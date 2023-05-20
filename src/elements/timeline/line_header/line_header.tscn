@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://s605awsqv1xu"]
+
+[ext_resource type="Script" path="res://elements/timeline/line_header/line_header.gd" id="1_5asby"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mcear"]
+font_size = 18
+
+[node name="LineHeader" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 130)
+offset_right = 244.0
+offset_bottom = 130.0
+size_flags_horizontal = 3
+script = ExtResource("1_5asby")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="LineTitle" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Line_name"
+label_settings = SubResource("LabelSettings_mcear")

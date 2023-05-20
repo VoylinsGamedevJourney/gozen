@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://drayrngp0sntq"]
+
+[node name="ProjectMonitor" type="PanelContainer"]
+size_flags_horizontal = 3

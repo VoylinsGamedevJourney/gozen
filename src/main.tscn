@@ -1,0 +1,96 @@
+[gd_scene load_steps=5 format=3 uid="uid://kmsitpxlr3at"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_h7ewd"]
+[ext_resource type="PackedScene" uid="uid://cj30pb6goxaqo" path="res://elements/status_bar/status_bar.tscn" id="2_avxde"]
+[ext_resource type="PackedScene" uid="uid://drayrngp0sntq" path="res://elements/project_monitor/project_monitor.tscn" id="3_2hf35"]
+[ext_resource type="PackedScene" uid="uid://b10nk2g1jbnu4" path="res://elements/timeline/timeline.tscn" id="3_q4b8y"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_h7ewd")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatusBar" parent="VBox" instance=ExtResource("2_avxde")]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBox/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Top" type="HSplitContainer" parent="VBox/MarginContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProjectMonitor" parent="VBox/MarginContainer/VSplitContainer/Top" instance=ExtResource("3_2hf35")]
+layout_mode = 2
+
+[node name="EffectsCompositions" type="PanelContainer" parent="VBox/MarginContainer/VSplitContainer/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Bottom" type="HSplitContainer" parent="VBox/MarginContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Files" type="TabContainer" parent="VBox/MarginContainer/VSplitContainer/Bottom"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="Project Files" type="TabBar" parent="VBox/MarginContainer/VSplitContainer/Bottom/Files"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox/MarginContainer/VSplitContainer/Bottom/Files/Project Files"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="ProjectFilesList" type="ItemList" parent="VBox/MarginContainer/VSplitContainer/Bottom/Files/Project Files/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Global Files" type="TabBar" parent="VBox/MarginContainer/VSplitContainer/Bottom/Files"]
+visible = false
+layout_mode = 2
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="VBox/MarginContainer/VSplitContainer/Bottom/Files/Global Files"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 31.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="GlobalFilesList" type="ItemList" parent="VBox/MarginContainer/VSplitContainer/Bottom/Files/Global Files/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Timeline" parent="VBox/MarginContainer/VSplitContainer/Bottom" instance=ExtResource("3_q4b8y")]
+layout_mode = 2
