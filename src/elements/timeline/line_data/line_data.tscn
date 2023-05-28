@@ -1,4 +1,0 @@
-[gd_scene format=3 uid="uid://c7f8mmo2nic21"]
-
-[node name="LineData" type="PanelContainer"]
-custom_minimum_size = Vector2(0, 130)

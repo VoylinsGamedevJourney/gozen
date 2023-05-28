@@ -4,14 +4,33 @@ extends Node
 ##
 ## When a new window/scene needs to be opened, it goes through this script.
 
-enum TYPE {PROJECT_MANAGER}
-
+enum {
+	MODULE_PROJECT_MANAGER
+}
 
 func _ready() -> void:
 	print("Window manager starting up ...")
-	load_window_module(TYPE.PROJECT_MANAGER)
+	load_modules()
+	
 	# On startup we need the project manager to popup
-	#WindowManager.open_window_inscreen("project_manager")
+	show_window_module(MODULE_PROJECT_MANAGER)
+
+
+func load_modules() -> void:
+	# TODO: Go into user://Modules and go through every subfolder and
+	# load all modules into the project
+	# ProjectSettings.load_resource_pack(module_path)
+	pass
+
+
+func show_window_module(module: int) -> void:
+	match module:
+		MODULE_PROJECT_MANAGER:
+			pass
+		_: 
+			printerr("Invalid module!")
+			return
+
 
 
 func load_window_module(module_type: TYPE, module_name: String = "default") -> void:

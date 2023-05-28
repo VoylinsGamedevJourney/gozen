@@ -1,19 +1,16 @@
 class_name ProjectData
 extends Node
 
-var project_name: String = "new_project"
-var project_path: String = ""
+var project_name := ""
+var project_path := ""
+var last_edited := 202305271539
+var files := []
 
-var local_files := []
-var line_data := { "video": [], "audio": [] }
+
+func load_data(new_project_path: String) -> void:
+	pass
 
 
-func get_data() -> Dictionary:
-	var temp_data: Dictionary = {}
-	for x in get_property_list():
-		if x.usage == 4096: temp_data[x.name] = get(x.name)
-	return temp_data
-
-func set_data(data: Dictionary) -> void:
-	for x in data:
-		if get(x) != null: set(x, data[x])
+func save_data() -> void:
+	# Also change the last_edited value
+	pass

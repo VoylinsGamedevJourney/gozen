@@ -13,17 +13,25 @@ config_version=5
 config/name="GoZen"
 config/description="The Minimalist Video Editor"
 run/main_scene="res://main.tscn"
+config/custom_user_dir_name="GoZSen"
 config/features=PackedStringArray("4.0", "Forward Plus")
 run/low_processor_mode=true
 config/icon="res://icon.svg"
 
 [autoload]
 
-ProjectManager="*res://scripts/autoloads/project_manager.gd"
+Globals="*res://scripts/autloads/globals.gd"
+SettingsManager="*res://scripts/autloads/settings_handler.gd"
+ProjectManager="*res://scripts/autloads/project_handler.gd"
+WindowManager="*res://scripts/autloads/module_handler.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_height"
+window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom="res://default_theme.tres"

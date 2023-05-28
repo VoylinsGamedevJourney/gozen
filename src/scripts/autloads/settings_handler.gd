@@ -7,6 +7,9 @@ const folder_structure: PackedStringArray = [
 ]
 
 var projects := [] # List of all saved project paths
+var sel_modules := {
+	"ProjectManager": "default"
+}
 
 
 func _ready() -> void:
