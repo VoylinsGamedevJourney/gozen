@@ -1,9 +1,4 @@
 [gd_resource type="Theme" format=3 uid="uid://ousk4dq8dmjl"]
 
 [resource]
-HBoxContainer/constants/separation = 20
-Label/font_sizes/font_size = 30
-LineEdit/font_sizes/font_size = 30
-OptionButton/font_sizes/font_size = 30
-PopupMenu/font_sizes/font_size = 30
-VBoxContainer/constants/separation = 20
+default_font_size = 20
