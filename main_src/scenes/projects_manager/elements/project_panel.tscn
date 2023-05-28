@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://dm71ydnjg65o7"]
+
+[ext_resource type="Script" path="res://scenes/projects_manager/elements/project_panel.gd" id="1_c8y27"]
+[ext_resource type="Texture2D" uid="uid://dsp2i31npdikw" path="res://icon.svg" id="2_ap4n8"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dqaw7"]
+font_size = 28
+outline_size = 1
+shadow_size = 0
+
+[sub_resource type="FontVariation" id="FontVariation_1fsue"]
+variation_transform = Transform2D(1, -0.08, 0, 1, 0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wijik"]
+font = SubResource("FontVariation_1fsue")
+font_size = 20
+font_color = Color(0.772549, 0.772549, 0.772549, 1)
+
+[node name="project_panel" type="Panel"]
+custom_minimum_size = Vector2(0, 100)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_c8y27")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="HBox"]
+layout_mode = 2
+texture = ExtResource("2_ap4n8")
+expand_mode = 2
+stretch_mode = 4
+
+[node name="ProjectDetails" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="ProjectNameLabel" type="Label" parent="HBox/ProjectDetails"]
+layout_mode = 2
+text = "Project Name"
+label_settings = SubResource("LabelSettings_dqaw7")
+
+[node name="ProjectPathLabel" type="Label" parent="HBox/ProjectDetails"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Project path"
+label_settings = SubResource("LabelSettings_wijik")
+vertical_alignment = 2
