@@ -1,62 +1,56 @@
 extends Node
 
-## Handles window/scene loading
+## Handles modules (importing them )
 ##
-## When a new window/scene needs to be opened, it goes through this script.
+## Modules get loaded on startup in the correct folder inside of res. 
+## The way that modules get added to the editor is manually by putting them
+## in the correct folder or by importing them through the settings.
 
-enum {
-	MODULE_PROJECT_MANAGER
-}
 
 func _ready() -> void:
-	print("Window manager starting up ...")
-	load_modules()
+	_load_modules()
 	
 	# On startup we need the project manager to popup
-	show_window_module(MODULE_PROJECT_MANAGER)
+	show_window_module(Globals.MODULES.PROJECT_MANAGER)
 
 
-func load_modules() -> void:
-	# TODO: Go into user://Modules and go through every subfolder and
-	# load all modules into the project
-	# ProjectSettings.load_resource_pack(module_path)
-	pass
+func _load_modules() -> void:
+	# Loading all modules (pck files)
+	var dir := DirAccess.open(Globals.MODULE_USER_PATH)
+	var pck_paths := []
+	for type in Globals.MODULES.values():
+		if !dir.dir_exists(Globals.MODULE_PATHS[type]):
+			print("No modules in: %s!" % Globals.MODULE_PATHS[type])
+			continue
+		dir.change_dir(Globals.MODULE_PATHS[type])
+		for module in dir.get_directories():
+			pck_paths.append(_get_user_pck_path(type, module))
+		dir.change_dir("../")
+	for pck_path in pck_paths:
+		if !ProjectSettings.load_resource_pack(pck_path):
+			printerr("Could not load PCK file at path: %s!" % pck_path)
 
 
-func show_window_module(module: int) -> void:
-	match module:
-		MODULE_PROJECT_MANAGER:
-			pass
-		_: 
-			printerr("Invalid module!")
-			return
+func import_module(type: Globals.MODULES, pck_path: String) -> void:
+	# TODO: Importing modules through settings is not implemented yet.
+	var dir := DirAccess.open(Globals.MODULE_USER_PATH)
+	dir.change_dir(Globals.MODULE_PATHS[type])
+	dir.copy(pck_path, "./")
+	_load_modules()
 
 
-
-func load_window_module(module_type: TYPE, module_name: String = "default") -> void:
-	print("Loading module '%s' of type '%s' ..." % [module_name, module_type])
-	var module_path := "res://modules/" if module_name == "default" else "user://Modules/"
-	var scene_path := module_path
-	match module_type:
-		TYPE.PROJECT_MANAGER:
-			module_path += "ProjectManager/"
-			scene_path += "ProjectManager/project_manager.tscn"
-		_: 
-			printerr("Could not find module_type '%s'" % module_type)
-			return
-	module_path += "%s.pck" % module_name
-	
-	var success = ProjectSettings.load_resource_pack(module_path)
-	if !success:
-		printerr("Could not load pck file!")
-		return
-	var module_window = load(scene_path)
-	
-	Globals.main.add_child(module_window.instantiate())
+func _get_user_pck_path(pck_type: Globals.MODULES, pck_name: String) -> String:
+	var pck_path := Globals.MODULE_USER_PATH
+	pck_path += "/%s/" % Globals.MODULE_PATHS[pck_type]
+	pck_path += "%s/%s.pck" % [pck_name, pck_name]
+	return pck_path
 
 
-func open_window_inscreen(window_name: String) -> void:
-	print("Opening inscreen window '%s' ..." % window_name)
-	
-	var new_window := load("res://scenes/%%/%%.tscn".replace("%%", window_name))
-	Globals.main.add_child(new_window.instantiate())
+func show_window_module(type: Globals.MODULES) -> void:
+	var module_path := Globals.MODULE_RES_PATH
+	module_path += "/%s/" % Globals.MODULE_PATHS[type]
+	module_path += "%/%.tscn".replace('%', SettingsHandler.selected_modules[type])
+	var module_node := load(module_path)
+	if module_node == null:
+		printerr("Could not load module at path: %s!" % module_path)
+	Globals.main.add_child(module_node.instantiate())

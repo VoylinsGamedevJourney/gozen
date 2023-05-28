@@ -4,8 +4,8 @@ const settings_path := "user://settings.dat"
 
 # Save-able data
 var projects := [] # List of all saved project paths
-var sel_modules := {
-	"project_manager": "default"
+var selected_modules := {
+	Globals.MODULES.PROJECT_MANAGER: "default"
 }
 
 
@@ -21,7 +21,7 @@ func _ready() -> void:
 func save_settings() -> void:
 	var data := {
 		"projects": projects,
-		"sel_modules": sel_modules
+		"selected_modules": selected_modules
 	}
 	var file := FileAccess.open_compressed(settings_path, FileAccess.WRITE)
 	file.store_var(data)
