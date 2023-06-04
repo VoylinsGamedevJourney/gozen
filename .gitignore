@@ -13,3 +13,6 @@ export_presets.cfg
 *.mkv
 *.mp4
 
+# For big reset
+old_src/
+
