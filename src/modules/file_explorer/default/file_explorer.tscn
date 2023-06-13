@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmqvcdk78xep0"]
+
+[ext_resource type="Script" path="res://modules/file_explorer/default/file_explorer_module.gd" id="1_mmy07"]
+[ext_resource type="Theme" uid="uid://c82us1mx0cbvi" path="res://main_theme.tres" id="1_v8gq6"]
+
+[node name="FileExplorerModule" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_v8gq6")
+script = ExtResource("1_mmy07")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FileDialog" type="FileDialog" parent="."]
+initial_position = 1
+title = "Open a File"
+size = Vector2i(614, 600)
+mode = 2
+visible = true
+min_size = Vector2i(200, 600)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.gozen")
+show_hidden_files = true
+
+[connection signal="canceled" from="FileDialog" to="." method="_on_cancel_button_pressed"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
+[connection signal="files_selected" from="FileDialog" to="." method="_on_file_dialog_files_selected"]

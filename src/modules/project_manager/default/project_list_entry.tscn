@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://ddkb4lqdvj8oi"]
+
+[ext_resource type="Script" path="res://modules/project_manager/default/project_list_entry.gd" id="1_6ppk6"]
+[ext_resource type="Theme" uid="uid://c82us1mx0cbvi" path="res://main_theme.tres" id="1_rj5nq"]
+[ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="2_xg28v"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_hoeno"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_w1k00"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_tjtbd"]
+font_color = Color(0.566406, 0.566406, 0.566406, 1)
+
+[node name="ProjectListEntry" type="Button"]
+custom_minimum_size = Vector2(0, 100)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 8.0
+grow_horizontal = 2
+theme = ExtResource("1_rj5nq")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_hoeno")
+script = ExtResource("1_6ppk6")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Left" type="VBoxContainer" parent="MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProjectNameLabel" type="Label" parent="MarginContainer/HBox/Left"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Project name"
+label_settings = SubResource("LabelSettings_w1k00")
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/HBox/Left"]
+layout_mode = 2
+
+[node name="FolderTextureRect" type="TextureRect" parent="MarginContainer/HBox/Left/HBox"]
+modulate = Color(0.564706, 0.564706, 0.564706, 1)
+layout_mode = 2
+texture = ExtResource("2_xg28v")
+expand_mode = 3
+
+[node name="ProjectPathLabel" type="Label" parent="MarginContainer/HBox/Left/HBox"]
+layout_mode = 2
+text = "Project path"
+label_settings = SubResource("LabelSettings_tjtbd")
+
+[node name="Right" type="VBoxContainer" parent="MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="ProjectCreationDateLabel" type="Label" parent="MarginContainer/HBox/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Created:"
+horizontal_alignment = 2
+
+[node name="ProjectEditDateLabel" type="Label" parent="MarginContainer/HBox/Right"]
+layout_mode = 2
+text = "Edit:"
+horizontal_alignment = 2
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

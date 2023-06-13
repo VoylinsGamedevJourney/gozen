@@ -1,0 +1,233 @@
+[gd_scene load_steps=9 format=3 uid="uid://gfqogc42maxg"]
+
+[ext_resource type="Theme" uid="uid://c82us1mx0cbvi" path="res://main_theme.tres" id="1_cnf2c"]
+[ext_resource type="Script" path="res://modules/project_manager/default/project_manager_module.gd" id="2_bmis0"]
+[ext_resource type="Script" path="res://modules/project_manager/default/version_label.gd" id="3_ep1jp"]
+[ext_resource type="Texture2D" uid="uid://btn7ggmosh2g1" path="res://icons/Search.svg" id="4_n28s5"]
+[ext_resource type="Texture2D" uid="uid://b7d0rsvfi0ol0" path="res://icons/Add.svg" id="5_3fmvp"]
+[ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="6_lh1aw"]
+[ext_resource type="Texture2D" uid="uid://qt1dl0iwudtf" path="res://icons/Remove.svg" id="7_aaqff"]
+[ext_resource type="Texture2D" uid="uid://d00vfsik3pfbv" path="res://icons/Clear.svg" id="8_o4vca"]
+
+[node name="StartupModule" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_cnf2c")
+script = ExtResource("2_bmis0")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VersionLabel" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Version:"
+horizontal_alignment = 2
+script = ExtResource("3_ep1jp")
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Projects" type="TabBar" parent="MarginContainer/TabContainer"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="MarginContainer/TabContainer/Projects"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/TabContainer/Projects/Margin"]
+layout_mode = 2
+
+[node name="MainVBox" type="VBoxContainer" parent="MarginContainer/TabContainer/Projects/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TopFunctions" type="HBoxContainer" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox"]
+layout_mode = 2
+
+[node name="SearchProjectsLineEdit" type="LineEdit" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/TopFunctions"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Filter projects"
+clear_button_enabled = true
+right_icon = ExtResource("4_n28s5")
+
+[node name="SortLabel" type="Label" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/TopFunctions"]
+layout_mode = 2
+text = "Sort:"
+
+[node name="SortOptionButton" type="OptionButton" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/TopFunctions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 3
+selected = 1
+popup/item_0/text = "Name"
+popup/item_0/id = 0
+popup/item_1/text = "Last edited"
+popup/item_1/id = 1
+popup/item_2/text = "Creation"
+popup/item_2/id = 2
+
+[node name="ScrollPanel" type="Panel" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProjectsScrollContainer" type="ScrollContainer" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/ScrollPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="ProjectsList" type="VBoxContainer" parent="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/ScrollPanel/ProjectsScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="MarginContainer/TabContainer/Projects/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="AddNewProjectButton" type="Button" parent="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Add new project"
+icon = ExtResource("5_3fmvp")
+
+[node name="ImportProjectButton" type="Button" parent="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Import project"
+icon = ExtResource("6_lh1aw")
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+
+[node name="RemoveProjectButton" type="Button" parent="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Remove project"
+icon = ExtResource("7_aaqff")
+
+[node name="RemoveMissingProjectsButton" type="Button" parent="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Remove missing projects"
+icon = ExtResource("8_o4vca")
+
+[node name="About" type="TabBar" parent="MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/TabContainer/About"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -149.5
+offset_right = 0.5
+offset_bottom = 149.5
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[center]
+[b]Made by:[/b]  Voylin
+[b]Source code:[/b]  [url=https://github.com/voylin/GoZen]Voylin - Github[/url]
+[b]Youtube channel:[/b]  [url=https://youtube.com/@voylinsgamedevjourney]Voylin's Gamedev Journey[/url]
+
+
+This video editor is being developed as a learning experience, a showcase of what Godot is capable of, and because I want a decent working video editor to use on linux.
+-
+Voylin
+
+
+[b]Support this project:[/b]
+At this moment there is no way to support me yet. ^^\\\" I guess share my videos and subscribe to my youtube channel?
+[/center]"
+fit_content = true
+
+[node name="AddNewProjectPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AddNewProjectDialog" type="ConfirmationDialog" parent="AddNewProjectPanel"]
+initial_position = 2
+title = "Add new project"
+size = Vector2i(600, 126)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AddNewProjectPanel/AddNewProjectDialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 592.0
+offset_bottom = 77.0
+size_flags_vertical = 3
+alignment = 1
+
+[node name="NameHBox" type="HBoxContainer" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProjectNameLabel" type="Label" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/NameHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Project name:"
+
+[node name="ProjectNameLineEdit" type="LineEdit" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/NameHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 20
+structured_text_bidi_override = 2
+
+[node name="LocationHBox" type="HBoxContainer" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer"]
+layout_mode = 2
+
+[node name="LocationLabel" type="Label" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/LocationHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Location:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/LocationHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LocationLineEdit" type="LineEdit" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SearchAddNewPathButton" type="Button" parent="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer"]
+layout_mode = 2
+text = "Select"
+
+[connection signal="text_changed" from="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/TopFunctions/SearchProjectsLineEdit" to="." method="_on_filter_text_change"]
+[connection signal="item_selected" from="MarginContainer/TabContainer/Projects/Margin/HBox/MainVBox/TopFunctions/SortOptionButton" to="." method="_on_sort_option_item_selected"]
+[connection signal="pressed" from="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox/AddNewProjectButton" to="." method="_on_add_new_project_button_pressed"]
+[connection signal="pressed" from="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox/ImportProjectButton" to="." method="_on_import_project_button_pressed"]
+[connection signal="pressed" from="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox/RemoveProjectButton" to="." method="_on_remove_project_button_pressed"]
+[connection signal="pressed" from="MarginContainer/TabContainer/Projects/Margin/HBox/ButtonsVBox/RemoveMissingProjectsButton" to="." method="_on_remove_missing_projects_button_pressed"]
+[connection signal="canceled" from="AddNewProjectPanel/AddNewProjectDialog" to="." method="close_new_project_dialog"]
+[connection signal="confirmed" from="AddNewProjectPanel/AddNewProjectDialog" to="." method="create_new_project"]
+[connection signal="pressed" from="AddNewProjectPanel/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer/SearchAddNewPathButton" to="." method="_on_search_new_project_path_pressed"]
