@@ -127,8 +127,8 @@ func _on_project_button_pressed(project_entry: ProjectListEntry) -> void:
 	if selected_project != project_entry:
 		selected_project = project_entry
 		return
-	# TODO: Start main editor layout
-	print("TODO")
+	get_parent().add_child(ModuleManager.get_module("editor_layout"))
+	self.queue_free()
 
 
 func _on_sort_option_item_selected(_index: int) -> void:

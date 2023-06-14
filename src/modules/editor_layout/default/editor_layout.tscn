@@ -1,0 +1,152 @@
+[gd_scene load_steps=6 format=3 uid="uid://dv0p3slhakt3y"]
+
+[ext_resource type="Script" path="res://modules/editor_layout/default/editor_layout_module.gd" id="1_sv6l8"]
+[ext_resource type="Theme" uid="uid://c82us1mx0cbvi" path="res://main_theme.tres" id="1_wuws6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_klyv2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_imhc5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v775k"]
+
+[node name="EditorLayout" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_wuws6")
+script = ExtResource("1_sv6l8")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TopBar" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer/TopBar"]
+layout_mode = 2
+offset_top = 2.0
+offset_right = 1906.0
+offset_bottom = 28.0
+text = "Status: ..."
+
+[node name="Buttons" type="HBoxContainer" parent="MarginContainer/VBoxContainer/TopBar"]
+layout_mode = 2
+offset_right = 1906.0
+offset_bottom = 31.0
+alignment = 1
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/TopBar/Buttons"]
+layout_mode = 2
+text = "Render"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSP1" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 500
+
+[node name="HSP2" type="HSplitContainer" parent="MarginContainer/VBoxContainer/HSP1"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LeftSpace" type="PanelContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_klyv2")
+
+[node name="VSCLeft" type="VSplitContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2/LeftSpace"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TopLeft" type="TabContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2/LeftSpace/VSCLeft"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Library" type="TabBar" parent="MarginContainer/VBoxContainer/HSP1/HSP2/LeftSpace/VSCLeft/TopLeft"]
+layout_mode = 2
+
+[node name="BottomLeft" type="TabContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2/LeftSpace/VSCLeft"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Files" type="TabBar" parent="MarginContainer/VBoxContainer/HSP1/HSP2/LeftSpace/VSCLeft/BottomLeft"]
+layout_mode = 2
+
+[node name="MiddleSpace" type="PanelContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_imhc5")
+
+[node name="VSCMiddle" type="VSplitContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2/MiddleSpace"]
+unique_name_in_owner = true
+layout_mode = 2
+split_offset = 203
+
+[node name="ProjectViewPanel" type="Panel" parent="MarginContainer/VBoxContainer/HSP1/HSP2/MiddleSpace/VSCMiddle"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer/VBoxContainer/HSP1/HSP2/MiddleSpace/VSCMiddle/ProjectViewPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/HSP1/HSP2/MiddleSpace/VSCMiddle/ProjectViewPanel/SubViewportContainer"]
+
+[node name="TimeLinePanel" type="Panel" parent="MarginContainer/VBoxContainer/HSP1/HSP2/MiddleSpace/VSCMiddle"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HSP1/HSP2/MiddleSpace/VSCMiddle/TimeLinePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -33.5
+offset_top = -13.0
+offset_right = 33.5
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Timeline"
+
+[node name="RightSpace" type="PanelContainer" parent="MarginContainer/VBoxContainer/HSP1"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_v775k")
+
+[node name="VSCRight" type="VSplitContainer" parent="MarginContainer/VBoxContainer/HSP1/RightSpace"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TopRight" type="TabContainer" parent="MarginContainer/VBoxContainer/HSP1/RightSpace/VSCRight"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Effects" type="TabBar" parent="MarginContainer/VBoxContainer/HSP1/RightSpace/VSCRight/TopRight"]
+layout_mode = 2
+
+[node name="BottomRight" type="TabContainer" parent="MarginContainer/VBoxContainer/HSP1/RightSpace/VSCRight"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="dragged" from="MarginContainer/VBoxContainer/HSP1" to="." method="_on_hsp_1_dragged"]
+[connection signal="dragged" from="MarginContainer/VBoxContainer/HSP1/HSP2" to="." method="_on_hsp_2_dragged"]

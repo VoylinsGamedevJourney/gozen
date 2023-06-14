@@ -50,7 +50,6 @@ func import_project(project_path: String) -> void:
 	var new_entry: ProjectListEntry = ProjectListEntry.new()
 	
 	if !FileAccess.file_exists(project_path):
-		printerr("No project file at '%s'!" % project_path)
 		new_entry.p_path = project_path
 	else:
 		var file = FileAccess.open_compressed(
