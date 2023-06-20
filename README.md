@@ -1,10 +1,6 @@
 # GoZen
 *The Minimalist Video Editor*
 
-## Where see the progress
-
-I've made a page for displaying the progress for this video editor which you can find on [this link to the Notion board!](https://voylin.notion.site/voylin/GoZen-a998dc9479c84a8ea35e330d45813982)
-
 ## Meaning of GoZen 
 
 I named the editor GoZen, Go comes from Godot and Zen from ... zen. I want this editor to be very useful, but not be too complex to the end user so they can edit videos whilst being zen. Honestly, I had a very good reason to use zen in the name but I completely forgot as I only wrote down the name and not how I came up with it. ^^"
