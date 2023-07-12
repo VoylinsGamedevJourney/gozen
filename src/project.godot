@@ -14,16 +14,28 @@ config/name="GoZen"
 run/main_scene="res://main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
-config/features=PackedStringArray("4.0", "Forward Plus")
+config/features=PackedStringArray("4.1", "Forward Plus")
 run/low_processor_mode=true
 config/icon="res://icon.svg"
 
 [autoload]
 
-ModuleManager="*res://autoloads/module_manager.gd"
-Globals="*res://globals.gd"
+ModuleManager="*res://scripts/autoloads/module_manager.gd"
+Globals="*res://scripts/autoloads/globals.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+
+[gui]
+
+theme/custom_font="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf"
+
+[internationalization]
+
+locale/translation_remaps={
+"res://translations/nodes/about_rich_text_label_en.tscn": PackedStringArray("res://translations/nodes/about_rich_text_label_en.tscn:en", "res://translations/nodes/about_rich_text_label_ja.tscn:ja")
+}
+locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.ja.translation")
+locale/test="ja"
