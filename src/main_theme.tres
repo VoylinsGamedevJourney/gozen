@@ -1,0 +1,68 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://dfc8t3rxw13ra"]
+
+[ext_resource type="FontFile" uid="uid://cwvjhtfqmlpfs" path="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_3r82a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ddtnu"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.129458, 0.129458, 0.129458, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_87m4r"]
+content_margin_left = 37.0
+content_margin_top = 7.0
+content_margin_right = 37.0
+content_margin_bottom = 7.0
+bg_color = Color(0.156863, 0.156863, 0.156863, 1)
+border_width_top = 3
+border_color = Color(0.254902, 0.117647, 0.32549, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ml6ap"]
+content_margin_left = 37.0
+content_margin_top = 7.0
+content_margin_right = 37.0
+content_margin_bottom = 7.0
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+border_width_top = 3
+border_color = Color(0.509804, 0.231373, 0.647059, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_500uy"]
+content_margin_left = 37.0
+content_margin_top = 7.0
+content_margin_right = 37.0
+content_margin_bottom = 7.0
+bg_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+border_width_top = 3
+border_color = Color(0.188235, 0.0862745, 0.239216, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uenkc"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.176349, 0.176349, 0.176349, 1)
+
+[resource]
+default_font = ExtResource("1_3r82a")
+default_font_size = 16
+TabContainer/font_sizes/font_size = 18
+TabContainer/styles/panel = SubResource("StyleBoxFlat_ddtnu")
+TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_87m4r")
+TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_ml6ap")
+TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_500uy")
+background/base_type = &"PanelContainer"
+background/styles/panel = SubResource("StyleBoxFlat_uenkc")
