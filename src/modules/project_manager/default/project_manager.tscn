@@ -1,0 +1,229 @@
+[gd_scene load_steps=11 format=3 uid="uid://gfqogc42maxg"]
+
+[ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_251g8"]
+[ext_resource type="Script" path="res://modules/project_manager/default/project_manager_module.gd" id="2_bmis0"]
+[ext_resource type="Script" path="res://scripts/version_label.gd" id="3_ow1pb"]
+[ext_resource type="Texture2D" uid="uid://btn7ggmosh2g1" path="res://icons/Search.svg" id="4_n28s5"]
+[ext_resource type="Texture2D" uid="uid://b7d0rsvfi0ol0" path="res://icons/Add.svg" id="5_3fmvp"]
+[ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="6_lh1aw"]
+[ext_resource type="Texture2D" uid="uid://qt1dl0iwudtf" path="res://icons/Remove.svg" id="7_aaqff"]
+[ext_resource type="Texture2D" uid="uid://d00vfsik3pfbv" path="res://icons/Clear.svg" id="8_o4vca"]
+[ext_resource type="PackedScene" uid="uid://6mlvn6cyymdo" path="res://translations/nodes/about_rich_text_label_en.tscn" id="9_7usct"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vgh0j"]
+
+[node name="ProjectManager" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_251g8")
+theme_type_variation = &"background"
+script = ExtResource("2_bmis0")
+
+[node name="VersionHBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 2
+
+[node name="VersionLabel" type="Label" parent="VersionHBox"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "TEXT_VERSION"
+horizontal_alignment = 2
+
+[node name="VersionNumberLabel" type="Label" parent="VersionHBox"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0.0.0"
+horizontal_alignment = 2
+script = ExtResource("3_ow1pb")
+
+[node name="Content" type="TabContainer" parent="."]
+layout_mode = 2
+
+[node name="TAB_PROJECTS" type="TabBar" parent="Content"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Content/TAB_PROJECTS"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="Content/TAB_PROJECTS/Margin"]
+layout_mode = 2
+
+[node name="MainVBox" type="VBoxContainer" parent="Content/TAB_PROJECTS/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TopFunctions" type="HBoxContainer" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox"]
+layout_mode = 2
+
+[node name="SearchProjectsLineEdit" type="LineEdit" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "TEXT_FILTER_PROJECTS"
+clear_button_enabled = true
+right_icon = ExtResource("4_n28s5")
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="VSeparator" type="VSeparator" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions"]
+layout_mode = 2
+theme_override_constants/separation = 7
+theme_override_styles/separator = SubResource("StyleBoxEmpty_vgh0j")
+
+[node name="SortLabel" type="Label" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions"]
+layout_mode = 2
+text = "TEXT_SORT"
+
+[node name="SortOptionButton" type="OptionButton" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 3
+selected = 1
+popup/item_0/text = "Name"
+popup/item_0/id = 0
+popup/item_1/text = "Last edited"
+popup/item_1/id = 1
+popup/item_2/text = "Creation"
+popup/item_2/id = 2
+
+[node name="ScrollPanel" type="Panel" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProjectsScrollContainer" type="ScrollContainer" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/ScrollPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="ProjectsList" type="VBoxContainer" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/ScrollPanel/ProjectsScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="Content/TAB_PROJECTS/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="AddNewProjectButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Add new project"
+icon = ExtResource("5_3fmvp")
+expand_icon = true
+
+[node name="ImportProjectButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Import project"
+icon = ExtResource("6_lh1aw")
+expand_icon = true
+
+[node name="HSeparator" type="HSeparator" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+
+[node name="RemoveProjectButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Remove project"
+icon = ExtResource("7_aaqff")
+expand_icon = true
+
+[node name="RemoveMissingProjectsButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+layout_mode = 2
+text = "Remove missing projects"
+icon = ExtResource("8_o4vca")
+expand_icon = true
+
+[node name="TAB_ABOUT" type="TabBar" parent="Content"]
+visible = false
+layout_mode = 2
+
+[node name="AboutRichTextLabel" parent="Content/TAB_ABOUT" instance=ExtResource("9_7usct")]
+layout_mode = 0
+anchors_preset = 0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = 0.0
+offset_right = 700.0
+offset_bottom = 336.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="NewProjectPopup" type="Panel" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="AddNewProjectDialog" type="ConfirmationDialog" parent="NewProjectPopup"]
+title = "Add new project"
+initial_position = 2
+size = Vector2i(600, 126)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NewProjectPopup/AddNewProjectDialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 592.0
+offset_bottom = 77.0
+size_flags_vertical = 3
+alignment = 1
+
+[node name="NameHBox" type="HBoxContainer" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProjectNameLabel" type="Label" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer/NameHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Project name:"
+
+[node name="ProjectNameLineEdit" type="LineEdit" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer/NameHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 20
+caret_blink = true
+caret_blink_interval = 0.5
+structured_text_bidi_override = 2
+
+[node name="LocationHBox" type="HBoxContainer" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer"]
+layout_mode = 2
+
+[node name="LocationLabel" type="Label" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer/LocationHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Location:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer/LocationHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LocationLineEdit" type="LineEdit" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="SearchAddNewPathButton" type="Button" parent="NewProjectPopup/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer"]
+layout_mode = 2
+text = "Select"
+
+[connection signal="text_changed" from="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions/SearchProjectsLineEdit" to="." method="_on_filter_text_change"]
+[connection signal="item_selected" from="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions/SortOptionButton" to="." method="_on_sort_option_item_selected"]
+[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/AddNewProjectButton" to="." method="_on_add_new_project_button_pressed"]
+[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/ImportProjectButton" to="." method="_on_import_project_button_pressed"]
+[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/RemoveProjectButton" to="." method="_on_remove_project_button_pressed"]
+[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/RemoveMissingProjectsButton" to="." method="_on_remove_missing_projects_button_pressed"]
+[connection signal="canceled" from="NewProjectPopup/AddNewProjectDialog" to="." method="close_new_project_dialog"]
+[connection signal="confirmed" from="NewProjectPopup/AddNewProjectDialog" to="." method="create_new_project"]
+[connection signal="pressed" from="NewProjectPopup/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer/SearchAddNewPathButton" to="." method="_on_search_new_project_path_pressed"]
