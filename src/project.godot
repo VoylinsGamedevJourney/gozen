@@ -35,7 +35,7 @@ theme/custom_font="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf"
 [internationalization]
 
 locale/translation_remaps={
-"res://translations/nodes/about_rich_text_label_en.tscn": PackedStringArray("res://translations/nodes/about_rich_text_label_en.tscn:en", "res://translations/nodes/about_rich_text_label_ja.tscn:ja")
+"res://translations/nodes/about_rich_text_label_en.tscn": PackedStringArray("res://translations/nodes/about_rich_text_label_en.tscn:en", "res://translations/nodes/about_rich_text_label_ja.tscn:ja", "res://translations/nodes/about_rich_text_label_fr.tscn:fr")
 }
-locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.ja.translation")
+locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation")
 locale/test="ja"

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://6mlvn6cyymdo"]
+[gd_scene format=3 uid="uid://c2omf0dqqmjdn"]
 
 [node name="AboutRichTextLabel" type="RichTextLabel"]
 custom_minimum_size = Vector2(700, 0)
