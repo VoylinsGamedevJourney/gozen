@@ -3,7 +3,11 @@ extends Control
 
 ## File Explorer Interface
 ##
-## test
+## This is the interface which has to be used when
+## creating your own file explorer interface. By using
+## this interface we maintain compatibility with the
+## core editor and other modules.
+
 
 signal on_dir_selected(dir)
 signal on_file_selected(path)
@@ -17,22 +21,13 @@ enum FILE_MODE {
 }
 
 
-var file_explorer_title := "Open file"
-var file_mode: FILE_MODE = FILE_MODE.SELECT_FILE
-var file_filters: PackedStringArray = []
-
-
-func _ready() -> void:
-	close_file_explorer()
+var title : String
+var mode: FILE_MODE = FILE_MODE.SELECT_FILE
+var filters: PackedStringArray = []
 
 
 func open_file_explorer() -> void:
 	self.visible = true
-
-
-func close_file_explorer() -> void:
-	self.visible = false
-	file_filters = []
 
 
 # Returns an array of the given path with all files and folders.

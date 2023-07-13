@@ -14,50 +14,38 @@ extends Control
 var projects := []
 
 
-## Initialize project manager:
-##
-## When a project manager module gets loaded on starup, all currently saved
-## project locations will be searched to create the projects list.
 func _init() -> void:
 	load_projects()
 
 
-## Loading all saved project paths:
-##
-## All paths for the created projects get saved into a file.
-## This loads in all essential project data which may be 
-## useful to use inside of the project manager.
 func load_projects() -> void:
 	if !FileAccess.file_exists(Globals.PATH_PROJECT_LIST): return
-	var file := FileAccess.open_compressed(
-		Globals.PATH_PROJECT_LIST, FileAccess.READ)
-	if file.get_open_error():
-		printerr("Could not open project list file, error: %s" % file.get_open_error())
+	var file := FileAccess.open_compressed(Globals.PATH_PROJECT_LIST, FileAccess.READ)
+	if FileAccess.get_open_error():
+		printerr("Could not open project list file!\n\tError: %s" % FileAccess.get_open_error())
 		return
 	var project_paths: PackedStringArray = file.get_var()
 	for project_path in project_paths:
 		import_project(project_path, false)
 
 
-## We add an entry to the projects array, and if necesarry we save the data.
 func import_project(project_path: String, save_paths: bool = true) -> void:
 	projects.append(Project.get_project_manager_data(project_path))
-	if save_paths: save_projects()
+	if save_paths:
+		save_projects()
 
 
-## When saving we only take the projects paths and put these in a file.
 func save_projects() -> void:
 	var project_paths: PackedStringArray = []
 	for project in projects: project_paths.append(project.p_path)
 	var file := FileAccess.open_compressed(Globals.PATH_PROJECT_LIST, FileAccess.WRITE)
-	if file.get_open_error():
+	if FileAccess.get_open_error():
 		printerr("Could not open project list at path: %s\n\tError: %s" % [
-			Globals.PATH_PROJECT_LIST, file.get_open_error()])
+			Globals.PATH_PROJECT_LIST, FileAccess.get_open_error()])
 		return
 	file.store_var(project_paths)
 
 
-## Creates a new project, add it to the project list, and saves the list
 func add_project(project_name: String, project_folder: String) -> void:
 	var project_data := Project.create_new_project(project_name, project_folder)
 	if project_data == {}:
@@ -67,22 +55,18 @@ func add_project(project_name: String, project_folder: String) -> void:
 	save_projects()
 
 
+func remove_project_from_list(project_path: String) -> void:
+	for project in projects:
+		if project.p_path == project_path:
+			projects.erase(project)
+	save_projects()
 
 
-
-
-
-
-## Creating a project requires only a name and a location.
-## !! Required info may change as the editor evolves !!
 func create_project(p_name: String, p_location: String) -> void:
 	if !DirAccess.dir_exists_absolute(p_location):
 		printerr("'%s' is not a valid directory for a gozen project!")
 		return
 	
-	# Check if project name is valid (no special characters)
-	# This is important as Operating Systems don't always
-	# accept these characters
 	for character in ['<','>',':','"','/','\\','|','?','*']:
 		if character in p_name:
 			printerr("No special characters are allowed in project names!")
@@ -114,26 +98,21 @@ func create_project(p_name: String, p_location: String) -> void:
 	if new_project.p_path in projects_paths:
 		printerr("Project with path '%s' is already in the list!" % new_project.p_path)
 		return
-#
-#	projects_list.append(new_project)
-#	save_projects_list()
-#
-#
-#func remove_project(project_entry: Project) -> void:
-#	projects_list.erase(project_entry)
-#	save_projects_list()
-#
-#
-#func remove_missing_projects() -> void:
-#	for project in projects_list.duplicate():
-#		if project.p_creation == 0: projects_list.erase(project)
-#	save_projects_list()
+	import_project(new_project.p_path)
 
 
-func open_editor_layout(_project: Project) -> void:
-	if _project.p_creation == 0:
+func remove_missing_projects() -> void:
+	for project in projects.duplicate():
+		if project.p_creation == 0:
+			projects.erase(project)
+	save_projects()
+
+
+func open_editor_layout(project_path: String) -> void:
+	if !FileAccess.file_exists(project_path):
 		printerr("Can't open missing project!")
 		return
 	get_parent().add_child(ModuleManager.get_module("editor_layout"))
-	Globals.current_project = _project
+	Globals.current_project = Project.new()
+	Globals.current_project.load_project(project_path)
 	queue_free()

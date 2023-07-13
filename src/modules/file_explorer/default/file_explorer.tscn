@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bmqvcdk78xep0"]
 
 [ext_resource type="Script" path="res://modules/file_explorer/default/file_explorer_module.gd" id="1_mmy07"]
-[ext_resource type="Theme" uid="uid://c82us1mx0cbvi" path="res://main_theme_dark.tres" id="1_v8gq6"]
+[ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_v8gq6"]
 
 [node name="FileExplorerModule" type="Control"]
 layout_mode = 3
@@ -21,11 +21,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="FileDialog" type="FileDialog" parent="."]
-initial_position = 1
+[node name="ExplorerPopup" type="FileDialog" parent="."]
 title = "Open a File"
-size = Vector2i(614, 600)
-mode = 2
+initial_position = 1
+size = Vector2i(626, 600)
 visible = true
 min_size = Vector2i(200, 600)
 ok_button_text = "Open"
@@ -34,7 +33,7 @@ access = 2
 filters = PackedStringArray("*.gozen")
 show_hidden_files = true
 
-[connection signal="canceled" from="FileDialog" to="." method="_on_cancel_button_pressed"]
-[connection signal="dir_selected" from="FileDialog" to="." method="_on_file_dialog_dir_selected"]
-[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
-[connection signal="files_selected" from="FileDialog" to="." method="_on_file_dialog_files_selected"]
+[connection signal="canceled" from="ExplorerPopup" to="." method="_on_cancel_button_pressed"]
+[connection signal="dir_selected" from="ExplorerPopup" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="file_selected" from="ExplorerPopup" to="." method="_on_file_dialog_file_selected"]
+[connection signal="files_selected" from="ExplorerPopup" to="." method="_on_file_dialog_files_selected"]

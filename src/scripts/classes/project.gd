@@ -20,8 +20,9 @@ static func get_project_manager_data(project_path: String) -> Dictionary:
 		"p_edit": 0 }
 	if !FileAccess.file_exists(project_path): return project_dic
 	var project_file := FileAccess.open_compressed(project_path, FileAccess.READ)
-	if project_file.get_open_error():
-		printerr("Could not open project file at %s.\n\tError: %s" % [project_path, project_file.get_open_error()])
+	var error := FileAccess.get_open_error()
+	if error:
+		printerr("Could not open project file at %s.\n\tError: %s" % [project_path, error])
 		return project_dic
 	var project_data: Dictionary = project_file.get_var()
 	project_dic.p_name = project_data.p_name
@@ -37,8 +38,8 @@ static func create_new_project(project_name: String, project_folder: String) -> 
 		return {}
 	var file_correct_name: String = "" 
 	var invalid_characters := ['<','>',':','"','/','\\','|','?','*']
-	for char in project_name:
-		file_correct_name += "_" if char in invalid_characters else char
+	for character in project_name:
+		file_correct_name += "_" if character in invalid_characters else character
 	var project := Project.new()
 	project.p_name = project_name
 	project.p_path = "%s/%s.gozen" % [project_folder, file_correct_name]
@@ -58,12 +59,6 @@ func save_project() -> void:
 	var file := FileAccess.open_compressed(p_path, FileAccess.WRITE)
 	file.store_var(data)
 	file.close()
-#	I AM HERE!!!
-
-
-
-
-
 
 
 func load_project(project_path: String) -> void:

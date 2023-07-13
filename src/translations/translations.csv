@@ -1,6 +1,18 @@
 KEY,en,ja
+TITLE_ADD_NEW_PROJECT,Add new project,新しいプロジェクトを追加する
 TEXT_VERSION,Version,バージョン
 TEXT_SORT,Sort:,並び替え：
 TEXT_FILTER_PROJECTS,Filter projects,プロジェクトのフィルター
 TAB_PROJECTS,Projects,プロジェクト
 TAB_ABOUT,About,情報
+SORT_NAME,name,名前
+SORT_LAST_EDITED,last edited,編集日
+SORT_CREATION,creation,作った日
+BUTTON_ADD_NEW_PROJECT,Add new project,新プロジェクト
+BUTTON_IMPORT_PROJECT,Import project,プロジェクトをインポート
+BUTTON_REMOVE_PROJECT,Remove project,プロジェクトを消す
+BUTTON_REMOVE_MISSING,Remove missing projects,不足プロジェクトを削除 
+ADD_NEW_PROJECT_NAME,Project name:,プロジェクトの名前：
+ADD_NEW_PROJECT_LOCATION,Location:,保存場所：
+ADD_NEW_PROJECT_SELECT,Select,選ぶ
+FILE_EXPLORER_SELECT_FOLDER,Select project folder,プロジェクトフォルダを選択してください
