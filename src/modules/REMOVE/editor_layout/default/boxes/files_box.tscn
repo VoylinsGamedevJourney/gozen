@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dq1bcmmfdtqpe"]
+
+[ext_resource type="Script" path="res://modules/REMOVE/editor_layout/default/boxes/files_box.gd" id="1_ajqxu"]
+
+[node name="Files" type="TabBar"]
+script = ExtResource("1_ajqxu")

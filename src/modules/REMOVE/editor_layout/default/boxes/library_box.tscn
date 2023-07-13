@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhnh51mmaxn0m"]
+
+[ext_resource type="Script" path="res://modules/REMOVE/editor_layout/default/boxes/library_box.gd" id="1_ph22x"]
+
+[node name="Library" type="TabBar"]
+script = ExtResource("1_ph22x")
