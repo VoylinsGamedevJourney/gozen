@@ -1,27 +1,25 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddkb4lqdvj8oi"]
+[gd_scene load_steps=6 format=3 uid="uid://bgeekyq0xtelp"]
 
-[ext_resource type="Script" path="res://modules/project_manager/default/project_list_entry.gd" id="1_6ppk6"]
-[ext_resource type="Theme" uid="uid://c82us1mx0cbvi" path="res://main_theme_dark.tres" id="1_rj5nq"]
-[ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="2_xg28v"]
+[ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_3tdeg"]
+[ext_resource type="Script" path="res://modules/project_manager/default/project_list_entry.gd" id="1_m0r27"]
+[ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="3_dux7w"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_hoeno"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_w1k00"]
+[sub_resource type="LabelSettings" id="LabelSettings_5yig1"]
 font_size = 20
 
-[sub_resource type="LabelSettings" id="LabelSettings_tjtbd"]
-font_color = Color(0.566406, 0.566406, 0.566406, 1)
+[sub_resource type="LabelSettings" id="LabelSettings_n5se2"]
+font_color = Color(0.615686, 0.615686, 0.615686, 1)
 
-[node name="ProjectListEntry" type="Button"]
+[node name="project_list_entry" type="Button"]
 custom_minimum_size = Vector2(0, 100)
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 8.0
+offset_bottom = 70.0
 grow_horizontal = 2
-theme = ExtResource("1_rj5nq")
-toggle_mode = true
-button_group = SubResource("ButtonGroup_hoeno")
-script = ExtResource("1_6ppk6")
+size_flags_horizontal = 3
+theme = ExtResource("1_3tdeg")
+expand_icon = true
+script = ExtResource("1_m0r27")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -30,50 +28,55 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 7
 
-[node name="HBox" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Left" type="VBoxContainer" parent="MarginContainer/HBox"]
+[node name="DataVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ProjectNameLabel" type="Label" parent="MarginContainer/HBox/Left"]
+[node name="ProjectNameLabel" type="Label" parent="MarginContainer/HBoxContainer/DataVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Project name"
-label_settings = SubResource("LabelSettings_w1k00")
+label_settings = SubResource("LabelSettings_5yig1")
 
-[node name="HBox" type="HBoxContainer" parent="MarginContainer/HBox/Left"]
+[node name="PathHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/DataVBox"]
 layout_mode = 2
+theme_override_constants/separation = 14
 
-[node name="FolderTextureRect" type="TextureRect" parent="MarginContainer/HBox/Left/HBox"]
-modulate = Color(0.564706, 0.564706, 0.564706, 1)
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/DataVBox/PathHBox"]
+modulate = Color(0.509804, 0.231373, 0.647059, 1)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("2_xg28v")
-expand_mode = 3
+texture = ExtResource("3_dux7w")
+expand_mode = 2
+stretch_mode = 5
 
-[node name="ProjectPathLabel" type="Label" parent="MarginContainer/HBox/Left/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Project path"
-label_settings = SubResource("LabelSettings_tjtbd")
-clip_text = true
-
-[node name="Right" type="VBoxContainer" parent="MarginContainer/HBox"]
+[node name="ProjectPathLabel" type="Label" parent="MarginContainer/HBoxContainer/DataVBox/PathHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2
+text = "Project location"
+label_settings = SubResource("LabelSettings_n5se2")
 
-[node name="ProjectCreationDateLabel" type="Label" parent="MarginContainer/HBox/Right"]
+[node name="DatesVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_vertical = 3
-text = "Created:"
+alignment = 2
+
+[node name="CreationLabel" type="Label" parent="MarginContainer/HBoxContainer/DatesVBox"]
+layout_mode = 2
+text = "Created on:"
 horizontal_alignment = 2
 
-[node name="ProjectEditDateLabel" type="Label" parent="MarginContainer/HBox/Right"]
+[node name="LastEditLabel" type="Label" parent="MarginContainer/HBoxContainer/DatesVBox"]
 layout_mode = 2
-text = "Edit:"
+text = "Edited on:"
 horizontal_alignment = 2
 
 [connection signal="pressed" from="." to="." method="_on_pressed"]
