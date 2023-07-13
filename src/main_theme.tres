@@ -1,6 +1,70 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://dfc8t3rxw13ra"]
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://dfc8t3rxw13ra"]
 
 [ext_resource type="FontFile" uid="uid://cwvjhtfqmlpfs" path="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_3r82a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lmyou"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.294118, 0.294118, 0.294118, 0.392157)
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dno22"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.156863, 0.156863, 0.156863, 1)
+border_width_top = 3
+border_color = Color(0.254902, 0.117647, 0.32549, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grwrw"]
+content_margin_left = 28.0
+content_margin_top = 7.0
+content_margin_right = 28.0
+content_margin_bottom = 7.0
+bg_color = Color(0.294118, 0.294118, 0.294118, 0.392157)
+border_width_top = 3
+border_color = Color(0.509804, 0.231373, 0.647059, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nk2ac"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+border_width_top = 3
+border_color = Color(0.188235, 0.0862745, 0.239216, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t3s8g"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.294118, 0.294118, 0.294118, 0.392157)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fpa7q"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.294118, 0.294118, 0.294118, 0.392157)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ddtnu"]
 content_margin_left = 10.0
@@ -59,10 +123,20 @@ bg_color = Color(0.176349, 0.176349, 0.176349, 1)
 [resource]
 default_font = ExtResource("1_3r82a")
 default_font_size = 16
+EditorTabContainer/base_type = &"TabContainer"
+EditorTabContainer/constants/side_margin = 0
+EditorTabContainer/styles/panel = SubResource("StyleBoxFlat_lmyou")
+EditorTabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_dno22")
+EditorTabContainer/styles/tab_selected = SubResource("StyleBoxFlat_grwrw")
+EditorTabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_nk2ac")
+EditorTabContainer/styles/tabbar_background = SubResource("StyleBoxFlat_t3s8g")
+HBoxContainer/constants/separation = 14
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_fpa7q")
 TabContainer/font_sizes/font_size = 18
 TabContainer/styles/panel = SubResource("StyleBoxFlat_ddtnu")
 TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_87m4r")
 TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_ml6ap")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_500uy")
+VBoxContainer/constants/separation = 14
 background/base_type = &"PanelContainer"
 background/styles/panel = SubResource("StyleBoxFlat_uenkc")

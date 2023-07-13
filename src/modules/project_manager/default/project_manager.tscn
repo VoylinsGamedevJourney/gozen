@@ -162,6 +162,16 @@ offset_bottom = 336.0
 grow_horizontal = 1
 grow_vertical = 1
 
+[node name="TAB_SETTINGS" type="TabBar" parent="Content"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Content/TAB_SETTINGS"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 24.0
+text = "Work in Progress"
+
 [node name="NewProjectPopup" type="Panel" parent="."]
 visible = false
 layout_mode = 2

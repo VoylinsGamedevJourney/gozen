@@ -89,4 +89,4 @@ func _on_project_button_pressed(project_path: String) -> void:
 	if selected_project_path != project_path:
 		selected_project_path = project_path
 		return
-	open_editor_layout(selected_project_path)
+	open_editor(selected_project_path)

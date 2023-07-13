@@ -108,11 +108,11 @@ func remove_missing_projects() -> void:
 	save_projects()
 
 
-func open_editor_layout(project_path: String) -> void:
+func open_editor(project_path: String) -> void:
 	if !FileAccess.file_exists(project_path):
 		printerr("Can't open missing project!")
 		return
-	get_parent().add_child(ModuleManager.get_module("editor_layout"))
 	Globals.current_project = Project.new()
 	Globals.current_project.load_project(project_path)
+	get_parent().add_child(ModuleManager.get_module("editor"))
 	queue_free()

@@ -9,6 +9,9 @@ var p_path: String
 var p_creation: int = 0
 var p_edit: int = 0
 
+var folders := {
+	"Main": []
+}
 
 
 ## Get only the essential data for using inside of the project manager
