@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://gfqogc42maxg"]
+[gd_scene load_steps=13 format=3 uid="uid://gfqogc42maxg"]
 
 [ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_251g8"]
 [ext_resource type="Script" path="res://modules/project_manager/default/project_manager_module.gd" id="2_bmis0"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://qt1dl0iwudtf" path="res://icons/Remove.svg" id="7_aaqff"]
 [ext_resource type="Texture2D" uid="uid://d00vfsik3pfbv" path="res://icons/Clear.svg" id="8_o4vca"]
 [ext_resource type="PackedScene" uid="uid://6mlvn6cyymdo" path="res://translations/nodes/about_rich_text_label_en.tscn" id="9_7usct"]
+[ext_resource type="Script" path="res://scripts/setting_scripts/setting_language.gd" id="10_g6f3v"]
 [ext_resource type="Script" path="res://modules/project_manager/default/new_project_popup.gd" id="10_k1knf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vgh0j"]
@@ -44,6 +45,7 @@ script = ExtResource("3_ow1pb")
 layout_mode = 2
 
 [node name="TAB_PROJECTS" type="TabBar" parent="Content"]
+visible = false
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="Content/TAB_PROJECTS"]
@@ -163,14 +165,27 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="TAB_SETTINGS" type="TabBar" parent="Content"]
-visible = false
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Content/TAB_SETTINGS"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Content/TAB_SETTINGS"]
 layout_mode = 0
 offset_right = 40.0
-offset_bottom = 24.0
-text = "Work in Progress"
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Content/TAB_SETTINGS/VBoxContainer"]
+layout_mode = 2
+
+[node name="LanguageSettingLabel" type="Label" parent="Content/TAB_SETTINGS/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTING_TEXT_LANGUAGE"
+horizontal_alignment = 2
+
+[node name="LanguageOptionButton" type="OptionButton" parent="Content/TAB_SETTINGS/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("10_g6f3v")
 
 [node name="NewProjectPopup" type="Panel" parent="."]
 visible = false

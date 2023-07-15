@@ -1,18 +1,20 @@
-KEY,en,ja,fr
-TITLE_ADD_NEW_PROJECT,Add new project,新しいプロジェクトを追加する,Ajouter un nouveau projet
-TEXT_VERSION,Version,バージョン,Version
-TEXT_SORT,Sort:,並び替え：,Trier :
-TEXT_FILTER_PROJECTS,Filter projects,プロジェクトのフィルター,Filtrer les projets
-TAB_PROJECTS,Projects,プロジェクト,Projets
-TAB_ABOUT,About,情報,À Propos
-SORT_NAME,name,名前,nom
-SORT_LAST_EDITED,last edited,編集日,dernier édité
-SORT_CREATION,creation,作った日,création
-BUTTON_ADD_NEW_PROJECT,Add new project,新プロジェクト,Ajouter un nouveau projet
-BUTTON_IMPORT_PROJECT,Import project,プロジェクトをインポート,Importer un projet
-BUTTON_REMOVE_PROJECT,Remove project,プロジェクトを消す,Supprimer un projet
-BUTTON_REMOVE_MISSING,Remove missing projects,不足プロジェクトを削除 ,Supprimer les projets manquants
-ADD_NEW_PROJECT_NAME,Project name:,プロジェクトの名前：,Nom du projet :
-ADD_NEW_PROJECT_LOCATION,Location:,保存場所：,Localisation :
-ADD_NEW_PROJECT_SELECT,Select,選ぶ,Sélection
-FILE_EXPLORER_SELECT_FOLDER,Select project folder,プロジェクトフォルダを選択してください,Sélectionner le dossier du projet
+KEY,en,ja,fr,nl
+TITLE_ADD_NEW_PROJECT,Add new project,新しいプロジェクトを追加する,Ajouter un nouveau projet,Nieuw project
+TEXT_VERSION,Version,バージョン,Version,Version
+TEXT_SORT,Sort:,並び替え：,Trier:,Sorteer:
+TEXT_FILTER_PROJECTS,Filter projects,プロジェクトのフィルター,Filtrer les projets,Projecten filteren
+TAB_PROJECTS,Projects,プロジェクト,Projets,Projecten
+TAB_ABOUT,About,情報,À Propos,Info
+TAB_SETTINGS,Settings,設定,,Instellingen
+SORT_NAME,name,名前,nom,naam
+SORT_LAST_EDITED,last edited,編集日,dernier édité,Laatst bewerkt
+SORT_CREATION,creation,作った日,création,gemaakt op
+BUTTON_ADD_NEW_PROJECT,Add new project,新プロジェクト,Ajouter un nouveau projet,Nieuw project
+BUTTON_IMPORT_PROJECT,Import project,プロジェクトをインポート,Importer un projet,Project importeren
+BUTTON_REMOVE_PROJECT,Remove project,プロジェクトを消す,Supprimer un projet,Verwijder project
+BUTTON_REMOVE_MISSING,Remove missing projects,不足プロジェクトを削除 ,Supprimer les projets manquants,Verwijder vermiste projecten
+ADD_NEW_PROJECT_NAME,Project name:,プロジェクトの名前：,Nom du projet:,Project naam:
+ADD_NEW_PROJECT_LOCATION,Location:,保存場所：,Localisation:,Locatie:
+ADD_NEW_PROJECT_SELECT,Select,選ぶ,Sélection,Selecteer
+FILE_EXPLORER_SELECT_FOLDER,Select project folder,プロジェクトフォルダを選択してください,Sélectionner le dossier du projet,Selecteer project map
+SETTING_TEXT_LANGUAGE,Language,言語,,Taal

@@ -113,11 +113,11 @@ corner_radius_top_left = 7
 corner_radius_top_right = 7
 expand_margin_bottom = 1.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uenkc"]
-content_margin_left = 20.0
-content_margin_top = 20.0
-content_margin_right = 20.0
-content_margin_bottom = 20.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ko1a3"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
 bg_color = Color(0.176349, 0.176349, 0.176349, 1)
 
 [resource]
@@ -139,4 +139,4 @@ TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_ml6ap")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_500uy")
 VBoxContainer/constants/separation = 14
 background/base_type = &"PanelContainer"
-background/styles/panel = SubResource("StyleBoxFlat_uenkc")
+background/styles/panel = SubResource("StyleBoxFlat_ko1a3")

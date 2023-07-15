@@ -23,3 +23,7 @@ May be bad to say that this video editor will be bad, but I want to only make th
 
 I create the interfaces so people can easily design modules that will work with others (as long as they use the module interface properly).
 
+
+# TO-DO foir after Version 1
+
+- Module manager

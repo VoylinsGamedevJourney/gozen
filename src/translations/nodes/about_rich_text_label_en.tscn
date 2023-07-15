@@ -17,7 +17,7 @@ text = "[center]
 [b]Youtube channel:[/b]  [url=https://youtube.com/@voylinsgamedevjourney]Voylin's Gamedev Journey[/url]
 
 
-This video editor is being developed as a learning experience, a showcase of what Godot is capable of, and because I want a decent working video editor to use on linux.
+This video editor is being developed as a learning experience, a showcase of what Godot is capable of, and because I want a decent working video editor to use on Linux.
 -
 Voylin
 
@@ -30,5 +30,6 @@ Voylin
 [b]English:[/b] Voylin
 [b]Japanese:[/b] Voylin
 [b]French:[/b] Slander
+[b]Dutch:[/b] Voylins
 [/center]"
 fit_content = true

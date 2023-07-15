@@ -10,6 +10,7 @@ const VERSION := "0.0.1-Alpha"
 
 # Paths
 const PATH_PROJECT_LIST := "user://projects_lists.dat"
+const PATH_SETTINGS := "user://settings.dat"
 
 
 # Nodes
