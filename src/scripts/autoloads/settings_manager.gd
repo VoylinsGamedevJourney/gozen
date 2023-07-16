@@ -3,21 +3,20 @@ extends Node
 signal language_changed
 
 
-enum LANGUAGE_ID { ENGLISH, JAPANESE, FRENCH, DUTCH }
+enum LANGUAGE_ID { ENGLISH, JAPANESE, FRENCH, DUTCH, CHINESE_TAIWAN }
 const LANGUAGES := {
 	LANGUAGE_ID.ENGLISH: ["en", "English"],
 	LANGUAGE_ID.JAPANESE: ["ja", "日本語"], 
 	LANGUAGE_ID.FRENCH: ["fr", "Français"], 
-	LANGUAGE_ID.DUTCH: ["nl", "Nederlands"] } 
+	LANGUAGE_ID.DUTCH: ["nl", "Nederlands"], 
+	LANGUAGE_ID.CHINESE_TAIWAN: ["zh_TW", "Nederlands"] } 
 var language := LANGUAGE_ID.ENGLISH: set = _set_language
 
 @export var custom_module_settings := {}
 
 
 func _ready() -> void:
-	print(TranslationServer.get_locale())
 	load_settings()
-	print(TranslationServer.get_locale())
 
 
 func save_settings() -> void:
@@ -41,5 +40,5 @@ func load_settings() -> void:
 func _set_language(new_language: LANGUAGE_ID) -> void:
 	language = new_language
 	TranslationServer.set_locale(LANGUAGES[language][0])
-	emit_signal("language_changed")
+	language_changed.emit()
 	save_settings()

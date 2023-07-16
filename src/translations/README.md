@@ -1,5 +1,7 @@
 # Translations
 
+***The method for contributing languages will change in the near future as having multiple people edit the csv file causes merging errors in github. More info coming soon, but for now using these guidelines is fine!***
+
 At this stage we have a couple of different languages available inside of the editor.
 
 - English;

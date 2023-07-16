@@ -24,6 +24,8 @@ ModuleManager="*res://scripts/autoloads/module_manager.gd"
 Globals="*res://scripts/autoloads/globals.gd"
 ThumbManager="*res://scripts/autoloads/thumb_manager.gd"
 SettingsManager="*res://scripts/autoloads/settings_manager.gd"
+ProjectViewManager="*res://scripts/autoloads/project_view_manager.gd"
+TimelineManager="*res://scripts/autoloads/timeline_manager.gd"
 
 [display]
 
@@ -37,6 +39,6 @@ theme/custom_font="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf"
 [internationalization]
 
 locale/translation_remaps={
-"res://translations/nodes/about_rich_text_label_en.tscn": PackedStringArray("res://translations/nodes/about_rich_text_label_en.tscn:en", "res://translations/nodes/about_rich_text_label_ja.tscn:ja", "res://translations/nodes/about_rich_text_label_fr.tscn:fr", "res://translations/nodes/about_rich_text_label_nl.tscn:nl")
+"res://translations/nodes/about_rich_text_label_en.tscn": PackedStringArray("res://translations/nodes/about_rich_text_label_en.tscn:en", "res://translations/nodes/about_rich_text_label_ja.tscn:ja", "res://translations/nodes/about_rich_text_label_fr.tscn:fr", "res://translations/nodes/about_rich_text_label_nl.tscn:nl", "res://translations/nodes/about_rich_text_label_zh_TW.tscn:zh_TW")
 }
-locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation")
+locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation")
