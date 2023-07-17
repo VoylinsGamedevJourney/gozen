@@ -1,0 +1,44 @@
+name: Bug Report
+description: Report an issue or possible bug
+labels: []
+assignees: []
+body:
+    - type: input
+      id: version
+      attributes:
+          label: Version or branch
+          placeholder: 0.0.0 / master
+      validations:
+          required: true
+    - type: input
+      id: os
+      attributes:
+          label: Operating system
+          placeholder: Windows, Mac, Linux
+      validations:
+          required: true
+    - type: textarea
+      id: bug-behaviour
+      attributes:
+          label: Bug behaviour
+          description: Describe the bug clearly and concisely
+      validations:
+          required: true
+    - type: textarea
+      id: expected-behaviour
+      attributes:
+          label: Expected behaviour
+          description: What do you expected to happen?
+      validations:
+          required: true
+    - type: textarea
+      id: bug-reproduction-steps
+      attributes:
+          label: Steps to reproduce
+          description: How to reproduce the bug?
+      validations:
+          required: true
+    - type: textarea
+      id: others
+      attributes:
+          label: Other informations
