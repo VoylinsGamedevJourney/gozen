@@ -21,17 +21,24 @@ body:
       id: bug-behaviour
       attributes:
           label: Bug behaviour
+          description: Describe the bug clearly and concisely
       validations:
           required: true
     - type: textarea
       id: expected-behaviour
       attributes:
           label: Expected behaviour
+          description: What do you expected to happen?
       validations:
           required: true
-    - type: input
-      id: bug-reproduction
+    - type: textarea
+      id: bug-reproduction-steps
       attributes:
           label: Steps to reproduce
+          description: How to reproduce the bug?
       validations:
           required: true
+    - type: textarea
+      id: others
+      attributes:
+          label: Other informations
