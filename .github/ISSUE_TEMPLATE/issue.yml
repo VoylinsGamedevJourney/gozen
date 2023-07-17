@@ -1,0 +1,37 @@
+name: Bug Report
+description: Report an issue or possible bug
+labels: []
+assignees: []
+body:
+    - type: input
+      id: version
+      attributes:
+          label: Version or branch
+          placeholder: 0.0.0 / master
+      validations:
+          required: true
+    - type: input
+      id: os
+      attributes:
+          label: Operating system
+          placeholder: Windows, Mac, Linux
+      validations:
+          required: true
+    - type: textarea
+      id: bug-behaviour
+      attributes:
+          label: Bug behaviour
+      validations:
+          required: true
+    - type: textarea
+      id: expected-behaviour
+      attributes:
+          label: Expected behaviour
+      validations:
+          required: true
+    - type: input
+      id: bug-reproduction
+      attributes:
+          label: Steps to reproduce
+      validations:
+          required: true
