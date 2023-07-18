@@ -7,7 +7,8 @@ At this stage we have a couple of different languages available inside of the ed
 - English;
 - Japanese;
 - French;
-- Dutch.
+- Dutch;
+- Chinese
 
 ## All languages welcome!
 
@@ -33,3 +34,4 @@ English: Voylin
 Japanese: Voylin
 French: Slander
 Dutch: Voylin
+Chinese: Aappaapp
