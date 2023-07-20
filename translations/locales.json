@@ -1,0 +1,226 @@
+{
+  "TITLE_ADD_NEW_PROJECT": {
+    "en": "Add new project",
+    "ja": "新しいプロジェクトを追加する",
+    "fr": "Ajouter un nouveau projet",
+    "nl": "Nieuw project",
+    "zh_TW": "建立新專案"
+  },
+  "TEXT_VERSION": {
+    "en": "Version",
+    "ja": "バージョン",
+    "fr": "Version",
+    "nl": "Version",
+    "zh_TW": "版本"
+  },
+  "TEXT_SORT": {
+    "en": "Sort:",
+    "ja": "並び替え：",
+    "fr": "Trier :",
+    "nl": "Sorteer:",
+    "zh_TW": "排序"
+  },
+  "TEXT_FILTER_PROJECTS": {
+    "en": "Filter projects",
+    "ja": "プロジェクトのフィルター",
+    "fr": "Filtrer les projets",
+    "nl": "Projecten filteren",
+    "zh_TW": "篩選專案"
+  },
+  "TAB_PROJECTS": {
+    "en": "Projects",
+    "ja": "プロジェクト",
+    "fr": "Projets",
+    "nl": "Projecten",
+    "zh_TW": "專案"
+  },
+  "TAB_ABOUT": {
+    "en": "About",
+    "ja": "情報",
+    "fr": "À Propos",
+    "nl": "Info",
+    "zh_TW": "關於"
+  },
+  "TAB_SETTINGS": {
+    "en": "Settings",
+    "ja": "設定",
+    "fr": "Réglages",
+    "nl": "Instellingen",
+    "zh_TW": "設定"
+  },
+  "SORT_NAME": {
+    "en": "name",
+    "ja": "名前",
+    "fr": "nom",
+    "nl": "naam",
+    "zh_TW": "名稱"
+  },
+  "SORT_LAST_EDITED": {
+    "en": "last edited",
+    "ja": "編集日",
+    "fr": "dernier édité",
+    "nl": "Laatst bewerkt",
+    "zh_TW": "最近修改"
+  },
+  "SORT_CREATION": {
+    "en": "creation",
+    "ja": "作った日",
+    "fr": "création",
+    "nl": "gemaakt op",
+    "zh_TW": "最近建立"
+  },
+  "BUTTON_ADD_NEW_PROJECT": {
+    "en": "Add new project",
+    "ja": "新プロジェクト",
+    "fr": "Ajouter un nouveau projet",
+    "nl": "Nieuw project",
+    "zh_TW": "建立新專案"
+  },
+  "BUTTON_IMPORT_PROJECT": {
+    "en": "Import project",
+    "ja": "プロジェクトをインポート",
+    "fr": "Importer un projet",
+    "nl": "Project importeren",
+    "zh_TW": "導入專案"
+  },
+  "BUTTON_REMOVE_PROJECT": {
+    "en": "Remove project",
+    "ja": "プロジェクトを消す",
+    "fr": "Supprimer un projet",
+    "nl": "Verwijder project",
+    "zh_TW": "移除專案"
+  },
+  "BUTTON_REMOVE_MISSING": {
+    "en": "Remove missing projects",
+    "ja": "不足プロジェクトを削除",
+    "fr": "Supprimer les projets manquants",
+    "nl": "Verwijder vermiste projecten",
+    "zh_TW": "移除缺失專案"
+  },
+  "ADD_NEW_PROJECT_NAME": {
+    "en": "Project name:",
+    "ja": "プロジェクトの名前：",
+    "fr": "Nom du projet :",
+    "nl": "Project naam:",
+    "zh_TW": "專案名稱："
+  },
+  "ADD_NEW_PROJECT_LOCATION": {
+    "en": "Location:",
+    "ja": "保存場所：",
+    "fr": "Localisation :",
+    "nl": "Locatie:",
+    "zh_TW": "專案位置："
+  },
+  "ADD_NEW_PROJECT_SELECT": {
+    "en": "Select",
+    "ja": "選ぶ",
+    "fr": "Sélection",
+    "nl": "Selecteer",
+    "zh_TW": "選擇"
+  },
+  "FILE_EXPLORER_TITLE_SELECT_FOLDER": {
+    "en": "Select Project Folder",
+    "ja": "プロジェクトフォルダを選択してください",
+    "fr": "Sélectionner le dossier du projet",
+    "nl": "Selecteer project map",
+    "zh_TW": "選擇專案位置"
+  },
+  "FILE_EXPLORER_HOME_BUTTON": {
+    "en": "Home",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_DOCUMENTS_BUTTON": {
+    "en": "Documents",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_DOWNLOADS_BUTTON": {
+    "en": "Downloads",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_PICTURES_BUTTON": {
+    "en": "Pictures",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_MUSIC_BUTTON": {
+    "en": "Music",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_VIDEOS_BUTTON": {
+    "en": "Videos",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_SAVED_PATHS": {
+    "en": "Saved paths",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_ADD_PATH": {
+    "en": "Add path",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_RETURN_BUTTON": {
+    "en": "Back",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_PROJECT_FOLDER_BUTTON": {
+    "en": "Project folder",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_FOLDER_ERROR": {
+    "en": "This Folder does not exist!",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_CLOSE": {
+    "en": "Close",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_SELECT": {
+    "en": "Select",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "SETTING_TEXT_LANGUAGE": {
+    "en": "Language",
+    "ja": "言語",
+    "fr": "Langue",
+    "nl": "Taal",
+    "zh_TW": "語言"
+  }
+}
