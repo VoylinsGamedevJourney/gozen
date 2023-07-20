@@ -17,4 +17,17 @@ ADD_NEW_PROJECT_NAME,Project name:,プロジェクトの名前：,Nom du projet 
 ADD_NEW_PROJECT_LOCATION,Location:,保存場所：,Localisation :,Locatie:,專案位置：
 ADD_NEW_PROJECT_SELECT,Select,選ぶ,Sélection,Selecteer,選擇
 FILE_EXPLORER_SELECT_FOLDER,Select project folder,プロジェクトフォルダを選択してください,Sélectionner le dossier du projet,Selecteer project map,選擇專案位置
+FILE_EXPLORER_HOME_BUTTON,Home,,,,
+FILE_EXPLORER_DOCUMENTS_BUTTON,Documents,,,,
+FILE_EXPLORER_DOWNLOADS_BUTTON,Downloads,,,,
+FILE_EXPLORER_PICTURES_BUTTON,Pictures,,,,
+FILE_EXPLORER_MUSIC_BUTTON,Music,,,,
+FILE_EXPLORER_VIDEOS_BUTTON,Videos,,,,
+FILE_EXPLORER_SAVED_PATHS,Saved paths,,,,
+FILE_EXPLORER_ADD_PATH,Add path,,,,
+FILE_EXPLORER_RETURN_BUTTON,Back,,,,
+FILE_EXPLORER_PROJECT_FOLDER_BUTTON,Project folder,,,,
+FILE_EXPLORER_FOLDER_ERROR,This Folder does not exist!,,,,
+FILE_EXPLORER_CLOSE,Close,,,,
+FILE_EXPLORER_SELECT,Select,,,,
 SETTING_TEXT_LANGUAGE,Language,言語,Langue,Taal,語言
