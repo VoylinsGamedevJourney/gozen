@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bgeekyq0xtelp"]
 
 [ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_3tdeg"]
-[ext_resource type="Script" path="res://modules/project_manager/default/project_list_entry.gd" id="1_m0r27"]
+[ext_resource type="Script" path="res://ui/project_manager/project_list_entry.gd" id="1_m0r27"]
 [ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="3_dux7w"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_5yig1"]

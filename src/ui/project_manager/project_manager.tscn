@@ -1,16 +1,16 @@
 [gd_scene load_steps=13 format=3 uid="uid://gfqogc42maxg"]
 
 [ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_251g8"]
-[ext_resource type="Script" path="res://modules/project_manager/default/project_manager_module.gd" id="2_bmis0"]
+[ext_resource type="Script" path="res://ui/project_manager/project_manager.gd" id="2_khb5t"]
 [ext_resource type="Script" path="res://scripts/version_label.gd" id="3_ow1pb"]
 [ext_resource type="Texture2D" uid="uid://btn7ggmosh2g1" path="res://icons/Search.svg" id="4_n28s5"]
 [ext_resource type="Texture2D" uid="uid://b7d0rsvfi0ol0" path="res://icons/Add.svg" id="5_3fmvp"]
 [ext_resource type="Texture2D" uid="uid://dgjkvokk05piu" path="res://icons/Folder.svg" id="6_lh1aw"]
 [ext_resource type="Texture2D" uid="uid://qt1dl0iwudtf" path="res://icons/Remove.svg" id="7_aaqff"]
 [ext_resource type="Texture2D" uid="uid://d00vfsik3pfbv" path="res://icons/Clear.svg" id="8_o4vca"]
-[ext_resource type="PackedScene" uid="uid://6mlvn6cyymdo" path="res://translations/nodes/about_rich_text_label_en.tscn" id="9_7usct"]
+[ext_resource type="PackedScene" uid="uid://6mlvn6cyymdo" path="res://translations/nodes/about_rich_text_label_zh_TW.tscn" id="9_7usct"]
 [ext_resource type="Script" path="res://scripts/setting_scripts/setting_language.gd" id="10_g6f3v"]
-[ext_resource type="Script" path="res://modules/project_manager/default/new_project_popup.gd" id="10_k1knf"]
+[ext_resource type="Script" path="res://ui/project_manager/new_project_popup.gd" id="10_k1knf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vgh0j"]
 
@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_251g8")
 theme_type_variation = &"background"
-script = ExtResource("2_bmis0")
+script = ExtResource("2_khb5t")
 
 [node name="VersionHBox" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -45,7 +45,6 @@ script = ExtResource("3_ow1pb")
 layout_mode = 2
 
 [node name="TAB_PROJECTS" type="TabBar" parent="Content"]
-visible = false
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="Content/TAB_PROJECTS"]
@@ -165,6 +164,7 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="TAB_SETTINGS" type="TabBar" parent="Content"]
+visible = false
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Content/TAB_SETTINGS"]

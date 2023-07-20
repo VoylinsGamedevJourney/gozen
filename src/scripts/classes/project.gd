@@ -58,3 +58,6 @@ func new_project(p_name: String, p_folder: String, p_fps: int = 30) -> void:
 		project_path = project_path.replace(x,"_")
 	
 	save_project()
+	var projects_list := ProjectManager.load_projects_list()
+	projects_list.append(project_path)
+	ProjectManager.save_projects_list(projects_list)

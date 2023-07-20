@@ -28,4 +28,4 @@ func set_data(project_dic: Dictionary) -> void:
 
 
 func _on_pressed() -> void:
-	emit_signal("project_clicked", dic.p_path)
+	project_clicked.emit(dic.p_path)
