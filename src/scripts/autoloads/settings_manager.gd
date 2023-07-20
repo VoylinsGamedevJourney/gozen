@@ -9,7 +9,7 @@ const LANGUAGES := {
 	LANGUAGE_ID.JAPANESE: ["ja", "日本語"], 
 	LANGUAGE_ID.FRENCH: ["fr", "Français"], 
 	LANGUAGE_ID.DUTCH: ["nl", "Nederlands"], 
-	LANGUAGE_ID.CHINESE_TAIWAN: ["zh_TW", "Nederlands"] } 
+	LANGUAGE_ID.CHINESE_TAIWAN: ["zh_TW", "中文(台灣)"] } 
 var language := LANGUAGE_ID.ENGLISH: set = _set_language
 
 @export var custom_module_settings := {}
