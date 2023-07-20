@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GoZen"
-run/main_scene="res://main.tscn"
+run/main_scene="res://ui/project_manager/project_manager.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.1", "Forward Plus")
@@ -20,12 +20,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-ModuleManager="*res://scripts/autoloads/module_manager.gd"
 Globals="*res://scripts/autoloads/globals.gd"
 ThumbManager="*res://scripts/autoloads/thumb_manager.gd"
 SettingsManager="*res://scripts/autoloads/settings_manager.gd"
 ProjectViewManager="*res://scripts/autoloads/project_view_manager.gd"
-TimelineManager="*res://scripts/autoloads/timeline_manager.gd"
 
 [display]
 
@@ -35,6 +33,15 @@ window/size/viewport_height=1080
 [gui]
 
 theme/custom_font="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf"
+
+[input]
+
+file_explorer_previous_path={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194308,"key_label":0,"unicode":0,"echo":false,"script":null)
+, null, null, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":128,"position":Vector2(321, 16),"global_position":Vector2(325, 59),"factor":1.0,"button_index":8,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
 
 [internationalization]
 

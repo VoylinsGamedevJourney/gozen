@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=13 format=3 uid="uid://dfc8t3rxw13ra"]
+[gd_resource type="Theme" load_steps=18 format=3 uid="uid://dfc8t3rxw13ra"]
 
 [ext_resource type="FontFile" uid="uid://cwvjhtfqmlpfs" path="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_3r82a"]
 
@@ -120,6 +120,16 @@ content_margin_right = 7.0
 content_margin_bottom = 7.0
 bg_color = Color(0.176349, 0.176349, 0.176349, 1)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7qq6m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a1t1l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0nt6u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gkuyy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wswe2"]
+
 [resource]
 default_font = ExtResource("1_3r82a")
 default_font_size = 16
@@ -140,3 +150,9 @@ TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_500uy")
 VBoxContainer/constants/separation = 14
 background/base_type = &"PanelContainer"
 background/styles/panel = SubResource("StyleBoxFlat_ko1a3")
+hide_h_scroll/base_type = &"HScrollBar"
+hide_h_scroll/styles/grabber = SubResource("StyleBoxEmpty_7qq6m")
+hide_h_scroll/styles/grabber_highlight = SubResource("StyleBoxEmpty_a1t1l")
+hide_h_scroll/styles/grabber_pressed = SubResource("StyleBoxEmpty_0nt6u")
+hide_h_scroll/styles/scroll = SubResource("StyleBoxEmpty_gkuyy")
+hide_h_scroll/styles/scroll_focus = SubResource("StyleBoxEmpty_wswe2")

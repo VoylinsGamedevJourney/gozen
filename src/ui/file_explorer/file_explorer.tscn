@@ -74,27 +74,27 @@ size_flags_vertical = 3
 
 [node name="HomeButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
-text = "Home"
+text = "FILE_EXPLORER_HOME_BUTTON"
 
 [node name="DocumentsButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
-text = "Documents"
+text = "FILE_EXPLORER_DOCUMENTS_BUTTON"
 
 [node name="DownloadsButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
-text = "Downloads"
+text = "FILE_EXPLORER_DOWNLOADS_BUTTON"
 
 [node name="PicturesButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
-text = "Pictures"
+text = "FILE_EXPLORER_PICTURES_BUTTON"
 
 [node name="MusicButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
-text = "Music"
+text = "FILE_EXPLORER_MUSIC_BUTTON"
 
 [node name="VideosButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
-text = "Videos"
+text = "FILE_EXPLORER_VIDEOS_BUTTON"
 
 [node name="HSeparator" type="HSeparator" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
@@ -103,7 +103,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6lgsr")
 [node name="SavedPathsLabel" type="Label" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 self_modulate = Color(1, 1, 1, 0.658824)
 layout_mode = 2
-text = "Saved Paths"
+text = "FILE_EXPLORER_SAVED_PATHS"
 horizontal_alignment = 1
 
 [node name="SavedPathsScroll" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
@@ -121,7 +121,7 @@ theme_override_styles/separator = SubResource("StyleBoxLine_6lgsr")
 
 [node name="AddSavedPathButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
-text = "Add path"
+text = "FILE_EXPLORER_ADD_PATH"
 
 [node name="MainPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer"]
 self_modulate = Color(1, 1, 1, 0.392157)
@@ -131,10 +131,22 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="PathLineEdit" type="LineEdit" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+layout_mode = 2
+
+[node name="ReturnButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
+layout_mode = 2
+text = "FILE_EXPLORER_RETURN_BUTTON"
+
+[node name="PathLineEdit" type="LineEdit" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="ProjectFolderButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FILE_EXPLORER_PROJECT_FOLDER_BUTTON"
 
 [node name="FolderFilesPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
 layout_mode = 2
@@ -157,7 +169,7 @@ theme_override_constants/v_separation = 14
 [node name="ErrorLabel" type="Label" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "This Folder does not exist!"
+text = "FILE_EXPLORER_FOLDER_ERROR"
 label_settings = SubResource("LabelSettings_5pbw5")
 horizontal_alignment = 1
 
@@ -167,11 +179,11 @@ alignment = 2
 
 [node name="CloseButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
 layout_mode = 2
-text = "Close"
+text = "FILE_EXPLORER_CLOSE"
 
 [node name="SelectButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
 layout_mode = 2
-text = "Select"
+text = "FILE_EXPLORER_SELECT"
 
 [connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/HomeButton" to="." method="_on_system_path_button_pressed" binds= ["home"]]
 [connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DocumentsButton" to="." method="_on_system_path_button_pressed" binds= ["documents"]]
@@ -179,4 +191,5 @@ text = "Select"
 [connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/PicturesButton" to="." method="_on_system_path_button_pressed" binds= ["pictures"]]
 [connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/MusicButton" to="." method="_on_system_path_button_pressed" binds= ["music"]]
 [connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/VideosButton" to="." method="_on_system_path_button_pressed" binds= ["videos"]]
-[connection signal="text_submitted" from="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/PathLineEdit" to="." method="go_to_folder"]
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="text_submitted" from="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer/PathLineEdit" to="." method="go_to_folder"]
