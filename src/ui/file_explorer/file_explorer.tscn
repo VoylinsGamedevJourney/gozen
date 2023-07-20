@@ -1,0 +1,182 @@
+[gd_scene load_steps=6 format=3 uid="uid://bqwawhxaygnx"]
+
+[ext_resource type="Script" path="res://ui/file_explorer/file_explorer.gd" id="1_m7dyb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qriql"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+bg_color = Color(0.192157, 0.192157, 0.192157, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_6lgsr"]
+thickness = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6pp0r"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.6, 0.6, 0.6, 0.372549)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5pbw5"]
+font_size = 18
+font_color = Color(1, 0.956863, 0.972549, 1)
+shadow_size = 10
+shadow_color = Color(0, 0, 0, 0.0470588)
+
+[node name="FileExplorer" type="PanelContainer"]
+self_modulate = Color(1, 1, 1, 0.392157)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_m7dyb")
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="Explorer" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(900, 700)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center/Explorer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Center/Explorer/VBox"]
+layout_mode = 2
+text = "TITLE"
+horizontal_alignment = 1
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Center/Explorer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 170
+
+[node name="LeftPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qriql")
+
+[node name="VBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="SystemScroll" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SystemVBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HomeButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+layout_mode = 2
+text = "Home"
+
+[node name="DocumentsButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+layout_mode = 2
+text = "Documents"
+
+[node name="DownloadsButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+layout_mode = 2
+text = "Downloads"
+
+[node name="PicturesButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+layout_mode = 2
+text = "Pictures"
+
+[node name="MusicButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+layout_mode = 2
+text = "Music"
+
+[node name="VideosButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+layout_mode = 2
+text = "Videos"
+
+[node name="HSeparator" type="HSeparator" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_6lgsr")
+
+[node name="SavedPathsLabel" type="Label" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+self_modulate = Color(1, 1, 1, 0.658824)
+layout_mode = 2
+text = "Saved Paths"
+horizontal_alignment = 1
+
+[node name="SavedPathsScroll" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SavedPathsVBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SavedPathsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator2" type="HSeparator" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_6lgsr")
+
+[node name="AddSavedPathButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+layout_mode = 2
+text = "Add path"
+
+[node name="MainPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer"]
+self_modulate = Color(1, 1, 1, 0.392157)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PathLineEdit" type="LineEdit" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FolderFilesPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_6pp0r")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="FoldersFileContent" type="HFlowContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 14
+
+[node name="ErrorLabel" type="Label" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "This Folder does not exist!"
+label_settings = SubResource("LabelSettings_5pbw5")
+horizontal_alignment = 1
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+layout_mode = 2
+alignment = 2
+
+[node name="CloseButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
+layout_mode = 2
+text = "Close"
+
+[node name="SelectButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
+layout_mode = 2
+text = "Select"
+
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/HomeButton" to="." method="_on_system_path_button_pressed" binds= ["home"]]
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DocumentsButton" to="." method="_on_system_path_button_pressed" binds= ["documents"]]
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DownloadsButton" to="." method="_on_system_path_button_pressed" binds= ["downloads"]]
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/PicturesButton" to="." method="_on_system_path_button_pressed" binds= ["pictures"]]
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/MusicButton" to="." method="_on_system_path_button_pressed" binds= ["music"]]
+[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/VideosButton" to="." method="_on_system_path_button_pressed" binds= ["videos"]]
+[connection signal="text_submitted" from="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/PathLineEdit" to="." method="go_to_folder"]

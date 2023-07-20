@@ -9,7 +9,7 @@ extends Node
 const VERSION := "0.0.1-Alpha"
 
 # Paths
-const PATH_PROJECT_LIST := "user://projects_lists.dat"
+const PATH_PROJECTS_LIST := "user://projects_lists.dat"
 const PATH_SETTINGS := "user://settings.dat"
 
 
@@ -20,4 +20,19 @@ var editor_layout: EditorLayoutInterface
 
 # Variables
 
-var current_project: Project
+var window_title: String:
+	set(value):
+		get_window().set_title(value)
+		window_title = value
+var project: Project
+
+var system_username
+
+
+func _ready() -> void:
+	window_title = "GoZen - %s" % VERSION
+	
+	# Getting the username of the OS,
+	var output : Array = []
+	OS.execute("whoami", [], output)
+	system_username = output[0].replace("\n","")
