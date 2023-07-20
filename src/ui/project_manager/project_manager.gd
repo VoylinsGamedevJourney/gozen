@@ -9,12 +9,47 @@ var projects_list := []
 func _ready() -> void:
 	projects_list = load_projects_list()
 	update_projects_list()
+	
+	%SearchProjectsLineEdit.connect(
+		"text_changed", func(filter_text):
+			for child in %ProjectsList.get_children():
+				child.visible = filter_text.length() == 0 or filter_text.to_lower() in child.name.to_lower())
+	%AddNewProjectButton.connect(
+		"pressed", func(): $NewProjectPopup.show_popup())
+	%ImportProjectButton.connect(
+		"pressed", func():
+			var explorer = preload("res://ui/file_explorer/file_explorer.tscn").instantiate()
+			add_child(explorer)
+			explorer.set_title("FILE_EXPLORER_TITLE_SELECT_GOZEN")
+			explorer.filters = ["*.gozen"]
+			explorer.connect_to_signal(
+				explorer.on_file_selected, 
+				func(path):
+					import_project(path)
+					update_projects_list())
+			explorer.open_file_explorer())
+	%RemoveProjectButton.connect(
+		"pressed", func():
+			if selected_project_path == null: return
+			for project in projects_list:
+				if project.project_path == selected_project_path:
+					projects_list.erase(project)
+			save_projects_list(projects_list)
+			update_projects_list())
+	%RemoveMissingProjectsButton.connect(
+		"pressed", func():
+			for project in projects_list.duplicate():
+				if project.project_creation == 0:
+					projects_list.erase(project)
+			save_projects_list(projects_list)
+			update_projects_list())
+	
 
 
 static func save_projects_list(projects_list: Array) -> void:
 	var project_paths: PackedStringArray = []
 	for project in projects_list: project_paths.append(project.project_path)
-	var file := FileAccess.open_compressed(Globals.PATH_PROJECT_LIST, FileAccess.WRITE)
+	var file := FileAccess.open_compressed(Globals.PATH_PROJECTS_LIST, FileAccess.WRITE)
 	if FileAccess.get_open_error():
 		printerr("Could not open project list at path: %s\n\tError: %s" % [
 			Globals.PATH_PROJECT_LIST, FileAccess.get_open_error()])
@@ -30,7 +65,7 @@ static func load_projects_list() -> Array:
 		printerr("Could not open projects list file!\n\tError: %s" % error)
 		return []
 	
-	var project_paths: PackedStringArray = file.get_csv_line()
+	var project_paths: PackedStringArray = file.get_var()
 	var list := []
 	for project_path in project_paths:
 		var project := Project.new()
@@ -79,49 +114,13 @@ func update_projects_list(_order_index: int = -1) -> void:
 		var new_entry: Node = preload("res://ui/project_manager/project_list_entry.tscn").instantiate()
 		new_entry.set_data(project)
 		new_entry.button_group = button_group
-		new_entry.connect("project_clicked", _on_project_button_pressed)
+		new_entry.connect(
+			"project_clicked", 
+			func(project_path: String):
+				if selected_project_path != project_path:
+					selected_project_path = project_path; return
+				open_editor(selected_project_path))
 		%ProjectsList.add_child(new_entry)
-
-
-func _on_filter_text_change(filter_text: String) -> void:
-	for child in %ProjectsList.get_children():
-		child.visible = filter_text.length() == 0 or filter_text.to_lower() in child.name.to_lower()
-
-
-func _on_add_new_project_pressed() -> void:
-	$NewProjectPopup.show_popup()
-
-
-func _on_import_project_pressed() -> void:
-	var explorer = preload("res://ui/file_explorer/file_explorer.tscn").instantiate()
-	add_child(explorer)
-	explorer.set_title("FILE_EXPLORER_TITLE_SELECT_FOLDER")
-	explorer.mode = FileExplorerInterface.FILE_MODE.SELECT_FILE
-	explorer.filters = ["*.gozen"]
-	explorer.connect_to_signal(
-		explorer.on_file_selected, 
-		func(path):
-			import_project(path)
-			update_projects_list())
-	explorer.open_file_explorer()
-
-
-func _on_remove_project_pressed() -> void:
-	if selected_project_path == null: return
-	remove_project_from_list(selected_project_path)
-	update_projects_list()
-
-
-func _on_remove_missing_pressed() -> void:
-	remove_missing_projects()
-	update_projects_list()
-
-
-func _on_project_button_pressed(project_path: String) -> void:
-	if selected_project_path != project_path:
-		selected_project_path = project_path
-		return
-	open_editor(selected_project_path)
 
 
 func add_project(project_name: String, project_folder: String) -> void:
@@ -129,23 +128,10 @@ func add_project(project_name: String, project_folder: String) -> void:
 	project.new_project(project_name, project_folder)
 
 
-func remove_project_from_list(project_path: String) -> void:
-	for project in projects_list:
-		if project.project_path == project_path:
-			projects_list.erase(project)
-	save_projects_list(projects_list)
-
-
 func create_project(p_name: String, p_folder: String) -> void:
 	var project := Project.new()
 	project.new_project(p_name, p_folder)
-
-
-func remove_missing_projects() -> void:
-	for project in projects_list.duplicate():
-		if project.project_creation == 0:
-			projects_list.erase(project)
-	save_projects_list(projects_list)
+	open_editor(project.project_path)
 
 
 func open_editor(project_path: String) -> void:

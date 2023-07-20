@@ -125,6 +125,13 @@
     "nl": "Selecteer project map",
     "zh_TW": "選擇專案位置"
   },
+  "FILE_EXPLORER_TITLE_SELECT_GOZEN": {
+    "en": "Select Project File",
+    "ja": "プロジェクトファイルを選択してください",
+    "fr": "",
+    "nl": "Selecteer project bestand",
+    "zh_TW": ""
+  },
   "FILE_EXPLORER_HOME_BUTTON": {
     "en": "Home",
     "ja": "",

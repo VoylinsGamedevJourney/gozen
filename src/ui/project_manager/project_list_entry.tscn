@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bgeekyq0xtelp"]
+[gd_scene load_steps=6 format=3 uid="uid://ornsr1iqlunf"]
 
 [ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_3tdeg"]
 [ext_resource type="Script" path="res://ui/project_manager/project_list_entry.gd" id="1_m0r27"]

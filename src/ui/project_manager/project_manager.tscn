@@ -66,6 +66,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 
 [node name="SearchProjectsLineEdit" type="LineEdit" parent="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "TEXT_FILTER_PROJECTS"
@@ -121,12 +122,14 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.2
 
 [node name="AddNewProjectButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "BUTTON_ADD_NEW_PROJECT"
 icon = ExtResource("5_3fmvp")
 expand_icon = true
 
 [node name="ImportProjectButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "BUTTON_IMPORT_PROJECT"
 icon = ExtResource("6_lh1aw")
@@ -136,12 +139,14 @@ expand_icon = true
 layout_mode = 2
 
 [node name="RemoveProjectButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "BUTTON_REMOVE_PROJECT"
 icon = ExtResource("7_aaqff")
 expand_icon = true
 
 [node name="RemoveMissingProjectsButton" type="Button" parent="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "BUTTON_REMOVE_MISSING"
 icon = ExtResource("8_o4vca")
@@ -245,12 +250,7 @@ caret_blink_interval = 0.5
 layout_mode = 2
 text = "ADD_NEW_PROJECT_SELECT"
 
-[connection signal="text_changed" from="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions/SearchProjectsLineEdit" to="." method="_on_filter_text_change"]
 [connection signal="item_selected" from="Content/TAB_PROJECTS/Margin/HBox/MainVBox/TopFunctions/SortOptionButton" to="." method="update_projects_list"]
-[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/AddNewProjectButton" to="." method="_on_add_new_project_pressed"]
-[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/ImportProjectButton" to="." method="_on_import_project_pressed"]
-[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/RemoveProjectButton" to="." method="_on_remove_project_pressed"]
-[connection signal="pressed" from="Content/TAB_PROJECTS/Margin/HBox/ButtonsVBox/RemoveMissingProjectsButton" to="." method="_on_remove_missing_pressed"]
 [connection signal="canceled" from="NewProjectPopup/AddNewProjectDialog" to="NewProjectPopup" method="_on_popup_cancel"]
 [connection signal="confirmed" from="NewProjectPopup/AddNewProjectDialog" to="NewProjectPopup" method="_on_popup_confirmed"]
 [connection signal="pressed" from="NewProjectPopup/AddNewProjectDialog/VBoxContainer/LocationHBox/HBoxContainer/SearchPathButton" to="NewProjectPopup" method="_on_path_select_pressed"]
