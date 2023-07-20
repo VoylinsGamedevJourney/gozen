@@ -34,5 +34,5 @@ func _ready() -> void:
 	
 	# Getting the username of the OS,
 	var output : Array = []
-	OS.execute("whoami", [], output)
+	OS.execute("whoami", [], output) # TODO: Make cross-platform
 	system_username = output[0].replace("\n","")

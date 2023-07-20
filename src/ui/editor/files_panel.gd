@@ -1,26 +1,16 @@
-extends EditorLayoutInterface
-
-var current_folder : String = "Main"
-
+extends PanelContainer
 
 func _ready() -> void:
-	# TODO: Add folder to FolderVBox from Project
-	for folder in Globals.current_project.folders:
+	load_files_panel()
+
+
+func load_files_panel() -> void:
+	for folder in Globals.project.folders:
 		var new_button := preload("res://modules/editor/default/folder_button.tscn").instantiate()
 		new_button.text = folder
 		new_button.connect("pressed", open_folder.bind(folder))
 		%FoldersVBox.add_child(new_button)
 	open_folder("Main")
-
-
-func _on_project_button_pressed() -> void:
-#	TODO: Implement a project settings menu
-	pass # Replace with function body.
-
-
-func _on_settings_button_pressed() -> void:
-#	TODO: Implement a settings menu
-	pass # Replace with function body.
 
 
 func _on_new_folder_button_pressed() -> void:
@@ -37,14 +27,7 @@ func open_folder(folder_name) -> void:
 
 
 func _on_add_file_button_pressed() -> void:
-	# TODO: Add file to thje project document
+	# TODO: Open File Explorer
+	# TODO: Add file to the project document
 	# TODO: Update %FolderFiles
-	pass # Replace with function body.
-
-
-func _on_add_video_line_button_pressed() -> void:
-	pass # Replace with function body.
-
-
-func _on_add_audio_line_button_pressed() -> void:
 	pass # Replace with function body.

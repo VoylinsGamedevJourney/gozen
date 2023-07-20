@@ -3,18 +3,11 @@
 [ext_resource type="Theme" uid="uid://dfc8t3rxw13ra" path="res://main_theme.tres" id="1_0ubvq"]
 [ext_resource type="Texture2D" uid="uid://bymoljbrjpusf" path="res://icons/Placeholder.svg" id="2_l4ukl"]
 [ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="2_nc1u8"]
+[ext_resource type="PackedScene" uid="uid://bl4dhffn1xefl" path="res://ui/editor/files_panel.tscn" id="4_txtxm"]
 [ext_resource type="Script" path="res://modules/editor/default/project_view_control.gd" id="4_wfw80"]
+[ext_resource type="Script" path="res://modules/editor/default/timeline.gd" id="5_adn1r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6fa2y"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uqa0s"]
-content_margin_right = 7.0
-bg_color = Color(0.321569, 0.321569, 0.321569, 0.74902)
-corner_radius_top_left = 14
-corner_radius_bottom_left = 14
-expand_margin_left = 7.0
-expand_margin_top = 7.0
-expand_margin_bottom = 7.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bo34y"]
 content_margin_right = 7.0
@@ -31,13 +24,7 @@ expand_margin_left = 3.0
 expand_margin_top = 7.0
 expand_margin_right = 7.0
 
-[sub_resource type="LabelSettings" id="LabelSettings_hdvxh"]
-line_spacing = 0.0
-font_size = 10
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wd6od"]
-content_margin_top = 28.0
-content_margin_right = 7.0
 bg_color = Color(0.0862745, 0.0862745, 0.0862745, 0.819608)
 corner_radius_bottom_left = 14
 expand_margin_left = 7.0
@@ -111,63 +98,8 @@ layout_mode = 2
 size_flags_vertical = 3
 split_offset = 395
 
-[node name="FilesPanel" type="PanelContainer" parent="HBox/VSplit/HSplit"]
+[node name="FilesPanel" parent="HBox/VSplit/HSplit" instance=ExtResource("4_txtxm")]
 layout_mode = 2
-theme_type_variation = &"EditorTabContainer"
-
-[node name="HBox" type="HBoxContainer" parent="HBox/VSplit/HSplit/FilesPanel"]
-layout_mode = 2
-
-[node name="FolderPanel" type="PanelContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_uqa0s")
-
-[node name="VBox" type="VBoxContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox/FolderPanel"]
-layout_mode = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox/FolderPanel/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="FoldersVBox" type="VBoxContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox/FolderPanel/VBox/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HSeparator" type="HSeparator" parent="HBox/VSplit/HSplit/FilesPanel/HBox/FolderPanel/VBox"]
-layout_mode = 2
-
-[node name="NewFolderButton" type="Button" parent="HBox/VSplit/HSplit/FilesPanel/HBox/FolderPanel/VBox"]
-layout_mode = 2
-text = "New folder"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="FolderFiles" type="GridContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox/VBoxContainer/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HSeparator" type="HSeparator" parent="HBox/VSplit/HSplit/FilesPanel/HBox/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBox/VSplit/HSplit/FilesPanel/HBox/VBoxContainer"]
-layout_mode = 2
-
-[node name="AddFileButton" type="Button" parent="HBox/VSplit/HSplit/FilesPanel/HBox/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Add file(s)"
 
 [node name="HSplit" type="HSplitContainer" parent="HBox/VSplit/HSplit"]
 layout_mode = 2
@@ -233,6 +165,7 @@ scroll_following = true
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.6
+script = ExtResource("5_adn1r")
 
 [node name="Grid" type="GridContainer" parent="HBox/VSplit/TimeLineContainer"]
 layout_mode = 2
@@ -245,22 +178,8 @@ layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_bo34y")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBox/VSplit/TimeLineContainer/Grid/LeftTop"]
+[node name="placeholder" type="Label" parent="HBox/VSplit/TimeLineContainer/Grid/LeftTop"]
 layout_mode = 2
-
-[node name="AddVideoButton" type="Button" parent="HBox/VSplit/TimeLineContainer/Grid/LeftTop/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 10
-text = "Add video"
-flat = true
-
-[node name="AddAudioButton" type="Button" parent="HBox/VSplit/TimeLineContainer/Grid/LeftTop/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 10
-text = "Add audio"
-flat = true
 
 [node name="FrameLinePanel" type="PanelContainer" parent="HBox/VSplit/TimeLineContainer/Grid"]
 layout_mode = 2
@@ -268,17 +187,18 @@ size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_k8xtp")
 
 [node name="FrameLineScroll" type="ScrollContainer" parent="HBox/VSplit/TimeLineContainer/Grid/FrameLinePanel"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 vertical_scroll_mode = 0
 
-[node name="FrameLine" type="HBoxContainer" parent="HBox/VSplit/TimeLineContainer/Grid/FrameLinePanel/FrameLineScroll"]
+[node name="FrameLine" type="Label" parent="HBox/VSplit/TimeLineContainer/Grid/FrameLinePanel/FrameLineScroll"]
+unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Label" type="Label" parent="HBox/VSplit/TimeLineContainer/Grid/FrameLinePanel/FrameLineScroll/FrameLine"]
-layout_mode = 2
-text = "0 .... 1 .... 2 .... 3 .... 4 .... 5 "
-label_settings = SubResource("LabelSettings_hdvxh")
+size_flags_horizontal = 3
+mouse_filter = 0
+text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+vertical_alignment = 1
 
 [node name="LineHeadersPanel" type="PanelContainer" parent="HBox/VSplit/TimeLineContainer/Grid"]
 custom_minimum_size = Vector2(140, 0)
@@ -287,17 +207,27 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_wd6od")
 
 [node name="LineHeadersVBox" type="VBoxContainer" parent="HBox/VSplit/TimeLineContainer/Grid/LineHeadersPanel"]
 layout_mode = 2
+alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBox/VSplit/TimeLineContainer/Grid"]
+[node name="HSeparator" type="HSeparator" parent="HBox/VSplit/TimeLineContainer/Grid/LineHeadersPanel/LineHeadersVBox"]
+layout_mode = 2
+
+[node name="TimelineScroll" type="ScrollContainer" parent="HBox/VSplit/TimeLineContainer/Grid"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_type_variation = &"hide_h_scroll"
 
-[node name="LinesVBox" type="VBoxContainer" parent="HBox/VSplit/TimeLineContainer/Grid/ScrollContainer"]
+[node name="LinesVBox" type="VBoxContainer" parent="HBox/VSplit/TimeLineContainer/Grid/TimelineScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="TimelineLength" type="HSeparator" parent="HBox/VSplit/TimeLineContainer/Grid/TimelineScroll/LinesVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [connection signal="pressed" from="HBox/ButtonPanel/VBoxContainer/ProjectButton" to="." method="_on_project_button_pressed"]
 [connection signal="pressed" from="HBox/ButtonPanel/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="HBox/VSplit/HSplit/FilesPanel/HBox/FolderPanel/VBox/NewFolderButton" to="." method="_on_new_folder_button_pressed"]
-[connection signal="pressed" from="HBox/VSplit/HSplit/FilesPanel/HBox/VBoxContainer/HBoxContainer/AddFileButton" to="." method="_on_add_file_button_pressed"]
-[connection signal="pressed" from="HBox/VSplit/TimeLineContainer/Grid/LeftTop/HBoxContainer/AddVideoButton" to="." method="_on_add_video_line_button_pressed"]
-[connection signal="pressed" from="HBox/VSplit/TimeLineContainer/Grid/LeftTop/HBoxContainer/AddAudioButton" to="." method="_on_add_audio_line_button_pressed"]
+[connection signal="gui_input" from="HBox/VSplit/TimeLineContainer/Grid/FrameLinePanel/FrameLineScroll/FrameLine" to="HBox/VSplit/TimeLineContainer" method="_on_frame_line_gui_input"]
