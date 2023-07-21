@@ -97,6 +97,20 @@
     "nl": "Verwijder vermiste projecten",
     "zh_TW": "移除缺失專案"
   },
+  "BUTTON_CANCEL": {
+    "en": "Cancel",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "BUTTON_CREATE": {
+    "en": "Create",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
   "ADD_NEW_PROJECT_NAME": {
     "en": "Project name:",
     "ja": "プロジェクトの名前：",
@@ -124,6 +138,20 @@
     "fr": "Sélectionner le dossier du projet",
     "nl": "Selecteer project map",
     "zh_TW": "選擇專案位置"
+  },
+  "FILE_EXPLORER_TITLE_SELECT_FILE": {
+    "en": "Select File",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "FILE_EXPLORER_TITLE_SELECT_FILES": {
+    "en": "Select File(s)",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
   },
   "FILE_EXPLORER_TITLE_SELECT_GOZEN": {
     "en": "Select Project File",
