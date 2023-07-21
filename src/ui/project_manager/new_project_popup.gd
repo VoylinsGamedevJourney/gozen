@@ -1,16 +1,16 @@
 extends Panel
 
 
-func show_popup() -> void:
-	$AddNewProjectDialog.popup_centered()
+func _ready() -> void: 
+	self.visible = false
 
 
 func _on_path_select_pressed() -> void:
 	var explorer = preload("res://ui/file_explorer/file_explorer.tscn").instantiate()
-	add_child(explorer)
-	explorer.set_title("FILE_EXPLORER_SELECT_FOLDER")
-	explorer.connect_to_signal(
-		explorer.on_dir_selected, 
+	get_parent().add_child(explorer)
+	explorer.set_info("FILE_EXPLORER_SELECT_FOLDER")
+	explorer.connect(
+		"on_dir_selected", 
 		_on_location_search_selected)
 	explorer.show_file_explorer()
 
@@ -20,17 +20,19 @@ func _on_location_search_selected(dir: String) -> void:
 	find_child("LocationLineEdit").text = dir
 
 
-
-func _on_popup_cancel() -> void:
-	$AddNewProjectDialog.hide()
+func _on_cancel() -> void:
+	self.visible = false
 	find_child("ProjectNameLineEdit").text = ""
 	find_child("LocationLineEdit").text = ""
-	self.queue_free()
 
 
-func _on_popup_confirmed() -> void:
+func _on_create() -> void:
+	if find_child("LocationLineEdit").text.length() == 0:
+		return printerr("Location is empty")
+	if find_child("ProjectNameLineEdit").text.length() == 0:
+		return printerr("Project name is empty")
 	get_parent().create_project(
 		find_child("ProjectNameLineEdit").text,
 		find_child("LocationLineEdit").text)
-	_on_popup_cancel()
+	_on_cancel()
 	get_parent().update_projects_list()

@@ -7,7 +7,7 @@ var projects_list := []
 
 
 func _ready() -> void:
-	projects_list = load_projects_list()
+	projects_list = ProjectManager.load_projects_list()
 	update_projects_list()
 	
 	%SearchProjectsLineEdit.connect(
@@ -15,40 +15,41 @@ func _ready() -> void:
 			for child in %ProjectsList.get_children():
 				child.visible = filter_text.length() == 0 or filter_text.to_lower() in child.name.to_lower())
 	%AddNewProjectButton.connect(
-		"pressed", func(): $NewProjectPopup.show_popup())
+		"pressed", func(): $NewProjectPanel.visible = true)
 	%ImportProjectButton.connect(
 		"pressed", func():
 			var explorer = preload("res://ui/file_explorer/file_explorer.tscn").instantiate()
 			add_child(explorer)
-			explorer.set_title("FILE_EXPLORER_TITLE_SELECT_GOZEN")
-			explorer.filters = ["*.gozen"]
-			explorer.connect_to_signal(
-				explorer.on_file_selected, 
+			explorer.set_info("FILE_EXPLORER_TITLE_SELECT_GOZEN", ["*.gozen"])
+			explorer.connect(
+				"on_file_selected", 
 				func(path):
 					import_project(path)
 					update_projects_list())
-			explorer.open_file_explorer())
+			explorer.show_file_explorer())
 	%RemoveProjectButton.connect(
 		"pressed", func():
 			if selected_project_path == null: return
 			for project in projects_list:
 				if project.project_path == selected_project_path:
 					projects_list.erase(project)
-			save_projects_list(projects_list)
+			ProjectManager.save_projects_list(projects_list)
 			update_projects_list())
 	%RemoveMissingProjectsButton.connect(
 		"pressed", func():
 			for project in projects_list.duplicate():
 				if project.project_creation == 0:
 					projects_list.erase(project)
-			save_projects_list(projects_list)
+			ProjectManager.save_projects_list(projects_list)
 			update_projects_list())
 	
 
 
-static func save_projects_list(projects_list: Array) -> void:
+static func save_projects_list(list: Array) -> void:
 	var project_paths: PackedStringArray = []
-	for project in projects_list: project_paths.append(project.project_path)
+	for project in list: 
+		project_paths.append(project)
+	
 	var file := FileAccess.open_compressed(Globals.PATH_PROJECTS_LIST, FileAccess.WRITE)
 	if FileAccess.get_open_error():
 		printerr("Could not open project list at path: %s\n\tError: %s" % [
@@ -78,7 +79,7 @@ func import_project(project_path: String,) -> void:
 	var project := Project.new()
 	project.load_project(project_path)
 	projects_list.append(project)
-	save_projects_list(projects_list)
+	ProjectManager.save_projects_list(projects_list)
 
 
 func update_projects_list(_order_index: int = -1) -> void:
@@ -102,7 +103,6 @@ func update_projects_list(_order_index: int = -1) -> void:
 		
 		while projects_dic.has("%s_%s" % [order_name, order_id]):
 			order_id += 1
-		var projects := []
 		projects_dic["%s_%s" % [order_name, order_id]] = project
 		project_keys.append("%s_%s" % [order_name, order_id])
 

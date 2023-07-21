@@ -1,9 +1,19 @@
 extends PanelContainer
 
+#### TODO: DON'T USE DIALOGUE BOXES OR WINDOWS, INPUT DOES NOT GET TRANSFERED
+
+# TODO: Make "saved paths" work
+
+signal on_dir_selected(dir)
+signal on_file_selected(file)
+signal on_files_selected(files)
+
 
 var previous_paths: PackedStringArray
 var current_path: String
 var project_path: String
+
+var item_files_group: ButtonGroup = ButtonGroup.new()
 
 ## Don't add extensions for adding files
 var extensions: PackedStringArray = [] 
@@ -11,6 +21,7 @@ var multi_select: bool = false # TODO: make this work!
 
 
 func _ready() -> void:
+	item_files_group.allow_unpress = true
 	self.visible = false
 	%ProjectFolderButton.visible = false
 	%ProjectFolderButton.connect("pressed", go_to_folder.bind(project_path))
@@ -18,22 +29,14 @@ func _ready() -> void:
 	show_file_explorer() # TODO: REMOVE THIS LINE
 
 
-func set_title(title: String) -> void:
+func set_info(title: String, ext_array: PackedStringArray = [], select_multi: bool = false, p_path: String = "") -> void:
 	find_child("TitleLabel").text = title
 	go_to_folder(current_path)
-
-
-func set_project_path(path: String) -> void:
-	project_path = path
-	%ProjectFolderButton.visible = true
-
-
-func add_extensions(array: PackedStringArray) -> void:
-	extensions.append_array(array)
-
-
-func enable_multi_select() -> void:
-	multi_select = true
+	if project_path != "":
+		project_path = p_path
+		%ProjectFolderButton.visible = true
+	extensions.append_array(ext_array)
+	multi_select = select_multi
 
 
 func show_file_explorer() -> void:
@@ -45,7 +48,8 @@ func _input(event: InputEvent) -> void:
 		_on_return_button_pressed()
 
 
-func close_file_explorer() -> void: self.queue_free()
+func close_file_explorer() -> void:
+	self.queue_free()
 
 
 func go_to_folder(path: String, previous: bool = false) -> void:
@@ -59,10 +63,14 @@ func go_to_folder(path: String, previous: bool = false) -> void:
 
 
 func populate_folder_files() -> void:
-	for item in %FoldersFileContent.get_children(): item.queue_free()
+	for item in %FoldersFileContent.get_children():
+		item.queue_free()
+	
 	if !DirAccess.dir_exists_absolute(current_path):
 		return printerr("Folder does not exist")
+	
 	var dir := DirAccess.open(current_path)
+	
 	# First adding directories
 	var folders := dir.get_directories()
 	for folder in folders:
@@ -70,13 +78,17 @@ func populate_folder_files() -> void:
 		item.set_info(folder, Color(0,255,100,255))
 		%FoldersFileContent.add_child(item)
 		item.connect(
-			"pressed", 
-			go_to_folder.bind("%s/%s" % [current_path, folder]))
+			"pressed", go_to_folder.bind("%s/%s" % [current_path, folder]))
+	
+	# Adding files
 	var files := dir.get_files()
 	for file in files:
-		if not file.split('.')[-1] in extensions: continue
+		if not file.split('.')[-1] in extensions and extensions.size() != 0:
+			continue
 		var item := preload("res://ui/file_explorer/item.tscn").instantiate()
 		item.set_info(file, Color(250,100,100,255))
+		item.button_group = item_files_group
+		item.connect("pressed", file_item_pressed.bind("%s/%s" % [current_path, file]))
 		%FoldersFileContent.add_child(item)
 
 
@@ -99,3 +111,22 @@ func _on_return_button_pressed() -> void:
 		go_to_folder(previous_paths[-1], true)
 		previous_paths.remove_at(previous_paths.size()-1)
 
+
+func _on_close_button_pressed() -> void:
+	self.queue_free()
+
+
+func _on_select_button_pressed() -> void:
+	# Get the folder which was selected and return the value
+	if extensions.size() == 0: # Directory
+		on_dir_selected.emit(current_path)
+	elif multi_select: # Files
+		pass
+	else: # File
+		pass
+	close_file_explorer()
+
+
+func file_item_pressed(file_path) -> void:
+	print(file_path)
+	print(item_files_group.get_buttons())

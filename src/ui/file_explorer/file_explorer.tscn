@@ -1,6 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqwawhxaygnx"]
+[gd_scene load_steps=7 format=3 uid="uid://bqwawhxaygnx"]
 
 [ext_resource type="Script" path="res://ui/file_explorer/file_explorer.gd" id="1_m7dyb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mhuv"]
+bg_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qriql"]
 content_margin_left = 7.0
@@ -36,129 +39,130 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_m7dyb")
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Window" type="CenterContainer" parent="."]
 layout_mode = 2
 
-[node name="Explorer" type="PanelContainer" parent="Center"]
-custom_minimum_size = Vector2(900, 700)
+[node name="Explorer" type="PanelContainer" parent="Window"]
+custom_minimum_size = Vector2(1100, 800)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8mhuv")
+
+[node name="VBox" type="VBoxContainer" parent="Window/Explorer"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Center/Explorer"]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="Center/Explorer/VBox"]
+[node name="TitleLabel" type="Label" parent="Window/Explorer/VBox"]
 layout_mode = 2
 text = "TITLE"
 horizontal_alignment = 1
 
-[node name="HSplitContainer" type="HSplitContainer" parent="Center/Explorer/VBox"]
+[node name="HSplitContainer" type="HSplitContainer" parent="Window/Explorer/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = 170
 
-[node name="LeftPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer"]
+[node name="LeftPanel" type="PanelContainer" parent="Window/Explorer/VBox/HSplitContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_qriql")
 
-[node name="VBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel"]
+[node name="VBox" type="VBoxContainer" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel"]
 layout_mode = 2
 
-[node name="SystemScroll" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+[node name="SystemScroll" type="ScrollContainer" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SystemVBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll"]
+[node name="SystemVBox" type="VBoxContainer" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HomeButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+[node name="HomeButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_HOME_BUTTON"
 
-[node name="DocumentsButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+[node name="DocumentsButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_DOCUMENTS_BUTTON"
 
-[node name="DownloadsButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+[node name="DownloadsButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_DOWNLOADS_BUTTON"
 
-[node name="PicturesButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+[node name="PicturesButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_PICTURES_BUTTON"
 
-[node name="MusicButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+[node name="MusicButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_MUSIC_BUTTON"
 
-[node name="VideosButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
+[node name="VideosButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_VIDEOS_BUTTON"
 
-[node name="HSeparator" type="HSeparator" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+[node name="HSeparator" type="HSeparator" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6lgsr")
 
-[node name="SavedPathsLabel" type="Label" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+[node name="SavedPathsLabel" type="Label" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 self_modulate = Color(1, 1, 1, 0.658824)
 layout_mode = 2
 text = "FILE_EXPLORER_SAVED_PATHS"
 horizontal_alignment = 1
 
-[node name="SavedPathsScroll" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+[node name="SavedPathsScroll" type="ScrollContainer" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SavedPathsVBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SavedPathsScroll"]
+[node name="SavedPathsVBox" type="VBoxContainer" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SavedPathsScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HSeparator2" type="HSeparator" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+[node name="HSeparator2" type="HSeparator" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_6lgsr")
 
-[node name="AddSavedPathButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
+[node name="AddSavedPathButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_ADD_PATH"
 
-[node name="MainPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer"]
+[node name="MainPanel" type="PanelContainer" parent="Window/Explorer/VBox/HSplitContainer"]
 self_modulate = Color(1, 1, 1, 0.392157)
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel"]
+[node name="VBox" type="VBoxContainer" parent="Window/Explorer/VBox/HSplitContainer/MainPanel"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
 layout_mode = 2
 
-[node name="ReturnButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
+[node name="ReturnButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
 layout_mode = 2
 text = "FILE_EXPLORER_RETURN_BUTTON"
 
-[node name="PathLineEdit" type="LineEdit" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
+[node name="PathLineEdit" type="LineEdit" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ProjectFolderButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
+[node name="ProjectFolderButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "FILE_EXPLORER_PROJECT_FOLDER_BUTTON"
 
-[node name="FolderFilesPanel" type="PanelContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+[node name="FolderFilesPanel" type="PanelContainer" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_6pp0r")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="FoldersFileContent" type="HFlowContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel/ScrollContainer"]
+[node name="FoldersFileContent" type="HFlowContainer" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -166,30 +170,32 @@ size_flags_vertical = 3
 theme_override_constants/h_separation = 14
 theme_override_constants/v_separation = 14
 
-[node name="ErrorLabel" type="Label" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
+[node name="ErrorLabel" type="Label" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/FolderFilesPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "FILE_EXPLORER_FOLDER_ERROR"
 label_settings = SubResource("LabelSettings_5pbw5")
 horizontal_alignment = 1
 
-[node name="ButtonsHBox" type="HBoxContainer" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
+[node name="ButtonsHBox" type="HBoxContainer" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox"]
 layout_mode = 2
 alignment = 2
 
-[node name="CloseButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
+[node name="CloseButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_CLOSE"
 
-[node name="SelectButton" type="Button" parent="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
+[node name="SelectButton" type="Button" parent="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox"]
 layout_mode = 2
 text = "FILE_EXPLORER_SELECT"
 
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/HomeButton" to="." method="_on_system_path_button_pressed" binds= ["home"]]
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DocumentsButton" to="." method="_on_system_path_button_pressed" binds= ["documents"]]
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DownloadsButton" to="." method="_on_system_path_button_pressed" binds= ["downloads"]]
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/PicturesButton" to="." method="_on_system_path_button_pressed" binds= ["pictures"]]
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/MusicButton" to="." method="_on_system_path_button_pressed" binds= ["music"]]
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/VideosButton" to="." method="_on_system_path_button_pressed" binds= ["videos"]]
-[connection signal="pressed" from="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
-[connection signal="text_submitted" from="Center/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer/PathLineEdit" to="." method="go_to_folder"]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/HomeButton" to="." method="_on_system_path_button_pressed" binds= ["home"]]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DocumentsButton" to="." method="_on_system_path_button_pressed" binds= ["documents"]]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/DownloadsButton" to="." method="_on_system_path_button_pressed" binds= ["downloads"]]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/PicturesButton" to="." method="_on_system_path_button_pressed" binds= ["pictures"]]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/MusicButton" to="." method="_on_system_path_button_pressed" binds= ["music"]]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/LeftPanel/VBox/SystemScroll/SystemVBox/VideosButton" to="." method="_on_system_path_button_pressed" binds= ["videos"]]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="text_submitted" from="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/HBoxContainer/PathLineEdit" to="." method="go_to_folder"]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Window/Explorer/VBox/HSplitContainer/MainPanel/VBox/ButtonsHBox/SelectButton" to="." method="_on_select_button_pressed"]

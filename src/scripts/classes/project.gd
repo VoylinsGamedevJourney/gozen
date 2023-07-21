@@ -54,7 +54,7 @@ func new_project(p_name: String, p_folder: String, p_fps: int = 30) -> void:
 	project_fps = p_fps
 	
 	# Fix path to not include invalid characters
-	for x in ['<','>',':','"','/','\\','|','?','*',' ']:
+	for x in ['<','>',':','"','\\','|','?','*',' ']:
 		project_path = project_path.replace(x,"_")
 	
 	save_project()
