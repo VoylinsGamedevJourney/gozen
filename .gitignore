@@ -15,6 +15,7 @@ export_presets.cfg
 
 # For big reset
 old_src/
+src/OLD/*
 
 # Linux dot files
 .directory
