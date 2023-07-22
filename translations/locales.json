@@ -1,11 +1,64 @@
 {
-  "TITLE_ADD_NEW_PROJECT": {
+  "STARTUP_PANEL_TITLE": {
+    "en": "Welcome!",
+    "ja": "ようこそ！",
+    "fr": "",
+    "nl": "Welkom",
+    "zh_TW": ""
+  },
+  "STARTUP_PANEL_TEXT_PROJECTS": {
+    "en": "Projects",
+    "ja": "プロジェクト",
+    "fr": "",
+    "nl": "Projecten",
+    "zh_TW": ""
+  },
+  "STARTUP_BUTTON_ADD_NEW_PROJECT": {
+    "en": "Add new project",
+    "ja": "新プロジェクト",
+    "fr": "Ajouter un nouveau projet",
+    "nl": "Nieuw project",
+    "zh_TW": "建立新專案"
+  },
+  "NEW_PROJECT_TITLE": {
     "en": "Add new project",
     "ja": "新しいプロジェクトを追加する",
     "fr": "Ajouter un nouveau projet",
     "nl": "Nieuw project",
     "zh_TW": "建立新專案"
   },
+  "NEW_PROJECT_NAME": {
+    "en": "Project name:",
+    "ja": "プロジェクトの名前：",
+    "fr": "Nom du projet :",
+    "nl": "Project naam:",
+    "zh_TW": "專案名稱："
+  },
+  "NEW_PROJECT_LOCATION": {
+    "en": "Location:",
+    "ja": "保存場所：",
+    "fr": "Localisation :",
+    "nl": "Locatie:",
+    "zh_TW": "專案位置："
+  },
+
+  "BUTTON_CANCEL": {
+    "en": "Cancel",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+  "BUTTON_CREATE": {
+    "en": "Create",
+    "ja": "",
+    "fr": "",
+    "nl": "",
+    "zh_TW": ""
+  },
+
+
+
   "TEXT_VERSION": {
     "en": "Version",
     "ja": "バージョン",
@@ -69,13 +122,6 @@
     "nl": "gemaakt op",
     "zh_TW": "最近建立"
   },
-  "BUTTON_ADD_NEW_PROJECT": {
-    "en": "Add new project",
-    "ja": "新プロジェクト",
-    "fr": "Ajouter un nouveau projet",
-    "nl": "Nieuw project",
-    "zh_TW": "建立新專案"
-  },
   "BUTTON_IMPORT_PROJECT": {
     "en": "Import project",
     "ja": "プロジェクトをインポート",
@@ -96,41 +142,6 @@
     "fr": "Supprimer les projets manquants",
     "nl": "Verwijder vermiste projecten",
     "zh_TW": "移除缺失專案"
-  },
-  "BUTTON_CANCEL": {
-    "en": "Cancel",
-    "ja": "",
-    "fr": "",
-    "nl": "",
-    "zh_TW": ""
-  },
-  "BUTTON_CREATE": {
-    "en": "Create",
-    "ja": "",
-    "fr": "",
-    "nl": "",
-    "zh_TW": ""
-  },
-  "ADD_NEW_PROJECT_NAME": {
-    "en": "Project name:",
-    "ja": "プロジェクトの名前：",
-    "fr": "Nom du projet :",
-    "nl": "Project naam:",
-    "zh_TW": "專案名稱："
-  },
-  "ADD_NEW_PROJECT_LOCATION": {
-    "en": "Location:",
-    "ja": "保存場所：",
-    "fr": "Localisation :",
-    "nl": "Locatie:",
-    "zh_TW": "專案位置："
-  },
-  "ADD_NEW_PROJECT_SELECT": {
-    "en": "Select",
-    "ja": "選ぶ",
-    "fr": "Sélection",
-    "nl": "Selecteer",
-    "zh_TW": "選擇"
   },
   "FILE_EXPLORER_TITLE_SELECT_FOLDER": {
     "en": "Select Project Folder",
