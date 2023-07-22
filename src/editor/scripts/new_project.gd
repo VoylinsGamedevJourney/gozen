@@ -1,5 +1,10 @@
 extends ColorRect
 
+# TODO: Add a way to select the path by going through the file explorer
+# TODO: Add option to press enter after typing in the path to create
+#       the project instead of having to click on the button.
+# TODO: Add option to press escape to go back to the startup panel
+
 @onready var project_title_node := find_child("NewProjectTitleLineEdit")
 @onready var project_path_node  := find_child("NewProjectPathLineEdit")
 
