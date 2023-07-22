@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://caa0pt5vc6yxc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q4j7b"]
+bg_color = Color(0.313726, 0.313726, 0.313726, 0.243137)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5hevn"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+corner_radius_top_left = 31
+corner_radius_top_right = 31
+corner_radius_bottom_right = 31
+corner_radius_bottom_left = 31
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ohm7"]
+
+[resource]
+HBoxContainer/constants/separation = 7
+Panel/styles/panel = SubResource("StyleBoxFlat_q4j7b")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_5hevn")
+ProjectButton/base_type = &"Button"
+ProjectButton/styles/normal = SubResource("StyleBoxEmpty_2ohm7")
+VBoxContainer/constants/separation = 7
