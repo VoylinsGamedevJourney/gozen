@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GoZen"
-run/main_scene="res://ui/project_manager/project_manager.tscn"
+run/main_scene="res://editor/editor.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.1", "Forward Plus")
@@ -20,15 +20,15 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://scripts/autoloads/globals.gd"
-ThumbManager="*res://scripts/autoloads/thumb_manager.gd"
-SettingsManager="*res://scripts/autoloads/settings_manager.gd"
-ProjectViewManager="*res://scripts/autoloads/project_view_manager.gd"
+Global="*res://global.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/subwindows/embed_subwindows=false
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [gui]
 
@@ -45,7 +45,5 @@ file_explorer_previous_path={
 
 [internationalization]
 
-locale/translation_remaps={
-"res://translations/nodes/about_rich_text_label_en.tscn": PackedStringArray("res://translations/nodes/about_rich_text_label_en.tscn:en", "res://translations/nodes/about_rich_text_label_ja.tscn:ja", "res://translations/nodes/about_rich_text_label_fr.tscn:fr", "res://translations/nodes/about_rich_text_label_nl.tscn:nl", "res://translations/nodes/about_rich_text_label_zh_TW.tscn:zh_TW")
-}
+locale/translation_remaps={}
 locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation")
