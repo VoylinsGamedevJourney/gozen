@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://nsfiulsud0kt"]
-
-[ext_resource type="Script" path="res://modules/REMOVE/editor_layout/default/boxes/project_view_box.gd" id="1_853wp"]
-
-[node name="ProjectView" type="Panel"]
-script = ExtResource("1_853wp")

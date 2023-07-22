@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://b32mmso1iewei"]
-
-[ext_resource type="Script" path="res://modules/REMOVE/editor_layout/default/boxes/timeline_box.gd" id="1_x8j53"]
-
-[node name="timeline_box" type="Panel"]
-script = ExtResource("1_x8j53")

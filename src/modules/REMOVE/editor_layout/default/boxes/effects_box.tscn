@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bvkwiaurqxmfo"]
-
-[ext_resource type="Script" path="res://modules/REMOVE/editor_layout/default/boxes/effects_box.gd" id="1_1rbof"]
-
-[node name="Effects" type="TabBar"]
-script = ExtResource("1_1rbof")
