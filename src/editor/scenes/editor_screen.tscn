@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dluvsoin30b42"]
+[gd_scene load_steps=3 format=3 uid="uid://dluvsoin30b42"]
 
-[ext_resource type="Theme" uid="uid://caa0pt5vc6yxc" path="res://editor/editor_theme.tres" id="1_entvl"]
+[ext_resource type="Theme" uid="uid://caa0pt5vc6yxc" path="res://editor/theming/editor_theme.tres" id="1_t5sne"]
+[ext_resource type="Script" path="res://editor/scripts/editor_screen.gd" id="2_sjwv2"]
 
 [node name="EditorScreen" type="ColorRect"]
 anchors_preset = 15
@@ -8,8 +9,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_entvl")
+theme = ExtResource("1_t5sne")
 color = Color(0.121569, 0, 0.25098, 0.360784)
+script = ExtResource("2_sjwv2")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1

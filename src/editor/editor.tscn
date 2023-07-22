@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://ccbdlfok6nm80"]
+[gd_scene load_steps=6 format=3 uid="uid://ccbdlfok6nm80"]
 
-[ext_resource type="Theme" uid="uid://caa0pt5vc6yxc" path="res://editor/editor_theme.tres" id="1_gcfg4"]
-[ext_resource type="Script" path="res://editor/editor.gd" id="1_x78fu"]
-[ext_resource type="PackedScene" uid="uid://dluvsoin30b42" path="res://editor/editor_screen.tscn" id="3_bw8w7"]
-[ext_resource type="PackedScene" uid="uid://buit0ngyspg4r" path="res://editor/start_up.tscn" id="3_oivwj"]
-[ext_resource type="PackedScene" uid="uid://b431y4n4ae5d7" path="res://editor/new_project.tscn" id="4_ge1tu"]
-[ext_resource type="Script" path="res://editor/editor_screen.gd" id="4_kda5u"]
+[ext_resource type="Theme" uid="uid://caa0pt5vc6yxc" path="res://editor/theming/editor_theme.tres" id="1_ee4y8"]
+[ext_resource type="Script" path="res://editor/editor.gd" id="2_ra40d"]
+[ext_resource type="PackedScene" uid="uid://dluvsoin30b42" path="res://editor/scenes/editor_screen.tscn" id="3_hwuek"]
+[ext_resource type="PackedScene" uid="uid://buit0ngyspg4r" path="res://editor/scenes/start_up.tscn" id="4_yu87j"]
+[ext_resource type="PackedScene" uid="uid://b431y4n4ae5d7" path="res://editor/scenes/new_project.tscn" id="5_qkkpa"]
 
 [node name="Editor" type="Panel"]
 anchors_preset = 15
@@ -13,18 +12,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_gcfg4")
-script = ExtResource("1_x78fu")
+theme = ExtResource("1_ee4y8")
+script = ExtResource("2_ra40d")
 
-[node name="EditorScreen" parent="." instance=ExtResource("3_bw8w7")]
+[node name="EditorScreen" parent="." instance=ExtResource("3_hwuek")]
 layout_mode = 1
-script = ExtResource("4_kda5u")
 
-[node name="StartUp" parent="." instance=ExtResource("3_oivwj")]
-visible = false
+[node name="StartUp" parent="." instance=ExtResource("4_yu87j")]
 layout_mode = 1
-color = Color(0.121569, 0, 0.25098, 0.360784)
 
-[node name="NewProject" parent="." instance=ExtResource("4_ge1tu")]
-visible = false
+[node name="NewProject" parent="." instance=ExtResource("5_qkkpa")]
 layout_mode = 1

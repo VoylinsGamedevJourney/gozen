@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://buit0ngyspg4r"]
 
-[ext_resource type="Script" path="res://editor/startup.gd" id="1_5j21x"]
-[ext_resource type="LabelSettings" uid="uid://bk47h44p1qddd" path="res://editor/popup_title_label.tres" id="2_owq22"]
+[ext_resource type="Script" path="res://editor/scripts/startup.gd" id="1_5j21x"]
+[ext_resource type="LabelSettings" uid="uid://bk47h44p1qddd" path="res://editor/theming/popup_title_label.tres" id="2_n6ij7"]
 
 [node name="StartUp" type="ColorRect"]
 anchors_preset = 15
@@ -33,7 +33,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="StartUpPanel/VBox"]
 layout_mode = 2
 text = "STARTUP_PANEL_TITLE"
-label_settings = ExtResource("2_owq22")
+label_settings = ExtResource("2_n6ij7")
 horizontal_alignment = 1
 
 [node name="ProjectsLabel" type="Label" parent="StartUpPanel/VBox"]

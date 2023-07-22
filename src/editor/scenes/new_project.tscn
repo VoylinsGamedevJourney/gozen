@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b431y4n4ae5d7"]
 
-[ext_resource type="Script" path="res://editor/new_project.gd" id="1_sybk5"]
-[ext_resource type="LabelSettings" uid="uid://bk47h44p1qddd" path="res://editor/popup_title_label.tres" id="2_nwls3"]
+[ext_resource type="Script" path="res://editor/scripts/new_project.gd" id="1_sybk5"]
+[ext_resource type="LabelSettings" uid="uid://bk47h44p1qddd" path="res://editor/theming/popup_title_label.tres" id="2_nwls3"]
 
 [node name="NewProject" type="ColorRect"]
 anchors_preset = 15
