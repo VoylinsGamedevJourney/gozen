@@ -1,7 +1,7 @@
 extends Node
 
 # Editor
-signal start_editing(project_info)
+signal start_editing(project)
 
 # StartUp window
 signal show_startup_panel

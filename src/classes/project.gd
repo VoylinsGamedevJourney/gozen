@@ -13,8 +13,8 @@ func save_data() -> void:
 	})
 
 
-func load_data() -> void:
-	var file := FileAccess.open_compressed(path, FileAccess.READ)
+func load_data(p_path: String) -> void:
+	var file := FileAccess.open_compressed(p_path, FileAccess.READ)
 	var data: Dictionary = file.get_var()
 	for key in data: 
 		match key:

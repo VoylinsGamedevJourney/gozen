@@ -16,7 +16,7 @@ var projects_list := [] # Each entry is an array [title, path]
 func _ready() -> void:
 	Global.update_project_list.connect(_update_projects_list)
 	Global.add_projects_list_entry.connect(_add_projects_list_entry)
-	Global.start_editing.connect(func(): queue_free())
+	Global.start_editing.connect(func(_x): queue_free())
 	Global.show_startup_panel.connect(func(): self.visible = true)
 	_update_projects_list()
 	self.visible = true
@@ -31,11 +31,13 @@ func _update_projects_list() -> void:
 		new_button.theme_type_variation = "ProjectButton"
 		new_button.connect("pressed", _on_project_button_pressed.bind(project))
 		new_button.text = project[0]
+		new_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		projects_vbox.add_child(new_button)
 
 
 func _add_projects_list_entry(project: Project) -> void:
 	projects_list.push_front([project.title, project.path])
+	_save_projects_list()
 
 
 func _save_projects_list() -> void:
@@ -48,6 +50,7 @@ func _load_projects_list() -> void:
 	if !FileAccess.file_exists(PATH_PROJECTS_LIST): return
 	var file := FileAccess.open(PATH_PROJECTS_LIST, FileAccess.READ)
 	projects_list = file.get_var()
+	print(projects_list)
 
 
 func _on_new_project_button_pressed() -> void:
@@ -57,5 +60,7 @@ func _on_new_project_button_pressed() -> void:
 
 func _on_project_button_pressed(project_info: Array) -> void:
 	# Project info is an array [title, path]
-	print(project_info)
+	if projects_list.find(project_info) != 0:
+		projects_list.erase(project_info)
+		projects_list.push_front(project_info)
 	Global.start_editing.emit(project_info)

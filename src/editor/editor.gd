@@ -8,5 +8,4 @@ func _ready() -> void:
 
 func open_project(project_info: Array) -> void:
 	Global.project = Project.new()
-	Global.project.load_data()
-	
+	Global.project.load_data(project_info[1])
