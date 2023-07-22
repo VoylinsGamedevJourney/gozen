@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://ccbdlfok6nm80"]
+
+[ext_resource type="Theme" uid="uid://caa0pt5vc6yxc" path="res://editor/editor_theme.tres" id="1_gcfg4"]
+[ext_resource type="Script" path="res://editor/editor.gd" id="1_x78fu"]
+[ext_resource type="PackedScene" uid="uid://buit0ngyspg4r" path="res://editor/start_up.tscn" id="3_oivwj"]
+[ext_resource type="PackedScene" uid="uid://b431y4n4ae5d7" path="res://editor/new_project.tscn" id="4_ge1tu"]
+
+[node name="Editor" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_gcfg4")
+script = ExtResource("1_x78fu")
+
+[node name="EditorScreen" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StartUp" parent="." instance=ExtResource("3_oivwj")]
+layout_mode = 0
+anchors_preset = 0
+
+[node name="NewProject" parent="." instance=ExtResource("4_ge1tu")]
+layout_mode = 0
+anchors_preset = 0

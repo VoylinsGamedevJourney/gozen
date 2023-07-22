@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3 uid="uid://b431y4n4ae5d7"]
+
+[ext_resource type="Script" path="res://editor/new_project.gd" id="1_sybk5"]
+[ext_resource type="LabelSettings" uid="uid://bk47h44p1qddd" path="res://editor/popup_title_label.tres" id="2_nwls3"]
+
+[node name="NewProject" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.121569, 0, 0.25098, 0.360784)
+script = ExtResource("1_sybk5")
+
+[node name="NewProjectPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -86.0
+offset_right = 300.0
+offset_bottom = 86.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NewProjectPanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="NewProjectPanel/VBoxContainer"]
+layout_mode = 2
+text = "NEW_PROJECT_TITLE"
+label_settings = ExtResource("2_nwls3")
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="NewProjectPanel/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="NewProjectTitleLabel" type="Label" parent="NewProjectPanel/VBoxContainer/Grid"]
+layout_mode = 2
+text = "NEW_PROJECT_NAME"
+horizontal_alignment = 2
+
+[node name="NewProjectTitleLineEdit" type="LineEdit" parent="NewProjectPanel/VBoxContainer/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NewProjectPathLabel" type="Label" parent="NewProjectPanel/VBoxContainer/Grid"]
+layout_mode = 2
+text = "NEW_PROJECT_LOCATION"
+horizontal_alignment = 2
+
+[node name="NewProjectPathLineEdit" type="LineEdit" parent="NewProjectPanel/VBoxContainer/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="NewProjectPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="NewProjectCancelButton" type="Button" parent="NewProjectPanel/VBoxContainer/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BUTTON_CANCEL"
+
+[node name="NewProjectCreateButton" type="Button" parent="NewProjectPanel/VBoxContainer/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BUTTON_CREATE"
+
+[connection signal="pressed" from="NewProjectPanel/VBoxContainer/ButtonsHBox/NewProjectCancelButton" to="." method="_on_new_project_cancel_button_pressed"]
+[connection signal="pressed" from="NewProjectPanel/VBoxContainer/ButtonsHBox/NewProjectCreateButton" to="." method="_on_new_project_create_button_pressed"]
