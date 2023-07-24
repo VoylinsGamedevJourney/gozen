@@ -2,14 +2,14 @@
   "STARTUP_PANEL_TITLE": {
     "en": "Welcome!",
     "ja": "ようこそ！",
-    "fr": "",
+    "fr": "Bienvenue !",
     "nl": "Welkom",
     "zh_TW": ""
   },
   "STARTUP_PANEL_TEXT_PROJECTS": {
     "en": "Projects",
     "ja": "プロジェクト",
-    "fr": "",
+    "fr": "Projets",
     "nl": "Projecten",
     "zh_TW": ""
   },
@@ -44,15 +44,15 @@
 
   "BUTTON_CANCEL": {
     "en": "Cancel",
-    "ja": "",
-    "fr": "",
+    "ja": "キャンセル",
+    "fr": "Annuler",
     "nl": "",
     "zh_TW": ""
   },
   "BUTTON_CREATE": {
     "en": "Create",
-    "ja": "",
-    "fr": "",
+    "ja": "作成",
+    "fr": "Créer",
     "nl": "",
     "zh_TW": ""
   },
@@ -146,120 +146,120 @@
   "FILE_EXPLORER_TITLE_SELECT_FOLDER": {
     "en": "Select Project Folder",
     "ja": "プロジェクトフォルダを選択してください",
-    "fr": "Sélectionner le dossier du projet",
+    "fr": "Sélectionner le Dossier du Projet",
     "nl": "Selecteer project map",
     "zh_TW": "選擇專案位置"
   },
   "FILE_EXPLORER_TITLE_SELECT_FILE": {
     "en": "Select File",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "ファイルを選ぶ",
+    "fr": "Sélectioner le Fichier",
+    "nl": "Selecteer bestand",
     "zh_TW": ""
   },
   "FILE_EXPLORER_TITLE_SELECT_FILES": {
     "en": "Select File(s)",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "ファイルを選ぶ",
+    "fr": "Sélectioner le(s) Fichier(s)",
+    "nl": "Selecteer bestand(en)",
     "zh_TW": ""
   },
   "FILE_EXPLORER_TITLE_SELECT_GOZEN": {
     "en": "Select Project File",
     "ja": "プロジェクトファイルを選択してください",
-    "fr": "",
+    "fr": "Sélectioner le Fichier Projet",
     "nl": "Selecteer project bestand",
     "zh_TW": ""
   },
   "FILE_EXPLORER_HOME_BUTTON": {
     "en": "Home",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "ホーム",
+    "fr": "Maison",
+    "nl": "Home",
     "zh_TW": ""
   },
   "FILE_EXPLORER_DOCUMENTS_BUTTON": {
     "en": "Documents",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "ドキュメントDocuments",
+    "fr": "ドキュメント",
+    "nl": "Documenten",
     "zh_TW": ""
   },
   "FILE_EXPLORER_DOWNLOADS_BUTTON": {
     "en": "Downloads",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "ダウンロード",
+    "fr": "Téléchargements",
+    "nl": "Downloads",
     "zh_TW": ""
   },
   "FILE_EXPLORER_PICTURES_BUTTON": {
     "en": "Pictures",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "写真",
+    "fr": "Images",
+    "nl": "Foto's",
     "zh_TW": ""
   },
   "FILE_EXPLORER_MUSIC_BUTTON": {
     "en": "Music",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "音楽",
+    "fr": "Musique",
+    "nl": "Muziek",
     "zh_TW": ""
   },
   "FILE_EXPLORER_VIDEOS_BUTTON": {
     "en": "Videos",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "動画",
+    "fr": "Vidéos",
+    "nl": "Videos",
     "zh_TW": ""
   },
   "FILE_EXPLORER_SAVED_PATHS": {
     "en": "Saved paths",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "保存されたパス",
+    "fr": "Chemins enregistrés",
+    "nl": "Bewaarde locaties",
     "zh_TW": ""
   },
   "FILE_EXPLORER_ADD_PATH": {
     "en": "Add path",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "パスの追加",
+    "fr": "Ajouter un chemin",
+    "nl": "Locatie toevoegen",
     "zh_TW": ""
   },
   "FILE_EXPLORER_RETURN_BUTTON": {
     "en": "Back",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "戻る",
+    "fr": "Retour",
+    "nl": "Terug",
     "zh_TW": ""
   },
   "FILE_EXPLORER_PROJECT_FOLDER_BUTTON": {
     "en": "Project folder",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "プロジェクトのフォルダー",
+    "fr": "Dossier du projet",
+    "nl": "Project map",
     "zh_TW": ""
   },
   "FILE_EXPLORER_FOLDER_ERROR": {
     "en": "This Folder does not exist!",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "このフォルダは存在しません！",
+    "fr": "Ce dossier n'existe pas !",
+    "nl": "Deze map bestaat niet!",
     "zh_TW": ""
   },
   "FILE_EXPLORER_CLOSE": {
     "en": "Close",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "閉じる",
+    "fr": "Fermer",
+    "nl": "Sluit",
     "zh_TW": ""
   },
   "FILE_EXPLORER_SELECT": {
     "en": "Select",
-    "ja": "",
-    "fr": "",
-    "nl": "",
+    "ja": "選択",
+    "fr": "Sélectioner",
+    "nl": "Selecteer",
     "zh_TW": ""
   },
   "SETTING_TEXT_LANGUAGE": {
