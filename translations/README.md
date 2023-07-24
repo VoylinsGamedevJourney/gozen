@@ -26,7 +26,7 @@ This will create a new entry for all keys inside of the JSON file, add the words
 
 ### Updating an already existing language
 
-The way to contribute is by adding/changing your desired language in the translations.csv file. Respect the csv structure of the file, a good way to do this is by opening it in a spreadsheet app.
+In the translation.json file you'll find empty/prefilled slots for each key which needs translation. You can fill in or edit the current translation. Some text editors suport folding which may be helpful to only display the information which you want to see, but this is totally up to you.
 
 ## Nodes folder
 
