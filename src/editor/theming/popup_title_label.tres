@@ -1,7 +1,0 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bk47h44p1qddd"]
-
-[ext_resource type="FontFile" uid="uid://n8cxbphvo4x0" path="res://fonts/noto_sans_jp/static/NotoSansJP-Bold.ttf" id="1_hd5nd"]
-
-[resource]
-font = ExtResource("1_hd5nd")
-font_size = 18
