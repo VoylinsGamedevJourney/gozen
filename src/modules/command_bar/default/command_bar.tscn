@@ -1,8 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://dedsbtsetboyv"]
+[gd_scene load_steps=4 format=3 uid="uid://dedsbtsetboyv"]
 
 [ext_resource type="Script" path="res://modules/command_bar/default/command_bar.gd" id="1_nrlre"]
 
-[node name="command_bar" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewrmy"]
+content_margin_top = 50.0
+bg_color = Color(0.219608, 0.219608, 0.219608, 0.729412)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2diww"]
+bg_color = Color(0.219608, 0.219608, 0.219608, 0.729412)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[node name="CommandBar" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,3 +25,40 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nrlre")
+
+[node name="InfoPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -586.0
+offset_top = 128.0
+offset_right = 586.0
+offset_bottom = 178.0
+grow_horizontal = 2
+pivot_offset = Vector2(586, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_ewrmy")
+
+[node name="Scroll" type="ScrollContainer" parent="InfoPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel/Scroll"]
+layout_mode = 2
+
+[node name="CommandPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(1172, 50)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -586.0
+offset_top = 128.0
+offset_right = 586.0
+offset_bottom = 178.0
+grow_horizontal = 2
+pivot_offset = Vector2(586, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_2diww")
+
+[node name="CommandLineEdit" type="LineEdit" parent="CommandPanel"]
+layout_mode = 2

@@ -1,11 +1,12 @@
 extends Node
 
 const PATH := "user://module_settings"
-const PATH_MODULE := "res://modules/_/%s/_.tscn"
+const PATH_MODULE := "res://modules/|/%s/|.tscn"
 
 var modules := {
 	"startup": "default",
-	"editor": "default" }
+	"editor": "default",
+	"command_bar": "default" }
 
 
 func _ready() -> void:
@@ -35,4 +36,4 @@ func _load() -> void:
 
 
 func get_module(module: String) -> Node:
-	return load(PATH_MODULE.replace('_', module) % modules[module]).instantiate()
+	return load(PATH_MODULE.replace('|', module) % modules[module]).instantiate()
