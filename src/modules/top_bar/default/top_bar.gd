@@ -2,6 +2,7 @@ extends TopBarModule
 
 # TODO: Have an option to switch the order of these buttons from right to left
 # TODO: Make this top_bar invisible in zen mode
+# TODO: Make icon open a menu to see about, donation page, changelog, ...
 
 
 func _ready() -> void:

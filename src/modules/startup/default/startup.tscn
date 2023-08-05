@@ -20,7 +20,7 @@ shadow_size = 5
 shadow_offset = Vector2(0, 2)
 
 [sub_resource type="LabelSettings" id="LabelSettings_vykhc"]
-font_size = 10
+font_size = 12
 shadow_size = 2
 shadow_color = Color(0, 0, 0, 0.552941)
 
@@ -171,7 +171,7 @@ label_settings = SubResource("LabelSettings_54q4e")
 
 [node name="NewFHDHButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2hc5g")
 text = "New 1080p (landscape)"
 flat = true
@@ -179,7 +179,7 @@ alignment = 0
 
 [node name="NewFHDVButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jov6d")
 text = "New 1080p (Portrait)"
 flat = true
@@ -187,7 +187,7 @@ alignment = 0
 
 [node name="New4KHButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2hc5g")
 text = "New 4K (landscape)"
 flat = true
@@ -195,7 +195,7 @@ alignment = 0
 
 [node name="New4KVButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jov6d")
 text = "New 4K (Portrait)"
 flat = true
@@ -208,7 +208,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_3josr")
 
 [node name="OpenProjectButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jov6d")
 text = "Open project"
 flat = true
@@ -231,7 +231,7 @@ size_flags_vertical = 3
 [node name="ProjectExampleButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/RightVBox/RecentProjectsVBox"]
 visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jov6d")
 text = "Example"
 flat = true
@@ -240,7 +240,7 @@ alignment = 0
 [node name="ChangelogButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/RightVBox"]
 visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jov6d")
 text = "Support this project"
 flat = true
@@ -248,7 +248,7 @@ alignment = 0
 
 [node name="DonateButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/RightVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jov6d")
 text = "Support this project"
 flat = true

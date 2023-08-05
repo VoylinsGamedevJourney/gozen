@@ -1,11 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://b72yl7fvcwsx3"]
+[gd_scene load_steps=9 format=3 uid="uid://b72yl7fvcwsx3"]
 
 [ext_resource type="Script" path="res://modules/top_bar/default/top_bar.gd" id="1_egmw6"]
+[ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://icon.png" id="2_hm26p"]
+[ext_resource type="Texture2D" uid="uid://d4kvq12gshwyr" path="res://assets/startup_icons/maximize.png" id="2_xua2d"]
+[ext_resource type="Texture2D" uid="uid://bwp8lupedimnl" path="res://assets/startup_icons/minimize.png" id="2_ytj3x"]
+[ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/startup_icons/close.png" id="3_tr2aa"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chl26"]
 content_margin_left = 7.0
 content_margin_right = 7.0
-bg_color = Color(0.223529, 0.223529, 0.223529, 1)
+bg_color = Color(0.117647, 0.117647, 0.117647, 1)
 shadow_color = Color(0, 0, 0, 0.156863)
 shadow_size = 1
 shadow_offset = Vector2(0, 1)
@@ -27,35 +31,53 @@ script = ExtResource("1_egmw6")
 layout_mode = 2
 theme_override_constants/separation = 7
 
+[node name="EditorButton" type="TextureButton" parent="HBox"]
+custom_minimum_size = Vector2(26, 30)
+layout_mode = 2
+texture_normal = ExtResource("2_hm26p")
+ignore_texture_size = true
+stretch_mode = 5
+
 [node name="ProjectButton" type="Button" parent="HBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "Project"
+flat = true
 
 [node name="SettingsButton" type="Button" parent="HBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "Settings"
+flat = true
 
 [node name="Spacer" type="VSeparator" parent="HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_hyse3")
 
-[node name="MinimizeButton" type="Button" parent="HBox"]
+[node name="MinimizeButton" type="TextureButton" parent="HBox"]
+modulate = Color(1, 1, 1, 0.494118)
+custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "Minimize"
+texture_normal = ExtResource("2_ytj3x")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="SwitchModeButton" type="Button" parent="HBox"]
+[node name="SwitchModeButton" type="TextureButton" parent="HBox"]
+modulate = Color(1, 1, 1, 0.494118)
+custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "Switch"
+texture_normal = ExtResource("2_xua2d")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="ExitButton" type="Button" parent="HBox"]
+[node name="ExitButton" type="TextureButton" parent="HBox"]
+modulate = Color(1, 1, 1, 0.494118)
+custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "Exit"
+texture_normal = ExtResource("3_tr2aa")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="ProjectTitleLabel" type="Label" parent="."]
 layout_mode = 2

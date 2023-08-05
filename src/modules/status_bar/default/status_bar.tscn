@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://xevk8phnxw6w"]
+[gd_scene load_steps=3 format=3 uid="uid://xevk8phnxw6w"]
 
 [ext_resource type="Script" path="res://modules/status_bar/default/status_bar.gd" id="1_u54bq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_038f5"]
+bg_color = Color(0.117647, 0.117647, 0.117647, 1)
 
 [node name="StatusBar" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 14)
@@ -8,6 +11,8 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -14.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_038f5")
 script = ExtResource("1_u54bq")
