@@ -1,0 +1,1 @@
+class_name StatusBarModule extends Node
