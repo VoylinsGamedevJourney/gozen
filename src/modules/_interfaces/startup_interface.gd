@@ -6,14 +6,17 @@ class_name StartupModule extends Node
 ## we want to work with. A clean list of all previously
 ## saved projects.
 
-
-## Get list of all projects
-
-
-## Create a new project
+const PATH_RECENT_PROJECTS := "user://recent_projects"
+var recent_projects: PackedStringArray = []
 
 
-## Import a new project
+func _ready() -> void:
+	pass
 
 
-## Remove project from list
+func load_recent_projects() -> void:
+	pass
+
+
+func save_recent_projects() -> void:
+	pass
