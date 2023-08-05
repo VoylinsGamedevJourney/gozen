@@ -10,5 +10,7 @@ signal _on_project_title_change
 signal _on_project_saved
 signal _on_project_unsaved_changes
 
+signal _on_exit_startup
+
 
 const VERSION := "0.0.1-Alpha"
