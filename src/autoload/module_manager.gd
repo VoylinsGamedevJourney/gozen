@@ -6,7 +6,9 @@ const PATH_MODULE := "res://modules/|/%s/|.tscn"
 var modules := {
 	"startup": "default",
 	"editor": "default",
-	"command_bar": "default" }
+	"command_bar": "default",
+	"top_bar": "default",
+	"status_bar": "default", }
 
 
 func _ready() -> void:
