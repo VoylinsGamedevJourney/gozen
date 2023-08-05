@@ -16,7 +16,7 @@ config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 run/low_processor_mode=true
-boot_splash/image="res://icon.png"
+boot_splash/image="res://assets/splash_screen.png"
 config/icon="res://icon.png"
 
 [autoload]
