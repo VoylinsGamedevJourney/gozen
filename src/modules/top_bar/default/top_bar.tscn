@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b72yl7fvcwsx3"]
+[gd_scene load_steps=11 format=3 uid="uid://b72yl7fvcwsx3"]
 
 [ext_resource type="Script" path="res://modules/top_bar/default/top_bar.gd" id="1_egmw6"]
 [ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://icon.png" id="2_hm26p"]
@@ -16,14 +16,6 @@ shadow_color = Color(0, 0, 0, 0.156863)
 shadow_size = 1
 shadow_offset = Vector2(0, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhpgk"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_24a23"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvwid"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5wjpa"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hyse3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r4n2x"]
@@ -36,13 +28,6 @@ anchor_right = 1.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_chl26")
 script = ExtResource("1_egmw6")
-
-[node name="MoveWindowButton" type="Button" parent="."]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_rhpgk")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_24a23")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_jvwid")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_5wjpa")
 
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -112,8 +97,7 @@ label_settings = SubResource("LabelSettings_r4n2x")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="button_down" from="MoveWindowButton" to="." method="_on_move_window_button_button_down"]
-[connection signal="button_up" from="MoveWindowButton" to="." method="_on_move_window_button_button_up"]
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="pressed" from="HBox/MinimizeButton" to="." method="_on_minimize_button_pressed"]
 [connection signal="pressed" from="HBox/SwitchModeButton" to="." method="_on_switch_mode_button_pressed"]
 [connection signal="pressed" from="HBox/ExitButton" to="." method="_on_exit_button_pressed"]

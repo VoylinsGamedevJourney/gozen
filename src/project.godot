@@ -31,7 +31,7 @@ ProjectManager="*res://autoload/project_manager.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/extend_to_title=true
+window/size/borderless=true
 
 [gui]
 

@@ -5,7 +5,7 @@ extends TopBarModule
 # TODO: Make icon open a menu to see about, donation page, changelog, ...
 
 var move_window: bool = false
-var move_position: Vector2i
+var move_start: Vector2i
 
 
 func _ready() -> void:
@@ -15,16 +15,15 @@ func _ready() -> void:
 
 
 # This is the functionality to move the window as we extent_to_title
-func _on_move_window_button_button_down() -> void:
-	move_position = get_viewport().get_mouse_position()
-	move_window = true
-func _on_move_window_button_button_up() -> void:
-	move_window = false
+func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == 1:
+		if !move_window: move_start = get_viewport().get_mouse_position()
+		move_window = event.is_pressed()
+
 func _process(delta: float) -> void:
 	if !move_window: return
-	var mouse_delta = Vector2i(get_viewport().get_mouse_position()) - move_position
+	var mouse_delta = Vector2i(get_viewport().get_mouse_position()) - move_start
 	get_window().position += mouse_delta
-	move_position = get_viewport().get_mouse_position()
 
 
 func on_project_title_change() -> void:
