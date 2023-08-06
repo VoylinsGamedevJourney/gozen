@@ -1,4 +1,22 @@
 {
+  "STARTUP_TITLE_NEW_PROJECT": {
+    "en": "New project",
+    "ja": "新しいプロジェクト",
+    "fr": "Un nouveau projet",
+    "nl": "Nieuw project",
+    "zh_TW": "新專案"
+  },
+  "STARTUP_TITLE_RECENT_PROJECTS": {
+    "en": "Recent projects",
+    "ja": "最近のプロジェクト",
+    "fr": "",
+    "nl": "Recente projecten",
+    "zh_TW": ""
+  },
+
+
+
+
   "STARTUP_PANEL_TITLE": {
     "en": "Welcome!",
     "ja": "ようこそ！",
@@ -20,13 +38,7 @@
     "nl": "Nieuw project",
     "zh_TW": "建立新專案"
   },
-  "NEW_PROJECT_TITLE": {
-    "en": "Add new project",
-    "ja": "新しいプロジェクトを追加する",
-    "fr": "Ajouter un nouveau projet",
-    "nl": "Nieuw project",
-    "zh_TW": "建立新專案"
-  },
+  
   "NEW_PROJECT_NAME": {
     "en": "Project name:",
     "ja": "プロジェクトの名前：",

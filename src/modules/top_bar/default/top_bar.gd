@@ -12,6 +12,8 @@ func _ready() -> void:
 	Globals._on_project_title_change.connect(on_project_title_change)
 	Globals._on_project_saved.connect(on_project_saved)
 	Globals._on_project_unsaved_changes.connect(on_project_unsaved_changes)
+	check_zen()
+	Globals._on_zen_switch.connect(check_zen)
 
 
 # This is the functionality to move the window as we extent_to_title
@@ -54,7 +56,10 @@ func _on_minimize_button_pressed() -> void:
 
 func _on_switch_mode_button_pressed() -> void:
 	match get_window().mode:
-		Window.MODE_WINDOWED:  get_window().set_mode(Window.MODE_MAXIMIZED)
+		Window.MODE_WINDOWED:  
+			get_window().set_mode(Window.MODE_MAXIMIZED)
+			var screen_size := DisplayServer.screen_get_size()
+			get_window().size = screen_size - Vector2i(300,300)
 		Window.MODE_MAXIMIZED: get_window().set_mode(Window.MODE_WINDOWED)
 
 
@@ -62,3 +67,9 @@ func _on_exit_button_pressed() -> void:
 	# TODO: Check if unsaved changes and first display a message
 	#       asking if they want to save or not
 	get_tree().quit()
+
+
+func check_zen() -> void:
+	find_child("MinimizeButton").visible = !SettingsManager.zen_mode
+	find_child("SwitchModeButton").visible = !SettingsManager.zen_mode
+	find_child("ExitButton").visible = !SettingsManager.zen_mode
