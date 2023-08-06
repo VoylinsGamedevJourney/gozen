@@ -13,6 +13,48 @@
     "nl": "Recente projecten",
     "zh_TW": ""
   },
+  "STARTUP_BUTTON_NEW_FHD_H_PROJECT": {
+    "en": "New 1080p (landscape)",
+    "ja": "新1080p　（横）",
+    "fr": "",
+    "nl": "Nieuw 1080p (landschap)",
+    "zh_TW": ""
+  },
+  "STARTUP_BUTTON_NEW_FHD_V_PROJECT": {
+    "en": "New 1080p (portrait)",
+    "ja": "新1080p　（縦）",
+    "fr": "",
+    "nl": "Nieuw 1080p (portret)",
+    "zh_TW": ""
+  },
+  "STARTUP_BUTTON_NEW_4K_H_PROJECT": {
+    "en": "New 4K (landscape)",
+    "ja": "新４K　（横）",
+    "fr": "",
+    "nl": "Nieuw 4k (landschap)",
+    "zh_TW": ""
+  },
+  "STARTUP_BUTTON_NEW_4K_V_PROJECT": {
+    "en": "New 4K (portrait)",
+    "ja": "新４K　（縦）",
+    "fr": "",
+    "nl": "Nieuw 4k (portret)",
+    "zh_TW": ""
+  },
+  "STARTUP_BUTTON_OPEN_PROJECT": {
+    "en": "Open project",
+    "ja": "プロジェクトをを開く",
+    "fr": "",
+    "nl": "Open project",
+    "zh_TW": ""
+  },
+  "STARTUP_BUTTON_SUPPORT_PROJECT": {
+    "en": "Support this project",
+    "ja": "このプロジェクトを支援する",
+    "fr": "",
+    "nl": "Steun dit project",
+    "zh_TW": ""
+  },
 
 
 
@@ -133,13 +175,6 @@
     "fr": "création",
     "nl": "gemaakt op",
     "zh_TW": "最近建立"
-  },
-  "BUTTON_IMPORT_PROJECT": {
-    "en": "Import project",
-    "ja": "プロジェクトをインポート",
-    "fr": "Importer un projet",
-    "nl": "Project importeren",
-    "zh_TW": "導入專案"
   },
   "BUTTON_REMOVE_PROJECT": {
     "en": "Remove project",
