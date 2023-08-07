@@ -10,10 +10,3 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_fojp6")
-
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 0
-offset_left = 339.0
-offset_top = 484.0
-offset_right = 1396.0
-offset_bottom = 524.0
