@@ -52,6 +52,7 @@ func _on_settings_button_pressed() -> void:
 
 func _on_minimize_button_pressed() -> void:
 	get_window().set_mode(Window.MODE_MINIMIZED)
+	Globals._on_window_mode_switch.emit()
 
 
 func _on_switch_mode_button_pressed() -> void:
@@ -59,8 +60,9 @@ func _on_switch_mode_button_pressed() -> void:
 		Window.MODE_WINDOWED:  
 			get_window().set_mode(Window.MODE_MAXIMIZED)
 			var screen_size := DisplayServer.screen_get_size()
-			get_window().size = screen_size - Vector2i(300,300)
+			get_window().size = screen_size - Vector2i(600,600)
 		Window.MODE_MAXIMIZED: get_window().set_mode(Window.MODE_WINDOWED)
+	Globals._on_window_mode_switch.emit()
 
 
 func _on_exit_button_pressed() -> void:

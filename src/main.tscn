@@ -1,12 +1,74 @@
-[gd_scene load_steps=2 format=3 uid="uid://2xg6eooelhqq"]
+[gd_scene load_steps=3 format=3 uid="uid://2xg6eooelhqq"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_0vn1l"]
+[ext_resource type="Script" path="res://scripts/resize_handler.gd" id="2_s65yb"]
 
-[node name="Main" type="VBoxContainer"]
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0vn1l")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
-script = ExtResource("1_0vn1l")
+
+[node name="ResizeHandler" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_s65yb")
+metadata/_edit_lock_ = true
+
+[node name="Right" type="Control" parent="ResizeHandler"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+grow_horizontal = 0
+grow_vertical = 2
+pivot_offset = Vector2(5, 0)
+mouse_default_cursor_shape = 10
+
+[node name="Bottom" type="Control" parent="ResizeHandler"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(0, 5)
+mouse_default_cursor_shape = 9
+
+[node name="BottomRight" type="Control" parent="ResizeHandler"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+pivot_offset = Vector2(5, 5)
+mouse_default_cursor_shape = 12
