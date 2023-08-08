@@ -53,7 +53,7 @@ switch_zen_mode={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.fr.translation", "res://translations/translations.ja.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation")
+locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.fr.translation", "res://translations/translations.ja.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation")
 
 [rendering]
 

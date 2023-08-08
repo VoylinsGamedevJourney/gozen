@@ -6,7 +6,8 @@ enum LANGUAGE {
 	JAPANESE, 
 	FRENCH, 
 	DUTCH, 
-	CHINESE_TAIWAN }
+	CHINESE_TAIWAN,
+	POLISH }
 
 const PATH := "user://settings"
 
@@ -24,6 +25,7 @@ var language: LANGUAGE = LANGUAGE.ENGLISH:
 			LANGUAGE.FRENCH: locale = "fr"
 			LANGUAGE.DUTCH: locale = "nl"
 			LANGUAGE.CHINESE_TAIWAN: locale = "zh_TW"
+			LANGUAGE.POLISH: locale = "pl_pl"
 		TranslationServer.set_locale(locale)
 
 var module_settings := {}
