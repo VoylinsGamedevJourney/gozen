@@ -4,316 +4,351 @@
     "ja": "新しいプロジェクト",
     "fr": "Un nouveau projet",
     "nl": "Nieuw project",
-    "zh_TW": "新專案"
+    "zh_TW": "新專案",
+    "pl_pl": "Nowy projekt"
   },
   "STARTUP_TITLE_RECENT_PROJECTS": {
     "en": "Recent projects",
     "ja": "最近のプロジェクト",
     "fr": "",
     "nl": "Recente projecten",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Ostatnie projekty"
   },
   "STARTUP_BUTTON_NEW_FHD_H_PROJECT": {
     "en": "New 1080p (landscape)",
     "ja": "新1080p　（横）",
     "fr": "",
     "nl": "Nieuw 1080p (landschap)",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Nowy 1080p (poziomy)"
   },
   "STARTUP_BUTTON_NEW_FHD_V_PROJECT": {
     "en": "New 1080p (portrait)",
     "ja": "新1080p　（縦）",
     "fr": "",
     "nl": "Nieuw 1080p (portret)",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Nowy 1080p (pionowy)"
   },
   "STARTUP_BUTTON_NEW_4K_H_PROJECT": {
     "en": "New 4K (landscape)",
     "ja": "新４K　（横）",
     "fr": "",
     "nl": "Nieuw 4k (landschap)",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Nowy 4k (poziomy)"
   },
   "STARTUP_BUTTON_NEW_4K_V_PROJECT": {
     "en": "New 4K (portrait)",
     "ja": "新４K　（縦）",
     "fr": "",
     "nl": "Nieuw 4k (portret)",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Nowy 4k (pionowy)"
   },
   "STARTUP_BUTTON_OPEN_PROJECT": {
     "en": "Open project",
     "ja": "プロジェクトをを開く",
     "fr": "",
     "nl": "Open project",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Otwórz projekt"
   },
   "STARTUP_BUTTON_SUPPORT_PROJECT": {
     "en": "Support this project",
     "ja": "このプロジェクトを支援する",
     "fr": "",
     "nl": "Steun dit project",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Wesprzyj ten projekt"
   },
-
-
-
-
   "STARTUP_PANEL_TITLE": {
     "en": "Welcome!",
     "ja": "ようこそ！",
     "fr": "Bienvenue !",
     "nl": "Welkom",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Witaj!"
   },
   "STARTUP_PANEL_TEXT_PROJECTS": {
     "en": "Projects",
     "ja": "プロジェクト",
     "fr": "Projets",
     "nl": "Projecten",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Projekty"
   },
   "STARTUP_BUTTON_ADD_NEW_PROJECT": {
     "en": "Add new project",
     "ja": "新プロジェクト",
     "fr": "Ajouter un nouveau projet",
     "nl": "Nieuw project",
-    "zh_TW": "建立新專案"
+    "zh_TW": "建立新專案",
+    "pl_pl": "Dodaj nowy projekt"
   },
-  
   "NEW_PROJECT_NAME": {
     "en": "Project name:",
     "ja": "プロジェクトの名前：",
     "fr": "Nom du projet :",
     "nl": "Project naam:",
-    "zh_TW": "專案名稱："
+    "zh_TW": "專案名稱：",
+    "pl_pl": "Nazwa projektu: "
   },
   "NEW_PROJECT_LOCATION": {
     "en": "Location:",
     "ja": "保存場所：",
     "fr": "Localisation :",
     "nl": "Locatie:",
-    "zh_TW": "專案位置："
+    "zh_TW": "專案位置：",
+    "pl_pl": "Lokalizacja:"
   },
-
   "BUTTON_CANCEL": {
     "en": "Cancel",
     "ja": "キャンセル",
     "fr": "Annuler",
     "nl": "",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Anuluj"
   },
   "BUTTON_CREATE": {
     "en": "Create",
     "ja": "作成",
     "fr": "Créer",
     "nl": "",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Utwórz"
   },
-
-
-
   "TEXT_VERSION": {
     "en": "Version",
     "ja": "バージョン",
     "fr": "Version",
     "nl": "Version",
-    "zh_TW": "版本"
+    "zh_TW": "版本",
+    "pl_pl": "Wersja"
   },
   "TEXT_SORT": {
     "en": "Sort:",
     "ja": "並び替え：",
     "fr": "Trier :",
     "nl": "Sorteer:",
-    "zh_TW": "排序"
+    "zh_TW": "排序",
+    "pl_pl": "Sortuj:"
   },
   "TEXT_FILTER_PROJECTS": {
     "en": "Filter projects",
     "ja": "プロジェクトのフィルター",
     "fr": "Filtrer les projets",
     "nl": "Projecten filteren",
-    "zh_TW": "篩選專案"
+    "zh_TW": "篩選專案",
+    "pl_pl": "Filtruj projekty"
   },
   "TAB_PROJECTS": {
     "en": "Projects",
     "ja": "プロジェクト",
     "fr": "Projets",
     "nl": "Projecten",
-    "zh_TW": "專案"
+    "zh_TW": "專案",
+    "pl_pl": "Projekty"
   },
   "TAB_ABOUT": {
     "en": "About",
     "ja": "情報",
     "fr": "À Propos",
     "nl": "Info",
-    "zh_TW": "關於"
+    "zh_TW": "關於",
+    "pl_pl": "Info"
   },
   "TAB_SETTINGS": {
     "en": "Settings",
     "ja": "設定",
     "fr": "Réglages",
     "nl": "Instellingen",
-    "zh_TW": "設定"
+    "zh_TW": "設定",
+    "pl_pl": "Ustawienia"
   },
   "SORT_NAME": {
     "en": "name",
     "ja": "名前",
     "fr": "nom",
     "nl": "naam",
-    "zh_TW": "名稱"
+    "zh_TW": "名稱",
+    "pl_pl": "nazwa"
   },
   "SORT_LAST_EDITED": {
     "en": "last edited",
     "ja": "編集日",
     "fr": "dernier édité",
     "nl": "Laatst bewerkt",
-    "zh_TW": "最近修改"
+    "zh_TW": "最近修改",
+    "pl_pl": "ostatnio edytowane"
   },
   "SORT_CREATION": {
     "en": "creation",
     "ja": "作った日",
     "fr": "création",
     "nl": "gemaakt op",
-    "zh_TW": "最近建立"
+    "zh_TW": "最近建立",
+    "pl_pl": "utworzone"
   },
   "BUTTON_REMOVE_PROJECT": {
     "en": "Remove project",
     "ja": "プロジェクトを消す",
     "fr": "Supprimer un projet",
     "nl": "Verwijder project",
-    "zh_TW": "移除專案"
+    "zh_TW": "移除專案",
+    "pl_pl": "Usuń projekt"
   },
   "BUTTON_REMOVE_MISSING": {
     "en": "Remove missing projects",
     "ja": "不足プロジェクトを削除",
     "fr": "Supprimer les projets manquants",
     "nl": "Verwijder vermiste projecten",
-    "zh_TW": "移除缺失專案"
+    "zh_TW": "移除缺失專案",
+    "pl_pl": "Usuń brakujące projekty"
   },
   "FILE_EXPLORER_TITLE_SELECT_FOLDER": {
     "en": "Select Project Folder",
     "ja": "プロジェクトフォルダを選択してください",
     "fr": "Sélectionner le Dossier du Projet",
     "nl": "Selecteer project map",
-    "zh_TW": "選擇專案位置"
+    "zh_TW": "選擇專案位置",
+    "pl_pl": "Wybierz folder projektu"
   },
   "FILE_EXPLORER_TITLE_SELECT_FILE": {
     "en": "Select File",
     "ja": "ファイルを選ぶ",
     "fr": "Sélectioner le Fichier",
     "nl": "Selecteer bestand",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Wybierz plik"
   },
   "FILE_EXPLORER_TITLE_SELECT_FILES": {
     "en": "Select File(s)",
     "ja": "ファイルを選ぶ",
     "fr": "Sélectioner le(s) Fichier(s)",
     "nl": "Selecteer bestand(en)",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Wybierz plik(i)"
   },
   "FILE_EXPLORER_TITLE_SELECT_GOZEN": {
     "en": "Select Project File",
     "ja": "プロジェクトファイルを選択してください",
     "fr": "Sélectioner le Fichier Projet",
     "nl": "Selecteer project bestand",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Wybierz plik projektu"
   },
   "FILE_EXPLORER_HOME_BUTTON": {
     "en": "Home",
     "ja": "ホーム",
     "fr": "Maison",
     "nl": "Home",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Katalog domowy"
   },
   "FILE_EXPLORER_DOCUMENTS_BUTTON": {
     "en": "Documents",
     "ja": "ドキュメント",
     "fr": "Documents",
     "nl": "Documenten",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Dokumenty"
   },
   "FILE_EXPLORER_DOWNLOADS_BUTTON": {
     "en": "Downloads",
     "ja": "ダウンロード",
     "fr": "Téléchargements",
     "nl": "Downloads",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Pobrane"
   },
   "FILE_EXPLORER_PICTURES_BUTTON": {
     "en": "Pictures",
     "ja": "写真",
     "fr": "Images",
     "nl": "Foto's",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Obrazu"
   },
   "FILE_EXPLORER_MUSIC_BUTTON": {
     "en": "Music",
     "ja": "音楽",
     "fr": "Musique",
     "nl": "Muziek",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Muzyka"
   },
   "FILE_EXPLORER_VIDEOS_BUTTON": {
     "en": "Videos",
     "ja": "動画",
     "fr": "Vidéos",
     "nl": "Videos",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Wideo"
   },
   "FILE_EXPLORER_SAVED_PATHS": {
     "en": "Saved paths",
     "ja": "保存されたパス",
     "fr": "Chemins enregistrés",
     "nl": "Bewaarde locaties",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Zapisane ścieżki"
   },
   "FILE_EXPLORER_ADD_PATH": {
     "en": "Add path",
     "ja": "パスの追加",
     "fr": "Ajouter un chemin",
     "nl": "Locatie toevoegen",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Dodaj ścieżkę"
   },
   "FILE_EXPLORER_RETURN_BUTTON": {
     "en": "Back",
     "ja": "戻る",
     "fr": "Retour",
     "nl": "Terug",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Powrót"
   },
   "FILE_EXPLORER_PROJECT_FOLDER_BUTTON": {
     "en": "Project folder",
     "ja": "プロジェクトのフォルダー",
     "fr": "Dossier du projet",
     "nl": "Project map",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Folder projektu"
   },
   "FILE_EXPLORER_FOLDER_ERROR": {
     "en": "This Folder does not exist!",
     "ja": "このフォルダは存在しません！",
     "fr": "Ce dossier n'existe pas !",
     "nl": "Deze map bestaat niet!",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Ten folder nie istnieje!"
   },
   "FILE_EXPLORER_CLOSE": {
     "en": "Close",
     "ja": "閉じる",
     "fr": "Fermer",
     "nl": "Sluit",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Zamknij"
   },
   "FILE_EXPLORER_SELECT": {
     "en": "Select",
     "ja": "選択",
     "fr": "Sélectioner",
     "nl": "Selecteer",
-    "zh_TW": ""
+    "zh_TW": "",
+    "pl_pl": "Wybierz"
   },
   "SETTING_TEXT_LANGUAGE": {
     "en": "Language",
     "ja": "言語",
     "fr": "Langue",
     "nl": "Taal",
-    "zh_TW": "語言"
+    "zh_TW": "語言",
+    "pl_pl": "Język"
   }
 }
