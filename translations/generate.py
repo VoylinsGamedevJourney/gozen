@@ -39,7 +39,7 @@ def add_language(json_file):
   try:
     with open(json_file, 'r') as file: data = json.load(file)
     for k in data.keys(): data[k][locale] = ""
-    with open(json_file, 'w') as file: json.dump(data, file, indent=2)
+    with open(json_file, 'w') as file: json.dump(data, file, indent=2, ensure_ascii=False)
   except Exception as e:
     print(f"An error occurred: {e}")
 
