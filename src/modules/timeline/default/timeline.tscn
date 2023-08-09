@@ -1,12 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://kktdag02i8qd"]
+[gd_scene load_steps=4 format=3 uid="uid://kktdag02i8qd"]
 
 [ext_resource type="Script" path="res://modules/timeline/default/timeline.gd" id="1_eocur"]
+[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://modules/editor/default/main_editor_theme.tres" id="1_ox6vf"]
 
-[node name="timeline" type="Control"]
-layout_mode = 3
+[sub_resource type="LabelSettings" id="LabelSettings_t5rvy"]
+font_size = 60
+
+[node name="Timeline" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_ox6vf")
 script = ExtResource("1_eocur")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Timeline"
+label_settings = SubResource("LabelSettings_t5rvy")
+horizontal_alignment = 1
+vertical_alignment = 1

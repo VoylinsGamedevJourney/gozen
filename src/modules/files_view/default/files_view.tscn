@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://6cs0hb28epea"]
+
+[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://modules/editor/default/main_editor_theme.tres" id="1_thqsh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_enbux"]
+font_size = 60
+
+[node name="FilesView" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_thqsh")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Files View"
+label_settings = SubResource("LabelSettings_enbux")
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,12 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://vvbx5qhm413d"]
+[gd_scene load_steps=4 format=3 uid="uid://vvbx5qhm413d"]
 
 [ext_resource type="Script" path="res://modules/project_view/default/project_view.gd" id="1_fmqr0"]
+[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://modules/editor/default/main_editor_theme.tres" id="1_mrenp"]
 
-[node name="project_view" type="Control"]
-layout_mode = 3
+[sub_resource type="LabelSettings" id="LabelSettings_bns32"]
+font_size = 50
+
+[node name="project_view" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_mrenp")
 script = ExtResource("1_fmqr0")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Project view"
+label_settings = SubResource("LabelSettings_bns32")
+horizontal_alignment = 1
+vertical_alignment = 1
