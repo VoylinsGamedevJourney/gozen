@@ -39,12 +39,12 @@ func _on_gui_input(event: InputEvent, id: int) -> void:
 		resizing = event.is_pressed()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if resizing:
 		if resize_node == BOTTOM or resize_node == BOTTOM_RIGHT: 
-			get_window().size.y = get_global_mouse_position().y
+			get_window().size.y = int(get_global_mouse_position().y)
 		if resize_node == RIGHT or resize_node == BOTTOM_RIGHT: 
-			get_window().size.x = get_global_mouse_position().x
+			get_window().size.x = int(get_global_mouse_position().x)
 
 
 func _on_window_switch() -> void:
