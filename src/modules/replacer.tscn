@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://buremqdyb7y2r"]
+
+[ext_resource type="Script" path="res://modules/replacer.gd" id="1_y1xgs"]
+
+[node name="Placeholder" type="Node"]
+script = ExtResource("1_y1xgs")
