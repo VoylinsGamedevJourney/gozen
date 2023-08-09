@@ -3,12 +3,18 @@ extends Node
 const PATH := "user://module_settings"
 const PATH_MODULE := "res://modules/|/%s/|.tscn"
 
+enum MODULES{MM,OO}
 var modules := {
-	"startup": "default",
-	"editor": "default",
 	"command_bar": "default",
-	"top_bar": "default",
-	"status_bar": "default", }
+	"editor": "default",
+	"effects_view": "default",
+	"files_view": "default",
+	"file_explorer": "default",
+	"project_view": "default",
+	"startup": "default",
+	"status_bar": "default",
+	"timeline": "default",
+	"top_bar": "default" }
 
 
 func _ready() -> void:

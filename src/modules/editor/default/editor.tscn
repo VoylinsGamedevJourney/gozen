@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://tsxucctndc2m"]
+[gd_scene load_steps=5 format=3 uid="uid://tsxucctndc2m"]
 
+[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://modules/editor/default/main_editor_theme.tres" id="1_5d5fk"]
 [ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="1_fojp6"]
+[ext_resource type="PackedScene" uid="uid://btgrwemgt5tpj" path="res://modules/editor/default/landscape_view.tscn" id="3_c85wm"]
+[ext_resource type="PackedScene" uid="uid://c4ku05c4brsvc" path="res://modules/editor/default/portrait_view.tscn" id="4_os1yu"]
 
 [node name="Editor" type="Control"]
 layout_mode = 3
@@ -9,4 +12,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_5d5fk")
 script = ExtResource("1_fojp6")
+
+[node name="LandscapeView" parent="." instance=ExtResource("3_c85wm")]
+layout_mode = 0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="PortraitView" parent="." instance=ExtResource("4_os1yu")]
+visible = false
+layout_mode = 1

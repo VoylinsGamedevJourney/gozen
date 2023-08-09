@@ -8,6 +8,7 @@ signal _on_window_mode_switch
 
 # Project signals
 signal _on_project_title_change
+signal _on_project_resolution_change
 
 signal _on_project_saved
 signal _on_project_unsaved_changes

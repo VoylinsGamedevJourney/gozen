@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://btgrwemgt5tpj"]
+
+[ext_resource type="PackedScene" uid="uid://buremqdyb7y2r" path="res://modules/replacer.tscn" id="1_dirlf"]
+
+[node name="LandscapeView" type="VSplitContainer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 100
+
+[node name="HSplitTop" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="effects_view" parent="HSplitTop" instance=ExtResource("1_dirlf")]
+
+[node name="project_view" parent="HSplitTop" instance=ExtResource("1_dirlf")]
+
+[node name="HSplitBottom" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="files_view" parent="HSplitBottom" instance=ExtResource("1_dirlf")]
+
+[node name="timeline" parent="HSplitBottom" instance=ExtResource("1_dirlf")]
