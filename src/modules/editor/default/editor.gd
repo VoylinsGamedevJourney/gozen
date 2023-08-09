@@ -1,8 +1,8 @@
 extends EditorModule
 
-# TODO: Change layout when resolution becomes vertical/horizontal
-enum LAYOUT {NOT_CONFIGURED, LANDSCAPE,PORTRAIT}
-var layout : LAYOUT = LAYOUT.NOT_CONFIGURED
+enum LAYOUT {UNCONFIGURED,LANDSCAPE,PORTRAIT}
+var layout : LAYOUT = LAYOUT.UNCONFIGURED
+
 
 func _ready() -> void:
 	Globals._on_project_resolution_change.connect(_on_project_resolution_change)
