@@ -1,12 +1,13 @@
 # Translations
 
-At this stage we have a couple of different languages available inside of the editor. (language + contributors)
+At this stage we have a couple of different languages available inside of the editor. 
 
 - English;
 - Japanese;
 - French;
 - Dutch;
-- Chinese.
+- Chinese;
+- Polish
 
 ## All languages welcome!
 
@@ -38,8 +39,9 @@ We don't have any specific plans for adding more languages in the future. Langua
 
 # Current contributors
 
-English: Voylin
-Japanese: Voylin
-French: Slander
-Dutch: Voylin
-Chinese: Aappaapp
+- English: Voylin
+- Japanese: Voylin
+- French: Slander
+- Dutch: Voylin
+- Chinese: Aappaapp
+- Polish: SzczurekYT
