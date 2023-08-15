@@ -21,7 +21,7 @@ After you are done editing the JSON file you can create a pull request. Please o
 
 ### New language?
 
-run the python script "generate.py", select 2 and enter the official language code. Don't worry about the changes which need to be done inside any of the other project files as we will be adjusting those.
+Run the python script "generate.py" by using "python generate.py" inside of the folder, select '2' and enter the official language code in plain text without any ' or " marks. Don't worry about the changes which need to be done inside any of the other project files as we will be adjusting those.
 
 This will create a new entry for all keys inside of the JSON file, add the words next to the language code of each key and you're done!
 
