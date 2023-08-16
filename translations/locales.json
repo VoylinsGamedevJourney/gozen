@@ -5,7 +5,8 @@
     "fr": "Nouveau projet",
     "nl": "Nieuw project",
     "zh_TW": "新專案",
-    "pl_pl": "Nowy projekt"
+    "pl_pl": "Nowy projekt",
+    "de": "Neues Projekt"
   },
   "STARTUP_TITLE_RECENT_PROJECTS": {
     "en": "Recent projects",
@@ -13,7 +14,8 @@
     "fr": "Projets récents",
     "nl": "Recente projecten",
     "zh_TW": "",
-    "pl_pl": "Ostatnie projekty"
+    "pl_pl": "Ostatnie projekty",
+    "de": "Zuletzt geöffnete Projekte"
   },
   "STARTUP_BUTTON_NEW_FHD_H_PROJECT": {
     "en": "New 1080p (landscape)",
@@ -21,7 +23,8 @@
     "fr": "Nouveau 1080p (paysage)",
     "nl": "Nieuw 1080p (landschap)",
     "zh_TW": "",
-    "pl_pl": "Nowy 1080p (poziomy)"
+    "pl_pl": "Nowy 1080p (poziomy)",
+    "de": "Neues 1080p (Landschaft)"
   },
   "STARTUP_BUTTON_NEW_FHD_V_PROJECT": {
     "en": "New 1080p (portrait)",
@@ -29,7 +32,8 @@
     "fr": "Nouveau 1080p (portrait)",
     "nl": "Nieuw 1080p (portret)",
     "zh_TW": "",
-    "pl_pl": "Nowy 1080p (pionowy)"
+    "pl_pl": "Nowy 1080p (pionowy)",
+    "de": "Neues 1080p (Porträt)"
   },
   "STARTUP_BUTTON_NEW_4K_H_PROJECT": {
     "en": "New 4K (landscape)",
@@ -37,7 +41,8 @@
     "fr": "Nouveau 4K (paysage)",
     "nl": "Nieuw 4k (landschap)",
     "zh_TW": "",
-    "pl_pl": "Nowy 4k (poziomy)"
+    "pl_pl": "Nowy 4k (poziomy)",
+    "de": "Neues 4k (Landschaft)"
   },
   "STARTUP_BUTTON_NEW_4K_V_PROJECT": {
     "en": "New 4K (portrait)",
@@ -45,7 +50,8 @@
     "fr": "Nouveau 4K (portrait)",
     "nl": "Nieuw 4k (portret)",
     "zh_TW": "",
-    "pl_pl": "Nowy 4k (pionowy)"
+    "pl_pl": "Nowy 4k (pionowy)",
+    "de": "Neues 4k (Porträt)"
   },
   "STARTUP_BUTTON_OPEN_PROJECT": {
     "en": "Open project",
@@ -53,7 +59,8 @@
     "fr": "Ouvrir un projet",
     "nl": "Open project",
     "zh_TW": "",
-    "pl_pl": "Otwórz projekt"
+    "pl_pl": "Otwórz projekt",
+    "de": "Projekt öffnen"
   },
   "STARTUP_BUTTON_SUPPORT_PROJECT": {
     "en": "Support this project",
@@ -61,7 +68,8 @@
     "fr": "Supporter ce projet",
     "nl": "Steun dit project",
     "zh_TW": "",
-    "pl_pl": "Wesprzyj ten projekt"
+    "pl_pl": "Wesprzyj ten projekt",
+    "de": "Unterstütze dieses Projekt"
   },
   "STARTUP_PANEL_TITLE": {
     "en": "Welcome!",
@@ -69,7 +77,8 @@
     "fr": "Bienvenue !",
     "nl": "Welkom",
     "zh_TW": "",
-    "pl_pl": "Witaj!"
+    "pl_pl": "Witaj!",
+    "de": "Willkommen!"
   },
   "STARTUP_PANEL_TEXT_PROJECTS": {
     "en": "Projects",
@@ -77,7 +86,8 @@
     "fr": "Projets",
     "nl": "Projecten",
     "zh_TW": "",
-    "pl_pl": "Projekty"
+    "pl_pl": "Projekty",
+    "de": "Projekte"
   },
   "STARTUP_BUTTON_ADD_NEW_PROJECT": {
     "en": "Add new project",
@@ -85,7 +95,8 @@
     "fr": "Ajouter un nouveau projet",
     "nl": "Nieuw project",
     "zh_TW": "建立新專案",
-    "pl_pl": "Dodaj nowy projekt"
+    "pl_pl": "Dodaj nowy projekt",
+    "de": "Neues Projekt"
   },
   "NEW_PROJECT_NAME": {
     "en": "Project name:",
@@ -93,7 +104,8 @@
     "fr": "Nom du projet :",
     "nl": "Project naam:",
     "zh_TW": "專案名稱：",
-    "pl_pl": "Nazwa projektu: "
+    "pl_pl": "Nazwa projektu: ",
+    "de": "Projektname"
   },
   "NEW_PROJECT_LOCATION": {
     "en": "Location:",
@@ -101,7 +113,8 @@
     "fr": "Emplacement :",
     "nl": "Locatie:",
     "zh_TW": "專案位置：",
-    "pl_pl": "Lokalizacja:"
+    "pl_pl": "Lokalizacja:",
+    "de": "Ort:"
   },
   "BUTTON_CANCEL": {
     "en": "Cancel",
@@ -109,7 +122,8 @@
     "fr": "Annuler",
     "nl": "",
     "zh_TW": "",
-    "pl_pl": "Anuluj"
+    "pl_pl": "Anuluj",
+    "de": "Abbrechen"
   },
   "BUTTON_CREATE": {
     "en": "Create",
@@ -117,7 +131,8 @@
     "fr": "Créer",
     "nl": "",
     "zh_TW": "",
-    "pl_pl": "Utwórz"
+    "pl_pl": "Utwórz",
+    "de": "Erstelle"
   },
   "TEXT_VERSION": {
     "en": "Version",
@@ -125,7 +140,8 @@
     "fr": "Version",
     "nl": "Version",
     "zh_TW": "版本",
-    "pl_pl": "Wersja"
+    "pl_pl": "Wersja",
+    "de": "Version"
   },
   "TEXT_SORT": {
     "en": "Sort:",
@@ -133,7 +149,8 @@
     "fr": "Trier :",
     "nl": "Sorteer:",
     "zh_TW": "排序",
-    "pl_pl": "Sortuj:"
+    "pl_pl": "Sortuj:",
+    "de": "Sortiere:"
   },
   "TEXT_FILTER_PROJECTS": {
     "en": "Filter projects",
@@ -141,7 +158,8 @@
     "fr": "Filtrer les projets",
     "nl": "Projecten filteren",
     "zh_TW": "篩選專案",
-    "pl_pl": "Filtruj projekty"
+    "pl_pl": "Filtruj projekty",
+    "de": "Filter Projekte"
   },
   "TAB_PROJECTS": {
     "en": "Projects",
@@ -149,7 +167,8 @@
     "fr": "Projets",
     "nl": "Projecten",
     "zh_TW": "專案",
-    "pl_pl": "Projekty"
+    "pl_pl": "Projekty",
+    "de": "Projekte"
   },
   "TAB_ABOUT": {
     "en": "About",
@@ -157,7 +176,8 @@
     "fr": "À Propos",
     "nl": "Info",
     "zh_TW": "關於",
-    "pl_pl": "Info"
+    "pl_pl": "Info",
+    "de": "Über"
   },
   "TAB_SETTINGS": {
     "en": "Settings",
@@ -165,7 +185,8 @@
     "fr": "Réglages",
     "nl": "Instellingen",
     "zh_TW": "設定",
-    "pl_pl": "Ustawienia"
+    "pl_pl": "Ustawienia",
+    "de": "Einstellungen"
   },
   "SORT_NAME": {
     "en": "name",
@@ -173,7 +194,8 @@
     "fr": "nom",
     "nl": "naam",
     "zh_TW": "名稱",
-    "pl_pl": "nazwa"
+    "pl_pl": "nazwa",
+    "de": "Name"
   },
   "SORT_LAST_EDITED": {
     "en": "last edited",
@@ -181,7 +203,8 @@
     "fr": "dernier édité",
     "nl": "Laatst bewerkt",
     "zh_TW": "最近修改",
-    "pl_pl": "ostatnio edytowane"
+    "pl_pl": "ostatnio edytowane",
+    "de": "zuletzt bearbeitet"
   },
   "SORT_CREATION": {
     "en": "creation",
@@ -189,7 +212,8 @@
     "fr": "création",
     "nl": "gemaakt op",
     "zh_TW": "最近建立",
-    "pl_pl": "utworzone"
+    "pl_pl": "utworzone",
+    "de": "erstellung"
   },
   "BUTTON_REMOVE_PROJECT": {
     "en": "Remove project",
@@ -197,7 +221,8 @@
     "fr": "Supprimer un projet",
     "nl": "Verwijder project",
     "zh_TW": "移除專案",
-    "pl_pl": "Usuń projekt"
+    "pl_pl": "Usuń projekt",
+    "de": "Projekt entfernen"
   },
   "BUTTON_REMOVE_MISSING": {
     "en": "Remove missing projects",
@@ -205,7 +230,8 @@
     "fr": "Supprimer les projets manquants",
     "nl": "Verwijder vermiste projecten",
     "zh_TW": "移除缺失專案",
-    "pl_pl": "Usuń brakujące projekty"
+    "pl_pl": "Usuń brakujące projekty",
+    "de": "Entferne fehlende Projekte"
   },
   "FILE_EXPLORER_TITLE_SELECT_FOLDER": {
     "en": "Select Project Folder",
@@ -213,7 +239,8 @@
     "fr": "Sélectionner le Dossier du Projet",
     "nl": "Selecteer project map",
     "zh_TW": "選擇專案位置",
-    "pl_pl": "Wybierz folder projektu"
+    "pl_pl": "Wybierz folder projektu",
+    "de": "Projekt Ordner auswählen"
   },
   "FILE_EXPLORER_TITLE_SELECT_FILE": {
     "en": "Select File",
@@ -221,7 +248,8 @@
     "fr": "Sélectioner le Fichier",
     "nl": "Selecteer bestand",
     "zh_TW": "",
-    "pl_pl": "Wybierz plik"
+    "pl_pl": "Wybierz plik",
+    "de": "Datei auswählen"
   },
   "FILE_EXPLORER_TITLE_SELECT_FILES": {
     "en": "Select File(s)",
@@ -229,7 +257,8 @@
     "fr": "Sélectioner le(s) Fichier(s)",
     "nl": "Selecteer bestand(en)",
     "zh_TW": "",
-    "pl_pl": "Wybierz plik(i)"
+    "pl_pl": "Wybierz plik(i)",
+    "de": "Datei(en) auswählen"
   },
   "FILE_EXPLORER_TITLE_SELECT_GOZEN": {
     "en": "Select Project File",
@@ -237,7 +266,8 @@
     "fr": "Sélectioner le Fichier Projet",
     "nl": "Selecteer project bestand",
     "zh_TW": "",
-    "pl_pl": "Wybierz plik projektu"
+    "pl_pl": "Wybierz plik projektu",
+    "de": "Projektdatei auswählen"
   },
   "FILE_EXPLORER_HOME_BUTTON": {
     "en": "Home",
@@ -245,7 +275,8 @@
     "fr": "Maison",
     "nl": "Home",
     "zh_TW": "",
-    "pl_pl": "Katalog domowy"
+    "pl_pl": "Katalog domowy",
+    "de": "Home"
   },
   "FILE_EXPLORER_DOCUMENTS_BUTTON": {
     "en": "Documents",
@@ -253,7 +284,8 @@
     "fr": "Documents",
     "nl": "Documenten",
     "zh_TW": "",
-    "pl_pl": "Dokumenty"
+    "pl_pl": "Dokumenty",
+    "de": "Dokumente"
   },
   "FILE_EXPLORER_DOWNLOADS_BUTTON": {
     "en": "Downloads",
@@ -261,7 +293,8 @@
     "fr": "Téléchargements",
     "nl": "Downloads",
     "zh_TW": "",
-    "pl_pl": "Pobrane"
+    "pl_pl": "Pobrane",
+    "de": "Downloads"
   },
   "FILE_EXPLORER_PICTURES_BUTTON": {
     "en": "Pictures",
@@ -269,7 +302,8 @@
     "fr": "Images",
     "nl": "Foto's",
     "zh_TW": "",
-    "pl_pl": "Obrazu"
+    "pl_pl": "Obrazu",
+    "de": "Bilder"
   },
   "FILE_EXPLORER_MUSIC_BUTTON": {
     "en": "Music",
@@ -277,7 +311,8 @@
     "fr": "Musique",
     "nl": "Muziek",
     "zh_TW": "",
-    "pl_pl": "Muzyka"
+    "pl_pl": "Muzyka",
+    "de": "Musik"
   },
   "FILE_EXPLORER_VIDEOS_BUTTON": {
     "en": "Videos",
@@ -285,7 +320,8 @@
     "fr": "Vidéos",
     "nl": "Videos",
     "zh_TW": "",
-    "pl_pl": "Wideo"
+    "pl_pl": "Wideo",
+    "de": "Videos"
   },
   "FILE_EXPLORER_SAVED_PATHS": {
     "en": "Saved paths",
@@ -293,7 +329,8 @@
     "fr": "Chemins enregistrés",
     "nl": "Bewaarde locaties",
     "zh_TW": "",
-    "pl_pl": "Zapisane ścieżki"
+    "pl_pl": "Zapisane ścieżki",
+    "de": "gespeicherte Pfade"
   },
   "FILE_EXPLORER_ADD_PATH": {
     "en": "Add path",
@@ -301,7 +338,8 @@
     "fr": "Ajouter un chemin",
     "nl": "Locatie toevoegen",
     "zh_TW": "",
-    "pl_pl": "Dodaj ścieżkę"
+    "pl_pl": "Dodaj ścieżkę",
+    "de": "Pfad hinzufügen"
   },
   "FILE_EXPLORER_RETURN_BUTTON": {
     "en": "Back",
@@ -309,7 +347,8 @@
     "fr": "Retour",
     "nl": "Terug",
     "zh_TW": "",
-    "pl_pl": "Powrót"
+    "pl_pl": "Powrót",
+    "de": "Zurück"
   },
   "FILE_EXPLORER_PROJECT_FOLDER_BUTTON": {
     "en": "Project folder",
@@ -317,7 +356,8 @@
     "fr": "Dossier du projet",
     "nl": "Project map",
     "zh_TW": "",
-    "pl_pl": "Folder projektu"
+    "pl_pl": "Folder projektu",
+    "de": "Projekt Ordner"
   },
   "FILE_EXPLORER_FOLDER_ERROR": {
     "en": "This Folder does not exist!",
@@ -325,7 +365,8 @@
     "fr": "Ce dossier n'existe pas !",
     "nl": "Deze map bestaat niet!",
     "zh_TW": "",
-    "pl_pl": "Ten folder nie istnieje!"
+    "pl_pl": "Ten folder nie istnieje!",
+    "de": "Dieser Ordner existiert nicht!"
   },
   "FILE_EXPLORER_CLOSE": {
     "en": "Close",
@@ -333,7 +374,8 @@
     "fr": "Fermer",
     "nl": "Sluit",
     "zh_TW": "",
-    "pl_pl": "Zamknij"
+    "pl_pl": "Zamknij",
+    "de": "Schließen"
   },
   "FILE_EXPLORER_SELECT": {
     "en": "Select",
@@ -341,7 +383,8 @@
     "fr": "Sélectioner",
     "nl": "Selecteer",
     "zh_TW": "",
-    "pl_pl": "Wybierz"
+    "pl_pl": "Wybierz",
+    "de": "Auswählen"
   },
   "SETTING_TEXT_LANGUAGE": {
     "en": "Language",
@@ -349,6 +392,7 @@
     "fr": "Langue",
     "nl": "Taal",
     "zh_TW": "語言",
-    "pl_pl": "Język"
+    "pl_pl": "Język",
+    "de": "Sprache"
   }
 }
