@@ -19,13 +19,13 @@ def main(json_file, csv_file):
 
 def generate_csv(json_file, csv_file):
   try:
-    with open(json_file, 'r') as file:
+    with open(json_file, 'r', encoding="utf8") as file:
       data = json.load(file)
 
     languages = list(data[next(iter(data))].keys())
     header = "KEY," + ",".join(languages) + "\n"
 
-    with open(csv_file, 'w') as file:
+    with open(csv_file, 'w', encoding="utf8") as file:
       file.write(header)
       for key, values in data.items():
         row = f"{key}," + ",".join(['"{}"'.format(values.get(lang, '')) for lang in languages]) + "\n"
@@ -37,9 +37,9 @@ def generate_csv(json_file, csv_file):
 def add_language(json_file):
   locale = input("Enter locale code: ")
   try:
-    with open(json_file, 'r') as file: data = json.load(file)
+    with open(json_file, 'r', encoding="utf8") as file: data = json.load(file)
     for k in data.keys(): data[k][locale] = ""
-    with open(json_file, 'w') as file: json.dump(data, file, indent=2, ensure_ascii=False)
+    with open(json_file, 'w', encoding="utf8") as file: json.dump(data, file, indent=2, ensure_ascii=False)
   except Exception as e:
     print(f"An error occurred: {e}")
 
