@@ -7,7 +7,8 @@ At this stage we have a couple of different languages available inside of the ed
 - French;
 - Dutch;
 - Chinese;
-- Polish
+- Polish;
+- German.
 
 ## All languages welcome!
 
@@ -45,3 +46,4 @@ We don't have any specific plans for adding more languages in the future. Langua
 - Dutch: Voylin
 - Chinese: Aappaapp
 - Polish: SzczurekYT
+- German: Kiisu-Master
