@@ -2,7 +2,7 @@
   "STARTUP_TITLE_NEW_PROJECT": {
     "en": "New project",
     "ja": "新しいプロジェクト",
-    "fr": "Un nouveau projet",
+    "fr": "Nouveau projet",
     "nl": "Nieuw project",
     "zh_TW": "新專案",
     "pl_pl": "Nowy projekt"
@@ -10,7 +10,7 @@
   "STARTUP_TITLE_RECENT_PROJECTS": {
     "en": "Recent projects",
     "ja": "最近のプロジェクト",
-    "fr": "",
+    "fr": "Projets récents",
     "nl": "Recente projecten",
     "zh_TW": "",
     "pl_pl": "Ostatnie projekty"
@@ -18,7 +18,7 @@
   "STARTUP_BUTTON_NEW_FHD_H_PROJECT": {
     "en": "New 1080p (landscape)",
     "ja": "新1080p　（横）",
-    "fr": "",
+    "fr": "Nouveau 1080p (paysage)",
     "nl": "Nieuw 1080p (landschap)",
     "zh_TW": "",
     "pl_pl": "Nowy 1080p (poziomy)"
@@ -26,7 +26,7 @@
   "STARTUP_BUTTON_NEW_FHD_V_PROJECT": {
     "en": "New 1080p (portrait)",
     "ja": "新1080p　（縦）",
-    "fr": "",
+    "fr": "Nouveau 1080p (portrait)",
     "nl": "Nieuw 1080p (portret)",
     "zh_TW": "",
     "pl_pl": "Nowy 1080p (pionowy)"
@@ -34,7 +34,7 @@
   "STARTUP_BUTTON_NEW_4K_H_PROJECT": {
     "en": "New 4K (landscape)",
     "ja": "新４K　（横）",
-    "fr": "",
+    "fr": "Nouveau 4K (paysage)",
     "nl": "Nieuw 4k (landschap)",
     "zh_TW": "",
     "pl_pl": "Nowy 4k (poziomy)"
@@ -42,7 +42,7 @@
   "STARTUP_BUTTON_NEW_4K_V_PROJECT": {
     "en": "New 4K (portrait)",
     "ja": "新４K　（縦）",
-    "fr": "",
+    "fr": "Nouveau 4K (portrait)",
     "nl": "Nieuw 4k (portret)",
     "zh_TW": "",
     "pl_pl": "Nowy 4k (pionowy)"
@@ -50,7 +50,7 @@
   "STARTUP_BUTTON_OPEN_PROJECT": {
     "en": "Open project",
     "ja": "プロジェクトをを開く",
-    "fr": "",
+    "fr": "Ouvrir un projet",
     "nl": "Open project",
     "zh_TW": "",
     "pl_pl": "Otwórz projekt"
@@ -58,7 +58,7 @@
   "STARTUP_BUTTON_SUPPORT_PROJECT": {
     "en": "Support this project",
     "ja": "このプロジェクトを支援する",
-    "fr": "",
+    "fr": "Supporter ce projet",
     "nl": "Steun dit project",
     "zh_TW": "",
     "pl_pl": "Wesprzyj ten projekt"
@@ -98,7 +98,7 @@
   "NEW_PROJECT_LOCATION": {
     "en": "Location:",
     "ja": "保存場所：",
-    "fr": "Localisation :",
+    "fr": "Emplacement :",
     "nl": "Locatie:",
     "zh_TW": "專案位置：",
     "pl_pl": "Lokalizacja:"
