@@ -7,8 +7,22 @@ extends StartupModule
 
 
 func _ready() -> void:
-	# TODO: Add recent projects
-	pass
+	# Check if opened with a "*.gozen" file as argument.
+	var args := OS.get_cmdline_user_args()
+	for arg in args:
+		if "*.gozen" in arg:
+			# TODO: Load project info and close startup
+			print("Not implemented yet!")
+	
+	
+	var recent_projects: Array = Globals.recent_projects
+	var example_button = %RecentProjectsVBox
+	for path in recent_projects:
+		var p_name := get_project_title(path)
+		if p_name == "": continue
+		var new_button := example_button.duplicate()
+		new_button.text = p_name
+		new_button.tooltip_text = path
 
 
 func _on_image_credit_meta_clicked(meta) -> void:

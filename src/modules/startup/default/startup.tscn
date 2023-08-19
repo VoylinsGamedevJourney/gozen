@@ -55,6 +55,7 @@ theme = ExtResource("1_jwv65")
 script = ExtResource("1_hmdvy")
 
 [node name="Background" type="ColorRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -238,6 +239,7 @@ text = "STARTUP_TITLE_RECENT_PROJECTS"
 label_settings = SubResource("LabelSettings_54q4e")
 
 [node name="RecentProjectsVBox" type="VBoxContainer" parent="StartupPanel/VBox/MarginContainer/HBox/RightVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4

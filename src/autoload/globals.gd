@@ -1,5 +1,6 @@
 extends Label
 
+
 # Editor signals
 signal _on_open_project_settings
 signal _on_open_settings

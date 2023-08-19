@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://modules/file_explorer/default/file_explorer.gd" id="1_26xw6"]
 
-[node name="file_explorer" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="file_explorer" type="Node"]
 script = ExtResource("1_26xw6")
+
+[node name="FileDialog" type="FileDialog" parent="."]
+initial_position = 1
+mode_overrides_title = false
+access = 2
+show_hidden_files = true

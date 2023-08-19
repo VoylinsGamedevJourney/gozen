@@ -1,8 +1,6 @@
 class_name StartupModule extends Node
 
 
-#
-#
 #func get_recent_projects_list() -> Array:
 #	if !FileAccess.file_exists(PATH_RECENT_PROJECTS): return []
 #	var file := FileAccess.open(PATH_RECENT_PROJECTS, FileAccess.READ)
@@ -11,8 +9,8 @@ class_name StartupModule extends Node
 #	for entry in data:
 #		if FileAccess.file_exists(entry): list.append(entry)
 #	return list
-#
-#
+
+
 #func push_entry_to_front(entry: String, list: Array, new: bool = false) -> Array:
 #	if !new: list.remove_at(list.find(entry))
 #	var new_list := [entry]
