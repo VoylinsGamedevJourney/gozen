@@ -22,7 +22,13 @@ signal _on_zen_switch
 
 
 # Editor constants
-const VERSION := "0.0.1-Alpha"
+signal _on_version_string_change(new_string)
+signal _on_version_update_available
+var version_string := "0.0.0":
+	set(x): 
+		version_string = x
+		_on_version_string_change.emit(version_string)
+
 
 # Recent project variables/functions
 const PATH_RECENT_PROJECTS := "user://recent_projects"
