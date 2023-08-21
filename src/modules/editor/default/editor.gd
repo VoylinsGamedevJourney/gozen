@@ -5,7 +5,7 @@ var layout : LAYOUT = LAYOUT.UNCONFIGURED
 
 
 func _ready() -> void:
-	ProjectManager._on_resolution_change.connect(_on_project_resolution_change)
+	ProjectManager._on_resolution_changed.connect(_on_project_resolution_change)
 
 
 func _on_project_resolution_change(new_resolution: Vector2i) -> void:

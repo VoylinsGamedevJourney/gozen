@@ -14,10 +14,8 @@ func _ready() -> void:
 			# TODO: Load project info and close startup
 			print("Not implemented yet!")
 	
-	
-	var recent_projects: Array = Globals.recent_projects
 	var example_button = %RecentProjectsVBox
-	for path in recent_projects:
+	for path in ProjectManager.get_recent_projects():
 		var p_name := get_project_title(path)
 		if p_name == "": continue
 		var new_button := example_button.duplicate()
