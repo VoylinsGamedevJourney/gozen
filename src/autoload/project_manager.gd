@@ -1,30 +1,17 @@
 extends Node
 
-@export var edit_mode: bool = false
+# Project signals
+signal _on_saved
+signal _on_unsaved_changes
 
-var title := "Untitled project": 
-	set(new_title): 
-		# TODO: Remove invalid chars
-		# TODO: Change file path + file name
-		title = new_title 
-		Globals._on_project_title_change.emit()
-var path: String = "" # user://project_folder
+signal _on_title_change(new_title)
+signal _on_resolution_change(new_resolution)
 
-var resolution := Vector2i(1920, 1080):
-	set(x):
-		resolution = x
-		Globals._on_project_resolution_change.emit()
+var project: Project
 
-
-func _ready() -> void:
-	Globals._on_exit_startup.connect(func():edit_mode = true)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("save_project"): save_project()
-
-
-func get_full_path() -> String:
-	return "%s/%s.gozen" % [path, title]
 
 
 ## A quick check to see if a project file is actually valid
@@ -45,8 +32,8 @@ func load_project(project_path: String) -> void:
 
 
 func save_project() -> void:
-	if !edit_mode: return
-	if path == "": # New project
+	if project == null: return
+	if project.path == "": # New project
 		# Open file explorer
 		var file_explorer := ModuleManager.get_module("file_explorer")
 		add_child(file_explorer)
@@ -61,6 +48,40 @@ func save_project() -> void:
 
 
 func _on_new_project_path_selected(new_path: String) -> void:
-	title = new_path.split("/")[-1].replace(".gozen",'')
-	path = new_path.replace("%s.gozen" % title, '')
+	project.title = new_path.split("/")[-1].replace(".gozen",'')
+	project.path = new_path.replace("%s.gozen" % project.title, '')
 	save_project()
+
+##############################################################
+# Getters and setters  #######################################
+##############################################################
+
+# TITLE  #####################################################
+func get_title() -> String: 
+	return project.title
+
+func set_title(new_title: String) -> void:
+	# TODO: Remove invalid chars
+	project.title = new_title
+	ProjectManager._on_title_change.emit(new_title)
+
+
+# PATH  ######################################################
+func get_project_path() -> String:
+	return project.path
+
+func get_full_project_path() -> String:
+	return "%s/%s.gozen" % [project.path, project.title]
+
+func set_project_path(new_path: String) -> void:
+	# Todo: Make certain new_path is not full path
+	project.path = new_path
+
+
+# RESOLUTION  ################################################
+func get_resolution() -> Vector2i:
+	return project.resolution
+
+func set_resolution(new_resolution: Vector2i) -> void:
+	project.resolution = new_resolution
+	_on_resolution_change.emit(new_resolution)

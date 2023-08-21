@@ -46,7 +46,8 @@ func _on_new_project_button_pressed(quality: int, horizontal: bool) -> void:
 	if quality == 0:   resolution = Vector2i(1920, 1080) # 1080p
 	elif quality == 1: resolution = Vector2i(3840, 2160) # 4K
 	if horizontal: resolution = Vector2i(resolution.y, resolution.x)
-	ProjectManager.resolution = resolution
+	ProjectManager.project = Project.new()
+	ProjectManager.set_resolution(resolution)
 	close_startup()
 
 

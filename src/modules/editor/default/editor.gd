@@ -5,12 +5,12 @@ var layout : LAYOUT = LAYOUT.UNCONFIGURED
 
 
 func _ready() -> void:
-	Globals._on_project_resolution_change.connect(_on_project_resolution_change)
+	ProjectManager._on_resolution_change.connect(_on_project_resolution_change)
 
 
-func _on_project_resolution_change() -> void:
+func _on_project_resolution_change(new_resolution: Vector2i) -> void:
 	var change: bool = false
-	if ProjectManager.resolution.x < ProjectManager.resolution.y:
+	if new_resolution.x < new_resolution.y:
 		if layout != LAYOUT.LANDSCAPE: change = true
 		layout = LAYOUT.LANDSCAPE
 	else:

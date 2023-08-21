@@ -9,9 +9,9 @@ var move_start: Vector2i
 
 
 func _ready() -> void:
-	Globals._on_project_title_change.connect(on_project_title_change)
-	Globals._on_project_saved.connect(on_project_saved)
-	Globals._on_project_unsaved_changes.connect(on_project_unsaved_changes)
+	ProjectManager._on_title_change.connect(on_project_title_change)
+	ProjectManager._on_saved.connect(on_project_saved)
+	ProjectManager._on_unsaved_changes.connect(on_project_unsaved_changes)
 	check_zen()
 	Globals._on_zen_switch.connect(check_zen)
 

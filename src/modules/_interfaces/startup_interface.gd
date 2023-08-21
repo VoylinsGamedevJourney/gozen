@@ -9,5 +9,4 @@ func get_project_title(project_path: String) -> String:
 
 
 func close_startup() -> void:
-	Globals._on_exit_startup.emit()
 	self.queue_free()

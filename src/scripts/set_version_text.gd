@@ -1,8 +1,8 @@
 extends Label
 
 func _ready() -> void: 
-	set_version_string(Globals.version_string)
-	Globals._on_version_string_change.connect(set_version_string)
+	set_version_string(VersionCheck.version_string)
+	VersionCheck._on_change.connect(set_version_string)
 
 
 func set_version_string(version_string) -> void:
