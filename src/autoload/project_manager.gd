@@ -67,6 +67,8 @@ func _on_new_project_path_selected(new_path: String) -> void:
 ##############################################################
 
 func get_recent_projects() -> Array:
+	if !FileAccess.file_exists(PATH_RECENT_PROJECTS):
+		FileManager.save_data([], PATH_RECENT_PROJECTS)
 	return str_to_var(FileManager.load_data(PATH_RECENT_PROJECTS))
 
 

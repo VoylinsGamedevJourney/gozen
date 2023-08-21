@@ -53,8 +53,6 @@ var settings: Settings = Settings.new()
 var startup := true
 
 
-
-# Load settings only at startup
 func _ready() -> void:
 	load_settings()
 
