@@ -1,13 +1,16 @@
 extends Node
 
-# Project signals
+signal _on_project_loaded
 signal _on_saved
 signal _on_unsaved_changes
 
 signal _on_title_change(new_title)
 signal _on_resolution_change(new_resolution)
 
-var project: Project
+var project: Project:
+	set(x):
+		project = x
+		_on_project_loaded.emit()
 
 
 func _input(event: InputEvent) -> void:
@@ -85,3 +88,15 @@ func get_resolution() -> Vector2i:
 func set_resolution(new_resolution: Vector2i) -> void:
 	project.resolution = new_resolution
 	_on_resolution_change.emit(new_resolution)
+
+
+# FILES  #####################################################
+func get_files() -> Dictionary:
+	return project.files
+
+func get_file(id: int) -> File:
+	return project.files[id]
+
+func add_file(new_file: File) -> void:
+	project.files[project.files_id] = new_file
+	project.files_id += 1

@@ -1,8 +1,7 @@
-class_name FileImage
+class_name FileImage extends File
 
 var image_name: String
 var image_path: String
-var duration: int # Duration in frames
 
 
 # TODO: Check on opening project if file still exists (_init?)
@@ -10,6 +9,7 @@ var duration: int # Duration in frames
 
 static func create(full_path: String, duration: int) -> FileImage:
 	var file_image := FileImage.new()
+	file_image.type = TYPE.IMAGE
 	file_image.image_name = full_path.split('/')[-1]
 	file_image.image_path = full_path.trim_suffix(file_image.image_name)
 	file_image.duration = duration
