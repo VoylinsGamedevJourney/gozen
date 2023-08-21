@@ -31,6 +31,8 @@ func save_data(data, path: String) -> void:
 ## Returns the variable as a string, this can be made into the 
 ## correct variable again by using str_to_var().
 func load_data(path: String, compress: bool = false) -> String:
+	if !FileAccess.file_exists(path):
+		return ""
 	var file := FileAccess.open(path, FileAccess.READ)
 	var error := FileAccess.get_open_error()
 	if error:
