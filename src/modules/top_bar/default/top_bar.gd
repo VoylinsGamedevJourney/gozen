@@ -61,7 +61,7 @@ func _on_switch_mode_button_pressed() -> void:
 			get_window().set_mode(Window.MODE_FULLSCREEN)
 		Window.MODE_FULLSCREEN : 
 			get_window().set_mode(Window.MODE_WINDOWED)
-	Globals._on_window_mode_switch.emit()
+	WindowManager._on_window_mode_switch.emit()
 
 
 func _on_exit_button_pressed() -> void:
