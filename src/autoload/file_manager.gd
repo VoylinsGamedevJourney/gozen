@@ -1,38 +1,46 @@
 extends Node
+## File Manager
+##
+## Saving projects, settings, and module info is done here.
+## Every var gets converted into a string of text and gets
+## saved to the file. The load function returns that info
 
-var error: int
+
+const OPEN_ERROR := "Could not open file '%s' for %s!\n\tError: %s"
+const PROCESS_ERROR := "Could not %s data to '%s'!\n\tError: %s"
 
 
-func save_dic(dic: Dictionary, file_path: String, compress: bool = false) -> void:
-	var file : FileAccess
-	if compress:
-		file = FileAccess.open_compressed(file_path, FileAccess.WRITE)
-	else:
-		file = FileAccess.open(file_path, FileAccess.WRITE)
-	error = FileAccess.get_open_error()
+## Save data
+##
+## Turns a variable (class or native type) into a string and saves
+## it to a file as text. 
+func save_data(data, path: String) -> void:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	var error := FileAccess.get_open_error()
 	if error:
-		printerr("Could not open file '%s' for saving!\n\tError: %s" % [file_path, error])
+		printerr(OPEN_ERROR % [path, "saving", error])
 		return
-	file.store_var(dic)
+	file.store_string(var_to_str(data))
 	error = file.get_error()
 	if error:
-		printerr("Could not save data to '%s'!\n\tError: %s" % [file_path, error])
-	file.close()
+		printerr(PROCESS_ERROR % ["save", path, error])
 
 
-func load_dic(file_path: String, compress: bool = false) -> Dictionary:
-	var file : FileAccess
-	if compress:
-		file = FileAccess.open_compressed(file_path, FileAccess.READ)
-	else:
-		file = FileAccess.open(file_path, FileAccess.READ)
-	error = FileAccess.get_open_error()
+## Load data
+##
+## Returns the variable as a string, this can be made into the 
+## correct variable again by using str_to_var().
+func load_data(path: String) -> String:
+	if !FileAccess.file_exists(path):
+		return ""
+	var file := FileAccess.open(path, FileAccess.READ)
+	var error := FileAccess.get_open_error()
 	if error:
-		printerr("Could not open file '%s' for loading dic!\n\tError: %s" % [file_path, error])
-		return {}
-	var dic: Dictionary = file.get_var()
+		printerr(OPEN_ERROR % [path, "loading", error])
+		return ""
+	var string := file.get_as_text()
 	error = file.get_error()
 	if error:
-		printerr("Could not load dic to '%s'!\n\tError: %s" % [file_path, error])
-	file.close()
-	return dic
+		printerr(PROCESS_ERROR % ["load", path, error])
+		return ""
+	return string

@@ -22,7 +22,8 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Globals="*res://autoload/globals.gd"
+WindowManager="*res://autoload/window_manager.gd"
+VersionCheck="*res://autoload/version_check.gd"
 SettingsManager="*res://autoload/settings_manager.gd"
 FileManager="*res://autoload/file_manager.gd"
 ModuleManager="*res://autoload/module_manager.gd"

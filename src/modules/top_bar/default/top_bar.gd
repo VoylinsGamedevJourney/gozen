@@ -9,11 +9,11 @@ var move_start: Vector2i
 
 
 func _ready() -> void:
-	Globals._on_project_title_change.connect(on_project_title_change)
-	Globals._on_project_saved.connect(on_project_saved)
-	Globals._on_project_unsaved_changes.connect(on_project_unsaved_changes)
-	check_zen()
-	Globals._on_zen_switch.connect(check_zen)
+	ProjectManager._on_title_changed.connect(on_project_title_change)
+	ProjectManager._on_saved.connect(on_project_saved)
+	ProjectManager._on_unsaved_changes.connect(on_project_unsaved_changes)
+	check_zen(SettingsManager.get_zen_mode())
+	SettingsManager._on_zen_switched.connect(check_zen)
 
 
 # This is the functionality to move the window as we extent_to_title
@@ -43,16 +43,16 @@ func on_project_unsaved_changes() -> void:
 
 
 func _on_project_button_pressed() -> void:
-	Globals._on_open_project_settings.emit()
+	ProjectManager._on_open_project_settings.emit()
 
 
 func _on_settings_button_pressed() -> void:
-	Globals._on_open_settings.emit()
+	SettingsManager._on_open_settings.emit()
 
 
 func _on_minimize_button_pressed() -> void:
 	get_window().set_mode(Window.MODE_MINIMIZED)
-	Globals._on_window_mode_switch.emit()
+	WindowManager._on_window_mode_switched.emit()
 
 
 func _on_switch_mode_button_pressed() -> void:
@@ -61,7 +61,8 @@ func _on_switch_mode_button_pressed() -> void:
 			get_window().set_mode(Window.MODE_FULLSCREEN)
 		Window.MODE_FULLSCREEN : 
 			get_window().set_mode(Window.MODE_WINDOWED)
-	Globals._on_window_mode_switch.emit()
+	WindowManager._on_window_mode_switch.emit()
+
 
 
 func _on_exit_button_pressed() -> void:
@@ -70,7 +71,7 @@ func _on_exit_button_pressed() -> void:
 	get_tree().quit()
 
 
-func check_zen() -> void:
-	find_child("MinimizeButton").visible = !SettingsManager.zen_mode
-	find_child("SwitchModeButton").visible = !SettingsManager.zen_mode
-	find_child("ExitButton").visible = !SettingsManager.zen_mode
+func check_zen(value: bool) -> void:
+	find_child("MinimizeButton").visible = !value
+	find_child("SwitchModeButton").visible = !value
+	find_child("ExitButton").visible = !value

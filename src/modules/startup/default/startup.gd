@@ -14,10 +14,8 @@ func _ready() -> void:
 			# TODO: Load project info and close startup
 			print("Not implemented yet!")
 	
-	
-	var recent_projects: Array = Globals.recent_projects
 	var example_button = %RecentProjectsVBox
-	for path in recent_projects:
+	for path in ProjectManager.get_recent_projects():
 		var p_name := get_project_title(path)
 		if p_name == "": continue
 		var new_button := example_button.duplicate()
@@ -46,7 +44,8 @@ func _on_new_project_button_pressed(quality: int, horizontal: bool) -> void:
 	if quality == 0:   resolution = Vector2i(1920, 1080) # 1080p
 	elif quality == 1: resolution = Vector2i(3840, 2160) # 4K
 	if horizontal: resolution = Vector2i(resolution.y, resolution.x)
-	ProjectManager.resolution = resolution
+	ProjectManager.project = Project.new()
+	ProjectManager.set_resolution(resolution)
 	close_startup()
 
 
