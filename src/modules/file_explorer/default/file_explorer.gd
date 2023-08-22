@@ -1,7 +1,11 @@
 extends FileExplorerModule
+## The Default Files Explorer Module
+##
+## Still WIP
 
 
-func _ready() -> void: _on_open.connect(open)
+func _ready() -> void:
+	_on_open.connect(open)
 
 
 func open(title: String) -> void:

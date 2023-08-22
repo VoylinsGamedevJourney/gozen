@@ -1,4 +1,8 @@
 extends Node
+## Project Manager
+##
+## Here all signals and functions are located which have to
+## do with the the project data.
 
 signal _on_open_project_settings
 
@@ -8,52 +12,52 @@ signal _on_saved
 
 signal _on_title_changed(new_title)
 signal _on_resolution_changed(new_resolution)
+signal _on_file_added(new_file)
 
 
 const PATH_RECENT_PROJECTS := "user://recent_projects"
 
 
+## The "project" var is a Project class variable
+##
+## The Project class basically has all the variables inside
+## of it, all functions to handle those vars are here in the
+## autoload for handling project related stuff.
 var project: Project:
 	set(x):
 		project = x
 		_on_project_loaded.emit()
 
 
+## Check for keyboard shortcuts
+##
+## At this moment only used for the save shortcut.
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("save_project"): save_project()
+	if event.is_action_pressed("save_project"):
+		save_project()
 
-
-## A quick check to see if a project file is actually valid
-func check_project_file(project_path: String) -> bool:
-	if !FileAccess.file_exists(project_path): return false
-	var project_file := FileAccess.open_compressed(project_path, FileAccess.READ)
-	if FileAccess.get_open_error() != OK: return false
-	var file_data = project_file.get_var()
-	if not file_data is Dictionary: return false
-	if !(file_data as Dictionary).has("title"): return false
-	if !(file_data as Dictionary).has("path"): return false
-	return true
 
 
 func load_project(project_path: String) -> void:
 	var data: String = FileManager.load_data(get_full_project_path())
-	if data == "":
-		print("Project not at path: '%s'" % project_path)
-		erase_recent_project(project_path)
-		return
-	project = str_to_var(data)
+	if data != "": # TODO: Improve this check (sometimes data is invalid but not "")
+		project = str_to_var(data)
+	print("Project not at path: '%s'" % project_path)
+	erase_recent_project(project_path)
+	return
 
 
 func save_project() -> void:
-	if project == null: return
-	if project.path == "": # New project
-		# Open file explorer
-		var file_explorer := ModuleManager.get_module("file_explorer")
-		add_child(file_explorer)
-		file_explorer.open_explorer(FileExplorerModule.MODE.OPEN_FILE, ["*.gozen"])
-		file_explorer.collect_data.connect(_on_new_project_path_selected)
-		return
-	FileManager.save_data(project, get_full_project_path())
+	if project == null:
+		return # No project here so nothing to save
+	if project.path != "": # Existing project
+		FileManager.save_data(project, get_full_project_path())
+	# New project
+	var file_explorer := ModuleManager.get_module("file_explorer")
+	add_child(file_explorer)
+	file_explorer.open_explorer(FileExplorerModule.MODE.OPEN_FILE, ["*.gozen"])
+	file_explorer.collect_data.connect(_on_new_project_path_selected)
+	return
 
 
 func _on_new_project_path_selected(new_path: String) -> void:
@@ -141,3 +145,4 @@ func get_file(id: int) -> File:
 func add_file(new_file: File) -> void:
 	project.files[project.files_id] = new_file
 	project.files_id += 1
+	_on_file_added.emit(new_file)

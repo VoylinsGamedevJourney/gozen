@@ -1,4 +1,9 @@
 extends Node
+## Replacer node
+## 
+## Change this name by the module you want.
+##
+## !! This is still pretty much a work in progress atm !!
 
 
 ## Make the node name the same as the module which you want to load

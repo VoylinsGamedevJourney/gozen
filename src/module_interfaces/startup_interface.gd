@@ -1,4 +1,7 @@
 class_name StartupModule extends Node
+## The Startup Module Interface
+##
+## Still WIP
 
 
 func get_project_title(project_path: String) -> String:

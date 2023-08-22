@@ -1,9 +1,12 @@
 extends StartupModule
-
-# TODO: Include website URL, placeholder  = WebsiteLabel
-# TODO: Add icons
-# TODO: Change button style, stylebox empty but color on hover + click
-# TODO: Changelog button, for this we need a changelog.md file as well
+## The Default Effects View Module
+##
+## Still WIP
+##
+## TODO: Include website URL, placeholder = WebsiteLabel
+## TODO: Add icons
+## TODO: Change button style, stylebox empty but color on hover + click
+## TODO: Changelog button, for this we need a changelog.md file as well
 
 
 func _ready() -> void:
@@ -16,8 +19,9 @@ func _ready() -> void:
 	
 	var example_button = %RecentProjectsVBox
 	for path in ProjectManager.get_recent_projects():
-		var p_name := get_project_title(path)
-		if p_name == "": continue
+		var p_name: String = str_to_var(FileManager.load_data(path)).title
+		if p_name == "":
+			continue
 		var new_button := example_button.duplicate()
 		new_button.text = p_name
 		new_button.tooltip_text = path
@@ -46,7 +50,7 @@ func _on_new_project_button_pressed(quality: int, horizontal: bool) -> void:
 	if horizontal: resolution = Vector2i(resolution.y, resolution.x)
 	ProjectManager.project = Project.new()
 	ProjectManager.set_resolution(resolution)
-	close_startup()
+	queue_free()
 
 
 func _on_recent_project_button_pressed(project_path: String) -> void:
@@ -54,4 +58,4 @@ func _on_recent_project_button_pressed(project_path: String) -> void:
 	ProjectManager.load_project(project_path)
 	# TODO: Add project to top of recent projects
 	# TODO: Save recent projects
-	close_startup()
+	queue_free()

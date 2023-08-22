@@ -4,9 +4,6 @@ var image_name: String
 var image_path: String
 
 
-# TODO: Check on opening project if file still exists (_init?)
-
-
 static func create(full_path: String, duration: int) -> FileImage:
 	var file_image := FileImage.new()
 	file_image.type = TYPE.IMAGE

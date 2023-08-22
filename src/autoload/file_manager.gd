@@ -14,16 +14,18 @@ const PROCESS_ERROR := "Could not %s data to '%s'!\n\tError: %s"
 ##
 ## Turns a variable (class or native type) into a string and saves
 ## it to a file as text. 
-func save_data(data, path: String) -> void:
+func save_data(data, path: String) -> bool:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	var error := FileAccess.get_open_error()
 	if error:
 		printerr(OPEN_ERROR % [path, "saving", error])
-		return
+		return false
 	file.store_string(var_to_str(data))
 	error = file.get_error()
 	if error:
 		printerr(PROCESS_ERROR % ["save", path, error])
+		return false
+	return true
 
 
 ## Load data

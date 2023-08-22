@@ -1,4 +1,7 @@
 class_name FileExplorerModule extends Node
+## The File Explorer Interface
+##
+## Still WIP
 
 signal collect_data(data)
 

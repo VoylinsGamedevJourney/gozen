@@ -1,4 +1,8 @@
 extends CommandBarModule
+## The Default Command Bar
+##
+## Still very much a WIP
+
 
 signal _on_create_new_project
 
@@ -12,7 +16,8 @@ var active := false
 @onready var info_vbox := find_child("InfoVBox")
 
 var commands_startup := [
-	["Create new project", _on_create_new_project]]
+	["Create new project", _on_create_new_project]
+]
 var commands_editing := []
 
 
@@ -23,14 +28,17 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !active: return
 	match state:
-		STARTUP: update_info_panel(commands_startup)
-		EDITING: update_info_panel(commands_editing)
+		STARTUP: 
+			update_info_panel(commands_startup)
+		EDITING: 
+			update_info_panel(commands_editing)
 
 
 func update_info_panel(list: Array) -> void:
 	pass
 
 
+## Getting command bar shortcut presses
 func _input(event: InputEvent) -> void:
 	if !active and event.is_action_pressed("open_command_bar"):
 		show_command_bar()

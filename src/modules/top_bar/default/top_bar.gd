@@ -1,8 +1,11 @@
 extends TopBarModule
-
-# TODO: Have an option to switch the order of these buttons from right to left
-# TODO: Make this top_bar invisible in zen mode
-# TODO: Make icon open a menu to see about, donation page, changelog, ...
+## The Default Top Bar Module
+##
+## Still WIP
+##
+## TODO: Have an option to switch the order of these buttons from right to left
+## TODO: Make this top_bar invisible in zen mode
+## TODO: Make icon open a menu to see about, donation page, changelog, ...
 
 var move_window: bool = false
 var move_start: Vector2i
@@ -19,7 +22,8 @@ func _ready() -> void:
 # This is the functionality to move the window as we extent_to_title
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == 1:
-		if !move_window: move_start = get_viewport().get_mouse_position()
+		if !move_window:
+			move_start = get_viewport().get_mouse_position()
 		move_window = event.is_pressed()
 
 func _process(_delta: float) -> void:
