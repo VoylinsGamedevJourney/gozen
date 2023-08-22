@@ -64,6 +64,7 @@ func _on_switch_mode_button_pressed() -> void:
 	WindowManager._on_window_mode_switch.emit()
 
 
+
 func _on_exit_button_pressed() -> void:
 	# TODO: Check if unsaved changes and first display a message
 	#       asking if they want to save or not
