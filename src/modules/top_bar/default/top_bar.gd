@@ -58,10 +58,9 @@ func _on_minimize_button_pressed() -> void:
 func _on_switch_mode_button_pressed() -> void:
 	match get_window().mode:
 		Window.MODE_WINDOWED:  
-			get_window().set_mode(Window.MODE_MAXIMIZED)
-			var screen_size := DisplayServer.screen_get_size()
-			get_window().size = screen_size - Vector2i(600,600)
-		Window.MODE_MAXIMIZED: get_window().set_mode(Window.MODE_WINDOWED)
+			get_window().set_mode(Window.MODE_FULLSCREEN)
+		Window.MODE_FULLSCREEN : 
+			get_window().set_mode(Window.MODE_WINDOWED)
 	Globals._on_window_mode_switch.emit()
 
 
