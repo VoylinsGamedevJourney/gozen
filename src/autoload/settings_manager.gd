@@ -15,6 +15,7 @@ signal _on_version_outdated
 const PATH := "user://settings"
 
 
+var startup: bool = true
 var settings: Settings = Settings.new()
 
 var update_available: bool = false
@@ -28,20 +29,24 @@ func load_settings() -> void:
 	var data: String = FileManager.load_data(PATH)
 	if data == "":
 		save_settings()
+		startup = false
 		return
 	settings = str_to_var(data)
 	for setting in settings.get_property_list():
 		if setting.usage == 4096:
 			call("set_%s" % setting.name, settings.get(setting.name))
+	startup = false
 
 
 func save_settings() -> void:
-	FileManager.save_data(settings, PATH)
+	if !startup:
+		print("saving")
+		FileManager.save_data(settings, PATH)
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("switch_zen_mode"):
-		set_zen_mode(!get_zen_mode())
+		switch_zen_mode()
 
 
 ##############################################################
@@ -57,6 +62,10 @@ func set_zen_mode(value: bool) -> void:
 	settings.zen_mode = value
 	_on_zen_switched.emit(value)
 	save_settings()
+
+
+func switch_zen_mode() -> void:
+	set_zen_mode(!get_zen_mode())
 
 
 # LANGUAGE  ##################################################
@@ -115,3 +124,4 @@ func check_version() -> void:
 func set_editor_version(version: String) -> void:
 	settings.editor_version = version
 	check_version()
+	save_settings()

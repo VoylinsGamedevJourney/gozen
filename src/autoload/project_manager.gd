@@ -117,6 +117,7 @@ func get_full_project_path() -> String:
 
 
 func set_project_path(new_path: String) -> void:
+	# If new_path is "", it means the project will try to save under a new path
 	# Todo: Make certain new_path is not full path
 	project.path = new_path
 
