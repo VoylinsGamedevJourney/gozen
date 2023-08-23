@@ -18,7 +18,7 @@ split_offset = 100
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="files_view" parent="VSplit/HSplit" instance=ExtResource("1_jqydq")]
+[node name="media_pool" parent="VSplit/HSplit" instance=ExtResource("1_jqydq")]
 
 [node name="effects_view" parent="VSplit/HSplit" instance=ExtResource("1_jqydq")]
 

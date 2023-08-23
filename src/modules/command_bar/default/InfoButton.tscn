@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpit7jgjryt7u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7t0gs"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7ohm2"]
+font_color = Color(0.584314, 0.584314, 0.584314, 1)
+
+[node name="InfoButton" type="Button"]
+custom_minimum_size = Vector2(0, 70)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7t0gs")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 7
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="CommandLabel" type="RichTextLabel" parent="MarginContainer/VBox"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Command"
+fit_content = true
+
+[node name="InfoLabel" type="Label" parent="MarginContainer/VBox"]
+layout_mode = 2
+text = "Info"
+label_settings = SubResource("LabelSettings_7ohm2")

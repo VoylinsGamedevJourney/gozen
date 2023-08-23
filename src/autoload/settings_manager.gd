@@ -9,43 +9,6 @@ signal _on_open_settings
 signal _on_zen_switched(value)
 
 
-enum LANGUAGE {
-	ENGLISH, 
-	JAPANESE, 
-	FRENCH, 
-	DUTCH, 
-	CHINESE_TAIWAN, 
-	POLISH,
-}
-
-
-const LANGUAGE_INFO := {
-	LANGUAGE.ENGLISH: {
-		locale = "en",
-		language = "English",
-	},
-	LANGUAGE.JAPANESE: {
-		locale = "ja",
-		language = "日本語",
-	},
-	LANGUAGE.FRENCH: {
-		locale = "fr",
-		language = "Français"
-	},
-	LANGUAGE.DUTCH: {
-		locale = "nl",
-		language = "Nederlands"
-	},
-	LANGUAGE.CHINESE_TAIWAN: {
-		locale = "zh_TW",
-		language = "中文"
-	},
-	LANGUAGE.POLISH: {
-		locale = "pl_pl",
-		language = "Polski"
-	},
-}
-
 const PATH := "user://settings"
 
 
@@ -96,7 +59,7 @@ func set_zen_mode(value: bool) -> void:
 
 # LANGUAGE  ##################################################
 
-func set_language(language: LANGUAGE) -> void:
-	TranslationServer.set_locale(LANGUAGE_INFO[language].locale)
-	settings.language = language
+func set_language(language_code: String) -> void:
+	TranslationServer.set_locale(language_code)
+	settings.language = language_code
 	save_settings()

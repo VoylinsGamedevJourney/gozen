@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/startup_icons/note_add.png" id="5_c47mr"]
 [ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/startup_icons/folder_open.png" id="5_i14en"]
 [ext_resource type="Texture2D" uid="uid://dmirvnpk5saql" path="res://assets/watermark.png" id="6_fgjut"]
+[ext_resource type="LabelSettings" uid="uid://beexdwdlieaad" path="res://modules/startup/default/title_label.tres" id="7_jouqv"]
 [ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/startup_icons/favorite.png" id="7_nkeee"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_35utr"]
@@ -38,10 +39,6 @@ shadow_offset = Vector2(2, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tevpi"]
 content_margin_left = 5.0
 
-[sub_resource type="LabelSettings" id="LabelSettings_54q4e"]
-font_size = 12
-font_color = Color(0.494118, 0.494118, 0.494118, 1)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3josr"]
 
 [node name="Startup" type="Control"]
@@ -49,6 +46,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 2.0
+offset_right = 15.0
+offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_jwv65")
@@ -187,7 +188,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_tevpi")
 text = "STARTUP_TITLE_NEW_PROJECT"
-label_settings = SubResource("LabelSettings_54q4e")
+label_settings = ExtResource("7_jouqv")
 
 [node name="VBox" type="VBoxContainer" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
@@ -217,6 +218,15 @@ text = "STARTUP_BUTTON_NEW_4K_V_PROJECT"
 icon = ExtResource("5_c47mr")
 alignment = 0
 
+[node name="HSeparator" type="HSeparator" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+
+[node name="NewCustomButton" type="Button" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+text = "STARTUP_BUTTON_NEW_CUSTOM_PROJECT"
+icon = ExtResource("5_c47mr")
+alignment = 0
+
 [node name="Spacer" type="HSeparator" parent="StartupPanel/VBox/MarginContainer/HBox/LeftVBox"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -234,9 +244,10 @@ size_flags_horizontal = 3
 
 [node name="RecentTitleLabel" type="Label" parent="StartupPanel/VBox/MarginContainer/HBox/RightVBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxEmpty_tevpi")
 text = "STARTUP_TITLE_RECENT_PROJECTS"
-label_settings = SubResource("LabelSettings_54q4e")
+label_settings = ExtResource("7_jouqv")
 
 [node name="RecentProjectsVBox" type="VBoxContainer" parent="StartupPanel/VBox/MarginContainer/HBox/RightVBox"]
 unique_name_in_owner = true
@@ -268,5 +279,6 @@ alignment = 0
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDVButton" to="." method="_on_new_project_button_pressed" binds= [0, false]]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KHButton" to="." method="_on_new_project_button_pressed" binds= [1, true]]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KVButton" to="." method="_on_new_project_button_pressed" binds= [1, false]]
+[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewCustomButton" to="." method="_on_new_project_button_pressed" binds= [0, true]]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/RightVBox/DonateButton" to="." method="_on_donate_button_pressed"]

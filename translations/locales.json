@@ -52,7 +52,16 @@
     "zh_TW": "",
     "pl_pl": "Nowy 4k (pionowy)",
     "de": "Neues 4k (Porträt)"
-  },
+  }, 
+  "STARTUP_BUTTON_NEW_CUSTOM_PROJECT": {
+    "en": "New custom",
+    "ja": "新カスタム",
+    "fr": "",
+    "nl": "",
+    "zh_TW": "",
+    "pl_pl": "",
+    "de": ""
+  }, 
   "STARTUP_BUTTON_OPEN_PROJECT": {
     "en": "Open project",
     "ja": "プロジェクトをを開く",

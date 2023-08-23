@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://qqdwb7vj6pre"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://qqdwb7vj6pre"]
 
 [ext_resource type="FontFile" uid="uid://cwvjhtfqmlpfs" path="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_nn53x"]
 
@@ -39,6 +39,10 @@ expand_margin_top = 2.0
 expand_margin_right = 4.0
 expand_margin_bottom = 2.0
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_yiucl"]
+color = Color(0.494118, 0.494118, 0.494118, 0.207843)
+grow_begin = -2.0
+
 [resource]
 default_font = ExtResource("1_nn53x")
 default_font_size = 12
@@ -49,4 +53,6 @@ Button/styles/focus = SubResource("StyleBoxEmpty_7qigc")
 Button/styles/hover = SubResource("StyleBoxFlat_ryy6a")
 Button/styles/normal = SubResource("StyleBoxFlat_0sjim")
 Button/styles/pressed = SubResource("StyleBoxFlat_haqyg")
+HSeparator/constants/separation = 5
+HSeparator/styles/separator = SubResource("StyleBoxLine_yiucl")
 VBoxContainer/constants/separation = 1

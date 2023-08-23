@@ -21,7 +21,7 @@ var modules := {
 		"selected": "default",
 		"available": ["default"]
 	},
-	files_view = {
+	media_pool = {
 		"selected": "default",
 		"available": ["default"]
 	},
@@ -79,6 +79,8 @@ func _save() -> void:
 func _load() -> void:
 	var data: Dictionary = str_to_var(FileManager.load_data(PATH_SAVE))
 	for module in data:
+		if !modules.has(module):
+			return
 		var available := (modules[module].available as Array).has(data[module])
 		modules[module].selected = data[module] if available else "default"
 

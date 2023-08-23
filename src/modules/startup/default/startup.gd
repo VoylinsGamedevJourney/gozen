@@ -43,14 +43,22 @@ func _on_open_project_button_pressed() -> void:
 	pass # Replace with function body.
 
 
+## New project button
+##
+## Quality:
+## - 0 = 1080p
+## - 1 = 4K
+## - 2 = 1080p size, but opens project settings (custom project)
 func _on_new_project_button_pressed(quality: int, horizontal: bool) -> void:
-	var resolution: Vector2i
-	if quality == 0:   resolution = Vector2i(1920, 1080) # 1080p
-	elif quality == 1: resolution = Vector2i(3840, 2160) # 4K
-	if horizontal: resolution = Vector2i(resolution.y, resolution.x)
-	ProjectManager.project = Project.new()
-	ProjectManager.set_resolution(resolution)
-	queue_free()
+	if quality == 0 or quality == 2:
+		create_new_project(
+				Vector2i(1080 if horizontal else 1920,1920 if horizontal else 1080))
+	elif quality == 1:
+		create_new_project(
+				Vector2i(2160 if horizontal else 3840,3840 if horizontal else 2160))
+	if quality == 2:
+		ProjectManager._on_open_project_settings.emit()
+	close()
 
 
 func _on_recent_project_button_pressed(project_path: String) -> void:
@@ -58,4 +66,4 @@ func _on_recent_project_button_pressed(project_path: String) -> void:
 	ProjectManager.load_project(project_path)
 	# TODO: Add project to top of recent projects
 	# TODO: Save recent projects
-	queue_free()
+	close()

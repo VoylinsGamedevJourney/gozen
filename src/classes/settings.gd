@@ -6,5 +6,5 @@ class_name Settings
 ## by SettingsManager. This way the data here is easier to look at.
 
 
-var language: SettingsManager.LANGUAGE = SettingsManager.LANGUAGE.ENGLISH
+var language: String = "en"
 var zen_mode := false
