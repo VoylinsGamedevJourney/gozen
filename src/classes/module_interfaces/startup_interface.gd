@@ -3,11 +3,7 @@ class_name StartupModule extends Node
 ##
 ## Still WIP
 
-var recent_projects
 
-
-func _init() -> void:
-	recent_projects = ProjectManager.get_recent_projects()
 
 
 func create_new_project(resolution: Vector2i) -> void:

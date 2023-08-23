@@ -1,4 +1,4 @@
-extends EditorModule
+extends Control
 ## The Default Editor Module
 ##
 ## Still very much a WIP

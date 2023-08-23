@@ -275,10 +275,10 @@ icon = ExtResource("7_nkeee")
 alignment = 0
 
 [connection signal="meta_clicked" from="StartupPanel/VBox/WelcomeImage/ImageCredit" to="." method="_on_image_credit_meta_clicked"]
-[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDHButton" to="." method="_on_new_project_button_pressed" binds= [0, true]]
-[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDVButton" to="." method="_on_new_project_button_pressed" binds= [0, false]]
-[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KHButton" to="." method="_on_new_project_button_pressed" binds= [1, true]]
-[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KVButton" to="." method="_on_new_project_button_pressed" binds= [1, false]]
-[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewCustomButton" to="." method="_on_new_project_button_pressed" binds= [0, true]]
+[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDHButton" to="." method="_on_new_fhdh_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDVButton" to="." method="_on_new_fhdv_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KHButton" to="." method="_on_new_4kh_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KVButton" to="." method="_on_new_4kv_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewCustomButton" to="." method="_on_new_custom_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/RightVBox/DonateButton" to="." method="_on_donate_button_pressed"]

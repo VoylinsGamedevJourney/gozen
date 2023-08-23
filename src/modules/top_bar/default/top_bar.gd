@@ -1,4 +1,4 @@
-extends TopBarModule
+extends Control
 ## The Default Top Bar Module
 ##
 ## Still WIP

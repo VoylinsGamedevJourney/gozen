@@ -18,7 +18,7 @@ func _ready() -> void:
 	info_button = preload("res://modules/command_bar/default/InfoButton.tscn").instantiate()
 
 
-func update_info_panel(possible_commands: Array, text: String, options: bool = false) -> void:
+func update_info_panel(possible_commands: Array, text: String) -> void:
 	# TODO: connect buttons to a separate function which calls _on_text_submitted
 	#       with the correct command text
 	var possible_texts := _format_possible_commands(possible_commands, text)
