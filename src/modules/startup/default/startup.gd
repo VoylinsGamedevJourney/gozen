@@ -1,4 +1,4 @@
-extends StartupModule
+extends Control
 ## The Default Effects View Module
 ##
 ## Still WIP
@@ -27,6 +27,7 @@ func _ready() -> void:
 		var new_button := button.duplicate()
 		new_button.text = p_name
 		new_button.tooltip_text = path
+		new_button.pressed.connect(_on_recent_project_button_pressed.bind(path))
 
 
 func _on_image_credit_meta_clicked(meta) -> void:
@@ -44,31 +45,16 @@ func _on_open_project_button_pressed() -> void:
 	queue_free()
 
 
-## New project button
-##
-## Quality:
-## - 0 = 1080p
-## - 1 = 4K
-## - 2 = 1080p size, but opens project settings (custom project)
-func _on_new_project_button_pressed(quality: int, horizontal: bool) -> void:
-	if quality == 0 or quality == 2:
-		create_new_project(
-				Vector2i(1080 if horizontal else 1920,1920 if horizontal else 1080))
-	elif quality == 1:
-		create_new_project(
-				Vector2i(2160 if horizontal else 3840,3840 if horizontal else 2160))
-	if quality == 2:
-		ProjectManager._on_open_project_settings.emit()
-	queue_free()
-
-
 func _on_recent_project_button_pressed(project_path: String) -> void:
-	if !ProjectManager.check_project_file(project_path): return
+	if !ProjectManager.check_project_file(project_path):
+		return
 	ProjectManager.load_project(project_path)
 	# TODO: Add project to top of recent projects
 	# TODO: Save recent projects
 	queue_free()
 
+
+# NEW PROJECT BUTTONS  #######################################
 
 ## New 1080p project horizontal
 func _on_new_fhdh_button_pressed() -> void:
@@ -102,5 +88,5 @@ func _on_new_4kv_button_pressed() -> void:
 func _on_new_custom_button_pressed() -> void:
 	ProjectManager.project = Project.new()
 	ProjectManager.set_resolution(Vector2i(1080,1920))
-	# TODO: Open project manager
+	ProjectManager._on_open_project_settings.emit()
 	queue_free()
