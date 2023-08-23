@@ -1,8 +1,9 @@
-extends CommandBarModule
+extends Control
 ## The Default Command Bar
 ##
 ## Still very much a WIP
 
+var command_line: LineEdit
 var info_vbox: VBoxContainer
 var info_button: Button
 
@@ -10,12 +11,33 @@ var selected := 0
 
 
 func _ready() -> void:
-	set_command_line(find_child("CommandLineEdit"))
-	command_line.text_changed.connect(self._on_text_changed)
-	command_line.text_submitted.connect(self._on_text_submitted)
+	command_line = find_child("CommandLineEdit")
+	_hide_command_bar()
+	CommandBarManager.bar = self
+	
+	# Binding functions
+	command_line.text_changed.connect(_on_text_changed)
+	command_line.text_submitted.connect(_on_text_submitted)
 	info_vbox = find_child("InfoVBox")
 	CommandBarManager._on_possible_commands_entered.connect(update_info_panel)
 	info_button = preload("res://modules/command_bar/default/InfoButton.tscn").instantiate()
+
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_released("open_command_bar") and !self.visible:
+		_show_command_bar()
+	if event.is_action_pressed("ui_cancel") and self.visible:
+		_hide_command_bar()
+
+
+func _show_command_bar() -> void:
+	self.visible = true
+	command_line.grab_focus()
+
+
+func _hide_command_bar() -> void:
+	self.visible = false
+	command_line.text = ""
 
 
 func update_info_panel(possible_commands: Array, text: String) -> void:
@@ -62,8 +84,14 @@ func _format_possible_commands(possible_commands: Array, text: String) -> Array:
 	return possible_texts
 
 
-func _on_text_submitted(text: String) -> void:
-	if selected <= info_vbox.get_child_count():
-		super(info_vbox.get_child(selected).name)
-	else:
-		printerr("Invalid option selected!")
+func _on_text_changed(command: String) -> void:
+	CommandBarManager._on_command_line_text_changed(command)
+
+
+func _on_text_submitted(_text: String) -> void:
+	if info_vbox.get_child_count() < selected + 1:
+		_hide_command_bar()
+		return
+	CommandBarManager._on_command_line_submitted(
+			info_vbox.get_child(selected).name)
+	_hide_command_bar()

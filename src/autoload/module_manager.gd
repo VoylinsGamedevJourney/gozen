@@ -1,5 +1,13 @@
 extends Node
 
+signal _on_file_explorer_cancel
+signal _on_file_explorer_ok(data)
+
+
+# File Explorer Modes
+enum FE_MODES { OPEN_FILE, OPEN_FILES, OPEN_DIRECTORY }
+
+
 const PATH_SAVE := "user://module_settings"
 const PATH_MODULE := "res://modules/|/%s/|.tscn"
 
@@ -119,3 +127,11 @@ func _get_available() -> void:
 			# TODO: Check if file has correct extension.
 			modules[module].available.append(file)
 		dir.change_dir("..")
+
+
+# FILE EXPLORER STUFF  #######################################
+
+func open_file_explorer(mode: FE_MODES, title: String, extensions: Array = []) -> void:
+	var explorer = get_module("file_explorer")
+	get_tree().current_scene.add_child(explorer)
+	explorer.open(mode, title, extensions)
