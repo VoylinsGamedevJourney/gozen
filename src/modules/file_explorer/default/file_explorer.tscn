@@ -1,12 +1,62 @@
-[gd_scene load_steps=2 format=3 uid="uid://bgendq8utqsqh"]
+[gd_scene load_steps=8 format=3 uid="uid://bgendq8utqsqh"]
 
+[ext_resource type="Theme" uid="uid://ypebpyghjimm" path="res://modules/file_explorer/default/file_explorer_theme.tres" id="1_5wo8f"]
 [ext_resource type="Script" path="res://modules/file_explorer/default/file_explorer.gd" id="1_26xw6"]
 
-[node name="file_explorer" type="Node"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nyp3x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uls7y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4bq5n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am04d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8w2jo"]
+
+[node name="file_explorer" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5wo8f")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_nyp3x")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_uls7y")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4bq5n")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_am04d")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8w2jo")
 script = ExtResource("1_26xw6")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.137255, 0, 0.262745, 0.431373)
 
 [node name="FileDialog" type="FileDialog" parent="."]
 initial_position = 1
+size = Vector2i(738, 500)
+visible = true
 mode_overrides_title = false
 access = 2
 show_hidden_files = true
+
+[node name="Explorer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(730, 600)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -375.0
+offset_top = -300.0
+offset_right = 375.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="pressed" from="." to="." method="_on_cancel_pressed"]

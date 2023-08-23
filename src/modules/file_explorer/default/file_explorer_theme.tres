@@ -1,0 +1,58 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://ypebpyghjimm"]
+
+[ext_resource type="FontFile" uid="uid://cwvjhtfqmlpfs" path="res://fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_oma8i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7qigc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryy6a"]
+bg_color = Color(0.333333, 0, 0.470588, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0sjim"]
+bg_color = Color(0.333333, 0, 0.470588, 0)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_haqyg"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.333333, 0, 0.470588, 1)
+border_blend = true
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+expand_margin_left = 4.0
+expand_margin_top = 2.0
+expand_margin_right = 4.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_yiucl"]
+color = Color(0.494118, 0.494118, 0.494118, 0.207843)
+grow_begin = -2.0
+
+[resource]
+default_font = ExtResource("1_oma8i")
+default_font_size = 12
+Button/constants/h_separation = 7
+Button/constants/icon_max_width = 20
+Button/font_sizes/font_size = 13
+Button/styles/focus = SubResource("StyleBoxEmpty_7qigc")
+Button/styles/hover = SubResource("StyleBoxFlat_ryy6a")
+Button/styles/normal = SubResource("StyleBoxFlat_0sjim")
+Button/styles/pressed = SubResource("StyleBoxFlat_haqyg")
+HSeparator/constants/separation = 5
+HSeparator/styles/separator = SubResource("StyleBoxLine_yiucl")
+VBoxContainer/constants/separation = 1
