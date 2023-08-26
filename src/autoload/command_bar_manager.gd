@@ -18,9 +18,7 @@ var commands := {}
 
 func _ready() -> void:
 	# Add default editor commands
-	_add_command_switch_zen_mode()
-	_add_command_project_save()
-	_add_command_project_save_as()
+	_add_default_commands()
 	# TODO: Open settings command
 	# TODO: Open project settings command
 
@@ -58,30 +56,28 @@ func add_command(command_entry: Command) -> void:
 	commands[command_entry.command] = command_entry
 
 
-func _add_command_switch_zen_mode() -> void:
-	var command_entry: Command = Command.new()
-	command_entry.command = "Switch zen mode"
-	command_entry.mode = Command.MODES.EVERYWHERE
-	command_entry.info = "Toggle between zen and normal mode"
-	command_entry.function = func(): SettingsManager.switch_zen_mode()
-	commands[command_entry.command] = command_entry
+func _add_default_commands() -> void:
+	# Command:Toggle zen mode
+	var c_toggle_zen: Command = Command.new()
+	c_toggle_zen.command = "Setting: Toggle zen mode"
+	c_toggle_zen.mode = Command.MODES.EVERYWHERE
+	c_toggle_zen.function = func(): 
+			SettingsManager.switch_zen_mode()
+	commands[c_toggle_zen.command] = c_toggle_zen
 
-
-func _add_command_project_save() -> void:
-	var command_entry: Command = Command.new()
-	command_entry.command = "Save project"
-	command_entry.mode = Command.MODES.EDITOR_ONLY
-	command_entry.info = "Save project at the saved path"
-	command_entry.function = func(): ProjectManager.save_project()
-	commands[command_entry.command] = command_entry
-
-
-func _add_command_project_save_as() -> void:
-	var command_entry: Command = Command.new()
-	command_entry.command = "Save project as ..."
-	command_entry.mode = Command.MODES.EDITOR_ONLY
-	command_entry.info = "Save project at the a new path"
-	command_entry.function = func(): 
+	# Command: Save project
+	var c_save_project: Command = Command.new()
+	c_save_project.command = "Project: Save project"
+	c_save_project.mode = Command.MODES.EDITOR_ONLY
+	c_save_project.function = func(): 
+			ProjectManager.save_project()
+	commands[c_save_project.command] = c_save_project
+	
+	# Command: Save project as ...
+	var c_save_project_as: Command = Command.new()
+	c_save_project_as.command = "Project: Save project as ..."
+	c_save_project_as.mode = Command.MODES.EDITOR_ONLY
+	c_save_project_as.function = func(): 
 			ProjectManager.set_project_path("")
 			ProjectManager.save_project()
-	commands[command_entry.command] = command_entry
+	commands[c_save_project_as.command] = c_save_project_as

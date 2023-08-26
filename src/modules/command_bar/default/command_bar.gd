@@ -56,10 +56,8 @@ func update_info_panel(possible_commands: Array, text: String) -> void:
 			button.find_child("CommandLabel").text = possible_texts[id]
 			existing_buttons.remove_at(existing_buttons.find(possible_commands[id]))
 			continue
-		var info_text: String = CommandBarManager.commands[possible_commands[id]].info
 		new_button.name = possible_commands[id]
 		new_button.find_child("CommandLabel").text = possible_texts[id]
-		new_button.find_child("InfoLabel").text = "  %s" % info_text
 		info_vbox.add_child(new_button)
 	
 	for button in existing_buttons:

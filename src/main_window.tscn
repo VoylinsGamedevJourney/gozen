@@ -34,6 +34,6 @@ size_flags_vertical = 3
 
 [node name="startup" parent="Layout/ContentView/Content" instance=ExtResource("2_i0jnp")]
 
-[node name="status_bar" parent="Layout/ContentView" instance=ExtResource("2_i0jnp")]
+[node name="command_bar" parent="Layout/ContentView/Content" instance=ExtResource("2_i0jnp")]
 
-[node name="command_bar" parent="." instance=ExtResource("2_i0jnp")]
+[node name="status_bar" parent="Layout/ContentView" instance=ExtResource("2_i0jnp")]

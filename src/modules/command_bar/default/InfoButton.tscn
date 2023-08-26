@@ -1,9 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpit7jgjryt7u"]
+[gd_scene load_steps=2 format=3 uid="uid://cpit7jgjryt7u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7t0gs"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_7ohm2"]
-font_color = Color(0.584314, 0.584314, 0.584314, 1)
 
 [node name="InfoButton" type="Button"]
 custom_minimum_size = Vector2(0, 70)
@@ -33,8 +30,3 @@ layout_mode = 2
 bbcode_enabled = true
 text = "Command"
 fit_content = true
-
-[node name="InfoLabel" type="Label" parent="MarginContainer/VBox"]
-layout_mode = 2
-text = "Info"
-label_settings = SubResource("LabelSettings_7ohm2")

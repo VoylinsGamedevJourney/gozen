@@ -9,7 +9,6 @@ enum MODES { EVERYWHERE, EDITOR_ONLY, STARTUP_ONLY }
 
 ## The command which needs to be typed out
 var command: String
-var info: String
 
 ## Edit only makes it so a command can not run from the startup screen.
 var mode: MODES
