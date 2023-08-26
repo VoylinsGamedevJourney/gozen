@@ -26,7 +26,7 @@ func _ready() -> void:
 	# Changing size here so when working on modules/ui we have a 1080p
 	# view of how everything would look.
 	get_window().min_size = Vector2i(600,600)
-	get_window().size = Vector2i(1152, 648)
+#	get_window().size = Vector2i(1152, 648)
 	
 	WindowManager._on_window_mode_switch.connect(_on_window_switch)
 	
