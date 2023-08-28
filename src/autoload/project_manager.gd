@@ -53,16 +53,16 @@ func save_project() -> void:
 	if project.path != "": # Existing project
 		FileManager.save_data(project, get_full_project_path())
 	# New project
-	var file_explorer := ModuleManager.get_module("file_explorer")
-	add_child(file_explorer)
-	file_explorer.open_explorer(FileExplorerModule.MODE.OPEN_FILE, ["*.gozen"])
-	file_explorer.collect_data.connect(_on_new_project_path_selected)
+	ModuleManager.open_file_explorer(
+			ModuleManager.FE_MODES.OPEN_FILE, "Select save path for project", ["*.gozen"])
+	ModuleManager._on_file_explorer_ok.connect(_on_new_project_path_selected)
 	return
 
 
 func _on_new_project_path_selected(new_path: String) -> void:
 	project.title = new_path.split("/")[-1].replace(".gozen",'')
 	project.path = new_path.replace("%s.gozen" % project.title, '')
+	add_recent_project(project.path)
 	save_project()
 
 

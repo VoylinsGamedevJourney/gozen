@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://dpqk1aijixs1a"]
+
+[ext_resource type="Script" path="res://module_interface.gd" id="1_1eypd"]
+
+[resource]
+script = ExtResource("1_1eypd")
+module_name = "Default"
+scene = "res://modules/editor/default/editor.tscn"

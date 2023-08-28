@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://cphdx5vwainwn"]
+
+[ext_resource type="Script" path="res://module_interface.gd" id="1_r0mvu"]
+
+[resource]
+script = ExtResource("1_r0mvu")
+module_name = "Default"
+scene = "res://modules/timeline/default/timeline.tscn"
