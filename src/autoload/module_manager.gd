@@ -4,134 +4,96 @@ signal _on_file_explorer_cancel
 signal _on_file_explorer_ok(data)
 
 
-# File Explorer Modes
 enum FE_MODES { OPEN_FILE, OPEN_FILES, OPEN_DIRECTORY }
 
 
-const PATH_SAVE := "user://module_settings"
-const PATH_MODULE := "res://modules/|/%s/|.tscn"
+const PATH_SEL_MODULES := "user://selected_modules"
 
 
-## Modules dictionary
-##
-## Contains the selected module information for each module type
-## and all the available modules which get updated on startup.
-var modules := {
-	command_bar = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	editor = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	effects_view = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	media_pool = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	file_explorer = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	project_view = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	startup = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	status_bar = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	timeline = {
-		"selected": "default",
-		"available": ["default"]
-	},
-	top_bar = {
-		"selected": "default",
-		"available": ["default"]
-	},
-}
+var modules := {}
+var selected_modules := {}
 
 
-## Setting up the Module Manager
-##
-## First we check the available and afterwards we save/load
-## the data according to wether the save file exists or not.
 func _ready() -> void:
-	_get_available()
-	_load() if FileAccess.file_exists(PATH_SAVE) else _save()
-
-
-## Saving selected modules
-##
-## We only need the 'selected' information as the available
-## modules get found on startup anyway and should be up to date.
-func _save() -> void:
-	var selected_data := {}
-	for module in modules:
-		selected_data[module] = modules[module].selected
-	FileManager.save_data(selected_data, PATH_SAVE)
-
-
-## Loading selected modules from save file
-##
-## We first check if the module is still available or not,
-## if not we change the value to "default".
-func _load() -> void:
-	var data: Dictionary = str_to_var(FileManager.load_data(PATH_SAVE))
-	for module in data:
-		if !modules.has(module):
-			return
-		var available := (modules[module].available as Array).has(data[module])
-		modules[module].selected = data[module] if available else "default"
-
-
-## Getting the module node
-##
-## This function takes the information from the modules dic
-## and returns the module for the specified module type.
-func get_module(module: String) -> Node:
-	return load(PATH_MODULE.replace('|', module) % modules[module].selected).instantiate()
-
-## Getting all available modules
-##
-## It is important that we get all modules from the start.
-## Else get_module() won't be functioning properly and
-## cause crashes. It would be helpful to still have a check
-## inside of get_module() just in case, but thats a TODO
-## for later.
-func _get_available() -> void:
-	var error: int
-	# Check if the modules dir exists
+	Logger.ln("Startup")
+	if FileAccess.file_exists(PATH_SEL_MODULES):
+		Logger.ln("Loading selected modules info")
+		selected_modules = str_to_var(FileManager.load_data(PATH_SEL_MODULES))
+	
+	Logger.ln("Loading custom modules")
 	var dir := DirAccess.open("user://")
 	if !dir.dir_exists("modules"):
-		error = dir.make_dir("modules")
-		printerr("Could not make 'modules' dir!\n\tError: %s" % error)
+		dir.make_dir("modules")
 	
-	# Create missing modules folders if needed and
-	# gets all available modules
 	dir.change_dir("modules")
-	for module in modules:
-		if !dir.dir_exists(module):
-			error = dir.make_dir(module)
-			printerr("Could not make '%s' dir!\n\tError: %s" % [module, error])
-		dir.change_dir(module)
-		for file in dir.get_files():
-			# TODO: Check if file has correct extension.
-			modules[module].available.append(file)
+	for module_type in dir.get_directories():
+		Logger.ln("Loading modules of type '%s'" % module_type)
+		dir.change_dir(module_type)
+		for module_name in dir.get_files():
+			_load_custom_module(module_type, module_name)
 		dir.change_dir("..")
+	
+	Logger.ln("Creating modules dictionary")
+	dir = DirAccess.open("res://modules")
+	for module_type in dir.get_directories():
+		modules[module_type] = {}
+		dir.change_dir(module_type)
+		for module_folder in dir.get_directories():
+			var path := "res://modules/%s/%s/info.tres" % [module_type, module_folder]
+			if !FileAccess.file_exists(path):
+				printerr("There is no ModuleInterface resource called 'info.tres' in %s!" % path)
+				continue
+			var info: ModuleInterface = load(path)
+			modules[module_type][info.module_name.to_lower()] = info.scene
+		dir.change_dir("..")
+
+
+func _load_custom_module(module_type: String, module_name: String) -> void:
+	Logger.ln("Loading module '%s' of type '%s'" % [module_name, module_type])
+	if !ProjectSettings.load_resource_pack("user://modules/%s/%s" % [module_type, module_name]):
+		printerr("Could not load '%s'" % module_name)
+
+
+## Only way to add custom modules is by putting the file in 'user://modules/...'
+func _add_custom_module(module_type: String, module_name: String) -> void:
+	Logger.ln("Adding custom module '%s' of type '%s'" % [module_type, module_name])
+	# TODO: A way to add a custom module, after adding it needs to be loaded
+	# TODO: Open file explorer and get the required file.
+	# TODO: Check if module type folder actually exists
+	# TODO: Add it to modules dictionary as well
+	pass
+
+
+# SELECTED MODULES STUFF  ####################################
+
+func get_selected_modules() -> Dictionary:
+	Logger.ln("Getting all selected modules")
+	return selected_modules
+
+
+func get_selected_module(module_type: String) -> Node:
+	Logger.ln("Getting module type '%s'" % module_type)
+	if !selected_modules.has(module_type):
+		Logger.ln("Creating default selected entry for '%s'" % module_type)
+		selected_modules[module_type] = "Default"
+		FileManager.save_data(selected_modules, PATH_SEL_MODULES)
+	if !modules[module_type].has(selected_modules[module_type].to_lower()):
+		printerr("Module '%s' not found for type '%s'" % [[selected_modules[module_type]], module_type])
+		return Node.new()
+	return load(modules[module_type][selected_modules[module_type].to_lower()]).instantiate()
+
+
+func change_selected_module(module_type: String, module_name: String) -> void:
+	Logger.ln("Changing selected module for type '%s' to '%s'" % [module_type, module_name])
+	selected_modules[module_type] = module_name
+	FileManager.save_data(selected_modules, PATH_SEL_MODULES)
 
 
 # FILE EXPLORER STUFF  #######################################
 
 func open_file_explorer(mode: FE_MODES, title: String, extensions: Array = []) -> void:
-	var explorer = get_module("file_explorer")
-	get_tree().current_scene.add_child(explorer)
-	explorer.open(mode, title, extensions)
+	Logger.ln("Opening file explorer")
+#	var explorer := get_module("file_explorer")
+#	get_tree().current_scene.add_child(explorer)
+#	explorer.open(mode, title, extensions)
+	pass # TODO

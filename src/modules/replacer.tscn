@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://buremqdyb7y2r"]
+[gd_scene load_steps=2 format=3 uid="uid://cqqolha4tgxq8"]
 
-[ext_resource type="Script" path="res://modules/replacer.gd" id="1_y1xgs"]
+[ext_resource type="Script" path="res://modules/replacer.gd" id="1_t60wa"]
 
-[node name="Placeholder" type="Node"]
-script = ExtResource("1_y1xgs")
+[node name="replacer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_t60wa")

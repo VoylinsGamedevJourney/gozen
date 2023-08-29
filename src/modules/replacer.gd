@@ -1,12 +1,7 @@
-extends Node
-## Replacer node
-## 
-## Change this name by the module you want.
-##
-## !! This is still pretty much a work in progress atm !!
+extends Control
 
 
-## Make the node name the same as the module which you want to load
-## We use _process as _ready gives errors of parents not being fully ready
+# We use _process because parent node may still be busy in _ready
 func _process(_delta: float) -> void:
-	self.replace_by(ModuleManager.get_module(name), true)
+	Logger.ln("Replacing node to module type '%s'" % self.name)
+	self.replace_by(ModuleManager.get_selected_module(self.name))
