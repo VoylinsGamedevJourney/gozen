@@ -22,10 +22,12 @@ var update_available: bool = false
 
 
 func _ready() -> void:
+	Logger.ln("Startup")
 	load_settings()
 
 
 func load_settings() -> void:
+	Logger.ln("Loading settings data")
 	var data: String = FileManager.load_data(PATH)
 	if data == "":
 		save_settings()
@@ -40,13 +42,15 @@ func load_settings() -> void:
 
 func save_settings() -> void:
 	if !startup:
+		Logger.ln("Saving settings data")
 		print("saving")
 		FileManager.save_data(settings, PATH)
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("switch_zen_mode"):
-		switch_zen_mode()
+	if event.is_action_pressed("toggle_zen_mode"):
+		Logger.ln("Shortcut for toggle zen mode pressed")
+		toggle_zen_mode()
 
 
 ##############################################################
@@ -54,23 +58,28 @@ func _input(event: InputEvent) -> void:
 ##############################################################
 
 # ZEN MODE  ##################################################
+
 func get_zen_mode() -> bool:
+	Logger.ln("Getting zen mode")
 	return settings.zen_mode
 
 
 func set_zen_mode(value: bool) -> void:
+	Logger.ln("Setting zen mode to '%s'" % value)
 	settings.zen_mode = value
 	_on_zen_switched.emit(value)
 	save_settings()
 
 
-func switch_zen_mode() -> void:
+func toggle_zen_mode() -> void:
+	Logger.ln("Toggling zen mode")
 	set_zen_mode(!get_zen_mode())
 
 
 # LANGUAGE  ##################################################
 
 func set_language(language_code: String) -> void:
+	Logger.ln("Setting language to '%s'" % language_code)
 	TranslationServer.set_locale(language_code)
 	settings.language = language_code
 	save_settings()
@@ -79,10 +88,12 @@ func set_language(language_code: String) -> void:
 # VERSION  ###################################################
 
 func get_version() -> String:
+	Logger.ln("Getting editor version")
 	return settings.editor_version
 
 
 func check_version() -> void:
+	Logger.ln("Checking editor version")
 	var http_request := HTTPRequest.new()
 	add_child(http_request)
 	http_request.request_completed.connect(
@@ -122,6 +133,7 @@ func check_version() -> void:
 
 
 func set_editor_version(version: String) -> void:
+	Logger.ln("Setting editor version")
 	settings.editor_version = version
 	check_version()
 	save_settings()

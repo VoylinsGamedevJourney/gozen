@@ -21,7 +21,7 @@ func _ready() -> void:
 	c_toggle_zen.command = "Setting: Toggle zen mode"
 	c_toggle_zen.mode = Command.MODES.EVERYWHERE
 	c_toggle_zen.function = func(): 
-			SettingsManager.switch_zen_mode()
+			SettingsManager.toggle_zen_mode()
 	commands[c_toggle_zen.command] = c_toggle_zen
 
 	# Command: Save project

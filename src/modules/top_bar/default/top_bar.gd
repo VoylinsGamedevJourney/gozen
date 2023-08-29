@@ -56,7 +56,7 @@ func _on_settings_button_pressed() -> void:
 
 func _on_minimize_button_pressed() -> void:
 	get_window().set_mode(Window.MODE_MINIMIZED)
-	WindowManager._on_window_mode_switched.emit()
+	get_tree().current_scene._on_window_mode_switched.emit()
 
 
 func _on_switch_mode_button_pressed() -> void:
@@ -65,7 +65,7 @@ func _on_switch_mode_button_pressed() -> void:
 			get_window().set_mode(Window.MODE_FULLSCREEN)
 		Window.MODE_FULLSCREEN : 
 			get_window().set_mode(Window.MODE_WINDOWED)
-	WindowManager._on_window_mode_switch.emit()
+	get_tree().current_scene._on_window_mode_switch.emit()
 
 
 

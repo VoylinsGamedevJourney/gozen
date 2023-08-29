@@ -15,6 +15,7 @@ const PROCESS_ERROR := "Could not %s data to '%s'!\n\tError: %s"
 ## Turns a variable (class or native type) into a string and saves
 ## it to a file as text. 
 func save_data(data, path: String) -> bool:
+	Logger.ln("Saving data to '%s'" % path)
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	var error := FileAccess.get_open_error()
 	if error:
@@ -33,6 +34,7 @@ func save_data(data, path: String) -> bool:
 ## Returns the variable as a string, this can be made into the 
 ## correct variable again by using str_to_var().
 func load_data(path: String) -> String:
+	Logger.ln("Loading data from '%s'" % path)
 	if !FileAccess.file_exists(path):
 		return ""
 	var file := FileAccess.open(path, FileAccess.READ)
