@@ -72,13 +72,13 @@ func _format_possible_commands(possible_commands: Array, text: String) -> Array:
 		var t: int = 0
 		while c < command.length() and t < text.length():
 			if command[c].to_lower() == text[t].to_lower():
-				result += "[b]" + command[c] + "[/b]"
+				result += "[color=white]" + command[c] + "[/color]"
 				t += 1
 			else:
 				result += command[c]
 			c += 1
 		result += command.substr(c)
-		possible_texts.append(result)
+		possible_texts.append("[color=gray]%s[/color]" % result)
 	return possible_texts
 
 

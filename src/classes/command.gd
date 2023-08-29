@@ -12,8 +12,6 @@ var command: String
 
 ## Edit only makes it so a command can not run from the startup screen.
 var mode: MODES
-## Edit only makes it so a command can only run from the startup screen.
-var startup_only: bool = false
 
 ## The function which runs when entering command
 var function
