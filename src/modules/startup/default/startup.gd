@@ -1,15 +1,12 @@
 extends Control
-## The Default Effects View Module
-##
-## Still WIP
-##
-## TODO: Include website URL, placeholder = WebsiteLabel
-## TODO: Changelog button, for this we need a changelog.md file as well
+# TODO: Include website URL, placeholder = WebsiteLabel
+# TODO: Changelog button, for this we need a changelog.md file as well
 
 var recent_projects: Array
 
 
 func _ready() -> void:
+	
 	ProjectManager.get_recent_projects()
 	
 	# Check if opened with a "*.gozen" file as argument.
@@ -20,6 +17,7 @@ func _ready() -> void:
 			queue_free()
 	
 	var button = %RecentProjectsVBox
+	return # TODO
 	for path in ProjectManager.get_recent_projects():
 		var p_name: String = str_to_var(FileManager.load_data(path)).title
 		if p_name == "":

@@ -1,12 +1,12 @@
 [gd_scene load_steps=11 format=3 uid="uid://b72yl7fvcwsx3"]
 
 [ext_resource type="Script" path="res://modules/top_bar/default/top_bar.gd" id="1_egmw6"]
-[ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://icon.png" id="2_hm26p"]
-[ext_resource type="Texture2D" uid="uid://cpd4rdetdel1p" path="res://assets/top_bar_icons/movie_edit.png" id="3_nak7m"]
-[ext_resource type="Texture2D" uid="uid://dem5aoobluph8" path="res://assets/top_bar_icons/settings_video_camera.png" id="4_vmjh0"]
-[ext_resource type="Texture2D" uid="uid://bwp8lupedimnl" path="res://assets/top_bar_icons/minimize.png" id="5_k12xv"]
-[ext_resource type="Texture2D" uid="uid://d4kvq12gshwyr" path="res://assets/top_bar_icons/maximize.png" id="6_n434s"]
-[ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/top_bar_icons/close.png" id="7_timhm"]
+[ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://assets/icon.png" id="2_hm26p"]
+[ext_resource type="Texture2D" uid="uid://cpd4rdetdel1p" path="res://assets/icons_top_bar/movie_edit.png" id="3_nak7m"]
+[ext_resource type="Texture2D" uid="uid://dem5aoobluph8" path="res://assets/icons_top_bar/settings_video_camera.png" id="4_vmjh0"]
+[ext_resource type="Texture2D" uid="uid://bwp8lupedimnl" path="res://assets/icons_top_bar/minimize.png" id="5_k12xv"]
+[ext_resource type="Texture2D" uid="uid://d4kvq12gshwyr" path="res://assets/icons_top_bar/maximize.png" id="6_n434s"]
+[ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/icons_top_bar/close.png" id="7_timhm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chl26"]
 content_margin_left = 7.0

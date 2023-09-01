@@ -1,7 +1,4 @@
 extends Control
-## The Default Command Bar
-##
-## Still very much a WIP
 
 var command_line: LineEdit
 var info_vbox: VBoxContainer

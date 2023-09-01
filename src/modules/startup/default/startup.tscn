@@ -1,16 +1,16 @@
 [gd_scene load_steps=16 format=3 uid="uid://bil6gouk3mfhw"]
 
-[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://default_theme.tres" id="1_f4pub"]
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_f4pub"]
 [ext_resource type="Script" path="res://modules/startup/default/startup.gd" id="1_hmdvy"]
-[ext_resource type="Texture2D" uid="uid://c01l6tqooh3d" path="res://assets/startup_images/clay-banks-u27Rrbs9Dwc-unsplash.jpg" id="2_8gdoi"]
-[ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://icon.png" id="3_hjqrg"]
+[ext_resource type="Texture2D" uid="uid://c01l6tqooh3d" path="res://assets/images_startup/clay-banks-u27Rrbs9Dwc-unsplash.jpg" id="2_8gdoi"]
+[ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://assets/icon.png" id="3_hjqrg"]
 [ext_resource type="Script" path="res://scripts/set_version_text.gd" id="4_5chfm"]
-[ext_resource type="Texture2D" uid="uid://xudpbkvqbyor" path="res://assets/startup_icons/video_file.png" id="5_065by"]
-[ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/startup_icons/note_add.png" id="5_c47mr"]
-[ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/startup_icons/folder_open.png" id="5_i14en"]
+[ext_resource type="Texture2D" uid="uid://xudpbkvqbyor" path="res://assets/icons_startup/video_file.png" id="5_065by"]
+[ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/icons_startup/note_add.png" id="5_c47mr"]
+[ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/icons_startup/folder_open.png" id="5_i14en"]
 [ext_resource type="Texture2D" uid="uid://dmirvnpk5saql" path="res://assets/watermark.png" id="6_fgjut"]
 [ext_resource type="LabelSettings" uid="uid://beexdwdlieaad" path="res://modules/startup/default/title_label.tres" id="7_jouqv"]
-[ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/startup_icons/favorite.png" id="7_nkeee"]
+[ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/icons_startup/favorite.png" id="7_nkeee"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_vykhc"]
 font_size = 12

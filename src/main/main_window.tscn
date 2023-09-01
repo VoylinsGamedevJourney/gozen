@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://2xg6eooelhqq"]
+
+[ext_resource type="Script" path="res://main/main_window.gd" id="1_64h7j"]
+[ext_resource type="Script" path="res://scripts/replacer.gd" id="2_so5ay"]
+
+[node name="MainWindow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_64h7j")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="top_bar" type="Control" parent="Layout"]
+layout_mode = 2
+script = ExtResource("2_so5ay")
+
+[node name="ContentView" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Content" type="Control" parent="Layout/ContentView"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="editor" type="Control" parent="Layout/ContentView/Content"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("2_so5ay")
+
+[node name="startup" type="Control" parent="Layout/ContentView/Content"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("2_so5ay")
+
+[node name="command_bar" type="Control" parent="Layout/ContentView/Content"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("2_so5ay")
+
+[node name="status_bar" type="Control" parent="Layout/ContentView"]
+layout_mode = 2
+script = ExtResource("2_so5ay")
+
+[node name="Handles" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Right" type="Control" parent="Handles"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
+
+[node name="Bottom" type="Control" parent="Handles"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_default_cursor_shape = 9
+
+[node name="Corner" type="Control" parent="Handles"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_default_cursor_shape = 12
+
+[connection signal="gui_input" from="Handles/Right" to="." method="_on_gui_input" binds= [NodePath(".")]]
+[connection signal="gui_input" from="Handles/Bottom" to="." method="_on_gui_input" binds= [NodePath(".")]]
+[connection signal="gui_input" from="Handles/Corner" to="." method="_on_gui_input" binds= [NodePath(".")]]

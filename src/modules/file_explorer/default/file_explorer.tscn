@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bgendq8utqsqh"]
+[gd_scene load_steps=10 format=3 uid="uid://bgendq8utqsqh"]
 
-[ext_resource type="Theme" uid="uid://ypebpyghjimm" path="res://modules/file_explorer/default/file_explorer_theme.tres" id="1_5wo8f"]
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_0rbx4"]
 [ext_resource type="Script" path="res://modules/file_explorer/default/file_explorer.gd" id="1_26xw6"]
+[ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/icons_top_bar/close.png" id="3_7ep1t"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nyp3x"]
 
@@ -13,13 +14,15 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8w2jo"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mcgkv"]
+
 [node name="file_explorer" type="Button"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_5wo8f")
+theme = ExtResource("1_0rbx4")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_nyp3x")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_uls7y")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_4bq5n")
@@ -34,12 +37,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.137255, 0, 0.262745, 0.431373)
+color = Color(0, 0, 0, 0.470588)
 
 [node name="FileDialog" type="FileDialog" parent="."]
 initial_position = 1
 size = Vector2i(738, 500)
-visible = true
 mode_overrides_title = false
 access = 2
 show_hidden_files = true
@@ -59,4 +61,116 @@ offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="Explorer"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="VBox" type="VBoxContainer" parent="Explorer/MarginContainer"]
+layout_mode = 2
+
+[node name="TopBar" type="PanelContainer" parent="Explorer/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Explorer/MarginContainer/VBox/TopBar"]
+layout_mode = 2
+text = "Title"
+horizontal_alignment = 1
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Explorer/MarginContainer/VBox/TopBar"]
+layout_mode = 2
+
+[node name="PreviousFolderButton" type="TextureButton" parent="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox"]
+custom_minimum_size = Vector2(21, 21)
+layout_mode = 2
+
+[node name="NextFolderButton" type="TextureButton" parent="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox"]
+custom_minimum_size = Vector2(21, 21)
+layout_mode = 2
+
+[node name="FolderOnTopButton" type="TextureButton" parent="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox"]
+custom_minimum_size = Vector2(21, 21)
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_mcgkv")
+
+[node name="CreateFolderButton" type="TextureButton" parent="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox"]
+custom_minimum_size = Vector2(21, 21)
+layout_mode = 2
+
+[node name="CloseButton" type="TextureButton" parent="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox"]
+custom_minimum_size = Vector2(21, 21)
+layout_mode = 2
+texture_normal = ExtResource("3_7ep1t")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="NavHBox" type="HBoxContainer" parent="Explorer/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="Explorer/MarginContainer/VBox/NavHBox"]
+layout_mode = 2
+text = "Path:"
+
+[node name="PathLineEdit" type="LineEdit" parent="Explorer/MarginContainer/VBox/NavHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RefreshButton" type="TextureButton" parent="Explorer/MarginContainer/VBox/NavHBox"]
+layout_mode = 2
+
+[node name="MiddleHBox" type="HBoxContainer" parent="Explorer/MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SavedLocationsPanel" type="PanelContainer" parent="Explorer/MarginContainer/VBox/MiddleHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="FilesViewPanel" type="PanelContainer" parent="Explorer/MarginContainer/VBox/MiddleHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InfoHBox" type="HBoxContainer" parent="Explorer/MarginContainer/VBox"]
+layout_mode = 2
+
+[node name="FileLabel" type="Label" parent="Explorer/MarginContainer/VBox/InfoHBox"]
+layout_mode = 2
+text = "File:"
+
+[node name="LineEdit" type="LineEdit" parent="Explorer/MarginContainer/VBox/InfoHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExtensionsOptionButton" type="OptionButton" parent="Explorer/MarginContainer/VBox/InfoHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="BottomButtonsHBox" type="HBoxContainer" parent="Explorer/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 70
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="Explorer/MarginContainer/VBox/BottomButtonsHBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "Cancel"
+
+[node name="OkButton" type="Button" parent="Explorer/MarginContainer/VBox/BottomButtonsHBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "OK"
+
 [connection signal="pressed" from="." to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox/CloseButton" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Explorer/MarginContainer/VBox/BottomButtonsHBox/CancelButton" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Explorer/MarginContainer/VBox/BottomButtonsHBox/OkButton" to="." method="_on_ok_pressed"]

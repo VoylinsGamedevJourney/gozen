@@ -1,9 +1,8 @@
 extends Control
-## The Default Editor Module
-##
-## Still very much a WIP
 
 enum LAYOUT {UNCONFIGURED,LANDSCAPE,PORTRAIT}
+
+
 var layout : LAYOUT = LAYOUT.UNCONFIGURED
 
 

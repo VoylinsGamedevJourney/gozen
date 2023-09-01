@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://tsxucctndc2m"]
 
-[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://modules/editor/default/main_editor_theme.tres" id="1_5d5fk"]
+[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_5d5fk"]
 [ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="1_fojp6"]
 
 [node name="EditorScreen" type="MarginContainer"]

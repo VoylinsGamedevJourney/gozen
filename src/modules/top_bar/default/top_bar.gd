@@ -1,11 +1,7 @@
 extends Control
-## The Default Top Bar Module
-##
-## Still WIP
-##
-## TODO: Have an option to switch the order of these buttons from right to left
-## TODO: Make this top_bar invisible in zen mode
-## TODO: Make icon open a menu to see about, donation page, changelog, ...
+# TODO: Have an option to switch the order of these buttons from right to left
+# TODO: Make this top_bar invisible in zen mode
+# TODO: Make icon open a menu to see about, donation page, changelog, ...
 
 var move_window: bool = false
 var move_start: Vector2i
@@ -25,6 +21,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		if !move_window:
 			move_start = get_viewport().get_mouse_position()
 		move_window = event.is_pressed()
+
 
 func _process(_delta: float) -> void:
 	if !move_window: return
