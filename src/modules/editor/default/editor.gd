@@ -23,9 +23,3 @@ func _on_project_resolution_change(new_resolution: Vector2i) -> void:
 	
 	for child in get_children():
 		child.queue_free()
-	
-	match layout:
-		LAYOUT.PORTRAIT:
-			add_child(preload("res://modules/editor/default/portrait_view.tscn").instantiate())
-		LAYOUT.LANDSCAPE:
-			add_child(preload("res://modules/editor/default/landscape_view.tscn").instantiate())

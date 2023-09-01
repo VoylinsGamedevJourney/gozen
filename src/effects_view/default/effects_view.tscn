@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bcyrwwp5kived"]
 
-[ext_resource type="Script" path="res://modules/project_view/effects_view/default/effects_view.gd" id="1_5tw1o"]
+[ext_resource type="Script" path="res://effects_view/default/effects_view.gd" id="1_5tw1o"]
 [ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_xhcm1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tqpyo"]
