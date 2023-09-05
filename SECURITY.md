@@ -13,5 +13,5 @@ These can change on the release of new versions so check this page after every b
 
 ## Reporting a Vulnerability
 
-Report vulnerabilities as issues and we will try fixing them as soon as possible. 
+Report vulnerabilities to voylinslife@gmail.com and we will try fixing them as soon as possible. 
 Of course if you think you could fix it by yourself you are also free to open up a pull request.
