@@ -1,9 +1,9 @@
-import json
+import yaml
 import os
+import collections
 
 
-
-def main(json_file, csv_file):
+def main(yaml_file, csv_file):
   print("What would you like to do:")
   print("1. Generate main CSV file")
   print("2. Add a language code")
@@ -11,16 +11,16 @@ def main(json_file, csv_file):
 
   if command == "1":
     print("Generating main CSV file")
-    generate_csv(json_file, csv_file)
+    generate_csv(yaml_file, csv_file)
   elif command == "2":
-    print("Adding new language to JSON")
-    add_language(json_file)
+    print("Adding new language to YAML file")
+    add_language(yaml_file)
 
 
-def generate_csv(json_file, csv_file):
+def generate_csv(yaml_file, csv_file):
   try:
-    with open(json_file, 'r', encoding="utf8") as file:
-      data = json.load(file)
+    with open(yaml_file, 'r', encoding="utf8") as file:
+      data = yaml.safe_load(file)
 
     languages = list(data[next(iter(data))].keys())
     header = "KEY," + ",".join(languages) + "\n"
@@ -34,19 +34,32 @@ def generate_csv(json_file, csv_file):
     print(f"An error occurred: {e}")
 
 
-def add_language(json_file):
+def add_language(yaml_file):
   locale = input("Enter locale code: ")
   try:
-    with open(json_file, 'r', encoding="utf8") as file: data = json.load(file)
-    for k in data.keys(): data[k][locale] = ""
-    with open(json_file, 'w', encoding="utf8") as file: json.dump(data, file, indent=2, ensure_ascii=False)
+    with open(yaml_file, 'r', encoding="utf8") as file:
+      data = file.readlines()
+
+    new_data = []
+    key = ""
+    for line in data:
+      if line[0] == ' ':
+        new_data.append(line)
+      else:
+        if key != '':
+          new_data.append("  " + locale + ": \"\"\n")
+        key = line
+        new_data.append(line)
+    new_data.append("  " + locale + ": \"\"\n")
+    
+    with open(yaml_file, 'w', encoding="utf8") as file:
+      file.writelines(new_data)
   except Exception as e:
     print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
   path = os.path.abspath(__file__)
-  json_file = os.path.dirname(path) + "/locales.json"
+  yaml_file = os.path.dirname(path) + "/locales.yaml"
   csv_file = os.path.dirname(path).replace("translations", "src/translations/translations.csv")
-  main(json_file, csv_file)
-
+  main(yaml_file, csv_file)
