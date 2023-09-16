@@ -1,6 +1,6 @@
 # GoZen
 
-*The Minimalist Video Editor*
+*The Modular & Minimalist Video Editor*
 
 ## Meaning of GoZen 
 

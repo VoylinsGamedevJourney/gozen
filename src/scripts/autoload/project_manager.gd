@@ -18,6 +18,7 @@ var project: Project:
 	set(x):
 		project = x
 		_on_project_loaded.emit()
+var explorer
 
 
 func _input(event: InputEvent) -> void:
@@ -40,10 +41,12 @@ func save_project() -> void:
 	if project.path != "": # Existing project
 		FileManager.save_data(project, get_full_project_path())
 	# New project
-	ModuleManager.open_file_explorer(
-			ModuleManager.FE_MODES.OPEN_FILE, "Select save path for project", ["*.gozen"])
-	ModuleManager._on_file_explorer_ok.connect(_on_new_project_path_selected)
-	return
+	explorer = ModuleManager.get_selected_module("file_explorer")
+	explorer.create("Save project", FileExplorer.MODE.SAVE_PROJECT)
+	explorer._on_save_project_path_selected.connect(_on_new_project_path_selected)
+	explorer._on_cancel_pressed.connect(_explorer_cancel_pressed)
+	get_tree().current_scene.find_child("Content").add_child(explorer)
+	explorer.open()
 
 
 func _on_new_project_path_selected(new_path: String) -> void:
@@ -51,6 +54,10 @@ func _on_new_project_path_selected(new_path: String) -> void:
 	project.path = new_path.replace("%s.gozen" % project.title, '')
 	add_recent_project(project.path)
 	save_project()
+
+
+func _explorer_cancel_pressed() -> void:
+	explorer = null
 
 
 ##############################################################
