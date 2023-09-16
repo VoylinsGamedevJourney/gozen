@@ -1,5 +1,8 @@
 # GoZen
 
+> [!IMPORTANT]  
+> GoZen is in a pre-alpha stage. You should not expect everything to work properly.
+
 *The Modular & Minimalist Video Editor*
 
 ## Meaning of GoZen 
