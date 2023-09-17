@@ -8,6 +8,8 @@ var move_start: Vector2i
 
 
 func _ready() -> void:
+	find_child("ProjectButton").visible = false
+	ProjectManager._on_project_loaded.connect(on_startup_closed)
 	ProjectManager._on_title_changed.connect(on_project_title_change)
 	ProjectManager._on_saved.connect(on_project_saved)
 	ProjectManager._on_unsaved_changes.connect(on_project_unsaved_changes)
@@ -27,6 +29,10 @@ func _process(_delta: float) -> void:
 	if !move_window: return
 	var mouse_delta = Vector2i(get_viewport().get_mouse_position()) - move_start
 	get_window().position += mouse_delta
+
+
+func on_startup_closed() -> void:
+	find_child("ProjectButton").visible = true
 
 
 func on_project_title_change() -> void:
