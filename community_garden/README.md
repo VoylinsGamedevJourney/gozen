@@ -2,7 +2,7 @@
 
 ## What is the garden?
 
-The 'garden' is where all officially approved community modules/effects can be found. 
+The 'garden' is where all **officially approved** community modules/effects can be found. 
 
 ## I want to add my module/effect
 

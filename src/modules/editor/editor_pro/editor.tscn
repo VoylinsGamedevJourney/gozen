@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://brxv2oy4k8fe3"]
+
+[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_vsyo5"]
+[ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="2_cag7s"]
+
+[node name="EditorScreen" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_vsyo5")
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+script = ExtResource("2_cag7s")
