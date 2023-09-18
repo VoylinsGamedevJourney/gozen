@@ -1,8 +1,10 @@
 extends Control
-# TODO: Include website URL, placeholder = WebsiteLabel
-# TODO: Changelog button, for this we need a changelog.md file as well
+# Future TODO: Make version label clickable, bringing up a popup
+#              which displays recent version changes (changelog of that version)
+
 
 var recent_projects: Array
+var explorer: Control
 
 
 func _ready() -> void:
@@ -16,19 +18,25 @@ func _ready() -> void:
 			ProjectManager.load_project(arg)
 			queue_free()
 	
-	var button = %RecentProjectsVBox
-	return # TODO
+	var button = %RecentProjectsVBox.get_child(0)
+	
 	for path in ProjectManager.get_recent_projects():
+		if %RecentProjectsVBox.get_child_count() > 6:
+			break # We only want the 5 most recent projects to show
+		if !FileAccess.file_exists(path):
+			continue
 		var p_name: String = str_to_var(FileManager.load_data(path)).title
 		if p_name == "":
 			continue
 		var new_button := button.duplicate()
-		new_button.text = p_name
+		new_button.text = path
 		new_button.tooltip_text = path
 		new_button.pressed.connect(_on_recent_project_button_pressed.bind(path))
+		new_button.visible = true
+		%RecentProjectsVBox.add_child(new_button)
 
 
-func _on_image_credit_meta_clicked(meta) -> void:
+func _on_url_clicked(meta) -> void:
 	OS.shell_open(meta)
 
 
@@ -37,18 +45,30 @@ func _on_donate_button_pressed() -> void:
 
 
 func _on_open_project_button_pressed() -> void:
-	# TODO: Open file explorer
-	# TODO: Add project on top of recent projects
-	# TODO: Save recent projects
+	explorer = ModuleManager.get_selected_module("file_explorer")
+	explorer.create("Save project", FileExplorer.MODE.SAVE_PROJECT)
+	explorer._on_save_project_path_selected.connect(_on_open_project_file_selected)
+	explorer._on_cancel_pressed.connect(_on_explorer_cancel_pressed)
+	get_tree().current_scene.find_child("Content").add_child(explorer)
+	explorer.open()
+
+
+func _on_open_project_file_selected(path: String) -> void:
+	ProjectManager.add_recent_project(path)
+	ProjectManager.load_project(path)
 	queue_free()
 
 
+func _on_explorer_cancel_pressed() -> void:
+	explorer.queue_free()
+	explorer = null
+
+
 func _on_recent_project_button_pressed(project_path: String) -> void:
-	if !ProjectManager.check_project_file(project_path):
+	if !FileAccess.file_exists(project_path):
 		return
 	ProjectManager.load_project(project_path)
-	# TODO: Add project to top of recent projects
-	# TODO: Save recent projects
+	ProjectManager.add_recent_project(project_path)
 	queue_free()
 
 

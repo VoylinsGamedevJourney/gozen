@@ -8,19 +8,18 @@
 [ext_resource type="Texture2D" uid="uid://xudpbkvqbyor" path="res://assets/icons_startup/video_file.png" id="5_065by"]
 [ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/icons_startup/note_add.png" id="5_c47mr"]
 [ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/icons_startup/folder_open.png" id="5_i14en"]
-[ext_resource type="Texture2D" uid="uid://dmirvnpk5saql" path="res://assets/watermark.png" id="6_fgjut"]
+[ext_resource type="FontFile" uid="uid://jnjfo4ffpto4" path="res://assets/fonts/urw_gothic/URWGothic-Book.ttf" id="7_cicay"]
 [ext_resource type="LabelSettings" uid="uid://beexdwdlieaad" path="res://modules/startup/default/title_label.tres" id="7_jouqv"]
 [ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/icons_startup/favorite.png" id="7_nkeee"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_vykhc"]
 font_size = 12
 
-[sub_resource type="LabelSettings" id="LabelSettings_fwbqt"]
-font_size = 10
-font_color = Color(0.407843, 0.407843, 0.407843, 1)
-shadow_size = 2
-shadow_color = Color(0, 0, 0, 0.0745098)
-shadow_offset = Vector2(2, 1)
+[sub_resource type="LabelSettings" id="LabelSettings_y1y4c"]
+line_spacing = 107.0
+font = ExtResource("7_cicay")
+font_size = 60
+shadow_offset = Vector2(0, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tevpi"]
 content_margin_left = 5.0
@@ -116,37 +115,40 @@ label_settings = SubResource("LabelSettings_vykhc")
 horizontal_alignment = 2
 script = ExtResource("4_5chfm")
 
-[node name="WebsiteLabel" type="Label" parent="StartupPanel/VBox/WelcomeImage"]
-visible = false
+[node name="WebsiteLabel" type="RichTextLabel" parent="StartupPanel/VBox/WelcomeImage"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 7.0
-offset_top = -20.0
+offset_top = -18.0
 offset_right = 227.0
-offset_bottom = -2.0
+offset_bottom = -1.0
 grow_vertical = 0
-text = "www.voylin.com"
-label_settings = SubResource("LabelSettings_fwbqt")
-vertical_alignment = 2
+theme_override_colors/default_color = Color(0.470588, 0.470588, 0.470588, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.141176)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/normal_font_size = 8
+bbcode_enabled = true
+text = "[url=https://www.youtube.com/@voylinsgamedevjourney]VGJ YouTube channel[/url]"
 
-[node name="WaterMark" type="TextureRect" parent="StartupPanel/VBox/WelcomeImage"]
-custom_minimum_size = Vector2(200, 100)
+[node name="WaterMarkLabel" type="Label" parent="StartupPanel/VBox/WelcomeImage"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 20.0
+offset_bottom = 9.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("6_fgjut")
-expand_mode = 1
-stretch_mode = 5
+text = "GoZen"
+label_settings = SubResource("LabelSettings_y1y4c")
+vertical_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="StartupPanel/VBox"]
 layout_mode = 2
@@ -264,7 +266,8 @@ text = "STARTUP_BUTTON_SUPPORT_PROJECT"
 icon = ExtResource("7_nkeee")
 alignment = 0
 
-[connection signal="meta_clicked" from="StartupPanel/VBox/WelcomeImage/ImageCredit" to="." method="_on_image_credit_meta_clicked"]
+[connection signal="meta_clicked" from="StartupPanel/VBox/WelcomeImage/ImageCredit" to="." method="_on_url_clicked"]
+[connection signal="meta_clicked" from="StartupPanel/VBox/WelcomeImage/WebsiteLabel" to="." method="_on_url_clicked"]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDHButton" to="." method="_on_new_fhdh_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/NewFHDVButton" to="." method="_on_new_fhdv_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/MarginContainer/HBox/LeftVBox/VBox/New4KHButton" to="." method="_on_new_4kh_button_pressed"]
