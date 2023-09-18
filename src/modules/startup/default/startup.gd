@@ -28,7 +28,7 @@ func _ready() -> void:
 		new_button.pressed.connect(_on_recent_project_button_pressed.bind(path))
 
 
-func _on_image_credit_meta_clicked(meta) -> void:
+func _on_url_clicked(meta) -> void:
 	OS.shell_open(meta)
 
 
