@@ -18,7 +18,7 @@ var project: Project:
 	set(x):
 		project = x
 		_on_project_loaded.emit()
-var explorer
+var explorer: Control
 
 
 func _input(event: InputEvent) -> void:
