@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="GoZen"
+config/description="A modular video editor made with Godot."
 run/main_scene="res://main/main_window.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
@@ -42,6 +43,7 @@ project/assembly_name="GoZen"
 
 [gui]
 
+theme/custom="res://assets/default_theme.tres"
 theme/custom_font="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf"
 
 [input]
@@ -70,4 +72,4 @@ locale/translations=PackedStringArray("res://translations/translations.en.transl
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-environment/defaults/default_clear_color=Color(0.101961, 0.101961, 0.101961, 1)
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
