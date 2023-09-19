@@ -82,48 +82,34 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MiddleTopLeft" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit"]
+[node name="MiddleTopLeft" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="Label" type="Label" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit/MiddleTopLeft"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -9.0
-offset_right = 20.0
-offset_bottom = 9.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 text = "MiddleTopLeft"
 label_settings = SubResource("LabelSettings_ajjk5")
 
-[node name="project_view" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit"]
+[node name="ProjectviewPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_bex4u")
+
+[node name="project_view" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit/ProjectviewPanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_ihq0b")
 
-[node name="MiddleTopRight" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit"]
+[node name="MiddleTopRight" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="Label" type="Label" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleMainTopHSplit/MiddleTopRight"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -10.5
-offset_right = 32.0
-offset_bottom = 10.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 text = "MiddleTopRight"
 label_settings = SubResource("LabelSettings_ajjk5")
 
@@ -135,49 +121,35 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MiddleBottomLeft" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit"]
+[node name="MiddleBottomLeft" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="Label" type="Label" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit/MiddleBottomLeft"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -51.0
-offset_top = -10.5
-offset_right = 51.0
-offset_bottom = 10.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 text = "MiddleLeftBottom
 "
 label_settings = SubResource("LabelSettings_ajjk5")
 
-[node name="timeline" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit"]
+[node name="TimelinePanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_bex4u")
+
+[node name="timeline" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit/TimelinePanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_ihq0b")
 
-[node name="MiddleBottomRight" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit"]
+[node name="MiddleBottomRight" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="Label" type="Label" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleBottomRight"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -10.5
-offset_right = 32.0
-offset_bottom = 10.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 text = "MiddleRightBottom
 "
 label_settings = SubResource("LabelSettings_ajjk5")
