@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://tsxucctndc2m"]
+[gd_scene load_steps=4 format=3 uid="uid://tsxucctndc2m"]
 
-[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_5d5fk"]
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_5d5fk"]
 [ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="1_fojp6"]
+[ext_resource type="Script" path="res://scripts/replacer.gd" id="3_ihq0b"]
 
 [node name="EditorScreen" type="MarginContainer"]
 anchors_preset = 15
@@ -15,3 +16,207 @@ theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 7
 script = ExtResource("1_fojp6")
+
+[node name="MainHSplit" type="HSplitContainer" parent="."]
+layout_mode = 2
+split_offset = -600
+
+[node name="LeftVSplit" type="VSplitContainer" parent="MainHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LeftTop" type="Control" parent="MainHSplit/LeftVSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainHSplit/LeftVSplit/LeftTop"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.5
+offset_top = -10.5
+offset_right = 21.5
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "LeftTop
+"
+
+[node name="LeftBottom" type="Control" parent="MainHSplit/LeftVSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainHSplit/LeftVSplit/LeftBottom"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -10.5
+offset_right = 32.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "LeftBottom
+"
+
+[node name="SecondHSplit" type="HSplitContainer" parent="MainHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = 360
+
+[node name="MiddleVSplit" type="VSplitContainer" parent="MainHSplit/SecondHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MiddleMainTopHSplit" type="HSplitContainer" parent="MainHSplit/SecondHSplit/MiddleVSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MiddleSecondTopHSplit" type="HSplitContainer" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleMainTopHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MiddleTopLeft" type="Control" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit/MiddleTopLeft"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 20.0
+offset_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "MiddleTopLeft"
+
+[node name="project_view" type="Control" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleMainTopHSplit/MiddleSecondTopHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_ihq0b")
+
+[node name="MiddleTopRight" type="Control" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleMainTopHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleMainTopHSplit/MiddleTopRight"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -10.5
+offset_right = 32.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "MiddleTopRight"
+
+[node name="MiddleBottomHSplit" type="HSplitContainer" parent="MainHSplit/SecondHSplit/MiddleVSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MiddleSecondTopHSplit" type="HSplitContainer" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleBottomHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MiddleBottomLeft" type="Control" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit/MiddleBottomLeft"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -51.0
+offset_top = -10.5
+offset_right = 51.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "MiddleLeftBottom
+"
+
+[node name="timeline" type="Control" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleBottomHSplit/MiddleSecondTopHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_ihq0b")
+
+[node name="MiddleBottomRight" type="Control" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleBottomHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainHSplit/SecondHSplit/MiddleVSplit/MiddleBottomHSplit/MiddleBottomRight"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -10.5
+offset_right = 32.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "MiddleRightBottom
+"
+
+[node name="RightVSplit" type="VSplitContainer" parent="MainHSplit/SecondHSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightTop" type="Control" parent="MainHSplit/SecondHSplit/RightVSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainHSplit/SecondHSplit/RightVSplit/RightTop"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -10.5
+offset_right = 32.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "RightTop"
+
+[node name="RightBottom" type="Control" parent="MainHSplit/SecondHSplit/RightVSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MainHSplit/SecondHSplit/RightVSplit/RightBottom"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -10.5
+offset_right = 32.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "RightBottom
+"
