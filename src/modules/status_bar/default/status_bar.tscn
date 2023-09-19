@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scripts/set_version_text.gd" id="2_nc70g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_038f5"]
-bg_color = Color(0.117647, 0.117647, 0.117647, 1)
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_u2kya"]
 line_spacing = 0.0

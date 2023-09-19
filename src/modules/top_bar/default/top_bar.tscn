@@ -11,7 +11,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chl26"]
 content_margin_left = 7.0
 content_margin_right = 7.0
-bg_color = Color(0.117647, 0.117647, 0.117647, 1)
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
 shadow_color = Color(0, 0, 0, 0.156863)
 shadow_size = 1
 shadow_offset = Vector2(0, 1)
