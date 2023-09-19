@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bil6gouk3mfhw"]
+[gd_scene load_steps=17 format=3 uid="uid://bil6gouk3mfhw"]
 
 [ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_f4pub"]
 [ext_resource type="Script" path="res://modules/startup/default/startup.gd" id="1_hmdvy"]
@@ -11,6 +11,20 @@
 [ext_resource type="FontFile" uid="uid://jnjfo4ffpto4" path="res://assets/fonts/urw_gothic/URWGothic-Book.ttf" id="7_cicay"]
 [ext_resource type="LabelSettings" uid="uid://beexdwdlieaad" path="res://modules/startup/default/title_label.tres" id="7_jouqv"]
 [ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/icons_startup/favorite.png" id="7_nkeee"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqyyg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.12549)
+shadow_size = 5
+shadow_offset = Vector2(0, 2)
 
 [sub_resource type="LabelSettings" id="LabelSettings_vykhc"]
 font_size = 12
@@ -60,6 +74,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xqyyg")
 
 [node name="VBox" type="VBoxContainer" parent="StartupPanel"]
 layout_mode = 2
