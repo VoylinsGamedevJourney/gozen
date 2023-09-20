@@ -47,6 +47,7 @@ func save_project() -> void:
 	explorer._on_cancel_pressed.connect(_explorer_cancel_pressed)
 	get_tree().current_scene.find_child("Content").add_child(explorer)
 	explorer.open()
+	_on_saved.emit()
 
 
 func _on_new_project_path_selected(new_path: String) -> void:

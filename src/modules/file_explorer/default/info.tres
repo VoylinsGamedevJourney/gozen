@@ -6,3 +6,4 @@
 script = ExtResource("1_02116")
 module_name = "Default"
 scene = "res://modules/file_explorer/default/file_explorer.tscn"
+version_nr = 1
