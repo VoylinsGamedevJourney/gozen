@@ -1,9 +1,13 @@
 extends Control
 
+enum TAB_POSITION { TOP, BOTTOM }
+
+
 const DATA_PATH := "user://default_editor_module.dat"
 
 
 var data := {
+	tab_position = TAB_POSITION.TOP,
 	panels = { 
 		left_top = [],
 		left_bottom = [],
@@ -15,14 +19,14 @@ var data := {
 		right_bottom = [],
 	},
 	offsets = {
-		main_h = 0,
+		main_h = -1200,
 		left_v = 0,
-		second_h = 0,
+		second_h = 1200,
 		middle_v = 0,
-		middle_top_h = 0,
-		middle_second_top_h = 0,
-		middle_bottom_h = 0,
-		middle_second_bottom_h = 0,
+		middle_top_h = 1200,
+		middle_second_top_h = -1200,
+		middle_bottom_h = 1200,
+		middle_second_bottom_h = -1200,
 		right_v = 0
 	}
 }
