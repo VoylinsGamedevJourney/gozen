@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bief6towf416u"]
 
-[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_req2b"]
-[ext_resource type="Script" path="res://effects_view/default/effects_view.gd" id="2_v3023"]
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_req2b"]
+[ext_resource type="Script" path="res://modules/effects_view/default/effects_view.gd" id="2_v3023"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tqpyo"]
 font_size = 80

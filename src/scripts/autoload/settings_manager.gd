@@ -75,7 +75,7 @@ func get_language_list() -> Dictionary:
 	var dic := {}
 	var locales: Array = TranslationServer.get_loaded_locales()
 	for locale in locales:
-		var language_name: String
+		var language_name: String = ""
 		if locale.contains("_"):
 			language_name += TranslationServer.get_language_name(locale.split('_')[0])
 			language_name += " - %s" % TranslationServer.get_country_name(locale.split('_')[1])

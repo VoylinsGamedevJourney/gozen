@@ -42,7 +42,7 @@ func _load_custom_module(module_type: String, module_name: String) -> void:
 
 
 ## Only way to add custom modules is by putting the file in 'user://modules/...'
-func _add_custom_module(module_type: String, module_name: String) -> void:
+func _add_custom_module(_module_type: String, _module_name: String) -> void:
 	# TODO: A way to add a custom module, after adding it needs to be loaded
 	# TODO: Open file explorer and get the required file.
 	# TODO: Check if module type folder actually exists
