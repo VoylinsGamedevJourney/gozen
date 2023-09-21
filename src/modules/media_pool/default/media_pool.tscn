@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://6cs0hb28epea"]
 
-[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_tveyf"]
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_tveyf"]
 [ext_resource type="Script" path="res://modules/media_pool/default/media_pool.gd" id="2_m2otm"]
 
-[node name="FilesView" type="PanelContainer"]
+[node name="MediaPool" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

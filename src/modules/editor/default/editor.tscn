@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://tsxucctndc2m"]
+[gd_scene load_steps=7 format=3 uid="uid://tsxucctndc2m"]
 
 [ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_5d5fk"]
 [ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="1_fojp6"]
 [ext_resource type="Script" path="res://scripts/replacer.gd" id="3_ihq0b"]
 [ext_resource type="StyleBox" uid="uid://3p2k6n60hsjd" path="res://assets/node_styles/style_panel_background.tres" id="3_wou5c"]
 [ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/node_styles/style_panel_secondary.tres" id="4_bex4u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c3hox"]
 
 [node name="EditorScreen" type="MarginContainer"]
 anchors_preset = 15
@@ -20,16 +22,19 @@ theme_override_constants/margin_bottom = 7
 script = ExtResource("1_fojp6")
 
 [node name="MainHSplit" type="HSplitContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 split_offset = -1200
 
 [node name="LeftPanel" type="PanelContainer" parent="MainHSplit"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("3_wou5c")
 
 [node name="LeftVSplit" type="VSplitContainer" parent="MainHSplit/LeftPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -37,12 +42,20 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/LeftPanel/LeftVSplit/LeftTopPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="LeftBottomPanel" type="PanelContainer" parent="MainHSplit/LeftPanel/LeftVSplit"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/LeftPanel/LeftVSplit/LeftBottomPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="SecondaryPanel" type="PanelContainer" parent="MainHSplit"]
@@ -50,6 +63,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="SecondHSplit" type="HSplitContainer" parent="MainHSplit/SecondaryPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 split_offset = 1200
@@ -60,24 +74,31 @@ size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("3_wou5c")
 
 [node name="MiddleVSplit" type="VSplitContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="MiddleTopHSplit" type="HSplitContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = 1200
 
 [node name="MiddleSecondTopHSplit" type="HSplitContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 split_offset = -1200
 
-[node name="MiddleTopLeft" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleSecondTopHSplit"]
+[node name="MiddleTopLeftPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleSecondTopHSplit"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleSecondTopHSplit/MiddleTopLeftPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="ProjectviewPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleSecondTopHSplit"]
@@ -91,28 +112,38 @@ layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_ihq0b")
 
-[node name="MiddleTopRight" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit"]
+[node name="MiddleTopRightPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleTopRightPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="MiddleBottomHSplit" type="HSplitContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = 1200
 
 [node name="MiddleSecondBottomHSplit" type="HSplitContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 split_offset = -1200
 
-[node name="MiddleBottomLeft" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondBottomHSplit"]
+[node name="MiddleBottomLeftPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondBottomHSplit"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondBottomHSplit/MiddleBottomLeftPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="TimelinePanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondBottomHSplit"]
@@ -126,20 +157,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_ihq0b")
 
-[node name="MiddleBottomRight" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit"]
+[node name="MiddleBottomRightPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleBottomRightPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="RightPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("3_wou5c")
 
 [node name="RightVSplit" type="VSplitContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/RightPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -147,12 +184,20 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/RightPanel/RightVSplit/RightTopPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [node name="RightBottomPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/RightPanel/RightVSplit"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c3hox")
+
+[node name="TabContainer" type="TabContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/RightPanel/RightVSplit/RightBottomPanel"]
+layout_mode = 2
 theme_override_styles/panel = ExtResource("4_bex4u")
 
 [connection signal="dragged" from="MainHSplit" to="." method="set_split_offset" binds= ["main_h"]]

@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_jam0u")
 module_name = "Default"
-scene = "res://modules/editor/default/editor.tscn"
+scene = "res://modules/effects_view/default/effects_view.tscn"
 version_nr = 1

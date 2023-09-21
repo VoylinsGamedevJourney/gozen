@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://kktdag02i8qd"]
 
 [ext_resource type="Script" path="res://modules/timeline/default/timeline.gd" id="1_eocur"]
-[ext_resource type="Theme" uid="uid://cuk12i8c822qr" path="res://assets/main_editor_theme.tres" id="1_ox6vf"]
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_ox6vf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_665wr"]
 font_size = 20
