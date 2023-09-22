@@ -1,5 +1,10 @@
 # GoZen
 
+> [!IMPORTANT]  
+> GoZen is in a pre-alpha stage. You should not expect everything to work properly.
+> All work on GoZen is being done in the development branch for now.
+> If you want to stay up to date with the progress, look in the [projects tab](https://github.com/users/voylin/projects/3) or join the [discord server]( https://discord.gg/BdbUf7VKYC).
+
 *The Minimalist Video Editor*
 
 ## Meaning of GoZen 
