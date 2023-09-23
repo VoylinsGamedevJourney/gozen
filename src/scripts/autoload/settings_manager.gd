@@ -85,4 +85,12 @@ func get_language_list() -> Dictionary:
 	return dic
 
 
+# UPDATE NOTIFICATION  ########################################
 
+func set_update_notification(value: bool) -> void:
+	settings.update_notification = value
+	save_settings()
+
+
+func get_update_notification() -> bool:
+	return settings.update_notification
