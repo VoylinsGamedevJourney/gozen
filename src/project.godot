@@ -19,6 +19,9 @@ run/low_processor_mode=true
 boot_splash/bg_color=Color(0.101961, 0.101961, 0.101961, 1)
 boot_splash/image="res://assets/splash_screen.png"
 config/icon="res://icon.png"
+config/version_major=0
+config/version_minor=1
+config/version_patch=0
 
 [autoload]
 
