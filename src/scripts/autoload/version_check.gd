@@ -10,6 +10,7 @@ const PROPERTY_PATCH := "config/version_patch"
 
 
 var version: String = "0.0.0"
+var update_available: bool = false
 
 
 func _ready() -> void:
@@ -39,7 +40,6 @@ func _ready() -> void:
 
 
 func _version_check_received(_r, response, _h, body):
-	print(body.get_string_from_utf8())
 	if response == 404:
 		print_debug("Could not retrieve version file, 404")
 		return
@@ -49,10 +49,13 @@ func _version_check_received(_r, response, _h, body):
 	
 	if (branch_settings.get_value("application",PROPERTY_MAJOR) >
 			ProjectSettings.get_setting("application/%s" % PROPERTY_MAJOR)):
+		update_available = true
 		_on_version_outdated.emit()
 	elif (branch_settings.get_value("application",PROPERTY_MINOR) >
 			ProjectSettings.get_setting("application/%s" % PROPERTY_MINOR)):
+		update_available = true
 		_on_version_outdated.emit()
 	elif (branch_settings.get_value("application",PROPERTY_PATCH) >
 			ProjectSettings.get_setting("application/%s" % PROPERTY_PATCH)):
+		update_available = true
 		_on_version_outdated.emit()

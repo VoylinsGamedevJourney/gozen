@@ -1,41 +1,29 @@
 extends Node
 
+signal _settings_ready
+
 signal _on_open_settings
 signal _on_zen_switched(value)
 
-signal _on_version_changed(new_version)
-signal _on_version_outdated
+
+const PATH := "user://settings.ini"
 
 
-const PATH := "user://settings"
-
-
-var startup: bool = true
-var settings: Settings = Settings.new()
-
-var update_available: bool = false
+var data: ConfigFile
 
 
 func _ready() -> void:
-	load_settings()
+	if FileAccess.file_exists(PATH):
+		_load()
+	else:
+		data = ConfigFile.new()
+	_settings_ready.emit()
 
 
-func load_settings() -> void:
-	var data: String = FileManager.load_data(PATH)
-	if data == "":
-		save_settings()
-		startup = false
-		return
-	settings = str_to_var(data)
-	for setting in settings.get_property_list():
-		if setting.usage == 4096:
-			call("set_%s" % setting.name, settings.get(setting.name))
-	startup = false
-
-
-func save_settings() -> void:
-	if !startup:
-		FileManager.save_data(settings, PATH)
+func _load() -> void:
+	data.load(PATH)
+	for key in data.get_section_keys("main"):
+		call("set_%s" % key, data.get_value("main", key), true)
 
 
 func _input(event: InputEvent) -> void:
@@ -43,33 +31,28 @@ func _input(event: InputEvent) -> void:
 		toggle_zen_mode()
 
 
-##############################################################
-# Getters and setters  #######################################
-##############################################################
+###############################################################
+## Getters and setters  #######################################
+###############################################################
 
-# ZEN MODE  ##################################################
+## ZEN MODE  ##################################################
 
 func get_zen_mode() -> bool:
-	return settings.zen_mode
+	return data.get_value("main", "zen_mode", false)
 
 
-func set_zen_mode(value: bool) -> void:
-	settings.zen_mode = value
+func set_zen_mode(value: bool, startup: bool = false) -> void:
+	data.set_value("main", "zen_mode", value)
 	_on_zen_switched.emit(value)
-	save_settings()
+	if !startup:
+		data.save(PATH)
 
 
 func toggle_zen_mode() -> void:
 	set_zen_mode(!get_zen_mode())
 
 
-# LANGUAGE  ##################################################
-
-func set_language(language_code: String) -> void:
-	TranslationServer.set_locale(language_code)
-	settings.language = language_code
-	save_settings()
-
+## LANGUAGE  ##################################################
 
 func get_language_list() -> Dictionary:
 	var dic := {}
@@ -85,12 +68,20 @@ func get_language_list() -> Dictionary:
 	return dic
 
 
-# UPDATE NOTIFICATION  ########################################
+func set_language(language_code: String, startup: bool = false) -> void:
+	TranslationServer.set_locale(language_code)
+	data.set_value("main", "language", language_code)
+	if !startup:
+		data.save(PATH)
 
-func set_update_notification(value: bool) -> void:
-	settings.update_notification = value
-	save_settings()
 
+## UPDATE NOTIFICATION  #######################################
 
 func get_update_notification() -> bool:
-	return settings.update_notification
+	return data.get_value("main", "update_notification", true)
+
+
+func set_update_notification(value: bool, startup: bool = false) -> void:
+	data.set_value("main", "update_notification", value)
+	if !startup:
+		data.save(PATH)
