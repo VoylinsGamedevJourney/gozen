@@ -1,7 +1,5 @@
 extends FileExplorer
-# TODO: Resizing of icon support
 
-const PATH_LAST_DIR := "user://explorer_last_dir"
 
 var dir: DirAccess
 
@@ -11,7 +9,10 @@ func create(_title: String, _mode: MODE, _filter: Array = []):
 	mode = _mode
 	filter = _filter
 	# TODO: Set dir location to last saved folder
-	dir.open(str_to_var(FileManager.load_data(PATH_LAST_DIR)))
+	dir.open(SettingsManager.data.get_value(
+			"file_explorer", 
+			"last_dir", 
+			ProjectSettings.globalize_path("res://")))
 	self.visible = false
 
 
@@ -101,5 +102,6 @@ func _on_create_folder_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	FileManager.save_data(dir.get_current_dir(), PATH_LAST_DIR)
+	SettingsManager.data.set_value("file_explorer", "last_dir", dir.get_current_dir())
+	SettingsManager.data.save(SettingsManager.PATH)
 	cancel_pressed()
