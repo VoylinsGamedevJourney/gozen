@@ -1,4 +1,8 @@
 extends FileExplorer
+## File Explorer
+##
+## The settings config section is 'file_explorer',
+## it has a key called 'last_dir'
 
 
 var dir: DirAccess

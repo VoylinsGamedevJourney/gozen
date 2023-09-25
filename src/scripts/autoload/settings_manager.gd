@@ -1,4 +1,13 @@
 extends Node
+## Settings manager
+##
+## All settings are saved in a config file (INI)
+## Settings list: (name, type, default)
+## - zen_mode;  (bool, false)
+## - language;  (String, "en")
+## - update_notification;  (bool, true);
+##
+## These settings are saved inside of section 'main'
 
 signal _settings_ready
 

@@ -1,4 +1,8 @@
 extends Node
+## Module Manager
+##
+## The selected modules are saved in the settings file
+## under section 'selected_modules'
 
 
 var modules := {}
