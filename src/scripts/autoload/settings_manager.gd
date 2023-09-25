@@ -7,6 +7,11 @@ signal _on_zen_switched(value)
 
 
 const PATH := "user://settings.ini"
+const DEFAULT := {
+	language = "en",
+	zen_mode = false,
+	update_notification = true
+}
 
 
 var data: ConfigFile
@@ -16,6 +21,9 @@ func _ready() -> void:
 	data = ConfigFile.new()
 	if FileAccess.file_exists(PATH):
 		_load()
+	else:
+		for setting in DEFAULT:
+			data.set_value("main", setting, DEFAULT[setting])
 	_settings_ready.emit()
 
 
