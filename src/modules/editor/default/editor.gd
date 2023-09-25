@@ -72,8 +72,10 @@ func build_editor() -> void:
 			panel_nodes[panel].visible = false
 			continue
 		for mod in data.panels[panel]:
-			if data.panels[panel].get_child_count() == 0:
-				var new_panel =
+#			if data.panels[panel].get_child_count() == 0:
+#				pass
+				# TODO: Add background panel
+#				var new_panel =
 			panel_nodes[panel].add_child(ModuleManager .get_selected_module(mod))
 	
 	# Check for Left and Right panel to see if empty or not

@@ -1,24 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://dedsbtsetboyv"]
+[gd_scene load_steps=9 format=3 uid="uid://dedsbtsetboyv"]
 
 [ext_resource type="Script" path="res://modules/command_bar/default/command_bar.gd" id="1_nrlre"]
+[ext_resource type="StyleBox" uid="uid://3p2k6n60hsjd" path="res://assets/node_styles/style_panel_background.tres" id="2_g62xp"]
+[ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/node_styles/style_panel_secondary.tres" id="3_43mtw"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewrmy"]
-content_margin_left = 10.0
-content_margin_top = 50.0
-content_margin_right = 10.0
-content_margin_bottom = 7.0
-bg_color = Color(0.219608, 0.219608, 0.219608, 0.729412)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pnw7a"]
+bg_color = Color(0, 0, 0, 0.392157)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2diww"]
-bg_color = Color(0.219608, 0.219608, 0.219608, 0.729412)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wpalm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i5i3n"]
 content_margin_left = 10.0
@@ -32,13 +21,15 @@ content_margin_right = 10.0
 content_margin_left = 10.0
 content_margin_right = 10.0
 
-[node name="CommandBar" type="Control"]
-layout_mode = 3
+[node name="CommandBar" type="Button"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pnw7a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_pnw7a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pnw7a")
 script = ExtResource("1_nrlre")
 
 [node name="InfoPanel" type="PanelContainer" parent="."]
@@ -53,19 +44,21 @@ offset_right = 300.0
 offset_bottom = 180.0
 grow_horizontal = 2
 pivot_offset = Vector2(586, 0)
-theme_override_styles/panel = SubResource("StyleBoxFlat_ewrmy")
+theme_override_styles/panel = ExtResource("2_g62xp")
 
-[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel"]
+[node name="VBox" type="VBoxContainer" parent="InfoPanel"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="InfoPanel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wpalm")
+
+[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel/VBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="InfoPanel"]
-layout_mode = 2
-
-[node name="Scroll" type="ScrollContainer" parent="InfoPanel/VBoxContainer"]
-layout_mode = 2
-horizontal_scroll_mode = 0
 
 [node name="CommandPanel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(600, 50)
@@ -79,10 +72,13 @@ offset_right = 300.0
 offset_bottom = 180.0
 grow_horizontal = 2
 pivot_offset = Vector2(586, 0)
-theme_override_styles/panel = SubResource("StyleBoxFlat_2diww")
+theme_override_styles/panel = ExtResource("3_43mtw")
 
 [node name="CommandLineEdit" type="LineEdit" parent="CommandPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_i5i3n")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_vpqpg")
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_h6he7")
+
+[connection signal="pressed" from="." to="." method="_hide_command_bar"]
