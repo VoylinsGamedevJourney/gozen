@@ -1,20 +1,17 @@
 extends Node
 
-const PATH_SEL_MODULES := "user://selected_modules"
-
 
 var modules := {}
-var selected_modules := {}
 
 
 func _ready() -> void:
-	if FileAccess.file_exists(PATH_SEL_MODULES):
-		selected_modules = str_to_var(FileManager.load_data(PATH_SEL_MODULES))
-	
+	# Creating modules dir in user:// if doesn't exist
 	var dir := DirAccess.open("user://")
 	if !dir.dir_exists("modules"):
 		dir.make_dir("modules")
+		return
 	
+	# Loading in all saved custom modules
 	dir.change_dir("modules")
 	for module_type in dir.get_directories():
 		dir.change_dir(module_type)
@@ -22,6 +19,7 @@ func _ready() -> void:
 			_load_custom_module(module_type, module_name)
 		dir.change_dir("..")
 	
+	# Populating the modules dictionary
 	dir = DirAccess.open("res://modules")
 	for module_type in dir.get_directories():
 		modules[module_type] = {}
@@ -52,19 +50,20 @@ func _add_custom_module(_module_type: String, _module_name: String) -> void:
 
 # SELECTED MODULES STUFF  ####################################
 
-func get_selected_modules() -> Dictionary:
-	return selected_modules
+func get_selected_module_keys() -> PackedStringArray:
+	if SettingsManager.data.has_section("selected_modules"):
+		return SettingsManager.data.get_section_keys("selected_modules")
+	return []
 
 
 func get_selected_module(module_type: String) -> Node:
-	if !selected_modules.has(module_type):
-		selected_modules[module_type] = "Default"
-		FileManager.save_data(selected_modules, PATH_SEL_MODULES)
-	if !modules[module_type].has(selected_modules[module_type].to_lower()):
-		return Node.new()
-	return load(modules[module_type][selected_modules[module_type].to_lower()]).instantiate()
+	if !get_selected_module_keys().has(module_type):
+		SettingsManager.data.set_value("selected_modules", module_type, "default")
+		SettingsManager.data.save(SettingsManager.PATH)
+	var selected_module: String = SettingsManager.data.get_value("selected_modules",module_type, "default")
+	return load(modules[module_type][selected_module]).instantiate()
 
 
 func change_selected_module(module_type: String, module_name: String) -> void:
-	selected_modules[module_type] = module_name
-	FileManager.save_data(selected_modules, PATH_SEL_MODULES)
+	SettingsManager.data.set_value("selected_modules", module_type, module_name)
+	SettingsManager.data.save(SettingsManager.PATH)

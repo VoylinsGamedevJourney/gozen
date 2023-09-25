@@ -13,10 +13,9 @@ var data: ConfigFile
 
 
 func _ready() -> void:
+	data = ConfigFile.new()
 	if FileAccess.file_exists(PATH):
 		_load()
-	else:
-		data = ConfigFile.new()
 	_settings_ready.emit()
 
 
