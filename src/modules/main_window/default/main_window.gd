@@ -12,6 +12,9 @@ func _ready() -> void:
 	get_window().min_size = Vector2i(600,600)
 	_on_window_mode_switch.connect(_on_window_switch)
 	_on_window_switch()
+	
+	SettingsManager._on_zen_switched.connect(_on_zen_switch)
+	_on_zen_switch(SettingsManager.get_zen_mode())
 
 
 func _process(_delta: float) -> void:
@@ -33,3 +36,7 @@ func _on_gui_input(event: InputEvent, node: NodePath) -> void:
 ## Disable handles when window is not in windowed mode
 func _on_window_switch() -> void:
 	$Handles.visible = get_window().mode == Window.MODE_WINDOWED
+
+
+func _on_zen_switch(value: bool) -> void:
+	%StatusBar.visible = value

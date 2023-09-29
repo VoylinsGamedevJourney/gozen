@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://c3grblydggern"]
-
-[ext_resource type="Script" path="res://scripts/resources/module_interface.gd" id="1_3ilyq"]
-
-[resource]
-script = ExtResource("1_3ilyq")
-module_name = "Default"
-scene = "res://modules/top_bar/default/top_bar.tscn"
