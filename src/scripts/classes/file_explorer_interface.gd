@@ -7,18 +7,17 @@ signal _on_cancel_pressed
 enum MODE { SAVE_PROJECT }
 
 
-var explorer: Control
 var title: String
 var mode: MODE
 var filter: Array
 
 
 func show() -> void:
-	explorer.visible = true
+	self.visible = true
 
 
 func close() -> void:
-	explorer.queue_free()
+	self.queue_free()
 
 
 func ok_pressed(path: Array) -> void:

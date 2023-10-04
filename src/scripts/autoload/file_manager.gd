@@ -1,6 +1,5 @@
 extends Node
 
-
 const OPEN_ERROR := "Could not open file '%s' for %s!\n\tError: %s"
 const PROCESS_ERROR := "Could not %s data to '%s'!\n\tError: %s"
 

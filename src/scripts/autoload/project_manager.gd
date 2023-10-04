@@ -45,7 +45,7 @@ func save_project() -> void:
 	explorer.create("Save project", FileExplorer.MODE.SAVE_PROJECT)
 	explorer._on_save_project_path_selected.connect(_on_new_project_path_selected)
 	explorer._on_cancel_pressed.connect(_explorer_cancel_pressed)
-	get_tree().current_scene.find_child("Content").add_child(explorer)
+	get_tree().current_scene.add_to_content(explorer)
 	explorer.open()
 	_on_saved.emit()
 

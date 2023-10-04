@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bgendq8utqsqh"]
+[gd_scene load_steps=20 format=3 uid="uid://bgendq8utqsqh"]
 
 [ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_0rbx4"]
 [ext_resource type="Script" path="res://modules/file_explorer/default/file_explorer.gd" id="1_26xw6"]
@@ -19,6 +19,8 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8w2jo"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_88e2k"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_n0d4d"]
 font_size = 14
 
@@ -33,6 +35,10 @@ corner_radius_bottom_left = 7
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tkbl0"]
+content_margin_left = 7.0
+content_margin_right = 7.0
 
 [node name="file_explorer" type="Button"]
 anchors_preset = 15
@@ -78,6 +84,7 @@ offset_right = 375.0
 offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_88e2k")
 
 [node name="MarginContainer" type="MarginContainer" parent="Explorer"]
 layout_mode = 2
@@ -155,6 +162,7 @@ layout_mode = 2
 text = "Path:"
 
 [node name="PathLineEdit" type="LineEdit" parent="Explorer/MarginContainer/VBox/NavHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -231,6 +239,16 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_obp1q")
 
+[node name="Scroll" type="ScrollContainer" parent="Explorer/MarginContainer/VBox/MiddleHBox/FilesViewPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_tkbl0")
+
+[node name="FilesHFlow" type="HFlowContainer" parent="Explorer/MarginContainer/VBox/MiddleHBox/FilesViewPanel/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="InfoHBox" type="HBoxContainer" parent="Explorer/MarginContainer/VBox"]
 layout_mode = 2
 
@@ -268,10 +286,11 @@ text = "OK"
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox/FolderOnTopButton" to="." method="_on_folder_on_top_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox/CreateFolderButton" to="." method="_on_create_folder_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/TopBar/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="text_submitted" from="Explorer/MarginContainer/VBox/NavHBox/PathLineEdit" to="." method="_on_path_line_edit_text_submitted"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/MiddleHBox/SavedLocationsPanel/ScrollContainer/VBox/HomeButton" to="." method="_on_home_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/MiddleHBox/SavedLocationsPanel/ScrollContainer/VBox/DocumentsButton" to="." method="_on_documents_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/MiddleHBox/SavedLocationsPanel/ScrollContainer/VBox/PicturesButton" to="." method="_on_pictures_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/MiddleHBox/SavedLocationsPanel/ScrollContainer/VBox/MusicButton" to="." method="_on_music_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/MiddleHBox/SavedLocationsPanel/ScrollContainer/VBox/VideosButton" to="." method="_on_videos_button_pressed"]
-[connection signal="pressed" from="Explorer/MarginContainer/VBox/BottomButtonsHBox/CancelButton" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Explorer/MarginContainer/VBox/BottomButtonsHBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Explorer/MarginContainer/VBox/BottomButtonsHBox/OkButton" to="." method="_on_ok_pressed"]

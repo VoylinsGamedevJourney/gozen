@@ -68,6 +68,14 @@ func get_selected_module(module_type: String) -> Node:
 	return load(modules[module_type][selected_module]).instantiate()
 
 
+func get_selected_module_path(module_type: String) -> String:
+	if !get_selected_module_keys().has(module_type):
+		SettingsManager.data.set_value("selected_modules", module_type, "default")
+		SettingsManager.data.save(SettingsManager.PATH)
+	var selected_module: String = SettingsManager.data.get_value("selected_modules",module_type, "default")
+	return modules[module_type][selected_module]
+
+
 func change_selected_module(module_type: String, module_name: String) -> void:
 	SettingsManager.data.set_value("selected_modules", module_type, module_name)
 	SettingsManager.data.save(SettingsManager.PATH)
