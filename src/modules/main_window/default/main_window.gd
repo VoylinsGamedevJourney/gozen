@@ -17,6 +17,28 @@ func _ready() -> void:
 	_on_zen_switch(SettingsManager.get_zen_mode())
 
 
+func _on_right_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		_gui_input_handling(event, $Handles/Right)
+
+
+func _on_bottom_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		_gui_input_handling(event, $Handles/Bottom)
+
+
+func _on_corner_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		_gui_input_handling(event, $Handles/Corner)
+
+
+func _gui_input_handling(event: InputEvent, node: Control) -> void:
+	if event.button_index == 1:
+		if !resizing:
+			resize_node = node
+		resizing = event.is_pressed()
+
+
 func _process(_delta: float) -> void:
 	if resizing:
 		var current_scene = get_tree().current_scene
@@ -26,17 +48,14 @@ func _process(_delta: float) -> void:
 			get_window().size.x = int(current_scene.get_global_mouse_position().x)
 
 
-func _on_gui_input(event: InputEvent, node: NodePath) -> void:
-	if event is InputEventMouseButton and event.button_index == 1:
-		if !resizing: 
-			resize_node = get_node(node)
-		resizing = event.is_pressed()
-
-
 ## Disable handles when window is not in windowed mode
 func _on_window_switch() -> void:
 	$Handles.visible = get_window().mode == Window.MODE_WINDOWED
 
 
 func _on_zen_switch(value: bool) -> void:
-	%StatusBar.visible = value
+	%StatusBar.visible = !value
+
+
+func add_to_content(node: Node) -> void:
+	%Content.add_child(node)
