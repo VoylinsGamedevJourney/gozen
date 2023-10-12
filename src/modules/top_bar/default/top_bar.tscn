@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b72yl7fvcwsx3"]
+[gd_scene load_steps=17 format=3 uid="uid://b72yl7fvcwsx3"]
 
 [ext_resource type="Script" path="res://modules/top_bar/default/top_bar.gd" id="1_egmw6"]
 [ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://icon.png" id="2_hm26p"]
@@ -6,7 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://dem5aoobluph8" path="res://assets/top_bar_icons/settings_video_camera.png" id="4_vmjh0"]
 [ext_resource type="Texture2D" uid="uid://bwp8lupedimnl" path="res://assets/top_bar_icons/minimize.png" id="5_k12xv"]
 [ext_resource type="Texture2D" uid="uid://d4kvq12gshwyr" path="res://assets/top_bar_icons/maximize.png" id="6_n434s"]
+[ext_resource type="Texture2D" uid="uid://dnbfg6wdw43pe" path="res://assets/top_bar_icons/minimize_pressed.png" id="6_p7088"]
+[ext_resource type="Texture2D" uid="uid://bgf5ac0bhcmvp" path="res://assets/top_bar_icons/minimize_hover.png" id="7_ifh1q"]
 [ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/top_bar_icons/close.png" id="7_timhm"]
+[ext_resource type="Texture2D" uid="uid://cfsl6vmt3677s" path="res://assets/top_bar_icons/maximize_pressed.png" id="9_ijd4h"]
+[ext_resource type="Texture2D" uid="uid://27ir0jhsc6s2" path="res://assets/top_bar_icons/maximize_hover.png" id="10_1co4q"]
+[ext_resource type="Texture2D" uid="uid://cg07fe81qtc43" path="res://assets/top_bar_icons/close_pressed.png" id="12_oih5b"]
+[ext_resource type="Texture2D" uid="uid://c258dfyo5iw5v" path="res://assets/top_bar_icons/close_hover.png" id="13_axs4x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chl26"]
 content_margin_left = 7.0
@@ -70,6 +76,8 @@ modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("5_k12xv")
+texture_pressed = ExtResource("6_p7088")
+texture_hover = ExtResource("7_ifh1q")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -78,6 +86,8 @@ modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("6_n434s")
+texture_pressed = ExtResource("9_ijd4h")
+texture_hover = ExtResource("10_1co4q")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -86,6 +96,8 @@ modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("7_timhm")
+texture_pressed = ExtResource("12_oih5b")
+texture_hover = ExtResource("13_axs4x")
 ignore_texture_size = true
 stretch_mode = 5
 
