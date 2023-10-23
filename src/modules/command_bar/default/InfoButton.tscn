@@ -1,9 +1,12 @@
 [gd_scene load_steps=2 format=3 uid="uid://cpit7jgjryt7u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7t0gs"]
+content_margin_left = 7.0
+content_margin_top = 14.0
+content_margin_right = 7.0
 
 [node name="InfoButton" type="Button"]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(0, 40)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -11,22 +14,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_7t0gs")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 7
-
-[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+[node name="CommandLabel" type="RichTextLabel" parent="."]
 layout_mode = 2
-
-[node name="CommandLabel" type="RichTextLabel" parent="MarginContainer/VBox"]
-layout_mode = 2
+offset_left = 7.0
+offset_top = 14.0
+offset_right = 1913.0
+offset_bottom = 1080.0
+mouse_filter = 1
 bbcode_enabled = true
 text = "Command"
 fit_content = true

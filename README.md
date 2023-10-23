@@ -1,12 +1,21 @@
 # GoZen
 
-*The Minimalist Video Editor*
+> [!IMPORTANT]  
+> GoZen is in a pre-alpha stage. You should not expect everything to work properly.
+
+*The Modular & Minimalist Video Editor*
+
+[Stay up to date](https://voylin.github.io/GoZen)
 
 ## Meaning of GoZen 
 
 I named the editor GoZen, Go comes from Godot and Zen from ... zen. I want this editor to be very useful, but not be too complex to the end user so they can edit videos whilst being zen. Honestly, I had a very good reason to use zen in the name but I completely forgot as I only wrote down the name and not how I came up with it. ^^"
 
 （午前）Gozen also means morning in Japanese, so the logo represents a rising sun. The logo and look of the editor is all still a work in progress!
+
+## Want to contribute?
+
+Read the [contributing documentation](CONTRIBUTING.md)!
 
 ## Why create a video editor with Godot?
 

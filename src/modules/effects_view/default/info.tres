@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://xolj73fb15ja"]
+
+[ext_resource type="Script" path="res://scripts/resources/module_interface.gd" id="1_jam0u"]
+
+[resource]
+script = ExtResource("1_jam0u")
+module_name = "Default"
+scene = "res://modules/effects_view/default/effects_view.tscn"
+version_nr = 1

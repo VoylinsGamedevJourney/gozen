@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://i4lavk6yq7vs"]
+
+[ext_resource type="Script" path="res://scripts/resources/module_interface.gd" id="1_3ctg7"]
+
+[resource]
+script = ExtResource("1_3ctg7")
+module_name = "Default"
+scene = "res://modules/command_bar/default/command_bar.tscn"
+version_nr = 1

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://bbbdvgwwd0j1s"]
+
+[ext_resource type="Script" path="res://scripts/resources/module_interface.gd" id="1_3gvly"]
+
+[resource]
+script = ExtResource("1_3gvly")
+module_name = "Default"
+scene = "res://modules/media_pool/default/media_pool.tscn"

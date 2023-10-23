@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://dkl2h34lj0xnh"]
+
+[ext_resource type="Script" path="res://scripts/resources/module_interface.gd" id="1_nynwu"]
+
+[resource]
+script = ExtResource("1_nynwu")
+module_name = "Default"
+scene = "res://modules/settings_menu/default/settings_menu.tscn"
+version_nr = 1

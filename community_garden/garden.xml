@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<garden>
+  <modules>
+    <module name="Example" version="0.1.0" requirements="" type="" release_url=""/>
+    <module name="CommandPro" version="0.1.0" requirements="CommandBasic" type="command_bar" release_url=""/>
+  </modules>
+  <effects>
+    <effect name="Example" version="0.1.0" requirements="" release_url=""/>
+  </effects>
+</garden>

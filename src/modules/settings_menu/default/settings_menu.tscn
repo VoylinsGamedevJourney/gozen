@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcu2gon56mdfk"]
+
+[ext_resource type="Script" path="res://modules/settings_menu/default/settings_menu.gd" id="1_bxapj"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_k0m7p"]
+thickness = 2
+vertical = true
+
+[node name="SettingsMenu" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bxapj")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="SearchBar" type="LineEdit" parent="MarginContainer/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Search ..."
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 200
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/VBox/HSplitContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Categories" type="ScrollContainer" parent="MarginContainer/VBox/HSplitContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CategoriesVBox" type="VBoxContainer" parent="MarginContainer/VBox/HSplitContainer/HBox/Categories"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBox/HSplitContainer/HBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_k0m7p")
+
+[node name="CategorySettings" type="ScrollContainer" parent="MarginContainer/VBox/HSplitContainer"]
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBox/HSplitContainer/CategorySettings"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tabs_visible = false
