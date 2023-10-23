@@ -1,12 +1,22 @@
-[gd_scene load_steps=11 format=3 uid="uid://b72yl7fvcwsx3"]
+[gd_scene load_steps=21 format=3 uid="uid://b72yl7fvcwsx3"]
 
 [ext_resource type="Script" path="res://modules/top_bar/default/top_bar.gd" id="1_egmw6"]
 [ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://icon.png" id="2_hm26p"]
 [ext_resource type="Texture2D" uid="uid://cpd4rdetdel1p" path="res://assets/top_bar_icons/movie_edit.png" id="3_nak7m"]
+[ext_resource type="Texture2D" uid="uid://i8uwe2bp41ul" path="res://assets/top_bar_icons/movie_edit_pressed.png" id="4_8ka2c"]
 [ext_resource type="Texture2D" uid="uid://dem5aoobluph8" path="res://assets/top_bar_icons/settings_video_camera.png" id="4_vmjh0"]
 [ext_resource type="Texture2D" uid="uid://bwp8lupedimnl" path="res://assets/top_bar_icons/minimize.png" id="5_k12xv"]
+[ext_resource type="Texture2D" uid="uid://djfowh2mylkmf" path="res://assets/top_bar_icons/movie_edit_hover.png" id="5_u8lub"]
 [ext_resource type="Texture2D" uid="uid://d4kvq12gshwyr" path="res://assets/top_bar_icons/maximize.png" id="6_n434s"]
+[ext_resource type="Texture2D" uid="uid://wppili70t75v" path="res://assets/top_bar_icons/minimize_pressed.png" id="6_p7088"]
+[ext_resource type="Texture2D" uid="uid://clalkb4v4mry0" path="res://assets/top_bar_icons/settings_video_camera_pressed.png" id="7_ft17w"]
+[ext_resource type="Texture2D" uid="uid://c3dbm7c3iw60r" path="res://assets/top_bar_icons/minimize_hover.png" id="7_ifh1q"]
 [ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/top_bar_icons/close.png" id="7_timhm"]
+[ext_resource type="Texture2D" uid="uid://rpy20vdx5mb8" path="res://assets/top_bar_icons/settings_video_camera_hover.png" id="8_rbxkj"]
+[ext_resource type="Texture2D" uid="uid://cekamvlu5w6iu" path="res://assets/top_bar_icons/maximize_pressed.png" id="9_ijd4h"]
+[ext_resource type="Texture2D" uid="uid://dys5pfiey66fh" path="res://assets/top_bar_icons/maximize_hover.png" id="10_1co4q"]
+[ext_resource type="Texture2D" uid="uid://2185ifdnmybv" path="res://assets/top_bar_icons/close_pressed.png" id="12_oih5b"]
+[ext_resource type="Texture2D" uid="uid://cwpqrtim2bmj6" path="res://assets/top_bar_icons/close_hover.png" id="13_axs4x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chl26"]
 content_margin_left = 7.0
@@ -47,6 +57,8 @@ custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 tooltip_text = "Project settings"
 texture_normal = ExtResource("3_nak7m")
+texture_pressed = ExtResource("4_8ka2c")
+texture_hover = ExtResource("5_u8lub")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -56,6 +68,8 @@ custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 tooltip_text = "Ediutor settings"
 texture_normal = ExtResource("4_vmjh0")
+texture_pressed = ExtResource("7_ft17w")
+texture_hover = ExtResource("8_rbxkj")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -70,6 +84,8 @@ modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("5_k12xv")
+texture_pressed = ExtResource("6_p7088")
+texture_hover = ExtResource("7_ifh1q")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -78,6 +94,8 @@ modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("6_n434s")
+texture_pressed = ExtResource("9_ijd4h")
+texture_hover = ExtResource("10_1co4q")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -86,6 +104,8 @@ modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("7_timhm")
+texture_pressed = ExtResource("12_oih5b")
+texture_hover = ExtResource("13_axs4x")
 ignore_texture_size = true
 stretch_mode = 5
 
