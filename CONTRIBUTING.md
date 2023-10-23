@@ -15,13 +15,14 @@ To contribute to GoZen, make sure you have the following:
 
 ## How to Contribute
 
-1. Fork the project on GitHub to create your own copy.
-1. Create a new branch in your forked repository with a descriptive name for the changes you plan to make.
-1. Before submitting your changes, rebase your commits to ensure the branch consists of a maximum of one commit (unless multiple commits are justified).
-1. Open a pull request from your branch to the main repository.
-1. Wait for code review and feedback from the project maintainer (you will be notified through the pull request).
-1. Address any feedback or requested changes and update your pull request.
-1. Once your pull request is approved, it will be merged into the main repository.
+1. Fork the project on GitHub to create your own copy;
+1. When adding new features, be certain to be in the development branch;
+1. Create a new branch in your forked repository with a descriptive name for the changes you plan to make;
+1. Before submitting your changes, rebase your commits to ensure the branch consists of a maximum of one commit (unless multiple commits are justified);
+1. Open a pull request from your branch to the Development branch in the main repository;
+1. Wait for code review and feedback from the project maintainer (you will be notified through the pull request);
+1. Address any feedback or requested changes and update your pull request;
+1. Once your pull request is approved, it will be merged into the main repository;
 
 ### Reporting Bugs and Requesting Features
 
