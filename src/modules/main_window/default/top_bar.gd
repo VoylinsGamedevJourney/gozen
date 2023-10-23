@@ -26,7 +26,8 @@ func _on_gui_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if !move_window: return
+	if !move_window:
+		return
 	var mouse_delta = Vector2i(get_viewport().get_mouse_position()) - move_start
 	get_window().position += mouse_delta
 
