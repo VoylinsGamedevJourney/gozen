@@ -13,6 +13,10 @@ I named the editor GoZen, Go comes from Godot and Zen from ... zen. I want this 
 
 （午前）Gozen also means morning in Japanese, so the logo represents a rising sun. The logo and look of the editor is all still a work in progress!
 
+## Want to contribute?
+
+Read the [contributing documentation](CONTRIBUTING.md)!
+
 ## Why create a video editor with Godot?
 
 I have talked about this in [my first video of this project](https://www.youtube.com/watch?v=Ps0yQOJCYi0) so I don't want to talk too much more about the reason other than to say: Godot is capable of many things, it gives me a good UI framework and tons of possibilities for people to create their own modules and plugins for the editor and the 3D/2D capabilities save me some work to implement more complex features.

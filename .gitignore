@@ -13,9 +13,9 @@ export_presets.cfg
 *.mkv
 *.mp4
 
-# For big reset
-old_src/
-src/OLD/*
-
 # Linux dot files
 .directory
+
+TODO.md
+
+.idea

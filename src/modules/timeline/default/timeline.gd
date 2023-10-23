@@ -1,1 +1,1 @@
-extends TimelineModule
+extends Control

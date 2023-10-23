@@ -1,1 +1,1 @@
-extends ProjectViewModule
+extends Control
