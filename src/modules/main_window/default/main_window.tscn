@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://2xg6eooelhqq"]
+[gd_scene load_steps=26 format=3 uid="uid://2xg6eooelhqq"]
 
 [ext_resource type="Script" path="res://modules/main_window/default/main_window.gd" id="1_64h7j"]
 [ext_resource type="Script" path="res://modules/main_window/default/top_bar.gd" id="2_iba3u"]
@@ -6,10 +6,20 @@
 [ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://assets/icon.png" id="3_y74ip"]
 [ext_resource type="Texture2D" uid="uid://cpd4rdetdel1p" path="res://assets/icons_top_bar/movie_edit.png" id="4_fo4vy"]
 [ext_resource type="Texture2D" uid="uid://dem5aoobluph8" path="res://assets/icons_top_bar/settings_video_camera.png" id="5_3u824"]
+[ext_resource type="Texture2D" uid="uid://i8uwe2bp41ul" path="res://assets/icons_top_bar/movie_edit_pressed.png" id="5_qn6g6"]
 [ext_resource type="Texture2D" uid="uid://bwp8lupedimnl" path="res://assets/icons_top_bar/minimize.png" id="6_olv2o"]
+[ext_resource type="Texture2D" uid="uid://djfowh2mylkmf" path="res://assets/icons_top_bar/movie_edit_hover.png" id="6_xq0cp"]
 [ext_resource type="Texture2D" uid="uid://d4kvq12gshwyr" path="res://assets/icons_top_bar/maximize.png" id="7_s1hq2"]
+[ext_resource type="Texture2D" uid="uid://clalkb4v4mry0" path="res://assets/icons_top_bar/settings_video_camera_pressed.png" id="8_e8na4"]
 [ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/icons_top_bar/close.png" id="8_ego7h"]
+[ext_resource type="Texture2D" uid="uid://rpy20vdx5mb8" path="res://assets/icons_top_bar/settings_video_camera_hover.png" id="9_6gbx2"]
+[ext_resource type="Texture2D" uid="uid://wppili70t75v" path="res://assets/icons_top_bar/minimize_pressed.png" id="11_rysa6"]
 [ext_resource type="Script" path="res://scripts/set_version_text.gd" id="11_v8vrd"]
+[ext_resource type="Texture2D" uid="uid://c3dbm7c3iw60r" path="res://assets/icons_top_bar/minimize_hover.png" id="12_f3hpn"]
+[ext_resource type="Texture2D" uid="uid://cekamvlu5w6iu" path="res://assets/icons_top_bar/maximize_pressed.png" id="14_qkc4c"]
+[ext_resource type="Texture2D" uid="uid://dys5pfiey66fh" path="res://assets/icons_top_bar/maximize_hover.png" id="15_oopua"]
+[ext_resource type="Texture2D" uid="uid://2185ifdnmybv" path="res://assets/icons_top_bar/close_pressed.png" id="17_w3ml3"]
+[ext_resource type="Texture2D" uid="uid://cwpqrtim2bmj6" path="res://assets/icons_top_bar/close_hover.png" id="18_jnov1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chl26"]
 content_margin_left = 7.0
@@ -69,20 +79,22 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="ProjectButton" type="TextureButton" parent="Layout/TopBar/HBox"]
-modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 tooltip_text = "TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON"
 texture_normal = ExtResource("4_fo4vy")
+texture_pressed = ExtResource("5_qn6g6")
+texture_hover = ExtResource("6_xq0cp")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="SettingsButton" type="TextureButton" parent="Layout/TopBar/HBox"]
-modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 tooltip_text = "TOP_BAR_TOOLTIP_EDITOR_SETTINGS_BUTTON"
 texture_normal = ExtResource("5_3u824")
+texture_pressed = ExtResource("8_e8na4")
+texture_hover = ExtResource("9_6gbx2")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -93,26 +105,29 @@ mouse_filter = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_hyse3")
 
 [node name="MinimizeButton" type="TextureButton" parent="Layout/TopBar/HBox"]
-modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("6_olv2o")
+texture_pressed = ExtResource("11_rysa6")
+texture_hover = ExtResource("12_f3hpn")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="SwitchModeButton" type="TextureButton" parent="Layout/TopBar/HBox"]
-modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("7_s1hq2")
+texture_pressed = ExtResource("14_qkc4c")
+texture_hover = ExtResource("15_oopua")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="ExitButton" type="TextureButton" parent="Layout/TopBar/HBox"]
-modulate = Color(1, 1, 1, 0.494118)
 custom_minimum_size = Vector2(20, 30)
 layout_mode = 2
 texture_normal = ExtResource("8_ego7h")
+texture_pressed = ExtResource("17_w3ml3")
+texture_hover = ExtResource("18_jnov1")
 ignore_texture_size = true
 stretch_mode = 5
 
