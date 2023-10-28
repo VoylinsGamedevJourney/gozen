@@ -16,19 +16,19 @@ If you want to provide language support by entering your language or adjusting/a
 
 ## How to contribute
 
-Before contributing, you have to fork the Development branch of this repository and create a new branch called something like 'language_*language-code* update/addition'. Please refer to "New language" or "updating an already existing language" to know how to edit the JSON file correctly.
+Before contributing, you have to fork the Development branch of this repository and create a new branch called something like 'language_*language-code* update/addition'. Please refer to "New language" or "updating an already existing language" to know how to edit the YAML file correctly.
 
-After you are done editing the JSON file you can create a pull request. Please only add the updated JSON file as we will handle the csv file and other project files.
+After you are done editing the YAML file you can create a pull request. Please only add the updated YAML file as we will handle the csv file and other project files.
 
 ### New language?
 
 Run the python script "generate.py" by using "python generate.py" inside of the folder, select '2' and enter the official language code in plain text without any ' or " marks. Don't worry about the changes which need to be done inside any of the other project files as we will be adjusting those.
 
-This will create a new entry for all keys inside of the JSON file, add the words next to the language code of each key and you're done!
+This will create a new entry for all keys inside of the YAML file, add the words next to the language code of each key and you're done!
 
 ### Updating an already existing language
 
-In the translation.json file you'll find empty/prefilled slots for each key which needs translation. You can fill in or edit the current translation. Some text editors suport folding which may be helpful to only display the information which you want to see, but this is totally up to you.
+In the translation.yaml file you'll find empty/prefilled slots for each key which needs translation. You can fill in or edit the current translation. Some text editors suport folding which may be helpful to only display the information which you want to see, but this is totally up to you.
 
 ## Nodes folder
 
