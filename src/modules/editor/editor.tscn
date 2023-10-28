@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://tsxucctndc2m"]
+[gd_scene load_steps=8 format=3 uid="uid://tsxucctndc2m"]
 
 [ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_5d5fk"]
-[ext_resource type="Script" path="res://modules/editor/default/editor.gd" id="1_fojp6"]
-[ext_resource type="Script" path="res://scripts/replacer.gd" id="3_ihq0b"]
+[ext_resource type="Script" path="res://modules/editor/editor.gd" id="1_fojp6"]
 [ext_resource type="StyleBox" uid="uid://3p2k6n60hsjd" path="res://assets/node_styles/style_panel_background.tres" id="3_wou5c"]
 [ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/node_styles/style_panel_secondary.tres" id="4_bex4u"]
+[ext_resource type="PackedScene" uid="uid://vvbx5qhm413d" path="res://modules/project_view/project_view.tscn" id="5_0i76t"]
+[ext_resource type="PackedScene" uid="uid://kktdag02i8qd" path="res://modules/timeline/timeline.tscn" id="6_fvhdp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c3hox"]
 
@@ -28,6 +29,7 @@ split_offset = -1200
 
 [node name="LeftPanel" type="PanelContainer" parent="MainHSplit"]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -107,10 +109,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_bex4u")
 
-[node name="project_view" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleSecondTopHSplit/ProjectviewPanel"]
+[node name="project_view" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit/MiddleSecondTopHSplit/ProjectviewPanel" instance=ExtResource("5_0i76t")]
 layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("3_ihq0b")
 
 [node name="MiddleTopRightPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleTopHSplit"]
 unique_name_in_owner = true
@@ -152,10 +152,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_bex4u")
 
-[node name="timeline" type="Control" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondBottomHSplit/TimelinePanel"]
+[node name="Timeline" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit/MiddleSecondBottomHSplit/TimelinePanel" instance=ExtResource("6_fvhdp")]
 layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("3_ihq0b")
 
 [node name="MiddleBottomRightPanel" type="PanelContainer" parent="MainHSplit/SecondaryPanel/SecondHSplit/MiddlePanel/MiddleVSplit/MiddleBottomHSplit"]
 unique_name_in_owner = true

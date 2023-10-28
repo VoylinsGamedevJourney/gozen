@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://vvbx5qhm413d"]
 
-[ext_resource type="Script" path="res://modules/project_view/default/project_view.gd" id="1_fmqr0"]
+[ext_resource type="Script" path="res://modules/project_view/project_view.gd" id="1_fmqr0"]
 [ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_mrenp"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_bns32"]

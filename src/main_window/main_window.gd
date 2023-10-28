@@ -1,15 +1,22 @@
-extends Control
-## NOTE: Because of a Godot bug, borderless mode causes trouble!
+class_name MainWindow extends Control
+## Main Window
+##
+## The main window for GoZen, contains the place where the content
+## "editor screen, command bar, startup, ..." is being displayed.
+## The main window also handles the resizing and main window controls.
 
 signal _on_window_mode_switch
 
 
+## Bool to check if currently resizing.
 var resizing: bool = false
+## Handle used for deciding how to resize.
 var resize_node: Control
 
 
 func _ready() -> void:
 	get_window().min_size = Vector2i(600,600)
+	
 	_on_window_mode_switch.connect(_on_window_switch)
 	_on_window_switch()
 	
@@ -48,11 +55,12 @@ func _process(_delta: float) -> void:
 			get_window().size.x = int(current_scene.get_global_mouse_position().x)
 
 
-## Disable handles when window is not in windowed mode
+## Disable handles when window is not in windowed mode.
 func _on_window_switch() -> void:
 	$Handles.visible = get_window().mode == Window.MODE_WINDOWED
 
 
+## What needs to happen/change in zen mode
 func _on_zen_switch(value: bool) -> void:
 	%StatusBar.visible = !value
 

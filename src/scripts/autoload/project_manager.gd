@@ -8,6 +8,7 @@ signal _on_saved
 
 signal _on_title_changed(new_title)
 signal _on_resolution_changed(new_resolution)
+signal _on_framerate_changed(new_framerate)
 signal _on_file_added(new_file)
 
 
@@ -41,13 +42,14 @@ func save_project() -> void:
 	if project.path != "": # Existing project
 		FileManager.save_data(project, get_full_project_path())
 	# New project
-	explorer = ModuleManager.get_selected_module("file_explorer")
-	explorer.create("Save project", FileExplorer.MODE.SAVE_PROJECT)
-	explorer._on_save_project_path_selected.connect(_on_new_project_path_selected)
-	explorer._on_cancel_pressed.connect(_explorer_cancel_pressed)
-	get_tree().current_scene.add_to_content(explorer)
-	explorer.open()
-	_on_saved.emit()
+	# TODO: Make this work again!
+#	explorer = ModuleManager.get_selected_module("file_explorer")
+#	explorer.create("Save project", FileExplorer.MODE.SAVE_PROJECT)
+#	explorer._on_save_project_path_selected.connect(_on_new_project_path_selected)
+#	explorer._on_cancel_pressed.connect(_explorer_cancel_pressed)
+#	get_tree().current_scene.add_to_content(explorer)
+#	explorer.open()
+#	_on_saved.emit()
 
 
 func _on_new_project_path_selected(new_path: String) -> void:
@@ -61,9 +63,9 @@ func _explorer_cancel_pressed() -> void:
 	explorer = null
 
 
-##############################################################
-# Recent Projects  ###########################################
-##############################################################
+###############################################################
+## Recent Projects  ###########################################
+###############################################################
 
 func get_recent_projects() -> Array:
 	if !FileAccess.file_exists(PATH_RECENT_PROJECTS):
@@ -85,11 +87,11 @@ func erase_recent_project(project_path: String) -> void:
 	FileManager.save_data(recent_projects, PATH_RECENT_PROJECTS)
 
 
-##############################################################
-# Getters and setters  #######################################
-##############################################################
+###############################################################
+## Getters and setters  #######################################
+###############################################################
 
-# TITLE  #####################################################
+## TITLE  #####################################################
 
 func get_title() -> String:
 	return project.title
@@ -101,7 +103,7 @@ func set_title(new_title: String) -> void:
 	ProjectManager._on_title_change.emit(new_title)
 
 
-# PATH  ######################################################
+## PATH  ######################################################
 
 func get_project_path() -> String:
 	return project.path
@@ -117,7 +119,7 @@ func set_project_path(new_path: String) -> void:
 	project.path = new_path
 
 
-# RESOLUTION  ################################################
+## RESOLUTION  ################################################
 
 func get_resolution() -> Vector2i:
 	return project.resolution
@@ -128,7 +130,19 @@ func set_resolution(new_resolution: Vector2i) -> void:
 	_on_resolution_changed.emit(new_resolution)
 
 
-# FILES  #####################################################
+
+## FRAMERATE  #################################################
+
+func get_framerate() -> float:
+	return project.framerate
+
+
+func set_framerate(new_framerate: float) -> void:
+	project.framerate = new_framerate
+	_on_framerate_changed.emit(new_framerate)
+
+
+## FILES  #####################################################
 
 func get_files() -> Dictionary:
 	return project.files

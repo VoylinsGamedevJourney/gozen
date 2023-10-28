@@ -6,7 +6,7 @@ extends FileExplorer
 
 
 var dir: DirAccess
-var button_template := preload("res://modules/file_explorer/default/TemplateButton.tscn")
+var button_template := preload("res://modules/file_explorer/TemplateButton.tscn")
 
 
 func create(_title: String, _mode: MODE, _filter: Array = []):

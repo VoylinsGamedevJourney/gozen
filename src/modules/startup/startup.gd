@@ -4,7 +4,7 @@ extends Control
 
 
 var recent_projects: Array
-var explorer: Control
+var explorer: FileDialog
 
 
 func _ready() -> void:
@@ -45,7 +45,10 @@ func _on_donate_button_pressed() -> void:
 
 
 func _on_open_project_button_pressed() -> void:
-	explorer = ModuleManager.get_selected_module("file_explorer")
+	explorer = FileDialog.new()
+	explorer.popup_centered(Vector2i(300,300))
+	# TODO: Make this work!
+#	explorer = ModuleManager.get_selected_module("file_explorer")
 	explorer.create("Save project", FileExplorer.MODE.SAVE_PROJECT)
 	explorer._on_save_project_path_selected.connect(_on_open_project_file_selected)
 	explorer._on_cancel_pressed.connect(_on_explorer_cancel_pressed)

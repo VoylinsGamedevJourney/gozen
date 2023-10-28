@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://52r4xywpqsct"]
 
-[ext_resource type="Script" path="res://modules/project_settings_menu/default/project_settings_menu.gd" id="1_t57cn"]
+[ext_resource type="Script" path="res://modules/project_settings_menu/project_settings_menu.gd" id="1_t57cn"]
 
 [node name="ProjectSettingsMenu" type="PanelContainer"]
 anchors_preset = 15

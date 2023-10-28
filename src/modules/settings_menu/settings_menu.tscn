@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dcu2gon56mdfk"]
 
-[ext_resource type="Script" path="res://modules/settings_menu/default/settings_menu.gd" id="1_bxapj"]
+[ext_resource type="Script" path="res://modules/settings_menu/settings_menu.gd" id="1_bxapj"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_k0m7p"]
 thickness = 2

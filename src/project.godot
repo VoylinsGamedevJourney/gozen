@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GoZen"
 config/description="A modular video editor made with Godot."
-run/main_scene="res://ready.tscn"
+run/main_scene="res://main_window/main_window.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.1", "C#", "GL Compatibility")
@@ -28,7 +28,6 @@ config/version_patch=0
 
 VersionCheck="*res://scripts/autoload/version_check.gd"
 SettingsManager="*res://scripts/autoload/settings_manager.gd"
-ModuleManager="*res://scripts/autoload/module_manager.gd"
 FileManager="*res://scripts/autoload/file_manager.gd"
 ProjectManager="*res://scripts/autoload/project_manager.gd"
 CommandBarManager="*res://scripts/autoload/command_bar_manager.gd"

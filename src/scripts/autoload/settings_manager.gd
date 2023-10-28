@@ -6,6 +6,7 @@ extends Node
 ## - zen_mode;  (bool, false)
 ## - language;  (String, "en")
 ## - update_notification;  (bool, true);
+## - timeline_max_size; (int, 86400)
 ##
 ## These settings are saved inside of section 'main'
 
@@ -13,13 +14,15 @@ signal _settings_ready
 
 signal _on_open_settings
 signal _on_zen_switched(value)
+signal _on_timeline_max_size_changed(new_size)
 
 
 const PATH := "user://settings.ini"
 const DEFAULT := {
 	language = "en",
 	zen_mode = false,
-	update_notification = true
+	update_notification = true,
+	timeline_max_size = 86400 # In seconds
 }
 
 
@@ -99,5 +102,18 @@ func get_update_notification() -> bool:
 
 func set_update_notification(value: bool, startup: bool = false) -> void:
 	data.set_value("main", "update_notification", value)
+	if !startup:
+		data.save(PATH)
+
+
+## TIMELINE MAXIMUM SIZE  #####################################
+
+func get_timeline_max_size() -> int:
+	return data.get_value("main", "timeline_max_size", 86400)
+
+
+func set_timeline_max_size(new_size: int, startup: bool = false) -> void:
+	data.set_value("main", "timeline_max_size", new_size)
+	_on_timeline_max_size_changed.emit(new_size)
 	if !startup:
 		data.save(PATH)

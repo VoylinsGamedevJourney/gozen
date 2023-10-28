@@ -1,10 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://kktdag02i8qd"]
+[gd_scene load_steps=6 format=3 uid="uid://kktdag02i8qd"]
 
-[ext_resource type="Script" path="res://modules/timeline/default/timeline.gd" id="1_eocur"]
+[ext_resource type="Script" path="res://modules/timeline/timeline.gd" id="1_eocur"]
 [ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_ox6vf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ae2cj"]
+bg_color = Color(0.27451, 0.27451, 0.27451, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_665wr"]
 font_size = 20
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_btjhq"]
+color = Color(1, 1, 1, 1)
+grow_end = 100.0
+thickness = 2
+vertical = true
 
 [node name="Timeline" type="PanelContainer"]
 anchors_preset = 15
@@ -22,17 +31,29 @@ columns = 2
 [node name="TopLeft" type="Control" parent="GridContainer"]
 layout_mode = 2
 
-[node name="TopScroll" type="ScrollContainer" parent="GridContainer"]
+[node name="TopBar" type="Control" parent="GridContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="TopScroll" type="ScrollContainer" parent="GridContainer/TopBar"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
-[node name="ColorRect" type="ColorRect" parent="GridContainer/TopScroll"]
+[node name="TopTimeline" type="PanelContainer" parent="GridContainer/TopBar/TopScroll"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color(0.273438, 0.273438, 0.273438, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_ae2cj")
 
 [node name="SideScroll" type="ScrollContainer" parent="GridContainer"]
 layout_mode = 2
@@ -67,18 +88,42 @@ label_settings = SubResource("LabelSettings_665wr")
 [node name="MainScroll" type="ScrollContainer" parent="GridContainer"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="GridContainer/MainScroll"]
+[node name="MainBox" type="Control" parent="GridContainer/MainScroll"]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TracksVBox" type="VBoxContainer" parent="GridContainer/MainScroll/MainBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="ColorRect" type="ColorRect" parent="GridContainer/MainScroll/VBox"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-color = Color(0.639216, 0.639216, 0.639216, 1)
-
-[node name="ColorRect2" type="ColorRect" parent="GridContainer/MainScroll/VBox"]
+[node name="ColorRect1" type="ColorRect" parent="GridContainer/MainScroll/MainBox/TracksVBox"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 color = Color(0.623529, 0.623529, 0.623529, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="GridContainer/MainScroll/MainBox/TracksVBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+color = Color(0.623529, 0.623529, 0.623529, 1)
+
+[node name="FrameIndicator" type="VSeparator" parent="GridContainer/MainScroll/MainBox"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 3.0
+offset_bottom = 1043.0
+scale = Vector2(0.5, 0.5)
+theme_override_styles/separator = SubResource("StyleBoxLine_btjhq")
+
+[connection signal="gui_input" from="GridContainer/MainScroll/MainBox/TracksVBox" to="." method="_on_tracks_v_box_gui_input"]

@@ -15,7 +15,7 @@ func _ready() -> void:
 	command_line.text_changed.connect(_on_text_changed)
 	command_line.text_submitted.connect(_on_text_submitted)
 	CommandBarManager._on_possible_commands_entered.connect(update_info_panel)
-	info_button = preload("res://modules/command_bar/default/InfoButton.tscn").instantiate()
+	info_button = preload("res://modules/command_bar/InfoButton.tscn").instantiate()
 
 
 func _input(event: InputEvent) -> void:
@@ -91,11 +91,13 @@ func _on_text_submitted(_text: String) -> void:
 
 
 func update_selected_command_button(new_selected: int) -> void:
-	selected = new_selected
-	var empty_style := StyleBoxEmpty.new()
-	var selected_style := StyleBoxFlat.new()
-	selected_style.set_corner_radius_all(7)
-	selected_style.bg_color = Color("880BCB")
-	for button_id in %InfoVBox.get_child_count():
-		%InfoVBox.get_child(button_id).add_theme_stylebox_override(
-				"normal", selected_style if button_id == selected else empty_style)
+	pass
+#	selected = new_selected
+#	var empty_style := StyleBoxEmpty.new()
+#	var selected_style := StyleBoxFlat.new()
+#	selected_style.set_corner_radius_all(7)
+#	selected_style.bg_color = Color("880BCB")
+	# TODO: Fix later!
+#	for button_id in %InfoVBox.get_child_count():
+#		%InfoVBox.get_child(button_id).add_theme_stylebox_override(
+#				"normal", selected_style if button_id == selected else empty_style)
