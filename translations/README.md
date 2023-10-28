@@ -16,7 +16,7 @@ If you want to provide language support by entering your language or adjusting/a
 
 ## How to contribute
 
-Before contributing, you have to fork this repository and create a new branch called something like 'language_*language-code* update/addition'. Please refer to "New language" or "updating an already existing language" to know how to edit the JSON file correctly.
+Before contributing, you have to fork the Development branch of this repository and create a new branch called something like 'language_*language-code* update/addition'. Please refer to "New language" or "updating an already existing language" to know how to edit the JSON file correctly.
 
 After you are done editing the JSON file you can create a pull request. Please only add the updated JSON file as we will handle the csv file and other project files.
 
