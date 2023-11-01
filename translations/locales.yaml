@@ -49,7 +49,7 @@ STARTUP_BUTTON_NEW_4K_V_PROJECT:
 STARTUP_BUTTON_NEW_CUSTOM_PROJECT:
   en: "New custom"
   ja: "新カスタム"
-  fr: ""
+  fr: "Nouveau personnalisé"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -361,7 +361,7 @@ SETTING_TEXT_LANGUAGE:
 TOP_BAR_TOOLTIP_EDITOR_BUTTON:
   en: "Shows some editor information."
   ja: ""
-  fr: ""
+  fr: "Affiche quelques informations de l'éditeur."
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -369,7 +369,7 @@ TOP_BAR_TOOLTIP_EDITOR_BUTTON:
 TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON:
   en: "Takes you to the project settings."
   ja: ""
-  fr: ""
+  fr: "Vous emmène à la configuration du projet."
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -377,7 +377,7 @@ TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON:
 TOP_BAR_TOOLTIP_EDITOR_SETTINGS_BUTTON:
   en: "Takes you to the editor settings."
   ja: ""
-  fr: ""
+  fr: "Vous emmène à la configuration de l'éditeur."
   nl: ""
   zh_TW: ""
   pl_pl: ""
