@@ -12,10 +12,10 @@ config_version=5
 
 config/name="GoZen"
 config/description="A modular video editor made with Godot."
-run/main_scene="res://main_window/main_window.tscn"
+run/main_scene="res://main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
-config/features=PackedStringArray("4.1", "C#", "GL Compatibility")
+config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.101961, 0.101961, 0.101961, 1)
 boot_splash/image="res://assets/splash_screen.png"
