@@ -64,7 +64,7 @@ func _explorer_cancel_pressed() -> void:
 
 
 ###############################################################
-## Recent Projects  ###########################################
+#region Recent Projects  ######################################
 ###############################################################
 
 func get_recent_projects() -> Array:
@@ -86,12 +86,14 @@ func erase_recent_project(project_path: String) -> void:
 	recent_projects.erase(project_path)
 	FileManager.save_data(recent_projects, PATH_RECENT_PROJECTS)
 
-
-###############################################################
-## Getters and setters  #######################################
+#endregion
 ###############################################################
 
-## TITLE  #####################################################
+###############################################################
+#region Getters and setters  ##################################
+###############################################################
+
+#region TITLE  #####################################################
 
 func get_title() -> String:
 	return project.title
@@ -102,8 +104,9 @@ func set_title(new_title: String) -> void:
 	project.title = new_title
 	ProjectManager._on_title_change.emit(new_title)
 
+#endregion
 
-## PATH  ######################################################
+#region PATH  #################################################
 
 func get_project_path() -> String:
 	return project.path
@@ -118,8 +121,9 @@ func set_project_path(new_path: String) -> void:
 	# Todo: Make certain new_path is not full path
 	project.path = new_path
 
+#endregion
 
-## RESOLUTION  ################################################
+#region RESOLUTION  ###########################################
 
 func get_resolution() -> Vector2i:
 	return project.resolution
@@ -129,9 +133,9 @@ func set_resolution(new_resolution: Vector2i) -> void:
 	project.resolution = new_resolution
 	_on_resolution_changed.emit(new_resolution)
 
+#endregion
 
-
-## FRAMERATE  #################################################
+#region FRAMERATE  ############################################
 
 func get_framerate() -> float:
 	return project.framerate
@@ -141,8 +145,9 @@ func set_framerate(new_framerate: float) -> void:
 	project.framerate = new_framerate
 	_on_framerate_changed.emit(new_framerate)
 
+#endregion
 
-## FILES  #####################################################
+#region FILES  ################################################
 
 func get_files() -> Dictionary:
 	return project.files
@@ -156,3 +161,7 @@ func add_file(new_file: File) -> void:
 	project.files[project.files_id] = new_file
 	project.files_id += 1
 	_on_file_added.emit(new_file)
+
+#endregion
+#endregion
+###############################################################

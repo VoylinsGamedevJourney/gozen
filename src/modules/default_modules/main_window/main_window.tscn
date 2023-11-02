@@ -238,6 +238,8 @@ grow_vertical = 0
 mouse_default_cursor_shape = 12
 
 [connection signal="gui_input" from="Layout/TopBar" to="Layout/TopBar" method="_on_gui_input"]
+[connection signal="pressed" from="Layout/TopBar/HBox/ProjectButton" to="." method="_on_project_settings_button_pressed"]
+[connection signal="pressed" from="Layout/TopBar/HBox/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="Layout/TopBar/HBox/MinimizeButton" to="Layout/TopBar" method="_on_minimize_button_pressed"]
 [connection signal="pressed" from="Layout/TopBar/HBox/SwitchModeButton" to="Layout/TopBar" method="_on_switch_mode_button_pressed"]
 [connection signal="pressed" from="Layout/TopBar/HBox/ExitButton" to="Layout/TopBar" method="_on_exit_button_pressed"]

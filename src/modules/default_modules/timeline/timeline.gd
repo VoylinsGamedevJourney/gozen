@@ -9,8 +9,9 @@ var indicator_moving: bool = false
 
 
 func _ready() -> void:
-	ProjectManager._on_framerate_changed.connect(_timeline_setup)
-	ProjectManager._on_project_loaded.connect(_timeline_setup)
+	pass
+	#ProjectManager._on_framerate_changed.connect(_timeline_setup)
+	#ProjectManager._on_project_loaded.connect(_timeline_setup)
 
 
 func _timeline_setup() -> void:
@@ -38,8 +39,8 @@ func _process(_delta: float) -> void:
 	if indicator_moving:
 		var framerate : float = ProjectManager.get_framerate()
 		# Use different function for playing as indicator position != current frame
-		indicator_pos = clampi(%MainBox.get_local_mouse_position().x,0, SettingsManager.get_timeline_max_size() * framerate)
+		#indicator_pos = clampi(%MainBox.get_local_mouse_position().x,0, SettingsManager.get_timeline_max_size() * framerate)
 		
 		%FrameIndicator.position.x = indicator_pos
-		current_frame = indicator_pos * zoom
+		#current_frame = indicator_pos * zoom
 		print("current frame %s and indicator pos %s" % [current_frame, indicator_pos])

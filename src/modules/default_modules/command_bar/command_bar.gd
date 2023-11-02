@@ -90,7 +90,7 @@ func _on_text_submitted(_text: String) -> void:
 	_hide_command_bar()
 
 
-func update_selected_command_button(new_selected: int) -> void:
+func update_selected_command_button(_new_selected: int) -> void:
 	pass
 #	selected = new_selected
 #	var empty_style := StyleBoxEmpty.new()

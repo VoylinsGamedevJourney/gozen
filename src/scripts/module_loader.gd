@@ -9,3 +9,8 @@ extends Node
 func _process(_delta) -> void:
 	var mod_path := "res://modules/default_modules/%s/%s.tscn" % [self.name,self.name]
 	replace_by(load(mod_path).instantiate())
+
+
+# TODO: Create a static function which gives a node with this
+# this script attached to it. Easier to add modules to locations
+# if this is possible

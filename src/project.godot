@@ -26,8 +26,8 @@ config/version_patch=0
 
 [autoload]
 
-VersionCheck="*res://scripts/autoload/version_check.gd"
 SettingsManager="*res://scripts/autoload/settings_manager.gd"
+VersionCheck="*res://scripts/autoload/version_check.gd"
 FileManager="*res://scripts/autoload/file_manager.gd"
 ProjectManager="*res://scripts/autoload/project_manager.gd"
 CommandBarManager="*res://scripts/autoload/command_bar_manager.gd"

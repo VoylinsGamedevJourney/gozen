@@ -1,11 +1,19 @@
 extends ModuleSettingsMenu
 
-# TODO: Make search work
+# TODO: Add search
 # TODO: Display all module settings in their own category
+# TODO: Make language setting into an option button
+
+
+var startup := true
 
 
 func _ready() -> void:
-	build_settings()
+	%LanguageLineEdit.text = TranslationServer.get_locale()
+	%ZenModeCheckBox.button_pressed = SettingsManager.get_zen_mode()
+	%UpdateNotificationCheckBox.button_pressed = SettingsManager.get_update_notification()
+	%TimelineMaxSizeSpinBox.value = SettingsManager.get_timeline_max_size()
+	startup = false
 
 
 func _input(event: InputEvent) -> void:
@@ -13,14 +21,25 @@ func _input(event: InputEvent) -> void:
 		queue_free()
 
 
-func build_settings() -> void:
-	var cat_main := SettingsCategory.new("Main")
-	cat_main.append(
-		SettingsSetting.new(
-			"Language",
-			SettingsSetting.TYPE.LIST,
-			SettingsManager.set_language,
-			
-		)
-	)
-	pass
+func _on_language_line_edit_text_submitted(new_language: String) -> void:
+	if startup:
+		return
+	SettingsManager.set_language(new_language)
+
+
+func _on_zen_mode_check_box_toggled(toggle: bool) -> void:
+	if startup:
+		return
+	SettingsManager.set_zen_mode(toggle)
+
+
+func _on_update_notification_check_box_toggled(toggle: bool) -> void:
+	if startup:
+		return
+	SettingsManager.set_update_notification(toggle)
+
+
+func _on_timeline_max_size_spin_box_value_changed(value: float) -> void:
+	if startup:
+		return
+	SettingsManager.set_timeline_max_size(value)

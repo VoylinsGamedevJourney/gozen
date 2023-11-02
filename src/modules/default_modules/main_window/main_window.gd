@@ -67,3 +67,17 @@ func _on_zen_switch(value: bool) -> void:
 
 func add_to_content(node: Node) -> void:
 	%Content.add_child(node)
+
+
+func _on_project_settings_button_pressed() -> void:
+	var project_settings := Control.new()
+	project_settings.name = "project_settings_menu"
+	project_settings.set_script(load("res://scripts/module_loader.gd"))
+	ModuleMainWindow.instance.add_to_content(project_settings)
+
+
+func _on_settings_button_pressed() -> void:
+	var settings_menu := Control.new()
+	settings_menu.name = "settings_menu"
+	settings_menu.set_script(load("res://scripts/module_loader.gd"))
+	ModuleMainWindow.instance.add_to_content(settings_menu)
