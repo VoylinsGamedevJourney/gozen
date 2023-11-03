@@ -80,6 +80,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xqyyg")
 layout_mode = 2
 
 [node name="WelcomeImage" type="TextureRect" parent="StartupPanel/VBox"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 270)
 layout_mode = 2
 texture = ExtResource("2_8gdoi")
@@ -91,11 +92,14 @@ offset_left = 14.0
 offset_top = 14.0
 offset_right = 59.0
 offset_bottom = 59.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("3_hjqrg")
 expand_mode = 1
 stretch_mode = 4
 
 [node name="ImageCredit" type="RichTextLabel" parent="StartupPanel/VBox/WelcomeImage"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -108,12 +112,12 @@ offset_right = -2.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/default_color = Color(0.470588, 0.470588, 0.470588, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.141176)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.137255)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/italics_font_size = 8
 bbcode_enabled = true
-text = "[right][i]Image by [url=https://unsplash.com/photos/u27Rrbs9Dwc]Clay Banks via Unsplash[/url] [/i][/right]"
+text = "[right][i]Image by [url=https://unsplash.com/photos/u27Rrbs9Dwc]Clay Banks via Unsplash[/url][/i][/right]"
 
 [node name="VersionLabel" type="Label" parent="StartupPanel/VBox/WelcomeImage"]
 layout_mode = 1
