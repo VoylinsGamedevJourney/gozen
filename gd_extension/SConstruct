@@ -1,0 +1,17 @@
+env = SConscript("godot-cpp/SConstruct")
+env.Append(CPPPATH="src/")
+
+#env.Append(LIB="...")
+#env.Append(LIBPATH="...")
+
+src = Glob("src/*.cpp")
+
+# Debug stuff
+print("Suffix:", env["suffix"])
+print("SHLIBSUFFIX:", env["SHLIBSUFFIX"])
+
+libpath = "../src/bin/libgozen_interface{}{}".format(env["suffix"], env["SHLIBSUFFIX"])
+print("libpath:", libpath)
+
+sharedlib = env.SharedLibrary(libpath, src)
+Default(sharedlib)
