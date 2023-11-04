@@ -1,8 +1,7 @@
 env = SConscript("godot-cpp/SConstruct")
 env.Append(CPPPATH="src/")
 
-#env.Append(LIB="...")
-#env.Append(LIBPATH="...")
+env.Append(LINKFLAGS=["-lmlt"])
 
 src = Glob("src/*.cpp")
 
