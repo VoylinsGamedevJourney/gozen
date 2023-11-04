@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://6cs0hb28epea"]
+
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_tveyf"]
+[ext_resource type="Script" path="res://modules/media_pool/default/media_pool.gd" id="2_m2otm"]
+
+[node name="MediaPool" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_tveyf")
+script = ExtResource("2_m2otm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="AddImageButton" type="Button" parent="VBoxContainer/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add image"
+
+[node name="AddColorButton" type="Button" parent="VBoxContainer/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add color"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HFlow" type="HFlowContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
