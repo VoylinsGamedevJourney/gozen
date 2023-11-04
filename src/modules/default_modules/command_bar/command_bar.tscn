@@ -1,0 +1,84 @@
+[gd_scene load_steps=9 format=3 uid="uid://dedsbtsetboyv"]
+
+[ext_resource type="Script" path="res://modules/default_modules/command_bar/command_bar.gd" id="1_nrlre"]
+[ext_resource type="StyleBox" uid="uid://3p2k6n60hsjd" path="res://assets/node_styles/style_panel_background.tres" id="2_g62xp"]
+[ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/node_styles/style_panel_secondary.tres" id="3_43mtw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pnw7a"]
+bg_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wpalm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i5i3n"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vpqpg"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h6he7"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+
+[node name="CommandBar" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pnw7a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_pnw7a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pnw7a")
+script = ExtResource("1_nrlre")
+
+[node name="InfoPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 130.0
+offset_right = 300.0
+offset_bottom = 180.0
+grow_horizontal = 2
+pivot_offset = Vector2(586, 0)
+theme_override_styles/panel = ExtResource("2_g62xp")
+
+[node name="VBox" type="VBoxContainer" parent="InfoPanel"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="InfoPanel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_wpalm")
+
+[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CommandPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(600, 50)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 130.0
+offset_right = 300.0
+offset_bottom = 180.0
+grow_horizontal = 2
+pivot_offset = Vector2(586, 0)
+theme_override_styles/panel = ExtResource("3_43mtw")
+
+[node name="CommandLineEdit" type="LineEdit" parent="CommandPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_i5i3n")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vpqpg")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_h6he7")
+
+[connection signal="pressed" from="." to="." method="_hide_command_bar"]

@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcu2gon56mdfk"]
+
+[ext_resource type="Script" path="res://modules/default_modules/settings_menu/settings_menu.gd" id="1_bxapj"]
+[ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/node_styles/style_panel_secondary.tres" id="1_x2rdb"]
+[ext_resource type="LabelSettings" uid="uid://dhiw8blnu367c" path="res://assets/node_styles/category_label.tres" id="2_xbbjn"]
+
+[node name="SettingsMenu" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_x2rdb")
+script = ExtResource("1_bxapj")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ProjectSettingsVBox" type="VBoxContainer" parent="ScrollContainer/CenterContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="MainCategoryLabel" type="Label" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox"]
+layout_mode = 2
+text = "Main"
+label_settings = ExtResource("2_xbbjn")
+
+[node name="HSeparator" type="HSeparator" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox"]
+layout_mode = 2
+
+[node name="TitleHBox" type="HBoxContainer" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox"]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/TitleHBox"]
+layout_mode = 2
+text = "Language:"
+
+[node name="LanguageLineEdit" type="LineEdit" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/TitleHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ZenModeHBox" type="HBoxContainer" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox"]
+layout_mode = 2
+
+[node name="ZenModeLabel" type="Label" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/ZenModeHBox"]
+layout_mode = 2
+text = "Zen mode:"
+
+[node name="ZenModeCheckBox" type="CheckBox" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/ZenModeHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="UpdateNotificationHBox" type="HBoxContainer" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox"]
+layout_mode = 2
+
+[node name="UpdateNotificationLabel" type="Label" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/UpdateNotificationHBox"]
+layout_mode = 2
+text = "Update notifications:"
+
+[node name="UpdateNotificationCheckBox" type="CheckBox" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/UpdateNotificationHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TimelineMaxSizeHBox" type="HBoxContainer" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox"]
+layout_mode = 2
+
+[node name="TimelineMaxSizeLabel" type="Label" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/TimelineMaxSizeHBox"]
+layout_mode = 2
+text = "Timeline maximum size:"
+
+[node name="TimelineMaxSizeSpinBox" type="SpinBox" parent="ScrollContainer/CenterContainer/ProjectSettingsVBox/TimelineMaxSizeHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1e+06
+
+[connection signal="text_submitted" from="ScrollContainer/CenterContainer/ProjectSettingsVBox/TitleHBox/LanguageLineEdit" to="." method="_on_language_line_edit_text_submitted"]
+[connection signal="toggled" from="ScrollContainer/CenterContainer/ProjectSettingsVBox/ZenModeHBox/ZenModeCheckBox" to="." method="_on_zen_mode_check_box_toggled"]
+[connection signal="toggled" from="ScrollContainer/CenterContainer/ProjectSettingsVBox/UpdateNotificationHBox/UpdateNotificationCheckBox" to="." method="_on_update_notification_check_box_toggled"]
+[connection signal="value_changed" from="ScrollContainer/CenterContainer/ProjectSettingsVBox/TimelineMaxSizeHBox/TimelineMaxSizeSpinBox" to="." method="_on_timeline_max_size_spin_box_value_changed"]
