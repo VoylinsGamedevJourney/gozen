@@ -64,7 +64,7 @@ func _ready() -> void:
 		%RecentProjectsVBox.add_child(new_button)
 	
 	# Setting the startup image:
-	var month : int = Time.get_datetime_dict_from_system().month
+	#var month : int = Time.get_datetime_dict_from_system().month
 	var image_data: Dictionary = startup_images["winter"]
 	# TODO: Find better images for this
 	#match month:
