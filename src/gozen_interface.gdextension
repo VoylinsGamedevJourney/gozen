@@ -1,8 +1,8 @@
 [configuration]
 
-entry_symbol = "gozen_interface_library_init"
+entry_symbol = "gozen_library_init"
 compatibility_minimum = 4.2
 
 [libraries]
 
-linux.debug.x86_64 = "res://bin/libgozen_interface.linux.template_debug.x86_64.so"
+linux.debug.x86_64 = "res://bin/libgozen.linux.template_debug.x86_64.so"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm -r gozen-ffmpeg/bin/*
+
 # First argument is for the threads you want to use
 # Second argument is for the target you want to develop for
 pushd gozen-ffmpeg
