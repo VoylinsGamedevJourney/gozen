@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bief6towf416u"]
+
+[ext_resource type="Theme" uid="uid://cp7ejwlv0gu1a" path="res://assets/default_theme.tres" id="1_req2b"]
+[ext_resource type="Script" path="res://modules/effects_view/default/effects_view.gd" id="2_v3023"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_tqpyo"]
+font_size = 80
+
+[node name="effects_view" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_req2b")
+script = ExtResource("2_v3023")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Effects view"
+label_settings = SubResource("LabelSettings_tqpyo")
+horizontal_alignment = 1
+vertical_alignment = 1

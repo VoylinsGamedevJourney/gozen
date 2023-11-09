@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="ModuleInterface" load_steps=2 format=3 uid="uid://bil0ibghatn2x"]
-
-[ext_resource type="Script" path="res://scripts/resources/module_interface.gd" id="1_ckgdy"]
-
-[resource]
-script = ExtResource("1_ckgdy")
-module_name = "Default"
-scene = "res://modules/editor/default/editor.tscn"
-version_nr = 1
