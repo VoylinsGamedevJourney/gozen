@@ -5,12 +5,12 @@
 [ext_resource type="Texture2D" uid="uid://c01l6tqooh3d" path="res://assets/images_startup/clay-banks-u27Rrbs9Dwc-unsplash.jpg" id="2_8gdoi"]
 [ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://assets/icon.png" id="3_hjqrg"]
 [ext_resource type="Script" path="res://scripts/set_version_text.gd" id="4_5chfm"]
-[ext_resource type="Texture2D" uid="uid://xudpbkvqbyor" path="res://assets/icons_startup/video_file.png" id="5_065by"]
-[ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/icons_startup/note_add.png" id="5_c47mr"]
-[ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/icons_startup/folder_open.png" id="5_i14en"]
+[ext_resource type="Texture2D" uid="uid://xudpbkvqbyor" path="res://assets/icons/video_file.png" id="5_065by"]
+[ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/icons/note_add.png" id="5_c47mr"]
+[ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/icons/folder_open.png" id="5_i14en"]
 [ext_resource type="FontFile" uid="uid://jnjfo4ffpto4" path="res://assets/fonts/urw_gothic/URWGothic-Book.ttf" id="7_cicay"]
 [ext_resource type="LabelSettings" uid="uid://beexdwdlieaad" path="res://modules/default_modules/startup/title_label.tres" id="7_jouqv"]
-[ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/icons_startup/favorite.png" id="7_nkeee"]
+[ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/icons/favorite.png" id="7_nkeee"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqyyg"]
 content_margin_left = 0.0

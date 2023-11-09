@@ -8,7 +8,8 @@ At this stage we have a couple of different languages available inside of the ed
 - Dutch;
 - Chinese;
 - Polish;
-- German.
+- German;
+- Brazilian Portuguese.
 
 ## All languages welcome!
 
@@ -16,7 +17,7 @@ If you want to provide language support by entering your language or adjusting/a
 
 ## How to contribute
 
-Before contributing, you have to fork the Development branch of this repository and create a new branch called something like 'language_*language-code* update/addition'. Please refer to "New language" or "updating an already existing language" to know how to edit the YAML file correctly.
+Before contributing, you have to fork this repository and create a new branch called something like 'language_*language-code* update/addition'. Please refer to "New language" or "updating an already existing language" to know how to edit the YAML file correctly.
 
 After you are done editing the YAML file you can create a pull request. Please only add the updated YAML file as we will handle the csv file and other project files.
 
@@ -28,17 +29,13 @@ This will create a new entry for all keys inside of the YAML file, add the words
 
 ### Updating an already existing language
 
-In the translation.yaml file you'll find empty/prefilled slots for each key which needs translation. You can fill in or edit the current translation. Some text editors suport folding which may be helpful to only display the information which you want to see, but this is totally up to you.
+In the translation.yaml file you'll find empty/prefilled slots for each key which needs translation. You can fill in or edit the current translation. Some text editors support folding which may be helpful to only display the information which you want to see, but this is totally up to you.
 
-## Nodes folder
-
-We also have certain resources that change for languages. Inside of the nodes folder, copy one of each type, change the ending to your language code. Translate the inside of the scene and done.
-
-# Future languages
+## Future languages
 
 We don't have any specific plans for adding more languages in the future. Language support will completely depend on the support of the community.
 
-# Current contributors
+## Current contributors
 
 - English: Voylin
 - Japanese: Voylin
@@ -47,3 +44,4 @@ We don't have any specific plans for adding more languages in the future. Langua
 - Chinese: Aappaapp
 - Polish: SzczurekYT
 - German: Kiisu-Master
+- Brazilian Portuguese: Wilker-uwu 
