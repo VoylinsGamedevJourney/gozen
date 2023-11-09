@@ -1,0 +1,3 @@
+[submodule "gozen-ffmpeg"]
+	path = gozen-ffmpeg
+	url = git@github.com:voylin/gozen-ffmpeg.git
