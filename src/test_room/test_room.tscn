@@ -19,27 +19,39 @@ offset_bottom = 40.0
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-offset_right = 441.0
-offset_bottom = 281.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(441, 281)
+size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
+[node name="Control" type="Control" parent="SubViewportContainer/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport/Control"]
 custom_minimum_size = Vector2(440, 280)
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Purple" type="ColorRect" parent="SubViewportContainer/SubViewport"]
+[node name="Purple" type="ColorRect" parent="SubViewportContainer/SubViewport/Control"]
 offset_left = 400.0
 offset_top = 240.0
-offset_right = 440.0
-offset_bottom = 280.0
+offset_right = 480.0
+offset_bottom = 320.0
 color = Color(0.760784, 0, 1, 1)
 
 [node name="Timer" type="Timer" parent="."]

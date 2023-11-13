@@ -8,6 +8,8 @@ pushd gozen-ffmpeg
 ./build.sh 10 target_debug
 popd
 
-rm -r src/bin/*
+# Hiding it for now, incase no new builds are possible, 
+# we don't lose the previous one
+#rm -r src/bin/*
 
 cp -r gozen-ffmpeg/bin/. src/bin
