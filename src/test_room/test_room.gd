@@ -1,6 +1,8 @@
 extends Control
 
-var stop := false
+var path := "/home/voylin/Documents/Programming/GoZen/src/test_room/test_8-Cleanup.mpeg4.mp4"
+var codec := "libxvid"
+
 var frames := [
 	 Vector2i(400, 240),
 	 Vector2i(399, 239),
@@ -315,42 +317,23 @@ var frames := [
 	 Vector2i(0, 0),
 ]
 
-
 func _on_button_pressed() -> void:
-	#for frame: Vector2i in frames:
-		#$SubViewportContainer/SubViewport/Purple.position = frame
-		#await RenderingServer.frame_post_draw
-		#var image: Image = $SubViewportContainer/SubViewport.get_texture().get_image()
-		#for x in image.get_data():
-			#if x > 255 or x < -255:
-				#print(x)
-	#return
 	var render_profile: GoZenRenderProfile = GoZenRenderProfile.new()
-	render_profile.set_filename("/home/voylin/Documents/Programming/GoZen/src/test_room/test_4.mp4")
-	render_profile.set_codec_name("mpeg2video")
+	render_profile.set_filename(path)
+	render_profile.set_codec_name(codec)
 	render_profile.set_video_size($SubViewportContainer.size)
 	render_profile.set_framerate(30)
 	render_profile.set_bit_rate(400000)
+	
 	var renderer: GoZenRenderer = GoZenRenderer.new()
 	if(renderer.open_ffmpeg(render_profile) == OK):
 		print("Renderer open")
 		for frame: Vector2i in frames:
-			$SubViewportContainer/SubViewport/Purple.position = frame
+			$SubViewportContainer/SubViewport/Control/Purple.position = frame
 			await RenderingServer.frame_post_draw
 			renderer.send_frame($SubViewportContainer/SubViewport.get_texture().get_image())
 		if (renderer.close_ffmpeg() == OK):
 			print("Rendering complete!")
-	#var pipe_renderer: GoZenPipeRenderer = GoZenPipeRenderer.new()
-	#pipe_renderer.setup(
-		#"/home/voylin/Documents/Programming/GoZen/src/renderers/render_server/test.webm",
-		#30)
-	#print("Start sending frames")
-	#for frame: Vector2i in frames:
-		#$SubViewportContainer/SubViewport/Purple.position = frame
-		#await RenderingServer.frame_post_draw
-		#var image: Image = $SubViewportContainer/SubViewport.get_texture().get_image()
-		#pipe_renderer.add_frame(image)
-	#pipe_renderer.finish_video()
 
 
 func _ready() -> void:
@@ -359,6 +342,15 @@ func _ready() -> void:
 	#print(GoZenInterface.get_video_file_meta("/home/voylin/Documents/Programming/GoZen/src/test_room/test.mp4"))
 	#var renderer: GoZenRenderer = GoZenRenderer.new()
 	#renderer.setup()
-	await RenderingServer.frame_post_draw
-	var image: Image = $SubViewportContainer/SubViewport.get_texture().get_image()
+	#await RenderingServer.frame_post_draw
+	#var image: Image = $SubViewportContainer/SubViewport.get_texture().get_image()
+	var data := GoZenInterface.get_supported_codecs()
+	for x in data:
+		for i in data[x]:
+			print(data[x][i])
+
+	
+	
+	
+	
 	pass
