@@ -344,12 +344,12 @@ func _ready() -> void:
 	#renderer.setup()
 	#await RenderingServer.frame_post_draw
 	#var image: Image = $SubViewportContainer/SubViewport.get_texture().get_image()
-	var data := GoZenInterface.get_supported_codecs()
-	for x in data:
-		for i in data[x]:
-			print(data[x][i])
-
-	
+	#var data := GoZenInterface.get_supported_codecs()
+	#for x in data:
+		#for i in data[x]:
+			#print(data[x][i])
+	var importer: GoZenImporter = GoZenImporter.new()
+	print(importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/test.mp4"))
 	
 	
 	
