@@ -3,6 +3,7 @@ extends Control
 var path := "/home/voylin/Documents/Programming/GoZen/src/test_room/test_8-Cleanup.mpeg4.mp4"
 var codec := "libxvid"
 
+var data: Dictionary
 var frames := [
 	 Vector2i(400, 240),
 	 Vector2i(399, 239),
@@ -318,6 +319,23 @@ var frames := [
 ]
 
 func _on_button_pressed() -> void:
+	var stream := AudioStreamWAV.new()
+	stream.set_format(stream.FORMAT_16_BITS);
+	stream.set_stereo(true)
+	stream.set_mix_rate(48000)
+	stream.set_data(data["audio"])
+	print("audio length: %s" % stream.get_length())
+	$AudioStreamPlayer.stream = stream
+	$AudioStreamPlayer.play()
+	return
+	
+	# WORKING VIDEO
+	for x in data["video"]:
+		$TextureRect.texture = x
+		await RenderingServer.frame_post_draw
+	return
+	
+	
 	var render_profile: GoZenRenderProfile = GoZenRenderProfile.new()
 	render_profile.set_filename(path)
 	render_profile.set_codec_name(codec)
@@ -349,14 +367,7 @@ func _ready() -> void:
 		#for i in data[x]:
 			#print(data[x][i])
 	var importer: GoZenImporter = GoZenImporter.new()
-	var data := importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/Normal.MP4")
-	var image := Image.new()
-	#print(data["video"].size())
-	image.set_data(1920,1080, false, Image.FORMAT_RGB8, data["video"][20])
-	var tex := ImageTexture.new()
-	tex.set_image(image)
-	#print(data["video"][3])
-	$TextureRect.texture = tex
+	data = importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/Normal.MP4")
 	
 	
 	#var audio_data: PackedByteArray = importer.get_container_data(

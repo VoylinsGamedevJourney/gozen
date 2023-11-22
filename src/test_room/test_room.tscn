@@ -67,6 +67,7 @@ layout_mode = 0
 offset_right = 442.0
 offset_bottom = 379.0
 texture = SubResource("PlaceholderTexture2D_vw0ek")
+stretch_mode = 4
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
