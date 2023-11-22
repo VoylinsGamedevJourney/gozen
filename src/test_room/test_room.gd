@@ -349,8 +349,26 @@ func _ready() -> void:
 		#for i in data[x]:
 			#print(data[x][i])
 	var importer: GoZenImporter = GoZenImporter.new()
-	print(importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/test.mp4"))
+	var data := importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/Normal.MP4")
+	var image := Image.new()
+	#print(data["video"].size())
+	image.set_data(1920,1080, false, Image.FORMAT_RGB8, data["video"][20])
+	var tex := ImageTexture.new()
+	tex.set_image(image)
+	#print(data["video"][3])
+	$TextureRect.texture = tex
 	
 	
+	#var audio_data: PackedByteArray = importer.get_container_data(
+		#"/storage/Documents/Programming/GoZen/src/test_room/Normal.MP4").audio
+	#var stream := AudioStreamWAV.new()
+	#stream.set_format(stream.FORMAT_16_BITS);
+	#stream.set_stereo(true)
+	#stream.set_mix_rate(48000)
+	#stream.set_data(audio_data)
+	#print("audio length: %s" % stream.get_length())
+	
+	#$AudioStreamPlayer.stream = importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/Normal.MP4").audio
+	#$AudioStreamPlayer.play()
 	
 	pass

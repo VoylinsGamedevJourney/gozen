@@ -16,9 +16,8 @@ run/main_scene="res://main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
-run/low_processor_mode=true
 boot_splash/bg_color=Color(0.101961, 0.101961, 0.101961, 1)
-boot_splash/image="res://assets/splash_screen.png"
+boot_splash/show_image=false
 config/icon="res://assets/icon.png"
 config/version_major=0
 config/version_minor=1
@@ -39,10 +38,18 @@ window/size/viewport_height=1080
 window/size/borderless=true
 window/size/window_width_override=1152
 window/size/window_height_override=648
+window/subwindows/embed_subwindows=false
+window/vsync/vsync_mode=0
 
 [dotnet]
 
 project/assembly_name="GoZen"
+
+[file_customization]
+
+folder_colors={
+"res://bin/": "gray"
+}
 
 [gui]
 

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cytecc88icb0p"]
+[gd_scene load_steps=3 format=3 uid="uid://cytecc88icb0p"]
 
 [ext_resource type="Script" path="res://test_room/test_room.gd" id="1_lbdss"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vw0ek"]
 
 [node name="TestRoom" type="Control"]
 layout_mode = 3
@@ -10,6 +12,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lbdss")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+mix_target = 1
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
 layout_mode = 0
@@ -56,6 +61,12 @@ offset_bottom = 320.0
 color = Color(0.760784, 0, 1, 1)
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 442.0
+offset_bottom = 379.0
+texture = SubResource("PlaceholderTexture2D_vw0ek")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
