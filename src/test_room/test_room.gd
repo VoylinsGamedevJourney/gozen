@@ -330,11 +330,11 @@ func _on_button_pressed() -> void:
 	return
 	
 	# WORKING VIDEO
+	
 	for x in data["video"]:
 		$TextureRect.texture = x
 		await RenderingServer.frame_post_draw
 	return
-	
 	
 	var render_profile: GoZenRenderProfile = GoZenRenderProfile.new()
 	render_profile.set_filename(path)
