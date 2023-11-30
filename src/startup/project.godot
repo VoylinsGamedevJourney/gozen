@@ -1,0 +1,53 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="GoZen Startup"
+config/description="The startup manager of the video editor GoZen made by Voylin with Godot."
+config/version="0.3.0-alpha"
+run/main_scene="res://ui/startup_window.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="GoZen"
+config/features=PackedStringArray("4.2", "GL Compatibility")
+run/low_processor_mode=true
+boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 1)
+boot_splash/show_image=false
+config/icon="res://assets/icon.png"
+
+[display]
+
+window/size/viewport_width=650
+window/size/viewport_height=525
+window/size/resizable=false
+window/size/borderless=true
+window/size/always_on_top=true
+window/size/transparent=true
+window/energy_saving/keep_screen_on=false
+window/subwindows/embed_subwindows=false
+window/per_pixel_transparency/allowed=true
+
+[file_customization]
+
+folder_colors={
+"res://assets/": "yellow",
+"res://translations/": "teal"
+}
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/translations.de.translation", "res://translations/translations.en.translation", "res://translations/translations.fr.translation", "res://translations/translations.ja.translation", "res://translations/translations.nl.translation", "res://translations/translations.pl.translation", "res://translations/translations.pt.translation", "res://translations/translations.zh_TW.translation")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.207843, 0.207843, 0.207843, 1)
+viewport/transparent_background=true
