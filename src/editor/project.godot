@@ -10,18 +10,15 @@ config_version=5
 
 [application]
 
-config/name="GoZen"
-config/description="A modular video editor made with Godot."
-run/main_scene="res://main.tscn"
+config/name="GoZen Editor"
+config/description="GoZen is an open source video editor made within Godot by Voylin."
+config/version="0.3.0-alpha"
+run/main_scene="res://ui/startup_window/startup_window.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
-config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
-boot_splash/bg_color=Color(0.101961, 0.101961, 0.101961, 1)
+config/features=PackedStringArray("4.2", "GL Compatibility")
 boot_splash/show_image=false
 config/icon="res://assets/icon.png"
-config/version_major=0
-config/version_minor=1
-config/version_patch=0
 
 [autoload]
 
@@ -35,15 +32,13 @@ CommandBarManager="*res://scripts/autoload/command_bar_manager.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/mode=2
 window/size/borderless=true
 window/size/window_width_override=1152
 window/size/window_height_override=648
+window/energy_saving/keep_screen_on=false
 window/subwindows/embed_subwindows=false
 window/vsync/vsync_mode=0
-
-[dotnet]
-
-project/assembly_name="GoZen"
 
 [file_customization]
 

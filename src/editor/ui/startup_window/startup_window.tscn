@@ -1,0 +1,316 @@
+[gd_scene load_steps=20 format=3 uid="uid://b1igh523b86v5"]
+
+[ext_resource type="Script" path="res://ui/startup_window/startup_window.gd" id="2_uafxo"]
+[ext_resource type="Texture2D" uid="uid://c01l6tqooh3d" path="res://assets/images_startup/clay-banks-u27Rrbs9Dwc-unsplash.jpg" id="3_xpk0q"]
+[ext_resource type="Texture2D" uid="uid://o5ojo77as5qr" path="res://assets/icon.png" id="4_yyeun"]
+[ext_resource type="Script" path="res://scripts/set_version_text.gd" id="5_77wfl"]
+[ext_resource type="FontFile" uid="uid://jnjfo4ffpto4" path="res://assets/fonts/urw_gothic/URWGothic-Book.ttf" id="6_23pm3"]
+[ext_resource type="Texture2D" uid="uid://3sx23nlmwswd" path="res://assets/icons/close.png" id="6_suidh"]
+[ext_resource type="LabelSettings" uid="uid://beexdwdlieaad" path="res://modules/default_modules/startup/title_label.tres" id="7_6hypc"]
+[ext_resource type="Texture2D" uid="uid://dld01dq2ofliy" path="res://assets/icons/note_add.png" id="8_ccwhm"]
+[ext_resource type="Texture2D" uid="uid://l1w4jalp6dpi" path="res://assets/icons/folder_open.png" id="9_nw7vx"]
+[ext_resource type="Texture2D" uid="uid://b0q1ocgjgo38o" path="res://assets/icons/favorite.png" id="11_1yyp6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqyyg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.12549)
+shadow_size = 5
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vykhc"]
+font_size = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_y1y4c"]
+font = ExtResource("6_23pm3")
+font_size = 60
+shadow_offset = Vector2(0, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plh4v"]
+content_margin_left = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3josr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tevpi"]
+content_margin_left = 5.0
+
+[sub_resource type="Animation" id="Animation_m6n4x"]
+resource_name = "hide exit button"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VBox/WelcomeImage/ExitButton:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ykwfg"]
+resource_name = "show exit button"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VBox/WelcomeImage/ExitButton:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_25l1x"]
+_data = {
+"hide exit button": SubResource("Animation_m6n4x"),
+"show exit button": SubResource("Animation_ykwfg")
+}
+
+[node name="StartupPanel" type="PanelContainer"]
+clip_children = 2
+custom_minimum_size = Vector2(650, 525)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xqyyg")
+script = ExtResource("2_uafxo")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="WelcomeImage" type="TextureRect" parent="VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 270)
+layout_mode = 2
+texture = ExtResource("3_xpk0q")
+expand_mode = 2
+
+[node name="EditorImageButton" type="TextureButton" parent="VBox/WelcomeImage"]
+layout_mode = 2
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 59.0
+offset_bottom = 59.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("4_yyeun")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="ImageCredit" type="RichTextLabel" parent="VBox/WelcomeImage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -284.0
+offset_top = -17.0
+offset_right = -2.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0.470588, 0.470588, 0.470588, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.137255)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/italics_font_size = 8
+bbcode_enabled = true
+text = "[right][i]Image by [url=https://unsplash.com/photos/u27Rrbs9Dwc]Clay Banks via Unsplash[/url][/i][/right]"
+
+[node name="VersionLabel" type="Label" parent="VBox/WelcomeImage"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -228.0
+offset_top = 19.0
+offset_right = -18.0
+offset_bottom = 37.0
+grow_horizontal = 0
+text = "0.0.1- Alpha"
+label_settings = SubResource("LabelSettings_vykhc")
+horizontal_alignment = 2
+script = ExtResource("5_77wfl")
+
+[node name="WebsiteLabel" type="RichTextLabel" parent="VBox/WelcomeImage"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = -18.0
+offset_right = 227.0
+offset_bottom = -1.0
+grow_vertical = 0
+theme_override_colors/default_color = Color(0.470588, 0.470588, 0.470588, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.141176)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/normal_font_size = 8
+bbcode_enabled = true
+text = "[url=https://www.youtube.com/@voylinsgamedevjourney]VGJ YouTube channel[/url]"
+
+[node name="WaterMarkLabel" type="Label" parent="VBox/WelcomeImage"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -9.0
+offset_right = 20.0
+offset_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "GoZen"
+label_settings = SubResource("LabelSettings_y1y4c")
+vertical_alignment = 2
+
+[node name="ExitButton" type="TextureButton" parent="VBox/WelcomeImage"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+texture_normal = ExtResource("6_suidh")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 14
+
+[node name="HBox" type="HBoxContainer" parent="VBox/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LeftVBox" type="VBoxContainer" parent="VBox/MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NewTitleLabel" type="Label" parent="VBox/MarginContainer/HBox/LeftVBox"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_plh4v")
+text = "STARTUP_TITLE_NEW_PROJECT"
+label_settings = ExtResource("7_6hypc")
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MarginContainer/HBox/LeftVBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="NewFHDHButton" type="Button" parent="VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "BUTTON_NEW_HORIZONTAL_FHD_PROJECT"
+icon = ExtResource("8_ccwhm")
+alignment = 0
+
+[node name="NewFHDVButton" type="Button" parent="VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "STARTUP_BUTTON_NEW_FHD_V_PROJECT"
+icon = ExtResource("8_ccwhm")
+alignment = 0
+
+[node name="New4KHButton" type="Button" parent="VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "STARTUP_BUTTON_NEW_4K_H_PROJECT"
+icon = ExtResource("8_ccwhm")
+alignment = 0
+
+[node name="New4KVButton" type="Button" parent="VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "STARTUP_BUTTON_NEW_4K_V_PROJECT"
+icon = ExtResource("8_ccwhm")
+alignment = 0
+
+[node name="HSeparator" type="HSeparator" parent="VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+theme_type_variation = &"startup_button"
+
+[node name="NewCustomButton" type="Button" parent="VBox/MarginContainer/HBox/LeftVBox/VBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "STARTUP_BUTTON_NEW_CUSTOM_PROJECT"
+icon = ExtResource("8_ccwhm")
+alignment = 0
+
+[node name="Spacer" type="HSeparator" parent="VBox/MarginContainer/HBox/LeftVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_3josr")
+
+[node name="OpenProjectButton" type="Button" parent="VBox/MarginContainer/HBox/LeftVBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "STARTUP_BUTTON_OPEN_PROJECT"
+icon = ExtResource("9_nw7vx")
+alignment = 0
+
+[node name="RightVBox" type="VBoxContainer" parent="VBox/MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RecentTitleLabel" type="Label" parent="VBox/MarginContainer/HBox/RightVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_tevpi")
+text = "STARTUP_TITLE_RECENT_PROJECTS"
+label_settings = ExtResource("7_6hypc")
+
+[node name="RecentProjectsVBox" type="VBoxContainer" parent="VBox/MarginContainer/HBox/RightVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="ChangelogButton" type="Button" parent="VBox/MarginContainer/HBox/RightVBox"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "Support this project"
+alignment = 0
+
+[node name="DonateButton" type="Button" parent="VBox/MarginContainer/HBox/RightVBox"]
+layout_mode = 2
+theme_type_variation = &"startup_buttons"
+text = "STARTUP_BUTTON_SUPPORT_PROJECT"
+icon = ExtResource("11_1yyp6")
+alignment = 0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_25l1x")
+}
+
+[connection signal="pressed" from="VBox/WelcomeImage/EditorImageButton" to="." method="_on_editor_image_button_pressed"]
+[connection signal="mouse_entered" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_mouse_entered"]
+[connection signal="mouse_exited" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_mouse_exited"]
+[connection signal="pressed" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_pressed"]

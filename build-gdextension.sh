@@ -12,4 +12,4 @@ popd
 # we don't lose the previous one
 #rm -r src/bin/*
 
-cp -r gozen-ffmpeg/bin/. src/bin
+cp -r gozen-ffmpeg/bin/. src/editor/bin
