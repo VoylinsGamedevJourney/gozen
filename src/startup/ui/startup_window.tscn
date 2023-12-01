@@ -157,7 +157,6 @@ text = "GoZen"
 label_settings = SubResource("LabelSettings_3568g")
 
 [node name="ExitButton" type="TextureButton" parent="VBox/WelcomeImage"]
-modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 1
 anchors_preset = 1

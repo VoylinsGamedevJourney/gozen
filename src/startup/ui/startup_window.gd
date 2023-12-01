@@ -1,10 +1,18 @@
 extends Control
+## Startup Window
+##
+## This is the startup window for GoZen. Here you can select one of your
+## previous projects or choose to create a new project with some basic
+## presets. Not much logic going on for now.
+##
+## TODO: Change out the FileDialog to something more robust. (Native or custom)
+
 
 var explorer : FileDialog
 
 
 ###############################################################
-#region Basic stuff  ##########################################
+#region Basic logic  ##########################################
 ###############################################################
 
 # Setting up the Startup Screen
@@ -123,7 +131,6 @@ func _on_new_custom_button_pressed() -> void:
 
 
 func _on_open_project_button_pressed() -> void:
-	# TODO: Change this with native file manager or custom one
 	explorer = FileDialog.new()
 	explorer.title = tr("EXPLORER_OPEN_PROJECT")
 	explorer.add_filter("*.gozen")
