@@ -1,5 +1,7 @@
 extends Control
 
+var explorer : FileDialog
+
 
 ###############################################################
 #region Basic stuff  ##########################################
@@ -121,7 +123,16 @@ func _on_new_custom_button_pressed() -> void:
 
 
 func _on_open_project_button_pressed() -> void:
-	pass # TODO: Open file explorer to select project file
+	# TODO: Change this with native file manager or custom one
+	explorer = FileDialog.new()
+	explorer.title = tr("EXPLORER_OPEN_PROJECT")
+	explorer.add_filter("*.gozen")
+	explorer.show_hidden_files = true
+	explorer.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	explorer.file_selected.connect(_on_open_project_file_selected)
+	explorer.canceled.connect(_on_open_project_cancel)
+	add_child(explorer)
+	explorer.popup_centered(Vector2i(600,500))
 
 
 func _on_support_project_button_pressed() -> void:
@@ -144,6 +155,18 @@ func _on_new_custom_confirm_button_pressed() -> void:
 	if title == "":
 		title = tr("UNTITLED_PROJECT_TITLE")
 	open_editor(["new", title, "%sx%s" % [%XSpinBox.value, %YSpinBox.value]])
+
+#endregion
+###############################################################
+# region Open project explorer  ###############################
+###############################################################
+
+func _on_open_project_cancel() -> void:
+	explorer.queue_free()
+
+
+func _on_open_project_file_selected(path: String) -> void:
+	open_editor([path])
 
 #endregion
 ###############################################################
