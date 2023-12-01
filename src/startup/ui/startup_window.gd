@@ -47,15 +47,21 @@ func open_editor(arg: PackedStringArray) -> void:
 
 # Loading the 5 most recently worked on projects
 func load_recent_projects() -> void:
-	const path: String = "user://recent_projects.dat"
-	if !FileAccess.file_exists(path):
+	const PATH: String = "user://recent_projects.dat"
+	if !FileAccess.file_exists(PATH):
 		print("No recent projects yet")
 		return
 	
 	# Updating the recent projects file and adding buttons
-	var file_access := FileAccess.open(path, FileAccess.READ)
-	var old_recent_projects: Array = file_access.get_as_text().split('\n')
+	var file_access := FileAccess.open(PATH, FileAccess.READ)
+	var old_recent_projects: PackedStringArray
 	var new_recent_projects: String = ""
+	
+	# Making certain no duplicated are in recent_projects file data
+	for entry: String in file_access.get_as_text().split('\n'):
+		if !old_recent_projects.has(entry):
+			old_recent_projects.append(entry)
+	
 	for entry: String in old_recent_projects:
 		var project_data: PackedStringArray = entry.split('||')
 		if project_data.size() != 2: # End of file reached!
@@ -76,9 +82,9 @@ func load_recent_projects() -> void:
 		button.tooltip_text = project_data[1]
 		button.icon = preload("res://assets/icons/video_file.png")
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.connect("pressed", open_editor.bind([project_data[1]]))
+		button.connect("pressed", open_editor.bind(["--type=open", "--project_path=%s" % project_data[1]]))
 		%RecentProjectsVBox.add_child(button)
-	file_access.open(path, FileAccess.WRITE)
+	file_access.open(PATH, FileAccess.WRITE)
 	file_access.store_string(new_recent_projects)
 	old_recent_projects = []
 
@@ -117,13 +123,13 @@ func _on_exit_button_mouse_exited() -> void:
 ###############################################################
 
 func _on_new_fhd_button_pressed(horizontal: bool) -> void:
-	if horizontal: open_editor(["new", tr("UNTITLED_PROJECT_TITLE"), "1920x1080"])
-	else:          open_editor(["new", tr("UNTITLED_PROJECT_TITLE"), "1080x1920"])
+	if horizontal: open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1920x1080"])
+	else:          open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1080x1920"])
 
 
 func _on_new_4k_button_pressed(horizontal: bool) -> void:
-	if horizontal: open_editor(["new", tr("UNTITLED_PROJECT_TITLE"), "1920x1080"])
-	else:          open_editor(["new", tr("UNTITLED_PROJECT_TITLE"), "1080x1920"])
+	if horizontal: open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1920x1080"])
+	else:          open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1080x1920"])
 
 
 func _on_new_custom_button_pressed() -> void:
@@ -161,7 +167,7 @@ func _on_new_custom_confirm_button_pressed() -> void:
 	var title: String = %NewProjectTitleLineEdit.text
 	if title == "":
 		title = tr("UNTITLED_PROJECT_TITLE")
-	open_editor(["new", title, "%sx%s" % [%XSpinBox.value, %YSpinBox.value]])
+	open_editor(["--type=new", "--title=%s" % title, "--size=%sx%s" % [%XSpinBox.value, %YSpinBox.value]])
 
 #endregion
 ###############################################################
@@ -173,7 +179,7 @@ func _on_open_project_cancel() -> void:
 
 
 func _on_open_project_file_selected(path: String) -> void:
-	open_editor([path])
+	open_editor(["--type=open", "--project_path=%s" % path])
 
 #endregion
 ###############################################################

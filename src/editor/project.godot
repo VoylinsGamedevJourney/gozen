@@ -13,7 +13,7 @@ config_version=5
 config/name="GoZen Editor"
 config/description="GoZen is an open source video editor made within Godot by Voylin."
 config/version="0.3.0-alpha"
-run/main_scene="res://ui/startup_window/startup_window.tscn"
+run/main_scene="res://ui/editor_window/editor_window.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.2", "GL Compatibility")
@@ -24,9 +24,8 @@ config/icon="res://assets/icon.png"
 
 SettingsManager="*res://scripts/autoload/settings_manager.gd"
 VersionCheck="*res://scripts/autoload/version_check.gd"
-FileManager="*res://scripts/autoload/file_manager.gd"
 ProjectManager="*res://scripts/autoload/project_manager.gd"
-CommandBarManager="*res://scripts/autoload/command_bar_manager.gd"
+CommandBarManager="*res://ui/command_bar/command_bar_manager.gd"
 
 [display]
 
@@ -43,6 +42,7 @@ window/vsync/vsync_mode=0
 [file_customization]
 
 folder_colors={
+"res://assets/": "yellow",
 "res://bin/": "gray"
 }
 
