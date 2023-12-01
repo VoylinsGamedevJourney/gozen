@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bgvojivfjgw3f"]
-
-[ext_resource type="Texture2D" uid="uid://xudpbkvqbyor" path="res://assets/icons/video_file.png" id="1_i2mwv"]
-
-[node name="ProjectExampleButton" type="Button"]
-theme_type_variation = &"startup_buttons"
-text = "Example"
-icon = ExtResource("1_i2mwv")
-alignment = 0
