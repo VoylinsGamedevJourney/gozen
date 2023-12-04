@@ -54,39 +54,45 @@ func load_recent_projects() -> void:
 	
 	# Updating the recent projects file and adding buttons
 	var file_access := FileAccess.open(PATH, FileAccess.READ)
-	var old_recent_projects: PackedStringArray
-	var new_recent_projects: String = ""
+	var file_data: PackedStringArray = file_access.get_as_text().split('\n')
+	
+	var new_file_data: String = ""
 	
 	# Making certain no duplicated are in recent_projects file data
-	for entry: String in file_access.get_as_text().split('\n'):
-		if !old_recent_projects.has(entry):
-			old_recent_projects.append(entry)
+	# each entry is made up like this: 'title||path||datetime'
+	# Date and time may be different but title+path will be the same.
+	var check_array: PackedStringArray
+	for entry: String in file_data:
+		var entry_data: PackedStringArray = entry.split('||')
+		var entry_check: String = "%s||%s" % [entry_data[0], entry_data[1]]
+		if !check_array.has(entry_check):
+			check_array.append(entry_check)
+		else:
+			file_data.remove_at(file_data.find(entry))
 	
-	for entry: String in old_recent_projects:
-		var project_data: PackedStringArray = entry.split('||')
-		if project_data.size() != 2: # End of file reached!
-			break 
+	for entry: String in file_data:
+		var entry_data: PackedStringArray = entry.split('||')
+		if entry_data.size() != 3: break # End of file reached!
 		if FileAccess.file_exists(entry):
-			# Adding existing files to the new_recent_projects for saving later
-			new_recent_projects += "%s\n" % entry
-		else: # If file does not exist, we do not need to go further
-			continue
-		if %RecentProjectsVBox.get_child_count() == 5:
-			# We only need the first 5 existing project files, so we
-			# skip the next part of adding a button			# can be "" = empty so we need to check for this
-			continue
+			new_file_data += "%s\n" % entry
+		else: continue # If file does not exist, we do not need to go further
+		
+		# We only need the first 5 existing project files, so we
+		# skip the next part of adding a button can be "" = empty 
+		# so we need to check for this
+		if %RecentProjectsVBox.get_child_count() == 5: continue
 		
 		# Adding the recent projects button
 		var button := Button.new()
-		button.text = project_data[0]
-		button.tooltip_text = project_data[1]
+		button.text = entry_data[0]
+		button.tooltip_text = entry_data[1]
 		button.icon = preload("res://assets/icons/video_file.png")
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.connect("pressed", open_editor.bind(["--type=open", "--project_path=%s" % project_data[1]]))
+		button.connect("pressed", open_editor.bind(["--type=open", "--project_path=%s" % entry_data[1]]))
 		%RecentProjectsVBox.add_child(button)
+	
 	file_access.open(PATH, FileAccess.WRITE)
-	file_access.store_string(new_recent_projects)
-	old_recent_projects = []
+	file_access.store_string(new_file_data)
 
 #endregion
 ###############################################################
@@ -171,7 +177,7 @@ func _on_new_custom_confirm_button_pressed() -> void:
 
 #endregion
 ###############################################################
-# region Open project explorer  ###############################
+#region Open project explorer  ###############################
 ###############################################################
 
 func _on_open_project_cancel() -> void:
