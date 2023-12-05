@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://i0afdsn6mn8r"]
+[gd_scene load_steps=4 format=3 uid="uid://i0afdsn6mn8r"]
+
+[ext_resource type="PackedScene" uid="uid://damrypkaih6ch" path="res://ui/editor_window/top_bar/top_bar.tscn" id="2_cfupl"]
+[ext_resource type="PackedScene" uid="uid://dw25wwbr77fyb" path="res://ui/editor_window/resize_handles/resize_handles.tscn" id="5_d82ab"]
+[ext_resource type="PackedScene" uid="uid://ceg34ei6bl8dy" path="res://ui/editor_window/status_bar/status_bar.tscn" id="20_ynsae"]
 
 [node name="EditorWindow" type="Control"]
 layout_mode = 3
@@ -7,3 +11,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TopBar" parent="Layout" instance=ExtResource("2_cfupl")]
+layout_mode = 2
+
+[node name="Content" type="Control" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatusBar" parent="Layout" instance=ExtResource("20_ynsae")]
+layout_mode = 2
+
+[node name="ResizeHandles" parent="." instance=ExtResource("5_d82ab")]

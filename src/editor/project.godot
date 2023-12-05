@@ -43,7 +43,8 @@ window/vsync/vsync_mode=0
 
 folder_colors={
 "res://assets/": "yellow",
-"res://bin/": "gray"
+"res://bin/": "gray",
+"res://translations/": "teal"
 }
 
 [gui]

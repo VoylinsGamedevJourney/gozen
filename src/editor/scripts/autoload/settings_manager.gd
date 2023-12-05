@@ -1,4 +1,15 @@
 extends Node
+
+signal _on_window_mode_switch
+
+
+
+
+
+
+
+####   V OLD V
+
 ## Settings manager
 ##
 ## All settings are saved in a config file (INI)

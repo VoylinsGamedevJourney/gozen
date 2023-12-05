@@ -327,7 +327,7 @@ func _on_button_pressed() -> void:
 	print("audio length: %s" % stream.get_length())
 	$AudioStreamPlayer.stream = stream
 	$AudioStreamPlayer.play()
-	return
+	#return
 	
 	# WORKING VIDEO
 	
@@ -367,7 +367,7 @@ func _ready() -> void:
 		#for i in data[x]:
 			#print(data[x][i])
 	var importer: GoZenImporter = GoZenImporter.new()
-	data = importer.get_container_data("/storage/Documents/Programming/GoZen/src/test_room/Normal.MP4")
+	data = importer.get_container_data("/storage/Documents/Programming/GoZen/src/editor/test_room/Normal.MP4")
 	
 	
 	#var audio_data: PackedByteArray = importer.get_container_data(

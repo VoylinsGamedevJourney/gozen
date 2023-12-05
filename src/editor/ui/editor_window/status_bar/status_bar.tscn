@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://ceg34ei6bl8dy"]
+
+[ext_resource type="Script" path="res://ui/editor_window/status_bar/status_bar.gd" id="1_tl3bs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_038f5"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_u2kya"]
+line_spacing = 0.0
+font_size = 12
+
+[node name="StatusBar" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_038f5")
+script = ExtResource("1_tl3bs")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 2
+
+[node name="VersionLabel" type="Label" parent="HBox"]
+layout_mode = 2
+text = "0.0.1-Alpha"
+label_settings = SubResource("LabelSettings_u2kya")
