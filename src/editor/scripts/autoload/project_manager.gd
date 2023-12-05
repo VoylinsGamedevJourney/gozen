@@ -23,7 +23,7 @@ const PATH_RECENT_PROJECTS := "user://recent_projects"
 
 var project_title : String
 var project_path  : String
-var size : Vector2i
+var resolution : Vector2i
 var framerate: float = 30.0
 #endregion
 
@@ -58,7 +58,7 @@ func _ready() -> void:
 			load_project(arguments.project_path)
 		"new":
 			project_title = arguments.title
-			size = arguments.size
+			resolution = arguments.resolution
 		_:
 			printerr("No valid type detected!\n\t'%s' is not a valid type!" % arguments.type)
 			get_tree().quit()
@@ -133,125 +133,72 @@ func update_recent_project() -> void:
 	const PATH := "user://recent_projects.dat"
 	var file := FileAccess.open(PATH, FileAccess.READ)
 	var data: String = file.get_as_text()
-	data = "%s||%s\n%s" % [project_title, project_path, data]
+	data = "%s||%s||%s\n%s" % [
+			project_title, 
+			project_path, 
+			Time.get_datetime_string_from_system(),
+			data]
 	file = FileAccess.open(PATH, FileAccess.WRITE)
 	file.store_string(data)
 
 #endregion
 ###############################################################
 
-
-
-
-
-
-#######    V    OLD    V
-
-#func _on_new_project_path_selected(new_path: String) -> void:
-#	project.title = new_path.split("/")[-1].replace(".gozen",'')
-#	project.path = new_path.replace("%s.gozen" % project.title, '')
-#	add_recent_project(project.path)
-#	save_project()
-
-
-func _explorer_cancel_pressed() -> void:
-	pass#explorer = null
-
+#     GETTERS AND SETTERS     #################################
 
 ###############################################################
-#region Recent Projects  ######################################
+#region Project title  ########################################
 ###############################################################
 
+func get_project_title() -> String:
+	return project_title
 
-#func add_recent_project(project_path: String) -> void:
-#	var recent_projects: Array = [project_path]
-#	var old_recent_projects := get_recent_projects()
-#	old_recent_projects.erase(project_path)
-#	recent_projects.append_array(old_recent_projects)
-#	#FileManager.save_data(recent_projects, PATH_RECENT_PROJECTS)
-#
-#
-#func erase_recent_project(project_path: String) -> void:
-#	var recent_projects := get_recent_projects()
-#	recent_projects.erase(project_path)
-#	#FileManager.save_data(recent_projects, PATH_RECENT_PROJECTS)
+
+func set_project_title(new_title: String) -> void:
+	project_title = new_title
+	save_project(true)
+	_on_title_changed.emit(project_title)
 
 #endregion
 ###############################################################
-
-###############################################################
-#region Getters and setters  ##################################
+#region Project path  ########################################
 ###############################################################
 
-#region TITLE  #####################################################
+func get_project_path() -> String:
+	return project_path
 
-#func get_title() -> String:
-	#return project.title
-#
-#
-#func set_title(new_title: String) -> void:
-#	 TODO: Remove invalid chars
-	#project.title = new_title
-	#ProjectManager._on_title_change.emit(new_title)
-#
+
+func set_project_path(new_path: String) -> void:
+	project_path = new_path
+	save_project(true)
+
 #endregion
-#
-#region PATH  #################################################
-#
-#func get_project_path() -> String:
-	#return project.path
-#
-#
-#func get_full_project_path() -> String:
-	#return "%s/%s.gozen" % [project.path, project.title]
-#
-#
-#func set_project_path(new_path: String) -> void:
-#	 If new_path is "", it means the project will try to save under a new path
-#	 Todo: Make certain new_path is not full path
-	#project.path = new_path
-#
+###############################################################
+#region Resolution  #################################################
+###############################################################
+
+func get_resoltion() -> Vector2i:
+	return resolution
+
+
+func set_size(new_resolution: Vector2i) -> void:
+	resolution = new_resolution
+	save_project()
+	_on_resolution_changed.emit(resolution)
+
 #endregion
-#
-#region RESOLUTION  ###########################################
-#
-#func get_resolution() -> Vector2i:
-	#return project.resolution
-#
-#
-#func set_resolution(new_resolution: Vector2i) -> void:
-	#project.resolution = new_resolution
-	#_on_resolution_changed.emit(new_resolution)
-#
-#endregion
-#
-#region FRAMERATE  ############################################
-#
-#func get_framerate() -> float:
-	#return project.framerate
-#
-#
-#func set_framerate(new_framerate: float) -> void:
-	#project.framerate = new_framerate
-	#_on_framerate_changed.emit(new_framerate)
-#
-#endregion
-#
-#region FILES  ################################################
-#
-#func get_files() -> Dictionary:
-	#return project.files
-#
-#
-#func get_file(id: int) -> File:
-	#return project.files[id]
-#
-#
-#func add_file(new_file: File) -> void:
-	#project.files[project.files_id] = new_file
-	#project.files_id += 1
-	#_on_file_added.emit(new_file)
-#
-#endregion
+###############################################################
+#region Framerate  ############################################
+###############################################################
+
+func get_framerate() -> int:
+	return framerate
+
+
+func set_framerate(new_framerate: int) -> void:
+	framerate = new_framerate
+	save_project()
+	_on_framerate_changed.emit(framerate)
+
 #endregion
 ###############################################################

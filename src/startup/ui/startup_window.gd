@@ -129,13 +129,13 @@ func _on_exit_button_mouse_exited() -> void:
 ###############################################################
 
 func _on_new_fhd_button_pressed(horizontal: bool) -> void:
-	if horizontal: open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1920x1080"])
-	else:          open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1080x1920"])
+	if horizontal: open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--resolution=1920x1080"])
+	else:          open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--resolution=1080x1920"])
 
 
 func _on_new_4k_button_pressed(horizontal: bool) -> void:
-	if horizontal: open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1920x1080"])
-	else:          open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--size=1080x1920"])
+	if horizontal: open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--resolution=1920x1080"])
+	else:          open_editor(["--type=new", "--title=%s" % tr("UNTITLED_PROJECT_TITLE"), "--resolution=1080x1920"])
 
 
 func _on_new_custom_button_pressed() -> void:
@@ -173,7 +173,7 @@ func _on_new_custom_confirm_button_pressed() -> void:
 	var title: String = %NewProjectTitleLineEdit.text
 	if title == "":
 		title = tr("UNTITLED_PROJECT_TITLE")
-	open_editor(["--type=new", "--title=%s" % title, "--size=%sx%s" % [%XSpinBox.value, %YSpinBox.value]])
+	open_editor(["--type=new", "--title=%s" % title, "--resolution=%sx%s" % [%XSpinBox.value, %YSpinBox.value]])
 
 #endregion
 ###############################################################
