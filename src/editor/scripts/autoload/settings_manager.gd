@@ -1,107 +1,94 @@
 extends Node
+## Settings Manager
+##
+## TODO: Make the actual settings menu a separate program which sends the
+## data back to this script upon closing.
+
+signal _on_settings_loaded
+signal _on_project_saved
 
 signal _on_window_mode_switch
 
-
-
-
-
-
-
-####   V OLD V
-
-## Settings manager
-##
-## All settings are saved in a config file (INI)
-## Settings list: (name, type, default)
-## - zen_mode;  (bool, false)
-## - language;  (String, "en")
-## - update_notification;  (bool, true);
-## - timeline_max_size; (int, 86400)
-##
-## These settings are saved inside of section 'main'
-
-
-#region Signals
-signal _settings_ready
-
-signal _on_open_settings
 signal _on_zen_switched(value)
 signal _on_language_changed(value)
-signal _on_update_notification_changed(value)
-signal _on_timeline_max_size_changed(new_size)
-#endregion
 
 
-#region Constants
-const PATH := "user://settings.ini"
-#endregion
+const PATH := "user://settings.dat"
 
 
-#region Settings data
-var data : Settings
-#endregion
+var zen_mode: bool = false
+var language: String = "en"
 
+
+###############################################################
+#region Data handlers  ########################################
+###############################################################
 
 func _ready() -> void:
-	if FileAccess.file_exists(PATH):
-		_load()
-	else:
-		data = Settings.new()
-	_settings_ready.emit()
+	load_settings()
 
 
-func _load() -> void:
-	var settings_file := FileAccess.open(PATH, FileAccess.READ)
-	var error := FileAccess.get_open_error()
-	if error:
-		printerr("Could not open settings file '%s'!\n\tError: %s" % [PATH, error])
-	var data_string := settings_file.get_as_text()
-	error = settings_file.get_error()
-	if error:
-		printerr("Could not save data to '%s'!\n\tError: %s" % [PATH, error])
-	data = str_to_var(data_string)
+func load_settings() -> void:
+	# Check to see if path actually exists
+	if !FileAccess.file_exists(PATH):
+		save_settings()
+	
+	# Open file and load data
+	var file := FileAccess.open(PATH, FileAccess.READ)
+	var data: Dictionary = file.get_var()
+	for key: String in data:
+		if get(key): # Check if variable still exists or not
+			set(key, data[key])
+	
+	_on_settings_loaded.emit()
 
 
-func _save() ->void:
-	var settings_file := FileAccess.open(PATH, FileAccess.WRITE)
-	var error := FileAccess.get_open_error()
-	if error:
-		printerr("Could not open file '%s'!\n\tError: %s" % [PATH, error])
-	settings_file.store_string(var_to_str(data))
-	error = settings_file.get_error()
-	if error:
-		printerr("Could not save data to '%s'!\n\tError: %s" % [PATH, error])
+func save_settings() -> void:
+	# Save the actual data
+	var data: Dictionary = {}
+	for x: Dictionary in get_property_list():
+		if x.usage == 4096:
+			data[x.name] = get(x.name)
+	var file := FileAccess.open(PATH, FileAccess.WRITE)
+	file.store_var(data, false)
+	
+	_on_project_saved.emit()
 
+#endregion
+###############################################################
+#region Input handling  #######################################
+###############################################################
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_zen_mode"):
 		toggle_zen_mode()
 
-
-###############################################################
-#region Getters and setters  ##################################
+#endregion
 ###############################################################
 
-#region ZEN MODE  #############################################
+#     GETTERS AND SETTERS     #################################
+
+###############################################################
+#region Zen mode  #############################################
+###############################################################
 
 func get_zen_mode() -> bool:
-	return data.zen_mode
+	return zen_mode
 
 
-func set_zen_mode(value: bool, startup: bool = false) -> void:
-	data.zen_mode = value
+func set_zen_mode(value: bool) -> void:
+	zen_mode = value
 	_on_zen_switched.emit(value)
-	if !startup:
-		data.save(PATH)
+	save_settings()
 
 
 func toggle_zen_mode() -> void:
 	set_zen_mode(!get_zen_mode())
 
 #endregion
-
-#region LANGUAGE  #############################################
+###############################################################
+#region Language  #############################################
+###############################################################
 
 func get_language_list() -> Dictionary:
 	var dic := {}
@@ -119,39 +106,9 @@ func get_language_list() -> Dictionary:
 
 func set_language(language_code: String, startup: bool = false) -> void:
 	TranslationServer.set_locale(language_code)
-	data.language = language_code
+	language = language_code
 	_on_language_changed.emit(language_code)
-	if !startup:
-		_save()
+	save_settings()
 
-#endregion
-
-#region UPDATE NOTIFICATION  ##################################
-
-func get_update_notification() -> bool:
-	return data.update_notification
-
-
-func set_update_notification(value: bool, startup: bool = false) -> void:
-	data.update_notification = value
-	_on_update_notification_changed.emit(value)
-	if !startup:
-		_save()
-
-#endregion
-
-#region TIMELINE MAXIMUM SIZE  ################################
-
-func get_timeline_max_size() -> int:
-	return data.timeline_max_size
-
-
-func set_timeline_max_size(new_size: int, startup: bool = false) -> void:
-	data.timeline_max_size = new_size
-	_on_timeline_max_size_changed.emit(new_size)
-	if !startup:
-		data.save(PATH)
-
-#endregion
 #endregion
 ###############################################################
