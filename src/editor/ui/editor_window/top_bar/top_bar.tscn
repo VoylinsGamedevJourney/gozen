@@ -32,7 +32,7 @@ shadow_offset = Vector2(0, 1)
 font_size = 14
 
 [node name="TopBar" type="PanelContainer"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 30)
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 30.0
@@ -113,6 +113,7 @@ text = "Untitled project*"
 label_settings = SubResource("LabelSettings_r4n2x")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_lock_ = true
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="pressed" from="HBox/EditorButton" to="." method="_on_editor_button_pressed"]
