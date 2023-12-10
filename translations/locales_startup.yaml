@@ -82,7 +82,7 @@ BUTTON_SUPPORT_PROJECT:
 POPUP_CUSTOM_PROJECT_TITLE:
   en: "Custom project"
   ja: "カスタムプロジェクト"
-  fr: ""
+  fr: "Projet personnalisé"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -91,7 +91,7 @@ POPUP_CUSTOM_PROJECT_TITLE:
 POPUP_CUSTOM_PROJECT_NAME:
   en: "Project title:"
   ja: "プロジェクトのタイトル："
-  fr: ""
+  fr: "Titre du projet :"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -100,7 +100,7 @@ POPUP_CUSTOM_PROJECT_NAME:
 POPUP_CUSTOM_PROJECT_SIZE:
   en: "Project size:"
   ja: "プロジェクトのサイズ："
-  fr: ""
+  fr: "Dimensions du projet :"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -109,7 +109,7 @@ POPUP_CUSTOM_PROJECT_SIZE:
 POPUP_CUSTOM_PROJECT_BUTTON_CANCEL:
   en: "Cancel"
   ja: "キャンセル"
-  fr: ""
+  fr: "Annuler"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -118,7 +118,7 @@ POPUP_CUSTOM_PROJECT_BUTTON_CANCEL:
 POPUP_CUSTOM_PROJECT_BUTTON_OK:
   en: "OK"
   ja: "了解"
-  fr: ""
+  fr: "Ok"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -127,7 +127,7 @@ POPUP_CUSTOM_PROJECT_BUTTON_OK:
 POPUP_CUSTOM_PROJECT_TOOLTIP_X:
   en: "Width in pixels for the project."
   ja: "プロジェクトの幅（ピクセル）"
-  fr: ""
+  fr: "Largeur pour le projet en pixels."
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -136,7 +136,7 @@ POPUP_CUSTOM_PROJECT_TOOLTIP_X:
 POPUP_CUSTOM_PROJECT_TOOLTIP_Y:
   en: "Height in pixels for the project."
   ja: "プロジェクトの高さ（ピクセル）"
-  fr: ""
+  fr: "Hauteur pour le projet en pixels."
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -145,7 +145,7 @@ POPUP_CUSTOM_PROJECT_TOOLTIP_Y:
 UNTITLED_PROJECT_TITLE:
   en: "Untitled project"
   ja: "新プロジェクト"
-  fr: ""
+  fr: "Projet sans titre"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -154,7 +154,7 @@ UNTITLED_PROJECT_TITLE:
 EXPLORER_OPEN_PROJECT:
   en: "Open project"
   ja: "プロジェクトを開く"
-  fr: ""
+  fr: "Ouvrir un projet"
   nl: ""
   zh_TW: ""
   pl_pl: ""
