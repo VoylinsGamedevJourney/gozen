@@ -100,7 +100,7 @@ POPUP_CUSTOM_PROJECT_NAME:
 POPUP_CUSTOM_PROJECT_SIZE:
   en: "Project size:"
   ja: "プロジェクトのサイズ："
-  fr: "Dimensions du projet :"
+  fr: "Taille du projet :"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -126,8 +126,8 @@ POPUP_CUSTOM_PROJECT_BUTTON_OK:
   pt_br: ""
 POPUP_CUSTOM_PROJECT_TOOLTIP_X:
   en: "Width in pixels for the project."
-  ja: "プロジェクトの幅（ピクセル）"
-  fr: "Largeur pour le projet en pixels."
+  ja: "プロジェクトの幅（ピクセル）
+  fr: "Longueur du projet en pixels."
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -136,7 +136,7 @@ POPUP_CUSTOM_PROJECT_TOOLTIP_X:
 POPUP_CUSTOM_PROJECT_TOOLTIP_Y:
   en: "Height in pixels for the project."
   ja: "プロジェクトの高さ（ピクセル）"
-  fr: "Hauteur pour le projet en pixels."
+  fr: "Hauteur du projet en pixels"
   nl: ""
   zh_TW: ""
   pl_pl: ""

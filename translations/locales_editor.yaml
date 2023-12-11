@@ -10,7 +10,7 @@ TEXT_VERSION:
 FILE_EXPLORER_TITLE_SELECT_FOLDER:
   en: "Select Project Folder"
   ja: "プロジェクトフォルダを選択してください"
-  fr: "Sélectionner le Dossier du Projet"
+  fr: "Sélectionner le dossier du projet"
   nl: "Selecteer project map"
   zh_TW: "選擇專案位置"
   pl_pl: "Wybierz folder projektu"
@@ -66,7 +66,7 @@ BUTTON_CREATE:
 TAB_ABOUT:
   en: "About"
   ja: "情報"
-  fr: "À Propos"
+  fr: "À propos"
   nl: "Info"
   zh_TW: "關於"
   pl_pl: "Info"

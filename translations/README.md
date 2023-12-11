@@ -39,7 +39,7 @@ We don't have any specific plans for adding more languages in the future. Langua
 
 - English: Voylin
 - Japanese: Voylin
-- French: Slander
+- French: Slander, #Guigui
 - Dutch: Voylin
 - Chinese: Aappaapp
 - Polish: SzczurekYT
