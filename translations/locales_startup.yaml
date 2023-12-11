@@ -118,7 +118,7 @@ POPUP_CUSTOM_PROJECT_BUTTON_CANCEL:
 POPUP_CUSTOM_PROJECT_BUTTON_OK:
   en: "OK"
   ja: "了解"
-  fr: "OK"
+  fr: "Ok"
   nl: ""
   zh_TW: ""
   pl_pl: ""
@@ -126,7 +126,7 @@ POPUP_CUSTOM_PROJECT_BUTTON_OK:
   pt_br: ""
 POPUP_CUSTOM_PROJECT_TOOLTIP_X:
   en: "Width in pixels for the project."
-  ja: "プロジェクトの幅（ピクセル）"
+  ja: "プロジェクトの幅（ピクセル）
   fr: "Longueur du projet en pixels."
   nl: ""
   zh_TW: ""
@@ -154,7 +154,7 @@ UNTITLED_PROJECT_TITLE:
 EXPLORER_OPEN_PROJECT:
   en: "Open project"
   ja: "プロジェクトを開く"
-  fr: "Ouvrir le projet"
+  fr: "Ouvrir un projet"
   nl: ""
   zh_TW: ""
   pl_pl: ""
