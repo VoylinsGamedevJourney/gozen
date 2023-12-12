@@ -104,7 +104,7 @@ func get_language_list() -> Dictionary:
 	return dic
 
 
-func set_language(language_code: String, startup: bool = false) -> void:
+func set_language(language_code: String) -> void:
 	TranslationServer.set_locale(language_code)
 	language = language_code
 	_on_language_changed.emit(language_code)

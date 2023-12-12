@@ -191,11 +191,11 @@ func set_size(new_resolution: Vector2i) -> void:
 #region Framerate  ############################################
 ###############################################################
 
-func get_framerate() -> int:
+func get_framerate() -> float:
 	return framerate
 
 
-func set_framerate(new_framerate: int) -> void:
+func set_framerate(new_framerate: float) -> void:
 	framerate = new_framerate
 	save_project()
 	_on_framerate_changed.emit(framerate)
