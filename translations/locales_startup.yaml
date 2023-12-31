@@ -7,6 +7,8 @@ TITLE_NEW_PROJECT:
   pl_pl: "Nowy projekt"
   de: "Neues Projekt"
   pt_br: "Novo projeto"
+  uk_UA: "Новий проєкт"
+  ru_RU: "Новый проект"
 TITLE_RECENT_PROJECTS:
   en: "Recent projects"
   ja: "最近のプロジェクト"
@@ -16,6 +18,8 @@ TITLE_RECENT_PROJECTS:
   pl_pl: "Ostatnie projekty"
   de: "Zuletzt geöffnete Projekte"
   pt_br: "Projetos recentes"
+  uk_UA: "Нещодавні проєкти"
+  ru_RU: "Недавние проекты"
 BUTTON_NEW_HORIZONTAL_FHD_PROJECT:
   en: "New 1080p (landscape)"
   ja: "新1080p　（横）"
@@ -25,6 +29,8 @@ BUTTON_NEW_HORIZONTAL_FHD_PROJECT:
   pl_pl: "Nowy 1080p (poziomy)"
   de: "Neues 1080p (Landschaft)"
   pt_br: "Novo 1080p (paisagem)"
+  uk_UA: "Новий 1080p (альбомна орієнтація)"
+  ru_RU: "Новый 1080p (альбомная ориентация)"
 BUTTON_NEW_VERTICAL_FHD_PROJECT:
   en: "New 1080p (portrait)"
   ja: "新1080p　（縦）"
@@ -34,6 +40,8 @@ BUTTON_NEW_VERTICAL_FHD_PROJECT:
   pl_pl: "Nowy 1080p (pionowy)"
   de: "Neues 1080p (Porträt)"
   pt_br: "Novo 1080p (retrato)"
+  uk_UA: "Новий 1080p (портретна орієнтація)"
+  ru_RU: "Новый 1080p (портретная ориентация)"
 BUTTON_NEW_HORIZONTAL_4K_PROJECT:
   en: "New 4K (landscape)"
   ja: "新４K　（横）"
@@ -43,6 +51,8 @@ BUTTON_NEW_HORIZONTAL_4K_PROJECT:
   pl_pl: "Nowy 4k (poziomy)"
   de: "Neues 4k (Landschaft)"
   pt_br: "Novo 4K (paisagem)"
+  uk_UA: "Новий 4K (альбомна орієнтація)"
+  ru_RU: "Новый 4K (альбомная ориентация)"
 BUTTON_NEW_VERTICAL_4K_PROJECT:
   en: "New 4K (portrait)"
   ja: "新４K　（縦）"
@@ -52,6 +62,8 @@ BUTTON_NEW_VERTICAL_4K_PROJECT:
   pl_pl: "Nowy 4k (pionowy)"
   de: "Neues 4k (Porträt)"
   pt_br: "Novo 4K (retrato)"
+  uk_UA: "Новий 4K (портретна орієнтація)"
+  ru_RU: "Новый 4K (портретная ориентация)"
 BUTTON_NEW_CUSTOM_PROJECT:
   en: "New custom"
   ja: "新カスタム"
@@ -61,6 +73,8 @@ BUTTON_NEW_CUSTOM_PROJECT:
   pl_pl: ""
   de: ""
   pt_br: "Novo personalizado"
+  uk_UA: "Новий не стандартний"
+  ru_RU: "Новый не стандартный"
 BUTTON_OPEN_PROJECT:
   en: "Open project"
   ja: "プロジェクトをを開く"
@@ -70,6 +84,8 @@ BUTTON_OPEN_PROJECT:
   pl_pl: "Otwórz projekt"
   de: "Projekt öffnen"
   pt_br: "Abrir projeto"
+  uk_UA: "Відкрити проєкт"
+  ru_RU: "Открыть проект"
 BUTTON_SUPPORT_PROJECT:
   en: "Support this project"
   ja: "このプロジェクトを支援する"
@@ -79,6 +95,8 @@ BUTTON_SUPPORT_PROJECT:
   pl_pl: "Wesprzyj ten projekt"
   de: "Unterstütze dieses Projekt"
   pt_br: "Apoie este projeto"
+  uk_UA: "Підтримати проєкт"
+  ru_RU: "Поддержать проект"
 POPUP_CUSTOM_PROJECT_TITLE:
   en: "Custom project"
   ja: "カスタムプロジェクト"
@@ -88,6 +106,8 @@ POPUP_CUSTOM_PROJECT_TITLE:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Власний проєкт"
+  ru_RU: "Собственный проект"
 POPUP_CUSTOM_PROJECT_NAME:
   en: "Project title:"
   ja: "プロジェクトのタイトル："
@@ -97,6 +117,8 @@ POPUP_CUSTOM_PROJECT_NAME:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Назва проєкту"
+  ru_RU: "Название проекта"
 POPUP_CUSTOM_PROJECT_SIZE:
   en: "Project size:"
   ja: "プロジェクトのサイズ："
@@ -106,6 +128,8 @@ POPUP_CUSTOM_PROJECT_SIZE:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Розмір проєкту:"
+  ru_RU: "Размер проекта:"
 POPUP_CUSTOM_PROJECT_BUTTON_CANCEL:
   en: "Cancel"
   ja: "キャンセル"
@@ -115,6 +139,8 @@ POPUP_CUSTOM_PROJECT_BUTTON_CANCEL:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Скасувати"
+  ru_RU: "Отменить"
 POPUP_CUSTOM_PROJECT_BUTTON_OK:
   en: "OK"
   ja: "了解"
@@ -124,6 +150,8 @@ POPUP_CUSTOM_PROJECT_BUTTON_OK:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "ОК"
+  ru_RU: "ОК"
 POPUP_CUSTOM_PROJECT_TOOLTIP_X:
   en: "Width in pixels for the project."
   ja: "プロジェクトの幅（ピクセル）"
@@ -133,6 +161,8 @@ POPUP_CUSTOM_PROJECT_TOOLTIP_X:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Ширина проєкту у пікселях."
+  ru_RU: "Ширина проэкта в пикселях."
 POPUP_CUSTOM_PROJECT_TOOLTIP_Y:
   en: "Height in pixels for the project."
   ja: "プロジェクトの高さ（ピクセル）"
@@ -142,6 +172,8 @@ POPUP_CUSTOM_PROJECT_TOOLTIP_Y:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Висота проєкту в пікселях."
+  ru_RU: "Высота проэкта в пикселях."
 UNTITLED_PROJECT_TITLE:
   en: "Untitled project"
   ja: "新プロジェクト"
@@ -151,6 +183,8 @@ UNTITLED_PROJECT_TITLE:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Проєкт без назви"
+  ru_RU: "Проэкт без названия"
 EXPLORER_OPEN_PROJECT:
   en: "Open project"
   ja: "プロジェクトを開く"
@@ -160,6 +194,8 @@ EXPLORER_OPEN_PROJECT:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Відкрити проєкт"
+  ru_RU: "Открыть проект"
 EMPTY:
   en: ""
   ja: ""
@@ -169,3 +205,5 @@ EMPTY:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: ""
+  ru_RU: ""
