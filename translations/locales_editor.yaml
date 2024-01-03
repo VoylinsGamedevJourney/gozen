@@ -7,6 +7,8 @@ TEXT_VERSION:
   pl_pl: "Wersja"
   de: "Version"
   pt_br: "Versão"
+  uk_UA: "Версія"
+  ru_RU: "Версия"
 FILE_EXPLORER_TITLE_SELECT_FOLDER:
   en: "Select Project Folder"
   ja: "プロジェクトフォルダを選択してください"
@@ -16,6 +18,8 @@ FILE_EXPLORER_TITLE_SELECT_FOLDER:
   pl_pl: "Wybierz folder projektu"
   de: "Projekt Ordner auswählen"
   pt_br: "Selecione a Pasta do Projeto"
+  uk_UA: "Обрати теку проєкту"
+  ru_RU: "Выбрать папку проекта"
 FILE_EXPLORER_CLOSE:
   en: "Close"
   ja: "閉じる"
@@ -25,6 +29,8 @@ FILE_EXPLORER_CLOSE:
   pl_pl: "Zamknij"
   de: "Schließen"
   pt_br: "Fechar"
+  uk_UA: "Закрити"
+  ru_RU: "закрыть"
 FILE_EXPLORER_SELECT:
   en: "Select"
   ja: "選択"
@@ -34,15 +40,8 @@ FILE_EXPLORER_SELECT:
   pl_pl: "Wybierz"
   de: "Auswählen"
   pt_br: "Selecionar"
-
-
-
-
-
-
-
-
-
+  uk_UA: "Обрати"
+  ru_RU: "Выбрать"
 BUTTON_CANCEL:
   en: "Cancel"
   ja: "キャンセル"
@@ -52,6 +51,8 @@ BUTTON_CANCEL:
   pl_pl: "Anuluj"
   de: "Abbrechen"
   pt_br: "Cancelar"
+  uk_UA: "Скасувати"
+  ru_RU: "Отменить"
 BUTTON_CREATE:
   en: "Create"
   ja: "作成"
@@ -61,8 +62,8 @@ BUTTON_CREATE:
   pl_pl: "Utwórz"
   de: "Erstelle"
   pt_br: "Criar"
-
-
+  uk_UA: "Створити"
+  ru_RU: "Создать"
 TAB_ABOUT:
   en: "About"
   ja: "情報"
@@ -72,6 +73,8 @@ TAB_ABOUT:
   pl_pl: "Info"
   de: "Über"
   pt_br: "Sobre"
+  uk_UA: "Про додаток"
+  ru_RU: "Про приложение"
 TAB_SETTINGS:
   en: "Settings"
   ja: "設定"
@@ -81,12 +84,8 @@ TAB_SETTINGS:
   pl_pl: "Ustawienia"
   de: "Einstellungen"
   pt_br: "Configurações"
-
-
-
-
-
-
+  uk_UA: "Налаштування"
+  ru_RU: "Настройки"
 SETTING_TEXT_LANGUAGE:
   en: "Language"
   ja: "言語"
@@ -96,6 +95,8 @@ SETTING_TEXT_LANGUAGE:
   pl_pl: "Język"
   de: "Sprache"
   pt_br: "Idioma"
+  uk_UA: "Мова"
+  ru_RU: "Язык"
 TOP_BAR_TOOLTIP_EDITOR_BUTTON:
   en: "Shows some editor information."
   ja: ""
@@ -105,6 +106,8 @@ TOP_BAR_TOOLTIP_EDITOR_BUTTON:
   pl_pl: ""
   de: ""
   pt_br: "Mostra algumas informações sobre o editor."
+  uk_UA: "Показує деяку інформацію про редактор."
+  ru_RU: "Показывает некоторую информацию про редактор."
 TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON:
   en: "Takes you to the project settings."
   ja: ""
@@ -114,6 +117,8 @@ TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON:
   pl_pl: ""
   de: ""
   pt_br: "Leva você às configurações do projeto."
+  uk_UA: "Відправить вас до налаштувань проєкту."
+  ru_RU: "Отправит вас в настройки проекта."
 TOP_BAR_TOOLTIP_EDITOR_SETTINGS_BUTTON:
   en: "Takes you to the editor settings."
   ja: ""
@@ -123,6 +128,8 @@ TOP_BAR_TOOLTIP_EDITOR_SETTINGS_BUTTON:
   pl_pl: ""
   de: ""
   pt_br: "Leva você às configurações do editor."
+  uk_UA: "Відправить вас до налаштувань редактору."
+  ru_RU: "Отправит вас в настройки редактора."
 POPUP_EXIT_SAVE_TEXT:
   en: "Do you want to save the project?"
   ja: "プロジェクトを保存しますか？"
@@ -132,6 +139,8 @@ POPUP_EXIT_SAVE_TEXT:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: "Бажаєте зберегти проєкт?"
+  ru_RU: "Желаете сохранить проект?"
 EMPTY:
   en: ""
   ja: ""
@@ -141,3 +150,5 @@ EMPTY:
   pl_pl: ""
   de: ""
   pt_br: ""
+  uk_UA: ""
+  ru_RU: ""

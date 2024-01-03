@@ -9,7 +9,9 @@ At this stage we have a couple of different languages available inside of the ed
 - Chinese;
 - Polish;
 - German;
-- Brazilian Portuguese.
+- Brazilian Portuguese;
+- Ukranian;
+- Rusian.
 
 ## All languages welcome!
 
@@ -44,4 +46,6 @@ We don't have any specific plans for adding more languages in the future. Langua
 - Chinese: Aappaapp
 - Polish: SzczurekYT
 - German: Kiisu-Master
-- Brazilian Portuguese: Wilker-uwu 
+- Brazilian Portuguese: Wilker-uwu
+- Ukranian: Vovkiv
+- Rusian: Vovkiv
