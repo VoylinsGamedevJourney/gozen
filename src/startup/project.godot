@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="GoZen Startup"
-config/description="The startup manager of the video editor GoZen made by Voylin with Godot."
+config/description="The startup manager of the video editor GoZen made by Voylin with Godot. For opening video files, please use GoZen Editor executable instead."
 config/version="0.3.0-alpha"
+config/tags=PackedStringArray("gozen")
 run/main_scene="res://ui/startup_window.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
-config/features=PackedStringArray("4.2", "GL Compatibility")
+config/features=PackedStringArray("4.3", "GL Compatibility")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 1)
 boot_splash/show_image=false

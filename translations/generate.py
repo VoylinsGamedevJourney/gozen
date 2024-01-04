@@ -9,9 +9,11 @@ def main():
 
   yaml_file_editor = os.path.dirname(path) + "/locales_editor.yaml"
   yaml_file_startup = os.path.dirname(path) + "/locales_startup.yaml"
+  yaml_file_settings_menu = os.path.dirname(path) + "/locales_settings_menu.yaml"
   
   csv_file_editor = os.path.dirname(path).replace("translations", "src/editor/translations/translations.csv")
   csv_file_startup = os.path.dirname(path).replace("translations", "src/startup/translations/translations.csv")
+  csv_file_settings_menu = os.path.dirname(path).replace("translations", "src/settings_menu/translations/translations.csv")
 
   # Showing option menu + waiting for input
   print("What would you like to do:")
@@ -24,10 +26,12 @@ def main():
     print("Generating CSV files ...")
     generate_csv(yaml_file_editor, csv_file_editor)
     generate_csv(yaml_file_startup, csv_file_startup)
+    generate_csv(yaml_file_settings_menu, csv_file_settings_menu)
   elif command == "2":  # New locale
     print("Adding new language to YAML files ...")
     add_new_language(yaml_file_editor)
     add_new_language(yaml_file_startup)
+    add_new_language(yaml_file_settings_menu)
   print("Finished!")
 
 

@@ -1,6 +1,3 @@
 [submodule "gozen-ffmpeg"]
 	path = gozen-ffmpeg
 	url = git@github.com:VoylinsGamedevJourney/gozen-ffmpeg.git
-[submodule "GoZen-docs"]
-	path = gozen-docs
-	url = git@github.com:VoylinsGamedevJourney/GoZen-docs.git
