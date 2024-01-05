@@ -28,3 +28,15 @@ func save_editor_layout() -> void:
 
 #endregion
 ###############################################################
+#region Split dragging  #######################################
+###############################################################
+
+func _on_layout_h_split_dragged(offset: int) -> void:
+	save_editor_layout()
+
+
+func _on_layout_v_split_dragged(offset: int) -> void:
+	save_editor_layout()
+
+#endregion
+###############################################################

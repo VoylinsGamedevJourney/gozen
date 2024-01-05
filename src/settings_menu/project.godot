@@ -10,11 +10,10 @@ config_version=5
 
 [application]
 
-config/name="GoZen Startup"
-config/description="The startup manager of the video editor GoZen made by Voylin with Godot. For opening video files, please use GoZen Editor executable instead."
-config/version="0.3.0-alpha"
+config/name="GoZen Settings Menu"
+config/description="The settings manager for the GoZen video editor. When the settings manager is opened with a project file (*.gozen) as argument, you'll be editing the settings of the specific project. If no arguments are given, you'll be editing the video editor settings themselves."
 config/tags=PackedStringArray("gozen")
-run/main_scene="res://ui/startup_window.tscn"
+run/main_scene="res://ui/settings_menu.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
 config/features=PackedStringArray("4.3", "GL Compatibility")
@@ -30,16 +29,22 @@ window/size/viewport_height=525
 window/size/resizable=false
 window/size/borderless=true
 window/size/always_on_top=true
-window/size/transparent=true
 window/energy_saving/keep_screen_on=false
 window/subwindows/embed_subwindows=false
-window/per_pixel_transparency/allowed=true
 
 [file_customization]
 
 folder_colors={
 "res://assets/": "yellow",
 "res://translations/": "teal"
+}
+
+[input]
+
+save_data={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"echo":false,"script":null)
+]
 }
 
 [internationalization]
@@ -51,4 +56,3 @@ locale/translations=PackedStringArray("res://translations/translations.de.transl
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.207843, 0.207843, 0.207843, 1)
-viewport/transparent_background=true

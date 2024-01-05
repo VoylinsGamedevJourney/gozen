@@ -13,7 +13,7 @@ var custom_project_landscape: bool = true
 
 # Setting up the Startup Screen
 func _ready() -> void:
-	print("Starting up 'GoZen Startup' ...")
+	set_language()
 	startup_argument_check() # Check if project got opened with an argument
 	load_recent_projects()   # Populating recent projects lists
 	check_version()          # Checking and setting version string
@@ -23,44 +23,41 @@ func _ready() -> void:
 #region Startup logic  ########################################
 ###############################################################
 
+func set_language() -> void:
+	const PATH_SETTINGS := "user://settings.cfg"
+	var locale := "en" # Default
+	if FileAccess.file_exists(PATH_SETTINGS):
+		var settings := ConfigFile.new()
+		settings.load(PATH_SETTINGS)
+		locale = settings.get_value("general", "language", locale)
+	TranslationServer.set_locale(locale)
+
 ## Check if startup is opened with a path, else directly open the GoZen editor
 func startup_argument_check() -> void:
-	print("Startup argument check ...")
 	var arguments: PackedStringArray = OS.get_cmdline_args()
 	if arguments.size() == 2:
 		if arguments[1].contains(".gozen"):
-			print("Startup opened with a *.gozen file!\n\t%s" % arguments[1])
 			open_editor(["--type=open", "--project_path=%s" % arguments[1]])
 		else: printerr("No valid startup arguments were given!")
-	else: print("No startup arguments were given.")
 
 
 func check_version() -> void:
-	print("Checking version and setting version string ...")
 	# TODO: Check if version is up to date or not
 	%VersionLabel.text = ProjectSettings.get_setting("application/config/version")
 
 
 ## Function to open the editor, also closes the startup menu
 func open_editor(arg: PackedStringArray) -> void:
-	print("Opening GoZen editor with following arguments:\n\t%s" % arg)
 	if Engine.is_editor_hint(): # Editor check
 		printerr("Running from Godot editor, can't start GoZen Editor!")
 		get_tree().quit()
 	
 	# Getting executable path for editor
 	var path : String = OS.get_executable_path().get_base_dir() + "/gozen_editor.%s"
-	print("Running from %s" % OS.get_name())
 	match OS.get_name():
-		"Windows": 
-			print("Running from Windows ...")
-			path = path % "exe"
-		"Linux": 
-			print("Running from Linux ...")
-			path = path % "x86_64"
-		"macOS":
-			print("Running from Mac OS ...")
-			path = path % "app"
+		"Windows": path = path % "exe"
+		"Linux":   path = path % "x86_64"
+		"macOS":   path = path % "app"
 	
 	# Opens a new thread else startup menu can't close
 	var thread := Thread.new()
@@ -73,9 +70,7 @@ func open_editor(arg: PackedStringArray) -> void:
 
 ## Loading the 5 most recently worked on projects
 func load_recent_projects() -> void:
-	print("Loading recent projects ...")
 	if !FileAccess.file_exists(PATH_RECENT_PROJECTS):
-		print("No recent projects file yet.")
 		# Hiding the separator and the 'show all projects' button
 		%RecentProjectsVBox.get_child(-1).visible = false
 		%RecentProjectsVBox.get_child(-2).visible = false
@@ -168,18 +163,15 @@ func load_recent_projects() -> void:
 
 ## Make link to image clickable
 func _on_image_credit_label_meta_clicked(meta: Variant) -> void:
-	print("Image credit button pressed")
 	OS.shell_open(meta)
 
 
 ## Open the github page when editor button is pressed
 func _on_editor_button_pressed() -> void:
-	print("Editor button pressed")
 	OS.shell_open("https://github.com/VoylinsGamedevJourney/GoZen")
 
 
 func _on_exit_button_pressed() -> void:
-	print("Exit button pressed")
 	get_tree().quit()
 
 
@@ -234,7 +226,6 @@ func _on_create_project_button_pressed() -> void:
 ###############################################################
 
 func _on_open_project_button_pressed() -> void:
-	print("Opening file dialog for opening *.gozen file ...")
 	# TODO: Change out the FileDialog to something more robust. (Native or custom)
 	var explorer := FileDialog.new()
 	explorer.title = tr("EXPLORER_OPEN_PROJECT")
@@ -242,11 +233,8 @@ func _on_open_project_button_pressed() -> void:
 	explorer.show_hidden_files = true
 	explorer.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	explorer.file_selected.connect(func(path):
-			print("File selected at path:\n\t%s" % path)
 			open_editor(["--type=open", "--project_path=%s" % path]))
-	explorer.canceled.connect(func(): 
-			print("File explorer closing ...")
-			explorer.queue_free())
+	explorer.canceled.connect(func(): explorer.queue_free())
 	add_child(explorer)
 	explorer.popup_centered(Vector2i(600,500))
 
@@ -256,7 +244,6 @@ func _on_open_project_button_pressed() -> void:
 ###############################################################
 
 func _on_support_project_button_pressed() -> void:
-	print("Support button pressed ...")
 	OS.shell_open("https://ko-fi.com/voylin")
 
 #endregion

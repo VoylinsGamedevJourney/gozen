@@ -13,10 +13,12 @@ config_version=5
 config/name="GoZen Editor"
 config/description="GoZen is an open source video editor made within Godot by Voylin."
 config/version="0.3.0-alpha"
+config/tags=PackedStringArray("gozen")
 run/main_scene="res://ui/editor_window/editor_window.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="GoZen"
-config/features=PackedStringArray("4.2", "GL Compatibility")
+config/auto_accept_quit=false
+config/features=PackedStringArray("4.3", "GL Compatibility")
 boot_splash/show_image=false
 config/icon="res://assets/icon.png"
 
@@ -72,7 +74,7 @@ save_project={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.fr.translation", "res://translations/translations.ja.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation")
+locale/translations=PackedStringArray("res://translations/translations.en.translation", "res://translations/translations.fr.translation", "res://translations/translations.ja.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation", "res://translations/translations.de.translation", "res://translations/translations.pt.translation", "res://translations/translations.ru_RU.translation", "res://translations/translations.uk_UA.translation")
 
 [rendering]
 

@@ -1,0 +1,151 @@
+[gd_scene load_steps=12 format=3 uid="uid://uyu2gs3morw7"]
+
+[ext_resource type="Script" path="res://ui/scripts/settings_menu.gd" id="1_pbe2t"]
+[ext_resource type="Script" path="res://ui/scripts/move_window.gd" id="2_ay6nh"]
+[ext_resource type="Texture2D" uid="uid://b4kniiqxxbm6r" path="res://assets/icons/close.png" id="2_p88k6"]
+[ext_resource type="LabelSettings" uid="uid://db8av0x8nr40s" path="res://ui/theming/label_settings_unsaved_changes.tres" id="3_orvgd"]
+[ext_resource type="PackedScene" uid="uid://cxb66n5f3yy6e" path="res://ui/resize_handles/resize_handles.tscn" id="4_q1xhw"]
+
+[sub_resource type="Animation" id="Animation_4hh1m"]
+resource_name = "hide_changes_saved"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VBox/BottomBarContainer/HBoxContainer/StatusLabel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hb58y"]
+_data = {
+"hide_changes_saved": SubResource("Animation_4hh1m")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p5qjr"]
+content_margin_left = 3.0
+content_margin_right = 3.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wbgmw"]
+font_size = 15
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_be75s"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbyv5"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[node name="SettingsMenu" type="Control"]
+clip_children = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pbe2t")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_hb58y")
+}
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TopBarContainer" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_p5qjr")
+script = ExtResource("2_ay6nh")
+
+[node name="WindowLabel" type="Label" parent="VBox/TopBarContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+text = "TOP_BAR_TITLE_SETTINGS_MENU"
+label_settings = SubResource("LabelSettings_wbgmw")
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="VBox/TopBarContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="ExitButton" type="TextureButton" parent="VBox/TopBarContainer/HBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_EXIT"
+texture_normal = ExtResource("2_p88k6")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Scroll" type="ScrollContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_be75s")
+
+[node name="SettingsGrid" type="GridContainer" parent="VBox/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="BottomBarContainer" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nbyv5")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBox/BottomBarContainer"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="StatusLabel" type="Label" parent="VBox/BottomBarContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "STATUS_CHANGES_SAVED"
+label_settings = ExtResource("3_orvgd")
+
+[node name="CancelButton" type="Button" parent="VBox/BottomBarContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_CANCEL"
+theme_override_font_sizes/font_size = 13
+text = "BUTTON_CANCEL"
+
+[node name="SaveButton" type="Button" parent="VBox/BottomBarContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_SAVE"
+theme_override_font_sizes/font_size = 13
+text = "BUTTON_SAVE"
+
+[node name="Handles" parent="." instance=ExtResource("4_q1xhw")]
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 650.0
+offset_bottom = 525.0
+
+[connection signal="pressed" from="VBox/TopBarContainer/HBox/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="VBox/BottomBarContainer/HBoxContainer/CancelButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="VBox/BottomBarContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]

@@ -10,7 +10,7 @@ extends PanelContainer
 ## TODO: Display a star next to project title when there are 0unsaved changes
 
 
-var move_window: bool = false
+var move_window := false
 var move_start: Vector2i
 
 
@@ -122,6 +122,11 @@ func _on_exit_button_pressed() -> void:
 	dialog.dialog_text = tr("POPUP_EXIT_SAVE_TEXT")
 	get_tree().root.add_child(dialog)
 	dialog.popup_centered()
+
+
+func _notification(what: int):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_on_exit_button_pressed()
 
 #endregion
 ###############################################################
