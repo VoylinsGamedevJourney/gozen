@@ -1,26 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://i0afdsn6mn8r"]
+[gd_scene load_steps=10 format=3 uid="uid://i0afdsn6mn8r"]
 
-[ext_resource type="Theme" uid="uid://cvv4mu4srdvdh" path="res://ui/editor_window/theme_module_buttons.tres" id="2_0bt5p"]
 [ext_resource type="PackedScene" uid="uid://damrypkaih6ch" path="res://ui/editor_window/top_bar/top_bar.tscn" id="2_cfupl"]
-[ext_resource type="Texture2D" uid="uid://b7fpp8oqsuk05" path="res://assets/icons/icon_folder.png" id="2_iyr7k"]
 [ext_resource type="Script" path="res://ui/editor_window/editor_layout.gd" id="2_k5yiy"]
-[ext_resource type="Texture2D" uid="uid://u6wtl4hm6r3n" path="res://assets/icons/icon_effect.png" id="3_sace5"]
-[ext_resource type="Texture2D" uid="uid://c75yufdvxenp7" path="res://assets/icons/icon_subtitles.png" id="4_g3rrh"]
+[ext_resource type="PackedScene" uid="uid://dbnhxiqj3mnwe" path="res://ui/module_bar_panel/module_bar_panel.tscn" id="3_hqicj"]
+[ext_resource type="PackedScene" uid="uid://b6jpf33ako3vt" path="res://ui/module_panel/module_panel.tscn" id="5_av54o"]
 [ext_resource type="PackedScene" uid="uid://dw25wwbr77fyb" path="res://ui/editor_window/resize_handles/resize_handles.tscn" id="5_d82ab"]
-[ext_resource type="Theme" uid="uid://bb6sp1l2go5b8" path="res://ui/editor_window/theme_layout_panels.tres" id="7_ch834"]
-[ext_resource type="Texture2D" uid="uid://dev7t2yjjkrwp" path="res://assets/icons/icon_render.png" id="7_wksug"]
+[ext_resource type="PackedScene" uid="uid://drqtuibppcf8s" path="res://ui/project_view/project_view_panel.tscn" id="6_s22hs"]
+[ext_resource type="PackedScene" uid="uid://c807tb5aqp3fc" path="res://ui/timeline/timeline.tscn" id="6_sp5g2"]
+[ext_resource type="Theme" uid="uid://bb6sp1l2go5b8" path="res://assets/theming/theme_layout_panels.tres" id="7_ch834"]
 [ext_resource type="PackedScene" uid="uid://ceg34ei6bl8dy" path="res://ui/editor_window/status_bar/status_bar.tscn" id="20_ynsae"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kkw0i"]
-content_margin_left = 5.0
-content_margin_top = 10.0
-content_margin_right = 5.0
-content_margin_bottom = 10.0
-bg_color = Color(0.207843, 0.207843, 0.207843, 1)
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_64ioo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5muqw"]
 
 [node name="EditorWindow" type="Control"]
 layout_mode = 3
@@ -48,65 +36,8 @@ size_flags_vertical = 3
 theme_override_constants/separation = -1
 script = ExtResource("2_k5yiy")
 
-[node name="ModuleBarPanel" type="PanelContainer" parent="VBox/LayoutHBox"]
-custom_minimum_size = Vector2(58, 0)
+[node name="ModuleBarPanel" parent="VBox/LayoutHBox" instance=ExtResource("3_hqicj")]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_kkw0i")
-
-[node name="ModuleButtonsVBox" type="VBoxContainer" parent="VBox/LayoutHBox/ModuleBarPanel"]
-layout_mode = 2
-theme = ExtResource("2_0bt5p")
-theme_override_constants/separation = 10
-
-[node name="MediaPoolButton" type="Button" parent="VBox/LayoutHBox/ModuleBarPanel/ModuleButtonsVBox"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "TOOLTIP_MEDIA_POOL_PANEL_BUTTON"
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_64ioo")
-icon = ExtResource("2_iyr7k")
-expand_icon = true
-
-[node name="EffectsButton" type="Button" parent="VBox/LayoutHBox/ModuleBarPanel/ModuleButtonsVBox"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "TOOLTIP_EFFECTS_PANEL_BUTTON"
-toggle_mode = true
-button_group = SubResource("ButtonGroup_64ioo")
-icon = ExtResource("3_sace5")
-expand_icon = true
-
-[node name="SubtitlesButton" type="Button" parent="VBox/LayoutHBox/ModuleBarPanel/ModuleButtonsVBox"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "TOOLTIP_SUBTITLES_PANEL_BUTTON"
-toggle_mode = true
-button_group = SubResource("ButtonGroup_64ioo")
-icon = ExtResource("4_g3rrh")
-expand_icon = true
-
-[node name="HSeparator" type="HSeparator" parent="VBox/LayoutHBox/ModuleBarPanel/ModuleButtonsVBox"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_5muqw")
-
-[node name="RenderButton" type="Button" parent="VBox/LayoutHBox/ModuleBarPanel/ModuleButtonsVBox"]
-custom_minimum_size = Vector2(48, 48)
-layout_mode = 2
-tooltip_text = "TOOLTIP_RENDER_MENU_BUTTON"
-
-[node name="TextureRect" type="TextureRect" parent="VBox/LayoutHBox/ModuleBarPanel/ModuleButtonsVBox/RenderButton"]
-self_modulate = Color(1, 0.0196078, 0, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("7_wksug")
-expand_mode = 3
-stretch_mode = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="VBox/LayoutHBox"]
 layout_mode = 2
@@ -127,24 +58,15 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ModulePanel" type="PanelContainer" parent="VBox/LayoutHBox/MarginContainer/LayoutVSplit/LayoutHSplit"]
+[node name="ModulePanel" parent="VBox/LayoutHBox/MarginContainer/LayoutVSplit/LayoutHSplit" instance=ExtResource("5_av54o")]
 unique_name_in_owner = true
-clip_children = 2
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"PanelTopLeft"
 
-[node name="ProjectViewPanel" type="PanelContainer" parent="VBox/LayoutHBox/MarginContainer/LayoutVSplit/LayoutHSplit"]
-clip_children = 2
+[node name="ProjectViewPanel" parent="VBox/LayoutHBox/MarginContainer/LayoutVSplit/LayoutHSplit" instance=ExtResource("6_s22hs")]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"PanelTopRight"
 
-[node name="Timeline" type="PanelContainer" parent="VBox/LayoutHBox/MarginContainer/LayoutVSplit"]
-clip_children = 2
+[node name="Timeline" parent="VBox/LayoutHBox/MarginContainer/LayoutVSplit" instance=ExtResource("6_sp5g2")]
 layout_mode = 2
-size_flags_vertical = 3
-theme_type_variation = &"PanelBottomSingle"
 
 [node name="StatusBar" parent="VBox" instance=ExtResource("20_ynsae")]
 layout_mode = 2

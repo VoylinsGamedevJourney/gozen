@@ -6,3 +6,9 @@ compatibility_minimum = 4.2
 [libraries]
 
 linux.debug.x86_64 = "res://bin/libgozen.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "res://bin/libgozen.linux.template_release.x86_64.so"
+windows.debug.x86_64 = "res://bin/libgozen.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://bin/libgozen.windows.template_release.x86_64.dll"
+macos.debug = "res://bin/libgozen.macos.template_debug.x86_64.framework"
+macos.release = "res://bin/libgozen.macos.template_release.x86_64.framework"
+

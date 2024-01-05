@@ -23,6 +23,7 @@ const PATH_RECENT_PROJECTS := "user://recent_projects"
 
 var project_title : String
 var project_path  : String
+
 var resolution : Vector2i
 var framerate: float = 30.0
 #endregion
@@ -44,9 +45,9 @@ func _ready() -> void:
 			arguments[key_value[0].lstrip("--")] = key_value[1]
 	
 	# Check if file got opened with the editor directly
-	if arguments.size() == 0:
+	if arguments.size() == 2:
 		# First argument should be the file path
-		var path: String = OS.get_cmdline_args()[0]
+		var path: String = OS.get_cmdline_args()[1]
 		load_project(path)
 		return
 	elif !arguments.has("type"):

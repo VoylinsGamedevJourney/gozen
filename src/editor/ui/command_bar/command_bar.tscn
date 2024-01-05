@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://dedsbtsetboyv"]
 
 [ext_resource type="Script" path="res://ui/command_bar/command_bar.gd" id="1_nrlre"]
-[ext_resource type="StyleBox" uid="uid://3p2k6n60hsjd" path="res://assets/node_styles/style_panel_background.tres" id="2_g62xp"]
-[ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/node_styles/style_panel_secondary.tres" id="3_43mtw"]
+[ext_resource type="StyleBox" uid="uid://3p2k6n60hsjd" path="res://assets/theming/node_styles/style_panel_background.tres" id="2_g62xp"]
+[ext_resource type="StyleBox" uid="uid://bckf7vybjoaps" path="res://assets/theming/node_styles/style_panel_secondary.tres" id="3_43mtw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pnw7a"]
 bg_color = Color(0, 0, 0, 0.392157)

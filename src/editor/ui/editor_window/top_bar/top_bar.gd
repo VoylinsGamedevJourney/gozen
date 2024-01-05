@@ -82,13 +82,13 @@ func _on_editor_button_pressed() -> void:
 ## Opens the project settings popup.
 func _on_project_button_pressed() -> void:
 	get_tree().root.add_child(
-			preload("res://ui/popup_project_settings/PopupProjectSettings.tscn").instantiate())
+			preload("res://ui/_popups/popup_project_settings/PopupProjectSettings.tscn").instantiate())
 
 
 ## Opens the settings popup.
 func _on_settings_button_pressed() -> void:
 	get_tree().root.add_child(
-			preload("res://ui/popup_settings/PopupSettings.tscn").instantiate())
+			preload("res://ui/_popups/popup_settings/PopupSettings.tscn").instantiate())
 
 
 ## Minimizes the window if possible, 

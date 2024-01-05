@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6jpf33ako3vt"]
+
+[ext_resource type="Theme" uid="uid://bb6sp1l2go5b8" path="res://assets/theming/theme_layout_panels.tres" id="1_molqb"]
+
+[node name="ModulePanel" type="PanelContainer"]
+clip_children = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_molqb")
+theme_type_variation = &"PanelTopLeft"

@@ -24,9 +24,8 @@ config/icon="res://assets/icon.png"
 
 [autoload]
 
-SettingsManager="*res://scripts/autoload/settings_manager.gd"
-VersionCheck="*res://scripts/autoload/version_check.gd"
-ProjectManager="*res://scripts/autoload/project_manager.gd"
+SettingsManager="*res://autoloads/settings_manager.gd"
+ProjectManager="*res://autoloads/project_manager.gd"
 CommandBarManager="*res://ui/command_bar/command_bar_manager.gd"
 
 [display]
@@ -46,12 +45,13 @@ window/vsync/vsync_mode=0
 folder_colors={
 "res://assets/": "yellow",
 "res://bin/": "gray",
+"res://test_room/": "red",
 "res://translations/": "teal"
 }
 
 [gui]
 
-theme/custom="res://assets/default_theme.tres"
+theme/custom="res://assets/theming/default_theme.tres"
 theme/custom_font="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf"
 
 [input]

@@ -6,10 +6,10 @@ uid="uid://douj4k181auib"
 
 [deps]
 
-files=["res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation", "res://translations/translations.de.translation", "res://translations/translations.pt.translation"]
+files=["res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation", "res://translations/translations.de.translation", "res://translations/translations.pt.translation", "res://translations/translations.uk_UA.translation", "res://translations/translations.ru_RU.translation"]
 
 source_file="res://translations/translations.csv"
-dest_files=["res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation", "res://translations/translations.de.translation", "res://translations/translations.pt.translation"]
+dest_files=["res://translations/translations.en.translation", "res://translations/translations.ja.translation", "res://translations/translations.fr.translation", "res://translations/translations.nl.translation", "res://translations/translations.zh_TW.translation", "res://translations/translations.pl.translation", "res://translations/translations.de.translation", "res://translations/translations.pt.translation", "res://translations/translations.uk_UA.translation", "res://translations/translations.ru_RU.translation"]
 
 [params]
 

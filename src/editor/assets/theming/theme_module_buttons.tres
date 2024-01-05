@@ -3,45 +3,39 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bh6rb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pb1le"]
+content_margin_left = 4.0
 bg_color = Color(1, 1, 1, 0)
-border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 0.490196)
 border_blend = true
-corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
 shadow_color = Color(0, 0, 0, 0.207843)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ppv0"]
+content_margin_left = 4.0
 bg_color = Color(1, 1, 1, 0)
-border_width_left = 2
 border_width_top = 3
 border_width_right = 2
 border_width_bottom = 3
 border_color = Color(0.270588, 0.270588, 0.270588, 0.603922)
 border_blend = true
-corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
 shadow_color = Color(0, 0, 0, 0.207843)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_red2b"]
+content_margin_left = 4.0
 bg_color = Color(1, 1, 1, 0)
-border_width_left = 2
 border_width_top = 3
 border_width_right = 2
 border_width_bottom = 3
 border_color = Color(0.909804, 0.909804, 0.909804, 0.490196)
 border_blend = true
-corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
 shadow_color = Color(0, 0, 0, 0.207843)
 
 [resource]

@@ -12,13 +12,7 @@ signal _on_language_changed(value)
 const PATH_SETTINGS := "user://settings.cfg"
 const PATH_MENU_CFG := "user://settings_data.cfg"
 
-@export var DEFAULT := {
-	"zen_mode": {"default": false},
-	"language": {"default": "en", "options": TranslationServer.get_loaded_locales()}
-}
-
 var config := ConfigFile.new()
-
 
 
 func _ready() -> void:
@@ -62,7 +56,11 @@ func load_defaults() -> void:
 	var settings := {
 		"general": [
 			"zen_mode",
-			"language"
+			"language",
+		], 
+		"timeline": [
+			"default_video_tracks",
+			"default_audio_tracks",
 		]
 	}
 	
@@ -143,6 +141,50 @@ func get_language_meta() -> Dictionary:
 		"default": "en",
 		"options": options,
 		"type": "text"
+	}
+
+#endregion
+################################################################
+#region Default Video Tracks  ##################################
+################################################################
+
+func set_default_video_tracks(new_value: int) -> void:
+	config.set_value("general", "default_video_tracks", new_value)
+
+
+func get_default_video_tracks() -> int:
+	return config.get_value("general", "default_video_tracks",  get_default_video_tracks_meta().default)
+
+
+func get_default_video_tracks_meta() -> Dictionary:
+	return {
+		"default": 3,
+		"type": "int",
+		"step": 1,
+		"min_value": 1,
+		"max_value": 30
+	}
+
+#endregion
+################################################################
+#region Default Audio Tracks  ##################################
+################################################################
+
+func set_default_audio_tracks(new_value: int) -> void:
+	config.set_value("general", "default_audio_tracks", new_value)
+
+
+func get_default_audio_tracks() -> int:
+	return config.get_value("general", "default_audio_tracks",  get_default_audio_tracks_meta().default)
+
+
+func get_default_audio_tracks_meta() -> Dictionary:
+	return {
+		"default": 3,
+		"type": "int",
+		"step": 1,
+		"min_value": 1,
+		"max_value": 30
 	}
 
 #endregion
