@@ -20,17 +20,6 @@ TITLE_RECENT_PROJECTS:
   pt_br: "Projetos recentes"
   uk_UA: "Нещодавні проєкти"
   ru_RU: "Недавние проекты"
-TITLE_NEW_PROJECT:
-  en: "New project title:"
-  ja: "新プロジェクトのタイトル："
-  fr: ""
-  nl: "Nieuwe project titel:"
-  zh_TW: ""
-  pl_pl: ""
-  de: ""
-  pt_br: ""
-  uk_UA: ""
-  ru_RU: ""
 TEXT_UNTITLED_PROJECT_TITLE:
   en: "Untitled project"
   ja: "新プロジェクト"

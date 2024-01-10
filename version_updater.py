@@ -12,14 +12,20 @@ def update_version(config_path, new_version):
 
 if __name__ == "__main__":
   path = os.path.abspath(__file__)
-  editor_config_file = os.path.dirname(path) + "/editor/project.godot"
-  startup_config_file = os.path.dirname(path) + "/startup/project.godot"
-  settings_menu_config_file = os.path.dirname(path) + "/settings_menu/project.godot"
+  editor_config_file = os.path.dirname(path) + "/src/editor/project.godot"
+  startup_config_file = os.path.dirname(path) + "/src/startup/project.godot"
+  settings_menu_config_file = os.path.dirname(path) + "/src/settings_menu/project.godot"
 
   new_version = input("Version: ")
   print("Updating ...")
   update_version(editor_config_file, new_version)
   update_version(startup_config_file, new_version)
   update_version(settings_menu_config_file, new_version)
+
+  stable = input("Stable (Y/n): ")
+  if stable.lower() == "y" or stable.lower() == "yes":
+    print("Updating stable file ...")
+    with open('STABLE_VERSION', 'w') as file:
+      file.write(new_version)
 
   print("Versions updated successfully!")

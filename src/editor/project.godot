@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GoZen Editor"
 config/description="GoZen is an open source video editor made within Godot by Voylin."
-config/version="0.3.0-alpha"
+config/version="0.4.1-alpha"
 config/tags=PackedStringArray("gozen")
 run/main_scene="res://ui/editor_window/editor_window.tscn"
 config/use_custom_user_dir=true

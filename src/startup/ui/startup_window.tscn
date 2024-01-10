@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b2nhvvmhj12rm"]
+[gd_scene load_steps=24 format=3 uid="uid://b2nhvvmhj12rm"]
 
 [ext_resource type="Theme" uid="uid://hfu11ujnk2ky" path="res://ui/theming/theme.tres" id="1_8jteq"]
 [ext_resource type="Script" path="res://ui/scripts/startup_window.gd" id="1_550dq"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cof2m8ndly0d2" path="res://assets/icons/close.png" id="5_5n6wl"]
 [ext_resource type="LabelSettings" uid="uid://1r7ne35kh7qj" path="res://ui/theming/label_settings_title.tres" id="6_1mxij"]
 [ext_resource type="Texture2D" uid="uid://crgccvvmkmqw4" path="res://assets/icons/note_add.png" id="7_jlk2r"]
+[ext_resource type="FontFile" uid="uid://cwvjhtfqmlpfs" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="8_32nlv"]
 [ext_resource type="LabelSettings" uid="uid://pk4i87lufyv4" path="res://ui/theming/label_settings_text.tres" id="8_o4o0u"]
 [ext_resource type="Script" path="res://ui/scripts/tab_handler.gd" id="8_qef8m"]
 [ext_resource type="Texture2D" uid="uid://bvqu2s4fu24x4" path="res://assets/icons/folder_open.png" id="9_6lj1m"]
@@ -69,6 +70,12 @@ font_size = 9
 [sub_resource type="LabelSettings" id="LabelSettings_3568g"]
 font = ExtResource("4_0qpip")
 font_size = 60
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m21lb"]
+bg_color = Color(0.2, 0.121569, 0.227451, 0.517647)
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ffl80"]
 
@@ -163,6 +170,8 @@ text = "GoZen"
 label_settings = SubResource("LabelSettings_3568g")
 
 [node name="ExitButton" type="TextureButton" parent="VBox/WelcomeImage"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 1
 anchors_preset = 1
@@ -175,6 +184,28 @@ tooltip_text = "TOOLTIP_EXIT_BUTTON"
 texture_normal = ExtResource("5_5n6wl")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="UpdateAvailable" type="PanelContainer" parent="VBox/WelcomeImage"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(135, 17)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -67.5
+offset_right = 67.5
+offset_bottom = 17.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_m21lb")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBox/WelcomeImage/UpdateAvailable"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.972656, 0.972656, 0.972656, 1)
+theme_override_fonts/normal_font = ExtResource("8_32nlv")
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "[center][url=https://github.com/VoylinsGamedevJourney/GoZen]Update available[/url][/center]"
 
 [node name="TabContainer" type="TabContainer" parent="VBox"]
 unique_name_in_owner = true
@@ -210,22 +241,7 @@ label_settings = ExtResource("6_1mxij")
 [node name="VBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="TitleHBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/TitleHBox"]
-layout_mode = 2
-text = "TITLE_NEW_PROJECT"
-label_settings = ExtResource("8_o4o0u")
-
-[node name="TitleLineEdit" type="LineEdit" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/TitleHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-tooltip_text = "TOOLTIP_NEW_PROJECT_TITLE"
-
-[node name="HSeparator" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
-layout_mode = 2
+theme_override_constants/separation = 14
 
 [node name="QualityVBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
 layout_mode = 2
@@ -374,6 +390,13 @@ text = "BUTTON_CREATE_PROJECT"
 icon = ExtResource("7_jlk2r")
 alignment = 0
 
+[node name="OpenProjectButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_OPEN_PROJECT"
+text = "BUTTON_OPEN_PROJECT"
+icon = ExtResource("9_6lj1m")
+alignment = 0
+
 [node name="RightVBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -397,13 +420,6 @@ layout_mode = 2
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
 text = "BUTTON_SHOW_ALL_PROJECTS"
-icon = ExtResource("9_6lj1m")
-alignment = 0
-
-[node name="OpenProjectButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
-layout_mode = 2
-tooltip_text = "TOOLTIP_BUTTON_OPEN_PROJECT"
-text = "BUTTON_OPEN_PROJECT"
 icon = ExtResource("9_6lj1m")
 alignment = 0
 
@@ -451,6 +467,7 @@ text = "BUTTON_RETURN_MAIN"
 [connection signal="mouse_entered" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_mouse_entered"]
 [connection signal="mouse_exited" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_mouse_exited"]
 [connection signal="pressed" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="meta_clicked" from="VBox/WelcomeImage/UpdateAvailable/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/HDQualityButton" to="." method="change_res" binds= [Vector2i(1280, 720)]]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/FHDQualityButton" to="." method="change_res" binds= [Vector2i(1920, 1080)]]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/4KQualityButton" to="." method="change_res" binds= [Vector2i(3840, 2160)]]
@@ -458,7 +475,7 @@ text = "BUTTON_RETURN_MAIN"
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/HorizontalButton" to="." method="_on_horizontal_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/VerticalButton" to="." method="_on_vertical_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/RecentProjectsVBox/ShowAllProjectsButton" to="VBox/TabContainer" method="_on_show_all_projects_button_pressed"]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/RecentProjectsTab/VBox/AllProjectsReturnButton" to="VBox/TabContainer" method="_on_all_projects_return_button_pressed"]

@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GoZen Startup"
 config/description="The startup manager of the video editor GoZen made by Voylin with Godot. For opening video files, please use GoZen Editor executable instead."
-config/version="0.3.0-alpha"
+config/version="0.4.1-alpha"
 config/tags=PackedStringArray("gozen")
 run/main_scene="res://ui/startup_window.tscn"
 config/use_custom_user_dir=true
@@ -40,6 +40,14 @@ window/per_pixel_transparency/allowed=true
 folder_colors={
 "res://assets/": "yellow",
 "res://translations/": "teal"
+}
+
+[input]
+
+close_editor={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"echo":false,"script":null)
+]
 }
 
 [internationalization]
