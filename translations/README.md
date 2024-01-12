@@ -15,7 +15,7 @@ At this stage we have a couple of different languages available inside of the ed
 
 ## How to contribute
 
-Before contributing, you have to [fork this repository](https://github.com/VoylinsGamedevJourney/GoZen/fork) and create a new branch called something like `language-*language-code*-update` (for example, `language-uk_UA-update` when you updating existing translation or `language-uk_UA-addition` when you adding new one). Please refer to [Adding new translation](#adding-new-translation) or [Updating an already existing language](#updating-an-already-existing-translation) to know how to edit the YAML file correctly.
+Before contributing, you have to [fork this repository](https://github.com/VoylinsGamedevJourney/GoZen/fork) and create a new branch called something like `language-*language-code*-update` (for example, `language-uk_UA-update` when you updating existing translation or `language-uk_UA-addition` when you adding new one). Please refer to [Adding new translation](#adding-new-translation) or [Updating an already existing translation](#updating-an-already-existing-translation) to know how to edit the YAML file correctly.
 
 After you are done editing the YAML file you can create a pull request. Please only add the updated YAML file as we will handle the csv file and other project files.
 
