@@ -10,15 +10,15 @@ GoZen is an open-source video editor developed using the Godot game engine. The 
 
 To contribute to GoZen, make sure you have the following:
 
-- The latest version of Godot (version 4+);
-- Familiarity with GDScript and Godot;
+- [The latest version of Godot (version 4+)](https://godotengine.org/download/);
+- [Familiarity with GDScript and Godot](https://docs.godotengine.org/en/stable/);
 
 ## How to Contribute
 
-1. Fork the project on GitHub to create your own copy;
+1. [Fork the project on GitHub to create your own copy](https://github.com/VoylinsGamedevJourney/GoZen/fork);
 1. Create a new branch in your forked repository with a descriptive name for the changes you plan to make;
 1. Before submitting your changes, rebase your commits to ensure the branch consists of a maximum of one commit (unless multiple commits are justified);
-1. Open a pull request from your branch to the main repository;
+1. [Open a pull request from your branch to the main repository](https://github.com/VoylinsGamedevJourney/GoZen/compare);
 1. Wait for code review and feedback from the project maintainer (you will be notified through the pull request);
 1. Address any feedback or requested changes and update your pull request;
 1. Once your pull request is approved, it will be merged into the main repository;
@@ -29,6 +29,10 @@ For bug reports and feature requests, please follow the guidelines below:
 
 **Bug Reports:** Provide a clear and detailed description of the issue, including steps to reproduce it.
 **Feature Requests:** Clearly explain the desired feature and its expected benefits.
+
+### Translation contribution
+
+If you want to contribute with translation, then refer to [translation guide](translations/README.md).
 
 ### Code Reviews and Merging Process
 
