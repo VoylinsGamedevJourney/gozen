@@ -1,11 +1,5 @@
 extends Node
 ## Project Manager
-##
-## Here all data related to the actual project is being stored and 
-## handled. Remember to always use the setter and getter functions 
-## when dealing with this data.
-##
-## TODO: Change out the FileDialog by native or custom one in the future
 
 #region Signals
 signal _on_project_loaded
@@ -15,85 +9,109 @@ signal _on_unsaved_changes
 signal _on_title_changed(new_title)
 signal _on_resolution_changed(new_resolution)
 signal _on_framerate_changed(new_framerate)
+signal _on_files_changed(new_files)
 #endregion
 
-#region variable
-const PATH_RECENT_PROJECTS := "user://recent_projects"
 
+const PATH_RECENT_PROJECTS := "user://recent_projects"
+const PATH_MENU_CFG := "user://project_settings_data.cfg"
+
+
+var config := ConfigFile.new()
 
 var project_title : String
 var project_path  : String
 
-var resolution : Vector2i
-var framerate: float = 30.0
-#endregion
 
-
-## On startup we need to check the arguments to see what needs to happen.
-## If arguments are correct, we either load the project file, or set
-## the variable to the argument values to create a new project.
 func _ready() -> void:
 	if OS.has_feature("editor"):
-		print("Running from Godot editor")
+		print("check")
 		return
-	
-	# Getting all custom arguments which were passed from startup
+	var arguments := get_startup_arguments()
+	load_defaults()
+	load_settings(arguments)
+
+
+###############################################################
+#region Startup  ##############################################
+###############################################################
+
+func get_startup_arguments() -> Dictionary:
 	var arguments = {}
 	for argument: String in OS.get_cmdline_args():
 		if argument.find("=") > -1:
 			var key_value = argument.split("=")
 			arguments[key_value[0].lstrip("--")] = key_value[1]
 	
-	# Check if file got opened with the editor directly
-	if arguments.size() == 2:
-		# First argument should be the file path
-		var path: String = OS.get_cmdline_args()[1]
-		load_project(path)
-		return
+	# Check if file got opened with the editor directly, first (only) should be project path
+	if arguments.size() == 2 and OS.get_cmdline_args()[1].contains(".gozen"):
+		project_path = OS.get_cmdline_args()[1]
+		arguments.type = "open"
+		return arguments
 	elif !arguments.has("type"):
 		printerr("No project path given as argument, nor type given!")
 		get_tree().quit()
+	return {}
+
+
+## Only for the settings
+func load_defaults() -> void:
+	var settings := {
+		"general": [
+			"project_title",
+			"project_path",
+			"resolution",
+			"framerate",
+		]
+	}
 	
+	# Generate defaults + settings menu config file
+	var settings_menu_config := ConfigFile.new()
+	for section: String in settings:
+		for setting: String in settings[section]:
+			var setting_meta: Dictionary = call("get_%s_meta" % setting)
+			call("set_%s" % setting, call("get_%s_meta" % setting).default)
+			settings_menu_config.set_value(section, setting, setting_meta)
+	settings_menu_config.save(PATH_MENU_CFG)
+
+
+func load_settings(arguments: Dictionary) -> void:
 	match arguments.type:
 		"open":
-			load_project(arguments.project_path)
+			project_title = arguments.project_path.split('/')[-1].replace(".gozen", "")
+			project_path  = arguments.project_path
 		"new":
 			project_title = arguments.title
-			resolution = arguments.resolution
+			project_path = arguments.project_path
+			config.set_value("general", "resolution", arguments.resolution)
 		_:
-			printerr("No valid type detected!\n\t'%s' is not a valid type!" % arguments.type)
+			printerr("Invalid type '%s'!" % arguments.type)
 			get_tree().quit()
+	
+	# Loading actual data file 
+	if !FileAccess.file_exists(project_path):
+		# When no file exists, create new file
+		config.save(project_path)
+		_on_project_loaded.emit()
+		return
+	# Load in user defined settings
+	var user_config := ConfigFile.new()
+	user_config.load(project_path)
+	for section: String in user_config.get_sections():
+		for setting in user_config.get_section_keys(section):
+			if config.has_section_key(section, setting):
+				config.set_value(section, setting, user_config.get_value(section, setting))
+	config.save(project_path)
+	_on_project_loaded.emit()
 
-
+#endregion
 ###############################################################
-#region Data handlers  ########################################
+#region Input handler  ########################################
 ###############################################################
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("save_project"):
 		save_project()
-
-
-func load_project(path: String) -> void:
-	# Check to see if path actually exists
-	if !FileAccess.file_exists(path):
-		printerr("No valid file found at given path '%s'!" % path)
-		get_tree().quit()
-	
-	# Check if file extension is correct or not
-	if project_path.split('.')[-1].to_lower() != "gozen":
-		printerr("File path '%s' does not have '.gozen' extension!" % path)
-		get_tree().quit()
-	
-	# If checks are successful, open file and load data
-	var file := FileAccess.open(path, FileAccess.READ)
-	var data: Dictionary = file.get_var()
-	for key: String in data:
-		if get(key): # Check if variable still exists or not
-			set(key, data[key])
-	
-	_on_project_loaded.emit()
-	update_recent_project()
 
 
 func save_project(add_to_recent: bool = false) -> void:
@@ -145,7 +163,12 @@ func update_recent_project() -> void:
 #endregion
 ###############################################################
 
-#     GETTERS AND SETTERS     #################################
+
+###############################################################
+##
+##     GETTERS AND SETTERS
+##
+###############################################################
 
 ###############################################################
 #region Project title  ########################################
@@ -178,28 +201,57 @@ func set_project_path(new_path: String) -> void:
 #region Resolution  #################################################
 ###############################################################
 
-func get_resoltion() -> Vector2i:
-	return resolution
+func set_resolution(new_value: Vector2i) -> void:
+	config.set_value("general", "resolution", new_value)
+	_on_resolution_changed.emit(new_value)
 
 
-func set_size(new_resolution: Vector2i) -> void:
-	resolution = new_resolution
-	save_project()
-	_on_resolution_changed.emit(resolution)
+func get_resolution() -> Vector2i:
+	return config.get_value("general", "resolution", get_resolution_meta().default)
+
+
+func get_resolution_meta() -> Dictionary:
+	return {
+		"default": Vector2i(1920, 1080),
+		"type": "vector2i"
+		# TODO
+	}
 
 #endregion
 ###############################################################
 #region Framerate  ############################################
 ###############################################################
 
+func set_framerate(new_value: Vector2i) -> void:
+	config.set_value("general", "framerate", new_value)
+	_on_framerate_changed.emit(new_value)
+
+
 func get_framerate() -> float:
-	return framerate
+	return config.get_value("general", "framerate", get_framerate_meta().default)
 
 
-func set_framerate(new_framerate: float) -> void:
-	framerate = new_framerate
-	save_project()
-	_on_framerate_changed.emit(framerate)
+func get_framerate_meta() -> Dictionary:
+	return {
+		"default": 30,
+		"type": "float",
+		"step": 0.1,
+		"min_value": 1,
+		"max_value": 240
+	}
+
+#endregion
+###############################################################
+
+
+###############################################################
+##
+##     FILES HANDLER
+##
+###############################################################
+
+func add_file(file: DefaultFile) -> void:
+	var data := file.get_data()
 
 #endregion
 ###############################################################

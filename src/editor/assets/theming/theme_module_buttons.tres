@@ -20,7 +20,7 @@ bg_color = Color(1, 1, 1, 0)
 border_width_top = 3
 border_width_right = 2
 border_width_bottom = 3
-border_color = Color(0.270588, 0.270588, 0.270588, 0.603922)
+border_color = Color(0.270588, 0.270588, 0.270588, 0)
 border_blend = true
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
@@ -28,7 +28,7 @@ shadow_color = Color(0, 0, 0, 0.207843)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_red2b"]
 content_margin_left = 4.0
-bg_color = Color(1, 1, 1, 0)
+bg_color = Color(1, 1, 1, 0.164706)
 border_width_top = 3
 border_width_right = 2
 border_width_bottom = 3

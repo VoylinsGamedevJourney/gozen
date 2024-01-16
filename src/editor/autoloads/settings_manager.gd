@@ -14,8 +14,15 @@ const PATH_MENU_CFG := "user://settings_data.cfg"
 
 var config := ConfigFile.new()
 
+var dic: Dictionary
 
 func _ready() -> void:
+	# ### FOR TESTING DELETE LATER!!!!!
+	var importer := GoZenImporter.new()
+	dic = importer.get_container_data("/storage/Videos/Life/2016-02 日本/6. Philosopher's Path/2016  02  16  06  05.MTS")
+	# ### UNTIL HERE!!!!
+	
+	
 	print_system_data()
 	load_defaults()
 	load_settings()
