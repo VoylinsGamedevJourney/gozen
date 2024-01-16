@@ -31,9 +31,11 @@ var effects: Array
 
 func get_data() -> Dictionary:
 	var dic := {}
-	for variable: String in vars:
-		if get(variable) == null:
-			printerr("'%s' can not be empty!" % variable)
+	for variable_data: Dictionary in get_property_list():
+		if variable_data.usage != 4096:
+			continue
+		elif get(variable_data.name) == null:
+			printerr("'%s' can not be empty!" % variable_data.name)
 		else:
-			dic[variable] = get(variable)
+			dic[variable_data.name] = get(variable_data.name)
 	return dic

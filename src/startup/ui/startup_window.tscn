@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://b2nhvvmhj12rm"]
+[gd_scene load_steps=26 format=3 uid="uid://b2nhvvmhj12rm"]
 
 [ext_resource type="Theme" uid="uid://hfu11ujnk2ky" path="res://ui/theming/theme.tres" id="1_8jteq"]
 [ext_resource type="Script" path="res://ui/scripts/startup_window.gd" id="1_550dq"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://ui/scripts/tab_handler.gd" id="8_qef8m"]
 [ext_resource type="Texture2D" uid="uid://bvqu2s4fu24x4" path="res://assets/icons/folder_open.png" id="9_6lj1m"]
 [ext_resource type="Texture2D" uid="uid://c6hmmy1slx5nx" path="res://assets/icons/support.png" id="10_jr08l"]
+[ext_resource type="Texture2D" uid="uid://kunah1v8h6h3" path="res://assets/icons/baseline_link_black_48dp.png" id="13_pl2ap"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7mil"]
 content_margin_left = 0.0
@@ -81,6 +82,8 @@ corner_detail = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n0tus"]
 content_margin_left = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0rxim"]
 
 [node name="StartupWindow" type="PanelContainer"]
 clip_children = 2
@@ -232,163 +235,29 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
 
-[node name="NewTitleLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
+[node name="RecentTitleLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_n0tus")
-text = "TITLE_NEW_PROJECT"
+text = "TITLE_RECENT_PROJECTS"
 label_settings = ExtResource("6_1mxij")
 
-[node name="VBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
+[node name="RecentProjectsVBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 14
 
-[node name="QualityVBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="QualityHBox" type="HBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox"]
-layout_mode = 2
-theme_override_constants/separation = 7
-
-[node name="HDQualityButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_HD"
-theme_type_variation = &"QualityButton"
-text = "HD"
-
-[node name="FHDQualityButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_FHD"
-theme_type_variation = &"QualityButton"
-text = "FHD"
-
-[node name="4KQualityButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_4K"
-theme_type_variation = &"QualityButton"
-text = "4K"
-
-[node name="8KQualityButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_8K"
-theme_type_variation = &"QualityButton"
-text = "8K"
-
-[node name="VSeparator" type="VSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
+[node name="HSeparator" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/RecentProjectsVBox"]
 layout_mode = 2
 
-[node name="HorizontalButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
+[node name="ShowAllProjectsButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/RecentProjectsVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_HORIZONTAL"
-theme_type_variation = &"QualityButton"
-text = "H"
-
-[node name="VerticalButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_VERTICAL"
-theme_type_variation = &"QualityButton"
-text = "V"
-
-[node name="QualitySizeHBox" type="HBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox"]
-layout_mode = 2
-
-[node name="XLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
-layout_mode = 2
-text = "x:"
-label_settings = ExtResource("8_o4o0u")
-
-[node name="SizeXSpinBox" type="SpinBox" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_RESOLUTION_X"
-min_value = 1.0
-max_value = 100000.0
-value = 1920.0
-alignment = 1
-
-[node name="YLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
-layout_mode = 2
-text = "y:"
-label_settings = ExtResource("8_o4o0u")
-
-[node name="SizeYSpinBox" type="SpinBox" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_RESOLUTION_Y"
-min_value = 1.0
-max_value = 100000.0
-value = 1080.0
-alignment = 1
-
-[node name="HSeparator2" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
-layout_mode = 2
-
-[node name="FramerateHBox" type="HBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox"]
-layout_mode = 2
-text = "fps:"
-label_settings = ExtResource("8_o4o0u")
-
-[node name="FrameRateSpinBox" type="SpinBox" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_FPS"
-min_value = 1.0
-max_value = 240.0
-value = 30.0
-alignment = 1
-
-[node name="VSeparator" type="VSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox"]
-layout_mode = 2
-
-[node name="HBox" type="HBoxContainer" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox"]
-layout_mode = 2
-
-[node name="30fpsButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox/HBox"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_FPS_30"
-theme_type_variation = &"QualityButton"
-text = "30"
-
-[node name="60fpsButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox/HBox"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_FPS_60"
-theme_type_variation = &"QualityButton"
-text = "60"
-
-[node name="120fpsButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/FramerateHBox/HBox"]
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "TOOLTIP_FPS_30"
-theme_type_variation = &"QualityButton"
-text = "120
-"
-
-[node name="HSeparator3" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox"]
-layout_mode = 2
-
-[node name="CreateProjectButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
-layout_mode = 2
-tooltip_text = "TOOLTIP_BUTTON_CREATE_PROJECT"
-text = "BUTTON_CREATE_PROJECT"
-icon = ExtResource("7_jlk2r")
+tooltip_text = "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
+text = "BUTTON_SHOW_ALL_PROJECTS"
+icon = ExtResource("9_6lj1m")
 alignment = 0
+
+[node name="HSeparator2" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/LeftVBox/RecentProjectsVBox"]
+layout_mode = 2
 
 [node name="OpenProjectButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
 layout_mode = 2
@@ -397,31 +266,59 @@ text = "BUTTON_OPEN_PROJECT"
 icon = ExtResource("9_6lj1m")
 alignment = 0
 
+[node name="CreateProjectButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/LeftVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_CREATE_PROJECT"
+text = "BUTTON_CREATE_PROJECT"
+icon = ExtResource("7_jlk2r")
+alignment = 0
+
 [node name="RightVBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
 
-[node name="RecentTitleLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
+[node name="GettingStartedLabel" type="Label" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_n0tus")
-text = "TITLE_RECENT_PROJECTS"
+text = "TITLE_GETTING_STARTED"
 label_settings = ExtResource("6_1mxij")
 
-[node name="RecentProjectsVBox" type="VBoxContainer" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
-unique_name_in_owner = true
+[node name="HSeparator" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
+layout_mode = 2
+
+[node name="ManualButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+text = "BUTTON_MANUAL"
+icon = ExtResource("13_pl2ap")
+alignment = 0
+
+[node name="TutorialsButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+text = "BUTTON_TUTORIALS"
+icon = ExtResource("13_pl2ap")
+alignment = 0
+
+[node name="SupportButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+text = "BUTTON_SUPPORT"
+icon = ExtResource("13_pl2ap")
+alignment = 0
+
+[node name="DiscordButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+text = "BUTTON_DISCORD"
+icon = ExtResource("13_pl2ap")
+alignment = 0
+
+[node name="Spacer" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="HSeparator" type="HSeparator" parent="VBox/TabContainer/MainTab/HBox/RightVBox/RecentProjectsVBox"]
-layout_mode = 2
-
-[node name="ShowAllProjectsButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox/RecentProjectsVBox"]
-layout_mode = 2
-tooltip_text = "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
-text = "BUTTON_SHOW_ALL_PROJECTS"
-icon = ExtResource("9_6lj1m")
-alignment = 0
+theme_override_styles/separator = SubResource("StyleBoxEmpty_0rxim")
 
 [node name="SupportProjectButton" type="Button" parent="VBox/TabContainer/MainTab/HBox/RightVBox"]
 layout_mode = 2
@@ -461,6 +358,183 @@ layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_RETURN_MAIN"
 text = "BUTTON_RETURN_MAIN"
 
+[node name="CreateNewProjectTab" type="MarginContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 14
+
+[node name="LeftVBox" type="VBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="NewTitleLabel" type="Label" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n0tus")
+text = "TITLE_NEW_PROJECT"
+label_settings = ExtResource("6_1mxij")
+
+[node name="VBox" type="VBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="QualityVBox" type="VBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="QualityHBox" type="HBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="HDQualityButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_HD"
+theme_type_variation = &"QualityButton"
+text = "HD"
+
+[node name="FHDQualityButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_FHD"
+theme_type_variation = &"QualityButton"
+text = "FHD"
+
+[node name="4KQualityButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_4K"
+theme_type_variation = &"QualityButton"
+text = "4K"
+
+[node name="8KQualityButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_8K"
+theme_type_variation = &"QualityButton"
+text = "8K"
+
+[node name="VSeparator" type="VSeparator" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+
+[node name="HorizontalButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_HORIZONTAL"
+theme_type_variation = &"QualityButton"
+text = "H"
+
+[node name="VerticalButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_VERTICAL"
+theme_type_variation = &"QualityButton"
+text = "V"
+
+[node name="QualitySizeHBox" type="HBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox"]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
+layout_mode = 2
+text = "x:"
+label_settings = ExtResource("8_o4o0u")
+
+[node name="SizeXSpinBox" type="SpinBox" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_RESOLUTION_X"
+min_value = 1.0
+max_value = 100000.0
+value = 1920.0
+alignment = 1
+
+[node name="YLabel" type="Label" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
+layout_mode = 2
+text = "y:"
+label_settings = ExtResource("8_o4o0u")
+
+[node name="SizeYSpinBox" type="SpinBox" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualitySizeHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_RESOLUTION_Y"
+min_value = 1.0
+max_value = 100000.0
+value = 1080.0
+alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox"]
+layout_mode = 2
+
+[node name="FramerateHBox" type="HBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox"]
+layout_mode = 2
+text = "fps:"
+label_settings = ExtResource("8_o4o0u")
+
+[node name="FrameRateSpinBox" type="SpinBox" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_FPS"
+min_value = 1.0
+max_value = 240.0
+value = 30.0
+alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox"]
+layout_mode = 2
+
+[node name="30fpsButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_FPS_30"
+theme_type_variation = &"QualityButton"
+text = "30"
+
+[node name="60fpsButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_FPS_60"
+theme_type_variation = &"QualityButton"
+text = "60"
+
+[node name="120fpsButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/FramerateHBox/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_FPS_30"
+theme_type_variation = &"QualityButton"
+text = "120
+"
+
+[node name="HSeparator3" type="HSeparator" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox"]
+layout_mode = 2
+
+[node name="CreateProjectButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_CREATE_PROJECT"
+text = "BUTTON_CREATE_PROJECT"
+icon = ExtResource("7_jlk2r")
+alignment = 0
+
+[node name="OpenProjectButton" type="Button" parent="VBox/TabContainer/CreateNewProjectTab/LeftVBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_OPEN_PROJECT"
+text = "BUTTON_OPEN_PROJECT"
+icon = ExtResource("9_6lj1m")
+alignment = 0
+
 [connection signal="gui_input" from="VBox/WelcomeImage" to="VBox/WelcomeImage" method="_on_welcome_image_gui_input"]
 [connection signal="pressed" from="VBox/WelcomeImage/EditorButton" to="." method="_on_editor_button_pressed"]
 [connection signal="meta_clicked" from="VBox/WelcomeImage/ImageCreditLabel" to="." method="_on_image_credit_label_meta_clicked"]
@@ -468,14 +542,20 @@ text = "BUTTON_RETURN_MAIN"
 [connection signal="mouse_exited" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_mouse_exited"]
 [connection signal="pressed" from="VBox/WelcomeImage/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="meta_clicked" from="VBox/WelcomeImage/UpdateAvailable/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/HDQualityButton" to="." method="change_res" binds= [Vector2i(1280, 720)]]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/FHDQualityButton" to="." method="change_res" binds= [Vector2i(1920, 1080)]]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/4KQualityButton" to="." method="change_res" binds= [Vector2i(3840, 2160)]]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/8KQualityButton" to="." method="change_res" binds= [Vector2i(7680, 4320)]]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/HorizontalButton" to="." method="_on_horizontal_button_pressed"]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/VBox/QualityVBox/QualityHBox/VerticalButton" to="." method="_on_vertical_button_pressed"]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/RecentProjectsVBox/ShowAllProjectsButton" to="VBox/TabContainer" method="_on_show_all_projects_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
-[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/RecentProjectsVBox/ShowAllProjectsButton" to="VBox/TabContainer" method="_on_show_all_projects_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/ManualButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/TutorialsButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/SupportButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/DiscordButton" to="." method="_on_support_project_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/MainTab/HBox/RightVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
 [connection signal="pressed" from="VBox/TabContainer/RecentProjectsTab/VBox/AllProjectsReturnButton" to="VBox/TabContainer" method="_on_all_projects_return_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox/HDQualityButton" to="." method="change_res" binds= [Vector2i(1280, 720)]]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox/FHDQualityButton" to="." method="change_res" binds= [Vector2i(1920, 1080)]]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox/4KQualityButton" to="." method="change_res" binds= [Vector2i(3840, 2160)]]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox/8KQualityButton" to="." method="change_res" binds= [Vector2i(7680, 4320)]]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox/HorizontalButton" to="." method="_on_horizontal_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/VBox/QualityVBox/QualityHBox/VerticalButton" to="." method="_on_vertical_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="VBox/TabContainer/CreateNewProjectTab/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]

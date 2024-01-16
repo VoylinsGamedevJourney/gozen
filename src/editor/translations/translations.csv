@@ -11,5 +11,6 @@ SETTING_TEXT_LANGUAGE,"Language","言語","Langue","Taal","語言","Język","Spr
 TOP_BAR_TOOLTIP_EDITOR_BUTTON,"Shows some editor information.","","Affiche quelques informations de l'éditeur.","","顯示編輯器資訊","","","Mostra algumas informações sobre o editor.","Показує деяку інформацію про редактор.","Показывает некоторую информацию про редактор."
 TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON,"Takes you to the project settings.","","Vous emmène à la configuration du projet.","","帶你前往專案設定","","","Leva você às configurações do projeto.","Відправить вас до налаштувань проєкту.","Отправит вас в настройки проекта."
 TOP_BAR_TOOLTIP_EDITOR_SETTINGS_BUTTON,"Takes you to the editor settings.","","Vous emmène à la configuration de l'éditeur.","","帶你前往編輯器設定","","","Leva você às configurações do editor.","Відправить вас до налаштувань редактору.","Отправит вас в настройки редактора."
+TOP_BAR_TOOLTIP_RENDER_BUTTON,"Open render menu.","","","","","","","","",""
 POPUP_EXIT_SAVE_TEXT,"Do you want to save the project?","プロジェクトを保存しますか？","Voulez-vous sauvegarder le projet ?","","你需要儲存專案嗎?","","","","Бажаєте зберегти проєкт?","Желаете сохранить проект?"
 EMPTY,"","","","","","","","","",""

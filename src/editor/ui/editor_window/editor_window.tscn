@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://i0afdsn6mn8r"]
 
-[ext_resource type="PackedScene" uid="uid://damrypkaih6ch" path="res://ui/editor_window/top_bar/top_bar.tscn" id="2_cfupl"]
+[ext_resource type="PackedScene" uid="uid://damrypkaih6ch" path="res://ui/top_bar/top_bar.tscn" id="2_cfupl"]
 [ext_resource type="Script" path="res://ui/editor_window/editor_layout.gd" id="2_k5yiy"]
 [ext_resource type="PackedScene" uid="uid://dbnhxiqj3mnwe" path="res://ui/module_bar_panel/module_bar_panel.tscn" id="3_hqicj"]
 [ext_resource type="PackedScene" uid="uid://b6jpf33ako3vt" path="res://ui/module_panel/module_panel.tscn" id="5_av54o"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://drqtuibppcf8s" path="res://ui/project_view/project_view_panel.tscn" id="6_s22hs"]
 [ext_resource type="PackedScene" uid="uid://c807tb5aqp3fc" path="res://ui/timeline/timeline.tscn" id="6_sp5g2"]
 [ext_resource type="Theme" uid="uid://bb6sp1l2go5b8" path="res://assets/theming/theme_layout_panels.tres" id="7_ch834"]
-[ext_resource type="PackedScene" uid="uid://ceg34ei6bl8dy" path="res://ui/editor_window/status_bar/status_bar.tscn" id="20_ynsae"]
+[ext_resource type="PackedScene" uid="uid://ceg34ei6bl8dy" path="res://status_bar/status_bar.tscn" id="20_ynsae"]
 
 [node name="EditorWindow" type="Control"]
 layout_mode = 3
