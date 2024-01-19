@@ -15,3 +15,6 @@ export_presets.cfg
 *.mkv
 *.mp4
 *.webp
+
+# Not including build libraries anymore
+src/editor/bin/*.so

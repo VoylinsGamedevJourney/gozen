@@ -37,6 +37,10 @@ case $platform in
     ;;
   2)
     platform=windows
+    pushd gozen-ffmpeg
+    # We need to build FFmpeg first
+    ./build_ffmpeg.sh
+    popd
     ;;
   3)
     platform=macos
