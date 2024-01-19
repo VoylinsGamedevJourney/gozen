@@ -11,5 +11,25 @@ config_version=5
 [application]
 
 config/name="GoZen - Video Editor"
+config/description="GoZen is an open source video editor made with Godot by Voylin."
+config/version="0.0.1-pre-alpha"
+run/main_scene="res://ui/screens/screen_main/screen_main.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.3", "Forward Plus")
+boot_splash/show_image=false
 config/icon="res://icon.svg"
+
+[debug]
+
+shader_language/warnings/treat_warnings_as_errors=true
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/borderless=true
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
