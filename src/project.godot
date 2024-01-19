@@ -30,6 +30,14 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/borderless=true
 
+[file_customization]
+
+folder_colors={
+"res://assets/": "yellow",
+"res://bin/": "gray",
+"res://translations/": "teal"
+}
+
 [rendering]
 
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

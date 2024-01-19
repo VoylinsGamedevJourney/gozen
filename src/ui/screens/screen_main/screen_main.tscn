@@ -1,3 +1,23 @@
-[gd_scene format=3 uid="uid://bi2mj6leheui6"]
+[gd_scene load_steps=2 format=3 uid="uid://bi2mj6leheui6"]
 
-[node name="ScreenMain" type="Node2D"]
+[ext_resource type="PackedScene" uid="uid://dampusi0yrmvy" path="res://ui/screens/screen_startup/screen_startup.tscn" id="1_d4vsy"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.498039)
+
+[node name="ScreenStartup" parent="." instance=ExtResource("1_d4vsy")]
+layout_mode = 1
