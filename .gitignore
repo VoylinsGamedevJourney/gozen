@@ -18,3 +18,7 @@ export_presets.cfg
 
 # Not including build libraries anymore
 src/editor/bin/*.so
+
+
+OLD/
+bin/

@@ -1,1 +1,0 @@
-class_name AudioFile extends ActualFile
