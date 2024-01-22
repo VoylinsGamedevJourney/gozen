@@ -1,0 +1,247 @@
+[gd_scene load_steps=6 format=3 uid="uid://ebiyyjjklvhv"]
+
+[ext_resource type="Theme" uid="uid://4he80n7v8sdk" path="res://ui/screen_startup/theming/screen_startup_theme.tres" id="1_ahbn0"]
+[ext_resource type="LabelSettings" uid="uid://bhb4yqus1rclg" path="res://ui/screen_startup/theming/startup_label_title.tres" id="2_7exsf"]
+[ext_resource type="Script" path="res://ui/screen_startup/scripts/startup_tab_create_new_project.gd" id="2_7g1u0"]
+[ext_resource type="Script" path="res://ui/screen_startup/scripts/startup_new_project_resolution.gd" id="3_jlmoa"]
+[ext_resource type="Script" path="res://ui/screen_startup/scripts/startup_select_path.gd" id="4_0ssei"]
+
+[node name="CreateNewProjectTab" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ahbn0")
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 14
+script = ExtResource("2_7g1u0")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="TitleLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "TITLE_NEW_PROJECT"
+label_settings = ExtResource("2_7exsf")
+
+[node name="Spacer1" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="Grid" type="GridContainer" parent="VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="TitleLabel" type="Label" parent="VBox/Grid"]
+layout_mode = 2
+text = "STARTUP_TEXT_TITLE"
+
+[node name="TitleLineEdit" type="LineEdit" parent="VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+clear_button_enabled = true
+
+[node name="PathLabel" type="Label" parent="VBox/Grid"]
+layout_mode = 2
+text = "STARTUP_TEXT_PATH"
+
+[node name="PathHBox" type="HBoxContainer" parent="VBox/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PathLineEdit" type="LineEdit" parent="VBox/Grid/PathHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+clear_button_enabled = true
+
+[node name="SelectPathButton" type="Button" parent="VBox/Grid/PathHBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_SELECT_PATH"
+theme_type_variation = &"PresetButton"
+text = "STARTUP_BUTTON_SELECT_PATH"
+script = ExtResource("4_0ssei")
+
+[node name="Spacer2" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="ResolutionVBox" type="VBoxContainer" parent="VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+script = ExtResource("3_jlmoa")
+
+[node name="PresetsHBox" type="HBoxContainer" parent="VBox/HBox/ResolutionVBox"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="HDQualityButton" type="Button" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_HD"
+theme_type_variation = &"PresetButton"
+text = "HD"
+
+[node name="FHDQualityButton" type="Button" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_FHD"
+theme_type_variation = &"PresetButton"
+text = "FHD"
+
+[node name="4KQualityButton" type="Button" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_4K"
+theme_type_variation = &"PresetButton"
+text = "4K"
+
+[node name="8KQualityButton" type="Button" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_8K"
+theme_type_variation = &"PresetButton"
+text = "8K"
+
+[node name="VSeparator2" type="VSeparator" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+layout_mode = 2
+
+[node name="HorizontalButton" type="Button" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_HORIZONTAL"
+theme_type_variation = &"PresetButton"
+text = "H"
+
+[node name="VerticalButton" type="Button" parent="VBox/HBox/ResolutionVBox/PresetsHBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_VERTICAL"
+theme_type_variation = &"PresetButton"
+text = "V"
+
+[node name="ResolutionHBox" type="HBoxContainer" parent="VBox/HBox/ResolutionVBox"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="XLabel" type="Label" parent="VBox/HBox/ResolutionVBox/ResolutionHBox"]
+layout_mode = 2
+text = "x:"
+
+[node name="XSpinBox" type="SpinBox" parent="VBox/HBox/ResolutionVBox/ResolutionHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 100000.0
+value = 1920.0
+alignment = 1
+
+[node name="YLabel" type="Label" parent="VBox/HBox/ResolutionVBox/ResolutionHBox"]
+layout_mode = 2
+text = "y:"
+
+[node name="YSpinBox" type="SpinBox" parent="VBox/HBox/ResolutionVBox/ResolutionHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 100000.0
+value = 1080.0
+alignment = 1
+
+[node name="VSeparator1" type="VSeparator" parent="VBox/HBox"]
+layout_mode = 2
+
+[node name="FramerateVBox" type="VBoxContainer" parent="VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+theme_override_constants/separation = 7
+
+[node name="PresetsHBox" type="HBoxContainer" parent="VBox/HBox/FramerateVBox"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+
+[node name="Framerate30Button" type="Button" parent="VBox/HBox/FramerateVBox/PresetsHBox"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PresetButton"
+text = "30"
+
+[node name="Framerate60Button" type="Button" parent="VBox/HBox/FramerateVBox/PresetsHBox"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PresetButton"
+text = "60"
+
+[node name="Framerate120Button" type="Button" parent="VBox/HBox/FramerateVBox/PresetsHBox"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PresetButton"
+text = "120"
+
+[node name="FramerateHBox" type="HBoxContainer" parent="VBox/HBox/FramerateVBox"]
+layout_mode = 2
+
+[node name="FramerateLabel" type="Label" parent="VBox/HBox/FramerateVBox/FramerateHBox"]
+layout_mode = 2
+text = "STARTUP_TEXT_FRAMERATE"
+
+[node name="FramerateSpinBox" type="SpinBox" parent="VBox/HBox/FramerateVBox/FramerateHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+value = 1.0
+
+[node name="Spacer3" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="ButtonHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ReturnButton" type="Button" parent="VBox/ButtonHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "TOOLTIP_BUTTON_RETURN_MAIN"
+text = "BUTTON_RETURN"
+
+[node name="CreateProjectButton" type="Button" parent="VBox/ButtonHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_CREATE_PROJECT"
+text = "STARTUP_BUTTON_CREATE_PROJECT"
+
+[connection signal="pressed" from="VBox/Grid/PathHBox/SelectPathButton" to="VBox/Grid/PathHBox/SelectPathButton" method="pressed"]
+[connection signal="pressed" from="VBox/HBox/ResolutionVBox/PresetsHBox/HDQualityButton" to="VBox/HBox/ResolutionVBox" method="set_quality" binds= [Vector2i(1280, 720)]]
+[connection signal="pressed" from="VBox/HBox/ResolutionVBox/PresetsHBox/FHDQualityButton" to="VBox/HBox/ResolutionVBox" method="set_quality" binds= [Vector2i(1920, 1080)]]
+[connection signal="pressed" from="VBox/HBox/ResolutionVBox/PresetsHBox/4KQualityButton" to="VBox/HBox/ResolutionVBox" method="set_quality" binds= [Vector2i(3840, 2160)]]
+[connection signal="pressed" from="VBox/HBox/ResolutionVBox/PresetsHBox/8KQualityButton" to="VBox/HBox/ResolutionVBox" method="set_quality" binds= [Vector2i(7680, 4320)]]
+[connection signal="pressed" from="VBox/HBox/ResolutionVBox/PresetsHBox/HorizontalButton" to="VBox/HBox/ResolutionVBox" method="switch_landscape" binds= [true]]
+[connection signal="pressed" from="VBox/HBox/ResolutionVBox/PresetsHBox/VerticalButton" to="VBox/HBox/ResolutionVBox" method="switch_landscape" binds= [false]]
+[connection signal="pressed" from="VBox/HBox/FramerateVBox/PresetsHBox/Framerate30Button" to="VBox/HBox/FramerateVBox/FramerateHBox/FramerateSpinBox" method="set_value" binds= [30]]
+[connection signal="pressed" from="VBox/HBox/FramerateVBox/PresetsHBox/Framerate60Button" to="VBox/HBox/FramerateVBox/FramerateHBox/FramerateSpinBox" method="set_value" binds= [60]]
+[connection signal="pressed" from="VBox/HBox/FramerateVBox/PresetsHBox/Framerate120Button" to="VBox/HBox/FramerateVBox/FramerateHBox/FramerateSpinBox" method="set_value" binds= [120]]
+[connection signal="pressed" from="VBox/ButtonHBox/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonHBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]

@@ -20,5 +20,5 @@ export_presets.cfg
 src/editor/bin/*.so
 
 
-OLD/
-bin/
+/OLD/
+/bin/

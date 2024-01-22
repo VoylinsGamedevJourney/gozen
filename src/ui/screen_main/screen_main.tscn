@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://bi2mj6leheui6"]
+
+[ext_resource type="Script" path="res://ui/screen_main/scripts/screen_main.gd" id="1_wqsh7"]
+[ext_resource type="PackedScene" uid="uid://b5v73aqfs1kfq" path="res://ui/screen_main/components/main_resize_handles.tscn" id="2_pcyab"]
+[ext_resource type="PackedScene" uid="uid://bwmh7ufcadx5v" path="res://ui/screen_main/components/main_top_bar.tscn" id="2_xllsp"]
+[ext_resource type="PackedScene" uid="uid://mc55n17n0n8r" path="res://ui/screen_main/components/main_status_bar.tscn" id="2_xny7d"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wqsh7")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" parent="VBox" instance=ExtResource("2_xllsp")]
+layout_mode = 2
+
+[node name="Content" type="Control" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Overlay" type="ColorRect" parent="VBox/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.498039)
+
+[node name="StatusBar" parent="VBox" instance=ExtResource("2_xny7d")]
+layout_mode = 2
+
+[node name="ResizeHandles" parent="." instance=ExtResource("2_pcyab")]
+layout_mode = 1

@@ -13,12 +13,18 @@ config_version=5
 config/name="GoZen - Video Editor"
 config/description="GoZen is an open source video editor made with Godot by Voylin."
 config/version="0.0.1-pre-alpha"
-run/main_scene="res://ui/screens/screen_main/screen_main.tscn"
+run/main_scene="res://ui/screen_main/screen_main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
+config/version_stable="0.0.0"
+
+[autoload]
+
+SettingsManager="*res://autoloads/al_settings_manager.gd"
+ProjectManager="*res://autoloads/al_project_manager.gd"
 
 [debug]
 
@@ -29,15 +35,37 @@ shader_language/warnings/treat_warnings_as_errors=true
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/borderless=true
+window/size/window_width_override=1152
+window/size/window_height_override=648
 
 [file_customization]
 
 folder_colors={
 "res://assets/": "yellow",
+"res://autoloads/": "blue",
 "res://bin/": "gray",
+"res://classes/": "blue",
 "res://translations/": "teal"
 }
 
+[globals]
+
+url/stable_version="https://raw.githubusercontent.com/VoylinsGamedevJourney/GoZen/master/src/project.godot"
+url/github_repo="https://github.com/VoylinsGamedevJourney/GoZens"
+url/kofi_page="https://ko-fi.com/voylin"
+url/discord="discord.gg/BdbUf7VKYC"
+url/support_page="https://github.com/VoylinsGamedevJourney/GoZen"
+url/tutorials_page="https://github.com/VoylinsGamedevJourney/GoZen"
+url/manual_page="https://github.com/VoylinsGamedevJourney/GoZen"
+path/settings="user://settings.cfg"
+path/recent_projects="user://recent_projects.dat"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/translations.de.translation", "res://translations/translations.en.translation", "res://translations/translations.fr.translation", "res://translations/translations.ja.translation", "res://translations/translations.nl.translation", "res://translations/translations.pl.translation", "res://translations/translations.pt.translation", "res://translations/translations.ru_RU.translation", "res://translations/translations.uk_UA.translation", "res://translations/translations.zh_TW.translation")
+
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

@@ -1,0 +1,135 @@
+[gd_scene load_steps=11 format=3 uid="uid://kl028ek3jm6x"]
+
+[ext_resource type="Theme" uid="uid://4he80n7v8sdk" path="res://ui/screen_startup/theming/screen_startup_theme.tres" id="1_61lus"]
+[ext_resource type="Script" path="res://ui/screen_startup/scripts/startup_tab_main.gd" id="2_61yn2"]
+[ext_resource type="Script" path="res://ui/screen_startup/scripts/startup_recent_projects_small.gd" id="2_p1jah"]
+[ext_resource type="Texture2D" uid="uid://b2lbweyckvws7" path="res://assets/icons/folder_open.png" id="3_hskw1"]
+[ext_resource type="LabelSettings" uid="uid://bhb4yqus1rclg" path="res://ui/screen_startup/theming/startup_label_title.tres" id="3_wsf7l"]
+[ext_resource type="Texture2D" uid="uid://cpulbvif037ec" path="res://assets/icons/note_add.png" id="4_i3qvv"]
+[ext_resource type="Texture2D" uid="uid://bpjbmo5en5ak5" path="res://assets/icons/baseline_link_black_48dp.png" id="5_e8y16"]
+[ext_resource type="Script" path="res://classes/button_open_link.gd" id="6_5bd1q"]
+[ext_resource type="Texture2D" uid="uid://cnt381ylae2gq" path="res://assets/icons/support.png" id="7_fw0ax"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f7vt4"]
+
+[node name="MainTab" type="MarginContainer"]
+theme = ExtResource("1_61lus")
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 14
+script = ExtResource("2_61yn2")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LeftVBox" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="RecentProjectsLabel" type="Label" parent="HBox/LeftVBox"]
+layout_mode = 2
+text = "STARTUP_TITLE_RECENT_PROJECTS"
+label_settings = ExtResource("3_wsf7l")
+
+[node name="RecentProjectsVBox" type="VBoxContainer" parent="HBox/LeftVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 7
+script = ExtResource("2_p1jah")
+
+[node name="Spacer1" type="HSeparator" parent="HBox/LeftVBox/RecentProjectsVBox"]
+layout_mode = 2
+
+[node name="Spacer2" type="HSeparator" parent="HBox/LeftVBox/RecentProjectsVBox"]
+layout_mode = 2
+
+[node name="ShowAllProjectsButton" type="Button" parent="HBox/LeftVBox/RecentProjectsVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
+text = "STARTUP_BUTTON_SHOW_ALL_PROJECTS"
+icon = ExtResource("3_hskw1")
+alignment = 0
+
+[node name="OpenProjectButton" type="Button" parent="HBox/LeftVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_OPEN_PROJECT"
+text = "STARTUP_BUTTON_OPEN_PROJECT"
+icon = ExtResource("3_hskw1")
+alignment = 0
+
+[node name="CreateProjectButton" type="Button" parent="HBox/LeftVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_CREATE_PROJECT"
+text = "STARTUP_BUTTON_CREATE_PROJECT"
+icon = ExtResource("4_i3qvv")
+alignment = 0
+
+[node name="RightVBox" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+
+[node name="GettingStartedLabel" type="Label" parent="HBox/RightVBox"]
+layout_mode = 2
+text = "STARTUP_TITLE_GETTING_STARTED"
+label_settings = ExtResource("3_wsf7l")
+
+[node name="Spacer1" type="HSeparator" parent="HBox/RightVBox"]
+layout_mode = 2
+
+[node name="ManualButton" type="Button" parent="HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_MANUAL"
+text = "STARTUP_BUTTON_MANUAL"
+icon = ExtResource("5_e8y16")
+alignment = 0
+script = ExtResource("6_5bd1q")
+link = "manual_page"
+
+[node name="TutorialsButton" type="Button" parent="HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_TUTORIALS"
+text = "STARTUP_BUTTON_TUTORIALS"
+icon = ExtResource("5_e8y16")
+alignment = 0
+script = ExtResource("6_5bd1q")
+link = "tutorials_page"
+
+[node name="SupportButton" type="Button" parent="HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_SUPPORT"
+text = "STARTUP_BUTTON_SUPPORT"
+icon = ExtResource("5_e8y16")
+alignment = 0
+script = ExtResource("6_5bd1q")
+link = "support_page"
+
+[node name="DiscordButton" type="Button" parent="HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_DISCORD"
+text = "STARTUP_BUTTON_DISCORD"
+icon = ExtResource("5_e8y16")
+alignment = 0
+script = ExtResource("6_5bd1q")
+link = "discord"
+
+[node name="Spacer2" type="HSeparator" parent="HBox/RightVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_f7vt4")
+
+[node name="SupportProjectButton" type="Button" parent="HBox/RightVBox"]
+layout_mode = 2
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_SUPPORT_PROJECT"
+text = "STARTUP_BUTTON_SUPPORT_PROJECT"
+icon = ExtResource("7_fw0ax")
+alignment = 0
+script = ExtResource("6_5bd1q")
+link = "kofi_page"
+
+[connection signal="pressed" from="HBox/LeftVBox/RecentProjectsVBox/ShowAllProjectsButton" to="." method="_on_show_all_projects_button_pressed"]
+[connection signal="pressed" from="HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
+[connection signal="pressed" from="HBox/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]

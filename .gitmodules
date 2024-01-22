@@ -1,0 +1,3 @@
+[submodule "src/bin/gde_ffmpeg/godot-cpp"]
+	path = src/bin/gde_ffmpeg/godot-cpp
+	url = git@github.com:godotengine/godot-cpp.git

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqovtkqnn5ara"]
+
+[ext_resource type="Texture2D" uid="uid://b0dnkbt4gk0wd" path="res://assets/icons/video_file.png" id="1_ejc6v"]
+
+[node name="ProjectButton" type="Button"]
+text = "TEXT_UNTITLED_PROJECT_TITLE"
+icon = ExtResource("1_ejc6v")
+alignment = 0
