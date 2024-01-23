@@ -1,0 +1,27 @@
+env = SConscript("godot-cpp/SConstruct")
+env.Append(CPPPATH=["src/"])
+
+
+# Determine the platform and set the appropriate link flags
+platform = ARGUMENTS.get('platform', 'Linux')
+if platform == "linux": # Linux
+  print("Linux system detected")
+  env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
+elif platform == "windows": # Windows - not working
+  print("Windows system detected")
+  env.Append(CPPPATH=["bin-ffmpeg/include"])
+  env.Append(LIBPATH=["bin-ffmpeg/lib"])
+  env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
+  env.Append(LINKFLAGS=["-lavcodec", "-lavformat", "-lavfilter", "-lavdevice", "-lavutil", "-lswscale", "-lswresample"])
+elif platform == "macos": # macOS - not working
+  print("Mac system detected")
+  env.Append(LIBS=["libavcodec", "libavformat", "libavfilter", "libavdevice", "libavutil", "libswscale", "libswresample"])
+
+src = Glob("src/*.cpp")
+
+libpath = "../libgozen{}{}".format(env["suffix"], env["SHLIBSUFFIX"])
+print("libpath:", libpath)
+
+
+sharedlib = env.SharedLibrary(libpath, src)
+Default(sharedlib)
