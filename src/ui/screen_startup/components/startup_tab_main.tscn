@@ -43,15 +43,15 @@ script = ExtResource("2_p1jah")
 [node name="Spacer1" type="HSeparator" parent="HBox/LeftVBox/RecentProjectsVBox"]
 layout_mode = 2
 
-[node name="Spacer2" type="HSeparator" parent="HBox/LeftVBox/RecentProjectsVBox"]
-layout_mode = 2
-
 [node name="ShowAllProjectsButton" type="Button" parent="HBox/LeftVBox/RecentProjectsVBox"]
 layout_mode = 2
 tooltip_text = "STARTUP_TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
 text = "STARTUP_BUTTON_SHOW_ALL_PROJECTS"
 icon = ExtResource("3_hskw1")
 alignment = 0
+
+[node name="Spacer2" type="HSeparator" parent="HBox/LeftVBox/RecentProjectsVBox"]
+layout_mode = 2
 
 [node name="OpenProjectButton" type="Button" parent="HBox/LeftVBox"]
 layout_mode = 2

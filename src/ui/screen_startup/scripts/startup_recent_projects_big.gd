@@ -9,8 +9,8 @@ func load_list():
 	var file := FileAccess.open(
 		ProjectSettings.get_setting("globals/path/recent_projects"), 
 		FileAccess.READ)
-	if file == null || file.get_open_error():
-		Printer.error("Could not open recent projects file: '%s'!" % file.get_open_error())
+	if file == null || FileAccess.get_open_error():
+		Printer.error("Could not open recent projects file: '%s'!" % FileAccess.get_open_error())
 		return
 	# Each entry is made up like this: 'title||path||datetime'
 	var file_data: PackedStringArray = file.get_as_text().split('\n')

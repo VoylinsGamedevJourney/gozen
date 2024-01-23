@@ -44,6 +44,7 @@ folder_colors={
 "res://assets/": "yellow",
 "res://autoloads/": "blue",
 "res://bin/": "gray",
+"res://bin/gde_ffmpeg/": "purple",
 "res://classes/": "blue",
 "res://translations/": "teal"
 }
@@ -51,7 +52,7 @@ folder_colors={
 [globals]
 
 url/stable_version="https://raw.githubusercontent.com/VoylinsGamedevJourney/GoZen/master/src/project.godot"
-url/github_repo="https://github.com/VoylinsGamedevJourney/GoZens"
+url/github_repo="https://github.com/VoylinsGamedevJourney/GoZen"
 url/kofi_page="https://ko-fi.com/voylin"
 url/discord="discord.gg/BdbUf7VKYC"
 url/support_page="https://github.com/VoylinsGamedevJourney/GoZen"

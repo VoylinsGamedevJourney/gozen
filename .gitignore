@@ -22,3 +22,4 @@ src/editor/bin/*.so
 
 /OLD/
 /bin/
+/test_project/

@@ -19,7 +19,7 @@ func pressed() -> void:
 	
 	file_dialog.file_selected.connect(func(path: String):
 		if %TitleLineEdit.text == "":
-			%TitleLineEdit.text = path.split('/')[-1].to_camel_case()
+			%TitleLineEdit.text = path.split('/')[-1].to_pascal_case()
 		%PathLineEdit.text = path
 		if !path.contains(".gozen"):
 			%PathLineEdit.text += ".gozen")
