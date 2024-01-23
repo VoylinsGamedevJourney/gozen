@@ -1,5 +1,11 @@
 extends Node
 
+signal _on_project_loaded
+signal _on_project_saved
+
+signal _on_unsaved_changes
+signal _on_changes_saved
+
 signal _on_title_changed(new_title: String)
 signal _on_resolution_changed(new_resolution: Vector2i)
 signal _on_framerate_changed(new_framerate: int)
@@ -13,11 +19,11 @@ func new_project(title: String, path: String, resolution: Vector2i, framerate: i
 	config = ConfigFile.new()
 	project_path = path
 	
-	set_title(title)
+	set_title(title, false)
 	set_resolution(resolution)
 	set_framerate(framerate)
 	
-	config.save(project_path)
+	save_project()
 	update_recent_projects()
 
 
@@ -34,6 +40,11 @@ func load_project(path: String) -> void:
 	update_recent_projects()
 
 
+func save_project() -> void:
+	config.save(project_path)
+	_on_project_saved.emit()
+
+
 func update_recent_projects() -> void:
 	# Each entry is made up like this: 'title||path||datetime'
 	var file := FileAccess.open(
@@ -47,6 +58,8 @@ func update_recent_projects() -> void:
 			project_path, 
 			Time.get_datetime_string_from_system(),
 			data]
+	if data.ends_with("\n"):
+		print(8888) # TODO remove last line
 	file = FileAccess.open(
 		ProjectSettings.get_setting("globals/path/recent_projects"),
 		FileAccess.WRITE)
@@ -60,12 +73,12 @@ func get_title() -> String:
 	return config.get_value("general", "title", tr("TEXT_UNTITLED_PROJECT_TITLE"))
 
 
-func set_title(new_title: String) -> void:
+func set_title(new_title: String, update: bool = true) -> void:
 	config.set_value("general", "title", new_title)
 	_on_title_changed.emit(new_title)
-	config.save(project_path)
-	update_recent_projects()
-
+	save_project()
+	if update:
+		update_recent_projects()
 
 #endregion
 ###############################################################
@@ -79,7 +92,7 @@ func get_resolution() -> Vector2i:
 func set_resolution(new_resolution: Vector2i) -> void:
 	config.set_value("general", "resolution", new_resolution)
 	_on_resolution_changed.emit(new_resolution)
-	config.save(project_path)
+	save_project()
 
 #endregion
 ###############################################################
@@ -93,7 +106,7 @@ func get_framerate() -> int:
 func set_framerate(new_framerate: int) -> void:
 	config.set_value("general", "framerate", new_framerate)
 	_on_framerate_changed.emit(new_framerate)
-	config.save(project_path)
+	save_project()
 
 #endregion
 ###############################################################
