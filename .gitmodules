@@ -1,3 +1,6 @@
 [submodule "src/bin/gde_ffmpeg/godot-cpp"]
 	path = src/bin/gde_ffmpeg/godot-cpp
 	url = git@github.com:godotengine/godot-cpp.git
+[submodule "translations"]
+	path = translations
+	url = git@github.com:VoylinsGamedevJourney/GoZen-translations.git

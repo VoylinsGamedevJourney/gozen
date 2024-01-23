@@ -21,23 +21,27 @@ func _ready() -> void:
 
 func show_screen(screen_id: SCREENS) -> void:
 	if %Overlay.visible:
-		# If Overlay is active, another screen is already open,
-		# so we can't open the new screen.
-		Printer.error("Can't open screen as another one is still open!")
-		return
+		if screen_id == SCREENS.SETTINGS:
+			# Settings menu can be opened on top of other screens
+			$VBox/Content.get_children()[-1].visible = false
+		else:
+			$VBox/Content.get_children()[-1].queue_free()
+		$VBox/Content.get_children()[-1].visible = true
 	%Overlay.visible = true
 	var screen: Resource
 	
 	if screen_id == SCREENS.STARTUP:
 		screen = load("res://ui/screen_startup/screen_startup.tscn")
 	elif screen_id == SCREENS.SETTINGS:
-		screen = preload("res://ui/screen_settings/screen_settings.tscn")
+		screen = preload("res://ui/screen_settings_menu/screen_settings_menu.tscn")
 	elif screen_id == SCREENS.PROJECT_SETTINGS:
-		screen = preload("res://ui/screen_project_settings/screen_project_settings.tscn")
+		screen = preload("res://ui/screen_project_settings_menu/screen_project_settings_menu.tscn")
 	
 	$VBox/Content.add_child(screen.instantiate())
 
 
 func close_screen() -> void:
-	%Overlay.visible = false
-	get_child(-1).queue_free()
+	# This means that there is a screen above a screen
+	# so overlay should stay visible
+	%Overlay.visible = %Content.get_child(-2).name != "Overlay"
+	%Content.get_child(-1).queue_free()

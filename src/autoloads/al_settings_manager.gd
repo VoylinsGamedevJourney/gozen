@@ -35,7 +35,7 @@ func get_language() -> String:
 func set_language(new_language: String) -> void:
 	config.set_value("general", "language", new_language)
 	_on_language_changed.emit(new_language)
-	TranslationServer.set_locale(TranslationServer.get_loaded_locales()[index])
+	TranslationServer.set_locale(new_language)
 	save_settings()
 
 #endregion
