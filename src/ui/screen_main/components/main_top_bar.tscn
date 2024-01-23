@@ -45,6 +45,7 @@ theme_override_constants/separation = 4
 [node name="EditorButton" type="Button" parent="Margin/HBox"]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
+tooltip_text = "TOP_BAR_TOOLTIP_EDITOR_BUTTON"
 icon = ExtResource("4_07ice")
 flat = true
 icon_alignment = 1
@@ -55,6 +56,7 @@ link = "github_repo"
 [node name="ProjectButton" type="Button" parent="Margin/HBox"]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
+tooltip_text = "TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON"
 icon = ExtResource("6_b7p0r")
 icon_alignment = 1
 expand_icon = true
@@ -62,6 +64,7 @@ expand_icon = true
 [node name="SettingsButton" type="Button" parent="Margin/HBox"]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
+tooltip_text = "TOP_BAR_TOOLTIP_SETTINGS_BUTTON"
 icon = ExtResource("7_w5c7v")
 icon_alignment = 1
 expand_icon = true

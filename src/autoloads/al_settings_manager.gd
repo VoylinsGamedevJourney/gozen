@@ -24,6 +24,13 @@ func save_settings() -> void:
 	config.save(ProjectSettings.get_setting("globals/path/settings"))
 
 
+#################################################################
+##
+##      GETTERS AND SETTERS
+##
+#################################################################
+
+
 ###############################################################
 #region Setting: Language  ####################################
 ###############################################################
@@ -36,6 +43,32 @@ func set_language(new_language: String) -> void:
 	config.set_value("general", "language", new_language)
 	_on_language_changed.emit(new_language)
 	TranslationServer.set_locale(new_language)
+	save_settings()
+
+#endregion
+###############################################################
+#region Setting: Default video tracks  ########################
+###############################################################
+
+func get_default_video_tracks() -> int:
+	return config.get_value("timeline", "default_video_tracks", 3)
+
+
+func set_default_video_tracks(new_default: int) -> void:
+	config.set_value("timeline", "default_video_tracks", new_default)
+	save_settings()
+
+#endregion
+###############################################################
+#region Setting: Default audio tracks  ########################
+###############################################################
+
+func get_default_audio_tracks() -> int:
+	return config.get_value("timeline", "default_audio_tracks", 3)
+
+
+func set_default_audio_tracks(new_default: int) -> void:
+	config.set_value("timeline", "default_audio_tracks", new_default)
 	save_settings()
 
 #endregion

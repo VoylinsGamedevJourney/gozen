@@ -1,0 +1,147 @@
+[gd_scene load_steps=8 format=3 uid="uid://4tamgba5f2br"]
+
+[ext_resource type="Script" path="res://ui/screen_settings_menu/scripts/screen_settings_menu.gd" id="1_4vaem"]
+[ext_resource type="Theme" uid="uid://owprihx12ose" path="res://ui/screen_settings_menu/theming/screen_settings_theme.tres" id="1_e8l14"]
+[ext_resource type="Texture2D" uid="uid://c1yn05a2gyiiy" path="res://assets/icons/close.png" id="2_16ytd"]
+[ext_resource type="LabelSettings" uid="uid://c3ofeed22k1br" path="res://ui/screen_settings_menu/theming/settings_label_title.tres" id="4_lpi0q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5n4wt"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3k2y"]
+bg_color = Color(0.34902, 0.34902, 0.34902, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p646q"]
+content_margin_left = 7.0
+content_margin_right = 7.0
+
+[node name="ScreenSettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_e8l14")
+script = ExtResource("1_4vaem")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(650, 650)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5n4wt")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="TitlePanel" type="PanelContainer" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v3k2y")
+
+[node name="SettingsTitleLabel" type="Label" parent="Panel/VBox/TitlePanel"]
+layout_mode = 2
+text = "SETTINGS_TITLE"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="TextureButton" parent="Panel/VBox/TitlePanel"]
+custom_minimum_size = Vector2(23, 23)
+layout_mode = 2
+size_flags_horizontal = 8
+texture_normal = ExtResource("2_16ytd")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p646q")
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GeneralLabel" type="Label" parent="Panel/VBox/Scroll/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTINGS_TITLE_GENERAL"
+label_settings = ExtResource("4_lpi0q")
+
+[node name="GeneralSettingsGrid" type="GridContainer" parent="Panel/VBox/Scroll/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+columns = 2
+
+[node name="LanguageLabel" type="Label" parent="Panel/VBox/Scroll/VBox/GeneralSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTINGS_TEXT_LANGUAGE"
+
+[node name="LanguageOptionButton" type="OptionButton" parent="Panel/VBox/Scroll/VBox/GeneralSettingsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
+
+[node name="Spacer1" type="HSeparator" parent="Panel/VBox/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TimelineLabel" type="Label" parent="Panel/VBox/Scroll/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTINGS_TITLE_TIMELINE"
+label_settings = ExtResource("4_lpi0q")
+
+[node name="TimelineSettingsGrid" type="GridContainer" parent="Panel/VBox/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+columns = 2
+
+[node name="DefaultVideoTracksLabel" type="Label" parent="Panel/VBox/Scroll/VBox/TimelineSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
+
+[node name="DefaultVideoTracksSpinBox" type="SpinBox" parent="Panel/VBox/Scroll/VBox/TimelineSettingsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
+min_value = 1.0
+max_value = 30.0
+value = 3.0
+
+[node name="DefaultAudioTracksLabel" type="Label" parent="Panel/VBox/Scroll/VBox/TimelineSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
+
+[node name="DefaultAudioTracksSpinBox" type="SpinBox" parent="Panel/VBox/Scroll/VBox/TimelineSettingsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
+min_value = 1.0
+max_value = 30.0
+value = 3.0
+
+[connection signal="pressed" from="Panel/VBox/TitlePanel/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="item_selected" from="Panel/VBox/Scroll/VBox/GeneralSettingsGrid/LanguageOptionButton" to="." method="_on_language_option_button_item_selected"]
+[connection signal="value_changed" from="Panel/VBox/Scroll/VBox/TimelineSettingsGrid/DefaultVideoTracksSpinBox" to="." method="_on_default_video_tracks_spin_box_value_changed"]
+[connection signal="value_changed" from="Panel/VBox/Scroll/VBox/TimelineSettingsGrid/DefaultAudioTracksSpinBox" to="." method="_on_default_audio_tracks_spin_box_value_changed"]

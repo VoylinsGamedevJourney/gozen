@@ -23,6 +23,8 @@ func new_project(title: String, path: String, resolution: Vector2i, framerate: i
 	set_resolution(resolution)
 	set_framerate(framerate)
 	
+	_on_project_loaded.emit()
+	
 	save_project()
 	update_recent_projects()
 
@@ -37,7 +39,9 @@ func load_project(path: String) -> void:
 		Printer.error("Could not open project file!")
 		return
 	project_path = path
+	_on_title_changed.emit(get_title())
 	update_recent_projects()
+	_on_project_loaded.emit()
 
 
 func save_project() -> void:
@@ -58,8 +62,6 @@ func update_recent_projects() -> void:
 			project_path, 
 			Time.get_datetime_string_from_system(),
 			data]
-	if data.ends_with("\n"):
-		print(8888) # TODO remove last line
 	file = FileAccess.open(
 		ProjectSettings.get_setting("globals/path/recent_projects"),
 		FileAccess.WRITE)
@@ -74,6 +76,7 @@ func get_title() -> String:
 
 
 func set_title(new_title: String, update: bool = true) -> void:
+	print("set title")
 	config.set_value("general", "title", new_title)
 	_on_title_changed.emit(new_title)
 	save_project()
@@ -86,11 +89,11 @@ func set_title(new_title: String, update: bool = true) -> void:
 ###############################################################
 
 func get_resolution() -> Vector2i:
-	return config.get_value("general", "resolution", Vector2i(1920,1080))
+	return config.get_value("quality", "resolution", Vector2i(1920,1080))
 
 
 func set_resolution(new_resolution: Vector2i) -> void:
-	config.set_value("general", "resolution", new_resolution)
+	config.set_value("quality", "resolution", new_resolution)
 	_on_resolution_changed.emit(new_resolution)
 	save_project()
 
@@ -100,11 +103,11 @@ func set_resolution(new_resolution: Vector2i) -> void:
 ###############################################################
 
 func get_framerate() -> int:
-	return config.get_value("general", "framerate", 30)
+	return config.get_value("quality", "framerate", 30)
 
 
 func set_framerate(new_framerate: int) -> void:
-	config.set_value("general", "framerate", new_framerate)
+	config.set_value("quality", "framerate", new_framerate)
 	_on_framerate_changed.emit(new_framerate)
 	save_project()
 

@@ -44,6 +44,7 @@ text = "STARTUP_TEXT_TITLE"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_INPUT_PROJECT_TITLE"
 clear_button_enabled = true
 
 [node name="PathLabel" type="Label" parent="VBox/Grid"]
@@ -58,6 +59,7 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_INPUT_PROJECT_PATH"
 clear_button_enabled = true
 
 [node name="SelectPathButton" type="Button" parent="VBox/Grid/PathHBox"]
@@ -91,7 +93,7 @@ theme_override_constants/separation = 7
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "STARTUP_TOOLTIP_HD"
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_HD"
 theme_type_variation = &"PresetButton"
 text = "HD"
 
@@ -99,7 +101,7 @@ text = "HD"
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "STARTUP_TOOLTIP_FHD"
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_FHD"
 theme_type_variation = &"PresetButton"
 text = "FHD"
 
@@ -107,7 +109,7 @@ text = "FHD"
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "STARTUP_TOOLTIP_4K"
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_4K"
 theme_type_variation = &"PresetButton"
 text = "4K"
 
@@ -115,7 +117,7 @@ text = "4K"
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "STARTUP_TOOLTIP_8K"
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_8K"
 theme_type_variation = &"PresetButton"
 text = "8K"
 
@@ -126,7 +128,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "STARTUP_TOOLTIP_HORIZONTAL"
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_HORIZONTAL"
 theme_type_variation = &"PresetButton"
 text = "H"
 
@@ -134,7 +136,7 @@ text = "H"
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "STARTUP_TOOLTIP_VERTICAL"
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_VERTICAL"
 theme_type_variation = &"PresetButton"
 text = "V"
 
@@ -150,6 +152,7 @@ text = "x:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_INPUT_RESOLUTION_X"
 min_value = 1.0
 max_value = 100000.0
 value = 1920.0
@@ -163,6 +166,7 @@ text = "y:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_INPUT_RESOLUTION_Y"
 min_value = 1.0
 max_value = 100000.0
 value = 1080.0
@@ -185,6 +189,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_FPS_30"
 theme_type_variation = &"PresetButton"
 text = "30"
 
@@ -192,6 +197,7 @@ text = "30"
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_FPS_60"
 theme_type_variation = &"PresetButton"
 text = "60"
 
@@ -199,6 +205,7 @@ text = "60"
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_BUTTON_FPS_120"
 theme_type_variation = &"PresetButton"
 text = "120"
 
@@ -213,7 +220,9 @@ text = "STARTUP_TEXT_FRAMERATE"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "STARTUP_TOOLTIP_INPUT_FPS"
 min_value = 1.0
+max_value = 240.0
 value = 30.0
 
 [node name="Spacer3" type="HSeparator" parent="VBox"]
