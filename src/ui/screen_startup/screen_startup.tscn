@@ -83,6 +83,7 @@ offset_top = 14.0
 offset_right = 59.0
 offset_bottom = 59.0
 tooltip_text = "STARTUP_TOOLTIP_EDITOR_BUTTON"
+mouse_default_cursor_shape = 16
 texture_normal = ExtResource("2_kjkym")
 ignore_texture_size = true
 stretch_mode = 5
@@ -101,6 +102,7 @@ offset_top = -17.0
 offset_right = -7.0
 grow_horizontal = 0
 grow_vertical = 0
+auto_translate = false
 theme_override_colors/default_color = Color(0.470588, 0.470588, 0.470588, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.137255)
 theme_override_constants/shadow_offset_x = 2
@@ -120,7 +122,6 @@ offset_top = -18.205
 offset_right = 92.0
 offset_bottom = -0.205002
 grow_vertical = 0
-text = "0.0.0-alpha"
 label_settings = SubResource("LabelSettings_4vsyn")
 script = ExtResource("5_qrn3g")
 
@@ -137,6 +138,7 @@ offset_right = 97.0
 offset_bottom = 30.5
 grow_horizontal = 2
 grow_vertical = 2
+auto_translate = false
 text = "GoZen"
 label_settings = SubResource("LabelSettings_u4yy2")
 
@@ -156,6 +158,7 @@ script = ExtResource("7_2af61")
 
 [node name="UpdateAvailableLabel" type="RichTextLabel" parent="StartupPanel/VBox/TopImage/UpdateAvailablePanel"]
 layout_mode = 2
+auto_translate = false
 theme_override_fonts/normal_font = ExtResource("6_rdrx7")
 theme_override_font_sizes/normal_font_size = 10
 bbcode_enabled = true

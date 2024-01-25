@@ -1,25 +1,56 @@
 # Godot ignores
 .godot/
 .import/
-export.cfg
-export_presets.cfg
 *.translation
+/bin/
+
 
 # Linux dot files
 .directory
 
-# JetBrains
-.idea
 
 # Video files (for testing)
 *.mkv
 *.mp4
 *.webp
 
-# Not including build libraries anymore
-src/editor/bin/*.so
+
+# Scons
+.sconsign.dblite
+config.log
+.sconf_temp
 
 
+# C++ ignores
+## Prerequisites
+*.d
+## Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+## Precompiled Headers
+*.gch
+*.pch
+## Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+## Fortran module files
+*.mod
+*.smod
+## Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+## Executables
+*.exe
+*.out
+*.app
+
+
+# Custom ignores (Temporary)
 /OLD/
-/bin/
 /test_project/
+

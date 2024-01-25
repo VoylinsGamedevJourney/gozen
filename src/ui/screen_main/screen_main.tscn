@@ -32,12 +32,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="EditorUI" parent="VBox/Content" instance=ExtResource("3_hbcbb")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-grow_horizontal = 1
-grow_vertical = 1
+layout_mode = 1
 
 [node name="Overlay" type="ColorRect" parent="VBox/Content"]
 unique_name_in_owner = true
