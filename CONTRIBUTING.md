@@ -32,7 +32,7 @@ For bug reports and feature requests, please follow the guidelines below:
 
 ### Translation contribution
 
-If you want to contribute with translation, then refer to [translation guide](https://github.com/VoylinsGamedevJourney/GoZen-translations/README.md).
+If you want to contribute with translation, then refer to [translation guide](https://github.com/VoylinsGamedevJourney/GoZen-translations/blob/master/README.md).
 
 ### Code Reviews and Merging Process
 
