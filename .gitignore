@@ -34,6 +34,7 @@ config.log
 *.pch
 ## Compiled Dynamic libraries
 *.so
+*.os
 *.dylib
 *.dll
 ## Fortran module files
