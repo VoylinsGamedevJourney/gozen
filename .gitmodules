@@ -4,3 +4,6 @@
 [submodule "translations"]
 	path = src/translations
 	url = git@github.com:VoylinsGamedevJourney/GoZen-translations.git
+[submodule "src/bin/gde_ffmpeg/ffmpeg"]
+	path = src/bin/gde_ffmpeg/ffmpeg
+	url = git@github.com:FFmpeg/FFmpeg.git
