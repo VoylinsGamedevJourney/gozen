@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bud05fo1b65ng"]
+
+[node name="EditorUI" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="MainSplit" type="SplitContainer" parent="."]
+layout_mode = 2
+
+[node name="LeftSplit" type="SplitContainer" parent="MainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/LeftSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/LeftSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SecondSplit" type="SplitContainer" parent="MainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MiddleSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
