@@ -46,12 +46,8 @@ function compile_gdextension() {
       ;;
     2)
       platform=windows
-      echo "Windows export not supported yet!"
-      exit 1
-      #pushd gozen-ffmpeg
-      ## We need to build FFmpeg first
-      #./build_ffmpeg.sh
-      #popd
+      #echo "Windows export not supported yet!"
+      #exit 1
       ;;
     3)
       platform=macos

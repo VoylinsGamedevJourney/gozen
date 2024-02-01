@@ -4,6 +4,9 @@
 *.translation
 /bin/
 
+# FFmpeg ignores
+ffmpeg-bin/
+
 
 # Linux dot files
 .directory

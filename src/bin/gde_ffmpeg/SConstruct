@@ -1,3 +1,6 @@
+import os
+
+
 env = SConscript("godot-cpp/SConstruct")
 env.Append(CPPPATH=["src/"])
 
@@ -9,8 +12,9 @@ if platform == "linux": # Linux
   env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
 elif platform == "windows": # Windows - not working
   print("Windows system detected")
-  env.Append(CPPPATH=["bin-ffmpeg/include"])
-  env.Append(LIBPATH=["bin-ffmpeg/lib"])
+  env.Execute("./build-ffmpeg.sh")
+  env.Append(CPPPATH=["ffmpeg-bin/include"])
+  env.Append(LIBPATH=["ffmpeg-bin/lib"])
   env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
   env.Append(LINKFLAGS=["-lavcodec", "-lavformat", "-lavfilter", "-lavdevice", "-lavutil", "-lswscale", "-lswresample"])
 elif platform == "macos": # macOS - not working
