@@ -17,7 +17,8 @@ git pull
 
 config_extra_args=""
 if [ "$platform" = "windows" ]; then
-    cross_prefix="/opt/bin/x86_64-w64-mingw32-"
+    export PATH="/opt/bin":$PATH
+    cross_prefix="x86_64-w64-mingw32-"
     config_extra_args="--cross-prefix="$cross_prefix" --arch=x86_64 --target-os=mingw32"
 fi
 
