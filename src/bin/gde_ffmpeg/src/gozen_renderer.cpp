@@ -41,8 +41,10 @@ int GoZenRenderer::open_ffmpeg(Ref<GoZenRenderProfile> new_profile) {
   p_codec_context->pix_fmt = AV_PIX_FMT_YUV420P;
   p_codec_context->width = profile->video_size.x;
   p_codec_context->height = profile->video_size.y;
-  p_codec_context->time_base = (AVRational){1, profile->framerate};
-  p_codec_context->framerate = (AVRational){profile->framerate, 1};
+  p_codec_context->time_base.num = 1;
+  p_codec_context->time_base.den = profile->framerate;
+  p_codec_context->framerate.num = profile->framerate;
+  p_codec_context->framerate.den = 1;
   p_codec_context->gop_size = 10;
   p_codec_context->max_b_frames = 1;
  
