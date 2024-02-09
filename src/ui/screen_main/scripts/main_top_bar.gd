@@ -6,20 +6,27 @@ extends PanelContainer
 
 @export var resize_handles: Control
 
-var _windowed_win_size: Vector2i = Vector2i(300, 100)
-var _windowed_win_pos: Vector2i = Vector2i(0, 0)
-var _win_mode: Window.Mode = Window.MODE_WINDOWED
+@onready var _windowed_win_size: Vector2i = get_window().size
+@onready var _windowed_win_pos: Vector2i = get_window().position
 
 var win_mode: Window.Mode:
 	get:
-		return _win_mode
+		var current_mode = get_window().mode
+		if OS.get_name() != "Windows" or !get_window().borderless:
+			return current_mode
+
+		if current_mode == Window.MODE_WINDOWED:
+			var usable_screen := DisplayServer.screen_get_usable_rect(get_window().current_screen)
+			if get_window().position == usable_screen.position and get_window().size == usable_screen.size:
+				return Window.MODE_MAXIMIZED
+			return Window.MODE_WINDOWED
+
+		return current_mode
 
 	set(value):
-		if value == _win_mode: return
+		if value == win_mode: return
 
-		# store prev_mode and current win_mode
-		var prev_mode = _win_mode
-		_win_mode = value
+		var prev_mode = win_mode
 
 		if OS.get_name() != "Windows" or !get_window().borderless:
 			get_window().mode = value
@@ -34,11 +41,11 @@ var win_mode: Window.Mode:
 			get_window().borderless = false
 			get_window().mode = Window.MODE_MAXIMIZED
 			get_window().borderless = true
-			
+
 			# adjust mismatched window size and position
 			var usable_screen := DisplayServer.screen_get_usable_rect(get_window().current_screen)
-			get_window().position = usable_screen.position + Vector2i(1, 1)
-			get_window().size = usable_screen.size
+			get_window().position = usable_screen.position
+			get_window().size = usable_screen.size + Vector2i(2, 2)
 			return
 
 		if value == Window.MODE_WINDOWED:
@@ -46,7 +53,7 @@ var win_mode: Window.Mode:
 			get_window().mode = prev_mode	# window.mode is not set to maximized when borderless
 			get_window().mode = Window.MODE_WINDOWED
 			get_window().borderless = true
-			
+
 			# restore window size and position
 			get_window().size = _windowed_win_size
 			get_window().position = _windowed_win_pos
