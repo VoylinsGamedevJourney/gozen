@@ -32,7 +32,7 @@ This guide will help you compile the GoZen gdextension.
 
 ## Step 2: Cloning repositories
 
-- Open a terminal in the desired directory and clone the Gozen repository
+- Open a terminal in the desired directory and clone the GoZen repository
 
     ```bash
     git clone --recurse-submodules https://github.com/VoylinsGamedevJourney/GoZen.git
