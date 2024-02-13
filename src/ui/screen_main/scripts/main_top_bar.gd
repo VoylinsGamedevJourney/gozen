@@ -97,7 +97,7 @@ func _on_top_bar_dragging(event) -> void:
 
 		if move_window:
 			# offset between the mouse position and the window position
-			move_win_offset = global_mouse - get_window().position
+			move_win_offset = global_mouse - DisplayServer.window_get_position(get_window().get_window_id())
 
 		elif OS.get_name() == "Windows":
 			var screen_rect := DisplayServer.screen_get_usable_rect(get_window().current_screen)
