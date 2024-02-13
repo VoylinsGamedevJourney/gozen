@@ -6,6 +6,11 @@ This guide will help you compile the GoZen gdextension.
 
 ### Linux
 
+- For dependencies you will mainly need Python and scons. These are needed for compiling the GDExtension which gives access to FFmpeg, which also needs to be installed.
+
+    ```bash
+    pacman -Syu python scons ffmpeg
+    ```
 ### Windows
 
 - Install Msys2 from [www.msys2.org](https://www.msys2.org/)
