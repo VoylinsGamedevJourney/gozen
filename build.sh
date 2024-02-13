@@ -21,7 +21,7 @@ function build_gozen_light() {
 
 
 function generate_localization() {
-  pushd src/translations/POT
+  pushd src/translations/gozen-translations
   git pull
   ./generate_mo_files.sh
   popd
