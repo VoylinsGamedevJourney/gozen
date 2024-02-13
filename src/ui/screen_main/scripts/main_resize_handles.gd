@@ -10,9 +10,6 @@ func _ready() -> void:
 	$Right.gui_input.connect(_on_gui_input.bind($Right))
 	$Bottom.gui_input.connect(_on_gui_input.bind($Bottom))
 	$Corner.gui_input.connect(_on_gui_input.bind($Corner))
-	
-	get_viewport().size_changed.connect(func():
-		visible = get_window().mode == Window.MODE_WINDOWED)
 
 
 ###############################################################
