@@ -92,26 +92,33 @@ var win_mode: Window.Mode:
 
 func _on_top_bar_dragging(event) -> void:
 	if event is InputEventMouseButton and event.button_index == 1:
-		var global_mouse := DisplayServer.mouse_get_position()
-		move_window = event.is_pressed() and win_mode == Window.MODE_WINDOWED
+		var mouse_pos := DisplayServer.mouse_get_position()
+		var win_pos := DisplayServer.window_get_position(get_window().get_window_id())
+		move_window = false
 
-		if move_window:
-			# offset between the mouse position and the window position
-			move_win_offset = global_mouse - DisplayServer.window_get_position(get_window().get_window_id())
+		if win_mode == Window.MODE_WINDOWED:
+			if event.is_pressed():
+				move_win_offset = mouse_pos - win_pos
+				move_window = true
 
-		elif OS.get_name() == "Windows":
-			var screen_rect := DisplayServer.screen_get_usable_rect(get_window().current_screen)
-			if !screen_rect.has_point(global_mouse):
-				var title_bar_offset := (
-					Vector2i(0, -int(size.y)) if global_mouse.y > screen_rect.end.y else
-					Vector2i(0, int(size.y)) if global_mouse.y < screen_rect.position.y else
-					Vector2i(0, 0)
+			elif OS.get_name() == "Windows":
+				var screen_rect := DisplayServer.screen_get_usable_rect(
+					DisplayServer.SCREEN_WITH_MOUSE_FOCUS
 				)
-				get_window().position = (
-					global_mouse.clamp(screen_rect.position, screen_rect.end)
-					- Vector2i(get_viewport().get_mouse_position())
-					+ title_bar_offset
-				)
+				var tb_top := Vector2i(mouse_pos.x, win_pos.y)
+				var tb_bottom := Vector2i(mouse_pos.x, win_pos.y + int(size.y))
+
+				if !screen_rect.encloses(Rect2i(tb_top, tb_bottom)):
+					if tb_top.y < screen_rect.position.y:
+						get_window().position = (
+							tb_top.clamp(screen_rect.position, screen_rect.end)
+							- Vector2i(move_win_offset.x, 0)
+						)
+					else:
+						get_window().position = (
+							tb_bottom.clamp(screen_rect.position, screen_rect.end)
+							- Vector2i(move_win_offset.x, int(size.y))
+						)
 
 func _process(_delta: float) -> void:
 	if move_window:
