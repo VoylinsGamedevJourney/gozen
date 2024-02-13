@@ -1,4 +1,7 @@
 extends PanelContainer
+# MODULAR TODO: Create a way for modules to add icons
+#               between Spacer and SettingsButton
+
 
 var move_window := false
 var move_start: Vector2i
