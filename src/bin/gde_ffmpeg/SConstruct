@@ -7,17 +7,22 @@ env.Append(CPPPATH=["src/"])
 
 # Determine the platform and set the appropriate link flags
 platform = ARGUMENTS.get('platform', 'Linux')
+use_mingw = ARGUMENTS.get('use_mingw', 'no')
 if platform == "linux": # Linux
   print("Linux system detected")
   env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
 elif platform == "windows": # Windows
   print("Windows system detected")
+  # First compiling ffmpeg
   num_jobs = GetOption('num_jobs')
   env.Execute("./build-ffmpeg.sh " + str(num_jobs))
-  env.Append(LIBPATH=["ffmpeg-bin/include"])
-  #env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
-  #env.Append(LINKFLAGS=["-lavcodec", "-lavformat", "-lavfilter", "-lavdevice", "-lavutil", "-lswscale", "-lswresample"])
-elif platform == "macos": # macOS
+  # Adding libraries for building
+  env.Append(CPPPATH=["ffmpeg-bin/include"])
+  env.Append(LIBPATH=["ffmpeg-bin/bin"])
+  env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
+  if use_mingw == "no":
+    env.Append(LINKFLAGS=["avcodec.lib", "avformat.lib", "avfilter.lib", "avdevice.lib", "avutil.lib", "swscale.lib", "swresample.lib"])
+elif platform == "macos": # MacOS - not working
   print("Mac system detected")
   env.Append(LIBS=["libavcodec", "libavformat", "libavfilter", "libavdevice", "libavutil", "libswscale", "libswresample"])
 

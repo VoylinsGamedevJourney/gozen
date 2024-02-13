@@ -22,7 +22,11 @@ void GoZenPipeRenderer::setup(String output, int frame_rate) {
   //UtilityFunctions::print(cmd.c_str());
 
   // Opening the pipe
+#ifdef _WIN32
+  ffmpegPipe = _popen(cmd.c_str(), "w");
+#else
   ffmpegPipe = popen(cmd.c_str(), "w");
+#endif
   if (!ffmpegPipe) {
     UtilityFunctions::printerr("Failed to open ffmpeg pipe!");
     exit(1);
@@ -47,7 +51,11 @@ void GoZenPipeRenderer::add_frame(Ref<Image> frame_image) {
 
 void GoZenPipeRenderer::finish_video() {
   if (ffmpegPipe) {
+#ifdef _WIN32
+    _pclose(ffmpegPipe);
+#else
     pclose(ffmpegPipe);
+#endif
     ffmpegPipe = nullptr;
     UtilityFunctions::print("ffmpeg is closed");
   }

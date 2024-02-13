@@ -34,10 +34,12 @@ function compile_gdextension() {
   git pull
   popd
 
+  local scons_extra_args=""
+
   echo "GDExtension compiling"
   echo "Select target platform:"
   echo "1. Linux"
-  echo "2. Windows (not-supported yet)"
+  echo "2. Windows (Msys2)"
   echo "3. Mac (not-supported yet)"
   read -p "> " platform
   case $platform in
@@ -46,8 +48,7 @@ function compile_gdextension() {
       ;;
     2)
       platform=windows
-      #echo "Windows export not supported yet!"
-      #exit 1
+      scons_extra_args="use_mingw=yes"
       ;;
     3)
       platform=macos
@@ -75,10 +76,24 @@ function compile_gdextension() {
       target=template_debug
       ;;
   esac
+
   echo "Enter amount of cores/thread for compiling:"
   read -p "> " num_jobs
+
+  echo "Build FFmpeg? (y/N)"
+  read -p "> " ffmpeg
+  case $ffmpeg in
+    y)
+      pushd src/bin/gde_ffmpeg/
+      ./build-ffmpeg.sh $platform $num_jobs || { echo "FFmpeg build failed"; exit 1; }
+      popd
+      ;;
+    *)
+      ;;
+  esac
+
   pushd src/bin/gde_ffmpeg/
-  scons -j $num_jobs target=$target platform=$platform
+  scons -j $num_jobs target=$target platform=$platform $scons_extra_args
   popd
 }
 
