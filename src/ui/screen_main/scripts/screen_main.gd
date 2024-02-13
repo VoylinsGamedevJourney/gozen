@@ -6,8 +6,8 @@ static var instance: ScreenMain
 
 
 func _ready() -> void:
-	# Setting the ScreenMain instance to the current node, this helps
-	# other scripts to call show_screen and close_screen.
+	## Setting the ScreenMain instance to the current node, this helps
+	## other scripts to call show_screen and close_screen.
 	ScreenMain.instance = self
 	
 	var arguments := OS.get_cmdline_args()

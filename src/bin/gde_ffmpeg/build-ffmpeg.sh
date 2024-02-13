@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+  num_jobs=4
+else
+  num_jobs=$1
+fi
+
 echo "Running FFmpeg builder ..."
 platform=$1
 num_jobs=${2:-6}
