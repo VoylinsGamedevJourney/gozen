@@ -6,7 +6,7 @@ extends PanelContainer
 var menu_buttons := []
 
 var move_window := false
-var move_start: Vector2i
+var move_win_offset: Vector2i
 
 
 func _ready() -> void:
@@ -92,13 +92,15 @@ var win_mode: Window.Mode:
 
 func _on_top_bar_dragging(event) -> void:
 	if event is InputEventMouseButton and event.button_index == 1:
+		var global_mouse := DisplayServer.mouse_get_position()
 		move_window = event.is_pressed() and win_mode == Window.MODE_WINDOWED
+
 		if move_window:
-			move_start = get_viewport().get_mouse_position()
+			# offset between the mouse position and the window position
+			move_win_offset = global_mouse - get_window().position
 
 		elif OS.get_name() == "Windows":
 			var screen_rect := DisplayServer.screen_get_usable_rect(get_window().current_screen)
-			var global_mouse := DisplayServer.mouse_get_position()
 			if !screen_rect.has_point(global_mouse):
 				var title_bar_offset := (
 					Vector2i(0, -int(size.y)) if global_mouse.y > screen_rect.end.y else
@@ -113,8 +115,7 @@ func _on_top_bar_dragging(event) -> void:
 
 func _process(_delta: float) -> void:
 	if move_window:
-		var mouse_delta = Vector2i(get_viewport().get_mouse_position()) - move_start
-		get_window().position += mouse_delta
+		get_window().position = DisplayServer.mouse_get_position() - move_win_offset
 
 #endregion
 ###############################################################
