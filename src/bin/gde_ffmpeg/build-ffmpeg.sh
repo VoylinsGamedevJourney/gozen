@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+  num_jobs=4
+else
+  num_jobs=$1
+fi
+
 echo "Running FFmpeg builder ..."
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -12,5 +18,5 @@ echo "Updating ffmpeg submodule ..."
 git pull
 
 ./configure --prefix="$ffmpeg_bin_folder" --enable-shared --enable-gpl
-make -j 6
-make -j 6 install
+make -j $num_jobs
+make -j $num_jobs install
