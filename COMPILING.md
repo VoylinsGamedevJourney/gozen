@@ -1,19 +1,19 @@
 # Compiling GoZen
 
-This guide will help you compile the GoZen gdextension.
+This guide will help you compile the GoZen GDExtension.
 
 ## Step 1: Installing dependencies
 
 ### Linux
 
-- For dependencies you will mainly need Python and scons. These are needed for compiling the GDExtension which gives access to FFmpeg, which also needs to be installed.
+- For dependencies you will mainly need Python and SCons. These are needed for compiling the GDExtension which gives access to FFmpeg, which also needs to be installed.
 
     ```bash
     pacman -Syu python scons ffmpeg
     ```
 ### Windows
 
-- Install Msys2 from [www.msys2.org](https://www.msys2.org/)
+- Install MSYS2 from [www.msys2.org](https://www.msys2.org/)
 - Add `path\to\msys64\mingw64\bin` and `path\to\msys64\usr\bin` to the `Path` environment variable. The default installation path is `C:\msys64\`
 
 - Update all packages by executing the following command in the terminal:
@@ -38,13 +38,13 @@ This guide will help you compile the GoZen gdextension.
     git clone --recurse-submodules https://github.com/VoylinsGamedevJourney/GoZen.git
     ```
 
-- Move to the Gozen directory
+- Move to the GoZen directory
 
     ```bash
     cd GoZen
     ```
 
-- Clone the Godot-cpp repository
+- Clone the godot-cpp repository
 
     ```bash
     git clone https://github.com/godotengine/godot-cpp.git src/bin/gde_ffmpeg/godot-cpp
@@ -58,7 +58,7 @@ This guide will help you compile the GoZen gdextension.
     sh build.sh
     ```
 
-    **Note:** You will need to compile ffmpeg at least once. Enter `y` when prompted.
+    **Note:** You will need to compile FFmpeg at least once. Enter `y` when prompted.
 
 - Once the build is complete, you can now open the Godot project located in `./src` directory
 
