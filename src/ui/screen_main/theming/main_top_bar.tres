@@ -36,3 +36,7 @@ Button/styles/focus = SubResource("StyleBoxEmpty_43emp")
 Button/styles/hover = SubResource("StyleBoxFlat_urgjl")
 Button/styles/normal = SubResource("StyleBoxEmpty_4kvfj")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_0ah4v")
+PopupMenu/colors/font_separator_color = Color(0.621094, 0.621094, 0.621094, 1)
+PopupMenu/constants/icon_max_width = 26
+PopupMenu/font_sizes/font_separator_size = 12
+PopupMenu/font_sizes/font_size = 14
