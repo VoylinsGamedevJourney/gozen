@@ -96,6 +96,20 @@ func _on_top_bar_dragging(event) -> void:
 		if move_window:
 			move_start = get_viewport().get_mouse_position()
 
+		elif OS.get_name() == "Windows":
+			var screen_rect := DisplayServer.screen_get_usable_rect(get_window().current_screen)
+			var global_mouse := DisplayServer.mouse_get_position()
+			if !screen_rect.has_point(global_mouse):
+				var title_bar_offset := (
+					Vector2i(0, -int(size.y)) if global_mouse.y > screen_rect.end.y else
+					Vector2i(0, int(size.y)) if global_mouse.y < screen_rect.position.y else
+					Vector2i(0, 0)
+				)
+				get_window().position = (
+					global_mouse.clamp(screen_rect.position, screen_rect.end)
+					- Vector2i(get_viewport().get_mouse_position())
+					+ title_bar_offset
+				)
 
 func _process(_delta: float) -> void:
 	if move_window:
