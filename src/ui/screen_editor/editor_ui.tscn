@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bud05fo1b65ng"]
+[gd_scene load_steps=2 format=3 uid="uid://bud05fo1b65ng"]
+
+[ext_resource type="Script" path="res://ui/screen_editor/scripts/editor_ui.gd" id="1_p86jn"]
 
 [node name="EditorUI" type="HBoxContainer"]
 anchors_preset = 15
@@ -7,6 +9,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 7
+script = ExtResource("1_p86jn")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(80, 0)
@@ -19,12 +22,13 @@ size_flags_horizontal = 3
 [node name="MainSplit" type="SplitContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 7
-split_offset = -415
+split_offset = -605
 
 [node name="LeftSplit" type="SplitContainer" parent="MarginContainer/MainSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
+split_offset = 270
 vertical = true
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/LeftSplit"]
@@ -39,7 +43,7 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
-split_offset = 210
+split_offset = 395
 
 [node name="MiddleSplit" type="SplitContainer" parent="MarginContainer/MainSplit/SecondSplit"]
 layout_mode = 2
@@ -47,18 +51,63 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 7
 vertical = true
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit"]
+[node name="MiddleTopMainSplit" type="SplitContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit"]
 layout_mode = 2
 size_flags_vertical = 3
+split_offset = 295
 
-[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit"]
+[node name="MiddleTopSecondSplit" type="SplitContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
 layout_mode = 2
+size_flags_horizontal = 3
+split_offset = -170
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MiddleBottomMainSplit" type="SplitContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 295
+
+[node name="MiddleBottomSecondSplit" type="SplitContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = -170
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="RightSplit" type="SplitContainer" parent="MarginContainer/MainSplit/SecondSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
+split_offset = -145
 vertical = true
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/MainSplit/SecondSplit/RightSplit"]
