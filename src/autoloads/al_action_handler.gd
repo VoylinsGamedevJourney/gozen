@@ -12,11 +12,10 @@ func _input(event):
 		redo()
 
 
-func do(function: Callable, undo_function: Callable, args: Array = []) -> void:
-	var action := Action.new(function, undo_function, args)
-	function.call(args)
+func do(function: Callable, undo_function: Callable, do_args: Array = [], undo_args: Array = []) -> void:
+	var action := Action.new(function, undo_function, do_args, undo_args)
+	function.call(do_args)
 	if actions.size() == actions_max:
-		function.call(args)
 		actions.pop_front()
 		actions.append(action)
 		return
@@ -31,7 +30,7 @@ func undo() -> void:
 		print("Nothing to undo!")
 		return
 	var action: Action = actions[action_current]
-	action.undo_function.call(action.args)
+	action.undo_function.call(action.undo_args)
 	if action_current > 0:
 		action_current -= 1 
 
@@ -42,15 +41,17 @@ func redo() -> void:
 		return
 	action_current += 1 
 	var action: Action = actions[action_current]
-	action.function.call(action.args)
+	action.function.call(action.do_args)
 
 
 class Action:
 	var function: Callable
 	var undo_function: Callable
-	var args: Array
+	var do_args: Array
+	var undo_args: Array
 	
-	func _init(_function: Callable, _undo_function: Callable, _args: Array = []):
+	func _init(_function: Callable, _undo_function: Callable, _do_args: Array = [], _undo_args: Array = []):
 		function = _function
 		undo_function = _undo_function
-		args = _args
+		do_args = _do_args
+		undo_args = _undo_args
