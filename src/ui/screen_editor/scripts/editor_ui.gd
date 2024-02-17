@@ -1,4 +1,6 @@
 extends HBoxContainer
+# Make module manager which updates module list on startup
+# and loads in all necesarry buttons (top_bar, other views)
 
 
 var config := ConfigFile.new()
@@ -31,14 +33,19 @@ func _ready():
 
 func add_module(module_name: String, panel_name: String) -> void:
 	# load in module and update panel
+	# save config
 	pass
 
 
 func move_module(panel_origin: String, panel_dest: String) -> void:
 	# Update the previous panel and update new panel
+	
+	# save config
 	pass
 
 
 func update_panel(panel_name: String) -> void:
 	# If panel empty, hide, else show
+	
+	# save config
 	pass
