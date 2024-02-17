@@ -14,11 +14,16 @@ func _input(event):
 
 func do(function: Callable, undo_function: Callable, args: Array = []) -> void:
 	var action := Action.new(function, undo_function, args)
-	if actions.size() != action_current:
+	function.call(args)
+	if actions.size() == actions_max:
+		function.call(args)
+		actions.pop_front()
+		actions.append(action)
+		return
+	elif actions.size() != action_current:
 		actions.resize(action_current+1)
 	action_current += 1
 	actions.append(action)
-	function.call(args)
 
 
 func undo() -> void:
