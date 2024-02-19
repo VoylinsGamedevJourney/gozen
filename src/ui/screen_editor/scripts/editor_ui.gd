@@ -23,7 +23,7 @@ var config := ConfigFile.new()
 
 func _ready():
 	if instance != null:
-		printerr("No 2 'EditorUI' screens are allowed!")
+		Printer.error("No 2 'EditorUI' screens are allowed!")
 		self.queue_free()
 		return
 	instance = self
@@ -39,9 +39,14 @@ func _ready():
 	path = ProjectSettings.get_setting("globals/path/editor_ui")
 	if FileAccess.file_exists(path):
 		config.load(path)
-		set_layouts()
+		var layout_order: PackedStringArray = config.get_value("general", "layouts_order")
+		for id: String in layout_order:
+			add_layout(id.split("-")[0], id)
 	else:
-		set_default_layout()
+		# Setting default layouts
+		add_layout("file_manager")
+		add_layout("default")
+		add_layout("render_menu")
 
 
 ## Loading in all layouts
@@ -53,26 +58,10 @@ func load_layouts() -> void:
 	var dir := DirAccess.open(path)
 	for module_name: String in dir.get_files():
 		if not ".pck" in module_name:
-			print("'%s' does not have a pck extension!")
+			Printer.error("'%s' does not have a pck extension!")
 			continue
 		Printer.debug("Loading in layout module '%s' ..." % module_name)
 		ProjectSettings.load_resource_pack(path + module_name)
-
-
-func set_default_layout() -> void:
-	# TODO: Change default icons
-	add_layout("file_manager")
-	add_layout("default")
-	add_layout("render_menu")
-
-
-func set_layouts() -> void:
-	## Happens on startup when config file is present. Getting the data
-	## from the config file
-	var layout_order: PackedStringArray = config.get_value("general", "layouts_order")
-	print(layout_order)
-	for id: String in layout_order:
-		add_layout(id.split("-")[0], id)
 
 
 func _get_available_layouts() -> PackedStringArray:
@@ -84,14 +73,16 @@ func _get_available_layouts() -> PackedStringArray:
 
 
 func add_layout(layout_name: String, id: String = "") -> void:
-	var layout_data: LayoutModule = load("res://layout_modules/layout_%s.tres" % layout_name)
 	# Check if single only or not
+	var layout_data: LayoutModule = load("res://layout_modules/layout_%s.tres" % layout_name)
 	if layout_data.single_only:
 		for child: Node in %SidebarVBox.get_children():
-			if child.name.split("-")[0] == layout_name:
-				Printer.error("Module is single only, already in sidebar present!")
-				return
+			if child.name.split("-")[0] != layout_name:
+				continue
+			Printer.error("Module is single only, already in sidebar present!")
+			return
 	
+	# Setting name for button and layout
 	var button := Button.new()
 	var layout: Node = layout_data.scene.instantiate()
 	if id == "":
@@ -99,6 +90,8 @@ func add_layout(layout_name: String, id: String = "") -> void:
 		var layout_order: PackedStringArray = config.get_value("general", "layouts_order", [])
 		layout.name = layout_id
 		button.name = layout_id
+		button.icon = layout_data.default_icon
+		
 		# Updating the config file
 		layout_order.append(layout_id)
 		config.set_value("general", "layouts_order", layout_order)
@@ -106,13 +99,21 @@ func add_layout(layout_name: String, id: String = "") -> void:
 	else:
 		layout.name = id
 		button.name = id
-	button.icon = layout_data.default_icon
+	
+	# Setting button data
 	button.expand_icon = true
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.custom_minimum_size = Vector2i(40,40)
+	
+	# Setting button function
 	var tab_nr := %SidebarVBox.get_child_count()
 	button.pressed.connect(func(): 
 		%LayoutContainer.current_tab = tab_nr)
+	
+	# Setting the button icon
+	var icon_path: String = config.get_value("custom_icons", id, "")
+	button.icon = layout_data.default_icon if icon_path == "" else load(icon_path)
+	
 	# Adding the nodes to the sidebar + tab container
 	%SidebarVBox.add_child(button)
 	%LayoutContainer.add_child(layout)

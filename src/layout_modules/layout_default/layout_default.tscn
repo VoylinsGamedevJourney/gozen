@@ -12,6 +12,12 @@ grow_vertical = 2
 script = ExtResource("1_t7o15")
 
 [node name="MainSplit" type="SplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 7
 split_offset = -605
 
@@ -22,13 +28,19 @@ theme_override_constants/separation = 7
 split_offset = 270
 vertical = true
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/LeftSplit"]
+[node name="LeftTopPanel" type="PanelContainer" parent="MainSplit/LeftSplit"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/LeftSplit"]
+[node name="TabContainer" type="TabContainer" parent="MainSplit/LeftSplit/LeftTopPanel"]
+layout_mode = 2
+
+[node name="LeftBottomPanel" type="PanelContainer" parent="MainSplit/LeftSplit"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="MainSplit/LeftSplit/LeftBottomPanel"]
+layout_mode = 2
 
 [node name="SecondSplit" type="SplitContainer" parent="MainSplit"]
 layout_mode = 2
@@ -45,54 +57,74 @@ vertical = true
 [node name="MiddleTopMainSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 7
 split_offset = 295
 
 [node name="MiddleTopSecondSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 7
 split_offset = -170
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
+[node name="MiddleLeftTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit/MiddleLeftTopPanel"]
+layout_mode = 2
+
+[node name="MiddleTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit/MiddleTopPanel"]
+layout_mode = 2
+
+[node name="MiddleRightTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleRightTopPanel"]
+layout_mode = 2
 
 [node name="MiddleBottomMainSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 7
 split_offset = 295
 
 [node name="MiddleBottomSecondSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 7
 split_offset = -170
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
-visible = false
+[node name="MiddleLeftBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit/MiddleLeftBottomPanel"]
+layout_mode = 2
+
+[node name="MiddleBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
-visible = false
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit/MiddleBottomPanel"]
+layout_mode = 2
+
+[node name="MiddleRightBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleRightBottomPanel"]
+layout_mode = 2
 
 [node name="RightSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
 layout_mode = 2
@@ -101,10 +133,16 @@ theme_override_constants/separation = 7
 split_offset = -145
 vertical = true
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
+[node name="RightTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/RightSplit/RightTopPanel"]
+layout_mode = 2
+
+[node name="RightBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="MainSplit/SecondSplit/RightSplit/RightBottomPanel"]
+layout_mode = 2
