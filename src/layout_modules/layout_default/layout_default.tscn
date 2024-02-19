@@ -1,0 +1,110 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfo5kjkjmgvky"]
+
+[ext_resource type="Script" path="res://layout_modules/layout_default/layout_default.gd" id="1_t7o15"]
+
+[node name="LayoutDefault" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t7o15")
+
+[node name="MainSplit" type="SplitContainer" parent="."]
+theme_override_constants/separation = 7
+split_offset = -605
+
+[node name="LeftSplit" type="SplitContainer" parent="MainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+split_offset = 270
+vertical = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/LeftSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/LeftSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SecondSplit" type="SplitContainer" parent="MainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+split_offset = 395
+
+[node name="MiddleSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+vertical = true
+
+[node name="MiddleTopMainSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 295
+
+[node name="MiddleTopSecondSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = -170
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MiddleBottomMainSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 295
+
+[node name="MiddleBottomSecondSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = -170
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RightSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+split_offset = -145
+vertical = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
+layout_mode = 2
+size_flags_vertical = 3
