@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LayoutModule" load_steps=4 format=3 uid="uid://dw2viyqayyclg"]
+
+[ext_resource type="Texture2D" uid="uid://b2lbweyckvws7" path="res://assets/icons/folder_open.png" id="1_j4tjr"]
+[ext_resource type="Script" path="res://classes/resources/layout_module.gd" id="1_vxma7"]
+[ext_resource type="PackedScene" uid="uid://vcw6xyb5mav2" path="res://layout_modules/layout_file_manager/layout_file_manager.tscn" id="2_iknlg"]
+
+[resource]
+script = ExtResource("1_vxma7")
+default_icon = ExtResource("1_j4tjr")
+scene = ExtResource("2_iknlg")
+single_only = true

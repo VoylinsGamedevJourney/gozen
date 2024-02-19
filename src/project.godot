@@ -61,6 +61,9 @@ url/tutorials_page="https://github.com/VoylinsGamedevJourney/GoZen"
 url/manual_page="https://github.com/VoylinsGamedevJourney/GoZen"
 path/settings="user://settings.cfg"
 path/recent_projects="user://recent_projects.dat"
+path/editor_ui="user://editor_ui.cfg"
+path/modules/layout_cfg="user://layouts/"
+path/modules/custom_layout_modules="user://layout_modules/"
 
 [internationalization]
 
