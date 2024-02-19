@@ -9,11 +9,11 @@ var panels := {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for child: Node in %LayoutContainer.get_children():
-		if child is SplitContainer:
-			splits[child.name] = child
-		elif child is PanelContainer:
-			panels[child.name] = child
+	#for child: Node in %LayoutContainer.get_children():
+		#if child is SplitContainer:
+			#splits[child.name] = child
+		#elif child is PanelContainer:
+			#panels[child.name] = child
 	
 	#if FileAccess.file_exists(path):
 		#config.load(path)
@@ -24,7 +24,7 @@ func _ready():
 	
 	# Hide panels with no children
 	
-	
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
