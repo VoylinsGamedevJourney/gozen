@@ -1,40 +1,35 @@
-[gd_scene format=3 uid="uid://bud05fo1b65ng"]
+[gd_scene load_steps=2 format=3 uid="uid://bud05fo1b65ng"]
 
-[node name="EditorUI" type="MarginContainer"]
+[ext_resource type="Script" path="res://ui/screen_editor/scripts/editor_ui.gd" id="1_p86jn"]
+
+[node name="EditorUI" type="HBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+theme_override_constants/separation = 4
+script = ExtResource("1_p86jn")
 
-[node name="MainSplit" type="SplitContainer" parent="."]
+[node name="EditorSidebar" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="LeftSplit" type="SplitContainer" parent="MainSplit"]
+[node name="Margin" type="MarginContainer" parent="EditorSidebar"]
 layout_mode = 2
-size_flags_horizontal = 3
-vertical = true
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="PanelContainer" type="PanelContainer" parent="MainSplit/LeftSplit"]
+[node name="SidebarVBox" type="VBoxContainer" parent="EditorSidebar/Margin"]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = 16
+alignment = 1
 
-[node name="PanelContainer2" type="PanelContainer" parent="MainSplit/LeftSplit"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SecondSplit" type="SplitContainer" parent="MainSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MiddleSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
+[node name="LayoutContainer" type="TabContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="RightSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
+tabs_visible = false

@@ -13,7 +13,7 @@ func _ready() -> void:
 	set_default_menu_buttons()
 	# TODO: Fetch all custom module buttons
 	set_button_positions()
-	print(%TopMenuButtons.get_children())
+	
 	%TopMenuButtons.get_node("ProjectSettingsButton").visible = false
 	ProjectManager._on_project_loaded.connect(func(): 
 		%TopMenuButtons.get_node("ProjectSettingsButton").visible = true)
