@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_00kkd")
+layout_name = "Default layout"
 default_icon = ExtResource("1_864bp")
 scene = ExtResource("1_1ivqy")
 single_only = false
