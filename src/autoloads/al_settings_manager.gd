@@ -8,21 +8,14 @@ signal _on_top_bar_positions_changed
 var config := ConfigFile.new()
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	Printer.startup() # Printing some debug info
-	load_settings()
-
-
-func load_settings() -> void:
+	# Loading settings
 	if FileAccess.file_exists(ProjectSettings.get_setting("globals/path/settings")):
 		config.load(ProjectSettings.get_setting("globals/path/settings"))
-	
-	# Setting necesarry settings
 	TranslationServer.set_locale(get_language())
 
 
-func save_settings() -> void:
+func _save_settings() -> void:
 	config.save(ProjectSettings.get_setting("globals/path/settings"))
 
 
@@ -44,7 +37,7 @@ func set_language(new_language: String) -> void:
 	config.set_value("general", "language", new_language)
 	TranslationServer.set_locale(new_language)
 	_on_language_changed.emit(new_language)
-	save_settings()
+	_save_settings()
 
 #endregion
 ###############################################################
@@ -66,7 +59,7 @@ func get_default_video_tracks() -> int:
 
 func set_default_video_tracks(new_default: int) -> void:
 	config.set_value("timeline", "default_video_tracks", new_default)
-	save_settings()
+	_save_settings()
 
 #endregion
 ###############################################################
@@ -79,7 +72,7 @@ func get_default_audio_tracks() -> int:
 
 func set_default_audio_tracks(new_default: int) -> void:
 	config.set_value("timeline", "default_audio_tracks", new_default)
-	save_settings()
+	_save_settings()
 
 #endregion
 ###############################################################
@@ -108,7 +101,7 @@ func set_top_bar_menu_position(button_name: String, new_pos: int) -> void:
 	# 1 = only next to editor button
 	# 2 = display on both places
 	config.set_value("top_bar", "button_%s" % button_name, new_pos)
-	save_settings()
+	_save_settings()
 	_on_top_bar_positions_changed.emit()
 
 #endregion

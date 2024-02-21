@@ -23,6 +23,8 @@ config/version_stable="0.0.0"
 
 [autoload]
 
+Printer="*res://autoloads/al_printer.gd"
+ModuleManager="*res://autoloads/al_module_manager.gd"
 SettingsManager="*res://autoloads/al_settings_manager.gd"
 ProjectManager="*res://autoloads/al_project_manager.gd"
 ActionHandler="*res://autoloads/al_action_handler.gd"
