@@ -64,8 +64,16 @@ url/manual_page="https://github.com/VoylinsGamedevJourney/GoZen"
 path/settings="user://settings.cfg"
 path/recent_projects="user://recent_projects.dat"
 path/editor_ui="user://editor_ui.cfg"
-path/modules/layout_cfg="user://layouts/"
-path/modules/custom_layout_modules="user://layout_modules/"
+path/modules/layout_modules="user://custom_layouts/"
+path/modules/modules="user://custom_modules/"
+path/modules/effects="user://custom_effects/"
+path/modules/transitions="user://custom_transitions/"
+path/modules/render_profiles="user://custom_render_profiles/"
+path/configs/layout_modules="user://layout_configs/"
+path/configs/modules="user://module_configs/"
+path/configs/effects="user://effect_configs/"
+path/configs/transitions="user://transition_configs/"
+path/configs/render_profiles="user://render_profile_configs/"
 
 [internationalization]
 

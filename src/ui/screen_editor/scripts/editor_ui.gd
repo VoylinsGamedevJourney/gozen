@@ -28,15 +28,7 @@ func _ready():
 		return
 	instance = self
 	
-	# Making certain paths to configs and custome layout modules exist
-	var path := "globals/path/modules/%s"
-	for dir in [
-		ProjectSettings.get_setting(path % "custom_layout_modules"),
-		ProjectSettings.get_setting(path % "layout_cfg")]:
-		if DirAccess.dir_exists_absolute(dir.replace("user://", OS.get_user_data_dir())):
-			DirAccess.make_dir_absolute(dir.replace("user://", OS.get_user_data_dir()))
-	
-	path = ProjectSettings.get_setting("globals/path/editor_ui")
+	var path = ProjectSettings.get_setting("globals/path/editor_ui")
 	if FileAccess.file_exists(path):
 		config.load(path)
 		var layout_order: PackedStringArray = config.get_value("general", "layouts_order")
@@ -62,14 +54,6 @@ func load_layouts() -> void:
 			continue
 		Printer.debug("Loading in layout module '%s' ..." % module_name)
 		ProjectSettings.load_resource_pack(path + module_name)
-
-
-func _get_available_layouts() -> PackedStringArray:
-	var data : PackedStringArray
-	var dir := DirAccess.open("res://layout_modules")
-	for module_dir: String in dir.get_directories():
-		data.append(module_dir.lstrip("layout_"))
-	return data
 
 
 func add_layout(layout_name: String, id: String = "") -> void:
@@ -136,5 +120,4 @@ func set_custom_icon(layout_id: String, new_icon_path: Texture) -> void:
 	# Key is layout_id and key value is the new_icon_path
 	# After changin that in the config, save config and change the icon in
 	# the sidebar
-	
 	pass
