@@ -6,7 +6,7 @@ extends PanelContainer
 var menu_buttons := []
 
 var move_window := false
-var move_start: Vector2i
+var move_win_offset: Vector2i
 
 
 func _ready() -> void:
@@ -92,15 +92,37 @@ var win_mode: Window.Mode:
 
 func _on_top_bar_dragging(event) -> void:
 	if event is InputEventMouseButton and event.button_index == 1:
-		move_window = event.is_pressed() and win_mode == Window.MODE_WINDOWED
-		if move_window:
-			move_start = get_viewport().get_mouse_position()
+		var mouse_pos := DisplayServer.mouse_get_position()
+		var win_pos := DisplayServer.window_get_position(get_window().get_window_id())
+		move_window = false
 
+		if win_mode == Window.MODE_WINDOWED:
+			if event.is_pressed():
+				move_win_offset = mouse_pos - win_pos
+				move_window = true
+
+			elif OS.get_name() == "Windows":
+				var screen_rect := DisplayServer.screen_get_usable_rect(
+					DisplayServer.SCREEN_WITH_MOUSE_FOCUS
+				)
+				var tb_top := Vector2i(mouse_pos.x, win_pos.y)
+				var tb_bottom := Vector2i(mouse_pos.x, win_pos.y + int(size.y))
+
+				if !screen_rect.encloses(Rect2i(tb_top, tb_bottom)):
+					if tb_top.y < screen_rect.position.y:
+						get_window().position = (
+							tb_top.clamp(screen_rect.position, screen_rect.end)
+							- Vector2i(move_win_offset.x, 0)
+						)
+					else:
+						get_window().position = (
+							tb_bottom.clamp(screen_rect.position, screen_rect.end)
+							- Vector2i(move_win_offset.x, int(size.y))
+						)
 
 func _process(_delta: float) -> void:
 	if move_window:
-		var mouse_delta = Vector2i(get_viewport().get_mouse_position()) - move_start
-		get_window().position += mouse_delta
+		get_window().position = DisplayServer.mouse_get_position() - move_win_offset
 
 #endregion
 ###############################################################
