@@ -25,11 +25,14 @@ func _on_gui_input(event: InputEvent, node: Control):
 
 func _process(_delta: float) -> void:
 	if resizing:
-		var current_scene = get_tree().current_scene
+		var relative_mouse_pos = (
+			DisplayServer.mouse_get_position()
+			- DisplayServer.window_get_position(get_window().get_window_id())
+		)
 		if resize_node in [$Bottom, $Corner]:
-			get_window().size.y = int(current_scene.get_global_mouse_position().y)
+			get_window().size.y = int(relative_mouse_pos.y)
 		if resize_node in [$Right, $Corner]:
-			get_window().size.x = int(current_scene.get_global_mouse_position().x)
+			get_window().size.x = int(relative_mouse_pos.x)
 
 #endregion
 ###############################################################
