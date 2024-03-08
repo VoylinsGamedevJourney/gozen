@@ -1,5 +1,6 @@
 class_name EditorUI extends HBoxContainer
-## Info:
+## Editor UI
+## 
 ## Layouts get added with a name in this form: 
 ## 'layout_name-random number', the random number is between
 ## 10000,99999 to make certain that no layout of the same type gets the
@@ -9,16 +10,19 @@ class_name EditorUI extends HBoxContainer
 ##
 ## Config:
 ## [general]
-## - layouts_order: []
+## - layouts_order: [layout_id, layout_id, ...]
+## [custom_icons]
+## - layout_id: icon path
 
-# TODO:
-# - Figure out re-ordering buttons in sidebar; (Right click shows menu for 'move up' and 'move down'?)
-# - Adding new layouts to sidebar (Right menu click?);
-# - Make it possible to set custom icons (Right click menu);
+
+# TODO: Add option menu to sidebar to add layout, move up/down,
+#       add custom icon and delete layout (Right menu click)
 
 
 var instance: EditorUI
+
 var config := ConfigFile.new()
+var config_path: String = ProjectSettings.get_setting("globals/path/editor_ui")
 
 
 func _ready():
@@ -28,17 +32,20 @@ func _ready():
 		return
 	instance = self
 	
-	var path = ProjectSettings.get_setting("globals/path/editor_ui")
-	if FileAccess.file_exists(path):
-		config.load(path)
-		var layout_order: PackedStringArray = config.get_value("general", "layouts_order")
+	if FileAccess.file_exists(config_path):
+		config.load(config_path)
+		var layout_order: PackedStringArray = config.get_value("general", "layouts_order", [])
 		for id: String in layout_order:
 			add_layout(id.split("-")[0], id)
+			
 	else:
-		# Setting default layouts
+		# Creating default layouts
 		add_layout("file_manager")
 		add_layout("default")
 		add_layout("render_menu")
+	
+	# TODO: Save last used tab in project file or have option in settings to set default
+	%LayoutContainer.current_tab = 1
 
 
 func _input(event) -> void:
@@ -58,31 +65,14 @@ func change_layout(id: int) -> void:
 		%LayoutContainer.current_tab = id
 
 
-## Loading in all layouts
-func load_layouts() -> void:
-	# First load in all custom layouts
-	var path: String = ProjectSettings.get_setting("globals/path/modules/custom_layout_modules")
-	if DirAccess.dir_exists_absolute(path.replace("user://", OS.get_user_data_dir())):
-			DirAccess.make_dir_absolute(path.replace("user://", OS.get_user_data_dir()))
-	var dir := DirAccess.open(path)
-	for module_name: String in dir.get_files():
-		if not ".pck" in module_name:
-			Printer.error("'%s' does not have a pck extension!")
-			continue
-		Printer.debug("Loading in layout module '%s' ..." % module_name)
-		ProjectSettings.load_resource_pack(path + module_name)
-
-
 func add_layout(layout_name: String, id: String = "") -> void:
-	# Check if single only or not
+	# Check if single use only or if a layout can be used in multiple instances
 	var layout_data: LayoutModule = load("res://layout_modules/layout_%s.tres" % layout_name)
 	if layout_data.single_only:
 		for child: Node in %SidebarVBox.get_children():
-			if child.name.split("-")[0] != layout_name:
-				continue
-			Printer.error("Module is single only, already in sidebar present!")
-			return
-	
+			if child.name.split("-")[0] == layout_name:
+				Printer.error("Module is single only, already in sidebar present!")
+				return
 	# Setting name for button and layout
 	var button := Button.new()
 	var layout: Node = layout_data.scene.instantiate()
@@ -96,10 +86,12 @@ func add_layout(layout_name: String, id: String = "") -> void:
 		# Updating the config file
 		layout_order.append(layout_id)
 		config.set_value("general", "layouts_order", layout_order)
-		config.save(ProjectSettings.get_setting("globals/path/editor_ui"))
+		config.save(config_path)
 	else:
 		layout.name = id
 		button.name = id
+		if config.has_section_key("custom_icons", id):
+			button.icon = config.get_value("custom_icons", id)
 	
 	# Setting button data
 	button.expand_icon = true
@@ -121,20 +113,71 @@ func add_layout(layout_name: String, id: String = "") -> void:
 
 
 func move_up(layout_id: String) -> void:
-	# TODO: move the Sidebar button, but also the tab itself + 
-	# update the button pressed function
-	pass
+	## Moving the layout one up in the order of the sidebar and layout container.
+	var button: Node = %SidebarVBox.get_node(layout_id)
+	var container: Node = %LayoutContainer.get_node(layout_id)
+	var button_pos := button.get_index()
+	%SidebarVBox.move_child(
+		button, 
+		clampi(button_pos-1, 0, %SidebarVBox.get_child_count()))
+	%LayoutContainer.move_child(
+		container, 
+		clampi(button_pos-1, 0, %SidebarVBox.get_child_count()))
+	# Saving new order of layouts
+	var new_order: PackedStringArray = []
+	for child: Node in %SidebarVBox.get_children():
+		new_order.append(child.name)
+	config.set_value("general", "layouts_order", new_order)
+	remove_custom_icon(layout_id)
+	config.save(config_path)
 
 
 func move_down(layout_id: String) -> void:
-	# TODO: move the Sidebar button, but also the tab itself + 
-	# update the button pressed function
-	pass
+	## Moving the layout one down in the order of the sidebar and layout container.
+	var button: Node = %SidebarVBox.get_node(layout_id)
+	var container: Node = %LayoutContainer.get_node(layout_id)
+	var button_pos := button.get_index()
+	%SidebarVBox.move_child(
+		button, 
+		clampi(button_pos+1, 0, %SidebarVBox.get_child_count()))
+	%LayoutContainer.move_child(
+		container, 
+		clampi(button_pos+1, 0, %SidebarVBox.get_child_count()))
+	# Saving new order of layouts
+	var new_order: PackedStringArray = []
+	for child: Node in %SidebarVBox.get_children():
+		new_order.append(child.name)
+	config.set_value("general", "layouts_order", new_order)
+	remove_custom_icon(layout_id)
+	config.save(config_path)
 
 
-func set_custom_icon(layout_id: String, new_icon_path: Texture) -> void:
-	# TODO: Add to config under category "custom_icons" section
-	# Key is layout_id and key value is the new_icon_path
-	# After changin that in the config, save config and change the icon in
-	# the sidebar
-	pass
+func remove_layout(layout_id: String) -> void:
+	## Removing a layout and related stuff.
+	%SidebarVBox.get_node(layout_id).queue_free()
+	%LayoutContainer.get_node(layout_id).queue_free()
+	ModuleManager.remove_config_layout("layout_modules", layout_id)
+	var new_order: PackedStringArray = config.get_value("general", "layouts_order")
+	new_order.remove_at(new_order.find(layout_id))
+	config.set_value("general", "layouts_order", new_order)
+	remove_custom_icon(layout_id)
+	# TODO: Find a way to delete all custom layout files of the layout
+	# (have a remove config files callable function in the resource?)
+	config.save(config_path)
+
+
+func set_custom_icon(layout_id: String, new_icon_path: String) -> void:
+	## Setting a custom icon for a sidebar button.
+	config.set_value("custom_icons", layout_id, new_icon_path)
+	var button: Button = %SidebarVBox.get_node(layout_id)
+	button.icon = load(new_icon_path)
+	config.save(config_path)
+
+
+func remove_custom_icon(layout_id: String) -> void:
+	## Removes the custom icon from sidebar and from config file.
+	if config.has_section_key("custom_icons", layout_id):
+		if %SidebarVBox.has_node(layout_id): # Checking if button isn't deleted yet
+			%SidebarVBox.get_node(layout_id).icon = null
+		config.erase_section_key("custom_icons", layout_id)
+		config.save(config_path)

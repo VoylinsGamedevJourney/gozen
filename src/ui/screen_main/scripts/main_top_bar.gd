@@ -164,10 +164,8 @@ func set_default_menu_buttons() -> void:
 
 
 func add_menu_button(icon_path: String, title: String, function: Callable, tooltip: String) -> void:
-	var icon := ImageTexture.new()
-	var image: Image = Image.new()
-	image.load(icon_path)
-	icon.set_image(image)
+	var icon: Texture2D = Texture2D.new()
+	icon = load(icon_path)
 	
 	menu_buttons.append({
 		"icon": icon,

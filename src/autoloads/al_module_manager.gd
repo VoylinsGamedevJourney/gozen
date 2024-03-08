@@ -61,3 +61,9 @@ func get_config_path(type: String, instance_name: String) -> String:
 		ProjectSettings.get_setting("globals/path/configs/%s" % type), 
 		instance_name
 	]
+
+
+func remove_config_layout(type: String, instance_name: String) -> void:
+	DirAccess.remove_absolute("%s%s.cfg" % [
+		ProjectSettings.get_setting("globals/path/configs/%s" % type), 
+		instance_name])
