@@ -14,8 +14,8 @@ class_name EditorUI extends HBoxContainer
 # TODO:
 # - Figure out re-ordering buttons in sidebar; (Right click shows menu for 'move up' and 'move down'?)
 # - Adding new layouts to sidebar (Right menu click?);
-# - Shortcuts for easily switching between different layouts (ctrl+number?);
 # - Make it possible to set custom icons (Right click menu);
+
 
 var instance: EditorUI
 var config := ConfigFile.new()
@@ -39,6 +39,23 @@ func _ready():
 		add_layout("file_manager")
 		add_layout("default")
 		add_layout("render_menu")
+
+
+func _input(event) -> void:
+	## Shortcuts for changing the editor layout.
+	# TODO: Make it possible to change these shortcuts
+	for layout_id in range(1,10):
+		if event.is_action_pressed("editor_layout_%s" % layout_id):
+			change_layout(layout_id)
+	if event.is_action_pressed("editor_layout_prev"):
+		change_layout(clamp(%LayoutContainer.current_tab - 1, 1,9))
+	if event.is_action_pressed("editor_layout_prev"):
+		change_layout(clamp(%LayoutContainer.current_tab + 1, 1,9))
+
+
+func change_layout(id: int) -> void:
+	if id <= (%LayoutContainer.get_child_count() - 1):
+		%LayoutContainer.current_tab = id
 
 
 ## Loading in all layouts

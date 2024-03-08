@@ -57,7 +57,7 @@ function compile_gdextension() {
       ;;
     *)
       echo "Choosing platform=linuxbsd as no (valid) argument was given."
-      platform=linuxbsd
+      platform=linux
       ;;
   esac
   echo "Select build taget:"
