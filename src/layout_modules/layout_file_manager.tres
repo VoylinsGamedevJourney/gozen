@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_vxma7")
+layout_name = "File Manager layout"
 default_icon = ExtResource("1_j4tjr")
 scene = ExtResource("2_iknlg")
 single_only = true

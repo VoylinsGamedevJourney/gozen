@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_jn87o")
+layout_name = "Render Menu layout"
 default_icon = ExtResource("1_be3mi")
 scene = ExtResource("2_ci3xm")
 single_only = true
