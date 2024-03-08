@@ -31,8 +31,12 @@ func new_project(title: String, path: String, resolution: Vector2i, framerate: i
 
 func load_project(path: String) -> void:
 	if !path.to_lower().contains(".gozen"):
-		Printer.error("Can't load project as path does not have '*.gozen' extension!")
-		return
+		var new_path: String = "%s.gozen" % path
+		if !FileAccess.file_exists(new_path):
+			Printer.error("Can't load project as path does not have '*.gozen' extension!\n\t%s" % path)
+			get_tree().quit()
+			return
+		path = new_path
 	if config == null:
 		config = ConfigFile.new()
 	if config.load(path):
@@ -83,7 +87,6 @@ func get_title() -> String:
 
 
 func set_title(new_title: String, update: bool = true) -> void:
-	print("set title")
 	config.set_value("general", "title", new_title)
 	_on_title_changed.emit(new_title)
 	save_project()
