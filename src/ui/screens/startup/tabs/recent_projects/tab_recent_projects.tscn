@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://drr0y16e8o2s7"]
+
+[ext_resource type="Theme" uid="uid://4he80n7v8sdk" path="res://ui/screens/startup/theming/screen_startup_theme.tres" id="1_5i611"]
+[ext_resource type="Script" path="res://ui/screens/startup/tabs/recent_projects/tab_recent_projects.gd" id="2_kdguh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysba2"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[node name="RecentProjectsTab" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5i611")
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 14
+script = ExtResource("2_kdguh")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ysba2")
+horizontal_scroll_mode = 0
+
+[node name="RecentProjectsVBox" type="VBoxContainer" parent="VBox/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="ReturnButton" type="Button" parent="VBox"]
+layout_mode = 2
+tooltip_text = "TOOLTIP_BUTTON_RETURN_MAIN"
+text = "BUTTON_RETURN"
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="VBox/ReturnButton" to="." method="_on_return_button_pressed"]

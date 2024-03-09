@@ -13,7 +13,7 @@ config_version=5
 config/name="GoZen - Video Editor"
 config/description="GoZen is an open source video editor made with Godot by Voylin."
 config/version="0.3.0-pre-alpha"
-run/main_scene="res://ui/screen_main/screen_main.tscn"
+run/main_scene="res://ui/screens/main/main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.3", "Forward Plus")
@@ -23,11 +23,11 @@ config/version_stable="0.0.0"
 
 [autoload]
 
-Printer="*res://autoloads/al_printer.gd"
-ModuleManager="*res://autoloads/al_module_manager.gd"
-SettingsManager="*res://autoloads/al_settings_manager.gd"
-ProjectManager="*res://autoloads/al_project_manager.gd"
-ActionHandler="*res://autoloads/al_action_handler.gd"
+Printer="*res://scripts/autoloads/al_printer.gd"
+ModuleManager="*res://scripts/autoloads/al_module_manager.gd"
+SettingsManager="*res://scripts/autoloads/al_settings_manager.gd"
+ProjectManager="*res://scripts/autoloads/al_project_manager.gd"
+ActionHandler="*res://scripts/autoloads/al_action_handler.gd"
 
 [debug]
 
@@ -45,10 +45,11 @@ window/size/window_height_override=648
 
 folder_colors={
 "res://assets/": "yellow",
-"res://autoloads/": "blue",
 "res://bin/": "gray",
 "res://bin/gde_ffmpeg/": "purple",
-"res://classes/": "blue",
+"res://scripts/": "blue",
+"res://scripts/autoloads/": "blue",
+"res://scripts/classes/": "blue",
 "res://translations/": "teal"
 }
 

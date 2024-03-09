@@ -1,0 +1,192 @@
+[gd_scene load_steps=18 format=3 uid="uid://dampusi0yrmvy"]
+
+[ext_resource type="Theme" uid="uid://4he80n7v8sdk" path="res://ui/screens/startup/theming/screen_startup_theme.tres" id="1_q4oef"]
+[ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="2_wisq1"]
+[ext_resource type="Texture2D" uid="uid://d3b524cpjjf2u" path="res://icon.svg" id="3_ro7xu"]
+[ext_resource type="Script" path="res://scripts/classes/button_open_link.gd" id="4_krc67"]
+[ext_resource type="Script" path="res://scripts/meta_clicked.gd" id="5_fs7hn"]
+[ext_resource type="Script" path="res://scripts/version_label.gd" id="6_drumn"]
+[ext_resource type="FontFile" uid="uid://dt4l8r2o2i8qt" path="res://assets/fonts/urw_gothic/URWGothic-Book.ttf" id="7_qt7yy"]
+[ext_resource type="Script" path="res://ui/screens/startup/version_check.gd" id="8_ly8xh"]
+[ext_resource type="FontFile" uid="uid://bdr3q0dq4r8j5" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="9_svjku"]
+[ext_resource type="PackedScene" uid="uid://kl028ek3jm6x" path="res://ui/screens/startup/tabs/main/tab_main.tscn" id="10_7qif3"]
+[ext_resource type="PackedScene" uid="uid://drr0y16e8o2s7" path="res://ui/screens/startup/tabs/recent_projects/tab_recent_projects.tscn" id="11_1byyg"]
+[ext_resource type="PackedScene" uid="uid://ebiyyjjklvhv" path="res://ui/screens/startup/tabs/create_new_project/tab_create_new_project.tscn" id="12_l7fym"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y5hbq"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_4vsyn"]
+font_size = 9
+
+[sub_resource type="LabelSettings" id="LabelSettings_u4yy2"]
+font = ExtResource("7_qt7yy")
+font_size = 60
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5tpm"]
+bg_color = Color(0.2, 0.121569, 0.227451, 0.517647)
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l7cqu"]
+
+[node name="ScreenStartup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_q4oef")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.498039)
+
+[node name="StartupPanel" type="PanelContainer" parent="."]
+clip_children = 2
+custom_minimum_size = Vector2(650, 500)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y5hbq")
+
+[node name="VBox" type="VBoxContainer" parent="StartupPanel"]
+layout_mode = 2
+
+[node name="TopImage" type="TextureRect" parent="StartupPanel/VBox"]
+custom_minimum_size = Vector2(650, 270)
+layout_mode = 2
+texture = ExtResource("2_wisq1")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="EditorButton" type="TextureButton" parent="StartupPanel/VBox/TopImage"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 59.0
+offset_bottom = 59.0
+tooltip_text = "STARTUP_TOOLTIP_EDITOR_BUTTON"
+mouse_default_cursor_shape = 16
+texture_normal = ExtResource("3_ro7xu")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("4_krc67")
+link = "github_repo"
+
+[node name="ImageCreditsLabel" type="RichTextLabel" parent="StartupPanel/VBox/TopImage"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -287.0
+offset_top = -17.0
+offset_right = -7.0
+grow_horizontal = 0
+grow_vertical = 0
+auto_translate = false
+theme_override_colors/default_color = Color(0.470588, 0.470588, 0.470588, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.137255)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/italics_font_size = 9
+bbcode_enabled = true
+text = "[right][i]Image by [url=https://unsplash.com/photos/u27Rrbs9Dwc]Clay Banks via Unsplash[/url][/i][/right]"
+script = ExtResource("5_fs7hn")
+
+[node name="VersionLabel" type="Label" parent="StartupPanel/VBox/TopImage"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = -18.205
+offset_right = 92.0
+offset_bottom = -0.205002
+grow_vertical = 0
+label_settings = SubResource("LabelSettings_4vsyn")
+script = ExtResource("6_drumn")
+
+[node name="GoZenLabel" type="Label" parent="StartupPanel/VBox/TopImage"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -97.0
+offset_top = -30.5
+offset_right = 97.0
+offset_bottom = 30.5
+grow_horizontal = 2
+grow_vertical = 2
+auto_translate = false
+text = "GoZen"
+label_settings = SubResource("LabelSettings_u4yy2")
+
+[node name="UpdateAvailablePanel" type="PanelContainer" parent="StartupPanel/VBox/TopImage"]
+visible = false
+custom_minimum_size = Vector2(135, 17)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -67.5
+offset_right = 67.5
+offset_bottom = 17.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_k5tpm")
+script = ExtResource("8_ly8xh")
+
+[node name="UpdateAvailableLabel" type="RichTextLabel" parent="StartupPanel/VBox/TopImage/UpdateAvailablePanel"]
+layout_mode = 2
+auto_translate = false
+theme_override_fonts/normal_font = ExtResource("9_svjku")
+theme_override_font_sizes/normal_font_size = 10
+bbcode_enabled = true
+text = "[center][url=https://github.com/VoylinsGamedevJourney/GoZen]Update available[/url][/center]"
+script = ExtResource("5_fs7hn")
+
+[node name="BottomPanel" type="TabContainer" parent="StartupPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_l7cqu")
+tabs_visible = false
+
+[node name="MainTab" parent="StartupPanel/VBox/BottomPanel" instance=ExtResource("10_7qif3")]
+layout_mode = 2
+
+[node name="RecentProjectsTab" parent="StartupPanel/VBox/BottomPanel" instance=ExtResource("11_1byyg")]
+visible = false
+layout_mode = 2
+
+[node name="CreateNewProjectTab" parent="StartupPanel/VBox/BottomPanel" instance=ExtResource("12_l7fym")]
+visible = false
+layout_mode = 2
