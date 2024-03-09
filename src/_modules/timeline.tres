@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Module" load_steps=3 format=3 uid="uid://et4sw4g0ip5k"]
 
-[ext_resource type="Script" path="res://classes/resources/module.gd" id="1_obfso"]
-[ext_resource type="PackedScene" uid="uid://bldrq8eh7apaa" path="res://modules/timeline/timeline.tscn" id="1_t1web"]
+[ext_resource type="Script" path="res://scripts/classes/resources/module.gd" id="1_obfso"]
+[ext_resource type="PackedScene" uid="uid://bldrq8eh7apaa" path="res://_modules/timeline/timeline.tscn" id="1_t1web"]
 
 [resource]
 script = ExtResource("1_obfso")

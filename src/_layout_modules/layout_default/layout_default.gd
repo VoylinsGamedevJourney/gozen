@@ -10,7 +10,7 @@ const SECTION_SPLITS := "splits"
 const SECTION_PANELS := "panels"
 const SECTION_TABS := "tabs"
 
-const PATH_MODULES := "res://modules/%s.tres"
+const PATH_MODULES := "res://_modules/%s.tres"
 var config_path: String
 var config := ConfigFile.new()
 

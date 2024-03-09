@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Module" load_steps=3 format=3 uid="uid://cvjrerlh4yu82"]
 
-[ext_resource type="PackedScene" uid="uid://2me1rcywnmph" path="res://modules/media_pool/media_pool.tscn" id="1_0dw87"]
-[ext_resource type="Script" path="res://classes/resources/module.gd" id="1_o40vg"]
+[ext_resource type="PackedScene" uid="uid://2me1rcywnmph" path="res://_modules/media_pool/media_pool.tscn" id="1_0dw87"]
+[ext_resource type="Script" path="res://scripts/classes/resources/module.gd" id="1_o40vg"]
 
 [resource]
 script = ExtResource("1_o40vg")
