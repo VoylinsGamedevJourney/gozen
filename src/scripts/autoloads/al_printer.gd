@@ -35,7 +35,6 @@ func error(message: String) -> void:
 
 func debug(message: String) -> void:
 	todo("Have a toggle in settings to enable/disable debug.")
-	# TODO: Have a toggle in settings to enable/disable debug
 	_print(["grey", "DEBUG", message])
 
 

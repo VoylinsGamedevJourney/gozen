@@ -5,7 +5,7 @@ var action_current := -1
 var actions: Array = []
 
 
-func _input(event):
+func _input(event) -> void:
 	if event.is_action_pressed("ui_undo"):
 		undo()
 	if event.is_action_pressed("ui_redo"):
@@ -50,7 +50,9 @@ class Action:
 	var do_args: Array
 	var undo_args: Array
 	
-	func _init(_function: Callable, _undo_function: Callable, _do_args: Array = [], _undo_args: Array = []):
+	func _init(
+			_function: Callable, _undo_function: Callable, 
+			_do_args: Array = [], _undo_args: Array = []) -> void:
 		function = _function
 		undo_function = _undo_function
 		do_args = _do_args

@@ -3,7 +3,7 @@ extends BaseButton
 @export var link: String
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	pressed.connect(_on_button_pressed)
 
 

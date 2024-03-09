@@ -7,7 +7,7 @@ extends Node
 const types := ["layout_modules", "modules", "effects", "transitions", "render_profiles"]
 
 
-func _ready():
+func _ready() -> void:
 	## Creating necessary structures and loading/checking all custom modules
 	_create_folder_structure()
 	_load_custom_modules()
@@ -40,27 +40,21 @@ func _load_custom_modules() -> void:
 func _check_custom_modules() -> void:
 	## Check if all modules have an info resource
 	for type: String in types:
-		var module_folders := DirAccess.get_directories_at("res://%s" % type)
-		var module_resources := DirAccess.get_files_at("res://%s" % type)
+		var module_folders := DirAccess.get_directories_at("res://_%s" % type)
+		var module_resources := DirAccess.get_files_at("res://_%s" % type)
 		
-		# Checking for mod configs
-		for module: String in module_resources:
+		for module: String in module_resources: # Checking for mod configs
 			if not module.trim_suffix(".tres") in module_folders:
 				Printer.error("No folder for config '%s'!" % module.trim_suffix(".tres"))
-				get_tree().quit() # TODO: Handle this in a better ways
-		
-		# Checking for mod folders
-		for module: String in module_folders:
+		for module: String in module_folders: # Checking for mod folders
 			if not module + ".tres" in module_resources:
 				Printer.error("No config for mod folder '%s'!" % module)
-				get_tree().quit() # TODO: Handle this in a better way
 
 
 func get_config_path(type: String, instance_name: String) -> String:
 	return "%s%s.cfg" % [
 		ProjectSettings.get_setting("globals/path/configs/%s" % type), 
-		instance_name
-	]
+		instance_name]
 
 
 func remove_config_layout(type: String, instance_name: String) -> void:

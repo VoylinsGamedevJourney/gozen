@@ -8,11 +8,13 @@ signal _on_top_bar_positions_changed
 var config := ConfigFile.new()
 
 
-func _ready():
+func _ready() -> void:
 	# Loading settings
 	if FileAccess.file_exists(ProjectSettings.get_setting("globals/path/settings")):
 		config.load(ProjectSettings.get_setting("globals/path/settings"))
+	
 	TranslationServer.set_locale(get_language())
+	get_viewport().set_embedding_subwindows(get_embed_subwindows())
 
 
 func _save_settings() -> void:
@@ -105,4 +107,24 @@ func set_top_bar_menu_position(button_name: String, new_pos: int) -> void:
 	_on_top_bar_positions_changed.emit()
 
 #endregion
+#################################################################
+##
+##      Viewport  -  GETTERS AND SETTERS
+##
+#################################################################
+
+###############################################################
+#region Embed subwindows  #####################################
+###############################################################
+
+func get_embed_subwindows() -> bool:
+	return config.get_value("viewport", "embed_subwindows", true)
+
+
+func set_embed_subwindows(value: bool) -> void:
+	get_viewport().set_embedding_subwindows(value)
+	config.set_value("viewport", "embed_subwindows", value)
+	_save_settings()
+
+#region
 ###############################################################
