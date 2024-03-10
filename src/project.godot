@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GoZen - Video Editor"
 config/description="GoZen is an open source video editor made with Godot by Voylin."
-config/version="0.3.0-pre-alpha"
+config/version="0.4.0-pre-alpha"
 run/main_scene="res://ui/screens/main/main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
@@ -75,6 +75,10 @@ path/configs/modules="user://module_configs/"
 path/configs/effects="user://effect_configs/"
 path/configs/transitions="user://transition_configs/"
 path/configs/render_profiles="user://render_profile_configs/"
+
+[gui]
+
+theme/custom_font="res://assets/fonts/noto_sans_jp/NotoSansJP.tres"
 
 [input]
 

@@ -1,0 +1,15 @@
+[gd_resource type="FontVariation" load_steps=10 format=3 uid="uid://c0jw2lvdmvm1x"]
+
+[ext_resource type="FontFile" uid="uid://bdr3q0dq4r8j5" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_armie"]
+[ext_resource type="FontFile" uid="uid://c47t5hqpn68sm" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Black.ttf" id="2_wa4w8"]
+[ext_resource type="FontFile" uid="uid://7wwfq8k0h1tm" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Bold.ttf" id="3_qyqxj"]
+[ext_resource type="FontFile" uid="uid://cp21ohvuuplec" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-ExtraBold.ttf" id="4_xkfk6"]
+[ext_resource type="FontFile" uid="uid://bij656pl6y3k4" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-ExtraLight.ttf" id="5_khf5n"]
+[ext_resource type="FontFile" uid="uid://dc1hoys1j4l4g" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Light.ttf" id="6_cbkql"]
+[ext_resource type="FontFile" uid="uid://ccnfydc3tkta2" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Medium.ttf" id="7_me6eb"]
+[ext_resource type="FontFile" uid="uid://d0g5op2ceducl" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-SemiBold.ttf" id="8_unk03"]
+[ext_resource type="FontFile" uid="uid://b72nfbfb60152" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Thin.ttf" id="9_amci4"]
+
+[resource]
+fallbacks = Array[Font]([ExtResource("2_wa4w8"), ExtResource("3_qyqxj"), ExtResource("4_xkfk6"), ExtResource("5_khf5n"), ExtResource("6_cbkql"), ExtResource("7_me6eb"), ExtResource("8_unk03"), ExtResource("9_amci4")])
+base_font = ExtResource("1_armie")
