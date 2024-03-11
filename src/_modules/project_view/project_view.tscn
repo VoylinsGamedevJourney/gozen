@@ -1,9 +1,53 @@
-[gd_scene format=3 uid="uid://1nx50h5vm2y2"]
+[gd_scene load_steps=4 format=3 uid="uid://1nx50h5vm2y2"]
 
-[node name="ProjectView" type="Control"]
-layout_mode = 3
+[ext_resource type="Script" path="res://_modules/project_view/project_view.gd" id="1_5recb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ij6ya"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4jm55"]
+viewport_path = NodePath("ProjectViewport")
+
+[node name="ProjectView" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ij6ya")
+script = ExtResource("1_5recb")
+
+[node name="ProjectViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="ProjectTextureRect" type="TextureRect" parent="VBox/Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+texture = SubResource("ViewportTexture_4jm55")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="PlayPauseButton" type="Button" parent="VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Pause"
+
+[connection signal="pressed" from="VBox/HBox/PlayPauseButton" to="." method="_on_play_pause_button_pressed"]
