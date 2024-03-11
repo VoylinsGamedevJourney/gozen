@@ -1,9 +1,89 @@
-[gd_scene format=3 uid="uid://bldrq8eh7apaa"]
+[gd_scene load_steps=4 format=3 uid="uid://bldrq8eh7apaa"]
 
-[node name="Timeline" type="Control"]
-layout_mode = 3
+[ext_resource type="Script" path="res://_modules/timeline/timeline.gd" id="1_nniuu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_inrdi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qj2dj"]
+
+[node name="Timeline" type="HSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_nniuu")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+
+[node name="TimeLineLeft" type="PanelContainer" parent="HSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_inrdi")
+
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/TimeLineLeft"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Top" type="PanelContainer" parent="HSplitContainer/TimeLineLeft/VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TrackContainer" type="ScrollContainer" parent="HSplitContainer/TimeLineLeft/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/TimeLineLeft/VBox/TrackContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TrackVBox" type="VBoxContainer" parent="HSplitContainer/TimeLineLeft/VBox/TrackContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TimeLineRight" type="PanelContainer" parent="HSplitContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qj2dj")
+
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/TimeLineRight"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="TimelineTop" type="ScrollContainer" parent="HSplitContainer/TimeLineRight/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTop"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TimeLineTopHBox" type="HBoxContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTop/PanelContainer"]
+layout_mode = 2
+
+[node name="TimelineTrackContainer" type="ScrollContainer" parent="HSplitContainer/TimeLineRight/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TimelineTrackVBox" type="VBoxContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="gui_input" from="HSplitContainer/TimeLineLeft/VBox/TrackContainer" to="." method="_on_track_container_gui_input"]
+[connection signal="gui_input" from="HSplitContainer/TimeLineRight/VBox/TimelineTop" to="." method="_on_timeline_top_gui_input"]
+[connection signal="gui_input" from="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer" to="." method="_on_timeline_track_container_gui_input"]

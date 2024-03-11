@@ -1,4 +1,5 @@
 extends Node
+# MAYBE: Investigate build in UndoRedo class
 
 var actions_max := 100
 var action_current := -1

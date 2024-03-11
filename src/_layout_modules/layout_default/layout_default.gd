@@ -5,6 +5,9 @@ extends Control
 
 # TODO: Create the system for people to add/move modules
 # TODO: Hide tabs when only 1 tab is present
+# TODO: Make module instances have a custom ID, but different tab name
+# 		Possible solution, create module node with module name, inside that
+#		Control node the actual module with the idin the name
 
 const SECTION_SPLITS := "splits"
 const SECTION_PANELS := "panels"

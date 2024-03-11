@@ -35,6 +35,7 @@ theme_override_constants/margin_bottom = 7
 
 [node name="ProjectTextureRect" type="TextureRect" parent="VBox/Margin"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_vertical = 3
 texture = SubResource("ViewportTexture_4jm55")

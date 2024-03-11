@@ -11,7 +11,7 @@ signal _on_resolution_changed(new_resolution: Vector2i)
 signal _on_framerate_changed(new_framerate: int)
 
 
-var config: ConfigFile
+var config: ConfigFile = ConfigFile.new()
 var project_path: String
 
 
