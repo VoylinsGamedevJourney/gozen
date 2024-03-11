@@ -173,12 +173,12 @@ func set_default_menu_buttons() -> void:
 		"res://assets/icons/movie_edit.png",
 		"Project settings",
 		func() -> void: ScreenMain.instance.open_project_settings_popup(),
-		"todo: tooltip")
+		"BUTTONS_PROJECT_SETTINGS_TOOLTIP")
 	add_menu_button( # Settings
 		"res://assets/icons/settings_video_camera.png",
 		"Settings",
 		func() -> void: ScreenMain.instance.open_settings_popup(),
-		"todo: tooltip")
+		"BUTTONS_SETTINGS_TOOLTIP")
 	if !SettingsManager.config.has_section("top_bar"):
 		SettingsManager.set_top_bar_menu_position("project_settings", 1)
 		SettingsManager.set_top_bar_menu_position("settings", 1)

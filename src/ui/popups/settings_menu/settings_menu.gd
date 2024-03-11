@@ -1,4 +1,4 @@
-extends Control
+extends Window
 # TODO: Have a toggle in settings to enable/disable debug printing
 
 
@@ -9,11 +9,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		_on_close_button_pressed()
-
-
-func _on_close_button_pressed() -> void:
-	ScreenMain.instance.close_screen()
+		_on_close_requested()
 
 
 func set_current_values() -> void:
@@ -54,3 +50,8 @@ func _on_default_audio_tracks_spin_box_value_changed(value) -> void:
 
 #endregion
 ###############################################################
+
+
+func _on_close_requested():
+	# TODO: We really need to close this or just keep invisible?
+	self.queue_free()

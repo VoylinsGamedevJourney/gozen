@@ -161,7 +161,7 @@ func remove_layout(layout_id: String) -> void:
 	new_order.remove_at(new_order.find(layout_id))
 	config.set_value("general", "layouts_order", new_order)
 	remove_custom_icon(layout_id)
-	# TODO: Find a way to delete all custom layout files of the layout
+	# TODO: Find a way to delete all custom layout files of the layout modules
 	# (have a remove config files callable function in the resource?)
 	config.save(config_path)
 

@@ -6,12 +6,15 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p646q"]
 content_margin_left = 7.0
+content_margin_top = 7.0
 content_margin_right = 7.0
+content_margin_bottom = 7.0
 
 [node name="PopupProjectSettingsMenu" type="Window"]
 title = "PROJECT_SETTINGS_TITLE"
 position = Vector2i(0, 36)
 size = Vector2i(650, 650)
+keep_title_visible = true
 theme = ExtResource("1_qbgtc")
 script = ExtResource("2_uibc8")
 
@@ -120,6 +123,7 @@ custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 size_flags_horizontal = 3
 
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="text_submitted" from="Scroll/VBox/GeneralSettingsGrid/ProjectTitleLineEdit" to="." method="_on_project_title_line_edit_text_submitted"]
 [connection signal="value_changed" from="Scroll/VBox/QualitySettingsGrid/ResolutionHBox/ResolutionXSpinBox" to="." method="_on_resolution_x_spin_box_value_changed"]
 [connection signal="value_changed" from="Scroll/VBox/QualitySettingsGrid/ResolutionHBox/ResolutionYSpinBox" to="." method="_on_resolution_y_spin_box_value_changed"]

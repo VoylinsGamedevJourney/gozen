@@ -29,7 +29,6 @@ func close_startup() -> void:
 
 
 func open_settings_popup() -> void:
-	# TODO: Make this work
 	var popup: Window = preload(
 		"res://ui/popups/settings_menu/settings_menu.tscn").instantiate()
 	popup.name = "popup"
@@ -37,7 +36,6 @@ func open_settings_popup() -> void:
 
 
 func open_project_settings_popup() -> void:
-	# TODO: Make this work
 	var popup: Window = preload(
 		"res://ui/popups/project_settings_menu/project_settings_menu.tscn").instantiate()
 	popup.name = "popup"

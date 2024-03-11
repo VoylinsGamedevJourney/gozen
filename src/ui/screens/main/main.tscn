@@ -23,9 +23,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="TopBar" parent="VBox" node_paths=PackedStringArray("resize_handles") instance=ExtResource("2_xllsp")]
+[node name="TopBar" parent="VBox" instance=ExtResource("2_xllsp")]
 layout_mode = 2
-resize_handles = NodePath("../../ResizeHandles")
 
 [node name="Content" type="Control" parent="VBox"]
 unique_name_in_owner = true
