@@ -1,4 +1,14 @@
 extends Node
+## Project Manager
+##
+## Config structure:
+## [general]
+##   title: String
+##   files: {unique_file_id: {file_class_data}}
+##   folders: {folder_name: {files = [file_id's], sub_folders = [...]}}
+## [quality]
+##   resolution: Vector2i
+##   framerate: float
 
 signal _on_project_loaded
 signal _on_project_saved
@@ -22,6 +32,7 @@ func new_project(title: String, path: String, resolution: Vector2i, framerate: i
 	set_title(title, false)
 	set_resolution(resolution)
 	set_framerate(framerate)
+	init_folder_root()
 	
 	_on_project_loaded.emit()
 	
@@ -37,8 +48,6 @@ func load_project(path: String) -> void:
 			get_tree().quit()
 			return
 		path = new_path
-	if config == null:
-		config = ConfigFile.new()
 	if config.load(path):
 		Printer.error("Could not open project file!")
 		return
@@ -95,6 +104,22 @@ func set_title(new_title: String, update: bool = true) -> void:
 
 #endregion
 ###############################################################
+#region Files  ################################################
+###############################################################
+
+func get_files() -> Dictionary:
+	return config.get_value("general", "files", {})
+
+
+func get_folders() -> Dictionary:
+	return config.get_value("general", "folders")
+
+
+func init_folder_root() -> void:
+	config.set_value("general", "folders", {"folder_name": "root", "sub_folders": [], "files": []})
+
+#endregion
+###############################################################
 
 #################################################################
 ##
@@ -120,11 +145,11 @@ func set_resolution(new_resolution: Vector2i) -> void:
 #region Project Framerate  ####################################
 ###############################################################
 
-func get_framerate() -> int:
-	return config.get_value("quality", "framerate", 30)
+func get_framerate() -> float:
+	return config.get_value("quality", "framerate", 30.0)
 
 
-func set_framerate(new_framerate: int) -> void:
+func set_framerate(new_framerate: float) -> void:
 	config.set_value("quality", "framerate", new_framerate)
 	_on_framerate_changed.emit(new_framerate)
 	save_project()

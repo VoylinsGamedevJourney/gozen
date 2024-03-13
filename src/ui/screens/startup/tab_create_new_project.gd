@@ -15,7 +15,7 @@ func _on_create_project_button_pressed() -> void:
 		%PathLineEdit.text,  # path
 		Vector2i(%XSpinBox.value, %YSpinBox.value), # resolution
 		%FramerateSpinBox.value) # framerate
-	ScreenMain.instance.close_screen()
+	ScreenMain.instance.close_startup()
 
 
 func _on_select_path_button_pressed():
