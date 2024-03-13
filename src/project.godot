@@ -78,6 +78,7 @@ path/configs/render_profiles="user://render_profile_configs/"
 
 [gui]
 
+theme/custom="res://assets/themes/default_theme.tres"
 theme/custom_font="res://assets/fonts/noto_sans_jp/NotoSansJP.tres"
 
 [input]

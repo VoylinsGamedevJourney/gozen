@@ -1,4 +1,4 @@
-extends Label
+extends RichTextLabel
 ## Version Label
 ##
 ## A script which you can attach to a node to get the current GoZen version

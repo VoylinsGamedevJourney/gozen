@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://b26iqs67e6bvp"]
+
+[ext_resource type="FontFile" uid="uid://bdr3q0dq4r8j5" path="res://assets/fonts/noto_sans_jp/static/NotoSansJP-Regular.ttf" id="1_rd1qo"]
+
+[resource]
+default_font = ExtResource("1_rd1qo")
+default_font_size = 13
