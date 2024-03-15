@@ -1,23 +1,21 @@
-[gd_scene load_steps=16 format=3 uid="uid://dampusi0yrmvy"]
+[gd_scene load_steps=14 format=3 uid="uid://dampusi0yrmvy"]
 
 [ext_resource type="Theme" uid="uid://o5vxrd3qck" path="res://assets/themes/startup_theme.tres" id="1_mvhsc"]
+[ext_resource type="Script" path="res://ui/screens/startup/startup.gd" id="2_bjdu8"]
 [ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="2_wisq1"]
 [ext_resource type="Texture2D" uid="uid://d3b524cpjjf2u" path="res://icon.svg" id="3_ro7xu"]
 [ext_resource type="Script" path="res://scripts/classes/button_open_link.gd" id="4_krc67"]
 [ext_resource type="Script" path="res://scripts/meta_clicked.gd" id="5_fs7hn"]
 [ext_resource type="Script" path="res://scripts/version_label.gd" id="6_drumn"]
-[ext_resource type="Script" path="res://ui/screens/startup/tab_main.gd" id="8_gr3ko"]
 [ext_resource type="Script" path="res://ui/screens/startup/version_check.gd" id="8_ly8xh"]
 [ext_resource type="Texture2D" uid="uid://b2lbweyckvws7" path="res://assets/icons/folder_open.png" id="9_h61l5"]
 [ext_resource type="Texture2D" uid="uid://cpulbvif037ec" path="res://assets/icons/note_add.png" id="10_j8kon"]
 [ext_resource type="Texture2D" uid="uid://bpjbmo5en5ak5" path="res://assets/icons/baseline_link_black_48dp.png" id="11_jx18t"]
 [ext_resource type="Texture2D" uid="uid://cnt381ylae2gq" path="res://assets/icons/support.png" id="12_piepe"]
-[ext_resource type="Script" path="res://ui/screens/startup/tab_create_new_project.gd" id="13_mtgbq"]
-[ext_resource type="Script" path="res://ui/screens/startup/tab_recent_projects.gd" id="14_qkvf6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f7vt4"]
 
-[node name="ScreenStartup" type="Control"]
+[node name="Startup" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,6 +23,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_mvhsc")
+script = ExtResource("2_bjdu8")
 
 [node name="Overlay" type="ColorRect" parent="."]
 layout_mode = 1
@@ -100,11 +99,11 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 7.0
-offset_top = -18.205
-offset_right = 92.0
-offset_bottom = -0.205002
+offset_top = -18.0
+offset_right = 285.0
 grow_vertical = 0
 text = "Version: 0.0.0"
+scroll_active = false
 script = ExtResource("6_drumn")
 
 [node name="GoZenLabel" type="Label" parent="StartupPanel/VBox/TopImage"]
@@ -146,73 +145,73 @@ bbcode_enabled = true
 text = "[center][url=https://github.com/VoylinsGamedevJourney/GoZen]Update available[/url][/center]"
 script = ExtResource("5_fs7hn")
 
-[node name="BottomPanel" type="TabContainer" parent="StartupPanel/VBox"]
+[node name="StartupTabPanel" type="TabContainer" parent="StartupPanel/VBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 tabs_visible = false
 
-[node name="MainTab" type="MarginContainer" parent="StartupPanel/VBox/BottomPanel"]
+[node name="MainTab" type="MarginContainer" parent="StartupPanel/VBox/StartupTabPanel"]
 layout_mode = 2
-script = ExtResource("8_gr3ko")
 
-[node name="HBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/MainTab"]
+[node name="HBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/MainTab"]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="LeftVBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox"]
+[node name="LeftVBox" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RecentProjectsLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox"]
+[node name="RecentProjectsLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "TITLE_RECENT_PROJECTS"
 
-[node name="RecentProjectsVBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox"]
+[node name="RecentProjectsVBoxShort" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Spacer1" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox/RecentProjectsVBox"]
+[node name="Spacer1" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/RecentProjectsVBoxShort"]
 layout_mode = 2
 
-[node name="ShowAllProjectsButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox/RecentProjectsVBox"]
+[node name="ShowAllProjectsButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/RecentProjectsVBoxShort"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
 text = "BUTTON_SHOW_ALL_PROJECTS"
 icon = ExtResource("9_h61l5")
 alignment = 0
 
-[node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox/RecentProjectsVBox"]
+[node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/RecentProjectsVBoxShort"]
 layout_mode = 2
 
-[node name="OpenProjectButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox"]
+[node name="OpenProjectButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_OPEN_PROJECT"
 text = "BUTTON_OPEN_PROJECT"
 icon = ExtResource("9_h61l5")
 alignment = 0
 
-[node name="CreateProjectButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox"]
+[node name="CreateProjectButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_CREATE_PROJECT"
 text = "BUTTON_CREATE_PROJECT"
 icon = ExtResource("10_j8kon")
 alignment = 0
 
-[node name="RightVBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox"]
+[node name="RightVBox" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GettingStartedLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="GettingStartedLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "TITLE_GETTING_STARTED"
 
-[node name="Spacer1" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="Spacer1" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 
-[node name="ManualButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="ManualButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_MANUAL"
 text = "BUTTON_MANUAL"
@@ -221,7 +220,7 @@ alignment = 0
 script = ExtResource("4_krc67")
 link = "manual_page"
 
-[node name="TutorialsButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="TutorialsButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_TUTORIALS"
 text = "BUTTON_TUTORIALS"
@@ -230,7 +229,7 @@ alignment = 0
 script = ExtResource("4_krc67")
 link = "tutorials_page"
 
-[node name="SupportButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="SupportButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_SUPPORT"
 text = "BUTTON_SUPPORT"
@@ -239,7 +238,7 @@ alignment = 0
 script = ExtResource("4_krc67")
 link = "support_page"
 
-[node name="DiscordButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="DiscordButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_DISCORD"
 text = "BUTTON_DISCORD"
@@ -248,12 +247,12 @@ alignment = 0
 script = ExtResource("4_krc67")
 link = "discord"
 
-[node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_f7vt4")
 
-[node name="SupportProjectButton" type="Button" parent="StartupPanel/VBox/BottomPanel/MainTab/HBox/RightVBox"]
+[node name="SupportProjectButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_SUPPORT_PROJECT"
 text = "BUTTON_SUPPORT_PROJECT"
@@ -262,77 +261,76 @@ alignment = 0
 script = ExtResource("4_krc67")
 link = "kofi_page"
 
-[node name="RecentProjectsTab" type="MarginContainer" parent="StartupPanel/VBox/BottomPanel"]
+[node name="RecentProjectsTab" type="MarginContainer" parent="StartupPanel/VBox/StartupTabPanel"]
 visible = false
 layout_mode = 2
-script = ExtResource("14_qkvf6")
 
-[node name="VBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/RecentProjectsTab"]
+[node name="VBox" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab"]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="StartupPanel/VBox/BottomPanel/RecentProjectsTab/VBox"]
+[node name="ScrollContainer" type="ScrollContainer" parent="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="RecentProjectsVBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/RecentProjectsTab/VBox/ScrollContainer"]
+[node name="RecentProjectsVBoxLong" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab/VBox/ScrollContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Spacer" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/RecentProjectsTab/VBox"]
+[node name="Spacer" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab/VBox"]
 layout_mode = 2
 
-[node name="ReturnButton" type="Button" parent="StartupPanel/VBox/BottomPanel/RecentProjectsTab/VBox"]
+[node name="ReturnButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab/VBox"]
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_RETURN_MAIN"
 text = "BUTTON_RETURN"
 
-[node name="CreateNewProjectTab" type="MarginContainer" parent="StartupPanel/VBox/BottomPanel"]
+[node name="CreateNewProjectTab" type="MarginContainer" parent="StartupPanel/VBox/StartupTabPanel"]
 visible = false
 layout_mode = 2
-script = ExtResource("13_mtgbq")
 
-[node name="VBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab"]
+[node name="VBox" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="TitleLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "TITLE_NEW_PROJECT"
 
-[node name="Spacer1" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="Spacer1" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 
-[node name="Grid" type="GridContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="Grid" type="GridContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 columns = 2
 
-[node name="TitleLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid"]
+[node name="TitleLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid"]
 layout_mode = 2
 text = "PROJECT_SETTINGS_TEXT_TITLE"
 
-[node name="TitleLineEdit" type="LineEdit" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid"]
+[node name="TitleLineEdit" type="LineEdit" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "TOOLTIP_INPUT_PROJECT_TITLE"
 clear_button_enabled = true
 
-[node name="PathLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid"]
+[node name="PathLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid"]
 layout_mode = 2
 text = "PROJECT_SETTINGS_TEXT_PATH"
 
-[node name="PathHBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid"]
+[node name="PathHBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PathLineEdit" type="LineEdit" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid/PathHBox"]
+[node name="PathLineEdit" type="LineEdit" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid/PathHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "TOOLTIP_INPUT_PROJECT_PATH"
 clear_button_enabled = true
 
-[node name="SelectPathButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid/PathHBox"]
+[node name="SelectPathButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid/PathHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 tooltip_text = "TOOLTIP_BUTTON_SELECT_PATH"
@@ -341,21 +339,21 @@ icon = ExtResource("9_h61l5")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="HBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 
-[node name="ResolutionVBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox"]
+[node name="ResolutionVBox" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PresetsHBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox"]
+[node name="PresetsHBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox"]
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
 
-[node name="HDQualityButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="HDQualityButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -363,7 +361,7 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "HD"
 
-[node name="FHDQualityButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="FHDQualityButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -371,7 +369,7 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "FHD"
 
-[node name="4KQualityButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="4KQualityButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -379,7 +377,7 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "4K"
 
-[node name="8KQualityButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="8KQualityButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -387,10 +385,10 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "8K"
 
-[node name="VSeparator2" type="VSeparator" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="VSeparator2" type="VSeparator" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 layout_mode = 2
 
-[node name="HorizontalButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="HorizontalButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -398,7 +396,7 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "H"
 
-[node name="VerticalButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
+[node name="VerticalButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -406,16 +404,16 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "V"
 
-[node name="ResolutionHBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox"]
+[node name="ResolutionHBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox"]
 layout_mode = 2
 theme_override_constants/separation = 7
 
-[node name="XLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
+[node name="XLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
 layout_mode = 2
 auto_translate = false
 text = "x:"
 
-[node name="XSpinBox" type="SpinBox" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
+[node name="XSpinBox" type="SpinBox" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -426,12 +424,12 @@ max_value = 100000.0
 value = 1920.0
 alignment = 1
 
-[node name="YLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
+[node name="YLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
 layout_mode = 2
 auto_translate = false
 text = "y:"
 
-[node name="YSpinBox" type="SpinBox" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
+[node name="YSpinBox" type="SpinBox" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/ResolutionHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -442,20 +440,20 @@ max_value = 100000.0
 value = 1080.0
 alignment = 1
 
-[node name="VSeparator1" type="VSeparator" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox"]
+[node name="VSeparator1" type="VSeparator" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox"]
 layout_mode = 2
 
-[node name="FramerateVBox" type="VBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox"]
+[node name="FramerateVBox" type="VBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 theme_override_constants/separation = 7
 
-[node name="PresetsHBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox"]
+[node name="PresetsHBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox"]
 custom_minimum_size = Vector2(0, 27)
 layout_mode = 2
 
-[node name="Framerate30Button" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox"]
+[node name="Framerate30Button" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -463,7 +461,7 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "30"
 
-[node name="Framerate60Button" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox"]
+[node name="Framerate60Button" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -471,7 +469,7 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "60"
 
-[node name="Framerate120Button" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox"]
+[node name="Framerate120Button" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -479,14 +477,14 @@ auto_translate = false
 theme_type_variation = &"preset_button"
 text = "120"
 
-[node name="FramerateHBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox"]
+[node name="FramerateHBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox"]
 layout_mode = 2
 
-[node name="FramerateLabel" type="Label" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox"]
+[node name="FramerateLabel" type="Label" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox"]
 layout_mode = 2
 text = "PROJECT_SETTINGS_TEXT_FRAMERATE"
 
-[node name="FramerateSpinBox" type="SpinBox" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox"]
+[node name="FramerateSpinBox" type="SpinBox" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -497,32 +495,37 @@ max_value = 240.0
 value = 30.0
 alignment = 1
 
-[node name="Spacer3" type="HSeparator" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="Spacer3" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 
-[node name="ButtonHBox" type="HBoxContainer" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox"]
+[node name="ButtonHBox" type="HBoxContainer" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox"]
 layout_mode = 2
 
-[node name="ReturnButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/ButtonHBox"]
+[node name="ReturnButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/ButtonHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "TOOLTIP_BUTTON_RETURN_MAIN"
 text = "BUTTON_RETURN"
 
-[node name="CreateProjectButton" type="Button" parent="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/ButtonHBox"]
+[node name="CreateProjectButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/ButtonHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "TOOLTIP_BUTTON_CREATE_PROJECT"
 text = "BUTTON_CREATE_PROJECT"
 
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox/RecentProjectsVBox/ShowAllProjectsButton" to="StartupPanel/VBox/BottomPanel/MainTab" method="_on_show_all_projects_button_pressed"]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox/OpenProjectButton" to="StartupPanel/VBox/BottomPanel/MainTab" method="_on_open_project_button_pressed"]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/MainTab/HBox/LeftVBox/CreateProjectButton" to="StartupPanel/VBox/BottomPanel/MainTab" method="_on_create_project_button_pressed"]
-[connection signal="visibility_changed" from="StartupPanel/VBox/BottomPanel/RecentProjectsTab" to="StartupPanel/VBox/BottomPanel/RecentProjectsTab" method="_on_visibility_changed"]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/RecentProjectsTab/VBox/ReturnButton" to="StartupPanel/VBox/BottomPanel/RecentProjectsTab" method="_on_return_button_pressed"]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/Grid/PathHBox/SelectPathButton" to="StartupPanel/VBox/BottomPanel/CreateNewProjectTab" method="_on_select_path_button_pressed"]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox/Framerate30Button" to="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox/FramerateSpinBox" method="set_value" binds= [30]]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox/Framerate60Button" to="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox/FramerateSpinBox" method="set_value" binds= [60]]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox/Framerate120Button" to="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/FramerateHBox/FramerateSpinBox" method="set_value" binds= [120]]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/ButtonHBox/ReturnButton" to="StartupPanel/VBox/BottomPanel/CreateNewProjectTab" method="_on_return_button_pressed"]
-[connection signal="pressed" from="StartupPanel/VBox/BottomPanel/CreateNewProjectTab/VBox/ButtonHBox/CreateProjectButton" to="StartupPanel/VBox/BottomPanel/CreateNewProjectTab" method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/RecentProjectsVBoxShort/ShowAllProjectsButton" to="." method="_on_show_all_projects_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab/VBox/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid/PathHBox/SelectPathButton" to="." method="_on_select_path_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/HDQualityButton" to="." method="_on_set_quality" binds= [Vector2i(1280, 720)]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/FHDQualityButton" to="." method="_on_set_quality" binds= [Vector2i(1920, 1080)]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/4KQualityButton" to="." method="_on_set_quality" binds= [Vector2i(3840, 2160)]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/8KQualityButton" to="." method="_on_set_quality" binds= [Vector2i(7680, 4320)]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/HorizontalButton" to="." method="_on_switch_landscape" binds= [true]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/VerticalButton" to="." method="_on_switch_landscape" binds= [false]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox/Framerate30Button" to="." method="_on_framerate_button_pressed" binds= [30]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox/Framerate60Button" to="." method="_on_framerate_button_pressed" binds= [60]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/FramerateVBox/PresetsHBox/Framerate120Button" to="." method="_on_framerate_button_pressed" binds= [120]]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/ButtonHBox/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/ButtonHBox/CreateProjectButton" to="." method="_on_create_project"]

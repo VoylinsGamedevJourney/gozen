@@ -34,10 +34,11 @@ func new_project(title: String, path: String, resolution: Vector2i, framerate: i
 	set_framerate(framerate)
 	init_folder_root()
 	
-	_on_project_loaded.emit()
+	var recent_projects := RecentProjects.new()
+	recent_projects.add_new_project(title, project_path)
 	
+	_on_project_loaded.emit()
 	save_project()
-	update_recent_projects()
 
 
 func load_project(path: String) -> void:
@@ -53,32 +54,14 @@ func load_project(path: String) -> void:
 		return
 	project_path = path
 	_on_title_changed.emit(get_title())
-	update_recent_projects()
+	var recent_projects := RecentProjects.new()
+	recent_projects.update_project(get_title(), project_path)
 	_on_project_loaded.emit()
 
 
 func save_project() -> void:
 	config.save(project_path)
 	_on_project_saved.emit()
-
-
-func update_recent_projects() -> void:
-	# Each entry is made up like this: 'title||path||datetime'
-	var file := FileAccess.open(
-		ProjectSettings.get_setting("globals/path/recent_projects"), 
-		FileAccess.READ)
-	var data: String
-	if FileAccess.file_exists(ProjectSettings.get_setting("globals/path/recent_projects")):
-		data = file.get_as_text()
-	data = "%s||%s||%s\n%s" % [
-			get_title(), 
-			project_path, 
-			Time.get_datetime_string_from_system(),
-			data]
-	file = FileAccess.open(
-		ProjectSettings.get_setting("globals/path/recent_projects"),
-		FileAccess.WRITE)
-	file.store_string(data)
 
 
 #################################################################
@@ -100,7 +83,8 @@ func set_title(new_title: String, update: bool = true) -> void:
 	_on_title_changed.emit(new_title)
 	save_project()
 	if update:
-		update_recent_projects()
+		var recent_projects := RecentProjects.new()
+		recent_projects.update_project(new_title, project_path)
 
 #endregion
 ###############################################################

@@ -24,10 +24,6 @@ func _ready() -> void:
 		%Content.add_child(preload("res://ui/screens/startup/startup.tscn").instantiate())
 
 
-func close_startup() -> void:
-	%Content.get_node("ScreenStartup").queue_free()
-
-
 func open_settings_popup() -> void:
 	var popup: Window = preload(
 		"res://ui/popups/settings_menu/settings_menu.tscn").instantiate()
