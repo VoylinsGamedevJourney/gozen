@@ -28,6 +28,7 @@ func _create_folder_structure() -> void:
 
 
 func _load_custom_modules() -> void:
+	## Loading custom modules from the user file system at 'user://*'
 	for type: String in types:
 		var module_folder: String = ProjectSettings.get_setting("globals/path/modules/%s" % type)
 		var module_files := DirAccess.get_files_at(module_folder)
@@ -38,17 +39,12 @@ func _load_custom_modules() -> void:
 
 
 func _check_custom_modules() -> void:
-	## Check if all modules have an info resource
+	## Check if all modules have an 'info' resource
 	for type: String in types:
 		var module_folders := DirAccess.get_directories_at("res://_%s" % type)
-		var module_resources := DirAccess.get_files_at("res://_%s" % type)
-		
-		for module: String in module_resources: # Checking for mod configs
-			if not module.trim_suffix(".tres") in module_folders:
-				Printer.error("No folder for config '%s'!" % module.trim_suffix(".tres"))
-		for module: String in module_folders: # Checking for mod folders
-			if not module + ".tres" in module_resources:
-				Printer.error("No config for mod folder '%s'!" % module)
+		for module_folder: String in module_folders:
+			if !FileAccess.file_exists("res://_%s/%s/info.tres" % [type, module_folder]):
+				Printer.error("No info file found for mod folder '%s'!" % module_folder)
 
 
 func get_config_path(type: String, instance_name: String) -> String:

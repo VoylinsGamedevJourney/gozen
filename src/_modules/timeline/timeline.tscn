@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://bldrq8eh7apaa"]
+[gd_scene load_steps=5 format=3 uid="uid://bldrq8eh7apaa"]
 
 [ext_resource type="Script" path="res://_modules/timeline/timeline.gd" id="1_nniuu"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_inrdi"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ip8cq"]
+color = Color(0.199219, 0.199219, 0.199219, 1)
+thickness = 3
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qj2dj"]
 
@@ -45,6 +49,11 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HSplitContainer/TimeLineLeft/VBox/TrackContainer/PanelContainer/TrackVBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ip8cq")
 
 [node name="TimeLineRight" type="PanelContainer" parent="HSplitContainer"]
 layout_mode = 2
@@ -83,6 +92,11 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer/PanelContainer/TimelineTrackVBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ip8cq")
 
 [connection signal="gui_input" from="HSplitContainer/TimeLineLeft/VBox/TrackContainer" to="." method="_on_track_container_gui_input"]
 [connection signal="gui_input" from="HSplitContainer/TimeLineRight/VBox/TimelineTop" to="." method="_on_timeline_top_gui_input"]

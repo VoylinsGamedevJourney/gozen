@@ -13,7 +13,7 @@ const SECTION_SPLITS := "splits"
 const SECTION_PANELS := "panels"
 const SECTION_TABS := "tabs"
 
-const PATH_MODULES := "res://_modules/%s.tres"
+const PATH_MODULE_DATA := "res://_modules/%s/info.tres"
 var config_path: String
 var config := ConfigFile.new()
 
@@ -80,7 +80,7 @@ func save_split_offset(split_offset: int, split_container: String) -> void:
 func add_module(module_name: String, tab_container: String) -> void:
 	## Adding module to the correct tab container and saving the config
 	## with the updated info.
-	var module_data: Module = load(PATH_MODULES % module_name)
+	var module_data: Module = load(PATH_MODULE_DATA % module_name)
 	var module: Control = module_data.scene.instantiate()
 	module.name = "%s-%s" % [module_name, randi_range(100000, 999999)]
 	tabs[tab_container].add_child(module)
@@ -95,7 +95,7 @@ func _add_modules(module_names: PackedStringArray, tab_container: String) -> voi
 	## We don't use add_module for this as we don't need to create a new id,
 	## nor do we need to add it to the config again.
 	for module_name: String in module_names:
-		var module_data: Module = load(PATH_MODULES % module_name.split('-')[0])
+		var module_data: Module = load(PATH_MODULE_DATA % module_name.split('-')[0])
 		var module: Control = module_data.scene.instantiate()
 		module.name = module_name # Adding  existing name with existing identifier
 		tabs[tab_container].add_child(module)

@@ -25,13 +25,11 @@ func _on_timeline_track_container_gui_input(event):
 
 func _scroll(direction: DIRECTION, main_timeline: bool) -> void:
 	if direction == DIRECTION.VERTICAL:
-		print("vertical")
 		if main_timeline:
 			%TrackContainer.scroll_vertical = %TimelineTrackContainer.scroll_vertical
 		else:
 			%TimelineTrackContainer.scroll_vertical = %TrackContainer.scroll_vertical
 	if direction == DIRECTION.HORIZONTAL:
-		print("horizontal")
 		if main_timeline:
 			%TimelineTop.scroll_horizontal = %TimelineTrackContainer.scroll_horizontal
 		else:

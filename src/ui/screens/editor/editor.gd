@@ -67,7 +67,7 @@ func change_layout(id: int) -> void:
 
 func add_layout(layout_name: String, id: String = "") -> void:
 	# Check if single use only or if a layout can be used in multiple instances
-	var layout_data: LayoutModule = load("res://_layout_modules/layout_%s.tres" % layout_name)
+	var layout_data: LayoutModule = load("res://_layout_modules/layout_%s/info.tres" % layout_name)
 	if layout_data.single_only:
 		for child: Node in %SidebarVBox.get_children():
 			if child.name.split("-")[0] == layout_name:
