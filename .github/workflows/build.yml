@@ -14,5 +14,7 @@ jobs:
         run: pip install scons
       - name: Setup FFmpeg
         run: sudo apt install -y ffmpeg
+      - name: Setup yasm
+        run: sudo apt install -y yasm
       - name: Build
         run: cd ./src/bin/gde_ffmpeg/ && ./build-ffmpeg.sh linux && scons target=template_release platform=linux
