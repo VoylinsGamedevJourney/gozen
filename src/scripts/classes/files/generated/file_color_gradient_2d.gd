@@ -1,4 +1,5 @@
-class_name FileColorGradient2D extends FileDefault
+class_name FileColorGradient2D extends File
+# TODO: Option for saving certain gradient profiles for using in multiple projects
 
 var offsets: PackedFloat32Array
 var colors: PackedColorArray
