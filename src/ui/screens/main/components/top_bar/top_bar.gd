@@ -30,18 +30,16 @@ func _ready() -> void:
 		%TopMenuButtons.get_node("ProjectSettingsButton").visible = true)
 	
 	get_viewport().size_changed.connect(func() -> void:
-		WindowResizeHandles.instance.visible = win_mode == Window.MODE_WINDOWED and get_window().borderless
-	)
+		var value := win_mode == Window.MODE_WINDOWED and get_window().borderless
+		WindowResizeHandles.instance.visible = value)
 
 
 func set_window_title() -> void:
 	%WindowTitle.text = tr("TEXT_UNTITLED_PROJECT_TITLE")
 	ProjectManager._on_title_changed.connect(func(new_title: String) -> void:
 		%WindowTitle.text = new_title + " ")
-	ProjectManager._on_project_saved.connect(func() -> void:
-		%WindowTitle.text[-1] = " ")
-	ProjectManager._on_unsaved_changes.connect(func() -> void:
-		%WindowTitle.text[-1] = "*")
+	ProjectManager._on_unsaved_changes_changed.connect(func(value: bool) -> void:
+		%WindowTitle.text[-1] = "*" if value else " ")
 
 
 ###############################################################

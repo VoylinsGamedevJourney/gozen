@@ -12,13 +12,15 @@ extends Node
 
 signal _on_project_loaded
 signal _on_project_saved
-
-signal _on_unsaved_changes
-signal _on_changes_saved
+signal _on_unsaved_changes_changed(value: bool)
 
 signal _on_title_changed(new_title: String)
 signal _on_resolution_changed(new_resolution: Vector2i)
 signal _on_framerate_changed(new_framerate: int)
+
+signal _on_video_tracks_changed(update_video_tracks: Array)
+signal _on_audio_tracks_changed(update_audio_tracks: Array)
+
 
 # Key's for variables which need saving
 const keys: PackedStringArray = [
@@ -61,6 +63,10 @@ func new_project(title: String, path: String, resolution: Vector2i, framerate: i
 	set_title(title, false)
 	set_resolution(resolution)
 	set_framerate(framerate)
+	# TODO: set default video tracks
+	# TODO: set default audio tracks
+	# for _x: int in default_video_tracks:
+	#   add_video_track
 	
 	update_recent_projects()
 	_on_project_loaded.emit()
@@ -100,6 +106,10 @@ func update_recent_projects() -> void:
 	var recent_projects := RecentProjects.new()
 	recent_projects.update_project(get_title(), project_path)
 
+
+func unsaved_changes(value: bool) -> void:
+	unsaved_changes = value
+	_on_unsaved_changes_changed.emit(value)
 
 #################################################################
 ##
@@ -148,6 +158,50 @@ func get_framerate() -> float:
 func set_framerate(new_framerate: float) -> void:
 	framerate = new_framerate
 	_on_framerate_changed.emit(new_framerate)
+	unsaved_changes = true
+
+#endregion
+###############################################################
+#region  Video tracks  ########################################
+###############################################################
+
+func get_video_tracks() -> Array:
+	return video_tracks
+
+
+func add_video_track(amount: int = 1) -> void:
+	for _x: int in amount:
+		var new_track := TimelineTrack.new()
+		video_tracks.append(new_track)
+	_on_video_tracks_changed.emit(video_tracks)
+	unsaved_changes = true
+
+
+func remove_video_track(position: int) -> void:
+	video_tracks.remove_at(position)
+	_on_video_tracks_changed.emit(video_tracks)
+	unsaved_changes = true
+
+#endregion
+###############################################################
+#region  Audio tracks  ########################################
+###############################################################
+
+func get_audio_tracks() -> Array:
+	return audio_tracks
+
+
+func add_audio_track(amount: int = 1) -> void:
+	for _x: int in amount:
+		var new_track := TimelineTrack.new()
+		audio_tracks.append(new_track)
+	_on_audio_tracks_changed.emit(audio_tracks)
+	unsaved_changes = true
+
+
+func remove_audio_track(position: int) -> void:
+	audio_tracks.remove_at(position)
+	_on_audio_tracks_changed.emit(audio_tracks)
 	unsaved_changes = true
 
 #endregion
