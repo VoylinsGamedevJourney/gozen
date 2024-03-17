@@ -22,17 +22,3 @@ func _ready() -> void:
 		ProjectManager.load_project(arguments[1].strip_edges())
 	else:
 		%Content.add_child(preload("res://ui/screens/startup/startup.tscn").instantiate())
-
-
-func open_settings_popup() -> void:
-	var popup: Window = preload(
-		"res://ui/popups/settings_menu/settings_menu.tscn").instantiate()
-	popup.name = "popup"
-	add_child(popup)
-
-
-func open_project_settings_popup() -> void:
-	var popup: Window = preload(
-		"res://ui/popups/project_settings_menu/project_settings_menu.tscn").instantiate()
-	popup.name = "popup"
-	add_child(popup)

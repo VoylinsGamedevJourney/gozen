@@ -1,0 +1,111 @@
+class_name TopBar extends PanelContainer
+# When adding buttons, add the buttons next to the editor button, but also in
+# the editor menu. Set the id and the function call in the variable dictionary
+# menu_buttons. Also, set a default in the settings for the top bar.
+
+static var instance
+
+@onready var _windowed_win_size: Vector2i = get_window().size
+@onready var _windowed_win_pos: Vector2i = get_window().position
+
+var move_window := false
+var move_win_offset: Vector2i
+
+var win_mode: Window.Mode:
+	get: return get_window_mode()
+	set(value): set_window_mode(value)
+
+
+func _ready() -> void:
+	instance = self
+	get_viewport().size_changed.connect(func() -> void:
+		var value := win_mode == Window.MODE_WINDOWED and get_window().borderless
+		WindowResizeHandles.instance.visible = value)
+
+
+###############################################################
+#region Window Mode  ##########################################
+###############################################################
+
+func get_window_mode() -> Window.Mode:
+	var current_mode = get_window().mode
+	if OS.get_name() != "Windows" or !get_window().borderless:
+		return current_mode
+	if current_mode == Window.MODE_WINDOWED:
+		var usable_screen := DisplayServer.screen_get_usable_rect(get_window().current_screen)
+		if get_window().position == usable_screen.position and get_window().size == usable_screen.size:
+			return Window.MODE_MAXIMIZED
+		return Window.MODE_WINDOWED
+	return current_mode
+
+
+func set_window_mode(value: Window.Mode) -> void:
+	if value == win_mode:
+		return
+	var prev_mode = win_mode
+	if OS.get_name() != "Windows" or !get_window().borderless:
+		get_window().mode = value
+		return
+	# store window size in windowed mode
+	if prev_mode == Window.MODE_WINDOWED:
+		_windowed_win_pos = get_window().position
+		_windowed_win_size = get_window().size
+	if value == Window.MODE_MAXIMIZED:
+		get_window().borderless = false
+		get_window().mode = Window.MODE_MAXIMIZED
+		get_window().borderless = true
+		# adjust mismatched window size and position
+		var usable_screen := DisplayServer.screen_get_usable_rect(get_window().current_screen)
+		get_window().position = usable_screen.position
+		get_window().size = usable_screen.size + Vector2i(2, 2)
+		return
+	if value == Window.MODE_WINDOWED:
+		get_window().borderless = false
+		get_window().mode = prev_mode	# window.mode is not set to maximized when borderless
+		get_window().mode = Window.MODE_WINDOWED
+		get_window().borderless = true
+		# restore window size and position
+		get_window().size = _windowed_win_size
+		get_window().position = _windowed_win_pos
+		return
+	get_window().mode = value
+
+#endregion
+###############################################################
+#region Window Dragging  ######################################
+###############################################################
+
+func _on_top_bar_dragging(event) -> void:
+	if !event is InputEventMouseButton or event.button_index != 1:
+		return # Only continues when event is mouse button 1 pressed
+	var mouse_pos := DisplayServer.mouse_get_position()
+	var win_pos := DisplayServer.window_get_position(get_window().get_window_id())
+	move_window = false
+	if win_mode != Window.MODE_WINDOWED:
+		return
+	if event.is_pressed():
+		move_win_offset = mouse_pos - win_pos
+		move_window = true
+	elif OS.get_name() != "Windows":
+		return
+	var screen_rect := DisplayServer.screen_get_usable_rect(
+		DisplayServer.SCREEN_WITH_MOUSE_FOCUS)
+	var tb_top := Vector2i(mouse_pos.x, win_pos.y)
+	var tb_bottom := Vector2i(mouse_pos.x, win_pos.y + int(size.y))
+	if screen_rect.encloses(Rect2i(tb_top, tb_bottom)):
+		return
+	if tb_top.y < screen_rect.position.y:
+		get_window().position = (
+			tb_top.clamp(screen_rect.position, screen_rect.end)
+			- Vector2i(move_win_offset.x, 0))
+	else:
+		get_window().position = (
+			tb_bottom.clamp(screen_rect.position, screen_rect.end)
+			- Vector2i(move_win_offset.x, int(size.y)))
+
+func _process(_delta: float) -> void:
+	if move_window:
+		get_window().position = DisplayServer.mouse_get_position() - move_win_offset
+
+#endregion
+###############################################################
