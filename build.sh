@@ -37,6 +37,10 @@ function compile_gdextension() {
   local scons_extra_args=""
 
   echo "GDExtension compiling"
+
+  echo "Enter amount of cores/thread for compiling:"
+  read -p "> " num_jobs
+
   echo "Select target platform:"
   echo "1. Linux"
   echo "2. Windows (Msys2)"
@@ -49,6 +53,17 @@ function compile_gdextension() {
     2)
       platform=windows
       scons_extra_args="use_mingw=yes"
+      echo "Build FFmpeg? (y/N)"
+        read -p "> " ffmpeg
+        case $ffmpeg in
+          y)
+            pushd src/bin/gde_ffmpeg/
+            ./build-ffmpeg.sh $platform $num_jobs || { echo "FFmpeg build failed"; exit 1; }
+            popd
+            ;;
+          *)
+            ;;
+        esac
       ;;
     3)
       platform=macos
@@ -60,6 +75,7 @@ function compile_gdextension() {
       platform=linux
       ;;
   esac
+
   echo "Select build taget:"
   echo "1. template_debug"
   echo "2. template_release"
@@ -74,21 +90,6 @@ function compile_gdextension() {
     *)
       echo "Choosing target=template_debug as no (valid) argument was given."
       target=template_debug
-      ;;
-  esac
-
-  echo "Enter amount of cores/thread for compiling:"
-  read -p "> " num_jobs
-
-  echo "Build FFmpeg? (y/N)"
-  read -p "> " ffmpeg
-  case $ffmpeg in
-    y)
-      pushd src/bin/gde_ffmpeg/
-      ./build-ffmpeg.sh $platform $num_jobs || { echo "FFmpeg build failed"; exit 1; }
-      popd
-      ;;
-    *)
       ;;
   esac
 
