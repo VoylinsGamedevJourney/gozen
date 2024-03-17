@@ -14,6 +14,5 @@ jobs:
         run: pip install scons
       - name: Setup FFmpeg
         run: sudo apt install -y ffmpeg
-      - run: cd ./GoZen
       - name: Build
         run: sh ./build.sh
