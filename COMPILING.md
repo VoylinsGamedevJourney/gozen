@@ -58,7 +58,7 @@ This guide will help you compile the GoZen GDExtension.
     sh build.sh
     ```
 
-    **Note:** You will need to compile FFmpeg at least once. Enter `y` when prompted.
+    **Note:** You will need to compile FFmpeg at least once when compiling for Windows. Enter `y` when prompted.
 
 - Once the build is complete, you can now open the Godot project located in `./src` directory
 
