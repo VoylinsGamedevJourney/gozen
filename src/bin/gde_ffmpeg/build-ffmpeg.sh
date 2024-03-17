@@ -18,6 +18,8 @@ ffmpeg_bin_folder="$script_dir/ffmpeg-bin"
 
 mkdir -p "$ffmpeg_bin_folder"
 cd "$ffmpeg_source_folder" || exit -1
+echo "Updating ffmpeg submodule ..."
+git pull
 
 config_extra_args=""
 if [ "$platform" = "windows" ]; then
