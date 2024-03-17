@@ -15,4 +15,4 @@ jobs:
       - name: Setup FFmpeg
         run: sudo apt install -y ffmpeg
       - name: Build
-        run: cd ./src/bin/gde_ffmpeg/ && scons target=template_release platform=linux
+        run: cd ./src/bin/gde_ffmpeg/ && ./build-ffmpeg.sh linux && scons target=template_release platform=linux
