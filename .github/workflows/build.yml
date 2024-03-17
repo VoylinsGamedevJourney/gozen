@@ -1,0 +1,19 @@
+on: [push, pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Setup Python
+        uses: actions/setup-python@v5
+      - name: Setup SCons
+        run: pip install scons
+      - name: Setup FFmpeg
+        run: sudo apt install -y ffmpeg
+      - run: cd ./GoZen
+      - name: Build
+        run: sh ./build.sh
