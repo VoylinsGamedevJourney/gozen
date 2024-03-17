@@ -51,7 +51,5 @@ func _on_default_audio_tracks_spin_box_value_changed(value) -> void:
 #endregion
 ###############################################################
 
-
 func _on_close_requested():
-	# TODO: We really need to close this or just keep invisible?
-	self.queue_free()
+	visible = false

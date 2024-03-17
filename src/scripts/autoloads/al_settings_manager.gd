@@ -21,6 +21,27 @@ func _save_settings() -> void:
 	config.save(ProjectSettings.get_setting("globals/path/settings"))
 
 
+func open_settings_popup() -> void:
+	var popup_name := "settings_popup"
+	if get_tree().root.has_node(popup_name):
+		get_tree().root.get_node(popup_name).visible = true
+		return
+	var popup: Window = preload(
+		"res://ui/popups/settings_menu/settings_menu.tscn").instantiate()
+	popup.name = popup_name
+	get_tree().root.add_child(popup)
+
+
+func open_project_settings_popup() -> void:
+	var popup_name := "project_settings_popup"
+	if get_tree().root.has_node(popup_name):
+		get_tree().root.get_node(popup_name).visible = true
+		return
+	var popup: Window = preload(
+		"res://ui/popups/project_settings_menu/project_settings_menu.tscn").instantiate()
+	popup.name = popup_name
+	get_tree().root.add_child(popup)
+
 #################################################################
 ##
 ##      GENERAL  -  GETTERS AND SETTERS

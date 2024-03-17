@@ -53,5 +53,4 @@ func _on_resolution_y_spin_box_value_changed(new_value) -> void:
 ###############################################################
 
 func _on_close_requested():
-	# TODO: We really need to close this or just keep invisible?
-	self.queue_free()
+	visible = false
