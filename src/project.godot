@@ -76,7 +76,7 @@ path/configs/modules="user://module_configs/"
 path/configs/effects="user://effect_configs/"
 path/configs/transitions="user://transition_configs/"
 path/configs/render_profiles="user://render_profile_configs/"
-path/file_manager="user://file_manager.cfg"
+path/file_manager="user://file_manager"
 
 [gui]
 

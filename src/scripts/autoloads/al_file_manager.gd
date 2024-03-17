@@ -1,59 +1,58 @@
 extends Node
 ## File Manager
-##
-## Config structure:
-## [general]
-##   files: {unique_file_id: {file_class_data}}
-##   folders: {folder_name: {files = [file_id's], sub_folders = [...]}}
 
+var path: String = ProjectSettings.get_setting("globals/path/file_manager") 
 
-var config := ConfigFile.new()
+var folder_data := {} # Full_path: Array of files
+var file_data   := {} # File_id: File class object
+var current_id := 0 # File ID's for global start with 'G_' and for project with 'P_'
 
 
 func _ready():
-	var config_path: String = ProjectSettings.get_setting("globals/path/file_manager")
-	if FileAccess.file_exists(config_path):
-		config.load(config_path)
-	else:
-		init_folder_root()
+	## Loading data on startup if exists
+	if FileAccess.file_exists(path):
+		var file := FileAccess.open(path, FileAccess.READ)
+		var temp: Dictionary = str_to_var(file.get_as_text())
+		folder_data = temp.folder_data
+		file_data = temp.file_data
+		current_id = temp.current_id
 
 
-func save_config() -> void:
-	config.save(ProjectSettings.get_setting("globals/path/file_manager"))
+func save_data() -> void:
+	var path: String = ProjectSettings.get_setting("globals/path/file_manager")
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(var_to_str({
+		"folder_data": folder_data, 
+		"file_data": file_data,
+		"current_id": current_id}))
 
 
-func add_file(file_path: String, folder: String, global: bool = false) -> void:
-	if global:
-		
-		save_config()
+func add_file(file: File, folder: String, _file_data: Dictionary, _folder_data: Dictionary, _current_id: int) -> void:
+	var prefix := "G_%s" if _folder_data == folder_data else "P_%"
+	_file_data[prefix % _current_id] = file
+	if !_folder_data.has(folder):
+		add_folder(folder, _folder_data)
+	_folder_data[folder].append(prefix % _current_id)
+	_current_id += 1
+	if _folder_data == folder_data:
+		save_data()
 
 
-func remove_file(path: String, global: bool = false) -> void:
-	if global:
-		save_config()
+func add_folder(folder_path: String, _folder_data: Dictionary) -> void:
+	_folder_data[folder_path] = PackedStringArray()
+	if _folder_data == _folder_data:
+		save_data()
 
 
-func init_folder_root() -> void:
-	config.set_value("general", "folders", {"folder_name": "root", "sub_folders": [], "files": []})
-	save_config()
+func remove_file(folder: String, file_id: String, _file_data: Dictionary, _folder_data: Dictionary) -> void:
+	_file_data.erase(file_id)
+	_folder_data[folder].erase(file_id)
+	if _folder_data == folder_data:
+		save_data()
 
 
-func add_folder(path: String, global: bool = false) -> void:
-	if global:
-		save_config()
-
-
-func remove_folder(path: String, global: bool = false) -> void:
-	# TODO: Remove files if necesarry
-	if global:
-		save_config()
-
-
-func get_files() -> Dictionary:
-	## For getting global files
-	return config.get_value("general", "files", {})
-
-
-func get_folders() -> Dictionary:
-	## For getting global folders
-	return config.get_value("general", "folders")
+func remove_folder(folder_path: String, _file_data: Dictionary, _folder_data: Dictionary) -> void:
+	# TODO: Remove files from folder and possible subfolders
+	_folder_data.erase(folder_path)
+	if _folder_data == folder_data:
+		save_data()

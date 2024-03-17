@@ -10,7 +10,7 @@ func _init():
 	load_data()
 	
 	# Check data
-	var clean_data: Array
+	var clean_data: Array = []
 	var existing_paths: PackedStringArray = []
 	for entry: RecentProject in data:
 		if FileAccess.file_exists(entry.path) and not entry.path in existing_paths:
