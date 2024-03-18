@@ -19,7 +19,7 @@ jobs:
       - name: Build GDExtension
         run: pushd ./src/bin/gde_ffmpeg/ && scons target=template_release platform=linux use_ci=yes && popd
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ffmpeg-linux
-          path: src/bin/gde_ffmpeg/libgozen*
+          path: "**/libgozen*"
