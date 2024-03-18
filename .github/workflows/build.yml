@@ -18,8 +18,31 @@ jobs:
         run: pushd ./src/bin/gde_ffmpeg/ && sh ./build-ffmpeg.sh && popd
       - name: Build GDExtension
         run: pushd ./src/bin/gde_ffmpeg/ && scons target=template_release platform=linux use_ci=yes && popd
+      - name: Upload GDExtension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdextension-linux
+          path: src/bin/libgozen*
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Update pacman
+        run: pacman -Suy
+      - name: Install stuff
+        run: pacman -S --noconfirm mingw-w64-cross-binutils mingw-w64-x86_64-toolchain mingw-w64-x86_64-scons mingw-w64-x86_64-yasm diffutils make
+      - name: Build FFmpeg
+        run: pushd ./src/bin/gde_ffmpeg/ && sh ./build-ffmpeg.sh && popd
+      - name: Build GDExtension
+        run: pushd ./src/bin/gde_ffmpeg/ && scons target=template_release platform=linux use_ci=yes && popd
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ffmpeg-linux
-          path: "**/libgozen*"
+          name: ffmpeg-windows
+          path: src/bin/libgozen*
