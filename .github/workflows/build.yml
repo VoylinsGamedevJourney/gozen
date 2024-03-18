@@ -13,6 +13,6 @@ jobs:
       - name: Setup SCons
         run: pip install scons
       - name: Setup FFmpeg
-        run: sudo apt update && sudo apt install -y ffmpeg
+        run: sudo apt install -y ffmpeg
       - name: Build
-        run: cd ./src/bin/gde_ffmpeg/ && scons -j 10 target=template_release platform=linux
+        run: cd ./src/bin/gde_ffmpeg/ && sh ./build-ffmpeg.sh && scons -j 10 target=template_release platform=linux use_ci=yes

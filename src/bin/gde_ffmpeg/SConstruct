@@ -6,11 +6,15 @@ env.Append(CPPPATH=["src/"])
 
 
 # Determine the platform and set the appropriate link flags
+ci = ARGUMENTS.get('use_ci', 'no')
 platform = ARGUMENTS.get('platform', 'Linux')
 use_mingw = ARGUMENTS.get('use_mingw', 'no')
 if platform == "linux": # Linux
   print("Linux system detected")
   env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
+  if ci == "yes":
+    env.Append(CPPPATH=["ffmpeg-bin/include"])
+    env.Append(LIBPATH=["ffmpeg-bin/bin"])
 elif platform == "windows": # Windows
   print("Windows system detected")
   # First compiling ffmpeg
