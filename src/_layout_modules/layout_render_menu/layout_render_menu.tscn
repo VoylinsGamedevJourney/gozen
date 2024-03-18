@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://b6f602loowbp0"]
+[gd_scene load_steps=2 format=3 uid="uid://b6f602loowbp0"]
+
+[ext_resource type="Script" path="res://_layout_modules/layout_render_menu/layout_render_menu.gd" id="1_6mfas"]
 
 [node name="RenderMenu" type="Control"]
 layout_mode = 3
@@ -7,3 +9,48 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_6mfas")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplit" type="HSplitContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = -440
+
+[node name="RenderSettings" type="PanelContainer" parent="VBoxContainer/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/HSplit/RenderSettings"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Render settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProjectView" type="PanelContainer" parent="VBoxContainer/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/HSplit/ProjectView"]
+layout_mode = 2
+text = "Project view"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MiniTimeline" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MiniTimeline"]
+layout_mode = 2
+text = "Mini timeline"
+horizontal_alignment = 1
+vertical_alignment = 1
