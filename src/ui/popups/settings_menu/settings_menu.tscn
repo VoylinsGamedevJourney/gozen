@@ -12,8 +12,9 @@ content_margin_bottom = 7.0
 
 [node name="PopupSettingsMenu" type="Window"]
 title = "SETTINGS_TITLE"
-position = Vector2i(0, 36)
+initial_position = 2
 size = Vector2i(650, 650)
+exclusive = true
 keep_title_visible = true
 theme = ExtResource("1_v6d11")
 script = ExtResource("2_p04nt")

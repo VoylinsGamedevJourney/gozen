@@ -19,7 +19,9 @@ class_name EditorUI extends HBoxContainer
 #       add custom icon and delete layout (Right menu click)
 
 
-var instance: EditorUI
+static var instance: EditorUI
+
+var sidebar_button_menu: PopupMenu
 
 var config := ConfigFile.new()
 var config_path: String = ProjectSettings.get_setting("globals/path/editor_ui")
@@ -37,7 +39,6 @@ func _ready() -> void:
 		var layout_order: PackedStringArray = config.get_value("general", "layouts_order", [])
 		for id: String in layout_order:
 			add_layout(id.split("-")[0], id)
-			
 	else:
 		# Creating default layouts
 		add_layout("file_manager")
@@ -45,7 +46,8 @@ func _ready() -> void:
 		add_layout("render_menu")
 	
 	# TODO: Save last used tab in project file or have option in settings to set default
-	%LayoutContainer.current_tab = 1
+	if %LayoutContainer.get_child_count() > 0:
+		%LayoutContainer.current_tab = 1
 
 
 func _input(event) -> void:
@@ -69,12 +71,12 @@ func add_layout(layout_name: String, id: String = "") -> void:
 	# Check if single use only or if a layout can be used in multiple instances
 	var layout_data: LayoutModule = load("res://_layout_modules/layout_%s/info.tres" % layout_name)
 	if layout_data.single_only:
-		for child: Node in %SidebarVBox.get_children():
-			if child.name.split("-")[0] == layout_name:
-				Printer.error("Module is single only, already in sidebar present!")
-				return
+		if check_single_existing(layout_name):
+			Printer.error("Module is single only, already in sidebar present!")
+			return
 	# Setting name for button and layout
 	var button := Button.new()
+	button.gui_input.connect(_on_sidebar_button_gui_event.bind(button))
 	var layout: Node = layout_data.scene.instantiate()
 	if id == "":
 		var layout_id := "%s-%s" % [layout_name, randi_range(10000,99999)]
@@ -112,7 +114,66 @@ func add_layout(layout_name: String, id: String = "") -> void:
 	%LayoutContainer.add_child(layout)
 
 
-func move_up(layout_id: String) -> void:
+func check_single_existing(layout_name: String) -> bool:
+	for child: Node in %SidebarVBox.get_children():
+		if child.name.split("-")[0] == layout_name:
+			return true
+	return false
+
+
+func _on_sidebar_gui_event(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
+		if event.is_pressed():
+			var menu := PopupMenu.new()
+			menu.position = get_local_mouse_position()
+			menu.add_item("Add new layout", 4)
+			menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(null))
+			add_child(menu)
+			menu.popup()
+			menu.visibility_changed.connect(func():
+				if !menu.visible:
+					menu.queue_free())
+
+
+func _on_sidebar_button_gui_event(event: InputEvent, button: Button) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
+		if event.is_pressed():
+			var menu := PopupMenu.new()
+			menu.position = get_local_mouse_position()
+			menu.add_item("Move up", 0)
+			menu.add_item("Move down", 1)
+			menu.add_separator()
+			menu.add_item("Change icon", 2)
+			menu.add_separator()
+			menu.add_item("Remove layout", 3)
+			menu.add_item("Add new layout", 4)
+			menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(button))
+			add_child(menu)
+			menu.popup()
+			menu.mouse_exited.connect(func(): menu.queue_free())
+			menu.visibility_changed.connect(func():
+				if !menu.visible:
+					menu.queue_free())
+
+
+func _on_sidebar_button_menu_pressed(id: int, button: Button) -> void:
+	match id:
+		0: # Move up
+			_move_up(button.name)
+		1: # Move down
+			_move_down(button.name)
+		2: # Change icon
+			# TODO: Open popup to select new icon file
+			# DialogManager
+			#_set_custom_icon(button.name, icon_path)
+			pass
+		3: # Remove layout
+			_remove_layout(button.name)
+		4: # Add new layout
+			add_child(preload("res://ui/popups/add_editor_layout/add_editor_layout.tscn").instantiate())
+
+
+func _move_up(layout_id: String) -> void:
 	## Moving the layout one up in the order of the sidebar and layout container.
 	var button: Node = %SidebarVBox.get_node(layout_id)
 	var container: Node = %LayoutContainer.get_node(layout_id)
@@ -132,7 +193,7 @@ func move_up(layout_id: String) -> void:
 	config.save(config_path)
 
 
-func move_down(layout_id: String) -> void:
+func _move_down(layout_id: String) -> void:
 	## Moving the layout one down in the order of the sidebar and layout container.
 	var button: Node = %SidebarVBox.get_node(layout_id)
 	var container: Node = %LayoutContainer.get_node(layout_id)
@@ -152,7 +213,7 @@ func move_down(layout_id: String) -> void:
 	config.save(config_path)
 
 
-func remove_layout(layout_id: String) -> void:
+func _remove_layout(layout_id: String) -> void:
 	## Removing a layout and related stuff.
 	%SidebarVBox.get_node(layout_id).queue_free()
 	%LayoutContainer.get_node(layout_id).queue_free()
@@ -166,7 +227,7 @@ func remove_layout(layout_id: String) -> void:
 	config.save(config_path)
 
 
-func set_custom_icon(layout_id: String, new_icon_path: String) -> void:
+func _set_custom_icon(layout_id: String, new_icon_path: String) -> void:
 	## Setting a custom icon for a sidebar button.
 	config.set_value("custom_icons", layout_id, new_icon_path)
 	var button: Button = %SidebarVBox.get_node(layout_id)
