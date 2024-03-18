@@ -14,7 +14,7 @@ if platform == "linux": # Linux
   env.Append(LIBS=["avcodec", "avformat", "avfilter", "avdevice", "avutil", "swscale", "swresample"])
   if ci == "yes":
     env.Append(CPPPATH=["ffmpeg-bin/include"])
-    env.Append(LIBPATH=["ffmpeg-bin/bin"])
+    env.Append(LIBPATH=["ffmpeg-bin/lib"])
 elif platform == "windows": # Windows
   print("Windows system detected")
   # First compiling ffmpeg
