@@ -15,9 +15,9 @@ jobs:
       - name: Setup Yasm
         run: sudo apt install -y yasm
       - name: Build FFmpeg
-        run: cd ./src/bin/gde_ffmpeg/ && sh ./build-ffmpeg.sh
+        run: pushd ./src/bin/gde_ffmpeg/ && sh ./build-ffmpeg.sh && popd
       - name: Build GDExtension
-        run: scons target=template_release platform=linux use_ci=yes
+        run: pushd ./src/bin/gde_ffmpeg/ && scons target=template_release platform=linux use_ci=yes && popd
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
