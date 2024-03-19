@@ -56,13 +56,13 @@ var video_tracks: Array = []
 var audio_tracks: Array = []
 
 
-func new_project(title: String, path: String, resolution: Vector2i, framerate: int) -> void:
+func new_project(p_title: String, p_path: String, p_resolution: Vector2i, p_framerate: int) -> void:
 	config = ConfigFile.new()
-	project_path = path
+	project_path = p_path
 	
-	set_title(title, false)
-	set_resolution(resolution)
-	set_framerate(framerate)
+	set_title(p_title, false)
+	set_resolution(p_resolution)
+	set_framerate(p_framerate)
 	add_video_tracks(SettingsManager.get_default_video_tracks())
 	add_audio_tracks(SettingsManager.get_default_audio_tracks())
 	

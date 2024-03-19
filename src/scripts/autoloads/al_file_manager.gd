@@ -1,7 +1,7 @@
 extends Node
 ## File Manager
 
-var path: String = ProjectSettings.get_setting("globals/path/file_manager") 
+@onready var path: String = ProjectSettings.get_setting("globals/path/file_manager") 
 
 var folder_data := {} # Full_path: Array of files
 var file_data   := {} # File_id: File class object
@@ -19,7 +19,6 @@ func _ready():
 
 
 func save_data() -> void:
-	var path: String = ProjectSettings.get_setting("globals/path/file_manager")
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(var_to_str({
 		"folder_data": folder_data, 

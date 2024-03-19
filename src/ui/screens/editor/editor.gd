@@ -136,24 +136,26 @@ func _on_sidebar_gui_event(event: InputEvent) -> void:
 
 
 func _on_sidebar_button_gui_event(event: InputEvent, button: Button) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
-		if event.is_pressed():
-			var menu := PopupMenu.new()
-			menu.position = get_local_mouse_position()
-			menu.add_item("Move up", 0)
-			menu.add_item("Move down", 1)
-			menu.add_separator()
-			menu.add_item("Change icon", 2)
-			menu.add_separator()
-			menu.add_item("Remove layout", 3)
-			menu.add_item("Add new layout", 4)
-			menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(button))
-			add_child(menu)
-			menu.popup()
-			menu.mouse_exited.connect(func(): menu.queue_free())
-			menu.visibility_changed.connect(func():
-				if !menu.visible:
-					menu.queue_free())
+	if not event is InputEventMouseButton or event.button_index == MOUSE_BUTTON_RIGHT:
+		return
+	if !event.is_pressed():
+		return
+	var menu := PopupMenu.new()
+	menu.position = get_local_mouse_position() as Vector2i + menu.size / 2
+	
+	menu.add_item("Move up", 0)
+	menu.add_item("Move down", 1)
+	menu.add_separator()
+	menu.add_item("Change icon", 2)
+	menu.add_separator()
+	menu.add_item("Remove layout", 3)
+	menu.add_item("Add new layout", 4)
+	
+	menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(button))
+	menu.mouse_exited.connect(func(): menu.queue_free())
+	
+	add_child(menu)
+	menu.popup()
 
 
 func _on_sidebar_button_menu_pressed(id: int, button: Button) -> void:

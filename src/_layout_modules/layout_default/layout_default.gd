@@ -84,6 +84,9 @@ func add_module(module_name: String, tab_container: String) -> void:
 	var module: Control = module_data.scene.instantiate()
 	module.name = "%s-%s" % [module_name, randi_range(100000, 999999)]
 	tabs[tab_container].add_child(module)
+	var tab_index: int = module.get_index()
+	var tab_name: String = Toolbox.beautify_name(module_name)
+	tabs[tab_container].get_tab_bar().set_tab_title(tab_index, tab_name)
 	var array: PackedStringArray = config.get_value(SECTION_TABS, tab_container, [])
 	array.append(module_name)
 	config.set_value(SECTION_TABS, tab_container, array)
@@ -99,6 +102,9 @@ func _add_modules(module_names: PackedStringArray, tab_container: String) -> voi
 		var module: Control = module_data.scene.instantiate()
 		module.name = module_name # Adding  existing name with existing identifier
 		tabs[tab_container].add_child(module)
+		var tab_index: int = module.get_index()
+		var tab_name: String = Toolbox.beautify_name(module_name)
+		tabs[tab_container].get_tab_bar().set_tab_title(tab_index, tab_name)
 
 
 func move_module_to_tabs(module_name: String, tabs_origin: String, tabs_dest: String) -> void:

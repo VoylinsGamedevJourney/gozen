@@ -6,7 +6,7 @@ func _ready() -> void:
 	for layout: String in DirAccess.get_directories_at("res://_layout_modules/"):
 		var layout_name: String = layout.trim_prefix("layout_")
 		var entry: Button = button.duplicate()
-		entry.text = layout.replace('_', ' ').capitalize()
+		entry.text = Toolbox.beautify_name(layout)
 		entry.pressed.connect(_on_layout_button_pressed.bind(layout_name))
 		var layout_data: LayoutModule = load("res://_layout_modules/layout_%s/info.tres" % layout_name)
 		if layout_data.single_only:

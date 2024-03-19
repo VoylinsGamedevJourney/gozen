@@ -25,3 +25,7 @@ var duration: int
 var nickname: String
 var file_effects: Array
 var effects: Array
+
+
+func get_icon() -> Resource:
+	return icon[type]

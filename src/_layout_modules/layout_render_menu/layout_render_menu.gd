@@ -10,14 +10,3 @@ extends Control
 # use a RenderProfile class and use var_to_str and str_to_var
 # TODO: Render settings should have a dropdown with the necesarry settings
 # displayed underneath the dropdown which change after selecting a render profile.
-
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

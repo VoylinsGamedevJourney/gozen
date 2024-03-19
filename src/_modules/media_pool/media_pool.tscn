@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://2me1rcywnmph"]
 
-[ext_resource type="Script" path="res://_modules/media_pool/media_pool.gd" id="1_nq208"]
+[ext_resource type="Script" path="res://_modules/media_pool/tree.gd" id="2_dc37s"]
 
 [node name="MediaPool" type="TabContainer"]
 anchors_preset = 15
@@ -8,32 +8,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+current_tab = 0
 use_hidden_tabs_for_min_size = true
-script = ExtResource("1_nq208")
 
-[node name="Project files" type="TabBar" parent="."]
+[node name="project_tree" type="Tree" parent="."]
 layout_mode = 2
-
-[node name="project_tree" type="Tree" parent="Project files"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-hide_root = true
 select_mode = 2
+script = ExtResource("2_dc37s")
 
-[node name="Global Files" type="TabBar" parent="."]
+[node name="global_tree" type="Tree" parent="."]
 visible = false
 layout_mode = 2
-
-[node name="global_tree" type="Tree" parent="Global Files"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-hide_root = true
 select_mode = 2
+script = ExtResource("2_dc37s")
+global = true
+
+[connection signal="button_clicked" from="project_tree" to="project_tree" method="_on_button_clicked"]
+[connection signal="empty_clicked" from="project_tree" to="project_tree" method="_on_empty_clicked"]
+[connection signal="button_clicked" from="global_tree" to="global_tree" method="_on_button_clicked"]
+[connection signal="empty_clicked" from="global_tree" to="global_tree" method="_on_empty_clicked"]
