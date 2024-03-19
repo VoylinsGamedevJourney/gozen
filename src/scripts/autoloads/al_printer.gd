@@ -1,9 +1,5 @@
 extends Node
-# TODO:
-#  Create log files where this info gets written to.
-#  Reason: Could help with debugging problems but only write to file
-#          when debug build. For Release there will be a toggle in settings
-#          to enable logging.
+
 
 var log_file : FileAccess
 var log_path : String
@@ -63,16 +59,18 @@ func _print_wall(color: String, data: Array) -> void:
 ###############################################################
 
 func _create_log() -> void:
-	var date_time: Dictionary = Time.get_datetime_dict_from_system()
-	log_path = "user://log_{year}-{month}-{day}_{hour}-{minute}-{second}".format(date_time)
-	log_file = FileAccess.open(log_path, FileAccess.WRITE)
+	return # FIXME Files not writing properly
+	#var date_time: Dictionary = Time.get_datetime_dict_from_system()
+	#log_path = "user://log_{year}-{month}-{day}_{hour}-{minute}-{second}".format(date_time)
+	#log_file = FileAccess.open(log_path, FileAccess.WRITE)
 
 
-func _add_to_log(message: String) -> void:
-	if !log_file.is_open():
-		print("not open")
-		log_file = FileAccess.open(log_path, FileAccess.WRITE)
-	log_file.store_line(message)
+func _add_to_log(_message: String) -> void:
+	return # FIXME Files not writing properly
+	#if !log_file.is_open():
+		#print("not open")
+		#log_file = FileAccess.open(log_path, FileAccess.WRITE)
+	#log_file.store_line(message)
 
 #endregion
 ###############################################################
