@@ -3,8 +3,6 @@ extends Control
 ##
 ## Creates a layout with 10 different resize-able panels/tab containers. 
 
-# TODO: Create the system for people to add/move modules
-# TODO: Hide tabs when only 1 tab is present
 # TODO: Make module instances have a custom ID, but different tab name
 # 		Possible solution, create module node with module name, inside that
 #		Control node the actual module with the idin the name

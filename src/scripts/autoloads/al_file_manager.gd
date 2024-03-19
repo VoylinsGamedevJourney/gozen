@@ -51,7 +51,17 @@ func remove_file(folder: String, file_id: String, _file_data: Dictionary, _folde
 
 
 func remove_folder(folder_path: String, _file_data: Dictionary, _folder_data: Dictionary) -> void:
-	# TODO: Remove files from folder and possible subfolders
-	_folder_data.erase(folder_path)
+	# Getting all subfolders so we can delete them whilst making list of all files
+	var file_ids: PackedStringArray = []
+	for folder: String in _folder_data:
+		if folder_path in folder:
+			file_ids.append_array(_folder_data[folder])
+			_folder_data.erase(folder)
+	
+	# Deleting all files from the deleted folder and subfolders
+	for file_id: String in file_ids:
+		_file_data.erase(file_id)
+	
+	# Checking if global data or not, project files/folders get saved separately
 	if _folder_data == folder_data:
 		save_data()

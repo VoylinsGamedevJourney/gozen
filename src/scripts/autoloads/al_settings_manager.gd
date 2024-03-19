@@ -49,7 +49,7 @@ func open_project_settings_popup() -> void:
 #################################################################
 
 ###############################################################
-#region Setting: Language  ####################################
+#region Language  #############################################
 ###############################################################
 
 func get_language() -> String:
@@ -64,7 +64,19 @@ func set_language(new_language: String) -> void:
 
 #endregion
 ###############################################################
+#region Debug enabled  ########################################
+###############################################################
 
+func get_debug_enabled() -> String:
+	return config.get_value("general", "debug_enabled", true)
+
+
+func set_debug_enabled(new_value: String) -> void:
+	config.set_value("general", "debug_enabled", new_value)
+	_save_settings()
+
+#endregion
+###############################################################
 
 #################################################################
 ##

@@ -15,10 +15,6 @@ class_name EditorUI extends HBoxContainer
 ## - layout_id: icon path
 
 
-# TODO: Add option menu to sidebar to add layout, move up/down,
-#       add custom icon and delete layout (Right menu click)
-
-
 static var instance: EditorUI
 
 var sidebar_button_menu: PopupMenu
