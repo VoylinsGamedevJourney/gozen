@@ -34,16 +34,16 @@ jobs:
           install: >-
             curl
             git
+            mingw-w64-cross-binutils
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-yasm
+            diffutils
+            make
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Update pacman
-        shell: msys2 {0}
-        run: pacman -Suy
-      - name: Install stuff
-        shell: msys2 {0}
-        run: pacman -S --noconfirm mingw-w64-cross-binutils mingw-w64-x86_64-toolchain mingw-w64-x86_64-scons mingw-w64-x86_64-yasm diffutils make
       - name: Build FFmpeg
         run: pushd ./src/bin/gde_ffmpeg/ && sh ./build-ffmpeg.sh && popd
       - name: Build GDExtension
