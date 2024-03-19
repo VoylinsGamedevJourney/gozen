@@ -31,6 +31,7 @@ jobs:
         with:
           msystem: MINGW64
           update: true
+          location: D:\
           install: >-
             curl
             git
@@ -40,6 +41,7 @@ jobs:
             mingw-w64-x86_64-yasm
             diffutils
             make
+      - run: echo "D:\msys64\mingw64\bin\" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Checkout
         uses: actions/checkout@v4
         with:
