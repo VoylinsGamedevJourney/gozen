@@ -28,7 +28,6 @@ func do(function: Callable, undo_function: Callable, do_args: Array = [], undo_a
 
 func undo() -> void:
 	if actions.size() == 0:
-		print("Nothing to undo!")
 		return
 	var action: Action = actions[action_current]
 	action.undo_function.call(action.undo_args)
@@ -38,7 +37,6 @@ func undo() -> void:
 
 func redo() -> void:
 	if actions.size() < action_current:
-		print("Nothing to redo!")
 		return
 	action_current += 1 
 	var action: Action = actions[action_current]

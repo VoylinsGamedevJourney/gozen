@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="LayoutModule" load_steps=4 format=3 uid="uid://kbs865phcknx"]
 
 [ext_resource type="Script" path="res://scripts/classes/resources/layout_module.gd" id="1_00kkd"]
-[ext_resource type="PackedScene" uid="uid://cfo5kjkjmgvky" path="res://_layout_modules/layout_default/layout_default.tscn" id="1_1ivqy"]
+[ext_resource type="PackedScene" uid="uid://cfo5kjkjmgvky" path="res://_layouts/layout_default/layout_default.tscn" id="1_1ivqy"]
 [ext_resource type="Texture2D" uid="uid://duo114j3quanx" path="res://assets/icons/refresh.png" id="1_864bp"]
 
 [resource]

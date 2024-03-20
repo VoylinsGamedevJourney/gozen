@@ -1,9 +1,7 @@
 extends Node
 
 signal _on_language_changed(new_language: String)
-
 signal _on_top_bar_positions_changed
-
 
 var config := ConfigFile.new()
 
@@ -42,15 +40,7 @@ func open_project_settings_popup() -> void:
 	popup.name = popup_name
 	get_tree().root.add_child(popup)
 
-#################################################################
-##
-##      GENERAL  -  GETTERS AND SETTERS
-##
-#################################################################
-
-###############################################################
-#region Language  #############################################
-###############################################################
+#region  Getters and setters  ##################################################
 
 func get_language() -> String:
 	return config.get_value("general", "language", "en")
@@ -62,12 +52,8 @@ func set_language(new_language: String) -> void:
 	_on_language_changed.emit(new_language)
 	_save_settings()
 
-#endregion
-###############################################################
-#region Debug enabled  ########################################
-###############################################################
 
-func get_debug_enabled() -> String:
+func get_debug_enabled() -> bool:
 	return config.get_value("general", "debug_enabled", true)
 
 
@@ -75,18 +61,6 @@ func set_debug_enabled(new_value: String) -> void:
 	config.set_value("general", "debug_enabled", new_value)
 	_save_settings()
 
-#endregion
-###############################################################
-
-#################################################################
-##
-##      TIMELINE  -  GETTERS AND SETTERS
-##
-#################################################################
-
-###############################################################
-#region Default video tracks  #################################
-###############################################################
 
 func get_default_video_tracks() -> int:
 	return config.get_value("timeline", "default_video_tracks", 3)
@@ -96,10 +70,6 @@ func set_default_video_tracks(new_default: int) -> void:
 	config.set_value("timeline", "default_video_tracks", new_default)
 	_save_settings()
 
-#endregion
-###############################################################
-#region Default audio tracks  #################################
-###############################################################
 
 func get_default_audio_tracks() -> int:
 	return config.get_value("timeline", "default_audio_tracks", 3)
@@ -109,18 +79,6 @@ func set_default_audio_tracks(new_default: int) -> void:
 	config.set_value("timeline", "default_audio_tracks", new_default)
 	_save_settings()
 
-#endregion
-###############################################################
-
-#################################################################
-##
-##      TOP BAR MENU  -  GETTERS AND SETTERS
-##
-#################################################################
-
-###############################################################
-#region Top Bar menu position  ################################
-###############################################################
 
 func get_top_bar_menu_position(button_name: String) -> int:
 	return config.get_value("top_bar", "button_%s" % button_name, 0)
@@ -139,16 +97,6 @@ func set_top_bar_menu_position(button_name: String, new_pos: int) -> void:
 	_save_settings()
 	_on_top_bar_positions_changed.emit()
 
-#endregion
-#################################################################
-##
-##      Viewport  -  GETTERS AND SETTERS
-##
-#################################################################
-
-###############################################################
-#region Embed subwindows  #####################################
-###############################################################
 
 func get_embed_subwindows() -> bool:
 	return config.get_value("viewport", "embed_subwindows", true)
@@ -159,5 +107,8 @@ func set_embed_subwindows(value: bool) -> void:
 	config.set_value("viewport", "embed_subwindows", value)
 	_save_settings()
 
-#region
-###############################################################
+#endregion
+#region  ProjectSetting Getters  ###############################################
+
+
+#endregion

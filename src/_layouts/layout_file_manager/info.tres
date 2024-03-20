@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://b2lbweyckvws7" path="res://assets/icons/folder_open.png" id="1_j4tjr"]
 [ext_resource type="Script" path="res://scripts/classes/resources/layout_module.gd" id="1_vxma7"]
-[ext_resource type="PackedScene" uid="uid://vcw6xyb5mav2" path="res://_layout_modules/layout_file_manager/layout_file_manager.tscn" id="2_iknlg"]
+[ext_resource type="PackedScene" uid="uid://vcw6xyb5mav2" path="res://_layouts/layout_file_manager/layout_file_manager.tscn" id="2_iknlg"]
 
 [resource]
 script = ExtResource("1_vxma7")

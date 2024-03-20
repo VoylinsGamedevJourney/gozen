@@ -11,14 +11,10 @@ static var instance: ScreenMain
 func _ready() -> void:
 	## Setting the ScreenMain instance to the current node, this helps
 	## other scripts to call show_screen and close_screen.
-	if instance != null:
-		Printer.error("Something went wrong! Can't have two 'screen_main' instances!")
-		get_tree().quit(-1)
-		return
 	ScreenMain.instance = self
 	
 	var arguments := OS.get_cmdline_args()
-	if arguments.size() == 2 and arguments[1].strip_edges().to_lower().contains(".gozen"):
+	if arguments.size() == 2 and Toolbox.check_extension(arguments[1], ["gozen"]):
 		ProjectManager.load_project(arguments[1].strip_edges())
 	else:
 		%Content.add_child(preload("res://ui/screens/startup/startup.tscn").instantiate())

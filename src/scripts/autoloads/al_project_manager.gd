@@ -72,7 +72,7 @@ func new_project(p_title: String, p_path: String, p_resolution: Vector2i, p_fram
 
 
 func load_project(path: String) -> void:
-	if !path.to_lower().contains(".gozen"):
+	if !Toolbox.check_extension(path, ["gozen"]):
 		var new_path: String = "%s.gozen" % path
 		if !FileAccess.file_exists(new_path):
 			Printer.error("Can't load project as path does not have '*.gozen' extension!\n\t%s" % path)

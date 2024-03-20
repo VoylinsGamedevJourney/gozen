@@ -33,7 +33,7 @@ func _create_recent_project_button(data: RecentProject, parent: Node) -> void:
 
 
 func _file_selected(path: String) -> void:
-	if path.contains(".gozen"):
+	if Toolbox.check_extension(path, ["gozen"]):
 		ProjectManager.load_project(path)
 		self.queue_free()
 	else:
@@ -86,7 +86,7 @@ func _on_select_path_button_pressed():
 func _on_file_selected(path: String) -> void:
 	if %TitleLineEdit.text == "":
 		%TitleLineEdit.text = path.split('/')[-1].to_pascal_case()
-	if !path.contains(".gozen"):
+	if !Toolbox.check_extension(path, ["gozen"]):
 		%PathLineEdit.text = path + ".gozen"
 	else:
 		%PathLineEdit.text = path

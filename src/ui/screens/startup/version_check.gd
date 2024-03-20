@@ -19,14 +19,18 @@ func _request_completed(result: int, response_code: int, _h, body: PackedByteArr
 	## When a request has been completed, this will be checked if we could find the
 	## config file, if yes, we load it in and we compare to the local config file.
 	if result != OK or response_code == 404:
-		Printer.debug("Could not get any info")
-		return false # Could not get the page, no connection
+		return false # Could not get the page, possibly no connection?
 	var config := ConfigFile.new()
 	config.parse(body.get_string_from_utf8())
-	var v_remote: PackedInt32Array = get_version(config.get_value("application/config", "version_stable", "0.0.0"))
-	var v_local: PackedInt32Array = get_version(ProjectSettings.get_setting("application/config/version"))
+	# Getting version strings
+	var stable_version: String = config.get_value("application/config", "version_stable", "0.0.0")
+	var local_version: String = ProjectSettings.get_setting("application/config/version")
+	# Version checking
+	var v_remote: PackedInt32Array = get_version(stable_version)
+	var v_local: PackedInt32Array = get_version(local_version)
 	for i: int in 3:
 		if v_remote[i] > v_local[i]:
+			Printer.debug("New version is available!\n\tVersion: %s" % stable_version)
 			return true
 		elif v_remote[i] < v_local[i]:
 			return false

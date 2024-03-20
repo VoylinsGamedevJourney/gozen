@@ -25,7 +25,7 @@ func _ready() -> void:
 	_check_node($MainSplit) # (looping function)
 	
 	# Check if config exists
-	config_path = ModuleManager.get_config_path("layout_modules", name)
+	config_path = ModuleManager.get_config_file(ModuleManager.TYPE.LAYOUT, name)
 	if FileAccess.file_exists(config_path):
 		load_config()
 	else:
@@ -80,7 +80,7 @@ func add_module(module_name: String, tab_container: String) -> void:
 	## with the updated info.
 	var module_data: Module = load(PATH_MODULE_DATA % module_name)
 	var module: Control = module_data.scene.instantiate()
-	module.name = "%s-%s" % [module_name, randi_range(100000, 999999)]
+	module.name = ModuleManager.create_module_id(ModuleManager.TYPE.MODULE, module_name)
 	tabs[tab_container].add_child(module)
 	var tab_index: int = module.get_index()
 	var tab_name: String = Toolbox.beautify_name(module_name)
@@ -117,32 +117,6 @@ func move_module_to_tabs(module_name: String, tabs_origin: String, tabs_dest: St
 	new_dest.append(module_name)
 	config.set_value(SECTION_TABS, tabs_origin, new_origin)
 	config.set_value(SECTION_TABS, tabs_dest, new_dest)
-	config.save(config_path)
-
-
-func move_module_order_up(module_name: String, tab_container: String) -> void:
-	## Changing the order up of which a module appears as a tab
-	var module: Control = tabs[tab_container].get_node(module_name)
-	var module_pos: int = module.get_index()
-	module.move_child(module, clampi(module_pos + 1, 0, tabs[tab_container].get_child_count()))
-	
-	var new_order: PackedStringArray = []
-	for child: Node in tabs[tab_container].get_children():
-		new_order.append(child.name)
-	config.set_value(SECTION_TABS, tab_container, new_order)
-	config.save(config_path)
-
-
-func move_module_order_down(module_name: String, tab_container: String) -> void:
-	## Changing the order down of which a module appears as a tab
-	var module: Control = tabs[tab_container].get_node(module_name)
-	var module_pos: int = module.get_index()
-	module.move_child(module, clampi(module_pos + 1, 0, tabs[tab_container].get_child_count()))
-	
-	var new_order: PackedStringArray = []
-	for child: Node in tabs[tab_container].get_children():
-		new_order.append(child.name)
-	config.set_value(SECTION_TABS, tab_container, new_order)
 	config.save(config_path)
 
 

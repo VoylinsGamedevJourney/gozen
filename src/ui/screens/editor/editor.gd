@@ -65,7 +65,7 @@ func change_layout(id: int) -> void:
 
 func add_layout(layout_name: String, id: String = "") -> void:
 	# Check if single use only or if a layout can be used in multiple instances
-	var layout_data: LayoutModule = load("res://_layout_modules/layout_%s/info.tres" % layout_name)
+	var layout_data: LayoutModule = ModuleManager.get_layout_info(layout_name)
 	if layout_data.single_only:
 		if check_single_existing(layout_name):
 			Printer.error("Module is single only, already in sidebar present!")
@@ -89,7 +89,7 @@ func add_layout(layout_name: String, id: String = "") -> void:
 		layout.name = id
 		button.name = id
 		if config.has_section_key("custom_icons", id):
-			button.icon = config.get_value("custom_icons", id)
+			button.icon = load(config.get_value("custom_icons", id))
 	
 	# Setting button data
 	button.expand_icon = true
@@ -121,7 +121,8 @@ func _on_sidebar_gui_event(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.is_pressed():
 			var menu := PopupMenu.new()
-			menu.position = get_local_mouse_position()
+			menu.size.y = 10
+			menu.position = get_global_mouse_position()
 			menu.add_item("Add new layout", 4)
 			menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(null))
 			add_child(menu)
@@ -132,12 +133,13 @@ func _on_sidebar_gui_event(event: InputEvent) -> void:
 
 
 func _on_sidebar_button_gui_event(event: InputEvent, button: Button) -> void:
-	if not event is InputEventMouseButton or event.button_index == MOUSE_BUTTON_RIGHT:
+	if not event is InputEventMouseButton or event.button_index != MOUSE_BUTTON_RIGHT:
 		return
 	if !event.is_pressed():
 		return
 	var menu := PopupMenu.new()
-	menu.position = get_local_mouse_position() as Vector2i + menu.size / 2
+	menu.size.y = 10
+	menu.position = get_global_mouse_position()
 	
 	menu.add_item("Move up", 0)
 	menu.add_item("Move down", 1)
@@ -157,51 +159,40 @@ func _on_sidebar_button_gui_event(event: InputEvent, button: Button) -> void:
 func _on_sidebar_button_menu_pressed(id: int, button: Button) -> void:
 	match id:
 		0: # Move up
-			_move_up(button.name)
+			move_layout_up(button.name)
 		1: # Move down
-			_move_down(button.name)
+			move_layout_down(button.name)
 		2: # Change icon
-			# TODO: Open popup to select new icon file
-			# DialogManager
-			#_set_custom_icon(button.name, icon_path)
-			pass
+			var dialog := DialogManager.get_layout_icon_dialog()
+			dialog.file_selected.connect(_set_custom_icon.bind(button.name))
+			dialog.canceled.connect(func() -> void: dialog.queue_free())
+			add_child(dialog)
+			dialog.popup_centered(Vector2i(500,600))
 		3: # Remove layout
 			_remove_layout(button.name)
 		4: # Add new layout
 			add_child(preload("res://ui/popups/add_editor_layout/add_editor_layout.tscn").instantiate())
 
 
-func _move_up(layout_id: String) -> void:
-	## Moving the layout one up in the order of the sidebar and layout container.
-	var button: Node = %SidebarVBox.get_node(layout_id)
-	var container: Node = %LayoutContainer.get_node(layout_id)
-	var button_pos := button.get_index()
-	%SidebarVBox.move_child(
-		button, 
-		clampi(button_pos-1, 0, %SidebarVBox.get_child_count()))
-	%LayoutContainer.move_child(
-		container, 
-		clampi(button_pos-1, 0, %SidebarVBox.get_child_count()))
-	# Saving new order of layouts
-	var new_order: PackedStringArray = []
-	for child: Node in %SidebarVBox.get_children():
-		new_order.append(child.name)
-	config.set_value("general", "layouts_order", new_order)
-	remove_custom_icon(layout_id)
-	config.save(config_path)
+func move_layout_up(layout_id: String) -> void:
+	_move_layout(layout_id, -1)
 
 
-func _move_down(layout_id: String) -> void:
+func move_layout_down(layout_id: String) -> void:
+	_move_layout(layout_id, +1)
+
+
+func _move_layout(layout_id: String, pos: int) -> void:
 	## Moving the layout one down in the order of the sidebar and layout container.
 	var button: Node = %SidebarVBox.get_node(layout_id)
 	var container: Node = %LayoutContainer.get_node(layout_id)
 	var button_pos := button.get_index()
 	%SidebarVBox.move_child(
 		button, 
-		clampi(button_pos+1, 0, %SidebarVBox.get_child_count()))
+		clampi(button_pos + pos, 0, %SidebarVBox.get_child_count()))
 	%LayoutContainer.move_child(
 		container, 
-		clampi(button_pos+1, 0, %SidebarVBox.get_child_count()))
+		clampi(button_pos + pos, 0, %SidebarVBox.get_child_count()))
 	# Saving new order of layouts
 	var new_order: PackedStringArray = []
 	for child: Node in %SidebarVBox.get_children():
@@ -225,8 +216,11 @@ func _remove_layout(layout_id: String) -> void:
 	config.save(config_path)
 
 
-func _set_custom_icon(layout_id: String, new_icon_path: String) -> void:
+func _set_custom_icon(new_icon_path: String, layout_id: String) -> void:
 	## Setting a custom icon for a sidebar button.
+	if !FileAccess.file_exists(new_icon_path):
+		Printer.error("No image file found at %s!" % new_icon_path)
+		return
 	config.set_value("custom_icons", layout_id, new_icon_path)
 	var button: Button = %SidebarVBox.get_node(layout_id)
 	button.icon = load(new_icon_path)
