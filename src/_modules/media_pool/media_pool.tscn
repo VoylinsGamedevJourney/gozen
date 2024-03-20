@@ -1,29 +1,80 @@
-[gd_scene load_steps=2 format=3 uid="uid://2me1rcywnmph"]
+[gd_scene load_steps=4 format=3 uid="uid://2me1rcywnmph"]
 
+[ext_resource type="Script" path="res://_modules/media_pool/media_pool.gd" id="1_my3i6"]
 [ext_resource type="Script" path="res://_modules/media_pool/tree.gd" id="2_dc37s"]
 
-[node name="MediaPool" type="TabContainer"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_i1kj8"]
+
+[node name="MediaPool" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 0
-use_hidden_tabs_for_min_size = true
+script = ExtResource("1_my3i6")
 
-[node name="project_tree" type="Tree" parent="."]
+[node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
-select_mode = 2
-script = ExtResource("2_dc37s")
 
-[node name="global_tree" type="Tree" parent="."]
-visible = false
+[node name="FolderButtons" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
-select_mode = 2
+
+[node name="SwitchProjectButton" type="Button" parent="VBox/FolderButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_i1kj8")
+text = "Project"
+
+[node name="SwitchGlobalButton" type="Button" parent="VBox/FolderButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_i1kj8")
+text = "Global"
+
+[node name="SearchLineEdit" type="LineEdit" parent="VBox"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="GlobalPanelScroll" type="ScrollContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GlobalPanel" type="PanelContainer" parent="VBox/GlobalPanelScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GlobalTree" type="Tree" parent="VBox/GlobalPanelScroll/GlobalPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+allow_rmb_select = true
 script = ExtResource("2_dc37s")
 global = true
 
-[connection signal="button_clicked" from="project_tree" to="project_tree" method="_on_button_clicked"]
-[connection signal="empty_clicked" from="project_tree" to="project_tree" method="_on_empty_clicked"]
-[connection signal="button_clicked" from="global_tree" to="global_tree" method="_on_button_clicked"]
-[connection signal="empty_clicked" from="global_tree" to="global_tree" method="_on_empty_clicked"]
+[node name="ProjectPanelScroll" type="ScrollContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProjectPanel" type="PanelContainer" parent="VBox/ProjectPanelScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ProjectTree" type="Tree" parent="VBox/ProjectPanelScroll/ProjectPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+allow_rmb_select = true
+script = ExtResource("2_dc37s")
+
+[connection signal="pressed" from="VBox/FolderButtons/SwitchProjectButton" to="." method="_on_switch_project_button_pressed"]
+[connection signal="pressed" from="VBox/FolderButtons/SwitchGlobalButton" to="." method="_on_switch_global_button_pressed"]
+[connection signal="text_changed" from="VBox/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
+[connection signal="empty_clicked" from="VBox/GlobalPanelScroll/GlobalPanel/GlobalTree" to="VBox/GlobalPanelScroll/GlobalPanel/GlobalTree" method="_on_empty_clicked"]
+[connection signal="item_mouse_selected" from="VBox/GlobalPanelScroll/GlobalPanel/GlobalTree" to="VBox/GlobalPanelScroll/GlobalPanel/GlobalTree" method="_on_item_mouse_selected"]
+[connection signal="empty_clicked" from="VBox/ProjectPanelScroll/ProjectPanel/ProjectTree" to="VBox/ProjectPanelScroll/ProjectPanel/ProjectTree" method="_on_empty_clicked"]
+[connection signal="item_mouse_selected" from="VBox/ProjectPanelScroll/ProjectPanel/ProjectTree" to="VBox/ProjectPanelScroll/ProjectPanel/ProjectTree" method="_on_item_mouse_selected"]

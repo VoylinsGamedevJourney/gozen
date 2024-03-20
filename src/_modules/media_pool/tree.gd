@@ -1,20 +1,25 @@
 extends Tree
+# NOTE: if item.get_text(1) in get_file_data()
 
-enum POPUP_TYPE { MINIMAL, FOLDER, FILE }
+enum POPUP_TYPE { MINIMAL, FULL }
 
 @export var global: bool = false
 
 var icon_folder := preload("res://assets/icons/icon_folder.png")
+var icon_max_width := 20
+
+var folder_items := {}
+var file_items := {}
 
 
 func _ready() -> void:
-	# Renaming the tab
-	var tab_bar: TabBar = get_parent().get_tab_bar()
-	tab_bar.set_tab_title(get_index(), Toolbox.beautify_name(name))
+	# Creating the root item
+	var root := create_item()
+	root.set_text(0, "root")
+	root.set_icon(0, icon_folder)
+	root.set_icon_max_width(0, icon_max_width)
 	
 	# Loading structure
-	var root := create_item() # Creating the root item
-	root.set_text(0, "root")
 	if global:
 		load_structure()
 	else:
@@ -40,11 +45,7 @@ func _load_folders(path: String, files: Array) -> void:
 	# Creating the folder structure
 	var current_folder: TreeItem = get_root()
 	for folder: String in path.split('/'):
-		var new_folder := create_item(current_folder)
-		new_folder.set_text(0, folder)
-		new_folder.set_text(1, path)
-		new_folder.set_icon(0, icon_folder)
-		current_folder = new_folder
+		current_folder = _new_folder(current_folder, folder, path)
 	_load_files(current_folder, files)
 
 
@@ -52,43 +53,56 @@ func _load_files(folder: TreeItem, files: PackedStringArray) -> void:
 	# Adding all files to the folder structure
 	for file_id: String in files:
 		var file_data: File = get_file_data()[file_id]
-		var file_item := create_item(folder)
-		file_item.set_text(0, file_data.nickname)
-		file_item.set_text(1, file_id)
-		file_item.set_icon(0, file_data.get_icon())
-		if file_data is FileActual:
-			file_item.set_tooltip_text(0, file_data.file_path)
+		_new_file(folder, file_id, file_data)
 
 
-func create_popup(mouse_position: Vector2, type: POPUP_TYPE, item: TreeItem) -> PopupMenu:
+func _new_folder(parent: TreeItem, folder_name: String, folder_path: String) -> TreeItem:
+	var item := create_item(parent)
+	item.set_text(0, folder_name)
+	item.set_icon(0, icon_folder)
+	item.set_icon_max_width(0, icon_max_width)
+	folder_items[item] = folder_path
+	return item
+
+
+func _new_file(parent: TreeItem, file_id: String, data: File) -> TreeItem:
+	var item := create_item(parent)
+	item.set_text(0, data.nickname)
+	item.set_icon(0, data.get_icon())
+	item.set_icon_max_width(0, icon_max_width)
+	if data is FileActual:
+		item.set_tooltip_text(0, data.file_path)
+	file_items[item] = file_id
+	return item
+
+
+func create_popup(type: POPUP_TYPE, item: TreeItem) -> PopupMenu:
 	var popup := PopupMenu.new()
-	popup.position = mouse_position as Vector2i + popup.size / 2
-	popup.add_item("Add file(s)", 0)
-	popup.add_item("Add folder", 1)
 	popup.id_pressed.connect(_on_item_clicked.bind(popup, item))
 	popup.mouse_exited.connect(func(): popup.queue_free())
-	#if !full_menu:
-		#return popup
+	popup.position = get_global_mouse_position() as Vector2i
+	popup.size = Vector2i(160, 10)
+	popup.add_item("Add file(s)", 0)
+	popup.add_item("Add folder", 1)
+	if type == POPUP_TYPE.MINIMAL:
+		return popup
 	popup.add_separator()
 	popup.add_item("Rename", 2)
 	return popup
 
 
-func _on_empty_clicked(mouse_position: Vector2, mouse_button_index: int) -> void:
-	print("empty clicked")
+func _on_empty_clicked(_mouse_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		var popup := create_popup(mouse_position, POPUP_TYPE.MINIMAL, get_root())
+		var popup := create_popup(POPUP_TYPE.MINIMAL, get_root())
 		add_child(popup)
 		popup.popup()
 
 
-func _on_button_clicked(item: TreeItem, c: int, id: int, mouse_button_index: int) -> void:
+func _on_item_mouse_selected(_position: Vector2, mouse_button_index: int) -> void:
 	# TODO: Double click = rename
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		var popup := create_popup(
-			get_local_mouse_position(), 
-			POPUP_TYPE.FILE if item.get_text(1) in get_file_data() else POPUP_TYPE.FOLDER,
-			item)
+		var item: TreeItem = get_selected()
+		var popup := create_popup(POPUP_TYPE.FULL, item)
 		add_child(popup)
 		popup.popup()
 
@@ -105,21 +119,54 @@ func _on_item_clicked(id: int, popup: PopupMenu, item: TreeItem) -> void:
 
 
 func open_file_dialog(folder: TreeItem) -> void:
-	pass # TODO: make this work
+	var dialog := DialogManager.get_file_import_dialog()
+	dialog.files_selected.connect(add_files.bind(folder))
+	dialog.file_selected.connect(add_file.bind(folder))
+	dialog.canceled.connect(func() -> void: dialog.queue_free())
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(500,600))
 
 
 func add_folder(folder: TreeItem) -> void:
-	var new_item := create_item(folder, 0)
+	# Creating path
 	var path := "new_folder"
-	new_item.set_text(0, path)
+	var current_folder := folder
 	while true:
-		folder = folder.get_parent()
-		if !folder:
+		path = "%s/%s" % [current_folder.get_text(0), path]
+		current_folder = current_folder.get_parent()
+		if !current_folder:
+			if path.split('/')[0] == "root":
+				path = path.trim_prefix("root/")
 			break
-		path += folder.get_text(0)
+	
+	# Checking if folder name is taken already or not
+	var keys: PackedStringArray = get_folder_data().keys()
+	while path in keys:
+		for folder_path: String in keys:
+			if path != folder_path:
+				break; # Early break out if path is unique
+			if int(path[-1]) in range(10):
+				var nr: int = path.split("_")[-1].to_int()
+				path = "%s_%s" % [path.trim_suffix('_' + str(nr)), str(nr + 1)]
+			else:
+				path += "_1" # TODO: Fix this later to increment number instead
+	
+	_new_folder(folder, path.split('/')[-1], path)
+	FileManager.add_folder(path, FileManager.folder_data if global else ProjectManager.folder_data)
 	# TODO: Directly focus on renaming and only saving new folder after
 	# by calling a rename_item function?
 
 
-func rename_item(item) -> void:
+func add_file(path: String, folder: TreeItem) -> void:
+	print(path)
+	print(folder)
+	pass
+
+
+func add_files(paths: PackedStringArray, folder: TreeItem) -> void:
+	for path: String in paths:
+		add_file(path, folder)
+
+
+func rename_item(_item: TreeItem) -> void:
 	pass # TODO: Make this work
