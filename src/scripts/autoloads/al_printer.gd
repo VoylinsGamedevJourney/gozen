@@ -53,24 +53,24 @@ func _print_wall(color: String, data: Array) -> void:
 		_add_to_log("%s: %s" % [line[0], line[1]])
 		print_rich("[color=%s][b]%s:[/b] %s" % [color, line[0], line[1]])
 
-
-###############################################################
-#region Log File Handler  #####################################
-###############################################################
+#region  Log File Handler  #####################################################
 
 func _create_log() -> void:
-	return # FIXME Files not writing properly
-	#var date_time: Dictionary = Time.get_datetime_dict_from_system()
-	#log_path = "user://log_{year}-{month}-{day}_{hour}-{minute}-{second}".format(date_time)
-	#log_file = FileAccess.open(log_path, FileAccess.WRITE)
+	if Engine.has_singleton("EditorInterface"):
+		return
+	log_path = "user://log_{year}-{month}-{day}".format(Time.get_date_dict_from_system())
+	if FileAccess.file_exists(log_path):
+		log_file = FileAccess.open(log_path, FileAccess.READ_WRITE)
+	else:
+		log_file = FileAccess.open(log_path, FileAccess.WRITE)
 
 
-func _add_to_log(_message: String) -> void:
-	return # FIXME Files not writing properly
-	#if !log_file.is_open():
-		#print("not open")
-		#log_file = FileAccess.open(log_path, FileAccess.WRITE)
-	#log_file.store_line(message)
+func _add_to_log(message: String) -> void:
+	if Engine.has_singleton("EditorInterface"):
+		return
+	message = "{hour}-{minute}-{second}  " + message
+	log_file.seek_end()
+	log_file.store_line(message.format(Time.get_time_dict_from_system()))
+	log_file.flush()
 
 #endregion
-###############################################################
