@@ -1,10 +1,32 @@
 #include "interface.hpp"
 
 
-Dictionary GoZenInterface::get_supported_codecs() {
-	Dictionary dic = {};
-	Dictionary audio = {};
-	Dictionary video = {};
+Array GoZenInterface::get_supported_video_codecs() {
+	Array codecs = Array();
+	std::pair<CODEC, String> video_codecs[] = {
+		{H264, "H264"},
+		{H265, "H265"},
+		{MPEG1, "MPEG1"},
+		{MPEG2, "MPEG2"},
+		{MPEG4, "MPEG4"},
+		{VP8, "VP8"},
+		{VP9, "VP9"},
+		{AV1, "AV1"},
+	};
+	for (const auto& v_codec : video_codecs) {
+		const AVCodec* codec = avcodec_find_encoder(static_cast<AVCodecID>(v_codec.first));
+		Dictionary entry = {};
+		entry["codec_id"] = v_codec.second;
+		entry["supported"] = is_codec_supported(v_codec.first);
+		entry["hardware_accel"] = codec->capabilities & AV_CODEC_CAP_HARDWARE;
+		codecs.append(entry);
+	}
+	return codecs;
+}
+
+
+Array GoZenInterface::get_supported_audio_codecs() {
+	Array codecs = Array();
 	std::pair<CODEC, String> audio_codecs[] = {
 		{MP3, "MP3"},
 		{AAC, "AAC"},
@@ -15,40 +37,15 @@ Dictionary GoZenInterface::get_supported_codecs() {
 		{EAC3, "EAC3"},
 		{WAV, "WAV"},
 	};
-	std::pair<CODEC, String> video_codecs[] = {
-		{H264, "H264"},
-		{H265, "H265"},
-		{VP9, "VP9"},
-		{MPEG4, "MPEG4"},
-		{MPEG2, "MPEG2"},
-		{MPEG1, "MPEG1"},
-		{AV1, "AV1"},
-		{VP8, "VP8"},
-	};
-	
-	/* Audio codecs */
 	for (const auto& a_codec : audio_codecs) {
 		const AVCodec* codec = avcodec_find_encoder(static_cast<AVCodecID>(a_codec.first));
 		Dictionary entry = {};
-		entry["supported"] = is_codec_supported(a_codec.first);
 		entry["codec_id"] = a_codec.second;
+		entry["supported"] = is_codec_supported(a_codec.first);
 		entry["hardware_accel"] = codec->capabilities & AV_CODEC_CAP_HARDWARE;
-		audio[a_codec.second] = entry;
+		codecs.append(entry);
 	}
-	
-	/* Video codecs */
-	for (const auto& v_codec : video_codecs) {
-		const AVCodec* codec = avcodec_find_encoder(static_cast<AVCodecID>(v_codec.first));
-		Dictionary entry = {};
-		entry["supported"] = is_codec_supported(v_codec.first);
-		entry["codec_id"] = v_codec.second;
-		entry["hardware_accel"] = codec->capabilities & AV_CODEC_CAP_HARDWARE;
-		video[v_codec.second] = entry;
-	}
-
-	dic["audio"] = audio;
-	dic["video"] = video;
-	return dic;
+	return codecs;
 }
 
 

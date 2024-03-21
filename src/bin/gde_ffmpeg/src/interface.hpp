@@ -11,7 +11,7 @@ using namespace godot;
 class GoZenInterface : public Resource {
 	GDCLASS(GoZenInterface, Resource);
 
-	public:
+public:
 		enum CODEC {
 			MP3 = AV_CODEC_ID_MP3,			/* Audio codecs */
 			AAC = AV_CODEC_ID_AAC,
@@ -32,8 +32,9 @@ class GoZenInterface : public Resource {
 			VP8 = AV_CODEC_ID_VP8 
 		};
 
-		static Dictionary get_supported_codecs();
 		static Dictionary get_video_file_meta(String file_path);
+		static Array get_supported_video_codecs();
+		static Array get_supported_audio_codecs();
 		static bool is_codec_supported(CODEC codec);
 
 	
@@ -60,8 +61,9 @@ class GoZenInterface : public Resource {
 			BIND_ENUM_CONSTANT(AV1);
 			BIND_ENUM_CONSTANT(VP8);
  
-			ClassDB::bind_static_method("GoZenInterface", D_METHOD("get_supported_codecs", "filename:String"), &GoZenInterface::get_supported_codecs);
 			ClassDB::bind_static_method("GoZenInterface", D_METHOD("get_video_file_meta", "file_path:String"), &GoZenInterface::get_video_file_meta);
+			ClassDB::bind_static_method("GoZenInterface", D_METHOD("get_supported_video_codecs"), &GoZenInterface::get_supported_video_codecs);
+			ClassDB::bind_static_method("GoZenInterface", D_METHOD("get_supported_audio_codecs"), &GoZenInterface::get_supported_audio_codecs);
 			ClassDB::bind_static_method("GoZenInterface", D_METHOD("is_codec_supported", "codec:CODEC"), &GoZenInterface::is_codec_supported);
 		}
 };
