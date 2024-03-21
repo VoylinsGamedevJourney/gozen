@@ -8,6 +8,7 @@ static var instance
 @onready var _windowed_win_size: Vector2i = get_window().size
 @onready var _windowed_win_pos: Vector2i = get_window().position
 var _pre_mz_mode: Window.Mode = Window.MODE_MINIMIZED
+var _pre_fs_mode: Window.Mode = Window.MODE_FULLSCREEN
 
 var move_window := false
 var move_win_offset: Vector2i
@@ -22,6 +23,11 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(func() -> void:
 		var value := win_mode == Window.MODE_WINDOWED and get_window().borderless
 		WindowResizeHandles.instance.visible = value)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.keycode == KEY_F11 and event.pressed:
+			toggle_fullscreen()
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
@@ -79,6 +85,14 @@ func set_window_mode(value: Window.Mode) -> void:
 		get_window().position = _windowed_win_pos
 		return
 	get_window().mode = value
+
+
+func toggle_fullscreen() -> void:
+	if win_mode == Window.MODE_FULLSCREEN:
+		win_mode = _pre_fs_mode
+	else:
+		_pre_fs_mode = win_mode
+		win_mode = Window.MODE_FULLSCREEN
 
 #endregion
 ###############################################################
