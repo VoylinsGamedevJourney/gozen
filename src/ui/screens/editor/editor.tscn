@@ -18,15 +18,15 @@ layout_mode = 2
 [node name="Margin" type="MarginContainer" parent="EditorSidebar"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_bottom = 16
 
 [node name="SidebarVBox" type="VBoxContainer" parent="EditorSidebar/Margin"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 16
-alignment = 1
 
 [node name="LayoutContainer" type="TabContainer" parent="."]
 unique_name_in_owner = true

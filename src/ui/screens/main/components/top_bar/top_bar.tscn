@@ -1,12 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://bwmh7ufcadx5v"]
+[gd_scene load_steps=13 format=3 uid="uid://bwmh7ufcadx5v"]
 
 [ext_resource type="Script" path="res://ui/screens/main/components/top_bar/window_handler.gd" id="1_8vd8r"]
 [ext_resource type="Theme" uid="uid://wa3swx7ortc6" path="res://ui/screens/main/theming/main_top_bar.tres" id="1_d5ptb"]
 [ext_resource type="Script" path="res://ui/screens/main/components/top_bar/window_title.gd" id="3_6hxwg"]
 [ext_resource type="Texture2D" uid="uid://bdsvqibn5gh04" path="res://assets/icons/editor_icon.png" id="4_07ice"]
 [ext_resource type="Script" path="res://ui/screens/main/components/top_bar/top_bar_buttons.gd" id="4_ueiae"]
+[ext_resource type="Texture2D" uid="uid://hav4onsqoo7i" path="res://assets/icons/settings_video_camera.png" id="6_e6hda"]
 [ext_resource type="Texture2D" uid="uid://bk66k38osgv0o" path="res://assets/icons/minimize.png" id="6_vtbfy"]
 [ext_resource type="Texture2D" uid="uid://cxdjexu1spc7o" path="res://assets/icons/maximize.png" id="7_7ncvm"]
+[ext_resource type="Texture2D" uid="uid://bgrbdik8x3iqe" path="res://assets/icons/movie_edit.png" id="7_8xc1a"]
 [ext_resource type="Texture2D" uid="uid://c1yn05a2gyiiy" path="res://assets/icons/close.png" id="8_fak1p"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_b1s40"]
@@ -49,8 +51,17 @@ icon = ExtResource("4_07ice")
 icon_alignment = 1
 expand_icon = true
 
-[node name="TopMenuButtons" type="HBoxContainer" parent="Margin/ButtonHBox"]
+[node name="SettingsButton" type="Button" parent="Margin/ButtonHBox"]
+custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
+icon = ExtResource("6_e6hda")
+expand_icon = true
+
+[node name="ProjectSettingsButton" type="Button" parent="Margin/ButtonHBox"]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+icon = ExtResource("7_8xc1a")
+expand_icon = true
 
 [node name="Spacer" type="VSeparator" parent="Margin/ButtonHBox"]
 layout_mode = 2
@@ -77,6 +88,8 @@ icon = ExtResource("8_fak1p")
 expand_icon = true
 
 [connection signal="gui_input" from="." to="." method="_on_top_bar_dragging"]
-[connection signal="pressed" from="Margin/ButtonHBox/MinimizeButton" to="." method="_on_minimize_button_pressed"]
-[connection signal="pressed" from="Margin/ButtonHBox/SwitchModeButton" to="." method="_on_switch_mode_button_pressed"]
-[connection signal="pressed" from="Margin/ButtonHBox/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Margin/ButtonHBox/SettingsButton" to="Margin/ButtonHBox" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="Margin/ButtonHBox/ProjectSettingsButton" to="Margin/ButtonHBox" method="_on_project_settings_button_pressed"]
+[connection signal="pressed" from="Margin/ButtonHBox/MinimizeButton" to="Margin/ButtonHBox" method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="Margin/ButtonHBox/SwitchModeButton" to="Margin/ButtonHBox" method="_on_switch_mode_button_pressed"]
+[connection signal="pressed" from="Margin/ButtonHBox/ExitButton" to="Margin/ButtonHBox" method="_on_exit_button_pressed"]

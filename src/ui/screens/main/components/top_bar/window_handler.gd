@@ -24,10 +24,17 @@ func _ready() -> void:
 		var value := win_mode == Window.MODE_WINDOWED and get_window().borderless
 		WindowResizeHandles.instance.visible = value)
 
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.keycode == KEY_F11 and event.pressed:
 			toggle_fullscreen()
+
+
+func _process(_delta: float) -> void:
+	if move_window: # Window dragging
+		get_window().position = DisplayServer.mouse_get_position() - move_win_offset
+
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
@@ -35,17 +42,16 @@ func _notification(what: int) -> void:
 		if OS.get_name() == "Windows" and win_mode != Window.MODE_MINIMIZED and _pre_mz_mode != Window.MODE_MINIMIZED:
 			win_mode = _pre_mz_mode
 
-###############################################################
-#region Window Mode  ##########################################
-###############################################################
+#region #####################  Window Mode  ####################################
 
 func get_window_mode() -> Window.Mode:
-	var current_mode = get_window().mode
-	if OS.get_name() != "Windows" or !get_window().borderless:
+	var window: Window = get_window()
+	var current_mode = window.mode
+	if OS.get_name() != "Windows" or !window.borderless:
 		return current_mode
 	if current_mode == Window.MODE_WINDOWED:
-		var usable_screen := DisplayServer.screen_get_usable_rect(get_window().current_screen)
-		if get_window().position == usable_screen.position and get_window().size == usable_screen.size:
+		var usable_screen := DisplayServer.screen_get_usable_rect(window.current_screen)
+		if window.position == usable_screen.position and window.size == usable_screen.size:
 			return Window.MODE_MAXIMIZED
 		return Window.MODE_WINDOWED
 	return current_mode
@@ -54,37 +60,38 @@ func get_window_mode() -> Window.Mode:
 func set_window_mode(value: Window.Mode) -> void:
 	if value == win_mode:
 		return
+	var window: Window = get_window()
 	var prev_mode = win_mode
-	if OS.get_name() != "Windows" or !get_window().borderless:
-		get_window().mode = value
+	if OS.get_name() != "Windows" or !window.borderless:
+		window.mode = value
 		return
 	# store window size in windowed mode
 	if prev_mode == Window.MODE_WINDOWED and _pre_mz_mode == Window.MODE_MINIMIZED:
-		_windowed_win_pos = get_window().position
-		_windowed_win_size = get_window().size
+		_windowed_win_pos = window.position
+		_windowed_win_size = window.size
 	if value == Window.MODE_MINIMIZED:
 		_pre_mz_mode = prev_mode
 	else:
 		_pre_mz_mode = Window.MODE_MINIMIZED
 	if value == Window.MODE_MAXIMIZED:
-		get_window().borderless = false
-		get_window().mode = Window.MODE_MAXIMIZED
-		get_window().borderless = true
+		window.borderless = false
+		window.mode = Window.MODE_MAXIMIZED
+		window.borderless = true
 		# adjust mismatched window size and position
-		var usable_screen := DisplayServer.screen_get_usable_rect(get_window().current_screen)
-		get_window().position = usable_screen.position
-		get_window().size = usable_screen.size + Vector2i(2, 2)
+		var usable_screen := DisplayServer.screen_get_usable_rect(window.current_screen)
+		window.position = usable_screen.position
+		window.size = usable_screen.size + Vector2i(2, 2)
 		return
 	if value == Window.MODE_WINDOWED:
-		get_window().borderless = false
-		get_window().mode = prev_mode	# window.mode is not set to maximized when borderless
-		get_window().mode = Window.MODE_WINDOWED
-		get_window().borderless = true
+		window.borderless = false
+		window.mode = prev_mode	# window.mode is not set to maximized when borderless
+		window.mode = Window.MODE_WINDOWED
+		window.borderless = true
 		# restore window size and position
-		get_window().size = _windowed_win_size
-		get_window().position = _windowed_win_pos
+		window.size = _windowed_win_size
+		window.position = _windowed_win_pos
 		return
-	get_window().mode = value
+	window.mode = value
 
 
 func toggle_fullscreen() -> void:
@@ -95,15 +102,14 @@ func toggle_fullscreen() -> void:
 		win_mode = Window.MODE_FULLSCREEN
 
 #endregion
-###############################################################
-#region Window Dragging  ######################################
-###############################################################
+#region #####################  Window Dragging  ################################
 
 func _on_top_bar_dragging(event) -> void:
 	if !event is InputEventMouseButton or event.button_index != 1:
 		return # Only continues when event is mouse button 1 pressed
+	var window: Window = get_window()
 	var mouse_pos := DisplayServer.mouse_get_position()
-	var win_pos := DisplayServer.window_get_position(get_window().get_window_id())
+	var win_pos := DisplayServer.window_get_position(window.get_window_id())
 	move_window = false
 	if win_mode != Window.MODE_WINDOWED:
 		return
@@ -119,17 +125,12 @@ func _on_top_bar_dragging(event) -> void:
 	if screen_rect.encloses(Rect2i(tb_top, tb_bottom)):
 		return
 	if tb_top.y < screen_rect.position.y:
-		get_window().position = (
+		window.position = (
 			tb_top.clamp(screen_rect.position, screen_rect.end)
 			- Vector2i(move_win_offset.x, 0))
 	else:
-		get_window().position = (
+		window.position = (
 			tb_bottom.clamp(screen_rect.position, screen_rect.end)
 			- Vector2i(move_win_offset.x, int(size.y)))
 
-func _process(_delta: float) -> void:
-	if move_window:
-		get_window().position = DisplayServer.mouse_get_position() - move_win_offset
-
 #endregion
-###############################################################
