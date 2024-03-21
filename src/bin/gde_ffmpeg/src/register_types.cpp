@@ -1,29 +1,28 @@
 #include "register_types.hpp"
 
-#include "gozen_importer.hpp"
-#include "gozen_renderer.hpp"
-#include "gozen_pipe_renderer.hpp"
-#include "gozen_render_profile.hpp"
+#include "interface.hpp"
+#include "video.hpp"
+#include "renderer.hpp"
+#include "render_profile.hpp"
 
 
 using namespace godot;
 
+
 void initialize_gozen_library_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE)
 		return;
-	}
 	
-	ClassDB::register_class<GoZenImporter>();
+	ClassDB::register_class<GoZenInterface>();
+	ClassDB::register_class<GoZenVideo>();
 	ClassDB::register_class<GoZenRenderer>();
-	ClassDB::register_class<GoZenPipeRenderer>();
 	ClassDB::register_class<GoZenRenderProfile>();
 }
 
 
 void uninitialize_gozen_library_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE)
 		return;
-	}
 }
 
 extern "C" {
