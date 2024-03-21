@@ -54,3 +54,4 @@ config.log
 *.app
 
 .vscode
+.idea
