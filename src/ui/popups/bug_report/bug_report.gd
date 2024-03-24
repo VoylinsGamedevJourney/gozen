@@ -9,16 +9,6 @@ const id_version := 1893125384
 const id_contact := 529782953
 const id_desc := 1630285445
 
-func _ready() -> void:
-	print("entry.{id_version}={version}&entry.{id_contact}={contact}&entry.{id_desc}={desc}".format({
-			"id_version": id_version,
-			"id_contact": id_contact,
-			"id_desc": id_desc,
-			"version": ProjectSettings.get_setting("application/config/version"),
-			"contact": %ContactLineEdit.text,
-			"desc": %DescTextEdit.text
-		}))
-
 
 func _on_about_to_popup() -> void:
 	%ContactLineEdit.text = ""
@@ -38,7 +28,7 @@ func _on_submit_button_pressed() -> void:
 		url_request, 
 		packet_header,
 		HTTPClient.METHOD_POST,
-		"entry.{id_version}:{version}&entry.{id_contact}:{contact}&entry.{id_desc}:{desc}".format({
+		"entry.{id_version}={version}&entry.{id_contact}={contact}&entry.{id_desc}={desc}".format({
 			"id_version": id_version,
 			"id_contact": id_contact,
 			"id_desc": id_desc,
