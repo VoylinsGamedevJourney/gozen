@@ -42,6 +42,7 @@ func _notification(what: int) -> void:
 		if OS.get_name() == "Windows" and win_mode != Window.MODE_MINIMIZED and _pre_mz_mode != Window.MODE_MINIMIZED:
 			win_mode = _pre_mz_mode
 
+
 #region #####################  Window Mode  ####################################
 
 func get_window_mode() -> Window.Mode:

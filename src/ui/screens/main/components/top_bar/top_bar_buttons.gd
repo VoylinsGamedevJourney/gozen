@@ -2,6 +2,12 @@ extends HBoxContainer
 # TODO: Add links from start menu to TopEditorButton
 
 
+func _ready() -> void:
+	var menu: PopupMenu = get_node("TopEditorButton").get_popup()
+	menu.id_pressed.connect(_on_popup_menu_id_pressed)
+	menu.mouse_exited.connect(_on_top_editor_popup_menu_mouse_exited.bind(menu))
+
+
 func _on_minimize_button_pressed() -> void:
 	TopBar.instance.win_mode = Window.MODE_MINIMIZED
 
@@ -31,22 +37,28 @@ func _on_exit_button_pressed() -> void:
 
 
 func _on_settings_button_pressed():
-	var popup_name := "settings_popup"
-	if has_node(popup_name):
-		get_node(popup_name).visible = true
-		return
-	var popup: Window = preload(
-		"res://ui/popups/settings_menu/settings_menu.tscn").instantiate()
-	popup.name = popup_name
-	add_child(popup)
+	PopupManager.open_popup(PopupManager.POPUP.SETTINGS_MENU)
 
 
 func _on_project_settings_button_pressed():
-	var popup_name := "project_settings_popup"
-	if has_node(popup_name):
-		get_node(popup_name).visible = true
-		return
-	var popup: Window = preload(
-		"res://ui/popups/project_settings_menu/project_settings_menu.tscn").instantiate()
-	popup.name = popup_name
-	add_child(popup)
+	PopupManager.open_popup(PopupManager.POPUP.PROJECT_SETTINGS_MENU)
+
+
+func _on_popup_menu_id_pressed(id: int) -> void:
+	match id:
+		0: # Report bug
+			PopupManager.open_popup(PopupManager.POPUP.BUG_REPORT)
+		2: # Manuals
+			OS.shell_open(Globals.URL_MANUAL)
+		3: # Tutorials
+			OS.shell_open(Globals.URL_TUTORIALS)
+		4: # Github
+			OS.shell_open(Globals.URL_GITHUB_REPO)
+		5: # Discord
+			OS.shell_open(Globals.URL_DISCORD)
+		6: # Support this project
+			OS.shell_open(Globals.URL_SUPPORT_PROJECT)
+
+
+func _on_top_editor_popup_menu_mouse_exited(menu: PopupMenu) -> void:
+	menu.visible = false
