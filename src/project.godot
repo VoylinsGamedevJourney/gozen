@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GoZen - Video Editor"
 config/description="GoZen is an open source video editor made with Godot by Voylin."
-config/version="0.4.0-pre-alpha"
+config/version="0.4.5-pre-alpha"
 run/main_scene="res://ui/screens/main/main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
@@ -29,6 +29,8 @@ SettingsManager="*res://scripts/autoloads/al_settings_manager.gd"
 ProjectManager="*res://scripts/autoloads/al_project_manager.gd"
 ActionHandler="*res://scripts/autoloads/al_action_handler.gd"
 FileManager="*res://scripts/autoloads/al_file_manager.gd"
+DialogManager="*res://scripts/autoloads/al_dialog_manager.gd"
+PopupManager="*res://scripts/autoloads/al_popup_manager.gd"
 
 [debug]
 
@@ -53,20 +55,6 @@ folder_colors={
 "res://scripts/classes/": "blue",
 "res://translations/": "teal"
 }
-
-[globals]
-
-url/stable_version="https://raw.githubusercontent.com/VoylinsGamedevJourney/GoZen/master/src/project.godot"
-url/github_repo="https://github.com/VoylinsGamedevJourney/GoZen"
-url/kofi_page="https://ko-fi.com/voylin"
-url/discord="discord.gg/BdbUf7VKYC"
-url/support_page="https://github.com/VoylinsGamedevJourney/GoZen"
-url/tutorials_page="https://github.com/VoylinsGamedevJourney/GoZen"
-url/manual_page="https://github.com/VoylinsGamedevJourney/GoZen"
-path/settings="user://settings.cfg"
-path/recent_projects="user://recent_projects"
-path/editor_ui="user://editor_ui.cfg"
-path/file_manager="user://file_manager"
 
 [gui]
 

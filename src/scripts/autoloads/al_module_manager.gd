@@ -1,7 +1,7 @@
 extends Node ## Module manager
 
 
-enum TYPE { LAYOUT, MODULE, EFFECT, TRANSITION, RENDER_PROFILE }
+enum TYPE { LAYOUT, MODULE, EFFECT, TRANSITION,  }
 
 
 func _ready() -> void:
@@ -10,7 +10,6 @@ func _ready() -> void:
 	_load_modules(TYPE.MODULE)
 	_load_modules(TYPE.EFFECT)
 	_load_modules(TYPE.TRANSITION)
-	_load_modules(TYPE.RENDER_PROFILE)
 
 
 func _load_modules(type: TYPE) -> void:
@@ -35,7 +34,6 @@ func get_type_string(type: TYPE) -> String:
 		TYPE.MODULE: return "modules"
 		TYPE.EFFECT: return "effects"
 		TYPE.TRANSITION: return "transitions"
-		TYPE.RENDER_PROFILE: return "render_profiles"
 		_: return ""
 
 
@@ -65,11 +63,10 @@ func create_module_id(type: TYPE, module_name: String) -> String:
 	var config_dir_files := DirAccess.get_files_at(get_config_folder(type))
 	var new_name := "%s-%s" % [module_name, randi_range(100000, 999999)]
 	while new_name in config_dir_files:
+		randomize()
 		new_name = "%s-%s" % [module_name, randi_range(100000, 999999)]
 	return new_name
 
 
-func remove_config_layout(type: String, instance_name: String) -> void:
-	DirAccess.remove_absolute("%s%s.cfg" % [
-		ProjectSettings.get_setting("globals/path/configs/%s" % type), 
-		instance_name])
+func remove_config_layout(instance_name: String) -> void:
+	DirAccess.remove_absolute("%s%s.cfg" % [get_config_folder(TYPE.LAYOUT), instance_name])

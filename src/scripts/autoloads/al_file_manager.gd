@@ -1,8 +1,6 @@
 extends Node
 ## File Manager
 
-@onready var path: String = ProjectSettings.get_setting("globals/path/file_manager") 
-
 var folder_data := {} # Full_path: Array of files
 var file_data   := {} # File_id: File class object
 var current_id := 0 # File ID's for global start with 'G_' and for project with 'P_'
@@ -10,8 +8,8 @@ var current_id := 0 # File ID's for global start with 'G_' and for project with 
 
 func _ready():
 	## Loading data on startup if exists
-	if FileAccess.file_exists(path):
-		var file := FileAccess.open(path, FileAccess.READ)
+	if FileAccess.file_exists(Globals.PATH_FILE_MANAGER):
+		var file := FileAccess.open(Globals.PATH_FILE_MANAGER, FileAccess.READ)
 		var temp: Dictionary = str_to_var(file.get_as_text())
 		folder_data = temp.folder_data
 		file_data = temp.file_data
@@ -19,7 +17,7 @@ func _ready():
 
 
 func save_data() -> void:
-	var file := FileAccess.open(path, FileAccess.WRITE)
+	var file := FileAccess.open(Globals.PATH_FILE_MANAGER, FileAccess.WRITE)
 	file.store_string(var_to_str({
 		"folder_data": folder_data, 
 		"file_data": file_data,

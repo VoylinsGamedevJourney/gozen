@@ -109,15 +109,8 @@ func set_unsaved_changes(value: bool) -> void:
 	unsaved_changes = value
 	_on_unsaved_changes_changed.emit(value)
 
-#################################################################
-##
-##    DATA GETTERS AND SETTERS
-##
-#################################################################
 
-###############################################################
-#region  Title  ###############################################
-###############################################################
+#region #####################  Getters and Setters  ############################
 
 func get_title() -> String:
 	return title
@@ -130,10 +123,6 @@ func set_title(new_title: String, update: bool = true) -> void:
 	if update:
 		update_recent_projects()
 
-#endregion
-###############################################################
-#region  Resolution  ##########################################
-###############################################################
 
 func get_resolution() -> Vector2i:
 	return resolution
@@ -144,10 +133,6 @@ func set_resolution(new_resolution: Vector2i) -> void:
 	_on_resolution_changed.emit(new_resolution)
 	set_unsaved_changes(true)
 
-#endregion
-###############################################################
-#region  Framerate  ###########################################
-###############################################################
 
 func get_framerate() -> float:
 	return framerate
@@ -158,10 +143,6 @@ func set_framerate(new_framerate: float) -> void:
 	_on_framerate_changed.emit(new_framerate)
 	set_unsaved_changes(true)
 
-#endregion
-###############################################################
-#region  Video tracks  ########################################
-###############################################################
 
 func get_video_tracks() -> Array:
 	return video_tracks
@@ -180,10 +161,6 @@ func remove_video_track(position: int) -> void:
 	_on_video_tracks_changed.emit(video_tracks)
 	set_unsaved_changes(true)
 
-#endregion
-###############################################################
-#region  Audio tracks  ########################################
-###############################################################
 
 func get_audio_tracks() -> Array:
 	return audio_tracks
@@ -203,4 +180,3 @@ func remove_audio_track(position: int) -> void:
 	set_unsaved_changes(true)
 
 #endregion
-###############################################################

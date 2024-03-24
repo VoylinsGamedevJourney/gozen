@@ -11,9 +11,7 @@ func _ready() -> void:
 	_on_switch_project_button_pressed()
 
 
-###############################################################
-#region Top area  #############################################
-###############################################################
+#region #####################  Top area  #######################################
 
 func _on_switch_project_button_pressed() -> void:
 	$VBox/ProjectPanelScroll.visible = true
@@ -32,4 +30,3 @@ func _on_search_line_edit_text_changed(_new_text: String) -> void:
 	# word in the file name. All folders with all files hidden should also get hidden)
 
 #endregion
-###############################################################

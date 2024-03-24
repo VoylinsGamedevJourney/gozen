@@ -4,8 +4,7 @@ var data: Array
 
 
 func _init():
-	var path := _get_path()
-	if !FileAccess.file_exists(path):
+	if !FileAccess.file_exists(Globals.PATH_RECENT_PROJECTS):
 		return # No data so no need to continue
 	load_data()
 	
@@ -22,13 +21,13 @@ func _init():
 
 
 func load_data() -> void:
-	var file := FileAccess.open(_get_path(), FileAccess.READ)
+	var file := FileAccess.open(Globals.PATH_RECENT_PROJECTS, FileAccess.READ)
 	data = str_to_var(file.get_as_text())
 	file.close()
 
 
 func save_data() -> void:
-	var file := FileAccess.open(_get_path(), FileAccess.WRITE)
+	var file := FileAccess.open(Globals.PATH_RECENT_PROJECTS, FileAccess.WRITE)
 	file.store_string(var_to_str(data))
 	file.close()
 
@@ -53,7 +52,3 @@ func update_project(title: String, path: String) -> void:
 		add_new_project(title, path)
 	else:
 		save_data()
-
-
-func _get_path() -> String:
-	return ProjectSettings.get_setting("globals/path/recent_projects")

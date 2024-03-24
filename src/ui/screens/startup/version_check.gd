@@ -10,7 +10,7 @@ func _ready() -> void:
 	var request := HTTPRequest.new()
 	add_child(request)
 	request.request_completed.connect(_request_completed)
-	var error = request.request(ProjectSettings.get_setting("globals/url/stable_version"))
+	var error = request.request(Globals.URL_VERSION_STABLE)
 	if error != OK:
 		Printer.error("Could not complete Version check request '%s'!" % error)
 

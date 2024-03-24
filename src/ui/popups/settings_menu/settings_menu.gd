@@ -29,17 +29,15 @@ func prepare_languages() -> void:
 			%LanguageOptionButton.add_item(TranslationServer.get_language_name(option))
 
 
-###############################################################
-#region GENERAL SETTING SETTERS  ############################## 
-###############################################################
+func _on_close_requested():
+	PopupManager.close_popup(PopupManager.POPUP.SETTINGS_MENU)
+
+
+#region #####################  Getters and Setters  ############################
 
 func _on_language_option_button_item_selected(index) -> void:
 	SettingsManager.set_language(TranslationServer.get_loaded_locales()[index])
 
-#endregion
-###############################################################
-#region TIMELINE SETTING SETTERS  #############################
-###############################################################
 
 func _on_default_video_tracks_spin_box_value_changed(value) -> void:
 	SettingsManager.set_default_video_tracks(value)
@@ -49,7 +47,3 @@ func _on_default_audio_tracks_spin_box_value_changed(value) -> void:
 	SettingsManager.set_default_audio_tracks(value)
 
 #endregion
-###############################################################
-
-func _on_close_requested():
-	visible = false

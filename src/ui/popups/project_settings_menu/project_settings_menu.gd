@@ -21,17 +21,15 @@ func set_current_values() -> void:
 	%FramerateSpinBox.value = ProjectManager.get_framerate()
 
 
-###############################################################
-#region GENERAL SETTING SETTERS  ############################## 
-###############################################################
+func _on_close_requested():
+	PopupManager.close_popup(PopupManager.POPUP.PROJECT_SETTINGS_MENU)
+
+
+#region  ####################  Getters and Setters  ############################
 
 func _on_project_title_line_edit_text_submitted(new_title) -> void:
 	ProjectManager.set_title(new_title)
 
-#endregion
-###############################################################
-#region QUALITY SETTING SETTERS  ############################## 
-###############################################################
 
 func _on_framerate_spin_box_value_changed(new_value) -> void:
 	ProjectManager.set_framerate(new_value)
@@ -48,9 +46,4 @@ func _on_resolution_y_spin_box_value_changed(new_value) -> void:
 	resolution.y = new_value
 	ProjectManager.set_resolution(resolution)
 
-
 #endregion
-###############################################################
-
-func _on_close_requested():
-	visible = false

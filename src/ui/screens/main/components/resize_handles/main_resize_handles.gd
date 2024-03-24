@@ -19,9 +19,7 @@ func _ready() -> void:
 	$Corner.gui_input.connect(_on_gui_input.bind($Corner))
 
 
-###############################################################
-#region Resizing logic  #######################################
-###############################################################
+#region #####################  Resizing logic  #################################
 
 func _on_gui_input(event: InputEvent, node: Control) -> void:
 	if event is InputEventMouseButton and event.button_index == 1:
@@ -42,4 +40,3 @@ func _process(_delta: float) -> void:
 			get_window().size.x = int(relative_mouse_pos.x)
 
 #endregion
-###############################################################

@@ -40,9 +40,7 @@ func _file_selected(path: String) -> void:
 		Printer.error("Can't open project as path does not have '*.gozen' extension!")
 
 
-###############################################################
-#region Buttons  ##############################################
-###############################################################
+#region #####################  New Project Buttons  ############################
 
 func _on_open_project_button_pressed() -> void:
 	var dialog := DialogManager.get_open_project_dialog()
@@ -109,4 +107,25 @@ func _on_framerate_button_pressed(frame_rate: int) -> void:
 	%FramerateSpinBox.value = frame_rate
 
 #endregion
-###############################################################
+#region #####################  Link buttons  ###################################
+
+func _on_editor_button_pressed() -> void:
+	OS.shell_open(Globals.URL_GITHUB_REPO) # NOTE: Replace by site in future
+
+
+func _on_manual_button_pressed() -> void:
+	OS.shell_open(Globals.URL_MANUAL) # NOTE: Replace in future
+
+
+func _on_tutorials_button_pressed() -> void:
+	OS.shell_open(Globals.URL_TUTORIALS) # NOTE: Replace in future
+
+
+func _on_discord_button_pressed() -> void:
+	OS.shell_open(Globals.URL_DISCORD)
+
+
+func _on_support_project_button_pressed() -> void:
+	OS.shell_open(Globals.URL_SUPPORT_PROJECT)
+
+#endregion

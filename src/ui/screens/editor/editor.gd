@@ -18,9 +18,10 @@ class_name EditorUI extends HBoxContainer
 static var instance: EditorUI
 
 var sidebar_button_menu: PopupMenu
+var button_group: ButtonGroup = ButtonGroup.new()
 
 var config := ConfigFile.new()
-var config_path: String = ProjectSettings.get_setting("globals/path/editor_ui")
+var config_path: String = Globals.PATH_EDITOR_UI
 
 
 func _ready() -> void:
@@ -44,6 +45,7 @@ func _ready() -> void:
 	# TODO: Save last used tab in project file or have option in settings to set default
 	if %LayoutContainer.get_child_count() > 0:
 		%LayoutContainer.current_tab = 1
+		%SidebarVBox.get_child(1).button_pressed = true
 
 
 func _input(event) -> void:
@@ -75,6 +77,7 @@ func add_layout(layout_name: String, id: String = "") -> void:
 	button.gui_input.connect(_on_sidebar_button_gui_event.bind(button))
 	var layout: Node = layout_data.scene.instantiate()
 	if id == "":
+		randomize() # TODO: check if layout_id doesn't exist already
 		var layout_id := "%s-%s" % [layout_name, randi_range(10000,99999)]
 		var layout_order: PackedStringArray = config.get_value("general", "layouts_order", [])
 		layout.name = layout_id
@@ -93,8 +96,10 @@ func add_layout(layout_name: String, id: String = "") -> void:
 	
 	# Setting button data
 	button.expand_icon = true
-	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	button.custom_minimum_size = Vector2i(40,40)
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	button.custom_minimum_size = Vector2i(30,30)
+	button.toggle_mode = true
+	button.button_group = button_group
 	
 	# Setting button function
 	var tab_nr := %SidebarVBox.get_child_count()
@@ -171,7 +176,7 @@ func _on_sidebar_button_menu_pressed(id: int, button: Button) -> void:
 		3: # Remove layout
 			_remove_layout(button.name)
 		4: # Add new layout
-			add_child(preload("res://ui/popups/add_editor_layout/add_editor_layout.tscn").instantiate())
+			PopupManager.open_popup(PopupManager.POPUP.ADD_EDITOR_LAYOUT)
 
 
 func move_layout_up(layout_id: String) -> void:
@@ -206,7 +211,7 @@ func _remove_layout(layout_id: String) -> void:
 	## Removing a layout and related stuff.
 	%SidebarVBox.get_node(layout_id).queue_free()
 	%LayoutContainer.get_node(layout_id).queue_free()
-	ModuleManager.remove_config_layout("layout_modules", layout_id)
+	ModuleManager.remove_config_layout(layout_id)
 	var new_order: PackedStringArray = config.get_value("general", "layouts_order")
 	new_order.remove_at(new_order.find(layout_id))
 	config.set_value("general", "layouts_order", new_order)

@@ -1,4 +1,4 @@
-class_name DialogManager extends Node
+extends Node
 ## Dialog Manager
 ##
 ## All file dialog's which need opening will be opened from here. This is
@@ -12,7 +12,7 @@ const supported_file_formats := {
 	"Audio": "*.ogg, *.wav, *.mp3" }
 
 
-static func _default_dialog(mode: FileDialog.FileMode) -> FileDialog:
+func _default_dialog(mode: FileDialog.FileMode) -> FileDialog:
 	var dialog := FileDialog.new()
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.file_mode = mode
@@ -21,7 +21,7 @@ static func _default_dialog(mode: FileDialog.FileMode) -> FileDialog:
 	return dialog
 
 
-static func get_open_project_dialog() -> FileDialog:
+func get_open_project_dialog() -> FileDialog:
 	var dialog := _default_dialog(FileDialog.FILE_MODE_OPEN_FILE)
 	dialog.add_filter("*.gozen", "GoZen project file")
 	
@@ -31,7 +31,7 @@ static func get_open_project_dialog() -> FileDialog:
 	return dialog
 
 
-static func get_select_path_dialog() -> FileDialog:
+func get_select_path_dialog() -> FileDialog:
 	var dialog := _default_dialog(FileDialog.FILE_MODE_SAVE_FILE)
 	dialog.add_filter("*.gozen", "GoZen project file")
 	dialog.title = "DIALOG_TITLE_SELECT_PROJECT_PATH"
@@ -40,7 +40,7 @@ static func get_select_path_dialog() -> FileDialog:
 	return dialog
 
 
-static func get_file_import_dialog() -> FileDialog:
+func get_file_import_dialog() -> FileDialog:
 	var dialog := _default_dialog(FileDialog.FILE_MODE_OPEN_FILES)
 	for key: String in supported_file_formats:
 		dialog.add_filter(supported_file_formats[key], key)
@@ -50,7 +50,7 @@ static func get_file_import_dialog() -> FileDialog:
 	return dialog
 
 
-static func get_layout_icon_dialog() -> FileDialog:
+func get_layout_icon_dialog() -> FileDialog:
 	var dialog := _default_dialog(FileDialog.FILE_MODE_OPEN_FILE)
 	dialog.add_filter(supported_file_formats.Images, "Images")
 	dialog.title = "DIALOG_TITLE_SELECT_LAYOUT_ICON"

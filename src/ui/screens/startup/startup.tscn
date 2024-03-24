@@ -1,10 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://dampusi0yrmvy"]
+[gd_scene load_steps=13 format=3 uid="uid://dampusi0yrmvy"]
 
 [ext_resource type="Theme" uid="uid://o5vxrd3qck" path="res://assets/themes/startup_theme.tres" id="1_mvhsc"]
 [ext_resource type="Script" path="res://ui/screens/startup/startup.gd" id="2_bjdu8"]
 [ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="2_wisq1"]
 [ext_resource type="Texture2D" uid="uid://d3b524cpjjf2u" path="res://icon.svg" id="3_ro7xu"]
-[ext_resource type="Script" path="res://scripts/classes/button_open_link.gd" id="4_krc67"]
 [ext_resource type="Script" path="res://scripts/meta_clicked.gd" id="5_fs7hn"]
 [ext_resource type="Script" path="res://scripts/version_label.gd" id="6_drumn"]
 [ext_resource type="Script" path="res://ui/screens/startup/version_check.gd" id="8_ly8xh"]
@@ -73,8 +72,6 @@ mouse_default_cursor_shape = 16
 texture_normal = ExtResource("3_ro7xu")
 ignore_texture_size = true
 stretch_mode = 5
-script = ExtResource("4_krc67")
-link = "github_repo"
 
 [node name="ImageCreditsLabel" type="RichTextLabel" parent="StartupPanel/VBox/TopImage"]
 layout_mode = 1
@@ -217,8 +214,6 @@ tooltip_text = "TOOLTIP_BUTTON_MANUAL"
 text = "BUTTON_MANUAL"
 icon = ExtResource("11_jx18t")
 alignment = 0
-script = ExtResource("4_krc67")
-link = "manual_page"
 
 [node name="TutorialsButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
@@ -226,17 +221,6 @@ tooltip_text = "TOOLTIP_BUTTON_TUTORIALS"
 text = "BUTTON_TUTORIALS"
 icon = ExtResource("11_jx18t")
 alignment = 0
-script = ExtResource("4_krc67")
-link = "tutorials_page"
-
-[node name="SupportButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
-layout_mode = 2
-tooltip_text = "TOOLTIP_BUTTON_SUPPORT"
-text = "BUTTON_SUPPORT"
-icon = ExtResource("11_jx18t")
-alignment = 0
-script = ExtResource("4_krc67")
-link = "support_page"
 
 [node name="DiscordButton" type="Button" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
@@ -244,8 +228,6 @@ tooltip_text = "TOOLTIP_BUTTON_DISCORD"
 text = "BUTTON_DISCORD"
 icon = ExtResource("11_jx18t")
 alignment = 0
-script = ExtResource("4_krc67")
-link = "discord"
 
 [node name="Spacer2" type="HSeparator" parent="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox"]
 layout_mode = 2
@@ -258,8 +240,6 @@ tooltip_text = "TOOLTIP_BUTTON_SUPPORT_PROJECT"
 text = "BUTTON_SUPPORT_PROJECT"
 icon = ExtResource("12_piepe")
 alignment = 0
-script = ExtResource("4_krc67")
-link = "kofi_page"
 
 [node name="RecentProjectsTab" type="MarginContainer" parent="StartupPanel/VBox/StartupTabPanel"]
 visible = false
@@ -513,9 +493,14 @@ size_flags_horizontal = 3
 tooltip_text = "TOOLTIP_BUTTON_CREATE_PROJECT"
 text = "BUTTON_CREATE_PROJECT"
 
+[connection signal="pressed" from="StartupPanel/VBox/TopImage/EditorButton" to="." method="_on_editor_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/RecentProjectsVBoxShort/ShowAllProjectsButton" to="." method="_on_show_all_projects_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/LeftVBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox/ManualButton" to="." method="_on_manual_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox/DiscordButton" to="." method="_on_discord_button_pressed"]
+[connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/MainTab/HBox/RightVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/RecentProjectsTab/VBox/ReturnButton" to="." method="_on_return_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/Grid/PathHBox/SelectPathButton" to="." method="_on_select_path_button_pressed"]
 [connection signal="pressed" from="StartupPanel/VBox/StartupTabPanel/CreateNewProjectTab/VBox/HBox/ResolutionVBox/PresetsHBox/HDQualityButton" to="." method="_on_set_quality" binds= [Vector2i(1280, 720)]]

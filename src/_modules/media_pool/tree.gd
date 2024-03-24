@@ -1,5 +1,4 @@
 extends Tree
-# NOTE: if item.get_text(1) in get_file_data()
 
 enum POPUP_TYPE { MINIMAL, FULL }
 
@@ -77,6 +76,7 @@ func _new_file(parent: TreeItem, file_id: String, data: File) -> TreeItem:
 
 
 func create_popup(type: POPUP_TYPE, item: TreeItem) -> PopupMenu:
+	# TODO: Add to popup manager
 	var popup := PopupMenu.new()
 	popup.id_pressed.connect(_on_item_clicked.bind(popup, item))
 	popup.mouse_exited.connect(func(): popup.queue_free())
@@ -142,25 +142,19 @@ func add_folder(folder: TreeItem) -> void:
 	# Checking if folder name is taken already or not
 	var keys: PackedStringArray = get_folder_data().keys()
 	while path in keys:
-		for folder_path: String in keys:
-			if path != folder_path:
-				break; # Early break out if path is unique
-			if int(path[-1]) in range(10):
-				var nr: int = path.split("_")[-1].to_int()
-				path = "%s_%s" % [path.trim_suffix('_' + str(nr)), str(nr + 1)]
-			else:
-				path += "_1" # TODO: Fix this later to increment number instead
+		if int(path[-1]) in range(10):
+			var nr: int = path.split("_")[-1].to_int()
+			path = "%s_%s" % [path.trim_suffix('_' + str(nr)), str(nr + 1)]
+		else:
+			path += "_1"
 	
 	_new_folder(folder, path.split('/')[-1], path)
 	FileManager.add_folder(path, FileManager.folder_data if global else ProjectManager.folder_data)
-	# TODO: Directly focus on renaming and only saving new folder after
-	# by calling a rename_item function?
+	# TODO: Directly focus on renaming and only saving new folder after by calling a rename_item function?
 
 
 func add_file(path: String, folder: TreeItem) -> void:
-	print(path)
-	print(folder)
-	pass
+	print("%s - %s" % [path, folder])
 
 
 func add_files(paths: PackedStringArray, folder: TreeItem) -> void:

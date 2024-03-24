@@ -22,4 +22,4 @@ func _on_layout_button_pressed(layout_name: String) -> void:
 
 
 func _on_cancel_button_pressed():
-	self.queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.ADD_EDITOR_LAYOUT)

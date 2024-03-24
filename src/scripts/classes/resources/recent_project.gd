@@ -1,4 +1,4 @@
-class_name RecentProject extends Node
+class_name RecentProject extends Resource
 
 var title: String
 var path: String
