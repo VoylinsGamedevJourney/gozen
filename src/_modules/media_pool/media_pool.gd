@@ -3,7 +3,7 @@ extends PanelContainer
 enum STATE { PROJECT, GLOBAL }
 
 var state: STATE
-var icon_folder := preload("res://assets/icons/icon_folder.png")
+var icon_folder := preload("res://assets/icons/folder.png")
 
 
 func _ready() -> void:

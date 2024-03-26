@@ -6,7 +6,7 @@ extends Node
 ## setting all the properties of a dialog can be a lot of code.
 
 # TODO: Use GDExtension to load up all supported extensions
-const supported_file_formats := {
+const SUPPORTED_FORMATS := {
 	"Videos": "*.mp4, *.mov, *.avi, *.mkv, *.webm, *.flv, *.mpeg, *.mpg, *.wmv, *.asf, *.vob, *.ts, *.m2ts, *.mts, *.3gp, *.3g2",
 	"Images": "*.png, *.jpg, *.svg, *.webp, *.bmp, *.tga, *.dds, *.hdr, *.exr",
 	"Audio": "*.ogg, *.wav, *.mp3" }
@@ -42,8 +42,8 @@ func get_select_path_dialog() -> FileDialog:
 
 func get_file_import_dialog() -> FileDialog:
 	var dialog := _default_dialog(FileDialog.FILE_MODE_OPEN_FILES)
-	for key: String in supported_file_formats:
-		dialog.add_filter(supported_file_formats[key], key)
+	for key: String in SUPPORTED_FORMATS:
+		dialog.add_filter(SUPPORTED_FORMATS[key], key)
 	dialog.title = "DIALOG_TITLE_SELECT_FILES"
 	dialog.ok_button_text = "DIALOG_BUTTON_SELECT_FILES"
 	dialog.cancel_button_text = "DIALOG_BUTTON_CANCEL"
@@ -52,7 +52,7 @@ func get_file_import_dialog() -> FileDialog:
 
 func get_layout_icon_dialog() -> FileDialog:
 	var dialog := _default_dialog(FileDialog.FILE_MODE_OPEN_FILE)
-	dialog.add_filter(supported_file_formats.Images, "Images")
+	dialog.add_filter(SUPPORTED_FORMATS.Images, "Images")
 	dialog.title = "DIALOG_TITLE_SELECT_LAYOUT_ICON"
 	dialog.ok_button_text = "DIALOG_BUTTON_SELECT_FILE"
 	dialog.cancel_button_text = "DIALOG_BUTTON_CANCEL"

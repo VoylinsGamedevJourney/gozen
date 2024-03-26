@@ -3,21 +3,21 @@ extends HSplitContainer
 enum DIRECTION { HORIZONTAL, VERTICAL }
 
 
-func _on_track_container_gui_input(event):
+func _on_track_container_gui_input(event) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_UP]:
 			if !event.shift_pressed:
 				_scroll(DIRECTION.VERTICAL, false)
 
 
-func _on_timeline_top_gui_input(event):
+func _on_timeline_top_gui_input(event) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_UP]:
 			if event.shift_pressed:
 				_scroll(DIRECTION.HORIZONTAL, false)
 
 
-func _on_timeline_track_container_gui_input(event):
+func _on_timeline_track_container_gui_input(event) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_UP]:
 			_scroll(DIRECTION.HORIZONTAL if event.shift_pressed else DIRECTION.VERTICAL, true)

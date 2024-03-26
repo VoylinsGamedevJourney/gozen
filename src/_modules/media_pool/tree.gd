@@ -4,7 +4,7 @@ enum POPUP_TYPE { MINIMAL, FULL }
 
 @export var global: bool = false
 
-var icon_folder := preload("res://assets/icons/icon_folder.png")
+var icon_folder := preload("res://assets/icons/folder.png")
 var icon_max_width := 20
 
 var folder_items := {}

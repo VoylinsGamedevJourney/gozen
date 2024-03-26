@@ -6,7 +6,7 @@ var file_data   := {} # File_id: File class object
 var current_id := 0 # File ID's for global start with 'G_' and for project with 'P_'
 
 
-func _ready():
+func _ready() -> void:
 	## Loading data on startup if exists
 	if FileAccess.file_exists(Globals.PATH_FILE_MANAGER):
 		var file := FileAccess.open(Globals.PATH_FILE_MANAGER, FileAccess.READ)

@@ -9,7 +9,7 @@ enum TYPE {
 	TEXT, COLOR, COLOR_GRADIENT_1D, COLOR_GRADIENT_2D, SHADER # Generated
 }
 
-const icon := {
+const ICONS := {
 	TYPE.VIDEO: preload("res://assets/icons/video_file.png"),
 	TYPE.AUDIO: preload("res://assets/icons/audio_file.png"),
 	TYPE.IMAGE: preload("res://assets/icons/image_file.png"),
@@ -28,4 +28,4 @@ var effects: Array
 
 
 func get_icon() -> Resource:
-	return icon[type]
+	return ICONS[type]

@@ -23,7 +23,7 @@ signal _on_audio_tracks_changed(update_audio_tracks: Array)
 
 
 # Key's for variables which need saving
-const keys: PackedStringArray = [
+const KEYS: PackedStringArray = [
 	"title",
 	
 	"folder_data",
@@ -82,7 +82,7 @@ func load_project(path: String) -> void:
 	project_path = path
 	var file := FileAccess.open(project_path, FileAccess.READ)
 	var data: Dictionary = str_to_var(file.get_as_text())
-	for key: String in keys:
+	for key: String in KEYS:
 		set(key, data[key])
 	
 	_on_title_changed.emit(get_title())
@@ -93,7 +93,7 @@ func load_project(path: String) -> void:
 func save_project() -> void:
 	var file := FileAccess.open(project_path, FileAccess.WRITE)
 	var data := {}
-	for key: String in keys:
+	for key: String in KEYS:
 		data[key] = get(key)
 	file.store_string(var_to_str(data))
 	_on_project_saved.emit()

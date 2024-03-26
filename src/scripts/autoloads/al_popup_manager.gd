@@ -3,6 +3,10 @@ extends Node
 
 enum POPUP { ADD_EDITOR_LAYOUT, BUG_REPORT, PROJECT_SETTINGS_MENU, SETTINGS_MENU }
 
+
+const POPUP_PATH := "res://popups/{popup}/{popup}.tscn"
+
+
 var popups := {
 	POPUP.ADD_EDITOR_LAYOUT : { 
 		string = "add_editor_layout", 
@@ -15,16 +19,14 @@ var popups := {
 		instance = null},
 	POPUP.SETTINGS_MENU : { 
 		string = "settings_menu", 
-		instance = null},
-}
+		instance = null}}
 
 
 func open_popup(popup: POPUP) -> void:
 	if popups[popup].instance == null:
-		var popup_instance: Window = load("res://ui/popups/{popup}/{popup}.tscn".format({
-			"popup" = popups[popup].string})).instantiate()
-		get_tree().root.add_child(popup_instance)
-		popups[popup].instance = popup_instance
+		var instance: Window = load(POPUP_PATH.format({popup = popups[popup].string})).instantiate()
+		get_tree().root.add_child(instance)
+		popups[popup].instance = instance
 	popups[popup].instance.popup()
 
 

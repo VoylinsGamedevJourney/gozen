@@ -3,7 +3,7 @@ class_name RecentProjects extends Node
 var data: Array
 
 
-func _init():
+func _init() -> void:
 	if !FileAccess.file_exists(Globals.PATH_RECENT_PROJECTS):
 		return # No data so no need to continue
 	load_data()

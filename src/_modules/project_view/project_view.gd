@@ -3,7 +3,7 @@ extends Control
 var playing: bool = false
 
 
-func _on_play_pause_button_pressed():
+func _on_play_pause_button_pressed() -> void:
 	# TODO:
 	# - Actually play from the timeline
 	# - Update when play header reached end of timeline
