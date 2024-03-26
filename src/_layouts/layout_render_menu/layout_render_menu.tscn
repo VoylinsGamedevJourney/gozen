@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6f602loowbp0"]
+[gd_scene load_steps=13 format=3 uid="uid://b6f602loowbp0"]
 
 [ext_resource type="Script" path="res://_layouts/layout_render_menu/layout_render_menu.gd" id="1_6mfas"]
+[ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="2_33p6d"]
+[ext_resource type="LabelSettings" uid="uid://c0qh8a5u8wkr7" path="res://_layouts/layout_render_menu/title_label.tres" id="2_lrdku"]
+[ext_resource type="Texture2D" uid="uid://bhr7yi3nlfpot" path="res://assets/icons/marker.png" id="2_r2p44"]
+[ext_resource type="Texture2D" uid="uid://c6xd7wfa08g53" path="res://assets/icons/first_page.png" id="3_11k5m"]
+[ext_resource type="Texture2D" uid="uid://b7jy45llxuju1" path="res://assets/icons/play_arrow.png" id="3_fctgf"]
+[ext_resource type="Texture2D" uid="uid://6ddkouo66fgh" path="res://assets/icons/fast_rewind.png" id="4_g0q1y"]
+[ext_resource type="Texture2D" uid="uid://cdercgb6b3cya" path="res://assets/icons/pause.png" id="6_5doyq"]
+[ext_resource type="Texture2D" uid="uid://d31xegkfd0bqk" path="res://assets/icons/fast_forward.png" id="7_0flhc"]
+[ext_resource type="Texture2D" uid="uid://bcgusx0plmh5y" path="res://assets/icons/last_page.png" id="8_waeps"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_apnng"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v342u"]
+bg_color = Color(1, 1, 1, 1)
 
 [node name="RenderMenu" type="Control"]
 layout_mode = 3
@@ -11,7 +25,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6mfas")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,38 +33,373 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HSplit" type="HSplitContainer" parent="VBoxContainer"]
+[node name="HSplit" type="HSplitContainer" parent="VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-split_offset = -440
+split_offset = -300
 
-[node name="RenderSettings" type="PanelContainer" parent="VBoxContainer/HSplit"]
+[node name="VBox" type="VBoxContainer" parent="VBox/HSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/HSplit/RenderSettings"]
+[node name="ProjectSettingsPanel" type="PanelContainer" parent="VBox/HSplit/VBox"]
 layout_mode = 2
-size_flags_vertical = 1
-text = "Render settings"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="ProjectView" type="PanelContainer" parent="VBoxContainer/HSplit"]
+[node name="VBox" type="VBoxContainer" parent="VBox/HSplit/VBox/ProjectSettingsPanel"]
+layout_mode = 2
+
+[node name="ProjectTitleLabel" type="Label" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox"]
+layout_mode = 2
+text = "Project"
+label_settings = ExtResource("2_lrdku")
+
+[node name="Grid" type="GridContainer" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="FileNameLabel" type="Label" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "File name:"
+
+[node name="FileNameLineEdit" type="LineEdit" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/HSplit/ProjectView"]
+[node name="LocationLabel" type="Label" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid"]
 layout_mode = 2
-text = "Project view"
+text = "Location:"
+
+[node name="LocationHBox" type="HBoxContainer" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid"]
+layout_mode = 2
+
+[node name="LocationLineEdit" type="LineEdit" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid/LocationHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid/LocationHBox"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Browse"
+
+[node name="PresetLabel" type="Label" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Format:"
+
+[node name="PresetOptionButton" type="OptionButton" parent="VBox/HSplit/VBox/ProjectSettingsPanel/VBox/Grid"]
+layout_mode = 2
+
+[node name="EncoderSettingsPanel" type="PanelContainer" parent="VBox/HSplit/VBox"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="VBox/HSplit/VBox/EncoderSettingsPanel"]
+layout_mode = 2
+
+[node name="EncoderTitleLabel" type="Label" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox"]
+layout_mode = 2
+text = "Encoder"
+label_settings = ExtResource("2_lrdku")
+
+[node name="ThreadsHBox" type="HBoxContainer" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="ThreadsLabel" type="Label" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox/ThreadsHBox"]
+layout_mode = 2
+text = "Threads:"
+
+[node name="SpinBox" type="SpinBox" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox/ThreadsHBox"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="Grid" type="GridContainer" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="QualityLabel" type="Label" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Quality:"
+
+[node name="QualitySlider" type="HSlider" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpeedLabel" type="Label" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Speed:"
+
+[node name="SpeedSlider" type="HSlider" parent="VBox/HSplit/VBox/EncoderSettingsPanel/VBox/Grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RenderSettingsPanel" type="PanelContainer" parent="VBox/HSplit/VBox"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBox/HSplit/VBox/RenderSettingsPanel"]
+layout_mode = 2
+
+[node name="RenderAreaVBox" type="VBoxContainer" parent="VBox/HSplit/VBox/RenderSettingsPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RenderAreaTitleLabel" type="Label" parent="VBox/HSplit/VBox/RenderSettingsPanel/HBoxContainer/RenderAreaVBox"]
+layout_mode = 2
+text = "Render area"
+label_settings = ExtResource("2_lrdku")
+
+[node name="RenderAreaOptionButton" type="OptionButton" parent="VBox/HSplit/VBox/RenderSettingsPanel/HBoxContainer/RenderAreaVBox"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Full video"
+popup/item_0/id = 0
+popup/item_1/text = "Selected area"
+popup/item_1/id = 1
+
+[node name="AudioRenderingVBox" type="VBoxContainer" parent="VBox/HSplit/VBox/RenderSettingsPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioRenderingTitleLabel" type="Label" parent="VBox/HSplit/VBox/RenderSettingsPanel/HBoxContainer/AudioRenderingVBox"]
+layout_mode = 2
+text = "Audio rendering"
+label_settings = ExtResource("2_lrdku")
+
+[node name="AudioRenderingOptionButton" type="OptionButton" parent="VBox/HSplit/VBox/RenderSettingsPanel/HBoxContainer/AudioRenderingVBox"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "In-video"
+popup/item_0/id = 0
+popup/item_1/text = "Separata file"
+popup/item_1/id = 1
+
+[node name="AdvancedSettingsPanel" type="PanelContainer" parent="VBox/HSplit/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBox/HSplit/VBox/AdvancedSettingsPanel"]
+layout_mode = 2
+
+[node name="TopHBox" type="HBoxContainer" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="AdvancedSettingsTitleLabel" type="Label" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Advanced settings"
+label_settings = ExtResource("2_lrdku")
+
+[node name="EnableAdvancedSettingsCheckButton" type="CheckButton" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox/TopHBox"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="VideoCodecLabel" type="Label" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox/GridContainer"]
+layout_mode = 2
+text = "Video Codec:"
+
+[node name="VideoCodecOptionButton" type="OptionButton" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioCodec" type="Label" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox/GridContainer"]
+layout_mode = 2
+text = "Audio codec:"
+
+[node name="AudioCodecOptionButton" type="OptionButton" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InfoLabel" type="Label" parent="VBox/HSplit/VBox/AdvancedSettingsPanel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "* = hardware acceleration possible"
+label_settings = ExtResource("2_lrdku")
+horizontal_alignment = 2
+
+[node name="RenderButtonsPanel" type="PanelContainer" parent="VBox/HSplit/VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBox/HSplit/VBox/RenderButtonsPanel"]
+layout_mode = 2
+
+[node name="ExportVideoOnlyButton" type="Button" parent="VBox/HSplit/VBox/RenderButtonsPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export video only"
+
+[node name="ExportAudioOnlyButton" type="Button" parent="VBox/HSplit/VBox/RenderButtonsPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export Audio only"
+
+[node name="ExportVideoButton" type="Button" parent="VBox/HSplit/VBox/RenderButtonsPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export video"
+
+[node name="ProjectView" type="PanelContainer" parent="VBox/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBox/HSplit/ProjectView"]
+layout_mode = 2
+
+[node name="ProjectTextureView" type="TextureRect" parent="VBox/HSplit/ProjectView/VBox"]
+layout_mode = 2
+texture = ExtResource("2_33p6d")
+expand_mode = 5
+
+[node name="ProjectPreviewButtonsHBox" type="HBoxContainer" parent="VBox/HSplit/ProjectView/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="ToBeginButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
+custom_minimum_size = Vector2(59, 59)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("3_11k5m")
+icon_alignment = 1
+
+[node name="RewindButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
+custom_minimum_size = Vector2(59, 59)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("4_g0q1y")
+icon_alignment = 1
+
+[node name="PlayButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
+custom_minimum_size = Vector2(59, 59)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("3_fctgf")
+icon_alignment = 1
+
+[node name="PauseButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
+visible = false
+custom_minimum_size = Vector2(59, 59)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("6_5doyq")
+icon_alignment = 1
+
+[node name="ForwardButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
+custom_minimum_size = Vector2(59, 59)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("7_0flhc")
+icon_alignment = 1
+
+[node name="ToEndButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
+custom_minimum_size = Vector2(59, 59)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = ExtResource("8_waeps")
+icon_alignment = 1
+
+[node name="MiniTimeline" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 225)
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBox/MiniTimeline"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MiniTimeline/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+
+[node name="Spacer" type="HSeparator" parent="VBox/MiniTimeline/HBox/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_apnng")
+
+[node name="TagsLabel" type="Label" parent="VBox/MiniTimeline/HBox/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Tags:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MiniTimeline" type="PanelContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
+[node name="VideoLabel" type="Label" parent="VBox/MiniTimeline/HBox/VBox"]
 layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/MiniTimeline"]
-layout_mode = 2
-text = "Mini timeline"
+size_flags_vertical = 3
+text = "Video:"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AudioLabel" type="Label" parent="VBox/MiniTimeline/HBox/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Audio:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox/MiniTimeline/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MiniTimeline/HBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TimelineMarkers" type="Panel" parent="VBox/MiniTimeline/HBox/ScrollContainer/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v342u")
+
+[node name="MarkerButtonOne" type="TextureButton" parent="VBox/MiniTimeline/HBox/ScrollContainer/VBox/TimelineMarkers"]
+modulate = Color(0.591674, 0, 1, 1)
+layout_mode = 0
+offset_left = -6.0
+offset_top = -2.0
+offset_right = 6.0
+offset_bottom = 14.0
+texture_normal = ExtResource("2_r2p44")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="MarkerButtonTwo" type="TextureButton" parent="VBox/MiniTimeline/HBox/ScrollContainer/VBox/TimelineMarkers"]
+modulate = Color(0.591674, 0, 1, 1)
+layout_mode = 0
+offset_left = 86.0
+offset_top = -2.0
+offset_right = 98.0
+offset_bottom = 14.0
+texture_normal = ExtResource("2_r2p44")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Panel" type="Panel" parent="VBox/MiniTimeline/HBox/ScrollContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel2" type="Panel" parent="VBox/MiniTimeline/HBox/ScrollContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel3" type="Panel" parent="VBox/MiniTimeline/HBox/ScrollContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="VBox/HSplit/VBox/RenderButtonsPanel/HBox/ExportVideoOnlyButton" to="." method="_on_export_video_only_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/VBox/RenderButtonsPanel/HBox/ExportAudioOnlyButton" to="." method="_on_export_audio_only_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/VBox/RenderButtonsPanel/HBox/ExportVideoButton" to="." method="_on_export_video_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox/ToBeginButton" to="." method="_on_to_begin_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox/RewindButton" to="." method="_on_rewind_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox/PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox/ForwardButton" to="." method="_on_forward_button_pressed"]
+[connection signal="pressed" from="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox/ToEndButton" to="." method="_on_to_end_button_pressed"]

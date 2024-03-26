@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="LayoutModule" load_steps=4 format=3 uid="uid://b4x21qeeycqm2"]
 
+[ext_resource type="Texture2D" uid="uid://df8y0hka7gsd3" path="res://assets/icons/downloading.png" id="1_ho177"]
 [ext_resource type="Script" path="res://scripts/classes/resources/layout_module.gd" id="1_jn87o"]
-[ext_resource type="Texture2D" uid="uid://bpjbmo5en5ak5" path="res://assets/icons/baseline_link_black_48dp.png" id="1_sxgpi"]
 [ext_resource type="PackedScene" uid="uid://b6f602loowbp0" path="res://_layouts/layout_render_menu/layout_render_menu.tscn" id="2_ci3xm"]
 
 [resource]
 script = ExtResource("1_jn87o")
 layout_name = "Render Menu layout"
 layout_description = ""
-default_icon = ExtResource("1_sxgpi")
+default_icon = ExtResource("1_ho177")
 scene = ExtResource("2_ci3xm")
 single_only = true
