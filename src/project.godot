@@ -13,7 +13,7 @@ config_version=5
 config/name="GoZen - Video Editor"
 config/description="GoZen is an open source video editor made with Godot by Voylin."
 config/version="0.4.5-pre-alpha"
-run/main_scene="res://ui/screens/main/main.tscn"
+run/main_scene="res://ui/main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.2", "Forward Plus")
@@ -31,6 +31,7 @@ ActionHandler="*res://scripts/autoloads/al_action_handler.gd"
 FileManager="*res://scripts/autoloads/al_file_manager.gd"
 DialogManager="*res://scripts/autoloads/al_dialog_manager.gd"
 PopupManager="*res://scripts/autoloads/al_popup_manager.gd"
+WindowHandler="*res://scripts/autoloads/al_window_handler.gd"
 
 [debug]
 
@@ -44,9 +45,14 @@ window/size/borderless=true
 window/size/window_width_override=1152
 window/size/window_height_override=648
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gengodot/plugin.cfg")
+
 [file_customization]
 
 folder_colors={
+"res://addons/": "gray",
 "res://assets/": "yellow",
 "res://bin/": "gray",
 "res://bin/gde_ffmpeg/": "purple",

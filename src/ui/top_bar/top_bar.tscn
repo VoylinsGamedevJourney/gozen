@@ -1,0 +1,175 @@
+[gd_scene load_steps=23 format=3 uid="uid://c3lkgqkxicy2b"]
+
+[ext_resource type="Script" path="res://ui/top_bar/top_bar.gd" id="1_mvswx"]
+[ext_resource type="Texture2D" uid="uid://d3b524cpjjf2u" path="res://icon.svg" id="2_er7bg"]
+[ext_resource type="Texture2D" uid="uid://hav4onsqoo7i" path="res://assets/icons/settings_video_camera.png" id="3_i4f6w"]
+[ext_resource type="Script" path="res://ui/top_bar/editor_menu_button.gd" id="3_xbsa1"]
+[ext_resource type="Texture2D" uid="uid://bgrbdik8x3iqe" path="res://assets/icons/movie_edit.png" id="4_44a26"]
+[ext_resource type="Texture2D" uid="uid://bk66k38osgv0o" path="res://assets/icons/minimize.png" id="5_0geoq"]
+[ext_resource type="Texture2D" uid="uid://cxdjexu1spc7o" path="res://assets/icons/maximize.png" id="6_lts2r"]
+[ext_resource type="Texture2D" uid="uid://c1yn05a2gyiiy" path="res://assets/icons/close.png" id="7_ldt8k"]
+[ext_resource type="Script" path="res://ui/top_bar/window_title.gd" id="8_xcybd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0e2s"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 26
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2fg8q"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_espjr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wu6mi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_deqq2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k3sm1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08wdr"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+expand_margin_left = 3.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qsb17"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ln3j0"]
+bg_color = Color(0.207843, 0.207843, 0.207843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jtopl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x2pn6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b4lbh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_f68yb"]
+font_size = 14
+
+[node name="TopBarHBox" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 48.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+script = ExtResource("1_mvswx")
+
+[node name="EditorMenuPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o0e2s")
+
+[node name="EditorMenuButton" type="MenuButton" parent="EditorMenuPanel"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2fg8q")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_espjr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wu6mi")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_deqq2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_k3sm1")
+icon = ExtResource("2_er7bg")
+expand_icon = true
+script = ExtResource("3_xbsa1")
+
+[node name="TopBarPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_08wdr")
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="TopBarPanel"]
+modulate = Color(1, 1, 1, 0.705882)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="SettingsButton" type="Button" parent="TopBarPanel/ButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ln3j0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_jtopl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x2pn6")
+icon = ExtResource("3_i4f6w")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ProjectSettingsButton" type="Button" parent="TopBarPanel/ButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ln3j0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_jtopl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x2pn6")
+icon = ExtResource("4_44a26")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Spacer" type="VSeparator" parent="TopBarPanel/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_b4lbh")
+
+[node name="MinimizeButton" type="Button" parent="TopBarPanel/ButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ln3j0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_jtopl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x2pn6")
+icon = ExtResource("5_0geoq")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MaximizeButton" type="Button" parent="TopBarPanel/ButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ln3j0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_jtopl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x2pn6")
+icon = ExtResource("6_lts2r")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ExitButton" type="Button" parent="TopBarPanel/ButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ln3j0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_jtopl")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x2pn6")
+icon = ExtResource("7_ldt8k")
+icon_alignment = 1
+expand_icon = true
+
+[node name="WindowTitleLabel" type="Label" parent="TopBarPanel"]
+layout_mode = 2
+size_flags_vertical = 1
+auto_translate = false
+localize_numeral_system = false
+label_settings = SubResource("LabelSettings_f68yb")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("8_xcybd")
+
+[connection signal="gui_input" from="EditorMenuPanel" to="." method="_on_top_bar_dragging"]
+[connection signal="gui_input" from="TopBarPanel" to="." method="_on_top_bar_dragging"]
+[connection signal="pressed" from="TopBarPanel/ButtonsHBox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="TopBarPanel/ButtonsHBox/ProjectSettingsButton" to="." method="_on_project_settings_button_pressed"]
+[connection signal="pressed" from="TopBarPanel/ButtonsHBox/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="TopBarPanel/ButtonsHBox/MaximizeButton" to="." method="_on_maximize_button_pressed"]
+[connection signal="pressed" from="TopBarPanel/ButtonsHBox/ExitButton" to="." method="_on_exit_button_pressed"]
