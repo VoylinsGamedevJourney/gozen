@@ -251,12 +251,14 @@ layout_mode = 2
 
 [node name="ProjectTextureView" type="TextureRect" parent="VBox/HSplit/ProjectView/VBox"]
 layout_mode = 2
+size_flags_vertical = 3
 texture = ExtResource("2_33p6d")
-expand_mode = 5
+expand_mode = 1
+stretch_mode = 5
 
 [node name="ProjectPreviewButtonsHBox" type="HBoxContainer" parent="VBox/HSplit/ProjectView/VBox"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 8
 alignment = 1
 
 [node name="ToBeginButton" type="Button" parent="VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox"]
