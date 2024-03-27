@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bc8y71yksypu4"]
+[gd_scene load_steps=3 format=3 uid="uid://bc8y71yksypu4"]
 
 [ext_resource type="Script" path="res://addons/gengodot/gengodot_script.gd" id="1_c8bnl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jsy6p"]
 
 [node name="Gengodot" type="MarginContainer"]
 anchors_preset = 15
@@ -21,6 +23,24 @@ layout_mode = 2
 layout_mode = 2
 alignment = 2
 
+[node name="CategoryOptionButton" type="OptionButton" parent="VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="SpacerLeft" type="VSeparator" parent="VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_jsy6p")
+
+[node name="LoadLocalizationButton" type="Button" parent="VBox/ButtonsHBox"]
+layout_mode = 2
+text = "Load Localization"
+
+[node name="SpacerRight" type="VSeparator" parent="VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_jsy6p")
+
 [node name="GeneratePOTButton" type="Button" parent="VBox/ButtonsHBox"]
 layout_mode = 2
 text = "Generate POT"
@@ -37,15 +57,15 @@ size_flags_vertical = 3
 [node name="HeaderHBox" type="HBoxContainer" parent="VBox/VBox"]
 layout_mode = 2
 
+[node name="ContextLabel" type="Label" parent="VBox/VBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "String context"
+
 [node name="IDLabel" type="Label" parent="VBox/VBox/HeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Localization ID"
-
-[node name="FirstLanguageOptionButton" type="OptionButton" parent="VBox/VBox/HeaderHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="SecondLanguageOptionButton" type="OptionButton" parent="VBox/VBox/HeaderHBox"]
 unique_name_in_owner = true
@@ -64,3 +84,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[connection signal="pressed" from="VBox/ButtonsHBox/LoadLocalizationButton" to="." method="_on_load_localization_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonsHBox/GeneratePOTButton" to="." method="_on_generate_pot_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonsHBox/GenerateMOButton" to="." method="_on_generate_mo_button_pressed"]
