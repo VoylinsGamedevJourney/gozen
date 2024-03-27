@@ -6,9 +6,11 @@ extends MarginContainer
 
 const PATH_POT := "res://translations/gozen-translations/po_files/translations_template.pot"
 const PATH_PO_FILES := "res://translations/gozen-translations/po_files/"
-const PATH_MO_FILES := "res://translations/gozen-translations/"
+const PATH_MO_FILES := "res://translations/"
 
 const POT_HEADERS := [
+	"msgid \"\"",
+	"msgstr \"\"",
 	"\"Project-Id-Version: GoZen - Video Editor\\n\"",
 	"\"MIME-Version: 1.0\\n\"",
 	"\"Content-Type: text/plain; charset=UTF-8\\n\"",
@@ -26,7 +28,18 @@ var pot_data : Dictionary = {} # Key is 'msgid'
 
 func _on_generate_pot_button_pressed() -> void:
 	var original_pot_data: Dictionary = _get_po_data(PATH_POT)
-	# LANGUAGE translation for GoZen - Video Editor for the following files:
+	pass
+
+
+func _on_generate_po(language_code: String, data: Dictionary) -> void:
+	# First line: # LANGUAGE translation for GoZen - Video Editor for the following files:
+	# After that first all file occurances make packed string array?
+	# Make another packed string array with the rest of the file data
+	# 
+	# Put the first line and occurances, followed by the standard headers
+	# Add the language header and repalce language code
+	# Add empty line
+	# Add all other data
 	pass
 
 
