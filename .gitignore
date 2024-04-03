@@ -23,6 +23,7 @@ ffmpeg-bin/
 config.log
 .sconf_temp
 
+__pycache__
 
 # C++ ignores
 ## Prerequisites
@@ -57,3 +58,5 @@ config.log
 .idea
 
 *.mo
+
+*.pyc
