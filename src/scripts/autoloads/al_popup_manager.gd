@@ -22,12 +22,14 @@ var popups := {
 		instance = null}}
 
 
-func open_popup(popup: POPUP) -> void:
-	if popups[popup].instance == null:
-		var instance: Window = load(POPUP_PATH.format({popup = popups[popup].string})).instantiate()
-		get_tree().root.add_child(instance)
-		popups[popup].instance = instance
-	popups[popup].instance.popup()
+func open_popup(a_popup: POPUP) -> void:
+	if popups[a_popup].instance != null:
+		popups[a_popup].instance.popup()
+	
+	var instance: Window = load(POPUP_PATH.format({popup = popups[a_popup].string})).instantiate()
+	
+	get_tree().root.add_child(instance)
+	popups[a_popup].instance = instance
 
 
 func close_popup(popup: POPUP) -> void:

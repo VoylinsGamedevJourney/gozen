@@ -1,4 +1,5 @@
 extends Node
+# TODO: Stop using ConfigFile, there's a performance limitation
 
 signal _on_language_changed(new_language: String)
 signal _on_top_bar_positions_changed
@@ -25,10 +26,11 @@ func get_language() -> String:
 	return config.get_value("general", "language", "en")
 
 
-func set_language(new_language: String) -> void:
-	config.set_value("general", "language", new_language)
-	TranslationServer.set_locale(new_language)
-	_on_language_changed.emit(new_language)
+func set_language(a_language: String) -> void:
+	config.set_value("general", "language", a_language)
+	TranslationServer.set_locale(a_language)
+	
+	_on_language_changed.emit(a_language)
 	_save_settings()
 
 
@@ -36,8 +38,8 @@ func get_debug_enabled() -> bool:
 	return config.get_value("general", "debug_enabled", true)
 
 
-func set_debug_enabled(new_value: String) -> void:
-	config.set_value("general", "debug_enabled", new_value)
+func set_debug_enabled(a_value: String) -> void:
+	config.set_value("general", "debug_enabled", a_value)
 	_save_settings()
 
 
@@ -45,8 +47,8 @@ func get_default_video_tracks() -> int:
 	return config.get_value("timeline", "default_video_tracks", 3)
 
 
-func set_default_video_tracks(new_default: int) -> void:
-	config.set_value("timeline", "default_video_tracks", new_default)
+func set_default_video_tracks(a_default: int) -> void:
+	config.set_value("timeline", "default_video_tracks", a_default)
 	_save_settings()
 
 
@@ -54,16 +56,16 @@ func get_default_audio_tracks() -> int:
 	return config.get_value("timeline", "default_audio_tracks", 3)
 
 
-func set_default_audio_tracks(new_default: int) -> void:
-	config.set_value("timeline", "default_audio_tracks", new_default)
+func set_default_audio_tracks(a_default: int) -> void:
+	config.set_value("timeline", "default_audio_tracks", a_default)
 	_save_settings()
 
 
-func get_top_bar_menu_position(button_name: String) -> int:
-	return config.get_value("top_bar", "button_%s" % button_name, 0)
+func get_top_bar_menu_position(a_button_name: String) -> int:
+	return config.get_value("top_bar", "button_%s" % a_button_name, 0)
 
 
-func set_top_bar_menu_position(button_name: String, new_pos: int) -> void:
+func set_top_bar_menu_position(a_button_name: String, a_pos: int) -> void:
 	# TODO: Add a way to change this through the settings menu.
 	# Best way to do this is get all section keys from section "top_bar", check
 	# if key starts with "button_". This way custom module buttons will also
@@ -72,7 +74,7 @@ func set_top_bar_menu_position(button_name: String, new_pos: int) -> void:
 	# 0 = display in menu only
 	# 1 = only next to editor button
 	# 2 = display on both places
-	config.set_value("top_bar", "button_%s" % button_name, new_pos)
+	config.set_value("top_bar", "button_%s" % a_button_name, a_pos)
 	_save_settings()
 	_on_top_bar_positions_changed.emit()
 
@@ -81,9 +83,9 @@ func get_embed_subwindows() -> bool:
 	return config.get_value("viewport", "embed_subwindows", true)
 
 
-func set_embed_subwindows(value: bool) -> void:
-	get_viewport().set_embedding_subwindows(value)
-	config.set_value("viewport", "embed_subwindows", value)
+func set_embed_subwindows(a_value: bool) -> void:
+	get_viewport().set_embedding_subwindows(a_value)
+	config.set_value("viewport", "embed_subwindows", a_value)
 	_save_settings()
 
 #endregion

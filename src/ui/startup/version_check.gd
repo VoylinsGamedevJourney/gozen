@@ -7,39 +7,39 @@ extends PanelContainer
 
 func _ready() -> void:
 	## Creating an http request, connects and sends it. 
-	var request := HTTPRequest.new()
-	add_child(request)
-	request.request_completed.connect(_request_completed)
-	var error = request.request(Globals.URL_VERSION_STABLE)
-	if error != OK:
-		Printer.error("Could not complete Version check request '%s'!" % error)
+	var l_request := HTTPRequest.new()
+	add_child(l_request)
+	l_request.request_completed.connect(_request_completed)
+	var l_error = l_request.request(Globals.URL_VERSION_STABLE)
+	if l_error != OK:
+		Printer.error(Globals.ERROR_VERSION_CHECK_REQUEST % l_error)
 
 
-func _request_completed(result: int, response_code: int, _h, body: PackedByteArray) -> bool:
+func _request_completed(a_result: int, a_response_code: int, _h, a_body: PackedByteArray) -> bool:
 	## When a request has been completed, this will be checked if we could find the
 	## config file, if yes, we load it in and we compare to the local config file.
-	if result != OK or response_code == 404:
+	if a_result != OK or a_response_code == 404:
 		return false # Could not get the page, possibly no connection?
-	var config := ConfigFile.new()
-	config.parse(body.get_string_from_utf8())
+	var l_config := ConfigFile.new()
+	l_config.parse(a_body.get_string_from_utf8())
 	# Getting version strings
-	var stable_version: String = config.get_value("application/config", "version_stable", "0.0.0")
-	var local_version: String = ProjectSettings.get_setting("application/config/version")
+	var l_stable_version: String = l_config.get_value("application/config", "version_stable", "0.0.0")
+	var l_local_version: String = ProjectSettings.get_setting("application/config/version")
 	# Version checking
-	var v_remote: PackedInt32Array = get_version(stable_version)
-	var v_local: PackedInt32Array = get_version(local_version)
+	var l_version_remote: PackedInt32Array = get_version(l_stable_version)
+	var l_version_local: PackedInt32Array = get_version(l_local_version)
 	for i: int in 3:
-		if v_remote[i] > v_local[i]:
-			Printer.debug("New version is available!\n\tVersion: %s" % stable_version)
+		if l_version_remote[i] > l_version_local[i]:
+			Printer.debug("New version is available!\n\tVersion: %s" % l_stable_version)
 			return true
-		elif v_remote[i] < v_local[i]:
+		elif l_version_remote[i] < l_version_local[i]:
 			return false
 	return false
 
 
-func get_version(version: String) -> PackedInt32Array:
+func get_version(a_version: String) -> PackedInt32Array:
 	## Version number has 3 values, but it could have a string attached to it in
 	## case of alpha, beta, or dev. We need an Int array, so we should avoid
 	## loading the last numbers as this is not necesarry.
-	var data := version.split("-")[0].split(".")
-	return [int(data[0]), int(data[1]), int(data[2])]
+	var l_data := a_version.split("-")[0].split(".")
+	return [int(l_data[0]), int(l_data[1]), int(l_data[2])]

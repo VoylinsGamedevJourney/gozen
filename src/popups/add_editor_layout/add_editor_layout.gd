@@ -2,22 +2,21 @@ extends Window
 
 
 func _ready() -> void:
-	var button := Button.new()
-	for layout: String in DirAccess.get_directories_at("res://_layouts/"):
-		var layout_data: LayoutModule = load("res://_layouts/%s/info.tres" % layout)
-		var layout_name: String = layout.trim_prefix("layout_")
-		var entry: Button = button.duplicate()
-		entry.text = layout_data.layout_name
-		entry.tooltip_text = layout_data.layout_description
-		entry.pressed.connect(_on_layout_button_pressed.bind(layout_name))
-		if layout_data.single_only and EditorUI.instance.check_single_existing(layout_name):
-			entry.disabled = true
-			entry.tooltip_text = "This layout it single use only and already active."
-		%AddLayoutVBox.add_child(entry)
+	for l_layout: String in DirAccess.get_directories_at("res://_layouts/"):
+		var l_layout_data: LayoutModule = load("res://_layouts/%s/info.tres" % l_layout)
+		var l_layout_name: String = l_layout.trim_prefix("layout_")
+		var l_button: Button = Button.new()
+		l_button.text = l_layout_data.layout_name
+		l_button.tooltip_text = l_layout_data.layout_description
+		l_button.pressed.connect(_on_layout_button_pressed.bind(l_layout_name))
+		if l_layout_data.single_only and EditorUI.instance.check_single_existing(l_layout_name):
+			l_button.disabled = true
+			l_button.tooltip_text = "This layout it single use only and already active."
+		%AddLayoutVBox.add_child(l_button)
 
 
-func _on_layout_button_pressed(layout_name: String) -> void:
-	EditorUI.instance.add_layout(layout_name)
+func _on_layout_button_pressed(a_layout_name: String) -> void:
+	EditorUI.instance.add_layout(a_layout_name)
 	_on_cancel_button_pressed()
 
 

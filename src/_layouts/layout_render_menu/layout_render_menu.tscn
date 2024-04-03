@@ -1,11 +1,11 @@
 [gd_scene load_steps=13 format=3 uid="uid://b6f602loowbp0"]
 
 [ext_resource type="Script" path="res://_layouts/layout_render_menu/layout_render_menu.gd" id="1_6mfas"]
-[ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="2_33p6d"]
 [ext_resource type="LabelSettings" uid="uid://c0qh8a5u8wkr7" path="res://_layouts/layout_render_menu/title_label.tres" id="2_lrdku"]
 [ext_resource type="Texture2D" uid="uid://bhr7yi3nlfpot" path="res://assets/icons/marker.png" id="2_r2p44"]
 [ext_resource type="Texture2D" uid="uid://c6xd7wfa08g53" path="res://assets/icons/first_page.png" id="3_11k5m"]
 [ext_resource type="Texture2D" uid="uid://b7jy45llxuju1" path="res://assets/icons/play_arrow.png" id="3_fctgf"]
+[ext_resource type="Texture2D" uid="uid://cy7sy3fnwfye6" path="res://assets/images/startup_image.webp" id="3_qa5t4"]
 [ext_resource type="Texture2D" uid="uid://6ddkouo66fgh" path="res://assets/icons/fast_rewind.png" id="4_g0q1y"]
 [ext_resource type="Texture2D" uid="uid://cdercgb6b3cya" path="res://assets/icons/pause.png" id="6_5doyq"]
 [ext_resource type="Texture2D" uid="uid://d31xegkfd0bqk" path="res://assets/icons/fast_forward.png" id="7_0flhc"]
@@ -252,7 +252,7 @@ layout_mode = 2
 [node name="ProjectTextureView" type="TextureRect" parent="VBox/HSplit/ProjectView/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("2_33p6d")
+texture = ExtResource("3_qa5t4")
 expand_mode = 1
 stretch_mode = 5
 

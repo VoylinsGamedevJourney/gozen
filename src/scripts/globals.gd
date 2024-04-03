@@ -17,3 +17,14 @@ const PATH_SETTINGS := "user://settings.cfg"
 const PATH_RECENT_PROJECTS := "user://recent_projects"
 const PATH_EDITOR_UI := "user://editor_ui.cfg"
 const PATH_FILE_MANAGER := "user://file_manager"
+
+#endregion
+#region #####################  ERRORS  #########################################
+
+const ERROR_PROJECT_PATH_EXTENSION := "Can't load project, path has no '*.gozen' extension!\n\t%s"
+const ERROR_NO_IMAGE_FOUND := "No image file found at '%s'!"
+const ERROR_VERSION_CHECK_REQUEST :="Could not complete Version check request '%s'!"
+const ERROR_INVALID_FILE_TYPE := "Invalid file type!\n\t%s"
+const ERROR_MODULE_SINGLE_ONLY := "Module is single only, already in sidebar present!"
+
+#endregion

@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://j4v0yji8gj6j"]
 
-[ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="1_7byeg"]
 [ext_resource type="Script" path="res://_layouts/layout_subtitle_manager/layout_subtitle_manager.gd" id="1_s8ikh"]
 [ext_resource type="Texture2D" uid="uid://bhr7yi3nlfpot" path="res://assets/icons/marker.png" id="1_y6h7u"]
 [ext_resource type="Texture2D" uid="uid://c6xd7wfa08g53" path="res://assets/icons/first_page.png" id="2_1dg7a"]
+[ext_resource type="Texture2D" uid="uid://cy7sy3fnwfye6" path="res://assets/images/startup_image.webp" id="2_tm6pl"]
 [ext_resource type="Texture2D" uid="uid://6ddkouo66fgh" path="res://assets/icons/fast_rewind.png" id="3_w7wvj"]
 [ext_resource type="Texture2D" uid="uid://b7jy45llxuju1" path="res://assets/icons/play_arrow.png" id="4_4nagx"]
 [ext_resource type="Texture2D" uid="uid://cdercgb6b3cya" path="res://assets/icons/pause.png" id="5_b6cm6"]
@@ -43,7 +43,7 @@ layout_mode = 2
 [node name="TextureRect" type="TextureRect" parent="HSplitContainer/ProjectViewPanel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_7byeg")
+texture = ExtResource("2_tm6pl")
 expand_mode = 1
 stretch_mode = 5
 

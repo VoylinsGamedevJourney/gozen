@@ -1,4 +1,4 @@
-@tool
+@tool 
 extends EditorPlugin
 
 
@@ -23,9 +23,9 @@ func _has_main_screen() -> bool:
 	return true
 
 
-func _make_visible(visible) -> void:
+func _make_visible(a_visible) -> void:
 	if instance:
-		instance.visible = visible
+		instance.visible = a_visible
 
 
 func _get_plugin_name() -> String:

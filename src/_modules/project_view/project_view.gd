@@ -14,5 +14,3 @@ func _on_play_pause_button_pressed() -> void:
 	else:
 		%PlayPauseButton.text = "Play"
 	playing = !playing
-	print(playing)
-	

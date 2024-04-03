@@ -6,41 +6,39 @@ var action_current := -1
 var actions: Array = []
 
 
-func _input(event) -> void:
-	if event.is_action_pressed("ui_undo"):
+func _input(a_event: InputEvent) -> void:
+	if a_event.is_action_pressed("ui_undo"):
 		undo()
-	if event.is_action_pressed("ui_redo"):
+	if a_event.is_action_pressed("ui_redo"):
 		redo()
 
 
-func do(function: Callable, undo_function: Callable, do_args: Array = [], undo_args: Array = []) -> void:
-	var action := Action.new(function, undo_function, do_args, undo_args)
-	function.call(do_args)
+func do(a_function: Callable, a_undo_function: Callable, a_do_args: Array = [], a_undo_args: Array = []) -> void:
+	var l_action: Action = Action.new(a_function, a_undo_function, a_do_args, a_undo_args)
+	a_function.call(a_do_args)
 	if actions.size() == actions_max:
 		actions.pop_front()
-		actions.append(action)
+		actions.append(l_action)
 		return
 	elif actions.size() != action_current:
-		actions.resize(action_current+1)
+		actions.resize(action_current + 1)
 	action_current += 1
-	actions.append(action)
+	actions.append(l_action)
 
 
 func undo() -> void:
-	if actions.size() == 0:
-		return
-	var action: Action = actions[action_current]
-	action.undo_function.call(action.undo_args)
-	if action_current > 0:
-		action_current -= 1 
+	if actions.size() != 0:
+		var l_action: Action = actions[action_current]
+		l_action.undo_function.call(l_action.undo_args)
+		if action_current > 0:
+			action_current -= 1 
 
 
 func redo() -> void:
-	if actions.size() < action_current:
-		return
-	action_current += 1 
-	var action: Action = actions[action_current]
-	action.function.call(action.do_args)
+	if actions.size() >= action_current:
+		action_current += 1 
+		var l_action: Action = actions[action_current]
+		l_action.function.call(l_action.do_args)
 
 
 class Action:
@@ -50,9 +48,9 @@ class Action:
 	var undo_args: Array
 	
 	func _init(
-			_function: Callable, _undo_function: Callable, 
-			_do_args: Array = [], _undo_args: Array = []) -> void:
-		function = _function
-		undo_function = _undo_function
-		do_args = _do_args
-		undo_args = _undo_args
+			a_function: Callable, a_undo_function: Callable, 
+			a_do_args: Array = [], a_undo_args: Array = []) -> void:
+		function = a_function
+		undo_function = a_undo_function
+		do_args = a_do_args
+		undo_args = a_undo_args

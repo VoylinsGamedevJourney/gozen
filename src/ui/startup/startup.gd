@@ -1,19 +1,20 @@
 extends Control
 
-var landscape := true # For creating new projects
+var landscape: bool = true # For creating new projects
 
 
 func _ready() -> void:
 	# Populating the recent projects lists
-	var recent_projects := RecentProjects.new()
-	var count := 0
-	for entry: RecentProject in recent_projects.data:
-		if count != 5:
-			count += 1
-			_create_recent_project_button(entry, %RecentProjectsVBoxShort)
-		_create_recent_project_button(entry, %RecentProjectsVBoxLong)
+	var l_recent_projects: RecentProjects = RecentProjects.new()
+	var l_count: int = 0
 	
-	if recent_projects.data.size() < 5:
+	for l_entry: RecentProject in l_recent_projects.data:
+		if l_count != 5:
+			l_count += 1
+			_create_recent_project_button(l_entry, %RecentProjectsVBoxShort)
+		_create_recent_project_button(l_entry, %RecentProjectsVBoxLong)
+	
+	if l_recent_projects.data.size() < 5:
 		# Hiding the separator and the 'show all projects' button
 		%RecentProjectsVBoxShort.get_node("ShowAllProjectsButton").visible = false
 		%RecentProjectsVBoxShort.get_node("Spacer2").visible = false
@@ -22,32 +23,40 @@ func _ready() -> void:
 		move_child(%RecentProjectsVBoxShort.get_node("Spacer2"), -1)
 
 
-func _create_recent_project_button(data: RecentProject, parent: Node) -> void:
-	var button := Button.new()
-	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	button.text = data.title
-	button.tooltip_text = data.path
-	button.icon = preload("res://assets/icons/video_file.png")
-	button.pressed.connect(_file_selected.bind(data.path))
-	parent.add_child(button)
+func _create_recent_project_button(a_data: RecentProject, a_parent: Node) -> void:
+	var l_button := Button.new()
+	
+	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	l_button.text = a_data.title
+	l_button.tooltip_text = a_data.path
+	l_button.icon = preload("res://assets/icons/video_file.png")
+	l_button.pressed.connect(_file_selected.bind(a_data.path))
+	
+	a_parent.add_child(l_button)
 
 
-func _file_selected(path: String) -> void:
-	if Toolbox.check_extension(path, ["gozen"]):
-		ProjectManager.load_project(path)
+func _file_selected(a_path: String) -> void:
+	if Toolbox.check_extension(a_path, ["gozen"]):
+		ProjectManager.load_project(a_path)
 		self.queue_free()
-	else:
-		Printer.error("Can't open project as path does not have '*.gozen' extension!")
+		return
+	Printer.error(Globals.ERROR_PROJECT_PATH_EXTENSION)
 
 
 #region #####################  New Project Buttons  ############################
 
 func _on_open_project_button_pressed() -> void:
-	var dialog := DialogManager.get_open_project_dialog()
-	dialog.file_selected.connect(_file_selected)
-	dialog.canceled.connect(func() -> void: dialog.queue_free())
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(500,600))
+	var l_dialog := DialogManager.get_open_project_dialog()
+	
+	l_dialog.file_selected.connect(_file_selected)
+	l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog))
+	
+	add_child(l_dialog)
+	l_dialog.popup_centered(Vector2i(500,600))
+
+
+func _on_return_button_pressed() -> void:
+	%StartupTabPanel.current_tab = 0
 
 
 func _on_show_all_projects_button_pressed() -> void:
@@ -58,53 +67,52 @@ func _on_create_project_button_pressed() -> void:
 	%StartupTabPanel.current_tab = 2
 
 
-func _on_return_button_pressed() -> void:
-	%StartupTabPanel.current_tab = 0
-
-
 func _on_create_project() -> void:
-	if %TitleLineEdit.text == "" or %PathLineEdit.text == "":
-		return
-	ProjectManager.new_project(
-		%TitleLineEdit.text,
-		%PathLineEdit.text,
-		Vector2i(%XSpinBox.value, %YSpinBox.value), # resolution
-		%FramerateSpinBox.value)
-	self.queue_free()
+	if %TitleLineEdit.text != "" and %PathLineEdit.text != "":
+		ProjectManager.new_project(
+			%TitleLineEdit.text,
+			%PathLineEdit.text,
+			Vector2i(%XSpinBox.value, %YSpinBox.value), # resolution
+			%FramerateSpinBox.value)
+		self.queue_free()
 
 
 func _on_select_path_button_pressed() -> void:
-	var dialog := DialogManager.get_select_path_dialog()
-	dialog.file_selected.connect(_on_file_selected)
-	dialog.canceled.connect(func() -> void: dialog.queue_free())
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(500,600))
+	var l_dialog := DialogManager.get_select_path_dialog()
+	
+	l_dialog.file_selected.connect(_on_file_selected)
+	l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog))
+	
+	add_child(l_dialog)
+	l_dialog.popup_centered(Vector2i(500,600))
 
 
-func _on_file_selected(path: String) -> void:
+func _on_file_selected(a_path: String) -> void:
 	if %TitleLineEdit.text == "":
-		%TitleLineEdit.text = path.split('/')[-1].to_pascal_case()
-	if !Toolbox.check_extension(path, ["gozen"]):
-		%PathLineEdit.text = path + ".gozen"
+		%TitleLineEdit.text = a_path.split('/')[-1].to_pascal_case()
+	
+	if !Toolbox.check_extension(a_path, ["gozen"]):
+		%PathLineEdit.text = a_path + ".gozen"
 	else:
-		%PathLineEdit.text = path
+		%PathLineEdit.text = a_path
 
 
-func _on_switch_landscape(value: bool) -> void:
-	landscape = value
-	var big: int = max(%XSpinBox.value, %YSpinBox.value) 
-	var small: int = min(%XSpinBox.value, %YSpinBox.value) 
-	%XSpinBox.value = big if landscape else small
-	%YSpinBox.value = small if landscape else big
+func _on_switch_landscape(a_value: bool) -> void:
+	var l_big: int = max(%XSpinBox.value, %YSpinBox.value) 
+	var l_small: int = min(%XSpinBox.value, %YSpinBox.value) 
+	
+	landscape = a_value
+	%XSpinBox.value = l_big if landscape else l_small
+	%YSpinBox.value = l_small if landscape else l_big
 
 
-func _on_set_quality(resolution: Vector2i) -> void:
-	%XSpinBox.value = resolution.x if landscape else resolution.y
-	%YSpinBox.value = resolution.y if landscape else resolution.x
+func _on_set_quality(a_resolution: Vector2i) -> void:
+	%XSpinBox.value = a_resolution.x if landscape else a_resolution.y
+	%YSpinBox.value = a_resolution.y if landscape else a_resolution.x
 
 
-func _on_framerate_button_pressed(frame_rate: int) -> void:
-	%FramerateSpinBox.value = frame_rate
+func _on_framerate_button_pressed(a_frame_rate: int) -> void:
+	%FramerateSpinBox.value = a_frame_rate
 
 #endregion
 #region #####################  Link buttons  ###################################

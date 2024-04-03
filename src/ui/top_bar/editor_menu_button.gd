@@ -11,26 +11,28 @@ var items: Array = [
 
 
 func _ready() -> void:
-	var menu: PopupMenu = get_popup()
-	var id := 0
-	for item: Object in items:
-		if item is ItemSeparator:
-			menu.add_separator(item.label)
+	var l_menu: PopupMenu = get_popup()
+	var l_id: int = 0
+	
+	for l_item: Object in items:
+		if l_item is ItemSeparator:
+			l_menu.add_separator(l_item.label)
 		else:
-			menu.add_item(item.label)
-			menu.set_item_icon(id, Toolbox.get_icon_tex2d(item.item_icon))
-		id += 1
-	menu.id_pressed.connect(_on_id_pressed)
-	menu.mouse_exited.connect(_on_menu_mouse_exited)
+			l_menu.add_item(l_item.label)
+			l_menu.set_item_icon(l_id, Toolbox.get_icon_tex2d(l_item.item_icon))
+		l_id += 1
+		
+	l_menu.id_pressed.connect(_on_id_pressed)
+	l_menu.mouse_exited.connect(_on_menu_mouse_exited)
 
 
 func _on_menu_mouse_exited() -> void:
 	get_popup().visible = false
 
 
-func _on_id_pressed(id: int) -> void:
-	if !items[id] is ItemSeparator:
-		items[id].function.call()
+func _on_id_pressed(a_id: int) -> void:
+	if !items[a_id] is ItemSeparator:
+		items[a_id].function.call()
 
 
 func _report_bug_pressed() -> void:
@@ -62,16 +64,14 @@ class ItemEntry:
 	var function: Callable
 	var item_icon: String
 	
-	
-	func _init(_label: String, _function: Callable, _item_icon: String) -> void:
-		self.label = _label
-		self.function = _function
-		self.item_icon = _item_icon
+	func _init(a_label: String, a_function: Callable, a_item_icon: String) -> void:
+		self.label = a_label
+		self.function = a_function
+		self.item_icon = a_item_icon
 
 
 class ItemSeparator:
 	var label: String
 	
-	
-	func _init(_label: String) -> void:
-		self.label = _label
+	func _init(a_label: String) -> void:
+		self.label = a_label

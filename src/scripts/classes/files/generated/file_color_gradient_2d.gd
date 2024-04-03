@@ -11,3 +11,8 @@ var fill: GradientTexture2D.Fill
 var fill_from: Vector2
 var fill_to: Vector2
 var repeat: GradientTexture2D.Repeat
+
+
+func _init() -> void:
+	type = TYPE.COLOR_GRADIENT_2D
+	duration = 120 # TODO: Make possible to change default

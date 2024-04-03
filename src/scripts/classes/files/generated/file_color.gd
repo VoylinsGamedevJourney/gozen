@@ -3,3 +3,8 @@ class_name FileColor extends File
 
 var color: Color
 var size: int
+
+
+func _init() -> void:
+	type = TYPE.COLOR
+	duration = 120 # TODO: Make possible to change default

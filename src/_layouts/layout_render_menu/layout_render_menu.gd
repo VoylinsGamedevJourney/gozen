@@ -10,8 +10,6 @@ extends Control
 # use a RenderProfile class and use var_to_str and str_to_var
 # TODO: Render settings should have a dropdown with the necesarry settings
 # displayed underneath the dropdown which change after selecting a render profile.
-
-
 # TODO: Use a config file to save all custom profiles, section key is name
 
 @onready var project_preview_buttons := $VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox
@@ -20,20 +18,22 @@ extends Control
 func _ready() -> void:
 	# TODO: Display a * next to ntries in option button menu of which have hardware acceleration
 	# Maybe have a checkbox is they want hardware acceleration to be enabled or not?
-	var id := 0
-	for codec_info: Dictionary in GoZenInterface.get_supported_video_codecs():
+	var l_id: int = 0
+	
+	for l_codec_info: Dictionary in GoZenInterface.get_supported_video_codecs():
 		%VideoCodecOptionButton.add_item("{codec_id}{hardware_encoding}".format({
-			hardware_encoding = '*' if codec_info.hardware_accel else '', 
-			codec_id = codec_info.codec_id }))
-		%VideoCodecOptionButton.set_item_disabled(id, !codec_info.supported)
-		id += 1
-	id = 0
-	for codec_info: Dictionary in GoZenInterface.get_supported_audio_codecs():
+			hardware_encoding = '*' if l_codec_info.hardware_accel else '', 
+			codec_id = l_codec_info.codec_id }))
+		%VideoCodecOptionButton.set_item_disabled(l_id, !l_codec_info.supported)
+		l_id += 1
+	
+	l_id = 0
+	for l_codec_info: Dictionary in GoZenInterface.get_supported_audio_codecs():
 		%AudioCodecOptionButton.add_item("{codec_id}{hardware_encoding}".format({
-			hardware_encoding = '*' if codec_info.hardware_accel else '',
-			codec_id = codec_info.codec_id }))
-		%AudioCodecOptionButton.set_item_disabled(id, !codec_info.supported)
-		id += 1
+			hardware_encoding = '*' if l_codec_info.hardware_accel else '',
+			codec_id = l_codec_info.codec_id }))
+		%AudioCodecOptionButton.set_item_disabled(l_id, !l_codec_info.supported)
+		l_id += 1
 
 
 #region #####################  Playback buttons  ###############################

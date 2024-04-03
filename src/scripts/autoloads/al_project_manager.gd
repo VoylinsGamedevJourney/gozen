@@ -1,14 +1,5 @@
 extends Node
 ## Project Manager
-##
-## Config structure:
-## [general]
-##   title: String
-##   files: {unique_file_id: {file_class_data}}
-##   folders: {folder_name: {files = [file_id's], sub_folders = [...]}}
-## [quality]
-##   resolution: Vector2i
-##   framerate: float
 
 signal _on_project_loaded
 signal _on_project_saved
@@ -27,7 +18,7 @@ const KEYS: PackedStringArray = [
 	"title",
 	
 	"folder_data",
-	"file_data",
+	"files_data",
 	"current_id", 
 	
 	"resolution",
@@ -36,147 +27,142 @@ const KEYS: PackedStringArray = [
 	"audio_tracks" ]
 
 
-var config: ConfigFile = ConfigFile.new()
-var project_path: String
+var project_path: String:
+	set = _set_project_path
 
-var unsaved_changes := false
+var unsaved_changes := false:
+	set = _set_unsaved_changes
 
+var title: String:
+	set = _set_title
 
-# Project data (for saving)
-var title: String
+var folder_data: Dictionary = {} # Full_path: Array of files
+var files_data: Dictionary = {} # File_id: File class object
+var current_id: int = 0  # File ID's for global start with 'G_' and for project with 'P_'
 
-var folder_data := {} # Full_path: Array of files
-var file_data   := {} # File_id: File class object
-var current_id  := 0  # File ID's for global start with 'G_' and for project with 'P_'
-
-var resolution: Vector2i
-var framerate: float
+var resolution: Vector2i:
+	set = _set_resolution
+var framerate: float:
+	set = _set_framerate
 
 var video_tracks: Array = []
 var audio_tracks: Array = []
 
 
-func new_project(p_title: String, p_path: String, p_resolution: Vector2i, p_framerate: int) -> void:
-	config = ConfigFile.new()
-	project_path = p_path
+func _input(a_event: InputEvent) -> void:
+	if a_event.is_action_released("save_project"):
+		save_project()
+
+
+func new_project(a_title: String, a_path: String, a_resolution: Vector2i, a_framerate: int) -> void:
+	project_path = a_path
 	
-	set_title(p_title, false)
-	set_resolution(p_resolution)
-	set_framerate(p_framerate)
+	title = a_title
+	resolution = a_resolution
+	framerate = a_framerate
 	add_video_tracks(SettingsManager.get_default_video_tracks())
 	add_audio_tracks(SettingsManager.get_default_audio_tracks())
 	
-	update_recent_projects()
 	_on_project_loaded.emit()
 	save_project()
 
 
-func load_project(path: String) -> void:
-	if !Toolbox.check_extension(path, ["gozen"]):
-		var new_path: String = "%s.gozen" % path
-		if !FileAccess.file_exists(new_path):
-			Printer.error("Can't load project as path does not have '*.gozen' extension!\n\t%s" % path)
+func load_project(a_path: String) -> void:
+	if Toolbox.check_extension(a_path, ["gozen"]):
+		project_path = a_path
+	else:
+		project_path = "%s.gozen" % a_path
+		if !Toolbox.file_exists(project_path, Globals.ERROR_PROJECT_PATH_EXTENSION):
 			get_tree().quit(-2)
 			return
-		path = new_path
-	project_path = path
-	var file := FileAccess.open(project_path, FileAccess.READ)
-	var data: Dictionary = str_to_var(file.get_as_text())
-	for key: String in KEYS:
-		set(key, data[key])
 	
-	_on_title_changed.emit(get_title())
+	var l_file := FileAccess.open(project_path, FileAccess.READ)
+	var l_data: Dictionary = str_to_var(l_file.get_as_text())
+	
+	for l_key: String in KEYS:
+		set(l_key, l_data[l_key])
+	
+	_on_title_changed.emit(title)
 	update_recent_projects()
 	_on_project_loaded.emit()
 
 
 func save_project() -> void:
-	var file := FileAccess.open(project_path, FileAccess.WRITE)
-	var data := {}
-	for key: String in KEYS:
-		data[key] = get(key)
-	file.store_string(var_to_str(data))
+	var l_file: FileAccess = FileAccess.open(project_path, FileAccess.WRITE)
+	var l_data: Dictionary = {}
+	
+	for l_key: String in KEYS:
+		l_data[l_key] = get(l_key)
+	
+	l_file.store_string(var_to_str(l_data))
 	_on_project_saved.emit()
-	set_unsaved_changes(false)
+	unsaved_changes = false
 
 
 func update_recent_projects() -> void:
-	var recent_projects := RecentProjects.new()
-	recent_projects.update_project(get_title(), project_path)
+	var l_recent_projects := RecentProjects.new()
+	l_recent_projects.update_project(title, project_path)
 
 
-func set_unsaved_changes(value: bool) -> void:
-	unsaved_changes = value
-	_on_unsaved_changes_changed.emit(value)
+#region #####################  Getters & Setters  ##############################
+
+func _set_project_path(a_path: String) -> void:
+	if Toolbox.check_extension(a_path, ["gozen"]):
+		project_path = a_path
+	else:
+		project_path = "%s.gozen" % a_path
 
 
-#region #####################  Getters and Setters  ############################
-
-func get_title() -> String:
-	return title
-
-
-func set_title(new_title: String, update: bool = true) -> void:
-	title = new_title
-	_on_title_changed.emit(new_title)
-	set_unsaved_changes(true)
-	if update:
-		update_recent_projects()
+func _set_unsaved_changes(a_value: bool) -> void:
+	unsaved_changes = a_value
+	_on_unsaved_changes_changed.emit(unsaved_changes)
 
 
-func get_resolution() -> Vector2i:
-	return resolution
+func _set_title(a_title: String) -> void:
+	title = a_title
+	_on_title_changed.emit(title)
+	unsaved_changes = true
+	
+	update_recent_projects()
 
 
-func set_resolution(new_resolution: Vector2i) -> void:
-	resolution = new_resolution
-	_on_resolution_changed.emit(new_resolution)
-	set_unsaved_changes(true)
+func _set_resolution(a_resolution: Vector2i) -> void:
+	resolution = a_resolution
+	_on_resolution_changed.emit(resolution)
+	unsaved_changes = true
 
 
-func get_framerate() -> float:
-	return framerate
+func _set_framerate(a_framerate: float) -> void:
+	framerate = a_framerate
+	_on_framerate_changed.emit(framerate)
+	unsaved_changes = true
 
+#endregion
+#region #####################  Track handling  #################################
 
-func set_framerate(new_framerate: float) -> void:
-	framerate = new_framerate
-	_on_framerate_changed.emit(new_framerate)
-	set_unsaved_changes(true)
-
-
-func get_video_tracks() -> Array:
-	return video_tracks
-
-
-func add_video_tracks(amount: int = 1) -> void:
-	for _x: int in amount:
-		var new_track := TimelineTrack.new()
-		video_tracks.append(new_track)
+func add_video_tracks(a_amount: int = 1) -> void:
+	for _i: int in a_amount:
+		video_tracks.append(TimelineTrack.new())
 	_on_video_tracks_changed.emit(video_tracks)
-	set_unsaved_changes(true)
+	unsaved_changes = true
 
 
-func remove_video_track(position: int) -> void:
-	video_tracks.remove_at(position)
+func remove_video_track(a_position: int) -> void:
+	video_tracks.remove_at(a_position)
 	_on_video_tracks_changed.emit(video_tracks)
-	set_unsaved_changes(true)
+	unsaved_changes = true
 
 
-func get_audio_tracks() -> Array:
-	return audio_tracks
-
-
-func add_audio_tracks(amount: int = 1) -> void:
-	for _x: int in amount:
-		var new_track := TimelineTrack.new()
-		audio_tracks.append(new_track)
+func add_audio_tracks(a_amount: int = 1) -> void:
+	for _i: int in a_amount:
+		audio_tracks.append(TimelineTrack.new())
 	_on_audio_tracks_changed.emit(audio_tracks)
-	set_unsaved_changes(true)
+	unsaved_changes = true
 
 
-func remove_audio_track(position: int) -> void:
-	audio_tracks.remove_at(position)
+func remove_audio_track(a_position: int) -> void:
+	audio_tracks.remove_at(a_position)
 	_on_audio_tracks_changed.emit(audio_tracks)
-	set_unsaved_changes(true)
+	unsaved_changes = true
 
 #endregion

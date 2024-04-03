@@ -7,10 +7,10 @@ func _ready() -> void:
 	ProjectManager._on_unsaved_changes_changed.connect(_on_project_unsaved_changes_changed)
 
 
-func _on_project_title_changed(new_title: String) -> void:
+func _on_project_title_changed(a_title: String) -> void:
 	# Extra space is needed for the '*' mark to indicate unsaved changes
-	text = new_title + " "
+	text = a_title + " "
 
 
-func _on_project_unsaved_changes_changed(value: bool) -> void:
-	text[-1] = "*" if value else " "
+func _on_project_unsaved_changes_changed(a_value: bool) -> void:
+	text[-1] = "*" if a_value else " "

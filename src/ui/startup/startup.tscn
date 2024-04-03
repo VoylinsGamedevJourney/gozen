@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://o5vxrd3qck" path="res://assets/themes/startup_theme.tres" id="1_f5sf6"]
 [ext_resource type="Script" path="res://ui/startup/startup.gd" id="2_4bhej"]
-[ext_resource type="Texture2D" uid="uid://ixtvcdvfcf4i" path="res://assets/images/startup_image.png" id="3_cdhwg"]
+[ext_resource type="Texture2D" uid="uid://cy7sy3fnwfye6" path="res://assets/images/startup_image.webp" id="3_ahvpn"]
 [ext_resource type="Texture2D" uid="uid://d3b524cpjjf2u" path="res://icon.svg" id="4_qu77c"]
 [ext_resource type="Script" path="res://scripts/meta_clicked.gd" id="5_1blu8"]
 [ext_resource type="Script" path="res://scripts/version_label.gd" id="6_l32t5"]
@@ -56,7 +56,7 @@ layout_mode = 2
 [node name="TopImage" type="TextureRect" parent="StartupPanel/VBox"]
 custom_minimum_size = Vector2(650, 270)
 layout_mode = 2
-texture = ExtResource("3_cdhwg")
+texture = ExtResource("3_ahvpn")
 expand_mode = 2
 stretch_mode = 5
 

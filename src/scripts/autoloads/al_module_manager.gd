@@ -12,24 +12,22 @@ func _ready() -> void:
 	_load_modules(TYPE.TRANSITION)
 
 
-func _load_modules(type: TYPE) -> void:
-	if SettingsManager.get_debug_enabled():
-		Printer.debug("Loading modules of type '%s' ..." % get_type_string(type))
-	var path := get_custom_modules_folder(type)
+func _load_modules(a_type: TYPE) -> void:
+	var l_path: String = get_custom_modules_folder(a_type)
+	
 	# Creating necesarry folders if not existing already
-	DirAccess.make_dir_recursive_absolute(path)
-	DirAccess.make_dir_recursive_absolute(get_config_folder(type))
+	DirAccess.make_dir_recursive_absolute(l_path)
+	DirAccess.make_dir_recursive_absolute(get_config_folder(a_type))
+	
 	# Loading in all custom module files of 'type'
-	var module_files := DirAccess.get_files_at(path)
-	if module_files.size() == 0:
-		return
-	for file: String in module_files:
-		if Toolbox.check_extension(file, ["pck"]):
-			ProjectSettings.load_resource_pack(path + file, false)
+	if DirAccess.get_files_at(l_path).size() != 0:
+		for l_file: String in DirAccess.get_files_at(l_path):
+			if Toolbox.check_extension(l_file, ["pck"]):
+				ProjectSettings.load_resource_pack(l_path + l_file, false)
 
 
-func get_type_string(type: TYPE) -> String:
-	match type:
+func get_type_string(a_type: TYPE) -> String:
+	match a_type:
 		TYPE.LAYOUT: return "layouts"
 		TYPE.MODULE: return "modules"
 		TYPE.EFFECT: return "effects"
@@ -37,36 +35,33 @@ func get_type_string(type: TYPE) -> String:
 		_: return ""
 
 
-func get_custom_modules_folder(type: TYPE) -> String:
-	return "user://modules/%s/" % get_type_string(type)
+func get_custom_modules_folder(a_type: TYPE) -> String:
+	return "user://modules/%s/" % get_type_string(a_type)
 
 
-func get_config_folder(type: TYPE) -> String:
-	return "user://module_configs/%s/" % get_type_string(type)
+func get_config_folder(a_type: TYPE) -> String:
+	return "user://module_configs/%s/" % get_type_string(a_type)
 
 
-func get_config_file(type: TYPE, file_name: String) -> String:
-	return get_config_folder(type) + file_name
+func get_config_file(a_type: TYPE, a_file_name: String) -> String:
+	return get_config_folder(a_type) + a_file_name
 
 
-func get_module_info(type: TYPE, module_name: String) -> Module:
-	return load("res://_%s/%s/info.tres" % [
-		get_type_string(type), module_name])
+func get_module_info(a_type: TYPE, a_module_name: String) -> Module:
+	return load("res://_%s/%s/info.tres" % [get_type_string(a_type), a_module_name])
 
 
-func get_layout_info(layout_name: String) -> LayoutModule:
-	return load("res://_%s/layout_%s/info.tres" % [
-		get_type_string(TYPE.LAYOUT), layout_name])
+func get_layout_info(a_layout_name: String) -> LayoutModule:
+	return load("res://_%s/layout_%s/info.tres" % [get_type_string(TYPE.LAYOUT), a_layout_name])
 
 
-func create_module_id(type: TYPE, module_name: String) -> String:
-	var config_dir_files := DirAccess.get_files_at(get_config_folder(type))
-	var new_name := "%s-%s" % [module_name, randi_range(100000, 999999)]
-	while new_name in config_dir_files:
+func create_module_id(a_type: TYPE, a_module_name: String) -> String:
+	var l_new_name: String = "%s-%s" % [a_module_name, randi_range(100000, 999999)]
+	while l_new_name in DirAccess.get_files_at(get_config_folder(a_type)):
 		randomize()
-		new_name = "%s-%s" % [module_name, randi_range(100000, 999999)]
-	return new_name
+		l_new_name = "%s-%s" % [a_module_name, randi_range(100000, 999999)]
+	return l_new_name
 
 
-func remove_config_layout(instance_name: String) -> void:
-	DirAccess.remove_absolute("%s%s.cfg" % [get_config_folder(TYPE.LAYOUT), instance_name])
+func remove_config_layout(a_instance_name: String) -> void:
+	DirAccess.remove_absolute("%s%s.cfg" % [get_config_folder(TYPE.LAYOUT), a_instance_name])

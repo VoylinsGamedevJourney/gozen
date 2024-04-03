@@ -24,5 +24,5 @@ func _on_exit_button_pressed() -> void:
 	WindowHandler._on_exit_request()
 
 
-func _on_top_bar_dragging(event: InputEvent) -> void:
-	WindowHandler._on_top_bar_dragging(event)
+func _on_top_bar_dragging(a_event: InputEvent) -> void:
+	WindowHandler._on_top_bar_dragging(a_event)

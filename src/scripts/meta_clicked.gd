@@ -9,6 +9,6 @@ func _ready() -> void:
 	meta_clicked.connect(_on_meta_clicked)
 
 
-func _on_meta_clicked(meta: Variant) -> void:
+func _on_meta_clicked(a_meta: Variant) -> void:
 	## Opening the link in the browser of choice.
-	OS.shell_open(meta)
+	OS.shell_open(a_meta)

@@ -18,22 +18,21 @@ func _ready() -> void:
 
 #region #####################  Resizing logic  #################################
 
-func _on_gui_input(event: InputEvent, node: Control) -> void:
-	if event is InputEventMouseButton and event.button_index == 1:
+func _on_gui_input(a_event: InputEvent, a_node: Control) -> void:
+	if a_event is InputEventMouseButton and a_event.button_index == 1:
 		if !resizing:
-			resize_node = node
-		resizing = event.is_pressed()
+			resize_node = a_node
+		resizing = a_event.is_pressed()
 
 
 func _process(_delta: float) -> void:
 	if resizing:
-		var relative_mouse_pos = (
-			DisplayServer.mouse_get_position()
-			- DisplayServer.window_get_position(get_window().get_window_id())
-		)
+		var l_window_pos: Vector2i = DisplayServer.window_get_position(get_window().get_window_id())
+		var l_relative_mouse_pos: Vector2i = (DisplayServer.mouse_get_position() -l_window_pos)
+		
 		if resize_node in [$Bottom, $Corner]:
-			get_window().size.y = int(relative_mouse_pos.y)
+			get_window().size.y = l_relative_mouse_pos.y
 		if resize_node in [$Right, $Corner]:
-			get_window().size.x = int(relative_mouse_pos.x)
+			get_window().size.x = l_relative_mouse_pos.x
 
 #endregion
