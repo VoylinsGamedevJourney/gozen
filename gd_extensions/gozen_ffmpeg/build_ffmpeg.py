@@ -20,9 +20,6 @@ def build_ffmpeg(num_jobs = 0):
     os.makedirs(ffmpeg_bin_folder, exist_ok=True)
     os.chdir(ffmpeg_source_folder)
 
-    print('Updating git ...')
-    os.system('git pull')
-    
     config_extra_args = ''
     if platform.system().lower() == 'linux':
         os.environ['PATH'] = '/opt/bin:' + os.environ['PATH']

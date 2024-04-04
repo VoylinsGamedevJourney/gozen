@@ -63,13 +63,6 @@ def compile_gozen_ffmpeg():
     os.chdir('../..')
 
 
-def update_godot_cpp():
-    print('Updating godot-cpp git ...')
-    os.chdir('gd_extensions/godot_cpp')
-    os.system('git pull')
-    os.chdir('../..')
-
-
 def _print_choices(title, tasks = []):
     print('\n-= ' + title + ': =-')
     for i, task in enumerate(tasks, start=1):
@@ -80,4 +73,5 @@ def _print_choices(title, tasks = []):
 
 
 if __name__ == '__main__':
+    os.system('git submodule update')
     main()
