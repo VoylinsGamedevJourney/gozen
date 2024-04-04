@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfo5kjkjmgvky"]
+[gd_scene load_steps=6 format=3 uid="uid://cfo5kjkjmgvky"]
 
 [ext_resource type="Script" path="res://_layouts/layout_default/layout_default.gd" id="1_t7o15"]
+[ext_resource type="PackedScene" uid="uid://2me1rcywnmph" path="res://_modules/media_pool/media_pool.tscn" id="2_kdy5o"]
+[ext_resource type="PackedScene" uid="uid://bldrq8eh7apaa" path="res://_modules/timeline/timeline.tscn" id="2_xj3a4"]
+[ext_resource type="PackedScene" uid="uid://1nx50h5vm2y2" path="res://_modules/project_view/project_view.tscn" id="3_li2j3"]
+[ext_resource type="PackedScene" uid="uid://be6u0nnhs5wtr" path="res://_modules/effects_view/effects_view.tscn" id="4_fkxl8"]
 
 [node name="LayoutDefault" type="Control"]
 layout_mode = 3
@@ -11,148 +15,37 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_t7o15")
 
-[node name="MainSplit" type="SplitContainer" parent="."]
+[node name="VSplit" type="VSplitContainer" parent="."]
+clip_children = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 7
-split_offset = -605
+split_offset = 220
 
-[node name="LeftSplit" type="SplitContainer" parent="MainSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 7
-split_offset = 270
-vertical = true
-
-[node name="LeftTopPanel" type="PanelContainer" parent="MainSplit/LeftSplit"]
-custom_minimum_size = Vector2(100, 0)
+[node name="HSplit" type="HSplitContainer" parent="VSplit"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LeftTopTabs" type="TabContainer" parent="MainSplit/LeftSplit/LeftTopPanel"]
+[node name="MediaPool" parent="VSplit/HSplit" instance=ExtResource("2_kdy5o")]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="LeftBottomPanel" type="PanelContainer" parent="MainSplit/LeftSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="LeftBottomTabs" type="TabContainer" parent="MainSplit/LeftSplit/LeftBottomPanel"]
-layout_mode = 2
-
-[node name="SecondSplit" type="SplitContainer" parent="MainSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 7
-split_offset = 395
-
-[node name="MiddleSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 7
-vertical = true
-
-[node name="MiddleTopMainSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 7
-split_offset = 295
-
-[node name="MiddleTopSecondSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 7
-split_offset = -170
-
-[node name="MiddleLeftTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
-custom_minimum_size = Vector2(100, 0)
+[node name="HSplit" type="HSplitContainer" parent="VSplit/HSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MiddleLeftTopTabs" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit/MiddleLeftTopPanel"]
-layout_mode = 2
-
-[node name="MiddleTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit"]
-custom_minimum_size = Vector2(100, 0)
+[node name="ProjectView" parent="VSplit/HSplit/HSplit" instance=ExtResource("3_li2j3")]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
-[node name="MiddleTopTabs" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleTopSecondSplit/MiddleTopPanel"]
+[node name="EffectsView" parent="VSplit/HSplit/HSplit" instance=ExtResource("4_fkxl8")]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="MiddleRightTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MiddleRightTopTabs" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleTopMainSplit/MiddleRightTopPanel"]
-layout_mode = 2
-
-[node name="MiddleBottomMainSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit"]
+[node name="Timeline" parent="VSplit" instance=ExtResource("2_xj3a4")]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 7
-split_offset = 295
-
-[node name="MiddleBottomSecondSplit" type="SplitContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 7
-split_offset = -170
-
-[node name="MiddleLeftBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MiddleLeftBottomTabs" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit/MiddleLeftBottomPanel"]
-layout_mode = 2
-
-[node name="MiddleBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MiddleBottomTabs" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleBottomSecondSplit/MiddleBottomPanel"]
-layout_mode = 2
-
-[node name="MiddleRightBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MiddleRightBottomTabs" type="TabContainer" parent="MainSplit/SecondSplit/MiddleSplit/MiddleBottomMainSplit/MiddleRightBottomPanel"]
-layout_mode = 2
-
-[node name="RightSplit" type="SplitContainer" parent="MainSplit/SecondSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 7
-split_offset = -145
-vertical = true
-
-[node name="RightTopPanel" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="RightTopTabs" type="TabContainer" parent="MainSplit/SecondSplit/RightSplit/RightTopPanel"]
-layout_mode = 2
-
-[node name="RightBottomPanel" type="PanelContainer" parent="MainSplit/SecondSplit/RightSplit"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="RightBottomTabs" type="TabContainer" parent="MainSplit/SecondSplit/RightSplit/RightBottomPanel"]
-layout_mode = 2
