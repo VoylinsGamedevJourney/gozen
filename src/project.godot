@@ -12,14 +12,13 @@ config_version=5
 
 config/name="GoZen - Video Editor"
 config/description="GoZen is an open source video editor made with Godot by Voylin."
-config/version="0.4.5-pre-alpha"
+config/version="2024.4.4"
 run/main_scene="res://ui/main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
-config/version_stable="0.0.0"
 
 [autoload]
 
