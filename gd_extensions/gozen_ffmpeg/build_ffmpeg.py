@@ -19,8 +19,8 @@ def build_ffmpeg(num_jobs = 0):
     os.makedirs(gdextension_dir, exist_ok=True)
     os.makedirs(ffmpeg_bin_folder, exist_ok=True)
     os.chdir(ffmpeg_source_folder)
-    
-    print('Updating submodule ...')
+
+    print('Updating git ...')
     os.system('git pull')
     
     config_extra_args = ''
