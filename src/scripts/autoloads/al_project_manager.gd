@@ -42,7 +42,7 @@ var current_id: int = 0  # File ID's for global start with 'G_' and for project 
 
 var resolution: Vector2i:
 	set = _set_resolution
-var framerate: float:
+var framerate: float = 30:
 	set = _set_framerate
 
 var video_tracks: Array = []
@@ -80,9 +80,14 @@ func load_project(a_path: String) -> void:
 	var l_data: Dictionary = str_to_var(l_file.get_as_text())
 	
 	for l_key: String in KEYS:
-		set(l_key, l_data[l_key])
+		if l_key == "playhead_position":
+			FrameBox.playhead_position = l_data["playhead_position"]
+		else:
+			set(l_key, l_data[l_key])
 	
 	_on_title_changed.emit(title)
+	_on_video_tracks_changed.emit(video_tracks)
+	_on_audio_tracks_changed.emit(audio_tracks)
 	update_recent_projects()
 	_on_project_loaded.emit()
 
@@ -93,6 +98,8 @@ func save_project() -> void:
 	
 	for l_key: String in KEYS:
 		l_data[l_key] = get(l_key)
+	
+	l_data["playhead_position"] = FrameBox.playhead_position
 	
 	l_file.store_string(var_to_str(l_data))
 	_on_project_saved.emit()
@@ -140,29 +147,33 @@ func _set_framerate(a_framerate: float) -> void:
 #endregion
 #region #####################  Track handling  #################################
 
-func add_video_tracks(a_amount: int = 1) -> void:
+func add_video_tracks(a_amount: int = 1, a_send_signal: bool = false) -> void:
 	for _i: int in a_amount:
 		video_tracks.append(TimelineTrack.new())
-	_on_video_tracks_changed.emit(video_tracks)
+	if a_send_signal:
+		_on_video_tracks_changed.emit(video_tracks)
 	unsaved_changes = true
 
 
-func remove_video_track(a_position: int) -> void:
+func remove_video_track(a_position: int, a_send_signal: bool = false) -> void:
 	video_tracks.remove_at(a_position)
-	_on_video_tracks_changed.emit(video_tracks)
+	if a_send_signal:
+		_on_video_tracks_changed.emit(video_tracks)
 	unsaved_changes = true
 
 
-func add_audio_tracks(a_amount: int = 1) -> void:
+func add_audio_tracks(a_amount: int = 1, a_send_signal: bool = false) -> void:
 	for _i: int in a_amount:
 		audio_tracks.append(TimelineTrack.new())
-	_on_audio_tracks_changed.emit(audio_tracks)
+	if a_send_signal:
+		_on_audio_tracks_changed.emit(audio_tracks)
 	unsaved_changes = true
 
 
-func remove_audio_track(a_position: int) -> void:
+func remove_audio_track(a_position: int, a_send_signal: bool = false) -> void:
 	audio_tracks.remove_at(a_position)
-	_on_audio_tracks_changed.emit(audio_tracks)
+	if a_send_signal:
+		_on_audio_tracks_changed.emit(audio_tracks)
 	unsaved_changes = true
 
 #endregion
