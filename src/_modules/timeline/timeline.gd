@@ -1,4 +1,4 @@
-extends HSplitContainer
+extends HBoxContainer
 
 # Have 2 variables inside of ProjectManager, tracks_audio and tracks_video,
 # These variables are arrays in which their index decides the position of the tracks.
@@ -9,6 +9,86 @@ extends HSplitContainer
 
 enum DIRECTION { HORIZONTAL, VERTICAL }
 
+
+const MINIMUM_FRAME_SIZE: float = 0.5
+const MAXIMUM_FRAME_SIZE: float = 0.5
+
+
+var video_track_heads: Array = []
+var audio_track_heads: Array = []
+var video_track_panels: Array = []
+var audio_track_panels: Array = []
+
+var frame_size: float = 1.0 # How many pixels should 1 frame take up
+
+
+func _ready() -> void:
+	ProjectManager._on_video_tracks_changed.connect(_on_video_tracks_changed)
+	ProjectManager._on_audio_tracks_changed.connect(_on_audio_tracks_changed)
+	FrameBox._on_playhead_position_changed.connect(_on_playhead_position_changed)
+
+
+func _on_playhead_position_changed(a_value: float) -> void:
+	%TimelinePlayhead.position.x = a_value * frame_size
+
+#region #####################  Track management  ###############################
+
+func _on_video_tracks_changed(a_update_video_tracks: Array) -> void:
+	# Check if track needs to be added or not (check if up-to-date)
+	if a_update_video_tracks.size() != video_track_panels.size():
+		for l_track: Node in video_track_panels:
+			l_track.queue_free()
+		for l_track: Node in video_track_heads:
+			l_track.queue_free()
+		video_track_panels = []
+		video_track_heads = []
+		for track: TimelineTrack in a_update_video_tracks:
+			add_video_track()
+
+
+func _on_audio_tracks_changed(a_update_audio_tracks: Array) -> void:
+	# Check if track needs to be added or not (check if up-to-date)
+	if a_update_audio_tracks.size() != audio_track_panels.size():
+		for l_track: Node in audio_track_panels:
+			l_track.queue_free()
+		for l_track: Node in audio_track_heads:
+			l_track.queue_free()
+		audio_track_panels = []
+		audio_track_heads = []
+		for track: TimelineTrack in a_update_audio_tracks:
+			add_audio_track()
+
+
+func add_video_track() -> void:
+	var l_track_head: Node = preload("res://_modules/timeline/video_track_head/video_track_head.tscn").instantiate()
+	var l_track_panel: Panel = Panel.new()
+	video_track_heads.append(l_track_head)
+	video_track_panels.append(l_track_panel)
+	l_track_head.set_tag_label("V%s" % video_track_heads.size())
+	l_track_panel.custom_minimum_size = Vector2i(600,26)
+	%TrackHeadVBox.add_child(l_track_head)
+	%TrackHeadVBox.move_child(l_track_head, 0)
+	%TimelineTrackVBox.add_child(l_track_panel)
+	%TimelineTrackVBox.move_child(l_track_panel, 0)
+
+
+func add_audio_track() -> void:
+	var l_track_head: Node = preload("res://_modules/timeline/audio_track_head/audio_track_head.tscn").instantiate()
+	var l_track_panel: Panel = Panel.new()
+	audio_track_heads.append(l_track_head)
+	audio_track_panels.append(l_track_panel)
+	l_track_head.set_tag_label("A%s" % video_track_heads.size())
+	l_track_panel.custom_minimum_size = Vector2i(600,26)
+	
+	%TrackHeadVBox.add_child(l_track_head)
+	%TimelineTrackVBox.add_child(l_track_panel)
+
+
+func remove_track(_a_video: bool) -> void:
+	pass
+
+#endregion
+#region #####################  Scrolling  ######################################
 
 func _on_track_container_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton:
@@ -41,3 +121,5 @@ func _scroll(a_direction: DIRECTION, a_main_timeline: bool) -> void:
 			%TimelineTop.scroll_horizontal = %TimelineTrackContainer.scroll_horizontal
 		else:
 			%TimelineTrackContainer.scroll_horizontal = %TimelineTop.scroll_horizontal
+
+#endregion

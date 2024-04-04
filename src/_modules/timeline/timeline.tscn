@@ -1,103 +1,162 @@
-[gd_scene load_steps=5 format=3 uid="uid://bldrq8eh7apaa"]
+[gd_scene load_steps=10 format=3 uid="uid://bldrq8eh7apaa"]
 
 [ext_resource type="Script" path="res://_modules/timeline/timeline.gd" id="1_nniuu"]
+[ext_resource type="Script" path="res://_modules/timeline/timestamp_label.gd" id="2_x3ojt"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_inrdi"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewg15"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ikk25"]
+content_margin_left = 3.0
+content_margin_right = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufq2u"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_ip8cq"]
 color = Color(0.199219, 0.199219, 0.199219, 1)
-thickness = 3
+grow_begin = 20.0
+grow_end = 20.0
+thickness = 7
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qj2dj"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
 
-[node name="Timeline" type="HSplitContainer"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_t0kkv"]
+color = Color(0.539062, 0.539062, 0.539062, 0.784314)
+grow_begin = -20.0
+grow_end = 0.0
+thickness = 2
+vertical = true
+
+[node name="Timeline" type="HBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 3
 script = ExtResource("1_nniuu")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
-layout_mode = 2
-
-[node name="TimeLineLeft" type="PanelContainer" parent="HSplitContainer"]
-custom_minimum_size = Vector2(100, 0)
+[node name="TimeLineLeft" type="PanelContainer" parent="."]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_inrdi")
 
-[node name="VBox" type="VBoxContainer" parent="HSplitContainer/TimeLineLeft"]
+[node name="VBox" type="VBoxContainer" parent="TimeLineLeft"]
 layout_mode = 2
-theme_override_constants/separation = 7
+theme_override_constants/separation = 3
 
-[node name="Top" type="PanelContainer" parent="HSplitContainer/TimeLineLeft/VBox"]
+[node name="Top" type="PanelContainer" parent="TimeLineLeft/VBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ewg15")
 
-[node name="TrackContainer" type="ScrollContainer" parent="HSplitContainer/TimeLineLeft/VBox"]
+[node name="TimeLabel" type="Label" parent="TimeLineLeft/VBox/Top"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ikk25")
+text = "00:00:00,00"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("2_x3ojt")
+
+[node name="TrackContainer" type="ScrollContainer" parent="TimeLineLeft/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/TimeLineLeft/VBox/TrackContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="TimeLineLeft/VBox/TrackContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ufq2u")
 
-[node name="TrackVBox" type="VBoxContainer" parent="HSplitContainer/TimeLineLeft/VBox/TrackContainer/PanelContainer"]
+[node name="TrackHeadVBox" type="VBoxContainer" parent="TimeLineLeft/VBox/TrackContainer/PanelContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="HSplitContainer/TimeLineLeft/VBox/TrackContainer/PanelContainer/TrackVBox"]
+[node name="HSeparator" type="HSeparator" parent="TimeLineLeft/VBox/TrackContainer/PanelContainer/TrackHeadVBox"]
+custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_ip8cq")
 
-[node name="TimeLineRight" type="PanelContainer" parent="HSplitContainer"]
+[node name="TimeLineRight" type="Panel" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_qj2dj")
 
-[node name="VBox" type="VBoxContainer" parent="HSplitContainer/TimeLineRight"]
+[node name="VBox" type="VBoxContainer" parent="TimeLineRight"]
 layout_mode = 2
-theme_override_constants/separation = 7
+offset_right = 1842.0
+offset_bottom = 1080.0
+theme_override_constants/separation = 3
 
-[node name="TimelineTop" type="ScrollContainer" parent="HSplitContainer/TimeLineRight/VBox"]
+[node name="TimelineTop" type="ScrollContainer" parent="TimeLineRight/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 vertical_scroll_mode = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTop"]
+[node name="TimelineTopPanel" type="Panel" parent="TimeLineRight/VBox/TimelineTop"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ufq2u")
 
-[node name="TimeLineTopHBox" type="HBoxContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTop/PanelContainer"]
-layout_mode = 2
-
-[node name="TimelineTrackContainer" type="ScrollContainer" parent="HSplitContainer/TimeLineRight/VBox"]
+[node name="TimelineTrackContainer" type="ScrollContainer" parent="TimeLineRight/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 vertical_scroll_mode = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="TimeLineRight/VBox/TimelineTrackContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ufq2u")
 
-[node name="TimelineTrackVBox" type="VBoxContainer" parent="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer/PanelContainer"]
+[node name="TimelineTrackVBox" type="VBoxContainer" parent="TimeLineRight/VBox/TimelineTrackContainer/PanelContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer/PanelContainer/TimelineTrackVBox"]
+[node name="HSeparator" type="HSeparator" parent="TimeLineRight/VBox/TimelineTrackContainer/PanelContainer/TimelineTrackVBox"]
+custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_ip8cq")
 
-[connection signal="gui_input" from="HSplitContainer/TimeLineLeft/VBox/TrackContainer" to="." method="_on_track_container_gui_input"]
-[connection signal="gui_input" from="HSplitContainer/TimeLineRight/VBox/TimelineTop" to="." method="_on_timeline_top_gui_input"]
-[connection signal="gui_input" from="HSplitContainer/TimeLineRight/VBox/TimelineTrackContainer" to="." method="_on_timeline_track_container_gui_input"]
+[node name="TimelinePlayhead" type="VSeparator" parent="TimeLineRight"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 4.0
+offset_bottom = 1080.0
+size_flags_horizontal = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_t0kkv")
+
+[connection signal="gui_input" from="TimeLineLeft/VBox/TrackContainer" to="." method="_on_track_container_gui_input"]
+[connection signal="gui_input" from="TimeLineRight/VBox/TimelineTop" to="." method="_on_timeline_top_gui_input"]
+[connection signal="gui_input" from="TimeLineRight/VBox/TimelineTrackContainer" to="." method="_on_timeline_track_container_gui_input"]
