@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddghltif4t3fu"]
+
+[ext_resource type="Script" path="res://_modules/timeline/video_track_head/video_track_head.gd" id="1_ph3m2"]
+
+[node name="VideoTrackHBox" type="HBoxContainer"]
+theme_override_constants/separation = 3
+alignment = 1
+script = ExtResource("1_ph3m2")
+
+[node name="TrackNameLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+text = "V1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LockButton" type="Button" parent="."]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+text = "L"
+
+[node name="HideButton" type="Button" parent="."]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+text = "H"

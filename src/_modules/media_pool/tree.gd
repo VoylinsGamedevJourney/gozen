@@ -184,7 +184,7 @@ func add_files(a_file_paths: PackedStringArray, a_folder_item: TreeItem) -> void
 		add_file(l_file_path, a_folder_item)
 
 
-func rename_item(a_item: TreeItem) -> void:
+func rename_item(_a_item: TreeItem) -> void:
 	print("not working") # TODO: Make this work
 
 
