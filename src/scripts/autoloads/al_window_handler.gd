@@ -41,8 +41,9 @@ func _notification(what: int) -> void:
 
 
 func _on_viewport_size_changed() -> void:
-	var l_value: bool = window_mode == Window.MODE_WINDOWED and get_window().borderless
-	WindowResizeHandles.instance.visible = l_value
+	if !WindowResizeHandles.instance.tiling:
+		var l_value: bool = window_mode == Window.MODE_WINDOWED and get_window().borderless
+		WindowResizeHandles.instance.visible = l_value
 
 
 #region #####################  Window Mode  ####################################

@@ -5,15 +5,29 @@ static var instance: WindowResizeHandles
 
 var resizing: bool = false  ## Bool to check if currently resizing.
 var resize_node: Control    ## Handle used for deciding how to resize.
+var tiling: bool = false
 
 
 func _ready() -> void:
 	instance = self
+	
+	check_tiling_window_manager()
+	
 	get_window().min_size = Vector2i(700,600)
 	
 	$Right.gui_input.connect(_on_gui_input.bind($Right))
 	$Bottom.gui_input.connect(_on_gui_input.bind($Bottom))
 	$Corner.gui_input.connect(_on_gui_input.bind($Corner))
+
+
+func check_tiling_window_manager() -> void:
+	if OS.get_name() in ["Windows", "macOS"]:
+		return # No tiling for these operating systems
+	for l_de: String in ["SWAYSOCK", "I3SOCK"]:
+		tiling = OS.has_environment(l_de)
+		if tiling:
+			visible = false
+			return # Environment found so exit
 
 
 #region #####################  Resizing logic  #################################
