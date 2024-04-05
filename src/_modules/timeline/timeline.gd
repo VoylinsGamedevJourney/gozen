@@ -19,6 +19,8 @@ var audio_track_heads: Array = []
 var video_track_panels: Array = []
 var audio_track_panels: Array = []
 
+var time_markers: Array = []
+
 var frame_size: float = 1.0 # How many pixels should 1 frame take up
 
 
@@ -62,10 +64,13 @@ func _on_audio_tracks_changed(a_update_audio_tracks: Array) -> void:
 func add_video_track() -> void:
 	var l_track_head: Node = preload("res://_modules/timeline/video_track_head/video_track_head.tscn").instantiate()
 	var l_track_panel: Panel = Panel.new()
+	
 	video_track_heads.append(l_track_head)
 	video_track_panels.append(l_track_panel)
 	l_track_head.set_tag_label("V%s" % video_track_heads.size())
-	l_track_panel.custom_minimum_size = Vector2i(600,26)
+	l_track_panel.custom_minimum_size = Vector2i(6000,26) # TODO: Set better minimum
+	l_track_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
 	%TrackHeadVBox.add_child(l_track_head)
 	%TrackHeadVBox.move_child(l_track_head, 0)
 	%TimelineTrackVBox.add_child(l_track_panel)
@@ -75,10 +80,12 @@ func add_video_track() -> void:
 func add_audio_track() -> void:
 	var l_track_head: Node = preload("res://_modules/timeline/audio_track_head/audio_track_head.tscn").instantiate()
 	var l_track_panel: Panel = Panel.new()
+	
 	audio_track_heads.append(l_track_head)
 	audio_track_panels.append(l_track_panel)
 	l_track_head.set_tag_label("A%s" % video_track_heads.size())
 	l_track_panel.custom_minimum_size = Vector2i(600,26)
+	l_track_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	%TrackHeadVBox.add_child(l_track_head)
 	%TimelineTrackVBox.add_child(l_track_panel)
@@ -123,3 +130,21 @@ func _scroll(a_direction: DIRECTION, a_main_timeline: bool) -> void:
 			%TimelineTrackContainer.scroll_horizontal = %TimelineTop.scroll_horizontal
 
 #endregion
+
+
+func _on_timeline_top_panel_resized():
+	var l_separation: int = %TimelineTopPanel.size.x / frame_size
+	for l_child: Node in %TimelineTopPanel.get_children():
+		l_child.queue_free()
+	for l_i: int in l_separation:
+		var l_marker: Node = preload("res://_modules/timeline/time_marker/time_marker.tscn").instantiate()
+		time_markers.append(l_marker)
+		l_marker.custom_minimum_size = Vector2i(l_separation, 0)
+		l_marker.position.x = l_i * l_separation
+		l_marker._update_marker(frame_size)
+		%TimelineTopPanel.add_child(l_marker)
+
+
+func _on_timeline_panel_resized():
+	%TimelineTopPanel.custom_minimum_size.x = %TimelineTrackVBox.size.x
+	_on_timeline_top_panel_resized()

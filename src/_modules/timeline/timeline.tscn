@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bldrq8eh7apaa"]
+[gd_scene load_steps=11 format=3 uid="uid://bldrq8eh7apaa"]
 
 [ext_resource type="Script" path="res://_modules/timeline/timeline.gd" id="1_nniuu"]
 [ext_resource type="Script" path="res://_modules/timeline/timestamp_label.gd" id="2_x3ojt"]
@@ -21,12 +21,16 @@ expand_margin_bottom = 3.0
 content_margin_left = 3.0
 content_margin_right = 3.0
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c15q8"]
+content_margin_bottom = 8.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufq2u"]
 content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+expand_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_ip8cq"]
 color = Color(0.199219, 0.199219, 0.199219, 1)
@@ -82,7 +86,9 @@ script = ExtResource("2_x3ojt")
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_c15q8")
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="TimeLineLeft/VBox/TrackContainer"]
 layout_mode = 2
@@ -95,6 +101,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 3
 alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="TimeLineLeft/VBox/TrackContainer/PanelContainer/TrackHeadVBox"]
@@ -102,24 +109,24 @@ custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_ip8cq")
 
-[node name="TimeLineRight" type="Panel" parent="."]
+[node name="TimeLineRight" type="PanelContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_qj2dj")
 
 [node name="VBox" type="VBoxContainer" parent="TimeLineRight"]
 layout_mode = 2
-offset_right = 1842.0
-offset_bottom = 1080.0
 theme_override_constants/separation = 3
 
 [node name="TimelineTop" type="ScrollContainer" parent="TimeLineRight/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
 [node name="TimelineTopPanel" type="Panel" parent="TimeLineRight/VBox/TimelineTop"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -140,8 +147,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ufq2u")
 [node name="TimelineTrackVBox" type="VBoxContainer" parent="TimeLineRight/VBox/TimelineTrackContainer/PanelContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_constants/separation = 3
 alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="TimeLineRight/VBox/TimelineTrackContainer/PanelContainer/TimelineTrackVBox"]
@@ -149,14 +155,21 @@ custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_ip8cq")
 
-[node name="TimelinePlayhead" type="VSeparator" parent="TimeLineRight"]
+[node name="Control" type="Control" parent="TimeLineRight"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TimelinePlayhead" type="VSeparator" parent="TimeLineRight/Control"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_right = 4.0
+offset_left = 919.0
+offset_right = 923.0
 offset_bottom = 1080.0
 size_flags_horizontal = 4
 theme_override_styles/separator = SubResource("StyleBoxLine_t0kkv")
 
 [connection signal="gui_input" from="TimeLineLeft/VBox/TrackContainer" to="." method="_on_track_container_gui_input"]
 [connection signal="gui_input" from="TimeLineRight/VBox/TimelineTop" to="." method="_on_timeline_top_gui_input"]
+[connection signal="resized" from="TimeLineRight/VBox/TimelineTop/TimelineTopPanel" to="." method="_on_timeline_top_panel_resized"]
 [connection signal="gui_input" from="TimeLineRight/VBox/TimelineTrackContainer" to="." method="_on_timeline_track_container_gui_input"]
+[connection signal="resized" from="TimeLineRight/VBox/TimelineTrackContainer/PanelContainer" to="." method="_on_timeline_panel_resized"]
