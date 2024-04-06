@@ -1,11 +1,9 @@
-[gd_scene load_steps=32 format=3 uid="uid://5dtnk6ata1q7"]
+[gd_scene load_steps=30 format=3 uid="uid://5dtnk6ata1q7"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_q631s"]
 [ext_resource type="Script" path="res://main/editor.gd" id="2_0chca"]
 [ext_resource type="PackedScene" uid="uid://dampusi0yrmvy" path="res://main/startup/startup.tscn" id="2_fbr1p"]
 [ext_resource type="Theme" uid="uid://blypv21oquull" path="res://main/sidebar_buttons.tres" id="3_xvjft"]
-[ext_resource type="Script" path="res://main/resize_handles.gd" id="5_nf2tg"]
-[ext_resource type="Script" path="res://main/top_bar.gd" id="5_s7fhq"]
 [ext_resource type="Texture2D" uid="uid://d3b524cpjjf2u" path="res://icon.svg" id="6_rc1kj"]
 [ext_resource type="Script" path="res://main/editor_menu_button.gd" id="7_6s8j5"]
 [ext_resource type="Texture2D" uid="uid://hav4onsqoo7i" path="res://assets/icons/settings_video_camera.png" id="8_o55nl"]
@@ -161,21 +159,20 @@ tabs_visible = false
 visible = false
 layout_mode = 1
 
-[node name="TopBarHBox" type="HBoxContainer" parent="."]
+[node name="TopBar" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 58.0
 grow_horizontal = 2
 theme_override_constants/separation = 0
-script = ExtResource("5_s7fhq")
 
-[node name="EditorMenuPanel" type="PanelContainer" parent="TopBarHBox"]
+[node name="EditorMenuPanel" type="PanelContainer" parent="TopBar"]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o0e2s")
 
-[node name="EditorMenuButton" type="MenuButton" parent="TopBarHBox/EditorMenuPanel"]
+[node name="EditorMenuButton" type="MenuButton" parent="TopBar/EditorMenuPanel"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2fg8q")
@@ -187,20 +184,20 @@ icon = ExtResource("6_rc1kj")
 expand_icon = true
 script = ExtResource("7_6s8j5")
 
-[node name="TopBarPanel" type="PanelContainer" parent="TopBarHBox"]
+[node name="TopBarPanel" type="PanelContainer" parent="TopBar"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_08wdr")
 
-[node name="ButtonsHBox" type="HBoxContainer" parent="TopBarHBox/TopBarPanel"]
+[node name="ButtonsHBox" type="HBoxContainer" parent="TopBar/TopBarPanel"]
 modulate = Color(1, 1, 1, 0.705882)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="SettingsButton" type="Button" parent="TopBarHBox/TopBarPanel/ButtonsHBox"]
+[node name="SettingsButton" type="Button" parent="TopBar/TopBarPanel/ButtonsHBox"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
@@ -211,7 +208,7 @@ icon = ExtResource("8_o55nl")
 icon_alignment = 1
 expand_icon = true
 
-[node name="ProjectSettingsButton" type="Button" parent="TopBarHBox/TopBarPanel/ButtonsHBox"]
+[node name="ProjectSettingsButton" type="Button" parent="TopBar/TopBarPanel/ButtonsHBox"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
@@ -222,13 +219,13 @@ icon = ExtResource("9_y7t0e")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Spacer" type="VSeparator" parent="TopBarHBox/TopBarPanel/ButtonsHBox"]
+[node name="Spacer" type="VSeparator" parent="TopBar/TopBarPanel/ButtonsHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_b4lbh")
 
-[node name="MinimizeButton" type="Button" parent="TopBarHBox/TopBarPanel/ButtonsHBox"]
+[node name="MinimizeButton" type="Button" parent="TopBar/TopBarPanel/ButtonsHBox"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
@@ -239,7 +236,7 @@ icon = ExtResource("10_u1xa1")
 icon_alignment = 1
 expand_icon = true
 
-[node name="MaximizeButton" type="Button" parent="TopBarHBox/TopBarPanel/ButtonsHBox"]
+[node name="MaximizeButton" type="Button" parent="TopBar/TopBarPanel/ButtonsHBox"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
@@ -250,7 +247,7 @@ icon = ExtResource("11_kvf16")
 icon_alignment = 1
 expand_icon = true
 
-[node name="ExitButton" type="Button" parent="TopBarHBox/TopBarPanel/ButtonsHBox"]
+[node name="ExitButton" type="Button" parent="TopBar/TopBarPanel/ButtonsHBox"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_qsb17")
@@ -261,7 +258,7 @@ icon = ExtResource("12_te4m5")
 icon_alignment = 1
 expand_icon = true
 
-[node name="WindowTitleLabel" type="Label" parent="TopBarHBox/TopBarPanel"]
+[node name="WindowTitleLabel" type="Label" parent="TopBar/TopBarPanel"]
 layout_mode = 2
 size_flags_vertical = 1
 auto_translate = false
@@ -278,7 +275,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("5_nf2tg")
 metadata/_edit_lock_ = true
 
 [node name="Right" type="Control" parent="ResizeHandles"]
@@ -317,10 +313,10 @@ grow_vertical = 0
 mouse_default_cursor_shape = 12
 
 [connection signal="gui_input" from="Margin/EditorHBox/SidebarPanel" to="Margin/EditorHBox" method="_on_sidebar_gui_event"]
-[connection signal="gui_input" from="TopBarHBox/EditorMenuPanel" to="TopBarHBox" method="_on_top_bar_dragging"]
-[connection signal="gui_input" from="TopBarHBox/TopBarPanel" to="TopBarHBox" method="_on_top_bar_dragging"]
-[connection signal="pressed" from="TopBarHBox/TopBarPanel/ButtonsHBox/SettingsButton" to="TopBarHBox" method="_on_settings_button_pressed"]
-[connection signal="pressed" from="TopBarHBox/TopBarPanel/ButtonsHBox/ProjectSettingsButton" to="TopBarHBox" method="_on_project_settings_button_pressed"]
-[connection signal="pressed" from="TopBarHBox/TopBarPanel/ButtonsHBox/MinimizeButton" to="TopBarHBox" method="_on_minimize_button_pressed"]
-[connection signal="pressed" from="TopBarHBox/TopBarPanel/ButtonsHBox/MaximizeButton" to="TopBarHBox" method="_on_maximize_button_pressed"]
-[connection signal="pressed" from="TopBarHBox/TopBarPanel/ButtonsHBox/ExitButton" to="TopBarHBox" method="_on_exit_button_pressed"]
+[connection signal="gui_input" from="TopBar/EditorMenuPanel" to="TopBar" method="_on_top_bar_dragging"]
+[connection signal="gui_input" from="TopBar/TopBarPanel" to="TopBar" method="_on_top_bar_dragging"]
+[connection signal="pressed" from="TopBar/TopBarPanel/ButtonsHBox/SettingsButton" to="." method="open_popup" binds= ["settings_menu"]]
+[connection signal="pressed" from="TopBar/TopBarPanel/ButtonsHBox/ProjectSettingsButton" to="." method="open_popup" binds= ["project_settings_menu"]]
+[connection signal="pressed" from="TopBar/TopBarPanel/ButtonsHBox/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="TopBar/TopBarPanel/ButtonsHBox/MaximizeButton" to="." method="_on_maximize_button_pressed"]
+[connection signal="pressed" from="TopBar/TopBarPanel/ButtonsHBox/ExitButton" to="." method="_on_exit_request"]

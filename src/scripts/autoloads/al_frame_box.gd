@@ -43,23 +43,23 @@ func set_playhead_position(a_value: int) -> void:
 	_on_playhead_position_changed.emit(a_value)
 
 
-func get_timestamp() -> String:
-	if playhead_position == 0 or ProjectManager.framerate == 0:
+func get_timestamp(a_frames: int = playhead_position) -> String:
+	if a_frames == 0 or ProjectManager.framerate == 0:
 		return "00:00:00,00"
-	var l_frames_per_hours: int = ProjectManager.framerate * 60 * 60
-	var l_frames_per_minutes: int = ProjectManager.framerate * 60
-	var l_frames_per_seconds: int = ProjectManager.framerate
+	var l_frames_per_hours: int = int(ProjectManager.framerate) * 60 * 60
+	var l_frames_per_minutes: int = int(ProjectManager.framerate) * 60
+	var l_frames_per_seconds: int = int(ProjectManager.framerate)
 	
 	# Calculate hours
-	var l_hours: int = playhead_position / l_frames_per_hours
-	var l_remaining_frames: int = playhead_position % l_frames_per_hours
+	var l_hours: int = float(a_frames) / l_frames_per_hours
+	var l_remaining_frames: int = a_frames % l_frames_per_hours
 
 	# Calculate minutes
-	var l_minutes: int = l_remaining_frames / l_frames_per_minutes
+	var l_minutes: int = float(l_remaining_frames) / l_frames_per_minutes
 	l_remaining_frames %= l_frames_per_minutes
 
 	# Calculate seconds
-	var l_seconds: int = l_remaining_frames / l_frames_per_seconds
+	var l_seconds: int = float(l_remaining_frames) / l_frames_per_seconds
 
 	# Calculate frames
 	var l_frames: int = l_remaining_frames % l_frames_per_seconds

@@ -36,7 +36,7 @@ func _on_id_pressed(a_id: int) -> void:
 
 
 func _report_bug_pressed() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.BUG_REPORT)
+	get_tree().root.open_popup("bug report")
 
 
 func _url_manual_pressed() -> void:

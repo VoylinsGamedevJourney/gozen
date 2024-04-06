@@ -29,8 +29,6 @@ ProjectManager="*res://scripts/autoloads/al_project_manager.gd"
 ActionHandler="*res://scripts/autoloads/al_action_handler.gd"
 FileManager="*res://scripts/autoloads/al_file_manager.gd"
 DialogManager="*res://scripts/autoloads/al_dialog_manager.gd"
-PopupManager="*res://scripts/autoloads/al_popup_manager.gd"
-WindowHandler="*res://scripts/autoloads/al_window_handler.gd"
 FrameBox="*res://scripts/autoloads/al_frame_box.gd"
 
 [debug]

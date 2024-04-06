@@ -136,7 +136,7 @@ func change_layout(a_id: int) -> void:
 
 
 func open_add_layout_popup() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.ADD_EDITOR_LAYOUT)
+	get_tree().root.open_popup("add_editor_layout")
 
 
 func add_layout(a_layout_name: String, a_id: String = "") -> void:
