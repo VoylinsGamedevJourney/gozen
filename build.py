@@ -4,48 +4,37 @@ import translations.translations as translations
 import gd_extensions.build_gdextensions as gde_extensions
 
 
+def build_gozen():
+    l_user_input = toolbox.get_input_choice('Menu', [
+        'Full build (Godot, GDExtensions, Localizations, ...)',
+        'Godot build only'])
+    
+    # Gather build info
+    l_num_jobs = toolbox.get_input_jobs()
 
-num_jobs = 0
-platform = ''
-scons_extra_args = ''
-target = ''
-
-
-
-def get_build_data():
-    global num_jobs, platform, scons_extra_args, target
-
-    num_jobs = _print_choices('Enter amount of cores/threads for compiling')
-
-    platform = _print_choices('Select target platform', [
+    l_platform = 'linux'
+    match toolbox.get_input_choices('Select target platform', [
         'Linux',
         'Windows(Msys2)',
-        'MacOS (un-supported)'])
-
-    match platform:
-        case '1':
-            platform = 'linux'
+        'MacOS (not supported)']):
         case '2':
-            platform = 'windows'
+            l_platform = 'windows'
             scons_extra_args = 'use_mingw=yes'
-        case '3':
-            platform = 'macos'
-        case _:
-            print('Invalid platform choice, defaulting to Linux.')
-            platform = 'linux'
+        case '3': l_platform = 'macos'
 
-    target = _print_choices('Select build target', [
+    l_target = 'template_debug'
+    match toolbox.get_input_choices('Select build target', [
         'template_debug',
-        'template_release'])
-
-    match target:
-        case '2': target = 'template_release'
-        case _:   target = 'template_debug'
+        'template_release']):
+        case '2': l_target = 'template_release'
 
 
+    # Start building
+    if user_input == 1:
+        translations.generate_mo()
+        gde_extensions.build_ffmpeg(l_num_jobs)
 
-def build_gozen():
-    pass
+    print('Not yet to implemented!') # Building Godot application
 
 
 def menu():

@@ -7,6 +7,9 @@ import toolbox
 
 
 def generate_pot():
+    # Go through files in 'src' (Exclude .godot and only look in *.tscn and *.gd files)
+    # Make a dictionary of all entries, which line they appear on, msgctx from parameters
+    # Generate file from dictionary
     print('not implemented yet')
 
 
@@ -19,6 +22,8 @@ def generate_mo():
 
 
 def create_new_locale():
+    # Ask for locale (Use toolbox and check against possible locales to see if correct)
+    # Generate new po file with POT file
     print('not implemented yet')
 
 

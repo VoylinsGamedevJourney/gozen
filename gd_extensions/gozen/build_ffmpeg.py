@@ -1,10 +1,17 @@
+import sys
 import os
 import shutil
 import platform
 import glob
 
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),"../python"))
+import toolbox
+
+
+
 folder_bin = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../bin/ffmpeg_bin')
 folder_source = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ffmpeg')
+
 
 
 def configure_ffmpeg():
@@ -28,9 +35,9 @@ def copy_mingw():
         shutil.copy(os.path.join('/usr/x86_64-w64-mingw32/bin/', dll), folder_bin)
 
 
-def build_ffmpeg(a_num_jobs = 0):
+def build(a_num_jobs = 0):
     if a_num_jobs == 0: # Getting threads/cores for compiling FFmpeg
-        a_num_jobs = input('Enter amount of cores/threads for compiling FFmpeg: ')
+        a_num_jobs = toolbox.get_input_jobs()
 
     configure_ffmpeg() # Configuring FFmpeg build
     make_ffmpeg(a_num_jobs) # Building ffmpeg
@@ -41,4 +48,5 @@ def build_ffmpeg(a_num_jobs = 0):
 
 
 if __name__ == '__main__':
-    build_ffmpeg()
+    toolbox.print_title('FFmpeg builder')
+    build()
