@@ -1,0 +1,44 @@
+import os
+import shutil
+import platform
+import glob
+
+folder_bin = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../bin/ffmpeg_bin')
+folder_source = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ffmpeg')
+
+
+def configure_ffmpeg():
+    config_extra_args = ''
+    if platform.system().lower() == 'linux':
+        os.environ['PATH'] = '/opt/bin:' + os.environ['PATH']
+        cross_prefix = 'x86_64-w64-mingw32-'
+        config_extra_args = '--cross-prefix=' + cross_prefix + ' --arch=x86_64 --target-os=mingw32'
+    
+    os.system(f'{folder_source}/configure --prefix={folder_bin} --enable-gpl --enable-shared {config_extra_args}')
+
+
+def make_ffmpeg(a_num_jobs):
+    os.makedirs(folder_bin, exist_ok=True)
+    os.system(f'make -j {a_num_jobs}')
+    os.system(f'make -j {a_num_jobs} install')
+
+
+def copy_mingw():
+    for dll in ['zlib1.dll', 'libiconv-2.dll', 'libbz2-1.dll', 'liblzma-5.dll', 'libwinpthread-1.dll']:
+        shutil.copy(os.path.join('/usr/x86_64-w64-mingw32/bin/', dll), folder_bin)
+
+
+def build_ffmpeg(a_num_jobs = 0):
+    if a_num_jobs == 0: # Getting threads/cores for compiling FFmpeg
+        a_num_jobs = input('Enter amount of cores/threads for compiling FFmpeg: ')
+
+    configure_ffmpeg() # Configuring FFmpeg build
+    make_ffmpeg(a_num_jobs) # Building ffmpeg
+
+    if platform.system().lower() == 'linux': 
+        copy_mingw() # Copying mingw
+        
+
+
+if __name__ == '__main__':
+    build_ffmpeg()
