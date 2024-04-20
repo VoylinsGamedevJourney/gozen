@@ -1,6 +1,9 @@
 import os
+import python.toolbox as toolbox
+import translations.translations as translations
+import gd_extensions.build_gdextensions as gde_extensions
 
-from gozen_translations.generate_mo_files import generate_mo_files
+
 
 num_jobs = 0
 platform = ''
@@ -8,26 +11,9 @@ scons_extra_args = ''
 target = ''
 
 
-def main():
-    print('-= GoZen Builder =-')
-
-    choice = _print_choices('Select task', [
-        'Build GoZen [Full]',
-        'Generate localization',
-        'Compile GDExtension [gozen_ffmpeg]'])
-
-    if choice in ['1', '2']: # Generating localization
-        generate_mo_files()
-    
-    if choice in ['1', '3']: # Compiling GDExtensions
-        get_build_data()
-        compile_gozen_ffmpeg()
-
 
 def get_build_data():
     global num_jobs, platform, scons_extra_args, target
-
-    print('-= Creating build profile =-')
 
     num_jobs = _print_choices('Enter amount of cores/threads for compiling')
 
@@ -57,21 +43,21 @@ def get_build_data():
         case _:   target = 'template_debug'
 
 
-def compile_gozen_ffmpeg():
-    os.chdir('gd_extensions/gozen_ffmpeg')
-    os.system(f'scons -j {num_jobs} target={target} platform={platform} {scons_extra_args}')
-    os.chdir('../..')
+
+def build_gozen():
+    pass
 
 
-def _print_choices(title, tasks = []):
-    print('\n-= ' + title + ': =-')
-    for i, task in enumerate(tasks, start=1):
-        print(f'{i}. {task};')
-    user_input = input('> ')
-    print('\n')
-    return user_input
+def menu():
+    match toolbox.get_input_choice('Menu', [
+        'Build GoZen',
+        'Localization menu',
+        'GDExtension menu']):
+        case 0: build_gozen()
+        case 1: translations.menu()
+        case 2: gde_extensions.menu()
 
 
 if __name__ == '__main__':
-    os.system('git submodule update')
-    main()
+    toolbox.print_title('GoZen builder')
+    menu()

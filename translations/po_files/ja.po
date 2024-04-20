@@ -1,0 +1,265 @@
+# LANGUAGE translation for GoZen - Video Editor for the following files:
+# res://ui/screen_main/components/main_top_bar.tscn
+# res://ui/screen_main/screen_main.tscn
+# res://ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+# res://ui/screen_settings_menu/screen_settings_menu.tscn
+# res://ui/screen_startup/screen_startup.tscn
+# res://ui/screen_startup/components/startup_recent_project_button.tscn
+# res://ui/screen_startup/components/startup_tab_create_new_project.tscn
+# res://ui/screen_startup/components/startup_tab_main.tscn
+# res://ui/screen_startup/components/startup_tab_recent_projects.tscn
+# res://ui/screen_startup/scripts/startup_version_label.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen - Video Editor\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_SAVE"
+msgstr "保存"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_DONT_SAVE"
+msgstr "保存しない"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_ON_EXIT"
+msgstr "プロジェクトを保存しますか？"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_EDITOR_BUTTON"
+msgstr "エディターの情報を見る。"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON"
+msgstr "プロジェクトの設定メニューを開く。"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_SETTINGS_BUTTON"
+msgstr "エディターの設定メニューを開く。"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE"
+msgstr "プロジェクトの設定メニュー"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE_GENERAL"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_TITLE"
+msgstr "タイトル："
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_INPUT_PROJECT_TITLE"
+msgstr "プロジェクトの名前。"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE_QUALITY"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TEXT_RESOLUTION"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_RESOLUTION_X"
+msgstr "プロジェクトの幅（ピクセル）"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_RESOLUTION_Y"
+msgstr "プロジェクトの高さ（ピクセル）"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_FRAMERATE"
+msgstr "フレームレート："
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_FPS"
+msgstr "フレームレート"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE"
+msgstr "設定"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE_GENERAL"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_LANGUAGE"
+msgstr "言語"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+#, fuzzy
+msgid "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
+msgstr "言語を変わる"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE_TIMELINE"
+msgstr "タイムラインの設定"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
+msgstr ""
+
+#: ui/screen_startup/screen_startup.tscn
+#: ui/screen_startup/scripts/startup_version_label.gd
+msgid "TEXT_VERSION"
+msgstr "バージョン"
+
+#: ui/screen_startup/screen_startup.tscn
+msgid "STARTUP_TOOLTIP_EDITOR_BUTTON"
+msgstr "GoZenのGithubページを見る。"
+
+#: ui/screen_startup/components/startup_recent_project_button.tscn
+msgid "TEXT_UNTITLED_PROJECT_TITLE"
+msgstr "新プロジェクト"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "DIALOG_TITLE_SELECT_PROJECT_PATH"
+msgstr "プロジェクトフォルダを選択してください"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "DIALOG_BUTTON_SELECT_PATH"
+msgstr "ファイルの保存先を選択"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_BUTTON_CANCEL"
+msgstr "キャンセル"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TITLE_NEW_PROJECT"
+msgstr "新しいプロジェクト"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#, fuzzy
+msgid "PROJECT_SETTINGS_TEXT_PATH"
+msgstr "パス："
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_INPUT_PROJECT_PATH"
+msgstr "どこでこのプロジェクトをセーブしたい。"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_BUTTON_SELECT_PATH"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_recent_projects.tscn
+msgid "TOOLTIP_BUTTON_RETURN_MAIN"
+msgstr "メインメニューに戻る"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_recent_projects.tscn
+msgid "BUTTON_RETURN"
+msgstr "戻る"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_CREATE_PROJECT"
+msgstr "プロジェクト作成"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_CREATE_PROJECT"
+msgstr "プロジェクトの作成"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_TITLE_OPEN_PROJECT"
+msgstr "GoZenのプロジェクトを開く"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_BUTTON_OPEN_PROJECT"
+msgstr "プロジェクトを開く"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TITLE_RECENT_PROJECTS"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
+msgstr "以前に開いたすべてのプロジェクトを表示。"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SHOW_ALL_PROJECTS"
+msgstr "全部のプロジェクトを見る"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_OPEN_PROJECT"
+msgstr "エディタで開く「*.gozen」ファイルを選択します。"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_OPEN_PROJECT"
+msgstr "プロジェクトをを開く"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TITLE_GETTING_STARTED"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_MANUAL"
+msgstr "GoZenのマニュアルを開く。"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_MANUAL"
+msgstr "マニュアル"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_TUTORIALS"
+msgstr "チュートリアルを見る。"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_TUTORIALS"
+msgstr "チュートリアル"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SUPPORT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SUPPORT"
+msgstr "サポート"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_DISCORD"
+msgstr "Discordサーバーを開く。"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_DISCORD"
+msgstr "Discordサーバー"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+msgstr "このボタンをクリックすると、私のko-fiページに移動し、寄付をしていただけます。大変感謝しています！"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SUPPORT_PROJECT"
+msgstr "このプロジェクトを支援する"

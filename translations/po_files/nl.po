@@ -1,0 +1,263 @@
+# LANGUAGE translation for GoZen - Video Editor for the following files:
+# res://ui/screen_main/components/main_top_bar.tscn
+# res://ui/screen_main/screen_main.tscn
+# res://ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+# res://ui/screen_settings_menu/screen_settings_menu.tscn
+# res://ui/screen_startup/screen_startup.tscn
+# res://ui/screen_startup/components/startup_recent_project_button.tscn
+# res://ui/screen_startup/components/startup_tab_create_new_project.tscn
+# res://ui/screen_startup/components/startup_tab_main.tscn
+# res://ui/screen_startup/components/startup_tab_recent_projects.tscn
+# res://ui/screen_startup/scripts/startup_version_label.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen - Video Editor\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_SAVE"
+msgstr "Opslaan"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_DONT_SAVE"
+msgstr "Niet opslaan"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_ON_EXIT"
+msgstr "Wil je het project opslaan?"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_EDITOR_BUTTON"
+msgstr "Toon informatie over de editor."
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON"
+msgstr "Open de project instellingen."
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_SETTINGS_BUTTON"
+msgstr "Open de editor installingen."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE"
+msgstr "Project instellingen menu"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE_GENERAL"
+msgstr "Algemene instellignen"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_TITLE"
+msgstr "Titel:"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_INPUT_PROJECT_TITLE"
+msgstr "De naam van je video project."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE_QUALITY"
+msgstr "Kwaliteit instellingen"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TEXT_RESOLUTION"
+msgstr "Resolutie:"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_RESOLUTION_X"
+msgstr "De breedte in pixels voor je project."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_RESOLUTION_Y"
+msgstr "Hoogte in pixels voor je project."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_FRAMERATE"
+msgstr "Framerate:"
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_FPS"
+msgstr "Framerate"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE"
+msgstr "Instellingen"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE_GENERAL"
+msgstr "Algemene instellignen"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_LANGUAGE"
+msgstr "Taal"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
+msgstr "Verander de taal."
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE_TIMELINE"
+msgstr "Timeline instellingen"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
+msgstr "Standaar video tracks:"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
+msgstr "Verander hoeveelheid van video tracks voor nieuwe projecten."
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
+msgstr "Standaar audio tracks:"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
+msgstr "Verander hoeveelheid van audio tracks voor nieuwe projecten."
+
+#: ui/screen_startup/screen_startup.tscn
+#: ui/screen_startup/scripts/startup_version_label.gd
+msgid "TEXT_VERSION"
+msgstr "Version"
+
+#: ui/screen_startup/screen_startup.tscn
+msgid "STARTUP_TOOLTIP_EDITOR_BUTTON"
+msgstr "Ga naar de GoZen Github pagina."
+
+#: ui/screen_startup/components/startup_recent_project_button.tscn
+msgid "TEXT_UNTITLED_PROJECT_TITLE"
+msgstr "Naamloos project"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "DIALOG_TITLE_SELECT_PROJECT_PATH"
+msgstr "Selecteer project folder."
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "DIALOG_BUTTON_SELECT_PATH"
+msgstr "Selecteer locatie"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_BUTTON_CANCEL"
+msgstr "Annuleer"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TITLE_NEW_PROJECT"
+msgstr "Nieuw project"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_PATH"
+msgstr "Locatie:"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_INPUT_PROJECT_PATH"
+msgstr "De locatie waar je het video project wilt opslaan."
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_BUTTON_SELECT_PATH"
+msgstr "Selecteer de locatie waar je GoZen wilt opslaan."
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_recent_projects.tscn
+msgid "TOOLTIP_BUTTON_RETURN_MAIN"
+msgstr "Terug naar hoofdmenu"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_recent_projects.tscn
+msgid "BUTTON_RETURN"
+msgstr "Terug"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_CREATE_PROJECT"
+msgstr "Maak en open een nieuw project."
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_CREATE_PROJECT"
+msgstr "Maak een nieuw project"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_TITLE_OPEN_PROJECT"
+msgstr "Open GoZen project"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_BUTTON_OPEN_PROJECT"
+msgstr "Open project"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TITLE_RECENT_PROJECTS"
+msgstr "Recente projecten"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
+msgstr "Toon alle projecten die reeds geopend zijn."
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SHOW_ALL_PROJECTS"
+msgstr "Toon alle projecten"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_OPEN_PROJECT"
+msgstr "Selecteer een '*.gozen' bestand om te openen."
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_OPEN_PROJECT"
+msgstr "Open project"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TITLE_GETTING_STARTED"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_MANUAL"
+msgstr "Open de GoZen handleiding."
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_MANUAL"
+msgstr "Handleiding"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_TUTORIALS"
+msgstr "Open de tutorials"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_TUTORIALS"
+msgstr "Tutorials"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SUPPORT"
+msgstr "Open een contact formulier voor help."
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SUPPORT"
+msgstr "Contacteer support"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_DISCORD"
+msgstr "Open/join de Discord server."
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_DISCORD"
+msgstr "Discord server"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+msgstr "Deze knop brengt je naar mijn ko-fi pagina waar je een donatie kan maken die erg gewaardeerd is."
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SUPPORT_PROJECT"
+msgstr "Steun dit project"

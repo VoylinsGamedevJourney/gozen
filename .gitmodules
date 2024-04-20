@@ -5,5 +5,5 @@
 	path = gozen_translations
 	url = git@github.com:VoylinsGamedevJourney/GoZen-translations.git
 [submodule "ffmpeg"]
-	path = gd_extensions/gozen_ffmpeg/ffmpeg
+	path = gd_extensions/gozen/ffmpeg
 	url = git@github.com:FFmpeg/FFmpeg.git

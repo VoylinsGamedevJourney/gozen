@@ -1,0 +1,264 @@
+# LANGUAGE translation for GoZen - Video Editor for the following files:
+# res://ui/screen_main/components/main_top_bar.tscn
+# res://ui/screen_main/screen_main.tscn
+# res://ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+# res://ui/screen_settings_menu/screen_settings_menu.tscn
+# res://ui/screen_startup/screen_startup.tscn
+# res://ui/screen_startup/components/startup_recent_project_button.tscn
+# res://ui/screen_startup/components/startup_tab_create_new_project.tscn
+# res://ui/screen_startup/components/startup_tab_main.tscn
+# res://ui/screen_startup/components/startup_tab_recent_projects.tscn
+# res://ui/screen_startup/scripts/startup_version_label.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen - Video Editor\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_SAVE"
+msgstr ""
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_DONT_SAVE"
+msgstr ""
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "DIALOG_TEXT_ON_EXIT"
+msgstr "Желаете сохранить проект?"
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_EDITOR_BUTTON"
+msgstr "Показывает некоторую информацию про редактор."
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_PROJECT_SETTINGS_BUTTON"
+msgstr "Отправит вас в настройки проекта."
+
+#: ui/screen_main/components/main_top_bar.tscn
+msgid "TOP_BAR_TOOLTIP_SETTINGS_BUTTON"
+msgstr "Отправит вас в настройки редактора."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE_GENERAL"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_TITLE"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_INPUT_PROJECT_TITLE"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TITLE_QUALITY"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "PROJECT_SETTINGS_TEXT_RESOLUTION"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_RESOLUTION_X"
+msgstr "Ширина проэкта в пикселях."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_RESOLUTION_Y"
+msgstr "Высота проэкта в пикселях."
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_FRAMERATE"
+msgstr ""
+
+#: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
+msgid "TOOLTIP_INPUT_FPS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE"
+msgstr "Настройки"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE_GENERAL"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_LANGUAGE"
+msgstr "Язык"
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TITLE_TIMELINE"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
+msgstr ""
+
+#: ui/screen_settings_menu/screen_settings_menu.tscn
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
+msgstr ""
+
+#: ui/screen_startup/screen_startup.tscn
+#: ui/screen_startup/scripts/startup_version_label.gd
+msgid "TEXT_VERSION"
+msgstr "Версия"
+
+#: ui/screen_startup/screen_startup.tscn
+msgid "STARTUP_TOOLTIP_EDITOR_BUTTON"
+msgstr ""
+
+#: ui/screen_startup/components/startup_recent_project_button.tscn
+msgid "TEXT_UNTITLED_PROJECT_TITLE"
+msgstr "Проэкт без названия"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "DIALOG_TITLE_SELECT_PROJECT_PATH"
+msgstr "Выбрать папку проекта"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "DIALOG_BUTTON_SELECT_PATH"
+msgstr "Выбрать"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_BUTTON_CANCEL"
+msgstr "Отменить"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TITLE_NEW_PROJECT"
+msgstr "Новый проект"
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "PROJECT_SETTINGS_TEXT_PATH"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_INPUT_PROJECT_PATH"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+msgid "TOOLTIP_BUTTON_SELECT_PATH"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_recent_projects.tscn
+msgid "TOOLTIP_BUTTON_RETURN_MAIN"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_recent_projects.tscn
+msgid "BUTTON_RETURN"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_CREATE_PROJECT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_create_new_project.tscn
+#: ui/screen_startup/components/startup_tab_main.tscn
+#, fuzzy
+msgid "BUTTON_CREATE_PROJECT"
+msgstr "Создать"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_TITLE_OPEN_PROJECT"
+msgstr "Открыть проект"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "DIALOG_BUTTON_OPEN_PROJECT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TITLE_RECENT_PROJECTS"
+msgstr "Недавние проекты"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SHOW_ALL_PROJECTS"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_OPEN_PROJECT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_OPEN_PROJECT"
+msgstr "Открыть проект"
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TITLE_GETTING_STARTED"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_MANUAL"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_MANUAL"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_TUTORIALS"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_TUTORIALS"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SUPPORT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SUPPORT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_DISCORD"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_DISCORD"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "TOOLTIP_BUTTON_SUPPORT_PROJECT"
+msgstr ""
+
+#: ui/screen_startup/components/startup_tab_main.tscn
+msgid "BUTTON_SUPPORT_PROJECT"
+msgstr "Поддержать проект"

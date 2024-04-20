@@ -2,11 +2,9 @@
 .godot/
 .import/
 *.translation
+*.mo
 /bin/
-
-# FFmpeg ignores
-ffmpeg-bin/
-
+/gd_extensions/bin/
 
 # Linux dot files
 .directory
@@ -18,12 +16,14 @@ ffmpeg-bin/
 *.webp
 
 
-# Scons
+# Python
+__pycache__
+*.pyc
+## Scons
 .sconsign.dblite
 config.log
 .sconf_temp
 
-__pycache__
 
 # C++ ignores
 ## Prerequisites
@@ -54,9 +54,7 @@ __pycache__
 *.out
 *.app
 
+
+# Editors
 .vscode
 .idea
-
-*.mo
-
-*.pyc
