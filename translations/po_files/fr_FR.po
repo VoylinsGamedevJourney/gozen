@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GoZen - Video Editor\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2024/04/17\n"
+"Last-Translator: Slander\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -27,11 +27,11 @@ msgstr ""
 
 #: ui/screen_main/components/main_top_bar.tscn
 msgid "DIALOG_TEXT_SAVE"
-msgstr ""
+msgstr "Sauvegarder"
 
 #: ui/screen_main/components/main_top_bar.tscn
 msgid "DIALOG_TEXT_DONT_SAVE"
-msgstr ""
+msgstr "Ne pas sauvegarder"
 
 #: ui/screen_main/components/main_top_bar.tscn
 msgid "DIALOG_TEXT_ON_EXIT"
@@ -51,29 +51,29 @@ msgstr "Vous emmène à la configuration de l'éditeur."
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TITLE"
-msgstr ""
+msgstr "Menu de configuration du projet"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TITLE_GENERAL"
-msgstr ""
+msgstr "Configuration générale"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "PROJECT_SETTINGS_TEXT_TITLE"
-msgstr ""
+msgstr "Titre :"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "TOOLTIP_INPUT_PROJECT_TITLE"
-msgstr ""
+msgstr "Le nom de votre projet vidéo."
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TITLE_QUALITY"
-msgstr ""
+msgstr "Paramètre de qualité"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TEXT_RESOLUTION"
-msgstr ""
+msgstr "Résolution :"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "TOOLTIP_INPUT_RESOLUTION_X"
@@ -86,19 +86,19 @@ msgstr "Hauteur du projet en pixels."
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "PROJECT_SETTINGS_TEXT_FRAMERATE"
-msgstr ""
+msgstr "Fréquence d'image"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "TOOLTIP_INPUT_FPS"
-msgstr ""
+msgstr "Fréquence d'image."
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TITLE"
-msgstr "Réglages"
+msgstr "Paramètres"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TITLE_GENERAL"
-msgstr ""
+msgstr "Paramètres généraux"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TEXT_LANGUAGE"
@@ -106,27 +106,27 @@ msgstr "Langue"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
-msgstr ""
+msgstr "Change la langue de l'interface."
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TITLE_TIMELINE"
-msgstr ""
+msgstr "Paramètres de la timeline"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
-msgstr ""
+msgstr "Pistes vidéo par défaut :"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
-msgstr ""
+msgstr "Change le nombre de pistes vidéo par défaut pour les nouveaux projets."
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
-msgstr ""
+msgstr "Pistes audio par défaut :"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
-msgstr ""
+msgstr "Change le nombre de pistes audio par défaut pour les nouveaux projets."
 
 #: ui/screen_startup/screen_startup.tscn
 #: ui/screen_startup/scripts/startup_version_label.gd
@@ -135,7 +135,7 @@ msgstr "Version"
 
 #: ui/screen_startup/screen_startup.tscn
 msgid "STARTUP_TOOLTIP_EDITOR_BUTTON"
-msgstr ""
+msgstr "Se rendre à la page Github de GoZen."
 
 #: ui/screen_startup/components/startup_recent_project_button.tscn
 msgid "TEXT_UNTITLED_PROJECT_TITLE"
@@ -146,9 +146,8 @@ msgid "DIALOG_TITLE_SELECT_PROJECT_PATH"
 msgstr "Sélectionner le dossier du projet."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
-#, fuzzy
 msgid "DIALOG_BUTTON_SELECT_PATH"
-msgstr "Sélectioner"
+msgstr "Sélectioner le chemin"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_main.tscn
@@ -161,36 +160,35 @@ msgstr "Nouveau projet"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "PROJECT_SETTINGS_TEXT_PATH"
-msgstr ""
+msgstr "Chemin :"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "TOOLTIP_INPUT_PROJECT_PATH"
-msgstr ""
+msgstr "L'endroit où vous souhaitez sauvegarder le nouveau projet vidéo."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "TOOLTIP_BUTTON_SELECT_PATH"
-msgstr ""
+msgstr "Sélectionnez le chemin où vous souhaitez sauvegarder le projet GoZen."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_recent_projects.tscn
 msgid "TOOLTIP_BUTTON_RETURN_MAIN"
-msgstr ""
+msgstr "Revenir au menu principal."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_recent_projects.tscn
 msgid "BUTTON_RETURN"
-msgstr ""
+msgstr "Retour"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_CREATE_PROJECT"
-msgstr ""
+msgstr "Créer et ouvrir le nouveau projet."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_main.tscn
-#, fuzzy
 msgid "BUTTON_CREATE_PROJECT"
-msgstr "Créer"
+msgstr "Créer le projet"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "DIALOG_TITLE_OPEN_PROJECT"
@@ -198,7 +196,7 @@ msgstr "Ouvrir un projet"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "DIALOG_BUTTON_OPEN_PROJECT"
-msgstr ""
+msgstr "Ouvrir le projet"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TITLE_RECENT_PROJECTS"
@@ -206,15 +204,15 @@ msgstr "Projets récents"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
-msgstr ""
+msgstr "Afficher tous les projets ouverts précédemment."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_SHOW_ALL_PROJECTS"
-msgstr ""
+msgstr "Afficher tous les projets"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_OPEN_PROJECT"
-msgstr ""
+msgstr "Sélectionnez un fichier '*.gozen' à ouvrir dans l'éditeur."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_OPEN_PROJECT"
@@ -222,43 +220,45 @@ msgstr "Ouvrir un projet"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TITLE_GETTING_STARTED"
-msgstr ""
+msgstr "Commencer"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_MANUAL"
-msgstr ""
+msgstr "Ouvrir le manuel de GoZen."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_MANUAL"
-msgstr ""
+msgstr "Manuel"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_TUTORIALS"
-msgstr ""
+msgstr "Ouvrir la section des tutoriels."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_TUTORIALS"
-msgstr ""
+msgstr "Tutoriels"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_SUPPORT"
-msgstr ""
+msgstr "Ouvrez un formulaire de contact vers l'assistance afin de proposer des retours d'expérience ou d'obtenir de l'aide."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_SUPPORT"
-msgstr ""
+msgstr "Contacter l'assistance"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_DISCORD"
-msgstr ""
+msgstr "Ouvrir / rejoindre le serveur Discord."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_DISCORD"
-msgstr ""
+msgstr "Serveur Discord"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_SUPPORT_PROJECT"
 msgstr ""
+"Ce bouton vous dirigera vers la page ko-fi du projet où vous pourrez faire "
+"un don afin de supporter financièrement le projet GoZen."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_SUPPORT_PROJECT"

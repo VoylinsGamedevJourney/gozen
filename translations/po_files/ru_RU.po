@@ -17,21 +17,21 @@ msgstr ""
 "Project-Id-Version: GoZen - Video Editor\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: USBashka <usbashka@gmail.com>\n"
 "Language-Team: \n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: ui/screen_main/components/main_top_bar.tscn
 msgid "DIALOG_TEXT_SAVE"
-msgstr ""
+msgstr "Сохранить"
 
 #: ui/screen_main/components/main_top_bar.tscn
 msgid "DIALOG_TEXT_DONT_SAVE"
-msgstr ""
+msgstr "Не сохранять"
 
 #: ui/screen_main/components/main_top_bar.tscn
 msgid "DIALOG_TEXT_ON_EXIT"
@@ -51,46 +51,46 @@ msgstr "Отправит вас в настройки редактора."
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TITLE"
-msgstr ""
+msgstr "Настройки проекта"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TITLE_GENERAL"
-msgstr ""
+msgstr "Общие настройки"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "PROJECT_SETTINGS_TEXT_TITLE"
-msgstr ""
+msgstr "Заголовок:"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "TOOLTIP_INPUT_PROJECT_TITLE"
-msgstr ""
+msgstr "Название вашего проекта."
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TITLE_QUALITY"
-msgstr ""
+msgstr "Настройки качества"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "PROJECT_SETTINGS_TEXT_RESOLUTION"
-msgstr ""
+msgstr "Разрешение:"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "TOOLTIP_INPUT_RESOLUTION_X"
-msgstr "Ширина проэкта в пикселях."
+msgstr "Ширина проекта в пикселях."
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "TOOLTIP_INPUT_RESOLUTION_Y"
-msgstr "Высота проэкта в пикселях."
+msgstr "Высота проекта в пикселях."
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "PROJECT_SETTINGS_TEXT_FRAMERATE"
-msgstr ""
+msgstr "Частота кадров:"
 
 #: ui/screen_project_settings_menu/screen_project_settings_menu.tscn
 msgid "TOOLTIP_INPUT_FPS"
-msgstr ""
+msgstr "Частота кадров"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TITLE"
@@ -98,35 +98,35 @@ msgstr "Настройки"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TITLE_GENERAL"
-msgstr ""
+msgstr "Общие настройки"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TEXT_LANGUAGE"
-msgstr "Язык"
+msgstr "Язык:"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
-msgstr ""
+msgstr "Меняет язык интерфейса"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TITLE_TIMELINE"
-msgstr ""
+msgstr "Настройки таймлайна"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
-msgstr ""
+msgstr "Видеодорожки по умолчанию:"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
-msgstr ""
+msgstr "Изменяет количество видеодорожек по умолчанию для нового проекта."
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
-msgstr ""
+msgstr "Аудиодорожки по умолчанию:"
 
 #: ui/screen_settings_menu/screen_settings_menu.tscn
 msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
-msgstr ""
+msgstr "Изменяет количество аудиодорожек по умолчанию для нового проекта."
 
 #: ui/screen_startup/screen_startup.tscn
 #: ui/screen_startup/scripts/startup_version_label.gd
@@ -135,11 +135,11 @@ msgstr "Версия"
 
 #: ui/screen_startup/screen_startup.tscn
 msgid "STARTUP_TOOLTIP_EDITOR_BUTTON"
-msgstr ""
+msgstr "Перейти на GitHub-страницу GoZen."
 
 #: ui/screen_startup/components/startup_recent_project_button.tscn
 msgid "TEXT_UNTITLED_PROJECT_TITLE"
-msgstr "Проэкт без названия"
+msgstr "Безымянный проект"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "DIALOG_TITLE_SELECT_PROJECT_PATH"
@@ -160,44 +160,43 @@ msgstr "Новый проект"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "PROJECT_SETTINGS_TEXT_PATH"
-msgstr ""
+msgstr "Путь:"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "TOOLTIP_INPUT_PROJECT_PATH"
-msgstr ""
+msgstr "Место, где вы хотите сохранить ваш проект."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 msgid "TOOLTIP_BUTTON_SELECT_PATH"
-msgstr ""
+msgstr "Выберите путь, по которому вы хотите сохранить GoZen-проект."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_recent_projects.tscn
 msgid "TOOLTIP_BUTTON_RETURN_MAIN"
-msgstr ""
+msgstr "Вернуться в главное меню"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_recent_projects.tscn
 msgid "BUTTON_RETURN"
-msgstr ""
+msgstr "Назад"
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_CREATE_PROJECT"
-msgstr ""
+msgstr "Создать и открыть новый проект."
 
 #: ui/screen_startup/components/startup_tab_create_new_project.tscn
 #: ui/screen_startup/components/startup_tab_main.tscn
-#, fuzzy
 msgid "BUTTON_CREATE_PROJECT"
-msgstr "Создать"
+msgstr "Создать проект"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "DIALOG_TITLE_OPEN_PROJECT"
-msgstr "Открыть проект"
+msgstr "Открыть GoZen-проект"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "DIALOG_BUTTON_OPEN_PROJECT"
-msgstr ""
+msgstr "Открыть проект"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TITLE_RECENT_PROJECTS"
@@ -205,15 +204,15 @@ msgstr "Недавние проекты"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_SHOW_ALL_PROJECTS"
-msgstr ""
+msgstr "Показать все ранее открытые проекты."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_SHOW_ALL_PROJECTS"
-msgstr ""
+msgstr "Показать все проекты"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_OPEN_PROJECT"
-msgstr ""
+msgstr "Выберите \"*.gozen\" файл, который хотите открыть в редакторе."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_OPEN_PROJECT"
@@ -221,43 +220,43 @@ msgstr "Открыть проект"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TITLE_GETTING_STARTED"
-msgstr ""
+msgstr "Полезные ресурсы"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_MANUAL"
-msgstr ""
+msgstr "Открыть мануал по GoZen."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_MANUAL"
-msgstr ""
+msgstr "Мануал"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_TUTORIALS"
-msgstr ""
+msgstr "Открыть раздел с обучающими материалами."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_TUTORIALS"
-msgstr ""
+msgstr "Обучающие материалы"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_SUPPORT"
-msgstr ""
+msgstr "Связаться с поддержкой, чтобы оставить отзыв или получить помощь."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_SUPPORT"
-msgstr ""
+msgstr "Связаться с поддержкой"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_DISCORD"
-msgstr ""
+msgstr "Открыть/присоединиться к Discord-серверу."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_DISCORD"
-msgstr ""
+msgstr "Discord-сервер"
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "TOOLTIP_BUTTON_SUPPORT_PROJECT"
-msgstr ""
+msgstr "Эта кнопка откроет мою страницу на ko-fi, где вы можете сделать донат, что было бы очень клёво."
 
 #: ui/screen_startup/components/startup_tab_main.tscn
 msgid "BUTTON_SUPPORT_PROJECT"
