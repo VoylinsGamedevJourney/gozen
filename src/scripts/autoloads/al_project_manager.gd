@@ -30,13 +30,12 @@ const KEYS: PackedStringArray = [
 var project_path: String:
 	set = _set_project_path
 
-var unsaved_changes := false:
+var unsaved_changes: bool = false:
 	set = _set_unsaved_changes
 
 var title: String:
 	set = _set_title
 
-var folder_data: Dictionary = {} # Full_path: Array of files
 var files_data: Dictionary = {} # File_id: File class object
 var current_id: int = 0  # File ID's for global start with 'G_' and for project with 'P_'
 
@@ -76,7 +75,7 @@ func load_project(a_path: String) -> void:
 			get_tree().quit(-2)
 			return
 	
-	var l_file := FileAccess.open(project_path, FileAccess.READ)
+	var l_file: FileAccess = FileAccess.open(project_path, FileAccess.READ)
 	var l_data: Dictionary = str_to_var(l_file.get_as_text())
 	
 	for l_key: String in KEYS:
@@ -107,10 +106,60 @@ func save_project() -> void:
 
 
 func update_recent_projects() -> void:
-	var l_recent_projects := RecentProjects.new()
+	var l_recent_projects: RecentProjects = RecentProjects.new()
 	l_recent_projects.update_project(title, project_path)
 
+#endregion
+#region #####################  File Management  ################################
 
+func add_file_actual(a_file_path: String) -> int:
+	match FileActual.get_file_type(a_file_path):
+		File.TYPE.VIDEO: return ProjectManager.add_file_video(a_file_path)
+		File.TYPE.AUDIO: return ProjectManager.add_file_audio(a_file_path)
+		File.TYPE.IMAGE: return ProjectManager.add_file_image(a_file_path)
+		_: return -1
+
+
+func add_file_video(a_file_path: String) -> int:
+	if FileActual.get_file_type(a_file_path) != File.TYPE.VIDEO:
+		return -1
+	return _add_file(FileVideo.new(a_file_path))
+
+
+func add_file_audio(a_file_path: String) -> int:
+	if FileActual.get_file_type(a_file_path) != File.TYPE.AUDIO:
+		return -1
+	return _add_file(FileAudio.new(a_file_path))
+
+
+func add_file_image(a_file_path: String) -> int:
+	if FileActual.get_file_type(a_file_path) != File.TYPE.IMAGE:
+		return -1
+	return _add_file(FileImage.new(a_file_path))
+
+
+func add_file_text() -> int:
+	return _add_file(FileText.new())
+
+
+func add_file_color() -> int:
+	return _add_file(FileColor.new())
+
+
+func _add_file(a_file: File) -> int:
+	current_id += 1
+	files_data[current_id] = a_file
+	unsaved_changes = true
+	return current_id
+
+
+func remove_file(a_file_id: String) -> void:
+	if files_data.erase(a_file_id):
+		Printer.error(Globals.ERROR_ARRAY_ERASE)
+	
+	unsaved_changes = true
+
+#endregion
 #region #####################  Getters & Setters  ##############################
 
 func _set_project_path(a_path: String) -> void:
