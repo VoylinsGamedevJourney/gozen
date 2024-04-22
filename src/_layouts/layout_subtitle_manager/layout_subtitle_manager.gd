@@ -3,7 +3,7 @@ extends VSplitContainer
 # as I'll probably work on SRT subtitles first.
 
 
-@onready var project_preview_buttons := $HSplitContainer/ProjectViewPanel/VBox/ProjectPreviewButtonsHBox
+@onready var project_preview_buttons: HBoxContainer = find_child("ProjectPreviewButtonsHBox")
 
 
 func _ready() -> void:

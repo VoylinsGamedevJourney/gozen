@@ -22,8 +22,8 @@ func _ready() -> void:
 			l_menu.set_item_icon(l_id, Toolbox.get_icon_tex2d(l_item.item_icon))
 		l_id += 1
 		
-	l_menu.id_pressed.connect(_on_id_pressed)
-	l_menu.mouse_exited.connect(_on_menu_mouse_exited)
+	Printer.connect_error(l_menu.id_pressed.connect(_on_id_pressed))
+	Printer.connect_error(l_menu.mouse_exited.connect(_on_menu_mouse_exited))
 
 
 func _on_menu_mouse_exited() -> void:
@@ -40,23 +40,28 @@ func _report_bug_pressed() -> void:
 
 
 func _url_manual_pressed() -> void:
-	OS.shell_open(Globals.URL_MANUAL)
+	if OS.shell_open(Globals.URL_MANUAL):
+		Printer.error("Couldn't open '%s'" % Globals.URL_MANUAL)
 
 
 func _url_tutorials_pressed() -> void:
-	OS.shell_open(Globals.URL_TUTORIALS)
+	if OS.shell_open(Globals.URL_TUTORIALS):
+		Printer.error("Couldn't open '%s'" % Globals.URL_TUTORIALS)
 
 
 func _url_github_pressed() -> void:
-	OS.shell_open(Globals.URL_GITHUB_REPO)
+	if OS.shell_open(Globals.URL_GITHUB_REPO):
+		Printer.error("Couldn't open '%s'" % Globals.URL_GITHUB_REPO)
 
 
 func _url_discord_pressed() -> void:
-	OS.shell_open(Globals.URL_DISCORD)
+	if OS.shell_open(Globals.URL_DISCORD):
+		Printer.error("Couldn't open '%s'" % Globals.URL_DISCORD)
 
 
 func _url_support_project_pressed() -> void:
-	OS.shell_open(Globals.URL_SUPPORT_PROJECT)
+	if OS.shell_open(Globals.URL_SUPPORT_PROJECT):
+		Printer.error("Couldn't open '%s'" % Globals.URL_SUPPORT_PROJECT)
 
 
 class ItemEntry:

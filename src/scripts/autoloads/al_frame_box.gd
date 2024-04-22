@@ -4,7 +4,7 @@ extends Node
 ## This is the tool which helps to generate the images to display in the project view,
 ## it's also the tool to control the playhead.
 
-signal _on_playhead_position_changed(value)
+signal _on_playhead_position_changed(value: int)
 
 
 var playhead_position: int = 0: # Position in frames
@@ -16,9 +16,10 @@ var playback_speed: float = 1.0 # TODO: Implement
 
 
 func _ready() -> void:
-	ProjectManager._on_framerate_changed.connect(_on_framerate_changed)
+	Printer.connect_error(
+		ProjectManager._on_framerate_changed.connect(_on_framerate_changed))
 	add_child(timer)
-	timer.timeout.connect(_next_frame)
+	Printer.connect_error(timer.timeout.connect(_next_frame))
 
 
 func _input(a_event: InputEvent) -> void:
@@ -51,15 +52,15 @@ func get_timestamp(a_frames: int = playhead_position) -> String:
 	var l_frames_per_seconds: int = int(ProjectManager.framerate)
 	
 	# Calculate hours
-	var l_hours: int = float(a_frames) / l_frames_per_hours
+	var l_hours: int = int(float(a_frames) / l_frames_per_hours)
 	var l_remaining_frames: int = a_frames % l_frames_per_hours
 
 	# Calculate minutes
-	var l_minutes: int = float(l_remaining_frames) / l_frames_per_minutes
+	var l_minutes: int = int(float(l_remaining_frames) / l_frames_per_minutes)
 	l_remaining_frames %= l_frames_per_minutes
 
 	# Calculate seconds
-	var l_seconds: int = float(l_remaining_frames) / l_frames_per_seconds
+	var l_seconds: int = int(float(l_remaining_frames) / l_frames_per_seconds)
 
 	# Calculate frames
 	var l_frames: int = l_remaining_frames % l_frames_per_seconds

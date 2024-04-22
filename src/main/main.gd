@@ -24,23 +24,9 @@ var tiling: bool = false
 func _ready() -> void:
 	_check_startup_arguments()
 	_check_tiling_window_manager()
-	_setup_resize_handlers()
-	
-	
-	# Window handling
-	get_window().min_size = Vector2i(700,600)
-	get_viewport().size_changed.connect(_on_viewport_size_changed)
-	
-	# Window title
-	label_window_title.text = tr("TEXT_UNTITLED_PROJECT_TITLE")
-	ProjectManager._on_title_changed.connect(_on_project_title_changed)
-	ProjectManager._on_unsaved_changes_changed.connect(_on_project_unsaved_changes_changed)
-
-
-func _input(a_event: InputEvent) -> void:
-	if a_event is InputEventKey:
-		if a_event.keycode == KEY_F11 and a_event.pressed:
-			toggle_fullscreen()
+	_setup_resize_handler()
+	_setup_window_handler()
+	_setup_window_title()
 
 
 func _process(_delta: float) -> void:
@@ -59,6 +45,12 @@ func _process(_delta: float) -> void:
 			get_window().size.x = l_relative_mouse_pos.x
 
 
+func _input(a_event: InputEvent) -> void:
+	if a_event is InputEventKey:
+		if a_event.keycode == KEY_F11 and a_event.pressed:
+			toggle_fullscreen()
+
+
 func _notification(a_what: int) -> void:
 	if a_what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
 		# if unminimizing, restore mode
@@ -67,12 +59,6 @@ func _notification(a_what: int) -> void:
 		
 		if l_windows_os and l_not_minimized and _previous_minimized_mode != Window.MODE_MINIMIZED:
 			set_window_mode(_previous_minimized_mode)
-
-
-func _on_viewport_size_changed() -> void:
-	if !tiling:
-		var l_value: bool = window_mode == Window.MODE_WINDOWED and get_window().borderless
-		$ResizeHandles.visible = l_value
 
 
 func _check_startup_arguments() -> void:
@@ -99,6 +85,24 @@ func open_popup(a_popup: String) -> void:
 
 
 #region #####################  Window Mode  ####################################
+
+func _setup_window_handler() -> void:
+	get_window().min_size = Vector2i(700,600)
+	Printer.connect_error(get_viewport().size_changed.connect(_on_viewport_size_changed))
+
+
+func _setup_window_title() -> void:
+	# Window title
+	label_window_title.text = tr("TEXT_UNTITLED_PROJECT_TITLE")
+	Printer.connect_error(ProjectManager._on_title_changed.connect(_on_project_title_changed))
+	Printer.connect_error(ProjectManager._on_unsaved_changes_changed.connect(_on_project_unsaved_changes_changed))
+
+
+func _on_viewport_size_changed() -> void:
+	if !tiling:
+		var l_value: bool = window_mode == Window.MODE_WINDOWED and get_window().borderless
+		$ResizeHandles.visible = l_value
+
 
 func get_window_mode() -> Window.Mode:
 	var l_window: Window = get_window()
@@ -171,10 +175,10 @@ func _on_exit_request() -> void:
 	
 	var dialog: ConfirmationDialog = ConfirmationDialog.new()
 	
-	dialog.canceled.connect(func() -> void: get_tree().quit())
-	dialog.confirmed.connect(func() -> void:
+	Printer.connect_error(dialog.canceled.connect(func() -> void: get_tree().quit()))
+	Printer.connect_error(dialog.confirmed.connect(func() -> void:
 			ProjectManager.save_project()
-			get_tree().quit())
+			get_tree().quit()))
 	dialog.ok_button_text = tr("DIALOG_TEXT_SAVE")
 	dialog.cancel_button_text = tr("DIALOG_TEXT_DONT_SAVE")
 	dialog.borderless = true
@@ -182,7 +186,6 @@ func _on_exit_request() -> void:
 	
 	get_tree().root.add_child(dialog)
 	dialog.popup_centered()
-
 
 #endregion
 #region #####################  Window Dragging  ################################
@@ -204,7 +207,7 @@ func _on_top_bar_dragging(event: InputEvent) -> void:
 	elif !Toolbox.os_is_windows():
 		return
 	
-	var l_screen_rect := DisplayServer.screen_get_usable_rect(DisplayServer.SCREEN_WITH_MOUSE_FOCUS)
+	var l_screen_rect: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.SCREEN_WITH_MOUSE_FOCUS)
 	var l_topbar_top: Vector2i = Vector2i(l_mouse_pos.x, l_window_pos.y)
 	var l_topbar_bottom: Vector2i = Vector2i(l_mouse_pos.x, l_window_pos.y + int(size.y))
 	
@@ -242,9 +245,9 @@ func _on_maximize_button_pressed() -> void:
 #endregion
 #region #####################  Resize handling  ################################
 
-func _setup_resize_handlers() -> void:
+func _setup_resize_handler() -> void:
 	for l_node: Node in [$ResizeHandles/Right, $ResizeHandles/Bottom, $ResizeHandles/Corner]:
-		l_node.gui_input.connect(_on_resize_handler_input.bind(l_node))
+		Printer.connect_error(l_node.gui_input.connect(_on_resize_handler_input.bind(l_node)))
 
 
 func _on_resize_handler_input(a_event: InputEvent, a_node: Control) -> void:

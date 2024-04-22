@@ -4,20 +4,24 @@ extends Node
 signal _on_language_changed(new_language: String)
 signal _on_top_bar_positions_changed
 
-var config := ConfigFile.new()
+var error: int = 0
+var config: ConfigFile = ConfigFile.new()
 
 
 func _ready() -> void:
 	# Loading settings
 	if FileAccess.file_exists(Globals.PATH_SETTINGS):
-		config.load(Globals.PATH_SETTINGS)
+		error = config.load(Globals.PATH_SETTINGS)
+		if error:
+			printerr("Loading config returned error '%s'!" % error)
 	
 	TranslationServer.set_locale(get_language())
 	get_viewport().set_embedding_subwindows(get_embed_subwindows())
 
 
 func _save_settings() -> void:
-	config.save(Globals.PATH_SETTINGS)
+	if config.save(Globals.PATH_SETTINGS):
+		Printer.error(Globals.ERROR_CONFIG_SAVE)
 
 
 #region #####################  Getters and setters  ############################

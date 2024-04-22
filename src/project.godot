@@ -27,12 +27,14 @@ ModuleManager="*res://scripts/autoloads/al_module_manager.gd"
 SettingsManager="*res://scripts/autoloads/al_settings_manager.gd"
 ProjectManager="*res://scripts/autoloads/al_project_manager.gd"
 ActionHandler="*res://scripts/autoloads/al_action_handler.gd"
-FileManager="*res://scripts/autoloads/al_file_manager.gd"
 DialogManager="*res://scripts/autoloads/al_dialog_manager.gd"
 FrameBox="*res://scripts/autoloads/al_frame_box.gd"
 
 [debug]
 
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/inferred_declaration=1
+gdscript/warnings/return_value_discarded=1
 shader_language/warnings/treat_warnings_as_errors=true
 
 [display]
@@ -135,7 +137,7 @@ play_pause={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/de.mo", "res://translations/en.mo", "res://translations/fr.mo", "res://translations/ja.mo", "res://translations/nl.mo", "res://translations/pl_PL.mo", "res://translations/pt_BR.mo", "res://translations/ru_RU.mo", "res://translations/uk_UA.mo", "res://translations/zh_TW.mo")
+locale/translations=PackedStringArray("res://translations/de.mo", "res://translations/en.mo", "res://translations/ja.mo", "res://translations/nl.mo", "res://translations/pl_PL.mo", "res://translations/pt_BR.mo", "res://translations/ru_RU.mo", "res://translations/uk_UA.mo", "res://translations/zh_TW.mo", "res://translations/fr_FR.mo")
 locale/translations_pot_files=PackedStringArray("res://ui/screen_main/components/main_top_bar.tscn", "res://ui/screen_main/screen_main.tscn", "res://ui/screen_project_settings_menu/screen_project_settings_menu.tscn", "res://ui/screen_settings_menu/screen_settings_menu.tscn", "res://ui/screen_startup/screen_startup.tscn", "res://ui/screen_startup/components/startup_recent_project_button.tscn", "res://ui/screen_startup/components/startup_tab_create_new_project.tscn", "res://ui/screen_startup/components/startup_tab_main.tscn", "res://ui/screen_startup/components/startup_tab_recent_projects.tscn", "res://ui/screen_startup/scripts/startup_version_label.gd")
 locale/include_text_server_data=true
 

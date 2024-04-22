@@ -15,19 +15,20 @@ func _init() -> void:
 	for l_entry: RecentProject in data:
 		if FileAccess.file_exists(l_entry.path) and not l_entry.path in l_existing_paths:
 			l_clean_data.append(l_entry)
-			l_existing_paths.append(l_entry.path)
+			if l_existing_paths.append(l_entry.path):
+				Printer.error(Globals.ERROR_ARRAY_APPEND)
 	if data != l_clean_data:
 		data = l_clean_data
 		save_data()
 
 
 func load_data() -> void:
-	var l_file := FileAccess.open(Globals.PATH_RECENT_PROJECTS, FileAccess.READ)
+	var l_file: FileAccess = FileAccess.open(Globals.PATH_RECENT_PROJECTS, FileAccess.READ)
 	data = str_to_var(l_file.get_as_text())
 
 
 func save_data() -> void:
-	var l_file := FileAccess.open(Globals.PATH_RECENT_PROJECTS, FileAccess.WRITE)
+	var l_file: FileAccess = FileAccess.open(Globals.PATH_RECENT_PROJECTS, FileAccess.WRITE)
 	l_file.store_string(var_to_str(data))
 
 
@@ -35,7 +36,8 @@ func add_new_project(a_title: String, a_path: String) -> void:
 	var l_project: RecentProject = RecentProject.new()
 	
 	l_project.create(a_title, a_path)
-	data.insert(0, l_project)
+	if data.insert(0, l_project):
+		Printer.error(Globals.ERROR_ARRAY_INSERT)
 	save_data()
 
 
@@ -47,7 +49,8 @@ func update_project(a_title: String, a_path: String) -> void:
 		if l_entry.path == a_path:
 			l_found = true
 			l_entry.title = a_title
-			l_clean_data.insert(0, l_entry)
+			if l_clean_data.insert(0, l_entry):
+				Printer.error(Globals.ERROR_ARRAY_INSERT)
 		l_clean_data.append(l_entry)
 	
 	if !l_found:

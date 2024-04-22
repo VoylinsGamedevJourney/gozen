@@ -32,6 +32,7 @@ func _ready() -> void:
 		["Debug build", OS.is_debug_build()],
 		["--==--================--==--"]
 	])
+	print('')
 
 
 func todo(a_message: String) -> void:

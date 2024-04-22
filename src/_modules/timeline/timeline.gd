@@ -25,9 +25,12 @@ var frame_size: float = 1.0 # How many pixels should 1 frame take up
 
 
 func _ready() -> void:
-	ProjectManager._on_video_tracks_changed.connect(_on_video_tracks_changed)
-	ProjectManager._on_audio_tracks_changed.connect(_on_audio_tracks_changed)
-	FrameBox._on_playhead_position_changed.connect(_on_playhead_position_changed)
+	Printer.connect_error(
+		ProjectManager._on_video_tracks_changed.connect(_on_video_tracks_changed))
+	Printer.connect_error(
+		ProjectManager._on_audio_tracks_changed.connect(_on_audio_tracks_changed))
+	Printer.connect_error(
+		FrameBox._on_playhead_position_changed.connect(_on_playhead_position_changed))
 
 
 func _on_playhead_position_changed(a_value: float) -> void:
@@ -132,19 +135,20 @@ func _scroll(a_direction: DIRECTION, a_main_timeline: bool) -> void:
 #endregion
 
 
-func _on_timeline_top_panel_resized():
-	var l_separation: int = %TimelineTopPanel.size.x / frame_size
-	for l_child: Node in %TimelineTopPanel.get_children():
-		l_child.queue_free()
-	for l_i: int in l_separation:
-		var l_marker: Node = preload("res://_modules/timeline/time_marker/time_marker.tscn").instantiate()
-		time_markers.append(l_marker)
-		l_marker.custom_minimum_size = Vector2i(l_separation, 0)
-		l_marker.position.x = l_i * l_separation
-		l_marker._update_marker(frame_size)
-		%TimelineTopPanel.add_child(l_marker)
+func _on_timeline_top_panel_resized() -> void:
+	return # Causing lag at the moment
+	#var l_separation: int = %TimelineTopPanel.size.x / frame_size
+	#for l_child: Node in %TimelineTopPanel.get_children():
+	#	l_child.queue_free()
+	#for l_i: int in l_separation:
+	#	var l_marker: Node = preload("res://_modules/timeline/time_marker/time_marker.tscn").instantiate()
+	#	time_markers.append(l_marker)
+	#	l_marker.custom_minimum_size = Vector2i(l_separation, 0)
+	#	l_marker.position.x = l_i * l_separation
+	#	l_marker._update_marker(frame_size)
+	#	%TimelineTopPanel.add_child(l_marker)
 
 
-func _on_timeline_panel_resized():
+func _on_timeline_panel_resized() -> void:
 	%TimelineTopPanel.custom_minimum_size.x = %TimelineTrackVBox.size.x
 	_on_timeline_top_panel_resized()

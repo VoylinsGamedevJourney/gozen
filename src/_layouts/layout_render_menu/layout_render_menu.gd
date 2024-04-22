@@ -12,7 +12,7 @@ extends Control
 # displayed underneath the dropdown which change after selecting a render profile.
 # TODO: Use a config file to save all custom profiles, section key is name
 
-@onready var project_preview_buttons := $VBox/HSplit/ProjectView/VBox/ProjectPreviewButtonsHBox
+@onready var project_preview_buttons: HBoxContainer = find_child("ProjectPreviewButtonsHBox")
 
 
 func _ready() -> void:

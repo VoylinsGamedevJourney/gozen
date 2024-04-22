@@ -7,7 +7,7 @@ extends RichTextLabel
 
 func _ready() -> void:
 	_set_text()
-	SettingsManager._on_language_changed.connect(_set_text)
+	Printer.connect_error(SettingsManager._on_language_changed.connect(_set_text))
 
 
 func _set_text(_new_language: String = "") -> void:

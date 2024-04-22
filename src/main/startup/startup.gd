@@ -24,13 +24,13 @@ func _ready() -> void:
 
 
 func _create_recent_project_button(a_data: RecentProject, a_parent: Node) -> void:
-	var l_button := Button.new()
+	var l_button: Button = Button.new()
 	
 	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l_button.text = a_data.title
 	l_button.tooltip_text = a_data.path
 	l_button.icon = preload("res://assets/icons/video_file.png")
-	l_button.pressed.connect(_file_selected.bind(a_data.path))
+	Printer.connect_error(l_button.pressed.connect(_file_selected.bind(a_data.path)))
 	
 	a_parent.add_child(l_button)
 
@@ -46,10 +46,10 @@ func _file_selected(a_path: String) -> void:
 #region #####################  New Project Buttons  ############################
 
 func _on_open_project_button_pressed() -> void:
-	var l_dialog := DialogManager.get_open_project_dialog()
+	var l_dialog: FileDialog = DialogManager.get_open_project_dialog()
 	
-	l_dialog.file_selected.connect(_file_selected)
-	l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog))
+	Printer.connect_error(l_dialog.file_selected.connect(_file_selected))
+	Printer.connect_error(l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog)))
 	
 	add_child(l_dialog)
 	l_dialog.popup_centered(Vector2i(500,600))
@@ -78,10 +78,10 @@ func _on_create_project() -> void:
 
 
 func _on_select_path_button_pressed() -> void:
-	var l_dialog := DialogManager.get_select_path_dialog()
+	var l_dialog: FileDialog = DialogManager.get_select_path_dialog()
 	
-	l_dialog.file_selected.connect(_on_file_selected)
-	l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog))
+	Printer.connect_error(l_dialog.file_selected.connect(_on_file_selected))
+	Printer.connect_error(l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog)))
 	
 	add_child(l_dialog)
 	l_dialog.popup_centered(Vector2i(500,600))
@@ -118,22 +118,27 @@ func _on_framerate_button_pressed(a_frame_rate: int) -> void:
 #region #####################  Link buttons  ###################################
 
 func _on_editor_button_pressed() -> void:
-	OS.shell_open(Globals.URL_GITHUB_REPO) # NOTE: Replace by site in future
+	if OS.shell_open(Globals.URL_GITHUB_REPO): # NOTE: Replace by site in future
+		Printer.error(Globals.ERROR_OPEN_LINK % Globals.URL_GITHUB_REPO)
 
 
 func _on_manual_button_pressed() -> void:
-	OS.shell_open(Globals.URL_MANUAL) # NOTE: Replace in future
+	if OS.shell_open(Globals.URL_MANUAL): # NOTE: Replace in future
+		Printer.error(Globals.ERROR_OPEN_LINK % Globals.URL_MANUAL)
 
 
 func _on_tutorials_button_pressed() -> void:
-	OS.shell_open(Globals.URL_TUTORIALS) # NOTE: Replace in future
+	if OS.shell_open(Globals.URL_TUTORIALS): # NOTE: Replace in future
+		Printer.error(Globals.ERROR_OPEN_LINK % Globals.URL_TUTORIALS)
 
 
 func _on_discord_button_pressed() -> void:
-	OS.shell_open(Globals.URL_DISCORD)
+	if OS.shell_open(Globals.URL_DISCORD):
+		Printer.error(Globals.ERROR_OPEN_LINK % Globals.URL_DISCORD)
 
 
 func _on_support_project_button_pressed() -> void:
-	OS.shell_open(Globals.URL_SUPPORT_PROJECT)
+	if OS.shell_open(Globals.URL_SUPPORT_PROJECT):
+		Printer.error(Globals.ERROR_OPEN_LINK % Globals.URL_SUPPORT_PROJECT)
 
 #endregion

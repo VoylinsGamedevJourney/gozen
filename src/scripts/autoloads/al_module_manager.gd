@@ -3,6 +3,8 @@ extends Node ## Module manager
 
 enum TYPE { LAYOUT, MODULE, EFFECT, TRANSITION,  }
 
+var error: int = 0
+
 
 func _ready() -> void:
 	## Creating necessary structures and loading/checking all custom modules
@@ -16,14 +18,20 @@ func _load_modules(a_type: TYPE) -> void:
 	var l_path: String = get_custom_modules_folder(a_type)
 	
 	# Creating necesarry folders if not existing already
-	DirAccess.make_dir_recursive_absolute(l_path)
-	DirAccess.make_dir_recursive_absolute(get_config_folder(a_type))
+	error = DirAccess.make_dir_recursive_absolute(l_path)
+	if error:
+		printerr("Making absolute recursive directory returned error '%s'!" % error)
+	error = DirAccess.make_dir_recursive_absolute(get_config_folder(a_type))
+	if error:
+		printerr("Making absolute recursive directory returned error '%s'!" % error)
 	
 	# Loading in all custom module files of 'type'
 	if DirAccess.get_files_at(l_path).size() != 0:
 		for l_file: String in DirAccess.get_files_at(l_path):
 			if Toolbox.check_extension(l_file, ["pck"]):
-				ProjectSettings.load_resource_pack(l_path + l_file, false)
+				error = ProjectSettings.load_resource_pack(l_path + l_file, false)
+				if error:
+					printerr("Couldn't load resource pack, returned error '%s'!" % error)
 
 
 func get_type_string(a_type: TYPE) -> String:
@@ -64,4 +72,5 @@ func create_module_id(a_type: TYPE, a_module_name: String) -> String:
 
 
 func remove_config_layout(a_instance_name: String) -> void:
-	DirAccess.remove_absolute("%s%s.cfg" % [get_config_folder(TYPE.LAYOUT), a_instance_name])
+	if DirAccess.remove_absolute("%s%s.cfg" % [get_config_folder(TYPE.LAYOUT), a_instance_name]):
+		Printer.error(Globals.ERROR_DIRACCESS_RM_ABS)

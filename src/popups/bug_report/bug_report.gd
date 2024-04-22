@@ -35,7 +35,7 @@ func _on_submit_button_pressed() -> void:
 	
 	add_child(l_request)
 	l_request.request(URL_REQUEST, PACKET_HEADER, HTTPClient.METHOD_POST, l_message.format(l_data))
-	l_request.request_completed.connect(_request_completed.bind(l_request))
+	Printer.connect_error(l_request.request_completed.connect(_request_completed.bind(l_request)))
 	PopupManager.close_popup(PopupManager.POPUP.BUG_REPORT)
 
 

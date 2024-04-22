@@ -40,7 +40,8 @@ func _ready() -> void:
 	instance = self
 	
 	if FileAccess.file_exists(config_path):
-		config.load(config_path)
+		if config.load(config_path):
+			Printer.error("Couldn't load config!")
 		for l_id: String in config.get_value("general", "layouts_order", []):
 			add_layout(l_id.split("-")[0], l_id)
 	else:
@@ -73,7 +74,7 @@ func _process(a_delta: float) -> void:
 
 
 func _build_menu(a_data: Dictionary) -> PopupMenu:
-	var l_menu := PopupMenu.new()
+	var l_menu: PopupMenu = PopupMenu.new()
 	for l_id: int in a_data:
 		if a_data[l_id] is ItemSeparator:
 			l_menu.add_separator(a_data[l_id].label)
@@ -82,7 +83,7 @@ func _build_menu(a_data: Dictionary) -> PopupMenu:
 			l_menu.set_item_icon(l_id, Toolbox.get_icon_tex2d(a_data[l_id].item_icon))
 	l_menu.size.y = 10
 	l_menu.position = get_global_mouse_position()
-	l_menu.mouse_exited.connect(Toolbox.free_node.bind(l_menu))
+	Printer.connect_error(l_menu.mouse_exited.connect(Toolbox.free_node.bind(l_menu)))
 	return l_menu
 
 
@@ -98,7 +99,7 @@ func _on_sidebar_gui_event(a_event: InputEvent) -> void:
 		if a_event.is_pressed():
 			var l_menu: PopupMenu = _build_menu(sidebar_menu_empty_items)
 			
-			l_menu.id_pressed.connect(_on_sidebar_empty_menu_pressed)
+			Printer.connect_error(l_menu.id_pressed.connect(_on_sidebar_empty_menu_pressed))
 			add_child(l_menu)
 			l_menu.popup()
 
@@ -109,7 +110,7 @@ func _on_sidebar_button_gui_event(a_event: InputEvent, a_button: Button) -> void
 			return
 		var l_menu: PopupMenu = _build_menu(sidebar_menu_items)
 		
-		l_menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(a_button))
+		Printer.connect_error(l_menu.id_pressed.connect(_on_sidebar_button_menu_pressed.bind(a_button)))
 		add_child(l_menu)
 		l_menu.popup()
 
@@ -155,25 +156,26 @@ func add_layout(a_layout_name: String, a_id: String = "") -> void:
 	
 	# Setting name for button and layout
 	var l_layout: Node = l_layout_data.scene.instantiate()
-	var l_button := Button.new()
+	var l_button: Button = Button.new()
 	var l_icon_path: String = config.get_value("custom_icons", a_id, "")
 	
 	l_button.icon = l_layout_data.default_icon if l_icon_path == "" else load(l_icon_path)
 	l_button.flat = true
-	l_button.gui_input.connect(_on_sidebar_button_gui_event.bind(l_button))
+	Printer.connect_error(l_button.gui_input.connect(_on_sidebar_button_gui_event.bind(l_button)))
 	
 	if a_id == "":
 		randomize() # TODO: check if layout_id doesn't exist already
-		var l_layout_id := "%s-%s" % [a_layout_name, randi_range(10000,99999)]
+		var l_layout_id: String = "%s-%s" % [a_layout_name, randi_range(10000,99999)]
 		var l_layout_order: PackedStringArray = config.get_value("general", "layouts_order", [])
 		l_layout.name = l_layout_id
 		l_button.name = l_layout_id
 		l_button.icon = l_layout_data.default_icon
 		
 		# Updating the config file
-		l_layout_order.append(l_layout_id)
+		if l_layout_order.append(l_layout_id):
+			Printer.error(Globals.ERROR_ARRAY_APPEND)
 		config.set_value("general", "layouts_order", l_layout_order)
-		config.save(config_path)
+		save_config()
 	else:
 		l_layout.name = a_id
 		l_button.name = a_id
@@ -188,7 +190,7 @@ func add_layout(a_layout_name: String, a_id: String = "") -> void:
 	l_button.tooltip_text = l_layout_data.layout_description
 	
 	# Setting button function
-	l_button.pressed.connect(func() -> void: change_layout(l_button.get_index()))
+	Printer.connect_error(l_button.pressed.connect(func() -> void: change_layout(l_button.get_index())))
 	
 	# Adding the nodes to the sidebar + tab container
 	%SidebarVBox.add_child(l_button)
@@ -207,7 +209,7 @@ func _move_layout(a_layout_id: String, a_position: int) -> void:
 	## Moving the layout one down in the order of the sidebar and layout container.
 	var l_button: Node = %SidebarVBox.get_node(a_layout_id)
 	var l_container: Node = %LayoutContainer.get_node(a_layout_id)
-	var l_new_button_position := l_button.get_index() + a_position
+	var l_new_button_position: int = l_button.get_index() + a_position
 	var l_new_order: PackedStringArray = []
 	
 	# Moving nodes to new position
@@ -218,10 +220,11 @@ func _move_layout(a_layout_id: String, a_position: int) -> void:
 	
 	# Saving new order of layouts
 	for l_child: Node in %SidebarVBox.get_children():
-		l_new_order.append(l_child.name)
+		if l_new_order.append(l_child.name):
+			Printer.error(Globals.ERROR_ARRAY_APPEND)
 	config.set_value("general", "layouts_order", l_new_order)
 	change_layout(l_new_button_position)
-	config.save(config_path)
+	save_config()
 
 
 func remove_layout(a_layout_id: String) -> void:
@@ -244,14 +247,14 @@ func remove_layout(a_layout_id: String) -> void:
 	# (have a remove config files callable function in the resource?)
 	
 	change_layout(%LayoutContainer.current_tab)
-	config.save(config_path)
+	save_config()
 
 
 func open_change_icon_dialog(a_layout_id: String) -> void:
-	var l_dialog := DialogManager.get_layout_icon_dialog()
+	var l_dialog: FileDialog = DialogManager.get_layout_icon_dialog()
 	
-	l_dialog.file_selected.connect(_set_custom_icon.bind(%SidebarVBox.get_node(a_layout_id).name))
-	l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog))
+	Printer.connect_error(l_dialog.file_selected.connect(_set_custom_icon.bind(%SidebarVBox.get_node(a_layout_id).name)))
+	Printer.connect_error(l_dialog.canceled.connect(Toolbox.free_node.bind(l_dialog)))
 	
 	add_child(l_dialog)
 	l_dialog.popup_centered(Vector2i(500,600))
@@ -264,7 +267,7 @@ func _set_custom_icon(a_new_icon_path: String, a_layout_id: String) -> void:
 		
 		config.set_value("custom_icons", a_layout_id, a_new_icon_path)
 		l_button.icon = load(a_new_icon_path)
-		config.save(config_path)
+		save_config()
 
 
 func remove_custom_icon(a_layout_id: String) -> void:
@@ -273,7 +276,12 @@ func remove_custom_icon(a_layout_id: String) -> void:
 		if %SidebarVBox.has_node(a_layout_id): # Checking if button isn't deleted yet
 			%SidebarVBox.get_node(a_layout_id).icon = null
 		config.erase_section_key("custom_icons", a_layout_id)
-		config.save(config_path)
+		save_config()
+
+
+func save_config() -> void:
+	if config.save(config_path):
+		Printer.error(Globals.ERROR_CONFIG_SAVE)
 
 
 class ItemEntry:

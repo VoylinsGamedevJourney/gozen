@@ -8,7 +8,7 @@ func _ready() -> void:
 		var l_button: Button = Button.new()
 		l_button.text = l_layout_data.layout_name
 		l_button.tooltip_text = l_layout_data.layout_description
-		l_button.pressed.connect(_on_layout_button_pressed.bind(l_layout_name))
+		Printer.connect_error(l_button.pressed.connect(_on_layout_button_pressed.bind(l_layout_name)))
 		if l_layout_data.single_only and EditorUI.instance.check_single_existing(l_layout_name):
 			l_button.disabled = true
 			l_button.tooltip_text = "This layout it single use only and already active."

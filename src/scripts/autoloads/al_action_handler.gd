@@ -1,8 +1,8 @@
 extends Node
 # MAYBE: Investigate build in UndoRedo class
 
-var actions_max := 100
-var action_current := -1
+var actions_max: int = 100
+var action_current: int = -1
 var actions: Array = []
 
 
@@ -21,7 +21,8 @@ func do(a_function: Callable, a_undo_function: Callable, a_do_args: Array = [], 
 		actions.append(l_action)
 		return
 	elif actions.size() != action_current:
-		actions.resize(action_current + 1)
+		if actions.resize(action_current + 1):
+			Printer.error("Couldn't resize array!")
 	action_current += 1
 	actions.append(l_action)
 
