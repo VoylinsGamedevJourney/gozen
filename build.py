@@ -17,20 +17,20 @@ def build_gozen():
         'Linux',
         'Windows(Msys2)',
         'MacOS (not supported)']):
-        case '2':
+        case '1':
             l_platform = 'windows'
             scons_extra_args = 'use_mingw=yes'
-        case '3': l_platform = 'macos'
+        case '2': l_platform = 'macos'
 
     l_target = 'template_debug'
     match toolbox.get_input_choices('Select build target', [
         'template_debug',
         'template_release']):
-        case '2': l_target = 'template_release'
+        case '1': l_target = 'template_release'
 
 
     # Start building
-    if user_input == 1:
+    if user_input == 0:
         translations.generate_mo()
         gde_extensions.build_ffmpeg(l_num_jobs)
 

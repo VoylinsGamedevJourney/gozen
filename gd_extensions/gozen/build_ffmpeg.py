@@ -30,20 +30,12 @@ def make_ffmpeg(a_num_jobs):
     os.system(f'make -j {a_num_jobs} install')
 
 
-def copy_mingw():
-    for dll in ['zlib1.dll', 'libiconv-2.dll', 'libbz2-1.dll', 'liblzma-5.dll', 'libwinpthread-1.dll']:
-        shutil.copy(os.path.join('/usr/x86_64-w64-mingw32/bin/', dll), folder_bin)
-
-
 def build(a_num_jobs = 0):
     if a_num_jobs == 0: # Getting threads/cores for compiling FFmpeg
         a_num_jobs = toolbox.get_input_jobs()
 
     configure_ffmpeg() # Configuring FFmpeg build
     make_ffmpeg(a_num_jobs) # Building ffmpeg
-
-    if platform.system().lower() == 'linux': 
-        copy_mingw() # Copying mingw
         
 
 

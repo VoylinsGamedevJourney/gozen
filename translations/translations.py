@@ -2,7 +2,7 @@ import sys
 import os
 import re
 
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),"../python"))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),'../python'))
 import toolbox
 
 
@@ -11,66 +11,89 @@ def generate_pot():
     # Go through files in 'src' (Exclude .godot and only look in *.tscn and *.gd files)
     # Make a dictionary of all entries, which line they appear on, msgctx from parameters
     # Generate file from dictionary
-    print('not implemented yet')
     results = {}
+    files_list = []
 
     for root, _, files in os.walk('../src'):
         for file in files:
-            if file.endswith(".tscn"):
-                file_path = os.path.join(root, file)
-                for block in _extract_blocks(file_path):
-                    _parse_block(block, results, file_path)
-    for key, value in results.items():
-        print(key)
-        for entry in value:
-            print(f"    File: {entry['file_path']}, Block: {entry['block_number']}, Line: {entry['line_number']}")
+            if file.endswith('.tscn'):
+                _scan_tscn_file(os.path.join(root, file), results, files_list)
+
+    # For testing only
+    #for key, value in results.items():
+    #    print(key)
+    #    #for entry in value:
+    #    #    print(f'    File: {entry['file_path']}, Block: {entry['block_number']}, Line: {entry['line_number']}')
+    with open('translations_template.pot', 'w') as file:
+        file.write('# LANGUAGE translation for GoZen - Video Editor for the following files:\n')
+        for file_path in sorted(files_list):
+            file.write(f'# {file_path.replace("../src", "res:/")}\n')
+        file.write('#, fuzzy\nmsgid ""\nmsgstr ""\n')
+        file.write('"Project-Id-Version: GoZen - Video Editor\\n"\n')
+        file.write('"MIME-Version: 1.0\\n"\n')
+        file.write('"Content-Type: text/plain; charset=UTF-8\\n"\n')
+        file.write('"Content-Transfer-Encoding: 8-bit\\n"\n')
+        for key, value in results.items():
+            file.write('\n')
+            file.write(f'#: {value["file_path"].replace("../src", "res:/")}:{value["line_number"]}\n')
+            file.write(f'#: node={value["node_type"]}, type = {value["text_type"]}\n')
+            file.write(f'msgid "{key}"\nmsgstr ""\n')
 
 
-def _extract_blocks(a_file_path):
-    # For tscn files only
-    with open(a_file_path, "r") as f:
+
+
+
+
+
+def _scan_tscn_file(a_file_path, a_results, a_files_list):
+    with open(a_file_path, 'r') as f:
         lines = f.readlines()
     
-    blocks = []
-    block_lines = []
-    in_block = False
-
+    node_type = ''
+    text = ''
+    text_line_number = ''
+    tooltip_text = ''
+    tooltip_text_line_number = ''
+    auto_translate = True
     for line_number, line in enumerate(lines, start=1):
-        if '[node ' in line:
-            if block_lines:
-                blocks.append(block_lines)
-                block_lines = []
-            in_block = True
-        elif line.strip() == '':
-            in_block = False
-        elif in_block:
-            block_lines.append(line.strip())
-
-    if block_lines:
-        blocks.append(block_lines)
-    
-    return blocks
-
-
-def _parse_block(a_block, a_results, a_file_path):
-    # For tscn files only
-    block_start_line = None
-    auto_translate_false = False
-    for line_number, line in enumerate(a_block, start=1):
-        key, value = line.split('=', 1)
-        key = key.strip()
-        value = value.strip()
+        if '[node' in line:
+            temp_node_type = re.search(r'type="([^"]+)"', line)
+            if temp_node_type:
+                node_type = temp_node_type.group(1)
         
-        if key == 'text' and not value.startswith('"') and not value.endswith('"'):
-            block_start_line = line_number
-        elif key == 'auto_translate' and value == 'false':
-            auto_translate_false = True
+        if line.startswith("text = "):
+            text = re.search(r'text = "([^"]+)"', line).group(1)
+            text_line_number = line_number
+        elif line.startswith("tooltip_text = "):
+            text = re.search(r'tooltip_text = "([^"]+)"', line).group(1)
+            tooltip_text_line_number = line_number
+        elif line.startswith("auto_translate = "):
+            auto_translate = re.search(r'auto_translate = ([^"]+)', line).group(1) != 'false'
 
-    if block_start_line is not None and not auto_translate_false:
-        text_value = a_block[0].split('=')[1].strip()
-        if text_value not in a_results:
-            a_results[text_value] = {'file_path': a_file_path, 'line_number': block_start_line}
-    
+        if line == '\n':
+            # Block ended
+            if auto_translate and node_type != '':
+                if a_file_path not in a_files_list:
+                    a_files_list.append(a_file_path)
+                if text != '':
+                    a_results[text] = {
+                        'file_path': a_file_path, 
+                        'line_number': text_line_number, 
+                        'node_type': node_type,
+                        'text_type': 'text'}
+                elif tooltip_text != '':
+                    a_results[tooltip_text] = {
+                        'file_path': a_file_path, 
+                        'line_number': tooltip_text_line_number, 
+                        'node_type': node_type,
+                        'text_type': 'tooltip_text'}
+            node_type = ''
+            text = ''
+            text_line_number = ''
+            tooltip_text = ''
+            tooltip_text_line_number = ''
+            auto_translate = True
+
 
 def generate_mo():
     file_path = os.path.join(os.path.dirname(__file__))

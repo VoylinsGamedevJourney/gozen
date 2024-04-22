@@ -29,9 +29,9 @@ def menu():
 		'Build GoZen GDExtension',
 		'Generate godot-cpp',
 		'Generate FFmpeg']):
-		case 1: compile_gozen()
-		case 2: compile_godot_cpp()
-		case 3: ffmpeg.build()
+		case 0: compile_gozen()
+		case 1: compile_godot_cpp()
+		case 2: ffmpeg.build()
 
 
 if __name__ == '__main__':
