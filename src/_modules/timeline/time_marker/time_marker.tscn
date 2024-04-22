@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cdhkvwmpmykei"]
+
+[ext_resource type="Script" path="res://_modules/timeline/time_marker/time_marker.gd" id="1_xdjq5"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_hu1m0"]
+color = Color(0.199802, 0.199802, 0.199802, 1)
+thickness = 2
+vertical = true
+
+[node name="TimeMarker" type="HBoxContainer"]
+offset_right = 81.0
+offset_bottom = 30.0
+script = ExtResource("1_xdjq5")
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+theme_override_styles/separator = SubResource("StyleBoxLine_hu1m0")
+
+[node name="TimeMarkerLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
