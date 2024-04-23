@@ -2,7 +2,8 @@ extends Node
 ## Frame box
 ##
 ## This is the tool which helps to generate the images to display in the project view,
-## it's also the tool to control the playhead.
+## it's also the tool to control the playhead and for dragging and dropping on
+## the timeline.
 
 signal _on_playhead_position_changed(value: int)
 

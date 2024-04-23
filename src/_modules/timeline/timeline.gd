@@ -23,14 +23,18 @@ var time_markers: Array = []
 
 var frame_size: float = 1.0 # How many pixels should 1 frame take up
 
+var preview_panel: Panel = Panel.new()
+
 
 func _ready() -> void:
-	Printer.connect_error(
-		ProjectManager._on_video_tracks_changed.connect(_on_video_tracks_changed))
-	Printer.connect_error(
-		ProjectManager._on_audio_tracks_changed.connect(_on_audio_tracks_changed))
-	Printer.connect_error(
-		FrameBox._on_playhead_position_changed.connect(_on_playhead_position_changed))
+	Printer.connect_error(ProjectManager._on_video_tracks_changed.connect(_on_video_tracks_changed))
+	Printer.connect_error(ProjectManager._on_audio_tracks_changed.connect(_on_audio_tracks_changed))
+	Printer.connect_error(FrameBox._on_playhead_position_changed.connect(_on_playhead_position_changed))
+	
+	var stylebox: StyleBoxFlat = StyleBoxFlat.new()
+	stylebox.bg_color = Color.DARK_GRAY
+	preview_panel.add_theme_stylebox_override("panel", stylebox)
+	preview_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _on_playhead_position_changed(a_value: float) -> void:
@@ -47,8 +51,8 @@ func _on_video_tracks_changed(a_update_video_tracks: Array) -> void:
 			l_track.queue_free()
 		video_track_panels = []
 		video_track_heads = []
-		for track: TimelineTrack in a_update_video_tracks:
-			add_video_track()
+		for l_id: int in a_update_video_tracks.size():
+			add_video_track(l_id)
 
 
 func _on_audio_tracks_changed(a_update_audio_tracks: Array) -> void:
@@ -60,19 +64,22 @@ func _on_audio_tracks_changed(a_update_audio_tracks: Array) -> void:
 			l_track.queue_free()
 		audio_track_panels = []
 		audio_track_heads = []
-		for track: TimelineTrack in a_update_audio_tracks:
-			add_audio_track()
+		for l_id: int in a_update_audio_tracks.size():
+			add_audio_track(l_id)
 
 
-func add_video_track() -> void:
-	var l_track_head: Node = preload("res://_modules/timeline/video_track_head/video_track_head.tscn").instantiate()
+func add_video_track(l_id: int) -> void:
+	var l_track_head: Node = preload("res://_modules/timeline/video_track/video_track_head.tscn").instantiate()
 	var l_track_panel: Panel = Panel.new()
 	
 	video_track_heads.append(l_track_head)
 	video_track_panels.append(l_track_panel)
+	
 	l_track_head.set_tag_label("V%s" % video_track_heads.size())
+	l_track_panel.set_script(preload("res://_modules/timeline/video_track/video_track.gd"))
 	l_track_panel.custom_minimum_size = Vector2i(6000,26) # TODO: Set better minimum
-	l_track_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l_track_panel.track_id = l_id
+	l_track_panel.timeline_node = self
 	
 	%TrackHeadVBox.add_child(l_track_head)
 	%TrackHeadVBox.move_child(l_track_head, 0)
@@ -80,15 +87,19 @@ func add_video_track() -> void:
 	%TimelineTrackVBox.move_child(l_track_panel, 0)
 
 
-func add_audio_track() -> void:
-	var l_track_head: Node = preload("res://_modules/timeline/audio_track_head/audio_track_head.tscn").instantiate()
+func add_audio_track(l_id: int) -> void:
+	var l_track_head: Node = preload("res://_modules/timeline/audio_track/audio_track_head.tscn").instantiate()
 	var l_track_panel: Panel = Panel.new()
 	
 	audio_track_heads.append(l_track_head)
 	audio_track_panels.append(l_track_panel)
+	
 	l_track_head.set_tag_label("A%s" % video_track_heads.size())
+	
+	l_track_panel.set_script(preload("res://_modules/timeline/audio_track/audio_track.gd"))
 	l_track_panel.custom_minimum_size = Vector2i(600,26)
-	l_track_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l_track_panel.track_id = l_id
+	l_track_panel.timeline_node = self
 	
 	%TrackHeadVBox.add_child(l_track_head)
 	%TimelineTrackVBox.add_child(l_track_panel)

@@ -198,7 +198,7 @@ func _set_framerate(a_framerate: float) -> void:
 
 func add_video_tracks(a_amount: int = 1, a_send_signal: bool = false) -> void:
 	for _i: int in a_amount:
-		video_tracks.append(TimelineTrack.new())
+		video_tracks.append({})
 	if a_send_signal:
 		_on_video_tracks_changed.emit(video_tracks)
 	unsaved_changes = true
@@ -213,7 +213,7 @@ func remove_video_track(a_position: int, a_send_signal: bool = false) -> void:
 
 func add_audio_tracks(a_amount: int = 1, a_send_signal: bool = false) -> void:
 	for _i: int in a_amount:
-		audio_tracks.append(TimelineTrack.new())
+		audio_tracks.append({})
 	if a_send_signal:
 		_on_audio_tracks_changed.emit(audio_tracks)
 	unsaved_changes = true

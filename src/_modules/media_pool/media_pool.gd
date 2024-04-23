@@ -53,8 +53,10 @@ func _sort_files(a_parent: VBoxContainer) -> void:
 func _add_file_button(a_file_id: int) -> void:
 	var l_button: Button = Button.new()
 	l_button.set_meta("file_id", a_file_id)
+	l_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 	l_button.set_text(ProjectManager.files_data[a_file_id].nickname)
 	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	l_button.set_script(preload("res://_modules/media_pool/file_button.gd"))
 	tabs[ProjectManager.files_data[a_file_id].type].add_child(l_button)
 
 
@@ -70,15 +72,12 @@ func _on_files_dropped(a_files: PackedStringArray) -> void:
 		_sort_files(l_child)
 
 
-func _on_tab_bar_gui_input(a_event: InputEvent):
+func _on_tab_bar_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton:
 		if a_event.button_index == 4 and a_event.pressed: # Scroll down
 			$VBox/TabBar.current_tab -= 1
 		if a_event.button_index == 5 and a_event.pressed: # Scroll up
 			$VBox/TabBar.current_tab += 1
-
-
-
 
 
 #func _ready():
