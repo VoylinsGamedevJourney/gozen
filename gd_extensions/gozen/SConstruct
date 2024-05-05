@@ -1,5 +1,5 @@
 import os
-from build_ffmpeg import build_ffmpeg
+import build_ffmpeg
 
 
 env = SConscript('../godot_cpp/SConstruct')

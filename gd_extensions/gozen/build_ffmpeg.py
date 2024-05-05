@@ -4,7 +4,7 @@ import shutil
 import platform
 import glob
 
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),"../python"))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),"../../python"))
 import toolbox
 
 

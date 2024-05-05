@@ -1,9 +1,7 @@
 #include "register_types.hpp"
 
-#include "interface.hpp"
 #include "video.hpp"
 #include "renderer.hpp"
-#include "render_profile.hpp"
 
 
 using namespace godot;
@@ -13,10 +11,9 @@ void initialize_gozen_library_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE)
 		return;
 	
-	ClassDB::register_class<GoZenInterface>();
-	ClassDB::register_class<GoZenVideo>();
-	ClassDB::register_class<GoZenRenderer>();
-	ClassDB::register_class<GoZenRenderProfile>();
+	ClassDB::register_class<Video>();
+	ClassDB::register_class<Renderer>();
+	ClassDB::register_class<RenderProfile>();
 }
 
 

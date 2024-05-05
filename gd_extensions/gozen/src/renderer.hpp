@@ -1,47 +1,67 @@
 #pragma once
-// This is the renderer, create an instance, feed it data, and make the finished video into a file.
 
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
-#include "ffmpeg_includes.hpp"
+
+extern "C" {
+	#include <libavcodec/avcodec.h>
+	#include <libavformat/avformat.h>
+	#include <libavdevice/avdevice.h>
+	#include <libavfilter/avfilter.h>
+	#include <libavutil/dict.h>
+	#include <libpostproc/postprocess.h>
+	#include <libavutil/channel_layout.h>
+	#include <libavutil/opt.h>
+	#include <libavutil/imgutils.h>
+	#include <libavutil/pixdesc.h>
+	#include <libswscale/swscale.h>
+	#include <libswresample/swresample.h>
+}
+
 #include "render_profile.hpp"
 
 
 using namespace godot;
 
-class GoZenRenderer : public Resource {
-	GDCLASS(GoZenRenderer, Resource);
 
-	private:
-		struct SwsContext *p_sws_ctx;
-		AVCodecContext *p_codec_context = NULL;
-		const AVCodec *codec;
-		FILE *p_output_file;
-		AVPacket *p_packet;
-		AVFrame *p_frame;
-		int i, x, y;
-		int byte_per_pixel = 3;
+class Renderer : public Resource {
+	GDCLASS(Renderer, Resource);
 
 
-		void _encode(AVCodecContext *dec_ctx, AVFrame *frame, AVPacket *pkt, FILE *filename);
+private:
+
+	struct SwsContext *sws_ctx;
+	AVCodecContext *av_codec_ctx = NULL;
+	AVPacket *av_packet;
+	AVFrame *av_frame;
+
+	FILE *output_file;
+
+	int i = 0, x = 0, y = 0, byte_per_pixel = 3; // Byte per pixel should be 4 for alpha!
+
+
+	void _encode(AVCodecContext *dec_ctx, AVFrame *frame, AVPacket *pkt, FILE *filename);
 	
 
-	public:
-		Ref<GoZenRenderProfile> profile;
-
-
-		GoZenRenderer() {}
-		~GoZenRenderer();
-
-		int open_ffmpeg(Ref<GoZenRenderProfile> new_profile);
-		void send_frame(Ref<Image> frame_image);
-		int close_ffmpeg();
+public:
 	
-	protected:
-		static inline void _bind_methods() {	 
-			ClassDB::bind_method(D_METHOD("open_ffmpeg", "new_profile:GoZenRenderProfile"), &GoZenRenderer::open_ffmpeg);
-			ClassDB::bind_method(D_METHOD("send_frame", "frame_image"), &GoZenRenderer::send_frame);
-			ClassDB::bind_method(D_METHOD("close_ffmpeg"), &GoZenRenderer::close_ffmpeg);
-		}
+	Ref<RenderProfile> profile = nullptr;
+
+	~Renderer() { close(); }
+
+	void open(Ref<RenderProfile> a_profile);
+	void send_frame(Ref<Image> a_frame_image);
+	void close();
+
+	static bool is_codec_supported(RenderProfile::CODEC a_codec);
+	static Array get_supported_video_codecs();
+	static Array get_supported_audio_codecs();
+	
+
+protected:
+
+	bool is_open = false;
+
+	static void _bind_methods();
 };

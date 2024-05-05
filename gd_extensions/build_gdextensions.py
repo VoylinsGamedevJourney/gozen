@@ -2,36 +2,33 @@ import sys
 import os
 import subprocess
 
-import gozen.build_ffmpeg as ffmpeg
-
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),"../python"))
+
+import gozen.build_ffmpeg as ffmpeg
 import toolbox
 
 
-
-def compile_ffmpeg(a_num_jobs = 0):
+def compile_ffmpeg(a_num_jobs):
 	ffmpeg.build(a_num_jobs)
 
 
-
-def compile_gozen():
+def compile_gozen(a_num_jobs, a_target, a_platform):
+	scons_extra_args = 'use_mingw=yes' if a_platform == 'windows' else ''
 	subprocess.run(
-    	f'scons -j {num_jobs} target={target} platform={platform} {scons_extra_args}',
-    	shell=True, cwd='gd_extensions/gozen')
-
-
-def compile_godot_cpp():
-	subprocess.run(f'scons -j {num_jobs}', shell=True, cwd='gd_extensions/godot_cpp')
+		f'scons -j {a_num_jobs} target={a_target} platform={a_platform} {scons_extra_args}',
+		shell=True, cwd='gd_extensions/gozen')
 
 
 def menu():
-	match toolbox.get_input_choices('GDExtensions menu', [
+	match toolbox.get_input_choice('GDExtensions menu', [
 		'Build GoZen GDExtension',
-		'Generate godot-cpp',
 		'Generate FFmpeg']):
-		case 0: compile_gozen()
-		case 1: compile_godot_cpp()
-		case 2: ffmpeg.build()
+		case 0: compile_gozen(
+				toolbox.get_input_jobs(), 
+				toolbox.get_target_choice(), 
+				toolbox.get_platform_choice())
+		case 1: ffmpeg.build(toolbox.get_input_jobs())
 
 
 if __name__ == '__main__':

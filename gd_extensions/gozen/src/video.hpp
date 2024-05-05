@@ -10,51 +10,75 @@
 #include <godot_cpp/variant/variant.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#include "ffmpeg_includes.hpp"
+extern "C" {
+	#include <libavcodec/avcodec.h>
+	#include <libavformat/avformat.h>
+	#include <libavdevice/avdevice.h>
+	#include <libavfilter/avfilter.h>
+	#include <libavutil/dict.h>
+	#include <libpostproc/postprocess.h>
+	#include <libavutil/channel_layout.h>
+	#include <libavutil/opt.h>
+	#include <libavutil/imgutils.h>
+	#include <libavutil/pixdesc.h>
+	#include <libswscale/swscale.h>
+	#include <libswresample/swresample.h>
+}
 
 using namespace godot;
 
-class GoZenVideo : public Resource {
-	GDCLASS(GoZenVideo, Resource);
+class Video : public Resource {
+	GDCLASS(Video, Resource);
 
-	private:
-		AVFormatContext *p_format_context = NULL;
-		AVCodecContext *p_video_codec_context = NULL, *p_audio_codec_context;
-		int width, height;
-		struct SwsContext *p_sws_ctx = nullptr;
-		struct SwrContext *p_swr_ctx = nullptr;
-		enum AVPixelFormat pixel_format;
-		AVStream *p_video_stream = NULL, *p_audio_stream = NULL;
-		uint8_t *p_video_dst_data[4] = {NULL};
-		int video_dst_linesize[4], video_dst_bufsize;
-		int video_stream_index = -1, audio_stream_index = -1;
-		AVFrame *p_frame = NULL;
-		AVPacket *p_packet = NULL;
-		PackedByteArray audio = PackedByteArray();
-		Array video = Array();
-		PackedByteArray subtitles = PackedByteArray();
+private:
 
-		int swr_result;
-		AVSampleFormat new_audio_format = AV_SAMPLE_FMT_S16; //AV_SAMPLE_FMT_FLT;//AVSampleFormat::AV_SAMPLE_FMT_S16 ;
+	// Variables
+	AVFormatContext* av_format_ctx = nullptr;
+	AVStream* av_stream = nullptr;
+	AVCodecContext* av_codec_ctx = nullptr;
+	struct SwsContext* sws_ctx = nullptr;
 
+	AVFrame* av_frame = nullptr;
+	AVPacket* av_packet = nullptr;
 
-		int open_codec_context(int *stream_index, AVCodecContext **codec_context, enum AVMediaType type);
-		int decode_packet(AVCodecContext *codec, const AVPacket *packet);
+	PackedByteArray byte_array = PackedByteArray();
+	Ref<AudioStreamWAV> audio_stream_wav = memnew(AudioStreamWAV);
 
-		int output_video_frame(AVFrame *frame);
-		int output_audio_frame(AVFrame *frame);
+	int response = 0, src_linesize[4] = {0,0,0,0}, total_frame_number = 0;
 
-		void print_av_err(int errnum);
+	long start_time_video = 0, start_time_audio = 0, frame_timestamp = 0, current_pts = 0;
+	double average_frame_duration = 0, stream_time_base_video = 0, stream_time_base_audio = 0;
 
-	public:
-		GoZenVideo() {}
-		~GoZenVideo() {}
+public:
 
-		Dictionary get_container_data(String filename);
+	Video() {}
+	~Video() { close(); }
 
 
-	protected:
-		static void _bind_methods() {
-			ClassDB::bind_method(D_METHOD("get_container_data", "filename:String"), &GoZenVideo::get_container_data);
-		}
+	void open(String a_path);
+	void close();
+
+	Ref<Image> seek_frame(int a_frame_nr);
+	Ref<Image> next_frame();
+
+	inline Ref<AudioStreamWAV> get_audio() { return audio_stream_wav; }
+
+	inline int get_total_frame_nr() const { return total_frame_number;};
+	void _get_total_frame_nr();
+
+	Vector2i get_size() const { return Vector2i(av_codec_ctx->width, av_codec_ctx->height); }
+
+	void printerr(String a_message);
+	void print_av_error(String a_message);
+
+	static Dictionary get_video_file_meta(String a_file_path);
+
+
+protected:
+
+	bool is_open = false;
+
+
+	static void _bind_methods();
+	
 };

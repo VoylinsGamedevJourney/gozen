@@ -2,7 +2,6 @@ import readline
 import os
 
 
-
 def print_title(a_title):
 	print(f'--== {a_title} ==--')
 
@@ -39,3 +38,21 @@ def get_input_jobs():
 	print()
 	return int(user_input) - 1
 
+
+def get_platform_choice():
+	match get_input_choice('Select target platform', [
+		'Linux',
+		'Windows(Msys2)',
+		'MacOS (not supported)']):
+		case 0:
+			return 'linux'
+		case 1: return 'windows'
+		case 2: return 'macos'
+
+
+def get_target_choice():
+	match get_input_choice('Select build target', [
+		'template_debug',
+		'template_release']):
+		case 0: return 'template_debug'
+		case 1: return 'template_release'

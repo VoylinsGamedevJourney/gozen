@@ -1,301 +1,491 @@
 #include "video.hpp"
 
 
-Dictionary GoZenVideo::get_container_data(String filename) {
-	int ret = 0;
-	Dictionary data = {};
+void Video::open(String a_path) {
 
-	// Open file + allocate format context
-	if (avformat_open_input(&p_format_context, filename.utf8(), NULL, NULL) < 0) {
-		UtilityFunctions::printerr("Could not open file!");
-		return data;
+	// Opening video
+	av_format_ctx = avformat_alloc_context();
+	if (!av_format_ctx)
+		 return printerr("Couldn't allocate av format context!");
+	if (avformat_open_input(&av_format_ctx, a_path.utf8(), NULL, NULL))
+		return printerr("Couldn't open video file!");
+	if (avformat_find_stream_info(av_format_ctx, NULL))
+		return printerr("Couldn't find stream info!");
+
+	// Getting the audio and video stream
+	AVStream* av_stream_audio;
+	for (int i = 0; i < av_format_ctx->nb_streams; i++) {
+		AVCodecParameters* av_codec_params = av_format_ctx->streams[i]->codecpar;
+
+		// TODO: Find way to get all streams and save them in arrays instead
+		if (!avcodec_find_decoder(av_codec_params->codec_id))
+			continue;
+		else if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
+			av_stream_audio = av_format_ctx->streams[i];
+		else if (av_codec_params->codec_type == AVMEDIA_TYPE_VIDEO)
+			av_stream = av_format_ctx->streams[i];
 	}
 
-	// Get stream info
-	if (avformat_find_stream_info(p_format_context, NULL) < 0) {
-		UtilityFunctions::printerr("Could not get stream info!");
-		return data;
-	}
+// Video Decoder Setup 
+	// Setup Decoder codec context
+	const AVCodec* av_codec_video = avcodec_find_decoder(av_stream->codecpar->codec_id);
+	if (!av_codec_video)
+		return printerr("Couldn't find any codec decoder for video!");
 
-	if (open_codec_context(&video_stream_index, &p_video_codec_context, AVMEDIA_TYPE_VIDEO) >= 0) {
-		p_video_stream = p_format_context->streams[video_stream_index];
+	// Allocate codec context for decoder
+	av_codec_ctx = avcodec_alloc_context3(av_codec_video);
+	if (av_codec_ctx == NULL)
+		return printerr("Couldn't allocate codec context for video!");
 
-		// Allocate the image where the decoded image will be put
-		width = p_video_codec_context->width;
-		height = p_video_codec_context->height;
-		pixel_format = p_video_codec_context->pix_fmt;
-		ret = av_image_alloc(p_video_dst_data, video_dst_linesize, width, height, pixel_format, 1);
-		if (ret < 0) {
-			UtilityFunctions::printerr("Could not allocate raw video buffer!");
-			goto end;
-		}
+	// Copying parameters
+	if (avcodec_parameters_to_context(av_codec_ctx, av_stream->codecpar))
+		return printerr("Couldn't initialize video codec context!");
 
-		video_dst_bufsize = ret;
-	}
+	// Enable multi-threading for decoding - Video
+	// set codec to automatically determine how many threads suits best for the decoding job
+	av_codec_ctx->thread_count = 0;
+	if (av_codec_video->capabilities & AV_CODEC_CAP_FRAME_THREADS)
+		av_codec_ctx->thread_type = FF_THREAD_FRAME;
+	else if (av_codec_video->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+		av_codec_ctx->thread_type = FF_THREAD_SLICE;
+	else av_codec_ctx->thread_count = 1; //don't use multithreading
 
-	if (open_codec_context(&audio_stream_index, &p_audio_codec_context, AVMEDIA_TYPE_AUDIO) >= 0) {
-		p_audio_stream = p_format_context->streams[audio_stream_index];
-	}
+	// Open codec
+	if (avcodec_open2(av_codec_ctx, av_codec_video, NULL))
+		return printerr("Couldn't open video codec!");
 
-	// Dumping info to stderr
-	av_dump_format(p_format_context, 0, filename.utf8(), 0);
+	// Setup SWS context for converting frame from YUV to RGB
+	sws_ctx = sws_getContext(
+		av_codec_ctx->width, av_codec_ctx->height, (AVPixelFormat)av_stream->codecpar->format,
+		av_codec_ctx->width, av_codec_ctx->height, AV_PIX_FMT_RGB24,
+		SWS_BILINEAR, NULL, NULL, NULL);
+	if (!sws_ctx)
+		return printerr("Couldn't get SWS context!");
 
-	if (!p_video_stream && !p_audio_stream) {
-		UtilityFunctions::printerr("Could not find audio or video stream in input!");
-		goto end;
-	}
+	// Byte_array setup
+	byte_array.resize(av_codec_ctx->width * av_codec_ctx->height * 3);
+	src_linesize[0] = av_codec_ctx->width * 3;
 
-	p_frame = av_frame_alloc();
-	if (!p_frame) {
-		UtilityFunctions::printerr("Could not allocate frame!");
-		goto end;
-	}
+	// Set other variables
+	stream_time_base_video = av_q2d(av_stream->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks
+	start_time_video = av_stream->start_time != AV_NOPTS_VALUE ? (long)(av_stream->start_time * stream_time_base_video): 0;
+	average_frame_duration = 10000000.0 / av_q2d(av_stream->avg_frame_rate);  // eg. 1 sec / 25 fps = 400.000 ticks (40ms)
 
-	p_packet = av_packet_alloc();
-	if (!p_packet) {
-		UtilityFunctions::printerr("Could not allocate packet!");
-		goto end;
-	}
-	
-	p_sws_ctx = sws_getContext(
-			width, height, AV_PIX_FMT_YUV420P,
-			width, height, AV_PIX_FMT_RGB24,
-			SWS_BILINEAR, NULL, NULL, NULL); // TODO: Option to change: SWS_BILINEAR in profile (low quality has trouble with this)
-	if (!p_sws_ctx) {
-		UtilityFunctions::printerr("Could not get sws context!");
-		goto end;
-	} else {
-		UtilityFunctions::print("Allocated SWS");
-	}
+	_get_total_frame_nr();
 
-	
-	swr_result = swr_alloc_set_opts2(
-		&p_swr_ctx,
-		&p_audio_codec_context->ch_layout, new_audio_format, p_audio_codec_context->sample_rate,
-		&p_audio_codec_context->ch_layout, p_audio_codec_context->sample_fmt, p_audio_codec_context->sample_rate,
+
+// Audio Decoder Setup 
+	// Setup Decoder codec context
+	const AVCodec* av_codec_audio = avcodec_find_decoder(av_stream_audio->codecpar->codec_id);
+	if (!av_codec_audio)
+		return printerr("Couldn't find any codec decoder for audio!");
+
+	// Allocate codec context for decoder
+	AVCodecContext* av_codec_ctx_audio = avcodec_alloc_context3(av_codec_audio);
+	if (av_codec_ctx_audio == NULL)
+		return printerr("Couldn't allocate codec context for audio!");
+
+	// Copying parameters
+	if (avcodec_parameters_to_context(av_codec_ctx_audio, av_stream_audio->codecpar))
+		return printerr("Couldn't initialize audio codec context!");
+
+	// Enable multi-threading for decoding - Audio
+	// set codec to automatically determine how many threads suits best for the decoding job
+	av_codec_ctx_audio->thread_count = 0;
+	if (av_codec_audio->capabilities & AV_CODEC_CAP_FRAME_THREADS)
+		av_codec_ctx_audio->thread_type = FF_THREAD_FRAME;
+	else if (av_codec_audio->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+		av_codec_ctx_audio->thread_type = FF_THREAD_SLICE;
+	else av_codec_ctx_audio->thread_count = 1; //don't use multithreading
+
+	// Open codec
+	if (avcodec_open2(av_codec_ctx_audio, av_codec_audio, NULL))
+		return printerr("Couldn't open audio codec!");
+
+	av_codec_ctx_audio->request_sample_fmt = AV_SAMPLE_FMT_S16;
+
+	// Setup SWR for converting frame
+	struct SwrContext* swr_ctx = nullptr;
+	response = swr_alloc_set_opts2(
+		&swr_ctx,
+		&av_codec_ctx_audio->ch_layout, AV_SAMPLE_FMT_S16, av_codec_ctx_audio->sample_rate,
+		&av_codec_ctx_audio->ch_layout, av_codec_ctx_audio->sample_fmt, av_codec_ctx_audio->sample_rate,
 		0, nullptr);
-	if (swr_result < 0) {
-		UtilityFunctions::printerr("Failed to obtain SWR context");
-		print_av_err(swr_result);
-		goto end;
-	}
-	if (!p_swr_ctx || swr_init(p_swr_ctx) < 0) {
-		UtilityFunctions::print("Could not allocate resampler context!");
-		goto end;
-	} else {
-		UtilityFunctions::print("Allocated SWR");
-	}
+	if (response < 0)
+		return print_av_error("Failed to obtain SWR context!");
+	else if (!swr_ctx)
+		return printerr("Could not allocate re-sampler context!");
 
-	if (p_video_stream) UtilityFunctions::print("Demuxing video from file.");
-	if (p_audio_stream) UtilityFunctions::print("Demuxing audio from file.");
-	
-	// Reading frames from file
-	while (av_read_frame(p_format_context, p_packet) >= 0) {
-		// Check if packet belongs to a stream we need, else skip
-		if (p_packet->stream_index == video_stream_index)
-			ret = decode_packet(p_video_codec_context, p_packet);
-		else if (p_packet->stream_index == audio_stream_index)
-			ret = decode_packet(p_audio_codec_context, p_packet);
-		av_packet_unref(p_packet);
-		if (ret < 0) break;
-	}
+	response = swr_init(swr_ctx);
+	if (response < 0)
+		return print_av_error("Couldn't initialize SWR!");
 
-	// Flush decoders
-	if (p_video_codec_context)
-		decode_packet(p_video_codec_context, NULL);
-	if (p_audio_codec_context)
-		decode_packet(p_audio_codec_context, NULL);
-	
-	UtilityFunctions::print("Demuxing complete!");
-	data["video"] = video;
-	data["audio"] = audio;
-	data["subtitles"] = subtitles;
+	// Setting up variables for audio
+	stream_time_base_audio = av_q2d(av_stream_audio->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks
+	start_time_audio = av_stream_audio->start_time != AV_NOPTS_VALUE ? (long)(av_stream_audio->start_time * stream_time_base_audio): 0;
 
-end:
-	avcodec_free_context(&p_video_codec_context);
-	avcodec_free_context(&p_audio_codec_context);
-	avformat_close_input(&p_format_context);
-	
-	av_packet_free(&p_packet);
-	av_frame_free(&p_frame);
-	av_free(p_video_dst_data[0]);
+// Getting the audio
+	// Set the seeker to the beginning of audio stream
+	response = av_seek_frame(av_format_ctx, av_stream_audio->index, start_time_audio, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_ANY);
+	avcodec_flush_buffers(av_codec_ctx_audio);
+	if (response < 0)
+		return printerr("Can't seek to the beginning of audio!");
 
-	sws_freeContext(p_sws_ctx);
-	swr_free(&p_swr_ctx);
+	av_packet = av_packet_alloc();
+	av_frame = av_frame_alloc();
+	AVFrame* l_av_new_frame = nullptr;
+	PackedByteArray l_audio_data = PackedByteArray();
+	size_t l_audio_size = 0;
 
-	return data;
-}
-
-
-int GoZenVideo::open_codec_context(int *stream_index, AVCodecContext **codec_context, enum AVMediaType type) {
-	int ret, stream_idx;
-	AVStream *p_stream;
-	const AVCodec *codec = NULL;
-
-	ret = av_find_best_stream(p_format_context, type, -1, -1, NULL, 0);
-	if (ret < 0) {
-		UtilityFunctions::printerr("Could not find stream of type '" + static_cast<String>(av_get_media_type_string(type)) +	"'!");
-	} else {
-		stream_idx = ret;
-		p_stream = p_format_context->streams[stream_idx];
-
-		// Find decoder for stream
-		codec = avcodec_find_decoder(p_stream->codecpar->codec_id);
-		if (!codec) {
-			UtilityFunctions::printerr("Could not find decoder!");
-			return AVERROR(EINVAL);
-		}
-
-		// Allocate codec context for decoder
-		*codec_context = avcodec_alloc_context3(codec);
-		if (!*codec_context) {
-			UtilityFunctions::printerr("Failed to allocate the codec context!");
-			return AVERROR(ENOMEM);
-		}
-
-		// Copy codec params from input stream to codec context output
-		if ((ret = avcodec_parameters_to_context(*codec_context, p_stream->codecpar)) < 0) {
-			UtilityFunctions::printerr("Failed to copy codec params to decoder context!");
-			return ret;
-		}
-
-		// Initialize decoders
-		if ((ret = avcodec_open2(*codec_context, codec, NULL) < 0)) {
-			UtilityFunctions::printerr("Failed to init codec!");
-			return ret;
-		}
-		*stream_index = stream_idx;
-	}
-
-	return 0;
-}
-
-
-int GoZenVideo::decode_packet(AVCodecContext *codec, const AVPacket *packet) {
-	int ret = 0;
-
-	// Submit packet to decoder
-	ret = avcodec_send_packet(codec, packet);
-	if (ret < 0) {
-		UtilityFunctions::printerr("Error submitting a packet for decoding!");
-		return ret;
-	}
-
-	// Get all available frames from decoder
-	while (ret >= 0) {
-		ret = avcodec_receive_frame(codec, p_frame);
-		if (ret < 0) {
-			// If return values equals these, then no output frame is available,
-			// but there were also no errors.
-			if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
-				return 0;
-			
-			UtilityFunctions::printerr("Error during decoding!");
-			return ret;
-		}
-
-		// Write frame data to output file
-		if (codec->codec->type == AVMEDIA_TYPE_VIDEO)
-			ret = output_video_frame(p_frame);
-		else if (codec->codec->type == AVMEDIA_TYPE_AUDIO)
-			ret = output_audio_frame(p_frame);
-		else
-			// This will probably never print, but this is in preparation
-			// for getting the subtitle stream data
-			UtilityFunctions::printerr("Unknown type!");
+	while (av_read_frame(av_format_ctx, av_packet) >= 0) {
 		
-		if (ret < 0)
-			return ret;
+		if (av_packet->stream_index == av_stream_audio->index) {
+
+			response = avcodec_send_packet(av_codec_ctx_audio, av_packet);
+			if (response < 0) {
+				UtilityFunctions::printerr("Error decoding audio packet!");
+				av_packet_unref(av_packet);
+				break;
+			}
+
+			while (response >= 0) {
+				response = avcodec_receive_frame(av_codec_ctx_audio, av_frame);
+				if (response == AVERROR(EAGAIN) || response == AVERROR_EOF)
+					break;
+				else if (response < 0) {
+					UtilityFunctions::printerr("Error decoding audio frame!");
+					break;
+				}
+
+				// Copy decoded data to new frame
+				l_av_new_frame = av_frame_alloc();
+				l_av_new_frame->format = AV_SAMPLE_FMT_S16;
+				l_av_new_frame->ch_layout = av_frame->ch_layout;
+				l_av_new_frame->sample_rate = av_frame->sample_rate;
+				l_av_new_frame->nb_samples = swr_get_out_samples(swr_ctx, av_frame->nb_samples);
+
+				response = av_frame_get_buffer(l_av_new_frame, 0);
+				if (response < 0) {
+					print_av_error("Couldn't create new frame for swr!");
+					av_frame_unref(av_frame);
+					av_frame_unref(l_av_new_frame);
+					break;
+				}
+
+				response = swr_convert_frame(swr_ctx, l_av_new_frame, av_frame);
+				if (response < 0) {
+					print_av_error("Couldn't convert the frame!");
+					av_frame_unref(av_frame);
+					av_frame_unref(l_av_new_frame);
+					break;
+				}
+
+				size_t l_byte_size = l_av_new_frame->nb_samples * av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+				if (av_codec_ctx_audio->ch_layout.nb_channels >= 2)
+					l_byte_size *= 2;
+
+				l_audio_data.resize(l_audio_size + l_byte_size);
+				memcpy(&(l_audio_data.ptrw()[l_audio_size]), l_av_new_frame->extended_data[0], l_byte_size);
+				l_audio_size += l_byte_size;
+
+				av_frame_unref(av_frame);
+				av_frame_unref(l_av_new_frame);
+			}
+		}
+		av_packet_unref(av_packet);
 	}
 
-	return 0;
+	// Audio stream settings
+	audio_stream_wav->set_format(audio_stream_wav->FORMAT_16_BITS);
+	audio_stream_wav->set_mix_rate(av_codec_ctx_audio->sample_rate);
+	audio_stream_wav->set_stereo(av_codec_ctx_audio->ch_layout.nb_channels >= 2);
+	audio_stream_wav->set_data(l_audio_data);
+
+	// Cleanup
+	av_packet_free(&av_packet);
+	av_frame_free(&av_frame);
+	av_frame_free(&l_av_new_frame);
+	avcodec_free_context(&av_codec_ctx_audio);
+	swr_free(&swr_ctx);
+
+	is_open = true;
 }
 
 
-int GoZenVideo::output_video_frame(AVFrame *frame) {
-	if (frame->width != width || frame->height != height || frame->format != pixel_format) {
-		UtilityFunctions::printerr("Some change happened, width/height/pixel_format is not constant!");
-		return -1;
-	}
+void Video::close() {
+	is_open = false;
 
-	// Copy decoded frame to destination buffer
-	//av_image_copy(p_video_dst_data, video_dst_linesize,(const uint8_t **)(frame->data), frame->linesize, pixel_format, width, height);
+	if (av_format_ctx)
+		avformat_close_input(&av_format_ctx);
 
-	//
-	// Here is where the writing to the raw video file happens
-	//fwrite(p_video_dst_data[0], 1, video_dst_bufsize, video_destination_file);
-	//
+	if (av_codec_ctx)
+		avcodec_free_context(&av_codec_ctx);
+	if (sws_ctx)
+		sws_freeContext(sws_ctx);
 
-	PackedByteArray byte_array = PackedByteArray();
-	const int expected_rgb_size = width * height * 3;
-	int src_linesize[4] = { width * 3, 0, 0, 0 };
-	byte_array.resize(expected_rgb_size);
-	uint8_t *w = byte_array.ptrw();
-
-	uint8_t *dest_data[1] = { w };
-	sws_scale(p_sws_ctx, frame->data, frame->linesize, 0, frame->height, dest_data, src_linesize);
-
-	Ref<Image> image = memnew(Image);
-	// memcpy not possible as this would copy the yuv420p format
-	//memcpy(dest_data, p_video_dst_data[0], expected_rgb_size);
-	image->set_data(width, height, false, image->FORMAT_RGB8, byte_array);
-	Ref<ImageTexture> tex = memnew(ImageTexture);
-	tex->set_image(image);
-	video.append(tex);
-
-	return 0;
+	if (av_frame)
+		av_frame_free(&av_frame);
+	if (av_packet)
+		av_packet_free(&av_packet);
 }
 
 
-int GoZenVideo::output_audio_frame(AVFrame *frame) {
-	AVFrame *new_frame;
-	new_frame = av_frame_alloc();
-	new_frame->format = new_audio_format;
-	new_frame->ch_layout = p_audio_codec_context->ch_layout;
-	new_frame->sample_rate = p_audio_codec_context->sample_rate;
-	new_frame->nb_samples = frame->nb_samples; //swr_get_out_samples(p_swr_ctx, frame->nb_samples);
+Ref<Image> Video::seek_frame(int a_frame_nr) {
 
-	int result = av_frame_get_buffer(new_frame, 0);
-	if (result < 0) {
-		UtilityFunctions::printerr("Could not allocate new frame for swr!");
-		print_av_err(result);
-		av_frame_unref(new_frame);
-		return -1;
+	Ref<Image> l_image = memnew(Image);
+
+	if (!is_open) {
+		UtilityFunctions::printerr("Video isn't open yet!");
+		return l_image;
+	}
+
+	av_packet = av_packet_alloc();
+	av_frame = av_frame_alloc();
+
+	// Video seeking
+	frame_timestamp = (long)(a_frame_nr * average_frame_duration);
+	response = av_seek_frame(av_format_ctx, -1, (start_time_video + frame_timestamp) / 10, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+	avcodec_flush_buffers(av_codec_ctx);
+	if (response < 0) {
+		UtilityFunctions::printerr("Can't seek video file!");
+		av_frame_free(&av_frame);
+		av_packet_free(&av_packet);
+		return l_image;
+	}
+
+	while (true) {
+		
+		// Demux packet
+		response = av_read_frame(av_format_ctx, av_packet);
+		if (response != 0)
+			break;
+		if (av_packet->stream_index != av_stream->index) {
+			av_packet_unref(av_packet);
+			continue;
+		}
+
+		// Send packet for decoding
+		response = avcodec_send_packet(av_codec_ctx, av_packet);
+		av_packet_unref(av_packet);
+		if (response != 0)
+			break;
+
+		// Valid packet found, decode frame
+		while (true) {
+			
+			// Receive all frames
+			response = avcodec_receive_frame(av_codec_ctx, av_frame);
+			if (response != 0) {
+				av_frame_unref(av_frame);
+				break;
+			}
+
+			// Get frame pts
+			current_pts = av_frame->best_effort_timestamp == AV_NOPTS_VALUE ? av_frame->pts : av_frame->best_effort_timestamp;
+			if (current_pts == AV_NOPTS_VALUE) {
+				av_frame_unref(av_frame);
+				continue;
+			}
+
+			// Skip to actual requested frame
+			if ((long)(current_pts * stream_time_base_video) / 10000 < frame_timestamp / 10000) {
+				av_frame_unref(av_frame);
+				continue;
+			}
+
+			uint8_t* l_dest_data[1] = { byte_array.ptrw() };
+			sws_scale(sws_ctx, av_frame->data, av_frame->linesize, 0, av_frame->height, l_dest_data, src_linesize);
+			l_image->set_data(av_frame->width, av_frame->height, 0, l_image->FORMAT_RGB8, byte_array);
+
+			// Cleanup
+			av_frame_unref(av_frame);
+			av_frame_free(&av_frame);
+			av_packet_free(&av_packet);
+			
+			return l_image;
+		} 
+	}
+
+	// Cleanup
+	av_frame_free(&av_frame);
+	av_packet_free(&av_packet);
+
+	return l_image;
+}
+
+
+Ref<Image> Video::next_frame() {
+	
+	Ref<Image> l_image = memnew(Image);
+
+	if (!is_open) {
+		UtilityFunctions::printerr("Video isn't open yet!");
+		return l_image;
+	}
+
+	av_packet = av_packet_alloc();
+	av_frame = av_frame_alloc();
+
+	while (true) {
+		
+		// Demux packet
+		response = av_read_frame(av_format_ctx, av_packet);
+		if (response != 0)
+			break;
+		if (av_packet->stream_index != av_stream->index) {
+			av_packet_unref(av_packet);
+			continue;
+		}
+
+		// Send packet for decoding
+		response = avcodec_send_packet(av_codec_ctx, av_packet);
+		av_packet_unref(av_packet);
+		if (response != 0)
+			break;
+
+		// Valid packet found, decode frame
+		while (true) {
+			
+			// Receive all frames
+			response = avcodec_receive_frame(av_codec_ctx, av_frame);
+			if (response != 0) {
+				av_frame_unref(av_frame);
+				break;
+			}
+
+			uint8_t* l_dest_data[1] = { byte_array.ptrw() };
+			sws_scale(sws_ctx, av_frame->data, av_frame->linesize, 0, av_frame->height, l_dest_data, src_linesize);
+			l_image->set_data(av_frame->width, av_frame->height, 0, l_image->FORMAT_RGB8, byte_array);
+
+			// Cleanup
+			av_frame_unref(av_frame);
+			av_frame_free(&av_frame);
+			av_packet_free(&av_packet);
+			
+			return l_image;
+		} 
+	}
+
+	// Cleanup
+	av_frame_free(&av_frame);
+	av_packet_free(&av_packet);
+
+	return l_image;
+}
+
+
+void Video::_get_total_frame_nr() {
+
+	if (av_stream->nb_frames > 500)
+		total_frame_number = av_stream->nb_frames - 30;
+	
+	av_packet = av_packet_alloc();
+	av_frame = av_frame_alloc();
+	
+	// Video seeking
+	frame_timestamp = (long)(total_frame_number * average_frame_duration);
+	response = av_seek_frame(av_format_ctx, -1, (start_time_video + frame_timestamp) / 10, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+	avcodec_flush_buffers(av_codec_ctx);
+	if (response < 0) {
+		UtilityFunctions::printerr("Can't seek video stream!");
+		av_frame_free(&av_frame);
+		av_packet_free(&av_packet);
+	}
+
+	while (true) {
+		
+		// Demux packet
+		response = av_read_frame(av_format_ctx, av_packet);
+		if (response != 0)
+			break;
+		if (av_packet->stream_index != av_stream->index) {
+			av_packet_unref(av_packet);
+			continue;
+		}
+
+		// Send packet for decoding
+		response = avcodec_send_packet(av_codec_ctx, av_packet);
+		av_packet_unref(av_packet);
+		if (response != 0)
+			break;
+
+		// Valid packet found, decode frame
+		while (true) {
+			
+			// Receive all frames
+			response = avcodec_receive_frame(av_codec_ctx, av_frame);
+			if (response != 0) {
+				av_frame_unref(av_frame);
+				break;
+			}
+
+			// Get frame pts
+			current_pts = av_frame->best_effort_timestamp == AV_NOPTS_VALUE ? av_frame->pts : av_frame->best_effort_timestamp;
+			if (current_pts == AV_NOPTS_VALUE) {
+				av_frame_unref(av_frame);
+				continue;
+			}
+
+			// Skip to actual requested frame
+			if ((long)(current_pts * stream_time_base_video) / 10000 < frame_timestamp / 10000) {
+				av_frame_unref(av_frame);
+				continue;
+			}
+
+			total_frame_number++;
+		} 
+	}
+}
+
+
+void Video::printerr(String a_message) {
+	UtilityFunctions::printerr(a_message);
+	close();
+}
+
+
+void Video::print_av_error(String a_message) {
+	char l_error_buffer[AV_ERROR_MAX_STRING_SIZE];
+	av_strerror(response, l_error_buffer, sizeof(l_error_buffer));
+	UtilityFunctions::printerr(a_message + l_error_buffer);
+	close();
+}
+
+
+Dictionary Video::get_video_file_meta(String a_file_path) {
+	AVFormatContext *l_format_ctx = NULL;
+	const AVDictionaryEntry *l_tag = NULL;
+	Dictionary l_meta = {};
+ 
+	if (avformat_open_input(&l_format_ctx, a_file_path.utf8(), NULL, NULL)) {
+		UtilityFunctions::printerr("Could not open file!");
+		return l_meta;
 	}
 	
-	result = swr_convert_frame(p_swr_ctx, new_frame, frame);
-	if (result < 0) {
-		UtilityFunctions::printerr("Could not convert audio frame!");
-		print_av_err(result);
-		av_frame_unref(new_frame);
-		return -1;
+	if (avformat_find_stream_info(l_format_ctx, NULL) < 0) {
+		UtilityFunctions::printerr("Could not find stream info!");
+		return l_meta;
 	}
 	
-	size_t unpadded_linesize = frame->nb_samples * av_get_bytes_per_sample(new_audio_format); 
-
-	std::vector<int16_t> audio_vector(unpadded_linesize);
-	memcpy(audio_vector.data(), new_frame->extended_data[0], unpadded_linesize);
-
-	PackedByteArray byte_array = PackedByteArray();
-	byte_array.resize(unpadded_linesize * 2);
-
-	int64_t byte_offset = 0;
-	for (size_t i = 0; i < unpadded_linesize; ++i) {
-		int16_t value = ((int16_t*)new_frame->extended_data[0])[i];
-		byte_array.encode_s16(byte_offset, value);
-		byte_offset += sizeof(int16_t);
-	}
-
-	audio.append_array(byte_array);
-	av_frame_unref(frame);
-	return 0;
+	while (l_tag = av_dict_iterate(l_format_ctx->metadata, l_tag))
+		l_meta[l_tag->key] = l_tag->value;
+	
+	avformat_close_input(&l_format_ctx);
+	return l_meta;
 }
 
 
-void GoZenVideo::print_av_err(int errnum) {
-	char error_buffer[AV_ERROR_MAX_STRING_SIZE];
-	av_strerror(errnum, error_buffer, sizeof(error_buffer));
-	std::string av_err_str = "AV ERROR: " + std::to_string(errnum) + " - " + error_buffer;
-	UtilityFunctions::printerr(av_err_str.c_str());
-	std::cout << error_buffer << std::endl;
+void Video::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("open", "a_path"), &Video::open);
+	ClassDB::bind_method(D_METHOD("close"), &Video::close);
+
+	ClassDB::bind_method(D_METHOD("seek_frame", "a_frame_nr"), &Video::seek_frame);
+	ClassDB::bind_method(D_METHOD("next_frame"), &Video::next_frame);
+	ClassDB::bind_method(D_METHOD("get_audio"), &Video::get_audio);
+
+	ClassDB::bind_method(D_METHOD("get_total_frame_nr"), &Video::get_total_frame_nr);
+
+	ClassDB::bind_method(D_METHOD("get_size"), &Video::get_size);
+
+	ClassDB::bind_static_method("Video", D_METHOD("get_video_file_meta", "a_file_path:String"), &Video::get_video_file_meta);
 }
