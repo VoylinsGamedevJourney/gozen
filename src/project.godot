@@ -34,7 +34,6 @@ FrameBox="*res://scripts/autoloads/al_frame_box.gd"
 
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
-gdscript/warnings/return_value_discarded=1
 shader_language/warnings/treat_warnings_as_errors=true
 
 [display]
