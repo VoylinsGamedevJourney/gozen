@@ -3,7 +3,7 @@
 *The Minimalist Video Editor*
 
 > [!IMPORTANT]  
-> GoZen is nowhere near done! Join the [discord server](https://discord.gg/BdbUf7VKYC) or look at the [Projects tab](https://github.com/users/voylin/projects/3) to know more about the development.
+> GoZen is nowhere near done! Join the [discord server](https://discord.gg/BdbUf7VKYC) or look at the [Projects tab](https://github.com/orgs/VoylinsGamedevJourney/projects/1) to know more about the development.
 
 
 ## What is GoZen 
