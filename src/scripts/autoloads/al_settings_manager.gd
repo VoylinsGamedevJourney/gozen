@@ -47,20 +47,20 @@ func set_debug_enabled(a_value: String) -> void:
 	_save_settings()
 
 
-func get_default_video_tracks() -> int:
+func get_default_video_track_amount() -> int:
 	return config.get_value("timeline", "default_video_tracks", 3)
 
 
-func set_default_video_tracks(a_default: int) -> void:
+func set_default_video_amount(a_default: int) -> void:
 	config.set_value("timeline", "default_video_tracks", a_default)
 	_save_settings()
 
 
-func get_default_audio_tracks() -> int:
+func get_default_audio_amount() -> int:
 	return config.get_value("timeline", "default_audio_tracks", 3)
 
 
-func set_default_audio_tracks(a_default: int) -> void:
+func set_default_audio_amount(a_default: int) -> void:
 	config.set_value("timeline", "default_audio_tracks", a_default)
 	_save_settings()
 
