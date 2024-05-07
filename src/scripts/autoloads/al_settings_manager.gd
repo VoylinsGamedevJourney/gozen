@@ -1,4 +1,4 @@
-extends Node
+extends DataHandler
 
 signal _on_language_changed
 
@@ -45,25 +45,13 @@ func _init() -> void:
 
 func _ready() -> void:
 	# Loading settings on startup
-	if FileAccess.file_exists(PATH):
-		var l_file: FileAccess = FileAccess.open(PATH, FileAccess.READ)
-		var l_data: Dictionary = str_to_var(l_file.get_as_text())
-		
-		for l_key: String in l_data.keys():
-			set(l_key, l_data[l_key])
+	load_data(PATH)
 	_loaded = true
 
 
 func save_settings() -> void:
-	if !_loaded:
-		return
-	var l_file: FileAccess = FileAccess.open(PATH, FileAccess.WRITE)
-	var l_data: Dictionary = {}
-	
-	for l_dic: Dictionary in get_property_list():
-		if (l_dic.usage == 4096 or l_dic.usage == 4102) and l_dic.name[0] != "_":
-			l_data[l_dic.name] = get(l_dic.name)
-	l_file.store_string(var_to_str(l_data))
+	if _loaded:
+		save_data(PATH)
 
 
 ##region #####################  Setters and getters  ############################

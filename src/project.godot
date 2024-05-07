@@ -56,7 +56,6 @@ folder_colors={
 "res://bin/gde_ffmpeg/": "purple",
 "res://scripts/": "blue",
 "res://scripts/autoloads/": "blue",
-"res://scripts/classes/": "blue",
 "res://translations/": "teal"
 }
 

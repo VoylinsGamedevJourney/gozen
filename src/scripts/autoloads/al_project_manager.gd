@@ -1,4 +1,4 @@
-extends Node
+extends DataHandler
 ## Project Manager
 
 
@@ -50,14 +50,7 @@ func new_project(a_title: String, a_path: String, a_resolution: Vector2i, a_fram
 
 
 func save_project() -> void:
-	var l_file: FileAccess = FileAccess.open(_project_path, FileAccess.WRITE)
-	var l_data: Dictionary = {}
-	
-	for l_dic: Dictionary in get_property_list():
-		if (l_dic.usage == 4096 or l_dic.usage == 4102) and l_dic.name[0] != "_":
-			l_data[l_dic.name] = get(l_dic.name)
-	
-	l_file.store_string(var_to_str(l_data))
+	save_data(_project_path)
 	_on_project_saved.emit()
 	set_unsaved_changes(false)
 
@@ -67,13 +60,7 @@ func load_project(a_path: String) -> void:
 		printerr("Can't load project, path has no '*.gozen' extension!")
 		return
 	set_project_path(a_path)
-	
-	var l_file: FileAccess = FileAccess.open(_project_path, FileAccess.READ)
-	var l_data: Dictionary = str_to_var(l_file.get_as_text())
-	
-	for l_key: String in l_data.keys():
-		set(l_key, l_data[l_key])
-	
+	load_data(_project_path)
 	_on_project_loaded.emit()
 
 
@@ -165,7 +152,6 @@ func add_clip(a_data: Dictionary) -> void:
 #endregion
 #region #####################  Recent Projects  ################################
 
-
 func _init() -> void:
 	if !FileAccess.file_exists("user://recent_projects"):
 		return
@@ -177,11 +163,11 @@ func _init() -> void:
 	var l_clean_data: Array = []
 	var l_existing_paths: PackedStringArray = []
 	
-	for l_entry: Array in get_recent_projects():
+	for l_entry: Array in _recent_projects:
 		if FileAccess.file_exists(l_entry[1]) and not l_entry[1] in l_existing_paths:
 			l_clean_data.append(l_entry)
 			l_existing_paths.append(l_entry[1])
-	if get_recent_projects() != l_clean_data:
+	if _recent_projects != l_clean_data:
 		_recent_projects = l_clean_data
 		save_recent_projects_data()
 
@@ -204,6 +190,6 @@ func update_project_entry(a_title: String, a_path: String) -> void:
 
 func save_recent_projects_data() -> void:
 	var l_file: FileAccess = FileAccess.open("user://recent_projects", FileAccess.WRITE)
-	l_file.store_string(var_to_str(get_recent_projects()))
+	l_file.store_string(var_to_str(_recent_projects))
 
 #endregion
