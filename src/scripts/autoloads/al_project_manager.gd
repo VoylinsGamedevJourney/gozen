@@ -4,32 +4,27 @@ extends Node
 
 signal _on_project_loaded
 signal _on_project_saved
-signal _on_unsaved_changes_changed(value: bool)
+signal _on_unsaved_changes_changed
 
-signal _on_title_changed(new_title: String)
-signal _on_resolution_changed(new_resolution: Vector2i)
-signal _on_framerate_changed(new_framerate: int)
+signal _on_title_changed
+signal _on_resolution_changed
+signal _on_framerate_changed
 
-signal _on_video_tracks_changed()
-signal _on_audio_tracks_changed()
+signal _on_video_tracks_changed
+signal _on_audio_tracks_changed
 
 
-var _recent_projects: Array = []: # [[title, path], ...]
-	get = get_recent_projects
+var _recent_projects: Array = [] # [[title, path], ...]
+var _file_data: Dictionary = {} # "Raw" file data
 
-var _unsaved_changes: bool = false:
-	set = set_unsaved_changes, get = get_unsaved_changes
-var _project_path: String = "":
-	set = set_project_path, get = get_project_path
+var _unsaved_changes: bool = false: set = set_unsaved_changes
+var _project_path: String = "": set = set_project_path
 
-var title: String = "":
-	set = set_title, get = get_title
+var title: String = "": set = set_title
 var current_ids: PackedInt64Array = [0,0] # [ File, Clip ]
 
-var resolution: Vector2i = Vector2i(0,0):
-	set = set_resolution, get = get_resolution
-var framerate: float = 30:
-	set = set_framerate, get = get_framerate
+var resolution: Vector2i = Vector2i(0,0): set = set_resolution
+var framerate: float = 30: set = set_framerate
 
 var video_tracks: Array = []
 var audio_tracks: Array = []
@@ -55,7 +50,7 @@ func new_project(a_title: String, a_path: String, a_resolution: Vector2i, a_fram
 
 
 func save_project() -> void:
-	var l_file: FileAccess = FileAccess.open(get_project_path(), FileAccess.WRITE)
+	var l_file: FileAccess = FileAccess.open(_project_path, FileAccess.WRITE)
 	var l_data: Dictionary = {}
 	
 	for l_dic: Dictionary in get_property_list():
@@ -69,11 +64,11 @@ func save_project() -> void:
 
 func load_project(a_path: String) -> void:
 	if a_path.split('.')[-1].to_lower() != "gozen":
-		Printer.error("Can't load project, path has no '*.gozen' extension!")
+		printerr("Can't load project, path has no '*.gozen' extension!")
 		return
 	set_project_path(a_path)
 	
-	var l_file: FileAccess = FileAccess.open(get_project_path(), FileAccess.READ)
+	var l_file: FileAccess = FileAccess.open(_project_path, FileAccess.READ)
 	var l_data: Dictionary = str_to_var(l_file.get_as_text())
 	
 	for l_key: String in l_data.keys():
@@ -84,17 +79,9 @@ func load_project(a_path: String) -> void:
 
 #region #####################  Setters & Getters  ##############################
 
-func get_recent_projects() -> Array:
-	return _recent_projects
-
-
 func set_unsaved_changes(a_value: bool) -> void:
 	_unsaved_changes = a_value
-	_on_unsaved_changes_changed.emit(a_value)
-
-
-func get_unsaved_changes() -> bool:
-	return _unsaved_changes
+	_on_unsaved_changes_changed.emit()
 
 
 func set_project_path(a_value: String) -> void:
@@ -104,19 +91,11 @@ func set_project_path(a_value: String) -> void:
 		_project_path = "%s.gozen" % a_value
 
 
-func get_project_path() -> String:
-	return _project_path
-
-
 func set_title(a_value: String) -> void:
 	title = a_value
-	_on_title_changed.emit(title)
-	update_project_entry(title, get_project_path())
+	_on_title_changed.emit()
+	update_project_entry(title, _project_path)
 	set_unsaved_changes(true)
-
-
-func get_title() -> String:
-	return title
 
 
 func increase_current_file_id() -> void:
@@ -141,18 +120,10 @@ func set_resolution(a_value: Vector2i) -> void:
 	set_unsaved_changes(true)
 
 
-func get_resolution() -> Vector2i:
-	return resolution
-
-
 func set_framerate(a_value: float) -> void:
 	framerate = a_value
 	_on_framerate_changed.emit()
 	set_unsaved_changes(true)
-
-
-func get_framerate() -> float:
-	return framerate
 
 
 func add_video_track() -> void:
@@ -163,7 +134,7 @@ func add_video_track() -> void:
 
 func add_audio_track() -> void:
 	audio_tracks.append({})
-	_on_audio_tracks_changed.emit(audio_tracks)
+	_on_audio_tracks_changed.emit()
 	set_unsaved_changes(true)
 
 

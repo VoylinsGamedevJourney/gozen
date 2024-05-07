@@ -22,9 +22,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Printer="*res://scripts/autoloads/al_printer.gd"
-ModuleManager="*res://scripts/autoloads/al_module_manager.gd"
 SettingsManager="*res://scripts/autoloads/al_settings_manager.gd"
+ModuleManager="*res://scripts/autoloads/al_module_manager.gd"
 ProjectManager="*res://scripts/autoloads/al_project_manager.gd"
 ActionHandler="*res://scripts/autoloads/al_action_handler.gd"
 DialogManager="*res://scripts/autoloads/al_dialog_manager.gd"

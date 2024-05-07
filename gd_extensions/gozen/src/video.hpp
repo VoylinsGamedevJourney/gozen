@@ -63,6 +63,8 @@ public:
 
 	inline Ref<AudioStreamWAV> get_audio() { return audio_stream_wav; }
 
+	inline float get_framerate() const { return av_q2d(av_codec_ctx->framerate) ? is_open: 0.0; }
+
 	inline int get_total_frame_nr() const { return total_frame_number;};
 	void _get_total_frame_nr();
 

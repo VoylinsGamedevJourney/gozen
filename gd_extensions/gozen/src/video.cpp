@@ -483,8 +483,8 @@ void Video::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("next_frame"), &Video::next_frame);
 	ClassDB::bind_method(D_METHOD("get_audio"), &Video::get_audio);
 
+	ClassDB::bind_method(D_METHOD("get_framerate"), &Video::get_framerate);
 	ClassDB::bind_method(D_METHOD("get_total_frame_nr"), &Video::get_total_frame_nr);
-
 	ClassDB::bind_method(D_METHOD("get_size"), &Video::get_size);
 
 	ClassDB::bind_static_method("Video", D_METHOD("get_video_file_meta", "a_file_path:String"), &Video::get_video_file_meta);
