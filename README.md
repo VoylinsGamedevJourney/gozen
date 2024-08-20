@@ -18,14 +18,14 @@ I have a list of goals which I would like to achieve with GoZen, as this is a pr
 
 The goals/values of GoZen are:
 
-- **Open source learning experience**, I'll try to do this with videos of it's development and explanations of how I implemented certain features;
-- **Free and Open source**, keep this project completely free and open source;
-- **Linux first**, as I am a linux user who had been struggling to find a good video which would fit my needs;
-- **Useful**, no crashes and provide the flexibility people want;
-- **Not too complex**, without losing functionality;
-- **Zen experience**, don't stress people who try to use GoZen by providing a _minimalist_ environment;
-- **Modular**, I use Godot for multiple reasons, but this also makes it very easy for people to create their own modules for the editor;
-- **Compete** with the big video editors.
+- **Open source learning experience**: I'll try to do this with videos of it's development and explanations of how I implemented certain features;
+- **Free and Open source**: keep this project completely free and open source;
+- **Linux first**: as I am a linux user who had been struggling to find a good video which would fit my needs;
+- **Useful**: no crashes and provide the flexibility people want;
+- **Not too complex**: without losing functionality;
+- **Zen experience**: don't stress people who try to use GoZen by providing a _minimalist_ environment;
+- **Modular**: I use Godot for multiple reasons, but this also makes it very easy for people to create their own modules for the editor;
+- **Compete**: with the big video editors.
 
 ### Competing with the big guys!
 
@@ -42,3 +42,5 @@ Read the [contributing documentation](CONTRIBUTING.md)!
 ## Follow the development
 
 If you want to stay up to date, go to our [discord server](https://discord.gg/BdbUf7VKYC) or follow me on [Voylin's Gamedev Journey](https://youtube.com/@voylinsgamedevjourney)!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
