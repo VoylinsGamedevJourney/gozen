@@ -1,0 +1,68 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="GoZen"
+config/description="A video editor made with FFmpeg and Godot with as goal to become the best modular video editor for Linux (and also usable on Windows)."
+run/main_scene="res://scenes/start_screen/start_scene.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="gozen"
+config/features=PackedStringArray("4.3", "Forward Plus")
+boot_splash/show_image=false
+config/icon="res://icon.svg"
+
+[autoload]
+
+ModuleManager="*res://globals/module_manager.gd"
+SettingsManager="*res://globals/settings_manager.gd"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/inferred_declaration=1
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
+gdscript/warnings/unsafe_cast=1
+gdscript/warnings/unsafe_call_argument=1
+gdscript/warnings/return_value_discarded=1
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/resizable=false
+window/size/borderless=true
+window/size/window_width_override=700
+window/size/window_height_override=500
+window/subwindows/embed_subwindows=false
+
+[file_customization]
+
+folder_colors={
+"res://modules/": "orange"
+}
+
+[filesystem]
+
+import/fbx2gltf/enabled=false
+import/blender/enabled=false
+
+[gui]
+
+theme/custom="res://theming/gozen_theme.tres"
+
+[internationalization]
+
+locale/include_text_server_data=true
+
+[rendering]
+
+renderer/rendering_method.web="forward_plus"
