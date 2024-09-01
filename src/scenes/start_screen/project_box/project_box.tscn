@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://q6xsd8gh5tiq"]
+
+[ext_resource type="LabelSettings" uid="uid://rltvy27kxyxb" path="res://scenes/start_screen/project_box/title_label_settings.tres" id="1_n2p5s"]
+[ext_resource type="Script" path="res://scenes/start_screen/project_box/project_box.gd" id="1_rg0qk"]
+[ext_resource type="LabelSettings" uid="uid://bngi0x712m4pa" path="res://scenes/start_screen/project_box/date_label_settings.tres" id="2_bto0r"]
+[ext_resource type="LabelSettings" uid="uid://dn5deftnqfwbr" path="res://scenes/start_screen/project_box/path_label_settings.tres" id="3_twj7a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fhadu"]
+content_margin_left = 7.0
+content_margin_top = 3.0
+content_margin_right = 7.0
+content_margin_bottom = 3.0
+bg_color = Color(0.34902, 0.34902, 0.34902, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="ProjectBox" type="PanelContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 62.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fhadu")
+script = ExtResource("1_rg0qk")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TITLE"
+label_settings = ExtResource("1_n2p5s")
+
+[node name="VBox" type="VBoxContainer" parent="VBox/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="CreationDateLabel" type="Label" parent="VBox/HBox/VBox"]
+layout_mode = 2
+text = "0000-00-00  00:00  Creation date"
+label_settings = ExtResource("2_bto0r")
+
+[node name="LastEditedLabel" type="Label" parent="VBox/HBox/VBox"]
+layout_mode = 2
+text = "0000-00-00  00:00  Last edited"
+label_settings = ExtResource("2_bto0r")
+
+[node name="PathLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Path: ..."
+label_settings = ExtResource("3_twj7a")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
