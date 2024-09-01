@@ -10,8 +10,10 @@ GoZen is an open-source video editor developed using the Godot game engine. The 
 
 To contribute to GoZen, make sure you have the following:
 
-- [The latest version of Godot (version 4+)](https://godotengine.org/download/);
+- [Godot 4.2.2](https://godotengine.org/download/);
 - [Familiarity with GDScript and Godot](https://docs.godotengine.org/en/stable/);
+
+The Godot version will most likely stay the most up to date stable release of Godot unless breaking bugs are present which would stop GoZen from working properly.
 
 ## How to Contribute
 
@@ -49,3 +51,4 @@ Discussions and questions related to GoZen can be held on the GitHub Discussions
 ## Additional Resources
 
 Currently, no specific coding conventions, style guidelines, documentation, tutorials, guidelines for writing tests, or code of conduct are available. These resources will be developed and added over time. However, your contributions are still highly encouraged and appreciated.
+

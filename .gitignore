@@ -13,7 +13,7 @@
 # Video files (for testing)
 *.mkv
 *.mp4
-*.webp
+*.webm
 
 
 # Python
@@ -58,3 +58,5 @@ config.log
 # Editors
 .vscode
 .idea
+
+ol_src

@@ -1,0 +1,444 @@
+# LANGUAGE translation for GoZen - Video Editor for the following files:
+# res://_layouts/layout_default/layout_default.tscn
+# res://_layouts/layout_render_menu/layout_render_menu.tscn
+# res://_layouts/layout_subtitle_manager/layout_subtitle_manager.tscn
+# res://_modules/media_pool/media_pool.tscn
+# res://_modules/project_view/project_view.tscn
+# res://_modules/timeline/audio_track_head/audio_track_head.tscn
+# res://_modules/timeline/time_marker/time_marker.tscn
+# res://_modules/timeline/timeline.tscn
+# res://_modules/timeline/video_track_head/video_track_head.tscn
+# res://addons/gengodot/gengodot.tscn
+# res://main/main.tscn
+# res://main/startup/startup.tscn
+# res://popups/add_editor_layout/add_editor_layout.tscn
+# res://popups/bug_report/bug_report.tscn
+# res://popups/project_settings_menu/project_settings_menu.tscn
+# res://popups/settings_menu/settings_menu.tscn
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen - Video Editor\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: res://_modules/project_view/project_view.tscn:52
+#: node=Button, type = text
+msgid "Pause"
+msgstr ""
+
+#: res://_modules/timeline/timeline.tscn:80
+#: node=Label, type = text
+msgid "00:00:00,00"
+msgstr ""
+
+#: res://_modules/timeline/audio_track_head/audio_track_head.tscn:15
+#: node=Label, type = text
+msgid "V1"
+msgstr ""
+
+#: res://_modules/media_pool/media_pool.tscn:23
+#: node=Button, type = text
+msgid "P"
+msgstr ""
+
+#: res://_modules/media_pool/media_pool.tscn:28
+#: node=Button, type = text
+msgid "G"
+msgstr ""
+
+#: res://_modules/media_pool/media_pool.tscn:35
+#: node=Button, type = text
+msgid "AF"
+msgstr ""
+
+#: res://addons/gengodot/gengodot.tscn:37
+#: node=Button, type = text
+msgid "Load Localization"
+msgstr ""
+
+#: res://addons/gengodot/gengodot.tscn:46
+#: node=Button, type = text
+msgid "Generate POT"
+msgstr ""
+
+#: res://addons/gengodot/gengodot.tscn:50
+#: node=Button, type = text
+msgid "Generate MO files"
+msgstr ""
+
+#: res://addons/gengodot/gengodot.tscn:63
+#: node=Label, type = text
+msgid "String context"
+msgstr ""
+
+#: res://addons/gengodot/gengodot.tscn:68
+#: node=Label, type = text
+msgid "Localization ID"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:53
+#: node=Label, type = text
+msgid "Project"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:62
+#: node=Label, type = text
+msgid "File name:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:70
+#: node=Label, type = text
+msgid "Location:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:82
+#: node=Button, type = text
+msgid "Browse"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:86
+#: node=Label, type = text
+msgid "Format:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:99
+#: node=Label, type = text
+msgid "Encoder"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:107
+#: node=Label, type = text
+msgid "Threads:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:120
+#: node=Label, type = text
+msgid "Quality:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:128
+#: node=Label, type = text
+msgid "Speed:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:146
+#: node=Label, type = text
+msgid "Render area"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:164
+#: node=Label, type = text
+msgid "Audio rendering"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:189
+#: node=Label, type = text
+msgid "Advanced settings"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:201
+#: node=Label, type = text
+msgid "Video Codec:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:210
+#: node=Label, type = text
+msgid "Audio codec:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:220
+#: node=Label, type = text
+msgid "* = hardware acceleration possible"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:233
+#: node=Button, type = text
+msgid "Export video only"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:238
+#: node=Button, type = text
+msgid "Export Audio only"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:243
+#: node=Button, type = text
+msgid "Export video"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:332
+#: node=Label, type = text
+msgid "Tags:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:339
+#: node=Label, type = text
+msgid "Video:"
+msgstr ""
+
+#: res://_layouts/layout_render_menu/layout_render_menu.tscn:346
+#: node=Label, type = text
+msgid "Audio:"
+msgstr ""
+
+#: res://popups/bug_report/bug_report.tscn:59
+#: node=Button, type = text
+msgid "Cancel"
+msgstr ""
+
+#: res://popups/bug_report/bug_report.tscn:37
+#: node=Label, type = text
+msgid "E-mail or discord name (not necessary)"
+msgstr ""
+
+#: res://popups/bug_report/bug_report.tscn:46
+#: node=Label, type = text
+msgid "Bug description:"
+msgstr ""
+
+#: res://popups/bug_report/bug_report.tscn:63
+#: node=Button, type = text
+msgid "Submit"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:36
+#: node=Label, type = text
+msgid "SETTINGS_TITLE_GENERAL"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:48
+#: node=Label, type = text
+msgid "SETTINGS_TEXT_LANGUAGE"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:
+#: node=OptionButton, type = text
+msgid "SETTINGS_TOOLTIP_SETTING_LANGUAGE"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:64
+#: node=Label, type = text
+msgid "SETTINGS_TITLE_TIMELINE"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:77
+#: node=Label, type = text
+msgid "SETTINGS_TEXT_DEFAULT_VIDEO_TRACKS"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:
+#: node=SpinBox, type = text
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_VIDEO_TRACKS"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:91
+#: node=Label, type = text
+msgid "SETTINGS_TEXT_DEFAULT_AUDIO_TRACKS"
+msgstr ""
+
+#: res://popups/settings_menu/settings_menu.tscn:
+#: node=SpinBox, type = text
+msgid "SETTINGS_TOOLTIP_SETTING_DEFAULT_AUDIO_TRACKS"
+msgstr ""
+
+#: res://popups/project_settings_menu/project_settings_menu.tscn:39
+#: node=Label, type = text
+msgid "PROJECT_SETTINGS_TITLE_GENERAL"
+msgstr ""
+
+#: res://main/startup/startup.tscn:289
+#: node=Label, type = text
+msgid "PROJECT_SETTINGS_TEXT_TITLE"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=LineEdit, type = text
+msgid "TOOLTIP_INPUT_PROJECT_TITLE"
+msgstr ""
+
+#: res://popups/project_settings_menu/project_settings_menu.tscn:62
+#: node=Label, type = text
+msgid "PROJECT_SETTINGS_TITLE_QUALITY"
+msgstr ""
+
+#: res://popups/project_settings_menu/project_settings_menu.tscn:74
+#: node=Label, type = text
+msgid "PROJECT_SETTINGS_TEXT_RESOLUTION"
+msgstr ""
+
+#: res://main/startup/startup.tscn:394
+#: node=Label, type = text
+msgid "x:"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=SpinBox, type = text
+msgid "TOOLTIP_INPUT_RESOLUTION_X"
+msgstr ""
+
+#: res://popups/project_settings_menu/project_settings_menu.tscn:98
+#: node=Label, type = text
+msgid "Y:"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=SpinBox, type = text
+msgid "TOOLTIP_INPUT_RESOLUTION_Y"
+msgstr ""
+
+#: res://main/startup/startup.tscn:465
+#: node=Label, type = text
+msgid "PROJECT_SETTINGS_TEXT_FRAMERATE"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=SpinBox, type = text
+msgid "TOOLTIP_INPUT_FPS"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=TextureButton, type = text
+msgid "STARTUP_TOOLTIP_EDITOR_BUTTON"
+msgstr ""
+
+#: res://main/startup/startup.tscn:90
+#: node=RichTextLabel, type = text
+msgid "[right]Image by [url=https://unsplash.com/photos/u27Rrbs9Dwc]Clay Banks via Unsplash[/url][/right]"
+msgstr ""
+
+#: res://main/startup/startup.tscn:102
+#: node=RichTextLabel, type = text
+msgid "Version: 0.0.0"
+msgstr ""
+
+#: res://main/startup/startup.tscn:121
+#: node=Label, type = text
+msgid "GoZen"
+msgstr ""
+
+#: res://main/startup/startup.tscn:142
+#: node=RichTextLabel, type = text
+msgid "[center][url=https://github.com/VoylinsGamedevJourney/GoZen]Update available[/url][/center]"
+msgstr ""
+
+#: res://main/startup/startup.tscn:165
+#: node=Label, type = text
+msgid "TITLE_RECENT_PROJECTS"
+msgstr ""
+
+#: res://main/startup/startup.tscn:178
+#: node=Button, type = text
+msgid "BUTTON_SHOW_ALL_PROJECTS"
+msgstr ""
+
+#: res://main/startup/startup.tscn:188
+#: node=Button, type = text
+msgid "BUTTON_OPEN_PROJECT"
+msgstr ""
+
+#: res://main/startup/startup.tscn:494
+#: node=Button, type = text
+msgid "BUTTON_CREATE_PROJECT"
+msgstr ""
+
+#: res://main/startup/startup.tscn:206
+#: node=Label, type = text
+msgid "TITLE_GETTING_STARTED"
+msgstr ""
+
+#: res://main/startup/startup.tscn:214
+#: node=Button, type = text
+msgid "BUTTON_MANUAL"
+msgstr ""
+
+#: res://main/startup/startup.tscn:221
+#: node=Button, type = text
+msgid "BUTTON_TUTORIALS"
+msgstr ""
+
+#: res://main/startup/startup.tscn:228
+#: node=Button, type = text
+msgid "BUTTON_DISCORD"
+msgstr ""
+
+#: res://main/startup/startup.tscn:240
+#: node=Button, type = text
+msgid "BUTTON_SUPPORT_PROJECT"
+msgstr ""
+
+#: res://main/startup/startup.tscn:488
+#: node=Button, type = text
+msgid "BUTTON_RETURN"
+msgstr ""
+
+#: res://main/startup/startup.tscn:278
+#: node=Label, type = text
+msgid "TITLE_NEW_PROJECT"
+msgstr ""
+
+#: res://main/startup/startup.tscn:300
+#: node=Label, type = text
+msgid "PROJECT_SETTINGS_TEXT_PATH"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=LineEdit, type = text
+msgid "TOOLTIP_INPUT_PROJECT_PATH"
+msgstr ""
+
+#: res://main/startup/startup.tscn:
+#: node=Button, type = text
+msgid "TOOLTIP_BUTTON_SELECT_PATH"
+msgstr ""
+
+#: res://main/startup/startup.tscn:342
+#: node=Button, type = text
+msgid "HD"
+msgstr ""
+
+#: res://main/startup/startup.tscn:350
+#: node=Button, type = text
+msgid "FHD"
+msgstr ""
+
+#: res://main/startup/startup.tscn:358
+#: node=Button, type = text
+msgid "4K"
+msgstr ""
+
+#: res://main/startup/startup.tscn:366
+#: node=Button, type = text
+msgid "8K"
+msgstr ""
+
+#: res://main/startup/startup.tscn:377
+#: node=Button, type = text
+msgid "H"
+msgstr ""
+
+#: res://main/startup/startup.tscn:385
+#: node=Button, type = text
+msgid "V"
+msgstr ""
+
+#: res://main/startup/startup.tscn:410
+#: node=Label, type = text
+msgid "y:"
+msgstr ""
+
+#: res://main/startup/startup.tscn:442
+#: node=Button, type = text
+msgid "30"
+msgstr ""
+
+#: res://main/startup/startup.tscn:450
+#: node=Button, type = text
+msgid "60"
+msgstr ""
+
+#: res://main/startup/startup.tscn:458
+#: node=Button, type = text
+msgid "120"
+msgstr ""

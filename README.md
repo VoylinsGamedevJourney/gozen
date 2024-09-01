@@ -1,16 +1,20 @@
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
+
+<img src="./assets/logo.svg" alt="GoZen Logo" width="300"/>
+
+
 # GoZen
 
 *The Minimalist Video Editor*
 
 > [!IMPORTANT]  
-> GoZen is nowhere near done! Join the [discord server](https://discord.gg/BdbUf7VKYC) or look at the [Projects tab](https://github.com/orgs/VoylinsGamedevJourney/projects/1) to know more about the development.
+> GoZen is in Alpha at the moment and nowhere near done! Join the [discord server](https://discord.gg/BdbUf7VKYC) to stay up to date and to talk with the people who make this video editor possible! There is too much to do so I don't really bother with a roadmap as maintaining that will just get in the way. ^^"
 
+## What is GoZen?
 
-## What is GoZen 
+GoZen is inteded to become a minimalistic, but modular, video editor with the main supported OS being Linux. But thanks to using Godot, a Windows build is also available. MacOS isn't supported yet as I don't even earn enough to pay for food, let alone buying a Mac XD.
 
-I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. Basically, the name implies that the video editor is made in Godot, and that it should be a _zen_ experience to use it.
-
-（午前）Gozen also means morning in Japanese, so the logo represents a rising sun.
+I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. Basically, the name implies that the video editor is made in Godot, and that it should be a _zen_ experience to use it. （午前）Gozen also means morning in Japanese, so the logo represents a rising sun. I'm quite a morning person and seeing the sunrise always makes me feel like I'll have a productive day.
 
 ### Goals
 
@@ -37,10 +41,12 @@ It is highly possible that we will first have a working version of the editor fo
 
 ## Want to contribute?
 
-Read the [contributing documentation](CONTRIBUTING.md)!
+Read the [contributing documentation](./CONTRIBUTING.md)!
 
 ## Follow the development
 
 If you want to stay up to date, go to our [discord server](https://discord.gg/BdbUf7VKYC) or follow me on [Voylin's Gamedev Journey](https://youtube.com/@voylinsgamedevjourney)!
+
+> This software uses libraries from the FFmpeg project under the LGPLv2.1
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
