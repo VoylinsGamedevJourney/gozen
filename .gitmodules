@@ -1,6 +1,6 @@
 [submodule "godot-cpp"]
-	path = gd_extensions/godot_cpp
+	path = godot_cpp
 	url = git@github.com:godotengine/godot-cpp.git
 [submodule "ffmpeg"]
-	path = gd_extensions/gozen/ffmpeg
+	path = ffmpeg
 	url = git@github.com:FFmpeg/FFmpeg.git
