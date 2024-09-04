@@ -8,12 +8,12 @@ env = SConscript('godot_cpp/SConstruct')
 env.Append(CPPPATH=['gde_gozen'])
 
 
-platform = ARGUMENTS('platform', 'linux')
+platform = ARGUMENTS.get('platform', 'linux')
 target = ARGUMENTS.get('target', 'template_debug').replace('template_', '')
 jobs = ARGUMENTS.get('jobs', 4)
+compile_ffmpeg = ARGUMENTS.get('compile_ffmpeg', 'false')
 
-
-ffmpeg_args = '--disable-shared --enable-gpl --enable-static'
+ffmpeg_args = '--enable-shared --enable-gpl'
 
 ffmpeg_args += ' --disable-postproc'
 ffmpeg_args += ' --disable-avfilter'
@@ -36,6 +36,15 @@ os.makedirs(f'bin/{platform}/{target}', exist_ok=True)
 
 
 if 'linux' in platform:
+    if compile_ffmpeg != 'false':
+        os.chdir('ffmpeg')
+        os.system(f'./configure --prefix=./bin {ffmpeg_args} --target-os=linux')
+        time.sleep(4)
+
+        os.system(f'make -j {jobs}')
+        os.system(f'make -j {jobs} install')
+        os.chdir('..')
+
     env.Append(LINKFLAGS=['-static-libstdc++'])
     env.Append(CPPFLAGS=['-Iffmpeg/bin', '-Iffmpeg/bin/include'])
     env.Append(LIBPATH=[
@@ -47,33 +56,26 @@ if 'linux' in platform:
         'ffmpeg/bin/include/libswscale',
         'ffmpeg/bin/lib'])
 
-    os.chdir('ffmpeg')
-    ffmpeg_args += ' --extra-cflags="-fPic" --extra-ldflags="-fpic"'
-    os.system(f'./configure --prefix=./bin {ffmpeg_args} --target-os=linux')
-    time.sleep(4)
 
-    os.system(f'make -j {jobs}')
-    os.system(f'make -j {jobs} install')
-    os.chdir('..')
-
-    env.Append(LIBS=['avcodec', 'avformat', 'avdevice', 'avutil', 'swresample', 'swscale'])
     os.system(f'cp ffmpeg/bin/lib/lib*.so* bin/{platform}/{target}')
+    env.Append(LIBS=['avcodec', 'avformat', 'avdevice', 'avutil', 'swresample', 'swscale'])
 elif 'windows' in platform:
-    if os_platform.system().lower() == 'linux':
-        ffmpeg_args += ' --cross-prefix=x86_64-w64-mingw32- --target-os=mingw32'
-        ffmpeg_args += ' --enable-cross-compile'
-        ffmpeg_args += ' --extra-ldflags="-static"'
-    else:
-        ffmpeg_args += ' --target-os=windows'
+    if compile_ffmpeg != 'false':
+        if os_platform.system().lower() == 'linux':
+            ffmpeg_args += ' --cross-prefix=x86_64-w64-mingw32- --target-os=mingw32'
+            ffmpeg_args += ' --enable-cross-compile'
+            ffmpeg_args += ' --extra-ldflags="-static"'
+        else:
+            ffmpeg_args += ' --target-os=windows'
 
-    os.chdir('ffmpeg')
-    os.environ['PATH'] = '/opt/bin:' + os.environ['PATH']
-    os.system(f'./configure --prefix=./bin {ffmpeg_args}')
-    time.sleep(4)
+        os.chdir('ffmpeg')
+        os.environ['PATH'] = '/opt/bin:' + os.environ['PATH']
+        os.system(f'./configure --prefix=./bin {ffmpeg_args}')
+        time.sleep(4)
 
-    os.system(f'make -j {jobs}')
-    os.system(f'make -j {jobs} install')
-    os.chdir('..')
+        os.system(f'make -j {jobs}')
+        os.system(f'make -j {jobs} install')
+        os.chdir('..')
 
     if os_platform.system().lower() == 'windows':
         env.Append(LIBS=[
@@ -93,7 +95,8 @@ elif 'windows' in platform:
     src = Glob('src/*.cpp')
 
 
-libpath = 'bin/{}/{}/lib{}{}{}'.format(platform, target, libname, env['suffix'], env['SHLIBSUFFIX'])
+src = Glob('gde_gozen/*.cpp')
+libpath = 'bin/{}/{}/libgozen{}{}'.format(platform, target, env['suffix'], env['SHLIBSUFFIX'])
 sharedlib = env.SharedLibrary(libpath, src)
 Default(sharedlib)
 
