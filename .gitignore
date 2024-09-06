@@ -3,8 +3,6 @@
 .import/
 *.translation
 *.mo
-/bin/
-/gd_extensions/bin/
 
 # Linux dot files
 .directory
@@ -14,52 +12,21 @@
 *.mp4
 *.webm
 
-
 # Python
 __pycache__
 *.pyc
+
 ## Scons
 .sconsign.dblite
 config.log
 .sconf_temp
 .scons-cache
+.cache
 
 
 # C++ ignores
-## Prerequisites
-*.d
-## Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-## Precompiled Headers
-*.gch
-*.pch
-## Compiled Dynamic libraries
-*.so
-*.os
-*.dylib
-*.dll
-## Fortran module files
-*.mod
-*.smod
-## Compiled Static libraries
-*.lai
-*.la
-*.a
+*.so*
 *.lib
-## Executables
-*.exe
-*.out
-*.app
 
-
-# Editors
-.vscode
-.idea
-
-
-.cache
-
+# Temporary
 ol_src

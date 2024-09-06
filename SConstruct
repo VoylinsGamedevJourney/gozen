@@ -12,10 +12,10 @@ jobs = ARGUMENTS.get('jobs', 4)
 arch = ARGUMENTS.get('arch', 'x86_64')
 target = ARGUMENTS.get('target', 'template_debug').replace('template_', '')
 platform = ARGUMENTS.get('platform', 'linux')
+recompile_ffmpeg = ARGUMENTS.get('recompile_ffmpeg', 'yes')
 
 ffmpeg_args = '--enable-shared --enable-gpl'
 
-ffmpeg_args = '--enable-shared'
 ffmpeg_args += ' --disable-postproc'
 ffmpeg_args += ' --disable-avfilter'
 ffmpeg_args += ' --disable-programs --disable-ffmpeg --disable-ffplay --disable-ffprobe'
@@ -28,6 +28,7 @@ ffmpeg_args += ' --enable-libopus'
 ffmpeg_args += ' --enable-libdav1d'
 ffmpeg_args += ' --enable-libtheora'
 ffmpeg_args += ' --enable-libwebp'
+
 ffmpeg_args += ' --quiet'
 ffmpeg_args += f' --arch={arch}'
 
@@ -42,15 +43,15 @@ if 'linux' in platform:
     else:  # For people needing FFmpeg binaries
         platform += '_full'
         os.makedirs(f'bin/{platform}/{target}', exist_ok=True)
-        if ARGUMENTS.get('recompile_ffmpeg', 'yes') == 'yes':
+        if recompile_ffmpeg == 'yes':
             ffmpeg_args += ' --extra-cflags="-fPIC" --extra-ldflags="-fpic"'
 
             os.chdir('gde_gozen/ffmpeg')
             os.system('make distclean')
-            time.sleep(5)
+            time.sleep(2)
 
             os.system(f'./configure --prefix=./bin {ffmpeg_args} --target-os=linux')
-            time.sleep(5)
+            time.sleep(2)
 
             os.system(f'make -j {jobs}')
             os.system(f'make -j {jobs} install')
@@ -77,7 +78,7 @@ if 'linux' in platform:
             'swscale'])
 elif 'windows' in platform:
     os.makedirs(f'bin/{platform}/{target}', exist_ok=True)
-    if ARGUMENTS.get('recompile_ffmpeg', 'yes') == 'yes':
+    if recompile_ffmpeg == 'yes':
         if os_platform.system().lower() == 'linux':
             ffmpeg_args += ' --cross-prefix=x86_64-w64-mingw32- --target-os=mingw32'
             ffmpeg_args += ' --enable-cross-compile'
@@ -88,11 +89,11 @@ elif 'windows' in platform:
 
         os.chdir('gde_gozen/ffmpeg')
         os.system('make distclean')
-        time.sleep(5)
+        time.sleep(2)
 
         os.environ['PATH'] = '/opt/bin:' + os.environ['PATH']
         os.system(f'./configure --prefix=./bin {ffmpeg_args}')
-        time.sleep(5)
+        time.sleep(2)
 
         os.system(f'make -j {jobs}')
         os.system(f'make -j {jobs} install')
