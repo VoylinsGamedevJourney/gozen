@@ -1,0 +1,3 @@
+[submodule "gde_gozen"]
+	path = gde_gozen
+	url = git@github.com:VoylinsGamedevJourney/gde_gozen.git

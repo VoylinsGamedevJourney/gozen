@@ -9,7 +9,6 @@
 # Linux dot files
 .directory
 
-
 # Video files (for testing)
 *.mkv
 *.mp4
@@ -23,6 +22,7 @@ __pycache__
 .sconsign.dblite
 config.log
 .sconf_temp
+.scons-cache
 
 
 # C++ ignores
