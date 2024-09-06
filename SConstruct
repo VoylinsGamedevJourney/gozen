@@ -92,7 +92,6 @@ elif 'windows' in platform:
     env.Append(LIBPATH=['ffmpeg/bin/bin'])
 
     os.system(f'cp ffmpeg/bin/bin/*.dll bin/{platform}/{target}')
-    src = Glob('src/*.cpp')
 
 
 src = Glob('gde_gozen/*.cpp')
