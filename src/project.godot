@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GoZen"
 config/description="A video editor made with FFmpeg and Godot with as goal to become the best modular video editor for Linux (and also usable on Windows)."
-config/version="2024-09-01_alpha"
+config/version="2024-09-07_alpha"
 run/main_scene="res://scenes/start_screen/start_scene.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"

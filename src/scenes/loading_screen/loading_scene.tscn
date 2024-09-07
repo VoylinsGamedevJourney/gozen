@@ -199,16 +199,16 @@ flat = true
 
 [node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 0
 
 [node name="LoadingLabel" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = " Loading: ..."
+text = " Loading:"
 label_settings = SubResource("LabelSettings_uqp6m")
 
 [node name="LoadingTextLabel" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+label_settings = SubResource("LabelSettings_uqp6m")
 text_overrun_behavior = 1
 
 [node name="Timer" type="Timer" parent="."]
