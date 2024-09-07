@@ -12,6 +12,9 @@ signal _on_track_removed(track_id: int)
 
 signal _on_framerate_changed(value: int)
 
+signal _on_clip_added(clip_id: int)
+signal _on_clip_removed.emit(track_id, pts)
+
 
 #------------------------------------------------ TEMPORARY VARIABLES
 var _project_path: String = ""
@@ -26,6 +29,7 @@ var framerate: int = 30: set = set_framerate
 
 var files: Dictionary = {}
 var tracks: Array[Dictionary] = []
+var clips: Dictionary = {}
 
 var counter_file_id: int = 0
 var counter_clip_id: int = 0
@@ -70,6 +74,8 @@ func set_framerate(a_value: int) -> void:
 			_calculate_duration_video(l_id)
 		elif files[l_id].type == File.AUDIO:
 			_calculate_duration_audio(l_id)
+	
+	# TODO: Change all the clip durations so the timeline doesn't get messed up
 
 	_on_framerate_changed.emit(a_value)
 
@@ -111,7 +117,7 @@ func add_file(a_path: String) -> void:
 	l_file.id = counter_file_id
 	files[l_file.id] = l_file
 	if !add_file_data(l_file.id):
-		if files.erase(l_file.id):
+		if !files.erase(l_file.id):
 			printerr("Couldn't erase %s from files!" % l_file.id)
 		printerr("File data could not be loaded!")
 		return
@@ -184,4 +190,60 @@ func remove_track(a_id: int) -> void:
 	_tracks_data.remove_at(a_id)
 	_on_track_removed.emit(a_id)
 
+
+#------------------------------------------------ CLIP HANDLING
+func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
+	counter_clip_id += 1
+	var clip_id: int = counter_clip_id
+
+	clips[clip_id] = ClipData.new()
+	clips[clip_id].id = clip_id
+	clips[clip_id].file_id = a_file_id
+	clips[clip_id].pts = a_pts
+	clips[clip_id].duration = files[a_file_id].duration
+	clips[clip_id].start = 0
+	clips[clip_id].end = files[a_file_id].duration
+	clips[clip_id].track_id = a_track_id
+	tracks[a_track_id][a_pts] = clip_id
+
+	_on_clip_added.emit(clip_id)
+
+
+func move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
+	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
+		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
+	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
+
+	tracks[a_new_track_id][a_new_pts] = a_clip_id
+	clips[a_clip_id].pts = a_new_pts
+	_on_clip_added.emit(a_clip_id)
+
+
+func remove_clip(a_clip_id: int) -> void:
+	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
+		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
+	if !clips.erase(a_clip_id):
+		printerr("Couln't remove clip id %s from clips!" % a_clip_id)	
+	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
+
+
+func resize_clip(a_clip_id: int, a_duration: int, a_left: bool) -> void:
+	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
+		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
+	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
+
+	var l_old_duration: int = clips[a_clip_id].duration
+	var l_difference: int = a_duration - l_old_duration
+	clips[a_clip_id].duration = a_duration
+	
+	if a_left:
+		clips[a_clip_id].pts = clips[a_clip_id].pts - l_difference
+
+	if files[clips[a_clip_id].file_id].type in [File.AUDIO, File.VIDEO]:
+		if a_left:
+			clips[a_clip_id].start -= l_difference
+		else:
+			clips[a_clip_id].end += l_difference
+
+	_on_clip_added.emit(a_clip_id)
 
