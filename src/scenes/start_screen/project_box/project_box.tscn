@@ -16,13 +16,17 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
-[node name="ProjectBox" type="PanelContainer"]
+[node name="ProjectBox" type="PanelContainer" node_paths=PackedStringArray("title_label", "creation_date_label", "last_edited_date_label", "path_label")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 62.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_fhadu")
 script = ExtResource("1_rg0qk")
+title_label = NodePath("VBox/HBox/TitleLabel")
+creation_date_label = NodePath("VBox/HBox/VBox/CreationDateLabel")
+last_edited_date_label = NodePath("VBox/HBox/VBox/LastEditedLabel")
+path_label = NodePath("VBox/PathLabel")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -33,6 +37,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="VBox/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 text = "TITLE"
 label_settings = ExtResource("1_n2p5s")
 
@@ -43,16 +48,19 @@ alignment = 2
 
 [node name="CreationDateLabel" type="Label" parent="VBox/HBox/VBox"]
 layout_mode = 2
+mouse_filter = 1
 text = "0000-00-00  00:00  Creation date"
 label_settings = ExtResource("2_bto0r")
 
 [node name="LastEditedLabel" type="Label" parent="VBox/HBox/VBox"]
 layout_mode = 2
+mouse_filter = 1
 text = "0000-00-00  00:00  Last edited"
 label_settings = ExtResource("2_bto0r")
 
 [node name="PathLabel" type="Label" parent="VBox"]
 layout_mode = 2
+mouse_filter = 1
 text = "Path: ..."
 label_settings = ExtResource("3_twj7a")
 

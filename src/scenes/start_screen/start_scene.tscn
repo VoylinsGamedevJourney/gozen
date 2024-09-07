@@ -1,10 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://buykwt2otvgic"]
+[gd_scene load_steps=17 format=3 uid="uid://buykwt2otvgic"]
 
 [ext_resource type="Script" path="res://scenes/start_screen/start_scene.gd" id="1_p3vev"]
 [ext_resource type="Texture2D" uid="uid://3svb07jeroqt" path="res://assets/icons/close.png" id="2_yle7i"]
 [ext_resource type="Texture2D" uid="uid://cniq52xnmkh71" path="res://assets/icons/support.png" id="3_0fvpy"]
-[ext_resource type="Texture2D" uid="uid://gtqb1ghm6u26" path="res://assets/icons/list.png" id="3_yx1dh"]
 [ext_resource type="Texture2D" uid="uid://ji1vcakvv7tu" path="res://assets/icons/file_add.png" id="4_kwb5a"]
+[ext_resource type="Texture2D" uid="uid://0tl1eb2x143q" path="res://assets/icons/folder_open.svg" id="4_manxb"]
 [ext_resource type="Texture2D" uid="uid://ba7bkpt16brh7" path="res://assets/icons/settings.png" id="4_st3fs"]
 [ext_resource type="Texture2D" uid="uid://cikf0wqv0g643" path="res://assets/header_images/header_1.webp" id="7_dvbdg"]
 
@@ -24,14 +24,6 @@ border_blend = true
 [sub_resource type="LabelSettings" id="LabelSettings_0xffm"]
 font_size = 30
 
-[sub_resource type="Gradient" id="Gradient_ueitc"]
-colors = PackedColorArray(0.0941176, 0.0941176, 0.0941176, 0.0784314, 0.0941176, 0.0941176, 0.0941176, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_46hie"]
-gradient = SubResource("Gradient_ueitc")
-fill_from = Vector2(0, 0.504587)
-fill_to = Vector2(0, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dgutb"]
 content_margin_top = 8.0
 content_margin_bottom = 8.0
@@ -44,9 +36,9 @@ corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_31da4"]
 color = Color(1, 1, 1, 0.0235294)
-grow_begin = 7.0
+grow_begin = 14.0
 grow_end = 0.0
-thickness = 2
+thickness = 4
 
 [sub_resource type="Gradient" id="Gradient_dglh3"]
 colors = PackedColorArray(1, 1, 1, 1, 0.0937819, 0.0937819, 0.0937819, 1)
@@ -66,17 +58,24 @@ corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hvkrh"]
-content_margin_left = 3.0
-content_margin_top = 3.0
-content_margin_right = 3.0
-content_margin_bottom = 3.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rkjp0"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pgveb"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
 
-[node name="StartScreen" type="PanelContainer" node_paths=PackedStringArray("tab_container", "tab_recent_projects", "tab_all_projects")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j365j"]
+content_margin_left = 40.0
+content_margin_top = 16.0
+content_margin_right = 40.0
+content_margin_bottom = 30.0
+bg_color = Color(0.34902, 0.34902, 0.34902, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="StartScreen" type="PanelContainer" node_paths=PackedStringArray("all_projects", "new_project_panel", "title_line_edit", "path_line_edit", "resolution_x_spin_box", "resolution_y_spin_box", "framerate_spin_box")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -84,115 +83,95 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nirm4")
 script = ExtResource("1_p3vev")
-tab_container = NodePath("VBox/MainContainer/PanelContainer/TextureRect/CenterContainer")
-tab_recent_projects = NodePath("VBox/MainContainer/PanelContainer/TextureRect/CenterContainer/RecentProjectsTab")
-tab_all_projects = NodePath("VBox/MainContainer/PanelContainer/TextureRect/CenterContainer/AllProjectsTab/AllProjectsVBox")
+all_projects = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/AllProjectsTab/AllProjectsVBox")
+new_project_panel = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel")
+title_line_edit = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/TitleLineEdit")
+path_line_edit = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/PathHBox/PathLineEdit")
+resolution_x_spin_box = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/ResolutionHBox/ResolutionXSpinBox")
+resolution_y_spin_box = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/ResolutionHBox/ResolutionYSpinBox")
+framerate_spin_box = NodePath("MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/FramerateHBox/FramerateSpinBox")
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="MainVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="TopBar" type="HBoxContainer" parent="VBox"]
+[node name="TopBar" type="HBoxContainer" parent="MainVBox"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="VBox/TopBar"]
-clip_children = 2
+[node name="Title" type="Label" parent="MainVBox/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "GoZen - Project manager"
 label_settings = SubResource("LabelSettings_0xffm")
 
-[node name="TextureRect" type="TextureRect" parent="VBox/TopBar/Title"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture2D_46hie")
-expand_mode = 1
-
-[node name="ExitButton" type="TextureButton" parent="VBox/TopBar"]
+[node name="ExitButton" type="TextureButton" parent="MainVBox/TopBar"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture_normal = ExtResource("2_yle7i")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="MainContainer" type="HBoxContainer" parent="VBox"]
+[node name="MainHBox" type="HBoxContainer" parent="MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LeftPanel" type="PanelContainer" parent="VBox/MainContainer"]
-custom_minimum_size = Vector2(175, 0)
+[node name="LeftPanel" type="PanelContainer" parent="MainVBox/MainHBox"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dgutb")
 
-[node name="VBox" type="VBoxContainer" parent="VBox/MainContainer/LeftPanel"]
+[node name="ButtonsVBox" type="VBoxContainer" parent="MainVBox/MainHBox/LeftPanel"]
 layout_mode = 2
 
-[node name="RecentProjectsButton" type="Button" parent="VBox/MainContainer/LeftPanel/VBox"]
+[node name="NewProjectButton" type="TextureButton" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
+custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
-text = "Recent projects"
-icon = ExtResource("3_yx1dh")
-flat = true
-alignment = 0
-expand_icon = true
+texture_normal = ExtResource("4_kwb5a")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="NewProjectButton" type="Button" parent="VBox/MainContainer/LeftPanel/VBox"]
+[node name="OpenProjectButton" type="TextureButton" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
+custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
-text = "New project"
-icon = ExtResource("4_kwb5a")
-flat = true
-alignment = 0
-expand_icon = true
+texture_normal = ExtResource("4_manxb")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="HSeparator2" type="HSeparator" parent="VBox/MainContainer/LeftPanel/VBox"]
+[node name="HSeparator2" type="HSeparator" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
 clip_children = 2
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_31da4")
 
-[node name="TextureRect" type="TextureRect" parent="VBox/MainContainer/LeftPanel/VBox/HSeparator2"]
+[node name="TextureRect" type="TextureRect" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox/HSeparator2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -7.0
+offset_left = -14.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture1D_ido5w")
 expand_mode = 1
 
-[node name="AllProjectsButton" type="Button" parent="VBox/MainContainer/LeftPanel/VBox"]
-layout_mode = 2
-text = "All projects"
-flat = true
-alignment = 0
-
-[node name="Spacer" type="Control" parent="VBox/MainContainer/LeftPanel/VBox"]
+[node name="Spacer" type="Control" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HSeparator1" type="HSeparator" parent="VBox/MainContainer/LeftPanel/VBox"]
+[node name="HSeparator1" type="HSeparator" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
 clip_children = 2
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_31da4")
 
-[node name="TextureRect" type="TextureRect" parent="VBox/MainContainer/LeftPanel/VBox/HSeparator1"]
+[node name="TextureRect" type="TextureRect" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox/HSeparator1"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -7.0
+offset_left = -14.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture1D_ido5w")
 expand_mode = 1
 
-[node name="BottomButtonsHBox" type="HBoxContainer" parent="VBox/MainContainer/LeftPanel/VBox"]
-layout_mode = 2
-alignment = 1
-
-[node name="SupportButton" type="TextureButton" parent="VBox/MainContainer/LeftPanel/VBox/BottomButtonsHBox"]
+[node name="SupportButton" type="TextureButton" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -201,7 +180,7 @@ texture_normal = ExtResource("3_0fvpy")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="SettingsButton" type="TextureButton" parent="VBox/MainContainer/LeftPanel/VBox/BottomButtonsHBox"]
+[node name="SettingsButton" type="TextureButton" parent="MainVBox/MainHBox/LeftPanel/ButtonsVBox"]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -210,13 +189,13 @@ texture_normal = ExtResource("4_st3fs")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="PanelContainer" type="Panel" parent="VBox/MainContainer"]
+[node name="ContentPanel" type="Panel" parent="MainVBox/MainHBox"]
 clip_children = 1
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_gseux")
 
-[node name="TextureRect" type="TextureRect" parent="VBox/MainContainer/PanelContainer"]
+[node name="TextureRect" type="TextureRect" parent="MainVBox/MainHBox/ContentPanel"]
 self_modulate = Color(1, 1, 1, 0.113725)
 layout_mode = 1
 anchors_preset = 15
@@ -229,42 +208,135 @@ texture = ExtResource("7_dvbdg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CenterContainer" type="TabContainer" parent="VBox/MainContainer/PanelContainer/TextureRect"]
+[node name="AllProjectsTab" type="ScrollContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_hvkrh")
-current_tab = 0
-tabs_visible = false
-
-[node name="RecentProjectsTab" type="VBoxContainer" parent="VBox/MainContainer/PanelContainer/TextureRect/CenterContainer"]
-layout_mode = 2
-metadata/_tab_index = 0
-
-[node name="NewProjectTab" type="PanelContainer" parent="VBox/MainContainer/PanelContainer/TextureRect/CenterContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_rkjp0")
-metadata/_tab_index = 1
-
-[node name="AllProjectsTab" type="ScrollContainer" parent="VBox/MainContainer/PanelContainer/TextureRect/CenterContainer"]
-visible = false
-layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pgveb")
-metadata/_tab_index = 2
 
-[node name="AllProjectsVBox" type="VBoxContainer" parent="VBox/MainContainer/PanelContainer/TextureRect/CenterContainer/AllProjectsTab"]
+[node name="AllProjectsVBox" type="VBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/AllProjectsTab"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[connection signal="pressed" from="VBox/TopBar/ExitButton" to="." method="_on_exit_button_pressed"]
-[connection signal="pressed" from="VBox/MainContainer/LeftPanel/VBox/RecentProjectsButton" to="." method="_on_recent_projects_button_pressed"]
-[connection signal="pressed" from="VBox/MainContainer/LeftPanel/VBox/NewProjectButton" to="." method="_on_new_project_button_pressed"]
-[connection signal="pressed" from="VBox/MainContainer/LeftPanel/VBox/AllProjectsButton" to="." method="_on_all_projects_button_pressed"]
-[connection signal="pressed" from="VBox/MainContainer/LeftPanel/VBox/BottomButtonsHBox/SupportButton" to="." method="_on_support_button_pressed"]
-[connection signal="pressed" from="VBox/MainContainer/LeftPanel/VBox/BottomButtonsHBox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[node name="NewProjectPanel" type="PanelContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Screen" type="PanelContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_j365j")
+
+[node name="VBox" type="VBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="NewProjectTitle" type="Label" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create project"
+label_settings = SubResource("LabelSettings_0xffm")
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="TitleLabel" type="Label" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer"]
+layout_mode = 2
+text = "Project title"
+
+[node name="TitleLineEdit" type="LineEdit" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer"]
+layout_mode = 2
+text = "Project path"
+
+[node name="PathHBox" type="HBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer"]
+layout_mode = 2
+
+[node name="PathLineEdit" type="LineEdit" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/PathHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectProjectPathButton" type="Button" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/PathHBox"]
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+icon = ExtResource("4_manxb")
+expand_icon = true
+
+[node name="ResolutionLabel" type="Label" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer"]
+layout_mode = 2
+text = "Resolution"
+
+[node name="HBox" type="HBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ResolutionHBox" type="HBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResolutionXSpinBox" type="SpinBox" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/ResolutionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 100000.0
+value = 1920.0
+alignment = 1
+
+[node name="ResolutionYSpinBox" type="SpinBox" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/ResolutionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 100000.0
+value = 1080.0
+alignment = 1
+
+[node name="FramerateHBox" type="HBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox"]
+layout_mode = 2
+
+[node name="FramerateLabel" type="Label" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/FramerateHBox"]
+layout_mode = 2
+text = "FPS"
+
+[node name="FramerateSpinBox" type="SpinBox" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/HBox/FramerateHBox"]
+layout_mode = 2
+min_value = 1.0
+max_value = 400.0
+value = 30.0
+alignment = 1
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="CreateButton" type="Button" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create project"
+
+[connection signal="pressed" from="MainVBox/TopBar/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/LeftPanel/ButtonsVBox/NewProjectButton" to="." method="_on_new_project_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/LeftPanel/ButtonsVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/LeftPanel/ButtonsVBox/SupportButton" to="." method="_on_support_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/LeftPanel/ButtonsVBox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/GridContainer/PathHBox/SelectProjectPathButton" to="." method="_on_select_project_path_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/ButtonsHBox/CancelButton" to="." method="_on_cancel_create_project_button_pressed"]
+[connection signal="pressed" from="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel/Screen/VBox/ButtonsHBox/CreateButton" to="." method="_on_create_project_button_pressed"]
