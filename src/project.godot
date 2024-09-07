@@ -26,7 +26,7 @@ GoZenServer="*res://globals/gozen_server.gd"
 ModuleManager="*res://globals/module_manager.gd"
 SettingsManager="*res://globals/settings_manager.gd"
 RecentProjectsManager="*res://globals/recent_projects_manager.gd"
-ProjectManager="*res://globals/project_manager.gd"
+Project="*res://globals/project.gd"
 
 [debug]
 
