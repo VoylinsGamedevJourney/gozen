@@ -2,7 +2,7 @@ class_name DataManager
 extends Node
 
 
-func save_data(a_path: String) -> int:
+func _save_data(a_path: String) -> int:
 	OS.set_use_file_access_save_and_swap(true)
 	var l_file: FileAccess = FileAccess.open(a_path, FileAccess.WRITE)
 	if FileAccess.get_open_error():
@@ -26,7 +26,7 @@ func save_data(a_path: String) -> int:
 	return OK
 
 
-func load_data(a_path: String) -> int:
+func _load_data(a_path: String) -> int:
 	if (FileAccess.file_exists(a_path)):
 		var l_file: FileAccess = FileAccess.open(a_path, FileAccess.READ)
 		if FileAccess.get_open_error():
