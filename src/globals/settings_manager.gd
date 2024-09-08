@@ -1,8 +1,23 @@
 extends DataManager
 
 
+signal _on_settings_saved
+signal _on_settings_loaded
+
+signal _on_window_moved
+signal _on_window_resized
+signal _on_window_mode_changed(mode: Window.Mode)
+
+
 const PATH: String = "user://editor_settings"
 
+
+var _tiling_wm: bool = false
+var _resize_node: int = 0
+var _moving_window: bool = false
+var _move_offset: Vector2i = Vector2i.ZERO
+var _prev_window_mode: Window.Mode = Window.MODE_MAXIMIZED
+var _relative_mouse_pos: Vector2i = Vector2i.ZERO
 
 var default_tracks: int = 6
 var default_duration_image: int = 600
@@ -14,9 +29,64 @@ var default_duration_text: int = 600
 
 #------------------------------------------------ GODOT FUNCTIONS
 func _ready() -> void:
+	GoZenServer.add_loadable(Loadable.new("Check for tiling wm", _check_tiling_wm))
 	print_debug_info()
 	load_data()
 
+
+func _process(_delta: float) -> void:
+	if _moving_window:
+		if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_moving_window = false
+			_on_window_moved.emit()
+			return
+		get_window().position = DisplayServer.mouse_get_position() - _move_offset
+
+	if !_resize_node != 0:
+		if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_resize_node = 0
+			_on_window_resized.emit()
+			return
+
+		_relative_mouse_pos = DisplayServer.mouse_get_position() - DisplayServer.window_get_position(get_window().get_window_id())
+		if _resize_node & 1:
+			get_window().size.x = _relative_mouse_pos.x+2
+		if _resize_node & 2:
+			get_window().size.y = _relative_mouse_pos.y+2
+
+#------------------------------------------------ WINDOW HANDLING
+func _check_tiling_wm() -> void:
+	# I don't know enough about Windows for this
+	if OS.get_name() == "Linux":
+		match get_wm_name():
+			"i3":
+				_tiling_wm = true
+
+
+func get_wm_name() -> String:
+	var l_reply: Array = []
+	if OS.execute("echo", ["$XDG_CURRENT_DESKTOP"], l_reply):
+		printerr("Something went wrong getting XDG_CURRENT_DESKTOP")
+		return ""
+	var l_reply_string: String = l_reply[0]
+	return l_reply_string.trim_suffix("\n")
+
+
+func change_window_mode(a_mode: Window.Mode) -> void:
+	if _tiling_wm:
+		print("Tiling window managers don't have change window support!")
+		return
+
+	_prev_window_mode = get_window().mode
+
+	if a_mode == Window.MODE_MAXIMIZED and a_mode == get_window().mode:
+		a_mode = Window.MODE_WINDOWED
+	if a_mode == Window.MODE_FULLSCREEN and a_mode == get_window().mode:
+		a_mode = _prev_window_mode
+
+	get_window().mode = a_mode
+	_on_window_mode_changed.emit(a_mode)
+	
 
 #------------------------------------------------ DATA HANDLING
 func print_debug_info() -> void:
@@ -43,9 +113,11 @@ func print_debug_info() -> void:
 func save_data() -> void:
 	if _save_data(PATH) == ERR_FILE_CANT_OPEN:
 		printerr("Couldn't open settings file for saving! ", PATH)
+	_on_settings_saved.emit()
 
 
 func load_data() -> void:
 	if _load_data(PATH) == ERR_FILE_CANT_OPEN:
 		printerr("Couldn't open settings file for loading! ", PATH)
+	_on_settings_loaded.emit()
 

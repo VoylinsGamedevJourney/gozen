@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtvlcle3r6hq4"]
+
+[ext_resource type="Script" path="res://scenes/main_screen/exit_popup.gd" id="1_uftx7"]
+
+[node name="ExitPopup" type="PopupPanel"]
+title = "Do you want to save before quiting?"
+initial_position = 2
+size = Vector2i(400, 140)
+visible = true
+transient_to_focused = true
+borderless = false
+script = ExtResource("1_uftx7")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 396.0
+offset_bottom = 136.0
+
+[node name="Label" type="Label" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "You have unsaved changes to your project!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="NoSaveButton" type="Button" parent="VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Don't save"
+
+[node name="SaveButton" type="Button" parent="VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save project"
+
+[connection signal="close_requested" from="." to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonsHBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonsHBox/NoSaveButton" to="." method="_on_no_save_button_pressed"]
+[connection signal="pressed" from="VBox/ButtonsHBox/SaveButton" to="." method="_on_save_button_pressed"]

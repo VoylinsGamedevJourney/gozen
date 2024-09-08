@@ -31,6 +31,7 @@ func add_loadables_to_front(a_loadables: Array[Loadable]) -> void:
 	for l_loadable: Loadable in a_loadables:
 		loadables.push_front(l_loadable)
 
+
 #------------------------------------------------ STATUS INDICATOR
 # TODO: DisplayServer.create_status_indicator()
 # Give the status indicator quick shortcuts to start rendering and to see

@@ -1,8 +1,37 @@
-[gd_scene load_steps=2 format=3 uid="uid://d1gom0xe2d33x"]
+[gd_scene load_steps=12 format=3 uid="uid://d1gom0xe2d33x"]
 
 [ext_resource type="Script" path="res://scenes/main_screen/main_scene.gd" id="1_srwu4"]
+[ext_resource type="Texture2D" uid="uid://bxjmxqqpcb5mg" path="res://assets/icons/menu_icon.png" id="2_q2e80"]
+[ext_resource type="Texture2D" uid="uid://d1qcj26ffale2" path="res://assets/icons/settings_editor.png" id="3_tmq48"]
+[ext_resource type="Texture2D" uid="uid://crlbo0rlhy7vy" path="res://assets/icons/settings_project.png" id="4_gcr8d"]
+[ext_resource type="Texture2D" uid="uid://c4lvpwi3q1g60" path="res://assets/icons/minimize.png" id="5_ksjtt"]
+[ext_resource type="Texture2D" uid="uid://bp3ujxelm0sry" path="res://assets/icons/maximize.png" id="6_wotdv"]
+[ext_resource type="Texture2D" uid="uid://3svb07jeroqt" path="res://assets/icons/close.png" id="7_b0fst"]
 
-[node name="MainScene" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_weo6k"]
+content_margin_top = 24.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_et3dn"]
+bg_color = Color(0.666667, 0, 1, 1)
+border_width_right = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+border_blend = true
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77ql1"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+border_width_bottom = 2
+border_color = Color(0.0937819, 0.0937819, 0.0937819, 1)
+corner_radius_bottom_right = 21
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jy5u"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[node name="MainScene" type="Control" node_paths=PackedStringArray("window_title", "side_panel_vbox", "main_tab_container", "top_bar_buttons")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,3 +39,181 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_srwu4")
+window_title = NodePath("MenuBarHBox/Buttons/WindowLabel")
+side_panel_vbox = NodePath("MarginContainer/MainHBox/SidePanel/SidePanelButtons")
+main_tab_container = NodePath("MarginContainer/MainHBox/MainPanel/MainPanels")
+top_bar_buttons = NodePath("MenuBarHBox/Buttons/TopBarButtonsHBox")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_top = 30
+metadata/_edit_lock_ = true
+
+[node name="MainHBox" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="SidePanel" type="PanelContainer" parent="MarginContainer/MainHBox"]
+custom_minimum_size = Vector2(38, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_weo6k")
+
+[node name="SidePanelIndicatorControl" type="Control" parent="MarginContainer/MainHBox/SidePanel"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="SidePanelIndicator" type="Panel" parent="MarginContainer/MainHBox/SidePanel/SidePanelIndicatorControl"]
+custom_minimum_size = Vector2(3, 30)
+layout_mode = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_et3dn")
+
+[node name="SidePanelButtons" type="VBoxContainer" parent="MarginContainer/MainHBox/SidePanel"]
+layout_mode = 2
+
+[node name="MainPanel" type="MarginContainer" parent="MarginContainer/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_top = 7
+
+[node name="MainPanels" type="TabContainer" parent="MarginContainer/MainHBox/MainPanel"]
+layout_mode = 2
+
+[node name="ResizeHandles" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="Right" type="Control" parent="ResizeHandles"]
+custom_minimum_size = Vector2(4, 4)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
+
+[node name="Bottom" type="Control" parent="ResizeHandles"]
+custom_minimum_size = Vector2(4, 4)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_default_cursor_shape = 9
+
+[node name="Corner" type="Control" parent="ResizeHandles"]
+custom_minimum_size = Vector2(6, 4)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -4.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_default_cursor_shape = 12
+
+[node name="MenuBarHBox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_constants/separation = -1
+
+[node name="MainMenuPanel" type="PanelContainer" parent="MenuBarHBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_77ql1")
+
+[node name="MainMenuButton" type="MenuButton" parent="MenuBarHBox/MainMenuPanel"]
+layout_mode = 2
+icon = ExtResource("2_q2e80")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Buttons" type="PanelContainer" parent="MenuBarHBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2jy5u")
+
+[node name="WindowLabel" type="Label" parent="MenuBarHBox/Buttons"]
+layout_mode = 2
+mouse_filter = 1
+text = "Project Title*"
+horizontal_alignment = 1
+
+[node name="TopBarButtonsHBox" type="HBoxContainer" parent="MenuBarHBox/Buttons"]
+modulate = Color(1, 1, 1, 0.627451)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="EditorSettingsButton" type="TextureButton" parent="MenuBarHBox/Buttons/TopBarButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture_normal = ExtResource("3_tmq48")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ProjectSettingsButton" type="TextureButton" parent="MenuBarHBox/Buttons/TopBarButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture_normal = ExtResource("4_gcr8d")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Spacer" type="Control" parent="MenuBarHBox/Buttons/TopBarButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+
+[node name="MinimizeButton" type="TextureButton" parent="MenuBarHBox/Buttons/TopBarButtonsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture_normal = ExtResource("5_ksjtt")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="MaximizeButton" type="TextureButton" parent="MenuBarHBox/Buttons/TopBarButtonsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture_normal = ExtResource("6_wotdv")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ExitButton" type="TextureButton" parent="MenuBarHBox/Buttons/TopBarButtonsHBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture_normal = ExtResource("7_b0fst")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="gui_input" from="ResizeHandles/Right" to="." method="_on_resize_handle_gui_input" binds= [1]]
+[connection signal="gui_input" from="ResizeHandles/Bottom" to="." method="_on_resize_handle_gui_input" binds= [2]]
+[connection signal="gui_input" from="ResizeHandles/Corner" to="." method="_on_resize_handle_gui_input" binds= [3]]
+[connection signal="pressed" from="MenuBarHBox/MainMenuPanel/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="gui_input" from="MenuBarHBox/Buttons" to="." method="_on_top_bar_gui_input"]
+[connection signal="pressed" from="MenuBarHBox/Buttons/TopBarButtonsHBox/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]
+[connection signal="pressed" from="MenuBarHBox/Buttons/TopBarButtonsHBox/ProjectSettingsButton" to="." method="_on_project_settings_button_pressed"]
+[connection signal="pressed" from="MenuBarHBox/Buttons/TopBarButtonsHBox/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="MenuBarHBox/Buttons/TopBarButtonsHBox/MaximizeButton" to="." method="_on_maximize_button_pressed"]
+[connection signal="pressed" from="MenuBarHBox/Buttons/TopBarButtonsHBox/ExitButton" to="." method="_on_exit_button_pressed"]
