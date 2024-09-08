@@ -3,11 +3,10 @@ extends Control
 # TODO: Window title
 @export var window_title: Label
 @export var side_panel_vbox: VBoxContainer
+@export var side_panel_indicator: Panel
 @export var main_tab_container: TabContainer
-
 @export var top_bar_buttons: HBoxContainer
-
-
+@export var resize_handles: Control
 
 
 
@@ -16,33 +15,47 @@ func _ready() -> void:
 	err += Project._on_title_changed.connect(_update_window_title)
 	err += Project._on_project_saved.connect(_update_window_title)
 	err += Project._on_changes_occurred.connect(_update_window_title)
+	err += SettingsManager._on_window_moved.connect(_update_window_handles)
+	err += SettingsManager._on_window_resized.connect(_update_window_handles)
+	err += SettingsManager._on_window_mode_changed.connect(_update_window_handles)
 	if err:
 		printerr("Couldn't connect functions to project!")
-
-	GoZenServer.add_loadable(Loadable.new("Initializing main panels", _load_main_panels))
 
 	get_window().min_size = Vector2i(700, 500)
 	if SettingsManager._tiling_wm:
 		# Hiding buttons as tiling wm's don't need them
 		top_bar_buttons.remove_child(top_bar_buttons.get_child(-2))
 		top_bar_buttons.remove_child(top_bar_buttons.get_child(-2))
-		
-
+		resize_handles.queue_free()
+	
+	_update_window_handles()
+	_load_layouts()
 
 
 func _update_window_title() -> void:
 	window_title.text = Project.title + (" " if !Project._unsaved_changes else "*")
 
 
-func _load_main_panels() -> void:
-	pass
-#	for l_panel_id: int in ModuleManager.main_panels.size(): 
-#		var l_panel: MainPanel = ModuleManager.main_panels[l_panel_id]
-#		var l_button: TextureButton = TextureButton.new()
-#		l_button.texture_normal = l_panel.icon
-#		l_button.tooltip_text = l_panel.title
-#		side_panel_vbox.add_child(l_button)
-		#main_tab_container.add_child()
+func _update_window_handles() -> void:
+	if !SettingsManager._tiling_wm:
+		resize_handles.visible = get_window().mode == Window.MODE_WINDOWED
+
+
+func _load_layouts() -> void:
+	for l_layout_id: int in ModuleManager.layouts.size(): 
+		var l_layout: Control = ModuleManager.get_layout_scene(l_layout_id).instantiate()
+		main_tab_container.add_child(l_layout)
+
+		var l_button: TextureButton = TextureButton.new()
+		l_button.custom_minimum_size = Vector2i(30, 30)
+		l_button.ignore_texture_size = true
+		l_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		l_button.texture_normal = ModuleManager.get_layout_icon(l_layout_id)
+		l_button.tooltip_text = ModuleManager.get_layout_title(l_layout_id)
+		if l_button.pressed.connect(switch_layout.bind(l_layout_id)):
+			printerr("Couldn't connect side panel button! ", l_layout_id)
+		side_panel_vbox.add_child(l_button)
+
 
 
 func _on_exit_button_pressed() -> void:
@@ -89,4 +102,18 @@ func _on_top_bar_gui_input(a_event: InputEvent) -> void:
 			SettingsManager._moving_window = true
 			SettingsManager._move_offset = DisplayServer.mouse_get_position() -\
 					DisplayServer.window_get_position(get_window().get_window_id())
+
+#------------------------------------------------ LAYOUT HANDLER
+func switch_layout(l_id: int) -> void:
+	if main_tab_container.current_tab == l_id:
+		return
+
+	var tween: Tween = get_tree().create_tween()
+	var l_button: TextureButton = side_panel_vbox.get_child(l_id)
+	if !tween.set_trans(Tween.TRANS_CIRC) or !tween.set_speed_scale(3):
+		printerr("Something went wrong configuring tween!")
+	if !tween.tween_property(side_panel_indicator, "position", Vector2(0., l_button.position.y), 0.4):
+		printerr("Couldn't set tween property!")
+
+	main_tab_container.current_tab = l_id
 

@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://3svb07jeroqt" path="res://assets/icons/close.png" id="7_b0fst"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_weo6k"]
-content_margin_top = 24.0
+content_margin_top = 40.0
 bg_color = Color(0.137255, 0.137255, 0.137255, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_et3dn"]
@@ -31,7 +31,7 @@ content_margin_left = 5.0
 content_margin_right = 5.0
 bg_color = Color(0.137255, 0.137255, 0.137255, 1)
 
-[node name="MainScene" type="Control" node_paths=PackedStringArray("window_title", "side_panel_vbox", "main_tab_container", "top_bar_buttons")]
+[node name="MainScene" type="Control" node_paths=PackedStringArray("window_title", "side_panel_vbox", "side_panel_indicator", "main_tab_container", "top_bar_buttons", "resize_handles")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,8 +41,10 @@ grow_vertical = 2
 script = ExtResource("1_srwu4")
 window_title = NodePath("MenuBarHBox/Buttons/WindowLabel")
 side_panel_vbox = NodePath("MarginContainer/MainHBox/SidePanel/SidePanelButtons")
+side_panel_indicator = NodePath("MarginContainer/MainHBox/SidePanel/SidePanelIndicatorControl/SidePanelIndicator")
 main_tab_container = NodePath("MarginContainer/MainHBox/MainPanel/MainPanels")
 top_bar_buttons = NodePath("MenuBarHBox/Buttons/TopBarButtonsHBox")
+resize_handles = NodePath("ResizeHandles")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -70,6 +72,8 @@ mouse_filter = 1
 [node name="SidePanelIndicator" type="Panel" parent="MarginContainer/MainHBox/SidePanel/SidePanelIndicatorControl"]
 custom_minimum_size = Vector2(3, 30)
 layout_mode = 1
+offset_right = 3.0
+offset_bottom = 30.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_et3dn")
 
 [node name="SidePanelButtons" type="VBoxContainer" parent="MarginContainer/MainHBox/SidePanel"]
@@ -82,6 +86,7 @@ theme_override_constants/margin_top = 7
 
 [node name="MainPanels" type="TabContainer" parent="MarginContainer/MainHBox/MainPanel"]
 layout_mode = 2
+tabs_visible = false
 
 [node name="ResizeHandles" type="Control" parent="."]
 layout_mode = 1
@@ -207,9 +212,6 @@ texture_normal = ExtResource("7_b0fst")
 ignore_texture_size = true
 stretch_mode = 5
 
-[connection signal="gui_input" from="ResizeHandles/Right" to="." method="_on_resize_handle_gui_input" binds= [1]]
-[connection signal="gui_input" from="ResizeHandles/Bottom" to="." method="_on_resize_handle_gui_input" binds= [2]]
-[connection signal="gui_input" from="ResizeHandles/Corner" to="." method="_on_resize_handle_gui_input" binds= [3]]
 [connection signal="pressed" from="MenuBarHBox/MainMenuPanel/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="gui_input" from="MenuBarHBox/Buttons" to="." method="_on_top_bar_gui_input"]
 [connection signal="pressed" from="MenuBarHBox/Buttons/TopBarButtonsHBox/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]

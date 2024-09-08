@@ -74,7 +74,6 @@ func get_wm_name() -> String:
 
 func change_window_mode(a_mode: Window.Mode) -> void:
 	if _tiling_wm:
-		print("Tiling window managers don't have change window support!")
 		return
 
 	_prev_window_mode = get_window().mode

@@ -11,7 +11,7 @@ func _input(a_event: InputEvent) -> void:
 	if !_enabled:
 		return
 
-	if Input.is_action_pressed("save_project"):
+	if a_event.is_action_pressed("save_project"):
 		Project.save_data()
-	if Input.is_action_pressed("fullscreen"):
+	if a_event.is_action_pressed("fullscreen"):
 		SettingsManager.change_window_mode(Window.MODE_FULLSCREEN)

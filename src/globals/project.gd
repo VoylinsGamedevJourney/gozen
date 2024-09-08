@@ -4,6 +4,9 @@ extends DataManager
 #------------------------------------------------ SIGNALS
 signal _on_project_saved
 signal _on_project_loaded
+signal _on_changes_occurred
+
+signal _on_title_changed
 
 signal _on_file_added(file_id: int)
 
@@ -13,7 +16,7 @@ signal _on_track_removed(track_id: int)
 signal _on_framerate_changed(value: int)
 
 signal _on_clip_added(clip_id: int)
-signal _on_clip_removed.emit(track_id, pts)
+signal _on_clip_removed(track_id: int, pts: int)
 
 
 #------------------------------------------------ TEMPORARY VARIABLES
@@ -21,9 +24,11 @@ var _project_path: String = ""
 var _files_data: Dictionary = {} 
 var _tracks_data: Array[PackedInt64Array] = []
 
+var _unsaved_changes: bool = false
+
 
 #------------------------------------------------ DATA VARIABLES
-var title: String = ""
+var title: String = "" : set = set_title
 var resolution: Vector2i = Vector2i.ZERO
 var framerate: int = 30: set = set_framerate
 
@@ -38,9 +43,9 @@ var counter_clip_id: int = 0
 #------------------------------------------------ GODOT FUNCTIONS
 func _ready() -> void:
 	GoZenServer.add_loadables([
-		Loadable.new("Setting up tracks",  Project._setup_tracks),
-		Loadable.new("Loading tracks data", Project._load_files_data, 1.),
-		Loadable.new("Loading tracks data", Project._load_tracks_data, 1.),
+		Loadable.new("Setting up tracks",  Project._setup_tracks, 0.2),
+		Loadable.new("Loading files data", Project._load_files_data, 0.3),
+		Loadable.new("Loading tracks data", Project._load_tracks_data, 0.3),
 	])
 
 	if get_window().files_dropped.connect(_on_files_dropped):
@@ -55,6 +60,7 @@ func save_data() -> void:
 		printerr("Couldn't open settings file for saving! ", _project_path)
 	else:
 		_on_project_saved.emit()
+	_unsaved_changes = false
 
 
 func load_data(a_path: String) -> void:
@@ -63,9 +69,19 @@ func load_data(a_path: String) -> void:
 		get_tree().quit(-1)
 	else:
 		_on_project_loaded.emit()
+	
+	
+func _changes_occurred() -> void:
+	_unsaved_changes = true
+	_on_changes_occurred.emit()
 
 
 #------------------------------------------------ SETTERS
+func set_title(a_title: String) -> void:
+	title = a_title
+	_on_title_changed.emit()
+
+
 func set_framerate(a_value: int) -> void:
 	framerate = a_value
 
@@ -76,7 +92,6 @@ func set_framerate(a_value: int) -> void:
 			_calculate_duration_audio(l_id)
 	
 	# TODO: Change all the clip durations so the timeline doesn't get messed up
-
 	_on_framerate_changed.emit(a_value)
 
 
@@ -84,6 +99,7 @@ func set_framerate(a_value: int) -> void:
 func _on_files_dropped(a_files: PackedStringArray) -> void:
 	for l_path: String in a_files:
 		add_file(l_path)
+		_changes_occurred()
 
 	
 func _load_files_data() -> void:
@@ -183,12 +199,13 @@ func add_track() -> void:
 	tracks.append({})
 	_tracks_data.append(PackedInt64Array())
 	_on_track_added.emit()
-
+	_changes_occurred()
 
 func remove_track(a_id: int) -> void:
 	tracks.remove_at(a_id)
 	_tracks_data.remove_at(a_id)
 	_on_track_removed.emit(a_id)
+	_changes_occurred()
 
 
 #------------------------------------------------ CLIP HANDLING
@@ -207,6 +224,7 @@ func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 	tracks[a_track_id][a_pts] = clip_id
 
 	_on_clip_added.emit(clip_id)
+	_changes_occurred()
 
 
 func move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
@@ -217,6 +235,7 @@ func move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	tracks[a_new_track_id][a_new_pts] = a_clip_id
 	clips[a_clip_id].pts = a_new_pts
 	_on_clip_added.emit(a_clip_id)
+	_changes_occurred()
 
 
 func remove_clip(a_clip_id: int) -> void:
@@ -225,6 +244,7 @@ func remove_clip(a_clip_id: int) -> void:
 	if !clips.erase(a_clip_id):
 		printerr("Couln't remove clip id %s from clips!" % a_clip_id)	
 	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
+	_changes_occurred()
 
 
 func resize_clip(a_clip_id: int, a_duration: int, a_left: bool) -> void:
@@ -246,4 +266,5 @@ func resize_clip(a_clip_id: int, a_duration: int, a_left: bool) -> void:
 			clips[a_clip_id].end += l_difference
 
 	_on_clip_added.emit(a_clip_id)
+	_changes_occurred()
 
