@@ -37,20 +37,15 @@ func _ready() -> void:
 
 	get_viewport().get_window().unresizable = false
 	self.visible = false
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	SettingsManager.change_window_mode(Window.MODE_MAXIMIZED)
 
-	# Check for tiling window managers
-	if OS.get_name() == "Linux":
-		var l_reply: Array = []
-		if OS.execute("echo", ["$XDG_CURRENT_DESKTOP"], l_reply):
-			printerr("Something went wrong getting XDG_CURRENT_DESKTOP")
-		var l_wm: String = l_reply[0]
-		match l_wm.trim_suffix("\n"):
+	# Check for tiling window managers to disable floating
+	if SettingsManager._tiling_wm:
+		get_window().grab_focus()
+		match SettingsManager.get_wm_name():
 			"i3":
-				get_window().grab_focus()
 				if OS.execute("i3-msg", ["floating", "disable"]):
 					printerr("Error occured when making non floating on i3!")
-			_: print("Not a tiling window manager")
 
 	GoZenServer.loadables = [] # Cleanup of memory
 
