@@ -81,7 +81,7 @@ func _on_new_project_button_pressed() -> void:
 
 
 func _on_settings_button_pressed() -> void:
-	ModuleManager.open_popup(ModuleManager.MENU.SETTINGS)
+	ModuleManager.open_popup(ModuleManager.MENU.SETTINGS_EDITOR)
 
 
 func _on_support_button_pressed() -> void:

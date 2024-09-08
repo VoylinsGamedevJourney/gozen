@@ -27,6 +27,7 @@ ModuleManager="*res://globals/module_manager.gd"
 SettingsManager="*res://globals/settings_manager.gd"
 RecentProjectsManager="*res://globals/recent_projects_manager.gd"
 Project="*res://globals/project.gd"
+ActionManager="*res://globals/action_manager.gd"
 
 [debug]
 
@@ -63,10 +64,26 @@ import/blender/enabled=false
 
 theme/custom="res://theming/gozen_theme.tres"
 
+[input]
+
+save_project={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"location":0,"echo":false,"script":null)
+]
+}
+fullscreen={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194342,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+
 [internationalization]
 
 locale/include_text_server_data=true
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 renderer/rendering_method.web="forward_plus"
+environment/defaults/default_clear_color=Color(0.0937819, 0.0937819, 0.0937819, 1)
