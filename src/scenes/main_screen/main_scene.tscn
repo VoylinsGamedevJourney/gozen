@@ -59,9 +59,10 @@ metadata/_edit_lock_ = true
 
 [node name="MainHBox" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="SidePanel" type="PanelContainer" parent="MarginContainer/MainHBox"]
-custom_minimum_size = Vector2(38, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_weo6k")
 

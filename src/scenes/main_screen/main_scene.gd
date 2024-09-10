@@ -44,16 +44,19 @@ func _update_window_handles() -> void:
 func _load_layouts() -> void:
 	for l_layout_id: int in ModuleManager.layouts.size(): 
 		var l_layout: Control = ModuleManager.get_layout_scene(l_layout_id).instantiate()
-		main_tab_container.add_child(l_layout)
+		l_layout.name = ModuleManager.layouts[l_layout_id]
 
 		var l_button: TextureButton = TextureButton.new()
-		l_button.custom_minimum_size = Vector2i(30, 30)
-		l_button.ignore_texture_size = true
+		l_button.name = ModuleManager.layouts[l_layout_id]
+		l_button.tooltip_text = ModuleManager.get_layout_title(l_layout_id)
 		l_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		l_button.texture_normal = ModuleManager.get_layout_icon(l_layout_id)
-		l_button.tooltip_text = ModuleManager.get_layout_title(l_layout_id)
+		l_button.ignore_texture_size = true
+		l_button.custom_minimum_size = Vector2i(30, 30)
 		if l_button.pressed.connect(switch_layout.bind(l_layout_id)):
 			printerr("Couldn't connect side panel button! ", l_layout_id)
+
+		main_tab_container.add_child(l_layout)
 		side_panel_vbox.add_child(l_button)
 
 

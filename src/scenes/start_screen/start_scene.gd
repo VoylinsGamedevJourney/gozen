@@ -54,6 +54,15 @@ func _load_projects() -> void:
 		all_projects.add_child(l_project_box)
 
 
+func _on_top_bar_gui_input(a_event: InputEvent) -> void:
+	if a_event is InputEventMouseButton:
+		var l_event: InputEventMouseButton = a_event
+		if l_event.is_pressed() and l_event.button_index == 1:
+			SettingsManager._moving_window = true
+			SettingsManager._move_offset = DisplayServer.mouse_get_position() -\
+					DisplayServer.window_get_position(get_window().get_window_id())
+
+
 func start_load_scene() -> void:
 	if get_tree().change_scene_to_packed(preload("res://scenes/loading_screen/loading_scene.tscn")):
 		printerr("Couldn't change scene to loading scene!")
@@ -146,3 +155,6 @@ func _on_create_project_button_pressed() -> void:
 
 func set_new_project_path(a_path: String) -> void:
 	path_line_edit.text = a_path
+
+
+

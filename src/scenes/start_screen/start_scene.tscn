@@ -332,6 +332,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Create project"
 
+[connection signal="gui_input" from="MainVBox/TopBar" to="." method="_on_top_bar_gui_input"]
 [connection signal="pressed" from="MainVBox/TopBar/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="pressed" from="MainVBox/MainHBox/LeftPanel/ButtonsVBox/NewProjectButton" to="." method="_on_new_project_button_pressed"]
 [connection signal="pressed" from="MainVBox/MainHBox/LeftPanel/ButtonsVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
