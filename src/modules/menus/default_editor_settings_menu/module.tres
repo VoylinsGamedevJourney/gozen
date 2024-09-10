@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Module" load_steps=4 format=3 uid="uid://cy828w4wp6kc6"]
+
+[ext_resource type="Texture2D" uid="uid://d1qcj26ffale2" path="res://assets/icons/settings_editor.png" id="1_8m5e1"]
+[ext_resource type="Script" path="res://classes/module.gd" id="1_mf0qj"]
+[ext_resource type="PackedScene" uid="uid://c7wwn2ddluqtx" path="res://modules/menus/default_editor_settings_menu/editor_settings.tscn" id="2_mbqxx"]
+
+[resource]
+script = ExtResource("1_mf0qj")
+icon = ExtResource("1_8m5e1")
+title = "Default Editor Settings"
+scene = ExtResource("2_mbqxx")
