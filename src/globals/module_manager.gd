@@ -16,8 +16,8 @@ var _modules: Dictionary = {}
 
 var layouts: PackedStringArray = []
 var modules: Dictionary = { # Selected modules to use
-	MENU.SETTINGS_EDITOR: "default_editor_settings_menu-0",
-	MENU.SETTINGS_PROJECT: "default_project_settings_menu-0"
+	MENU.SETTINGS_EDITOR: "default_editor_settings_menu",
+	MENU.SETTINGS_PROJECT: "default_project_settings_menu"
 }
 
 
@@ -48,7 +48,6 @@ func _check_modules() -> void:
 				_modules["%s/%s" % [l_type, l_module_name]] = l_module
 
 
-
 func load_data() -> void:
 	if FileAccess.file_exists(PATH):
 		if _load_data(PATH):
@@ -61,11 +60,24 @@ func load_data() -> void:
 		])
 		if _save_data(PATH):
 			printerr("Saving data for ModuleManager failed!")
-		
 
 
-func open_popup(_menu: MENU) -> void:
-	print("STILL WIP")
+func open_popup(a_menu: MENU) -> void:
+	# Modules only get loaded after selecting a project, but we do need access
+	# to the editor settings from the Project Management screen.
+	var l_scene: PackedScene
+
+	if _modules.is_empty():
+		# TODO: Check the modules data file, without loading the data, for the
+		# requested menu module and only load that one in to be used when the 
+		# editor isn't fully loaded yet!
+		l_scene = (load("%smenus/%s/module.tres" % [MODULES_PATH, modules[a_menu]]) as Module).scene
+	else:
+		l_scene = _modules["menus/" + modules[a_menu]].scene
+
+	var l_popup: PopupPanel = l_scene.instantiate()
+	get_tree().root.add_child(l_popup)
+	l_popup.popup_centered()
 
 
 func create_module_id(a_module_name: String) -> String:
