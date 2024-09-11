@@ -11,6 +11,8 @@ extends Control
 
 
 func _ready() -> void:
+	get_tree().set_auto_accept_quit(false)
+
 	var err: int = 0
 	err += Project._on_title_changed.connect(_update_window_title)
 	err += Project._on_project_saved.connect(_update_window_title)
@@ -68,6 +70,12 @@ func _on_exit_button_pressed() -> void:
 		l_popup.popup_centered()
 		return
 	get_tree().quit()
+
+
+func _notification(a_what: int) -> void:
+	if a_what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_on_exit_button_pressed()
+		return
 
 
 func _on_maximize_button_pressed() -> void:
