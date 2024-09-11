@@ -58,3 +58,12 @@ func _on_meta_clicked(a_meta: String) -> void:
 	if OS.shell_open(a_meta):
 		printerr("Error opening url! ", a_meta)
 
+
+
+func _on_texture_rect_gui_input(a_event: InputEvent) -> void:
+	if a_event is InputEventMouseButton and get_window().mode == Window.MODE_WINDOWED:
+		var l_event: InputEventMouseButton = a_event
+		if l_event.is_pressed() and l_event.button_index == 1:
+			SettingsManager._moving_window = true
+			SettingsManager._move_offset = DisplayServer.mouse_get_position() -\
+					DisplayServer.window_get_position(get_window().get_window_id())

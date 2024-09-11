@@ -213,6 +213,7 @@ text_overrun_behavior = 1
 
 [node name="Timer" type="Timer" parent="."]
 
+[connection signal="gui_input" from="VBoxContainer/Header/TextureRect" to="." method="_on_texture_rect_gui_input"]
 [connection signal="meta_clicked" from="VBoxContainer/Header/TextureRect/CreatorLabel" to="." method="_on_meta_clicked"]
 [connection signal="meta_clicked" from="VBoxContainer/PanelContainer/VBoxContainer/Control/SponsorLabel" to="." method="_on_meta_clicked"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxContainer/Control/HBox/VGJ/Button" to="." method="_on_meta_clicked" binds= ["https://ko-fi.com/voylin"]]
