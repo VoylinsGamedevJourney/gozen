@@ -16,7 +16,15 @@ func _on_advanced_settings_check_button_toggled(a_toggle: bool) -> void:
 	simple_settings_vbox.visible = !a_toggle
 
 
+#------------------------------------------------ RENDER BUTTONS
 func _on_render_button_pressed() -> void:
+	# TODO: Take in mind the advanced settings toggle for getting the render settings
+	# TODO: Open a popup to make it impossible to click on anything in the main UI whilst rendering
+	# give a cancel render button and display a timeline of how far the rendering process is.
+	pass # Replace with function body.
+
+
+func _on_render_region_button_pressed() -> void:
 	# TODO: Take in mind the advanced settings toggle for getting the render settings
 	# TODO: Open a popup to make it impossible to click on anything in the main UI whilst rendering
 	# give a cancel render button and display a timeline of how far the rendering process is.

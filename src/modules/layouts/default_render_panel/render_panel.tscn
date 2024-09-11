@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bikqyskma20eu"]
+[gd_scene load_steps=8 format=3 uid="uid://bikqyskma20eu"]
 
 [ext_resource type="LabelSettings" uid="uid://c4a6g42uduiy3" path="res://theming/module_title.tres" id="1_dbry3"]
-[ext_resource type="Script" path="res://modules/layouts/default_render_panel/timeline_panel.gd" id="1_euexf"]
 [ext_resource type="Script" path="res://modules/layouts/default_render_panel/render_panel.gd" id="1_xke8d"]
 [ext_resource type="Texture2D" uid="uid://0tl1eb2x143q" path="res://assets/icons/folder_open.svg" id="2_n6dwy"]
+[ext_resource type="Texture2D" uid="uid://it3u5obbn8pe" path="res://assets/icons/fast_rewind.png" id="4_s5w5d"]
+[ext_resource type="Texture2D" uid="uid://mpaeh4ccv5r0" path="res://assets/icons/play.png" id="5_b53di"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_alpqh"]
 color = Color(1, 1, 1, 0.0235294)
@@ -74,21 +75,70 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="FindPathButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/PathHBox"]
+self_modulate = Color(0.34902, 0.34902, 0.34902, 1)
 custom_minimum_size = Vector2(26, 0)
 layout_mode = 2
 texture_normal = ExtResource("2_n6dwy")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="HSeparator" type="HSeparator" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+[node name="RenderSettingsGrid" type="HFlowContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="ExportVideoHBox" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExportVideoLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderSettingsGrid/ExportVideoHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export video"
+
+[node name="ExportVideoCheckButton" type="CheckButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderSettingsGrid/ExportVideoHBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ExportAudioHBox" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExportAudioLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderSettingsGrid/ExportAudioHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Export audio"
+
+[node name="ExportAudioCheckButton" type="CheckButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderSettingsGrid/ExportAudioHBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HSeparator1" type="HSeparator" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_alpqh")
 
 [node name="SimpleSettingsHBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
 layout_mode = 2
 
+[node name="TitleLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/SimpleSettingsHBox"]
+layout_mode = 2
+text = "Simple render settings"
+label_settings = ExtResource("1_dbry3")
+
 [node name="SimpleSettingsGrid" type="GridContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/SimpleSettingsHBox"]
 layout_mode = 2
+columns = 2
+
+[node name="PresetLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/SimpleSettingsHBox/SimpleSettingsGrid"]
+layout_mode = 2
+text = "Preset"
+
+[node name="OptionButton" type="OptionButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/SimpleSettingsHBox/SimpleSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+allow_reselect = true
+item_count = 2
+popup/item_0/text = "YouTube"
+popup/item_1/id = 1
 
 [node name="AdvancedSettingsHBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
 layout_mode = 2
@@ -100,6 +150,52 @@ label_settings = ExtResource("1_dbry3")
 
 [node name="AdvancedSettingsGrid" type="GridContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox"]
 layout_mode = 2
+columns = 2
+
+[node name="VideoCodecLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+text = "Video codec"
+
+[node name="VideoCodecOptionButton" type="OptionButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioCodecLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+text = "Audio codec"
+
+[node name="AudioCodecOptionButton" type="OptionButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BitrateLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+text = "Bitrate"
+
+[node name="BitrateSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+
+[node name="GOPLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+text = "GOP size"
+
+[node name="GOPSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+
+[node name="SamplerateLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+text = "Samplerate"
+
+[node name="SamplerateSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+
+[node name="StereoLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+text = "Stereo audio"
+
+[node name="StereoCheckBox" type="CheckBox" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox/AdvancedSettingsGrid"]
+layout_mode = 2
+button_pressed = true
 
 [node name="Spacer" type="Control" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
 layout_mode = 2
@@ -109,8 +205,17 @@ size_flags_vertical = 3
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_alpqh")
 
-[node name="RenderButton" type="Button" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+[node name="RenderButtonsHBox" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
 layout_mode = 2
+
+[node name="RenderRegionButton" type="Button" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Render region"
+
+[node name="RenderButton" type="Button" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Render project"
 
 [node name="PreviewPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer"]
@@ -131,25 +236,70 @@ stretch_mode = 5
 layout_mode = 2
 alignment = 1
 
-[node name="RewindButton" type="Button" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+[node name="RewindButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "Rewind"
+texture_normal = ExtResource("4_s5w5d")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="PlayPauseButton" type="Button" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+[node name="PlayPauseButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "PlayPause"
+texture_normal = ExtResource("5_b53di")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="ForwardButton" type="Button" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+[node name="ForwardButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-text = "Forward
-"
+texture_normal = ExtResource("4_s5w5d")
+ignore_texture_size = true
+stretch_mode = 5
+flip_h = true
 
 [node name="TimelinePanel" type="PanelContainer" parent="VSplitContainer"]
-custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-script = ExtResource("1_euexf")
 
-[node name="VBox" type="VBoxContainer" parent="VSplitContainer/TimelinePanel"]
+[node name="HBox" type="HBoxContainer" parent="VSplitContainer/TimelinePanel"]
 layout_mode = 2
+
+[node name="TimelineVBox" type="VBoxContainer" parent="VSplitContainer/TimelinePanel/HBox"]
+layout_mode = 2
+
+[node name="RenderRegionLabel" type="Label" parent="VSplitContainer/TimelinePanel/HBox/TimelineVBox"]
+layout_mode = 2
+text = "Region"
+
+[node name="TagsLabel" type="Label" parent="VSplitContainer/TimelinePanel/HBox/TimelineVBox"]
+layout_mode = 2
+text = "Tags"
+
+[node name="TimelineLabel" type="Label" parent="VSplitContainer/TimelinePanel/HBox/TimelineVBox"]
+layout_mode = 2
+text = "Timeline"
+
+[node name="Scroll" type="ScrollContainer" parent="VSplitContainer/TimelinePanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TimelineDataVBox" type="VBoxContainer" parent="VSplitContainer/TimelinePanel/HBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RenderRegionArea" type="Panel" parent="VSplitContainer/TimelinePanel/HBox/Scroll/TimelineDataVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TagsArea" type="Panel" parent="VSplitContainer/TimelinePanel/HBox/Scroll/TimelineDataVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TimelineArea" type="Panel" parent="VSplitContainer/TimelinePanel/HBox/Scroll/TimelineDataVBox"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [connection signal="toggled" from="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/TitleHBox/AdvancedSettingsCheckButton" to="." method="_on_advanced_settings_check_button_toggled"]
+[connection signal="pressed" from="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderButtonsHBox/RenderRegionButton" to="." method="_on_render_region_button_pressed"]
+[connection signal="pressed" from="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/RenderButtonsHBox/RenderButton" to="." method="_on_render_button_pressed"]
