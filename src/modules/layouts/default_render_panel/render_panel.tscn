@@ -1,16 +1,155 @@
-[gd_scene format=3 uid="uid://bikqyskma20eu"]
+[gd_scene load_steps=7 format=3 uid="uid://bikqyskma20eu"]
 
-[node name="RenderPanel" type="Control"]
+[ext_resource type="LabelSettings" uid="uid://c4a6g42uduiy3" path="res://theming/module_title.tres" id="1_dbry3"]
+[ext_resource type="Script" path="res://modules/layouts/default_render_panel/timeline_panel.gd" id="1_euexf"]
+[ext_resource type="Script" path="res://modules/layouts/default_render_panel/render_panel.gd" id="1_xke8d"]
+[ext_resource type="Texture2D" uid="uid://0tl1eb2x143q" path="res://assets/icons/folder_open.svg" id="2_n6dwy"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_alpqh"]
+color = Color(1, 1, 1, 0.0235294)
+thickness = 3
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_8atpc"]
+size = Vector2(1920, 1080)
+
+[node name="RenderPanel" type="Control" node_paths=PackedStringArray("simple_settings_vbox", "advanced_settings_vbox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_xke8d")
+simple_settings_vbox = NodePath("VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/SimpleSettingsHBox")
+advanced_settings_vbox = NodePath("VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox")
 
-[node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "tttt
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RenderSettingsPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="RenderSettingsScroll" type="ScrollContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TitleHBox" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="RenderSettingsTitleLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/TitleHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Render settings"
+label_settings = ExtResource("1_dbry3")
+
+[node name="AdvancedSettingsCheckButton" type="CheckButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/TitleHBox"]
+layout_mode = 2
+tooltip_text = "Enable advanced render settings"
+theme_override_colors/font_color = Color(0.34902, 0.34902, 0.34902, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="PathHBox" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/PathHBox"]
+layout_mode = 2
+text = "Path"
+
+[node name="PathLineEdit" type="LineEdit" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/PathHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FindPathButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/PathHBox"]
+custom_minimum_size = Vector2(26, 0)
+layout_mode = 2
+texture_normal = ExtResource("2_n6dwy")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="HSeparator" type="HSeparator" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_alpqh")
+
+[node name="SimpleSettingsHBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="SimpleSettingsGrid" type="GridContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/SimpleSettingsHBox"]
+layout_mode = 2
+
+[node name="AdvancedSettingsHBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox"]
+layout_mode = 2
+text = "Advanced render settings"
+label_settings = ExtResource("1_dbry3")
+
+[node name="AdvancedSettingsGrid" type="GridContainer" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/AdvancedSettingsHBox"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSeparator2" type="HSeparator" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_alpqh")
+
+[node name="RenderButton" type="Button" parent="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox"]
+layout_mode = 2
+text = "Render project"
+
+[node name="PreviewPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/PreviewPanel"]
+layout_mode = 2
+
+[node name="PlaybackTexture" type="TextureRect" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = SubResource("PlaceholderTexture2D_8atpc")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="RewindButton" type="Button" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+layout_mode = 2
+text = "Rewind"
+
+[node name="PlayPauseButton" type="Button" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+layout_mode = 2
+text = "PlayPause"
+
+[node name="ForwardButton" type="Button" parent="VSplitContainer/HSplitContainer/PreviewPanel/VBox/PlaybackButtonsHBox"]
+layout_mode = 2
+text = "Forward
 "
+
+[node name="TimelinePanel" type="PanelContainer" parent="VSplitContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+script = ExtResource("1_euexf")
+
+[node name="VBox" type="VBoxContainer" parent="VSplitContainer/TimelinePanel"]
+layout_mode = 2
+
+[connection signal="toggled" from="VSplitContainer/HSplitContainer/RenderSettingsPanel/RenderSettingsScroll/VBox/TitleHBox/AdvancedSettingsCheckButton" to="." method="_on_advanced_settings_check_button_toggled"]
