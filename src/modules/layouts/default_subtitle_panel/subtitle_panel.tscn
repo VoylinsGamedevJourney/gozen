@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://d236g5v1vtvdt"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_36bhu"]
+size = Vector2(1920, 1080)
+
+[node name="SubtitlePanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VSplit" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="HSplit" type="HSplitContainer" parent="VSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = -385
+
+[node name="TextPanel" type="PanelContainer" parent="VSplit/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scroll" type="ScrollContainer" parent="VSplit/HSplit/TextPanel"]
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="VSplit/HSplit/TextPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ViewPanel" type="PanelContainer" parent="VSplit/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VSplit/HSplit/ViewPanel"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VSplit/HSplit/ViewPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = SubResource("PlaceholderTexture2D_36bhu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ControlsHBox" type="HBoxContainer" parent="VSplit/HSplit/ViewPanel/VBox"]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="VSplit/HSplit/ViewPanel/VBox/ControlsHBox"]
+layout_mode = 2
+
+[node name="TimelinePanel" type="PanelContainer" parent="VSplit"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 8
