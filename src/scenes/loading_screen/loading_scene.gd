@@ -8,7 +8,10 @@ const MIN_TIME: int = 3
 @export var timer: Timer
 
 
-func _ready() -> void:
+var editor_scene: Control = preload("res://scenes/main_screen/main_scene.tscn").instantiate()
+
+
+func start_loading() -> void:
 	var l_total_time: float = 0
 	version_label.text = "Version: %s " % ProjectSettings.get_setting("application/config/version")
 
@@ -35,6 +38,9 @@ func _ready() -> void:
 	timer.start(MIN_TIME - l_total_time if l_total_time < MIN_TIME else 1.)
 	await timer.timeout
 
+	editor_scene.visible = false
+	get_parent().add_child(editor_scene)
+
 	get_viewport().get_window().unresizable = false
 	self.visible = false
 	SettingsManager.change_window_mode(Window.MODE_MAXIMIZED)
@@ -47,17 +53,14 @@ func _ready() -> void:
 				if OS.execute("i3-msg", ["floating", "disable"]):
 					printerr("Error occured when making non floating on i3!")
 
+	editor_scene.visible = true
 	GoZenServer.loadables = [] # Cleanup of memory
-
-	if get_tree().change_scene_to_file("res://scenes/main_screen/main_scene.tscn"):
-		printerr("Couldn't load main scene!")
-		get_tree().quit(-2)
-
+	self.queue_free()
+	
 
 func _on_meta_clicked(a_meta: String) -> void:
 	if OS.shell_open(a_meta):
 		printerr("Error opening url! ", a_meta)
-
 
 
 func _on_texture_rect_gui_input(a_event: InputEvent) -> void:
@@ -67,3 +70,4 @@ func _on_texture_rect_gui_input(a_event: InputEvent) -> void:
 			SettingsManager._moving_window = true
 			SettingsManager._move_offset = DisplayServer.mouse_get_position() -\
 					DisplayServer.window_get_position(get_window().get_window_id())
+

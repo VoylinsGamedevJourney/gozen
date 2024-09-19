@@ -1,7 +1,8 @@
 extends Control
 
 
-# TODO: Create an indicator to see on what tab you are on
+signal _start_project_loading
+
 
 @export var all_projects: VBoxContainer
 @export var new_project_panel: PanelContainer
@@ -19,7 +20,7 @@ var choose_path_dialog: FileDialog = FileDialog.new()
 
 
 
-func _ready() -> void:
+func start_project_manager() -> void:
 	new_project_panel.visible = false
 	title_line_edit.placeholder_text = "Project_%s" % RecentProjectsManager.total_id
 
@@ -63,18 +64,15 @@ func _on_top_bar_gui_input(a_event: InputEvent) -> void:
 					DisplayServer.window_get_position(get_window().get_window_id())
 
 
-func start_load_scene() -> void:
-	if get_tree().change_scene_to_packed(preload("res://scenes/loading_screen/loading_scene.tscn")):
-		printerr("Couldn't change scene to loading scene!")
-
-
 #------------------------------------------------ BUTTONS
 func _on_project_pressed(a_id: int) -> void:
 	GoZenServer.add_loadables_to_front([
 		Loadable.new("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[a_id][0]), 0.3),
 		Loadable.new("Setting current project id", RecentProjectsManager.set_current_project_id.bind(a_id)),
 	])
-	start_load_scene()
+	self.visible = false
+	_start_project_loading.emit()
+	self.queue_free()
 
 
 func _on_exit_button_pressed() -> void:
@@ -150,11 +148,11 @@ func _on_create_project_button_pressed() -> void:
 		Loadable.new("Setting current project id", RecentProjectsManager.set_current_project_id.bind(RecentProjectsManager.project_data.size()-1)),
 	])
 
-	start_load_scene()
+	self.visible = false
+	_start_project_loading.emit()
+	self.queue_free()
 
 
 func set_new_project_path(a_path: String) -> void:
 	path_line_edit.text = a_path
-
-
 
