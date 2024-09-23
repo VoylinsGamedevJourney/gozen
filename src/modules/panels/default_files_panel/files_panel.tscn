@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://do5l37y7cr1ky"]
+
+[ext_resource type="Script" path="res://modules/panels/default_files_panel/files_panel.gd" id="1_5nyht"]
+
+[node name="FilesPanel" type="Control" node_paths=PackedStringArray("tree")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5nyht")
+tree = NodePath("FilesTree")
+
+[node name="FilesTree" type="Tree" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+hide_root = true
+drop_mode_flags = 3
+
+[connection signal="button_clicked" from="FilesTree" to="." method="_on_files_tree_button_clicked"]

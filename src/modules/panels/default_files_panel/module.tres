@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Module" load_steps=4 format=3 uid="uid://bo07oq23sgwq6"]
+
+[ext_resource type="Script" path="res://classes/module.gd" id="1_4yik2"]
+[ext_resource type="Texture2D" uid="uid://c2mxco5li8lrq" path="res://modules/panels/default_files_panel/files_panel_icon.png" id="1_12fmi"]
+[ext_resource type="PackedScene" uid="uid://do5l37y7cr1ky" path="res://modules/panels/default_files_panel/files_panel.tscn" id="1_t6kr8"]
+
+[resource]
+script = ExtResource("1_4yik2")
+icon = ExtResource("1_12fmi")
+title = "Default Files Panel"
+scene = ExtResource("1_t6kr8")
