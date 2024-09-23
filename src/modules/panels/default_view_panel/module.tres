@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Module" load_steps=4 format=3 uid="uid://b3c7gd7c57rq1"]
+
+[ext_resource type="PackedScene" uid="uid://cse1v6pi6ah7r" path="res://modules/panels/default_view_panel/view_panel.tscn" id="1_8fcj6"]
+[ext_resource type="Texture2D" uid="uid://bqrn1ngxn7sgs" path="res://modules/panels/default_view_panel/view_panel_icon.png" id="1_hge3f"]
+[ext_resource type="Script" path="res://classes/module.gd" id="1_ucipo"]
+
+[resource]
+script = ExtResource("1_ucipo")
+icon = ExtResource("1_hge3f")
+title = "Default View Panel"
+scene = ExtResource("1_8fcj6")
