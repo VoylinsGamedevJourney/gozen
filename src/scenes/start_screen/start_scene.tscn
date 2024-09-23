@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://buykwt2otvgic"]
+[gd_scene load_steps=18 format=3 uid="uid://buykwt2otvgic"]
 
 [ext_resource type="Script" path="res://scenes/start_screen/start_scene.gd" id="1_p3vev"]
 [ext_resource type="Texture2D" uid="uid://3svb07jeroqt" path="res://assets/icons/close.png" id="2_yle7i"]
@@ -63,6 +63,9 @@ content_margin_left = 7.0
 content_margin_top = 7.0
 content_margin_right = 7.0
 content_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hlgn8"]
+bg_color = Color(0, 0, 0, 0.282353)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j365j"]
 content_margin_left = 40.0
@@ -230,6 +233,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hlgn8")
 
 [node name="Screen" type="PanelContainer" parent="MainVBox/MainHBox/ContentPanel/TextureRect/NewProjectPanel"]
 layout_mode = 2

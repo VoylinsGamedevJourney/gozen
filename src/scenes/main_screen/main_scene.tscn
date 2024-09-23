@@ -84,6 +84,8 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
 
 [node name="MainPanels" type="TabContainer" parent="MarginContainer/MainHBox/MainPanel"]
 layout_mode = 2

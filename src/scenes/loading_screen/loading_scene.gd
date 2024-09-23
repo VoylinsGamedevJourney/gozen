@@ -31,8 +31,8 @@ func start_loading() -> void:
 		l_total_time += timer.wait_time
 		await timer.timeout
 	
-	loading_text_label.text = "Finalizing ..."
-	loading_text_label.tooltip_text = "Finalizing"
+	loading_text_label.text = "Loading editor ..."
+	loading_text_label.tooltip_text = "Loading editor"
 	await RenderingServer.frame_pre_draw
 	
 	timer.start(MIN_TIME - l_total_time if l_total_time < MIN_TIME else 1.)
@@ -40,6 +40,27 @@ func start_loading() -> void:
 
 	editor_scene.visible = false
 	get_parent().add_child(editor_scene)
+
+	for l_loadable: Loadable in GoZenServer.after_loadables as Array[Loadable]:
+		loading_text_label.text = "%s..." % l_loadable.info_text
+		loading_text_label.tooltip_text = l_loadable.info_text
+		await RenderingServer.frame_pre_draw
+		await l_loadable.function.call()
+
+		if l_loadable.delay == 0:
+			l_total_time += 0.1
+			timer.start(0.1)
+		else:
+			l_total_time += l_loadable.delay
+			timer.start(l_loadable.delay)
+
+		l_total_time += timer.wait_time
+		await timer.timeout
+
+	loading_text_label.text = "Finalizing ..."
+	loading_text_label.tooltip_text = "Finalizing"
+	await RenderingServer.frame_pre_draw
+	GoZenServer.loaded = true
 
 	get_viewport().get_window().unresizable = false
 	self.visible = false
