@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bc23mdjps7mj"]
+
+[node name="TimelinePanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SidePanel" type="PanelContainer" parent="HBox"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="HBox/SidePanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="HBox/SidePanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MainPanel" type="PanelContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scroll" type="ScrollContainer" parent="HBox/MainPanel"]
+layout_mode = 2
+
+[node name="Clips" type="Control" parent="HBox/MainPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
