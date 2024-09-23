@@ -8,7 +8,11 @@ signal _on_changes_occurred
 
 signal _on_title_changed
 
+signal _on_folder_added(path: String)
+signal _on_folder_removed(path: String)
+
 signal _on_file_added(file_id: int)
+signal _on_file_removed(file_id: int)
 
 signal _on_track_added
 signal _on_track_removed(track_id: int)
@@ -36,6 +40,8 @@ var files: Dictionary = {}
 var tracks: Array[Dictionary] = []
 var clips: Dictionary = {}
 
+var folders: PackedStringArray = []
+
 var counter_file_id: int = 0
 var counter_clip_id: int = 0
 
@@ -43,7 +49,7 @@ var counter_clip_id: int = 0
 #------------------------------------------------ GODOT FUNCTIONS
 func _ready() -> void:
 	GoZenServer.add_loadables([
-		Loadable.new("Setting up tracks",  Project._setup_tracks, 0.2),
+		Loadable.new("Setting up tracks",  Project._setup_tracks),
 		Loadable.new("Loading files data", Project._load_files_data, 0.3),
 		Loadable.new("Loading tracks data", Project._load_tracks_data, 0.3),
 	])
@@ -68,6 +74,7 @@ func load_data(a_path: String) -> void:
 		printerr("Couldn't open settings file for loading! ", a_path)
 		get_tree().quit(-1)
 	else:
+		_project_path = a_path
 		_on_project_loaded.emit()
 	
 	
@@ -145,18 +152,19 @@ func add_file(a_path: String) -> void:
 func add_file_data(a_id: int) -> bool:
 	var l_path: String = files[a_id].path
 
-	match files[a_id]:
+	match files[a_id].type:
 		File.VIDEO: 
-			var l_array: Array[Video] = []
+			var l_array: Array[VideoData] = []
 			if l_array.resize(tracks.size()):
 				printerr("Couldn't resize array for VideoData!")
 				return false
-			_files_data[a_id] = l_array
 
 			for i: int in tracks.size():
 				var l_data: VideoData = VideoData.new()
-				if l_data.open(l_path, i == 0):
+				if !l_data.open(l_path, i == 0):
 					return false
+				l_array[i] = l_data
+			_files_data[a_id] = l_array
 		File.TEXT: _files_data[a_id] = FileText.open(a_id)
 		File.AUDIO: _files_data[a_id] = AudioImporter.load(l_path)
 		File.COLOR: _files_data[a_id] = FileColor.open(a_id)
@@ -174,34 +182,43 @@ func add_file_data(a_id: int) -> bool:
 	return true
 	
 
+func remove_file(a_id: int) -> void:
+	if !files.erase(a_id):
+		printerr("Couldn't remove file id %s from project files!" % a_id)
+	if _files_data.erase(a_id):
+		printerr("Couldn't remove file data id %s from project files!" % a_id)
+	_on_file_removed.emit(a_id)
+
+
 func _calculate_duration_video(a_id: int) -> void:
-	var l_video: Video = _files_data[a_id][0]
-	_files_data[a_id][0].duration = round(l_video.get_frame_duration() / l_video.get_framerate() * framerate)
+	var l_video: Video = _files_data[a_id][0].data
+	files[a_id].duration = round(l_video.get_frame_duration() / l_video.get_framerate() * framerate)
 
 
 func _calculate_duration_audio(a_id: int) -> void:
 	var l_audio_stream: AudioStream = _files_data[a_id]
-	_files_data[a_id].duration = round(l_audio_stream.get_length() * framerate)
+	files[a_id].duration = round(l_audio_stream.get_length() * framerate)
 
 
 #------------------------------------------------ TRACK HANDLING
 func _setup_tracks() -> void:
 	if tracks == []: # If empty
 		for i: int in SettingsManager.default_tracks:
-			add_track()
+			_add_track()
 
 
 func _load_tracks_data() -> void:
 	pass
 
 
-func add_track() -> void:
+func _add_track() -> void:
 	tracks.append({})
 	_tracks_data.append(PackedInt64Array())
 	_on_track_added.emit()
 	_changes_occurred()
 
-func remove_track(a_id: int) -> void:
+
+func _remove_track(a_id: int) -> void:
 	tracks.remove_at(a_id)
 	_tracks_data.remove_at(a_id)
 	_on_track_removed.emit(a_id)
@@ -209,7 +226,7 @@ func remove_track(a_id: int) -> void:
 
 
 #------------------------------------------------ CLIP HANDLING
-func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
+func _add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 	counter_clip_id += 1
 	var clip_id: int = counter_clip_id
 
@@ -227,7 +244,7 @@ func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 	_changes_occurred()
 
 
-func move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
+func _move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
 		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
 	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
@@ -238,33 +255,33 @@ func move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	_changes_occurred()
 
 
-func remove_clip(a_clip_id: int) -> void:
-	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
-		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
-	if !clips.erase(a_clip_id):
-		printerr("Couln't remove clip id %s from clips!" % a_clip_id)	
-	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
+func _remove_clip(a_id: int) -> void:
+	if !tracks[clips[a_id].track_id].erase(clips[a_id].pts):
+		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_id, clips[a_id].pts])
+	if !clips.erase(a_id):
+		printerr("Couln't remove clip id %s from clips!" % a_id)	
+	_on_clip_removed.emit(clips[a_id].track_id, clips[a_id].pts)
 	_changes_occurred()
 
 
-func resize_clip(a_clip_id: int, a_duration: int, a_left: bool) -> void:
-	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
-		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
-	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
+func _resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
+	if !tracks[clips[a_id].track_id].erase(clips[a_id].pts):
+		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_id, clips[a_id].pts])
+	_on_clip_removed.emit(clips[a_id].track_id, clips[a_id].pts)
 
-	var l_old_duration: int = clips[a_clip_id].duration
+	var l_old_duration: int = clips[a_id].duration
 	var l_difference: int = a_duration - l_old_duration
-	clips[a_clip_id].duration = a_duration
+	clips[a_id].duration = a_duration
 	
 	if a_left:
-		clips[a_clip_id].pts = clips[a_clip_id].pts - l_difference
+		clips[a_id].pts = clips[a_id].pts - l_difference
 
-	if files[clips[a_clip_id].file_id].type in [File.AUDIO, File.VIDEO]:
+	if files[clips[a_id].file_id].type in [File.AUDIO, File.VIDEO]:
 		if a_left:
-			clips[a_clip_id].start -= l_difference
+			clips[a_id].start -= l_difference
 		else:
-			clips[a_clip_id].end += l_difference
+			clips[a_id].end += l_difference
 
-	_on_clip_added.emit(a_clip_id)
+	_on_clip_added.emit(a_id)
 	_changes_occurred()
 

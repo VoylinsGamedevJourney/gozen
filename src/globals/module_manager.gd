@@ -2,9 +2,16 @@ extends DataManager
 
 
 enum MENU {
-	SETTINGS_EDITOR,
-	SETTINGS_PROJECT,
+	SETTINGS_EDITOR = 100,
+	SETTINGS_PROJECT = 101,
 }
+enum PANEL {
+	VIEW = 1,
+	FILES = 2,
+	EFFECTS = 3,
+	TIMELINE = 4,
+}
+
 
 const PATH: String = "user://module_settings"
 const MODULE_DATA_PATH: String = "user://module_data/"
@@ -17,7 +24,11 @@ var _modules: Dictionary = {}
 var layouts: PackedStringArray = []
 var modules: Dictionary = { # Selected modules to use
 	MENU.SETTINGS_EDITOR: "default_editor_settings_menu",
-	MENU.SETTINGS_PROJECT: "default_project_settings_menu"
+	MENU.SETTINGS_PROJECT: "default_project_settings_menu",
+	PANEL.VIEW: "default_view_panel",
+	PANEL.FILES: "default_files_panel",
+	PANEL.EFFECTS: "default_effects_panel",
+	PANEL.TIMELINE: "default_timeline_panel",
 }
 
 
@@ -55,8 +66,8 @@ func load_data() -> void:
 	else:
 		# Setting default main panels
 		layouts.append_array([
-			"default_editor_panel-0",
-			"default_render_panel-0",
+			"default_editor_layout-0",
+			"default_render_layout-0",
 		])
 		if _save_data(PATH):
 			printerr("Saving data for ModuleManager failed!")
@@ -97,4 +108,9 @@ func get_layout_icon(l_id: int) -> Texture2D:
 
 func get_layout_title(l_id: int) -> String:
 	return _modules["layouts/" + layouts[l_id].get_slice('-', 0)].title
+
+
+func get_panel_module(a_type: PANEL) -> PackedScene:
+	var l_selected_module: String = modules[a_type]
+	return _modules["panels/" + l_selected_module.get_slice('-', 0)].scene
 
