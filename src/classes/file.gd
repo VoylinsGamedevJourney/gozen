@@ -1,12 +1,15 @@
 class_name File
 extends Resource
 
+# TODO: Add functionality to add PCK files (packed scenes)
+
 
 enum {
 	COLOR, TEXT, GRADIENT, # GENERATED
-	VIDEO, IMAGE, AUDIO # ACTUAL FILES
+	VIDEO, IMAGE, AUDIO, PCK # ACTUAL FILES
 }
 
+const PCK_EXT: PackedStringArray = ["pck"]
 const COLOR_EXT: PackedStringArray = ["gozenc"]
 const TEXT_EXT: PackedStringArray = ["gozent"]
 const GRADIENT_EXT: PackedStringArray = ["gozeng"]
@@ -22,6 +25,8 @@ var nickname: String
 var path: String
 var sha256: String
 
+var location: String = "/" # Path for file managers inside of GoZen
+
 var duration: int = 0
 
 
@@ -33,7 +38,8 @@ static func open(a_path: String) -> File:
 	l_file.path = a_path
 	l_file.sha256 = FileAccess.get_sha256(a_path)
 
-	if l_ext in TEXT_EXT: l_file.type = TEXT
+	if l_ext in PCK_EXT: l_file.type = PCK
+	elif l_ext in TEXT_EXT: l_file.type = TEXT
 	elif l_ext in VIDEO_EXT: l_file.type = VIDEO
 	elif l_ext in AUDIO_EXT: l_file.type = AUDIO
 	elif l_ext in IMAGE_EXT: l_file.type = IMAGE
@@ -45,3 +51,14 @@ static func open(a_path: String) -> File:
 
 	return l_file
 
+
+func get_thumb() -> Texture2D:
+	# TODO: Generate thumbs representing the actual data instead of icons,
+	# make this int a setting to let people choose.
+	match type:
+		TEXT: return preload("res://assets/icons/text_file.png")
+		VIDEO: return preload("res://assets/icons/video_file.png")
+		AUDIO: return preload("res://assets/icons/audio_file.png")
+		IMAGE: return preload("res://assets/icons/image_file.png")
+		_: return preload("res://assets/icons/file.png")
+	

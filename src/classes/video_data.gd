@@ -20,6 +20,10 @@ func open(a_path: String, a_load_audio: bool) -> bool:
 	return true
 
 
+func check_open() -> bool:
+	return data.is_open()
+
+
 func get_frame(a_is_playing: bool) -> ImageTexture:
 	if frame_skip < 0 or frame_skip	> 8 or (!a_is_playing and frame_skip > 8): 
 		frame_nr = current_frame
