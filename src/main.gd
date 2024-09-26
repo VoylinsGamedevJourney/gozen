@@ -5,6 +5,7 @@ signal _start_project_loading
 
 
 func _ready() -> void:
+
 	var l_args: PackedStringArray = OS.get_cmdline_args()
 	if l_args.size() >= 1:
 		for l_arg: String in l_args:
@@ -15,7 +16,7 @@ func _ready() -> void:
 
 				var l_id: int = RecentProjectsManager.project_data.size() - 1
 				GoZenServer.add_loadables_to_front([
-					Loadable.new("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[l_id][0]), 0.3),
+					Loadable.new("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[l_id][0])),
 					Loadable.new("Setting current project id", RecentProjectsManager.set_current_project_id.bind(l_id)),
 				])
 

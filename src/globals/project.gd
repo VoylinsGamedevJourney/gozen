@@ -12,6 +12,7 @@ signal _on_folder_added(path: String)
 signal _on_folder_removed(path: String)
 
 signal _on_file_added(file_id: int)
+signal _on_file_nickname_changed(file_id: int)
 signal _on_file_removed(file_id: int)
 
 signal _on_track_added
@@ -50,8 +51,8 @@ var counter_clip_id: int = 0
 func _ready() -> void:
 	GoZenServer.add_loadables([
 		Loadable.new("Setting up tracks",  Project._setup_tracks),
-		Loadable.new("Loading files data", Project._load_files_data, 0.3),
-		Loadable.new("Loading tracks data", Project._load_tracks_data, 0.3),
+		Loadable.new("Loading files data", Project._load_files_data),
+		Loadable.new("Loading tracks data", Project._load_tracks_data),
 	])
 
 	if get_window().files_dropped.connect(_on_files_dropped):
@@ -180,6 +181,11 @@ func add_file_data(a_id: int) -> bool:
 			File.IMAGE: files[a_id].duration = SettingsManager.default_duration_image
 			File.GRADIENT: files[a_id].duration = SettingsManager.default_duration_gradient
 	return true
+
+
+func change_file_nickname(a_file_id: int, a_new_nickname: String) -> void:
+	files[a_file_id].nickname = a_new_nickname
+	_on_file_nickname_changed.emit(a_file_id)
 	
 
 func remove_file(a_id: int) -> void:

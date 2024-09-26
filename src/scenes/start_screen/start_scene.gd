@@ -67,7 +67,7 @@ func _on_top_bar_gui_input(a_event: InputEvent) -> void:
 #------------------------------------------------ BUTTONS
 func _on_project_pressed(a_id: int) -> void:
 	GoZenServer.add_loadables_to_front([
-		Loadable.new("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[a_id][0]), 0.3),
+		Loadable.new("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[a_id][0])),
 		Loadable.new("Setting current project id", RecentProjectsManager.set_current_project_id.bind(a_id)),
 	])
 	self.visible = false
@@ -144,7 +144,7 @@ func _on_create_project_button_pressed() -> void:
 	Project.framerate = l_framerate
 
 	GoZenServer.add_loadables_to_front([
-		Loadable.new("Saving new project", Project.save_data, 0.3),
+		Loadable.new("Saving new project", Project.save_data),
 		Loadable.new("Setting current project id", RecentProjectsManager.set_current_project_id.bind(RecentProjectsManager.project_data.size()-1)),
 	])
 

@@ -42,7 +42,7 @@ func _process(_delta: float) -> void:
 			return
 		get_window().position = DisplayServer.mouse_get_position() - _move_offset
 
-	if !_resize_node != 0:
+	if _resize_node != 0:
 		if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			_resize_node = 0
 			_on_window_resized.emit()

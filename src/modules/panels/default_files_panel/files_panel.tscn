@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://modules/panels/default_files_panel/files_panel.gd" id="1_5nyht"]
 
-[node name="FilesPanel" type="Control" node_paths=PackedStringArray("tree")]
+[node name="FilesPanel" type="Control" node_paths=PackedStringArray("tab_container", "folder_pck", "folder_text", "folder_color", "folder_image", "folder_audio", "folder_video", "folder_gradient")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,16 +10,58 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5nyht")
-tree = NodePath("FilesTree")
+tab_container = NodePath("VBox/TabContainer")
+folder_pck = NodePath("VBox/TabContainer/PCKHFlow")
+folder_text = NodePath("VBox/TabContainer/TextHFlow")
+folder_color = NodePath("VBox/TabContainer/ColorHFlow")
+folder_image = NodePath("VBox/TabContainer/ImageHFlow")
+folder_audio = NodePath("VBox/TabContainer/AudioHFlow")
+folder_video = NodePath("VBox/TabContainer/VideoHFlow")
+folder_gradient = NodePath("VBox/TabContainer/GradientHFlow")
 
-[node name="FilesTree" type="Tree" parent="."]
+[node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-hide_root = true
-drop_mode_flags = 3
 
-[connection signal="button_clicked" from="FilesTree" to="." method="_on_files_tree_button_clicked"]
+[node name="TabContainer" type="TabContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="PCKHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="TextHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="ColorHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="ImageHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="AudioHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="VideoHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="GradientHFlow" type="HFlowContainer" parent="VBox/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6

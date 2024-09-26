@@ -30,9 +30,9 @@ func _ready() -> void:
 		top_bar_buttons.remove_child(top_bar_buttons.get_child(-2))
 		resize_handles.queue_free()
 
-	GoZenServer.add_after_loadables([
+	GoZenServer.add_loadables([
 		Loadable.new("Updating window handles", _update_window_handles),
-		Loadable.new("Loading layouts", _load_layouts, 0.4),
+		Loadable.new("Loading layouts", _load_layouts),
 	])
 
 

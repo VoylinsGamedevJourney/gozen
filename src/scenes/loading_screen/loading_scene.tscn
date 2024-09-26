@@ -92,6 +92,7 @@ anchor_bottom = 1.0
 offset_top = -29.0
 offset_right = 223.0
 grow_vertical = 0
+tooltip_text = "Made by me :D"
 theme_override_font_sizes/normal_font_size = 12
 bbcode_enabled = true
 text = " Created by: [url=\"https://www.youtube.com/@voylinsgamedevjourney\"]Voylin's Gamedev Journey[/url]"
@@ -100,6 +101,7 @@ scroll_active = false
 autowrap_mode = 0
 
 [node name="VersionLabel" type="Label" parent="VBoxContainer/Header/TextureRect"]
+auto_translate_mode = 2
 self_modulate = Color(1, 1, 1, 0.627451)
 layout_mode = 1
 anchors_preset = 3
@@ -111,6 +113,9 @@ offset_left = -223.0
 offset_top = -29.0
 grow_horizontal = 0
 grow_vertical = 0
+tooltip_text = "Yep, the version is a date, deal with it! :p"
+mouse_filter = 1
+text = "Version: "
 label_settings = SubResource("LabelSettings_rnr42")
 horizontal_alignment = 2
 
@@ -202,6 +207,8 @@ layout_mode = 2
 
 [node name="LoadingLabel" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Patience is the key to many things ... but if it takes to long GoZen may have crashed ^^\""
+mouse_filter = 1
 text = " Loading:"
 label_settings = SubResource("LabelSettings_uqp6m")
 

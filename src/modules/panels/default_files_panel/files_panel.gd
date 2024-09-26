@@ -1,115 +1,111 @@
 extends Control
 
 
+# TODO: Add tabs to left
+# TODO: Add extra button for adding files + tab for opening to add, or creating to add
+
+
 const ICON_MAX_WIDTH: int = 20
 
+@export var tab_container: TabContainer
 
-@export var tree: Tree
-
-
-var root: TreeItem
+@export var folder_pck: HFlowContainer
+@export var folder_text: HFlowContainer
+@export var folder_color: HFlowContainer
+@export var folder_image: HFlowContainer
+@export var folder_audio: HFlowContainer
+@export var folder_video: HFlowContainer
+@export var folder_gradient: HFlowContainer
 
 
 
 func _ready() -> void:
 	var err: int = 0
-	err += Project._on_folder_added.connect(_on_folder_added)
-	err += Project._on_folder_removed.connect(_on_folder_removed)
+
 	err += Project._on_file_added.connect(_on_file_added)
 	err += Project._on_file_removed.connect(_on_file_removed)
 	if err:
 		printerr("Errors occured connecting functions from Project to Files Panel!")
 
-	#tree.set_drag_forwarding()
-
 	GoZenServer.add_after_loadable(
-		Loadable.new("Preparing file tree module", _initialize_file_tree))
+		Loadable.new("Preparing file panel", _initialize_file_tree))
 
 
 #------------------------------------------------ TREE HANDLERS
 func _initialize_file_tree() -> void:
-	if tree == null:
-		printerr("No file tree detected!")
-		return
-	elif root != null:
-		printerr("File tree already initialized!")
-		return
-	
-	root = tree.create_item()
-
-	for l_folder: String in Project.folders:
-		_add_folder(l_folder)
 	for l_file: File in Project.files.values():
 		_add_file(l_file)
 
 
-func _find_folder_item_by_meta(l_parent: TreeItem, l_meta: String) -> TreeItem:
-	var l_item: TreeItem = l_parent.get_first_child()
-	while l_item:
-		if l_item.get_metadata(0) is String and l_item.get_metadata(0) == l_meta:
-			return l_item
-		l_item = l_item.get_next()
-	return null
+func _sort_tree(a_type: int) -> void:
+	var l_folder: HFlowContainer = _get_folder_from_type(a_type)
+	var l_nodes: Dictionary = {}
+
+	for l_child: Button in l_folder.get_children():
+		l_nodes[l_child.name] = l_child
+	
+	var l_pos: int = 0
+	var l_keys: PackedStringArray = l_nodes.keys()
+	l_keys.sort()
+
+	for l_node_name: String in l_nodes.keys():
+		var l_button: Button = l_nodes[l_node_name]
+		l_folder.move_child(l_button, l_pos)
+		l_pos += 1
 
 
-func _find_file_item_by_meta(l_parent: TreeItem, l_meta: int) -> TreeItem:
-	var l_item: TreeItem = l_parent.get_first_child()
-	while l_item:
-		if l_item.get_metadata(0) is int and l_item.get_metadata(0) == l_meta:
-			return l_item
-		l_item = l_item.get_next()
-	return null
+func _get_folder_from_type(a_type: int) -> HFlowContainer:
+	match a_type:
+		File.PCK: return folder_pck
+		File.TEXT: return folder_text
+		File.COLOR: return folder_color
+		File.IMAGE: return folder_image
+		File.AUDIO: return folder_audio
+		File.VIDEO: return folder_video
+		File.GRADIENT: return folder_gradient
+		_:
+			printerr("Invalid type!")
+			return null
 
 
-func _on_files_tree_button_clicked(item:TreeItem, column:int, id:int, mouse_button_index:int) -> void:
-	# TODO: Make this work
-	pass # Replace with function body.
+#------------------------------------------------ FILE BUTTON HANDLERS
+func _create_file_box(a_file: File) -> Button:
+	var l_button: Button = Button.new()
+
+	l_button.name = a_file.nickname
+	l_button.text = a_file.nickname
+
+	l_button.icon = a_file.get_thumb()
+	l_button.expand_icon = true
+	l_button.custom_minimum_size = Vector2i(100, 100)
+
+	l_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+
+	if Project._on_file_nickname_changed.connect(_on_file_nickname_changed.bind(a_file.id, l_button)):
+		printerr("Couldn't connect on file nickname changed to button!")
+
+	return l_button
 
 
-#------------------------------------------------ FOLDER HANDLING
-func _on_folder_added(a_path: String) -> void:
-	_add_folder(a_path)
-	#_sort_tree(root)
+func _on_file_nickname_changed(a_file_id: int, a_button_file_id: int, a_node: Button) -> void:
+	if a_button_file_id != a_file_id:
+		return
 
+	var l_file: File = Project.files[a_file_id]
 
-func _on_folder_removed(a_path: String) -> void:
-	_remove_folder(a_path)
+	a_node.text = l_file.nickname
+	a_node.name = l_file.nickname
 
-
-func _add_folder(a_path: String) -> void:
-	var l_folder_structure: PackedStringArray = a_path.split("/")
-	var l_parent_item: TreeItem = root
-	var l_full_path: String = ""
-
-	for l_folder_name: String in l_folder_structure:
-		if l_folder_name == "":
-			continue
-
-		l_full_path += "/" + l_folder_name
-		var l_folder_item: TreeItem = _find_folder_item_by_meta(l_parent_item, l_full_path)
-		
-		if l_folder_item == null:
-			l_folder_item = tree.create_item(l_parent_item)
-			l_folder_item.set_text(0, l_folder_name)
-			l_folder_item.set_metadata(0, l_full_path)
-			l_folder_item.set_tooltip_text(0, l_full_path)
-			l_folder_item.set_disable_folding(false)
-		l_parent_item = l_folder_item
-
-
-func _remove_folder(a_path: String) -> void:
-	var l_folder_item: TreeItem = _find_folder_item_by_meta(root, a_path)
-	if l_folder_item:
-		l_folder_item.free()
-	else:
-		printerr("Couldn't find folder with path %s to delete" % a_path)
+	_sort_tree(l_file.type)
 
 
 #------------------------------------------------ FILE HANDLING
 func _on_file_added(l_id: int) -> void:
 	var l_file: File = Project.files[l_id]
+
 	_add_file(l_file)
-	#_sort_tree(root)
+	_sort_tree(l_file.type)
 
 
 func _on_file_removed(l_id: int) -> void:
@@ -117,26 +113,20 @@ func _on_file_removed(l_id: int) -> void:
 
 
 func _add_file(a_file: File) -> void:
-	_add_folder(a_file.location)
+	var l_file_box: Button = _create_file_box(a_file)
 
-	var l_parent_folder: TreeItem = _find_folder_item_by_meta(root, a_file.location)
-	var l_file_item: TreeItem = tree.create_item(l_parent_folder)
+	_get_folder_from_type(a_file.type).add_child(l_file_box)
+	tab_container.current_tab = _get_folder_from_type(a_file.type).get_index()
 
-	l_file_item.set_text(0, a_file.nickname)
-	l_file_item.set_icon(0, a_file.get_thumb())
-	l_file_item.set_metadata(0, a_file.id)
-	l_file_item.set_tooltip_text(0, a_file.path)
-	l_file_item.set_icon_max_width(0, ICON_MAX_WIDTH)
-	l_file_item.set_disable_folding(true)
+	_sort_tree(a_file.type)
 
 
 func _remove_file(a_id: int) -> void:
-	var l_file_item: TreeItem = _find_file_item_by_meta(root, a_id)
-	if l_file_item:
-		l_file_item.free()
-	else:
-		printerr("Couldn't find file with id %s to delete" % a_id)
+	if Project.files.has(a_id):
+		Project.remove_file(a_id)
+		return
 
+	var l_file: File = Project.files[a_id]
 
-#------------------------------------------------ SORT
+	_get_folder_from_type(l_file.type).get_node(l_file.nickname).queue_free()
 

@@ -16,6 +16,8 @@ var loadables: Array[Loadable] = []
 var after_loadables: Array[Loadable] = []
 var loaded: bool = false
 
+
+
 func add_loadable(a_loadable: Loadable) -> void:
 	loadables.append(a_loadable)
 
