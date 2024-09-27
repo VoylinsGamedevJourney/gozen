@@ -154,6 +154,10 @@ func add_file_data(a_id: int) -> bool:
 	var l_path: String = files[a_id].path
 
 	match files[a_id].type:
+		File.TEXT: _files_data[a_id] = FileText.open(a_id)
+		File.COLOR: _files_data[a_id] = FileColor.open(a_id)
+		File.IMAGE: _files_data[a_id] = ImageTexture.create_from_image(Image.load_from_file(l_path))
+		File.AUDIO: _files_data[a_id] = AudioImporter.load(l_path)
 		File.VIDEO: 
 			var l_array: Array[VideoData] = []
 			if l_array.resize(tracks.size()):
@@ -166,20 +170,14 @@ func add_file_data(a_id: int) -> bool:
 					return false
 				l_array[i] = l_data
 			_files_data[a_id] = l_array
-		File.TEXT: _files_data[a_id] = FileText.open(a_id)
-		File.AUDIO: _files_data[a_id] = AudioImporter.load(l_path)
-		File.COLOR: _files_data[a_id] = FileColor.open(a_id)
-		File.IMAGE: _files_data[a_id] = ImageTexture.create_from_image(Image.load_from_file(l_path))
-		File.GRADIENT: _files_data[a_id] = FileGradient.open(a_id)
 
 	if files[a_id].duration == 0:
 		match files[a_id].type:
-			File.VIDEO: _calculate_duration_video(a_id)
-			File.AUDIO: _calculate_duration_audio(a_id)
 			File.TEXT: files[a_id].duration = SettingsManager.default_duration_text
 			File.COLOR: files[a_id].duration = SettingsManager.default_duration_color
 			File.IMAGE: files[a_id].duration = SettingsManager.default_duration_image
-			File.GRADIENT: files[a_id].duration = SettingsManager.default_duration_gradient
+			File.AUDIO: _calculate_duration_audio(a_id)
+			File.VIDEO: _calculate_duration_video(a_id)
 	return true
 
 

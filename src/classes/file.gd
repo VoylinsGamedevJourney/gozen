@@ -5,14 +5,13 @@ extends Resource
 
 
 enum {
-	COLOR, TEXT, GRADIENT, # GENERATED
+	COLOR, TEXT, # GENERATED
 	VIDEO, IMAGE, AUDIO, PCK # ACTUAL FILES
 }
 
 const PCK_EXT: PackedStringArray = ["pck"]
 const COLOR_EXT: PackedStringArray = ["gozenc"]
 const TEXT_EXT: PackedStringArray = ["gozent"]
-const GRADIENT_EXT: PackedStringArray = ["gozeng"]
 const VIDEO_EXT: PackedStringArray = ["mp4","mov","avi","mkv","webm","flv","mpeg",
 									  "mpg","wmv","asf","vob","ts","m2ts","mts","3gp","3g2"]
 const AUDIO_EXT: PackedStringArray = ["ogg","wav","mp3"]
@@ -44,7 +43,6 @@ static func open(a_path: String) -> File:
 	elif l_ext in AUDIO_EXT: l_file.type = AUDIO
 	elif l_ext in IMAGE_EXT: l_file.type = IMAGE
 	elif l_ext in COLOR_EXT: l_file.type = COLOR
-	elif l_ext in GRADIENT_EXT: l_file.type = GRADIENT
 	else:
 		printerr("No valid extension!")
 		return null

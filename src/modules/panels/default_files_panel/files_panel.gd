@@ -15,7 +15,6 @@ const ICON_MAX_WIDTH: int = 20
 @export var folder_image: HFlowContainer
 @export var folder_audio: HFlowContainer
 @export var folder_video: HFlowContainer
-@export var folder_gradient: HFlowContainer
 
 
 
@@ -36,6 +35,23 @@ func _initialize_file_tree() -> void:
 	for l_file: File in Project.files.values():
 		_add_file(l_file)
 
+	# TODO: Adding correct icons and replace placeholders
+	var l_tab_bar: TabBar = tab_container.get_tab_bar()
+	var l_tab_data: Array[PackedStringArray] = [
+		["PCK", "text"],
+		["Text", "text"],
+		["Color", "image"],
+		["Image", "text"],
+		["Audio", "audio"],
+		["Video", "video"]
+	]
+
+	for i: int in l_tab_data.size():
+		l_tab_bar.set_tab_title(i, "")
+		l_tab_bar.set_tab_icon_max_width(i, 22)
+		l_tab_bar.set_tab_tooltip(i, "%s files" % l_tab_data[i][0])
+		l_tab_bar.set_tab_icon(i, load("res://assets/icons/%s_file.png" % l_tab_data[i][1]) as Texture2D)
+
 
 func _sort_tree(a_type: int) -> void:
 	var l_folder: HFlowContainer = _get_folder_from_type(a_type)
@@ -46,10 +62,12 @@ func _sort_tree(a_type: int) -> void:
 	
 	var l_pos: int = 0
 	var l_keys: PackedStringArray = l_nodes.keys()
+
 	l_keys.sort()
 
 	for l_node_name: String in l_nodes.keys():
 		var l_button: Button = l_nodes[l_node_name]
+
 		l_folder.move_child(l_button, l_pos)
 		l_pos += 1
 
@@ -62,7 +80,6 @@ func _get_folder_from_type(a_type: int) -> HFlowContainer:
 		File.IMAGE: return folder_image
 		File.AUDIO: return folder_audio
 		File.VIDEO: return folder_video
-		File.GRADIENT: return folder_gradient
 		_:
 			printerr("Invalid type!")
 			return null
