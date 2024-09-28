@@ -41,6 +41,7 @@ var files: Dictionary = {}
 var tracks: Array[Dictionary] = []
 var clips: Dictionary = {}
 
+# NOTE: Only half implemented, core doesn't use but is here for modules
 var folders: PackedStringArray = []
 
 var counter_file_id: int = 0

@@ -1,14 +1,69 @@
-[gd_scene format=3 uid="uid://bc23mdjps7mj"]
+[gd_scene load_steps=4 format=3 uid="uid://bc23mdjps7mj"]
 
-[node name="TimelinePanel" type="Control"]
+[ext_resource type="Script" path="res://modules/panels/default_timeline_panel/timeline_panel.gd" id="1_qjs4a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8w1y7"]
+bg_color = Color(1, 1, 1, 0.0235294)
+corner_radius_top_left = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qqb47"]
+bg_color = Color(1, 1, 1, 0.0235294)
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+
+[node name="TimelinePanel" type="Control" node_paths=PackedStringArray("sidebar", "lines", "clips")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_qjs4a")
+sidebar = NodePath("Scroll/HBox/SidePanel/SidePanelVBox")
+lines = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Lines")
+clips = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Clips")
 
-[node name="HBox" type="HBoxContainer" parent="."]
+[node name="Scroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="HBox" type="HBoxContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SidePanel" type="PanelContainer" parent="Scroll/HBox"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8w1y7")
+
+[node name="SidePanelVBox" type="VBoxContainer" parent="Scroll/HBox/SidePanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="MainPanel" type="PanelContainer" parent="Scroll/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_qqb47")
+
+[node name="Scroll" type="ScrollContainer" parent="Scroll/HBox/MainPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Main" type="Control" parent="Scroll/HBox/MainPanel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Lines" type="Control" parent="Scroll/HBox/MainPanel/Scroll/Main"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,25 +71,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SidePanel" type="PanelContainer" parent="HBox"]
-layout_mode = 2
-
-[node name="Scroll" type="ScrollContainer" parent="HBox/SidePanel"]
-layout_mode = 2
-
-[node name="VBox" type="VBoxContainer" parent="HBox/SidePanel/Scroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MainPanel" type="PanelContainer" parent="HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Scroll" type="ScrollContainer" parent="HBox/MainPanel"]
-layout_mode = 2
-
-[node name="Clips" type="Control" parent="HBox/MainPanel/Scroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="Clips" type="Control" parent="Scroll/HBox/MainPanel/Scroll/Main"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
