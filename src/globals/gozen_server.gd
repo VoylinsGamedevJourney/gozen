@@ -125,3 +125,8 @@ func set_playhead_moving(a_value: bool) -> void:
 	_on_playhead_moving.emit(a_value)
 
 
+#------------------------------------------------ EFFECTS HANDLING
+
+signal _open_file_effects(file_id: int)
+signal _open_clip_effects(file_id: int)
+

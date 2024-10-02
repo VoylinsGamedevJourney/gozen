@@ -36,10 +36,10 @@ func _ready() -> void:
 
 #------------------------------------------------ TREE HANDLERS
 func _initialize_file_tree() -> void:
+	_update_icons()
+
 	for l_file: File in Project.files.values():
 		_add_file(l_file)
-	
-	_update_icons()
 
 
 func _update_icons() -> void:
@@ -50,7 +50,7 @@ func _update_icons() -> void:
 		["Color", "color"],
 		["Image", "image"],
 		["Audio", "audio"],
-		["Video", "video"]
+		["Video", "video"],
 	]
 
 	for i: int in l_tab_data.size():
@@ -96,7 +96,7 @@ func _get_folder_from_type(a_type: int) -> HFlowContainer:
 func _create_file_box(a_file: File) -> Button:
 	var l_button: Button = Button.new()
 
-	l_button.name = a_file.nickname
+	l_button.name = str(a_file.id)
 	l_button.text = a_file.nickname
 
 	l_button.icon = a_file.get_thumb()
@@ -105,6 +105,7 @@ func _create_file_box(a_file: File) -> Button:
 
 	l_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	l_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+	l_button.set_script(preload("res://modules/panels/default_files_panel/file_button.gd"))
 
 	if Project._on_file_nickname_changed.connect(_on_file_nickname_changed.bind(a_file.id, l_button)):
 		printerr("Couldn't connect on file nickname changed to button!")
