@@ -83,6 +83,18 @@ func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 
 
 #------------------------------------------------ CLIP HANDLING
+
+signal _on_clip_moving(value: bool)
+
+
+var clip_moving: bool = false: set = set_clip_moving
+
+
+func set_clip_moving(a_value: bool) -> void:
+	clip_moving = a_value
+	_on_clip_moving.emit(a_value)
+
+
 func move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	# TODO: Add to action manager so we can undo this change
 	Project._move_clip(a_clip_id, a_new_pts, a_new_track_id)

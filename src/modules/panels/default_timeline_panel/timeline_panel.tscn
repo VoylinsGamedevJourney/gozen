@@ -78,6 +78,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="Clips" type="Control" parent="Scroll/HBox/MainPanel/Scroll/Main"]
 layout_mode = 1
@@ -86,6 +87,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="Playhead" type="Panel" parent="Scroll/HBox/MainPanel/Scroll/Main"]
 custom_minimum_size = Vector2(3, 0)
@@ -93,6 +95,7 @@ layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 grow_vertical = 2
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ixv1g")
 
 [connection signal="gui_input" from="Scroll/HBox/MainPanel/Scroll" to="." method="_on_scroll_gui_input"]

@@ -23,6 +23,7 @@ signal _on_clip_removed(track_id: int, pts: int)
 
 signal _on_end_pts_changed(value: int)
 signal _on_framerate_changed(value: int)
+signal _on_playhead_moved(value: bool)
 
 
 #------------------------------------------------ TEMPORARY VARIABLES
@@ -51,7 +52,7 @@ var folders: PackedStringArray = []
 var counter_file_id: int = 0
 var counter_clip_id: int = 0
 
-var playhead_pos: int = 0
+var playhead_pos: int = 0: set = set_playhead_pos
 
 
 #------------------------------------------------ GODOT FUNCTIONS
@@ -108,6 +109,11 @@ func set_framerate(a_value: int) -> void:
 	
 	# TODO: Change all the clip durations so the timeline doesn't get messed up
 	_on_framerate_changed.emit(a_value)
+
+
+func set_playhead_pos(a_value: int) -> void:
+	playhead_pos = a_value
+	_on_playhead_moved.emit(true)
 
 
 #------------------------------------------------ FILE HANDLING
