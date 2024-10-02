@@ -19,29 +19,36 @@ const ICON_MAX_WIDTH: int = 20
 
 
 func _ready() -> void:
-	var err: int = 0
+	GoZenServer.add_after_loadable(
+	Loadable.new("Preparing file panel", _initialize_file_tree))
 
+	var err: int = 0
 	err += Project._on_file_added.connect(_on_file_added)
 	err += Project._on_file_removed.connect(_on_file_removed)
 	if err:
 		printerr("Errors occured connecting functions from Project to Files Panel!")
-
-	GoZenServer.add_after_loadable(
-		Loadable.new("Preparing file panel", _initialize_file_tree))
+		err = 0
+	
+	err += SettingsManager._on_icon_pack_changed.connect(_update_icons)
+	if err:
+		printerr("Errors occured connecting to icon pack changed in default Files modules!")
 
 
 #------------------------------------------------ TREE HANDLERS
 func _initialize_file_tree() -> void:
 	for l_file: File in Project.files.values():
 		_add_file(l_file)
+	
+	_update_icons()
 
-	# TODO: Adding correct icons and replace placeholders
+
+func _update_icons() -> void:
 	var l_tab_bar: TabBar = tab_container.get_tab_bar()
 	var l_tab_data: Array[PackedStringArray] = [
-		["PCK", "text"],
+		["PCK", "pck"],
 		["Text", "text"],
-		["Color", "image"],
-		["Image", "text"],
+		["Color", "color"],
+		["Image", "image"],
 		["Audio", "audio"],
 		["Video", "video"]
 	]
@@ -50,7 +57,7 @@ func _initialize_file_tree() -> void:
 		l_tab_bar.set_tab_title(i, "")
 		l_tab_bar.set_tab_icon_max_width(i, 22)
 		l_tab_bar.set_tab_tooltip(i, "%s files" % l_tab_data[i][0])
-		l_tab_bar.set_tab_icon(i, load("res://assets/icons/%s_file.png" % l_tab_data[i][1]) as Texture2D)
+		l_tab_bar.set_tab_icon(i, SettingsManager.get_icon("%s_file" % l_tab_data[i][1]))
 
 
 func _sort_tree(a_type: int) -> void:

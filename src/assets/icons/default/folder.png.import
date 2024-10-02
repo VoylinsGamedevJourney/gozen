@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://it3u5obbn8pe"
-path="res://.godot/imported/fast_rewind.png-d840126728f256be8abbef043207f3eb.ctex"
+uid="uid://cojp3xd422dxn"
+path="res://.godot/imported/folder.png-7e1adebfcace9b26bf39c657c296640f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/fast_rewind.png"
-dest_files=["res://.godot/imported/fast_rewind.png-d840126728f256be8abbef043207f3eb.ctex"]
+source_file="res://assets/icons/default/folder.png"
+dest_files=["res://.godot/imported/folder.png-7e1adebfcace9b26bf39c657c296640f.ctex"]
 
 [params]
 

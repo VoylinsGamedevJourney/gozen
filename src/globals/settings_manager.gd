@@ -8,6 +8,8 @@ signal _on_window_moved
 signal _on_window_resized
 signal _on_window_mode_changed(mode: Window.Mode)
 
+signal _on_icon_pack_changed
+
 
 const PATH: String = "user://editor_settings"
 
@@ -24,6 +26,8 @@ var default_duration_image: int = 600
 var default_duration_color: int = 600
 var default_duration_gradient: int = 600
 var default_duration_text: int = 600
+
+var icon_pack: String = "default"
 
 
 
@@ -108,7 +112,6 @@ func print_debug_info() -> void:
 	print_rich("[color=purple][b]--==--================--==--")
 
 
-#------------------------------------------------ DATA HANDLING
 func save_data() -> void:
 	if _save_data(PATH) == ERR_FILE_CANT_OPEN:
 		printerr("Couldn't open settings file for saving! ", PATH)
@@ -119,4 +122,18 @@ func load_data() -> void:
 	if _load_data(PATH) == ERR_FILE_CANT_OPEN:
 		printerr("Couldn't open settings file for loading! ", PATH)
 	_on_settings_loaded.emit()
+
+
+#------------------------------------------------ ICON HANDLING
+func change_icon_pack(l_pack_name: String) -> void:
+	if !DirAccess.dir_exists_absolute("res://assets/icons/%s" % l_pack_name):
+		printerr("No icon pack loaded named: ", l_pack_name)
+		return
+
+	icon_pack = l_pack_name
+	_on_icon_pack_changed.emit()
+
+
+func get_icon(l_icon_name: String) -> Texture2D:
+	return load("res://assets/icons/%s/%s.png" % [icon_pack, l_icon_name])
 

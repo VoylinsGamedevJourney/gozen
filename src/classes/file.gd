@@ -54,9 +54,9 @@ func get_thumb() -> Texture2D:
 	# TODO: Generate thumbs representing the actual data instead of icons,
 	# make this int a setting to let people choose.
 	match type:
-		TEXT: return preload("res://assets/icons/text_file.png")
-		VIDEO: return preload("res://assets/icons/video_file.png")
-		AUDIO: return preload("res://assets/icons/audio_file.png")
-		IMAGE: return preload("res://assets/icons/image_file.png")
-		_: return preload("res://assets/icons/file.png")
+		TEXT: return SettingsManager.get_icon("text_file")
+		IMAGE: return SettingsManager.get_icon("image_file")
+		VIDEO: return SettingsManager.get_icon("video_file")
+		AUDIO: return SettingsManager.get_icon("audio_file")
+		_: return SettingsManager.get_icon("file")
 	
