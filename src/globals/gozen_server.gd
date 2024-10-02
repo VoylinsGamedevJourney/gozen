@@ -97,3 +97,19 @@ func resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
 	# TODO: Add to action manager so we can undo this change
 	Project._resize_clip(a_id, a_duration, a_left)
 
+
+#------------------------------------------------ PLAYHEAD HANDLING
+# All the playhead handling happens here for all nodes, as this info is needed
+# for the view of the project.
+
+signal _on_playhead_moving(value: bool)
+
+
+var playhead_moving: bool = false: set = set_playhead_moving
+
+
+func set_playhead_moving(a_value: bool) -> void:
+	playhead_moving = a_value
+	_on_playhead_moving.emit(a_value)
+
+

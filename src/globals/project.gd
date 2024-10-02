@@ -18,18 +18,22 @@ signal _on_file_removed(file_id: int)
 signal _on_track_added
 signal _on_track_removed(track_id: int)
 
-signal _on_framerate_changed(value: int)
-
 signal _on_clip_added(clip_id: int)
 signal _on_clip_removed(track_id: int, pts: int)
+
+signal _on_end_pts_changed(value: int)
+signal _on_framerate_changed(value: int)
 
 
 #------------------------------------------------ TEMPORARY VARIABLES
 var _project_path: String = ""
 var _files_data: Dictionary = {} 
 var _tracks_data: Array[PackedInt64Array] = []
+var _clip_nodes: Dictionary = {} 
 
 var _unsaved_changes: bool = false
+
+var _end_pts: int = 0
 
 
 #------------------------------------------------ DATA VARIABLES
@@ -46,6 +50,8 @@ var folders: PackedStringArray = []
 
 var counter_file_id: int = 0
 var counter_clip_id: int = 0
+
+var playhead_pos: int = 0
 
 
 #------------------------------------------------ GODOT FUNCTIONS
@@ -205,6 +211,18 @@ func _calculate_duration_audio(a_id: int) -> void:
 	files[a_id].duration = round(l_audio_stream.get_length() * framerate)
 
 
+#------------------------------------------------ FOLDER HANDLING
+func add_folder(a_path: String) -> void:
+	if !folders.append(a_path):
+		printerr("Error happend appending folder!")
+	_on_folder_added.emit(a_path)
+
+
+func remove_folder(a_path: String) -> void:
+	folders.remove_at(folders.find(a_path))
+	_on_folder_removed.emit(a_path)
+
+
 #------------------------------------------------ TRACK HANDLING
 func _setup_tracks() -> void:
 	if tracks == []: # If empty
@@ -224,9 +242,15 @@ func _add_track() -> void:
 
 
 func _remove_track(a_id: int) -> void:
+	# Removing tracks is destructive and can't be recovered with ctrl+z
+	for l_clip_id: int in tracks[a_id].keys():
+		_remove_clip(l_clip_id)
+
 	tracks.remove_at(a_id)
 	_tracks_data.remove_at(a_id)
 	_on_track_removed.emit(a_id)
+
+	_update_end_pts()
 	_changes_occurred()
 
 
@@ -246,6 +270,9 @@ func _add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 	tracks[a_track_id][a_pts] = clip_id
 
 	_on_clip_added.emit(clip_id)
+	_clip_nodes[clip_id] = []
+
+	_update_end_pts()
 	_changes_occurred()
 
 
@@ -257,6 +284,8 @@ func _move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	tracks[a_new_track_id][a_new_pts] = a_clip_id
 	clips[a_clip_id].pts = a_new_pts
 	_on_clip_added.emit(a_clip_id)
+
+	_update_end_pts()
 	_changes_occurred()
 
 
@@ -266,6 +295,11 @@ func _remove_clip(a_id: int) -> void:
 	if !clips.erase(a_id):
 		printerr("Couln't remove clip id %s from clips!" % a_id)	
 	_on_clip_removed.emit(clips[a_id].track_id, clips[a_id].pts)
+
+	for l_node: Control in _clip_nodes[a_id]:
+		l_node.queue_free()
+
+	_update_end_pts()
 	_changes_occurred()
 
 
@@ -288,5 +322,20 @@ func _resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
 			clips[a_id].end += l_difference
 
 	_on_clip_added.emit(a_id)
+	_update_end_pts()
 	_changes_occurred()
+
+
+#------------------------------------------------ MISC
+func _update_end_pts() -> void:
+	var l_pts: int = 0
+	for l_track_data: Dictionary in tracks:
+		var l_clip: ClipData = l_track_data[l_track_data.keys().max()]
+
+		if l_pts < l_clip.get_end_pts():
+			l_pts = l_clip.get_end_pts()
+
+	if l_pts != _end_pts:
+		_end_pts = l_pts
+		_on_end_pts_changed.emit(_end_pts)
 

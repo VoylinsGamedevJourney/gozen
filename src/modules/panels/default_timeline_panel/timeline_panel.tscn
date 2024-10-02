@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bc23mdjps7mj"]
+[gd_scene load_steps=5 format=3 uid="uid://bc23mdjps7mj"]
 
 [ext_resource type="Script" path="res://modules/panels/default_timeline_panel/timeline_panel.gd" id="1_qjs4a"]
 
@@ -12,7 +12,12 @@ bg_color = Color(1, 1, 1, 0.0235294)
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 
-[node name="TimelinePanel" type="Control" node_paths=PackedStringArray("sidebar", "lines", "clips")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixv1g"]
+bg_color = Color(0.666667, 0, 1, 1)
+border_width_right = 2
+border_color = Color(0.666667, 0, 1, 0.27451)
+
+[node name="TimelinePanel" type="Control" node_paths=PackedStringArray("sidebar", "scroll_container", "main_control", "lines_control", "clips_control", "playhead")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,8 +26,11 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qjs4a")
 sidebar = NodePath("Scroll/HBox/SidePanel/SidePanelVBox")
-lines = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Lines")
-clips = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Clips")
+scroll_container = NodePath("Scroll/HBox/MainPanel/Scroll")
+main_control = NodePath("Scroll/HBox/MainPanel/Scroll/Main")
+lines_control = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Lines")
+clips_control = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Clips")
+playhead = NodePath("Scroll/HBox/MainPanel/Scroll/Main/Playhead")
 
 [node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -56,7 +64,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qqb47")
 
 [node name="Scroll" type="ScrollContainer" parent="Scroll/HBox/MainPanel"]
 layout_mode = 2
-horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
 
 [node name="Main" type="Control" parent="Scroll/HBox/MainPanel/Scroll"]
 layout_mode = 2
@@ -78,3 +86,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Playhead" type="Panel" parent="Scroll/HBox/MainPanel/Scroll/Main"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ixv1g")
+
+[connection signal="gui_input" from="Scroll/HBox/MainPanel/Scroll" to="." method="_on_scroll_gui_input"]
+[connection signal="gui_input" from="Scroll/HBox/MainPanel/Scroll/Main" to="." method="_on_main_gui_input"]
