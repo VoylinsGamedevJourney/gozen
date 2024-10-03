@@ -13,3 +13,13 @@ func _init(a_func: Callable, a_undo_func: Callable, a_do_args: Array, a_undo_arg
 	undo_function = a_undo_func
 	do_args = a_do_args
 	undo_args = a_undo_args
+
+
+func undo() -> void:
+	undo_function.call(undo_args)
+
+
+func do() -> void:
+	function.call(do_args)
+
+

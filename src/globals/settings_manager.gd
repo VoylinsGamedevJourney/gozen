@@ -29,6 +29,8 @@ var default_duration_text: int = 600
 
 var icon_pack: String = "default"
 
+var max_actions: int = 200
+
 
 
 #------------------------------------------------ GODOT FUNCTIONS
