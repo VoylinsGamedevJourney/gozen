@@ -38,7 +38,7 @@ func _ready() -> void:
 	var err: int = 0
 	err += Project._on_track_added.connect(add_track)
 	err += Project._on_track_removed.connect(remove_track)
-	err += Project._on_clip_added.connect(add_track)
+	err += Project._on_clip_added.connect(add_clip)
 	err += Project._on_clip_resized.connect(resize_clip)
 	err += Project._on_clip_moved.connect(move_clip)
 	err += Project._on_end_pts_changed.connect(_on_pts_changed)
@@ -144,24 +144,30 @@ func add_clip(a_clip_id: int) -> void:
 			if l_node.get_parent() == clips_control:
 				return # Already added
 		
-	var l_node: Control = Control.new()
+	var l_clip: ClipData = Project.clips[a_clip_id]
+	var l_file: File = Project.files[l_clip.file_id]
+	var l_button: Button = Button.new()
 
-	# TODO: create clip panel
+	l_button.size = Vector2(l_clip.duration * zoom, TRACK_HEIGHT)
+	l_button.position = Vector2(l_clip.pts * zoom, l_clip.track_id * TRACK_HEIGHT)
+	l_button.set("theme_override_styles/normal", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
+	l_button.set_script(preload("res://modules/panels/default_timeline_panel/clip_button.gd"))
 
-	clips_control.add_child(l_node)
+	l_button.self_modulate = l_file.get_color()
+	clips_control.add_child(l_button)
 
-	if Project._clip_nodes.has(a_clip_id):
-		Project._clip_nodes[a_clip_id] = [l_node]
+	if !Project._clip_nodes.has(a_clip_id):
+		Project._clip_nodes[a_clip_id] = [l_button]
 	else:
 		var l_array: Array = Project._clip_nodes[a_clip_id]
-		l_array.append(l_node)
+		l_array.append(l_button)
 
 
-func resize_clip(a_clip_id: int) -> void:
+func resize_clip(_clip_id: int) -> void:
 	pass
 	
 
-func move_clip(a_track: int, a_clip_id: int) -> void:
+func move_clip(_track: int, _clip_id: int) -> void:
 	pass
 
 
@@ -227,7 +233,7 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 			return false
 		else:
 			for l_snap: int in snap_limit * 2:
-				if _fits(l_track_id, l_duration, l_pts - snap_limit + l_snap):
+				if _fits(l_track_id, l_duration, (l_pts - snap_limit + l_snap) as int):
 					l_offset = l_snap
 					break
 			if l_offset == -1000:
@@ -245,17 +251,35 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 	else:
 		preview.visible = false
 		return false
-	return false
+
+
+func _drop_clip_data(a_pos: Vector2, a_data: Draggable) -> void:
+	var l_track_id: int = floor(a_pos.y / TRACK_HEIGHT)
+	var l_pts: int = floor(preview.position.x / zoom)
+
+	# TODO: Support multiple new clips and move clips
+	preview.visible = false
+
+	# NEW CLIP(S)
+	if a_data.type & 1 == 0:
+		Project._add_clip(a_data.data[0], l_pts, l_track_id)
+
+	# MOVE CLIP(S)
+	elif a_data.type & 1 == 1:
+		print("TODO")
+		pass
+
+	GoZenServer.update_frame_forced()
 
 
 func _set_preview(a_track: int, a_pos_x: float, a_begin: bool = false) -> void:
-	preview.position = Vector2(max(snappedf(a_pos_x, zoom), 0), a_track * TRACK_HEIGHT)
+	preview.position = Vector2(maxf(snappedf(a_pos_x, zoom), 0), a_track * TRACK_HEIGHT)
 	if a_begin:
 		preview.position.x = 0
 	preview.visible = true
 
 
-func _fits(a_track: int, a_duration: int, a_pts: int, a_excluded_clip: ClipData = null) -> bool:
+func _fits(a_track: int, _duration: int, _pts: int, _excluded_clip: int = -1) -> bool:
 	if Project.tracks[a_track].size() == 0:
 		return true
 	return false

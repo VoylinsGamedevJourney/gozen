@@ -60,3 +60,13 @@ func get_thumb() -> Texture2D:
 		AUDIO: return SettingsManager.get_icon("audio_file")
 		_: return SettingsManager.get_icon("file")
 	
+
+func get_color() -> Color:
+	match type:
+		PCK: return SettingsManager.color_pck_file
+		TEXT: return SettingsManager.color_text_file
+		COLOR: return SettingsManager.color_color_file
+		IMAGE: return SettingsManager.color_image_file
+		AUDIO: return SettingsManager.color_audio_file
+		VIDEO: return SettingsManager.color_video_file
+		_: return Color.WHITE

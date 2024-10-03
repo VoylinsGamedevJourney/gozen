@@ -336,7 +336,10 @@ func _resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
 func _update_end_pts() -> void:
 	var l_pts: int = 0
 	for l_track_data: Dictionary in tracks:
-		var l_clip: ClipData = l_track_data[l_track_data.keys().max()]
+		if l_track_data.size() == 0:
+			continue 
+
+		var l_clip: ClipData = clips[l_track_data[l_track_data.keys().max()]]
 
 		if l_pts < l_clip.get_end_pts():
 			l_pts = l_clip.get_end_pts()

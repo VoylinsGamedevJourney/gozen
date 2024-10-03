@@ -31,6 +31,12 @@ var icon_pack: String = "default"
 
 var max_actions: int = 200
 
+var color_pck_file: Color = Color.MEDIUM_SEA_GREEN 
+var color_text_file: Color = Color.WHITE 
+var color_color_file: Color = Color.ORANGE_RED 
+var color_video_file: Color = Color.PURPLE 
+var color_image_file: Color = Color.GREEN 
+var color_audio_file: Color = Color.BLUE 
 
 
 #------------------------------------------------ GODOT FUNCTIONS
