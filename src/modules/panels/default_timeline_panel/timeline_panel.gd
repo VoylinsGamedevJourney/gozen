@@ -147,13 +147,22 @@ func add_clip(a_clip_id: int) -> void:
 	var l_clip: ClipData = Project.clips[a_clip_id]
 	var l_file: File = Project.files[l_clip.file_id]
 	var l_button: Button = Button.new()
+	var l_label: Label = Label.new()
 
 	l_button.size = Vector2(l_clip.duration * zoom, TRACK_HEIGHT)
 	l_button.position = Vector2(l_clip.pts * zoom, l_clip.track_id * TRACK_HEIGHT)
 	l_button.set("theme_override_styles/normal", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
+	l_button.set("theme_override_styles/hover", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
+	l_button.set("theme_override_styles/pressed", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
 	l_button.set_script(preload("res://modules/panels/default_timeline_panel/clip_button.gd"))
-
 	l_button.self_modulate = l_file.get_color()
+
+	l_label.clip_text = true
+	l_label.text = " " + l_file.nickname
+	l_label.set_anchors_preset(PRESET_FULL_RECT)
+	l_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	l_button.add_child(l_label)
 	clips_control.add_child(l_button)
 
 	if !Project._clip_nodes.has(a_clip_id):
