@@ -13,4 +13,4 @@ var end: int = 0
 
 
 func get_end_pts() -> int:
-	return pts + duration
+	return pts + duration - 1

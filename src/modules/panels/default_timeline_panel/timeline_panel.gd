@@ -144,18 +144,19 @@ func add_clip(a_clip_id: int) -> void:
 			if l_node.get_parent() == clips_control:
 				return # Already added
 		
-	var l_clip: ClipData = Project.clips[a_clip_id]
-	var l_file: File = Project.files[l_clip.file_id]
+	var l_file: File = Project.files[Project.get_clip_file_id(a_clip_id)]
 	var l_button: Button = Button.new()
 	var l_label: Label = Label.new()
 
-	l_button.size = Vector2(l_clip.duration * zoom, TRACK_HEIGHT)
-	l_button.position = Vector2(l_clip.pts * zoom, l_clip.track_id * TRACK_HEIGHT)
+	l_button.name = str(a_clip_id)
+	l_button.size = Vector2(frame_to_pos(Project.get_clip_duration(a_clip_id)), TRACK_HEIGHT)
+	l_button.position = Vector2(Project.get_clip_pts(a_clip_id) * zoom, Project.get_clip_track(a_clip_id) * TRACK_HEIGHT)
 	l_button.set("theme_override_styles/normal", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
 	l_button.set("theme_override_styles/hover", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
 	l_button.set("theme_override_styles/pressed", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
 	l_button.set_script(preload("res://modules/panels/default_timeline_panel/clip_button.gd"))
 	l_button.self_modulate = l_file.get_color()
+	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	l_label.clip_text = true
 	l_label.text = " " + l_file.nickname
@@ -172,17 +173,19 @@ func add_clip(a_clip_id: int) -> void:
 		l_array.append(l_button)
 
 
-func resize_clip(_clip_id: int) -> void:
-	pass
-	
-
 func move_clip(_track: int, _clip_id: int) -> void:
 	pass
 
 
+func resize_clip(a_clip_id: int) -> void:
+	var l_clip_button: Button = clips_control.get_node(str(a_clip_id))
+	l_clip_button.size.x = frame_to_pos(Project.get_clip_duration(a_clip_id))
+	l_clip_button.position.x = frame_to_pos(Project.get_clip_pts(a_clip_id))
+
+
 #------------------------------------------------ RESIZE HANDLING
 func _on_pts_changed(a_value: float = Project._end_pts) -> void:
-	main_control.custom_minimum_size.x = (a_value + TRACK_PADDING + scroll_container.size.x) * zoom
+	main_control.custom_minimum_size.x = frame_to_pos(a_value + TRACK_PADDING + scroll_container.size.x)
 
 
 func _on_tracks_changed() -> void:
@@ -205,18 +208,16 @@ func on_zoom(a_new_zoom: float = zoom) -> void:
 
 	# Correcting playhead position
 	if playhead.position.x != 0 and pre_zoom != 0:
-		playhead.position.x = playhead.position.x / pre_zoom * zoom
+		playhead.position.x = frame_to_pos(playhead.position.x / pre_zoom)
 
-	# TODO: Resize clips
+	for l_clip_button: Button in clips_control.get_children():
+		resize_clip(l_clip_button.name.to_int())
 
 
 #------------------------------------------------ DROP HANDLING
 func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 	# TODO: ADD support for NEW_CLIPS and MOVE_CLIPS
 	var l_track_id: int = floor(a_pos.y / TRACK_HEIGHT)
-	var l_pts: int = floor(a_pos.x / zoom)
-	var l_duration: int = -1
-	var l_offset: int = -1000
 
 	if l_track_id > Project.tracks.size() -1:
 		preview.visible = false
@@ -230,26 +231,33 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 	# NEW CLIP(S)
 	elif a_data.type & 1 == 0:
 		var l_file: File = Project.files[a_data.data[0]]
+		var l_duration: int = l_file.duration 
+		var l_pts: int = pos_to_frame(a_pos.x) - (l_duration / 2.) as int
+		var l_offset: int = -1000
 
-		l_duration = l_file.duration 
-		preview.size.x = l_duration * zoom
-		if l_pts - ((l_duration * zoom) / 2) < -snap_limit:
+		if l_pts - (frame_to_pos(l_duration) / 2) < -snap_limit:
 			if _fits(l_track_id, l_duration, 0):
-				_set_preview(l_track_id, 0, true)
+				_set_preview(l_track_id, -1, l_duration, true)
 				return true
-			print("Does not fit at beginning")
 			preview.visible = false
 			return false
+		elif _fits(l_track_id, l_duration, l_pts):
+			_set_preview(l_track_id, a_pos.x, l_duration, true)
+			return true
 		else:
-			for l_snap: int in snap_limit * 2:
-				if _fits(l_track_id, l_duration, (l_pts - snap_limit + l_snap) as int):
+			for l_snap: int in snap_limit:
+				if _fits(l_track_id, l_duration, l_pts + l_snap):
 					l_offset = l_snap
 					break
+				if _fits(l_track_id, l_duration, l_pts - l_snap):
+					l_offset = -l_snap
+					break
+
 			if l_offset == -1000:
 				preview.visible = false
 				return false
 			else:
-				_set_preview(l_track_id, a_pos.x - preview.size.x / 2 + (l_offset * zoom))
+				_set_preview(l_track_id, a_pos.x + frame_to_pos(l_offset), l_duration, true)
 				return true
 
 	# MOVE CLIP(S)
@@ -264,32 +272,64 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 
 func _drop_clip_data(a_pos: Vector2, a_data: Draggable) -> void:
 	var l_track_id: int = floor(a_pos.y / TRACK_HEIGHT)
-	var l_pts: int = floor(preview.position.x / zoom)
+	var l_pts: int = pos_to_frame(preview.position.x)
 
 	# TODO: Support multiple new clips and move clips
 	preview.visible = false
 
 	# NEW CLIP(S)
 	if a_data.type & 1 == 0:
-		Project._add_clip(a_data.data[0], l_pts, l_track_id)
+		Project._add_clip(a_data.data[0], maxi(l_pts, 0), l_track_id)
 
 	# MOVE CLIP(S)
 	elif a_data.type & 1 == 1:
-		print("TODO")
-		pass
+		Project._move_clip(a_data.data[0], l_pts, l_track_id)
 
 	GoZenServer.update_frame_forced()
 
 
-func _set_preview(a_track: int, a_pos_x: float, a_begin: bool = false) -> void:
-	preview.position = Vector2(maxf(snappedf(a_pos_x, zoom), 0), a_track * TRACK_HEIGHT)
-	if a_begin:
+func _set_preview(a_track: int, a_pos_x: float, a_duration: int, a_new: bool = false) -> void:
+	preview.size.x = frame_to_pos(a_duration)
+
+	if a_pos_x == -1:
 		preview.position.x = 0
+	elif a_new:
+		preview.position.x = maxf(a_pos_x - frame_to_pos(a_duration) / 2, 0)	
+	else:
+		preview.position.x = maxf(a_pos_x - frame_to_pos(a_duration), 0)
+	
+	preview.position.y = a_track * TRACK_HEIGHT
 	preview.visible = true
 
 
-func _fits(a_track: int, _duration: int, _pts: int, _excluded_clip: int = -1) -> bool:
+func _fits(a_track: int, a_duration: int, a_pts: int, a_excluded_clip: int = -1) -> bool:
 	if Project.tracks[a_track].size() == 0:
 		return true
-	return false
+
+	var l_range: PackedInt64Array = range(a_pts, a_pts + a_duration)
+	var l_prev_pts: int = -1
+
+	for l_track_pts: int in Project.tracks[a_track].keys():
+		if l_track_pts <= a_pts:
+			l_prev_pts = l_track_pts
+		elif l_track_pts in l_range:
+			if a_excluded_clip == -1 or a_pts != Project.get_clip_pts(a_excluded_clip):
+				return false
+		elif l_track_pts > a_pts + a_duration + 1: # Adding a frame just in case
+			break
+
+	if l_prev_pts != -1:
+		var l_track_clip: ClipData = Project.clips[Project.tracks[a_track][l_prev_pts]]
+		for l_pts: int in range(l_track_clip.pts, l_track_clip.pts + l_track_clip.duration):
+			if l_pts in l_range:
+				return false
+
+	return true
 	
+
+func pos_to_frame(a_pos: float) -> int:
+	return floor(a_pos / zoom)
+
+
+func frame_to_pos(a_frame_nr: int) -> float:
+	return a_frame_nr * zoom

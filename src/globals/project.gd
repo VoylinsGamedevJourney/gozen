@@ -332,6 +332,26 @@ func _resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
 	_changes_occurred()
 
 
+func get_clip_pts(a_id: int) -> int:
+	var l_clip: ClipData = clips[a_id]
+	return l_clip.pts
+
+
+func get_clip_duration(a_id: int) -> int:
+	var l_clip: ClipData = clips[a_id]
+	return l_clip.duration
+
+
+func get_clip_file_id(a_id: int) -> int:
+	var l_clip: ClipData = clips[a_id]
+	return l_clip.file_id
+
+
+func get_clip_track(a_id: int) -> int:
+	var l_clip: ClipData = clips[a_id]
+	return l_clip.track_id
+
+
 #------------------------------------------------ MISC
 func _update_end_pts() -> void:
 	var l_pts: int = 0
