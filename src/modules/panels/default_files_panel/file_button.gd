@@ -3,7 +3,7 @@ extends Node
 
 
 func _pressed() -> void:
-	GoZenServer._open_file_effects.emit(name.to_int())
+	GoZenServer.open_file_effects(name.to_int())
 
 
 func _get_drag_data(_pos: Vector2i) -> Variant:

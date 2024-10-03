@@ -141,7 +141,7 @@ func _add_file(a_file: File) -> void:
 	var l_file_box: Button = _create_file_box(a_file)
 
 	_get_folder_from_type(a_file.type).add_child(l_file_box)
-	tab_container.current_tab = _get_folder_from_type(a_file.type).get_index()
+	tab_container.current_tab = _get_folder_from_type(a_file.type).get_parent().get_index()
 
 	_sort_tree(a_file.type)
 
