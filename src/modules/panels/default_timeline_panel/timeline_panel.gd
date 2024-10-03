@@ -16,13 +16,18 @@ const ICON_SIZE: int = 20
 @export var main_control: Control
 @export var lines_control: Control
 @export var clips_control: Control
+
 @export var playhead: Panel
+@export var preview: PanelContainer
 
 
 var zoom: float = 1.0
 var pre_mouse_pos: int = 0
 var pre_scroll_pos: int = 0
 var pre_zoom: float = 1.0
+
+var snap_limit: float = 20:
+	get: return snap_limit * zoom
 
 
 
@@ -34,14 +39,13 @@ func _ready() -> void:
 	err += Project._on_track_added.connect(add_track)
 	err += Project._on_track_removed.connect(remove_track)
 	err += Project._on_clip_added.connect(add_track)
+	err += Project._on_clip_resized.connect(resize_clip)
+	err += Project._on_clip_moved.connect(move_clip)
 	err += Project._on_end_pts_changed.connect(_on_pts_changed)
-	if err:
-		printerr("Couldn't connect Project signals to Timeline module functions!")
-		err = 0
-
 	err += get_viewport().size_changed.connect(on_zoom)
+	err += mouse_exited.connect(func()->void: preview.visible = false)
 	if err:
-		printerr("Coulnd't connect to size_changed in Timeline module!")
+		printerr("Couldn't connect signals to Timeline module!")
 
 
 func _process(_delta: float) -> void:
@@ -63,14 +67,10 @@ func _prepare_timeline() -> void:
 		for l_clip_id: int in Project.tracks[l_track_id].keys():
 			add_clip(l_clip_id)
 
-	set_pre_zoom()
 	on_zoom()
-
-
-func set_pre_zoom() -> void:
-	pre_mouse_pos = main_control.get_local_mouse_position().x as int
-	pre_scroll_pos = scroll_container.scroll_horizontal
-	pre_zoom = zoom
+	preview.visible = false
+	preview.size.y = TRACK_HEIGHT
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _on_scroll_gui_input(a_event: InputEvent) -> void:
@@ -87,11 +87,9 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 	
 	if a_event.is_action_pressed("zoom_in", true):
 		get_viewport().set_input_as_handled()
-		set_pre_zoom()
 		on_zoom(zoom + 0.05)
 	elif a_event.is_action_pressed("zoom_out", true):
 		get_viewport().set_input_as_handled()
-		set_pre_zoom()
 		on_zoom(zoom - 0.05)
 
 
@@ -162,7 +160,10 @@ func add_clip(a_clip_id: int) -> void:
 func resize_clip(a_clip_id: int) -> void:
 	pass
 	
-	
+
+func move_clip(a_track: int, a_clip_id: int) -> void:
+	pass
+
 
 #------------------------------------------------ RESIZE HANDLING
 func _on_pts_changed(a_value: float = Project._end_pts) -> void:
@@ -174,6 +175,9 @@ func _on_tracks_changed() -> void:
 
 
 func on_zoom(a_new_zoom: float = zoom) -> void:
+	pre_mouse_pos = main_control.get_local_mouse_position().x as int
+	pre_scroll_pos = scroll_container.scroll_horizontal
+	pre_zoom = zoom
 	zoom = clamp(a_new_zoom, ZOOM_MIN, ZOOM_MAX)
 
 	# Resizing main control
@@ -190,3 +194,69 @@ func on_zoom(a_new_zoom: float = zoom) -> void:
 
 	# TODO: Resize clips
 
+
+#------------------------------------------------ DROP HANDLING
+func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
+	# TODO: ADD support for NEW_CLIPS and MOVE_CLIPS
+	var l_track_id: int = floor(a_pos.y / TRACK_HEIGHT)
+	var l_pts: int = floor(a_pos.x / zoom)
+	var l_duration: int = -1
+	var l_offset: int = -1000
+
+	if l_track_id > Project.tracks.size() -1:
+		preview.visible = false
+		return false
+
+	elif a_data.type & 2:
+		print("Multiple clips moving/adding not implemented yet!")
+		preview.visible = false
+		return false
+
+	# NEW CLIP(S)
+	elif a_data.type & 1 == 0:
+		var l_file: File = Project.files[a_data.data[0]]
+
+		l_duration = l_file.duration 
+		preview.size.x = l_duration * zoom
+		if l_pts - ((l_duration * zoom) / 2) < -snap_limit:
+			if _fits(l_track_id, l_duration, 0):
+				_set_preview(l_track_id, 0, true)
+				return true
+			print("Does not fit at beginning")
+			preview.visible = false
+			return false
+		else:
+			for l_snap: int in snap_limit * 2:
+				if _fits(l_track_id, l_duration, l_pts - snap_limit + l_snap):
+					l_offset = l_snap
+					break
+			if l_offset == -1000:
+				preview.visible = false
+				return false
+			else:
+				_set_preview(l_track_id, a_pos.x - preview.size.x / 2 + (l_offset * zoom))
+				return true
+
+	# MOVE CLIP(S)
+	elif a_data.type & 1 == 1:
+		print("TODO")
+		preview.visible = false
+		return false
+	else:
+		preview.visible = false
+		return false
+	return false
+
+
+func _set_preview(a_track: int, a_pos_x: float, a_begin: bool = false) -> void:
+	preview.position = Vector2(max(snappedf(a_pos_x, zoom), 0), a_track * TRACK_HEIGHT)
+	if a_begin:
+		preview.position.x = 0
+	preview.visible = true
+
+
+func _fits(a_track: int, a_duration: int, a_pts: int, a_excluded_clip: ClipData = null) -> bool:
+	if Project.tracks[a_track].size() == 0:
+		return true
+	return false
+	

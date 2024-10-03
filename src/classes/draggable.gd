@@ -2,7 +2,12 @@ class_name Draggable
 extends Node
 
 
-enum {NEW_CLIP, NEW_CLIPS, MOVE_CLIP, MOVE_CLIPS}
+enum {
+	NEW_CLIP = 0b00,
+	NEW_CLIPS = 0b10,
+	MOVE_CLIP = 0b01,
+	MOVE_CLIPS = 0b11,
+}
 
 
 var type: int

@@ -19,7 +19,9 @@ signal _on_track_added
 signal _on_track_removed(track_id: int)
 
 signal _on_clip_added(clip_id: int)
+signal _on_clip_moved(track_id: int, pts: int)
 signal _on_clip_removed(track_id: int, pts: int)
+signal _on_clip_resized(clip_id: int)
 
 signal _on_end_pts_changed(value: int)
 signal _on_framerate_changed(value: int)
@@ -285,12 +287,11 @@ func _add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 func _move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
 		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
-	_on_clip_removed.emit(clips[a_clip_id].track_id, clips[a_clip_id].pts)
 
 	tracks[a_new_track_id][a_new_pts] = a_clip_id
 	clips[a_clip_id].pts = a_new_pts
-	_on_clip_added.emit(a_clip_id)
 
+	_on_clip_moved.emit(a_new_track_id, a_clip_id)
 	_update_end_pts()
 	_changes_occurred()
 
@@ -312,7 +313,6 @@ func _remove_clip(a_id: int) -> void:
 func _resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
 	if !tracks[clips[a_id].track_id].erase(clips[a_id].pts):
 		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_id, clips[a_id].pts])
-	_on_clip_removed.emit(clips[a_id].track_id, clips[a_id].pts)
 
 	var l_old_duration: int = clips[a_id].duration
 	var l_difference: int = a_duration - l_old_duration
@@ -327,7 +327,7 @@ func _resize_clip(a_id: int, a_duration: int, a_left: bool) -> void:
 		else:
 			clips[a_id].end += l_difference
 
-	_on_clip_added.emit(a_id)
+	_on_clip_resized.emit(a_id)
 	_update_end_pts()
 	_changes_occurred()
 
