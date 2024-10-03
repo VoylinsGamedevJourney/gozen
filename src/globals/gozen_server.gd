@@ -87,6 +87,7 @@ func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 signal _on_clip_moving(value: bool)
 
 
+var selected_clips: PackedInt64Array = []
 var clip_moving: bool = false: set = set_clip_moving
 
 
