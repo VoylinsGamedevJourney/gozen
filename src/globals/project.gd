@@ -286,10 +286,11 @@ func _add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 
 func _move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 	if !tracks[clips[a_clip_id].track_id].erase(clips[a_clip_id].pts):
-		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_clip_id, clips[a_clip_id].pts])
+		printerr("Couldn't remove clip id %s with pts %s from track %s!" % [a_clip_id, clips[a_clip_id].pts, clips[a_clip_id].track_id])
 
 	tracks[a_new_track_id][a_new_pts] = a_clip_id
 	clips[a_clip_id].pts = a_new_pts
+	clips[a_clip_id].track_id = a_new_track_id
 
 	_on_clip_moved.emit(a_new_track_id, a_clip_id)
 	_update_end_pts()

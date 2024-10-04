@@ -12,9 +12,11 @@ enum {
 
 var type: int
 var data: PackedInt64Array = [] # NEW_ use File ID's and MOVE_ use Clip ID's
+var mouse_pos: float
 
 
-func _init(a_type: int, a_data: PackedInt64Array) -> void:
+func _init(a_type: int, a_data: PackedInt64Array, a_pos: float = 0.) -> void:
 	type = a_type
 	data = a_data
+	mouse_pos = a_pos
 

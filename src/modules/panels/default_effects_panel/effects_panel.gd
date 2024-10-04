@@ -23,8 +23,7 @@ func display_file_effects(a_file_id: int) -> void:
 	type = FILE
 
 
-func display_clip_effects(a_clip_id: int) -> void:
-	var l_clip: ClipData = Project.clips[a_clip_id]
+func display_clip_effects(_clip_id: int) -> void:
 	title.text = "Clip effects"
 	type = CLIP
 
