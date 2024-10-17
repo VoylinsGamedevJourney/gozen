@@ -138,8 +138,6 @@ func open_clip_effects(a_clip_id: int) -> void:
 
 #------------------------------------------------ PLAYBACK HANDLING
 
-signal _on_playhead_moving(value: bool)
-
 signal _on_current_frame_changed(frame: int)
 signal _update_frame_forced
 
@@ -147,12 +145,7 @@ signal _playback_paused
 signal _playback_started
 
 
-var is_playhead_moving: bool = false
 var is_playing: bool = false
-var was_playing: bool = false
-var is_dragging: bool = false
-var was_dragging: bool = false
-var is_clip_moving: bool = false
 
 var current_frame: int = 0
 var _skipped_frames: int = 0
@@ -166,61 +159,32 @@ var audio_players: Array[AudioStreamPlayer] = []
 
 
 
-func set_playhead_moving(a_value: bool) -> void:
-	is_playhead_moving = a_value
-	_on_playhead_moving.emit(a_value)
-
-
 func _process(a_delta: float) -> void:
-	if is_playhead_moving:
-		# For increasing performance whilst dragging
-		if !is_dragging and was_dragging:
-			is_dragging = was_dragging
-			was_playing = GoZenServer.is_playing
-			GoZenServer.is_playing = false
-			for l_player: AudioStreamPlayer in audio_players:
-				l_player.set_stream_paused(true)
+	if is_playing:
+		time_elapsed += a_delta
 
-		#set_frame_forced()
-
-		if !was_dragging:
-			is_dragging = false
-			GoZenServer.is_playing = was_playing
-			for l_player: AudioStreamPlayer in audio_players:
-				l_player.set_stream_paused(!GoZenServer.is_playing)
-
-
-	if !is_playing:
-		return
-	time_elapsed += a_delta
-	print("playing")
-
-	if time_elapsed < 1. / Project.framerate:
-		return
-
-	while time_elapsed >= 1. / Project.framerate:
-		time_elapsed -= 1. / Project.framerate
-		current_frame += 1
-		_skipped_frames += 1
-	
-	if current_frame >= Project._end_pts:
-		if is_dragging:
+		if time_elapsed < 1. / Project.framerate:
 			return
-	
-		is_playing = false
-		_playback_paused.emit()
-	else:
-		while _skipped_frames != 1:
-			next_frame(true)
-			_skipped_frames -= 1
 
-		next_frame(false)
+		while time_elapsed >= 1. / Project.framerate:
+			time_elapsed -= 1. / Project.framerate
+			current_frame += 1
+			_skipped_frames += 1
+		
+		if current_frame >= Project._end_pts:
+			is_playing = false
+			_playback_paused.emit()
+		else:
+			while _skipped_frames != 1:
+				next_frame(true)
+				_skipped_frames -= 1
+
+			next_frame(false)
 		
 
 func _on_play_pressed() -> void:
 	# Don't play past end frame
 	if current_frame >= Project._end_pts:
-		print("Reached end of timeline")
 		return
 
 	is_playing = !is_playing

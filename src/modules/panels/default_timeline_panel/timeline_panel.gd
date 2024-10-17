@@ -20,6 +20,8 @@ const SIDEBAR_WIDTH: int = 64
 @export var playhead: Panel
 @export var preview: PanelContainer
 
+var playhead_moving: bool = false
+var was_playing: bool = false
 
 var zoom: float = 1.0
 var pre_mouse_pos: int = 0
@@ -43,6 +45,8 @@ func _ready() -> void:
 			Project._on_clip_moved.connect(move_clip),
 			Project._on_end_pts_changed.connect(_on_pts_changed),
 
+			GoZenServer._on_current_frame_changed.connect(_on_current_frame_changed),
+
 			get_viewport().size_changed.connect(on_zoom),
 
 			mouse_exited.connect(func()->void: preview.visible = false),
@@ -50,7 +54,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if GoZenServer.is_playhead_moving and !GoZenServer.is_clip_moving:
+	if playhead_moving:
 		var l_temp: float = main_control.get_local_mouse_position().x
 		
 		playhead.position.x = snappedf(l_temp, zoom) - zoom
@@ -58,6 +62,8 @@ func _process(_delta: float) -> void:
 			playhead.position.x = 0
 
 		Project.playhead_pos = round(playhead.position.x / zoom)
+
+		# TODO: Update displayed frame ever 1/4 of a second for performance if 'was_playing equals true'
 
 	
 func _input(a_event: InputEvent) -> void:
@@ -87,9 +93,15 @@ func _on_scroll_gui_input(a_event: InputEvent) -> void:
 func _on_main_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton and (a_event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if a_event.is_released():
-			GoZenServer.set_playhead_moving(false)
+			playhead_moving = false
+			GoZenServer.current_frame = pos_to_frame(main_control.get_local_mouse_position().x)
+			if was_playing:
+				GoZenServer._on_play_pressed()
 		elif a_event.is_pressed():
-			GoZenServer.set_playhead_moving(true)
+			playhead_moving = true
+			was_playing = GoZenServer.is_playing
+			if was_playing:
+				GoZenServer._on_play_pressed()
 	
 	if a_event.is_action_pressed("zoom_in", true):
 		get_viewport().set_input_as_handled()
@@ -97,6 +109,10 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 	elif a_event.is_action_pressed("zoom_out", true):
 		get_viewport().set_input_as_handled()
 		on_zoom(zoom - 0.05)
+
+
+func _on_current_frame_changed(a_frame: int) -> void:
+	playhead.position.x = a_frame * zoom
 
 
 #------------------------------------------------ TRACK HANDLING

@@ -46,7 +46,7 @@ func _notification(a_notification_type: int) -> void:
 
 
 func _on_renamed() -> void:
-	var l_file: File = Project.files[Project.get_clip_file_id(int(name))]
+	var l_file: File = Project.files[Project.get_clip_file_id(name.to_int())]
 	var l_label: Label = $Margin/Label
 
 	self_modulate = l_file.get_color()
