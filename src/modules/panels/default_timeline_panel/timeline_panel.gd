@@ -49,8 +49,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if GoZenServer.playhead_moving and !GoZenServer.clip_moving:
-		print("playhead moving")
+	if GoZenServer.is_playhead_moving and !GoZenServer.is_clip_moving:
 		var l_temp: float = main_control.get_local_mouse_position().x
 		
 		playhead.position.x = snappedf(l_temp, zoom) - zoom
@@ -273,13 +272,13 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 	elif a_data.type & 1 == 1:
 		var l_clip: ClipData = Project.clips[a_data.data[0]]
 		var l_duration: int = l_clip.duration 
-		var l_pts: int = pos_to_frame(a_pos.x) - (l_duration / 2.) as int
+		var l_pts: int = Project.clips[a_data.data[0]].pts
 
 		for l_snap: int in snap_limit:
 			if _fits(l_track_id, l_duration, (l_pts - pos_to_frame(a_data.mouse_pos)) + l_snap, a_data.data[0]):
 				l_offset = l_snap
 				break
-			if _fits(l_track_id, l_duration, (l_pts - pos_to_frame(a_data.mouse_pos)) - l_snap, a_data.data[0]):
+			if _fits(l_track_id, l_duration, (l_pts - pos_to_frame(a_data.mouse_pos)) + l_duration - l_snap, a_data.data[0]):
 				l_offset = -l_snap
 				break
 
@@ -287,7 +286,7 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 			preview.visible = false
 			return false
 		else:
-			_set_preview(l_track_id, a_pos.x + frame_to_pos(l_offset), l_duration, true)
+			_set_preview(l_track_id, a_pos.x - a_data.mouse_pos + frame_to_pos(l_offset), l_duration)
 			return true
 	else:
 		preview.visible = false
@@ -320,7 +319,7 @@ func _set_preview(a_track: int, a_pos_x: float, a_duration: int, a_new: bool = f
 	elif a_new:
 		preview.position.x = maxf(a_pos_x - frame_to_pos(a_duration) / 2, 0)	
 	else:
-		preview.position.x = maxf(a_pos_x - frame_to_pos(a_duration), 0)
+		preview.position.x = maxf(a_pos_x, 0)
 	
 	preview.position.y = a_track * TRACK_HEIGHT
 	preview.visible = true
