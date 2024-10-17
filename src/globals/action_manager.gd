@@ -34,6 +34,9 @@ func _input(a_event: InputEvent) -> void:
 	elif a_event.is_action_pressed("open_help"):
 		print("Not implemented yet!")
 
+	elif a_event.is_action_pressed("play"):
+		GoZenServer._on_play_pressed()
+
 
 func undo_action() -> void:
 	if actions.size() != 0:
