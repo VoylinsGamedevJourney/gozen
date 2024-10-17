@@ -8,11 +8,11 @@ const ZOOM_MIN: float = 0.1
 const ZOOM_MAX: float = 6
 
 const SIDEBAR_WIDTH: int = 64
-const ICON_SIZE: int = 20
 
 
 @export var sidebar: VBoxContainer
 @export var scroll_container: ScrollContainer
+
 @export var main_control: Control
 @export var lines_control: Control
 @export var clips_control: Control
@@ -33,19 +33,20 @@ var snap_limit: float = 100:
 
 func _ready() -> void:
 	GoZenServer.add_after_loadable(
-	Loadable.new("Preparing timeline module", _prepare_timeline))
+		Loadable.new("Preparing timeline module", _prepare_timeline))
 
-	var err: int = 0
-	err += Project._on_track_added.connect(add_track)
-	err += Project._on_track_removed.connect(remove_track)
-	err += Project._on_clip_added.connect(add_clip)
-	err += Project._on_clip_resized.connect(resize_clip)
-	err += Project._on_clip_moved.connect(move_clip)
-	err += Project._on_end_pts_changed.connect(_on_pts_changed)
-	err += get_viewport().size_changed.connect(on_zoom)
-	err += mouse_exited.connect(func()->void: preview.visible = false)
-	if err:
-		printerr("Couldn't connect signals to Timeline module!")
+	GoZenServer.connect_err([
+			Project._on_track_added.connect(add_track),
+			Project._on_track_removed.connect(remove_track),
+			Project._on_clip_added.connect(add_clip),
+			Project._on_clip_resized.connect(resize_clip),
+			Project._on_clip_moved.connect(move_clip),
+			Project._on_end_pts_changed.connect(_on_pts_changed),
+
+			get_viewport().size_changed.connect(on_zoom),
+
+			mouse_exited.connect(func()->void: preview.visible = false),
+		], "Couldn't connect signals to Timeline module!")
 
 
 func _process(_delta: float) -> void:
@@ -100,37 +101,13 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 
 #------------------------------------------------ TRACK HANDLING
 func add_track() -> void:
-	# TODO: Add header in side panel
-	var l_header: VBoxContainer = VBoxContainer.new()
-	var l_header_hbox: HBoxContainer = HBoxContainer.new()
-	var l_header_separator: HSeparator = HSeparator.new()
-	var l_mute_button: TextureButton = TextureButton.new()
-	var l_hide_button: TextureButton = TextureButton.new()
-	var l_separator: HSeparator = HSeparator.new()
-
-	l_header_hbox.add_child(l_mute_button)
-	l_header_hbox.add_child(l_hide_button)
-	l_header.add_child(l_header_hbox)
-	l_header.add_child(l_header_separator)
+	var l_header: VBoxContainer = preload("res://modules/panels/default_timeline_panel/header/header.tscn").instantiate()
 	sidebar.add_child(l_header)
+	l_header.custom_minimum_size.y = TRACK_HEIGHT
 
-	l_mute_button.texture_normal = SettingsManager.get_icon("sound_on")
-	l_hide_button.texture_normal = SettingsManager.get_icon("visibility_on")
-
-	for l_button: TextureButton in [l_mute_button, l_hide_button]:
-		l_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		l_button.ignore_texture_size = true
-		l_button.custom_minimum_size.x = ICON_SIZE
-
-	l_header_separator.set_anchors_preset(PRESET_BOTTOM_WIDE)
-	l_header_hbox.custom_minimum_size.y = TRACK_HEIGHT - l_header_separator.size.y
-	l_header_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	l_header.add_theme_constant_override("separation", 0)
-
-	lines_control.add_child(l_separator)
-
-	l_separator.set_anchors_preset(PRESET_TOP_WIDE)
-	l_separator.position.y = ((l_header.get_index() + 1) * TRACK_HEIGHT) - l_separator.size.y
+	var l_track_line: HSeparator = preload("res://modules/panels/default_timeline_panel/track_separator/track_line.tscn").instantiate()
+	lines_control.add_child(l_track_line)
+	l_track_line.position.y = ((l_track_line.get_index() + 1) * TRACK_HEIGHT) - l_track_line.size.y
 
 	_on_tracks_changed()
 
@@ -138,7 +115,7 @@ func add_track() -> void:
 func remove_track(a_track_id: int) -> void:
 	sidebar.get_children()[a_track_id].queue_free()
 	lines_control.get_children()[-1].queue_free()
-	# TODO: Reposition all clips if removed track is not form the last line
+
 	_on_tracks_changed()
 
 
@@ -149,34 +126,19 @@ func add_clip(a_clip_id: int) -> void:
 			if l_node.get_parent() == clips_control:
 				return # Already added
 		
-	var l_file: File = Project.files[Project.get_clip_file_id(a_clip_id)]
-	var l_button: Button = Button.new()
-	var l_label: Label = Label.new()
+	var l_clip_button: Button = preload("res://modules/panels/default_timeline_panel/clip_button/clip_button.tscn").instantiate()
 
-	l_button.name = str(a_clip_id)
-	l_button.size = Vector2(frame_to_pos(Project.get_clip_duration(a_clip_id)), TRACK_HEIGHT)
-	l_button.position = Vector2(Project.get_clip_pts(a_clip_id) * zoom, Project.get_clip_track(a_clip_id) * TRACK_HEIGHT)
-	l_button.set("theme_override_styles/normal", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
-	l_button.set("theme_override_styles/hover", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
-	l_button.set("theme_override_styles/pressed", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
-	l_button.set("theme_override_styles/focus", preload("res://modules/panels/default_timeline_panel/clip_button.tres"))
-	l_button.set_script(preload("res://modules/panels/default_timeline_panel/clip_button.gd"))
-	l_button.self_modulate = l_file.get_color()
-	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
+	l_clip_button.name = str(a_clip_id)
+	l_clip_button.size = Vector2(frame_to_pos(Project.get_clip_duration(a_clip_id)), TRACK_HEIGHT)
+	l_clip_button.position = Vector2(Project.get_clip_pts(a_clip_id) * zoom, Project.get_clip_track(a_clip_id) * TRACK_HEIGHT)
 
-	l_label.clip_text = true
-	l_label.text = " " + l_file.nickname
-	l_label.set_anchors_preset(PRESET_FULL_RECT)
-	l_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	l_button.add_child(l_label)
-	clips_control.add_child(l_button)
+	clips_control.add_child(l_clip_button)
 
 	if !Project._clip_nodes.has(a_clip_id):
-		Project._clip_nodes[a_clip_id] = [l_button]
+		Project._clip_nodes[a_clip_id] = [l_clip_button]
 	else:
 		var l_array: Array = Project._clip_nodes[a_clip_id]
-		l_array.append(l_button)
+		l_array.append(l_clip_button)
 
 
 func move_clip(a_track: int, a_clip_id: int) -> void:

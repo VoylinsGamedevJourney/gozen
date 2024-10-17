@@ -8,11 +8,7 @@ var is_resizing_right: bool = false
 
 
 func _ready() -> void:
-	var err: int = 0
-	err += button_down.connect(_on_button_down)
-	err += button_up.connect(_on_button_up)
-	if err:
-		print("Couldn't connect clip button mouse events!")
+	_on_renamed()
 
 
 func _on_button_down() -> void:
@@ -27,7 +23,7 @@ func _on_button_up() -> void:
 	pass
 
 
-func _pressed() -> void:
+func _on_pressed() -> void:
 	GoZenServer.open_clip_effects(name.to_int())
 
 	if GoZenServer.selected_clips.append(name.to_int()):
@@ -47,4 +43,13 @@ func _notification(a_notification_type: int) -> void:
 			if is_dragging:
 				is_dragging = false
 				modulate = Color(1, 1, 1, 1)
+
+
+func _on_renamed() -> void:
+	var l_file: File = Project.files[Project.get_clip_file_id(int(name))]
+	var l_label: Label = $Margin/Label
+
+	self_modulate = l_file.get_color()
+	l_label.text = l_file.nickname
+
 

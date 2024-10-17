@@ -1,5 +1,5 @@
 class_name ClipData
-extends Node
+
 
 var id: int = -1
 var file_id: int = -1
@@ -12,5 +12,7 @@ var start: int = 0
 var end: int = 0
 
 
+
 func get_end_pts() -> int:
 	return pts + duration - 1
+
