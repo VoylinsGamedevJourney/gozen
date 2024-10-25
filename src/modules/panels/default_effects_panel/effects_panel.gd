@@ -10,7 +10,7 @@ var type: int = -1
 
 
 func _ready() -> void:
-	GoZenServer.connect_err([
+	CoreError.err_connect([
 			GoZenServer._open_file_effects.connect(display_file_effects),
 			GoZenServer._open_clip_effects.connect(display_clip_effects),
 		], "Couldn't connect functions to default effects panel!")

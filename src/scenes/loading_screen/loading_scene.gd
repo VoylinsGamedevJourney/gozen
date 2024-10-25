@@ -2,7 +2,6 @@ extends Control
 
 @export var loading_text_label: Label
 @export var version_label: Label
-@export var timer: Timer
 
 
 
@@ -13,17 +12,7 @@ func start_loading() -> void:
 	get_parent().add_child(l_editor_scene)
 	version_label.text = "Version: %s " % ProjectSettings.get_setting("application/config/version")
 
-	await _loading_cycle(CoreLoader.loadables)
-	CoreLoader.loadables = [] # Cleanup of memory
-	timer.start(0.5)
-	await timer.timeout
-
-	await _loading_cycle(CoreLoader.after_loadables)
-	CoreLoader.after_loadables = [] # Cleanup of memory
-	CoreLoader.loaded = true
-	loading_text_label.text = "Finalizing ..."
-	timer.start(0.5)
-	await timer.timeout
+	await CoreLoader.execute(loading_text_label)
 
 	self.visible = false
 	get_viewport().get_window().unresizable = false
@@ -34,17 +23,6 @@ func start_loading() -> void:
 
 	l_editor_scene.visible = true
 	self.queue_free()
-
-
-func _loading_cycle(a_array: Array[CoreLoader.Loadable]) -> void:
-	for l_loadable: CoreLoader.Loadable in a_array:
-		loading_text_label.text = "%s..." % l_loadable.info_text
-
-		timer.start(0.1)
-		await l_loadable.function.call()
-
-		if !timer.is_stopped():
-			await timer.timeout
 
 
 func _disable_floating_for_tiling_wm() -> void:

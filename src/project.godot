@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+CoreError="*res://globals/core_error.gd"
 CoreLoader="*res://globals/core_loader.gd"
 GoZenServer="*res://globals/gozen_server.gd"
 ModuleManager="*res://globals/module_manager.gd"

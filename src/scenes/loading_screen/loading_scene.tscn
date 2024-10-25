@@ -51,7 +51,7 @@ corner_radius_bottom_left = 20
 [sub_resource type="LabelSettings" id="LabelSettings_uqp6m"]
 font_size = 14
 
-[node name="LoadingScene" type="PanelContainer" node_paths=PackedStringArray("loading_text_label", "version_label", "timer")]
+[node name="LoadingScene" type="PanelContainer" node_paths=PackedStringArray("loading_text_label", "version_label")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -61,7 +61,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_8mmyj")
 script = ExtResource("1_fd3fg")
 loading_text_label = NodePath("VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/LoadingTextLabel")
 version_label = NodePath("VBoxContainer/Header/TextureRect/VersionLabel")
-timer = NodePath("Timer")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -218,10 +217,6 @@ size_flags_horizontal = 3
 label_settings = SubResource("LabelSettings_uqp6m")
 text_overrun_behavior = 1
 
-[node name="Timer" type="Timer" parent="."]
-
 [connection signal="gui_input" from="VBoxContainer/Header/TextureRect" to="." method="_on_texture_rect_gui_input"]
 [connection signal="meta_clicked" from="VBoxContainer/Header/TextureRect/CreatorLabel" to="." method="_on_meta_clicked"]
 [connection signal="meta_clicked" from="VBoxContainer/PanelContainer/VBoxContainer/Control/SponsorLabel" to="." method="_on_meta_clicked"]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxContainer/Control/HBox/VGJ/Button" to="." method="_on_meta_clicked" binds= ["https://ko-fi.com/voylin"]]
-[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxContainer/Control/HBox/VGJ/Button2" to="." method="_on_meta_clicked" binds= ["https://ko-fi.com/voylin"]]

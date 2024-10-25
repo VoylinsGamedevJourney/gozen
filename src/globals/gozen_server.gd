@@ -1,20 +1,6 @@
 extends Node
 
 
-#------------------------------------------------ ERROR HANDLING
-var err: int = 0
-
-
-func connect_err(a_errors: PackedInt64Array, a_string: String) -> void:
-	for a_error: int in a_errors:
-		err += a_error
-
-	if err:
-		printerr(a_string)
-
-	err = 0
-	
-
 #------------------------------------------------ STATUS INDICATOR
 # TODO: DisplayServer.create_status_indicator()
 # Give the status indicator quick shortcuts to start rendering and to see
@@ -55,13 +41,11 @@ func add_clip(a_file_id: int, a_pts: int, a_track_id: int) -> void:
 
 
 func _on_project_loaded() -> void:
-	print("Project loaded")
-	err += frames.resize(Project.tracks.size())
-	err += audio_players.resize(Project.tracks.size())
-	err += current_clips.resize(Project.tracks.size())
-	if err:
-		printerr("Couldn't resize array's in GoZen Server!")
-		err = 0
+	CoreError.err_resize([
+			frames.resize(Project.tracks.size()),
+			audio_players.resize(Project.tracks.size()),
+			current_clips.resize(Project.tracks.size())
+	], "Couldn't resize array's in GoZen Server!")
 
 	for l_track_id: int in Project.tracks.size():
 		audio_players[l_track_id] = AudioStreamPlayer.new()

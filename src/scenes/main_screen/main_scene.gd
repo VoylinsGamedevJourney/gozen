@@ -13,15 +13,17 @@ extends Control
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
 
-	GoZenServer.connect_err([
+	CoreError.err_connect([
 			Project._on_title_changed.connect(_update_window_title),
 			Project._on_project_saved.connect(_update_window_title),
 			Project._on_changes_occurred.connect(_update_window_title),
+	], "Couldn't connect Project functions to main scene!")
 
+	CoreError.err_connect([
 			SettingsManager._on_window_moved.connect(_update_window_handles),
 			SettingsManager._on_window_resized.connect(_update_window_handles),
 			SettingsManager._on_window_mode_changed.connect(_update_window_handles),
-		], "Couldn't connect functions to project!")
+	], "Couldn't connect SettingsManager functions to main scene!")
 
 	get_window().min_size = Vector2i(700, 500)
 	if SettingsManager._tiling_wm:
