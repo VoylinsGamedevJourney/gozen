@@ -19,19 +19,16 @@ const ICON_MAX_WIDTH: int = 20
 
 
 func _ready() -> void:
-	GoZenServer.add_after_loadable(
-	Loadable.new("Preparing file panel", _initialize_file_tree))
+	CoreLoader.append_after("Preparing file panel", _initialize_file_tree)
 
-	var err: int = 0
-	err += Project._on_file_added.connect(_on_file_added)
-	err += Project._on_file_removed.connect(_on_file_removed)
-	if err:
-		printerr("Errors occured connecting functions from Project to Files Panel!")
-		err = 0
-	
-	err += SettingsManager._on_icon_pack_changed.connect(_update_icons)
-	if err:
-		printerr("Errors occured connecting to icon pack changed in default Files modules!")
+	GoZenServer.connect_err([
+			Project._on_file_added.connect(_on_file_added),
+			Project._on_file_removed.connect(_on_file_removed),
+		], "Errors occured connecting functions from Project to Files Panel!")
+
+	GoZenServer.connect_err([
+			SettingsManager._on_icon_pack_changed.connect(_update_icons),
+		], "Errors occured connecting to icon pack changed in default Files modules!")
 
 
 #------------------------------------------------ TREE HANDLERS
@@ -65,7 +62,7 @@ func _sort_tree(a_type: int) -> void:
 	var l_nodes: Dictionary = {}
 
 	for l_child: Button in l_folder.get_children():
-		l_nodes[l_child.name] = l_child
+		l_nodes[Project.files[l_child.name.to_int()].nickname] = l_child
 	
 	var l_pos: int = 0
 	var l_keys: PackedStringArray = l_nodes.keys()
@@ -92,39 +89,6 @@ func _get_folder_from_type(a_type: int) -> HFlowContainer:
 			return null
 
 
-#------------------------------------------------ FILE BUTTON HANDLERS
-func _create_file_box(a_file: File) -> Button:
-	var l_button: Button = Button.new()
-
-	l_button.name = str(a_file.id)
-	l_button.text = a_file.nickname
-
-	l_button.icon = a_file.get_thumb()
-	l_button.expand_icon = true
-	l_button.custom_minimum_size = Vector2i(100, 100)
-
-	l_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-	l_button.set_script(preload("res://modules/panels/default_files_panel/file_button.gd"))
-
-	if Project._on_file_nickname_changed.connect(_on_file_nickname_changed.bind(a_file.id, l_button)):
-		printerr("Couldn't connect on file nickname changed to button!")
-
-	return l_button
-
-
-func _on_file_nickname_changed(a_file_id: int, a_button_file_id: int, a_node: Button) -> void:
-	if a_button_file_id != a_file_id:
-		return
-
-	var l_file: File = Project.files[a_file_id]
-
-	a_node.text = l_file.nickname
-	a_node.name = l_file.nickname
-
-	_sort_tree(l_file.type)
-
-
 #------------------------------------------------ FILE HANDLING
 func _on_file_added(l_id: int) -> void:
 	var l_file: File = Project.files[l_id]
@@ -138,7 +102,11 @@ func _on_file_removed(l_id: int) -> void:
 
 
 func _add_file(a_file: File) -> void:
-	var l_file_box: Button = _create_file_box(a_file)
+	var l_file_box: Button = preload("res://modules/panels/default_files_panel/files_box/files_box.tscn").instantiate()
+	l_file_box.name = str(a_file.id)
+	l_file_box.text = a_file.nickname
+	l_file_box.tooltip_text = a_file.nickname + '/n' + a_file.path
+	l_file_box.icon = a_file.get_thumb()
 
 	_get_folder_from_type(a_file.type).add_child(l_file_box)
 	tab_container.current_tab = _get_folder_from_type(a_file.type).get_parent().get_index()

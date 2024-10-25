@@ -15,10 +15,9 @@ func _ready() -> void:
 				RecentProjectsManager.add_project(l_path, l_arg.split("/")[-1].trim_suffix(".gozen"))
 
 				var l_id: int = RecentProjectsManager.project_data.size() - 1
-				GoZenServer.add_loadables_to_front([
-					Loadable.new("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[l_id][0])),
-					Loadable.new("Setting current project id", RecentProjectsManager.set_current_project_id.bind(l_id)),
-				])
+
+				CoreLoader.append_to_front("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[l_id][0]))
+				CoreLoader.append_to_front("Setting current project id", RecentProjectsManager.set_current_project_id.bind(l_id))
 
 				_start_project_loading.emit()
 				return

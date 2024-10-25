@@ -59,11 +59,9 @@ var playhead_pos: int = 0: set = set_playhead_pos
 
 #------------------------------------------------ GODOT FUNCTIONS
 func _ready() -> void:
-	GoZenServer.add_loadables([
-		Loadable.new("Setting up tracks",  Project._setup_tracks),
-		Loadable.new("Loading files data", Project._load_files_data),
-		Loadable.new("Loading tracks data", Project._load_tracks_data),
-	])
+	CoreLoader.append("Setting up tracks",  Project._setup_tracks)
+	CoreLoader.append("Loading files data", Project._load_files_data)
+	CoreLoader.append("Loading tracks data", Project._load_tracks_data)
 
 	if get_window().files_dropped.connect(_on_files_dropped):
 		printerr("Could not connect to files_dropped")
@@ -235,7 +233,7 @@ func remove_folder(a_path: String) -> void:
 func _setup_tracks() -> void:
 	if tracks == []: # If empty
 		for i: int in SettingsManager.default_tracks:
-			_add_track()
+			GoZenServer.add_track()
 
 
 func _load_tracks_data() -> void:
@@ -298,11 +296,15 @@ func _move_clip(a_clip_id: int, a_new_pts: int, a_new_track_id: int) -> void:
 
 
 func _remove_clip(a_id: int) -> void:
-	if !tracks[clips[a_id].track_id].erase(clips[a_id].pts):
+	var l_pts: int = clips[a_id].pts
+	var l_track_id: int = clips[a_id].track_id
+
+	if !tracks[l_track_id].erase(l_pts):
 		printerr("Couldn't remove clip id %s with pts %s from tracks!" % [a_id, clips[a_id].pts])
 	if !clips.erase(a_id):
 		printerr("Couln't remove clip id %s from clips!" % a_id)	
-	_on_clip_removed.emit(clips[a_id].track_id, clips[a_id].pts)
+
+	_on_clip_removed.emit(l_track_id, l_pts)
 
 	for l_node: Control in _clip_nodes[a_id]:
 		l_node.queue_free()

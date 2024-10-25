@@ -33,10 +33,8 @@ var modules: Dictionary = { # Selected modules to use
 
 
 func _ready() -> void:
-	GoZenServer.add_loadables_to_front([
-		Loadable.new("Checking modules", _check_modules),
-		Loadable.new("Load module data", load_data),
-	])
+	CoreLoader.append_to_front("Checking modules", _check_modules)
+	CoreLoader.append_to_front("Load module data", load_data)
 
 
 func _check_modules() -> void:

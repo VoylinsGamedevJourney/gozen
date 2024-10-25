@@ -41,7 +41,7 @@ var color_audio_file: Color = Color.BLUE
 
 #------------------------------------------------ GODOT FUNCTIONS
 func _ready() -> void:
-	GoZenServer.add_loadable(Loadable.new("Check for tiling wm", _check_tiling_wm))
+	CoreLoader.append("Check for tiling wm", _check_tiling_wm)
 	print_debug_info()
 	load_data()
 

@@ -8,7 +8,7 @@ var actions: Array[Action] = []
 
 
 func _ready() -> void:
-	GoZenServer.add_loadable(Loadable.new("Enabling ActionManager", func() -> void: _enabled = true))
+	CoreLoader.append("Enabling ActionManager", func() -> void: _enabled = true)
 
 
 func _input(a_event: InputEvent) -> void:

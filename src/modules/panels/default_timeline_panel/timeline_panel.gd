@@ -34,8 +34,7 @@ var snap_limit: float = 100:
 
 
 func _ready() -> void:
-	GoZenServer.add_after_loadable(
-		Loadable.new("Preparing timeline module", _prepare_timeline))
+	CoreLoader.append_after("Preparing timeline module", _prepare_timeline)
 
 	GoZenServer.connect_err([
 			Project._on_track_added.connect(add_track),
@@ -94,7 +93,7 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton and (a_event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if a_event.is_released():
 			playhead_moving = false
-			GoZenServer.current_frame = pos_to_frame(main_control.get_local_mouse_position().x)
+			GoZenServer.current_frame = max(pos_to_frame(main_control.get_local_mouse_position().x), 0)
 			if was_playing:
 				GoZenServer._on_play_pressed()
 		elif a_event.is_pressed():

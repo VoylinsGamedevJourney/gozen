@@ -13,15 +13,15 @@ extends Control
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
 
-	var err: int = 0
-	err += Project._on_title_changed.connect(_update_window_title)
-	err += Project._on_project_saved.connect(_update_window_title)
-	err += Project._on_changes_occurred.connect(_update_window_title)
-	err += SettingsManager._on_window_moved.connect(_update_window_handles)
-	err += SettingsManager._on_window_resized.connect(_update_window_handles)
-	err += SettingsManager._on_window_mode_changed.connect(_update_window_handles)
-	if err:
-		printerr("Couldn't connect functions to project!")
+	GoZenServer.connect_err([
+			Project._on_title_changed.connect(_update_window_title),
+			Project._on_project_saved.connect(_update_window_title),
+			Project._on_changes_occurred.connect(_update_window_title),
+
+			SettingsManager._on_window_moved.connect(_update_window_handles),
+			SettingsManager._on_window_resized.connect(_update_window_handles),
+			SettingsManager._on_window_mode_changed.connect(_update_window_handles),
+		], "Couldn't connect functions to project!")
 
 	get_window().min_size = Vector2i(700, 500)
 	if SettingsManager._tiling_wm:
@@ -30,10 +30,8 @@ func _ready() -> void:
 		top_bar_buttons.remove_child(top_bar_buttons.get_child(-2))
 		resize_handles.queue_free()
 
-	GoZenServer.add_loadables([
-		Loadable.new("Updating window handles", _update_window_handles),
-		Loadable.new("Loading layouts", _load_layouts),
-	])
+	CoreLoader.append("Updating window handles", _update_window_handles)
+	CoreLoader.append("Loading layouts", _load_layouts)
 
 
 func _update_window_title() -> void:

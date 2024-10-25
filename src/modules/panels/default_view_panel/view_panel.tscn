@@ -1,26 +1,32 @@
 [gd_scene load_steps=5 format=3 uid="uid://cse1v6pi6ah7r"]
 
-[ext_resource type="Texture2D" uid="uid://it3u5obbn8pe" path="res://assets/icons/fast_rewind.png" id="1_an4jw"]
+[ext_resource type="Texture2D" uid="uid://it3u5obbn8pe" path="res://assets/icons/default/fast_rewind.png" id="1_an4jw"]
 [ext_resource type="Script" path="res://modules/panels/default_view_panel/view_panel.gd" id="1_uiar5"]
-[ext_resource type="Texture2D" uid="uid://mpaeh4ccv5r0" path="res://assets/icons/play.png" id="2_hwnn4"]
+[ext_resource type="Texture2D" uid="uid://mpaeh4ccv5r0" path="res://assets/icons/default/play.png" id="2_hwnn4"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_a0j7l"]
-size = Vector2(1920, 1080)
+[sub_resource type="ViewportTexture" id="ViewportTexture_cu7ia"]
+viewport_path = NodePath("View/SubViewport")
 
-[node name="ViewPanel" type="VBoxContainer"]
+[node name="ViewPanel" type="VBoxContainer" node_paths=PackedStringArray("main_viewport")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uiar5")
+main_viewport = NodePath("View/SubViewport")
 
 [node name="View" type="TextureRect" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
-texture = SubResource("PlaceholderTexture2D_a0j7l")
+texture = SubResource("ViewportTexture_cu7ia")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="SubViewport" type="SubViewport" parent="View"]
+size = Vector2i(1920, 1080)
+
+[node name="AudioPlayers" type="Node" parent="View"]
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -47,3 +53,7 @@ texture_normal = ExtResource("1_an4jw")
 ignore_texture_size = true
 stretch_mode = 5
 flip_h = true
+
+[connection signal="pressed" from="ButtonsHBox/RewindButton" to="." method="_on_rewind_button_pressed"]
+[connection signal="pressed" from="ButtonsHBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="ButtonsHBox/ForwardButton" to="." method="_on_forward_button_pressed"]

@@ -13,14 +13,14 @@ func start_loading() -> void:
 	get_parent().add_child(l_editor_scene)
 	version_label.text = "Version: %s " % ProjectSettings.get_setting("application/config/version")
 
-	await _loading_cycle(GoZenServer.loadables)
-	GoZenServer.loadables = [] # Cleanup of memory
+	await _loading_cycle(CoreLoader.loadables)
+	CoreLoader.loadables = [] # Cleanup of memory
 	timer.start(0.5)
 	await timer.timeout
 
-	await _loading_cycle(GoZenServer.after_loadables)
-	GoZenServer.after_loadables = [] # Cleanup of memory
-	GoZenServer.loaded = true
+	await _loading_cycle(CoreLoader.after_loadables)
+	CoreLoader.after_loadables = [] # Cleanup of memory
+	CoreLoader.loaded = true
 	loading_text_label.text = "Finalizing ..."
 	timer.start(0.5)
 	await timer.timeout
@@ -36,8 +36,8 @@ func start_loading() -> void:
 	self.queue_free()
 
 
-func _loading_cycle(a_array: Array[Loadable]) -> void:
-	for l_loadable: Loadable in a_array:
+func _loading_cycle(a_array: Array[CoreLoader.Loadable]) -> void:
+	for l_loadable: CoreLoader.Loadable in a_array:
 		loading_text_label.text = "%s..." % l_loadable.info_text
 
 		timer.start(0.1)
