@@ -3,6 +3,7 @@ extends Node
 
 
 var data: Video = Video.new()
+var audio_data: AudioStream = null
 
 var current_frame: int = -1 # Current frame in timeline
 var frame_nr: int = 0 # Current frame in video file
@@ -17,6 +18,7 @@ func open(a_path: String, a_load_audio: bool) -> bool:
 	if err:
 		printerr("Something went wrong opening video file! ", err)
 		return false
+	audio_data = data.get_audio()
 	return true
 
 
@@ -24,10 +26,10 @@ func check_open() -> bool:
 	return data.is_open()
 
 
-func get_frame(a_is_playing: bool) -> ImageTexture:
-	if frame_skip < 0 or frame_skip	> 8 or (!a_is_playing and frame_skip > 8): 
+func get_frame() -> ImageTexture:
+	if frame_skip < 0 or frame_skip	> 8 or (!GoZenServer.is_playing and frame_skip > 8): 
 		frame_nr = current_frame
-		return ImageTexture.create_from_image(data.seek_frame(current_frame))
+		return ImageTexture.create_from_image(data.seek_frame(frame_nr))
 	for i: int in frame_skip:
 		if i + 1 == frame_skip:
 			frame_nr = current_frame
@@ -41,9 +43,10 @@ func get_frame(a_is_playing: bool) -> ImageTexture:
 	
 func next_available(a_frame_nr: int, a_clip: ClipData) -> bool:
 	a_frame_nr = int(a_frame_nr / float(Project.framerate) * data.get_framerate())
-	current_frame = round(a_frame_nr - a_clip.pts - a_clip.start / float(Project.framerate) * data.get_framerate())
+	current_frame = max(round(a_frame_nr - a_clip.pts - a_clip.start / float(Project.framerate) * data.get_framerate()), 0)
 	if current_frame != frame_nr:
 		frame_skip = -1 if current_frame < frame_nr else current_frame - frame_nr
 		return true
+	frame_skip = -1
 	return false
 

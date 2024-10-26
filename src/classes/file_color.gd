@@ -14,15 +14,13 @@ func save_data() -> void:
 		return
 
 	var l_path: String = Project.files[_id].path
-	if _save_data(l_path):
-		printerr("Couldn't save FileColor! ", l_path)
+	_save_data_err(l_path, "Couldn't save FileColor! ")
 
 
 static func open(a_id: int) -> FileColor:
 	var l_file_color: FileColor = FileColor.new()
 	var l_path: String = Project.files[a_id].path
 
-	if l_file_color._load_data(l_path):
-		printerr("Couldn't load data for FileColor! ", l_path)
+	l_file_color._load_data_err(l_path, "Couldn't load data for FileColor!")
 		
 	return l_file_color

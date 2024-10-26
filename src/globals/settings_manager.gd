@@ -121,14 +121,18 @@ func print_debug_info() -> void:
 
 
 func save_data() -> void:
-	if _save_data(PATH) == ERR_FILE_CANT_OPEN:
-		printerr("Couldn't open settings file for saving! ", PATH)
-	_on_settings_saved.emit()
+	if _save_data(PATH):
+		printerr("Couldn't save settings! ", PATH)
+	else:
+		_on_settings_saved.emit()
 
 
 func load_data() -> void:
-	if _load_data(PATH) == ERR_FILE_CANT_OPEN:
-		printerr("Couldn't open settings file for loading! ", PATH)
+	if !FileAccess.file_exists(PATH):
+		save_data()
+	elif _load_data(PATH):
+		printerr("Couldn't load settings! ", PATH)
+
 	_on_settings_loaded.emit()
 
 

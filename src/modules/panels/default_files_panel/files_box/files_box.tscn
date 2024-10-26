@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://q3c3csdohkur"]
+
+[ext_resource type="Script" path="res://modules/panels/default_files_panel/files_box/file_button.gd" id="1_41qxb"]
+
+[node name="FilesBox" type="Button"]
+custom_minimum_size = Vector2(120, 100)
+autowrap_mode = 2
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
+script = ExtResource("1_41qxb")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

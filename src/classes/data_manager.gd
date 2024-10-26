@@ -47,3 +47,18 @@ func _load_data(a_path: String) -> int:
 
 	OS.set_use_file_access_save_and_swap(false)
 	return ERR_FILE_NOT_FOUND
+
+
+func _save_data_err(a_path: String, a_string: String) -> void:
+	# For when you don't want/need to handle the error value and just print
+	var l_err: int = _save_data(a_path)
+	if l_err:
+		printerr(a_string, " Error: ", l_err, " Path: ", a_path)
+
+
+func _load_data_err(a_path: String, a_string: String) -> void:
+	# For when you don't want/need to handle the error value and just print
+	var l_err: int = _load_data(a_path)
+	if l_err:
+		printerr(a_string, " Error: ", l_err, " Path: ", a_path)
+

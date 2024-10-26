@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cyfvdnblibxnt"]
 
-[ext_resource type="Script" path="res://modules/layouts/default_editor_layout/editor_layout.gd" id="1_umqm6"]
+[ext_resource type="Script" path="res://layouts/default_editor_layout/editor_layout.gd" id="1_umqm6"]
 
 [node name="EditorPanel" type="VSplitContainer" node_paths=PackedStringArray("view_panel", "files_panel", "effects_panel", "timeline_panel")]
 anchors_preset = 15

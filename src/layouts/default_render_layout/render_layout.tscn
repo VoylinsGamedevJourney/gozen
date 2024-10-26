@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://bikqyskma20eu"]
 
 [ext_resource type="LabelSettings" uid="uid://c4a6g42uduiy3" path="res://theming/module_title.tres" id="1_dbry3"]
-[ext_resource type="Script" path="res://modules/layouts/default_render_layout/render_layout.gd" id="1_xke8d"]
-[ext_resource type="Texture2D" uid="uid://0tl1eb2x143q" path="res://assets/icons/folder_open.svg" id="2_n6dwy"]
-[ext_resource type="Texture2D" uid="uid://it3u5obbn8pe" path="res://assets/icons/fast_rewind.png" id="4_s5w5d"]
-[ext_resource type="Texture2D" uid="uid://mpaeh4ccv5r0" path="res://assets/icons/play.png" id="5_b53di"]
+[ext_resource type="Script" path="res://layouts/default_render_layout/render_layout.gd" id="1_xke8d"]
+[ext_resource type="Texture2D" uid="uid://0tl1eb2x143q" path="res://assets/icons/default/folder_open.svg" id="2_n6dwy"]
+[ext_resource type="Texture2D" uid="uid://it3u5obbn8pe" path="res://assets/icons/default/fast_rewind.png" id="4_s5w5d"]
+[ext_resource type="Texture2D" uid="uid://mpaeh4ccv5r0" path="res://assets/icons/default/play.png" id="5_b53di"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_alpqh"]
 color = Color(1, 1, 1, 0.0235294)

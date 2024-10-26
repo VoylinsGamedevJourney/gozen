@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Layout" load_steps=4 format=3 uid="uid://brirpag5x60tq"]
+
+[ext_resource type="Texture2D" uid="uid://b23ekijfd7s0h" path="res://layouts/default_editor_layout/editor_icon.png" id="1_027ja"]
+[ext_resource type="Script" path="res://classes/layout.gd" id="1_77qly"]
+[ext_resource type="PackedScene" uid="uid://cyfvdnblibxnt" path="res://layouts/default_editor_layout/editor_layout.tscn" id="1_knigg"]
+
+[resource]
+script = ExtResource("1_77qly")
+icon = ExtResource("1_027ja")
+title = "Default Editing Panel"
+scene = ExtResource("1_knigg")

@@ -46,23 +46,19 @@ func _update_window_handles() -> void:
 
 
 func _load_layouts() -> void:
-	for l_layout_id: int in ModuleManager.layouts.size(): 
-		var l_layout: Control = ModuleManager.get_layout_scene(l_layout_id).instantiate()
-		l_layout.name = ModuleManager.layouts[l_layout_id]
+	for l_layout: String in CoreLayouts.layouts: 
+		var l_layout_panel: Control = CoreLayouts.get_existing_instance(l_layout)
+		var l_button: TextureButton = preload("res://scenes/main_screen/layout_button/layout_button.tscn").instantiate()
 
-		var l_button: TextureButton = TextureButton.new()
-		l_button.name = ModuleManager.layouts[l_layout_id]
-		l_button.tooltip_text = ModuleManager.get_layout_title(l_layout_id)
-		l_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		l_button.texture_normal = ModuleManager.get_layout_icon(l_layout_id)
-		l_button.ignore_texture_size = true
-		l_button.custom_minimum_size = Vector2i(30, 30)
-		if l_button.pressed.connect(switch_layout.bind(l_layout_id)):
-			printerr("Couldn't connect side panel button! ", l_layout_id)
-
-		main_tab_container.add_child(l_layout)
+		main_tab_container.add_child(l_layout_panel)
 		side_panel_vbox.add_child(l_button)
 
+		l_button.name = l_layout
+		l_button.tooltip_text = CoreLayouts.get_title(l_layout)
+		l_button.texture_normal = CoreLayouts.get_icon(l_layout)
+
+		if l_button.pressed.connect(switch_layout.bind(l_layout)):
+			printerr("Couldn't connect side panel button! ", l_layout)
 
 
 func _on_exit_button_pressed() -> void:
@@ -89,11 +85,13 @@ func _on_minimize_button_pressed() -> void:
 
 
 func _on_project_settings_button_pressed() -> void:
-	ModuleManager.open_popup(ModuleManager.MENU.SETTINGS_PROJECT)
+	var l_popup: Popup = CoreModules.create_new_menu_instance_from_id(CoreModules.MENU_PROJECT_SETTINGS)
+	l_popup.popup_centered()
 
 
 func _on_editor_settings_button_pressed() -> void:
-	ModuleManager.open_popup(ModuleManager.MENU.SETTINGS_EDITOR)
+	var l_popup: Popup = CoreModules.create_new_menu_instance_from_id(CoreModules.MENU_EDITOR_SETTINGS)
+	l_popup.popup_centered()
 
 
 func _on_main_menu_button_pressed() -> void:
@@ -117,16 +115,21 @@ func _on_top_bar_gui_input(a_event: InputEvent) -> void:
 					DisplayServer.window_get_position(get_window().get_window_id())
 
 #------------------------------------------------ LAYOUT HANDLER
-func switch_layout(l_id: int) -> void:
-	if main_tab_container.current_tab == l_id:
+func switch_layout(a_name: String) -> void:
+	switch_layout_to_id(CoreLayouts.layouts.find(a_name))
+
+
+func switch_layout_to_id(a_id: int) -> void:
+	if main_tab_container.current_tab == a_id:
 		return
 
 	var tween: Tween = get_tree().create_tween()
-	var l_button: TextureButton = side_panel_vbox.get_child(l_id)
+	var l_button: TextureButton = side_panel_vbox.get_child(a_id)
+
 	if !tween.set_trans(Tween.TRANS_CIRC) or !tween.set_speed_scale(3):
 		printerr("Something went wrong configuring tween!")
 	if !tween.tween_property(side_panel_indicator, "position", Vector2(0., l_button.position.y), 0.4):
 		printerr("Couldn't set tween property!")
 
-	main_tab_container.current_tab = l_id
+	main_tab_container.current_tab = a_id
 

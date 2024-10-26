@@ -24,12 +24,14 @@ config/icon="res://icon.svg"
 
 CoreError="*res://globals/core_error.gd"
 CoreLoader="*res://globals/core_loader.gd"
+CoreLayouts="*res://globals/core_layouts.gd"
+CoreModules="*res://globals/core_modules.gd"
 GoZenServer="*res://globals/gozen_server.gd"
-ModuleManager="*res://globals/module_manager.gd"
 SettingsManager="*res://globals/settings_manager.gd"
 RecentProjectsManager="*res://globals/recent_projects_manager.gd"
 Project="*res://globals/project.gd"
 ActionManager="*res://globals/action_manager.gd"
+CoreEffects="*res://globals/core_effects.gd"
 
 [debug]
 
@@ -54,6 +56,7 @@ window/subwindows/embed_subwindows=false
 [file_customization]
 
 folder_colors={
+"res://layouts/": "orange",
 "res://modules/": "orange"
 }
 

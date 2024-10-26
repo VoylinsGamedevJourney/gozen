@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Layout" load_steps=4 format=3 uid="uid://dnbxu58dydews"]
+
+[ext_resource type="Script" path="res://classes/layout.gd" id="1_3534f"]
+[ext_resource type="Texture2D" uid="uid://br4cancfc4x37" path="res://layouts/default_subtitle_layout/subtitles_icon.png" id="1_hqivg"]
+[ext_resource type="PackedScene" uid="uid://d236g5v1vtvdt" path="res://layouts/default_subtitle_layout/subtitle_layout.tscn" id="2_r8oja"]
+
+[resource]
+script = ExtResource("1_3534f")
+icon = ExtResource("1_hqivg")
+title = "Default Subtitle Manager"
+scene = ExtResource("2_r8oja")
