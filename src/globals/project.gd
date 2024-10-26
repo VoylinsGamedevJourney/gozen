@@ -8,13 +8,6 @@ signal _on_changes_occurred
 
 signal _on_title_changed
 
-signal _on_folder_added(path: String)
-signal _on_folder_removed(path: String)
-
-signal _on_file_added(file_id: int)
-signal _on_file_nickname_changed(file_id: int)
-signal _on_file_removed(file_id: int)
-
 signal _on_track_added
 signal _on_track_removed(track_id: int)
 
@@ -62,9 +55,6 @@ func _ready() -> void:
 	CoreLoader.append("Setting up tracks",  Project._setup_tracks)
 	CoreLoader.append("Loading files data", Project._load_files_data)
 	CoreLoader.append("Loading tracks data", Project._load_tracks_data)
-
-	if get_window().files_dropped.connect(_on_files_dropped):
-		printerr("Could not connect to files_dropped")
 
 
 #------------------------------------------------ DATA HANDLING
@@ -117,53 +107,14 @@ func set_playhead_pos(a_value: int) -> void:
 
 
 #------------------------------------------------ FILE HANDLING
-func _on_files_dropped(a_files: PackedStringArray) -> void:
-	for l_path: String in a_files:
-		add_file(l_path)
-		_changes_occurred()
-
-	
 func _load_files_data() -> void:
 	# Run on startup
 	for l_id: int in files:
-		if !add_file_data(l_id):
+		if !_add_file_data(l_id):
 			printerr("Something went wrong loading file with id: %s!" % l_id)
 			
 
-func add_file(a_path: String) -> void:
-	var l_file: File = File.open(a_path)
-	var l_path: String = ""
-	
-	# Checking for duplicates
-	var l_duplicate: bool = false
-	for l_id: int in files:
-		if files[l_id].path == l_file.path:
-			l_duplicate = true
-			break
-
-		# sha256 can be the same, so also an extension check
-		l_path = files[l_id].path
-		if files[l_id].sha256 == l_file.sha256 and l_path.get_extension() == l_file.path.get_extension():
-			l_duplicate = true
-			break
-
-	if l_duplicate:
-		printerr("Files is a duplicate!")
-		return
-	
-	l_file.id = counter_file_id
-	files[l_file.id] = l_file
-	if !add_file_data(l_file.id):
-		if !files.erase(l_file.id):
-			printerr("Couldn't erase %s from files!" % l_file.id)
-		printerr("File data could not be loaded!")
-		return
-
-	counter_file_id += 1
-	_on_file_added.emit(l_file.id)
-
-
-func add_file_data(a_id: int) -> bool:
+func _add_file_data(a_id: int) -> bool:
 	var l_path: String = files[a_id].path
 
 	match files[a_id].type:
@@ -194,17 +145,8 @@ func add_file_data(a_id: int) -> bool:
 	return true
 
 
-func change_file_nickname(a_file_id: int, a_new_nickname: String) -> void:
-	files[a_file_id].nickname = a_new_nickname
-	_on_file_nickname_changed.emit(a_file_id)
 	
 
-func remove_file(a_id: int) -> void:
-	if !files.erase(a_id):
-		printerr("Couldn't remove file id %s from project files!" % a_id)
-	if _files_data.erase(a_id):
-		printerr("Couldn't remove file data id %s from project files!" % a_id)
-	_on_file_removed.emit(a_id)
 
 
 func _calculate_duration_video(a_id: int) -> void:
@@ -218,15 +160,6 @@ func _calculate_duration_audio(a_id: int) -> void:
 
 
 #------------------------------------------------ FOLDER HANDLING
-func add_folder(a_path: String) -> void:
-	if !folders.append(a_path):
-		printerr("Error happend appending folder!")
-	_on_folder_added.emit(a_path)
-
-
-func remove_folder(a_path: String) -> void:
-	folders.remove_at(folders.find(a_path))
-	_on_folder_removed.emit(a_path)
 
 
 #------------------------------------------------ TRACK HANDLING
