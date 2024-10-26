@@ -1,4 +1,6 @@
 extends Node
+# GoZen will mainly be used for random stuff which doesn't need a Core script,
+# and which code is small enough to be in here.
 
 
 #------------------------------------------------ STATUS INDICATOR
@@ -44,8 +46,7 @@ func _on_project_loaded() -> void:
 	CoreError.err_resize([
 			frames.resize(Project.tracks.size()),
 			audio_players.resize(Project.tracks.size()),
-			current_clips.resize(Project.tracks.size())
-	], "Couldn't resize array's in GoZen Server!")
+			current_clips.resize(Project.tracks.size())])
 
 	for l_track_id: int in Project.tracks.size():
 		audio_players[l_track_id] = AudioStreamPlayer.new()

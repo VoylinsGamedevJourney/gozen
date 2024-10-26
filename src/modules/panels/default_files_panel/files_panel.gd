@@ -22,13 +22,9 @@ func _ready() -> void:
 	CoreLoader.append_after("Preparing file panel", _initialize_file_tree)
 
 	CoreError.err_connect([
-			Project._on_file_added.connect(_on_file_added),
-			Project._on_file_removed.connect(_on_file_removed),
-		], "Errors occured connecting functions from Project to Files Panel!")
-
-	CoreError.err_connect([
-			SettingsManager._on_icon_pack_changed.connect(_update_icons),
-		], "Errors occured connecting to icon pack changed in default Files modules!")
+			CoreMedia._on_file_added.connect(_on_file_added),
+			CoreMedia._on_file_removed.connect(_on_file_removed),
+			SettingsManager._on_icon_pack_changed.connect(_update_icons)])
 
 
 #------------------------------------------------ TREE HANDLERS

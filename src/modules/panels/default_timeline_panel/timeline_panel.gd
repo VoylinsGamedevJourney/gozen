@@ -43,12 +43,10 @@ func _ready() -> void:
 			Project._on_clip_resized.connect(resize_clip),
 			Project._on_clip_moved.connect(move_clip),
 			Project._on_end_pts_changed.connect(_on_pts_changed),
-	], "Couldn't connect Project signals to Timeline module!")
-	CoreError.err_connect([
+
 			GoZenServer._on_current_frame_changed.connect(_on_current_frame_changed),
 			get_viewport().size_changed.connect(on_zoom),
-			mouse_exited.connect(func()->void: preview.visible = false),
-	], "Couldn't connect signals to Timeline module!")
+			mouse_exited.connect(func()->void: preview.visible = false)])
 
 
 func _process(_delta: float) -> void:
