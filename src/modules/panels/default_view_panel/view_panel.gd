@@ -15,7 +15,7 @@ var was_playing: bool = false
 func _ready() -> void:
 	CoreLoader.append_after("Setting up view panel", _setup)
 
-	if GoZenServer._on_current_frame_changed.connect(set_frame):
+	if CoreView._on_current_frame_changed.connect(set_frame):
 		printerr("Couldn't connect function in Default view panel!")
 
 

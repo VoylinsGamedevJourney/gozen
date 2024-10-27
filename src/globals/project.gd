@@ -159,14 +159,11 @@ func _calculate_duration_audio(a_id: int) -> void:
 	files[a_id].duration = round(l_audio_stream.get_length() * framerate)
 
 
-#------------------------------------------------ FOLDER HANDLING
-
-
 #------------------------------------------------ TRACK HANDLING
 func _setup_tracks() -> void:
 	if tracks == []: # If empty
 		for i: int in SettingsManager.default_tracks:
-			GoZenServer.add_track()
+			CoreTimeline.add_track()
 
 
 func _load_tracks_data() -> void:

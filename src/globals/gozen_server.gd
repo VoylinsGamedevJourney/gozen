@@ -17,3 +17,4 @@ extends Node
 # indicate if is charging or not. There should be a setting to disable this
 # icon changer.
 
+

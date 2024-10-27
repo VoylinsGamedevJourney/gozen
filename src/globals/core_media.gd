@@ -10,6 +10,7 @@ signal _on_file_nickname_changed(file_id: int)
 signal _on_folder_added(path: String)
 signal _on_folder_removed(path: String)
 
+signal _open_file_effects(id: int)
 
 
 func _ready() -> void:
@@ -73,6 +74,9 @@ func change_file_nickname(a_id: int, a_nickname: String) -> void:
 	Project._changes_occurred()
 	_on_file_nickname_changed.emit(a_id)
 
+
+func open_file_effects(a_id: int) -> void:
+	_open_file_effects.emit(a_id)
 
 
 #------------------------------------------------ FOLDER HANDLING

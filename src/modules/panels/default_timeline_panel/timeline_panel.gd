@@ -44,7 +44,7 @@ func _ready() -> void:
 			Project._on_clip_moved.connect(move_clip),
 			Project._on_end_pts_changed.connect(_on_pts_changed),
 
-			GoZenServer._on_current_frame_changed.connect(_on_current_frame_changed),
+			CoreView._on_current_frame_changed.connect(_on_current_frame_changed),
 			get_viewport().size_changed.connect(on_zoom),
 			mouse_exited.connect(func()->void: preview.visible = false)])
 
@@ -90,14 +90,14 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton and (a_event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if a_event.is_released():
 			playhead_moving = false
-			GoZenServer.current_frame = max(pos_to_frame(main_control.get_local_mouse_position().x), 0)
+			CoreView.current_frame = max(pos_to_frame(main_control.get_local_mouse_position().x), 0)
 			if was_playing:
-				GoZenServer._on_play_pressed()
+				CoreView._on_play_pressed()
 		elif a_event.is_pressed():
 			playhead_moving = true
-			was_playing = GoZenServer.is_playing
+			was_playing = CoreView.is_playing
 			if was_playing:
-				GoZenServer._on_play_pressed()
+				CoreView._on_play_pressed()
 	
 	if a_event.is_action_pressed("zoom_in", true):
 		get_viewport().set_input_as_handled()
@@ -143,6 +143,7 @@ func add_clip(a_clip_id: int) -> void:
 	l_clip_button.name = str(a_clip_id)
 	l_clip_button.size = Vector2(frame_to_pos(Project.get_clip_duration(a_clip_id)), TRACK_HEIGHT)
 	l_clip_button.position = Vector2(Project.get_clip_pts(a_clip_id) * zoom, Project.get_clip_track(a_clip_id) * TRACK_HEIGHT)
+	CoreError.err_connect([l_clip_button.pressed.connect(CoreTimeline.open_clip_effects.bind(a_clip_id))])
 
 	clips_control.add_child(l_clip_button)
 
@@ -282,7 +283,7 @@ func _drop_clip_data(a_pos: Vector2, a_data: Draggable) -> void:
 	elif a_data.type & 1 == 1:
 		Project._move_clip(a_data.data[0], l_pts, l_track_id)
 
-	GoZenServer.update_frame_forced()
+	CoreView.update_frame_forced()
 
 
 func _set_preview(a_track: int, a_pos_x: float, a_duration: int, a_new: bool = false) -> void:

@@ -101,8 +101,8 @@ func _add_file(a_file: File) -> void:
 	var l_file_box: Button = preload("res://modules/panels/default_files_panel/files_box/files_box.tscn").instantiate()
 	l_file_box.name = str(a_file.id)
 	l_file_box.text = a_file.nickname
-	l_file_box.tooltip_text = a_file.nickname + '/n' + a_file.path
 	l_file_box.icon = a_file.get_thumb()
+	l_file_box.tooltip_text = a_file.nickname + '/n' + a_file.path
 
 	_get_folder_from_type(a_file.type).add_child(l_file_box)
 	tab_container.current_tab = _get_folder_from_type(a_file.type).get_parent().get_index()
