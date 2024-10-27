@@ -25,17 +25,17 @@ func _input(a_event: InputEvent) -> void:
 	elif a_event.is_action_pressed("fullscreen"):
 		SettingsManager.change_window_mode(Window.MODE_FULLSCREEN)
 
-	elif a_event.is_action_pressed("clip_delete") and GoZenServer.selected_clips.size() != 0:
+	elif a_event.is_action_pressed("clip_delete") and CoreTimeline.selected_clips.size() != 0:
 		# TODO: Add this to actions which can be reverted, maybe have in GoZenServer remove_clips and add_clips
-		for l_id: int in GoZenServer.selected_clips:
-			GoZenServer.remove_clip(l_id)
-		GoZenServer.selected_clips = []
+		for l_id: int in CoreTimeline.selected_clips:
+			CoreTimeline.remove_clip(l_id)
+		CoreTimeline.selected_clips = []
 
 	elif a_event.is_action_pressed("open_help"):
 		print("Not implemented yet!")
 
 	elif a_event.is_action_pressed("play"):
-		GoZenServer._on_play_pressed()
+		CoreView._on_play_pressed()
 
 
 func undo_action() -> void:

@@ -144,8 +144,8 @@ func _on_create_project_button_pressed() -> void:
 	Project.resolution = l_resolution
 	Project.framerate = l_framerate
 
-	CoreLoader.add_loadable_to_front("Saving new project", Project.save_data)
-	CoreLoader.add_loadable_to_front("Setting current project id", RecentProjectsManager.set_current_project_id.bind(RecentProjectsManager.project_data.size()-1))
+	CoreLoader.append_to_front("Saving new project", Project.save_data)
+	CoreLoader.append_to_front("Setting current project id", RecentProjectsManager.set_current_project_id.bind(RecentProjectsManager.project_data.size()-1))
 
 	self.visible = false
 	_start_project_loading.emit()

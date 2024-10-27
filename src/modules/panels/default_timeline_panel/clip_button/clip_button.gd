@@ -24,9 +24,9 @@ func _on_button_up() -> void:
 
 
 func _on_pressed() -> void:
-	GoZenServer.open_clip_effects(name.to_int())
+	CoreEffects.open_clip_effects(name.to_int())
 
-	if GoZenServer.selected_clips.append(name.to_int()):
+	if CoreTimeline.selected_clips.append(name.to_int()):
 		printerr("Couldn't append clip id to selected clips! ", name)
 
 

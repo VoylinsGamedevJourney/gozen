@@ -27,7 +27,7 @@ func check_open() -> bool:
 
 
 func get_frame() -> ImageTexture:
-	if frame_skip < 0 or frame_skip	> 8 or (!GoZenServer.is_playing and frame_skip > 8): 
+	if frame_skip < 0 or frame_skip	> 8 or (!CoreView.is_playing and frame_skip > 8): 
 		frame_nr = current_frame
 		return ImageTexture.create_from_image(data.seek_frame(frame_nr))
 	for i: int in frame_skip:

@@ -1,6 +1,11 @@
 extends Control
 
 
+const PATH_HEADER: String = "header/header.tscn"
+const PATH_TRACK_LINE: String = "track_separator/track_line.tscn"
+const PATH_CLIP_BUTTON: String = "clip_button/clip_button.tscn"
+
+
 const TRACK_HEIGHT: int = 40
 const TRACK_PADDING: int = 3000
 
@@ -57,7 +62,7 @@ func _process(_delta: float) -> void:
 		if playhead.position.x < 0:
 			playhead.position.x = 0
 
-		Project.playhead_pos = round(playhead.position.x / zoom)
+		CoreTimeline.set_playhead_pos(roundi(playhead.position.x / zoom))
 
 		# TODO: Update displayed frame ever 1/4 of a second for performance if 'was_playing equals true'
 
@@ -90,14 +95,15 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton and (a_event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if a_event.is_released():
 			playhead_moving = false
-			CoreView.current_frame = max(pos_to_frame(main_control.get_local_mouse_position().x), 0)
+			CoreTimeline.set_playhead_pos(maxi(
+					CoreTimeline.pos_to_frame(playhead.position.x, zoom), 0))
 			if was_playing:
-				CoreView._on_play_pressed()
+				CoreTimeline.play_pressed()
 		elif a_event.is_pressed():
 			playhead_moving = true
 			was_playing = CoreView.is_playing
 			if was_playing:
-				CoreView._on_play_pressed()
+				CoreTimeline.play_pressed()
 	
 	if a_event.is_action_pressed("zoom_in", true):
 		get_viewport().set_input_as_handled()
@@ -113,11 +119,11 @@ func _on_current_frame_changed(a_frame: int) -> void:
 
 #------------------------------------------------ TRACK HANDLING
 func add_track() -> void:
-	var l_header: VBoxContainer = preload("res://modules/panels/default_timeline_panel/header/header.tscn").instantiate()
+	var l_header: VBoxContainer = preload(PATH_HEADER).instantiate()
 	sidebar.add_child(l_header)
 	l_header.custom_minimum_size.y = TRACK_HEIGHT
 
-	var l_track_line: HSeparator = preload("res://modules/panels/default_timeline_panel/track_separator/track_line.tscn").instantiate()
+	var l_track_line: HSeparator = preload(PATH_TRACK_LINE).instantiate()
 	lines_control.add_child(l_track_line)
 	l_track_line.position.y = ((l_track_line.get_index() + 1) * TRACK_HEIGHT) - l_track_line.size.y
 
@@ -138,10 +144,10 @@ func add_clip(a_clip_id: int) -> void:
 			if l_node.get_parent() == clips_control:
 				return # Already added
 		
-	var l_clip_button: Button = preload("res://modules/panels/default_timeline_panel/clip_button/clip_button.tscn").instantiate()
+	var l_clip_button: Button = preload(PATH_CLIP_BUTTON).instantiate()
 
 	l_clip_button.name = str(a_clip_id)
-	l_clip_button.size = Vector2(frame_to_pos(Project.get_clip_duration(a_clip_id)), TRACK_HEIGHT)
+	l_clip_button.size = Vector2(CoreTimeline.frame_to_pos(Project.get_clip_duration(a_clip_id), zoom), TRACK_HEIGHT)
 	l_clip_button.position = Vector2(Project.get_clip_pts(a_clip_id) * zoom, Project.get_clip_track(a_clip_id) * TRACK_HEIGHT)
 	CoreError.err_connect([l_clip_button.pressed.connect(CoreTimeline.open_clip_effects.bind(a_clip_id))])
 
@@ -156,18 +162,18 @@ func add_clip(a_clip_id: int) -> void:
 
 func move_clip(a_track: int, a_clip_id: int) -> void:
 	var l_clip_node: Button = clips_control.get_node(str(a_clip_id))
-	l_clip_node.position = Vector2(frame_to_pos(Project.get_clip_pts(a_clip_id)), a_track * TRACK_HEIGHT)
+	l_clip_node.position = Vector2(CoreTimeline.frame_to_pos(Project.get_clip_pts(a_clip_id), zoom), a_track * TRACK_HEIGHT)
 
 
 func resize_clip(a_clip_id: int) -> void:
 	var l_clip_button: Button = clips_control.get_node(str(a_clip_id))
-	l_clip_button.size.x = frame_to_pos(Project.get_clip_duration(a_clip_id))
-	l_clip_button.position.x = frame_to_pos(Project.get_clip_pts(a_clip_id))
+	l_clip_button.size.x = CoreTimeline.frame_to_pos(Project.get_clip_duration(a_clip_id), zoom)
+	l_clip_button.position.x = CoreTimeline.frame_to_pos(Project.get_clip_pts(a_clip_id), zoom)
 
 
 #------------------------------------------------ RESIZE HANDLING
 func _on_pts_changed(a_value: float = Project._end_pts) -> void:
-	main_control.custom_minimum_size.x = frame_to_pos((a_value + TRACK_PADDING + scroll_container.size.x) as int)
+	main_control.custom_minimum_size.x = CoreTimeline.frame_to_pos((a_value + TRACK_PADDING + scroll_container.size.x) as int, zoom)
 
 
 func _on_tracks_changed() -> void:
@@ -191,7 +197,7 @@ func on_zoom(a_new_zoom: float = zoom) -> void:
 
 	# Correcting playhead position
 	if playhead.position.x != 0 and pre_zoom != 0:
-		playhead.position.x = frame_to_pos((playhead.position.x / pre_zoom) as int)
+		playhead.position.x = CoreTimeline.frame_to_pos((playhead.position.x / pre_zoom) as int, zoom)
 
 	for l_clip_button: Button in clips_control.get_children():
 		resize_clip(l_clip_button.name.to_int())
@@ -199,7 +205,6 @@ func on_zoom(a_new_zoom: float = zoom) -> void:
 
 #------------------------------------------------ DROP HANDLING
 func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
-	# TODO: ADD support for NEW_CLIPS and MOVE_CLIPS
 	var l_track_id: int = floor(a_pos.y / TRACK_HEIGHT)
 	var l_offset: int = -1000
 
@@ -216,23 +221,25 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 	elif a_data.type & 1 == 0:
 		var l_file: File = Project.files[a_data.data[0]]
 		var l_duration: int = l_file.duration 
-		var l_pts: int = pos_to_frame(a_pos.x) - (l_duration / 2.) as int
+		var l_pts: int = CoreTimeline.pos_to_frame(a_pos.x, zoom) - (l_duration / 2.) as int
 
 		if l_pts < -snap_limit:
-			if _fits(l_track_id, l_duration, 0):
+			if CoreTimeline.check_clip_fit(l_track_id, l_duration, 0):
 				_set_preview(l_track_id, -1, l_duration, true)
 				return true
+
 			preview.visible = false
 			return false
-		elif _fits(l_track_id, l_duration, l_pts):
+		elif CoreTimeline.check_clip_fit(l_track_id, l_duration, l_pts):
 			_set_preview(l_track_id, a_pos.x, l_duration, true)
 			return true
 		else:
 			for l_snap: int in snap_limit:
-				if _fits(l_track_id, l_duration, l_pts + l_snap):
+				if CoreTimeline.check_clip_fit(l_track_id, l_duration, l_pts + l_snap):
 					l_offset = l_snap
 					break
-				if _fits(l_track_id, l_duration, l_pts - l_snap):
+
+				if CoreTimeline.check_clip_fit(l_track_id, l_duration, l_pts - l_snap):
 					l_offset = -l_snap
 					break
 
@@ -240,7 +247,7 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 				preview.visible = false
 				return false
 			else:
-				_set_preview(l_track_id, a_pos.x + frame_to_pos(l_offset), l_duration, true)
+				_set_preview(l_track_id, a_pos.x + CoreTimeline.frame_to_pos(l_offset, zoom), l_duration, true)
 				return true
 
 	# MOVE CLIP(S)
@@ -250,10 +257,10 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 		var l_pts: int = Project.clips[a_data.data[0]].pts
 
 		for l_snap: int in snap_limit:
-			if _fits(l_track_id, l_duration, (l_pts - pos_to_frame(a_data.mouse_pos)) + l_snap, a_data.data[0]):
+			if CoreTimeline.check_clip_fit(l_track_id, l_duration, (l_pts - CoreTimeline.pos_to_frame(a_data.mouse_pos, zoom)) + l_snap, a_data.data[0]):
 				l_offset = l_snap
 				break
-			if _fits(l_track_id, l_duration, (l_pts - pos_to_frame(a_data.mouse_pos)) + l_duration - l_snap, a_data.data[0]):
+			if CoreTimeline.check_clip_fit(l_track_id, l_duration, (l_pts - CoreTimeline.pos_to_frame(a_data.mouse_pos, zoom)) + l_duration - l_snap, a_data.data[0]):
 				l_offset = -l_snap
 				break
 
@@ -261,7 +268,7 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 			preview.visible = false
 			return false
 		else:
-			_set_preview(l_track_id, a_pos.x - a_data.mouse_pos + frame_to_pos(l_offset), l_duration)
+			_set_preview(l_track_id, a_pos.x - a_data.mouse_pos + CoreTimeline.frame_to_pos(l_offset, zoom), l_duration)
 			return true
 	else:
 		preview.visible = false
@@ -270,7 +277,7 @@ func _can_drop_clip_data(a_pos: Vector2, a_data: Draggable) -> bool:
 
 func _drop_clip_data(a_pos: Vector2, a_data: Draggable) -> void:
 	var l_track_id: int = floor(a_pos.y / TRACK_HEIGHT)
-	var l_pts: int = pos_to_frame(preview.position.x)
+	var l_pts: int = CoreTimeline.pos_to_frame(preview.position.x, zoom)
 
 	# TODO: Support multiple new clips and move clips
 	preview.visible = false
@@ -283,51 +290,19 @@ func _drop_clip_data(a_pos: Vector2, a_data: Draggable) -> void:
 	elif a_data.type & 1 == 1:
 		Project._move_clip(a_data.data[0], l_pts, l_track_id)
 
-	CoreView.update_frame_forced()
+	CoreTimeline._on_request_update_frame.emit()
 
 
 func _set_preview(a_track: int, a_pos_x: float, a_duration: int, a_new: bool = false) -> void:
-	preview.size.x = frame_to_pos(a_duration)
+	preview.size.x = CoreTimeline.frame_to_pos(a_duration, zoom)
 
 	if a_pos_x == -1:
 		preview.position.x = 0
 	elif a_new:
-		preview.position.x = maxf(a_pos_x - frame_to_pos(a_duration) / 2, 0)	
+		preview.position.x = maxf(a_pos_x - CoreTimeline.frame_to_pos(a_duration, zoom) / 2, 0)	
 	else:
 		preview.position.x = maxf(a_pos_x, 0)
 	
 	preview.position.y = a_track * TRACK_HEIGHT
 	preview.visible = true
-
-
-func _fits(a_track: int, a_duration: int, a_pts: int, a_excluded_clip: int = -1) -> bool:
-	if Project.tracks[a_track].size() == 0:
-		return true
-
-	var l_range: PackedInt64Array = range(a_pts, a_pts + a_duration)
-	var l_prev_pts: int = -1
-
-	for l_track_pts: int in Project.tracks[a_track].keys():
-		if l_track_pts <= a_pts:
-			l_prev_pts = l_track_pts
-		elif l_track_pts in l_range:
-			if a_excluded_clip == -1 or l_track_pts != Project.get_clip_pts(a_excluded_clip):
-				return false
-		elif l_track_pts > a_pts + a_duration + 1: # Adding a frame just in case
-			break
-
-	if l_prev_pts != -1:
-		var l_track_clip: ClipData = Project.clips[Project.tracks[a_track][l_prev_pts]]
-		for l_pts: int in range(l_track_clip.pts, l_track_clip.pts + l_track_clip.duration):
-			if l_pts in l_range:
-				return false
-
-	return true
 	
-
-func pos_to_frame(a_pos: float) -> int:
-	return floor(a_pos / zoom)
-
-
-func frame_to_pos(a_frame_nr: int) -> float:
-	return a_frame_nr * zoom

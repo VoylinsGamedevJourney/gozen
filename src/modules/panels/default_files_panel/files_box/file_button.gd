@@ -12,6 +12,7 @@ func _on_pressed() -> void:
 
 
 func _get_drag_data(_pos: Vector2) -> Variant:
+	release_focus()
 	return Draggable.new(Draggable.NEW_CLIP, [name.to_int()])
 
 

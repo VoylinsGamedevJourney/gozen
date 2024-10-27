@@ -112,7 +112,7 @@ func _add_file(a_file: File) -> void:
 
 func _remove_file(a_id: int) -> void:
 	if Project.files.has(a_id):
-		Project.remove_file(a_id)
+		CoreMedia.remove_file(a_id)
 		return
 
 	var l_file: File = Project.files[a_id]

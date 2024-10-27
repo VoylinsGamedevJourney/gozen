@@ -14,9 +14,9 @@ var was_playing: bool = false
 
 func _ready() -> void:
 	CoreLoader.append_after("Setting up view panel", _setup)
-
-	if CoreView._on_current_frame_changed.connect(set_frame):
-		printerr("Couldn't connect function in Default view panel!")
+	CoreError.err_connect([
+			CoreView._on_current_frame_changed.connect(set_frame),
+			CoreView._on_update_frame_forced.connect(set_frame.bind(Project.playhead_pos))])
 
 
 func _setup() -> void:
@@ -39,13 +39,13 @@ func _remove_view(a_id: int) -> void:
 #------------------------------------------------ FRAME HANDLING
 func set_frame(_frame: int) -> void:
 	for l_id: int in views.size():
-		views[l_id].texture = GoZenServer.frames[l_id]
+		views[l_id].texture = CoreView.frames[l_id]
 
 
 #------------------------------------------------ BUTTONS
 
 func _on_play_button_pressed() -> void:
-	GoZenServer._on_play_pressed()
+	CoreView._on_play_pressed()
 
 
 func _on_rewind_button_pressed() -> void:
