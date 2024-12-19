@@ -13,14 +13,13 @@ extends Control
 func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
 
-	CoreError.err_connect([
-			Project._on_title_changed.connect(_update_window_title),
-			Project._on_project_saved.connect(_update_window_title),
-			Project._on_changes_occurred.connect(_update_window_title),
+	Project._on_title_changed.connect(_update_window_title)
+	Project._on_project_saved.connect(_update_window_title)
+	Project._on_changes_occurred.connect(_update_window_title)
 
-			SettingsManager._on_window_moved.connect(_update_window_handles),
-			SettingsManager._on_window_resized.connect(_update_window_handles),
-			SettingsManager._on_window_mode_changed.connect(_update_window_handles)])
+	SettingsManager._on_window_moved.connect(_update_window_handles)
+	SettingsManager._on_window_resized.connect(_update_window_handles)
+	SettingsManager._on_window_mode_changed.connect(_update_window_handles)
 
 	get_window().min_size = Vector2i(700, 500)
 	if SettingsManager._tiling_wm:
@@ -34,7 +33,11 @@ func _ready() -> void:
 
 
 func _update_window_title() -> void:
-	window_title.text = Project.title + (" " if !Project._unsaved_changes else "*")
+	window_title.text = Project.title
+	if !Project._unsaved_changes:
+		window_title.text += " "
+	else:
+		window_title.text += "*"
 
 
 func _update_window_handles() -> void:
@@ -43,24 +46,28 @@ func _update_window_handles() -> void:
 
 
 func _load_layouts() -> void:
-	for l_layout: String in CoreLayouts.layouts: 
-		var l_layout_panel: Control = CoreLayouts.get_existing_instance(l_layout)
-		var l_button: TextureButton = preload("res://scenes/main_screen/layout_button/layout_button.tscn").instantiate()
+	for l_layout_name: String in CoreLayouts.layouts: 
+		var l_layout: Control = CoreLayouts.get_existing_instance(l_layout_name)
+		var l_button: TextureButton = preload(
+				 "res://scenes/main_screen/layout_button/layout_button.tscn")\
+				 .instantiate()
 
-		main_tab_container.add_child(l_layout_panel)
+		main_tab_container.add_child(l_layout)
 		side_panel_vbox.add_child(l_button)
 
-		l_button.name = l_layout
-		l_button.tooltip_text = CoreLayouts.get_title(l_layout)
-		l_button.texture_normal = CoreLayouts.get_icon(l_layout)
+		l_button.name = l_layout_name
+		l_button.tooltip_text = CoreLayouts.get_title(l_layout_name)
+		l_button.texture_normal = CoreLayouts.get_icon(l_layout_name)
 
-		if l_button.pressed.connect(switch_layout.bind(l_layout)):
-			printerr("Couldn't connect side panel button! ", l_layout)
+		if l_button.pressed.connect(switch_layout.bind(l_layout_name)):
+			printerr("Couldn't connect side panel button! ", l_layout_name)
 
 
 func _on_exit_button_pressed() -> void:
 	if Project._unsaved_changes:
-		var l_popup: PopupPanel = preload("res://scenes/main_screen/exit_popup.tscn").instantiate()
+		var l_popup: PopupPanel = preload(
+					  "res://scenes/main_screen/exit_popup.tscn").instantiate()
+
 		add_child(l_popup)
 		l_popup.popup_centered()
 		return
@@ -82,16 +89,17 @@ func _on_minimize_button_pressed() -> void:
 
 
 func _on_project_settings_button_pressed() -> void:
-	var l_popup: Popup = CoreModules.create_new_menu_instance_from_id(CoreModules.MENU_PROJECT_SETTINGS)
-	l_popup.popup_centered()
+	CoreModules.create_new_menu_instance_from_id(
+							CoreModules.MENU_PROJECT_SETTINGS).popup_centered()
 
 
 func _on_editor_settings_button_pressed() -> void:
-	var l_popup: Popup = CoreModules.create_new_menu_instance_from_id(CoreModules.MENU_EDITOR_SETTINGS)
-	l_popup.popup_centered()
+	CoreModules.create_new_menu_instance_from_id(
+							 CoreModules.MENU_EDITOR_SETTINGS).popup_centered()
 
 
 func _on_main_menu_button_pressed() -> void:
+	# TODO:
 	pass # Replace with function body.
 
 
@@ -99,17 +107,22 @@ func _on_main_menu_button_pressed() -> void:
 func _on_resize_handle_gui_input(a_event: InputEvent, a_side: int) -> void:
 	if a_event is InputEventMouseButton:
 		var l_event: InputEventMouseButton = a_event
+
 		if l_event.is_pressed():
 			SettingsManager._resize_node = a_side
 
 
 func _on_top_bar_gui_input(a_event: InputEvent) -> void:
-	if a_event is InputEventMouseButton and get_window().mode == Window.MODE_WINDOWED:
+	if a_event is InputEventMouseButton:
+		if get_window().mode != Window.MODE_WINDOWED:
+			return
+
 		var l_event: InputEventMouseButton = a_event
+
 		if l_event.is_pressed() and l_event.button_index == 1:
 			SettingsManager._moving_window = true
-			SettingsManager._move_offset = DisplayServer.mouse_get_position() -\
-					DisplayServer.window_get_position(get_window().get_window_id())
+			SettingsManager._move_offset = DisplayServer.mouse_get_position()-\
+				DisplayServer.window_get_position(get_window().get_window_id())
 
 #------------------------------------------------ LAYOUT HANDLER
 func switch_layout(a_name: String) -> void:

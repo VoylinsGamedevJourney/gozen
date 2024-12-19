@@ -22,7 +22,6 @@ var choose_path_dialog: FileDialog = FileDialog.new()
 
 func start_project_manager() -> void:
 	new_project_panel.visible = false
-	title_line_edit.placeholder_text = "Project_%s" % RecentProjectsManager.total_id
 
 	_prepare_dialogs()
 	_load_projects()
@@ -47,11 +46,16 @@ func _prepare_dialogs() -> void:
 
 
 func _load_projects() -> void:
-	for l_data: RecentProjectData in RecentProjectsManager.get_data():
+	for l_data: Array in RecentProjects.get_data():
+		if l_data.size() == 1:
+			continue
+
 		var l_project_box: ProjectBox = preload("res://scenes/start_screen/project_box/project_box.tscn").instantiate()
 		l_project_box.setup(l_data)
+		
 		if l_project_box._on_project_pressed.connect(_on_project_pressed):
 			printerr("Couldn't connect _on_project_pressed!")
+
 		all_projects.add_child(l_project_box)
 
 
@@ -60,14 +64,16 @@ func _on_top_bar_gui_input(a_event: InputEvent) -> void:
 		var l_event: InputEventMouseButton = a_event
 		if l_event.is_pressed() and l_event.button_index == 1:
 			SettingsManager._moving_window = true
-			SettingsManager._move_offset = DisplayServer.mouse_get_position() -\
-					DisplayServer.window_get_position(get_window().get_window_id())
+			SettingsManager._move_offset = DisplayServer.mouse_get_position()-\
+					DisplayServer.window_get_position(
+							get_window().get_window_id())
 
 
 #------------------------------------------------ BUTTONS
-func _on_project_pressed(a_id: int) -> void:
-	CoreLoader.append_to_front("Opening project", Project.load_data.bind(RecentProjectsManager.project_data[a_id][0]))
-	CoreLoader.append_to_front("Setting current project id", RecentProjectsManager.set_current_project_id.bind(a_id))
+func _on_project_pressed(a_path: String) -> void:
+	RecentProjects.add_to_top.bind(a_path)
+	CoreLoader.append_to_front(
+			"Opening project", Project.load_data.bind(a_path))
 
 	self.visible = false
 	_start_project_loading.emit()
@@ -98,10 +104,8 @@ func _on_support_button_pressed() -> void:
 
 
 func open_file(a_file: String) -> void:
-	var l_path: String = a_file.trim_suffix(a_file.split("/")[-1])
-	RecentProjectsManager.add_project(l_path, a_file.split("/")[-1].trim_suffix(".gozen"))
-	_on_project_pressed(RecentProjectsManager.project_data.size()-1)
-
+	RecentProjects.add_to_top(a_file.split('/')[-1], a_file)
+	_on_project_pressed(a_file)
 
 
 #------------------------------------------------ NEW PROJECT BUTTONS
@@ -137,15 +141,13 @@ func _on_create_project_button_pressed() -> void:
 	l_resolution.y = resolution_y_spin_box.value as int
 	l_framerate = framerate_spin_box.value as int
 
-	RecentProjectsManager.add_project(l_path, l_title)
-
 	Project._project_path = l_path
 	Project.title = l_title
 	Project.resolution = l_resolution
 	Project.framerate = l_framerate
 
+	RecentProjects.add_to_top(l_title, l_path)
 	CoreLoader.append_to_front("Saving new project", Project.save_data)
-	CoreLoader.append_to_front("Setting current project id", RecentProjectsManager.set_current_project_id.bind(RecentProjectsManager.project_data.size()-1))
 
 	self.visible = false
 	_start_project_loading.emit()
