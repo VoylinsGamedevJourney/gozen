@@ -1,4 +1,0 @@
-[submodule "gde_gozen"]
-	path = gde_gozen
-	url = https://github.com/VoylinsGamedevJourney/gde_gozen.git
-	ignore = dirty
