@@ -10,10 +10,10 @@ func _ready() -> void:
 
 func _on_project_id_pressed(a_id: int) -> void: ## Menu bar popup button
 	match a_id:
-		0: pass # Save current project
-		1: pass # Save current project to new location
-		2: pass # Load project
-	# TODO: Add a load recent projects dropdown
+		0: Project.save() # Save current project
+		1: Project.save("") # Save current project to new location
+		2: Project.load("") # Load project
+		3: pass # TODO: Add a load recent projects dropdown
 
 
 func _on_help_id_pressed(a_id: int) -> void: ## Menu bar popup button

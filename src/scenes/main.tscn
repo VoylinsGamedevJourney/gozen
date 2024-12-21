@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=6 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_6sk7e"]
+[ext_resource type="Script" path="res://scripts/files_panel.gd" id="2_vo4ot"]
+[ext_resource type="Script" path="res://scripts/view_panel.gd" id="3_h74h5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hg6qg"]
 bg_color = Color(0.153778, 0.153778, 0.153778, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_3t388"]
+viewport_path = NodePath("VideoView")
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -14,6 +19,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6sk7e")
 
+[node name="VideoView" type="SubViewport" parent="."]
+
+[node name="AudioPlaybacks" type="Node" parent="."]
+
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -21,6 +30,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 0
 
 [node name="MenuBarPanel" type="PanelContainer" parent="VBox"]
 layout_mode = 2
@@ -32,12 +42,14 @@ layout_mode = 2
 flat = true
 
 [node name="Project" type="PopupMenu" parent="VBox/MenuBarPanel/MenuBar"]
-item_count = 3
+item_count = 4
 item_0/text = "Save"
 item_1/text = "Save as ..."
 item_1/id = 1
 item_2/text = "Load"
 item_2/id = 2
+item_3/text = "Load recent ..."
+item_3/id = 3
 
 [node name="Help" type="PopupMenu" parent="VBox/MenuBarPanel/MenuBar"]
 auto_translate_mode = 1
@@ -47,5 +59,63 @@ item_0/text = "About GoZen"
 item_1/text = "Support GoZen"
 item_1/id = 1
 
+[node name="MarginContainer" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBox/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FilesPanel" type="PanelContainer" parent="VBox/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+script = ExtResource("2_vo4ot")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox/MarginContainer/HBoxContainer/FilesPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="FilesList" type="ItemList" parent="VBox/MarginContainer/HBoxContainer/FilesPanel/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+item_count = 1
+
+[node name="ViewPanel" type="PanelContainer" parent="VBox/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_h74h5")
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MarginContainer/HBoxContainer/ViewPanel"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBox/MarginContainer/HBoxContainer/ViewPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = SubResource("ViewportTexture_3t388")
+stretch_mode = 5
+
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="VBox/MarginContainer/HBoxContainer/ViewPanel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="VBox/MarginContainer/HBoxContainer/ViewPanel/VBox/PlaybackButtonsHBox"]
+layout_mode = 2
+text = "Play"
+
+[node name="EffectsPanel" type="PanelContainer" parent="VBox/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="TimelinePanel" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+
 [connection signal="id_pressed" from="VBox/MenuBarPanel/MenuBar/Project" to="." method="_on_project_id_pressed"]
 [connection signal="id_pressed" from="VBox/MenuBarPanel/MenuBar/Help" to="." method="_on_help_id_pressed"]
+[connection signal="pressed" from="VBox/MarginContainer/HBoxContainer/ViewPanel/VBox/PlaybackButtonsHBox/PlayButton" to="VBox/MarginContainer/HBoxContainer/ViewPanel" method="_on_play_button_pressed"]
