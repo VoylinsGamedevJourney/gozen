@@ -23,10 +23,10 @@ config.log
 .scons-cache
 .cache
 
-
 # C++ ignores
 *.so*
 *.lib
+*.dll
 
 # Temporary
 ol_src

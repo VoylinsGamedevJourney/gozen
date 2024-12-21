@@ -1,0 +1,6 @@
+[submodule "libs/godot_cpp"]
+	path = libs/godot_cpp
+	url = git@github.com:godotengine/godot-cpp.git
+[submodule "libs/ffmpeg"]
+	path = libs/ffmpeg
+	url = git@github.com:FFmpeg/FFmpeg.git
