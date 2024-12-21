@@ -7,11 +7,6 @@
 # Linux dot files
 .directory
 
-# Video files (for testing)
-*.mkv
-*.mp4
-*.webm
-
 # Python
 __pycache__
 *.pyc
@@ -27,6 +22,5 @@ config.log
 *.so*
 *.lib
 *.dll
+*.os
 
-# Temporary
-ol_src
