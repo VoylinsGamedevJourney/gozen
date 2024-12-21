@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvbtbhqrbp1u"]
+
+[ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_6sk7e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hg6qg"]
+bg_color = Color(0.153778, 0.153778, 0.153778, 1)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6sk7e")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuBarPanel" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hg6qg")
+
+[node name="MenuBar" type="MenuBar" parent="VBox/MenuBarPanel"]
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+flat = true
+
+[node name="Project" type="PopupMenu" parent="VBox/MenuBarPanel/MenuBar"]
+item_count = 3
+item_0/text = "Save"
+item_1/text = "Save as ..."
+item_1/id = 1
+item_2/text = "Load"
+item_2/id = 2
+
+[node name="Help" type="PopupMenu" parent="VBox/MenuBarPanel/MenuBar"]
+auto_translate_mode = 1
+size = Vector2i(137, 100)
+item_count = 2
+item_0/text = "About GoZen"
+item_1/text = "Support GoZen"
+item_1/id = 1
+
+[connection signal="id_pressed" from="VBox/MenuBarPanel/MenuBar/Project" to="." method="_on_project_id_pressed"]
+[connection signal="id_pressed" from="VBox/MenuBarPanel/MenuBar/Help" to="." method="_on_help_id_pressed"]
