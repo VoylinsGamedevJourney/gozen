@@ -22,8 +22,9 @@ config/icon="res://logo.svg"
 
 [autoload]
 
-Project="*res://scripts/globals/project.gd"
 Utils="*res://scripts/globals/utils.gd"
+Settings="*res://scripts/globals/settings.gd"
+Project="*res://scripts/globals/project.gd"
 
 [debug]
 
