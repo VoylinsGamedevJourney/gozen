@@ -13,7 +13,7 @@ func get_unique_id(a_keys: PackedInt32Array) -> int:
 
 	while true:
 		randomize()
-		l_id = randi()
+		l_id = abs(randi())
 
 		if !a_keys.has(l_id):
 			break

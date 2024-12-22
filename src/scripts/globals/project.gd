@@ -3,10 +3,28 @@ extends Node
 
 var _path: String = ""
 var _unsaved_changes: bool = false
+var undo_redo: UndoRedo = UndoRedo.new()
 
 var files: Dictionary = {} # {Unique_id (int32): File_object}
 var _files_data: Dictionary = {} # {Unique_id (int32): file_data (Varies)}
 
+var framerate: int = 30
+
+var timeline_scale: float = 2.0 # How many pixels 1 frame takes 
+
+
+
+func _ready() -> void:
+	undo_redo.max_steps = 200
+
+
+func _input(a_event: InputEvent) -> void:
+	if a_event.is_action_pressed("ui_undo") and undo_redo.has_undo():
+		if !undo_redo.undo():
+			printerr("Coulnd't undo action!")
+	elif a_event.is_action_pressed("ui_redo") and undo_redo.has_redo():
+		if !undo_redo.redo():
+			printerr("Coulnd't redo action!")
 
 
 func save(a_path: String = _path) -> void:
@@ -33,7 +51,10 @@ func save(a_path: String = _path) -> void:
 	var l_file: FileAccess = FileAccess.open(_path, FileAccess.WRITE)
 
 	l_file.store_string(var_to_str({
-		"files": files
+		"files": files,
+		"framerate": framerate,
+		"timeline_scale": timeline_scale,
+		"undo_redo": undo_redo
 	}))
 
 	l_file.close()
@@ -91,6 +112,9 @@ func load(a_path: String) -> void:
 	for l_key: String in l_data.keys():
 		match l_key:
 			"files": files = l_data[l_key]
+			"framerate": framerate = l_data[l_key]
+			"timeline_scale": timeline_scale = l_data[l_key]
+			"undo_redo": undo_redo = l_data[l_key]
 
 	l_file.close()
 
@@ -98,12 +122,16 @@ func load(a_path: String) -> void:
 func add_file(a_file_path: String) -> int:
 	var l_id: int = Utils.get_unique_id(files.keys())
 	var l_file: File = File.create(a_file_path)
+	var l_file_data: FileData = FileData.new()
 
 	if l_file == null:
 		return -1
 
+	l_file_data.id = l_id
+	l_file_data.init_data()
+
 	files[l_id] = l_file
-	# TODO: Generate data for _files_data
+	_files_data[l_id] = l_file_data
 
 	return l_id
 
