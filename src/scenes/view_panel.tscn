@@ -1,0 +1,115 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1kfy4fvd6fjw"]
+
+[ext_resource type="Script" path="res://scripts/view_panel.gd" id="1_ev6pk"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_p0o40"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lnb2a"]
+viewport_path = NodePath("VideoView")
+
+[node name="ViewPanel" type="PanelContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_ev6pk")
+
+[node name="VideoView" type="SubViewport" parent="."]
+size = Vector2i(1920, 1080)
+
+[node name="View1" type="TextureRect" parent="VideoView"]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p0o40")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="View2" type="TextureRect" parent="VideoView"]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p0o40")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="View3" type="TextureRect" parent="VideoView"]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p0o40")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="View4" type="TextureRect" parent="VideoView"]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p0o40")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="View5" type="TextureRect" parent="VideoView"]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p0o40")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="View6" type="TextureRect" parent="VideoView"]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p0o40")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="AudioPlaybacks" type="Node" parent="."]
+
+[node name="AudioStreamPlayer1" type="AudioStreamPlayer" parent="AudioPlaybacks"]
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="AudioPlaybacks"]
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="AudioPlaybacks"]
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="AudioPlaybacks"]
+
+[node name="AudioStreamPlayer5" type="AudioStreamPlayer" parent="AudioPlaybacks"]
+
+[node name="AudioStreamPlayer6" type="AudioStreamPlayer" parent="AudioPlaybacks"]
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = SubResource("ViewportTexture_lnb2a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="VBox/PlaybackButtonsHBox"]
+layout_mode = 2
+text = "Play"
+
+[connection signal="pressed" from="VBox/PlaybackButtonsHBox/PlayButton" to="." method="_on_play_button_pressed"]

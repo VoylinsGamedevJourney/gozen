@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://cmv40pg6t5bat"]
+
+[node name="EffectsPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(300, 0)

@@ -1,0 +1,107 @@
+[gd_scene load_steps=4 format=3 uid="uid://i0b2chrh82xc"]
+
+[ext_resource type="Script" path="res://scripts/timeline_clips.gd" id="2_1atm4"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_jcy7d"]
+color = Color(0.547811, 0, 0.914108, 0.533333)
+thickness = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h5ind"]
+bg_color = Color(0.683393, 0, 1, 1)
+
+[node name="TimelinePanel" type="PanelContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 204.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+
+[node name="Lines" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Spacing1" type="Control" parent="Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Line1" type="HSeparator" parent="Lines"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing2" type="Control" parent="Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Line2" type="HSeparator" parent="Lines"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing3" type="Control" parent="Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Line3" type="HSeparator" parent="Lines"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing4" type="Control" parent="Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Line4" type="HSeparator" parent="Lines"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing5" type="Control" parent="Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Line5" type="HSeparator" parent="Lines"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing6" type="Control" parent="Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Line6" type="HSeparator" parent="Lines"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Main" type="Control" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Clips" type="Control" parent="ScrollContainer/Main" node_paths=PackedStringArray("preview")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("2_1atm4")
+preview = NodePath("../ClipPreview")
+
+[node name="ClipPreview" type="PanelContainer" parent="ScrollContainer/Main"]
+visible = false
+layout_mode = 0
+offset_right = 229.0
+offset_bottom = 35.0
+mouse_filter = 2
+
+[node name="Playhead" type="Panel" parent="ScrollContainer/Main"]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 2.0
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
