@@ -12,10 +12,16 @@ var framerate: int = 30
 
 var timeline_scale: float = 2.0 # How many pixels 1 frame takes 
 
+var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track
+var clips: Dictionary = {} # {id: ClipData}
+
 
 
 func _ready() -> void:
 	undo_redo.max_steps = 200
+
+	for i: int in 6:
+		tracks.append({})
 
 
 func _input(a_event: InputEvent) -> void:
@@ -54,6 +60,8 @@ func save(a_path: String = _path) -> void:
 		"files": files,
 		"framerate": framerate,
 		"timeline_scale": timeline_scale,
+		"tracks": tracks,
+		"clips": clips,
 		"undo_redo": undo_redo
 	}))
 
@@ -114,6 +122,8 @@ func load(a_path: String) -> void:
 			"files": files = l_data[l_key]
 			"framerate": framerate = l_data[l_key]
 			"timeline_scale": timeline_scale = l_data[l_key]
+			"tracks": tracks = l_data[l_key]
+			"clips": clips = l_data[l_key]
 			"undo_redo": undo_redo = l_data[l_key]
 
 	l_file.close()
@@ -127,10 +137,16 @@ func add_file(a_file_path: String) -> int:
 	if l_file == null:
 		return -1
 
-	l_file_data.id = l_id
-	l_file_data.init_data()
+	# Check if file already exists
+	for l_existing: File in files.values():
+		if l_existing.path == a_file_path:
+			print("File already loaded with path '%s'!" % a_file_path)
+			return -1
 
 	files[l_id] = l_file
+
+	l_file_data.id = l_id
+	l_file_data.init_data()
 	_files_data[l_id] = l_file_data
 
 	return l_id

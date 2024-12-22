@@ -38,7 +38,6 @@ func _get_drag_data(_pos: Vector2) -> Draggable:
 			printerr("Something went wrong appending to draggable ids!")
 
 		l_draggable.duration += l_file_data.get_duration()
-		
-	print(l_draggable.ids)
-	print(l_draggable.duration)
+
 	return l_draggable
+
