@@ -15,5 +15,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
-item_count = 1
+theme_override_colors/font_color = Color(0.832644, 0.832644, 0.832644, 1)
 script = ExtResource("1_55uia")
