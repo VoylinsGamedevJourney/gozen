@@ -6,6 +6,8 @@ var path: String
 var nickname: String
 var type: TYPE
 
+var duration: int = -1
+
 
 
 static func create(a_path: String) -> File:
