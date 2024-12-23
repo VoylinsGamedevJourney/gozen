@@ -61,6 +61,7 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 
 			l_clip_data.id = l_clip_id
 			l_clip_data.file_id = l_id
+			l_clip_data.type = Project.files[l_id].type
 			l_clip_data.start_frame = l_start_frame
 			l_clip_data.duration = Project.files[l_id].duration
 
@@ -75,8 +76,10 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 		Project.undo_redo.create_action("Adding new clips to timeline")
 		Project.undo_redo.add_do_method(_add_new_clips.bind(
 				l_data, get_track_id(preview.position.y)))
+		Project.undo_redo.add_do_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.add_undo_method(_remove_new_clips.bind(
 				l_data, get_track_id(preview.position.y)))
+		Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.commit_action()
 	else:
 		Project.undo_redo.create_action("Moving clips on timeline")
@@ -91,6 +94,7 @@ func _add_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
 		Project.clips[id] = l_clip_data
 		Project.tracks[a_track_id][l_clip_data.start_frame] = id
 		add_clip(l_clip_data, a_track_id)
+	update_timeline_end()
 
 
 func _remove_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
@@ -101,6 +105,7 @@ func _remove_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
 		if !Project.tracks[a_track_id].erase(l_clip_data.start_frame):
 			printerr("Couldn't erase new clips from tracks!")
 		remove_clip(id)
+	update_timeline_end()
 
 
 func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
@@ -113,6 +118,7 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 	l_button.size.x = Project.timeline_scale * a_clip_data.duration
 	l_button.position.x = Project.timeline_scale * a_clip_data.start_frame
 	l_button.position.y = a_track_id * (LINE_HEIGHT + TRACK_HEIGHT)
+	l_button.set_script(preload("res://scripts/clip_button.gd"))
 
 	add_child(l_button)
 
@@ -165,4 +171,20 @@ func get_highest_frame(a_track_id: int, a_frame_nr: int) -> int:
 			return i
 
 	return -1
+
+
+func update_timeline_end() -> void:
+	var l_new_end: int = 0
+
+	for l_track: Dictionary in Project.tracks:
+		if l_track.size() == 0:
+			continue
+
+		var l_clip: ClipData = Project.clips[l_track[l_track.keys().max()]]
+		var l_value: int = l_clip.duration + l_clip.start_frame
+
+		if l_new_end < l_value:
+			l_new_end = l_value
+
+	Project.timeline_end = l_new_end
 

@@ -3,7 +3,7 @@ class_name FileData extends Node
 
 var id: int
 
-var image: Image = null
+var image: ImageTexture = null
 var audio: AudioStreamWAV = null
 var video: Array[Video] = []
 
@@ -27,7 +27,8 @@ func get_duration() -> int:
 func init_data() -> void:
 	var l_file: File = Project.files[id]
 	match get_type():
-		File.TYPE.IMAGE: image = Image.load_from_file(l_file.path)
+		File.TYPE.IMAGE:
+			image = ImageTexture.create_from_image(Image.load_from_file(l_file.path))
 		File.TYPE.AUDIO: audio = Audio.get_wav(l_file.path)
 		File.TYPE.VIDEO:
 			# At this moment we have by default 6 tracks
@@ -42,3 +43,4 @@ func init_data() -> void:
 
 			# Adding audio from video file individually
 			audio = Audio.get_wav(l_file.path)
+

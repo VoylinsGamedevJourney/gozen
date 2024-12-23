@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://i0b2chrh82xc"]
+[gd_scene load_steps=5 format=3 uid="uid://i0b2chrh82xc"]
 
 [ext_resource type="Script" path="res://scripts/timeline_clips.gd" id="2_1atm4"]
+[ext_resource type="Script" path="res://scenes/playhead.gd" id="2_mi352"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_jcy7d"]
 color = Color(0.547811, 0, 0.914108, 0.533333)
@@ -105,3 +106,6 @@ offset_right = 2.0
 grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
+script = ExtResource("2_mi352")
+
+[connection signal="gui_input" from="ScrollContainer/Main" to="ScrollContainer/Main/Playhead" method="_on_main_gui_input"]

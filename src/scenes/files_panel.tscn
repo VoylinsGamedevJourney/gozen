@@ -4,6 +4,8 @@
 
 [node name="FilesPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 0)
+offset_right = 308.0
+offset_bottom = 367.0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
@@ -16,4 +18,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.832644, 0.832644, 0.832644, 1)
+allow_reselect = true
 script = ExtResource("1_55uia")
+
+[connection signal="item_clicked" from="ScrollContainer/FilesList" to="ScrollContainer/FilesList" method="_on_item_clicked"]

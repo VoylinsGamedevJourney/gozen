@@ -31,13 +31,21 @@ func _get_drag_data(_pos: Vector2) -> Draggable:
 
 	l_draggable.files = true
 	for l_item: int in get_selected_items():
-		var l_file_id: int = get_item_metadata(l_item)
-		var l_file_data: FileData = Project._files_data[l_file_id]
+		var l_file_data: FileData = Project._files_data[get_file_id(l_item)]
 
-		if l_draggable.ids.append(l_file_id):
+		if l_draggable.ids.append(get_file_id(l_item)):
 			printerr("Something went wrong appending to draggable ids!")
 
 		l_draggable.duration += l_file_data.get_duration()
 
 	return l_draggable
+
+
+func get_file_id(a_index: int) -> int:
+	return get_item_metadata(a_index)
+	
+
+func _on_item_clicked(a_index: int, _pos: Vector2, a_mouse_index: int) -> void:
+	if a_mouse_index == MOUSE_BUTTON_LEFT:
+		EffectsPanel.instance.open_file_effects(get_file_id(a_index))
 
