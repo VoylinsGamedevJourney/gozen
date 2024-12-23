@@ -59,7 +59,7 @@ private:
 	// Default variable types
 	int sample_rate = -1;
 	int gop_size = 0;
-	int bit_rate = 400000; 
+	int bit_rate = 80000000;
 
 	int response = 0;
 	int frame_nr = 0;

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://i0b2chrh82xc"]
 
 [ext_resource type="Script" path="res://scripts/timeline_clips.gd" id="2_1atm4"]
-[ext_resource type="Script" path="res://scenes/playhead.gd" id="2_mi352"]
+[ext_resource type="Script" path="res://scripts/playhead.gd" id="2_mi352"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_jcy7d"]
 color = Color(0.547811, 0, 0.914108, 0.533333)

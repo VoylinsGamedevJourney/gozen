@@ -7,7 +7,6 @@ void GoZenError::_print(String a_string) {
 void GoZenError::print_error(ERROR a_err) {
 	switch (a_err) {
 		case NO_ERROR:
-			_print("No problems detected");
 			break;
 
 		case ERR_NOT_OPEN_VIDEO:

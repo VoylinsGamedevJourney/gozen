@@ -34,6 +34,11 @@ func _input(a_event: InputEvent) -> void:
 	if a_event.is_action_pressed("play"):
 		ViewPanel.instance._on_play_button_pressed()
 		get_viewport().set_input_as_handled()
+	elif a_event.is_action("open_render_menu"):
+		var l_render_menu: Window = preload("res://scenes/render_menu.tscn").instantiate()
+
+		add_child(l_render_menu)
+		l_render_menu.popup_centered()
 		
 
 

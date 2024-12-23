@@ -142,4 +142,10 @@ func update_texture_rect(a_id: int) -> void:
 		# resolution as the size of the image
 		print("shader material for type is not implemented yet! ",
 				loaded_clips[a_id].type)
-	
+
+
+func get_view_image() -> Image:
+	var l_subviewport: SubViewport = $VideoViews
+
+	return l_subviewport.get_texture().get_image()
+
