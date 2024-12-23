@@ -1,4 +1,9 @@
-[gd_scene format=3 uid="uid://cmv40pg6t5bat"]
+[gd_scene load_steps=2 format=3 uid="uid://cmv40pg6t5bat"]
+
+[ext_resource type="Script" path="res://scripts/effects_panel.gd" id="1_4bfaj"]
 
 [node name="EffectsPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 0)
+offset_right = 300.0
+offset_bottom = 420.0
+script = ExtResource("1_4bfaj")
