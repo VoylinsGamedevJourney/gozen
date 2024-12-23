@@ -163,3 +163,4 @@ func add_file(a_file_path: String) -> int:
 
 func get_clip_data(a_track_id: int, a_frame_nr: int) -> ClipData:
 	return Project.clips[Project.tracks[a_track_id][a_frame_nr]]
+

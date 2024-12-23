@@ -1,13 +1,16 @@
-extends Control
+class_name TimelineClips extends Control
 
 const TRACK_HEIGHT: int = 30
 const LINE_HEIGHT: int = 4
+
+static var instance: TimelineClips
 
 @export var preview: PanelContainer
 
 
 
 func _ready() -> void:
+	instance = self
 	preview.size.y = TRACK_HEIGHT
 
 	if mouse_exited.connect(func() -> void:
@@ -20,10 +23,10 @@ func _can_drop_data(a_pos: Vector2, a_data: Variant) -> bool:
 	var l_track: int = get_track_id(a_pos.y)
 
 	var l_frame: int = maxi(get_frame_nr(a_pos.x) - l_draggable.mouse_offset, 0)
-	var l_end: int = l_frame + l_draggable.duration
+	var l_end: int = l_frame + a_data.duration
 
-	var l_lowest: int = get_lowest_frame(l_track, l_frame)
-	var l_highest: int = get_highest_frame(l_track, l_frame)
+	var l_lowest: int = get_lowest_frame(l_track, l_frame, l_draggable.ignore)
+	var l_highest: int = get_highest_frame(l_track, l_frame, l_draggable.ignore)
 
 	# Check if highest
 	if l_highest == -1 and l_lowest < l_frame:
@@ -82,11 +85,33 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 		Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.commit_action()
 	else:
+		# TODO: Make this work when moving multiple nodes
 		Project.undo_redo.create_action("Moving clips on timeline")
+		for i: int in l_draggable.clip_buttons.size():
+			Project.undo_redo.add_do_method(_move_clip.bind(
+					l_draggable.clip_buttons[i], preview.position))
+			Project.undo_redo.add_undo_method(_move_clip.bind(
+					l_draggable.clip_buttons[i], l_draggable.clip_buttons[i].position))
+		Project.undo_redo.add_do_method(ViewPanel.instance._force_set_frame)
+		Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.commit_action()
 
 	preview.visible = false
 
+
+func _move_clip(a_node: Button, a_new_pos: Vector2) -> void:
+	var l_old_track_id: int = get_track_id(a_node.position.y)
+	var l_new_track_id: int = get_track_id(a_new_pos.y)
+	var l_old_frame_nr: int = get_frame_nr(a_node.position.x)
+	var l_new_frame_nr: int = get_frame_nr(a_new_pos.x)
+
+	if !Project.tracks[l_old_track_id].erase(l_old_frame_nr):
+		print("Could not erase from tracks!")
+	Project.tracks[l_new_track_id][l_new_frame_nr] = a_node.name.to_int()
+	Project.get_clip_data(l_new_track_id, l_new_frame_nr).start_frame = l_new_frame_nr
+
+	a_node.position = a_new_pos
+	
 
 func _add_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
 	for id: int in a_new_clips:
@@ -141,19 +166,22 @@ func hide_preview() -> bool:
 	return false
 
 
-func get_track_id(a_pos_y: float) -> int:
+static func get_track_id(a_pos_y: float) -> int:
 	return floori(a_pos_y / (TRACK_HEIGHT + LINE_HEIGHT))
 
 
-func get_frame_nr(a_pos_x: float) -> int:
+static func get_frame_nr(a_pos_x: float) -> int:
 	return floori(a_pos_x / Project.timeline_scale)
 
 
-func get_lowest_frame(a_track_id: int, a_frame_nr: int) -> int:
+func get_lowest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2i]) -> int:
 	var l_lowest: int = 0
 
 	for i: int in Project.tracks[a_track_id].keys():
 		if i < a_frame_nr:
+			if a_ignore.size() >= 1:
+				if i == a_ignore[0].y and a_track_id == a_ignore[0].x:
+					continue
 			l_lowest = i
 		elif i >= a_frame_nr:
 			break
@@ -165,9 +193,13 @@ func get_lowest_frame(a_track_id: int, a_frame_nr: int) -> int:
 	return l_clip.duration + l_lowest
 
 
-func get_highest_frame(a_track_id: int, a_frame_nr: int) -> int:
+func get_highest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2i]) -> int:
 	for i: int in Project.tracks[a_track_id].keys():
+		# TODO: Change the a_ignore when moving multiple clips
 		if i > a_frame_nr:
+			if a_ignore.size() >= 1:
+				if i == a_ignore[0].y and a_track_id == a_ignore[0].x:
+					continue
 			return i
 
 	return -1
@@ -187,4 +219,21 @@ func update_timeline_end() -> void:
 			l_new_end = l_value
 
 	Project.timeline_end = l_new_end
+
+
+func delete_clip(a_track_id: int, a_frame_nr: int) -> void:
+	var l_id: int = Project.tracks[a_track_id][a_frame_nr]
+
+	if !Project.clips.erase(l_id):
+		printerr("Couldn't erase new clips from clips!")
+	if !Project.tracks[a_track_id].erase(a_frame_nr):
+		printerr("Couldn't erase new clips from tracks!")
+
+	remove_clip(l_id)
+	update_timeline_end()
+
+
+func undelete_clip(a_clip_data: ClipData, a_track_id: int) -> void:
+	_add_new_clips({a_clip_data.id: a_clip_data}, a_track_id)
+	update_timeline_end()
 

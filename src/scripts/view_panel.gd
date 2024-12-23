@@ -53,13 +53,15 @@ func _on_end_reached() -> void:
 func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 	# Should only be called when having moved the playhead as it updates the
 	# the currently "loaded" clips.
-
 	for i: int in loaded_clips.size():
 		# First check if loaded clip is correct
 		if loaded_clips[i] != null and a_frame_nr > loaded_clips[i].start_frame:
-			if a_frame_nr < loaded_clips[i].start_frame + loaded_clips[i].duration:
+			# Check if clip still exists
+			if not loaded_clips[i].start_frame in Project.tracks[i]:
+				loaded_clips[i] = null
 				continue
-
+			elif a_frame_nr < loaded_clips[i].start_frame + loaded_clips[i].duration:
+				continue
 		loaded_clips[i] = null
 
 		# Take the current frame number and get the previous clip if clip start +
@@ -77,6 +79,7 @@ func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 
 		# Possibility found so checking if a_frame_nr is in the length
 		var l_clip_data: ClipData = Project.get_clip_data(i, l_start_frame)
+
 		if l_clip_data.duration < a_frame_nr - l_start_frame:
 			continue
 

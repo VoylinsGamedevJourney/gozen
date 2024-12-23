@@ -10,6 +10,7 @@ static var is_moving: bool = false
 
 func _ready() -> void:
 	instance = self
+	ViewPanel.instance._force_set_frame(0)
 
 
 func _process(_delta: float) -> void:
