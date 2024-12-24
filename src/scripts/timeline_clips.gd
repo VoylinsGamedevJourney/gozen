@@ -137,12 +137,19 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 	var l_button: Button = Button.new()
 
 	l_button.name = str(a_clip_data.id)
-	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
-	l_button.text = Project.files[a_clip_data.file_id].nickname
-	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	l_button.text = " " + Project.files[a_clip_data.file_id].nickname
 	l_button.size.x = Project.timeline_scale * a_clip_data.duration
+	l_button.clip_text = true
+	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l_button.position.x = Project.timeline_scale * a_clip_data.start_frame
 	l_button.position.y = a_track_id * (LINE_HEIGHT + TRACK_HEIGHT)
+	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	l_button.add_theme_stylebox_override("normal", StyleBoxFlat.new())
+	l_button.add_theme_stylebox_override("focus", StyleBoxFlat.new())
+	l_button.add_theme_stylebox_override("hover", StyleBoxFlat.new())
+	l_button.add_theme_stylebox_override("pressed", StyleBoxFlat.new())
+
 	l_button.set_script(preload("res://scripts/clip_button.gd"))
 
 	add_child(l_button)
@@ -217,7 +224,8 @@ func update_timeline_end() -> void:
 
 		if l_new_end < l_value:
 			l_new_end = l_value
-
+	
+	(get_parent() as Control).custom_minimum_size.x = (l_new_end + 1080) * Project.timeline_scale
 	Project.timeline_end = l_new_end
 
 
