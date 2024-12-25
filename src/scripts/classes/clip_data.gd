@@ -21,5 +21,5 @@ func get_audio_data() -> PackedByteArray:
 		printerr("Couldn't resize audio data of clip!")
 
 	# Only send beginning of audio
-	return l_audio.slice(begin)
+	return l_audio.slice(begin * AudioHandler.bytes_per_frame)
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://b1kfy4fvd6fjw"]
+[gd_scene load_steps=12 format=3 uid="uid://b1kfy4fvd6fjw"]
 
 [ext_resource type="Script" path="res://scripts/view_panel.gd" id="1_ev6pk"]
 [ext_resource type="Shader" path="res://shaders/rgb.gdshader" id="2_gf384"]
 [ext_resource type="Texture2D" uid="uid://bv3xxhbb81md5" path="res://logo.svg" id="3_jhbh7"]
+[ext_resource type="Script" path="res://scripts/audio_handler.gd" id="4_nuiq6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pp7hw"]
 shader = ExtResource("2_gf384")
@@ -101,6 +102,7 @@ grow_vertical = 2
 stretch_mode = 5
 
 [node name="AudioPlaybacks" type="Node" parent="."]
+script = ExtResource("4_nuiq6")
 
 [node name="AudioStreamPlayer1" type="AudioStreamPlayer" parent="AudioPlaybacks"]
 

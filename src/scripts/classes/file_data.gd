@@ -18,8 +18,12 @@ func get_duration() -> int:
 		# We need to calculate the duration first
 		match l_file.type:
 			File.TYPE.IMAGE: l_file.duration = Settings.default_image_duration
-			File.TYPE.AUDIO: l_file.duration = 0 # TODO: Get correct duration
-			File.TYPE.VIDEO: l_file.duration = 0 # TODO: Get correct duration
+			File.TYPE.AUDIO:
+				l_file.duration = int(
+						float(audio.data.size()) / AudioHandler.bytes_per_frame)
+			File.TYPE.VIDEO:
+				l_file.duration = int(
+						float(audio.data.size()) / AudioHandler.bytes_per_frame)
 
 	return Project.files[id].duration
 

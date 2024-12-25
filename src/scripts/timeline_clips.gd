@@ -121,6 +121,10 @@ func _add_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
 		add_clip(l_clip_data, a_track_id)
 	update_timeline_end()
 
+	for l_data: ClipData in a_new_clips.values():
+		AudioHandler.instance.add_data(
+				a_track_id, l_data.start_frame, l_data.get_audio_data())
+
 
 func _remove_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
 	for id: int in a_new_clips:
@@ -131,6 +135,9 @@ func _remove_new_clips(a_new_clips: Dictionary, a_track_id: int) -> void:
 			printerr("Couldn't erase new clips from tracks!")
 		remove_clip(id)
 	update_timeline_end()
+	for l_data: ClipData in a_new_clips.values():
+		AudioHandler.instance.remove_data(
+				a_track_id, l_data.start_frame, l_data.get_audio_data().size())
 
 
 func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
@@ -138,7 +145,8 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 
 	l_button.name = str(a_clip_data.id)
 	l_button.text = " " + Project.files[a_clip_data.file_id].nickname
-	l_button.size.x = Project.timeline_scale * a_clip_data.duration
+	l_button.custom_minimum_size.x = Project.timeline_scale * a_clip_data.duration
+	l_button.size.x = l_button.custom_minimum_size.x
 	l_button.clip_text = true
 	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l_button.position.x = Project.timeline_scale * a_clip_data.start_frame
@@ -149,6 +157,8 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 
 	if a_clip_data.type == File.TYPE.IMAGE:
 		l_style_box = preload("res://styles/style_box_image.tres")
+	elif a_clip_data.type == File.TYPE.AUDIO:
+		l_style_box = preload("res://styles/style_box_audio.tres")
 	else:
 		printerr("No clip style for this type!")
 	
@@ -238,6 +248,9 @@ func update_timeline_end() -> void:
 
 func delete_clip(a_track_id: int, a_frame_nr: int) -> void:
 	var l_id: int = Project.tracks[a_track_id][a_frame_nr]
+	var l_start: int = Project.clips[l_id].start_frame
+	var l_clip_data: ClipData = Project.clips[l_id]
+	var l_size: int = l_clip_data.get_audio_data().size()
 
 	if !Project.clips.erase(l_id):
 		printerr("Couldn't erase new clips from clips!")
@@ -246,9 +259,12 @@ func delete_clip(a_track_id: int, a_frame_nr: int) -> void:
 
 	remove_clip(l_id)
 	update_timeline_end()
+	AudioHandler.instance.remove_data(a_track_id, l_start, l_size)
 
 
 func undelete_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 	_add_new_clips({a_clip_data.id: a_clip_data}, a_track_id)
 	update_timeline_end()
+	AudioHandler.instance.add_data(
+			a_track_id, a_clip_data.start_frame, a_clip_data.get_audio_data())
 
