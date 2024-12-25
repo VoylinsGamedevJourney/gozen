@@ -145,10 +145,17 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 	l_button.position.y = a_track_id * (LINE_HEIGHT + TRACK_HEIGHT)
 	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	l_button.add_theme_stylebox_override("normal", StyleBoxFlat.new())
-	l_button.add_theme_stylebox_override("focus", StyleBoxFlat.new())
-	l_button.add_theme_stylebox_override("hover", StyleBoxFlat.new())
-	l_button.add_theme_stylebox_override("pressed", StyleBoxFlat.new())
+	var l_style_box: StyleBoxFlat = StyleBoxFlat.new()
+
+	if a_clip_data.type == File.TYPE.IMAGE:
+		l_style_box = preload("res://styles/style_box_image.tres")
+	else:
+		printerr("No clip style for this type!")
+	
+	l_button.add_theme_stylebox_override("normal", l_style_box)
+	l_button.add_theme_stylebox_override("focus", l_style_box)
+	l_button.add_theme_stylebox_override("hover", l_style_box)
+	l_button.add_theme_stylebox_override("pressed", l_style_box)
 
 	l_button.set_script(preload("res://scripts/clip_button.gd"))
 

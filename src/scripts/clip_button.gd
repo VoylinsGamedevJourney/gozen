@@ -16,6 +16,10 @@ var duration: int = 0
 # TODO: Resize TODO's
 # - Don't go over video/audio length;
 
+# TODO: Cutting TODO's
+# - Take in mind the start point of the audio/video
+
+
 
 func _ready() -> void:
 	_add_resize_button(PRESET_LEFT_WIDE, true)
@@ -47,6 +51,18 @@ func _on_button_down() -> void:
 	get_viewport().set_input_as_handled()	
 
 
+func _input(a_event: InputEvent) -> void:
+	if button_pressed and a_event.is_action_pressed("clip_split"):
+		Project.undo_redo.create_action("Deleting clip on timeline")
+
+		Project.undo_redo.add_do_method(_cut_clip.bind(Playhead.frame_nr))
+		Project.undo_redo.add_undo_method(_uncut_clip.bind(Playhead.frame_nr))
+
+		Project.undo_redo.add_do_method(ViewPanel.instance._force_set_frame)
+		Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
+		Project.undo_redo.commit_action()
+
+
 func _on_gui_input(a_event: InputEvent) -> void:
 	# We need mouse passthrough to allow for clip dragging without issues
 	# But when clicking on clips we do not want the playhead to keep jumping.
@@ -59,14 +75,17 @@ func _on_gui_input(a_event: InputEvent) -> void:
 
 	if a_event.is_action_pressed("delete_clip"):
 		Project.undo_redo.create_action("Deleting clip on timeline")
+
 		Project.undo_redo.add_do_method(TimelineClips.instance.delete_clip.bind(
 				TimelineClips.get_track_id(position.y),
 				TimelineClips.get_frame_nr(position.x)))
+
 		Project.undo_redo.add_undo_method(TimelineClips.instance.undelete_clip.bind(
 				Project.get_clip_data(
 						TimelineClips.get_track_id(position.y),
 						TimelineClips.get_frame_nr(position.x)),
 				TimelineClips.get_track_id(position.y)))
+
 		Project.undo_redo.add_do_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.commit_action()
@@ -185,13 +204,13 @@ func _on_commit_resize() -> void:
 	Project.undo_redo.add_do_method(_set_resize_data.bind(
 			TimelineClips.get_frame_nr(position.x),
 			TimelineClips.get_frame_nr(size.x)))
+
 	Project.undo_redo.add_undo_method(_set_resize_data.bind(
 			Project.clips[name.to_int()].start_frame,
 			Project.clips[name.to_int()].duration))
 
 	Project.undo_redo.add_do_method(ViewPanel.instance._force_set_frame)
 	Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
-
 	Project.undo_redo.commit_action()
 
 
@@ -206,4 +225,42 @@ func _set_resize_data(a_new_start: int, a_new_duration: int) -> void:
 
 	Project.clips[name.to_int()].start_frame = a_new_start
 	Project.clips[name.to_int()].duration = a_new_duration
+
+
+func _cut_clip(a_playhead: int) -> void:
+	var l_clip_data: ClipData = Project.clips[name.to_int()]
+	var l_new_clip: ClipData = ClipData.new()
+
+	# Check if playhead is inside of clip
+	if a_playhead <= l_clip_data.start_frame:
+		return # Playhead is left of the clip
+	elif a_playhead >= l_clip_data.start_frame + l_clip_data.duration:
+		return # Playhead is right of the clip
+
+	var l_frame: int = a_playhead - l_clip_data.start_frame
+
+	l_new_clip.id = Utils.get_unique_id(Project.clips.keys())
+	l_new_clip.file_id = l_clip_data.file_id
+	l_new_clip.type = l_clip_data.type
+
+	l_new_clip.start_frame = a_playhead
+	l_new_clip.duration = abs(l_clip_data.duration - l_frame)
+	l_new_clip.begin = l_clip_data.begin + l_frame
+
+	l_clip_data.duration -= l_new_clip.duration
+	size.x = l_clip_data.duration * Project.timeline_scale
+
+	TimelineClips.instance._add_new_clips({
+			l_new_clip.id: l_new_clip}, TimelineClips.get_track_id(position.y))
+
+
+func _uncut_clip(a_playhead: int) -> void:
+	var l_track: int = TimelineClips.get_track_id(position.y)
+	var l_current_clip: ClipData = Project.clips[name.to_int()]
+	var l_split_clip: ClipData = Project.get_clip_data(l_track, a_playhead)
+
+	l_current_clip.duration += l_split_clip.duration
+	size.x = l_current_clip.duration * Project.timeline_scale
+
+	TimelineClips.instance.delete_clip(l_track, a_playhead)
 
