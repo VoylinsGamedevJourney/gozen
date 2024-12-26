@@ -73,9 +73,6 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 			l_data[l_clip_id] = l_clip_data
 			
 			l_start_frame += l_clip_data.duration
-		else:
-			# Moving clips
-			pass
 
 	if l_draggable.files:
 		Project.undo_redo.create_action("Adding new clips to timeline")
@@ -94,8 +91,11 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 					l_draggable.clip_buttons[i], preview.position))
 			Project.undo_redo.add_undo_method(_move_clip.bind(
 					l_draggable.clip_buttons[i], l_draggable.clip_buttons[i].position))
+
 		Project.undo_redo.add_do_method(ViewPanel.instance._force_set_frame)
 		Project.undo_redo.add_undo_method(ViewPanel.instance._force_set_frame)
+		Project.undo_redo.add_do_method(update_timeline_end)
+		Project.undo_redo.add_undo_method(update_timeline_end)
 		Project.undo_redo.commit_action()
 
 	preview.visible = false

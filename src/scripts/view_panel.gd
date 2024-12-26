@@ -137,14 +137,13 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step()) -> void:
 				loaded_clips[i] = null
 				update_texture_rect(i)
 				AudioHandler.instance.reset_audio_stream(i)
-			elif loaded_clips[i].start_frame + loaded_clips[i].duration < a_frame_nr:
-				# Check if clip is still within bounds
-				if loaded_clips[i].type in VISUAL_TYPES:
-					update_texture_rect(i)
-				if loaded_clips[i].type in AUDIO_TYPES:
-					AudioHandler.instance.reset_audio_stream(i)
 
+			if loaded_clips[i].start_frame + loaded_clips[i].duration < a_frame_nr:
+				# Check if clip is still within bounds
 				loaded_clips[i] = null
+				update_texture_rect(i)
+				AudioHandler.instance.reset_audio_stream(i)
+
 
 		# if loaded_clip for track is null, check if at current frame_nr in
 		# track data if there is an entry or not.

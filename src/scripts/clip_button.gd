@@ -105,7 +105,7 @@ func _get_drag_data(_pos: Vector2) -> Draggable:
 		printerr("Something went wrong appending to draggable ids!")
 
 	l_draggable.files = false
-	l_draggable.duration = Project.get_clip_data(l_ignore.x, l_ignore.y).duration
+	l_draggable.duration = Project.clips[name.to_int()].duration
 	l_draggable.mouse_offset = TimelineClips.get_frame_nr(get_local_mouse_position().x)
 
 	l_draggable.ignore.append(l_ignore)
