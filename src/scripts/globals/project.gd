@@ -9,7 +9,7 @@ var files: Dictionary = {} # {Unique_id (int32): File_object}
 var _files_data: Dictionary = {} # {Unique_id (int32): FileData }
 
 var framerate: int = 30
-var timeline_scale: float = 2.0 # How many pixels 1 frame takes 
+var timeline_scale: float = 1.0 # How many pixels 1 frame takes 
 var timeline_end: int = 0
 
 var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track

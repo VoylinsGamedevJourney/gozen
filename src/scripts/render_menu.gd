@@ -41,6 +41,17 @@ func _on_render_button_pressed() -> void:
 	if err:
 		GoZenError.print_error(err) # TODO: Do something to handle the error
 
+
+	# TODO: Add audio
+	# generate each track individually
+	# Save first audio stream as main stream, for every extra stream created
+	# We use the C++ function to add them together (Audio class)
+		# Check if track has any audio clips in it or not, else leave empty.
+		# Go to each frame, append_array for audio data and use resize for no data
+		# Make certain to resize till timeline_end
+	# if final audiostream data size is 0, don't save audio
+
+
 	# Render logic
 	for i: int in Project.timeline_end:
 		print("handling frame ", i)
@@ -56,8 +67,6 @@ func _on_render_button_pressed() -> void:
 			GoZenError.print_error(err) # TODO: Do something to handle the error
 
 	await RenderingServer.frame_post_draw
-
-	# TODO: Add audio
 
 	renderer.close()
 

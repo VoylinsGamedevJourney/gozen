@@ -38,12 +38,11 @@ func _process(_delta: float) -> void:
 			max_left_resize,
 			max_right_resize if max_right_resize != -1 else 900000000000)
 
-
 		if is_resizing_right:
-			size.x  = (l_new_frame - start_frame) * Project.timeline_scale
+			custom_minimum_size.x  = (l_new_frame - start_frame) * Project.timeline_scale
 		elif is_resizing_left:
 			position.x = l_new_frame * Project.timeline_scale
-			size.x = (duration - (l_new_frame - start_frame)) * Project.timeline_scale
+			custom_minimum_size.x = (duration - (l_new_frame - start_frame)) * Project.timeline_scale
 
 
 func _on_button_down() -> void:
@@ -53,6 +52,7 @@ func _on_button_down() -> void:
 
 func _input(a_event: InputEvent) -> void:
 	if button_pressed and a_event.is_action_pressed("clip_split"):
+		print("cut")
 		Project.undo_redo.create_action("Deleting clip on timeline")
 
 		Project.undo_redo.add_do_method(_cut_clip.bind(Playhead.frame_nr))
@@ -215,6 +215,14 @@ func _on_commit_resize() -> void:
 
 
 func _set_resize_data(a_new_start: int, a_new_duration: int) -> void:
+	var l_clip_data: ClipData = Project.clips[name.to_int()]
+
+	if l_clip_data.start_frame != a_new_start:
+		print(l_clip_data.begin)
+		print(a_new_start - l_clip_data.start_frame)
+		l_clip_data.begin += a_new_start - l_clip_data.start_frame
+		print(l_clip_data.begin)
+
 	position.x = a_new_start * Project.timeline_scale
 	size.x = a_new_duration * Project.timeline_scale
 
@@ -223,8 +231,11 @@ func _set_resize_data(a_new_start: int, a_new_duration: int) -> void:
 		printerr("Could not erase from tracks!")
 	Project.tracks[TimelineClips.get_track_id(position.y)][a_new_start] = name.to_int()
 
-	Project.clips[name.to_int()].start_frame = a_new_start
-	Project.clips[name.to_int()].duration = a_new_duration
+	l_clip_data.start_frame = a_new_start
+	l_clip_data.duration = a_new_duration
+	l_clip_data.update_audio_data()
+
+	TimelineClips.instance.update_timeline_end()
 
 
 func _cut_clip(a_playhead: int) -> void:
@@ -248,10 +259,13 @@ func _cut_clip(a_playhead: int) -> void:
 	l_new_clip.begin = l_clip_data.begin + l_frame
 
 	l_clip_data.duration -= l_new_clip.duration
+	custom_minimum_size.x = l_clip_data.duration * Project.timeline_scale
 	size.x = l_clip_data.duration * Project.timeline_scale
 
 	TimelineClips.instance._add_new_clips({
 			l_new_clip.id: l_new_clip}, TimelineClips.get_track_id(position.y))
+	
+	l_clip_data.update_audio_data()
 
 
 func _uncut_clip(a_playhead: int) -> void:
@@ -260,7 +274,10 @@ func _uncut_clip(a_playhead: int) -> void:
 	var l_split_clip: ClipData = Project.get_clip_data(l_track, a_playhead)
 
 	l_current_clip.duration += l_split_clip.duration
+	custom_minimum_size.x = l_current_clip.duration * Project.timeline_scale
 	size.x = l_current_clip.duration * Project.timeline_scale
 
 	TimelineClips.instance.delete_clip(l_track, a_playhead)
+
+	l_current_clip.update_audio_data()
 

@@ -7,19 +7,22 @@ var type: File.TYPE
 
 var start_frame: int # Timeline begin of clip
 var duration: int
-var begin: int = 0 # Only for video + audio files
+var begin: int = 0 # Only for video files
+
+var audio_data: PackedByteArray = []
 
 
 
-func get_audio_data() -> PackedByteArray:
-	# TODO: Add all the effects in here as well
+func update_audio_data() -> void:
+	if type not in [File.TYPE.AUDIO, File.TYPE.VIDEO]:
+		return
+
 	var l_file_data: FileData = Project._files_data[file_id]
-	var l_audio: PackedByteArray = l_file_data.audio.data.duplicate()
 
-	# Trim end if needed
-	if l_audio.resize((begin + duration) * AudioHandler.bytes_per_frame):
-		printerr("Couldn't resize audio data of clip!")
+	# Trim beginning of audio
+	audio_data = l_file_data.audio.data.slice(
+			begin * AudioHandler.bytes_per_frame,
+			(begin + duration) * AudioHandler.bytes_per_frame)
 
-	# Only send beginning of audio
-	return l_audio.slice(begin * AudioHandler.bytes_per_frame)
+	# TODO: Add all the effects in here as well
 

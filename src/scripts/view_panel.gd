@@ -2,6 +2,7 @@ class_name ViewPanel extends PanelContainer
 # Current frame_nr should be gotten from the Playhead class
 
 const VISUAL_TYPES: PackedInt64Array = [ File.TYPE.IMAGE, File.TYPE.VIDEO ]
+const AUDIO_TYPES: PackedInt64Array = [ File.TYPE.AUDIO, File.TYPE.VIDEO ]
 
 
 static var instance: ViewPanel
@@ -26,14 +27,17 @@ func _process(a_delta: float) -> void:
 	if is_playing:
 		# Check if enough time has passed for next frame or not
 		# move playhead as well
+		var skips: int = 0
 		time_elapsed += a_delta
 
-		var skips: int = 0
+		if time_elapsed < frame_time:
+			return
+
 		while time_elapsed >= frame_time:
 			time_elapsed -= frame_time
 			skips += 1
 
-		if skips != 0:
+		if skips <= 1:
 			_set_frame(Playhead.instance.skip(skips))
 			# TODO: We have to adjust the audio playback as well when skipping happens
 		else:
@@ -42,8 +46,15 @@ func _process(a_delta: float) -> void:
 
 func _on_play_button_pressed() -> void:
 	if Playhead.frame_nr == Project.timeline_end:
+		AudioHandler.instance.stop_all_audio()
 		return _on_end_reached()
+
 	is_playing = !is_playing
+
+	if is_playing:
+		AudioHandler.instance.play_all_audio()
+	else:
+		AudioHandler.instance.stop_all_audio()
 
 
 func _on_end_reached() -> void:
@@ -53,16 +64,24 @@ func _on_end_reached() -> void:
 func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 	# Should only be called when having moved the playhead as it updates the
 	# the currently "loaded" clips.
+
 	for i: int in loaded_clips.size():
 		# First check if loaded clip is correct
 		if loaded_clips[i] != null and a_frame_nr > loaded_clips[i].start_frame:
 			# Check if clip still exists
 			if not loaded_clips[i].start_frame in Project.tracks[i]:
+				AudioHandler.instance.reset_audio_stream(i)
 				loaded_clips[i] = null
 				continue
 			elif a_frame_nr < loaded_clips[i].start_frame + loaded_clips[i].duration:
+				if loaded_clips[i].type in AUDIO_TYPES:
+					var l_audio_start_frame: int = a_frame_nr - loaded_clips[i].start_frame
+
+					AudioHandler.instance.set_audio(i, loaded_clips[i].audio_data, l_audio_start_frame)
 				continue
+
 		loaded_clips[i] = null
+		AudioHandler.instance.reset_audio_stream(i)
 
 		# Take the current frame number and get the previous clip if clip start +
 		# duration is higher or equal to the frame number.
@@ -83,12 +102,21 @@ func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 		if l_clip_data.duration < a_frame_nr - l_start_frame:
 			continue
 
-		# We only need to set the loaded_clips if the data is visual.
-		if l_clip_data.type in VISUAL_TYPES:
-			loaded_clips[i] = l_clip_data
+		loaded_clips[i] = l_clip_data
+
+		if l_clip_data.type in AUDIO_TYPES:
+			var l_audio_start_frame: int = a_frame_nr - l_clip_data.start_frame
+
+			AudioHandler.instance.set_audio(i, l_clip_data.audio_data, l_audio_start_frame)
 
 	for i: int in loaded_clips.size():
+		if loaded_clips[i] != null and loaded_clips[i].type == File.TYPE.AUDIO:
+			continue
+
 		update_texture_rect(i)
+
+	if is_playing:
+		AudioHandler.instance.play_all_audio()
 	
 	_set_frame(Playhead.instance.move(a_frame_nr))
 
@@ -101,29 +129,34 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step()) -> void:
 
 		# Check if clip is still valid, else set to null
 		if loaded_clips[i] != null:
-			if loaded_clips[i].start_frame + loaded_clips[i].duration < a_frame_nr:
+			if Project.tracks[i].has(a_frame_nr):
+				# Check if clip is correct or not
 				loaded_clips[i] = null
 				update_texture_rect(i)
+				AudioHandler.instance.reset_audio_stream(i)
+			elif loaded_clips[i].start_frame + loaded_clips[i].duration < a_frame_nr:
+				# Check if clip is still within bounds
+				if loaded_clips[i].type in VISUAL_TYPES:
+					update_texture_rect(i)
+				if loaded_clips[i].type in AUDIO_TYPES:
+					AudioHandler.instance.reset_audio_stream(i)
+
+				loaded_clips[i] = null
 
 		# if loaded_clip for track is null, check if at current frame_nr in
 		# track data if there is an entry or not.
 		if loaded_clips[i] == null:
 			if !Project.tracks[i].has(a_frame_nr):
 				continue
-			if Project.get_clip_data(i, a_frame_nr).type not in VISUAL_TYPES:
-				continue
 
 			loaded_clips[i] = Project.get_clip_data(i, a_frame_nr)
-			update_texture_rect(i)
+			if loaded_clips[i].type in VISUAL_TYPES:
+				update_texture_rect(i)
+			if loaded_clips[i].type in AUDIO_TYPES:
+				AudioHandler.instance.set_audio(
+						i, loaded_clips[i].audio_data, 0, is_playing)
 
-		# Check what type the clip is before continuing to display the data,
-		# we only need to check for visuals due to the implemented audio system.
-		# Image does not change it's data so it's set when updating the
-		# texture rect
-		if loaded_clips[i].type != File.TYPE.IMAGE:
-			print("Displaying this type not implemented yet! ", loaded_clips[i].type)
-
-		# TODO: Apply effect values to the shader
+		# TODO: Apply/Update effect values to the shader
 
 
 func update_texture_rect(a_id: int) -> void:

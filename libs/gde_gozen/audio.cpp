@@ -37,3 +37,19 @@ AudioStreamWAV *Audio::get_wav(String a_path) {
 	error = OK;
 	return l_audio;
 }
+
+
+PackedByteArray Audio::combine_data(PackedByteArray a_one, PackedByteArray a_two) {
+	for (size_t i = 0; i < a_one.size(); i += 2) {
+        int32_t combinedSample = Math::clamp(
+				static_cast<int16_t>(a_one[i] | (a_one[i + 1] << 8)) +
+				static_cast<int16_t>(a_two[i] | (a_two[i + 1] << 8)),
+				-32768, 32767);
+
+        a_one.ptrw()[i] = static_cast<uint8_t>(combinedSample & 0xFF);
+        a_one.ptrw()[i + 1] = static_cast<uint8_t>((combinedSample >> 8) & 0xFF);
+    }
+
+    return a_one;
+}
+

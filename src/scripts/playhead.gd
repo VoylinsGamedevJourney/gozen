@@ -7,6 +7,8 @@ static var instance: Playhead
 static var frame_nr: int = 0
 static var is_moving: bool = false
 
+var playback_before_moving: bool = false
+
 
 func _ready() -> void:
 	instance = self
@@ -25,14 +27,22 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 		if (a_event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 			if a_event.is_pressed():
 				is_moving = true
+				playback_before_moving = ViewPanel.instance.is_playing
+
+				if playback_before_moving:
+					ViewPanel.instance._on_play_button_pressed()
 			elif a_event.is_released():
 				is_moving = false
+
+				if playback_before_moving:
+					ViewPanel.instance._on_play_button_pressed()
 
 
 func step() -> int:
 	# Go one frame further
 	frame_nr += 1
 	position.x += Project.timeline_scale
+	print(frame_nr)
 
 	_on_end_check()
 	return frame_nr

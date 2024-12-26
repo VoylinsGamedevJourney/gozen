@@ -113,4 +113,17 @@ mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
 script = ExtResource("2_mi352")
 
+[node name="Checker" type="Panel" parent="ScrollContainer/Main"]
+layout_mode = 0
+offset_left = 300.0
+offset_right = 309.0
+offset_bottom = 216.0
+
+[node name="Panel2" type="Panel" parent="ScrollContainer/Main"]
+visible = false
+layout_mode = 0
+offset_left = 780.0
+offset_right = 789.0
+offset_bottom = 216.0
+
 [connection signal="gui_input" from="ScrollContainer/Main" to="ScrollContainer/Main/Playhead" method="_on_main_gui_input"]
