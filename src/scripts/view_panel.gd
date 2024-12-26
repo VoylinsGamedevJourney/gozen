@@ -12,7 +12,7 @@ var loaded_clips: Array[ClipData] = []
 
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0
-
+var skips: int = 0
 
 
 func _ready() -> void:
@@ -27,7 +27,7 @@ func _process(a_delta: float) -> void:
 	if is_playing:
 		# Check if enough time has passed for next frame or not
 		# move playhead as well
-		var skips: int = 0
+		skips = 0
 		time_elapsed += a_delta
 
 		if time_elapsed < frame_time:
@@ -122,6 +122,9 @@ func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 
 
 func _set_frame(a_frame_nr: int = Playhead.instance.step()) -> void:
+	# WARN: We need to take in mind frame skipping! We can skip over the moment
+	# that a frame is supposed to appear or start playing!
+
 	# Should only be used to display the next frame as it won't properly
 	# Search for the next clips.
 

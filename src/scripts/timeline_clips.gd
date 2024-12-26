@@ -13,9 +13,11 @@ func _ready() -> void:
 	instance = self
 	preview.size.y = TRACK_HEIGHT
 
-	if mouse_exited.connect(func() -> void:
-			preview.visible = false):
+	if mouse_exited.connect(func() -> void: preview.visible = false):
 		printerr("Couldn't connect mouse_exited!")
+
+	if Project.timeline_scale_changed.connect(_on_timeline_scale_changed):
+		printerr("Couldn't connect timeline_scale_changed!")
 
 
 func _can_drop_data(a_pos: Vector2, a_data: Variant) -> bool:
@@ -142,8 +144,7 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 	l_button.clip_text = true
 	l_button.name = str(a_clip_data.id)
 	l_button.text = " " + Project.files[a_clip_data.file_id].nickname
-	l_button.custom_minimum_size.x = Project.timeline_scale * a_clip_data.duration
-	l_button.size.x = l_button.custom_minimum_size.x
+	l_button.size.x = Project.timeline_scale * a_clip_data.duration
 	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l_button.position.x = Project.timeline_scale * a_clip_data.start_frame
 	l_button.position.y = a_track_id * (LINE_HEIGHT + TRACK_HEIGHT)
@@ -257,5 +258,18 @@ func delete_clip(a_track_id: int, a_frame_nr: int) -> void:
 func undelete_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 	_add_new_clips({a_clip_data.id: a_clip_data}, a_track_id)
 	a_clip_data.update_audio_data()
+	update_timeline_end()
+
+
+func _on_timeline_scale_changed() -> void:
+	# Get all clips, update their size and position
+	for l_clip_button: Button in get_children():
+		var l_data: ClipData = Project.clips[l_clip_button.name.to_int()]
+
+		l_clip_button.position.x = l_data.start_frame * Project.timeline_scale
+		l_clip_button.size.x = l_data.duration * Project.timeline_scale
+
+	# TODO: make it so the timline moves left/right according to the cursor position
+		
 	update_timeline_end()
 

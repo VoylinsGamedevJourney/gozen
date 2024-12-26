@@ -39,10 +39,10 @@ func _process(_delta: float) -> void:
 			max_right_resize if max_right_resize != -1 else 900000000000)
 
 		if is_resizing_right:
-			custom_minimum_size.x  = (l_new_frame - start_frame) * Project.timeline_scale
+			size.x  = (l_new_frame - start_frame) * Project.timeline_scale
 		elif is_resizing_left:
 			position.x = l_new_frame * Project.timeline_scale
-			custom_minimum_size.x = (duration - (l_new_frame - start_frame)) * Project.timeline_scale
+			size.x = (duration - (l_new_frame - start_frame)) * Project.timeline_scale
 
 
 func _on_button_down() -> void:
@@ -133,9 +133,10 @@ func _add_resize_button(a_preset: LayoutPreset, a_left: bool) -> void:
 	l_button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	l_button.mouse_default_cursor_shape = Control.CURSOR_HSIZE
 	l_button.set_anchors_and_offsets_preset(a_preset)
-	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
-	l_button.custom_minimum_size.x = 3
 	l_button.size.x = 3
+	if !a_left:
+		l_button.position.x -= 3
+	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	if l_button.button_down.connect(_on_resize_engaged.bind(a_left)):
 		printerr("Couldn't connect button_down to _on_resize_engaged!")
@@ -259,7 +260,6 @@ func _cut_clip(a_playhead: int) -> void:
 	l_new_clip.begin = l_clip_data.begin + l_frame
 
 	l_clip_data.duration -= l_new_clip.duration
-	custom_minimum_size.x = l_clip_data.duration * Project.timeline_scale
 	size.x = l_clip_data.duration * Project.timeline_scale
 
 	TimelineClips.instance._add_new_clips({
@@ -274,7 +274,6 @@ func _uncut_clip(a_playhead: int) -> void:
 	var l_split_clip: ClipData = Project.get_clip_data(l_track, a_playhead)
 
 	l_current_clip.duration += l_split_clip.duration
-	custom_minimum_size.x = l_current_clip.duration * Project.timeline_scale
 	size.x = l_current_clip.duration * Project.timeline_scale
 
 	TimelineClips.instance.delete_clip(l_track, a_playhead)
