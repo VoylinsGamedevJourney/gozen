@@ -24,3 +24,5 @@ config.log
 *.dll
 *.os
 
+compile_commands.json
+
