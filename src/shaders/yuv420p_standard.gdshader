@@ -2,7 +2,8 @@ shader_type canvas_item;
 
 
 uniform sampler2D y_data;
-uniform sampler2D uv_data;
+uniform sampler2D u_data;
+uniform sampler2D v_data;
 
 uniform vec2 resolution;
 uniform vec4 color_profile;
@@ -15,8 +16,12 @@ void fragment() {
     uv = clamp(uv, vec2(0.0), vec2(1.0));
 
     float Y = texture(y_data, uv).r;
-    float U = texture(uv_data, uv).r - 0.5;
-    float V = texture(uv_data, uv).g - 0.5;
+    float U = texture(u_data, uv).r;
+    float V = texture(v_data, uv).r;
+
+	Y = (Y * 255. - 16.) / 219.;
+	U = (U * 255. - 128.) / 244.;
+	V = (V * 255. - 128.) / 244.;
 
 	float R = Y + color_profile.x * V;
 	float G = Y - color_profile.y * U - color_profile.z * V;
