@@ -57,22 +57,22 @@ enum AVPixelFormat FFmpeg::get_hw_format(const enum AVPixelFormat *a_pix_fmt, en
 }
 
 
-AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_stream) {
-	AudioStreamWAV *l_audio = memnew(AudioStreamWAV);
+PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_stream) {
+	PackedByteArray l_data = PackedByteArray();
 
 	const AVCodec *l_codec_audio = avcodec_find_decoder(a_stream->codecpar->codec_id);
 	if (!l_codec_audio) {
 		UtilityFunctions::printerr("Couldn't find any codec decoder for audio!");
-		return l_audio;
+		return l_data;
 	}
 
 	AVCodecContext *l_codec_ctx_audio = avcodec_alloc_context3(l_codec_audio);
 	if (l_codec_ctx_audio == NULL) {
 		UtilityFunctions::printerr("Couldn't allocate codec context for audio!");
-		return l_audio;
+		return l_data;
 	} else if (avcodec_parameters_to_context(l_codec_ctx_audio, a_stream->codecpar)) {
 		UtilityFunctions::printerr("Couldn't initialize audio codec context!");
-		return l_audio;
+		return l_data;
 	}
 
 	enable_multithreading(l_codec_ctx_audio, l_codec_audio);
@@ -81,15 +81,17 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 	// Open codec - Audio
 	if (avcodec_open2(l_codec_ctx_audio, l_codec_audio, NULL)) {
 		UtilityFunctions::printerr("Couldn't open audio codec!");
-		return l_audio;
+		return l_data;
 	}
 
 	AVChannelLayout l_ch_layout;
 	struct SwrContext *l_swr_ctx = nullptr;
-	if (l_codec_ctx_audio->ch_layout.nb_channels <= 3) 
-		l_ch_layout = l_codec_ctx_audio->ch_layout;
-	else
-		l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
+
+	// NOTE: Trying to fix mono audio not being imported as stereo
+	//	if (l_codec_ctx_audio->ch_layout.nb_channels <= 3) 
+	//		l_ch_layout = l_codec_ctx_audio->ch_layout;
+	//	else
+	l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 
 	response = swr_alloc_set_opts2(
 		&l_swr_ctx, &l_ch_layout, AV_SAMPLE_FMT_S16,
@@ -101,7 +103,7 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		print_av_error("Failed to obtain SWR context!", response);
 		avcodec_flush_buffers(l_codec_ctx_audio);
 		avcodec_free_context(&l_codec_ctx_audio);
-		return l_audio;
+		return l_data;
 	}
 
 	response = swr_init(l_swr_ctx);
@@ -109,7 +111,7 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		print_av_error("Couldn't initialize SWR!", response);
 		avcodec_flush_buffers(l_codec_ctx_audio);
 		avcodec_free_context(&l_codec_ctx_audio);
-		return l_audio;
+		return l_data;
 	}
 
 	// Set the seeker to the beginning
@@ -121,7 +123,7 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		avcodec_flush_buffers(l_codec_ctx_audio);
 		avcodec_free_context(&l_codec_ctx_audio);
 		swr_free(&l_swr_ctx);
-		return l_audio;
+		return l_data;
 	}
 
 	AVFrame *l_frame = av_frame_alloc();
@@ -132,11 +134,10 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		avcodec_flush_buffers(l_codec_ctx_audio);
 		avcodec_free_context(&l_codec_ctx_audio);
 		swr_free(&l_swr_ctx);
-		return l_audio;
+		return l_data;
 	}
 
 	int l_bytes_per_samples = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
-	PackedByteArray l_audio_data = PackedByteArray();
 	bool l_stereo = l_codec_ctx_audio->ch_layout.nb_channels >= 2;
 	size_t l_audio_size = 0;
 
@@ -171,23 +172,15 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 			break;
 		}
 
-		size_t l_byte_size = l_decoded_frame->nb_samples * l_bytes_per_samples;
-		if (l_codec_ctx_audio->ch_layout.nb_channels >= 2)
-			l_byte_size *= 2;
+		size_t l_byte_size = l_decoded_frame->nb_samples * l_bytes_per_samples * 2;
 
-		l_audio_data.resize(l_audio_size + l_byte_size);
-		memcpy(&(l_audio_data.ptrw()[l_audio_size]), l_decoded_frame->extended_data[0], l_byte_size);
+		l_data.resize(l_audio_size + l_byte_size);
+		memcpy(&(l_data.ptrw()[l_audio_size]), l_decoded_frame->extended_data[0], l_byte_size);
 		l_audio_size += l_byte_size;
 
 		av_frame_unref(l_frame);
 		av_frame_unref(l_decoded_frame);
 	}
-
-	// Audio creation
-	l_audio->set_format(l_audio->FORMAT_16_BITS);
-	l_audio->set_mix_rate(l_codec_ctx_audio->sample_rate);
-	l_audio->set_stereo(l_stereo);
-	l_audio->set_data(l_audio_data);
 
 	// Cleanup
 	avcodec_flush_buffers(l_codec_ctx_audio);
@@ -198,6 +191,6 @@ AudioStreamWAV *FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 	av_frame_free(&l_decoded_frame);
 	av_packet_free(&l_packet);
 
-	return l_audio;
+	return l_data;
 }
 

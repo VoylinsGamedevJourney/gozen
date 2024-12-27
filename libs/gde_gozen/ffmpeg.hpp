@@ -48,5 +48,5 @@ public:
 	static int get_frame(AVFormatContext *a_format_ctx, AVCodecContext *a_codec_ctx, int a_stream_id, AVFrame *a_frame, AVPacket *a_packet);
 	static enum AVPixelFormat get_hw_format(const enum AVPixelFormat *a_pix_fmt, enum AVPixelFormat *a_hw_pix_fmt);
 
-	static AudioStreamWAV *get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_stream);
+	static PackedByteArray get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_stream);
 };
