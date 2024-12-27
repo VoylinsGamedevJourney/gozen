@@ -17,7 +17,9 @@ var effects: Dictionary = {}
 
 
 func get_audio() -> PackedByteArray:
-	return Project.get_clip_audio(id)
+	if type in ViewPanel.AUDIO_TYPES:
+		return Project.get_clip_audio(id)
+	return []
 
 
 func update_audio_data() -> void:

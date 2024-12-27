@@ -12,14 +12,14 @@ var playback_before_moving: bool = false
 
 func _ready() -> void:
 	instance = self
-	ViewPanel.instance._force_set_frame(0)
+	ViewPanel.instance._set_frame(0, true)
 
 
 func _process(_delta: float) -> void:
 	if is_moving:
-		ViewPanel.instance._force_set_frame(clampi(
+		ViewPanel.instance._set_frame(clampi(
 			floori(main.get_local_mouse_position().x / Project.timeline_scale),
-			0, Project.timeline_end))
+			0, Project.timeline_end), true)
 
 
 func _on_main_gui_input(a_event: InputEvent) -> void:
@@ -47,13 +47,12 @@ func step() -> int:
 	return frame_nr
 
 
-func move(a_frame_nr: int) -> int:
+func move(a_frame_nr: int) -> void:
 	# Move playhead frame further
 	frame_nr = a_frame_nr
 	position.x = Project.timeline_scale * frame_nr
 
 	_on_end_check()
-	return frame_nr
 
 
 func skip(a_amount: int) -> int:

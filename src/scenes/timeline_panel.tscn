@@ -114,6 +114,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
 script = ExtResource("2_mi352")
 
 [node name="Checker" type="Panel" parent="ScrollContainer/Main"]
+visible = false
 layout_mode = 0
 offset_left = 300.0
 offset_right = 309.0

@@ -136,7 +136,7 @@ public:
 	inline int is_open() { return renderer_open; }
 
 	int send_frame(Ref<Image> a_image);
-	int send_audio(PackedByteArray a_wav_data, int a_mix_rate);
+	int send_audio(PackedByteArray a_wav_data);
 
 	void close();
 
@@ -146,10 +146,10 @@ public:
 	inline void disable_debug() { av_log_set_level(AV_LOG_INFO); debug = false; }
 	inline bool get_debug() { return debug; }
 
-	inline void set_video_codec_id(VIDEO_CODEC a_codec_id) { video_codec_id = static_cast<AVCodecID>(a_codec_id); }
+	inline void set_video_codec_id(VIDEO_CODEC a_codec_id) { video_codec_id = (AVCodecID)a_codec_id; }
 	inline VIDEO_CODEC get_video_codec_id() { return static_cast<VIDEO_CODEC>(video_codec_id); }
 
-	inline void set_audio_codec_id(AUDIO_CODEC a_codec_id) { audio_codec_id = static_cast<AVCodecID>(a_codec_id); }
+	inline void set_audio_codec_id(AUDIO_CODEC a_codec_id) { audio_codec_id = (AVCodecID)a_codec_id; }
 	inline AUDIO_CODEC get_audio_codec_id() { return static_cast<AUDIO_CODEC>(audio_codec_id); }
 
 	inline void set_path(String a_path) { path = a_path; }
@@ -246,7 +246,7 @@ protected:
 		ClassDB::bind_method(D_METHOD("is_open"), &Renderer::is_open);
 
 		ClassDB::bind_method(D_METHOD("send_frame", "a_image"), &Renderer::send_frame);
-		ClassDB::bind_method(D_METHOD("send_audio", "a_wav_data", "a_mix_rate"), &Renderer::send_audio);
+		ClassDB::bind_method(D_METHOD("send_audio", "a_wav_data"), &Renderer::send_audio);
 
 		ClassDB::bind_method(D_METHOD("close"), &Renderer::close);
 

@@ -15,6 +15,7 @@ var frame_time: float = 0.0
 var skips: int = 0
 
 
+
 func _ready() -> void:
 	instance = self
 	frame_time = 1.0 / Project.framerate
@@ -61,128 +62,116 @@ func _on_end_reached() -> void:
 	is_playing = false
 
 
-func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
-	# Should only be called when having moved the playhead as it updates the
-	# the currently "loaded" clips.
-
-	for i: int in loaded_clips.size():
-		# First check if loaded clip is correct
-		if loaded_clips[i] != null and a_frame_nr > loaded_clips[i].start_frame:
-			# Check if clip still exists
-			if not loaded_clips[i].start_frame in Project.tracks[i]:
-				AudioHandler.instance.reset_audio_stream(i)
-				loaded_clips[i] = null
-				continue
-			elif a_frame_nr < loaded_clips[i].start_frame + loaded_clips[i].duration:
-				if loaded_clips[i].type in AUDIO_TYPES:
-					var l_audio_start_frame: int = a_frame_nr - loaded_clips[i].start_frame
-
-					AudioHandler.instance.set_audio(i, loaded_clips[i].get_audio(), l_audio_start_frame)
-				continue
-
-		loaded_clips[i] = null
-		AudioHandler.instance.reset_audio_stream(i)
-
-		# Take the current frame number and get the previous clip if clip start +
-		# duration is higher or equal to the frame number.
-		var l_start_frame: int = -1
-		for l_frame_nr: int in Project.tracks[i].keys():
-			if l_frame_nr > a_frame_nr:
-				break
-			elif l_frame_nr <= a_frame_nr:
-				l_start_frame = l_frame_nr
-
-		# No possibility for a clip found so we skip
-		if l_start_frame == -1:
-			continue
-
-		# Possibility found so checking if a_frame_nr is in the length
-		var l_clip_data: ClipData = Project.get_clip_data(i, l_start_frame)
-
-		if l_clip_data.duration < a_frame_nr - l_start_frame:
-			continue
-
-		loaded_clips[i] = l_clip_data
-
-		if l_clip_data.type in AUDIO_TYPES:
-			var l_audio_start_frame: int = a_frame_nr - l_clip_data.start_frame
-
-			AudioHandler.instance.set_audio(i, l_clip_data.get_audio(), l_audio_start_frame)
-
-	for i: int in loaded_clips.size():
-		if loaded_clips[i] != null and loaded_clips[i].type == File.TYPE.AUDIO:
-			continue
-
-		update_texture_rect(i)
-
-	if is_playing:
-		AudioHandler.instance.play_all_audio()
-	
-	_set_frame(Playhead.instance.move(a_frame_nr))
-
-
-func _set_frame(a_frame_nr: int = Playhead.instance.step()) -> void:
+func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bool = false) -> void:
 	# WARN: We need to take in mind frame skipping! We can skip over the moment
 	# that a frame is supposed to appear or start playing!
+	for i: int in loaded_clips.size():
+		# Check if current clip is correct
+		if _check_clip(i, a_frame_nr):
+			update_view(i)
+			continue
 
-	# Should only be used to display the next frame as it won't properly
-	# Search for the next clips.
+		set_view(i)
 
-	for i: int in loaded_clips.size(): # i is the track id + loaded clips id
+		# Getting the next frame if possible
+		var l_clip_id: int = _get_next_clip(a_frame_nr, i)
 
-		# Check if clip is still valid, else set to null
-		if loaded_clips[i] != null:
-			if Project.tracks[i].has(a_frame_nr):
-				# Check if clip is correct or not
-				loaded_clips[i] = null
-				update_texture_rect(i)
-				AudioHandler.instance.reset_audio_stream(i)
-
-			if loaded_clips[i].start_frame + loaded_clips[i].duration < a_frame_nr:
-				# Check if clip is still within bounds
-				loaded_clips[i] = null
-				update_texture_rect(i)
-				AudioHandler.instance.reset_audio_stream(i)
-
-
-		# if loaded_clip for track is null, check if at current frame_nr in
-		# track data if there is an entry or not.
-		if loaded_clips[i] == null:
-			if !Project.tracks[i].has(a_frame_nr):
-				continue
-
-			loaded_clips[i] = Project.get_clip_data(i, a_frame_nr)
-			if loaded_clips[i].type in VISUAL_TYPES:
-				update_texture_rect(i)
-			if loaded_clips[i].type in AUDIO_TYPES:
-				AudioHandler.instance.set_audio(
-						i, loaded_clips[i].get_audio(), 0, is_playing)
-
-		# TODO: Apply/Update effect values to the shader
+		if l_clip_id == -1:
+			loaded_clips[i] = null
+			AudioHandler.instance.stop_audio(i)
+		else:
+			loaded_clips[i] = Project.clips[l_clip_id]
+			set_view(i)
+			AudioHandler.instance.set_audio(
+					i, loaded_clips[i].get_audio(),
+					a_frame_nr - loaded_clips[i].start_frame)
+		update_view(i)
+	
+	if a_force_playhead:
+		Playhead.instance.move(a_frame_nr)
 
 
-func update_texture_rect(a_id: int) -> void:
+func set_view(a_id: int) -> void:
 	var l_view: TextureRect = $VideoViews.get_child(a_id)
 	var l_material: ShaderMaterial = l_view.material
 
+	# Resetting the texture and shader when no clip is set
 	if loaded_clips[a_id] == null:
 		l_view.texture = null
 		l_material.shader = null
-		return
-	
-	if loaded_clips[a_id].type == File.TYPE.IMAGE:
+
+	# When clip is an image, set the shader which gives access to the effects
+	elif loaded_clips[a_id].type == File.TYPE.IMAGE:
 		var l_file_data: FileData = Project._files_data[loaded_clips[a_id].file_id]
 
 		l_view.texture = l_file_data.image
 		l_material.shader = preload("res://shaders/rgb.gdshader")
 
-	if loaded_clips[a_id].type != File.TYPE.VIDEO:
-		return
+	elif loaded_clips[a_id].type != File.TYPE.VIDEO:
+		var l_tex: PlaceholderTexture2D = PlaceholderTexture2D.new()
+
+		l_tex.size = Vector2i(10,10)
+		l_view.texture = l_tex
+		l_material.shader = preload("res://shaders/rgb.gdshader")
 
 	# TODO: For video's create a new placeholder image for l_view with the 
 	# resolution as the size of the image
 	#if video.get_pixel_format().begins_with("yuv"):
 
+
+func update_view(a_id: int) -> void:
+	if loaded_clips[a_id] == null or loaded_clips[a_id].type not in VISUAL_TYPES:
+		return
+
+	# Setting all effects and settings to clips
+
+	# For images, only set effects
+	# For video's set next frame + apply effects
+	pass
+
+
+## Update display/audio and continue if within clip bounds
+func _check_clip(a_id: int, a_frame_nr: int) -> bool:
+	if loaded_clips[a_id] == null:
+		return false
+
+	if loaded_clips[a_id].start_frame > a_frame_nr:
+		return false
+
+	if a_frame_nr > loaded_clips[a_id].start_frame + loaded_clips[a_id].duration:
+		return false
+
+	# Setting the audio to the correct position
+	AudioHandler.instance.set_audio(
+		a_id, loaded_clips[a_id].get_audio(), a_frame_nr - loaded_clips[a_id].start_frame)
+	update_view(a_id)
+
+	return true
+
+
+func _get_next_clip(a_frame_nr: int, a_track: int) -> int:
+	var l_clip_id: int = -1
+
+	# Looking for the correct clip
+	for l_frame: int in Project.tracks[a_track].keys():
+		if l_frame < a_frame_nr:
+			l_clip_id = Project.tracks[a_track][l_frame]
+		else:
+			break
+
+	if _check_clip_end(a_frame_nr, l_clip_id):
+		return l_clip_id
+
+	return -1
+
+ 
+func _check_clip_end(a_frame_nr: int, a_clip_id: int) -> bool:
+	if a_clip_id == -1:
+		return false
+	
+	var l_clip: ClipData = Project.clips[a_clip_id]
+
+	return a_frame_nr < l_clip.start_frame + l_clip.duration
 
 
 func get_view_image() -> Image:

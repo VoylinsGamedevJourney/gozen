@@ -87,11 +87,15 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 	AVChannelLayout l_ch_layout;
 	struct SwrContext *l_swr_ctx = nullptr;
 
-	// NOTE: Trying to fix mono audio not being imported as stereo
-	//	if (l_codec_ctx_audio->ch_layout.nb_channels <= 3) 
-	//		l_ch_layout = l_codec_ctx_audio->ch_layout;
-	//	else
 	l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
+
+	// Checking the sample rate
+	// For some reason just checking it makes this function work, without
+	// this and SWR can not initialize. FFmpeg I guess? ...
+	if (l_codec_ctx_audio->sample_rate <= 0) {
+		UtilityFunctions::printerr("Invalid sample rate detected: ", l_codec_ctx_audio->sample_rate);
+		return l_data;
+	}
 
 	response = swr_alloc_set_opts2(
 		&l_swr_ctx, &l_ch_layout, AV_SAMPLE_FMT_S16,

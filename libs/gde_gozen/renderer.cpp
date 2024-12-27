@@ -268,14 +268,14 @@ int Renderer::send_frame(Ref<Image> a_image) {
 	return OK;
 }
 
-int Renderer::send_audio(PackedByteArray a_wav_data, int a_mix_rate) {
+int Renderer::send_audio(PackedByteArray a_wav_data) {
 	if (!renderer_open)
 		return GoZenError::ERR_NOT_OPEN_RENDERER;
 	else if (audio_codec_id == AV_CODEC_ID_NONE)
 		return GoZenError::ERR_AUDIO_NOT_ENABLED;
 	else if (audio_added)
 		return GoZenError::ERR_AUDIO_ALREADY_SEND;
-
+	
 	SwrContext *l_swr_ctx = nullptr;
 
 	// Allocate and setup SWR
@@ -283,7 +283,7 @@ int Renderer::send_audio(PackedByteArray a_wav_data, int a_mix_rate) {
 	swr_alloc_set_opts2(
 		&l_swr_ctx, 
 		&l_ch_layout, av_codec_ctx_audio->sample_fmt, av_codec_ctx_audio->sample_rate,
-		&l_ch_layout, AV_SAMPLE_FMT_S16, a_mix_rate,
+		&l_ch_layout, AV_SAMPLE_FMT_S16, sample_rate,
 		0, NULL);
 	if (!l_swr_ctx)
 		return GoZenError::ERR_CREATING_SWR;
@@ -303,7 +303,7 @@ int Renderer::send_audio(PackedByteArray a_wav_data, int a_mix_rate) {
 
 	l_frame_in->ch_layout = l_ch_layout;
 	l_frame_in->format = AV_SAMPLE_FMT_S16;
-	l_frame_in->sample_rate = a_mix_rate;
+	l_frame_in->sample_rate = sample_rate;
 
 	int l_total_samples = l_input_size / (av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2); // Stereo
 	const uint8_t ** l_data = &l_input_data;

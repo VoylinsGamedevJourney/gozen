@@ -32,33 +32,64 @@ func _on_render_button_pressed() -> void:
 		l_path += ".mp4"
 
 	renderer.set_path(l_path)
-	renderer.set_bit_rate(80000000)
 	renderer.set_framerate(30)
+	renderer.set_bit_rate(80000000)
 	renderer.set_resolution(Vector2i(1920, 1080))
-	renderer.set_video_codec_id(renderer.V_H264)
+	renderer.set_video_codec_id(renderer.V_MPEG4)
+
+	var l_audio: PackedByteArray = []
+
+	for l_track_id: int in Project.tracks.size():
+		var l_track_audio: PackedByteArray = []
+
+		for l_frame_point: int in Project.tracks[l_track_id].keys():
+			var l_clip_id: int = Project.tracks[l_track_id][l_frame_point]
+			var l_clip: ClipData = Project.clips[l_clip_id]
+
+			if l_clip.type in ViewPanel.AUDIO_TYPES:
+				# Check if we need to add empty data to track_audio
+				if l_track_audio.size() != l_clip.start_frame:
+					if l_track_audio.resize(l_clip.start_frame):
+						printerr("Couldn't resize l_track_audio!")
+
+				# Add the data to l_track_audio
+				l_track_audio.append_array(l_clip.get_audio())
+
+			# Check if audio is empty or not
+			if l_track_audio.size() == 0:
+				continue
+
+			# check for mistakes
+			if l_track_audio.size() > Project.timeline_end * AudioHandler.bytes_per_frame:
+				printerr("Too much audio data!")
+
+			# Resize the last parts to equal the size to timeline_end
+			if l_track_audio.resize(Project.timeline_end * AudioHandler.bytes_per_frame):
+				printerr("Couldn't resize l_track_audio!")
+
+		if l_audio.size() == 0:
+			l_audio = l_track_audio
+		elif l_audio.size() == l_track_audio.size():
+			l_audio = Audio.combine_data(l_audio, l_track_audio)
+
+	if l_audio.size() != 0:
+		renderer.set_audio_codec_id(Renderer.A_AAC)
+		renderer.set_sample_rate(44100)
 
 	err = renderer.open()
 	if err:
 		GoZenError.print_error(err) # TODO: Do something to handle the error
-
-
-	# TODO: Add audio
-	# generate each track individually
-	# Save first audio stream as main stream, for every extra stream created
-	# We use the C++ function to add them together (Audio class)
-		# Check if track has any audio clips in it or not, else leave empty.
-		# Go to each frame, append_array for audio data and use resize for no data
-		# Make certain to resize till timeline_end
-	# if final audiostream data size is 0, don't save audio
-
+		
+	if l_audio.size() != 0:
+		err = renderer.send_audio(l_audio)
+		if err:
+			GoZenError.print_error(err)
+			print("Something went wrong sending audio to renderer!")
 
 	# Render logic
 	for i: int in Project.timeline_end:
 		print("handling frame ", i)
-		if i == 0:
-			ViewPanel.instance._force_set_frame(0)
-		else:
-			ViewPanel.instance._set_frame()
+		ViewPanel.instance._set_frame(i)
 
 		# We need to wait else getting the image doesn't work
 		await RenderingServer.frame_post_draw

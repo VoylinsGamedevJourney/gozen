@@ -7,21 +7,75 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pp7hw"]
 shader = ExtResource("2_gf384")
+shader_parameter/alpha = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/red_value = 1.0
+shader_parameter/green_value = 1.0
+shader_parameter/blue_value = 1.0
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_effect_factor = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lvr7d"]
 shader = ExtResource("2_gf384")
+shader_parameter/alpha = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/red_value = 1.0
+shader_parameter/green_value = 1.0
+shader_parameter/blue_value = 1.0
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_effect_factor = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5f1op"]
 shader = ExtResource("2_gf384")
+shader_parameter/alpha = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/red_value = 1.0
+shader_parameter/green_value = 1.0
+shader_parameter/blue_value = 1.0
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_effect_factor = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_htx3v"]
 shader = ExtResource("2_gf384")
+shader_parameter/alpha = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/red_value = 1.0
+shader_parameter/green_value = 1.0
+shader_parameter/blue_value = 1.0
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_effect_factor = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4jx53"]
 shader = ExtResource("2_gf384")
+shader_parameter/alpha = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/red_value = 1.0
+shader_parameter/green_value = 1.0
+shader_parameter/blue_value = 1.0
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_effect_factor = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qlooh"]
 shader = ExtResource("2_gf384")
+shader_parameter/alpha = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/red_value = 1.0
+shader_parameter/green_value = 1.0
+shader_parameter/blue_value = 1.0
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_effect_factor = 0.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_weusi"]
 viewport_path = NodePath("VideoViews")

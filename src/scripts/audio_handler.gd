@@ -8,6 +8,7 @@ static var instance: AudioHandler
 # Numbers are: mix_rate, stereo, 16 bits so 2 bytes per sample
 static var bytes_per_frame: int
 
+
 var players: Array[AudioStreamPlayer] = []
 var streams: Array[AudioStreamWAV] = []
 
@@ -29,10 +30,14 @@ func _ready() -> void:
 		l_player.stream = l_stream
 
 
-func set_audio(a_track: int, a_audio: PackedByteArray, a_frame: int, a_play: bool = false) -> void:
+func set_audio(a_track: int, a_audio: PackedByteArray, a_frame: int) -> void:
+	if a_audio.size() == 0:
+		stop_audio(a_track)
+		return
+
 	streams[a_track].data = a_audio
 	players[a_track].play(float(a_frame) / Project.framerate)
-	players[a_track].stream_paused = !a_play
+	players[a_track].stream_paused = !ViewPanel.instance.is_playing
 
 
 func play_audio(a_track:int) -> void:
@@ -61,3 +66,4 @@ func reset_audio_stream(a_track: int) -> void:
 func reset_audio_streams() -> void:
 	for i: int in 6:
 		reset_audio_stream(i)
+
