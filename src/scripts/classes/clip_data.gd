@@ -9,8 +9,15 @@ var start_frame: int # Timeline begin of clip
 var duration: int
 var begin: int = 0 # Only for video files
 
-var audio_data: PackedByteArray = []
+var effects: Dictionary = {}
+# Possible audio effects:
+# - mono: bool (true = left channel only, false = right channel only)
+# - change_db: int (value gets added, use negative values for subtracting)
 
+
+
+func get_audio() -> PackedByteArray:
+	return Project.get_clip_audio(id)
 
 
 func update_audio_data() -> void:
@@ -20,9 +27,13 @@ func update_audio_data() -> void:
 	var l_file_data: FileData = Project._files_data[file_id]
 
 	# Trim beginning of audio
-	audio_data = l_file_data.audio.data.slice(
-			begin * AudioHandler.bytes_per_frame,
-			(begin + duration) * AudioHandler.bytes_per_frame)
+	Project._audio[id] = l_file_data.audio.slice(
+		begin * AudioHandler.bytes_per_frame,
+		(begin + duration) * AudioHandler.bytes_per_frame)
 
-	# TODO: Add all the effects in here as well
+	if effects.has("mono"):
+		Project._audio[id] = Audio.change_to_mono(Project._audio[id], effects["mono"])
+
+	if effects.has("change_db"):
+		Project._audio[id] = Audio.change_db(Project._audio[id], effects["change_db"])
 

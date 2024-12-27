@@ -42,7 +42,6 @@ func step() -> int:
 	# Go one frame further
 	frame_nr += 1
 	position.x += Project.timeline_scale
-	print(frame_nr)
 
 	_on_end_check()
 	return frame_nr

@@ -9,7 +9,7 @@ var _unsaved_changes: bool = false
 var undo_redo: UndoRedo = UndoRedo.new()
 
 var files: Dictionary = {} # {Unique_id (int32): File_object}
-var _files_data: Dictionary = {} # {Unique_id (int32): FileData }
+var _files_data: Dictionary = {} # { Unique_id (int32): FileData }
 
 var framerate: int = 30
 var timeline_scale: float = 1.0 : set = set_timeline_scale # How many pixels 1 frame takes 
@@ -17,6 +17,7 @@ var timeline_end: int = 0
 
 var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track
 var clips: Dictionary = {} # {id: ClipData}
+var _audio: Dictionary = {} # { clip_id: PackedByteArray }
 
 
 
@@ -172,7 +173,15 @@ func add_file(a_file_path: String) -> int:
 
 
 func get_clip_data(a_track_id: int, a_frame_nr: int) -> ClipData:
-	return Project.clips[Project.tracks[a_track_id][a_frame_nr]]
+	return clips[tracks[a_track_id][a_frame_nr]]
+
+
+func set_clip_audio(a_clip_id: int, a_data: PackedByteArray) -> void:
+	_audio[a_clip_id] = a_data
+
+
+func get_clip_audio(a_clip_id: int) -> PackedByteArray:
+	return _audio[a_clip_id]
 
 
 func set_timeline_scale(a_new_value: float) -> void:

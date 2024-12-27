@@ -108,7 +108,7 @@ func _move_clip(a_node: Button, a_new_pos: Vector2) -> void:
 	var l_new_frame_nr: int = get_frame_nr(a_new_pos.x)
 
 	if !Project.tracks[l_old_track_id].erase(l_old_frame_nr):
-		print("Could not erase from tracks!")
+		printerr("Could not erase from tracks!")
 	Project.tracks[l_new_track_id][l_new_frame_nr] = a_node.name.to_int()
 	Project.get_clip_data(l_new_track_id, l_new_frame_nr).start_frame = l_new_frame_nr
 
@@ -156,8 +156,8 @@ func add_clip(a_clip_data: ClipData, a_track_id: int) -> void:
 		l_style_box = preload("res://styles/style_box_image.tres")
 	elif a_clip_data.type == File.TYPE.AUDIO:
 		l_style_box = preload("res://styles/style_box_audio.tres")
-	else:
-		printerr("No clip style for this type!")
+	elif a_clip_data.type == File.TYPE.VIDEO:
+		l_style_box = preload("res://styles/style_box_video.tres")
 	
 	l_button.add_theme_stylebox_override("normal", l_style_box)
 	l_button.add_theme_stylebox_override("focus", l_style_box)

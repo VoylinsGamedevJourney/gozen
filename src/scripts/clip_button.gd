@@ -219,10 +219,7 @@ func _set_resize_data(a_new_start: int, a_new_duration: int) -> void:
 	var l_clip_data: ClipData = Project.clips[name.to_int()]
 
 	if l_clip_data.start_frame != a_new_start:
-		print(l_clip_data.begin)
-		print(a_new_start - l_clip_data.start_frame)
 		l_clip_data.begin += a_new_start - l_clip_data.start_frame
-		print(l_clip_data.begin)
 
 	position.x = a_new_start * Project.timeline_scale
 	size.x = a_new_duration * Project.timeline_scale

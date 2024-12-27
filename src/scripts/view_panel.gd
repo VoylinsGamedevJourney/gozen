@@ -77,7 +77,7 @@ func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 				if loaded_clips[i].type in AUDIO_TYPES:
 					var l_audio_start_frame: int = a_frame_nr - loaded_clips[i].start_frame
 
-					AudioHandler.instance.set_audio(i, loaded_clips[i].audio_data, l_audio_start_frame)
+					AudioHandler.instance.set_audio(i, loaded_clips[i].get_audio(), l_audio_start_frame)
 				continue
 
 		loaded_clips[i] = null
@@ -107,7 +107,7 @@ func _force_set_frame(a_frame_nr: int = Playhead.frame_nr) -> void:
 		if l_clip_data.type in AUDIO_TYPES:
 			var l_audio_start_frame: int = a_frame_nr - l_clip_data.start_frame
 
-			AudioHandler.instance.set_audio(i, l_clip_data.audio_data, l_audio_start_frame)
+			AudioHandler.instance.set_audio(i, l_clip_data.get_audio(), l_audio_start_frame)
 
 	for i: int in loaded_clips.size():
 		if loaded_clips[i] != null and loaded_clips[i].type == File.TYPE.AUDIO:
@@ -156,7 +156,7 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step()) -> void:
 				update_texture_rect(i)
 			if loaded_clips[i].type in AUDIO_TYPES:
 				AudioHandler.instance.set_audio(
-						i, loaded_clips[i].audio_data, 0, is_playing)
+						i, loaded_clips[i].get_audio(), 0, is_playing)
 
 		# TODO: Apply/Update effect values to the shader
 
@@ -175,11 +175,14 @@ func update_texture_rect(a_id: int) -> void:
 
 		l_view.texture = l_file_data.image
 		l_material.shader = preload("res://shaders/rgb.gdshader")
-	else:
-		# TODO: For video's create a new placeholder image for l_view with the 
-		# resolution as the size of the image
-		print("shader material for type is not implemented yet! ",
-				loaded_clips[a_id].type)
+
+	if loaded_clips[a_id].type != File.TYPE.VIDEO:
+		return
+
+	# TODO: For video's create a new placeholder image for l_view with the 
+	# resolution as the size of the image
+	#if video.get_pixel_format().begins_with("yuv"):
+
 
 
 func get_view_image() -> Image:

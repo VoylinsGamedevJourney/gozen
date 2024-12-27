@@ -1,5 +1,7 @@
 class_name AudioHandler extends Node
 
+# TODO: For double speed, change mix_rate or pitch (mix rate is easier)
+
 
 static var instance: AudioHandler
 
