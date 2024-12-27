@@ -1,23 +1,24 @@
 #include "audio.hpp"
+#include <map>
 
 
-AudioStreamWAV *Audio::get_wav(String a_path) {
+PackedByteArray Audio::get_audio_data(String a_path) {
 	AVFormatContext *l_format_ctx = avformat_alloc_context();
-	AudioStreamWAV *l_audio = nullptr;
+	PackedByteArray l_data = PackedByteArray();
 
 	if (!l_format_ctx) {
 		error = GoZenError::ERR_CREATING_AV_FORMAT_FAILED;
-		return nullptr;
+		return l_data;
 	}
 
 	if (avformat_open_input(&l_format_ctx, a_path.utf8(), NULL, NULL)) {
 		error = GoZenError::ERR_OPENING_AUDIO;
-		return nullptr;
+		return l_data;
 	}
 
 	if (avformat_find_stream_info(l_format_ctx, NULL)) {
 		error = GoZenError::ERR_NO_STREAM_INFO_FOUND;
-		return nullptr;
+		return l_data;
 	}
 
 	for (int i = 0; i < l_format_ctx->nb_streams; i++) {
@@ -27,7 +28,7 @@ AudioStreamWAV *Audio::get_wav(String a_path) {
 			l_format_ctx->streams[i]->discard = AVDISCARD_ALL;
 			continue;
 		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO) {
-			l_audio = FFmpeg::get_audio(l_format_ctx, l_format_ctx->streams[i]);
+			l_data = FFmpeg::get_audio(l_format_ctx, l_format_ctx->streams[i]);
 			break;
 		}
 	}
@@ -35,21 +36,51 @@ AudioStreamWAV *Audio::get_wav(String a_path) {
 	avformat_close_input(&l_format_ctx);
 
 	error = OK;
-	return l_audio;
+	return l_data;
 }
 
 
 PackedByteArray Audio::combine_data(PackedByteArray a_one, PackedByteArray a_two) {
-	for (size_t i = 0; i < a_one.size(); i += 2) {
-        int32_t combinedSample = Math::clamp(
-				static_cast<int16_t>(a_one[i] | (a_one[i + 1] << 8)) +
-				static_cast<int16_t>(a_two[i] | (a_two[i + 1] << 8)),
-				-32768, 32767);
+	const int16_t *l_one = (const int16_t*)a_one.ptr();
+	const int16_t *l_two = (const int16_t*)a_two.ptr();
 
-        a_one.ptrw()[i] = static_cast<uint8_t>(combinedSample & 0xFF);
-        a_one.ptrw()[i + 1] = static_cast<uint8_t>((combinedSample >> 8) & 0xFF);
-    }
+	for (size_t i = 0; i < a_one.size() / 2; i++)
+        ((int16_t*)a_one.ptrw())[i] = Math::clamp(l_one[i] + l_two[i], -32768, 32767);
 
     return a_one;
+}
+
+
+PackedByteArray Audio::change_db(PackedByteArray a_data, float a_db) {
+	static std::map<int, double> l_cache;
+
+	const int16_t *l_data = (const int16_t*)a_data.ptr();
+	const auto l_search = l_cache.find(a_db);
+	double l_value;
+
+	if (l_search == l_cache.end()) {
+		l_value = std::pow(10.0, a_db / 20.0);
+		l_cache[a_db] = l_value;
+	} else l_value = l_search->second;
+	
+	for (size_t i = 0; i < a_data.size() / 2; i++)
+		((int16_t*)a_data.ptrw())[i] = Math::clamp((int32_t)(l_data[i] * l_value), -32768, 32767);
+
+    return a_data;
+}
+
+
+PackedByteArray Audio::change_to_mono(PackedByteArray a_data, bool a_left) {
+	const int16_t *l_data = (const int16_t*)a_data.ptr();
+
+	if (a_left) {
+		for (size_t i = 0; i < a_data.size() / 2; i += 2)
+			((int16_t*)a_data.ptrw())[i + 1] = l_data[i];
+    } else {
+		for (size_t i = 0; i < a_data.size() / 2; i += 2)
+			((int16_t*)a_data.ptrw())[i] = l_data[i + 1];
+	}
+
+    return a_data;
 }
 
