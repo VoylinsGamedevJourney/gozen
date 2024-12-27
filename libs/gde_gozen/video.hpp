@@ -97,7 +97,7 @@ public:
 	static Dictionary get_file_meta(String a_file_path);
 	static PackedStringArray get_available_hw_devices();
 
-	int open(String a_path = "", bool a_load_audio = true);
+	int open(String a_path = "");
 	void close();
 
 	inline bool is_open() { return loaded; }
@@ -148,7 +148,7 @@ protected:
 		ClassDB::bind_static_method("Video", D_METHOD("get_file_meta", "a_file_path"), &Video::get_file_meta);
 		ClassDB::bind_static_method("Video", D_METHOD("get_available_hw_devices"), &Video::get_available_hw_devices);
 
-		ClassDB::bind_method(D_METHOD("open", "a_path", "a_load_audio"), &Video::open, DEFVAL(""), DEFVAL(true));
+		ClassDB::bind_method(D_METHOD("open", "a_path"), &Video::open);
 
 		ClassDB::bind_method(D_METHOD("is_open"), &Video::is_open);
 

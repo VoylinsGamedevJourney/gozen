@@ -41,7 +41,7 @@ enum AVPixelFormat Video::_get_format(AVCodecContext *a_av_ctx, const enum AVPix
 
 
 //----------------------------------------------- NON-STATIC FUNCTIONS
-int Video::open(String a_path, bool a_load_audio) {
+int Video::open(String a_path) {
 	if (loaded)
 		return GoZenError::ERR_ALREADY_OPEN_VIDEO;
 
@@ -64,18 +64,12 @@ int Video::open(String a_path, bool a_load_audio) {
 		return GoZenError::ERR_NO_STREAM_INFO_FOUND;
 	}
 
-	// Getting the audio and video stream
+	// Getting the video stream
 	for (int i = 0; i < av_format_ctx->nb_streams; i++) {
 		AVCodecParameters *av_codec_params = av_format_ctx->streams[i]->codecpar;
 
 		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
 			av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
-			continue;
-		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO) {
-			if (a_load_audio && (audio = FFmpeg::get_audio(av_format_ctx, av_format_ctx->streams[i])) == nullptr) {
-				close();
-				return response;
-			}
 			continue;
 		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_VIDEO) {
 			av_stream_video = av_format_ctx->streams[i];
@@ -99,7 +93,7 @@ int Video::open(String a_path, bool a_load_audio) {
 				hw_decoding = false;
 			}
 
-			continue;
+			break;
 		}
 		av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
 	}
