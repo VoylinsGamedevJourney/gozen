@@ -17,23 +17,18 @@ function compile_linux() {
 		 --disable-manpages --disable-podpages --disable-txtpages
 		 --arch=x86_64 --disable-ffplay --disable-ffmpeg
 		 --enable-gpl --enable-version3 --enable-lto --enable-libaom
-		 --enable-nvdec --enable-nvenc --enable-libx264 --enable-libx265
-		 --enable-libopus --enable-libpulse --enable-opencl
-		 --enable-libtheora --enable-libvpx --enable-libvpl
-		 --enable-libass --enable-libdav1d --enable-libdrm
-		 --enable-libsoxr --enable-vulkan --enable-opengl
-		 --enable-libmp3lame --enable-libvorbis --enable-libxvid
-		 --enable-librav1e --enable-libsvtav1 --enable-libxml2
-		 --enable-libopenmpt --enable-cuda-llvm
-		 --extra-cflags="-fPIC" --extra-ldflags="-fpic"
-		 --target-os=linux
+		 --enable-libx264 --enable-libx265 --enable-libwebp
+		 --enable-libopus --enable-libpulse --enable-libvpx --enable-libdav1d
+		 --enable-libmp3lame --enable-libvorbis --enable-librav1e
+		 --enable-libsvtav1 --enable-libxml2 --extra-cflags="-fPIC"
+		 --extra-ldflags="-fpic" --target-os=linux
 	END
 	)
 
     ./configure --prefix=./bin $ffmpeg_args
 
-    make -j 4
-    make -j 4 install
+    make -j 9
+    make -j 9 install
 
 	cp bin/lib/*.so* ../bin/linux
 	echo "Compiling FFmpeg for Linux complete"
