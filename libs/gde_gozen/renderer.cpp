@@ -292,8 +292,8 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 		return GoZenError::ERR_CREATING_SWR;
 	}
 	
-	const uint8_t *l_input_data = a_wav_data.ptr() + 44;
-	int l_input_size = a_wav_data.size() - 44;
+	const uint8_t *l_input_data = a_wav_data.ptr();
+	int l_input_size = a_wav_data.size();
 
 	AVFrame *l_frame_in = av_frame_alloc();
 	if (!l_frame_in) {

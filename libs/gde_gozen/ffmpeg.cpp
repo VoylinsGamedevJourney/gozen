@@ -91,7 +91,7 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 
 	// Checking the sample rate
 	// For some reason just checking it makes this function work, without
-	// this and SWR can not initialize. FFmpeg I guess? ...
+	// this and SWR can not initialize. FFmpeg 6.1 bug I guess? ...
 	if (l_codec_ctx_audio->sample_rate <= 0) {
 		UtilityFunctions::printerr("Invalid sample rate detected: ", l_codec_ctx_audio->sample_rate);
 		return l_data;

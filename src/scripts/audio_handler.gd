@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func set_audio(a_track: int, a_audio: PackedByteArray, a_frame: int) -> void:
-	if a_audio.size() == 0:
+	if a_audio.size() == 0 or RenderMenu.is_rendering:
 		stop_audio(a_track)
 		return
 

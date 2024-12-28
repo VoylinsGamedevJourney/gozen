@@ -58,8 +58,8 @@ func _input(a_event: InputEvent) -> void:
 		Project.undo_redo.add_do_method(_cut_clip.bind(Playhead.frame_nr))
 		Project.undo_redo.add_undo_method(_uncut_clip.bind(Playhead.frame_nr))
 
-		Project.undo_redo.add_do_method(ViewPanel.instance._set_frame)
-		Project.undo_redo.add_undo_method(ViewPanel.instance._set_frame)
+		Project.undo_redo.add_do_method(ViewPanel.instance._update_frame)
+		Project.undo_redo.add_undo_method(ViewPanel.instance._update_frame)
 		Project.undo_redo.commit_action()
 
 
@@ -86,8 +86,8 @@ func _on_gui_input(a_event: InputEvent) -> void:
 						TimelineClips.get_frame_nr(position.x)),
 				TimelineClips.get_track_id(position.y)))
 
-		Project.undo_redo.add_do_method(ViewPanel.instance._set_frame)
-		Project.undo_redo.add_undo_method(ViewPanel.instance._set_frame)
+		Project.undo_redo.add_do_method(ViewPanel.instance._update_frame)
+		Project.undo_redo.add_undo_method(ViewPanel.instance._update_frame)
 		Project.undo_redo.commit_action()
 
 
@@ -210,8 +210,8 @@ func _on_commit_resize() -> void:
 			Project.clips[name.to_int()].start_frame,
 			Project.clips[name.to_int()].duration))
 
-	Project.undo_redo.add_do_method(ViewPanel.instance._set_frame)
-	Project.undo_redo.add_undo_method(ViewPanel.instance._set_frame)
+	Project.undo_redo.add_do_method(ViewPanel.instance._update_frame)
+	Project.undo_redo.add_undo_method(ViewPanel.instance._update_frame)
 	Project.undo_redo.commit_action()
 
 

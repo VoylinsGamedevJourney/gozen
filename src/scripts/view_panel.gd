@@ -62,16 +62,18 @@ func _on_end_reached() -> void:
 	is_playing = false
 
 
+func _update_frame() -> void:
+	_set_frame(Playhead.frame_nr, true)
+
+
 func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bool = false) -> void:
 	# WARN: We need to take in mind frame skipping! We can skip over the moment
 	# that a frame is supposed to appear or start playing!
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct
-		if _check_clip(i, a_frame_nr):
+		if _check_clip(i, a_frame_nr, a_force_playhead):
 			update_view(i)
 			continue
-
-		set_view(i)
 
 		# Getting the next frame if possible
 		var l_clip_id: int = _get_next_clip(a_frame_nr, i)
@@ -81,10 +83,10 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bo
 			AudioHandler.instance.stop_audio(i)
 		else:
 			loaded_clips[i] = Project.clips[l_clip_id]
-			set_view(i)
 			AudioHandler.instance.set_audio(
 					i, loaded_clips[i].get_audio(),
 					a_frame_nr - loaded_clips[i].start_frame)
+		set_view(i)
 		update_view(i)
 	
 	if a_force_playhead:
@@ -131,7 +133,7 @@ func update_view(a_id: int) -> void:
 
 
 ## Update display/audio and continue if within clip bounds
-func _check_clip(a_id: int, a_frame_nr: int) -> bool:
+func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 	if loaded_clips[a_id] == null:
 		return false
 
@@ -142,8 +144,9 @@ func _check_clip(a_id: int, a_frame_nr: int) -> bool:
 		return false
 
 	# Setting the audio to the correct position
-	AudioHandler.instance.set_audio(
-		a_id, loaded_clips[a_id].get_audio(), a_frame_nr - loaded_clips[a_id].start_frame)
+	if a_set_audio:
+		AudioHandler.instance.set_audio(
+			a_id, loaded_clips[a_id].get_audio(), a_frame_nr - loaded_clips[a_id].start_frame)
 	update_view(a_id)
 
 	return true
@@ -154,7 +157,7 @@ func _get_next_clip(a_frame_nr: int, a_track: int) -> int:
 
 	# Looking for the correct clip
 	for l_frame: int in Project.tracks[a_track].keys():
-		if l_frame < a_frame_nr:
+		if l_frame <= a_frame_nr:
 			l_clip_id = Project.tracks[a_track][l_frame]
 		else:
 			break
