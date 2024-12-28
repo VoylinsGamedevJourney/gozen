@@ -23,6 +23,8 @@ config.log
 *.lib
 *.dll
 *.os
+*.obj
+*.exp
 
 compile_commands.json
 
