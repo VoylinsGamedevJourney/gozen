@@ -17,9 +17,11 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if is_moving:
-		ViewPanel.instance._set_frame(clampi(
-			floori(main.get_local_mouse_position().x / Project.timeline_scale),
-			0, Project.timeline_end), true)
+		var l_new_frame: int = clampi(
+				floori(main.get_local_mouse_position().x / Project.timeline_scale),
+				0, Project.timeline_end)
+		if l_new_frame != frame_nr:
+			ViewPanel.instance._set_frame(l_new_frame, true)
 
 
 func _on_main_gui_input(a_event: InputEvent) -> void:
