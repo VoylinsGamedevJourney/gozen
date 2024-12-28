@@ -89,19 +89,14 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 
 	l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 
-	// Checking the sample rate
-	// For some reason just checking it makes this function work, without
-	// this and SWR can not initialize. FFmpeg 6.1 bug I guess? ...
-	if (l_codec_ctx_audio->sample_rate <= 0) {
-		UtilityFunctions::printerr("Invalid sample rate detected: ", l_codec_ctx_audio->sample_rate);
-		return l_data;
-	}
-
-	response = swr_alloc_set_opts2(
-		&l_swr_ctx, &l_ch_layout, AV_SAMPLE_FMT_S16,
-		l_codec_ctx_audio->sample_rate, &l_codec_ctx_audio->ch_layout,
-		l_codec_ctx_audio->sample_fmt, l_codec_ctx_audio->sample_rate, 0,
-		nullptr);
+	response = swr_alloc_set_opts2(&l_swr_ctx,
+			&l_ch_layout,		// Out channel layout: Stereo
+			AV_SAMPLE_FMT_S16,  // We need 16 bits
+			44100,				// Sample rate should be the Godot default
+			&l_codec_ctx_audio->ch_layout,  // In channel layout
+			l_codec_ctx_audio->sample_fmt,	// In sample format
+			l_codec_ctx_audio->sample_rate, // In sample rate
+			0, nullptr);
 
 	if (response < 0) {
 		print_av_error("Failed to obtain SWR context!", response);
@@ -152,7 +147,7 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		// Copy decoded data to new frame
 		l_decoded_frame->format = AV_SAMPLE_FMT_S16;
 		l_decoded_frame->ch_layout = l_ch_layout;
-		l_decoded_frame->sample_rate = l_frame->sample_rate;
+		l_decoded_frame->sample_rate = 44100;// l_frame->sample_rate;
 		l_decoded_frame->nb_samples = swr_get_out_samples(l_swr_ctx, l_frame->nb_samples);
 
 		if ((response = av_frame_get_buffer(l_decoded_frame, 0)) < 0) {
