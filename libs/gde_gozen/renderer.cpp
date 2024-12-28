@@ -361,40 +361,35 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 		l_input_data += l_samples_to_convert * l_bytes_per_sample;
 	}
 
-	// Flush remaining frames
-	int response = avcodec_send_frame(av_codec_ctx_audio, nullptr);
-	if (response < 0) {
-		FFmpeg::print_av_error("Error flushing audio encoder!", response);
+	// Flush remaining samples
+	while (true) {
+		int l_converted_samples = swr_convert(l_swr_ctx,
+				l_frame_out->data, l_frame_out->nb_samples,
+				nullptr, 0);
+		if (l_converted_samples <= 0) break;
 
-		av_frame_free(&l_frame_out);
-		av_packet_free(&av_packet_audio);
-		swr_free(&l_swr_ctx);
+		l_frame_out->nb_samples = l_converted_samples;
+		l_frame_out->pts = l_pts;
+		l_pts += l_converted_samples;
 
-		return GoZenError::ERR_FAILED_FLUSH;
+		int response = avcodec_send_frame(av_codec_ctx_audio, l_frame_out);
+		if (l_converted_samples <= 0) break;
+
+		while ((response = avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio)) >= 0) {
+			av_packet_audio->stream_index = av_stream_audio->index;
+			av_packet_rescale_ts(av_packet_audio, av_codec_ctx_audio->time_base, av_stream_audio->time_base);
+			av_interleaved_write_frame(av_format_ctx, av_packet_audio);
+			av_packet_unref(av_packet_audio);
+		}
 	}
 
-	// Drain the encoder
-	while ((response = avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio)) >= 0) {
+	// Flush the encoder
+	avcodec_send_frame(av_codec_ctx_audio, nullptr);
+	while (avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio) >= 0) {
 		av_packet_audio->stream_index = av_stream_audio->index;
 		av_packet_rescale_ts(av_packet_audio, av_codec_ctx_audio->time_base, av_stream_audio->time_base);
-
-		response = av_interleaved_write_frame(av_format_ctx, av_packet_audio);
-		if (response < 0) {
-			FFmpeg::print_av_error("Error writing flushed audio packet!", response);
-
-			av_packet_free(&av_packet_audio);
-			av_frame_free(&l_frame_out);
-			av_packet_free(&av_packet_audio);
-			swr_free(&l_swr_ctx);
-
-			return GoZenError::ERR_FAILED_FLUSH;
-		}
-
+		av_interleaved_write_frame(av_format_ctx, av_packet_audio);
 		av_packet_unref(av_packet_audio);
-	}
-
-	if (response != AVERROR(EAGAIN) && response != AVERROR_EOF) {
-		FFmpeg::print_av_error("Error during audio encoder flush!", response);
 	}
 
 	av_frame_free(&l_frame_out);
