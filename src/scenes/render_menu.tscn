@@ -24,6 +24,7 @@ layout_mode = 2
 [node name="RenderPathLineEdit" type="LineEdit" parent="CenterContainer/RenderSettings"]
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
+text = "/storage/test_audio.mp4"
 placeholder_text = "Path for finished video '*.mp4'"
 
 [node name="RenderButton" type="Button" parent="CenterContainer/RenderSettings"]

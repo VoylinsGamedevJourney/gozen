@@ -48,7 +48,6 @@ func _on_render_button_pressed() -> void:
 		
 	if l_audio.size() != 0:
 		err = renderer.send_audio(l_audio)
-		print(err)
 		if err:
 			GoZenError.print_error(err)
 			print("Something went wrong sending audio to renderer!")

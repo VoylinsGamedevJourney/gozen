@@ -269,51 +269,27 @@ int Renderer::send_frame(Ref<Image> a_image) {
 }
 
 int Renderer::send_audio(PackedByteArray a_wav_data) {
-	if (!renderer_open)
-		return GoZenError::ERR_NOT_OPEN_RENDERER;
-	else if (audio_codec_id == AV_CODEC_ID_NONE)
-		return GoZenError::ERR_AUDIO_NOT_ENABLED;
-	else if (audio_added)
-		return GoZenError::ERR_AUDIO_ALREADY_SEND;
-	
-	SwrContext *l_swr_ctx = nullptr;
-
-	// Allocate and setup SWR
-	AVChannelLayout l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
-	swr_alloc_set_opts2(
-		&l_swr_ctx, 
-		&l_ch_layout, av_codec_ctx_audio->sample_fmt, av_codec_ctx_audio->sample_rate,
-		&l_ch_layout, AV_SAMPLE_FMT_S16, sample_rate,
-		0, NULL);
-	if (!l_swr_ctx)
-		return GoZenError::ERR_CREATING_SWR;
-	else if (swr_init(l_swr_ctx) < 0) {
-		swr_free(&l_swr_ctx);
-		return GoZenError::ERR_CREATING_SWR;
-	}
+	if (!renderer_open) return GoZenError::ERR_NOT_OPEN_RENDERER;
+	else if (audio_codec_id == AV_CODEC_ID_NONE) return GoZenError::ERR_AUDIO_NOT_ENABLED;
+	else if (audio_added) return GoZenError::ERR_AUDIO_ALREADY_SEND;
 	
 	const uint8_t *l_input_data = a_wav_data.ptr();
-	int l_input_size = a_wav_data.size();
+	SwrContext *l_swr_ctx = nullptr;
+	AVChannelLayout l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 
-	AVFrame *l_frame_in = av_frame_alloc();
-	if (!l_frame_in) {
-		swr_free(&l_swr_ctx);
-		return GoZenError::ERR_FAILED_ALLOC_FRAME;
+	// Allocate and setup SWR
+	swr_alloc_set_opts2(&l_swr_ctx, 
+			&l_ch_layout, av_codec_ctx_audio->sample_fmt, av_codec_ctx_audio->sample_rate,
+			&l_ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, NULL);
+	if (!l_swr_ctx || swr_init(l_swr_ctx) < 0) {
+		swr_free(&l_swr_ctx); // Godot crashes anyway when SWR can't be created.
+		return GoZenError::ERR_CREATING_SWR;
 	}
-
-	l_frame_in->ch_layout = l_ch_layout;
-	l_frame_in->format = AV_SAMPLE_FMT_S16;
-	l_frame_in->sample_rate = sample_rate;
-
-	int l_total_samples = l_input_size / (av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2); // Stereo
-	const uint8_t ** l_data = &l_input_data;
 
 	// Allocate a buffer for the output in the target format
 	AVFrame *l_frame_out = av_frame_alloc();
 	if (!l_frame_out) {
-		av_frame_free(&l_frame_in);
 		swr_free(&l_swr_ctx);
-
 		return GoZenError::ERR_FAILED_ALLOC_FRAME;
 	}
 
@@ -326,71 +302,70 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 
 	av_packet_audio = av_packet_alloc();
 	if (!av_packet_audio) {
-		av_frame_free(&l_frame_in);
 		av_frame_free(&l_frame_out);
 		swr_free(&l_swr_ctx);
-
 		return GoZenError::ERR_FAILED_ALLOC_PACKET;
 	}
 
-	av_packet_audio->pts = l_frame_out->pts; // PTS from the frame (if available)
-	av_packet_audio->dts = l_frame_out->pts; // DTS (can be same as PTS for audio)
+	int l_bytes_per_sample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2; // Stereo
+	int l_remaining_samples = a_wav_data.size() / l_bytes_per_sample;
+	int64_t l_pts = 0;
 
-	int l_remaining_samples = l_total_samples;
 	while (l_remaining_samples > 0) {
 		int l_samples_to_convert = FFMIN(l_remaining_samples, av_codec_ctx_audio->frame_size);
 		
 		// Resample the data 
-		int l_converted_samples = swr_convert(
-			l_swr_ctx, l_frame_out->data, l_samples_to_convert,
-			l_data, l_samples_to_convert);
+		int l_converted_samples = swr_convert(l_swr_ctx,
+				l_frame_out->data, l_frame_out->nb_samples,
+				&l_input_data, l_samples_to_convert);
+
 		if (l_converted_samples < 0) {
-			av_frame_free(&l_frame_in);
 			av_frame_free(&l_frame_out);
 			swr_free(&l_swr_ctx);
-
 			return GoZenError::ERR_FAILED_RESAMPLE;
 		}
 
-		// Send audio frame to the encoder
-		response = avcodec_send_frame(av_codec_ctx_audio, l_frame_out);
-		if (response < 0) {
-			FFmpeg::print_av_error("Error sending audio frame!", response);
-			av_frame_free(&l_frame_in);
-			av_frame_free(&l_frame_out);
-			swr_free(&l_swr_ctx);
+		if (l_converted_samples > 0) {
+			l_frame_out->nb_samples = l_converted_samples;
+			l_frame_out->pts = l_pts;
+			l_pts += l_converted_samples;
 
-			return GoZenError::ERR_FAILED_SENDING_FRAME;
-		}
-
-		while ((response = avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio)) >= 0) {
-			// Rescale packet timestamp if necessary
-			av_packet_audio->stream_index = av_stream_audio->index;
-			av_packet_rescale_ts(av_packet_audio, av_codec_ctx_audio->time_base, av_stream_audio->time_base);
-
-			// Write audio frame
-			response = av_interleaved_write_frame(av_format_ctx, av_packet_audio);
+			// Send audio frame to the encoder
+			response = avcodec_send_frame(av_codec_ctx_audio, l_frame_out);
 			if (response < 0) {
-				FFmpeg::print_av_error("Error writing audio packet!", response);
-				av_frame_free(&l_frame_in);
+				FFmpeg::print_av_error("Error sending audio frame!", response);
 				av_frame_free(&l_frame_out);
 				swr_free(&l_swr_ctx);
-
-				return GoZenError::ERR_ENCODING_FRAME;
+				av_packet_free(&av_packet_audio);
+				return GoZenError::ERR_FAILED_SENDING_FRAME;
 			}
-			av_packet_unref(av_packet_audio);
+
+			while ((response = avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio)) >= 0) {
+				// Rescale packet timestamp if necessary
+				av_packet_audio->stream_index = av_stream_audio->index;
+				av_packet_rescale_ts(av_packet_audio, av_codec_ctx_audio->time_base, av_stream_audio->time_base);
+
+				response = av_interleaved_write_frame(av_format_ctx, av_packet_audio);
+				if (response < 0) {
+					FFmpeg::print_av_error("Error writing audio packet!", response);
+					av_frame_free(&l_frame_out);
+					swr_free(&l_swr_ctx);
+					av_packet_free(&av_packet_audio);
+					return GoZenError::ERR_ENCODING_FRAME;
+				}
+				av_packet_unref(av_packet_audio);
+			}
 		}
 
 		l_remaining_samples -= l_samples_to_convert;
-		l_input_data += l_samples_to_convert * av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2;
+		l_input_data += l_samples_to_convert * l_bytes_per_sample;
 	}
 
-	// Signal the encoder to flush remaining frames
+	// Flush remaining frames
 	int response = avcodec_send_frame(av_codec_ctx_audio, nullptr);
 	if (response < 0) {
 		FFmpeg::print_av_error("Error flushing audio encoder!", response);
 
-		av_frame_free(&l_frame_in);
 		av_frame_free(&l_frame_out);
 		av_packet_free(&av_packet_audio);
 		swr_free(&l_swr_ctx);
@@ -408,7 +383,6 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 			FFmpeg::print_av_error("Error writing flushed audio packet!", response);
 
 			av_packet_free(&av_packet_audio);
-			av_frame_free(&l_frame_in);
 			av_frame_free(&l_frame_out);
 			av_packet_free(&av_packet_audio);
 			swr_free(&l_swr_ctx);
@@ -423,7 +397,6 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 		FFmpeg::print_av_error("Error during audio encoder flush!", response);
 	}
 
-	av_frame_free(&l_frame_in);
 	av_frame_free(&l_frame_out);
 	av_packet_free(&av_packet_audio);
 	swr_free(&l_swr_ctx);
