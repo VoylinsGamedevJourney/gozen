@@ -1,4 +1,4 @@
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6) [![Linux Debug](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_gozen_linux_debug.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_gozen_linux_debug.yml) [![Windows Debug](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_gozen_windows_debug.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_gozen_windows_debug.yml)
 
 [Discord server](https://discord.gg/BdbUf7VKYC)
 
