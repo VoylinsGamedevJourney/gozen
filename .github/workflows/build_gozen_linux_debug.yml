@@ -50,6 +50,7 @@ jobs:
         run: |
           # Build Godot
           mkdir bin
+          mkdir bin/linux
           cp libs/bin/linux/* bin/linux
           ./Godot_v${GODOT_VERSION}-stable_linux.x86_64 --import src/project.godot --quiet --headless --export-debug Linux ../bin/linux/GoZen_${{ env.date }}_debug.x86_64
 
