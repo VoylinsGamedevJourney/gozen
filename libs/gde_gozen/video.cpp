@@ -45,6 +45,7 @@ int Video::open(String a_path) {
 	if (loaded)
 		return GoZenError::ERR_ALREADY_OPEN_VIDEO;
 
+
 	path = a_path.utf8();
 
 	// Allocate video file context

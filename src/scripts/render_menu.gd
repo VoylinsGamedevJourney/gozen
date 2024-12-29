@@ -40,6 +40,7 @@ func _on_render_button_pressed() -> void:
 	renderer.set_video_codec_id(renderer.V_MPEG4)
 
 	# Rendering the audio
+	print("Creating audio ...")
 	var l_audio: PackedByteArray = _render_audio()
 
 	err = renderer.open()
@@ -53,6 +54,7 @@ func _on_render_button_pressed() -> void:
 			print("Something went wrong sending audio to renderer!")
 
 	# Render logic for visuals
+	print("Generating frames ...")
 	for i: int in Project.timeline_end:
 		ViewPanel.instance._set_frame(i, true)
 
@@ -71,8 +73,9 @@ func _on_render_button_pressed() -> void:
 	close_button.visible = true
 	is_rendering = false
 
+	print("Frames added to video")
 	print("Rendering video (", float(Project.timeline_end) / float(Project.framerate),
-			" seconds) took ", Time.get_ticks_usec() - l_start_time)
+			" seconds) took ", float(Time.get_ticks_usec() - l_start_time) / 1000000)
 
 
 func _on_close_button_pressed() -> void:
@@ -126,5 +129,5 @@ func _render_audio() -> PackedByteArray:
 
 	# Check for the total audio length
 	#print((float(l_audio.size()) / AudioHandler.bytes_per_frame) / 30)
-	
+	print("Rendering audio complete")
 	return l_audio

@@ -58,7 +58,13 @@ enum AVPixelFormat FFmpeg::get_hw_format(const enum AVPixelFormat *a_pix_fmt, en
 
 
 PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_stream) {
+	const int TARGET_SAMPLE_RATE = 44100;
+	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
+	const AVChannelLayout TARGET_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
+
+	struct SwrContext *l_swr_ctx = nullptr;
 	PackedByteArray l_data = PackedByteArray();
+
 
 	const AVCodec *l_codec_audio = avcodec_find_decoder(a_stream->codecpar->codec_id);
 	if (!l_codec_audio) {
@@ -76,57 +82,29 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 	}
 
 	enable_multithreading(l_codec_ctx_audio, l_codec_audio);
-	l_codec_ctx_audio->request_sample_fmt = AV_SAMPLE_FMT_S16;
+	l_codec_ctx_audio->request_sample_fmt = TARGET_FORMAT;
 
-	// Open codec - Audio
 	if (avcodec_open2(l_codec_ctx_audio, l_codec_audio, NULL)) {
 		UtilityFunctions::printerr("Couldn't open audio codec!");
 		return l_data;
 	}
 
-	AVChannelLayout l_ch_layout;
-	struct SwrContext *l_swr_ctx = nullptr;
-
-	l_ch_layout = AV_CHANNEL_LAYOUT_STEREO;
-
 	response = swr_alloc_set_opts2(&l_swr_ctx,
-			&l_ch_layout,		// Out channel layout: Stereo
-			AV_SAMPLE_FMT_S16,  // We need 16 bits
-			44100,				// Sample rate should be the Godot default
+			&TARGET_LAYOUT,		// Out channel layout: Stereo
+			TARGET_FORMAT,		// We need 16 bits
+			TARGET_SAMPLE_RATE,	// Sample rate should be the Godot default
 			&l_codec_ctx_audio->ch_layout,  // In channel layout
 			l_codec_ctx_audio->sample_fmt,	// In sample format
 			l_codec_ctx_audio->sample_rate, // In sample rate
 			0, nullptr);
-
-	if (response < 0) {
-		print_av_error("Failed to obtain SWR context!", response);
-		avcodec_flush_buffers(l_codec_ctx_audio);
-		avcodec_free_context(&l_codec_ctx_audio);
-		return l_data;
-	}
-
-	response = swr_init(l_swr_ctx);
-	if (response < 0) {
+	if (response < 0 or (response = swr_init(l_swr_ctx))) {
 		print_av_error("Couldn't initialize SWR!", response);
 		avcodec_flush_buffers(l_codec_ctx_audio);
 		avcodec_free_context(&l_codec_ctx_audio);
 		return l_data;
 	}
 
-	// Set the seeker to the beginning
-	int start_time_audio = a_stream->start_time != AV_NOPTS_VALUE ? a_stream->start_time : 0;
-	avcodec_flush_buffers(l_codec_ctx_audio);
-
-	if ((response = av_seek_frame(a_format_ctx, -1, start_time_audio, AVSEEK_FLAG_BACKWARD)) < 0) {
-		UtilityFunctions::printerr("Can't seek to the beginning of audio stream!");
-		avcodec_flush_buffers(l_codec_ctx_audio);
-		avcodec_free_context(&l_codec_ctx_audio);
-		swr_free(&l_swr_ctx);
-		return l_data;
-	}
-
-	AVFrame *l_frame = av_frame_alloc();
-	AVFrame *l_decoded_frame = av_frame_alloc();
+	AVFrame *l_frame = av_frame_alloc(), *l_decoded_frame = av_frame_alloc();
 	AVPacket *l_packet = av_packet_alloc();
 	if (!l_frame || !l_decoded_frame || !l_packet) {
 		UtilityFunctions::printerr("Couldn't allocate frames or packet for audio!");
@@ -136,29 +114,30 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		return l_data;
 	}
 
-	int l_bytes_per_samples = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
-	bool l_stereo = l_codec_ctx_audio->ch_layout.nb_channels >= 2;
+	// Set the seeker to the beginning
+	int l_start_time = a_stream->start_time != AV_NOPTS_VALUE ? a_stream->start_time : 0;
+	//avcodec_flush_buffers(l_codec_ctx_audio); // Not certain if needed here
+	if ((response = av_seek_frame(a_format_ctx, -1, l_start_time, AVSEEK_FLAG_BACKWARD)) < 0) {
+		UtilityFunctions::printerr("Can't seek to the beginning of audio stream!");
+		avcodec_flush_buffers(l_codec_ctx_audio);
+		avcodec_free_context(&l_codec_ctx_audio);
+		swr_free(&l_swr_ctx);
+		return l_data;
+	}
+
+
 	size_t l_audio_size = 0;
+	int l_bytes_per_samples = av_get_bytes_per_sample(TARGET_FORMAT);
 
-	while (true) {
-		if (get_frame(a_format_ctx, l_codec_ctx_audio, a_stream->index, l_frame, l_packet))
-			break;
-
+	while (!(get_frame(a_format_ctx, l_codec_ctx_audio, a_stream->index, l_frame, l_packet))) {
 		// Copy decoded data to new frame
-		l_decoded_frame->format = AV_SAMPLE_FMT_S16;
-		l_decoded_frame->ch_layout = l_ch_layout;
-		l_decoded_frame->sample_rate = 44100;// l_frame->sample_rate;
+		l_decoded_frame->format = TARGET_FORMAT;
+		l_decoded_frame->ch_layout = TARGET_LAYOUT;
+		l_decoded_frame->sample_rate = TARGET_SAMPLE_RATE;
 		l_decoded_frame->nb_samples = swr_get_out_samples(l_swr_ctx, l_frame->nb_samples);
 
 		if ((response = av_frame_get_buffer(l_decoded_frame, 0)) < 0) {
 			print_av_error("Couldn't create new frame for swr!", response);
-			av_frame_unref(l_frame);
-			av_frame_unref(l_decoded_frame);
-			break;
-		}
-
-		if ((response = swr_config_frame(l_swr_ctx, l_decoded_frame, l_frame)) < 0) {
-			print_av_error("Couldn't config the audio frame!", response);
 			av_frame_unref(l_frame);
 			av_frame_unref(l_decoded_frame);
 			break;
