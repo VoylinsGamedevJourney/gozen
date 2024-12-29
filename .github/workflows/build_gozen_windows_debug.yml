@@ -17,11 +17,23 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Installing dependencies
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 ffmpeg
+        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aom x264 x265 libwebp opus pulseaudio libvpx dav1d lame libvorbis rav1e svt-av1 libxml2
       - name: Checkout submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Install yay
+        run: |
+          pacman -S --noconfirm base-devel
+          git clone https://aur.archlinux.org/yay.git
+          cd yay
+          makepkg -si --noconfirm
+          cd ..
+          rm -rf yay
+
+      - name: Install MinGW dependencies
+        run: | # --noprogressbar
+          yay -S --noconfirm mingw-w64-x264 mingw-w64-x265 mingw-w64-pkg-config mingw-w64-gcc
 
       - name: Prepare Godot
         run: |
@@ -42,8 +54,8 @@ jobs:
         working-directory: libs
         run: |
           # First build FFmpeg
-          ./ffmpeg.sh -i 0
-          ./ffmpeg.sh -i 1
+          ./ffmpeg.sh 0
+          ./ffmpeg.sh 2
           scons -j4 target=template_debug platform=windows arch=x86_64 dev_build=yes
       
       - name: Build GoZen

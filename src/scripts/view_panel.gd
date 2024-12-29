@@ -77,7 +77,7 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bo
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct
 		if _check_clip(i, a_frame_nr, a_force_playhead):
-			update_view(i, a_frame_nr, a_force_playhead)
+			update_view(i, a_frame_nr)
 			continue
 
 		# Getting the next frame if possible
@@ -92,7 +92,7 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bo
 					i, loaded_clips[i].get_audio(),
 					a_frame_nr - loaded_clips[i].start_frame)
 		set_view(i)
-		update_view(i, a_frame_nr, true)
+		update_view(i, a_frame_nr)
 	
 	if a_force_playhead:
 		Playhead.instance.move(a_frame_nr)
@@ -143,7 +143,7 @@ func set_view(a_id: int) -> void: # a_id is track id
 						"color_profile", Vector4(1.5748, 0.1873, 0.4681, 1.8556))
 
 
-func update_view(a_id: int, a_frame_nr: int, a_seek: bool) -> void:
+func update_view(a_id: int, a_frame_nr: int) -> void:
 	# Setting all effects and settings to clips
 	var l_material: ShaderMaterial = views[a_id].material
 

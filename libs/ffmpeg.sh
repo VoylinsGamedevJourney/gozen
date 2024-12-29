@@ -38,6 +38,9 @@ function compile_linux() {
 function compile_windows() {
 	echo "Compiling FFmpeg for Windows ..."
 
+	export PKG_CONFIG_LIBDIR="/usr/x86_64-w64-mingw32/lib/pkgconfig"
+	export PKG_CONFIG_PATH="/usr/x86_64-w64-mingw32/lib/pkgconfig"
+
 	if [ ! -d "./bin/windows" ]; then
 		mkdir "./bin/windows"
 	fi
@@ -48,8 +51,10 @@ function compile_windows() {
 		--disable-sndio --disable-programs --disable-ffmpeg --disable-ffplay
         --disable-ffprobe --disable-doc --disable-htmlpages --disable-manpages
 		--disable-podpages --disable-txtpages --arch=x86_64 --enable-gpl
-		--enable-version3 --enable-lto --cross-prefix=x86_64-w64-mingw32-
-		--target-os=mingw32 --enable-cross-compile --extra-ldflags="-static"
+		--enable-version3 --enable-lto --enable-libx264 --enable-libx265
+		--extra-cflags="-fPIC" --extra-ldflags="-fpic" --extra-libs=-lpthread
+		--cross-prefix=x86_64-w64-mingw32- --target-os=mingw32
+		--enable-cross-compile
 	END
 	)
 	
@@ -59,7 +64,7 @@ function compile_windows() {
     make -j 4
     make -j 4 install
 
-    cp bin/bin/*.dll ../bin/windows
+    cp bin/lib/*.a ../bin/windows
 	echo "Compiling FFmpeg for Windows complete"
 }
 
@@ -84,6 +89,7 @@ case $choice in
 		echo "Cleaning FFmpeg"
 		cd ffmpeg
 		make distclean
+		rm -rf bin
 		echo "FFmpeg repo is cleaned up!";;
 	*) # Linux
 		compile_linux;;

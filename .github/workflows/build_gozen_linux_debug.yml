@@ -17,7 +17,7 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Installing dependencies
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg
+        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aom x264 x265 libwebp opus pulseaudio libvpx dav1d lame libvorbis rav1e svt-av1 libxml2
       - name: Checkout submodules
         uses: actions/checkout@v4
         with:
@@ -42,8 +42,8 @@ jobs:
         working-directory: libs
         run: |
           # First build FFmpeg
-          ./ffmpeg.sh -i 0
-          ./ffmpeg.sh -i 1
+          ./ffmpeg.sh 0
+          ./ffmpeg.sh 1
           scons -j4 target=template_debug platform=linux arch=x86_64 dev_build=yes
       
       - name: Build GoZen
