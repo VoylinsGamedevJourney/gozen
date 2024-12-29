@@ -63,19 +63,25 @@ function compile_windows() {
 	echo "Compiling FFmpeg for Windows complete"
 }
 
+if [ $# -eq 0 ]; then
+	# Interactive mode
+	echo "Please select an option:"
+	echo "1: Compile for Linux; (Default)"
+	echo "2: Compile for Windows;"
+	echo "0: Clean FFmpeg;"
 
-echo "Please select an option:"
-echo "1: Compile for Linux; (Default)"
-echo "2: Compile for Windows;"
-echo "0: Clean FFmpeg;"
-
-read -p "Enter your choice: " choice
-echo ""
+	read -p "Enter your choice: " choice
+	echo ""
+else
+	# Argument-based mode
+	choice=$1
+fi
 
 case $choice in
 	2) # Windows
 		compile_windows;;
 	0) # Cleanup FFmpeg
+		echo "Cleaning FFmpeg"
 		cd ffmpeg
 		make distclean
 		echo "FFmpeg repo is cleaned up!";;

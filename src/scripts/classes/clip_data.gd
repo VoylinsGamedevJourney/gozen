@@ -52,7 +52,6 @@ func load_video_frame(a_track: int, a_frame_nr: int) -> void:
 	a_frame_nr = clampi(
 			roundi((float(a_frame_nr) / Project.framerate) * _get_file_data().framerate),
 			0, _get_file_data().frame_duration)
-	print(a_frame_nr)
 
 	# Check if frame is already correct or not
 	if a_frame_nr != 0 and a_frame_nr == _get_file_data().current_frame[a_track]:

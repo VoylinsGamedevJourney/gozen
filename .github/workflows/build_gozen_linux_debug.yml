@@ -1,0 +1,62 @@
+name: build_gozen_linux_debug
+run-name: Build GoZen Linux Debug
+on:
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.3
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Set date variable
+        id: get-date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Installing dependencies
+        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Prepare Godot
+        run: |
+          # Getting Godot
+          wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip godot_linux.zip
+
+          # Getting the export templates
+          wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          unzip godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          
+          # Changing the version number
+          sed -i "s/config\/version=\"[0-9-]\+-alpha\"/config\/version=\"${{ env.date }}-alpha\"/" src/project.godot
+
+      - name: Build GDE GoZen debug
+        working-directory: libs
+        run: |
+          # First build FFmpeg
+          ./ffmpeg.sh -i 0
+          ./ffmpeg.sh -i 1
+          scons -j4 target=template_debug platform=linux arch=x86_64 dev_build=yes
+      
+      - name: Build GoZen
+        run: |
+          # Build Godot
+          mkdir bin
+          cp libs/bin/linux/* bin/linux
+          ./Godot_v${GODOT_VERSION}-stable_linux.x86_64 --import src/project.godot --quiet --headless --export-debug Linux ../bin/linux/GoZen_${{ env.date }}_debug.x86_64
+
+      - name: Uploading build
+        uses: actions/upload-artifact@v4
+        with:
+          name: gozen_linux_${{ env.date }}
+          path: bin/
+          retention-days: 20
+

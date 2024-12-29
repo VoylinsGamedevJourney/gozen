@@ -52,7 +52,6 @@ func init_data() -> void:
 			# the amount of tracks in the timeline. This way there will always
 			# be an extra video class so there can't be any lag from creating
 			# a new video class instance
-			print("getting video")
 			for i: int in 6:
 				var l_video: Video = Video.new()
 
@@ -65,7 +64,6 @@ func init_data() -> void:
 						printerr("Couldn't append to current frame!")
 
 			# Adding audio from video file individually
-			print("getting audio")
 			audio = Audio.get_audio_data(l_file.path)
 
 			# Set necessary metadata
