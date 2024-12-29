@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 
+// Effects
 uniform float alpha: hint_range(0.0, 1, 0.001) = 1;
 
 uniform float brightness: hint_range(-1, 1) = 0.0;

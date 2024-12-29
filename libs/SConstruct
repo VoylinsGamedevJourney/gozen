@@ -49,9 +49,6 @@ elif 'windows' in platform:
         LIBPATH=['ffmpeg/bin/bin'])
 
 
-CacheDir('.scons-cache')
-Decider('MD5')
-
 src = Glob('gde_gozen/*.cpp')
 libpath = 'bin/{}/libgozen{}{}'.format(
     platform, env['suffix'], env['SHLIBSUFFIX'])

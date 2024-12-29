@@ -7,6 +7,9 @@ const AUDIO_TYPES: PackedInt64Array = [ File.TYPE.AUDIO, File.TYPE.VIDEO ]
 
 static var instance: ViewPanel
 
+var video_views: SubViewport
+var views: Array[TextureRect] = []
+
 var is_playing: bool = false
 var loaded_clips: Array[ClipData] = []
 
@@ -18,10 +21,12 @@ var skips: int = 0
 
 func _ready() -> void:
 	instance = self
+	video_views = get_child(0)
 	frame_time = 1.0 / Project.framerate
 
 	for i: int in 6: # 6 static tracks
 		loaded_clips.append(null)
+		views.append(video_views.get_child(i))
 
 
 func _process(a_delta: float) -> void:
@@ -72,7 +77,7 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bo
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct
 		if _check_clip(i, a_frame_nr, a_force_playhead):
-			update_view(i)
+			update_view(i, a_frame_nr, a_force_playhead)
 			continue
 
 		# Getting the next frame if possible
@@ -87,55 +92,96 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bo
 					i, loaded_clips[i].get_audio(),
 					a_frame_nr - loaded_clips[i].start_frame)
 		set_view(i)
-		update_view(i)
+		update_view(i, a_frame_nr, true)
 	
 	if a_force_playhead:
 		Playhead.instance.move(a_frame_nr)
 
 
-func set_view(a_id: int) -> void:
-	var l_view: TextureRect = $VideoViews.get_child(a_id)
-	var l_material: ShaderMaterial = l_view.material
+func set_view(a_id: int) -> void: # a_id is track id
+	var l_material: ShaderMaterial = views[a_id].material
 
 	# Resetting the texture and shader when no clip is set
 	if loaded_clips[a_id] == null:
-		l_view.texture = null
+		views[a_id].texture = null
 		l_material.shader = null
+		return
 
 	# When clip is an image, set the shader which gives access to the effects
-	elif loaded_clips[a_id].type == File.TYPE.IMAGE:
+	if loaded_clips[a_id].type == File.TYPE.IMAGE:
 		var l_file_data: FileData = Project._files_data[loaded_clips[a_id].file_id]
 
-		l_view.texture = l_file_data.image
+		views[a_id].texture = l_file_data.image
 		l_material.shader = preload("res://shaders/rgb.gdshader")
 
-	elif loaded_clips[a_id].type != File.TYPE.VIDEO:
+	elif loaded_clips[a_id].type == File.TYPE.VIDEO:
+		var l_video: Video = Project._files_data[loaded_clips[a_id].file_id].video[a_id]
 		var l_tex: PlaceholderTexture2D = PlaceholderTexture2D.new()
 
-		l_tex.size = Vector2i(10,10)
-		l_view.texture = l_tex
-		l_material.shader = preload("res://shaders/rgb.gdshader")
+		# Set the correct shader for the video file
+		if l_video.is_full_color_range():
+			l_material.shader = preload("res://shaders/yuv420p_full.gdshader")
+		else:
+			l_material.shader = preload("res://shaders/yuv420p_standard.gdshader")
 
-	# TODO: For video's create a new placeholder image for l_view with the 
-	# resolution as the size of the image
-	#if video.get_pixel_format().begins_with("yuv"):
+		# Set resolution
+		l_tex.size = l_video.get_resolution()
+		views[a_id].texture = l_tex
+
+		l_material.set_shader_parameter("resolution", l_video.get_resolution())
+
+		# Set color profile
+		match l_video.get_color_profile():
+			"bt601", "bt470":
+				l_material.set_shader_parameter(
+						"color_profile", Vector4(1.402, 0.344136, 0.714136, 1.772))
+			"bt2020", "bt2100":
+				l_material.set_shader_parameter(
+						"color_profile", Vector4(1.4746, 0.16455, 0.57135, 1.8814))
+			_: # bt709 and unknown
+				l_material.set_shader_parameter(
+						"color_profile", Vector4(1.5748, 0.1873, 0.4681, 1.8556))
 
 
-func update_view(a_id: int) -> void:
+func update_view(a_id: int, a_frame_nr: int, a_seek: bool) -> void:
+	# Setting all effects and settings to clips
+	var l_material: ShaderMaterial = views[a_id].material
+
 	if loaded_clips[a_id] == null or loaded_clips[a_id].type not in VISUAL_TYPES:
 		return
 
-	# Setting all effects and settings to clips
+	if loaded_clips[a_id].type == File.TYPE.IMAGE:
+		# Set effects
+		pass
+	elif loaded_clips[a_id].type == File.TYPE.VIDEO:
+		var l_data: FileData = Project._files_data[loaded_clips[a_id].file_id]
+		var l_video: Video = l_data.video[a_id]
+		var l_res: Vector2i = l_data.resolution
+		var l_uv_res: Vector2i = l_data.uv_resolution
+		var l_padding: int = l_data.padding
 
-	# For images, only set effects
-	# For video's set next frame + apply effects
-	pass
+		# Get correct frame from video
+		loaded_clips[a_id].load_video_frame(a_id, a_frame_nr)
+
+		# Take Y U V data and create ImageTexture to send to shader
+		l_material.set_shader_parameter("y_data", ImageTexture.create_from_image(
+				Image.create_from_data(l_res.x + l_padding, l_res.y, false, Image.FORMAT_R8, l_video.get_y_data())))
+		l_material.set_shader_parameter("u_data", ImageTexture.create_from_image(
+				Image.create_from_data(l_uv_res.x, l_uv_res.y, false, Image.FORMAT_R8, l_video.get_u_data())))
+		l_material.set_shader_parameter("v_data", ImageTexture.create_from_image(
+				Image.create_from_data(l_uv_res.x, l_uv_res.y, false, Image.FORMAT_R8, l_video.get_v_data())))
 
 
-## Update display/audio and continue if within clip bounds
+## Update display/audio and continue if within clip bounds.
 func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 	if loaded_clips[a_id] == null:
 		return false
+
+	# Check if clip really still exists or not.
+	if !Project.clips.has(loaded_clips[a_id].id):
+		loaded_clips[a_id] = null
+		return false
+
 
 	if loaded_clips[a_id].start_frame > a_frame_nr:
 		return false
@@ -147,7 +193,6 @@ func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 	if a_set_audio:
 		AudioHandler.instance.set_audio(
 			a_id, loaded_clips[a_id].get_audio(), a_frame_nr - loaded_clips[a_id].start_frame)
-	update_view(a_id)
 
 	return true
 
@@ -169,16 +214,12 @@ func _get_next_clip(a_frame_nr: int, a_track: int) -> int:
 
  
 func _check_clip_end(a_frame_nr: int, a_clip_id: int) -> bool:
-	if a_clip_id == -1:
-		return false
-	
-	var l_clip: ClipData = Project.clips[a_clip_id]
+	var l_clip: ClipData = Project.clips.get(a_clip_id)
 
-	return a_frame_nr < l_clip.start_frame + l_clip.duration
+	return false if !l_clip else a_frame_nr < l_clip.start_frame + l_clip.duration
 
 
 func get_view_image() -> Image:
-	var l_subviewport: SubViewport = $VideoViews
-
-	return l_subviewport.get_texture().get_image()
+	# This is for getting the final image for the playback + rendering.
+	return video_views.get_texture().get_image()
 
