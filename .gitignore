@@ -25,6 +25,7 @@ config.log
 *.os
 *.obj
 *.exp
+*.a
 
 compile_commands.json
 

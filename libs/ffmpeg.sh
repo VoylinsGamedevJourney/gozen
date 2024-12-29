@@ -9,6 +9,8 @@ function compile_linux() {
 		mkdir "./bin/linux"
 	fi
 
+	export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
 	cd ffmpeg
 	ffmpeg_args=$(cat <<-END
 		 --enable-shared --quiet --disable-postproc
@@ -16,11 +18,10 @@ function compile_linux() {
 		 --disable-ffprobe --disable-doc --disable-htmlpages
 		 --disable-manpages --disable-podpages --disable-txtpages
 		 --arch=x86_64 --disable-ffplay --disable-ffmpeg
-		 --enable-gpl --enable-version3 --enable-lto --enable-libaom
+		 --enable-gpl --enable-version3 --enable-lto
 		 --enable-libx264 --enable-libx265 --enable-libwebp
-		 --enable-libopus --enable-libpulse --enable-libvpx --enable-libdav1d
-		 --enable-libmp3lame --enable-libvorbis --enable-librav1e
-		 --enable-libsvtav1 --enable-libxml2 --extra-cflags="-fPIC"
+		 --enable-libopus --enable-libpulse --enable-libvorbis
+		 --extra-cflags="-fPIC"
 		 --extra-ldflags="-fpic" --target-os=linux
 	END
 	)

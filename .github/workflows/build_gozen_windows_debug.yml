@@ -1,4 +1,4 @@
-name: build_gozen_windows_debug
+name: Windows Debug
 run-name: Build GoZen Windows Debug
 on:
   workflow_dispatch:
@@ -17,23 +17,23 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Installing dependencies
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aom x264 x265 libwebp opus pulseaudio libvpx dav1d lame libvorbis rav1e svt-av1 libxml2
+        run: pacman -Syu --noconfirm pkgconf git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg x264 x265 libwebp pulseaudio
       - name: Checkout submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - name: Install yay
         run: |
-          pacman -S --noconfirm base-devel
-          git clone https://aur.archlinux.org/yay.git
-          cd yay
-          makepkg -si --noconfirm
-          cd ..
-          rm -rf yay
+          pacman -S --noconfirm base-devel git sudo
+          useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builder
+          chown -R builder:builder .
+          su - builder -c 'git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm'
 
       - name: Install MinGW dependencies
-        run: | # --noprogressbar
-          yay -S --noconfirm mingw-w64-x264 mingw-w64-x265 mingw-w64-pkg-config mingw-w64-gcc
+        run: |
+          su - builder -c 'yay -S --noconfirm --noprogressbar mingw-w64-x264 mingw-w64-x265 mingw-w64-pkg-config mingw-w64-gcc'
 
       - name: Prepare Godot
         run: |

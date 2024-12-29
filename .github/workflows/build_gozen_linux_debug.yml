@@ -1,4 +1,4 @@
-name: build_gozen_linux_debug
+name: Linux Debug
 run-name: Build GoZen Linux Debug
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Installing dependencies
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aom x264 x265 libwebp opus pulseaudio libvpx dav1d lame libvorbis rav1e svt-av1 libxml2
+        run: pacman -Syu --noconfirm pkgconf git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg x264 x265 libwebp opus pulseaudio libvorbis libxml2
       - name: Checkout submodules
         uses: actions/checkout@v4
         with:
