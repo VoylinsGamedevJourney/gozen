@@ -12,26 +12,27 @@ function compile_linux() {
 	export PKG_CONFIG_PATH=/usr/lib/pkgconfig
 
 	cd ffmpeg
-	ffmpeg_args=$(cat <<-END
-		 --enable-shared --quiet --disable-postproc
-		 --disable-avfilter --disable-sndio --disable-programs
-		 --disable-ffprobe --disable-doc --disable-htmlpages
-		 --disable-manpages --disable-podpages --disable-txtpages
-		 --arch=x86_64 --disable-ffplay --disable-ffmpeg
-		 --enable-gpl --enable-version3 --enable-lto
-		 --enable-libx264 --enable-libx265 --enable-libwebp
-		 --enable-libopus --enable-libpulse --enable-libvorbis
-		 --extra-cflags="-fPIC"
-		 --extra-ldflags="-fpic" --target-os=linux
-	END
-	)
+	./configure --prefix=./bin --enable-shared \
+		--enable-gpl --enable-version3 \
+		--arch=x86_64 --target-os=linux \
+		--quiet \
+		--enable-pic \
+		\
+		--extra-cflags="-fPIC" --extra-ldflags="-fPIC" \
+		\
+		--disable-postproc --disable-avfilter --disable-sndio \
+		--disable-doc --disable-programs --disable-ffprobe \
+		--disable-htmlpages --disable-manpages --disable-podpages \
+		--disable-txtpages --disable-ffplay --disable-ffmpeg \
+		\
+		--enable-libx264 --enable-libx265 \
 
-    ./configure --prefix=./bin $ffmpeg_args
+	make -j $(nproc)
+	make install
 
-    make -j 9
-    make -j 9 install
+	cp bin/lib/*.so ../bin/linux
+	cp /usr/lib/libx26*.so ../bin/linux
 
-	cp bin/lib/*.so* ../bin/linux
 	echo "Compiling FFmpeg for Linux complete"
 }
 
@@ -47,25 +48,28 @@ function compile_windows() {
 	fi
 
 	cd ffmpeg
-	ffmpeg_args=$(cat <<-END
-		--enable-shared --quiet --disable-postproc --disable-avfilter
-		--disable-sndio --disable-programs --disable-ffmpeg --disable-ffplay
-        --disable-ffprobe --disable-doc --disable-htmlpages --disable-manpages
-		--disable-podpages --disable-txtpages --arch=x86_64 --enable-gpl
-		--enable-version3 --enable-lto --enable-libx264 --enable-libx265
-		--extra-cflags="-fPIC" --extra-ldflags="-fpic" --extra-libs=-lpthread
-		--cross-prefix=x86_64-w64-mingw32- --target-os=mingw32
-		--enable-cross-compile
-	END
-	)
-	
 	PATH="/opt/bin:$PATH"
-	./configure --prefix=./bin $ffmpeg_args
+	./configure --prefix=./bin --enable-shared \
+		--enable-gpl --enable-version3 \
+		--arch=x86_64 --target-os=mingw32 --enable-cross-compile \
+		--cross-prefix=x86_64-w64-mingw32- \
+		--quiet \
+		--extra-libs=-lpthread \
+		--extra-cflags="-fPIC" --extra-ldflags="-fpic" \
+		\
+		--disable-postproc --disable-avfilter --disable-sndio \
+		--disable-doc --disable-programs --disable-ffprobe \
+		--disable-htmlpages --disable-manpages --disable-podpages \
+		--disable-txtpages --disable-ffplay --disable-ffmpeg \
+		\
+		--enable-libx264 --enable-libx265
 
-    make -j 4
-    make -j 4 install
+	make -j $(nproc)
+	make install
 
-    cp bin/lib/*.a ../bin/windows
+	cp bin/bin/*.dll ../bin/windows
+	cp /usr/x86_64-w64-mingw32/bin/libx26*.dll ../bin/windows
+
 	echo "Compiling FFmpeg for Windows complete"
 }
 

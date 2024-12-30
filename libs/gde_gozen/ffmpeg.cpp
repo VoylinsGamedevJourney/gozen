@@ -97,7 +97,7 @@ PackedByteArray FFmpeg::get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 			l_codec_ctx_audio->sample_fmt,	// In sample format
 			l_codec_ctx_audio->sample_rate, // In sample rate
 			0, nullptr);
-	if (response < 0 or (response = swr_init(l_swr_ctx))) {
+	if (response < 0 || (response = swr_init(l_swr_ctx))) {
 		print_av_error("Couldn't initialize SWR!", response);
 		avcodec_flush_buffers(l_codec_ctx_audio);
 		avcodec_free_context(&l_codec_ctx_audio);

@@ -24,7 +24,8 @@ if 'linux' in platform:
             'ffmpeg/bin/lib'],
         LIBS=[
             'avcodec', 'avformat', 'avdevice',
-            'avutil', 'swresample', 'swscale'])
+            'avutil', 'swresample', 'swscale']
+    )
 
 elif 'windows' in platform:
     if not os.path.exists("bin/windows"):
@@ -42,16 +43,21 @@ elif 'windows' in platform:
     else:
         env.Append(LIBS=[
             'avcodec', 'avformat', 'avdevice',
-            'avutil', 'swresample', 'swscale'])
+            'avutil', 'swresample', 'swscale']
+        )
 
     env.Append(
         CPPPATH=['ffmpeg/bin/include'],
-        LIBPATH=['ffmpeg/bin/bin'])
+        LIBPATH=['ffmpeg/bin/bin']
+    )
 
 
 src = Glob('gde_gozen/*.cpp')
 libpath = 'bin/{}/libgozen{}{}'.format(
-    platform, env['suffix'], env['SHLIBSUFFIX'])
+    platform,
+    env['suffix'],
+    env['SHLIBSUFFIX']
+)
 
 sharedlib = env.SharedLibrary(libpath, src)
 Default(sharedlib)
