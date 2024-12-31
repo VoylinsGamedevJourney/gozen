@@ -8,7 +8,6 @@ void initialize_gozen_library_init_module(ModuleInitializationLevel p_level) {
 	ClassDB::register_class<Video>();
 	ClassDB::register_class<Audio>();
 	ClassDB::register_class<Renderer>();
-	ClassDB::register_class<GoZenError>();
 }
 
 void uninitialize_gozen_library_init_module(ModuleInitializationLevel p_level) {

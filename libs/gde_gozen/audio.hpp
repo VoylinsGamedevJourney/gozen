@@ -8,7 +8,6 @@
 #include <godot_cpp/core/math.hpp>
 
 #include "ffmpeg.hpp"
-#include "gozen_error.hpp"
 
 
 using namespace godot;
@@ -17,12 +16,6 @@ class Audio : public Resource {
 	GDCLASS(Audio, Resource);
 
 public:
-	static inline int error = 0;
-
-
-	static inline int get_error() { return error; }
-
-	static inline void enable_debug() { av_log_set_level(AV_LOG_VERBOSE); }
 	static PackedByteArray get_audio_data(String a_path);
 
 	static PackedByteArray combine_data(PackedByteArray a_one, PackedByteArray a_two);
@@ -30,10 +23,16 @@ public:
 	static PackedByteArray change_db(PackedByteArray a_data, float a_db);
 	static PackedByteArray change_to_mono(PackedByteArray a_data, bool a_left);
 
+	static inline void _log(String a_message) {
+		UtilityFunctions::print("Renderer: ", a_message, ".");
+	}
+	static inline bool _log_err(String a_message) {
+		UtilityFunctions::printerr("Renderer: ", a_message, "!");
+		return false;
+	}
 
 protected:
 	static inline void _bind_methods() {
-		ClassDB::bind_static_method("Audio", D_METHOD("get_error"), &Audio::get_error);
 		ClassDB::bind_static_method("Audio", D_METHOD("get_audio_data", "a_file_path"), &Audio::get_audio_data);
 
 		ClassDB::bind_static_method("Audio", D_METHOD("combine_data", "a_one", "a_two"), &Audio::combine_data);

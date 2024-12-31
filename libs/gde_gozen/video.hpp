@@ -13,7 +13,6 @@
 #include <godot_cpp/classes/rendering_server.hpp>
 
 #include "ffmpeg.hpp"
-#include "gozen_error.hpp"
 
 
 using namespace godot;
@@ -59,7 +58,6 @@ private:
 
 	bool loaded = false; // Is true after open()
 	bool hw_decoding = false; // Set by user
-	bool debug = false;
 	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
 	bool full_color_range = true;
 
@@ -87,17 +85,22 @@ private:
 
 	int _seek_frame(int a_frame_nr);
 
-	void _print_debug(std::string a_text);
-	void _printerr_debug(std::string a_text);
+	static inline void _log(String a_message) {
+		UtilityFunctions::print("Video: ", a_message, ".");
+	}
+	static inline bool _log_err(String a_message) {
+		UtilityFunctions::printerr("Video: ", a_message, "!");
+		return false;
+	}
 
 public:
-	Video() {}
+	Video() { av_log_set_level(AV_LOG_VERBOSE); }
 	~Video() { close(); }
 
 	static Dictionary get_file_meta(String a_file_path);
 	static PackedStringArray get_available_hw_devices();
 
-	int open(String a_path = "");
+	bool open(String a_path = "");
 	void close();
 
 	inline bool is_open() { return loaded; }
@@ -128,10 +131,6 @@ public:
 			UtilityFunctions::printerr("Setting prefered_hw_decoder after opening file has no effect!");
 		prefered_hw_decoder = a_value.utf8(); }
 	inline String get_prefered_hw_decoder() { return prefered_hw_decoder.c_str(); }
-
-	inline void enable_debug() { av_log_set_level(AV_LOG_VERBOSE); debug = true; }
-	inline void disable_debug() { av_log_set_level(AV_LOG_INFO); debug = false; }
-	inline bool get_debug_enabled() { return debug; }
 
 	inline String get_pixel_format() { return pixel_format.c_str(); }
 	inline String get_color_profile() { return av_color_primaries_name(color_profile); }
@@ -173,10 +172,6 @@ protected:
 		ClassDB::bind_method(D_METHOD("get_rotation"), &Video::get_rotation);
 
 		ClassDB::bind_method(D_METHOD("get_frame_duration"), &Video::get_frame_duration);
-
-		ClassDB::bind_method(D_METHOD("enable_debug"), &Video::enable_debug);
-		ClassDB::bind_method(D_METHOD("disable_debug"), &Video::disable_debug);
-		ClassDB::bind_method(D_METHOD("get_debug_enabled"), &Video::get_debug_enabled);
 
 		ClassDB::bind_method(D_METHOD("get_pixel_format"), &Video::get_pixel_format);
 		ClassDB::bind_method(D_METHOD("get_color_profile"), &Video::get_color_profile);

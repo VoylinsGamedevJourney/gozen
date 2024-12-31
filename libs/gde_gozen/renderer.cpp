@@ -18,18 +18,18 @@ PackedStringArray Renderer::get_available_codecs(int a_codec_id) {
 	return l_data;
 }
 
-int Renderer::open() {
+bool Renderer::open() {
 	if (renderer_open)
-		return GoZenError::ERR_ALREADY_OPEN_RENDERER;
+		return _log_err("Already open");
 	else {
 		if (path == "")
-			return GoZenError::ERR_NO_PATH_SET;
+			return _log_err("No path set");
 		else if (video_codec_id == AV_CODEC_ID_NONE)
-			return GoZenError::ERR_NO_CODEC_SET_VIDEO;
+			return _log_err("No video codec set");
 		else if (audio_codec_id == AV_CODEC_ID_NONE)
-			_print_debug("Audio codec not set, not rendering audio!");
+			_log("Audio codec not set, not rendering audio");
 		else if (audio_codec_id != AV_CODEC_ID_NONE && sample_rate == -1) {
-			_printerr_debug("A sample rate needs to be set for audio exporting!");
+			_log("A sample rate needs to be set for audio exporting");
 			audio_codec_id = AV_CODEC_ID_NONE;
 		}
 	}
@@ -37,10 +37,10 @@ int Renderer::open() {
 	// Allocating output media context
 	avformat_alloc_output_context2(&av_format_ctx, NULL, NULL, path.utf8());
 	if (!av_format_ctx) {
-		UtilityFunctions::printerr("Couldn't allocate av format context by looking at path extension, using MPEG!");
+		_log_err("Error creating AV Format by path extension, using MPEG");
 		avformat_alloc_output_context2(&av_format_ctx, NULL, "mpeg", path.utf8());
 	} if (!av_format_ctx)
-		return GoZenError::ERR_CREATING_AV_FORMAT_FAILED;
+		return _log_err("Error creating AV Format");
 
 	av_output_format = av_format_ctx->oformat;
 
@@ -48,22 +48,22 @@ int Renderer::open() {
 	const AVCodec *av_codec_video = avcodec_find_encoder(video_codec_id);
 	if (!av_codec_video) {
 		UtilityFunctions::printerr("Video codec '", avcodec_get_name(video_codec_id), "' not found!");
-		return GoZenError::ERR_FAILED_OPEN_VIDEO_CODEC;
+		return _log_err("Couldn't open video codec");
 	}
 
 	av_packet_video = av_packet_alloc();
 	if (!av_packet_video)
-		return GoZenError::ERR_FAILED_ALLOC_PACKET;
+		return _log_err("Out of memory");
 
 	av_stream_video = avformat_new_stream(av_format_ctx, NULL);
 	if (!av_stream_video)
-		return GoZenError::ERR_FAILED_CREATING_STREAM;
+		return _log_err("Couldn't create stream");
 
 	av_stream_video->id = av_format_ctx->nb_streams-1;
 
 	av_codec_ctx_video = avcodec_alloc_context3(av_codec_video);
 	if (!av_codec_ctx_video)
-		return GoZenError::ERR_FAILED_ALLOC_VIDEO_CODEC;
+		return _log_err("Couldn't alloc video codec");
 
 	FFmpeg::enable_multithreading(av_codec_ctx_video, av_codec_video);
 
@@ -81,7 +81,8 @@ int Renderer::open() {
 
 	if (av_codec_ctx_video->codec_id == AV_CODEC_ID_MPEG2VIDEO)
 		av_codec_ctx_video->max_b_frames = 2;
-	else av_codec_ctx_video->max_b_frames = 1;
+	else
+		av_codec_ctx_video->max_b_frames = 1;
 
 	if (av_codec_ctx_video->codec_id == AV_CODEC_ID_MPEG1VIDEO)
 		av_codec_ctx_video->mb_decision = 2;
@@ -91,7 +92,7 @@ int Renderer::open() {
 		av_codec_ctx_video->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 	// Setting the CRF
-	av_opt_set(av_codec_ctx_video->priv_data, "crf", crf.c_str(), 0);
+	av_opt_set(av_codec_ctx_video->priv_data, "crf", std::to_string(crf).c_str(), 0);
 
 	// Encoding options for different codecs
 	if (av_codec_video->id == AV_CODEC_ID_H264)
@@ -101,51 +102,52 @@ int Renderer::open() {
 	response = avcodec_open2(av_codec_ctx_video, av_codec_video, NULL);
 	if (response < 0) {
 		FFmpeg::print_av_error("Couldn't open video codec context!", response);
-		return GoZenError::ERR_FAILED_OPEN_VIDEO_CODEC;
+		return _log_err("Couldn't open video codec");
 	}
 
 	av_frame_video = av_frame_alloc();
 	if (!av_frame_video)
-		return GoZenError::ERR_FAILED_ALLOC_FRAME;
+		return _log_err("Out of memory");
 
 	av_frame_video->format = av_codec_ctx_video->pix_fmt;
 	av_frame_video->width = resolution.x;
 	av_frame_video->height = resolution.y;
 
 	if (av_frame_get_buffer(av_frame_video, 0))
-		return GoZenError::ERR_GET_FRAME_BUFFER;
+		return _log_err("Couldn't get frame buffer");
 
 	// Copy video stream params to muxer
 	if (avcodec_parameters_from_context(av_stream_video->codecpar, av_codec_ctx_video) < 0) {
-		return GoZenError::ERR_COPY_STREAM_PARAMS;
+		return _log_err("Couldn't copy stream params");
 	}
 
 	if (audio_codec_id != AV_CODEC_ID_NONE) {
 		const AVCodec *av_codec_audio = avcodec_find_encoder(audio_codec_id);
 		if (!av_codec_audio) {
 			UtilityFunctions::printerr("Audio codec '", avcodec_get_name(audio_codec_id), "' not found!");
-			return GoZenError::ERR_FAILED_FINDING_AUDIO_ENCODER;
+			return _log_err("Couldn't find audio encoder");
 		}
 
 		av_packet_audio = av_packet_alloc();
 		if (!av_packet_audio)
-			return GoZenError::ERR_FAILED_ALLOC_PACKET;
+			return _log_err("Out of memory");
 
 		av_stream_audio = avformat_new_stream(av_format_ctx, NULL);
 		if (!av_stream_audio)
-			return GoZenError::ERR_FAILED_CREATING_STREAM;
+			return _log_err("Couldn't create stream");
 
 		av_stream_audio->id = av_format_ctx->nb_streams-1;
 
 		av_codec_ctx_audio = avcodec_alloc_context3(av_codec_audio);
 		if (!av_codec_ctx_audio)
-			return GoZenError::ERR_FAILED_ALLOC_AUDIO_CODEC;
+			return _log_err("Couln't alloc audio codec");
 
 		FFmpeg::enable_multithreading(av_codec_ctx_audio, av_codec_audio);
 
 		av_codec_ctx_audio->bit_rate = 128000;
 		av_codec_ctx_audio->sample_fmt = av_codec_audio->sample_fmts[0]; // AV_SAMPLE_FMT_S16;
-		av_codec_ctx_audio->sample_rate = 44100;
+		av_codec_ctx_audio->sample_rate = sample_rate;
+
 		if (av_codec_audio->supported_samplerates) {
 			for (int i = 0; av_codec_audio->supported_samplerates[i]; i++) {
 				if (av_codec_audio->supported_samplerates[i] == 48000) {
@@ -164,12 +166,12 @@ int Renderer::open() {
 		response = avcodec_open2(av_codec_ctx_audio, av_codec_audio, NULL);
 		if (response < 0) {
 			FFmpeg::print_av_error("Couldn't open audio codec!", response);
-			return GoZenError::ERR_FAILED_OPEN_AUDIO_CODEC;
+			return false;
 		}
 
 		// Copy audio stream params to muxer
 		if (avcodec_parameters_from_context(av_stream_audio->codecpar, av_codec_ctx_audio))
-			return GoZenError::ERR_COPY_STREAM_PARAMS;
+			return _log_err("Couldn't copy stream params");
 
 		if (av_output_format->flags & AVFMT_GLOBALHEADER)
 			av_codec_ctx_audio->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
@@ -182,7 +184,7 @@ int Renderer::open() {
 		response = avio_open(&av_format_ctx->pb, path.utf8(), AVIO_FLAG_WRITE);
 		if (response < 0) {
 			FFmpeg::print_av_error("Couldn't open output file!", response);
-			return GoZenError::ERR_OPENING_VIDEO;
+			return _log_err("Couldn't open video");
 		}
 	}
 
@@ -190,7 +192,7 @@ int Renderer::open() {
 	response = avformat_write_header(av_format_ctx, NULL);
 	if (response < 0) {
 		FFmpeg::print_av_error("Error when writing header!", response);
-		return GoZenError::ERR_WRITING_HEADER;
+		return _log_err("Couldn't write header");
 	}
 
 	// Setting up SWS
@@ -199,33 +201,31 @@ int Renderer::open() {
 		av_frame_video->width, av_frame_video->height, AV_PIX_FMT_YUV420P,
 		SWS_BILINEAR, NULL, NULL, NULL); // TODO: Future option to change SWS_BILINEAR
 	if (!sws_ctx)
-		return GoZenError::ERR_CREATING_SWS;
+		return _log_err("Couldn't create SWS");
 
 	frame_nr = 0;
 	renderer_open = true;
 	return OK;
 }
 
-int Renderer::send_frame(Ref<Image> a_image) {
+bool Renderer::send_frame(Ref<Image> a_image) {
 	if (!renderer_open)
-		return GoZenError::ERR_NOT_OPEN_RENDERER;
+		return _log_err("Not open");
 	else if (audio_codec_id != AV_CODEC_ID_NONE && !audio_added)
-		return GoZenError::ERR_AUDIO_NOT_SEND;
-	else if (!av_codec_ctx_video)
-		return GoZenError::ERR_FAILED_OPEN_VIDEO_CODEC;
-
-	if (av_frame_make_writable(av_frame_video) < 0)
-		return GoZenError::ERR_FRAME_NOT_WRITABLE;
+		return _log_err("Audio hasn't been send");
+	else if (av_frame_make_writable(av_frame_video) < 0)
+		return _log_err("Frame not writable");
 
 	uint8_t *l_src_data[4] = { a_image->get_data().ptrw(), NULL, NULL, NULL };
 	int l_src_linesize[4] = { av_frame_video->width * 4, 0, 0, 0 };
+
 	response = sws_scale(
 			sws_ctx,
 			l_src_data, l_src_linesize, 0, av_frame_video->height,
 			av_frame_video->data, av_frame_video->linesize);
 	if (response < 0) {
 		FFmpeg::print_av_error("Scaling frame data failed!", response);
-		return GoZenError::ERR_SCALING_FAILED;
+		return false;
 	}
 
 	av_frame_video->pts = frame_nr;
@@ -235,7 +235,7 @@ int Renderer::send_frame(Ref<Image> a_image) {
 	response = avcodec_send_frame(av_codec_ctx_video, av_frame_video);
 	if (response < 0) {
 		FFmpeg::print_av_error("Error sending video frame!", response);
-		return GoZenError::ERR_FAILED_SENDING_FRAME;
+		return false;
 	}
 
 	av_packet_video = av_packet_alloc();
@@ -247,7 +247,7 @@ int Renderer::send_frame(Ref<Image> a_image) {
 		else if (response < 0) {
 			FFmpeg::print_av_error("Error encoding video frame!", response);
 			av_packet_free(&av_packet_video);
-			return GoZenError::ERR_ENCODING_FRAME;
+			return false;
 		}
 
 		// Rescale output packet timestamp values from codec to stream timebase
@@ -260,7 +260,7 @@ int Renderer::send_frame(Ref<Image> a_image) {
 			FFmpeg::print_av_error("Error whilst writing output packet!", response);
 			response = -1;
 			av_packet_free(&av_packet_video);
-			return GoZenError::ERR_ENCODING_FRAME;
+			return false;
 		}
 
 		av_packet_unref(av_packet_video);
@@ -270,10 +270,13 @@ int Renderer::send_frame(Ref<Image> a_image) {
 	return OK;
 }
 
-int Renderer::send_audio(PackedByteArray a_wav_data) {
-	if (!renderer_open) return GoZenError::ERR_NOT_OPEN_RENDERER;
-	else if (audio_codec_id == AV_CODEC_ID_NONE) return GoZenError::ERR_AUDIO_NOT_ENABLED;
-	else if (audio_added) return GoZenError::ERR_AUDIO_ALREADY_SEND;
+bool Renderer::send_audio(PackedByteArray a_wav_data) {
+	if (!renderer_open)
+		return _log_err("Not open");
+	else if (audio_codec_id == AV_CODEC_ID_NONE)
+		return _log_err("Audio not enabled");
+	else if (audio_added)
+		return _log_err("Audio already send");
 	
 	const uint8_t *l_input_data = a_wav_data.ptr();
 	SwrContext *l_swr_ctx = nullptr;
@@ -285,14 +288,14 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 			&l_ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, NULL);
 	if (!l_swr_ctx || swr_init(l_swr_ctx) < 0) {
 		swr_free(&l_swr_ctx); // Godot crashes anyway when SWR can't be created.
-		return GoZenError::ERR_CREATING_SWR;
+		return _log_err("Couldn't create SWR");
 	}
 
 	// Allocate a buffer for the output in the target format
 	AVFrame *l_frame_out = av_frame_alloc();
 	if (!l_frame_out) {
 		swr_free(&l_swr_ctx);
-		return GoZenError::ERR_FAILED_ALLOC_FRAME;
+		return _log_err("Out of memory");
 	}
 
 	l_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
@@ -306,7 +309,7 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 	if (!av_packet_audio) {
 		av_frame_free(&l_frame_out);
 		swr_free(&l_swr_ctx);
-		return GoZenError::ERR_FAILED_ALLOC_PACKET;
+		return _log_err("Out of memory");
 	}
 
 	int l_bytes_per_sample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2; // Stereo
@@ -324,7 +327,7 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 		if (l_converted_samples < 0) {
 			av_frame_free(&l_frame_out);
 			swr_free(&l_swr_ctx);
-			return GoZenError::ERR_FAILED_RESAMPLE;
+			return _log_err("Couldn't resample");
 		}
 
 		if (l_converted_samples > 0) {
@@ -339,7 +342,7 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 				av_frame_free(&l_frame_out);
 				swr_free(&l_swr_ctx);
 				av_packet_free(&av_packet_audio);
-				return GoZenError::ERR_FAILED_SENDING_FRAME;
+				return false;
 			}
 
 			while ((response = avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio)) >= 0) {
@@ -353,7 +356,7 @@ int Renderer::send_audio(PackedByteArray a_wav_data) {
 					av_frame_free(&l_frame_out);
 					swr_free(&l_swr_ctx);
 					av_packet_free(&av_packet_audio);
-					return GoZenError::ERR_ENCODING_FRAME;
+					return false;
 				}
 				av_packet_unref(av_packet_audio);
 			}
@@ -406,22 +409,54 @@ void Renderer::close() {
 	if (av_codec_ctx_video == nullptr)
 		return;
 
-	av_write_trailer(av_format_ctx);
+	// Flush encoders before cleanup
+	if (av_codec_ctx_video) {
+		avcodec_send_frame(av_codec_ctx_video, nullptr);
+		while (avcodec_receive_packet(av_codec_ctx_video, av_packet_video) >= 0)
+			av_packet_unref(av_packet_video);
+	}
 
-	avcodec_free_context(&av_codec_ctx_video);
-	if (av_codec_ctx_audio) avcodec_free_context(&av_codec_ctx_audio);
+	if (av_codec_ctx_audio) {
+		avcodec_send_frame(av_codec_ctx_audio, nullptr);
+		while (avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio) >= 0)
+			av_packet_unref(av_packet_audio);
+	}
 
-	if (av_frame_video) av_frame_free(&av_frame_video);
-	if (av_packet_video) av_packet_free(&av_packet_video);
+	if (av_format_ctx)
+		av_write_trailer(av_format_ctx);
 
-	if (av_packet_audio) av_packet_free(&av_packet_audio);
+	// Cleanup contexts
+	if (sws_ctx) {
+		sws_freeContext(sws_ctx);
+		sws_ctx = nullptr;
+	}
 
-	if (sws_ctx) sws_freeContext(sws_ctx);
+	if (av_codec_ctx_video)
+		avcodec_free_context(&av_codec_ctx_video);
 
-	if (!(av_output_format->flags & AVFMT_NOFILE))
-		avio_closep(&av_format_ctx->pb);
+	if (av_codec_ctx_audio)
+		avcodec_free_context(&av_codec_ctx_audio);
 
-	avformat_free_context(av_format_ctx);
+	if (av_frame_video)
+		av_frame_free(&av_frame_video);
+
+	if (av_packet_video)
+		av_packet_free(&av_packet_video);
+
+	if (av_packet_audio)
+		av_packet_free(&av_packet_audio);
+
+	if (av_format_ctx) {
+		if (!(av_output_format->flags & AVFMT_NOFILE))
+			avio_closep(&av_format_ctx->pb);
+
+		avformat_free_context(av_format_ctx);
+		av_format_ctx = nullptr;
+	}
+
+	renderer_open = false;
+	audio_added = false;
+	frame_nr = 0;
 }
 
 void Renderer::_print_debug(std::string a_text) {

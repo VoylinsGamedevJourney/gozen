@@ -1,25 +1,4 @@
 #pragma once
-// Common render profiles
-//
-// General purpose videos:
-// - AV_CODEC_ID_H264
-// - AV_CODEC_ID_AAC
-// - Container: mp4
-//
-// Web videos (vp9):		Web videos (AV1):
-// - AV_CODEC_ID_VP9		- AV_CODEC_ID_AV1
-// - AV_CODEC_ID_OPUS		- AV_CODEC_ID_OPUS
-// - Container: webm		- Container: webm
-//
-// HQ archiving (flac):		HQ archiving (aac):
-// - AV_CODEC_ID_HEVC		- AV_CODEC_ID_HEVC
-// - AV_CODEC_ID_FLAC		- AV_CODEC_ID_AAC
-// - Container: mkv			- Container: mkv
-//
-// Older devices:
-// - AV_CODEC_ID_MPEG4
-// - AV_CODEC_ID_MP3
-// - Container: avi
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/image.hpp>
@@ -29,7 +8,6 @@
 
 #include "ffmpeg.hpp"
 #include "avio_audio.hpp"
-#include "gozen_error.hpp"
 
 
 using namespace godot;
@@ -59,7 +37,7 @@ private:
 	// Default variable types
 	int sample_rate = -1;
 	int gop_size = 0;
-	int crf = 23;
+	int crf = 23; // 0 best quality, 51 worst quality, 18 tends to be not noticable
  
 	int response = 0;
 	int frame_nr = 0;
@@ -70,11 +48,19 @@ private:
 	bool audio_added = false;
 	bool debug = true;
 
-	std::string h264_preset = "medium"; // NOTE: This probably doesn't work yet
+	std::string h264_preset = "medium";
 	
 	// Godot classes
 	String path = "";
 	Vector2i resolution = Vector2i(1920, 1080);
+
+	static inline void _log(String a_message) {
+		UtilityFunctions::print("Renderer: ", a_message, ".");
+	}
+	static inline bool _log_err(String a_message) {
+		UtilityFunctions::printerr("Renderer: ", a_message, "!");
+		return false;
+	}
 
 
 public:
@@ -107,16 +93,6 @@ public:
 		A_WAV = AV_CODEC_ID_WAVPACK,
 		A_NONE = AV_CODEC_ID_NONE,
 	};
-	enum SUBTITLE_CODEC {
-		S_ASS = AV_CODEC_ID_ASS,
-		S_MOV_TEXT = AV_CODEC_ID_MOV_TEXT,
-		S_SUBRIP = AV_CODEC_ID_SUBRIP,
-		S_TEXT = AV_CODEC_ID_TEXT,
-		S_TTML = AV_CODEC_ID_TTML,
-		S_WEBVTT = AV_CODEC_ID_WEBVTT,
-		S_XSUB = AV_CODEC_ID_XSUB,
-		S_NONE = AV_CODEC_ID_NONE,
-	};
 	enum H264_PRESETS { // Only works for H.H264
 		H264_PRESET_ULTRAFAST,
 		H264_PRESET_SUPERFAST,
@@ -133,11 +109,11 @@ public:
 	Renderer() {};
 	~Renderer();
 
-	int open();
-	inline int is_open() { return renderer_open; }
+	bool open();
+	inline bool is_open() { return renderer_open; }
 
-	int send_frame(Ref<Image> a_image);
-	int send_audio(PackedByteArray a_wav_data);
+	bool send_frame(Ref<Image> a_image);
+	bool send_audio(PackedByteArray a_wav_data);
 
 	void close();
 
@@ -303,16 +279,6 @@ protected:
 		BIND_ENUM_CONSTANT(A_WAV);
 		BIND_ENUM_CONSTANT(A_NONE);
 
-		/* SUBTITLE CODEC ENUMS */
-		BIND_ENUM_CONSTANT(S_ASS);
-		BIND_ENUM_CONSTANT(S_MOV_TEXT);
-		BIND_ENUM_CONSTANT(S_SUBRIP);
-		BIND_ENUM_CONSTANT(S_TEXT);
-		BIND_ENUM_CONSTANT(S_TTML);
-		BIND_ENUM_CONSTANT(S_WEBVTT);
-		BIND_ENUM_CONSTANT(S_XSUB);
-		BIND_ENUM_CONSTANT(S_NONE);
-
 		/* H264 PRESETS */
 		BIND_ENUM_CONSTANT(H264_PRESET_ULTRAFAST);
 		BIND_ENUM_CONSTANT(H264_PRESET_SUPERFAST);
@@ -354,8 +320,8 @@ protected:
 		ClassDB::bind_method(D_METHOD("set_framerate", "a_framerate"), &Renderer::set_framerate);
 		ClassDB::bind_method(D_METHOD("get_framerate"), &Renderer::get_framerate);
 
-		ClassDB::bind_method(D_METHOD("set_bit_rate", "a_bit_rate"), &Renderer::set_bit_rate);
-		ClassDB::bind_method(D_METHOD("get_bit_rate"), &Renderer::get_bit_rate);
+		ClassDB::bind_method(D_METHOD("set_crf", "a_crf"), &Renderer::set_crf);
+		ClassDB::bind_method(D_METHOD("get_crf"), &Renderer::get_crf);
 
 		ClassDB::bind_method(D_METHOD("set_gop_size", "a_gop_size"), &Renderer::set_gop_size);
 		ClassDB::bind_method(D_METHOD("get_gop_size"), &Renderer::get_gop_size);
@@ -384,5 +350,4 @@ protected:
 
 VARIANT_ENUM_CAST(Renderer::VIDEO_CODEC);
 VARIANT_ENUM_CAST(Renderer::AUDIO_CODEC);
-VARIANT_ENUM_CAST(Renderer::SUBTITLE_CODEC);
 VARIANT_ENUM_CAST(Renderer::H264_PRESETS);

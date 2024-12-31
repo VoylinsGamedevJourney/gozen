@@ -9,7 +9,6 @@
 #include "video.hpp"
 #include "audio.hpp"
 #include "renderer.hpp"
-#include "gozen_error.hpp"
 
 using namespace godot;
 

@@ -3,21 +3,22 @@
 
 
 PackedByteArray Audio::get_audio_data(String a_path) {
+	av_log_set_level(AV_LOG_VERBOSE);
 	AVFormatContext *l_format_ctx = avformat_alloc_context();
 	PackedByteArray l_data = PackedByteArray();
 
 	if (!l_format_ctx) {
-		error = GoZenError::ERR_CREATING_AV_FORMAT_FAILED;
+		_log_err("Couldn't create AV Format");
 		return l_data;
 	}
 
 	if (avformat_open_input(&l_format_ctx, a_path.utf8(), NULL, NULL)) {
-		error = GoZenError::ERR_OPENING_AUDIO;
+		_log_err("Couldn't open audio");
 		return l_data;
 	}
 
 	if (avformat_find_stream_info(l_format_ctx, NULL)) {
-		error = GoZenError::ERR_NO_STREAM_INFO_FOUND;
+		_log_err("Couldn't find stream info");
 		return l_data;
 	}
 
@@ -34,8 +35,7 @@ PackedByteArray Audio::get_audio_data(String a_path) {
 	}
 
 	avformat_close_input(&l_format_ctx);
-
-	error = OK;
+	av_log_set_level(AV_LOG_INFO);
 	return l_data;
 }
 

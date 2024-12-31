@@ -124,7 +124,6 @@ func _render_audio() -> PackedByteArray:
 
 	if l_audio.size() != 0:
 		renderer.set_audio_codec_id(Renderer.A_AAC)
-		renderer.set_sample_rate(44100)
 
 	# Check for the total audio length
 	#print((float(l_audio.size()) / AudioHandler.bytes_per_frame) / 30)
