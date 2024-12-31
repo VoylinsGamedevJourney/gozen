@@ -68,7 +68,6 @@ int Renderer::open() {
 	FFmpeg::enable_multithreading(av_codec_ctx_video, av_codec_video);
 
 	av_codec_ctx_video->codec_id = video_codec_id;
-	av_codec_ctx_video->bit_rate = bit_rate;
 	av_codec_ctx_video->pix_fmt = AV_PIX_FMT_YUV420P;
 	av_codec_ctx_video->width = resolution.x; // Resolution must be a multiple of two
 	av_codec_ctx_video->height = resolution.y;
@@ -91,11 +90,12 @@ int Renderer::open() {
 	if (av_output_format->flags & AVFMT_GLOBALHEADER)
 		av_codec_ctx_video->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
+	// Setting the CRF
+	av_opt_set(av_codec_ctx_video->priv_data, "crf", crf.c_str(), 0);
+
 	// Encoding options for different codecs
-	if (av_codec_video->id == AV_CODEC_ID_H264) {
-		av_opt_set(av_codec_ctx_video->priv_data, "crf", "23", 0);
+	if (av_codec_video->id == AV_CODEC_ID_H264)
 		av_opt_set(av_codec_ctx_video->priv_data, "preset", h264_preset.c_str(), 0);
-	}
 
 	// Opening the video encoder codec
 	response = avcodec_open2(av_codec_ctx_video, av_codec_video, NULL);

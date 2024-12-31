@@ -59,7 +59,7 @@ private:
 	// Default variable types
 	int sample_rate = -1;
 	int gop_size = 0;
-	int bit_rate = 8; // Mbps
+	int crf = 23;
  
 	int response = 0;
 	int frame_nr = 0;
@@ -162,8 +162,8 @@ public:
 	inline void set_framerate(float a_framerate) { framerate = a_framerate; }
 	inline float get_framerate() { return framerate; }
 
-	inline void set_bit_rate(int a_bit_rate) { bit_rate = a_bit_rate * 1000000; }
-	inline int get_bit_rate() { return bit_rate; }
+	inline void set_crf(int a_crf) { crf = a_crf; }
+	inline int get_crf() { return crf; }
 
 	inline void set_gop_size(int a_gop_size) { gop_size = a_gop_size; }
 	inline int get_gop_size() { return gop_size; }
@@ -207,65 +207,65 @@ public:
 	inline void configure_for_high_quality() { // MP4
 		set_video_codec_id(V_HEVC);
 		set_audio_codec_id(A_AAC);
-		set_bit_rate(10); // For 4K this should be 15 - 20
+		set_crf(18);
 		set_h264_preset(H264_PRESET_SLOW);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_youtube() { // MP4
-		set_video_codec_id(V_H264);
-		set_audio_codec_id(A_AAC);
-		set_bit_rate(8); // For 4K change to 12-15
-		set_h264_preset(H264_PRESET_VERYFAST);
 		set_gop_size(15);
 	}
 
 	inline void configure_for_youtube_hq() { // MP4
 		set_video_codec_id(V_VP9);
 		set_audio_codec_id(A_OPUS);
-		set_bit_rate(10); // For 4K change to 12-15
+		set_crf(18);
+		set_gop_size(15);
+	}
+
+	inline void configure_for_youtube() { // MP4
+		set_video_codec_id(V_H264);
+		set_audio_codec_id(A_AAC);
+		set_crf(23);
+		set_h264_preset(H264_PRESET_VERYFAST);
 		set_gop_size(15);
 	}
 
 	inline void configure_for_av1() { // webm
 		set_video_codec_id(V_AV1);
 		set_audio_codec_id(A_OPUS);
-		set_bit_rate(10); // For 4K change to 15 - 20
+		set_crf(20);
 		set_gop_size(15);
 	}
 
 	inline void configure_for_vp9() { // webm
 		set_video_codec_id(V_VP9);
 		set_audio_codec_id(A_OPUS);
-		set_bit_rate(8); // For 4K change to 12-15
+		set_crf(20);
 		set_gop_size(15);
 	}
 
 	inline void configure_for_vp8() { // webm
 		set_video_codec_id(V_VP8);
 		set_audio_codec_id(A_OPUS);
-		set_bit_rate(8); // For 4K change to 12-15
+		set_crf(20);
 		set_gop_size(15);
 	}
 
 	inline void configure_for_hq_archiving_flac() { // mkv
 		set_video_codec_id(V_HEVC);
 		set_audio_codec_id(A_FLAC);
-		set_bit_rate(10);
+		set_crf(18);
 		set_gop_size(15);
 	}
 
 	inline void configure_for_hq_archiving_aac() { // mkv
 		set_video_codec_id(V_HEVC);
 		set_audio_codec_id(A_AAC);
-		set_bit_rate(10);
+		set_crf(18);
 		set_gop_size(10);
 	}
 
 	inline void configure_for_older_devices() { // avi
 		set_video_codec_id(V_MPEG4);
 		set_audio_codec_id(A_MP3);
-		set_bit_rate(7); // For 720p use 5, for lower go to 2-3 fps
+		set_crf(23);
 		set_gop_size(10);
 	}
 
@@ -368,8 +368,8 @@ protected:
 
 		ClassDB::bind_method(D_METHOD("configure_for_high_quality"), &Renderer::configure_for_high_quality);
 
-		ClassDB::bind_method(D_METHOD("configure_for_youtube"), &Renderer::configure_for_youtube);
 		ClassDB::bind_method(D_METHOD("configure_for_youtube_hq"), &Renderer::configure_for_youtube_hq);
+		ClassDB::bind_method(D_METHOD("configure_for_youtube"), &Renderer::configure_for_youtube);
 
 		ClassDB::bind_method(D_METHOD("configure_for_av1"), &Renderer::configure_for_av1);
 		ClassDB::bind_method(D_METHOD("configure_for_vp9"), &Renderer::configure_for_vp9);
