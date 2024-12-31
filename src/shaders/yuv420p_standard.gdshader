@@ -42,43 +42,43 @@ void fragment() {
 	float G = Y - color_profile.y * U - color_profile.z * V;
 	float B = Y + color_profile.w * U;
 
-     COLOR = vec4(R, G, B, 1.0);
-//	vec4 tex = vec4(R, G, B, 1.0);
-//	
-//	// Brightness
-//	mat4 brightness_matrix = mat4(
-//		vec4(1, 0, 0, 0),
-//		vec4(0, 1, 0, 0),
-//		vec4(0, 0, 1, 0),
-//		vec4(brightness, brightness, brightness, 1)
-//	);
-//
-//	// Contrast
-//	float contrast_value = (1.0 - contrast) / 2.0;
-//	mat4 contrast_matrix = mat4(
-//		vec4(contrast, 0, 0, 0),
-//		vec4(0, contrast, 0, 0),
-//		vec4(0, 0, contrast, 0),
-//		vec4(contrast_value, contrast_value, contrast_value, 1)
-//	);
-//
-//	// Saturation
-//	vec3 luminance = vec3( 0.3086, 0.6094, 0.0820 );
-//	float sat_adjust = 1.0 - saturation;
-//	vec3 red = vec3(luminance.x * sat_adjust) + vec3(saturation, 0, 0) * red_value;
-//	vec3 green = vec3(luminance.y * sat_adjust) + vec3(0, saturation, 0) * green_value;
-//	vec3 blue = vec3(luminance.z * sat_adjust) + vec3(0, 0,saturation) * blue_value;
-//	mat4 saturation_matrix = mat4(
-//		vec4(red, 0),
-//		vec4(green,0),
-//		vec4(blue,0),
-//		vec4(0, 0, 0, 1)
-//	);
-//	
-//	// Setting correct color
-//	COLOR = brightness_matrix * contrast_matrix * saturation_matrix * mix(
-//			tex, tex * tint_color, tint_effect_factor);
-//	
-//	// Transparency
-//	COLOR.a = alpha * tex.a;
+    // COLOR = vec4(R, G, B, 1.0);
+	vec4 tex = vec4(R, G, B, 1.0);
+	
+	// Brightness
+	mat4 brightness_matrix = mat4(
+		vec4(1, 0, 0, 0),
+		vec4(0, 1, 0, 0),
+		vec4(0, 0, 1, 0),
+		vec4(brightness, brightness, brightness, 1)
+	);
+
+	// Contrast
+	float contrast_value = (1.0 - contrast) / 2.0;
+	mat4 contrast_matrix = mat4(
+		vec4(contrast, 0, 0, 0),
+		vec4(0, contrast, 0, 0),
+		vec4(0, 0, contrast, 0),
+		vec4(contrast_value, contrast_value, contrast_value, 1)
+	);
+
+	// Saturation
+	vec3 luminance = vec3( 0.3086, 0.6094, 0.0820 );
+	float sat_adjust = 1.0 - saturation;
+	vec3 red = vec3(luminance.x * sat_adjust) + vec3(saturation, 0, 0) * red_value;
+	vec3 green = vec3(luminance.y * sat_adjust) + vec3(0, saturation, 0) * green_value;
+	vec3 blue = vec3(luminance.z * sat_adjust) + vec3(0, 0,saturation) * blue_value;
+	mat4 saturation_matrix = mat4(
+		vec4(red, 0),
+		vec4(green,0),
+		vec4(blue,0),
+		vec4(0, 0, 0, 1)
+	);
+	
+	// Setting correct color
+	COLOR = brightness_matrix * contrast_matrix * saturation_matrix * mix(
+			tex, tex * tint_color, tint_effect_factor);
+	
+	// Transparency
+	COLOR.a = alpha * tex.a;
 }

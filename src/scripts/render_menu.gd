@@ -35,9 +35,8 @@ func _on_render_button_pressed() -> void:
 
 	renderer.set_path(l_path)
 	renderer.set_framerate(30)
-	renderer.set_bit_rate(80000000)
 	renderer.set_resolution(Vector2i(1920, 1080))
-	renderer.set_video_codec_id(renderer.V_MPEG4)
+	renderer.configure_for_youtube()
 
 	# Rendering the audio
 	print("Creating audio ...")
@@ -74,8 +73,8 @@ func _on_render_button_pressed() -> void:
 	is_rendering = false
 
 	print("Frames added to video")
-	print("Rendering video (", float(Project.timeline_end) / float(Project.framerate),
-			" seconds) took ", float(Time.get_ticks_usec() - l_start_time) / 1000000)
+	print("Rendering video (", "%.2f" % (float(Project.timeline_end) / float(Project.framerate)),
+			" seconds) took ", "%.2f" % (float(Time.get_ticks_usec() - l_start_time) / 1000000), " seconds.")
 
 
 func _on_close_button_pressed() -> void:

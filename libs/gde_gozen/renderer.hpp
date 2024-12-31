@@ -59,8 +59,8 @@ private:
 	// Default variable types
 	int sample_rate = -1;
 	int gop_size = 0;
-	int bit_rate = 80000000;
-
+	int bit_rate = 8; // Mbps
+ 
 	int response = 0;
 	int frame_nr = 0;
 
@@ -70,7 +70,7 @@ private:
 	bool audio_added = false;
 	bool debug = true;
 
-	std::string h264_preset = "medium";
+	std::string h264_preset = "medium"; // NOTE: This probably doesn't work yet
 	
 	// Godot classes
 	String path = "";
@@ -102,6 +102,7 @@ public:
 		A_AAC = AV_CODEC_ID_AAC,
 		A_OPUS = AV_CODEC_ID_OPUS,
 		A_VORBIS = AV_CODEC_ID_VORBIS,
+		A_FLAC = AV_CODEC_ID_FLAC,
 		A_PCM = AV_CODEC_ID_PCM_S16LE,
 		A_WAV = AV_CODEC_ID_WAVPACK,
 		A_NONE = AV_CODEC_ID_NONE,
@@ -161,7 +162,7 @@ public:
 	inline void set_framerate(float a_framerate) { framerate = a_framerate; }
 	inline float get_framerate() { return framerate; }
 
-	inline void set_bit_rate(int a_bit_rate) { bit_rate = a_bit_rate; }
+	inline void set_bit_rate(int a_bit_rate) { bit_rate = a_bit_rate * 1000000; }
 	inline int get_bit_rate() { return bit_rate; }
 
 	inline void set_gop_size(int a_gop_size) { gop_size = a_gop_size; }
@@ -172,18 +173,101 @@ public:
 
 	inline void set_h264_preset(int a_value) {
 		switch (a_value) {
-			case H264_PRESET_ULTRAFAST: h264_preset = "ultrafast";
-			case H264_PRESET_SUPERFAST: h264_preset = "superfast";
-			case H264_PRESET_VERYFAST: h264_preset = "veryfast";
-			case H264_PRESET_FASTER: h264_preset = "faster";
-			case H264_PRESET_FAST: h264_preset = "fast";
-			case H264_PRESET_MEDIUM: h264_preset = "medium";
-			case H264_PRESET_SLOW: h264_preset = "slow";
-			case H264_PRESET_SLOWER: h264_preset = "slower";
-			case H264_PRESET_VERYSLOW: h264_preset = "veryslow";
+			case H264_PRESET_ULTRAFAST:
+				h264_preset = "ultrafast";
+				break;
+			case H264_PRESET_SUPERFAST:
+				h264_preset = "superfast";
+				break;
+			case H264_PRESET_VERYFAST:
+				h264_preset = "veryfast";
+				break;
+			case H264_PRESET_FASTER:
+				h264_preset = "faster";
+				break;
+			case H264_PRESET_FAST:
+				h264_preset = "fast";
+				break;
+			case H264_PRESET_MEDIUM:
+				h264_preset = "medium";
+				break;
+			case H264_PRESET_SLOW:
+				h264_preset = "slow";
+				break;
+			case H264_PRESET_SLOWER:
+				h264_preset = "slower";
+				break;
+			case H264_PRESET_VERYSLOW:
+				h264_preset = "veryslow";
+				break;
 		}
 	}
 	inline String get_h264_preset() { return h264_preset.c_str(); }
+
+	inline void configure_for_high_quality() { // MP4
+		set_video_codec_id(V_HEVC);
+		set_audio_codec_id(A_AAC);
+		set_bit_rate(10); // For 4K this should be 15 - 20
+		set_h264_preset(H264_PRESET_SLOW);
+		set_gop_size(15);
+	}
+
+	inline void configure_for_youtube() { // MP4
+		set_video_codec_id(V_H264);
+		set_audio_codec_id(A_AAC);
+		set_bit_rate(8); // For 4K change to 12-15
+		set_h264_preset(H264_PRESET_VERYFAST);
+		set_gop_size(15);
+	}
+
+	inline void configure_for_youtube_hq() { // MP4
+		set_video_codec_id(V_VP9);
+		set_audio_codec_id(A_OPUS);
+		set_bit_rate(10); // For 4K change to 12-15
+		set_gop_size(15);
+	}
+
+	inline void configure_for_av1() { // webm
+		set_video_codec_id(V_AV1);
+		set_audio_codec_id(A_OPUS);
+		set_bit_rate(10); // For 4K change to 15 - 20
+		set_gop_size(15);
+	}
+
+	inline void configure_for_vp9() { // webm
+		set_video_codec_id(V_VP9);
+		set_audio_codec_id(A_OPUS);
+		set_bit_rate(8); // For 4K change to 12-15
+		set_gop_size(15);
+	}
+
+	inline void configure_for_vp8() { // webm
+		set_video_codec_id(V_VP8);
+		set_audio_codec_id(A_OPUS);
+		set_bit_rate(8); // For 4K change to 12-15
+		set_gop_size(15);
+	}
+
+	inline void configure_for_hq_archiving_flac() { // mkv
+		set_video_codec_id(V_HEVC);
+		set_audio_codec_id(A_FLAC);
+		set_bit_rate(10);
+		set_gop_size(15);
+	}
+
+	inline void configure_for_hq_archiving_aac() { // mkv
+		set_video_codec_id(V_HEVC);
+		set_audio_codec_id(A_AAC);
+		set_bit_rate(10);
+		set_gop_size(10);
+	}
+
+	inline void configure_for_older_devices() { // avi
+		set_video_codec_id(V_MPEG4);
+		set_audio_codec_id(A_MP3);
+		set_bit_rate(7); // For 720p use 5, for lower go to 2-3 fps
+		set_gop_size(10);
+	}
 
 	void _print_debug(std::string a_text);
 	void _printerr_debug(std::string a_text);
@@ -214,6 +298,7 @@ protected:
 		BIND_ENUM_CONSTANT(A_AAC);
 		BIND_ENUM_CONSTANT(A_OPUS);
 		BIND_ENUM_CONSTANT(A_VORBIS);
+		BIND_ENUM_CONSTANT(A_FLAC);
 		BIND_ENUM_CONSTANT(A_PCM);
 		BIND_ENUM_CONSTANT(A_WAV);
 		BIND_ENUM_CONSTANT(A_NONE);
@@ -280,6 +365,20 @@ protected:
 
 		ClassDB::bind_method(D_METHOD("set_h264_preset", "a_value"), &Renderer::set_h264_preset);
 		ClassDB::bind_method(D_METHOD("get_h264_preset"), &Renderer::get_h264_preset);
+
+		ClassDB::bind_method(D_METHOD("configure_for_high_quality"), &Renderer::configure_for_high_quality);
+
+		ClassDB::bind_method(D_METHOD("configure_for_youtube"), &Renderer::configure_for_youtube);
+		ClassDB::bind_method(D_METHOD("configure_for_youtube_hq"), &Renderer::configure_for_youtube_hq);
+
+		ClassDB::bind_method(D_METHOD("configure_for_av1"), &Renderer::configure_for_av1);
+		ClassDB::bind_method(D_METHOD("configure_for_vp9"), &Renderer::configure_for_vp9);
+		ClassDB::bind_method(D_METHOD("configure_for_vp8"), &Renderer::configure_for_vp8);
+
+		ClassDB::bind_method(D_METHOD("configure_for_hq_archiving_flac"), &Renderer::configure_for_hq_archiving_flac);
+		ClassDB::bind_method(D_METHOD("configure_for_hq_archiving_aac"), &Renderer::configure_for_hq_archiving_aac);
+
+		ClassDB::bind_method(D_METHOD("configure_for_older_devices"), &Renderer::configure_for_older_devices);
 	}
 };
 

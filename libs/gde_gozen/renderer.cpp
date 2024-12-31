@@ -92,8 +92,10 @@ int Renderer::open() {
 		av_codec_ctx_video->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 	// Encoding options for different codecs
-	if (av_codec_video->id == AV_CODEC_ID_H264)
+	if (av_codec_video->id == AV_CODEC_ID_H264) {
+		av_opt_set(av_codec_ctx_video->priv_data, "crf", "23", 0);
 		av_opt_set(av_codec_ctx_video->priv_data, "preset", h264_preset.c_str(), 0);
+	}
 
 	// Opening the video encoder codec
 	response = avcodec_open2(av_codec_ctx_video, av_codec_video, NULL);
