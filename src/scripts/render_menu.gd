@@ -10,7 +10,6 @@ class_name RenderMenu extends Window
 static var is_rendering: bool = false
 
 var renderer: Renderer = Renderer.new()
-var err: int = 0
 
 
 
@@ -42,15 +41,14 @@ func _on_render_button_pressed() -> void:
 	print("Creating audio ...")
 	var l_audio: PackedByteArray = _render_audio()
 
-	err = renderer.open()
-	if err:
-		GoZenError.print_error(err) # TODO: Do something to handle the error
+	if renderer.open():
+		printerr("Couldn't open renderer!")
+		return
 		
 	if l_audio.size() != 0:
-		err = renderer.send_audio(l_audio)
-		if err:
-			GoZenError.print_error(err)
-			print("Something went wrong sending audio to renderer!")
+		if !renderer.send_audio(l_audio):
+			printerr("Something went wrong sending audio to renderer!")
+			return
 
 	# Render logic for visuals
 	print("Generating frames ...")
@@ -59,9 +57,9 @@ func _on_render_button_pressed() -> void:
 
 		# We need to wait else getting the image doesn't work
 		await RenderingServer.frame_post_draw
-		err = renderer.send_frame(ViewPanel.instance.get_view_image())
-		if err:
-			GoZenError.print_error(err) # TODO: Do something to handle the error
+		if !renderer.send_frame(ViewPanel.instance.get_view_image()):
+			printerr("Couldn't send frame to renderer!")
+			return
 
 	await RenderingServer.frame_post_draw
 

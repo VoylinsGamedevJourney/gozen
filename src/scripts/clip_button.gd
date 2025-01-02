@@ -52,7 +52,6 @@ func _on_button_down() -> void:
 
 func _input(a_event: InputEvent) -> void:
 	if button_pressed and a_event.is_action_pressed("clip_split"):
-		print("cut")
 		Project.undo_redo.create_action("Deleting clip on timeline")
 
 		Project.undo_redo.add_do_method(_cut_clip.bind(Playhead.frame_nr))
