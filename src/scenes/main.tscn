@@ -1,11 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=9 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_6sk7e"]
-[ext_resource type="PackedScene" uid="uid://dyawg3pgyxdp0" path="res://scenes/menu_bar.tscn" id="2_i57ul"]
+[ext_resource type="Script" path="res://scripts/menu_bar.gd" id="2_ape6y"]
 [ext_resource type="PackedScene" uid="uid://clxwikblkyucr" path="res://scenes/files_panel.tscn" id="3_6pnh6"]
+[ext_resource type="Texture2D" uid="uid://bv3xxhbb81md5" path="res://logo.svg" id="3_piflc"]
 [ext_resource type="PackedScene" uid="uid://b1kfy4fvd6fjw" path="res://scenes/view_panel.tscn" id="4_5b31x"]
 [ext_resource type="PackedScene" uid="uid://cmv40pg6t5bat" path="res://scenes/effects_panel.tscn" id="5_uog5s"]
 [ext_resource type="PackedScene" uid="uid://i0b2chrh82xc" path="res://scenes/timeline_panel.tscn" id="6_bexox"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hg6qg"]
+bg_color = Color(0.153778, 0.153778, 0.153778, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -25,7 +29,54 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="MenuBarPanel" parent="VBox" instance=ExtResource("2_i57ul")]
+[node name="MenuBarPanel" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hg6qg")
+script = ExtResource("2_ape6y")
+
+[node name="Label" type="Label" parent="VBox/MenuBarPanel"]
+layout_mode = 2
+text = "*Project"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBox/MenuBarPanel"]
+layout_mode = 2
+
+[node name="GoZenLogoButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture_normal = ExtResource("3_piflc")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="LayoutsHBox" type="HBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer"]
+layout_mode = 2
+
+[node name="EditingLayoutButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/LayoutsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+
+[node name="RenderLayoutButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/LayoutsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="VBox/MenuBarPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="MinimizeButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+
+[node name="MaximizeButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+
+[node name="ExitButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBox"]
@@ -107,6 +158,7 @@ grow_vertical = 0
 mouse_filter = 1
 mouse_default_cursor_shape = 12
 
+[connection signal="gui_input" from="VBox/MenuBarPanel" to="." method="_on_menu_bar_panel_gui_input"]
 [connection signal="gui_input" from="ResizeHandles/RightResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [1]]
 [connection signal="gui_input" from="ResizeHandles/BottomResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [2]]
 [connection signal="gui_input" from="ResizeHandles/CornerResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [3]]
