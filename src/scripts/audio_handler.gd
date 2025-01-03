@@ -37,7 +37,7 @@ func set_audio(a_track: int, a_audio: PackedByteArray, a_frame: int) -> void:
 
 	streams[a_track].data = a_audio
 	players[a_track].play(float(a_frame) / Project.framerate)
-	players[a_track].stream_paused = !ViewPanel.instance.is_playing
+	players[a_track].stream_paused = !View.is_playing
 
 
 func play_audio(a_track:int) -> void:

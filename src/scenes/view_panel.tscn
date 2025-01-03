@@ -1,167 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://b1kfy4fvd6fjw"]
+[gd_scene load_steps=3 format=3 uid="uid://b1kfy4fvd6fjw"]
 
 [ext_resource type="Script" path="res://scripts/view_panel.gd" id="1_ev6pk"]
-[ext_resource type="Shader" path="res://shaders/rgb.gdshader" id="2_gf384"]
-[ext_resource type="Texture2D" uid="uid://bv3xxhbb81md5" path="res://logo.svg" id="3_jhbh7"]
 [ext_resource type="Script" path="res://scripts/audio_handler.gd" id="4_nuiq6"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pp7hw"]
-shader = ExtResource("2_gf384")
-shader_parameter/alpha = 1.0
-shader_parameter/brightness = 0.0
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-shader_parameter/red_value = 1.0
-shader_parameter/green_value = 1.0
-shader_parameter/blue_value = 1.0
-shader_parameter/tint_color = Color(1, 1, 1, 1)
-shader_parameter/tint_effect_factor = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lvr7d"]
-shader = ExtResource("2_gf384")
-shader_parameter/alpha = 1.0
-shader_parameter/brightness = 0.0
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-shader_parameter/red_value = 1.0
-shader_parameter/green_value = 1.0
-shader_parameter/blue_value = 1.0
-shader_parameter/tint_color = Color(1, 1, 1, 1)
-shader_parameter/tint_effect_factor = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5f1op"]
-shader = ExtResource("2_gf384")
-shader_parameter/alpha = 1.0
-shader_parameter/brightness = 0.0
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-shader_parameter/red_value = 1.0
-shader_parameter/green_value = 1.0
-shader_parameter/blue_value = 1.0
-shader_parameter/tint_color = Color(1, 1, 1, 1)
-shader_parameter/tint_effect_factor = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_htx3v"]
-shader = ExtResource("2_gf384")
-shader_parameter/alpha = 1.0
-shader_parameter/brightness = 0.0
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-shader_parameter/red_value = 1.0
-shader_parameter/green_value = 1.0
-shader_parameter/blue_value = 1.0
-shader_parameter/tint_color = Color(1, 1, 1, 1)
-shader_parameter/tint_effect_factor = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4jx53"]
-shader = ExtResource("2_gf384")
-shader_parameter/alpha = 1.0
-shader_parameter/brightness = 0.0
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-shader_parameter/red_value = 1.0
-shader_parameter/green_value = 1.0
-shader_parameter/blue_value = 1.0
-shader_parameter/tint_color = Color(1, 1, 1, 1)
-shader_parameter/tint_effect_factor = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qlooh"]
-shader = ExtResource("2_gf384")
-shader_parameter/alpha = 1.0
-shader_parameter/brightness = 0.0
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-shader_parameter/red_value = 1.0
-shader_parameter/green_value = 1.0
-shader_parameter/blue_value = 1.0
-shader_parameter/tint_color = Color(1, 1, 1, 1)
-shader_parameter/tint_effect_factor = 0.0
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_weusi"]
-viewport_path = NodePath("VideoViews")
 
 [node name="ViewPanel" type="PanelContainer"]
 offset_right = 986.0
 offset_bottom = 422.0
 size_flags_horizontal = 3
 script = ExtResource("1_ev6pk")
-
-[node name="VideoViews" type="SubViewport" parent="."]
-size = Vector2i(1920, 1080)
-
-[node name="View1" type="TextureRect" parent="VideoViews"]
-z_index = 10
-material = SubResource("ShaderMaterial_pp7hw")
-custom_minimum_size = Vector2(1920, 1080)
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_jhbh7")
-stretch_mode = 5
-
-[node name="View2" type="TextureRect" parent="VideoViews"]
-z_index = 9
-material = SubResource("ShaderMaterial_lvr7d")
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 5
-
-[node name="View3" type="TextureRect" parent="VideoViews"]
-z_index = 8
-material = SubResource("ShaderMaterial_5f1op")
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 5
-
-[node name="View4" type="TextureRect" parent="VideoViews"]
-z_index = 7
-material = SubResource("ShaderMaterial_htx3v")
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 5
-
-[node name="View5" type="TextureRect" parent="VideoViews"]
-z_index = 6
-material = SubResource("ShaderMaterial_4jx53")
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 5
-
-[node name="View6" type="TextureRect" parent="VideoViews"]
-z_index = 5
-material = SubResource("ShaderMaterial_qlooh")
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 5
-
-[node name="Background" type="ColorRect" parent="VideoViews"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
 
 [node name="AudioPlaybacks" type="Node" parent="."]
 script = ExtResource("4_nuiq6")
@@ -184,7 +30,6 @@ layout_mode = 2
 [node name="TextureRect" type="TextureRect" parent="VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = SubResource("ViewportTexture_weusi")
 expand_mode = 1
 stretch_mode = 5
 

@@ -15,6 +15,17 @@ func _ready() -> void:
 			# TODO: Load project with the path found
 			break
 
+	if OS.get_name() == "Linux":
+		var l_output: Array = []
+
+		if OS.execute("echo", ["$XDG_CURRENT_DESKTOP"], l_output) == -1:
+			return
+
+		if l_output[0] == "i3\n":
+			get_node("ResizeHandles").queue_free()
+			get_node("VBox/MenuBarPanel/HBoxContainer/WindowButtons").queue_free()
+			get_window().borderless = false
+
 
 func _process(_delta: float) -> void:
 	if resizing:
@@ -50,4 +61,19 @@ func _on_menu_bar_panel_gui_input(a_event: InputEvent) -> void:
 
 	if moving:
 		get_window().position += Vector2i(get_global_mouse_position() - move_offset)
+
+
+func _on_exit_button_pressed() -> void:
+	get_tree().quit()
+
+
+func _on_maximize_button_pressed() -> void:
+	if get_window().mode == Window.MODE_WINDOWED:
+		get_window().set_mode(Window.MODE_MAXIMIZED)
+	else:
+		get_window().set_mode(Window.MODE_WINDOWED)
+
+
+func _on_minimize_button_pressed() -> void:
+	get_window().mode = Window.MODE_MINIMIZED
 

@@ -24,6 +24,7 @@ config/icon="res://logo.svg"
 Utils="*res://scripts/globals/utils.gd"
 Settings="*res://scripts/globals/settings.gd"
 Project="*res://scripts/globals/project.gd"
+View="*res://scripts/globals/view.gd"
 
 [debug]
 

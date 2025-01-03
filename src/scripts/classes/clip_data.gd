@@ -17,7 +17,7 @@ var effects_audio: EffectsAudio = EffectsAudio.new()
 
 
 func get_audio() -> PackedByteArray:
-	if type in ViewPanel.AUDIO_TYPES:
+	if type in View.AUDIO_TYPES:
 		return Project.get_clip_audio(id)
 	return []
 
@@ -40,10 +40,9 @@ func update_audio_data() -> void:
 				effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
 
 	# Adjusting volume
-	if effects_audio.db == 0:
+	if effects_audio.db != 0:
 		Project._audio[id] = Audio.change_db(
-				Project._audio[id] as PackedByteArray,
-				effects_audio.db)
+				Project._audio[id] as PackedByteArray, effects_audio.db)
 
 
 func load_video_frame(a_track: int, a_frame_nr: int) -> void:
@@ -63,7 +62,7 @@ func load_video_frame(a_track: int, a_frame_nr: int) -> void:
 	# Check if frame is before current one or after max skip
 	if a_frame_nr < _get_file_data().current_frame[a_track] or l_skips > MAX_FRAME_SKIPS:
 		_get_file_data().current_frame[a_track] = a_frame_nr
-		if _get_video(a_track).seek_frame(a_frame_nr):
+		if !_get_video(a_track).seek_frame(a_frame_nr):
 			printerr("Couldn't seek frame!")
 		return
 

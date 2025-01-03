@@ -78,10 +78,10 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 		Project.undo_redo.create_action("Adding new clips to timeline")
 		Project.undo_redo.add_do_method(_add_new_clips.bind(
 				l_data, get_track_id(preview.position.y)))
-		Project.undo_redo.add_do_method(ViewPanel.instance._update_frame)
+		Project.undo_redo.add_do_method(View._update_frame)
 		Project.undo_redo.add_undo_method(_remove_new_clips.bind(
 				l_data, get_track_id(preview.position.y)))
-		Project.undo_redo.add_undo_method(ViewPanel.instance._update_frame)
+		Project.undo_redo.add_undo_method(View._update_frame)
 		Project.undo_redo.commit_action()
 	else:
 		# TODO: Make this work when moving multiple nodes
@@ -92,8 +92,8 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 			Project.undo_redo.add_undo_method(_move_clip.bind(
 					l_draggable.clip_buttons[i], l_draggable.clip_buttons[i].position))
 
-		Project.undo_redo.add_do_method(ViewPanel.instance._update_frame)
-		Project.undo_redo.add_undo_method(ViewPanel.instance._update_frame)
+		Project.undo_redo.add_do_method(View._update_frame)
+		Project.undo_redo.add_undo_method(View._update_frame)
 		Project.undo_redo.add_do_method(update_timeline_end)
 		Project.undo_redo.add_undo_method(update_timeline_end)
 		Project.undo_redo.commit_action()

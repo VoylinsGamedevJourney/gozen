@@ -11,6 +11,8 @@ var undo_redo: UndoRedo = UndoRedo.new()
 var files: Dictionary = {} # {Unique_id (int32): File_object}
 var _files_data: Dictionary = {} # { Unique_id (int32): FileData }
 
+var resolution: Vector2i = Vector2i(1920,1080)
+
 var framerate: int = 30
 var timeline_scale: float = 1.0 : set = set_timeline_scale # How many pixels 1 frame takes 
 var timeline_end: int = 0
@@ -37,7 +39,7 @@ func _input(a_event: InputEvent) -> void:
 			printerr("Coulnd't redo action!")
 
 	if a_event.is_action_pressed("play"):
-		ViewPanel.instance._on_play_button_pressed()
+		View._on_play_button_pressed()
 		get_viewport().set_input_as_handled()
 	elif a_event.is_action("open_render_menu"):
 		var l_render_menu: Window = preload("res://scenes/render_menu.tscn").instantiate()
