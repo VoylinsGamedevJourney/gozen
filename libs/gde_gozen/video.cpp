@@ -157,8 +157,6 @@ bool Video::open(String a_path) {
 	else
 		pixel_format = av_get_pix_fmt_name(av_codec_ctx_video->pix_fmt);
 
-	_log("Selected pixel format is: " + (String)pixel_format.c_str());
-
 	if (av_stream_video->start_time != AV_NOPTS_VALUE)
 		start_time_video = (int64_t)(av_stream_video->start_time * stream_time_base_video);
 	else
@@ -309,7 +307,7 @@ void Video::close() {
 	av_format_ctx = nullptr;
 }
 
-int Video::seek_frame(int a_frame_nr) {
+bool Video::seek_frame(int a_frame_nr) {
 	if (!loaded)
 		return _log_err("Not open");
 
@@ -348,7 +346,7 @@ int Video::seek_frame(int a_frame_nr) {
 	av_frame_unref(av_frame);
 	av_packet_unref(av_packet);
 
-	return OK;
+	return true;
 }
 
 bool Video::next_frame(bool a_skip) {

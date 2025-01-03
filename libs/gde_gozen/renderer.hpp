@@ -35,7 +35,7 @@ private:
 	AVCodecID audio_codec_id = AV_CODEC_ID_NONE;
 
 	// Default variable types
-	int sample_rate = -1;
+	int sample_rate = 44100;
 	int gop_size = 0;
 	int crf = 23; // 0 best quality, 51 worst quality, 18 tends to be not noticable
  
@@ -46,6 +46,8 @@ private:
 
 	bool renderer_open = false;
 	bool audio_added = false;
+
+	bool audio_enabled = true;
 	bool debug = true;
 
 	std::string h264_preset = "medium";
@@ -146,6 +148,9 @@ public:
 
 	inline void set_sample_rate(int a_value) { sample_rate = a_value; }
 	inline int get_sample_rate() { return sample_rate; }
+
+	inline void enable_audio() { audio_enabled = true; }
+	inline void disable_audio() { audio_enabled = false; }
 
 	inline void set_h264_preset(int a_value) {
 		switch (a_value) {
@@ -328,6 +333,9 @@ protected:
 
 		ClassDB::bind_method(D_METHOD("set_sample_rate", "a_value"), &Renderer::set_sample_rate);
 		ClassDB::bind_method(D_METHOD("get_sample_rate"), &Renderer::get_sample_rate);
+
+		ClassDB::bind_method(D_METHOD("enable_audio"), &Renderer::enable_audio);
+		ClassDB::bind_method(D_METHOD("disable_audio"), &Renderer::disable_audio);
 
 		ClassDB::bind_method(D_METHOD("set_h264_preset", "a_value"), &Renderer::set_h264_preset);
 		ClassDB::bind_method(D_METHOD("get_h264_preset"), &Renderer::get_h264_preset);

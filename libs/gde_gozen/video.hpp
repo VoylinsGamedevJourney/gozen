@@ -105,7 +105,7 @@ public:
 
 	inline bool is_open() { return loaded; }
 
-	int seek_frame(int a_frame_nr);
+	bool seek_frame(int a_frame_nr);
 	bool next_frame(bool a_skip = false);
 
 	inline Ref<AudioStreamWAV> get_audio() { return audio; };

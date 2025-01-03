@@ -10,6 +10,7 @@ class_name RenderMenu extends Window
 static var is_rendering: bool = false
 
 var renderer: Renderer = Renderer.new()
+var frame_texture: ViewportTexture = View.main_view.get_texture() 
 
 
 
@@ -36,6 +37,7 @@ func _on_render_button_pressed() -> void:
 	renderer.set_framerate(30)
 	renderer.set_resolution(Vector2i(1920, 1080))
 	renderer.configure_for_youtube()
+	renderer.set_sample_rate(44100)
 
 	# Rendering the audio
 	print("Creating audio ...")
@@ -49,15 +51,17 @@ func _on_render_button_pressed() -> void:
 		if !renderer.send_audio(l_audio):
 			printerr("Something went wrong sending audio to renderer!")
 			return
+	else:
+		renderer.disable_audio()
 
 	# Render logic for visuals
 	print("Generating frames ...")
 	for i: int in Project.timeline_end:
-		ViewPanel.instance._set_frame(i, true)
+		View._set_frame(i, true)
 
 		# We need to wait else getting the image doesn't work
 		await RenderingServer.frame_post_draw
-		if !renderer.send_frame(ViewPanel.instance.get_view_image()):
+		if !renderer.send_frame(View.main_view.get_texture().get_image()):
 			printerr("Couldn't send frame to renderer!")
 			return
 
@@ -93,7 +97,7 @@ func _render_audio() -> PackedByteArray:
 		for l_frame_point: int in Project.tracks[l_track_id].keys():
 			var l_clip: ClipData = Project.clips[Project.tracks[l_track_id][l_frame_point]]
 
-			if l_clip.type in ViewPanel.AUDIO_TYPES:
+			if l_clip.type in View.AUDIO_TYPES:
 				# Check if we need to add empty data to track_audio
 				if l_track_audio.size() != l_clip.start_frame * AudioHandler.bytes_per_frame:
 					if l_track_audio.resize(l_clip.start_frame * AudioHandler.bytes_per_frame):

@@ -26,9 +26,9 @@ bool Renderer::open() {
 			return _log_err("No path set");
 		else if (video_codec_id == AV_CODEC_ID_NONE)
 			return _log_err("No video codec set");
-		else if (audio_codec_id == AV_CODEC_ID_NONE)
+		else if (audio_enabled && audio_codec_id == AV_CODEC_ID_NONE)
 			_log("Audio codec not set, not rendering audio");
-		else if (audio_codec_id != AV_CODEC_ID_NONE && sample_rate == -1) {
+		else if (audio_enabled && audio_codec_id != AV_CODEC_ID_NONE && sample_rate == -1) {
 			_log("A sample rate needs to be set for audio exporting");
 			audio_codec_id = AV_CODEC_ID_NONE;
 		}
@@ -121,7 +121,7 @@ bool Renderer::open() {
 		return _log_err("Couldn't copy stream params");
 	}
 
-	if (audio_codec_id != AV_CODEC_ID_NONE) {
+	if (audio_enabled) {
 		const AVCodec *av_codec_audio = avcodec_find_encoder(audio_codec_id);
 		if (!av_codec_audio) {
 			UtilityFunctions::printerr("Audio codec '", avcodec_get_name(audio_codec_id), "' not found!");
@@ -211,7 +211,7 @@ bool Renderer::open() {
 bool Renderer::send_frame(Ref<Image> a_image) {
 	if (!renderer_open)
 		return _log_err("Not open");
-	else if (audio_codec_id != AV_CODEC_ID_NONE && !audio_added)
+	else if (audio_enabled && audio_codec_id != AV_CODEC_ID_NONE && !audio_added)
 		return _log_err("Audio hasn't been send");
 	else if (av_frame_make_writable(av_frame_video) < 0)
 		return _log_err("Frame not writable");
@@ -267,7 +267,7 @@ bool Renderer::send_frame(Ref<Image> a_image) {
 	}
 
 	av_packet_free(&av_packet_video);
-	return OK;
+	return true;
 }
 
 bool Renderer::send_audio(PackedByteArray a_wav_data) {
@@ -402,7 +402,7 @@ bool Renderer::send_audio(PackedByteArray a_wav_data) {
 	swr_free(&l_swr_ctx);
 
 	audio_added = true;
-	return OK;
+	return true;
 }
 
 void Renderer::close() {
@@ -411,13 +411,17 @@ void Renderer::close() {
 
 	// Flush encoders before cleanup
 	if (av_codec_ctx_video) {
+		av_packet_video = av_packet_alloc();
 		avcodec_send_frame(av_codec_ctx_video, nullptr);
+		
 		while (avcodec_receive_packet(av_codec_ctx_video, av_packet_video) >= 0)
 			av_packet_unref(av_packet_video);
 	}
 
-	if (av_codec_ctx_audio) {
+	if (audio_enabled && av_codec_ctx_audio) {
+        av_packet_audio = av_packet_alloc();
 		avcodec_send_frame(av_codec_ctx_audio, nullptr);
+
 		while (avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio) >= 0)
 			av_packet_unref(av_packet_audio);
 	}
@@ -434,7 +438,7 @@ void Renderer::close() {
 	if (av_codec_ctx_video)
 		avcodec_free_context(&av_codec_ctx_video);
 
-	if (av_codec_ctx_audio)
+	if (audio_enabled && av_codec_ctx_audio)
 		avcodec_free_context(&av_codec_ctx_audio);
 
 	if (av_frame_video)
@@ -443,7 +447,7 @@ void Renderer::close() {
 	if (av_packet_video)
 		av_packet_free(&av_packet_video);
 
-	if (av_packet_audio)
+	if (audio_enabled && av_packet_audio)
 		av_packet_free(&av_packet_audio);
 
 	if (av_format_ctx) {
