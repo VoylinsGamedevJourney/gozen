@@ -1,14 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://clxwikblkyucr"]
+[gd_scene load_steps=5 format=3 uid="uid://clxwikblkyucr"]
 
 [ext_resource type="Script" path="res://scripts/files_list.gd" id="1_55uia"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pu77s"]
+content_margin_left = 5.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.133412, 0.130756, 0.130756, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bknhb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_phm1l"]
 
 [node name="FilesPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 0)
 offset_right = 308.0
 offset_bottom = 367.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pu77s")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_bknhb")
 horizontal_scroll_mode = 0
 
 [node name="FilesList" type="ItemList" parent="ScrollContainer"]
@@ -18,6 +30,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.832644, 0.832644, 0.832644, 1)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_phm1l")
 allow_reselect = true
 script = ExtResource("1_55uia")
 

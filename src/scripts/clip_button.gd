@@ -132,7 +132,7 @@ func _add_resize_button(a_preset: LayoutPreset, a_left: bool) -> void:
 	l_button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	l_button.mouse_default_cursor_shape = Control.CURSOR_HSIZE
 	l_button.set_anchors_and_offsets_preset(a_preset)
-	l_button.size.x = 3
+	l_button.custom_minimum_size.x = 3
 	if !a_left:
 		l_button.position.x -= 3
 	l_button.mouse_filter = Control.MOUSE_FILTER_PASS

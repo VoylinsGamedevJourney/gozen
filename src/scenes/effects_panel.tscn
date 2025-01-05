@@ -1,9 +1,270 @@
-[gd_scene load_steps=2 format=3 uid="uid://cmv40pg6t5bat"]
+[gd_scene load_steps=3 format=3 uid="uid://cmv40pg6t5bat"]
 
 [ext_resource type="Script" path="res://scripts/effects_panel.gd" id="1_4bfaj"]
 
-[node name="EffectsPanel" type="PanelContainer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1r5j1"]
+content_margin_left = 5.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.133412, 0.130756, 0.130756, 1)
+
+[node name="EffectsPanel" type="ScrollContainer" node_paths=PackedStringArray("volume_slider", "mono_option_button", "size_x", "size_y", "position_x", "position_y", "rotation_slider", "scale_x", "scale_y")]
 custom_minimum_size = Vector2(300, 0)
 offset_right = 300.0
-offset_bottom = 420.0
+offset_bottom = 824.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1r5j1")
+horizontal_scroll_mode = 0
 script = ExtResource("1_4bfaj")
+volume_slider = NodePath("EffectsVBox/AudioVBox/VolumeHBox/VolumeHSlider")
+mono_option_button = NodePath("EffectsVBox/AudioVBox/MonoHBox/MonoOptionButton")
+size_x = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/SizeVBox/SizeHBox/SizeXSpinBox")
+size_y = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/SizeVBox/SizeHBox/SizeYSpinBox")
+position_x = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox/PositionHBox/PositionXSpinBox")
+position_y = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox/PositionHBox/PositionYSpinBox")
+rotation_slider = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/RotationVBox/RotationHSlider")
+scale_x = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox/ScaleHBox/ScaleXSpinBox")
+scale_y = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox/ScaleHBox/ScaleYSpinBox")
+
+[node name="EffectsVBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="AudioVBox" type="VBoxContainer" parent="EffectsVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="EffectsVBox/AudioVBox"]
+layout_mode = 2
+text = "Audio"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="EffectsVBox/AudioVBox"]
+layout_mode = 2
+
+[node name="VolumeHBox" type="HBoxContainer" parent="EffectsVBox/AudioVBox"]
+layout_mode = 2
+
+[node name="VolumeLabel" type="Label" parent="EffectsVBox/AudioVBox/VolumeHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Volume:"
+
+[node name="VolumeHSlider" type="HSlider" parent="EffectsVBox/AudioVBox/VolumeHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -45.0
+max_value = 45.0
+tick_count = 7
+ticks_on_borders = true
+
+[node name="MonoHBox" type="HBoxContainer" parent="EffectsVBox/AudioVBox"]
+layout_mode = 2
+
+[node name="MonoLabel" type="Label" parent="EffectsVBox/AudioVBox/MonoHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stereo to mono:"
+
+[node name="MonoOptionButton" type="OptionButton" parent="EffectsVBox/AudioVBox/MonoHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+selected = 0
+item_count = 3
+popup/item_0/text = "Off"
+popup/item_1/text = "Left channel"
+popup/item_1/id = 1
+popup/item_2/text = "Right channel"
+popup/item_2/id = 2
+
+[node name="HSeparator2" type="HSeparator" parent="EffectsVBox/AudioVBox"]
+layout_mode = 2
+
+[node name="VisualsVBox" type="VBoxContainer" parent="EffectsVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="EffectsVBox/VisualsVBox"]
+layout_mode = 2
+text = "Visuals
+"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="EffectsVBox/VisualsVBox"]
+layout_mode = 2
+
+[node name="TransformsVBox" type="VBoxContainer" parent="EffectsVBox/VisualsVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SizeVBox" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
+layout_mode = 2
+
+[node name="SizeLabel" type="Label" parent="EffectsVBox/VisualsVBox/TransformsVBox/SizeVBox"]
+layout_mode = 2
+text = "Size:"
+
+[node name="SizeHBox" type="HBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox/SizeVBox"]
+layout_mode = 2
+
+[node name="SizeXSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/SizeVBox/SizeHBox"]
+layout_mode = 2
+
+[node name="SizeYSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/SizeVBox/SizeHBox"]
+layout_mode = 2
+
+[node name="PositionVBox" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
+layout_mode = 2
+
+[node name="PositionLabel" type="Label" parent="EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox"]
+layout_mode = 2
+text = "Position:"
+
+[node name="PositionHBox" type="HBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox"]
+layout_mode = 2
+
+[node name="PositionXSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox/PositionHBox"]
+layout_mode = 2
+
+[node name="PositionYSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox/PositionHBox"]
+layout_mode = 2
+
+[node name="RotationVBox" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
+layout_mode = 2
+
+[node name="RotationLabel" type="Label" parent="EffectsVBox/VisualsVBox/TransformsVBox/RotationVBox"]
+layout_mode = 2
+text = "Rotation:"
+
+[node name="RotationHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/TransformsVBox/RotationVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScaleVBox" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
+layout_mode = 2
+
+[node name="ScaleLabel" type="Label" parent="EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox"]
+layout_mode = 2
+text = "Scale:"
+
+[node name="ScaleHBox" type="HBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox"]
+layout_mode = 2
+
+[node name="ScaleXSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox/ScaleHBox"]
+layout_mode = 2
+
+[node name="ScaleYSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox/ScaleHBox"]
+layout_mode = 2
+
+[node name="PivotVBox" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
+layout_mode = 2
+
+[node name="PivotLabel" type="Label" parent="EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox"]
+layout_mode = 2
+text = "Pivot:"
+
+[node name="PivotHBox" type="HBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox"]
+layout_mode = 2
+
+[node name="PivotXSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox/PivotHBox"]
+layout_mode = 2
+
+[node name="PivotYSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox/PivotHBox"]
+layout_mode = 2
+
+[node name="VBoxContainer5" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
+layout_mode = 2
+
+[node name="BasicsGrid" type="GridContainer" parent="EffectsVBox/VisualsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="BrightnessLabel" type="Label" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brightness:"
+
+[node name="BrightnessHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContrastLabel" type="Label" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Contrast:"
+
+[node name="ContrastHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SaturationLabel" type="Label" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Saturation:"
+
+[node name="SaturationHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AlphaLabel" type="Label" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Alpha"
+
+[node name="AlphaHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/BasicsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="ExtraGrid" type="GridContainer" parent="EffectsVBox/VisualsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="RedValueLabel" type="Label" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Red value"
+
+[node name="RedValueHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GreenValueLabel" type="Label" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Green value:"
+
+[node name="GreenValueHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BlueValueLabel" type="Label" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Blue value:"
+
+[node name="BlueValueHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TintColorLabel" type="Label" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tint color:"
+
+[node name="TintColorPickerButton" type="ColorPickerButton" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TintEffectFactorLabel" type="Label" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tint intensity:"
+
+[node name="TintEffectFactorHSlider" type="HSlider" parent="EffectsVBox/VisualsVBox/ExtraGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator2" type="HSeparator" parent="EffectsVBox/VisualsVBox"]
+layout_mode = 2

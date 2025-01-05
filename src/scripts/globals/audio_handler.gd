@@ -20,6 +20,7 @@ func _ready() -> void:
 
 		players.append(l_player)
 		streams.append(l_stream)
+		add_child(l_player)
 
 		l_stream.format = AudioStreamWAV.FORMAT_16_BITS
 		l_stream.stereo = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=18 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_6sk7e"]
 [ext_resource type="Script" path="res://scripts/menu_bar.gd" id="2_ape6y"]
@@ -25,6 +25,12 @@ corner_radius_bottom_right = 26
 content_margin_left = 3.0
 content_margin_right = 3.0
 bg_color = Color(0.0941176, 0.0941176, 0.0941176, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ovds5"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -138,16 +144,16 @@ text = "Frame: 0/0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="VBox"]
+[node name="MarginContainer" type="TabContainer" parent="VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 3
-theme_override_constants/margin_bottom = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ovds5")
+current_tab = 0
+tabs_visible = false
 
 [node name="VBox" type="VBoxContainer" parent="VBox/MarginContainer"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="HBox" type="HBoxContainer" parent="VBox/MarginContainer/VBox"]
 layout_mode = 2
