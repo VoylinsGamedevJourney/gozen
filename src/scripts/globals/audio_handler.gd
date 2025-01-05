@@ -1,9 +1,6 @@
-class_name AudioHandler extends Node
+extends Node
 
 # TODO: For double speed, change mix_rate or pitch (mix rate is easier)
-
-
-static var instance: AudioHandler
 
 # Numbers are: mix_rate, stereo, 16 bits so 2 bytes per sample
 static var bytes_per_frame: int
@@ -15,16 +12,15 @@ var streams: Array[AudioStreamWAV] = []
 
 
 func _ready() -> void:
-	instance = self
 	bytes_per_frame = int(float(44100 * 2 * 2) / Project.framerate)
 
 	for i: int in 6:
-		players.append(get_child(i))
-	
-	for l_player: AudioStreamPlayer in players:
+		var l_player: AudioStreamPlayer = AudioStreamPlayer.new()
 		var l_stream: AudioStreamWAV = AudioStreamWAV.new()
 
+		players.append(l_player)
 		streams.append(l_stream)
+
 		l_stream.format = AudioStreamWAV.FORMAT_16_BITS
 		l_stream.stereo = true
 		l_player.stream = l_stream

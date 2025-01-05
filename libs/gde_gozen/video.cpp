@@ -281,7 +281,6 @@ bool Video::open(String a_path) {
 }
 
 void Video::close() {
-	_log("Closing file on path: " + (String)path.c_str());
 	loaded = false;
 
 	if (av_frame)
