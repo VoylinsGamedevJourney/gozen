@@ -16,7 +16,7 @@ func _ready() -> void:
 	if mouse_exited.connect(func() -> void: preview.visible = false):
 		printerr("Couldn't connect mouse_exited!")
 
-	if Project.timeline_scale_changed.connect(_on_timeline_scale_changed):
+	if Project._on_timeline_scale_changed.connect(_on_timeline_scale_changed):
 		printerr("Couldn't connect timeline_scale_changed!")
 
 

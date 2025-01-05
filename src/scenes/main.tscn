@@ -1,15 +1,30 @@
-[gd_scene load_steps=9 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=17 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_6sk7e"]
 [ext_resource type="Script" path="res://scripts/menu_bar.gd" id="2_ape6y"]
 [ext_resource type="PackedScene" uid="uid://clxwikblkyucr" path="res://scenes/files_panel.tscn" id="3_6pnh6"]
 [ext_resource type="Texture2D" uid="uid://bv3xxhbb81md5" path="res://logo.svg" id="3_piflc"]
-[ext_resource type="PackedScene" uid="uid://b1kfy4fvd6fjw" path="res://scenes/view_panel.tscn" id="4_5b31x"]
+[ext_resource type="Script" path="res://scripts/status_bar.gd" id="3_qlddx"]
+[ext_resource type="Texture2D" uid="uid://dxg1oo4c2cmhr" path="res://assets/icons/layouts/editor_icon.png" id="4_blfpg"]
+[ext_resource type="Texture2D" uid="uid://br5sv7q167obp" path="res://assets/icons/window/minimize.png" id="4_plua6"]
+[ext_resource type="Texture2D" uid="uid://b7iw0yh8hp2m7" path="res://assets/icons/layouts/render_icon.png" id="5_aurtj"]
+[ext_resource type="Texture2D" uid="uid://cbcfmcyepa0ag" path="res://assets/icons/window/maximize.png" id="5_pemgp"]
 [ext_resource type="PackedScene" uid="uid://cmv40pg6t5bat" path="res://scenes/effects_panel.tscn" id="5_uog5s"]
 [ext_resource type="PackedScene" uid="uid://i0b2chrh82xc" path="res://scenes/timeline_panel.tscn" id="6_bexox"]
+[ext_resource type="Texture2D" uid="uid://dh6fp0s0eppwn" path="res://assets/icons/window/close.png" id="6_tbbno"]
+[ext_resource type="Script" path="res://scripts/view_panel.gd" id="11_mpdmj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bx7lp"]
+bg_color = Color(1, 1, 1, 0.054902)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fh8o4"]
+bg_color = Color(0.0941176, 0.0941176, 0.0941176, 1)
+corner_radius_bottom_right = 26
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hg6qg"]
-bg_color = Color(0.153778, 0.153778, 0.153778, 1)
+content_margin_left = 3.0
+content_margin_right = 3.0
+bg_color = Color(0.0941176, 0.0941176, 0.0941176, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -30,54 +45,98 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="MenuBarPanel" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bx7lp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBox/MenuBarPanel"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="GoZenButton" type="Button" parent="VBox/MenuBarPanel/HBoxContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_fh8o4")
+icon = ExtResource("3_piflc")
+icon_alignment = 1
+expand_icon = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="TopMenuBarPanel" type="PanelContainer" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hg6qg")
 script = ExtResource("2_ape6y")
 
-[node name="Label" type="Label" parent="VBox/MenuBarPanel"]
+[node name="Label" type="Label" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel"]
 layout_mode = 2
-text = "*Project"
+text = "*New project"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBox/MenuBarPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel"]
 layout_mode = 2
 
-[node name="GoZenLogoButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+[node name="LayoutsHBox" type="HBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EditingLayoutButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/LayoutsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture_normal = ExtResource("3_piflc")
+texture_normal = ExtResource("4_blfpg")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="LayoutsHBox" type="HBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer"]
-layout_mode = 2
-
-[node name="EditingLayoutButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/LayoutsHBox"]
+[node name="RenderLayoutButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/LayoutsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+texture_normal = ExtResource("5_aurtj")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="RenderLayoutButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/LayoutsHBox"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-
-[node name="Spacer" type="Control" parent="VBox/MenuBarPanel/HBoxContainer"]
+[node name="WindowButtons" type="HBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 2
+alignment = 2
 
-[node name="MinimizeButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+[node name="MinimizeButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+texture_normal = ExtResource("4_plua6")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="MaximizeButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+[node name="MaximizeButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+texture_normal = ExtResource("5_pemgp")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="ExitButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer"]
+[node name="ExitButton" type="TextureButton" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+texture_normal = ExtResource("6_tbbno")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="StatusBarHBox" type="HBoxContainer" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_qlddx")
+
+[node name="FrameLabel" type="Label" parent="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/StatusBarHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Frame: 0/0"
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBox"]
 layout_mode = 2
@@ -97,8 +156,27 @@ size_flags_vertical = 3
 [node name="FilesPanel" parent="VBox/MarginContainer/VBox/HBox" instance=ExtResource("3_6pnh6")]
 layout_mode = 2
 
-[node name="ViewPanel" parent="VBox/MarginContainer/VBox/HBox" instance=ExtResource("4_5b31x")]
+[node name="ViewPanel" type="PanelContainer" parent="VBox/MarginContainer/VBox/HBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("11_mpdmj")
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MarginContainer/VBox/HBox/ViewPanel"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBox/MarginContainer/VBox/HBox/ViewPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="VBox/MarginContainer/VBox/HBox/ViewPanel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="VBox/MarginContainer/VBox/HBox/ViewPanel/VBox/PlaybackButtonsHBox"]
+layout_mode = 2
+text = "Play"
 
 [node name="EffectsPanel" parent="VBox/MarginContainer/VBox/HBox" instance=ExtResource("5_uog5s")]
 layout_mode = 2
@@ -107,6 +185,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="ResizeHandles" type="Control" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -114,6 +193,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="RightResizeHandle" type="Control" parent="ResizeHandles"]
 custom_minimum_size = Vector2(5, 5)
@@ -158,7 +238,11 @@ grow_vertical = 0
 mouse_filter = 1
 mouse_default_cursor_shape = 12
 
-[connection signal="gui_input" from="VBox/MenuBarPanel" to="." method="_on_menu_bar_panel_gui_input"]
+[connection signal="gui_input" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel" to="." method="_on_menu_bar_panel_gui_input"]
+[connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/MaximizeButton" to="." method="_on_maximize_button_pressed"]
+[connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="VBox/MarginContainer/VBox/HBox/ViewPanel/VBox/PlaybackButtonsHBox/PlayButton" to="VBox/MarginContainer/VBox/HBox/ViewPanel" method="_on_play_button_pressed"]
 [connection signal="gui_input" from="ResizeHandles/RightResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [1]]
 [connection signal="gui_input" from="ResizeHandles/BottomResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [2]]
 [connection signal="gui_input" from="ResizeHandles/CornerResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [3]]

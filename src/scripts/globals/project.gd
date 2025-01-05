@@ -1,7 +1,8 @@
 extends Node
 
 
-signal timeline_scale_changed
+signal _on_timeline_scale_changed
+signal _on_timeline_end_changed
 
 
 var _path: String = ""
@@ -15,7 +16,7 @@ var resolution: Vector2i = Vector2i(1920,1080)
 
 var framerate: int = 30
 var timeline_scale: float = 1.0 : set = set_timeline_scale # How many pixels 1 frame takes 
-var timeline_end: int = 0
+var timeline_end: int = 0: set = set_timeline_end
 
 var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track
 var clips: Dictionary = {} # {id: ClipData}
@@ -193,5 +194,10 @@ func set_timeline_scale(a_new_value: float) -> void:
 		return
 
 	timeline_scale = a_new_value
-	timeline_scale_changed.emit()
+	_on_timeline_scale_changed.emit()
+
+
+func set_timeline_end(a_new_value: int) -> void:
+	timeline_end = a_new_value
+	_on_timeline_end_changed.emit()
 

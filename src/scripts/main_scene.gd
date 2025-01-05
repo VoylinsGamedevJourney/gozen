@@ -22,8 +22,8 @@ func _ready() -> void:
 			return
 
 		if l_output[0] == "i3\n":
-			get_node("ResizeHandles").queue_free()
-			get_node("VBox/MenuBarPanel/HBoxContainer/WindowButtons").queue_free()
+			%ResizeHandles.queue_free()
+			%WindowButtons.queue_free()
 			get_window().borderless = false
 
 
