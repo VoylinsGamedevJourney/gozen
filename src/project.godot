@@ -22,6 +22,7 @@ config/icon="res://logo.svg"
 [autoload]
 
 Utils="*res://scripts/globals/utils.gd"
+AudioHandler="*res://scripts/globals/audio_handler.gd"
 Settings="*res://scripts/globals/settings.gd"
 Project="*res://scripts/globals/project.gd"
 View="*res://scripts/globals/view.gd"
@@ -88,3 +89,4 @@ timeline_zoom_out={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.213768, 0.21201, 0.214876, 1)

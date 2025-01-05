@@ -4,7 +4,6 @@ class_name Playhead extends Panel
 @onready var main: Control = get_parent()
 
 static var instance: Playhead
-static var frame_nr: int = 0
 static var is_moving: bool = false
 
 var playback_before_moving: bool = false
@@ -12,7 +11,8 @@ var playback_before_moving: bool = false
 
 func _ready() -> void:
 	instance = self
-	View._set_frame(0, true)
+	if View._on_frame_nr_changed.connect(move):
+		printerr("Couldn't connect to _on_frame_nr_changed!")
 
 
 func _process(_delta: float) -> void:
@@ -20,7 +20,7 @@ func _process(_delta: float) -> void:
 		var l_new_frame: int = clampi(
 				floori(main.get_local_mouse_position().x / Project.timeline_scale),
 				0, Project.timeline_end)
-		if l_new_frame != frame_nr:
+		if l_new_frame != View.frame_nr:
 			View._set_frame(l_new_frame, true)
 
 
@@ -40,34 +40,6 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 					View._on_play_button_pressed()
 
 
-func step() -> int:
-	# Go one frame further
-	frame_nr += 1
-	position.x += Project.timeline_scale
-
-	_on_end_check()
-	return frame_nr
-
-
-func move(a_frame_nr: int) -> void:
-	# Move playhead frame further
-	frame_nr = a_frame_nr
-	position.x = Project.timeline_scale * frame_nr
-
-	_on_end_check()
-
-
-func skip(a_amount: int) -> int:
-	# Move playhead frame further
-	frame_nr += a_amount
-	position.x = Project.timeline_scale * frame_nr
-
-	_on_end_check()
-	return frame_nr
-
-
-func _on_end_check() -> void:
-	if frame_nr >= Project.timeline_end:
-		View._on_end_reached()
-		frame_nr = Project.timeline_end
+func move() -> void:
+	position.x = Project.timeline_scale * View.frame_nr
 

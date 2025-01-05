@@ -54,8 +54,8 @@ func _input(a_event: InputEvent) -> void:
 	if button_pressed and a_event.is_action_pressed("clip_split"):
 		Project.undo_redo.create_action("Deleting clip on timeline")
 
-		Project.undo_redo.add_do_method(_cut_clip.bind(Playhead.frame_nr))
-		Project.undo_redo.add_undo_method(_uncut_clip.bind(Playhead.frame_nr))
+		Project.undo_redo.add_do_method(_cut_clip.bind(View.frame_nr))
+		Project.undo_redo.add_undo_method(_uncut_clip.bind(View.frame_nr))
 
 		Project.undo_redo.add_do_method(View._update_frame)
 		Project.undo_redo.add_undo_method(View._update_frame)

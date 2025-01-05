@@ -1,9 +1,13 @@
 extends Node
-# Current frame_nr should be gotten from the Playhead class
+
+signal _on_frame_nr_changed
+
 
 const VISUAL_TYPES: PackedInt64Array = [ File.TYPE.IMAGE, File.TYPE.VIDEO ]
 const AUDIO_TYPES: PackedInt64Array = [ File.TYPE.AUDIO, File.TYPE.VIDEO ]
 
+
+var frame_nr: int = 0
 
 var main_view: SubViewport
 var views: Array[TextureRect] = []
@@ -41,8 +45,7 @@ func _ready() -> void:
 	l_background.color = Color.BLACK
 
 	main_view.add_child(l_background)
-
-	
+	_set_frame(0, true)
 
 
 func _process(a_delta: float) -> void:
@@ -60,23 +63,24 @@ func _process(a_delta: float) -> void:
 			skips += 1
 
 		if skips <= 1:
-			_set_frame(Playhead.instance.skip(skips))
+			frame_nr += skips
+			_set_frame(frame_nr)
 			# TODO: We have to adjust the audio playback as well when skipping happens
 		else:
 			_set_frame()
 
 
 func _on_play_button_pressed() -> void:
-	if Playhead.frame_nr == Project.timeline_end:
-		AudioHandler.instance.stop_all_audio()
+	if frame_nr == Project.timeline_end:
+		AudioHandler.stop_all_audio()
 		return _on_end_reached()
 
 	is_playing = !is_playing
 
 	if is_playing:
-		AudioHandler.instance.play_all_audio()
+		AudioHandler.play_all_audio()
 	else:
-		AudioHandler.instance.stop_all_audio()
+		AudioHandler.stop_all_audio()
 
 
 func _on_end_reached() -> void:
@@ -84,10 +88,10 @@ func _on_end_reached() -> void:
 
 
 func _update_frame() -> void:
-	_set_frame(Playhead.frame_nr, true)
+	_set_frame(frame_nr, true)
 
 
-func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bool = false) -> void:
+func _set_frame(a_frame_nr: int = step_playhead(), a_force_playhead: bool = false) -> void:
 	# WARN: We need to take in mind frame skipping! We can skip over the moment
 	# that a frame is supposed to appear or start playing!
 	for i: int in loaded_clips.size():
@@ -101,17 +105,20 @@ func _set_frame(a_frame_nr: int = Playhead.instance.step(), a_force_playhead: bo
 
 		if l_clip_id == -1:
 			loaded_clips[i] = null
-			AudioHandler.instance.stop_audio(i)
+			AudioHandler.stop_audio(i)
 		else:
 			loaded_clips[i] = Project.clips[l_clip_id]
-			AudioHandler.instance.set_audio(
+			AudioHandler.set_audio(
 					i, loaded_clips[i].get_audio(),
 					a_frame_nr - loaded_clips[i].start_frame)
 		set_view(i)
 		update_view(i, a_frame_nr)
 	
 	if a_force_playhead:
-		Playhead.instance.move(a_frame_nr)
+		frame_nr = a_frame_nr
+		_on_end_check()
+
+	_on_frame_nr_changed.emit()
 
 
 func set_view(a_id: int) -> void: # a_id is track id
@@ -207,7 +214,7 @@ func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 
 	# Setting the audio to the correct position
 	if a_set_audio:
-		AudioHandler.instance.set_audio(
+		AudioHandler.set_audio(
 			a_id, loaded_clips[a_id].get_audio(), a_frame_nr - loaded_clips[a_id].start_frame)
 
 	return true
@@ -234,3 +241,16 @@ func _check_clip_end(a_frame_nr: int, a_clip_id: int) -> bool:
 
 	return false if !l_clip else a_frame_nr < l_clip.start_frame + l_clip.duration
 
+
+func step_playhead() -> int:
+	frame_nr += 1
+	_on_end_check()
+	_on_frame_nr_changed.emit()
+
+	return frame_nr
+
+
+func _on_end_check() -> void:
+	if frame_nr >= Project.timeline_end:
+		_on_end_reached()
+		frame_nr = Project.timeline_end
