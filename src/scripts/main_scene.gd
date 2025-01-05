@@ -1,6 +1,12 @@
 extends Control
 ## Mainly for handling the window itself
 
+@export var main_tab_container: TabContainer
+@export var layout_buttons: Array[Button]
+@export var layout_indicator: Panel
+
+
+
 var resizing: bool = false
 var new_size: Vector2i = Vector2i.ZERO
 
@@ -26,10 +32,19 @@ func _ready() -> void:
 			%WindowButtons.queue_free()
 			get_window().borderless = false
 
+	_on_switch_layout(0)
+
 
 func _process(_delta: float) -> void:
 	if resizing:
 		get_window().size = new_size
+
+	
+func _input(a_event: InputEvent) -> void:
+	if a_event.is_action_pressed("layout_1"):
+		_on_switch_layout(0)
+	if a_event.is_action_pressed("layout_2"):
+		_on_switch_layout(1)
 
 
 # 1 = Right, 2 = Bottom, 3 = Corner
@@ -76,4 +91,20 @@ func _on_maximize_button_pressed() -> void:
 
 func _on_minimize_button_pressed() -> void:
 	get_window().mode = Window.MODE_MINIMIZED
+
+
+func _on_switch_layout(a_tab_index: int) -> void:
+	if RenderMenu.is_rendering:
+		print("Can't change layout when rendering!")
+		return
+
+	# Switch the tab in the MainTabContainer
+	main_tab_container.current_tab = a_tab_index
+
+	# Move the indicator to the correct button (+3 for the padding of container)
+	layout_indicator.position.x = layout_buttons[a_tab_index].position.x + 3
+
+	# Make other layout buttons dimmer to be more clear
+	for i: int in layout_buttons.size():
+		layout_buttons[i].modulate.a = 1.0 if a_tab_index == i else 0.5
 

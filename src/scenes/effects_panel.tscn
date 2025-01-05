@@ -8,7 +8,7 @@ content_margin_top = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.133412, 0.130756, 0.130756, 1)
 
-[node name="EffectsPanel" type="ScrollContainer" node_paths=PackedStringArray("volume_slider", "mono_option_button", "size_x", "size_y", "position_x", "position_y", "rotation_slider", "scale_x", "scale_y")]
+[node name="EffectsPanel" type="ScrollContainer" node_paths=PackedStringArray("volume_slider", "mono_option_button", "size_x", "size_y", "position_x", "position_y", "rotation_slider", "scale_x", "scale_y", "pivot_x", "pivot_y", "brightness_slider", "contrast_slider", "saturation_slider", "alpha_slider", "red_value_slider", "green_value_slider", "blue_value_slider", "tint_color_picker_button", "tint_value_slider")]
 custom_minimum_size = Vector2(300, 0)
 offset_right = 300.0
 offset_bottom = 824.0
@@ -24,6 +24,17 @@ position_y = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/PositionVBox/Posit
 rotation_slider = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/RotationVBox/RotationHSlider")
 scale_x = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox/ScaleHBox/ScaleXSpinBox")
 scale_y = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/ScaleVBox/ScaleHBox/ScaleYSpinBox")
+pivot_x = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox/PivotHBox/PivotXSpinBox")
+pivot_y = NodePath("EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox/PivotHBox/PivotYSpinBox")
+brightness_slider = NodePath("EffectsVBox/VisualsVBox/BasicsGrid/BrightnessHSlider")
+contrast_slider = NodePath("EffectsVBox/VisualsVBox/BasicsGrid/ContrastHSlider")
+saturation_slider = NodePath("EffectsVBox/VisualsVBox/BasicsGrid/SaturationHSlider")
+alpha_slider = NodePath("EffectsVBox/VisualsVBox/BasicsGrid/AlphaHSlider")
+red_value_slider = NodePath("EffectsVBox/VisualsVBox/ExtraGrid/RedValueHSlider")
+green_value_slider = NodePath("EffectsVBox/VisualsVBox/ExtraGrid/GreenValueHSlider")
+blue_value_slider = NodePath("EffectsVBox/VisualsVBox/ExtraGrid/BlueValueHSlider")
+tint_color_picker_button = NodePath("EffectsVBox/VisualsVBox/ExtraGrid/TintColorPickerButton")
+tint_value_slider = NodePath("EffectsVBox/VisualsVBox/ExtraGrid/TintEffectFactorHSlider")
 
 [node name="EffectsVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -171,9 +182,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="PivotYSpinBox" type="SpinBox" parent="EffectsVBox/VisualsVBox/TransformsVBox/PivotVBox/PivotHBox"]
-layout_mode = 2
-
-[node name="VBoxContainer5" type="VBoxContainer" parent="EffectsVBox/VisualsVBox/TransformsVBox"]
 layout_mode = 2
 
 [node name="BasicsGrid" type="GridContainer" parent="EffectsVBox/VisualsVBox"]
