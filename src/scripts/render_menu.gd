@@ -61,7 +61,7 @@ func _on_render_button_pressed() -> void:
 
 		# We need to wait else getting the image doesn't work
 		await RenderingServer.frame_post_draw
-		if !renderer.send_frame(View.main_view.get_texture().get_image()):
+		if !renderer.send_frame(frame_texture.get_image()):
 			printerr("Couldn't send frame to renderer!")
 			return
 
