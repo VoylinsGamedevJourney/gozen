@@ -3,11 +3,16 @@
 [ext_resource type="Script" path="res://scripts/timeline_clips.gd" id="2_1atm4"]
 [ext_resource type="Script" path="res://scripts/playhead.gd" id="2_mi352"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btch5"]
-content_margin_left = 5.0
-content_margin_top = 0.0
-content_margin_bottom = 0.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxfkv"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.133412, 0.130756, 0.130756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_jcy7d"]
 color = Color(0.547811, 0, 0.914108, 0.533333)
@@ -22,7 +27,7 @@ anchor_right = 1.0
 offset_bottom = 204.0
 grow_horizontal = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_btch5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sxfkv")
 metadata/_edit_lock_ = true
 
 [node name="Lines" type="VBoxContainer" parent="."]

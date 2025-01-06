@@ -2,17 +2,21 @@
 
 [ext_resource type="Script" path="res://scripts/effects_panel.gd" id="1_4bfaj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1r5j1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i2hu2"]
 content_margin_left = 5.0
 content_margin_top = 0.0
 content_margin_bottom = 0.0
 bg_color = Color(0.133412, 0.130756, 0.130756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="EffectsPanel" type="ScrollContainer" node_paths=PackedStringArray("volume_slider", "mono_option_button", "size_x", "size_y", "position_x", "position_y", "rotation_slider", "scale_x", "scale_y", "pivot_x", "pivot_y", "brightness_slider", "contrast_slider", "saturation_slider", "alpha_slider", "red_value_slider", "green_value_slider", "blue_value_slider", "tint_color_picker_button", "tint_value_slider")]
-custom_minimum_size = Vector2(300, 0)
-offset_right = 300.0
+custom_minimum_size = Vector2(200, 0)
+offset_right = 280.0
 offset_bottom = 824.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_1r5j1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_i2hu2")
 horizontal_scroll_mode = 0
 script = ExtResource("1_4bfaj")
 volume_slider = NodePath("EffectsVBox/AudioVBox/VolumeHBox/VolumeHSlider")

@@ -71,11 +71,16 @@ content_margin_top = 3.0
 content_margin_right = 3.0
 content_margin_bottom = 3.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a22x2"]
-content_margin_left = 5.0
-content_margin_top = 0.0
-content_margin_bottom = 0.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ah4wg"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.133412, 0.130756, 0.130756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="Control" type="Control" node_paths=PackedStringArray("main_tab_container", "layout_buttons", "layout_indicator")]
 layout_mode = 3
@@ -229,39 +234,45 @@ tabs_visible = false
 
 [node name="EditingLayout" type="VBoxContainer" parent="VBox/MainTabContainer"]
 layout_mode = 2
+theme_override_constants/separation = 8
 metadata/_tab_index = 0
 
-[node name="HBox" type="HBoxContainer" parent="VBox/MainTabContainer/EditingLayout"]
+[node name="HSplit" type="HSplitContainer" parent="VBox/MainTabContainer/EditingLayout"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 3
 
-[node name="FilesPanel" parent="VBox/MainTabContainer/EditingLayout/HBox" instance=ExtResource("3_6pnh6")]
+[node name="FilesPanel" parent="VBox/MainTabContainer/EditingLayout/HSplit" instance=ExtResource("3_6pnh6")]
 layout_mode = 2
 
-[node name="ViewPanel" type="PanelContainer" parent="VBox/MainTabContainer/EditingLayout/HBox"]
+[node name="HSplit" type="HSplitContainer" parent="VBox/MainTabContainer/EditingLayout/HSplit"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ViewPanel" type="PanelContainer" parent="VBox/MainTabContainer/EditingLayout/HSplit/HSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_a22x2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ah4wg")
 script = ExtResource("11_mpdmj")
 
-[node name="VBox" type="VBoxContainer" parent="VBox/MainTabContainer/EditingLayout/HBox/ViewPanel"]
+[node name="VBox" type="VBoxContainer" parent="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="VBox/MainTabContainer/EditingLayout/HBox/ViewPanel/VBox"]
+[node name="TextureRect" type="TextureRect" parent="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="VBox/MainTabContainer/EditingLayout/HBox/ViewPanel/VBox"]
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
 layout_mode = 2
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="VBox/MainTabContainer/EditingLayout/HBox/ViewPanel/VBox/PlaybackButtonsHBox"]
+[node name="PlayButton" type="Button" parent="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/PlaybackButtonsHBox"]
 layout_mode = 2
 text = "Play"
 
-[node name="EffectsPanel" parent="VBox/MainTabContainer/EditingLayout/HBox" instance=ExtResource("5_uog5s")]
+[node name="EffectsPanel" parent="VBox/MainTabContainer/EditingLayout/HSplit/HSplit" instance=ExtResource("5_uog5s")]
 layout_mode = 2
 
 [node name="TimelinePanel" parent="VBox/MainTabContainer/EditingLayout" instance=ExtResource("6_bexox")]
@@ -332,7 +343,7 @@ mouse_default_cursor_shape = 12
 [connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/MinimizeButton" to="." method="_on_minimize_button_pressed"]
 [connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/MaximizeButton" to="." method="_on_maximize_button_pressed"]
 [connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/ExitButton" to="." method="_on_exit_button_pressed"]
-[connection signal="pressed" from="VBox/MainTabContainer/EditingLayout/HBox/ViewPanel/VBox/PlaybackButtonsHBox/PlayButton" to="VBox/MainTabContainer/EditingLayout/HBox/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/PlaybackButtonsHBox/PlayButton" to="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
 [connection signal="gui_input" from="ResizeHandles/RightResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [1]]
 [connection signal="gui_input" from="ResizeHandles/BottomResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [2]]
 [connection signal="gui_input" from="ResizeHandles/CornerResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [3]]
