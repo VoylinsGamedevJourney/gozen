@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=35 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_6sk7e"]
 [ext_resource type="Script" path="res://scripts/menu_bar.gd" id="2_ape6y"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://i0b2chrh82xc" path="res://scenes/timeline_panel.tscn" id="6_bexox"]
 [ext_resource type="Texture2D" uid="uid://dh6fp0s0eppwn" path="res://assets/icons/window/close.png" id="6_tbbno"]
 [ext_resource type="Script" path="res://scripts/view_panel.gd" id="11_mpdmj"]
+[ext_resource type="Script" path="res://scripts/render_layout.gd" id="14_0vgd5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bx7lp"]
 bg_color = Color(1, 1, 1, 0.054902)
@@ -229,10 +230,11 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ovds5")
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="EditingLayout" type="VBoxContainer" parent="VBox/MainTabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 0
@@ -278,10 +280,19 @@ layout_mode = 2
 [node name="TimelinePanel" parent="VBox/MainTabContainer/EditingLayout" instance=ExtResource("6_bexox")]
 layout_mode = 2
 
-[node name="RenderingLayout" type="VBoxContainer" parent="VBox/MainTabContainer"]
-visible = false
+[node name="RenderingLayout" type="VBoxContainer" parent="VBox/MainTabContainer" node_paths=PackedStringArray("render_path")]
 layout_mode = 2
+script = ExtResource("14_0vgd5")
+render_path = NodePath("PathLineEdit")
 metadata/_tab_index = 1
+
+[node name="PathLineEdit" type="LineEdit" parent="VBox/MainTabContainer/RenderingLayout"]
+layout_mode = 2
+text = "/storage/video.mp4"
+
+[node name="RenderButton" type="Button" parent="VBox/MainTabContainer/RenderingLayout"]
+layout_mode = 2
+text = "Render"
 
 [node name="ResizeHandles" type="Control" parent="."]
 unique_name_in_owner = true
@@ -344,6 +355,7 @@ mouse_default_cursor_shape = 12
 [connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/MaximizeButton" to="." method="_on_maximize_button_pressed"]
 [connection signal="pressed" from="VBox/MenuBarPanel/HBoxContainer/VBoxContainer/TopMenuBarPanel/HBoxContainer/WindowButtons/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="pressed" from="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/PlaybackButtonsHBox/PlayButton" to="VBox/MainTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBox/MainTabContainer/RenderingLayout/RenderButton" to="VBox/MainTabContainer/RenderingLayout" method="_on_render_button_pressed"]
 [connection signal="gui_input" from="ResizeHandles/RightResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [1]]
 [connection signal="gui_input" from="ResizeHandles/BottomResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [2]]
 [connection signal="gui_input" from="ResizeHandles/CornerResizeHandle" to="." method="_on_resize_handle_gui_input" binds= [3]]

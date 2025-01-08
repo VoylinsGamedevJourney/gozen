@@ -94,7 +94,7 @@ func _on_minimize_button_pressed() -> void:
 
 
 func _on_switch_layout(a_tab_index: int) -> void:
-	if RenderMenu.is_rendering:
+	if RenderLayout.is_rendering:
 		print("Can't change layout when rendering!")
 		return
 

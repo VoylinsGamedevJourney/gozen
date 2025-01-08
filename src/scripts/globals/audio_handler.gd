@@ -28,7 +28,7 @@ func _ready() -> void:
 
 
 func set_audio(a_track: int, a_audio: PackedByteArray, a_frame: int) -> void:
-	if a_audio.size() == 0 or RenderMenu.is_rendering:
+	if a_audio.size() == 0 or RenderLayout.is_rendering:
 		stop_audio(a_track)
 		return
 
@@ -64,3 +64,44 @@ func reset_audio_streams() -> void:
 	for i: int in 6:
 		reset_audio_stream(i)
 
+
+func render_audio() -> PackedByteArray:
+	var l_audio: PackedByteArray = []
+
+	for l_track_id: int in Project.tracks.size():
+		var l_track_audio: PackedByteArray = []
+
+		for l_frame_point: int in Project.tracks[l_track_id].keys():
+			var l_clip: ClipData = Project.clips[Project.tracks[l_track_id][l_frame_point]]
+
+			if l_clip.type in View.AUDIO_TYPES:
+				# Check if we need to add empty data to track_audio
+				if l_track_audio.size() != l_clip.start_frame * AudioHandler.bytes_per_frame:
+					if l_track_audio.resize(l_clip.start_frame * AudioHandler.bytes_per_frame):
+						printerr("Couldn't resize l_track_audio!")
+						print("resized array")
+
+				# Add the data to l_track_audio
+				l_track_audio.append_array(l_clip.get_audio())
+
+			# Check if audio is empty or not
+			if l_track_audio.size() == 0:
+				continue
+
+			# check for mistakes
+			if l_track_audio.size() > (Project.timeline_end + 1) * AudioHandler.bytes_per_frame:
+				printerr("Too much audio data!")
+
+			# Resize the last parts to equal the size to timeline_end
+			if l_track_audio.resize((Project.timeline_end + 1) * AudioHandler.bytes_per_frame):
+				printerr("Couldn't resize l_track_audio!")
+
+		if l_audio.size() == 0:
+			l_audio = l_track_audio
+		elif l_audio.size() == l_track_audio.size():
+			l_audio = Audio.combine_data(l_audio, l_track_audio)
+
+	# Check for the total audio length
+	#print((float(l_audio.size()) / AudioHandler.bytes_per_frame) / 30)
+	print("Rendering audio complete")
+	return l_audio

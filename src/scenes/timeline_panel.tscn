@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://i0b2chrh82xc"]
+[gd_scene load_steps=7 format=3 uid="uid://i0b2chrh82xc"]
 
 [ext_resource type="Script" path="res://scripts/timeline_clips.gd" id="2_1atm4"]
 [ext_resource type="Script" path="res://scripts/playhead.gd" id="2_mi352"]
@@ -17,6 +17,13 @@ corner_radius_bottom_left = 3
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_jcy7d"]
 color = Color(0.547811, 0, 0.914108, 0.533333)
 thickness = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ung8k"]
+bg_color = Color(0.6, 0.6, 0.6, 0.588235)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h5ind"]
 bg_color = Color(0.683393, 0, 1, 1)
@@ -114,6 +121,7 @@ layout_mode = 0
 offset_right = 229.0
 offset_bottom = 35.0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ung8k")
 
 [node name="Playhead" type="Panel" parent="ScrollContainer/Main"]
 custom_minimum_size = Vector2(2, 0)

@@ -198,6 +198,9 @@ static func get_frame_nr(a_pos_x: float) -> int:
 func get_lowest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2i]) -> int:
 	var l_lowest: int = -1
 
+	if a_track_id > Project.tracks.size():
+		return -1
+
 	for i: int in Project.tracks[a_track_id].keys():
 		if i < a_frame_nr:
 			if a_ignore.size() >= 1:
