@@ -122,11 +122,11 @@ func _set_frame(a_frame_nr: int = step_playhead(), a_force_playhead: bool = fals
 
 
 func set_view(a_id: int) -> void: # a_id is track id
-	var l_material: ShaderMaterial = views[a_id].material
+	var l_material: ShaderMaterial = views[-a_id].material
 
 	# Resetting the texture and shader when no clip is set
 	if loaded_clips[a_id] == null:
-		views[a_id].texture = null
+		views[-a_id].texture = null
 		l_material.shader = null
 		return
 
@@ -134,7 +134,7 @@ func set_view(a_id: int) -> void: # a_id is track id
 	if loaded_clips[a_id].type == File.TYPE.IMAGE:
 		var l_file_data: FileData = Project._files_data[loaded_clips[a_id].file_id]
 
-		views[a_id].texture = l_file_data.image
+		views[-a_id].texture = l_file_data.image
 		l_material.shader = preload("res://shaders/rgb.gdshader")
 
 	elif loaded_clips[a_id].type == File.TYPE.VIDEO:
@@ -149,7 +149,7 @@ func set_view(a_id: int) -> void: # a_id is track id
 
 		# Set resolution
 		l_tex.size = l_video.get_resolution()
-		views[a_id].texture = l_tex
+		views[-a_id].texture = l_tex
 
 		l_material.set_shader_parameter("resolution", l_video.get_resolution())
 
@@ -168,7 +168,7 @@ func set_view(a_id: int) -> void: # a_id is track id
 
 func update_view(a_id: int, a_frame_nr: int) -> void:
 	# Setting all effects and settings to clips
-	var l_material: ShaderMaterial = views[a_id].material
+	var l_material: ShaderMaterial = views[-a_id].material
 
 	if loaded_clips[a_id] == null or loaded_clips[a_id].type not in VISUAL_TYPES:
 		return
