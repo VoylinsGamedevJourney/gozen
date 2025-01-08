@@ -29,7 +29,9 @@ func get_duration() -> int:
 			File.TYPE.AUDIO:
 				l_file.duration = int(
 						float(audio.size()) / AudioHandler.bytes_per_frame)
-			File.TYPE.VIDEO: l_file.duration = video[0].get_frame_duration()
+			File.TYPE.VIDEO:
+				l_file.duration = floor(floor(video[0].get_frame_duration() /
+						video[0].get_framerate()) * Project.framerate)
 
 	return Project.files[id].duration
 
