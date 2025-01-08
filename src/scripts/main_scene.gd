@@ -13,6 +13,8 @@ var new_size: Vector2i = Vector2i.ZERO
 var moving: bool = false
 var move_offset: Vector2 = Vector2.ZERO
 
+var maximized: bool = false
+var old_size: Rect2i
 
 
 func _ready() -> void:
@@ -83,10 +85,16 @@ func _on_exit_button_pressed() -> void:
 
 
 func _on_maximize_button_pressed() -> void:
-	if get_window().mode == Window.MODE_WINDOWED:
-		get_window().set_mode(Window.MODE_MAXIMIZED)
+	if maximized:
+		get_window().set_size(old_size.size)
+		get_window().set_position(old_size.position)
+		maximized=false
+
 	else:
-		get_window().set_mode(Window.MODE_WINDOWED)
+		old_size=Rect2i(get_window().position,get_window().size)
+		get_window().set_size(DisplayServer.screen_get_usable_rect().size)
+		get_window().set_position(DisplayServer.screen_get_usable_rect().position)
+		maximized=true
 
 
 func _on_minimize_button_pressed() -> void:
