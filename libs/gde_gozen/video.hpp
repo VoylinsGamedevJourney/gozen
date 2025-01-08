@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <algorithm>
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/control.hpp>

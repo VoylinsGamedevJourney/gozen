@@ -368,38 +368,29 @@ void Video::_copy_frame_data() {
 		if (av_hwframe_transfer_data(av_hw_frame, av_frame, 0) < 0) {
 			UtilityFunctions::printerr("Error transferring the frame to system memory!");
 			return;
-		} else if (av_hw_frame->data[0] == nullptr) {
+		}
+	} else if (using_sws) {
+		sws_scale_frame(sws_ctx, av_hw_frame, av_frame);
+	}
+
+	if (hw_decoding || using_sws) {
+		if (av_hw_frame->data[0] == nullptr) {
 			_log_err("Frame is empty!");
 			return;
 		}
 
-		memcpy(y_data.ptrw(), av_hw_frame->data[0], y_data.size());
-		memcpy(u_data.ptrw(), av_hw_frame->data[1], u_data.size());
+		std::copy_n(av_hw_frame->data[0], y_data.size(), y_data.ptrw());
+		std::copy_n(av_hw_frame->data[1], u_data.size(), u_data.ptrw());
+		if (!hw_decoding)
+			std::copy_n(av_hw_frame->data[2], v_data.size(), v_data.ptrw());
 
 		av_frame_unref(av_hw_frame);
 		return;
-	} else {
-		if (av_frame->data[0] == nullptr) {
-			_log_err("Frame is empty!");
-			return;
-		}
-
-		if (using_sws) {
-			sws_scale_frame(sws_ctx, av_hw_frame, av_frame);
-
-			memcpy(y_data.ptrw(), av_hw_frame->data[0], y_data.size());
-			memcpy(u_data.ptrw(), av_hw_frame->data[1], u_data.size());
-			memcpy(v_data.ptrw(), av_hw_frame->data[2], v_data.size());
-
-			av_frame_unref(av_hw_frame);
-		} else {
-			memcpy(y_data.ptrw(), av_frame->data[0], y_data.size());
-			memcpy(u_data.ptrw(), av_frame->data[1], u_data.size());
-			memcpy(v_data.ptrw(), av_frame->data[2], v_data.size());
-		}
-
-		return;
 	}
+
+	std::copy_n(av_frame->data[0], y_data.size(), y_data.ptrw());
+	std::copy_n(av_frame->data[1], u_data.size(), u_data.ptrw());
+	std::copy_n(av_frame->data[2], v_data.size(), v_data.ptrw());
 }
 
 const AVCodec *Video::_get_hw_codec() {
