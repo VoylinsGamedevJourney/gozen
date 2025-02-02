@@ -267,7 +267,7 @@ bool Video::open(String a_path) {
 		av_stream_video->duration = duration;
 	}
 
-	frame_duration = (static_cast<double>(duration) / static_cast<double>(AV_TIME_BASE)) * framerate;
+	frame_count = (static_cast<double>(duration) / static_cast<double>(AV_TIME_BASE)) * framerate;
 
 	if (av_packet)
 		av_packet_unref(av_packet);

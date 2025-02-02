@@ -11,7 +11,7 @@ var wave: ImageTexture = null
 var padding: int = 0
 var resolution: Vector2i = Vector2i.ZERO
 var uv_resolution: Vector2i = Vector2i.ZERO
-var frame_duration: int = 0
+var frame_count: int = 0
 var framerate: float = 0.0
 
 var current_frame: PackedInt64Array = []
@@ -31,7 +31,7 @@ func get_duration() -> int:
 				l_file.duration = int(
 						float(audio.size()) / AudioHandler.bytes_per_frame)
 			File.TYPE.VIDEO:
-				l_file.duration = floor(floor(video[0].get_frame_duration() /
+				l_file.duration = floor(floor(video[0].get_frame_count() /
 						video[0].get_framerate()) * Project.framerate)
 
 	if audio.size() != 0:
@@ -79,6 +79,6 @@ func init_data() -> void:
 			resolution = video[0].get_resolution()
 			padding = video[0].get_padding()
 			uv_resolution = Vector2i(int((resolution.x + padding) / 2.), int(resolution.y / 2.))
-			frame_duration = video[0].get_frame_duration()
+			frame_count = video[0].get_frame_count()
 			framerate = video[0].get_framerate()
 
