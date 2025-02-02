@@ -1,7 +1,5 @@
 extends Button
 
-const WAVE_RECT_PATH: String = "res://objects/audio_wave_texture_rect.tscn"
-
 @onready var parent: Control = get_parent()
 
 var is_dragging: bool = false
@@ -31,7 +29,7 @@ func _ready() -> void:
 	if l_data.type in View.AUDIO_TYPES:
 		clip_children = CLIP_CHILDREN_AND_DRAW
 
-		wave_texture_rect = preload(WAVE_RECT_PATH).instantiate()
+		wave_texture_rect = preload("uid://ckgeq1wepgdxd").instantiate()
 		wave_texture_rect.position.x = -(Timeline.get_frame_pos(l_data.begin))
 		wave_texture_rect.texture = get_file_data().wave
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://i0b2chrh82xc"]
 
-[ext_resource type="Script" path="res://scripts/timeline.gd" id="1_t6m8t"]
+[ext_resource type="Script" uid="uid://yioe5cqd7tre" path="res://scripts/timeline.gd" id="1_t6m8t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxfkv"]
 content_margin_left = 3.0
@@ -20,7 +20,7 @@ thickness = 2
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h5ind"]
 bg_color = Color(0.683393, 0, 1, 1)
 
-[node name="TimelinePanel" type="PanelContainer" node_paths=PackedStringArray("scroll", "main", "clips", "preview", "playhead")]
+[node name="TimelinePanel" type="PanelContainer"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 204.0
@@ -28,11 +28,6 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_sxfkv")
 script = ExtResource("1_t6m8t")
-scroll = NodePath("TimelineScroll")
-main = NodePath("TimelineScroll/Main")
-clips = NodePath("TimelineScroll/Main/Clips")
-preview = NodePath("TimelineScroll/Main/Preview")
-playhead = NodePath("TimelineScroll/Main/Playhead")
 metadata/_edit_lock_ = true
 
 [node name="Lines" type="VBoxContainer" parent="."]
@@ -105,18 +100,21 @@ custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="TimelineScroll" type="ScrollContainer" parent="."]
+[node name="MainTimelineScroll" type="ScrollContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 vertical_scroll_mode = 0
 
-[node name="Main" type="Control" parent="TimelineScroll"]
+[node name="MainTimeline" type="Control" parent="MainTimelineScroll"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(1080, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="Clips" type="Control" parent="TimelineScroll/Main"]
+[node name="MainClips" type="Control" parent="MainTimelineScroll/MainTimeline"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -125,7 +123,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="Preview" type="Control" parent="TimelineScroll/Main"]
+[node name="MainPreview" type="Control" parent="MainTimelineScroll/MainTimeline"]
+unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0.784314)
 self_modulate = Color(0.666667, 0, 1, 1)
@@ -137,7 +136,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="Playhead" type="Panel" parent="TimelineScroll/Main"]
+[node name="MainPlayhead" type="Panel" parent="MainTimelineScroll/MainTimeline"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(2, 0)
 layout_mode = 1
 anchors_preset = 9
@@ -147,4 +147,4 @@ grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
 
-[connection signal="gui_input" from="TimelineScroll/Main" to="." method="_on_main_gui_input"]
+[connection signal="gui_input" from="MainTimelineScroll/MainTimeline" to="." method="_on_main_gui_input"]

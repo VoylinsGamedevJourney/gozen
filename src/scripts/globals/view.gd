@@ -22,9 +22,11 @@ var skips: int = 0
 
 
 func _ready() -> void:
+	var l_viewport_container: SubViewportContainer = SubViewportContainer.new()
 	main_view = SubViewport.new()
 	main_view.size = Project.resolution
-	add_child(main_view)
+	l_viewport_container.add_child(main_view)
+	add_child(l_viewport_container)
 
 	frame_time = 1.0 / Project.framerate
 
@@ -138,7 +140,7 @@ func set_view(a_id: int) -> void: # a_id is track id
 		var l_file_data: FileData = Project._files_data[loaded_clips[a_id].file_id]
 
 		views[-a_id].texture = l_file_data.image
-		l_material.shader = preload("res://shaders/rgb.gdshader")
+		l_material.shader = preload("uid://buykc07tkmep7")
 
 	elif loaded_clips[a_id].type == File.TYPE.VIDEO:
 		var l_video: Video = Project._files_data[loaded_clips[a_id].file_id].video[a_id]
@@ -146,9 +148,9 @@ func set_view(a_id: int) -> void: # a_id is track id
 
 		# Set the correct shader for the video file
 		if l_video.is_full_color_range():
-			l_material.shader = preload("res://shaders/yuv420p_full.gdshader")
+			l_material.shader = preload("uid://dpmrghbfbjdno")
 		else:
-			l_material.shader = preload("res://shaders/yuv420p_standard.gdshader")
+			l_material.shader = preload("uid://jdpget3uhmyi")
 
 		# Set resolution
 		l_tex.size = l_video.get_resolution()

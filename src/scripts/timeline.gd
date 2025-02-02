@@ -6,10 +6,10 @@ signal _on_zoom_changed
 const TRACK_HEIGHT: int = 30
 const LINE_HEIGHT: int = 4
 
-const STYLE_BOXES: Dictionary = {
-    File.TYPE.IMAGE: preload("res://styles/style_box_image.tres"),
-    File.TYPE.AUDIO: preload("res://styles/style_box_audio.tres"),
-    File.TYPE.VIDEO: preload("res://styles/style_box_video.tres")
+const STYLE_BOXES: Dictionary[File.TYPE, StyleBoxFlat] = {
+    File.TYPE.IMAGE: preload("uid://ovxi6b2xvyre"),
+    File.TYPE.AUDIO: preload("uid://dypfur4w0voh8"),
+    File.TYPE.VIDEO: preload("uid://ya6uqxm148ob")
 }
 
 
@@ -17,11 +17,11 @@ static var instance: Timeline
 static var playhead_moving: bool = false
 static var selected_clips: Array[int] = [] # An array of all selected clip id's
 
-@export var scroll: ScrollContainer
-@export var main: Control
-@export var clips: Control
-@export var preview: Control
-@export var playhead: Panel
+@onready var scroll: ScrollContainer = %MainTimelineScroll
+@onready var main: Control = %MainTimeline
+@onready var clips: Control = %MainClips
+@onready var preview: Control = %MainPreview
+@onready var playhead: Panel = %MainPlayhead
 
 
 var playback_before_moving: bool = false
@@ -34,9 +34,9 @@ var _offset: int = 0 # Offset for moving/placing clips
 func _ready() -> void:
 	instance = self
 
-	@warning_ignore("standalone_expression")[
-		View._on_frame_nr_changed.connect(move_playhead),
-		mouse_exited.connect(func() -> void: preview.visible = false)]
+	@warning_ignore_start("return_value_discarded")
+	View._on_frame_nr_changed.connect(move_playhead)
+	mouse_exited.connect(func() -> void: preview.visible = false)
 
 
 func _process(_delta: float) -> void:
@@ -137,8 +137,7 @@ func _can_drop_new_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
 	l_panel.size = Vector2(get_frame_pos(l_duration), TRACK_HEIGHT)
 	l_panel.position = Vector2(get_frame_pos(l_frame), get_track_pos(l_track))
 	l_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	l_panel.add_theme_stylebox_override("panel",
-			preload("res://styles/style_box_new_clip.tres") )
+	l_panel.add_theme_stylebox_override("panel", preload("uid://bvjeh28w5x0sk"))
 
 	preview.add_child(l_panel)
 
@@ -385,7 +384,7 @@ func add_clip(a_clip_data: ClipData) -> void:
 	l_button.add_theme_stylebox_override("hover", l_style_box)
 	l_button.add_theme_stylebox_override("pressed", l_style_box)
 
-	l_button.set_script(preload("res://scripts/clip_button.gd"))
+	l_button.set_script(load("uid://nco7qawggnsr"))
 
 	clips.add_child(l_button)
 
@@ -460,7 +459,7 @@ func get_highest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2
 func update_end() -> void:
 	var l_new_end: int = 0
 
-	for l_track: Dictionary in Project.tracks:
+	for l_track: Dictionary[int, int] in Project.tracks:
 		if l_track.size() == 0:
 			continue
 

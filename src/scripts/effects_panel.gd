@@ -1,4 +1,4 @@
-class_name EffectsPanel extends ScrollContainer
+class_name EffectsPanel extends TabContainer
 # We should use the view textures themself for transform effects.
 # We can resize the placeholder for sizing. For rotation we need to set the
 # pivot as well
@@ -17,42 +17,45 @@ class_name EffectsPanel extends ScrollContainer
 #
 # These effects will need to be implemented on a shader level
  
-
-static var instance: EffectsPanel = self
-
-
-@onready var audio_effects: VBoxContainer = get_child(0).get_child(0)
-@onready var visual_effects: VBoxContainer = get_child(0).get_child(1)
+# TODO: Resize the tabs to take the entire space
+# TODO: Hide scrollbar? or add extra spacing
 
 
-@export_group("Audio")
-@export var volume_slider: HSlider
-@export var mono_option_button: OptionButton
+static var instance: EffectsPanel
+
+
+@onready var audio_effects: ScrollContainer = %AudioEffectsTab
+@onready var visual_effects: ScrollContainer = %VisualEffectsTab
+
+
+# Audio effects
+@onready var volume_slider: HSlider = %EffectVolumeHSlider
+@onready var mono_option_button: OptionButton = %EffectMonoOptionButton
 
 @export_group("Visuals transforms")
-@export var size_x: SpinBox
-@export var size_y: SpinBox
-@export var position_x: SpinBox
-@export var position_y: SpinBox
-@export var rotation_slider: HSlider
-@export var scale_x: SpinBox
-@export var scale_y: SpinBox
-@export var pivot_x: SpinBox
-@export var pivot_y: SpinBox
+@onready var size_x: SpinBox = %EffectSizeXSpinBox
+@onready var size_y: SpinBox = %EffectSizeYSpinBox
+@onready var position_x: SpinBox = %EffectPositionXSpinBox
+@onready var position_y: SpinBox = %EffectPositionYSpinBox
+@onready var rotation_slider: HSlider = %EffectRotationHSlider
+@onready var scale_x: SpinBox = %EffectScaleXSpinBox
+@onready var scale_y: SpinBox = %EffectScaleYSpinBox
+@onready var pivot_x: SpinBox = %EffectPivotXSpinBox
+@onready var pivot_y: SpinBox = %EffectPivotYSpinBox
 
-@export_group("Visuals effects")
-@export var brightness_slider: HSlider
-@export var contrast_slider: HSlider
-@export var saturation_slider: HSlider
-@export var alpha_slider: HSlider
+# Visual effects
+@onready var brightness_slider: HSlider = %EffectBrightnessHSlider
+@onready var contrast_slider: HSlider = %EffectContrastHSlider
+@onready var saturation_slider: HSlider = %EffectSaturationHSlider
+@onready var alpha_slider: HSlider = %EffectAlphaHSlider
 
-@export_group("Visuals extras")
-@export var red_value_slider: HSlider
-@export var green_value_slider: HSlider
-@export var blue_value_slider: HSlider
+# Visual effects extra's
+@onready var red_value_slider: HSlider = %EffectRedValueHSlider
+@onready var green_value_slider: HSlider = %EffectGreenValueHSlider
+@onready var blue_value_slider: HSlider = %EffectBlueValueHSlider
 
-@export var tint_color_picker_button: ColorPickerButton
-@export var tint_value_slider: HSlider
+@onready var tint_color_button: ColorPickerButton = %EffectTintColorPickerButton
+@onready var tint_value_slider: HSlider = %EffectTintEffectFactorHSlider
 
 
 var current_clip: ClipData
@@ -61,8 +64,19 @@ var current_clip: ClipData
 
 func _ready() -> void:
 	instance = self
-	audio_effects.visible = false
-	visual_effects.visible = false
+
+	set_tab_hidden(0, true) # Audio
+	set_tab_hidden(1, true) # Visuals
+	set_tab_hidden(2, false) # Nothing selected
+
+	set_tab_title(0, "Audio")
+	set_tab_title(1, "Visuals")
+	set_tab_title(2, "No clip/file")
+	set_tab_tooltip(0, "Audio effects panel")
+	set_tab_tooltip(1, "Visual effects panel")
+	set_tab_tooltip(2, "Nothing is selected, select a clip or file.")
+
+	current_tab = 2
 
 
 func open_file_effects(a_id: int) -> void:
@@ -74,6 +88,6 @@ func open_clip_effects(a_id: int) -> void:
 
 	var l_type: File.TYPE = Project.files[current_clip.file_id].type
 
-	visual_effects.visible = l_type in View.VISUAL_TYPES
-	audio_effects.visible = l_type in View.AUDIO_TYPES
-
+	set_tab_hidden(0, l_type not in View.AUDIO_TYPES)
+	set_tab_hidden(1, l_type not in View.VISUAL_TYPES)
+	set_tab_hidden(2, true) # Nothing selected

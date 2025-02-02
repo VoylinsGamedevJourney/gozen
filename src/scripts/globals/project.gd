@@ -8,8 +8,8 @@ var _path: String = ""
 var _unsaved_changes: bool = false
 var undo_redo: UndoRedo = UndoRedo.new()
 
-var files: Dictionary = {} # {Unique_id (int32): File_object}
-var _files_data: Dictionary = {} # { Unique_id (int32): FileData }
+var files: Dictionary[int, File] = {} # {Unique_id (int32): File_object}
+var _files_data: Dictionary[int, FileData] = {} # { Unique_id (int32): FileData }
 
 var resolution: Vector2i = Vector2i(1920,1080)
 
@@ -17,8 +17,8 @@ var framerate: int = 30
 var timeline_end: int = 0: set = set_timeline_end
 
 var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track
-var clips: Dictionary = {} # {id: ClipData}
-var _audio: Dictionary = {} # { clip_id: PackedByteArray }
+var clips: Dictionary[int, ClipData] = {} # {id: ClipData}
+var _audio: Dictionary[int, PackedByteArray] = {} # { clip_id: PackedByteArray }
 
 
 
@@ -33,10 +33,17 @@ func _input(a_event: InputEvent) -> void:
 	if a_event.is_action_pressed("breakpoint"):
 		breakpoint
 
-	if a_event.is_action_pressed("ui_undo") and undo_redo.has_undo():
+	if a_event.is_action_pressed("save_project", false, true):
+		save_project(_path)
+	elif a_event.is_action_pressed("save_project_as", false, true):
+		save_project()
+	elif a_event.is_action_pressed("load_project", false, true):
+		load_project()
+
+	if a_event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
 		if !undo_redo.undo():
 			printerr("Coulnd't undo action!")
-	elif a_event.is_action_pressed("ui_redo") and undo_redo.has_redo():
+	elif a_event.is_action_pressed("ui_redo", false, true) and undo_redo.has_redo():
 		if !undo_redo.redo():
 			printerr("Coulnd't redo action!")
 
@@ -45,22 +52,9 @@ func _input(a_event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func save(a_path: String = _path) -> void:
+func save_project(a_path: String = _path) -> void:
 	if a_path == "":
-		var l_dialog: FileDialog = FileDialog.new()
-
-		l_dialog.title = "Save project"
-		l_dialog.access = FileDialog.ACCESS_FILESYSTEM
-		l_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
-		l_dialog.filters = ["*.gozen"]
-		l_dialog.use_native_dialog = true
-		
-		@warning_ignore("return_value_discarded")
-		l_dialog.file_selected.connect(save)
-
-		add_child(l_dialog)
-		l_dialog.popup_centered()
-		return
+		return _open_save_project_dialog()
 
 	_path = a_path
 
@@ -68,20 +62,21 @@ func save(a_path: String = _path) -> void:
 	OS.set_use_file_access_save_and_swap(true)
 	var l_file: FileAccess = FileAccess.open(_path, FileAccess.WRITE)
 
+	@warning_ignore("return_value_discarded")
 	l_file.store_string(var_to_str({
 		"files": files,
 		"framerate": framerate,
 		"tracks": tracks,
 		"clips": clips,
 		"undo_redo": undo_redo
-	}))
+	} as Dictionary))
 
 	l_file.close()
 	_unsaved_changes = false
 	OS.set_use_file_access_save_and_swap(false)
 	
 
-func load(a_path: String = "") -> void:
+func load_project(a_path: String = "") -> void:
 	if _unsaved_changes:
 		var l_dialog: ConfirmationDialog = ConfirmationDialog.new()
 
@@ -92,11 +87,11 @@ func load(a_path: String = "") -> void:
 
 		if l_dialog.get_cancel_button().pressed.connect(func() -> void:
 				_unsaved_changes = false
-				load(a_path)):
+				load_project(a_path)):
 			printerr("Couldn't connect cancel button!")
 		elif l_dialog.get_ok_button().pressed.connect(func() -> void:
-				save()
-				load(a_path)):
+				save_project(_path)
+				load_project(a_path)):
 			printerr("Couldn't connect ok button!")
 
 		add_child(l_dialog)
@@ -104,20 +99,7 @@ func load(a_path: String = "") -> void:
 		return
 
 	if a_path == "":
-		var l_dialog: FileDialog = FileDialog.new()
-
-		l_dialog.title = "Save project"
-		l_dialog.access = FileDialog.ACCESS_FILESYSTEM
-		l_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-		l_dialog.filters = ["*.gozen"]
-		l_dialog.use_native_dialog = true
-
-		if l_dialog.file_selected.connect(load):
-			printerr("Couldn't connect file_selected for save dialog!")
-
-		add_child(l_dialog)
-		l_dialog.popup_centered()
-		return
+		return _open_load_project_dialog()
 
 	_path = a_path
 
@@ -137,6 +119,38 @@ func load(a_path: String = "") -> void:
 			"undo_redo": undo_redo = l_data[l_key]
 
 	l_file.close()
+
+
+func _open_save_project_dialog() -> void:
+	var l_dialog: FileDialog = FileDialog.new()
+
+	l_dialog.title = "Save project"
+	l_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	l_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	l_dialog.filters = ["*.gozen"]
+	l_dialog.use_native_dialog = true
+	
+	@warning_ignore("return_value_discarded")
+	l_dialog.file_selected.connect(save_project)
+
+	add_child(l_dialog)
+	l_dialog.popup_centered()
+
+
+func _open_load_project_dialog() -> void:
+	var l_dialog: FileDialog = FileDialog.new()
+
+	l_dialog.title = "Load project"
+	l_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	l_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	l_dialog.filters = ["*.gozen"]
+	l_dialog.use_native_dialog = true
+
+	if l_dialog.file_selected.connect(load_project):
+		printerr("Couldn't connect file_selected for save dialog!")
+
+	add_child(l_dialog)
+	l_dialog.popup_centered()
 
 
 func add_file(a_file_path: String) -> int:

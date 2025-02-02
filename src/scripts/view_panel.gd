@@ -1,7 +1,7 @@
 class_name ViewPanel extends PanelContainer
 
 
-@onready var view_texture: TextureRect = get_node("VBox/TextureRect")
+@onready var view_texture: TextureRect = %MainPlaybackTextureRect
 
 
 func _ready() -> void:
