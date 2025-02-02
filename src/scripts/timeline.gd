@@ -49,10 +49,10 @@ func _process(_delta: float) -> void:
 
 
 func _input(a_event: InputEvent) -> void:
-	if a_event.is_action_pressed("timeline_zoom_in"):
+	if a_event.is_action_pressed("timeline_zoom_in", false, true):
 		zoom += 0.06 if zoom < 1 else 0.2
 		get_viewport().set_input_as_handled()
-	elif a_event.is_action_pressed("timeline_zoom_out"):
+	elif a_event.is_action_pressed("timeline_zoom_out", false, true):
 		zoom -= 0.06 if zoom < 1 else 0.2
 		get_viewport().set_input_as_handled()
 
