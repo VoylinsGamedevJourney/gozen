@@ -126,9 +126,9 @@ func _on_switch_layout(a_tab_index: int) -> void:
 
 func _on_gozen_popup_option_pressed(a_id: int) -> void:
 	match a_id:
-		0: Project.save(Project._path) # Save current project
-		1: Project.save() # Save as ...
-		2: Project.load() # Open file dialog to select project
+		0: Project.save_project(Project._path) # Save current project
+		1: Project.save_project() # Save as ...
+		2: Project.load_project() # Open file dialog to select project
 		10: # Support
 			@warning_ignore("return_value_discarded")
 			OS.shell_open("https://ko-fi.com/voylin")
