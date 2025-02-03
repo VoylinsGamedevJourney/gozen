@@ -473,12 +473,12 @@ func update_end() -> void:
 	Project.timeline_end = l_new_end
 
 
-func delete_clip(a_track_id: int, a_frame_nr: int) -> void:
-	var l_id: int = Project.tracks[a_track_id][a_frame_nr]
+func delete_clip(a_clip_data: ClipData) -> void:
+	var l_id: int = Project.tracks[a_clip_data.track][a_clip_data.start_frame]
 
 	if !Project.clips.erase(l_id):
 		printerr("Couldn't erase new clips from clips!")
-	if !Project.tracks[a_track_id].erase(a_frame_nr):
+	if !Project.tracks[a_clip_data.track].erase(a_clip_data.start_frame):
 		printerr("Couldn't erase new clips from tracks!")
 
 	remove_clip(l_id)

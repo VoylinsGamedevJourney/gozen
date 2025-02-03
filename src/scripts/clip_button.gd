@@ -104,7 +104,7 @@ func _on_gui_input(a_event: InputEvent) -> void:
 		Project.undo_redo.create_action("Deleting clip on timeline")
 
 		Project.undo_redo.add_do_method(Timeline.instance.delete_clip.bind(
-				get_clip_data().start_frame))
+				get_clip_data()))
 
 		Project.undo_redo.add_undo_method(Timeline.instance.undelete_clip.bind(
 				get_clip_data()))
@@ -283,7 +283,7 @@ func _uncut_clip(a_playhead: int, a_current_clip: ClipData) -> void:
 	a_current_clip.duration += l_split_clip.duration
 	size.x = Timeline.get_frame_pos(a_current_clip.duration)
 
-	Timeline.instance.delete_clip(l_track, a_playhead)
+	Timeline.instance.delete_clip(l_split_clip)
 	a_current_clip.update_audio_data()
 
 
