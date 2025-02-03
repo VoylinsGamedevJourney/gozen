@@ -214,7 +214,7 @@ bool Video::open(String a_path) {
 	y_data.resize(av_frame->linesize[0] * resolution.y);
 
 	if (!hw_decoding) {
-		if (av_frame->format == AV_PIX_FMT_YUV420P) {
+		if (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P) {
 			u_data.resize(av_frame->linesize[1] * (resolution.y / 2));
 			v_data.resize(av_frame->linesize[2] * (resolution.y / 2));
 

@@ -25,7 +25,7 @@ func _ready() -> void:
 			# TODO: Load project with the path found
 			break
 
-	_on_switch_layout(0)
+	_on_switch_layout.call_deferred(0)
 
 	
 func _input(a_event: InputEvent) -> void:
@@ -43,7 +43,15 @@ func _on_switch_layout(a_tab_index: int) -> void:
 		return
 
 	layout_tab_container.current_tab = a_tab_index
-	layout_indicator.position.y = layout_buttons[a_tab_index].position.y + 2
+	var l_tween: Tween = get_tree().create_tween()
+	@warning_ignore("return_value_discarded")
+	l_tween.tween_property(
+			layout_indicator,
+			"position",
+			Vector2(
+					layout_indicator.position.x,
+					layout_buttons[a_tab_index].position.y + 2),
+			0.1)
 
 	for i: int in layout_buttons.size():
 		layout_buttons[i].modulate.a = 1.0 if a_tab_index == i else 0.5
@@ -52,8 +60,8 @@ func _on_switch_layout(a_tab_index: int) -> void:
 func _on_gozen_popup_option_pressed(a_id: int) -> void:
 	match a_id:
 		0: Project.save_project(Project._path) # Save current project
-		1: Project.save_project() # Save as ...
-		2: Project.load_project() # Open file dialog to select project
+		1: Project.save_project("") # Save as ...
+		2: Project.load_project("") # Open file dialog to select project
 		10: # Support
 			@warning_ignore("return_value_discarded")
 			OS.shell_open("https://ko-fi.com/voylin")
@@ -61,4 +69,10 @@ func _on_gozen_popup_option_pressed(a_id: int) -> void:
 		12: # Site    TODO: Make a real site
 			@warning_ignore("return_value_discarded")
 			OS.shell_open("https://github.com/VoylinsGamedevJourney/GoZen")
+
+
+
+func _on_resized() -> void:
+	if layout_tab_container != null:
+		_on_switch_layout(layout_tab_container.current_tab)
 

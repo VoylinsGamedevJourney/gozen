@@ -36,9 +36,9 @@ func _input(a_event: InputEvent) -> void:
 	if a_event.is_action_pressed("save_project", false, true):
 		save_project(_path)
 	elif a_event.is_action_pressed("save_project_as", false, true):
-		save_project()
+		save_project("")
 	elif a_event.is_action_pressed("load_project", false, true):
-		load_project()
+		load_project("")
 
 	if a_event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
 		if !undo_redo.undo():
@@ -52,11 +52,13 @@ func _input(a_event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func save_project(a_path: String = _path) -> void:
+func save_project(a_path: String) -> void:
 	if a_path == "":
 		return _open_save_project_dialog()
 
 	_path = a_path
+	if _path.split('.')[-1] != 'gozen':
+		_path = _path + '.gozen'
 
 	# TODO: Save the data to an actual file
 	OS.set_use_file_access_save_and_swap(true)
@@ -76,7 +78,7 @@ func save_project(a_path: String = _path) -> void:
 	OS.set_use_file_access_save_and_swap(false)
 	
 
-func load_project(a_path: String = "") -> void:
+func load_project(a_path: String) -> void:
 	if _unsaved_changes:
 		var l_dialog: ConfirmationDialog = ConfirmationDialog.new()
 
