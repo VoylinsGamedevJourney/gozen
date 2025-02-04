@@ -17,9 +17,6 @@ var framerate: float = 0.0
 var current_frame: PackedInt64Array = []
 
 
-func get_type() -> File.TYPE:
-	return Project.files[id].type
-
 
 func get_duration() -> int:
 	var l_file: File = Project.files[id]
@@ -34,51 +31,76 @@ func get_duration() -> int:
 				l_file.duration = floor(floor(video[0].get_frame_count() /
 						video[0].get_framerate()) * Project.framerate)
 
-	if audio.size() != 0:
-		wave = Audio.get_audio_wave(audio, Project.framerate)
-
 	if l_file.duration == 0:
 		printerr("Something went wrong loading file ", id, ", duration is 0!")
 
+	load_wave()
 	return Project.files[id].duration
 
 
-func init_data() -> void:
+func load_wave() -> void:
+	if audio.size() != 0:
+		wave = Audio.get_audio_wave(audio, Project.framerate)
+
+
+func init_data(a_id: int) -> void:
+	id = a_id
 	var l_file: File = Project.files[id]
-	match get_type():
-		File.TYPE.IMAGE:
-			image = ImageTexture.create_from_image(Image.load_from_file(l_file.path))
-		File.TYPE.AUDIO: audio = Audio.get_audio_data(l_file.path)
-		File.TYPE.VIDEO:
-			# At this moment we have by default 6 tracks
-			# TODO: Find a better way instead of creating a new video object
-			# for each track. A possible solution could be to create a separate
-			# array which can tell if a certain video object is in use or not
-			# by a certain clip. And have a function check if all these objects
-			# are being used or not, if yes, we add a new one unless we reached
-			# the amount of tracks in the timeline. This way there will always
-			# be an extra video class so there can't be any lag from creating
-			# a new video class instance
-			for i: int in 6:
-				var l_video: Video = Video.new()
 
-				if l_video.open(l_file.path):
-					printerr("Something went wrong opening video at path '%s'!" %
-							l_file.path)
-				else:
-					video.append(l_video)
-					if current_frame.append(video[0].seek_frame(0)):
-						printerr("Couldn't append to current frame!")
+	if l_file.type == File.TYPE.IMAGE:
+		var l_image: Image = Image.load_from_file(l_file.path)
+		image = ImageTexture.create_from_image(l_image)
+	if l_file.type == File.TYPE.VIDEO:
+		# At this moment we have by default 6 tracks
+		# TODO: Find a better way instead of creating a new video object
+		# for each track. A possible solution could be to create a separate
+		# array which can tell if a certain video object is in use or not
+		# by a certain clip. And have a function check if all these objects
+		# are being used or not, if yes, we add a new one unless we reached
+		# the amount of tracks in the timeline. This way there will always
+		# be an extra video class so there can't be any lag from creating
+		# a new video class instance
+		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
+				_load_video_data.bind(l_file.path)),
+				_set_video_meta_data.bind(l_file.path)))
 
-			# Adding audio from video file individually
-			audio = Audio.get_audio_data(l_file.path)
+		for i: int in 5:
+			Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
+						_load_video_data.bind(l_file.path))))
 
-			# Set necessary metadata
-			# TODO: Create a function in GDE GoZen which gets this meta data
-			# instead of having this metadata in every video instance
-			resolution = video[0].get_resolution()
-			padding = video[0].get_padding()
-			uv_resolution = Vector2i(int((resolution.x + padding) / 2.), int(resolution.y / 2.))
-			frame_count = video[0].get_frame_count()
-			framerate = video[0].get_framerate()
+	if l_file.type in View.AUDIO_TYPES:
+		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
+				_load_audio_data.bind(l_file.path))))
+
+
+
+func _load_audio_data(a_file_path: String) -> void:
+	audio = Audio.get_audio_data(a_file_path)
+
+
+func _load_video_data(a_file_path: String) -> void:
+	var l_video: Video = Video.new()
+
+	if l_video.open(a_file_path):
+		printerr("Couldn't open video at path '%s'!" % a_file_path)
+		return
+
+	Threader.mutex.lock()
+	video.append(l_video)
+	if current_frame.append(0):
+		printerr("Couldn't append to current frame!")
+	Threader.mutex.unlock()
+
+
+func _set_video_meta_data(a_file_path: String) -> void:
+	# Set necessary metadata
+	# TODO: Create a function in GDE GoZen which gets this meta data
+	# instead of having this metadata in every video instance
+
+	resolution = video[0].get_resolution()
+	padding = video[0].get_padding()
+	uv_resolution = Vector2i(int((resolution.x + padding) / 2.), int(resolution.y / 2.))
+	frame_count = video[0].get_frame_count()
+	framerate = video[0].get_framerate()
+	print("Video ", a_file_path, " fully loaded")
 

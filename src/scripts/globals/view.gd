@@ -22,7 +22,11 @@ var skips: int = 0
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
+	Project._on_project_loaded.connect(_on_project_loaded)
+
 	var l_viewport_container: SubViewportContainer = SubViewportContainer.new()
+
 	main_view = SubViewport.new()
 	main_view.size = Project.resolution
 	l_viewport_container.add_child(main_view)
@@ -48,6 +52,10 @@ func _ready() -> void:
 
 	main_view.add_child(l_background)
 	_set_frame(0, true)
+
+
+func _on_project_loaded() -> void:
+	_set_frame(frame_nr, true)
 
 
 func _process(a_delta: float) -> void:
@@ -111,8 +119,7 @@ func _set_frame(a_frame_nr: int = step_playhead(), a_force_playhead: bool = fals
 		else:
 			loaded_clips[i] = Project.clips[l_clip_id]
 			AudioHandler.set_audio(
-					i, loaded_clips[i].get_audio(),
-					a_frame_nr - loaded_clips[i].start_frame)
+					loaded_clips[i], a_frame_nr - loaded_clips[i].start_frame)
 		set_view(i)
 		update_view(i, a_frame_nr)
 	
@@ -220,7 +227,7 @@ func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 	# Setting the audio to the correct position
 	if a_set_audio:
 		AudioHandler.set_audio(
-			a_id, loaded_clips[a_id].get_audio(), a_frame_nr - loaded_clips[a_id].start_frame)
+			loaded_clips[a_id], a_frame_nr - loaded_clips[a_id].start_frame)
 
 	return true
 

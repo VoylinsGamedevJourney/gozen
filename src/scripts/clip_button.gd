@@ -34,8 +34,7 @@ func _ready() -> void:
 		wave_texture_rect.texture = get_file_data().wave
 
 		add_child(wave_texture_rect)
-		await RenderingServer.frame_pre_draw
-		_update_wave()
+		_update_wave.call_deferred()
 
 
 func _process(_delta: float) -> void:

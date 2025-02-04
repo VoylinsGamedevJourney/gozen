@@ -37,6 +37,19 @@ func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	View._on_frame_nr_changed.connect(move_playhead)
 	mouse_exited.connect(func() -> void: preview.visible = false)
+	Project._on_project_loaded.connect(_on_project_loaded)
+
+
+func _on_project_loaded() -> void:
+	print("Loading timeline ...")
+
+	for l_child: Node in clips.get_children():
+		l_child.queue_free()
+
+	for l_clip: ClipData in Project.clips.values():
+		add_clip(l_clip)
+
+	update_end()
 
 
 func _process(_delta: float) -> void:
@@ -483,6 +496,7 @@ func delete_clip(a_clip_data: ClipData) -> void:
 
 	remove_clip(l_id)
 	update_end()
+	EffectsPanel.instance.check_clip()
 
 
 func undelete_clip(a_clip_data: ClipData) -> void:

@@ -22,7 +22,7 @@ static func create(a_path: String) -> File:
 			l_file.type = TYPE.AUDIO
 		"jpg", "jpeg", "png", "svg", "webp":
 			l_file.type = TYPE.IMAGE
-		"mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1":
+		"mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov":
 			l_file.type = TYPE.VIDEO
 		_:
 			printerr("Unrecognized file at '%s' with extension '%s'!" %

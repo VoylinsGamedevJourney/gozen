@@ -2,6 +2,7 @@ extends Node
 
 
 signal _on_timeline_end_changed
+signal _on_project_loaded
 
 
 var _path: String = ""
@@ -13,6 +14,7 @@ var _files_data: Dictionary[int, FileData] = {} # { Unique_id (int32): FileData 
 
 var resolution: Vector2i = Vector2i(1920,1080)
 
+var playhead_position: int = 0
 var framerate: int = 30
 var timeline_end: int = 0: set = set_timeline_end
 
@@ -70,7 +72,8 @@ func save_project(a_path: String) -> void:
 		"framerate": framerate,
 		"tracks": tracks,
 		"clips": clips,
-		"undo_redo": undo_redo
+		"undo_redo": undo_redo,
+		"playhead_position": View.frame_nr,
 	} as Dictionary))
 
 	l_file.close()
@@ -104,6 +107,16 @@ func load_project(a_path: String) -> void:
 		return _open_load_project_dialog()
 
 	_path = a_path
+	print(a_path)
+	print(_path)
+
+	# Resetting all variables
+	var l_new_instance: Node = (load("uid://biap2s04hs0bi") as GDScript).new()
+
+	for l_property: Dictionary in l_new_instance.get_property_list():
+		if l_property.usage == 4096 and l_property.name != "_path":
+			@warning_ignore("unsafe_call_argument")
+			set(l_property.name, l_new_instance.get(l_property.name))
 
 	var l_file: FileAccess = FileAccess.open(_path, FileAccess.READ)
 	var l_data: Dictionary = str_to_var(l_file.get_as_text())
@@ -119,8 +132,21 @@ func load_project(a_path: String) -> void:
 			"tracks": tracks = l_data[l_key]
 			"clips": clips = l_data[l_key]
 			"undo_redo": undo_redo = l_data[l_key]
+			"playhead_position": View.frame_nr = l_data[l_key]
 
 	l_file.close()
+	await RenderingServer.frame_post_draw
+
+	print("Loading files ...")
+	for l_file_id: int in files.keys():
+		_load_file_data(l_file_id)
+		_files_data[l_file_id].load_wave()
+
+	print("Loading clip audio ...")
+	for l_clip_data: ClipData in clips.values():
+		l_clip_data.update_audio_data()
+
+	_on_project_loaded.emit()
 
 
 func _open_save_project_dialog() -> void:
@@ -158,7 +184,6 @@ func _open_load_project_dialog() -> void:
 func add_file(a_file_path: String) -> int:
 	var l_id: int = Utils.get_unique_id(files.keys())
 	var l_file: File = File.create(a_file_path)
-	var l_file_data: FileData = FileData.new()
 
 	if l_file == null:
 		return -1
@@ -170,12 +195,16 @@ func add_file(a_file_path: String) -> int:
 			return -1
 
 	files[l_id] = l_file
-
-	l_file_data.id = l_id
-	l_file_data.init_data()
-	_files_data[l_id] = l_file_data
+	_load_file_data(l_id)
 
 	return l_id
+
+
+func _load_file_data(a_id: int) -> void:
+	var l_file_data: FileData = FileData.new()
+
+	l_file_data.init_data(a_id)
+	_files_data[a_id] = l_file_data
 
 
 func set_clip_audio(a_clip_id: int, a_data: PackedByteArray) -> void:

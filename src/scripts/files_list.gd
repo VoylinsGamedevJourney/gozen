@@ -3,28 +3,37 @@ extends ItemList
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
+	@warning_ignore_start("return_value_discarded")
 	get_window().files_dropped.connect(_on_files_dropped)
+	Project._on_project_loaded.connect(_on_project_loaded)
+
+
+func _on_project_loaded() -> void:
+	clear()
+
+	for l_id: int in Project.files.keys():
+		_add_file_to_list(l_id)
 	
 	
 func _on_files_dropped(a_files: PackedStringArray) -> void:
 	for l_file_path: String in a_files:
-		# Add to project
 		var l_id: int = Project.add_file(l_file_path)
 
-		if l_id == -1: # Invalid file
-			continue
-
-		# Create tree item for the file panel tree
-		var l_file: File = Project.files[l_id]
-		var l_item: int = add_item(l_file.nickname)
-
-		set_item_metadata(l_item, l_id)
-		set_item_tooltip(l_item, l_file.path)
-		# TODO: Add thumbnail
+		if l_id != -1: # Check for invalid file
+			_add_file_to_list(l_id)
 
 	sort_items_by_text()
 
+
+func _add_file_to_list(a_id: int) -> void:
+	# Create tree item for the file panel tree
+	var l_file: File = Project.files[a_id]
+	var l_item: int = add_item(l_file.nickname)
+
+	set_item_metadata(l_item, a_id)
+	set_item_tooltip(l_item, l_file.path)
+	# TODO: Add thumbnail
+	
 
 func _get_drag_data(_pos: Vector2) -> Draggable:
 	var l_draggable: Draggable = Draggable.new()
