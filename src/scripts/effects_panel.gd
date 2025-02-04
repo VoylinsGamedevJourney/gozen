@@ -29,8 +29,8 @@ static var instance: EffectsPanel
 
 
 # Audio effects
-@onready var volume_slider: HSlider = %EffectVolumeHSlider
-@onready var volume_spinbox: SpinBox = %EffectVolumeSpinBox
+@onready var gain_slider: HSlider = %EffectGainHSlider
+@onready var gain_spinbox: SpinBox = %EffectGainSpinBox
 @onready var mono_option_button: OptionButton = %EffectMonoOptionButton
 
 # Visual effects
@@ -109,22 +109,22 @@ func open_clip_effects(a_id: int) -> void:
 	set_tab_hidden(2, true) # Nothing selected
 
 	# Set audio effect values
-	volume_slider.value = current_clip.effects_audio.db
+	gain_slider.value = current_clip.effects_audio.db
 	mono_option_button.selected = current_clip.effects_audio.mono as int
 
 
-func _on_effect_volume_spin_box_value_changed(a_value: float) -> void:
-	volume_slider.value = a_value
+func _on_effect_gain_spin_box_value_changed(a_value: float) -> void:
+	gain_slider.value = a_value
 
 	if a_value < 0:
-		volume_spinbox.prefix = ''
+		gain_spinbox.prefix = ''
 	else:
-		volume_spinbox.prefix = '+'
+		gain_spinbox.prefix = '+'
 
 
-func _on_effect_volume_h_slider_value_changed(a_value:float) -> void:
-	volume_spinbox.value = a_value
-	current_clip.effects_audio.db = a_value as int
+func _on_effect_gain_h_slider_value_changed(a_value:float) -> void:
+	gain_spinbox.value = a_value
+	current_clip.effects_audio.gain = a_value as int
 	current_clip.update_audio_data()
 
 

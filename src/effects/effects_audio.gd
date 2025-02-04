@@ -5,6 +5,6 @@ class_name EffectsAudio extends Resource
 enum MONO { OFF, LEFT_CHANNEL, RIGHT_CHANNEL }
 
 
-var db: int = 0
+var gain: int = 0
 var mono: MONO = MONO.OFF
 

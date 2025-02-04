@@ -51,10 +51,10 @@ func _update_audio() -> void:
 				Project._audio[id] as PackedByteArray,
 				effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
 
-	# Adjusting volume
-	if effects_audio.db != 0:
+	# Adjusting gain
+	if effects_audio.gain != 0:
 		Project._audio[id] = Audio.change_db(
-				Project._audio[id] as PackedByteArray, effects_audio.db)
+				Project._audio[id] as PackedByteArray, effects_audio.gain)
 
 
 func load_video_frame(a_track: int, a_frame_nr: int) -> void:

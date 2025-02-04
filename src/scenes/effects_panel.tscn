@@ -44,15 +44,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="VolumeHBox" type="HBoxContainer" parent="EffectsTabs/AudioEffectsTab/AudioVBox"]
+[node name="GainHBox" type="HBoxContainer" parent="EffectsTabs/AudioEffectsTab/AudioVBox"]
 layout_mode = 2
 
-[node name="VolumeLabel" type="Label" parent="EffectsTabs/AudioEffectsTab/AudioVBox/VolumeHBox"]
+[node name="GainLabel" type="Label" parent="EffectsTabs/AudioEffectsTab/AudioVBox/GainHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Volume:"
+text = "Gain:"
 
-[node name="EffectVolumeHSlider" type="HSlider" parent="EffectsTabs/AudioEffectsTab/AudioVBox/VolumeHBox"]
+[node name="EffectGainHSlider" type="HSlider" parent="EffectsTabs/AudioEffectsTab/AudioVBox/GainHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -61,7 +61,7 @@ min_value = -45.0
 max_value = 45.0
 ticks_on_borders = true
 
-[node name="EffectVolumeSpinBox" type="SpinBox" parent="EffectsTabs/AudioEffectsTab/AudioVBox/VolumeHBox"]
+[node name="EffectGainSpinBox" type="SpinBox" parent="EffectsTabs/AudioEffectsTab/AudioVBox/GainHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 min_value = -45.0
@@ -303,6 +303,6 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[connection signal="value_changed" from="EffectsTabs/AudioEffectsTab/AudioVBox/VolumeHBox/EffectVolumeHSlider" to="EffectsTabs" method="_on_effect_volume_h_slider_value_changed"]
-[connection signal="value_changed" from="EffectsTabs/AudioEffectsTab/AudioVBox/VolumeHBox/EffectVolumeSpinBox" to="EffectsTabs" method="_on_effect_volume_spin_box_value_changed"]
+[connection signal="value_changed" from="EffectsTabs/AudioEffectsTab/AudioVBox/GainHBox/EffectGainHSlider" to="EffectsTabs" method="_on_effect_gain_h_slider_value_changed"]
+[connection signal="value_changed" from="EffectsTabs/AudioEffectsTab/AudioVBox/GainHBox/EffectGainSpinBox" to="EffectsTabs" method="_on_effect_gain_spin_box_value_changed"]
 [connection signal="item_selected" from="EffectsTabs/AudioEffectsTab/AudioVBox/MonoHBox/EffectMonoOptionButton" to="EffectsTabs" method="_on_effect_mono_option_button_item_selected"]
