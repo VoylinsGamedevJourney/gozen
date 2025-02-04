@@ -30,9 +30,10 @@ static var instance: EffectsPanel
 
 # Audio effects
 @onready var volume_slider: HSlider = %EffectVolumeHSlider
+@onready var volume_spinbox: SpinBox = %EffectVolumeSpinBox
 @onready var mono_option_button: OptionButton = %EffectMonoOptionButton
 
-@export_group("Visuals transforms")
+# Visual effects
 @onready var size_x: SpinBox = %EffectSizeXSpinBox
 @onready var size_y: SpinBox = %EffectSizeYSpinBox
 @onready var position_x: SpinBox = %EffectPositionXSpinBox
@@ -58,6 +59,7 @@ static var instance: EffectsPanel
 @onready var tint_value_slider: HSlider = %EffectTintEffectFactorHSlider
 
 
+var current_file: File
 var current_clip: ClipData
 
 
@@ -65,6 +67,12 @@ var current_clip: ClipData
 func _ready() -> void:
 	instance = self
 
+	@warning_ignore("return_value_discarded")
+	Project._on_project_loaded.connect(_reset)
+	_reset()
+
+
+func _reset() -> void:
 	set_tab_hidden(0, true) # Audio
 	set_tab_hidden(1, true) # Visuals
 	set_tab_hidden(2, false) # Nothing selected
@@ -79,15 +87,51 @@ func _ready() -> void:
 	current_tab = 2
 
 
+func check_clip() -> void:
+	if current_clip == null:
+		_reset()
+
+
 func open_file_effects(a_id: int) -> void:
 	print("File effects not implemented yet! file_id: ", a_id)
+	current_file = Project.files[a_id]
+	current_clip = null
 
 
 func open_clip_effects(a_id: int) -> void:
 	current_clip = Project.clips[a_id]
+	current_file = null
 
 	var l_type: File.TYPE = Project.files[current_clip.file_id].type
 
 	set_tab_hidden(0, l_type not in View.AUDIO_TYPES)
 	set_tab_hidden(1, l_type not in View.VISUAL_TYPES)
 	set_tab_hidden(2, true) # Nothing selected
+
+	# Set audio effect values
+	volume_slider.value = current_clip.effects_audio.db
+	mono_option_button.selected = current_clip.effects_audio.mono as int
+
+
+func _on_effect_volume_spin_box_value_changed(a_value: float) -> void:
+	volume_slider.value = a_value
+
+	if a_value < 0:
+		volume_spinbox.prefix = ''
+	else:
+		volume_spinbox.prefix = '+'
+
+
+func _on_effect_volume_h_slider_value_changed(a_value:float) -> void:
+	volume_spinbox.value = a_value
+	current_clip.effects_audio.db = a_value as int
+	current_clip.update_audio_data()
+
+
+func _on_effect_mono_option_button_item_selected(a_index: int) -> void:
+	match a_index:
+		0: current_clip.effects_audio.mono = EffectsAudio.MONO.OFF
+		1: current_clip.effects_audio.mono = EffectsAudio.MONO.LEFT_CHANNEL
+		2: current_clip.effects_audio.mono = EffectsAudio.MONO.RIGHT_CHANNEL
+	current_clip.update_audio_data()
+

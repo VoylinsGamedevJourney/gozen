@@ -21,6 +21,7 @@ config/icon="res://logo.svg"
 
 [autoload]
 
+Threader="*res://scripts/globals/threader.gd"
 Utils="*res://scripts/globals/utils.gd"
 AudioHandler="*res://scripts/globals/audio_handler.gd"
 Settings="*res://scripts/globals/settings.gd"

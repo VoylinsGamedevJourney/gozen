@@ -28,6 +28,13 @@ func get_audio() -> PackedByteArray:
 
 
 func update_audio_data() -> void:
+	Threader.tasks.append(Threader.Task.new(
+		WorkerThreadPool.add_task(_update_audio),
+		AudioHandler.check_audio.bind(self)
+	))
+
+
+func _update_audio() -> void:
 	if type not in [File.TYPE.AUDIO, File.TYPE.VIDEO]:
 		return
 
