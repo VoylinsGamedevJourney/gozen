@@ -217,6 +217,9 @@ func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 		loaded_clips[a_id] = null
 		return false
 
+	# Track check
+	if loaded_clips[a_id].track != a_id:
+		return false
 
 	if loaded_clips[a_id].start_frame > a_frame_nr:
 		return false

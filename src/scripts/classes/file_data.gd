@@ -4,6 +4,7 @@ class_name FileData extends Node
 var id: int
 
 var image: ImageTexture = null
+var raw_audio: PackedByteArray = []
 var audio: PackedByteArray = []
 var video: Array[Video] = []
 var wave: ImageTexture = null
@@ -26,7 +27,7 @@ func get_duration() -> int:
 			File.TYPE.IMAGE: l_file.duration = Settings.default_image_duration
 			File.TYPE.AUDIO:
 				l_file.duration = int(
-						float(audio.size()) / AudioHandler.bytes_per_frame)
+						float(raw_audio.size()) / AudioHandler.bytes_per_frame)
 			File.TYPE.VIDEO:
 				l_file.duration = floor(floor(video[0].get_frame_count() /
 						video[0].get_framerate()) * Project.framerate)
@@ -39,8 +40,8 @@ func get_duration() -> int:
 
 
 func load_wave() -> void:
-	if audio.size() != 0:
-		wave = Audio.get_audio_wave(audio, Project.framerate)
+	if raw_audio.size() != 0:
+		wave = Audio.get_audio_wave(raw_audio, Project.framerate)
 
 
 func init_data(a_id: int) -> void:
@@ -75,7 +76,34 @@ func init_data(a_id: int) -> void:
 
 
 func _load_audio_data(a_file_path: String) -> void:
-	audio = Audio.get_audio_data(a_file_path)
+	raw_audio = Audio.get_audio_data(a_file_path)
+	update_audio_data()
+
+
+func update_audio_data() -> void:
+	Threader.timed_tasks[id] = Threader.TimedTask.new(
+			_update_audio, _update_audio_clips)
+
+
+func _update_audio() -> void:
+	if Project.files[id].type not in [File.TYPE.AUDIO, File.TYPE.VIDEO]:
+		return
+
+	audio = raw_audio.duplicate()
+
+	# Applying default audio effects
+	Project.files[id].default_audio_effects.apply_effect(audio)
+
+	# Applying all other audio effects
+	for l_effect: EffectAudio in Project.files[id].audio_effects:
+		l_effect.apply_effect(audio)
+
+
+func _update_audio_clips() -> void:
+	# Updating clip audio if necessary
+	for l_clip: ClipData in Project.clips.values():
+		if l_clip.file_id == id:
+			l_clip.update_audio_data()
 
 
 func _load_video_data(a_file_path: String) -> void:

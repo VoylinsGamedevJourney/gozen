@@ -20,7 +20,9 @@ var timeline_end: int = 0: set = set_timeline_end
 
 var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track
 var clips: Dictionary[int, ClipData] = {} # {id: ClipData}
-var _audio: Dictionary[int, PackedByteArray] = {} # { clip_id: PackedByteArray }
+
+@warning_ignore("unused_private_class_variable")
+var _audio: Dictionary[int, PackedByteArray] = {} # { clip_id: ByteArray }
 
 
 
@@ -107,8 +109,6 @@ func load_project(a_path: String) -> void:
 		return _open_load_project_dialog()
 
 	_path = a_path
-	print(a_path)
-	print(_path)
 
 	# Resetting all variables
 	var l_new_instance: Node = (load("uid://biap2s04hs0bi") as GDScript).new()
@@ -182,7 +182,6 @@ func _open_load_project_dialog() -> void:
 
 
 func add_file(a_file_path: String) -> int:
-	var l_id: int = Utils.get_unique_id(files.keys())
 	var l_file: File = File.create(a_file_path)
 
 	if l_file == null:
@@ -194,10 +193,10 @@ func add_file(a_file_path: String) -> int:
 			print("File already loaded with path '%s'!" % a_file_path)
 			return -1
 
-	files[l_id] = l_file
-	_load_file_data(l_id)
+	files[l_file.id] = l_file
+	_load_file_data(l_file.id)
 
-	return l_id
+	return l_file.id
 
 
 func _load_file_data(a_id: int) -> void:
@@ -205,14 +204,6 @@ func _load_file_data(a_id: int) -> void:
 
 	l_file_data.init_data(a_id)
 	_files_data[a_id] = l_file_data
-
-
-func set_clip_audio(a_clip_id: int, a_data: PackedByteArray) -> void:
-	_audio[a_clip_id] = a_data
-
-
-func get_clip_audio(a_clip_id: int) -> PackedByteArray:
-	return _audio[a_clip_id]
 
 
 func set_timeline_end(a_new_value: int) -> void:

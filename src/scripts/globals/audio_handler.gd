@@ -10,6 +10,8 @@ var players: Array[AudioStreamPlayer] = []
 var streams: Array[AudioStreamWAV] = []
 var clip_ids: PackedInt64Array = []
 
+var not_ready_audio: Dictionary[int, ClipData] = {} # {track_id: ClipData)
+
 
 
 func _ready() -> void:
@@ -30,6 +32,11 @@ func _ready() -> void:
 		l_player.stream = l_stream
 
 
+func _process(_delta: float) -> void:
+	for l_clip_data: ClipData in not_ready_audio.values():
+		check_audio(l_clip_data)
+
+
 func set_audio(a_clip_data: ClipData, a_frame: int) -> void:
 	if RenderLayout.is_rendering or a_clip_data.get_audio().size() == 0:
 		stop_audio(a_clip_data.track)
@@ -37,6 +44,14 @@ func set_audio(a_clip_data: ClipData, a_frame: int) -> void:
 
 	clip_ids[a_clip_data.track] = a_clip_data.id
 	streams[a_clip_data.track].data = a_clip_data.get_audio()
+
+	if streams[a_clip_data.track].data.size() == 1: # Data still loading
+		not_ready_audio[a_clip_data.track] = a_clip_data
+		return
+	elif a_clip_data.track in not_ready_audio:
+		@warning_ignore("return_value_discarded")
+		not_ready_audio.erase(a_clip_data.track)
+		
 	players[a_clip_data.track].play(float(a_frame) / Project.framerate)
 	players[a_clip_data.track].stream_paused = !View.is_playing
 
@@ -44,6 +59,13 @@ func set_audio(a_clip_data: ClipData, a_frame: int) -> void:
 func check_audio(a_clip_data: ClipData) -> void:
 	if a_clip_data.id in clip_ids:
 		streams[a_clip_data.track].data = a_clip_data.get_audio()
+
+		if streams[a_clip_data.track].data.size() == 1: # Data still loading
+			return
+		else:
+			@warning_ignore("return_value_discarded")
+			not_ready_audio.erase(a_clip_data.track)
+
 		players[a_clip_data.track].play(float(View.frame_nr) / Project.framerate)
 		players[a_clip_data.track].stream_paused = !View.is_playing
 

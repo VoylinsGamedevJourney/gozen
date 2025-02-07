@@ -14,7 +14,8 @@ var end_frame: int : get = get_end_frame
 var duration: int
 var begin: int = 0 # Only for video files
 
-var effects_audio: EffectsAudio = EffectsAudio.new()
+var default_audio_effects: EffectAudioDefault = EffectAudioDefault.new()
+var audio_effects: Array[EffectAudio] = []
 
 
 func get_end_frame() -> int:
@@ -23,15 +24,15 @@ func get_end_frame() -> int:
 
 func get_audio() -> PackedByteArray:
 	if type in View.AUDIO_TYPES:
-		return Project.get_clip_audio(id)
+		if !Project._audio.has(id):
+			return [0]
+		return Project._audio[id]
 	return []
 
 
 func update_audio_data() -> void:
-	Threader.tasks.append(Threader.Task.new(
-		WorkerThreadPool.add_task(_update_audio),
-		AudioHandler.check_audio.bind(self)
-	))
+	Threader.timed_tasks[id] = Threader.TimedTask.new(
+			_update_audio, AudioHandler.check_audio.bind(self))
 
 
 func _update_audio() -> void:
@@ -45,16 +46,10 @@ func _update_audio() -> void:
 		begin * AudioHandler.bytes_per_frame,
 		(begin + duration) * AudioHandler.bytes_per_frame)
 
-	# Applying Mono effect
-	if effects_audio.mono != effects_audio.MONO.OFF:
-		Project._audio[id] = Audio.change_to_mono(
-				Project._audio[id] as PackedByteArray,
-				effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
-
-	# Adjusting gain
-	if effects_audio.gain != 0:
-		Project._audio[id] = Audio.change_db(
-				Project._audio[id] as PackedByteArray, effects_audio.gain)
+	# Applying default + other effects
+	default_audio_effects.apply_effect(Project._audio[id])
+	for l_effect: EffectAudio in audio_effects:
+		l_effect.apply_effect(Project._audio[id])
 
 
 func load_video_frame(a_track: int, a_frame_nr: int) -> void:
