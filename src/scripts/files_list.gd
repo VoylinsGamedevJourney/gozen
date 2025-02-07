@@ -1,11 +1,28 @@
 extends ItemList
 
 
+var not_ready: Dictionary[int, int] = {} # { file_id: item_id}
+
+
 
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	get_window().files_dropped.connect(_on_files_dropped)
 	Project._on_project_loaded.connect(_on_project_loaded)
+
+
+func _process(_delta: float) -> void:
+	for l_file_id: int in not_ready.keys():
+		if Project.files[l_file_id].type in View.AUDIO_TYPES:
+			if Project._files_data[l_file_id].audio == null:
+				print(Project._files_data[l_file_id].audio)
+				continue
+		if Project.files[l_file_id].type == File.TYPE.VIDEO:
+			if Project._files_data[l_file_id].video.size() == 0:
+				continue
+
+		set_item_disabled(not_ready[l_file_id], false)
+		not_ready.erase(l_file_id)
 
 
 func _on_project_loaded() -> void:
@@ -32,7 +49,10 @@ func _add_file_to_list(a_id: int) -> void:
 
 	set_item_metadata(l_item, a_id)
 	set_item_tooltip(l_item, l_file.path)
+	set_item_disabled(l_item, true)
 	# TODO: Add thumbnail
+
+	not_ready[a_id] = l_item
 	
 
 func _get_drag_data(_pos: Vector2) -> Draggable:
