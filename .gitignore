@@ -1,7 +1,6 @@
 # Godot ignores
 .godot/
 .import/
-*.translation
 *.mo
 
 # Linux dot files
@@ -27,6 +26,11 @@ config.log
 *.exp
 *.a
 
+# Compile commands should be generated with the 'bear' command
 compile_commands.json
 
-bin/linux
+# Don't save binary files to git
+bin/*
+
+# Test file
+test.gozen
