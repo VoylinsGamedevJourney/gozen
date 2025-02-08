@@ -1,5 +1,8 @@
 class_name EffectAudioDefault extends EffectAudio
 
+static var db_cache: Dictionary[int, float] = {} # { gain, value }
+
+
 const MIN_VALUE: int = 45
 const MAX_VALUE: int = -45
 
@@ -37,9 +40,9 @@ func get_one_shot() -> bool:
 	return true
 
 
-func apply_effect(a_data: PackedByteArray) -> void:
+func apply_effect(a_audio: Audio) -> void:
 	if gain != 0:
-		a_data = Audio.change_db(a_data, gain)
+		a_audio.change_db(gain)
 
 
 func _on_spinbox_value_changed(a_value: float, a_callable: Callable) -> void:

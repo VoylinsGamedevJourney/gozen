@@ -35,7 +35,7 @@ func _ready() -> void:
 	instance = self
 
 	@warning_ignore_start("return_value_discarded")
-	View._on_frame_nr_changed.connect(move_playhead)
+	View.frame_nr_changed.connect(move_playhead)
 	mouse_exited.connect(func() -> void: preview.visible = false)
 	Project._on_project_loaded.connect(_on_project_loaded)
 
@@ -58,7 +58,7 @@ func _process(_delta: float) -> void:
 				floori(main.get_local_mouse_position().x / zoom),
 				0, Project.timeline_end)
 		if l_new_frame != View.frame_nr:
-			View._set_frame(l_new_frame, true)
+			View.set_frame(l_new_frame)
 
 
 func _input(a_event: InputEvent) -> void:
@@ -92,7 +92,7 @@ func _set_zoom(a_new_zoom: float) -> void:
 	var l_prev_mouse: int = round(main.get_local_mouse_position().x / zoom)
 
 	zoom = clampf(a_new_zoom, 0.2, 10.0)
-	move_playhead()
+	move_playhead(View.frame_nr)
 
 	# Get all clips, update their size and position
 	for l_clip_button: Button in clips.get_children():
@@ -109,8 +109,8 @@ func _set_zoom(a_new_zoom: float) -> void:
 	_on_zoom_changed.emit()
 
 
-func move_playhead() -> void:
-	playhead.position.x = zoom * View.frame_nr
+func move_playhead(a_frame_nr: int) -> void:
+	playhead.position.x = zoom * a_frame_nr
 
 
 func _can_drop_data(_pos: Vector2, a_data: Variant) -> bool:
@@ -288,10 +288,10 @@ func _drop_data(_pos: Vector2, a_data: Variant) -> void:
 	else:
 		_handle_drop_existing_clips(l_draggable)
 
-	Project.undo_redo.add_do_method(View._update_frame)
+	Project.undo_redo.add_do_method(View.set_frame.bind(View.frame_nr))
 	Project.undo_redo.add_do_method(update_end)
 
-	Project.undo_redo.add_undo_method(View._update_frame)
+	Project.undo_redo.add_undo_method(View.set_frame.bind(View.frame_nr))
 	Project.undo_redo.add_undo_method(update_end)
 
 	Project.undo_redo.commit_action()

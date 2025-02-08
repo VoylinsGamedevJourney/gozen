@@ -14,18 +14,18 @@ func _ready() -> void:
 	instance = self
 
 	@warning_ignore_start("return_value_discarded")
-	View._on_frame_nr_changed.connect(_frame_update)
-	View._on_frame_nr_changed.connect(_time_update)
-	Project._on_timeline_end_changed.connect(_frame_update)
+	View.frame_nr_changed.connect(_frame_update)
+	View.frame_nr_changed.connect(_time_update)
+	Project._on_timeline_end_changed.connect(_frame_update.bind(View.frame_nr))
 
 	
-func _frame_update() -> void:
-	frame_label.text = "%s/%s" % [View.frame_nr, Project.timeline_end]
+func _frame_update(a_frame_nr: int) -> void:
+	frame_label.text = "%s/%s" % [a_frame_nr, Project.timeline_end]
 
 
-func _time_update() -> void:
+func _time_update(a_frame_nr: int) -> void:
 	@warning_ignore_start("integer_division")
-	time[2] = floori(View.frame_nr / Project.framerate) # Total seconds
+	time[2] = floori(a_frame_nr / Project.framerate) # Total seconds
 	time[0] = int(time[2] / 3600) # Setting the hours
 	time[2] = int(fmod(time[2], 3600)) # Calculate remaining seconds
 	time[1] = int(time[2] / 60) # Setting the minutes

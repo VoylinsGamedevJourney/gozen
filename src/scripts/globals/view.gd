@@ -1,18 +1,19 @@
 extends Node
 
-signal _on_frame_nr_changed
+signal frame_nr_changed(a_frame_nr: int)
+signal play_changed(a_value: bool)
 
 
 const VISUAL_TYPES: PackedInt64Array = [ File.TYPE.IMAGE, File.TYPE.VIDEO ]
 const AUDIO_TYPES: PackedInt64Array = [ File.TYPE.AUDIO, File.TYPE.VIDEO ]
 
 
-var frame_nr: int = 0
+var frame_nr: int = 0: set = _set_frame_nr
 
 var main_view: SubViewport
 var views: Array[TextureRect] = []
 
-var is_playing: bool = false
+var is_playing: bool = false: set = _set_is_playing
 var loaded_clips: Array[ClipData] = []
 
 var time_elapsed: float = 0.0
@@ -51,11 +52,11 @@ func _ready() -> void:
 	l_background.color = Color.BLACK
 
 	main_view.add_child(l_background)
-	_set_frame(0, true)
+	set_frame(0)
 
 
 func _on_project_loaded() -> void:
-	_set_frame(frame_nr, true)
+	set_frame(frame_nr)
 
 
 func _process(a_delta: float) -> void:
@@ -74,39 +75,29 @@ func _process(a_delta: float) -> void:
 
 		if skips <= 1:
 			frame_nr += skips
-			_set_frame(frame_nr)
+			set_frame(frame_nr)
 			# TODO: We have to adjust the audio playback as well when skipping happens
 		else:
-			_set_frame()
+			set_frame()
 
 
 func _on_play_button_pressed() -> void:
 	if frame_nr == Project.timeline_end:
-		AudioHandler.stop_all_audio()
-		return _on_end_reached()
+		is_playing = false
+		return
 
 	is_playing = !is_playing
 
-	if is_playing:
-		AudioHandler.play_all_audio()
-	else:
-		AudioHandler.stop_all_audio()
 
-
-func _on_end_reached() -> void:
-	is_playing = false
-
-
-func _update_frame() -> void:
-	_set_frame(frame_nr, true)
-
-
-func _set_frame(a_frame_nr: int = step_playhead(), a_force_playhead: bool = false) -> void:
+func set_frame(a_frame_nr: int = frame_nr + 1) -> void:
 	# WARN: We need to take in mind frame skipping! We can skip over the moment
 	# that a frame is supposed to appear or start playing!
+	frame_nr = a_frame_nr
+	frame_nr_changed.emit(frame_nr)
+
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct
-		if _check_clip(i, a_frame_nr, a_force_playhead):
+		if _check_clip(i, a_frame_nr):
 			update_view(i, a_frame_nr)
 			continue
 
@@ -115,20 +106,13 @@ func _set_frame(a_frame_nr: int = step_playhead(), a_force_playhead: bool = fals
 
 		if l_clip_id == -1:
 			loaded_clips[i] = null
-			AudioHandler.stop_audio(i)
+			continue
 		else:
 			loaded_clips[i] = Project.clips[l_clip_id]
-			AudioHandler.set_audio(
-					loaded_clips[i], a_frame_nr - loaded_clips[i].start_frame)
+
 		set_view(i)
 		update_view(i, a_frame_nr)
 	
-	if a_force_playhead:
-		frame_nr = a_frame_nr
-		_on_end_check()
-
-	_on_frame_nr_changed.emit()
-
 	if frame_nr == Project.timeline_end:
 		is_playing = false
 
@@ -208,7 +192,7 @@ func update_view(a_id: int, a_frame_nr: int) -> void:
 
 
 ## Update display/audio and continue if within clip bounds.
-func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
+func _check_clip(a_id: int, a_frame_nr: int) -> bool:
 	if loaded_clips[a_id] == null:
 		return false
 
@@ -226,11 +210,6 @@ func _check_clip(a_id: int, a_frame_nr: int, a_set_audio: bool) -> bool:
 
 	if a_frame_nr > loaded_clips[a_id].start_frame + loaded_clips[a_id].duration:
 		return false
-
-	# Setting the audio to the correct position
-	if a_set_audio:
-		AudioHandler.set_audio(
-			loaded_clips[a_id], a_frame_nr - loaded_clips[a_id].start_frame)
 
 	return true
 
@@ -257,15 +236,15 @@ func _check_clip_end(a_frame_nr: int, a_clip_id: int) -> bool:
 	return false if !l_clip else a_frame_nr < l_clip.start_frame + l_clip.duration
 
 
-func step_playhead() -> int:
-	frame_nr += 1
-	_on_end_check()
-	_on_frame_nr_changed.emit()
-
-	return frame_nr
-
-
-func _on_end_check() -> void:
-	if frame_nr >= Project.timeline_end:
-		_on_end_reached()
+func _set_frame_nr(a_value: int) -> void:
+	if a_value >= Project.timeline_end:
+		is_playing = false
 		frame_nr = Project.timeline_end
+	else:
+		frame_nr = a_value
+
+
+func _set_is_playing(a_value: bool) -> void:
+	is_playing = a_value
+	play_changed.emit(a_value)
+

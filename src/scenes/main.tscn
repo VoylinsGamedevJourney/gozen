@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=31 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Script" uid="uid://cn5rw8xe4i6dr" path="res://scripts/main_scene.gd" id="1_6sk7e"]
 [ext_resource type="PackedScene" uid="uid://clxwikblkyucr" path="res://scenes/files_panel.tscn" id="3_6pnh6"]
@@ -81,6 +81,11 @@ corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
+
+[sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_muem4"]
+clip_count = 1
+clip_0/name = &""
+clip_0/auto_advance = 0
 
 [node name="Editor" type="HBoxContainer"]
 anchors_preset = 15
@@ -316,6 +321,9 @@ text = "/storage/video.mp4"
 [node name="RenderButton" type="Button" parent="MainVBox/LayoutTabContainer/RenderingLayout"]
 layout_mode = 2
 text = "Render"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamInteractive_muem4")
 
 [connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/EditingLayoutButton" to="." method="_on_switch_layout" binds= [0]]

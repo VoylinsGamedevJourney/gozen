@@ -11,7 +11,8 @@ var max_right_resize: int = 0 # Maximum frame
 var start_frame: int = 0
 var duration: int = 0
 
-var wave_texture_rect: TextureRect = null
+var update_wave: bool = false
+var wave: bool = false
 
 
 
@@ -27,14 +28,8 @@ func _ready() -> void:
 		Timeline.instance._on_zoom_changed.connect(_update_wave)]
 
 	if l_data.type in View.AUDIO_TYPES:
-		clip_children = CLIP_CHILDREN_AND_DRAW
-
-		wave_texture_rect = preload("uid://ckgeq1wepgdxd").instantiate()
-		wave_texture_rect.position.x = -(Timeline.get_frame_pos(l_data.begin))
-		wave_texture_rect.texture = get_file_data().wave
-
-		add_child(wave_texture_rect)
-		_update_wave.call_deferred()
+		wave = true
+		_update_wave()
 
 
 func _process(_delta: float) -> void:
@@ -50,11 +45,17 @@ func _process(_delta: float) -> void:
 		# Updating the clip
 		if is_resizing_right:
 			size.x = Timeline.get_frame_pos(l_new_frame - start_frame)
-			_update_wave()
 		elif is_resizing_left:
 			position.x = Timeline.get_frame_pos(l_new_frame)
 			size.x = Timeline.get_frame_pos(duration - (l_new_frame - start_frame))
-			_update_wave(get_clip_data().begin + (l_new_frame - start_frame))
+
+		_update_wave()
+
+
+func _draw() -> void:
+	if wave and update_wave:
+		update_wave = false
+		# TODO: Make wave from audio clip data
 
 
 func _on_button_down() -> void:
@@ -75,11 +76,9 @@ func _input(a_event: InputEvent) -> void:
 		Project.undo_redo.create_action("Deleting clip on timeline")
 
 		Project.undo_redo.add_do_method(_cut_clip.bind(View.frame_nr, l_data))
-		Project.undo_redo.add_do_method(View._update_frame)
 		Project.undo_redo.add_do_method(_update_wave)
 
 		Project.undo_redo.add_undo_method(_uncut_clip.bind(View.frame_nr, l_data))
-		Project.undo_redo.add_undo_method(View._update_frame)
 		Project.undo_redo.add_undo_method(_update_wave)
 
 		Project.undo_redo.commit_action()
@@ -108,8 +107,8 @@ func _on_gui_input(a_event: InputEvent) -> void:
 		Project.undo_redo.add_undo_method(Timeline.instance.undelete_clip.bind(
 				get_clip_data()))
 
-		Project.undo_redo.add_do_method(View._update_frame)
-		Project.undo_redo.add_undo_method(View._update_frame)
+		Project.undo_redo.add_do_method(View.set_frame.bind(View.frame_nr))
+		Project.undo_redo.add_undo_method(View.set_frame.bind(View.frame_nr))
 		Project.undo_redo.commit_action()
 
 
@@ -220,12 +219,12 @@ func _on_commit_resize() -> void:
 	Project.undo_redo.add_do_method(_set_resize_data.bind(
 			Timeline.get_frame_id(position.x),
 			Timeline.get_frame_id(size.x)))
-	Project.undo_redo.add_do_method(View._update_frame)
+	Project.undo_redo.add_do_method(View.set_frame.bind(View.set_frame))
 	Project.undo_redo.add_do_method(_update_wave)
 
 	Project.undo_redo.add_undo_method(_set_resize_data.bind(
 			get_clip_data().start_frame, get_clip_data().duration))
-	Project.undo_redo.add_undo_method(View._update_frame)
+	Project.undo_redo.add_undo_method(View.set_frame.bind(View.set_frame))
 	Project.undo_redo.add_undo_method(_update_wave)
 
 	Project.undo_redo.commit_action()
@@ -264,15 +263,16 @@ func _cut_clip(a_playhead: int, a_clip_data: ClipData) -> void:
 	l_new_clip.begin = a_clip_data.begin + l_frame
 	l_new_clip.track = a_clip_data.track
 
-	a_clip_data.duration -= l_new_clip.duration - 1
+	a_clip_data.duration -= l_new_clip.duration
 	size.x = a_clip_data.duration * Timeline.get_zoom()
 
 	Project.clips[l_new_clip.id] = l_new_clip
 	Project.tracks[l_new_clip.track][l_new_clip.start_frame] = l_new_clip.id
 
-	a_clip_data.update_audio_data()
 	l_new_clip.update_audio_data()
+	AudioHandler.reset_stream(get_clip_data().track)
 	Timeline.instance.add_clip(l_new_clip)
+	a_clip_data.update_audio_data()
 
 
 func _uncut_clip(a_playhead: int, a_current_clip: ClipData) -> void:
@@ -284,6 +284,7 @@ func _uncut_clip(a_playhead: int, a_current_clip: ClipData) -> void:
 
 	Timeline.instance.delete_clip(l_split_clip)
 	a_current_clip.update_audio_data()
+	AudioHandler.reset_stream(get_clip_data().track)
 
 
 func get_clip_data() -> ClipData:
@@ -298,9 +299,6 @@ func get_file_data() -> FileData:
 	return Project._files_data[get_clip_data().file_id]
 
 
-func _update_wave(a_begin: int = get_clip_data().begin) -> void:
-	if wave_texture_rect != null:
-		wave_texture_rect.position.x = -(a_begin * Timeline.get_zoom())
-		wave_texture_rect.size.x = wave_texture_rect.texture.\
-				get_image().get_size().x * Timeline.get_zoom()
-
+func _update_wave() -> void:
+	update_wave = true
+	_draw()

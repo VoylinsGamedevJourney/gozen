@@ -50,7 +50,7 @@ func _on_render_button_pressed() -> void:
 	# Render logic for visuals
 	print("Generating frames ...")
 	for i: int in Project.timeline_end:
-		View._set_frame(i, true)
+		View.set_frame(i)
 
 		# We need to wait else getting the image doesn't work
 		await RenderingServer.frame_post_draw

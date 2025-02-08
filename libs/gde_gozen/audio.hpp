@@ -1,14 +1,13 @@
 #pragma once
 
-#include <algorithm>
 #include <cmath>
-#include <map>
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/core/math.hpp>
 
 #include "ffmpeg.hpp"
@@ -29,6 +28,10 @@ private:
 		UtilityFunctions::printerr("Renderer: ", a_message, "!");
 		return false;
 	}
+	
+	PackedByteArray raw_data;
+	PackedByteArray data;
+	Ref<AudioStreamWAV> stream;
 
 public:
 	static PackedByteArray get_audio_data(String a_path);
@@ -36,8 +39,28 @@ public:
 
 	static PackedByteArray combine_data(PackedByteArray a_one, PackedByteArray a_two);
 
-	static PackedByteArray change_db(PackedByteArray a_data, float a_db);
-	static PackedByteArray change_to_mono(PackedByteArray a_data, bool a_left);
+	inline void reset_data() {
+		if (!stream.is_valid()) {
+			stream.instantiate();
+			stream->set_format(godot::AudioStreamWAV::FORMAT_16_BITS);
+			stream->set_stereo(true);
+			stream->set_mix_rate(44100);
+		}
+		data = raw_data.duplicate();
+		stream->set_data(data); };
+
+	inline void set_raw_data(PackedByteArray a_data) {
+			raw_data = a_data;
+			reset_data(); }
+	inline PackedByteArray get_raw_data() { return raw_data; }
+	inline int get_raw_data_size() { return raw_data.size(); }
+
+	inline Ref<AudioStreamWAV> get_stream() { return stream; }
+	inline PackedByteArray get_data() { return data; }
+	inline int get_data_size() { return data.size(); }
+
+	void change_db(float a_db);
+	void change_to_mono(bool a_left);
 
 
 protected:
@@ -47,7 +70,16 @@ protected:
 
 		ClassDB::bind_static_method("Audio", D_METHOD("combine_data", "a_one", "a_two"), &Audio::combine_data);
 
-		ClassDB::bind_static_method("Audio", D_METHOD("change_db", "a_data", "a_db"), &Audio::change_db);
-		ClassDB::bind_static_method("Audio", D_METHOD("change_to_mono", "a_data", "a_left"), &Audio::change_db);
+		ClassDB::bind_method(D_METHOD("reset_data"), &Audio::reset_data);
+		ClassDB::bind_method(D_METHOD("set_raw_data", "a_data"), &Audio::set_raw_data);
+		ClassDB::bind_method(D_METHOD("get_raw_data"), &Audio::get_raw_data);
+		ClassDB::bind_method(D_METHOD("get_raw_data_size"), &Audio::get_raw_data_size);
+
+		ClassDB::bind_method(D_METHOD("get_stream"), &Audio::get_stream);
+		ClassDB::bind_method(D_METHOD("get_data"), &Audio::get_data);
+		ClassDB::bind_method(D_METHOD("get_data_size"), &Audio::get_data_size);
+
+		ClassDB::bind_method(D_METHOD("change_db", "a_db"), &Audio::change_db);
+		ClassDB::bind_method(D_METHOD("change_to_mono", "a_left"), &Audio::change_to_mono);
 	}
 };

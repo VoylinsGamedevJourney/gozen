@@ -21,9 +21,6 @@ var timeline_end: int = 0: set = set_timeline_end
 var tracks: Array[Dictionary] = [] # [{frame_nr: clip_id}] each dic is a track
 var clips: Dictionary[int, ClipData] = {} # {id: ClipData}
 
-@warning_ignore("unused_private_class_variable")
-var _audio: Dictionary[int, PackedByteArray] = {} # { clip_id: ByteArray }
-
 
 
 func _ready() -> void:

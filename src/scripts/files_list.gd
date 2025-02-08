@@ -1,7 +1,7 @@
 extends ItemList
 
 
-var not_ready: Dictionary[int, int] = {} # { file_id: item_id}
+var not_ready: PackedInt64Array = []
 
 
 
@@ -12,17 +12,22 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	for l_file_id: int in not_ready.keys():
+	if not_ready.size() == 0:
+		return
+
+	for l_file_id: int in not_ready:
 		if Project.files[l_file_id].type in View.AUDIO_TYPES:
-			if Project._files_data[l_file_id].audio == null:
-				print(Project._files_data[l_file_id].audio)
+			if Project._files_data[l_file_id].audio.get_stream() == null:
 				continue
 		if Project.files[l_file_id].type == File.TYPE.VIDEO:
 			if Project._files_data[l_file_id].video.size() == 0:
 				continue
 
-		set_item_disabled(not_ready[l_file_id], false)
-		not_ready.erase(l_file_id)
+		for i: int in item_count:
+			if get_item_metadata(i) == l_file_id:
+				set_item_disabled(i, false)
+				not_ready.remove_at(not_ready.find(l_file_id))
+				break
 
 
 func _on_project_loaded() -> void:
@@ -52,7 +57,7 @@ func _add_file_to_list(a_id: int) -> void:
 	set_item_disabled(l_item, true)
 	# TODO: Add thumbnail
 
-	not_ready[a_id] = l_item
+	not_ready.append(a_id)
 	
 
 func _get_drag_data(_pos: Vector2) -> Draggable:

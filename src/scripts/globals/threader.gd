@@ -49,7 +49,7 @@ class TimedTask:
 	func _init(a_task: Callable, a_after_task: Callable = Callable()) -> void:
 		task = a_task
 		after_task = a_after_task
-		time = Time.get_ticks_msec() + 500
+		time = Time.get_ticks_msec() + 200
 
 
 	func check() -> bool:
