@@ -139,10 +139,6 @@ func load_project(a_path: String) -> void:
 		_load_file_data(l_file_id)
 		_files_data[l_file_id].load_wave()
 
-	print("Loading clip audio ...")
-	for l_clip_data: ClipData in clips.values():
-		l_clip_data.update_audio_data()
-
 	_on_project_loaded.emit()
 
 

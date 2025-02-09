@@ -9,7 +9,7 @@ var type: TYPE = TYPE.EMPTY
 
 var duration: int = -1
 
-var default_audio_effects: EffectAudioDefault = EffectAudioDefault.new()
+var default_audio_effects: EffectAudioDefault = EffectAudioDefault.new(id, false)
 var audio_effects: Array[EffectAudio] = []
 
 

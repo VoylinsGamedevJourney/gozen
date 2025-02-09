@@ -7,45 +7,67 @@ const MIN_VALUE: int = 45
 const MAX_VALUE: int = -45
 
 
+var mute: bool = false
 var gain: int = 0
+
 
 
 func get_effect_name() -> String:
 	return "Audio defaults"
 
 
-func get_ui(a_update_callable: Callable) -> Control:
-	var l_hbox: HBoxContainer = HBoxContainer.new()
-	var l_label: Label = Label.new()
-	var l_spinbox: SpinBox = SpinBox.new()
-	
-	l_label.text = tr("Gain:")
-	l_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+func get_ui() -> Control:
+	# Mute effect
+	var l_vbox_mute: VBoxContainer = VBoxContainer.new()
+	var l_label_mute: Label = Label.new()
+	var l_checkbox_mute: CheckBox = CheckBox.new()
 
-	l_spinbox.min_value = -45
-	l_spinbox.max_value = 45
-	l_spinbox.value = gain
+	l_label_mute.text = tr("Mute:")
+	l_checkbox_mute.set_pressed(mute)
+	l_vbox_mute.add_child(l_label_mute)
+	l_vbox_mute.add_child(l_checkbox_mute)
 
 	@warning_ignore("return_value_discarded")
-	l_spinbox.value_changed.connect(
-			_on_spinbox_value_changed.bind(a_update_callable))
+	l_checkbox_mute.pressed.connect(_on_mute_pressed)
 
-	l_hbox.add_child(l_label)
-	l_hbox.add_child(l_spinbox)
+	# Gain effect
+	var l_label_gain: Label = Label.new()
+	var l_spinbox_gain: SpinBox = SpinBox.new()
+	
+	l_label_gain.text = tr("Gain:")
+	l_label_gain.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	l_spinbox_gain.min_value = -45
+	l_spinbox_gain.max_value = 45
+	l_spinbox_gain.value = gain
+
+	@warning_ignore("return_value_discarded")
+	l_spinbox_gain.value_changed.connect(_on_spinbox_value_changed)
+
+	# Finishing the node
+	var l_hbox: HBoxContainer = HBoxContainer.new()
+
+	l_hbox.add_child(l_vbox_mute)
+	l_hbox.add_child(l_label_gain)
+	l_hbox.add_child(l_spinbox_gain)
 
 	return l_hbox
 
 
-func get_one_shot() -> bool:
-	return true
+func _on_mute_pressed() -> void:
+	mute = !mute
+	update_audio_effect()
 
 
-func apply_effect(a_audio: Audio) -> void:
-	if gain != 0:
-		a_audio.change_db(gain)
-
-
-func _on_spinbox_value_changed(a_value: float, a_callable: Callable) -> void:
+func _on_spinbox_value_changed(a_value: float) -> void:
 	gain = int(a_value)
-	a_callable.call()
+	update_audio_effect()
+
+
+func apply_effect(a_data: PackedByteArray) -> PackedByteArray:
+	## This will be called in a thread to update the data
+	if mute:
+		a_data.fill(0)
+
+	return Audio.change_db(a_data, gain)
 

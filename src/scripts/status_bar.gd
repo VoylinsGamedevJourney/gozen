@@ -24,11 +24,10 @@ func _frame_update(a_frame_nr: int) -> void:
 
 
 func _time_update(a_frame_nr: int) -> void:
-	@warning_ignore_start("integer_division")
-	time[2] = floori(a_frame_nr / Project.framerate) # Total seconds
-	time[0] = int(time[2] / 3600) # Setting the hours
+	time[2] = floori(float(a_frame_nr) / Project.framerate) # Total seconds
+	time[0] = int(float(time[2]) / 3600) # Setting the hours
 	time[2] = int(fmod(time[2], 3600)) # Calculate remaining seconds
-	time[1] = int(time[2] / 60) # Setting the minutes
+	time[1] = int(float(time[2]) / 60) # Setting the minutes
 	time[2] = int(fmod(time[2], 60)) # Setting the seconds
 
 	time_label.text = "%d:%02d:%02d" % [time[0], time[1], time[2]]

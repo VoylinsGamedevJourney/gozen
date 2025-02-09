@@ -42,6 +42,7 @@ gdscript/warnings/return_value_discarded=1
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/subwindows/embed_subwindows=false
+window/vsync/vsync_mode=0
 
 [file_customization]
 

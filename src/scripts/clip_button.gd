@@ -245,7 +245,6 @@ func _set_resize_data(a_new_start: int, a_new_duration: int) -> void:
 
 	l_data.start_frame = a_new_start
 	l_data.duration = a_new_duration
-	l_data.update_audio_data()
 
 	Timeline.instance.update_end()
 
@@ -269,10 +268,7 @@ func _cut_clip(a_playhead: int, a_clip_data: ClipData) -> void:
 	Project.clips[l_new_clip.id] = l_new_clip
 	Project.tracks[l_new_clip.track][l_new_clip.start_frame] = l_new_clip.id
 
-	l_new_clip.update_audio_data()
-	AudioHandler.reset_stream(get_clip_data().track)
 	Timeline.instance.add_clip(l_new_clip)
-	a_clip_data.update_audio_data()
 
 
 func _uncut_clip(a_playhead: int, a_current_clip: ClipData) -> void:
@@ -283,8 +279,6 @@ func _uncut_clip(a_playhead: int, a_current_clip: ClipData) -> void:
 	size.x = Timeline.get_frame_pos(a_current_clip.duration)
 
 	Timeline.instance.delete_clip(l_split_clip)
-	a_current_clip.update_audio_data()
-	AudioHandler.reset_stream(get_clip_data().track)
 
 
 func get_clip_data() -> ClipData:

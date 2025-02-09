@@ -17,7 +17,7 @@ func _process(_delta: float) -> void:
 
 	for l_file_id: int in not_ready:
 		if Project.files[l_file_id].type in View.AUDIO_TYPES:
-			if Project._files_data[l_file_id].audio.get_stream() == null:
+			if Project._files_data[l_file_id].audio == null:
 				continue
 		if Project.files[l_file_id].type == File.TYPE.VIDEO:
 			if Project._files_data[l_file_id].video.size() == 0:

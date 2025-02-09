@@ -126,22 +126,19 @@ func show_audio_effects() -> void:
 
 	# Set the clip effect defaults + load defaults
 	if clip != null:
-		effects_vbox.add_child(clip.default_audio_effects.get_ui(
-				clip.update_audio_data))
+		effects_vbox.add_child(clip.default_audio_effects.get_ui())
 		effects_vbox.add_child(l_separator.duplicate())
 
 		for l_effect: EffectAudio in clip.audio_effects:
-			effects_vbox.add_child(l_effect.get_ui(clip.update_audio_data))
+			effects_vbox.add_child(l_effect.get_ui())
 			effects_vbox.add_child(l_separator.duplicate())
 	else:
 		# Set the file effect defaults + load defaults
-		effects_vbox.add_child(file.default_audio_effects.get_ui(
-				Project._files_data[file.id].update_audio_data))
+		effects_vbox.add_child(file.default_audio_effects.get_ui())
 		effects_vbox.add_child(l_separator.duplicate())
 
 		# Adding all other effects
 		for l_effect: EffectAudio in file.audio_effects:
-			effects_vbox.add_child(l_effect.get_ui(
-					Project._files_data[file.id].update_audio_data))
+			effects_vbox.add_child(l_effect.get_ui())
 			effects_vbox.add_child(l_separator.duplicate())
 

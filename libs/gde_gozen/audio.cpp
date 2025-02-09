@@ -58,17 +58,6 @@ PackedByteArray Audio::_get_audio(AVFormatContext *&a_format_ctx, AVStream *&a_s
 		return l_data;
 	}
 
-	// Set the seeker to the beginning
-	int l_start_time = a_stream->start_time != AV_NOPTS_VALUE ? a_stream->start_time : 0;
-	//avcodec_flush_buffers(l_codec_ctx_audio); // Not certain if needed here
-	if ((response = av_seek_frame(a_format_ctx, -1, l_start_time, AVSEEK_FLAG_BACKWARD)) < 0) {
-		UtilityFunctions::printerr("Can't seek to the beginning of audio stream!");
-		avcodec_flush_buffers(l_codec_ctx_audio);
-		avcodec_free_context(&l_codec_ctx_audio);
-		swr_free(&l_swr_ctx);
-		return l_data;
-	}
-
 	size_t l_audio_size = 0;
 	int l_bytes_per_samples = av_get_bytes_per_sample(TARGET_FORMAT);
 
@@ -234,12 +223,12 @@ PackedByteArray Audio::combine_data(PackedByteArray a_one, PackedByteArray a_two
 }
 
 
-void Audio::change_db(float a_db) {
+PackedByteArray Audio::change_db(PackedByteArray a_data, float a_db) {
 	static std::unordered_map<int, double> l_cache;
 	
-	const size_t l_sample_count = data.size() / 2;
-	const int16_t *l_data_r = reinterpret_cast<const int16_t*>(data.ptr());
-	int16_t *l_data_w = reinterpret_cast<int16_t*>(data.ptrw());
+	const size_t l_sample_count = a_data.size() / 2;
+	const int16_t *l_data_r = reinterpret_cast<const int16_t*>(a_data.ptr());
+	int16_t *l_data_w = reinterpret_cast<int16_t*>(a_data.ptrw());
 
 	const auto l_search = l_cache.find(a_db);
 	double l_value;
@@ -249,24 +238,26 @@ void Audio::change_db(float a_db) {
 		l_cache[a_db] = l_value;
 	} else l_value = l_search->second;
 	
-	for (size_t i = 0; i < data.size() / 2; i++)
+	for (size_t i = 0; i < l_sample_count; i++)
 		l_data_w[i] = Math::clamp((int32_t)(l_data_r[i] * l_value), -32768, 32767);
 
-	stream->set_data(data);
+	return a_data;
 }
 
 
-void Audio::change_to_mono(bool a_left) {
-	const int16_t *l_data = (const int16_t*)data.ptr();
-	int16_t *l_data_w = reinterpret_cast<int16_t*>(data.ptrw());
+PackedByteArray Audio::change_to_mono(PackedByteArray a_data, bool a_left) {
+	const size_t l_sample_count = a_data.size() / 2;
+	const int16_t *l_data = (const int16_t*)a_data.ptr();
+	int16_t *l_data_w = reinterpret_cast<int16_t*>(a_data.ptrw());
 
 	if (a_left) {
-		for (size_t i = 0; i < data.size() / 2; i += 2)
+		for (size_t i = 0; i < l_sample_count; i += 2)
 			l_data_w[i + 1] = l_data[i];
     } else {
-		for (size_t i = 0; i < data.size() / 2; i += 2)
+		for (size_t i = 0; i < l_sample_count; i += 2)
 			l_data_w[i] = l_data[i + 1];
 	}
-	stream->set_data(data);
+
+	return a_data;
 }
 

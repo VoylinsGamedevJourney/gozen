@@ -315,7 +315,6 @@ func _handle_drop_new_clips(l_draggable: Draggable) -> void:
 		l_new_clip_data.start_frame = l_start_frame
 		l_new_clip_data.track = l_track
 		l_new_clip_data.duration = Project.files[l_id].duration
-		l_new_clip_data.update_audio_data()
 
 		l_ids.append(l_new_clip_data.id)
 		l_draggable.new_clips.append(l_new_clip_data)
@@ -502,7 +501,6 @@ func delete_clip(a_clip_data: ClipData) -> void:
 func undelete_clip(a_clip_data: ClipData) -> void:
 	Project.clips[a_clip_data.id] = a_clip_data
 	Project.tracks[a_clip_data.track][a_clip_data.start_frame] = a_clip_data.id
-	a_clip_data.update_audio_data()
 
 	add_clip(a_clip_data)
 	update_end()
