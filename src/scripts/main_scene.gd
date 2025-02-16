@@ -12,8 +12,10 @@ extends Control
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
+	@warning_ignore_start("return_value_discarded")
 	gozen_button.get_popup().id_pressed.connect(_on_gozen_popup_option_pressed)
+	get_window().get_viewport().size_changed.connect(_on_gozen_popup_option_pressed)
+	@warning_ignore_restore("return_value_discarded")
 
 	# We need to manually fix the icon size for the items in the popup
 	for l_id: int in gozen_button.get_popup().item_count:

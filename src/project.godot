@@ -13,7 +13,7 @@ config_version=5
 config/name="GoZen"
 config/description="A video editor made in Godot with FFmpeg."
 config/version="0.0.0-alpha"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://main.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen_video_editor"
 config/features=PackedStringArray("4.4", "GL Compatibility")
@@ -42,16 +42,8 @@ gdscript/warnings/return_value_discarded=1
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/subwindows/embed_subwindows=false
+window/per_pixel_transparency/allowed=true
 window/vsync/vsync_mode=0
-
-[file_customization]
-
-folder_colors={
-"res://assets/": "yellow",
-"res://scenes/": "blue",
-"res://scripts/": "purple",
-"res://styles/": "pink"
-}
 
 [input]
 
@@ -116,3 +108,7 @@ load_project={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":79,"key_label":0,"unicode":111,"location":0,"echo":false,"script":null)
 ]
 }
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.164706, 0.164706, 0.164706, 1)

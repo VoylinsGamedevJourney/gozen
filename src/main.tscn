@@ -1,0 +1,655 @@
+[gd_scene load_steps=38 format=3 uid="uid://bvbtbhqrbp1u"]
+
+[ext_resource type="Theme" uid="uid://c60g0smnu0q7m" path="res://styles/dark_theme.tres" id="1_074og"]
+[ext_resource type="Script" uid="uid://cn5rw8xe4i6dr" path="res://scripts/main_scene.gd" id="2_cegan"]
+[ext_resource type="Texture2D" uid="uid://bv3xxhbb81md5" path="res://logo.svg" id="3_82xsv"]
+[ext_resource type="Texture2D" uid="uid://b1n31pcytnsx2" path="res://assets/icons/save.png" id="4_getpj"]
+[ext_resource type="Texture2D" uid="uid://i3npf1v3g7ay" path="res://assets/icons/save_as.png" id="5_ryguw"]
+[ext_resource type="Texture2D" uid="uid://d0sekj1pmn047" path="res://assets/icons/folder_open.png" id="6_d13ii"]
+[ext_resource type="Texture2D" uid="uid://cgpmm2sukr6q6" path="res://assets/icons/support.png" id="7_1u8w0"]
+[ext_resource type="Texture2D" uid="uid://ugsarkvhfpfm" path="res://assets/icons/info.png" id="8_0odxb"]
+[ext_resource type="Texture2D" uid="uid://bws4tffb1k6dv" path="res://assets/icons/link.png" id="9_lswn8"]
+[ext_resource type="Texture2D" uid="uid://dxg1oo4c2cmhr" path="res://assets/icons/layouts/editor_icon.png" id="10_a6jrf"]
+[ext_resource type="Texture2D" uid="uid://bo82sjgrri2vq" path="res://assets/icons/layouts/subtitles_icon.png" id="11_xuqvo"]
+[ext_resource type="Texture2D" uid="uid://b7iw0yh8hp2m7" path="res://assets/icons/layouts/render_icon.png" id="12_qsp4k"]
+[ext_resource type="LabelSettings" uid="uid://holicry8isp8" path="res://styles/label_panel_title.tres" id="13_cegan"]
+[ext_resource type="Script" uid="uid://d80lyg8d5u7" path="res://scripts/files_list.gd" id="13_kq58d"]
+[ext_resource type="Script" uid="uid://b3j7hxttw6e4r" path="res://scripts/view_panel.gd" id="14_seu75"]
+[ext_resource type="Script" uid="uid://duiu1d01138bh" path="res://scripts/effects_panel.gd" id="15_htxhm"]
+[ext_resource type="Script" uid="uid://yioe5cqd7tre" path="res://scripts/timeline.gd" id="16_jq2sk"]
+[ext_resource type="Script" uid="uid://brvmufe20ffqh" path="res://scripts/render_layout.gd" id="17_4k2k6"]
+[ext_resource type="Texture2D" uid="uid://cpxvrmee8mfgp" path="res://assets/icons/fast_rewind.png" id="17_ryguw"]
+[ext_resource type="Script" uid="uid://dc3g5258vekvv" path="res://scripts/status_bar.gd" id="18_0rl1p"]
+[ext_resource type="Texture2D" uid="uid://75wccbvtadm1" path="res://assets/icons/play.png" id="18_d13ii"]
+[ext_resource type="Texture2D" uid="uid://wow2wprhx36n" path="res://assets/icons/fast_forward.png" id="19_1u8w0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dp3eg"]
+content_margin_left = 3.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_muem4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dp3eg"]
+content_margin_bottom = 7.0
+bg_color = Color(0.266667, 0.266667, 0.266667, 1)
+corner_radius_top_right = 7
+expand_margin_left = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ld40"]
+content_margin_left = 2.0
+content_margin_right = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_muem4"]
+bg_color = Color(0.666667, 0, 1, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+expand_margin_left = 4.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gqmmt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_phm1l"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0ld40"]
+font_size = 13
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_muem4"]
+color = Color(0.34902, 0.34902, 0.34902, 1)
+thickness = 2
+vertical = true
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0odxb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0rpv8"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxfkv"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.133412, 0.130756, 0.130756, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_jcy7d"]
+color = Color(0.547811, 0, 0.914108, 0.533333)
+thickness = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h5ind"]
+bg_color = Color(0.683393, 0, 1, 1)
+
+[sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_muem4"]
+clip_count = 1
+clip_0/name = &""
+clip_0/auto_advance = 0
+
+[node name="Editor" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_074og")
+script = ExtResource("2_cegan")
+
+[node name="SideButtonsPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dp3eg")
+
+[node name="SideButtonsVBox" type="VBoxContainer" parent="SideButtonsPanel"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="GoZenButton" type="MenuButton" parent="SideButtonsPanel/SideButtonsVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_muem4")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_muem4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_muem4")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_muem4")
+icon = ExtResource("3_82xsv")
+flat = false
+icon_alignment = 1
+expand_icon = true
+item_count = 7
+popup/item_0/text = "Save project"
+popup/item_0/icon = ExtResource("4_getpj")
+popup/item_0/id = 0
+popup/item_1/text = "Save project as ..."
+popup/item_1/icon = ExtResource("5_ryguw")
+popup/item_1/id = 1
+popup/item_2/text = "Load project"
+popup/item_2/icon = ExtResource("6_d13ii")
+popup/item_2/id = 2
+popup/item_3/id = 3
+popup/item_3/separator = true
+popup/item_4/text = "Support GoZen"
+popup/item_4/icon = ExtResource("7_1u8w0")
+popup/item_4/id = 10
+popup/item_5/text = "About GoZen"
+popup/item_5/icon = ExtResource("8_0odxb")
+popup/item_5/id = 11
+popup/item_6/text = "GoZen site"
+popup/item_6/icon = ExtResource("9_lswn8")
+popup/item_6/id = 12
+
+[node name="TopSpacer" type="Control" parent="SideButtonsPanel/SideButtonsVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EditingLayoutButton" type="Button" parent="SideButtonsPanel/SideButtonsVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Editing layout"
+theme_type_variation = &"ButtonLayout"
+icon = ExtResource("10_a6jrf")
+icon_alignment = 2
+expand_icon = true
+
+[node name="SubtitlingLayoutButton" type="Button" parent="SideButtonsPanel/SideButtonsVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Subtitling layout"
+theme_type_variation = &"ButtonLayout"
+icon = ExtResource("11_xuqvo")
+icon_alignment = 2
+expand_icon = true
+
+[node name="RenderingLayoutButton" type="Button" parent="SideButtonsPanel/SideButtonsVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Rendering layout"
+theme_type_variation = &"ButtonLayout"
+icon = ExtResource("12_qsp4k")
+icon_alignment = 2
+expand_icon = true
+
+[node name="BottomSpacer" type="Control" parent="SideButtonsPanel/SideButtonsVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LayoutButtons" type="PanelContainer" parent="SideButtonsPanel/SideButtonsVBox"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dp3eg")
+
+[node name="HFlowContainer" type="HFlowContainer" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons"]
+layout_mode = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+
+[node name="Button" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="Button2" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="Button3" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="Button4" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="Button5" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="Button6" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="Button7" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
+text = "O"
+flat = true
+
+[node name="LayoutIndicator" type="Panel" parent="SideButtonsPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1, 30)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_muem4")
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LayoutTabContainer" type="TabContainer" parent="MainVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_gqmmt")
+current_tab = 0
+tabs_visible = false
+
+[node name="EditingLayout" type="VBoxContainer" parent="MainVBox/LayoutTabContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+metadata/_tab_index = 0
+
+[node name="HSplit" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/EditingLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="FilesPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel"]
+layout_mode = 2
+
+[node name="FilesTitleLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+layout_mode = 2
+text = "Media Browser"
+label_settings = ExtResource("13_cegan")
+
+[node name="FileTypesHBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProjectFilesButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+layout_mode = 2
+text = "Project"
+
+[node name="GlobalFilesButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"toggle_off"
+text = "Global"
+flat = true
+
+[node name="Spacer" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AddFileButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+layout_mode = 2
+tooltip_text = "Add files"
+text = "+"
+
+[node name="FilesSearchLineEdit" type="LineEdit" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Search media"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="FilesList" type="ItemList" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.832644, 0.832644, 0.832644, 1)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_phm1l")
+select_mode = 1
+allow_reselect = true
+max_text_lines = 2
+script = ExtResource("13_kq58d")
+
+[node name="HSplit" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ViewPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("14_seu75")
+
+[node name="VBox" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel"]
+layout_mode = 2
+
+[node name="MainPlaybackTextureRect" type="TextureRect" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
+layout_mode = 2
+
+[node name="InfoPanel" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
+modulate = Color(1, 1, 1, 0.588235)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 7
+script = ExtResource("18_0rl1p")
+
+[node name="StatusFrameLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+tooltip_text = "Current frame position"
+mouse_filter = 1
+text = "0/0"
+label_settings = SubResource("LabelSettings_0ld40")
+horizontal_alignment = 2
+
+[node name="VSeparator0" type="VSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/separator = SubResource("StyleBoxLine_muem4")
+
+[node name="StatusTimeLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+text = "0:00:00"
+label_settings = SubResource("LabelSettings_0ld40")
+horizontal_alignment = 2
+
+[node name="PlayButtonsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"PanelBox"
+
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="RewindButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture_normal = ExtResource("17_ryguw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PlayButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture_normal = ExtResource("18_d13ii")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ForwardButton2" type="TextureButton" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture_normal = ExtResource("19_1u8w0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="AudioLevelsPanel" type="Panel" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0odxb")
+
+[node name="EffectsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit" node_paths=PackedStringArray("button_audio_effects", "button_visual_effects", "effects_vbox")]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("15_htxhm")
+button_audio_effects = NodePath("EffectsVBox/TabButtonsHBox/AudioEffectsButton")
+button_visual_effects = NodePath("EffectsVBox/TabButtonsHBox/VideoEffectsButton")
+effects_vbox = NodePath("EffectsVBox/EffectsScroll/EffectsVBox")
+
+[node name="EffectsVBox" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel"]
+layout_mode = 2
+
+[node name="FilesTitleLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+layout_mode = 2
+text = "Effects & Properties"
+label_settings = ExtResource("13_cegan")
+
+[node name="TabButtonsHBox" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+layout_mode = 2
+
+[node name="VideoEffectsButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.517647)
+text = "Video"
+
+[node name="AudioEffectsButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox"]
+layout_mode = 2
+text = "Audio"
+flat = true
+
+[node name="HSeparator" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+layout_mode = 2
+
+[node name="EffectsScroll" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_0rpv8")
+
+[node name="EffectsVBox" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/EffectsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 7
+
+[node name="TimelinePanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_sxfkv")
+script = ExtResource("16_jq2sk")
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel"]
+layout_mode = 2
+
+[node name="TimeBarScrollContainer" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="TimeBarPanelContainer" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/TimeBarPanelContainer"]
+layout_mode = 2
+text = "0:00 (WIP)"
+
+[node name="Timeline" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Lines" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 2
+
+[node name="Spacing1" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Line1" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing2" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Line2" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing3" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Line3" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing4" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Line4" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing5" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Line5" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="Spacing6" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Line6" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
+
+[node name="ScrollbarSpacer" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/Lines"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MainTimelineScroll" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline"]
+unique_name_in_owner = true
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="MainTimeline" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/MainTimelineScroll"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1080, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="MainClips" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/MainTimelineScroll/MainTimeline"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="MainPreview" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/MainTimelineScroll/MainTimeline"]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0.784314)
+self_modulate = Color(0.666667, 0, 1, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="MainPlayhead" type="Panel" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/MainTimelineScroll/MainTimeline"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 2.0
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
+
+[node name="SubtitlingLayout" type="VBoxContainer" parent="MainVBox/LayoutTabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="WIPLabel" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout"]
+layout_mode = 2
+text = "Work in progress"
+
+[node name="RenderingLayout" type="VBoxContainer" parent="MainVBox/LayoutTabContainer" node_paths=PackedStringArray("view_texture_rect", "render_path")]
+visible = false
+layout_mode = 2
+script = ExtResource("17_4k2k6")
+view_texture_rect = NodePath("TextureRect")
+render_path = NodePath("PathLineEdit")
+metadata/_tab_index = 2
+
+[node name="TextureRect" type="TextureRect" parent="MainVBox/LayoutTabContainer/RenderingLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PathLineEdit" type="LineEdit" parent="MainVBox/LayoutTabContainer/RenderingLayout"]
+layout_mode = 2
+text = "/storage/video.mp4"
+
+[node name="RenderButton" type="Button" parent="MainVBox/LayoutTabContainer/RenderingLayout"]
+layout_mode = 2
+text = "Render"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamInteractive_muem4")
+
+[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/EditingLayoutButton" to="." method="_on_switch_layout" binds= [0]]
+[connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/SubtitlingLayoutButton" to="." method="_on_switch_layout" binds= [1]]
+[connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/RenderingLayoutButton" to="." method="_on_switch_layout" binds= [2]]
+[connection signal="item_clicked" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer/FilesList" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer/FilesList" method="_on_item_clicked"]
+[connection signal="pressed" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="pressed" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox/VideoEffectsButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel" method="show_visual_effects"]
+[connection signal="pressed" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox/AudioEffectsButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel" method="show_audio_effects"]
+[connection signal="gui_input" from="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/Timeline/MainTimelineScroll/MainTimeline" to="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel" method="_on_main_gui_input"]
+[connection signal="pressed" from="MainVBox/LayoutTabContainer/RenderingLayout/RenderButton" to="MainVBox/LayoutTabContainer/RenderingLayout" method="_on_render_button_pressed"]
