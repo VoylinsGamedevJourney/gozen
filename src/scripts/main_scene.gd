@@ -9,12 +9,14 @@ extends Control
 		%SubtitlingLayoutButton,
 		%RenderingLayoutButton ]
 
+var current_layout: int = 0
+
 
 
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	gozen_button.get_popup().id_pressed.connect(_on_gozen_popup_option_pressed)
-	get_window().get_viewport().size_changed.connect(_on_gozen_popup_option_pressed)
+	get_window().get_viewport().size_changed.connect(_on_switch_layout)
 	@warning_ignore_restore("return_value_discarded")
 
 	# We need to manually fix the icon size for the items in the popup
@@ -39,7 +41,7 @@ func _input(a_event: InputEvent) -> void:
 		_on_switch_layout(2)
 
 
-func _on_switch_layout(a_tab_index: int) -> void:
+func _on_switch_layout(a_tab_index: int = layout_tab_container.current_tab) -> void:
 	if RenderLayout.is_rendering:
 		print("Can't change layout when rendering!")
 		return
@@ -52,7 +54,7 @@ func _on_switch_layout(a_tab_index: int) -> void:
 			"position",
 			Vector2(
 					layout_indicator.position.x,
-					layout_buttons[a_tab_index].position.y + 2),
+					layout_buttons[a_tab_index].position.y),
 			0.1)
 
 	for i: int in layout_buttons.size():

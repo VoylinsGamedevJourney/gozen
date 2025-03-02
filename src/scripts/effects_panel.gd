@@ -25,7 +25,6 @@ class_name EffectsPanel extends PanelContainer
 static var instance: EffectsPanel
 
 
-@export var info_label: Label
 @export var button_audio_effects: Button 
 @export var button_visual_effects: Button
 @export var effects_vbox: VBoxContainer
@@ -46,13 +45,10 @@ func _ready() -> void:
 
 
 func _reset() -> void:
-	info_label.text = tr("No clip/file selected")
-	info_label.tooltip_text = "Clip on a clip or file to show their effects."
-	
 	_clean_effects()
 
-	button_audio_effects.visible = false
-	button_visual_effects.visible = false
+	button_audio_effects.disabled = true
+	button_visual_effects.disabled = true
 
 	clip = null
 	file = null
@@ -65,14 +61,14 @@ func _clean_effects() -> void:
 
 
 func check_type() -> void:
-	button_audio_effects.visible = type in View.AUDIO_TYPES
-	button_visual_effects.visible = type in View.VISUAL_TYPES
+	button_audio_effects.disabled = type in View.AUDIO_TYPES
+	button_visual_effects.disabled = type in View.VISUAL_TYPES
 
-	if button_audio_effects.pressed and button_audio_effects.visible:
+	if button_audio_effects.pressed and button_audio_effects.disabled:
 		show_audio_effects()
-	elif button_visual_effects.pressed and button_visual_effects.visible:
+	elif button_visual_effects.pressed and button_visual_effects.disabled:
 		show_visual_effects()
-	elif button_audio_effects.visible:
+	elif button_audio_effects.disabled:
 		button_audio_effects.set_pressed(true)
 		show_audio_effects()
 	else:
@@ -95,9 +91,6 @@ func open_clip_effects(a_id: int) -> void:
 	clip = Project.clips[a_id]
 	type = Project.files[clip.file_id].type
 
-	info_label.text = "Clip: " + str(a_id)
-	info_label.tooltip_text = Project.files[clip.file_id].path
-
 	check_type()
 
 
@@ -106,8 +99,6 @@ func open_file_effects(a_id: int) -> void:
 	file = Project.files[a_id]
 	type = file.type
 
-	info_label.text = "File: " + str(a_id)
-	info_label.tooltip_text = file.path
 	check_type()
 
 

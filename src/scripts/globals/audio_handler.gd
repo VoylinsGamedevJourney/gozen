@@ -109,7 +109,6 @@ func on_frame_changed(a_frame: int) -> void:
 		# Reset players
 		for i: int in players.size():
 			players[i].stop()
-			print("oi")
 			players[i].set_audio(find_audio(a_frame, i))
 
 	last_frame = a_frame

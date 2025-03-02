@@ -18,14 +18,14 @@ func get_effect_name() -> String:
 
 func get_ui() -> Control:
 	# Mute effect
-	var l_vbox_mute: VBoxContainer = VBoxContainer.new()
+	var l_hbox_mute: HBoxContainer = HBoxContainer.new()
 	var l_label_mute: Label = Label.new()
 	var l_checkbox_mute: CheckBox = CheckBox.new()
 
 	l_label_mute.text = tr("Mute:")
 	l_checkbox_mute.set_pressed(mute)
-	l_vbox_mute.add_child(l_label_mute)
-	l_vbox_mute.add_child(l_checkbox_mute)
+	l_hbox_mute.add_child(l_label_mute)
+	l_hbox_mute.add_child(l_checkbox_mute)
 
 	@warning_ignore("return_value_discarded")
 	l_checkbox_mute.pressed.connect(_on_mute_pressed)
@@ -45,13 +45,13 @@ func get_ui() -> Control:
 	l_spinbox_gain.value_changed.connect(_on_spinbox_value_changed)
 
 	# Finishing the node
-	var l_hbox: HBoxContainer = HBoxContainer.new()
+	var l_vbox: VBoxContainer = VBoxContainer.new()
 
-	l_hbox.add_child(l_vbox_mute)
-	l_hbox.add_child(l_label_gain)
-	l_hbox.add_child(l_spinbox_gain)
+	l_vbox.add_child(l_hbox_mute)
+	l_vbox.add_child(l_label_gain)
+	l_vbox.add_child(l_spinbox_gain)
 
-	return l_hbox
+	return l_vbox
 
 
 func _on_mute_pressed() -> void:

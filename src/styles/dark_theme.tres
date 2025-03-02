@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://c60g0smnu0q7m"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://c60g0smnu0q7m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cljn2"]
 content_margin_left = 7.0
@@ -6,17 +6,29 @@ content_margin_top = 2.0
 content_margin_right = 7.0
 content_margin_bottom = 2.0
 bg_color = Color(0.2, 0.2, 0.2, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oelqa"]
 bg_color = Color(0.2, 0.2, 0.2, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4jfd"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_iq0uy"]
+color = Color(0.333333, 0.333333, 0.333333, 1)
+grow_begin = 0.0
+grow_end = 0.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v01gn"]
 content_margin_left = 4.0
@@ -24,10 +36,10 @@ content_margin_top = 2.0
 content_margin_right = 4.0
 content_margin_bottom = 2.0
 bg_color = Color(0.266667, 0.266667, 0.266667, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iq0uy"]
 content_margin_left = 4.0
@@ -40,11 +52,22 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_cljn2"]
+color = Color(0.333333, 0.333333, 0.333333, 1)
+grow_begin = 0.0
+grow_end = 0.0
+vertical = true
+
 [resource]
 default_font_size = 12
+Button/colors/font_color = Color(1, 1, 1, 1)
 Button/styles/normal = SubResource("StyleBoxFlat_cljn2")
 ButtonLayout/base_type = &"Button"
 ButtonLayout/styles/normal = SubResource("StyleBoxFlat_oelqa")
+FakeTextureButton/base_type = &"Button"
+FakeTextureButton/styles/normal = SubResource("StyleBoxFlat_p4jfd")
+HSeparator/styles/separator = SubResource("StyleBoxLine_iq0uy")
 PanelBox/base_type = &"PanelContainer"
 PanelBox/styles/panel = SubResource("StyleBoxFlat_v01gn")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_iq0uy")
+VSeparator/styles/separator = SubResource("StyleBoxLine_cljn2")
