@@ -21,9 +21,12 @@ I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. Basi
 
 Read the [contributing documentation](./CONTRIBUTING.md) and join the [discord server](https://discord.gg/BdbUf7VKYC)! Don't know enough about programming, Godot, or video formats? You can also contribute with financial donations through my [ko-fi page](https://ko-fi.com/voylin), as this is my main income source which keeps it possible for me to work on this project.
 
+If you want donations to go fully towards the development of GoZen, go to our Open Collective page at https://opencollective.com/gozen to make a donation instead of my ko-fi page. Ko-fi page donations are used to support me, my projects, the YT channels, and GoZen, whilst the Open Collective page is exclusively for GoZen development.
+
 ## FFmpeg
 
 > This software uses libraries from the FFmpeg project under the LGPLv2.1
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
+[Open Collective page for GoZen](https://opencollective.com/gozen)
 
