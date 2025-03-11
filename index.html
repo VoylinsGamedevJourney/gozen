@@ -1,3 +1,165 @@
-# GoZen website
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>GoZen - Open Source Video Editor for Linux & Windows</title>
 
-*init*
+		<meta property="og:title" content="GoZen - Open Source Video Editor">
+		<meta property="og:description" content="A powerful, modular video editor built with Godot. Linux-first, beginner-friendly, and content creator approved.">
+		<meta property="og:image" content="/storage/programming/gozen/assets/startup_image/startup_image.jpg">
+		<meta property="og:url" content="https://gozen.github.io">
+		<meta property="og:type" content="website">
+
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="GoZen - Open Source Video Editor">
+		<meta name="twitter:description" content="A powerful, modular video editor built with Godot. Linux-first, beginner-friendly, and content creator approved.">
+		<meta name="twitter:image" content="/images/default-thumbnail.webp">
+
+		<link rel="stylesheet" href="/style.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<script src="/script.js" defer></script>
+		<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	</head>
+	<body>
+		<header>
+			<div class="container nav-container">
+				<div class="logo">
+					<img src="/images/logo.svg" alt="GoZen Logo">
+					<h1>GoZen</h1>
+				</div>
+				<button class="mobile-menu-btn">☰</button>
+				<nav class="nav-links">
+					<ul>
+						<li><a href="#features">Features</a></li>
+						<li><a href="#sponsors">Sponsors</a></li>
+						<li><a href="#support">Support</a></li>
+						<li><a href="#status">Status</a></li>
+						<li><a href="https://github.com/voylinsgamedevjourney/gozen" target="_blank">GitHub</a></li>
+						<li><a href="https://github.com/VoylinsGamedevJourney/gozen/releases" class="btn-top">Download Alpha</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+
+		<section class="hero">
+			<div class="container">
+				<div class="hero-content">
+					<h2>Video Editing,<br>Made Simple</h2>
+					<p>GoZen is an open-source video editor built with Godot. Designed for Linux users first, GoZen combines simplicity for beginners with powerful features for content creators.</p>
+					<a href="https://github.com/VoylinsGamedevJourney/gozen/releases" class="btn">Try GoZen Alpha</a>
+				</div>
+				<div class="hero-image">
+					<img src="/images/gozen_interface.webp" alt="GoZen Editor Interface">
+				</div>
+			</div>
+		</section>
+
+		<section class="features" id="features">
+			<div class="container">
+				<h2 class="section-title">Why Choose GoZen?</h2>
+				<div class="features-grid">
+					<div class="feature-card">
+						<h3>Stability First</h3>
+						<p>We prioritize bug fixes above all else, ensuring you have a stable editing experience every time you use GoZen without having the stress of losing your progress, this way you can stay <b>zen</b> whilst editing in Go<b>Zen</b>.</p>
+					</div>
+					<div class="feature-card">
+						<h3>Built for Linux</h3>
+						<p>GoZen is designed with Linux users in mind. Finally, a video editor that feels native to your Linux workflow. Windows is also supported but is not the top priority.</p>
+					</div>
+					<div class="feature-card">
+						<h3>Made with Godot</h3>
+						<p>Built with the Godot Engine, because of this creating and adding modules is as simple as it can be! No complex language which you need to learn to extend your workflow.</p>
+					</div>
+					<div class="feature-card">
+						<h3>Modular Design</h3>
+						<p>Extend your workflow with modules. GoZen's architecture makes it easy to add new features and customize your editing experience with modules to fit your personal editing needs.</p>
+					</div>
+					<div class="feature-card">
+						<h3>Clean Interface</h3>
+						<p>A smooth, non-cluttered user interface makes video editing intuitive for beginners while remaining powerful for content creators. Never feel overwhelmed again when editing videos.</p>
+					</div>
+					<div class="feature-card">
+						<h3>Community Driven</h3>
+						<p>As an open-source project, GoZen thrives on community contributions and feedback to create the editor normal users and content creators actually want to use.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="sponsors" id="sponsors">
+			<div class="container">
+				<h2 class="section-title">Our Sponsors</h2>
+				<div class="sponsors-grid">
+					<!-- Example sponsors - replace with actual sponsors when available -->
+					<div class="sponsor-card">
+						<img src="/images/sponsors/vgj.webp" alt="Creator">
+						<div class="sponsor-tier">Sponsor since 2022<br>The creator of GoZen</div>
+					</div>
+					<div class="sponsor-card">
+						<img src="/images/sponsors/empty.webp" alt="Empty sponsor">
+						<div class="sponsor-tier">Will you fill this slot?</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="support" id="support">
+			<div class="container">
+				<h2 class="section-title">Support GoZen</h2>
+				<div class="features-grid">
+					<div class="feature-card">
+						<h3>Support GoZen</h3>
+						<p>For financially supporting GoZen there is the Open Collective, all donations will exclusively be used for the development of the video editor.</p>
+						<a href="https://opencollective.com/gozen" target="_blank" class="btn">Open Collective page</a>
+					</div>
+					<div class="feature-card">
+						<h3>Support all my work</h3>
+						<p>Built with the Godot Engine, because of this creating and adding modules is as simple as it can be! No complex language which you need to learn to extend your workflow.</p>
+						<a href="https://ko-fi.com/voylin" target="_blank" class="btn">Ko-fi page</a>
+					</div>
+					<div class="feature-card">
+						<h3>Development never stops</h3>
+						<p>Helping with testing, fixing bugs, creating features, ... Developing a video editor is a lot of work so all help is welcome.</p>
+						<a href="https://github.com/voylinsgamedevjourney/gozen" target="_blank" class="btn">GitHub page</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<section class="status" id="status">
+			<div class="container status-container">
+				<h2 class="section-title">Development Status</h2>
+				<p>GoZen is currently in alpha. We're working hard to add features and fix bugs before our stable release.</p>
+				<div class="progress-bar">
+					<div class="progress-fill"></div>
+					<div class="status-label">Alpha</div>
+				</div>
+				<p>Join our community to help shape the future of GoZen!</p>
+				<a href="https://github.com/voylinsgamedevjourney/gozen" target="_blank" class="btn">View on GitHub</a>
+			</div>
+		</section>
+
+		<section class="cta">
+			<div class="container cta-container">
+				<h2 class="section-title">Ready to Try GoZen?</h2>
+				<p>Download the alpha version and start editing your videos with GoZen today. Your feedback helps us improve!</p>
+				<a href="#" class="btn">Download Alpha</a>
+			</div>
+		</section>
+
+		<footer>
+			<div class="container footer-container">
+				<div class="social-links">
+					<a href="https://www.youtube.com/@voylinsgamedevjourney" target="_blank"><i class="fab fa-youtube"></i></a>
+					<a href="https://github.com/voylinsgamedevjourney/" target="_blank"><i class="fab fa-github"></i></a>
+					<a href="https://discord.gg/BdbUf7VKYC" target="_blank"><i class="fab fa-discord"></i></a>
+					<a href="https://ko-fi.com/voylin" target="_blank"><i class="fas fa-mug-hot"></i></a>
+				</div>
+				<div class="copyright">
+					© 2025 GoZen. All rights reserved.
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>
