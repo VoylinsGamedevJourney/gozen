@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://bvbtbhqrbp1u"]
+[gd_scene load_steps=51 format=3 uid="uid://bvbtbhqrbp1u"]
 
 [ext_resource type="Theme" uid="uid://c60g0smnu0q7m" path="res://styles/dark_theme.tres" id="1_074og"]
 [ext_resource type="Script" uid="uid://cn5rw8xe4i6dr" path="res://scripts/main_scene.gd" id="2_cegan"]
@@ -13,7 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://bo82sjgrri2vq" path="res://assets/icons/layouts/subtitles_icon.png" id="11_xuqvo"]
 [ext_resource type="Texture2D" uid="uid://b7iw0yh8hp2m7" path="res://assets/icons/layouts/render_icon.png" id="12_qsp4k"]
 [ext_resource type="LabelSettings" uid="uid://holicry8isp8" path="res://styles/label_panel_title.tres" id="13_cegan"]
+[ext_resource type="Script" uid="uid://5rvvc4dqikdj" path="res://scripts/layout_buttons.gd" id="13_htxhm"]
 [ext_resource type="Script" uid="uid://d80lyg8d5u7" path="res://scripts/files_list.gd" id="13_kq58d"]
+[ext_resource type="Texture2D" uid="uid://dc8tdxs68gwk0" path="res://assets/icons/mode_normal.png" id="13_seu75"]
+[ext_resource type="Texture2D" uid="uid://b08to6y2xhrb5" path="res://assets/icons/mode_cut.png" id="14_htxhm"]
 [ext_resource type="Script" uid="uid://b3j7hxttw6e4r" path="res://scripts/view_panel.gd" id="14_seu75"]
 [ext_resource type="Script" uid="uid://duiu1d01138bh" path="res://scripts/effects_panel.gd" id="15_htxhm"]
 [ext_resource type="Script" uid="uid://yioe5cqd7tre" path="res://scripts/timeline.gd" id="16_jq2sk"]
@@ -29,6 +32,13 @@
 [ext_resource type="Texture2D" uid="uid://bhsj4fbabsm00" path="res://assets/icons/down.png" id="25_qsp4k"]
 [ext_resource type="LabelSettings" uid="uid://btfb1icxr4xtg" path="res://styles/label_panel_sub_title.tres" id="28_xuqvo"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_seu75"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.164706, 0.164706, 0.164706, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dp3eg"]
 content_margin_left = 3.0
 
@@ -39,10 +49,6 @@ content_margin_bottom = 7.0
 bg_color = Color(0.266667, 0.266667, 0.266667, 1)
 corner_radius_top_right = 7
 expand_margin_left = 5.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ld40"]
-content_margin_left = 2.0
-content_margin_right = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_muem4"]
 bg_color = Color(0.666667, 0, 1, 1)
@@ -110,25 +116,29 @@ clip_count = 1
 clip_0/name = &""
 clip_0/auto_advance = 0
 
-[node name="Editor" type="HBoxContainer"]
+[node name="EditorPanel" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_seu75")
+
+[node name="Editor" type="HBoxContainer" parent="."]
+layout_mode = 2
 theme = ExtResource("1_074og")
 script = ExtResource("2_cegan")
 
-[node name="SideButtonsPanel" type="PanelContainer" parent="."]
+[node name="SideButtonsPanel" type="PanelContainer" parent="Editor"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_dp3eg")
 
-[node name="SideButtonsVBox" type="VBoxContainer" parent="SideButtonsPanel"]
+[node name="SideButtonsVBox" type="VBoxContainer" parent="Editor/SideButtonsPanel"]
 custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 theme_override_constants/separation = 7
 
-[node name="GoZenButton" type="MenuButton" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="GoZenButton" type="MenuButton" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
@@ -162,11 +172,11 @@ popup/item_6/text = "GoZen site"
 popup/item_6/icon = ExtResource("9_lswn8")
 popup/item_6/id = 12
 
-[node name="TopSpacer" type="Control" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="TopSpacer" type="Control" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="EditingLayoutButton" type="Button" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="EditingLayoutButton" type="Button" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
@@ -177,7 +187,7 @@ icon = ExtResource("10_a6jrf")
 icon_alignment = 2
 expand_icon = true
 
-[node name="SubtitlingLayoutButton" type="Button" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="SubtitlingLayoutButton" type="Button" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
@@ -188,7 +198,7 @@ icon = ExtResource("11_xuqvo")
 icon_alignment = 2
 expand_icon = true
 
-[node name="RenderingLayoutButton" type="Button" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="RenderingLayoutButton" type="Button" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
@@ -199,77 +209,36 @@ icon = ExtResource("12_qsp4k")
 icon_alignment = 2
 expand_icon = true
 
-[node name="BottomSpacer" type="Control" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="BottomSpacer" type="Control" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LayoutButtons" type="PanelContainer" parent="SideButtonsPanel/SideButtonsVBox"]
+[node name="LayoutButtons" type="PanelContainer" parent="Editor/SideButtonsPanel/SideButtonsVBox"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dp3eg")
+script = ExtResource("13_htxhm")
 
-[node name="HFlowContainer" type="HFlowContainer" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons"]
+[node name="HFlowContainer" type="HFlowContainer" parent="Editor/SideButtonsPanel/SideButtonsVBox/LayoutButtons"]
 layout_mode = 2
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 
-[node name="Button" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+[node name="NormalModeButton" type="TextureButton" parent="Editor/SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
+texture_normal = ExtResource("13_seu75")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="Button2" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
+[node name="CutModeButton" type="TextureButton" parent="Editor/SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
+texture_normal = ExtResource("14_htxhm")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="Button3" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
-
-[node name="Button4" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
-
-[node name="Button5" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
-
-[node name="Button6" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
-
-[node name="Button7" type="Button" parent="SideButtonsPanel/SideButtonsVBox/LayoutButtons/HFlowContainer"]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_0ld40")
-text = "O"
-flat = true
-
-[node name="LayoutIndicator" type="Panel" parent="SideButtonsPanel"]
+[node name="LayoutIndicator" type="Panel" parent="Editor/SideButtonsPanel"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1, 30)
 layout_mode = 2
@@ -278,74 +247,73 @@ size_flags_vertical = 4
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_muem4")
 
-[node name="MainVBox" type="VBoxContainer" parent="."]
+[node name="MainVBox" type="VBoxContainer" parent="Editor"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LayoutTabContainer" type="TabContainer" parent="MainVBox"]
+[node name="LayoutTabContainer" type="TabContainer" parent="Editor/MainVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_gqmmt")
-current_tab = 2
+current_tab = 0
 tabs_visible = false
 
-[node name="EditingLayout" type="VBoxContainer" parent="MainVBox/LayoutTabContainer"]
-visible = false
+[node name="EditingLayout" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 metadata/_tab_index = 0
 
-[node name="HSplit" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/EditingLayout"]
+[node name="HSplit" type="HSplitContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 
-[node name="FilesPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit"]
+[node name="FilesPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel"]
 layout_mode = 2
 
-[node name="FilesTitleLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+[node name="FilesTitleLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
 layout_mode = 2
 text = "Media Browser"
 label_settings = ExtResource("13_cegan")
 
-[node name="FileTypesHBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+[node name="FileTypesHBoxContainer" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="ProjectFilesButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+[node name="ProjectFilesButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
 layout_mode = 2
 text = "Project"
 
-[node name="GlobalFilesButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+[node name="GlobalFilesButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"toggle_off"
 text = "Global"
 flat = true
 
-[node name="Spacer" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+[node name="Spacer" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AddFileButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
+[node name="AddFileButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/FileTypesHBoxContainer"]
 layout_mode = 2
 tooltip_text = "Add files"
 text = "+"
 
-[node name="FilesSearchLineEdit" type="LineEdit" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+[node name="FilesSearchLineEdit" type="LineEdit" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
 layout_mode = 2
 placeholder_text = "Search media"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="FilesList" type="ItemList" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer"]
+[node name="FilesList" type="ItemList" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -358,36 +326,36 @@ allow_reselect = true
 max_text_lines = 2
 script = ExtResource("13_kq58d")
 
-[node name="HSplit" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit"]
+[node name="HSplit" type="HSplitContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ViewPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit"]
+[node name="ViewPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("14_seu75")
 
-[node name="VBox" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel"]
+[node name="VBox" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel"]
 layout_mode = 2
 
-[node name="MainPlaybackTextureRect" type="TextureRect" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
+[node name="MainPlaybackTextureRect" type="TextureRect" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox"]
 layout_mode = 2
 
-[node name="InfoPanel" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
+[node name="InfoPanel" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
 modulate = Color(1, 1, 1, 0.588235)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
 script = ExtResource("18_0rl1p")
 
-[node name="StatusFrameLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
+[node name="StatusFrameLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
@@ -397,13 +365,13 @@ text = "0/0"
 label_settings = SubResource("LabelSettings_0ld40")
 horizontal_alignment = 2
 
-[node name="VSeparator0" type="VSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
+[node name="VSeparator0" type="VSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/separator = SubResource("StyleBoxLine_muem4")
 
-[node name="StatusTimeLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
+[node name="StatusTimeLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/InfoPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
@@ -411,43 +379,43 @@ text = "0:00:00"
 label_settings = SubResource("LabelSettings_0ld40")
 horizontal_alignment = 2
 
-[node name="PlayButtonsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
+[node name="PlayButtonsPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_type_variation = &"PanelBox"
 
-[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel"]
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel"]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="RewindButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="RewindButton" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("17_ryguw")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="PlayButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="PlayButton" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("18_d13ii")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ForwardButton2" type="TextureButton" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="ForwardButton2" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("19_1u8w0")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="AudioLevelsPanel" type="Panel" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
+[node name="AudioLevelsPanel" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_0odxb")
 
-[node name="EffectsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit" node_paths=PackedStringArray("button_audio_effects", "button_visual_effects", "effects_vbox")]
+[node name="EffectsPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit" node_paths=PackedStringArray("button_audio_effects", "button_visual_effects", "effects_vbox")]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -456,148 +424,149 @@ button_audio_effects = NodePath("EffectsVBox/TabButtonsHBox/AudioEffectsButton")
 button_visual_effects = NodePath("EffectsVBox/TabButtonsHBox/VideoEffectsButton")
 effects_vbox = NodePath("EffectsVBox/EffectsScroll/EffectsVBox")
 
-[node name="EffectsVBox" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel"]
+[node name="EffectsVBox" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel"]
 layout_mode = 2
 
-[node name="FilesTitleLabel" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+[node name="FilesTitleLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
 layout_mode = 2
 text = "Effects & Properties"
 label_settings = ExtResource("13_cegan")
 
-[node name="TabButtonsHBox" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+[node name="TabButtonsHBox" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
 layout_mode = 2
 
-[node name="VideoEffectsButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox"]
+[node name="VideoEffectsButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.517647)
 text = "Video"
 
-[node name="AudioEffectsButton" type="Button" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox"]
+[node name="AudioEffectsButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox"]
 layout_mode = 2
 text = "Audio"
 flat = true
 
-[node name="HSeparator" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+[node name="HSeparator" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
 layout_mode = 2
 
-[node name="EffectsScroll" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
+[node name="EffectsScroll" type="ScrollContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_0rpv8")
 
-[node name="EffectsVBox" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/EffectsScroll"]
+[node name="EffectsVBox" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/EffectsScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 7
 
-[node name="TimelinePanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout"]
+[node name="TimelinePanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_sxfkv")
 script = ExtResource("16_jq2sk")
 metadata/_edit_lock_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TimeBarPanelContainer" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer"]
+[node name="TimeBarPanelContainer" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarPanelContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarPanelContainer"]
 layout_mode = 2
 text = "0:00 (WIP)"
 
-[node name="TimeBarScrollContainer" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer"]
+[node name="TimeBarScrollContainer" type="ScrollContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
-[node name="Timeline" type="PanelContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer"]
+[node name="Timeline" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxEmpty_1u8w0")
 
-[node name="Lines" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline"]
+[node name="Lines" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="Spacing1" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Spacing1" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Line1" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Line1" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
 
-[node name="Spacing2" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Spacing2" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Line2" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Line2" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
 
-[node name="Spacing3" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Spacing3" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Line3" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Line3" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
 
-[node name="Spacing4" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Spacing4" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Line4" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Line4" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
 
-[node name="Spacing5" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Spacing5" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Line5" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Line5" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
 
-[node name="Spacing6" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Spacing6" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Line6" type="HSeparator" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="Line6" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxLine_jcy7d")
 
-[node name="ScrollbarSpacer" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
+[node name="ScrollbarSpacer" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/Lines"]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="MainTimelineScroll" type="ScrollContainer" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline"]
+[node name="MainTimelineScroll" type="ScrollContainer" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline"]
 unique_name_in_owner = true
 layout_mode = 2
 vertical_scroll_mode = 0
 
-[node name="MainTimeline" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll"]
+[node name="MainTimeline" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1080, 0)
 layout_mode = 2
@@ -605,7 +574,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="MainClips" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline"]
+[node name="MainClips" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -615,7 +584,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="MainPreview" type="Control" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline"]
+[node name="MainPreview" type="Control" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline"]
 unique_name_in_owner = true
 visible = false
 modulate = Color(1, 1, 1, 0.784314)
@@ -628,7 +597,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="MainPlayhead" type="Panel" parent="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline"]
+[node name="MainPlayhead" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(2, 0)
 layout_mode = 1
@@ -638,81 +607,81 @@ grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_h5ind")
 
-[node name="SubtitlingLayout" type="VBoxContainer" parent="MainVBox/LayoutTabContainer"]
+[node name="SubtitlingLayout" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SubtitlePropertyPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2"]
+[node name="SubtitlePropertyPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
 layout_mode = 2
 text = "Subtitle Properties"
 label_settings = ExtResource("13_cegan")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Position:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="Button" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Bottom center"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
+[node name="Label2" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Start:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="Button2" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
+[node name="Button2" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0:00:00"
 
-[node name="Label3" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
+[node name="Label3" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "End:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="Button3" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
+[node name="Button3" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0:00:00"
 
-[node name="HSeparator" type="HSeparator" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="SubtitleTextEdit" type="TextEdit" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
+[node name="SubtitleTextEdit" type="TextEdit" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/SubtitlePropertyPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Subtitle text..."
 
-[node name="ViewPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2"]
+[node name="ViewPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel"]
 layout_mode = 2
 
-[node name="ViewTextureRect" type="TextureRect" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer"]
+[node name="ViewTextureRect" type="TextureRect" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -720,17 +689,17 @@ texture = SubResource("PlaceholderTexture2D_kq58d")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="InfoPanel" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2"]
+[node name="InfoPanel" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2"]
 modulate = Color(1, 1, 1, 0.588235)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
 script = ExtResource("18_0rl1p")
 
-[node name="StatusFrameLabel" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
+[node name="StatusFrameLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
 layout_mode = 2
 size_flags_vertical = 8
 tooltip_text = "Current frame position"
@@ -739,78 +708,78 @@ text = "0/0"
 label_settings = SubResource("LabelSettings_0ld40")
 horizontal_alignment = 2
 
-[node name="VSeparator0" type="VSeparator" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
+[node name="VSeparator0" type="VSeparator" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/separator = SubResource("StyleBoxLine_muem4")
 
-[node name="StatusTimeLabel" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
+[node name="StatusTimeLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
 layout_mode = 2
 size_flags_vertical = 8
 text = "0:00:00"
 label_settings = SubResource("LabelSettings_0ld40")
 horizontal_alignment = 2
 
-[node name="PlayButtonsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2"]
+[node name="PlayButtonsPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_type_variation = &"PanelBox"
 
-[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel"]
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel"]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="RewindButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="RewindButton" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("17_ryguw")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="PlayButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="PlayButton" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("18_d13ii")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ForwardButton2" type="TextureButton" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="ForwardButton2" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("19_1u8w0")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="AudioLevelsPanel" type="Panel" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2"]
+[node name="AudioLevelsPanel" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_0odxb")
 
-[node name="HSplit" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout"]
+[node name="HSplit" type="HSplitContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
-[node name="SubtitleListPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit"]
+[node name="SubtitleListPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
 layout_mode = 2
 text = "Subtitle List"
 label_settings = ExtResource("13_cegan")
 
-[node name="PanelContainer" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"PanelBox"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="AddSubtitleTextureButton" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="AddSubtitleTextureButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(20, 15)
 layout_mode = 2
 theme_type_variation = &"FakeTextureButton"
@@ -818,7 +787,7 @@ icon = ExtResource("22_lswn8")
 icon_alignment = 1
 expand_icon = true
 
-[node name="DeleteSubtitleTextureButton" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="DeleteSubtitleTextureButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(20, 15)
 layout_mode = 2
 theme_type_variation = &"FakeTextureButton"
@@ -826,7 +795,7 @@ icon = ExtResource("23_a6jrf")
 icon_alignment = 1
 expand_icon = true
 
-[node name="UpTextureButton" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="UpTextureButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(20, 15)
 layout_mode = 2
 theme_type_variation = &"FakeTextureButton"
@@ -834,7 +803,7 @@ icon = ExtResource("24_xuqvo")
 icon_alignment = 1
 expand_icon = true
 
-[node name="DownTextureButton" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="DownTextureButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(20, 15)
 layout_mode = 2
 theme_type_variation = &"FakeTextureButton"
@@ -842,140 +811,141 @@ icon = ExtResource("25_qsp4k")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Spacer" type="Control" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Spacer" type="Control" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ImportButton" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ImportButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "Import"
 
-[node name="ExportButton" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="ExportButton" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "Export"
 
-[node name="Spacer" type="Control" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
+[node name="Spacer" type="Control" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 
-[node name="Subtitles" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
+[node name="Subtitles" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="PanelContainer2" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles"]
+[node name="PanelContainer2" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles"]
 layout_mode = 2
 theme_type_variation = &"PanelBox"
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles/PanelContainer2"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles/PanelContainer2"]
 layout_mode = 2
 text = "1    0:00:00     Welcome"
 
-[node name="PanelContainer3" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles"]
+[node name="PanelContainer3" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles"]
 layout_mode = 2
 theme_type_variation = &"PanelBox"
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles/PanelContainer3"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/SubtitleListPanel/VBoxContainer/Subtitles/PanelContainer3"]
 layout_mode = 2
 text = "2    0:05:00     Like and subscribe"
 
-[node name="TimelinePanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit"]
+[node name="TimelinePanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel"]
 layout_mode = 2
 
-[node name="SubtitleBoxes" type="PanelContainer" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer"]
+[node name="SubtitleBoxes" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer/SubtitleBoxes"]
+[node name="Button" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer/SubtitleBoxes"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Button2" type="Button" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer/SubtitleBoxes"]
+[node name="Button2" type="Button" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer/SubtitleBoxes"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="AudioWaveform2" type="Panel" parent="MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer"]
+[node name="AudioWaveform2" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HSplit/TimelinePanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 
-[node name="RenderingLayout" type="VSplitContainer" parent="MainVBox/LayoutTabContainer"]
+[node name="RenderingLayout" type="VSplitContainer" parent="Editor/MainVBox/LayoutTabContainer"]
+visible = false
 layout_mode = 2
 script = ExtResource("17_4k2k6")
 metadata/_tab_index = 2
 
-[node name="HSplit" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout"]
+[node name="HSplit" type="HSplitContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RenderOptionsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit"]
+[node name="RenderOptionsPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 text = "Render properties"
 label_settings = ExtResource("13_cegan")
 
-[node name="Label2" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="Label2" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 text = "Output"
 label_settings = ExtResource("28_xuqvo")
 
-[node name="GridContainer" type="GridContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="GridContainer" type="GridContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Filename:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Button" type="Button" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer/HBoxContainer"]
 layout_mode = 2
 text = "Browse"
 
-[node name="Label2" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
+[node name="Label2" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Folder:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="LineEdit2" type="LineEdit" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
+[node name="LineEdit2" type="LineEdit" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HSeparator" type="HSeparator" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="Label3" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 text = "Format"
 label_settings = ExtResource("28_xuqvo")
 
-[node name="GridContainer2" type="GridContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="GridContainer2" type="GridContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
 layout_mode = 2
 text = "Preset:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="OptionButton" type="OptionButton" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
+[node name="OptionButton" type="OptionButton" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
@@ -983,12 +953,12 @@ item_count = 1
 popup/item_0/text = "YouTube"
 popup/item_0/id = 0
 
-[node name="Label2" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
+[node name="Label2" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
 layout_mode = 2
 text = "Video Codec:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="OptionButton2" type="OptionButton" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
+[node name="OptionButton2" type="OptionButton" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
@@ -996,12 +966,12 @@ item_count = 1
 popup/item_0/text = "H264"
 popup/item_0/id = 0
 
-[node name="Label5" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
+[node name="Label5" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
 layout_mode = 2
 text = "Audio Codec:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="OptionButton3" type="OptionButton" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
+[node name="OptionButton3" type="OptionButton" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
@@ -1009,78 +979,78 @@ item_count = 1
 popup/item_0/text = "AAC"
 popup/item_0/id = 0
 
-[node name="Spacer" type="Control" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="Spacer" type="Control" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSeparator2" type="HSeparator" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label4" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="Label4" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 text = "Quality"
 label_settings = ExtResource("28_xuqvo")
 
-[node name="GridContainer3" type="GridContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="GridContainer3" type="GridContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="Label5" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="Label5" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 text = "CRF:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="SpinBox4" type="SpinBox" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="SpinBox4" type="SpinBox" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 value = 18.0
 allow_greater = true
 
-[node name="Label2" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="Label2" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 text = "Gop size:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="SpinBox3" type="SpinBox" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="SpinBox3" type="SpinBox" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 value = 15.0
 allow_greater = true
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 text = "Sample rate:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="SpinBox2" type="SpinBox" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="SpinBox2" type="SpinBox" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 value = 100.0
 allow_greater = true
 
-[node name="Label3" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="Label3" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 text = "B-frames:"
 label_settings = ExtResource("22_a6jrf")
 
-[node name="SpinBox" type="SpinBox" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
+[node name="SpinBox" type="SpinBox" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer/GridContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Spacer3" type="Control" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
+[node name="Spacer3" type="Control" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/RenderOptionsPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="HSplitContainer" type="HSplitContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit"]
+[node name="HSplitContainer" type="HSplitContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit"]
 layout_mode = 2
 
-[node name="ViewPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer"]
+[node name="ViewPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel"]
 layout_mode = 2
 
-[node name="ViewTextureRect" type="TextureRect" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer"]
+[node name="ViewTextureRect" type="TextureRect" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -1088,17 +1058,17 @@ texture = SubResource("PlaceholderTexture2D_kq58d")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="InfoPanel" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2"]
+[node name="InfoPanel" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2"]
 modulate = Color(1, 1, 1, 0.588235)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 7
 script = ExtResource("18_0rl1p")
 
-[node name="StatusFrameLabel" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
+[node name="StatusFrameLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
 layout_mode = 2
 size_flags_vertical = 8
 tooltip_text = "Current frame position"
@@ -1107,80 +1077,80 @@ text = "0/0"
 label_settings = SubResource("LabelSettings_0ld40")
 horizontal_alignment = 2
 
-[node name="VSeparator0" type="VSeparator" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
+[node name="VSeparator0" type="VSeparator" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/separator = SubResource("StyleBoxLine_muem4")
 
-[node name="StatusTimeLabel" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
+[node name="StatusTimeLabel" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/InfoPanel"]
 layout_mode = 2
 size_flags_vertical = 8
 text = "0:00:00"
 label_settings = SubResource("LabelSettings_0ld40")
 horizontal_alignment = 2
 
-[node name="PlayButtonsPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2"]
+[node name="PlayButtonsPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_type_variation = &"PanelBox"
 
-[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel"]
+[node name="PlaybackButtonsHBox" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel"]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="RewindButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="RewindButton" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("17_ryguw")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="PlayButton" type="TextureButton" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="PlayButton" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("18_d13ii")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ForwardButton2" type="TextureButton" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
+[node name="ForwardButton2" type="TextureButton" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture_normal = ExtResource("19_1u8w0")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="AudioLevelsPanel" type="Panel" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2"]
+[node name="AudioLevelsPanel" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_0odxb")
 
-[node name="ChapterPanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer"]
+[node name="ChapterPanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer"]
 layout_mode = 2
 text = "Chapters"
 label_settings = ExtResource("13_cegan")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Context:"
 
-[node name="Button" type="Button" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Plain"
 
-[node name="Button2" type="Button" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer/HBoxContainer"]
+[node name="Button2" type="Button" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(21, 21)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -1189,7 +1159,7 @@ icon = ExtResource("22_lswn8")
 icon_alignment = 1
 expand_icon = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ChapterPanel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 2
@@ -1200,33 +1170,33 @@ fit_content = true
 context_menu_enabled = true
 selection_enabled = true
 
-[node name="TimelinePanel" type="PanelContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout"]
+[node name="TimelinePanel" type="PanelContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout"]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainVBox/LayoutTabContainer/RenderingLayout/TimelinePanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/TimelinePanel"]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="MainVBox/LayoutTabContainer/RenderingLayout/TimelinePanel/VBoxContainer"]
+[node name="Panel" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/TimelinePanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xuqvo")
 
-[node name="Panel2" type="Panel" parent="MainVBox/LayoutTabContainer/RenderingLayout/TimelinePanel/VBoxContainer"]
+[node name="Panel2" type="Panel" parent="Editor/MainVBox/LayoutTabContainer/RenderingLayout/TimelinePanel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Editor"]
 stream = SubResource("AudioStreamInteractive_muem4")
 
-[connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/EditingLayoutButton" to="." method="_on_switch_layout" binds= [0]]
-[connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/SubtitlingLayoutButton" to="." method="_on_switch_layout" binds= [1]]
-[connection signal="pressed" from="SideButtonsPanel/SideButtonsVBox/RenderingLayoutButton" to="." method="_on_switch_layout" binds= [2]]
-[connection signal="item_clicked" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer/FilesList" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer/FilesList" method="_on_item_clicked"]
-[connection signal="pressed" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
-[connection signal="pressed" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox/VideoEffectsButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel" method="show_visual_effects"]
-[connection signal="pressed" from="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox/AudioEffectsButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel" method="show_audio_effects"]
-[connection signal="gui_input" from="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline" to="MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel" method="_on_main_gui_input"]
-[connection signal="pressed" from="MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
-[connection signal="pressed" from="MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="resized" from="Editor" to="Editor" method="_on_resized"]
+[connection signal="pressed" from="Editor/SideButtonsPanel/SideButtonsVBox/EditingLayoutButton" to="Editor" method="_on_switch_layout" binds= [0]]
+[connection signal="pressed" from="Editor/SideButtonsPanel/SideButtonsVBox/SubtitlingLayoutButton" to="Editor" method="_on_switch_layout" binds= [1]]
+[connection signal="pressed" from="Editor/SideButtonsPanel/SideButtonsVBox/RenderingLayoutButton" to="Editor" method="_on_switch_layout" binds= [2]]
+[connection signal="item_clicked" from="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer/FilesList" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/FilesPanel/VBoxContainer/ScrollContainer/FilesList" method="_on_item_clicked"]
+[connection signal="pressed" from="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel/VBox/HBoxContainer/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="pressed" from="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox/VideoEffectsButton" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel" method="show_visual_effects"]
+[connection signal="pressed" from="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel/EffectsVBox/TabButtonsHBox/AudioEffectsButton" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/EffectsPanel" method="show_audio_effects"]
+[connection signal="gui_input" from="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel/VBoxContainer/TimeBarScrollContainer/Timeline/MainTimelineScroll/MainTimeline" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/TimelinePanel" method="_on_main_gui_input"]
+[connection signal="pressed" from="Editor/MainVBox/LayoutTabContainer/SubtitlingLayout/HBoxContainer2/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="pressed" from="Editor/MainVBox/LayoutTabContainer/RenderingLayout/HSplit/HSplitContainer/ViewPanel/VBoxContainer/HBoxContainer2/PlayButtonsPanel/PlaybackButtonsHBox/PlayButton" to="Editor/MainVBox/LayoutTabContainer/EditingLayout/HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]

@@ -11,6 +11,8 @@
 > [!IMPORTANT]  
 > GoZen is in Alpha at the moment! Beta release is to be expected in late 2025.
 
+[Visit the GoZen site!](https://voylinsgamedevjourney.github.io/gozen/)
+
 ## What is GoZen?
 
 GoZen is a minimalistic video editor. Not too many bells and whistles, with the aim at being stable and performant. The main supported OS is Linux as I, Voylin, am a Linux user myself who got too frustrated by the lack of good video editors being available.
