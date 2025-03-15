@@ -1,0 +1,6 @@
+.godot
+
+*.x86_64
+*.so*
+*.dblite
+*.os*
