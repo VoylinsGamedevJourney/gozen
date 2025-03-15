@@ -1,0 +1,38 @@
+name: Bug Report
+description: Report a bug
+labels: ["Bug"]
+body:
+  - type: textarea
+    id: version
+    attributes:
+      label: Tested version
+      description: Please specify all the GoZen versions you found the issue in, or the Git commit hash if you were not using a release build.
+      placeholder: 0.1.0-dev / 00edbf8d
+    validations:
+      required: true
+  - type: textarea
+    id: sysinfo
+    attributes:
+      label: System information
+      description: "Please specify system information (for example: OS, CPU, GPU, RAM) of all the machines that can reproduce the issue."
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue description
+      description: Describe your issue briefly. What is the expected behaviour?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: How do you reproduce the bug?
+    validations:
+      required: true
+  - type: textarea
+    id: others
+    attributes:
+      label: Other information
+      description: Any other information you would like to share? You can attach a project file, or a log file.

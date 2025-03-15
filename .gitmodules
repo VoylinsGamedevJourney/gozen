@@ -1,0 +1,12 @@
+[submodule "libs/godot_cpp"]
+	path = libs/godot_cpp
+	url = git@github.com:godotengine/godot-cpp.git
+	ignore = dirty
+[submodule "libs/ffmpeg"]
+	path = libs/ffmpeg
+	url = git@github.com:FFmpeg/FFmpeg.git
+	ignore = dirty
+[submodule "translations"]
+	path = translations
+	url = git@github.com:VoylinsGamedevJourney/gozen-translations.git
+	ignore = dirty

@@ -1,0 +1,23 @@
+name: Feature Request
+description: Propose a new feature
+labels: ["Feature"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or limitation
+      description: Describe the problem or limitation you are having while using GoZen
+    validations:
+      required: true
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature / enhancement to solve the problem
+      description: Describe the feature / enhancement and how it helps to overcome the problem or limitation
+    validations:
+      required: true
+  - type: textarea
+    id: others
+    attributes:
+      label: Other information
+      description: Any other information you would like to share?
