@@ -1,0 +1,176 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjen0oagwidr7"]
+
+[ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scripts/settings_menu.gd" id="1_ce4ec"]
+
+[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("theme_option_button", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "save_info_label")]
+self_modulate = Color(1, 1, 1, 0.666667)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"background"
+script = ExtResource("1_ce4ec")
+theme_option_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton")
+image_duration_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox")
+default_resolution_x_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionXSpinBox")
+default_resolution_y_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionYSpinBox")
+default_framerate_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/DefaultFramerateSpinBox")
+save_info_label = NodePath("Panel/Margin/VBox/SaveForEffectLabel")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(700, 300)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SettingsPanel" type="PanelContainer" parent="Panel/Margin/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel"]
+layout_mode = 2
+
+[node name="SettingsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin"]
+layout_mode = 2
+
+[node name="AppearanceLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Appearance"
+
+[node name="AppearanceGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="ThemeLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Theme"
+
+[node name="ThemeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Light mode is better."
+item_count = 2
+popup/item_0/text = "Dark"
+popup/item_0/id = 0
+popup/item_1/text = "Light"
+popup/item_1/id = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+
+[node name="DefaultsLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Defaults"
+
+[node name="DefaultsGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="ImageDurationLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Image duration"
+
+[node name="ImageDurationSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The duration in frames."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="DefaultResolutionLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default project resolution"
+
+[node name="ResolutionHBox" type="HBoxContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
+layout_mode = 2
+text = "X:"
+
+[node name="DefaultResolutionXSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The default video project width."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="YLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
+layout_mode = 2
+text = "Y:"
+
+[node name="DefaultResolutionYSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The default video project height."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="DefaultFramerateLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default project framerate"
+
+[node name="DefaultFramerateSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The default video project framerate."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="SaveForEffectLabel" type="Label" parent="Panel/Margin/VBox"]
+visible = false
+layout_mode = 2
+text = "Save changes for them to take effect."
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Ignore changes and close settings menu."
+text = "Cancel"
+
+[node name="ResetButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Reset all adjusted settings back to saved settings, if nothing was adjusted than settings will reset to default."
+text = "Reset"
+
+[node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Save the project settings."
+text = "Save"
+
+[connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]
+[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox" to="." method="_on_image_duration_spin_box_value_changed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]

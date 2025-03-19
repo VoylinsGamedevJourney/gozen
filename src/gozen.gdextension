@@ -1,0 +1,421 @@
+[configuration]
+
+entry_symbol = "gozen_library_init"
+compatibility_minimum = "4.4"
+
+[libraries]
+
+linux.debug.x86_64 = "../libs/bin/linux_x86_64/libgozen.linux.template_debug.dev.x86_64.so"
+linux.release.x86_64 = "../libs/bin/linux_x86_64/libgozen.linux.template_release.x86_64.so"
+linux.debug.x86_32 = "../libs/bin/linux_x86_32/libgozen.linux.template_debug.dev.x86_32.so"
+linux.release.x86_32 = "../libs/bin/linux_x86_32/libgozen.linux.template_release.x86_32.so"
+
+linux.debug.arm64 = "../libs/bin/linux_arm64/libgozen.linux.template_debug.dev.arm64.so"
+linux.release.arm64 = "../libs/bin/linux_arm64/libgozen.linux.template_release.arm64.so"
+linux.debug.arm32 = "../libs/bin/linux_arm32/libgozen.linux.template_debug.dev.arm32.so"
+linux.release.arm32 = "../libs/bin/linux_arm32/libgozen.linux.template_release.arm32.so"
+
+windows.debug.x86_64 = "../libs/bin/windows_x86_64/libgozen.windows.template_debug.dev.x86_64.dll"
+windows.release.x86_64 = "../libs/bin/windows_x86_64/libgozen.windows.template_release.x86_64.dll"
+windows.debug.x86_32 = "../libs/bin/windows_x86_32/libgozen.windows.template_debug.dev.x86_32.dll"
+windows.release.x86_32 = "../libs/bin/windows_x86_32/libgozen.windows.template_release.x86_32.dll"
+
+windows.debug.arm64 = "../libs/bin/windows_arm64/libgozen.windows.template_debug.dev.arm64.dll"
+windows.release.arm64 = "../libs/bin/windows_arm64/libgozen.windows.template_release.arm64.dll"
+windows.debug.arm32 = "../libs/bin/windows_arm32/libgozen.windows.template_debug.dev.arm32.dll"
+windows.release.arm32 = "../libs/bin/windows_arm32/libgozen.windows.template_release.arm32.dll"
+
+macos.debug.arm64 = "../libs/bin/macos_arm64/debug/libgozen.macos.template_debug.dev.arm64.dylib"
+macos.release.arm64 = "../libs/bin/macos_arm64/release/libgozen.macos.template_release.arm64.dylib"
+
+macos.debug.x86_64 = "../libs/bin/macos_x86_64/debug/libgozen.macos.template_debug.dev.x86_64.dylib"
+macos.release.x86_64 = "../libs/bin/macos_x86_64/release/libgozen.macos.template_release.x86_64.dylib"
+
+android.debug.arm64 = "../libs/bin/android_arm64/debug/libgozen.android.template_debug.dev.arm64.so"
+android.release.arm64 = "../libs/bin/android_arm64/release/libgozen.android.template_release.arm64.so"
+
+android.debug.arm32 = "../libs/bin/android_arm32/debug/libgozen.android.template_debug.dev.arm32.so"
+android.release.arm32 = "../libs/bin/android_arm32/release/libgozen.android.template_release.arm32.so"
+
+[icon]
+
+Video = "../libs/icon.svg"
+Renderer = "../libs/icon.svg"
+Audio = "../libs/icon.svg"
+
+[dependencies]
+
+linux.debug.x86_64 = {
+    "../libs/bin/linux_x86_64/libavcodec.so" : "",
+    "../libs/bin/linux_x86_64/libavcodec.so.60" : "",
+    "../libs/bin/linux_x86_64/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_x86_64/libavdevice.so" : "",
+    "../libs/bin/linux_x86_64/libavdevice.so.60" : "",
+    "../libs/bin/linux_x86_64/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_x86_64/libavformat.so" : "",
+    "../libs/bin/linux_x86_64/libavformat.so.60" : "",
+    "../libs/bin/linux_x86_64/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_x86_64/libavutil.so" : "",
+    "../libs/bin/linux_x86_64/libavutil.so.58" : "",
+    "../libs/bin/linux_x86_64/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_x86_64/libswresample.so" : "",
+    "../libs/bin/linux_x86_64/libswresample.so.4" : "",
+    "../libs/bin/linux_x86_64/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_x86_64/libswscale.so" : "",
+    "../libs/bin/linux_x86_64/libswscale.so.7" : "",
+    "../libs/bin/linux_x86_64/libswscale.so.7.5.100" : ""
+}
+linux.release.x86_64 = {
+    "../libs/bin/linux_x86_64/libavcodec.so" : "",
+    "../libs/bin/linux_x86_64/libavcodec.so.60" : "",
+    "../libs/bin/linux_x86_64/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_x86_64/libavdevice.so" : "",
+    "../libs/bin/linux_x86_64/libavdevice.so.60" : "",
+    "../libs/bin/linux_x86_64/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_x86_64/libavformat.so" : "",
+    "../libs/bin/linux_x86_64/libavformat.so.60" : "",
+    "../libs/bin/linux_x86_64/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_x86_64/libavutil.so" : "",
+    "../libs/bin/linux_x86_64/libavutil.so.58" : "",
+    "../libs/bin/linux_x86_64/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_x86_64/libswresample.so" : "",
+    "../libs/bin/linux_x86_64/libswresample.so.4" : "",
+    "../libs/bin/linux_x86_64/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_x86_64/libswscale.so" : "",
+    "../libs/bin/linux_x86_64/libswscale.so.7" : "",
+    "../libs/bin/linux_x86_64/libswscale.so.7.5.100" : ""
+}
+linux.debug.x86_32 = {
+    "../libs/bin/linux_x86_32/libavcodec.so" : "",
+    "../libs/bin/linux_x86_32/libavcodec.so.60" : "",
+    "../libs/bin/linux_x86_32/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_x86_32/libavdevice.so" : "",
+    "../libs/bin/linux_x86_32/libavdevice.so.60" : "",
+    "../libs/bin/linux_x86_32/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_x86_32/libavformat.so" : "",
+    "../libs/bin/linux_x86_32/libavformat.so.60" : "",
+    "../libs/bin/linux_x86_32/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_x86_32/libavutil.so" : "",
+    "../libs/bin/linux_x86_32/libavutil.so.58" : "",
+    "../libs/bin/linux_x86_32/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_x86_32/libswresample.so" : "",
+    "../libs/bin/linux_x86_32/libswresample.so.4" : "",
+    "../libs/bin/linux_x86_32/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_x86_32/libswscale.so" : "",
+    "../libs/bin/linux_x86_32/libswscale.so.7" : "",
+    "../libs/bin/linux_x86_32/libswscale.so.7.5.100" : ""
+}
+linux.release.x86_32 = {
+    "../libs/bin/linux_x86_32/libavcodec.so" : "",
+    "../libs/bin/linux_x86_32/libavcodec.so.60" : "",
+    "../libs/bin/linux_x86_32/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_x86_32/libavdevice.so" : "",
+    "../libs/bin/linux_x86_32/libavdevice.so.60" : "",
+    "../libs/bin/linux_x86_32/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_x86_32/libavformat.so" : "",
+    "../libs/bin/linux_x86_32/libavformat.so.60" : "",
+    "../libs/bin/linux_x86_32/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_x86_32/libavutil.so" : "",
+    "../libs/bin/linux_x86_32/libavutil.so.58" : "",
+    "../libs/bin/linux_x86_32/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_x86_32/libswresample.so" : "",
+    "../libs/bin/linux_x86_32/libswresample.so.4" : "",
+    "../libs/bin/linux_x86_32/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_x86_32/libswscale.so" : "",
+    "../libs/bin/linux_x86_32/libswscale.so.7" : "",
+    "../libs/bin/linux_x86_32/libswscale.so.7.5.100" : ""
+}
+linux.debug.arm64 = {
+    "../libs/bin/linux_arm64/libavcodec.so" : "",
+    "../libs/bin/linux_arm64/libavcodec.so.60" : "",
+    "../libs/bin/linux_arm64/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_arm64/libavdevice.so" : "",
+    "../libs/bin/linux_arm64/libavdevice.so.60" : "",
+    "../libs/bin/linux_arm64/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_arm64/libavformat.so" : "",
+    "../libs/bin/linux_arm64/libavformat.so.60" : "",
+    "../libs/bin/linux_arm64/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_arm64/libavutil.so" : "",
+    "../libs/bin/linux_arm64/libavutil.so.58" : "",
+    "../libs/bin/linux_arm64/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_arm64/libswresample.so" : "",
+    "../libs/bin/linux_arm64/libswresample.so.4" : "",
+    "../libs/bin/linux_arm64/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_arm64/libswscale.so" : "",
+    "../libs/bin/linux_arm64/libswscale.so.7" : "",
+    "../libs/bin/linux_arm64/libswscale.so.7.5.100" : ""
+}
+linux.release.arm64 = {
+    "../libs/bin/linux_arm64/libavcodec.so" : "",
+    "../libs/bin/linux_arm64/libavcodec.so.60" : "",
+    "../libs/bin/linux_arm64/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_arm64/libavdevice.so" : "",
+    "../libs/bin/linux_arm64/libavdevice.so.60" : "",
+    "../libs/bin/linux_arm64/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_arm64/libavformat.so" : "",
+    "../libs/bin/linux_arm64/libavformat.so.60" : "",
+    "../libs/bin/linux_arm64/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_arm64/libavutil.so" : "",
+    "../libs/bin/linux_arm64/libavutil.so.58" : "",
+    "../libs/bin/linux_arm64/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_arm64/libswresample.so" : "",
+    "../libs/bin/linux_arm64/libswresample.so.4" : "",
+    "../libs/bin/linux_arm64/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_arm64/libswscale.so" : "",
+    "../libs/bin/linux_arm64/libswscale.so.7" : "",
+    "../libs/bin/linux_arm64/libswscale.so.7.5.100" : ""
+}
+linux.debug.arm32 = {
+    "../libs/bin/linux_arm32/libavcodec.so" : "",
+    "../libs/bin/linux_arm32/libavcodec.so.60" : "",
+    "../libs/bin/linux_arm32/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_arm32/libavdevice.so" : "",
+    "../libs/bin/linux_arm32/libavdevice.so.60" : "",
+    "../libs/bin/linux_arm32/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_arm32/libavformat.so" : "",
+    "../libs/bin/linux_arm32/libavformat.so.60" : "",
+    "../libs/bin/linux_arm32/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_arm32/libavutil.so" : "",
+    "../libs/bin/linux_arm32/libavutil.so.58" : "",
+    "../libs/bin/linux_arm32/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_arm32/libswresample.so" : "",
+    "../libs/bin/linux_arm32/libswresample.so.4" : "",
+    "../libs/bin/linux_arm32/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_arm32/libswscale.so" : "",
+    "../libs/bin/linux_arm32/libswscale.so.7" : "",
+    "../libs/bin/linux_arm32/libswscale.so.7.5.100" : ""
+}
+linux.release.arm32 = {
+    "../libs/bin/linux_arm32/libavcodec.so" : "",
+    "../libs/bin/linux_arm32/libavcodec.so.60" : "",
+    "../libs/bin/linux_arm32/libavcodec.so.60.31.102" : "",
+
+    "../libs/bin/linux_arm32/libavdevice.so" : "",
+    "../libs/bin/linux_arm32/libavdevice.so.60" : "",
+    "../libs/bin/linux_arm32/libavdevice.so.60.3.100" : "",
+
+    "../libs/bin/linux_arm32/libavformat.so" : "",
+    "../libs/bin/linux_arm32/libavformat.so.60" : "",
+    "../libs/bin/linux_arm32/libavformat.so.60.16.100" : "",
+
+    "../libs/bin/linux_arm32/libavutil.so" : "",
+    "../libs/bin/linux_arm32/libavutil.so.58" : "",
+    "../libs/bin/linux_arm32/libavutil.so.58.29.100" : "",
+
+    "../libs/bin/linux_arm32/libswresample.so" : "",
+    "../libs/bin/linux_arm32/libswresample.so.4" : "",
+    "../libs/bin/linux_arm32/libswresample.so.4.12.100" : "",
+
+    "../libs/bin/linux_arm32/libswscale.so" : "",
+    "../libs/bin/linux_arm32/libswscale.so.7" : "",
+    "../libs/bin/linux_arm32/libswscale.so.7.5.100" : ""
+}
+
+windows.debug.x86_64 = {
+    "../libs/bin/windows_x86_64/avcodec-60.dll" : "",
+    "../libs/bin/windows_x86_64/avdevice-60.dll" : "",
+    "../libs/bin/windows_x86_64/avformat-60.dll" : "",
+	"../libs/bin/windows_x86_64/avutil-58.dll" : "",
+
+	"../libs/bin/windows_x86_64/swresample-4.dll" : "",
+	"../libs/bin/windows_x86_64/swscale-7.dll" : ""
+}
+windows.release.x86_64 = {
+    "../libs/bin/windows_x86_64/avcodec-60.dll" : "",
+    "../libs/bin/windows_x86_64/avdevice-60.dll" : "",
+    "../libs/bin/windows_x86_64/avformat-60.dll" : "",
+    "../libs/bin/windows_x86_64/avutil-58.dll" : "",
+
+	"../libs/bin/windows_x86_64/swresample-4.dll" : "",
+	"../libs/bin/windows_x86_64/swscale-7.dll" : ""
+}
+windows.debug.x86_32 = {
+    "../libs/bin/windows_x86_32/avcodec-60.dll" : "",
+    "../libs/bin/windows_x86_32/avdevice-60.dll" : "",
+    "../libs/bin/windows_x86_32/avformat-60.dll" : "",
+	"../libs/bin/windows_x86_32/avutil-58.dll" : "",
+
+	"../libs/bin/windows_x86_32/swresample-4.dll" : "",
+	"../libs/bin/windows_x86_32/swscale-7.dll" : ""
+}
+windows.release.x86_32 = {
+    "../libs/bin/windows_x86_32/avcodec-60.dll" : "",
+    "../libs/bin/windows_x86_32/avdevice-60.dll" : "",
+    "../libs/bin/windows_x86_32/avformat-60.dll" : "",
+    "../libs/bin/windows_x86_32/avutil-58.dll" : "",
+
+	"../libs/bin/windows_x86_32/swresample-4.dll" : "",
+	"../libs/bin/windows_x86_32/swscale-7.dll" : ""
+}
+windows.debug.arm64 = {
+    "../libs/bin/windows_arm64/avcodec-60.dll" : "",
+    "../libs/bin/windows_arm64/avdevice-60.dll" : "",
+    "../libs/bin/windows_arm64/avformat-60.dll" : "",
+	"../libs/bin/windows_arm64/avutil-58.dll" : "",
+
+	"../libs/bin/windows_arm64/swresample-4.dll" : "",
+	"../libs/bin/windows_arm64/swscale-7.dll" : ""
+}
+windows.release.arm64 = {
+    "../libs/bin/windows_arm64/avcodec-60.dll" : "",
+    "../libs/bin/windows_arm64/avdevice-60.dll" : "",
+    "../libs/bin/windows_arm64/avformat-60.dll" : "",
+    "../libs/bin/windows_arm64/avutil-58.dll" : "",
+
+	"../libs/bin/windows_arm64/swresample-4.dll" : "",
+	"../libs/bin/windows_arm64/swscale-7.dll" : ""
+}
+windows.debug.arm32 = {
+    "../libs/bin/windows_arm32/avcodec-60.dll" : "",
+    "../libs/bin/windows_arm32/avdevice-60.dll" : "",
+    "../libs/bin/windows_arm32/avformat-60.dll" : "",
+	"../libs/bin/windows_arm32/avutil-58.dll" : "",
+
+	"../libs/bin/windows_arm32/swresample-4.dll" : "",
+	"../libs/bin/windows_arm32/swscale-7.dll" : ""
+}
+windows.release.arm32 = {
+    "../libs/bin/windows_arm32/avcodec-60.dll" : "",
+    "../libs/bin/windows_arm32/avdevice-60.dll" : "",
+    "../libs/bin/windows_arm32/avformat-60.dll" : "",
+    "../libs/bin/windows_arm32/avutil-58.dll" : "",
+
+	"../libs/bin/windows_arm32/swresample-4.dll" : "",
+	"../libs/bin/windows_arm32/swscale-7.dll" : ""
+}
+
+macos.debug.arm64 = {
+	"../libs/bin/macos_arm64/debug/libavcodec.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libavcodec.60.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_arm64/debug/libavcodec.60.31.102.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/debug/libavdevice.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libavdevice.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libavdevice.60.3.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/debug/libavformat.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libavformat.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libavformat.60.16.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/debug/libavutil.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libavutil.58.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_arm64/debug/libavutil.58.29.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/debug/libswresample.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libswresample.4.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libswresample.4.12.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/debug/libswscale.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libswscale.7.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/debug/libswscale.7.5.100.dylib" : "Contents/Frameworks"
+}
+macos.release.arm64 = {
+	"../libs/bin/macos_arm64/release/libavcodec.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libavcodec.60.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_arm64/release/libavcodec.60.31.102.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/release/libavdevice.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libavdevice.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libavdevice.60.3.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/release/libavformat.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libavformat.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libavformat.60.16.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/release/libavutil.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libavutil.58.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_arm64/release/libavutil.58.29.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/release/libswresample.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libswresample.4.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libswresample.4.12.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_arm64/release/libswscale.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libswscale.7.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_arm64/release/libswscale.7.5.100.dylib" : "Contents/Frameworks"
+}
+macos.debug.x86_64 = {
+	"../libs/bin/macos_x86_64/debug/libavcodec.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libavcodec.60.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_x86_64/debug/libavcodec.60.31.102.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/debug/libavdevice.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libavdevice.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libavdevice.60.3.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/debug/libavformat.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libavformat.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libavformat.60.16.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/debug/libavutil.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libavutil.58.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_x86_64/debug/libavutil.58.29.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/debug/libswresample.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libswresample.4.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libswresample.4.12.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/debug/libswscale.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libswscale.7.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/debug/libswscale.7.5.100.dylib" : "Contents/Frameworks"
+}
+macos.release.x86_64 = {
+	"../libs/bin/macos_x86_64/release/libavcodec.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libavcodec.60.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_x86_64/release/libavcodec.60.31.102.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/release/libavdevice.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libavdevice.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libavdevice.60.3.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/release/libavformat.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libavformat.60.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libavformat.60.16.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/release/libavutil.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libavutil.58.dylib" : "Contents/Frameworks",
+	"../libs/bin/macos_x86_64/release/libavutil.58.29.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/release/libswresample.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libswresample.4.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libswresample.4.12.100.dylib" : "Contents/Frameworks",
+
+    "../libs/bin/macos_x86_64/release/libswscale.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libswscale.7.dylib" : "Contents/Frameworks",
+    "../libs/bin/macos_x86_64/release/libswscale.7.5.100.dylib" : "Contents/Frameworks"
+}

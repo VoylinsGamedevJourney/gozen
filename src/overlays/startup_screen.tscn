@@ -1,0 +1,313 @@
+[gd_scene load_steps=10 format=3 uid="uid://bqlcn30hs8qp5"]
+
+[ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scripts/startup_screen.gd" id="1_mrrmf"]
+[ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_jk13q"]
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.png" id="3_jdwvk"]
+[ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_wb8ll"]
+[ext_resource type="Texture2D" uid="uid://dkrjloft61kvq" path="res://assets/icons/add.png" id="4_wb8ll"]
+[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.png" id="5_x2wpv"]
+[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.png" id="6_donii"]
+[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.png" id="7_5plxg"]
+[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.png" id="8_ohjo4"]
+
+[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label")]
+self_modulate = Color(1, 1, 1, 0.666667)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"background"
+script = ExtResource("1_mrrmf")
+version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
+tab_container = NodePath("Panel/VBox/StartupTabContainer")
+recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
+project_path_line_edit = NodePath("Panel/VBox/StartupTabContainer/NewProject/PathHBox/PathLineEdit")
+resolution_x_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionXSpinBox")
+resolution_y_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionYSpinBox")
+framerate_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/FramerateSpinBox")
+warning_label = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectWarningLabel")
+
+[node name="Panel" type="PanelContainer" parent="."]
+clip_children = 2
+custom_minimum_size = Vector2(600, 500)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="StartupImage" type="TextureRect" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+texture = ExtResource("2_jk13q")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="GoZenLogoButton" type="TextureButton" parent="Panel/VBox/StartupImage"]
+layout_mode = 1
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 47.0
+offset_bottom = 47.0
+texture_normal = ExtResource("3_wb8ll")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="OverlayHBox" type="HBoxContainer" parent="Panel/VBox/StartupImage"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -23.0
+offset_right = -5.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="VersionLabel" type="RichTextLabel" parent="Panel/VBox/StartupImage/OverlayHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 9
+text = "Version: "
+scroll_active = false
+vertical_alignment = 2
+
+[node name="ImageAuthor" type="RichTextLabel" parent="Panel/VBox/StartupImage/OverlayHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 9
+bbcode_enabled = true
+text = "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 1
+tabs_visible = false
+
+[node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RecentProjectsLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Recent projects"
+
+[node name="HSeparatorTop" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
+layout_mode = 2
+
+[node name="RecentProjectsScroll" type="ScrollContainer" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RecentProjectsVBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparatorBottom" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
+layout_mode = 2
+
+[node name="OpenProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
+layout_mode = 2
+text = "Open project"
+icon = ExtResource("3_jdwvk")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
+layout_mode = 2
+text = "Create new project"
+icon = ExtResource("4_wb8ll")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="MenuVBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GettingStartedLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Getting started"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+
+[node name="SiteButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+text = "GoZen site"
+icon = ExtResource("7_5plxg")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="ManualButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+text = "Manual"
+icon = ExtResource("5_x2wpv")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="TutorialsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+text = "Tutorials"
+icon = ExtResource("6_donii")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="DiscordServerButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+text = "Discord server"
+icon = ExtResource("7_5plxg")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="Spacer" type="Control" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SupportProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
+layout_mode = 2
+text = "Support GoZen"
+icon = ExtResource("8_ohjo4")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer"]
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="NewProjectLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "New Project"
+
+[node name="HSeparator1" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+
+[node name="PathHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox"]
+layout_mode = 2
+text = "Path:"
+
+[node name="PathLineEdit" type="LineEdit" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProjectPathButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+texture_normal = ExtResource("3_jdwvk")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="NewProjectGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="ResolutionLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Resolution"
+
+[node name="ResolutionHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="XLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox"]
+layout_mode = 2
+text = "X:"
+
+[node name="ResolutionXSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The video width."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="YLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox"]
+layout_mode = 2
+text = "Y:"
+
+[node name="ResolutionYSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The video height."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="FramerateLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Framerate"
+
+[node name="FramerateSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The video framerate (fps)."
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+
+[node name="NewProjectWarningLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"warning_label"
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+
+[node name="CancelCreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Go back to startup menu."
+text = "Return"
+
+[node name="CreateNewProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Create new project with the chosen settings."
+text = "Create new project"
+
+[connection signal="pressed" from="Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_go_zen_logo_button_pressed"]
+[connection signal="meta_clicked" from="Panel/VBox/StartupImage/OverlayHBox/ImageAuthor" to="." method="_on_image_author_meta_clicked"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SiteButton" to="." method="_on_site_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ManualButton" to="." method="_on_manual_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/DiscordServerButton" to="." method="_on_discord_server_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CreateNewProjectButton" to="." method="_on_create_new_project_button_pressed"]
