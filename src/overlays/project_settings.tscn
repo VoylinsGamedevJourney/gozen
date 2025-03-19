@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1h5tylky47rt"]
+
+[ext_resource type="Script" uid="uid://bh7ksnxs73n8o" path="res://scripts/project_settings_menu.gd" id="1_hxewb"]
+
+[node name="ProjectSettings" type="PanelContainer"]
+self_modulate = Color(1, 1, 1, 0.666667)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"background"
+script = ExtResource("1_hxewb")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(700, 300)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SettingsPanel" type="PanelContainer" parent="Panel/Margin/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel"]
+layout_mode = 2
+
+[node name="SettingsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save"
+
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]
