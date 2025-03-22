@@ -24,10 +24,8 @@ var skips: int = 0
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
-	Project.project_ready.connect(_setup_audio_players)
-	Project.project_ready.connect(set_frame.bind(frame_nr))
-	@warning_ignore_restore("return_value_discarded")
+	Toolbox.connect_func(Project.project_ready, _setup_audio_players)
+	Toolbox.connect_func(Project.project_ready, set_frame.bind(frame_nr))
 
 
 func _process(a_delta: float) -> void:
@@ -195,8 +193,8 @@ func render_audio() -> PackedByteArray:
 				var l_sample_count: int = get_sample_count(l_clip.start_frame)
 
 				if l_track_audio.size() != l_sample_count:
-					@warning_ignore("return_value_discarded")
-					l_track_audio.resize(l_sample_count)
+					if l_track_audio.resize(l_sample_count):
+						Toolbox.print_resize_error()
 				
 				l_track_audio.append_array(l_clip.get_clip_audio_data())
 
@@ -205,8 +203,8 @@ func render_audio() -> PackedByteArray:
 				continue
 
 		# Making the audio data the correct length
-		@warning_ignore("return_value_discarded")
-		l_track_audio.resize(get_sample_count(Project.get_timeline_end() + 1))
+		if l_track_audio.resize(get_sample_count(Project.get_timeline_end() + 1)):
+			Toolbox.print_resize_error()
 
 		if l_audio.size() == 0:
 			l_audio = l_track_audio

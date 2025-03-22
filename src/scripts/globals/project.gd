@@ -23,8 +23,8 @@ func _update_recent_projects(a_new_path: String) -> void:
 		l_file.close()
 		
 	l_file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	@warning_ignore("return_value_discarded")
-	l_file.store_string(a_new_path + "\n" + l_content)
+	if !l_file.store_string(a_new_path + "\n" + l_content):
+		printerr("Error storing String for recent_projects!")
 
 
 func new_project(a_path: String, a_res: Vector2i, a_framerate: float) -> void:
@@ -36,8 +36,9 @@ func new_project(a_path: String, a_res: Vector2i, a_framerate: float) -> void:
 	set_project_path(a_path)
 	set_resolution(a_res)
 	set_framerate(a_framerate)
-	@warning_ignore("return_value_discarded")
-	Editor.loaded_clips.resize(get_track_count())
+	if Editor.loaded_clips.resize(get_track_count()):
+		Toolbox.print_resize_error()
+
 	file_data = {}
 
 	project_ready.emit()
@@ -57,11 +58,10 @@ func open(a_project_path: String) -> void:
 	if data.load_data(a_project_path):
 		printerr("Something went wrong whilst loading project!")
 
-	@warning_ignore_start("return_value_discarded")
 	set_project_path(a_project_path)
 	set_framerate(data.framerate)
-	Editor.loaded_clips.resize(get_track_count())
-	@warning_ignore_restore("return_value_discarded")
+	if Editor.loaded_clips.resize(get_track_count()):
+		Toolbox.print_resize_error()
 
 	for i: int in Project.get_file_ids():
 		load_file_data(i)
@@ -75,6 +75,30 @@ func load_file_data(a_id: int) -> void:
 
 	l_file_data.init_data(a_id)
 	file_data[a_id] = l_file_data
+
+
+func reload_file_data(a_id: int) -> void:
+	file_data[a_id].queue_free()
+	await RenderingServer.frame_pre_draw
+	load_file_data(a_id)
+
+
+func delete_file(a_id: int) -> void:
+	# TODO: We should also remove the actual clips from the timeline.
+	for l_clip: ClipData in data.clips.values():
+		if l_clip.file_id == a_id:
+			if data.clips.erase(l_clip.clip_id):
+				Toolbox.print_erase_error()
+
+	file_data[a_id].queue_free()
+	data.files[a_id].queue_free()
+
+	# WARNING: Right now we delete undo_redo, this is because it could cause
+	# issues when undoing a part where the clips are needed. This is a TODO
+	# for later!
+	InputManager.undo_redo = UndoRedo.new()
+
+	await RenderingServer.frame_pre_draw
 
 
 # Setters and Getters  --------------------------------------------------------
@@ -170,8 +194,8 @@ func set_clip(a_id: int, a_clip: ClipData) -> void:
 
 
 func erase_clip(a_clip_id: int) -> void:
-	@warning_ignore_start("return_value_discarded")
-	data.tracks[data.clips[a_clip_id].track_id].erase(data.clips[a_clip_id].start_frame)
-	data.clips.erase(a_clip_id)
-	@warning_ignore_restore("return_value_discarded")
+	if data.tracks[data.clips[a_clip_id].track_id].erase(data.clips[a_clip_id].start_frame):
+		Toolbox.print_erase_error()
+	if data.clips.erase(a_clip_id):
+		Toolbox.print_erase_error()
 

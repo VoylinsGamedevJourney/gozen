@@ -37,12 +37,16 @@ func _update_duration() -> void:
 
 func init_data(a_id: int) -> void:
 	id = a_id
+
 	var l_file: File = Project.get_file(id)
 
 	if l_file.type == File.TYPE.IMAGE:
-		var l_image: Image = Image.load_from_file(l_file.path)
-		image = ImageTexture.create_from_image(l_image)
-	if l_file.type == File.TYPE.VIDEO:
+		if l_file.temp_file != null:
+			image = l_file.temp_file.image_data
+			return
+
+		image = ImageTexture.create_from_image(Image.load_from_file(l_file.path))
+	elif l_file.type == File.TYPE.VIDEO:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
 				_load_video_data.bind(l_file.path)),
 				_set_video_meta_data.bind(l_file.path)))

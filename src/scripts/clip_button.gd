@@ -25,11 +25,9 @@ func _ready() -> void:
 	_add_resize_button(PRESET_LEFT_WIDE, true)
 	_add_resize_button(PRESET_RIGHT_WIDE, false)
 
-	@warning_ignore_start("return_value_discarded")
-	button_down.connect(_on_button_down)
-	gui_input.connect(_on_gui_input)
-	Timeline.instance.zoom_changed.connect(_update_wave)
-	@warning_ignore_restore("return_value_discarded")
+	Toolbox.connect_func(button_down, _on_button_down)
+	Toolbox.connect_func(gui_input, _on_gui_input)
+	Toolbox.connect_func(Timeline.instance.zoom_changed, _update_wave)
 
 	if Project.get_file(clip_data.file_id).type in Editor.AUDIO_TYPES:
 		wave = true

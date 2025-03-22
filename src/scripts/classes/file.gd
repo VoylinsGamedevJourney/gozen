@@ -2,15 +2,17 @@ class_name File
 extends Node
 
 
-enum TYPE { EMPTY = -1, IMAGE, VIDEO, AUDIO}
+enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO,  TEXT, }
 
 
 var id: int
-var path: String
+var path: String # Temporary files start with "temp://"
 var nickname: String
 var type: TYPE = TYPE.EMPTY
 
 var duration: int = -1
+
+var temp_file: TempFile = null # Only filled when file is a temp file
 
 
 
@@ -24,12 +26,20 @@ static func create(a_path: String) -> File:
 		l_file.type = TYPE.AUDIO
 	elif l_ext in ProjectSettings.get_setting_with_override("extensions/video"):
 		l_file.type = TYPE.VIDEO
+	elif a_path == "temp://image":
+		l_file.type = TYPE.IMAGE
+	elif a_path == "temp://text":
+		l_file.type = TYPE.TEXT
 	else:
 		printerr("Invalid file: ", a_path)
 		return null
 
 	l_file.id = Toolbox.get_unique_id(Project.get_file_ids())
 	l_file.path = a_path
-	l_file.nickname = a_path.get_file()
+
+	if a_path.contains("temp://"):
+		l_file.nickname = "Image %s" % l_file.id
+	else:
+		l_file.nickname = a_path.get_file()
 
 	return l_file
