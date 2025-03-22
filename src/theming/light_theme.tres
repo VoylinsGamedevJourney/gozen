@@ -1,22 +1,13 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://dxq4vg1l5rwhj"]
+[gd_resource type="Theme" load_steps=17 format=3 uid="uid://dxq4vg1l5rwhj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tod0p"]
-content_margin_left = 7.0
-content_margin_top = 2.0
-content_margin_right = 7.0
-content_margin_bottom = 2.0
-bg_color = Color(0.839216, 0.839216, 0.839216, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x043i"]
 content_margin_left = 7.0
 content_margin_top = 2.0
 content_margin_right = 7.0
 content_margin_bottom = 2.0
-bg_color = Color(0.760784, 0.760784, 0.760784, 1)
+bg_color = Color(0.721569, 0.721569, 0.721569, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
@@ -38,7 +29,7 @@ content_margin_left = 7.0
 content_margin_top = 2.0
 content_margin_right = 7.0
 content_margin_bottom = 2.0
-bg_color = Color(0.760784, 0.760784, 0.760784, 1)
+bg_color = Color(0.878431, 0.878431, 0.878431, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
@@ -47,6 +38,10 @@ corner_radius_bottom_left = 7
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_w6ddi"]
 color = Color(0.666667, 0.666667, 0.666667, 0.784314)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ootwl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tod0p"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ootwl"]
 bg_color = Color(0.866667, 0.866667, 0.866667, 1)
 corner_radius_top_left = 7
@@ -54,11 +49,16 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2uo22"]
 content_margin_left = 7.0
 content_margin_top = 7.0
 content_margin_right = 7.0
 content_margin_bottom = 7.0
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_li2em"]
 bg_color = Color(0.866667, 0.866667, 0.866667, 1)
@@ -77,6 +77,27 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kicdo"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_riq6l"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tod0p"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+
 [resource]
 default_font_size = 14
 Button/colors/font_color = Color(0, 0, 0, 1)
@@ -84,11 +105,13 @@ Button/colors/font_focus_color = Color(0, 0, 0, 1)
 Button/colors/font_hover_color = Color(0, 0, 0, 1)
 Button/colors/font_pressed_color = Color(0, 0, 0, 1)
 Button/constants/h_separation = 7
-Button/styles/focus = SubResource("StyleBoxFlat_tod0p")
+Button/styles/focus = SubResource("StyleBoxEmpty_w6ddi")
 Button/styles/hover = SubResource("StyleBoxFlat_x043i")
 Button/styles/normal = SubResource("StyleBoxFlat_kicdo")
 Button/styles/pressed = SubResource("StyleBoxFlat_6u4ua")
 HSeparator/styles/separator = SubResource("StyleBoxLine_w6ddi")
+ItemList/styles/focus = SubResource("StyleBoxEmpty_ootwl")
+ItemList/styles/panel = SubResource("StyleBoxEmpty_tod0p")
 Label/colors/font_color = Color(0, 0, 0, 1)
 MarginContainer/constants/margin_bottom = 7
 MarginContainer/constants/margin_left = 7
@@ -96,13 +119,17 @@ MarginContainer/constants/margin_right = 7
 MarginContainer/constants/margin_top = 7
 MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_ootwl")
-TabContainer/styles/panel = SubResource("StyleBoxEmpty_w6ddi")
+TabContainer/styles/panel = SubResource("StyleBoxFlat_2uo22")
 TooltipPanel/styles/panel = SubResource("StyleBoxFlat_li2em")
 VSeparator/styles/separator = SubResource("StyleBoxLine_li2em")
 background/base_type = &"PanelContainer"
 background/styles/panel = SubResource("StyleBoxFlat_w6ddi")
 box/base_type = &"PanelContainer"
 box/styles/panel = SubResource("StyleBoxFlat_riq6l")
+file_tab_button/base_type = &"Button"
+file_tab_button/styles/hover = SubResource("StyleBoxEmpty_kicdo")
+file_tab_button/styles/normal = SubResource("StyleBoxEmpty_riq6l")
+file_tab_button/styles/pressed = SubResource("StyleBoxFlat_tod0p")
 title_label/base_type = &"Label"
 title_label/colors/font_color = Color(0.214103, 0.214103, 0.214103, 1)
 title_label/font_sizes/font_size = 12

@@ -35,8 +35,8 @@ func _set_recent_projects() -> void:
 				# We still add non-found projects in case people have projects
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
-				@warning_ignore("return_value_discarded")
-				l_new_paths.append(l_path)
+				if l_new_paths.append(l_path):
+					Toolbox.print_append_error()
 				continue
 
 			var l_hbox: HBoxContainer = HBoxContainer.new()
@@ -47,23 +47,23 @@ func _set_recent_projects() -> void:
 			l_project_button.tooltip_text = l_path
 			l_project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-			@warning_ignore("return_value_discarded")
-			l_project_button.pressed.connect(open_project.bind(l_path))
+			Toolbox.connect_func(l_project_button.pressed, open_project.bind(l_path))
 
 			l_delete_button.texture_normal = preload("uid://dyndi17ou8ixo")
 			l_delete_button.ignore_texture_size = true
 			l_delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			l_delete_button.custom_minimum_size = Vector2i(18,0)
 
-			@warning_ignore("return_value_discarded")
-			l_delete_button.pressed.connect(_on_delete_recent_project.bind(l_hbox, l_path))
+			Toolbox.connect_func(
+					l_delete_button.pressed,
+					_on_delete_recent_project.bind(l_hbox, l_path))
 
 			l_hbox.add_child(l_delete_button)
 			l_hbox.add_child(l_project_button)
 
 			recent_projects_vbox.add_child(l_hbox)
-			@warning_ignore("return_value_discarded")
-			l_new_paths.append(l_path)
+			if l_new_paths.append(l_path):
+				Toolbox.print_append_error()
 
 		l_path = l_file.get_line()
 
@@ -71,8 +71,8 @@ func _set_recent_projects() -> void:
 	l_file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
 
 	for l_new_path: String in l_new_paths:
-		@warning_ignore("return_value_discarded")
-		l_file.store_line(l_new_path)
+		if !l_file.store_line(l_new_path):
+			printerr("Error storing line for recent_projects!\n", get_stack())
 
 	l_file.close()
 
@@ -83,8 +83,8 @@ func _on_delete_recent_project(a_hbox: HBoxContainer, a_path: String) -> void:
 
 	l_file.close()
 	l_file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	@warning_ignore("return_value_discarded")
-	l_file.store_string(l_context)
+	if !l_file.store_string(l_context):
+		printerr("Error storing String for recent_projects!\n", get_stack())
 	a_hbox.queue_free()
 
 
@@ -134,17 +134,12 @@ func _on_discord_server_button_pressed() -> void:
 
 
 func _on_open_project_button_pressed() -> void:
-	var l_dialog: FileDialog = FileDialog.new()
+	var l_dialog: FileDialog = Toolbox.get_file_dialog(
+			tr("Open project"),
+			FileDialog.FILE_MODE_OPEN_FILE,
+			["*%s;GoZen project files" % Project.EXTENSION])
 
-	l_dialog.force_native = true
-	l_dialog.use_native_dialog = true
-	l_dialog.title = tr("Open project")
-	l_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	l_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-	l_dialog.filters = ["*%s;GoZen project files" % Project.EXTENSION]
-
-	@warning_ignore("return_value_discarded")
-	l_dialog.file_selected.connect(open_project)
+	Toolbox.connect_func(l_dialog.file_selected, open_project)
 
 	add_child(l_dialog)
 	l_dialog.popup_centered()
@@ -187,17 +182,12 @@ func _on_create_new_project_button_pressed() -> void:
 		
 
 func _on_project_path_button_pressed() -> void:
-	var l_dialog: FileDialog = FileDialog.new()
+	var l_dialog: FileDialog = Toolbox.get_file_dialog(
+			tr("Select project path"),
+			FileDialog.FILE_MODE_SAVE_FILE,
+			["*%s;GoZen project files" % Project.EXTENSION])
 
-	l_dialog.force_native = true
-	l_dialog.use_native_dialog = true
-	l_dialog.title = tr("Select project path")
-	l_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	l_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
-	l_dialog.filters = ["*%s;GoZen project files" % Project.EXTENSION]
-
-	@warning_ignore("return_value_discarded")
-	l_dialog.file_selected.connect(open_project)
+	Toolbox.connect_func(l_dialog.file_selected, open_project)
 
 	add_child(l_dialog)
 	l_dialog.popup_centered()

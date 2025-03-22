@@ -39,11 +39,9 @@ func _ready() -> void:
 	instance = self
 	main_control.set_drag_forwarding(Callable(), _main_control_can_drop_data, _main_control_drop_data)
 
-	@warning_ignore_start("return_value_discarded")
-	Editor.frame_changed.connect(move_playhead)
-	mouse_exited.connect(func() -> void: preview.visible = false)
-	Project.project_ready.connect(_on_project_loaded)
-
+	Toolbox.connect_func(Editor.frame_changed, move_playhead)
+	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
+	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 
 func _on_project_loaded() -> void:
@@ -290,7 +288,6 @@ func _can_move_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
 
 		if l_button.get_child_count() >= 3:
 			l_new_button.add_child(l_button.get_child(2).duplicate()) # Wave Texture rect
-			@warning_ignore("unsafe_property_access")
 
 		l_main_control.add_child(l_new_button)
 

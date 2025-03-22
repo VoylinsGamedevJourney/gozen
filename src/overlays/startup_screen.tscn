@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_jk13q"]
 [ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.png" id="3_jdwvk"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_wb8ll"]
-[ext_resource type="Texture2D" uid="uid://dkrjloft61kvq" path="res://assets/icons/add.png" id="4_wb8ll"]
+[ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="5_wb8ll"]
 [ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.png" id="5_x2wpv"]
 [ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.png" id="6_donii"]
 [ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.png" id="7_5plxg"]
@@ -89,11 +89,10 @@ vertical_alignment = 2
 [node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 0
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -132,7 +131,7 @@ expand_icon = true
 [node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
 text = "Create new project"
-icon = ExtResource("4_wb8ll")
+icon = ExtResource("5_wb8ll")
 flat = true
 alignment = 0
 expand_icon = true
@@ -194,6 +193,7 @@ alignment = 0
 expand_icon = true
 
 [node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
