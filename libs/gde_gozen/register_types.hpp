@@ -7,6 +7,7 @@
 #include <godot_cpp/core/class_db.hpp>
 
 #include "video.hpp"
+#include "video_meta.hpp"
 #include "audio.hpp"
 #include "renderer.hpp"
 
