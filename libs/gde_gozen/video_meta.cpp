@@ -1,16 +1,15 @@
-#include "video.hpp"
+#include "video_meta.hpp"
 
 
-bool Video::open(String a_path) {
-	if (loaded)
-		return _log_err("Already open");
 
+bool VideoMeta::load_meta(String a_path) {
 	const AVCodec *av_codec_video;
-	Vector2i l_resolution = Vector2i(0, 0);
+
+	path = a_path.utf8();
 
 	// Allocate video file context
 	av_format_ctx = avformat_alloc_context();
-	if (!av_format_ctx || avformat_open_input(&av_format_ctx, a_path.utf8(), NULL, NULL)) {
+	if (!av_format_ctx || avformat_open_input(&av_format_ctx, path.c_str(), NULL, NULL)) {
 		close();
 		return _log_err("Couldn't open video");
 	}
@@ -26,8 +25,20 @@ bool Video::open(String a_path) {
 			continue;
 		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_VIDEO) {
 			av_stream_video = av_format_ctx->streams[i];
-			l_resolution.x = av_codec_params->width;
-			l_resolution.y = av_codec_params->height;
+			resolution.x = av_codec_params->width;
+			resolution.y = av_codec_params->height;
+			color_profile = av_codec_params->color_primaries;
+
+			AVDictionaryEntry *l_rotate_tag = av_dict_get(av_stream_video->metadata, "rotate", nullptr, 0);
+			rotation = l_rotate_tag ? atoi(l_rotate_tag->value) : 0;
+			if (rotation == 0) { // Check modern rotation detecting
+				for (int i = 0; i < av_stream_video->codecpar->nb_coded_side_data; ++i) {
+					const AVPacketSideData *side_data = &av_stream_video->codecpar->coded_side_data[i];
+
+					if (side_data->type == AV_PKT_DATA_DISPLAYMATRIX && side_data->size == sizeof(int32_t) * 9)
+						rotation = av_display_rotation_get(reinterpret_cast<const int32_t *>(side_data->data));
+				}
+			}
 
 			break;
 		}
@@ -48,7 +59,7 @@ bool Video::open(String a_path) {
 		close();
 		return _log_err("Couldn't alloc codec");
 	}
-	
+
 	// Copying parameters
 	if (avcodec_parameters_to_context(av_codec_ctx_video, av_stream_video->codecpar)) {
 		close();
@@ -65,7 +76,9 @@ bool Video::open(String a_path) {
 
 	float l_aspect_ratio = av_q2d(av_stream_video->codecpar->sample_aspect_ratio);
 	if (l_aspect_ratio > 1.0)
-		l_resolution.x = static_cast<int>(std::round(l_resolution.x * l_aspect_ratio));
+		resolution.x = static_cast<int>(std::round(resolution.x * l_aspect_ratio));
+
+	pixel_format = av_get_pix_fmt_name(av_codec_ctx_video->pix_fmt);
 
 	if (av_stream_video->start_time != AV_NOPTS_VALUE)
 		start_time_video = (int64_t)(av_stream_video->start_time * stream_time_base_video);
@@ -96,38 +109,49 @@ bool Video::open(String a_path) {
 		close();
 		return false;
 	}
+	
+	// Checking for interlacing and what type of interlacing
+	if (av_frame->flags & AV_FRAME_FLAG_INTERLACED)
+		interlaced = av_frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST ? 1 : 2;
+
+	// Checking color range
+	full_color_range = av_frame->color_range == AVCOL_RANGE_JPEG;
 
 	// Getting frame rate
-	double l_framerate = av_q2d(av_guess_frame_rate(av_format_ctx, av_stream_video, av_frame));
-	if (l_framerate <= 0) {
+	framerate = av_q2d(av_guess_frame_rate(av_format_ctx, av_stream_video, av_frame));
+	if (framerate <= 0) {
 		close();
 		return _log_err("Invalid framerate");
 	}
 
 	// Setting variables
-	average_frame_duration = 10000000.0 / l_framerate;								// eg. 1 sec / 25 fps = 400.000 ticks (40ms)
+	average_frame_duration = 10000000.0 / framerate;								// eg. 1 sec / 25 fps = 400.000 ticks (40ms)
 	stream_time_base_video = av_q2d(av_stream_video->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks
 
 	// Preparing the data array's
-	y_data.resize(av_frame->linesize[0] * l_resolution.y);
+	y_data.resize(av_frame->linesize[0] * resolution.y);
 
 	if (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P) {
-		u_data.resize(av_frame->linesize[1] * (l_resolution.y / 2));
-		v_data.resize(av_frame->linesize[2] * (l_resolution.y / 2));
+		u_data.resize(av_frame->linesize[1] * (resolution.y / 2));
+		v_data.resize(av_frame->linesize[2] * (resolution.y / 2));
+
+		padding = av_frame->linesize[0] - resolution.x;
 	} else {
 		_log("Enabling SWS due to foreign format");
 		using_sws = true;
 
 		sws_ctx = sws_getContext(
-						l_resolution.x, l_resolution.y, av_codec_ctx_video->pix_fmt,
-						l_resolution.x, l_resolution.y, AV_PIX_FMT_YUV420P,
+						resolution.x, resolution.y, av_codec_ctx_video->pix_fmt,
+						resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
 						SWS_BICUBIC, NULL, NULL, NULL);
 
 		av_sws_frame = av_frame_alloc();
 		sws_scale_frame(sws_ctx, av_sws_frame, av_frame);
 
-		u_data.resize(av_sws_frame->linesize[1] * (l_resolution.y / 2));
-		v_data.resize(av_sws_frame->linesize[2] * (l_resolution.y / 2));
+		u_data.resize(av_sws_frame->linesize[1] * (resolution.y / 2));
+		v_data.resize(av_sws_frame->linesize[2] * (resolution.y / 2));
+		padding = av_sws_frame->linesize[0] - resolution.x;
+
 		av_frame_unref(av_sws_frame);
 	}
 
@@ -151,24 +175,24 @@ bool Video::open(String a_path) {
 		av_stream_video->duration = duration;
 	}
 
+	frame_count = (static_cast<double>(duration) / static_cast<double>(AV_TIME_BASE)) * framerate;
+
 	if (av_packet)
 		av_packet_unref(av_packet);
 	if (av_frame)
 		av_frame_unref(av_frame);
 
-	loaded = true;
 	response = OK;
 
+	close();
 	return OK;
 }
 
-void Video::close() {
-	loaded = false;
-
+void VideoMeta::close() {
 	if (av_frame)
 		av_frame_free(&av_frame);
 	if (av_sws_frame)
-		av_frame_free(&av_sws_frame);
+		av_frame_free(&av_frame);
 	if (av_packet)
 		av_packet_free(&av_packet);
 
@@ -187,86 +211,7 @@ void Video::close() {
 	av_format_ctx = nullptr;
 }
 
-bool Video::seek_frame(int a_frame_nr) {
-	if (!loaded)
-		return _log_err("Not open");
-
-	// Video seeking
-	if ((response = _seek_frame(a_frame_nr)) < 0)
-		return _log_err("Couldn't seek");
-	
-	while (true) {
-		if ((response = FFmpeg::get_frame(av_format_ctx, av_codec_ctx_video, av_stream_video->index, av_frame, av_packet))) {
-			if (response == AVERROR_EOF) {
-				_log_err("End of file reached! Going back 1 frame!");
-
-				if ((response = _seek_frame(a_frame_nr--)) < 0)
-					return _log_err("Couldn't seek");
-
-				continue;
-			}
-			FFmpeg::print_av_error("Problem happened getting frame in seek_frame! ", response);
-			response = 1;
-			break;
-		}
-
-		// Get frame pts
-		current_pts = av_frame->best_effort_timestamp == AV_NOPTS_VALUE ? av_frame->pts : av_frame->best_effort_timestamp;
-		if (current_pts == AV_NOPTS_VALUE)
-			continue;
-
-		// Skip to actual requested frame
-		if ((int64_t)(current_pts * stream_time_base_video) / 10000 >=
-			frame_timestamp / 10000) {
-			_copy_frame_data();
-			break;
-		}
-	}
-
-	av_frame_unref(av_frame);
-	av_packet_unref(av_packet);
-
-	return true;
-}
-
-bool Video::next_frame(bool a_skip) {
-	if (!loaded)
-		return false;
-
-	FFmpeg::get_frame(av_format_ctx, av_codec_ctx_video, av_stream_video->index, av_frame, av_packet);
-
-	if (!a_skip)
-		_copy_frame_data();
-
-	av_frame_unref(av_frame);
-	av_packet_unref(av_packet);
-	
-	return true;
-}
-
-void Video::_copy_frame_data() {
-	if (using_sws) {
-		sws_scale_frame(sws_ctx, av_sws_frame, av_frame);
-
-		if (av_sws_frame->data[0] == nullptr) {
-			_log_err("Frame is empty!");
-			return;
-		}
-
-		memcpy(y_data.ptrw(), av_sws_frame->data[0], y_data.size());
-		memcpy(u_data.ptrw(), av_sws_frame->data[1], u_data.size());
-		memcpy(v_data.ptrw(), av_sws_frame->data[2], v_data.size());
-
-		av_frame_unref(av_sws_frame);
-		return;
-	}
-
-	memcpy(y_data.ptrw(), av_frame->data[0], y_data.size());
-	memcpy(u_data.ptrw(), av_frame->data[1], u_data.size());
-	memcpy(v_data.ptrw(), av_frame->data[2], v_data.size());
-}
-
-int Video::_seek_frame(int a_frame_nr) {
+int VideoMeta::_seek_frame(int a_frame_nr) {
 	avcodec_flush_buffers(av_codec_ctx_video);
 
 	frame_timestamp = (int64_t)(a_frame_nr * average_frame_duration);

@@ -66,6 +66,8 @@ func get_thumb(a_file_id: int) -> Texture:
 			printerr("No thumb for Audio files yet!")
 			return preload("uid://cs5gcg8kix42x")
 		File.TYPE.VIDEO:
+			# TODO: Can only do this after implementing the new video playback
+			# system because the way of getting the frame data will change.
 			printerr("No thumb for Video files yet!")
 			return preload("uid://dpg11eiuwgv38")
 		_: # File.TYPE.TEXT
