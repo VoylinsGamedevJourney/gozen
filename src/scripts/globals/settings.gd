@@ -9,7 +9,7 @@ var data: SettingsData = SettingsData.new()
 
 
 func _ready() -> void:
-	if data.load_data(PATH):
+	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
 		printerr("Something went wrong loading settings!")
 	apply_theme()
 	

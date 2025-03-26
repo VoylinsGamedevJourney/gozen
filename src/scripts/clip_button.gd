@@ -93,6 +93,9 @@ func _on_gui_input(a_event: InputEvent) -> void:
 	if a_event is InputEventMouseButton:
 		var l_event: InputEventMouseButton = a_event
 
+		if l_event.pressed:
+			get_viewport().set_input_as_handled()
+
 		if l_event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
 			return
 #		if !(l_event as InputEventWithModifiers).alt_pressed and l_event.is_pressed():
@@ -213,11 +216,11 @@ func _on_commit_resize() -> void:
 
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
 			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x)))
-	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.set_frame))
+	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
 	InputManager.undo_redo.add_do_method(_update_wave)
 
 	InputManager.undo_redo.add_undo_method(_set_resize_data.bind(clip_data.start_frame, clip_data.duration))
-	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.set_frame))
+	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
 	InputManager.undo_redo.add_undo_method(_update_wave)
 
 	InputManager.undo_redo.commit_action()
@@ -230,9 +233,8 @@ func _set_resize_data(a_new_start: int, a_new_duration: int) -> void:
 	position.x = a_new_start * Timeline.get_zoom()
 	size.x = a_new_duration * Timeline.get_zoom()
 
-	if !Project.get_track_data(clip_data.track_id).erase(clip_data.start_frame):
-		printerr("Could not erase from tracks!")
-	Project.get_track_data(clip_data.track_id)[a_new_start] = name.to_int()
+	Project.erase_track_entry(clip_data.track_id, clip_data.start_frame)
+	Project.set_track_data(clip_data.track_id, a_new_start, name.to_int())
 
 	clip_data.start_frame = a_new_start
 	clip_data.duration = a_new_duration
@@ -256,7 +258,7 @@ func _cut_clip(a_playhead: int, a_clip_data: ClipData) -> void:
 	size.x = a_clip_data.duration * Timeline.get_zoom()
 
 	Project.set_clip(l_new_clip.clip_id, l_new_clip)
-	Project.get_track_data(l_new_clip.track_id)[l_new_clip.start_frame] = l_new_clip.clip_id
+	Project.set_track_data(l_new_clip.track_id, l_new_clip.start_frame, l_new_clip.clip_id)
 
 	Timeline.instance.add_clip(l_new_clip)
 

@@ -89,7 +89,6 @@ func get_thumb(a_file_id: int) -> Texture:
 	if l_file != null:
 		l_file.close()
 	l_file = FileAccess.open(THUMB_INFO_PATH, FileAccess.WRITE)
-	print(THUMB_INFO_PATH)
 	l_data[l_path] = int(l_thumb_path.split('/')[-1])
 
 	if !l_file.store_var(l_data):

@@ -63,7 +63,7 @@ func open(a_project_path: String) -> void:
 	if Editor.loaded_clips.resize(get_track_count()):
 		Toolbox.print_resize_error()
 
-	for i: int in Project.get_file_ids():
+	for i: int in get_file_ids():
 		load_file_data(i)
 
 	_update_recent_projects(a_project_path)
@@ -87,7 +87,7 @@ func delete_file(a_id: int) -> void:
 	# TODO: We should also remove the actual clips from the timeline.
 	for l_clip: ClipData in data.clips.values():
 		if l_clip.file_id == a_id:
-			if data.clips.erase(l_clip.clip_id):
+			if !data.clips.erase(l_clip.clip_id):
 				Toolbox.print_erase_error()
 
 	file_data[a_id].queue_free()
@@ -114,7 +114,7 @@ func get_files() -> Dictionary[int, File]:
 	return data.files
 
 
-func get_file_ids() -> PackedInt32Array:
+func get_file_ids() -> PackedInt64Array:
 	return data.files.keys()
 
 
@@ -150,6 +150,15 @@ func get_timeline_end() -> int:
 func set_timeline_end(a_value: int) -> void:
 	data.timeline_end = a_value
 
+
+func set_track_data(a_track_id: int, a_key: int, a_value: int) -> void:
+	data.tracks[a_track_id][a_key] = a_value
+
+
+func erase_track_entry(a_track_id: int, a_key: int) -> void:
+	if !data.tracks[a_track_id].erase(a_key):
+		printerr("Could not erase ", a_key, " from track ", a_track_id, "!")
+	
 
 func get_track_count() -> int:
 	return data.tracks.size()
@@ -194,8 +203,8 @@ func set_clip(a_id: int, a_clip: ClipData) -> void:
 
 
 func erase_clip(a_clip_id: int) -> void:
-	if data.tracks[data.clips[a_clip_id].track_id].erase(data.clips[a_clip_id].start_frame):
+	if !data.tracks[data.clips[a_clip_id].track_id].erase(data.clips[a_clip_id].start_frame):
 		Toolbox.print_erase_error()
-	if data.clips.erase(a_clip_id):
+	if !data.clips.erase(a_clip_id):
 		Toolbox.print_erase_error()
 

@@ -23,3 +23,6 @@ func _input(a_event: InputEvent) -> void:
 		if !undo_redo.redo():
 			printerr("Couldn't redo!")
 
+	if a_event.is_action_pressed("breakpoint", true):
+		breakpoint
+
