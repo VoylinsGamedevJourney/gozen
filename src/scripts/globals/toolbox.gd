@@ -64,7 +64,7 @@ func open_url(a_url: String) -> void:
 	OS.shell_open(a_url)
 
 
-func get_unique_id(a_keys: PackedInt32Array) -> int:
+func get_unique_id(a_keys: PackedInt64Array) -> int:
 	var l_id: int = abs(randi())
 
 	randomize()

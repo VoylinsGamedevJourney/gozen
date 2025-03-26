@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scripts/editor_ui.gd" id="1_wlowb"]
 [ext_resource type="Script" uid="uid://bamx5qt7kpubd" path="res://scripts/files_list.gd" id="2_vjobr"]
-[ext_resource type="Texture2D" uid="uid://m56pkes40vci" path="res://assets/icons/image_file.png" id="3_t27w5"]
+[ext_resource type="Texture2D" uid="uid://m56pkes40vci" path="res://assets/icons/image_file.svg" id="3_t27w5"]
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scripts/timeline.gd" id="3_wrb8p"]
-[ext_resource type="Texture2D" uid="uid://r4adu60uf6kj" path="res://assets/icons/audio_file.png" id="4_k4288"]
-[ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/video_file.png" id="5_8yjtx"]
-[ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/text_file.png" id="6_3btpq"]
+[ext_resource type="Texture2D" uid="uid://r4adu60uf6kj" path="res://assets/icons/audio_file.svg" id="4_k4288"]
+[ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/video_file.svg" id="5_8yjtx"]
+[ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/text_file.svg" id="6_3btpq"]
 [ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="7_t27w5"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wrb8p"]
@@ -225,25 +225,30 @@ size_flags_vertical = 3
 
 [node name="TimelineScroll" type="ScrollContainer" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel"]
 layout_mode = 2
+scroll_horizontal_custom_step = 16.0
+scroll_vertical_custom_step = 8.0
 
 [node name="TimelineControl" type="Control" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Lines" type="VBoxContainer" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-modulate = Color(1, 1, 1, 0.392157)
-layout_mode = 2
-offset_right = 1920.0
-offset_bottom = 176.0
-
 [node name="Clips" type="Control" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
 layout_mode = 2
 anchors_preset = 0
+mouse_filter = 1
 
 [node name="Preview" type="Control" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
 layout_mode = 2
 anchors_preset = 0
+
+[node name="Lines" type="VBoxContainer" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
+modulate = Color(1, 1, 1, 0.470588)
+layout_mode = 2
+offset_right = 1920.0
+offset_bottom = 176.0
+mouse_filter = 2
+theme_override_constants/separation = 0
 
 [node name="Playhead" type="Panel" parent="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
 layout_mode = 2
@@ -254,3 +259,5 @@ theme_override_styles/panel = SubResource("StyleBoxLine_wrb8p")
 [connection signal="pressed" from="VSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox/VideoFilesButton" to="VSplitContainer/HSplit/FilePanel" method="_on_video_files_button_pressed"]
 [connection signal="pressed" from="VSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox/TextFilesButton" to="VSplitContainer/HSplit/FilePanel" method="_on_text_files_button_pressed"]
 [connection signal="pressed" from="VSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox/AddFilesButton" to="VSplitContainer/HSplit/FilePanel" method="_on_add_files_button_pressed"]
+[connection signal="gui_input" from="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll" to="VSplitContainer/Timeline" method="_on_timeline_scroll_gui_input"]
+[connection signal="gui_input" from="VSplitContainer/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl" to="VSplitContainer/Timeline" method="_on_main_gui_input"]

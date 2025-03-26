@@ -131,7 +131,7 @@ func _get_next_clip(a_frame_nr: int, a_track: int) -> int:
 		else:
 			break
 
-	if _check_clip_end(a_frame_nr, l_clip_id):
+	if l_clip_id != -1 and _check_clip_end(a_frame_nr, l_clip_id):
 		return l_clip_id
 
 	return -1
@@ -219,11 +219,13 @@ func render_audio() -> PackedByteArray:
 			
 # Video stuff  ----------------------------------------------------------------
 func set_view(a_id: int) -> void: # a_id is track id
-	print("set_view ", a_id)
+	pass
+	#print("set_view ", a_id)
 
 
 func update_view(a_id: int, a_frame_nr: int) -> void:
-	print("update_view ", a_id, " ", a_frame_nr)
+	pass
+	#print("update_view ", a_id, " ", a_frame_nr)
 
 
 ## Update display/audio and continue if within clip bounds.

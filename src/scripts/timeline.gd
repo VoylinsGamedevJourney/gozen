@@ -8,10 +8,11 @@ signal zoom_changed
 const TRACK_HEIGHT: int = 30
 const LINE_HEIGHT: int = 4
 
-const STYLE_BOXES: Dictionary[File.TYPE, StyleBoxFlat] = {
-    File.TYPE.IMAGE: preload("uid://dlxa6tecfxvwa"),
-    File.TYPE.AUDIO: preload("uid://b4hr3qnksucav"),
-    File.TYPE.VIDEO: preload("uid://dvjs7m2ktd528")
+# Normal, Focus
+const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
+    File.TYPE.IMAGE: [preload("uid://dlxa6tecfxvwa"),preload("uid://bwnfn42mtulgg")],
+    File.TYPE.AUDIO: [preload("uid://b4hr3qnksucav"),preload("uid://dxu1itu4lip5q")],
+    File.TYPE.VIDEO: [preload("uid://dvjs7m2ktd528"),preload("uid://wied1chri6pt")]
 }
 
 static var instance: Timeline
@@ -27,6 +28,7 @@ static var instance: Timeline
 var playhead_moving: bool = false
 var selected_clips: Array[int] = [] # An array of all selected clip id's
 
+var track_overlays: Array[ColorRect] = [] # Indicator if a track is (in)visible
 
 var playback_before_moving: bool = false
 var zoom: float = 1.0 : set = _set_zoom # How many pixels 1 frame takes
@@ -53,15 +55,24 @@ func _on_project_loaded() -> void:
 	for l_clip: ClipData in Project.get_clip_ids():
 		add_clip(l_clip)
 
-	lines.add_child(Control.new())
-	lines.add_theme_constant_override("separation", TRACK_HEIGHT)
+
 	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
 
 	for i: int in Project.get_track_count() - 1:
+		var l_overlay: ColorRect = ColorRect.new()
 		var l_line: HSeparator = HSeparator.new()
 
+		l_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		l_overlay.color = Color.DARK_GRAY
+		l_overlay.self_modulate = Color("ffffff00")
+		l_overlay.custom_minimum_size.y = TRACK_HEIGHT
+		track_overlays.append(l_overlay)
+
+		l_line.mouse_filter = Control.MOUSE_FILTER_PASS
 		l_line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
 		l_line.size.y = LINE_HEIGHT
+
+		lines.add_child(l_overlay)
 		lines.add_child(l_line)
 
 
@@ -73,6 +84,7 @@ func _process(_delta: float) -> void:
 		var l_new_frame: int = clampi(
 				floori(main_control.get_local_mouse_position().x / zoom),
 				0, Project.get_timeline_end())
+
 		if l_new_frame != Editor.frame_nr:
 			Editor.set_frame(l_new_frame)
 
@@ -186,13 +198,13 @@ func _can_drop_new_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
 		_offset = l_region.x - l_frame
 
 		if l_frame + _offset < l_region.y or l_region.y == -1:
-			l_panel.position.x += _offset
+			l_panel.position.x += _offset * zoom
 			return true
 	elif l_end >= l_region.y:
 		_offset = l_region.y - l_end
 
 		if l_frame - _offset > l_region.x and l_frame + _offset >= 0:
-			l_panel.position.x += _offset
+			l_panel.position.x += _offset * zoom
 			return true
 
 	preview.remove_child(l_panel)
@@ -221,6 +233,17 @@ func _can_move_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
 	var l_region: Vector2i = get_drop_region(
 			l_first_new_track, l_first_new_frame, a_draggable.ignores)
 
+	if l_region.x == l_first_clip.end_frame and l_region.y == -1:
+		# This means the drop is at the original clip's location
+		_offset = 0
+		return true
+
+	# Checking if the clip actually fits in the space or not
+	var l_region_duration: int = l_region.x + l_region.y
+
+	if l_region_duration > 0 and l_region_duration < l_first_clip.duration:
+		return false
+	
 	# Calculate possible offsets
 	var l_offset_range: Vector2i = Vector2i.ZERO
 
@@ -281,7 +304,7 @@ func _can_move_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
 		l_new_button.position = l_button.position
 		l_new_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		l_new_button.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
-		l_new_button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		l_new_button.add_theme_stylebox_override("normal", preload("uid://dx2v44643hfvy"))
 		# NOTE: Modulate alpha does not work when texture has alpha layers :/
 		#		l_new_button.modulate = Color(255,255,255,130)
 		l_new_button.modulate = Color(240,240,240)
@@ -360,14 +383,12 @@ func _move_clips(a_data: Draggable, a_track_diff: int, a_frame_diff: int) -> voi
 		var l_track: int = l_data.track_id + a_track_diff
 		var l_frame: int = l_data.start_frame + a_frame_diff
 
-		# Change data in tracks
-		if !Project.get_track_data(l_data.track_id).erase(l_data.start_frame):
-			printerr("Could not erase ", a_data.ids[i], " from tracks!")
+		Project.erase_track_entry(l_data.track_id, l_data.start_frame)
 
 		# Change clip data
 		l_data.track_id = l_track
 		l_data.start_frame = l_frame
-		Project.get_track_data(l_track)[l_frame] = a_data.ids[i]
+		Project.set_track_data(l_track, l_frame, a_data.ids[i])
 
 		# Change clip button position
 		a_data.clip_buttons[i].position = Vector2(
@@ -377,7 +398,7 @@ func _move_clips(a_data: Draggable, a_track_diff: int, a_frame_diff: int) -> voi
 func _add_new_clips(a_draggable: Draggable) -> void:
 	for l_clip_data: ClipData in a_draggable.new_clips:
 		Project.set_clip(l_clip_data.clip_id, l_clip_data)
-		Project.get_track_data(l_clip_data.track_id)[l_clip_data.start_frame] = l_clip_data.clip_id
+		Project.set_track_data(l_clip_data.track_id, l_clip_data.start_frame, l_clip_data.clip_id)
 
 		add_clip(l_clip_data)
 
@@ -391,21 +412,23 @@ func _remove_new_clips(a_draggable: Draggable) -> void:
 
 func add_clip(a_clip_data: ClipData) -> void:
 	var l_button: Button = Button.new()
-	var l_style_box: StyleBoxFlat = STYLE_BOXES[Project.get_file(a_clip_data.file_id).type]
 
 	l_button.clip_text = true
 	l_button.name = str(a_clip_data.clip_id)
 	l_button.text = " " + Project.get_file(a_clip_data.file_id).nickname
 	l_button.size.x = zoom * a_clip_data.duration
+	l_button.size.y = TRACK_HEIGHT
 	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	l_button.position.x = zoom * a_clip_data.start_frame
 	l_button.position.y = a_clip_data.track_id * (LINE_HEIGHT + TRACK_HEIGHT)
 	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	l_button.add_theme_stylebox_override("normal", l_style_box)
-	l_button.add_theme_stylebox_override("focus", l_style_box)
-	l_button.add_theme_stylebox_override("hover", l_style_box)
-	l_button.add_theme_stylebox_override("pressed", l_style_box)
+	@warning_ignore_start("unsafe_call_argument")
+	l_button.add_theme_stylebox_override("normal", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][0])
+	l_button.add_theme_stylebox_override("focus", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][1])
+	l_button.add_theme_stylebox_override("hover", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][0])
+	l_button.add_theme_stylebox_override("pressed", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][0])
+	@warning_ignore_restore("unsafe_call_argument")
 
 	l_button.set_script(load("uid://cvdbyqqvy1rl1"))
 
@@ -414,15 +437,6 @@ func add_clip(a_clip_data: ClipData) -> void:
 
 func remove_clip(a_clip_id: int) -> void:
 	clips.get_node(str(a_clip_id)).queue_free()
-
-
-func show_preview(a_track_id: int, a_frame_nr: int, a_duration: int) -> bool:
-	preview.position.y = a_track_id * (TRACK_HEIGHT + LINE_HEIGHT)
-	preview.position.x = zoom * a_frame_nr
-	preview.size.x = zoom * a_duration
-	preview.visible = true
-
-	return true
 
 
 func get_drop_region(a_track: int, a_frame: int, a_ignores: Array[Vector2i]) -> Vector2i:
@@ -506,7 +520,7 @@ func delete_clip(a_clip_data: ClipData) -> void:
 
 func undelete_clip(a_clip_data: ClipData) -> void:
 	Project.set_clip(a_clip_data.clip_id, a_clip_data)
-	Project.get_track_data(a_clip_data.track_id)[a_clip_data.start_frame] = a_clip_data.clip_id
+	Project.set_track_data(a_clip_data.track_id, a_clip_data.start_frame, a_clip_data.clip_id)
 
 	add_clip(a_clip_data)
 	update_end()
@@ -531,4 +545,18 @@ static func get_frame_pos(a_pos: float) -> float:
 static func get_track_pos(a_pos: float) -> float:
 	return a_pos * (TRACK_HEIGHT + LINE_HEIGHT)
 
+
+func _on_timeline_scroll_gui_input(a_event: InputEvent) -> void:
+	if a_event.is_action("scroll_up", true):
+		scroll_main.scroll_vertical -= int(scroll_main.scroll_vertical_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+	elif a_event.is_action("scroll_down", true):
+		scroll_main.scroll_vertical += int(scroll_main.scroll_vertical_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+	elif a_event.is_action("scroll_left", true):
+		scroll_main.scroll_horizontal -= int(scroll_main.scroll_horizontal_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+	elif a_event.is_action("scroll_right", true):
+		scroll_main.scroll_horizontal += int(scroll_main.scroll_horizontal_custom_step * zoom)
+		get_viewport().set_input_as_handled()
 
