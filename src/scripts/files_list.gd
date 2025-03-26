@@ -270,7 +270,7 @@ func _on_image_pasted() -> void:
 	l_file.temp_file = TempFile.new()
 	l_file.temp_file.image_data = ImageTexture.create_from_image(l_image)
 
-	Project.get_files()[l_file.id] = l_file
+	Project.set_file(l_file.id, l_file)
 	Project.load_file_data(l_file.id)
 	_add_file_to_list(l_file.id)
 
@@ -357,7 +357,7 @@ func add_file(a_file_path: String) -> int:
 		if l_existing.path == a_file_path:
 			print("File already loaded with path '%s'!" % a_file_path)
 
-	Project.get_files()[l_file.id] = l_file
+	Project.set_file(l_file.id, l_file)
 	Project.load_file_data(l_file.id)
 
 	return l_file.id

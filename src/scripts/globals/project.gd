@@ -109,6 +109,10 @@ func set_project_path(a_project_path: String) -> void:
 func get_project_path() -> String:
 	return data.project_path
 
+ 
+func set_file(a_file_id: int, a_file: File) -> void:
+	data.files[a_file_id] = a_file
+
 
 func get_files() -> Dictionary[int, File]:
 	return data.files
