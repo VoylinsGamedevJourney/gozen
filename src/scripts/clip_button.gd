@@ -11,10 +11,13 @@ var is_resizing_right: bool = false
 
 var max_left_resize: int = 0 # Minimum frame
 var max_right_resize: int = 0 # Maximum frame
-var start_frame: int = 0
-var duration: int = 0
+var _original_start_frame: int = 0
+var _original_duration: int = 0
+var _original_begin: int = 0
 
-var update_wave: bool = false
+var _visual_start_frame: int = 0
+var _visual_duration: int = 0
+
 var wave: bool = false
 
 
@@ -22,45 +25,89 @@ var wave: bool = false
 func _ready() -> void:
 	clip_data = Project.get_clip(name.to_int())
 
+	_original_start_frame = clip_data.start_frame
+	_original_duration = clip_data.duration
+	_original_begin = clip_data.begin
+
+	_visual_start_frame = _original_start_frame
+	_visual_duration = _original_duration
+
 	_add_resize_button(PRESET_LEFT_WIDE, true)
 	_add_resize_button(PRESET_RIGHT_WIDE, false)
 
 	Toolbox.connect_func(button_down, _on_button_down)
 	Toolbox.connect_func(gui_input, _on_gui_input)
-	Toolbox.connect_func(Timeline.instance.zoom_changed, _update_wave)
+	Toolbox.connect_func(Timeline.instance.zoom_changed, queue_redraw)
 
 	if Project.get_file(clip_data.file_id).type in Editor.AUDIO_TYPES:
 		wave = true
-		_update_wave()
+		Toolbox.connect_func(Project.get_file_data(clip_data.file_id).update_wave, queue_redraw)
 
 
 func _process(_delta: float) -> void:
 	if is_resizing_left or is_resizing_right:
-		var l_new_frame: int = Timeline.get_frame_id(
-				parent.get_local_mouse_position().x)
+		var l_mouse_x: float = parent.get_local_mouse_position().x
+		var l_zoom: float = Timeline.get_zoom()
+		var l_potential_frame: int = floori(l_mouse_x / l_zoom)
 
-		# Making certain we stay in bounds
-		l_new_frame = max(l_new_frame, max_left_resize)
-		if max_right_resize != -1:
-			l_new_frame = min(l_new_frame, max_right_resize)
+		if is_resizing_left:
+			l_potential_frame = clamp(l_potential_frame, max_left_resize, max_right_resize)
+			_visual_start_frame = l_potential_frame
+			_visual_duration = _original_start_frame + _original_duration - _visual_start_frame
+		else:
+			l_potential_frame = clamp(l_potential_frame, max_left_resize, max_right_resize)
+			_visual_start_frame = _original_start_frame
+			_visual_duration = l_potential_frame - _visual_start_frame
 
-		# Updating the clip
-		if is_resizing_right:
-			size.x = Timeline.get_frame_pos(l_new_frame - start_frame)
-		elif is_resizing_left:
-			position.x = Timeline.get_frame_pos(l_new_frame)
-			size.x = Timeline.get_frame_pos(duration - (l_new_frame - start_frame))
+		position.x = Timeline.get_frame_pos(_visual_start_frame)
+		size.x = Timeline.get_frame_pos(_visual_duration)
 
-		_update_wave()
+		queue_redraw()
 
 
 func _draw() -> void:
-	if wave and update_wave:
-		update_wave = false
-		# TODO: Make wave from audio clip data
+	if not wave:
+		return
+
+	var l_full_wave_data: PackedFloat32Array = Project.get_file_data(clip_data.file_id).audio_wave_data
+
+	if l_full_wave_data.is_empty():
+		return
+
+	var l_display_duration: int
+	var l_display_begin_offset: int
+
+	if is_resizing_left or is_resizing_right:
+		l_display_duration = _visual_duration
+		l_display_begin_offset = _original_begin + (_visual_start_frame - _original_start_frame)
+	else:
+		l_display_duration = clip_data.duration
+		l_display_begin_offset = clip_data.begin
+
+	if l_display_duration <= 0 or size.x <= 0:
+		return
+
+	var l_block_width: float = size.x / float(l_display_duration)
+	var l_panel_height: float = size.y
+
+	for i: int in l_display_duration:
+		var wave_data_index: int = l_display_begin_offset + i
+
+		if wave_data_index >= 0 and wave_data_index < l_full_wave_data.size():
+			var l_normalized_height: float = l_full_wave_data[wave_data_index]
+			var l_block_height: float = l_normalized_height * l_panel_height
+
+			var l_block_rect: Rect2 = Rect2(
+					i * l_block_width, (l_panel_height - l_block_height) / 2.0,
+					l_block_width, l_block_height)
+
+			draw_rect(l_block_rect, Color.LIGHT_GRAY)
 
 
 func _on_button_down() -> void:
+	if is_resizing_left or is_resizing_right:
+		return
+
 	is_dragging = true
 	get_viewport().set_input_as_handled()	
 
@@ -77,10 +124,10 @@ func _input(a_event: InputEvent) -> void:
 		InputManager.undo_redo.create_action("Deleting clip on timeline")
 
 		InputManager.undo_redo.add_do_method(_cut_clip.bind(Editor.frame_nr, clip_data))
-		InputManager.undo_redo.add_do_method(_update_wave)
+		InputManager.undo_redo.add_do_method(queue_redraw)
 
 		InputManager.undo_redo.add_undo_method(_uncut_clip.bind(Editor.frame_nr, clip_data))
-		InputManager.undo_redo.add_undo_method(_update_wave)
+		InputManager.undo_redo.add_undo_method(queue_redraw)
 
 		InputManager.undo_redo.commit_action()
 
@@ -165,9 +212,15 @@ func _add_resize_button(a_preset: LayoutPreset, a_left: bool) -> void:
 func _on_resize_engaged(a_left: bool) -> void:
 	var l_previous: int = -1
 
-	start_frame = clip_data.start_frame
-	duration = clip_data.duration
+	_original_start_frame = clip_data.start_frame
+	_original_duration = clip_data.duration
+	_original_begin = clip_data.begin
+
+	_visual_start_frame = _original_start_frame
+	_visual_duration = _original_duration
+
 	max_left_resize = 0
+	max_right_resize = -1
 
 	# First calculate spacing left of handle to other clips
 	if a_left:
@@ -217,11 +270,11 @@ func _on_commit_resize() -> void:
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
 			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x)))
 	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
-	InputManager.undo_redo.add_do_method(_update_wave)
+	InputManager.undo_redo.add_do_method(queue_redraw)
 
 	InputManager.undo_redo.add_undo_method(_set_resize_data.bind(clip_data.start_frame, clip_data.duration))
 	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
-	InputManager.undo_redo.add_undo_method(_update_wave)
+	InputManager.undo_redo.add_undo_method(queue_redraw)
 
 	InputManager.undo_redo.commit_action()
 
@@ -271,9 +324,4 @@ func _uncut_clip(a_playhead: int, a_current_clip: ClipData) -> void:
 	size.x = Timeline.get_frame_pos(a_current_clip.duration)
 
 	Timeline.instance.delete_clip(l_split_clip)
-
-
-func _update_wave() -> void:
-	update_wave = true
-	_draw()
 

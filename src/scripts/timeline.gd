@@ -75,7 +75,6 @@ func _on_project_loaded() -> void:
 		lines.add_child(l_overlay)
 		lines.add_child(l_line)
 
-
 	update_end()
 
 
@@ -91,10 +90,10 @@ func _process(_delta: float) -> void:
 
 func _input(a_event: InputEvent) -> void:
 	if a_event.is_action_pressed("timeline_zoom_in", false, true):
-		zoom += 0.06 if zoom < 1 else 0.2
+		zoom *= 1.15
 		get_viewport().set_input_as_handled()
 	elif a_event.is_action_pressed("timeline_zoom_out", false, true):
-		zoom -= 0.06 if zoom < 1 else 0.2
+		zoom /= 1.15
 		get_viewport().set_input_as_handled()
 
 
@@ -119,7 +118,7 @@ func _on_main_gui_input(a_event: InputEvent) -> void:
 func _set_zoom(a_new_zoom: float) -> void:
 	var l_prev_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
 
-	zoom = clampf(a_new_zoom, 0.2, 10.0)
+	zoom = clampf(a_new_zoom, 0.01, 20.0)
 	move_playhead(Editor.frame_nr)
 
 	# Get all clips, update their size and position
@@ -128,7 +127,6 @@ func _set_zoom(a_new_zoom: float) -> void:
 
 		l_clip_button.position.x = l_data.start_frame * zoom
 		l_clip_button.size.x = l_data.duration * zoom
-		l_clip_button.call("_update_wave")
 
 	update_end()
 	var l_now_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
@@ -507,6 +505,7 @@ func update_end() -> void:
 			l_new_end = l_value
 	
 	main_control.custom_minimum_size.x = (l_new_end + 1080) * zoom
+	lines.custom_minimum_size.x = (l_new_end + 1080) * zoom
 	Project.set_timeline_end(l_new_end)
 
 

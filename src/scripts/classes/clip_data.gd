@@ -15,7 +15,7 @@ var track_id: int
 var start_frame: int # Timeline begin position of clip
 var end_frame: int: get = get_end_frame
 var duration: int
-var begin: int = 0 # Only for video files
+var begin: int = 0 # Only for video and audio files
 
 
 
