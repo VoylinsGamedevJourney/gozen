@@ -63,15 +63,15 @@ func get_thumb(a_file_id: int) -> Texture:
 	match Project.get_file(a_file_id).type:
 		File.TYPE.IMAGE: l_image = Image.load_from_file(l_path)
 		File.TYPE.AUDIO:
-			printerr("No thumb for Audio files yet!")
+			push_warning("No thumb for Audio files yet!")
 			return preload("uid://cs5gcg8kix42x")
 		File.TYPE.VIDEO:
 			# TODO: Can only do this after implementing the new video playback
 			# system because the way of getting the frame data will change.
-			printerr("No thumb for Video files yet!")
+			push_warning("No thumb for Video files yet!")
 			return preload("uid://dpg11eiuwgv38")
 		_: # File.TYPE.TEXT
-			printerr("No thumb for Text files yet!")
+			push_warning("No thumb for Text files yet!")
 			return preload("uid://i70cmg7lfsl4")
 	
 	# Resizing the image with correct aspect ratio.

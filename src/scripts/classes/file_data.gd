@@ -2,6 +2,13 @@ class_name FileData
 extends Node
 
 
+signal update_wave
+
+
+# For the audio 16 bits/2 (stereo)
+const MAX_16_BIT_VALUE: float = 32767.0
+
+
 var id: int
 
 
@@ -11,6 +18,8 @@ var audio: AudioStreamWAV = null
 var image: ImageTexture = null
 
 var current_frame: PackedInt64Array = []
+
+var audio_wave_data: PackedFloat32Array = []
 
 var padding: int = 0
 var resolution: Vector2i = Vector2i.ZERO
@@ -69,7 +78,7 @@ func init_data(a_id: int) -> void:
 
 	if l_file.type in Editor.AUDIO_TYPES:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-				_load_audio_data.bind(l_file.path))))
+				_load_audio_data.bind(l_file.path)), create_wave))
 
 
 func _load_audio_data(a_file_path: String) -> void:
@@ -92,4 +101,51 @@ func _load_video_data(a_file_path: String) -> void:
 	if current_frame.append(0):
 		printerr("Couldn't append to current frame!")
 	Threader.mutex.unlock()
+
+
+func create_wave() -> void:
+	Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
+		_create_wave), update_wave.emit))
+
+
+func _create_wave() -> void:
+	var l_data: PackedByteArray = audio.data
+	audio_wave_data.clear()
+
+	if l_data.is_empty():
+		push_warning("Audio data is empty!")
+		return
+
+	var l_bytes_size: float = 4 # 16 bit * stereo
+	var l_total_frames: int = int(l_data.size() / l_bytes_size)
+	var l_frames_per_block: int = floori(44100.0 / Project.get_framerate())
+	var l_total_blocks: int = ceili(float(l_total_frames) / l_frames_per_block)
+	var l_current_frame_index: int = 0
+
+	if audio_wave_data.resize(l_total_blocks):
+		Toolbox.print_resize_error()
+
+	for i: int in l_total_blocks:
+		var l_max_abs_amplitude: float = 0.0
+		var l_start_frame: int = l_current_frame_index
+		var l_end_frame: int = min(l_start_frame + l_frames_per_block, l_total_frames)
+
+		for l_frame_index: int in range(l_start_frame, l_end_frame):
+			var l_byte_offset: int = int(l_frame_index * l_bytes_size)
+			var l_frame_max_abs_amplitude: float = 0.0
+
+			if l_byte_offset + l_bytes_size > l_data.size():
+				push_warning("Attempted to read past end of audio data at frame %d." % l_frame_index)
+				break
+
+			var l_left_sample: int = l_data.decode_s16(l_byte_offset)
+			var l_right_sample: int = l_data.decode_s16(l_byte_offset + 2)
+
+			l_frame_max_abs_amplitude = max(abs(float(l_left_sample)), abs(float(l_right_sample)))
+
+			if l_frame_max_abs_amplitude > l_max_abs_amplitude:
+				l_max_abs_amplitude = l_frame_max_abs_amplitude
+
+		audio_wave_data[i] = clamp(l_max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
+		l_current_frame_index = l_end_frame
 

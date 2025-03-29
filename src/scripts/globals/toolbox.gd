@@ -36,9 +36,8 @@ func connect_func(a_signal: Signal, a_callable: Callable) -> void:
 	# This function is needed to handle the error in a good way for when
 	# connecting a callable to a signal wasn't successful.
 	if a_signal.connect(a_callable):
-		printerr("Error connecting to signal '%s' to '%s'!" % [
+		push_error("Error connecting to signal '%s' to '%s'!" % [
 				a_signal.get_name(), a_callable.get_method()])
-		printerr(get_stack())
 
 	
 func print_resize_error() -> void:
