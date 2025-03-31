@@ -16,30 +16,31 @@ var temp_file: TempFile = null # Only filled when file is a temp file
 
 
 
-static func create(a_path: String) -> File:
-	var l_file: File = File.new()
-	var l_ext: String = a_path.get_extension().to_lower()
+static func create(file_path: String) -> File:
+	var file: File = File.new()
+	var ext: String = file_path.get_extension().to_lower()
 
-	if l_ext in ProjectSettings.get_setting_with_override("extensions/image"):
-		l_file.type = TYPE.IMAGE
-	elif l_ext in ProjectSettings.get_setting_with_override("extensions/audio"):
-		l_file.type = TYPE.AUDIO
-	elif l_ext in ProjectSettings.get_setting_with_override("extensions/video"):
-		l_file.type = TYPE.VIDEO
-	elif a_path == "temp://image":
-		l_file.type = TYPE.IMAGE
-	elif a_path == "temp://text":
-		l_file.type = TYPE.TEXT
+	if ext in ProjectSettings.get_setting_with_override("extensions/image"):
+		file.type = TYPE.IMAGE
+	elif ext in ProjectSettings.get_setting_with_override("extensions/audio"):
+		file.type = TYPE.AUDIO
+	elif ext in ProjectSettings.get_setting_with_override("extensions/video"):
+		file.type = TYPE.VIDEO
+	elif file_path == "temp://image":
+		file.type = TYPE.IMAGE
+	elif file_path == "temp://text":
+		file.type = TYPE.TEXT
 	else:
-		printerr("Invalid file: ", a_path)
+		printerr("Invalid file: ", file_path)
 		return null
 
-	l_file.id = Toolbox.get_unique_id(Project.get_file_ids())
-	l_file.path = a_path
+	file.id = Toolbox.get_unique_id(Project.get_file_ids())
+	file.path = file_path
 
-	if a_path.contains("temp://"):
-		l_file.nickname = "Image %s" % l_file.id
+	if file_path.contains("temp://"):
+		file.nickname = "Image %s" % file.id
 	else:
-		l_file.nickname = a_path.get_file()
+		file.nickname = file_path.get_file()
 
-	return l_file
+	return file
+

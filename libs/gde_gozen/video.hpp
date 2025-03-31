@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <cmath>
-#include <algorithm>
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/control.hpp>
@@ -54,18 +53,18 @@ private:
 	PackedByteArray v_data;
 
 	// Private functions
-	static enum AVPixelFormat _get_format(AVCodecContext *a_av_ctx, const enum AVPixelFormat *a_pix_fmt);
+	static enum AVPixelFormat _get_format(AVCodecContext *av_ctx, const enum AVPixelFormat *pix_fmt);
 	
 	void _copy_frame_data();
 	void _clean_frame_data();
 
-	int _seek_frame(int a_frame_nr);
+	int _seek_frame(int frame_nr);
 
-	static inline void _log(String a_message) {
-		UtilityFunctions::print("Video: ", a_message, ".");
+	static inline void _log(String message) {
+		UtilityFunctions::print("Video: ", message, ".");
 	}
-	static inline bool _log_err(String a_message) {
-		UtilityFunctions::printerr("Video: ", a_message, "!");
+	static inline bool _log_err(String message) {
+		UtilityFunctions::printerr("Video: ", message, "!");
 		return false;
 	}
 
@@ -73,13 +72,13 @@ public:
 	Video() { av_log_set_level(AV_LOG_VERBOSE); }
 	~Video() { close(); }
 
-	bool open(String a_path = "");
+	bool open(String video_path = "");
 	void close();
 
 	inline bool is_open() { return loaded; }
 
-	bool seek_frame(int a_frame_nr);
-	bool next_frame(bool a_skip = false);
+	bool seek_frame(int frame_nr);
+	bool next_frame(bool skip_frame = false);
 
 	inline PackedByteArray get_y_data() { return y_data; }
 	inline PackedByteArray get_u_data() { return u_data; }
@@ -87,16 +86,6 @@ public:
 
 
 protected:
-	static inline void _bind_methods() {
-		ClassDB::bind_method(D_METHOD("open", "a_path"), &Video::open);
-
-		ClassDB::bind_method(D_METHOD("is_open"), &Video::is_open);
-
-		ClassDB::bind_method(D_METHOD("seek_frame", "a_frame_nr"), &Video::seek_frame);
-		ClassDB::bind_method(D_METHOD("next_frame", "a_skip"), &Video::next_frame);
-
-		ClassDB::bind_method(D_METHOD("get_y_data"), &Video::get_y_data);
-		ClassDB::bind_method(D_METHOD("get_u_data"), &Video::get_u_data);
-		ClassDB::bind_method(D_METHOD("get_v_data"), &Video::get_v_data);
-	}
+	static void _bind_methods();
 };
+

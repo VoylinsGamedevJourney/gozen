@@ -43,8 +43,8 @@ func _on_reset_button_pressed() -> void:
 
 
 func _on_save_button_pressed() -> void:
-	for l_change: Callable in changes.values():
-		l_change.call()
+	for change: Callable in changes.values():
+		change.call()
 	
 	Settings.save()
 	self.queue_free()
@@ -54,13 +54,11 @@ func _on_cancel_button_pressed() -> void:
 	self.queue_free()
 
 
-func _on_theme_option_button_item_selected(a_index: int) -> void:
-	changes["theme"] = Settings.set_theme.bind(a_index)
+func _on_theme_option_button_item_selected(index: int) -> void:
+	changes["theme"] = Settings.set_theme.bind(index)
 	save_info_label.visible = true
 
 
-func _on_image_duration_spin_box_value_changed(a_value: float) -> void:
-	changes["image_duration"] = Settings.set_image_duration.bind(a_value)
-
-
+func _on_image_duration_spin_box_value_changed(value: float) -> void:
+	changes["image_duration"] = Settings.set_image_duration.bind(value)
 

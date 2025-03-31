@@ -25,6 +25,6 @@ var start_mouse_pos: Vector2
 
 
 # Give it the index of the array of ids/clip_buttons/new_position ...
-func get_clip_data(a_index: int) -> ClipData:
-	return Project.get_clip(ids[a_index])
+func get_clip_data(index: int) -> ClipData:
+	return Project.get_clip(ids[index])
 

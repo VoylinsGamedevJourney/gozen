@@ -49,280 +49,280 @@ func _ready() -> void:
 func _on_project_loaded() -> void:
 	print("Loading timeline ...")
 
-	for l_child: Node in clips.get_children():
-		l_child.queue_free()
+	for child: Node in clips.get_children():
+		child.queue_free()
 
-	for l_clip: ClipData in Project.get_clip_ids():
-		add_clip(l_clip)
+	for clip: ClipData in Project.get_clip_ids():
+		add_clip(clip)
 
 
 	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
 
 	for i: int in Project.get_track_count() - 1:
-		var l_overlay: ColorRect = ColorRect.new()
-		var l_line: HSeparator = HSeparator.new()
+		var overlay: ColorRect = ColorRect.new()
+		var line: HSeparator = HSeparator.new()
 
-		l_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		l_overlay.color = Color.DARK_GRAY
-		l_overlay.self_modulate = Color("ffffff00")
-		l_overlay.custom_minimum_size.y = TRACK_HEIGHT
-		track_overlays.append(l_overlay)
+		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		overlay.color = Color.DARK_GRAY
+		overlay.self_modulate = Color("ffffff00")
+		overlay.custom_minimum_size.y = TRACK_HEIGHT
+		track_overlays.append(overlay)
 
-		l_line.mouse_filter = Control.MOUSE_FILTER_PASS
-		l_line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
-		l_line.size.y = LINE_HEIGHT
+		line.mouse_filter = Control.MOUSE_FILTER_PASS
+		line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
+		line.size.y = LINE_HEIGHT
 
-		lines.add_child(l_overlay)
-		lines.add_child(l_line)
+		lines.add_child(overlay)
+		lines.add_child(line)
 
 	update_end()
 
 
 func _process(_delta: float) -> void:
 	if playhead_moving:
-		var l_new_frame: int = clampi(
+		var new_frame: int = clampi(
 				floori(main_control.get_local_mouse_position().x / zoom),
 				0, Project.get_timeline_end())
 
-		if l_new_frame != Editor.frame_nr:
-			Editor.set_frame(l_new_frame)
+		if new_frame != Editor.frame_nr:
+			Editor.set_frame(new_frame)
 
 
-func _input(a_event: InputEvent) -> void:
-	if a_event.is_action_pressed("timeline_zoom_in", false, true):
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("timeline_zoom_in", false, true):
 		zoom *= 1.15
 		get_viewport().set_input_as_handled()
-	elif a_event.is_action_pressed("timeline_zoom_out", false, true):
+	elif event.is_action_pressed("timeline_zoom_out", false, true):
 		zoom /= 1.15
 		get_viewport().set_input_as_handled()
 
 
-func _on_main_gui_input(a_event: InputEvent) -> void:
-	if a_event is not InputEventMouseButton:
+func _on_main_gui_input(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
 		return
 
-	if (a_event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
-		if a_event.is_pressed():
+	if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+		if event.is_pressed():
 			playhead_moving = true
 			playback_before_moving = Editor.is_playing
 
 			if playback_before_moving:
 				Editor._on_play_pressed()
-		elif a_event.is_released():
+		elif event.is_released():
 			playhead_moving = false
 
 			if playback_before_moving:
 				Editor._on_play_pressed()
 
 
-func _set_zoom(a_new_zoom: float) -> void:
-	var l_prev_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
+func _set_zoom(new_zoom: float) -> void:
+	var prev_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
 
-	zoom = clampf(a_new_zoom, 0.01, 20.0)
+	zoom = clampf(new_zoom, 0.01, 20.0)
 	move_playhead(Editor.frame_nr)
 
 	# Get all clips, update their size and position
-	for l_clip_button: Button in clips.get_children():
-		var l_data: ClipData = Project.get_clip(l_clip_button.name.to_int())
+	for clip_button: Button in clips.get_children():
+		var data: ClipData = Project.get_clip(clip_button.name.to_int())
 
-		l_clip_button.position.x = l_data.start_frame * zoom
-		l_clip_button.size.x = l_data.duration * zoom
+		clip_button.position.x = data.start_frame * zoom
+		clip_button.size.x = data.duration * zoom
 
 	update_end()
-	var l_now_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
+	var now_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
 
-	scroll_main.scroll_horizontal += round((l_prev_mouse - l_now_mouse) * zoom)
+	scroll_main.scroll_horizontal += round((prev_mouse - now_mouse) * zoom)
 	zoom_changed.emit()
 
 
-func move_playhead(a_frame_nr: int) -> void:
-	playhead.position.x = zoom * a_frame_nr
+func move_playhead(frame_nr: int) -> void:
+	playhead.position.x = zoom * frame_nr
 
 
-func _main_control_can_drop_data(_pos: Vector2, a_data: Variant) -> bool:
-	var l_data: Draggable = a_data
-	var l_pos: Vector2 = main_control.get_local_mouse_position()
+func _main_control_can_drop_data(_pos: Vector2, data: Variant) -> bool:
+	var draggable: Draggable = data
+	var pos: Vector2 = main_control.get_local_mouse_position()
 
 	# Clear previous preview just in case
-	for l_child: Node in preview.get_children():
-		l_child.queue_free()
+	for child: Node in preview.get_children():
+		child.queue_free()
 
-	if l_data.files:
-		preview.visible = _can_drop_new_clips(l_pos, l_data)
+	if draggable.files:
+		preview.visible = _can_drop_new_clips(pos, draggable)
 	else:
-		preview.visible = _can_move_clips(l_pos, l_data)
+		preview.visible = _can_move_clips(pos, draggable)
 
 	# Set previews for new clip positions
 	return preview.visible
 
 
-func _can_drop_new_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
-	var l_track: int = clampi(get_track_id(a_pos.y), 0, Project.get_track_count() - 1)
-	var l_frame: int = maxi(int(a_pos.x / zoom) - a_draggable.offset, 0)
-	var l_region: Vector2i = get_drop_region(l_track, l_frame, a_draggable.ignores)
+func _can_drop_new_clips(pos: Vector2, draggable: Draggable) -> bool:
+	var track: int = clampi(get_track_id(pos.y), 0, Project.get_track_count() - 1)
+	var frame: int = maxi(int(pos.x / zoom) - draggable.offset, 0)
+	var region: Vector2i = get_drop_region(track, frame, draggable.ignores)
 
-	var l_end: int = l_frame
-	var l_duration: int = 0
+	var end: int = frame
+	var duration: int = 0
 	_offset = 0
 
 	# Calculate total duration of all clips together
-	for l_file_id: int in a_draggable.ids:
-		l_duration += Project.get_file(l_file_id).duration
-	l_end = l_frame + l_duration
+	for file_id: int in draggable.ids:
+		duration += Project.get_file(file_id).duration
+	end = frame + duration
 
 	# Create a preview
-	var l_panel: PanelContainer = PanelContainer.new()
+	var panel: PanelContainer = PanelContainer.new()
 
-	l_panel.size = Vector2(get_frame_pos(l_duration), TRACK_HEIGHT)
-	l_panel.position = Vector2(get_frame_pos(l_frame), get_track_pos(l_track))
-	l_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	l_panel.add_theme_stylebox_override("panel", preload("uid://dx2v44643hfvy"))
+	panel.size = Vector2(get_frame_pos(duration), TRACK_HEIGHT)
+	panel.position = Vector2(get_frame_pos(frame), get_track_pos(track))
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", preload("uid://dx2v44643hfvy"))
 
-	preview.add_child(l_panel)
+	preview.add_child(panel)
 
 	# Check if highest
-	if l_region.x < l_frame and l_region.y == -1:
+	if region.x < frame and region.y == -1:
 		return true
 
 	# Check if clips fits
-	if l_region.x < l_frame and l_end < l_region.y:
+	if region.x < frame and end < region.y:
 		return true
-	if l_duration > l_region.y - l_region.x:
-		if l_region.x != -1 and l_region.y != -1:
+	if duration > region.y - region.x:
+		if region.x != -1 and region.y != -1:
 			return false
 
 	# Check if overlapping works
-	if l_frame <= l_region.x:
-		_offset = l_region.x - l_frame
+	if frame <= region.x:
+		_offset = region.x - frame
 
-		if l_frame + _offset < l_region.y or l_region.y == -1:
-			l_panel.position.x += _offset * zoom
+		if frame + _offset < region.y or region.y == -1:
+			panel.position.x += _offset * zoom
 			return true
-	elif l_end >= l_region.y:
-		_offset = l_region.y - l_end
+	elif end >= region.y:
+		_offset = region.y - end
 
-		if l_frame - _offset > l_region.x and l_frame + _offset >= 0:
-			l_panel.position.x += _offset * zoom
+		if frame - _offset > region.x and frame + _offset >= 0:
+			panel.position.x += _offset * zoom
 			return true
 
-	preview.remove_child(l_panel)
+	preview.remove_child(panel)
 	return false
 
 
-func _can_move_clips(a_pos: Vector2, a_draggable: Draggable) -> bool:
-	var l_first_clip: ClipData = a_draggable.get_clip_data(0)
-	var l_track: int = clampi(get_track_id(a_pos.y), 0, Project.get_track_count() - 1)
-	var l_frame: int = maxi(int(a_pos.x / zoom) - a_draggable.offset, 0)
+func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
+	var first_clip: ClipData = draggable.get_clip_data(0)
+	var track: int = clampi(get_track_id(pos.y), 0, Project.get_track_count() - 1)
+	var frame: int = maxi(int(pos.x / zoom) - draggable.offset, 0)
 
 	# Calculate differences of track + frame based on first clip
-	a_draggable.differences.y = l_track - l_first_clip.track_id
-	a_draggable.differences.x = l_frame - l_first_clip.start_frame
+	draggable.differences.y = track - first_clip.track_id
+	draggable.differences.x = frame - first_clip.start_frame
 
 	# Initial boundary check (Track only)
-	for l_id: int in a_draggable.ids:
+	for id: int in draggable.ids:
 		if !Toolbox.in_range(
-				Project.get_clip(l_id).track_id + a_draggable.differences.y as int,
+				Project.get_clip(id).track_id + draggable.differences.y as int,
 				0, Project.get_track_count()):
 			return false
 
 	# Initial region for first clip
-	var l_first_new_track: int = l_first_clip.track_id + a_draggable.differences.y
-	var l_first_new_frame: int = l_first_clip.start_frame + a_draggable.differences.x
-	var l_region: Vector2i = get_drop_region(
-			l_first_new_track, l_first_new_frame, a_draggable.ignores)
+	var first_new_track: int = first_clip.track_id + draggable.differences.y
+	var first_new_frame: int = first_clip.start_frame + draggable.differences.x
+	var region: Vector2i = get_drop_region(
+			first_new_track, first_new_frame, draggable.ignores)
 
-	if l_region.x == l_first_clip.end_frame and l_region.y == -1:
+	if region.x == first_clip.end_frame and region.y == -1:
 		# This means the drop is at the original clip's location
 		_offset = 0
 		return true
 
 	# Checking if the clip actually fits in the space or not
-	var l_region_duration: int = l_region.x + l_region.y
+	var region_duration: int = region.x + region.y
 
-	if l_region_duration > 0 and l_region_duration < l_first_clip.duration:
+	if region_duration > 0 and region_duration < first_clip.duration:
 		return false
 	
 	# Calculate possible offsets
-	var l_offset_range: Vector2i = Vector2i.ZERO
+	var offset_range: Vector2i = Vector2i.ZERO
 
-	if l_region.x != -1 and l_first_new_frame <= l_region.x:
-		l_offset_range.x = l_region.x - l_first_new_frame
-	if l_region.y != -1 and l_first_new_frame + l_first_clip.duration >= l_region.y:
-		l_offset_range.y = l_region.y - (l_first_new_frame + l_first_clip.duration)
+	if region.x != -1 and first_new_frame <= region.x:
+		offset_range.x = region.x - first_new_frame
+	if region.y != -1 and first_new_frame + first_clip.duration >= region.y:
+		offset_range.y = region.y - (first_new_frame + first_clip.duration)
 
 	# Check all other clips
-	for i: int in range(1, a_draggable.ids.size()):
-		var l_clip: ClipData = a_draggable.get_clip_data(i)
-		var l_new_track: int = l_clip.track_id + a_draggable.differences.y
-		var l_new_frame: int = l_clip.start_frame + a_draggable.differences.x
-		var l_clip_offsets: Vector2i = Vector2i.ZERO
-		var l_clip_region: Vector2i = get_drop_region(
-				l_new_track, l_new_frame, a_draggable.ignores)
+	for i: int in range(1, draggable.ids.size()):
+		var clip: ClipData = draggable.get_clip_data(i)
+		var new_track: int = clip.track_id + draggable.differences.y
+		var new_frame: int = clip.start_frame + draggable.differences.x
+		var clip_offsets: Vector2i = Vector2i.ZERO
+		var clip_region: Vector2i = get_drop_region(
+				new_track, new_frame, draggable.ignores)
 
 		# Calculate possible offsets for clip
-		if l_clip_region.x != -1 and l_new_frame <= l_clip_region.x:
-			l_clip_offsets.x = l_clip_region.x - l_new_frame
-		if l_clip_region.y != -1 and l_new_frame + l_clip.duration >= l_clip_region.y:
-			l_clip_offsets.y = l_clip_region.y - (l_new_frame + l_clip.duration)
+		if clip_region.x != -1 and new_frame <= clip_region.x:
+			clip_offsets.x = clip_region.x - new_frame
+		if clip_region.y != -1 and new_frame + clip.duration >= clip_region.y:
+			clip_offsets.y = clip_region.y - (new_frame + clip.duration)
 
 		# Update offset range based on clip offsets
-		l_offset_range.x = maxi(l_offset_range.x, l_clip_offsets.x)
-		l_offset_range.y = mini(l_offset_range.y, l_clip_offsets.y)
+		offset_range.x = maxi(offset_range.x, clip_offsets.x)
+		offset_range.y = mini(offset_range.y, clip_offsets.y)
 
-		if l_offset_range.x > l_offset_range.y:
+		if offset_range.x > offset_range.y:
 			return false
 
 	# Set final offset
-	if l_offset_range.x > 0:
-		_offset = l_offset_range.x
-	elif l_offset_range.y < 0:
-		_offset = l_offset_range.y
+	if offset_range.x > 0:
+		_offset = offset_range.x
+	elif offset_range.y < 0:
+		_offset = offset_range.y
 	else:
 		_offset = 0
 
 	# 0 frame check
-	if l_first_new_frame + _offset < 0:
+	if first_new_frame + _offset < 0:
 		return false
 
 	# Create preview
-	for l_node: Node in preview.get_children():
-		preview.remove_child(l_node)
+	for node: Node in preview.get_children():
+		preview.remove_child(node)
 
-	var l_main_control: Control = Control.new()
+	var control: Control = Control.new()
 
-	l_main_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	l_main_control.position.x = get_frame_pos(a_draggable.differences.x + _offset)
-	l_main_control.position.y = get_track_pos(a_draggable.differences.y)
-	preview.add_child(l_main_control)
+	control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	control.position.x = get_frame_pos(draggable.differences.x + _offset)
+	control.position.y = get_track_pos(draggable.differences.y)
+	preview.add_child(control)
 
-	for l_button: Button in a_draggable.clip_buttons:
-		var l_new_button: Button = Button.new()
+	for button: Button in draggable.clip_buttons:
+		var new_button: Button = Button.new()
 
-		l_new_button.size = l_button.size
-		l_new_button.position = l_button.position
-		l_new_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		l_new_button.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
-		l_new_button.add_theme_stylebox_override("normal", preload("uid://dx2v44643hfvy"))
+		new_button.size = button.size
+		new_button.position = button.position
+		new_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		new_button.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
+		new_button.add_theme_stylebox_override("normal", preload("uid://dx2v44643hfvy"))
 		# NOTE: Modulate alpha does not work when texture has alpha layers :/
-		#		l_new_button.modulate = Color(255,255,255,130)
-		l_new_button.modulate = Color(240,240,240)
+		#		new_button.modulate = Color(255,255,255,130)
+		new_button.modulate = Color(240,240,240)
 
-		if l_button.get_child_count() >= 3:
-			l_new_button.add_child(l_button.get_child(2).duplicate()) # Wave Texture rect
+		if button.get_child_count() >= 3:
+			new_button.add_child(button.get_child(2).duplicate()) # Wave Texture rect
 
-		l_main_control.add_child(l_new_button)
+		control.add_child(new_button)
 
 	return true
 
 
-func _main_control_drop_data(_pos: Vector2, a_data: Variant) -> void:
-	var l_draggable: Draggable = a_data
+func _main_control_drop_data(_pos: Vector2, data: Variant) -> void:
+	var draggable: Draggable = data
 	preview.visible = false
 
-	if l_draggable.files:
-		_handle_drop_new_clips(l_draggable)
+	if draggable.files:
+		_handle_drop_new_clips(draggable)
 	else:
-		_handle_drop_existing_clips(l_draggable)
+		_handle_drop_existing_clips(draggable)
 
 	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
 	InputManager.undo_redo.add_do_method(update_end)
@@ -333,158 +333,158 @@ func _main_control_drop_data(_pos: Vector2, a_data: Variant) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func _handle_drop_new_clips(l_draggable: Draggable) -> void:
+func _handle_drop_new_clips(draggable: Draggable) -> void:
 	InputManager.undo_redo.create_action("Adding new clips to timeline")
 
-	var l_pos: Vector2 = main_control.get_local_mouse_position()
-	var l_ids: Array = []
-	var l_track: int = get_track_id(l_pos.y)
-	var l_start_frame: int = maxi(
-			get_frame_id(l_pos.x) - l_draggable.offset + _offset, 0)
+	var pos: Vector2 = main_control.get_local_mouse_position()
+	var ids: Array = []
+	var track: int = get_track_id(pos.y)
+	var start_frame: int = maxi(
+			get_frame_id(pos.x) - draggable.offset + _offset, 0)
 
-	for l_id: int in l_draggable.ids:
-		var l_new_clip_data: ClipData = ClipData.new()
+	for id: int in draggable.ids:
+		var new_clip_data: ClipData = ClipData.new()
 
-		l_new_clip_data.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
-		l_new_clip_data.file_id = l_id
-		l_new_clip_data.start_frame = l_start_frame
-		l_new_clip_data.track_id = l_track
-		l_new_clip_data.duration = Project.get_file(l_id).duration
+		new_clip_data.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
+		new_clip_data.file_id = id
+		new_clip_data.start_frame = start_frame
+		new_clip_data.track_id = track
+		new_clip_data.duration = Project.get_file(id).duration
 
-		l_ids.append(l_new_clip_data.clip_id)
-		l_draggable.new_clips.append(l_new_clip_data)
-		l_start_frame += l_new_clip_data.duration
+		ids.append(new_clip_data.clip_id)
+		draggable.new_clips.append(new_clip_data)
+		start_frame += new_clip_data.duration
 
-	l_draggable.ids = l_ids
+	draggable.ids = ids
 
-	InputManager.undo_redo.add_do_method(_add_new_clips.bind(l_draggable))
-	InputManager.undo_redo.add_undo_method(_remove_new_clips.bind(l_draggable))
+	InputManager.undo_redo.add_do_method(_add_new_clips.bind(draggable))
+	InputManager.undo_redo.add_undo_method(_remove_new_clips.bind(draggable))
 
 
-func _handle_drop_existing_clips(l_draggable: Draggable) -> void:
+func _handle_drop_existing_clips(draggable: Draggable) -> void:
 	InputManager.undo_redo.create_action("Moving clips on timeline")
 
 	InputManager.undo_redo.add_do_method(_move_clips.bind(
-			l_draggable,
-			l_draggable.differences.y,
-			l_draggable.differences.x + _offset))
+			draggable,
+			draggable.differences.y,
+			draggable.differences.x + _offset))
 	InputManager.undo_redo.add_undo_method(_move_clips.bind(
-			l_draggable,
-			-l_draggable.differences.y,
-			-(l_draggable.differences.x + _offset)))
+			draggable,
+			-draggable.differences.y,
+			-(draggable.differences.x + _offset)))
 
 
-func _move_clips(a_data: Draggable, a_track_diff: int, a_frame_diff: int) -> void:
+func _move_clips(draggable: Draggable, track_diff: int, frame_diff: int) -> void:
 	# Go over each clip to update its data
-	for i: int in a_data.ids.size():
-		var l_data: ClipData = Project.get_clip(a_data.ids[i])
-		var l_track: int = l_data.track_id + a_track_diff
-		var l_frame: int = l_data.start_frame + a_frame_diff
+	for i: int in draggable.ids.size():
+		var data: ClipData = Project.get_clip(draggable.ids[i])
+		var track: int = data.track_id + track_diff
+		var frame: int = data.start_frame + frame_diff
 
-		Project.erase_track_entry(l_data.track_id, l_data.start_frame)
+		Project.erase_track_entry(data.track_id, data.start_frame)
 
 		# Change clip data
-		l_data.track_id = l_track
-		l_data.start_frame = l_frame
-		Project.set_track_data(l_track, l_frame, a_data.ids[i])
+		data.track_id = track
+		data.start_frame = frame
+		Project.set_track_data(track, frame, draggable.ids[i])
 
 		# Change clip button position
-		a_data.clip_buttons[i].position = Vector2(
-				get_frame_pos(l_frame), get_track_pos(l_track))
+		draggable.clip_buttons[i].position = Vector2(
+				get_frame_pos(frame), get_track_pos(track))
 
 
-func _add_new_clips(a_draggable: Draggable) -> void:
-	for l_clip_data: ClipData in a_draggable.new_clips:
-		Project.set_clip(l_clip_data.clip_id, l_clip_data)
-		Project.set_track_data(l_clip_data.track_id, l_clip_data.start_frame, l_clip_data.clip_id)
+func _add_new_clips(draggable: Draggable) -> void:
+	for clip_data: ClipData in draggable.new_clips:
+		Project.set_clip(clip_data.clip_id, clip_data)
+		Project.set_track_data(clip_data.track_id, clip_data.start_frame, clip_data.clip_id)
 
-		add_clip(l_clip_data)
-
-
-func _remove_new_clips(a_draggable: Draggable) -> void:
-	for l_clip_data: ClipData in a_draggable.new_clips:
-		var l_id: int = l_clip_data.clip_id
-		Project.erase_clip(l_id)
-		remove_clip(l_id)
+		add_clip(clip_data)
 
 
-func add_clip(a_clip_data: ClipData) -> void:
-	var l_button: Button = Button.new()
+func _remove_new_clips(draggable: Draggable) -> void:
+	for clip_data: ClipData in draggable.new_clips:
+		var id: int = clip_data.clip_id
+		Project.erase_clip(id)
+		remove_clip(id)
 
-	l_button.clip_text = true
-	l_button.name = str(a_clip_data.clip_id)
-	l_button.text = " " + Project.get_file(a_clip_data.file_id).nickname
-	l_button.size.x = zoom * a_clip_data.duration
-	l_button.size.y = TRACK_HEIGHT
-	l_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	l_button.position.x = zoom * a_clip_data.start_frame
-	l_button.position.y = a_clip_data.track_id * (LINE_HEIGHT + TRACK_HEIGHT)
-	l_button.mouse_filter = Control.MOUSE_FILTER_PASS
+
+func add_clip(clip_data: ClipData) -> void:
+	var button: Button = Button.new()
+
+	button.clip_text = true
+	button.name = str(clip_data.clip_id)
+	button.text = " " + Project.get_file(clip_data.file_id).nickname
+	button.size.x = zoom * clip_data.duration
+	button.size.y = TRACK_HEIGHT
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.position.x = zoom * clip_data.start_frame
+	button.position.y = clip_data.track_id * (LINE_HEIGHT + TRACK_HEIGHT)
+	button.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	@warning_ignore_start("unsafe_call_argument")
-	l_button.add_theme_stylebox_override("normal", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][0])
-	l_button.add_theme_stylebox_override("focus", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][1])
-	l_button.add_theme_stylebox_override("hover", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][0])
-	l_button.add_theme_stylebox_override("pressed", STYLE_BOXES[Project.get_file(a_clip_data.file_id).type][0])
+	button.add_theme_stylebox_override("normal", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
+	button.add_theme_stylebox_override("focus", STYLE_BOXES[Project.get_file(clip_data.file_id).type][1])
+	button.add_theme_stylebox_override("hover", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
+	button.add_theme_stylebox_override("pressed", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
 	@warning_ignore_restore("unsafe_call_argument")
 
-	l_button.set_script(load("uid://cvdbyqqvy1rl1"))
+	button.set_script(load("uid://cvdbyqqvy1rl1"))
 
-	clips.add_child(l_button)
-
-
-func remove_clip(a_clip_id: int) -> void:
-	clips.get_node(str(a_clip_id)).queue_free()
+	clips.add_child(button)
 
 
-func get_drop_region(a_track: int, a_frame: int, a_ignores: Array[Vector2i]) -> Vector2i:
+func remove_clip(clip_id: int) -> void:
+	clips.get_node(str(clip_id)).queue_free()
+
+
+func get_drop_region(track: int, frame: int, ignores: Array[Vector2i]) -> Vector2i:
 	# X = lowest, Y = highest
-	var l_region: Vector2i = Vector2i(-1, -1)
-	var l_keys: PackedInt64Array = Project.get_track_keys(a_track)
-	l_keys.sort()
+	var region: Vector2i = Vector2i(-1, -1)
+	var keys: PackedInt64Array = Project.get_track_keys(track)
+	keys.sort()
 
-	for a_track_frame: int in l_keys:
-		if a_track_frame < a_frame and Vector2i(a_track, a_track_frame) not in a_ignores:
-			l_region.x = a_track_frame
-		elif a_track_frame > a_frame and Vector2i(a_track, a_track_frame) not in a_ignores:
-			l_region.y = a_track_frame
+	for track_frame: int in keys:
+		if track_frame < frame and Vector2i(track, track_frame) not in ignores:
+			region.x = track_frame
+		elif track_frame > frame and Vector2i(track, track_frame) not in ignores:
+			region.y = track_frame
 			break
 
 	# Getting the correct end frame
-	if l_region.x != -1:
-		l_region.x = Project.get_clip(Project.get_track_data(a_track)[l_region.x]).end_frame
+	if region.x != -1:
+		region.x = Project.get_clip(Project.get_track_data(track)[region.x]).end_frame
 
-	return l_region
+	return region
 
 
-func get_lowest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2i]) -> int:
-	var l_lowest: int = -1
+func get_lowest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i]) -> int:
+	var lowest: int = -1
 
-	if a_track_id > Project.get_track_count() - 1:
+	if track_id > Project.get_track_count() - 1:
 		return -1
 
-	for i: int in Project.get_track_keys(a_track_id):
-		if i < a_frame_nr:
-			if a_ignore.size() >= 1:
-				if i == a_ignore[0].y and a_track_id == a_ignore[0].x:
+	for i: int in Project.get_track_keys(track_id):
+		if i < frame_nr:
+			if ignore.size() >= 1:
+				if i == ignore[0].y and track_id == ignore[0].x:
 					continue
-			l_lowest = i
-		elif i >= a_frame_nr:
+			lowest = i
+		elif i >= frame_nr:
 			break
 
-	if l_lowest == -1:
+	if lowest == -1:
 		return -1
 
-	var l_clip: ClipData = Project.get_clip(Project.get_track_data(a_track_id)[l_lowest])
-	return l_clip.duration + l_lowest
+	var clip: ClipData = Project.get_clip(Project.get_track_data(track_id)[lowest])
+	return clip.duration + lowest
 
 
-func get_highest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2i]) -> int:
-	for i: int in Project.get_track_keys(a_track_id):
-		# TODO: Change the a_ignore when moving multiple clips
-		if i > a_frame_nr:
-			if a_ignore.size() >= 1:
-				if i == a_ignore[0].y and a_track_id == a_ignore[0].x:
+func get_highest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i]) -> int:
+	for i: int in Project.get_track_keys(track_id):
+		# TODO: Change the ignore when moving multiple clips
+		if i > frame_nr:
+			if ignore.size() >= 1:
+				if i == ignore[0].y and track_id == ignore[0].x:
 					continue
 			return i
 
@@ -492,36 +492,36 @@ func get_highest_frame(a_track_id: int, a_frame_nr: int, a_ignore: Array[Vector2
 
 
 func update_end() -> void:
-	var l_new_end: int = 0
+	var new_end: int = 0
 
-	for l_track: Dictionary[int, int] in Project.get_tracks():
-		if l_track.size() == 0:
+	for track: Dictionary[int, int] in Project.get_tracks():
+		if track.size() == 0:
 			continue
 
-		var l_clip: ClipData = Project.get_clip(l_track[l_track.keys().max()])
-		var l_value: int = l_clip.duration + l_clip.start_frame
+		var clip: ClipData = Project.get_clip(track[track.keys().max()])
+		var value: int = clip.duration + clip.start_frame
 
-		if l_new_end < l_value:
-			l_new_end = l_value
+		if new_end < value:
+			new_end = value
 	
-	main_control.custom_minimum_size.x = (l_new_end + 1080) * zoom
-	lines.custom_minimum_size.x = (l_new_end + 1080) * zoom
-	Project.set_timeline_end(l_new_end)
+	main_control.custom_minimum_size.x = (new_end + 1080) * zoom
+	lines.custom_minimum_size.x = (new_end + 1080) * zoom
+	Project.set_timeline_end(new_end)
 
 
-func delete_clip(a_clip_data: ClipData) -> void:
-	var l_id: int = Project.get_track_data(a_clip_data.track_id)[a_clip_data.start_frame]
+func delete_clip(clip_data: ClipData) -> void:
+	var id: int = Project.get_track_data(clip_data.track_id)[clip_data.start_frame]
 
-	Project.erase_clip(l_id)
-	remove_clip(l_id)
+	Project.erase_clip(id)
+	remove_clip(id)
 	update_end()
 
 
-func undelete_clip(a_clip_data: ClipData) -> void:
-	Project.set_clip(a_clip_data.clip_id, a_clip_data)
-	Project.set_track_data(a_clip_data.track_id, a_clip_data.start_frame, a_clip_data.clip_id)
+func undelete_clip(clip_data: ClipData) -> void:
+	Project.set_clip(clip_data.clip_id, clip_data)
+	Project.set_track_data(clip_data.track_id, clip_data.start_frame, clip_data.clip_id)
 
-	add_clip(a_clip_data)
+	add_clip(clip_data)
 	update_end()
 
 
@@ -529,33 +529,33 @@ static func get_zoom() -> float:
 	return instance.zoom
 
 
-static func get_frame_id(a_pos: float) -> int:
-	return floor(a_pos / get_zoom())
+static func get_frame_id(pos: float) -> int:
+	return floor(pos / get_zoom())
 
 
-static func get_track_id(a_pos: float) -> int:
-	return floor(a_pos / (TRACK_HEIGHT + LINE_HEIGHT))
+static func get_track_id(pos: float) -> int:
+	return floor(pos / (TRACK_HEIGHT + LINE_HEIGHT))
 
 
-static func get_frame_pos(a_pos: float) -> float:
-	return a_pos * get_zoom()
+static func get_frame_pos(pos: float) -> float:
+	return pos * get_zoom()
 
 
-static func get_track_pos(a_pos: float) -> float:
-	return a_pos * (TRACK_HEIGHT + LINE_HEIGHT)
+static func get_track_pos(pos: float) -> float:
+	return pos * (TRACK_HEIGHT + LINE_HEIGHT)
 
 
-func _on_timeline_scroll_gui_input(a_event: InputEvent) -> void:
-	if a_event.is_action("scroll_up", true):
+func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
+	if event.is_action("scroll_up", true):
 		scroll_main.scroll_vertical -= int(scroll_main.scroll_vertical_custom_step * zoom)
 		get_viewport().set_input_as_handled()
-	elif a_event.is_action("scroll_down", true):
+	elif event.is_action("scroll_down", true):
 		scroll_main.scroll_vertical += int(scroll_main.scroll_vertical_custom_step * zoom)
 		get_viewport().set_input_as_handled()
-	elif a_event.is_action("scroll_left", true):
+	elif event.is_action("scroll_left", true):
 		scroll_main.scroll_horizontal -= int(scroll_main.scroll_horizontal_custom_step * zoom)
 		get_viewport().set_input_as_handled()
-	elif a_event.is_action("scroll_right", true):
+	elif event.is_action("scroll_right", true):
 		scroll_main.scroll_horizontal += int(scroll_main.scroll_horizontal_custom_step * zoom)
 		get_viewport().set_input_as_handled()
 

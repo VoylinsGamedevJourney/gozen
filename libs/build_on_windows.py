@@ -9,8 +9,8 @@ import platform as os_platform
 def check_required_programs_wsl():
     print('Checking if required programs are installed for WSL ...')
 
-    l_missing_programs = []
-    l_required_programs = {
+    missing_programs = []
+    required_programs = {
         'gcc': 'build-essential',
         'make': 'build-essential',
         'pkg-config': 'pkg-config',
@@ -21,16 +21,16 @@ def check_required_programs_wsl():
         'yasm': 'yasm'
     }
 
-    for l_program, l_package in l_required_programs.items():
+    for program, package in required_programs.items():
         try:
-            if subprocess.run(['wsl', 'which', l_program], capture_output=True,
+            if subprocess.run(['wsl', 'which', program], capture_output=True,
                               text=True, shell=True).returncode != 0:
-                l_missing_programs.append(l_package)
-        except subprocess.SubprocessError as l_error:
-            print(f'Error checking for {l_program}: {l_error}')
-            l_missing_programs.append(l_package)
+                missing_programs.append(package)
+        except subprocess.SubprocessError as error:
+            print(f'Error checking for {program}: {error}')
+            missing_programs.append(package)
 
-    return len(l_missing_programs) == 0, list(set(l_missing_programs))
+    return len(missing_programs) == 0, list(set(missing_programs))
 
 
 def install_wsl_required_programs():
@@ -78,24 +78,24 @@ def main():
         input('After installation, run this script again.\nPress Enter to exit...')
         sys.exit(1)
 
-    l_programs_installed, l_missing_programs = check_required_programs_wsl()
+    programs_installed, missing_programs = check_required_programs_wsl()
 
-    if not l_programs_installed:
+    if not programs_installed:
         print('Some required programs are missing in WSL:')
 
-        for l_program in l_missing_programs:
-            print(f'\t- {l_program}')
+        for program in missing_programs:
+            print(f'\t- {program}')
 
         install_wsl_required_programs()
 
     try:
         # Navigate to the correct directory in WSL and run the script again.
-        l_wsl_path = subprocess.run(['wsl', 'wslpath', os.getcwd()], capture_output=True, text=True, shell=True).stdout.strip()
-        subprocess.run(['wsl', 'python3', 'build.py'], cwd=l_wsl_path, check=True, shell=True)
+        wsl_path = subprocess.run(['wsl', 'wslpath', os.getcwd()], capture_output=True, text=True, shell=True).stdout.strip()
+        subprocess.run(['wsl', 'python3', 'build.py'], cwd=wsl_path, check=True, shell=True)
 
         print('Build completed successfully!')
-    except subprocess.CalledProcessError as l_error:
-        print(f'Error during build process: {l_error}')
+    except subprocess.CalledProcessError as error:
+        print(f'Error during build process: {error}')
 
         input('Press Enter to exit...')
         sys.exit(1)

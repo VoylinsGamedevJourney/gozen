@@ -23,41 +23,41 @@ func get_end_frame() -> int:
 	return start_frame + duration
 
 
-func load_video_frame(a_nr: int) -> void:
+func load_video_frame(frame_nr: int) -> void:
 	# Changing from global frame nr to clip frame nr
-	var l_file_data: FileData = Project.get_file_data(file_id)
-	var l_video: Video = l_file_data.videos[track_id]
+	var file_data: FileData = Project.get_file_data(file_id)
+	var video: Video = file_data.videos[track_id]
 
-	a_nr = a_nr - start_frame + begin
+	frame_nr = frame_nr - start_frame + begin
 
 	# Check if not reloading same frame
-	if a_nr == l_file_data.current_frame[track_id]:
+	if frame_nr == file_data.current_frame[track_id]:
 		return
 
 	# Check if frame is before current one or after max skip
-	var l_skips: int = a_nr - l_file_data.current_frame[track_id]
+	var skips: int = frame_nr - file_data.current_frame[track_id]
 
-	if a_nr < l_file_data.current_frame[track_id] or l_skips > MAX_FRAME_SKIPS:
-		l_file_data.current_frame[track_id] = a_nr
+	if frame_nr < file_data.current_frame[track_id] or skips > MAX_FRAME_SKIPS:
+		file_data.current_frame[track_id] = frame_nr
 
-		if !l_video.seek_frame(a_nr):
+		if !video.seek_frame(frame_nr):
 			printerr("Couldn't seek frame!")
 
 		return
 
 	# Go through skips and set frame
-	for i: int in l_skips - 1:
-		if !l_video.next_frame(true):
+	for i: int in skips - 1:
+		if !video.next_frame(true):
 			print("Something went wrong skipping next frame!")
 
-	l_file_data.current_frame[track_id] = a_nr
+	file_data.current_frame[track_id] = frame_nr
 
-	if !l_video.next_frame(false):
+	if !video.next_frame(false):
 		print("Something went wrong skipping next frame!")
 
 
 func get_clip_audio_data() -> PackedByteArray:
-	var l_file_data: FileData = Project.get_file_data(file_id)
+	var file_data: FileData = Project.get_file_data(file_id)
 
-	return l_file_data.audio.data.slice(begin, begin + duration)
+	return file_data.audio.data.slice(begin, begin + duration)
 		

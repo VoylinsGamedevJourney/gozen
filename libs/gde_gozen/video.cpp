@@ -1,16 +1,17 @@
 #include "video.hpp"
 
 
-bool Video::open(String a_path) {
+bool Video::open(String video_path) {
 	if (loaded)
 		return _log_err("Already open");
 
 	const AVCodec *av_codec_video;
-	Vector2i l_resolution = Vector2i(0, 0);
+	Vector2i resolution = Vector2i(0, 0);
 
 	// Allocate video file context
 	av_format_ctx = avformat_alloc_context();
-	if (!av_format_ctx || avformat_open_input(&av_format_ctx, a_path.utf8(), NULL, NULL)) {
+	if (!av_format_ctx || avformat_open_input(
+			&av_format_ctx, video_path.utf8(), NULL, NULL)) {
 		close();
 		return _log_err("Couldn't open video");
 	}
@@ -19,15 +20,16 @@ bool Video::open(String a_path) {
 	avformat_find_stream_info(av_format_ctx, NULL);
 
 	for (int i = 0; i < av_format_ctx->nb_streams; i++) {
-		AVCodecParameters *av_codec_params = av_format_ctx->streams[i]->codecpar;
+		AVCodecParameters *av_codec_params =
+				av_format_ctx->streams[i]->codecpar;
 
 		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
 			av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
 			continue;
 		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_VIDEO) {
 			av_stream_video = av_format_ctx->streams[i];
-			l_resolution.x = av_codec_params->width;
-			l_resolution.y = av_codec_params->height;
+			resolution.x = av_codec_params->width;
+			resolution.y = av_codec_params->height;
 
 			break;
 		}
@@ -50,7 +52,8 @@ bool Video::open(String a_path) {
 	}
 	
 	// Copying parameters
-	if (avcodec_parameters_to_context(av_codec_ctx_video, av_stream_video->codecpar)) {
+	if (avcodec_parameters_to_context(
+			av_codec_ctx_video, av_stream_video->codecpar)) {
 		close();
 		return _log_err("Failed to init codec");
 	}
@@ -63,12 +66,15 @@ bool Video::open(String a_path) {
 		return _log_err("Failed to open codec");
 	}
 
-	float l_aspect_ratio = av_q2d(av_stream_video->codecpar->sample_aspect_ratio);
-	if (l_aspect_ratio > 1.0)
-		l_resolution.x = static_cast<int>(std::round(l_resolution.x * l_aspect_ratio));
+	float aspect_ratio = av_q2d(
+			av_stream_video->codecpar->sample_aspect_ratio);
+	if (aspect_ratio > 1.0)
+		resolution.x = static_cast<int>(
+				std::round(resolution.x * aspect_ratio));
 
 	if (av_stream_video->start_time != AV_NOPTS_VALUE)
-		start_time_video = (int64_t)(av_stream_video->start_time * stream_time_base_video);
+		start_time_video = (int64_t)(
+				av_stream_video->start_time * stream_time_base_video);
 	else
 		start_time_video = 0;
 
@@ -79,8 +85,8 @@ bool Video::open(String a_path) {
 	}
 
 	avcodec_flush_buffers(av_codec_ctx_video);
-	bool l_duration_from_bitrate = av_format_ctx->duration_estimation_method == AVFMT_DURATION_FROM_BITRATE;
-	if (l_duration_from_bitrate) {
+	bool duration_from_bitrate = av_format_ctx->duration_estimation_method == AVFMT_DURATION_FROM_BITRATE;
+	if (duration_from_bitrate) {
 		close();
 		return _log_err("Invalid video");
 	}
@@ -98,36 +104,36 @@ bool Video::open(String a_path) {
 	}
 
 	// Getting frame rate
-	double l_framerate = av_q2d(av_guess_frame_rate(av_format_ctx, av_stream_video, av_frame));
-	if (l_framerate <= 0) {
+	double framerate = av_q2d(av_guess_frame_rate(av_format_ctx, av_stream_video, av_frame));
+	if (framerate <= 0) {
 		close();
 		return _log_err("Invalid framerate");
 	}
 
 	// Setting variables
-	average_frame_duration = 10000000.0 / l_framerate;								// eg. 1 sec / 25 fps = 400.000 ticks (40ms)
+	average_frame_duration = 10000000.0 / framerate;								// eg. 1 sec / 25 fps = 400.000 ticks (40ms)
 	stream_time_base_video = av_q2d(av_stream_video->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks
 
 	// Preparing the data array's
-	y_data.resize(av_frame->linesize[0] * l_resolution.y);
+	y_data.resize(av_frame->linesize[0] * resolution.y);
 
 	if (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P) {
-		u_data.resize(av_frame->linesize[1] * (l_resolution.y / 2));
-		v_data.resize(av_frame->linesize[2] * (l_resolution.y / 2));
+		u_data.resize(av_frame->linesize[1] * (resolution.y / 2));
+		v_data.resize(av_frame->linesize[2] * (resolution.y / 2));
 	} else {
 		_log("Enabling SWS due to foreign format");
 		using_sws = true;
 
 		sws_ctx = sws_getContext(
-						l_resolution.x, l_resolution.y, av_codec_ctx_video->pix_fmt,
-						l_resolution.x, l_resolution.y, AV_PIX_FMT_YUV420P,
+						resolution.x, resolution.y, av_codec_ctx_video->pix_fmt,
+						resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
 						SWS_BICUBIC, NULL, NULL, NULL);
 
 		av_sws_frame = av_frame_alloc();
 		sws_scale_frame(sws_ctx, av_sws_frame, av_frame);
 
-		u_data.resize(av_sws_frame->linesize[1] * (l_resolution.y / 2));
-		v_data.resize(av_sws_frame->linesize[2] * (l_resolution.y / 2));
+		u_data.resize(av_sws_frame->linesize[1] * (resolution.y / 2));
+		v_data.resize(av_sws_frame->linesize[2] * (resolution.y / 2));
 		av_frame_unref(av_sws_frame);
 	}
 
@@ -137,15 +143,15 @@ bool Video::open(String a_path) {
 
 	duration = av_format_ctx->duration;
 
-	if (av_stream_video->duration == AV_NOPTS_VALUE || l_duration_from_bitrate) {
-		if (duration == AV_NOPTS_VALUE || l_duration_from_bitrate) {
+	if (av_stream_video->duration == AV_NOPTS_VALUE || duration_from_bitrate) {
+		if (duration == AV_NOPTS_VALUE || duration_from_bitrate) {
 			close();
 			return _log_err("Invalid video");
 		} else {
-			AVRational l_temp_rational = AVRational{1, AV_TIME_BASE};
+			AVRational temp_rational = AVRational{1, AV_TIME_BASE};
 
-			if (l_temp_rational.num != av_stream_video->time_base.num || l_temp_rational.num != av_stream_video->time_base.num)
-				duration = std::ceil(static_cast<double>(duration) * av_q2d(l_temp_rational) / av_q2d(av_stream_video->time_base));
+			if (temp_rational.num != av_stream_video->time_base.num || temp_rational.num != av_stream_video->time_base.num)
+				duration = std::ceil(static_cast<double>(duration) * av_q2d(temp_rational) / av_q2d(av_stream_video->time_base));
 		}
 
 		av_stream_video->duration = duration;
@@ -187,12 +193,12 @@ void Video::close() {
 	av_format_ctx = nullptr;
 }
 
-bool Video::seek_frame(int a_frame_nr) {
+bool Video::seek_frame(int frame_nr) {
 	if (!loaded)
 		return _log_err("Not open");
 
 	// Video seeking
-	if ((response = _seek_frame(a_frame_nr)) < 0)
+	if ((response = _seek_frame(frame_nr)) < 0)
 		return _log_err("Couldn't seek");
 	
 	while (true) {
@@ -200,7 +206,7 @@ bool Video::seek_frame(int a_frame_nr) {
 			if (response == AVERROR_EOF) {
 				_log_err("End of file reached! Going back 1 frame!");
 
-				if ((response = _seek_frame(a_frame_nr--)) < 0)
+				if ((response = _seek_frame(frame_nr--)) < 0)
 					return _log_err("Couldn't seek");
 
 				continue;
@@ -229,13 +235,13 @@ bool Video::seek_frame(int a_frame_nr) {
 	return true;
 }
 
-bool Video::next_frame(bool a_skip) {
+bool Video::next_frame(bool skip_frame) {
 	if (!loaded)
 		return false;
 
 	FFmpeg::get_frame(av_format_ctx, av_codec_ctx_video, av_stream_video->index, av_frame, av_packet);
 
-	if (!a_skip)
+	if (!skip_frame)
 		_copy_frame_data();
 
 	av_frame_unref(av_frame);
@@ -266,10 +272,32 @@ void Video::_copy_frame_data() {
 	memcpy(v_data.ptrw(), av_frame->data[2], v_data.size());
 }
 
-int Video::_seek_frame(int a_frame_nr) {
+int Video::_seek_frame(int frame_nr) {
 	avcodec_flush_buffers(av_codec_ctx_video);
 
-	frame_timestamp = (int64_t)(a_frame_nr * average_frame_duration);
+	frame_timestamp = (int64_t)(frame_nr * average_frame_duration);
 	return av_seek_frame(av_format_ctx, -1, (start_time_video + frame_timestamp) / 10, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
+}
+
+
+#define BIND_METHOD(method_name) \
+    ClassDB::bind_method(D_METHOD(#method_name), &Video::method_name)
+
+#define BIND_METHOD_1(method_name, param1) \
+    ClassDB::bind_method( \
+        D_METHOD(#method_name, param1), &Video::method_name)
+
+
+void Video::_bind_methods() {
+	BIND_METHOD_1(open, "video_path");
+
+	BIND_METHOD(is_open);
+
+	BIND_METHOD_1(seek_frame, "frame_nr");
+	BIND_METHOD_1(next_frame, "skip_frame");
+
+	BIND_METHOD(get_y_data);
+	BIND_METHOD(get_u_data);
+	BIND_METHOD(get_v_data);
 }
 

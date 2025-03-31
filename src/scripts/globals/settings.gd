@@ -10,13 +10,13 @@ var data: SettingsData = SettingsData.new()
 
 func _ready() -> void:
 	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
-		printerr("Something went wrong loading settings!")
+		printerr("Something went wrong loading settings! ", data.error)
 	apply_theme()
 	
 
 func save() -> void:
 	if data.save_data(PATH):
-		printerr("Something went wrong saving settings!")
+		printerr("Something went wrong saving settings! ", data.error)
 
 
 func reset_settings() -> void:
@@ -24,8 +24,8 @@ func reset_settings() -> void:
 
 
 # Appearance set/get
-func set_theme(a_theme: SettingsData.THEME) -> void:
-	data.theme = a_theme
+func set_theme(theme: SettingsData.THEME) -> void:
+	data.theme = theme
 	apply_theme()
 
 
@@ -42,32 +42,32 @@ func get_theme() -> SettingsData.THEME:
 
 
 # Defaults set/get
-func set_image_duration(a_duration: int) -> void:
-	data.image_duration = a_duration
+func set_image_duration(duration: int) -> void:
+	data.image_duration = duration
 
 
 func get_image_duration() -> int:
 	return data.image_duration
 
 
-func set_default_project_path(a_path: String) -> void:
-	data.default_project_path = a_path
+func set_default_project_path(path: String) -> void:
+	data.default_project_path = path
 
 
 func get_default_project_path() -> String:
 	return data.default_project_path
 
 
-func set_default_resolution(a_res: Vector2i) -> void:
-	data.default_resolution = a_res
+func set_default_resolution(res: Vector2i) -> void:
+	data.default_resolution = res
 
 
 func get_default_resolution() -> Vector2i:
 	return data.default_resolution
 
 
-func set_default_framerate(a_framerate: float) -> void:
-	data.default_framerate = a_framerate
+func set_default_framerate(framerate: float) -> void:
+	data.default_framerate = framerate
 	
 
 func get_default_framerate() -> float:

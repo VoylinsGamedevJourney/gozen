@@ -23,22 +23,22 @@ THREADS = os.cpu_count() or 4
 PATH_BUILD_WINDOWS = 'build_on_windows.py'
 
 
-def _print_options(a_title, a_options):
-    print(f'{a_title}:')
+def _print_options(title, options):
+    print(f'{title}:')
 
     i = 1
 
-    for l_option in a_options:
+    for option in options:
         if i == 1:
-            print(f'{i}. {l_option}; (default)')
+            print(f'{i}. {option}; (default)')
         else:
-            print(f'{i}. {l_option};')
+            print(f'{i}. {option};')
         i += 1
 
     return input('> ')
 
 
-def compile_ffmpeg(a_platform, a_arch):
+def compile_ffmpeg(platform, arch):
     match _print_options('Do you want to (re)compile ffmpeg?', ['yes', 'no']):
         case '2':
             return
@@ -49,21 +49,21 @@ def compile_ffmpeg(a_platform, a_arch):
         subprocess.run(['make', 'distclean'], cwd='./ffmpeg/')
         subprocess.run(['rm', '-rf', 'bin'], cwd='./ffmpeg/')
 
-    if a_platform == 'linux':
-        compile_ffmpeg_linux(a_arch)
-    elif a_platform == 'windows':
-        compile_ffmpeg_windows(a_arch)
-    elif a_platform == 'macos':
-        compile_ffmpeg_macos(a_arch)
+    if platform == 'linux':
+        compile_ffmpeg_linux(arch)
+    elif platform == 'windows':
+        compile_ffmpeg_windows(arch)
+    elif platform == 'macos':
+        compile_ffmpeg_macos(arch)
 
 
-def compile_ffmpeg_linux(a_arch):
+def compile_ffmpeg_linux(arch):
     print('Configuring FFmpeg for Linux ...')
 
-    l_path = f'bin/linux_{a_arch}'
+    path = f'bin/linux_{arch}'
     os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
 
-    os.makedirs(l_path, exist_ok=True)
+    os.makedirs(path, exist_ok=True)
     os.environ["PKG_CONFIG_PATH"] = "/usr/lib/pkgconfig"
 
     subprocess.run([
@@ -72,7 +72,7 @@ def compile_ffmpeg_linux(a_arch):
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
-        f'--arch={a_arch}',
+        f'--arch={arch}',
         '--target-os=linux',
         '--quiet',
         '--enable-pic',
@@ -101,22 +101,22 @@ def compile_ffmpeg_linux(a_arch):
 
     print('Copying lib files ...')
 
-    for l_file in glob.glob('ffmpeg/bin/lib/*.so*'):
-        shutil.copy2(l_file, l_path)
-    for l_file in glob.glob('/usr/lib/libx26*.so'):
-        shutil.copy2(l_file, l_path)
+    for file in glob.glob('ffmpeg/bin/lib/*.so*'):
+        shutil.copy2(file, path)
+    for file in glob.glob('/usr/lib/libx26*.so'):
+        shutil.copy2(file, path)
 
     print('Compiling FFmpeg for Linux finished!')
 
 
-def compile_ffmpeg_windows(a_arch):
+def compile_ffmpeg_windows(arch):
     print('Configuring FFmpeg for Windows ...')
 
-    l_path = f'bin/windows_{a_arch}'
-    os.environ['PKG_CONFIG_LIBDIR'] = f'/usr/{a_arch}-w64-mingw32/lib/pkgconfig'
-    os.environ['PKG_CONFIG_PATH'] = f'/usr/{a_arch}-w64-mingw32/lib/pkgconfig'
+    path = f'bin/windows_{arch}'
+    os.environ['PKG_CONFIG_LIBDIR'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
+    os.environ['PKG_CONFIG_PATH'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
 
-    os.makedirs(l_path, exist_ok=True)
+    os.makedirs(path, exist_ok=True)
 
     subprocess.run([
         './configure',
@@ -124,10 +124,10 @@ def compile_ffmpeg_windows(a_arch):
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
-        f'--arch={a_arch}',
+        f'--arch={arch}',
         '--target-os=mingw32',
         '--enable-cross-compile',
-        f'--cross-prefix={a_arch}-w64-mingw32-',
+        f'--cross-prefix={arch}-w64-mingw32-',
         '--quiet',
         '--extra-libs=-lpthread',
         '--extra-ldflags="-static"',
@@ -156,23 +156,23 @@ def compile_ffmpeg_windows(a_arch):
 
     print('Copying lib files ...')
 
-    for l_file in glob.glob('ffmpeg/bin/bin/*.dll'):
-        shutil.copy2(l_file, l_path)
+    for file in glob.glob('ffmpeg/bin/bin/*.dll'):
+        shutil.copy2(file, path)
 
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {l_path}')
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {l_path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
 
     print('Compiling FFmpeg for Windows finished!')
 
 
-def compile_ffmpeg_macos(a_arch):
+def compile_ffmpeg_macos(arch):
     print('Configuring FFmpeg for MacOS ...')
 
-    l_path_debug = f'bin/macos_{a_arch}/debug/lib'
-    l_path_release = f'bin/macos_{a_arch}/release/lib'
+    path_debug = f'bin/macos_{arch}/debug/lib'
+    path_release = f'bin/macos_{arch}/release/lib'
 
-    os.makedirs(l_path_debug, exist_ok=True)
-    os.makedirs(l_path_release, exist_ok=True)
+    os.makedirs(path_debug, exist_ok=True)
+    os.makedirs(path_release, exist_ok=True)
 
     subprocess.run([
         './configure',
@@ -180,7 +180,7 @@ def compile_ffmpeg_macos(a_arch):
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
-        f'--arch={a_arch}',
+        f'--arch={arch}',
         '--extra-ldflags="-mmacosx-version-min=10.13"',
         '--quiet',
         '--extra-cflags="-fPIC -mmacosx-version-min=10.13"',
@@ -207,34 +207,34 @@ def compile_ffmpeg_macos(a_arch):
 
     print('Copying lib files ...')
 
-    for l_file in glob.glob('./ffmpeg/bin/lib/*.dylib'):
-        shutil.copy2(l_file, l_path_debug)
-        shutil.copy2(l_file, l_path_release)
+    for file in glob.glob('./ffmpeg/bin/lib/*.dylib'):
+        shutil.copy2(file, path_debug)
+        shutil.copy2(file, path_release)
 
     print('Compiling FFmpeg for MacOS finished!')
 
 
-def macos_fix(a_arch):
+def macos_fix(arch):
     # This is a fix for the MacOS builds to get the libraries to properly connect to
     # the gdextension library. Without it, the FFmpeg libraries can't be found.
     print('Running fix for MacOS builds ...')
 
-    l_debug_binary = f'./test_room/addons/gde_gozen/bin/macos_{a_arch}/debug/libgozen.macos.template_debug.dev.{a_arch}.dylib'
-    l_release_binary = f'./test_room/addons/gde_gozen/bin/macos_{a_arch}/release/libgozen.macos.template_release.{a_arch}.dylib'
-    l_debug_bin_folder = f'./test_room/addons/gde_gozen/bin/macos_{a_arch}/debug/lib'
-    l_release_bin_folder = f'./test_room/addons/gde_gozen/bin/macos_{a_arch}/release/lib'
+    debug_binary = f'./test_room/addons/gde_gozen/bin/macos_{arch}/debug/libgozen.macos.template_debug.dev.{arch}.dylib'
+    release_binary = f'./test_room/addons/gde_gozen/bin/macos_{arch}/release/libgozen.macos.template_release.{arch}.dylib'
+    debug_bin_folder = f'./test_room/addons/gde_gozen/bin/macos_{arch}/debug/lib'
+    release_bin_folder = f'./test_room/addons/gde_gozen/bin/macos_{arch}/release/lib'
 
     print("Updating @loader_path for MacOS builds")
 
-    if os.path.exists(l_debug_binary):
-        for l_file in os.listdir(l_debug_bin_folder):
-            os.system(f'install_name_tool -change ./bin/lib/{l_file} @loader_path/lib/{l_file} {l_debug_binary}')
-        subprocess.run(['otool', '-L', l_debug_binary], cwd='./')
+    if os.path.exists(debug_binary):
+        for file in os.listdir(debug_bin_folder):
+            os.system(f'install_name_tool -change ./bin/lib/{file} @loader_path/lib/{file} {debug_binary}')
+        subprocess.run(['otool', '-L', debug_binary], cwd='./')
 
-    if os.path.exists(l_release_binary):
-        for l_file in os.listdir(l_release_bin_folder):
-            os.system(f'install_name_tool -change ./bin/lib/{l_file} @loader_path/lib/{l_file} {l_release_binary}')
-        subprocess.run(['otool', '-L', l_release_binary], cwd='./')
+    if os.path.exists(release_binary):
+        for file in os.listdir(release_bin_folder):
+            os.system(f'install_name_tool -change ./bin/lib/{file} @loader_path/lib/{file} {release_binary}')
+        subprocess.run(['otool', '-L', release_binary], cwd='./')
 
 
 def main():
@@ -253,48 +253,48 @@ def main():
         subprocess.run([sys.executable, PATH_BUILD_WINDOWS], cwd='./', check=True)
         sys.exit(3)
 
-    l_platform = 'linux'
+    platform = 'linux'
 
     match _print_options('Select platform', ['linux', 'windows', 'macos']):
         case '2':
-            l_platform = 'windows'
+            platform = 'windows'
         case '3':
-            l_platform = 'macos'
+            platform = 'macos'
 
     # arm64 isn't supported yet by mingw for Windows, so x86_64 only.
-    l_arch = 'x86_64' if l_platform != 'macos' else 'arm64'
+    arch = 'x86_64' if platform != 'macos' else 'arm64'
 
-    match l_platform:
+    match platform:
         case 'linux':
             if _print_options('Choose architecture', ['x86_64', 'arm64']) == '2':
-                l_arch = 'arm64'
+                arch = 'arm64'
         case 'macos':
             if _print_options('Select target', ['arm64', 'x86_64']) == '2':
-                l_arch = 'x86_64'
+                arch = 'x86_64'
 
     # When selecting the target, we set dev_build to yes to get more debug info
     # which is helpful when debugging to get something useful of an error msg.
-    l_target = 'debug'
-    l_dev_build = ''
+    target = 'debug'
+    dev_build = ''
 
     match _print_options('Select target', ['debug', 'release']):
         case '2':
-            l_target = 'release'
+            target = 'release'
         case _:
-            l_dev_build = 'dev_build=yes'
+            dev_build = 'dev_build=yes'
 
-    compile_ffmpeg(l_platform, l_arch)
+    compile_ffmpeg(platform, arch)
     subprocess.run([
         'scons',
         f'-j{THREADS}',
-        f'target=template_{l_target}',
-        f'platform={l_platform}',
-        f'arch={l_arch}',
-        l_dev_build
+        f'target=template_{target}',
+        f'platform={platform}',
+        f'arch={arch}',
+        dev_build
     ], cwd='./')
 
-    if l_platform == 'macos':
-        macos_fix(l_arch)
+    if platform == 'macos':
+        macos_fix(arch)
 
     print()
     print('v=========================v')

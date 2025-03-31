@@ -6,8 +6,8 @@ var changes: Dictionary[String, Callable] = {}
 
 
 func _on_save_button_pressed() -> void:
-	for l_change: Callable in changes.values():
-		l_change.call()
+	for change: Callable in changes.values():
+		change.call()
 
 	self.queue_free()
 

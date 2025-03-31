@@ -45,21 +45,22 @@ func _update_duration() -> void:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)
 
 
-func init_data(a_id: int) -> void:
-	id = a_id
+func init_data(file_data_id: int) -> void:
+	id = file_data_id
 
-	var l_file: File = Project.get_file(id)
+	var file: File = Project.get_file(id)
 
-	if l_file.type == File.TYPE.IMAGE:
-		if l_file.temp_file != null:
-			image = l_file.temp_file.image_data
+	if file.type == File.TYPE.IMAGE:
+		if file.temp_file != null:
+			image = file.temp_file.image_data
 			return
 
-		image = ImageTexture.create_from_image(Image.load_from_file(l_file.path))
-	elif l_file.type == File.TYPE.VIDEO:
+		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
+	elif file.type == File.TYPE.VIDEO:
 		video_meta = VideoMeta.new()
 
-		if video_meta.load_meta(l_file.path):
+		# TODO: Re-implement the VideoMeta clas
+		if !video_meta.load_meta(file.path):
 			printerr("Failed loading video file meta data!")
 
 		# Set necessary metadata
@@ -70,34 +71,34 @@ func init_data(a_id: int) -> void:
 		framerate = video_meta.get_framerate()
 
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-				_load_video_data.bind(l_file.path))))
+				_load_video_data.bind(file.path))))
 
 		for i: int in 5:
 			Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-						_load_video_data.bind(l_file.path))))
+						_load_video_data.bind(file.path))))
 
-	if l_file.type in Editor.AUDIO_TYPES:
+	if file.type in Editor.AUDIO_TYPES:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-				_load_audio_data.bind(l_file.path)), create_wave))
+				_load_audio_data.bind(file.path)), create_wave))
 
 
-func _load_audio_data(a_file_path: String) -> void:
+func _load_audio_data(file_path: String) -> void:
 	audio = AudioStreamWAV.new()
 	audio.mix_rate = 44100
 	audio.stereo = true
 	audio.format = AudioStreamWAV.FORMAT_16_BITS
-	audio.data = Audio.get_audio_data(a_file_path)
+	audio.data = Audio.get_audio_data(file_path)
 
 
-func _load_video_data(a_file_path: String) -> void:
-	var l_video: Video = Video.new()
+func _load_video_data(file_path: String) -> void:
+	var video: Video = Video.new()
 
-	if l_video.open(a_file_path):
-		printerr("Couldn't open video at path '%s'!" % a_file_path)
+	if video.open(file_path):
+		printerr("Couldn't open video at path '%s'!" % file_path)
 		return
 
 	Threader.mutex.lock()
-	videos.append(l_video)
+	videos.append(video)
 	if current_frame.append(0):
 		printerr("Couldn't append to current frame!")
 	Threader.mutex.unlock()
@@ -109,43 +110,43 @@ func create_wave() -> void:
 
 
 func _create_wave() -> void:
-	var l_data: PackedByteArray = audio.data
+	var data: PackedByteArray = audio.data
 	audio_wave_data.clear()
 
-	if l_data.is_empty():
+	if data.is_empty():
 		push_warning("Audio data is empty!")
 		return
 
-	var l_bytes_size: float = 4 # 16 bit * stereo
-	var l_total_frames: int = int(l_data.size() / l_bytes_size)
-	var l_frames_per_block: int = floori(44100.0 / Project.get_framerate())
-	var l_total_blocks: int = ceili(float(l_total_frames) / l_frames_per_block)
-	var l_current_frame_index: int = 0
+	var bytes_size: float = 4 # 16 bit * stereo
+	var total_frames: int = int(data.size() / bytes_size)
+	var frames_per_block: int = floori(44100.0 / Project.get_framerate())
+	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
+	var current_frame_index: int = 0
 
-	if audio_wave_data.resize(l_total_blocks):
+	if audio_wave_data.resize(total_blocks):
 		Toolbox.print_resize_error()
 
-	for i: int in l_total_blocks:
-		var l_max_abs_amplitude: float = 0.0
-		var l_start_frame: int = l_current_frame_index
-		var l_end_frame: int = min(l_start_frame + l_frames_per_block, l_total_frames)
+	for i: int in total_blocks:
+		var max_abs_amplitude: float = 0.0
+		var start_frame: int = current_frame_index
+		var end_frame: int = min(start_frame + frames_per_block, total_frames)
 
-		for l_frame_index: int in range(l_start_frame, l_end_frame):
-			var l_byte_offset: int = int(l_frame_index * l_bytes_size)
-			var l_frame_max_abs_amplitude: float = 0.0
+		for frame_index: int in range(start_frame, end_frame):
+			var byte_offset: int = int(frame_index * bytes_size)
+			var frame_max_abs_amplitude: float = 0.0
 
-			if l_byte_offset + l_bytes_size > l_data.size():
-				push_warning("Attempted to read past end of audio data at frame %d." % l_frame_index)
+			if byte_offset + bytes_size > data.size():
+				push_warning("Attempted to read past end of audio data at frame %d." % frame_index)
 				break
 
-			var l_left_sample: int = l_data.decode_s16(l_byte_offset)
-			var l_right_sample: int = l_data.decode_s16(l_byte_offset + 2)
+			var left_sample: int = data.decode_s16(byte_offset)
+			var right_sample: int = data.decode_s16(byte_offset + 2)
 
-			l_frame_max_abs_amplitude = max(abs(float(l_left_sample)), abs(float(l_right_sample)))
+			frame_max_abs_amplitude = max(abs(float(left_sample)), abs(float(right_sample)))
 
-			if l_frame_max_abs_amplitude > l_max_abs_amplitude:
-				l_max_abs_amplitude = l_frame_max_abs_amplitude
+			if frame_max_abs_amplitude > max_abs_amplitude:
+				max_abs_amplitude = frame_max_abs_amplitude
 
-		audio_wave_data[i] = clamp(l_max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
-		l_current_frame_index = l_end_frame
+		audio_wave_data[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
+		current_frame_index = end_frame
 

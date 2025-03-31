@@ -2,39 +2,43 @@
 
 
 
-void FFmpeg::print_av_error(const char *a_message, int a_error) {
-	char l_error_buffer[AV_ERROR_MAX_STRING_SIZE];
+void FFmpeg::print_av_error(const char *message, int error) {
+	char error_buffer[AV_ERROR_MAX_STRING_SIZE];
 
-	av_strerror(a_error, l_error_buffer, sizeof(l_error_buffer));
-	UtilityFunctions::printerr((std::string(a_message) + " " + l_error_buffer).c_str());
+	av_strerror(error, error_buffer, sizeof(error_buffer));
+	UtilityFunctions::printerr("FFmpeg error: ", message, " ", error_buffer);
 }
 
-void FFmpeg::enable_multithreading(AVCodecContext *&a_codec_ctx, const AVCodec *&a_codec) {
-	a_codec_ctx->thread_count = OS::get_singleton()->get_processor_count() - 1;
-	if (a_codec->capabilities & AV_CODEC_CAP_FRAME_THREADS) {
-		a_codec_ctx->thread_type = FF_THREAD_FRAME;
-	} else if (a_codec->capabilities & AV_CODEC_CAP_SLICE_THREADS) {
-		a_codec_ctx->thread_type = FF_THREAD_SLICE;
-	} else a_codec_ctx->thread_count = 1; // Don't use multithreading
+void FFmpeg::enable_multithreading(AVCodecContext *&codec_ctx, const AVCodec *&codec) {
+	codec_ctx->thread_count = Math::min(
+			OS::get_singleton()->get_processor_count() - 1, 1);
+	// TODO: Let users decide how many threads they maximum want to use.
+
+	if (codec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
+		codec_ctx->thread_type = FF_THREAD_FRAME;
+	else if (codec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+		codec_ctx->thread_type = FF_THREAD_SLICE;
+	else
+		codec_ctx->thread_count = 1; // Fallback
 }
 
-int FFmpeg::get_frame(AVFormatContext *a_format_ctx, AVCodecContext *a_codec_ctx, int a_stream_id, AVFrame *a_frame, AVPacket *a_packet) {
+int FFmpeg::get_frame(AVFormatContext *format_ctx, AVCodecContext *codec_ctx, int stream_id, AVFrame *frame, AVPacket *packet) {
 	eof = false;
 
-	while ((response = avcodec_receive_frame(a_codec_ctx, a_frame)) == AVERROR(EAGAIN) && !eof) {
+	while ((response = avcodec_receive_frame(codec_ctx, frame)) == AVERROR(EAGAIN) && !eof) {
 		do {
-			av_packet_unref(a_packet);
-			response = av_read_frame(a_format_ctx, a_packet);
-		} while (a_packet->stream_index != a_stream_id && response >= 0);
+			av_packet_unref(packet);
+			response = av_read_frame(format_ctx, packet);
+		} while (packet->stream_index != stream_id && response >= 0);
 
 		if (response == AVERROR_EOF) {
 			eof = true;
-			avcodec_send_packet(a_codec_ctx, nullptr); // Send null packet to signal end
+			avcodec_send_packet(codec_ctx, nullptr); // Send null packet to signal end
 		} else if (response < 0) {
 			UtilityFunctions::printerr("Error reading frame! ", response);
 			break;
 		} else {
-			response = avcodec_send_packet(a_codec_ctx, a_packet);
+			response = avcodec_send_packet(codec_ctx, packet);
 			if (response < 0 && response != AVERROR_INVALIDDATA) {
 				UtilityFunctions::printerr("Problem sending package! ", response);
 				break;
@@ -44,16 +48,4 @@ int FFmpeg::get_frame(AVFormatContext *a_format_ctx, AVCodecContext *a_codec_ctx
 
 	return response;
 }
-
-enum AVPixelFormat FFmpeg::get_hw_format(const enum AVPixelFormat *a_pix_fmt, enum AVPixelFormat *a_hw_pix_fmt) {
-	const enum AVPixelFormat *p;
-
-	for (p = a_pix_fmt; *p != -1; p++)
-		if (*p == *a_hw_pix_fmt)
-			return *p;
-
-	UtilityFunctions::printerr("Failed to get HW surface format!");
-	return AV_PIX_FMT_NONE;
-}
-
 
