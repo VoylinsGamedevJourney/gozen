@@ -11,6 +11,7 @@
 #include <godot_cpp/core/math.hpp>
 
 #include "ffmpeg.hpp"
+#include "ffmpeg_helpers.hpp"
 
 
 using namespace godot;

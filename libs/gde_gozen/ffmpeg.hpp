@@ -44,8 +44,8 @@ public:
 
 	static void print_av_error(const char *message, int error);
 
-	static void enable_multithreading(AVCodecContext *&codec_ctx,
-								      const AVCodec *&codec);
+	static void enable_multithreading(AVCodecContext *codec_ctx,
+								      const AVCodec *codec);
 	static int get_frame(AVFormatContext *format_ctx,
 						 AVCodecContext *codec_ctx, int stream_id,
 						 AVFrame *frame, AVPacket *packet);

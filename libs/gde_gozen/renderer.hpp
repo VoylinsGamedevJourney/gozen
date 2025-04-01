@@ -7,6 +7,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "ffmpeg.hpp"
+#include "ffmpeg_helpers.hpp"
 
 
 using namespace godot;
@@ -16,19 +17,17 @@ class Renderer : public Resource {
 
 private:
 	// FFmpeg classes
-	AVFormatContext *av_format_ctx = nullptr;
-	const AVOutputFormat *av_output_format = nullptr;
-
-	AVCodecContext *av_codec_ctx_video = nullptr;
+	UniqueAVFormatCtxOutput av_format_ctx;
+	UniqueAVCodecCtx av_codec_ctx_video;
+	UniqueAVPacket av_packet_video;
+	UniqueAVFrame av_frame_video;
 	AVStream *av_stream_video = nullptr;
-	AVPacket *av_packet_video = nullptr;
-	AVFrame *av_frame_video = nullptr;
 
-	AVCodecContext *av_codec_ctx_audio = nullptr;
+	UniqueAVCodecCtx av_codec_ctx_audio;
+	UniqueAVPacket av_packet_audio;
 	AVStream *av_stream_audio = nullptr;
-	AVPacket *av_packet_audio = nullptr;
 
-	struct SwsContext *sws_ctx = nullptr;
+	UniqueSwsCtx sws_ctx;
 
 	AVCodecID video_codec_id = AV_CODEC_ID_NONE;
 	AVCodecID audio_codec_id = AV_CODEC_ID_NONE;
@@ -61,6 +60,20 @@ private:
 	// Godot classes
 	String path = "";
 	Vector2i resolution = Vector2i(1920, 1080);
+
+	// Video metadata
+	// TODO: Add these to the render menu in the editor.
+	String meta_title = "";
+	String meta_comment = "Rendered with the GoZen Video editor.";
+	String meta_author = "";
+	String meta_copyright = "";
+
+	// Private classes
+	bool _add_video_stream();
+	bool _add_audio_stream();
+	bool _open_output_file();
+	bool _write_header();
+	bool _finalize_renderer();
 
 	static inline void _log(String message) {
 		UtilityFunctions::print("Renderer: ", message, ".");
@@ -247,6 +260,23 @@ public:
 		set_crf(23);
 		set_gop_size(10);
 	}
+
+	// Video file metadata
+	inline void set_video_meta_title(const String &new_title) {
+		meta_title = new_title; }
+	inline String get_video_meta_title() const { return meta_title; }
+
+	inline void set_video_meta_comment(const String &new_comment) {
+		meta_comment = new_comment; }
+	inline String get_video_meta_comment() const { return meta_comment; }
+
+	inline void set_video_meta_author(const String &new_author) {
+		meta_author = new_author; }
+	inline String get_video_meta_author() const { return meta_author; }
+
+	inline void set_video_meta_copyright(const String &new_copyright) {
+		meta_copyright = new_copyright; }
+	inline String get_video_meta_copyright() const { return meta_copyright; }
 
 protected:
 	static void _bind_methods();

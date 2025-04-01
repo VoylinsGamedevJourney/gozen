@@ -7,121 +7,121 @@ PackedByteArray Audio::_get_audio(AVFormatContext *&format_ctx,
 	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
 	const AVChannelLayout TARGET_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
 
-	struct SwrContext *swr_ctx = nullptr;
-	PackedByteArray data = PackedByteArray();
+	UniqueAVCodecCtx codec_ctx;
+	UniqueSwrCtx swr_ctx;
+	UniqueAVPacket av_packet;
+	UniqueAVFrame av_frame;
+	UniqueAVFrame av_decoded_frame;
+
+	PackedByteArray audio_data = PackedByteArray();
 
 
-	const AVCodec *codec_audio = avcodec_find_decoder(
+	const AVCodec *codec = avcodec_find_decoder(
 			stream->codecpar->codec_id);
-	if (!codec_audio) {
+	if (!codec) {
 		UtilityFunctions::printerr("Couldn't find any decoder for audio!");
-		return data;
+		return audio_data;
 	}
 
-	AVCodecContext *codec_ctx_audio = avcodec_alloc_context3(codec_audio);
-	if (codec_ctx_audio == NULL) {
+	codec_ctx = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(
+			avcodec_alloc_context3(codec));
+	if (codec_ctx == NULL) {
 		UtilityFunctions::printerr("Couldn't allocate context for audio!");
-		return data;
+		return audio_data;
 	} 
-	if (avcodec_parameters_to_context(codec_ctx_audio, stream->codecpar)) {
+	if (avcodec_parameters_to_context(codec_ctx.get(), stream->codecpar)) {
 		UtilityFunctions::printerr("Couldn't initialize audio codec context!");
-		return data;
+		return audio_data;
 	}
 
-	FFmpeg::enable_multithreading(codec_ctx_audio, codec_audio);
-	codec_ctx_audio->request_sample_fmt = TARGET_FORMAT;
+	FFmpeg::enable_multithreading(codec_ctx.get(), codec);
+	codec_ctx->request_sample_fmt = TARGET_FORMAT;
 
-	if (avcodec_open2(codec_ctx_audio, codec_audio, NULL)) {
+	if (avcodec_open2(codec_ctx.get(), codec, NULL)) {
 		UtilityFunctions::printerr("Couldn't open audio codec!");
-		return data;
+		return audio_data;
 	}
-
-	int response = swr_alloc_set_opts2(&swr_ctx,
+	
+	SwrContext* temp_swr_ctx = nullptr;
+	int response = swr_alloc_set_opts2(&temp_swr_ctx,
 			&TARGET_LAYOUT,			// Out channel layout: Stereo
 			TARGET_FORMAT,			// We need 16 bits
 			TARGET_SAMPLE_RATE,		// Sample rate should be the Godot default
-			&codec_ctx_audio->ch_layout,	// In channel layout
-			codec_ctx_audio->sample_fmt,	// In sample format
-			codec_ctx_audio->sample_rate,	// In sample rate
+			&codec_ctx->ch_layout,	// In channel layout
+			codec_ctx->sample_fmt,	// In sample format
+			codec_ctx->sample_rate,	// In sample rate
 			0, nullptr);
-	if (response < 0 || (response = swr_init(swr_ctx))) {
+	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
+
+	if (response < 0 || (response = swr_init(swr_ctx.get()))) {
 		FFmpeg::print_av_error("Couldn't initialize SWR!", response);
-		avcodec_flush_buffers(codec_ctx_audio);
-		avcodec_free_context(&codec_ctx_audio);
-		return data;
+		return audio_data;
 	}
 
-	AVFrame *frame = av_frame_alloc(), *decoded_frame = av_frame_alloc();
-	AVPacket *packet = av_packet_alloc();
-	if (!frame || !decoded_frame || !packet) {
+	av_packet = make_unique_avpacket();
+	av_frame = make_unique_avframe();
+	av_decoded_frame = make_unique_avframe();
+
+	if (!av_frame || !av_decoded_frame || !av_packet) {
 		UtilityFunctions::printerr(
 				"Couldn't allocate frames/packet for audio!");
-		avcodec_flush_buffers(codec_ctx_audio);
-		avcodec_free_context(&codec_ctx_audio);
-		swr_free(&swr_ctx);
-		return data;
+		return audio_data;
 	}
 
 	size_t audio_size = 0;
 	int bytes_per_samples = av_get_bytes_per_sample(TARGET_FORMAT);
 
-	while (!(FFmpeg::get_frame(
-			format_ctx, codec_ctx_audio, stream->index, frame, packet))) {
+	while (!(FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index,
+							   av_frame.get(), av_packet.get()))) {
 		// Copy decoded data to new frame
-		decoded_frame->format = TARGET_FORMAT;
-		decoded_frame->ch_layout = TARGET_LAYOUT;
-		decoded_frame->sample_rate = TARGET_SAMPLE_RATE;
-		decoded_frame->nb_samples = swr_get_out_samples(
-				swr_ctx, frame->nb_samples);
+		av_decoded_frame->format = TARGET_FORMAT;
+		av_decoded_frame->ch_layout = TARGET_LAYOUT;
+		av_decoded_frame->sample_rate = TARGET_SAMPLE_RATE;
+		av_decoded_frame->nb_samples = swr_get_out_samples(
+				swr_ctx.get(), av_frame->nb_samples);
 
-		if ((response = av_frame_get_buffer(decoded_frame, 0)) < 0) {
+		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
 			FFmpeg::print_av_error(
 					"Couldn't create new frame for swr!", response);
-			av_frame_unref(frame);
-			av_frame_unref(decoded_frame);
+			av_frame_unref(av_frame.get());
+			av_frame_unref(av_decoded_frame.get());
 			break;
 		}
 		if (wav) {
-			response = swr_config_frame(swr_ctx, decoded_frame, frame);
+			response = swr_config_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
 			if (response < 0) {
 				FFmpeg::print_av_error(
 						"Couldn't config the audio frame!", response);
-				av_frame_unref(frame);
-				av_frame_unref(decoded_frame);
+				av_frame_unref(av_frame.get());
+				av_frame_unref(av_decoded_frame.get());
 				break;
 			}
 		}
-		response = swr_convert_frame(swr_ctx, decoded_frame, frame);
+		response = swr_convert_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
 		if (response < 0) {
 			FFmpeg::print_av_error(
 					"Couldn't convert the audio frame!", response);
-			av_frame_unref(frame);
-			av_frame_unref(decoded_frame);
+			av_frame_unref(av_frame.get());
+			av_frame_unref(av_decoded_frame.get());
 			break;
 		}
 
-		size_t byte_size = decoded_frame->nb_samples * bytes_per_samples * 2;
+		size_t byte_size = av_decoded_frame->nb_samples * bytes_per_samples * 2;
 
-		data.resize(audio_size + byte_size);
-		memcpy(&(data.ptrw()[audio_size]), 
-				decoded_frame->extended_data[0],
+		audio_data.resize(audio_size + byte_size);
+		memcpy(&(audio_data.ptrw()[audio_size]), 
+				av_decoded_frame->extended_data[0],
 				byte_size);
 		audio_size += byte_size;
 
-		av_frame_unref(frame);
-		av_frame_unref(decoded_frame);
+		av_frame_unref(av_frame.get());
+		av_frame_unref(av_decoded_frame.get());
 	}
 
 	// Cleanup
-	avcodec_flush_buffers(codec_ctx_audio);
-	avcodec_free_context(&codec_ctx_audio);
-	swr_free(&swr_ctx);
+	avcodec_flush_buffers(codec_ctx.get());
 
-	av_frame_free(&frame);
-	av_frame_free(&decoded_frame);
-	av_packet_free(&packet);
-
-	return data;
+	return audio_data;
 }
 
 

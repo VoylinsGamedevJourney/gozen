@@ -5,8 +5,8 @@ bool VideoMeta::load_meta(const String &video_path) {
 	meta_loaded = false;
 	path = video_path;
 
-	UniqueAVFormatContextInput av_format_ctx;
-	UniqueAVCodecContext av_codec_ctx_video;
+	UniqueAVFormatCtxInput av_format_ctx;
+	UniqueAVCodecCtx av_codec_ctx_video;
 	UniqueAVFrame av_frame;
 	UniqueAVPacket av_packet;
 
@@ -17,7 +17,7 @@ bool VideoMeta::load_meta(const String &video_path) {
 		return _log_err("Couldn't open video file: " + path);
 
 	av_format_ctx = make_unique_ffmpeg<
-			AVFormatContext, AVFormatContextInputDeleter>(temp_format_ctx);
+			AVFormatContext, AVFormatCtxInputDeleter>(temp_format_ctx);
 
 	if (avformat_find_stream_info(av_format_ctx.get(), nullptr) < 0)
 		return _log_err("Couldn't find stream information in: " + path);
@@ -117,7 +117,7 @@ bool VideoMeta::load_meta(const String &video_path) {
 
 	if (codec_video) {
 		av_codec_ctx_video = make_unique_ffmpeg<
-				AVCodecContext, AVCodecContextDeleter>(
+				AVCodecContext, AVCodecCtxDeleter>(
 				avcodec_alloc_context3(codec_video));
 
 		if (av_codec_ctx_video && avcodec_parameters_to_context(

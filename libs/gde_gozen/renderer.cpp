@@ -6,83 +6,126 @@ Renderer::~Renderer() {
 }
 
 PackedStringArray Renderer::get_available_codecs(int codec_id) {
-	PackedStringArray codec_data = PackedStringArray();
-
-	const AVCodec *codec = nullptr;
+	PackedStringArray codec_names = PackedStringArray();
+	const AVCodec *current_codec = nullptr;
 	void *i = nullptr;
 
-	while ((codec = av_codec_iterate(&i)))
-		if (codec->id == codec_id && av_codec_is_encoder(codec))
-			codec_data.append(codec->name);
+	while ((current_codec = av_codec_iterate(&i)))
+		if (current_codec->id == codec_id && av_codec_is_encoder(current_codec))
+			codec_names.append(current_codec->name);
 
-	return codec_data;
+	return codec_names;
 }
 
 bool Renderer::open() {
 	if (renderer_open)
 		return _log_err("Already open");
-	else {
-		if (path == "")
-			return _log_err("No path set");
-		else if (video_codec_id == AV_CODEC_ID_NONE)
-			return _log_err("No video codec set");
-		else if (audio_enabled && audio_codec_id == AV_CODEC_ID_NONE)
+
+	if (path.is_empty())
+		return _log_err("No path set");
+	if (video_codec_id == AV_CODEC_ID_NONE)
+		return _log_err("No video codec set");
+	if (resolution.x <= 0 || resolution.y <= 0)
+		return _log_err("Invalid resolution set");
+	if (framerate <= 0)
+		return _log_err("Invalid framerate set");
+
+	if (audio_enabled) {
+		if (audio_codec_id == AV_CODEC_ID_NONE) {
 			_log("Audio codec not set, not rendering audio");
-		else if (audio_enabled && audio_codec_id != AV_CODEC_ID_NONE
-					&& sample_rate == -1) {
+			audio_enabled = false;
+		} else if (sample_rate == -1) {
 			_log("A sample rate needs to be set for audio exporting");
-			audio_codec_id = AV_CODEC_ID_NONE;
+			audio_enabled = false;
 		}
 	}
 
 	// Allocating output media context
-	avformat_alloc_output_context2(&av_format_ctx, NULL, NULL, path.utf8());
-	if (!av_format_ctx) {
-		_log_err("Error creating AV Format by path extension, using MPEG");
-		avformat_alloc_output_context2(
-				&av_format_ctx, NULL, "mpeg", path.utf8());
-	} if (!av_format_ctx)
-		return _log_err("Error creating AV Format");
+	AVFormatContext* temp_format_ctx = nullptr;
 
-	av_output_format = av_format_ctx->oformat;
+	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, path.utf8())) {
+		_log_err("Error creating AV Format by path extension, using MPEG");
+		_log("Trying MPEG default");
+		if (avformat_alloc_output_context2(
+				&temp_format_ctx, nullptr, "mpeg", path.utf8())) {
+			return _log_err("Error creating AV Format");
+		}
+	}
+
+	av_format_ctx = make_unique_ffmpeg<AVFormatContext, AVFormatCtxOutputDeleter>(
+			temp_format_ctx);
 
 	// Setting up video stream
-	const AVCodec *av_codec_video = avcodec_find_encoder(video_codec_id);
-	if (!av_codec_video) {
-		UtilityFunctions::printerr("Video codec '",
-									avcodec_get_name(video_codec_id),
-									"' not found!");
+	if (!_add_video_stream()) {
+		close();
+		return _log_err("Couldn't create video stream");
+	}
+
+	// Setting up audio stream
+	if (audio_enabled && !_add_audio_stream()) {
+		close();
+		return _log_err("Couldn't create video stream");
+	}
+
+	av_dump_format(av_format_ctx.get(), 0, path.utf8(), 1);
+
+	// Open output file if needed
+	if (!_open_output_file()) {
+		close();
+		return _log_err("Couldn't open output file");
+	}
+
+	// Write stream header - if any
+	if (!_write_header()) {
+		close();
+		return _log_err("Couldn't write header");
+	}
+
+	// Setting up SWS
+	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter >(sws_getContext(
+			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGBA,
+			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_YUV420P,
+			sws_quality, nullptr, nullptr, nullptr));
+	if (!sws_ctx)
+		return _log_err("Couldn't create SWS");
+
+	frame_nr = 0;
+	renderer_open = true;
+	return OK;
+}
+
+bool Renderer::_add_video_stream() {
+	const AVCodec *av_codec = avcodec_find_encoder(video_codec_id);
+	if (!av_codec) {
+		_log_err(avcodec_get_name(video_codec_id));
 		return _log_err("Couldn't open video codec");
 	}
 
-	av_packet_video = av_packet_alloc();
-	if (!av_packet_video)
+	if (!(av_packet_video = make_unique_avpacket()))
 		return _log_err("Out of memory");
 
-	av_stream_video = avformat_new_stream(av_format_ctx, NULL);
+	av_stream_video = avformat_new_stream(av_format_ctx.get(), nullptr);
 	if (!av_stream_video)
 		return _log_err("Couldn't create stream");
 
-	av_stream_video->id = av_format_ctx->nb_streams-1;
+	av_stream_video->id = av_format_ctx->nb_streams - 1;
 
-	av_codec_ctx_video = avcodec_alloc_context3(av_codec_video);
+	av_codec_ctx_video = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(
+			avcodec_alloc_context3(av_codec));
 	if (!av_codec_ctx_video)
 		return _log_err("Couldn't alloc video codec");
 
-	FFmpeg::enable_multithreading(av_codec_ctx_video, av_codec_video);
+	FFmpeg::enable_multithreading(av_codec_ctx_video.get(), av_codec);
 
 	av_codec_ctx_video->codec_id = video_codec_id;
-	av_codec_ctx_video->pix_fmt = AV_PIX_FMT_YUV420P;
-	// Resolution must be a multiple of two
-	av_codec_ctx_video->width = resolution.x;
-	av_codec_ctx_video->height = resolution.y;
-	av_codec_ctx_video->time_base = AVRational{1, (int)framerate};
+	av_codec_ctx_video->width = resolution.x;  // Resolution must be
+	av_codec_ctx_video->height = resolution.y; // a multiple of two.
+	av_codec_ctx_video->time_base = {1, (int)round(framerate)};
+	av_codec_ctx_video->framerate = {(int)round(framerate), 1};
 	av_stream_video->time_base = av_codec_ctx_video->time_base;
-
-	av_codec_ctx_video->framerate = AVRational{(int)framerate, 1};
 	av_stream_video->avg_frame_rate = av_codec_ctx_video->framerate;
-
 	av_codec_ctx_video->gop_size = gop_size;
+	av_codec_ctx_video->pix_fmt = AV_PIX_FMT_YUV420P;
 
 	if (av_codec_ctx_video->codec_id == AV_CODEC_ID_MPEG2VIDEO)
 		av_codec_ctx_video->max_b_frames = b_frames <= 2 ? b_frames : 2;
@@ -93,26 +136,26 @@ bool Renderer::open() {
 		av_codec_ctx_video->mb_decision = 2;
 
 	// Some formats want stream headers separated
-	if (av_output_format->flags & AVFMT_GLOBALHEADER)
+	if (av_format_ctx->oformat->flags & AVFMT_GLOBALHEADER)
 		av_codec_ctx_video->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 	// Setting the CRF
 	av_opt_set(av_codec_ctx_video->priv_data, "crf",
-				std::to_string(crf).c_str(), 0);
+			std::to_string(crf).c_str(), 0);
 
 	// Encoding options for different codecs
-	if (av_codec_video->id == AV_CODEC_ID_H264)
+	if (av_codec->id == AV_CODEC_ID_H264)
 		av_opt_set(av_codec_ctx_video->priv_data, "preset",
-				h264_preset.c_str(), 0);
+			 h264_preset.c_str(), 0);
 
 	// Opening the video encoder codec
-	response = avcodec_open2(av_codec_ctx_video, av_codec_video, NULL);
+	response = avcodec_open2(av_codec_ctx_video.get(), av_codec, nullptr);
 	if (response < 0) {
 		FFmpeg::print_av_error("Couldn't open video codec context!", response);
 		return _log_err("Couldn't open video codec");
 	}
 
-	av_frame_video = av_frame_alloc();
+	av_frame_video = make_unique_avframe();
 	if (!av_frame_video)
 		return _log_err("Out of memory");
 
@@ -120,104 +163,115 @@ bool Renderer::open() {
 	av_frame_video->width = resolution.x;
 	av_frame_video->height = resolution.y;
 
-	if (av_frame_get_buffer(av_frame_video, 0))
+	if (av_frame_get_buffer(av_frame_video.get(), 0))
 		return _log_err("Couldn't get frame buffer");
 
 	// Copy video stream params to muxer
 	if (avcodec_parameters_from_context(av_stream_video->codecpar,
-										av_codec_ctx_video) < 0) {
+										av_codec_ctx_video.get()) < 0) {
 		return _log_err("Couldn't copy stream params");
 	}
 
-	if (audio_enabled) {
-		const AVCodec *av_codec_audio = avcodec_find_encoder(audio_codec_id);
-		if (!av_codec_audio) {
-			UtilityFunctions::printerr("Audio codec '",
-										avcodec_get_name(audio_codec_id),
-										"' not found!");
-			return _log_err("Couldn't find audio encoder");
-		}
+	return true;
+}
 
-		av_packet_audio = av_packet_alloc();
-		if (!av_packet_audio)
-			return _log_err("Out of memory");
+bool Renderer::_add_audio_stream() {
+	const AVCodec *av_codec = avcodec_find_encoder(audio_codec_id);
+	if (!av_codec) {
+		_log_err(avcodec_get_name(audio_codec_id));
+		return _log_err("Couldn't find audio encoder");
+	}
 
-		av_stream_audio = avformat_new_stream(av_format_ctx, NULL);
-		if (!av_stream_audio)
-			return _log_err("Couldn't create stream");
+	if (!(av_packet_audio = make_unique_avpacket()))
+		return _log_err("Out of memory");
 
-		av_stream_audio->id = av_format_ctx->nb_streams-1;
+	av_stream_audio = avformat_new_stream(av_format_ctx.get(), nullptr);
+	if (!av_stream_audio)
+		return _log_err("Couldn't create stream");
 
-		av_codec_ctx_audio = avcodec_alloc_context3(av_codec_audio);
-		if (!av_codec_ctx_audio)
-			return _log_err("Couln't alloc audio codec");
+	av_stream_audio->id = av_format_ctx->nb_streams - 1;
 
-		FFmpeg::enable_multithreading(av_codec_ctx_audio, av_codec_audio);
+	av_codec_ctx_audio = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(
+				avcodec_alloc_context3(av_codec));
+	if (!av_codec_ctx_audio)
+		return _log_err("Couln't alloc audio codec");
 
-		av_codec_ctx_audio->bit_rate = 128000;
-		av_codec_ctx_audio->sample_fmt = av_codec_audio->sample_fmts[0];
-		av_codec_ctx_audio->sample_rate = sample_rate;
+	FFmpeg::enable_multithreading(av_codec_ctx_audio.get(), av_codec);
 
-		if (av_codec_audio->supported_samplerates) {
-			for (int i = 0; av_codec_audio->supported_samplerates[i]; i++) {
-				if (av_codec_audio->supported_samplerates[i] == 48000) {
-					av_codec_ctx_audio->sample_rate = 48000;
-					break;
-				}
+	av_codec_ctx_audio->bit_rate = 128000;
+	av_codec_ctx_audio->sample_fmt = av_codec->sample_fmts[0];
+	av_codec_ctx_audio->sample_rate = sample_rate;
+
+	if (av_codec->supported_samplerates) {
+		for (int i = 0; av_codec->supported_samplerates[i]; i++) {
+			if (av_codec->supported_samplerates[i] == 48000) {
+				av_codec_ctx_audio->sample_rate = 48000;
+				break;
 			}
 		}
-		av_codec_ctx_audio->time_base = AVRational{
-				1, av_codec_ctx_audio->sample_rate};
-		av_stream_audio->time_base = av_codec_ctx_audio->time_base;
-
-		AVChannelLayout ch_layout = AV_CHANNEL_LAYOUT_STEREO;
-		av_channel_layout_copy(&av_codec_ctx_audio->ch_layout, &(ch_layout));
-
-		// Opening the audio encoder codec
-		response = avcodec_open2(av_codec_ctx_audio, av_codec_audio, NULL);
-		if (response < 0) {
-			FFmpeg::print_av_error("Couldn't open audio codec!", response);
-			return false;
-		}
-
-		// Copy audio stream params to muxer
-		if (avcodec_parameters_from_context(av_stream_audio->codecpar,
-											av_codec_ctx_audio))
-			return _log_err("Couldn't copy stream params");
-
-		if (av_output_format->flags & AVFMT_GLOBALHEADER)
-			av_codec_ctx_audio->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 	}
 
-	av_dump_format(av_format_ctx, 0, path.utf8(), 1);
+	av_codec_ctx_audio->time_base = AVRational{1, av_codec_ctx_audio->sample_rate};
+	av_stream_audio->time_base = av_codec_ctx_audio->time_base;
 
-	// Open output file if needed
-	if (!(av_output_format->flags & AVFMT_NOFILE)) {
+	AVChannelLayout ch_layout = AV_CHANNEL_LAYOUT_STEREO;
+	av_channel_layout_copy(&av_codec_ctx_audio->ch_layout, &(ch_layout));
+
+	// Opening the audio encoder codec.
+	response = avcodec_open2(av_codec_ctx_audio.get(), av_codec, nullptr);
+	if (response < 0) {
+		FFmpeg::print_av_error("Couldn't open audio codec!", response);
+		return false;
+	}
+
+	// Copy audio stream params to muxer.
+	if (avcodec_parameters_from_context(av_stream_audio->codecpar,
+										av_codec_ctx_audio.get()))
+		return _log_err("Couldn't copy stream params");
+
+	if (av_format_ctx->oformat->flags & AVFMT_GLOBALHEADER)
+		av_codec_ctx_audio->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+	
+	return true;
+}
+
+bool Renderer::_open_output_file() {
+	if (!(av_format_ctx->oformat->flags & AVFMT_NOFILE)) {
 		response = avio_open(&av_format_ctx->pb, path.utf8(), AVIO_FLAG_WRITE);
+
 		if (response < 0) {
 			FFmpeg::print_av_error("Couldn't open output file!", response);
-			return _log_err("Couldn't open video");
+			return false;
 		}
 	}
 
-	// Write stream header - if any
-	response = avformat_write_header(av_format_ctx, NULL);
+	return true;
+}
+
+bool Renderer::_write_header() {
+	AVDictionary* options = nullptr;
+
+	if (!meta_title.is_empty())
+		av_dict_set(&options, "title", meta_title.utf8(), 0);
+	else
+		av_dict_set(&options, "title", path.get_file().utf8(), 0);
+
+	if (!meta_comment.is_empty())
+		av_dict_set(&options, "comment", meta_comment.utf8(), 0);
+	if (!meta_author.is_empty())
+		av_dict_set(&options, "author", meta_author.utf8(), 0);
+	if (!meta_copyright.is_empty())
+		av_dict_set(&options, "copyright", meta_copyright.utf8(), 0);
+
+	response = avformat_write_header(av_format_ctx.get(), &options);
+	av_dict_free(&options);
+
 	if (response < 0) {
 		FFmpeg::print_av_error("Error when writing header!", response);
-		return _log_err("Couldn't write header");
+		return false;
 	}
 
-	// Setting up SWS
-	sws_ctx = sws_getContext(
-		av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGBA,
-		av_frame_video->width, av_frame_video->height, AV_PIX_FMT_YUV420P,
-		sws_quality, NULL, NULL, NULL);
-	if (!sws_ctx)
-		return _log_err("Couldn't create SWS");
-
-	frame_nr = 0;
-	renderer_open = true;
-	return OK;
+	return true;
 }
 
 bool Renderer::send_frame(Ref<Image> frame_image) {
@@ -226,14 +280,14 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 	else if (audio_enabled && audio_codec_id != AV_CODEC_ID_NONE
 			&& !audio_added)
 		return _log_err("Audio hasn't been send");
-	else if (av_frame_make_writable(av_frame_video) < 0)
+	else if (av_frame_make_writable(av_frame_video.get()) < 0)
 		return _log_err("Frame not writable");
 
-	uint8_t *src_data[4] = { frame_image->get_data().ptrw(), NULL, NULL, NULL};
+	uint8_t *src_data[4] = { frame_image->get_data().ptrw(), nullptr, nullptr, nullptr};
 	int src_linesize[4] = { av_frame_video->width * 4, 0, 0, 0 };
 
 	response = sws_scale(
-			sws_ctx,
+			sws_ctx.get(),
 			src_data, src_linesize, 0, av_frame_video->height,
 			av_frame_video->data, av_frame_video->linesize);
 	if (response < 0) {
@@ -245,87 +299,79 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 	frame_nr++;
 
 	// Adding frame
-	response = avcodec_send_frame(av_codec_ctx_video, av_frame_video);
+	response = avcodec_send_frame(av_codec_ctx_video.get(), av_frame_video.get());
 	if (response < 0) {
 		FFmpeg::print_av_error("Error sending video frame!", response);
 		return false;
 	}
 
-	av_packet_video = av_packet_alloc();
+	av_packet_video = make_unique_avpacket();
 
 	while (response >= 0) {
-		response = avcodec_receive_packet(av_codec_ctx_video, av_packet_video);
+		response = avcodec_receive_packet(av_codec_ctx_video.get(), av_packet_video.get());
 		if (response == AVERROR(EAGAIN) || response == AVERROR_EOF)
 			break;
 		else if (response < 0) {
 			FFmpeg::print_av_error("Error encoding video frame!", response);
-			av_packet_free(&av_packet_video);
 			return false;
 		}
 
 		// Rescale output packet timestamp values from codec to stream timebase
 		av_packet_video->stream_index = av_stream_video->index;
-		av_packet_rescale_ts(av_packet_video, av_codec_ctx_video->time_base,
+		av_packet_rescale_ts(av_packet_video.get(),
+							 av_codec_ctx_video->time_base,
 							 av_stream_video->time_base);
 
 		// Write the frame to file
-		response = av_interleaved_write_frame(av_format_ctx, av_packet_video);
+		response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_video.get());
 		if (response < 0) {
 			FFmpeg::print_av_error("Error writing output packet!", response);
 			response = -1;
-			av_packet_free(&av_packet_video);
 			return false;
 		}
 
-		av_packet_unref(av_packet_video);
+		av_packet_unref(av_packet_video.get());
 	}
 
-	av_packet_free(&av_packet_video);
 	return true;
 }
 
 bool Renderer::send_audio(PackedByteArray wav_data) {
 	if (!renderer_open)
 		return _log_err("Not open");
-	else if (audio_codec_id == AV_CODEC_ID_NONE)
+	if (audio_codec_id == AV_CODEC_ID_NONE)
 		return _log_err("Audio not enabled");
-	else if (audio_added)
+	if (audio_added)
 		return _log_err("Audio already send");
 	
 	const uint8_t *input_data = wav_data.ptr();
-	SwrContext *swr_ctx = nullptr;
+	UniqueSwrCtx swr_ctx;
 	AVChannelLayout ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 
 	// Allocate and setup SWR
-	swr_alloc_set_opts2(&swr_ctx,
+	SwrContext* temp_swr_ctx = nullptr;
+	swr_alloc_set_opts2(&temp_swr_ctx,
 			&ch_layout,av_codec_ctx_audio->sample_fmt,
 			av_codec_ctx_audio->sample_rate,
-			&ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, NULL);
-	if (!swr_ctx || swr_init(swr_ctx) < 0) {
-		swr_free(&swr_ctx); // Godot crashes anyway when SWR can't be created.
+			&ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, nullptr);
+	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
+	if (!swr_ctx || swr_init(swr_ctx.get()) < 0)
 		return _log_err("Couldn't create SWR");
-	}
 
 	// Allocate a buffer for the output in the target format
-	AVFrame *frame_out = av_frame_alloc();
-	if (!frame_out) {
-		swr_free(&swr_ctx);
+	UniqueAVFrame av_frame_out = make_unique_avframe();
+	if (!av_frame_out)
 		return _log_err("Out of memory");
-	}
 
-	frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
-	frame_out->format = av_codec_ctx_audio->sample_fmt;
-	frame_out->sample_rate = av_codec_ctx_audio->sample_rate;
-	frame_out->nb_samples = av_codec_ctx_audio->frame_size;
+	av_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
+	av_frame_out->format = av_codec_ctx_audio->sample_fmt;
+	av_frame_out->sample_rate = av_codec_ctx_audio->sample_rate;
+	av_frame_out->nb_samples = av_codec_ctx_audio->frame_size;
 
-	av_frame_get_buffer(frame_out, 0);
+	av_frame_get_buffer(av_frame_out.get(), 0);
 
-	av_packet_audio = av_packet_alloc();
-	if (!av_packet_audio) {
-		av_frame_free(&frame_out);
-		swr_free(&swr_ctx);
+	if (!(av_packet_audio = make_unique_avpacket()))
 		return _log_err("Out of memory");
-	}
 
 	int bytes_per_sample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2;
 	int remaining_samples = wav_data.size() / bytes_per_sample;
@@ -336,51 +382,41 @@ bool Renderer::send_audio(PackedByteArray wav_data) {
 									   av_codec_ctx_audio->frame_size);
 		
 		// Resample the data 
-		int converted_samples = swr_convert(swr_ctx,
-				frame_out->data, frame_out->nb_samples,
+		int converted_samples = swr_convert(swr_ctx.get(),
+				av_frame_out->data, av_frame_out->nb_samples,
 				&input_data, samples_to_convert);
 
-		if (converted_samples < 0) {
-			av_frame_free(&frame_out);
-			swr_free(&swr_ctx);
+		if (converted_samples < 0)
 			return _log_err("Couldn't resample");
-		}
-
 		if (converted_samples > 0) {
-			frame_out->nb_samples = converted_samples;
-			frame_out->pts = pts;
+			av_frame_out->nb_samples = converted_samples;
+			av_frame_out->pts = pts;
 			pts += converted_samples;
 
 			// Send audio frame to the encoder
-			response = avcodec_send_frame(av_codec_ctx_audio, frame_out);
+			response = avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
 			if (response < 0) {
 				FFmpeg::print_av_error("Error sending audio frame!", response);
-				av_frame_free(&frame_out);
-				swr_free(&swr_ctx);
-				av_packet_free(&av_packet_audio);
 				return false;
 			}
 
-			while ((response = avcodec_receive_packet(av_codec_ctx_audio,
-													  av_packet_audio)) >= 0) {
+			while ((response = avcodec_receive_packet(av_codec_ctx_audio.get(),
+													  av_packet_audio.get())) >= 0) {
 				// Rescale packet timestamp if necessary
 				av_packet_audio->stream_index = av_stream_audio->index;
 				av_packet_rescale_ts(
-						av_packet_audio,
+						av_packet_audio.get(),
 						av_codec_ctx_audio->time_base,
 						av_stream_audio->time_base);
 
-				response = av_interleaved_write_frame(av_format_ctx,
-													  av_packet_audio);
+				response = av_interleaved_write_frame(av_format_ctx.get(),
+													  av_packet_audio.get());
 				if (response < 0) {
-					FFmpeg::print_av_error("Error writing audio packet!",
-								response);
-					av_frame_free(&frame_out);
-					swr_free(&swr_ctx);
-					av_packet_free(&av_packet_audio);
+					FFmpeg::print_av_error("Error writing audio packet!", response);
 					return false;
 				}
-				av_packet_unref(av_packet_audio);
+
+				av_packet_unref(av_packet_audio.get());
 			}
 		}
 
@@ -390,102 +426,102 @@ bool Renderer::send_audio(PackedByteArray wav_data) {
 
 	// Flush remaining samples
 	while (true) {
-		int converted_samples = swr_convert(swr_ctx,
-				frame_out->data, frame_out->nb_samples,
-				nullptr, 0);
-		if (converted_samples <= 0) break;
+		int converted_samples = swr_convert(swr_ctx.get(),
+								   av_frame_out->data, av_frame_out->nb_samples,
+								   nullptr, 0);
+		if (converted_samples <= 0)
+			break;
 
-		frame_out->nb_samples = converted_samples;
-		frame_out->pts = pts;
+		av_frame_out->nb_samples = converted_samples;
+		av_frame_out->pts = pts;
 		pts += converted_samples;
 
-		int response = avcodec_send_frame(av_codec_ctx_audio, frame_out);
+		int response = avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
 		if (converted_samples <= 0) break;
 
-		while ((response = avcodec_receive_packet(av_codec_ctx_audio,
-												  av_packet_audio)) >= 0) {
+		while ((response = avcodec_receive_packet(av_codec_ctx_audio.get(),
+												  av_packet_audio.get())) >= 0) {
 			av_packet_audio->stream_index = av_stream_audio->index;
 			av_packet_rescale_ts(
-					av_packet_audio,
+					av_packet_audio.get(),
 					av_codec_ctx_audio->time_base,
 					av_stream_audio->time_base);
-			av_interleaved_write_frame(av_format_ctx, av_packet_audio);
-			av_packet_unref(av_packet_audio);
+			av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
+			av_packet_unref(av_packet_audio.get());
 		}
 	}
 
 	// Flush the encoder
-	avcodec_send_frame(av_codec_ctx_audio, nullptr);
-	while (avcodec_receive_packet(av_codec_ctx_audio, av_packet_audio) >= 0) {
+	avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
+	while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
 		av_packet_audio->stream_index = av_stream_audio->index;
-		av_packet_rescale_ts(av_packet_audio, av_codec_ctx_audio->time_base,
+		av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base,
 							 av_stream_audio->time_base);
-		av_interleaved_write_frame(av_format_ctx, av_packet_audio);
-		av_packet_unref(av_packet_audio);
+		av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
+		av_packet_unref(av_packet_audio.get());
 	}
-
-	av_frame_free(&frame_out);
-	av_packet_free(&av_packet_audio);
-	swr_free(&swr_ctx);
 
 	audio_added = true;
 	return true;
 }
 
-void Renderer::close() {
-	if (av_codec_ctx_video == nullptr)
-		return;
+bool Renderer::_finalize_renderer() {
+	if (!renderer_open)
+		return _log_err("Renderer not open, can't finalize video");
+	if (!av_format_ctx)
+		return _log_err("Can't finalize renderer, no format context");
+
+	_log("Finalizing renderer ..");
 
 	// Flush encoders before cleanup
 	if (av_codec_ctx_video) {
-		av_packet_video = av_packet_alloc();
-		avcodec_send_frame(av_codec_ctx_video, nullptr);
+		av_packet_video = make_unique_avpacket();
+		avcodec_send_frame(av_codec_ctx_video.get(), nullptr);
 		
 		while (avcodec_receive_packet(
-				av_codec_ctx_video, av_packet_video) >= 0)
-			av_packet_unref(av_packet_video);
+				av_codec_ctx_video.get(), av_packet_video.get()) >= 0)
+			av_packet_unref(av_packet_video.get());
 	}
 
 	if (audio_enabled && av_codec_ctx_audio) {
-        av_packet_audio = av_packet_alloc();
-		avcodec_send_frame(av_codec_ctx_audio, nullptr);
+        av_packet_audio = make_unique_avpacket();
+		avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
 
 		while (avcodec_receive_packet(
-				av_codec_ctx_audio, av_packet_audio) >= 0)
-			av_packet_unref(av_packet_audio);
+				av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0)
+			av_packet_unref(av_packet_audio.get());
 	}
-
-	if (av_format_ctx)
-		av_write_trailer(av_format_ctx);
-
-	// Cleanup contexts
-	if (sws_ctx) {
-		sws_freeContext(sws_ctx);
-		sws_ctx = nullptr;
-	}
-
-	if (av_codec_ctx_video)
-		avcodec_free_context(&av_codec_ctx_video);
-
-	if (audio_enabled && av_codec_ctx_audio)
-		avcodec_free_context(&av_codec_ctx_audio);
-
-	if (av_frame_video)
-		av_frame_free(&av_frame_video);
-
-	if (av_packet_video)
-		av_packet_free(&av_packet_video);
-
-	if (audio_enabled && av_packet_audio)
-		av_packet_free(&av_packet_audio);
 
 	if (av_format_ctx) {
-		if (!(av_output_format->flags & AVFMT_NOFILE))
+		response = av_write_trailer(av_format_ctx.get());
+		if (response)
+			FFmpeg::print_av_error("Error writing trailer to video file!", response);
+	}
+
+	_log("Video render finished");
+	return true;
+}
+
+
+void Renderer::close() {
+	if (!_finalize_renderer())
+		_log_err("Something went wrong finalizing video");
+
+	// Cleanup contexts
+	sws_ctx.reset();
+
+	av_packet_video.reset();
+	av_packet_audio.reset();
+	av_frame_video.reset();
+
+	av_codec_ctx_video.reset();
+	av_codec_ctx_audio.reset();
+
+	if (av_format_ctx)
+		if (!(av_format_ctx->oformat->flags & AVFMT_NOFILE))
 			avio_closep(&av_format_ctx->pb);
 
-		avformat_free_context(av_format_ctx);
-		av_format_ctx = nullptr;
-	}
+	av_format_ctx.reset();
 
 	renderer_open = false;
 	audio_added = false;

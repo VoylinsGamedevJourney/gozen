@@ -9,7 +9,7 @@ void FFmpeg::print_av_error(const char *message, int error) {
 	UtilityFunctions::printerr("FFmpeg error: ", message, " ", error_buffer);
 }
 
-void FFmpeg::enable_multithreading(AVCodecContext *&codec_ctx, const AVCodec *&codec) {
+void FFmpeg::enable_multithreading(AVCodecContext *codec_ctx, const AVCodec *codec) {
 	codec_ctx->thread_count = Math::min(
 			OS::get_singleton()->get_processor_count() - 1, 1);
 	// TODO: Let users decide how many threads they maximum want to use.

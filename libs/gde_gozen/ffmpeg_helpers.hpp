@@ -12,16 +12,16 @@ extern "C" {
 
 
 // AV Format Context helpers
-struct AVFormatContextInputDeleter {
+struct AVFormatCtxInputDeleter {
 	void operator()(AVFormatContext* ctx) const {
 		if (ctx)
 			avformat_close_input(&ctx);
 	}
 };
-using UniqueAVFormatContextInput = std::unique_ptr<AVFormatContext, AVFormatContextInputDeleter>;
+using UniqueAVFormatCtxInput = std::unique_ptr<AVFormatContext, AVFormatCtxInputDeleter>;
 
 
-struct AVFormatContextOutputDeleter {
+struct AVFormatCtxOutputDeleter {
 	void operator()(AVFormatContext* ctx) const {
 		if (ctx) {
 			if (ctx->pb && !(ctx->oformat->flags & AVFMT_NOFILE))
@@ -31,18 +31,18 @@ struct AVFormatContextOutputDeleter {
 		}
 	}
 };
-using UniqueAVFormatContextOutput = std::unique_ptr<AVFormatContext, AVFormatContextOutputDeleter>;
+using UniqueAVFormatCtxOutput = std::unique_ptr<AVFormatContext, AVFormatCtxOutputDeleter>;
 
 
 // AV Codec Context helpers
-struct AVCodecContextDeleter {
+struct AVCodecCtxDeleter {
 	void operator()(AVCodecContext* ctx) const {
 		if (ctx) {
 			avcodec_free_context(&ctx);
 		}
 	}
 };
-using UniqueAVCodecContext = std::unique_ptr<AVCodecContext, AVCodecContextDeleter>;
+using UniqueAVCodecCtx = std::unique_ptr<AVCodecContext, AVCodecCtxDeleter>;
 
 
 // AV Frame helper
@@ -68,25 +68,25 @@ using UniqueAVPacket = std::unique_ptr<AVPacket, AVPacketDeleter>;
 
 
 // SWResample Context helper
-struct SwrContextDeleter {
+struct SwrCtxDeleter {
 	void operator()(SwrContext* ctx) const {
 		if (ctx) {
 			swr_free(&ctx);
 		}
 	}
 };
-using UniqueSwrContext = std::unique_ptr<SwrContext, SwrContextDeleter>;
+using UniqueSwrCtx = std::unique_ptr<SwrContext, SwrCtxDeleter>;
 
 
 // SWScale Context helper
-struct SwsContextDeleter {
+struct SwsCtxDeleter {
 	void operator()(SwsContext* ctx) const {
 		if (ctx) {
 			sws_freeContext(ctx);
 		}
 	}
 };
-using UniqueSwsContext = std::unique_ptr<SwsContext, SwsContextDeleter>;
+using UniqueSwsCtx = std::unique_ptr<SwsContext, SwsCtxDeleter>;
 
 
 template<typename T_FFmpeg, typename T_Deleter>

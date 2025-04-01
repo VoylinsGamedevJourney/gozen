@@ -13,6 +13,7 @@
 #include <godot_cpp/classes/rendering_server.hpp>
 
 #include "ffmpeg.hpp"
+#include "ffmpeg_helpers.hpp"
 
 
 using namespace godot;
@@ -21,16 +22,16 @@ class Video : public Resource {
 	GDCLASS(Video, Resource);
 
 private:
-	// FFmpeg classes
-	AVFormatContext *av_format_ctx = nullptr;
-	AVCodecContext *av_codec_ctx_video = nullptr;
-	AVStream *av_stream_video = nullptr;
+	// FFmpeg classe
+	UniqueAVFormatCtxInput av_format_ctx;
+	UniqueAVCodecCtx av_codec_ctx;
+	AVStream *av_stream = nullptr;
 
-	AVFrame *av_frame = nullptr;
-	AVFrame *av_sws_frame = nullptr;
-	AVPacket *av_packet = nullptr;
+	UniqueAVPacket av_packet;
+	UniqueAVFrame av_frame;
 
-	struct SwsContext *sws_ctx = nullptr;
+	UniqueAVFrame av_sws_frame;
+	UniqueSwsCtx sws_ctx;
 
 	// Default variable types
 	int response = 0;
