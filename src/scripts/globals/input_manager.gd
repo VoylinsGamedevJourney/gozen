@@ -23,6 +23,10 @@ func _input(event: InputEvent) -> void:
 		if !undo_redo.redo():
 			printerr("Couldn't redo!")
 
+	if event.is_action_pressed("timeline_play_pause", false, true):
+		Editor.on_play_pressed()
+		get_viewport().set_input_as_handled()
+
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
 

@@ -21,11 +21,7 @@ var current_frame: PackedInt64Array = []
 
 var audio_wave_data: PackedFloat32Array = []
 
-var padding: int = 0
-var resolution: Vector2i = Vector2i.ZERO
 var uv_resolution: Vector2i = Vector2i.ZERO
-var frame_count: int = 0
-var framerate: float = 0.0
 
 
 
@@ -64,11 +60,9 @@ func init_data(file_data_id: int) -> void:
 			printerr("Failed loading video file meta data!")
 
 		# Set necessary metadata
-		resolution = video_meta.get_resolution()
-		padding = video_meta.get_padding()
-		uv_resolution = Vector2i(int((resolution.x + padding) / 2.), int(resolution.y / 2.))
-		frame_count = video_meta.get_frame_count()
-		framerate = video_meta.get_framerate()
+		uv_resolution = Vector2i(
+				int((video_meta.get_width() + video_meta.get_padding()) / 2.),
+				int(video_meta.get_height() / 2.))
 
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
 				_load_video_data.bind(file.path))))

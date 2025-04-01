@@ -73,3 +73,10 @@ func set_default_framerate(framerate: float) -> void:
 func get_default_framerate() -> float:
 	return data.default_framerate
 
+
+func set_tracks_amount(track_amount: int) -> void:
+	data.default_tracks = track_amount
+
+
+func get_tracks_amount() -> int:
+	return data.default_tracks

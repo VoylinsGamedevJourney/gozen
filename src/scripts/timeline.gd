@@ -107,12 +107,12 @@ func _on_main_gui_input(event: InputEvent) -> void:
 			playback_before_moving = Editor.is_playing
 
 			if playback_before_moving:
-				Editor._on_play_pressed()
+				Editor.on_play_pressed()
 		elif event.is_released():
 			playhead_moving = false
 
 			if playback_before_moving:
-				Editor._on_play_pressed()
+				Editor.on_play_pressed()
 
 
 func _set_zoom(new_zoom: float) -> void:

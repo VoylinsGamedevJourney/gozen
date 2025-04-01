@@ -14,3 +14,5 @@ var default_project_path: String = OS.get_executable_path().trim_suffix(OS.get_e
 var default_resolution: Vector2i = Vector2i(1920, 1080)
 var default_framerate: float = 30.0
 
+var tracks_amount: int = 6 # The amount of tracks
+

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scripts/settings_menu.gd" id="1_ce4ec"]
 
-[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("theme_option_button", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "save_info_label")]
+[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "theme_option_button", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox")]
 self_modulate = Color(1, 1, 1, 0.666667)
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,12 +11,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"background"
 script = ExtResource("1_ce4ec")
+save_info_label = NodePath("Panel/Margin/VBox/SaveForEffectLabel")
 theme_option_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton")
 image_duration_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox")
 default_resolution_x_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionXSpinBox")
 default_resolution_y_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionYSpinBox")
 default_framerate_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/DefaultFramerateSpinBox")
-save_info_label = NodePath("Panel/Margin/VBox/SaveForEffectLabel")
+track_amount_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox")
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(700, 300)
@@ -58,6 +59,8 @@ columns = 2
 [node name="ThemeLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Choose your theme: Dark or Light. Both are developed at the same time so both themes should be usable. Custom theme's coming in the future."
+mouse_filter = 1
 text = "Theme"
 
 [node name="ThemeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
@@ -85,6 +88,8 @@ columns = 2
 [node name="ImageDurationLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Default image duration for when dragging image clips onto the timeline. This setting does have an effect on currently open projects."
+mouse_filter = 1
 text = "Image duration"
 
 [node name="ImageDurationSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
@@ -98,6 +103,8 @@ allow_greater = true
 [node name="DefaultResolutionLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Video resolution default for newly created projects."
+mouse_filter = 1
 text = "Default project resolution"
 
 [node name="ResolutionHBox" type="HBoxContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
@@ -105,6 +112,8 @@ layout_mode = 2
 
 [node name="XLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
 layout_mode = 2
+tooltip_text = "Video width default for newly created projects."
+mouse_filter = 1
 text = "X:"
 
 [node name="DefaultResolutionXSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
@@ -117,6 +126,8 @@ allow_greater = true
 
 [node name="YLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
 layout_mode = 2
+tooltip_text = "Video height default for newly created projects."
+mouse_filter = 1
 text = "Y:"
 
 [node name="DefaultResolutionYSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
@@ -130,6 +141,8 @@ allow_greater = true
 [node name="DefaultFramerateLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "The default project framerate for when you create new projects."
+mouse_filter = 1
 text = "Default project framerate"
 
 [node name="DefaultFramerateSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
@@ -139,6 +152,33 @@ tooltip_text = "The default video project framerate."
 min_value = 1.0
 value = 1.0
 allow_greater = true
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+
+[node name="TimelineLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Timeline"
+
+[node name="TimelineGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="TrackAmountLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This setting is used for new projects you create. New projects will intialize with the amount of tracks which you define here."
+mouse_filter = 1
+text = "Default track amount"
+
+[node name="TrackAmountSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The duration in frames."
+min_value = 1.0
+max_value = 32.0
+value = 1.0
 
 [node name="SaveForEffectLabel" type="Label" parent="Panel/Margin/VBox"]
 visible = false
@@ -171,6 +211,7 @@ text = "Save"
 
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]
 [connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox" to="." method="_on_image_duration_spin_box_value_changed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox" to="." method="_on_track_amount_spin_box_value_changed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/ResetButton" to="." method="_on_reset_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]

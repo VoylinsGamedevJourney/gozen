@@ -51,7 +51,7 @@ func _process(delta: float) -> void:
 		set_frame()
 
 
-func _on_play_pressed() -> void:
+func on_play_pressed() -> void:
 	is_playing = false if frame_nr == Project.get_timeline_end() else !is_playing
 
 
