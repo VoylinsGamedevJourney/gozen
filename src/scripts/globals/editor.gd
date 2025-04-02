@@ -32,10 +32,10 @@ func _process(delta: float) -> void:
 	if !is_playing:
 		return
 
-	# Check if enough time has passed for next frame or not move playhead as well
 	skips = 0
 	time_elapsed += delta
 
+	# Check if enough time has passed for next frame or not.
 	if time_elapsed < frame_time:
 		return
 
@@ -43,12 +43,8 @@ func _process(delta: float) -> void:
 		time_elapsed -= frame_time
 		skips += 1
 
-	if skips <= 1:
-		# TODO: We have to adjust the audio playback as well when skipping happens
-		frame_nr += skips
-		set_frame(frame_nr)
-	else:
-		set_frame()
+	frame_nr += skips
+	set_frame(frame_nr)
 
 
 func on_play_pressed() -> void:
@@ -62,22 +58,24 @@ func _set_frame_nr(value: int) -> void:
 
 		for i: int in audio_players.size():
 			audio_players[i].stop()
+
 		return
 
-	if value == prev_frame + 1:
-		for i: int in audio_players.size():
-			var track_data: PackedInt64Array = Project.get_track_keys(i)
-
-			if track_data.has(value):
-				audio_players[i].set_audio(track_data[value])
-			elif audio_players[i].stop_frame == value:
-				audio_players[i].stop()
-	else:  # Reset all audio players
-		for i: int in audio_players.size():
-			audio_players[i].stop()
-			audio_players[i].set_audio(find_audio(value, i))
-	
 	frame_nr = value
+	if frame_nr == prev_frame + 1:
+		for i: int in audio_players.size():
+			var track_data: Dictionary[int, int] = Project.get_track_data(i)
+
+			if track_data.keys().has(frame_nr):
+				audio_players[i].set_audio(track_data[frame_nr])
+			elif audio_players[i].stop_frame == frame_nr:
+				audio_players[i].stop()
+		return
+	
+	# Reset/update all audio players
+	for i: int in audio_players.size():
+		audio_players[i].set_audio(find_audio(frame_nr, i))
+	
 	prev_frame = frame_nr
 		
 
@@ -90,9 +88,10 @@ func _set_is_playing(value: bool) -> void:
 	play_changed.emit(value)
 
 
-func set_frame(nr: int = frame_nr + 1) -> void:
+func set_frame(new_frame: int = frame_nr + 1) -> void:
 	# TODO: Implement frame skipping
-	frame_nr = nr
+	if frame_nr != new_frame:
+		frame_nr = new_frame
 
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct

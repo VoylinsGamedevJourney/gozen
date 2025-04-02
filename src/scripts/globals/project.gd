@@ -30,7 +30,7 @@ func _update_recent_projects(new_path: String) -> void:
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	data = ProjectData.new()
 
-	for i: int in Settings.get_default_tracks():
+	for i: int in Settings.get_tracks_amount():
 		data.tracks.append({})
 
 	set_project_path(path)

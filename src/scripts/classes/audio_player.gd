@@ -23,6 +23,9 @@ func play(value: bool) -> void:
 
 	
 func stop() -> void:
+	if player.playing:
+		player.stop()
+
 	stop_frame = -1
 	clip_id = -1
 	player.stream_paused = true
@@ -34,6 +37,9 @@ func is_playing() -> bool:
 
 func set_audio(audio_clip_id: int) -> void:
 	if audio_clip_id == -1:
+		if player.playing:
+			player.stop()
+		stop()
 		return
 
 	var data: ClipData = Project.get_clip(audio_clip_id)
@@ -45,16 +51,33 @@ func set_audio(audio_clip_id: int) -> void:
 
 	set_effects(data)
 
-	# Setting stream
-	var position: float = float(Editor.frame_nr - data.start_frame + data.begin) / Project.get_framerate()
+	# Getting timings in seconds.
+	var position: float = float(Editor.frame_nr - data.start_frame + data.begin)
+	position /= Project.get_framerate()
 
-	if old_file_id != file_id:
-		player.stream = Project.get_file_data(file_id).audio
-	else:
-		if abs(player.get_playback_position() - position) > 0.09:
+	# Set stream if changed.
+	if old_file_id != file_id or !player.stream:
+		var file_data: FileData = Project.get_file_data(file_id)
+
+		if file_data and file_data.audio:
+			player.stream = file_data.audio
+			player.play(position)
+			player.stream_paused = !Editor.is_playing
 			return
 
-	player.play(position / Project.get_framerate())
+		return stop()
+
+	# Check if playback is close enough ONLY if stream is the same.
+	var frame_duration: float = 1.0 / Project.get_framerate()
+	if abs(player.get_playback_position() - position) < frame_duration:
+		if player.playing:
+			player.stream_paused = !Editor.is_playing
+		return
+
+	print("here")
+
+	# Play audio from the position otherwise.
+	player.play(position)
 	player.stream_paused = !Editor.is_playing
 
 
