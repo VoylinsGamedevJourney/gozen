@@ -1,15 +1,24 @@
 #include "video.hpp"
 
+Video::Video() {
+	av_log_set_level(AV_LOG_VERBOSE); 
+}
 
-bool Video::open(String video_path) {
+Video::~Video() {
+	close();
+}
+
+
+bool Video::open(const String& video_path) {
 	if (loaded)
 		return _log_err("Already open");
 
-	Vector2i resolution = Vector2i(0, 0);
+	path = video_path;
+	resolution = Vector2i(0, 0);
 
 	// Allocate video file context
 	AVFormatContext* temp_format_ctx = nullptr;
-	if (avformat_open_input(&temp_format_ctx, video_path.utf8(), NULL, NULL)) {
+	if (avformat_open_input(&temp_format_ctx, path.utf8(), nullptr, nullptr)) {
 		close();
 		return _log_err("Couldn't open video");
 	}
@@ -18,7 +27,7 @@ bool Video::open(String video_path) {
 			temp_format_ctx);
 
 	// Getting the video stream
-	avformat_find_stream_info(av_format_ctx.get(), NULL);
+	avformat_find_stream_info(av_format_ctx.get(), nullptr);
 
 	for (int i = 0; i < av_format_ctx->nb_streams; i++) {
 		AVCodecParameters *av_codec_params =
@@ -36,6 +45,75 @@ bool Video::open(String video_path) {
 		av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
 	}
 
+	// Get basic stream info.
+	resolution.x = av_stream->codecpar->width;
+	resolution.y = av_stream->codecpar->height;
+	framerate = av_q2d(av_guess_frame_rate(
+			av_format_ctx.get(), av_stream, nullptr));
+
+	if (framerate <= 0)
+		framerate = av_q2d(av_stream->avg_frame_rate);
+	if (framerate <= 0)
+		framerate = av_q2d(av_stream->r_frame_rate);
+	if (framerate <= 0) {
+		_log("Could not determine framerate reliably");
+		framerate = 0.0f;
+	}
+
+	// Figuring out duration.
+	if (av_stream->duration != AV_NOPTS_VALUE)
+		duration_us = av_rescale_q(av_stream->duration,
+								   av_stream->time_base, AV_TIME_BASE_Q);
+	else if (av_format_ctx->duration != AV_NOPTS_VALUE)
+		duration_us = av_format_ctx->duration;
+	else {
+		duration_us = 0;
+		_log("Could not determine video duration");
+	}
+
+	if (framerate > 0 && duration_us > 0)
+		frame_count = static_cast<int64_t>(
+				round(get_duration_seconds() * framerate));
+	else
+		frame_count = 0;
+
+	pixel_format_name = av_get_pix_fmt_name(
+			static_cast<AVPixelFormat>(av_stream->codecpar->format));
+	color_primaries_name =
+			av_color_primaries_name(av_stream->codecpar->color_primaries);
+	color_trc_name = av_color_transfer_name(
+			av_stream->codecpar->color_trc);
+	color_space_name = av_color_space_name(
+			av_stream->codecpar->color_space);
+	is_full_color_range = 
+			av_stream->codecpar->color_range == AVCOL_RANGE_JPEG;
+
+	// Getting rotation.
+	// Modern method has deprecated stuff issues, so we just check video meta.
+	rotation = 0;
+	AVDictionaryEntry* rotate_tag = av_dict_get(
+			av_stream->metadata, "rotate", nullptr, 0);
+
+	if (rotate_tag && rotate_tag->value) {
+		rotation = atoi(rotate_tag->value);
+
+		if (rotation == -90)
+			rotation = 270;
+
+		rotation = rotation % 360;
+		if (rotation < 0)
+			rotation += 360;
+
+		if (rotation != 0 && rotation != 90 && rotation != 180 &&
+			rotation != 270) {
+			_log("Non-standard rotation metadata tag found: " +
+					String::num_int64(rotation) + ". Resetting to 0");
+			rotation = 0;
+		}
+	}
+
+	is_interlaced = false;
+
 	// Setup Decoder codec context
 	const AVCodec *av_codec = avcodec_find_decoder(
 			av_stream->codecpar->codec_id);
@@ -50,7 +128,7 @@ bool Video::open(String video_path) {
 		close();
 		return _log_err("Couldn't alloc codec");
 	}
-	
+
 	// Copying parameters
 	if (avcodec_parameters_to_context(
 			av_codec_ctx.get(), av_stream->codecpar)) {
@@ -61,7 +139,7 @@ bool Video::open(String video_path) {
 	FFmpeg::enable_multithreading(av_codec_ctx.get(), av_codec);
 	
 	// Open codec - Video
-	if (avcodec_open2(av_codec_ctx.get(), av_codec, NULL)) {
+	if (avcodec_open2(av_codec_ctx.get(), av_codec, nullptr)) {
 		close();
 		return _log_err("Failed to open codec");
 	}
@@ -104,59 +182,52 @@ bool Video::open(String video_path) {
 		return false;
 	}
 
-	// Getting frame rate
-	double framerate = av_q2d(av_guess_frame_rate(av_format_ctx.get(), av_stream, av_frame.get()));
-	if (framerate <= 0) {
-		close();
-		return _log_err("Invalid framerate");
-	}
+	// Getting more metadata
+	is_interlaced = (
+			av_codec_ctx->field_order != AV_FIELD_PROGRESSIVE
+			&& av_codec_ctx->field_order != AV_FIELD_UNKNOWN);
+
+	padding = av_frame->linesize[0] - resolution.x;
 
 	// Setting variables
-	average_frame_duration = 10000000.0 / framerate;								// eg. 1 sec / 25 fps = 400.000 ticks (40ms)
+	average_frame_duration = 10000000.0 / framerate; // eg. 1 sec / 25 fps = 400.000 ticks (40ms)
 	stream_time_base_video = av_q2d(av_stream->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks
 
-	// Preparing the data array's
-	y_data.resize(av_frame->linesize[0] * resolution.y);
-
+	// Setting linesize and enabling sws if needed.
 	if (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P) {
-		u_data.resize(av_frame->linesize[1] * (resolution.y / 2));
-		v_data.resize(av_frame->linesize[2] * (resolution.y / 2));
+		using_sws = false;
+
+		y_data = Image::create_empty(av_frame->linesize[0], resolution.y, false, Image::FORMAT_R8);
+		u_data = Image::create_empty(av_frame->linesize[1], resolution.y/2, false, Image::FORMAT_R8);
+		v_data = Image::create_empty(av_frame->linesize[2], resolution.y/2, false, Image::FORMAT_R8);
 	} else {
-		_log("Enabling SWS due to foreign format");
+		_log("Enabling SWS due to pixel format: " + pixel_format_name);
 		using_sws = true;
 
+		// TODO: Make it possible to switch SWS_BILINEAR by SWS_BICUBIC or ...
 		sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(sws_getContext(
 						resolution.x, resolution.y, av_codec_ctx->pix_fmt,
 						resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
-						SWS_BICUBIC, NULL, NULL, NULL));
+						SWS_BILINEAR, nullptr, nullptr, nullptr));
+        if (!sws_ctx) {
+             close();
+             return _log_err("Failed to create SWS context");
+        }
 
 		av_sws_frame = make_unique_avframe();
+        if (!av_sws_frame) {
+            close();
+            return _log_err("Failed to allocate SWS frame");
+        }
+
 		sws_scale_frame(sws_ctx.get(), av_sws_frame.get(), av_frame.get());
 
-		u_data.resize(av_sws_frame->linesize[1] * (resolution.y / 2));
-		v_data.resize(av_sws_frame->linesize[2] * (resolution.y / 2));
+		y_data = Image::create_empty(av_sws_frame->linesize[0] , resolution.y, false, Image::FORMAT_R8);
+		u_data = Image::create_empty(av_sws_frame->linesize[1] , resolution.y/2, false, Image::FORMAT_R8);
+		v_data = Image::create_empty(av_sws_frame->linesize[2] , resolution.y/2, false, Image::FORMAT_R8);
+		padding = av_sws_frame->linesize[0] - resolution.x;
+
 		av_frame_unref(av_sws_frame.get());
-	}
-
-	// Checking second frame
-	if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
-								av_stream->index, av_frame.get(), av_packet.get())))
-		FFmpeg::print_av_error("Something went wrong getting second frame!", response);
-
-	duration = av_format_ctx->duration;
-
-	if (av_stream->duration == AV_NOPTS_VALUE || duration_from_bitrate) {
-		if (duration == AV_NOPTS_VALUE || duration_from_bitrate) {
-			close();
-			return _log_err("Invalid video");
-		} else {
-			AVRational temp_rational = AVRational{1, AV_TIME_BASE};
-
-			if (temp_rational.num != av_stream->time_base.num || temp_rational.num != av_stream->time_base.num)
-				duration = std::ceil(static_cast<double>(duration) * av_q2d(temp_rational) / av_q2d(av_stream->time_base));
-		}
-
-		av_stream->duration = duration;
 	}
 
 	if (av_packet)
@@ -166,6 +237,8 @@ bool Video::open(String video_path) {
 
 	loaded = true;
 	response = OK;
+	current_frame = 0;
+	seek_frame(0);
 
 	return OK;
 }
@@ -173,6 +246,7 @@ bool Video::open(String video_path) {
 void Video::close() {
 	loaded = false;
 	response = OK;
+	current_frame = -1;
 
 	av_packet.reset();
 	av_frame.reset();
@@ -182,8 +256,6 @@ void Video::close() {
 
 	av_codec_ctx.reset();
 	av_format_ctx.reset();
-	av_frame = nullptr;
-	av_packet = nullptr;
 }
 
 bool Video::seek_frame(int frame_nr) {
@@ -224,6 +296,8 @@ bool Video::seek_frame(int frame_nr) {
 		}
 	}
 
+	current_frame = frame_nr;
+
 	av_frame_unref(av_frame.get());
 	av_packet_unref(av_packet.get());
 
@@ -240,6 +314,8 @@ bool Video::next_frame(bool skip_frame) {
 	if (!skip_frame)
 		_copy_frame_data();
 
+	current_frame++;
+
 	av_frame_unref(av_frame.get());
 	av_packet_unref(av_packet.get());
 	
@@ -247,25 +323,26 @@ bool Video::next_frame(bool skip_frame) {
 }
 
 void Video::_copy_frame_data() {
-	if (using_sws) {
-		sws_scale_frame(sws_ctx.get(), av_sws_frame.get(), av_frame.get());
-
-		if (av_sws_frame->data[0] == nullptr) {
-			_log_err("Frame is empty!");
-			return;
-		}
-
-		memcpy(y_data.ptrw(), av_sws_frame->data[0], y_data.size());
-		memcpy(u_data.ptrw(), av_sws_frame->data[1], u_data.size());
-		memcpy(v_data.ptrw(), av_sws_frame->data[2], v_data.size());
-
-		av_frame_unref(av_sws_frame.get());
+	if (av_frame->data[0] == nullptr) {
+		_log_err("Frame is empty!");
 		return;
 	}
 
-	memcpy(y_data.ptrw(), av_frame->data[0], y_data.size());
-	memcpy(u_data.ptrw(), av_frame->data[1], u_data.size());
-	memcpy(v_data.ptrw(), av_frame->data[2], v_data.size());
+	if (using_sws) {
+		sws_scale_frame(sws_ctx.get(), av_sws_frame.get(), av_frame.get());
+
+		memcpy(y_data->ptrw(), av_sws_frame->data[0], y_data->get_size().x*y_data->get_size().y);
+		memcpy(u_data->ptrw(), av_sws_frame->data[1], u_data->get_size().x*u_data->get_size().y);
+		memcpy(v_data->ptrw(), av_sws_frame->data[2], v_data->get_size().x*v_data->get_size().y);
+
+		av_frame_unref(av_sws_frame.get());
+	} else {
+		memcpy(y_data->ptrw(), av_frame->data[0], y_data->get_size().x*y_data->get_size().y);
+		memcpy(u_data->ptrw(), av_frame->data[1], u_data->get_size().x*u_data->get_size().y);
+		memcpy(v_data->ptrw(), av_frame->data[2], v_data->get_size().x*v_data->get_size().y);
+	}
+
+	return;
 }
 
 int Video::_seek_frame(int frame_nr) {
@@ -281,21 +358,44 @@ int Video::_seek_frame(int frame_nr) {
 #define BIND_METHOD(method_name) \
     ClassDB::bind_method(D_METHOD(#method_name), &Video::method_name)
 
-#define BIND_METHOD_1(method_name, param1) \
+#define BIND_METHOD_ARGS(method_name, ...) \
     ClassDB::bind_method( \
-        D_METHOD(#method_name, param1), &Video::method_name)
+        D_METHOD(#method_name, __VA_ARGS__), &Video::method_name)
 
 
 void Video::_bind_methods() {
-	BIND_METHOD_1(open, "video_path");
+	BIND_METHOD_ARGS(open, "video_path");
 
 	BIND_METHOD(is_open);
 
-	BIND_METHOD_1(seek_frame, "frame_nr");
-	BIND_METHOD_1(next_frame, "skip_frame");
+	BIND_METHOD_ARGS(seek_frame, "frame_nr");
+	BIND_METHOD_ARGS(next_frame, "skip_frame");
 
+	BIND_METHOD(get_current_frame);
 	BIND_METHOD(get_y_data);
 	BIND_METHOD(get_u_data);
 	BIND_METHOD(get_v_data);
+
+	// Metadata getters
+	BIND_METHOD(get_path);
+
+	BIND_METHOD(get_resolution);
+	BIND_METHOD(get_width);
+	BIND_METHOD(get_height);
+
+	BIND_METHOD(get_framerate);
+	BIND_METHOD(get_frame_count);
+	BIND_METHOD(get_duration_microseconds);
+	BIND_METHOD(get_duration_seconds);
+	BIND_METHOD(get_rotation);
+	BIND_METHOD(get_padding);
+
+	BIND_METHOD(get_pixel_format_name);
+	BIND_METHOD(get_color_primaries_name);
+	BIND_METHOD(get_color_trc_name);
+	BIND_METHOD(get_color_space_name);
+
+	BIND_METHOD(get_is_full_color_range);
+	BIND_METHOD(get_is_interlaced);
 }
 

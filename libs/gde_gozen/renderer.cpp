@@ -467,9 +467,11 @@ bool Renderer::send_audio(PackedByteArray wav_data) {
 
 bool Renderer::_finalize_renderer() {
 	if (!renderer_open)
-		return _log_err("Renderer not open, can't finalize video");
-	if (!av_format_ctx)
-		return _log_err("Can't finalize renderer, no format context");
+		return 2;
+	if (!av_format_ctx) {
+		_log_err("Can't finalize renderer, no format context");
+		return 1;
+	}
 
 	_log("Finalizing renderer ..");
 
@@ -499,12 +501,15 @@ bool Renderer::_finalize_renderer() {
 	}
 
 	_log("Video render finished");
-	return true;
+	return 0;
 }
 
 
 void Renderer::close() {
-	if (!_finalize_renderer())
+	response = _finalize_renderer();
+	if (response == 2)
+		return;
+	if (response == 1)
 		_log_err("Something went wrong finalizing video");
 
 	// Cleanup contexts
@@ -517,10 +522,6 @@ void Renderer::close() {
 	av_codec_ctx_video.reset();
 	av_codec_ctx_audio.reset();
 
-	if (av_format_ctx)
-		if (!(av_format_ctx->oformat->flags & AVFMT_NOFILE))
-			avio_closep(&av_format_ctx->pb);
-
 	av_format_ctx.reset();
 
 	renderer_open = false;
@@ -529,21 +530,16 @@ void Renderer::close() {
 }
 
 
-#define BIND_STATIC_METHOD_1(method_name, param1) \
+#define BIND_STATIC_METHOD_ARGS(method_name, ...) \
     ClassDB::bind_static_method("Renderer", \
-        D_METHOD(#method_name, param1), &Renderer::method_name)
+        D_METHOD(#method_name, __VA_ARGS__), &Renderer::method_name)
 
 #define BIND_METHOD(method_name) \
     ClassDB::bind_method(D_METHOD(#method_name), &Renderer::method_name)
 
-#define BIND_METHOD_1(method_name, param1) \
+#define BIND_METHOD_ARGS(method_name, ...) \
     ClassDB::bind_method( \
-        D_METHOD(#method_name, param1), &Renderer::method_name)
-
-#define BIND_METHOD_2(method_name, param1, param2) \
-    ClassDB::bind_method( \
-        D_METHOD(#method_name, param1, param2), &Renderer::method_name)
-
+        D_METHOD(#method_name, __VA_ARGS__), &Renderer::method_name)
 
 void Renderer::_bind_methods() {
 	/* VIDEO CODEC ENUMS */
@@ -592,14 +588,14 @@ void Renderer::_bind_methods() {
 	BIND_ENUM_CONSTANT(SWS_QUALITY_BICUBIC);
 
 
-	BIND_STATIC_METHOD_1(get_available_codecs, "codec_id");
+	BIND_STATIC_METHOD_ARGS(get_available_codecs, "codec_id");
 
 	BIND_METHOD(open);
 	BIND_METHOD(is_open);
 
 	
-	BIND_METHOD_1(send_frame, "frame_image");
-	BIND_METHOD_1(send_audio, "wav_data");
+	BIND_METHOD_ARGS(send_frame, "frame_image");
+	BIND_METHOD_ARGS(send_audio, "wav_data");
 
 	BIND_METHOD(close);
 
@@ -607,40 +603,40 @@ void Renderer::_bind_methods() {
 	BIND_METHOD(disable_debug);
 	BIND_METHOD(get_debug);
 
-	BIND_METHOD_1(set_video_codec_id, "codec_id");
+	BIND_METHOD_ARGS(set_video_codec_id, "codec_id");
 	BIND_METHOD(get_video_codec_id);
 
-	BIND_METHOD_1(set_audio_codec_id, "codec_id");
+	BIND_METHOD_ARGS(set_audio_codec_id, "codec_id");
 	BIND_METHOD(get_audio_codec_id);
 
-	BIND_METHOD_1(set_path, "file_path");
+	BIND_METHOD_ARGS(set_path, "file_path");
 	BIND_METHOD(get_path);
 
-	BIND_METHOD_1(set_resolution, "video_resolution");
+	BIND_METHOD_ARGS(set_resolution, "video_resolution");
 	BIND_METHOD(get_resolution);
 
-	BIND_METHOD_1(set_framerate, "video_framerate");
+	BIND_METHOD_ARGS(set_framerate, "video_framerate");
 	BIND_METHOD(get_framerate);
 
-	BIND_METHOD_1(set_crf, "video_crf");
+	BIND_METHOD_ARGS(set_crf, "video_crf");
 	BIND_METHOD(get_crf);
 
-	BIND_METHOD_1(set_gop_size, "video_gop_size");
+	BIND_METHOD_ARGS(set_gop_size, "video_gop_size");
 	BIND_METHOD(get_gop_size);
 
-	BIND_METHOD_1(set_sample_rate, "value");
+	BIND_METHOD_ARGS(set_sample_rate, "value");
 	BIND_METHOD(get_sample_rate);
 
-	BIND_METHOD_1(set_sws_quality, "value");
+	BIND_METHOD_ARGS(set_sws_quality, "value");
 	BIND_METHOD(get_sws_quality);
 
-	BIND_METHOD_1(set_b_frames, "value");
+	BIND_METHOD_ARGS(set_b_frames, "value");
 	BIND_METHOD(get_b_frames);
 
 	BIND_METHOD(enable_audio);
 	BIND_METHOD(disable_audio);
 
-	BIND_METHOD_1(set_h264_preset, "value");
+	BIND_METHOD_ARGS(set_h264_preset, "value");
 	BIND_METHOD(get_h264_preset);
 
 	BIND_METHOD(configure_for_high_quality);

@@ -216,20 +216,15 @@ PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 }
 
 
-#define BIND_STATIC_METHOD_1(method_name, param1) \
+#define BIND_STATIC_METHOD_ARGS(method_name, ...) \
     ClassDB::bind_static_method("Audio", \
-        D_METHOD(#method_name, param1), &Audio::method_name)
-
-#define BIND_STATIC_METHOD_2(method_name, param1, param2) \
-    ClassDB::bind_static_method("Audio", \
-        D_METHOD(#method_name, param1, param2), &Audio::method_name)
-
+        D_METHOD(#method_name, __VA_ARGS__), &Audio::method_name)
 
 void Audio::_bind_methods() {
-	BIND_STATIC_METHOD_1(get_audio_data, "file_path");
+	BIND_STATIC_METHOD_ARGS(get_audio_data, "file_path");
 
-	BIND_STATIC_METHOD_2(combine_data, "audio_one", "audio_two");
-	BIND_STATIC_METHOD_2(change_db, "audio_data", "db");
-	BIND_STATIC_METHOD_2(change_to_mono, "audio_data", "left_channel");
+	BIND_STATIC_METHOD_ARGS(combine_data, "audio_one", "audio_two");
+	BIND_STATIC_METHOD_ARGS(change_db, "audio_data", "db");
+	BIND_STATIC_METHOD_ARGS(change_to_mono, "audio_data", "left_channel");
 }
 
