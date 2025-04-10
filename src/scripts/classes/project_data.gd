@@ -14,3 +14,5 @@ var timeline_end: int = 0
 var tracks: Array[Dictionary] = []  # [{frame_nr: clip_id}]
 var clips: Dictionary[int, ClipData] = {}  # {clip_id: ClipData}
 
+var background_color: Color = Color.BLACK
+

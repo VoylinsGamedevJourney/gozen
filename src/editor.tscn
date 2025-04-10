@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b0r37lfkj7wl6"]
+[gd_scene load_steps=13 format=3 uid="uid://b0r37lfkj7wl6"]
 
 [ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scripts/editor_ui.gd" id="1_wlowb"]
 [ext_resource type="Script" uid="uid://bamx5qt7kpubd" path="res://scripts/files_list.gd" id="2_vjobr"]
@@ -10,6 +10,11 @@
 [ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="7_t27w5"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wrb8p"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t27w5"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_t27w5"]
+viewport_path = NodePath("VSplitContainer/HSplit/ViewPanel/VBox/ProjectViewSubViewport")
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wrb8p"]
 color = Color(0.654902, 0.0941176, 0.945098, 1)
@@ -187,9 +192,28 @@ size_flags_horizontal = 3
 [node name="VBox" type="VBoxContainer" parent="VSplitContainer/HSplit/ViewPanel"]
 layout_mode = 2
 
-[node name="ViewTextureRect" type="TextureRect" parent="VSplitContainer/HSplit/ViewPanel/VBox"]
+[node name="ProjectViewTextureRect" type="TextureRect" parent="VSplitContainer/HSplit/ViewPanel/VBox"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_t27w5")
 layout_mode = 2
 size_flags_vertical = 3
+texture = SubResource("ViewportTexture_t27w5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ProjectViewSubViewport" type="SubViewport" parent="VSplitContainer/HSplit/ViewPanel/VBox"]
+unique_name_in_owner = true
+size = Vector2i(1920, 1080)
+size_2d_override = Vector2i(1920, 1080)
+size_2d_override_stretch = true
+
+[node name="Background" type="ColorRect" parent="VSplitContainer/HSplit/ViewPanel/VBox/ProjectViewSubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="VSplitContainer/HSplit/ViewPanel/VBox"]
 layout_mode = 2

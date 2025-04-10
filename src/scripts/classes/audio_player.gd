@@ -74,8 +74,6 @@ func set_audio(audio_clip_id: int) -> void:
 			player.stream_paused = !Editor.is_playing
 		return
 
-	print("here")
-
 	# Play audio from the position otherwise.
 	player.play(position)
 	player.stream_paused = !Editor.is_playing

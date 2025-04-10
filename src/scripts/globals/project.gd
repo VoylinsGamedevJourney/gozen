@@ -212,3 +212,12 @@ func erase_clip(clip_id: int) -> void:
 	if !data.clips.erase(clip_id):
 		Toolbox.print_erase_error()
 
+
+func set_background_color(color: Color) -> void:
+	data.background_color = color
+	Editor.set_background_color(color)
+
+
+func get_background_color() -> Color:
+	return data.background_color
+

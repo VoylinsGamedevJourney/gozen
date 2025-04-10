@@ -5,17 +5,25 @@ signal frame_changed(nr: int)
 signal play_changed(value: bool)
 
 
+enum SHADER_ID { EMPTY, YUV, YUV_FULL, IMAGE }
+
 const VISUAL_TYPES: PackedInt64Array = [ File.TYPE.IMAGE, File.TYPE.VIDEO ]
 const AUDIO_TYPES: PackedInt64Array = [ File.TYPE.AUDIO, File.TYPE.VIDEO ]
 
 
-var audio_players: Array[AudioPlayer]
+var viewport: SubViewport
+var view_textures: Array[TextureRect] = []
+var audio_players: Array[AudioPlayer] = []
 
 var frame_nr: int = 0: set = _set_frame_nr
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = _set_is_playing
 var loaded_clips: Array[ClipData] = []
+var loaded_shaders: Array[SHADER_ID] = []
+var y_textures: Array[ImageTexture] = []
+var u_textures: Array[ImageTexture] = []
+var v_textures: Array[ImageTexture] = []
 
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0  # Get's set when changing framerate
@@ -24,6 +32,7 @@ var skips: int = 0
 
 
 func _ready() -> void:
+	Toolbox.connect_func(Project.project_ready, _setup_playback)
 	Toolbox.connect_func(Project.project_ready, _setup_audio_players)
 	Toolbox.connect_func(Project.project_ready, set_frame.bind(frame_nr))
 
@@ -96,7 +105,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct
 		if _check_clip(i, frame_nr):
-			update_view(i, frame_nr)
+			update_view(i)
 			continue
 
 		# Getting the next frame if possible
@@ -104,12 +113,17 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 
 		if clip_id == -1:
 			loaded_clips[i] = null
+
+			if view_textures[i].texture != null:
+				view_textures[i].texture = null
+				(view_textures[i].get_material() as ShaderMaterial).shader = null
+				loaded_shaders[i] = SHADER_ID.EMPTY
+
 			continue
 		else:
 			loaded_clips[i] = Project.get_clip(clip_id)
 
-		set_view(i)
-		update_view(i, frame_nr)
+		update_view(i)
 	
 	if frame_nr == Project.get_timeline_end():
 		is_playing = false
@@ -217,14 +231,78 @@ func render_audio() -> PackedByteArray:
 
 			
 # Video stuff  ----------------------------------------------------------------
-func set_view(_id: int) -> void: # id is track id
-	pass
-	#print("set_view ", id)
+func _setup_playback() -> void:
+	viewport.size = Project.get_resolution()
+
+	for i: int in Project.get_track_count():
+		var texture_rect: TextureRect = TextureRect.new()
+
+		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+
+		view_textures.append(texture_rect)
+		loaded_shaders.append(SHADER_ID.EMPTY)
+
+		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		texture_rect.material = ShaderMaterial.new()
+		y_textures.append(null)
+		u_textures.append(null)
+		v_textures.append(null)
+		
+		viewport.add_child(texture_rect)
 
 
-func update_view(_id: int, _new_frame_nr: int) -> void:
-	pass
-	#print("update_view ", id, " ", frame_nr)
+func update_view(track_id: int) -> void:
+	if loaded_clips[track_id] == null:
+		return
+
+	var file_data: FileData = Project.get_file_data(loaded_clips[track_id].file_id)
+	var material: ShaderMaterial = view_textures[track_id].get_material()
+
+	view_textures[track_id].texture = loaded_clips[track_id].get_frame(frame_nr)
+
+	# Check if correct shader is applied or not, if not, set correct shader.
+	if file_data.video != null:
+		if file_data.video.get_is_full_color_range():
+			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
+				print("set shader")
+				material.shader = preload("uid://btyavn64bvbu2")
+				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
+				_init_video_textures(track_id, file_data.video, material)
+		elif loaded_shaders[track_id] != SHADER_ID.YUV:
+			print("set shader")
+			material.shader = preload("uid://do37k5eu6tfbc")
+			loaded_shaders[track_id] = SHADER_ID.YUV
+			_init_video_textures(track_id, file_data.video, material)
+		else:
+			y_textures[track_id].update(file_data.video.get_y_data())
+			u_textures[track_id].update(file_data.video.get_u_data())
+			v_textures[track_id].update(file_data.video.get_v_data())
+
+		if material.get_shader_parameter("resolution") != Vector2(file_data.video.get_resolution()):
+			material.set_shader_parameter("resolution", file_data.video.get_resolution() as Vector2)
+		if material.get_shader_parameter("color_profile") != file_data.color_profile:
+			material.set_shader_parameter("color_profile", file_data.color_profile)
+	else:
+		# Just in case we remove the shader.
+		(view_textures[track_id].get_material() as ShaderMaterial).shader = null
+		loaded_shaders[track_id] = SHADER_ID.EMPTY
+
+		# TODO: Load image shader
+		# TODO: Include the resolution stuff in the Image shader
+		pass	
+
+	# TODO: Set video shader
+	# TODO: Set effects
+
+
+func _init_video_textures(track_id: int, video_data: Video, material: ShaderMaterial) -> void:
+	y_textures[track_id] = ImageTexture.create_from_image(video_data.get_y_data())
+	u_textures[track_id] = ImageTexture.create_from_image(video_data.get_u_data())
+	v_textures[track_id] = ImageTexture.create_from_image(video_data.get_v_data())
+	material.set_shader_parameter("y_data", y_textures[track_id])
+	material.set_shader_parameter("u_data", u_textures[track_id])
+	material.set_shader_parameter("v_data", v_textures[track_id])
 
 
 ## Update display/audio and continue if within clip bounds.
@@ -248,4 +326,11 @@ func _check_clip(id: int, new_frame_nr: int) -> bool:
 		return false
 
 	return true
+
+
+
+func set_background_color(color: Color) -> void:
+	var background: ColorRect = viewport.get_node("Background")
+
+	background.color = color
 

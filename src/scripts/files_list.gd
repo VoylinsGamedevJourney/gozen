@@ -105,7 +105,7 @@ func _process_file(file: File, file_data: FileData) -> void:
 			if file_data.audio == null or file_data.audio.data.size() == 0:
 				return
 		File.TYPE.VIDEO:
-			if file_data.videos.size() == 0:
+			if file_data.video == null:
 				return
 
 	for x: int in tabs[tab_id].item_count:

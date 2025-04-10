@@ -11,17 +11,12 @@ const MAX_16_BIT_VALUE: float = 32767.0
 
 var id: int
 
-
-var videos: Array[Video] = []
-var video_meta: VideoMeta = null
+var video: Video = null
 var audio: AudioStreamWAV = null
-var image: ImageTexture = null
-
-var current_frame: PackedInt64Array = []
+var image: Texture = null
 
 var audio_wave_data: PackedFloat32Array = []
-
-var uv_resolution: Vector2i = Vector2i.ZERO
+var color_profile: Vector4 = Vector4.ZERO
 
 
 
@@ -34,8 +29,8 @@ func _update_duration() -> void:
 		File.TYPE.AUDIO:
 			l_file.duration = floor(float(audio.data.size()) / (4 * 44101) * Project.get_framerate())
 		File.TYPE.VIDEO:
-			l_file.duration = floor(floor(video_meta.get_frame_count() /
-					video_meta.get_framerate()) * Project.get_framerate())
+			l_file.duration = floor(floor(video.get_frame_count() /
+					video.get_framerate()) * Project.get_framerate())
 
 	if l_file.duration == 0:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)
@@ -53,23 +48,8 @@ func init_data(file_data_id: int) -> void:
 
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
-		video_meta = VideoMeta.new()
-
-		# TODO: Re-implement the VideoMeta clas
-		if !video_meta.load_meta(file.path):
-			printerr("Failed loading video file meta data!")
-
-		# Set necessary metadata
-		uv_resolution = Vector2i(
-				int((video_meta.get_width() + video_meta.get_padding()) / 2.),
-				int(video_meta.get_height() / 2.))
-
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-				_load_video_data.bind(file.path))))
-
-		for i: int in 5:
-			Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-						_load_video_data.bind(file.path))))
+		_load_video_data.bind(file.path))))
 
 	if file.type in Editor.AUDIO_TYPES:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
@@ -85,16 +65,23 @@ func _load_audio_data(file_path: String) -> void:
 
 
 func _load_video_data(file_path: String) -> void:
-	var video: Video = Video.new()
+	var temp_video: Video = Video.new()
+	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
 
-	if video.open(file_path):
+	if temp_video.open(file_path):
 		printerr("Couldn't open video at path '%s'!" % file_path)
 		return
+	placeholder.size = temp_video.get_resolution()
+
+	match temp_video.get_color_space_name():
+		"bt601", "bt470": color_profile = Vector4(1.402, 0.344136, 0.714136, 1.772)
+		"bt2020", "bt2100": color_profile = Vector4(1.4746, 0.16455, 0.57135, 1.8814)
+		_: # bt709 and unknown
+			color_profile = Vector4(1.5748, 0.1873, 0.4681, 1.8556)
 
 	Threader.mutex.lock()
-	videos.append(video)
-	if current_frame.append(0):
-		printerr("Couldn't append to current frame!")
+	video = temp_video
+	image = placeholder
 	Threader.mutex.unlock()
 
 

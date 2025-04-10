@@ -23,37 +23,42 @@ func get_end_frame() -> int:
 	return start_frame + duration
 
 
-func load_video_frame(frame_nr: int) -> void:
-	# Changing from global frame nr to clip frame nr
-	var file_data: FileData = Project.get_file_data(file_id)
-	var video: Video = file_data.videos[track_id]
+func get_frame(frame_nr: int) -> Texture:
+	var type: File.TYPE = Project.get_clip_type(clip_id)
 
-	frame_nr = frame_nr - start_frame + begin
+	if type not in Editor.VISUAL_TYPES:
+		return null
+	elif type == File.TYPE.VIDEO:
+		# For the video stuff, we load in the data for the shader. The FileData
+		# has a placeholder texture of the size of the video so in the end we
+		# do the same as for the images, we return the picture. Only difference
+		# is that we need to update the data which we send to the shader
+		# through the editor.
 
-	# Check if not reloading same frame
-	if frame_nr == file_data.current_frame[track_id]:
-		return
+		# Changing from global frame nr to clip frame nr
+		var file_data: FileData = Project.get_file_data(file_id)
+		var video_frame_nr: int = file_data.video.get_current_frame()
+		frame_nr = frame_nr - start_frame + begin
 
-	# Check if frame is before current one or after max skip
-	var skips: int = frame_nr - file_data.current_frame[track_id]
+		# check if not reloading same frame
+		if frame_nr == video_frame_nr:
+			return
 
-	if frame_nr < file_data.current_frame[track_id] or skips > MAX_FRAME_SKIPS:
-		file_data.current_frame[track_id] = frame_nr
+		# check if frame is before current one or after max skip
+		var skips: int = frame_nr - video_frame_nr
 
-		if !video.seek_frame(frame_nr):
-			printerr("Couldn't seek frame!")
+		if frame_nr < video_frame_nr or skips > MAX_FRAME_SKIPS:
+			if !file_data.video.seek_frame(frame_nr):
+				printerr("Couldn't seek frame!")
 
-		return
+			return Project.get_file_data(file_id).image
 
-	# Go through skips and set frame
-	for i: int in skips - 1:
-		if !video.next_frame(true):
-			print("Something went wrong skipping next frame!")
-
-	file_data.current_frame[track_id] = frame_nr
-
-	if !video.next_frame(false):
-		print("Something went wrong skipping next frame!")
+		# go through skips and set frame
+		for i: int in skips:
+			if !file_data.video.next_frame(i == skips):
+				print("Something went wrong skipping next frame!")
+		
+	return Project.get_file_data(file_id).image
 
 
 func get_clip_audio_data() -> PackedByteArray:
