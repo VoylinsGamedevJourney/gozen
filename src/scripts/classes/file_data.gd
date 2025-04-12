@@ -57,11 +57,16 @@ func init_data(file_data_id: int) -> void:
 
 
 func _load_audio_data(file_path: String) -> void:
+	var audio_data: PackedByteArray = Audio.get_audio_data(file_path)
+
+	if audio_data.size() == 0:
+		return
+
 	audio = AudioStreamWAV.new()
 	audio.mix_rate = 44100
 	audio.stereo = true
 	audio.format = AudioStreamWAV.FORMAT_16_BITS
-	audio.data = Audio.get_audio_data(file_path)
+	audio.data = audio_data
 
 
 func _load_video_data(file_path: String) -> void:
@@ -86,8 +91,9 @@ func _load_video_data(file_path: String) -> void:
 
 
 func create_wave() -> void:
-	Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-		_create_wave), update_wave.emit))
+	if audio != null:
+		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
+			_create_wave), update_wave.emit))
 
 
 func _create_wave() -> void:

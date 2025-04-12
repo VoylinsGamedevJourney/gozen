@@ -45,6 +45,9 @@ func set_audio(audio_clip_id: int) -> void:
 	var data: ClipData = Project.get_clip(audio_clip_id)
 	var old_file_id: int = file_id
 
+	if Project.get_file_data(data.file_id).audio == null:
+		return
+
 	clip_id = audio_clip_id
 	file_id = data.file_id
 	stop_frame = data.end_frame

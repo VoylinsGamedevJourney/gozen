@@ -83,7 +83,8 @@ func _set_frame_nr(value: int) -> void:
 	
 	# Reset/update all audio players
 	for i: int in audio_players.size():
-		audio_players[i].set_audio(find_audio(frame_nr, i))
+		if loaded_clips[i] != null:
+			audio_players[i].set_audio(find_audio(frame_nr, i))
 	
 	prev_frame = frame_nr
 		
@@ -265,12 +266,10 @@ func update_view(track_id: int) -> void:
 	if file_data.video != null:
 		if file_data.video.get_is_full_color_range():
 			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
-				print("set shader")
 				material.shader = preload("uid://btyavn64bvbu2")
 				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
 				_init_video_textures(track_id, file_data.video, material)
 		elif loaded_shaders[track_id] != SHADER_ID.YUV:
-			print("set shader")
 			material.shader = preload("uid://do37k5eu6tfbc")
 			loaded_shaders[track_id] = SHADER_ID.YUV
 			_init_video_textures(track_id, file_data.video, material)
@@ -283,9 +282,12 @@ func update_view(track_id: int) -> void:
 			material.set_shader_parameter("resolution", file_data.video.get_resolution() as Vector2)
 		if material.get_shader_parameter("color_profile") != file_data.color_profile:
 			material.set_shader_parameter("color_profile", file_data.color_profile)
+	elif file_data.image != null:
+		material.shader = preload("uid://vc1lwmduyaub")
+		loaded_shaders[track_id] = SHADER_ID.IMAGE
 	else:
 		# Just in case we remove the shader.
-		(view_textures[track_id].get_material() as ShaderMaterial).shader = null
+		material.shader = null
 		loaded_shaders[track_id] = SHADER_ID.EMPTY
 
 		# TODO: Load image shader
