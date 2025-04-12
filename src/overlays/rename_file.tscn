@@ -41,12 +41,14 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 text = "Cancel"
 
 [node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 text = "Save"
 
 [connection signal="text_submitted" from="Panel/Margin/VBox/RenameFileLineEdit" to="." method="_on_rename_file_line_edit_text_submitted"]

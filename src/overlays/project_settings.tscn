@@ -60,6 +60,7 @@ text = "Background color"
 [node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
@@ -72,12 +73,14 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 text = "Cancel"
 
 [node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 text = "Save"
 
 [connection signal="color_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]

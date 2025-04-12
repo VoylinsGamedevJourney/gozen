@@ -307,6 +307,8 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 		#		new_button.modulate = Color(255,255,255,130)
 		new_button.modulate = Color(240,240,240)
 
+		new_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
 		if button.get_child_count() >= 3:
 			new_button.add_child(button.get_child(2).duplicate()) # Wave Texture rect
 
@@ -420,6 +422,7 @@ func add_clip(clip_data: ClipData) -> void:
 	button.position.x = zoom * clip_data.start_frame
 	button.position.y = clip_data.track_id * (LINE_HEIGHT + TRACK_HEIGHT)
 	button.mouse_filter = Control.MOUSE_FILTER_PASS
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 	@warning_ignore_start("unsafe_call_argument")
 	button.add_theme_stylebox_override("normal", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])

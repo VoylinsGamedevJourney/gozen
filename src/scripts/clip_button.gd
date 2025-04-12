@@ -203,6 +203,8 @@ func _add_resize_button(preset: LayoutPreset, left: bool) -> void:
 		button.position.x -= 3
 	button.mouse_filter = Control.MOUSE_FILTER_PASS
 
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
 	if button.button_down.connect(_on_resize_engaged.bind(left)):
 		printerr("Couldn't connect button_down to _on_resize_engaged!")
 	if button.button_up.connect(_on_commit_resize):

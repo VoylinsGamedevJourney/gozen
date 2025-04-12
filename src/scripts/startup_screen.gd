@@ -46,6 +46,7 @@ func _set_recent_projects() -> void:
 			project_button.text = path.get_file().trim_suffix(Project.EXTENSION)
 			project_button.tooltip_text = path
 			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 			Toolbox.connect_func(project_button.pressed, open_project.bind(path))
 
@@ -53,6 +54,7 @@ func _set_recent_projects() -> void:
 			delete_button.ignore_texture_size = true
 			delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			delete_button.custom_minimum_size = Vector2i(18,0)
+			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 			Toolbox.connect_func(
 					delete_button.pressed,
