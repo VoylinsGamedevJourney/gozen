@@ -2,13 +2,13 @@
 
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scripts/startup_screen.gd" id="1_mrrmf"]
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_jk13q"]
-[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.png" id="3_jdwvk"]
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="3_jdwvk"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_wb8ll"]
 [ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="5_wb8ll"]
-[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.png" id="5_x2wpv"]
-[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.png" id="6_donii"]
-[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.png" id="7_5plxg"]
-[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.png" id="8_ohjo4"]
+[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="5_x2wpv"]
+[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="6_donii"]
+[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="7_5plxg"]
+[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="8_ohjo4"]
 
 [node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label")]
 self_modulate = Color(1, 1, 1, 0.666667)
@@ -51,6 +51,7 @@ offset_left = 7.0
 offset_top = 7.0
 offset_right = 47.0
 offset_bottom = 47.0
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_wb8ll")
 ignore_texture_size = true
 stretch_mode = 5
@@ -122,6 +123,7 @@ layout_mode = 2
 
 [node name="OpenProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Open project"
 icon = ExtResource("3_jdwvk")
 flat = true
@@ -130,6 +132,7 @@ expand_icon = true
 
 [node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Create new project"
 icon = ExtResource("5_wb8ll")
 flat = true
@@ -150,6 +153,7 @@ layout_mode = 2
 
 [node name="SiteButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "GoZen site"
 icon = ExtResource("7_5plxg")
 flat = true
@@ -158,6 +162,7 @@ expand_icon = true
 
 [node name="ManualButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Manual"
 icon = ExtResource("5_x2wpv")
 flat = true
@@ -166,6 +171,7 @@ expand_icon = true
 
 [node name="TutorialsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Tutorials"
 icon = ExtResource("6_donii")
 flat = true
@@ -174,6 +180,7 @@ expand_icon = true
 
 [node name="DiscordServerButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Discord server"
 icon = ExtResource("7_5plxg")
 flat = true
@@ -186,6 +193,7 @@ size_flags_vertical = 3
 
 [node name="SupportProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 text = "Support GoZen"
 icon = ExtResource("8_ohjo4")
 flat = true
@@ -219,6 +227,7 @@ size_flags_horizontal = 3
 [node name="ProjectPathButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_jdwvk")
 ignore_texture_size = true
 stretch_mode = 5
@@ -245,6 +254,7 @@ text = "X:"
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The video width."
+mouse_default_cursor_shape = 1
 min_value = 1.0
 value = 1.0
 allow_greater = true
@@ -257,6 +267,7 @@ text = "Y:"
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The video height."
+mouse_default_cursor_shape = 1
 min_value = 1.0
 value = 1.0
 allow_greater = true
@@ -270,6 +281,7 @@ text = "Framerate"
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The video framerate (fps)."
+mouse_default_cursor_shape = 1
 min_value = 1.0
 value = 1.0
 allow_greater = true
@@ -290,6 +302,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Go back to startup menu."
+mouse_default_cursor_shape = 2
 text = "Return"
 
 [node name="CreateNewProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox"]
@@ -297,6 +310,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Create new project with the chosen settings."
+mouse_default_cursor_shape = 2
 text = "Create new project"
 
 [connection signal="pressed" from="Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_go_zen_logo_button_pressed"]
