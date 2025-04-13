@@ -251,6 +251,7 @@ func _setup_playback() -> void:
 		v_textures.append(null)
 		
 		viewport.add_child(texture_rect)
+		viewport.move_child(texture_rect, 1)
 
 
 func update_view(track_id: int) -> void:
@@ -328,7 +329,6 @@ func _check_clip(id: int, new_frame_nr: int) -> bool:
 		return false
 
 	return true
-
 
 
 func set_background_color(color: Color) -> void:

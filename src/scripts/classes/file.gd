@@ -2,7 +2,7 @@ class_name File
 extends Node
 
 
-enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO,  TEXT, }
+enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT }
 
 
 var id: int

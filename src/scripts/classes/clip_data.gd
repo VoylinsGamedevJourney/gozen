@@ -37,12 +37,15 @@ func get_frame(frame_nr: int) -> Texture:
 
 		# Changing from global frame nr to clip frame nr
 		var file_data: FileData = Project.get_file_data(file_id)
+		var video_framerate: float = file_data.video.get_framerate()
 		var video_frame_nr: int = file_data.video.get_current_frame()
+
 		frame_nr = frame_nr - start_frame + begin
+		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
 
 		# check if not reloading same frame
 		if frame_nr == video_frame_nr:
-			return
+			return Project.get_file_data(file_id).image
 
 		# check if frame is before current one or after max skip
 		var skips: int = frame_nr - video_frame_nr
@@ -57,7 +60,7 @@ func get_frame(frame_nr: int) -> Texture:
 		for i: int in skips:
 			if !file_data.video.next_frame(i == skips):
 				print("Something went wrong skipping next frame!")
-		
+
 	return Project.get_file_data(file_id).image
 
 

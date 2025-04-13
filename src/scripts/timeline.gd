@@ -52,9 +52,8 @@ func _on_project_loaded() -> void:
 	for child: Node in clips.get_children():
 		child.queue_free()
 
-	for clip: ClipData in Project.get_clip_ids():
+	for clip: ClipData in Project.get_clip_datas():
 		add_clip(clip)
-
 
 	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
 

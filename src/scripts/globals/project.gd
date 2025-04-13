@@ -189,8 +189,12 @@ func get_clips() -> Dictionary[int, ClipData]:
 	return data.clips
 
 
-func get_clip_ids() -> Array[ClipData]:
+func get_clip_datas() -> Array[ClipData]:
 	return data.clips.values()
+
+
+func get_clip_ids() -> PackedInt64Array:
+	return data.clips.keys()
 
 
 func get_clip(clip_id: int) -> ClipData:
