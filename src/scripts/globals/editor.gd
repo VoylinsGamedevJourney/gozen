@@ -286,17 +286,36 @@ func update_view(track_id: int) -> void:
 	elif file_data.image != null:
 		material.shader = preload("uid://vc1lwmduyaub")
 		loaded_shaders[track_id] = SHADER_ID.IMAGE
+
+		if material.get_shader_parameter("resolution") != file_data.image.get_size():
+			material.set_shader_parameter("resolution", file_data.image.get_size())
 	else:
 		# Just in case we remove the shader.
 		material.shader = null
 		loaded_shaders[track_id] = SHADER_ID.EMPTY
+		return
+	
+	var effects_video: EffectsVideo = loaded_clips[track_id].effects_video
+	material.set_shader_parameter("alpha", effects_video.alpha)
+ 
+	material.set_shader_parameter("brightness", effects_video.brightness)
+	material.set_shader_parameter("contrast", effects_video.contrast)
+	material.set_shader_parameter("saturation", effects_video.saturation)
 
-		# TODO: Load image shader
-		# TODO: Include the resolution stuff in the Image shader
-		pass	
+	material.set_shader_parameter("red_value", effects_video.red_value)
+	material.set_shader_parameter("green_value", effects_video.green_value)
+	material.set_shader_parameter("blue_value", effects_video.blue_value)
 
-	# TODO: Set video shader
-	# TODO: Set effects
+	material.set_shader_parameter("tint_color", effects_video.tint_color)
+	material.set_shader_parameter("tint_effect_factor", effects_video.tint_effect_factor)
+
+	if effects_video.enable_chroma_key:
+		material.set_shader_parameter("apply_chroma_key", true)
+		material.set_shader_parameter("key_color", effects_video.chroma_key_color)
+		material.set_shader_parameter("key_tolerance", effects_video.chroma_key_tolerance)
+		material.set_shader_parameter("key_softness", effects_video.chroma_key_softness)
+	else:
+		material.set_shader_parameter("apply_chroma_key", false)
 
 
 func _init_video_textures(track_id: int, video_data: Video, material: ShaderMaterial) -> void:

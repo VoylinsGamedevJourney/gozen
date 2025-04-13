@@ -13,7 +13,7 @@ var id: int
 
 var video: Video = null
 var audio: AudioStreamWAV = null
-var image: Texture = null
+var image: Texture2D = null
 
 var audio_wave_data: PackedFloat32Array = []
 var color_profile: Vector4 = Vector4.ZERO

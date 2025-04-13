@@ -141,6 +141,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		var mouse_event: InputEventMouseButton = event
 
 		if mouse_event.pressed:
+			EffectsPanel.instance.on_clip_pressed(name.to_int())
 			get_viewport().set_input_as_handled()
 
 		if mouse_event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
@@ -308,6 +309,8 @@ func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
 	new_clip.duration = abs(current_clip_data.duration - frame)
 	new_clip.begin = current_clip_data.begin + frame
 	new_clip.track_id = current_clip_data.track_id
+	new_clip.effects_video = EffectsVideo.new()
+	new_clip.effects_audio = EffectsAudio.new()
 
 	current_clip_data.duration -= new_clip.duration
 	size.x = current_clip_data.duration * Timeline.get_zoom()

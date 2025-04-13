@@ -16,9 +16,9 @@ uniform vec4 tint_color: source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform float tint_effect_factor: hint_range(0, 1) = 0.0;
 
 uniform bool apply_chroma_key = false;
-uniform vec4 key_color : source_color = vec4(0.0, 1.0, 0.0, 1.0);
-uniform float key_tolerance : hint_range(0.0, 1.0, 0.01) = 0.3;
-uniform float key_softness : hint_range(0.0, 0.5, 0.01) = 0.05;
+uniform vec4 key_color: source_color = vec4(0.0, 1.0, 0.0, 1.0);
+uniform float key_tolerance: hint_range(0.0, 1.0, 0.01) = 0.3;
+uniform float key_softness: hint_range(0.0, 0.5, 0.01) = 0.05;
 
 
 

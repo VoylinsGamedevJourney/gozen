@@ -17,6 +17,9 @@ var end_frame: int: get = get_end_frame
 var duration: int
 var begin: int = 0 # Only for video and audio files
 
+var effects_video: EffectsVideo
+var effects_audio: EffectsAudio
+
 
 
 func get_end_frame() -> int:

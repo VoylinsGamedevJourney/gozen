@@ -351,6 +351,8 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 		new_clip_data.start_frame = start_frame
 		new_clip_data.track_id = track
 		new_clip_data.duration = Project.get_file(id).duration
+		new_clip_data.effects_video = EffectsVideo.new()
+		new_clip_data.effects_audio = EffectsAudio.new()
 
 		ids.append(new_clip_data.clip_id)
 		draggable.new_clips.append(new_clip_data)

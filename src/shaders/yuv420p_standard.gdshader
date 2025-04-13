@@ -24,13 +24,14 @@ uniform vec4 tint_color: source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform float tint_effect_factor: hint_range(0, 1) = 0.0;
 
 uniform bool apply_chroma_key = false;
-uniform vec4 key_color : source_color = vec4(0.0, 1.0, 0.0, 1.0);
-uniform float key_tolerance : hint_range(0.0, 1.0, 0.01) = 0.3;
-uniform float key_softness : hint_range(0.0, 0.5, 0.01) = 0.05;
+uniform vec4 key_color: source_color = vec4(0.0, 1.0, 0.0, 1.0);
+uniform float key_tolerance: hint_range(0.0, 1.0, 0.01) = 0.3;
+uniform float key_softness: hint_range(0.0, 0.5, 0.01) = 0.05;
 
 
 
 void fragment() {
+	COLOR = vec4(1,1,1,1);
 	vec2 uv = UV;
     uv *= resolution / vec2(textureSize(y_data, 0));
     uv = clamp(uv, vec2(0.0), vec2(1.0));
