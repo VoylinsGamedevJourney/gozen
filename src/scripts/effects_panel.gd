@@ -13,6 +13,15 @@ static var instance: EffectsPanel
 @export var tab_container: TabContainer
 
 @export_group("Video effects")
+@export var position_x_spinbox: SpinBox
+@export var position_y_spinbox: SpinBox
+@export var size_x_spinbox: SpinBox
+@export var size_y_spinbox: SpinBox
+@export var scale_spinbox: SpinBox
+@export var rotation_spinbox: SpinBox
+@export var pivot_x_spinbox: SpinBox
+@export var pivot_y_spinbox: SpinBox
+
 @export var alpha_spinbox: SpinBox
 
 @export var brightness_spinbox: SpinBox
@@ -26,6 +35,7 @@ static var instance: EffectsPanel
 @export var tint_color: ColorPickerButton
 @export var tint_effect_factor: SpinBox
 
+@export var chroma_effects_grid: GridContainer
 @export var enable_chroma_key: CheckButton
 @export var chroma_key_color: ColorPickerButton
 @export var chroma_key_tolerance: SpinBox
@@ -99,7 +109,15 @@ func _on_audio_effects_button_pressed() -> void:
 func _set_video_effect_values() -> void:
 	var video_effects_data: EffectsVideo = Project.get_clip(current_clip_id).effects_video
 
+	position_x_spinbox.value = video_effects_data.position.x
+	position_y_spinbox.value = video_effects_data.position.y
+	size_x_spinbox.value = video_effects_data.size.x
+	size_y_spinbox.value = video_effects_data.size.y
+	scale_spinbox.value = video_effects_data.scale
+	rotation_spinbox.value = video_effects_data.rotation
 	alpha_spinbox.value = video_effects_data.alpha
+	pivot_x_spinbox.value = video_effects_data.pivot.x
+	pivot_y_spinbox.value = video_effects_data.pivot.y
 
 	brightness_spinbox.value = video_effects_data.brightness
 	contrast_spinbox.value = video_effects_data.contrast
@@ -113,9 +131,13 @@ func _set_video_effect_values() -> void:
 	tint_effect_factor.value = video_effects_data.tint_effect_factor
 	
 	enable_chroma_key.button_pressed = video_effects_data.enable_chroma_key
-	chroma_key_color.color = video_effects_data.chroma_key_color
-	chroma_key_tolerance.value = video_effects_data.chroma_key_tolerance
-	chroma_key_softness.value = video_effects_data.chroma_key_softness
+	if video_effects_data.enable_chroma_key:
+		chroma_key_color.color = video_effects_data.chroma_key_color
+		chroma_key_tolerance.value = video_effects_data.chroma_key_tolerance
+		chroma_key_softness.value = video_effects_data.chroma_key_softness
+		chroma_effects_grid.visible = true
+	else:
+		chroma_effects_grid.visible = false
 
 
 func _set_audio_effect_values() -> void:
@@ -140,8 +162,48 @@ func _on_mono_option_button_item_selected(value: int) -> void:
 
 # Video effects
 
+func _on_position_x_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.position.x = floor(value)
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_position_y_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.position.y = floor(value)
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_size_x_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.size.x = floor(value)
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_size_y_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.size.y = floor(value)
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_scale_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.scale = value
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_rotation_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.rotation = value
+	Editor.set_frame(Editor.frame_nr)
+
+
 func _on_alpha_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.alpha = value
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_pivot_x_spin_box_value_changed(value: float) -> void:
+	Project.get_clip(current_clip_id).effects_video.pivot.x = floor(value)
+	Editor.set_frame(Editor.frame_nr)
+
+
+func _on_pivot_y_spin_box_value_changed(value:float) -> void:
+	Project.get_clip(current_clip_id).effects_video.pivot.y = floor(value)
 	Editor.set_frame(Editor.frame_nr)
 
 
@@ -187,6 +249,7 @@ func _on_tint_color_effect_spin_box_value_changed(value: float) -> void:
 
 func _on_enable_chroma_key_button_toggled(toggled_on: bool) -> void:
 	Project.get_clip(current_clip_id).effects_video.enable_chroma_key = toggled_on
+	chroma_effects_grid.visible = toggled_on
 	Editor.set_frame(Editor.frame_nr)
 
 

@@ -317,6 +317,12 @@ func update_view(track_id: int) -> void:
 	else:
 		material.set_shader_parameter("apply_chroma_key", false)
 
+	view_textures[track_id].position = effects_video.position
+	view_textures[track_id].size = effects_video.size
+	view_textures[track_id].scale = Vector2(effects_video.scale / 100, effects_video.scale / 100)
+	view_textures[track_id].rotation = deg_to_rad(effects_video.rotation)
+	view_textures[track_id].pivot_offset = effects_video.pivot
+
 
 func _init_video_textures(track_id: int, video_data: Video, material: ShaderMaterial) -> void:
 	y_textures[track_id] = ImageTexture.create_from_image(video_data.get_y_data())
