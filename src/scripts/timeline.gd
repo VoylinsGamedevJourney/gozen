@@ -354,7 +354,7 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 		new_clip_data.effects_video = EffectsVideo.new()
 		new_clip_data.effects_audio = EffectsAudio.new()
 
-		new_clip_data.effects_video.update_transform()
+		new_clip_data.effects_video.set_default_transform()
 
 		ids.append(new_clip_data.clip_id)
 		draggable.new_clips.append(new_clip_data)

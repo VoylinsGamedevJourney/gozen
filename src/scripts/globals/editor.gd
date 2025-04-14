@@ -21,6 +21,10 @@ var prev_frame: int = -1
 var is_playing: bool = false: set = _set_is_playing
 var loaded_clips: Array[ClipData] = []
 var loaded_shaders: Array[SHADER_ID] = []
+
+var default_effects_video: EffectsVideo = EffectsVideo.new()
+var color_correction_default: Array[bool] = [] # is true if default colors are loaded.
+
 var y_textures: Array[ImageTexture] = []
 var u_textures: Array[ImageTexture] = []
 var v_textures: Array[ImageTexture] = []
@@ -119,7 +123,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 				view_textures[i].texture = null
 				(view_textures[i].get_material() as ShaderMaterial).shader = null
 				loaded_shaders[i] = SHADER_ID.EMPTY
-
 			continue
 		else:
 			loaded_clips[i] = Project.get_clip(clip_id)
@@ -244,6 +247,8 @@ func _setup_playback() -> void:
 		view_textures.append(texture_rect)
 		loaded_shaders.append(SHADER_ID.EMPTY)
 
+		color_correction_default.append(false)
+
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		texture_rect.material = ShaderMaterial.new()
 		y_textures.append(null)
@@ -298,30 +303,15 @@ func update_view(track_id: int) -> void:
 	var effects_video: EffectsVideo = loaded_clips[track_id].effects_video
 	material.set_shader_parameter("alpha", effects_video.alpha)
  
-	material.set_shader_parameter("brightness", effects_video.brightness)
-	material.set_shader_parameter("contrast", effects_video.contrast)
-	material.set_shader_parameter("saturation", effects_video.saturation)
+	if effects_video.enable_color_correction:
+		effects_video.apply_color_correction(material)
+		color_correction_default[track_id] = false
+	elif !color_correction_default[track_id]:
+		default_effects_video.apply_color_correction(material)
+		color_correction_default[track_id] = true
 
-	material.set_shader_parameter("red_value", effects_video.red_value)
-	material.set_shader_parameter("green_value", effects_video.green_value)
-	material.set_shader_parameter("blue_value", effects_video.blue_value)
-
-	material.set_shader_parameter("tint_color", effects_video.tint_color)
-	material.set_shader_parameter("tint_effect_factor", effects_video.tint_effect_factor)
-
-	if effects_video.enable_chroma_key:
-		material.set_shader_parameter("apply_chroma_key", true)
-		material.set_shader_parameter("key_color", effects_video.chroma_key_color)
-		material.set_shader_parameter("key_tolerance", effects_video.chroma_key_tolerance)
-		material.set_shader_parameter("key_softness", effects_video.chroma_key_softness)
-	else:
-		material.set_shader_parameter("apply_chroma_key", false)
-
-	view_textures[track_id].position = effects_video.position
-	view_textures[track_id].size = effects_video.size
-	view_textures[track_id].scale = Vector2(effects_video.scale / 100, effects_video.scale / 100)
-	view_textures[track_id].rotation = deg_to_rad(effects_video.rotation)
-	view_textures[track_id].pivot_offset = effects_video.pivot
+	effects_video.apply_chroma_key(material)
+	effects_video.apply_transform(view_textures[track_id])
 
 
 func _init_video_textures(track_id: int, video_data: Video, material: ShaderMaterial) -> void:

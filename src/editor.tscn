@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://b0r37lfkj7wl6"]
+[gd_scene load_steps=27 format=3 uid="uid://b0r37lfkj7wl6"]
 
 [ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scripts/editor_ui.gd" id="1_wlowb"]
 [ext_resource type="Script" uid="uid://bamx5qt7kpubd" path="res://scripts/files_list.gd" id="2_vjobr"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://yarovsxqsw5" path="res://assets/icons/audio_effects.svg" id="10_kwc7g"]
 [ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/pause.svg" id="11_lmvvn"]
 [ext_resource type="Texture2D" uid="uid://5sdky8df2641" path="res://assets/icons/skip_next.svg" id="12_hcdi5"]
+[ext_resource type="Texture2D" uid="uid://y0xdhtp02fh1" path="res://assets/icons/refresh.svg" id="16_hcdi5"]
 [ext_resource type="Script" uid="uid://3yx6sdt8tb8r" path="res://scripts/audio_meter.gd" id="17_2qtvm"]
 [ext_resource type="Texture2D" uid="uid://c2ydgv8p4bi18" path="res://assets/audio_meter/overlay_marker.png" id="18_lmvvn"]
 [ext_resource type="Texture2D" uid="uid://daggx7q3ma0l7" path="res://assets/audio_meter/progress.png" id="19_hcdi5"]
@@ -287,7 +288,7 @@ texture_normal = ExtResource("12_hcdi5")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="EffectsPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "alpha_spinbox", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "gain_spinbox", "mono_option_button")]
+[node name="EffectsPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "gain_spinbox", "mono_option_button")]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_type_variation = &"box"
@@ -295,15 +296,19 @@ script = ExtResource("8_3btpq")
 button_video_effects = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton")
 button_audio_effects = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton")
 tab_container = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer")
+reset_transform_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer2/ResetTransformEffectsButton")
 position_x_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PositionHBox/PositionXSpinBox")
 position_y_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PositionHBox/PositionYSpinBox")
 size_x_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/SizeHBox/SizeXSpinBox")
 size_y_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/SizeHBox/SizeYSpinBox")
 scale_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/ScaleSpinBox")
 rotation_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/RotationSpinBox")
+alpha_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox")
 pivot_x_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotXSpinBox")
 pivot_y_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotYSpinBox")
-alpha_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox")
+reset_color_correction_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/ResetColorCorrectionEffectsButton")
+color_correction_effects_grid = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid")
+enable_color_correction = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/EnableColorCorrectionButton")
 brightness_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/BrightnessSpinBox")
 contrast_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/ContrastSpinBox")
 saturation_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/SaturationSpinBox")
@@ -312,6 +317,7 @@ green_value_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTa
 blue_value_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/BlueValueSpinBox")
 tint_color = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/TintColorPickerButton")
 tint_effect_factor = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/TintColorEffectSpinBox")
+reset_chroma_key_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox/ResetChromaKeyEffectsButton")
 chroma_effects_grid = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid")
 enable_chroma_key = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox/EnableChromaKeyButton")
 chroma_key_color = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyColorPickerButton")
@@ -387,10 +393,21 @@ tabs_visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="TransformEffectsLabel" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 layout_mode = 2
+
+[node name="TransformEffectsLabel" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Transform"
+
+[node name="ResetTransformEffectsButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer2"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+texture_normal = ExtResource("16_hcdi5")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="TransformEffectsGrid" type="GridContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 layout_mode = 2
@@ -512,10 +529,28 @@ prefix = "Y:"
 custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 
-[node name="ColorCorrectionEffectsLabel2" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 layout_mode = 2
+
+[node name="ColorCorrectionEffectsLabel" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Color correction"
+
+[node name="ResetColorCorrectionEffectsButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+texture_normal = ExtResource("16_hcdi5")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="EnableColorCorrectionButton" type="CheckButton" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lmvvn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lmvvn")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lmvvn")
 
 [node name="ColorCorrectionGrid" type="GridContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 layout_mode = 2
@@ -618,6 +653,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Chroma key"
+
+[node name="ResetChromaKeyEffectsButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+texture_normal = ExtResource("16_hcdi5")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="EnableChromaKeyButton" type="CheckButton" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox"]
 layout_mode = 2
@@ -832,6 +874,7 @@ expand_mode = 1
 [connection signal="pressed" from="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ButtonsHBox/SkipNextButton" to="VSplitContainer/HSplitContainer/HSplit/ViewPanel" method="_on_skip_next_button_pressed"]
 [connection signal="pressed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_video_effects_button_pressed"]
 [connection signal="pressed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_audio_effects_button_pressed"]
+[connection signal="pressed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer2/ResetTransformEffectsButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_reset_transform_effects_button_pressed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PositionHBox/PositionXSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_position_x_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PositionHBox/PositionYSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_position_y_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/SizeHBox/SizeXSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_size_x_spin_box_value_changed"]
@@ -841,6 +884,8 @@ expand_mode = 1
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_alpha_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotXSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_pivot_x_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotYSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_pivot_y_spin_box_value_changed"]
+[connection signal="pressed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/ResetColorCorrectionEffectsButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_reset_color_correction_effects_button_pressed"]
+[connection signal="toggled" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/EnableColorCorrectionButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_enable_color_correction_button_toggled"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/BrightnessSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_brightness_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/ContrastSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_contrast_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/SaturationSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_saturation_spin_box_value_changed"]
@@ -849,6 +894,7 @@ expand_mode = 1
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/BlueValueSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_blue_value_spin_box_value_changed"]
 [connection signal="color_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/TintColorPickerButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_tint_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/TintColorEffectSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_tint_color_effect_spin_box_value_changed"]
+[connection signal="pressed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox/ResetChromaKeyEffectsButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_reset_chroma_key_effects_button_pressed"]
 [connection signal="toggled" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox/EnableChromaKeyButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_enable_chroma_key_button_toggled"]
 [connection signal="color_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyColorPickerButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_chroma_key_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyToleranceSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_chroma_key_tolerance_spin_box_value_changed"]

@@ -507,10 +507,8 @@ bool Renderer::_finalize_renderer() {
 
 void Renderer::close() {
 	response = _finalize_renderer();
-	if (response == 2)
+	if (response != OK)
 		return;
-	if (response == 1)
-		_log_err("Something went wrong finalizing video");
 
 	// Cleanup contexts
 	sws_ctx.reset();
