@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=17 format=3 uid="uid://dxq4vg1l5rwhj"]
+[gd_resource type="Theme" load_steps=18 format=3 uid="uid://dxq4vg1l5rwhj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
 
@@ -98,6 +98,9 @@ bg_color = Color(0.866667, 0.866667, 0.866667, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alpqq"]
+bg_color = Color(0.164706, 0.164706, 0.164706, 0.666667)
+
 [resource]
 default_font_size = 14
 Button/colors/font_color = Color(0, 0, 0, 1)
@@ -130,6 +133,8 @@ file_tab_button/base_type = &"Button"
 file_tab_button/styles/hover = SubResource("StyleBoxEmpty_kicdo")
 file_tab_button/styles/normal = SubResource("StyleBoxEmpty_riq6l")
 file_tab_button/styles/pressed = SubResource("StyleBoxFlat_tod0p")
+overlay_background/base_type = &"PanelContainer"
+overlay_background/styles/panel = SubResource("StyleBoxFlat_alpqq")
 title_label/base_type = &"Label"
 title_label/colors/font_color = Color(0.214103, 0.214103, 0.214103, 1)
 title_label/font_sizes/font_size = 12

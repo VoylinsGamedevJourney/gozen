@@ -1,22 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjen0oagwidr7"]
+[gd_scene format=3 uid="uid://chdpurqhtqieq"]
 
-[ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scripts/settings_menu.gd" id="1_ce4ec"]
-
-[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "theme_option_button", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox")]
+[node name="RenderMenu" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
-script = ExtResource("1_ce4ec")
-save_info_label = NodePath("Panel/Margin/VBox/SaveForEffectLabel")
-theme_option_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton")
-image_duration_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox")
-default_resolution_x_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionXSpinBox")
-default_resolution_y_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionYSpinBox")
-default_framerate_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/DefaultFramerateSpinBox")
-track_amount_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox")
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(700, 300)

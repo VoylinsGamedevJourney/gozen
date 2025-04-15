@@ -30,3 +30,11 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
 
+
+	if event.is_action_pressed("open_command_bar"):
+		get_tree().root.add_child(preload("uid://rj2h8g761jr1").instantiate())
+		get_viewport().set_input_as_handled()
+
+	if event.is_action_pressed("open_render_menu"):
+		get_tree().root.add_child(preload("uid://chdpurqhtqieq").instantiate())
+

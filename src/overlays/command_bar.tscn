@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://rj2h8g761jr1"]
+
+[ext_resource type="Script" uid="uid://cc5bnmmakhd8r" path="res://scripts/command_bar.gd" id="1_maggb"]
+
+[node name="CommandBar" type="PanelContainer" node_paths=PackedStringArray("command_line", "command_buttons")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_maggb")
+command_line = NodePath("MarginContainer/Panel/VBoxContainer/MarginContainer/CommandLineEdit")
+command_buttons = NodePath("MarginContainer/Panel/VBoxContainer/SettingsPanel/MarginContainer/ButtonVBoxContainer")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 150
+
+[node name="Panel" type="PanelContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(700, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_type_variation = &"box"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="CommandLineEdit" type="LineEdit" parent="MarginContainer/Panel/VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="SettingsPanel" type="PanelContainer" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel/VBoxContainer/SettingsPanel"]
+layout_mode = 2
+
+[node name="ButtonVBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/SettingsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[connection signal="text_changed" from="MarginContainer/Panel/VBoxContainer/MarginContainer/CommandLineEdit" to="." method="_on_command_line_edit_text_changed"]
+[connection signal="text_submitted" from="MarginContainer/Panel/VBoxContainer/MarginContainer/CommandLineEdit" to="." method="_on_command_line_edit_text_submitted"]

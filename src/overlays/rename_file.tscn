@@ -3,13 +3,12 @@
 [ext_resource type="Script" uid="uid://bvp07tbvon7gj" path="res://scripts/rename_file.gd" id="1_4de6o"]
 
 [node name="RenameFile" type="PanelContainer" node_paths=PackedStringArray("rename_line_edit")]
-self_modulate = Color(1, 1, 1, 0.666667)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"background"
+theme_type_variation = &"overlay_background"
 script = ExtResource("1_4de6o")
 rename_line_edit = NodePath("Panel/Margin/VBox/RenameFileLineEdit")
 

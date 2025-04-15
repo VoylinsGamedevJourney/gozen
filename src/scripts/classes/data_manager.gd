@@ -14,12 +14,12 @@ func save_data(save_path: String) -> int:
 
 	var data: Dictionary = {}
 	for property: Dictionary in get_property_list():
-		if property.usage in [4096, 4102]:
+		if property.usage in [4096, 4102, 69632]:
 			data[property.name] = get(str(property.name))
 
 	if !file.store_string(var_to_str(data)):
 		printerr("Something went wrong storing data to file: ", save_path)
-
+	print(get_property_list())
 	error = file.get_error()
 	return error
 

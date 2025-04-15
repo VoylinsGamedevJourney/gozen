@@ -107,6 +107,10 @@ func _set_new_project_defaults() -> void:
 	framerate_spinbox.value = Settings.get_default_framerate()
 
 
+func _on_editor_settings_button_pressed() -> void:
+	get_tree().root.add_child(preload("uid://bjen0oagwidr7").instantiate())
+
+
 func _on_image_author_meta_clicked(meta: Variant) -> void:
 	Toolbox.open_url(str(meta))
 

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=17 format=3 uid="uid://715mkakin2bb"]
+[gd_resource type="Theme" load_steps=18 format=3 uid="uid://715mkakin2bb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oqxky"]
 
@@ -98,6 +98,9 @@ bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_catyp"]
+bg_color = Color(0.164706, 0.164706, 0.164706, 0.666667)
+
 [resource]
 default_font_size = 14
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
@@ -125,6 +128,8 @@ file_tab_button/base_type = &"Button"
 file_tab_button/styles/hover = SubResource("StyleBoxEmpty_0hspu")
 file_tab_button/styles/normal = SubResource("StyleBoxEmpty_0icvv")
 file_tab_button/styles/pressed = SubResource("StyleBoxFlat_h2olj")
+overlay_background/base_type = &"PanelContainer"
+overlay_background/styles/panel = SubResource("StyleBoxFlat_catyp")
 title_label/base_type = &"Label"
 title_label/colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
 title_label/font_sizes/font_size = 12

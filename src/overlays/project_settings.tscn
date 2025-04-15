@@ -3,13 +3,12 @@
 [ext_resource type="Script" uid="uid://bh7ksnxs73n8o" path="res://scripts/project_settings_menu.gd" id="1_hxewb"]
 
 [node name="ProjectSettings" type="PanelContainer" node_paths=PackedStringArray("background_color_picker")]
-self_modulate = Color(1, 1, 1, 0.666667)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"background"
+theme_type_variation = &"overlay_background"
 script = ExtResource("1_hxewb")
 background_color_picker = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/BackgroundColorPickerButton")
 

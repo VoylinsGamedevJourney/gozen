@@ -24,6 +24,11 @@ func _ready() -> void:
 	set_values()
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_cancel_button_pressed()
+
+
 func set_values() -> void:
 	save_info_label.visible = false
 

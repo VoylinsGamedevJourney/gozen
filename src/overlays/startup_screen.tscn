@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://bqlcn30hs8qp5"]
+[gd_scene load_steps=11 format=3 uid="uid://bqlcn30hs8qp5"]
 
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scripts/startup_screen.gd" id="1_mrrmf"]
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_jk13q"]
 [ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="3_jdwvk"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_wb8ll"]
+[ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="4_x2wpv"]
 [ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="5_wb8ll"]
 [ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="5_x2wpv"]
 [ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="6_donii"]
@@ -11,13 +12,12 @@
 [ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="8_ohjo4"]
 
 [node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label")]
-self_modulate = Color(1, 1, 1, 0.666667)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"background"
+theme_type_variation = &"overlay_background"
 script = ExtResource("1_mrrmf")
 version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
@@ -27,6 +27,7 @@ resolution_x_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewPr
 resolution_y_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionYSpinBox")
 framerate_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/FramerateSpinBox")
 warning_label = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectWarningLabel")
+metadata/_edit_lock_ = true
 
 [node name="Panel" type="PanelContainer" parent="."]
 clip_children = 2
@@ -53,6 +54,23 @@ offset_right = 47.0
 offset_bottom = 47.0
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_wb8ll")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="EditorSettingsButton" type="TextureButton" parent="Panel/VBox/StartupImage"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -25.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 25.0
+grow_horizontal = 0
+tooltip_text = "Editor settings."
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_x2wpv")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -314,6 +332,7 @@ mouse_default_cursor_shape = 2
 text = "Create new project"
 
 [connection signal="pressed" from="Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_go_zen_logo_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupImage/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]
 [connection signal="meta_clicked" from="Panel/VBox/StartupImage/OverlayHBox/ImageAuthor" to="." method="_on_image_author_meta_clicked"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
