@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=18 format=3 uid="uid://dxq4vg1l5rwhj"]
+[gd_resource type="Theme" load_steps=19 format=3 uid="uid://dxq4vg1l5rwhj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
 
@@ -98,6 +98,17 @@ bg_color = Color(0.866667, 0.866667, 0.866667, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ij44"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alpqq"]
 bg_color = Color(0.164706, 0.164706, 0.164706, 0.666667)
 
@@ -133,6 +144,8 @@ file_tab_button/base_type = &"Button"
 file_tab_button/styles/hover = SubResource("StyleBoxEmpty_kicdo")
 file_tab_button/styles/normal = SubResource("StyleBoxEmpty_riq6l")
 file_tab_button/styles/pressed = SubResource("StyleBoxFlat_tod0p")
+main_button/base_type = &"Button"
+main_button/styles/normal = SubResource("StyleBoxFlat_5ij44")
 overlay_background/base_type = &"PanelContainer"
 overlay_background/styles/panel = SubResource("StyleBoxFlat_alpqq")
 title_label/base_type = &"Label"

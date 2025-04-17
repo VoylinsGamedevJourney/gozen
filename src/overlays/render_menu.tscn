@@ -1,4 +1,7 @@
-[gd_scene format=3 uid="uid://chdpurqhtqieq"]
+[gd_scene load_steps=3 format=3 uid="uid://chdpurqhtqieq"]
+
+[ext_resource type="Script" uid="uid://dobw2jnf0wcn4" path="res://scripts/render_menu.gd" id="1_6rdvb"]
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="2_lyxh1"]
 
 [node name="RenderMenu" type="PanelContainer"]
 anchors_preset = 15
@@ -7,9 +10,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
+script = ExtResource("1_6rdvb")
 
 [node name="Panel" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(700, 300)
+custom_minimum_size = Vector2(700, 400)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -21,169 +25,260 @@ layout_mode = 2
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
 layout_mode = 2
 
-[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VBox"]
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="TopPanel" type="PanelContainer" parent="Panel/Margin/VBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Video render path"
+
+[node name="PathHBox" type="HBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer"]
+layout_mode = 2
+
+[node name="PathLineEdit" type="LineEdit" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/PathHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectSavePathButton" type="Button" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/PathHBox"]
+custom_minimum_size = Vector2(33, 0)
+layout_mode = 2
+icon = ExtResource("2_lyxh1")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="RenderProfileHBox" type="GridContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="RenderProfileLabel" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Render profile"
+
+[node name="RenderProfileHBox" type="HBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RenderProfilesOptionButton" type="OptionButton" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderProfileHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SaveRenderProfileButton" type="Button" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderProfileHBox"]
+layout_mode = 2
+disabled = true
+text = "Save"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="SettingsPanel" type="PanelContainer" parent="Panel/Margin/VBox/Scroll"]
+[node name="RenderOptionsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel"]
+[node name="AudioPanel" type="PanelContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel"]
 layout_mode = 2
 
-[node name="SettingsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin"]
+[node name="AudioVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin"]
 layout_mode = 2
 
-[node name="AppearanceLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+[node name="AudioHeaderHBox" type="HBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
 layout_mode = 2
+
+[node name="AudioBoxLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioHeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Appearance"
+text = "Render audio"
 
-[node name="AppearanceGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+[node name="EnableAudioCheckButton" type="CheckButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioHeaderHBox"]
+layout_mode = 2
+tooltip_text = "Enable or disable the rendering out of audio."
+button_pressed = true
+flat = true
+
+[node name="AudioGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="ThemeLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
+[node name="AudioCodecLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Audio codec"
+
+[node name="AudioCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Choose your theme: Dark or Light. Both are developed at the same time so both themes should be usable. Custom theme's coming in the future."
-mouse_filter = 1
-text = "Theme"
 
-[node name="ThemeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
+[node name="VideoPanel" type="PanelContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Light mode is better."
-mouse_default_cursor_shape = 2
-item_count = 2
-popup/item_0/text = "Dark"
-popup/item_0/id = 0
-popup/item_1/text = "Light"
-popup/item_1/id = 1
 
-[node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel"]
 layout_mode = 2
 
-[node name="DefaultsLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+[node name="VideoVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin"]
 layout_mode = 2
+
+[node name="VideoHeaderHBox" type="HBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
+layout_mode = 2
+
+[node name="VideoBoxLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoHeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Defaults"
+text = "Render video"
 
-[node name="DefaultsGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+[node name="EnableVideoCheckButton" type="CheckButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoHeaderHBox"]
+layout_mode = 2
+tooltip_text = "Enable or disable the rendering out of video."
+button_pressed = true
+flat = true
+
+[node name="VideoGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="ImageDurationLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+[node name="VideoCodecLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Default image duration for when dragging image clips onto the timeline. This setting does have an effect on currently open projects."
-mouse_filter = 1
-text = "Image duration"
+text = "Video codec"
 
-[node name="ImageDurationSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+[node name="VideoCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "The duration in frames."
-mouse_default_cursor_shape = 1
-min_value = 1.0
-value = 1.0
+
+[node name="QualityLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+mouse_filter = 1
+text = "Quality"
+
+[node name="QualityHSlider" type="HSlider" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+min_value = -50.0
+max_value = -15.0
+value = -18.0
+
+[node name="SpeedLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+mouse_filter = 1
+text = "Speed"
+
+[node name="SpeedHSlider" type="HSlider" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+max_value = 9.0
+value = 3.0
+
+[node name="GOPSizeLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+mouse_filter = 1
+text = "GOP size"
+
+[node name="GOPSizeSpinBox" type="SpinBox" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+layout_mode = 2
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+value = 15.0
 allow_greater = true
+alignment = 2
 
-[node name="DefaultResolutionLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+[node name="MetadataPanel" type="PanelContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Video resolution default for newly created projects."
-mouse_filter = 1
-text = "Default project resolution"
 
-[node name="ResolutionHBox" type="HBoxContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel"]
 layout_mode = 2
 
-[node name="XLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
+[node name="MetadataVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin"]
 layout_mode = 2
-tooltip_text = "Video width default for newly created projects."
-mouse_filter = 1
-text = "X:"
 
-[node name="DefaultResolutionXSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
+[node name="MetadataHeaderHBox" type="HBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
+layout_mode = 2
+
+[node name="MetadataBoxLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "The default video project width."
-mouse_default_cursor_shape = 1
-min_value = 1.0
-value = 1.0
-allow_greater = true
-
-[node name="YLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
-layout_mode = 2
-tooltip_text = "Video height default for newly created projects."
-mouse_filter = 1
-text = "Y:"
-
-[node name="DefaultResolutionYSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "The default video project height."
-mouse_default_cursor_shape = 1
-min_value = 1.0
-value = 1.0
-allow_greater = true
-
-[node name="DefaultFramerateLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "The default project framerate for when you create new projects."
-mouse_filter = 1
-text = "Default project framerate"
-
-[node name="DefaultFramerateSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "The default video project framerate."
-mouse_default_cursor_shape = 1
-min_value = 1.0
-value = 1.0
-allow_greater = true
-
-[node name="HSeparator2" type="HSeparator" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
-layout_mode = 2
-
-[node name="TimelineLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
-layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Timeline"
+text = "Metadata"
 
-[node name="TimelineGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+[node name="EnableMetadataCheckButton" type="CheckButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
+layout_mode = 2
+tooltip_text = "Enable or disable the rendering out of video."
+button_pressed = true
+flat = true
+
+[node name="MetadataGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="TrackAmountLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Title"
+
+[node name="TitleLineEdit" type="LineEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "This setting is used for new projects you create. New projects will intialize with the amount of tracks which you define here."
-mouse_filter = 1
-text = "Default track amount"
 
-[node name="TrackAmountSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid"]
+[node name="CommentLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+text = "Comment"
+
+[node name="CommentTextEdit" type="TextEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="AuthorLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Author"
+
+[node name="AuthorLineEdit" type="LineEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "The duration in frames."
-mouse_default_cursor_shape = 1
-min_value = 1.0
-max_value = 32.0
-value = 1.0
 
-[node name="SaveForEffectLabel" type="Label" parent="Panel/Margin/VBox"]
-visible = false
+[node name="CopyrightLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Save changes for them to take effect."
+text = "Copyright"
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+[node name="CopyrightLineEdit" type="LineEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
 
-[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/ButtonHBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -191,25 +286,11 @@ tooltip_text = "Ignore changes and close settings menu."
 mouse_default_cursor_shape = 2
 text = "Cancel"
 
-[node name="ResetButton" type="Button" parent="Panel/Margin/VBox/HBox"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Reset all adjusted settings back to saved settings, if nothing was adjusted than settings will reset to default."
-mouse_default_cursor_shape = 2
-text = "Reset"
-
-[node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="RenderButton" type="Button" parent="Panel/Margin/VBox/ButtonHBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Save the project settings."
 mouse_default_cursor_shape = 2
-text = "Save"
-
-[connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]
-[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox" to="." method="_on_image_duration_spin_box_value_changed"]
-[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox" to="." method="_on_track_amount_spin_box_value_changed"]
-[connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/HBox/ResetButton" to="." method="_on_reset_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]
+theme_type_variation = &"main_button"
+text = "Render"

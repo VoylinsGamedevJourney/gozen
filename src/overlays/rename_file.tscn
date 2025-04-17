@@ -48,6 +48,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
+theme_type_variation = &"main_button"
 text = "Save"
 
 [connection signal="text_submitted" from="Panel/Margin/VBox/RenameFileLineEdit" to="." method="_on_rename_file_line_edit_text_submitted"]

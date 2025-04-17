@@ -80,6 +80,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
+theme_type_variation = &"main_button"
 text = "Save"
 
 [connection signal="color_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]

@@ -215,6 +215,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Save the project settings."
 mouse_default_cursor_shape = 2
+theme_type_variation = &"main_button"
 text = "Save"
 
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]

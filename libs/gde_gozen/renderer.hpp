@@ -115,15 +115,15 @@ public:
 		A_NONE = AV_CODEC_ID_NONE,
 	};
 	enum H264_PRESETS { // Only works for H.H264
-		H264_PRESET_ULTRAFAST,
-		H264_PRESET_SUPERFAST,
-		H264_PRESET_VERYFAST,
-		H264_PRESET_FASTER,
-		H264_PRESET_FAST,
-		H264_PRESET_MEDIUM, // default preset
-		H264_PRESET_SLOW,   // recommended
-		H264_PRESET_SLOWER,
 		H264_PRESET_VERYSLOW,
+		H264_PRESET_SLOWER,
+		H264_PRESET_SLOW,   // recommended
+		H264_PRESET_MEDIUM, // default preset
+		H264_PRESET_FAST,
+		H264_PRESET_FASTER,
+		H264_PRESET_VERYFAST,
+		H264_PRESET_SUPERFAST,
+		H264_PRESET_ULTRAFAST,
 	};
 	enum SWS_QUALITY {
 		SWS_QUALITY_FAST_BILINEAR = SWS_FAST_BILINEAR, // (Fast, lower quality)
@@ -183,15 +183,15 @@ public:
 
 	inline void set_h264_preset(int value) {
 		switch (value) {
-			case H264_PRESET_ULTRAFAST: h264_preset = "ultrafast"; break;
-			case H264_PRESET_SUPERFAST: h264_preset = "superfast"; break;
-			case H264_PRESET_VERYFAST:	h264_preset = "veryfast"; break;
-			case H264_PRESET_FASTER:	h264_preset = "faster"; break;
-			case H264_PRESET_FAST:		h264_preset = "fast"; break;
-			case H264_PRESET_MEDIUM:	h264_preset = "medium"; break;
-			case H264_PRESET_SLOW:		h264_preset = "slow"; break;
-			case H264_PRESET_SLOWER:	h264_preset = "slower";	break;
 			case H264_PRESET_VERYSLOW:	h264_preset = "veryslow"; break;
+			case H264_PRESET_SLOWER:	h264_preset = "slower";	break;
+			case H264_PRESET_SLOW:		h264_preset = "slow"; break;
+			case H264_PRESET_MEDIUM:	h264_preset = "medium"; break;
+			case H264_PRESET_FAST:		h264_preset = "fast"; break;
+			case H264_PRESET_FASTER:	h264_preset = "faster"; break;
+			case H264_PRESET_VERYFAST:	h264_preset = "veryfast"; break;
+			case H264_PRESET_SUPERFAST: h264_preset = "superfast"; break;
+			case H264_PRESET_ULTRAFAST: h264_preset = "ultrafast"; break;
 		}
 	}
 	inline String get_h264_preset() { return h264_preset.c_str(); }
@@ -199,7 +199,7 @@ public:
 	inline void configure_for_high_quality() { // MP4
 		set_video_codec_id(V_HEVC);
 		set_audio_codec_id(A_AAC);
-		set_crf(18);
+		set_crf(15);
 		set_h264_preset(H264_PRESET_SLOW);
 		set_gop_size(15);
 	}
