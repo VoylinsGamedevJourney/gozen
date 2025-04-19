@@ -288,7 +288,7 @@ texture_normal = ExtResource("12_hcdi5")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="EffectsPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "gain_spinbox", "mono_option_button")]
+[node name="EffectsPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "mute_button", "gain_label", "gain_spinbox", "mono_label", "mono_option_button")]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_type_variation = &"box"
@@ -323,7 +323,10 @@ enable_chroma_key = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabC
 chroma_key_color = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyColorPickerButton")
 chroma_key_tolerance = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyToleranceSpinBox")
 chroma_key_softness = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeySoftnessSpinBox")
+mute_button = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MuteCheckButton")
+gain_label = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainLabel")
 gain_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainSpinBox")
+mono_label = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoLabel")
 mono_option_button = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoOptionButton")
 
 [node name="Margin" type="MarginContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel"]
@@ -386,10 +389,11 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="VisualEffects" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -703,7 +707,6 @@ step = 0.01
 value = 0.05
 
 [node name="AudioEffects" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -715,6 +718,16 @@ text = "Basic audio effects"
 [node name="BasicEffects" type="GridContainer" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
 layout_mode = 2
 columns = 2
+
+[node name="MuteLabel" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Mute"
+
+[node name="MuteCheckButton" type="CheckButton" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
 
 [node name="GainLabel" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects"]
 layout_mode = 2
@@ -899,6 +912,7 @@ expand_mode = 1
 [connection signal="color_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyColorPickerButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_chroma_key_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyToleranceSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_chroma_key_tolerance_spin_box_value_changed"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeySoftnessSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_chroma_key_softness_spin_box_value_changed"]
+[connection signal="toggled" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MuteCheckButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_mute_check_button_toggled"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainSpinBox" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_gain_spin_box_value_changed"]
 [connection signal="item_selected" from="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoOptionButton" to="VSplitContainer/HSplitContainer/EffectsPanel" method="_on_mono_option_button_item_selected"]
 [connection signal="gui_input" from="VSplitContainer/BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll" to="VSplitContainer/BottomHBox/Timeline" method="_on_timeline_scroll_gui_input"]

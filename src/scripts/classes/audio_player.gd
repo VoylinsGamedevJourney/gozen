@@ -51,8 +51,7 @@ func set_audio(audio_clip_id: int) -> void:
 	clip_id = audio_clip_id
 	file_id = data.file_id
 	stop_frame = data.end_frame
-
-	set_effects(data)
+	update_effects()
 
 	# Getting timings in seconds.
 	var position: float = float(Editor.frame_nr - data.start_frame + data.begin)
@@ -66,8 +65,9 @@ func set_audio(audio_clip_id: int) -> void:
 			player.stream = file_data.audio
 			player.play(position)
 			player.stream_paused = !Editor.is_playing
+			set_effects(data)
+			update_effects()
 			return
-
 		return stop()
 
 	# Check if playback is close enough ONLY if stream is the same.
@@ -83,26 +83,20 @@ func set_audio(audio_clip_id: int) -> void:
 
 
 func set_effects(_data: ClipData = Project.get_clip(clip_id)) -> void:
+	# Cleaning previous effects
 	for i: int in AudioServer.get_bus_effect_count(bus_index):
 		AudioServer.remove_bus_effect(bus_index, 0)
 
-	# TODO: Implement audio effects
-#	if _set_bus_mute(data.default_audio_effects.mute):
-#		return
-#	_set_volume(data.default_audio_effects.gain)
+	# TODO: Add needed effects to bus
 
 
-func update_effects(_data: ClipData = Project.get_clip(clip_id)) -> void:
-	# TODO: Implement this, we don't need to remove/add any effects,
-	# just change the value of them
-	pass
+func update_effects(data: ClipData = Project.get_clip(clip_id)) -> void:
+	# Updates the effect variable values.
+	var audio_effects: EffectsAudio = data.effects_audio
 
+	if audio_effects.mute:
+		AudioServer.set_bus_mute(bus_index, audio_effects.mute)
+		return
 
-func _set_bus_mute(value: bool) -> bool:
-	AudioServer.set_bus_mute(bus_index, value)
-	return value
-
-
-func _set_volume(gain: int) -> void:
-	AudioServer.set_bus_volume_db(bus_index, gain)
+	AudioServer.set_bus_volume_db(bus_index, audio_effects.gain)
 

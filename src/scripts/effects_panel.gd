@@ -57,7 +57,10 @@ static var instance: EffectsPanel
 @export var chroma_key_softness: SpinBox
 
 @export_group("Audio effects")
+@export var mute_button: CheckButton
+@export var gain_label: Label
 @export var gain_spinbox: SpinBox
+@export var mono_label: Label
 @export var mono_option_button: OptionButton
 
 var current_clip_id: int = -1
@@ -164,9 +167,11 @@ func _set_video_effect_values() -> void:
 func _set_audio_effect_values() -> void:
 	var audio_effects_data: EffectsAudio = Project.get_clip(current_clip_id).effects_audio
 
+	mute_button.button_pressed = audio_effects_data.mute
 	gain_spinbox.value = audio_effects_data.gain
 	mono_option_button.selected = audio_effects_data.mono
 
+	_on_mute_check_button_toggled(mute_button.button_pressed)
 
 # Audio effects
 
@@ -179,6 +184,14 @@ func _on_mono_option_button_item_selected(value: int) -> void:
 		0: Project.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.DISABLE
 		1: Project.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.LEFT_CHANNEL
 		2: Project.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.RIGHT_CHANNEL
+
+
+func _on_mute_check_button_toggled(toggled_on: bool) -> void:
+	Project.get_clip(current_clip_id).effects_audio.mute = toggled_on
+	gain_label.visible = !toggled_on
+	gain_spinbox.visible = !toggled_on
+	mono_label.visible = !toggled_on
+	mono_option_button.visible = !toggled_on
 
 
 # Video effects
@@ -362,3 +375,4 @@ func check_reset_chroma_key_button() -> void:
 		return
 	reset_chroma_key_effects.visible = !Project.get_clip(
 			current_clip_id).effects_video.chroma_key_equal_to_defaults()
+
