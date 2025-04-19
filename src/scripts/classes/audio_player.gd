@@ -42,6 +42,10 @@ func set_audio(audio_clip_id: int) -> void:
 		stop()
 		return
 
+	# No audio playback needed during rendering.
+	if RenderingWindow.instance != null and RenderingWindow.instance.is_rendering:
+		return
+
 	var data: ClipData = Project.get_clip(audio_clip_id)
 	var old_file_id: int = file_id
 

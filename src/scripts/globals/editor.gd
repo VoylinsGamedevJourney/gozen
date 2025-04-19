@@ -189,50 +189,6 @@ func find_audio(frame: int, track: int) -> int:
 	else:
 		return -1
 
-
-func get_sample_count(frames: int) -> int:
-	return int(44100 * 4 * float(frames) / Project.get_framerate())
-
-	
-func render_audio() -> PackedByteArray:
-	var audio: PackedByteArray = []
-
-	for i: int in Project.get_track_count():
-		var track_audio: PackedByteArray = []
-		var track_data: Dictionary[int, int] = Project.get_track_data(i)
-
-
-		for frame_point: int in Project.get_track_keys(i):
-			var clip: ClipData = Project.get_clip(track_data[frame_point])
-			var file: File = Project.get_file(clip.file_id)
-
-			if file.type in AUDIO_TYPES:
-				var sample_count: int = get_sample_count(clip.start_frame)
-
-				if track_audio.size() != sample_count:
-					if track_audio.resize(sample_count):
-						Toolbox.print_resize_error()
-				
-				track_audio.append_array(clip.get_clip_audio_data())
-
-			# Checking if audio is empty or not
-			if track_audio.size() == 0:
-				continue
-
-		# Making the audio data the correct length
-		if track_audio.resize(get_sample_count(Project.get_timeline_end() + 1)):
-			Toolbox.print_resize_error()
-
-		if audio.size() == 0:
-			audio = track_audio
-		elif audio.size() == track_audio.size():
-			audio = Audio.combine_data(audio, track_audio)
-
-	# Check for the total audio length
-	#print((float(audio.size()) / AudioHandler.bytes_per_frame) / 30)
-	print("Rendering audio complete")
-	return audio
-
 			
 # Video stuff  ----------------------------------------------------------------
 func _setup_playback() -> void:

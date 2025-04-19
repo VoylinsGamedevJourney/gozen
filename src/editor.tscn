@@ -736,6 +736,8 @@ text = "Gain"
 
 [node name="GainSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects"]
 layout_mode = 2
+min_value = -80.0
+max_value = 40.0
 alignment = 2
 suffix = "db"
 

@@ -1,8 +1,7 @@
+class_name RenderingWindow
 extends PanelContainer
 
 # TODO: Create a way to save custom render profiles
-# TODO: Make path button work
-# TODO: Fill path with current project path (Change extension depending on selected profile
 # TODO: Fill render profiles option button with defaults
 # TODO: Make saving of custom render profiles work
 # TODO: Only highlight/enable the "save profile" button when changes have been made
@@ -13,6 +12,9 @@ extends PanelContainer
 
 const DEFAULT_RENDER_PROFILES_PATH: String = "res://render_profiles/"
 const RENDER_PROFILES_PATH: String = "user://render_profiles/"
+
+
+static var instance: RenderingWindow
 
 
 @export var path_line_edit: LineEdit
@@ -68,7 +70,6 @@ var video_codecs: Dictionary[Renderer.VIDEO_CODEC, String] = {
 	Renderer.VIDEO_CODEC.V_AV1: "AV1",
 	Renderer.VIDEO_CODEC.V_VP9: "VP9",
 	Renderer.VIDEO_CODEC.V_VP8: "VP8",
-	Renderer.VIDEO_CODEC.V_NONE: "NONE",
 }
 
 var is_rendering: bool = false
@@ -76,12 +77,13 @@ var is_rendering: bool = false
 
 
 func _ready() -> void:
+	instance = self
+
 	if !DirAccess.dir_exists_absolute(RENDER_PROFILES_PATH):
 		if DirAccess.make_dir_recursive_absolute(RENDER_PROFILES_PATH):
 			printerr("Couldn't create folder at %s!" % RENDER_PROFILES_PATH)
 
-	(get_child(0) as PanelContainer).visible = true
-	(get_child(1) as PanelContainer).visible = false
+	show_window(0)
 
 	# Loading default render profiles.
 	var id_youtube_profile: int = -1
@@ -105,6 +107,12 @@ func _ready() -> void:
 
 	load_render_profile(profiles[id_youtube_profile])
 	_on_enable_metadata_check_button_toggled(false)
+
+
+func _input(event: InputEvent) -> void:
+	# TODO: Improve this so it doesn't trigger when trying to "esc" a line edit.
+	if event.is_action_pressed("ui_cancel"):
+		_on_cancel_button_pressed()
 
 
 func load_render_profile(profile: RenderProfile) -> void:
@@ -133,7 +141,6 @@ func load_render_profile(profile: RenderProfile) -> void:
 
 
 func _on_select_save_path_button_pressed() -> void:
-	# TODO: Add the correct extension to it
 	var dialog: FileDialog = Toolbox.get_file_dialog(
 			"Select save path", FileDialog.FileMode.FILE_MODE_SAVE_FILE, [get_extension()])
 
@@ -144,14 +151,13 @@ func _on_select_save_path_button_pressed() -> void:
 
 
 func _save_path_selected(file_path: String) -> void:
-	# TODO: Add the correct extension to it.
 	path_line_edit.text = file_path
 
 
 func _on_save_render_profile_button_pressed() -> void:
 	pass # TODO: Bring up a popup to select under what name you want to save it.
-		 # TODO: Also check if it's overriding an already existing one. Only custom profiles
-		 # TODO: can be overriden.
+		  		# Also check if it's overriding an already existing one. Only custom profiles
+		  		# can be overriden.
 
 
 func _on_enable_metadata_check_button_toggled(toggled_on: bool) -> void:
@@ -165,21 +171,11 @@ func _on_cancel_button_pressed() -> void:
 func _on_render_button_pressed() -> void:
 	var start_time: int = Time.get_ticks_usec()
 
-	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_NONE:
-		if render_profile.audio_codec == Renderer.AUDIO_CODEC.A_NONE:
-			return # Nothing to do
-		(get_child(0) as PanelContainer).visible = false
-		(get_child(1) as PanelContainer).visible = true
-		render_progress_label.text = "Compiling audio data ..."
-		# TODO: Create and save audio
-		return
-
 	render_progress_bar.max_value = Project.get_timeline_end()
 	render_progress_bar.value = 0
 	render_progress_label.text = "Setting up renderer ..."
-		
-	(get_child(0) as PanelContainer).visible = false
-	(get_child(1) as PanelContainer).visible = true
+
+	show_window(1)
 
 	is_rendering = true
 	renderer = Renderer.new()
@@ -221,7 +217,8 @@ func _on_render_button_pressed() -> void:
 
 	if render_profile.audio_codec != Renderer.AUDIO_CODEC.A_NONE:
 		render_progress_label.text = "Compiling audio data ..."
-		# TODO: Add audio
+		if !renderer.send_audio(render_audio()):
+			printerr("Something went wrong sending audio!")
 
 	render_progress_label.text = "Creating & sending frame data ..."
 	Editor.set_frame(0)
@@ -244,9 +241,7 @@ func _on_render_button_pressed() -> void:
 	print("Rendering took: ", float(float(Time.get_ticks_usec() - start_time) / 1000000))
 
 	# TODO: Create a new screen to say that render was successfull or unsuccessful.
-	(get_child(0) as PanelContainer).visible = true
-	(get_child(1) as PanelContainer).visible = false
-
+	show_window(0)
 
 
 func get_extension(profile: RenderProfile = render_profile) -> String:
@@ -260,6 +255,8 @@ func get_extension(profile: RenderProfile = render_profile) -> String:
 		Renderer.VIDEO_CODEC.V_AV1: return ".webm"
 		Renderer.VIDEO_CODEC.V_VP9: return ".webm"
 		Renderer.VIDEO_CODEC.V_VP8: return ".webm"
+
+	printerr("Unrecognized codec!")
 	return ""
 
 
@@ -282,6 +279,8 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 		video_speed_label.visible = false
 		video_speed_slider.visible = false
 
+	path_line_edit.text = path_line_edit.text.get_basename() + get_extension()
+
 
 func _on_quality_h_slider_drag_ended(value_changed: bool) -> void:
 	if value_changed:
@@ -295,4 +294,52 @@ func _on_speed_h_slider_drag_ended(value_changed:bool) -> void:
 	
 func _on_gop_size_spin_box_value_changed(value: float) -> void:
 	render_profile.gop = int(value)
+
+
+func render_audio() -> PackedByteArray:
+	var audio: PackedByteArray = []
+
+	for i: int in Project.get_track_count():
+		var track_audio: PackedByteArray = []
+		var track_data: Dictionary[int, int] = Project.get_track_data(i)
+
+		if track_data.size() == 0:
+			continue
+
+		for frame_point: int in Project.get_track_keys(i):
+			var clip: ClipData = Project.get_clip(track_data[frame_point])
+			var file: File = Project.get_file(clip.file_id)
+
+			if file.type in Editor.AUDIO_TYPES:
+				var sample_count: int = get_sample_count(clip.start_frame)
+
+				if track_audio.size() != sample_count:
+					if track_audio.resize(sample_count):
+						Toolbox.print_resize_error()
+				
+				track_audio.append_array(clip.get_clip_audio_data())
+
+			# Checking if audio is empty or not
+			if track_audio.size() == 0:
+				continue
+
+		# Making the audio data the correct length
+		if track_audio.resize(get_sample_count(Project.get_timeline_end() + 1)):
+			Toolbox.print_resize_error()
+
+		if audio.size() == 0:
+			audio = track_audio
+		elif audio.size() == track_audio.size():
+			audio = Audio.combine_data(audio, track_audio)
+
+	return audio
+
+
+func show_window(nr: int) -> void:
+	for i: int in get_child_count():
+		(get_child(i) as PanelContainer).visible = nr == i
+
+
+static func get_sample_count(frames: int) -> int:
+	return int(44100 * 4 * float(frames) / Project.get_framerate())
 

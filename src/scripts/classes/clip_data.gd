@@ -69,6 +69,14 @@ func get_frame(frame_nr: int) -> Texture:
 
 func get_clip_audio_data() -> PackedByteArray:
 	var file_data: FileData = Project.get_file_data(file_id)
+	var data: PackedByteArray = file_data.audio.data.slice(
+			RenderingWindow.get_sample_count(begin),
+			RenderingWindow.get_sample_count(begin+duration))
 
-	return file_data.audio.data.slice(begin, begin + duration)
-		
+	data = Audio.change_db(data, effects_audio.gain)
+
+	if effects_audio.mono != effects_audio.MONO.DISABLE:
+		data = Audio.change_to_mono(data, effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
+
+	return data
+
