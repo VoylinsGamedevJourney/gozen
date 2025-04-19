@@ -30,14 +30,11 @@ bool Renderer::open() {
 	if (framerate <= 0)
 		return _log_err("Invalid framerate set");
 
-	if (audio_enabled) {
-		if (audio_codec_id == AV_CODEC_ID_NONE) {
+	if (audio_codec_id != AV_CODEC_ID_NONE) {
+		if (audio_codec_id == AV_CODEC_ID_NONE)
 			_log("Audio codec not set, not rendering audio");
-			audio_enabled = false;
-		} else if (sample_rate == -1) {
+		else if (sample_rate == -1)
 			_log("A sample rate needs to be set for audio exporting");
-			audio_enabled = false;
-		}
 	}
 
 	// Allocating output media context
@@ -62,7 +59,7 @@ bool Renderer::open() {
 	}
 
 	// Setting up audio stream
-	if (audio_enabled && !_add_audio_stream()) {
+	if (audio_codec_id != AV_CODEC_ID_NONE && !_add_audio_stream()) {
 		close();
 		return _log_err("Couldn't create video stream");
 	}
@@ -83,7 +80,7 @@ bool Renderer::open() {
 
 	// Setting up SWS
 	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter >(sws_getContext(
-			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGBA,
+			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGB24,
 			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_YUV420P,
 			sws_quality, nullptr, nullptr, nullptr));
 	if (!sws_ctx)
@@ -91,7 +88,7 @@ bool Renderer::open() {
 
 	frame_nr = 0;
 	renderer_open = true;
-	return OK;
+	return true;
 }
 
 bool Renderer::_add_video_stream() {
@@ -277,18 +274,18 @@ bool Renderer::_write_header() {
 bool Renderer::send_frame(Ref<Image> frame_image) {
 	if (!renderer_open)
 		return _log_err("Not open");
-	else if (audio_enabled && audio_codec_id != AV_CODEC_ID_NONE
+	else if (audio_codec_id != AV_CODEC_ID_NONE && audio_codec_id != AV_CODEC_ID_NONE
 			&& !audio_added)
 		return _log_err("Audio hasn't been send");
 	else if (av_frame_make_writable(av_frame_video.get()) < 0)
 		return _log_err("Frame not writable");
 
 	uint8_t *src_data[4] = { frame_image->get_data().ptrw(), nullptr, nullptr, nullptr};
-	int src_linesize[4] = { av_frame_video->width * 4, 0, 0, 0 };
+	int src_linesize[4] = { av_frame_video->width * 3, 0, 0, 0 };
 
 	response = sws_scale(
 			sws_ctx.get(),
-			src_data, src_linesize, 0, av_frame_video->height,
+			src_data, src_linesize, 0, frame_image->get_height(),
 			av_frame_video->data, av_frame_video->linesize);
 	if (response < 0) {
 		FFmpeg::print_av_error("Scaling frame data failed!", response);
@@ -485,7 +482,7 @@ bool Renderer::_finalize_renderer() {
 			av_packet_unref(av_packet_video.get());
 	}
 
-	if (audio_enabled && av_codec_ctx_audio) {
+	if (audio_codec_id != AV_CODEC_ID_NONE && av_codec_ctx_audio) {
         av_packet_audio = make_unique_avpacket();
 		avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
 
@@ -547,16 +544,9 @@ void Renderer::_bind_methods() {
 	BIND_ENUM_CONSTANT(V_MPEG2);
 	BIND_ENUM_CONSTANT(V_MPEG1);
 	BIND_ENUM_CONSTANT(V_MJPEG);
-	BIND_ENUM_CONSTANT(V_WEBP);
 	BIND_ENUM_CONSTANT(V_AV1);
 	BIND_ENUM_CONSTANT(V_VP9);
 	BIND_ENUM_CONSTANT(V_VP8);
-	BIND_ENUM_CONSTANT(V_AMV);
-	BIND_ENUM_CONSTANT(V_GIF);
-	BIND_ENUM_CONSTANT(V_THEORA);
-	BIND_ENUM_CONSTANT(V_DNXHD);
-	BIND_ENUM_CONSTANT(V_PRORES);
-	BIND_ENUM_CONSTANT(V_RAWVIDEO);
 	BIND_ENUM_CONSTANT(V_NONE);
 
 	/* AUDIO CODEC ENUMS */
@@ -599,56 +589,26 @@ void Renderer::_bind_methods() {
 
 	BIND_METHOD(enable_debug);
 	BIND_METHOD(disable_debug);
-	BIND_METHOD(get_debug);
 
 	BIND_METHOD_ARGS(set_video_codec_id, "codec_id");
-	BIND_METHOD(get_video_codec_id);
-
 	BIND_METHOD_ARGS(set_audio_codec_id, "codec_id");
-	BIND_METHOD(get_audio_codec_id);
 
-	BIND_METHOD_ARGS(set_path, "file_path");
-	BIND_METHOD(get_path);
+	BIND_METHOD_ARGS(set_file_path, "file_path");
 
 	BIND_METHOD_ARGS(set_resolution, "video_resolution");
-	BIND_METHOD(get_resolution);
-
 	BIND_METHOD_ARGS(set_framerate, "video_framerate");
-	BIND_METHOD(get_framerate);
-
 	BIND_METHOD_ARGS(set_crf, "video_crf");
-	BIND_METHOD(get_crf);
-
 	BIND_METHOD_ARGS(set_gop_size, "video_gop_size");
-	BIND_METHOD(get_gop_size);
-
-	BIND_METHOD_ARGS(set_sample_rate, "value");
-	BIND_METHOD(get_sample_rate);
 
 	BIND_METHOD_ARGS(set_sws_quality, "value");
-	BIND_METHOD(get_sws_quality);
-
 	BIND_METHOD_ARGS(set_b_frames, "value");
-	BIND_METHOD(get_b_frames);
-
-	BIND_METHOD(enable_audio);
-	BIND_METHOD(disable_audio);
-
 	BIND_METHOD_ARGS(set_h264_preset, "value");
-	BIND_METHOD(get_h264_preset);
 
-	BIND_METHOD(configure_for_high_quality);
+	BIND_METHOD_ARGS(set_sample_rate, "value");
 
-	BIND_METHOD(configure_for_youtube_hq);
-	BIND_METHOD(configure_for_youtube);
-
-	BIND_METHOD(configure_for_av1);
-	BIND_METHOD(configure_for_vp9);
-	BIND_METHOD(configure_for_vp8);
-
-	BIND_METHOD(configure_for_hq_archiving_flac);
-	BIND_METHOD(configure_for_hq_archiving_aac);
-
-	BIND_METHOD(configure_for_older_devices);
+	BIND_METHOD_ARGS(set_video_meta_title, "new_title");
+	BIND_METHOD_ARGS(set_video_meta_comment, "new_comment");
+	BIND_METHOD_ARGS(set_video_meta_author, "new_author");
+	BIND_METHOD_ARGS(set_video_meta_copyright, "new_copyright");
 }
 

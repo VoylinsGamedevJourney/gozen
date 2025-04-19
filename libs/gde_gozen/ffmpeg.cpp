@@ -10,16 +10,9 @@ void FFmpeg::print_av_error(const char *message, int error) {
 }
 
 void FFmpeg::enable_multithreading(AVCodecContext *codec_ctx, const AVCodec *codec) {
-	codec_ctx->thread_count = Math::min(
-			OS::get_singleton()->get_processor_count() - 1, 1);
-	// TODO: Let users decide how many threads they maximum want to use.
-
-	if (codec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
-		codec_ctx->thread_type = FF_THREAD_FRAME;
-	else if (codec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
-		codec_ctx->thread_type = FF_THREAD_SLICE;
-	else
-		codec_ctx->thread_count = 1; // Fallback
+	codec_ctx->thread_count = 0; // Let FFmpeg decide how many threads to use.
+	codec_ctx->thread_type = FF_THREAD_FRAME | FF_THREAD_SLICE;
+	// We just enable everything and hope it's supported.
 }
 
 int FFmpeg::get_frame(AVFormatContext *format_ctx, AVCodecContext *codec_ctx, int stream_id, AVFrame *frame, AVPacket *packet) {

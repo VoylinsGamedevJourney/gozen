@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RenderProfile" load_steps=2 format=3 uid="uid://bp6oahvgcklvc"]
+
+[ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_lchot"]
+
+[resource]
+script = ExtResource("1_lchot")
+profile_name = "YouTube"
+audio_codec = 86018
+video_codec = 27
+crf = 20
+gop = 15
+h264_preset = 4
+metadata/_custom_type_script = "uid://bcxushh1wsu1b"

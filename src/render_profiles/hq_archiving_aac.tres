@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RenderProfile" load_steps=2 format=3 uid="uid://bre71k1yoxen7"]
+
+[ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_u0gv5"]
+
+[resource]
+script = ExtResource("1_u0gv5")
+profile_name = "HQ Archiving (AAC)"
+audio_codec = 86018
+video_codec = 173
+crf = 18
+gop = 10
+h264_preset = 3
+metadata/_custom_type_script = "uid://bcxushh1wsu1b"

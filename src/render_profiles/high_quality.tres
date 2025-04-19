@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RenderProfile" load_steps=2 format=3 uid="uid://bcktb6d5bti7t"]
+
+[ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_sqe43"]
+
+[resource]
+script = ExtResource("1_sqe43")
+profile_name = "High Quality"
+audio_codec = 86018
+video_codec = 173
+crf = 15
+gop = 15
+h264_preset = 2
+metadata/_custom_type_script = "uid://bcxushh1wsu1b"

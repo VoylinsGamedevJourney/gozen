@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/classes/time.hpp>
 
 #include "ffmpeg.hpp"
 #include "ffmpeg_helpers.hpp"
@@ -52,7 +53,6 @@ private:
 	bool renderer_open = false;
 	bool audio_added = false;
 
-	bool audio_enabled = true;
 	bool debug = true;
 
 	std::string h264_preset = "medium";
@@ -92,16 +92,9 @@ public:
 		V_MPEG2 = AV_CODEC_ID_MPEG2VIDEO,
 		V_MPEG1 = AV_CODEC_ID_MPEG1VIDEO,
 		V_MJPEG = AV_CODEC_ID_MJPEG,
-		V_WEBP = AV_CODEC_ID_WEBP,
 		V_AV1 = AV_CODEC_ID_AV1,
 		V_VP9 = AV_CODEC_ID_VP9,
 		V_VP8 = AV_CODEC_ID_VP8,
-		V_AMV = AV_CODEC_ID_AMV,
-		V_GIF = AV_CODEC_ID_GIF,
-		V_THEORA = AV_CODEC_ID_THEORA,
-		V_DNXHD = AV_CODEC_ID_DNXHD,
-		V_PRORES = AV_CODEC_ID_PRORES,
-		V_RAWVIDEO = AV_CODEC_ID_RAWVIDEO,
 		V_NONE = AV_CODEC_ID_NONE,
 	};
 	enum AUDIO_CODEC {
@@ -146,40 +139,18 @@ public:
 
 	inline void enable_debug() { av_log_set_level(AV_LOG_VERBOSE); debug = true; }
 	inline void disable_debug() { av_log_set_level(AV_LOG_INFO); debug = false; }
-	inline bool get_debug() { return debug; }
 
 	inline void set_video_codec_id(VIDEO_CODEC codec_id) { video_codec_id = (AVCodecID)codec_id; }
-	inline VIDEO_CODEC get_video_codec_id() { return static_cast<VIDEO_CODEC>(video_codec_id); }
-
 	inline void set_audio_codec_id(AUDIO_CODEC codec_id) { audio_codec_id = (AVCodecID)codec_id; }
-	inline AUDIO_CODEC get_audio_codec_id() { return static_cast<AUDIO_CODEC>(audio_codec_id); }
 
-	inline void set_path(String file_path) { path = file_path; }
-	inline String get_path() { return path; }
+	inline void set_file_path(String file_path) { path = file_path; }
 
 	inline void set_resolution(Vector2i video_resolution) { resolution = video_resolution; }
-	inline Vector2i get_resolution() { return resolution; }
-
 	inline void set_framerate(float video_framerate) { framerate = video_framerate; }
-	inline float get_framerate() { return framerate; }
-
 	inline void set_crf(int video_crf) { crf = video_crf; }
-	inline int get_crf() { return crf; }
-
 	inline void set_gop_size(int video_gop_size) { gop_size = video_gop_size; }
-	inline int get_gop_size() { return gop_size; }
-
-	inline void set_sample_rate(int value) { sample_rate = value; }
-	inline int get_sample_rate() { return sample_rate; }
-
 	inline void set_sws_quality(SWS_QUALITY value) { sws_quality = value; }
-	inline int get_sws_quality() { return sws_quality; }
-
 	inline void set_b_frames(int value) { b_frames = value; }
-	inline int get_b_frames() { return b_frames; }
-
-	inline void enable_audio() { audio_enabled = true; }
-	inline void disable_audio() { audio_enabled = false; }
 
 	inline void set_h264_preset(int value) {
 		switch (value) {
@@ -194,89 +165,13 @@ public:
 			case H264_PRESET_ULTRAFAST: h264_preset = "ultrafast"; break;
 		}
 	}
-	inline String get_h264_preset() { return h264_preset.c_str(); }
 
-	inline void configure_for_high_quality() { // MP4
-		set_video_codec_id(V_HEVC);
-		set_audio_codec_id(A_AAC);
-		set_crf(15);
-		set_h264_preset(H264_PRESET_SLOW);
-		set_gop_size(15);
-	}
+	inline void set_sample_rate(int value) { sample_rate = value; }
 
-	inline void configure_for_youtube_hq() { // MP4
-		set_video_codec_id(V_VP9);
-		set_audio_codec_id(A_OPUS);
-		set_crf(18);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_youtube() { // MP4
-		set_video_codec_id(V_H264);
-		set_audio_codec_id(A_AAC);
-		set_crf(23);
-		set_h264_preset(H264_PRESET_VERYFAST);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_av1() { // webm
-		set_video_codec_id(V_AV1);
-		set_audio_codec_id(A_OPUS);
-		set_crf(20);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_vp9() { // webm
-		set_video_codec_id(V_VP9);
-		set_audio_codec_id(A_OPUS);
-		set_crf(20);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_vp8() { // webm
-		set_video_codec_id(V_VP8);
-		set_audio_codec_id(A_OPUS);
-		set_crf(20);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_hq_archiving_flac() { // mkv
-		set_video_codec_id(V_HEVC);
-		set_audio_codec_id(A_FLAC);
-		set_crf(18);
-		set_gop_size(15);
-	}
-
-	inline void configure_for_hq_archiving_aac() { // mkv
-		set_video_codec_id(V_HEVC);
-		set_audio_codec_id(A_AAC);
-		set_crf(18);
-		set_gop_size(10);
-	}
-
-	inline void configure_for_older_devices() { // avi
-		set_video_codec_id(V_MPEG4);
-		set_audio_codec_id(A_MP3);
-		set_crf(23);
-		set_gop_size(10);
-	}
-
-	// Video file metadata
-	inline void set_video_meta_title(const String &new_title) {
-		meta_title = new_title; }
-	inline String get_video_meta_title() const { return meta_title; }
-
-	inline void set_video_meta_comment(const String &new_comment) {
-		meta_comment = new_comment; }
-	inline String get_video_meta_comment() const { return meta_comment; }
-
-	inline void set_video_meta_author(const String &new_author) {
-		meta_author = new_author; }
-	inline String get_video_meta_author() const { return meta_author; }
-
-	inline void set_video_meta_copyright(const String &new_copyright) {
-		meta_copyright = new_copyright; }
-	inline String get_video_meta_copyright() const { return meta_copyright; }
+	inline void set_video_meta_title(const String &new_title) { meta_title = new_title; }
+	inline void set_video_meta_comment(const String &new_comment) { meta_comment = new_comment; }
+	inline void set_video_meta_author(const String &new_author) { meta_author = new_author; }
+	inline void set_video_meta_copyright(const String &new_copyright) { meta_copyright = new_copyright; }
 
 protected:
 	static void _bind_methods();
