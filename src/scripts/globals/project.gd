@@ -65,6 +65,11 @@ func open(project_path: String) -> void:
 
 	for i: int in get_file_ids():
 		load_file_data(i)
+		var type: File.TYPE = data.files[i].type
+
+		if type == File.TYPE.VIDEO and file_data[i].video == null:
+			await file_data[i].video_loaded
+			print("loaded")
 
 	_update_recent_projects(project_path)
 	project_ready.emit()

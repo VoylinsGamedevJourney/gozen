@@ -19,7 +19,7 @@ func save_data(save_path: String) -> int:
 
 	if !file.store_string(var_to_str(data)):
 		printerr("Something went wrong storing data to file: ", save_path)
-	print(get_property_list())
+
 	error = file.get_error()
 	return error
 

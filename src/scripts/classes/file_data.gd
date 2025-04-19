@@ -2,6 +2,7 @@ class_name FileData
 extends Node
 
 
+signal video_loaded
 signal update_wave
 
 
@@ -49,7 +50,7 @@ func init_data(file_data_id: int) -> void:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-		_load_video_data.bind(file.path))))
+		_load_video_data.bind(file.path)), video_loaded.emit))
 
 	if file.type in Editor.AUDIO_TYPES:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
