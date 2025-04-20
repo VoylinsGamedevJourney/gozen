@@ -1,0 +1,72 @@
+name: 'Linux x86_64'
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        type: string
+        default: 'v0.0'
+        
+env:
+  GODOT_VERSION: 4.4.1
+  
+  EXPORT_FOLDER: bin/linux_x86_64
+
+run-name: 'Build GoZen for Linux version: ${{ inputs.version }} by @${{ github.actor }}'
+
+jobs:
+  build-gde-linux:
+    name: 'Build GoZen'
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - name: 'Installing dependencies'
+        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc x264 x265 pkgconf
+
+      - name: 'Checkout submodules'
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: 'Compiling GDE GoZen Debug'
+        working-directory: ./libs
+        run: |
+          python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
+          scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64
+
+      - name: 'Compiling GDE GoZen'
+        working-directory: ./libs
+        run: |
+          scons -j$(nproc) target=template_release platform=linux arch=x86_64
+
+      - name: 'Prepare Godot'
+        run: |
+          wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          unzip godot_linux.zip
+          wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          unzip godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
+          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
+
+      - name: 'Prepare folder'
+        run: |
+          mkdir -p ${{ env.EXPORT_FOLDER }}
+          cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
+          cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
+
+      - name: 'Export for Linux'
+        working-directory: ./src
+        run: |
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
+
+      - name: 'Upload Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: GoZen_Linux_x86_64_${{ inputs.version }}
+          path: ${{ env.EXPORT_FOLDER }}
+          retention-days: 2
+

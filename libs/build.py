@@ -125,7 +125,6 @@ def compile_ffmpeg_windows(arch):
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
-        '--enable-pthreads',
         f'--arch={arch}',
         '--target-os=mingw32',
         '--enable-cross-compile',
@@ -146,9 +145,9 @@ def compile_ffmpeg_windows(arch):
         '--disable-podpages',
         '--disable-txtpages',
         '--disable-ffplay',
-        '--disable-ffmpeg',
-        '--enable-libx264',
-        '--enable-libx265'
+        '--disable-ffmpeg'
+        # '--enable-libx264',
+        # '--enable-libx265'
     ], cwd='./ffmpeg/')
 
     print('Compiling FFmpeg for Windows ...')
@@ -222,10 +221,10 @@ def macos_fix(arch):
     # the gdextension library. Without it, the FFmpeg libraries can't be found.
     print('Running fix for MacOS builds ...')
 
-    debug_binary = f'./test_room/addons/gde_gozen/bin/macos_{arch}/debug/libgozen.macos.template_debug.dev.{arch}.dylib'
-    release_binary = f'./test_room/addons/gde_gozen/bin/macos_{arch}/release/libgozen.macos.template_release.{arch}.dylib'
-    debug_bin_folder = f'./test_room/addons/gde_gozen/bin/macos_{arch}/debug/lib'
-    release_bin_folder = f'./test_room/addons/gde_gozen/bin/macos_{arch}/release/lib'
+    debug_binary = f'./libs/bin/macos_{arch}/debug/libgozen.macos.template_debug.dev.{arch}.dylib'
+    release_binary = f'./libs/bin/macos_{arch}/release/libgozen.macos.template_release.{arch}.dylib'
+    debug_bin_folder = f'./libs/bin/macos_{arch}/debug/lib'
+    release_bin_folder = f'./libs/bin/macos_{arch}/release/lib'
 
     print("Updating @loader_path for MacOS builds")
 

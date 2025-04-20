@@ -1,3 +1,5 @@
+[![Linux x86_64](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml) [![Windows x86_64](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml)
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
 [Discord server](https://discord.gg/BdbUf7VKYC)
 

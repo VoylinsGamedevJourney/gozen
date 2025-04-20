@@ -4,3 +4,7 @@
 *.so*
 *.dblite
 *.os*
+
+*.sh
+*.exe
+*.tmp
