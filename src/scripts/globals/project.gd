@@ -44,6 +44,7 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	project_ready.emit()
 	_update_recent_projects(path)
 	save()
+	get_window().title = "GoZen - %s" % path.get_file().get_basename()
 
 
 func save() -> void:
@@ -73,6 +74,7 @@ func open(project_path: String) -> void:
 
 	_update_recent_projects(project_path)
 	project_ready.emit()
+	get_window().title = "GoZen - %s" % project_path.get_file().get_basename()
 
 
 func load_file_data(id: int) -> void:
