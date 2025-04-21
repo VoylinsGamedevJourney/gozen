@@ -241,7 +241,6 @@ stretch_mode = 5
 [node name="ProjectViewSubViewport" type="SubViewport" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox"]
 unique_name_in_owner = true
 size = Vector2i(1920, 1080)
-size_2d_override = Vector2i(1920, 1080)
 size_2d_override_stretch = true
 
 [node name="Background" type="ColorRect" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ProjectViewSubViewport"]

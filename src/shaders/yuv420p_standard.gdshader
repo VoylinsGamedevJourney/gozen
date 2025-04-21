@@ -31,7 +31,6 @@ uniform float key_softness: hint_range(0.0, 0.5, 0.01) = 0.05;
 
 
 void fragment() {
-	COLOR = vec4(1,1,1,1);
 	vec2 uv = UV;
     uv *= resolution / vec2(textureSize(y_data, 0));
     uv = clamp(uv, vec2(0.0), vec2(1.0));
