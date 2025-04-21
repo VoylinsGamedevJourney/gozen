@@ -47,8 +47,6 @@ func _ready() -> void:
 
 
 func _on_project_loaded() -> void:
-	print("Loading timeline ...")
-
 	for child: Node in clips.get_children():
 		child.queue_free()
 
@@ -238,8 +236,9 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 	# Checking if the clip actually fits in the space or not
 	var region_duration: int = region.x + region.y
 
-	if region_duration > 0 and region_duration < first_clip.duration:
-		return false
+	if region.y != -1:
+		if region_duration > 0 and region_duration < first_clip.duration:
+			return false
 	
 	# Calculate possible offsets
 	var offset_range: Vector2i = Vector2i.ZERO

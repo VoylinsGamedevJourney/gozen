@@ -9,29 +9,29 @@ extends Node
 
 
 
-var position: Vector2i = Vector2i.ZERO
-var size: Vector2i = Vector2i.ZERO
-var scale: float = 100
-var rotation: float = 0
-var alpha: float = 1.0
-var pivot: Vector2i = Vector2i.ZERO
+@export var position: Vector2i = Vector2i.ZERO
+@export var size: Vector2i = Vector2i.ZERO
+@export var scale: float = 100
+@export var rotation: float = 0
+@export var alpha: float = 1.0
+@export var pivot: Vector2i = Vector2i.ZERO
 
-var enable_color_correction: bool = false
-var brightness: float = 0.0 # Min: -1.0, Max: 1.0
-var contrast: float = 1.0 # Min: -1.0, Max: 1.0
-var saturation: float = 1.0 # Min: -1.0, Max: 1.0
+@export var enable_color_correction: bool = false
+@export var brightness: float = 0.0 # Min: -1.0, Max: 1.0
+@export var contrast: float = 1.0 # Min: -1.0, Max: 1.0
+@export var saturation: float = 1.0 # Min: -1.0, Max: 1.0
 
-var red_value: float = 1.0 # Min: 0.0, Max: 1.0
-var green_value: float = 1.0 # Min: 0.0, Max: 1.0
-var blue_value: float = 1.0 # Min: 0.0, Max: 1.0
+@export var red_value: float = 1.0 # Min: 0.0, Max: 1.0
+@export var green_value: float = 1.0 # Min: 0.0, Max: 1.0
+@export var blue_value: float = 1.0 # Min: 0.0, Max: 1.0
 
-var tint_color: Color = Color.BLACK
-var tint_effect_factor: float = 0.0 # Min: 0.0, Max: 1.0
+@export var tint_color: Color = Color.BLACK
+@export var tint_effect_factor: float = 0.0 # Min: 0.0, Max: 1.0
 
-var enable_chroma_key: bool = false
-var chroma_key_color: Color = Color.LIME_GREEN
-var chroma_key_tolerance: float = 0.3 # Min: 0.0, Max 1.0
-var chroma_key_softness: float = 0.05 # Min: 0.0, Max 0.5
+@export var enable_chroma_key: bool = false
+@export var chroma_key_color: Color = Color.LIME_GREEN
+@export var chroma_key_tolerance: float = 0.3 # Min: 0.0, Max 1.0
+@export var chroma_key_softness: float = 0.05 # Min: 0.0, Max 0.5
 
 
 
