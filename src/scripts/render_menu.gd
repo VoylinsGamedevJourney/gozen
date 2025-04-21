@@ -88,11 +88,13 @@ func _ready() -> void:
 	# Loading default render profiles.
 	var id_youtube_profile: int = -1
 	for profile_file: String in DirAccess.get_files_at(DEFAULT_RENDER_PROFILES_PATH):
-		profiles.append(load(DEFAULT_RENDER_PROFILES_PATH + profile_file))
-		render_profiles_option_button.add_item(profiles[-1].profile_name)
+		# In exported builds, there are more files than only the .tres files.
+		if profile_file.to_lower().ends_with(".tres"):
+			profiles.append(load(DEFAULT_RENDER_PROFILES_PATH + profile_file))
+			render_profiles_option_button.add_item(profiles[-1].profile_name)
 
-		if profiles[-1].profile_name.to_lower() == "youtube":
-			id_youtube_profile = profiles.size() -1
+			if profiles[-1].profile_name.to_lower() == "youtube":
+				id_youtube_profile = profiles.size() -1
 
 	# Loading audio codecs.
 	for id: Renderer.AUDIO_CODEC in audio_codecs.keys():
