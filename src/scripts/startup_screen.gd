@@ -19,6 +19,7 @@ func _ready() -> void:
 	_set_recent_projects()
 	_set_version_label()
 	_set_new_project_defaults()
+	project_path_line_edit.text = OS.get_executable_path() + "/project.gozen"
 
 
 func _set_recent_projects() -> void:
@@ -193,7 +194,8 @@ func _on_project_path_button_pressed() -> void:
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;GoZen project files" % Project.EXTENSION])
 
-	Toolbox.connect_func(dialog.file_selected, open_project)
+	Toolbox.connect_func(dialog.file_selected, _set_project_path)
+	dialog.ok_button_text = "Select"
 
 	add_child(dialog)
 	dialog.popup_centered()
