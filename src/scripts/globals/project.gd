@@ -179,6 +179,10 @@ func get_track_keys(track_id: int) -> PackedInt64Array:
 	return data.tracks[track_id].keys()
 
 
+func get_track_values(track_id: int) -> PackedInt64Array:
+	return data.tracks[track_id].values()
+
+
 func get_tracks() -> Array[Dictionary]:
 	return data.tracks
 

@@ -312,7 +312,7 @@ func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
 	new_clip.effects_video = clip_data.effects_video.duplicate()
 	new_clip.effects_audio = clip_data.effects_audio.duplicate()
 
-	current_clip_data.duration -= new_clip.duration
+	current_clip_data.duration -= new_clip.duration + 1
 	size.x = current_clip_data.duration * Timeline.get_zoom()
 
 	Project.set_clip(new_clip.clip_id, new_clip)

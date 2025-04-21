@@ -71,14 +71,12 @@ func _set_frame_nr(value: int) -> void:
 
 		for i: int in audio_players.size():
 			audio_players[i].stop()
-
 		return
-
+	
 	frame_nr = value
 	if frame_nr == prev_frame + 1:
 		for i: int in audio_players.size():
 			var track_data: Dictionary[int, int] = Project.get_track_data(i)
-
 			if track_data.keys().has(frame_nr):
 				audio_players[i].set_audio(track_data[frame_nr])
 			elif audio_players[i].stop_frame == frame_nr:
@@ -282,6 +280,8 @@ func _init_video_textures(track_id: int, video_data: Video, material: ShaderMate
 ## Update display/audio and continue if within clip bounds.
 func _check_clip(id: int, new_frame_nr: int) -> bool:
 	if loaded_clips[id] == null:
+		if audio_players[id].clip_id != -1:
+			audio_players[id].stop()
 		return false
 
 	# Check if clip really still exists or not.
