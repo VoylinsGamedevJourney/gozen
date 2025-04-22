@@ -11,6 +11,10 @@ MARCH_FLAGS = {
 }
 
 
+cache_folder = ARGUMENTS.get('cache_dir', 'null')
+if cache_folder != 'null':
+    CacheDir(cache_folder)
+
 env = SConscript('godot_cpp/SConstruct')
 env.Append(CPPPATH=['gde_gozen'])
 env_suffix = env['suffix']
@@ -26,15 +30,15 @@ libpath = f'bin/{platform}_{arch}/libgozen{env_suffix}{env_shlibsuffix}'
 if 'linux' in platform:
     env.Append(
         LINKFLAGS=['-static-libstdc++'],
-        CPPFLAGS=['-Iffmpeg/bin', '-Iffmpeg/bin/include'],
+        CPPFLAGS=['-Iffmpeg/bin_linux', '-Iffmpeg/bin_linux/include'],
         LIBPATH=[
-            'ffmpeg/bin/include/libavcodec',
-            'ffmpeg/bin/include/libavformat',
-            'ffmpeg/bin/include/libavdevice',
-            'ffmpeg/bin/include/libavutil',
-            'ffmpeg/bin/include/libswresample',
-            'ffmpeg/bin/include/libswscale',
-            'ffmpeg/bin/lib'],
+            'ffmpeg/bin_linux/include/libavcodec',
+            'ffmpeg/bin_linux/include/libavformat',
+            'ffmpeg/bin_linux/include/libavdevice',
+            'ffmpeg/bin_linux/include/libavutil',
+            'ffmpeg/bin_linux/include/libswresample',
+            'ffmpeg/bin_linux/include/libswscale',
+            'ffmpeg/bin_linux/lib'],
         CCFLAGS=[f'-march={MARCH_FLAGS[arch]}'],
         LIBS=LIBS_COMMON)
 elif 'windows' in platform:
@@ -50,22 +54,22 @@ elif 'windows' in platform:
         env.Append(LIBS=LIBS_COMMON)
 
     env.Append(
-        CPPPATH=['ffmpeg/bin/include'],
-        LIBPATH=['ffmpeg/bin/bin'])
+        CPPPATH=['ffmpeg/bin_windows/include'],
+        LIBPATH=['ffmpeg/bin_windows/bin'])
 elif 'macos' in platform:
     # MacOS can only be build on a MacOS machine!
     macos_path = f'bin/{platform}/{target}/lib'
 
     env.Append(
-        CPPPATH=['ffmpeg/bin/include'],
+        CPPPATH=['ffmpeg/bin_macos/include'],
         LIBPATH=[
-            'ffmpeg/bin/lib',
-            'ffmpeg/bin/include/libavcodec',
-            'ffmpeg/bin/include/libavformat',
-            'ffmpeg/bin/include/libavdevice',
-            'ffmpeg/bin/include/libavutil',
-            'ffmpeg/bin/include/libswresample',
-            'ffmpeg/bin/include/libswscale',
+            'ffmpeg/bin_macos/lib',
+            'ffmpeg/bin_macos/include/libavcodec',
+            'ffmpeg/bin_macos/include/libavformat',
+            'ffmpeg/bin_macos/include/libavdevice',
+            'ffmpeg/bin_macos/include/libavutil',
+            'ffmpeg/bin_macos/include/libswresample',
+            'ffmpeg/bin_macos/include/libswscale',
             macos_path,
             '/usr/local/lib'],
         LIBS=LIBS_COMMON,

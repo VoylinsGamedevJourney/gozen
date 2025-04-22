@@ -7,6 +7,10 @@ on:
         description: 'Version'
         type: string
         default: 'v0.0'
+      rebuild_ffmpeg:
+        description: 'Rebuild FFmpeg'
+        type: boolean
+        default: false
         
 env:
   GODOT_VERSION: 4.4.1
@@ -27,6 +31,14 @@ jobs:
         with:
           path: /var/cache/pacman/pkg
           key: ${{ runner.os }}-archlinux-packam-pkg
+          
+      - name: 'Installing dependencies'
+        run: pacman -Sy --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc x264 x265 pkgconf
+
+      - name: 'Checkout submodules'
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: 'Cache Godot'
         uses: actions/cache@v4
@@ -34,13 +46,23 @@ jobs:
           path: ~/.local/share/godot
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
 
-      - name: 'Installing dependencies'
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc x264 x265 pkgconf
-
-      - name: 'Checkout submodules'
-        uses: actions/checkout@v4
+      - name: 'Cache FFmpeg Linux'
+        uses: actions/cache@v4
         with:
-          submodules: recursive
+          path: libs/ffmpeg/bin_linux
+          key: ffmpeg-linux
+
+      - name: 'Cache scons Linux debug'
+        uses: actions/cache@v4
+        with:
+          path: libs/scons_linux_debug
+          key: gde_linux_debug
+
+      - name: 'Cache scons Linux release'
+        uses: actions/cache@v4
+        with:
+          path: libs/scons_linux_release
+          key: gde_linux_release
 
       - name: 'Prepare Godot'
         run: |
@@ -68,13 +90,21 @@ jobs:
       - name: 'Compiling GDE GoZen Debug'
         working-directory: ./libs
         run: |
-          python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
-          scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64
+          REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
+
+          if [ ! -d ffmpeg/bin_linux ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
+            python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
+          else
+            echo "FFmpeg build found in cache."
+          fi
+
+          python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
+          scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64 cache_dir=scons_linux_debug
 
       - name: 'Compiling GDE GoZen'
         working-directory: ./libs
         run: |
-          scons -j$(nproc) target=template_release platform=linux arch=x86_64
+          scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release
 
       - name: 'Prepare folder'
         run: |

@@ -47,28 +47,29 @@ def compile_ffmpeg(platform, arch):
         print('Cleaning FFmpeg...')
 
         subprocess.run(['make', 'distclean'], cwd='./ffmpeg/')
-        subprocess.run(['rm', '-rf', 'bin'], cwd='./ffmpeg/')
+        subprocess.run(['rm', '-rf', 'bin_linux'], cwd='./ffmpeg/')
+        subprocess.run(['rm', '-rf', 'bin_windows'], cwd='./ffmpeg/')
+        subprocess.run(['rm', '-rf', 'bin_macos'], cwd='./ffmpeg/')
 
     if platform == 'linux':
         compile_ffmpeg_linux(arch)
+        copy_lib_files_linux(arch)
     elif platform == 'windows':
         compile_ffmpeg_windows(arch)
+        copy_lib_files_windows(arch)
     elif platform == 'macos':
         compile_ffmpeg_macos(arch)
+        copy_lib_files_macos(arch)
 
 
 def compile_ffmpeg_linux(arch):
     print('Configuring FFmpeg for Linux ...')
 
-    path = f'bin/linux_{arch}'
-    os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
-
-    os.makedirs(path, exist_ok=True)
     os.environ["PKG_CONFIG_PATH"] = "/usr/lib/pkgconfig"
 
     subprocess.run([
         './configure',
-        '--prefix=./bin',
+        '--prefix=./bin_linux',
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
@@ -100,9 +101,14 @@ def compile_ffmpeg_linux(arch):
     subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
     subprocess.run(['make', 'install'], cwd='./ffmpeg/')
 
+
+def copy_lib_files_linux(arch):
+    path = f'bin/linux_{arch}'
+    os.makedirs(path, exist_ok=True)
+
     print('Copying lib files ...')
 
-    for file in glob.glob('ffmpeg/bin/lib/*.so*'):
+    for file in glob.glob('ffmpeg/bin_linux/lib/*.so*'):
         shutil.copy2(file, path)
     for file in glob.glob('/usr/lib/libx26*.so'):
         shutil.copy2(file, path)
@@ -113,15 +119,12 @@ def compile_ffmpeg_linux(arch):
 def compile_ffmpeg_windows(arch):
     print('Configuring FFmpeg for Windows ...')
 
-    path = f'bin/windows_{arch}'
     os.environ['PKG_CONFIG_LIBDIR'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
     os.environ['PKG_CONFIG_PATH'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
 
-    os.makedirs(path, exist_ok=True)
-
     subprocess.run([
         './configure',
-        '--prefix=./bin',
+        '--prefix=./bin_windows',
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
@@ -155,9 +158,14 @@ def compile_ffmpeg_windows(arch):
     subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
     subprocess.run(['make', 'install'], cwd='./ffmpeg/')
 
+
+def copy_lib_files_windows(arch):
+    path = f'bin/windows_{arch}'
+    os.makedirs(path, exist_ok=True)
+
     print('Copying lib files ...')
 
-    for file in glob.glob('ffmpeg/bin/bin/*.dll'):
+    for file in glob.glob('ffmpeg/bin_windows/bin/*.dll'):
         shutil.copy2(file, path)
 
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
@@ -169,15 +177,9 @@ def compile_ffmpeg_windows(arch):
 def compile_ffmpeg_macos(arch):
     print('Configuring FFmpeg for MacOS ...')
 
-    path_debug = f'bin/macos_{arch}/debug/lib'
-    path_release = f'bin/macos_{arch}/release/lib'
-
-    os.makedirs(path_debug, exist_ok=True)
-    os.makedirs(path_release, exist_ok=True)
-
     subprocess.run([
         './configure',
-        '--prefix=./bin',
+        '--prefix=./bin_macos',
         '--enable-shared',
         '--enable-gpl',
         '--enable-version3',
@@ -207,9 +209,17 @@ def compile_ffmpeg_macos(arch):
     subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
     subprocess.run(['make', 'install'], cwd='./ffmpeg/')
 
+
+def copy_lib_files_macos(arch):
+    path_debug = f'bin/macos_{arch}/debug/lib'
+    path_release = f'bin/macos_{arch}/release/lib'
+
+    os.makedirs(path_debug, exist_ok=True)
+    os.makedirs(path_release, exist_ok=True)
+
     print('Copying lib files ...')
 
-    for file in glob.glob('./ffmpeg/bin/lib/*.dylib'):
+    for file in glob.glob('./ffmpeg/bin_macos/lib/*.dylib'):
         shutil.copy2(file, path_debug)
         shutil.copy2(file, path_release)
 
