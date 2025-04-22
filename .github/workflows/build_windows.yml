@@ -22,6 +22,18 @@ jobs:
     container:
       image: archlinux:latest
     steps:
+      - name: 'Cache pacman packages'
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/pacman/pkg
+          key: ${{ runner.os }}-archlinux-packam-pkg
+
+      - name: 'Cache Godot'
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot
+          key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
+
       - name: 'Installing dependencies'
         run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 mingw-w64-gcc mingw-w64-binutils ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc nasm cmake pkgconf
 
@@ -29,6 +41,29 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: 'Prepare Godot'
+        run: |
+          if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
+            echo "Downloading Godot editor ..."
+            wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+            unzip godot_linux.zip
+          else
+            echo "Godot editor found in cache."
+          fi
+
+          if [ ! -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable ]; then
+            echo "Downloading Godot export templates ..."
+            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+            mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+            unzip godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+            mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
+            rm -rf ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates
+          else
+            echo "Godot export templates found in cache."
+          fi
+
+          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
      # I tried my best but no x264 and x265 for Window users for now. Windows is a pain.
      # - name: Build x264 for Windows
@@ -58,16 +93,6 @@ jobs:
         run: |
           python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
           scons -j$(nproc) target=template_release platform=windows arch=x86_64
-
-      - name: 'Prepare Godot'
-        run: |
-          wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
-          unzip godot_linux.zip
-          wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
-          mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-          unzip godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-          mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
-          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
       - name: 'Prepare folder'
         run: |

@@ -2,12 +2,6 @@ class_name RenderingWindow
 extends PanelContainer
 
 # TODO: Create a way to save custom render profiles
-# TODO: Fill render profiles option button with defaults
-# TODO: Make saving of custom render profiles work
-# TODO: Only highlight/enable the "save profile" button when changes have been made
-# TODO: Check if audio/video only
-# TODO: Hide "Speed" when the selected codec isn't H264
-# WARN: Quality uses a negative value, make positive before passing to Renderer!!
 
 
 const DEFAULT_RENDER_PROFILES_PATH: String = "res://render_profiles/"
@@ -44,7 +38,7 @@ static var instance: RenderingWindow
 @export var copyright_line_edit: LineEdit
 
 
-@onready var viewport: ViewportTexture = Editor.viewport.get_texture()
+var viewport: ViewportTexture
 
 var renderer: Renderer
 var render_profile: RenderProfile
@@ -78,6 +72,9 @@ var is_rendering: bool = false
 
 func _ready() -> void:
 	instance = self
+	viewport = Editor.viewport.get_texture()
+	if viewport == null:
+		printerr("Renderer: viewport is null!")
 
 	if !DirAccess.dir_exists_absolute(RENDER_PROFILES_PATH):
 		if DirAccess.make_dir_recursive_absolute(RENDER_PROFILES_PATH):
