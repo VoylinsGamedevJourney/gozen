@@ -19,7 +19,7 @@ func _ready() -> void:
 	_set_recent_projects()
 	_set_version_label()
 	_set_new_project_defaults()
-	project_path_line_edit.text = OS.get_executable_path() + "/project.gozen"
+	project_path_line_edit.text = OS.get_executable_path().get_base_dir() + "/project.gozen"
 
 
 func _set_recent_projects() -> void:

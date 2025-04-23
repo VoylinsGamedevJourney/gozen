@@ -1,4 +1,4 @@
-name: 'Windows x86_64'
+name: 'Linux x86_64 debug'
 
 on:
   workflow_dispatch:
@@ -15,12 +15,12 @@ on:
 env:
   GODOT_VERSION: 4.4.1
   
-  EXPORT_FOLDER: bin/windows_x86_64
+  EXPORT_FOLDER: bin/linux_x86_64
 
-run-name: 'Build GoZen for Windows version: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'Build GoZen debug for Linux version: ${{ inputs.version }} by @${{ github.actor }}'
 
 jobs:
-  build-gde-windows:
+  build-gde-linux:
     name: 'Build GoZen'
     runs-on: ubuntu-latest
     container:
@@ -31,9 +31,9 @@ jobs:
         with:
           path: /var/cache/pacman/pkg
           key: ${{ runner.os }}-archlinux-packam-pkg
-
+          
       - name: 'Installing dependencies'
-        run: pacman -Sy --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 mingw-w64-gcc mingw-w64-binutils ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc nasm cmake pkgconf
+        run: pacman -Sy --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc x264 x265 pkgconf
 
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
@@ -52,23 +52,11 @@ jobs:
           path: libs/ffmpeg/bin_linux
           key: ffmpeg-linux
 
-      - name: 'Cache FFmpeg Windows'
-        uses: actions/cache@v4
-        with:
-          path: libs/ffmpeg/bin_windows
-          key: ffmpeg-linux
-
       - name: 'Cache scons Linux debug'
         uses: actions/cache@v4
         with:
           path: libs/scons_linux_debug
           key: gde_linux_debug
-
-      - name: 'Cache scons Windows release'
-        uses: actions/cache@v4
-        with:
-          path: libs/scons_windows_release
-          key: gde_windows_release
 
       - name: 'Prepare Godot'
         run: |
@@ -93,18 +81,7 @@ jobs:
 
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
-     # I tried my best but no x264 and x265 for Window users for now. Windows is a pain.
-     # - name: Build x264 for Windows
-     #   run: |
-     #     git clone --depth 1 https://code.videolan.org/videolan/x264.git
-     #     cd x264
-     #     ./configure --host=x86_64-w64-mingw32 --cross-prefix=x86_64-w64-mingw32- --prefix=/usr/x86_64-w64-mingw32 --enable-static --enable-shared
-     #     make -j$(nproc)
-     #     make install
-     #     cd ..
-
-        # This step is needed so Godot can identify the classes.
-      - name: 'Compiling GDE GoZen Debug (Linux)'
+      - name: 'Compiling GDE GoZen Debug'
         working-directory: ./libs
         run: |
           REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
@@ -118,43 +95,22 @@ jobs:
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
           scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64 cache_dir=scons_linux_debug
 
-      - name: 'clean ffmpeg'
-        working-directory: ./libs/ffmpeg
-        run: |
-          if [ -f ffmpeg/ffbuild/config.mak ]; then
-            make distclean
-          fi
-
-      - name: 'Compiling GDE GoZen'
-        working-directory: ./libs
-        run: |
-          REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
-
-          if [ ! -d ffmpeg/bin_windows ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
-            python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
-          else
-            echo "FFmpeg build found in cache."
-          fi
-
-          python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
-          scons -j$(nproc) target=template_release platform=windows arch=x86_64 cache_dir=scons_windows_release
-
       - name: 'Prepare folder'
         run: |
           mkdir -p ${{ env.EXPORT_FOLDER }}
           cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
           cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
-    
-      - name: 'Export for Windows'
+
+      - name: 'Export for Linux'
         working-directory: ./src
         run: |
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-debug Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-debug Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
 
-      - name: 'Upload Windows'
+      - name: 'Upload Linux'
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Windows_x86_64_${{ inputs.version }}
+          name: GoZen_Linux_x86_64_${{ inputs.version }}-DEBUG
           path: ${{ env.EXPORT_FOLDER }}
           retention-days: 2
 

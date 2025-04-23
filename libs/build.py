@@ -110,7 +110,7 @@ def copy_lib_files_linux(arch):
 
     for file in glob.glob('ffmpeg/bin_linux/lib/*.so*'):
         shutil.copy2(file, path)
-    for file in glob.glob('/usr/lib/libx26*.so'):
+    for file in glob.glob('/usr/lib/libx26*'):
         shutil.copy2(file, path)
 
     print('Compiling FFmpeg for Linux finished!')

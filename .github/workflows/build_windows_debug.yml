@@ -1,4 +1,4 @@
-name: 'Windows x86_64'
+name: 'Windows x86_64 debug'
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ env:
   
   EXPORT_FOLDER: bin/windows_x86_64
 
-run-name: 'Build GoZen for Windows version: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'Build GoZen debug for Windows version: ${{ inputs.version }} by @${{ github.actor }}'
 
 jobs:
   build-gde-windows:
@@ -64,11 +64,11 @@ jobs:
           path: libs/scons_linux_debug
           key: gde_linux_debug
 
-      - name: 'Cache scons Windows release'
+      - name: 'Cache scons Windows debug'
         uses: actions/cache@v4
         with:
-          path: libs/scons_windows_release
-          key: gde_windows_release
+          path: libs/scons_windows_debug
+          key: gde_windows_debug
 
       - name: 'Prepare Godot'
         run: |
@@ -137,7 +137,7 @@ jobs:
           fi
 
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
-          scons -j$(nproc) target=template_release platform=windows arch=x86_64 cache_dir=scons_windows_release
+          scons -j$(nproc) target=template_debug dev_build=yes platform=windows arch=x86_64 cache_dir=scons_windows_debug
 
       - name: 'Prepare folder'
         run: |
@@ -148,13 +148,13 @@ jobs:
       - name: 'Export for Windows'
         working-directory: ./src
         run: |
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-debug Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-debug Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
 
       - name: 'Upload Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Windows_x86_64_${{ inputs.version }}
+          name: GoZen_Windows_x86_64_${{ inputs.version }}-DEBUG
           path: ${{ env.EXPORT_FOLDER }}
           retention-days: 2
 
