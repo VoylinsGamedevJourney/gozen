@@ -71,6 +71,10 @@ func get_clip_audio_data() -> PackedByteArray:
 			RenderingWindow.get_sample_count(begin),
 			RenderingWindow.get_sample_count(begin+duration))
 
+	if effects_audio.mute:
+		data.fill(0)
+		return data
+
 	data = Audio.change_db(data, effects_audio.gain)
 
 	if effects_audio.mono != effects_audio.MONO.DISABLE:
