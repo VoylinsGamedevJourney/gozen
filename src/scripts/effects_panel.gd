@@ -104,9 +104,7 @@ func on_clip_pressed(id: int) -> void:
 			button_audio_effects.visible = showing
 			_set_video_effect_values()
 
-			if button_audio_effects.visible or tab_container.current_tab == 2:
-				button_video_effects.button_pressed = true
-				button_video_effects.pressed.emit()
+			if button_audio_effects.visible:
 				_set_audio_effect_values()
 		File.TYPE.TEXT:
 			button_video_effects.visible = true

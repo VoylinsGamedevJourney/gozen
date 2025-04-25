@@ -472,10 +472,12 @@ text = "Scale"
 [node name="ScaleSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid"]
 layout_mode = 2
 min_value = 1.0
+max_value = 1000.0
 value = 100.0
 allow_greater = true
 alignment = 2
 suffix = "%"
+metadata/_edit_lock_ = true
 
 [node name="RotationLabel" type="Label" parent="VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid"]
 layout_mode = 2

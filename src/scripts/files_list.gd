@@ -244,12 +244,23 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	var last_type: int = -1
 
 	for file_path: String in files:
-		var id: int = add_file(file_path)
+		# TODO: Check if file_path is a file or a directory
+		if FileAccess.file_exists(file_path):
+			var id: int = add_file(file_path)
 
-		if id != -1: # Check for invalid file
-			_add_file_to_list(id)
+			if id != -1: # Check for invalid file
+				_add_file_to_list(id)
+			else:
+				continue
 
-		last_type = int(Project.get_file(id).type)
+			last_type = int(Project.get_file(id).type)
+		elif DirAccess.dir_exists_absolute(file_path): # Probably a folder
+			var data: PackedStringArray = DirAccess.get_files_at(file_path)
+
+			for i: int in data.size():
+				data[i] = "%s/%s" % [file_path, data[i]]
+
+			_on_files_dropped(data)
 
 	for list: ItemList in tabs:
 		list.sort_items_by_text()

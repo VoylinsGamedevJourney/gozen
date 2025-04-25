@@ -46,7 +46,7 @@ window/size/viewport_height=1080
 [extensions]
 
 audio=PackedStringArray("wav", "mp3", "ogg")
-video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov")
+video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov", "mts")
 image=PackedStringArray("jpg", "jpeg", "png", "svg", "webp")
 
 [gui]

@@ -204,8 +204,6 @@ func _add_resize_button(preset: LayoutPreset, left: bool) -> void:
 		button.position.x -= 3
 	button.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
 	if button.button_down.connect(_on_resize_engaged.bind(left)):
 		printerr("Couldn't connect button_down to _on_resize_engaged!")
 	if button.button_up.connect(_on_commit_resize):
@@ -271,7 +269,7 @@ func _on_commit_resize() -> void:
 	InputManager.undo_redo.create_action("Resizing clip on timeline")
 
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
-			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x)))
+			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x + 0.1)))
 	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
 	InputManager.undo_redo.add_do_method(queue_redraw)
 
@@ -312,7 +310,7 @@ func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
 	new_clip.effects_video = clip_data.effects_video.duplicate()
 	new_clip.effects_audio = clip_data.effects_audio.duplicate()
 
-	current_clip_data.duration -= new_clip.duration + 1
+	current_clip_data.duration -= new_clip.duration
 	size.x = current_clip_data.duration * Timeline.get_zoom()
 
 	Project.set_clip(new_clip.clip_id, new_clip)
