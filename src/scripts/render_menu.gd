@@ -67,6 +67,7 @@ var video_codecs: Dictionary[Renderer.VIDEO_CODEC, String] = {
 }
 
 var is_rendering: bool = false
+var cancel_rendering: bool = false
 
 
 
@@ -174,6 +175,7 @@ func _on_render_button_pressed() -> void:
 	render_progress_label.text = "Setting up renderer ..."
 
 	show_window(1)
+	await RenderingServer.frame_post_draw
 
 	is_rendering = true
 	renderer = Renderer.new()
@@ -209,12 +211,16 @@ func _on_render_button_pressed() -> void:
 		printerr("Something went wrong and rendering isn't possible!")
 		return
 
-	render_progress_bar.max_value = Project.get_timeline_end() + 4
+	render_progress_bar.max_value = Project.get_timeline_end() + 8
 	render_progress_bar.value = 0
 	render_progress_label.text = "Setting up renderer ..."
+	await RenderingServer.frame_post_draw
 
 	if render_profile.audio_codec != Renderer.AUDIO_CODEC.A_NONE:
+		render_progress_bar.value += 1
 		render_progress_label.text = "Compiling audio data ..."
+		render_progress_bar.value += 4
+		await RenderingServer.frame_post_draw
 		if !renderer.send_audio(render_audio()):
 			printerr("Something went wrong sending audio!")
 
@@ -222,21 +228,33 @@ func _on_render_button_pressed() -> void:
 	Editor.set_frame(0)
 
 	for i: int in Project.get_timeline_end() + 1:
+		if cancel_rendering:
+			break;
 		await RenderingServer.frame_post_draw
 		
 		if !renderer.send_frame(viewport.get_image()):
 			printerr("Something went wrong sending frame!")
 		render_progress_bar.value += 1
 		Editor.set_frame() # Getting the next frame in line.
-		
-	render_progress_label.text = "Sending last frames ..."
-	render_progress_bar.value += 1
-	render_progress_bar.value += 1
-	render_progress_label.text = "Finalizing render ..."
+
+	if cancel_rendering:
+		render_progress_label.text = "Canceling render process ..."
+		await RenderingServer.frame_post_draw
+	else:
+		render_progress_label.text = "Sending last frames ..."
+		await RenderingServer.frame_post_draw
+		render_progress_bar.value += 1
+		await RenderingServer.frame_post_draw
+		render_progress_bar.value += 1
+		await RenderingServer.frame_post_draw
+		render_progress_label.text = "Finalizing render ..."
+		await RenderingServer.frame_post_draw
+
 	renderer.close()
 
 	is_rendering = false
-	print("Rendering took: ", float(float(Time.get_ticks_usec() - start_time) / 1000000))
+	print("Rendered video length: ", float(Project.get_timeline_end()) / Project.get_framerate())
+	print("Rendering process took: ", float(float(Time.get_ticks_usec() - start_time) / 1000000))
 
 	# TODO: Create a new screen to say that render was successfull or unsuccessful.
 	show_window(0)
@@ -297,6 +315,9 @@ func _on_gop_size_spin_box_value_changed(value: float) -> void:
 func render_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
 
+	if audio.resize(get_sample_count(Project.get_timeline_end() + 1)):
+		Toolbox.print_resize_error()
+
 	for i: int in Project.get_track_count():
 		var track_audio: PackedByteArray = []
 		var track_data: Dictionary[int, int] = Project.get_track_data(i)
@@ -317,18 +338,11 @@ func render_audio() -> PackedByteArray:
 				
 				track_audio.append_array(clip.get_clip_audio_data())
 
-			# Checking if audio is empty or not
-			if track_audio.size() == 0:
-				continue
-
 		# Making the audio data the correct length
 		if track_audio.resize(get_sample_count(Project.get_timeline_end() + 1)):
 			Toolbox.print_resize_error()
 
-		if audio.size() == 0:
-			audio = track_audio
-		elif audio.size() == track_audio.size():
-			audio = Audio.combine_data(audio, track_audio)
+		audio = Audio.combine_data(audio, track_audio)
 
 	return audio
 

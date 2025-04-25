@@ -171,7 +171,7 @@ PackedByteArray Audio::combine_data(PackedByteArray audio_one,
 
 	for (size_t i = 0; i < audio_one.size() / 2; i++)
         ((int16_t*)audio_one.ptrw())[i] = Math::clamp(
-				p_one[i] + p_one[i], -32768, 32767);
+				p_one[i] + p_two[i], -32768, 32767);
 
     return audio_one;
 }

@@ -234,7 +234,8 @@ func _save_image_to_file(path: String, file: File, item_index: int) -> void:
 	file.temp_file = null
 	tabs[file.type].set_item_tooltip(item_index, path)
 
-	Project.load_file_data(file.id)
+	if !Project.load_file_data(file.id):
+		printerr("Something went wrong loading file '%s' after saving temp image to real image!" % path)
 
 	
 func _on_files_dropped(files: PackedStringArray) -> void:
@@ -282,7 +283,9 @@ func _on_image_pasted() -> void:
 	file.temp_file.image_data = ImageTexture.create_from_image(image)
 
 	Project.set_file(file.id, file)
-	Project.load_file_data(file.id)
+	if !Project.load_file_data(file.id):
+		printerr("Problem happened on pasting image!")
+		return
 	_add_file_to_list(file.id)
 
 	tabs[File.TYPE.IMAGE].sort_items_by_text()
@@ -369,7 +372,9 @@ func add_file(file_path: String) -> int:
 			print("File already loaded with path '%s'!" % file_path)
 
 	Project.set_file(file.id, file)
-	Project.load_file_data(file.id)
+	if !Project.load_file_data(file.id):
+		printerr("Problem happened adding file!")
+		return -1
 
 	return file.id
 
