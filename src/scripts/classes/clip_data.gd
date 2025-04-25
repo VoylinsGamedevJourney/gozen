@@ -56,13 +56,11 @@ func get_frame(frame_nr: int) -> Texture:
 		if frame_nr < video_frame_nr or skips > MAX_FRAME_SKIPS:
 			if !file_data.video.seek_frame(frame_nr):
 				printerr("Couldn't seek frame!")
-
-			return Project.get_file_data(file_id).image
-
-		# go through skips and set frame
-		for i: int in skips:
-			if !file_data.video.next_frame(i == skips):
-				print("Something went wrong skipping next frame!")
+		else:
+			# go through skips and set frame
+			for i: int in skips:
+				if !file_data.video.next_frame(i == skips):
+					print("Something went wrong skipping next frame!")
 
 	return Project.get_file_data(file_id).image
 

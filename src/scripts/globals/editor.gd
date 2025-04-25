@@ -219,6 +219,7 @@ func update_view(track_id: int) -> void:
 
 	var file_data: FileData = Project.get_file_data(loaded_clips[track_id].file_id)
 	var material: ShaderMaterial = view_textures[track_id].get_material()
+	var updated: bool = false
 
 	view_textures[track_id].texture = loaded_clips[track_id].get_frame(frame_nr)
 
@@ -229,11 +230,14 @@ func update_view(track_id: int) -> void:
 				material.shader = preload("uid://btyavn64bvbu2")
 				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
 				_init_video_textures(track_id, file_data.video, material)
+				updated = true
 		elif loaded_shaders[track_id] != SHADER_ID.YUV:
 			material.shader = preload("uid://do37k5eu6tfbc")
 			loaded_shaders[track_id] = SHADER_ID.YUV
 			_init_video_textures(track_id, file_data.video, material)
-		else:
+			updated = true
+
+		if !updated:
 			y_textures[track_id].update(file_data.video.get_y_data())
 			u_textures[track_id].update(file_data.video.get_u_data())
 			v_textures[track_id].update(file_data.video.get_v_data())
