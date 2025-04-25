@@ -269,7 +269,7 @@ func _on_commit_resize() -> void:
 	InputManager.undo_redo.create_action("Resizing clip on timeline")
 
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
-			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x + 0.1)))
+			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x)))
 	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
 	InputManager.undo_redo.add_do_method(queue_redraw)
 

@@ -175,9 +175,30 @@ bool Video::open(const String& video_path) {
 		return false;
 	}
 
-	if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
-						 av_stream->index, av_frame.get(), av_packet.get()))) {
-		FFmpeg::print_av_error("Something went wrong getting first frame!", response);
+	int attempts = 0;
+	while (true) {
+		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
+									 av_stream->index, av_frame.get(), av_packet.get());
+
+		if (response == 0)
+			break;
+		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
+			if (attempts > 10) {
+				FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+				break;
+			}
+
+			attempts++;
+		} else if (response == AVERROR_EOF) {
+			FFmpeg::print_av_error("Reached EOF trying to get first frame!", response);
+			break;
+		} else {
+			FFmpeg::print_av_error("Something went wrong getting first frame!", response);
+			break;
+		}
+	}
+
+	if (response < 0) {
 		close();
 		return false;
 	}

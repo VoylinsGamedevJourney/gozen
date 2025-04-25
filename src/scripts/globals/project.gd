@@ -65,29 +65,36 @@ func open(project_path: String) -> void:
 		Toolbox.print_resize_error()
 
 	for i: int in get_file_ids():
-		load_file_data(i)
+		if !load_file_data(i):
+			continue # File became invaled so entry got deleted.
+
 		var type: File.TYPE = data.files[i].type
 
 		if type == File.TYPE.VIDEO and file_data[i].video == null:
 			await file_data[i].video_loaded
-			print("loaded")
 
 	_update_recent_projects(project_path)
 	project_ready.emit()
 	get_window().title = "GoZen - %s" % project_path.get_file().get_basename()
 
 
-func load_file_data(id: int) -> void:
+func load_file_data(id: int) -> bool:
 	var temp_file_data: FileData = FileData.new()
 
-	temp_file_data.init_data(id)
+	if !temp_file_data.init_data(id):
+		delete_file(id)
+		return false
+		
 	file_data[id] = temp_file_data
+	return true
 
 
 func reload_file_data(id: int) -> void:
 	file_data[id].queue_free()
 	await RenderingServer.frame_pre_draw
-	load_file_data(id)
+	if !load_file_data(id):
+		delete_file(id)
+		print("File became invalid!")
 
 
 func delete_file(id: int) -> void:
@@ -96,9 +103,18 @@ func delete_file(id: int) -> void:
 		if clip.file_id == id:
 			if !data.clips.erase(clip.clip_id):
 				Toolbox.print_erase_error()
+	print(id)
 
-	file_data[id].queue_free()
-	data.files[id].queue_free()
+	if file_data.has(id):
+		if file_data[id] != null:
+			file_data[id].queue_free()
+		if file_data.erase(id):
+			Toolbox.print_erase_error()
+	if data.files.has(id):
+		if data.files[id] != null:
+			data.files[id].queue_free()
+		if data.files.erase(id):
+			Toolbox.print_erase_error()
 
 	# WARNING: Right now we delete undo_redo, this is because it could cause
 	# issues when undoing a part where the clips are needed. This is a TODO

@@ -102,5 +102,6 @@ func update_effects(data: ClipData = Project.get_clip(clip_id)) -> void:
 		AudioServer.set_bus_mute(bus_index, audio_effects.mute)
 		return
 
+	AudioServer.set_bus_mute(bus_index, false)
 	AudioServer.set_bus_volume_db(bus_index, audio_effects.gain)
 

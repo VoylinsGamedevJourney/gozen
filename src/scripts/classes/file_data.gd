@@ -37,15 +37,18 @@ func _update_duration() -> void:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)
 
 
-func init_data(file_data_id: int) -> void:
+func init_data(file_data_id: int) -> bool:
 	id = file_data_id
 
 	var file: File = Project.get_file(id)
+	if file == null:
+		printerr("Can't init data as file %s is null!")
+		return false
 
 	if file.type == File.TYPE.IMAGE:
 		if file.temp_file != null:
 			image = file.temp_file.image_data
-			return
+			return true
 
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
@@ -55,6 +58,8 @@ func init_data(file_data_id: int) -> void:
 	if file.type in Editor.AUDIO_TYPES:
 		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
 				_load_audio_data.bind(file.path)), create_wave))
+
+	return true
 
 
 func _load_audio_data(file_path: String) -> void:
