@@ -122,6 +122,7 @@ func _set_zoom(new_zoom: float) -> void:
 	var prev_mouse_frame: int = roundi(prev_mouse_x / zoom)
 
 	zoom = clampf(new_zoom, 0.001, 40.0)
+	scroll_main.scroll_horizontal_custom_step = lerpf(20, 1, ((zoom - 0.001) / (40.0 - 0.001)))
 	move_playhead(Editor.frame_nr)
 
 	# Get all clips, update their size and position

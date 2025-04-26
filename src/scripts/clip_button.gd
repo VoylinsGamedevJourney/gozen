@@ -115,7 +115,18 @@ func _on_button_down() -> void:
 func _input(event: InputEvent) -> void:
 	# TODO: Make it so only selected clips can be cut
 	# Timeline.selected_clips
-	if event.is_action_pressed("clip_split"):
+	if !has_focus():
+		return
+	if event.is_action_pressed("ctrl_click", false, true):
+		print("---")
+		print("Clip id: ", clip_data.clip_id)
+		print("Clip track: ", clip_data.track_id)
+		print()
+		print("Clip duration: ", clip_data.duration)
+		print("Clip start frame: ", clip_data.start_frame)
+		print("Clip end frame: ", clip_data.end_frame)
+		print("Clip begin: ", clip_data.begin)
+	elif event.is_action_pressed("clip_split"):
 		# Check if playhead is inside of clip, else we skip creating undo and
 		# redo entries.
 		if Editor.frame_nr <= clip_data.start_frame or Editor.frame_nr >= clip_data.end_frame:
