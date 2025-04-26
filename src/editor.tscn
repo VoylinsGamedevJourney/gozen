@@ -821,7 +821,7 @@ size_flags_vertical = 3
 
 [node name="TimelineScroll" type="ScrollContainer" parent="VSplitContainer/BottomHBox/Timeline/VBoxContainer/TimelinePanel"]
 layout_mode = 2
-scroll_horizontal_custom_step = 16.0
+scroll_horizontal_custom_step = 24.0
 scroll_vertical_custom_step = 8.0
 
 [node name="TimelineControl" type="Control" parent="VSplitContainer/BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll"]

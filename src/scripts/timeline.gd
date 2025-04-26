@@ -73,6 +73,7 @@ func _on_project_loaded() -> void:
 		lines.add_child(line)
 
 	update_end()
+	_set_zoom(zoom)
 
 
 func _process(_delta: float) -> void:
@@ -113,9 +114,11 @@ func _on_main_gui_input(event: InputEvent) -> void:
 
 
 func _set_zoom(new_zoom: float) -> void:
-	var prev_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
+	var prev_mouse_x: float = main_control.get_local_mouse_position().x
+	var prev_scroll: int = scroll_main.scroll_horizontal
+	var prev_mouse_frame: int = roundi(prev_mouse_x / zoom)
 
-	zoom = clampf(new_zoom, 0.01, 20.0)
+	zoom = clampf(new_zoom, 0.001, 40.0)
 	move_playhead(Editor.frame_nr)
 
 	# Get all clips, update their size and position
@@ -126,9 +129,10 @@ func _set_zoom(new_zoom: float) -> void:
 		clip_button.size.x = data.duration * zoom
 
 	update_end()
-	var now_mouse: int = round(main_control.get_local_mouse_position().x / zoom)
 
-	scroll_main.scroll_horizontal += round((prev_mouse - now_mouse) * zoom)
+	var new_mouse_x: float = prev_mouse_frame * zoom
+	scroll_main.scroll_horizontal = new_mouse_x - (prev_mouse_x - prev_scroll)
+
 	zoom_changed.emit()
 
 
