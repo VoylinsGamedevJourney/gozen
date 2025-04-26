@@ -23,6 +23,7 @@ func _ready() -> void:
 	for list_id: int in tabs.size():
 		tabs[list_id].set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
 		Toolbox.connect_func(tabs[list_id].item_clicked, _file_item_clicked.bind(list_id))
+		buttons[list_id].visible = list_id == File.TYPE.VIDEO
 
 
 func _process(_delta: float) -> void:
@@ -107,6 +108,8 @@ func _process_file(file: File, file_data: FileData) -> void:
 		File.TYPE.VIDEO:
 			if file_data.video == null:
 				return
+
+	buttons[file.type].visible = true
 
 	for x: int in tabs[tab_id].item_count:
 		if tabs[tab_id].get_item_metadata(x) == file.id:
@@ -243,15 +246,18 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 		return
 
 	var last_type: int = -1
+	for id: int in buttons.size():
+		if buttons[id].button_pressed:
+			last_type = id
+			break
 
 	for file_path: String in files:
-		# TODO: Check if file_path is a file or a directory
 		if FileAccess.file_exists(file_path):
 			var id: int = add_file(file_path)
 
-			if id != -1: # Check for invalid file
+			if id > 0: # Check for invalid file
 				_add_file_to_list(id)
-			else:
+			else: # Invalid file (-1 = invalid, -2 = already added)
 				continue
 
 			last_type = int(Project.get_file(id).type)
@@ -361,15 +367,16 @@ func _on_add_files_button_pressed() -> void:
 
 
 func add_file(file_path: String) -> int:
-	var file: File = File.create(file_path)
-
-	if file == null:
-		return -1
-
 	# Check if file already exists
 	for existing: File in Project.get_files().values():
 		if existing.path == file_path:
 			print("File already loaded with path '%s'!" % file_path)
+			return -2
+
+	var file: File = File.create(file_path)
+
+	if file == null:
+		return -1
 
 	Project.set_file(file.id, file)
 	if !Project.load_file_data(file.id):
