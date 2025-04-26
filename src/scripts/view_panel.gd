@@ -38,15 +38,6 @@ func _on_skip_next_button_pressed() -> void:
 
 
 func _on_frame_changed(frame_nr: int) -> void:
-	var total_seconds_float: float = float(frame_nr) / Project.get_framerate()
-	var total_seconds: int = floor(total_seconds_float)
-
-	var hours: int = int(float(total_seconds) / 3600)
-	var remaining_seconds: int = total_seconds % 3600
-	var minutes: int = int(float(remaining_seconds) / 60)
-	var seconds: int = total_seconds % 60
-	var micro: int = int(float(total_seconds_float - total_seconds) * 100)
-
 	frame_label.text = tr("Frame") + ": " + str(frame_nr)
-	time_label.text = "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
+	time_label.text = Toolbox.format_time_str_from_frame(frame_nr)
 	

@@ -86,3 +86,19 @@ func in_rangef(value: float, min_value: float, max_value: float, include_last: b
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
 
+
+func format_time_str_from_frame(frame_count: int) -> String:
+	return format_time_str(float(frame_count) / Project.get_framerate())
+	
+
+func format_time_str(total_seconds: float) -> String:
+	var total_seconds_int: int = floor(total_seconds)
+
+	var hours: int = int(float(total_seconds_int) / 3600)
+	var remaining_seconds: int = total_seconds_int % 3600
+	var minutes: int = int(float(remaining_seconds) / 60)
+	var seconds: int = total_seconds_int % 60
+	var micro: int = int(float(total_seconds - total_seconds_int) * 100)
+
+	return "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
+	

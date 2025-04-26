@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dobw2jnf0wcn4" path="res://scripts/render_menu.gd" id="1_6rdvb"]
 [ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="2_lyxh1"]
 
-[node name="RenderMenu" type="PanelContainer" node_paths=PackedStringArray("path_line_edit", "render_profiles_option_button", "render_progress_bar", "render_progress_label", "audio_codec_option_button", "video_grid", "video_codec_option_button", "video_quality_slider", "video_speed_label", "video_speed_slider", "video_gop_spinbox", "render_metadata_toggle", "metadata_grid", "title_line_edit", "comment_text_edit", "author_line_edit", "copyright_line_edit")]
+[node name="RenderMenu" type="PanelContainer" node_paths=PackedStringArray("path_line_edit", "render_profiles_option_button", "render_progress_bar", "render_warning_label", "render_progress_label", "advanced_render_settings", "audio_codec_option_button", "video_grid", "video_codec_option_button", "video_quality_slider", "video_speed_label", "video_speed_slider", "video_gop_spinbox", "threads_spinbox", "render_metadata_toggle", "metadata_grid", "title_line_edit", "comment_text_edit", "author_line_edit", "copyright_line_edit", "render_path_label", "render_time_taken_label", "render_video_length_label")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -13,24 +13,30 @@ theme_type_variation = &"overlay_background"
 script = ExtResource("1_6rdvb")
 path_line_edit = NodePath("Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderPathHBox/PathLineEdit")
 render_profiles_option_button = NodePath("Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderProfileHBox/RenderProfilesOptionButton")
-render_progress_bar = NodePath("RenderPanel/Margin/MainPanel/Margin/VBoxContainer/ProgressBar")
-render_progress_label = NodePath("RenderPanel/Margin/MainPanel/Margin/VBoxContainer/RenderUpdateLabel")
-audio_codec_option_button = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer/AudioCodecOptionButton")
-video_grid = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer")
-video_codec_option_button = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer/VideoCodecOptionButton")
-video_quality_slider = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/QualityHSlider")
-video_speed_label = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/SpeedLabel")
-video_speed_slider = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/SpeedHSlider")
-video_gop_spinbox = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/GOPSizeSpinBox")
-render_metadata_toggle = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox/EnableMetadataCheckButton")
-metadata_grid = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer")
-title_line_edit = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/TitleLineEdit")
-comment_text_edit = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/CommentTextEdit")
-author_line_edit = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/AuthorLineEdit")
-copyright_line_edit = NodePath("Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/CopyrightLineEdit")
+render_progress_bar = NodePath("RenderPanel/Margin/MainPanel/Margin/VBox/ProgressBar")
+render_warning_label = NodePath("RenderPanel/Margin/MainPanel/Margin/VBox/HBox/RenderWarningLabel")
+render_progress_label = NodePath("RenderPanel/Margin/MainPanel/Margin/VBox/HBox/RenderUpdateLabel")
+advanced_render_settings = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer")
+audio_codec_option_button = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer/AudioCodecOptionButton")
+video_grid = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer")
+video_codec_option_button = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer/VideoCodecOptionButton")
+video_quality_slider = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/QualityHSlider")
+video_speed_label = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/SpeedLabel")
+video_speed_slider = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/SpeedHSlider")
+video_gop_spinbox = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/GOPSizeSpinBox")
+threads_spinbox = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox/ThreadsGridContainer/ThreadsSpinBox")
+render_metadata_toggle = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox/EnableMetadataCheckButton")
+metadata_grid = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer")
+title_line_edit = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/TitleLineEdit")
+comment_text_edit = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/CommentTextEdit")
+author_line_edit = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/AuthorLineEdit")
+copyright_line_edit = NodePath("Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer/CopyrightLineEdit")
+render_path_label = NodePath("RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer/PathLabel")
+render_time_taken_label = NodePath("RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer/TimeTakenLabel")
+render_video_length_label = NodePath("RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer/VideoLengthLabel")
 
 [node name="Panel" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(700, 380)
+custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -55,10 +61,25 @@ layout_mode = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer"]
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer"]
 layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render video"
+
+[node name="ShowAdvancedSettingsButton" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_type_variation = &"info_label"
+text = "Advanced settings"
+horizontal_alignment = 2
+
+[node name="CheckButton" type="CheckButton" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox"]
+layout_mode = 2
+flat = true
 
 [node name="RenderProfileHBox" type="GridContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer"]
 layout_mode = 2
@@ -105,86 +126,87 @@ text = "Save"
 [node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox"]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox"]
+[node name="AdvancedSettingsScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="RenderOptionsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer"]
+[node name="RenderOptionsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="AudioPanel" type="PanelContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox"]
+[node name="AudioPanel" type="PanelContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel"]
 layout_mode = 2
 
-[node name="AudioVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin"]
+[node name="AudioVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin"]
 layout_mode = 2
 
-[node name="AudioBoxLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
+[node name="AudioBoxLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render audio"
 
-[node name="AudioGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
+[node name="AudioGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="AudioCodecLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
+[node name="AudioCodecLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Audio codec"
 
-[node name="AudioCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
+[node name="AudioCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VideoPanel" type="PanelContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox"]
+[node name="VideoPanel" type="PanelContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel"]
 layout_mode = 2
 
-[node name="VideoVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin"]
+[node name="VideoVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin"]
 layout_mode = 2
 
-[node name="VideoBoxLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
+[node name="VideoBoxLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render video"
 
-[node name="EnableVideoGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
+[node name="EnableVideoGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="VideoCodecLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer"]
+[node name="VideoCodecLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Video codec"
 
-[node name="VideoCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer"]
+[node name="VideoCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VideoGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
+[node name="VideoGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="QualityLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+[node name="QualityLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 mouse_filter = 1
 text = "Quality"
 
-[node name="QualityHSlider" type="HSlider" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+[node name="QualityHSlider" type="HSlider" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -193,14 +215,14 @@ min_value = -50.0
 max_value = -15.0
 value = -18.0
 
-[node name="SpeedLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+[node name="SpeedLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 mouse_filter = 1
 text = "Speed"
 
-[node name="SpeedHSlider" type="HSlider" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+[node name="SpeedHSlider" type="HSlider" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
@@ -209,14 +231,14 @@ value = 3.0
 tick_count = 9
 ticks_on_borders = true
 
-[node name="GOPSizeLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+[node name="GOPSizeLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 mouse_filter = 1
 text = "GOP size"
 
-[node name="GOPSizeSpinBox" type="SpinBox" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
+[node name="GOPSizeSpinBox" type="SpinBox" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
@@ -224,68 +246,97 @@ value = 15.0
 allow_greater = true
 alignment = 2
 
-[node name="MetadataPanel" type="PanelContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox"]
+[node name="ThreadsPanel" type="PanelContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel"]
 layout_mode = 2
 
-[node name="MetadataVBox" type="VBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin"]
+[node name="ThreadsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin"]
 layout_mode = 2
 
-[node name="MetadataHeaderHBox" type="HBoxContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
+[node name="ThreadsBoxLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "CPU threads"
+
+[node name="ThreadsGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="ThreadsCodecLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox/ThreadsGridContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Threads/cores"
+
+[node name="ThreadsSpinBox" type="SpinBox" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox/ThreadsGridContainer"]
+layout_mode = 2
+tooltip_text = "Put on '0' to use all available threads."
+
+[node name="MetadataPanel" type="PanelContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel"]
 layout_mode = 2
 
-[node name="MetadataBoxLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
+[node name="MetadataVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin"]
+layout_mode = 2
+
+[node name="MetadataHeaderHBox" type="HBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
+layout_mode = 2
+
+[node name="MetadataBoxLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Metadata"
 
-[node name="EnableMetadataCheckButton" type="CheckButton" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
+[node name="EnableMetadataCheckButton" type="CheckButton" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
 layout_mode = 2
 tooltip_text = "Enable or disable the rendering out of video."
 flat = true
 
-[node name="MetadataGridContainer" type="GridContainer" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
+[node name="MetadataGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
 layout_mode = 2
 columns = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Title"
 
-[node name="TitleLineEdit" type="LineEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="TitleLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CommentLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="CommentLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
 text = "Comment"
 
-[node name="CommentTextEdit" type="TextEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="CommentTextEdit" type="TextEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 
-[node name="AuthorLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="AuthorLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Author"
 
-[node name="AuthorLineEdit" type="LineEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="AuthorLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CopyrightLabel" type="Label" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="CopyrightLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Copyright"
 
-[node name="CopyrightLineEdit" type="LineEdit" parent="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
+[node name="CopyrightLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -327,32 +378,134 @@ size_flags_horizontal = 3
 [node name="Margin" type="MarginContainer" parent="RenderPanel/Margin/MainPanel"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RenderPanel/Margin/MainPanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="RenderPanel/Margin/MainPanel/Margin"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="TitleLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "Rendering ..."
 
-[node name="ProgressBar" type="ProgressBar" parent="RenderPanel/Margin/MainPanel/Margin/VBoxContainer"]
+[node name="ProgressBar" type="ProgressBar" parent="RenderPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
 step = 0.5
 
-[node name="RenderUpdateLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBoxContainer"]
+[node name="HBox" type="HBoxContainer" parent="RenderPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
+
+[node name="RenderWarningLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"warning_label"
+text = "Something went wrong!!"
+
+[node name="RenderUpdateLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Creating audio ..."
-horizontal_alignment = 1
 
+[node name="CancelRenderButton" type="Button" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Cancel rendering"
+
+[node name="RenderFinishedPanel" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="RenderFinishedPanel"]
+layout_mode = 2
+
+[node name="MainPanel" type="PanelContainer" parent="RenderFinishedPanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="RenderFinishedPanel/Margin/MainPanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="RenderFinishedPanel/Margin/MainPanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Rendering finished"
+
+[node name="GridContainer" type="GridContainer" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="TitlePathLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+layout_mode = 2
+text = "Path:"
+
+[node name="PathLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "/"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="TitleVideoLengthLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+layout_mode = 2
+text = "Video length:"
+
+[node name="VideoLengthLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+layout_mode = 2
+text = "00:00:00.00"
+
+[node name="SpacerControl1" type="Control" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="SpacerControl2" type="Control" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="TitleTimeTakenLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+layout_mode = 2
+text = "Render time:"
+
+[node name="TimeTakenLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "00:00:00.00"
+
+[node name="HBox" type="HBoxContainer" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 2
+
+[node name="ReturnButton" type="Button" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "Return"
+
+[node name="CloseButton" type="Button" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_type_variation = &"main_button"
+text = "Close"
+
+[connection signal="toggled" from="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox/CheckButton" to="." method="_on_check_button_toggled"]
 [connection signal="pressed" from="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderPathHBox/SelectSavePathButton" to="." method="_on_select_save_path_button_pressed"]
 [connection signal="item_selected" from="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderProfileHBox/RenderProfilesOptionButton" to="." method="_on_render_profiles_option_button_item_selected"]
 [connection signal="pressed" from="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderProfileHBox/SaveRenderProfileButton" to="." method="_on_save_render_profile_button_pressed"]
-[connection signal="item_selected" from="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer/AudioCodecOptionButton" to="." method="_on_audio_codec_option_button_item_selected"]
-[connection signal="item_selected" from="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
-[connection signal="drag_ended" from="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/QualityHSlider" to="." method="_on_quality_h_slider_drag_ended"]
-[connection signal="drag_ended" from="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/SpeedHSlider" to="." method="_on_speed_h_slider_drag_ended"]
-[connection signal="value_changed" from="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/GOPSizeSpinBox" to="." method="_on_gop_size_spin_box_value_changed"]
-[connection signal="toggled" from="Panel/Margin/VBox/ScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox/EnableMetadataCheckButton" to="." method="_on_enable_metadata_check_button_toggled"]
+[connection signal="item_selected" from="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer/AudioCodecOptionButton" to="." method="_on_audio_codec_option_button_item_selected"]
+[connection signal="item_selected" from="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
+[connection signal="drag_ended" from="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/QualityHSlider" to="." method="_on_quality_h_slider_drag_ended"]
+[connection signal="drag_ended" from="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/SpeedHSlider" to="." method="_on_speed_h_slider_drag_ended"]
+[connection signal="value_changed" from="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer/GOPSizeSpinBox" to="." method="_on_gop_size_spin_box_value_changed"]
+[connection signal="toggled" from="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox/EnableMetadataCheckButton" to="." method="_on_enable_metadata_check_button_toggled"]
 [connection signal="pressed" from="Panel/Margin/VBox/ButtonHBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/ButtonHBox/RenderButton" to="." method="_on_render_button_pressed"]
+[connection signal="pressed" from="RenderPanel/Margin/MainPanel/Margin/VBox/HBox/CancelRenderButton" to="." method="_on_cancel_render_button_pressed"]
+[connection signal="pressed" from="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/HBox/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]

@@ -112,7 +112,7 @@ bool Renderer::_add_video_stream() {
 	if (!av_codec_ctx_video)
 		return _log_err("Couldn't alloc video codec");
 
-	FFmpeg::enable_multithreading(av_codec_ctx_video.get(), av_codec);
+	FFmpeg::enable_multithreading(av_codec_ctx_video.get(), av_codec, threads);
 
 	av_codec_ctx_video->codec_id = video_codec_id;
 	av_codec_ctx_video->width = resolution.x;  // Resolution must be
@@ -598,6 +598,7 @@ void Renderer::_bind_methods() {
 	BIND_METHOD_ARGS(set_resolution, "video_resolution");
 	BIND_METHOD_ARGS(set_framerate, "video_framerate");
 	BIND_METHOD_ARGS(set_crf, "video_crf");
+	BIND_METHOD_ARGS(set_threads, "thread_count");
 	BIND_METHOD_ARGS(set_gop_size, "video_gop_size");
 
 	BIND_METHOD_ARGS(set_sws_quality, "value");

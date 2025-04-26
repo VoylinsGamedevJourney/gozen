@@ -9,8 +9,8 @@ void FFmpeg::print_av_error(const char *message, int error) {
 	UtilityFunctions::printerr("FFmpeg error: ", message, " ", error_buffer);
 }
 
-void FFmpeg::enable_multithreading(AVCodecContext *codec_ctx, const AVCodec *codec) {
-	codec_ctx->thread_count = 0; // Let FFmpeg decide how many threads to use.
+void FFmpeg::enable_multithreading(AVCodecContext *codec_ctx, const AVCodec *codec, int thread_count) {
+	codec_ctx->thread_count = thread_count; // Let FFmpeg decide how many threads to use.
 	codec_ctx->thread_type = FF_THREAD_FRAME | FF_THREAD_SLICE;
 	// We just enable everything and hope it's supported.
 }

@@ -14,7 +14,9 @@ static var instance: RenderingWindow
 @export var path_line_edit: LineEdit
 @export var render_profiles_option_button: OptionButton
 @export var render_progress_bar: ProgressBar
+@export var render_warning_label: Label
 @export var render_progress_label: Label
+@export var advanced_render_settings: ScrollContainer
 
 @export_group("Audio")
 @export var audio_codec_option_button: OptionButton
@@ -28,6 +30,9 @@ static var instance: RenderingWindow
 @export var video_speed_slider: HSlider
 @export var video_gop_spinbox: SpinBox
 
+@export_group("Threads")
+@export var threads_spinbox: SpinBox
+
 @export_group("Metadata")
 @export var render_metadata_toggle: CheckButton
 @export var metadata_grid: GridContainer
@@ -36,6 +41,11 @@ static var instance: RenderingWindow
 @export var comment_text_edit: TextEdit
 @export var author_line_edit: LineEdit
 @export var copyright_line_edit: LineEdit
+
+@export_group("Render results")
+@export var render_path_label: Label
+@export var render_time_taken_label: Label
+@export var render_video_length_label: Label
 
 
 var viewport: ViewportTexture
@@ -82,6 +92,8 @@ func _ready() -> void:
 			printerr("Couldn't create folder at %s!" % RENDER_PROFILES_PATH)
 
 	show_window(0)
+	advanced_render_settings.visible = false
+	threads_spinbox.max_value = OS.get_processor_count()
 
 	# Loading default render profiles.
 	var id_youtube_profile: int = -1
@@ -170,6 +182,8 @@ func _on_cancel_button_pressed() -> void:
 func _on_render_button_pressed() -> void:
 	var start_time: int = Time.get_ticks_usec()
 
+	render_warning_label.visible = false
+	render_progress_label.visible = true
 	render_progress_bar.max_value = Project.get_timeline_end()
 	render_progress_bar.value = 0
 	render_progress_label.text = "Setting up renderer ..."
@@ -188,6 +202,7 @@ func _on_render_button_pressed() -> void:
 	renderer.set_gop_size(render_profile.gop)
 	renderer.set_crf(render_profile.crf) # Slider has a negative value
 	renderer.set_sws_quality(Renderer.SWS_QUALITY_BILINEAR)
+	renderer.set_threads(max(0, threads_spinbox.value))
 
 	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
 		renderer.set_h264_preset(render_profile.h264_preset)
@@ -208,6 +223,9 @@ func _on_render_button_pressed() -> void:
 			renderer.set_video_meta_copyright(copyright)
 
 	if !renderer.open():
+		render_warning_label.visible = true
+		render_progress_label.visible = false
+		render_warning_label.text = "Renderer couldn't be opened, check path and settings!"
 		printerr("Something went wrong and rendering isn't possible!")
 		return
 
@@ -222,7 +240,12 @@ func _on_render_button_pressed() -> void:
 		render_progress_bar.value += 4
 		await RenderingServer.frame_post_draw
 		if !renderer.send_audio(render_audio()):
+			render_warning_label.visible = true
+			render_progress_label.visible = false
+			render_warning_label.text = "Something went wrong sending audio to the renderer!"
+			renderer.close()
 			printerr("Something went wrong sending audio!")
+			return
 
 	render_progress_label.text = "Creating & sending frame data ..."
 	Editor.set_frame(0)
@@ -233,7 +256,12 @@ func _on_render_button_pressed() -> void:
 		await RenderingServer.frame_post_draw
 		
 		if !renderer.send_frame(viewport.get_image()):
+			render_warning_label.visible = true
+			render_progress_label.visible = false
+			render_warning_label.text = "Something went wrong sending frame to the renderer!"
+			renderer.close()
 			printerr("Something went wrong sending frame!")
+			return
 		render_progress_bar.value += 1
 		Editor.set_frame() # Getting the next frame in line.
 
@@ -251,13 +279,23 @@ func _on_render_button_pressed() -> void:
 		await RenderingServer.frame_post_draw
 
 	renderer.close()
-
 	is_rendering = false
-	print("Rendered video length: ", float(Project.get_timeline_end()) / Project.get_framerate())
-	print("Rendering process took: ", float(float(Time.get_ticks_usec() - start_time) / 1000000))
 
-	# TODO: Create a new screen to say that render was successfull or unsuccessful.
-	show_window(0)
+	if cancel_rendering:
+		cancel_rendering = false
+		render_progress_label.text = "Cancel rendering ..."
+		await RenderingServer.frame_post_draw
+		show_window(0)
+		return
+
+	render_path_label.text = path_line_edit.text
+	render_path_label.tooltip_text = path_line_edit.text
+
+	render_time_taken_label.text = Toolbox.format_time_str(
+			float(float(Time.get_ticks_usec() - start_time) / 1000000))
+	render_video_length_label.text = Toolbox.format_time_str_from_frame(
+			Project.get_timeline_end() + 1)
+	show_window(2)
 
 
 func get_extension(profile: RenderProfile = render_profile) -> String:
@@ -354,4 +392,20 @@ func show_window(nr: int) -> void:
 
 static func get_sample_count(frames: int) -> int:
 	return int(44100 * 4 * float(frames) / Project.get_framerate())
+
+
+func _on_check_button_toggled(toggled_on:bool) -> void:
+	advanced_render_settings.visible = toggled_on
+
+
+func _on_cancel_render_button_pressed() -> void:
+	cancel_rendering = true
+
+
+func _on_close_button_pressed() -> void:
+	self.queue_free()
+
+
+func _on_return_button_pressed() -> void:
+	show_window(0)
 

@@ -37,6 +37,7 @@ private:
 	int sample_rate = 44100;
 	int gop_size = 15;
 	int crf = 23; // 0 best quality, 51 worst quality, 18 not really noticable.
+	int threads = 0;
 	
 	int sws_quality = SWS_QUALITY_BILINEAR;
 
@@ -148,6 +149,7 @@ public:
 	inline void set_resolution(Vector2i video_resolution) { resolution = video_resolution; }
 	inline void set_framerate(float video_framerate) { framerate = video_framerate; }
 	inline void set_crf(int video_crf) { crf = video_crf; }
+	inline void set_threads(int thread_count) { threads = thread_count; }
 	inline void set_gop_size(int video_gop_size) { gop_size = video_gop_size; }
 	inline void set_sws_quality(SWS_QUALITY value) { sws_quality = value; }
 	inline void set_b_frames(int value) { b_frames = value; }
