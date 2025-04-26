@@ -101,6 +101,9 @@ func _on_main_gui_input(event: InputEvent) -> void:
 
 	if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if event.is_pressed():
+			if Settings.get_pause_after_drag() and Editor.is_playing:
+				Editor.on_play_pressed()
+
 			playhead_moving = true
 			playback_before_moving = Editor.is_playing
 

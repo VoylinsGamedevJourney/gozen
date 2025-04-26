@@ -14,6 +14,7 @@ extends PanelContainer
 
 @export_group("Timeline")
 @export var track_amount_spinbox: SpinBox
+@export var pause_after_drag: CheckButton
 
 
 
@@ -30,8 +31,6 @@ func _input(event: InputEvent) -> void:
 
 
 func set_values() -> void:
-	save_info_label.visible = false
-
 	# Appearance values
 	theme_option_button.selected = Settings.get_theme()
 
@@ -43,6 +42,9 @@ func set_values() -> void:
 
 	# Timeline values
 	track_amount_spinbox.value = Settings.get_tracks_amount()
+	pause_after_drag.button_pressed = Settings.get_pause_after_drag()
+
+	save_info_label.visible = false
 
 
 func _on_reset_button_pressed() -> void:
@@ -73,8 +75,15 @@ func _on_theme_option_button_item_selected(index: int) -> void:
 
 func _on_image_duration_spin_box_value_changed(value: float) -> void:
 	changes["image_duration"] = Settings.set_image_duration.bind(value)
+	save_info_label.visible = true
 
 
 func _on_track_amount_spin_box_value_changed(value: float) -> void:
 	changes["track_amount"] = Settings.set_tracks_amount.bind(value)
+	save_info_label.visible = true
+
+
+func _on_pause_after_drag_check_button_toggled(value: bool) -> void:
+	changes["pause_after_drag"] = Settings.set_pause_after_drag.bind(value)
+	save_info_label.visible = true
 

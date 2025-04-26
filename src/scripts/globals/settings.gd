@@ -80,3 +80,12 @@ func set_tracks_amount(track_amount: int) -> void:
 
 func get_tracks_amount() -> int:
 	return data.tracks_amount
+
+
+func set_pause_after_drag(value: bool) -> void:
+	data.pause_after_drag = value
+
+
+func get_pause_after_drag() -> bool:
+	return data.pause_after_drag
+

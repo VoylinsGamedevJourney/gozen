@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scripts/settings_menu.gd" id="1_ce4ec"]
 
-[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "theme_option_button", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox")]
+[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "theme_option_button", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox", "pause_after_drag")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,9 +17,10 @@ default_resolution_x_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/
 default_resolution_y_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionYSpinBox")
 default_framerate_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/DefaultFramerateSpinBox")
 track_amount_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox")
+pause_after_drag = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/PauseAfterDragCheckButton")
 
 [node name="Panel" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(700, 300)
+custom_minimum_size = Vector2(700, 350)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -185,6 +186,18 @@ min_value = 1.0
 max_value = 32.0
 value = 1.0
 
+[node name="PauseAfterDragLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This setting is used for new projects you create. New projects will intialize with the amount of tracks which you define here."
+mouse_filter = 1
+text = "Pause after dragging"
+
+[node name="PauseAfterDragCheckButton" type="CheckButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid"]
+layout_mode = 2
+size_flags_horizontal = 0
+flat = true
+
 [node name="SaveForEffectLabel" type="Label" parent="Panel/Margin/VBox"]
 visible = false
 layout_mode = 2
@@ -221,6 +234,7 @@ text = "Save"
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]
 [connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox" to="." method="_on_image_duration_spin_box_value_changed"]
 [connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox" to="." method="_on_track_amount_spin_box_value_changed"]
+[connection signal="toggled" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/PauseAfterDragCheckButton" to="." method="_on_pause_after_drag_check_button_toggled"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/ResetButton" to="." method="_on_reset_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]

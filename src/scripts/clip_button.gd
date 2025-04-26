@@ -140,7 +140,7 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
 
-		if mouse_event.pressed:
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			EffectsPanel.instance.on_clip_pressed(name.to_int())
 			get_viewport().set_input_as_handled()
 
