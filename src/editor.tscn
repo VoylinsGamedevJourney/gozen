@@ -211,12 +211,14 @@ icon_mode = 0
 fixed_icon_size = Vector2i(107, 60)
 metadata/_tab_index = 3
 
-[node name="ViewPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer/HSplit" node_paths=PackedStringArray("button_play", "button_pause")]
+[node name="ViewPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer/HSplit" node_paths=PackedStringArray("button_play", "button_pause", "frame_label", "time_label")]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("8_3v1c7")
 button_play = NodePath("Margin/VBox/ButtonsHBox/PlayButton")
 button_pause = NodePath("Margin/VBox/ButtonsHBox/PauseButton")
+frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
+time_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/TimeLabel")
 
 [node name="Margin" type="MarginContainer" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel"]
 layout_mode = 2
@@ -255,6 +257,21 @@ color = Color(0, 0, 0, 1)
 layout_mode = 2
 alignment = 1
 
+[node name="TimeDataVBox" type="VBoxContainer" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="FrameLabel" type="Label" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ButtonsHBox/TimeDataVBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "Frame: 0"
+
+[node name="TimeLabel" type="Label" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ButtonsHBox/TimeDataVBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "00:00:00.00"
+
 [node name="SkipPrevButton" type="TextureButton" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
@@ -286,6 +303,10 @@ mouse_default_cursor_shape = 2
 texture_normal = ExtResource("12_hcdi5")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="SpacerControl" type="Control" parent="VSplitContainer/HSplitContainer/HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="EffectsPanel" type="PanelContainer" parent="VSplitContainer/HSplitContainer" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "mute_button", "gain_label", "gain_spinbox", "mono_label", "mono_option_button")]
 custom_minimum_size = Vector2(260, 0)
@@ -790,6 +811,9 @@ vertical_scroll_mode = 0
 
 [node name="TimelineBox" type="PanelContainer" parent="VSplitContainer/BottomHBox/Timeline/VBoxContainer/TimelineBoxScroll"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"box"
 
 [node name="TimelinePanel" type="PanelContainer" parent="VSplitContainer/BottomHBox/Timeline/VBoxContainer"]
 layout_mode = 2
@@ -816,9 +840,12 @@ anchors_preset = 0
 
 [node name="Lines" type="VBoxContainer" parent="VSplitContainer/BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
 modulate = Color(1, 1, 1, 0.470588)
-layout_mode = 2
-offset_right = 1920.0
-offset_bottom = 176.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 0
 
