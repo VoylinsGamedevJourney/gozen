@@ -286,11 +286,51 @@ bool Video::seek_frame(int frame_nr) {
 	// Video seeking
 	if ((response = _seek_frame(frame_nr)) < 0)
 		return _log_err("Couldn't seek");
+
+
+
+
+
+	int attempts = 0;
+	while (true) {
+		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
+									 av_stream->index, av_frame.get(), av_packet.get());
+
+		if (response == 0)
+			break;
+		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
+			if (attempts > 10) {
+				FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+				break;
+			}
+
+			attempts++;
+		} else if (response == AVERROR_EOF) {
+			FFmpeg::print_av_error("Reached EOF trying to get first frame!", response);
+			break;
+		} else {
+			FFmpeg::print_av_error("Something went wrong getting first frame!", response);
+			break;
+		}
+	}
+
+
+
+
+
 	
 	while (true) {
 		if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
 									av_stream->index, av_frame.get(), av_packet.get()))) {
-			if (response == AVERROR_EOF) {
+			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
+				if (attempts > 10) {
+					FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+					break;
+				}
+
+				attempts++;
+				continue;
+			} else if (response == AVERROR_EOF) {
 				_log_err("End of file reached! Going back 1 frame!");
 
 				if ((response = _seek_frame(frame_nr--)) < 0)
@@ -298,6 +338,7 @@ bool Video::seek_frame(int frame_nr) {
 
 				continue;
 			}
+			
 			FFmpeg::print_av_error("Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
