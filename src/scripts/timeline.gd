@@ -73,7 +73,8 @@ func _on_project_loaded() -> void:
 		lines.add_child(line)
 
 	update_end()
-	_set_zoom(zoom)
+	_set_zoom(Project.get_zoom())
+	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
 
 
 func _process(_delta: float) -> void:
@@ -135,8 +136,10 @@ func _set_zoom(new_zoom: float) -> void:
 	update_end()
 
 	var new_mouse_x: float = prev_mouse_frame * zoom
-	scroll_main.scroll_horizontal = new_mouse_x - (prev_mouse_x - prev_scroll)
+	scroll_main.scroll_horizontal = int(new_mouse_x - (prev_mouse_x - prev_scroll))
 
+	Project.set_timeline_scroll_h(scroll_main.scroll_horizontal)
+	Project.set_zoom(zoom)
 	zoom_changed.emit()
 
 

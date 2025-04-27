@@ -16,3 +16,7 @@ var clips: Dictionary[int, ClipData] = {}  # {clip_id: ClipData}
 
 var background_color: Color = Color.BLACK
 
+# Tracking current timeline for reloading project.
+var timeline_scroll_h: int = 0
+var zoom: float = 1.0
+

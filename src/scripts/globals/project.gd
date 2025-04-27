@@ -252,3 +252,19 @@ func set_background_color(color: Color) -> void:
 func get_background_color() -> Color:
 	return data.background_color
 
+
+func set_timeline_scroll_h(value: int) -> void:
+	data.timeline_scroll_h = value
+
+
+func get_timeline_scroll_h() -> int:
+	return data.timeline_scroll_h
+
+
+func set_zoom(value: float) -> void:
+	data.zoom = value
+
+
+func get_zoom() -> float:
+	return data.zoom
+
