@@ -101,19 +101,22 @@ def compile_ffmpeg_linux(arch):
     subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
     subprocess.run(['make', 'install'], cwd='./ffmpeg/')
 
+    print('Compiling FFmpeg for Linux finished!')
+
 
 def copy_lib_files_linux(arch):
     path = f'bin/linux_{arch}'
     os.makedirs(path, exist_ok=True)
 
-    print('Copying lib files ...')
+    print(f'Copying lib files to {path} ...')
 
-    for file in glob.glob('ffmpeg/bin_linux/lib/*.so*'):
-        shutil.copy2(file, path)
-    for file in glob.glob('/usr/lib/libx26*'):
+    for file in glob.glob('ffmpeg/bin_linux/lib/*.so.*'):
+        if file.count('.') == 2:
+            shutil.copy2(file, path)
+    for file in glob.glob('/usr/lib/libx26*.so.*'):
         shutil.copy2(file, path)
 
-    print('Compiling FFmpeg for Linux finished!')
+    print('Copying files for Linux finished!')
 
 
 def compile_ffmpeg_windows(arch):
@@ -158,12 +161,14 @@ def compile_ffmpeg_windows(arch):
     subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
     subprocess.run(['make', 'install'], cwd='./ffmpeg/')
 
+    print('Compiling FFmpeg for Windows finished!')
+
 
 def copy_lib_files_windows(arch):
     path = f'bin/windows_{arch}'
     os.makedirs(path, exist_ok=True)
 
-    print('Copying lib files ...')
+    print(f'Copying lib files to {path} ...')
 
     for file in glob.glob('ffmpeg/bin_windows/bin/*.dll'):
         shutil.copy2(file, path)
@@ -171,7 +176,7 @@ def copy_lib_files_windows(arch):
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
 
-    print('Compiling FFmpeg for Windows finished!')
+    print('Copying files for Windows finished!')
 
 
 def compile_ffmpeg_macos(arch):
@@ -209,6 +214,8 @@ def compile_ffmpeg_macos(arch):
     subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
     subprocess.run(['make', 'install'], cwd='./ffmpeg/')
 
+    print('Compiling FFmpeg for MacOS finished!')
+
 
 def copy_lib_files_macos(arch):
     path_debug = f'bin/macos_{arch}/debug/lib'
@@ -217,13 +224,13 @@ def copy_lib_files_macos(arch):
     os.makedirs(path_debug, exist_ok=True)
     os.makedirs(path_release, exist_ok=True)
 
-    print('Copying lib files ...')
+    print(f'Copying lib files to {path} ...')
 
     for file in glob.glob('./ffmpeg/bin_macos/lib/*.dylib'):
         shutil.copy2(file, path_debug)
         shutil.copy2(file, path_release)
 
-    print('Compiling FFmpeg for MacOS finished!')
+    print('Copying files for MacOS finished!')
 
 
 def macos_fix(arch):

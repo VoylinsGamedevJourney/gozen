@@ -29,7 +29,9 @@ libpath = f'bin/{platform}_{arch}/libgozen{env_suffix}{env_shlibsuffix}'
 
 if 'linux' in platform:
     env.Append(
-        LINKFLAGS=['-static-libstdc++'],
+        LINKFLAGS=[
+            '-static-libstdc++',
+            '-Wl,-rpath,"$ORIGIN"'],
         CPPFLAGS=['-Iffmpeg/bin_linux', '-Iffmpeg/bin_linux/include'],
         LIBPATH=[
             'ffmpeg/bin_linux/include/libavcodec',

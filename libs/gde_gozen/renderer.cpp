@@ -193,7 +193,7 @@ bool Renderer::_add_audio_stream() {
 	if (!av_codec_ctx_audio)
 		return _log_err("Couln't alloc audio codec");
 
-	FFmpeg::enable_multithreading(av_codec_ctx_audio.get(), av_codec);
+	FFmpeg::enable_multithreading(av_codec_ctx_audio.get(), av_codec, threads);
 
 	av_codec_ctx_audio->bit_rate = 128000;
 	av_codec_ctx_audio->sample_fmt = av_codec->sample_fmts[0];

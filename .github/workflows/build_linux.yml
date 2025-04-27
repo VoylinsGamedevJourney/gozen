@@ -98,6 +98,7 @@ jobs:
             echo "FFmpeg build found in cache."
           fi
 
+          # To copy everything to the GDExtension folder.
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
           scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64 cache_dir=scons_linux_debug
 
