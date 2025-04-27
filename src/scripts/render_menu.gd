@@ -202,7 +202,7 @@ func _on_render_button_pressed() -> void:
 	renderer.set_gop_size(render_profile.gop)
 	renderer.set_crf(render_profile.crf) # Slider has a negative value
 	renderer.set_sws_quality(Renderer.SWS_QUALITY_BILINEAR)
-	renderer.set_threads(max(0, threads_spinbox.value))
+	renderer.set_threads(maxi(0, threads_spinbox.value))
 
 	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
 		renderer.set_h264_preset(render_profile.h264_preset)
@@ -227,6 +227,7 @@ func _on_render_button_pressed() -> void:
 		render_progress_label.visible = false
 		render_warning_label.text = "Renderer couldn't be opened, check path and settings!"
 		printerr("Something went wrong and rendering isn't possible!")
+		is_rendering = false
 		return
 
 	render_progress_bar.max_value = Project.get_timeline_end() + 8
@@ -245,6 +246,7 @@ func _on_render_button_pressed() -> void:
 			render_warning_label.text = "Something went wrong sending audio to the renderer!"
 			renderer.close()
 			printerr("Something went wrong sending audio!")
+			is_rendering = false
 			return
 
 	render_progress_label.text = "Creating & sending frame data ..."
@@ -261,6 +263,7 @@ func _on_render_button_pressed() -> void:
 			render_warning_label.text = "Something went wrong sending frame to the renderer!"
 			renderer.close()
 			printerr("Something went wrong sending frame!")
+			is_rendering = false
 			return
 		render_progress_bar.value += 1
 		Editor.set_frame() # Getting the next frame in line.
@@ -282,6 +285,7 @@ func _on_render_button_pressed() -> void:
 	is_rendering = false
 
 	if cancel_rendering:
+		is_rendering = false
 		cancel_rendering = false
 		render_progress_label.text = "Cancel rendering ..."
 		await RenderingServer.frame_post_draw
@@ -400,6 +404,9 @@ func _on_check_button_toggled(toggled_on:bool) -> void:
 
 func _on_cancel_render_button_pressed() -> void:
 	cancel_rendering = true
+
+	if !is_rendering:
+		show_window(0)
 
 
 func _on_close_button_pressed() -> void:
