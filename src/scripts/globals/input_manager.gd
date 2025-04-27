@@ -10,11 +10,19 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("help"):
+		get_tree().root.add_child(preload("uid://d4e5ndtm65ok3").instantiate())
+
+	# EVERYTHING which is only allowed to open after the start screen goes below!
 	if Project.data == null:
 		return
 
 	if event.is_action_pressed("save_project", false, true):
 		Project.save()
+	if event.is_action_pressed("save_project_as", false, true):
+		Project.save_as()
+	if event.is_action_pressed("open_project", false, true):
+		Project.open_project()
 
 	if event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
 		if !undo_redo.undo():

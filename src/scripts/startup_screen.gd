@@ -22,6 +22,11 @@ func _ready() -> void:
 	project_path_line_edit.text = OS.get_executable_path().get_base_dir() + "/project.gozen"
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("open_project", false, true):
+		_on_open_project_button_pressed()
+
+
 func _set_recent_projects() -> void:
 	if !FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
 		return
@@ -117,11 +122,11 @@ func _on_image_author_meta_clicked(meta: Variant) -> void:
 
 
 func _on_support_project_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
+	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/support")))
 	
 
 func _on_go_zen_logo_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/support")))
+	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
 
 
 func _on_site_button_pressed() -> void:

@@ -36,6 +36,7 @@ render_time_taken_label = NodePath("RenderFinishedPanel/Margin/MainPanel/Margin/
 render_video_length_label = NodePath("RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer/VideoLengthLabel")
 
 [node name="Panel" type="PanelContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -361,7 +362,6 @@ theme_type_variation = &"main_button"
 text = "Render"
 
 [node name="RenderPanel" type="PanelContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_horizontal = 4

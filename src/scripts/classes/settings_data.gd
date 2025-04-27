@@ -7,6 +7,7 @@ enum THEME { DARK, LIGHT }
 
 # Appearance
 var theme: THEME = THEME.DARK
+var show_menu_bar: bool = true
 
 # Defaults
 var image_duration: int = 300

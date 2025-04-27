@@ -1,14 +1,23 @@
 extends Node
 
+signal on_show_menu_bar_changed(value: bool)
+
 
 const PATH: String = "user://settings"
 
 
 var data: SettingsData = SettingsData.new()
 
+var menu_bar: MenuBar
+
 
 
 func _ready() -> void:
+	for arg: String in OS.get_cmdline_args():
+		if arg.to_lower() == "reset_settings":
+			Settings.reset_settings()
+			Settings.save()
+
 	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
 		printerr("Something went wrong loading settings! ", data.error)
 	apply_theme()
@@ -39,6 +48,15 @@ func apply_theme() -> void:
 
 func get_theme() -> SettingsData.THEME:
 	return data.theme
+
+
+func set_show_menu_bar(value: bool) -> void:
+	data.show_menu_bar = value
+	on_show_menu_bar_changed.emit(value)
+
+
+func get_show_menu_bar() -> bool:
+	return data.show_menu_bar
 
 
 # Defaults set/get

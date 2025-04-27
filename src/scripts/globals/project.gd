@@ -52,6 +52,22 @@ func save() -> void:
 		printerr("Something went wrong whilst saving project! ", data.error)
 
 
+func save_as() -> void:
+	var dialog: FileDialog = Toolbox.get_file_dialog(
+			tr("Save project as ..."),
+			FileDialog.FILE_MODE_SAVE_FILE,
+			["*%s;GoZen project files" % EXTENSION])
+
+	Toolbox.connect_func(dialog.file_selected, _save_as)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _save_as(new_project_path: String) -> void:
+	set_project_path(new_project_path)
+	save()
+
+	
 func open(project_path: String) -> void:
 	data = ProjectData.new()
 	file_data = {}
@@ -76,6 +92,22 @@ func open(project_path: String) -> void:
 	_update_recent_projects(project_path)
 	project_ready.emit()
 	get_window().title = "GoZen - %s" % project_path.get_file().get_basename()
+
+
+func open_project() -> void:
+	var dialog: FileDialog = Toolbox.get_file_dialog(
+			tr("Open project"),
+			FileDialog.FILE_MODE_OPEN_FILE,
+			["*%s;GoZen project files" % EXTENSION])
+
+	Toolbox.connect_func(dialog.file_selected, _open_project)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _open_project(file_path: String) -> void:
+	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
+		printerr("Project: Something went wrong opening project from file dialog!")
 
 
 func load_file_data(id: int) -> bool:
