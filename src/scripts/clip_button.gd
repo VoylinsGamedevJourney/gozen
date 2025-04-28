@@ -63,7 +63,7 @@ func _process(_delta: float) -> void:
 			_visual_duration = potential_frame - _visual_start_frame
 
 		position.x = Timeline.get_frame_pos(_visual_start_frame)
-		size.x = Timeline.get_frame_pos(_visual_duration)
+		size.x = Timeline.get_clip_size(_visual_duration)
 
 		queue_redraw()
 
@@ -73,12 +73,11 @@ func _draw() -> void:
 		return
 
 	var full_wave_data: PackedFloat32Array = Project.get_file_data(clip_data.file_id).audio_wave_data
+	var display_duration: int
+	var display_begin_offset: int
 
 	if full_wave_data.is_empty():
 		return
-
-	var display_duration: int
-	var display_begin_offset: int
 
 	if is_resizing_left or is_resizing_right:
 		display_duration = _visual_duration
@@ -90,7 +89,7 @@ func _draw() -> void:
 	if display_duration <= 0 or size.x <= 0:
 		return
 
-	var block_width: float = size.x / float(display_duration)
+	var block_width: float = Timeline.get_zoom()
 	var panel_height: float = size.y
 
 	for i: int in display_duration:
@@ -98,10 +97,17 @@ func _draw() -> void:
 
 		if wave_data_index >= 0 and wave_data_index < full_wave_data.size():
 			var normalized_height: float = full_wave_data[wave_data_index]
-			var block_height: float = normalized_height * panel_height
+			var block_height: float = clampf(normalized_height * (panel_height * 2), 0, panel_height)
+			var block_pos_y: float = 0.0
+
+			match Settings.get_audio_waveform_style():
+				SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+					block_pos_y = (panel_height - block_height) / 2.0
+				SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+					block_pos_y = panel_height - block_height
 
 			var block_rect: Rect2 = Rect2(
-					i * block_width, (panel_height - block_height) / 2.0,
+					i * block_width, block_pos_y,
 					block_width, block_height)
 
 			draw_rect(block_rect, Color.LIGHT_GRAY)
@@ -295,8 +301,8 @@ func _set_resize_data(new_start: int, new_duration: int) -> void:
 	if clip_data.start_frame != new_start:
 		clip_data.begin += new_start - clip_data.start_frame
 
-	position.x = new_start * Timeline.get_zoom()
-	size.x = new_duration * Timeline.get_zoom()
+	position.x = Timeline.get_frame_pos(new_start)
+	size.x = Timeline.get_clip_size(new_duration)
 
 	Project.erase_track_entry(clip_data.track_id, clip_data.start_frame)
 	Project.set_track_data(clip_data.track_id, new_start, name.to_int())
@@ -315,14 +321,14 @@ func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
 	new_clip.file_id = current_clip_data.file_id
 
 	new_clip.start_frame = playhead
-	new_clip.duration = abs(current_clip_data.duration - frame)
+	new_clip.duration = abs(current_clip_data.duration - frame + 1)
 	new_clip.begin = current_clip_data.begin + frame
 	new_clip.track_id = current_clip_data.track_id
 	new_clip.effects_video = clip_data.effects_video.duplicate()
 	new_clip.effects_audio = clip_data.effects_audio.duplicate()
 
 	current_clip_data.duration -= new_clip.duration
-	size.x = current_clip_data.duration * Timeline.get_zoom()
+	size.x = Timeline.get_clip_size(current_clip_data.duration)
 
 	Project.set_clip(new_clip.clip_id, new_clip)
 	Project.set_track_data(new_clip.track_id, new_clip.start_frame, new_clip.clip_id)

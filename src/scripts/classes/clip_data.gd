@@ -23,7 +23,7 @@ var effects_audio: EffectsAudio
 
 
 func get_end_frame() -> int:
-	return start_frame + duration
+	return start_frame + duration - 1
 
 
 func get_frame(frame_nr: int) -> Texture:

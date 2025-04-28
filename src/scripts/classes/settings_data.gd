@@ -3,11 +3,13 @@ extends DataManager
 
 
 enum THEME { DARK, LIGHT }
+enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
 
 
 # Appearance
 var theme: THEME = THEME.DARK
 var show_menu_bar: bool = true
+var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER 
 
 # Defaults
 var image_duration: int = 300

@@ -6,6 +6,7 @@ extends PanelContainer
 @export_group("Appearance")
 @export var theme_option_button: OptionButton
 @export var show_menu_bar_button: CheckButton
+@export var audio_waveform_style: OptionButton
 
 @export_group("Defaults")
 @export var image_duration_spinbox: SpinBox
@@ -36,6 +37,7 @@ func set_values() -> void:
 	# Appearance values
 	theme_option_button.selected = Settings.get_theme()
 	show_menu_bar_button.button_pressed = Settings.get_show_menu_bar()
+	audio_waveform_style.selected = Settings.get_audio_waveform_style()
 
 	# Defaults values
 	image_duration_spinbox.value = Settings.get_image_duration()
@@ -82,6 +84,11 @@ func _on_theme_option_button_item_selected(index: int) -> void:
 
 func _on_show_menu_bar_check_button_toggled(value: bool) -> void:
 	changes["show_menu_bar"] = Settings.set_show_menu_bar.bind(value)
+	save_info_label.visible = true
+
+
+func _on_audio_waveform_style_option_button_item_selected(index: int) -> void:
+	changes["audio_waveform_style"] = Settings.set_audio_waveform_style.bind(index)
 	save_info_label.visible = true
 
 

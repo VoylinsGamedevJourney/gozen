@@ -59,6 +59,16 @@ func get_show_menu_bar() -> bool:
 	return data.show_menu_bar
 
 
+func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
+	data.audio_waveform_style = style
+	for file_data: FileData in Project.file_data.values():
+		file_data.update_wave.emit()
+
+
+func get_audio_waveform_style() -> SettingsData.AUDIO_WAVEFORM_STYLE:
+	return data.audio_waveform_style
+
+
 # Defaults set/get
 func set_image_duration(duration: int) -> void:
 	data.image_duration = duration

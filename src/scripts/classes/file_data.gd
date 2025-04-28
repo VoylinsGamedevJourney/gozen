@@ -30,8 +30,8 @@ func _update_duration() -> void:
 		File.TYPE.AUDIO:
 			l_file.duration = floor(float(audio.data.size()) / (4 * 44101) * Project.get_framerate())
 		File.TYPE.VIDEO:
-			l_file.duration = floor(floor(video.get_frame_count() /
-					video.get_framerate()) * Project.get_framerate())
+			var frame_time: float = video.get_frame_count() / video.get_framerate()
+			l_file.duration = floor(frame_time * Project.get_framerate())
 
 	if l_file.duration == 0:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)

@@ -105,7 +105,6 @@ func update_frame() -> void:
 
 
 func set_frame(new_frame: int = frame_nr + 1) -> void:
-	# TODO: Implement frame skipping
 	if frame_nr != new_frame:
 		frame_nr = new_frame
 
@@ -159,7 +158,7 @@ func _get_next_clip(new_frame_nr: int, track: int) -> int:
 func _check_clip_end(new_frame_nr: int, id: int) -> bool:
 	var clip: ClipData = Project.get_clip(id)
 
-	return false if !clip else new_frame_nr < clip.start_frame + clip.duration
+	return false if !clip else new_frame_nr <= (clip.get_end_frame() + 1)
 
 
 # Audio stuff  ----------------------------------------------------------------
@@ -186,7 +185,7 @@ func find_audio(frame: int, track: int) -> int:
 		return -1
 
 	last = Project.get_track_data(track)[last]
-	if frame <= Project.get_clip(last).get_end_frame():
+	if frame < Project.get_clip(last).get_end_frame():
 		return last
 	else:
 		return -1

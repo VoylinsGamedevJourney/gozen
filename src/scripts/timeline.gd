@@ -71,6 +71,12 @@ func _input(event: InputEvent) -> void:
 			_delete_empty_space()
 			get_viewport().set_input_as_handled()
 
+	if !Editor.is_playing:
+		if event.is_action_pressed("ui_left"):
+			Editor.set_frame(Editor.frame_nr - 1)
+		elif event.is_action_pressed("ui_right"):
+			Editor.set_frame(Editor.frame_nr + 1)
+
 
 func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
 	if event.is_action("scroll_up", true):
@@ -111,7 +117,7 @@ func _on_main_gui_input(event: InputEvent) -> void:
 func _set_zoom(new_zoom: float) -> void:
 	var prev_mouse_x: float = main_control.get_local_mouse_position().x
 	var prev_scroll: int = scroll_main.scroll_horizontal
-	var prev_mouse_frame: int = roundi(prev_mouse_x / zoom)
+	var prev_mouse_frame: int = get_frame_id(prev_mouse_x)
 
 	zoom = clampf(new_zoom, 0.001, 40.0)
 	scroll_main.scroll_horizontal_custom_step = lerpf(20, 1, ((zoom - 0.001) / (40.0 - 0.001)))
@@ -121,8 +127,8 @@ func _set_zoom(new_zoom: float) -> void:
 	for clip_button: Button in clips.get_children():
 		var data: ClipData = Project.get_clip(clip_button.name.to_int())
 
-		clip_button.position.x = data.start_frame * zoom
-		clip_button.size.x = data.duration * zoom
+		clip_button.position.x = get_frame_pos(data.start_frame)
+		clip_button.size.x = get_clip_size(data.duration)
 
 	update_end()
 
@@ -274,8 +280,8 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 
 	if region.x != -1 and first_new_frame <= region.x:
 		offset_range.x = region.x - first_new_frame
-	if region.y != -1 and first_new_frame + first_clip.duration >= region.y:
-		offset_range.y = region.y - (first_new_frame + first_clip.duration)
+	if region.y != -1 and first_new_frame + first_clip.duration - 1 >= region.y:
+		offset_range.y = region.y - (first_new_frame + first_clip.duration - 1)
 
 	# Check all other clips
 	for i: int in range(1, draggable.ids.size()):
@@ -290,7 +296,7 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 		if clip_region.x != -1 and new_frame <= clip_region.x:
 			clip_offsets.x = clip_region.x - new_frame
 		if clip_region.y != -1 and new_frame + clip.duration >= clip_region.y:
-			clip_offsets.y = clip_region.y - (new_frame + clip.duration)
+			clip_offsets.y = clip_region.y - clip.get_end_frame()
 
 		# Update offset range based on clip offsets
 		offset_range.x = maxi(offset_range.x, clip_offsets.x)
@@ -386,7 +392,7 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 
 		ids.append(new_clip_data.clip_id)
 		draggable.new_clips.append(new_clip_data)
-		start_frame += new_clip_data.duration
+		start_frame += new_clip_data.duration - 1
 
 	draggable.ids = ids
 
@@ -447,7 +453,7 @@ func add_clip(clip_data: ClipData) -> void:
 	button.clip_text = true
 	button.name = str(clip_data.clip_id)
 	button.text = " " + Project.get_file(clip_data.file_id).nickname
-	button.size.x = zoom * clip_data.duration
+	button.size.x = get_clip_size(clip_data.duration)
 	button.size.y = TRACK_HEIGHT
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button.position.x = zoom * clip_data.start_frame
@@ -533,7 +539,7 @@ func update_end() -> void:
 			continue
 
 		var clip: ClipData = Project.get_clip(track[track.keys().max()])
-		var value: int = clip.duration + clip.start_frame
+		var value: int = clip.get_end_frame()
 
 		if new_end < value:
 			new_end = value
@@ -561,6 +567,10 @@ func undelete_clip(clip_data: ClipData) -> void:
 
 func move_playhead(frame_nr: int) -> void:
 	playhead.position.x = zoom * frame_nr
+
+
+static func get_clip_size(duration: int) -> float:
+	return instance.zoom * (duration + 1)
 
 
 static func get_zoom() -> float:
