@@ -46,37 +46,6 @@ func _ready() -> void:
 	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 
-func _on_project_loaded() -> void:
-	for child: Node in clips.get_children():
-		child.queue_free()
-
-	for clip: ClipData in Project.get_clip_datas():
-		add_clip(clip)
-
-	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
-
-	for i: int in Project.get_track_count() - 1:
-		var overlay: ColorRect = ColorRect.new()
-		var line: HSeparator = HSeparator.new()
-
-		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		overlay.color = Color.DARK_GRAY
-		overlay.self_modulate = Color("ffffff00")
-		overlay.custom_minimum_size.y = TRACK_HEIGHT
-		track_overlays.append(overlay)
-
-		line.mouse_filter = Control.MOUSE_FILTER_PASS
-		line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
-		line.size.y = LINE_HEIGHT
-
-		lines.add_child(overlay)
-		lines.add_child(line)
-
-	update_end()
-	_set_zoom(Project.get_zoom())
-	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
-
-
 func _process(_delta: float) -> void:
 	if playhead_moving:
 		var new_frame: int = clampi(
@@ -85,6 +54,7 @@ func _process(_delta: float) -> void:
 
 		if new_frame != Editor.frame_nr:
 			Editor.set_frame(new_frame)
+			new_frame = -1
 
 
 func _input(event: InputEvent) -> void:
@@ -94,14 +64,35 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("timeline_zoom_out", false, true):
 		zoom /= 1.15
 		get_viewport().set_input_as_handled()
+	
+	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
+		var mod: int = Settings.get_delete_empty_modifier()
+		if mod == KEY_NONE or Input.is_key_pressed(mod):
+			_delete_empty_space()
+			get_viewport().set_input_as_handled()
 
+
+func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
+	if event.is_action("scroll_up", true):
+		scroll_main.scroll_vertical -= int(scroll_main.scroll_vertical_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+	elif event.is_action("scroll_down", true):
+		scroll_main.scroll_vertical += int(scroll_main.scroll_vertical_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+	elif event.is_action("scroll_left", true):
+		scroll_main.scroll_horizontal -= int(scroll_main.scroll_horizontal_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+	elif event.is_action("scroll_right", true):
+		scroll_main.scroll_horizontal += int(scroll_main.scroll_horizontal_custom_step * zoom)
+		get_viewport().set_input_as_handled()
+			
 
 func _on_main_gui_input(event: InputEvent) -> void:
 	if event is not InputEventMouseButton:
 		return
 
 	if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
-		if event.is_pressed():
+		if event.is_pressed() and !Input.is_key_pressed(KEY_SHIFT) and !Input.is_key_pressed(KEY_CTRL):
 			if Settings.get_pause_after_drag() and Editor.is_playing:
 				Editor.on_play_pressed()
 
@@ -143,8 +134,35 @@ func _set_zoom(new_zoom: float) -> void:
 	zoom_changed.emit()
 
 
-func move_playhead(frame_nr: int) -> void:
-	playhead.position.x = zoom * frame_nr
+func _on_project_loaded() -> void:
+	for child: Node in clips.get_children():
+		child.queue_free()
+
+	for clip: ClipData in Project.get_clip_datas():
+		add_clip(clip)
+
+	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
+
+	for i: int in Project.get_track_count() - 1:
+		var overlay: ColorRect = ColorRect.new()
+		var line: HSeparator = HSeparator.new()
+
+		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		overlay.color = Color.DARK_GRAY
+		overlay.self_modulate = Color("ffffff00")
+		overlay.custom_minimum_size.y = TRACK_HEIGHT
+		track_overlays.append(overlay)
+
+		line.mouse_filter = Control.MOUSE_FILTER_PASS
+		line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
+		line.size.y = LINE_HEIGHT
+
+		lines.add_child(overlay)
+		lines.add_child(line)
+
+	update_end()
+	_set_zoom(Project.get_zoom())
+	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
 
 
 func _main_control_can_drop_data(_pos: Vector2, data: Variant) -> bool:
@@ -473,7 +491,7 @@ func get_drop_region(track: int, frame: int, ignores: Array[Vector2i]) -> Vector
 	return region
 
 
-func get_lowest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i]) -> int:
+func get_lowest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i] = []) -> int:
 	var lowest: int = -1
 
 	if track_id > Project.get_track_count() - 1:
@@ -495,7 +513,7 @@ func get_lowest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i]) -> 
 	return clip.duration + lowest
 
 
-func get_highest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i]) -> int:
+func get_highest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i] = []) -> int:
 	for i: int in Project.get_track_keys(track_id):
 		# TODO: Change the ignore when moving multiple clips
 		if i > frame_nr:
@@ -541,6 +559,10 @@ func undelete_clip(clip_data: ClipData) -> void:
 	update_end()
 
 
+func move_playhead(frame_nr: int) -> void:
+	playhead.position.x = zoom * frame_nr
+
+
 static func get_zoom() -> float:
 	return instance.zoom
 
@@ -553,25 +575,49 @@ static func get_track_id(pos: float) -> int:
 	return floor(pos / (TRACK_HEIGHT + LINE_HEIGHT))
 
 
-static func get_frame_pos(pos: float) -> float:
-	return pos * get_zoom()
+static func get_frame_pos(frame_nr: int) -> float:
+	return frame_nr * get_zoom()
 
 
-static func get_track_pos(pos: float) -> float:
-	return pos * (TRACK_HEIGHT + LINE_HEIGHT)
+static func get_track_pos(track_id: int) -> float:
+	return track_id * (TRACK_HEIGHT + LINE_HEIGHT)
 
 
-func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
-	if event.is_action("scroll_up", true):
-		scroll_main.scroll_vertical -= int(scroll_main.scroll_vertical_custom_step * zoom)
-		get_viewport().set_input_as_handled()
-	elif event.is_action("scroll_down", true):
-		scroll_main.scroll_vertical += int(scroll_main.scroll_vertical_custom_step * zoom)
-		get_viewport().set_input_as_handled()
-	elif event.is_action("scroll_left", true):
-		scroll_main.scroll_horizontal -= int(scroll_main.scroll_horizontal_custom_step * zoom)
-		get_viewport().set_input_as_handled()
-	elif event.is_action("scroll_right", true):
-		scroll_main.scroll_horizontal += int(scroll_main.scroll_horizontal_custom_step * zoom)
-		get_viewport().set_input_as_handled()
+func _delete_empty_space() -> void:
+	var mouse_track: int = get_track_id(main_control.get_local_mouse_position().y)
+	var mouse_frame: int = get_frame_id(main_control.get_local_mouse_position().x)
+	var lowest_frame: int = get_lowest_frame(mouse_track, mouse_frame)
+	var highest_frame: int = get_highest_frame(mouse_track,mouse_frame)
+
+	if highest_frame < 0:
+		return # Nothing to erase
+
+	var draggable: Draggable = Draggable.new()
+	draggable.differences = Vector2i(highest_frame - lowest_frame, 0)
+
+	var track_data: Dictionary[int, int] = Project.get_track_data(mouse_track)
+	for frame_nr: int in track_data.keys():
+		if frame_nr < highest_frame:
+			continue
+
+		draggable.clip_buttons.append(clips.get_node(str(track_data[frame_nr])))
+		if draggable.ids.append(track_data[frame_nr]):
+			Toolbox.print_append_error()
+			continue
+
+	InputManager.undo_redo.create_action("Delete empty space")
+
+	InputManager.undo_redo.add_do_method(_move_clips.bind(
+			draggable,
+			draggable.differences.y,
+			-draggable.differences.x))
+	InputManager.undo_redo.add_do_method(Editor.update_frame)
+
+	InputManager.undo_redo.add_undo_method(_move_clips.bind(
+			draggable,
+			draggable.differences.y,
+			draggable.differences.x))
+	InputManager.undo_redo.add_undo_method(Editor.update_frame)
+
+	InputManager.undo_redo.commit_action()
 

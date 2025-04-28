@@ -896,6 +896,7 @@ anchors_preset = 0
 mouse_filter = 1
 
 [node name="Preview" type="Control" parent="VBox/VSplitContainer/BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
+modulate = Color(1, 1, 1, 0.607843)
 layout_mode = 2
 anchors_preset = 0
 

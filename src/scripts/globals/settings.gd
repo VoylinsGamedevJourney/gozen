@@ -107,3 +107,11 @@ func set_pause_after_drag(value: bool) -> void:
 func get_pause_after_drag() -> bool:
 	return data.pause_after_drag
 
+
+func set_delete_empty_modifier(new_key: int) -> void:
+	data.delete_empty_modifier = new_key
+	
+
+func get_delete_empty_modifier() -> int:
+	return data.delete_empty_modifier
+

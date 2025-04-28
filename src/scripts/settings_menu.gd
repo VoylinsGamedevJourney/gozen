@@ -16,6 +16,7 @@ extends PanelContainer
 @export_group("Timeline")
 @export var track_amount_spinbox: SpinBox
 @export var pause_after_drag: CheckButton
+@export var delete_empty_modifier_button: OptionButton
 
 
 
@@ -45,6 +46,10 @@ func set_values() -> void:
 	# Timeline values
 	track_amount_spinbox.value = Settings.get_tracks_amount()
 	pause_after_drag.button_pressed = Settings.get_pause_after_drag()
+	match Settings.get_delete_empty_modifier():
+		KEY_NONE: delete_empty_modifier_button.selected = 0
+		KEY_CTRL: delete_empty_modifier_button.selected = 1
+		KEY_SHIFT: delete_empty_modifier_button.selected = 2
 
 	save_info_label.visible = false
 
@@ -92,5 +97,14 @@ func _on_track_amount_spin_box_value_changed(value: float) -> void:
 
 func _on_pause_after_drag_check_button_toggled(value: bool) -> void:
 	changes["pause_after_drag"] = Settings.set_pause_after_drag.bind(value)
+	save_info_label.visible = true
+
+
+func _on_delete_empty_modifier_option_button_item_selected(index: int) -> void:
+	match index:
+		0: changes["delete_empty_modifier"] = Settings.set_delete_empty_modifier.bind(KEY_NONE)
+		1: changes["delete_empty_modifier"] = Settings.set_delete_empty_modifier.bind(KEY_CTRL)
+		2: changes["delete_empty_modifier"] = Settings.set_delete_empty_modifier.bind(KEY_SHIFT)
+
 	save_info_label.visible = true
 

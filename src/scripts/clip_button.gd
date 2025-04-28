@@ -55,7 +55,10 @@ func _process(_delta: float) -> void:
 			_visual_start_frame = potential_frame
 			_visual_duration = _original_start_frame + _original_duration - _visual_start_frame
 		else:
-			potential_frame = clamp(potential_frame, max_left_resize, max_right_resize)
+			if max_right_resize != -1:
+				potential_frame = clamp(potential_frame, max_left_resize, max_right_resize)
+			else:
+				potential_frame = maxi(potential_frame, max_left_resize)
 			_visual_start_frame = _original_start_frame
 			_visual_duration = potential_frame - _visual_start_frame
 
@@ -113,8 +116,6 @@ func _on_button_down() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# TODO: Make it so only selected clips can be cut
-	# Timeline.selected_clips
 	if !has_focus():
 		return
 	if event.is_action_pressed("ctrl_click", false, true):
@@ -278,9 +279,8 @@ func _on_commit_resize() -> void:
 	is_resizing_right = false
 
 	InputManager.undo_redo.create_action("Resizing clip on timeline")
-
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
-			Timeline.get_frame_id(position.x), Timeline.get_frame_id(size.x)))
+			_visual_start_frame, _visual_duration))
 	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
 	InputManager.undo_redo.add_do_method(queue_redraw)
 

@@ -224,7 +224,9 @@ func get_track_count() -> int:
 
 
 func get_track_keys(track_id: int) -> PackedInt64Array:
-	return data.tracks[track_id].keys()
+	var keys: PackedInt64Array = data.tracks[track_id].keys()
+	keys.sort()
+	return keys
 
 
 func get_track_values(track_id: int) -> PackedInt64Array:
@@ -237,8 +239,10 @@ func get_tracks() -> Array[Dictionary]:
 
 func get_track_data(track_id: int) -> Dictionary[int, int]:
 	var track_data: Dictionary[int, int] = {}
+	var keys: PackedInt64Array = get_track_keys(track_id)
+	keys.sort()
 
-	for key: int in data.tracks[track_id]:
+	for key: int in keys:
 		track_data[key] = data.tracks[track_id][key]
 		
 	return track_data

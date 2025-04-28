@@ -100,6 +100,10 @@ func _set_is_playing(value: bool) -> void:
 	play_changed.emit(value)
 
 
+func update_frame() -> void:
+	set_frame(frame_nr)
+
+
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	# TODO: Implement frame skipping
 	if frame_nr != new_frame:
