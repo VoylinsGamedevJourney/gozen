@@ -36,6 +36,35 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_paste"):
 		_on_image_pasted()
 
+	if tabs[tab_container.current_tab].has_focus() and event.is_action_pressed("delete_clip"):
+		var item_ids: PackedInt32Array = []
+		InputManager.undo_redo.create_action("Delete file(s)")
+
+		for item_id: int in tabs[tab_container.current_tab].get_selected_items():
+			var file_id: int = tabs[tab_container.current_tab].get_item_metadata(item_id)
+			var file: File = Project.get_file(file_id)
+
+			InputManager.undo_redo.add_do_method(Project.delete_file.bind(file_id))
+
+			InputManager.undo_redo.add_undo_method(Project._add_file.bind(file))
+			InputManager.undo_redo.add_undo_method(_add_file_to_list.bind(file.id))
+
+			for clip_data: ClipData in Project.get_clip_datas():
+				if clip_data.file_id == file_id:
+					InputManager.undo_redo.add_undo_method(Project._add_clip.bind(clip_data))
+
+			InputManager.undo_redo.add_undo_method(Timeline.instance._check_clips)
+			if item_ids.insert(0, item_id):
+				Toolbox.print_insert_error()
+
+		InputManager.undo_redo.add_do_method(_delete_file_items.bind(item_ids))
+		InputManager.undo_redo.commit_action()
+
+
+func _delete_file_items(ids: PackedInt32Array) -> void:
+	for item_id: int in ids:
+		tabs[tab_container.current_tab].remove_item(item_id)
+
 	
 func get_thumb(file_id: int) -> Texture:
 	# This function also creates the thumb if not existing yet.
@@ -173,8 +202,19 @@ func _on_list_popup_id_pressed(id: int, item_index: int, file: File) -> void:
 		1: # Reload
 			Project.reload_file_data(file.id)
 		2: # Delete
-			tabs[int(file.type)].remove_item(item_index)
-			Project.delete_file(file.id)
+			InputManager.undo_redo.create_action("Delete file")
+			InputManager.undo_redo.add_do_method(tabs[int(file.type)].remove_item.bind(item_index))
+			InputManager.undo_redo.add_do_method(Project.delete_file.bind(file.id))
+
+			InputManager.undo_redo.add_undo_method(Project._add_file.bind(file))
+			InputManager.undo_redo.add_undo_method(_add_file_to_list.bind(file.id))
+
+			for clip_data: ClipData in Project.get_clip_datas():
+				if clip_data.file_id == file.id:
+					InputManager.undo_redo.add_undo_method(Project._add_clip.bind(clip_data))
+
+			InputManager.undo_redo.add_undo_method(Timeline.instance._check_clips)
+			InputManager.undo_redo.commit_action()
 		3: # Save as file (Only for temp files)
 			if file.type == File.TYPE.TEXT:
 				# TODO: Implement duplicating text files

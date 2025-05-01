@@ -2,6 +2,7 @@ extends Node
 
 
 signal project_ready
+signal file_deleted
 
 
 const EXTENSION: String = ".gozen"
@@ -129,31 +130,30 @@ func reload_file_data(id: int) -> void:
 		print("File became invalid!")
 
 
+func _add_file(file: File) -> void:
+	# Used for undoing the deletion of a file.
+	data.files[file.id] = file
+	if !load_file_data(file.id):
+		print("Something went wrong loading file '", file.path, "'!")
+
+
+func _add_clip(clip_data: ClipData) -> void:
+	# Used for undoing the deletion of a file.
+	data.clips[clip_data.clip_id] = clip_data
+
+	
 func delete_file(id: int) -> void:
-	# TODO: We should also remove the actual clips from the timeline.
 	for clip: ClipData in data.clips.values():
 		if clip.file_id == id:
-			if !data.clips.erase(clip.clip_id):
-				Toolbox.print_erase_error()
-	print(id)
+			Timeline.instance.delete_clip(clip)
 
-	if file_data.has(id):
-		if file_data[id] != null:
-			file_data[id].queue_free()
-		if file_data.erase(id):
+	if file_data.has(id) and !file_data.erase(id):
 			Toolbox.print_erase_error()
-	if data.files.has(id):
-		if data.files[id] != null:
-			data.files[id].queue_free()
-		if data.files.erase(id):
+	if data.files.has(id) and !data.files.erase(id):
 			Toolbox.print_erase_error()
-
-	# WARNING: Right now we delete undo_redo, this is because it could cause
-	# issues when undoing a part where the clips are needed. This is a TODO
-	# for later!
-	InputManager.undo_redo = UndoRedo.new()
 
 	await RenderingServer.frame_pre_draw
+	file_deleted.emit()
 
 
 # Setters and Getters  --------------------------------------------------------

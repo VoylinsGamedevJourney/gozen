@@ -52,6 +52,12 @@ func print_append_error() -> void:
 	printerr(get_stack())
 
 
+func print_insert_error() -> void:
+	# This func is needed so we don't have the same error message everywhere.
+	printerr("Couldn't insert to array!")
+	printerr(get_stack())
+	
+
 func print_erase_error() -> void:
 	# This func is needed so we don't have the same error message everywhere.
 	printerr("Couldn't erase entry!")
