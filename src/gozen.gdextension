@@ -52,8 +52,6 @@ linux.debug.x86_64 = {
     "../libs/bin/linux_x86_64/libavutil.so.58" : "",
     "../libs/bin/linux_x86_64/libswresample.so.4" : "",
     "../libs/bin/linux_x86_64/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.release.x86_64 = {
     "../libs/bin/linux_x86_64/libavcodec.so.60" : "",
@@ -62,8 +60,6 @@ linux.release.x86_64 = {
     "../libs/bin/linux_x86_64/libavutil.so.58" : "",
     "../libs/bin/linux_x86_64/libswresample.so.4" : "",
     "../libs/bin/linux_x86_64/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.debug.x86_32 = {
     "../libs/bin/linux_x86_32/libavcodec.so.60" : "",
@@ -72,8 +68,6 @@ linux.debug.x86_32 = {
     "../libs/bin/linux_x86_32/libavutil.so.58" : "",
     "../libs/bin/linux_x86_32/libswresample.so.4" : "",
     "../libs/bin/linux_x86_32/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.release.x86_32 = {
     "../libs/bin/linux_x86_32/libavcodec.so.60" : "",
@@ -82,8 +76,6 @@ linux.release.x86_32 = {
     "../libs/bin/linux_x86_32/libavutil.so.58" : "",
     "../libs/bin/linux_x86_32/libswresample.so.4" : "",
     "../libs/bin/linux_x86_32/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.debug.arm64 = {
     "../libs/bin/linux_arm64/libavcodec.so.60" : "",
@@ -92,8 +84,6 @@ linux.debug.arm64 = {
     "../libs/bin/linux_arm64/libavutil.so.58" : "",
     "../libs/bin/linux_arm64/libswresample.so.4" : "",
     "../libs/bin/linux_arm64/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.release.arm64 = {
     "../libs/bin/linux_arm64/libavcodec.so.60" : "",
@@ -102,8 +92,6 @@ linux.release.arm64 = {
     "../libs/bin/linux_arm64/libavutil.so.58" : "",
     "../libs/bin/linux_arm64/libswresample.so.4" : "",
     "../libs/bin/linux_arm64/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.debug.arm32 = {
     "../libs/bin/linux_arm32/libavcodec.so.60" : "",
@@ -112,8 +100,6 @@ linux.debug.arm32 = {
     "../libs/bin/linux_arm32/libavutil.so.58" : "",
     "../libs/bin/linux_arm32/libswresample.so.4" : "",
     "../libs/bin/linux_arm32/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 linux.release.arm32 = {
     "../libs/bin/linux_arm32/libavcodec.so.60" : "",
@@ -122,8 +108,6 @@ linux.release.arm32 = {
     "../libs/bin/linux_arm32/libavutil.so.58" : "",
     "../libs/bin/linux_arm32/libswresample.so.4" : "",
     "../libs/bin/linux_arm32/libswscale.so.7" : "",
-	"../libs/bin/linux_x86_64/libx264.so.164": "",
-	"../libs/bin/linux_x86_64/libx265.so.212": "",
 }
 
 windows.debug.x86_64 = {

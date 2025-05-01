@@ -54,6 +54,9 @@ def compile_ffmpeg(platform, arch):
     if platform == 'linux':
         compile_ffmpeg_linux(arch)
         copy_lib_files_linux(arch)
+    elif platform == 'linux_compatibility':
+        compile_ffmpeg_linux_compatibility(arch)
+        copy_lib_files_linux(arch)
     elif platform == 'windows':
         compile_ffmpeg_windows(arch)
         copy_lib_files_windows(arch)
@@ -67,7 +70,7 @@ def compile_ffmpeg_linux(arch):
 
     os.environ["PKG_CONFIG_PATH"] = "/usr/lib/pkgconfig"
 
-    subprocess.run([
+    cmd = [
         './configure',
         '--prefix=./bin_linux',
         '--enable-shared',
@@ -94,7 +97,51 @@ def compile_ffmpeg_linux(arch):
         '--disable-ffmpeg',
         '--enable-libx264',
         '--enable-libx265'
-    ], cwd='./ffmpeg/')
+    ]
+
+    subprocess.run(cmd, cwd='./ffmpeg/')
+
+    print('Compiling FFmpeg for Linux ...')
+
+    subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
+    subprocess.run(['make', 'install'], cwd='./ffmpeg/')
+
+    print('Compiling FFmpeg for Linux finished!')
+
+
+def compile_ffmpeg_linux_compatibility(arch):
+    print('Configuring FFmpeg for Linux ...')
+
+    os.environ["PKG_CONFIG_PATH"] = "/usr/lib/pkgconfig"
+
+    cmd = [
+        './configure',
+        '--prefix=./bin_linux',
+        '--enable-shared',
+        '--enable-gpl',
+        '--enable-version3',
+        '--enable-pthreads',
+        f'--arch={arch}',
+        '--target-os=linux',
+        '--quiet',
+        '--enable-pic',
+        '--extra-cflags="-fPIC"',
+        '--extra-ldflags="-fPIC"',
+        '--disable-postproc',
+        '--disable-avfilter',
+        '--disable-sndio',
+        '--disable-doc',
+        '--disable-programs',
+        '--disable-ffprobe',
+        '--disable-htmlpages',
+        '--disable-manpages',
+        '--disable-podpages',
+        '--disable-txtpages',
+        '--disable-ffplay',
+        '--disable-ffmpeg'
+    ]
+
+    subprocess.run(cmd, cwd='./ffmpeg/')
 
     print('Compiling FFmpeg for Linux ...')
 
@@ -113,8 +160,6 @@ def copy_lib_files_linux(arch):
     for file in glob.glob('ffmpeg/bin_linux/lib/*.so.*'):
         if file.count('.') == 2:
             shutil.copy2(file, path)
-    for file in glob.glob('/usr/lib/libx26*.so.*'):
-        shutil.copy2(file, path)
 
     print('Copying files for Linux finished!')
 
@@ -274,10 +319,12 @@ def main():
 
     platform = 'linux'
 
-    match _print_options('Select platform', ['linux', 'windows', 'macos']):
+    match _print_options('Select platform', ['linux', 'linux_compatibility', 'windows', 'macos']):
         case '2':
-            platform = 'windows'
+            platform = 'linux_compatibility'
         case '3':
+            platform = 'windows'
+        case '4':
             platform = 'macos'
 
     # arm64 isn't supported yet by mingw for Windows, so x86_64 only.
@@ -303,6 +350,10 @@ def main():
             dev_build = 'dev_build=yes'
 
     compile_ffmpeg(platform, arch)
+
+    if platform == 'linux_compatibility':
+        platform = 'linux'
+
     subprocess.run([
         'scons',
         f'-j{THREADS}',

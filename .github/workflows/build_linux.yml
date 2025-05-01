@@ -26,12 +26,6 @@ jobs:
     container:
       image: archlinux:latest
     steps:
-      - name: 'Cache pacman packages'
-        uses: actions/cache@v4
-        with:
-          path: /var/cache/pacman/pkg
-          key: ${{ runner.os }}-archlinux-packam-pkg
-          
       - name: 'Installing dependencies'
         run: pacman -Sy --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc x264 x265 pkgconf
 
@@ -50,19 +44,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: libs/ffmpeg/bin_linux
-          key: ffmpeg-linux
+          key: ${{ runner.os }}-arch-ffmpeg
 
       - name: 'Cache scons Linux debug'
         uses: actions/cache@v4
         with:
           path: libs/scons_linux_debug
-          key: gde_linux_debug
+          key: ${{ runner.os }}-arch-gde-debug
 
       - name: 'Cache scons Linux release'
         uses: actions/cache@v4
         with:
           path: libs/scons_linux_release
-          key: gde_linux_release
+          key: ${{ runner.os }}-arch-gde-release
 
       - name: 'Prepare Godot'
         run: |
@@ -98,7 +92,6 @@ jobs:
             echo "FFmpeg build found in cache."
           fi
 
-          # To copy everything to the GDExtension folder.
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
           scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64 cache_dir=scons_linux_debug
 

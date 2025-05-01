@@ -26,12 +26,6 @@ jobs:
     container:
       image: archlinux:latest
     steps:
-      - name: 'Cache pacman packages'
-        uses: actions/cache@v4
-        with:
-          path: /var/cache/pacman/pkg
-          key: ${{ runner.os }}-archlinux-packam-pkg
-
       - name: 'Installing dependencies'
         run: pacman -Sy --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 mingw-w64-gcc mingw-w64-binutils ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc nasm cmake pkgconf
 
@@ -75,7 +69,7 @@ jobs:
           if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
             echo "Downloading Godot editor ..."
             wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
-            unzip godot_linux.zip
+            unzip -o godot_linux.zip
           else
             echo "Godot editor found in cache."
           fi
@@ -84,7 +78,7 @@ jobs:
             echo "Downloading Godot export templates ..."
             wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
             mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-            unzip godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+            unzip -o godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
             mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
             rm -rf ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates
           else
