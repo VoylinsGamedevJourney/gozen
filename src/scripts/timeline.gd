@@ -44,6 +44,7 @@ func _ready() -> void:
 	Toolbox.connect_func(Editor.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
 	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
+	Toolbox.connect_func(Project.file_deleted, _check_clips)
 
 
 func _process(_delta: float) -> void:
@@ -169,6 +170,24 @@ func _on_project_loaded() -> void:
 	update_end()
 	_set_zoom(Project.get_zoom())
 	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
+
+
+func _check_clips() -> void:
+	# Get's called after deleting of a file.
+	var ids: PackedInt64Array = Project.get_clip_ids()
+
+	# Check for buttons which need to be deleted.
+	for clip_button: Button in clips.get_children():
+		var clip_id: int = int(clip_button.name)
+
+		if clip_id not in ids:
+			clip_button.queue_free()
+		else:
+			ids.remove_at(ids.find(clip_id))
+			
+	# Check for buttons which need to be added.
+	for clip_id: int in ids:
+		add_clip(Project.get_clip(clip_id))
 
 
 func _main_control_can_drop_data(_pos: Vector2, data: Variant) -> bool:
@@ -329,7 +348,9 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 	preview.add_child(control)
 
 	for button: Button in draggable.clip_buttons:
-		var new_button: Button = Button.new()
+		var new_button: PreviewAudioWave = PreviewAudioWave.new()
+
+		new_button.clip_data = Project.get_clip(int(button.name))
 
 		new_button.size = button.size
 		new_button.position = button.position
