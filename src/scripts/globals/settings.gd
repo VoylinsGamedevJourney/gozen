@@ -90,8 +90,24 @@ func set_default_resolution(res: Vector2i) -> void:
 	data.default_resolution = res
 
 
+func set_default_resolution_x(x_value: int) -> void:
+	data.default_resolution.x = x_value
+
+
+func set_default_resolution_y(y_value: int) -> void:
+	data.default_resolution.y = y_value
+
+
 func get_default_resolution() -> Vector2i:
 	return data.default_resolution
+
+
+func get_default_resolution_x() -> int:
+	return data.default_resolution.x
+
+
+func get_default_resolution_y() -> int:
+	return data.default_resolution.y
 
 
 func set_default_framerate(framerate: float) -> void:
@@ -102,6 +118,7 @@ func get_default_framerate() -> float:
 	return data.default_framerate
 
 
+# Timeline set/get
 func set_tracks_amount(track_amount: int) -> void:
 	data.tracks_amount = track_amount
 

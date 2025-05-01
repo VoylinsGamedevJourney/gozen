@@ -10,6 +10,8 @@ var path: String # Temporary files start with "temp://"
 var nickname: String
 var type: TYPE = TYPE.EMPTY
 
+var modified_time: int = -1
+
 var duration: int = -1
 
 var temp_file: TempFile = null # Only filled when file is a temp file
@@ -22,10 +24,13 @@ static func create(file_path: String) -> File:
 
 	if ext in ProjectSettings.get_setting_with_override("extensions/image"):
 		file.type = TYPE.IMAGE
+		file.modified_time = FileAccess.get_modified_time(file_path)
 	elif ext in ProjectSettings.get_setting_with_override("extensions/audio"):
 		file.type = TYPE.AUDIO
+		file.modified_time = FileAccess.get_modified_time(file_path)
 	elif ext in ProjectSettings.get_setting_with_override("extensions/video"):
 		file.type = TYPE.VIDEO
+		file.modified_time = FileAccess.get_modified_time(file_path)
 	elif file_path == "temp://image":
 		file.type = TYPE.IMAGE
 	elif file_path == "temp://text":

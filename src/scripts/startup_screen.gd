@@ -108,8 +108,8 @@ func _set_version_label() -> void:
 
 func _set_new_project_defaults() -> void:
 	project_path_line_edit.text = Settings.get_default_project_path()
-	resolution_x_spinbox.value = Settings.get_default_resolution().x
-	resolution_y_spinbox.value = Settings.get_default_resolution().y
+	resolution_x_spinbox.value = Settings.get_default_resolution_x()
+	resolution_y_spinbox.value = Settings.get_default_resolution_y()
 	framerate_spinbox.value = Settings.get_default_framerate()
 
 

@@ -13,11 +13,13 @@ const NICKNAME_SIZE: int = 14
 @export var buttons: Array[Button] = []
 
 var loading_files: PackedInt64Array = []
+var modified_files_check_running: bool = false
 
 
 
 func _ready() -> void:
 	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
+	Toolbox.connect_func(get_window().focus_entered, _modified_files_check)
 	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 	for list_id: int in tabs.size():
@@ -64,6 +66,30 @@ func _input(event: InputEvent) -> void:
 func _delete_file_items(ids: PackedInt32Array) -> void:
 	for item_id: int in ids:
 		tabs[tab_container.current_tab].remove_item(item_id)
+
+
+func _modified_files_check() -> void:
+	# Check to see if a file needs reloading or not.
+	# TODO: Maybe check as well to see if files still exist or not.
+	if Project.data == null:
+		return
+
+	modified_files_check_running = true
+	for file: File in Project.get_files().values():
+		if file.modified_time == -1:
+			# Check if an actual file, maybe wasn't updated yet.
+			if FileAccess.file_exists(file.path):
+				file.modified_time = FileAccess.get_modified_time(file.path)
+
+			# Else probably a temporary file or editor created "file".
+			continue
+
+		var new_modified_time: int = FileAccess.get_modified_time(file.path)
+		if file.modified_time != new_modified_time:
+			file.modified_time = new_modified_time
+			Project.reload_file_data(file.id)
+	
+	modified_files_check_running = false
 
 	
 func get_thumb(file_id: int) -> Texture:

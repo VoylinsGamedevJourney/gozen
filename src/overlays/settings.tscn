@@ -71,6 +71,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Light mode is better."
 mouse_default_cursor_shape = 2
+selected = 0
 item_count = 2
 popup/item_0/text = "Dark"
 popup/item_0/id = 0
@@ -98,6 +99,7 @@ text = "Audio waveform style"
 
 [node name="AudioWaveformStyleOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
 layout_mode = 2
+selected = 0
 item_count = 3
 popup/item_0/text = "Center"
 popup/item_0/id = 0
@@ -284,6 +286,9 @@ text = "Save"
 [connection signal="toggled" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ShowMenuBarCheckButton" to="." method="_on_show_menu_bar_check_button_toggled"]
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/AudioWaveformStyleOptionButton" to="." method="_on_audio_waveform_style_option_button_item_selected"]
 [connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ImageDurationSpinBox" to="." method="_on_image_duration_spin_box_value_changed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionXSpinBox" to="." method="_on_default_resolution_x_spin_box_value_changed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/ResolutionHBox/DefaultResolutionYSpinBox" to="." method="_on_default_resolution_y_spin_box_value_changed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/DefaultsGrid/DefaultFramerateSpinBox" to="." method="_on_default_framerate_spin_box_value_changed"]
 [connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox" to="." method="_on_track_amount_spin_box_value_changed"]
 [connection signal="toggled" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/PauseAfterDragCheckButton" to="." method="_on_pause_after_drag_check_button_toggled"]
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/DeleteEmptyModifierOptionButton" to="." method="_on_delete_empty_modifier_option_button_item_selected"]

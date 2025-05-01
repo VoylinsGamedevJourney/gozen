@@ -20,8 +20,8 @@ extends PanelContainer
 @export var delete_empty_modifier_button: OptionButton
 
 
-
 var changes: Dictionary[String, Callable] = {}
+
 
 
 func _ready() -> void:
@@ -94,6 +94,21 @@ func _on_audio_waveform_style_option_button_item_selected(index: int) -> void:
 
 func _on_image_duration_spin_box_value_changed(value: float) -> void:
 	changes["image_duration"] = Settings.set_image_duration.bind(value)
+	save_info_label.visible = true
+
+
+func _on_default_resolution_x_spin_box_value_changed(value: float) -> void:
+	changes["set_res_x"] = Settings.set_default_resolution_x.bind(value)
+	save_info_label.visible = true
+
+
+func _on_default_resolution_y_spin_box_value_changed(value: float) -> void:
+	changes["set_res_y"] = Settings.set_default_resolution_y.bind(value)
+	save_info_label.visible = true
+
+
+func _on_default_framerate_spin_box_value_changed(value:float) -> void:
+	changes["default_framerate"] = Settings.set_default_framerate.bind(value)
 	save_info_label.visible = true
 
 
