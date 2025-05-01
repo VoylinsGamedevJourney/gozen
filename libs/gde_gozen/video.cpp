@@ -36,7 +36,8 @@ bool Video::open(const String& video_path) {
 		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
 			av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
 			continue;
-		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_VIDEO) {
+		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_VIDEO  &&
+				!(av_format_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC)) {
 			av_stream = av_format_ctx->streams[i];
 			resolution.x = av_codec_params->width;
 			resolution.y = av_codec_params->height;
