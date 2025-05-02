@@ -172,8 +172,8 @@ func _set_audio_effect_values() -> void:
 
 	_on_mute_check_button_toggled(mute_button.button_pressed)
 
-# Audio effects
 
+# Audio effects
 func _on_gain_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_audio.gain = value
 

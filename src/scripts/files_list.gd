@@ -182,8 +182,13 @@ func _on_project_loaded() -> void:
 	for list: ItemList in tabs:
 		list.clear()
 
+	var last_type: File.TYPE = File.TYPE.VIDEO
 	for id: int in Project.get_file_ids():
 		_add_file_to_list(id)
+		last_type = Project.get_file(id).type
+	
+	buttons[last_type].button_pressed = true
+	tab_container.current_tab = last_type
 
 
 func _file_item_clicked(index: int, pos: Vector2, mouse_index: int, tab_id: int) -> void:

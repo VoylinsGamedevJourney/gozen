@@ -62,6 +62,23 @@ func _input(event: InputEvent) -> void:
 	if Project.data == null:
 		return
 
+	if !Editor.is_playing:
+		if event.is_action_pressed("ui_left"):
+			Editor.set_frame(Editor.frame_nr - 1)
+		elif event.is_action_pressed("ui_right"):
+			Editor.set_frame(Editor.frame_nr + 1)
+
+	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
+		var mod: int = Settings.get_delete_empty_modifier()
+		if mod == KEY_NONE or Input.is_key_pressed(mod):
+			_delete_empty_space()
+			get_viewport().set_input_as_handled()
+
+
+func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
+	if Project.data == null:
+		return
+
 	if event.is_action_pressed("timeline_zoom_in", false, true):
 		zoom *= 1.15
 		get_viewport().set_input_as_handled()
@@ -69,20 +86,6 @@ func _input(event: InputEvent) -> void:
 		zoom /= 1.15
 		get_viewport().set_input_as_handled()
 	
-	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
-		var mod: int = Settings.get_delete_empty_modifier()
-		if main_control.has_focus() and mod == KEY_NONE or Input.is_key_pressed(mod):
-			_delete_empty_space()
-			get_viewport().set_input_as_handled()
-
-	if !Editor.is_playing:
-		if event.is_action_pressed("ui_left"):
-			Editor.set_frame(Editor.frame_nr - 1)
-		elif event.is_action_pressed("ui_right"):
-			Editor.set_frame(Editor.frame_nr + 1)
-
-
-func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
 	if event.is_action("scroll_up", true):
 		scroll_main.scroll_vertical -= int(scroll_main.scroll_vertical_custom_step * zoom)
 		get_viewport().set_input_as_handled()
@@ -119,12 +122,33 @@ func _on_main_gui_input(event: InputEvent) -> void:
 
 
 func _set_zoom(new_zoom: float) -> void:
+	if zoom == new_zoom:
+		return
+
+	# We need to await to get the correct get_local_mouse_position
+	await RenderingServer.frame_post_draw
 	var prev_mouse_x: float = main_control.get_local_mouse_position().x
 	var prev_scroll: int = scroll_main.scroll_horizontal
 	var prev_mouse_frame: int = get_frame_id(prev_mouse_x)
 
 	zoom = clampf(new_zoom, 0.001, 40.0)
-	scroll_main.scroll_horizontal_custom_step = lerpf(20, 1, ((zoom - 0.001) / (40.0 - 0.001)))
+
+	# TODO: Make this better
+	if zoom > 30:
+		scroll_main.scroll_horizontal_custom_step = 1
+	elif zoom > 20:
+		scroll_main.scroll_horizontal_custom_step = 2
+	elif zoom > 10:
+		scroll_main.scroll_horizontal_custom_step = 4
+	elif zoom > 5:
+		scroll_main.scroll_horizontal_custom_step = 8
+	elif zoom > 1:
+		scroll_main.scroll_horizontal_custom_step = 18
+	elif zoom > 0.4:
+		scroll_main.scroll_horizontal_custom_step = 40
+	else:
+		scroll_main.scroll_horizontal_custom_step = 100
+
 	move_playhead(Editor.frame_nr)
 
 	# Get all clips, update their size and position
