@@ -63,7 +63,6 @@ private:
 	Vector2i resolution = Vector2i(1920, 1080);
 
 	// Video metadata
-	// TODO: Add these to the render menu in the editor.
 	String meta_title = "";
 	String meta_comment = "Rendered with the GoZen Video editor.";
 	String meta_author = "";

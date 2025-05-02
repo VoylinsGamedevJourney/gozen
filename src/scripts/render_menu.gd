@@ -1,8 +1,6 @@
 class_name RenderingWindow
 extends PanelContainer
 
-# TODO: Create a way to save custom render profiles
-
 
 const DEFAULT_RENDER_PROFILES_PATH: String = "res://render_profiles/"
 const RENDER_PROFILES_PATH: String = "user://render_profiles/"
@@ -121,7 +119,6 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# TODO: Improve this so it doesn't trigger when trying to "esc" a line edit.
 	if event.is_action_pressed("ui_cancel"):
 		_on_cancel_button_pressed()
 
@@ -202,7 +199,7 @@ func _on_render_button_pressed() -> void:
 	renderer.set_gop_size(render_profile.gop)
 	renderer.set_crf(render_profile.crf) # Slider has a negative value
 	renderer.set_sws_quality(Renderer.SWS_QUALITY_BILINEAR)
-	renderer.set_threads(maxi(0, threads_spinbox.value))
+	renderer.set_threads(maxi(0, threads_spinbox.value as int))
 
 	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
 		renderer.set_h264_preset(render_profile.h264_preset)

@@ -35,6 +35,9 @@ func _process(_delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if Project.data == null:
+		return
+
 	if event.is_action_pressed("ui_paste"):
 		_on_image_pasted()
 

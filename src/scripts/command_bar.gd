@@ -25,7 +25,6 @@ func _ready() -> void:
 	instance = self
 	command_line.grab_focus()
 
-	# TODO: Load commands
 	var command_keys: PackedStringArray = commands.keys()
 	var button_group:ButtonGroup = ButtonGroup.new()
 	command_keys.sort()
