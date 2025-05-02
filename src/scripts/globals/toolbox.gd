@@ -1,6 +1,37 @@
 extends Node
 
 
+func _ready() -> void:
+	if OS.is_debug_build():
+		# Debug print to give more information to the developers incase
+		# something went wrong whilst using GoZen.
+		_print_startup_debug()
+
+
+func _print_startup_debug() -> void:
+	var header: Callable = (func(text: String) -> void:
+			print_rich("[color=purple][b]", text))
+	var info: Callable = (func(title: String, context: Variant) -> void:
+			print_rich("[color=purple][b]", title, "[/b]: [color=gray]", context))
+
+	header.call("--==  GoZen - Video Editor  ==--")
+	info.call("GoZen Version", ProjectSettings.get_setting("application/config/version"))
+	info.call("OS", OS.get_model_name())
+	info.call("OS Version", OS.get_version())
+	info.call("Distribution", OS.get_distribution_name())
+	info.call("Processor", OS.get_processor_name())
+	info.call("Threads", OS.get_processor_count())
+	info.call("Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
+				  	str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)), 
+				  	str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))])
+	info.call("Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
+				  	RenderingServer.get_video_adapter_name(),
+				  	RenderingServer.get_video_adapter_api_version(),
+				  	RenderingServer.get_video_adapter_type()])
+	info.call("Locale", OS.get_locale())
+	info.call("Startup args", OS.get_cmdline_args())
+	header.call("--==--================--==--")
+
 
 func format_file_nickname(file_name: String, size: int) -> String:
 	var new_name: String = ""
@@ -16,7 +47,6 @@ func format_file_nickname(file_name: String, size: int) -> String:
 	new_name += file_name
 
 	return new_name
-
 
 
 func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray) -> FileDialog:
@@ -79,15 +109,15 @@ func get_unique_id(keys: PackedInt64Array) -> int:
 	return id
 
 
-## Easier way to check if a value is within a range.
 func in_range(value: int, min_value: int, max_value: int, include_last: bool = true) -> bool:
+	## Easier way to check if a value is within a range.
 	if include_last:
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
 
 
-## Same as in_range but for floats
 func in_rangef(value: float, min_value: float, max_value: float, include_last: bool = true) -> bool:
+	## Same as in_range but for floats
 	if include_last:
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
