@@ -50,6 +50,8 @@ private:
 
 	bool loaded = false; // Is true after open()
 	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
+	
+	int sws_flag = SWS_BILINEAR;
 
 	// Metadata variables
 	String path = "";
@@ -69,8 +71,6 @@ private:
 
 	bool is_full_color_range = false; // Limited (tv) or full (pc) range.
 	bool is_interlaced = false;
-
-	// TODO: Maybe add bitrate, codec name, aspect ratio, ...	
 
 	// Private functions
 	void _copy_frame_data();
@@ -95,6 +95,9 @@ public:
 
 	bool seek_frame(int frame_nr);
 	bool next_frame(bool skip_frame = false);
+
+	inline void set_sws_flag_bilinear() { sws_flag = SWS_BILINEAR; }
+	inline void set_sws_flag_bicubic() { sws_flag = SWS_BICUBIC; }
 
 	inline int get_current_frame() const { return current_frame; }
 	inline Ref<Image> get_y_data() const { return y_data; }

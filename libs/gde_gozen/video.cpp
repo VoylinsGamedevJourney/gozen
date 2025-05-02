@@ -226,11 +226,10 @@ bool Video::open(const String& video_path) {
 		_log("Enabling SWS due to pixel format: " + pixel_format_name);
 		using_sws = true;
 
-		// TODO: Make it possible to switch SWS_BILINEAR by SWS_BICUBIC or ...
 		sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(sws_getContext(
 						resolution.x, resolution.y, av_codec_ctx->pix_fmt,
 						resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
-						SWS_BILINEAR, nullptr, nullptr, nullptr));
+						sws_flag, nullptr, nullptr, nullptr));
         if (!sws_ctx) {
              close();
              return _log_err("Failed to create SWS context");
@@ -438,6 +437,9 @@ void Video::_bind_methods() {
 	BIND_METHOD(get_y_data);
 	BIND_METHOD(get_u_data);
 	BIND_METHOD(get_v_data);
+
+	BIND_METHOD(set_sws_flag_bilinear);
+	BIND_METHOD(set_sws_flag_bicubic);
 
 	// Metadata getters
 	BIND_METHOD(get_path);
