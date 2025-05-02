@@ -1,8 +1,6 @@
 class_name EffectsPanel
 extends PanelContainer
 
-# TODO: Text effects should be on top of the visual effects VBox.
-# Make these effects invisible for non-text clips.
 
 
 static var instance: EffectsPanel
@@ -100,7 +98,7 @@ func on_clip_pressed(id: int) -> void:
 		File.TYPE.VIDEO:
 			var showing: bool = Project.get_file_data(data.file_id).audio != null
 
-			button_video_effects.visible = showing
+			button_video_effects.visible = true
 			button_audio_effects.visible = showing
 			_set_video_effect_values()
 
@@ -160,6 +158,9 @@ func _set_video_effect_values() -> void:
 	chroma_key_color.color = video_effects_data.chroma_key_color
 	chroma_key_tolerance.value = video_effects_data.chroma_key_tolerance
 	chroma_key_softness.value = video_effects_data.chroma_key_softness
+
+	if tab_container.current_tab == 2:
+		tab_container.current_tab = 0
 
 
 func _set_audio_effect_values() -> void:
