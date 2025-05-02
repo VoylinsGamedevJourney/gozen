@@ -59,6 +59,9 @@ func _process(_delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if Project.data == null:
+		return
+
 	if event.is_action_pressed("timeline_zoom_in", false, true):
 		zoom *= 1.15
 		get_viewport().set_input_as_handled()
@@ -68,7 +71,7 @@ func _input(event: InputEvent) -> void:
 	
 	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
 		var mod: int = Settings.get_delete_empty_modifier()
-		if mod == KEY_NONE or Input.is_key_pressed(mod):
+		if main_control.has_focus() and mod == KEY_NONE or Input.is_key_pressed(mod):
 			_delete_empty_space()
 			get_viewport().set_input_as_handled()
 
