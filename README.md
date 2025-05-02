@@ -1,32 +1,87 @@
-[![Linux x86_64](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml) [![Windows x86_64](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml)
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
-[Discord server](https://discord.gg/BdbUf7VKYC)
-
-<img src="./assets/logo.svg" alt="GoZen Logo" width="300"/>
-
 # GoZen
+
+[![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen)
+[![Discord](https://img.shields.io/discord/1120566516899926068?label=Discord&logo=discord&logoColor=white)](https://discord.gg/BdbUf7VKYC)
+[![Linux x86_64 Build Status](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml)
+[![Windows x86_64 Build Status](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+<img src="./assets/logo.svg" alt="GoZen Logo" width="200"/>
+
 *The Minimalist Video Editor*
 
 > [!IMPORTANT]  
-> GoZen is in Alpha at the moment! Beta release is to be expected in late 2025.
-
-[Visit the GoZen site!](https://voylinsgamedevjourney.github.io/gozen/)
+> GoZen is currently in Alpha! Expect bugs and frequent changes to happen! Beta release is planned for late 2025.
+> 
+> Visit the [GoZen project site](https://voylinsgamedevjourney.github.io/gozen/) for more information and updates.
 
 ## What is GoZen?
-GoZen is a minimalistic video editor. Not too many bells and whistles, with the aim of being a stable and performant editor. GoZen is being build for Linux, but there is also Windows support.
+GoZen is a lightweight, stable, minimalistic, and performant video editor with simplicity in mind. Built using the Godot game engine, GoZen aims to provide a focused video editing  experience without the complexity which other traditional NLE's. It is primarily developed for Linux but includes support for Windows, MacOS support will come in the future.
 
-### Meaning of GoZen
-I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. The name implies that the video editor is made in Godot, and that it's a _zen_ experience to use. 午前 (= Gozen) also means morning in Japanese, that's why the logo represents a rising sun. I'm quite a morning person and seeing the sunrise always makes me feel like I'll have a productive day, so the meaning of GoZen for me links to being productive and having a zen experience.
+## Features
+- Smooth video playback;
+- Fast rendering;
+- Crash free;
+- Support for all codecs (which FFmpeg supports);
+- Clean, minimalist, but usable UI;
+- Cross-platform (Linux, Windows);
 
-## Want to contribute?
-Read the [contributing documentation](./CONTRIBUTING.md) and join the [discord server](https://discord.gg/BdbUf7VKYC)! Don't know enough about programming, Godot, or video formats? You can also contribute with financial donations through [the open collective page for GoZen](opencollective.com/gozen), or through [my ko-fi page](https://ko-fi.com/voylin). The open collective page donations will be exclusively used for GoZen developent, my ko-fi page donations are to support me and my work (video's, GoZen, and other software).
+## UI overview
+![screenshot of GoZen UI](./assets/screenshots/alpha_01.png)
+The top left displays your media pool, listing your files by type and alphabetically. In the top center you have your video project playback itself with on the right of that your effects panel.
 
-## FFmpeg
+On the bottom you have your timeline with on the right your audio meter to check if your audio is clipping or not.
+
+## Installation
+Due to GoZen still being in alpha, there is no available build yet through each distro's package manager (an AUR build is coming). The best way to download the most recent version is through following links:
+- [GoZen GitHub release page](https://github.com/VoylinsGamedevJourney/gozen/releases);
+- [GoZen Itch.io page](https://voylin.itch.io/gozen);
+
+At this moment there are three builds:
+- Linux: This version works on more up-to-date distro's;
+- Linux compatibility: This works on all distro's;
+- Windows: ...;
+
+The download comes as a zip folder which you just need to unpack. No installation needed, just an executable with the libraries needed to run GoZen.
+
+### Prerequisites
+For the main Linux build, you will need to have following libraries installed:
+- `x264`;
+- `x265`;
+
+### For developers (building from source)
+First of all, you'll need to go into the `libs` folder and run the python script `build.py`, just follow the instructions and it should compile FFmpeg and the GDExtension without issues (on both Linux and Windows). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.
+
+> [!IMPORTANT]  
+> For the Windows build you will need to use WSL since FFmpeg needs it to compile.
+
+## Contributing
+We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.
+
+Please read our [Contributing Guide](./CONTRIBUTING.md) for more details on how to get involved.
+
+Join our [Discord server](https://discord.gg/BdbUf7VKYC) to discuss the GoZen project and ask questions!
+
+## Support the project ❤️
+GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad and my time is limited as I'm trying to make it financially work to keep working from home.
+
+If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through following platforms:
+- **Contribute financially via Open Collective:** Funds go directly towards GoZen-related expenses (e.g., software licenses, hardware). [Open Collective page](https://opencollective.com/gozen)
+- **Support me personally via Ko-fi:** This helps support my overall work, including GoZen development, videos, and other projects. [Ko-fi page](https://ko-fi.com/voylin)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
+
+## Changelog
+See the [CHANGELOG.md](./CHANGELOG.md) file for an overview of all changes to the projects from version to version.
+
+## About GoZen
+I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. The name implies that the video editor is made in Godot, and that it's a _zen-like_ experience to use. 午前 (Gozen) also means morning in Japanese, that's why the logo represents a rising sun.
+
+I'm a morning person and seeing/feeling the sunrise each morning always makes me feel like I'll have a productive day, so the meaning of GoZen for me links to being productive and having a zen experience whilst editing videos.
+
+## License
+
+The project is licensed under the [GPLv3 license](./LICENSE). FFmpeg is being used which has it's own license as well, for compiling FFmpeg we use the `--enable-gpl3` flag.
 
 > This software uses libraries from the FFmpeg project under the LGPLv2.1
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R4M1UM6)
-
-[Open Collective page for GoZen](https://opencollective.com/gozen)
-
+> Other libraries used may come with their own specific licenses so be sure to check before forking the project and/or using code from this project to see if it can be used with your project license.
