@@ -4,7 +4,7 @@ import sys
 import platform as os_platform
 
 
-LIBS_COMMON = ['avcodec', 'avformat', 'avdevice', 'avutil', 'swresample', 'swscale']
+LIBS_COMMON = ['avcodec', 'avformat', 'avutil', 'swresample', 'swscale']
 MARCH_FLAGS = {
     'x86_64': 'x86-64',
     'arm64': 'native'  # Using 'native' for ARM64 is often safer than specifying specific architecture
@@ -24,43 +24,57 @@ jobs = ARGUMENTS.get('jobs', 4)
 platform = ARGUMENTS.get('platform', 'linux')
 arch = ARGUMENTS.get('arch', 'x86_64')
 target = ARGUMENTS.get('target', 'template_debug').split('_')[-1]
-libpath = f'bin/{platform}_{arch}/libgozen{env_suffix}{env_shlibsuffix}'
+libpath = f'bin/{platform}_{arch}'
+
+use_system = ARGUMENTS.get('use_system', 'no')
 
 
 if 'linux' in platform:
-    env.Append(
-        LINKFLAGS=[
-            '-static-libstdc++',
-            '-Wl,-rpath,"$ORIGIN"'],
-        CPPFLAGS=['-Iffmpeg/bin_linux', '-Iffmpeg/bin_linux/include'],
-        LIBPATH=[
-            'ffmpeg/bin_linux/include/libavcodec',
-            'ffmpeg/bin_linux/include/libavformat',
-            'ffmpeg/bin_linux/include/libavdevice',
-            'ffmpeg/bin_linux/include/libavutil',
-            'ffmpeg/bin_linux/include/libswresample',
-            'ffmpeg/bin_linux/include/libswscale',
-            'ffmpeg/bin_linux/lib'],
-        CCFLAGS=[f'-march={MARCH_FLAGS[arch]}'],
-        LIBS=LIBS_COMMON)
+    libpath += f'/libgozen{env_suffix}{env_shlibsuffix}'
+    if use_system == 'yes':
+        env.Append(
+            CPPPATH=['/usr/include/ffmpeg/'],
+            LIBS=LIBS_COMMON,
+        )
+    else:
+        env.Append(
+            LINKFLAGS=[
+                '-static-libstdc++',
+                '-Wl,-rpath,"$ORIGIN"'],
+            CPPFLAGS=[
+                '-Iffmpeg/bin_linux',
+                '-Iffmpeg/bin_linux/include'],
+            LIBPATH=[
+                'ffmpeg/bin_linux/include/libavcodec',
+                'ffmpeg/bin_linux/include/libavformat',
+                'ffmpeg/bin_linux/include/libavutil',
+                'ffmpeg/bin_linux/include/libswresample',
+                'ffmpeg/bin_linux/include/libswscale',
+                'ffmpeg/bin_linux/lib'],
+            CCFLAGS=[f'-march={MARCH_FLAGS[arch]}'],
+            LIBS=LIBS_COMMON,
+        )
 elif 'windows' in platform:
+    libpath += f'/libgozen{env_suffix}{env_shlibsuffix}'
     if os_platform.system().lower() == 'windows':
         env.Append(LIBS=[
             'avcodec.lib',
             'avformat.lib',
-            'avdevice.lib',
             'avutil.lib',
             'swresample.lib',
-            'swscale.lib'])
+            'swscale.lib'
+        ])
     else:
         env.Append(LIBS=LIBS_COMMON)
 
     env.Append(
         CPPPATH=['ffmpeg/bin_windows/include'],
-        LIBPATH=['ffmpeg/bin_windows/bin'])
+        LIBPATH=['ffmpeg/bin_windows/bin'],
+    )
 elif 'macos' in platform:
     # MacOS can only be build on a MacOS machine!
-    macos_path = f'bin/{platform}/{target}/lib'
+    macos_path = f'{libpath}/{target}/lib'
+    libpath += f'/{target}/libgozen{env_suffix}{env_shlibsuffix}'
 
     env.Append(
         CPPPATH=['ffmpeg/bin_macos/include'],
@@ -68,7 +82,6 @@ elif 'macos' in platform:
             'ffmpeg/bin_macos/lib',
             'ffmpeg/bin_macos/include/libavcodec',
             'ffmpeg/bin_macos/include/libavformat',
-            'ffmpeg/bin_macos/include/libavdevice',
             'ffmpeg/bin_macos/include/libavutil',
             'ffmpeg/bin_macos/include/libswresample',
             'ffmpeg/bin_macos/include/libswscale',
@@ -81,8 +94,8 @@ elif 'macos' in platform:
             '-framework', 'CoreVideo',
             '-framework', 'CoreMedia',
             '-framework', 'AVFoundation',
-            '-rpath', 'libPath'])
-    libpath = f'bin/{platform}_{arch}/{target}/libgozen{env_suffix}{env_shlibsuffix}'
+            '-rpath', 'libPath'],
+    )
 
 
 src = Glob('gde_gozen/*.cpp')

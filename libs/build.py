@@ -22,6 +22,25 @@ import shutil
 THREADS = os.cpu_count() or 4
 PATH_BUILD_WINDOWS = 'build_on_windows.py'
 
+TARGET_DEV: str = 'debug'
+TARGET_RELEASE: str = 'release'
+
+DISABLED_MODULES = [
+    '--disable-avdevice',
+    '--disable-postproc',
+    '--disable-avfilter',
+    '--disable-sndio',
+    '--disable-doc',
+    '--disable-programs',
+    '--disable-ffprobe',
+    '--disable-htmlpages',
+    '--disable-manpages',
+    '--disable-podpages',
+    '--disable-txtpages',
+    '--disable-ffplay',
+    '--disable-ffmpeg'
+]
+
 
 def _print_options(title, options):
     print(f'{title}:')
@@ -67,8 +86,7 @@ def compile_ffmpeg(platform, arch):
 
 def compile_ffmpeg_linux(arch):
     print('Configuring FFmpeg for Linux ...')
-
-    os.environ["PKG_CONFIG_PATH"] = "/usr/lib/pkgconfig"
+    os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
 
     cmd = [
         './configure',
@@ -81,23 +99,12 @@ def compile_ffmpeg_linux(arch):
         '--target-os=linux',
         '--quiet',
         '--enable-pic',
-        '--extra-cflags="-fPIC"',
-        '--extra-ldflags="-fPIC"',
-        '--disable-postproc',
-        '--disable-avfilter',
-        '--disable-sndio',
-        '--disable-doc',
-        '--disable-programs',
-        '--disable-ffprobe',
-        '--disable-htmlpages',
-        '--disable-manpages',
-        '--disable-podpages',
-        '--disable-txtpages',
-        '--disable-ffplay',
-        '--disable-ffmpeg',
+        '--extra-cflags=-fPIC',
+        '--extra-ldflags=-fPIC',
         '--enable-libx264',
         '--enable-libx265'
     ]
+    cmd += DISABLED_MODULES
 
     subprocess.run(cmd, cwd='./ffmpeg/')
 
@@ -112,7 +119,7 @@ def compile_ffmpeg_linux(arch):
 def compile_ffmpeg_linux_compatibility(arch):
     print('Configuring FFmpeg for Linux ...')
 
-    os.environ["PKG_CONFIG_PATH"] = "/usr/lib/pkgconfig"
+    os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
 
     cmd = [
         './configure',
@@ -125,21 +132,10 @@ def compile_ffmpeg_linux_compatibility(arch):
         '--target-os=linux',
         '--quiet',
         '--enable-pic',
-        '--extra-cflags="-fPIC"',
-        '--extra-ldflags="-fPIC"',
-        '--disable-postproc',
-        '--disable-avfilter',
-        '--disable-sndio',
-        '--disable-doc',
-        '--disable-programs',
-        '--disable-ffprobe',
-        '--disable-htmlpages',
-        '--disable-manpages',
-        '--disable-podpages',
-        '--disable-txtpages',
-        '--disable-ffplay',
-        '--disable-ffmpeg'
+        '--extra-cflags=-fPIC',
+        '--extra-ldflags=-fPIC',
     ]
+    cmd += DISABLED_MODULES
 
     subprocess.run(cmd, cwd='./ffmpeg/')
 
@@ -170,7 +166,7 @@ def compile_ffmpeg_windows(arch):
     os.environ['PKG_CONFIG_LIBDIR'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
     os.environ['PKG_CONFIG_PATH'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
 
-    subprocess.run([
+    cmd = [
         './configure',
         '--prefix=./bin_windows',
         '--enable-shared',
@@ -182,24 +178,14 @@ def compile_ffmpeg_windows(arch):
         f'--cross-prefix={arch}-w64-mingw32-',
         '--quiet',
         '--extra-libs=-lpthread',
-        '--extra-ldflags="-static"',
-        '--extra-ldflags="-fpic"',
-        '--extra-cflags="-fPIC"',
-        '--disable-postproc',
-        '--disable-avfilter',
-        '--disable-sndio',
-        '--disable-doc',
-        '--disable-programs',
-        '--disable-ffprobe',
-        '--disable-htmlpages',
-        '--disable-manpages',
-        '--disable-podpages',
-        '--disable-txtpages',
-        '--disable-ffplay',
-        '--disable-ffmpeg'
+        '--extra-ldflags=-static -fpic',
+        '--extra-cflags=-fPIC',
         # '--enable-libx264',
         # '--enable-libx265'
-    ], cwd='./ffmpeg/')
+    ]
+    cmd += DISABLED_MODULES
+
+    subprocess.run(cmd, cwd='./ffmpeg/')
 
     print('Compiling FFmpeg for Windows ...')
 
@@ -227,7 +213,7 @@ def copy_lib_files_windows(arch):
 def compile_ffmpeg_macos(arch):
     print('Configuring FFmpeg for MacOS ...')
 
-    subprocess.run([
+    cmd = [
         './configure',
         '--prefix=./bin_macos',
         '--enable-shared',
@@ -235,24 +221,15 @@ def compile_ffmpeg_macos(arch):
         '--enable-version3',
         '--enable-pthreads',
         f'--arch={arch}',
-        '--extra-ldflags="-mmacosx-version-min=10.13"',
+        '--extra-ldflags=-mmacosx-version-min=10.13',
         '--quiet',
-        '--extra-cflags="-fPIC -mmacosx-version-min=10.13"',
-        '--disable-postproc',
-        '--disable-avfilter',
-        '--disable-sndio',
-        '--disable-doc',
-        '--disable-programs',
-        '--disable-ffprobe',
-        '--disable-htmlpages',
-        '--disable-manpages',
-        '--disable-podpages',
-        '--disable-txtpages',
-        '--disable-ffplay',
-        '--disable-ffmpeg',
+        '--extra-cflags=-fPIC -mmacosx-version-min=10.13',
         '--enable-libx264',
         '--enable-libx265'
-    ], cwd='./ffmpeg/')
+    ]
+    cmd += DISABLED_MODULES
+
+    subprocess.run(cmd, cwd='./ffmpeg/')
 
     print('Compiling FFmpeg for MacOS ...')
 
@@ -269,7 +246,7 @@ def copy_lib_files_macos(arch):
     os.makedirs(path_debug, exist_ok=True)
     os.makedirs(path_release, exist_ok=True)
 
-    print(f'Copying lib files to {path} ...')
+    print(f'Copying lib files to {path_debug} & {path_release} ...')
 
     for file in glob.glob('./ffmpeg/bin_macos/lib/*.dylib'):
         shutil.copy2(file, path_debug)
@@ -288,7 +265,7 @@ def macos_fix(arch):
     debug_bin_folder = f'./libs/bin/macos_{arch}/debug/lib'
     release_bin_folder = f'./libs/bin/macos_{arch}/release/lib'
 
-    print("Updating @loader_path for MacOS builds")
+    print('Updating @loader_path for MacOS builds')
 
     if os.path.exists(debug_binary):
         for file in os.listdir(debug_bin_folder):
@@ -309,7 +286,7 @@ def main():
     print()
 
     if sys.version_info < (3, 10):
-        print("Python 3.10+ is required to run this script!")
+        print('Python 3.10+ is required to run this script!')
         sys.exit(2)
 
     if os_platform.system() == 'Windows':
@@ -317,8 +294,15 @@ def main():
         subprocess.run([sys.executable, PATH_BUILD_WINDOWS], cwd='./', check=True)
         sys.exit(3)
 
-    platform = 'linux'
+    match _print_options('Init/Update submodules', ['no', 'initialize', 'update']):
+        case 2:
+            subprocess.run(['git', 'submodule', 'update',
+                            '--init', '--recursive'], cwd='./')
+        case 3:
+            subprocess.run(['git', 'submodule', 'update',
+                            '--recursive', '--remote'], cwd='./')
 
+    platform = 'linux'
     match _print_options('Select platform', ['linux', 'linux_compatibility', 'windows', 'macos']):
         case '2':
             platform = 'linux_compatibility'
@@ -329,7 +313,6 @@ def main():
 
     # arm64 isn't supported yet by mingw for Windows, so x86_64 only.
     arch = 'x86_64' if platform != 'macos' else 'arm64'
-
     match platform:
         case 'linux':
             if _print_options('Choose architecture', ['x86_64', 'arm64']) == '2':
@@ -338,16 +321,10 @@ def main():
             if _print_options('Select target', ['arm64', 'x86_64']) == '2':
                 arch = 'x86_64'
 
-    # When selecting the target, we set dev_build to yes to get more debug info
-    # which is helpful when debugging to get something useful of an error msg.
-    target = 'debug'
-    dev_build = ''
-
-    match _print_options('Select target', ['debug', 'release']):
+    target = TARGET_DEV
+    match _print_options('Select target', [TARGET_DEV, TARGET_RELEASE]):
         case '2':
-            target = 'release'
-        case _:
-            dev_build = 'dev_build=yes'
+            target = TARGET_RELEASE
 
     compile_ffmpeg(platform, arch)
 
@@ -359,8 +336,7 @@ def main():
         f'-j{THREADS}',
         f'target=template_{target}',
         f'platform={platform}',
-        f'arch={arch}',
-        dev_build
+        f'arch={arch}'
     ], cwd='./')
 
     if platform == 'macos':

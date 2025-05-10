@@ -6,8 +6,6 @@ extern "C" {
 	#include <libavcodec/codec_id.h>
 	#include <libavcodec/packet.h>
 	
-	#include <libavdevice/avdevice.h>
-	
 	#include <libavformat/avformat.h>
 	
 	#include <libavutil/avassert.h>
