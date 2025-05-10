@@ -15,7 +15,7 @@ There are many ways you can contribute to the GoZen project:
 - Spread the word of GoZen!
 
 ## Getting help & Communication
-If you have questions, need clarification, or want to discuss ideas before contributing, please join our [Discord server](https://discord.gg/BdbUf7VKYC). It's the best place for real-time communication with the community and maintainers. You can also use the [Discussions](https://github.com/VoylinsGamedevJourney/gozen/discussions) tab on the GoZen GitHub repo for communication but replies may come more slowly.
+If you have questions, need clarification, or want to discuss ideas before contributing, please join our [Discord server](https://discord.gg/BdbUf7VKYC). It's the best place for real-time communication with the community and maintainers. Issues can also be created in the repo itself.
 
 ## Reporting bugs 🐛
 Found a bug (which is still alive)? Please help us by reporting it!
@@ -44,7 +44,7 @@ Have an (awesome) idea for a new feature or improvement? We'd love to hear and c
     *   Any alternative ideas you considered.
 
 > [!IMPORTANT]  
-> For larger features, it's recommended to discuss them on the [Discord server](https://discord.gg/BdbUf7VKYC) or open a post in the [Discussions tab](https://github.com/VoylinsGamedevJourney/gozen/discussions).
+> For larger features, it's recommended to discuss them on the [Discord server](https://discord.gg/BdbUf7VKYC).
 
 ## Contributing code
 We welcome code contributions! Please follow these steps to make contributions go more smoothly:
