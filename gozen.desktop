@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=GoZen
+Comment=A minimalistic video editor
+Exec=gozen
+Icon=gozen
+Terminal=false
+Type=Application
+Categories=Game;AudioVideo;
