@@ -96,7 +96,7 @@ jobs:
           fi
 
           python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
-          scons -j$(nproc) target=template_debug dev_build=yes platform=linux arch=x86_64 cache_dir=scons_linux_debug
+          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug
 
       - name: 'Prepare folder'
         run: |
