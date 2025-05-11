@@ -133,7 +133,7 @@ def compile_ffmpeg_linux_compatibility(arch):
         '--quiet',
         '--enable-pic',
         '--extra-cflags=-fPIC',
-        '--extra-ldflags=-fPIC',
+        '--extra-ldflags=-Wl,-rpath,$ORIGIN -fPIC',
     ]
     cmd += DISABLED_MODULES
 

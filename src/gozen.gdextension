@@ -47,7 +47,6 @@ Audio = "res://../libs/icon.svg"
 
 linux.debug.x86_64 = {
     "res://../libs/bin/linux_x86_64/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_x86_64/libaice.so.60" : "",
     "res://../libs/bin/linux_x86_64/libavformat.so.60" : "",
     "res://../libs/bin/linux_x86_64/libavutil.so.58" : "",
     "res://../libs/bin/linux_x86_64/libswresample.so.4" : "",
@@ -55,7 +54,6 @@ linux.debug.x86_64 = {
 }
 linux.release.x86_64 = {
     "res://../libs/bin/linux_x86_64/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_x86_64/libaice.so.60" : "",
     "res://../libs/bin/linux_x86_64/libavformat.so.60" : "",
     "res://../libs/bin/linux_x86_64/libavutil.so.58" : "",
     "res://../libs/bin/linux_x86_64/libswresample.so.4" : "",
@@ -63,7 +61,6 @@ linux.release.x86_64 = {
 }
 linux.debug.x86_32 = {
     "res://../libs/bin/linux_x86_32/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_x86_32/libaice.so.60" : "",
     "res://../libs/bin/linux_x86_32/libavformat.so.60" : "",
     "res://../libs/bin/linux_x86_32/libavutil.so.58" : "",
     "res://../libs/bin/linux_x86_32/libswresample.so.4" : "",
@@ -71,7 +68,6 @@ linux.debug.x86_32 = {
 }
 linux.release.x86_32 = {
     "res://../libs/bin/linux_x86_32/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_x86_32/libaice.so.60" : "",
     "res://../libs/bin/linux_x86_32/libavformat.so.60" : "",
     "res://../libs/bin/linux_x86_32/libavutil.so.58" : "",
     "res://../libs/bin/linux_x86_32/libswresample.so.4" : "",
@@ -79,7 +75,6 @@ linux.release.x86_32 = {
 }
 linux.debug.arm64 = {
     "res://../libs/bin/linux_arm64/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_arm64/libaice.so.60" : "",
     "res://../libs/bin/linux_arm64/libavformat.so.60" : "",
     "res://../libs/bin/linux_arm64/libavutil.so.58" : "",
     "res://../libs/bin/linux_arm64/libswresample.so.4" : "",
@@ -87,7 +82,6 @@ linux.debug.arm64 = {
 }
 linux.release.arm64 = {
     "res://../libs/bin/linux_arm64/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_arm64/libaice.so.60" : "",
     "res://../libs/bin/linux_arm64/libavformat.so.60" : "",
     "res://../libs/bin/linux_arm64/libavutil.so.58" : "",
     "res://../libs/bin/linux_arm64/libswresample.so.4" : "",
@@ -95,7 +89,6 @@ linux.release.arm64 = {
 }
 linux.debug.arm32 = {
     "res://../libs/bin/linux_arm32/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_arm32/libaice.so.60" : "",
     "res://../libs/bin/linux_arm32/libavformat.so.60" : "",
     "res://../libs/bin/linux_arm32/libavutil.so.58" : "",
     "res://../libs/bin/linux_arm32/libswresample.so.4" : "",
@@ -103,7 +96,6 @@ linux.debug.arm32 = {
 }
 linux.release.arm32 = {
     "res://../libs/bin/linux_arm32/libavcodec.so.60" : "",
-    "res://../libs/bin/linux_arm32/libaice.so.60" : "",
     "res://../libs/bin/linux_arm32/libavformat.so.60" : "",
     "res://../libs/bin/linux_arm32/libavutil.so.58" : "",
     "res://../libs/bin/linux_arm32/libswresample.so.4" : "",
@@ -112,7 +104,6 @@ linux.release.arm32 = {
 
 windows.debug.x86_64 = {
     "res://../libs/bin/windows_x86_64/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_x86_64/aice-60.dll" : "",
     "res://../libs/bin/windows_x86_64/avformat-60.dll" : "",
 	"res://../libs/bin/windows_x86_64/avutil-58.dll" : "",
 
@@ -124,7 +115,6 @@ windows.debug.x86_64 = {
 }
 windows.release.x86_64 = {
     "res://../libs/bin/windows_x86_64/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_x86_64/aice-60.dll" : "",
     "res://../libs/bin/windows_x86_64/avformat-60.dll" : "",
     "res://../libs/bin/windows_x86_64/avutil-58.dll" : "",
 
@@ -136,7 +126,6 @@ windows.release.x86_64 = {
 }
 windows.debug.x86_32 = {
     "res://../libs/bin/windows_x86_32/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_x86_32/aice-60.dll" : "",
     "res://../libs/bin/windows_x86_32/avformat-60.dll" : "",
 	"res://../libs/bin/windows_x86_32/avutil-58.dll" : "",
 
@@ -148,7 +137,6 @@ windows.debug.x86_32 = {
 }
 windows.release.x86_32 = {
     "res://../libs/bin/windows_x86_32/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_x86_32/aice-60.dll" : "",
     "res://../libs/bin/windows_x86_32/avformat-60.dll" : "",
     "res://../libs/bin/windows_x86_32/avutil-58.dll" : "",
 
@@ -160,7 +148,6 @@ windows.release.x86_32 = {
 }
 windows.debug.arm64 = {
     "res://../libs/bin/windows_arm64/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_arm64/aice-60.dll" : "",
     "res://../libs/bin/windows_arm64/avformat-60.dll" : "",
 	"res://../libs/bin/windows_arm64/avutil-58.dll" : "",
 
@@ -172,7 +159,6 @@ windows.debug.arm64 = {
 }
 windows.release.arm64 = {
     "res://../libs/bin/windows_arm64/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_arm64/aice-60.dll" : "",
     "res://../libs/bin/windows_arm64/avformat-60.dll" : "",
     "res://../libs/bin/windows_arm64/avutil-58.dll" : "",
 
@@ -184,7 +170,6 @@ windows.release.arm64 = {
 }
 windows.debug.arm32 = {
     "res://../libs/bin/windows_arm32/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_arm32/aice-60.dll" : "",
     "res://../libs/bin/windows_arm32/avformat-60.dll" : "",
 	"res://../libs/bin/windows_arm32/avutil-58.dll" : "",
 
@@ -196,7 +181,6 @@ windows.debug.arm32 = {
 }
 windows.release.arm32 = {
     "res://../libs/bin/windows_arm32/avcodec-60.dll" : "",
-    "res://../libs/bin/windows_arm32/aice-60.dll" : "",
     "res://../libs/bin/windows_arm32/avformat-60.dll" : "",
     "res://../libs/bin/windows_arm32/avutil-58.dll" : "",
 
@@ -209,7 +193,6 @@ windows.release.arm32 = {
 
 macos.debug.arm64 = {
     "res://../libs/bin/macos_arm64/debug/libavcodec.60.dylib" : "Contents/Frameworks",
-    "res://../libs/bin/macos_arm64/debug/libaice.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_arm64/debug/libavformat.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_arm64/debug/libavutil.58.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_arm64/debug/libswresample.4.dylib" : "Contents/Frameworks",
@@ -217,7 +200,6 @@ macos.debug.arm64 = {
 }
 macos.release.arm64 = {
     "res://../libs/bin/macos_arm64/release/libavcodec.60.dylib" : "Contents/Frameworks",
-    "res://../libs/bin/macos_arm64/release/libaice.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_arm64/release/libavformat.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_arm64/release/libavutil.58.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_arm64/release/libswresample.4.dylib" : "Contents/Frameworks",
@@ -225,7 +207,6 @@ macos.release.arm64 = {
 }
 macos.debug.x86_64 = {
     "res://../libs/bin/macos_x86_64/debug/libavcodec.60.dylib" : "Contents/Frameworks",
-    "res://../libs/bin/macos_x86_64/debug/libaice.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_x86_64/debug/libavformat.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_x86_64/debug/libavutil.58.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_x86_64/debug/libswresample.4.dylib" : "Contents/Frameworks",
@@ -233,7 +214,6 @@ macos.debug.x86_64 = {
 }
 macos.release.x86_64 = {
     "res://../libs/bin/macos_x86_64/release/libavcodec.60.dylib" : "Contents/Frameworks",
-    "res://../libs/bin/macos_x86_64/release/libaice.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_x86_64/release/libavformat.60.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_x86_64/release/libavutil.58.dylib" : "Contents/Frameworks",
     "res://../libs/bin/macos_x86_64/release/libswresample.4.dylib" : "Contents/Frameworks",
