@@ -7,7 +7,6 @@ for multiple platforms and architectures.
 
 NOTE:
     Windows and Linux can be build on Linux or Windows with WSL.
-    For MacOS you need to use MacOS itself else building fails.
 """
 
 
@@ -22,6 +21,8 @@ import shutil
 THREADS = os.cpu_count() or 4
 PATH_BUILD_WINDOWS = 'build_on_windows.py'
 
+FFMPEG_SOURCE_DIR: str = './ffmpeg'
+
 TARGET_DEV: str = 'debug'
 TARGET_RELEASE: str = 'release'
 
@@ -32,13 +33,10 @@ DISABLED_MODULES = [
     '--disable-sndio',
     '--disable-doc',
     '--disable-programs',
-    '--disable-ffprobe',
     '--disable-htmlpages',
     '--disable-manpages',
     '--disable-podpages',
     '--disable-txtpages',
-    '--disable-ffplay',
-    '--disable-ffmpeg'
 ]
 
 
@@ -62,13 +60,12 @@ def compile_ffmpeg(platform, arch):
         case '2':
             return
 
-    if os.path.exists('./ffmpeg/ffbuild/config.mak'):
+    if os.path.exists(f'{FFMPEG_SOURCE_DIR}/ffbuild/config.mak'):
         print('Cleaning FFmpeg...')
 
-        subprocess.run(['make', 'distclean'], cwd='./ffmpeg/')
-        subprocess.run(['rm', '-rf', 'bin_linux'], cwd='./ffmpeg/')
-        subprocess.run(['rm', '-rf', 'bin_windows'], cwd='./ffmpeg/')
-        subprocess.run(['rm', '-rf', 'bin_macos'], cwd='./ffmpeg/')
+        subprocess.run(['make', 'distclean'], cwd=FFMPEG_SOURCE_DIR)
+        subprocess.run(['rm', '-rf', 'bin_linux'], cwd=FFMPEG_SOURCE_DIR)
+        subprocess.run(['rm', '-rf', 'bin_windows'], cwd=FFMPEG_SOURCE_DIR)
 
     if platform == 'linux':
         compile_ffmpeg_linux(arch)
@@ -76,14 +73,28 @@ def compile_ffmpeg(platform, arch):
     elif platform == 'windows':
         compile_ffmpeg_windows(arch)
         copy_lib_files_windows(arch)
-    elif platform == 'macos':
-        compile_ffmpeg_macos(arch)
-        copy_lib_files_macos(arch)
 
 
 def compile_ffmpeg_linux(arch):
     print('Configuring FFmpeg for Linux ...')
-    os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
+
+    try:
+        # Get all default pkg-config paths from the system
+        pc_paths = subprocess.check_output(
+            ['pkg-config', '--variable', 'pc_path', 'pkg-config']
+        ).decode().strip().split(':')
+
+        # Also include ffmpeg's local install path if you're installing into ./bin_linux
+        pc_paths.insert(0, os.path.abspath('ffmpeg/bin_linux/lib/pkgconfig'))
+
+        # Export all paths to the environment
+        os.environ['PKG_CONFIG_PATH'] = ':'.join(pc_paths)
+
+        print('PKG_CONFIG_PATH set to:', os.environ['PKG_CONFIG_PATH'])
+
+    except subprocess.CalledProcessError:
+        print('Warning: pkg-config not found or failed. Using default path.')
+        os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
 
     cmd = [
         './configure',
@@ -97,17 +108,18 @@ def compile_ffmpeg_linux(arch):
         '--enable-pic',
         '--extra-cflags=-fPIC',
         '--extra-ldflags=-fPIC',
+        '--pkg-config-flags=--static',
         '--enable-libx264',
         '--enable-libx265'
     ]
     cmd += DISABLED_MODULES
 
-    subprocess.run(cmd, cwd='./ffmpeg/')
+    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR)
 
     print('Compiling FFmpeg for Linux ...')
 
-    subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
-    subprocess.run(['make', 'install'], cwd='./ffmpeg/')
+    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR)
+    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR)
 
     print('Compiling FFmpeg for Linux finished!')
 
@@ -121,6 +133,40 @@ def copy_lib_files_linux(arch):
     for file in glob.glob('ffmpeg/bin_linux/lib/*.so.*'):
         if file.count('.') == 2:
             shutil.copy2(file, path)
+
+    print('Finding and copying required system .so dependencies ...')
+
+    def copy_dependencies(binary_path):
+        try:
+            output = subprocess.check_output(['ldd', binary_path], text=True)
+            for line in output.splitlines():
+                if '=>' not in line:
+                    continue
+                parts = line.strip().split('=>')
+                if len(parts) < 2:
+                    continue
+                lib_path = parts[1].split('(')[0].strip()
+                if os.path.isfile(lib_path):
+                    shutil.copy2(lib_path, path)
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to run ldd on {binary_path}: {e}")
+
+    # TODO: Make this work without manually adding version number
+    binaries = [
+        f'{path}/libavcodec.so.60',
+        f'{path}/libavformat.so.60',
+        f'{path}/libavutil.so.58',
+        f'{path}/libswscale.so.7',
+        f'{path}/libswresample.so.4',
+        # f'bin/linux_{arch}/libgozen.linux.template_debug.{arch}.so'
+    ]
+
+    # TODO: Make this not copy all libraries, only needed ones (x264, x265)
+    for binary in binaries:
+        if os.path.exists(binary):
+            copy_dependencies(binary)
+        else:
+            print(f"Warning: {binary} not found, skipping...")
 
     print('Copying files for Linux finished!')
 
@@ -145,17 +191,17 @@ def compile_ffmpeg_windows(arch):
         '--extra-libs=-lpthread',
         '--extra-ldflags=-static -fpic',
         '--extra-cflags=-fPIC',
-        # '--enable-libx264',
-        # '--enable-libx265'
+        '--enable-libx264',
+        '--enable-libx265'
     ]
     cmd += DISABLED_MODULES
 
-    subprocess.run(cmd, cwd='./ffmpeg/')
+    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR)
 
     print('Compiling FFmpeg for Windows ...')
 
-    subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
-    subprocess.run(['make', 'install'], cwd='./ffmpeg/')
+    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR)
+    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR)
 
     print('Compiling FFmpeg for Windows finished!')
 
@@ -173,74 +219,6 @@ def copy_lib_files_windows(arch):
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
 
     print('Copying files for Windows finished!')
-
-
-def compile_ffmpeg_macos(arch):
-    print('Configuring FFmpeg for MacOS ...')
-
-    cmd = [
-        './configure',
-        '--prefix=./bin_macos',
-        '--enable-shared',
-        '--enable-gpl',
-        '--enable-version3',
-        '--enable-pthreads',
-        f'--arch={arch}',
-        '--extra-ldflags=-mmacosx-version-min=10.13',
-        '--quiet',
-        '--extra-cflags=-fPIC -mmacosx-version-min=10.13',
-        '--enable-libx264',
-        '--enable-libx265'
-    ]
-    cmd += DISABLED_MODULES
-
-    subprocess.run(cmd, cwd='./ffmpeg/')
-
-    print('Compiling FFmpeg for MacOS ...')
-
-    subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
-    subprocess.run(['make', 'install'], cwd='./ffmpeg/')
-
-    print('Compiling FFmpeg for MacOS finished!')
-
-
-def copy_lib_files_macos(arch):
-    path_debug = f'bin/macos_{arch}/debug/lib'
-    path_release = f'bin/macos_{arch}/release/lib'
-
-    os.makedirs(path_debug, exist_ok=True)
-    os.makedirs(path_release, exist_ok=True)
-
-    print(f'Copying lib files to {path_debug} & {path_release} ...')
-
-    for file in glob.glob('./ffmpeg/bin_macos/lib/*.dylib'):
-        shutil.copy2(file, path_debug)
-        shutil.copy2(file, path_release)
-
-    print('Copying files for MacOS finished!')
-
-
-def macos_fix(arch):
-    # This is a fix for the MacOS builds to get the libraries to properly connect to
-    # the gdextension library. Without it, the FFmpeg libraries can't be found.
-    print('Running fix for MacOS builds ...')
-
-    debug_binary = f'./libs/bin/macos_{arch}/debug/libgozen.macos.template_debug.dev.{arch}.dylib'
-    release_binary = f'./libs/bin/macos_{arch}/release/libgozen.macos.template_release.{arch}.dylib'
-    debug_bin_folder = f'./libs/bin/macos_{arch}/debug/lib'
-    release_bin_folder = f'./libs/bin/macos_{arch}/release/lib'
-
-    print('Updating @loader_path for MacOS builds')
-
-    if os.path.exists(debug_binary):
-        for file in os.listdir(debug_bin_folder):
-            os.system(f'install_name_tool -change ./bin/lib/{file} @loader_path/lib/{file} {debug_binary}')
-        subprocess.run(['otool', '-L', debug_binary], cwd='./')
-
-    if os.path.exists(release_binary):
-        for file in os.listdir(release_bin_folder):
-            os.system(f'install_name_tool -change ./bin/lib/{file} @loader_path/lib/{file} {release_binary}')
-        subprocess.run(['otool', '-L', release_binary], cwd='./')
 
 
 def main():
@@ -268,23 +246,16 @@ def main():
                             '--recursive', '--remote'], cwd='./')
 
     platform = 'linux'
-    match _print_options('Select platform', ['linux', 'linux_compatibility', 'windows', 'macos']):
+    match _print_options('Select platform', ['linux', 'windows']):
         case '2':
-            platform = 'linux_compatibility'
-        case '3':
             platform = 'windows'
-        case '4':
-            platform = 'macos'
 
     # arm64 isn't supported yet by mingw for Windows, so x86_64 only.
-    arch = 'x86_64' if platform != 'macos' else 'arm64'
+    arch = 'x86_64'
     match platform:
         case 'linux':
             if _print_options('Choose architecture', ['x86_64', 'arm64']) == '2':
                 arch = 'arm64'
-        case 'macos':
-            if _print_options('Select target', ['arm64', 'x86_64']) == '2':
-                arch = 'x86_64'
 
     target = TARGET_DEV
     match _print_options('Select target', [TARGET_DEV, TARGET_RELEASE]):
@@ -293,9 +264,6 @@ def main():
 
     compile_ffmpeg(platform, arch)
 
-    if platform == 'linux_compatibility':
-        platform = 'linux'
-
     subprocess.run([
         'scons',
         f'-j{THREADS}',
@@ -303,9 +271,6 @@ def main():
         f'platform={platform}',
         f'arch={arch}'
     ], cwd='./')
-
-    if platform == 'macos':
-        macos_fix(arch)
 
     print()
     print('v=========================v')

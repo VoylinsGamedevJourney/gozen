@@ -71,31 +71,6 @@ elif 'windows' in platform:
         CPPPATH=['ffmpeg/bin_windows/include'],
         LIBPATH=['ffmpeg/bin_windows/bin'],
     )
-elif 'macos' in platform:
-    # MacOS can only be build on a MacOS machine!
-    macos_path = f'{libpath}/{target}/lib'
-    libpath += f'/{target}/libgozen{env_suffix}{env_shlibsuffix}'
-
-    env.Append(
-        CPPPATH=['ffmpeg/bin_macos/include'],
-        LIBPATH=[
-            'ffmpeg/bin_macos/lib',
-            'ffmpeg/bin_macos/include/libavcodec',
-            'ffmpeg/bin_macos/include/libavformat',
-            'ffmpeg/bin_macos/include/libavutil',
-            'ffmpeg/bin_macos/include/libswresample',
-            'ffmpeg/bin_macos/include/libswscale',
-            macos_path,
-            '/usr/local/lib'],
-        LIBS=LIBS_COMMON,
-        LINKFLAGS=[
-            '-stdlib=libc++',
-            '-framework', 'CoreFoundation',
-            '-framework', 'CoreVideo',
-            '-framework', 'CoreMedia',
-            '-framework', 'AVFoundation',
-            '-rpath', 'libPath'],
-    )
 
 
 src = Glob('gde_gozen/*.cpp')
