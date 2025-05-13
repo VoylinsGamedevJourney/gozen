@@ -4,6 +4,7 @@ extends Control
 @export var menu_bar: MenuBar
 
 
+
 func _ready() -> void:
 	Editor.viewport = %ProjectViewSubViewport
 	_show_menu_bar(Settings.get_show_menu_bar())

@@ -68,7 +68,7 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = 25.0
 grow_horizontal = 0
-tooltip_text = "Editor settings."
+tooltip_text = "button_tooltip_editor_settings"
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_x2wpv")
 ignore_texture_size = true
@@ -122,7 +122,7 @@ size_flags_horizontal = 3
 [node name="RecentProjectsLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Recent projects"
+text = "title_recent_projects"
 
 [node name="HSeparatorTop" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
@@ -142,7 +142,7 @@ layout_mode = 2
 [node name="OpenProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Open project"
+text = "button_open_project"
 icon = ExtResource("3_jdwvk")
 flat = true
 alignment = 0
@@ -151,7 +151,7 @@ expand_icon = true
 [node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Create new project"
+text = "button_create_new_project"
 icon = ExtResource("5_wb8ll")
 flat = true
 alignment = 0
@@ -164,7 +164,7 @@ size_flags_horizontal = 3
 [node name="GettingStartedLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Getting started"
+text = "title_getting_started"
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
@@ -172,7 +172,7 @@ layout_mode = 2
 [node name="SiteButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "GoZen site"
+text = "button_gozen_site"
 icon = ExtResource("7_5plxg")
 flat = true
 alignment = 0
@@ -181,7 +181,7 @@ expand_icon = true
 [node name="ManualButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Manual"
+text = "button_manual"
 icon = ExtResource("5_x2wpv")
 flat = true
 alignment = 0
@@ -190,7 +190,7 @@ expand_icon = true
 [node name="TutorialsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Tutorials"
+text = "button_tutorials"
 icon = ExtResource("6_donii")
 flat = true
 alignment = 0
@@ -199,7 +199,7 @@ expand_icon = true
 [node name="DiscordServerButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Discord server"
+text = "button_discord_server"
 icon = ExtResource("7_5plxg")
 flat = true
 alignment = 0
@@ -212,7 +212,7 @@ size_flags_vertical = 3
 [node name="SupportProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Support GoZen"
+text = "button_support_gozen"
 icon = ExtResource("8_ohjo4")
 flat = true
 alignment = 0
@@ -226,7 +226,7 @@ metadata/_tab_index = 1
 [node name="NewProjectLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "New Project"
+text = "title_new_project"
 
 [node name="HSeparator1" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject"]
 layout_mode = 2
@@ -236,7 +236,7 @@ layout_mode = 2
 
 [node name="PathLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox"]
 layout_mode = 2
-text = "Path:"
+text = "text_path"
 
 [node name="PathLineEdit" type="LineEdit" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox"]
 layout_mode = 2
@@ -258,7 +258,7 @@ columns = 2
 [node name="ResolutionLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Resolution"
+text = "text_resolution"
 
 [node name="ResolutionHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
 layout_mode = 2
@@ -293,7 +293,8 @@ allow_greater = true
 [node name="FramerateLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Framerate"
+text = "text_framerate"
+metadata/_edit_lock_ = true
 
 [node name="FramerateSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
 layout_mode = 2
@@ -319,17 +320,16 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Go back to startup menu."
 mouse_default_cursor_shape = 2
-text = "Return"
+text = "button_return"
 
 [node name="CreateNewProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Create new project with the chosen settings."
+tooltip_text = "button_tooltip_create_new_project"
 mouse_default_cursor_shape = 2
-text = "Create new project"
+text = "button_create_new_project"
 
 [connection signal="pressed" from="Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_go_zen_logo_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupImage/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]

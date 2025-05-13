@@ -97,13 +97,14 @@ func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 
 
 func _set_version_label() -> void:
-	var version_string: String = ProjectSettings.get_setting_with_override(
+	var version_string: String = tr("text_version") + ": "
+	version_string += ProjectSettings.get_setting_with_override(
 			"application/config/version")
 
 	if OS.is_debug_build():
 		version_string += "-debug"
 
-	version_label.text += version_string
+	version_label.text = version_string
 
 
 func _set_new_project_defaults() -> void:

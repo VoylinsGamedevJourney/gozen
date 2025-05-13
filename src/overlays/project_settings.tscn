@@ -43,7 +43,7 @@ layout_mode = 2
 [node name="AppearanceLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Appearance"
+text = "title_appearance"
 
 [node name="AppearanceGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
 layout_mode = 2
@@ -54,11 +54,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The default background color of your video project."
 mouse_filter = 1
-text = "Background color"
+text = "setting_background_color"
 
 [node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "tooltip_setting_background_color"
 mouse_default_cursor_shape = 2
 flat = true
 
@@ -73,7 +74,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
-text = "Cancel"
+text = "button_cancel"
 
 [node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(0, 30)
@@ -81,7 +82,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 theme_type_variation = &"main_button"
-text = "Save"
+text = "button_save_settings"
 
 [connection signal="color_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]

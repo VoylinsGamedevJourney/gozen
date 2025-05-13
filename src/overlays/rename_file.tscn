@@ -28,7 +28,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Rename file to ..."
+text = "text_rename_file_to"
 
 [node name="RenameFileLineEdit" type="LineEdit" parent="Panel/Margin/VBox"]
 layout_mode = 2
@@ -41,7 +41,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
-text = "Cancel"
+text = "button_cancel"
 
 [node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(0, 30)
@@ -49,7 +49,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 theme_type_variation = &"main_button"
-text = "Save"
+text = "button_save"
 
 [connection signal="text_submitted" from="Panel/Margin/VBox/RenameFileLineEdit" to="." method="_on_rename_file_line_edit_text_submitted"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]

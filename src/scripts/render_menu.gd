@@ -183,7 +183,7 @@ func _on_render_button_pressed() -> void:
 	render_progress_label.visible = true
 	render_progress_bar.max_value = Project.get_timeline_end()
 	render_progress_bar.value = 0
-	render_progress_label.text = "Setting up renderer ..."
+	render_progress_label.text = tr("renderer_progress_text_setup")
 
 	show_window(1)
 	await RenderingServer.frame_post_draw
@@ -222,31 +222,30 @@ func _on_render_button_pressed() -> void:
 	if !renderer.open():
 		render_warning_label.visible = true
 		render_progress_label.visible = false
-		render_warning_label.text = "Renderer couldn't be opened, check path and settings!"
+		render_warning_label.text = "renderer_progress_text_open_error"
 		printerr("Something went wrong and rendering isn't possible!")
 		is_rendering = false
 		return
 
 	render_progress_bar.max_value = Project.get_timeline_end() + 8
 	render_progress_bar.value = 0
-	render_progress_label.text = "Setting up renderer ..."
 	await RenderingServer.frame_post_draw
 
 	if render_profile.audio_codec != Renderer.AUDIO_CODEC.A_NONE:
 		render_progress_bar.value += 1
-		render_progress_label.text = "Compiling audio data ..."
+		render_progress_label.text = "renderer_progress_text_compiling_audio"
 		render_progress_bar.value += 4
 		await RenderingServer.frame_post_draw
 		if !renderer.send_audio(render_audio()):
 			render_warning_label.visible = true
 			render_progress_label.visible = false
-			render_warning_label.text = "Something went wrong sending audio to the renderer!"
+			render_warning_label.text = "renderer_progress_text_sending_audio_error"
 			renderer.close()
 			printerr("Something went wrong sending audio!")
 			is_rendering = false
 			return
 
-	render_progress_label.text = "Creating & sending frame data ..."
+	render_progress_label.text = "renderer_progress_text_creating_sending_data"
 	Editor.set_frame(0)
 
 	for i: int in Project.get_timeline_end() + 1:
@@ -257,7 +256,7 @@ func _on_render_button_pressed() -> void:
 		if !renderer.send_frame(viewport.get_image()):
 			render_warning_label.visible = true
 			render_progress_label.visible = false
-			render_warning_label.text = "Something went wrong sending frame to the renderer!"
+			render_warning_label.text = "renderer_progress_text_sending_data_error"
 			renderer.close()
 			printerr("Something went wrong sending frame!")
 			is_rendering = false
@@ -266,28 +265,26 @@ func _on_render_button_pressed() -> void:
 		Editor.set_frame() # Getting the next frame in line.
 
 	if cancel_rendering:
-		render_progress_label.text = "Canceling render process ..."
+		render_progress_label.text = "renderer_progress_text_canceling"
 		await RenderingServer.frame_post_draw
-	else:
-		render_progress_label.text = "Sending last frames ..."
-		await RenderingServer.frame_post_draw
-		render_progress_bar.value += 1
-		await RenderingServer.frame_post_draw
-		render_progress_bar.value += 1
-		await RenderingServer.frame_post_draw
-		render_progress_label.text = "Finalizing render ..."
-		await RenderingServer.frame_post_draw
-
-	renderer.close()
-	is_rendering = false
-
-	if cancel_rendering:
+		renderer.close()
 		is_rendering = false
 		cancel_rendering = false
-		render_progress_label.text = "Cancel rendering ..."
 		await RenderingServer.frame_post_draw
 		show_window(0)
 		return
+
+	render_progress_label.text = "renderer_progress_text_last_frame"
+	await RenderingServer.frame_post_draw
+	render_progress_bar.value += 1
+	await RenderingServer.frame_post_draw
+	render_progress_bar.value += 1
+	await RenderingServer.frame_post_draw
+	render_progress_label.text = "renderer_progress_text_finilizing"
+	await RenderingServer.frame_post_draw
+
+	renderer.close()
+	is_rendering = false
 
 	render_path_label.text = path_line_edit.text
 	render_path_label.tooltip_text = path_line_edit.text

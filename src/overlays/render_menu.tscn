@@ -69,13 +69,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Render video"
+text = "title_render_video"
 
 [node name="ShowAdvancedSettingsButton" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox"]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_type_variation = &"info_label"
-text = "Advanced settings"
+text = "text_advanced_settings"
 horizontal_alignment = 2
 
 [node name="CheckButton" type="CheckButton" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox"]
@@ -88,7 +88,7 @@ columns = 2
 
 [node name="PathLabel" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox"]
 layout_mode = 2
-text = "Path"
+text = "render_option_path"
 
 [node name="RenderPathHBox" type="HBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox"]
 layout_mode = 2
@@ -108,7 +108,7 @@ expand_icon = true
 [node name="RenderProfileLabel" type="Label" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Profile"
+text = "render_option_profile"
 
 [node name="RenderProfileHBox" type="HBoxContainer" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox"]
 layout_mode = 2
@@ -152,7 +152,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Render audio"
+text = "title_render_audio"
 
 [node name="AudioGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox"]
 layout_mode = 2
@@ -161,7 +161,7 @@ columns = 2
 [node name="AudioCodecLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Audio codec"
+text = "render_option_audio_codec"
 
 [node name="AudioCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/AudioPanel/Margin/AudioVBox/AudioGridContainer"]
 layout_mode = 2
@@ -181,7 +181,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Render video"
+text = "title_render_video"
 
 [node name="EnableVideoGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox"]
 layout_mode = 2
@@ -190,7 +190,7 @@ columns = 2
 [node name="VideoCodecLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Video codec"
+text = "render_option_video_codec"
 
 [node name="VideoCodecOptionButton" type="OptionButton" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/EnableVideoGridContainer"]
 layout_mode = 2
@@ -205,13 +205,13 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 mouse_filter = 1
-text = "Quality"
+text = "render_option_quality"
 
 [node name="QualityHSlider" type="HSlider" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+tooltip_text = "render_option_tooltip_quality"
 min_value = -50.0
 max_value = -15.0
 value = -18.0
@@ -221,12 +221,12 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 mouse_filter = 1
-text = "Speed"
+text = "render_option_speed"
 
 [node name="SpeedHSlider" type="HSlider" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+tooltip_text = "render_option_tooltip_speed"
 max_value = 8.0
 value = 3.0
 tick_count = 9
@@ -237,12 +237,12 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 mouse_filter = 1
-text = "GOP size"
+text = "render_option_gop_size"
 
 [node name="GOPSizeSpinBox" type="SpinBox" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/VideoPanel/Margin/VideoVBox/VideoGridContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+tooltip_text = "render_option_tooltip_gop_size"
 value = 15.0
 allow_greater = true
 alignment = 2
@@ -261,7 +261,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "CPU threads"
+text = "title_cpu_threads"
 
 [node name="ThreadsGridContainer" type="GridContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox"]
 layout_mode = 2
@@ -270,11 +270,11 @@ columns = 2
 [node name="ThreadsCodecLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox/ThreadsGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Threads/cores"
+text = "render_option_threads_cores"
 
 [node name="ThreadsSpinBox" type="SpinBox" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/ThreadsPanel/Margin/ThreadsVBox/ThreadsGridContainer"]
 layout_mode = 2
-tooltip_text = "Put on '0' to use all available threads."
+tooltip_text = "render_option_tooltip_threads_cores"
 
 [node name="MetadataPanel" type="PanelContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox"]
 layout_mode = 2
@@ -289,11 +289,11 @@ layout_mode = 2
 [node name="MetadataHeaderHBox" type="HBoxContainer" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox"]
 layout_mode = 2
 
-[node name="MetadataBoxLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
+[node name="TitleMetadataBoxLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Metadata"
+text = "title_metadata"
 
 [node name="EnableMetadataCheckButton" type="CheckButton" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataHeaderHBox"]
 layout_mode = 2
@@ -307,7 +307,7 @@ columns = 2
 [node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Title"
+text = "render_option_metadata_title"
 
 [node name="TitleLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
@@ -317,7 +317,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
-text = "Comment"
+text = "render_option_metadata_comment"
 
 [node name="CommentTextEdit" type="TextEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(0, 60)
@@ -326,7 +326,7 @@ layout_mode = 2
 [node name="AuthorLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Author"
+text = "render_option_metadata_author"
 
 [node name="AuthorLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
@@ -335,7 +335,7 @@ size_flags_horizontal = 3
 [node name="CopyrightLabel" type="Label" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Copyright"
+text = "render_option_metadata_copyright"
 
 [node name="CopyrightLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AdvancedSettingsScrollContainer/RenderOptionsVBox/MetadataPanel/Margin/MetadataVBox/MetadataGridContainer"]
 layout_mode = 2
@@ -348,20 +348,19 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Ignore changes and close settings menu."
 mouse_default_cursor_shape = 2
-text = "Cancel"
+text = "button_cancel"
 
 [node name="RenderButton" type="Button" parent="Panel/Margin/VBox/ButtonHBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Save the project settings."
 mouse_default_cursor_shape = 2
 theme_type_variation = &"main_button"
-text = "Render"
+text = "button_start_render"
 
 [node name="RenderPanel" type="PanelContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -385,7 +384,7 @@ size_flags_horizontal = 3
 [node name="TitleLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Rendering ..."
+text = "title_rendering"
 
 [node name="ProgressBar" type="ProgressBar" parent="RenderPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
@@ -398,7 +397,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"warning_label"
-text = "Something went wrong!!"
+text = "rendering_warning"
 
 [node name="RenderUpdateLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
 layout_mode = 2
@@ -409,10 +408,9 @@ text = "Creating audio ..."
 [node name="CancelRenderButton" type="Button" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Cancel rendering"
+text = "button_cancel_rendering"
 
 [node name="RenderFinishedPanel" type="PanelContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -436,7 +434,7 @@ size_flags_horizontal = 3
 [node name="TitleLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Rendering finished"
+text = "title_rendering_finished"
 
 [node name="GridContainer" type="GridContainer" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox"]
 layout_mode = 2
@@ -445,7 +443,7 @@ columns = 2
 
 [node name="TitlePathLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
 layout_mode = 2
-text = "Path:"
+text = "render_option_path"
 
 [node name="PathLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
 layout_mode = 2
@@ -456,7 +454,7 @@ text_overrun_behavior = 3
 
 [node name="TitleVideoLengthLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
 layout_mode = 2
-text = "Video length:"
+text = "render_option_video_length"
 
 [node name="VideoLengthLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
 layout_mode = 2
@@ -472,7 +470,7 @@ layout_mode = 2
 
 [node name="TitleTimeTakenLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
 layout_mode = 2
-text = "Render time:"
+text = "render_option_render_time"
 
 [node name="TimeTakenLabel" type="Label" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/GridContainer"]
 layout_mode = 2
@@ -486,13 +484,13 @@ alignment = 2
 [node name="ReturnButton" type="Button" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
-text = "Return"
+text = "button_return"
 
 [node name="CloseButton" type="Button" parent="RenderFinishedPanel/Margin/MainPanel/Margin/VBox/HBox"]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_type_variation = &"main_button"
-text = "Close"
+text = "button_close"
 
 [connection signal="toggled" from="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/TopHBox/CheckButton" to="." method="_on_check_button_toggled"]
 [connection signal="pressed" from="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderPathHBox/SelectSavePathButton" to="." method="_on_select_save_path_button_pressed"]

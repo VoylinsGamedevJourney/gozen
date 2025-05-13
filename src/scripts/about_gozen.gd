@@ -14,7 +14,8 @@ func _ready() -> void:
 
 
 func _set_version_label() -> void:
-	var version_string: String = ProjectSettings.get_setting_with_override(
+	var version_string: String = tr("text_version").capitalize()
+	version_string += ProjectSettings.get_setting_with_override(
 			"application/config/version")
 
 	if OS.is_debug_build():
@@ -31,12 +32,12 @@ func _set_links_label() -> void:
 	var youtube_url: String = ProjectSettings.get_setting_with_override("urls/youtube_channel")
 
 	var lines: PackedStringArray = [
-			"GoZen website: " + URL.replace("URL", site_url),
-			"GitHub repo: " + URL.replace("URL", github_url),
-			"Discord link: " + URL.replace("URL", discord_url),
-			"Support GoZen: " + URL.replace("URL", support_url),
+			tr("text_gozen_website") + ": " + URL.replace("URL", site_url),
+			tr("text_github_repo") + ": " + URL.replace("URL", github_url),
+			tr("text_discord_link") + ": " + URL.replace("URL", discord_url),
+			tr("text_support_gozen") + ": " + URL.replace("URL", support_url),
 			"",
-			"GoZen is a video editor made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)".replace("URL", youtube_url)
+			"text_gozen_made_by" + " [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)".replace("URL", youtube_url)
 	]
 	for line: String in lines:
 		links_label.text += line + "\n"
