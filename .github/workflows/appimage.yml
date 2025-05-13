@@ -49,7 +49,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: libs/ffmpeg/bin_linux
-          key: ${{ runner.os }}-ubuntu-ffmpeg-compatibility
+          key: ${{ runner.os }}-ubuntu-ffmpeg
 
       - name: 'Cache scons Linux debug'
         uses: actions/cache@v4
@@ -93,8 +93,7 @@ jobs:
           REBUILD_SCONS_INPUT="${{ inputs.rebuild_scons }}"
 
           if [ ! -d ffmpeg/bin_linux ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
-            # This can be changed to non-compatibility if I were to build x264 and x265 in the repo itself.
-            python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux_compatibility("x86_64")'
+            python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
           else
             echo "FFmpeg build found in cache."
           fi
@@ -114,6 +113,10 @@ jobs:
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
 
+      - name: 'Copy extra libs'
+        run: |
+          cp libs/bin/linux_x86_64/*.so ${{ env.EXPORT_FOLDER }}
+
       - name: 'Create AppDir structure'
         run: |
           mkdir -p ${{ env.APPIMAGE_DIR }}/usr/bin
@@ -128,6 +131,7 @@ jobs:
           cp ${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64 ${{ env.APPIMAGE_DIR }}/usr/bin/${{ env.APP_NAME }}
           cp ${{ env.EXPORT_FOLDER }}/libgozen*.so ${{ env.APPIMAGE_DIR }}/usr/lib/
           cp ${{ env.EXPORT_FOLDER }}/*.so.* ${{ env.APPIMAGE_DIR }}/usr/lib/
+          cp ${{ env.EXPORT_FOLDER }}/*.so ${{ env.APPIMAGE_DIR }}/usr/lib/
           ls ${{ env.EXPORT_FOLDER }}/
           
           cp assets/gozen_icon.png "${{ env.APPIMAGE_DIR }}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png"

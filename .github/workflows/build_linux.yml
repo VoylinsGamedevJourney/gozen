@@ -31,7 +31,7 @@ jobs:
       - name: 'Installing dependencies'
         run: |
           sudo apt-get update
-          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu pkg-config
+          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu pkg-config libx264-dev libx265-dev
 
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
@@ -116,6 +116,10 @@ jobs:
         run: |
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
+
+      - name: 'Copy extra libs'
+        run: |
+          cp libs/bin/linux_x86_64/*.so ${{ env.EXPORT_FOLDER }}
 
       - name: 'Upload Linux'
         uses: actions/upload-artifact@v4

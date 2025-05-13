@@ -187,10 +187,11 @@ def compile_ffmpeg_windows(arch):
         '--target-os=mingw32',
         '--enable-cross-compile',
         f'--cross-prefix={arch}-w64-mingw32-',
+        f'--pkg-config={arch}-w64-mingw32-pkg-config',
         '--quiet',
         '--extra-libs=-lpthread',
-        '--extra-ldflags=-static -fpic',
-        '--extra-cflags=-fPIC',
+        '--extra-ldflags=-fPIC  -static-libgcc -static-libstdc++',
+        '--extra-cflags=-fPIC -O2',
         '--enable-libx264',
         '--enable-libx265'
     ]
@@ -217,6 +218,8 @@ def copy_lib_files_windows(arch):
 
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264.dll {path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx265.dll {path}')
 
     print('Copying files for Windows finished!')
 
