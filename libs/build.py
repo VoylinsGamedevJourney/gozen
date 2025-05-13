@@ -73,9 +73,6 @@ def compile_ffmpeg(platform, arch):
     if platform == 'linux':
         compile_ffmpeg_linux(arch)
         copy_lib_files_linux(arch)
-    elif platform == 'linux_compatibility':
-        compile_ffmpeg_linux_compatibility(arch)
-        copy_lib_files_linux(arch)
     elif platform == 'windows':
         compile_ffmpeg_windows(arch)
         copy_lib_files_windows(arch)
@@ -97,43 +94,11 @@ def compile_ffmpeg_linux(arch):
         '--enable-pthreads',
         f'--arch={arch}',
         '--target-os=linux',
-        '--quiet',
         '--enable-pic',
         '--extra-cflags=-fPIC',
         '--extra-ldflags=-fPIC',
         '--enable-libx264',
         '--enable-libx265'
-    ]
-    cmd += DISABLED_MODULES
-
-    subprocess.run(cmd, cwd='./ffmpeg/')
-
-    print('Compiling FFmpeg for Linux ...')
-
-    subprocess.run(['make', f'-j{THREADS}'], cwd='./ffmpeg/')
-    subprocess.run(['make', 'install'], cwd='./ffmpeg/')
-
-    print('Compiling FFmpeg for Linux finished!')
-
-
-def compile_ffmpeg_linux_compatibility(arch):
-    print('Configuring FFmpeg for Linux ...')
-
-    os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
-
-    cmd = [
-        './configure',
-        '--prefix=./bin_linux',
-        '--enable-shared',
-        '--enable-gpl',
-        '--enable-version3',
-        '--enable-pthreads',
-        f'--arch={arch}',
-        '--target-os=linux',
-        '--quiet',
-        '--enable-pic',
-        '--extra-cflags=-fPIC',
-        '--extra-ldflags=-Wl,-rpath,$ORIGIN -fPIC',
     ]
     cmd += DISABLED_MODULES
 
