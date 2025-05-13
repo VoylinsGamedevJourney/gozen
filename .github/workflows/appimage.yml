@@ -57,7 +57,7 @@ jobs:
           path: libs/scons_linux_debug
           key: ${{ runner.os }}-gde-gozen-debug
 
-      - name: 'Cache scons Linux Release'
+      - name: 'Cache scons Linux release'
         uses: actions/cache@v4
         with:
           path: libs/scons_linux_release
@@ -92,6 +92,8 @@ jobs:
           REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
           REBUILD_SCONS_INPUT="${{ inputs.rebuild_scons }}"
 
+          export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+
           if [ ! -d ffmpeg/bin_linux ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
             python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
           else
@@ -100,6 +102,9 @@ jobs:
 
           if  [ "$REBUILD_SCONS_INPUT" == "true" ]; then
             scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug -c
+            scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release -c
+            rm -rf scons_linux_debug
+            rm -rf scons_linux_release
           fi
 
           python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
@@ -116,6 +121,7 @@ jobs:
       - name: 'Copy extra libs'
         run: |
           cp libs/bin/linux_x86_64/*.so ${{ env.EXPORT_FOLDER }}
+          rm ${{ env.EXPORT_FOLDER }}/*debug*.so
 
       - name: 'Create AppDir structure'
         run: |

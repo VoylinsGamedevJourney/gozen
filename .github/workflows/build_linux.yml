@@ -31,7 +31,7 @@ jobs:
       - name: 'Installing dependencies'
         run: |
           sudo apt-get update
-          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu pkg-config libx264-dev libx265-dev
+          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu pkg-config libx264-dev libx265-dev libnuma-dev fuse libfuse2 desktop-file-utils patchelf
 
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
@@ -91,6 +91,8 @@ jobs:
           REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
           REBUILD_SCONS_INPUT="${{ inputs.rebuild_scons }}"
 
+          export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+
           if [ ! -d ffmpeg/bin_linux ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
             python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
           else
@@ -98,7 +100,10 @@ jobs:
           fi
 
           if  [ "$REBUILD_SCONS_INPUT" == "true" ]; then
-            scons -c
+            scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug -c
+            scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release -c
+            rm -rf scons_linux_debug
+            rm -rf scons_linux_release
           fi
 
           python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
@@ -120,11 +125,14 @@ jobs:
       - name: 'Copy extra libs'
         run: |
           cp libs/bin/linux_x86_64/*.so ${{ env.EXPORT_FOLDER }}
+          ls ${{ env.EXPORT_FOLDER }}
+          ls libs/bin/linux_x86_64
+          rm ${{ env.EXPORT_FOLDER }}/*debug*.so
 
       - name: 'Upload Linux'
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Linux_x86_64_${{ inputs.version }}-DEBUG
+          name: GoZen_Linux_x86_64_${{ inputs.version }}
           path: ${{ env.EXPORT_FOLDER }}
           retention-days: 2
 

@@ -79,15 +79,10 @@ def compile_ffmpeg_linux(arch):
     print('Configuring FFmpeg for Linux ...')
 
     try:
-        # Get all default pkg-config paths from the system
         pc_paths = subprocess.check_output(
             ['pkg-config', '--variable', 'pc_path', 'pkg-config']
         ).decode().strip().split(':')
-
-        # Also include ffmpeg's local install path if you're installing into ./bin_linux
         pc_paths.insert(0, os.path.abspath('ffmpeg/bin_linux/lib/pkgconfig'))
-
-        # Export all paths to the environment
         os.environ['PKG_CONFIG_PATH'] = ':'.join(pc_paths)
 
         print('PKG_CONFIG_PATH set to:', os.environ['PKG_CONFIG_PATH'])
@@ -110,16 +105,16 @@ def compile_ffmpeg_linux(arch):
         '--extra-ldflags=-fPIC',
         '--pkg-config-flags=--static',
         '--enable-libx264',
-        '--enable-libx265'
+        # '--enable-libx265'
     ]
     cmd += DISABLED_MODULES
 
-    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR)
+    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR, env=os.environ)
 
     print('Compiling FFmpeg for Linux ...')
 
-    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR)
-    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR)
+    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
+    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
 
     print('Compiling FFmpeg for Linux finished!')
 
@@ -146,8 +141,20 @@ def copy_lib_files_linux(arch):
                 if len(parts) < 2:
                     continue
                 lib_path = parts[1].split('(')[0].strip()
-                if os.path.isfile(lib_path):
-                    shutil.copy2(lib_path, path)
+                if not os.path.isfile(lib_path):
+                    continue
+
+                if any(lib_path.endswith(name) for name in (
+                    'libc.so.6',
+                    'libm.so.6',
+                    'libpthread.so.0',
+                    'libdl.so.2',
+                    'librt.so.1',
+                    'ld-linux-x86-64.so.2',
+                )):
+                    continue
+
+                shutil.copy2(lib_path, path)
         except subprocess.CalledProcessError as e:
             print(f"Failed to run ldd on {binary_path}: {e}")
 
@@ -193,7 +200,7 @@ def compile_ffmpeg_windows(arch):
         '--extra-ldflags=-fPIC  -static-libgcc -static-libstdc++',
         '--extra-cflags=-fPIC -O2',
         '--enable-libx264',
-        '--enable-libx265'
+        #'--enable-libx265'
     ]
     cmd += DISABLED_MODULES
 
@@ -219,7 +226,7 @@ def copy_lib_files_windows(arch):
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264.dll {path}')
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx265.dll {path}')
+    #os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx265.dll {path}')
 
     print('Copying files for Windows finished!')
 
