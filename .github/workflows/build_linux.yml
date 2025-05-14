@@ -125,7 +125,10 @@ jobs:
       - name: 'Copy extra libs'
         run: |
           cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
-          rm ${{ env.EXPORT_FOLDER }}/*debug*.so
+          cp /usr/lib/x86_64-linux-gnu/libx26*.so ${{ env.EXPORT_FOLDER }}
+          echo "reading bin"
+          ls libs/bin/linux_x86_64
+          rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
 
       - name: 'Upload Linux'
         uses: actions/upload-artifact@v4

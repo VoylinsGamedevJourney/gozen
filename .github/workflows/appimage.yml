@@ -121,7 +121,10 @@ jobs:
       - name: 'Copy extra libs'
         run: |
           cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
-          rm ${{ env.EXPORT_FOLDER }}/*debug*.so
+          cp /usr/lib/x86_64-linux-gnu/libx26*.so ${{ env.EXPORT_FOLDER }}
+          echo "reading bin"
+          ls libs/bin/linux_x86_64
+          rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
 
       - name: 'Create AppDir structure'
         run: |
@@ -156,6 +159,7 @@ jobs:
           #!/bin/bash
           APPIMAGE_PATH="\$(readlink -f "\${0}")"
           APPDIR="\$(dirname "\${APPIMAGE_PATH}")"
+          export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
 
           cd "\${APPDIR}/usr/bin"
 

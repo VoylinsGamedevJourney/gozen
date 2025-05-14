@@ -16,7 +16,6 @@ if cache_folder != 'null':
     CacheDir(cache_folder)
 
 env = SConscript('godot_cpp/SConstruct')
-env.Append(CPPPATH=['gde_gozen'])
 env_suffix = env['suffix']
 env_shlibsuffix = env['SHLIBSUFFIX']
 

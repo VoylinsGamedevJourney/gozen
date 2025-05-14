@@ -105,7 +105,6 @@ def compile_ffmpeg_linux(arch):
         '--extra-ldflags=-fPIC',
         '--pkg-config-flags=--static',
         '--enable-libx264',
-        # '--enable-libx265'
     ]
     cmd += DISABLED_MODULES
 
@@ -144,6 +143,8 @@ def copy_lib_files_linux(arch):
                 if not os.path.isfile(lib_path):
                     continue
 
+                print(lib_path)
+
                 if any(lib_path.endswith(name) for name in (
                     'libc.so.6',
                     'libm.so.6',
@@ -165,7 +166,7 @@ def copy_lib_files_linux(arch):
         f'{path}/libavutil.so.58',
         f'{path}/libswscale.so.7',
         f'{path}/libswresample.so.4',
-        # f'bin/linux_{arch}/libgozen.linux.template_debug.{arch}.so'
+        f'bin/linux_{arch}/libgozen.linux.template_debug.{arch}.so'
     ]
 
     # TODO: Make this not copy all libraries, only needed ones (x264, x265)
@@ -200,7 +201,6 @@ def compile_ffmpeg_windows(arch):
         '--extra-ldflags=-fPIC  -static-libgcc -static-libstdc++',
         '--extra-cflags=-fPIC -O2',
         '--enable-libx264',
-        #'--enable-libx265'
     ]
     cmd += DISABLED_MODULES
 
@@ -225,8 +225,7 @@ def copy_lib_files_windows(arch):
 
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264.dll {path}')
-    #os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx265.dll {path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
 
     print('Copying files for Windows finished!')
 
