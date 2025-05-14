@@ -1,6 +1,10 @@
 # Changelog
 This is the changelog of all releases which can be found on the [GoZen repo release page](https://github.com/VoylinsGamedevJourney/gozen/releases)
 
+## Version 0.2.3-alpha - 2025/05/14
+A small update with the star of the show: Rendering should be fixed.
+Also, localization is implemented and will soon accept contributors to add the extra languages.
+
 ## Version 0.2.2-alpha - 2025/05/11
 ### Fixes
 - *Fix:* GDExtension dependency paths;

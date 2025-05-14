@@ -120,7 +120,7 @@ jobs:
 
       - name: 'Copy extra libs'
         run: |
-          cp libs/bin/linux_x86_64/*.so ${{ env.EXPORT_FOLDER }}
+          cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
           rm ${{ env.EXPORT_FOLDER }}/*debug*.so
 
       - name: 'Create AppDir structure'
