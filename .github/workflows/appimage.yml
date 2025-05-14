@@ -7,14 +7,6 @@ on:
         description: 'Version'
         type: string
         default: 'v0.0'
-      rebuild_ffmpeg:
-        description: 'Rebuild FFmpeg'
-        type: boolean
-        default: false
-      rebuild_scons:
-        description: 'Rebuild scons'
-        type: boolean
-        default: false
         
 env:
   GODOT_VERSION: 4.4.1
@@ -45,24 +37,6 @@ jobs:
           path: ~/.local/share/godot
           key: ${{ runner.os }}-ubuntu-godot-${{ env.GODOT_VERSION }}
 
-      - name: 'Cache FFmpeg Linux'
-        uses: actions/cache@v4
-        with:
-          path: libs/ffmpeg/bin_linux
-          key: ${{ runner.os }}-ubuntu-ffmpeg
-
-      - name: 'Cache scons Linux debug'
-        uses: actions/cache@v4
-        with:
-          path: libs/scons_linux_debug
-          key: ${{ runner.os }}-gde-gozen-debug
-
-      - name: 'Cache scons Linux release'
-        uses: actions/cache@v4
-        with:
-          path: libs/scons_linux_release
-          key: ${{ runner.os }}-gde-gozen-release
-
       - name: 'Prepare Godot'
         run: |
           if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
@@ -89,25 +63,15 @@ jobs:
       - name: 'Compiling GDE GoZen Debug'
         working-directory: ./libs
         run: |
-          REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
-          REBUILD_SCONS_INPUT="${{ inputs.rebuild_scons }}"
-
           export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 
-          if [ ! -d ffmpeg/bin_linux ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
-            python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
-          else
-            echo "FFmpeg build found in cache."
-          fi
+          python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
 
-          if  [ "$REBUILD_SCONS_INPUT" == "true" ]; then
-            scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug -c
-            scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release -c
-            rm -rf scons_linux_debug
-            rm -rf scons_linux_release
-          fi
+          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 -c
+          scons -j$(nproc) target=template_release platform=linux arch=x86_64 -c
 
           python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
+
           scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug
           scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release
 
