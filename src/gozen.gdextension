@@ -7,20 +7,12 @@ compatibility_minimum = "4.4"
 
 linux.debug.x86_64 = "res://../libs/bin/linux_x86_64/libgozen.linux.template_debug.x86_64.so"
 linux.release.x86_64 = "res://../libs/bin/linux_x86_64/libgozen.linux.template_release.x86_64.so"
-linux.debug.x86_32 = "res://../libs/bin/linux_x86_32/libgozen.linux.template_debug.x86_32.so"
-linux.release.x86_32 = "res://../libs/bin/linux_x86_32/libgozen.linux.template_release.x86_32.so"
 
 linux.debug.arm64 = "res://../libs/bin/linux_arm64/libgozen.linux.template_debug.arm64.so"
 linux.release.arm64 = "res://../libs/bin/linux_arm64/libgozen.linux.template_release.arm64.so"
-linux.debug.arm32 = "res://../libs/bin/linux_arm32/libgozen.linux.template_debug.arm32.so"
-linux.release.arm32 = "res://../libs/bin/linux_arm32/libgozen.linux.template_release.arm32.so"
 
 windows.debug.x86_64 = "res://../libs/bin/windows_x86_64/libgozen.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "res://../libs/bin/windows_x86_64/libgozen.windows.template_release.x86_64.dll"
-windows.debug.x86_32 = "res://../libs/bin/windows_x86_32/libgozen.windows.template_debug.x86_32.dll"
-windows.release.x86_32 = "res://../libs/bin/windows_x86_32/libgozen.windows.template_release.x86_32.dll"
 
 windows.debug.arm64 = "res://../libs/bin/windows_arm64/libgozen.windows.template_debug.arm64.dll"
 windows.release.arm64 = "res://../libs/bin/windows_arm64/libgozen.windows.template_release.arm64.dll"
-windows.debug.arm32 = "res://../libs/bin/windows_arm32/libgozen.windows.template_debug.arm32.dll"
-windows.release.arm32 = "res://../libs/bin/windows_arm32/libgozen.windows.template_release.arm32.dll"

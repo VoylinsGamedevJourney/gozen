@@ -201,7 +201,7 @@ def compile_ffmpeg_windows(arch):
         '--extra-libs=-lpthread',
         '--extra-ldflags=-fPIC  -static-libgcc -static-libstdc++',
         '--extra-cflags=-fPIC -O2',
-        '--enable-libx264',
+        # '--enable-libx264',
     ]
     cmd += DISABLED_MODULES
 
