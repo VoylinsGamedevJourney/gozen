@@ -182,8 +182,8 @@ def copy_lib_files_linux(arch):
 def compile_ffmpeg_windows(arch):
     print('Configuring FFmpeg for Windows ...')
 
-    os.environ['PKG_CONFIG_LIBDIR'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
-    os.environ['PKG_CONFIG_PATH'] = f'/usr/{arch}-w64-mingw32/lib/pkgconfig'
+    os.environ['PKG_CONFIG_LIBDIR'] = '/usr/x86_64-w64-mingw32/lib/pkgconfig'
+    os.environ['PKG_CONFIG_PATH'] = '/usr/x86_64-w64-mingw32/lib/pkgconfig'
 
     cmd = [
         './configure',
@@ -194,8 +194,9 @@ def compile_ffmpeg_windows(arch):
         f'--arch={arch}',
         '--target-os=mingw32',
         '--enable-cross-compile',
-        f'--cross-prefix={arch}-w64-mingw32-',
-        f'--pkg-config={arch}-w64-mingw32-pkg-config',
+        '--cross-prefix=x86_64-w64-mingw32-',
+        '--pkg-config=x86_64-w64-mingw32-pkg-config',
+        '--pkg-config-flags=--static',
         '--quiet',
         '--extra-libs=-lpthread',
         '--extra-ldflags=-fPIC  -static-libgcc -static-libstdc++',
@@ -223,8 +224,7 @@ def copy_lib_files_windows(arch):
     for file in glob.glob('ffmpeg/bin_windows/bin/*.dll'):
         shutil.copy2(file, path)
 
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread-1.dll {path}')
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread*.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
 
     print('Copying files for Windows finished!')

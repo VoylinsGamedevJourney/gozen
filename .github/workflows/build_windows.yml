@@ -7,10 +7,6 @@ on:
         description: 'Version'
         type: string
         default: 'v0.0'
-      rebuild_ffmpeg:
-        description: 'Rebuild FFmpeg'
-        type: boolean
-        default: false
         
 env:
   GODOT_VERSION: 4.4.1
@@ -64,61 +60,6 @@ jobs:
             echo 'AUR package installation complete.'
           "
 
-
-#      - name: 'Manually installing mingw w64 packages'
-#        working-directory: /home/builder
-#        run: |
-#          su -l builder -c "
-#            git clone --depth 1 https://aur.archlinux.org/mingw-w64-pkg-config.git &&
-#            cd mingw-w64-pkg-config &&
-#            makepkg -si --noconfirm --needed
-#
-#            mkdir -p ~/aur_builds && cd ~/aur_builds || exit 1;
-#
-#            cd /home/builder
-#            echo 'Installing AUR package: mingw-w64-environment'
-#            rm -rf mingw-w64-environment; # Clean up previous clone, if any
-#            # The git clone URL is correct
-#            if git clone --depth 1 https://aur.archlinux.org/mingw-w64-environment.git; then
-#              cd mingw-w64-environment || exit 1;
-#              makepkg -si --noconfirm --needed
-#            else
-#              echo 'Failed to clone mingw-w64-environment'
-#              exit 1
-#            fi
-#
-#            cd /home/builder
-#            mkdir -p ~/aur_builds && cd ~/aur_builds || exit 1;
-#
-#            cd /home/builder
-#            echo 'Installing AUR dependency: mingw-w64-l-smash'
-#            if [ ! -d mingw-w64-l-smash ]; then
-#              git clone --depth 1 https://aur.archlinux.org/mingw-w64-l-smash.git
-#            fi
-#            cd mingw-w64-l-smash && makepkg -si --noconfirm --needed && cd ..
-#      
-#            cd /home/builder
-#            echo 'Installing mingw-w64-x264'
-#            if [ ! -d mingw-w64-x264 ]; then
-#              git clone --depth 1 https://aur.archlinux.org/mingw-w64-x264.git
-#            fi
-#            cd mingw-w64-x264 && makepkg -si --noconfirm --needed
-#          "
-#
-#            cd /home/builder
-#            echo 'Installing AUR dependency: mingw-w64-cmake'
-#            if [ ! -d mingw-w64-cmake ]; then
-#              git clone --depth 1 https://aur.archlinux.org/mingw-w64-cmake.git
-#            fi
-#            cd mingw-w64-cmake && makepkg -si --noconfirm --needed && cd ..
-#      
-#            cd /home/builder
-#            echo 'Installing mingw-w64-x265'
-#            if [ ! -d mingw-w64-x265 ]; then
-#              git clone --depth 1 https://aur.archlinux.org/mingw-w64-x265.git
-#            fi
-#            cd mingw-w64-x265 && makepkg -si --noconfirm --needed
-
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
         with:
@@ -129,30 +70,6 @@ jobs:
         with:
           path: ~/.local/share/godot
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
-
-      - name: 'Cache FFmpeg Linux'
-        uses: actions/cache@v4
-        with:
-          path: libs/ffmpeg/bin_linux
-          key: ffmpeg-linux
-
-      - name: 'Cache FFmpeg Windows'
-        uses: actions/cache@v4
-        with:
-          path: libs/ffmpeg/bin_windows
-          key: ffmpeg-linux
-
-      - name: 'Cache scons Linux debug'
-        uses: actions/cache@v4
-        with:
-          path: libs/scons_linux_debug
-          key: gde_linux_debug
-
-      - name: 'Cache scons Windows release'
-        uses: actions/cache@v4
-        with:
-          path: libs/scons_windows_release
-          key: gde_windows_release
 
       - name: 'Prepare Godot'
         run: |
@@ -181,16 +98,9 @@ jobs:
       - name: 'Compiling GDE GoZen Debug (Linux)'
         working-directory: ./libs
         run: |
-          REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
-
-          if [ ! -d ffmpeg/bin_linux ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
-            python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
-          else
-            echo "FFmpeg build found in cache."
-          fi
-
+          python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
-          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug
+          scons -j$(nproc) target=template_debug platform=linux arch=x86_64
 
       - name: 'Clean ffmpeg'
         working-directory: ./libs/ffmpeg
@@ -202,16 +112,9 @@ jobs:
       - name: 'Compiling GDE GoZen'
         working-directory: ./libs
         run: |
-          REBUILD_FFMPEG_INPUT="${{ inputs.rebuild_ffmpeg }}"
-
-          if [ ! -d ffmpeg/bin_windows ] || [ "$REBUILD_FFMPEG_INPUT" == "true" ]; then
-            python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
-          else
-            echo "FFmpeg build found in cache."
-          fi
-
+          python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
-          scons -j$(nproc) target=template_release platform=windows arch=x86_64 cache_dir=scons_windows_release
+          scons -j$(nproc) target=template_release platform=windows arch=x86_64
 
       - name: 'Prepare folder'
         run: |
