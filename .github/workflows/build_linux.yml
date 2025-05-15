@@ -87,11 +87,16 @@ jobs:
 
       - name: 'Copy extra libs'
         run: |
+          echo "Copying libs"
           cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
           cp /usr/lib/x86_64-linux-gnu/libx26*.so ${{ env.EXPORT_FOLDER }}
-          echo "reading bin"
-          ls libs/bin/linux_x86_64
           rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
+
+      - name: 'Fix RPATH'
+        working-directory: ${{ env.EXPORT_FOLDER }}
+        run: |
+          echo "Setting RPATH"
+          find . -maxdepth 1 -name "*.so*" -exec sudo patchelf --set-rpath '$ORIGIN' {} \;
 
       - name: 'Upload Linux'
         uses: actions/upload-artifact@v4
