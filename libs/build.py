@@ -196,21 +196,19 @@ def compile_ffmpeg_windows(arch):
         '--enable-cross-compile',
         '--cross-prefix=x86_64-w64-mingw32-',
         '--pkg-config=x86_64-w64-mingw32-pkg-config',
-        '--pkg-config-flags=--static',
-        '--quiet',
-        '--extra-libs=-lpthread',
-        '--extra-ldflags=-fPIC  -static-libgcc -static-libstdc++',
-        '--extra-cflags=-fPIC -O2',
-        # '--enable-libx264',
+        '--extra-libs=-lpthread -lmingwex',
+        '--extra-ldflags=-fPIC',
+        '--extra-cflags=-fPIC',
+        '--enable-libx264',
     ]
     cmd += DISABLED_MODULES
 
-    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR)
+    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR, env=os.environ)
 
     print('Compiling FFmpeg for Windows ...')
 
-    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR)
-    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR)
+    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
+    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
 
     print('Compiling FFmpeg for Windows finished!')
 
@@ -225,6 +223,7 @@ def copy_lib_files_windows(arch):
         shutil.copy2(file, path)
 
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread*.dll {path}')
+    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
     os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
 
     print('Copying files for Windows finished!')

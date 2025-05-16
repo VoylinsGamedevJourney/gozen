@@ -23,7 +23,7 @@ jobs:
       image: archlinux:latest
     steps:
       - name: 'Installing pacman dependencies'
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc nasm cmake pkgconf fakeroot debugedit sudo go which
+        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc nasm cmake pkgconf fakeroot debugedit sudo go which perl texinfo
 
       - name: 'Creating fake user install yay'
         working-directory: /tmp
