@@ -196,10 +196,7 @@ def compile_ffmpeg_windows(arch):
         '--enable-cross-compile',
         '--cross-prefix=x86_64-w64-mingw32-',
         '--pkg-config=x86_64-w64-mingw32-pkg-config',
-        '--extra-libs=-lpthread -lmingwex',
-        '--extra-ldflags=-fPIC',
-        '--extra-cflags=-fPIC',
-        '--enable-libx264',
+        '--extra-libs=-lpthread',
     ]
     cmd += DISABLED_MODULES
 
@@ -222,9 +219,9 @@ def copy_lib_files_windows(arch):
     for file in glob.glob('ffmpeg/bin_windows/bin/*.dll'):
         shutil.copy2(file, path)
 
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread*.dll {path}')
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
-    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
+#    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread*.dll {path}')
+#    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
+#    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
 
     print('Copying files for Windows finished!')
 
