@@ -80,7 +80,7 @@ bool Renderer::open() {
 
 	// Setting up SWS
 	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter >(sws_getContext(
-			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGB24,
+			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGBA,
 			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_YUV420P,
 			sws_quality, nullptr, nullptr, nullptr));
 	if (!sws_ctx)
@@ -281,7 +281,7 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 		return _log_err("Frame not writable");
 
 	uint8_t *src_data[4] = { frame_image->get_data().ptrw(), nullptr, nullptr, nullptr};
-	int src_linesize[4] = { av_frame_video->width * 3, 0, 0, 0 };
+	int src_linesize[4] = { av_frame_video->width * 4, 0, 0, 0 };
 
 	response = sws_scale(
 			sws_ctx.get(),

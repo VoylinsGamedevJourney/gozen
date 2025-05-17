@@ -252,7 +252,7 @@ func _on_render_button_pressed() -> void:
 		if cancel_rendering:
 			break;
 		await RenderingServer.frame_post_draw
-		
+
 		if !renderer.send_frame(viewport.get_image()):
 			render_warning_label.visible = true
 			render_progress_label.visible = false
