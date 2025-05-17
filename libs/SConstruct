@@ -65,6 +65,7 @@ elif 'windows' in platform:
     env.Append(
         CPPPATH=['ffmpeg/bin_windows/include'],
         LIBPATH=['ffmpeg/bin_windows/bin'],
+        CXXFLAGS=['-std=c++17', '-pthread'],
     )
 
 

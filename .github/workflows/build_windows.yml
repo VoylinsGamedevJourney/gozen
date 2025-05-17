@@ -10,7 +10,6 @@ on:
         
 env:
   GODOT_VERSION: 4.4.1
-  
   EXPORT_FOLDER: bin/windows_x86_64
 
 run-name: 'Build GoZen for Windows version: ${{ inputs.version }} by @${{ github.actor }}'
@@ -18,47 +17,17 @@ run-name: 'Build GoZen for Windows version: ${{ inputs.version }} by @${{ github
 jobs:
   build-gde-windows:
     name: 'Build GoZen'
-    runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: 'Installing pacman dependencies'
-        run: pacman -Syu --noconfirm git bash yasm python python-pip scons gcc diffutils make wget unzip tar mingw-w64 ffmpeg aarch64-linux-gnu-binutils aarch64-linux-gnu-gcc nasm cmake pkgconf fakeroot debugedit sudo go which perl texinfo
-
-      - name: 'Creating fake user install yay'
-        working-directory: /tmp
+      - name: 'Installing dependencies'
         run: |
-          useradd -m builder
-          echo "builder ALL=(ALL) NOPASSWD: /usr/bin/pacman" > /etc/sudoers.d/builder
-          chmod 0440 /etc/sudoers.d/builder
+          sudo apt-get update
+          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar mingw-w64 mingw-w64-tools ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu nasm cmake pkg-config libx264-dev libx265-dev libnuma-dev fuse libfuse2 desktop-file-utils patchelf golang perl texinfo
 
-          PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /home/builder/.bash_profile
-          chown builder:builder /home/builder/.bash_profile
-
-          echo 'Installing yay AUR helper...'
-          su -l builder -c "
-            export PATH=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$PATH\"
-            git clone --depth 1 https://aur.archlinux.org/yay.git
-            cd yay
-            makepkg -si --noconfirm --needed
-          "
-          echo 'yay installation complete.'
-
-      - name: 'Install MinGW AUR packages as builder using yay'
+      - name: 'Set MinGW to POSIX'
         run: |
-          su -l builder -c "
-            export PATH=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$PATH\"
-            echo 'Installing mingw-w64 AUR packages with yay...'
-            yay -S --noconfirm --needed \
-              mingw-w64-pkg-config \
-              mingw-w64-environment \
-              mingw-w64-l-smash \
-              mingw-w64-x264
-            # If you re-add these, uncomment them:
-            # mingw-w64-cmake \
-            # mingw-w64-x265
-            echo 'AUR package installation complete.'
-          "
+          sudo update-alternatives --install /usr/bin/x86_64-w64-mingw32-gcc x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix 100
+          sudo update-alternatives --install /usr/bin/x86_64-w64-mingw32-g++ x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix 100
 
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
@@ -98,23 +67,27 @@ jobs:
       - name: 'Compiling GDE GoZen Debug (Linux)'
         working-directory: ./libs
         run: |
-          python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
-          python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
+          export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+
+          python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
+          python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
+
           scons -j$(nproc) target=template_debug platform=linux arch=x86_64
+
+      - name: 'Clean SCons Build Artifacts'
+        working-directory: ./libs
+        run: scons -c
 
       - name: 'Clean ffmpeg'
         working-directory: ./libs/ffmpeg
-        run: |
-          if [ -f ffmpeg/ffbuild/config.mak ]; then
-            make distclean
-          fi
+        run: make distclean
 
       - name: 'Compiling GDE GoZen'
         working-directory: ./libs
         run: |
           python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
-          scons -j$(nproc) target=template_release platform=windows arch=x86_64
+          scons -j$(nproc) target=template_release platform=windows arch=x86_64 use_mingw=yes
 
       - name: 'Prepare folder'
         run: |

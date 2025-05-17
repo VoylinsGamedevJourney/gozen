@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.local/share/godot
-          key: ${{ runner.os }}-ubuntu-godot-${{ env.GODOT_VERSION }}
+          key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
 
       - name: 'Prepare Godot'
         run: |
@@ -64,14 +64,10 @@ jobs:
           export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 
           python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
-
-          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 -c
-          scons -j$(nproc) target=template_release platform=linux arch=x86_64 -c
-
           python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
 
-          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug
-          scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release
+          scons -j$(nproc) target=template_debug platform=linux arch=x86_64
+          scons -j$(nproc) target=template_release platform=linux arch=x86_64
 
       - name: 'Prepare folder'
         run: |
