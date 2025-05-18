@@ -74,6 +74,7 @@ jobs:
         working-directory: ./libs
         run: |
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
+          scons -j4 target=template_debug platform=windows arch=x86_64
           scons -j4 target=template_release platform=windows arch=x86_64
 
       - name: 'Prepare folder'
