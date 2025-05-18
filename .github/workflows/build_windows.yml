@@ -33,6 +33,7 @@ jobs:
         working-directory: ./libs
         run: |
           python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
+          cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ffmpeg/bin_windows/bin
 
       - name: 'Upload FFmpeg binaries'
         uses: actions/upload-artifact@v4
@@ -74,6 +75,7 @@ jobs:
         working-directory: ./libs
         run: |
           python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
+          scons -j4 target=template_debug platform=windows arch=x86_64
           scons -j4 target=template_release platform=windows arch=x86_64
 
       - name: 'Prepare folder'
@@ -101,11 +103,18 @@ jobs:
       - name: 'Export project for Windows'
         working-directory: ./src
         run: |
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe --import godot.project --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
 
       - name: 'Copy extra DLLs'
         run: copy libs\bin\windows_x86_64\*.dll $env:EXPORT_FOLDER\
+
+      - name: 'Upload GDE'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gde-windows-bin
+          path: libs/bin
+          retention-days: 1
 
       - name: 'Upload Windows'
         uses: actions/upload-artifact@v4
