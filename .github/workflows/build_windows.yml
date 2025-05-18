@@ -108,6 +108,13 @@ jobs:
       - name: 'Copy extra DLLs'
         run: copy libs\bin\windows_x86_64\*.dll $env:EXPORT_FOLDER\
 
+      - name: 'Upload GDE'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gde-windows-bin
+          path: libs/bin
+          retention-days: 1
+
       - name: 'Upload Windows'
         uses: actions/upload-artifact@v4
         with:
