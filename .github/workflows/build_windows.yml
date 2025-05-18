@@ -33,6 +33,7 @@ jobs:
         working-directory: ./libs
         run: |
           python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
+          cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ffmpeg/bin_windows
 
       - name: 'Upload FFmpeg binaries'
         uses: actions/upload-artifact@v4
