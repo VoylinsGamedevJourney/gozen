@@ -102,7 +102,7 @@ jobs:
       - name: 'Export project for Windows'
         working-directory: ./src
         run: |
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless
           ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
 
       - name: 'Copy extra DLLs'
