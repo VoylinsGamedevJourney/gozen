@@ -4,6 +4,7 @@ extends PanelContainer
 @export var save_info_label: Label
 
 @export_group("Appearance")
+@export var language_option_button: OptionButton
 @export var theme_option_button: OptionButton
 @export var show_menu_bar_button: CheckButton
 @export var audio_waveform_style: OptionButton
@@ -21,10 +22,12 @@ extends PanelContainer
 
 
 var changes: Dictionary[String, Callable] = {}
+var locales: PackedStringArray = [] # List of key codes
 
 
 
 func _ready() -> void:
+	load_locales()
 	set_values()
 
 
@@ -33,8 +36,20 @@ func _input(event: InputEvent) -> void:
 		_on_cancel_button_pressed()
 
 
+func load_locales() -> void:
+	var data: Dictionary[String, String] = Settings.get_languages()
+	var keys: PackedStringArray = data.keys()
+	
+	keys.sort()
+	for key: String in keys:
+		if locales.append(data[key]):
+			Toolbox.print_append_error()
+		language_option_button.add_item(key)
+
+
 func set_values() -> void:
 	# Appearance values
+	language_option_button.selected = locales.find(Settings.get_language())
 	theme_option_button.selected = Settings.get_theme()
 	show_menu_bar_button.button_pressed = Settings.get_show_menu_bar()
 	audio_waveform_style.selected = Settings.get_audio_waveform_style()
@@ -69,12 +84,20 @@ func _on_save_button_pressed() -> void:
 	for change: Callable in changes.values():
 		change.call()
 	
+	Settings.apply_language()
 	Settings.save()
 	self.queue_free()
 
 
 func _on_cancel_button_pressed() -> void:
+	Settings.apply_language()
 	self.queue_free()
+
+
+func _on_language_option_button_item_selected(index: int) -> void:
+	changes["language"] = Settings.set_language.bind(locales[index])
+	TranslationServer.set_locale(locales[index])
+	save_info_label.visible = true
 
 
 func _on_theme_option_button_item_selected(index: int) -> void:

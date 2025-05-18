@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scripts/settings_menu.gd" id="1_ce4ec"]
 
-[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "theme_option_button", "show_menu_bar_button", "audio_waveform_style", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox", "pause_after_drag", "delete_empty_modifier_button")]
+[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "language_option_button", "theme_option_button", "show_menu_bar_button", "audio_waveform_style", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox", "pause_after_drag", "delete_empty_modifier_button")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -11,6 +11,7 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_ce4ec")
 save_info_label = NodePath("Panel/Margin/VBox/SaveForEffectLabel")
+language_option_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/LanguageOptionButton")
 theme_option_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton")
 show_menu_bar_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ShowMenuBarCheckButton")
 audio_waveform_style = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/AudioWaveformStyleOptionButton")
@@ -58,6 +59,16 @@ text = "title_appearance"
 [node name="AppearanceGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
 layout_mode = 2
 columns = 2
+
+[node name="LanguageLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Choose your theme: Dark or Light. Both are developed at the same time so both themes should be usable. Custom theme's coming in the future."
+mouse_filter = 1
+text = "setting_language"
+
+[node name="LanguageOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
+layout_mode = 2
 
 [node name="ThemeLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid"]
 layout_mode = 2
@@ -280,6 +291,7 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"main_button"
 text = "button_save_settings"
 
+[connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/LanguageOptionButton" to="." method="_on_language_option_button_item_selected"]
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ThemeOptionButton" to="." method="_on_theme_option_button_item_selected"]
 [connection signal="toggled" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/ShowMenuBarCheckButton" to="." method="_on_show_menu_bar_check_button_toggled"]
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/AppearanceGrid/AudioWaveformStyleOptionButton" to="." method="_on_audio_waveform_style_option_button_item_selected"]

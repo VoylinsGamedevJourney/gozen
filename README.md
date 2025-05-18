@@ -19,6 +19,7 @@
 GoZen is a lightweight, stable, minimalistic, and performant video editor with simplicity in mind. Built using the Godot game engine, GoZen aims to provide a focused video editing  experience without the complexity which other traditional NLE's. It is primarily developed for Linux but includes support for Windows, MacOS support will come in the future.
 
 ## Features
+
 - Smooth video playback;
 - Fast rendering;
 - Crash free;
@@ -34,15 +35,16 @@ On the bottom you have your timeline with on the right your audio meter to check
 
 ## Installation
 Due to GoZen still being in alpha, there is no available build yet through each distro's package manager (an AUR build is coming). The best way to download the most recent version is through following links:
-- [GoZen GitHub release page](https://github.com/VoylinsGamedevJourney/gozen/releases);
-- [GoZen Itch.io page](https://voylin.itch.io/gozen);
+- [GitHub release page](https://github.com/VoylinsGamedevJourney/gozen/releases);
+- [Itch.io page](https://voylin.itch.io/gozen);
+- [GoZen AUR](https://aur.archlinux.org/packages/gozen);
+- [GoZen-git AUR](https://aur.archlinux.org/packages/gozen); (This is the most up to-date, but most likely to break)
 
 At this moment there are three builds:
 - Linux: This version works on more up-to-date distro's;
-- Linux compatibility: This works on all distro's;
+- AppImage: This works on all distro's;
+- AUR: For Arch Linux users, there is a normal version and a git version available;
 - Windows: ...;
-
-The download comes as a zip folder which you just need to unpack. No installation needed, just an executable with the libraries needed to run GoZen.
 
 ### Prerequisites
 For the main Linux build, you will need to have following libraries installed:
@@ -61,6 +63,9 @@ We welcome contributions to GoZen wether it's reporting bugs, suggesting feature
 Please read our [Contributing Guide](./CONTRIBUTING.md) for more details on how to get involved.
 
 Join our [Discord server](https://discord.gg/BdbUf7VKYC) to discuss the GoZen project and ask questions!
+
+### Localization
+We need contributors for the localization of GoZen, more info can be found in [the translation README](/src/translations/README.md)
 
 ## Support the project ❤️
 GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad and my time is limited as I'm trying to make it financially work to keep working from home.

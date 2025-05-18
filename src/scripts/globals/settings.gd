@@ -20,6 +20,7 @@ func _ready() -> void:
 
 	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
 		printerr("Something went wrong loading settings! ", data.error)
+	apply_language()
 	apply_theme()
 	
 
@@ -33,6 +34,44 @@ func reset_settings() -> void:
 
 
 # Appearance set/get
+func set_language(code: String) -> void:
+	data.language = code
+	apply_language()
+
+
+func apply_language() -> void:
+	TranslationServer.set_locale(data.language)
+
+
+func get_language() -> String:
+	return data.language
+
+
+func get_languages() -> Dictionary:
+	var language_data: Dictionary[String, String] = {}
+
+	# Get all the data.
+	for code: String in TranslationServer.get_loaded_locales():
+		var key: String = code.split('_')[0]
+
+		if Localization.native_locale_names.has(key):
+			key = Localization.native_locale_names[key]
+		else:
+			key = TranslationServer.get_locale_name(key)
+
+		if code.contains('_'): # Country code present
+			var country_code: String = code.split('_')[1]
+
+			if Localization.native_country_names.has(country_code):
+				key += " (" + Localization.native_country_names[country_code] + ")"
+			else:
+				key += " (" + TranslationServer.get_country_name(country_code) + ")"
+
+		language_data[key] = code
+
+	return language_data
+
+
 func set_theme(theme: SettingsData.THEME) -> void:
 	data.theme = theme
 	apply_theme()

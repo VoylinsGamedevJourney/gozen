@@ -187,6 +187,10 @@ msgid "setting_background_color"
 msgstr ""
 
 
+msgid "setting_language"
+msgstr ""
+
+
 msgid "setting_theme"
 msgstr ""
 
