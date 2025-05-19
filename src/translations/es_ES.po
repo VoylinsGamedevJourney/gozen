@@ -1,0 +1,295 @@
+# GoZen Localization Template
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+
+msgid "title_about_gozen"
+msgstr "Acerca de GoZen"
+
+msgid "title_appearance"
+msgstr "Apariencia"
+
+msgid "title_defaults"
+msgstr "Valores por defecto"
+
+msgid "title_timeline"
+msgstr "Línea de tiempo"
+
+msgid "title_rendering"
+msgstr "Renderizado"
+
+msgid "title_rendering_finished"
+msgstr "Renderizado finalizado"
+
+msgid "title_render_video"
+msgstr "Renderizar vídeo"
+
+msgid "title_render_audio"
+msgstr "Renderizar audio"
+
+msgid "title_metadata"
+msgstr "Metadatos"
+
+msgid "title_cpu_threads"
+msgstr "Hilos de CPU"
+
+msgid "title_recent_projects"
+msgstr "Proyectos recientes"
+
+msgid "title_getting_started"
+msgstr "Primeros pasos"
+
+msgid "title_new_project"
+msgstr "Nuevo proyecto"
+
+msgid "button_tooltip_create_new_project"
+msgstr "Crear nuevo proyecto con la configuración elegida."
+
+msgid "button_gozen_site"
+msgstr "Sitio de GoZen"
+
+msgid "button_manual"
+msgstr "Manual"
+
+msgid "button_tutorials"
+msgstr "Tutoriales"
+
+msgid "button_discord_server"
+msgstr "Servidor de Discord"
+
+msgid "button_support_gozen"
+msgstr "Apoyar a GoZen"
+
+msgid "button_open_project"
+msgstr "Abrir proyecto"
+
+msgid "button_create_new_project"
+msgstr "Crear nuevo proyecto"
+
+msgid "button_tooltip_editor_settings"
+msgstr "Configuración del editor."
+
+msgid "button_cancel"
+msgstr "Cancelar"
+
+msgid "button_cancel_rendering"
+msgstr "Cancelar renderizado"
+
+msgid "button_reset"
+msgstr "Restablecer"
+
+msgid "button_return"
+msgstr "Volver"
+
+msgid "button_start_render"
+msgstr "Iniciar renderizado"
+
+msgid "button_save"
+msgstr "Guardar"
+
+msgid "button_save_settings"
+msgstr "Guardar configuración"
+
+msgid "button_close"
+msgstr "Cerrar"
+
+msgid "text_version"
+msgstr "Versión"
+
+msgid "text_gozen_website"
+msgstr "Página web de GoZen"
+
+msgid "text_github_repo"
+msgstr "Repositorio de GitHub"
+
+msgid "text_discord_link"
+msgstr "Enlace de Discord"
+
+msgid "text_support_gozen"
+msgstr "Apoyar a GoZen"
+
+# Note: This is part of the string for the "about gozen" screen.
+#: scripts/about_gozen.gd
+msgid "text_gozen_made_by"
+msgstr "GoZen es un editor de vídeo creado por"
+
+msgid "text_rename_file_to"
+msgstr "Renombrar archivo a ..."
+
+msgid "text_advanced_settings"
+msgstr "Configuración avanzada"
+
+msgid "text_path"
+msgstr "Ruta"
+
+msgid "text_resolution"
+msgstr "Resolución"
+
+msgid "text_framerate"
+msgstr "Fotogramas por segundo"
+
+msgid "tooltip_ignore_changes_close_settings"
+msgstr "Ignorar cambios y cerrar el menú de configuración."
+
+msgid "tooltip_setting_background_color"
+msgstr "El color de fondo predeterminado de tu proyecto."
+
+msgid "setting_background_color"
+msgstr "Color de fondo"
+
+msgid "setting_language"
+msgstr "Idioma"
+
+msgid "setting_theme"
+msgstr "Tema"
+
+msgid "setting_tooltip_theme"
+msgstr "El modo claro es mejor."
+
+msgid "setting_show_menu_bar"
+msgstr "Mostrar barra de menú"
+
+msgid "setting_waveform_style"
+msgstr "Estilo de la onda de audio"
+
+msgid "setting_default_image_duration"
+msgstr "Duración predeterminada de la imagen"
+
+msgid "setting_tooltip_default_image_duration"
+msgstr "La duración en fotogramas."
+
+msgid "setting_default_project_resolution"
+msgstr "Resolución predeterminada del proyecto"
+
+msgid "setting_tooltip_default_project_resolution_x"
+msgstr "El ancho de vídeo predeterminado del proyecto."
+
+msgid "setting_tooltip_default_project_resolution_y"
+msgstr "El alto de vídeo predeterminado del proyecto."
+
+msgid "setting_default_project_framerate"
+msgstr "Fotogramas por segundo predeterminados del proyecto"
+
+msgid "setting_tooltip_default_project_framerate"
+msgstr "Los fotogramas por segundo predeterminados del proyecto."
+
+msgid "setting_default_track_amount"
+msgstr "Cantidad de pistas predeterminada"
+
+msgid "setting_pause_after_dragging"
+msgstr "Pausar después de arrastrar"
+
+msgid "setting_delete_empty_space_mod"
+msgstr "Modificador para eliminar espacio vacío"
+
+msgid "setting_tooltip_delete_empty_space_mod"
+msgstr ""
+"Hacer doble clic en los espacios vacíos de la línea de tiempo elimina el "
+"espacio vacío y mueve todo. Configurar un modificador hace que necesites "
+"presionar esa tecla específica para que al hacer doble clic se elimine el "
+"espacio vacío entre clips."
+
+msgid "renderer_progress_text_setup"
+msgstr "Configurando renderizador ..."
+
+msgid "renderer_progress_text_open_error"
+msgstr "No se pudo abrir el renderizador, ¡Verifica la ruta y la configuración!"
+
+msgid "renderer_progress_text_compiling_audio"
+msgstr "Compilando datos de audio ..."
+
+msgid "renderer_progress_text_sending_audio_error"
+msgstr "¡Algo salió mal al enviar audio al renderizador!"
+
+msgid "renderer_progress_text_creating_sending_data"
+msgstr "Creando y enviando datos de fotogramas ..."
+
+msgid "renderer_progress_text_sending_data_error"
+msgstr "¡Algo salió mal al enviar fotogramas al renderizador!"
+
+msgid "renderer_progress_text_canceling"
+msgstr "Cancelando proceso de renderizado ..."
+
+msgid "renderer_progress_text_last_frame"
+msgstr "Enviando últimos fotogramas ..."
+
+msgid "renderer_progress_text_finilizing"
+msgstr "Finalizando renderizado ..."
+
+msgid "rendering_warning"
+msgstr "¡Algo salió mal!"
+
+msgid "render_option_path"
+msgstr "Ruta"
+
+msgid "render_option_profile"
+msgstr "Perfil de renderizado"
+
+msgid "render_option_audio_codec"
+msgstr "Códec de audio"
+
+msgid "render_option_video_codec"
+msgstr "Códec de vídeo"
+
+msgid "render_option_quality"
+msgstr "Calidad"
+
+msgid "render_option_tooltip_quality"
+msgstr ""
+"Ajusta el CRF (Factor de Tasa Constante), la configuración de menor calidad "
+"es 50 y la de mayor calidad es 15. El valor predeterminado es 18. Se utiliza "
+"para ajustar la tasa de bits, lo que tiene un impacto en la calidad y el "
+"tamaño. El valor 0 ofrece la mejor calidad, 51 la peor, y 18 no es muy "
+"notorio."
+
+msgid "render_option_speed"
+msgstr "Velocidad"
+
+msgid "render_option_tooltip_speed"
+msgstr ""
+"Ajusta la velocidad de codificación H264. Configurar la velocidad demasiado "
+"alta podría tener un impacto negativo en la calidad final del vídeo."
+
+msgid "render_option_gop_size"
+msgstr "Tamaño de GOP"
+
+msgid "render_option_tooltip_gop_size"
+msgstr ""
+"Grupo de Imágenes. Un valor más alto es mejor para la compresión en "
+"comparación con un valor más bajo. Pero cuanto más alto sea el valor, menos "
+"preciso será al buscar y navegar a través de la reproducción del vídeo. "
+"Establece un valor bajo si tienes la intención de utilizar el vídeo "
+"renderizado para editar."
+
+msgid "render_option_threads_cores"
+msgstr "Hilos/núcleos"
+
+msgid "render_option_tooltip_threads_cores"
+msgstr "Pon '0' para usar todos los hilos disponibles."
+
+msgid "render_option_metadata_title"
+msgstr "Título"
+
+msgid "render_option_metadata_comment"
+msgstr "Comentario"
+
+msgid "render_option_metadata_author"
+msgstr "Autor"
+
+msgid "render_option_metadata_copyright"
+msgstr "Derechos de autor"
+
+msgid "render_option_video_length"
+msgstr "Duración del vídeo"
+
+msgid "render_option_render_time"
+msgstr "Tiempo de renderizado"
