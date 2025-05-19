@@ -16,6 +16,6 @@ static var native_locale_names: Dictionary = {
 
 
 static var native_country_names: Dictionary = {
-	"es_ES": "España",
+	"ES": "España",
 }
 
