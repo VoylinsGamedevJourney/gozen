@@ -11,10 +11,12 @@ static var native_locale_names: Dictionary = {
 	"ja": "日本語",
 	"pl": "Polski",
 	"ur": "اُردُو",
+	"es": "Español",
 }
 
 
 static var native_country_names: Dictionary = {
 	"FR": "France",
+	"ES": "España",
 }
 
