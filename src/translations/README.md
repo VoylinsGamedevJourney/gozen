@@ -26,9 +26,9 @@ For the localization system we use [Gettext PO files](https://www.gnu.org/softwa
 This list of languages is from entries which have been made but don't have any active maintainers anymore.
 
 ## How to contribute 🛠️
-[![How to localize GoZen](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+[![GoZen: How to Contribute Translations (Localization Guide)](https://img.youtube.com/vi/041s9Uy3tm0/0.jpg)](https://www.youtube.com/watch?v=041s9Uy3tm0)
 
-To start contributing, you'll have to [fork this repository](https://github.com/VoylinsGamedevJourney/GoZen-translations/fork) and create a new branch called something like `language-*language-code*-update` (for example, `language-uk_UA-update` when you updating existing translation or `language-uk_UA-addition` when you adding new one).
+To start contributing, you'll have to [fork this repository](https://github.com/VoylinsGamedevJourney/GoZen/fork) and create a new branch called something like `language-*language-code*-update` (for example, `language-uk_UA-update` when you updating existing translation or `language-uk_UA-addition` when you adding new one).
 
 After you are done creating/editing the po file you can create a pull request, after which we will check and merge it when approved.
 

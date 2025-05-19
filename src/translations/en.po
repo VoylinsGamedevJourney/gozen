@@ -2,358 +2,291 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n" # e.g., 2023-10-27 15:00+0100
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
+"X-Generator: Poedit 3.6\n"
 
 msgid "title_about_gozen"
 msgstr "About GoZen"
 
-
 msgid "title_appearance"
 msgstr "Appearance"
-
 
 msgid "title_defaults"
 msgstr "Defaults"
 
-
 msgid "title_timeline"
 msgstr "Timeline"
-
 
 msgid "title_rendering"
 msgstr "Rendering"
 
-
 msgid "title_rendering_finished"
 msgstr "Rendering finished"
-
 
 msgid "title_render_video"
 msgstr "Render video"
 
-
 msgid "title_render_audio"
 msgstr "Render audio"
-
 
 msgid "title_metadata"
 msgstr "Metadata"
 
-
 msgid "title_cpu_threads"
 msgstr "CPU threads"
-
 
 msgid "title_recent_projects"
 msgstr "Recent projects"
 
-
 msgid "title_getting_started"
 msgstr "Getting started"
-
 
 msgid "title_new_project"
 msgstr "New project"
 
-
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
-
 
 msgid "button_gozen_site"
 msgstr "GoZen site"
 
-
 msgid "button_manual"
 msgstr "Manual"
-
 
 msgid "button_tutorials"
 msgstr "Tutorials"
 
-
 msgid "button_discord_server"
 msgstr "Discord server"
-
 
 msgid "button_support_gozen"
 msgstr "Support GoZen"
 
-
 msgid "button_open_project"
 msgstr "Open project"
-
 
 msgid "button_create_new_project"
 msgstr "Create new project"
 
-
 msgid "button_tooltip_editor_settings"
 msgstr "Editor settings."
-
 
 msgid "button_cancel"
 msgstr "Cancel"
 
-
 msgid "button_cancel_rendering"
 msgstr "Cancel rendering"
-
 
 msgid "button_reset"
 msgstr "Reset"
 
-
 msgid "button_return"
 msgstr "Return"
-
 
 msgid "button_start_render"
 msgstr "Start rendering"
 
-
 msgid "button_save"
 msgstr "Save"
-
 
 msgid "button_save_settings"
 msgstr "Save settings"
 
-
 msgid "button_close"
 msgstr "Close"
-
 
 msgid "text_version"
 msgstr "Version"
 
-
 msgid "text_gozen_website"
 msgstr "GoZen website"
-
 
 msgid "text_github_repo"
 msgstr "GitHub repo"
 
-
 msgid "text_discord_link"
 msgstr "Discord link"
 
-
 msgid "text_support_gozen"
 msgstr "Support GoZen"
-
 
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
 msgstr "GoZen is a video editor made by"
 
-
 msgid "text_rename_file_to"
 msgstr "Rename file to ..."
-
 
 msgid "text_advanced_settings"
 msgstr "Advanced settings"
 
-
 msgid "text_path"
 msgstr "Path"
-
 
 msgid "text_resolution"
 msgstr "Resolution"
 
-
 msgid "text_framerate"
 msgstr "Framerate"
-
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Ignore changes and close settings menu."
 
-
 msgid "tooltip_setting_background_color"
 msgstr "The default background color of your project."
-
 
 msgid "setting_background_color"
 msgstr "Background color"
 
+msgid "setting_language"
+msgstr "Language"
 
 msgid "setting_theme"
 msgstr "Theme"
 
-
 msgid "setting_tooltip_theme"
 msgstr "Light mode is better."
-
 
 msgid "setting_show_menu_bar"
 msgstr "Show menu bar"
 
-
 msgid "setting_waveform_style"
 msgstr "Audio waveform style"
-
 
 msgid "setting_default_image_duration"
 msgstr "Default image duration"
 
-
 msgid "setting_tooltip_default_image_duration"
 msgstr "The duration in frames."
-
 
 msgid "setting_default_project_resolution"
 msgstr "Default project resolution"
 
-
 msgid "setting_tooltip_default_project_resolution_x"
 msgstr "The default video project width."
-
 
 msgid "setting_tooltip_default_project_resolution_y"
 msgstr "The default video project height."
 
-
 msgid "setting_default_project_framerate"
 msgstr "Default project framerate"
-
 
 msgid "setting_tooltip_default_project_framerate"
 msgstr "The default video project framerate."
 
-
 msgid "setting_default_track_amount"
 msgstr "Default track amount"
-
 
 msgid "setting_pause_after_dragging"
 msgstr "Pause after dragging"
 
-
 msgid "setting_delete_empty_space_mod"
 msgstr "Delete empty space modifier"
 
-
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "Double clicking empty spaces in the timeline deletes the empty space and moves everything. Setting a modifier makes it so you need to press that specific key to make double clicking remove the empty space in between clips."
-
+msgstr ""
+"Double clicking empty spaces in the timeline deletes the empty space and "
+"moves everything. Setting a modifier makes it so you need to press that "
+"specific key to make double clicking remove the empty space in between clips."
 
 msgid "renderer_progress_text_setup"
 msgstr "Setting up renderer ..."
 
-
 msgid "renderer_progress_text_open_error"
 msgstr "Renderer couldn't be opened, check path and settings!"
-
 
 msgid "renderer_progress_text_compiling_audio"
 msgstr "Compiling audio data ..."
 
-
 msgid "renderer_progress_text_sending_audio_error"
 msgstr "Something went wrong sending audio to the renderer!"
-
 
 msgid "renderer_progress_text_creating_sending_data"
 msgstr "Creating & sending frame data ..."
 
-
 msgid "renderer_progress_text_sending_data_error"
 msgstr "Something went wrong sending frame to the renderer!"
-
 
 msgid "renderer_progress_text_canceling"
 msgstr "Canceling render process ..."
 
-
 msgid "renderer_progress_text_last_frame"
 msgstr "Sending last frames ..."
-
 
 msgid "renderer_progress_text_finilizing"
 msgstr "Finalizing render ..."
 
-
 msgid "rendering_warning"
 msgstr "Something went wrong!"
-
 
 msgid "render_option_path"
 msgstr "Path"
 
-
 msgid "render_option_profile"
 msgstr "Render profile"
-
 
 msgid "render_option_audio_codec"
 msgstr "Audio codec"
 
-
 msgid "render_option_video_codec"
 msgstr "Video codec"
-
 
 msgid "render_option_quality"
 msgstr "Quality"
 
-
 msgid "render_option_tooltip_quality"
-msgstr "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
-
+msgstr ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
 
 msgid "render_option_speed"
 msgstr "Speed"
 
-
 msgid "render_option_tooltip_speed"
-msgstr "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
-
+msgstr ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
 
 msgid "render_option_gop_size"
 msgstr "GOP size"
 
-
 msgid "render_option_tooltip_gop_size"
-msgstr "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
-
+msgstr ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
 
 msgid "render_option_threads_cores"
 msgstr "Threads/cores"
 
-
 msgid "render_option_tooltip_threads_cores"
 msgstr "Put on '0' to use all available threads."
-
 
 msgid "render_option_metadata_title"
 msgstr "Title"
 
-
 msgid "render_option_metadata_comment"
 msgstr "Comment"
-
 
 msgid "render_option_metadata_author"
 msgstr "Author"
 
-
 msgid "render_option_metadata_copyright"
 msgstr "Copyright"
 
-
 msgid "render_option_video_length"
 msgstr "Video length"
-
 
 msgid "render_option_render_time"
 msgstr "Render time"

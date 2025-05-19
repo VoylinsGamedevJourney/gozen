@@ -2,359 +2,275 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n" # e.g., 2023-10-27 15:00+0100
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
+"X-Generator: Poedit 3.6\n"
 
 msgid "title_about_gozen"
 msgstr "Over GoZen"
 
-
 msgid "title_appearance"
 msgstr "Uiterlijk"
-
 
 msgid "title_defaults"
 msgstr "Standaarden"
 
-
 msgid "title_timeline"
 msgstr "Tijdlijn"
-
 
 msgid "title_rendering"
 msgstr "Renderen"
 
-
 msgid "title_rendering_finished"
 msgstr "Renderen voltooid"
-
 
 msgid "title_render_video"
 msgstr "Video renderen"
 
-
 msgid "title_render_audio"
 msgstr "Audio renderen"
-
 
 msgid "title_metadata"
 msgstr "Metadata"
 
-
 msgid "title_cpu_threads"
 msgstr "CPU-threads"
-
 
 msgid "title_recent_projects"
 msgstr "Recente projecten"
 
-
 msgid "title_getting_started"
 msgstr "Aan de slag"
-
 
 msgid "title_new_project"
 msgstr "Nieuw project"
 
-
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
-
 
 msgid "button_gozen_site"
 msgstr "GoZen website"
 
-
 msgid "button_manual"
 msgstr "Handleiding"
-
 
 msgid "button_tutorials"
 msgstr "Tutorials"
 
-
 msgid "button_discord_server"
 msgstr "Discord server"
 
-
 msgid "button_support_gozen"
-msgstr "Steung GoZen"
-
+msgstr "Steun GoZen"
 
 msgid "button_open_project"
 msgstr "Project openen"
 
-
 msgid "button_create_new_project"
 msgstr "Nieuw project aanmaken"
-
 
 msgid "button_tooltip_editor_settings"
 msgstr "Editor instellingen."
 
-
 msgid "button_cancel"
 msgstr "Annuleren"
-
 
 msgid "button_cancel_rendering"
 msgstr "Renderen annuleren"
 
-
 msgid "button_reset"
 msgstr "Reset"
-
 
 msgid "button_return"
 msgstr "Terug"
 
-
 msgid "button_start_render"
 msgstr "Start renderen"
-
 
 msgid "button_save"
 msgstr "Opslaan"
 
-
 msgid "button_save_settings"
 msgstr "Instellingen opslaan"
-
 
 msgid "button_close"
 msgstr "Sluiten"
 
-
 msgid "text_version"
 msgstr "Versie"
-
 
 msgid "text_gozen_website"
 msgstr "GoZen website"
 
-
 msgid "text_github_repo"
 msgstr "GitHub repository"
-
 
 msgid "text_discord_link"
 msgstr "Discord link"
 
-
 msgid "text_support_gozen"
 msgstr "Steun GoZen"
-
 
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
 msgstr "GoZen is een video-editor gemaakt door"
 
-
 msgid "text_rename_file_to"
 msgstr "Hernoem bestand naar ..."
-
 
 msgid "text_advanced_settings"
 msgstr "Geavanceerde instellingen"
 
-
 msgid "text_path"
 msgstr "Pad"
-
 
 msgid "text_resolution"
 msgstr "Resolutie"
 
-
 msgid "text_framerate"
 msgstr "Framerate"
-
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Wijzigingen negeren en instellingen menu sluiten."
 
-
 msgid "tooltip_setting_background_color"
 msgstr "De standaard achtergrondkleur van je project."
-
 
 msgid "setting_background_color"
 msgstr "Achtergroundkleur"
 
-
 msgid "setting_theme"
 msgstr "Thema"
-
 
 msgid "setting_tooltip_theme"
 msgstr "Light theme is beter."
 
-
 msgid "setting_show_menu_bar"
 msgstr "Menubalk weergeven"
-
 
 msgid "setting_waveform_style"
 msgstr "Stijl audiogolf vorm"
 
-
 msgid "setting_default_image_duration"
 msgstr "Standaard duur afbeeldingen"
-
 
 msgid "setting_tooltip_default_image_duration"
 msgstr "De duur in frames."
 
-
 msgid "setting_default_project_resolution"
 msgstr "Standaard project resolutie"
-
 
 msgid "setting_tooltip_default_project_resolution_x"
 msgstr "De standaard breedte van een video project."
 
-
 msgid "setting_tooltip_default_project_resolution_y"
 msgstr "De standaard hoogte van een video project."
-
 
 msgid "setting_default_project_framerate"
 msgstr "Standaard project framerate"
 
-
 msgid "setting_tooltip_default_project_framerate"
 msgstr "De standaard framerate van een video project."
-
 
 msgid "setting_default_track_amount"
 msgstr "Standaard aantal tracks"
 
-
 msgid "setting_pause_after_dragging"
 msgstr "Pauzeren na slepen"
-
 
 msgid "setting_delete_empty_space_mod"
 msgstr "Modkey voor verwijderen van een lege ruimte"
 
-
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr "Dubbelklikken op lege plekken in de tijdlijn verwijdert de lege ruimte en verplaatst alles. Door een modificatietoets in te stellen, moet je die specifieke toets ingedrukt houden om dubbelklikken de lege ruimte tussen clips te laten verwijderen."
-
 
 msgid "renderer_progress_text_setup"
 msgstr "Renderer instellen ..."
 
-
 msgid "renderer_progress_text_open_error"
 msgstr "Renderer kon niet worden geopend, controleer pad en instellingen!"
-
 
 msgid "renderer_progress_text_compiling_audio"
 msgstr "Audio data compileren ..."
 
-
 msgid "renderer_progress_text_sending_audio_error"
 msgstr "Er ging iets mis bij het versturen van audio naar de renderer!"
-
 
 msgid "renderer_progress_text_creating_sending_data"
 msgstr "Frame data aanmaken & versturen ..."
 
-
 msgid "renderer_progress_text_sending_data_error"
 msgstr "Er ging iets mis bij het versturen van frame data naar de renderer!"
-
 
 msgid "renderer_progress_text_canceling"
 msgstr "Renderproces annuleren ..."
 
-
 msgid "renderer_progress_text_last_frame"
 msgstr "Laatste frames versturen ..."
-
 
 msgid "renderer_progress_text_finilizing"
 msgstr "Render afronden ..."
 
-
 msgid "rendering_warning"
 msgstr "Er ging iets mis!"
-
 
 msgid "render_option_path"
 msgstr "Pad"
 
-
 msgid "render_option_profile"
 msgstr "Renderprofiel"
-
 
 msgid "render_option_audio_codec"
 msgstr "Audio codec"
 
-
 msgid "render_option_video_codec"
 msgstr "Video codec"
-
 
 msgid "render_option_quality"
 msgstr "Kwaliteit"
 
-
 msgid "render_option_tooltip_quality"
 msgstr "Past de CRF (Constant Rate Factor) aan. De laagste kwaliteitsinstelling is 50 en de hoogste kwaliteitsinstelling is 15. Standaard is ingesteld op 18. Gebruikt om bitrate aan te passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 geeft de beste, 51 de slechtste kwaliteit, 18 is nauwelijks merkbaar."
-
 
 msgid "render_option_speed"
 msgstr "Snelheid"
 
-
 msgid "render_option_tooltip_speed"
 msgstr "Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een negatieve invloed hebben op de uiteindelijke videokwaliteit."
-
 
 msgid "render_option_gop_size"
 msgstr "GOP-grootte"
 
-
 msgid "render_option_tooltip_gop_size"
 msgstr "Group Of Pictures. Een hogere waarde is beter voor compressie vergeleken met een lagere waarde. Maar hoe hoger de waarde is, hoe minder nauwkeurig het zoeken en door de video navigeren tijdens afspelen zal zijn. Zet op een lage waarde als je van plan bent de gerenderde video te gebruiken voor bewerking."
-
 
 msgid "render_option_threads_cores"
 msgstr "Threads/cores"
 
-
 msgid "render_option_tooltip_threads_cores"
 msgstr "Zet op '0' om alle beschikbare threads te gebruiken."
-
 
 msgid "render_option_metadata_title"
 msgstr "Titel"
 
-
 msgid "render_option_metadata_comment"
 msgstr "Opmerking"
-
 
 msgid "render_option_metadata_author"
 msgstr "Auteur"
 
-
 msgid "render_option_metadata_copyright"
 msgstr "Auteursrecht"
-
 
 msgid "render_option_video_length"
 msgstr "Video lengte"
 
-
 msgid "render_option_render_time"
 msgstr "Render tijd"
-
