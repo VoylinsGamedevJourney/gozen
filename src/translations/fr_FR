@@ -1,0 +1,292 @@
+# GoZen Localization Template
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+
+msgid "title_about_gozen"
+msgstr "À Propos de GoZen"
+
+msgid "title_appearance"
+msgstr "Apparence"
+
+msgid "title_defaults"
+msgstr "Par défauts"
+
+msgid "title_timeline"
+msgstr "Timeline"
+
+msgid "title_rendering"
+msgstr "Rendu"
+
+msgid "title_rendering_finished"
+msgstr "Rendu terminé"
+
+msgid "title_render_video"
+msgstr "Rendu vidéo"
+
+msgid "title_render_audio"
+msgstr "Rendu audio"
+
+msgid "title_metadata"
+msgstr "Métadata"
+
+msgid "title_cpu_threads"
+msgstr "Threads CPU"
+
+msgid "title_recent_projects"
+msgstr "Projets récents"
+
+msgid "title_getting_started"
+msgstr "Démarrer"
+
+msgid "title_new_project"
+msgstr "Nouveau projet"
+
+msgid "button_tooltip_create_new_project"
+msgstr "Créer un nouveau projet avec les réglages sélectionnés."
+
+msgid "button_gozen_site"
+msgstr "Site Internet GoZen"
+
+msgid "button_manual"
+msgstr "Manuel"
+
+msgid "button_tutorials"
+msgstr "Tutoriels"
+
+msgid "button_discord_server"
+msgstr "Serveur Discord"
+
+msgid "button_support_gozen"
+msgstr "Aider GoZen"
+
+msgid "button_open_project"
+msgstr "Ouvrir un projet"
+
+msgid "button_create_new_project"
+msgstr "Créer un nouveau projet"
+
+msgid "button_tooltip_editor_settings"
+msgstr "Configuration de l'éditeur."
+
+msgid "button_cancel"
+msgstr "Annuler"
+
+msgid "button_cancel_rendering"
+msgstr "Annuler le rendu"
+
+msgid "button_reset"
+msgstr "Réinitialiser"
+
+msgid "button_return"
+msgstr "Retour"
+
+msgid "button_start_render"
+msgstr "Démarrer le rendu"
+
+msgid "button_save"
+msgstr "Sauvegarder"
+
+msgid "button_save_settings"
+msgstr "Sauvegarder les réglages"
+
+msgid "button_close"
+msgstr "Fermer"
+
+msgid "text_version"
+msgstr "Version"
+
+msgid "text_gozen_website"
+msgstr "Site Internet GoZen"
+
+msgid "text_github_repo"
+msgstr "Dépôt GitHub"
+
+msgid "text_discord_link"
+msgstr "Lien Discord"
+
+msgid "text_support_gozen"
+msgstr "Aider GoZen"
+
+# Note: This is part of the string for the "about gozen" screen.
+#: scripts/about_gozen.gd
+msgid "text_gozen_made_by"
+msgstr "GoZen est un éditeur vidéo conçu par"
+
+msgid "text_rename_file_to"
+msgstr "Renommer le fichier en ..."
+
+msgid "text_advanced_settings"
+msgstr "Réglages avancés"
+
+msgid "text_path"
+msgstr "Chemin"
+
+msgid "text_resolution"
+msgstr "Résolution"
+
+msgid "text_framerate"
+msgstr "Fréquence d'images"
+
+msgid "tooltip_ignore_changes_close_settings"
+msgstr "Ignorer les changements et fermer le menu de configuration."
+
+msgid "tooltip_setting_background_color"
+msgstr "La couleur par défaut de l'arrière-plan de votre projet."
+
+msgid "setting_background_color"
+msgstr "Couleur d'arrière-plan"
+
+msgid "setting_language"
+msgstr "Langage"
+
+msgid "setting_theme"
+msgstr "Thème"
+
+msgid "setting_tooltip_theme"
+msgstr "Le mode sombre est le meilleur."
+
+msgid "setting_show_menu_bar"
+msgstr "Afficher la barre de menu"
+
+msgid "setting_waveform_style"
+msgstr "Style des ondes audio"
+
+msgid "setting_default_image_duration"
+msgstr "Durée d'image par défaut"
+
+msgid "setting_tooltip_default_image_duration"
+msgstr "La durée en nombre d'images."
+
+msgid "setting_default_project_resolution"
+msgstr "Résolution par défaut du projet"
+
+msgid "setting_tooltip_default_project_resolution_x"
+msgstr "La largeur par défaut du projet."
+
+msgid "setting_tooltip_default_project_resolution_y"
+msgstr "La hauteur par défaut du projet."
+
+msgid "setting_default_project_framerate"
+msgstr "Framerate par défaut du projet"
+
+msgid "setting_tooltip_default_project_framerate"
+msgstr "La fréquence d'images par défaut du projet."
+
+msgid "setting_default_track_amount"
+msgstr "Nombre de pistes par défaut"
+
+msgid "setting_pause_after_dragging"
+msgstr "Pause après déplacement"
+
+msgid "setting_delete_empty_space_mod"
+msgstr "Modificateur de suppression d'espace vide"
+
+msgid "setting_tooltip_delete_empty_space_mod"
+msgstr ""
+"Double-cliquer un espace vide de la timeline supprime cet espace vide et "
+"déplace les clips. Définir un modificateur impose de devoir appuyer cette touche "
+"spécifique pour que le double-clic supprime l'espace vide entre les clips."
+
+msgid "renderer_progress_text_setup"
+msgstr "Préparation du moteur de rendu ..."
+
+msgid "renderer_progress_text_open_error"
+msgstr "Le moteur de rendu ne peut être ouvert, vérifiez le chemin et les réglages !"
+
+msgid "renderer_progress_text_compiling_audio"
+msgstr "Compilation des données audio ..."
+
+msgid "renderer_progress_text_sending_audio_error"
+msgstr "Une erreur est apparue pendant l'envoi de l'audio au moteur de rendu !"
+
+msgid "renderer_progress_text_creating_sending_data"
+msgstr "Création et envoi des données d'image ..."
+
+msgid "renderer_progress_text_sending_data_error"
+msgstr "Une erreur est apparue pendant l'envoi de l'image au moteur de rendu !"
+
+msgid "renderer_progress_text_canceling"
+msgstr "Annulation du processus de rendu ..."
+
+msgid "renderer_progress_text_last_frame"
+msgstr "Envoi des dernières images ..."
+
+msgid "renderer_progress_text_finilizing"
+msgstr "Finalisation du rendu ..."
+
+msgid "rendering_warning"
+msgstr "Une erreur est apparue !"
+
+msgid "render_option_path"
+msgstr "Chemin"
+
+msgid "render_option_profile"
+msgstr "Profil de rendu"
+
+msgid "render_option_audio_codec"
+msgstr "Codec audio"
+
+msgid "render_option_video_codec"
+msgstr "Codec vidéo"
+
+msgid "render_option_quality"
+msgstr "Qualité"
+
+msgid "render_option_tooltip_quality"
+msgstr ""
+"Ajuste le Facteur de Taux Constant (CRF), la qualité la plus basse étant 50, "
+"la plus haute 15. Par défaut elle est définie à 18. Elle est utilisée pour "
+"ajuster le bitrate qui a un impact sur la qualité ainsi que le poids. Une valeur "
+"de 0 donne le meilleur, 51 donne la pire qualité, 18 n'est pas vraiment visible."
+
+msgid "render_option_speed"
+msgstr "Vitesse"
+
+msgid "render_option_tooltip_speed"
+msgstr ""
+"Ajuste la vitesse d'encodage H264. Définir une vitesse trop rapide peut avoir "
+"un impact négatif sur la qualité finale de la vidéo."
+
+msgid "render_option_gop_size"
+msgstr "Taille des GI"
+
+msgid "render_option_tooltip_gop_size"
+msgstr ""
+"Groupements d'Images. Une valeur élevée a une meilleur compression qu'une "
+"valeur basse. Toutefois, plus la valeur est élevée, moins la recherche et le "
+"déplacement lors de la lecture vidéo seront précis. Définissez une valeur basse "
+"si vous avez l'intention d'utiliser le rendu pour l'édition."
+
+msgid "render_option_threads_cores"
+msgstr "Threads/cœurs"
+
+msgid "render_option_tooltip_threads_cores"
+msgstr "Définissez à '0' pour utiliser tous les threads disponibles."
+
+msgid "render_option_metadata_title"
+msgstr "Titre"
+
+msgid "render_option_metadata_comment"
+msgstr "Commentaire"
+
+msgid "render_option_metadata_author"
+msgstr "Auteur"
+
+msgid "render_option_metadata_copyright"
+msgstr "Droits d'auteur"
+
+msgid "render_option_video_length"
+msgstr "Longueur de la vidéo"
+
+msgid "render_option_render_time"
+msgstr "Temps de rendu"
