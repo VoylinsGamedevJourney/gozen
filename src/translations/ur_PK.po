@@ -40,7 +40,7 @@ msgid "title_metadata"
 msgstr "میٹاڈیٹا"
 
 msgid "title_cpu_threads"
-msgstr "سی بی یو تھریڈز"
+msgstr "سی پی یو تھریڈز"
 
 msgid "title_recent_projects"
 msgstr "حالیہ پروجیکٹس"
@@ -52,7 +52,7 @@ msgid "title_new_project"
 msgstr "نیا پروجیکت"
 
 msgid "button_tooltip_create_new_project"
-msgstr "چنے گئے اختیارات سے نیا پروجیکٹ بنائں."
+msgstr "چنی گئ ترتیبات سے نیا پروجیکٹ بنائں."
 
 msgid "button_gozen_site"
 msgstr "گوزین کی سائٹ"
@@ -115,15 +115,15 @@ msgid "text_discord_link"
 msgstr "دسکورڈ لنک"
 
 msgid "text_support_gozen"
-msgstr "گوزین کی تائید کریں"
+msgstr "گوزین کا ساتھ دیں"
 
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "گوزین ایک وڈیو ایڈیٹر ہے جو کے"
+msgstr "گوزین ایک ویڈیو ایڈیٹر ہے جس کا تخلیق کارہے"
 
 msgid "text_rename_file_to"
-msgstr "فائل کا نام تبدیل کریں."
+msgstr "فائل کا نام تبدیل کریں ..."
 
 msgid "text_advanced_settings"
 msgstr "اعلیٰ ترتیبات"
@@ -200,31 +200,31 @@ msgstr ""
 "تاکہ ڈبل کلک کے ذریعے کلپس کے درمیان خالی جگہ حذف کی جا سکے."
 
 msgid "renderer_progress_text_setup"
-msgstr "رینڈر کو ترتیب دی جارہی ہے."
+msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
 
 msgid "renderer_progress_text_open_error"
 msgstr "رینڈرر کو کھولا نہی جا سکا، مقام اور ترتیبات دیکھیں!"
 
 msgid "renderer_progress_text_compiling_audio"
-msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے."
+msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے ..."
 
 msgid "renderer_progress_text_sending_audio_error"
 msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
 
 msgid "renderer_progress_text_creating_sending_data"
-msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے."
+msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے ..."
 
 msgid "renderer_progress_text_sending_data_error"
 msgstr "فریم رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
 
 msgid "renderer_progress_text_canceling"
-msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے."
+msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
 
 msgid "renderer_progress_text_last_frame"
-msgstr "آخری فریمز بھیجے جا رہی ہیں."
+msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
 
 msgid "renderer_progress_text_finilizing"
-msgstr "رینڈر مکمل کیا جا رہا ہے."
+msgstr "رینڈر کو حتمی شکل دی جا رہی ہے ..."
 
 msgid "rendering_warning"
 msgstr "کچھ غلط ہو گیا!"
@@ -254,8 +254,8 @@ msgstr "رفتار"
 
 msgid "render_option_tooltip_speed"
 msgstr ""
-"H264 انکوڈنگ کی رفتار کو ایڈجسٹ کرتا ہے۔ رفتار کو زیادہ سیٹ کرنے سے حتمی "
-"ویڈیو کے معیار پر منفی اثر پڑ سکتا ہے."
+"ایچ264 کو انکوڈنگ کرنے کی رفتار کو ایڈجسٹ کرتا ہے۔ رفتار کو بہت زیادہ سیٹ "
+"کرنے سے حتمی ویڈیو کے معیار پر منفی اثر پڑ سکتا ہے."
 
 msgid "render_option_gop_size"
 msgstr "جی او پی سائز"
