@@ -1,0 +1,292 @@
+# GoZen Localization Template
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ur_PK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+
+msgid "title_about_gozen"
+msgstr "گوزین کی معلومات"
+
+msgid "title_appearance"
+msgstr "ظہور"
+
+msgid "title_defaults"
+msgstr "ڈیفالٹس"
+
+msgid "title_timeline"
+msgstr "ٹائم لائن"
+
+msgid "title_rendering"
+msgstr "رینڈرنگ"
+
+msgid "title_rendering_finished"
+msgstr "رینڈرنگ مکمل"
+
+msgid "title_render_video"
+msgstr "رینڈر ویڈیو"
+
+msgid "title_render_audio"
+msgstr "رینڈر آڈیو"
+
+msgid "title_metadata"
+msgstr "میٹاڈیٹا"
+
+msgid "title_cpu_threads"
+msgstr "سی پی یو تھریڈز"
+
+msgid "title_recent_projects"
+msgstr "حالیہ پروجیکٹس"
+
+msgid "title_getting_started"
+msgstr "شروعات کریں"
+
+msgid "title_new_project"
+msgstr "نیا پروجیکت"
+
+msgid "button_tooltip_create_new_project"
+msgstr "چنی گئ ترتیبات سے نیا پروجیکٹ بنائں."
+
+msgid "button_gozen_site"
+msgstr "گوزین کی سائٹ"
+
+msgid "button_manual"
+msgstr "ہدایت نامہ"
+
+msgid "button_tutorials"
+msgstr "ویڈیو اسباق"
+
+msgid "button_discord_server"
+msgstr "دسکورڈ سرور"
+
+msgid "button_support_gozen"
+msgstr "گوزن کا ساتھ دیں"
+
+msgid "button_open_project"
+msgstr "پروجیکٹ کھولیں"
+
+msgid "button_create_new_project"
+msgstr "نیا پروجیکٹ بنائیں"
+
+msgid "button_tooltip_editor_settings"
+msgstr "ایڈیٹر کی ترتیبات."
+
+msgid "button_cancel"
+msgstr "منسوخ کریں"
+
+msgid "button_cancel_rendering"
+msgstr "رینڈرنگ منسوخ کریں"
+
+msgid "button_reset"
+msgstr "ری سیٹ"
+
+msgid "button_return"
+msgstr "واپس جائیں"
+
+msgid "button_start_render"
+msgstr "رینڈرنگ شروع کریں"
+
+msgid "button_save"
+msgstr "سیو کریں"
+
+msgid "button_save_settings"
+msgstr "ترتیبات سیو کریں"
+
+msgid "button_close"
+msgstr "بند کریں"
+
+msgid "text_version"
+msgstr "ورژن"
+
+msgid "text_gozen_website"
+msgstr "گوزین کی ویب سائیٹ"
+
+msgid "text_github_repo"
+msgstr "گٹہب ریپو"
+
+msgid "text_discord_link"
+msgstr "دسکورڈ لنک"
+
+msgid "text_support_gozen"
+msgstr "گوزین کا ساتھ دیں"
+
+# Note: This is part of the string for the "about gozen" screen.
+#: scripts/about_gozen.gd
+msgid "text_gozen_made_by"
+msgstr "گوزین ایک ویڈیو ایڈیٹر ہے جس کا تخلیق کارہے"
+
+msgid "text_rename_file_to"
+msgstr "فائل کا نام تبدیل کریں ..."
+
+msgid "text_advanced_settings"
+msgstr "اعلیٰ ترتیبات"
+
+msgid "text_path"
+msgstr "مقام"
+
+msgid "text_resolution"
+msgstr "ریزولوشن"
+
+msgid "text_framerate"
+msgstr "فریم ریٹ"
+
+msgid "tooltip_ignore_changes_close_settings"
+msgstr "تبدیلیاں نظر انداز کریں اور ترتیبات بند کریں."
+
+msgid "tooltip_setting_background_color"
+msgstr "پروجیکٹ کا ڈیفالٹ بیک گراؤنڈ رنگ."
+
+msgid "setting_background_color"
+msgstr "بیک گراونڈ کا رنگ"
+
+msgid "setting_language"
+msgstr "زبان"
+
+msgid "setting_theme"
+msgstr "تھیم"
+
+msgid "setting_tooltip_theme"
+msgstr ""
+"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
+"کریں."
+
+msgid "setting_show_menu_bar"
+msgstr "مینو بار دکھائیں"
+
+msgid "setting_waveform_style"
+msgstr "آڈیو ویوفارم کا انداز"
+
+msgid "setting_default_image_duration"
+msgstr "تصویر کا ڈیفالٹ دورانیہ"
+
+msgid "setting_tooltip_default_image_duration"
+msgstr "دورانیہ (فریمز میں)"
+
+msgid "setting_default_project_resolution"
+msgstr "پروجیکٹ کی ڈیفالٹ ریزولوشن"
+
+msgid "setting_tooltip_default_project_resolution_x"
+msgstr "پروجیکٹ کی ڈیفالٹ وڈیو چوڑائ."
+
+msgid "setting_tooltip_default_project_resolution_y"
+msgstr "پروجیکٹ کی ڈیفالٹ وڈیو لمبائ."
+
+msgid "setting_default_project_framerate"
+msgstr "ڈیفالٹ پروجیکٹ فریم ریٹ"
+
+msgid "setting_tooltip_default_project_framerate"
+msgstr "ڈیفالٹ وڈیو پروجیکٹ کے فریم ریٹ."
+
+msgid "setting_default_track_amount"
+msgstr "ڈیفالٹ ٹریک کی مقدار"
+
+msgid "setting_pause_after_dragging"
+msgstr "ڈریگ کے بعد توقف"
+
+msgid "setting_delete_empty_space_mod"
+msgstr "خالی جگہ حذف کرنے والا موڈیفائر"
+
+msgid "setting_tooltip_delete_empty_space_mod"
+msgstr ""
+"ٹائم لائن میں خالی جگہ پر ڈبل کلک کرنے سے خالی جگہ حذف ہو جاتی ہے اور سب کچھ "
+"منتقل ہو جاتا ہے۔ ایک موڈیفائر سیٹ کرنے سے آپ کو مخصوص کی کو دبانا پڑے گا "
+"تاکہ ڈبل کلک کے ذریعے کلپس کے درمیان خالی جگہ حذف کی جا سکے."
+
+msgid "renderer_progress_text_setup"
+msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
+
+msgid "renderer_progress_text_open_error"
+msgstr "رینڈرر کو کھولا نہی جا سکا، مقام اور ترتیبات دیکھیں!"
+
+msgid "renderer_progress_text_compiling_audio"
+msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے ..."
+
+msgid "renderer_progress_text_sending_audio_error"
+msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
+
+msgid "renderer_progress_text_creating_sending_data"
+msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے ..."
+
+msgid "renderer_progress_text_sending_data_error"
+msgstr "فریم رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
+
+msgid "renderer_progress_text_canceling"
+msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
+
+msgid "renderer_progress_text_last_frame"
+msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
+
+msgid "renderer_progress_text_finilizing"
+msgstr "رینڈر کو حتمی شکل دی جا رہی ہے ..."
+
+msgid "rendering_warning"
+msgstr "کچھ غلط ہو گیا!"
+
+msgid "render_option_path"
+msgstr "فائل کا مقام"
+
+msgid "render_option_profile"
+msgstr "رینڈر پروفائل"
+
+msgid "render_option_audio_codec"
+msgstr "آڈیو کوڈیک"
+
+msgid "render_option_video_codec"
+msgstr "ویڈیو کوڈیک"
+
+msgid "render_option_quality"
+msgstr "وڈیو کامعیار"
+
+msgid "render_option_tooltip_quality"
+msgstr ""
+"سی.آر.ایف ایڈجسٹمنٹ: 50 سب سے کم معیار، 15 سب سے زیادہ معیار، 18 ڈیفالٹ۔ 0 "
+"بہترین معیار، 51 سب سے خراب."
+
+msgid "render_option_speed"
+msgstr "رفتار"
+
+msgid "render_option_tooltip_speed"
+msgstr ""
+"ایچ264 کو انکوڈنگ کرنے کی رفتار کو ایڈجسٹ کرتا ہے۔ رفتار کو بہت زیادہ سیٹ "
+"کرنے سے حتمی ویڈیو کے معیار پر منفی اثر پڑ سکتا ہے."
+
+msgid "render_option_gop_size"
+msgstr "جی او پی سائز"
+
+msgid "render_option_tooltip_gop_size"
+msgstr ""
+"تصاویر کا گروپ (GOP)۔ زیادہ قیمت بہتر ہے کمپریشن کے لیے، کم قیمت کے مقابلے "
+"میں۔ تاہم، جتنا زیادہ قیمت ہوگی، ویڈیو پلے بیک کے دوران تلاش اور اسکرابنگ کے "
+"لیے اتنی کم درستگی ہوگی۔ اگر آپ رینڈر شدہ ویڈیو کو ایڈیٹنگ کے لیے استعمال "
+"کرنے کا ارادہ رکھتے ہیں تو اسے کم قیمت پر سیٹ کریں."
+
+msgid "render_option_threads_cores"
+msgstr "تھریڈز/کورز"
+
+msgid "render_option_tooltip_threads_cores"
+msgstr "تمام دستیاب تھریدز استعمال کرنے کے لیِے '0' لگائیں."
+
+msgid "render_option_metadata_title"
+msgstr "عنوان"
+
+msgid "render_option_metadata_comment"
+msgstr "تبصرہ"
+
+msgid "render_option_metadata_author"
+msgstr "مصنف"
+
+msgid "render_option_metadata_copyright"
+msgstr "کاپی رائیٹ"
+
+msgid "render_option_video_length"
+msgstr "وڈیو کی لمبائ"
+
+msgid "render_option_render_time"
+msgstr "رینڈر کا وقت"
