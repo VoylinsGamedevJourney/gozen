@@ -19,7 +19,7 @@ msgid "title_appearance"
 msgstr "Apparence"
 
 msgid "title_defaults"
-msgstr "Par défauts"
+msgstr "Par défaut"
 
 msgid "title_timeline"
 msgstr "Timeline"
