@@ -14,7 +14,7 @@ For the localization system we use [Gettext PO files](https://www.gnu.org/softwa
 | German               | `de`    | [flipdp]()                                  |
 | Japanese             | `ja`    | [Voylin](https://github.com/Voylin)         |
 | Polish               | `pl`    | [SzczurekYT](https://github.com/SzczurekYT) |
-| Urdu                 | `ur`    | [Adil Shafiq]()                             |
+| Urdu                 | `ur`    | [AdilDevStuff](https://github.com/AdilDevStuff) |
 
 ### Languages needing maintainers ⚠️
 | Language             | Code    |
