@@ -18,10 +18,14 @@ import glob
 import shutil
 
 
-THREADS = os.cpu_count() or 4
-PATH_BUILD_WINDOWS = 'build_on_windows.py'
+THREADS: int = os.cpu_count() or 4
+PATH_BUILD_WINDOWS: str = 'build_on_windows.py'
 
 FFMPEG_SOURCE_DIR: str = './ffmpeg'
+
+X264_REPO: str = 'https://code.videolan.org/videolan/x264.git'
+X264_DIR: str = 'x264_src'
+X264_WINDOWS_DIR: str = 'bin_windows/x264'
 
 TARGET_DEV: str = 'debug'
 TARGET_RELEASE: str = 'release'
@@ -61,7 +65,7 @@ def compile_ffmpeg(platform, arch):
             return
 
     if os.path.exists(f'{FFMPEG_SOURCE_DIR}/ffbuild/config.mak'):
-        print('Cleaning FFmpeg...')
+        print('Cleaning FFmpeg...', flush=True)
 
         subprocess.run(['make', 'distclean'], cwd=FFMPEG_SOURCE_DIR)
         subprocess.run(['rm', '-rf', 'bin_linux'], cwd=FFMPEG_SOURCE_DIR)
@@ -71,12 +75,13 @@ def compile_ffmpeg(platform, arch):
         compile_ffmpeg_linux(arch)
         copy_lib_files_linux(arch)
     elif platform == 'windows':
+        build_windows_x264()
         compile_ffmpeg_windows(arch)
         copy_lib_files_windows(arch)
 
 
 def compile_ffmpeg_linux(arch):
-    print('Configuring FFmpeg for Linux ...')
+    print('Configuring FFmpeg for Linux ...', flush=True)
 
     try:
         pc_paths = subprocess.check_output(
@@ -85,10 +90,10 @@ def compile_ffmpeg_linux(arch):
         pc_paths.insert(0, os.path.abspath('ffmpeg/bin_linux/lib/pkgconfig'))
         os.environ['PKG_CONFIG_PATH'] = ':'.join(pc_paths)
 
-        print('PKG_CONFIG_PATH set to:', os.environ['PKG_CONFIG_PATH'])
+        print('PKG_CONFIG_PATH set to:', os.environ['PKG_CONFIG_PATH'], flush=True)
 
     except subprocess.CalledProcessError:
-        print('Warning: pkg-config not found or failed. Using default path.')
+        print('Warning: pkg-config not found or failed. Using default path.', flush=True)
         os.environ['PKG_CONFIG_PATH'] = '/usr/lib/pkgconfig'
 
     cmd = [
@@ -108,14 +113,14 @@ def compile_ffmpeg_linux(arch):
     ]
     cmd += DISABLED_MODULES
 
-    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR, env=os.environ)
+    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR, env=os.environ, check=True)
 
-    print('Compiling FFmpeg for Linux ...')
+    print('Compiling FFmpeg for Linux ...', flush=True)
 
-    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
-    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
+    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR, env=os.environ, check=True)
+    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR, env=os.environ, check=True)
 
-    print('Compiling FFmpeg for Linux finished!')
+    print('Compiling FFmpeg for Linux finished!', flush=True)
 
 
 def copy_lib_files_linux(arch):
@@ -128,7 +133,7 @@ def copy_lib_files_linux(arch):
         if file.count('.') == 2:
             shutil.copy2(file, path)
 
-    print('Finding and copying required system .so dependencies ...')
+    print('Finding and copying required system .so dependencies ...', flush=True)
 
     def copy_dependencies(binary_path):
         try:
@@ -157,7 +162,7 @@ def copy_lib_files_linux(arch):
 
                 shutil.copy2(lib_path, path)
         except subprocess.CalledProcessError as e:
-            print(f"Failed to run ldd on {binary_path}: {e}")
+            print(f'Failed to run ldd on {binary_path}: {e}')
 
     # TODO: Make this work without manually adding version number
     binaries = [
@@ -174,16 +179,25 @@ def copy_lib_files_linux(arch):
         if os.path.exists(binary):
             copy_dependencies(binary)
         else:
-            print(f"Warning: {binary} not found, skipping...")
+            print(f'Warning: {binary} not found, skipping...')
 
-    print('Copying files for Linux finished!')
+    print('Copying files for Linux finished!', flush=True)
 
 
 def compile_ffmpeg_windows(arch):
-    print('Configuring FFmpeg for Windows ...')
+    print('Configuring FFmpeg for Windows ...', flush=True)
 
-    os.environ['PKG_CONFIG_LIBDIR'] = '/usr/x86_64-w64-mingw32/lib/pkgconfig'
-    os.environ['PKG_CONFIG_PATH'] = '/usr/x86_64-w64-mingw32/lib/pkgconfig'
+    x264_install_base_dir: str = os.path.abspath(f'ffmpeg/{X264_WINDOWS_DIR}')
+    x264_include_dir: str = f'{x264_install_base_dir}/include'
+    x264_lib_dir: str = f'{x264_install_base_dir}/lib'
+    x264_pkgconfig_dir: str = f'{x264_lib_dir}/pkgconfig'
+
+    ffmpeg_env = os.environ.copy()
+
+    ffmpeg_env['PKG_CONFIG_PATH'] = os.pathsep.join([
+        x264_pkgconfig_dir,
+        '/usr/x86_64-w64-mingw32/lib/pkgconfig',
+    ])
 
     cmd = [
         './configure',
@@ -195,19 +209,22 @@ def compile_ffmpeg_windows(arch):
         '--target-os=mingw32',
         '--enable-cross-compile',
         '--cross-prefix=x86_64-w64-mingw32-',
-        '--pkg-config=x86_64-w64-mingw32-pkg-config',
+        '--pkg-config=pkg-config',
         '--extra-libs=-lpthread',
+        f'--extra-cflags=-I{x264_include_dir}',
+        f'--extra-ldflags=-L{x264_lib_dir}',
+        '--enable-libx264',
     ]
     cmd += DISABLED_MODULES
 
-    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR, env=os.environ)
+    subprocess.run(cmd, cwd=FFMPEG_SOURCE_DIR, env=ffmpeg_env, check=True)
 
-    print('Compiling FFmpeg for Windows ...')
+    print('Compiling FFmpeg for Windows ...', flush=True)
 
-    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
-    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR, env=os.environ)
+    subprocess.run(['make', f'-j{THREADS}'], cwd=FFMPEG_SOURCE_DIR, env=ffmpeg_env, check=True)
+    subprocess.run(['make', 'install'], cwd=FFMPEG_SOURCE_DIR, env=ffmpeg_env, check=True)
 
-    print('Compiling FFmpeg for Windows finished!')
+    print('Compiling FFmpeg for Windows finished!', flush=True)
 
 
 def copy_lib_files_windows(arch):
@@ -219,11 +236,57 @@ def copy_lib_files_windows(arch):
     for file in glob.glob('ffmpeg/bin_windows/bin/*.dll'):
         shutil.copy2(file, path)
 
-#    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libwinpthread*.dll {path}')
-#    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libstdc++-6.dll {path}')
-#    os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
+    os.system(f'cp ffmpeg/bin_windows/x264/bin/* {path}')
+    # os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
 
-    print('Copying files for Windows finished!')
+    print('Copying files for Windows finished!', flush=True)
+
+
+def build_windows_x264():
+    print('Configuring X264 for Windows ...', flush=True)
+
+    install_dir = os.path.abspath(f'ffmpeg/{X264_WINDOWS_DIR}')
+
+    if not os.path.exists(X264_DIR):
+        print('Cloning x264 repo ...', flush=True)
+        subprocess.run(['git', 'clone', '--depth', '1', X264_REPO, X264_DIR], cwd='./')
+    else:
+        print('Cleaning x264 repo folder ...', flush=True)
+        subprocess.run(['make', 'clean'], cwd=X264_DIR)
+
+    if os.path.exists(install_dir):
+        print(f'Removing existing x264 install directory: {install_dir}')
+        shutil.rmtree(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
+
+    x264_env = os.environ.copy()
+    x264_env['CC'] = 'x86_64-w64-mingw32-gcc'
+    x264_env['CXX'] = 'x86_64-w64-mingw32-g++'
+    x264_env['AR'] = 'x86_64-w64-mingw32-ar'
+    x264_env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
+    x264_env['STRIP'] = 'x86_64-w64-mingw32-strip'
+    x264_env['PKG_CONFIG'] = 'x86_64-w64-mingw32-pkg-config'
+
+    cmd = [
+        './configure',
+        '--host=x86_64-w64-mingw32',
+        '--cross-prefix=x86_64-w64-mingw32-',
+        f'--prefix={install_dir}',
+        '--enable-shared',
+        '--disable-cli',
+        '--enable-pic',
+        '--disable-avs',
+        '--extra-ldflags=-lpthread'
+    ]
+
+    subprocess.run(cmd, cwd=X264_DIR, env=x264_env, check=True)
+
+    print('Compiling X264 ...', flush=True)
+
+    subprocess.run(['make', f'-j{THREADS}'], cwd=X264_DIR, env=x264_env, check=True)
+    subprocess.run(['make', 'install'], cwd=X264_DIR, env=x264_env, check=True)
+
+    print('Compiling X264 finished!', flush=True)
 
 
 def main():

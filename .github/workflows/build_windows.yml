@@ -32,6 +32,7 @@ jobs:
       - name: 'Compiling FFmpeg for Windows'
         working-directory: ./libs
         run: |
+          python -c 'import sys; sys.path.append("."); import build; build.build_windows_x264()'
           python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
           cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ffmpeg/bin_windows/bin
 

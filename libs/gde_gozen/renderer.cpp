@@ -79,9 +79,9 @@ bool Renderer::open() {
 	}
 
 	// Setting up SWS
-	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter >(sws_getContext(
-			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_RGBA,
-			av_frame_video->width, av_frame_video->height, AV_PIX_FMT_YUV420P,
+	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(sws_getContext(
+			resolution.x, resolution.y, AV_PIX_FMT_RGBA,
+			resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
 			sws_quality, nullptr, nullptr, nullptr));
 	if (!sws_ctx)
 		return _log_err("Couldn't create SWS");
@@ -161,6 +161,8 @@ bool Renderer::_add_video_stream() {
 	av_frame_video->height = resolution.y;
 
 	if (av_frame_get_buffer(av_frame_video.get(), 0))
+		return _log_err("Couldn't get frame buffer");
+	else if (av_frame_get_buffer(av_frame_video.get(), 32) < 0)
 		return _log_err("Couldn't get frame buffer");
 
 	// Copy video stream params to muxer
@@ -280,8 +282,55 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 	else if (av_frame_make_writable(av_frame_video.get()) < 0)
 		return _log_err("Frame not writable");
 
-	uint8_t *src_data[4] = { frame_image->get_data().ptrw(), nullptr, nullptr, nullptr};
-	int src_linesize[4] = { av_frame_video->width * 4, 0, 0, 0 };
+	PackedByteArray image_pixel_data = frame_image->get_data();
+	uint8_t *src_data[4] = { image_pixel_data.ptrw(), nullptr, nullptr, nullptr};
+	int src_linesize[4] = { frame_image->get_width() * 4, 0, 0, 0 };
+
+	if (!frame_image.is_valid()) {
+		UtilityFunctions::printerr("frame_image isn't valid");
+	}
+	if (frame_image->get_format() != Image::FORMAT_RGBA8) {
+		UtilityFunctions::printerr("frame_image isn't correct format");
+		UtilityFunctions::print(frame_image->get_format());
+		return false;
+	}
+	if (frame_image->get_size() != resolution) {
+		UtilityFunctions::printerr("frame_image resolution isn't correct");
+		UtilityFunctions::print(frame_image->get_size());
+		UtilityFunctions::print(resolution);
+		return false;
+	}
+	if (!sws_ctx) {
+		UtilityFunctions::print("SWS_CTX is empty!");
+		return false;
+	}
+	if (sws_ctx.get() == nullptr) {
+		UtilityFunctions::print("SWS_CTX is null!");
+		return false;
+	}
+
+	// EXTRA TESTS
+	if (!av_frame_video) {
+		UtilityFunctions::print("av_frame_video is empty!");
+		return false;
+	}
+	if (av_frame_video.get() == nullptr) {
+		UtilityFunctions::print("av_frame_video is null!");
+		return false;
+	}
+
+    if (image_pixel_data.is_empty()) {
+        UtilityFunctions::printerr("send_frame: frame_image->get_data() IS EMPTY!");
+        return false;
+    }
+
+	// Validate destination frame
+	if (!av_frame_video->data[0] || !av_frame_video->data[1] || !av_frame_video->data[2]) {
+		UtilityFunctions::printerr("Destination frame planes not allocated!");
+		return false;
+	}
+
+	UtilityFunctions::print("Everything fine");
 
 	response = sws_scale(
 			sws_ctx.get(),
@@ -588,6 +637,7 @@ void Renderer::_bind_methods() {
 	BIND_METHOD(close);
 
 	BIND_METHOD(enable_debug);
+	BIND_METHOD(enable_trace);
 	BIND_METHOD(disable_debug);
 
 	BIND_METHOD_ARGS(set_video_codec_id, "codec_id");

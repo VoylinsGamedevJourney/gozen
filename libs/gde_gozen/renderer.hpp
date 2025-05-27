@@ -137,7 +137,8 @@ public:
 
 	static PackedStringArray get_available_codecs(int codec_id);
 
-	inline void enable_debug() { av_log_set_level(AV_LOG_VERBOSE); debug = true; }
+	inline void enable_debug() { av_log_set_level(AV_LOG_DEBUG); debug = true; }
+	inline void enable_trace() { av_log_set_level(AV_LOG_TRACE); debug = true; }
 	inline void disable_debug() { av_log_set_level(AV_LOG_INFO); debug = false; }
 
 	inline void set_video_codec_id(VIDEO_CODEC codec_id) { video_codec_id = (AVCodecID)codec_id; }
