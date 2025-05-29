@@ -321,13 +321,13 @@ func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
 	new_clip.file_id = current_clip_data.file_id
 
 	new_clip.start_frame = playhead
-	new_clip.duration = abs(current_clip_data.duration - frame + 1)
+	new_clip.duration = abs(current_clip_data.duration - frame)
 	new_clip.begin = current_clip_data.begin + frame
 	new_clip.track_id = current_clip_data.track_id
 	new_clip.effects_video = clip_data.effects_video.duplicate()
 	new_clip.effects_audio = clip_data.effects_audio.duplicate()
 
-	current_clip_data.duration -= new_clip.duration
+	current_clip_data.duration -= new_clip.duration + 1
 	size.x = Timeline.get_clip_size(current_clip_data.duration)
 
 	Project.set_clip(new_clip.clip_id, new_clip)
