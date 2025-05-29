@@ -286,52 +286,6 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 	uint8_t *src_data[4] = { image_pixel_data.ptrw(), nullptr, nullptr, nullptr};
 	int src_linesize[4] = { frame_image->get_width() * 4, 0, 0, 0 };
 
-	if (!frame_image.is_valid()) {
-		UtilityFunctions::printerr("frame_image isn't valid");
-	}
-	if (frame_image->get_format() != Image::FORMAT_RGBA8) {
-		UtilityFunctions::printerr("frame_image isn't correct format");
-		UtilityFunctions::print(frame_image->get_format());
-		return false;
-	}
-	if (frame_image->get_size() != resolution) {
-		UtilityFunctions::printerr("frame_image resolution isn't correct");
-		UtilityFunctions::print(frame_image->get_size());
-		UtilityFunctions::print(resolution);
-		return false;
-	}
-	if (!sws_ctx) {
-		UtilityFunctions::print("SWS_CTX is empty!");
-		return false;
-	}
-	if (sws_ctx.get() == nullptr) {
-		UtilityFunctions::print("SWS_CTX is null!");
-		return false;
-	}
-
-	// EXTRA TESTS
-	if (!av_frame_video) {
-		UtilityFunctions::print("av_frame_video is empty!");
-		return false;
-	}
-	if (av_frame_video.get() == nullptr) {
-		UtilityFunctions::print("av_frame_video is null!");
-		return false;
-	}
-
-    if (image_pixel_data.is_empty()) {
-        UtilityFunctions::printerr("send_frame: frame_image->get_data() IS EMPTY!");
-        return false;
-    }
-
-	// Validate destination frame
-	if (!av_frame_video->data[0] || !av_frame_video->data[1] || !av_frame_video->data[2]) {
-		UtilityFunctions::printerr("Destination frame planes not allocated!");
-		return false;
-	}
-
-	UtilityFunctions::print("Everything fine");
-
 	response = sws_scale(
 			sws_ctx.get(),
 			src_data, src_linesize, 0, frame_image->get_height(),
