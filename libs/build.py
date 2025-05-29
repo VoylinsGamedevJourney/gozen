@@ -111,6 +111,9 @@ def compile_ffmpeg_linux(arch):
         '--pkg-config-flags=--static',
         '--enable-libx264',
         '--enable-libx265',
+        '--enable-libmp3lame',
+        '--enable-libopus',
+        '--enable-libvorbis',
     ]
     cmd += DISABLED_MODULES
 

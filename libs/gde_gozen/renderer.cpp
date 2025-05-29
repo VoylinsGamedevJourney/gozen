@@ -73,6 +73,7 @@ bool Renderer::open() {
 	}
 
 	// Write stream header - if any
+	_log("Writing header to file ...");
 	if (!_write_header()) {
 		close();
 		return _log_err("Couldn't write header");
@@ -160,9 +161,8 @@ bool Renderer::_add_video_stream() {
 	av_frame_video->width = resolution.x;
 	av_frame_video->height = resolution.y;
 
-	if (av_frame_get_buffer(av_frame_video.get(), 0))
-		return _log_err("Couldn't get frame buffer");
-	else if (av_frame_get_buffer(av_frame_video.get(), 32) < 0)
+	// 32 is a common value, 0 let's FFmpeg decide.
+	if (av_frame_get_buffer(av_frame_video.get(), 32) < 0)
 		return _log_err("Couldn't get frame buffer");
 
 	// Copy video stream params to muxer
@@ -305,14 +305,13 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 		return false;
 	}
 
-	av_packet_video = make_unique_avpacket();
-
-	while (response >= 0) {
+	while (true) {
 		response = avcodec_receive_packet(av_codec_ctx_video.get(), av_packet_video.get());
 		if (response == AVERROR(EAGAIN) || response == AVERROR_EOF)
 			break;
 		else if (response < 0) {
 			FFmpeg::print_av_error("Error encoding video frame!", response);
+			av_packet_unref(av_packet_video.get());
 			return false;
 		}
 
@@ -466,25 +465,62 @@ bool Renderer::send_audio(PackedByteArray wav_data) {
 }
 
 bool Renderer::_finalize_renderer() {
-	if (!renderer_open)
+	if (!renderer_open) {
+		_log("Renderer not open, nothing to finalize.");
 		return 2;
-	if (!av_format_ctx) {
+	} else if (!av_format_ctx) {
 		_log_err("Can't finalize renderer, no format context");
 		return 1;
 	}
 
 	_log("Finalizing renderer ..");
 
-	// Flush encoders before cleanup
+	// Flush video encoder.
 	if (av_codec_ctx_video) {
+		_log("Flushing video encoder...");
 		av_packet_video = make_unique_avpacket();
-		avcodec_send_frame(av_codec_ctx_video.get(), nullptr);
+		response = avcodec_send_frame(av_codec_ctx_video.get(), nullptr);
+
+		if (response < 0 && response != AVERROR_EOF) {
+			FFmpeg::print_av_error("Error sending null frame to video encoder!", response);
+			return response;
+		}
 		
-		while (avcodec_receive_packet(
-				av_codec_ctx_video.get(), av_packet_video.get()) >= 0)
+		while (true) {
+			response = avcodec_receive_packet(av_codec_ctx_video.get(), av_packet_video.get());
+			if (response == AVERROR_EOF) {
+				_log("Video encoder flushed.");
+				av_packet_unref(av_packet_video.get());
+				break;
+			} else if (response == AVERROR(EAGAIN)) {
+				// Should not happen when flushing with a NULL frame.
+				_log_err("Video encoder returned EAGAIN during flush!");
+				av_packet_unref(av_packet_video.get());
+				break;
+			} else if (response < 0) {
+				FFmpeg::print_av_error("Error receiving flushed video packet!", response);
+				return response;
+			}
+
+			// Valid packet received, writing to file.
+			av_packet_video->stream_index = av_stream_video->index;
+			av_packet_rescale_ts(
+					av_packet_video.get(),
+					av_codec_ctx_video->time_base,
+					av_stream_video->time_base);
+
+			_log("Writing flushed video packet PTS: " + String::num_int64(av_packet_video->pts));
+			response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_video.get());
 			av_packet_unref(av_packet_video.get());
+
+			if (response < 0) {
+				FFmpeg::print_av_error("Error writing flushed video packet to file!", response);
+				return response;
+			}
+		}
 	}
 
+	// Flush audio encoder (send_audio already does this, this is just an extra check).
 	if (audio_codec_id != AV_CODEC_ID_NONE && av_codec_ctx_audio) {
         av_packet_audio = make_unique_avpacket();
 		avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
@@ -494,13 +530,15 @@ bool Renderer::_finalize_renderer() {
 			av_packet_unref(av_packet_audio.get());
 	}
 
+	// Writing stream trailer.
 	if (av_format_ctx) {
+		_log("Writing trailer to file ...");
 		response = av_write_trailer(av_format_ctx.get());
-		if (response)
+		if (response < 0)
 			FFmpeg::print_av_error("Error writing trailer to video file!", response);
 	}
 
-	_log("Video render finished");
+	_log("Video render finished successfully.");
 	return 0;
 }
 
@@ -508,7 +546,9 @@ bool Renderer::_finalize_renderer() {
 void Renderer::close() {
 	response = _finalize_renderer();
 	if (response != OK)
-		return;
+		_log_err("_finalize_renderer failed with: " + String::num_int64(response));
+
+	_log("Closing renderer and cleaning up resources...");
 
 	// Cleanup contexts
 	sws_ctx.reset();

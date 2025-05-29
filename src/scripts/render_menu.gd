@@ -133,6 +133,7 @@ func load_render_profile(profile: RenderProfile) -> void:
 	render_profile = profile.duplicate()
 
 	# Printing some debug info
+	print("--------------------")
 	header.call("Render profile selected")
 	info.call("Audio codec", render_profile.audio_codec)
 	info.call("Video codec", render_profile.video_codec)
@@ -140,6 +141,7 @@ func load_render_profile(profile: RenderProfile) -> void:
 	info.call("CRF", render_profile.crf)
 	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
 		info.call("h264 preset", render_profile.h264_preset)
+	print("--------------------")
 
 	path_line_edit.text = Project.get_project_path().get_basename() + get_extension()
 
@@ -203,6 +205,7 @@ func _on_render_button_pressed() -> void:
 	var info: Callable = (func(title: String, context: Variant) -> void:
 			print_rich("[b]", title, "[/b]: ", context))
 
+	print("--------------------")
 	header.call("Rendering process started")
 	info.call("Path", path_line_edit.text)
 	info.call("Resolution", Project.get_resolution())
@@ -214,6 +217,7 @@ func _on_render_button_pressed() -> void:
 	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
 		info.call("h264 preset", render_profile.h264_preset)
 	info.call("Frames to process", Project.get_timeline_end() + 1)
+	print("--------------------")
 
 	# Preparing the UI.
 	render_warning_label.visible = false
@@ -229,7 +233,7 @@ func _on_render_button_pressed() -> void:
 	var start_time: int = Time.get_ticks_usec()
 	is_rendering = true
 	renderer = Renderer.new()
-	renderer.enable_debug()
+	renderer.enable_debug() # NOTE: For actual releases, this should be disabled.
 
 	# Setting all data into the renderer.
 	renderer.set_file_path(path_line_edit.text)
