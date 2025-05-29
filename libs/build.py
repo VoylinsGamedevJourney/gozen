@@ -110,6 +110,7 @@ def compile_ffmpeg_linux(arch):
         '--extra-ldflags=-fPIC',
         '--pkg-config-flags=--static',
         '--enable-libx264',
+        '--enable-libx265',
     ]
     cmd += DISABLED_MODULES
 
@@ -192,10 +193,15 @@ def compile_ffmpeg_windows(arch):
     x264_lib_dir: str = f'{x264_install_base_dir}/lib'
     x264_pkgconfig_dir: str = f'{x264_lib_dir}/pkgconfig'
 
+    x265_install_base_dir: str = os.path.abspath(f'ffmpeg/{X265_WINDOWS_DIR}')
+    x265_include_dir: str = f'{x265_install_base_dir}/include'
+    x265_lib_dir: str = f'{x265_install_base_dir}/lib'
+    x265_pkgconfig_dir: str = f'{x265_lib_dir}/pkgconfig'
     ffmpeg_env = os.environ.copy()
 
     ffmpeg_env['PKG_CONFIG_PATH'] = os.pathsep.join([
         x264_pkgconfig_dir,
+        x265_pkgconfig_dir,
         '/usr/x86_64-w64-mingw32/lib/pkgconfig',
     ])
 
@@ -211,9 +217,10 @@ def compile_ffmpeg_windows(arch):
         '--cross-prefix=x86_64-w64-mingw32-',
         '--pkg-config=pkg-config',
         '--extra-libs=-lpthread',
-        f'--extra-cflags=-I{x264_include_dir}',
-        f'--extra-ldflags=-L{x264_lib_dir}',
+        f'--extra-cflags=-I{x264_include_dir} -I{x265_include_dir}',
+        f'--extra-ldflags=-L{x264_lib_dir} -L{x265_lib_dir}',
         '--enable-libx264',
+        '--enable-libx265',
     ]
     cmd += DISABLED_MODULES
 
@@ -237,6 +244,7 @@ def copy_lib_files_windows(arch):
         shutil.copy2(file, path)
 
     os.system(f'cp ffmpeg/bin_windows/x264/bin/* {path}')
+    os.system(f'cp ffmpeg/bin_windows/x265/bin/* {path}')
     # os.system(f'cp /usr/x86_64-w64-mingw32/bin/libx264*.dll {path}')
 
     print('Copying files for Windows finished!', flush=True)
@@ -245,11 +253,11 @@ def copy_lib_files_windows(arch):
 def build_windows_x264():
     print('Configuring X264 for Windows ...', flush=True)
 
-    install_dir = os.path.abspath(f'ffmpeg/{X264_WINDOWS_DIR}')
+    install_dir: str = os.path.abspath(f'ffmpeg/{X264_WINDOWS_DIR}')
 
     if not os.path.exists(X264_DIR):
         print('Cloning x264 repo ...', flush=True)
-        subprocess.run(['git', 'clone', '--depth', '1', X264_REPO, X264_DIR], cwd='./')
+        subprocess.run(['git', 'clone', '--depth', '1', '--branch', 'stable', X264_REPO, X264_DIR], cwd='./')
     else:
         print('Cleaning x264 repo folder ...', flush=True)
         subprocess.run(['make', 'clean'], cwd=X264_DIR)
