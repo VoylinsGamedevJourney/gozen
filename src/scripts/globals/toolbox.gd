@@ -2,13 +2,10 @@ extends Node
 
 
 func _ready() -> void:
-	if OS.is_debug_build():
-		# Debug print to give more information to the developers incase
-		# something went wrong whilst using GoZen.
-		_print_startup_debug()
+	_print_startup_info()
 
 
-func _print_startup_debug() -> void:
+func _print_startup_info() -> void:
 	var header: Callable = (func(text: String) -> void:
 			print_rich("[color=purple][b]", text))
 	var info: Callable = (func(title: String, context: Variant) -> void:

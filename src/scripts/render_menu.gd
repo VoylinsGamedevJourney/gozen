@@ -124,7 +124,22 @@ func _input(event: InputEvent) -> void:
 
 
 func load_render_profile(profile: RenderProfile) -> void:
+	# Printing info about the selected rendering profile.
+	var header: Callable = (func(text: String) -> void:
+			print_rich("[b]", text))
+	var info: Callable = (func(title: String, context: Variant) -> void:
+			print_rich("[b]", title, "[/b]: ", context))
+
 	render_profile = profile.duplicate()
+
+	# Printing some debug info
+	header.call("Render profile selected")
+	info.call("Audio codec", render_profile.audio_codec)
+	info.call("Video codec", render_profile.video_codec)
+	info.call("GOP", render_profile.gop)
+	info.call("CRF", render_profile.crf)
+	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
+		info.call("h264 preset", render_profile.h264_preset)
 
 	path_line_edit.text = Project.get_project_path().get_basename() + get_extension()
 
@@ -173,25 +188,50 @@ func _on_enable_metadata_check_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_cancel_button_pressed() -> void:
+	if is_rendering:
+		renderer.close()
+
 	self.queue_free()
 
 
 func _on_render_button_pressed() -> void:
-	var start_time: int = Time.get_ticks_usec()
+	var threads: int = maxi(0, threads_spinbox.value as int)
 
+	# Printing info about the rendering process.
+	var header: Callable = (func(text: String) -> void:
+			print_rich("[b]", text))
+	var info: Callable = (func(title: String, context: Variant) -> void:
+			print_rich("[b]", title, "[/b]: ", context))
+
+	header.call("Rendering process started")
+	info.call("Path", path_line_edit.text)
+	info.call("Resolution", Project.get_resolution())
+	info.call("Audio codec", render_profile.audio_codec)
+	info.call("Video codec", render_profile.video_codec)
+	info.call("GOP", render_profile.gop)
+	info.call("CRF", render_profile.crf)
+	info.call("Cores/threads", threads)
+	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
+		info.call("h264 preset", render_profile.h264_preset)
+	info.call("Frames to process", Project.get_timeline_end() + 1)
+
+	# Preparing the UI.
 	render_warning_label.visible = false
 	render_progress_label.visible = true
 	render_progress_bar.max_value = Project.get_timeline_end()
 	render_progress_bar.value = 0
 	render_progress_label.text = tr("renderer_progress_text_setup")
+	print("Renderer is preparing ...")
 
 	show_window(1)
 	await RenderingServer.frame_post_draw
 
+	var start_time: int = Time.get_ticks_usec()
 	is_rendering = true
 	renderer = Renderer.new()
 	renderer.enable_debug()
 
+	# Setting all data into the renderer.
 	renderer.set_file_path(path_line_edit.text)
 	renderer.set_resolution(Project.get_resolution())
 	renderer.set_audio_codec_id(render_profile.audio_codec)
@@ -199,11 +239,11 @@ func _on_render_button_pressed() -> void:
 	renderer.set_gop_size(render_profile.gop)
 	renderer.set_crf(render_profile.crf) # Slider has a negative value
 	renderer.set_sws_quality(Renderer.SWS_QUALITY_BILINEAR)
-	renderer.set_threads(maxi(0, threads_spinbox.value as int))
-
+	renderer.set_threads(threads)
 	if render_profile.video_codec == Renderer.VIDEO_CODEC.V_H264:
 		renderer.set_h264_preset(render_profile.h264_preset)
 
+	# Adding metadata if necessary.
 	if render_metadata_toggle.button_pressed:
 		var title: String = title_line_edit.text
 		var comment: String = comment_text_edit.text
@@ -219,10 +259,12 @@ func _on_render_button_pressed() -> void:
 		if copyright != "":
 			renderer.set_video_meta_copyright(copyright)
 
+	# Check if rendering is possible or not.
 	if !renderer.open():
 		render_warning_label.visible = true
 		render_progress_label.visible = false
 		render_warning_label.text = "renderer_progress_text_open_error"
+		printerr("Renderer could not open!")
 		printerr("Something went wrong and rendering isn't possible!")
 		is_rendering = false
 		return
@@ -231,11 +273,14 @@ func _on_render_button_pressed() -> void:
 	render_progress_bar.value = 0
 	await RenderingServer.frame_post_draw
 
+	# Adding the audio (if needed).
 	if render_profile.audio_codec != Renderer.AUDIO_CODEC.A_NONE:
 		render_progress_bar.value += 1
 		render_progress_label.text = "renderer_progress_text_compiling_audio"
 		render_progress_bar.value += 4
+		print("Renderer is compiling audio ...")
 		await RenderingServer.frame_post_draw
+
 		if !renderer.send_audio(render_audio()):
 			render_warning_label.visible = true
 			render_progress_label.visible = false
@@ -245,8 +290,10 @@ func _on_render_button_pressed() -> void:
 			is_rendering = false
 			return
 
-	render_progress_label.text = "renderer_progress_text_creating_sending_data"
+	# Sending the frame data.
 	Editor.set_frame(0)
+	render_progress_label.text = "renderer_progress_text_creating_sending_data"
+	print("Renderer starts sending frames ...")
 
 	for i: int in Project.get_timeline_end() + 1:
 		if cancel_rendering:
@@ -266,7 +313,9 @@ func _on_render_button_pressed() -> void:
 
 	if cancel_rendering:
 		render_progress_label.text = "renderer_progress_text_canceling"
+		print("Renderer got canceled.")
 		await RenderingServer.frame_post_draw
+
 		renderer.close()
 		is_rendering = false
 		cancel_rendering = false
@@ -275,12 +324,14 @@ func _on_render_button_pressed() -> void:
 		return
 
 	render_progress_label.text = "renderer_progress_text_last_frame"
+	print("Renderer processing last frame.")
 	await RenderingServer.frame_post_draw
 	render_progress_bar.value += 1
 	await RenderingServer.frame_post_draw
 	render_progress_bar.value += 1
 	await RenderingServer.frame_post_draw
 	render_progress_label.text = "renderer_progress_text_finilizing"
+	print("Renderer finalizing ...")
 	await RenderingServer.frame_post_draw
 
 	renderer.close()
@@ -294,6 +345,7 @@ func _on_render_button_pressed() -> void:
 	render_video_length_label.text = Toolbox.format_time_str_from_frame(
 			Project.get_timeline_end() + 1)
 	show_window(2)
+	print("Renderer finished.")
 
 
 func get_extension(profile: RenderProfile = render_profile) -> String:
@@ -308,7 +360,7 @@ func get_extension(profile: RenderProfile = render_profile) -> String:
 		Renderer.VIDEO_CODEC.V_VP9: return ".webm"
 		Renderer.VIDEO_CODEC.V_VP8: return ".webm"
 
-	printerr("Unrecognized codec!")
+	printerr("Unrecognized codec! ", profile.video_codec)
 	return ""
 
 
@@ -385,7 +437,8 @@ func render_audio() -> PackedByteArray:
 
 func show_window(nr: int) -> void:
 	for i: int in get_child_count():
-		(get_child(i) as PanelContainer).visible = nr == i
+		if get_child(i) is PanelContainer:
+			(get_child(i) as PanelContainer).visible = nr == i
 
 
 static func get_sample_count(frames: int) -> int:
