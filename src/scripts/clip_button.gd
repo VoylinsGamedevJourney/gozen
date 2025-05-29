@@ -327,7 +327,7 @@ func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
 	new_clip.effects_video = clip_data.effects_video.duplicate()
 	new_clip.effects_audio = clip_data.effects_audio.duplicate()
 
-	current_clip_data.duration -= new_clip.duration + 1
+	current_clip_data.duration -= new_clip.duration
 	size.x = Timeline.get_clip_size(current_clip_data.duration)
 
 	Project.set_clip(new_clip.clip_id, new_clip)

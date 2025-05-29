@@ -6,7 +6,7 @@
 script = ExtResource("1_5bs73")
 profile_name = "AV1"
 audio_codec = 86018
-video_codec = 27
+video_codec = 226
 crf = 23
 gop = 15
 h264_preset = 6

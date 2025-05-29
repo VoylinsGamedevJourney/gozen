@@ -68,8 +68,16 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_pressed("ui_right"):
 			Editor.set_frame(Editor.frame_nr + 1)
 
+	if event is InputEventMouseButton and (event as InputEventMouseButton).is_released():
+		if preview.visible:
+			preview.visible = false
+		
+
+	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
+		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
 		var mod: int = Settings.get_delete_empty_modifier()
+
 		if mod == KEY_NONE or Input.is_key_pressed(mod):
 			_delete_empty_space()
 			get_viewport().set_input_as_handled()
@@ -225,7 +233,9 @@ func _main_control_can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	for child: Node in preview.get_children():
 		child.queue_free()
 
-	if draggable.files:
+	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
+		preview.visible = false
+	elif draggable.files:
 		preview.visible = _can_drop_new_clips(pos, draggable)
 	else:
 		preview.visible = _can_move_clips(pos, draggable)
@@ -540,7 +550,7 @@ func get_drop_region(track: int, frame: int, ignores: Array[Vector2i]) -> Vector
 
 	# Getting the correct end frame
 	if region.x != -1:
-		region.x = Project.get_clip(Project.get_track_data(track)[region.x]).end_frame
+		region.x = Project.get_clip(Project.get_track_data(track)[region.x]).end_frame + 1
 
 	return region
 
@@ -618,7 +628,7 @@ func move_playhead(frame_nr: int) -> void:
 
 
 static func get_clip_size(duration: int) -> float:
-	return instance.zoom * (duration + 1)
+	return instance.zoom * duration
 
 
 static func get_zoom() -> float:

@@ -24,6 +24,9 @@ msgstr "Defaults"
 msgid "title_timeline"
 msgstr "Timeline"
 
+msgid "title_extras"
+msgstr "Extra's"
+
 msgid "title_rendering"
 msgstr "Rendering"
 
@@ -197,6 +200,18 @@ msgstr ""
 "moves everything. Setting a modifier makes it so you need to press that "
 "specific key to make double clicking remove the empty space in between clips."
 
+
+msgid "setting_check_version"
+msgstr "Check version"
+
+
+msgid "setting_tooltip_check_version"
+msgstr ""
+"This relies on checking the GitHub repo and therefore will make a connection "
+"to the internet. Some people prefer to not make their applications connect "
+"to the internet so this is by default 'disabled'."
+
+
 msgid "renderer_progress_text_setup"
 msgstr "Setting up renderer ..."
 
@@ -290,3 +305,6 @@ msgstr "Video length"
 
 msgid "render_option_render_time"
 msgstr "Render time"
+
+msgid "notification_update_available"
+msgstr "Update available!"

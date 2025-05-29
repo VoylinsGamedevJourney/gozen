@@ -2,6 +2,8 @@ extends PanelContainer
 
 
 @export var version_label: RichTextLabel
+@export var new_version_available_panel: PanelContainer
+@export var new_version_available_button: TextureButton
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
 
@@ -13,6 +15,8 @@ extends PanelContainer
 @export var warning_label: Label
 
 
+var http_request: HTTPRequest # For version check
+
 
 func _ready() -> void:
 	tab_container.current_tab = 0
@@ -20,6 +24,11 @@ func _ready() -> void:
 	_set_version_label()
 	_set_new_project_defaults()
 	project_path_line_edit.text = OS.get_executable_path().get_base_dir() + "/project.gozen"
+
+	if Settings.get_check_version():
+		_check_new_version()
+	else:
+		new_version_available_panel.visible = false
 
 
 func _input(event: InputEvent) -> void:
@@ -212,4 +221,104 @@ func _set_project_path(path: String) -> void:
 		path += Project.EXTENSION
 
 	project_path_line_edit.text = path
+
+
+func _check_new_version() -> void:
+	# NOTE: This will only start working once we have an actual release and not a pre-release!
+	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/latest_release_check")))
+
+	http_request = HTTPRequest.new()
+	add_child(http_request)
+	Toolbox.connect_func(
+		http_request.request_completed,
+		_check_new_version_request_completed)
+
+	# TODO: Change this to open the URL of the OS download instead of GitHub Repo
+	Toolbox.connect_func(new_version_available_button.pressed, func() -> void:
+			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/latest_release"))))
+
+
+func _check_new_version_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	# Initial check to see if the request was successful or not.
+	if result != HTTPRequest.RESULT_SUCCESS:
+		new_version_available_panel.visible = false
+		print("Check for new version failed! ", result)
+	elif response_code == 404:
+		print("No releases found for repo! ", response_code)
+	elif response_code != 200:
+		print("HTTPRequest failed with status code: ", response_code)
+		return
+
+	# Request was successful, not checking the JSON data.
+	var json: Variant = JSON.parse_string(body.get_string_from_utf8())
+
+	if json == null:
+		print("Failed to parse JSON response for checking version!")
+		return
+	elif typeof(json) != TYPE_DICTIONARY:
+		print("Failed to get dictionary from json for checking version!")
+		return
+
+	var json_data: Dictionary = json
+
+	if !json_data.has("tag_name"):
+		print("No releases found for repo!")
+		return
+
+	# Checking the version from the latest release vs the current editor version.
+	var latest_release: String = str(json_data["tag_name"]).to_lower().lstrip('v')
+	var major: int = int(latest_release.split('.')[0])
+	var minor: int = int(latest_release.split('.')[1])
+	var patch: int = -1
+	var tag: int = 3
+
+	var current_release: String = str(ProjectSettings.get_setting_with_override("application/config/version"))
+	var current_major: int = int(current_release.split('.')[0])
+	var current_minor: int = int(current_release.split('.')[0])
+	var current_patch: int = -1
+	var current_tag: int = 3
+	
+	if latest_release.count('.') == 3:
+		patch = int(latest_release.split('.')[2])
+	if current_release.count('.') == 3:
+		patch = int(current_release.split('.')[2])
+
+	if latest_release.contains('-'):
+		match latest_release.split('-')[1]:
+			"dev": tag = 0
+			"alpha": tag = 1
+			"beta": tag = 2
+	if current_release.contains('-'):
+		match current_release.split('-')[1]:
+			"dev": current_tag = 0
+			"alpha": current_tag = 1
+			"beta": current_tag = 2
+
+	# Checking Major.
+	if current_major < major:
+		new_version_available_panel.visible = true
+		return
+	elif current_major > major:
+		return # Already newest version.
+
+	# Checking Minor.
+	if current_minor < minor:
+		new_version_available_panel.visible = true
+		return
+	elif current_minor > minor:
+		return # Already newest version.
+
+	# Checking Patch.
+	if current_patch < patch:
+		new_version_available_panel.visible = true
+		return
+	elif current_patch > patch:
+		return # Already newest version.
+
+	# Checking Tag.
+	if current_tag < tag:
+		new_version_available_panel.visible = true
+		return
+	elif current_tag > tag:
+		return # Already newest version.
 

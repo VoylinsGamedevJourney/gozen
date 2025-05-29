@@ -181,3 +181,11 @@ func set_delete_empty_modifier(new_key: int) -> void:
 func get_delete_empty_modifier() -> int:
 	return data.delete_empty_modifier
 
+
+func set_check_version(value: bool) -> void:
+	data.check_version = value
+	
+
+func get_check_version() -> int:
+	return data.check_version
+

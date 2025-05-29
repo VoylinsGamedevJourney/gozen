@@ -20,6 +20,9 @@ extends PanelContainer
 @export var pause_after_drag: CheckButton
 @export var delete_empty_modifier_button: OptionButton
 
+@export_group("Extra's")
+@export var check_version: CheckButton
+
 
 var changes: Dictionary[String, Callable] = {}
 var locales: PackedStringArray = [] # List of key codes
@@ -67,6 +70,9 @@ func set_values() -> void:
 		KEY_NONE: delete_empty_modifier_button.selected = 0
 		KEY_CTRL: delete_empty_modifier_button.selected = 1
 		KEY_SHIFT: delete_empty_modifier_button.selected = 2
+
+	# Extra values
+	check_version.button_pressed = Settings.get_check_version()
 
 	save_info_label.visible = false
 
@@ -151,5 +157,10 @@ func _on_delete_empty_modifier_option_button_item_selected(index: int) -> void:
 		1: changes["delete_empty_modifier"] = Settings.set_delete_empty_modifier.bind(KEY_CTRL)
 		2: changes["delete_empty_modifier"] = Settings.set_delete_empty_modifier.bind(KEY_SHIFT)
 
+	save_info_label.visible = true
+
+
+func _on_check_version_check_button_toggled(value: bool) -> void:
+	changes["check_version"] = Settings.set_check_version.bind(value)
 	save_info_label.visible = true
 

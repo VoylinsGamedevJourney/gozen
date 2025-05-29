@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bqlcn30hs8qp5"]
+[gd_scene load_steps=13 format=3 uid="uid://bqlcn30hs8qp5"]
 
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scripts/startup_screen.gd" id="1_mrrmf"]
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_jk13q"]
@@ -11,7 +11,18 @@
 [ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="7_5plxg"]
 [ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="8_ohjo4"]
 
-[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2wpv"]
+content_margin_left = 20.0
+content_margin_right = 18.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="LabelSettings" id="LabelSettings_x2wpv"]
+font_size = 13
+
+[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,6 +31,8 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_mrrmf")
 version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
+new_version_available_panel = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel")
+new_version_available_button = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer/RepoTextureButton")
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
 recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
 project_path_line_edit = NodePath("Panel/VBox/StartupTabContainer/NewProject/PathHBox/PathLineEdit")
@@ -104,6 +117,33 @@ text = "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]
 scroll_active = false
 horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="UpdateAvailablePanel" type="PanelContainer" parent="Panel/VBox/StartupImage"]
+custom_minimum_size = Vector2(300, 20)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_right = 150.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x2wpv")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBox/StartupImage/UpdateAvailablePanel"]
+layout_mode = 2
+
+[node name="UpdateAvailableLabel" type="Label" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "notification_update_available"
+label_settings = SubResource("LabelSettings_x2wpv")
+
+[node name="RepoTextureButton" type="TextureButton" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+texture_normal = ExtResource("7_5plxg")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox"]
 layout_mode = 2

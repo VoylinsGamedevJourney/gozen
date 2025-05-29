@@ -24,6 +24,9 @@ msgstr "標準設定"
 msgid "title_timeline"
 msgstr "タイムライン"
 
+msgid "title_extras"
+msgstr "その他"
+
 msgid "title_rendering"
 msgstr "レンダリング"
 
@@ -194,6 +197,15 @@ msgstr "空白削除修飾キー"
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr "タイムライン上の空白部分をダブルクリックすると、その空白を削除して全てを移動させます。修飾キーを設定すると、その特定のキーを押しながらダブルクリックする必要があり、クリップ間の空白を削除します。"
 
+msgid "setting_check_version"
+msgstr "バージョンを確認"
+
+msgid "setting_tooltip_check_version"
+msgstr ""
+"この機能はGitHubリポジトリを確認するためインターネットに接続します。"
+"アプリケーションがインターネットに接続することを好まないユーザーもいるため、"
+"この設定はデフォルトで「無効」になっています。"
+
 msgid "renderer_progress_text_setup"
 msgstr "レンダラーを準備中..."
 
@@ -277,3 +289,6 @@ msgstr "動画の長さ"
 
 msgid "render_option_render_time"
 msgstr "レンダリング時間"
+
+msgid "notification_update_available"
+msgstr "更新があります！"

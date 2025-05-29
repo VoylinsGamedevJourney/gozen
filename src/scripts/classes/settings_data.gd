@@ -23,3 +23,6 @@ var tracks_amount: int = 6 # The amount of tracks
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
 
+# Extra
+var check_version: bool = false
+

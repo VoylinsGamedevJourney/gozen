@@ -25,6 +25,10 @@ msgid "title_timeline"
 msgstr ""
 
 
+msgid "title_extras"
+msgstr "Extra's"
+
+
 msgid "title_rendering"
 msgstr ""
 
@@ -251,6 +255,14 @@ msgid "setting_tooltip_delete_empty_space_mod"
 msgstr ""
 
 
+msgid "setting_check_version"
+msgstr ""
+
+
+msgid "setting_tooltip_check_version"
+msgstr ""
+
+
 msgid "renderer_progress_text_setup"
 msgstr ""
 
@@ -360,4 +372,8 @@ msgstr ""
 
 
 msgid "render_option_render_time"
+msgstr ""
+
+
+msgid "notification_update_available"
 msgstr ""

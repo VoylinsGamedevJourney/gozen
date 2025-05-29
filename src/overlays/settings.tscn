@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scripts/settings_menu.gd" id="1_ce4ec"]
 
-[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "language_option_button", "theme_option_button", "show_menu_bar_button", "audio_waveform_style", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox", "pause_after_drag", "delete_empty_modifier_button")]
+[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("save_info_label", "language_option_button", "theme_option_button", "show_menu_bar_button", "audio_waveform_style", "image_duration_spinbox", "default_resolution_x_spinbox", "default_resolution_y_spinbox", "default_framerate_spinbox", "track_amount_spinbox", "pause_after_drag", "delete_empty_modifier_button", "check_version")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,6 +22,7 @@ default_framerate_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Mar
 track_amount_spinbox = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox")
 pause_after_drag = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/PauseAfterDragCheckButton")
 delete_empty_modifier_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/DeleteEmptyModifierOptionButton")
+check_version = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/ExtrasGrid/CheckVersionCheckButton")
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(700, 350)
@@ -259,6 +260,28 @@ popup/item_1/id = 1
 popup/item_2/text = "Shift"
 popup/item_2/id = 2
 
+[node name="ExtrasLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_extras"
+
+[node name="ExtrasGrid" type="GridContainer" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox"]
+layout_mode = 2
+columns = 2
+
+[node name="CheckVersionLabel" type="Label" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/ExtrasGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "This setting is used for new projects you create. New projects will intialize with the amount of tracks which you define here."
+mouse_filter = 1
+text = "setting_check_version"
+
+[node name="CheckVersionCheckButton" type="CheckButton" parent="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/ExtrasGrid"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "setting_tooltip_check_version"
+flat = true
+
 [node name="SaveForEffectLabel" type="Label" parent="Panel/Margin/VBox"]
 visible = false
 layout_mode = 2
@@ -302,6 +325,7 @@ text = "button_save_settings"
 [connection signal="value_changed" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/TrackAmountSpinBox" to="." method="_on_track_amount_spin_box_value_changed"]
 [connection signal="toggled" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/PauseAfterDragCheckButton" to="." method="_on_pause_after_drag_check_button_toggled"]
 [connection signal="item_selected" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/TimelineGrid/DeleteEmptyModifierOptionButton" to="." method="_on_delete_empty_modifier_option_button_item_selected"]
+[connection signal="toggled" from="Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/ExtrasGrid/CheckVersionCheckButton" to="." method="_on_check_version_check_button_toggled"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/ResetButton" to="." method="_on_reset_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]

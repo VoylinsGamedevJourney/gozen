@@ -24,6 +24,9 @@ msgstr "Standaarden"
 msgid "title_timeline"
 msgstr "Tijdlijn"
 
+msgid "title_extras"
+msgstr "Extra's"
+
 msgid "title_rendering"
 msgstr "Renderen"
 
@@ -191,6 +194,15 @@ msgstr "Modkey voor verwijderen van een lege ruimte"
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr "Dubbelklikken op lege plekken in de tijdlijn verwijdert de lege ruimte en verplaatst alles. Door een modificatietoets in te stellen, moet je die specifieke toets ingedrukt houden om dubbelklikken de lege ruimte tussen clips te laten verwijderen."
 
+msgid "setting_check_version"
+msgstr "Versie controleren"
+
+msgid "setting_tooltip_check_version"
+msgstr ""
+"Hiervoor wordt de GitHub-repository gecontroleerd, wat een internetverbinding "
+"vereist. Omdat sommige gebruikers liever niet willen dat hun applicaties "
+"verbinding maken met het internet, is deze optie standaard 'uitgeschakeld'."
+
 msgid "renderer_progress_text_setup"
 msgstr "Renderer instellen ..."
 
@@ -274,3 +286,6 @@ msgstr "Video lengte"
 
 msgid "render_option_render_time"
 msgstr "Render tijd"
+
+msgid "notification_update_available"
+msgstr "Update beschikbaar!"

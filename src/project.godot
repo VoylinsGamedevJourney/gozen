@@ -174,3 +174,5 @@ tutorials="https://www.youtube.com/playlist?list=PL8opQePBSY5kE0bsegp82mcfC6DfOa
 discord="https://discord.gg/BdbUf7VKYC"
 github="https://github.com/VoylinsGamedevJourney/gozen"
 youtube_channel="https://www.youtube.com/@voylinsgamedevjourney"
+latest_release="https://github.com/VoylinsGamedevJourney/gozen/releasess"
+latest_release_check="https://api.github.com/repos/VoylinsGamedevJourney/GoZen/releases/latest"
