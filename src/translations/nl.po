@@ -54,6 +54,9 @@ msgstr "Aan de slag"
 msgid "title_new_project"
 msgstr "Nieuw project"
 
+msgid "title_loading_project"
+msgstr "Project laden"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
 
@@ -149,6 +152,9 @@ msgstr "De standaard achtergrondkleur van je project."
 msgid "setting_background_color"
 msgstr "Achtergroundkleur"
 
+msgid "setting_language"
+msgstr "Taal"
+
 msgid "setting_theme"
 msgstr "Thema"
 
@@ -192,16 +198,21 @@ msgid "setting_delete_empty_space_mod"
 msgstr "Modkey voor verwijderen van een lege ruimte"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "Dubbelklikken op lege plekken in de tijdlijn verwijdert de lege ruimte en verplaatst alles. Door een modificatietoets in te stellen, moet je die specifieke toets ingedrukt houden om dubbelklikken de lege ruimte tussen clips te laten verwijderen."
+msgstr ""
+"Dubbelklikken op lege plekken in de tijdlijn verwijdert de lege ruimte en "
+"verplaatst alles. Door een modificatietoets in te stellen, moet je die "
+"specifieke toets ingedrukt houden om dubbelklikken de lege ruimte tussen "
+"clips te laten verwijderen."
 
 msgid "setting_check_version"
 msgstr "Versie controleren"
 
 msgid "setting_tooltip_check_version"
 msgstr ""
-"Hiervoor wordt de GitHub-repository gecontroleerd, wat een internetverbinding "
-"vereist. Omdat sommige gebruikers liever niet willen dat hun applicaties "
-"verbinding maken met het internet, is deze optie standaard 'uitgeschakeld'."
+"Hiervoor wordt de GitHub-repository gecontroleerd, wat een "
+"internetverbinding vereist. Omdat sommige gebruikers liever niet willen dat "
+"hun applicaties verbinding maken met het internet, is deze optie standaard "
+"'uitgeschakeld'."
 
 msgid "renderer_progress_text_setup"
 msgstr "Renderer instellen ..."
@@ -249,19 +260,30 @@ msgid "render_option_quality"
 msgstr "Kwaliteit"
 
 msgid "render_option_tooltip_quality"
-msgstr "Past de CRF (Constant Rate Factor) aan. De laagste kwaliteitsinstelling is 50 en de hoogste kwaliteitsinstelling is 15. Standaard is ingesteld op 18. Gebruikt om bitrate aan te passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 geeft de beste, 51 de slechtste kwaliteit, 18 is nauwelijks merkbaar."
+msgstr ""
+"Past de CRF (Constant Rate Factor) aan. De laagste kwaliteitsinstelling is "
+"50 en de hoogste kwaliteitsinstelling is 15. Standaard is ingesteld op 18. "
+"Gebruikt om bitrate aan te passen, wat invloed heeft op kwaliteit en "
+"grootte. Waarde 0 geeft de beste, 51 de slechtste kwaliteit, 18 is "
+"nauwelijks merkbaar."
 
 msgid "render_option_speed"
 msgstr "Snelheid"
 
 msgid "render_option_tooltip_speed"
-msgstr "Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een negatieve invloed hebben op de uiteindelijke videokwaliteit."
+msgstr ""
+"Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een "
+"negatieve invloed hebben op de uiteindelijke videokwaliteit."
 
 msgid "render_option_gop_size"
 msgstr "GOP-grootte"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "Group Of Pictures. Een hogere waarde is beter voor compressie vergeleken met een lagere waarde. Maar hoe hoger de waarde is, hoe minder nauwkeurig het zoeken en door de video navigeren tijdens afspelen zal zijn. Zet op een lage waarde als je van plan bent de gerenderde video te gebruiken voor bewerking."
+msgstr ""
+"Group Of Pictures. Een hogere waarde is beter voor compressie vergeleken met "
+"een lagere waarde. Maar hoe hoger de waarde is, hoe minder nauwkeurig het "
+"zoeken en door de video navigeren tijdens afspelen zal zijn. Zet op een lage "
+"waarde als je van plan bent de gerenderde video te gebruiken voor bewerking."
 
 msgid "render_option_threads_cores"
 msgstr "Threads/cores"
@@ -289,3 +311,24 @@ msgstr "Render tijd"
 
 msgid "notification_update_available"
 msgstr "Update beschikbaar!"
+
+msgid "status_project_loading_init"
+msgstr "Project openen..."
+
+msgid "status_project_preparing_timeline"
+msgstr "Tijdlijn voorbereiden ..."
+
+msgid "status_project_loading_files"
+msgstr "Media laden ..."
+
+msgid "status_project_playback_setup"
+msgstr "Video afspelen voorbereiden ..."
+
+msgid "status_project_file_list_setup"
+msgstr "Media lijst laden ..."
+
+msgid "status_project_loading_clips"
+msgstr "Clips laden ..."
+
+msgid "status_project_finalizing"
+msgstr "Afronden ..."

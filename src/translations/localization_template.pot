@@ -64,6 +64,8 @@ msgstr ""
 msgid "title_new_project"
 msgstr ""
 
+msgid "title_loading_project"
+msgstr ""
 
 msgid "button_tooltip_create_new_project"
 msgstr ""
@@ -376,4 +378,25 @@ msgstr ""
 
 
 msgid "notification_update_available"
+msgstr ""
+
+msgid "status_project_loading_init"
+msgstr ""
+
+msgid "status_project_preparing_timeline"
+msgstr ""
+
+msgid "status_project_loading_files"
+msgstr ""
+
+msgid "status_project_playback_setup"
+msgstr ""
+
+msgid "status_project_file_list_setup"
+msgstr ""
+
+msgid "status_project_loading_clips"
+msgstr ""
+
+msgid "status_project_finalizing"
 msgstr ""

@@ -42,6 +42,12 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 
 	file_data = {}
 
+	Editor._setup_playback()
+	Editor._setup_audio_players()
+	Editor.set_frame(data.playhead_position)
+	FilesList.instance._on_project_loaded()
+	Timeline.instance._on_project_loaded()
+
 	project_ready.emit()
 	_update_recent_projects(path)
 	save()
@@ -70,17 +76,30 @@ func _save_as(new_project_path: String) -> void:
 
 	
 func open(project_path: String) -> void:
+	var loading_overlay: LoadingProjectOverlay = preload("res://overlays/loading_project.tscn").instantiate()
+	get_tree().root.add_child(loading_overlay)
+
 	data = ProjectData.new()
 	file_data = {}
 
+	# 1% = Loading has started.
+	loading_overlay.update_progress_bar(1, true)
+
 	if data.load_data(project_path):
 		printerr("Something went wrong whilst loading project!", data.error)
+
+	# 5% = Loading has started
+	loading_overlay.update_progress(5, "status_project_preparing_timeline")
 
 	set_project_path(project_path)
 	set_framerate(data.framerate)
 	if Editor.loaded_clips.resize(get_track_count()):
 		Toolbox.print_resize_error()
 
+	# 7% = Timeline ready to accept clips.
+	loading_overlay.update_progress(7, "status_project_loading_files")
+
+	var progress_increment: float = float(get_file_ids().size()) / 73.0
 	for i: int in get_file_ids():
 		if !load_file_data(i):
 			continue # File became invaled so entry got deleted.
@@ -89,10 +108,30 @@ func open(project_path: String) -> void:
 
 		if type == File.TYPE.VIDEO and file_data[i].video == null:
 			await file_data[i].video_loaded
+		loading_overlay.increment_progress_bar(progress_increment)
 
+	# 80% = Files loaded, setting up playback.
+	loading_overlay.update_progress(80, "status_project_playback_setup")
+	Editor._setup_playback()
+	Editor._setup_audio_players()
+	Editor.set_frame(data.playhead_position)
+
+	# 85% = Playback is ready, preparing file list.
+	loading_overlay.update_progress(85, "status_project_file_list_setup")
+	FilesList.instance._on_project_loaded()
+
+	# 95% = Last part for loading timeline.
+	loading_overlay.update_progress(95, "status_project_loading_clips")
+	Timeline.instance._on_project_loaded()
+
+	# 99% = Finalizing.
+	loading_overlay.update_progress(99, "status_project_finalizing")
 	_update_recent_projects(project_path)
 	project_ready.emit()
+
+	loading_overlay.update_progress_bar(100)
 	get_window().title = "GoZen - %s" % project_path.get_file().get_basename()
+	loading_overlay.queue_free()
 
 
 func open_project() -> void:

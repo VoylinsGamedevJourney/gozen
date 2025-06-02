@@ -43,7 +43,6 @@ func _ready() -> void:
 
 	Toolbox.connect_func(Editor.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
-	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 	Toolbox.connect_func(Project.file_deleted, _check_clips)
 
 

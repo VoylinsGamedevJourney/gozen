@@ -35,11 +35,6 @@ var skips: int = 0
 
 
 
-func _ready() -> void:
-	Toolbox.connect_func(Project.project_ready, _setup_playback)
-	Toolbox.connect_func(Project.project_ready, _setup_audio_players)
-	Toolbox.connect_func(Project.project_ready, set_frame.bind(frame_nr))
-
 
 func _process(delta: float) -> void:
 	if !is_playing:

@@ -360,7 +360,6 @@ theme_type_variation = &"main_button"
 text = "button_start_render"
 
 [node name="RenderPanel" type="PanelContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -402,7 +401,7 @@ text = "rendering_warning"
 [node name="RenderUpdateLabel" type="Label" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"title_label"
+theme_type_variation = &"info_label"
 text = "Creating audio ..."
 
 [node name="CancelRenderButton" type="Button" parent="RenderPanel/Margin/MainPanel/Margin/VBox/HBox"]
@@ -411,6 +410,7 @@ layout_mode = 2
 text = "button_cancel_rendering"
 
 [node name="RenderFinishedPanel" type="PanelContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 4

@@ -54,8 +54,12 @@ msgstr "はじめに"
 msgid "title_new_project"
 msgstr "新しいプロジェクト"
 
+msgid "title_loading_project"
+msgstr "プロジェクトを読み込み中"
+
 msgid "button_tooltip_create_new_project"
-msgstr "選択した設定で新しいプロジェクトを作成します。"
+msgstr ""
+"選択した設定で新しいプロジェクトを作成します。"
 
 msgid "button_gozen_site"
 msgstr "GoZenサイト"
@@ -183,7 +187,8 @@ msgid "setting_default_project_framerate"
 msgstr "デフォルトプロジェクトフレームレート"
 
 msgid "setting_tooltip_default_project_framerate"
-msgstr "デフォルトの動画プロジェクトのフレームレートです。"
+msgstr ""
+"デフォルトの動画プロジェクトのフレームレートです。"
 
 msgid "setting_default_track_amount"
 msgstr "デフォルトのトラック数"
@@ -195,34 +200,44 @@ msgid "setting_delete_empty_space_mod"
 msgstr "空白削除修飾キー"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "タイムライン上の空白部分をダブルクリックすると、その空白を削除して全てを移動させます。修飾キーを設定すると、その特定のキーを押しながらダブルクリックする必要があり、クリップ間の空白を削除します。"
+msgstr ""
+"タイムライン上の空白部分をダブルクリックすると、そ"
+"の空白を削除して全てを移動させます。修飾キーを設定"
+"すると、その特定のキーを押しながらダブルクリックす"
+"る必要があり、クリップ間の空白を削除します。"
 
 msgid "setting_check_version"
 msgstr "バージョンを確認"
 
 msgid "setting_tooltip_check_version"
 msgstr ""
-"この機能はGitHubリポジトリを確認するためインターネットに接続します。"
-"アプリケーションがインターネットに接続することを好まないユーザーもいるため、"
-"この設定はデフォルトで「無効」になっています。"
+"この機能はGitHubリポジトリを確認するためインター"
+"ネットに接続します。アプリケーションがインターネッ"
+"トに接続することを好まないユーザーもいるため、この"
+"設定はデフォルトで「無効」になっています。"
 
 msgid "renderer_progress_text_setup"
 msgstr "レンダラーを準備中..."
 
 msgid "renderer_progress_text_open_error"
-msgstr "レンダラーを開けませんでした。パスと設定を確認してください！"
+msgstr ""
+"レンダラーを開けませんでした。パスと設定を確認して"
+"ください！"
 
 msgid "renderer_progress_text_compiling_audio"
 msgstr "音声データをコンパイル中..."
 
 msgid "renderer_progress_text_sending_audio_error"
-msgstr "レンダラーへの音声データ送信中に問題が発生しました！"
+msgstr ""
+"レンダラーへの音声データ送信中に問題が発生しまし"
+"た！"
 
 msgid "renderer_progress_text_creating_sending_data"
 msgstr "フレームデータを作成・送信中..."
 
 msgid "renderer_progress_text_sending_data_error"
-msgstr "レンダラーへのフレーム送信中に問題が発生しました！"
+msgstr ""
+"レンダラーへのフレーム送信中に問題が発生しました！"
 
 msgid "renderer_progress_text_canceling"
 msgstr "レンダリングプロセスをキャンセル中..."
@@ -252,25 +267,40 @@ msgid "render_option_quality"
 msgstr "品質"
 
 msgid "render_option_tooltip_quality"
-msgstr "CRF（固定品質レート）を調整します。最低品質の設定は50、最高品質の設定は15です。デフォルトは18に設定されています。品質とサイズに影響を与えるビットレートの調整に使用されます。値0が最高品質、51が最低品質で、18はほとんど違いがありません。"
+msgstr ""
+"CRF（固定品質レート）を調整します。最低品質の設定"
+"は50、最高品質の設定は15です。デフォルトは18に設定"
+"されています。品質とサイズに影響を与えるビットレー"
+"トの調整に使用されます。値0が最高品質、51が最低品"
+"質で、18はほとんど違いがありません。"
 
 msgid "render_option_speed"
 msgstr "速度"
 
 msgid "render_option_tooltip_speed"
-msgstr "H264エンコードの速度を調整します。速度を高くしすぎると、最終的な動画品質に悪影響を与える可能性があります。"
+msgstr ""
+"H264エンコードの速度を調整します。速度を高くしすぎ"
+"ると、最終的な動画品質に悪影響を与える可能性があり"
+"ます。"
 
 msgid "render_option_gop_size"
 msgstr "GOPサイズ"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "Group Of Pictures（ピクチャのグループ）。値が高いほど、低い値と比較して圧縮に適しています。しかし、値が高いほど、動画再生中のシークやスクラブの精度が低くなります。レンダリングされた動画を編集に使用するつもりなら、低い値に設定してください。"
+msgstr ""
+"Group Of Pictures（ピクチャのグループ）。値が高い"
+"ほど、低い値と比較して圧縮に適しています。しかし、"
+"値が高いほど、動画再生中のシークやスクラブの精度が"
+"低くなります。レンダリングされた動画を編集に使用す"
+"るつもりなら、低い値に設定してください。"
 
 msgid "render_option_threads_cores"
 msgstr "スレッド/コア数"
 
 msgid "render_option_tooltip_threads_cores"
-msgstr "利用可能な全てのスレッドを使用するには「0」を入力してください。"
+msgstr ""
+"利用可能な全てのスレッドを使用するには「0」を入力"
+"してください。"
 
 msgid "render_option_metadata_title"
 msgstr "タイトル"
@@ -292,3 +322,24 @@ msgstr "レンダリング時間"
 
 msgid "notification_update_available"
 msgstr "更新があります！"
+
+msgid "status_project_loading_init"
+msgstr "プロジェクトを開き中..."
+
+msgid "status_project_preparing_timeline"
+msgstr "タイムラインを準備中..."
+
+msgid "status_project_loading_files"
+msgstr "ファイルを読み込み中..."
+
+msgid "status_project_playback_setup"
+msgstr "再生を設定中..."
+
+msgid "status_project_file_list_setup"
+msgstr "ファイルリストを設定中..."
+
+msgid "status_project_loading_clips"
+msgstr "タイムラインのクリップを読み込み中..."
+
+msgid "status_project_finalizing"
+msgstr "最終処理中..."

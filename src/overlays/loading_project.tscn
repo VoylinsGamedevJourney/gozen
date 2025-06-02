@@ -1,0 +1,80 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4h7t8ccus0yv"]
+
+[ext_resource type="Script" uid="uid://qkskvhw6if0k" path="res://scripts/loading_project.gd" id="1_757g1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqr8q"]
+bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_757g1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
+bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
+
+[node name="LoadingProject" type="PanelContainer" node_paths=PackedStringArray("progress_bar", "progress_hint")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_757g1")
+progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator/ProgressBar")
+progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/LoadingHintLabel")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="LoadPanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/LoadPanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_loading_projects"
+
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="ProgressBarIndicator" type="ProgressBar" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_gqr8q")
+indeterminate = true
+editor_preview_indeterminate = true
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxEmpty_757g1")
+theme_override_styles/fill = SubResource("StyleBoxFlat_kw4wx")
+
+[node name="LoadingHintLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "status_project_loading_init"
+horizontal_alignment = 1
+
+[node name="LoadingProject" type="Control" parent="."]
+layout_mode = 2

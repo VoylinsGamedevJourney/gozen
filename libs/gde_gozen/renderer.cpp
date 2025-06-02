@@ -544,6 +544,9 @@ bool Renderer::_finalize_renderer() {
 
 
 void Renderer::close() {
+	if (frame_nr == 0)
+		return;
+
 	response = _finalize_renderer();
 	if (response != OK)
 		_log_err("_finalize_renderer failed with: " + String::num_int64(response));

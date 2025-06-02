@@ -54,6 +54,9 @@ msgstr "Getting started"
 msgid "title_new_project"
 msgstr "New project"
 
+msgid "title_loading_project"
+msgstr "Loading project"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
@@ -200,17 +203,14 @@ msgstr ""
 "moves everything. Setting a modifier makes it so you need to press that "
 "specific key to make double clicking remove the empty space in between clips."
 
-
 msgid "setting_check_version"
 msgstr "Check version"
-
 
 msgid "setting_tooltip_check_version"
 msgstr ""
 "This relies on checking the GitHub repo and therefore will make a connection "
 "to the internet. Some people prefer to not make their applications connect "
 "to the internet so this is by default 'disabled'."
-
 
 msgid "renderer_progress_text_setup"
 msgstr "Setting up renderer ..."
@@ -308,3 +308,24 @@ msgstr "Render time"
 
 msgid "notification_update_available"
 msgstr "Update available!"
+
+msgid "status_project_loading_init"
+msgstr "Opening project ..."
+
+msgid "status_project_preparing_timeline"
+msgstr "Preparing timeline ..."
+
+msgid "status_project_loading_files"
+msgstr "Loading files ..."
+
+msgid "status_project_playback_setup"
+msgstr "Setting up playback ..."
+
+msgid "status_project_file_list_setup"
+msgstr "Setting up file list ..."
+
+msgid "status_project_loading_clips"
+msgstr "Loading clips ..."
+
+msgid "status_project_finalizing"
+msgstr "Finalizing ..."

@@ -1,3 +1,4 @@
+class_name FilesList
 extends PanelContainer
 
 
@@ -6,6 +7,8 @@ const THUMB_INFO_PATH: String = "user://thumbs/info"
 
 const NICKNAME_SIZE: int = 14
 
+
+static var instance: FilesList
 
 # Order is the same as the ENUM of File.TYPE: Image, Audio, Video, Text/Title
 @export var tab_container: TabContainer
@@ -18,9 +21,10 @@ var modified_files_check_running: bool = false
 
 
 func _ready() -> void:
+	instance = self
+
 	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
 	Toolbox.connect_func(get_window().focus_entered, _modified_files_check)
-	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 	for list_id: int in tabs.size():
 		tabs[list_id].set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
@@ -177,8 +181,6 @@ func _process_file(file: File, file_data: FileData) -> void:
 
 
 func _on_project_loaded() -> void:
-	# On project loaded we want to clean up the previous entries before adding
-	# the current project files.
 	for list: ItemList in tabs:
 		list.clear()
 
