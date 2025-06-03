@@ -29,28 +29,35 @@ func _update_recent_projects(new_path: String) -> void:
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
+	var new_project_overlay: ProgressOverlay = preload("res://overlays/progress_overlay.tscn").instantiate()
 	data = ProjectData.new()
+	file_data = {}
 
-	for i: int in Settings.get_tracks_amount():
-		data.tracks.append({})
+	get_tree().root.add_child(new_project_overlay)
+	new_project_overlay.update_title("title_new_project")
+	new_project_overlay.update_progress(0, "status_new_project_init")
 
 	set_project_path(path)
 	set_resolution(res)
 	set_framerate(framerate)
+	for i: int in Settings.get_tracks_amount():
+		data.tracks.append({})
 	if Editor.loaded_clips.resize(get_track_count()):
 		Toolbox.print_resize_error()
 
-	file_data = {}
-
+	new_project_overlay.update_progress(50, "status_project_playback_setup")
 	Editor._setup_playback()
 	Editor._setup_audio_players()
 	Editor.set_frame(data.playhead_position)
 	FilesList.instance._on_project_loaded()
 	Timeline.instance._on_project_loaded()
 
+	new_project_overlay.update_progress(98, "status_project_finalizing")
+
 	project_ready.emit()
 	_update_recent_projects(path)
 	save()
+	new_project_overlay.update_progress_bar(99)
 	get_window().title = "GoZen - %s" % path.get_file().get_basename()
 
 
@@ -76,8 +83,11 @@ func _save_as(new_project_path: String) -> void:
 
 	
 func open(project_path: String) -> void:
-	var loading_overlay: LoadingProjectOverlay = preload("res://overlays/loading_project.tscn").instantiate()
+	var loading_overlay: ProgressOverlay = preload("res://overlays/progress_overlay.tscn").instantiate()
+	
 	get_tree().root.add_child(loading_overlay)
+	loading_overlay.update_title("title_loading_project")
+	loading_overlay.update_progress(0, "status_project_loading_init")
 
 	data = ProjectData.new()
 	file_data = {}

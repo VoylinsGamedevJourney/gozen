@@ -329,3 +329,6 @@ msgstr "Loading clips ..."
 
 msgid "status_project_finalizing"
 msgstr "Finalizing ..."
+
+msgid "status_new_project_init"
+msgstr "Creating new project ..."

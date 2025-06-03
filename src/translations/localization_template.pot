@@ -400,3 +400,6 @@ msgstr ""
 
 msgid "status_project_finalizing"
 msgstr ""
+
+msgid "status_new_project_init"
+msgstr ""

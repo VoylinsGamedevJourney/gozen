@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://d4h7t8ccus0yv"]
 
-[ext_resource type="Script" uid="uid://qkskvhw6if0k" path="res://scripts/loading_project.gd" id="1_757g1"]
+[ext_resource type="Script" uid="uid://qkskvhw6if0k" path="res://scripts/progress_overlay.gd" id="1_hfqfp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gqr8q"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
@@ -10,14 +10,15 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="LoadingProject" type="PanelContainer" node_paths=PackedStringArray("progress_bar", "progress_hint")]
+[node name="ProgressOverlay" type="PanelContainer" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
-script = ExtResource("1_757g1")
+script = ExtResource("1_hfqfp")
+title_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TitleLabel")
 progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator/ProgressBar")
 progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/LoadingHintLabel")
 

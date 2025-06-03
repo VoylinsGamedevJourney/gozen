@@ -1,14 +1,15 @@
-class_name LoadingProjectOverlay
+class_name ProgressOverlay
 extends PanelContainer
 
 
+@export var title_label: Label
 @export var progress_bar: ProgressBar
 @export var progress_hint: Label
 
 
 
-func _ready() -> void:
-	update_progress(0, "status_project_loading_init")
+func update_title(title: String) -> void:
+	title_label.text = tr(title)
 
 
 func update_progress(value: int, text: String) -> void:
