@@ -96,6 +96,8 @@ public:
 	bool seek_frame(int frame_nr);
 	bool next_frame(bool skip_frame = false);
 
+	Ref<Image> generate_thumbnail_at_frame(int frame_nr);
+
 	inline void set_sws_flag_bilinear() { sws_flag = SWS_BILINEAR; }
 	inline void set_sws_flag_bicubic() { sws_flag = SWS_BICUBIC; }
 

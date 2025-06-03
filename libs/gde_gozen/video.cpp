@@ -287,10 +287,6 @@ bool Video::seek_frame(int frame_nr) {
 	if ((response = _seek_frame(frame_nr)) < 0)
 		return _log_err("Couldn't seek");
 
-
-
-
-
 	int attempts = 0;
 	while (true) {
 		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
@@ -314,11 +310,6 @@ bool Video::seek_frame(int frame_nr) {
 		}
 	}
 
-
-
-
-
-	
 	while (true) {
 		if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
 									av_stream->index, av_frame.get(), av_packet.get()))) {
@@ -384,6 +375,158 @@ bool Video::next_frame(bool skip_frame) {
 	return true;
 }
 
+
+Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
+	// This is identical to the seek_frame() function, but instead of copying
+	// the data to Y,U,V we create an RGBA Image.
+	if (!loaded) {
+		_log_err("Not open");
+		return Ref<Image>();
+	} else if ((response = _seek_frame(frame_nr)) < 0) {
+		_log_err("Couldn't seek");
+		return Ref<Image>();
+	}
+
+	bool frame_found = false;
+	int attempts = 0;
+
+	while (true) {
+		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
+									 av_stream->index, av_frame.get(), av_packet.get());
+
+		if (response == 0)
+			break;
+		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
+			if (attempts > 10) {
+				FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+				break;
+			}
+
+			attempts++;
+		} else if (response == AVERROR_EOF) {
+			FFmpeg::print_av_error("Reached EOF trying to get first frame!", response);
+			break;
+		} else {
+			FFmpeg::print_av_error("Something went wrong getting first frame!", response);
+			break;
+		}
+	}
+
+	while (true) {
+		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(),
+									 av_stream->index, av_frame.get(), av_packet.get());
+		if (response) {
+			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
+				if (attempts > 10) {
+					FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+					break;
+				}
+				attempts++;
+				continue;
+			} else if (response == AVERROR_EOF) {
+				_log_err("End of file reached! Going back 1 frame!");
+
+				if ((response = _seek_frame(frame_nr--)) < 0) {
+					_log_err("Couldn't seek");
+					return Ref<Image>();
+				}
+				continue;
+			}
+			
+			FFmpeg::print_av_error("Problem happened getting frame in seek_frame! ", response);
+			response = 1;
+			break;
+		}
+
+		// Get frame pts.
+		current_pts = av_frame->best_effort_timestamp == AV_NOPTS_VALUE ?
+				av_frame->pts : av_frame->best_effort_timestamp;
+		if (current_pts == AV_NOPTS_VALUE)
+			continue;
+
+		// Skip to actual requested frame.
+		if ((int64_t)(current_pts * stream_time_base_video) / 10000 >=
+			frame_timestamp / 10000) {
+			frame_found = true;
+			break;
+		}
+	}
+
+	// We still have to set the frame_nr since that's where the "playhead" is
+	// inside of the file.
+	current_frame = frame_nr;
+
+	if (!frame_found) {
+		av_frame_unref(av_frame.get());
+		av_packet_unref(av_packet.get());
+
+		return Ref<Image>();
+	}
+
+	// Creation of the thumbnail. 
+	AVPixelFormat source_pix_fmt = static_cast<AVPixelFormat>(av_frame->format);
+
+    UniqueSwsCtx sws_ctx_thumb = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(
+        sws_getContext(
+            resolution.x, resolution.y, source_pix_fmt,     // Source
+            resolution.x, resolution.y, AV_PIX_FMT_RGBA,	// Target
+            SWS_FAST_BILINEAR, nullptr, nullptr, nullptr
+        )
+    );
+
+    if (!sws_ctx_thumb) {
+        _log_err("Failed to create SWS context for RGBA conversion.");
+        return Ref<Image>();
+    }
+
+    UniqueAVFrame rgba_frame = make_unique_avframe();
+    if (!rgba_frame) {
+        _log_err("Failed to allocate AVFrame for RGBA data.");
+        return Ref<Image>();
+    }
+    rgba_frame->format = AV_PIX_FMT_RGBA;
+    rgba_frame->width = resolution.x;
+    rgba_frame->height = resolution.y;
+
+    // Allocate buffer for the RGBA frame.
+    response = av_frame_get_buffer(rgba_frame.get(), 0); // Use default alignment (usually 32)
+    if (response < 0) {
+        FFmpeg::print_av_error("Failed to allocate buffer for RGBA frame: ", response);
+        return Ref<Image>();
+    }
+
+    sws_scale(
+        sws_ctx_thumb.get(),
+        (const uint8_t* const*)av_frame->data, av_frame->linesize,
+        0, resolution.y, rgba_frame->data, rgba_frame->linesize
+    );
+
+    PackedByteArray pixel_data = PackedByteArray();
+    int rgba_data_size = resolution.x * resolution.y * 4;
+    pixel_data.resize(rgba_data_size);
+
+    if (rgba_frame->linesize[0] == resolution.x * 4) {
+        memcpy(pixel_data.ptrw(), rgba_frame->data[0], rgba_data_size);
+    } else {
+        // Handle potential padding in linesize.
+        uint8_t* dest_ptr = pixel_data.ptrw();
+        const uint8_t* src_ptr = rgba_frame->data[0];
+        for (int y = 0; y < resolution.y; ++y) {
+            memcpy(dest_ptr, src_ptr, resolution.x * 4);
+            dest_ptr += resolution.x * 4;
+            src_ptr += rgba_frame->linesize[0];
+        }
+    }
+
+    Ref<Image> thumbnail_image = Image::create_from_data(resolution.x, resolution.y,
+														 false, Image::FORMAT_RGBA8, pixel_data);
+	av_frame_unref(av_frame.get());
+	av_packet_unref(av_packet.get());
+
+	return thumbnail_image;
+}
+
+
 void Video::_copy_frame_data() {
 	if (av_frame->data[0] == nullptr) {
 		_log_err("Frame is empty!");
@@ -432,6 +575,8 @@ void Video::_bind_methods() {
 
 	BIND_METHOD_ARGS(seek_frame, "frame_nr");
 	BIND_METHOD_ARGS(next_frame, "skip_frame");
+
+	BIND_METHOD_ARGS(generate_thumbnail_at_frame, "frame_nr");
 
 	BIND_METHOD(get_current_frame);
 	BIND_METHOD(get_y_data);

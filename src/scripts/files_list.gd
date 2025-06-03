@@ -105,37 +105,44 @@ func get_thumb(file_id: int) -> Texture:
 		if DirAccess.make_dir_absolute(THUMB_PATH):
 			printerr("Couldn't create folder at %s!" % THUMB_PATH)
 
+	var path: String = Project.get_file(file_id).path
+	var data: Dictionary[String, int] = {}
+
+	if FileAccess.file_exists(THUMB_INFO_PATH):
+		var file: FileAccess = FileAccess.open(THUMB_INFO_PATH, FileAccess.READ)
+		data = file.get_var()
+
+	# Checking if thumb already exists for file.
+	var thumb_path: String = ""
+	if path in data.keys():
+		thumb_path = ProjectSettings.globalize_path(THUMB_PATH + str(data[path]) + ".webp")
+		if FileAccess.file_exists(thumb_path):
+			return ImageTexture.create_from_image(Image.load_from_file(thumb_path))
+
+	# No thumb exists so create new one.
+	thumb_path = ProjectSettings.globalize_path(THUMB_PATH + str(Toolbox.get_unique_id(data.values())) + ".webp")
+
+	if !FileAccess.file_exists(thumb_path):
+		create_thumb(file_id, path, thumb_path)
+
+	return ImageTexture.create_from_image(Image.load_from_file(thumb_path))
+
+
+func create_thumb(file_id: int, file_path: String, thumb_path: String) -> void:
 	var file: FileAccess
 	var data: Dictionary[String, int] = {}
 
 	if FileAccess.file_exists(THUMB_INFO_PATH):
 		file = FileAccess.open(THUMB_INFO_PATH, FileAccess.READ)
 		data = file.get_var()
-
-	var path: String = Project.get_file(file_id).path
-
-	# Checking if thumb already exists for file.
-	if path in data.keys() and FileAccess.file_exists(THUMB_PATH + str(data[path])):
-		return ImageTexture.create_from_image(Image.load_from_file(THUMB_PATH + str(data[path]) + ".webp"))
-
-	# No thumb exists so create new one.
-	var thumb_path: String = THUMB_PATH + str(Toolbox.get_unique_id(data.values())) + ".webp"
 	var image: Image
 
-	# TODO: Create thumbs for all types
 	match Project.get_file(file_id).type:
-		File.TYPE.IMAGE: image = Image.load_from_file(path)
+		File.TYPE.IMAGE: image = Image.load_from_file(file_path)
 		File.TYPE.AUDIO:
 			push_warning("No thumb for Audio files yet!")
-			return preload("uid://cs5gcg8kix42x")
-		File.TYPE.VIDEO:
-			# TODO: Can only do this after implementing the new video playback
-			# system because the way of getting the frame data will change.
-			push_warning("No thumb for Video files yet!")
-			return preload("uid://dpg11eiuwgv38")
-		_: # File.TYPE.TEXT
-			push_warning("No thumb for Text files yet!")
-			return preload("uid://i70cmg7lfsl4")
+			return # TODO: Make thumbnails for Audio files!
+		File.TYPE.VIDEO: image = Project.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
 	
 	# Resizing the image with correct aspect ratio.
 	var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
@@ -152,12 +159,10 @@ func get_thumb(file_id: int) -> Texture:
 	if file != null:
 		file.close()
 	file = FileAccess.open(THUMB_INFO_PATH, FileAccess.WRITE)
-	data[path] = int(thumb_path.split('/')[-1])
+	data[file_path] = int(thumb_path.split('/')[-1])
 
 	if !file.store_var(data):
 		printerr("Error happened when storing thumb data!")
-
-	return ImageTexture.create_from_image(Image.load_from_file(thumb_path))
 
 
 func _process_file(file: File, file_data: FileData) -> void:
@@ -378,8 +383,13 @@ func _on_image_pasted() -> void:
 func _add_file_to_list(id: int) -> void:
 	# Create tree item for the file panel tree
 	var file: File = Project.get_file(id)
+	var file_data: FileData = Project.get_file_data(id)
 	var list_id: int = int(file.type)
 	var item: int = tabs[list_id].add_item(Toolbox.format_file_nickname(file.nickname, NICKNAME_SIZE))
+
+	# TODO: We need a better way of loading in files so this isn't needed!
+	while (file.type == File.TYPE.VIDEO and (file_data.video == null or !file_data.video.is_open())):
+		await RenderingServer.frame_post_draw	
 
 	tabs[list_id].set_item_metadata(item, id)
 	tabs[list_id].set_item_tooltip(item, file.path)
