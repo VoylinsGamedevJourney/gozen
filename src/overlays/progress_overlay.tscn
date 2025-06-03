@@ -10,7 +10,7 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="PanelContainer" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint")]
+[node name="ProgressOverlay" type="PanelContainer" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "scroll_container", "vbox")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -21,6 +21,8 @@ script = ExtResource("1_hfqfp")
 title_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TitleLabel")
 progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator/ProgressBar")
 progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/LoadingHintLabel")
+scroll_container = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer")
+vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVBox")
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(700, 0)
@@ -77,5 +79,10 @@ theme_type_variation = &"info_label"
 text = "status_project_loading_init"
 horizontal_alignment = 1
 
-[node name="LoadingProject" type="Control" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="FilesVBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer"]
 layout_mode = 2

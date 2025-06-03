@@ -57,6 +57,9 @@ msgstr "New project"
 msgid "title_loading_project"
 msgstr "Loading project"
 
+msgid "title_files_dropped"
+msgstr "Files dropped"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 

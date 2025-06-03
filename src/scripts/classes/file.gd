@@ -49,3 +49,19 @@ static func create(file_path: String) -> File:
 
 	return file
 
+
+static func check_valid(file_path: String) -> bool:
+	# Only for real files, not temp ones.
+	if !FileAccess.file_exists(file_path):
+		return false
+	var ext: String = file_path.get_extension()
+
+	if ext in ProjectSettings.get_setting_with_override("extensions/image"):
+		return true
+	elif ext in ProjectSettings.get_setting_with_override("extensions/audio"):
+		return true
+	elif ext in ProjectSettings.get_setting_with_override("extensions/video"):
+		return true
+
+	return false
+

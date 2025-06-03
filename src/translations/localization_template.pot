@@ -67,6 +67,9 @@ msgstr ""
 msgid "title_loading_project"
 msgstr ""
 
+msgid "title_files_dropped"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 

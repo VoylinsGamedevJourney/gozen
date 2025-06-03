@@ -2,6 +2,7 @@ extends Node
 
 
 signal project_ready
+signal file_added(id: int)
 signal file_deleted
 
 
@@ -12,6 +13,9 @@ const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 var data: ProjectData
 var file_data: Dictionary [int, FileData] = {}
 
+
+func _ready() -> void:
+	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
 
 
 func _update_recent_projects(new_path: String) -> void:
@@ -109,7 +113,7 @@ func open(project_path: String) -> void:
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update_progress(7, "status_project_loading_files")
 
-	var progress_increment: float = float(get_file_ids().size()) / 73.0
+	var progress_increment: float = (1 / float(get_file_ids().size())) * 73
 	for i: int in get_file_ids():
 		if !load_file_data(i):
 			continue # File became invaled so entry got deleted.
@@ -179,6 +183,26 @@ func reload_file_data(id: int) -> void:
 		print("File became invalid!")
 
 
+func add_file(file_path: String) -> int:
+	# Check if file already exists inside of the project.
+	for existing: File in Project.get_files().values():
+		if existing.path == file_path:
+			print("File already loaded with path '%s'!" % file_path)
+			return -2
+
+	var file: File = File.create(file_path)
+
+	if file == null:
+		return -1
+
+	Project.set_file(file.id, file)
+	if !Project.load_file_data(file.id):
+		printerr("Problem happened adding file!")
+		return -1
+
+	return file.id
+
+
 func _add_file(file: File) -> void:
 	# Used for undoing the deletion of a file.
 	data.files[file.id] = file
@@ -196,13 +220,72 @@ func delete_file(id: int) -> void:
 		if clip.file_id == id:
 			Timeline.instance.delete_clip(clip)
 
-	if file_data.has(id) and !file_data.erase(id):
-			Toolbox.print_erase_error()
-	if data.files.has(id) and !data.files.erase(id):
-			Toolbox.print_erase_error()
+	if !file_data.has(id) and !file_data.erase(id):
+		Toolbox.print_erase_error()
+	if !data.files.has(id) and !data.files.erase(id):
+		Toolbox.print_erase_error()
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit()
+
+
+func _on_files_dropped(files: PackedStringArray) -> void:
+	# Only allow files to be dropped in non-empty projects.
+	if data == null:
+		return
+
+	var dropped_overlay: ProgressOverlay = preload("res://overlays/progress_overlay.tscn").instantiate()
+	var file_status: Dictionary = {}
+	var still_loading: PackedInt64Array = []
+	var progress_increment: float = 0.0
+	for file_path: String in Toolbox.find_subfolder_files(files):
+		file_status[file_path] = 0
+
+	progress_increment = (1 / float(file_status.keys().size())) * 50
+
+	get_tree().root.add_child(dropped_overlay)
+	dropped_overlay.update_title("title_files_dropped")
+	dropped_overlay.update_progress(0, "")
+	dropped_overlay.update_files(file_status)
+	await RenderingServer.frame_post_draw
+
+	for file_path: String in file_status.keys():
+		var id: int = add_file(file_path)
+		dropped_overlay.increment_progress_bar(progress_increment)
+		await RenderingServer.frame_post_draw
+
+		if id in [-2, -1]: # -2 = Already loaded, -1 = Problem loading.
+			file_status[file_path] = id
+			dropped_overlay.update_files(file_status)
+			dropped_overlay.increment_progress_bar(progress_increment)
+			continue
+
+		if get_file_data(id) == null or get_file(id).type == File.TYPE.VIDEO:
+			if still_loading.append(id):
+				Toolbox.print_append_error()
+		else:
+			file_status[file_path] = 1
+			dropped_overlay.update_files(file_status)
+			dropped_overlay.increment_progress_bar(progress_increment)
+			file_added.emit(id)
+
+	while still_loading.size() != 0:
+		for id: int in still_loading:
+			if get_file(id).type == File.TYPE.VIDEO:
+				if get_file_data(id).video != null and get_file_data(id).video.is_open():
+					file_status[get_file(id).path] = 1
+					dropped_overlay.update_files(file_status)
+					dropped_overlay.increment_progress_bar(progress_increment)
+					file_added.emit(id)
+					still_loading.remove_at(still_loading.find(id))
+			else:
+				printerr("This should not happen! File is type: ", get_file(id).type)
+				dropped_overlay.increment_progress_bar(progress_increment)
+				still_loading.remove_at(still_loading.find(id))
+
+		await RenderingServer.frame_post_draw
+
+	dropped_overlay.queue_free()
 
 
 # Setters and Getters  --------------------------------------------------------

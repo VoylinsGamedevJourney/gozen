@@ -22,9 +22,8 @@ var modified_files_check_running: bool = false
 
 func _ready() -> void:
 	instance = self
-
-	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
 	Toolbox.connect_func(get_window().focus_entered, _modified_files_check)
+	Toolbox.connect_func(Project.file_added, _add_file_to_list)
 
 	for list_id: int in tabs.size():
 		tabs[list_id].set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
@@ -321,41 +320,6 @@ func _save_image_to_file(path: String, file: File, item_index: int) -> void:
 	if !Project.load_file_data(file.id):
 		printerr("Something went wrong loading file '%s' after saving temp image to real image!" % path)
 
-	
-func _on_files_dropped(files: PackedStringArray) -> void:
-	if Project.data == null:
-		return
-
-	var last_type: int = -1
-	for id: int in buttons.size():
-		if buttons[id].button_pressed:
-			last_type = id
-			break
-
-	for file_path: String in files:
-		if FileAccess.file_exists(file_path):
-			var id: int = add_file(file_path)
-
-			if id > 0: # Check for invalid file
-				_add_file_to_list(id)
-			else: # Invalid file (-1 = invalid, -2 = already added)
-				continue
-
-			last_type = int(Project.get_file(id).type)
-		elif DirAccess.dir_exists_absolute(file_path): # Probably a folder
-			var data: PackedStringArray = DirAccess.get_files_at(file_path)
-
-			for i: int in data.size():
-				data[i] = "%s/%s" % [file_path, data[i]]
-
-			_on_files_dropped(data)
-
-	for list: ItemList in tabs:
-		list.sort_items_by_text()
-
-	buttons[last_type].button_pressed = true
-	buttons[last_type].pressed.emit()
-
 
 func _on_image_pasted() -> void:
 	if !DisplayServer.clipboard_has_image():
@@ -446,28 +410,7 @@ func _on_add_files_button_pressed() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
 			tr("Add files to project"), FileDialog.FILE_MODE_OPEN_FILES, [])
 
-	Toolbox.connect_func(dialog.files_selected, _on_files_dropped)
-
+	Toolbox.connect_func(dialog.files_selected, Project._on_files_dropped)
 	add_child(dialog)
 	dialog.popup_centered()
-
-
-func add_file(file_path: String) -> int:
-	# Check if file already exists
-	for existing: File in Project.get_files().values():
-		if existing.path == file_path:
-			print("File already loaded with path '%s'!" % file_path)
-			return -2
-
-	var file: File = File.create(file_path)
-
-	if file == null:
-		return -1
-
-	Project.set_file(file.id, file)
-	if !Project.load_file_data(file.id):
-		printerr("Problem happened adding file!")
-		return -1
-
-	return file.id
 
