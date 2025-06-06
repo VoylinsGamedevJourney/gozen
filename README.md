@@ -70,11 +70,7 @@ We need contributors for the localization of GoZen, more info can be found in [t
 ## Support the project ❤️
 GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad and my time is limited as I'm trying to make it financially work to keep working from home.
 
-If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through following platforms:
-- **Contribute financially via Open Collective:** Funds go directly towards GoZen-related expenses (e.g., software licenses, hardware). [Open Collective page](https://opencollective.com/gozen)
-- **Support me personally via Ko-fi:** This helps support my overall work, including GoZen development, videos, and other projects. [Ko-fi page](https://ko-fi.com/voylin)
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
+If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through [my Ko-fi page](https://ko-fi.com/voylin).
 
 ## Changelog
 See the [CHANGELOG.md](./CHANGELOG.md) file for an overview of all changes to the projects from version to version.
@@ -90,3 +86,6 @@ The project is licensed under the [GPLv3 license](./LICENSE). FFmpeg is being us
 
 > This software uses libraries from the FFmpeg project under the LGPLv2.1
 > Other libraries used may come with their own specific licenses so be sure to check before forking the project and/or using code from this project to see if it can be used with your project license.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
+
