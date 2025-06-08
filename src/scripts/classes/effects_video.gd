@@ -46,7 +46,7 @@ func set_default_transform() -> void:
 
 func apply_transform(view_texture: TextureRect) -> void:
 	view_texture.position = position
-	view_texture.size = size
+	view_texture.set_deferred("size", size)
 	view_texture.scale = Vector2(scale / 100, scale / 100)
 	view_texture.rotation = deg_to_rad(rotation)
 	view_texture.pivot_offset = pivot

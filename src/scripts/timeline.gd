@@ -71,7 +71,8 @@ func _input(event: InputEvent) -> void:
 		if preview.visible:
 			preview.visible = false
 		
-
+	if event.is_action_pressed("clip_split"):
+		_clips_split(Editor.frame_nr)
 	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
 		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
@@ -688,3 +689,104 @@ func _delete_empty_space() -> void:
 
 	InputManager.undo_redo.commit_action()
 
+
+func _clips_split(frame_nr: int) -> void:
+	# TODO: We need to do a couple of things:
+	# - Check which clips, if any, from the selected clips are in the cut zone;
+	# - If none in the cut zone, cut all found clips;
+	# - If one or more of selected clips in cut zone, cut only those.
+
+	# I probably need to redo this entire function, with a variable for 
+	#	possible clips, and check those possible clips if there's any inside of selected clips
+	#	than do the cutting.
+
+	var clips_at_playhead: Array[ClipData] = []
+	
+	for track_id: int in Project.get_track_count():
+		var last_start_frame: int = -1
+		var clip_data: ClipData = null
+
+		# Get the last clip before the frame_nr.
+		for start_frame: int in Project.get_track_keys(track_id):
+			if start_frame <= frame_nr:
+				last_start_frame = start_frame
+			else: break
+
+		if last_start_frame == -1:
+			continue
+
+		var clip_id: int = Project.get_track_data(track_id)[last_start_frame]
+		clip_data = Project.get_clip(clip_id)
+
+		# Check if frame_nr is within the clip length.
+		if frame_nr <= clip_data.get_end_frame():
+			clips_at_playhead.append(clip_data)
+
+
+	# After getting the clips at the playhead, we need to check if any of the
+	# clips are inside of the selected_clips.
+	var in_selected_clips: bool = false
+	for clip_data: ClipData in clips_at_playhead:
+		if clip_data.clip_id in selected_clips:
+			in_selected_clips = true
+			break
+
+	# If selected clips have been found, we only cut those clips, so we remove
+	# the other clips.
+	if in_selected_clips:
+		for clip_data: ClipData in clips_at_playhead:
+			if !selected_clips.has(clip_data.clip_id):
+				clips_at_playhead.remove_at(clips_at_playhead.find(clip_data))
+
+	
+	InputManager.undo_redo.create_action("Deleting clip on timeline")
+
+	for clip_data: ClipData in clips_at_playhead:
+		InputManager.undo_redo.add_do_method(_cut_clip.bind(frame_nr, clip_data))
+	InputManager.undo_redo.add_do_method(queue_redraw)
+
+	for clip_data: ClipData in clips_at_playhead:
+		InputManager.undo_redo.add_undo_method(_uncut_clip.bind(frame_nr, clip_data))
+	InputManager.undo_redo.add_undo_method(queue_redraw)
+
+	InputManager.undo_redo.commit_action()
+
+
+func _cut_clip(frame_nr: int, current_clip_data: ClipData) -> void:
+	var new_clip: ClipData = ClipData.new()
+	var frame: int = frame_nr - current_clip_data.start_frame
+
+	new_clip.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
+	new_clip.file_id = current_clip_data.file_id
+
+	new_clip.start_frame = frame_nr
+	new_clip.duration = abs(current_clip_data.duration - frame)
+	new_clip.begin = current_clip_data.begin + frame
+	new_clip.track_id = current_clip_data.track_id
+	new_clip.effects_video = current_clip_data.effects_video.duplicate()
+	new_clip.effects_audio = current_clip_data.effects_audio.duplicate()
+
+	current_clip_data.duration -= new_clip.duration
+	_update_clip_size(current_clip_data.clip_id, get_clip_size(current_clip_data.duration))
+
+	Project.set_clip(new_clip.clip_id, new_clip)
+	Project.set_track_data(new_clip.track_id, new_clip.start_frame, new_clip.clip_id)
+
+	add_clip(new_clip)
+
+
+func _uncut_clip(frame_nr: int, current_clip: ClipData) -> void:
+	var clip_button: Control = clips.get_node(str(current_clip.clip_id))
+	var track: int = get_track_id(clip_button.position.y)
+	var split_clip: ClipData = Project.get_clip(Project.get_track_data(track)[frame_nr])
+
+	current_clip.duration += split_clip.duration
+	_update_clip_size(current_clip.clip_id, Timeline.get_frame_pos(current_clip.duration))
+
+	delete_clip(split_clip)
+
+
+func _update_clip_size(clip_id: int, new_size_x: float) -> void:
+	var clip_button: Control = clips.get_node(str(clip_id))
+	clip_button.size.x = new_size_x
+	
