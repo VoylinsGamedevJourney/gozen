@@ -7,6 +7,8 @@ extends PanelContainer
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
 
+@export var animation_player: AnimationPlayer
+
 @export_category("New project menu")
 @export var project_path_line_edit: LineEdit
 @export var resolution_x_spinbox: SpinBox
@@ -19,7 +21,11 @@ var http_request: HTTPRequest # For version check
 
 
 func _ready() -> void:
-	tab_container.current_tab = 0
+	if OS.is_debug_build():
+		tab_container.current_tab = 0
+	else:
+		animation_player.play("show_sponsors")
+
 	_set_recent_projects()
 	_set_version_label()
 	_set_new_project_defaults()
@@ -321,4 +327,26 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 		return
 	elif current_tag > tag:
 		return # Already newest version.
+
+
+func _on_sponsor_logo_input(event: InputEvent, sponsor: String) -> void:
+	if event.is_pressed():
+		Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/sponsors/%s" % sponsor)))
+
+
+func _on_sponsor_name_input(event: InputEvent, sponsor: String) -> void:
+	if event.is_pressed():
+		Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/sponsors/%s" % sponsor)))
+
+
+func _on_become_sponsor_button_pressed() -> void:
+	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/become_sponsor_info")))
+
+
+func _on_close_sponsors_button_pressed() -> void:
+	tab_container.current_tab = 0
+
+
+func _on_view_sponsors_button_pressed() -> void:
+	tab_container.current_tab = 2
 

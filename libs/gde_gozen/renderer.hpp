@@ -24,6 +24,9 @@ private:
 	UniqueAVFrame av_frame_video;
 	AVStream *av_stream_video = nullptr;
 
+	UniqueAVFrame av_frame_hw_video;
+	AVBufferRef *hw_device_ctx = nullptr;
+
 	UniqueAVCodecCtx av_codec_ctx_audio;
 	UniqueAVPacket av_packet_audio;
 	AVStream *av_stream_audio = nullptr;
@@ -43,7 +46,7 @@ private:
 
 	// The maximum for B-frames
 	// B-frames can improve the compression of a video as it looks to
-	// previous and future frames to make up the image
+	// previous and future frames to make up the image.
 	int b_frames = 0;
  
 	int response = 0;
@@ -57,6 +60,7 @@ private:
 	bool debug = true;
 
 	std::string h264_preset = "medium";
+	int hw_device_type = HW_DEVICE_TYPE_NVENC;
 	
 	// Godot classes
 	String path = "";
@@ -122,6 +126,12 @@ public:
 		SWS_QUALITY_FAST_BILINEAR = SWS_FAST_BILINEAR, // (Fast, lower quality)
 		SWS_QUALITY_BILINEAR = SWS_BILINEAR, // (Good balance between speed and quality)
 		SWS_QUALITY_BICUBIC = SWS_BICUBIC, // (Better quality, but slower)
+	};
+	enum HW_DEVICE_TYPES {
+		HW_DEVICE_TYPE_NONE = -1,
+		HW_DEVICE_TYPE_NVENC, // NVidia
+		HW_DEVICE_TYPE_VAAPI, // AMD/Intel on Linux
+		HW_DEVICE_TYPE_QSV, // Intel
 	};
 
 	Renderer() {};

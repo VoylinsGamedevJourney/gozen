@@ -70,6 +70,9 @@ msgstr ""
 msgid "title_files_dropped"
 msgstr ""
 
+msgid "title_sponsors"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 
@@ -93,6 +96,11 @@ msgstr ""
 msgid "button_support_gozen"
 msgstr ""
 
+msgid "button_view_sponsors"
+msgstr ""
+
+msgid "button_become_sponsor"
+msgstr ""
 
 msgid "button_open_project"
 msgstr ""

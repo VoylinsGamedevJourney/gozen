@@ -57,6 +57,9 @@ msgstr "新しいプロジェクト"
 msgid "title_loading_project"
 msgstr "プロジェクトを読み込み中"
 
+msgid "title_sponsors"
+msgstr "スポンサー"
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 "選択した設定で新しいプロジェクトを作成します。"
@@ -72,6 +75,12 @@ msgstr "チュートリアル"
 
 msgid "button_discord_server"
 msgstr "Discordサーバー"
+
+msgid "button_view_sponsors"
+msgstr "スポンサーを見る"
+
+msgid "button_become_sponsor"
+msgstr "スポンサーになる"
 
 msgid "button_support_gozen"
 msgstr "GoZenをサポートする"

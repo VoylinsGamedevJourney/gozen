@@ -57,6 +57,9 @@ msgstr "Nieuw project"
 msgid "title_loading_project"
 msgstr "Project laden"
 
+msgid "title_sponsors"
+msgstr "Sponsors"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
 
@@ -71,6 +74,12 @@ msgstr "Tutorials"
 
 msgid "button_discord_server"
 msgstr "Discord server"
+
+msgid "button_view_sponsors"
+msgstr "Sponsors"
+
+msgid "button_become_sponsor"
+msgstr "Word een sponsor"
 
 msgid "button_support_gozen"
 msgstr "Steun GoZen"

@@ -60,6 +60,9 @@ msgstr "Loading project"
 msgid "title_files_dropped"
 msgstr "Files dropped"
 
+msgid "title_sponsors"
+msgstr "Sponsors"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
@@ -74,6 +77,12 @@ msgstr "Tutorials"
 
 msgid "button_discord_server"
 msgstr "Discord server"
+
+msgid "button_view_sponsors"
+msgstr "View sponsors"
+
+msgid "button_become_sponsor"
+msgstr "Become a sponsor"
 
 msgid "button_support_gozen"
 msgstr "Support GoZen"

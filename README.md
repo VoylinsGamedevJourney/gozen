@@ -72,6 +72,9 @@ GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad 
 
 If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through [my Ko-fi page](https://ko-fi.com/voylin).
 
+### Becoming a sponsor
+If you have interest in becoming a sponsor to the GoZen project, please visit [this form](https://forms.gle/boBG9UB6ouSg8vce9) and fill in the details. We'll reply as soon as we can.
+
 ## Changelog
 See the [CHANGELOG.md](./CHANGELOG.md) file for an overview of all changes to the projects from version to version.
 
