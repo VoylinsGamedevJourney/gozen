@@ -164,6 +164,12 @@ def copy_lib_files_linux(arch):
                 )):
                     continue
 
+                lib_name = os.path.basename(lib_path)
+                dest_path = os.path.join(path, lib_name)
+
+                if os.path.abspath(lib_path) == os.path.abspath(dest_path):
+                    continue  # Avoid SameFileError
+
                 shutil.copy2(lib_path, path)
         except subprocess.CalledProcessError as e:
             print(f'Failed to run ldd on {binary_path}: {e}')
