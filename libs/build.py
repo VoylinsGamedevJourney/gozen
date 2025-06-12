@@ -114,7 +114,7 @@ def main() -> ExitCode:
 
     if utils.CURR_PLATFORM == "windows":
         # Oh no, Windows detected. ^^"
-        if not utils.find_program("git"):
+        if not utils.find_program(utils.GIT_PATH):
             print("Git is not installed in Windows!\nSteps to install Git:")
             print("\t1. Download Git installer from https://git-scm.com/")
             print("\t2. Run the installer to install Git")
@@ -211,6 +211,10 @@ def main() -> ExitCode:
 
         if missing_packages:
             print("Installing necessary MSYS2 dependencies ...")
+            
+            if utils.is_current_msys2():
+                input("The terminal will automatically close after update.\nPress Enter to continue...")
+
             install_success = utils.install_msys2_required_deps(missing_packages)
 
             if not install_success:

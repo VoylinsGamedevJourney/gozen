@@ -190,24 +190,11 @@ def check_required_programs_msys2() -> list[str]:
     return missing_programs
 
 
-def check_required_programs_windows() -> dict[str, str]:
-    required_programs = {
-        GIT_PATH: "https://git-scm.com/",
-    }
-
-    missing_programs = []
-    for program in required_programs:
-        if not find_program(program):
-            missing_programs.append(program)
-
-    return {program: required_programs[program] for program in missing_programs}
-
-
 def is_msys2_installed() -> bool:
     try:
         return (
             subprocess.run(
-                [f"{MSYS2_DIR}\\msys2_shell.cmd", "--help"], capture_output=True
+                [str(MSYS2_DIR / "msys2_shell.cmd"), "--help"], capture_output=True
             ).returncode
             == 0
         )
@@ -220,17 +207,37 @@ def install_msys2_required_deps(missing_programs) -> bool:
         return True
 
     try:
-        subprocess.run([*MSYS2_SHELL, "pacman -Syu --noconfirm"], check=True)
-        subprocess.run(
+        run_command(["pacman", "-Syu", "--noconfirm"], check=True, use_msys2=True)
+        run_command(
             [
-                *MSYS2_SHELL,
-                f"pacman -S {' '.join(missing_programs)} --noconfirm",
+                "pacman",
+                "-S",
+                *missing_programs,
+                "--noconfirm",
             ],
             check=True,
+            use_msys2=True,
         )
         return True
     except subprocess.CalledProcessError:
         return False
+
+
+def find_msys2_win_dir() -> Path | None:
+    """
+    Returns the windows style MSYS2 directory if running in a MSYS2 environment.
+    """
+    if not is_current_msys2():
+        return None
+
+    try:
+        return Path(
+            subprocess.run(
+                ["cygpath", "-w", "/"], capture_output=True, text=True, check=True
+            ).stdout.strip()
+        )
+    except subprocess.CalledProcessError:
+        return None
 
 
 # Basic Constants
@@ -238,18 +245,19 @@ CURR_PLATFORM = os_platform.system().lower()
 HOMEDRIVE: str = os.environ.get("HOMEDRIVE", "C:")
 
 # GoZen Environment Variables
-MSYS2_DIR: str = os.environ.get("GOZEN_MSYS2_DIR") or (
-    f"{HOMEDRIVE}\\msys64" if not is_current_msys2() else "/"
+MSYS2_DIR: Path = Path(
+    os.environ.get("GOZEN_MSYS2_DIR")
+    or (find_msys2_win_dir() or f"{HOMEDRIVE}\\msys64")
 )
-GIT_PATH: str = (
-    os.environ.get("GOZEN_GIT_PATH") or "git"
-    if find_program("git")
+GIT_PATH: str = os.environ.get("GOZEN_GIT_PATH") or (
+    "git"
+    if find_program("git") or CURR_PLATFORM != "windows"
     else f"{HOMEDRIVE}\\Program Files\\Git\\cmd\\git.exe"
 )
 
 # Other Constants
 MSYS2_SHELL: list[str] = [
-    f"{MSYS2_DIR}\\msys2_shell.cmd",
+    str(MSYS2_DIR / "msys2_shell.cmd"),
     "-ucrt64",
     "-no-start",
     "-defterm",
