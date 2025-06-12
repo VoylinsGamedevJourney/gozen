@@ -1,73 +1,142 @@
 #!/usr/bin/env python
 import os
-import sys
 import platform as os_platform
+import sys
 
-
-LIBS_COMMON = ['avcodec', 'avformat', 'avutil', 'swresample', 'swscale']
+LIBS_COMMON = ["avcodec", "avformat", "avutil", "swresample", "swscale"]
 MARCH_FLAGS = {
     'x86_64': 'x86-64',
     'arm64': 'armv8-a'
 }
 
 
-env = SConscript('godot_cpp/SConstruct')
-env_suffix = env['suffix']
-env_shlibsuffix = env['SHLIBSUFFIX']
+env = SConscript("godot_cpp/SConstruct")
+env_suffix = env["suffix"]
+env_shlibsuffix = env["SHLIBSUFFIX"]
 
-jobs = ARGUMENTS.get('jobs', 4)
-platform = ARGUMENTS.get('platform', 'linux')
-arch = ARGUMENTS.get('arch', 'x86_64')
-target = ARGUMENTS.get('target', 'template_debug').split('_')[-1]
-libpath = f'bin/{platform}_{arch}'
+jobs = ARGUMENTS.get("jobs", 4)
+platform = ARGUMENTS.get("platform", "linux")
+arch = ARGUMENTS.get("arch", "x86_64")
+target = ARGUMENTS.get("target", "template_debug").split("_")[-1]
+libpath = f"bin/{platform}_{arch}"
+use_mingw = ARGUMENTS.get("use_mingw", "no")
 
-use_system = ARGUMENTS.get('use_system', 'no')
+use_system = ARGUMENTS.get("use_system", "no")
 
 
-if 'linux' in platform:
-    libpath += f'/libgozen{env_suffix}{env_shlibsuffix}'
-    if use_system == 'yes':
+if "linux" in platform:
+    libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"
+    if use_system == "yes":
         env.Append(
-            CPPPATH=['/usr/include/ffmpeg/'],
+            CPPPATH=["/usr/include/ffmpeg/"],
             LIBS=LIBS_COMMON,
         )
     else:
         env.Append(
-            LINKFLAGS=[
-                '-static-libstdc++',
-                '-Wl,-rpath,"$ORIGIN"'],
-            CPPFLAGS=[
-                '-Iffmpeg/bin_linux',
-                '-Iffmpeg/bin_linux/include'],
+            LINKFLAGS=["-static-libstdc++", '-Wl,-rpath,"$ORIGIN"'],
+            CPPFLAGS=["-Iffmpeg/bin_linux", "-Iffmpeg/bin_linux/include"],
             LIBPATH=[
-                'ffmpeg/bin_linux/include/libavcodec',
-                'ffmpeg/bin_linux/include/libavformat',
-                'ffmpeg/bin_linux/include/libavutil',
-                'ffmpeg/bin_linux/include/libswresample',
-                'ffmpeg/bin_linux/include/libswscale',
-                'ffmpeg/bin_linux/lib'],
-            CCFLAGS=[f'-march={MARCH_FLAGS[arch]}'],
+                "ffmpeg/bin_linux/include/libavcodec",
+                "ffmpeg/bin_linux/include/libavformat",
+                "ffmpeg/bin_linux/include/libavutil",
+                "ffmpeg/bin_linux/include/libswresample",
+                "ffmpeg/bin_linux/include/libswscale",
+                "ffmpeg/bin_linux/lib",
+            ],
+            CCFLAGS=[f"-march={MARCH_FLAGS[arch]}"],
             LIBS=LIBS_COMMON,
         )
-elif 'windows' in platform:
-    libpath += f'/libgozen{env_suffix}{env_shlibsuffix}'
-    if os_platform.system().lower() == 'windows':
-        env.Append(LIBS=[
-            'avcodec.lib',
-            'avformat.lib',
-            'avutil.lib',
-            'swresample.lib',
-            'swscale.lib'
-        ])
+elif "windows" in platform:
+    libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"
+    if os_platform.system().lower() == "windows" and use_mingw == "no":
+        env.Append(
+            LIBS=[
+                "avcodec.lib",
+                "avformat.lib",
+                "avutil.lib",
+                "swresample.lib",
+                "swscale.lib",
+            ]
+        )
     else:
-        env.Append(LIBS=LIBS_COMMON)
+        libs = [
+            "-lSvtAv1Enc",
+            # '-lX11',
+            # '-lXext',
+            # '-lXv',
+            "-ladvapi32",
+            # '-landroid',
+            "-laom",
+            # '-lasound',
+            "-latomic",
+            "-lbcrypt",
+            "-lbz2",
+            # '-lcamera2ndk',
+            # '-lcrystalhd',
+            # '-ldl',
+            "-lgcc",
+            "-lgcc_s",
+            "-lgdi32",
+            "-liconv",
+            "-llzma",
+            "-lm",
+            # '-lmediandk',
+            "-lmfplat",
+            "-lmp3lame",
+            "-lole32",
+            "-loleaut32",
+            "-lopus",
+            "-lpsapi",
+            "-lpthread",
+            "-lsecur32",
+            "-lshell32",
+            "-lshlwapi",
+            "-lstdc++",
+            "-lstrmiids",
+            "-luser32",
+            "-luuid",
+            "-lvfw32",
+            "-lvorbis",
+            "-lvorbisenc",
+            "-logg",  # must be after '-lvorbis'
+            "-lvpx",
+            # '-lws2',
+            "-lws2_32",
+            "-lx264",
+            "-lx265",
+            "-lz",
+        ]
+
+        env.Append(LIBS=LIBS_COMMON + libs)
 
     env.Append(
-        CPPPATH=['ffmpeg/bin_windows/include'],
-        LIBPATH=['ffmpeg/bin_windows/bin'],
+        CPPPATH=[
+            "ffmpeg/bin_windows/include",
+            "ffmpeg/bin_windows/aom/include",
+            "ffmpeg/bin_windows/svtav1/include",
+            "ffmpeg/bin_windows/x264/include",
+            "ffmpeg/bin_windows/x265/include",
+            "ffmpeg/bin_windows/mp3lame/include",
+            "ffmpeg/bin_windows/ogg/include",
+            "ffmpeg/bin_windows/opus/include",
+            "ffmpeg/bin_windows/vorbis/include",
+            "ffmpeg/bin_windows/vpx/include",
+        ],
+        LIBPATH=[
+            "ffmpeg/bin_windows/lib",
+            "ffmpeg/bin_windows/aom/lib",
+            "ffmpeg/bin_windows/svtav1/lib",
+            "ffmpeg/bin_windows/x264/lib",
+            "ffmpeg/bin_windows/x265/lib",
+            "ffmpeg/bin_windows/mp3lame/lib",
+            "ffmpeg/bin_windows/ogg/lib",
+            "ffmpeg/bin_windows/opus/lib",
+            "ffmpeg/bin_windows/vorbis/lib",
+            "ffmpeg/bin_windows/vpx/lib",
+        ],
     )
 
 
-src = Glob('gde_gozen/*.cpp')
+src = Glob("gde_gozen/*.cpp")
 sharedlib = env.SharedLibrary(libpath, src)
 Default(sharedlib)
