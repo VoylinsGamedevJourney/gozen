@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sysconfig
 from pathlib import Path
+from typing import Any
 
 MSYS2_REQUIRED_PACKAGES = [
     "mingw-w64-ucrt-x86_64-binutils",
@@ -32,7 +33,7 @@ MSYS2_REQUIRED_PACKAGES = [
 ]
 
 
-_old_cwd = None
+_old_cwd: str = ''
 
 
 def run_command(
@@ -43,7 +44,7 @@ def run_command(
     shell: bool = False,
     use_msys2: bool = False,
     **kwargs,
-) -> subprocess.CompletedProcess:
+) -> subprocess.CompletedProcess[str | bytes | Any]:
     """
     Run command with arguments and return a CompletedProcess instance. Similar to `subprocess.run()`.
 
@@ -75,9 +76,9 @@ def run_command(
     The rest of the parameters are the same as `subprocess.run()`.
     """
     global _old_cwd
-    if _old_cwd != cwd:
+    if _old_cwd != str(cwd or ''):
         print(f"$ cd {cwd}")
-        _old_cwd = cwd
+        _old_cwd = str(cwd or '')
 
     print(f"$ {' '.join(command)}", flush=True)
 
@@ -202,7 +203,7 @@ def is_msys2_installed() -> bool:
         return False
 
 
-def install_msys2_required_deps(missing_programs) -> bool:
+def install_msys2_required_deps(missing_programs: list[str]) -> bool:
     if not missing_programs:
         return True
 
