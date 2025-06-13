@@ -52,12 +52,10 @@ func init_data(file_data_id: int) -> bool:
 
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
-		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-		_load_video_data.bind(file.path)), video_loaded.emit))
+		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
 
-	if file.type in Editor.AUDIO_TYPES:
-		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-				_load_audio_data.bind(file.path)), create_wave))
+	if file.type in EditorCore.AUDIO_TYPES:
+		Threader.add_task(_load_audio_data.bind(file.path), create_wave)
 
 	return true
 
@@ -98,8 +96,7 @@ func _load_video_data(file_path: String) -> void:
 
 func create_wave() -> void:
 	if audio != null:
-		Threader.tasks.append(Threader.Task.new(WorkerThreadPool.add_task(
-			_create_wave), update_wave.emit))
+		Threader.add_task(_create_wave, update_wave.emit)
 
 
 func _create_wave() -> void:
@@ -142,4 +139,42 @@ func _create_wave() -> void:
 
 		audio_wave_data[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
+
+
+func generate_audio_thumb() -> Image:
+	if !audio_wave_data.size():
+		print("waiting")
+		await update_wave
+	print(audio_wave_data.size())
+		
+	var size: Vector2i = Vector2i(854, 480)
+	var thumb: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGB8)
+
+	var data_per_pixel: float = float(audio_wave_data.size()) / size.x
+	var center: int = int(float(size.y) / 2)
+	var amp: int = int(float(size.y) / 2 * 0.9)
+
+	thumb.fill(Color.DIM_GRAY) # Background color.
+	for x_pos: int in size.x: # Data color.
+		var start_index: int = floori(x_pos * data_per_pixel)
+		var end_index: int = min(ceili((x_pos + 1) * data_per_pixel), audio_wave_data.size())
+
+		if start_index >= end_index:
+			continue # No data/End of data
+
+		var max_amp: float = 0.0
+		for i: int in range(start_index, end_index):
+			max_amp = max(max_amp, audio_wave_data[i])
+
+		var half_height: int = floori(max_amp * amp)
+		var y_top: int = clamp(center - half_height, 0, size.y - 1)
+		var y_bottom: int = clamp(center + half_height, 0, size.y - 1)
+
+		for y_pos: int in range(y_top, y_bottom + 1):
+			thumb.set_pixel(x_pos, y_pos, Color.GHOST_WHITE)
+
+	for x_pos: int in size.x: # Center line.
+		thumb.set_pixel(x_pos, center, Color.GRAY)
+	
+	return thumb
 

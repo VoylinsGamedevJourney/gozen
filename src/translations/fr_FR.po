@@ -221,9 +221,6 @@ msgstr "Annulation du processus de rendu ..."
 msgid "renderer_progress_text_last_frame"
 msgstr "Envoi des dernières images ..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "Finalisation du rendu ..."
-
 msgid "rendering_warning"
 msgstr "Une erreur est apparue !"
 

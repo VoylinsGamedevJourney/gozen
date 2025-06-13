@@ -81,7 +81,7 @@ var cancel_rendering: bool = false
 
 func _ready() -> void:
 	instance = self
-	viewport = Editor.viewport.get_texture()
+	viewport = EditorCore.viewport.get_texture()
 	if viewport == null:
 		printerr("Renderer: viewport is null!")
 
@@ -233,7 +233,11 @@ func _on_render_button_pressed() -> void:
 	var start_time: int = Time.get_ticks_usec()
 	is_rendering = true
 	renderer = Renderer.new()
-	renderer.enable_debug() # NOTE: For actual releases, this should be disabled.
+
+	if OS.is_debug_build():
+		renderer.enable_debug()
+	else:
+		renderer.disable_debug()
 
 	# Setting all data into the renderer.
 	renderer.set_file_path(path_line_edit.text)
@@ -295,25 +299,42 @@ func _on_render_button_pressed() -> void:
 			return
 
 	# Sending the frame data.
-	Editor.set_frame(0)
+	EditorCore.set_frame(0)
 	render_progress_label.text = "renderer_progress_text_creating_sending_data"
 	print("Renderer starts sending frames ...")
 
+	var frame_array_size: int = 10 # floori(Project.get_framerate())
+	var frame_array: Array[Image] = []
+	var frame_pos: int = 0
+	var thread: Thread = Thread.new()
+
+	if frame_array.resize(frame_array_size):
+		Toolbox.print_resize_error()
+
 	for i: int in Project.get_timeline_end() + 1:
 		if cancel_rendering:
-			break;
+			break
 		await RenderingServer.frame_post_draw
 
-		if !renderer.send_frame(viewport.get_image()):
-			render_warning_label.visible = true
-			render_progress_label.visible = false
-			render_warning_label.text = "renderer_progress_text_sending_data_error"
-			renderer.close()
-			printerr("Something went wrong sending frame!")
-			is_rendering = false
-			return
+		if frame_pos == frame_array_size:
+			if thread.is_started():
+				await thread.wait_to_finish()
+			if thread.start(_send_frames.bind(frame_array.duplicate())):
+				printerr("Something with rendering thread went wrong!")
+			frame_array.fill(null)
+			frame_pos = 0
+
+		frame_array[frame_pos] = viewport.get_image()
+		frame_pos += 1
 		render_progress_bar.value += 1
-		Editor.set_frame() # Getting the next frame in line.
+		EditorCore.set_frame() # Getting the next frame in line.
+
+	if thread.is_alive() or thread.is_started():
+		await thread.wait_to_finish()
+	if frame_array.size() != 0:
+		if thread.start(_send_frames.bind(frame_array.duplicate())):
+			printerr("Something with rendering thread went wrong!")
+		await thread.wait_to_finish()
 
 	if cancel_rendering:
 		render_progress_label.text = "renderer_progress_text_canceling"
@@ -329,13 +350,7 @@ func _on_render_button_pressed() -> void:
 
 	render_progress_label.text = "renderer_progress_text_last_frame"
 	print("Renderer processing last frame.")
-	await RenderingServer.frame_post_draw
-	render_progress_bar.value += 1
-	await RenderingServer.frame_post_draw
-	render_progress_bar.value += 1
-	await RenderingServer.frame_post_draw
-	render_progress_label.text = "renderer_progress_text_finilizing"
-	print("Renderer finalizing ...")
+	render_progress_bar.value += 2
 	await RenderingServer.frame_post_draw
 
 	renderer.close()
@@ -350,6 +365,20 @@ func _on_render_button_pressed() -> void:
 			Project.get_timeline_end() + 1)
 	show_window(2)
 	print("Renderer finished.")
+
+
+func _send_frames(frame_array: Array[Image]) -> void:
+	for frame: Image in frame_array:
+		if frame == null:
+			break
+		if !renderer.send_frame(frame):
+			render_warning_label.visible = true
+			render_progress_label.visible = false
+			render_warning_label.text = "renderer_progress_text_sending_data_error"
+			renderer.close()
+			printerr("Something went wrong sending frame!")
+			is_rendering = false
+			return
 
 
 func get_extension(profile: RenderProfile = render_profile) -> String:
@@ -421,7 +450,7 @@ func render_audio() -> PackedByteArray:
 			var clip: ClipData = Project.get_clip(track_data[frame_point])
 			var file: File = Project.get_file(clip.file_id)
 
-			if file.type in Editor.AUDIO_TYPES:
+			if file.type in EditorCore.AUDIO_TYPES:
 				var sample_count: int = get_sample_count(clip.start_frame)
 
 				if track_audio.size() != sample_count:

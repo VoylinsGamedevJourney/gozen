@@ -1,0 +1,57 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6gtxtbblg2fy"]
+
+[ext_resource type="Script" uid="uid://3yx6sdt8tb8r" path="res://scenes/audio_meter/audio_meter.gd" id="1_slymy"]
+[ext_resource type="Texture2D" uid="uid://daggx7q3ma0l7" path="res://assets/audio_meter/progress.png" id="2_063fn"]
+[ext_resource type="Texture2D" uid="uid://c2ydgv8p4bi18" path="res://assets/audio_meter/overlay_marker.png" id="3_1q77g"]
+
+[node name="AudioMeter" type="PanelContainer" node_paths=PackedStringArray("audio_bar_left", "audio_bar_right")]
+custom_minimum_size = Vector2(10, 0)
+theme_type_variation = &"box"
+script = ExtResource("1_slymy")
+audio_bar_left = NodePath("Margin/InnerAudioMeterPanel/HBox/LeftChannelBar")
+audio_bar_right = NodePath("Margin/InnerAudioMeterPanel/HBox/RightChannelBar")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="InnerAudioMeterPanel" type="PanelContainer" parent="Margin"]
+clip_children = 2
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Margin/InnerAudioMeterPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="LeftChannelBar" type="TextureProgressBar" parent="Margin/InnerAudioMeterPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -60.0
+max_value = 0.0
+step = 0.5
+value = -59.5
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = ExtResource("2_063fn")
+tint_progress = Color(1, 1, 1, 0.784314)
+
+[node name="RightChannelBar" type="TextureProgressBar" parent="Margin/InnerAudioMeterPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -60.0
+max_value = 0.0
+step = 0.5
+value = -59.5
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = ExtResource("2_063fn")
+tint_progress = Color(1, 1, 1, 0.784314)
+
+[node name="OverlayTexture" type="TextureRect" parent="Margin/InnerAudioMeterPanel"]
+modulate = Color(1, 1, 1, 0.196078)
+layout_mode = 2
+texture = ExtResource("3_1q77g")
+expand_mode = 1

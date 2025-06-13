@@ -40,7 +40,7 @@ func _ready() -> void:
 	Toolbox.connect_func(gui_input, _on_gui_input)
 	Toolbox.connect_func(Timeline.instance.zoom_changed, queue_redraw)
 
-	if Project.get_file(clip_data.file_id).type in Editor.AUDIO_TYPES:
+	if Project.get_file(clip_data.file_id).type in EditorCore.AUDIO_TYPES:
 		wave = true
 		Toolbox.connect_func(Project.get_file_data(clip_data.file_id).update_wave, queue_redraw)
 
@@ -164,8 +164,8 @@ func _on_gui_input(event: InputEvent) -> void:
 		InputManager.undo_redo.add_do_method(Timeline.instance.delete_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(Timeline.instance.undelete_clip.bind(clip_data))
 
-		InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
-		InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
+		InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
+		InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 		InputManager.undo_redo.commit_action()
 
 
@@ -277,11 +277,11 @@ func _on_commit_resize() -> void:
 	InputManager.undo_redo.create_action("Resizing clip on timeline")
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
 			_visual_start_frame, _visual_duration))
-	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_do_method(queue_redraw)
 
 	InputManager.undo_redo.add_undo_method(_set_resize_data.bind(clip_data.start_frame, clip_data.duration))
-	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_undo_method(queue_redraw)
 
 	InputManager.undo_redo.commit_action()

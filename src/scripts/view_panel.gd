@@ -10,8 +10,8 @@ extends PanelContainer
 
 
 func _ready() -> void:
-	Toolbox.connect_func(Editor.play_changed, _on_play_changed)
-	Toolbox.connect_func(Editor.frame_changed, _on_frame_changed)
+	Toolbox.connect_func(EditorCore.play_changed, _on_play_changed)
+	Toolbox.connect_func(EditorCore.frame_changed, _on_frame_changed)
 
 
 func _on_play_changed(value: bool) -> void:
@@ -25,11 +25,11 @@ func _on_skip_prev_button_pressed() -> void:
 
 
 func _on_play_button_pressed() -> void:
-	Editor.on_play_pressed()
+	EditorCore.on_play_pressed()
 
 
 func _on_pause_button_pressed() -> void:
-	Editor.is_playing = false
+	EditorCore.is_playing = false
 
 
 func _on_skip_next_button_pressed() -> void:

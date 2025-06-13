@@ -29,7 +29,7 @@ func get_end_frame() -> int:
 func get_frame(frame_nr: int) -> Texture:
 	var type: File.TYPE = Project.get_clip_type(clip_id)
 
-	if type not in Editor.VISUAL_TYPES:
+	if type not in EditorCore.VISUAL_TYPES:
 		return null
 	elif type == File.TYPE.VIDEO:
 		# For the video stuff, we load in the data for the shader. The FileData

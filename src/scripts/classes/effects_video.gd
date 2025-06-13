@@ -2,7 +2,7 @@ class_name EffectsVideo
 extends Node
 
 # Default variables can be gotten from anywhere through
-# Editor.default_effects_video
+# EditorCore.default_effects_video
 # This will be helpful if some people want to set defaults which apply to each
 # project as we only need to adjust the instance of Editor to apply changes
 # anywhere.
@@ -79,60 +79,60 @@ func reset_transform() -> void:
 
 
 func reset_color_correction() -> void:
-	brightness = Editor.default_effects_video.brightness
-	contrast = Editor.default_effects_video.contrast
-	saturation = Editor.default_effects_video.saturation
+	brightness = EditorCore.default_effects_video.brightness
+	contrast = EditorCore.default_effects_video.contrast
+	saturation = EditorCore.default_effects_video.saturation
 	
-	red_value = Editor.default_effects_video.red_value
-	green_value = Editor.default_effects_video.green_value
-	blue_value = Editor.default_effects_video.blue_value
+	red_value = EditorCore.default_effects_video.red_value
+	green_value = EditorCore.default_effects_video.green_value
+	blue_value = EditorCore.default_effects_video.blue_value
 	
-	tint_color = Editor.default_effects_video.tint_color
-	tint_effect_factor = Editor.default_effects_video.tint_effect_factor
+	tint_color = EditorCore.default_effects_video.tint_color
+	tint_effect_factor = EditorCore.default_effects_video.tint_effect_factor
 
 
 func reset_chroma_key() -> void:
-	chroma_key_color = Editor.default_effects_video.chroma_key_color
-	chroma_key_tolerance = Editor.default_effects_video.chroma_key_tolerance
-	chroma_key_softness = Editor.default_effects_video.chroma_key_softness
+	chroma_key_color = EditorCore.default_effects_video.chroma_key_color
+	chroma_key_tolerance = EditorCore.default_effects_video.chroma_key_tolerance
+	chroma_key_softness = EditorCore.default_effects_video.chroma_key_softness
 
 
 func transforms_equal_to_defaults() -> bool:
-	if position != Editor.default_effects_video.position: return false
-	if size != Editor.default_effects_video.size: return false
-	if scale != Editor.default_effects_video.scale: return false
-	if rotation != Editor.default_effects_video.rotation: return false
-	if pivot != Editor.default_effects_video.pivot: return false
+	if position != EditorCore.default_effects_video.position: return false
+	if size != EditorCore.default_effects_video.size: return false
+	if scale != EditorCore.default_effects_video.scale: return false
+	if rotation != EditorCore.default_effects_video.rotation: return false
+	if pivot != EditorCore.default_effects_video.pivot: return false
 	return true
 
 
 func color_correction_equal_to_defaults() -> bool:
-	if brightness != Editor.default_effects_video.brightness:
+	if brightness != EditorCore.default_effects_video.brightness:
 		return false
-	if contrast != Editor.default_effects_video.contrast:
+	if contrast != EditorCore.default_effects_video.contrast:
 		return false
-	if saturation != Editor.default_effects_video.saturation:
-		return false
-	
-	if red_value != Editor.default_effects_video.red_value:
-		return false
-	if green_value != Editor.default_effects_video.green_value:
-		return false
-	if blue_value != Editor.default_effects_video.blue_value:
+	if saturation != EditorCore.default_effects_video.saturation:
 		return false
 	
-	if tint_color != Editor.default_effects_video.tint_color:
+	if red_value != EditorCore.default_effects_video.red_value:
 		return false
-	if tint_effect_factor != Editor.default_effects_video.tint_effect_factor:
+	if green_value != EditorCore.default_effects_video.green_value:
+		return false
+	if blue_value != EditorCore.default_effects_video.blue_value:
+		return false
+	
+	if tint_color != EditorCore.default_effects_video.tint_color:
+		return false
+	if tint_effect_factor != EditorCore.default_effects_video.tint_effect_factor:
 		return false
 	return true
 
 
 func chroma_key_equal_to_defaults() -> bool:
-	if chroma_key_color != Editor.default_effects_video.chroma_key_color:
+	if chroma_key_color != EditorCore.default_effects_video.chroma_key_color:
 		return false
-	if chroma_key_tolerance != Editor.default_effects_video.chroma_key_tolerance:
+	if chroma_key_tolerance != EditorCore.default_effects_video.chroma_key_tolerance:
 		return false
-	if chroma_key_softness != Editor.default_effects_video.chroma_key_softness:
+	if chroma_key_softness != EditorCore.default_effects_video.chroma_key_softness:
 		return false
 	return true

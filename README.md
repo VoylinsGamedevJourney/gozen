@@ -50,6 +50,9 @@ At this moment there are three builds:
 For the main Linux build, you will need to have following libraries installed:
 - `x264`;
 - `x265`;
+- `lame` *(mp3lame)*;
+- `opus`;
+- `libvorbis`;
 
 ### For developers (building from source)
 First of all, you'll need to go into the `libs` folder and run the python script `build.py`, just follow the instructions and it should compile FFmpeg and the GDExtension without issues (on both Linux and Windows). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.

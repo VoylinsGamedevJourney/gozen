@@ -17,18 +17,19 @@ run/main_scene="uid://b0r37lfkj7wl6"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.4", "Forward Plus")
+run/low_processor_mode=true
 boot_splash/image="uid://be26q5shju2ml"
 config/icon="res://icon.svg"
 boot_splash/minimum_display_time=500
 
 [autoload]
 
-Toolbox="*res://scripts/globals/toolbox.gd"
 Threader="*res://scripts/globals/threader.gd"
-Editor="*res://scripts/globals/editor.gd"
+Thumbnailer="*res://scripts/globals/thumbnailer.gd"
 InputManager="*res://scripts/globals/input_manager.gd"
-Settings="*res://scripts/globals/settings.gd"
-Project="*res://scripts/globals/project.gd"
+EditorCore="*res://scripts/globals/editor_core.gd"
+Settings="*res://scripts/globals/settings_manager.gd"
+Project="*res://scripts/globals/project_manager.gd"
 
 [debug]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://rj2h8g761jr1"]
 
-[ext_resource type="Script" uid="uid://cc5bnmmakhd8r" path="res://scripts/command_bar.gd" id="1_maggb"]
+[ext_resource type="Script" uid="uid://cc5bnmmakhd8r" path="res://scenes/command_bar/command_bar.gd" id="1_maggb"]
 
 [node name="CommandBar" type="PanelContainer" node_paths=PackedStringArray("command_line", "command_buttons")]
 anchors_preset = 15

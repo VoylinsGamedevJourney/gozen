@@ -227,9 +227,6 @@ msgstr "Render wird abgebrochen ..."
 msgid "renderer_progress_text_last_frame"
 msgstr "Letzte Frames werden gesendet ..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "Render Finalisieren ..."
-
 msgid "rendering_warning"
 msgstr "Etwas ist schiefgelaufen!"
 

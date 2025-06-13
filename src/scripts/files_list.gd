@@ -2,18 +2,19 @@ class_name FilesList
 extends PanelContainer
 
 
-const THUMB_PATH: String = "user://thumbs/"
-const THUMB_INFO_PATH: String = "user://thumbs/info"
-
 const NICKNAME_SIZE: int = 14
 
 
 static var instance: FilesList
 
 # Order is the same as the ENUM of File.TYPE: Image, Audio, Video, Text/Title
+@export var buttons_container: HBoxContainer
 @export var tab_container: TabContainer
-@export var tabs: Array[ItemList] = []
-@export var buttons: Array[Button] = []
+
+var tabs: Array[ItemList] = []
+var buttons: Array[Button] = []
+
+var items: Dictionary[int, int] = {} # { file_id, item_id }
 
 var loading_files: PackedInt64Array = []
 var modified_files_check_running: bool = false
@@ -24,6 +25,14 @@ func _ready() -> void:
 	instance = self
 	Toolbox.connect_func(get_window().focus_entered, _modified_files_check)
 	Toolbox.connect_func(Project.file_added, _add_file_to_list)
+	Toolbox.connect_func(Thumbnailer.thumb_generated, _update_thumb)
+
+	for child: Node in buttons_container.get_children():
+		if child is Button:
+			buttons.append(child)
+	for child: Node in tab_container.get_children():
+		if child is ItemList:
+			tabs.append(child)
 
 	for list_id: int in tabs.size():
 		tabs[list_id].set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
@@ -96,72 +105,6 @@ func _modified_files_check() -> void:
 			Project.reload_file_data(file.id)
 	
 	modified_files_check_running = false
-
-	
-func get_thumb(file_id: int) -> Texture:
-	# This function also creates the thumb if not existing yet.
-	if !DirAccess.dir_exists_absolute(THUMB_PATH):
-		if DirAccess.make_dir_absolute(THUMB_PATH):
-			printerr("Couldn't create folder at %s!" % THUMB_PATH)
-
-	var path: String = Project.get_file(file_id).path
-	var data: Dictionary[String, int] = {}
-
-	if FileAccess.file_exists(THUMB_INFO_PATH):
-		var file: FileAccess = FileAccess.open(THUMB_INFO_PATH, FileAccess.READ)
-		data = file.get_var()
-
-	# Checking if thumb already exists for file.
-	var thumb_path: String = ""
-	if path in data.keys():
-		thumb_path = ProjectSettings.globalize_path(THUMB_PATH + str(data[path]) + ".webp")
-		if FileAccess.file_exists(thumb_path):
-			return ImageTexture.create_from_image(Image.load_from_file(thumb_path))
-
-	# No thumb exists so create new one.
-	thumb_path = ProjectSettings.globalize_path(THUMB_PATH + str(Toolbox.get_unique_id(data.values())) + ".webp")
-
-	if !FileAccess.file_exists(thumb_path):
-		create_thumb(file_id, path, thumb_path)
-
-	return ImageTexture.create_from_image(Image.load_from_file(thumb_path))
-
-
-func create_thumb(file_id: int, file_path: String, thumb_path: String) -> void:
-	var file: FileAccess
-	var data: Dictionary[String, int] = {}
-
-	if FileAccess.file_exists(THUMB_INFO_PATH):
-		file = FileAccess.open(THUMB_INFO_PATH, FileAccess.READ)
-		data = file.get_var()
-	var image: Image
-
-	match Project.get_file(file_id).type:
-		File.TYPE.IMAGE: image = Image.load_from_file(file_path)
-		File.TYPE.AUDIO:
-			push_warning("No thumb for Audio files yet!")
-			return # TODO: Make thumbnails for Audio files!
-		File.TYPE.VIDEO: image = Project.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
-	
-	# Resizing the image with correct aspect ratio.
-	var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
-
-	image.resize(
-			int(image.get_width() * image_scale),
-			int(image.get_height() * image_scale),
-			Image.INTERPOLATE_BILINEAR)
-
-	if image.save_webp(thumb_path):
-		printerr("Something went wrong saving thumb!")
-
-	# Saving the new entry so we don't create duplicate thumbnails
-	if file != null:
-		file.close()
-	file = FileAccess.open(THUMB_INFO_PATH, FileAccess.WRITE)
-	data[file_path] = int(thumb_path.split('/')[-1])
-
-	if !file.store_var(data):
-		printerr("Error happened when storing thumb data!")
 
 
 func _process_file(file: File, file_data: FileData) -> void:
@@ -292,6 +235,13 @@ func _update_file_nickname(file_id: int, index: int) -> void:
 	tab.sort_items_by_text()
 
 
+func _update_thumb(file_id: int) -> void:
+	var file: File = Project.get_file(file_id)
+	tabs[file.type].set_item_icon(
+			items[file_id],
+			Thumbnailer.get_thumb(file_id) as Texture2D)
+
+
 func _save_audio_to_wav(path: String, file: File) -> void:
 	if Project.get_file_data(file.id).audio.save_to_wav(path):
 		printerr("Error occured when saving to WAV!")
@@ -344,22 +294,24 @@ func _on_image_pasted() -> void:
 	buttons[File.TYPE.IMAGE].pressed.emit()
 
 
-func _add_file_to_list(id: int) -> void:
+func _add_file_to_list(file_id: int) -> void:
 	# Create tree item for the file panel tree
-	var file: File = Project.get_file(id)
-	var file_data: FileData = Project.get_file_data(id)
+	var file: File = Project.get_file(file_id)
+	var file_data: FileData = Project.get_file_data(file_id)
 	var list_id: int = int(file.type)
-	var item: int = tabs[list_id].add_item(Toolbox.format_file_nickname(file.nickname, NICKNAME_SIZE))
+
+	items[file_id] = tabs[list_id].add_item(
+			Toolbox.format_file_nickname(file.nickname, NICKNAME_SIZE))
 
 	# TODO: We need a better way of loading in files so this isn't needed!
 	while (file.type == File.TYPE.VIDEO and (file_data.video == null or !file_data.video.is_open())):
 		await RenderingServer.frame_post_draw	
 
-	tabs[list_id].set_item_metadata(item, id)
-	tabs[list_id].set_item_tooltip(item, file.path)
-	tabs[list_id].set_item_icon(item, get_thumb(id) as Texture2D)
+	tabs[list_id].set_item_metadata(items[file_id], file_id)
+	tabs[list_id].set_item_tooltip(items[file_id], file.path)
+	_update_thumb(file_id)
 
-	if loading_files.append(id):
+	if loading_files.append(file_id):
 		Toolbox.print_append_error()
 	
 

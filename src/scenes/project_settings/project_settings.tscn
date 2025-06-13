@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d1h5tylky47rt"]
 
-[ext_resource type="Script" uid="uid://bh7ksnxs73n8o" path="res://scripts/project_settings_menu.gd" id="1_hxewb"]
+[ext_resource type="Script" uid="uid://bh7ksnxs73n8o" path="res://scenes/project_settings/project_settings_menu.gd" id="1_hxewb"]
 
 [node name="ProjectSettings" type="PanelContainer" node_paths=PackedStringArray("background_color_picker")]
 anchors_preset = 15

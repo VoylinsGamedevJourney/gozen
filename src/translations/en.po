@@ -248,9 +248,6 @@ msgstr "Canceling render process ..."
 msgid "renderer_progress_text_last_frame"
 msgstr "Sending last frames ..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "Finalizing render ..."
-
 msgid "rendering_warning"
 msgstr "Something went wrong!"
 

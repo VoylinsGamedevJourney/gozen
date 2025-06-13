@@ -10,7 +10,7 @@ const DB_MAX: float = 0.0
 
 
 func _process(_delta: float) -> void:
-	if !Editor.is_playing:
+	if !EditorCore.is_playing:
 		return
 
 	var peak_db_left: float = AudioServer.get_bus_peak_volume_left_db(0, 0)

@@ -58,7 +58,7 @@ func set_audio(audio_clip_id: int) -> void:
 	update_effects()
 
 	# Getting timings in seconds.
-	var position: float = float(Editor.frame_nr - data.start_frame + data.begin)
+	var position: float = float(EditorCore.frame_nr - data.start_frame + data.begin)
 	position /= Project.get_framerate()
 
 	# Set stream if changed.
@@ -68,7 +68,7 @@ func set_audio(audio_clip_id: int) -> void:
 		if file_data and file_data.audio:
 			player.stream = file_data.audio
 			player.play(position)
-			player.stream_paused = !Editor.is_playing
+			player.stream_paused = !EditorCore.is_playing
 			set_effects(data)
 			update_effects()
 			return
@@ -78,12 +78,12 @@ func set_audio(audio_clip_id: int) -> void:
 	var frame_duration: float = 1.0 / Project.get_framerate()
 	if abs(player.get_playback_position() - position) < frame_duration:
 		if player.playing:
-			player.stream_paused = !Editor.is_playing
+			player.stream_paused = !EditorCore.is_playing
 		return
 
 	# Play audio from the position otherwise.
 	player.play(position)
-	player.stream_paused = !Editor.is_playing
+	player.stream_paused = !EditorCore.is_playing
 
 
 func set_effects(_data: ClipData = Project.get_clip(clip_id)) -> void:

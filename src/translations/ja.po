@@ -254,9 +254,6 @@ msgstr "レンダリングプロセスをキャンセル中..."
 msgid "renderer_progress_text_last_frame"
 msgstr "最後のフレームを送信中..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "レンダリングを完了中..."
-
 msgid "rendering_warning"
 msgstr "問題が発生しました！"
 

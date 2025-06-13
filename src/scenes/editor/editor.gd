@@ -6,9 +6,13 @@ extends Control
 
 
 func _ready() -> void:
-	Editor.viewport = %ProjectViewSubViewport
+	print_startup_info()
+
+	EditorCore.viewport = %ProjectViewSubViewport
 	_show_menu_bar(Settings.get_show_menu_bar())
 
+	PhysicsServer2D.set_active(false)
+	PhysicsServer3D.set_active(false)
 	Toolbox.connect_func(Settings.on_show_menu_bar_changed, _show_menu_bar)
 
 	# Check if editor got opened with a project path as argument.
@@ -20,6 +24,31 @@ func _ready() -> void:
 	# Showing Startup Screen
 	add_child(preload("uid://bqlcn30hs8qp5").instantiate())
 	
+
+func print_startup_info() -> void:
+	var header: Callable = (func(text: String) -> void:
+			print_rich("[color=purple][b]", text))
+	var info: Callable = (func(title: String, context: Variant) -> void:
+			print_rich("[color=purple][b]", title, "[/b]: [color=gray]", context))
+
+	header.call("--==  GoZen - Video Editor  ==--")
+	info.call("GoZen Version", ProjectSettings.get_setting("application/config/version"))
+	info.call("OS", OS.get_model_name())
+	info.call("OS Version", OS.get_version())
+	info.call("Distribution", OS.get_distribution_name())
+	info.call("Processor", OS.get_processor_name())
+	info.call("Threads", OS.get_processor_count())
+	info.call("Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
+				  	str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)), 
+				  	str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))])
+	info.call("Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
+				  	RenderingServer.get_video_adapter_name(),
+				  	RenderingServer.get_video_adapter_api_version(),
+				  	RenderingServer.get_video_adapter_type()])
+	info.call("Locale", OS.get_locale())
+	info.call("Startup args", OS.get_cmdline_args())
+	header.call("--==--================--==--")
+
 
 func _show_menu_bar(value: bool) -> void:
 	if menu_bar != null:

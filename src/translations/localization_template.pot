@@ -308,10 +308,6 @@ msgid "renderer_progress_text_last_frame"
 msgstr ""
 
 
-msgid "renderer_progress_text_finilizing"
-msgstr ""
-
-
 msgid "rendering_warning"
 msgstr ""
 

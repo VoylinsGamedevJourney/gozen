@@ -33,7 +33,7 @@ func _update_recent_projects(new_path: String) -> void:
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
-	var new_project_overlay: ProgressOverlay = preload("res://overlays/progress_overlay.tscn").instantiate()
+	var new_project_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
 	data = ProjectData.new()
 	file_data = {}
 
@@ -46,13 +46,13 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	set_framerate(framerate)
 	for i: int in Settings.get_tracks_amount():
 		data.tracks.append({})
-	if Editor.loaded_clips.resize(get_track_count()):
+	if EditorCore.loaded_clips.resize(get_track_count()):
 		Toolbox.print_resize_error()
 
 	new_project_overlay.update_progress(50, "status_project_playback_setup")
-	Editor._setup_playback()
-	Editor._setup_audio_players()
-	Editor.set_frame(data.playhead_position)
+	EditorCore._setup_playback()
+	EditorCore._setup_audio_players()
+	EditorCore.set_frame(data.playhead_position)
 	FilesList.instance._on_project_loaded()
 	Timeline.instance._on_project_loaded()
 
@@ -87,7 +87,7 @@ func _save_as(new_project_path: String) -> void:
 
 	
 func open(project_path: String) -> void:
-	var loading_overlay: ProgressOverlay = preload("res://overlays/progress_overlay.tscn").instantiate()
+	var loading_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
 	
 	get_tree().root.add_child(loading_overlay)
 	loading_overlay.update_title("title_loading_project")
@@ -107,7 +107,7 @@ func open(project_path: String) -> void:
 
 	set_project_path(project_path)
 	set_framerate(data.framerate)
-	if Editor.loaded_clips.resize(get_track_count()):
+	if EditorCore.loaded_clips.resize(get_track_count()):
 		Toolbox.print_resize_error()
 
 	# 7% = Timeline ready to accept clips.
@@ -126,9 +126,9 @@ func open(project_path: String) -> void:
 
 	# 80% = Files loaded, setting up playback.
 	loading_overlay.update_progress(80, "status_project_playback_setup")
-	Editor._setup_playback()
-	Editor._setup_audio_players()
-	Editor.set_frame(data.playhead_position)
+	EditorCore._setup_playback()
+	EditorCore._setup_audio_players()
+	EditorCore.set_frame(data.playhead_position)
 
 	# 85% = Playback is ready, preparing file list.
 	loading_overlay.update_progress(85, "status_project_file_list_setup")
@@ -234,7 +234,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	if data == null:
 		return
 
-	var dropped_overlay: ProgressOverlay = preload("res://overlays/progress_overlay.tscn").instantiate()
+	var dropped_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
 	var file_status: Dictionary = {}
 	var still_loading: PackedInt64Array = []
 	var progress_increment: float = 0.0
@@ -327,7 +327,7 @@ func get_resolution() -> Vector2i:
 
 func set_framerate(framerate: float) -> void:
 	data.framerate = framerate
-	Editor.frame_time = 1.0 / data.framerate
+	EditorCore.frame_time = 1.0 / data.framerate
 
 
 func get_framerate() -> float:
@@ -414,7 +414,7 @@ func erase_clip(clip_id: int) -> void:
 
 func set_background_color(color: Color) -> void:
 	data.background_color = color
-	Editor.set_background_color(color)
+	EditorCore.set_background_color(color)
 
 
 func get_background_color() -> Color:

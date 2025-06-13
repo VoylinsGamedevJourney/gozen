@@ -222,9 +222,6 @@ msgstr "Cancelando proceso de renderizado ..."
 msgid "renderer_progress_text_last_frame"
 msgstr "Enviando últimos fotogramas ..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "Finalizando renderizado ..."
-
 msgid "rendering_warning"
 msgstr "¡Algo salió mal!"
 

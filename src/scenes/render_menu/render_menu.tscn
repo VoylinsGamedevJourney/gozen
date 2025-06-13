@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://chdpurqhtqieq"]
 
-[ext_resource type="Script" uid="uid://dobw2jnf0wcn4" path="res://scripts/render_menu.gd" id="1_6rdvb"]
-[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="2_lyxh1"]
+[ext_resource type="Script" uid="uid://dobw2jnf0wcn4" path="res://scenes/render_menu/render_menu.gd" id="1_jrcft"]
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="2_qosgd"]
 
 [node name="RenderMenu" type="PanelContainer" node_paths=PackedStringArray("path_line_edit", "render_profiles_option_button", "render_progress_bar", "render_warning_label", "render_progress_label", "advanced_render_settings", "audio_codec_option_button", "video_grid", "video_codec_option_button", "video_quality_slider", "video_speed_label", "video_speed_slider", "video_gop_spinbox", "threads_spinbox", "render_metadata_toggle", "metadata_grid", "title_line_edit", "comment_text_edit", "author_line_edit", "copyright_line_edit", "render_path_label", "render_time_taken_label", "render_video_length_label")]
 anchors_preset = 15
@@ -10,7 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
-script = ExtResource("1_6rdvb")
+script = ExtResource("1_jrcft")
 path_line_edit = NodePath("Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderPathHBox/PathLineEdit")
 render_profiles_option_button = NodePath("Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderProfileHBox/RenderProfilesOptionButton")
 render_progress_bar = NodePath("RenderPanel/Margin/MainPanel/Margin/VBox/ProgressBar")
@@ -99,7 +99,7 @@ size_flags_horizontal = 3
 [node name="SelectSavePathButton" type="Button" parent="Panel/Margin/VBox/TopHBox/TopPanel/Margin/VBoxContainer/RenderProfileHBox/RenderPathHBox"]
 custom_minimum_size = Vector2(33, 0)
 layout_mode = 2
-icon = ExtResource("2_lyxh1")
+icon = ExtResource("2_qosgd")
 flat = true
 icon_alignment = 1
 expand_icon = true

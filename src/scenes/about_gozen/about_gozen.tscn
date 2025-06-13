@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d4e5ndtm65ok3"]
 
-[ext_resource type="Script" uid="uid://cd0krdlykelvg" path="res://scripts/about_gozen.gd" id="1_ecejt"]
+[ext_resource type="Script" uid="uid://cd0krdlykelvg" path="res://scenes/about_gozen/about_gozen.gd" id="1_ecejt"]
 
 [node name="AboutGoZen" type="PanelContainer" node_paths=PackedStringArray("version_label", "links_label")]
 anchors_preset = 15

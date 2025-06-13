@@ -247,9 +247,6 @@ msgstr "Renderproces annuleren ..."
 msgid "renderer_progress_text_last_frame"
 msgstr "Laatste frames versturen ..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "Render afronden ..."
-
 msgid "rendering_warning"
 msgstr "Er ging iets mis!"
 

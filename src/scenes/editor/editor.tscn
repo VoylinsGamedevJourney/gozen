@@ -1,31 +1,29 @@
-[gd_scene load_steps=33 format=3 uid="uid://b0r37lfkj7wl6"]
+[gd_scene load_steps=31 format=3 uid="uid://b0r37lfkj7wl6"]
 
-[ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scripts/editor_ui.gd" id="1_wlowb"]
-[ext_resource type="Texture2D" uid="uid://dpsmt1do2u4xl" path="res://assets/icons/project_settings.svg" id="2_ta0gc"]
-[ext_resource type="Script" uid="uid://bamx5qt7kpubd" path="res://scripts/files_list.gd" id="2_vjobr"]
-[ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="3_ajpey"]
-[ext_resource type="Texture2D" uid="uid://m56pkes40vci" path="res://assets/icons/image_file.svg" id="3_t27w5"]
-[ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scripts/timeline.gd" id="3_wrb8p"]
-[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="4_acw8i"]
-[ext_resource type="Texture2D" uid="uid://r4adu60uf6kj" path="res://assets/icons/audio_file.svg" id="4_k4288"]
-[ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/video_file.svg" id="5_8yjtx"]
-[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="5_pw4om"]
-[ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/text_file.svg" id="6_3btpq"]
-[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="6_xr2sj"]
-[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="7_2ok6a"]
-[ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="7_t27w5"]
-[ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://scripts/effects_panel.gd" id="8_3btpq"]
-[ext_resource type="Script" uid="uid://dq0sbkf6cfqnp" path="res://scripts/view_panel.gd" id="8_3v1c7"]
-[ext_resource type="Texture2D" uid="uid://dbpodibqe4ml1" path="res://assets/icons/video_effects.svg" id="9_7py46"]
-[ext_resource type="Texture2D" uid="uid://c6u5jisjppwl5" path="res://assets/icons/skip_previous.svg" id="9_qd6k7"]
-[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/play.svg" id="10_2qtvm"]
-[ext_resource type="Texture2D" uid="uid://yarovsxqsw5" path="res://assets/icons/audio_effects.svg" id="10_kwc7g"]
-[ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/pause.svg" id="11_lmvvn"]
-[ext_resource type="Texture2D" uid="uid://5sdky8df2641" path="res://assets/icons/skip_next.svg" id="12_hcdi5"]
-[ext_resource type="Texture2D" uid="uid://y0xdhtp02fh1" path="res://assets/icons/refresh.svg" id="16_hcdi5"]
-[ext_resource type="Script" uid="uid://3yx6sdt8tb8r" path="res://scripts/audio_meter.gd" id="17_2qtvm"]
-[ext_resource type="Texture2D" uid="uid://c2ydgv8p4bi18" path="res://assets/audio_meter/overlay_marker.png" id="18_lmvvn"]
-[ext_resource type="Texture2D" uid="uid://daggx7q3ma0l7" path="res://assets/audio_meter/progress.png" id="19_hcdi5"]
+[ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scenes/editor/editor.gd" id="1_nbwom"]
+[ext_resource type="Texture2D" uid="uid://dpsmt1do2u4xl" path="res://assets/icons/project_settings.svg" id="2_f4kn2"]
+[ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="3_f77pu"]
+[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="4_ftkm7"]
+[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="5_cw3ab"]
+[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="6_mq4v0"]
+[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="7_4qqsw"]
+[ext_resource type="Script" uid="uid://bamx5qt7kpubd" path="res://scripts/files_list.gd" id="8_sj3js"]
+[ext_resource type="Texture2D" uid="uid://m56pkes40vci" path="res://assets/icons/image_file.svg" id="9_8am3x"]
+[ext_resource type="Texture2D" uid="uid://r4adu60uf6kj" path="res://assets/icons/audio_file.svg" id="10_n6m0l"]
+[ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/video_file.svg" id="11_d0ujo"]
+[ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/text_file.svg" id="12_ryg2c"]
+[ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="13_223ji"]
+[ext_resource type="Script" uid="uid://dq0sbkf6cfqnp" path="res://scripts/view_panel.gd" id="14_j2336"]
+[ext_resource type="Texture2D" uid="uid://c6u5jisjppwl5" path="res://assets/icons/skip_previous.svg" id="15_l5jkt"]
+[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/play.svg" id="16_lhd7h"]
+[ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/pause.svg" id="17_83dub"]
+[ext_resource type="Texture2D" uid="uid://5sdky8df2641" path="res://assets/icons/skip_next.svg" id="18_2ly6v"]
+[ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://scripts/effects_panel.gd" id="19_wdyyo"]
+[ext_resource type="Texture2D" uid="uid://dbpodibqe4ml1" path="res://assets/icons/video_effects.svg" id="20_biw7w"]
+[ext_resource type="Texture2D" uid="uid://yarovsxqsw5" path="res://assets/icons/audio_effects.svg" id="21_7rg80"]
+[ext_resource type="Texture2D" uid="uid://y0xdhtp02fh1" path="res://assets/icons/refresh.svg" id="22_hbpaw"]
+[ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scripts/timeline.gd" id="23_caabj"]
+[ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="24_f0t63"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wrb8p"]
 
@@ -51,7 +49,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"background"
-script = ExtResource("1_wlowb")
+script = ExtResource("1_nbwom")
 menu_bar = NodePath("VBox/MenuBar")
 
 [node name="VBox" type="VBoxContainer" parent="."]
@@ -74,7 +72,7 @@ item_2/disabled = true
 item_3/id = 3
 item_3/separator = true
 item_4/text = "Project settings"
-item_4/icon = ExtResource("2_ta0gc")
+item_4/icon = ExtResource("2_f4kn2")
 item_4/id = 4
 item_5/text = "Open render menu"
 item_5/id = 5
@@ -83,26 +81,26 @@ item_5/id = 5
 auto_translate_mode = 1
 item_count = 9
 item_0/text = "Open settings"
-item_0/icon = ExtResource("3_ajpey")
+item_0/icon = ExtResource("3_f77pu")
 item_0/id = 0
 item_1/id = 1
 item_1/separator = true
 item_2/text = "GoZen site"
-item_2/icon = ExtResource("4_acw8i")
+item_2/icon = ExtResource("4_ftkm7")
 item_2/id = 2
 item_3/text = "Manual"
-item_3/icon = ExtResource("5_pw4om")
+item_3/icon = ExtResource("5_cw3ab")
 item_3/id = 3
 item_4/text = "Tutorials"
-item_4/icon = ExtResource("6_xr2sj")
+item_4/icon = ExtResource("6_mq4v0")
 item_4/id = 4
 item_5/text = "Discord server"
-item_5/icon = ExtResource("4_acw8i")
+item_5/icon = ExtResource("4_ftkm7")
 item_5/id = 5
 item_6/id = 6
 item_6/separator = true
 item_7/text = "Support GoZen"
-item_7/icon = ExtResource("7_2ok6a")
+item_7/icon = ExtResource("7_4qqsw")
 item_7/id = 7
 item_8/text = "About GoZen"
 item_8/id = 8
@@ -120,14 +118,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="FilePanel" type="PanelContainer" parent="VBox/VSplitContainer/HSplitContainer/HSplit" node_paths=PackedStringArray("tab_container", "tabs", "buttons")]
+[node name="FilePanel" type="PanelContainer" parent="VBox/VSplitContainer/HSplitContainer/HSplit" node_paths=PackedStringArray("buttons_container", "tab_container")]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_type_variation = &"box"
-script = ExtResource("2_vjobr")
+script = ExtResource("8_sj3js")
+buttons_container = NodePath("Margin/VBox/FilesButtonsHBox")
 tab_container = NodePath("Margin/VBox/FilesListScroll/FilesTabContainer")
-tabs = [NodePath("Margin/VBox/FilesListScroll/FilesTabContainer/ImageList"), NodePath("Margin/VBox/FilesListScroll/FilesTabContainer/AudioList"), NodePath("Margin/VBox/FilesListScroll/FilesTabContainer/VideoList"), NodePath("Margin/VBox/FilesListScroll/FilesTabContainer/TextList")]
-buttons = [NodePath("Margin/VBox/FilesButtonsHBox/ImageFilesButton"), NodePath("Margin/VBox/FilesButtonsHBox/AudioFilesButton"), NodePath("Margin/VBox/FilesButtonsHBox/VideoFilesButton"), NodePath("Margin/VBox/FilesButtonsHBox/TextFilesButton")]
 
 [node name="Margin" type="MarginContainer" parent="VBox/VSplitContainer/HSplitContainer/HSplit/FilePanel"]
 layout_mode = 2
@@ -158,7 +155,7 @@ theme_type_variation = &"file_tab_button"
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_wrb8p")
-icon = ExtResource("3_t27w5")
+icon = ExtResource("9_8am3x")
 expand_icon = true
 
 [node name="AudioFilesButton" type="Button" parent="VBox/VSplitContainer/HSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox"]
@@ -169,7 +166,7 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"file_tab_button"
 toggle_mode = true
 button_group = SubResource("ButtonGroup_wrb8p")
-icon = ExtResource("4_k4288")
+icon = ExtResource("10_n6m0l")
 expand_icon = true
 
 [node name="VideoFilesButton" type="Button" parent="VBox/VSplitContainer/HSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox"]
@@ -180,7 +177,7 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"file_tab_button"
 toggle_mode = true
 button_group = SubResource("ButtonGroup_wrb8p")
-icon = ExtResource("5_8yjtx")
+icon = ExtResource("11_d0ujo")
 expand_icon = true
 
 [node name="TextFilesButton" type="Button" parent="VBox/VSplitContainer/HSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox"]
@@ -191,7 +188,7 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"file_tab_button"
 toggle_mode = true
 button_group = SubResource("ButtonGroup_wrb8p")
-icon = ExtResource("6_3btpq")
+icon = ExtResource("12_ryg2c")
 expand_icon = true
 
 [node name="SpacerMiddle" type="Control" parent="VBox/VSplitContainer/HSplitContainer/HSplit/FilePanel/Margin/VBox/FilesButtonsHBox"]
@@ -202,7 +199,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(22, 20)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("7_t27w5")
+texture_normal = ExtResource("13_223ji")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -275,7 +272,7 @@ metadata/_tab_index = 3
 [node name="ViewPanel" type="PanelContainer" parent="VBox/VSplitContainer/HSplitContainer/HSplit" node_paths=PackedStringArray("button_play", "button_pause", "frame_label", "time_label")]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("8_3v1c7")
+script = ExtResource("14_j2336")
 button_play = NodePath("Margin/VBox/ButtonsHBox/PlayButton")
 button_pause = NodePath("Margin/VBox/ButtonsHBox/PauseButton")
 frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
@@ -337,7 +334,7 @@ text = "00:00:00.00"
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("9_qd6k7")
+texture_normal = ExtResource("15_l5jkt")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -345,7 +342,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("10_2qtvm")
+texture_normal = ExtResource("16_lhd7h")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -353,7 +350,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("11_lmvvn")
+texture_normal = ExtResource("17_83dub")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -361,7 +358,7 @@ stretch_mode = 5
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("12_hcdi5")
+texture_normal = ExtResource("18_2ly6v")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -373,7 +370,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_type_variation = &"box"
-script = ExtResource("8_3btpq")
+script = ExtResource("19_wdyyo")
 button_video_effects = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton")
 button_audio_effects = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton")
 tab_container = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer")
@@ -440,7 +437,7 @@ theme_type_variation = &"file_tab_button"
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_3btpq")
-icon = ExtResource("9_7py46")
+icon = ExtResource("20_biw7w")
 icon_alignment = 1
 expand_icon = true
 
@@ -453,7 +450,7 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"file_tab_button"
 toggle_mode = true
 button_group = SubResource("ButtonGroup_3btpq")
-icon = ExtResource("10_kwc7g")
+icon = ExtResource("21_7rg80")
 icon_alignment = 1
 expand_icon = true
 
@@ -490,7 +487,7 @@ text = "Transform"
 [node name="ResetTransformEffectsButton" type="TextureButton" parent="VBox/VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer2"]
 custom_minimum_size = Vector2(14, 0)
 layout_mode = 2
-texture_normal = ExtResource("16_hcdi5")
+texture_normal = ExtResource("22_hbpaw")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -628,7 +625,7 @@ text = "Color correction"
 [node name="ResetColorCorrectionEffectsButton" type="TextureButton" parent="VBox/VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer"]
 custom_minimum_size = Vector2(14, 0)
 layout_mode = 2
-texture_normal = ExtResource("16_hcdi5")
+texture_normal = ExtResource("22_hbpaw")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -744,7 +741,7 @@ text = "Chroma key"
 [node name="ResetChromaKeyEffectsButton" type="TextureButton" parent="VBox/VSplitContainer/HSplitContainer/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox"]
 custom_minimum_size = Vector2(14, 0)
 layout_mode = 2
-texture_normal = ExtResource("16_hcdi5")
+texture_normal = ExtResource("22_hbpaw")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -852,7 +849,7 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"box"
-script = ExtResource("3_wrb8p")
+script = ExtResource("23_caabj")
 lines = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Lines")
 scroll_bar = NodePath("VBoxContainer/TimelineBoxScroll")
 scroll_main = NodePath("VBoxContainer/TimelinePanel/TimelineScroll")
@@ -915,58 +912,8 @@ theme_override_constants/separation = 0
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxLine_wrb8p")
 
-[node name="AudioMeter" type="PanelContainer" parent="VBox/VSplitContainer/BottomHBox" node_paths=PackedStringArray("audio_bar_left", "audio_bar_right")]
-custom_minimum_size = Vector2(10, 0)
+[node name="AudioMeter" parent="VBox/VSplitContainer/BottomHBox" instance=ExtResource("24_f0t63")]
 layout_mode = 2
-theme_type_variation = &"box"
-script = ExtResource("17_2qtvm")
-audio_bar_left = NodePath("Margin/InnerAudioMeterPanel/HBox/LeftChannelBar")
-audio_bar_right = NodePath("Margin/InnerAudioMeterPanel/HBox/RightChannelBar")
-
-[node name="Margin" type="MarginContainer" parent="VBox/VSplitContainer/BottomHBox/AudioMeter"]
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="InnerAudioMeterPanel" type="PanelContainer" parent="VBox/VSplitContainer/BottomHBox/AudioMeter/Margin"]
-clip_children = 2
-layout_mode = 2
-
-[node name="HBox" type="HBoxContainer" parent="VBox/VSplitContainer/BottomHBox/AudioMeter/Margin/InnerAudioMeterPanel"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="LeftChannelBar" type="TextureProgressBar" parent="VBox/VSplitContainer/BottomHBox/AudioMeter/Margin/InnerAudioMeterPanel/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = -60.0
-max_value = 0.0
-step = 0.5
-value = -59.5
-fill_mode = 3
-nine_patch_stretch = true
-texture_progress = ExtResource("19_hcdi5")
-tint_progress = Color(1, 1, 1, 0.784314)
-
-[node name="RightChannelBar" type="TextureProgressBar" parent="VBox/VSplitContainer/BottomHBox/AudioMeter/Margin/InnerAudioMeterPanel/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = -60.0
-max_value = 0.0
-step = 0.5
-value = -59.5
-fill_mode = 3
-nine_patch_stretch = true
-texture_progress = ExtResource("19_hcdi5")
-tint_progress = Color(1, 1, 1, 0.784314)
-
-[node name="OverlayTexture" type="TextureRect" parent="VBox/VSplitContainer/BottomHBox/AudioMeter/Margin/InnerAudioMeterPanel"]
-modulate = Color(1, 1, 1, 0.196078)
-layout_mode = 2
-texture = ExtResource("18_lmvvn")
-expand_mode = 1
 
 [connection signal="id_pressed" from="VBox/MenuBar/Project" to="." method="_on_menu_bar_project_id_pressed"]
 [connection signal="id_pressed" from="VBox/MenuBar/Editor" to="." method="_on_menu_bar_editor_id_pressed"]

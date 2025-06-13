@@ -41,7 +41,7 @@ func _ready() -> void:
 	instance = self
 	main_control.set_drag_forwarding(Callable(), _main_control_can_drop_data, _main_control_drop_data)
 
-	Toolbox.connect_func(Editor.frame_changed, move_playhead)
+	Toolbox.connect_func(EditorCore.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
 	Toolbox.connect_func(Project.file_deleted, _check_clips)
 
@@ -52,8 +52,8 @@ func _process(_delta: float) -> void:
 				floori(main_control.get_local_mouse_position().x / zoom),
 				0, Project.get_timeline_end())
 
-		if new_frame != Editor.frame_nr:
-			Editor.set_frame(new_frame)
+		if new_frame != EditorCore.frame_nr:
+			EditorCore.set_frame(new_frame)
 			new_frame = -1
 
 
@@ -61,18 +61,18 @@ func _input(event: InputEvent) -> void:
 	if Project.data == null:
 		return
 
-	if !Editor.is_playing:
+	if !EditorCore.is_playing:
 		if event.is_action_pressed("ui_left"):
-			Editor.set_frame(Editor.frame_nr - 1)
+			EditorCore.set_frame(EditorCore.frame_nr - 1)
 		elif event.is_action_pressed("ui_right"):
-			Editor.set_frame(Editor.frame_nr + 1)
+			EditorCore.set_frame(EditorCore.frame_nr + 1)
 
 	if event is InputEventMouseButton and (event as InputEventMouseButton).is_released():
 		if preview.visible:
 			preview.visible = false
 		
 	if event.is_action_pressed("clip_split"):
-		_clips_split(Editor.frame_nr)
+		_clips_split(EditorCore.frame_nr)
 	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
 		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
@@ -114,19 +114,19 @@ func _on_main_gui_input(event: InputEvent) -> void:
 
 	if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if event.is_pressed() and !Input.is_key_pressed(KEY_SHIFT) and !Input.is_key_pressed(KEY_CTRL):
-			if Settings.get_pause_after_drag() and Editor.is_playing:
-				Editor.on_play_pressed()
+			if Settings.get_pause_after_drag() and EditorCore.is_playing:
+				EditorCore.on_play_pressed()
 
 			playhead_moving = true
-			playback_before_moving = Editor.is_playing
+			playback_before_moving = EditorCore.is_playing
 
 			if playback_before_moving:
-				Editor.on_play_pressed()
+				EditorCore.on_play_pressed()
 		elif event.is_released():
 			playhead_moving = false
 
 			if playback_before_moving:
-				Editor.on_play_pressed()
+				EditorCore.on_play_pressed()
 
 
 func _set_zoom(new_zoom: float) -> void:
@@ -157,7 +157,7 @@ func _set_zoom(new_zoom: float) -> void:
 	else:
 		scroll_main.scroll_horizontal_custom_step = 100
 
-	move_playhead(Editor.frame_nr)
+	move_playhead(EditorCore.frame_nr)
 
 	# Get all clips, update their size and position
 	for clip_button: Button in clips.get_children():
@@ -417,10 +417,10 @@ func _main_control_drop_data(_pos: Vector2, data: Variant) -> void:
 	else:
 		_handle_drop_existing_clips(draggable)
 
-	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_do_method(update_end)
 
-	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_undo_method(update_end)
 
 	InputManager.undo_redo.commit_action()
@@ -679,13 +679,13 @@ func _delete_empty_space() -> void:
 			draggable,
 			draggable.differences.y,
 			-draggable.differences.x))
-	InputManager.undo_redo.add_do_method(Editor.update_frame)
+	InputManager.undo_redo.add_do_method(EditorCore.update_frame)
 
 	InputManager.undo_redo.add_undo_method(_move_clips.bind(
 			draggable,
 			draggable.differences.y,
 			draggable.differences.x))
-	InputManager.undo_redo.add_undo_method(Editor.update_frame)
+	InputManager.undo_redo.add_undo_method(EditorCore.update_frame)
 
 	InputManager.undo_redo.commit_action()
 

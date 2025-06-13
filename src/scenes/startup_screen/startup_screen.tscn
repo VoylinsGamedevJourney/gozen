@@ -1,17 +1,17 @@
 [gd_scene load_steps=18 format=3 uid="uid://bqlcn30hs8qp5"]
 
-[ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scripts/startup_screen.gd" id="1_mrrmf"]
-[ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_jk13q"]
-[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="3_jdwvk"]
-[ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_wb8ll"]
-[ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="4_x2wpv"]
-[ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="5_wb8ll"]
-[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="5_x2wpv"]
-[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="6_donii"]
-[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="7_5plxg"]
-[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="8_ohjo4"]
-[ext_resource type="Texture2D" uid="uid://d34rtkurt6qhl" path="res://assets/icons/sponsors.svg" id="10_5plxg"]
-[ext_resource type="Texture2D" uid="uid://brw0l3u8bd2bb" path="res://assets/sponsors/vgj.webp" id="11_donii"]
+[ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scenes/startup_screen/startup_screen.gd" id="1_sgta6"]
+[ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_5viva"]
+[ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_gatud"]
+[ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="4_80ee3"]
+[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="5_pcyft"]
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="6_j711k"]
+[ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="7_4kk3e"]
+[ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="8_wn5y3"]
+[ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="9_ncffq"]
+[ext_resource type="Texture2D" uid="uid://d34rtkurt6qhl" path="res://assets/icons/sponsors.svg" id="10_1nlba"]
+[ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="11_0i7o8"]
+[ext_resource type="Texture2D" uid="uid://brw0l3u8bd2bb" path="res://assets/sponsors/vgj.webp" id="12_xyrqg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2wpv"]
 content_margin_left = 20.0
@@ -23,6 +23,57 @@ corner_detail = 1
 
 [sub_resource type="LabelSettings" id="LabelSettings_x2wpv"]
 font_size = 13
+
+[sub_resource type="Animation" id="Animation_5plxg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["5"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Panel/VBox/StartupTabContainer:current_tab")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/CloseSponsorsButton:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_donii"]
 resource_name = "show_sponsors"
@@ -76,57 +127,6 @@ tracks/3/keys = {
 "values": [true, false]
 }
 
-[sub_resource type="Animation" id="Animation_5plxg"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:text")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["5"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Panel/VBox/StartupTabContainer:current_tab")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [2]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/CloseSponsorsButton:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5plxg"]
 _data = {
 &"RESET": SubResource("Animation_5plxg"),
@@ -140,7 +140,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
-script = ExtResource("1_mrrmf")
+script = ExtResource("1_sgta6")
 version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
 new_version_available_panel = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel")
 new_version_available_button = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer/RepoTextureButton")
@@ -167,7 +167,7 @@ layout_mode = 2
 [node name="StartupImage" type="TextureRect" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
-texture = ExtResource("2_jk13q")
+texture = ExtResource("2_5viva")
 expand_mode = 1
 stretch_mode = 6
 
@@ -178,7 +178,7 @@ offset_top = 7.0
 offset_right = 47.0
 offset_bottom = 47.0
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("3_wb8ll")
+texture_normal = ExtResource("3_gatud")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -195,7 +195,7 @@ offset_bottom = 25.0
 grow_horizontal = 0
 tooltip_text = "button_tooltip_editor_settings"
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("4_x2wpv")
+texture_normal = ExtResource("4_80ee3")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -253,7 +253,7 @@ label_settings = SubResource("LabelSettings_x2wpv")
 [node name="RepoTextureButton" type="TextureButton" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-texture_normal = ExtResource("7_5plxg")
+texture_normal = ExtResource("5_pcyft")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -296,7 +296,7 @@ layout_mode = 2
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_open_project"
-icon = ExtResource("3_jdwvk")
+icon = ExtResource("6_j711k")
 flat = true
 alignment = 0
 expand_icon = true
@@ -305,7 +305,7 @@ expand_icon = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_create_new_project"
-icon = ExtResource("5_wb8ll")
+icon = ExtResource("7_4kk3e")
 flat = true
 alignment = 0
 expand_icon = true
@@ -326,7 +326,7 @@ layout_mode = 2
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_gozen_site"
-icon = ExtResource("7_5plxg")
+icon = ExtResource("5_pcyft")
 flat = true
 alignment = 0
 expand_icon = true
@@ -335,7 +335,7 @@ expand_icon = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_manual"
-icon = ExtResource("5_x2wpv")
+icon = ExtResource("8_wn5y3")
 flat = true
 alignment = 0
 expand_icon = true
@@ -344,7 +344,7 @@ expand_icon = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_tutorials"
-icon = ExtResource("6_donii")
+icon = ExtResource("9_ncffq")
 flat = true
 alignment = 0
 expand_icon = true
@@ -353,7 +353,7 @@ expand_icon = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_discord_server"
-icon = ExtResource("7_5plxg")
+icon = ExtResource("5_pcyft")
 flat = true
 alignment = 0
 expand_icon = true
@@ -366,7 +366,7 @@ size_flags_vertical = 3
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_view_sponsors"
-icon = ExtResource("10_5plxg")
+icon = ExtResource("10_1nlba")
 flat = true
 alignment = 0
 expand_icon = true
@@ -375,7 +375,7 @@ expand_icon = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "button_support_gozen"
-icon = ExtResource("8_ohjo4")
+icon = ExtResource("11_0i7o8")
 flat = true
 alignment = 0
 expand_icon = true
@@ -408,7 +408,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("3_jdwvk")
+texture_normal = ExtResource("6_j711k")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -526,7 +526,7 @@ alignment = 1
 custom_minimum_size = Vector2(130, 130)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture = ExtResource("11_donii")
+texture = ExtResource("12_xyrqg")
 expand_mode = 1
 stretch_mode = 5
 

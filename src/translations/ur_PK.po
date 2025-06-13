@@ -223,9 +223,6 @@ msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
 msgid "renderer_progress_text_last_frame"
 msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
 
-msgid "renderer_progress_text_finilizing"
-msgstr "رینڈر کو حتمی شکل دی جا رہی ہے ..."
-
 msgid "rendering_warning"
 msgstr "کچھ غلط ہو گیا!"
 
