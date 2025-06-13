@@ -1,36 +1,9 @@
+class_name Toolbox
 extends Node
 
 
-func _ready() -> void:
-	_print_startup_info()
 
-
-func _print_startup_info() -> void:
-	var header: Callable = (func(text: String) -> void:
-			print_rich("[color=purple][b]", text))
-	var info: Callable = (func(title: String, context: Variant) -> void:
-			print_rich("[color=purple][b]", title, "[/b]: [color=gray]", context))
-
-	header.call("--==  GoZen - Video Editor  ==--")
-	info.call("GoZen Version", ProjectSettings.get_setting("application/config/version"))
-	info.call("OS", OS.get_model_name())
-	info.call("OS Version", OS.get_version())
-	info.call("Distribution", OS.get_distribution_name())
-	info.call("Processor", OS.get_processor_name())
-	info.call("Threads", OS.get_processor_count())
-	info.call("Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
-				  	str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)), 
-				  	str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))])
-	info.call("Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
-				  	RenderingServer.get_video_adapter_name(),
-				  	RenderingServer.get_video_adapter_api_version(),
-				  	RenderingServer.get_video_adapter_type()])
-	info.call("Locale", OS.get_locale())
-	info.call("Startup args", OS.get_cmdline_args())
-	header.call("--==--================--==--")
-
-
-func format_file_nickname(file_name: String, size: int) -> String:
+static func format_file_nickname(file_name: String, size: int) -> String:
 	var new_name: String = ""
 
 	while file_name.length() > size:
@@ -46,7 +19,7 @@ func format_file_nickname(file_name: String, size: int) -> String:
 	return new_name
 
 
-func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray) -> FileDialog:
+static func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray) -> FileDialog:
 	var dialog: FileDialog = FileDialog.new()
 
 	dialog.force_native = true
@@ -59,7 +32,7 @@ func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedSt
 	return dialog
 
 
-func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
+static func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
 	# This function is needed to handle the error in a good way for when
 	# connecting a callable to a signal wasn't successful.
 	if connect_signal.connect(connect_callable):
@@ -67,36 +40,36 @@ func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
 				connect_signal.get_name(), connect_callable.get_method()])
 
 	
-func print_resize_error() -> void:
+static func print_resize_error() -> void:
 	# This func is needed so we don't have the same error message everywhere.
 	printerr("Couldn't resize array!")
 	printerr(get_stack())
 
 
-func print_append_error() -> void:
+static func print_append_error() -> void:
 	# This func is needed so we don't have the same error message everywhere.
 	printerr("Couldn't append to array!")
 	printerr(get_stack())
 
 
-func print_insert_error() -> void:
+static func print_insert_error() -> void:
 	# This func is needed so we don't have the same error message everywhere.
 	printerr("Couldn't insert to array!")
 	printerr(get_stack())
 	
 
-func print_erase_error() -> void:
+static func print_erase_error() -> void:
 	# This func is needed so we don't have the same error message everywhere.
 	printerr("Couldn't erase entry!")
 	printerr(get_stack())
 
 
-func open_url(url: String) -> void:
+static func open_url(url: String) -> void:
 	@warning_ignore("return_value_discarded")
 	OS.shell_open(url)
 
 
-func get_unique_id(keys: PackedInt64Array) -> int:
+static func get_unique_id(keys: PackedInt64Array) -> int:
 	var id: int = abs(randi())
 
 	randomize()
@@ -106,25 +79,25 @@ func get_unique_id(keys: PackedInt64Array) -> int:
 	return id
 
 
-func in_range(value: int, min_value: int, max_value: int, include_last: bool = true) -> bool:
+static func in_range(value: int, min_value: int, max_value: int, include_last: bool = true) -> bool:
 	## Easier way to check if a value is within a range.
 	if include_last:
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
 
 
-func in_rangef(value: float, min_value: float, max_value: float, include_last: bool = true) -> bool:
+static func in_rangef(value: float, min_value: float, max_value: float, include_last: bool = true) -> bool:
 	## Same as in_range but for floats
 	if include_last:
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
 
 
-func format_time_str_from_frame(frame_count: int) -> String:
+static func format_time_str_from_frame(frame_count: int) -> String:
 	return format_time_str(float(frame_count) / Project.get_framerate())
 	
 
-func format_time_str(total_seconds: float) -> String:
+static func format_time_str(total_seconds: float) -> String:
 	var total_seconds_int: int = floor(total_seconds)
 
 	var hours: int = int(float(total_seconds_int) / 3600)
@@ -136,7 +109,7 @@ func format_time_str(total_seconds: float) -> String:
 	return "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
 	
 
-func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
+static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 	var folders: PackedStringArray = []
 	var actual_files: PackedStringArray = []
 
