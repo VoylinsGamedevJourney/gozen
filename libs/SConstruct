@@ -33,22 +33,14 @@ if "linux" in platform:
         )
     else:
         env.Append(
-            LINKFLAGS=["-static-libstdc++", '-Wl,-rpath,"$ORIGIN"'],
-            CPPFLAGS=["-Iffmpeg/bin_linux", "-Iffmpeg/bin_linux/include"],
-            LIBPATH=[
-                "ffmpeg/bin_linux/include/libavcodec",
-                "ffmpeg/bin_linux/include/libavformat",
-                "ffmpeg/bin_linux/include/libavutil",
-                "ffmpeg/bin_linux/include/libswresample",
-                "ffmpeg/bin_linux/include/libswscale",
-                "ffmpeg/bin_linux/lib",
-            ],
+            # LINKFLAGS=["-static-libstdc++", '-Wl,-rpath,"$ORIGIN"'],
+            LINKFLAGS="-fPIC",
             CCFLAGS=[f"-march={MARCH_FLAGS[arch]}"],
             LIBS=LIBS_COMMON,
         )
 elif "windows" in platform:
     libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"
-    if os_platform.system().lower() == "windows" and use_mingw == "no":
+    if os_platform.system().lower() == "windows" and use_mingw != "yes":
         env.Append(
             LIBS=[
                 "avcodec.lib",
@@ -109,32 +101,32 @@ elif "windows" in platform:
 
         env.Append(LIBS=LIBS_COMMON + libs)
 
-    env.Append(
-        CPPPATH=[
-            "ffmpeg/bin_windows/include",
-            "ffmpeg/bin_windows/aom/include",
-            "ffmpeg/bin_windows/svtav1/include",
-            "ffmpeg/bin_windows/x264/include",
-            "ffmpeg/bin_windows/x265/include",
-            "ffmpeg/bin_windows/mp3lame/include",
-            "ffmpeg/bin_windows/ogg/include",
-            "ffmpeg/bin_windows/opus/include",
-            "ffmpeg/bin_windows/vorbis/include",
-            "ffmpeg/bin_windows/vpx/include",
-        ],
-        LIBPATH=[
-            "ffmpeg/bin_windows/lib",
-            "ffmpeg/bin_windows/aom/lib",
-            "ffmpeg/bin_windows/svtav1/lib",
-            "ffmpeg/bin_windows/x264/lib",
-            "ffmpeg/bin_windows/x265/lib",
-            "ffmpeg/bin_windows/mp3lame/lib",
-            "ffmpeg/bin_windows/ogg/lib",
-            "ffmpeg/bin_windows/opus/lib",
-            "ffmpeg/bin_windows/vorbis/lib",
-            "ffmpeg/bin_windows/vpx/lib",
-        ],
-    )
+env.Append(
+    CPPPATH=[
+        f"ffmpeg/bin_{platform}/include",
+        f"ffmpeg/bin_{platform}/aom/include",
+        f"ffmpeg/bin_{platform}/svtav1/include",
+        f"ffmpeg/bin_{platform}/x264/include",
+        f"ffmpeg/bin_{platform}/x265/include",
+        f"ffmpeg/bin_{platform}/mp3lame/include",
+        f"ffmpeg/bin_{platform}/ogg/include",
+        f"ffmpeg/bin_{platform}/opus/include",
+        f"ffmpeg/bin_{platform}/vorbis/include",
+        f"ffmpeg/bin_{platform}/vpx/include",
+    ],
+    LIBPATH=[
+        f"ffmpeg/bin_{platform}/lib",
+        f"ffmpeg/bin_{platform}/aom/lib",
+        f"ffmpeg/bin_{platform}/svtav1/lib",
+        f"ffmpeg/bin_{platform}/x264/lib",
+        f"ffmpeg/bin_{platform}/x265/lib",
+        f"ffmpeg/bin_{platform}/mp3lame/lib",
+        f"ffmpeg/bin_{platform}/ogg/lib",
+        f"ffmpeg/bin_{platform}/opus/lib",
+        f"ffmpeg/bin_{platform}/vorbis/lib",
+        f"ffmpeg/bin_{platform}/vpx/lib",
+    ],
+)
 
 
 src = Glob("gde_gozen/*.cpp")

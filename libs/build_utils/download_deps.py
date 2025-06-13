@@ -58,7 +58,7 @@ def clone_dep(
         ]
 
     cmd += [arg for (k, v) in kwargs.items() for arg in (k, v)]
-    run_command(cmd, cwd="./")
+    run_command(cmd, cwd="./", check=True)
 
 
 def download_ffmpeg_deps() -> None:

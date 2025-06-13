@@ -66,7 +66,7 @@ def build_lib(
         or all(isinstance(cmd, list) for cmd in compile_cmd)
     ), "configure_cmd must be a list of strings or a list of lists of strings."
 
-    print(f"Configuring {lib_name} for Windows ...", flush=True)
+    print(f"Configuring {lib_name} ...", flush=True)
 
     build_env = env or {}
     compile_cmd = compile_cmd or [["make", f"-j{threads}"], ["make", "install"]]
@@ -102,7 +102,7 @@ def build_lib(
     print(f"Compiling {lib_name} finished!", flush=True)
 
 
-def build_x264(platform: str, threads: int, env: dict | None = None):
+def build_x264(platform: str, threads: int, env: dict[str, str] | None = None):
     if X264_SOURCE_DIR.exists():
         run_command(
             ["make", "distclean"],
@@ -156,7 +156,8 @@ def build_x265(platform: str, threads: int, env: dict | None = None):
             "cmake",
             "-G=Ninja",
             f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
-            "-DENABLE_SHARED=off",
+            "-DENABLE_SHARED=OFF",
+            "-DENABLE_PIC=ON",
             f"{convert_to_msys2_path(source_dir)}",
         ],
         compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
@@ -186,6 +187,7 @@ def build_aom(platform: str, threads: int, env: dict | None = None):
             "-G=Ninja",
             f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
             "-DENABLE_TESTS=OFF",
+            "-DCONFIG_PIC=1",
             f"{convert_to_msys2_path(AOM_SOURCE_DIR)}",
         ],
         compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
@@ -246,6 +248,7 @@ def build_vpx(platform: str, threads: int, env: dict | None = None):
             "--disable-unit-tests",
             "--enable-vp9-highbitdepth",
             "--as=yasm",
+            "--enable-pic",
         ],
         threads=threads,
         env=env,
@@ -265,7 +268,7 @@ def build_opus(platform: str, threads: int, env: dict | None = None):
     clear_dir(install_dir)
 
     build_lib(
-        "VPX",
+        "Opus",
         OPUS_SOURCE_DIR,
         configure_cmd=(
             ["./autogen.sh"],
@@ -273,6 +276,7 @@ def build_opus(platform: str, threads: int, env: dict | None = None):
                 "./configure",
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
+                "--enable-pic",
             ],
         ),
         threads=threads,
@@ -301,6 +305,7 @@ def build_ogg(platform: str, threads: int, env: dict | None = None):
                 "./configure",
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
+                "--enable-pic",
             ],
         ),
         threads=threads,
@@ -343,6 +348,7 @@ def build_vorbis(platform: str, threads: int, env: dict | None = None):
                 "./configure",
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
+                "--enable-pic",
             ],
         ),
         threads=threads,
@@ -372,6 +378,7 @@ def build_mp3lame(platform: str, threads: int, env: dict | None = None):
             "--enable-nasm",
             "--disable-decoder",
             "--disable-frontend",
+            "--with-pic=yes",
         ],
         threads=threads,
         env=env,

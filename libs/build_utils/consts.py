@@ -33,7 +33,7 @@ AOM_GIT_OPTIONS: dict[str, Any] = {}
 SVT_AV1_REPO = "https://gitlab.com/AOMediaCodec/SVT-AV1.git"
 SVT_AV1_SOURCE_DIR = Path("svtav1_src").absolute()
 SVT_AV1_INSTALL_DIR_NAME = "svtav1"
-SVT_AV1_BUILD_DIR = SVT_AV1_SOURCE_DIR / "build"
+SVT_AV1_BUILD_DIR = SVT_AV1_SOURCE_DIR / "Build"
 SVT_AV1_GIT_OPTIONS: dict[str, Any] = {"--branch": "v2.3.0"}
 
 VPX_REPO = "https://chromium.googlesource.com/webm/libvpx"
