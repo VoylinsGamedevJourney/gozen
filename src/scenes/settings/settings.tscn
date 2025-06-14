@@ -25,7 +25,6 @@ delete_empty_modifier_button = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/
 check_version = NodePath("Panel/Margin/VBox/Scroll/SettingsPanel/Margin/SettingsVBox/ExtrasGrid/CheckVersionCheckButton")
 
 [node name="Panel" type="PanelContainer" parent="."]
-visible = false
 custom_minimum_size = Vector2(700, 350)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -316,6 +315,7 @@ theme_type_variation = &"main_button"
 text = "button_save_settings"
 
 [node name="Panel2" type="PanelContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(900, 700)
 layout_mode = 2
 size_flags_horizontal = 4

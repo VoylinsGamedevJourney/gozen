@@ -1,11 +1,9 @@
-class_name FilesList
+class_name FilesPanelTypes
 extends PanelContainer
 
 
 const NICKNAME_SIZE: int = 14
 
-
-static var instance: FilesList
 
 # Order is the same as the ENUM of File.TYPE: Image, Audio, Video, Text/Title
 @export var buttons_container: HBoxContainer
@@ -22,10 +20,10 @@ var modified_files_check_running: bool = false
 
 
 func _ready() -> void:
-	instance = self
 	Toolbox.connect_func(get_window().focus_entered, _modified_files_check)
 	Toolbox.connect_func(Project.file_added, _add_file_to_list)
 	Toolbox.connect_func(Thumbnailer.thumb_generated, _update_thumb)
+	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 	for child: Node in buttons_container.get_children():
 		if child is Button:

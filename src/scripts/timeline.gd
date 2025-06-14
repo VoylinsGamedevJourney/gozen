@@ -44,6 +44,7 @@ func _ready() -> void:
 	Toolbox.connect_func(EditorCore.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
 	Toolbox.connect_func(Project.file_deleted, _check_clips)
+	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 
 func _process(_delta: float) -> void:
@@ -135,6 +136,7 @@ func _set_zoom(new_zoom: float) -> void:
 
 	# We need to await to get the correct get_local_mouse_position
 	await RenderingServer.frame_post_draw
+
 	var prev_mouse_x: float = main_control.get_local_mouse_position().x
 	var prev_scroll: int = scroll_main.scroll_horizontal
 	var prev_mouse_frame: int = get_frame_id(prev_mouse_x)

@@ -53,8 +53,6 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	EditorCore._setup_playback()
 	EditorCore._setup_audio_players()
 	EditorCore.set_frame(data.playhead_position)
-	FilesList.instance._on_project_loaded()
-	Timeline.instance._on_project_loaded()
 
 	new_project_overlay.update_progress(98, "status_project_finalizing")
 
@@ -129,14 +127,6 @@ func open(project_path: String) -> void:
 	EditorCore._setup_playback()
 	EditorCore._setup_audio_players()
 	EditorCore.set_frame(data.playhead_position)
-
-	# 85% = Playback is ready, preparing file list.
-	loading_overlay.update_progress(85, "status_project_file_list_setup")
-	FilesList.instance._on_project_loaded()
-
-	# 95% = Last part for loading timeline.
-	loading_overlay.update_progress(95, "status_project_loading_clips")
-	Timeline.instance._on_project_loaded()
 
 	# 99% = Finalizing.
 	loading_overlay.update_progress(99, "status_project_finalizing")
