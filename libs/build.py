@@ -15,8 +15,9 @@ options:
   --default      use default parameters
 
 environment variables:
-  GOZEN_MSYS2_DIR   path to the MSYS2 directory where MSYS2 is installed (default: C:\\msys64)
-  GOZEN_GIT_PATH    path to the git executable (default: git)
+  GOZEN_MSYS2_DIR       path to the MSYS2 directory where MSYS2 is installed (default: C:\\msys64)
+  GOZEN_GIT_PATH        path to the git executable (default: git)
+  GOZEN_CROSS_SYSROOT   root of the cross-build tree, used when cross compiling (default: linux: /usr/x86_64-w64-mingw32/sys-root/mingw, windows: ${GOZEN_MSYS2_DIR}/ucrt64)
 
 environment variable usage:
   windows       set GOZEN_MSYS2_DIR=C:\\msys64 && python3 build.py
@@ -24,9 +25,9 @@ environment variable usage:
 """
 
 import os
-import platform as os_platform
 import subprocess
 import sys
+import datetime
 from enum import IntEnum
 
 from build_utils import build_ffmpeg, utils
@@ -182,7 +183,14 @@ def main() -> ExitCode:
                 cwd="./",
             )
 
-    target_platform = os_platform.system().lower()
+    target_platform = (
+        "windows"
+        if utils.CURR_PLATFORM == "windows"
+        else _print_options(
+            "Choose target platform",
+            ["linux", "windows"],
+        )
+    )
     if target_platform not in ["linux", "windows"]:
         print(f"Unsupported platform ({target_platform})")
         return ExitCode.UNSUPPORTED_PLATFORM
@@ -211,9 +219,11 @@ def main() -> ExitCode:
 
         if missing_packages:
             print("Installing necessary MSYS2 dependencies ...")
-            
+
             if utils.is_current_msys2():
-                input("The terminal will automatically close after update.\nPress Enter to continue...")
+                input(
+                    "The terminal will automatically close after update.\nPress Enter to continue..."
+                )
 
             install_success = utils.install_msys2_required_deps(missing_packages)
 

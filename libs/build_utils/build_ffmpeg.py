@@ -38,7 +38,7 @@ from .consts import (
 from .download_deps import download_ffmpeg_deps
 from .utils import (
     CURR_PLATFORM,
-    MSYS2_DIR,
+    CROSS_SYSROOT,
     clear_dir,
     convert_to_msys2_path,
     run_command,
@@ -71,46 +71,31 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
 
     env: dict[str, str] = {} if CURR_PLATFORM == "windows" else dict(os.environ)
 
-    if platform == "windows" and CURR_PLATFORM != "windows":
-        env["CC"] = "x86_64-w64-mingw32-gcc"
-        env["CXX"] = "x86_64-w64-mingw32-g++"
-        env["AR"] = "x86_64-w64-mingw32-ar"
-        env["RANLIB"] = "x86_64-w64-mingw32-ranlib"
-        env["STRIP"] = "x86_64-w64-mingw32-strip"
-        env["PKG_CONFIG"] = "x86_64-w64-mingw32-pkg-config"
+    print("Downloading FFmpeg dependencies...")
+    download_ffmpeg_deps()
+
+    print("Building FFmpeg dependencies...")
+    build_x264(platform, threads, env)
+    build_x265(platform, threads, env)
+    build_aom(platform, threads, env)
+    build_svt_av1(platform, threads, env)
+    build_vpx(platform, threads, env)
+    build_opus(platform, threads, env)
+    build_mp3lame(platform, threads, env)
+    build_ogg(platform, threads, env)
+    build_vorbis(platform, threads, env)
 
     if platform == "linux":
-        print("Downloading FFmpeg dependencies...")
-        download_ffmpeg_deps()
-
-        print("Building FFmpeg dependencies...")
-        build_x264(platform, threads, env)
-        build_x265(platform, threads, env)
-        build_aom(platform, threads, env)
-        build_svt_av1(platform, threads, env)
-        build_vpx(platform, threads, env)
-        build_opus(platform, threads, env)
-        build_mp3lame(platform, threads, env)
-        build_ogg(platform, threads, env)
-        build_vorbis(platform, threads, env)
         build_ffmpeg_linux(arch, threads, env)
         copy_lib_files_linux(arch)
-    elif platform == "windows":
-        print("Downloading FFmpeg dependencies...")
-        download_ffmpeg_deps()
+        return
 
-        print("Building FFmpeg dependencies...")
-        build_x264(platform, threads, env)
-        build_x265(platform, threads, env)
-        build_aom(platform, threads, env)
-        build_svt_av1(platform, threads, env)
-        build_vpx(platform, threads, env)
-        build_opus(platform, threads, env)
-        build_mp3lame(platform, threads, env)
-        build_ogg(platform, threads, env)
-        build_vorbis(platform, threads, env)
+    if platform == "windows":
         build_ffmpeg_windows(arch, threads, env)
         copy_lib_files_windows(arch)
+        return
+    
+    raise ValueError(f"Platform not supported for compiling ffmpeg: {platform}")
 
 
 def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
@@ -229,7 +214,7 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
             else ""
         )
     else:
-        # In msys2, os.environ.get("PKG_CONFIG_PATH") will return ';' separated windows style paths
+        # In msys2, os.environ.get("PKG_CONFIG_PATH") will return ';' separated windows style paths (we don't want that)
         # Also, $PKG_CONFIG_PATH will NOT exist if running in cmd or powershell, so we cannot get it from os.environ
         env["PKG_CONFIG_PATH"] += (
             ":" + "$PKG_CONFIG_PATH"  # will expand automatically in use_msys2=True mode
@@ -264,7 +249,12 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
     cmd += FFMPEG_DISABLED_MODULES
 
     if CURR_PLATFORM != "windows":
-        cmd += ["--enable-cross-compile", "--cross-prefix=x86_64-w64-mingw32-"]
+        cmd += [
+            "--enable-cross-compile",
+            "--cross-prefix=x86_64-w64-mingw32-",
+            "--pkg-config=pkg-config",  # `x86_64-w64-mingw32-pkg-config` prepends `/usr/x86_64-w64-mingw32/sys-root/mingw/` to all paths
+            "--extra-cflags=-DWINICONV_CONST",  # see: https://github.com/win-iconv/win-iconv/issues/25
+        ]
 
     build_lib(
         "FFmpeg",
@@ -272,11 +262,11 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
         configure_cmd=cmd,
         threads=threads,
         env=env,
-        use_msys2=True,
+        use_msys2=CURR_PLATFORM == "windows",
     )
 
 
-def copy_lib_files_linux(arch):
+def copy_lib_files_linux(arch: str):
     path = f"bin/linux_{arch}"
     os.makedirs(path, exist_ok=True)
 
@@ -288,7 +278,7 @@ def copy_lib_files_linux(arch):
 
     print("Finding and copying required system .so dependencies ...", flush=True)
 
-    def copy_dependencies(binary_path):
+    def copy_dependencies(binary_path: str):
         try:
             output = subprocess.check_output(["ldd", binary_path], text=True)
             for line in output.splitlines():
@@ -346,19 +336,19 @@ def copy_lib_files_linux(arch):
     print("Copying files for Linux finished!", flush=True)
 
 
-def copy_lib_files_windows(arch):
+def copy_lib_files_windows(arch: str):
     path = f"bin/windows_{arch}"
-    os.makedirs(path, exist_ok=True)
-
-    print(f"Copying lib files to {path} ...")
-
+    dll_dir = CROSS_SYSROOT / "bin"
     extra_libs = [
         "libwinpthread-1.dll",
         "libgcc_s_seh-1.dll",
     ]
 
+    print(f"Copying lib files to {path} ...")
+    os.makedirs(path, exist_ok=True)
+
     for file in glob.glob("ffmpeg/bin_windows/bin/*.dll") + [
-        f"{MSYS2_DIR}/ucrt64/bin/{dll}" for dll in extra_libs
+        dll_dir / dll for dll in extra_libs
     ]:
         shutil.copy2(file, path)
 

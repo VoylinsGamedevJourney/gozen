@@ -33,13 +33,13 @@ MSYS2_REQUIRED_PACKAGES = [
 ]
 
 
-_old_cwd: str = ''
+_old_cwd: str = ""
 
 
 def run_command(
     command: list[str],
     cwd: str | os.PathLike | None = None,
-    env: dict | None = None,
+    env: dict[str, str] | None = None,
     check: bool = False,
     shell: bool = False,
     use_msys2: bool = False,
@@ -76,9 +76,9 @@ def run_command(
     The rest of the parameters are the same as `subprocess.run()`.
     """
     global _old_cwd
-    if _old_cwd != str(cwd or ''):
+    if _old_cwd != str(cwd or ""):
         print(f"$ cd {cwd}")
-        _old_cwd = str(cwd or '')
+        _old_cwd = str(cwd or "")
 
     print(f"$ {' '.join(command)}", flush=True)
 
@@ -255,6 +255,17 @@ GIT_PATH: str = os.environ.get("GOZEN_GIT_PATH") or (
     if find_program("git") or CURR_PLATFORM != "windows"
     else f"{HOMEDRIVE}\\Program Files\\Git\\cmd\\git.exe"
 )
+CROSS_SYSROOT: Path = Path(
+    os.environ.get("GOZEN_CROSS_SYSROOT")
+    or (
+        MSYS2_DIR / "ucrt64"
+        if CURR_PLATFORM == "windows"
+        else Path("/") / "usr" / "x86_64-w64-mingw32" / "sys-root" / "mingw"
+    )
+)
+# Cross prefix is only used when cross compiling
+# some deps seem to not support this, so this is not made configurable
+CROSS_PREFIX: str = "x86_64-w64-mingw32-"
 
 # Other Constants
 MSYS2_SHELL: list[str] = [

@@ -25,7 +25,13 @@ from .consts import (
     X265_SOURCE_DIR,
     get_ffmpeg_install_dir,
 )
-from .utils import CURR_PLATFORM, clear_dir, convert_to_msys2_path, run_command
+from .utils import (
+    CROSS_PREFIX,
+    CURR_PLATFORM,
+    clear_dir,
+    convert_to_msys2_path,
+    run_command,
+)
 
 
 def build_lib(
@@ -34,7 +40,7 @@ def build_lib(
     configure_cmd: list[str] | Sequence[list[str]],
     compile_cmd: Optional[list[str] | Sequence[list[str]]] = None,
     threads: int = 4,
-    env: Optional[dict] = None,
+    env: Optional[dict[str, str]] = None,
     use_msys2: bool = False,
 ) -> None:
     """Builds a library.
@@ -111,6 +117,7 @@ def build_x264(platform: str, threads: int, env: dict[str, str] | None = None):
         )
     install_dir = get_ffmpeg_install_dir(platform) / X264_INSTALL_DIR_NAME
     clear_dir(install_dir)
+
     build_lib(
         "x264",
         os.path.abspath(X264_SOURCE_DIR),
@@ -126,7 +133,7 @@ def build_x264(platform: str, threads: int, env: dict[str, str] | None = None):
         + (
             [
                 "--host=x86_64-w64-mingw32",
-                "--cross-prefix=x86_64-w64-mingw32-",
+                f"--cross-prefix={CROSS_PREFIX}",
             ]
             if platform == "windows" and CURR_PLATFORM != "windows"
             else []
@@ -137,7 +144,7 @@ def build_x264(platform: str, threads: int, env: dict[str, str] | None = None):
     )
 
 
-def build_x265(platform: str, threads: int, env: dict | None = None):
+def build_x265(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / X265_INSTALL_DIR_NAME
     source_dir = X265_SOURCE_DIR / "source"
 
@@ -155,11 +162,25 @@ def build_x265(platform: str, threads: int, env: dict | None = None):
         configure_cmd=[
             "cmake",
             "-G=Ninja",
+            "--fresh",
             f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
             "-DENABLE_SHARED=OFF",
             "-DENABLE_PIC=ON",
             f"{convert_to_msys2_path(source_dir)}",
-        ],
+        ]
+        + (
+            [
+                "-DCMAKE_SYSTEM_NAME=Windows",
+                "-DCMAKE_SYSTEM_PROCESSOR=x86_64",
+                f"-DCMAKE_C_COMPILER={CROSS_PREFIX}gcc",
+                f"-DCMAKE_CXX_COMPILER={CROSS_PREFIX}g++",
+                f"-DCMAKE_C_COMPILER_AR={CROSS_PREFIX}gcc-ar",
+                f"-DCMAKE_CXX_COMPILER_AR={CROSS_PREFIX}gcc-ar",
+                f"-DCMAKE_RC_COMPILER={CROSS_PREFIX}windres",
+            ]
+            if platform == "windows" and CURR_PLATFORM != platform
+            else []
+        ),
         compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
         threads=threads,
         env=env,
@@ -167,7 +188,7 @@ def build_x265(platform: str, threads: int, env: dict | None = None):
     )
 
 
-def build_aom(platform: str, threads: int, env: dict | None = None):
+def build_aom(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / AOM_INSTALL_DIR_NAME
 
     if AOM_BUILD_DIR.exists():
@@ -185,11 +206,26 @@ def build_aom(platform: str, threads: int, env: dict | None = None):
         configure_cmd=[
             "cmake",
             "-G=Ninja",
+            "--fresh",
             f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
             "-DENABLE_TESTS=OFF",
             "-DCONFIG_PIC=1",
             f"{convert_to_msys2_path(AOM_SOURCE_DIR)}",
-        ],
+        ]
+        + (
+            [
+                "-DCMAKE_TOOLCHAIN_FILE="
+                + convert_to_msys2_path(
+                    AOM_SOURCE_DIR
+                    / "build"
+                    / "cmake"
+                    / "toolchains"
+                    / "x86_64-mingw-gcc.cmake"
+                )
+            ]
+            if platform == "windows" and CURR_PLATFORM != platform
+            else []
+        ),
         compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
         threads=threads,
         env=env,
@@ -197,7 +233,7 @@ def build_aom(platform: str, threads: int, env: dict | None = None):
     )
 
 
-def build_svt_av1(platform: str, threads: int, env: dict | None = None):
+def build_svt_av1(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / SVT_AV1_INSTALL_DIR_NAME
 
     if SVT_AV1_BUILD_DIR.exists():
@@ -214,12 +250,27 @@ def build_svt_av1(platform: str, threads: int, env: dict | None = None):
         configure_cmd=[
             "cmake",
             "-G=Ninja",
+            "--fresh",
             f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DBUILD_SHARED_LIBS=OFF",
+            "-DBUILD_APPS=OFF",
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
             f"{convert_to_msys2_path(SVT_AV1_SOURCE_DIR)}",
-        ],
+        ]
+        + (
+            [
+                "-DCMAKE_SYSTEM_NAME=Windows",
+                "-DCMAKE_SYSTEM_PROCESSOR=x86_64",
+                f"-DCMAKE_C_COMPILER={CROSS_PREFIX}gcc",
+                f"-DCMAKE_CXX_COMPILER={CROSS_PREFIX}g++",
+                f"-DCMAKE_C_COMPILER_AR={CROSS_PREFIX}gcc-ar",
+                f"-DCMAKE_CXX_COMPILER_AR={CROSS_PREFIX}gcc-ar",
+                f"-DCMAKE_RC_COMPILER={CROSS_PREFIX}windres",
+            ]
+            if platform == "windows" and CURR_PLATFORM != platform
+            else []
+        ),
         compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
         threads=threads,
         env=env,
@@ -227,7 +278,7 @@ def build_svt_av1(platform: str, threads: int, env: dict | None = None):
     )
 
 
-def build_vpx(platform: str, threads: int, env: dict | None = None):
+def build_vpx(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / VPX_INSTALL_DIR_NAME
 
     if VPX_SOURCE_DIR.exists():
@@ -238,6 +289,10 @@ def build_vpx(platform: str, threads: int, env: dict | None = None):
         )
     clear_dir(install_dir)
 
+    env = env or {}
+    if platform != CURR_PLATFORM:
+        env["CROSS"] = CROSS_PREFIX
+
     build_lib(
         "VPX",
         VPX_SOURCE_DIR,
@@ -247,16 +302,21 @@ def build_vpx(platform: str, threads: int, env: dict | None = None):
             "--disable-examples",
             "--disable-unit-tests",
             "--enable-vp9-highbitdepth",
-            "--as=yasm",
+            "--disable-docs",
             "--enable-pic",
-        ],
+        ]
+        + (
+            ["--target=x86_64-win64-gcc"]
+            if platform == "windows" and CURR_PLATFORM != platform
+            else []
+        ),
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",
     )
 
 
-def build_opus(platform: str, threads: int, env: dict | None = None):
+def build_opus(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / OPUS_INSTALL_DIR_NAME
 
     if OPUS_SOURCE_DIR.exists():
@@ -277,7 +337,13 @@ def build_opus(platform: str, threads: int, env: dict | None = None):
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ],
+                "--disable-doc",
+            ]
+            + (
+                ["--host=x86_64-w64-mingw32"]
+                if platform == "windows" and CURR_PLATFORM != platform
+                else []
+            ),
         ),
         threads=threads,
         env=env,
@@ -285,7 +351,7 @@ def build_opus(platform: str, threads: int, env: dict | None = None):
     )
 
 
-def build_ogg(platform: str, threads: int, env: dict | None = None):
+def build_ogg(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / OGG_INSTALL_DIR_NAME
 
     if OGG_SOURCE_DIR.exists():
@@ -306,7 +372,12 @@ def build_ogg(platform: str, threads: int, env: dict | None = None):
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ],
+            ]
+            + (
+                ["--host=x86_64-w64-mingw32"]
+                if platform == "windows" and CURR_PLATFORM != platform
+                else []
+            ),
         ),
         threads=threads,
         env=env,
@@ -314,7 +385,7 @@ def build_ogg(platform: str, threads: int, env: dict | None = None):
     )
 
 
-def build_vorbis(platform: str, threads: int, env: dict | None = None):
+def build_vorbis(platform: str, threads: int, env: dict):
     install_dir = get_ffmpeg_install_dir(platform) / VORBIS_INSTALL_DIR_NAME
 
     if VORBIS_SOURCE_DIR.exists():
@@ -325,10 +396,9 @@ def build_vorbis(platform: str, threads: int, env: dict | None = None):
         )
     clear_dir(install_dir)
 
-    env = env or {}
     pc_path = (
         os.environ.get("PKG_CONFIG_PATH", "")
-        if platform != "windows"
+        if CURR_PLATFORM != "windows"
         else "$PKG_CONFIG_PATH"  # will expand automatically in use_msys2=True mode
     )
 
@@ -338,6 +408,10 @@ def build_vorbis(platform: str, threads: int, env: dict | None = None):
     env["PKG_CONFIG_PATH"] = convert_to_msys2_path(ogg_pkgconfig_dir) + (
         (":" + pc_path) if pc_path else ""
     )
+    if platform == "windows" and CURR_PLATFORM != platform:
+        env["PKG_CONFIG"] = (
+            "pkg-config"  # `x86_64-w64-mingw32-pkg-config` prepends `/usr/x86_64-w64-mingw32/sys-root/mingw/` to all paths
+        )
 
     build_lib(
         "vorbis",
@@ -349,7 +423,14 @@ def build_vorbis(platform: str, threads: int, env: dict | None = None):
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ],
+            ]
+            + (
+                [
+                    "--host=x86_64-w64-mingw32",
+                ]
+                if platform == "windows" and CURR_PLATFORM != platform
+                else []
+            ),
         ),
         threads=threads,
         env=env,
@@ -357,7 +438,7 @@ def build_vorbis(platform: str, threads: int, env: dict | None = None):
     )
 
 
-def build_mp3lame(platform: str, threads: int, env: dict | None = None):
+def build_mp3lame(platform: str, threads: int, env: dict[str, str] | None = None):
     install_dir = get_ffmpeg_install_dir(platform) / MP3LAME_INSTALL_DIR_NAME
 
     if MP3LAME_SOURCE_DIR.exists():
@@ -379,7 +460,12 @@ def build_mp3lame(platform: str, threads: int, env: dict | None = None):
             "--disable-decoder",
             "--disable-frontend",
             "--with-pic=yes",
-        ],
+        ]
+        + (
+            ["--host=x86_64-w64-mingw32"]
+            if platform == "windows" and CURR_PLATFORM != platform
+            else []
+        ),
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",
