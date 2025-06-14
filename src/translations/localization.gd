@@ -19,5 +19,6 @@ static var native_country_names: Dictionary = {
 	"FR": "France",
 	"ES": "España",
 	"PK": "پاکستان",
+	"TW": "台灣",
 }
 
