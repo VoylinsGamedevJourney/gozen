@@ -35,7 +35,6 @@ var skips: int = 0
 
 
 
-
 func _process(delta: float) -> void:
 	if !is_playing:
 		return
@@ -153,7 +152,11 @@ func _get_next_clip(new_frame_nr: int, track: int) -> int:
 func _check_clip_end(new_frame_nr: int, id: int) -> bool:
 	var clip: ClipData = Project.get_clip(id)
 
-	return false if !clip else new_frame_nr <= (clip.get_end_frame() + 1)
+	if !clip:
+		print("clip false")
+		return false
+	else:
+		return new_frame_nr <= clip.get_end_frame()
 
 
 # Audio stuff  ----------------------------------------------------------------
@@ -298,7 +301,7 @@ func _check_clip(id: int, new_frame_nr: int) -> bool:
 	if loaded_clips[id].start_frame > new_frame_nr:
 		return false
 
-	if frame_nr > loaded_clips[id].start_frame + loaded_clips[id].duration:
+	if frame_nr > loaded_clips[id].get_end_frame():
 		return false
 
 	return true
