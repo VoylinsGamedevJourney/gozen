@@ -54,6 +54,18 @@ msgstr "Erste Schritte"
 msgid "title_new_project"
 msgstr "Neues Projekt"
 
+#, fuzzy
+msgid "title_loading_project"
+msgstr "Neues Projekt"
+
+#, fuzzy
+msgid "title_files_dropped"
+msgstr "Neues Projekt"
+
+#, fuzzy
+msgid "title_sponsors"
+msgstr "Extras"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Neues Projekt mit gewählten Einstellungen erstellen"
 
@@ -71,6 +83,14 @@ msgstr "Discord Server"
 
 msgid "button_support_gozen"
 msgstr "GoZen unterstützen"
+
+#, fuzzy
+msgid "button_view_sponsors"
+msgstr "Einstellungen speichern"
+
+#, fuzzy
+msgid "button_become_sponsor"
+msgstr "Schließen"
 
 msgid "button_open_project"
 msgstr "Projekt öffnen"
@@ -195,13 +215,20 @@ msgid "setting_delete_empty_space_mod"
 msgstr "Leere Bereiche Entfernen Modifikator"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "Doppelklicken auf leere Bereiche in der Timeline entfernt diese und verschiebt alle nachfolgenden Clips. Wenn ein Modifikator festgelegt ist, muss dieser zusätzlich gedrückt werden, damit der Doppelklick den leeren Bereich zwischen den Clips entfernt."
+msgstr ""
+"Doppelklicken auf leere Bereiche in der Timeline entfernt diese und "
+"verschiebt alle nachfolgenden Clips. Wenn ein Modifikator festgelegt ist, "
+"muss dieser zusätzlich gedrückt werden, damit der Doppelklick den leeren "
+"Bereich zwischen den Clips entfernt."
 
 msgid "setting_check_version"
 msgstr "Version Prüfen"
 
 msgid "setting_tooltip_check_version"
-msgstr "Dies erfordert eine Verbindung zum Internet, da das GitHub Repository überprüft wird. Da manche Nutzer keine Onlineverbindung wünschen, ist diese Funktion standardmäßig deaktiviert."
+msgstr ""
+"Dies erfordert eine Verbindung zum Internet, da das GitHub Repository "
+"überprüft wird. Da manche Nutzer keine Onlineverbindung wünschen, ist diese "
+"Funktion standardmäßig deaktiviert."
 
 msgid "renderer_progress_text_setup"
 msgstr "Renderer Einrichten ..."
@@ -246,19 +273,30 @@ msgid "render_option_quality"
 msgstr "Qualität"
 
 msgid "render_option_tooltip_quality"
-msgstr "CRF (Constant Rate Factor) anpassen. Die niedrigste Qualitätseinstellung ist 50 und die höchste ist 15. Der Standardwert ist 18. Wird zur Anpassung der Bitrate verwendet, was sich auf die Qualität und Dateigröße auswirkt. Der Wert 0 gibt die beste, 51 die schlechteste Qualität. 18 bietet in der Regel eine visuell kaum wahrnehmbare Komprimierung."
+msgstr ""
+"CRF (Constant Rate Factor) anpassen. Die niedrigste Qualitätseinstellung ist "
+"50 und die höchste ist 15. Der Standardwert ist 18. Wird zur Anpassung der "
+"Bitrate verwendet, was sich auf die Qualität und Dateigröße auswirkt. Der "
+"Wert 0 gibt die beste, 51 die schlechteste Qualität. 18 bietet in der Regel "
+"eine visuell kaum wahrnehmbare Komprimierung."
 
 msgid "render_option_speed"
 msgstr "Geschwindigkeit"
 
 msgid "render_option_tooltip_speed"
-msgstr "Geschwindigkeit für H264 Encoding anpassen. Ein zu hoher Wert kann sich negativ auf die finale Video Qualität auswirken."
+msgstr ""
+"Geschwindigkeit für H264 Encoding anpassen. Ein zu hoher Wert kann sich "
+"negativ auf die finale Video Qualität auswirken."
 
 msgid "render_option_gop_size"
 msgstr "GOP Größe"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "Bildergruppe (GOP). Ein höherer Wert ist besser für Kompression im Vergleich zu einem niedrigeren Wert. Allerdings wird das Video dadurch beim Suchen und Durchscrubben ungenauer. Niedrigeren Wert verwenden, wenn das Video später noch bearbeitet werden soll."
+msgstr ""
+"Bildergruppe (GOP). Ein höherer Wert ist besser für Kompression im Vergleich "
+"zu einem niedrigeren Wert. Allerdings wird das Video dadurch beim Suchen und "
+"Durchscrubben ungenauer. Niedrigeren Wert verwenden, wenn das Video später "
+"noch bearbeitet werden soll."
 
 msgid "render_option_threads_cores"
 msgstr "Threads/Kerne"
@@ -286,3 +324,32 @@ msgstr "Renderdauer"
 
 msgid "notification_update_available"
 msgstr "Update verfügbar!"
+
+msgid "status_project_loading_init"
+msgstr ""
+
+msgid "status_project_preparing_timeline"
+msgstr ""
+
+msgid "status_project_loading_files"
+msgstr ""
+
+msgid "status_project_playback_setup"
+msgstr ""
+
+msgid "status_project_finalizing"
+msgstr ""
+
+#, fuzzy
+msgid "status_new_project_init"
+msgstr "Neues Projekt"
+
+#, fuzzy
+msgid "command_editor_settings"
+msgstr "Editor Einstellungen"
+
+msgid "command_project_settings"
+msgstr ""
+
+msgid "command_render_menu"
+msgstr ""

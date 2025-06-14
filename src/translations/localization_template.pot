@@ -399,14 +399,17 @@ msgstr ""
 msgid "status_project_playback_setup"
 msgstr ""
 
-msgid "status_project_file_list_setup"
-msgstr ""
-
-msgid "status_project_loading_clips"
-msgstr ""
-
 msgid "status_project_finalizing"
 msgstr ""
 
 msgid "status_new_project_init"
+msgstr ""
+
+msgid "command_editor_settings"
+msgstr ""
+
+msgid "command_project_settings"
+msgstr ""
+
+msgid "command_render_menu"
 msgstr ""

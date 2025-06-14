@@ -7,9 +7,9 @@ const MAX_COMMANDS: int = 5
 
 static var instance: CommandBar
 static var commands: Dictionary[String, Callable] = {
-	"Editor settings": open_editor_settings,
-	"Project settings": open_project_settings,
-	"Render menu": open_render_menu
+	"command_editor_settings": open_editor_settings,
+	"command_project_settings": open_project_settings,
+	"command_render_menu": open_render_menu
 }
 
 
@@ -32,7 +32,7 @@ func _ready() -> void:
 	for command: String in command_keys:
 		var button: Button = Button.new()
 		
-		button.text = command
+		button.text = tr(command)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		Toolbox.connect_func(button.pressed, commands[command])

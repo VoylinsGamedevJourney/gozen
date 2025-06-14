@@ -57,6 +57,9 @@ msgstr "Nieuw project"
 msgid "title_loading_project"
 msgstr "Project laden"
 
+msgid "title_files_dropped"
+msgstr "Bestanden toegevoegd"
+
 msgid "title_sponsors"
 msgstr "Sponsors"
 
@@ -75,14 +78,14 @@ msgstr "Tutorials"
 msgid "button_discord_server"
 msgstr "Discord server"
 
+msgid "button_support_gozen"
+msgstr "Steun GoZen"
+
 msgid "button_view_sponsors"
 msgstr "Sponsors"
 
 msgid "button_become_sponsor"
 msgstr "Word een sponsor"
-
-msgid "button_support_gozen"
-msgstr "Steun GoZen"
 
 msgid "button_open_project"
 msgstr "Project openen"
@@ -330,11 +333,17 @@ msgstr "Media laden ..."
 msgid "status_project_playback_setup"
 msgstr "Video afspelen voorbereiden ..."
 
-msgid "status_project_file_list_setup"
-msgstr "Media lijst laden ..."
-
-msgid "status_project_loading_clips"
-msgstr "Clips laden ..."
-
 msgid "status_project_finalizing"
 msgstr "Afronden ..."
+
+msgid "status_new_project_init"
+msgstr "Nieuw project aanmaken ..."
+
+msgid "command_editor_settings"
+msgstr "Editor instellingen"
+
+msgid "command_project_settings"
+msgstr "Project instellingen"
+
+msgid "command_render_menu"
+msgstr "Render menu"

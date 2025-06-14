@@ -24,6 +24,10 @@ msgstr "ڈیفالٹس"
 msgid "title_timeline"
 msgstr "ٹائم لائن"
 
+#, fuzzy
+msgid "title_extras"
+msgstr "ڈیفالٹس"
+
 msgid "title_rendering"
 msgstr "رینڈرنگ"
 
@@ -51,6 +55,17 @@ msgstr "شروعات کریں"
 msgid "title_new_project"
 msgstr "نیا پروجیکت"
 
+#, fuzzy
+msgid "title_loading_project"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "title_files_dropped"
+msgstr "نیا پروجیکت"
+
+msgid "title_sponsors"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr "چنی گئ ترتیبات سے نیا پروجیکٹ بنائں."
 
@@ -68,6 +83,14 @@ msgstr "دسکورڈ سرور"
 
 msgid "button_support_gozen"
 msgstr "گوزن کا ساتھ دیں"
+
+#, fuzzy
+msgid "button_view_sponsors"
+msgstr "ترتیبات سیو کریں"
+
+#, fuzzy
+msgid "button_become_sponsor"
+msgstr "بند کریں"
 
 msgid "button_open_project"
 msgstr "پروجیکٹ کھولیں"
@@ -199,6 +222,16 @@ msgstr ""
 "منتقل ہو جاتا ہے۔ ایک موڈیفائر سیٹ کرنے سے آپ کو مخصوص کی کو دبانا پڑے گا "
 "تاکہ ڈبل کلک کے ذریعے کلپس کے درمیان خالی جگہ حذف کی جا سکے."
 
+#, fuzzy
+msgid "setting_check_version"
+msgstr "تھیم"
+
+#, fuzzy
+msgid "setting_tooltip_check_version"
+msgstr ""
+"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
+"کریں."
+
 msgid "renderer_progress_text_setup"
 msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
 
@@ -287,3 +320,35 @@ msgstr "وڈیو کی لمبائ"
 
 msgid "render_option_render_time"
 msgstr "رینڈر کا وقت"
+
+msgid "notification_update_available"
+msgstr ""
+
+msgid "status_project_loading_init"
+msgstr ""
+
+msgid "status_project_preparing_timeline"
+msgstr ""
+
+msgid "status_project_loading_files"
+msgstr ""
+
+msgid "status_project_playback_setup"
+msgstr ""
+
+msgid "status_project_finalizing"
+msgstr ""
+
+#, fuzzy
+msgid "status_new_project_init"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "command_editor_settings"
+msgstr "ایڈیٹر کی ترتیبات."
+
+msgid "command_project_settings"
+msgstr ""
+
+msgid "command_render_menu"
+msgstr ""

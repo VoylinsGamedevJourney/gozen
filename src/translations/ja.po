@@ -57,6 +57,9 @@ msgstr "新しいプロジェクト"
 msgid "title_loading_project"
 msgstr "プロジェクトを読み込み中"
 
+msgid "title_files_dropped"
+msgstr "ファイル追加"
+
 msgid "title_sponsors"
 msgstr "スポンサー"
 
@@ -76,14 +79,14 @@ msgstr "チュートリアル"
 msgid "button_discord_server"
 msgstr "Discordサーバー"
 
+msgid "button_support_gozen"
+msgstr "GoZenをサポートする"
+
 msgid "button_view_sponsors"
 msgstr "スポンサーを見る"
 
 msgid "button_become_sponsor"
 msgstr "スポンサーになる"
-
-msgid "button_support_gozen"
-msgstr "GoZenをサポートする"
 
 msgid "button_open_project"
 msgstr "プロジェクトを開く"
@@ -341,11 +344,17 @@ msgstr "ファイルを読み込み中..."
 msgid "status_project_playback_setup"
 msgstr "再生を設定中..."
 
-msgid "status_project_file_list_setup"
-msgstr "ファイルリストを設定中..."
-
-msgid "status_project_loading_clips"
-msgstr "タイムラインのクリップを読み込み中..."
-
 msgid "status_project_finalizing"
 msgstr "最終処理中..."
+
+msgid "status_new_project_init"
+msgstr "新しいプロジェクトを作成しています..."
+
+msgid "command_editor_settings"
+msgstr "エディター設定"
+
+msgid "command_project_settings"
+msgstr "プロジェクト設定"
+
+msgid "command_render_menu"
+msgstr "レンダリングメニュー"

@@ -24,6 +24,10 @@ msgstr "Par défaut"
 msgid "title_timeline"
 msgstr "Timeline"
 
+#, fuzzy
+msgid "title_extras"
+msgstr "Par défaut"
+
 msgid "title_rendering"
 msgstr "Rendu"
 
@@ -51,6 +55,17 @@ msgstr "Démarrer"
 msgid "title_new_project"
 msgstr "Nouveau projet"
 
+#, fuzzy
+msgid "title_loading_project"
+msgstr "Nouveau projet"
+
+#, fuzzy
+msgid "title_files_dropped"
+msgstr "Nouveau projet"
+
+msgid "title_sponsors"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr "Créer un nouveau projet avec les réglages sélectionnés."
 
@@ -68,6 +83,14 @@ msgstr "Serveur Discord"
 
 msgid "button_support_gozen"
 msgstr "Aider GoZen"
+
+#, fuzzy
+msgid "button_view_sponsors"
+msgstr "Sauvegarder les réglages"
+
+#, fuzzy
+msgid "button_become_sponsor"
+msgstr "Fermer"
 
 msgid "button_open_project"
 msgstr "Ouvrir un projet"
@@ -194,14 +217,24 @@ msgstr "Modificateur de suppression d'espace vide"
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr ""
 "Double-cliquer un espace vide de la timeline supprime cet espace vide et "
-"déplace les clips. Définir un modificateur impose de devoir appuyer cette touche "
-"spécifique pour que le double-clic supprime l'espace vide entre les clips."
+"déplace les clips. Définir un modificateur impose de devoir appuyer cette "
+"touche spécifique pour que le double-clic supprime l'espace vide entre les "
+"clips."
+
+#, fuzzy
+msgid "setting_check_version"
+msgstr "Thème"
+
+#, fuzzy
+msgid "setting_tooltip_check_version"
+msgstr "Le mode sombre est le meilleur."
 
 msgid "renderer_progress_text_setup"
 msgstr "Préparation du moteur de rendu ..."
 
 msgid "renderer_progress_text_open_error"
-msgstr "Le moteur de rendu ne peut être ouvert, vérifiez le chemin et les réglages !"
+msgstr ""
+"Le moteur de rendu ne peut être ouvert, vérifiez le chemin et les réglages !"
 
 msgid "renderer_progress_text_compiling_audio"
 msgstr "Compilation des données audio ..."
@@ -243,16 +276,17 @@ msgid "render_option_tooltip_quality"
 msgstr ""
 "Ajuste le Facteur de Taux Constant (CRF), la qualité la plus basse étant 50, "
 "la plus haute 15. Par défaut elle est définie à 18. Elle est utilisée pour "
-"ajuster le bitrate qui a un impact sur la qualité ainsi que le poids. Une valeur "
-"de 0 donne le meilleur, 51 donne la pire qualité, 18 n'est pas vraiment visible."
+"ajuster le bitrate qui a un impact sur la qualité ainsi que le poids. Une "
+"valeur de 0 donne le meilleur, 51 donne la pire qualité, 18 n'est pas "
+"vraiment visible."
 
 msgid "render_option_speed"
 msgstr "Vitesse"
 
 msgid "render_option_tooltip_speed"
 msgstr ""
-"Ajuste la vitesse d'encodage H264. Définir une vitesse trop rapide peut avoir "
-"un impact négatif sur la qualité finale de la vidéo."
+"Ajuste la vitesse d'encodage H264. Définir une vitesse trop rapide peut "
+"avoir un impact négatif sur la qualité finale de la vidéo."
 
 msgid "render_option_gop_size"
 msgstr "Taille des GI"
@@ -261,8 +295,8 @@ msgid "render_option_tooltip_gop_size"
 msgstr ""
 "Groupements d'Images. Une valeur élevée a une meilleur compression qu'une "
 "valeur basse. Toutefois, plus la valeur est élevée, moins la recherche et le "
-"déplacement lors de la lecture vidéo seront précis. Définissez une valeur basse "
-"si vous avez l'intention d'utiliser le rendu pour l'édition."
+"déplacement lors de la lecture vidéo seront précis. Définissez une valeur "
+"basse si vous avez l'intention d'utiliser le rendu pour l'édition."
 
 msgid "render_option_threads_cores"
 msgstr "Threads/cœurs"
@@ -287,3 +321,35 @@ msgstr "Longueur de la vidéo"
 
 msgid "render_option_render_time"
 msgstr "Temps de rendu"
+
+msgid "notification_update_available"
+msgstr ""
+
+msgid "status_project_loading_init"
+msgstr ""
+
+msgid "status_project_preparing_timeline"
+msgstr ""
+
+msgid "status_project_loading_files"
+msgstr ""
+
+msgid "status_project_playback_setup"
+msgstr ""
+
+msgid "status_project_finalizing"
+msgstr ""
+
+#, fuzzy
+msgid "status_new_project_init"
+msgstr "Nouveau projet"
+
+#, fuzzy
+msgid "command_editor_settings"
+msgstr "Configuration de l'éditeur."
+
+msgid "command_project_settings"
+msgstr ""
+
+msgid "command_render_menu"
+msgstr ""
