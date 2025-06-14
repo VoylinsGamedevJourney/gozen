@@ -73,6 +73,12 @@ msgstr ""
 msgid "title_sponsors"
 msgstr ""
 
+msgid "title_editor_settings"
+msgstr ""
+
+msgid "title_project_settings"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 

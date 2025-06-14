@@ -14,6 +14,7 @@ config/name="GoZen"
 config/description="Video editor "
 config/version="0.2.3-alpha"
 run/main_scene="uid://b0r37lfkj7wl6"
+run/print_header=false
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/features=PackedStringArray("4.4", "Forward Plus")
@@ -34,6 +35,7 @@ Project="*res://scripts/globals/project_manager.gd"
 
 settings/crash_handler/message="Please include this when reporting the bug. Reporting bugs is possible here: https://github.com/VoylinsGamedevJourney/gozen/issues"
 settings/crash_handler/message.editor="Please include this when reporting the bug: https://github.com/VoylinsGamedevJourney/gozen/issues"
+file_logging/enable_file_logging=true
 file_logging/log_path="user://logs/gozen.log"
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
@@ -42,6 +44,7 @@ gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unsafe_cast=1
 gdscript/warnings/unsafe_call_argument=1
 gdscript/warnings/return_value_discarded=1
+shader_language/warnings/treat_warnings_as_errors=true
 
 [display]
 

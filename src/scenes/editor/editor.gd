@@ -1,4 +1,8 @@
+class_name EditorUI
 extends Control
+
+
+static var instance: EditorUI
 
 
 @export var menu_bar: MenuBar
@@ -6,6 +10,7 @@ extends Control
 
 
 func _ready() -> void:
+	instance = self
 	print_startup_info()
 
 	EditorCore.viewport = %ProjectViewSubViewport

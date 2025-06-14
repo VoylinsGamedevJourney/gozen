@@ -91,12 +91,12 @@ func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 
 
 static func open_editor_settings() -> void:
-	instance.get_tree().root.add_child(preload("uid://bjen0oagwidr7").instantiate())
+	Settings.open_settings_menu()
 	instance.queue_free()
 
 
 static func open_project_settings() -> void:
-	instance.get_tree().root.add_child(preload("uid://d1h5tylky47rt").instantiate())
+	Project.open_settings_menu()
 	instance.queue_free()
 
 

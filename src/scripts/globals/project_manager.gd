@@ -154,6 +154,13 @@ func _open_project(file_path: String) -> void:
 		printerr("Project: Something went wrong opening project from file dialog!")
 
 
+func open_settings_menu() -> void:
+	var settings_panel: SettingsPanel = preload("uid://bjen0oagwidr7").instantiate()
+
+	settings_panel.set_mode_project_settings()
+	EditorUI.instance.add_child(settings_panel)
+
+
 func load_file_data(id: int) -> bool:
 	var temp_file_data: FileData = FileData.new()
 

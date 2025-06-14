@@ -33,6 +33,13 @@ func reset_settings() -> void:
 	data = SettingsData.new()
 
 
+func open_settings_menu() -> void:
+	var settings_panel: SettingsPanel = preload("uid://bjen0oagwidr7").instantiate()
+
+	settings_panel.set_mode_editor_settings()
+	EditorUI.instance.add_child(settings_panel)
+
+
 # Appearance set/get
 func set_language(code: String) -> void:
 	data.language = code
@@ -48,6 +55,7 @@ func get_language() -> String:
 
 
 func get_languages() -> Dictionary:
+	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
 
 	# Get all the data.
@@ -67,7 +75,13 @@ func get_languages() -> Dictionary:
 			else:
 				key += " (" + TranslationServer.get_country_name(country_code) + ")"
 
-		language_data[key] = code
+		temp_language_data[key] = code
+	
+	var keys: PackedStringArray = temp_language_data.keys()
+	keys.sort()
+
+	for key: String in keys:
+		language_data[key] = temp_language_data[key]
 
 	return language_data
 
@@ -89,6 +103,14 @@ func get_theme() -> SettingsData.THEME:
 	return data.theme
 
 
+func get_themes() -> Dictionary[String, SettingsData.THEME]:
+	var themes: Dictionary[String, SettingsData.THEME] = {
+		"Dark": SettingsData.THEME.DARK,
+		"Light": SettingsData.THEME.LIGHT,
+	}
+	return themes
+
+
 func set_show_menu_bar(value: bool) -> void:
 	data.show_menu_bar = value
 	on_show_menu_bar_changed.emit(value)
@@ -106,6 +128,15 @@ func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 
 func get_audio_waveform_style() -> SettingsData.AUDIO_WAVEFORM_STYLE:
 	return data.audio_waveform_style
+
+
+func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE]:
+	var styles: Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE] = {
+		"Center": SettingsData.AUDIO_WAVEFORM_STYLE.CENTER,
+		"Bottom to Top": SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP,
+		"Top to bottom": SettingsData.AUDIO_WAVEFORM_STYLE.TOP_TO_BOTTOM,
+	}
+	return styles
 
 
 # Defaults set/get
@@ -180,6 +211,15 @@ func set_delete_empty_modifier(new_key: int) -> void:
 
 func get_delete_empty_modifier() -> int:
 	return data.delete_empty_modifier
+
+
+func get_delete_empty_modifiers() -> Dictionary[String, int]:
+	var mods: Dictionary[String, int] = {
+		"": KEY_NONE,
+		"Control": KEY_CTRL,
+		"Shift": KEY_SHIFT
+	}
+	return mods
 
 
 func set_check_version(value: bool) -> void:

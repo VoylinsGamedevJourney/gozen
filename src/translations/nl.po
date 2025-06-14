@@ -63,6 +63,12 @@ msgstr "Bestanden toegevoegd"
 msgid "title_sponsors"
 msgstr "Sponsors"
 
+msgid "title_editor_settings"
+msgstr "Editor instellingen"
+
+msgid "title_project_settings"
+msgstr "Project instellingen"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
 

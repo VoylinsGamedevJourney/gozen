@@ -130,7 +130,7 @@ func _set_new_project_defaults() -> void:
 
 
 func _on_editor_settings_button_pressed() -> void:
-	get_tree().root.add_child(preload("uid://bjen0oagwidr7").instantiate())
+	Settings.open_settings_menu()
 
 
 func _on_image_author_meta_clicked(meta: Variant) -> void:

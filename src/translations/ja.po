@@ -63,6 +63,12 @@ msgstr "ファイル追加"
 msgid "title_sponsors"
 msgstr "スポンサー"
 
+msgid "title_editor_settings"
+msgstr "エディター設定"
+
+msgid "title_project_settings"
+msgstr "プロジェクト設定"
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 "選択した設定で新しいプロジェクトを作成します。"

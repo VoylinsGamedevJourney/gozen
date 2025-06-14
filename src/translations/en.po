@@ -63,6 +63,12 @@ msgstr "Files dropped"
 msgid "title_sponsors"
 msgstr "Sponsors"
 
+msgid "title_editor_settings"
+msgstr "Editor settings"
+
+msgid "title_project_settings"
+msgstr "Project settings"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
