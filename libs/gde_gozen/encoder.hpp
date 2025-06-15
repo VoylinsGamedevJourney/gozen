@@ -13,8 +13,8 @@
 
 using namespace godot;
 
-class Renderer : public Resource {
-	GDCLASS(Renderer, Resource);
+class Encoder : public Resource {
+	GDCLASS(Encoder, Resource);
 
 private:
 	// FFmpeg classes
@@ -54,7 +54,7 @@ private:
 
 	float framerate = 30.;
 
-	bool renderer_open = false;
+	bool encoder_open = false;
 	bool audio_added = false;
 
 	bool debug = true;
@@ -77,13 +77,13 @@ private:
 	bool _add_audio_stream();
 	bool _open_output_file();
 	bool _write_header();
-	bool _finalize_renderer();
+	bool _finalize_encoding();
 
 	static inline void _log(String message) {
-		UtilityFunctions::print("Renderer: ", message, ".");
+		UtilityFunctions::print("Encoder: ", message, ".");
 	}
 	static inline bool _log_err(String message) {
-		UtilityFunctions::printerr("Renderer: ", message, "!");
+		UtilityFunctions::printerr("Encoder: ", message, "!");
 		return false;
 	}
 
@@ -134,11 +134,11 @@ public:
 		HW_DEVICE_TYPE_QSV, // Intel
 	};
 
-	Renderer() {};
-	~Renderer();
+	Encoder() {};
+	~Encoder();
 
 	bool open();
-	inline bool is_open() { return renderer_open; }
+	inline bool is_open() { return encoder_open; }
 
 	bool send_frame(Ref<Image> frame_image);
 	bool send_audio(PackedByteArray wav_data);
@@ -190,9 +190,9 @@ protected:
 	static void _bind_methods();
 };
 
-VARIANT_ENUM_CAST(Renderer::VIDEO_CODEC);
-VARIANT_ENUM_CAST(Renderer::AUDIO_CODEC);
-VARIANT_ENUM_CAST(Renderer::H264_PRESETS);
-VARIANT_ENUM_CAST(Renderer::SWS_QUALITY);
-VARIANT_ENUM_CAST(Renderer::HW_DEVICE_TYPES);
+VARIANT_ENUM_CAST(Encoder::VIDEO_CODEC);
+VARIANT_ENUM_CAST(Encoder::AUDIO_CODEC);
+VARIANT_ENUM_CAST(Encoder::H264_PRESETS);
+VARIANT_ENUM_CAST(Encoder::SWS_QUALITY);
+VARIANT_ENUM_CAST(Encoder::HW_DEVICE_TYPES);
 

@@ -8,7 +8,7 @@
 
 #include "video.hpp"
 #include "audio.hpp"
-#include "renderer.hpp"
+#include "encoder.hpp"
 
 using namespace godot;
 

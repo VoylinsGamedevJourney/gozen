@@ -1,11 +1,11 @@
-#include "renderer.hpp"
+#include "encoder.hpp"
 
 
-Renderer::~Renderer() {
+Encoder::~Encoder() {
 	close();
 }
 
-PackedStringArray Renderer::get_available_codecs(int codec_id) {
+PackedStringArray Encoder::get_available_codecs(int codec_id) {
 	PackedStringArray codec_names = PackedStringArray();
 	const AVCodec *current_codec = nullptr;
 	void *i = nullptr;
@@ -17,8 +17,8 @@ PackedStringArray Renderer::get_available_codecs(int codec_id) {
 	return codec_names;
 }
 
-bool Renderer::open() {
-	if (renderer_open)
+bool Encoder::open() {
+	if (encoder_open)
 		return _log_err("Already open");
 
 	if (path.is_empty())
@@ -32,7 +32,7 @@ bool Renderer::open() {
 
 	if (audio_codec_id != AV_CODEC_ID_NONE) {
 		if (audio_codec_id == AV_CODEC_ID_NONE)
-			_log("Audio codec not set, not rendering audio");
+			_log("Audio codec not set, not encoding audio");
 		else if (sample_rate == -1)
 			_log("A sample rate needs to be set for audio exporting");
 	}
@@ -88,11 +88,11 @@ bool Renderer::open() {
 		return _log_err("Couldn't create SWS");
 
 	frame_nr = 0;
-	renderer_open = true;
+	encoder_open = true;
 	return true;
 }
 
-bool Renderer::_add_video_stream() {
+bool Encoder::_add_video_stream() {
 	const AVCodec *av_codec = avcodec_find_encoder(video_codec_id);
 	if (!av_codec) {
 		_log_err(avcodec_get_name(video_codec_id));
@@ -174,7 +174,7 @@ bool Renderer::_add_video_stream() {
 	return true;
 }
 
-bool Renderer::_add_audio_stream() {
+bool Encoder::_add_audio_stream() {
 	const AVCodec *av_codec = avcodec_find_encoder(audio_codec_id);
 	if (!av_codec) {
 		_log_err(avcodec_get_name(audio_codec_id));
@@ -234,7 +234,7 @@ bool Renderer::_add_audio_stream() {
 	return true;
 }
 
-bool Renderer::_open_output_file() {
+bool Encoder::_open_output_file() {
 	if (!(av_format_ctx->oformat->flags & AVFMT_NOFILE)) {
 		response = avio_open(&av_format_ctx->pb, path.utf8(), AVIO_FLAG_WRITE);
 
@@ -247,7 +247,7 @@ bool Renderer::_open_output_file() {
 	return true;
 }
 
-bool Renderer::_write_header() {
+bool Encoder::_write_header() {
 	AVDictionary* options = nullptr;
 
 	if (!meta_title.is_empty())
@@ -273,8 +273,8 @@ bool Renderer::_write_header() {
 	return true;
 }
 
-bool Renderer::send_frame(Ref<Image> frame_image) {
-	if (!renderer_open)
+bool Encoder::send_frame(Ref<Image> frame_image) {
+	if (!encoder_open)
 		return _log_err("Not open");
 	else if (audio_codec_id != AV_CODEC_ID_NONE && audio_codec_id != AV_CODEC_ID_NONE
 			&& !audio_added)
@@ -335,8 +335,8 @@ bool Renderer::send_frame(Ref<Image> frame_image) {
 	return true;
 }
 
-bool Renderer::send_audio(PackedByteArray wav_data) {
-	if (!renderer_open)
+bool Encoder::send_audio(PackedByteArray wav_data) {
+	if (!encoder_open)
 		return _log_err("Not open");
 	if (audio_codec_id == AV_CODEC_ID_NONE)
 		return _log_err("Audio not enabled");
@@ -464,16 +464,16 @@ bool Renderer::send_audio(PackedByteArray wav_data) {
 	return true;
 }
 
-bool Renderer::_finalize_renderer() {
-	if (!renderer_open) {
-		_log("Renderer not open, nothing to finalize.");
+bool Encoder::_finalize_encoding() {
+	if (!encoder_open) {
+		_log("Encoder not open, nothing to finalize.");
 		return 2;
 	} else if (!av_format_ctx) {
-		_log_err("Can't finalize renderer, no format context");
+		_log_err("Can't finalize encoding, no format context");
 		return 1;
 	}
 
-	_log("Finalizing renderer ..");
+	_log("Finalizing encoding ..");
 
 	// Flush video encoder.
 	if (av_codec_ctx_video) {
@@ -538,20 +538,20 @@ bool Renderer::_finalize_renderer() {
 			FFmpeg::print_av_error("Error writing trailer to video file!", response);
 	}
 
-	_log("Video render finished successfully.");
+	_log("Video encoding finished successfully.");
 	return 0;
 }
 
 
-void Renderer::close() {
+void Encoder::close() {
 	if (frame_nr == 0)
 		return;
 
-	response = _finalize_renderer();
+	response = _finalize_encoding();
 	if (response != OK)
-		_log_err("_finalize_renderer failed with: " + String::num_int64(response));
+		_log_err("_finalize_encoding failed with: " + String::num_int64(response));
 
-	_log("Closing renderer and cleaning up resources...");
+	_log("Closing encoder and cleaning up resources...");
 
 	// Cleanup contexts
 	sws_ctx.reset();
@@ -565,24 +565,24 @@ void Renderer::close() {
 
 	av_format_ctx.reset();
 
-	renderer_open = false;
+	encoder_open = false;
 	audio_added = false;
 	frame_nr = 0;
 }
 
 
 #define BIND_STATIC_METHOD_ARGS(method_name, ...) \
-    ClassDB::bind_static_method("Renderer", \
-        D_METHOD(#method_name, __VA_ARGS__), &Renderer::method_name)
+    ClassDB::bind_static_method("Encoder", \
+        D_METHOD(#method_name, __VA_ARGS__), &Encoder::method_name)
 
 #define BIND_METHOD(method_name) \
-    ClassDB::bind_method(D_METHOD(#method_name), &Renderer::method_name)
+    ClassDB::bind_method(D_METHOD(#method_name), &Encoder::method_name)
 
 #define BIND_METHOD_ARGS(method_name, ...) \
     ClassDB::bind_method( \
-        D_METHOD(#method_name, __VA_ARGS__), &Renderer::method_name)
+        D_METHOD(#method_name, __VA_ARGS__), &Encoder::method_name)
 
-void Renderer::_bind_methods() {
+void Encoder::_bind_methods() {
 	/* VIDEO CODEC ENUMS */
 	BIND_ENUM_CONSTANT(V_HEVC);
 	BIND_ENUM_CONSTANT(V_H264);
