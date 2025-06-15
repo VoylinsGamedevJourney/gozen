@@ -27,6 +27,9 @@ msgstr "タイムライン"
 msgid "title_extras"
 msgstr "その他"
 
+msgid "title_render_settings"
+msgstr "レンダリング設定"
+
 msgid "title_rendering"
 msgstr "レンダリング"
 
@@ -68,6 +71,9 @@ msgstr "エディター設定"
 
 msgid "title_project_settings"
 msgstr "プロジェクト設定"
+
+msgid "title_chapters"
+msgstr "チャプター"
 
 msgid "button_tooltip_create_new_project"
 msgstr ""
@@ -114,6 +120,12 @@ msgstr "リセット"
 
 msgid "button_return"
 msgstr "戻る"
+
+msgid "button_screen_editing"
+msgstr "編集"
+
+msgid "button_screen_render"
+msgstr "レンダリング"
 
 msgid "button_start_render"
 msgstr "レンダリングを開始"

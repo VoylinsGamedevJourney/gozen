@@ -28,6 +28,8 @@ msgstr ""
 msgid "title_extras"
 msgstr "Extra's"
 
+msgid "title_render_settings"
+msgstr ""
 
 msgid "title_rendering"
 msgstr ""
@@ -77,6 +79,9 @@ msgid "title_editor_settings"
 msgstr ""
 
 msgid "title_project_settings"
+msgstr ""
+
+msgid "title_chapters"
 msgstr ""
 
 msgid "button_tooltip_create_new_project"
@@ -135,6 +140,11 @@ msgstr ""
 msgid "button_return"
 msgstr ""
 
+msgid "button_screen_editing"
+msgstr ""
+
+msgid "button_screen_render"
+msgstr ""
 
 msgid "button_start_render"
 msgstr ""
@@ -150,7 +160,6 @@ msgstr ""
 
 msgid "button_close"
 msgstr ""
-
 
 msgid "text_version"
 msgstr ""
@@ -291,6 +300,9 @@ msgstr ""
 
 
 msgid "renderer_progress_text_compiling_audio"
+msgstr ""
+
+msgid "renderer_progress_text_sending_audio"
 msgstr ""
 
 

@@ -138,3 +138,24 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 	
 	return actual_files
 
+
+static func get_sample_count(frames: int) -> int:
+	return int(44100 * 4 * float(frames) / Project.get_framerate())
+
+
+static func get_video_extension(video_codec: Renderer.VIDEO_CODEC) -> String:
+	match video_codec:
+		Renderer.VIDEO_CODEC.V_HEVC: return ".mp4"
+		Renderer.VIDEO_CODEC.V_H264: return ".mp4"
+		Renderer.VIDEO_CODEC.V_MPEG4: return ".mp4"
+		Renderer.VIDEO_CODEC.V_MPEG2: return ".mpg"
+		Renderer.VIDEO_CODEC.V_MPEG1: return ".mpg"
+		Renderer.VIDEO_CODEC.V_MJPEG: return ".mov"
+		Renderer.VIDEO_CODEC.V_AV1: return ".webm"
+		Renderer.VIDEO_CODEC.V_VP9: return ".webm"
+		Renderer.VIDEO_CODEC.V_VP8: return ".webm"
+
+	printerr("Unrecognized codec! ", video_codec)
+	return ""
+
+

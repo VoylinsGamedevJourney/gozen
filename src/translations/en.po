@@ -27,6 +27,9 @@ msgstr "Timeline"
 msgid "title_extras"
 msgstr "Extra's"
 
+msgid "title_render_settings"
+msgstr "Render settings"
+
 msgid "title_rendering"
 msgstr "Rendering"
 
@@ -68,6 +71,9 @@ msgstr "Editor settings"
 
 msgid "title_project_settings"
 msgstr "Project settings"
+
+msgid "title_chapters"
+msgstr "Chapters"
 
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
@@ -113,6 +119,12 @@ msgstr "Reset"
 
 msgid "button_return"
 msgstr "Return"
+
+msgid "button_screen_editing"
+msgstr "Edit"
+
+msgid "button_screen_render"
+msgstr "Render"
 
 msgid "button_start_render"
 msgstr "Start rendering"
@@ -238,6 +250,9 @@ msgstr "Renderer couldn't be opened, check path and settings!"
 
 msgid "renderer_progress_text_compiling_audio"
 msgstr "Compiling audio data ..."
+
+msgid "renderer_progress_text_sending_audio"
+msgstr "Sending audio data ..."
 
 msgid "renderer_progress_text_sending_audio_error"
 msgstr "Something went wrong sending audio to the renderer!"

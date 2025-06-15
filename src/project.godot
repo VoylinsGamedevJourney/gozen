@@ -28,6 +28,7 @@ Threader="*res://scripts/globals/threader.gd"
 Thumbnailer="*res://scripts/globals/thumbnailer.gd"
 InputManager="*res://scripts/globals/input_manager.gd"
 EditorCore="*res://scripts/globals/editor_core.gd"
+RenderManager="*res://scripts/globals/render_manager.gd"
 Settings="*res://scripts/globals/settings_manager.gd"
 Project="*res://scripts/globals/project_manager.gd"
 

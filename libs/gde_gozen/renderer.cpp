@@ -644,6 +644,7 @@ void Renderer::_bind_methods() {
 
 	BIND_METHOD_ARGS(set_video_codec_id, "codec_id");
 	BIND_METHOD_ARGS(set_audio_codec_id, "codec_id");
+	BIND_METHOD(audio_codec_set);
 
 	BIND_METHOD_ARGS(set_file_path, "file_path");
 

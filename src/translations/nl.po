@@ -27,6 +27,9 @@ msgstr "Tijdlijn"
 msgid "title_extras"
 msgstr "Extra's"
 
+msgid "title_render_settings"
+msgstr "Render instellingen"
+
 msgid "title_rendering"
 msgstr "Renderen"
 
@@ -68,6 +71,9 @@ msgstr "Editor instellingen"
 
 msgid "title_project_settings"
 msgstr "Project instellingen"
+
+msgid "title_chapters"
+msgstr "Chapters"
 
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
@@ -113,6 +119,12 @@ msgstr "Reset"
 
 msgid "button_return"
 msgstr "Terug"
+
+msgid "button_screen_editing"
+msgstr "Bewerken"
+
+msgid "button_screen_render"
+msgstr "Renderen"
 
 msgid "button_start_render"
 msgstr "Start renderen"

@@ -153,6 +153,7 @@ public:
 
 	inline void set_video_codec_id(VIDEO_CODEC codec_id) { video_codec_id = (AVCodecID)codec_id; }
 	inline void set_audio_codec_id(AUDIO_CODEC codec_id) { audio_codec_id = (AVCodecID)codec_id; }
+	inline bool audio_codec_set() const { return AV_CODEC_ID_NONE != audio_codec_id; }
 
 	inline void set_file_path(String file_path) { path = file_path; }
 
