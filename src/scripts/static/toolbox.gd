@@ -69,6 +69,26 @@ static func open_url(url: String) -> void:
 	OS.shell_open(url)
 
 
+static func open_url_site() -> void:
+	open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
+
+
+static func open_url_manual() -> void:
+	open_url(str(ProjectSettings.get_setting_with_override("urls/manual")))
+
+
+static func open_url_tutorials() -> void:
+	open_url(str(ProjectSettings.get_setting_with_override("urls/tutorials")))
+
+
+static func open_url_discord() -> void:
+	open_url(str(ProjectSettings.get_setting_with_override("urls/discord")))
+
+
+static func open_url_support() -> void:
+	open_url(str(ProjectSettings.get_setting_with_override("urls/support")))
+
+
 static func get_unique_id(keys: PackedInt64Array) -> int:
 	var id: int = abs(randi())
 

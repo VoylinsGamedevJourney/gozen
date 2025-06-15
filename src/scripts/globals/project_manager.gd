@@ -151,7 +151,7 @@ func open_project() -> void:
 
 func _open_project(file_path: String) -> void:
 	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
-		printerr("Project: Something went wrong opening project from file dialog!")
+		printerr("ProjectManager: Something went wrong opening project from file dialog!")
 
 
 func open_settings_menu() -> void:
@@ -182,7 +182,7 @@ func reload_file_data(id: int) -> void:
 
 func add_file(file_path: String) -> int:
 	# Check if file already exists inside of the project.
-	for existing: File in Project.get_files().values():
+	for existing: File in get_files().values():
 		if existing.path == file_path:
 			print("File already loaded with path '%s'!" % file_path)
 			return -2
@@ -192,8 +192,8 @@ func add_file(file_path: String) -> int:
 	if file == null:
 		return -1
 
-	Project.set_file(file.id, file)
-	if !Project.load_file_data(file.id):
+	set_file(file.id, file)
+	if !load_file_data(file.id):
 		printerr("Problem happened adding file!")
 		return -1
 

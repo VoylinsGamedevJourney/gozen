@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://6snp6sstgbb5"]
+
+[ext_resource type="Script" uid="uid://cey31yt1rd71u" path="res://scenes/menu_bar/menu_bar.gd" id="1_tjpug"]
+
+[node name="MenuBarHBox" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 28.0
+grow_horizontal = 2
+script = ExtResource("1_tjpug")
+
+[node name="MenuBar" type="MenuBar" parent="."]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+
+[node name="EditorScreenButton" type="Button" parent="."]
+layout_mode = 2
+text = "button_screen_editing"
+
+[node name="RenderScreenButton" type="Button" parent="."]
+layout_mode = 2
+text = "button_screen_render"

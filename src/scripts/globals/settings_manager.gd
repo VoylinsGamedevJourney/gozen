@@ -15,8 +15,8 @@ var menu_bar: MenuBar
 func _ready() -> void:
 	for arg: String in OS.get_cmdline_args():
 		if arg.to_lower() == "reset_settings":
-			Settings.reset_settings()
-			Settings.save()
+			reset_settings()
+			save()
 
 	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
 		printerr("Something went wrong loading settings! ", data.error)

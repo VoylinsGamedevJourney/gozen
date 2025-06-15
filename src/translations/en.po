@@ -365,3 +365,43 @@ msgstr "Project settings"
 
 msgid "command_render_menu"
 msgstr "Render menu"
+
+msgid "menu_bar_project"
+msgstr "Project"
+
+msgid "menu_bar_editor"
+msgstr "Editor"
+
+msgid "menu_bar_project_save"
+msgstr "Save"
+
+msgid "menu_bar_project_save_as"
+msgstr "Save as ..."
+
+msgid "menu_bar_project_open_project"
+msgstr "Open"
+
+msgid "menu_bar_project_open_settings"
+msgstr "Open settings"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "Open settings"
+
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZen site"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "Manual"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "Tutorials"
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Discord server"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "Support GoZen"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "About GoZen"
