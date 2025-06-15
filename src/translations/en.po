@@ -387,7 +387,6 @@ msgstr "Open settings"
 msgid "menu_bar_editor_open_settings"
 msgstr "Open settings"
 
-
 msgid "menu_bar_editor_open_url_site"
 msgstr "GoZen site"
 

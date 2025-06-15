@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="RenderProfile" load_steps=2 format=3 uid="uid://f5ffyfe5gb5b"]
+[gd_resource type="Resource" script_class="RenderProfile" load_steps=3 format=3 uid="uid://f5ffyfe5gb5b"]
 
 [ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_burnd"]
+[ext_resource type="Texture2D" uid="uid://dygxtqkkxgxxr" path="res://assets/profiles/youtube_hq.svg" id="1_scxfi"]
 
 [resource]
 script = ExtResource("1_burnd")
 profile_name = "YouTube High Quality"
+icon = ExtResource("1_scxfi")
 audio_codec = 86076
 video_codec = 167
 crf = 18
