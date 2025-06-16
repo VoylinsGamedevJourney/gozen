@@ -7,9 +7,9 @@
 script = ExtResource("1_burnd")
 profile_name = "YouTube High Quality"
 icon = ExtResource("1_scxfi")
-audio_codec = 86076
 video_codec = 167
 crf = 18
 gop = 15
 h264_preset = 2
+audio_codec = 86076
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"
