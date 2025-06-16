@@ -5,16 +5,16 @@ For the localization system we use [Gettext PO files](https://www.gnu.org/softwa
 
 ## Language status
 ### Actively maintained languages ✅
-| Language             | Code    | Maintainer(s)                               |
-| -------------------- | ------- | ------------------------------------------- |
-| English (Source)     | `en`    | [Voylin](https://github.com/voylin)         |
-| Chinese (Simplified) | `zh_CN` | [Aappaapp](https://github.com/Aappaapp)     |
-| Dutch                | `nl`    | [Voylin](https://github.com/Voylin)         |
-| French               | `fr_FR` | [Slander](https://github.com/Slander), [#Guigui](https://github.com/HastagGuigui) |
-| German               | `de`    | [flipdp]()                                  |
-| Japanese             | `ja`    | [Voylin](https://github.com/Voylin)         |
-| Polish               | `pl`    | [SzczurekYT](https://github.com/SzczurekYT) |
-| Urdu                 | `ur`    | [AdilDevStuff](https://github.com/AdilDevStuff) |
+| Language              | Code    | Maintainer(s)                               |
+| --------------------- | ------- | ------------------------------------------- |
+| English (Source)      | `en`    | [Voylin](https://github.com/voylin)         |
+| Chinese (Traditional) | `zh_TW` | [aappaapp](https://github.com/Aappaapp)     |
+| Dutch                 | `nl`    | [Voylin](https://github.com/Voylin)         |
+| French                | `fr_FR` | [Slander](https://github.com/Slander), [#Guigui](https://github.com/HastagGuigui) |
+| German                | `de`    | [flipdp]()                                  |
+| Japanese              | `ja`    | [Voylin](https://github.com/Voylin)         |
+| Polish                | `pl`    | [SzczurekYT](https://github.com/SzczurekYT) |
+| Urdu                  | `ur`    | [AdilDevStuff](https://github.com/AdilDevStuff) |
 
 ### Languages needing maintainers ⚠️
 | Language             | Code    |

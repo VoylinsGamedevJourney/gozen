@@ -1,0 +1,337 @@
+# GoZen Localization Template
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+
+msgid "title_about_gozen"
+msgstr "關於 GoZen"
+
+msgid "title_appearance"
+msgstr "外觀"
+
+msgid "title_defaults"
+msgstr "預設值"
+
+msgid "title_timeline"
+msgstr "時間軸"
+
+msgid "title_extras"
+msgstr "其他"
+
+msgid "title_rendering"
+msgstr "渲染"
+
+msgid "title_rendering_finished"
+msgstr "渲染完成"
+
+msgid "title_render_video"
+msgstr "渲染影片"
+
+msgid "title_render_audio"
+msgstr "渲染音訊"
+
+msgid "title_metadata"
+msgstr "詮釋資料"
+
+msgid "title_cpu_threads"
+msgstr "CPU 執行緒"
+
+msgid "title_recent_projects"
+msgstr "近期專案"
+
+msgid "title_getting_started"
+msgstr "入門指南"
+
+msgid "title_new_project"
+msgstr "新增專案"
+
+msgid "title_loading_project"
+msgstr "正在載入專案"
+
+msgid "title_files_dropped"
+msgstr "已加入檔案"
+
+msgid "title_sponsors"
+msgstr "贊助者"
+
+msgid "title_editor_settings"
+msgstr "編輯器設定"
+
+msgid "title_project_settings"
+msgstr "專案設定"
+
+msgid "button_tooltip_create_new_project"
+msgstr "使用所選設定建立新專案。"
+
+msgid "button_gozen_site"
+msgstr "GoZen 網站"
+
+msgid "button_manual"
+msgstr "使用手冊"
+
+msgid "button_tutorials"
+msgstr "教學課程"
+
+msgid "button_discord_server"
+msgstr "Discord 伺服器"
+
+msgid "button_support_gozen"
+msgstr "支持 GoZen"
+
+msgid "button_view_sponsors"
+msgstr "查看贊助者"
+
+msgid "button_become_sponsor"
+msgstr "成為贊助者"
+
+msgid "button_open_project"
+msgstr "開啟專案"
+
+msgid "button_create_new_project"
+msgstr "建立新專案"
+
+msgid "button_tooltip_editor_settings"
+msgstr "編輯器設定。"
+
+msgid "button_cancel"
+msgstr "取消"
+
+msgid "button_cancel_rendering"
+msgstr "取消渲染"
+
+msgid "button_reset"
+msgstr "重設"
+
+msgid "button_return"
+msgstr "返回"
+
+msgid "button_start_render"
+msgstr "開始渲染"
+
+msgid "button_save"
+msgstr "儲存"
+
+msgid "button_save_settings"
+msgstr "儲存設定"
+
+msgid "button_close"
+msgstr "關閉"
+
+msgid "text_version"
+msgstr "版本"
+
+msgid "text_gozen_website"
+msgstr "GoZen 網站"
+
+msgid "text_github_repo"
+msgstr "GitHub 儲存庫"
+
+msgid "text_discord_link"
+msgstr "Discord 連結"
+
+msgid "text_support_gozen"
+msgstr "支持 GoZen"
+
+# Note: This is part of the string for the "about gozen" screen.
+#: scripts/about_gozen.gd
+msgid "text_gozen_made_by"
+msgstr "開發者為"
+
+msgid "text_rename_file_to"
+msgstr "將檔案重新命名為..."
+
+msgid "text_advanced_settings"
+msgstr "進階設定"
+
+msgid "text_path"
+msgstr "路徑"
+
+msgid "text_resolution"
+msgstr "解析度"
+
+msgid "text_framerate"
+msgstr "幀率"
+
+msgid "tooltip_ignore_changes_close_settings"
+msgstr "忽略變更並關閉設定選單。"
+
+msgid "tooltip_setting_background_color"
+msgstr "專案的預設背景顏色。"
+
+msgid "setting_background_color"
+msgstr "背景顏色"
+
+msgid "setting_language"
+msgstr "語言"
+
+msgid "setting_theme"
+msgstr "佈景主題"
+
+msgid "setting_tooltip_theme"
+msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
+
+msgid "setting_show_menu_bar"
+msgstr "顯示選單列"
+
+msgid "setting_waveform_style"
+msgstr "音訊波形樣式"
+
+msgid "setting_default_image_duration"
+msgstr "預設圖片持續時間"
+
+msgid "setting_tooltip_default_image_duration"
+msgstr "以影格為單位的持續時間。"
+
+msgid "setting_default_project_resolution"
+msgstr "預設專案解析度"
+
+msgid "setting_tooltip_default_project_resolution_x"
+msgstr "預設影片專案的寬度。"
+
+msgid "setting_tooltip_default_project_resolution_y"
+msgstr "預設影片專案的高度。"
+
+msgid "setting_default_project_framerate"
+msgstr "預設專案幀率"
+
+msgid "setting_tooltip_default_project_framerate"
+msgstr "預設影片專案的幀率。"
+
+msgid "setting_default_track_amount"
+msgstr "預設軌道數量"
+
+msgid "setting_pause_after_dragging"
+msgstr "拖曳後暫停"
+
+msgid "setting_delete_empty_space_mod"
+msgstr "刪除空白區間修飾鍵"
+
+msgid "setting_tooltip_delete_empty_space_mod"
+msgstr "在時間軸上雙擊空白處會刪除該空白區間並移動後方所有片段。設定修飾鍵後，您需要按住該特定按鍵再雙擊，才能移除片段之間的空白區間。"
+
+msgid "setting_check_version"
+msgstr "檢查更新"
+
+msgid "setting_tooltip_check_version"
+msgstr "此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些人不希望應用程式連網，因此此功能預設為「停用」。"
+
+msgid "renderer_progress_text_setup"
+msgstr "正在設定渲染器..."
+
+msgid "renderer_progress_text_open_error"
+msgstr "無法開啟渲染器，請檢查路徑與設定！"
+
+msgid "renderer_progress_text_compiling_audio"
+msgstr "正在編譯音訊資料..."
+
+msgid "renderer_progress_text_sending_audio_error"
+msgstr "傳送音訊至渲染器時發生錯誤！"
+
+msgid "renderer_progress_text_creating_sending_data"
+msgstr "正在建立並傳送影格資料..."
+
+msgid "renderer_progress_text_sending_data_error"
+msgstr "傳送影格至渲染器時發生錯誤！"
+
+msgid "renderer_progress_text_canceling"
+msgstr "正在取消渲染程序..."
+
+msgid "renderer_progress_text_last_frame"
+msgstr "正在傳送最後的影格..."
+
+msgid "rendering_warning"
+msgstr "發生錯誤！"
+
+msgid "render_option_path"
+msgstr "路徑"
+
+msgid "render_option_profile"
+msgstr "渲染設定檔"
+
+msgid "render_option_audio_codec"
+msgstr "音訊編解碼器"
+
+msgid "render_option_video_codec"
+msgstr "視訊編解碼器"
+
+msgid "render_option_quality"
+msgstr "品質"
+
+#, fuzzy
+msgid "render_option_tooltip_quality"
+msgstr "調整 CRF (恆定速率因子)。最低品質設定為 50，最高品質設定為 15。預設值為 18。此設定用於調整位元率，會影響品質與檔案大小。數值 0 為最佳品質，51 為最差品質，18 的畫質損失通常難以察覺。"
+
+msgid "render_option_speed"
+msgstr "速度"
+
+msgid "render_option_tooltip_speed"
+msgstr "調整 H.264 的編碼速度。設定過高的速度可能會對最終影片品質產生負面影響。"
+
+msgid "render_option_gop_size"
+msgstr "GOP 大小"
+
+msgid "render_option_tooltip_gop_size"
+msgstr "GOP (Group Of Pictures，圖像群組)。數值越高，壓縮率越好。但數值越高，在影片中跳轉的精確度就越低。如果您打算將渲染後的影片用於後續編輯，請設定較低的數值。"
+
+msgid "render_option_threads_cores"
+msgstr "執行緒/核心數"
+
+msgid "render_option_tooltip_threads_cores"
+msgstr "設定為「0」以使用所有可用的執行緒。"
+
+msgid "render_option_metadata_title"
+msgstr "標題"
+
+msgid "render_option_metadata_comment"
+msgstr "註解"
+
+msgid "render_option_metadata_author"
+msgstr "作者"
+
+msgid "render_option_metadata_copyright"
+msgstr "版權"
+
+msgid "render_option_video_length"
+msgstr "影片長度"
+
+msgid "render_option_render_time"
+msgstr "渲染時間"
+
+msgid "notification_update_available"
+msgstr "有可用的更新！"
+
+msgid "status_project_loading_init"
+msgstr "正在開啟專案..."
+
+msgid "status_project_preparing_timeline"
+msgstr "正在準備時間軸..."
+
+msgid "status_project_loading_files"
+msgstr "正在載入檔案..."
+
+msgid "status_project_playback_setup"
+msgstr "正在設定播放..."
+
+msgid "status_project_finalizing"
+msgstr "正在完成最後步驟..."
+
+msgid "status_new_project_init"
+msgstr "正在建立新專案..."
+
+msgid "command_editor_settings"
+msgstr "編輯器設定"
+
+msgid "command_project_settings"
+msgstr "專案設定"
+
+msgid "command_render_menu"
+msgstr "渲染選單"
