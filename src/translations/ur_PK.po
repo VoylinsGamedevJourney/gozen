@@ -232,28 +232,36 @@ msgstr ""
 "تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
 "کریں."
 
-msgid "renderer_progress_text_setup"
+#, fuzzy
+msgid "encoding_progress_text_setup"
 msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
 
-msgid "renderer_progress_text_open_error"
+#, fuzzy
+msgid "encoding_progress_text_open_error"
 msgstr "رینڈرر کو کھولا نہی جا سکا، مقام اور ترتیبات دیکھیں!"
 
-msgid "renderer_progress_text_compiling_audio"
+#, fuzzy
+msgid "encoding_progress_text_compiling_audio"
 msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے ..."
 
-msgid "renderer_progress_text_sending_audio_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio_error"
 msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
 
-msgid "renderer_progress_text_creating_sending_data"
+#, fuzzy
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے ..."
 
-msgid "renderer_progress_text_sending_data_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_data_error"
 msgstr "فریم رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
 
-msgid "renderer_progress_text_canceling"
+#, fuzzy
+msgid "encoding_progress_text_canceling"
 msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
 
-msgid "renderer_progress_text_last_frame"
+#, fuzzy
+msgid "encoding_progress_text_last_frame"
 msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
 
 msgid "rendering_warning"

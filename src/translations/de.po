@@ -230,28 +230,31 @@ msgstr ""
 "überprüft wird. Da manche Nutzer keine Onlineverbindung wünschen, ist diese "
 "Funktion standardmäßig deaktiviert."
 
-msgid "renderer_progress_text_setup"
+#, fuzzy
+msgid "encoding_progress_text_setup"
 msgstr "Renderer Einrichten ..."
 
-msgid "renderer_progress_text_open_error"
+#, fuzzy
+msgid "encoding_progress_text_open_error"
 msgstr "Renderer konnte nicht geöffnet werden. Pfad und Einstellungen prüfen!"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Audiodaten kompilieren ..."
 
-msgid "renderer_progress_text_sending_audio_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio_error"
 msgstr "Etwas ist beim Senden der Audio zum Renderer schiefgelaufen!"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Erstellen & Senden der Framedaten"
 
-msgid "renderer_progress_text_sending_data_error"
+msgid "encoding_progress_text_sending_data_error"
 msgstr "Etwas ist beim Senden der Frames zum Renderer schiefgelaufen!"
 
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_canceling"
 msgstr "Render wird abgebrochen ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Letzte Frames werden gesendet ..."
 
 msgid "rendering_warning"

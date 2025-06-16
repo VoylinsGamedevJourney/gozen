@@ -291,38 +291,38 @@ msgid "setting_tooltip_check_version"
 msgstr ""
 
 
-msgid "renderer_progress_text_setup"
+msgid "encoding_progress_text_setup"
 msgstr ""
 
 
-msgid "renderer_progress_text_open_error"
+msgid "encoding_progress_text_open_error"
 msgstr ""
 
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoding_progress_text_compiling_audio"
 msgstr ""
 
-msgid "renderer_progress_text_sending_audio"
-msgstr ""
-
-
-msgid "renderer_progress_text_sending_audio_error"
+msgid "encoding_progress_text_sending_audio"
 msgstr ""
 
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_sending_audio_error"
 msgstr ""
 
 
-msgid "renderer_progress_text_sending_data_error"
+msgid "encoding_progress_text_creating_sending_data"
 msgstr ""
 
 
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_sending_data_error"
 msgstr ""
 
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_canceling"
+msgstr ""
+
+
+msgid "encoding_progress_text_last_frame"
 msgstr ""
 
 

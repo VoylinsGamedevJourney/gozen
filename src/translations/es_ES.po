@@ -229,29 +229,33 @@ msgstr "Tema"
 msgid "setting_tooltip_check_version"
 msgstr "El modo claro es mejor."
 
-msgid "renderer_progress_text_setup"
+#, fuzzy
+msgid "encoding_progress_text_setup"
 msgstr "Configurando renderizador ..."
 
-msgid "renderer_progress_text_open_error"
+#, fuzzy
+msgid "encoding_progress_text_open_error"
 msgstr ""
 "No se pudo abrir el renderizador, ¡Verifica la ruta y la configuración!"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Compilando datos de audio ..."
 
-msgid "renderer_progress_text_sending_audio_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio_error"
 msgstr "¡Algo salió mal al enviar audio al renderizador!"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Creando y enviando datos de fotogramas ..."
 
-msgid "renderer_progress_text_sending_data_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_data_error"
 msgstr "¡Algo salió mal al enviar fotogramas al renderizador!"
 
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_canceling"
 msgstr "Cancelando proceso de renderizado ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Enviando últimos fotogramas ..."
 
 msgid "rendering_warning"

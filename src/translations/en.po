@@ -242,31 +242,31 @@ msgstr ""
 "to the internet. Some people prefer to not make their applications connect "
 "to the internet so this is by default 'disabled'."
 
-msgid "renderer_progress_text_setup"
-msgstr "Setting up renderer ..."
+msgid "encoding_progress_text_setup"
+msgstr "Setting up encoder ..."
 
-msgid "renderer_progress_text_open_error"
-msgstr "Renderer couldn't be opened, check path and settings!"
+msgid "encoding_progress_text_open_error"
+msgstr "Encoder couldn't be opened, check path and settings!"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Compiling audio data ..."
 
-msgid "renderer_progress_text_sending_audio"
+msgid "encoding_progress_text_sending_audio"
 msgstr "Sending audio data ..."
 
-msgid "renderer_progress_text_sending_audio_error"
-msgstr "Something went wrong sending audio to the renderer!"
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "Something went wrong sending audio to the encoder!"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Creating & sending frame data ..."
 
-msgid "renderer_progress_text_sending_data_error"
-msgstr "Something went wrong sending frame to the renderer!"
+msgid "encoding_progress_text_sending_data_error"
+msgstr "Something went wrong sending frame to the encoder!"
 
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_canceling"
 msgstr "Canceling render process ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Sending last frames ..."
 
 msgid "rendering_warning"

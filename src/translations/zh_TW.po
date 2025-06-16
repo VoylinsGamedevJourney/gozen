@@ -224,28 +224,36 @@ msgstr "檢查更新"
 msgid "setting_tooltip_check_version"
 msgstr "此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些人不希望應用程式連網，因此此功能預設為「停用」。"
 
-msgid "renderer_progress_text_setup"
+#, fuzzy
+msgid "encoding_progress_text_setup"
 msgstr "正在設定渲染器..."
 
-msgid "renderer_progress_text_open_error"
+#, fuzzy
+msgid "encoding_progress_text_open_error"
 msgstr "無法開啟渲染器，請檢查路徑與設定！"
 
-msgid "renderer_progress_text_compiling_audio"
+#, fuzzy
+msgid "encoding_progress_text_compiling_audio"
 msgstr "正在編譯音訊資料..."
 
-msgid "renderer_progress_text_sending_audio_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio_error"
 msgstr "傳送音訊至渲染器時發生錯誤！"
 
-msgid "renderer_progress_text_creating_sending_data"
+#, fuzzy
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "正在建立並傳送影格資料..."
 
-msgid "renderer_progress_text_sending_data_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_data_error"
 msgstr "傳送影格至渲染器時發生錯誤！"
 
-msgid "renderer_progress_text_canceling"
+#, fuzzy
+msgid "encoding_progress_text_canceling"
 msgstr "正在取消渲染程序..."
 
-msgid "renderer_progress_text_last_frame"
+#, fuzzy
+msgid "encoding_progress_text_last_frame"
 msgstr "正在傳送最後的影格..."
 
 msgid "rendering_warning"

@@ -229,29 +229,33 @@ msgstr "Thème"
 msgid "setting_tooltip_check_version"
 msgstr "Le mode sombre est le meilleur."
 
-msgid "renderer_progress_text_setup"
+#, fuzzy
+msgid "encoding_progress_text_setup"
 msgstr "Préparation du moteur de rendu ..."
 
-msgid "renderer_progress_text_open_error"
+#, fuzzy
+msgid "encoding_progress_text_open_error"
 msgstr ""
 "Le moteur de rendu ne peut être ouvert, vérifiez le chemin et les réglages !"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Compilation des données audio ..."
 
-msgid "renderer_progress_text_sending_audio_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio_error"
 msgstr "Une erreur est apparue pendant l'envoi de l'audio au moteur de rendu !"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Création et envoi des données d'image ..."
 
-msgid "renderer_progress_text_sending_data_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_data_error"
 msgstr "Une erreur est apparue pendant l'envoi de l'image au moteur de rendu !"
 
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_canceling"
 msgstr "Annulation du processus de rendu ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Envoi des dernières images ..."
 
 msgid "rendering_warning"

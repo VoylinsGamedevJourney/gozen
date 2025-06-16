@@ -244,28 +244,28 @@ msgstr ""
 "hun applicaties verbinding maken met het internet, is deze optie standaard "
 "'uitgeschakeld'."
 
-msgid "renderer_progress_text_setup"
-msgstr "Renderer instellen ..."
+msgid "encoding_progress_text_setup"
+msgstr "Encoder instellen ..."
 
-msgid "renderer_progress_text_open_error"
-msgstr "Renderer kon niet worden geopend, controleer pad en instellingen!"
+msgid "encoding_progress_text_open_error"
+msgstr "Encoder kon niet worden geopend, controleer pad en instellingen!"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Audio data compileren ..."
 
-msgid "renderer_progress_text_sending_audio_error"
-msgstr "Er ging iets mis bij het versturen van audio naar de renderer!"
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "Er ging iets mis bij het versturen van audio naar de encoder!"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Frame data aanmaken & versturen ..."
 
-msgid "renderer_progress_text_sending_data_error"
-msgstr "Er ging iets mis bij het versturen van frame data naar de renderer!"
+msgid "encoding_progress_text_sending_data_error"
+msgstr "Er ging iets mis bij het versturen van frame data naar de encoder!"
 
-msgid "renderer_progress_text_canceling"
-msgstr "Renderproces annuleren ..."
+msgid "encoding_progress_text_canceling"
+msgstr "Encoding proces annuleren ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Laatste frames versturen ..."
 
 msgid "rendering_warning"

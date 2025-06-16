@@ -246,33 +246,33 @@ msgstr ""
 "トに接続することを好まないユーザーもいるため、この"
 "設定はデフォルトで「無効」になっています。"
 
-msgid "renderer_progress_text_setup"
-msgstr "レンダラーを準備中..."
+msgid "encoder_progress_text_setup"
+msgstr "エンコードを準備中..."
 
-msgid "renderer_progress_text_open_error"
+msgid "encoder_progress_text_open_error"
 msgstr ""
-"レンダラーを開けませんでした。パスと設定を確認して"
+"エンコードを開けませんでした。パスと設定を確認して"
 "ください！"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "encoder_progress_text_compiling_audio"
 msgstr "音声データをコンパイル中..."
 
-msgid "renderer_progress_text_sending_audio_error"
+msgid "encoder_progress_text_sending_audio_error"
 msgstr ""
-"レンダラーへの音声データ送信中に問題が発生しまし"
+"エンコードへの音声データ送信中に問題が発生しまし"
 "た！"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoder_progress_text_creating_sending_data"
 msgstr "フレームデータを作成・送信中..."
 
-msgid "renderer_progress_text_sending_data_error"
+msgid "encoder_progress_text_sending_data_error"
 msgstr ""
-"レンダラーへのフレーム送信中に問題が発生しました！"
+"エンコードへのフレーム送信中に問題が発生しました！"
 
-msgid "renderer_progress_text_canceling"
-msgstr "レンダリングプロセスをキャンセル中..."
+msgid "encoder_progress_text_canceling"
+msgstr "エンコードプロセスをキャンセル中..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoder_progress_text_last_frame"
 msgstr "最後のフレームを送信中..."
 
 msgid "rendering_warning"
