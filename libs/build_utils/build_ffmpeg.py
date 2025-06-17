@@ -22,7 +22,7 @@ from .build_deps import (
     build_x264,
     build_x265,
 )
-from .consts import (
+from .paths import (
     AOM_INSTALL_DIR_NAME,
     FFMPEG_SOURCE_DIR,
     MP3LAME_INSTALL_DIR_NAME,
@@ -34,6 +34,7 @@ from .consts import (
     X264_INSTALL_DIR_NAME,
     X265_INSTALL_DIR_NAME,
     get_ffmpeg_install_dir,
+    get_lib_dir,
 )
 from .download_deps import download_ffmpeg_deps
 from .utils import (
@@ -94,32 +95,26 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
         build_ffmpeg_windows(arch, threads, env)
         copy_lib_files_windows(arch)
         return
-    
+
     raise ValueError(f"Platform not supported for compiling ffmpeg: {platform}")
 
 
 def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
     ffmpeg_install_dir = get_ffmpeg_install_dir("linux")
-    x264_pc_dir = ffmpeg_install_dir / X264_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    x265_pc_dir = ffmpeg_install_dir / X265_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    aom_pc_dir = (
-        ffmpeg_install_dir
-        / AOM_INSTALL_DIR_NAME
-        / ("lib64" if arch == "x86_64" else "lib")
-        / "pkgconfig"
-    )
+    x264_pc_dir = get_lib_dir(ffmpeg_install_dir / X264_INSTALL_DIR_NAME) / "pkgconfig"
+    x265_pc_dir = get_lib_dir(ffmpeg_install_dir / X265_INSTALL_DIR_NAME) / "pkgconfig"
+    aom_pc_dir = get_lib_dir(ffmpeg_install_dir / AOM_INSTALL_DIR_NAME) / "pkgconfig"
     svt_av1_pc_dir = (
-        ffmpeg_install_dir
-        / SVT_AV1_INSTALL_DIR_NAME
-        / ("lib64" if arch == "x86_64" else "lib")
-        / "pkgconfig"
+        get_lib_dir(ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME) / "pkgconfig"
     )
-    vpx_pc_dir = ffmpeg_install_dir / VPX_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    opus_pc_dir = ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    ogg_pc_dir = ffmpeg_install_dir / OGG_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    vorbis_pc_dir = ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME / "lib" / "pkgconfig"
+    vpx_pc_dir = get_lib_dir(ffmpeg_install_dir / VPX_INSTALL_DIR_NAME) / "pkgconfig"
+    opus_pc_dir = get_lib_dir(ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME) / "pkgconfig"
+    ogg_pc_dir = get_lib_dir(ffmpeg_install_dir / OGG_INSTALL_DIR_NAME) / "pkgconfig"
+    vorbis_pc_dir = (
+        get_lib_dir(ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME) / "pkgconfig"
+    )
+    mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
     mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
-    mp3lame_lib_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "lib"
     mp3lame_pc_dir = mp3lame_lib_dir / "pkgconfig"
 
     pc_paths = os.environ.get("PKG_CONFIG_PATH")
@@ -181,16 +176,20 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
 
 def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
     ffmpeg_install_dir = get_ffmpeg_install_dir("windows")
-    x264_pc_dir = ffmpeg_install_dir / X264_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    x265_pc_dir = ffmpeg_install_dir / X265_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    aom_pc_dir = ffmpeg_install_dir / AOM_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    svt_av1_pc_dir = ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    vpx_pc_dir = ffmpeg_install_dir / VPX_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    opus_pc_dir = ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    ogg_pc_dir = ffmpeg_install_dir / OGG_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    vorbis_pc_dir = ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME / "lib" / "pkgconfig"
+    x264_pc_dir = get_lib_dir(ffmpeg_install_dir / X264_INSTALL_DIR_NAME) / "pkgconfig"
+    x265_pc_dir = get_lib_dir(ffmpeg_install_dir / X265_INSTALL_DIR_NAME) / "pkgconfig"
+    aom_pc_dir = get_lib_dir(ffmpeg_install_dir / AOM_INSTALL_DIR_NAME) / "pkgconfig"
+    svt_av1_pc_dir = (
+        get_lib_dir(ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME) / "pkgconfig"
+    )
+    vpx_pc_dir = get_lib_dir(ffmpeg_install_dir / VPX_INSTALL_DIR_NAME) / "pkgconfig"
+    opus_pc_dir = get_lib_dir(ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME) / "pkgconfig"
+    ogg_pc_dir = get_lib_dir(ffmpeg_install_dir / OGG_INSTALL_DIR_NAME) / "pkgconfig"
+    vorbis_pc_dir = (
+        get_lib_dir(ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME) / "pkgconfig"
+    )
+    mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
     mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
-    mp3lame_lib_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "lib"
     mp3lame_pc_dir = mp3lame_lib_dir / "pkgconfig"
 
     env = env or {}
