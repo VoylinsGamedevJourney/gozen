@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from .consts import (
+from .paths import (
     AOM_BUILD_DIR,
     AOM_REPO,
     AOM_SOURCE_DIR,

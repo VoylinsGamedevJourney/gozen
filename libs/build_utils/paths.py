@@ -12,6 +12,16 @@ def get_ffmpeg_install_dir(target_platform: str) -> Path:
     return (Path("ffmpeg") / f"bin_{target_platform}").absolute()
 
 
+def get_lib_dir(install_dir: Path) -> Path:
+    assert install_dir.exists(), f"Install directory {install_dir} does not exist"
+
+    libdir = next((d for d in install_dir.glob("lib*/")), None)
+    if libdir is None:
+        raise FileNotFoundError(f"Could not find lib directory in {install_dir}")
+
+    return libdir
+
+
 # FFmpeg dependencies
 X264_REPO = "https://code.videolan.org/videolan/x264.git"
 X264_SOURCE_DIR = Path("x264_src").absolute()

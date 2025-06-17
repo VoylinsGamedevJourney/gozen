@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Sequence
 
-from .consts import (
+from .paths import (
     AOM_BUILD_DIR,
     AOM_INSTALL_DIR_NAME,
     AOM_SOURCE_DIR,

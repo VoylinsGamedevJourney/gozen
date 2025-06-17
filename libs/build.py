@@ -24,10 +24,10 @@ environment variable usage:
   linux         export GOZEN_GIT_PATH=/usr/bin/git && python3 build.py
 """
 
+import datetime
 import os
 import subprocess
 import sys
-import datetime
 from enum import IntEnum
 
 from build_utils import build_ffmpeg, utils
@@ -100,6 +100,12 @@ def _print_nums(title: str, min: int, max: int | None, default: int) -> int:
 
     print("Aborting...")
     sys.exit(ExitCode.INVALID_OPTION)
+
+
+def str_dt(dt: datetime.timedelta) -> str:
+    mm, ss = divmod(dt.seconds, 60)
+    hh, mm = divmod(mm, 60)
+    return "%d hours %02d minutes %02d seconds" % (hh, mm, ss)
 
 
 def main() -> ExitCode:
@@ -242,20 +248,13 @@ def main() -> ExitCode:
 
             print("Successfully installed the required MSYS2 dependencies!")
 
-        print("Checking for missing Windows dependencies ...")
-        missing_programs = utils.check_required_programs_windows()
-
-        if missing_programs:
-            print("Please install the following required programs:")
-            for program, url in missing_programs.items():
-                print(f"\t{program} - {url}")
-
-            input("Press Enter to exit...")
-            return ExitCode.DEP_NOT_FOUND
+    start_time = datetime.datetime.now()
 
     # Compile ffmpeg
     if should_compile_ffmpeg:
         build_ffmpeg.compile_ffmpeg(target_platform, arch, int(threads))
+
+    print(f"Built ffmpeg in {str_dt(datetime.datetime.now() - start_time)}\n")
 
     # Compile GDE GoZen
     command = [
@@ -278,6 +277,7 @@ def main() -> ExitCode:
         print("Build failed.")
         return ExitCode.ERROR
 
+    print(f"Built in {str_dt(datetime.datetime.now() - start_time)}")
     print()
     print("v=========================v")
     print("| Done building GDE GoZen |")
