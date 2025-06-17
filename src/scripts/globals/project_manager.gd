@@ -14,6 +14,7 @@ var data: ProjectData
 var file_data: Dictionary [int, FileData] = {}
 
 
+
 func _ready() -> void:
 	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
 
@@ -235,8 +236,12 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	var file_status: Dictionary = {}
 	var still_loading: PackedInt64Array = []
 	var progress_increment: float = 0.0
+
 	for file_path: String in Toolbox.find_subfolder_files(files):
 		file_status[file_path] = 0
+	for file_path: String in files:
+		if FileAccess.file_exists(file_path):
+			file_status[file_path] = 0
 
 	progress_increment = (1 / float(file_status.keys().size())) * 50
 
