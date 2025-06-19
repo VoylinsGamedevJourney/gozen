@@ -5,10 +5,11 @@ GDE GoZen FFmpeg Builder Script
 This script handles the compilation of FFmpeg.
 """
 
-import glob
 import os
+from pathlib import Path
 import shutil
 import subprocess
+from typing import Generator
 
 from .build_deps import (
     build_aom,
@@ -38,10 +39,11 @@ from .paths import (
 )
 from .download_deps import download_ffmpeg_deps
 from .utils import (
+    CURR_ARCH,
     CURR_PLATFORM,
-    CROSS_SYSROOT,
     clear_dir,
     convert_to_msys2_path,
+    get_host_and_sysroot,
     run_command,
 )
 
@@ -76,15 +78,15 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
     download_ffmpeg_deps()
 
     print("Building FFmpeg dependencies...")
-    build_x264(platform, threads, env)
-    build_x265(platform, threads, env)
-    build_aom(platform, threads, env)
-    build_svt_av1(platform, threads, env)
-    build_vpx(platform, threads, env)
-    build_opus(platform, threads, env)
-    build_mp3lame(platform, threads, env)
-    build_ogg(platform, threads, env)
-    build_vorbis(platform, threads, env)
+    build_x264(platform, arch, threads, env)
+    build_x265(platform, arch, threads, env)
+    build_aom(platform, arch, threads, env)
+    build_svt_av1(platform, arch, threads, env)
+    build_vpx(platform, arch, threads, env)
+    build_opus(platform, arch, threads, env)
+    build_mp3lame(platform, arch, threads, env)
+    build_ogg(platform, arch, threads, env)
+    build_vorbis(platform, arch, threads, env)
 
     if platform == "linux":
         build_ffmpeg_linux(arch, threads, env)
@@ -135,6 +137,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         )
         + ((":" + pc_paths) if pc_paths else ""),
     }
+    host, _ = get_host_and_sysroot("linux", arch)
 
     cmd = [
         "./configure",
@@ -143,7 +146,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         "--enable-gpl",
         "--enable-version3",
         "--enable-pthreads",
-        f"--arch={arch}",
+        f"--arch={'aarch64' if arch == 'arm64' else arch}",
         "--target-os=linux",
         "--enable-pic",
         "--extra-cflags=-fPIC",
@@ -163,6 +166,13 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         "--enable-libsvtav1",
     ]
     cmd += FFMPEG_DISABLED_MODULES
+
+    if arch == "arm64":
+        cmd += [
+            "--enable-cross-compile",
+            f"--cross-prefix={host}-",
+            "--pkg-config=pkg-config",
+        ]
 
     build_lib(
         "FFmpeg",
@@ -266,90 +276,118 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
 
 
 def copy_lib_files_linux(arch: str):
-    path = f"bin/linux_{arch}"
-    os.makedirs(path, exist_ok=True)
+    dest_dir = Path(".") / "bin" / f"linux_{arch}"
+    _, sysroot = get_host_and_sysroot("linux", arch)
+    lib_dir = sysroot / "lib"
+    dest_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Copying lib files to {path} ...")
+    print(f"Copying lib files to {dest_dir} ...")
 
-    for file in glob.glob("ffmpeg/bin_linux/lib/*.so.*"):
-        if file.count(".") == 2:
-            shutil.copy2(file, path)
+    def find_libs(binary_path: Path) -> Generator[Path, None, None]:
+        excluded_libs = [
+            "libc.so.6",
+            "libm.so.6",
+            "libpthread.so.0",
+            "libdl.so.2",
+            "librt.so.1",
+            "ld-linux-x86-64.so.2",
+        ] + [p.name for p in ffmpeg_libs]
 
-    print("Finding and copying required system .so dependencies ...", flush=True)
+        if CURR_PLATFORM == "linux" and CURR_ARCH == arch:
+            output = subprocess.run(
+                ["ldd", binary_path], capture_output=True, text=True
+            )
+            if output.returncode != 0:
+                print(
+                    f"Failed to run ldd on {binary_path}. exit-code:{output.returncode} std-err:\n{output.stderr}"
+                )
+                return
 
-    def copy_dependencies(binary_path: str):
-        try:
-            output = subprocess.check_output(["ldd", binary_path], text=True)
-            for line in output.splitlines():
+            for line in output.stdout.splitlines():
                 if "=>" not in line:
                     continue
                 parts = line.strip().split("=>")
                 if len(parts) < 2:
                     continue
-                lib_path = parts[1].split("(")[0].strip()
+                lib_path = Path(parts[1].split("(")[0].strip())
                 if not os.path.isfile(lib_path):
                     continue
 
-                print(lib_path)
-
-                if any(
-                    lib_path.endswith(name)
-                    for name in (
-                        "libc.so.6",
-                        "libm.so.6",
-                        "libpthread.so.0",
-                        "libdl.so.2",
-                        "librt.so.1",
-                        "ld-linux-x86-64.so.2",
-                    )
-                ):
+                lib_name = lib_path.name
+                if lib_name in excluded_libs:
                     continue
 
-                lib_name = os.path.basename(lib_path)
-                dest_path = os.path.join(path, lib_name)
-
-                if os.path.abspath(lib_path) == os.path.abspath(dest_path):
-                    continue  # Avoid SameFileError
-
-                shutil.copy2(lib_path, path)
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to run ldd on {binary_path}: {e}")
-
-    # TODO: Make this work without manually adding version number
-    binaries = [
-        f"{path}/libavcodec.so.60",
-        f"{path}/libavformat.so.60",
-        f"{path}/libavutil.so.58",
-        f"{path}/libswscale.so.7",
-        f"{path}/libswresample.so.4",
-        f"bin/linux_{arch}/libgozen.linux.template_debug.{arch}.so",
-    ]
-
-    # TODO: Make this not copy all libraries, only needed ones (x264, x265)
-    for binary in binaries:
-        if os.path.exists(binary):
-            copy_dependencies(binary)
+                yield lib_path
         else:
-            print(f"Warning: {binary} not found, skipping...")
+            output = subprocess.run(
+                ["objdump", "-p", binary_path], capture_output=True, text=True
+            )
+            if output.returncode != 0:
+                print(
+                    f"Failed to run ldd on {binary_path}: exit-code:{output.returncode} std-err:\n{output.stderr}"
+                )
+                return
+
+            for line in output.stdout.splitlines():
+                if "NEEDED" not in line:
+                    continue
+
+                lib_name = line.strip().removeprefix("NEEDED").strip()
+                if lib_name in excluded_libs:
+                    continue
+
+                for lib_path in sysroot.rglob(f"lib*/*/{lib_name}"):
+                    # TODO: use objdump to make sure the file format and architecture matches
+                    if not lib_path.exists():
+                        continue
+                    yield lib_path
+                    break
+
+    def copy_dependencies(binary_path: Path) -> None:
+        for lib_path in find_libs(binary_path):
+            lib_name = lib_path.name
+            if not os.path.isfile(lib_path):
+                print(f"Couldn't find {lib_name} in {lib_dir}")
+                continue
+
+            print(f"Copying {lib_name} from {lib_dir} to {dest_dir}")
+
+            dest_path = dest_dir / lib_name
+
+            if os.path.abspath(lib_path) == os.path.abspath(dest_path):
+                print(
+                    f'Couldn\'t copy. Source "{lib_path}" and destination "{dest_path}" point to the same file.'
+                )
+                continue  # Avoid SameFileError
+
+            shutil.copy2(lib_path, dest_dir)
+
+    ffmpeg_libs = [
+        file for file in (get_ffmpeg_install_dir("linux") / "lib").glob("*.so.[0-9]*")
+    ]
+    for binary in ffmpeg_libs:
+        shutil.copy2(binary, dest_dir)
+        copy_dependencies(binary)
 
     print("Copying files for Linux finished!", flush=True)
 
 
 def copy_lib_files_windows(arch: str):
-    path = f"bin/windows_{arch}"
-    dll_dir = CROSS_SYSROOT / "bin"
+    dest_dir = Path(".") / "bin" / f"windows_{arch}"
+    _, sysroot = get_host_and_sysroot("windows", arch)
+    dll_dir = sysroot / "bin"
     extra_libs = [
         "libwinpthread-1.dll",
         "libgcc_s_seh-1.dll",
     ]
 
-    print(f"Copying lib files to {path} ...")
-    os.makedirs(path, exist_ok=True)
+    print(f"Copying lib files to {dest_dir} ...")
+    os.makedirs(dest_dir, exist_ok=True)
 
-    for file in glob.glob("ffmpeg/bin_windows/bin/*.dll") + [
+    for file in list((get_ffmpeg_install_dir("windows") / "bin").glob("*.dll")) + [
         dll_dir / dll for dll in extra_libs
     ]:
-        shutil.copy2(file, path)
+        shutil.copy2(file, dest_dir)
 
     print("Copying files for Windows finished!", flush=True)
 

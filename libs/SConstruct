@@ -5,12 +5,13 @@ import sys
 
 LIBS_COMMON = ["avcodec", "avformat", "avutil", "swresample", "swscale"]
 MARCH_FLAGS = {
-    'x86_64': 'x86-64',
-    'arm64': 'armv8-a'
+    "x86_64": "x86-64",
+    "arm64": "armv8-a",
 }
 
 
 env = SConscript("godot_cpp/SConstruct")
+
 env_suffix = env["suffix"]
 env_shlibsuffix = env["SHLIBSUFFIX"]
 
@@ -23,6 +24,10 @@ use_mingw = ARGUMENTS.get("use_mingw", "no")
 
 use_system = ARGUMENTS.get("use_system", "no")
 
+if arch == "arm64":
+    env['CC'] = 'aarch64-linux-gnu-gcc'
+    env['CXX'] = 'aarch64-linux-gnu-g++'
+    env['LINK'] = 'aarch64-linux-gnu-g++'
 
 if "linux" in platform:
     libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"

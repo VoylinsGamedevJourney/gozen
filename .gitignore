@@ -1,4 +1,6 @@
 .godot
+__pycache__
+aom_build
 
 *.x86_64
 *.so*
