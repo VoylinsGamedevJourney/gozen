@@ -264,7 +264,7 @@ def main() -> ExitCode:
         f"platform={target_platform}",
         f"arch={arch}",
     ]
-    if utils.CURR_PLATFORM == "windows":
+    if target_platform == "windows":
         command += ["use_static_cpp=yes", "use_mingw=yes"]
 
     res = utils.run_command(

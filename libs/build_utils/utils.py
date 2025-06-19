@@ -6,7 +6,7 @@ import shutil
 import subprocess
 import sysconfig
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 MSYS2_REQUIRED_PACKAGES = [
     "mingw-w64-ucrt-x86_64-binutils",
@@ -241,8 +241,50 @@ def find_msys2_win_dir() -> Path | None:
         return None
 
 
+def get_host_and_sysroot(target_platform: str, arch: str) -> tuple[str, Path]:
+    assert arch in ["x86_64", "arm64"]
+    assert target_platform in ["windows", "linux"]
+    if CURR_PLATFORM == "windows":
+        assert target_platform == "windows", (
+            "Cross compilation on windows not supported"
+        )
+        # Windows arm
+        if arch == "arm64":
+            raise ValueError("Compilation for windows arm64 not supported")
+            return "", MSYS2_DIR / "clangarm64"
+
+        # Windows x86_64
+        return "", MSYS2_DIR / "ucrt64"
+
+    assert CURR_PLATFORM == "linux", (
+        f"Platform and arch combination ({target_platform}, {arch}) not supported on ({CURR_PLATFORM})"
+    )
+
+    # Cross compile for windows x86_64
+    if target_platform == "windows":
+        assert arch == "x86_64", "Cross compilation for windows_arm not supported"
+        return "x86_64-w64-mingw32", Path(
+            _GOZEN_CROSS_SYSROOT
+        ) if _GOZEN_CROSS_SYSROOT else Path(
+            "/"
+        ) / "usr" / "x86_64-w64-mingw32" / "sys-root" / "mingw"
+
+    # Cross compile for arm linux
+    if arch == "arm64" and CURR_ARCH != "arm64":
+        return "aarch64-linux-gnu", Path(
+            _GOZEN_CROSS_SYSROOT
+        ) if _GOZEN_CROSS_SYSROOT else Path("/") / "usr" / "aarch64-linux-gnu"
+        # /usr/aarch64-redhat-linux/sys-root/fc43/usr/
+
+    # Compile for current platform and arch
+    return "", Path("/")
+
+
 # Basic Constants
 CURR_PLATFORM = os_platform.system().lower()
+CURR_ARCH: Literal["x86_64", "arm64"] = (
+    "x86_64" if os_platform.machine() in ["x86_64", "ARM64", "i386"] else "arm64"
+)
 HOMEDRIVE: str = os.environ.get("HOMEDRIVE", "C:")
 
 # GoZen Environment Variables
@@ -255,17 +297,7 @@ GIT_PATH: str = os.environ.get("GOZEN_GIT_PATH") or (
     if find_program("git") or CURR_PLATFORM != "windows"
     else f"{HOMEDRIVE}\\Program Files\\Git\\cmd\\git.exe"
 )
-CROSS_SYSROOT: Path = Path(
-    os.environ.get("GOZEN_CROSS_SYSROOT")
-    or (
-        MSYS2_DIR / "ucrt64"
-        if CURR_PLATFORM == "windows"
-        else Path("/") / "usr" / "x86_64-w64-mingw32" / "sys-root" / "mingw"
-    )
-)
-# Cross prefix is only used when cross compiling
-# some deps seem to not support this, so this is not made configurable
-CROSS_PREFIX: str = "x86_64-w64-mingw32-"
+_GOZEN_CROSS_SYSROOT = os.environ.get("GOZEN_CROSS_SYSROOT")
 
 # Other Constants
 MSYS2_SHELL: list[str] = [

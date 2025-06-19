@@ -39,9 +39,9 @@ from .paths import (
 from .download_deps import download_ffmpeg_deps
 from .utils import (
     CURR_PLATFORM,
-    CROSS_SYSROOT,
     clear_dir,
     convert_to_msys2_path,
+    get_host_and_sysroot,
     run_command,
 )
 
@@ -76,15 +76,15 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
     download_ffmpeg_deps()
 
     print("Building FFmpeg dependencies...")
-    build_x264(platform, threads, env)
-    build_x265(platform, threads, env)
-    build_aom(platform, threads, env)
-    build_svt_av1(platform, threads, env)
-    build_vpx(platform, threads, env)
-    build_opus(platform, threads, env)
-    build_mp3lame(platform, threads, env)
-    build_ogg(platform, threads, env)
-    build_vorbis(platform, threads, env)
+    build_x264(platform, arch, threads, env)
+    build_x265(platform, arch, threads, env)
+    build_aom(platform, arch, threads, env)
+    build_svt_av1(platform, arch, threads, env)
+    build_vpx(platform, arch, threads, env)
+    build_opus(platform, arch, threads, env)
+    build_mp3lame(platform, arch, threads, env)
+    build_ogg(platform, arch, threads, env)
+    build_vorbis(platform, arch, threads, env)
 
     if platform == "linux":
         build_ffmpeg_linux(arch, threads, env)
@@ -135,6 +135,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         )
         + ((":" + pc_paths) if pc_paths else ""),
     }
+    host, _ = get_host_and_sysroot("linux", arch)
 
     cmd = [
         "./configure",
@@ -163,6 +164,12 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         "--enable-libsvtav1",
     ]
     cmd += FFMPEG_DISABLED_MODULES
+
+    if arch == "arm64":
+        cmd += [
+            "--enable-cross-compile",
+            f"--cross-prefix={host}-",
+        ]
 
     build_lib(
         "FFmpeg",
@@ -337,7 +344,8 @@ def copy_lib_files_linux(arch: str):
 
 def copy_lib_files_windows(arch: str):
     path = f"bin/windows_{arch}"
-    dll_dir = CROSS_SYSROOT / "bin"
+    _, sysroot = get_host_and_sysroot("windows", arch)
+    dll_dir = sysroot / "bin"
     extra_libs = [
         "libwinpthread-1.dll",
         "libgcc_s_seh-1.dll",
