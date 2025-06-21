@@ -29,7 +29,7 @@ func _ready() -> void:
 	_set_recent_projects()
 	_set_version_label()
 	_set_new_project_defaults()
-	project_path_line_edit.text = OS.get_executable_path().get_base_dir() + "/project.gozen"
+	project_path_line_edit.text = OS.get_system_dir(OS.SYSTEM_DIR_MOVIES) + "/project.gozen"
 
 	if Settings.get_check_version():
 		_check_new_version()

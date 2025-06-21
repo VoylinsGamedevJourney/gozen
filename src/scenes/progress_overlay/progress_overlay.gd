@@ -6,6 +6,7 @@ extends PanelContainer
 @export var progress_bar: ProgressBar
 @export var progress_hint: Label
 @export var scroll_container: ScrollContainer
+@export var status_hbox: HBoxContainer
 @export var vbox: VBoxContainer
 
 var file_labels: Dictionary = {}
@@ -69,4 +70,3 @@ func update_files(files: Dictionary) -> void:
 			1:  file_labels[file].self_modulate = Color.GREEN
 			-1: file_labels[file].self_modulate = Color.RED
 			-2: file_labels[file].self_modulate = Color.GRAY
-

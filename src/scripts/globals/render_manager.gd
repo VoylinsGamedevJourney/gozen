@@ -120,10 +120,10 @@ func start() -> void:
 	await RenderingServer.frame_post_draw
 	encoder.close()
 
+	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
 
-	encoding_time = Time.get_ticks_msec() - start_time
 	print("Encoding finished. Time taken (msec): ", encoding_time)
 
 

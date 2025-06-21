@@ -162,6 +162,42 @@ func _on_copy_chapters_button_pressed() -> void:
 	DisplayServer.clipboard_set(chapters_text_edit.text)
 
 
+func _on_select_save_path_button_pressed() -> void:
+	var dialog: FileDialog = Toolbox.get_file_dialog(
+			"file_dialog_title_select_save_path",
+			FileDialog.FileMode.FILE_MODE_SAVE_FILE,
+			["*" +_get_current_extension()])
+
+	dialog.current_dir = Project.get_project_base_folder()
+	dialog.current_file = Project.get_project_name()
+	Toolbox.connect_func(dialog.file_selected, _save_path_selected)
+
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _save_path_selected(file_path: String) -> void:
+	path_line_edit.text = file_path
+
+
+func _render_finished() -> void:
+	var dialog: AcceptDialog = AcceptDialog.new()
+
+	dialog.title = tr("title_rendering_finished")
+	dialog.dialog_text = "Path: %s\n" % path_line_edit.text
+	dialog.dialog_text += "Render time: %s" % Toolbox.format_time_str(
+			RenderManager.encoding_time / 1000.0)
+	dialog.exclusive = true
+	
+	add_child(dialog)
+	dialog.popup_centered()
+	progress_overlay.queue_free()
+
+
+func _cancel_render() -> void:
+	RenderManager.cancel_encoding = true
+
+
 func _on_start_render_button_pressed() -> void:
 	# Printing info about the rendering process.
 	print("--------------------")
@@ -199,7 +235,15 @@ func _on_start_render_button_pressed() -> void:
 	progress_overlay.update_title("title_rendering")
 	progress_overlay.update_progress(0, "")
 
+	var button: Button = Button.new()
+
+	button.text = tr("button_cancel_rendering")
+	Toolbox.connect_func(button.pressed, _cancel_render)
+
 	add_child(progress_overlay)
+	var status_label: Label = progress_overlay.status_hbox.get_child(0)
+	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	progress_overlay.status_hbox.add_child(button)
 
 	# WARN: This should not be here
 	# Changing icon back to indicate that GoZen rendering has finished + we
@@ -237,46 +281,17 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		# TODO: Make these into popups instead of in the overlay.
 		RenderManager.STATUS.ERROR_OPEN: status_str = "encoding_progress_text_open_error"
 		RenderManager.STATUS.ERROR_AUDIO: status_str = "encoding_progress_text_sending_audio_error"
-		RenderManager.STATUS.ERROR_CANCELED: status_str = "encoding_progress_text_canceling"
+		RenderManager.STATUS.ERROR_CANCELED:
+			progress_overlay.queue_free() # status_str = "encoding_progress_text_canceling"
 
 		# Normal progress.
 		RenderManager.STATUS.SETUP: status_str = "encoding_progress_text_setup"
 		RenderManager.STATUS.COMPILING_AUDIO: status_str = "encoding_progress_text_compiling_audio"
 		RenderManager.STATUS.SENDING_AUDIO: status_str = "encoding_progress_text_compiling_audio"
 		RenderManager.STATUS.SENDING_FRAMES: status_str = "encoding_progress_text_creating_sending_data"
+		RenderManager.STATUS.FRAMES_SEND: status_str = "encoding_progress_text_creating_sending_data"
 		RenderManager.STATUS.LAST_FRAMES: status_str = "encoding_progress_text_last_frame"
 		RenderManager.STATUS.FINISHED: _render_finished()
 
 	progress_overlay.update_progress(floori(current_progress), status_str)
 
-
-func _on_select_save_path_button_pressed() -> void:
-	#DisplayServer.file_dialog_show(
-	#	"file_dialog_title_select_save_path",
-	#	Project.get_project_base_folder(),
-	#	Project.get_project_name(),
-	#	false,
-	#	DisplayServer.FileDialogMode.FILE_DIALOG_MODE_SAVE_FILE,
-	#	[_get_current_extension()],
-	#	_save_path_selected
-	#)
-	var dialog: FileDialog = Toolbox.get_file_dialog(
-			"file_dialog_title_select_save_path",
-			FileDialog.FileMode.FILE_MODE_SAVE_FILE,
-			["*" +_get_current_extension()])
-
-	dialog.current_dir = Project.get_project_base_folder()
-	dialog.current_file = Project.get_project_name()
-	Toolbox.connect_func(dialog.file_selected, _save_path_selected)
-
-	add_child(dialog)
-	dialog.popup_centered()
-
-
-func _save_path_selected(file_path: String) -> void:
-	path_line_edit.text = file_path
-
-
-func _render_finished() -> void:
-	adjl:
-	pass

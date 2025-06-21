@@ -10,7 +10,7 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="PanelContainer" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "scroll_container", "vbox")]
+[node name="ProgressOverlay" type="PanelContainer" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "scroll_container", "status_hbox", "vbox")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,8 +20,9 @@ theme_type_variation = &"overlay_background"
 script = ExtResource("1_7woll")
 title_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TitleLabel")
 progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator/ProgressBar")
-progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/LoadingHintLabel")
+progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox/LoadingHintLabel")
 scroll_container = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer")
+status_hbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox")
 vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVBox")
 
 [node name="Panel" type="PanelContainer" parent="."]
@@ -73,8 +74,12 @@ grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_757g1")
 theme_override_styles/fill = SubResource("StyleBoxFlat_kw4wx")
 
-[node name="LoadingHintLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="StatusHBox" type="HBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
 layout_mode = 2
+
+[node name="LoadingHintLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"info_label"
 text = "status_project_loading_init"
 horizontal_alignment = 1
