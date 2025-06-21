@@ -10,18 +10,16 @@ For the localization system we use [Gettext PO files](https://www.gnu.org/softwa
 | English (Source)      | `en`    | [Voylin](https://github.com/voylin)         |
 | Chinese (Traditional) | `zh_TW` | [aappaapp](https://github.com/Aappaapp)     |
 | Dutch                 | `nl`    | [Voylin](https://github.com/Voylin)         |
+| Spanish               | `es_ES` | [Dekotale](https://github.com/dekotale)     |
 | French                | `fr_FR` | [Slander](https://github.com/Slander), [#Guigui](https://github.com/HastagGuigui) |
-| German                | `de`    | [flipdp]()                                  |
+| German                | `de`    | [flipdp](https://github.com/flipdp)         |
 | Japanese              | `ja`    | [Voylin](https://github.com/Voylin)         |
-| Polish                | `pl`    | [SzczurekYT](https://github.com/SzczurekYT) |
-| Urdu                  | `ur`    | [AdilDevStuff](https://github.com/AdilDevStuff) |
+| Urdu                  | `ur_PK` | [AdilDevStuff](https://github.com/AdilDevStuff) |
 
 ### Languages needing maintainers ⚠️
 | Language             | Code    |
 | -------------------- | ------- |
-| Brazilian Portuguese | `pt_BR` |
-| Russian              | `ru`    |
-| Ukrainian            | `uk`    |
+|                      |         |
 
 This list of languages is from entries which have been made but don't have any active maintainers anymore.
 
