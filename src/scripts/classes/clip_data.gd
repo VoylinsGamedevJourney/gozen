@@ -68,8 +68,8 @@ func get_frame(frame_nr: int) -> Texture:
 func get_clip_audio_data() -> PackedByteArray:
 	var file_data: FileData = Project.get_file_data(file_id)
 	var data: PackedByteArray = file_data.audio.data.slice(
-			RenderingWindow.get_sample_count(begin),
-			RenderingWindow.get_sample_count(begin+duration))
+			Toolbox.get_sample_count(begin),
+			Toolbox.get_sample_count(begin+duration))
 
 	if effects_audio.mute:
 		data.fill(0)

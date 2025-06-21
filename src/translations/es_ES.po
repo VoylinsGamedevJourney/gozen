@@ -40,9 +40,6 @@ msgstr "Renderizar vídeo"
 msgid "title_render_audio"
 msgstr "Renderizar audio"
 
-msgid "title_metadata"
-msgstr "Metadatos"
-
 msgid "title_cpu_threads"
 msgstr "Hilos de CPU"
 
@@ -309,39 +306,33 @@ msgstr "Hilos/núcleos"
 msgid "render_option_tooltip_threads_cores"
 msgstr "Pon '0' para usar todos los hilos disponibles."
 
-msgid "render_option_metadata_title"
-msgstr "Título"
-
-msgid "render_option_metadata_comment"
-msgstr "Comentario"
-
-msgid "render_option_metadata_author"
-msgstr "Autor"
-
-msgid "render_option_metadata_copyright"
-msgstr "Derechos de autor"
-
 msgid "render_option_video_length"
 msgstr "Duración del vídeo"
 
 msgid "render_option_render_time"
 msgstr "Tiempo de renderizado"
 
+#, fuzzy
 msgid "notification_update_available"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_init"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_preparing_timeline"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_files"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_playback_setup"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_finalizing"
 msgstr ""
 

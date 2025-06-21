@@ -101,6 +101,6 @@ static func open_project_settings() -> void:
 
 
 static func open_render_menu() -> void:
-	instance.get_tree().root.add_child(preload("uid://chdpurqhtqieq").instantiate())
+	InputManager.show_render_screen()
 	instance.queue_free()
 

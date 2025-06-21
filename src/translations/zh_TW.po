@@ -39,9 +39,6 @@ msgstr "渲染影片"
 msgid "title_render_audio"
 msgstr "渲染音訊"
 
-msgid "title_metadata"
-msgstr "詮釋資料"
-
 msgid "title_cpu_threads"
 msgstr "CPU 執行緒"
 
@@ -295,18 +292,6 @@ msgstr "執行緒/核心數"
 
 msgid "render_option_tooltip_threads_cores"
 msgstr "設定為「0」以使用所有可用的執行緒。"
-
-msgid "render_option_metadata_title"
-msgstr "標題"
-
-msgid "render_option_metadata_comment"
-msgstr "註解"
-
-msgid "render_option_metadata_author"
-msgstr "作者"
-
-msgid "render_option_metadata_copyright"
-msgstr "版權"
 
 msgid "render_option_video_length"
 msgstr "影片長度"

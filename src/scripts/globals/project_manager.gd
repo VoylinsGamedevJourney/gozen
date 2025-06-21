@@ -273,16 +273,16 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 
 	while still_loading.size() != 0:
 		for id: int in still_loading:
-			if get_file(id).type == File.TYPE.VIDEO:
-				if get_file_data(id).video != null and get_file_data(id).video.is_open():
-					file_status[get_file(id).path] = 1
-					dropped_overlay.update_files(file_status)
-					dropped_overlay.increment_progress_bar(progress_increment)
-					file_added.emit(id)
-					still_loading.remove_at(still_loading.find(id))
-			else:
+			if get_file(id).type != File.TYPE.VIDEO:
 				printerr("This should not happen! File is type: ", get_file(id).type)
 				dropped_overlay.increment_progress_bar(progress_increment)
+				still_loading.remove_at(still_loading.find(id))
+				continue
+			if get_file_data(id).video != null and get_file_data(id).video.is_open():
+				file_status[get_file(id).path] = 1
+				dropped_overlay.update_files(file_status)
+				dropped_overlay.increment_progress_bar(progress_increment)
+				file_added.emit(id)
 				still_loading.remove_at(still_loading.find(id))
 
 		await RenderingServer.frame_post_draw
@@ -297,6 +297,15 @@ func set_project_path(project_path: String) -> void:
 
 func get_project_path() -> String:
 	return data.project_path
+
+
+func get_project_name() -> String:
+	var p_path: String = data.project_path.get_file()
+	return p_path.trim_suffix("." + p_path.get_extension())
+
+
+func get_project_base_folder() -> String:
+	return data.project_path.get_base_dir()
 
  
 func set_file(file_id: int, file: File) -> void:

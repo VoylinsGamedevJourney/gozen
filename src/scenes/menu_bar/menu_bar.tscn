@@ -22,3 +22,6 @@ text = "button_screen_editing"
 [node name="RenderScreenButton" type="Button" parent="."]
 layout_mode = 2
 text = "button_screen_render"
+
+[connection signal="pressed" from="EditorScreenButton" to="." method="_on_editor_screen_button_pressed"]
+[connection signal="pressed" from="RenderScreenButton" to="." method="_on_render_screen_button_pressed"]

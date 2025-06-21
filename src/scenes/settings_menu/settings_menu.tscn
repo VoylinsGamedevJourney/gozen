@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bjen0oagwidr7"]
 
-[ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings/settings.gd" id="1_26ncd"]
+[ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
 
 [node name="Settings" type="PanelContainer" node_paths=PackedStringArray("panel_label", "side_bar_vbox", "settings_vbox")]
 anchors_preset = 15

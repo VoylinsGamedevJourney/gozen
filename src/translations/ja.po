@@ -42,9 +42,6 @@ msgstr "動画をレンダリング"
 msgid "title_render_audio"
 msgstr "音声をレンダリング"
 
-msgid "title_metadata"
-msgstr "メタデータ"
-
 msgid "title_cpu_threads"
 msgstr "CPUスレッド"
 
@@ -328,18 +325,6 @@ msgid "render_option_tooltip_threads_cores"
 msgstr ""
 "利用可能な全てのスレッドを使用するには「0」を入力"
 "してください。"
-
-msgid "render_option_metadata_title"
-msgstr "タイトル"
-
-msgid "render_option_metadata_comment"
-msgstr "コメント"
-
-msgid "render_option_metadata_author"
-msgstr "作成者"
-
-msgid "render_option_metadata_copyright"
-msgstr "著作権"
 
 msgid "render_option_video_length"
 msgstr "動画の長さ"

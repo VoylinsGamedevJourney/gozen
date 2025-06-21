@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=23 format=3 uid="uid://dxq4vg1l5rwhj"]
+[gd_resource type="Theme" load_steps=27 format=3 uid="uid://dxq4vg1l5rwhj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
 
@@ -112,6 +112,27 @@ corner_radius_bottom_left = 7
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alpqq"]
 bg_color = Color(0.164706, 0.164706, 0.164706, 0.666667)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x043i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6u4ua"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_alpqq"]
+content_margin_left = 7.0
+content_margin_top = 7.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fey51"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.8, 0.8, 0.8, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_li2em"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwiux"]
@@ -180,6 +201,11 @@ main_button/base_type = &"Button"
 main_button/styles/normal = SubResource("StyleBoxFlat_5ij44")
 overlay_background/base_type = &"PanelContainer"
 overlay_background/styles/panel = SubResource("StyleBoxFlat_alpqq")
+render_profile_button/base_type = &"Button"
+render_profile_button/styles/focus = SubResource("StyleBoxEmpty_x043i")
+render_profile_button/styles/hover = SubResource("StyleBoxEmpty_6u4ua")
+render_profile_button/styles/normal = SubResource("StyleBoxEmpty_alpqq")
+render_profile_button/styles/pressed = SubResource("StyleBoxFlat_fey51")
 side_bar_button/base_type = &"Button"
 side_bar_button/styles/focus = SubResource("StyleBoxEmpty_li2em")
 side_bar_button/styles/hover = SubResource("StyleBoxFlat_kwiux")

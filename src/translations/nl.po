@@ -42,9 +42,6 @@ msgstr "Video renderen"
 msgid "title_render_audio"
 msgstr "Audio renderen"
 
-msgid "title_metadata"
-msgstr "Metadata"
-
 msgid "title_cpu_threads"
 msgstr "CPU-threads"
 
@@ -317,18 +314,6 @@ msgstr "Threads/cores"
 
 msgid "render_option_tooltip_threads_cores"
 msgstr "Zet op '0' om alle beschikbare threads te gebruiken."
-
-msgid "render_option_metadata_title"
-msgstr "Titel"
-
-msgid "render_option_metadata_comment"
-msgstr "Opmerking"
-
-msgid "render_option_metadata_author"
-msgstr "Auteur"
-
-msgid "render_option_metadata_copyright"
-msgstr "Auteursrecht"
 
 msgid "render_option_video_length"
 msgstr "Video lengte"

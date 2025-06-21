@@ -18,6 +18,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_close_button_pressed() -> void:
+	Settings.save()
 	self.queue_free()
 
 
@@ -238,12 +239,13 @@ func _option_button_item_selected(id: int, option_button: OptionButton, callable
 func _create_check_button(default: bool, callable: Callable, tooltip: String) -> CheckButton:
 	var check_button: CheckButton = CheckButton.new()
 
+	check_button.flat = true
 	check_button.button_pressed = default
 	check_button.tooltip_text = tooltip
 	check_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	Toolbox.connect_func(check_button.toggled, callable)
 
-	check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	check_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	check_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 	return check_button

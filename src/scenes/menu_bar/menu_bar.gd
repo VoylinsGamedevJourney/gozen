@@ -27,12 +27,12 @@ func build_menu_bar() -> void:
 	_add_popup_menu("menu_bar_editor", [
 		MenuItem.new("menu_bar_editor_open_settings", Settings.open_settings_menu, preload("uid://c35rwqbeqmush")),
 		MenuItem.new("line"),
-		MenuItem.new("menu_bar_editor_open_url_site", Toolbox.open_url_site, preload("uid://npglkea55x8p")),
-		MenuItem.new("menu_bar_editor_open_url_manual", Toolbox.open_url_manual, preload("uid://c8ydairucfdee")),
-		MenuItem.new("menu_bar_editor_open_url_tutorials", Toolbox.open_url_tutorials, preload("uid://bbuw3ew0x2ghk")),
-		MenuItem.new("menu_bar_editor_open_url_discord", Toolbox.open_url_discord, preload("uid://npglkea55x8p")),
+		MenuItem.new("menu_bar_editor_open_url_site", Toolbox.open_url.bind("site"), preload("uid://npglkea55x8p")),
+		MenuItem.new("menu_bar_editor_open_url_manual", Toolbox.open_url.bind("manual"), preload("uid://c8ydairucfdee")),
+		MenuItem.new("menu_bar_editor_open_url_tutorials", Toolbox.open_url.bind("tutorials"), preload("uid://bbuw3ew0x2ghk")),
+		MenuItem.new("menu_bar_editor_open_url_discord", Toolbox.open_url.bind("discord"), preload("uid://npglkea55x8p")),
 		MenuItem.new("line"),
-		MenuItem.new("menu_bar_editor_open_url_support", Toolbox.open_url_support, preload("uid://qin4ceo74nw6")),
+		MenuItem.new("menu_bar_editor_open_url_support", Toolbox.open_url.bind("support"), preload("uid://qin4ceo74nw6")),
 		MenuItem.new("menu_bar_editor_open_about_gozen", _open_about_gozen, preload("uid://rfesonobkxh1")),
 	])
 
@@ -66,6 +66,15 @@ func _on_id_pressed(id: int, menu: PopupMenu) -> void:
 
 func _open_about_gozen() -> void:
 	add_child(preload("uid://d4e5ndtm65ok3").instantiate())
+
+
+func _on_editor_screen_button_pressed() -> void:
+	InputManager.show_editor_screen()
+
+
+func _on_render_screen_button_pressed() -> void:
+	InputManager.show_render_screen()
+
 
 
 class MenuItem:

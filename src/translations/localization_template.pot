@@ -12,18 +12,14 @@ msgstr ""
 msgid "title_about_gozen"
 msgstr ""
 
-
 msgid "title_appearance"
 msgstr ""
-
 
 msgid "title_defaults"
 msgstr ""
 
-
 msgid "title_timeline"
 msgstr ""
-
 
 msgid "title_extras"
 msgstr ""
@@ -34,34 +30,23 @@ msgstr ""
 msgid "title_rendering"
 msgstr ""
 
-
 msgid "title_rendering_finished"
 msgstr ""
-
 
 msgid "title_render_video"
 msgstr ""
 
-
 msgid "title_render_audio"
 msgstr ""
-
-
-msgid "title_metadata"
-msgstr ""
-
 
 msgid "title_cpu_threads"
 msgstr ""
 
-
 msgid "title_recent_projects"
 msgstr ""
 
-
 msgid "title_getting_started"
 msgstr ""
-
 
 msgid "title_new_project"
 msgstr ""
@@ -87,22 +72,17 @@ msgstr ""
 msgid "button_tooltip_create_new_project"
 msgstr ""
 
-
 msgid "button_gozen_site"
 msgstr ""
-
 
 msgid "button_manual"
 msgstr ""
 
-
 msgid "button_tutorials"
 msgstr ""
 
-
 msgid "button_discord_server"
 msgstr ""
-
 
 msgid "button_support_gozen"
 msgstr ""
@@ -116,26 +96,20 @@ msgstr ""
 msgid "button_open_project"
 msgstr ""
 
-
 msgid "button_create_new_project"
 msgstr ""
-
 
 msgid "button_tooltip_editor_settings"
 msgstr ""
 
-
 msgid "button_cancel"
 msgstr ""
-
 
 msgid "button_cancel_rendering"
 msgstr ""
 
-
 msgid "button_reset"
 msgstr ""
-
 
 msgid "button_return"
 msgstr ""
@@ -149,14 +123,11 @@ msgstr ""
 msgid "button_start_render"
 msgstr ""
 
-
 msgid "button_save"
 msgstr ""
 
-
 msgid "button_save_settings"
 msgstr ""
-
 
 msgid "button_close"
 msgstr ""
@@ -164,140 +135,106 @@ msgstr ""
 msgid "text_version"
 msgstr ""
 
-
 msgid "text_gozen_website"
 msgstr ""
-
 
 msgid "text_github_repo"
 msgstr ""
 
-
 msgid "text_discord_link"
 msgstr ""
 
-
 msgid "text_support_gozen"
 msgstr ""
-
 
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
 msgstr ""
 
-
 msgid "text_rename_file_to"
 msgstr ""
-
 
 msgid "text_advanced_settings"
 msgstr ""
 
-
 msgid "text_path"
 msgstr ""
-
 
 msgid "text_resolution"
 msgstr ""
 
-
 msgid "text_framerate"
 msgstr ""
-
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr ""
 
-
 msgid "tooltip_setting_background_color"
 msgstr ""
-
 
 msgid "setting_background_color"
 msgstr ""
 
-
 msgid "setting_language"
 msgstr ""
-
 
 msgid "setting_theme"
 msgstr ""
 
-
 msgid "setting_tooltip_theme"
 msgstr ""
-
 
 msgid "setting_show_menu_bar"
 msgstr ""
 
-
 msgid "setting_waveform_style"
 msgstr ""
-
 
 msgid "setting_default_image_duration"
 msgstr ""
 
-
 msgid "setting_tooltip_default_image_duration"
 msgstr ""
-
 
 msgid "setting_default_project_resolution"
 msgstr ""
 
-
 msgid "setting_tooltip_default_project_resolution_x"
 msgstr ""
-
 
 msgid "setting_tooltip_default_project_resolution_y"
 msgstr ""
 
-
 msgid "setting_default_project_framerate"
 msgstr ""
-
 
 msgid "setting_tooltip_default_project_framerate"
 msgstr ""
 
-
 msgid "setting_default_track_amount"
 msgstr ""
-
 
 msgid "setting_pause_after_dragging"
 msgstr ""
 
-
 msgid "setting_delete_empty_space_mod"
 msgstr ""
-
 
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr ""
 
-
 msgid "setting_check_version"
 msgstr ""
-
 
 msgid "setting_tooltip_check_version"
 msgstr ""
 
-
 msgid "encoding_progress_text_setup"
 msgstr ""
 
-
 msgid "encoding_progress_text_open_error"
 msgstr ""
-
 
 msgid "encoding_progress_text_compiling_audio"
 msgstr ""
@@ -305,102 +242,65 @@ msgstr ""
 msgid "encoding_progress_text_sending_audio"
 msgstr ""
 
-
 msgid "encoding_progress_text_sending_audio_error"
 msgstr ""
-
 
 msgid "encoding_progress_text_creating_sending_data"
 msgstr ""
 
-
 msgid "encoding_progress_text_sending_data_error"
 msgstr ""
-
 
 msgid "encoding_progress_text_canceling"
 msgstr ""
 
-
 msgid "encoding_progress_text_last_frame"
 msgstr ""
-
 
 msgid "rendering_warning"
 msgstr ""
 
-
 msgid "render_option_path"
 msgstr ""
-
 
 msgid "render_option_profile"
 msgstr ""
 
-
 msgid "render_option_audio_codec"
 msgstr ""
-
 
 msgid "render_option_video_codec"
 msgstr ""
 
-
 msgid "render_option_quality"
 msgstr ""
-
 
 msgid "render_option_tooltip_quality"
 msgstr ""
 
-
 msgid "render_option_speed"
 msgstr ""
-
 
 msgid "render_option_tooltip_speed"
 msgstr ""
 
-
 msgid "render_option_gop_size"
 msgstr ""
-
 
 msgid "render_option_tooltip_gop_size"
 msgstr ""
 
-
 msgid "render_option_threads_cores"
 msgstr ""
-
 
 msgid "render_option_tooltip_threads_cores"
 msgstr ""
 
-
-msgid "render_option_metadata_title"
-msgstr ""
-
-
-msgid "render_option_metadata_comment"
-msgstr ""
-
-
-msgid "render_option_metadata_author"
-msgstr ""
-
-
-msgid "render_option_metadata_copyright"
-msgstr ""
-
-
 msgid "render_option_video_length"
 msgstr ""
 
-
 msgid "render_option_render_time"
 msgstr ""
-
 
 msgid "notification_update_available"
 msgstr ""
@@ -469,4 +369,7 @@ msgid "menu_bar_editor_open_url_support"
 msgstr ""
 
 msgid "menu_bar_editor_open_about_gozen"
+msgstr ""
+
+msgid "file_dialog_title_select_save_path"
 msgstr ""

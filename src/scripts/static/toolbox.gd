@@ -39,6 +39,14 @@ static func connect_func(connect_signal: Signal, connect_callable: Callable) -> 
 		push_error("Error connecting to signal '%s' to '%s'!" % [
 				connect_signal.get_name(), connect_callable.get_method()])
 
+
+static func print_header(text: String, color: String = "white") -> void:
+	print_rich("[color=%s][b]" % color, text)
+
+
+static func print_info(title: String, context: Variant, color: String = "white") -> void:
+	print_rich("[color=%s][b]" % color, title, "[/b]: [color=gray]", context)
+
 	
 static func print_resize_error() -> void:
 	# This func is needed so we don't have the same error message everywhere.
@@ -65,28 +73,13 @@ static func print_erase_error() -> void:
 
 
 static func open_url(url: String) -> void:
-	@warning_ignore("return_value_discarded")
-	OS.shell_open(url)
-
-
-static func open_url_site() -> void:
-	open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
-
-
-static func open_url_manual() -> void:
-	open_url(str(ProjectSettings.get_setting_with_override("urls/manual")))
-
-
-static func open_url_tutorials() -> void:
-	open_url(str(ProjectSettings.get_setting_with_override("urls/tutorials")))
-
-
-static func open_url_discord() -> void:
-	open_url(str(ProjectSettings.get_setting_with_override("urls/discord")))
-
-
-static func open_url_support() -> void:
-	open_url(str(ProjectSettings.get_setting_with_override("urls/support")))
+	if url.begins_with("http") or url.begins_with("www"):
+		@warning_ignore("return_value_discarded")
+		OS.shell_open(url)
+	else:
+		url = url.trim_prefix("urls/") # Just in case
+		@warning_ignore("return_value_discarded")
+		OS.shell_open(str(ProjectSettings.get_setting("urls/%s" % url)))
 
 
 static func get_unique_id(keys: PackedInt64Array) -> int:
@@ -163,19 +156,18 @@ static func get_sample_count(frames: int) -> int:
 	return int(44100 * 4 * float(frames) / Project.get_framerate())
 
 
-static func get_video_extension(video_codec: Renderer.VIDEO_CODEC) -> String:
+static func get_video_extension(video_codec: Encoder.VIDEO_CODEC) -> String:
 	match video_codec:
-		Renderer.VIDEO_CODEC.V_HEVC: return ".mp4"
-		Renderer.VIDEO_CODEC.V_H264: return ".mp4"
-		Renderer.VIDEO_CODEC.V_MPEG4: return ".mp4"
-		Renderer.VIDEO_CODEC.V_MPEG2: return ".mpg"
-		Renderer.VIDEO_CODEC.V_MPEG1: return ".mpg"
-		Renderer.VIDEO_CODEC.V_MJPEG: return ".mov"
-		Renderer.VIDEO_CODEC.V_AV1: return ".webm"
-		Renderer.VIDEO_CODEC.V_VP9: return ".webm"
-		Renderer.VIDEO_CODEC.V_VP8: return ".webm"
+		Encoder.VIDEO_CODEC.V_HEVC: return ".mp4"
+		Encoder.VIDEO_CODEC.V_H264: return ".mp4"
+		Encoder.VIDEO_CODEC.V_MPEG4: return ".mp4"
+		Encoder.VIDEO_CODEC.V_MPEG2: return ".mpg"
+		Encoder.VIDEO_CODEC.V_MPEG1: return ".mpg"
+		Encoder.VIDEO_CODEC.V_MJPEG: return ".mov"
+		Encoder.VIDEO_CODEC.V_AV1: return ".webm"
+		Encoder.VIDEO_CODEC.V_VP9: return ".webm"
+		Encoder.VIDEO_CODEC.V_VP8: return ".webm"
 
 	printerr("Unrecognized codec! ", video_codec)
 	return ""
-
 

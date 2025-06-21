@@ -22,13 +22,13 @@ static func create(file_path: String) -> File:
 	var file: File = File.new()
 	var ext: String = file_path.get_extension().to_lower()
 
-	if ext in ProjectSettings.get_setting_with_override("extensions/image"):
+	if ext in ProjectSettings.get_setting("extensions/image"):
 		file.type = TYPE.IMAGE
 		file.modified_time = FileAccess.get_modified_time(file_path)
-	elif ext in ProjectSettings.get_setting_with_override("extensions/audio"):
+	elif ext in ProjectSettings.get_setting("extensions/audio"):
 		file.type = TYPE.AUDIO
 		file.modified_time = FileAccess.get_modified_time(file_path)
-	elif ext in ProjectSettings.get_setting_with_override("extensions/video"):
+	elif ext in ProjectSettings.get_setting("extensions/video"):
 		file.type = TYPE.VIDEO
 		file.modified_time = FileAccess.get_modified_time(file_path)
 	elif file_path == "temp://image":
@@ -56,11 +56,11 @@ static func check_valid(file_path: String) -> bool:
 		return false
 	var ext: String = file_path.get_extension()
 
-	if ext in ProjectSettings.get_setting_with_override("extensions/image"):
+	if ext in ProjectSettings.get_setting("extensions/image"):
 		return true
-	elif ext in ProjectSettings.get_setting_with_override("extensions/audio"):
+	elif ext in ProjectSettings.get_setting("extensions/audio"):
 		return true
-	elif ext in ProjectSettings.get_setting_with_override("extensions/video"):
+	elif ext in ProjectSettings.get_setting("extensions/video"):
 		return true
 
 	return false

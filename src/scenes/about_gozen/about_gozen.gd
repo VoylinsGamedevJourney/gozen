@@ -15,8 +15,7 @@ func _ready() -> void:
 
 func _set_version_label() -> void:
 	var version_string: String = tr("text_version").capitalize()
-	version_string += ProjectSettings.get_setting_with_override(
-			"application/config/version")
+	version_string += ProjectSettings.get_setting("application/config/version")
 
 	if OS.is_debug_build():
 		version_string += "-debug"
@@ -25,11 +24,11 @@ func _set_version_label() -> void:
 	
 	
 func _set_links_label() -> void:
-	var site_url: String = ProjectSettings.get_setting_with_override("urls/site")
-	var github_url: String = ProjectSettings.get_setting_with_override("urls/github")
-	var discord_url: String = ProjectSettings.get_setting_with_override("urls/discord")
-	var support_url: String = ProjectSettings.get_setting_with_override("urls/support")
-	var youtube_url: String = ProjectSettings.get_setting_with_override("urls/youtube_channel")
+	var site_url: String = ProjectSettings.get_setting("urls/site")
+	var github_url: String = ProjectSettings.get_setting("urls/github")
+	var discord_url: String = ProjectSettings.get_setting("urls/discord")
+	var support_url: String = ProjectSettings.get_setting("urls/support")
+	var youtube_url: String = ProjectSettings.get_setting("urls/youtube_channel")
 
 	var lines: PackedStringArray = [
 			tr("text_gozen_website") + ": " + URL.replace("URL", site_url),

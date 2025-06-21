@@ -39,9 +39,6 @@ msgstr "Video rendern"
 msgid "title_render_audio"
 msgstr "Audio rendern"
 
-msgid "title_metadata"
-msgstr "Metadaten"
-
 msgid "title_cpu_threads"
 msgstr "CPU Threads"
 
@@ -307,18 +304,6 @@ msgstr "Threads/Kerne"
 msgid "render_option_tooltip_threads_cores"
 msgstr "Wähle '0' um alle verfügbaren Threads zu verwenden."
 
-msgid "render_option_metadata_title"
-msgstr "Titel"
-
-msgid "render_option_metadata_comment"
-msgstr "Kommentar"
-
-msgid "render_option_metadata_author"
-msgstr "Autor"
-
-msgid "render_option_metadata_copyright"
-msgstr "Urheberrecht"
-
 msgid "render_option_video_length"
 msgstr "Videolänge"
 
@@ -328,18 +313,23 @@ msgstr "Renderdauer"
 msgid "notification_update_available"
 msgstr "Update verfügbar!"
 
+#, fuzzy
 msgid "status_project_loading_init"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_preparing_timeline"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_files"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_playback_setup"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_finalizing"
 msgstr ""
 

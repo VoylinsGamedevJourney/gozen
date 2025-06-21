@@ -40,9 +40,6 @@ msgstr "Rendu vidéo"
 msgid "title_render_audio"
 msgstr "Rendu audio"
 
-msgid "title_metadata"
-msgstr "Métadata"
-
 msgid "title_cpu_threads"
 msgstr "Threads CPU"
 
@@ -308,39 +305,33 @@ msgstr "Threads/cœurs"
 msgid "render_option_tooltip_threads_cores"
 msgstr "Définissez à '0' pour utiliser tous les threads disponibles."
 
-msgid "render_option_metadata_title"
-msgstr "Titre"
-
-msgid "render_option_metadata_comment"
-msgstr "Commentaire"
-
-msgid "render_option_metadata_author"
-msgstr "Auteur"
-
-msgid "render_option_metadata_copyright"
-msgstr "Droits d'auteur"
-
 msgid "render_option_video_length"
 msgstr "Longueur de la vidéo"
 
 msgid "render_option_render_time"
 msgstr "Temps de rendu"
 
+#, fuzzy
 msgid "notification_update_available"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_init"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_preparing_timeline"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_files"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_playback_setup"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_finalizing"
 msgstr ""
 

@@ -1,0 +1,282 @@
+extends VSplitContainer
+
+
+const USER_PROFILES_PATH: String = "user://render_profiles/"
+
+
+@export var render_profiles_hbox: HBoxContainer
+@export var grid_audio: GridContainer
+
+@export_group("Path")
+@export var path_line_edit: LineEdit
+
+@export_group("Video")
+@export var video_codec_option_button: OptionButton
+@export var video_quality_hslider: HSlider
+@export var video_gop_spin_box: SpinBox
+@export_subgroup("H264 options")
+@export var video_speed_label: Label
+@export var video_speed_hslider: HSlider
+
+@export_group("Audio")
+@export var audio_codec_option_button: OptionButton
+
+@export_group("Threads")
+@export var threads_spin_box: SpinBox
+
+@export_group("Chapters")
+@export var chapters_text_edit: TextEdit
+
+var button_group: ButtonGroup = ButtonGroup.new()
+var status_indicator_id: int 
+
+var progress_overlay: ProgressOverlay
+var progress_frame_increase: float = 0.0
+var current_progress: float = 0.0
+
+
+
+func _ready() -> void:
+	Toolbox.connect_func(RenderManager.update_encoder_status, update_encoder_status)
+	Toolbox.connect_func(Project.project_ready, _set_default_path)
+
+	# Setup the codec option buttons.
+	_setup_codec_option_buttons()
+
+	# Adding render profiles
+	_add_default_profiles()
+
+	if DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
+		# Dir existed so there might be profiles inside. We go over the files
+		# alphabetically and check if they are valid RenderProfile classes.
+		var files: PackedStringArray = DirAccess.get_files_at(USER_PROFILES_PATH)
+		if files.size() != 0:
+			render_profiles_hbox.add_child(HSeparator.new())
+
+		for file_name: String in files:
+			add_profile(load(USER_PROFILES_PATH + file_name) as RenderProfile)
+	elif DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
+		# Else we create the directory in case we need to save a profile to it.
+		printerr("Couldn't create folder at %s!" % USER_PROFILES_PATH)
+
+	# Setting "YouTube" to the default loaded profile
+	var first_profile: Button = render_profiles_hbox.get_child(0)
+	first_profile.button_pressed = true
+	first_profile.pressed.emit()
+
+	# Setting thread count to all threads minus 1.
+	threads_spin_box.value = OS.get_processor_count() - 1
+	threads_spin_box.max_value = OS.get_processor_count()
+
+	# Render audio by default.
+	_on_render_audio_check_button_toggled(true)
+
+
+func _set_default_path() -> void:
+	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
+
+
+func _get_current_extension() -> String:
+	return Toolbox.get_video_extension(video_codec_option_button.get_selected_id())
+
+
+func _add_default_profiles() -> void:
+	# Default projects should appear in this order. User profiles get added
+	# after these default profiles separated by a line.
+	add_profile(preload("uid://bp6oahvgcklvc")) # YouTube
+	add_profile(preload("uid://f5ffyfe5gb5b"))  # YouTube HQ
+	add_profile(preload("uid://du35gfskoijp"))  # AV1
+	add_profile(preload("uid://b8lmmvi0gnujr")) # VP9
+	add_profile(preload("uid://drlbs008bf7so")) # VP8
+	add_profile(preload("uid://bcktb6d5bti7t")) # HEVC
+
+
+func _setup_codec_option_buttons() -> void:
+	video_codec_option_button.add_item("HEVC", Encoder.VIDEO_CODEC.V_HEVC)
+	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264) 
+	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4) 
+	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2) 
+	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1) 
+	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG) 
+	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1) 
+	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9) 
+	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8) 
+
+	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV) 
+	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM) 
+	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3) 
+	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC) 
+	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS) 
+	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS) 
+	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC) 
+	audio_codec_option_button.add_item("NONE", Encoder.AUDIO_CODEC.A_NONE) 
+
+
+func add_profile(profile: RenderProfile) -> void:
+	var button: Button = Button.new()
+
+	button.icon = profile.icon
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.expand_icon = true
+	button.custom_minimum_size.x = 70
+
+	button.toggle_mode = true
+	button.button_group = button_group
+	button.theme_type_variation = "render_profile_button"
+	button.tooltip_text = "Profile: %s" % profile.profile_name
+	Toolbox.connect_func(button.pressed, load_profile.bind(profile))
+
+	render_profiles_hbox.add_child(button)
+
+
+func load_profile(profile: RenderProfile) -> void:
+	# Set all the render settings correct.
+	for index: int in video_codec_option_button.item_count:
+		if video_codec_option_button.get_item_id(index) == profile.video_codec:
+			video_codec_option_button.selected = index
+			break
+
+	video_quality_hslider.value = profile.crf
+	video_gop_spin_box.value = profile.gop
+
+	if profile.video_codec == Encoder.VIDEO_CODEC.V_H264:
+		video_speed_label.visible = true
+		video_speed_hslider.visible = true
+		video_speed_hslider.value = profile.h264_preset
+	else:
+		video_speed_label.visible = false
+		video_speed_hslider.visible = false
+
+	for index: int in audio_codec_option_button.item_count:
+		if audio_codec_option_button.get_item_id(index) == profile.audio_codec:
+			audio_codec_option_button.selected = index
+			break
+
+
+func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
+	grid_audio.visible = toggled_on
+
+
+func _on_copy_chapters_button_pressed() -> void:
+	# TODO: Make this update everytime a chapter got changed/added.
+	DisplayServer.clipboard_set(chapters_text_edit.text)
+
+
+func _on_start_render_button_pressed() -> void:
+	# Printing info about the rendering process.
+	print("--------------------")
+	Toolbox.print_header("Rendering process started")
+	Toolbox.print_info("Path", path_line_edit.text)
+	Toolbox.print_info("Resolution", Project.get_resolution())
+	Toolbox.print_info("Framerate", Project.get_framerate())
+	Toolbox.print_info("Video codec", video_codec_option_button.get_selected_id())
+	Toolbox.print_info("CRF", int(0 - video_quality_hslider.value))
+	Toolbox.print_info("GOP", int(video_gop_spin_box.value))
+	if video_codec_option_button.get_selected_id() == Encoder.VIDEO_CODEC.V_H264:
+		Toolbox.print_info("h264 preset", int(video_speed_hslider.value))
+	Toolbox.print_info("Audio codec", audio_codec_option_button.get_selected_id())
+	Toolbox.print_info("Cores/threads", threads_spin_box.value)
+	Toolbox.print_info("Frames to process", Project.get_timeline_end() + 1)
+	print("--------------------")
+
+	# Resetting progress values.
+	progress_frame_increase = (94.0 / Project.get_timeline_end()) * floori(Project.get_framerate())
+	current_progress = 0.0
+
+	# Changing icon to indicate that GoZen is rendering.
+	var gozen_icon: CompressedTexture2D = preload("uid://cwv5gaisvmwv7")
+	var rendering_icon: CompressedTexture2D = preload("uid://b6r37nt1xhvq6")
+
+	DisplayServer.set_icon(rendering_icon.get_image())
+	status_indicator_id = DisplayServer.create_status_indicator(
+			rendering_icon, tr("title_rendering"), Callable())
+
+	# Display the progress popup.
+	if progress_overlay != null:
+		progress_overlay.queue_free()
+
+	progress_overlay = preload("uid://d4h7t8ccus0yv").instantiate()
+	progress_overlay.update_title("title_rendering")
+	progress_overlay.update_progress(0, "")
+
+	add_child(progress_overlay)
+
+	# WARN: This should not be here
+	# Changing icon back to indicate that GoZen rendering has finished + we
+	# delete the status indicator.
+	DisplayServer.set_icon(gozen_icon.get_image())
+	DisplayServer.delete_status_indicator(status_indicator_id)
+
+	RenderManager.encoder = Encoder.new()
+	RenderManager.encoder.set_resolution(Project.get_resolution())
+	RenderManager.encoder.set_framerate(Project.get_framerate())
+	RenderManager.encoder.set_file_path(path_line_edit.text)
+	RenderManager.encoder.set_video_codec_id(video_codec_option_button.get_selected_id())
+	RenderManager.encoder.set_crf(int(0 - video_quality_hslider.value))
+	RenderManager.encoder.set_h264_preset(int(video_speed_hslider.value))
+	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
+	RenderManager.encoder.set_audio_codec_id(audio_codec_option_button.get_selected_id())
+	RenderManager.encoder.set_threads(int(threads_spin_box.value))
+	RenderManager.start()
+
+
+func update_encoder_status(status: RenderManager.STATUS) -> void:
+	if progress_overlay == null:
+		printerr("ProgressOverlay is null!")
+		return
+
+	var status_str: String = ""
+	if status == RenderManager.STATUS.FRAMES_SEND:
+ 		# Update bar from 6 to 99.
+		current_progress += progress_frame_increase
+	elif status >= 0:
+		current_progress = status
+
+	match status:
+		# Errors, something went wrong.
+		# TODO: Make these into popups instead of in the overlay.
+		RenderManager.STATUS.ERROR_OPEN: status_str = "encoding_progress_text_open_error"
+		RenderManager.STATUS.ERROR_AUDIO: status_str = "encoding_progress_text_sending_audio_error"
+		RenderManager.STATUS.ERROR_CANCELED: status_str = "encoding_progress_text_canceling"
+
+		# Normal progress.
+		RenderManager.STATUS.SETUP: status_str = "encoding_progress_text_setup"
+		RenderManager.STATUS.COMPILING_AUDIO: status_str = "encoding_progress_text_compiling_audio"
+		RenderManager.STATUS.SENDING_AUDIO: status_str = "encoding_progress_text_compiling_audio"
+		RenderManager.STATUS.SENDING_FRAMES: status_str = "encoding_progress_text_creating_sending_data"
+		RenderManager.STATUS.LAST_FRAMES: status_str = "encoding_progress_text_last_frame"
+		RenderManager.STATUS.FINISHED: _render_finished()
+
+	progress_overlay.update_progress(floori(current_progress), status_str)
+
+
+func _on_select_save_path_button_pressed() -> void:
+	#DisplayServer.file_dialog_show(
+	#	"file_dialog_title_select_save_path",
+	#	Project.get_project_base_folder(),
+	#	Project.get_project_name(),
+	#	false,
+	#	DisplayServer.FileDialogMode.FILE_DIALOG_MODE_SAVE_FILE,
+	#	[_get_current_extension()],
+	#	_save_path_selected
+	#)
+	var dialog: FileDialog = Toolbox.get_file_dialog(
+			"file_dialog_title_select_save_path",
+			FileDialog.FileMode.FILE_MODE_SAVE_FILE,
+			["*" +_get_current_extension()])
+
+	dialog.current_dir = Project.get_project_base_folder()
+	dialog.current_file = Project.get_project_name()
+	Toolbox.connect_func(dialog.file_selected, _save_path_selected)
+
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _save_path_selected(file_path: String) -> void:
+	path_line_edit.text = file_path
+
+
+func _render_finished() -> void:
+	adjl:
+	pass

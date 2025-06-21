@@ -40,9 +40,6 @@ msgstr "رینڈر ویڈیو"
 msgid "title_render_audio"
 msgstr "رینڈر آڈیو"
 
-msgid "title_metadata"
-msgstr "میٹاڈیٹا"
-
 msgid "title_cpu_threads"
 msgstr "سی پی یو تھریڈز"
 
@@ -311,39 +308,33 @@ msgstr "تھریڈز/کورز"
 msgid "render_option_tooltip_threads_cores"
 msgstr "تمام دستیاب تھریدز استعمال کرنے کے لیِے '0' لگائیں."
 
-msgid "render_option_metadata_title"
-msgstr "عنوان"
-
-msgid "render_option_metadata_comment"
-msgstr "تبصرہ"
-
-msgid "render_option_metadata_author"
-msgstr "مصنف"
-
-msgid "render_option_metadata_copyright"
-msgstr "کاپی رائیٹ"
-
 msgid "render_option_video_length"
 msgstr "وڈیو کی لمبائ"
 
 msgid "render_option_render_time"
 msgstr "رینڈر کا وقت"
 
+#, fuzzy
 msgid "notification_update_available"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_init"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_preparing_timeline"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_loading_files"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_playback_setup"
 msgstr ""
 
+#, fuzzy
 msgid "status_project_finalizing"
 msgstr ""
 
@@ -355,8 +346,10 @@ msgstr "نیا پروجیکت"
 msgid "command_editor_settings"
 msgstr "ایڈیٹر کی ترتیبات."
 
+#, fuzzy
 msgid "command_project_settings"
 msgstr ""
 
+#, fuzzy
 msgid "command_render_menu"
 msgstr ""

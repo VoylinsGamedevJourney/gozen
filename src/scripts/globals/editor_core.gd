@@ -35,6 +35,19 @@ var skips: int = 0
 
 
 
+func _ready() -> void:
+	viewport = SubViewport.new()
+	viewport.size = Vector2i(1920, 1080)
+	viewport.size_2d_override_stretch = true
+
+	var background: ColorRect = ColorRect.new()
+
+	background.color = Color("#000000")
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(background)
+	add_child(viewport)
+
+
 func _process(delta: float) -> void:
 	if !is_playing:
 		return

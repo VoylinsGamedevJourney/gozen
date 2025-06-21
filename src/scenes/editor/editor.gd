@@ -6,19 +6,20 @@ static var instance: EditorUI
 
 
 @export var menu_bar: MenuBar
+@export var screen_tab_container: TabContainer
 
 
 
 func _ready() -> void:
 	instance = self
+
+	switch_screen(0)
 	print_startup_info()
-
-	EditorCore.viewport = %ProjectViewSubViewport
-	_show_menu_bar(Settings.get_show_menu_bar())
-
+	Toolbox.connect_func(InputManager.on_show_editor_screen, switch_screen.bind(0))
+	Toolbox.connect_func(InputManager.on_show_render_screen, switch_screen.bind(1))
+	Toolbox.connect_func(InputManager.on_switch_screen, switch_screen_quick)
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
-	Toolbox.connect_func(Settings.on_show_menu_bar_changed, _show_menu_bar)
 
 	# Check if editor got opened with a project path as argument.
 	for arg: String in OS.get_cmdline_args():
@@ -26,68 +27,42 @@ func _ready() -> void:
 			Project.open(arg)
 			return
 
-	# Showing Startup Screen
+	# Showing Startup Screen.
 	add_child(preload("uid://bqlcn30hs8qp5").instantiate())
 	
 
 func print_startup_info() -> void:
-	var header: Callable = (func(text: String) -> void:
-			print_rich("[color=purple][b]", text))
-	var info: Callable = (func(title: String, context: Variant) -> void:
-			print_rich("[color=purple][b]", title, "[/b]: [color=gray]", context))
+	var color: String = "purple"
+	Toolbox.print_header("--==  GoZen - Video Editor  ==--", color)
 
-	header.call("--==  GoZen - Video Editor  ==--")
-	info.call("GoZen Version", ProjectSettings.get_setting("application/config/version"))
-	info.call("OS", OS.get_model_name())
-	info.call("OS Version", OS.get_version())
-	info.call("Distribution", OS.get_distribution_name())
-	info.call("Processor", OS.get_processor_name())
-	info.call("Threads", OS.get_processor_count())
-	info.call("Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
-				  	str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)), 
-				  	str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))])
-	info.call("Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
-				  	RenderingServer.get_video_adapter_name(),
-				  	RenderingServer.get_video_adapter_api_version(),
-				  	RenderingServer.get_video_adapter_type()])
-	info.call("Locale", OS.get_locale())
-	info.call("Startup args", OS.get_cmdline_args())
-	header.call("--==--================--==--")
+	for info_print: PackedStringArray in [
+			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
+			["OS", OS.get_model_name()],
+			["OS Version", OS.get_version()],
+			["Distribution", OS.get_distribution_name()],
+			["Processor", OS.get_processor_name()],
+			["Threads", OS.get_processor_count()],
+			["Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
+				str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)), 
+				str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))]],
+			["Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
+				RenderingServer.get_video_adapter_name(),
+				RenderingServer.get_video_adapter_api_version(),
+				RenderingServer.get_video_adapter_type()]],
+			["Locale", OS.get_locale()],
+			["Startup args", OS.get_cmdline_args()]]:
+		Toolbox.print_info(info_print[0], info_print[1], color)
 
-
-func _show_menu_bar(value: bool) -> void:
-	if menu_bar != null:
-		menu_bar.visible = value
+	Toolbox.print_header("--==--================--==--", color)
 
 
-func _on_menu_bar_project_id_pressed(id: int) -> void:
-	match id:
-		0: # Save
-			Project.save()
-		1: # Save as
-			Project.save_as()
-		2: # Load
-			Project.open_project()
-		4: # Open project settings
-			add_child(preload("uid://d1h5tylky47rt").instantiate())
-		5: # Open render menu
-			add_child(preload("uid://chdpurqhtqieq").instantiate())
+func switch_screen(index: int) -> void:
+	if RenderManager.encoder == null or !RenderManager.encoder.is_open():
+		screen_tab_container.current_tab = index
 
 
-func _on_menu_bar_editor_id_pressed(id: int) -> void:
-	match id:
-		0: # Open settings
-			add_child(preload("uid://bjen0oagwidr7").instantiate())
-		2: # Open GoZen site
-			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
-		3: # Open manual
-			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/manual")))
-		4: # Open tutorials
-			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/tutorials")))
-		5: # Open Discord server
-			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/discord")))
-		7: # Support GoZen
-			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/support")))
-		8: # Open "about GoZen" popup
-			add_child(preload("uid://d4e5ndtm65ok3").instantiate())
+func switch_screen_quick() -> void:
+	if RenderManager.encoder == null or !RenderManager.encoder.is_open():
+		if !screen_tab_container.select_next_available():
+			screen_tab_container.current_tab = 0
 

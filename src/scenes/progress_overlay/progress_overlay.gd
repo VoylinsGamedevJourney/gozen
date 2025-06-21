@@ -23,7 +23,11 @@ func update_progress(value: int, text: String) -> void:
 
 
 func update_progress_bar(value: int, wait_frame: bool = false) -> void:
-	progress_bar.value = value
+	var tween: Tween = create_tween()
+
+	@warning_ignore("return_value_discarded")
+	tween.tween_property(progress_bar, "value", value, 1)
+
 	if wait_frame:
 		await RenderingServer.frame_post_draw
 
@@ -33,10 +37,15 @@ func update_progress_hint(text: String) -> void:
 
 
 func increment_progress_bar(value: float) -> void:
-	progress_bar.value += value
+	var tween: Tween = create_tween()
+
+	@warning_ignore("return_value_discarded")
+	tween.tween_property(progress_bar, "value", progress_bar.value + value, 0.1)
 
 
 func update_files(files: Dictionary) -> void:
+	# This is only used for when files have been added to a project in bulk or
+	# when a file needs loading time.
 	# Structure of files should be - file_path: status
 	# - 1: Loaded
 	# - 0: Loading

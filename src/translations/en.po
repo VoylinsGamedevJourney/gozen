@@ -42,9 +42,6 @@ msgstr "Render video"
 msgid "title_render_audio"
 msgstr "Render audio"
 
-msgid "title_metadata"
-msgstr "Metadata"
-
 msgid "title_cpu_threads"
 msgstr "CPU threads"
 
@@ -318,18 +315,6 @@ msgstr "Threads/cores"
 msgid "render_option_tooltip_threads_cores"
 msgstr "Put on '0' to use all available threads."
 
-msgid "render_option_metadata_title"
-msgstr "Title"
-
-msgid "render_option_metadata_comment"
-msgstr "Comment"
-
-msgid "render_option_metadata_author"
-msgstr "Author"
-
-msgid "render_option_metadata_copyright"
-msgstr "Copyright"
-
 msgid "render_option_video_length"
 msgstr "Video length"
 
@@ -404,3 +389,6 @@ msgstr "Support GoZen"
 
 msgid "menu_bar_editor_open_about_gozen"
 msgstr "About GoZen"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "Select save path"

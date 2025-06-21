@@ -113,8 +113,7 @@ func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 
 func _set_version_label() -> void:
 	var version_string: String = tr("text_version") + ": "
-	version_string += ProjectSettings.get_setting_with_override(
-			"application/config/version")
+	version_string += ProjectSettings.get_setting("application/config/version")
 
 	if OS.is_debug_build():
 		version_string += "-debug"
@@ -138,27 +137,27 @@ func _on_image_author_meta_clicked(meta: Variant) -> void:
 
 
 func _on_support_project_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/support")))
+	Toolbox.open_url("support")
 	
 
 func _on_go_zen_logo_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
+	Toolbox.open_url("site")
 
 
 func _on_site_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/site")))
+	Toolbox.open_url("site")
 
 
 func _on_manual_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/manual")))
+	Toolbox.open_url("manual")
 
 
 func _on_tutorials_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/tutorials")))
+	Toolbox.open_url("tutorials")
 
 
 func _on_discord_server_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/discord")))
+	Toolbox.open_url("discord")
 
 
 func _on_open_project_button_pressed() -> void:
@@ -231,7 +230,7 @@ func _set_project_path(path: String) -> void:
 
 func _check_new_version() -> void:
 	# NOTE: This will only start working once we have an actual release and not a pre-release!
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/latest_release_check")))
+	Toolbox.open_url("latest_release_check")
 
 	http_request = HTTPRequest.new()
 	add_child(http_request)
@@ -241,7 +240,7 @@ func _check_new_version() -> void:
 
 	# TODO: Change this to open the URL of the OS download instead of GitHub Repo
 	Toolbox.connect_func(new_version_available_button.pressed, func() -> void:
-			Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/latest_release"))))
+			Toolbox.open_url("latest_release"))
 
 
 func _check_new_version_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -278,7 +277,7 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 	var patch: int = -1
 	var tag: int = 3
 
-	var current_release: String = str(ProjectSettings.get_setting_with_override("application/config/version"))
+	var current_release: String = ProjectSettings.get_setting("application/config/version")
 	var current_major: int = int(current_release.split('.')[0])
 	var current_minor: int = int(current_release.split('.')[0])
 	var current_patch: int = -1
@@ -331,16 +330,16 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 
 func _on_sponsor_logo_input(event: InputEvent, sponsor: String) -> void:
 	if event.is_pressed():
-		Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/sponsors/%s" % sponsor)))
+		Toolbox.open_url("sponsors/%s" % sponsor)
 
 
 func _on_sponsor_name_input(event: InputEvent, sponsor: String) -> void:
 	if event.is_pressed():
-		Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/sponsors/%s" % sponsor)))
+		Toolbox.open_url("sponsors/%s" % sponsor)
 
 
 func _on_become_sponsor_button_pressed() -> void:
-	Toolbox.open_url(str(ProjectSettings.get_setting_with_override("urls/become_sponsor_info")))
+	Toolbox.open_url("become_sponsor_info")
 
 
 func _on_close_sponsors_button_pressed() -> void:
