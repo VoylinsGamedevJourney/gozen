@@ -57,7 +57,7 @@ func _process(_delta: float) -> void:
 			EditorCore.set_frame(new_frame)
 			new_frame = -1
 
-
+	
 func _input(event: InputEvent) -> void:
 	if Project.data == null:
 		return
@@ -68,12 +68,14 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_pressed("ui_right"):
 			EditorCore.set_frame(EditorCore.frame_nr + 1)
 
+	if event.is_action_pressed("clip_split"):
+		_clips_split(EditorCore.frame_nr)
+		get_viewport().set_input_as_handled()
+
 	if event is InputEventMouseButton and (event as InputEventMouseButton).is_released():
 		if preview.visible:
 			preview.visible = false
 		
-	if event.is_action_pressed("clip_split"):
-		_clips_split(EditorCore.frame_nr)
 	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
 		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://l1tap0q8rgjc"]
+[gd_scene load_steps=16 format=3 uid="uid://l1tap0q8rgjc"]
 
 [ext_resource type="PackedScene" uid="uid://dxd6juoiahioo" path="res://scenes/file_panel_types/file_panel_types.tscn" id="1_6ua06"]
 [ext_resource type="Script" uid="uid://c2d6titke1rt8" path="res://scenes/edit_screen/edit_screen.gd" id="1_qa2ll"]
@@ -12,20 +12,12 @@
 [ext_resource type="Texture2D" uid="uid://dbpodibqe4ml1" path="res://assets/icons/video_effects.svg" id="8_u10bm"]
 [ext_resource type="Texture2D" uid="uid://yarovsxqsw5" path="res://assets/icons/audio_effects.svg" id="9_3falb"]
 [ext_resource type="Texture2D" uid="uid://y0xdhtp02fh1" path="res://assets/icons/refresh.svg" id="10_p6l5x"]
-[ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scripts/timeline.gd" id="11_h1cnn"]
-[ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="12_pkp45"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t27w5"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_3btpq"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lmvvn"]
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_wrb8p"]
-color = Color(0.654902, 0.0941176, 0.945098, 1)
-grow_end = 300.0
-thickness = 2
-vertical = true
 
 [node name="EditScreen" type="VSplitContainer"]
 anchors_preset = 15
@@ -608,80 +600,6 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="BottomHBox" type="HBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="Timeline" type="PanelContainer" parent="BottomHBox" node_paths=PackedStringArray("lines", "scroll_bar", "scroll_main", "main_control", "clips", "preview", "playhead")]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"box"
-script = ExtResource("11_h1cnn")
-lines = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Lines")
-scroll_bar = NodePath("VBoxContainer/TimelineBoxScroll")
-scroll_main = NodePath("VBoxContainer/TimelinePanel/TimelineScroll")
-main_control = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl")
-clips = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Clips")
-preview = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Preview")
-playhead = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Playhead")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="BottomHBox/Timeline"]
-layout_mode = 2
-
-[node name="TimelineBoxScroll" type="ScrollContainer" parent="BottomHBox/Timeline/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-horizontal_scroll_mode = 3
-vertical_scroll_mode = 0
-
-[node name="TimelineBox" type="PanelContainer" parent="BottomHBox/Timeline/VBoxContainer/TimelineBoxScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_type_variation = &"box"
-
-[node name="TimelinePanel" type="PanelContainer" parent="BottomHBox/Timeline/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="TimelineScroll" type="ScrollContainer" parent="BottomHBox/Timeline/VBoxContainer/TimelinePanel"]
-layout_mode = 2
-scroll_horizontal_custom_step = 24.0
-scroll_vertical_custom_step = 8.0
-
-[node name="TimelineControl" type="Control" parent="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Clips" type="Control" parent="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-layout_mode = 2
-anchors_preset = 0
-mouse_filter = 1
-
-[node name="Preview" type="Control" parent="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-modulate = Color(1, 1, 1, 0.607843)
-layout_mode = 2
-anchors_preset = 0
-
-[node name="Lines" type="VBoxContainer" parent="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-modulate = Color(1, 1, 1, 0.470588)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="Playhead" type="Panel" parent="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxLine_wrb8p")
-
-[node name="AudioMeter" parent="BottomHBox" instance=ExtResource("12_pkp45")]
-layout_mode = 2
-
 [connection signal="pressed" from="HSplit/HSplit/ViewPanel/Margin/VBox/ButtonsHBox/SkipPrevButton" to="HSplit/HSplit/ViewPanel" method="_on_skip_prev_button_pressed"]
 [connection signal="pressed" from="HSplit/HSplit/ViewPanel/Margin/VBox/ButtonsHBox/PlayButton" to="HSplit/HSplit/ViewPanel" method="_on_play_button_pressed"]
 [connection signal="pressed" from="HSplit/HSplit/ViewPanel/Margin/VBox/ButtonsHBox/PauseButton" to="HSplit/HSplit/ViewPanel" method="_on_pause_button_pressed"]
@@ -716,5 +634,3 @@ layout_mode = 2
 [connection signal="toggled" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MuteCheckButton" to="HSplit/EffectsPanel" method="_on_mute_check_button_toggled"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainSpinBox" to="HSplit/EffectsPanel" method="_on_gain_spin_box_value_changed"]
 [connection signal="item_selected" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoOptionButton" to="HSplit/EffectsPanel" method="_on_mono_option_button_item_selected"]
-[connection signal="gui_input" from="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll" to="BottomHBox/Timeline" method="_on_timeline_scroll_gui_input"]
-[connection signal="gui_input" from="BottomHBox/Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl" to="BottomHBox/Timeline" method="_on_main_gui_input"]

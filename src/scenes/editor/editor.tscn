@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://b0r37lfkj7wl6"]
+[gd_scene load_steps=6 format=3 uid="uid://b0r37lfkj7wl6"]
 
 [ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scenes/editor/editor.gd" id="1_nbwom"]
 [ext_resource type="PackedScene" uid="uid://6snp6sstgbb5" path="res://scenes/menu_bar/menu_bar.tscn" id="2_7gtdv"]
+[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline_bar/timeline_bar.tscn" id="5_jwsr6"]
 [ext_resource type="PackedScene" uid="uid://l1tap0q8rgjc" path="res://scenes/edit_screen/edit_screen.tscn" id="8_rolao"]
 [ext_resource type="PackedScene" uid="uid://71mkki6432yy" path="res://scenes/render_screen/render_screen.tscn" id="9_p4u40"]
 
@@ -13,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"background"
 script = ExtResource("1_nbwom")
-screen_tab_container = NodePath("VBox/ScreenTabContainer")
+screen_tab_container = NodePath("VBox/VSplitContainer/ScreenTabContainer")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_direction = 2
@@ -22,17 +23,24 @@ layout_mode = 2
 [node name="MenuBarHBox" parent="VBox" instance=ExtResource("2_7gtdv")]
 layout_mode = 2
 
-[node name="ScreenTabContainer" type="TabContainer" parent="VBox"]
+[node name="VSplitContainer" type="VSplitContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScreenTabContainer" type="TabContainer" parent="VBox/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 tabs_visible = false
 
-[node name="EditTab" parent="VBox/ScreenTabContainer" instance=ExtResource("8_rolao")]
+[node name="EditTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("8_rolao")]
 layout_mode = 2
 
-[node name="RenderTab" parent="VBox/ScreenTabContainer" instance=ExtResource("9_p4u40")]
+[node name="RenderTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("9_p4u40")]
 visible = false
+layout_mode = 2
+
+[node name="TimelineBar" parent="VBox/VSplitContainer" instance=ExtResource("5_jwsr6")]
 layout_mode = 2
 
 [node name="ProjectViewSubViewport" type="SubViewport" parent="."]
