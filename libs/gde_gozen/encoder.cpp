@@ -250,17 +250,8 @@ bool Encoder::_open_output_file() {
 bool Encoder::_write_header() {
 	AVDictionary* options = nullptr;
 
-	if (!meta_title.is_empty())
-		av_dict_set(&options, "title", meta_title.utf8(), 0);
-	else
-		av_dict_set(&options, "title", path.get_file().utf8(), 0);
-
-	if (!meta_comment.is_empty())
-		av_dict_set(&options, "comment", meta_comment.utf8(), 0);
-	if (!meta_author.is_empty())
-		av_dict_set(&options, "author", meta_author.utf8(), 0);
-	if (!meta_copyright.is_empty())
-		av_dict_set(&options, "copyright", meta_copyright.utf8(), 0);
+	av_dict_set(&options, "title", path.get_file().utf8(), 0);
+	av_dict_set(&options, "comment", "Rendered with the GoZen Video editor.", 0);
 
 	response = avformat_write_header(av_format_ctx.get(), &options);
 	av_dict_free(&options);
@@ -659,10 +650,5 @@ void Encoder::_bind_methods() {
 	BIND_METHOD_ARGS(set_h264_preset, "value");
 
 	BIND_METHOD_ARGS(set_sample_rate, "value");
-
-	BIND_METHOD_ARGS(set_video_meta_title, "new_title");
-	BIND_METHOD_ARGS(set_video_meta_comment, "new_comment");
-	BIND_METHOD_ARGS(set_video_meta_author, "new_author");
-	BIND_METHOD_ARGS(set_video_meta_copyright, "new_copyright");
 }
 

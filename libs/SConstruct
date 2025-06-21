@@ -7,7 +7,7 @@ import platform as os_platform
 LIBS_COMMON = ['avcodec', 'avformat', 'avutil', 'swresample', 'swscale']
 MARCH_FLAGS = {
     'x86_64': 'x86-64',
-    'arm64': 'native'  # Using 'native' for ARM64 is often safer than specifying specific architecture
+    'arm64': 'armv8-a'
 }
 
 

@@ -6,6 +6,7 @@
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/time.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
 
 #include "ffmpeg.hpp"
 #include "ffmpeg_helpers.hpp"
@@ -65,12 +66,6 @@ private:
 	// Godot classes
 	String path = "";
 	Vector2i resolution = Vector2i(1920, 1080);
-
-	// Video metadata
-	String meta_title = "";
-	String meta_comment = "Rendered with the GoZen Video editor.";
-	String meta_author = "";
-	String meta_copyright = "";
 
 	// Private classes
 	bool _add_video_stream();
@@ -180,11 +175,6 @@ public:
 	}
 
 	inline void set_sample_rate(int value) { sample_rate = value; }
-
-	inline void set_video_meta_title(const String &new_title) { meta_title = new_title; }
-	inline void set_video_meta_comment(const String &new_comment) { meta_comment = new_comment; }
-	inline void set_video_meta_author(const String &new_author) { meta_author = new_author; }
-	inline void set_video_meta_copyright(const String &new_copyright) { meta_copyright = new_copyright; }
 
 protected:
 	static void _bind_methods();
