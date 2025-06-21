@@ -1,8 +1,8 @@
 [submodule "libs/godot_cpp"]
 	path = libs/godot_cpp
-	url = git@github.com:godotengine/godot-cpp.git
+	url = https://github.com/godotengine/godot-cpp.git
 	ignore = dirty
 [submodule "libs/ffmpeg"]
 	path = libs/ffmpeg
-	url = git@github.com:FFmpeg/FFmpeg.git
+	url = https://github.com/FFmpeg/FFmpeg.git
 	ignore = dirty
