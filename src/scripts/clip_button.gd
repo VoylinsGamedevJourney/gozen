@@ -65,7 +65,6 @@ func _process(_delta: float) -> void:
 
 		position.x = Timeline.get_frame_pos(_visual_start_frame)
 		size.x = Timeline.get_clip_size(_visual_duration)
-
 		queue_redraw()
 
 
@@ -239,7 +238,7 @@ func _on_resize_engaged(left: bool) -> void:
 			previous = max(0, i - 1)
 
 		if previous != -1:
-			max_left_resize = clip_data.duration + previous
+			max_left_resize = clip_data.start_frame + previous
 		max_right_resize = clip_data.end_frame
 	else:
 		for i: int in Project.get_track_keys(clip_data.track_id):
