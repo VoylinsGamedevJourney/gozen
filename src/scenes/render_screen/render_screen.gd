@@ -216,7 +216,7 @@ func _on_start_render_button_pressed() -> void:
 	print("--------------------")
 
 	# Resetting progress values.
-	progress_frame_increase = (94.0 / Project.get_timeline_end()) * floori(Project.get_framerate())
+	progress_frame_increase = (97.0 / Project.get_timeline_end()) * RenderManager.buffer_size
 	current_progress = 0.0
 
 	# Changing icon to indicate that GoZen is rendering.
@@ -240,7 +240,7 @@ func _on_start_render_button_pressed() -> void:
 	button.text = tr("button_cancel_rendering")
 	Toolbox.connect_func(button.pressed, _cancel_render)
 
-	add_child(progress_overlay)
+	get_tree().root.add_child(progress_overlay)
 	var status_label: Label = progress_overlay.status_hbox.get_child(0)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	progress_overlay.status_hbox.add_child(button)

@@ -19,7 +19,7 @@ static func format_file_nickname(file_name: String, size: int) -> String:
 	return new_name
 
 
-static func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray) -> FileDialog:
+static func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray = []) -> FileDialog:
 	var dialog: FileDialog = FileDialog.new()
 
 	dialog.force_native = true

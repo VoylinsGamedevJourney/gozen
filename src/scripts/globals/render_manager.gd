@@ -28,6 +28,8 @@ var cancel_encoding: bool = false
 var start_time: int = 0
 var encoding_time: int = 0
 
+var buffer_size: int = 5
+
 
 
 func stop_encoder() -> void:
@@ -76,19 +78,17 @@ func start() -> void:
 	print("Encoder starts sending frames ...")
 	update_encoder_status.emit(STATUS.SENDING_FRAMES)
 
-	var frame_array_size: int = floori(Project.get_framerate())
 	var frame_array: Array[Image] = []
 	var frame_pos: int = 0
 	var thread: Thread = Thread.new()
 
-	if frame_array.resize(frame_array_size):
+	if frame_array.resize(buffer_size):
 		Toolbox.print_resize_error()
 
 	for i: int in Project.get_timeline_end() + 1:
 		if cancel_encoding: break
-		await RenderingServer.frame_post_draw
 
-		if frame_pos == frame_array_size:
+		if frame_pos == buffer_size:
 			if thread.is_started():
 				await thread.wait_to_finish()
 			if thread.start(_send_frames.bind(frame_array.duplicate())):
@@ -97,9 +97,10 @@ func start() -> void:
 			frame_array.fill(null)
 			frame_pos = 0
 
+		await RenderingServer.frame_post_draw
 		frame_array[frame_pos] = viewport.get_image()
 		frame_pos += 1
-		EditorCore.set_frame() # Getting the next frame in line.
+		EditorCore.set_frame() # Getting the next frame ready.
 
 	if thread.is_alive() or thread.is_started():
 		await thread.wait_to_finish()

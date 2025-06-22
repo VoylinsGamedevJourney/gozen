@@ -399,6 +399,9 @@ msgstr "Support GoZen"
 msgid "menu_bar_editor_open_about_gozen"
 msgstr "About GoZen"
 
+msgid "file_dialog_title_add_files"
+msgstr "Add files"
+
 msgid "file_dialog_title_select_save_path"
 msgstr "Select save path"
 

@@ -39,11 +39,14 @@ func _file_menu_pressed(id: int) -> void:
 	match id:
 		0: # TODO: Add file(s)
 			var dialog: FileDialog = Toolbox.get_file_dialog(
-					tr("title_save_image_to_file"),
-					FileDialog.FILE_MODE_SAVE_FILE,
-					["*.png", "*.jpg", "*.webp"])
+					tr("file_dialog_title_add_files"),
+					FileDialog.FILE_MODE_OPEN_FILES)
 
+			Toolbox.connect_func(dialog.files_selected, Project._on_files_dropped)
+			add_child(dialog)
+			dialog.popup_centered()
 		1: # TODO: Add text
+			pass
 		2: # TODO: Add color
 			pass
 

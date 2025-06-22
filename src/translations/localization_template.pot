@@ -380,6 +380,9 @@ msgstr ""
 msgid "menu_bar_editor_open_about_gozen"
 msgstr ""
 
+msgid "file_dialog_title_add_files"
+msgstr ""
+
 msgid "file_dialog_title_select_save_path"
 msgstr ""
 
