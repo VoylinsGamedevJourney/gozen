@@ -75,6 +75,9 @@ msgstr "Chapters"
 msgid "title_save_image_to_file"
 msgstr "Save image to file"
 
+msgid "title_save_video_audio_to_wav"
+msgstr "Save video audio to wav"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
@@ -407,3 +410,30 @@ msgstr "Add text"
 
 msgid "file_panel_item_add_color"
 msgstr "Add color"
+
+msgid "popup_item_rename"
+msgstr "Rename"
+
+msgid "popup_item_reload"
+msgstr "Reload"
+
+msgid "popup_item_delete"
+msgstr "Delete"
+
+msgid "popup_item_duplicate"
+msgstr "Duplicate"
+
+msgid "popup_item_save_as_file"
+msgstr "Save as file ..."
+
+msgid "popup_item_extract_audio"
+msgstr "Extract audio (WAV)"
+
+msgid "popup_separator_image_options"
+msgstr "Image options"
+
+msgid "popup_separator_video_options"
+msgstr "Video options"
+
+msgid "popup_separator_text_options"
+msgstr "Text options"

@@ -2,6 +2,7 @@ extends PanelContainer
 
 
 @export var tree: Tree
+@export var file_menu_button: MenuButton
 
 var folder_items: Dictionary[String, TreeItem] = {}
 var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
@@ -19,6 +20,11 @@ func _ready() -> void:
 	tree.set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
 	folder_items["/"] = tree.create_item()
 
+	# Setting the max width needs to be done in this way.
+	for i: int in file_menu_button.item_count:
+		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
+	Toolbox.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
+
 
 func _on_project_loaded() -> void:
 	for folder: String in Project.get_folders():
@@ -27,6 +33,19 @@ func _on_project_loaded() -> void:
 
 	for file: File in Project.get_files().values():
 		_add_file_to_tree(file)
+
+
+func _file_menu_pressed(id: int) -> void:
+	match id:
+		0: # TODO: Add file(s)
+			var dialog: FileDialog = Toolbox.get_file_dialog(
+					tr("title_save_image_to_file"),
+					FileDialog.FILE_MODE_SAVE_FILE,
+					["*.png", "*.jpg", "*.webp"])
+
+		1: # TODO: Add text
+		2: # TODO: Add color
+			pass
 
 
 func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
@@ -40,8 +59,8 @@ func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
 	popup.size = Vector2i(100,0)
 
 	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
-		popup.add_item(tr("Rename"), 0)
-		popup.add_item(tr("Delete"), 2)
+		popup.add_item(tr("popup_item_rename"), 0)
+		popup.add_item(tr("popup_item_delete"), 2)
 
 		add_child(popup)
 		popup.popup()
@@ -51,22 +70,22 @@ func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
 		var file_id: int = file_item.get_metadata(0)
 		file = Project.get_file(file_id)
 
-		popup.add_item(tr("Rename"), 0)
-		popup.add_item(tr("Reload"), 1)
-		popup.add_item(tr("Delete"), 2)
+		popup.add_item(tr("popup_item_rename"), 0)
+		popup.add_item(tr("popup_item_reload"), 1)
+		popup.add_item(tr("popup_item_delete"), 2)
 
 		if file.type == File.TYPE.IMAGE:
 			if file.path.contains("temp://"):
-				popup.add_separator("Image options")
-				popup.add_item(tr("Save as file ..."), 3)
+				popup.add_separator(tr("popup_separator_image_options"))
+				popup.add_item(tr("popup_item_save_as_file"), 3)
 		if file.type == File.TYPE.VIDEO:
-			popup.add_separator("Video options")
-			popup.add_item(tr("Extract audio (WAV)"), 4)
+			popup.add_separator("popup_separator_video_options")
+			popup.add_item(tr("popup_item_extract_audio"), 4)
 		if file.type == File.TYPE.TEXT:
-			popup.add_separator("Text options")
-			popup.add_item(tr("Duplicate"), 5)
+			popup.add_separator(tr("popup_separator_text_options"))
+			popup.add_item(tr("popup_item_duplicate"), 5)
 			if file.path.contains("temp://"):
-				popup.add_item(tr("Save as file ..."), 3)
+				popup.add_item(tr("popup_item_save_as_file"), 3)
 
 	Toolbox.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
 	add_child(popup)
@@ -120,7 +139,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				dialog.popup_centered()
 		4: # Extract audio
 			var dialog: FileDialog = Toolbox.get_file_dialog(
-					tr("Save video audio to wav"),
+					tr("title_save_video_audio_to_wav"),
 					FileDialog.FILE_MODE_SAVE_FILE,
 					["*.wav"])
 

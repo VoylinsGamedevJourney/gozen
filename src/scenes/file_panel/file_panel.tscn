@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/text_file.svg" id="4_4eim5"]
 [ext_resource type="Texture2D" uid="uid://krvormuf3rd3" path="res://assets/icons/color_file.svg" id="5_almox"]
 
-[node name="FilePanel" type="PanelContainer" node_paths=PackedStringArray("tree")]
+[node name="FilePanel" type="PanelContainer" node_paths=PackedStringArray("tree", "file_menu_button")]
 custom_minimum_size = Vector2(260, 0)
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +16,7 @@ grow_vertical = 2
 theme_type_variation = &"box"
 script = ExtResource("1_b4ee2")
 tree = NodePath("Margin/VBox/FileTree")
+file_menu_button = NodePath("Margin/VBox/HBox/AddFileButton")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -55,5 +56,4 @@ popup/item_2/id = 2
 layout_mode = 2
 size_flags_vertical = 3
 hide_root = true
-drop_mode_flags = 1
 select_mode = 2
