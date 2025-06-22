@@ -1,8 +1,8 @@
 [gd_scene load_steps=16 format=3 uid="uid://l1tap0q8rgjc"]
 
-[ext_resource type="PackedScene" uid="uid://dxd6juoiahioo" path="res://scenes/file_panel_types/file_panel_types.tscn" id="1_6ua06"]
 [ext_resource type="Script" uid="uid://c2d6titke1rt8" path="res://scenes/edit_screen/edit_screen.gd" id="1_qa2ll"]
 [ext_resource type="Script" uid="uid://dq0sbkf6cfqnp" path="res://scripts/view_panel.gd" id="2_qa2ll"]
+[ext_resource type="PackedScene" uid="uid://dktafpwgtv5m3" path="res://scenes/file_panel/file_panel.tscn" id="2_rp1uh"]
 [ext_resource type="Texture2D" uid="uid://c6u5jisjppwl5" path="res://assets/icons/skip_previous.svg" id="3_v1g1j"]
 [ext_resource type="Script" uid="uid://0tlwabkx4t4m" path="res://scripts/project_view_texture.gd" id="4_8303h"]
 [ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/play.svg" id="4_ea0ft"]
@@ -39,7 +39,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = -500
 
-[node name="FilePanelTypes" parent="HSplit/HSplit" instance=ExtResource("1_6ua06")]
+[node name="FilePanel" parent="HSplit/HSplit" instance=ExtResource("2_rp1uh")]
 layout_mode = 2
 
 [node name="ViewPanel" type="PanelContainer" parent="HSplit/HSplit" node_paths=PackedStringArray("button_play", "button_pause", "frame_label", "time_label")]

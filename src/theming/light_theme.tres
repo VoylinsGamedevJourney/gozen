@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=27 format=3 uid="uid://dxq4vg1l5rwhj"]
+[gd_resource type="Theme" load_steps=28 format=3 uid="uid://dxq4vg1l5rwhj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
 
@@ -62,6 +62,13 @@ corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_li2em"]
 bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ktxas"]
+bg_color = Color(0.866667, 0.866667, 0.866667, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_li2em"]
 color = Color(0.666667, 0.666667, 0.666667, 0.784314)
@@ -185,6 +192,8 @@ MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_ootwl")
 TabContainer/styles/panel = SubResource("StyleBoxFlat_2uo22")
 TooltipPanel/styles/panel = SubResource("StyleBoxFlat_li2em")
+Tree/colors/font_color = Color(0, 0, 0, 1)
+Tree/styles/panel = SubResource("StyleBoxFlat_ktxas")
 VSeparator/styles/separator = SubResource("StyleBoxLine_li2em")
 background/base_type = &"PanelContainer"
 background/styles/panel = SubResource("StyleBoxFlat_w6ddi")

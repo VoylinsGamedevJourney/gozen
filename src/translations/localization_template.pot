@@ -69,6 +69,9 @@ msgstr ""
 msgid "title_chapters"
 msgstr ""
 
+msgid "title_save_image_to_file"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 
@@ -165,6 +168,9 @@ msgid "text_resolution"
 msgstr ""
 
 msgid "text_framerate"
+msgstr ""
+
+msgid "placeholder_text_search_files"
 msgstr ""
 
 msgid "tooltip_ignore_changes_close_settings"
@@ -372,4 +378,13 @@ msgid "menu_bar_editor_open_about_gozen"
 msgstr ""
 
 msgid "file_dialog_title_select_save_path"
+msgstr ""
+
+msgid "file_panel_item_add_files"
+msgstr ""
+
+msgid "file_panel_item_add_text"
+msgstr ""
+
+msgid "file_panel_item_add_color"
 msgstr ""

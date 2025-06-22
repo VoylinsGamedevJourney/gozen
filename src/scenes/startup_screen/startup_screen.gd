@@ -229,16 +229,15 @@ func _set_project_path(path: String) -> void:
 
 
 func _check_new_version() -> void:
-	# NOTE: This will only start working once we have an actual release and not a pre-release!
-	Toolbox.open_url("latest_release_check")
-
 	http_request = HTTPRequest.new()
 	add_child(http_request)
 	Toolbox.connect_func(
 		http_request.request_completed,
 		_check_new_version_request_completed)
 
-	# TODO: Change this to open the URL of the OS download instead of GitHub Repo
+	if !http_request.request("latest_release_check"):
+		printerr("Couldn't send an http request for the version check!")
+
 	Toolbox.connect_func(new_version_available_button.pressed, func() -> void:
 			Toolbox.open_url("latest_release"))
 

@@ -2,8 +2,6 @@ class_name FileRenameDialog
 extends PanelContainer
 
 
-signal file_renamed(id: int)
-
 @export var rename_line_edit: LineEdit
 
 var old_nickname: String
@@ -28,8 +26,7 @@ func _on_save_button_pressed() -> void:
 func _on_rename_file_line_edit_text_submitted(new_nickname: String) -> void:
 	# Only save if an actual new nickname got given
 	if new_nickname != "" and old_nickname != new_nickname:
-		Project.get_file(id).nickname = new_nickname
-		file_renamed.emit(id)
+		Project.set_file_nickname(id, new_nickname)
 
 	self.queue_free()
 	

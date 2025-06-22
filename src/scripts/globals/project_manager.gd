@@ -3,7 +3,9 @@ extends Node
 
 signal project_ready
 signal file_added(id: int)
-signal file_deleted
+signal file_deleted(id: int)
+signal file_nickname_changed(id: int)
+signal file_path_updated(id: int)
 
 
 const EXTENSION: String = ".gozen"
@@ -31,6 +33,71 @@ func _update_recent_projects(new_path: String) -> void:
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if !file.store_string(new_path + "\n" + content):
 		printerr("Error storing String for recent_projects!")
+
+
+func _open_project(file_path: String) -> void:
+	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
+		printerr("ProjectManager: Something went wrong opening project from file dialog!")
+
+
+func _save_as(new_project_path: String) -> void:
+	set_project_path(new_project_path)
+	save()
+
+
+func _modified_files_check() -> void:
+	# Check to see if a file needs reloading or not.
+	if Project.data == null:
+		return
+
+	for file: File in Project.get_files().values():
+		# Temp files can't change.
+		if file.path.begins_with("temp://"):
+			continue
+
+		# File doesn't exist anymore, removing file.
+		if !FileAccess.file_exists(file.path):
+			print("File %s at %s doesn't exist anymore!" % [file.id, file.path])
+			delete_file(file.id)
+			continue
+
+		# Check if an actual file, maybe wasn't updated yet.
+		if file.modified_time == -1: 
+			file.modified_time = FileAccess.get_modified_time(file.path)
+
+		var new_modified_time: int = FileAccess.get_modified_time(file.path)
+		if file.modified_time != new_modified_time:
+			file.modified_time = new_modified_time
+			Project.reload_file_data(file.id)
+
+
+func _save_image_to_file(path: String, file: File) -> void:
+	# We save the image, and replace the path to the new file
+	var extension: String = path.get_extension().to_lower()
+
+	if extension == "png" and file.temp_file.image_data.get_image().save_png(path):
+		printerr("Couldn't save image to png!\n", get_stack())
+		return
+	elif extension == "webp" and file.temp_file.image_data.get_image().save_webp(path, false, 1.0):
+		printerr("Couldn't save image to webp!\n", get_stack())
+		return
+	elif file.temp_file.image_data.get_image().save_jpg(path, 1.0):
+		printerr("Couldn't save image to jpg!\n", get_stack())
+		return
+
+	file.path = path
+	file.temp_file.free()
+	file.temp_file = null
+
+	if !load_file_data(file.id):
+		printerr("Something went wrong loading file '%s' after saving temp image to real image!" % path)
+
+	file_path_updated.emit(file.id)
+
+
+func _save_audio_to_wav(path: String, file: File) -> void:
+	if get_file_data(file.id).audio.save_to_wav(path):
+		printerr("Error occured when saving to WAV!")
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
@@ -78,11 +145,6 @@ func save_as() -> void:
 	Toolbox.connect_func(dialog.file_selected, _save_as)
 	add_child(dialog)
 	dialog.popup_centered()
-
-
-func _save_as(new_project_path: String) -> void:
-	set_project_path(new_project_path)
-	save()
 
 	
 func open(project_path: String) -> void:
@@ -148,11 +210,6 @@ func open_project() -> void:
 	Toolbox.connect_func(dialog.file_selected, _open_project)
 	add_child(dialog)
 	dialog.popup_centered()
-
-
-func _open_project(file_path: String) -> void:
-	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
-		printerr("ProjectManager: Something went wrong opening project from file dialog!")
 
 
 func open_settings_menu() -> void:
@@ -224,7 +281,7 @@ func delete_file(id: int) -> void:
 		Toolbox.print_erase_error()
 
 	await RenderingServer.frame_pre_draw
-	file_deleted.emit()
+	file_deleted.emit(id)
 
 
 func _on_files_dropped(files: PackedStringArray) -> void:
@@ -310,6 +367,11 @@ func get_project_base_folder() -> String:
  
 func set_file(file_id: int, file: File) -> void:
 	data.files[file_id] = file
+
+
+func set_file_nickname(file_id: int, nickname: String) -> void:
+	data.files[file_id].nickname = nickname
+	file_nickname_changed.emit(file_id)
 
 
 func get_files() -> Dictionary[int, File]:
@@ -446,4 +508,15 @@ func set_zoom(value: float) -> void:
 
 func get_zoom() -> float:
 	return data.zoom
+
+
+func add_folder(folder: String) -> void:
+	if data.folders.has(folder):
+		print("Folder %s already exists!")
+	elif data.folders.append(folder):
+		Toolbox.print_append_error()
+
+
+func get_folders() -> PackedStringArray:
+	return data.folders
 

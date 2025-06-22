@@ -72,6 +72,9 @@ msgstr "Project settings"
 msgid "title_chapters"
 msgstr "Chapters"
 
+msgid "title_save_image_to_file"
+msgstr "Save image to file"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
@@ -169,6 +172,9 @@ msgstr "Resolution"
 
 msgid "text_framerate"
 msgstr "Framerate"
+
+msgid "placeholder_text_search_files"
+msgstr "Search files ..."
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Ignore changes and close settings menu."
@@ -392,3 +398,12 @@ msgstr "About GoZen"
 
 msgid "file_dialog_title_select_save_path"
 msgstr "Select save path"
+
+msgid "file_panel_item_add_files"
+msgstr "Add file(s)"
+
+msgid "file_panel_item_add_text"
+msgstr "Add text"
+
+msgid "file_panel_item_add_color"
+msgstr "Add color"
