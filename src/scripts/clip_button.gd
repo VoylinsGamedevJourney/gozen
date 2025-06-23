@@ -232,22 +232,27 @@ func _on_resize_engaged(left: bool) -> void:
 
 	# First calculate spacing left of handle to other clips
 	if left:
-		for i: int in Project.get_track_keys(clip_data.track_id):
-			if i >= clip_data.start_frame:
-				break
-			previous = max(0, i - 1)
-
-		if previous != -1:
-			max_left_resize = clip_data.start_frame + previous
+		# Left resize can't go further than end frame.
 		max_right_resize = clip_data.end_frame
+		max_left_resize = clip_data.start_frame - clip_data.begin
+
+		for i: int in Project.get_track_keys(clip_data.track_id):
+			if i < clip_data.start_frame:
+				previous = i
+				continue
+
+			var front_clip_id: int = Project.get_track_data(clip_data.track_id)[previous]
+			max_left_resize = maxi(Project.get_clip(front_clip_id).get_end_frame(), max_left_resize)
 	else:
+		# Right resize can't go further than frame beginning
+		max_left_resize = clip_data.start_frame + 1
+
 		for i: int in Project.get_track_keys(clip_data.track_id):
 			if i > clip_data.start_frame:
 				previous = i
 				break
-
-		max_left_resize = clip_data.start_frame + 1
 		max_right_resize = maxi(previous, -1)
+
 
 	# Check if audio/video how much space is left to extend, take minimum
 	if Project.get_clip_type(name.to_int()) in [File.TYPE.VIDEO, File.TYPE.AUDIO]:
