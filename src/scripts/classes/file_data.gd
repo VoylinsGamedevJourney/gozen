@@ -15,6 +15,7 @@ var id: int
 var video: Video = null
 var audio: AudioStreamWAV = null
 var image: Texture2D = null
+var color: Color = Color.WHITE
 
 var audio_wave_data: PackedFloat32Array = []
 var color_profile: Vector4 = Vector4.ZERO
@@ -32,6 +33,8 @@ func _update_duration() -> void:
 		File.TYPE.VIDEO:
 			var frame_time: float = video.get_frame_count() / video.get_framerate()
 			l_file.duration = floor(frame_time * Project.get_framerate())
+		File.TYPE.COLOR:
+			l_file.duration = Settings.get_color_duration()
 
 	if l_file.duration == 0:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)
@@ -45,16 +48,14 @@ func init_data(file_data_id: int) -> bool:
 		printerr("Can't init data as file %s is null!")
 		return false
 
-	if file.type == File.TYPE.IMAGE:
-		if file.temp_file != null:
-			image = file.temp_file.image_data
-			return true
-
+	if file.path in ["temp://image", "temp://color"]:
+		file.temp_file.load_image()
+		image = file.temp_file.image_data
+	elif file.type == File.TYPE.IMAGE:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
-
-	if file.type in EditorCore.AUDIO_TYPES:
+	elif file.type in EditorCore.AUDIO_TYPES:
 		Threader.add_task(_load_audio_data.bind(file.path), create_wave)
 
 	return true

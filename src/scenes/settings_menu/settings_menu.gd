@@ -66,9 +66,15 @@ func set_mode_editor_settings() -> void:
 		_create_label("setting_default_image_duration"),
 		_create_spinbox(
 				Settings.get_image_duration(),
-				1, 100,
-				false, true,
+				1, 100, false, true,
 				Settings.set_image_duration,
+				"setting_tooltip_default_image_duration"
+		),
+		_create_label("setting_default_color_duration"),
+		_create_spinbox(
+				Settings.get_color_duration(),
+				1, 100, false, true,
+				Settings.set_color_duration,
 				"setting_tooltip_default_image_duration"
 		),
 		_create_label("setting_default_project_resolution"),
@@ -76,8 +82,7 @@ func set_mode_editor_settings() -> void:
 		_create_label("setting_default_project_framerate"),
 		_create_spinbox(
 				Settings.get_default_framerate(),
-				1, 100,
-				false, true,
+				1, 100, false, true,
 				Settings.set_default_framerate,
 				"setting_tooltip_default_project_framerate"
 		),
@@ -88,8 +93,7 @@ func set_mode_editor_settings() -> void:
 		_create_label("setting_default_track_amount"),
 		_create_spinbox(
 				Settings.get_tracks_amount(),
-				1, 32,
-				false, false,
+				1, 32, false, false,
 				Settings.set_default_framerate,
 				""
 		),
@@ -143,15 +147,13 @@ func _create_default_resolution_hbox() -> HBoxContainer:
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(_create_spinbox(
 			Settings.get_default_resolution_x(),
-			1, 100,
-			false, true,
+			1, 100, false, true,
 			Settings.set_default_resolution_x,
 			"setting_tooltip_default_project_resolution_x"))
 	resolution_hbox.add_child(y_label)
 	resolution_hbox.add_child(_create_spinbox(
 			Settings.get_default_resolution_y(),
-			1, 100,
-			false, true,
+			1, 100, false, true,
 			Settings.set_default_resolution_y,
 			"setting_tooltip_default_project_resolution_y"))
 

@@ -81,6 +81,9 @@ msgstr "Save image to file"
 msgid "title_save_video_audio_to_wav"
 msgstr "Save video audio to wav"
 
+msgid "title_add_color_file"
+msgstr "Add color file"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
@@ -110,6 +113,9 @@ msgstr "Open project"
 
 msgid "button_create_new_project"
 msgstr "Create new project"
+
+msgid "button_create_new_color_file"
+msgstr "Create color file"
 
 msgid "button_tooltip_editor_settings"
 msgstr "Editor settings."
@@ -210,6 +216,12 @@ msgid "setting_default_image_duration"
 msgstr "Default image duration"
 
 msgid "setting_tooltip_default_image_duration"
+msgstr "The duration in frames."
+
+msgid "setting_default_color_duration"
+msgstr "Default color duration"
+
+msgid "setting_tooltip_default_color_duration"
 msgstr "The duration in frames."
 
 msgid "setting_default_project_resolution"

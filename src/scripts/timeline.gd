@@ -10,9 +10,10 @@ const LINE_HEIGHT: int = 4
 
 # Normal, Focus
 const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
-    File.TYPE.IMAGE: [preload("uid://dlxa6tecfxvwa"),preload("uid://bwnfn42mtulgg")],
-    File.TYPE.AUDIO: [preload("uid://b4hr3qnksucav"),preload("uid://dxu1itu4lip5q")],
-    File.TYPE.VIDEO: [preload("uid://dvjs7m2ktd528"),preload("uid://wied1chri6pt")]
+    File.TYPE.IMAGE: [preload("uid://dlxa6tecfxvwa"), preload("uid://bwnfn42mtulgg")],
+    File.TYPE.AUDIO: [preload("uid://b4hr3qnksucav"), preload("uid://dxu1itu4lip5q")],
+    File.TYPE.VIDEO: [preload("uid://dvjs7m2ktd528"), preload("uid://wied1chri6pt")],
+    File.TYPE.COLOR: [preload("uid://df0jxk11tracv"), preload("uid://cwxo126dikkbh")],
 }
 
 static var instance: Timeline

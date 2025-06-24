@@ -8,5 +8,25 @@ extends Node
 # PATH in File objects should start with "temp://"
 
 var image_data: ImageTexture = null
-var text_data: String = "" # TODO: Change this when I actually implement text objects
+
+var url: String = ""
+var color: Color = Color.WHITE
+
+var text_data: String = ""
+var font_size: float = 12.0
+var font: String = ""
+
+
+
+func load_image() -> void:
+	# Check if image.
+	if url != "":
+		image_data = load(url)
+		return
+
+	# Is color.
+	var image: Image = Image.create(854, 480, false, Image.FORMAT_RGB8)
+
+	image.fill(color)
+	image_data = ImageTexture.create_from_image(image)
 

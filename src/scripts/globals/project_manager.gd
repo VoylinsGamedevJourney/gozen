@@ -260,11 +260,16 @@ func add_file(file_path: String) -> int:
 	return file.id
 
 
-func _add_file(file: File) -> void:
-	# Used for undoing the deletion of a file.
-	data.files[file.id] = file
+func add_file_object(file: File) -> void:
+	# Used for adding temp files.
+	set_file(file.id, file)
+
 	if !load_file_data(file.id):
 		print("Something went wrong loading file '", file.path, "'!")
+
+	# We only emit this one since for dropped/selected actual files this gets
+	# called inside of _on_files_dropped.
+	file_added.emit(file.id)
 
 
 func _add_clip(clip_data: ClipData) -> void:

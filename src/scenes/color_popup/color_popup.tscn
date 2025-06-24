@@ -1,0 +1,66 @@
+[gd_scene load_steps=2 format=3 uid="uid://brbxvynl0y3ha"]
+
+[ext_resource type="Script" uid="uid://c0xok1x6l3kwv" path="res://scenes/color_popup/color_popup.gd" id="1_oig83"]
+
+[node name="ColorPopup" type="PanelContainer" node_paths=PackedStringArray("color_picker")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_oig83")
+color_picker = NodePath("Panel/Margin/VBox/ColorFilePanel/Margin/VBox/ColorPicker")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="ColorFilePanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ColorFilePanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/ColorFilePanel/Margin"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_add_color_file"
+
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="ColorPicker" type="ColorPicker" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "button_cancel"
+
+[node name="CreateColor" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"main_button"
+text = "button_create_new_color_file"
+
+[connection signal="pressed" from="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox/CreateColor" to="." method="_on_create_color_pressed"]

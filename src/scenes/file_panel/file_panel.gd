@@ -37,7 +37,7 @@ func _on_project_loaded() -> void:
 
 func _file_menu_pressed(id: int) -> void:
 	match id:
-		0: # TODO: Add file(s)
+		0: # Add file(s)
 			var dialog: FileDialog = Toolbox.get_file_dialog(
 					tr("file_dialog_title_add_files"),
 					FileDialog.FILE_MODE_OPEN_FILES)
@@ -48,7 +48,8 @@ func _file_menu_pressed(id: int) -> void:
 		1: # TODO: Add text
 			pass
 		2: # TODO: Add color
-			pass
+			var color_popup: PanelContainer = preload("uid://brbxvynl0y3ha").instantiate()
+			EditorUI.instance.add_child(color_popup)
 
 
 func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:

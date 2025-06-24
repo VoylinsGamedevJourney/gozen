@@ -40,7 +40,17 @@ func _save_data() -> void:
 
 
 func get_thumb(file_id: int) -> Texture2D:
-	var path: String = Project.get_file(file_id).path
+	var file: File = Project.get_file(file_id)
+	var path: String = file.path
+	var image: Image
+
+	# Check if color or image.
+	if file.path in ["temp://color", "temp://image"]:
+		image = scale_thumbnail(file.temp_file.image_data.get_image())
+		return ImageTexture.create_from_image(image)
+	elif file.path == "temp://text":
+		printerr("No thumbnails for text yet!")
+		return
 
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
@@ -65,7 +75,7 @@ func get_thumb(file_id: int) -> Texture2D:
 				return preload("uid://dpg11eiuwgv38")
 
 	# Return the saved thumbnail.
-	var image: Image = Image.load_from_file(ProjectSettings.globalize_path(FILE_PATH % data[path]))
+	image = Image.load_from_file(ProjectSettings.globalize_path(FILE_PATH % data[path]))
 
 	return ImageTexture.create_from_image(image)
 
@@ -73,8 +83,9 @@ func get_thumb(file_id: int) -> Texture2D:
 # This function is for generating thumbnails, should only be called from the
 # _process function and in a thread through Threader.
 func _gen_thumb(file_id: int) -> void:
-	var path: String = Project.get_file(file_id).path
-	var type: File.TYPE = Project.get_file(file_id).type
+	var file: File = Project.get_file(file_id)
+	var path: String = file.path
+	var type: File.TYPE = file.type
 	var image: Image
 
 	match type:
@@ -87,14 +98,7 @@ func _gen_thumb(file_id: int) -> void:
 	
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
 	if type != File.TYPE.AUDIO:
-		var image_scale: float = min(
-				107 / float(image.get_width()),
-				60 / float(image.get_height()))
-
-		image.resize(
-				int(image.get_width() * image_scale),
-				int(image.get_height() * image_scale),
-				Image.INTERPOLATE_BILINEAR)
+		image = scale_thumbnail(image)
 
 	if image.save_webp(FILE_PATH % file_id):
 		printerr("Something went wrong saving thumb!")
@@ -103,4 +107,18 @@ func _gen_thumb(file_id: int) -> void:
 	data[path] = file_id
 	_save_data()
 	Threader.mutex.unlock()
+
+
+func scale_thumbnail(image: Image) -> Image:
+	var image_scale: float = min(
+			107 / float(image.get_width()),
+			60 / float(image.get_height()))
+
+	image.resize(
+			int(image.get_width() * image_scale),
+			int(image.get_height() * image_scale),
+			Image.INTERPOLATE_BILINEAR)
+
+	return image
+
 

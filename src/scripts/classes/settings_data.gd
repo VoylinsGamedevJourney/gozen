@@ -14,6 +14,7 @@ var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER
 
 # Defaults
 var image_duration: int = 300
+var color_duration: int = 300
 var default_project_path: String = OS.get_executable_path().trim_suffix(OS.get_executable_path().get_file())
 var default_resolution: Vector2i = Vector2i(1920, 1080)
 var default_framerate: float = 30.0

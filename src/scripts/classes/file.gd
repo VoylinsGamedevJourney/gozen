@@ -48,10 +48,8 @@ static func create(file_path: String) -> File:
 	file.path = file_path
 
 	if file_path.contains("temp://"):
-		# TODO: We should change the nickname to the first part of the text
-		# object or to the color code if the file is a color rect.
-		file.nickname = "%s %s" % [
-				file_path.trim_prefix("temp://").capitalize(), file.id]
+		var file_type: String = file_path.trim_prefix("temp://").capitalize()
+		file.nickname = "%s %s" % [file_type, file.id]
 	else:
 		file.nickname = file_path.get_file()
 

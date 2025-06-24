@@ -148,6 +148,14 @@ func get_image_duration() -> int:
 	return data.image_duration
 
 
+func set_color_duration(duration: int) -> void:
+	data.color_duration = duration
+
+
+func get_color_duration() -> int:
+	return data.color_duration
+
+
 func set_default_project_path(path: String) -> void:
 	data.default_project_path = path
 
