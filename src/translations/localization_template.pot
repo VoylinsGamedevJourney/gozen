@@ -33,6 +33,9 @@ msgstr ""
 msgid "title_rendering_finished"
 msgstr ""
 
+msgid "title_rendering_error"
+msgstr ""
+
 msgid "title_render_video"
 msgstr ""
 

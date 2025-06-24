@@ -20,8 +20,16 @@ func _on_play_changed(value: bool) -> void:
 
 
 func _on_skip_prev_button_pressed() -> void:
-	# TODO: Make this go to the previous marker!
-	pass # Replace with function body.
+	var marker_positions: PackedInt64Array = Project.get_marker_positions()
+	var prev_marker_pos: int = -1
+	var frame_nr: int = EditorCore.frame_nr
+
+	for marker_pos: int in marker_positions:
+		if marker_pos < frame_nr:
+			prev_marker_pos = marker_pos
+		else: break
+	
+	EditorCore.set_frame(maxi(0, prev_marker_pos))
 
 
 func _on_play_button_pressed() -> void:
@@ -33,8 +41,18 @@ func _on_pause_button_pressed() -> void:
 
 
 func _on_skip_next_button_pressed() -> void:
-	# TODO: Make this go to the next marker!
-	pass # Replace with function body.
+	var marker_positions: PackedInt64Array = Project.get_marker_positions()
+	var next_marker_pos: int = Project.get_timeline_end()
+	var frame_nr: int = EditorCore.frame_nr
+
+	marker_positions.sort()
+
+	for marker_pos: int in marker_positions:
+		if marker_pos > frame_nr:
+			next_marker_pos = marker_pos
+			break
+	
+	EditorCore.set_frame(mini(0, next_marker_pos))
 
 
 func _on_frame_changed(frame_nr: int) -> void:

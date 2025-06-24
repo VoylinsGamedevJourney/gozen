@@ -36,6 +36,9 @@ msgstr "Rendering"
 msgid "title_rendering_finished"
 msgstr "Rendering finished"
 
+msgid "title_rendering_error"
+msgstr "Rendering: Error occured"
+
 msgid "title_render_video"
 msgstr "Render video"
 

@@ -520,3 +520,31 @@ func add_folder(folder: String) -> void:
 func get_folders() -> PackedStringArray:
 	return data.folders
 
+
+func add_marker(frame_nr: int, marker: String) -> void:
+	if data.markers.has(frame_nr):
+		printerr("Already marker in postition %s!" % frame_nr)
+		return
+
+	data.markers[frame_nr] = marker
+
+
+func remove_marker(frame_nr: int) -> void:
+	if data.markers.has(frame_nr):
+		if !data.markers.erase(frame_nr):
+			Toolbox.print_erase_error()
+	else:
+		printerr("No marker at %s!" % frame_nr)
+
+
+func get_marker(frame_nr: int) -> String:
+	return data.markers[frame_nr]
+
+
+func get_marker_positions() -> PackedInt64Array:
+	return data.markers.keys()
+
+
+func get_markers() -> Dictionary[int, String]:
+	return data.markers
+
