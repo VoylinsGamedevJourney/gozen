@@ -48,8 +48,10 @@ func init_data(file_data_id: int) -> bool:
 		printerr("Can't init data as file %s is null!")
 		return false
 
-	if file.path in ["temp://image", "temp://color"]:
-		file.temp_file.load_image()
+	if file.path == "temp://color":
+		file.temp_file.load_image_from_color()
+		image = file.temp_file.image_data
+	elif file.path == "temp://image":
 		image = file.temp_file.image_data
 	elif file.type == File.TYPE.IMAGE:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))

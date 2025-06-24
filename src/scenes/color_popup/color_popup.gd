@@ -12,7 +12,7 @@ func _on_create_color_pressed() -> void:
 	file.nickname = "Color #" + color.to_html(true)
 	file.temp_file = TempFile.new()
 	file.temp_file.color = color
-	file.temp_file.load_image()
+	file.temp_file.load_image_from_color()
 
 	Project.add_file_object(file)
 	queue_free()

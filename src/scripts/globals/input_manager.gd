@@ -50,6 +50,9 @@ func _input(event: InputEvent) -> void:
 		if RenderManager.encoder == null or !RenderManager.encoder.is_open():
 			switch_screen()
 
+	if event.is_action_pressed("ui_paste"):
+		clipboard_paste()
+
 
 func show_editor_screen() -> void:
 	on_show_editor_screen.emit()
@@ -61,3 +64,20 @@ func show_render_screen() -> void:
 
 func switch_screen() -> void:
 	on_switch_screen.emit()
+
+
+
+func clipboard_paste() -> void:
+	var image: Image = DisplayServer.clipboard_get_image()
+
+	if Project.data == null or image == null:
+		return
+
+	var file: File = File.create("temp://image")
+
+	file.nickname = "Image %s" % file.id
+	file.temp_file = TempFile.new()
+	file.temp_file.image_data = ImageTexture.create_from_image(image)
+
+	Project.add_file_object(file)
+

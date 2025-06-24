@@ -9,7 +9,6 @@ extends Node
 
 var image_data: ImageTexture = null
 
-var url: String = ""
 var color: Color = Color.WHITE
 
 var text_data: String = ""
@@ -18,13 +17,7 @@ var font: String = ""
 
 
 
-func load_image() -> void:
-	# Check if image.
-	if url != "":
-		image_data = load(url)
-		return
-
-	# Is color.
+func load_image_from_color() -> void:
 	var image: Image = Image.create(854, 480, false, Image.FORMAT_RGB8)
 
 	image.fill(color)
