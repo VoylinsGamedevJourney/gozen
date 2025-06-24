@@ -39,6 +39,7 @@ var current_progress: float = 0.0
 func _ready() -> void:
 	Toolbox.connect_func(RenderManager.update_encoder_status, update_encoder_status)
 	Toolbox.connect_func(Project.project_ready, _set_default_path)
+	Toolbox.connect_func(Project._markers_updated, _on_chapters_updated)
 
 	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
@@ -93,23 +94,24 @@ func _add_default_profiles() -> void:
 
 func _setup_codec_option_buttons() -> void:
 	video_codec_option_button.add_item("HEVC", Encoder.VIDEO_CODEC.V_HEVC)
-	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264) 
-	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4) 
-	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2) 
-	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1) 
-	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG) 
-	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1) 
-	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9) 
-	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8) 
+	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264)
+	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4)
+	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2)
+	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1)
+	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG)
+	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1)
+	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9)
+	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8)
 
-	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV) 
-	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM) 
-	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3) 
-	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC) 
-	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS) 
-	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS) 
-	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC) 
-	audio_codec_option_button.add_item("NONE", Encoder.AUDIO_CODEC.A_NONE) 
+	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV)
+	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM)
+	audio_codec_option_button.add_item("MP2", Encoder.AUDIO_CODEC.A_MP2)
+	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3)
+	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC)
+	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS)
+	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS)
+	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC)
+	audio_codec_option_button.add_item("NONE", Encoder.AUDIO_CODEC.A_NONE)
 
 
 func add_profile(profile: RenderProfile) -> void:
@@ -157,8 +159,16 @@ func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
 	grid_audio.visible = toggled_on
 
 
+func _on_chapters_updated() -> void:
+	var chapters: Dictionary[int, String] = Project.get_markers()
+	chapters_text_edit.text = ""
+
+	for i: int in chapters:
+		var time: String = Toolbox.format_time_str_from_frame(i)
+		chapters_text_edit.text += "%s %s\n" % [time, chapters[i]]
+
+
 func _on_copy_chapters_button_pressed() -> void:
-	# TODO: Make this update everytime a chapter got changed/added.
 	DisplayServer.clipboard_set(chapters_text_edit.text)
 
 
@@ -178,6 +188,66 @@ func _on_select_save_path_button_pressed() -> void:
 
 func _save_path_selected(file_path: String) -> void:
 	path_line_edit.text = file_path
+
+
+func _on_video_codec_option_button_item_selected(index: int) -> void:
+	var video_codec_id: int = video_codec_option_button.get_item_id(index)
+	var extension: String = Toolbox.get_video_extension(video_codec_id)
+	var is_h264: bool = video_codec_id == Encoder.VIDEO_CODEC.V_H264
+	var path: String = path_line_edit.text
+	var allowed: PackedInt64Array = []
+
+	# Hide speed if not H264.
+	video_speed_label.visible = is_h264
+	video_speed_hslider.visible = is_h264
+
+	# Changing the extension in path line edit.
+	path_line_edit.text = path.trim_suffix(path.get_extension()) + extension
+
+	# First option is also the option it will select in case the currently
+	# selected audio codec does not fit the selected video codec.
+	match extension:
+		".mp4":
+			allowed = [
+				Encoder.AUDIO_CODEC.A_AAC,
+				Encoder.AUDIO_CODEC.A_MP3,
+				Encoder.AUDIO_CODEC.A_FLAC,
+				Encoder.AUDIO_CODEC.A_OPUS,
+				Encoder.AUDIO_CODEC.A_VORBIS,
+			]
+		".mpg":
+			allowed = [
+				Encoder.AUDIO_CODEC.A_MP2,
+				Encoder.AUDIO_CODEC.A_MP3,
+			]
+		".mov":
+			allowed = [
+				Encoder.AUDIO_CODEC.A_AAC,
+				Encoder.AUDIO_CODEC.A_PCM,
+				Encoder.AUDIO_CODEC.A_WAV,
+				Encoder.AUDIO_CODEC.A_MP3,
+				Encoder.AUDIO_CODEC.A_FLAC,
+			]
+		".webm":
+			allowed = [
+				Encoder.AUDIO_CODEC.A_OPUS,
+				Encoder.AUDIO_CODEC.A_VORBIS,
+			]
+		".ogg":
+			allowed = [
+				Encoder.AUDIO_CODEC.A_OPUS,
+				Encoder.AUDIO_CODEC.A_VORBIS,
+				Encoder.AUDIO_CODEC.A_FLAC,
+			]
+
+	for i: int in audio_codec_option_button.item_count:
+		var value: bool = audio_codec_option_button.get_item_id(i) in allowed
+
+		audio_codec_option_button.set_item_disabled(i, !value)
+
+	if audio_codec_option_button.get_selected_id() not in allowed:
+		var audio_codec_index: int = audio_codec_option_button.get_item_index(allowed[0])
+		audio_codec_option_button.select(audio_codec_index)
 
 
 func _render_finished() -> void:

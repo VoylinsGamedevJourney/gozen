@@ -7,6 +7,8 @@ signal file_deleted(id: int)
 signal file_nickname_changed(id: int)
 signal file_path_updated(id: int)
 
+signal _markers_updated # Used for chapters
+
 
 const EXTENSION: String = ".gozen"
 const RECENT_PROJECTS_FILE: String = "user://recent_projects"
@@ -524,17 +526,19 @@ func get_folders() -> PackedStringArray:
 func add_marker(frame_nr: int, marker: String) -> void:
 	if data.markers.has(frame_nr):
 		printerr("Already marker in postition %s!" % frame_nr)
-		return
-
-	data.markers[frame_nr] = marker
+	else:
+		data.markers[frame_nr] = marker
+	
+	_markers_updated.emit()
 
 
 func remove_marker(frame_nr: int) -> void:
-	if data.markers.has(frame_nr):
-		if !data.markers.erase(frame_nr):
-			Toolbox.print_erase_error()
-	else:
+	if !data.markers.has(frame_nr):
 		printerr("No marker at %s!" % frame_nr)
+	elif !data.markers.erase(frame_nr):
+		Toolbox.print_erase_error()
+
+	_markers_updated.emit()
 
 
 func get_marker(frame_nr: int) -> String:

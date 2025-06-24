@@ -12,7 +12,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_t27w5"]
 
-[node name="RenderScreen" type="VSplitContainer" node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
+[node name="RenderScreen" type="VSplitContainer" node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box", "chapters_text_edit")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,6 +30,7 @@ video_speed_label = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin
 video_speed_hslider = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/SpeedHSlider")
 audio_codec_option_button = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioGrid/AudioCodecOptionButton")
 threads_spin_box = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/ThreadsGrid/ThreadsSpinBox")
+chapters_text_edit = NodePath("HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox/ChaptersTextEdit")
 metadata/_tab_index = 1
 
 [node name="HSplit" type="HSplitContainer" parent="."]
@@ -351,6 +352,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [connection signal="pressed" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
+[connection signal="item_selected" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
 [connection signal="toggled" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
 [connection signal="pressed" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
 [connection signal="pressed" from="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox/HBox/CopyChaptersButton" to="." method="_on_copy_chapters_button_pressed"]
