@@ -198,6 +198,18 @@ func _cancel_render() -> void:
 	RenderManager.cancel_encoding = true
 
 
+func _show_error(message: String) -> void:
+	var dialog: AcceptDialog = AcceptDialog.new()
+
+	dialog.title = tr("title_rendering_error")
+	dialog.dialog_text = tr(message)
+	dialog.exclusive = true
+	
+	add_child(dialog)
+	dialog.popup_centered()
+	progress_overlay.queue_free()
+
+
 func _on_start_render_button_pressed() -> void:
 	# Printing info about the rendering process.
 	print("--------------------")
@@ -270,19 +282,12 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		return
 
 	var status_str: String = ""
-	if status == RenderManager.STATUS.FRAMES_SEND:
- 		# Update bar from 6 to 99.
-		current_progress += progress_frame_increase
-	elif status >= 0:
-		current_progress = status
 
 	match status:
 		# Errors, something went wrong.
-		# TODO: Make these into popups instead of in the overlay.
-		RenderManager.STATUS.ERROR_OPEN: status_str = "encoding_progress_text_open_error"
-		RenderManager.STATUS.ERROR_AUDIO: status_str = "encoding_progress_text_sending_audio_error"
-		RenderManager.STATUS.ERROR_CANCELED:
-			progress_overlay.queue_free() # status_str = "encoding_progress_text_canceling"
+		RenderManager.STATUS.ERROR_OPEN: _show_error("encoding_progress_text_open_error")
+		RenderManager.STATUS.ERROR_AUDIO: _show_error("encoding_progress_text_sending_audio_error")
+		RenderManager.STATUS.ERROR_CANCELED: _show_error("encoding_progress_text_canceling")
 
 		# Normal progress.
 		RenderManager.STATUS.SETUP: status_str = "encoding_progress_text_setup"
@@ -293,5 +298,11 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		RenderManager.STATUS.LAST_FRAMES: status_str = "encoding_progress_text_last_frame"
 		RenderManager.STATUS.FINISHED: _render_finished()
 
-	progress_overlay.update_progress(floori(current_progress), status_str)
+	if status >= 0:
+		if status == RenderManager.STATUS.FRAMES_SEND:
+			current_progress += progress_frame_increase # Update bar from 6 to 99.
+		else:
+			current_progress = status
+
+		progress_overlay.update_progress(floori(current_progress), status_str)
 
