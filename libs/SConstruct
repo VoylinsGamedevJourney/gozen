@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-import os
 import platform as os_platform
-import sys
 
 LIBS_COMMON = ["avcodec", "avformat", "avutil", "swresample", "swscale"]
 MARCH_FLAGS = {
@@ -25,9 +23,38 @@ use_mingw = ARGUMENTS.get("use_mingw", "no")
 use_system = ARGUMENTS.get("use_system", "no")
 
 if arch == "arm64":
-    env['CC'] = 'aarch64-linux-gnu-gcc'
-    env['CXX'] = 'aarch64-linux-gnu-g++'
-    env['LINK'] = 'aarch64-linux-gnu-g++'
+    env["CC"] = "aarch64-linux-gnu-gcc"
+    env["CXX"] = "aarch64-linux-gnu-g++"
+    env["LINK"] = "aarch64-linux-gnu-g++"
+
+
+env.Append(
+    CPPPATH=[
+        f"ffmpeg/bin_{platform}/include",
+        f"ffmpeg/bin_{platform}/aom/include",
+        f"ffmpeg/bin_{platform}/svtav1/include",
+        f"ffmpeg/bin_{platform}/x264/include",
+        f"ffmpeg/bin_{platform}/x265/include",
+        f"ffmpeg/bin_{platform}/mp3lame/include",
+        f"ffmpeg/bin_{platform}/ogg/include",
+        f"ffmpeg/bin_{platform}/opus/include",
+        f"ffmpeg/bin_{platform}/vorbis/include",
+        f"ffmpeg/bin_{platform}/vpx/include",
+    ],
+    LIBPATH=[
+        f"ffmpeg/bin_{platform}/lib",
+        f"ffmpeg/bin_{platform}/aom/lib",
+        f"ffmpeg/bin_{platform}/svtav1/lib",
+        f"ffmpeg/bin_{platform}/x264/lib",
+        f"ffmpeg/bin_{platform}/x265/lib",
+        f"ffmpeg/bin_{platform}/mp3lame/lib",
+        f"ffmpeg/bin_{platform}/ogg/lib",
+        f"ffmpeg/bin_{platform}/opus/lib",
+        f"ffmpeg/bin_{platform}/vorbis/lib",
+        f"ffmpeg/bin_{platform}/vpx/lib",
+    ],
+)
+
 
 if "linux" in platform:
     libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"
@@ -58,12 +85,20 @@ elif "windows" in platform:
     else:
         libs = [
             "-lSvtAv1Enc",
+            "-laom",
+            "-lmp3lame",
+            "-lopus",
+            "-lvorbis",
+            "-lvorbisenc",
+            "-logg",  # must be after '-lvorbis'
+            "-lvpx",
+            "-lx264",
+            "-lx265",
             # '-lX11',
             # '-lXext',
             # '-lXv',
             "-ladvapi32",
             # '-landroid',
-            "-laom",
             # '-lasound',
             "-latomic",
             "-lbcrypt",
@@ -79,12 +114,9 @@ elif "windows" in platform:
             "-lm",
             # '-lmediandk',
             "-lmfplat",
-            "-lmp3lame",
             "-lole32",
             "-loleaut32",
-            "-lopus",
             "-lpsapi",
-            "-lpthread",
             "-lsecur32",
             "-lshell32",
             "-lshlwapi",
@@ -93,45 +125,20 @@ elif "windows" in platform:
             "-luser32",
             "-luuid",
             "-lvfw32",
-            "-lvorbis",
-            "-lvorbisenc",
-            "-logg",  # must be after '-lvorbis'
-            "-lvpx",
             # '-lws2',
             "-lws2_32",
-            "-lx264",
-            "-lx265",
             "-lz",
+            "-lpthread",  # must be after everything
         ]
 
-        env.Append(LIBS=LIBS_COMMON + libs)
+        conf = Configure(env)
+        found_libs = [
+            lflag for lflag in libs if conf.CheckLib(lflag.removeprefix("-l"))
+        ]
+        if not all(lib in found_libs for lib in libs):
+            print("Ignoring libraries not found.")
 
-env.Append(
-    CPPPATH=[
-        f"ffmpeg/bin_{platform}/include",
-        f"ffmpeg/bin_{platform}/aom/include",
-        f"ffmpeg/bin_{platform}/svtav1/include",
-        f"ffmpeg/bin_{platform}/x264/include",
-        f"ffmpeg/bin_{platform}/x265/include",
-        f"ffmpeg/bin_{platform}/mp3lame/include",
-        f"ffmpeg/bin_{platform}/ogg/include",
-        f"ffmpeg/bin_{platform}/opus/include",
-        f"ffmpeg/bin_{platform}/vorbis/include",
-        f"ffmpeg/bin_{platform}/vpx/include",
-    ],
-    LIBPATH=[
-        f"ffmpeg/bin_{platform}/lib",
-        f"ffmpeg/bin_{platform}/aom/lib",
-        f"ffmpeg/bin_{platform}/svtav1/lib",
-        f"ffmpeg/bin_{platform}/x264/lib",
-        f"ffmpeg/bin_{platform}/x265/lib",
-        f"ffmpeg/bin_{platform}/mp3lame/lib",
-        f"ffmpeg/bin_{platform}/ogg/lib",
-        f"ffmpeg/bin_{platform}/opus/lib",
-        f"ffmpeg/bin_{platform}/vorbis/lib",
-        f"ffmpeg/bin_{platform}/vpx/lib",
-    ],
-)
+        env.Append(LIBS=LIBS_COMMON + found_libs)
 
 
 src = Glob("gde_gozen/*.cpp")
