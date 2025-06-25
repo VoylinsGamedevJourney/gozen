@@ -35,6 +35,8 @@ func _update_duration() -> void:
 			l_file.duration = floor(frame_time * Project.get_framerate())
 		File.TYPE.COLOR:
 			l_file.duration = Settings.get_color_duration()
+		File.TYPE.TEXT:
+			l_file.duration = Settings.get_text_duration()
 
 	if l_file.duration == 0:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)

@@ -262,6 +262,7 @@ func _render_finished() -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 	progress_overlay.queue_free()
+	progress_overlay = null
 
 
 func _cancel_render() -> void:
@@ -278,6 +279,7 @@ func _show_error(message: String) -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 	progress_overlay.queue_free()
+	progress_overlay = null
 
 
 func _on_start_render_button_pressed() -> void:
@@ -312,6 +314,7 @@ func _on_start_render_button_pressed() -> void:
 	# Display the progress popup.
 	if progress_overlay != null:
 		progress_overlay.queue_free()
+		progress_overlay = null
 
 	progress_overlay = preload("uid://d4h7t8ccus0yv").instantiate()
 	progress_overlay.update_title("title_rendering")

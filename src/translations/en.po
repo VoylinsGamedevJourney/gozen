@@ -224,6 +224,12 @@ msgstr "Default color duration"
 msgid "setting_tooltip_default_color_duration"
 msgstr "The duration in frames."
 
+msgid "setting_default_text_duration"
+msgstr "Default text duration"
+
+msgid "setting_tooltip_default_text_duration"
+msgstr "The duration in frames."
+
 msgid "setting_default_project_resolution"
 msgstr "Default project resolution"
 

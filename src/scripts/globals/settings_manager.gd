@@ -156,6 +156,14 @@ func get_color_duration() -> int:
 	return data.color_duration
 
 
+func set_text_duration(duration: int) -> void:
+	data.text_duration = duration
+
+
+func get_text_duration() -> int:
+	return data.text_duration
+
+
 func set_default_project_path(path: String) -> void:
 	data.default_project_path = path
 
