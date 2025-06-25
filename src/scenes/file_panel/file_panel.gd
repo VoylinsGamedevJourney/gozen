@@ -118,7 +118,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 			InputManager.undo_redo.add_do_method(_on_file_deleted.bind(file.id))
 			InputManager.undo_redo.add_do_method(Project.delete_file.bind(file.id))
 
-			InputManager.undo_redo.add_undo_method(Project._add_file.bind(file))
+			InputManager.undo_redo.add_undo_method(Project.add_file_object.bind(file))
 			InputManager.undo_redo.add_undo_method(_add_file_to_tree.bind(file.id))
 
 			# Making certain clips will be returned when deleting of file is un-done.

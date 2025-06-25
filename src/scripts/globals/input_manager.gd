@@ -66,18 +66,30 @@ func switch_screen() -> void:
 	on_switch_screen.emit()
 
 
-
 func clipboard_paste() -> void:
 	var image: Image = DisplayServer.clipboard_get_image()
 
-	if Project.data == null or image == null:
+	if Project.data == null:
 		return
 
-	var file: File = File.create("temp://image")
+	# The pasted data is an image/screenshot.
+	if image != null:
+		var file: File = File.create("temp://image")
 
-	file.nickname = "Image %s" % file.id
-	file.temp_file = TempFile.new()
-	file.temp_file.image_data = ImageTexture.create_from_image(image)
+		file.nickname = "Image %s" % file.id
+		file.temp_file = TempFile.new()
+		file.temp_file.image_data = ImageTexture.create_from_image(image)
 
-	Project.add_file_object(file)
+		Project.add_file_object(file)
+		return
+
+	# Checking if the pasted data is a path.
+	var data: PackedStringArray = DisplayServer.clipboard_get().split('\n')
+
+	for path: String in data:
+		if !FileAccess.file_exists(path):
+			return
+
+	# All paths pasted are files so we use _on_files_dropped.
+	Project._on_files_dropped(data)
 
