@@ -21,63 +21,56 @@ jobs:
     steps:
       - name: 'Installing dependencies'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar mingw-w64 ffmpeg nasm cmake pkg-config libnuma-dev fuse libfuse2 desktop-file-utils patchelf golang perl texinfo
+          sudo add-apt-repository ppa:git-core/ppa
+          sudo apt update
+
+          sudo apt-get install -y git git-svn bash yasm nasm python3 python3-pip scons gcc diffutils make wget unzip tar \
+          cmake autoconf automake libtool ninja-build pkg-config \
+          g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 binutils-mingw-w64-x86-64 mingw-w64-x86-64-dev \
+          win-iconv-mingw-w64-dev libz-mingw-w64-dev \
+          libnuma-dev fuse libfuse2 desktop-file-utils patchelf
 
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: 'Compiling FFmpeg for Windows'
+      - name: 'Cache Godot'
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot
+          key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
+
+      - name: 'Prepare Godot'
+        run: |
+          if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
+            echo "Downloading Godot editor ..."
+            wget -q -O godot_windows.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe.zip
+            unzip -o godot_windows.zip
+          else
+            echo "Godot editor found in cache."
+          fi
+
+          if [ ! -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable ]; then
+            echo "Downloading Godot export templates ..."
+            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+            mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+            unzip -o godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+            mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
+            rm -rf ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates
+          else
+            echo "Godot export templates found in cache."
+          fi
+
+          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
+
+      - name: 'Compiling GDE GoZen Debug'
         working-directory: ./libs
         run: |
-          python -c 'import sys; sys.path.append("."); import build; build.build_windows_x264()'
-          python -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_windows("x86_64")'
-          cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll ffmpeg/bin_windows/bin
+          python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.compile_ffmpeg('windows', 'x86_64', 4)"
 
-      - name: 'Upload FFmpeg binaries'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ffmpeg-windows-bin
-          path: libs/ffmpeg/bin_windows
-          retention-days: 1
-
-
-  build-gozen:
-    name: 'Build GoZen'
-    runs-on: windows-latest
-    needs: build-ffmpeg
-    steps:
-      - name: 'Checkout submodules'
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: 'Download FFmpeg binaries'
-        uses: actions/download-artifact@v4
-        with:
-          name: ffmpeg-windows-bin
-          path: libs/ffmpeg/bin_windows
-
-      - name: 'Set up Python'
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: 'Install Python dependencies'
-        run: pip install scons
-
-      - name: 'Set Godot version and patch project'
-        run: |
-          python -c 'import sys; sys.path.append("."); import update_version; update_version.update_version("${{ inputs.version }}")'
-
-      - name: 'Compiling GDE GoZen'
-        working-directory: ./libs
-        run: |
-          python -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_windows("x86_64")'
-          scons -j4 target=template_debug platform=windows arch=x86_64
-          scons -j4 target=template_release platform=windows arch=x86_64
+          scons -j$(nproc) target=template_debug platform=windows arch=x86_64
+          scons -j$(nproc) target=template_release platform=windows arch=x86_64
 
       - name: 'Prepare folder'
         run: |
@@ -85,30 +78,16 @@ jobs:
           cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
           cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
 
-      - name: 'Download Godot'
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe.zip" -OutFile "godot.zip"
-          Expand-Archive godot.zip -DestinationPath .
-
-      - name: 'Download Godot export templates'
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz" -OutFile "templates.tpz"
-          $exportPath = "$env:APPDATA\Godot\export_templates\${{ env.GODOT_VERSION }}.stable"
-          New-Item -ItemType Directory -Force -Path $exportPath
-          Expand-Archive -Path templates.tpz -DestinationPath $exportPath
-          if (Test-Path "$exportPath\templates") {
-            Move-Item "$exportPath\templates\*" $exportPath
-            Remove-Item "$exportPath\templates" -Recurse
-          }
-
-      - name: 'Export project for Windows'
+      - name: 'Export for Windows'
         working-directory: ./src
         run: |
           ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless
           ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
 
-      - name: 'Copy extra DLLs'
-        run: copy libs\bin\windows_x86_64\*.dll $env:EXPORT_FOLDER\
+      - name: 'Copy extra libs'
+        run: |
+          echo "Copying libs"
+          cp libs\bin\windows_x86_64\*.dll  ${{ env.EXPORT_FOLDER }}
 
       - name: 'Upload GDE'
         uses: actions/upload-artifact@v4

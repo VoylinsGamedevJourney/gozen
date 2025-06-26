@@ -23,8 +23,13 @@ jobs:
     steps:
       - name: 'Installing dependencies'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu pkg-config libx264-dev libx265-dev libnuma-dev fuse libfuse2 desktop-file-utils patchelf libmp3lame-dev libopus-dev libvorbis-dev libogg-dev
+          sudo add-apt-repository ppa:git-core/ppa
+          sudo apt update
+
+          sudo apt-get install -y git git-svn bash yasm nasm python3 python3-pip scons gcc diffutils make wget unzip tar \
+          cmake autoconf automake libtool ninja-build pkg-config \
+          binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu \
+          libnuma-dev fuse libfuse2 desktop-file-utils patchelf
 
       - name: 'Checkout submodules'
         uses: actions/checkout@v4
@@ -65,12 +70,10 @@ jobs:
         run: |
           export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 
-          python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
+          python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.compile_ffmpeg('linux', 'x86_64', 4)"
 
           scons -j$(nproc) target=template_debug platform=linux arch=x86_64 -c
           scons -j$(nproc) target=template_release platform=linux arch=x86_64 -c
-
-          python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
 
           scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug
           scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release
@@ -85,7 +88,6 @@ jobs:
       - name: 'Copy extra libs'
         run: |
           cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
-          cp /usr/lib/x86_64-linux-gnu/libx26*.so ${{ env.EXPORT_FOLDER }}
           echo "reading bin"
           ls libs/bin/linux_x86_64
           rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
