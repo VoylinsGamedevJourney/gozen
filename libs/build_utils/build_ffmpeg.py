@@ -6,9 +6,9 @@ This script handles the compilation of FFmpeg.
 """
 
 import os
-from pathlib import Path
 import shutil
 import subprocess
+from pathlib import Path
 from typing import Generator
 
 from .build_deps import (
@@ -23,6 +23,7 @@ from .build_deps import (
     build_x264,
     build_x265,
 )
+from .download_deps import download_ffmpeg_deps
 from .paths import (
     AOM_INSTALL_DIR_NAME,
     FFMPEG_SOURCE_DIR,
@@ -37,9 +38,8 @@ from .paths import (
     get_ffmpeg_install_dir,
     get_lib_dir,
 )
-from .download_deps import download_ffmpeg_deps
 from .utils import (
-    CURR_ARCH,
+    _GOZEN_CROSS_SYSROOT,
     CURR_PLATFORM,
     clear_dir,
     convert_to_msys2_path,
@@ -275,15 +275,61 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
     )
 
 
+def get_lib_search_paths(host: str) -> list[Path]:
+    cc = f"{host}-gcc" if host else "gcc"
+    try:
+        res = run_command(
+            [cc, "-print-search-dirs"],
+            use_msys2=CURR_PLATFORM == "windows",
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as e:
+        raise ValueError("Failed to identify gcc search paths") from e
+
+    out: str = res.stdout  # type: ignore
+    search_paths: list[Path] = []
+
+    for line in out.splitlines():
+        if not line.startswith("libraries:"):
+            continue
+
+        search_paths += [
+            Path(p)
+            for p in line.strip()
+            .removeprefix("libraries:")
+            .strip()
+            .removeprefix("=")
+            .split(":")
+        ]
+    return search_paths
+
+
+def find_file(name: str, search_paths: list[Path]) -> Path | None:
+    for path in search_paths:
+        if file := next(path.rglob(name), None):
+            return file
+        continue
+    print(f'Couldn\'t find {name} in "{":".join(map(str, search_paths))}"')
+
+
 def copy_lib_files_linux(arch: str):
     dest_dir = Path(".") / "bin" / f"linux_{arch}"
-    _, sysroot = get_host_and_sysroot("linux", arch)
-    lib_dir = sysroot / "lib"
+    host, sysroot = get_host_and_sysroot("linux", arch)
+
+    # User defined environment variable takes priority if present
+    search_paths = (
+        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else [])
+        + get_lib_search_paths(host)
+        + [sysroot]
+    )
+
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Copying lib files to {dest_dir} ...")
 
-    def find_libs(binary_path: Path) -> Generator[Path, None, None]:
+    def find_deps(binary_path: Path) -> Generator[Path, None, None]:
         excluded_libs = [
             "libc.so.6",
             "libm.so.6",
@@ -293,66 +339,40 @@ def copy_lib_files_linux(arch: str):
             "ld-linux-x86-64.so.2",
         ] + [p.name for p in ffmpeg_libs]
 
-        if CURR_PLATFORM == "linux" and CURR_ARCH == arch:
-            output = subprocess.run(
-                ["ldd", binary_path], capture_output=True, text=True
+        output = run_command(
+            ["objdump", "-p", str(binary_path)], capture_output=True, text=True
+        )
+        if output.returncode != 0:
+            print(
+                f"Objdump failed for {binary_path}: exit-code:{output.returncode} std-err:\n{output.stderr}"
             )
-            if output.returncode != 0:
-                print(
-                    f"Failed to run ldd on {binary_path}. exit-code:{output.returncode} std-err:\n{output.stderr}"
-                )
-                return
+            return
 
-            for line in output.stdout.splitlines():
-                if "=>" not in line:
-                    continue
-                parts = line.strip().split("=>")
-                if len(parts) < 2:
-                    continue
-                lib_path = Path(parts[1].split("(")[0].strip())
-                if not os.path.isfile(lib_path):
-                    continue
-
-                lib_name = lib_path.name
-                if lib_name in excluded_libs:
-                    continue
-
-                yield lib_path
-        else:
-            output = subprocess.run(
-                ["objdump", "-p", binary_path], capture_output=True, text=True
-            )
-            if output.returncode != 0:
-                print(
-                    f"Failed to run ldd on {binary_path}: exit-code:{output.returncode} std-err:\n{output.stderr}"
-                )
-                return
-
-            for line in output.stdout.splitlines():
-                if "NEEDED" not in line:
-                    continue
-
-                lib_name = line.strip().removeprefix("NEEDED").strip()
-                if lib_name in excluded_libs:
-                    continue
-
-                for lib_path in sysroot.rglob(f"lib*/*/{lib_name}"):
-                    # TODO: use objdump to make sure the file format and architecture matches
-                    if not lib_path.exists():
-                        continue
-                    yield lib_path
-                    break
-
-    def copy_dependencies(binary_path: Path) -> None:
-        for lib_path in find_libs(binary_path):
-            lib_name = lib_path.name
-            if not os.path.isfile(lib_path):
-                print(f"Couldn't find {lib_name} in {lib_dir}")
+        out: str = output.stdout # type: ignore
+        for line in out.splitlines():
+            if "NEEDED" not in line:
                 continue
 
-            print(f"Copying {lib_name} from {lib_dir} to {dest_dir}")
+            lib_name = line.strip().removeprefix("NEEDED").strip()
+            if lib_name in excluded_libs:
+                continue
 
-            dest_path = dest_dir / lib_name
+            lib_path = find_file(lib_name, search_paths)
+            if not lib_path:
+                continue
+
+            yield lib_path
+
+    copied_files: list[str] = []
+
+    def copy_dependencies(binary_path: Path) -> None:
+        for lib_path in find_deps(binary_path):
+            if lib_path.name in copied_files:
+                continue
+            copied_files.append(lib_path.name)
+
+            print(f"Copying {lib_path.name} from {lib_path.parent} to {dest_dir}")
+            dest_path = dest_dir / lib_path.name
 
             if os.path.abspath(lib_path) == os.path.abspath(dest_path):
                 print(
@@ -369,13 +389,21 @@ def copy_lib_files_linux(arch: str):
         shutil.copy2(binary, dest_dir)
         copy_dependencies(binary)
 
-    print("Copying files for Linux finished!", flush=True)
+    print("Finished copying files!", flush=True)
 
 
 def copy_lib_files_windows(arch: str):
     dest_dir = Path(".") / "bin" / f"windows_{arch}"
-    _, sysroot = get_host_and_sysroot("windows", arch)
-    dll_dir = sysroot / "bin"
+    host, sysroot = get_host_and_sysroot("windows", arch)
+
+    # On msys2 the dlls are present in sysroot/bin, on Ubuntu in sysroot/lib
+    # So we just use recursive search instad of specifying the full path
+    search_paths = (
+        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else [])
+        + get_lib_search_paths(host)
+        + [sysroot]
+    )
+
     extra_libs = [
         "libwinpthread-1.dll",
         "libgcc_s_seh-1.dll",
@@ -385,11 +413,15 @@ def copy_lib_files_windows(arch: str):
     os.makedirs(dest_dir, exist_ok=True)
 
     for file in list((get_ffmpeg_install_dir("windows") / "bin").glob("*.dll")) + [
-        dll_dir / dll for dll in extra_libs
+        find_file(dll, search_paths) for dll in extra_libs
     ]:
+        if not file:
+            continue
+
+        print(f"Copying {file.name} from {file.parent} to {dest_dir}")
         shutil.copy2(file, dest_dir)
 
-    print("Copying files for Windows finished!", flush=True)
+    print("Finished copying files!", flush=True)
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ options:
 environment variables:
   GOZEN_MSYS2_DIR       path to the MSYS2 directory where MSYS2 is installed (default: C:\\msys64)
   GOZEN_GIT_PATH        path to the git executable (default: git)
-  GOZEN_CROSS_SYSROOT   root of the cross-build tree, used when cross compiling (default: linux: /usr/x86_64-w64-mingw32/sys-root/mingw, windows: ${GOZEN_MSYS2_DIR}/ucrt64)
+  GOZEN_CROSS_SYSROOT   root of the cross-build tree, used when cross compiling (default: linux: auto-detect, windows: ${GOZEN_MSYS2_DIR}/ucrt64)
 
 environment variable usage:
   windows       set GOZEN_MSYS2_DIR=C:\\msys64 && python3 build.py
@@ -247,6 +247,12 @@ def main() -> ExitCode:
                 return ExitCode.DEP_NOT_FOUND
 
             print("Successfully installed the required MSYS2 dependencies!")
+
+    # Make sure that sysroot can be found
+    try:
+        utils.get_host_and_sysroot(target_platform, arch)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"{type(e)}: {e}")
 
     start_time = datetime.datetime.now()
 

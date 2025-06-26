@@ -1,6 +1,8 @@
 .godot
 __pycache__
 aom_build
+.venv
+.sconf_temp
 
 *.x86_64
 *.so*

@@ -263,18 +263,29 @@ def get_host_and_sysroot(target_platform: str, arch: str) -> tuple[str, Path]:
     # Cross compile for windows x86_64
     if target_platform == "windows":
         assert arch == "x86_64", "Cross compilation for windows_arm not supported"
-        return "x86_64-w64-mingw32", Path(
-            _GOZEN_CROSS_SYSROOT
-        ) if _GOZEN_CROSS_SYSROOT else Path(
-            "/"
-        ) / "usr" / "x86_64-w64-mingw32" / "sys-root" / "mingw"
+        if _GOZEN_CROSS_SYSROOT:
+            return "x86_64-w64-mingw32", Path(_GOZEN_CROSS_SYSROOT)
+
+        mingw_path = Path("/") / "usr" / "x86_64-w64-mingw32"
+        if not mingw_path.exists():
+            mingw_path = Path("/") / "usr" / "x86_64-w64-mingw"
+
+        if not mingw_path.exists():
+            raise FileNotFoundError(
+                "Mingw sysroot not found. Please specify the `GOZEN_CROSS_SYSROOT` environment variable."
+            )
+
+        sysroot = mingw_path / "sys-root" / "mingw"
+        if not sysroot.exists():
+            sysroot = mingw_path
+
+        return "x86_64-w64-mingw32", sysroot
 
     # Cross compile for arm linux
     if arch == "arm64" and CURR_ARCH != "arm64":
         return "aarch64-linux-gnu", Path(
             _GOZEN_CROSS_SYSROOT
         ) if _GOZEN_CROSS_SYSROOT else Path("/") / "usr" / "aarch64-linux-gnu"
-        # /usr/aarch64-redhat-linux/sys-root/fc43/usr/
 
     # Compile for current platform and arch
     return "", Path("/")
