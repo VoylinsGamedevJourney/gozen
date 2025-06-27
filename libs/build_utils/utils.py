@@ -140,13 +140,13 @@ def convert_to_msys2_path(path: str | Path) -> str:
 
     cmd = ["cygpath", str(path)]
     if not is_current_msys2_ucrt64():
-        _path = str(path).replace("\\", "/").replace(" ", "\\ ")
+        _path = str(path).replace("\\", "/")
         cmd = [*MSYS2_SHELL, f"cygpath {_path}"]
 
     res = subprocess.run(cmd, cwd="./", capture_output=True, text=True, shell=False)
     if res.returncode != 0:
         raise ValueError(f"Failed to convert path {path} to MSYS2 path!")
-    return res.stdout.strip().replace(" ", "\\ ")
+    return res.stdout.strip()
 
 
 def clear_dir(path: str | os.PathLike) -> None:

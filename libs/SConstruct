@@ -17,7 +17,7 @@ jobs = ARGUMENTS.get("jobs", 4)
 platform = ARGUMENTS.get("platform", "linux")
 arch = ARGUMENTS.get("arch", "x86_64")
 target = ARGUMENTS.get("target", "template_debug").split("_")[-1]
-libpath = f"bin/{platform}_{arch}"
+libpath = f"bin/{platform}_{arch}/libgozen{env_suffix}{env_shlibsuffix}"
 use_mingw = ARGUMENTS.get("use_mingw", "no")
 
 use_system = ARGUMENTS.get("use_system", "no")
@@ -57,7 +57,6 @@ env.Append(
 
 
 if "linux" in platform:
-    libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"
     if use_system == "yes":
         env.Append(
             CPPPATH=["/usr/include/ffmpeg/"],
@@ -71,7 +70,6 @@ if "linux" in platform:
             LIBS=LIBS_COMMON,
         )
 elif "windows" in platform:
-    libpath += f"/libgozen{env_suffix}{env_shlibsuffix}"
     if os_platform.system().lower() == "windows" and use_mingw != "yes":
         env.Append(
             LIBS=[
@@ -131,14 +129,19 @@ elif "windows" in platform:
             "-lpthread",  # must be after everything
         ]
 
-        conf = Configure(env)
-        found_libs = [
-            lflag for lflag in libs if conf.CheckLib(lflag.removeprefix("-l"))
-        ]
-        if not all(lib in found_libs for lib in libs):
-            print("Ignoring libraries not found.")
+        if os_platform.system().lower() != "windows":
+            # Some distros don't have certain libraries
+            conf = Configure(env)
+            found_libs = [
+                lflag for lflag in libs if conf.CheckLib(lflag.removeprefix("-l"))
+            ]
 
-        env.Append(LIBS=LIBS_COMMON + found_libs)
+            if not all(lib in found_libs for lib in libs):
+                print("Ignoring libraries not found.")
+            conf.env.Append(LIBS=LIBS_COMMON + found_libs)
+            env = conf.Finish()
+        else:
+            env.Append(LIBS=LIBS_COMMON + libs)
 
 
 src = Glob("gde_gozen/*.cpp")
