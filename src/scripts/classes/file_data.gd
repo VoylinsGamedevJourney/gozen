@@ -59,7 +59,8 @@ func init_data(file_data_id: int) -> bool:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
-	elif file.type in EditorCore.AUDIO_TYPES:
+
+	if file.type in EditorCore.AUDIO_TYPES:
 		Threader.add_task(_load_audio_data.bind(file.path), create_wave)
 
 	return true
