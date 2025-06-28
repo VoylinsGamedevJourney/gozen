@@ -17,7 +17,7 @@ run-name: 'Build GoZen for Windows version: ${{ inputs.version }} by @${{ github
 jobs:
   build-ffmpeg:
     name: 'Build FFmpeg'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: 'Installing dependencies'
         run: |
