@@ -307,9 +307,10 @@ func _on_start_render_button_pressed() -> void:
 	var gozen_icon: CompressedTexture2D = preload("uid://cwv5gaisvmwv7")
 	var rendering_icon: CompressedTexture2D = preload("uid://b6r37nt1xhvq6")
 
-	DisplayServer.set_icon(rendering_icon.get_image())
-	status_indicator_id = DisplayServer.create_status_indicator(
-			rendering_icon, tr("title_rendering"), Callable())
+	if OS.get_name().to_lower() == "windows":
+		DisplayServer.set_icon(rendering_icon.get_image())
+		status_indicator_id = DisplayServer.create_status_indicator(
+				rendering_icon, tr("title_rendering"), Callable())
 
 	# Display the progress popup.
 	if progress_overlay != null:
@@ -330,11 +331,9 @@ func _on_start_render_button_pressed() -> void:
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	progress_overlay.status_hbox.add_child(button)
 
-	# WARN: This should not be here
-	# Changing icon back to indicate that GoZen rendering has finished + we
-	# delete the status indicator.
-	DisplayServer.set_icon(gozen_icon.get_image())
-	DisplayServer.delete_status_indicator(status_indicator_id)
+	if OS.get_name().to_lower() == "windows":
+		DisplayServer.set_icon(gozen_icon.get_image())
+		DisplayServer.delete_status_indicator(status_indicator_id)
 
 	RenderManager.encoder = Encoder.new()
 	RenderManager.encoder.set_resolution(Project.get_resolution())
@@ -376,6 +375,6 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 			current_progress += progress_frame_increase # Update bar from 6 to 99.
 		else:
 			current_progress = status
-
+	if progress_overlay != null:
 		progress_overlay.update_progress(floori(current_progress), status_str)
 
