@@ -36,6 +36,9 @@ msgstr "Renderen"
 msgid "title_rendering_finished"
 msgstr "Renderen voltooid"
 
+msgid "title_rendering_error"
+msgstr "Renderen: Er is een fout opgetreden."
+
 msgid "title_render_video"
 msgstr "Video renderen"
 
@@ -72,6 +75,15 @@ msgstr "Project instellingen"
 msgid "title_chapters"
 msgstr "Chapters"
 
+msgid "title_save_image_to_file"
+msgstr "Afbeelding opslaan als bestand"
+
+msgid "title_save_video_audio_to_wav"
+msgstr "Video audio opslaan naar WAV"
+
+msgid "title_add_color_file"
+msgstr "Kleur clip toevoegen"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
 
@@ -101,6 +113,9 @@ msgstr "Project openen"
 
 msgid "button_create_new_project"
 msgstr "Nieuw project aanmaken"
+
+msgid "button_create_new_color_file"
+msgstr "Kleurbestand aanmaken"
 
 msgid "button_tooltip_editor_settings"
 msgstr "Editor instellingen."
@@ -170,6 +185,9 @@ msgstr "Resolutie"
 msgid "text_framerate"
 msgstr "Framerate"
 
+msgid "placeholder_text_search_files"
+msgstr "Zoek bestanden ..."
+
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Wijzigingen negeren en instellingen menu sluiten."
 
@@ -177,7 +195,7 @@ msgid "tooltip_setting_background_color"
 msgstr "De standaard achtergrondkleur van je project."
 
 msgid "setting_background_color"
-msgstr "Achtergroundkleur"
+msgstr "Achtergrondkleur"
 
 msgid "setting_language"
 msgstr "Taal"
@@ -192,12 +210,24 @@ msgid "setting_show_menu_bar"
 msgstr "Menubalk weergeven"
 
 msgid "setting_waveform_style"
-msgstr "Stijl audiogolf vorm"
+msgstr "Weergave van audiogolf"
 
 msgid "setting_default_image_duration"
 msgstr "Standaard duur afbeeldingen"
 
 msgid "setting_tooltip_default_image_duration"
+msgstr "De duur in frames."
+
+msgid "setting_default_color_duration"
+msgstr "Standaard duur kleuren"
+
+msgid "setting_tooltip_default_color_duration"
+msgstr "De duur in frames."
+
+msgid "setting_default_text_duration"
+msgstr "Standaard duur tekst"
+
+msgid "setting_tooltip_default_text_duration"
 msgstr "De duur in frames."
 
 msgid "setting_default_project_resolution"
@@ -241,6 +271,12 @@ msgstr ""
 "hun applicaties verbinding maken met het internet, is deze optie standaard "
 "'uitgeschakeld'."
 
+msgid "setting_auto_save"
+msgstr "Project automatisch opslaan"
+
+msgid "setting_tooltip_auto_save"
+msgstr "Sla je project elke paar minuten automatisch op."
+
 msgid "encoding_progress_text_setup"
 msgstr "Encoder instellen ..."
 
@@ -249,6 +285,9 @@ msgstr "Encoder kon niet worden geopend, controleer pad en instellingen!"
 
 msgid "encoding_progress_text_compiling_audio"
 msgstr "Audio data compileren ..."
+
+msgid "encoding_progress_text_sending_audio"
+msgstr "Er ging iets mis bij het versturen van audio naar de encoder!"
 
 msgid "encoding_progress_text_sending_audio_error"
 msgstr "Er ging iets mis bij het versturen van audio naar de encoder!"
@@ -316,10 +355,10 @@ msgid "render_option_tooltip_threads_cores"
 msgstr "Zet op '0' om alle beschikbare threads te gebruiken."
 
 msgid "render_option_video_length"
-msgstr "Video lengte"
+msgstr "Videolengte"
 
 msgid "render_option_render_time"
-msgstr "Render tijd"
+msgstr "Rendertijd"
 
 msgid "notification_update_available"
 msgstr "Update beschikbaar!"
@@ -350,3 +389,84 @@ msgstr "Project instellingen"
 
 msgid "command_render_menu"
 msgstr "Render menu"
+
+msgid "menu_bar_project"
+msgstr "Project"
+
+msgid "menu_bar_editor"
+msgstr "Editor"
+
+msgid "menu_bar_project_save"
+msgstr "Opslaan"
+
+msgid "menu_bar_project_save_as"
+msgstr "Opslaan als ..."
+
+msgid "menu_bar_project_open_project"
+msgstr "Openen"
+
+msgid "menu_bar_project_open_settings"
+msgstr "Instellingen"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "Instellingen"
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZen website"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "Handleiding"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "Tutorials"
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Discord server"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "Steun GoZen"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "Over GoZen"
+
+msgid "file_dialog_title_add_files"
+msgstr "Bestanden toevoegen"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "Opslaglocatie selecteren"
+
+msgid "file_panel_item_add_files"
+msgstr "Bestand(en) toevoegen"
+
+msgid "file_panel_item_add_text"
+msgstr "Tekst toevoegen"
+
+msgid "file_panel_item_add_color"
+msgstr "Kleur toevoegen"
+
+msgid "popup_item_rename"
+msgstr "Hernoemen"
+
+msgid "popup_item_reload"
+msgstr "Herladen"
+
+msgid "popup_item_delete"
+msgstr "Verwijderen"
+
+msgid "popup_item_duplicate"
+msgstr "Dupliceren"
+
+msgid "popup_item_save_as_file"
+msgstr "Opslaan als bestand ..."
+
+msgid "popup_item_extract_audio"
+msgstr "Audio extraheren (WAV)"
+
+msgid "popup_separator_image_options"
+msgstr "Afbeeldingopties"
+
+msgid "popup_separator_video_options"
+msgstr "Video-opties"
+
+msgid "popup_separator_text_options"
+msgstr "Tekstopties"

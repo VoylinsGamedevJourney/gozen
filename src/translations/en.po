@@ -37,7 +37,7 @@ msgid "title_rendering_finished"
 msgstr "Rendering finished"
 
 msgid "title_rendering_error"
-msgstr "Rendering: Error occured"
+msgstr "Rendering: Error occured."
 
 msgid "title_render_video"
 msgstr "Render video"
@@ -268,6 +268,12 @@ msgstr ""
 "This relies on checking the GitHub repo and therefore will make a connection "
 "to the internet. Some people prefer to not make their applications connect "
 "to the internet so this is by default 'disabled'."
+
+msgid "setting_auto_save"
+msgstr "Auto save project"
+
+msgid "setting_tooltip_auto_save"
+msgstr "Auto save your project every few minutes."
 
 msgid "encoding_progress_text_setup"
 msgstr "Setting up encoder ..."

@@ -27,11 +27,21 @@ msgstr "Zeitachse"
 msgid "title_extras"
 msgstr "Extras"
 
+#, fuzzy
+#| msgid "title_rendering"
+msgid "title_render_settings"
+msgstr "Rendern"
+
 msgid "title_rendering"
 msgstr "Rendern"
 
 msgid "title_rendering_finished"
 msgstr "Rendern abgeschlossen"
+
+#, fuzzy
+#| msgid "title_rendering"
+msgid "title_rendering_error"
+msgstr "Rendern"
 
 msgid "title_render_video"
 msgstr "Video rendern"
@@ -63,6 +73,30 @@ msgstr "Neues Projekt"
 msgid "title_sponsors"
 msgstr "Extras"
 
+#, fuzzy
+#| msgid "button_tooltip_editor_settings"
+msgid "title_editor_settings"
+msgstr "Editor Einstellungen"
+
+msgid "title_project_settings"
+msgstr "Projekteinstellungen"
+
+msgid "title_chapters"
+msgstr "Kapitel"
+
+#, fuzzy
+msgid "title_save_image_to_file"
+msgstr "Bild in Datei speichern"
+
+#, fuzzy
+#| msgid "title_render_audio"
+msgid "title_save_video_audio_to_wav"
+msgstr "Audio rendern"
+
+#, fuzzy
+msgid "title_add_color_file"
+msgstr "Farbdatei hinzufügen"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Neues Projekt mit gewählten Einstellungen erstellen"
 
@@ -83,17 +117,22 @@ msgstr "GoZen unterstützen"
 
 #, fuzzy
 msgid "button_view_sponsors"
-msgstr "Einstellungen speichern"
+msgstr "Sponsoren anzeigen"
 
 #, fuzzy
 msgid "button_become_sponsor"
-msgstr "Schließen"
+msgstr "Sponsor werden"
 
 msgid "button_open_project"
 msgstr "Projekt öffnen"
 
 msgid "button_create_new_project"
 msgstr "Neues Projekt erstellen"
+
+#, fuzzy
+#| msgid "button_create_new_project"
+msgid "button_create_new_color_file"
+msgstr "Neue Farbdatei erstellen"
 
 msgid "button_tooltip_editor_settings"
 msgstr "Editor Einstellungen"
@@ -109,6 +148,14 @@ msgstr "Zurücksetzen"
 
 msgid "button_return"
 msgstr "Zurück"
+
+#, fuzzy
+msgid "button_screen_editing"
+msgstr "Bearbeitungsbildschirm"
+
+#, fuzzy
+msgid "button_screen_render"
+msgstr "Renderbildschirm"
 
 msgid "button_start_render"
 msgstr "Render starten"
@@ -157,6 +204,10 @@ msgstr "Auflösung"
 msgid "text_framerate"
 msgstr "Bildrate"
 
+#, fuzzy
+msgid "placeholder_text_search_files"
+msgstr "Dateien suchen..."
+
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Veränderungen ignorieren und Einstellungen schließen"
 
@@ -179,7 +230,7 @@ msgid "setting_show_menu_bar"
 msgstr "Menüleiste anzeigen"
 
 msgid "setting_waveform_style"
-msgstr "Audio Wellenform Stil"
+msgstr "Audiowellenform-Stil"
 
 msgid "setting_default_image_duration"
 msgstr "Standard Bilddauer"
@@ -187,8 +238,28 @@ msgstr "Standard Bilddauer"
 msgid "setting_tooltip_default_image_duration"
 msgstr "Dauer in Frames"
 
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "setting_default_color_duration"
+msgstr "Standard Bilddauer"
+
+#, fuzzy
+#| msgid "setting_tooltip_default_image_duration"
+msgid "setting_tooltip_default_color_duration"
+msgstr "Dauer in Frames"
+
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "setting_default_text_duration"
+msgstr "Standard Bilddauer"
+
+#, fuzzy
+#| msgid "setting_tooltip_default_image_duration"
+msgid "setting_tooltip_default_text_duration"
+msgstr "Dauer in Frames"
+
 msgid "setting_default_project_resolution"
-msgstr "Standard Projekt Auflösung"
+msgstr "Standardprojektauflösung"
 
 msgid "setting_tooltip_default_project_resolution_x"
 msgstr "Standardbreite des Videoprojekts"
@@ -197,7 +268,7 @@ msgid "setting_tooltip_default_project_resolution_y"
 msgstr "Standardlänge des Videoprojekts"
 
 msgid "setting_default_project_framerate"
-msgstr "Standard Projekt Bildrate"
+msgstr "Standardprojektbildrate"
 
 msgid "setting_tooltip_default_project_framerate"
 msgstr "Die Standard Bildrate des Videoprojekts"
@@ -228,6 +299,16 @@ msgstr ""
 "Funktion standardmäßig deaktiviert."
 
 #, fuzzy
+#| msgid "setting_language"
+msgid "setting_auto_save"
+msgstr "Sprache"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_auto_save"
+msgstr "Einfach Dunkelmodus verwenden"
+
+#, fuzzy
 msgid "encoding_progress_text_setup"
 msgstr "Renderer Einrichten ..."
 
@@ -237,6 +318,10 @@ msgstr "Renderer konnte nicht geöffnet werden. Pfad und Einstellungen prüfen!"
 
 msgid "encoding_progress_text_compiling_audio"
 msgstr "Audiodaten kompilieren ..."
+
+#, fuzzy
+msgid "encoding_progress_text_sending_audio"
+msgstr "Etwas ist beim Senden der Audio zum Renderer schiefgelaufen!"
 
 #, fuzzy
 msgid "encoding_progress_text_sending_audio_error"
@@ -315,34 +400,137 @@ msgstr "Update verfügbar!"
 
 #, fuzzy
 msgid "status_project_loading_init"
-msgstr ""
+msgstr "Projekt wird geladen..."
 
 #, fuzzy
 msgid "status_project_preparing_timeline"
-msgstr ""
+msgstr "Timeline wird vorbereitet..."
 
 #, fuzzy
 msgid "status_project_loading_files"
-msgstr ""
+msgstr "Dateien werden geladen..."
 
 #, fuzzy
 msgid "status_project_playback_setup"
-msgstr ""
+msgstr "Wiedergabe wird eingerichtet..."
 
 #, fuzzy
 msgid "status_project_finalizing"
-msgstr ""
+msgstr "Projekt wird abgeschlossen..."
 
 #, fuzzy
 msgid "status_new_project_init"
 msgstr "Neues Projekt"
 
-#, fuzzy
 msgid "command_editor_settings"
-msgstr "Editor Einstellungen"
+msgstr "Editoreinstellungen"
 
 msgid "command_project_settings"
-msgstr ""
+msgstr "Projekteinstellungen"
 
+#, fuzzy
 msgid "command_render_menu"
-msgstr ""
+msgstr "Rendermenü"
+
+msgid "menu_bar_project"
+msgstr "Projekt"
+
+msgid "menu_bar_editor"
+msgstr "Editor"
+
+#, fuzzy
+msgid "menu_bar_project_save"
+msgstr "Speichern"
+
+#, fuzzy
+msgid "menu_bar_project_save_as"
+msgstr "Speichern unter..."
+
+msgid "menu_bar_project_open_project"
+msgstr "Projekt öffnen"
+
+msgid "menu_bar_project_open_settings"
+msgstr "Einstellungen"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "Einstellungen"
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZen Website öffnen"
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_manual"
+msgstr "Handbuch öffnen"
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "Tutorials öffnen"
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Discord öffnen"
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_support"
+msgstr "GoZen unterstützen"
+
+#, fuzzy
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "Über GoZen"
+
+#, fuzzy
+msgid "file_dialog_title_add_files"
+msgstr "Dateien hinzufügen"
+
+#, fuzzy
+msgid "file_dialog_title_select_save_path"
+msgstr "Speicherpfad wählen"
+
+#, fuzzy
+msgid "file_panel_item_add_files"
+msgstr "Dateien hinzufügen"
+
+#, fuzzy
+msgid "file_panel_item_add_text"
+msgstr "Text hinzufügen"
+
+#, fuzzy
+msgid "file_panel_item_add_color"
+msgstr "Farbe hinzufügen"
+
+#, fuzzy
+msgid "popup_item_rename"
+msgstr "Umbenennen"
+
+#, fuzzy
+msgid "popup_item_reload"
+msgstr "Neu laden"
+
+#, fuzzy
+msgid "popup_item_delete"
+msgstr "Löschen"
+
+#, fuzzy
+msgid "popup_item_duplicate"
+msgstr "Duplizieren"
+
+#, fuzzy
+msgid "popup_item_save_as_file"
+msgstr "Als Datei speichern"
+
+#, fuzzy
+msgid "popup_item_extract_audio"
+msgstr "Audio extrahieren"
+
+#, fuzzy
+msgid "popup_separator_image_options"
+msgstr "Bildoptionen"
+
+#, fuzzy
+msgid "popup_separator_video_options"
+msgstr "Videooptionen"
+
+#, fuzzy
+msgid "popup_separator_text_options"
+msgstr "Textoptionen"

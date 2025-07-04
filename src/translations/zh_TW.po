@@ -27,11 +27,20 @@ msgstr "時間軸"
 msgid "title_extras"
 msgstr "其他"
 
+#, fuzzy
+#| msgid "title_editor_settings"
+msgid "title_render_settings"
+msgstr "編輯器設定"
+
 msgid "title_rendering"
 msgstr "渲染"
 
 msgid "title_rendering_finished"
 msgstr "渲染完成"
+
+#, fuzzy
+msgid "title_rendering_error"
+msgstr ""
 
 msgid "title_render_video"
 msgstr "渲染影片"
@@ -66,6 +75,22 @@ msgstr "編輯器設定"
 msgid "title_project_settings"
 msgstr "專案設定"
 
+#, fuzzy
+msgid "title_chapters"
+msgstr "章節"
+
+#, fuzzy
+msgid "title_save_image_to_file"
+msgstr "儲存圖片到檔案"
+
+#, fuzzy
+msgid "title_save_video_audio_to_wav"
+msgstr "將影片音訊儲存為 （WAV）"
+
+#, fuzzy
+msgid "title_add_color_file"
+msgstr "新增顏色檔案"
+
 msgid "button_tooltip_create_new_project"
 msgstr "使用所選設定建立新專案。"
 
@@ -96,6 +121,10 @@ msgstr "開啟專案"
 msgid "button_create_new_project"
 msgstr "建立新專案"
 
+#, fuzzy
+msgid "button_create_new_color_file"
+msgstr "建立新顏色檔案"
+
 msgid "button_tooltip_editor_settings"
 msgstr "編輯器設定。"
 
@@ -110,6 +139,14 @@ msgstr "重設"
 
 msgid "button_return"
 msgstr "返回"
+
+#, fuzzy
+msgid "button_screen_editing"
+msgstr "編輯畫面"
+
+#, fuzzy
+msgid "button_screen_render"
+msgstr "渲染畫面"
 
 msgid "button_start_render"
 msgstr "開始渲染"
@@ -158,6 +195,10 @@ msgstr "解析度"
 msgid "text_framerate"
 msgstr "幀率"
 
+#, fuzzy
+msgid "placeholder_text_search_files"
+msgstr "搜尋檔案..."
+
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "忽略變更並關閉設定選單。"
 
@@ -188,6 +229,22 @@ msgstr "預設圖片持續時間"
 msgid "setting_tooltip_default_image_duration"
 msgstr "以影格為單位的持續時間。"
 
+#, fuzzy
+msgid "setting_default_color_duration"
+msgstr ""
+
+#, fuzzy
+msgid "setting_tooltip_default_color_duration"
+msgstr ""
+
+#, fuzzy
+msgid "setting_default_text_duration"
+msgstr ""
+
+#, fuzzy
+msgid "setting_tooltip_default_text_duration"
+msgstr ""
+
 msgid "setting_default_project_resolution"
 msgstr "預設專案解析度"
 
@@ -213,13 +270,28 @@ msgid "setting_delete_empty_space_mod"
 msgstr "刪除空白區間修飾鍵"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "在時間軸上雙擊空白處會刪除該空白區間並移動後方所有片段。設定修飾鍵後，您需要按住該特定按鍵再雙擊，才能移除片段之間的空白區間。"
+msgstr ""
+"在時間軸上雙擊空白處會刪除該空白區間並移動後方所有"
+"片段。設定修飾鍵後，您需要按住該特定按鍵再雙擊，才"
+"能移除片段之間的空白區間。"
 
 msgid "setting_check_version"
 msgstr "檢查更新"
 
 msgid "setting_tooltip_check_version"
-msgstr "此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些人不希望應用程式連網，因此此功能預設為「停用」。"
+msgstr ""
+"此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些"
+"人不希望應用程式連網，因此此功能預設為「停用」。"
+
+#, fuzzy
+#| msgid "setting_language"
+msgid "setting_auto_save"
+msgstr "語言"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_auto_save"
+msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
 #, fuzzy
 msgid "encoding_progress_text_setup"
@@ -232,6 +304,10 @@ msgstr "無法開啟渲染器，請檢查路徑與設定！"
 #, fuzzy
 msgid "encoding_progress_text_compiling_audio"
 msgstr "正在編譯音訊資料..."
+
+#, fuzzy
+msgid "encoding_progress_text_sending_audio"
+msgstr "傳送音訊至渲染器時發生錯誤！"
 
 #, fuzzy
 msgid "encoding_progress_text_sending_audio_error"
@@ -273,19 +349,29 @@ msgstr "品質"
 
 #, fuzzy
 msgid "render_option_tooltip_quality"
-msgstr "調整 CRF (恆定速率因子)。最低品質設定為 50，最高品質設定為 15。預設值為 18。此設定用於調整位元率，會影響品質與檔案大小。數值 0 為最佳品質，51 為最差品質，18 的畫質損失通常難以察覺。"
+msgstr ""
+"調整 CRF (恆定速率因子)。最低品質設定為 50，最高品"
+"質設定為 15。預設值為 18。此設定用於調整位元率，會"
+"影響品質與檔案大小。數值 0 為最佳品質，51 為最差品"
+"質，18 的畫質損失通常難以察覺。"
 
 msgid "render_option_speed"
 msgstr "速度"
 
 msgid "render_option_tooltip_speed"
-msgstr "調整 H.264 的編碼速度。設定過高的速度可能會對最終影片品質產生負面影響。"
+msgstr ""
+"調整 H.264 的編碼速度。設定過高的速度可能會對最終"
+"影片品質產生負面影響。"
 
 msgid "render_option_gop_size"
 msgstr "GOP 大小"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "GOP (Group Of Pictures，圖像群組)。數值越高，壓縮率越好。但數值越高，在影片中跳轉的精確度就越低。如果您打算將渲染後的影片用於後續編輯，請設定較低的數值。"
+msgstr ""
+"GOP (Group Of Pictures，圖像群組)。數值越高，壓縮"
+"率越好。但數值越高，在影片中跳轉的精確度就越低。如"
+"果您打算將渲染後的影片用於後續編輯，請設定較低的數"
+"值。"
 
 msgid "render_option_threads_cores"
 msgstr "執行緒/核心數"
@@ -328,3 +414,116 @@ msgstr "專案設定"
 
 msgid "command_render_menu"
 msgstr "渲染選單"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_project"
+msgstr "新增專案"
+
+#, fuzzy
+msgid "menu_bar_editor"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_project_save"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_project_save_as"
+msgstr ""
+
+#, fuzzy
+#| msgid "button_open_project"
+msgid "menu_bar_project_open_project"
+msgstr "開啟專案"
+
+#, fuzzy
+#| msgid "command_project_settings"
+msgid "menu_bar_project_open_settings"
+msgstr "專案設定"
+
+#, fuzzy
+#| msgid "command_editor_settings"
+msgid "menu_bar_editor_open_settings"
+msgstr "編輯器設定"
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_site"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_manual"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_discord"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_support"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_about_gozen"
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "關於 GoZen"
+
+#, fuzzy
+msgid "file_dialog_title_add_files"
+msgstr ""
+
+#, fuzzy
+msgid "file_dialog_title_select_save_path"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_files"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_text"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_color"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_rename"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_reload"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_delete"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_duplicate"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_save_as_file"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_extract_audio"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_image_options"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_video_options"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_text_options"
+msgstr ""

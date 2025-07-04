@@ -28,11 +28,21 @@ msgstr "Timeline"
 msgid "title_extras"
 msgstr "Par défaut"
 
+#, fuzzy
+#| msgid "title_rendering"
+msgid "title_render_settings"
+msgstr "Rendu"
+
 msgid "title_rendering"
 msgstr "Rendu"
 
 msgid "title_rendering_finished"
 msgstr "Rendu terminé"
+
+#, fuzzy
+#| msgid "title_rendering"
+msgid "title_rendering_error"
+msgstr "Rendu"
 
 msgid "title_render_video"
 msgstr "Rendu vidéo"
@@ -60,7 +70,36 @@ msgstr "Nouveau projet"
 msgid "title_files_dropped"
 msgstr "Nouveau projet"
 
+#, fuzzy
 msgid "title_sponsors"
+msgstr ""
+
+#, fuzzy
+#| msgid "button_tooltip_editor_settings"
+msgid "title_editor_settings"
+msgstr "Configuration de l'éditeur."
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "title_project_settings"
+msgstr "Nouveau projet"
+
+#, fuzzy
+#| msgid "title_cpu_threads"
+msgid "title_chapters"
+msgstr "Threads CPU"
+
+#, fuzzy
+msgid "title_save_image_to_file"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_render_audio"
+msgid "title_save_video_audio_to_wav"
+msgstr "Rendu audio"
+
+#, fuzzy
+msgid "title_add_color_file"
 msgstr ""
 
 msgid "button_tooltip_create_new_project"
@@ -95,6 +134,11 @@ msgstr "Ouvrir un projet"
 msgid "button_create_new_project"
 msgstr "Créer un nouveau projet"
 
+#, fuzzy
+#| msgid "button_create_new_project"
+msgid "button_create_new_color_file"
+msgstr "Créer un nouveau projet"
+
 msgid "button_tooltip_editor_settings"
 msgstr "Configuration de l'éditeur."
 
@@ -109,6 +153,16 @@ msgstr "Réinitialiser"
 
 msgid "button_return"
 msgstr "Retour"
+
+#, fuzzy
+#| msgid "button_save_settings"
+msgid "button_screen_editing"
+msgstr "Sauvegarder les réglages"
+
+#, fuzzy
+#| msgid "button_start_render"
+msgid "button_screen_render"
+msgstr "Démarrer le rendu"
 
 msgid "button_start_render"
 msgstr "Démarrer le rendu"
@@ -157,6 +211,10 @@ msgstr "Résolution"
 msgid "text_framerate"
 msgstr "Fréquence d'images"
 
+#, fuzzy
+msgid "placeholder_text_search_files"
+msgstr ""
+
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Ignorer les changements et fermer le menu de configuration."
 
@@ -185,6 +243,26 @@ msgid "setting_default_image_duration"
 msgstr "Durée d'image par défaut"
 
 msgid "setting_tooltip_default_image_duration"
+msgstr "La durée en nombre d'images."
+
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "setting_default_color_duration"
+msgstr "Durée d'image par défaut"
+
+#, fuzzy
+#| msgid "setting_tooltip_default_image_duration"
+msgid "setting_tooltip_default_color_duration"
+msgstr "La durée en nombre d'images."
+
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "setting_default_text_duration"
+msgstr "Durée d'image par défaut"
+
+#, fuzzy
+#| msgid "setting_tooltip_default_image_duration"
+msgid "setting_tooltip_default_text_duration"
 msgstr "La durée en nombre d'images."
 
 msgid "setting_default_project_resolution"
@@ -227,6 +305,16 @@ msgid "setting_tooltip_check_version"
 msgstr "Le mode sombre est le meilleur."
 
 #, fuzzy
+#| msgid "setting_language"
+msgid "setting_auto_save"
+msgstr "Langage"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_auto_save"
+msgstr "Le mode sombre est le meilleur."
+
+#, fuzzy
 msgid "encoding_progress_text_setup"
 msgstr "Préparation du moteur de rendu ..."
 
@@ -237,6 +325,10 @@ msgstr ""
 
 msgid "encoding_progress_text_compiling_audio"
 msgstr "Compilation des données audio ..."
+
+#, fuzzy
+msgid "encoding_progress_text_sending_audio"
+msgstr "Une erreur est apparue pendant l'envoi de l'audio au moteur de rendu !"
 
 #, fuzzy
 msgid "encoding_progress_text_sending_audio_error"
@@ -343,8 +435,121 @@ msgstr "Nouveau projet"
 msgid "command_editor_settings"
 msgstr "Configuration de l'éditeur."
 
+#, fuzzy
 msgid "command_project_settings"
 msgstr ""
 
+#, fuzzy
 msgid "command_render_menu"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_project"
+msgstr "Nouveau projet"
+
+#, fuzzy
+msgid "menu_bar_editor"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_project_save"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_project_save_as"
+msgstr ""
+
+#, fuzzy
+#| msgid "button_open_project"
+msgid "menu_bar_project_open_project"
+msgstr "Ouvrir un projet"
+
+#, fuzzy
+msgid "menu_bar_project_open_settings"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_settings"
+msgstr "Configuration de l'éditeur."
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_site"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_manual"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_discord"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_support"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_about_gozen"
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "À Propos de GoZen"
+
+#, fuzzy
+msgid "file_dialog_title_add_files"
+msgstr ""
+
+#, fuzzy
+msgid "file_dialog_title_select_save_path"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_files"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_text"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_color"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_rename"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_reload"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_delete"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_duplicate"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_save_as_file"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_extract_audio"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_image_options"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_video_options"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_text_options"
 msgstr ""
