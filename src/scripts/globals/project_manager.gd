@@ -131,6 +131,7 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	save()
 	new_project_overlay.update_progress_bar(99)
 	get_window().title = "GoZen - %s" % path.get_file().get_basename()
+	new_project_overlay.queue_free()
 
 
 func save() -> void:

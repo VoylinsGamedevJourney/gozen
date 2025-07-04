@@ -77,7 +77,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_donii"]
 resource_name = "show_sponsors"
-length = 4.5
+length = 3.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -85,10 +85,10 @@ tracks/0/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerL
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1, 2.03333, 3.03333, 4.03333),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.03333, 2.03333, 2.96667),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": ["4", "3", "2", "1", ""]
+"values": ["3", "2", "1", ""]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -97,7 +97,7 @@ tracks/1/path = NodePath("Panel/VBox/StartupTabContainer:current_tab")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 4.03333),
+"times": PackedFloat32Array(0, 3.06667),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [2, 0]
@@ -109,7 +109,7 @@ tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/Clo
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 4.46667),
+"times": PackedFloat32Array(0, 3.23333),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
@@ -121,7 +121,7 @@ tracks/3/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerL
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 4.46667),
+"times": PackedFloat32Array(0, 3.33333),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
