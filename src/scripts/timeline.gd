@@ -739,19 +739,22 @@ func _clips_split(frame_nr: int) -> void:
 
 	# If selected clips have been found, we only cut those clips, so we remove
 	# the other clips.
+	var clips_to_cut: Array[ClipData] = []
 	if in_selected_clips:
 		for clip_data: ClipData in clips_at_playhead:
-			if !selected_clips.has(clip_data.clip_id):
-				clips_at_playhead.remove_at(clips_at_playhead.find(clip_data))
+			if selected_clips.has(clip_data.clip_id):
+				clips_to_cut.append(clip_data)
+	else:
+		clips_to_cut = clips_at_playhead
 
 	
 	InputManager.undo_redo.create_action("Deleting clip on timeline")
 
-	for clip_data: ClipData in clips_at_playhead:
+	for clip_data: ClipData in clips_to_cut:
 		InputManager.undo_redo.add_do_method(_cut_clip.bind(frame_nr, clip_data))
 	InputManager.undo_redo.add_do_method(queue_redraw)
 
-	for clip_data: ClipData in clips_at_playhead:
+	for clip_data: ClipData in clips_to_cut:
 		InputManager.undo_redo.add_undo_method(_uncut_clip.bind(frame_nr, clip_data))
 	InputManager.undo_redo.add_undo_method(queue_redraw)
 
