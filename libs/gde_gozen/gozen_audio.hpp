@@ -16,18 +16,18 @@
 
 using namespace godot;
 
-class Audio : public Resource {
-	GDCLASS(Audio, Resource);
+class GoZenAudio : public Resource {
+	GDCLASS(GoZenAudio, Resource);
 
 private:
 	static PackedByteArray _get_audio(AVFormatContext *&format_ctx,
 									  AVStream *&stream, bool wav);
 
 	static inline void _log(String message) {
-		UtilityFunctions::print("Audio: ", message, ".");
+		UtilityFunctions::print("GoZenAudio: ", message, ".");
 	}
 	static inline bool _log_err(String message) {
-		UtilityFunctions::printerr("Audio: ", message, "!");
+		UtilityFunctions::printerr("GoZenAudio: ", message, "!");
 		return false;
 	}
 

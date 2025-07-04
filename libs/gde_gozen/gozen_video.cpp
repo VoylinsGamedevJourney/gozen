@@ -1,15 +1,15 @@
-#include "video.hpp"
+#include "gozen_video.hpp"
 
-Video::Video() {
+GoZenVideo::GoZenVideo() {
 	av_log_set_level(AV_LOG_VERBOSE); 
 }
 
-Video::~Video() {
+GoZenVideo::~GoZenVideo() {
 	close();
 }
 
 
-bool Video::open(const String& video_path) {
+bool GoZenVideo::open(const String& video_path) {
 	if (loaded)
 		return _log_err("Already open");
 
@@ -264,7 +264,7 @@ bool Video::open(const String& video_path) {
 	return OK;
 }
 
-void Video::close() {
+void GoZenVideo::close() {
 	loaded = false;
 	response = OK;
 	current_frame = -1;
@@ -279,7 +279,7 @@ void Video::close() {
 	av_format_ctx.reset();
 }
 
-bool Video::seek_frame(int frame_nr) {
+bool GoZenVideo::seek_frame(int frame_nr) {
 	if (!loaded)
 		return _log_err("Not open");
 
@@ -357,7 +357,7 @@ bool Video::seek_frame(int frame_nr) {
 	return true;
 }
 
-bool Video::next_frame(bool skip_frame) {
+bool GoZenVideo::next_frame(bool skip_frame) {
 	if (!loaded)
 		return false;
 
@@ -376,7 +376,7 @@ bool Video::next_frame(bool skip_frame) {
 }
 
 
-Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
+Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 	// This is identical to the seek_frame() function, but instead of copying
 	// the data to Y,U,V we create an RGBA Image.
 	if (!loaded) {
@@ -527,7 +527,7 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 }
 
 
-void Video::_copy_frame_data() {
+void GoZenVideo::_copy_frame_data() {
 	if (av_frame->data[0] == nullptr) {
 		_log_err("Frame is empty!");
 		return;
@@ -550,7 +550,7 @@ void Video::_copy_frame_data() {
 	return;
 }
 
-int Video::_seek_frame(int frame_nr) {
+int GoZenVideo::_seek_frame(int frame_nr) {
 	avcodec_flush_buffers(av_codec_ctx.get());
 
 	frame_timestamp = (int64_t)(frame_nr * average_frame_duration);
@@ -561,14 +561,14 @@ int Video::_seek_frame(int frame_nr) {
 
 
 #define BIND_METHOD(method_name) \
-    ClassDB::bind_method(D_METHOD(#method_name), &Video::method_name)
+    ClassDB::bind_method(D_METHOD(#method_name), &GoZenVideo::method_name)
 
 #define BIND_METHOD_ARGS(method_name, ...) \
     ClassDB::bind_method( \
-        D_METHOD(#method_name, __VA_ARGS__), &Video::method_name)
+        D_METHOD(#method_name, __VA_ARGS__), &GoZenVideo::method_name)
 
 
-void Video::_bind_methods() {
+void GoZenVideo::_bind_methods() {
 	BIND_METHOD_ARGS(open, "video_path");
 
 	BIND_METHOD(is_open);

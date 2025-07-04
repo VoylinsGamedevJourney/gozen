@@ -21,7 +21,7 @@ enum STATUS {
 signal update_encoder_status(status: STATUS)
 
 
-var encoder: Encoder
+var encoder: GoZenEncoder
 var viewport: ViewportTexture
 
 var cancel_encoding: bool = false
@@ -144,30 +144,39 @@ func encode_audio() -> PackedByteArray:
 		Toolbox.print_resize_error()
 
 	for i: int in Project.get_track_count():
-		var track_audio: PackedByteArray = []
-		var track_data: Dictionary[int, int] = Project.get_track_data(i)
+		for clip_id: int in Project.get_track_data(i).values():
+			if Project.get_clip_type(clip_id) not in EditorCore.AUDIO_TYPES:
+				continue
+			if Project.get_clip(clip_id).effects_audio.mute:
+				continue
 
-		if track_data.size() == 0:
-			continue
-
-		for frame_point: int in Project.get_track_keys(i):
-			var clip: ClipData = Project.get_clip(track_data[frame_point])
-			var file: File = Project.get_file(clip.file_id)
-
-			if file.type in EditorCore.AUDIO_TYPES:
-				var sample_count: int = Toolbox.get_sample_count(clip.start_frame)
-
-				if track_audio.size() != sample_count:
-					if track_audio.resize(sample_count):
-						Toolbox.print_resize_error()
-				
-				track_audio.append_array(clip.get_clip_audio_data())
-
-		# Making the audio data the correct length
-		if track_audio.resize(Toolbox.get_sample_count(Project.get_timeline_end() + 1)):
-			Toolbox.print_resize_error()
-
-		audio = Audio.combine_data(audio, track_audio)
+			# Audio is present so we can get all the track audio.
+			audio = _get_track_audio(audio, i)
+			break
 
 	return audio
+
+
+func _get_track_audio(audio: PackedByteArray, track_id: int) -> PackedByteArray:
+	var track_audio: PackedByteArray = []
+	var track_data: Dictionary[int, int] = Project.get_track_data(track_id)
+
+	for frame_point: int in Project.get_track_keys(track_id):
+		var clip: ClipData = Project.get_clip(track_data[frame_point])
+		var file: File = Project.get_file(clip.file_id)
+
+		if file.type in EditorCore.AUDIO_TYPES:
+			var sample_count: int = Toolbox.get_sample_count(clip.start_frame)
+
+			if track_audio.size() != sample_count:
+				if track_audio.resize(sample_count):
+					Toolbox.print_resize_error()
+			
+			track_audio.append_array(clip.get_clip_audio_data())
+
+	# Making the audio data the correct length
+	if track_audio.resize(Toolbox.get_sample_count(Project.get_timeline_end() + 1)):
+		Toolbox.print_resize_error()
+
+	return GoZenAudio.combine_data(audio, track_audio)
 

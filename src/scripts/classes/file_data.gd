@@ -12,7 +12,7 @@ const MAX_16_BIT_VALUE: float = 32767.0
 
 var id: int
 
-var video: Video = null
+var video: GoZenVideo = null
 var audio: AudioStreamWAV = null
 var image: Texture2D = null
 var color: Color = Color.WHITE
@@ -67,7 +67,7 @@ func init_data(file_data_id: int) -> bool:
 
 
 func _load_audio_data(file_path: String) -> void:
-	var audio_data: PackedByteArray = Audio.get_audio_data(file_path)
+	var audio_data: PackedByteArray = GoZenAudio.get_audio_data(file_path)
 
 	if audio_data.size() == 0:
 		return
@@ -80,7 +80,7 @@ func _load_audio_data(file_path: String) -> void:
 
 
 func _load_video_data(file_path: String) -> void:
-	var temp_video: Video = Video.new()
+	var temp_video: GoZenVideo = GoZenVideo.new()
 	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
 
 	if temp_video.open(file_path):

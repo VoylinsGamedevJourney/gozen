@@ -287,7 +287,7 @@ func update_view(track_id: int) -> void:
 	effects_video.apply_transform(view_textures[track_id])
 
 
-func _init_video_textures(track_id: int, video_data: Video, material: ShaderMaterial) -> void:
+func _init_video_textures(track_id: int, video_data: GoZenVideo, material: ShaderMaterial) -> void:
 	y_textures[track_id] = ImageTexture.create_from_image(video_data.get_y_data())
 	u_textures[track_id] = ImageTexture.create_from_image(video_data.get_u_data())
 	v_textures[track_id] = ImageTexture.create_from_image(video_data.get_v_data())
