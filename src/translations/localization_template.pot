@@ -260,6 +260,12 @@ msgstr ""
 msgid "setting_tooltip_check_version"
 msgstr ""
 
+msgid "setting_auto_save"
+msgstr ""
+
+msgid "setting_tooltip_auto_save"
+msgstr ""
+
 msgid "encoding_progress_text_setup"
 msgstr ""
 

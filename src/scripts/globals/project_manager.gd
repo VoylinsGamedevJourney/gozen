@@ -17,10 +17,22 @@ const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 var data: ProjectData
 var file_data: Dictionary [int, FileData] = {}
 
+var auto_save_timer: Timer
+
 
 
 func _ready() -> void:
 	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
+
+
+func _auto_save() -> void:
+	if auto_save_timer == null:
+		auto_save_timer = Timer.new()
+		Toolbox.connect_func(auto_save_timer.timeout, _auto_save)
+
+	if data != null:
+		save()
+	auto_save_timer.start(5*60) # Default time is every 5 minutes
 
 
 func _update_recent_projects(new_path: String) -> void:
@@ -133,6 +145,8 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	get_window().title = "GoZen - %s" % path.get_file().get_basename()
 	new_project_overlay.queue_free()
 
+	_auto_save()
+
 
 func save() -> void:
 	if data.save_data(data.project_path):
@@ -202,6 +216,8 @@ func open(project_path: String) -> void:
 	loading_overlay.update_progress_bar(100)
 	get_window().title = "GoZen - %s" % project_path.get_file().get_basename()
 	loading_overlay.queue_free()
+
+	_auto_save()
 
 
 func open_project() -> void:

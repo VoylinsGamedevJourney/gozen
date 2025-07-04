@@ -124,7 +124,12 @@ func set_mode_editor_settings() -> void:
 		_create_check_button(
 				Settings.get_check_version(),
 				Settings.set_check_version,
-				""),
+				"setting_tooltip_check_version"),
+		_create_label("setting_auto_save"),
+		_create_check_button(
+				Settings.get_auto_save(),
+				Settings.set_auto_save,
+				"setting_tooltip_auto_save"),
 	])
 
 

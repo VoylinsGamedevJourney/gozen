@@ -245,3 +245,13 @@ func set_check_version(value: bool) -> void:
 func get_check_version() -> int:
 	return data.check_version
 
+
+func set_auto_save(value: bool) -> void:
+	data.auto_save = value
+	if value:
+		Project._auto_save()
+	
+
+func get_auto_save() -> int:
+	return data.auto_save
+

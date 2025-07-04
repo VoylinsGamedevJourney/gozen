@@ -27,4 +27,5 @@ var delete_empty_modifier: int = KEY_NONE
 
 # Extra
 var check_version: bool = false
+var auto_save: bool = true
 
