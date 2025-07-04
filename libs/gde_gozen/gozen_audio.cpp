@@ -1,7 +1,7 @@
-#include "audio.hpp"
+#include "gozen_audio.hpp"
 
 
-PackedByteArray Audio::_get_audio(AVFormatContext *&format_ctx,
+PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 								  AVStream *&stream, bool wav) {
 	const int TARGET_SAMPLE_RATE = 44100;
 	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
@@ -125,7 +125,7 @@ PackedByteArray Audio::_get_audio(AVFormatContext *&format_ctx,
 }
 
 
-PackedByteArray Audio::get_audio_data(String file_path) {
+PackedByteArray GoZenAudio::get_audio_data(String file_path) {
 	av_log_set_level(AV_LOG_VERBOSE);
 	AVFormatContext *format_ctx = avformat_alloc_context();
 	PackedByteArray data = PackedByteArray();
@@ -164,7 +164,7 @@ PackedByteArray Audio::get_audio_data(String file_path) {
 }
 
 
-PackedByteArray Audio::combine_data(PackedByteArray audio_one,
+PackedByteArray GoZenAudio::combine_data(PackedByteArray audio_one,
 									PackedByteArray audio_two) {
 	const int16_t *p_one = (const int16_t*)audio_one.ptr();
 	const int16_t *p_two = (const int16_t*)audio_two.ptr();
@@ -177,7 +177,7 @@ PackedByteArray Audio::combine_data(PackedByteArray audio_one,
 }
 
 
-PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
+PackedByteArray GoZenAudio::change_db(PackedByteArray audio_data, float db) {
 	static std::unordered_map<int, double> cache;
 	
 	const size_t sample_count = audio_data.size() / 2;
@@ -199,7 +199,7 @@ PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
 }
 
 
-PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
+PackedByteArray GoZenAudio::change_to_mono(PackedByteArray audio_data, bool left) {
 	const size_t sample_count = audio_data.size() / 2;
 	const int16_t *p_data = (const int16_t*)audio_data.ptr();
 	int16_t *pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
@@ -217,10 +217,10 @@ PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 
 
 #define BIND_STATIC_METHOD_ARGS(method_name, ...) \
-    ClassDB::bind_static_method("Audio", \
-        D_METHOD(#method_name, __VA_ARGS__), &Audio::method_name)
+    ClassDB::bind_static_method("GoZenAudio", \
+        D_METHOD(#method_name, __VA_ARGS__), &GoZenAudio::method_name)
 
-void Audio::_bind_methods() {
+void GoZenAudio::_bind_methods() {
 	BIND_STATIC_METHOD_ARGS(get_audio_data, "file_path");
 
 	BIND_STATIC_METHOD_ARGS(combine_data, "audio_one", "audio_two");
