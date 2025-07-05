@@ -65,7 +65,7 @@ func _on_id_pressed(id: int, menu: PopupMenu) -> void:
 
 
 func _open_about_gozen() -> void:
-	add_child(preload("uid://d4e5ndtm65ok3").instantiate())
+	get_tree().root.add_child(preload("uid://d4e5ndtm65ok3").instantiate())
 
 
 func _on_editor_screen_button_pressed() -> void:
