@@ -1,4 +1,4 @@
-name: 'Build GoZen Release'
+name: 0 | Build GoZen
 
 on:
   workflow_dispatch:

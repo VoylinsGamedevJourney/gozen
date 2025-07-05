@@ -1,4 +1,4 @@
-name: 'Linux'
+name: 1 | Linux
 
 on:
   workflow_call:

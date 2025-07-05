@@ -62,9 +62,30 @@ def clone_dep(
 
 
 def download_ffmpeg_deps() -> None:
+    clone_dep_x264()
+    clone_dep_x265()
+    clone_dep_aom()
+    clone_dep_svt_av1()
+    clone_dep_vpx()
+    clone_dep_opus()
+    clone_dep_ogg()
+    clone_dep_vorbis()
+    clone_dep_mp3lame()
+
+
+def clone_dep_x264() -> None:
     clone_dep(X264_REPO, X264_SOURCE_DIR)
+
+
+def clone_dep_x265() -> None:
     clone_dep(X265_REPO, X265_SOURCE_DIR, build_dir=X265_BUILD_DIR)
+
+
+def clone_dep_aom() -> None:
     clone_dep(AOM_REPO, AOM_SOURCE_DIR, build_dir=AOM_BUILD_DIR)
+
+
+def clone_dep_svt_av1() -> None:
     clone_dep(
         SVT_AV1_REPO,
         SVT_AV1_SOURCE_DIR,
@@ -72,10 +93,25 @@ def download_ffmpeg_deps() -> None:
         svn=False,
         **SVT_AV1_GIT_OPTIONS,
     )
+
+
+def clone_dep_vpx() -> None:
     clone_dep(VPX_REPO, VPX_SOURCE_DIR)
+
+
+def clone_dep_opus() -> None:
     clone_dep(OPUS_REPO, OPUS_SOURCE_DIR)
+
+
+def clone_dep_ogg() -> None:
     clone_dep(OGG_REPO, OGG_SOURCE_DIR, build_dir=None, **OGG_GIT_OPTIONS)
+
+
+def clone_dep_vorbis() -> None:
     clone_dep(VORBIS_REPO, VORBIS_SOURCE_DIR, build_dir=None, **VORBIS_GIT_OPTIONS)
+
+
+def clone_dep_mp3lame() -> None:
     clone_dep(
         MP3LAME_REPO,
         MP3LAME_SOURCE_DIR,
