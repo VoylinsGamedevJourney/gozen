@@ -170,6 +170,6 @@ jobs:
       - name: 'Upload AppImage Artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-Linux-AppImage-${{ inputs.version }}
+          name: GoZen-Linux-AppImage-${{ inputs.version }}
           path: ${{ env.APP_NAME }}-${{ inputs.version }}-x86_64.AppImage
           if-no-files-found: error # Fails the workflow if the AppImage isn't found
