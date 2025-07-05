@@ -1,0 +1,31 @@
+name: 'Build GoZen Release'
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        type: string
+        default: 'v0.0'
+
+run-name: 'Build GoZen Release: ${{ inputs.version }} by @${{ github.actor }}'
+
+jobs:
+  build-linux:
+    name: 'Build Linux'
+    uses: ./.github/workflows/linux.yml
+    with:
+      version: ${{ inputs.version }}
+
+  build-appimage:
+    name: 'Build AppImage'
+    uses: ./.github/workflows/appimage.yml
+    with:
+      version: ${{ inputs.version }}
+
+  build-windows:
+    name: 'Build Windows'
+    uses: ./.github/workflows/windows.yml
+    with:
+      version: ${{ inputs.version }}
+

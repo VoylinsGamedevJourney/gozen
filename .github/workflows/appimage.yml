@@ -1,6 +1,11 @@
 name: 'AppImage'
 
 on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       version:

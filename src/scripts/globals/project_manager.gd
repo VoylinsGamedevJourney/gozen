@@ -28,6 +28,7 @@ func _ready() -> void:
 func _auto_save() -> void:
 	if auto_save_timer == null:
 		auto_save_timer = Timer.new()
+		add_child(auto_save_timer)
 		Toolbox.connect_func(auto_save_timer.timeout, _auto_save)
 
 	if data != null:
