@@ -359,7 +359,9 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		# Errors, something went wrong.
 		RenderManager.STATUS.ERROR_OPEN: _show_error("encoding_progress_text_open_error")
 		RenderManager.STATUS.ERROR_AUDIO: _show_error("encoding_progress_text_sending_audio_error")
-		RenderManager.STATUS.ERROR_CANCELED: _show_error("encoding_progress_text_canceling")
+		RenderManager.STATUS.ERROR_CANCELED:
+			progress_overlay.queue_free()
+			progress_overlay = null
 
 		# Normal progress.
 		RenderManager.STATUS.SETUP: status_str = "encoding_progress_text_setup"

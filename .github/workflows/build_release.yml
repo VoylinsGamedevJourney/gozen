@@ -1,5 +1,4 @@
 name: 0 | Build GoZen
-
 on:
   workflow_dispatch:
     inputs:
@@ -9,22 +8,50 @@ on:
         default: 'v0.0'
 
 run-name: 'Build GoZen Release: ${{ inputs.version }} by @${{ github.actor }}'
-
 jobs:
   build-linux:
-    name: 'Build Linux'
+    name: Build Linux
+    permissions:
+      actions: read
+      contents: read
     uses: ./.github/workflows/linux.yml
     with:
       version: ${{ inputs.version }}
 
   build-appimage:
-    name: 'Build AppImage'
+    name: Build AppImage
+    permissions:
+      actions: read
+      contents: read
     uses: ./.github/workflows/appimage.yml
     with:
       version: ${{ inputs.version }}
 
+  build-rpm:
+    needs: [build-linux]
+    name: Build RPM
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/build_package_rpm.yml
+    with:
+      version: ${{ inputs.version }}
+
+  build-deb:
+    needs: [build-linux]
+    name: Build DEB
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/build_package_deb.yml
+    with:
+      version: ${{ inputs.version }}
+
   build-windows:
-    name: 'Build Windows'
+    name: Build Windows
+    permissions:
+      actions: read
+      contents: read
     uses: ./.github/workflows/windows.yml
     with:
       version: ${{ inputs.version }}

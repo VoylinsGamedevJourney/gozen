@@ -1,9 +1,12 @@
 # GoZen
 
+[![Linux](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/linux.yml)
+[![AppImage](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/appimage.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/appimage.yml)
+[![RPM Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/rpm.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/rpm.yml)
+[![DEB Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/deb.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/deb.yml)
+[![Windows](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/windows.yml) <br>
 [![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen)
 [![Discord](https://img.shields.io/discord/1120566516899926068?label=Discord&logo=discord&logoColor=white)](https://discord.gg/BdbUf7VKYC)
-[![Linux x86_64 Build Status](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml)
-[![Windows x86_64 Build Status](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 <img src="./assets/logo.svg" alt="GoZen Logo" width="200"/>
@@ -48,6 +51,9 @@ At this moment there are three builds:
 
 ### For developers (building from source)
 First of all, you'll need to go into the `libs` folder and run the python script `build.py`, just follow the instructions and it should compile FFmpeg and the GDExtension without issues (on both Linux and Windows). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.
+
+> [!NOTE]
+> You will need `git-svn` in order to compile the Linux builds!
 
 ## Contributing
 We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.

@@ -1,5 +1,4 @@
-name: 3 | Windows
-
+name: 05 | Windows
 on:
   workflow_call:
     inputs:
@@ -9,24 +8,18 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version'
+        description: Version
         type: string
-        default: 'v0.0'
-        
+        default: v0.0
+
 env:
   GODOT_VERSION: 4.4.1
-  EXPORT_FOLDER: bin/windows_x86_64
+  EXPORT_FOLDER: libs/bin/windows_x86_64
 
-run-name: 'Build GoZen for Windows version: ${{ inputs.version }} by @${{ github.actor }}'
-
+run-name: 'Windows version: ${{ inputs.version }} by @${{ github.actor }}'
 jobs:
-  build-deps:
-    name: 'Build Windows dependencies'
-    uses: ./.github/workflows/windows_deps.yml
-
   build-gozen-windows:
-    needs: ['build-deps']
-    name: 'Build GoZen'
+    name: Build GoZen
     runs-on: windows-latest
     defaults:
       run:
@@ -63,12 +56,43 @@ jobs:
             mingw-w64-ucrt-x86_64-cmake
             mingw-w64-ucrt-x86_64-autotools
 
-      - name: 'Checkout submodules'
+      - name: Checkout submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: 'Prepare Godot'
+      - name: Get latest run ID for "Compile GDE"
+        id: get_ffmpeg_workflow_run_id
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WORKFLOW_NAME="11 | Compile GDE"
+          LATEST_RUN_ID=$(gh run list --workflow "${WORKFLOW_NAME}" --json databaseId --jq '.[0].databaseId')
+
+          if [ -z "$LATEST_RUN_ID" ]; then
+            echo "Error: Could not find latest run ID for workflow '${WORKFLOW_NAME}'."
+            exit 1
+          fi
+
+          echo "Found latest run ID: $LATEST_RUN_ID"
+          echo "latest_run_id=$LATEST_RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Get GDE artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows_gde
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get_ffmpeg_workflow_run_id.outputs.latest_run_id }}
+          path: ./libs/bin/windows_x86_64
+
+      - name: Cache Godot
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot
+          key: ${{ runner.os }}-windows-godot-${{ env.GODOT_VERSION }}
+
+      - name: Prepare Godot
         run: |
           if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
             echo "Downloading Godot editor ..."
@@ -92,84 +116,18 @@ jobs:
 
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
-      - name: Get x264
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_x264
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get x265
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_x265
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get aom
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_aom
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get svt_av1
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_svt_av1
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get vpx
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_vpx
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get opus
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_opus
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get ogg + vorbis
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_ogg_vorbis
-          path: libs/ffmpeg/bin_windows
-
-      - name: Get mp3lame
-        uses: actions/download-artifact@v4
-        with:
-          name: dep_win_mp3lame
-          path: libs/ffmpeg/bin_windows
-
-      - name: 'Compiling FFmpeg'
-        working-directory: ./libs
+      - name: Prepare folder
         run: |
-          echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.build_ffmpeg_windows('x86_64', 4, {})"
-          echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.copy_lib_files_windows('x86_64')"
-        
-      - name: 'Compiling GDE GoZen'
-        working-directory: ./libs
-        run: |
-          scons -j$(nproc) target=template_debug platform=windows arch=x86_64 use_static_cpp=yes use_mingw=yes
-          scons -j$(nproc) target=template_release platform=windows arch=x86_64 use_static_cpp=yes use_mingw=yes
-
-      - name: 'Prepare folder'
-        run: |
-          mkdir -p ${{ env.EXPORT_FOLDER }}
           cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
           cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
 
-      - name: 'Export for Windows'
+      - name: Export for Windows
         working-directory: ./src
         run: |
           ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless
           ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
 
-      - name: 'Copy extra libs'
-        run: |
-          echo "Copying libs"
-          cp libs/bin/windows_x86_64/*.dll  ${{ env.EXPORT_FOLDER }}
-
-      - name: 'Upload Windows'
+      - name: Upload Windows
         uses: actions/upload-artifact@v4
         with:
           name: GoZen_Windows_x86_64_${{ inputs.version }}

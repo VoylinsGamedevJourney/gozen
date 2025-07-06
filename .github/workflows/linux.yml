@@ -1,5 +1,4 @@
-name: 1 | Linux
-
+name: 01 | Linux
 on:
   workflow_call:
     inputs:
@@ -9,22 +8,24 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version'
+        description: Version
         type: string
-        default: 'v0.0'
+        default: v0.0
         
 env:
   GODOT_VERSION: 4.4.1
-  EXPORT_FOLDER: bin/linux_x86_64
+  EXPORT_FOLDER: libs/bin/linux_x86_64
 
-run-name: 'Build GoZen debug for Linux version: ${{ inputs.version }} by @${{ github.actor }}'
-
+run-name: 'Linux version: ${{ inputs.version }} by @${{ github.actor }}'
 jobs:
-  build-gde-linux:
-    name: 'Build GoZen'
+  build-linux:
+    name: Build GoZen
     runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
     steps:
-      - name: 'Installing dependencies'
+      - name: Installing dependencies
         run: |
           sudo add-apt-repository ppa:git-core/ppa
           sudo apt update
@@ -34,18 +35,42 @@ jobs:
           binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu \
           libnuma-dev fuse libfuse2 desktop-file-utils patchelf
 
-      - name: 'Checkout submodules'
+      - name: Checkout submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: 'Cache Godot'
+      - name: Get latest run ID for "Compile GDE"
+        id: get_ffmpeg_workflow_run_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WORKFLOW_NAME="11 | Compile GDE"
+          LATEST_RUN_ID=$(gh run list --workflow "${WORKFLOW_NAME}" --json databaseId --jq '.[0].databaseId')
+
+          if [ -z "$LATEST_RUN_ID" ]; then
+            echo "Error: Could not find latest run ID for workflow '${WORKFLOW_NAME}'."
+            exit 1
+          fi
+
+          echo "Found latest run ID: $LATEST_RUN_ID"
+          echo "latest_run_id=$LATEST_RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Get GDE artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux_gde
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get_ffmpeg_workflow_run_id.outputs.latest_run_id }}
+          path: ./libs/bin/linux_x86_64
+
+      - name: Cache Godot
         uses: actions/cache@v4
         with:
           path: ~/.local/share/godot
           key: ${{ runner.os }}-godot-${{ env.GODOT_VERSION }}
 
-      - name: 'Prepare Godot'
+      - name: Prepare Godot
         run: |
           if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
             echo "Downloading Godot editor ..."
@@ -68,41 +93,30 @@ jobs:
 
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
-      - name: 'Compiling GDE GoZen Debug'
-        working-directory: ./libs
+      - name: Prepare folder
         run: |
-          export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
-
-          python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.compile_ffmpeg('linux', 'x86_64', 4)"
-
-          scons -j$(nproc) target=template_debug platform=linux arch=x86_64
-          scons -j$(nproc) target=template_release platform=linux arch=x86_64
-
-      - name: 'Prepare folder'
-        run: |
-          mkdir -p ${{ env.EXPORT_FOLDER }}
           cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
           cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
 
-      - name: 'Export for Linux'
+      - name: Export for Linux
         working-directory: ./src
         run: |
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.x86_64
 
-      - name: 'Copy extra libs'
-        run: |
-          echo "Copying libs"
-          cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
-          rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
-
-      - name: 'Fix RPATH'
+      - name: Fix RPATH
         working-directory: ${{ env.EXPORT_FOLDER }}
         run: |
-          echo "Setting RPATH"
           find . -maxdepth 1 -name "*.so*" -exec sudo patchelf --set-rpath '$ORIGIN' {} \;
+          find . -maxdepth 1 -name "*.x86_64" -exec sudo patchelf --set-rpath '$ORIGIN' {} \;
 
-      - name: 'Upload Linux'
+      - name: Remove unnecessary libs
+        working-directory: ${{ env.EXPORT_FOLDER }}
+        run: |
+          rm *template_debug.*
+          rm *stdc++.so*
+
+      - name: Upload Linux
         uses: actions/upload-artifact@v4
         with:
           name: GoZen_Linux_x86_64_${{ inputs.version }}

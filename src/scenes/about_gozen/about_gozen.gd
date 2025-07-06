@@ -36,7 +36,7 @@ func _set_links_label() -> void:
 			tr("text_discord_link") + ": " + URL.replace("URL", discord_url),
 			tr("text_support_gozen") + ": " + URL.replace("URL", support_url),
 			"",
-			"text_gozen_made_by" + " [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)".replace("URL", youtube_url)
+			tr("text_gozen_made_by") + " [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)".replace("URL", youtube_url)
 	]
 	for line: String in lines:
 		links_label.text += line + "\n"

@@ -1,0 +1,41 @@
+name: 03 | RPM Package
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        type: string
+        default: v0.0
+
+env:
+  GODOT_VERSION: 4.4.1
+  EXPORT_FOLDER: libs/bin/linux_x86_64
+  APP_NAME: gozen
+  RPM_BUILD_DIR: ${{ github.workspace }}/rpmbuild
+
+run-name: 'RPM version: ${{ inputs.version }} by @${{ github.actor }}'
+jobs:
+  build-linux:
+    name: Build Linux
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/linux.yml
+    with:
+      version: ${{ inputs.version }}
+
+
+  build-rpm:
+    needs: [build-linux]
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/build_package_rpm.yml
+    with:
+      version: ${{ inputs.version }}
+

@@ -1,0 +1,221 @@
+name: 10 | Compile FFmpeg
+on:
+  workflow_call:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *' # Runs at 00:00 UTC on the 1st day of every month
+        
+env:
+  PATH_LINUX: libs/ffmpeg/bin_linux
+  PATH_WINDOWS: libs/ffmpeg/bin_windows
+
+run-name: Compile FFmpeg
+jobs:
+  compile-linux-x86_64:
+    name: Linux x86_64
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Installing dependencies
+        run: |
+          sudo add-apt-repository ppa:git-core/ppa
+          sudo apt update
+
+          sudo apt-get install -y git git-svn bash yasm nasm python3 python3-pip scons gcc diffutils make wget unzip tar \
+          cmake autoconf automake libtool ninja-build pkg-config \
+          binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu \
+          libnuma-dev fuse libfuse2 desktop-file-utils patchelf
+
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Compile FFmpeg
+        working-directory: ./libs
+        run: |
+          export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+          echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.compile_ffmpeg('linux', 'x86_64', 4)"
+
+      - name: Upload bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg_linux_x86_64
+          path: ${{ env.PATH_LINUX }}
+          retention-days: 30
+
+
+  compile-windows-x86_64:
+    needs: [
+      build-win-x86_64-dep-x264,
+      build-win-x86_64-dep-x265,
+      build-win-x86_64-dep-aom,
+      build-win-x86_64-dep-svt_av1,
+      build-win-x86_64-dep-vpx,
+      build-win-x86_64-dep-opus,
+      build-win-x86_64-dep-ogg-vorbis,
+      build-win-x86_64-dep-mp3lame]
+    name: Windows x86_64
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: |
+            git
+            subversion
+            unzip
+            mingw-w64-ucrt-x86_64-binutils
+            mingw-w64-ucrt-x86_64-crt-git
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-gdb
+            mingw-w64-ucrt-x86_64-gdb-multiarch
+            mingw-w64-ucrt-x86_64-headers-git
+            mingw-w64-ucrt-x86_64-libmangle-git
+            mingw-w64-ucrt-x86_64-libwinpthread
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-tools-git
+            mingw-w64-ucrt-x86_64-winpthreads
+            mingw-w64-ucrt-x86_64-winstorecompat-git
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-make
+            mingw-w64-ucrt-x86_64-diffutils
+            mingw-w64-ucrt-x86_64-yasm
+            mingw-w64-ucrt-x86_64-nasm
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-scons
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-autotools
+
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Get x264
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_x264
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get x265
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_x265
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get aom
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_aom
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get svt_av1
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_svt_av1
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get vpx
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_vpx
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get opus
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_opus
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get ogg + vorbis
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_ogg_vorbis
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Get mp3lame
+        uses: actions/download-artifact@v4
+        with:
+          name: dep_win_x86_64_mp3lame
+          path: ${{ env.PATH_WINDOWS }}
+
+      - name: Compiling
+        working-directory: ./libs
+        run: echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.build_ffmpeg_windows('x86_64', 4, {})"
+        
+      - name: Upload bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg_windows_x86_64
+          path: ${{ env.PATH_WINDOWS }}
+          retention-days: 30
+
+
+  build-win-x86_64-dep-x264:
+    name: x264
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: x264
+      architecture: x86_64
+
+
+  build-win-x86_64-dep-x265:
+    name: x265
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: x265
+      architecture: x86_64
+
+
+  build-win-x86_64-dep-aom:
+    name: aom
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: aom
+      architecture: x86_64
+
+
+  build-win-x86_64-dep-svt_av1:
+    name: svt_av1
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: svt_av1
+      architecture: x86_64
+
+
+  build-win-x86_64-dep-vpx:
+    name: vpx
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: vpx
+      architecture: x86_64
+
+          
+  build-win-x86_64-dep-opus:
+    name: opus
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: opus
+      architecture: x86_64
+
+          
+  build-win-x86_64-dep-ogg-vorbis:
+    name: ogg & vorbis
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: ogg_vorbis
+      architecture: x86_64
+
+
+  build-win-x86_64-dep-mp3lame:
+    name: mp3lame
+    uses: ./.github/workflows/build_win_dep.yml
+    with:
+      dep_name: mp3lame
+      architecture: x86_64
+
