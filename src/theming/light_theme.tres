@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=28 format=3 uid="uid://dxq4vg1l5rwhj"]
+[gd_resource type="Theme" load_steps=33 format=3 uid="uid://dxq4vg1l5rwhj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w6ddi"]
 
@@ -48,6 +48,18 @@ corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gehtg"]
+bg_color = Color(0.8, 0.8, 0.8, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.666667, 0.666667, 0.666667, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2uo22"]
 content_margin_left = 7.0
@@ -140,6 +152,29 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2uo22"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jrpa6"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.721569, 0.721569, 0.721569, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ll6x"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.8, 0.8, 0.8, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8q10s"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.878431, 0.878431, 0.878431, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_li2em"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwiux"]
@@ -174,6 +209,7 @@ default_font_size = 14
 Button/colors/font_color = Color(0, 0, 0, 1)
 Button/colors/font_focus_color = Color(0, 0, 0, 1)
 Button/colors/font_hover_color = Color(0, 0, 0, 1)
+Button/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 Button/colors/font_pressed_color = Color(0, 0, 0, 1)
 Button/constants/h_separation = 7
 Button/styles/focus = SubResource("StyleBoxEmpty_w6ddi")
@@ -188,8 +224,14 @@ MarginContainer/constants/margin_bottom = 7
 MarginContainer/constants/margin_left = 7
 MarginContainer/constants/margin_right = 7
 MarginContainer/constants/margin_top = 7
+MenuBar/colors/font_color = Color(0, 0, 0, 1)
+MenuBar/colors/font_hover_color = Color(0.196142, 0.196144, 0.196144, 1)
+MenuBar/colors/font_hover_pressed_color = Color(0.30139, 0.30139, 0.30139, 1)
+MenuBar/colors/font_pressed_color = Color(0, 0, 0, 1)
 MenuButton/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_ootwl")
+PopupMenu/colors/font_color = Color(0, 0, 0, 1)
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_gehtg")
 TabContainer/styles/panel = SubResource("StyleBoxFlat_2uo22")
 TooltipPanel/styles/panel = SubResource("StyleBoxFlat_li2em")
 Tree/colors/font_color = Color(0, 0, 0, 1)
@@ -215,6 +257,16 @@ render_profile_button/styles/focus = SubResource("StyleBoxEmpty_x043i")
 render_profile_button/styles/hover = SubResource("StyleBoxEmpty_6u4ua")
 render_profile_button/styles/normal = SubResource("StyleBoxEmpty_alpqq")
 render_profile_button/styles/pressed = SubResource("StyleBoxFlat_fey51")
+screen_button/base_type = &"Button"
+screen_button/colors/font_color = Color(0, 0, 0, 1)
+screen_button/colors/font_focus_color = Color(0, 0, 0, 1)
+screen_button/colors/font_hover_color = Color(0, 0, 0, 1)
+screen_button/colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+screen_button/colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+screen_button/styles/focus = SubResource("StyleBoxEmpty_2uo22")
+screen_button/styles/hover = SubResource("StyleBoxFlat_jrpa6")
+screen_button/styles/normal = SubResource("StyleBoxFlat_0ll6x")
+screen_button/styles/pressed = SubResource("StyleBoxFlat_8q10s")
 side_bar_button/base_type = &"Button"
 side_bar_button/styles/focus = SubResource("StyleBoxEmpty_li2em")
 side_bar_button/styles/hover = SubResource("StyleBoxFlat_kwiux")

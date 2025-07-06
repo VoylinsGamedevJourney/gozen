@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://l1tap0q8rgjc" path="res://scenes/edit_screen/edit_screen.tscn" id="8_rolao"]
 [ext_resource type="PackedScene" uid="uid://71mkki6432yy" path="res://scenes/render_screen/render_screen.tscn" id="9_p4u40"]
 
-[node name="Editor" type="PanelContainer" node_paths=PackedStringArray("screen_tab_container")]
+[node name="Editor" type="PanelContainer" node_paths=PackedStringArray("menu_bar", "screen_tab_container")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,11 +14,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"background"
 script = ExtResource("1_nbwom")
+menu_bar = NodePath("VBox/MenuBarHBox")
 screen_tab_container = NodePath("VBox/VSplitContainer/ScreenTabContainer")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_direction = 2
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="MenuBarHBox" parent="VBox" instance=ExtResource("2_7gtdv")]
 layout_mode = 2

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=28 format=3 uid="uid://715mkakin2bb"]
+[gd_resource type="Theme" load_steps=33 format=3 uid="uid://715mkakin2bb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oqxky"]
 
@@ -48,6 +48,18 @@ corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f7d0x"]
+bg_color = Color(0.266667, 0.266667, 0.266667, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1vteb"]
 content_margin_left = 7.0
@@ -140,6 +152,29 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_by48d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07bah"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3k2yc"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c21jn"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i2lla"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g1jt"]
@@ -184,7 +219,9 @@ MarginContainer/constants/margin_bottom = 7
 MarginContainer/constants/margin_left = 7
 MarginContainer/constants/margin_right = 7
 MarginContainer/constants/margin_top = 7
+MenuBar/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_0icvv")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_f7d0x")
 TabContainer/styles/panel = SubResource("StyleBoxFlat_1vteb")
 TooltipPanel/styles/panel = SubResource("StyleBoxFlat_rmx4m")
 Tree/colors/font_color = Color(1, 1, 1, 1)
@@ -210,6 +247,13 @@ render_profile_button/styles/focus = SubResource("StyleBoxEmpty_1vteb")
 render_profile_button/styles/hover = SubResource("StyleBoxEmpty_i7l8v")
 render_profile_button/styles/normal = SubResource("StyleBoxEmpty_catyp")
 render_profile_button/styles/pressed = SubResource("StyleBoxFlat_l8pwb")
+screen_button/base_type = &"Button"
+screen_button/colors/font_hover_color = Color(0.654902, 0.0941176, 0.945098, 1)
+screen_button/colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+screen_button/styles/focus = SubResource("StyleBoxEmpty_by48d")
+screen_button/styles/hover = SubResource("StyleBoxFlat_07bah")
+screen_button/styles/normal = SubResource("StyleBoxFlat_3k2yc")
+screen_button/styles/pressed = SubResource("StyleBoxFlat_c21jn")
 side_bar_button/base_type = &"Button"
 side_bar_button/styles/focus = SubResource("StyleBoxEmpty_i2lla")
 side_bar_button/styles/hover = SubResource("StyleBoxFlat_7g1jt")

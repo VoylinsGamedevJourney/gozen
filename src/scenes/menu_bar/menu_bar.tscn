@@ -1,13 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://6snp6sstgbb5"]
+[gd_scene load_steps=3 format=3 uid="uid://6snp6sstgbb5"]
 
 [ext_resource type="Script" uid="uid://cey31yt1rd71u" path="res://scenes/menu_bar/menu_bar.gd" id="1_tjpug"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_2bycd"]
 
 [node name="MenuBarHBox" type="HBoxContainer"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 28.0
 grow_horizontal = 2
+theme_override_constants/separation = 0
 script = ExtResource("1_tjpug")
+metadata/_edit_lock_ = true
 
 [node name="MenuBar" type="MenuBar" parent="."]
 custom_minimum_size = Vector2(0, 20)
@@ -17,10 +21,21 @@ flat = true
 
 [node name="EditorScreenButton" type="Button" parent="."]
 layout_mode = 2
+theme_type_variation = &"screen_button"
+theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_2bycd")
 text = "button_screen_editing"
 
 [node name="RenderScreenButton" type="Button" parent="."]
 layout_mode = 2
+theme_type_variation = &"screen_button"
+theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+toggle_mode = true
+button_group = SubResource("ButtonGroup_2bycd")
 text = "button_screen_render"
 
 [connection signal="pressed" from="EditorScreenButton" to="." method="_on_editor_screen_button_pressed"]

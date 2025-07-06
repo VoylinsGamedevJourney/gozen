@@ -5,13 +5,20 @@ extends Control
 static var instance: EditorUI
 
 
-@export var menu_bar: MenuBar
+@export var menu_bar: HBoxContainer
 @export var screen_tab_container: TabContainer
+
+var screen_buttons: Array[Button] = []
 
 
 
 func _ready() -> void:
 	instance = self
+
+	# Populate screen_buttons.
+	for node: Node in menu_bar.get_children():
+		if node is Button:
+			screen_buttons.append(node)
 
 	switch_screen(0)
 	print_startup_info()
@@ -59,10 +66,12 @@ func print_startup_info() -> void:
 func switch_screen(index: int) -> void:
 	if RenderManager.encoder == null or !RenderManager.encoder.is_open():
 		screen_tab_container.current_tab = index
+		screen_buttons[index].button_pressed = true
 
 
 func switch_screen_quick() -> void:
 	if RenderManager.encoder == null or !RenderManager.encoder.is_open():
 		if !screen_tab_container.select_next_available():
 			screen_tab_container.current_tab = 0
+		screen_buttons[screen_tab_container.current_tab].button_pressed = true
 
