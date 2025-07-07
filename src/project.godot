@@ -56,7 +56,7 @@ window/size/mode=2
 [extensions]
 
 audio=PackedStringArray("wav", "mp3", "ogg")
-video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov", "mts")
+video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov", "mts", "gif")
 image=PackedStringArray("jpg", "jpeg", "png", "svg", "webp")
 
 [gui]

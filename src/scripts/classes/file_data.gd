@@ -88,10 +88,15 @@ func _load_video_data(file_path: String) -> void:
 		return
 	placeholder.size = temp_video.get_resolution()
 
-	match temp_video.get_color_space_name():
+	if abs(temp_video.get_rotation()) == 90:
+		placeholder.size = Vector2(placeholder.size.y, placeholder.size.x)
+	else:
+		placeholder.size = Vector2(placeholder.size.x, placeholder.size.y)
+
+	match temp_video.get_color_profile():
 		"bt601", "bt470": color_profile = Vector4(1.402, 0.344136, 0.714136, 1.772)
 		"bt2020", "bt2100": color_profile = Vector4(1.4746, 0.16455, 0.57135, 1.8814)
-		_: # bt709 and unknown
+		_: # bt709 and unknown.
 			color_profile = Vector4(1.5748, 0.1873, 0.4681, 1.8556)
 
 	Threader.mutex.lock()

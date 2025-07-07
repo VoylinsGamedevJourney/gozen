@@ -240,14 +240,26 @@ func update_view(track_id: int) -> void:
 
 	# Check if correct shader is applied or not, if not, set correct shader.
 	if file_data.video != null:
-		if file_data.video.get_is_full_color_range():
+		var interlaced: int = file_data.video.get_interlaced() 
+
+		if file_data.video.get_full_color_range():
 			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
-				material.shader = preload("uid://btyavn64bvbu2")
+				if interlaced != 0:
+					material.shader = preload("uid://c43nm0hgg6y14")
+					material.set_shader_parameter("interlaced", interlaced)
+				else:
+					material.shader = preload("uid://btyavn64bvbu2")
+
 				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
 				_init_video_textures(track_id, file_data.video, material)
 				updated = true
 		elif loaded_shaders[track_id] != SHADER_ID.YUV:
-			material.shader = preload("uid://do37k5eu6tfbc")
+			if interlaced != 0:
+				material.shader = preload("uid://dyrtgm3mxg1af")
+				material.set_shader_parameter("interlaced", interlaced)
+			else:
+				material.shader = preload("uid://do37k5eu6tfbc")
+
 			loaded_shaders[track_id] = SHADER_ID.YUV
 			_init_video_textures(track_id, file_data.video, material)
 			updated = true
@@ -256,11 +268,10 @@ func update_view(track_id: int) -> void:
 			y_textures[track_id].update(file_data.video.get_y_data())
 			u_textures[track_id].update(file_data.video.get_u_data())
 			v_textures[track_id].update(file_data.video.get_v_data())
+		material.set_shader_parameter("resolution", file_data.video.get_actual_resolution() as Vector2)
+		material.set_shader_parameter("rotation", deg_to_rad(float(file_data.video.get_rotation())))
 
-		if material.get_shader_parameter("resolution") != Vector2(file_data.video.get_resolution()):
-			material.set_shader_parameter("resolution", file_data.video.get_resolution() as Vector2)
-		if material.get_shader_parameter("color_profile") != file_data.color_profile:
-			material.set_shader_parameter("color_profile", file_data.color_profile)
+		material.set_shader_parameter("color_profile", file_data.color_profile)
 	elif file_data.image != null:
 		material.shader = preload("uid://vc1lwmduyaub")
 		loaded_shaders[track_id] = SHADER_ID.IMAGE
