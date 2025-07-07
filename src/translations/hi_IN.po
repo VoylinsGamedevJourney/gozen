@@ -282,13 +282,13 @@ msgid "encoding_progress_text_sending_audio"
 msgstr "ऑडियो डेटा भेजा जा रहा है ..."
 
 msgid "encoding_progress_text_sending_audio_error"
-msgstr "ऑडियो एन्कोडर को भेजते समय कोई त्रुटि हुई!"
+msgstr "एन्कोडर को ऑडियो भेजते समय कुछ गलत हो गया!"
 
 msgid "encoding_progress_text_creating_sending_data"
 msgstr "फ़्रेम डेटा बनाया और भेजा जा रहा है ..."
 
 msgid "encoding_progress_text_sending_data_error"
-msgstr "फ्रेम को एन्कोडर को भेजते समय कोई त्रुटि हुई!"
+msgstr "एन्कोडर को फ़्रेम भेजते समय कुछ गलत हो गया!"
 
 msgid "encoding_progress_text_canceling"
 msgstr "रेंडर प्रक्रिया रद्द की जा रही है ..."
