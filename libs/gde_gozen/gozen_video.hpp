@@ -29,17 +29,21 @@ private:
 
 	UniqueAVPacket av_packet;
 	UniqueAVFrame av_frame;
-
 	UniqueAVFrame av_sws_frame;
 	UniqueSwsCtx sws_ctx;
 
-	// Default variable types
-	int response = 0;
+	enum AVColorPrimaries color_profile;
 
-	int current_frame = -1;
-	Ref<Image> y_data;
-	Ref<Image> u_data;
-	Ref<Image> v_data;
+	// Default variable types.
+	int response = 0;
+	int current_frame = 0;
+	int padding = 0;
+
+	int8_t rotation = 0;
+	int8_t interlaced = 0; // 0 = no interlacing, 1 = interlaced top first, 2 interlaced bottom first
+	
+	int64_t duration = 0;
+	int64_t frame_count = 0;
 
 	int64_t start_time_video = 0;
 	int64_t frame_timestamp = 0;
@@ -48,32 +52,29 @@ private:
 	double average_frame_duration = 0;
 	double stream_time_base_video = 0;
 
+	float sar = 0;
+	float framerate = 0;
+
 	bool loaded = false; // Is true after open()
 	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
+	bool full_color_range = true;
 	
 	int sws_flag = SWS_BILINEAR;
 
-	// Metadata variables
+	// Godot classes.
 	String path = "";
+	String pixel_format = "";
 
 	Vector2i resolution = Vector2i(0,0);
-	float framerate = 0.0;
-	int64_t duration_us = 0; // Duration in microseconds.
-	int64_t frame_count = 0; // Amount of video frames.
-	
-	int rotation = 0; // Rotation in degrees (0, 90, 180, 270).
-	int padding = 0;
-	
-	String pixel_format_name = "";
-	String color_primaries_name = "";
-	String color_trc_name = "";
-	String color_space_name = "";
+	Vector2i actual_resolution = Vector2i(0,0);
 
-	bool is_full_color_range = false; // Limited (tv) or full (pc) range.
-	bool is_interlaced = false;
-
+	Ref<Image> y_data;
+	Ref<Image> u_data;
+	Ref<Image> v_data;
+	
 	// Private functions
 	void _copy_frame_data();
+	void _clean_frame_data();
 	int _seek_frame(int frame_nr);
 
 	static inline void _log(const String& message) {
@@ -90,6 +91,7 @@ public:
 
 	bool open(const String& video_path);
 	void close();
+	static Dictionary get_file_meta(String a_file_path);
 
 	inline bool is_open() { return loaded; }
 
@@ -110,23 +112,23 @@ public:
 	inline String get_path() const { return path; }
 
 	inline Vector2i get_resolution() const { return resolution; }
+	inline Vector2i get_actual_resolution() const { return actual_resolution; }
 	inline int get_width() const { return resolution.x; }
 	inline int get_height() const { return resolution.y; }
+	inline int get_actual_width() const { return actual_resolution.x; }
+	inline int get_actual_height() const { return actual_resolution.y; }
 
 	inline float get_framerate() const { return framerate; }
 	inline int get_frame_count() const { return static_cast<int>(frame_count); }
-	inline int64_t get_duration_microseconds() const { return duration_us; }
-	inline double get_duration_seconds() const { return static_cast<double>(duration_us) / 1000000.0; }
 	inline int get_rotation() const { return rotation; }
 	inline int get_padding() const { return padding; }
+	inline int get_interlaced() const { return interlaced; }
+	inline float get_sar() const { return sar; }
 
-	inline String get_pixel_format_name() const { return pixel_format_name; }
-	inline String get_color_primaries_name() const { return color_primaries_name; }
-	inline String get_color_trc_name() const { return color_trc_name; }
-	inline String get_color_space_name() const { return color_space_name; }
+	inline String get_pixel_format() const { return pixel_format; }
+	inline String get_color_profile() { return av_color_primaries_name(color_profile); }
 
-	inline bool get_is_full_color_range() const { return is_full_color_range; }
-	inline bool get_is_interlaced() const { return is_interlaced; }
+	inline bool get_full_color_range() const { return full_color_range; }
 
 protected:
 	static void _bind_methods();
