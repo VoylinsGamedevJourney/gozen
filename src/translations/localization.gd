@@ -12,6 +12,7 @@ static var native_locale_names: Dictionary = {
 	"pl": "Polski",
 	"ur": "اُردُو",
 	"es": "Español",
+	"hi": "हिन्दी",
 }
 
 
