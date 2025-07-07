@@ -68,21 +68,21 @@ func set_mode_editor_settings() -> void:
 				Settings.get_image_duration(),
 				1, 100, false, true,
 				Settings.set_image_duration,
-				"setting_tooltip_default_image_duration"
+				"setting_tooltip_duration_in_frames"
 		),
 		_create_label("setting_default_color_duration"),
 		_create_spinbox(
 				Settings.get_color_duration(),
 				1, 100, false, true,
 				Settings.set_color_duration,
-				"setting_tooltip_default_image_duration"
+				"setting_tooltip_duration_in_frames"
 		),
 		_create_label("setting_default_text_duration"),
 		_create_spinbox(
 				Settings.get_text_duration(),
 				1, 100, false, true,
 				Settings.set_text_duration,
-				"setting_tooltip_default_image_duration"
+				"setting_tooltip_duration_in_frames"
 		),
 		_create_label("setting_default_project_resolution"),
 		_create_default_resolution_hbox(),

@@ -168,7 +168,7 @@ msgstr "Steun GoZen"
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen is een video-editor gemaakt door"
+msgstr "GoZen creator:"
 
 msgid "text_rename_file_to"
 msgstr "Hernoem bestand naar ..."
@@ -215,19 +215,13 @@ msgstr "Weergave van audiogolf"
 msgid "setting_default_image_duration"
 msgstr "Standaard duur afbeeldingen"
 
-msgid "setting_tooltip_default_image_duration"
-msgstr "De duur in frames."
-
 msgid "setting_default_color_duration"
 msgstr "Standaard duur kleuren"
-
-msgid "setting_tooltip_default_color_duration"
-msgstr "De duur in frames."
 
 msgid "setting_default_text_duration"
 msgstr "Standaard duur tekst"
 
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "De duur in frames."
 
 msgid "setting_default_project_resolution"
@@ -324,11 +318,9 @@ msgstr "Kwaliteit"
 
 msgid "render_option_tooltip_quality"
 msgstr ""
-"Past de CRF (Constant Rate Factor) aan. De laagste kwaliteitsinstelling is "
-"50 en de hoogste kwaliteitsinstelling is 15. Standaard is ingesteld op 18. "
-"Gebruikt om bitrate aan te passen, wat invloed heeft op kwaliteit en "
-"grootte. Waarde 0 geeft de beste, 51 de slechtste kwaliteit, 18 is "
-"nauwelijks merkbaar."
+"Past de CRF (Constant Rate Factor) aan. Lager getal = hogere kwaliteit maar tragere encodering. "
+"Hoger getal = lagere kwaliteit maar snellere encodering. Voor de meeste codecs wordt een waarde tussen 15 en 18 aanbevolen, "
+"aangezien het kwaliteitsverlies dan nauwelijks merkbaar is."
 
 msgid "render_option_speed"
 msgstr "Snelheid"

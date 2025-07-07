@@ -191,6 +191,7 @@ msgstr "دسکورڈ لنک"
 msgid "text_support_gozen"
 msgstr "گوزین کا ساتھ دیں"
 
+#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
@@ -244,18 +245,10 @@ msgstr "آڈیو ویوفارم کا انداز"
 msgid "setting_default_image_duration"
 msgstr "تصویر کا ڈیفالٹ دورانیہ"
 
-msgid "setting_tooltip_default_image_duration"
-msgstr "دورانیہ (فریمز میں)"
-
 #, fuzzy
 #| msgid "setting_default_image_duration"
 msgid "setting_default_color_duration"
 msgstr "تصویر کا ڈیفالٹ دورانیہ"
-
-#, fuzzy
-#| msgid "setting_tooltip_default_image_duration"
-msgid "setting_tooltip_default_color_duration"
-msgstr "دورانیہ (فریمز میں)"
 
 #, fuzzy
 #| msgid "setting_default_image_duration"
@@ -263,8 +256,7 @@ msgid "setting_default_text_duration"
 msgstr "تصویر کا ڈیفالٹ دورانیہ"
 
 #, fuzzy
-#| msgid "setting_tooltip_default_image_duration"
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "دورانیہ (فریمز میں)"
 
 msgid "setting_default_project_resolution"
@@ -373,6 +365,7 @@ msgstr "ویڈیو کوڈیک"
 msgid "render_option_quality"
 msgstr "وڈیو کامعیار"
 
+#, fuzzy
 msgid "render_option_tooltip_quality"
 msgstr ""
 "سی.آر.ایف ایڈجسٹمنٹ: 50 سب سے کم معیار، 15 سب سے زیادہ معیار، 18 ڈیفالٹ۔ 0 "

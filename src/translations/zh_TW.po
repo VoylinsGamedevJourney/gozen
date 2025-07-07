@@ -175,6 +175,7 @@ msgstr "Discord 連結"
 msgid "text_support_gozen"
 msgstr "支持 GoZen"
 
+#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
@@ -226,15 +227,8 @@ msgstr "音訊波形樣式"
 msgid "setting_default_image_duration"
 msgstr "預設圖片持續時間"
 
-msgid "setting_tooltip_default_image_duration"
-msgstr "以影格為單位的持續時間。"
-
 #, fuzzy
 msgid "setting_default_color_duration"
-msgstr ""
-
-#, fuzzy
-msgid "setting_tooltip_default_color_duration"
 msgstr ""
 
 #, fuzzy
@@ -242,8 +236,8 @@ msgid "setting_default_text_duration"
 msgstr ""
 
 #, fuzzy
-msgid "setting_tooltip_default_text_duration"
-msgstr ""
+msgid "setting_tooltip_default_image_duration"
+msgstr "以影格為單位的持續時間。"
 
 msgid "setting_default_project_resolution"
 msgstr "預設專案解析度"

@@ -191,6 +191,7 @@ msgstr "Enlace de Discord"
 msgid "text_support_gozen"
 msgstr "Apoyar a GoZen"
 
+#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
@@ -242,18 +243,10 @@ msgstr "Estilo de la onda de audio"
 msgid "setting_default_image_duration"
 msgstr "Duración predeterminada de la imagen"
 
-msgid "setting_tooltip_default_image_duration"
-msgstr "La duración en fotogramas."
-
 #, fuzzy
 #| msgid "setting_default_image_duration"
 msgid "setting_default_color_duration"
 msgstr "Duración predeterminada de la imagen"
-
-#, fuzzy
-#| msgid "setting_tooltip_default_image_duration"
-msgid "setting_tooltip_default_color_duration"
-msgstr "La duración en fotogramas."
 
 #, fuzzy
 #| msgid "setting_default_image_duration"
@@ -261,8 +254,7 @@ msgid "setting_default_text_duration"
 msgstr "Duración predeterminada de la imagen"
 
 #, fuzzy
-#| msgid "setting_tooltip_default_image_duration"
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "La duración en fotogramas."
 
 msgid "setting_default_project_resolution"
@@ -366,6 +358,7 @@ msgstr "Códec de vídeo"
 msgid "render_option_quality"
 msgstr "Calidad"
 
+#, fuzzy
 msgid "render_option_tooltip_quality"
 msgstr ""
 "Ajusta el CRF (Factor de Tasa Constante), la configuración de menor calidad "
