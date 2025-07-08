@@ -168,7 +168,7 @@ msgstr "GoZen को सहायता करें"
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen एक वीडियो एडिटर है जिसका निर्माता है"
+msgstr "GoZen एक वीडियो एडिटर है जिसे बनाया गया है"
 
 msgid "text_rename_file_to"
 msgstr "फ़ाइल का नाम बदलें ..."
@@ -327,7 +327,7 @@ msgid "render_option_gop_size"
 msgstr "GOP का आकार"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "Group Of Pictures। उच्च मान बेहतर कंप्रेशन देता है, लेकिन मान जितना अधिक होगा, वीडियो प्लेबैक के दौरान सटीकता (seeking और scrubbing) उतनी ही कम हो जाएगी। यदि आप इस वीडियो को आगे संपादन के लिए उपयोग करना चाहते हैं, तो मान को कम रखें।"
+msgstr "Group Of Pictures। अधिक मान बेहतर कंप्रेशन देता है, लेकिन जितना अधिक मान होगा, वीडियो प्लेबैक के दौरान सीकिंग और स्क्रबिंग की सटीकता उतनी ही कम हो जाएगी। यदि आप इस वीडियो का आगे संपादन करना चाहते हैं, तो इस मान को कम रखें।"
 
 msgid "render_option_threads_cores"
 msgstr "थ्रेड्स / कोर"
