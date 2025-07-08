@@ -12,6 +12,7 @@ static var native_locale_names: Dictionary = {
 	"pl": "Polski",
 	"ur": "اُردُو",
 	"es": "Español",
+	"hi": "हिन्दी",
 }
 
 
@@ -20,5 +21,6 @@ static var native_country_names: Dictionary = {
 	"ES": "España",
 	"PK": "پاکستان",
 	"TW": "台灣",
+	"IN": "भारत",
 }
 
