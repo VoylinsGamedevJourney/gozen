@@ -84,6 +84,9 @@ msgstr "Save video audio to wav"
 msgid "title_add_color_file"
 msgstr "Add color file"
 
+msgid "title_close_without_saving"
+msgstr "Close without saving?"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 
@@ -143,6 +146,9 @@ msgstr "Start rendering"
 
 msgid "button_save"
 msgstr "Save"
+
+msgid "button_dont_save"
+msgstr "Don't save"
 
 msgid "button_save_settings"
 msgstr "Save settings"
