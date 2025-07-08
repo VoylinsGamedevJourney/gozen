@@ -24,7 +24,7 @@ jobs:
       image: fedora:latest
     steps:
       - name: Install dependencies
-        run: dnf install -y rpm-build git tar gzip desktop-file-utils
+        run: dnf install -y rpm-build git tar gzip desktop-file-utils gpg
 
       - name: Checkout submodules
         uses: actions/checkout@v4
@@ -53,7 +53,9 @@ jobs:
           mkdir -p ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}
 
           cp -r ${{ env.EXPORT_FOLDER }}/* ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}
+          chmod +x ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/GoZen.x86_64
 
+          sed -i 's|^Exec=.*|Exec=/opt/GoZen.x86_64|' gozen.desktop
           cp gozen.desktop ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/
           cp assets/gozen_icon.png ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/
 

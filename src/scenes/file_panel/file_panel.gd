@@ -94,8 +94,9 @@ func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
 	Toolbox.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
 	add_child(popup)
 	popup.popup()
-	popup.position.x = int(mouse_pos.x + 18)
-	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
+	var padding: int = 18
+	popup.position.x = int(mouse_pos.x + padding)
+	popup.position.y = int(mouse_pos.y + padding + (popup.size.y / 2.0))
 
 
 ## For the right click presses of the file popup menu's.

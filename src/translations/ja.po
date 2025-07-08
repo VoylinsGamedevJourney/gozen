@@ -216,19 +216,13 @@ msgstr "音声波形スタイル"
 msgid "setting_default_image_duration"
 msgstr "画像のデフォルト表示時間"
 
-msgid "setting_tooltip_default_image_duration"
-msgstr "フレーム単位の長さです。"
-
 msgid "setting_default_color_duration"
 msgstr "デフォルトカラー表示時間"
-
-msgid "setting_tooltip_default_color_duration"
-msgstr "フレーム単位の長さです。"
 
 msgid "setting_default_text_duration"
 msgstr "デフォルトテキスト表示時間"
 
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "フレーム単位の長さです。"
 
 msgid "setting_default_project_resolution"
@@ -331,11 +325,9 @@ msgstr "品質"
 
 msgid "render_option_tooltip_quality"
 msgstr ""
-"CRF（固定品質レート）を調整します。最低品質の設定は"
-"50、最高品質の設定は15です。デフォルトは18に設定され"
-"ています。品質とサイズに影響を与えるビットレートの調"
-"整に使用されます。値0が最高品質、51が最低品質で、18"
-"はほとんど違いがありません。"
+"CRF（一定レート係数）を調整します。数値が低いほど高画質ですが、エンコードが遅くなります。"
+"数値が高いほど低画質になりますが、エンコードは速くなります。"
+"ほとんどのコーデックでは15〜18の範囲が推奨されており、画質の違いはほとんど感じられません。"
 
 msgid "render_option_speed"
 msgstr "速度"

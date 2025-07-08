@@ -212,19 +212,13 @@ msgstr ""
 msgid "setting_default_image_duration"
 msgstr ""
 
-msgid "setting_tooltip_default_image_duration"
-msgstr ""
-
 msgid "setting_default_color_duration"
-msgstr ""
-
-msgid "setting_tooltip_default_color_duration"
 msgstr ""
 
 msgid "setting_default_text_duration"
 msgstr ""
 
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr ""
 
 msgid "setting_default_project_resolution"

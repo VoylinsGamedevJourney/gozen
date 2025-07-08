@@ -168,7 +168,7 @@ msgstr "Support GoZen"
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen is a video editor made by"
+msgstr "GoZen creator:"
 
 msgid "text_rename_file_to"
 msgstr "Rename file to ..."
@@ -215,7 +215,7 @@ msgstr "Audio waveform style"
 msgid "setting_default_image_duration"
 msgstr "Default image duration"
 
-msgid "setting_tooltip_default_image_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "The duration in frames."
 
 msgid "setting_default_color_duration"
@@ -322,10 +322,10 @@ msgstr "Quality"
 
 msgid "render_option_tooltip_quality"
 msgstr ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
+"Adjusts the CRF (Constant Rate Factor), lower number = higher quality but "
+"slower encoding. Higher number = lower quality but faster encoding. For most "
+"codecs between 15-18 is recommended as the impact on quality won't be "
+"noticeable."
 
 msgid "render_option_speed"
 msgstr "Speed"
