@@ -168,7 +168,7 @@ msgstr "GoZen को सहायता करें"
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen एक वीडियो एडिटर है जिसे बनाया गया है"
+msgstr "GoZen एक वीडियो एडिटर है जिसका निर्माता है"
 
 msgid "text_rename_file_to"
 msgstr "फ़ाइल का नाम बदलें ..."
