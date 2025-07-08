@@ -18,6 +18,7 @@ var data: ProjectData
 var file_data: Dictionary [int, FileData] = {}
 
 var auto_save_timer: Timer
+var unsaved_changes: bool = false
 
 
 
@@ -152,6 +153,8 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 func save() -> void:
 	if data.save_data(data.project_path):
 		printerr("Something went wrong whilst saving project! ", data.error)
+	else:
+		unsaved_changes = false
 
 
 func save_as() -> void:
@@ -275,6 +278,7 @@ func add_file(file_path: String) -> int:
 		printerr("Problem happened adding file!")
 		return -1
 
+	unsaved_changes = true
 	return file.id
 
 
@@ -288,11 +292,13 @@ func add_file_object(file: File) -> void:
 	# We only emit this one since for dropped/selected actual files this gets
 	# called inside of _on_files_dropped.
 	file_added.emit(file.id)
+	unsaved_changes = true
 
 
 func _add_clip(clip_data: ClipData) -> void:
 	# Used for undoing the deletion of a file.
 	data.clips[clip_data.clip_id] = clip_data
+	unsaved_changes = true
 
 	
 func delete_file(id: int) -> void:
@@ -307,6 +313,7 @@ func delete_file(id: int) -> void:
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)
+	unsaved_changes = true
 
 
 func _on_files_dropped(files: PackedStringArray) -> void:
@@ -372,9 +379,37 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	dropped_overlay.queue_free()
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		if data != null and unsaved_changes:
+			print("Trying to close GoZen with unsaved changes: ", get_path())
+			auto_save_timer.paused = true
+
+			# Show popup asking if wanting to save or not.
+			var popup: AcceptDialog = AcceptDialog.new()
+			var dont_save_button: Button = popup.add_button(tr("button_dont_save"))
+			var cancel_button: Button = popup.add_cancel_button(tr("button_cancel"))
+
+			popup.title = tr("title_close_without_saving")
+			popup.ok_button_text = tr("button_save")
+
+			Toolbox.connect_func(popup.confirmed, save)
+			Toolbox.connect_func(popup.confirmed, get_tree().quit)
+			Toolbox.connect_func(dont_save_button.pressed, get_tree().quit)
+			if Settings.get_auto_save():
+				Toolbox.connect_func(cancel_button.pressed, auto_save_timer.start)
+
+			get_tree().root.add_child(popup)
+			popup.popup_centered()
+		else:
+			get_tree().quit()
+
+
+
 # Setters and Getters  --------------------------------------------------------
 func set_project_path(project_path: String) -> void:
 	data.project_path = project_path
+	unsaved_changes = true
 
 
 func get_project_path() -> String:
@@ -392,11 +427,13 @@ func get_project_base_folder() -> String:
  
 func set_file(file_id: int, file: File) -> void:
 	data.files[file_id] = file
+	unsaved_changes = true
 
 
 func set_file_nickname(file_id: int, nickname: String) -> void:
 	data.files[file_id].nickname = nickname
 	file_nickname_changed.emit(file_id)
+	unsaved_changes = true
 
 
 func get_files() -> Dictionary[int, File]:
@@ -417,6 +454,7 @@ func get_file_data(id: int) -> FileData:
 
 func set_resolution(res: Vector2i) -> void:
 	data.resolution = res
+	unsaved_changes = true
 
 
 func get_resolution() -> Vector2i:
@@ -426,6 +464,7 @@ func get_resolution() -> Vector2i:
 func set_framerate(framerate: float) -> void:
 	data.framerate = framerate
 	EditorCore.frame_time = 1.0 / data.framerate
+	unsaved_changes = true
 
 
 func get_framerate() -> float:
@@ -438,15 +477,19 @@ func get_timeline_end() -> int:
 
 func set_timeline_end(value: int) -> void:
 	data.timeline_end = value
+	unsaved_changes = true
 
 
 func set_track_data(track_id: int, key: int, value: int) -> void:
 	data.tracks[track_id][key] = value
+	unsaved_changes = true
 
 
 func erase_track_entry(track_id: int, key: int) -> void:
 	if !data.tracks[track_id].erase(key):
 		printerr("Could not erase ", key, " from track ", track_id, "!")
+	else:
+		unsaved_changes = true
 	
 
 func get_track_count() -> int:
@@ -501,18 +544,22 @@ func get_clip_type(clip_id: int) -> File.TYPE:
 func set_clip(id: int, clip: ClipData) -> void:
 	clip.clip_id = id
 	data.clips[id] = clip
+	unsaved_changes = true
 
 
 func erase_clip(clip_id: int) -> void:
 	if !data.tracks[data.clips[clip_id].track_id].erase(data.clips[clip_id].start_frame):
 		Toolbox.print_erase_error()
-	if !data.clips.erase(clip_id):
+	elif !data.clips.erase(clip_id):
 		Toolbox.print_erase_error()
+	else:
+		unsaved_changes = true
 
 
 func set_background_color(color: Color) -> void:
 	data.background_color = color
 	EditorCore.set_background_color(color)
+	unsaved_changes = true
 
 
 func get_background_color() -> Color:
@@ -521,6 +568,7 @@ func get_background_color() -> Color:
 
 func set_timeline_scroll_h(value: int) -> void:
 	data.timeline_scroll_h = value
+	unsaved_changes = true
 
 
 func get_timeline_scroll_h() -> int:
@@ -540,6 +588,8 @@ func add_folder(folder: String) -> void:
 		print("Folder %s already exists!")
 	elif data.folders.append(folder):
 		Toolbox.print_append_error()
+	else:
+		unsaved_changes = true
 
 
 func get_folders() -> PackedStringArray:
@@ -551,8 +601,8 @@ func add_marker(frame_nr: int, marker: String) -> void:
 		printerr("Already marker in postition %s!" % frame_nr)
 	else:
 		data.markers[frame_nr] = marker
-	
-	_markers_updated.emit()
+		_markers_updated.emit()
+		unsaved_changes = true
 
 
 func remove_marker(frame_nr: int) -> void:
@@ -560,8 +610,9 @@ func remove_marker(frame_nr: int) -> void:
 		printerr("No marker at %s!" % frame_nr)
 	elif !data.markers.erase(frame_nr):
 		Toolbox.print_erase_error()
-
-	_markers_updated.emit()
+	else:
+		_markers_updated.emit()
+		unsaved_changes = true
 
 
 func get_marker(frame_nr: int) -> String:

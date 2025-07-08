@@ -17,6 +17,7 @@ run/main_scene="uid://b0r37lfkj7wl6"
 run/print_header=false
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
+config/auto_accept_quit=false
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/image="uid://be26q5shju2ml"
 config/icon="res://icon.svg"

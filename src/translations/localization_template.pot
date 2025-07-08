@@ -81,6 +81,9 @@ msgstr ""
 msgid "title_add_color_file"
 msgstr ""
 
+msgid "title_close_without_saving"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 
@@ -139,6 +142,9 @@ msgid "button_start_render"
 msgstr ""
 
 msgid "button_save"
+msgstr ""
+
+msgid "button_dont_save"
 msgstr ""
 
 msgid "button_save_settings"

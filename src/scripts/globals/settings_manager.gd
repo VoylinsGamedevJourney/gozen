@@ -252,6 +252,6 @@ func set_auto_save(value: bool) -> void:
 		Project._auto_save()
 	
 
-func get_auto_save() -> int:
+func get_auto_save() -> bool:
 	return data.auto_save
 
