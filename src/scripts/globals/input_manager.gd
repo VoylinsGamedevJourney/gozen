@@ -54,6 +54,10 @@ func _input(event: InputEvent) -> void:
 		clipboard_paste()
 
 
+func _on_actual_close() -> void:
+	undo_redo.free()
+
+
 func show_editor_screen() -> void:
 	on_show_editor_screen.emit()
 

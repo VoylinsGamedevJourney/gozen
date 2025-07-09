@@ -32,6 +32,11 @@ var buffer_size: int = 5
 
 
 
+func _on_actual_close() -> void:
+	encoder.free()
+	viewport.free()
+
+
 func stop_encoder() -> void:
 	if encoder.is_open():
 		encoder.close()

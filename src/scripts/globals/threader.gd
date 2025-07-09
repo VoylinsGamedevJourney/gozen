@@ -27,6 +27,10 @@ func _process(_delta: float) -> void:
 			tasks.remove_at(tasks.find(task))
 
 
+func _on_actual_close() -> void:
+	mutex.free()
+
+
 func add_task(todo: Callable, after_todo: Callable) -> void:
 	var task: Task = Task.new(WorkerThreadPool.add_task(todo), after_todo)
 	tasks.append(task)

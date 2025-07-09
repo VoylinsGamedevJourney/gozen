@@ -24,6 +24,25 @@ var unsaved_changes: bool = false
 
 func _ready() -> void:
 	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
+	Toolbox.connect_func(get_window().close_requested, _on_close_requested)
+
+
+func _on_actual_close() -> void:
+	# Cleaning up is necessary to not have leaked memory and to not have
+	# a very slow shutdown of GoZen.
+	data.queue_free()
+	auto_save_timer.queue_free()
+
+	for file_data_object: FileData in file_data.values():
+		file_data_object.queue_free()
+	file_data.clear()
+
+	Settings._on_actual_close()
+	EditorCore._on_actual_close()
+	Threader._on_actual_close()
+	InputManager._on_actual_close()
+	RenderManager._on_actual_close()
+	get_tree().quit()
 
 
 func _auto_save() -> void:
@@ -379,30 +398,34 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	dropped_overlay.queue_free()
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		if data != null and unsaved_changes:
-			print("Trying to close GoZen with unsaved changes: ", get_path())
-			auto_save_timer.paused = true
+func _on_close_requested() -> void:
+	if data != null and unsaved_changes:
+		var popup: AcceptDialog = AcceptDialog.new()
+		var dont_save_button: Button = popup.add_button(tr("button_dont_save"))
+		var cancel_button: Button = popup.add_cancel_button(tr("button_cancel"))
 
-			# Show popup asking if wanting to save or not.
-			var popup: AcceptDialog = AcceptDialog.new()
-			var dont_save_button: Button = popup.add_button(tr("button_dont_save"))
-			var cancel_button: Button = popup.add_cancel_button(tr("button_cancel"))
+		auto_save_timer.paused = true
+		popup.title = tr("title_close_without_saving")
+		popup.ok_button_text = tr("button_save")
 
-			popup.title = tr("title_close_without_saving")
-			popup.ok_button_text = tr("button_save")
+		Toolbox.connect_func(popup.confirmed, _on_save_close)
+		Toolbox.connect_func(cancel_button.pressed, _on_cancel_close)
+		Toolbox.connect_func(dont_save_button.pressed, _on_actual_close)
 
-			Toolbox.connect_func(popup.confirmed, save)
-			Toolbox.connect_func(popup.confirmed, get_tree().quit)
-			Toolbox.connect_func(dont_save_button.pressed, get_tree().quit)
-			if Settings.get_auto_save():
-				Toolbox.connect_func(cancel_button.pressed, auto_save_timer.start)
+		get_tree().root.add_child(popup)
+		popup.popup_centered()
+	else:
+		get_tree().quit()
 
-			get_tree().root.add_child(popup)
-			popup.popup_centered()
-		else:
-			get_tree().quit()
+
+func _on_save_close() -> void:
+	save()
+	_on_actual_close()
+
+
+func _on_cancel_close() -> void:
+	if Settings.get_auto_save():
+		auto_save_timer.start()
 
 
 

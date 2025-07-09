@@ -68,6 +68,32 @@ func _process(delta: float) -> void:
 	set_frame(frame_nr)
 
 
+func _on_actual_close() -> void:
+	viewport.queue_free()
+
+	for tex: TextureRect in view_textures:
+		tex.queue_free()
+	view_textures.clear()
+
+	for player: AudioPlayer in audio_players:
+		player.queue_free()
+	audio_players.clear()
+	
+	loaded_clips.clear()
+	default_effects_video.queue_free()
+	
+	for tex: ImageTexture in y_textures:
+		tex.free()
+	for tex: ImageTexture in u_textures:
+		tex.free()
+	for tex: ImageTexture in v_textures:
+		tex.free()
+
+	y_textures.clear()
+	u_textures.clear()
+	v_textures.clear()
+
+
 func on_play_pressed() -> void:
 	is_playing = false if frame_nr == Project.get_timeline_end() else !is_playing
 

@@ -22,6 +22,10 @@ func _ready() -> void:
 		printerr("Something went wrong loading settings! ", data.error)
 	apply_language()
 	apply_theme()
+
+
+func _on_actual_close() -> void:
+	data.queue_free()
 	
 
 func save() -> void:
