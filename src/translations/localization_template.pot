@@ -12,352 +12,439 @@ msgstr ""
 msgid "title_about_gozen"
 msgstr ""
 
-
 msgid "title_appearance"
 msgstr ""
-
 
 msgid "title_defaults"
 msgstr ""
 
-
 msgid "title_timeline"
 msgstr ""
 
+msgid "title_extras"
+msgstr ""
+
+msgid "title_render_settings"
+msgstr ""
 
 msgid "title_rendering"
 msgstr ""
 
-
 msgid "title_rendering_finished"
 msgstr ""
 
+msgid "title_rendering_error"
+msgstr ""
 
 msgid "title_render_video"
 msgstr ""
 
-
 msgid "title_render_audio"
 msgstr ""
-
-
-msgid "title_metadata"
-msgstr ""
-
 
 msgid "title_cpu_threads"
 msgstr ""
 
-
 msgid "title_recent_projects"
 msgstr ""
-
 
 msgid "title_getting_started"
 msgstr ""
 
-
 msgid "title_new_project"
 msgstr ""
 
+msgid "title_loading_project"
+msgstr ""
+
+msgid "title_files_dropped"
+msgstr ""
+
+msgid "title_sponsors"
+msgstr ""
+
+msgid "title_editor_settings"
+msgstr ""
+
+msgid "title_project_settings"
+msgstr ""
+
+msgid "title_chapters"
+msgstr ""
+
+msgid "title_save_image_to_file"
+msgstr ""
+
+msgid "title_save_video_audio_to_wav"
+msgstr ""
+
+msgid "title_add_color_file"
+msgstr ""
+
+msgid "title_close_without_saving"
+msgstr ""
 
 msgid "button_tooltip_create_new_project"
 msgstr ""
 
-
 msgid "button_gozen_site"
 msgstr ""
-
 
 msgid "button_manual"
 msgstr ""
 
-
 msgid "button_tutorials"
 msgstr ""
-
 
 msgid "button_discord_server"
 msgstr ""
 
-
 msgid "button_support_gozen"
 msgstr ""
 
+msgid "button_view_sponsors"
+msgstr ""
+
+msgid "button_become_sponsor"
+msgstr ""
 
 msgid "button_open_project"
 msgstr ""
 
-
 msgid "button_create_new_project"
 msgstr ""
 
+msgid "button_create_new_color_file"
+msgstr ""
 
 msgid "button_tooltip_editor_settings"
 msgstr ""
 
-
 msgid "button_cancel"
 msgstr ""
-
 
 msgid "button_cancel_rendering"
 msgstr ""
 
-
 msgid "button_reset"
 msgstr ""
-
 
 msgid "button_return"
 msgstr ""
 
+msgid "button_screen_editing"
+msgstr ""
+
+msgid "button_screen_render"
+msgstr ""
 
 msgid "button_start_render"
 msgstr ""
 
-
 msgid "button_save"
 msgstr ""
 
+msgid "button_dont_save"
+msgstr ""
 
 msgid "button_save_settings"
 msgstr ""
 
-
 msgid "button_close"
 msgstr ""
-
 
 msgid "text_version"
 msgstr ""
 
-
 msgid "text_gozen_website"
 msgstr ""
-
 
 msgid "text_github_repo"
 msgstr ""
 
-
 msgid "text_discord_link"
 msgstr ""
 
-
 msgid "text_support_gozen"
 msgstr ""
-
 
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
 msgstr ""
 
-
 msgid "text_rename_file_to"
 msgstr ""
-
 
 msgid "text_advanced_settings"
 msgstr ""
 
-
 msgid "text_path"
 msgstr ""
-
 
 msgid "text_resolution"
 msgstr ""
 
-
 msgid "text_framerate"
 msgstr ""
 
+msgid "placeholder_text_search_files"
+msgstr ""
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr ""
 
-
 msgid "tooltip_setting_background_color"
 msgstr ""
-
 
 msgid "setting_background_color"
 msgstr ""
 
-
 msgid "setting_language"
 msgstr ""
-
 
 msgid "setting_theme"
 msgstr ""
 
-
 msgid "setting_tooltip_theme"
 msgstr ""
-
 
 msgid "setting_show_menu_bar"
 msgstr ""
 
-
 msgid "setting_waveform_style"
 msgstr ""
-
 
 msgid "setting_default_image_duration"
 msgstr ""
 
-
-msgid "setting_tooltip_default_image_duration"
+msgid "setting_default_color_duration"
 msgstr ""
 
+msgid "setting_default_text_duration"
+msgstr ""
+
+msgid "setting_tooltip_duration_in_frames"
+msgstr ""
 
 msgid "setting_default_project_resolution"
 msgstr ""
 
-
 msgid "setting_tooltip_default_project_resolution_x"
 msgstr ""
-
 
 msgid "setting_tooltip_default_project_resolution_y"
 msgstr ""
 
-
 msgid "setting_default_project_framerate"
 msgstr ""
-
 
 msgid "setting_tooltip_default_project_framerate"
 msgstr ""
 
-
 msgid "setting_default_track_amount"
 msgstr ""
-
 
 msgid "setting_pause_after_dragging"
 msgstr ""
 
-
 msgid "setting_delete_empty_space_mod"
 msgstr ""
-
 
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr ""
 
-
-msgid "renderer_progress_text_setup"
+msgid "setting_check_version"
 msgstr ""
 
-
-msgid "renderer_progress_text_open_error"
+msgid "setting_tooltip_check_version"
 msgstr ""
 
-
-msgid "renderer_progress_text_compiling_audio"
+msgid "setting_auto_save"
 msgstr ""
 
-
-msgid "renderer_progress_text_sending_audio_error"
+msgid "setting_tooltip_auto_save"
 msgstr ""
 
-
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_setup"
 msgstr ""
 
-
-msgid "renderer_progress_text_sending_data_error"
+msgid "encoding_progress_text_open_error"
 msgstr ""
 
-
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_compiling_audio"
 msgstr ""
 
-
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_sending_audio"
 msgstr ""
 
-
-msgid "renderer_progress_text_finilizing"
+msgid "encoding_progress_text_sending_audio_error"
 msgstr ""
 
+msgid "encoding_progress_text_creating_sending_data"
+msgstr ""
+
+msgid "encoding_progress_text_sending_data_error"
+msgstr ""
+
+msgid "encoding_progress_text_canceling"
+msgstr ""
+
+msgid "encoding_progress_text_last_frame"
+msgstr ""
 
 msgid "rendering_warning"
 msgstr ""
 
-
 msgid "render_option_path"
 msgstr ""
-
 
 msgid "render_option_profile"
 msgstr ""
 
-
 msgid "render_option_audio_codec"
 msgstr ""
-
 
 msgid "render_option_video_codec"
 msgstr ""
 
-
 msgid "render_option_quality"
 msgstr ""
-
 
 msgid "render_option_tooltip_quality"
 msgstr ""
 
-
 msgid "render_option_speed"
 msgstr ""
-
 
 msgid "render_option_tooltip_speed"
 msgstr ""
 
-
 msgid "render_option_gop_size"
 msgstr ""
-
 
 msgid "render_option_tooltip_gop_size"
 msgstr ""
 
-
 msgid "render_option_threads_cores"
 msgstr ""
-
 
 msgid "render_option_tooltip_threads_cores"
 msgstr ""
 
-
-msgid "render_option_metadata_title"
-msgstr ""
-
-
-msgid "render_option_metadata_comment"
-msgstr ""
-
-
-msgid "render_option_metadata_author"
-msgstr ""
-
-
-msgid "render_option_metadata_copyright"
-msgstr ""
-
-
 msgid "render_option_video_length"
 msgstr ""
 
-
 msgid "render_option_render_time"
+msgstr ""
+
+msgid "notification_update_available"
+msgstr ""
+
+msgid "status_project_loading_init"
+msgstr ""
+
+msgid "status_project_preparing_timeline"
+msgstr ""
+
+msgid "status_project_loading_files"
+msgstr ""
+
+msgid "status_project_playback_setup"
+msgstr ""
+
+msgid "status_project_finalizing"
+msgstr ""
+
+msgid "status_new_project_init"
+msgstr ""
+
+msgid "command_editor_settings"
+msgstr ""
+
+msgid "command_project_settings"
+msgstr ""
+
+msgid "command_render_menu"
+msgstr ""
+
+msgid "menu_bar_project"
+msgstr ""
+
+msgid "menu_bar_editor"
+msgstr ""
+
+msgid "menu_bar_project_save"
+msgstr ""
+
+msgid "menu_bar_project_save_as"
+msgstr ""
+
+msgid "menu_bar_project_open_project"
+msgstr ""
+
+msgid "menu_bar_project_open_settings"
+msgstr ""
+
+msgid "menu_bar_editor_open_settings"
+msgstr ""
+
+msgid "menu_bar_editor_open_url_site"
+msgstr ""
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr ""
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr ""
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr ""
+
+msgid "menu_bar_editor_open_url_support"
+msgstr ""
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr ""
+
+msgid "file_dialog_title_add_files"
+msgstr ""
+
+msgid "file_dialog_title_select_save_path"
+msgstr ""
+
+msgid "file_panel_item_add_files"
+msgstr ""
+
+msgid "file_panel_item_add_text"
+msgstr ""
+
+msgid "file_panel_item_add_color"
+msgstr ""
+
+msgid "popup_item_rename"
+msgstr ""
+
+msgid "popup_item_reload"
+msgstr ""
+
+msgid "popup_item_delete"
+msgstr ""
+
+msgid "popup_item_duplicate"
+msgstr ""
+
+msgid "popup_item_save_as_file"
+msgstr ""
+
+msgid "popup_item_extract_audio"
+msgstr ""
+
+msgid "popup_separator_image_options"
+msgstr ""
+
+msgid "popup_separator_video_options"
+msgstr ""
+
+msgid "popup_separator_text_options"
 msgstr ""

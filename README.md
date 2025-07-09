@@ -1,9 +1,12 @@
 # GoZen
 
+[![Linux](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/linux.yml)
+[![AppImage](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/appimage.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/appimage.yml)
+[![RPM Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/rpm.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/rpm.yml)
+[![DEB Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/deb.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/deb.yml)
+[![Windows](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/windows.yml) <br>
 [![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen)
 [![Discord](https://img.shields.io/discord/1120566516899926068?label=Discord&logo=discord&logoColor=white)](https://discord.gg/BdbUf7VKYC)
-[![Linux x86_64 Build Status](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml)
-[![Windows x86_64 Build Status](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 <img src="./assets/logo.svg" alt="GoZen Logo" width="200"/>
@@ -46,16 +49,11 @@ At this moment there are three builds:
 - AUR: For Arch Linux users, there is a normal version and a git version available;
 - Windows: ...;
 
-### Prerequisites
-For the main Linux build, you will need to have following libraries installed:
-- `x264`;
-- `x265`;
-
 ### For developers (building from source)
 First of all, you'll need to go into the `libs` folder and run the python script `build.py`, just follow the instructions and it should compile FFmpeg and the GDExtension without issues (on both Linux and Windows). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.
 
-> [!IMPORTANT]  
-> For the Windows build you will need to use WSL since FFmpeg needs it to compile.
+> [!NOTE]
+> You will need `git-svn` in order to compile the Linux builds!
 
 ## Contributing
 We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.
@@ -70,11 +68,10 @@ We need contributors for the localization of GoZen, more info can be found in [t
 ## Support the project ❤️
 GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad and my time is limited as I'm trying to make it financially work to keep working from home.
 
-If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through following platforms:
-- **Contribute financially via Open Collective:** Funds go directly towards GoZen-related expenses (e.g., software licenses, hardware). [Open Collective page](https://opencollective.com/gozen)
-- **Support me personally via Ko-fi:** This helps support my overall work, including GoZen development, videos, and other projects. [Ko-fi page](https://ko-fi.com/voylin)
+If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through [my Ko-fi page](https://ko-fi.com/voylin).
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
+### Becoming a sponsor
+If you have interest in becoming a sponsor to the GoZen project, please visit [this form](https://forms.gle/boBG9UB6ouSg8vce9) and fill in the details. We'll reply as soon as we can.
 
 ## Changelog
 See the [CHANGELOG.md](./CHANGELOG.md) file for an overview of all changes to the projects from version to version.
@@ -90,3 +87,6 @@ The project is licensed under the [GPLv3 license](./LICENSE). FFmpeg is being us
 
 > This software uses libraries from the FFmpeg project under the LGPLv2.1
 > Other libraries used may come with their own specific licenses so be sure to check before forking the project and/or using code from this project to see if it can be used with your project license.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
+

@@ -1,0 +1,362 @@
+[gd_scene load_steps=11 format=3 uid="uid://71mkki6432yy"]
+
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="1_qx788"]
+[ext_resource type="Script" uid="uid://cnh2n6srqnkxk" path="res://scenes/render_screen/render_screen.gd" id="1_xqju4"]
+[ext_resource type="Script" uid="uid://dq0sbkf6cfqnp" path="res://scripts/view_panel.gd" id="2_an5uk"]
+[ext_resource type="Script" uid="uid://0tlwabkx4t4m" path="res://scripts/project_view_texture.gd" id="3_cbi1q"]
+[ext_resource type="Texture2D" uid="uid://c6u5jisjppwl5" path="res://assets/icons/skip_previous.svg" id="3_fotwr"]
+[ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="3_s6tus"]
+[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/play.svg" id="4_rwgv3"]
+[ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/pause.svg" id="5_g8ltk"]
+[ext_resource type="Texture2D" uid="uid://5sdky8df2641" path="res://assets/icons/skip_next.svg" id="6_21bqq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t27w5"]
+
+[node name="RenderScreen" type="VSplitContainer" node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box", "chapters_text_edit")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+script = ExtResource("1_xqju4")
+render_profiles_hbox = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/RenderProfilesScroll/RenderProfilesHBox")
+grid_audio = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioGrid")
+path_line_edit = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
+video_codec_option_button = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/VideoCodecOptionButton")
+video_quality_hslider = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/QualityHSlider")
+video_gop_spin_box = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/GOPSizeSpinBox")
+video_speed_label = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/SpeedLabel")
+video_speed_hslider = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/SpeedHSlider")
+audio_codec_option_button = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioGrid/AudioCodecOptionButton")
+threads_spin_box = NodePath("HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/ThreadsGrid/ThreadsSpinBox")
+chapters_text_edit = NodePath("HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox/ChaptersTextEdit")
+metadata/_tab_index = 1
+
+[node name="HSplit" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="HSplit"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RenderOptionsPanel" type="PanelContainer" parent="HSplit/VBox"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="HSplit/VBox/RenderOptionsPanel"]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_render_settings"
+
+[node name="RenderProfilesLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+text = "render_option_profile"
+
+[node name="RenderProfilesScroll" type="ScrollContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+draw_focus_border = true
+vertical_scroll_mode = 0
+
+[node name="RenderProfilesHBox" type="HBoxContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/RenderProfilesScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TopSettingsHBox" type="GridContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="PathLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox"]
+layout_mode = 2
+text = "render_option_path"
+
+[node name="RenderPathHBox" type="HBoxContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PathLineEdit" type="LineEdit" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox/RenderPathHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectPathButton" type="TextureButton" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox/RenderPathHBox"]
+custom_minimum_size = Vector2(21, 0)
+layout_mode = 2
+texture_normal = ExtResource("1_qx788")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Line0" type="HSeparator" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="VideoLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_render_video"
+
+[node name="VideoGrid" type="GridContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="CodecLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+layout_mode = 2
+text = "render_option_video_codec"
+
+[node name="VideoCodecOptionButton" type="OptionButton" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QualityLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+mouse_filter = 1
+text = "render_option_quality"
+
+[node name="QualityHSlider" type="HSlider" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tooltip_text = "render_option_tooltip_quality"
+min_value = -50.0
+max_value = -15.0
+value = -18.0
+
+[node name="SpeedLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+mouse_filter = 1
+text = "render_option_speed"
+
+[node name="SpeedHSlider" type="HSlider" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "render_option_tooltip_speed"
+max_value = 8.0
+value = 3.0
+tick_count = 9
+ticks_on_borders = true
+
+[node name="GOPSizeLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+mouse_filter = 1
+text = "render_option_gop_size"
+
+[node name="GOPSizeSpinBox" type="SpinBox" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "render_option_tooltip_gop_size"
+value = 15.0
+allow_greater = true
+alignment = 2
+
+[node name="Line1" type="HSeparator" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="AudioTitleHBox" type="HBoxContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="AudioLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioTitleHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "title_render_audio"
+
+[node name="RenderAudioCheckButton" type="CheckButton" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioTitleHBox"]
+layout_mode = 2
+button_pressed = true
+flat = true
+
+[node name="AudioGrid" type="GridContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="CodecLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioGrid"]
+layout_mode = 2
+text = "render_option_audio_codec"
+
+[node name="AudioCodecOptionButton" type="OptionButton" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Line2" type="HSeparator" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ThreadsBoxLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "title_cpu_threads"
+
+[node name="ThreadsGrid" type="GridContainer" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="ThreadsCodecLabel" type="Label" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/ThreadsGrid"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "render_option_threads_cores"
+
+[node name="ThreadsSpinBox" type="SpinBox" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/ThreadsGrid"]
+layout_mode = 2
+tooltip_text = "render_option_tooltip_threads_cores"
+
+[node name="Line3" type="HSeparator" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="StartRenderButton" type="Button" parent="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+text = "button_start_render"
+
+[node name="ChaptersPanel" type="PanelContainer" parent="HSplit/VBox"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="HSplit/VBox/ChaptersPanel"]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="HSplit/VBox/ChaptersPanel/Margin"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="HSplit/VBox/ChaptersPanel/Margin/Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "title_chapters"
+
+[node name="CopyChaptersButton" type="TextureButton" parent="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(17, 0)
+layout_mode = 2
+texture_normal = ExtResource("3_s6tus")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ChaptersTextEdit" type="TextEdit" parent="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+editable = false
+scroll_smooth = true
+scroll_fit_content_width = true
+
+[node name="ViewPanel" type="PanelContainer" parent="HSplit" node_paths=PackedStringArray("button_play", "button_pause", "frame_label", "time_label")]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_an5uk")
+button_play = NodePath("Margin/VBox/ButtonsHBox/PlayButton")
+button_pause = NodePath("Margin/VBox/ButtonsHBox/PauseButton")
+frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
+time_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/TimeLabel")
+
+[node name="Margin" type="MarginContainer" parent="HSplit/ViewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="VBox" type="VBoxContainer" parent="HSplit/ViewPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ProjectViewTextureRect" type="TextureRect" parent="HSplit/ViewPanel/Margin/VBox"]
+material = SubResource("ShaderMaterial_t27w5")
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("3_cbi1q")
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="HSplit/ViewPanel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="TimeDataVBox" type="VBoxContainer" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="FrameLabel" type="Label" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox/TimeDataVBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "Frame: 0"
+
+[node name="TimeLabel" type="Label" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox/TimeDataVBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "00:00:00.00"
+
+[node name="SkipPrevButton" type="TextureButton" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_fotwr")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PlayButton" type="TextureButton" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_rwgv3")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PauseButton" type="TextureButton" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("5_g8ltk")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SkipNextButton" type="TextureButton" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("6_21bqq")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SpacerControl" type="Control" parent="HSplit/ViewPanel/Margin/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
+[connection signal="item_selected" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
+[connection signal="toggled" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
+[connection signal="pressed" from="HSplit/VBox/RenderOptionsPanel/Margin/Panel/Margin/VBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
+[connection signal="pressed" from="HSplit/VBox/ChaptersPanel/Margin/Panel/Margin/VBox/HBox/CopyChaptersButton" to="." method="_on_copy_chapters_button_pressed"]
+[connection signal="pressed" from="HSplit/ViewPanel/Margin/VBox/ButtonsHBox/SkipPrevButton" to="HSplit/ViewPanel" method="_on_skip_prev_button_pressed"]
+[connection signal="pressed" from="HSplit/ViewPanel/Margin/VBox/ButtonsHBox/PlayButton" to="HSplit/ViewPanel" method="_on_play_button_pressed"]
+[connection signal="pressed" from="HSplit/ViewPanel/Margin/VBox/ButtonsHBox/PauseButton" to="HSplit/ViewPanel" method="_on_pause_button_pressed"]
+[connection signal="pressed" from="HSplit/ViewPanel/Margin/VBox/ButtonsHBox/SkipNextButton" to="HSplit/ViewPanel" method="_on_skip_next_button_pressed"]

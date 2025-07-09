@@ -5,9 +5,9 @@ void initialize_gozen_library_init_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) 
 		return;
 	
-	ClassDB::register_class<Video>();
-	ClassDB::register_class<Audio>();
-	ClassDB::register_class<Renderer>();
+	ClassDB::register_class<GoZenVideo>();
+	ClassDB::register_class<GoZenAudio>();
+	ClassDB::register_class<GoZenEncoder>();
 }
 
 void uninitialize_gozen_library_init_module(ModuleInitializationLevel p_level) {

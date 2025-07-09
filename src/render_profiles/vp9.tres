@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="RenderProfile" load_steps=2 format=3 uid="uid://b8lmmvi0gnujr"]
+[gd_resource type="Resource" script_class="RenderProfile" load_steps=3 format=3 uid="uid://b8lmmvi0gnujr"]
 
 [ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_edoyl"]
+[ext_resource type="Texture2D" uid="uid://bdudcgajd48jn" path="res://assets/profiles/vp9.svg" id="1_o370e"]
 
 [resource]
 script = ExtResource("1_edoyl")
 profile_name = "VP9"
-audio_codec = 86076
+icon = ExtResource("1_o370e")
 video_codec = 139
 crf = 20
 gop = 15
 h264_preset = 3
+audio_codec = 86076
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"

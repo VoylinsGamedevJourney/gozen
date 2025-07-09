@@ -24,20 +24,31 @@ msgstr "ڈیفالٹس"
 msgid "title_timeline"
 msgstr "ٹائم لائن"
 
+#, fuzzy
+msgid "title_extras"
+msgstr "ڈیفالٹس"
+
+#, fuzzy
+#| msgid "title_rendering"
+msgid "title_render_settings"
+msgstr "رینڈرنگ"
+
 msgid "title_rendering"
 msgstr "رینڈرنگ"
 
 msgid "title_rendering_finished"
 msgstr "رینڈرنگ مکمل"
 
+#, fuzzy
+#| msgid "title_rendering"
+msgid "title_rendering_error"
+msgstr "رینڈرنگ"
+
 msgid "title_render_video"
 msgstr "رینڈر ویڈیو"
 
 msgid "title_render_audio"
 msgstr "رینڈر آڈیو"
-
-msgid "title_metadata"
-msgstr "میٹاڈیٹا"
 
 msgid "title_cpu_threads"
 msgstr "سی پی یو تھریڈز"
@@ -50,6 +61,46 @@ msgstr "شروعات کریں"
 
 msgid "title_new_project"
 msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "title_loading_project"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "title_files_dropped"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "title_sponsors"
+msgstr ""
+
+#, fuzzy
+#| msgid "button_tooltip_editor_settings"
+msgid "title_editor_settings"
+msgstr "ایڈیٹر کی ترتیبات."
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "title_project_settings"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+#| msgid "title_cpu_threads"
+msgid "title_chapters"
+msgstr "سی پی یو تھریڈز"
+
+#, fuzzy
+msgid "title_save_image_to_file"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_render_audio"
+msgid "title_save_video_audio_to_wav"
+msgstr "رینڈر آڈیو"
+
+#, fuzzy
+msgid "title_add_color_file"
+msgstr ""
 
 msgid "button_tooltip_create_new_project"
 msgstr "چنی گئ ترتیبات سے نیا پروجیکٹ بنائں."
@@ -69,10 +120,23 @@ msgstr "دسکورڈ سرور"
 msgid "button_support_gozen"
 msgstr "گوزن کا ساتھ دیں"
 
+#, fuzzy
+msgid "button_view_sponsors"
+msgstr "ترتیبات سیو کریں"
+
+#, fuzzy
+msgid "button_become_sponsor"
+msgstr "بند کریں"
+
 msgid "button_open_project"
 msgstr "پروجیکٹ کھولیں"
 
 msgid "button_create_new_project"
+msgstr "نیا پروجیکٹ بنائیں"
+
+#, fuzzy
+#| msgid "button_create_new_project"
+msgid "button_create_new_color_file"
 msgstr "نیا پروجیکٹ بنائیں"
 
 msgid "button_tooltip_editor_settings"
@@ -89,6 +153,16 @@ msgstr "ری سیٹ"
 
 msgid "button_return"
 msgstr "واپس جائیں"
+
+#, fuzzy
+#| msgid "button_save_settings"
+msgid "button_screen_editing"
+msgstr "ترتیبات سیو کریں"
+
+#, fuzzy
+#| msgid "button_start_render"
+msgid "button_screen_render"
+msgstr "رینڈرنگ شروع کریں"
 
 msgid "button_start_render"
 msgstr "رینڈرنگ شروع کریں"
@@ -117,6 +191,7 @@ msgstr "دسکورڈ لنک"
 msgid "text_support_gozen"
 msgstr "گوزین کا ساتھ دیں"
 
+#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
@@ -136,6 +211,10 @@ msgstr "ریزولوشن"
 
 msgid "text_framerate"
 msgstr "فریم ریٹ"
+
+#, fuzzy
+msgid "placeholder_text_search_files"
+msgstr ""
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "تبدیلیاں نظر انداز کریں اور ترتیبات بند کریں."
@@ -166,7 +245,18 @@ msgstr "آڈیو ویوفارم کا انداز"
 msgid "setting_default_image_duration"
 msgstr "تصویر کا ڈیفالٹ دورانیہ"
 
-msgid "setting_tooltip_default_image_duration"
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "setting_default_color_duration"
+msgstr "تصویر کا ڈیفالٹ دورانیہ"
+
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "setting_default_text_duration"
+msgstr "تصویر کا ڈیفالٹ دورانیہ"
+
+#, fuzzy
+msgid "setting_tooltip_duration_in_frames"
 msgstr "دورانیہ (فریمز میں)"
 
 msgid "setting_default_project_resolution"
@@ -199,32 +289,63 @@ msgstr ""
 "منتقل ہو جاتا ہے۔ ایک موڈیفائر سیٹ کرنے سے آپ کو مخصوص کی کو دبانا پڑے گا "
 "تاکہ ڈبل کلک کے ذریعے کلپس کے درمیان خالی جگہ حذف کی جا سکے."
 
-msgid "renderer_progress_text_setup"
+#, fuzzy
+msgid "setting_check_version"
+msgstr "تھیم"
+
+#, fuzzy
+msgid "setting_tooltip_check_version"
+msgstr ""
+"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
+"کریں."
+
+#, fuzzy
+#| msgid "setting_language"
+msgid "setting_auto_save"
+msgstr "زبان"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_auto_save"
+msgstr ""
+"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
+"کریں."
+
+#, fuzzy
+msgid "encoding_progress_text_setup"
 msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
 
-msgid "renderer_progress_text_open_error"
+#, fuzzy
+msgid "encoding_progress_text_open_error"
 msgstr "رینڈرر کو کھولا نہی جا سکا، مقام اور ترتیبات دیکھیں!"
 
-msgid "renderer_progress_text_compiling_audio"
+#, fuzzy
+msgid "encoding_progress_text_compiling_audio"
 msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے ..."
 
-msgid "renderer_progress_text_sending_audio_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio"
 msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
 
-msgid "renderer_progress_text_creating_sending_data"
+#, fuzzy
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
+
+#, fuzzy
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے ..."
 
-msgid "renderer_progress_text_sending_data_error"
+#, fuzzy
+msgid "encoding_progress_text_sending_data_error"
 msgstr "فریم رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
 
-msgid "renderer_progress_text_canceling"
+#, fuzzy
+msgid "encoding_progress_text_canceling"
 msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
 
-msgid "renderer_progress_text_last_frame"
+#, fuzzy
+msgid "encoding_progress_text_last_frame"
 msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
-
-msgid "renderer_progress_text_finilizing"
-msgstr "رینڈر کو حتمی شکل دی جا رہی ہے ..."
 
 msgid "rendering_warning"
 msgstr "کچھ غلط ہو گیا!"
@@ -244,6 +365,7 @@ msgstr "ویڈیو کوڈیک"
 msgid "render_option_quality"
 msgstr "وڈیو کامعیار"
 
+#, fuzzy
 msgid "render_option_tooltip_quality"
 msgstr ""
 "سی.آر.ایف ایڈجسٹمنٹ: 50 سب سے کم معیار، 15 سب سے زیادہ معیار، 18 ڈیفالٹ۔ 0 "
@@ -273,20 +395,159 @@ msgstr "تھریڈز/کورز"
 msgid "render_option_tooltip_threads_cores"
 msgstr "تمام دستیاب تھریدز استعمال کرنے کے لیِے '0' لگائیں."
 
-msgid "render_option_metadata_title"
-msgstr "عنوان"
-
-msgid "render_option_metadata_comment"
-msgstr "تبصرہ"
-
-msgid "render_option_metadata_author"
-msgstr "مصنف"
-
-msgid "render_option_metadata_copyright"
-msgstr "کاپی رائیٹ"
-
 msgid "render_option_video_length"
 msgstr "وڈیو کی لمبائ"
 
 msgid "render_option_render_time"
 msgstr "رینڈر کا وقت"
+
+#, fuzzy
+msgid "notification_update_available"
+msgstr ""
+
+#, fuzzy
+msgid "status_project_loading_init"
+msgstr ""
+
+#, fuzzy
+msgid "status_project_preparing_timeline"
+msgstr ""
+
+#, fuzzy
+msgid "status_project_loading_files"
+msgstr ""
+
+#, fuzzy
+msgid "status_project_playback_setup"
+msgstr ""
+
+#, fuzzy
+msgid "status_project_finalizing"
+msgstr ""
+
+#, fuzzy
+msgid "status_new_project_init"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "command_editor_settings"
+msgstr "ایڈیٹر کی ترتیبات."
+
+#, fuzzy
+msgid "command_project_settings"
+msgstr ""
+
+#, fuzzy
+msgid "command_render_menu"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_project"
+msgstr "نیا پروجیکت"
+
+#, fuzzy
+msgid "menu_bar_editor"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_project_save"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_project_save_as"
+msgstr ""
+
+#, fuzzy
+#| msgid "button_open_project"
+msgid "menu_bar_project_open_project"
+msgstr "پروجیکٹ کھولیں"
+
+#, fuzzy
+msgid "menu_bar_project_open_settings"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_settings"
+msgstr "ایڈیٹر کی ترتیبات."
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_site"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_manual"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_discord"
+msgstr ""
+
+#, fuzzy
+msgid "menu_bar_editor_open_url_support"
+msgstr ""
+
+#, fuzzy
+#| msgid "title_about_gozen"
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "گوزین کی معلومات"
+
+#, fuzzy
+msgid "file_dialog_title_add_files"
+msgstr ""
+
+#, fuzzy
+msgid "file_dialog_title_select_save_path"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_files"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_text"
+msgstr ""
+
+#, fuzzy
+msgid "file_panel_item_add_color"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_rename"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_reload"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_delete"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_duplicate"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_save_as_file"
+msgstr ""
+
+#, fuzzy
+msgid "popup_item_extract_audio"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_image_options"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_video_options"
+msgstr ""
+
+#, fuzzy
+msgid "popup_separator_text_options"
+msgstr ""

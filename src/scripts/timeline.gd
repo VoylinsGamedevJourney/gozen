@@ -10,9 +10,11 @@ const LINE_HEIGHT: int = 4
 
 # Normal, Focus
 const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
-    File.TYPE.IMAGE: [preload("uid://dlxa6tecfxvwa"),preload("uid://bwnfn42mtulgg")],
-    File.TYPE.AUDIO: [preload("uid://b4hr3qnksucav"),preload("uid://dxu1itu4lip5q")],
-    File.TYPE.VIDEO: [preload("uid://dvjs7m2ktd528"),preload("uid://wied1chri6pt")]
+    File.TYPE.IMAGE: [preload("uid://dlxa6tecfxvwa"), preload("uid://bwnfn42mtulgg")],
+    File.TYPE.AUDIO: [preload("uid://b4hr3qnksucav"), preload("uid://dxu1itu4lip5q")],
+    File.TYPE.VIDEO: [preload("uid://dvjs7m2ktd528"), preload("uid://wied1chri6pt")],
+    File.TYPE.COLOR: [preload("uid://df0jxk11tracv"), preload("uid://cwxo126dikkbh")],
+    File.TYPE.TEXT:  [preload("uid://c8iincian78e3"), preload("uid://vtif6uw34cqe")],
 }
 
 static var instance: Timeline
@@ -41,10 +43,10 @@ func _ready() -> void:
 	instance = self
 	main_control.set_drag_forwarding(Callable(), _main_control_can_drop_data, _main_control_drop_data)
 
-	Toolbox.connect_func(Editor.frame_changed, move_playhead)
+	Toolbox.connect_func(EditorCore.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
-	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 	Toolbox.connect_func(Project.file_deleted, _check_clips)
+	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 
 
 func _process(_delta: float) -> void:
@@ -53,23 +55,34 @@ func _process(_delta: float) -> void:
 				floori(main_control.get_local_mouse_position().x / zoom),
 				0, Project.get_timeline_end())
 
-		if new_frame != Editor.frame_nr:
-			Editor.set_frame(new_frame)
+		if new_frame != EditorCore.frame_nr:
+			EditorCore.set_frame(new_frame)
 			new_frame = -1
 
-
+	
 func _input(event: InputEvent) -> void:
 	if Project.data == null:
 		return
 
-	if !Editor.is_playing:
+	if !EditorCore.is_playing:
 		if event.is_action_pressed("ui_left"):
-			Editor.set_frame(Editor.frame_nr - 1)
+			EditorCore.set_frame(EditorCore.frame_nr - 1)
 		elif event.is_action_pressed("ui_right"):
-			Editor.set_frame(Editor.frame_nr + 1)
+			EditorCore.set_frame(EditorCore.frame_nr + 1)
 
+	if event.is_action_pressed("clip_split"):
+		_clips_split(EditorCore.frame_nr)
+		get_viewport().set_input_as_handled()
+
+	if event is InputEventMouseButton and (event as InputEventMouseButton).is_released():
+		if preview.visible:
+			preview.visible = false
+		
+	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
+		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).double_click:
 		var mod: int = Settings.get_delete_empty_modifier()
+
 		if mod == KEY_NONE or Input.is_key_pressed(mod):
 			_delete_empty_space()
 			get_viewport().set_input_as_handled()
@@ -106,19 +119,19 @@ func _on_main_gui_input(event: InputEvent) -> void:
 
 	if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if event.is_pressed() and !Input.is_key_pressed(KEY_SHIFT) and !Input.is_key_pressed(KEY_CTRL):
-			if Settings.get_pause_after_drag() and Editor.is_playing:
-				Editor.on_play_pressed()
+			if Settings.get_pause_after_drag() and EditorCore.is_playing:
+				EditorCore.on_play_pressed()
 
 			playhead_moving = true
-			playback_before_moving = Editor.is_playing
+			playback_before_moving = EditorCore.is_playing
 
 			if playback_before_moving:
-				Editor.on_play_pressed()
+				EditorCore.on_play_pressed()
 		elif event.is_released():
 			playhead_moving = false
 
 			if playback_before_moving:
-				Editor.on_play_pressed()
+				EditorCore.on_play_pressed()
 
 
 func _set_zoom(new_zoom: float) -> void:
@@ -127,6 +140,7 @@ func _set_zoom(new_zoom: float) -> void:
 
 	# We need to await to get the correct get_local_mouse_position
 	await RenderingServer.frame_post_draw
+
 	var prev_mouse_x: float = main_control.get_local_mouse_position().x
 	var prev_scroll: int = scroll_main.scroll_horizontal
 	var prev_mouse_frame: int = get_frame_id(prev_mouse_x)
@@ -149,7 +163,7 @@ func _set_zoom(new_zoom: float) -> void:
 	else:
 		scroll_main.scroll_horizontal_custom_step = 100
 
-	move_playhead(Editor.frame_nr)
+	move_playhead(EditorCore.frame_nr)
 
 	# Get all clips, update their size and position
 	for clip_button: Button in clips.get_children():
@@ -225,7 +239,9 @@ func _main_control_can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	for child: Node in preview.get_children():
 		child.queue_free()
 
-	if draggable.files:
+	if !main_control.get_global_rect().has_point(get_global_mouse_position()):
+		preview.visible = false
+	elif draggable.files:
 		preview.visible = _can_drop_new_clips(pos, draggable)
 	else:
 		preview.visible = _can_move_clips(pos, draggable)
@@ -407,10 +423,10 @@ func _main_control_drop_data(_pos: Vector2, data: Variant) -> void:
 	else:
 		_handle_drop_existing_clips(draggable)
 
-	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_do_method(update_end)
 
-	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_undo_method(update_end)
 
 	InputManager.undo_redo.commit_action()
@@ -540,7 +556,7 @@ func get_drop_region(track: int, frame: int, ignores: Array[Vector2i]) -> Vector
 
 	# Getting the correct end frame
 	if region.x != -1:
-		region.x = Project.get_clip(Project.get_track_data(track)[region.x]).end_frame
+		region.x = Project.get_clip(Project.get_track_data(track)[region.x]).end_frame + 1
 
 	return region
 
@@ -618,7 +634,7 @@ func move_playhead(frame_nr: int) -> void:
 
 
 static func get_clip_size(duration: int) -> float:
-	return instance.zoom * (duration + 1)
+	return instance.zoom * duration
 
 
 static func get_zoom() -> float:
@@ -669,13 +685,117 @@ func _delete_empty_space() -> void:
 			draggable,
 			draggable.differences.y,
 			-draggable.differences.x))
-	InputManager.undo_redo.add_do_method(Editor.update_frame)
+	InputManager.undo_redo.add_do_method(EditorCore.update_frame)
 
 	InputManager.undo_redo.add_undo_method(_move_clips.bind(
 			draggable,
 			draggable.differences.y,
 			draggable.differences.x))
-	InputManager.undo_redo.add_undo_method(Editor.update_frame)
+	InputManager.undo_redo.add_undo_method(EditorCore.update_frame)
 
 	InputManager.undo_redo.commit_action()
 
+
+func _clips_split(frame_nr: int) -> void:
+	# TODO: We need to do a couple of things:
+	# - Check which clips, if any, from the selected clips are in the cut zone;
+	# - If none in the cut zone, cut all found clips;
+	# - If one or more of selected clips in cut zone, cut only those.
+
+	# I probably need to redo this entire function, with a variable for 
+	#	possible clips, and check those possible clips if there's any inside of selected clips
+	#	than do the cutting.
+
+	var clips_at_playhead: Array[ClipData] = []
+	
+	for track_id: int in Project.get_track_count():
+		var last_start_frame: int = -1
+		var clip_data: ClipData = null
+
+		# Get the last clip before the frame_nr.
+		for start_frame: int in Project.get_track_keys(track_id):
+			if start_frame <= frame_nr:
+				last_start_frame = start_frame
+			else: break
+
+		if last_start_frame == -1:
+			continue
+
+		var clip_id: int = Project.get_track_data(track_id)[last_start_frame]
+		clip_data = Project.get_clip(clip_id)
+
+		# Check if frame_nr is within the clip length.
+		if frame_nr <= clip_data.get_end_frame():
+			clips_at_playhead.append(clip_data)
+
+
+	# After getting the clips at the playhead, we need to check if any of the
+	# clips are inside of the selected_clips.
+	var in_selected_clips: bool = false
+	for clip_data: ClipData in clips_at_playhead:
+		if clip_data.clip_id in selected_clips:
+			in_selected_clips = true
+			break
+
+	# If selected clips have been found, we only cut those clips, so we remove
+	# the other clips.
+	var clips_to_cut: Array[ClipData] = []
+	if in_selected_clips:
+		for clip_data: ClipData in clips_at_playhead:
+			if selected_clips.has(clip_data.clip_id):
+				clips_to_cut.append(clip_data)
+	else:
+		clips_to_cut = clips_at_playhead
+
+	
+	InputManager.undo_redo.create_action("Deleting clip on timeline")
+
+	for clip_data: ClipData in clips_to_cut:
+		InputManager.undo_redo.add_do_method(_cut_clip.bind(frame_nr, clip_data))
+	InputManager.undo_redo.add_do_method(queue_redraw)
+
+	for clip_data: ClipData in clips_to_cut:
+		InputManager.undo_redo.add_undo_method(_uncut_clip.bind(frame_nr, clip_data))
+	InputManager.undo_redo.add_undo_method(queue_redraw)
+
+	InputManager.undo_redo.commit_action()
+
+
+func _cut_clip(frame_nr: int, current_clip_data: ClipData) -> void:
+	var new_clip: ClipData = ClipData.new()
+	var frame: int = frame_nr - current_clip_data.start_frame
+
+	new_clip.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
+	new_clip.file_id = current_clip_data.file_id
+
+	new_clip.start_frame = frame_nr
+	new_clip.duration = abs(current_clip_data.duration - frame)
+	new_clip.begin = current_clip_data.begin + frame
+	new_clip.track_id = current_clip_data.track_id
+	new_clip.effects_video = current_clip_data.effects_video.duplicate()
+	new_clip.effects_audio = current_clip_data.effects_audio.duplicate()
+
+	current_clip_data.duration -= new_clip.duration
+	_update_clip_size(current_clip_data.clip_id, get_clip_size(current_clip_data.duration))
+
+	Project.set_clip(new_clip.clip_id, new_clip)
+	Project.set_track_data(new_clip.track_id, new_clip.start_frame, new_clip.clip_id)
+
+	add_clip(new_clip)
+
+
+func _uncut_clip(frame_nr: int, current_clip: ClipData) -> void:
+	var clip_button: Control = clips.get_node(str(current_clip.clip_id))
+	var track: int = get_track_id(clip_button.position.y)
+	var split_clip: ClipData = Project.get_clip(Project.get_track_data(track)[frame_nr])
+
+	current_clip.duration += split_clip.duration
+	_update_clip_size(current_clip.clip_id, Timeline.get_frame_pos(current_clip.duration))
+
+	delete_clip(split_clip)
+
+
+func _update_clip_size(clip_id: int, new_size_x: float) -> void:
+	var clip_button: Control = clips.get_node(str(clip_id))
+	clip_button.size.x = new_size_x
+	

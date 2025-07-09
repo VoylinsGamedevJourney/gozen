@@ -24,20 +24,26 @@ msgstr "Defaults"
 msgid "title_timeline"
 msgstr "Timeline"
 
+msgid "title_extras"
+msgstr "Extra's"
+
+msgid "title_render_settings"
+msgstr "Render settings"
+
 msgid "title_rendering"
 msgstr "Rendering"
 
 msgid "title_rendering_finished"
 msgstr "Rendering finished"
 
+msgid "title_rendering_error"
+msgstr "Rendering: Error occured."
+
 msgid "title_render_video"
 msgstr "Render video"
 
 msgid "title_render_audio"
 msgstr "Render audio"
-
-msgid "title_metadata"
-msgstr "Metadata"
 
 msgid "title_cpu_threads"
 msgstr "CPU threads"
@@ -50,6 +56,36 @@ msgstr "Getting started"
 
 msgid "title_new_project"
 msgstr "New project"
+
+msgid "title_loading_project"
+msgstr "Loading project"
+
+msgid "title_files_dropped"
+msgstr "Files dropped"
+
+msgid "title_sponsors"
+msgstr "Sponsors"
+
+msgid "title_editor_settings"
+msgstr "Editor settings"
+
+msgid "title_project_settings"
+msgstr "Project settings"
+
+msgid "title_chapters"
+msgstr "Chapters"
+
+msgid "title_save_image_to_file"
+msgstr "Save image to file"
+
+msgid "title_save_video_audio_to_wav"
+msgstr "Save video audio to wav"
+
+msgid "title_add_color_file"
+msgstr "Add color file"
+
+msgid "title_close_without_saving"
+msgstr "Close without saving?"
 
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
@@ -69,11 +105,20 @@ msgstr "Discord server"
 msgid "button_support_gozen"
 msgstr "Support GoZen"
 
+msgid "button_view_sponsors"
+msgstr "View sponsors"
+
+msgid "button_become_sponsor"
+msgstr "Become a sponsor"
+
 msgid "button_open_project"
 msgstr "Open project"
 
 msgid "button_create_new_project"
 msgstr "Create new project"
+
+msgid "button_create_new_color_file"
+msgstr "Create color file"
 
 msgid "button_tooltip_editor_settings"
 msgstr "Editor settings."
@@ -90,11 +135,20 @@ msgstr "Reset"
 msgid "button_return"
 msgstr "Return"
 
+msgid "button_screen_editing"
+msgstr "Edit"
+
+msgid "button_screen_render"
+msgstr "Render"
+
 msgid "button_start_render"
 msgstr "Start rendering"
 
 msgid "button_save"
 msgstr "Save"
+
+msgid "button_dont_save"
+msgstr "Don't save"
 
 msgid "button_save_settings"
 msgstr "Save settings"
@@ -120,7 +174,7 @@ msgstr "Support GoZen"
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen is a video editor made by"
+msgstr "GoZen creator:"
 
 msgid "text_rename_file_to"
 msgstr "Rename file to ..."
@@ -136,6 +190,9 @@ msgstr "Resolution"
 
 msgid "text_framerate"
 msgstr "Framerate"
+
+msgid "placeholder_text_search_files"
+msgstr "Search files ..."
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Ignore changes and close settings menu."
@@ -164,7 +221,19 @@ msgstr "Audio waveform style"
 msgid "setting_default_image_duration"
 msgstr "Default image duration"
 
-msgid "setting_tooltip_default_image_duration"
+msgid "setting_tooltip_duration_in_frames"
+msgstr "The duration in frames."
+
+msgid "setting_default_color_duration"
+msgstr "Default color duration"
+
+msgid "setting_tooltip_default_color_duration"
+msgstr "The duration in frames."
+
+msgid "setting_default_text_duration"
+msgstr "Default text duration"
+
+msgid "setting_tooltip_default_text_duration"
 msgstr "The duration in frames."
 
 msgid "setting_default_project_resolution"
@@ -197,32 +266,47 @@ msgstr ""
 "moves everything. Setting a modifier makes it so you need to press that "
 "specific key to make double clicking remove the empty space in between clips."
 
-msgid "renderer_progress_text_setup"
-msgstr "Setting up renderer ..."
+msgid "setting_check_version"
+msgstr "Check version"
 
-msgid "renderer_progress_text_open_error"
-msgstr "Renderer couldn't be opened, check path and settings!"
+msgid "setting_tooltip_check_version"
+msgstr ""
+"This relies on checking the GitHub repo and therefore will make a connection "
+"to the internet. Some people prefer to not make their applications connect "
+"to the internet so this is by default 'disabled'."
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "setting_auto_save"
+msgstr "Auto save project"
+
+msgid "setting_tooltip_auto_save"
+msgstr "Auto save your project every few minutes."
+
+msgid "encoding_progress_text_setup"
+msgstr "Setting up encoder ..."
+
+msgid "encoding_progress_text_open_error"
+msgstr "Encoder couldn't be opened, check path and settings!"
+
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Compiling audio data ..."
 
-msgid "renderer_progress_text_sending_audio_error"
-msgstr "Something went wrong sending audio to the renderer!"
+msgid "encoding_progress_text_sending_audio"
+msgstr "Sending audio data ..."
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "Something went wrong sending audio to the encoder!"
+
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Creating & sending frame data ..."
 
-msgid "renderer_progress_text_sending_data_error"
-msgstr "Something went wrong sending frame to the renderer!"
+msgid "encoding_progress_text_sending_data_error"
+msgstr "Something went wrong sending frame to the encoder!"
 
-msgid "renderer_progress_text_canceling"
+msgid "encoding_progress_text_canceling"
 msgstr "Canceling render process ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Sending last frames ..."
-
-msgid "renderer_progress_text_finilizing"
-msgstr "Finalizing render ..."
 
 msgid "rendering_warning"
 msgstr "Something went wrong!"
@@ -244,10 +328,10 @@ msgstr "Quality"
 
 msgid "render_option_tooltip_quality"
 msgstr ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
+"Adjusts the CRF (Constant Rate Factor), lower number = higher quality but "
+"slower encoding. Higher number = lower quality but faster encoding. For most "
+"codecs between 15-18 is recommended as the impact on quality won't be "
+"noticeable."
 
 msgid "render_option_speed"
 msgstr "Speed"
@@ -273,20 +357,119 @@ msgstr "Threads/cores"
 msgid "render_option_tooltip_threads_cores"
 msgstr "Put on '0' to use all available threads."
 
-msgid "render_option_metadata_title"
-msgstr "Title"
-
-msgid "render_option_metadata_comment"
-msgstr "Comment"
-
-msgid "render_option_metadata_author"
-msgstr "Author"
-
-msgid "render_option_metadata_copyright"
-msgstr "Copyright"
-
 msgid "render_option_video_length"
 msgstr "Video length"
 
 msgid "render_option_render_time"
 msgstr "Render time"
+
+msgid "notification_update_available"
+msgstr "Update available!"
+
+msgid "status_project_loading_init"
+msgstr "Opening project ..."
+
+msgid "status_project_preparing_timeline"
+msgstr "Preparing timeline ..."
+
+msgid "status_project_loading_files"
+msgstr "Loading files ..."
+
+msgid "status_project_playback_setup"
+msgstr "Setting up playback ..."
+
+msgid "status_project_finalizing"
+msgstr "Finalizing ..."
+
+msgid "status_new_project_init"
+msgstr "Creating new project ..."
+
+msgid "command_editor_settings"
+msgstr "Editor settings"
+
+msgid "command_project_settings"
+msgstr "Project settings"
+
+msgid "command_render_menu"
+msgstr "Render menu"
+
+msgid "menu_bar_project"
+msgstr "Project"
+
+msgid "menu_bar_editor"
+msgstr "Editor"
+
+msgid "menu_bar_project_save"
+msgstr "Save"
+
+msgid "menu_bar_project_save_as"
+msgstr "Save as ..."
+
+msgid "menu_bar_project_open_project"
+msgstr "Open"
+
+msgid "menu_bar_project_open_settings"
+msgstr "Open settings"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "Open settings"
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZen site"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "Manual"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "Tutorials"
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Discord server"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "Support GoZen"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "About GoZen"
+
+msgid "file_dialog_title_add_files"
+msgstr "Add files"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "Select save path"
+
+msgid "file_panel_item_add_files"
+msgstr "Add file(s)"
+
+msgid "file_panel_item_add_text"
+msgstr "Add text"
+
+msgid "file_panel_item_add_color"
+msgstr "Add color"
+
+msgid "popup_item_rename"
+msgstr "Rename"
+
+msgid "popup_item_reload"
+msgstr "Reload"
+
+msgid "popup_item_delete"
+msgstr "Delete"
+
+msgid "popup_item_duplicate"
+msgstr "Duplicate"
+
+msgid "popup_item_save_as_file"
+msgstr "Save as file ..."
+
+msgid "popup_item_extract_audio"
+msgstr "Extract audio (WAV)"
+
+msgid "popup_separator_image_options"
+msgstr "Image options"
+
+msgid "popup_separator_video_options"
+msgstr "Video options"
+
+msgid "popup_separator_text_options"
+msgstr "Text options"

@@ -1,0 +1,453 @@
+# GoZen Localization Template
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hi_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+
+msgid "title_about_gozen"
+msgstr "GoZen के बारे में"
+
+msgid "title_appearance"
+msgstr "रूप"
+
+msgid "title_defaults"
+msgstr "डिफ़ॉल्ट"
+
+msgid "title_timeline"
+msgstr "टाइमलाइन"
+
+msgid "title_extras"
+msgstr "अतिरिक्त"
+
+msgid "title_render_settings"
+msgstr "रेंडर सेटिंग्स"
+
+msgid "title_rendering"
+msgstr "रेंडरिंग "
+
+msgid "title_rendering_finished"
+msgstr "रेंडरिंग पूरी हुई"
+
+msgid "title_rendering_error"
+msgstr "रेंडरिंग: त्रुटि हुई है।"
+
+msgid "title_render_video"
+msgstr "वीडियो रेंडर करें"
+
+msgid "title_render_audio"
+msgstr "ऑडियो रेंडर करें"
+
+msgid "title_cpu_threads"
+msgstr "CPU थ्रेड्स"
+
+msgid "title_recent_projects"
+msgstr "हाल के प्रोजेक्ट्स"
+
+msgid "title_getting_started"
+msgstr "\tशुरुआत करें"
+
+msgid "title_new_project"
+msgstr "नया प्रोजेक्ट बनाएँ"
+
+msgid "title_loading_project"
+msgstr "प्रोजेक्ट लोड हो रहा है"
+
+msgid "title_files_dropped"
+msgstr "फ़ाइलें डाली गईं"
+
+msgid "title_sponsors"
+msgstr "\tप्रायोजक"
+
+msgid "title_editor_settings"
+msgstr "एडिटर सेटिंग्स"
+
+msgid "title_project_settings"
+msgstr "प्रोजेक्ट सेटिंग्स"
+
+msgid "title_chapters"
+msgstr "\tअध्याय"
+
+msgid "title_save_image_to_file"
+msgstr "छवि को फ़ाइल में सहेजें"
+
+msgid "title_save_video_audio_to_wav"
+msgstr "वीडियो ऑडियो को WAV में सहेजें"
+
+msgid "title_add_color_file"
+msgstr "रंग फ़ाइल जोड़ें"
+
+msgid "button_tooltip_create_new_project"
+msgstr "चुनी गई सेटिंग्स के साथ नया प्रोजेक्ट बनाएँ"
+
+msgid "button_gozen_site"
+msgstr "GoZen साइट"
+
+msgid "button_manual"
+msgstr "मैन्युअल"
+
+msgid "button_tutorials"
+msgstr "ट्यूटोरियल्स"
+
+msgid "button_discord_server"
+msgstr "डिस्कोर्ड सर्वर"
+
+msgid "button_support_gozen"
+msgstr "GoZen को सहायता करें"
+
+msgid "button_view_sponsors"
+msgstr "प्रायोजकों को देखें"
+
+msgid "button_become_sponsor"
+msgstr "प्रायोजक बनें"
+
+msgid "button_open_project"
+msgstr "प्रोजेक्ट खोलें"
+
+msgid "button_create_new_project"
+msgstr "नया प्रोजेक्ट बनाएँ"
+
+msgid "button_create_new_color_file"
+msgstr "रंग फ़ाइल बनाएँ"
+
+msgid "button_tooltip_editor_settings"
+msgstr "एडिटर सेटिंग्स"
+
+msgid "button_cancel"
+msgstr "रद्द करें"
+
+msgid "button_cancel_rendering"
+msgstr "रेंडरिंग रद्द करें"
+
+msgid "button_reset"
+msgstr "रीसेट करें"
+
+msgid "button_return"
+msgstr "वापस जाएँ"
+
+msgid "button_screen_editing"
+msgstr "एडिट करें"
+
+msgid "button_screen_render"
+msgstr "रेंडर करें"
+
+msgid "button_start_render"
+msgstr "रेंडरिंग शुरू करें"
+
+msgid "button_save"
+msgstr "सहेजें"
+
+msgid "button_save_settings"
+msgstr "सेटिंग्स सहेजें"
+
+msgid "button_close"
+msgstr "बंद करें"
+
+msgid "text_version"
+msgstr "वर्शन"
+
+msgid "text_gozen_website"
+msgstr "GoZen वेबसाइट"
+
+msgid "text_github_repo"
+msgstr "GitHub रिपोजिटरी"
+
+msgid "text_discord_link"
+msgstr "डिस्कोर्ड का लिंक"
+
+msgid "text_support_gozen"
+msgstr "GoZen को सहायता करें"
+
+# Note: This is part of the string for the "about gozen" screen.
+#: scripts/about_gozen.gd
+msgid "text_gozen_made_by"
+msgstr "GoZen एक वीडियो एडिटर है जिसका निर्माता है"
+
+msgid "text_rename_file_to"
+msgstr "फ़ाइल का नाम बदलें ..."
+
+msgid "text_advanced_settings"
+msgstr "उन्नत सेटिंग्स"
+
+msgid "text_path"
+msgstr "पथ"
+
+msgid "text_resolution"
+msgstr "रिज़ॉल्यूशन"
+
+msgid "text_framerate"
+msgstr "फ्रेमरेट"
+
+msgid "placeholder_text_search_files"
+msgstr "फ़ाइलें खोजें ..."
+
+msgid "tooltip_ignore_changes_close_settings"
+msgstr "परिवर्तन अनदेखा करें और सेटिंग्स मेनू बंद करें।"
+
+msgid "tooltip_setting_background_color"
+msgstr "आपके प्रोजेक्ट का डिफ़ॉल्ट पृष्ठभूमि रंग।"
+
+msgid "setting_background_color"
+msgstr "पृष्ठभूमि रंग"
+
+msgid "setting_language"
+msgstr "भाषा"
+
+msgid "setting_theme"
+msgstr "\tथीम"
+
+msgid "setting_tooltip_theme"
+msgstr "लाइट मोड बेहतर है।"
+
+msgid "setting_show_menu_bar"
+msgstr "मेनू बार दिखाएँ"
+
+msgid "setting_waveform_style"
+msgstr "ऑडियो वेवफ़ॉर्म शैली"
+
+msgid "setting_default_image_duration"
+msgstr "डिफ़ॉल्ट छवि अवधि"
+
+msgid "setting_tooltip_default_image_duration"
+msgstr "फ़्रेम में अवधि।"
+
+msgid "setting_default_color_duration"
+msgstr "\tडिफ़ॉल्ट रंग अवधि"
+
+msgid "setting_tooltip_default_color_duration"
+msgstr "फ़्रेम में अवधि।"
+
+msgid "setting_default_text_duration"
+msgstr "डिफ़ॉल्ट टेक्स्ट अवधि"
+
+msgid "setting_tooltip_default_text_duration"
+msgstr "फ़्रेम में अवधि।"
+
+msgid "setting_default_project_resolution"
+msgstr "डिफ़ॉल्ट प्रोजेक्ट रिज़ॉल्यूशन"
+
+msgid "setting_tooltip_default_project_resolution_x"
+msgstr "डिफ़ॉल्ट वीडियो प्रोजेक्ट की चौड़ाई।"
+
+msgid "setting_tooltip_default_project_resolution_y"
+msgstr "डिफ़ॉल्ट वीडियो प्रोजेक्ट की ऊँचाई।"
+
+msgid "setting_default_project_framerate"
+msgstr "डिफ़ॉल्ट प्रोजेक्ट फ्रेमरेट"
+
+msgid "setting_tooltip_default_project_framerate"
+msgstr "डिफ़ॉल्ट वीडियो प्रोजेक्ट की फ्रेमरेट।"
+
+msgid "setting_default_track_amount"
+msgstr "डिफ़ॉल्ट ट्रैक की संख्या"
+
+msgid "setting_pause_after_dragging"
+msgstr "ड्रैग करने के बाद रोकें"
+
+msgid "setting_delete_empty_space_mod"
+msgstr "खाली स्थान हटाने के लिए मोडिफायर"
+
+msgid "setting_tooltip_delete_empty_space_mod"
+msgstr "टाइमलाइन में खाली स्थान पर डबल-क्लिक करने से वह स्थान हट जाता है और बाकी क्लिप्स आगे खिसक जाती हैं। यदि आप एक मोडिफायर कुंजी सेट करते हैं, तो डबल-क्लिक से खाली स्थान तभी हटेगा जब वह कुंजी दबाई जाएगी।"
+
+msgid "setting_check_version"
+msgstr "वर्शन जांचें"
+
+msgid "setting_tooltip_check_version"
+msgstr "यह विकल्प GitHub रिपोजिटरी की जांच पर निर्भर करता है, और इसलिए इसके लिए इंटरनेट से कनेक्शन आवश्यक होता है। कुछ उपयोगकर्ता नहीं चाहते कि उनका ऐप इंटरनेट से जुड़े, इसलिए यह विकल्प डिफ़ॉल्ट रूप से 'अक्षम' होता है।"
+
+msgid "setting_auto_save"
+msgstr "स्वतः सहेजना"
+
+msgid "setting_tooltip_auto_save"
+msgstr "हर कुछ मिनटों में आपका प्रोजेक्ट स्वतः सहेज दिया जाएगा।"
+
+msgid "encoding_progress_text_setup"
+msgstr "एन्कोडर तैयार हो रहा है ..."
+
+msgid "encoding_progress_text_open_error"
+msgstr "एन्कोडर नहीं खोला जा सका, पथ और सेटिंग्स जांचें!"
+
+msgid "encoding_progress_text_compiling_audio"
+msgstr "ऑडियो डेटा संकलित किया जा रहा है ..."
+
+msgid "encoding_progress_text_sending_audio"
+msgstr "ऑडियो डेटा भेजा जा रहा है ..."
+
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "एन्कोडर को ऑडियो भेजते समय कुछ गलत हो गया!"
+
+msgid "encoding_progress_text_creating_sending_data"
+msgstr "फ़्रेम डेटा बनाया और भेजा जा रहा है ..."
+
+msgid "encoding_progress_text_sending_data_error"
+msgstr "एन्कोडर को फ़्रेम भेजते समय कुछ गलत हो गया!"
+
+msgid "encoding_progress_text_canceling"
+msgstr "रेंडर प्रक्रिया रद्द की जा रही है ..."
+
+msgid "encoding_progress_text_last_frame"
+msgstr "आखिरी फ्रेम भेजे जा रहे हैं ..."
+
+msgid "rendering_warning"
+msgstr "कुछ गलत हो गया!"
+
+msgid "render_option_path"
+msgstr "पथ"
+
+msgid "render_option_profile"
+msgstr "रेंडर प्रोफ़ाइल"
+
+msgid "render_option_audio_codec"
+msgstr "ऑडियो कोडेक"
+
+msgid "render_option_video_codec"
+msgstr "वीडियो कोडेक"
+
+msgid "render_option_quality"
+msgstr "गुणवत्ता"
+
+msgid "render_option_tooltip_quality"
+msgstr "CRF (कॉन्स्टेंट रेट फैक्टर) को समायोजित करता है। गुणवत्ता की सबसे कम सेटिंग 50 है, और सबसे अच्छी गुणवत्ता के लिए 15। डिफ़ॉल्ट मान 18 है। यह बिटरेट को नियंत्रित करता है, जिससे गुणवत्ता और फ़ाइल साइज़ प्रभावित होते हैं। मान 0 से सर्वोत्तम गुणवत्ता मिलती है, और 51 से सबसे कम। 18 पर आमतौर पर कोई स्पष्ट अंतर दिखाई नहीं देता।"
+
+msgid "render_option_speed"
+msgstr "गति"
+
+msgid "render_option_tooltip_speed"
+msgstr "H264 एन्कोडिंग की गति को समायोजित करता है। बहुत अधिक गति सेट करने से अंतिम वीडियो की गुणवत्ता पर नकारात्मक प्रभाव पड़ सकता है।"
+
+msgid "render_option_gop_size"
+msgstr "GOP का आकार"
+
+msgid "render_option_tooltip_gop_size"
+msgstr "Group Of Pictures। अधिक मान बेहतर कंप्रेशन देता है, लेकिन जितना अधिक मान होगा, वीडियो प्लेबैक के दौरान सीकिंग और स्क्रबिंग की सटीकता उतनी ही कम हो जाएगी। यदि आप इस वीडियो का आगे संपादन करना चाहते हैं, तो इस मान को कम रखें।"
+
+msgid "render_option_threads_cores"
+msgstr "थ्रेड्स / कोर"
+
+msgid "render_option_tooltip_threads_cores"
+msgstr "सभी उपलब्ध थ्रेड्स का उपयोग करने के लिए इसे '0' पर सेट करें।"
+
+msgid "render_option_video_length"
+msgstr "वीडियो की लंबाई"
+
+msgid "render_option_render_time"
+msgstr "रेंडर समय"
+
+msgid "notification_update_available"
+msgstr "अपडेट उपलब्ध है!"
+
+msgid "status_project_loading_init"
+msgstr "प्रोजेक्ट खोला जा रहा है ..."
+
+msgid "status_project_preparing_timeline"
+msgstr "टाइमलाइन तैयार की जा रही है ..."
+
+msgid "status_project_loading_files"
+msgstr "\tफ़ाइलें लोड की जा रही हैं ..."
+
+msgid "status_project_playback_setup"
+msgstr "प्लेबैक सेट किया जा रहा है ..."
+
+msgid "status_project_finalizing"
+msgstr "अंतिम प्रक्रिया चल रही है ..."
+
+msgid "status_new_project_init"
+msgstr "नया प्रोजेक्ट बनाया जा रहा है ..."
+
+msgid "command_editor_settings"
+msgstr "एडिटर सेटिंग्स"
+
+msgid "command_project_settings"
+msgstr "प्रोजेक्ट सेटिंग्स"
+
+msgid "command_render_menu"
+msgstr "रेंडर मेनू"
+
+msgid "menu_bar_project"
+msgstr "प्रोजेक्ट"
+
+msgid "menu_bar_editor"
+msgstr "एडिटर"
+
+msgid "menu_bar_project_save"
+msgstr "सहेजें"
+
+msgid "menu_bar_project_save_as"
+msgstr "ऐसे सहेजें ..."
+
+msgid "menu_bar_project_open_project"
+msgstr "खोलें"
+
+msgid "menu_bar_project_open_settings"
+msgstr "सेटिंग्स खोलें"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "सेटिंग्स खोलें"
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZen साइट"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "नियमावली"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "ट्यूटोरियल्स "
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "डिस्कोर्ड सर्वर"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "GoZen को सहायता करें"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "GoZen के बारे में"
+
+msgid "file_dialog_title_add_files"
+msgstr "फ़ाइलें जोड़ें"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "सहेजने का पथ चुनें"
+
+msgid "file_panel_item_add_files"
+msgstr "फ़ाइल(फ़ाइलें) जोड़ें"
+
+msgid "file_panel_item_add_text"
+msgstr "टेक्स्ट जोड़ें"
+
+msgid "file_panel_item_add_color"
+msgstr "रंग जोड़ें"
+
+msgid "popup_item_rename"
+msgstr "नाम बदलें"
+
+msgid "popup_item_reload"
+msgstr "रीलोड करें"
+
+msgid "popup_item_delete"
+msgstr "हटाएं"
+
+msgid "popup_item_duplicate"
+msgstr "प्रतिलिपि"
+
+msgid "popup_item_save_as_file"
+msgstr "फ़ाइल के रूप में सहेजें ..."
+
+msgid "popup_item_extract_audio"
+msgstr "ऑडियो एक्सट्रैक्ट करें (WAV)"
+
+msgid "popup_separator_image_options"
+msgstr "छवि विकल्प"
+
+msgid "popup_separator_video_options"
+msgstr "वीडियो विकल्प"
+
+msgid "popup_separator_text_options"
+msgstr "टेक्स्ट विकल्प"

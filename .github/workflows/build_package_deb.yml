@@ -1,0 +1,91 @@
+name: Build DEB Package
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+run-name: 'DEB version: ${{ inputs.version }} by @${{ github.actor }}'
+env:
+  GODOT_VERSION: 4.4.1
+  EXPORT_FOLDER: libs/bin/linux_x86_64
+  DEB_DIR: ${{ github.workspace }}/gozen-deb
+  APP_NAME: gozen
+
+jobs:
+  build-deb:
+    name: Build GoZen DEB
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git wget unzip desktop-file-utils fakeroot devscripts lintian
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: GoZen_Linux_x86_64_${{ inputs.version }}
+          path: ${{ env.EXPORT_FOLDER }}
+
+      - name: Create DEB package structure
+        run: |
+          mkdir -p ${{ env.DEB_DIR }}/DEBIAN
+          mkdir -p ${{ env.DEB_DIR }}/usr/bin
+          mkdir -p ${{ env.DEB_DIR }}/usr/lib/${{ env.APP_NAME }}
+          mkdir -p ${{ env.DEB_DIR }}/usr/share/applications
+          mkdir -p ${{ env.DEB_DIR }}/usr/share/icons/hicolor/128x128/apps
+          mkdir -p ${{ env.DEB_DIR }}/usr/share/doc/${{ env.APP_NAME }}
+
+          cp ${{ env.EXPORT_FOLDER }}/GoZen.x86_64 ${{ env.DEB_DIR }}/usr/bin/${{ env.APP_NAME }}
+          cp ${{ env.EXPORT_FOLDER }}/libgozen*.so ${{ env.DEB_DIR }}/usr/lib/${{ env.APP_NAME }}/ || true
+          cp LICENSE ${{ env.DEB_DIR }}/usr/share/doc/${{ env.APP_NAME }}/
+          cp MANUAL.md ${{ env.DEB_DIR }}/usr/share/doc/${{ env.APP_NAME }}/
+          cp assets/gozen_icon.png ${{ env.DEB_DIR }}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+          cp gozen.desktop ${{ env.DEB_DIR }}/usr/share/applications/
+          desktop-file-validate ${{ env.DEB_DIR }}/usr/share/applications/gozen.desktop
+
+      - name: Clean version string
+        id: version
+        run: echo "cleaned_version=$(echo '${{ inputs.version }}' | sed 's/^v//')" >> $GITHUB_OUTPUT
+
+      - name: Create control file
+        run: |
+          cat <<EOF > ${{ env.DEB_DIR }}/DEBIAN/control
+          Package: ${{ env.APP_NAME }}
+          Version: ${{ steps.version.outputs.cleaned_version }}
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Depends: libc6 (>= 2.27)
+          Maintainer: Voylin <noreply@example.com>
+          Description: GoZen Video Editor
+           A fast and modern open-source video editor for Linux.
+          EOF
+
+      - name: Set permissions
+        run: |
+          chmod 755 ${{ env.DEB_DIR }}/usr/bin/${{ env.APP_NAME }}
+          find ${{ env.DEB_DIR }} -type d -exec chmod 755 {} +
+
+      - name: Build DEB
+        run: |
+          fakeroot dpkg-deb --build ${{ env.DEB_DIR }}
+          mv gozen-deb.deb ${{ env.APP_NAME }}_${{ inputs.version }}_amd64.deb
+
+      - name: Upload DEB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GoZen_Linux_DEB_${{ inputs.version }}
+          path: ${{ env.APP_NAME }}_${{ inputs.version }}_amd64.deb
+
+

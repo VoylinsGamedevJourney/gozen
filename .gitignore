@@ -1,4 +1,8 @@
 .godot
+__pycache__
+aom_build
+.venv
+.sconf_temp
 
 *.x86_64
 *.so*
@@ -10,3 +14,10 @@
 *.tmp
 
 *.dll
+libs/aom_src
+libs/mp3lame_src
+libs/ogg_src
+libs/opus_src
+libs/svtav1_src
+libs/vorbis_src
+libs/vpx_src

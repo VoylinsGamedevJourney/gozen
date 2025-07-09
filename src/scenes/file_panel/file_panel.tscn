@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=3 uid="uid://dktafpwgtv5m3"]
+
+[ext_resource type="Script" uid="uid://brrldnnd060ok" path="res://scenes/file_panel/file_panel.gd" id="1_b4ee2"]
+[ext_resource type="Texture2D" uid="uid://fg500ydw1r6i" path="res://assets/icons/file.svg" id="2_40fut"]
+[ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/video_file.svg" id="3_iyj14"]
+[ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/text_file.svg" id="4_4eim5"]
+[ext_resource type="Texture2D" uid="uid://krvormuf3rd3" path="res://assets/icons/color_file.svg" id="5_almox"]
+
+[node name="FilePanel" type="PanelContainer" node_paths=PackedStringArray("tree", "file_menu_button")]
+custom_minimum_size = Vector2(260, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"box"
+script = ExtResource("1_b4ee2")
+tree = NodePath("Margin/VBox/FileTree")
+file_menu_button = NodePath("Margin/VBox/HBox/AddFileButton")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="SearchLineEdit" type="LineEdit" parent="Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+placeholder_text = "placeholder_text_search_files"
+clear_button_enabled = true
+
+[node name="AddFileButton" type="MenuButton" parent="Margin/VBox/HBox"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+icon = ExtResource("2_40fut")
+icon_alignment = 2
+expand_icon = true
+item_count = 3
+popup/item_0/text = "file_panel_item_add_files"
+popup/item_0/icon = ExtResource("3_iyj14")
+popup/item_0/id = 0
+popup/item_1/text = "file_panel_item_add_text"
+popup/item_1/icon = ExtResource("4_4eim5")
+popup/item_1/id = 1
+popup/item_2/text = "file_panel_item_add_color"
+popup/item_2/icon = ExtResource("5_almox")
+popup/item_2/id = 2
+
+[node name="FileTree" type="Tree" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+allow_rmb_select = true
+hide_root = true
+select_mode = 2

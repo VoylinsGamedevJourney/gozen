@@ -14,8 +14,10 @@ config/name="GoZen"
 config/description="Video editor "
 config/version="0.2.3-alpha"
 run/main_scene="uid://b0r37lfkj7wl6"
+run/print_header=false
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
+config/auto_accept_quit=false
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/image="uid://be26q5shju2ml"
 config/icon="res://icon.svg"
@@ -23,17 +25,19 @@ boot_splash/minimum_display_time=500
 
 [autoload]
 
-Toolbox="*res://scripts/globals/toolbox.gd"
 Threader="*res://scripts/globals/threader.gd"
-Editor="*res://scripts/globals/editor.gd"
+Thumbnailer="*res://scripts/globals/thumbnailer.gd"
 InputManager="*res://scripts/globals/input_manager.gd"
-Settings="*res://scripts/globals/settings.gd"
-Project="*res://scripts/globals/project.gd"
+EditorCore="*res://scripts/globals/editor_core.gd"
+RenderManager="*res://scripts/globals/render_manager.gd"
+Settings="*res://scripts/globals/settings_manager.gd"
+Project="*res://scripts/globals/project_manager.gd"
 
 [debug]
 
 settings/crash_handler/message="Please include this when reporting the bug. Reporting bugs is possible here: https://github.com/VoylinsGamedevJourney/gozen/issues"
 settings/crash_handler/message.editor="Please include this when reporting the bug: https://github.com/VoylinsGamedevJourney/gozen/issues"
+file_logging/enable_file_logging=true
 file_logging/log_path="user://logs/gozen.log"
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
@@ -42,6 +46,7 @@ gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unsafe_cast=1
 gdscript/warnings/unsafe_call_argument=1
 gdscript/warnings/return_value_discarded=1
+shader_language/warnings/treat_warnings_as_errors=true
 
 [display]
 
@@ -52,7 +57,7 @@ window/size/mode=2
 [extensions]
 
 audio=PackedStringArray("wav", "mp3", "ogg")
-video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov", "mts")
+video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov", "mts", "gif")
 image=PackedStringArray("jpg", "jpeg", "png", "svg", "webp")
 
 [gui]
@@ -139,7 +144,7 @@ open_command_bar={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":47,"key_label":0,"unicode":47,"location":0,"echo":false,"script":null)
 ]
 }
-open_render_menu={
+switch_screen={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
@@ -157,7 +162,7 @@ help={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/en.po", "res://translations/nl.po", "res://translations/ja.po", "res://translations/es_ES.po", "res://translations/fr_FR.po", "res://translations/ur_PK.po")
+locale/translations=PackedStringArray("res://translations/en.po", "res://translations/nl.po", "res://translations/ja.po", "res://translations/es_ES.po", "res://translations/fr_FR.po", "res://translations/ur_PK.po", "res://translations/de.po", "res://translations/zh_TW.po", "res://translations/hi_IN.po", "res://translations/pl.po")
 locale/translations_pot_files=PackedStringArray("res://editor.tscn", "res://overlays/about_gozen.tscn", "res://overlays/command_bar.tscn", "res://overlays/project_settings.tscn", "res://overlays/rename_file.tscn", "res://overlays/render_menu.tscn", "res://overlays/settings.tscn", "res://overlays/startup_screen.tscn", "res://scripts/about_gozen.gd", "res://scripts/audio_meter.gd", "res://scripts/clip_button.gd", "res://scripts/command_bar.gd", "res://scripts/editor_ui.gd", "res://scripts/effects_panel.gd", "res://scripts/files_list.gd", "res://scripts/preview_audio_wave.gd", "res://scripts/project_settings_menu.gd", "res://scripts/rename_file.gd", "res://scripts/render_menu.gd", "res://scripts/settings_menu.gd", "res://scripts/startup_screen.gd", "res://scripts/timeline.gd", "res://scripts/view_panel.gd", "res://scripts/globals/editor.gd", "res://scripts/globals/input_manager.gd", "res://scripts/globals/project.gd", "res://scripts/globals/settings.gd", "res://scripts/globals/threader.gd", "res://scripts/globals/toolbox.gd", "res://scripts/classes/audio_player.gd", "res://scripts/classes/clip_data.gd", "res://scripts/classes/data_manager.gd", "res://scripts/classes/draggable.gd", "res://scripts/classes/effects_audio.gd", "res://scripts/classes/effects_video.gd", "res://scripts/classes/file.gd", "res://scripts/classes/file_data.gd", "res://scripts/classes/project_data.gd", "res://scripts/classes/render_profile.gd", "res://scripts/classes/settings_data.gd", "res://scripts/classes/temp_file.gd")
 
 [rendering]
@@ -174,3 +179,7 @@ tutorials="https://www.youtube.com/playlist?list=PL8opQePBSY5kE0bsegp82mcfC6DfOa
 discord="https://discord.gg/BdbUf7VKYC"
 github="https://github.com/VoylinsGamedevJourney/gozen"
 youtube_channel="https://www.youtube.com/@voylinsgamedevjourney"
+latest_release="https://github.com/VoylinsGamedevJourney/gozen/releasess"
+latest_release_check="https://api.github.com/repos/VoylinsGamedevJourney/GoZen/releases/latest"
+sponsors/vgj="https://www.youtube.com/@voylinsgamedevjourney"
+become_sponsor_info="https://forms.gle/boBG9UB6ouSg8vce9"

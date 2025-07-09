@@ -1,5 +1,9 @@
 extends Node
 
+signal on_show_editor_screen
+signal on_show_render_screen
+signal on_switch_screen
+
 
 var undo_redo: UndoRedo = UndoRedo.new()
 
@@ -32,17 +36,64 @@ func _input(event: InputEvent) -> void:
 			printerr("Couldn't redo!")
 
 	if event.is_action_pressed("timeline_play_pause", false, true):
-		Editor.on_play_pressed()
+		EditorCore.on_play_pressed()
 		get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
 
-
-	if event.is_action_pressed("open_command_bar"):
+	if get_window().gui_get_focus_owner() is not LineEdit and event.is_action_pressed("open_command_bar"):
 		get_tree().root.add_child(preload("uid://rj2h8g761jr1").instantiate())
 		get_viewport().set_input_as_handled()
 
-	if event.is_action_pressed("open_render_menu"):
-		get_tree().root.add_child(preload("uid://chdpurqhtqieq").instantiate())
+	if event.is_action_pressed("switch_screen"):
+		if RenderManager.encoder == null or !RenderManager.encoder.is_open():
+			switch_screen()
+
+	if event.is_action_pressed("ui_paste"):
+		clipboard_paste()
+
+
+func _on_actual_close() -> void:
+	undo_redo.free()
+
+
+func show_editor_screen() -> void:
+	on_show_editor_screen.emit()
+
+
+func show_render_screen() -> void:
+	on_show_render_screen.emit()
+
+
+func switch_screen() -> void:
+	on_switch_screen.emit()
+
+
+func clipboard_paste() -> void:
+	var image: Image = DisplayServer.clipboard_get_image()
+
+	if Project.data == null:
+		return
+
+	# The pasted data is an image/screenshot.
+	if image != null:
+		var file: File = File.create("temp://image")
+
+		file.nickname = "Image %s" % file.id
+		file.temp_file = TempFile.new()
+		file.temp_file.image_data = ImageTexture.create_from_image(image)
+
+		Project.add_file_object(file)
+		return
+
+	# Checking if the pasted data is a path.
+	var data: PackedStringArray = DisplayServer.clipboard_get().split('\n')
+
+	for path: String in data:
+		if !FileAccess.file_exists(path):
+			return
+
+	# All paths pasted are files so we use _on_files_dropped.
+	Project._on_files_dropped(data)
 

@@ -24,20 +24,26 @@ msgstr "標準設定"
 msgid "title_timeline"
 msgstr "タイムライン"
 
+msgid "title_extras"
+msgstr "その他"
+
+msgid "title_render_settings"
+msgstr "レンダリング設定"
+
 msgid "title_rendering"
 msgstr "レンダリング"
 
 msgid "title_rendering_finished"
 msgstr "レンダリング完了"
 
+msgid "title_rendering_error"
+msgstr "レンダリング：エラーが発生しました！"
+
 msgid "title_render_video"
 msgstr "動画をレンダリング"
 
 msgid "title_render_audio"
 msgstr "音声をレンダリング"
-
-msgid "title_metadata"
-msgstr "メタデータ"
 
 msgid "title_cpu_threads"
 msgstr "CPUスレッド"
@@ -51,8 +57,36 @@ msgstr "はじめに"
 msgid "title_new_project"
 msgstr "新しいプロジェクト"
 
+msgid "title_loading_project"
+msgstr "プロジェクトを読み込み中"
+
+msgid "title_files_dropped"
+msgstr "ファイル追加"
+
+msgid "title_sponsors"
+msgstr "スポンサー"
+
+msgid "title_editor_settings"
+msgstr "エディター設定"
+
+msgid "title_project_settings"
+msgstr "プロジェクト設定"
+
+msgid "title_chapters"
+msgstr "チャプター"
+
+msgid "title_save_image_to_file"
+msgstr "画像をファイルに保存"
+
+msgid "title_save_video_audio_to_wav"
+msgstr "動画音声をWAVとして保存"
+
+msgid "title_add_color_file"
+msgstr "カラーファイルを追加"
+
 msgid "button_tooltip_create_new_project"
-msgstr "選択した設定で新しいプロジェクトを作成します。"
+msgstr ""
+"選択した設定で新しいプロジェクトを作成します。"
 
 msgid "button_gozen_site"
 msgstr "GoZenサイト"
@@ -69,14 +103,23 @@ msgstr "Discordサーバー"
 msgid "button_support_gozen"
 msgstr "GoZenをサポートする"
 
+msgid "button_view_sponsors"
+msgstr "スポンサーを見る"
+
+msgid "button_become_sponsor"
+msgstr "スポンサーになる"
+
 msgid "button_open_project"
 msgstr "プロジェクトを開く"
 
 msgid "button_create_new_project"
 msgstr "新しいプロジェクトを作成"
 
+msgid "button_create_new_color_file"
+msgstr "カラーファイルを作成"
+
 msgid "button_tooltip_editor_settings"
-msgstr "エディタ設定。"
+msgstr "エディター設定。"
 
 msgid "button_cancel"
 msgstr "キャンセル"
@@ -89,6 +132,12 @@ msgstr "リセット"
 
 msgid "button_return"
 msgstr "戻る"
+
+msgid "button_screen_editing"
+msgstr "編集"
+
+msgid "button_screen_render"
+msgstr "レンダリング"
 
 msgid "button_start_render"
 msgstr "レンダリングを開始"
@@ -137,6 +186,9 @@ msgstr "解像度"
 msgid "text_framerate"
 msgstr "フレームレート"
 
+msgid "placeholder_text_search_files"
+msgstr "ファイルを検索..."
+
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "変更を無視して設定メニューを閉じます。"
 
@@ -164,7 +216,13 @@ msgstr "音声波形スタイル"
 msgid "setting_default_image_duration"
 msgstr "画像のデフォルト表示時間"
 
-msgid "setting_tooltip_default_image_duration"
+msgid "setting_default_color_duration"
+msgstr "デフォルトカラー表示時間"
+
+msgid "setting_default_text_duration"
+msgstr "デフォルトテキスト表示時間"
+
+msgid "setting_tooltip_duration_in_frames"
 msgstr "フレーム単位の長さです。"
 
 msgid "setting_default_project_resolution"
@@ -180,7 +238,8 @@ msgid "setting_default_project_framerate"
 msgstr "デフォルトプロジェクトフレームレート"
 
 msgid "setting_tooltip_default_project_framerate"
-msgstr "デフォルトの動画プロジェクトのフレームレートです。"
+msgstr ""
+"デフォルトの動画プロジェクトのフレームレートです。"
 
 msgid "setting_default_track_amount"
 msgstr "デフォルトのトラック数"
@@ -192,34 +251,59 @@ msgid "setting_delete_empty_space_mod"
 msgstr "空白削除修飾キー"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "タイムライン上の空白部分をダブルクリックすると、その空白を削除して全てを移動させます。修飾キーを設定すると、その特定のキーを押しながらダブルクリックする必要があり、クリップ間の空白を削除します。"
+msgstr ""
+"タイムライン上の空白部分をダブルクリックすると、その"
+"空白を削除して全てを移動させます。修飾キーを設定する"
+"と、その特定のキーを押しながらダブルクリックする必要"
+"があり、クリップ間の空白を削除します。"
 
-msgid "renderer_progress_text_setup"
-msgstr "レンダラーを準備中..."
+msgid "setting_check_version"
+msgstr "バージョンを確認"
 
-msgid "renderer_progress_text_open_error"
-msgstr "レンダラーを開けませんでした。パスと設定を確認してください！"
+msgid "setting_tooltip_check_version"
+msgstr ""
+"この機能はGitHubリポジトリを確認するためインターネッ"
+"トに接続します。アプリケーションがインターネットに接"
+"続することを好まないユーザーもいるため、この設定はデ"
+"フォルトで「無効」になっています。"
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "setting_auto_save"
+msgstr "プロジェクトを自動保存"
+
+msgid "setting_tooltip_auto_save"
+msgstr "数分ごとにプロジェクトを自動保存します。"
+
+msgid "encoding_progress_text_setup"
+msgstr "エンコードを準備中..."
+
+msgid "encoding_progress_text_open_error"
+msgstr ""
+"エンコードを開けませんでした。パスと設定を確認してく"
+"ださい！"
+
+msgid "encoding_progress_text_compiling_audio"
 msgstr "音声データをコンパイル中..."
 
-msgid "renderer_progress_text_sending_audio_error"
-msgstr "レンダラーへの音声データ送信中に問題が発生しました！"
+msgid "encoding_progress_text_sending_audio"
+msgstr ""
+"エンコードへの音声データ送信中に問題が発生しました！"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_sending_audio_error"
+msgstr ""
+"エンコードへの音声データ送信中に問題が発生しました！"
+
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "フレームデータを作成・送信中..."
 
-msgid "renderer_progress_text_sending_data_error"
-msgstr "レンダラーへのフレーム送信中に問題が発生しました！"
+msgid "encoding_progress_text_sending_data_error"
+msgstr ""
+"エンコードへのフレーム送信中に問題が発生しました！"
 
-msgid "renderer_progress_text_canceling"
-msgstr "レンダリングプロセスをキャンセル中..."
+msgid "encoding_progress_text_canceling"
+msgstr "エンコードプロセスをキャンセル中..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "最後のフレームを送信中..."
-
-msgid "renderer_progress_text_finilizing"
-msgstr "レンダリングを完了中..."
 
 msgid "rendering_warning"
 msgstr "問題が発生しました！"
@@ -240,40 +324,152 @@ msgid "render_option_quality"
 msgstr "品質"
 
 msgid "render_option_tooltip_quality"
-msgstr "CRF（固定品質レート）を調整します。最低品質の設定は50、最高品質の設定は15です。デフォルトは18に設定されています。品質とサイズに影響を与えるビットレートの調整に使用されます。値0が最高品質、51が最低品質で、18はほとんど違いがありません。"
+msgstr ""
+"CRF（一定レート係数）を調整します。数値が低いほど高画質ですが、エンコードが遅くなります。"
+"数値が高いほど低画質になりますが、エンコードは速くなります。"
+"ほとんどのコーデックでは15〜18の範囲が推奨されており、画質の違いはほとんど感じられません。"
 
 msgid "render_option_speed"
 msgstr "速度"
 
 msgid "render_option_tooltip_speed"
-msgstr "H264エンコードの速度を調整します。速度を高くしすぎると、最終的な動画品質に悪影響を与える可能性があります。"
+msgstr ""
+"H264エンコードの速度を調整します。速度を高くしすぎる"
+"と、最終的な動画品質に悪影響を与える可能性がありま"
+"す。"
 
 msgid "render_option_gop_size"
 msgstr "GOPサイズ"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "Group Of Pictures（ピクチャのグループ）。値が高いほど、低い値と比較して圧縮に適しています。しかし、値が高いほど、動画再生中のシークやスクラブの精度が低くなります。レンダリングされた動画を編集に使用するつもりなら、低い値に設定してください。"
+msgstr ""
+"Group Of Pictures（ピクチャのグループ）。値が高いほ"
+"ど、低い値と比較して圧縮に適しています。しかし、値が"
+"高いほど、動画再生中のシークやスクラブの精度が低くな"
+"ります。レンダリングされた動画を編集に使用するつもり"
+"なら、低い値に設定してください。"
 
 msgid "render_option_threads_cores"
 msgstr "スレッド/コア数"
 
 msgid "render_option_tooltip_threads_cores"
-msgstr "利用可能な全てのスレッドを使用するには「0」を入力してください。"
-
-msgid "render_option_metadata_title"
-msgstr "タイトル"
-
-msgid "render_option_metadata_comment"
-msgstr "コメント"
-
-msgid "render_option_metadata_author"
-msgstr "作成者"
-
-msgid "render_option_metadata_copyright"
-msgstr "著作権"
+msgstr ""
+"利用可能な全てのスレッドを使用するには「0」を入力し"
+"てください。"
 
 msgid "render_option_video_length"
 msgstr "動画の長さ"
 
 msgid "render_option_render_time"
 msgstr "レンダリング時間"
+
+msgid "notification_update_available"
+msgstr "更新があります！"
+
+msgid "status_project_loading_init"
+msgstr "プロジェクトを開き中..."
+
+msgid "status_project_preparing_timeline"
+msgstr "タイムラインを準備中..."
+
+msgid "status_project_loading_files"
+msgstr "ファイルを読み込み中..."
+
+msgid "status_project_playback_setup"
+msgstr "再生を設定中..."
+
+msgid "status_project_finalizing"
+msgstr "最終処理中..."
+
+msgid "status_new_project_init"
+msgstr "新しいプロジェクトを作成しています..."
+
+msgid "command_editor_settings"
+msgstr "エディター設定"
+
+msgid "command_project_settings"
+msgstr "プロジェクト設定"
+
+msgid "command_render_menu"
+msgstr "レンダリングメニュー"
+
+msgid "menu_bar_project"
+msgstr "プロジェクト"
+
+msgid "menu_bar_editor"
+msgstr "エディター"
+
+msgid "menu_bar_project_save"
+msgstr "保存"
+
+msgid "menu_bar_project_save_as"
+msgstr "名前を付けて保存..."
+
+msgid "menu_bar_project_open_project"
+msgstr "開く"
+
+msgid "menu_bar_project_open_settings"
+msgstr "設定を開く"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "設定を開く"
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZenのサイト"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "マニュアル"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "チュートリアル"
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Discordサーバー"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "GoZenをサポート"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "GoZenについて"
+
+msgid "file_dialog_title_add_files"
+msgstr "ファイルを追加"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "保存パスを選択"
+
+msgid "file_panel_item_add_files"
+msgstr "ファイルを追加"
+
+msgid "file_panel_item_add_text"
+msgstr "テキストを追加"
+
+msgid "file_panel_item_add_color"
+msgstr "カラーを追加"
+
+msgid "popup_item_rename"
+msgstr "名前を変更"
+
+msgid "popup_item_reload"
+msgstr "リロード"
+
+msgid "popup_item_delete"
+msgstr "削除"
+
+msgid "popup_item_duplicate"
+msgstr "複製"
+
+msgid "popup_item_save_as_file"
+msgstr "ファイルに保存..."
+
+msgid "popup_item_extract_audio"
+msgstr "音声を抽出（WAV）"
+
+msgid "popup_separator_image_options"
+msgstr "画像オプション"
+
+msgid "popup_separator_video_options"
+msgstr "動画オプション"
+
+msgid "popup_separator_text_options"
+msgstr "テキストオプション"

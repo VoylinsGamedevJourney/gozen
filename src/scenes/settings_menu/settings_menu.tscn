@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjen0oagwidr7"]
+
+[ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
+
+[node name="Settings" type="PanelContainer" node_paths=PackedStringArray("panel_label", "side_bar_vbox", "settings_vbox")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_26ncd")
+panel_label = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/PanelLabel")
+side_bar_vbox = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SideBarVBox")
+settings_vbox = NodePath("SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin/SettingsVBox")
+
+[node name="SettingsPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(900, 450)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="SettingsPanel"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="SettingsPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel/Margin/HBox"]
+layout_mode = 2
+
+[node name="PanelLabel" type="Label" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Editor settings"
+
+[node name="SideBarVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseButton" type="Button" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme_type_variation = &"side_bar_button"
+text = "button_close"
+
+[node name="VBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scroll" type="ScrollContainer" parent="SettingsPanel/Margin/HBox/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+
+[node name="SettingsOptionsPanel" type="PanelContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel"]
+layout_mode = 2
+
+[node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin"]
+layout_mode = 2
+
+[connection signal="pressed" from="SettingsPanel/Margin/HBox/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

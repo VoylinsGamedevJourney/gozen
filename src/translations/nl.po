@@ -24,20 +24,26 @@ msgstr "Standaarden"
 msgid "title_timeline"
 msgstr "Tijdlijn"
 
+msgid "title_extras"
+msgstr "Extra's"
+
+msgid "title_render_settings"
+msgstr "Render instellingen"
+
 msgid "title_rendering"
 msgstr "Renderen"
 
 msgid "title_rendering_finished"
 msgstr "Renderen voltooid"
 
+msgid "title_rendering_error"
+msgstr "Renderen: Er is een fout opgetreden."
+
 msgid "title_render_video"
 msgstr "Video renderen"
 
 msgid "title_render_audio"
 msgstr "Audio renderen"
-
-msgid "title_metadata"
-msgstr "Metadata"
 
 msgid "title_cpu_threads"
 msgstr "CPU-threads"
@@ -50,6 +56,33 @@ msgstr "Aan de slag"
 
 msgid "title_new_project"
 msgstr "Nieuw project"
+
+msgid "title_loading_project"
+msgstr "Project laden"
+
+msgid "title_files_dropped"
+msgstr "Bestanden toegevoegd"
+
+msgid "title_sponsors"
+msgstr "Sponsors"
+
+msgid "title_editor_settings"
+msgstr "Editor instellingen"
+
+msgid "title_project_settings"
+msgstr "Project instellingen"
+
+msgid "title_chapters"
+msgstr "Chapters"
+
+msgid "title_save_image_to_file"
+msgstr "Afbeelding opslaan als bestand"
+
+msgid "title_save_video_audio_to_wav"
+msgstr "Video audio opslaan naar WAV"
+
+msgid "title_add_color_file"
+msgstr "Kleur clip toevoegen"
 
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
@@ -69,11 +102,20 @@ msgstr "Discord server"
 msgid "button_support_gozen"
 msgstr "Steun GoZen"
 
+msgid "button_view_sponsors"
+msgstr "Sponsors"
+
+msgid "button_become_sponsor"
+msgstr "Word een sponsor"
+
 msgid "button_open_project"
 msgstr "Project openen"
 
 msgid "button_create_new_project"
 msgstr "Nieuw project aanmaken"
+
+msgid "button_create_new_color_file"
+msgstr "Kleurbestand aanmaken"
 
 msgid "button_tooltip_editor_settings"
 msgstr "Editor instellingen."
@@ -89,6 +131,12 @@ msgstr "Reset"
 
 msgid "button_return"
 msgstr "Terug"
+
+msgid "button_screen_editing"
+msgstr "Bewerken"
+
+msgid "button_screen_render"
+msgstr "Renderen"
 
 msgid "button_start_render"
 msgstr "Start renderen"
@@ -120,7 +168,7 @@ msgstr "Steun GoZen"
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen is een video-editor gemaakt door"
+msgstr "GoZen creator:"
 
 msgid "text_rename_file_to"
 msgstr "Hernoem bestand naar ..."
@@ -137,6 +185,9 @@ msgstr "Resolutie"
 msgid "text_framerate"
 msgstr "Framerate"
 
+msgid "placeholder_text_search_files"
+msgstr "Zoek bestanden ..."
+
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Wijzigingen negeren en instellingen menu sluiten."
 
@@ -144,7 +195,10 @@ msgid "tooltip_setting_background_color"
 msgstr "De standaard achtergrondkleur van je project."
 
 msgid "setting_background_color"
-msgstr "Achtergroundkleur"
+msgstr "Achtergrondkleur"
+
+msgid "setting_language"
+msgstr "Taal"
 
 msgid "setting_theme"
 msgstr "Thema"
@@ -156,12 +210,18 @@ msgid "setting_show_menu_bar"
 msgstr "Menubalk weergeven"
 
 msgid "setting_waveform_style"
-msgstr "Stijl audiogolf vorm"
+msgstr "Weergave van audiogolf"
 
 msgid "setting_default_image_duration"
 msgstr "Standaard duur afbeeldingen"
 
-msgid "setting_tooltip_default_image_duration"
+msgid "setting_default_color_duration"
+msgstr "Standaard duur kleuren"
+
+msgid "setting_default_text_duration"
+msgstr "Standaard duur tekst"
+
+msgid "setting_tooltip_duration_in_frames"
 msgstr "De duur in frames."
 
 msgid "setting_default_project_resolution"
@@ -189,34 +249,54 @@ msgid "setting_delete_empty_space_mod"
 msgstr "Modkey voor verwijderen van een lege ruimte"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "Dubbelklikken op lege plekken in de tijdlijn verwijdert de lege ruimte en verplaatst alles. Door een modificatietoets in te stellen, moet je die specifieke toets ingedrukt houden om dubbelklikken de lege ruimte tussen clips te laten verwijderen."
+msgstr ""
+"Dubbelklikken op lege plekken in de tijdlijn verwijdert de lege ruimte en "
+"verplaatst alles. Door een modificatietoets in te stellen, moet je die "
+"specifieke toets ingedrukt houden om dubbelklikken de lege ruimte tussen "
+"clips te laten verwijderen."
 
-msgid "renderer_progress_text_setup"
-msgstr "Renderer instellen ..."
+msgid "setting_check_version"
+msgstr "Versie controleren"
 
-msgid "renderer_progress_text_open_error"
-msgstr "Renderer kon niet worden geopend, controleer pad en instellingen!"
+msgid "setting_tooltip_check_version"
+msgstr ""
+"Hiervoor wordt de GitHub-repository gecontroleerd, wat een "
+"internetverbinding vereist. Omdat sommige gebruikers liever niet willen dat "
+"hun applicaties verbinding maken met het internet, is deze optie standaard "
+"'uitgeschakeld'."
 
-msgid "renderer_progress_text_compiling_audio"
+msgid "setting_auto_save"
+msgstr "Project automatisch opslaan"
+
+msgid "setting_tooltip_auto_save"
+msgstr "Sla je project elke paar minuten automatisch op."
+
+msgid "encoding_progress_text_setup"
+msgstr "Encoder instellen ..."
+
+msgid "encoding_progress_text_open_error"
+msgstr "Encoder kon niet worden geopend, controleer pad en instellingen!"
+
+msgid "encoding_progress_text_compiling_audio"
 msgstr "Audio data compileren ..."
 
-msgid "renderer_progress_text_sending_audio_error"
-msgstr "Er ging iets mis bij het versturen van audio naar de renderer!"
+msgid "encoding_progress_text_sending_audio"
+msgstr "Er ging iets mis bij het versturen van audio naar de encoder!"
 
-msgid "renderer_progress_text_creating_sending_data"
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "Er ging iets mis bij het versturen van audio naar de encoder!"
+
+msgid "encoding_progress_text_creating_sending_data"
 msgstr "Frame data aanmaken & versturen ..."
 
-msgid "renderer_progress_text_sending_data_error"
-msgstr "Er ging iets mis bij het versturen van frame data naar de renderer!"
+msgid "encoding_progress_text_sending_data_error"
+msgstr "Er ging iets mis bij het versturen van frame data naar de encoder!"
 
-msgid "renderer_progress_text_canceling"
-msgstr "Renderproces annuleren ..."
+msgid "encoding_progress_text_canceling"
+msgstr "Encoding proces annuleren ..."
 
-msgid "renderer_progress_text_last_frame"
+msgid "encoding_progress_text_last_frame"
 msgstr "Laatste frames versturen ..."
-
-msgid "renderer_progress_text_finilizing"
-msgstr "Render afronden ..."
 
 msgid "rendering_warning"
 msgstr "Er ging iets mis!"
@@ -237,19 +317,28 @@ msgid "render_option_quality"
 msgstr "Kwaliteit"
 
 msgid "render_option_tooltip_quality"
-msgstr "Past de CRF (Constant Rate Factor) aan. De laagste kwaliteitsinstelling is 50 en de hoogste kwaliteitsinstelling is 15. Standaard is ingesteld op 18. Gebruikt om bitrate aan te passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 geeft de beste, 51 de slechtste kwaliteit, 18 is nauwelijks merkbaar."
+msgstr ""
+"Past de CRF (Constant Rate Factor) aan. Lager getal = hogere kwaliteit maar tragere encodering. "
+"Hoger getal = lagere kwaliteit maar snellere encodering. Voor de meeste codecs wordt een waarde tussen 15 en 18 aanbevolen, "
+"aangezien het kwaliteitsverlies dan nauwelijks merkbaar is."
 
 msgid "render_option_speed"
 msgstr "Snelheid"
 
 msgid "render_option_tooltip_speed"
-msgstr "Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een negatieve invloed hebben op de uiteindelijke videokwaliteit."
+msgstr ""
+"Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een "
+"negatieve invloed hebben op de uiteindelijke videokwaliteit."
 
 msgid "render_option_gop_size"
 msgstr "GOP-grootte"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "Group Of Pictures. Een hogere waarde is beter voor compressie vergeleken met een lagere waarde. Maar hoe hoger de waarde is, hoe minder nauwkeurig het zoeken en door de video navigeren tijdens afspelen zal zijn. Zet op een lage waarde als je van plan bent de gerenderde video te gebruiken voor bewerking."
+msgstr ""
+"Group Of Pictures. Een hogere waarde is beter voor compressie vergeleken met "
+"een lagere waarde. Maar hoe hoger de waarde is, hoe minder nauwkeurig het "
+"zoeken en door de video navigeren tijdens afspelen zal zijn. Zet op een lage "
+"waarde als je van plan bent de gerenderde video te gebruiken voor bewerking."
 
 msgid "render_option_threads_cores"
 msgstr "Threads/cores"
@@ -257,20 +346,119 @@ msgstr "Threads/cores"
 msgid "render_option_tooltip_threads_cores"
 msgstr "Zet op '0' om alle beschikbare threads te gebruiken."
 
-msgid "render_option_metadata_title"
-msgstr "Titel"
-
-msgid "render_option_metadata_comment"
-msgstr "Opmerking"
-
-msgid "render_option_metadata_author"
-msgstr "Auteur"
-
-msgid "render_option_metadata_copyright"
-msgstr "Auteursrecht"
-
 msgid "render_option_video_length"
-msgstr "Video lengte"
+msgstr "Videolengte"
 
 msgid "render_option_render_time"
-msgstr "Render tijd"
+msgstr "Rendertijd"
+
+msgid "notification_update_available"
+msgstr "Update beschikbaar!"
+
+msgid "status_project_loading_init"
+msgstr "Project openen..."
+
+msgid "status_project_preparing_timeline"
+msgstr "Tijdlijn voorbereiden ..."
+
+msgid "status_project_loading_files"
+msgstr "Media laden ..."
+
+msgid "status_project_playback_setup"
+msgstr "Video afspelen voorbereiden ..."
+
+msgid "status_project_finalizing"
+msgstr "Afronden ..."
+
+msgid "status_new_project_init"
+msgstr "Nieuw project aanmaken ..."
+
+msgid "command_editor_settings"
+msgstr "Editor instellingen"
+
+msgid "command_project_settings"
+msgstr "Project instellingen"
+
+msgid "command_render_menu"
+msgstr "Render menu"
+
+msgid "menu_bar_project"
+msgstr "Project"
+
+msgid "menu_bar_editor"
+msgstr "Editor"
+
+msgid "menu_bar_project_save"
+msgstr "Opslaan"
+
+msgid "menu_bar_project_save_as"
+msgstr "Opslaan als ..."
+
+msgid "menu_bar_project_open_project"
+msgstr "Openen"
+
+msgid "menu_bar_project_open_settings"
+msgstr "Instellingen"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "Instellingen"
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "GoZen website"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "Handleiding"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "Tutorials"
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Discord server"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "Steun GoZen"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "Over GoZen"
+
+msgid "file_dialog_title_add_files"
+msgstr "Bestanden toevoegen"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "Opslaglocatie selecteren"
+
+msgid "file_panel_item_add_files"
+msgstr "Bestand(en) toevoegen"
+
+msgid "file_panel_item_add_text"
+msgstr "Tekst toevoegen"
+
+msgid "file_panel_item_add_color"
+msgstr "Kleur toevoegen"
+
+msgid "popup_item_rename"
+msgstr "Hernoemen"
+
+msgid "popup_item_reload"
+msgstr "Herladen"
+
+msgid "popup_item_delete"
+msgstr "Verwijderen"
+
+msgid "popup_item_duplicate"
+msgstr "Dupliceren"
+
+msgid "popup_item_save_as_file"
+msgstr "Opslaan als bestand ..."
+
+msgid "popup_item_extract_audio"
+msgstr "Audio extraheren (WAV)"
+
+msgid "popup_separator_image_options"
+msgstr "Afbeeldingopties"
+
+msgid "popup_separator_video_options"
+msgstr "Video-opties"
+
+msgid "popup_separator_text_options"
+msgstr "Tekstopties"

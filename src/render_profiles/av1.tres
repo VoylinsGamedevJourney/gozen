@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="RenderProfile" load_steps=2 format=3 uid="uid://du35gfskoijp"]
+[gd_resource type="Resource" script_class="RenderProfile" load_steps=3 format=3 uid="uid://du35gfskoijp"]
 
 [ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_5bs73"]
+[ext_resource type="Texture2D" uid="uid://etnl583cumbo" path="res://assets/profiles/av1.svg" id="1_ub41c"]
 
 [resource]
 script = ExtResource("1_5bs73")
 profile_name = "AV1"
-audio_codec = 86018
-video_codec = 27
+icon = ExtResource("1_ub41c")
+video_codec = 226
 crf = 23
 gop = 15
 h264_preset = 6
+audio_codec = 86018
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"

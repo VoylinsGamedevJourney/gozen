@@ -27,6 +27,15 @@ func _process(_delta: float) -> void:
 			tasks.remove_at(tasks.find(task))
 
 
+func _on_actual_close() -> void:
+	mutex.free()
+
+
+func add_task(todo: Callable, after_todo: Callable) -> void:
+	var task: Task = Task.new(WorkerThreadPool.add_task(todo), after_todo)
+	tasks.append(task)
+
+
 class Task:
 	var id: int = -1
 	var after_task: Callable
@@ -37,9 +46,9 @@ class Task:
 		after_task = new_after_task
 
 
-## Timed tasks are for items such as changing effects to quickly, instead of
+## Timed tasks are for items such as changing effects too quickly, instead of
 ## creating multiple tasks which cancel each other out with the last one, we
-## keep updating the current task 
+## keep updating the current task.
 class TimedTask:
 	var task: Callable
 	var after_task: Callable

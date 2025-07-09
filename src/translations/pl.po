@@ -1,0 +1,468 @@
+# GoZen Localization Template
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+
+msgid "title_about_gozen"
+msgstr "O GoZen"
+
+msgid "title_appearance"
+msgstr "Wygląd"
+
+msgid "title_defaults"
+msgstr "Domyślne"
+
+msgid "title_timeline"
+msgstr "Oś czasu"
+
+msgid "title_extras"
+msgstr "Inne"
+
+msgid "title_render_settings"
+msgstr "Ustawienia eksportu"
+
+msgid "title_rendering"
+msgstr "Eksportowanie"
+
+msgid "title_rendering_finished"
+msgstr "Eksportowanie zakończone"
+
+msgid "title_rendering_error"
+msgstr "Eksport: Nastąpił błąd."
+
+msgid "title_render_video"
+msgstr "Eksport wideo"
+
+msgid "title_render_audio"
+msgstr "Eksport dźwięku"
+
+msgid "title_cpu_threads"
+msgstr "Wątki procesora"
+
+msgid "title_recent_projects"
+msgstr "Ostatnie projekty"
+
+msgid "title_getting_started"
+msgstr "Jak zacząć"
+
+msgid "title_new_project"
+msgstr "Nowy projekt"
+
+msgid "title_loading_project"
+msgstr "Ładowanie projektu"
+
+msgid "title_files_dropped"
+msgstr "Upuszczone pliki"
+
+msgid "title_sponsors"
+msgstr "Sponsorzy"
+
+msgid "title_editor_settings"
+msgstr "Ustawienia edytora"
+
+msgid "title_project_settings"
+msgstr "Ustawienia projektu"
+
+msgid "title_chapters"
+msgstr "Rozdziały"
+
+msgid "title_save_image_to_file"
+msgstr "Zapisz obraz do pliku"
+
+msgid "title_save_video_audio_to_wav"
+msgstr "Zapisz dźwięk wideo do wav"
+
+msgid "title_add_color_file"
+msgstr "Dodaj plik koloru"
+
+msgid "title_close_without_saving"
+msgstr "Wyjść bez zapisywania?"
+
+msgid "button_tooltip_create_new_project"
+msgstr "Utwórz nowy projekt z wybranymi ustawieniami."
+
+msgid "button_gozen_site"
+msgstr "Strona GoZen"
+
+msgid "button_manual"
+msgstr "Podręcznik"
+
+msgid "button_tutorials"
+msgstr "Poradniki"
+
+msgid "button_discord_server"
+msgstr "Serwer Discord"
+
+msgid "button_support_gozen"
+msgstr "Wesprzyj GoZen"
+
+msgid "button_view_sponsors"
+msgstr "Zobacz sponsorów"
+
+msgid "button_become_sponsor"
+msgstr "Zostań sponsorem"
+
+msgid "button_open_project"
+msgstr "Otwórz projekt"
+
+msgid "button_create_new_project"
+msgstr "Utwórz nowy projekt"
+
+msgid "button_create_new_color_file"
+msgstr "Utwórz plik koloru"
+
+msgid "button_tooltip_editor_settings"
+msgstr "Ustawienia edytora."
+
+msgid "button_cancel"
+msgstr "Anuluj"
+
+msgid "button_cancel_rendering"
+msgstr "Anuluj eksport"
+
+msgid "button_reset"
+msgstr "Resetuj"
+
+msgid "button_return"
+msgstr "Wróć"
+
+msgid "button_screen_editing"
+msgstr "Edycja"
+
+msgid "button_screen_render"
+msgstr "Eksport"
+
+msgid "button_start_render"
+msgstr "Eksportuj"
+
+msgid "button_save"
+msgstr "Zapisz"
+
+msgid "button_dont_save"
+msgstr "Nie zapisuj"
+
+msgid "button_save_settings"
+msgstr "Zapisz ustawienia"
+
+msgid "button_close"
+msgstr "Zamknij"
+
+msgid "text_version"
+msgstr "Wersja"
+
+msgid "text_gozen_website"
+msgstr "Strona internetowa GoZen"
+
+msgid "text_github_repo"
+msgstr "Repozytorium GitHub"
+
+msgid "text_discord_link"
+msgstr "Link Discord"
+
+msgid "text_support_gozen"
+msgstr "Wesprzyj GoZen"
+
+# Note: This is part of the string for the "about gozen" screen.
+#: scripts/about_gozen.gd
+msgid "text_gozen_made_by"
+msgstr "Twórca GoZen:"
+
+msgid "text_rename_file_to"
+msgstr "Zmień nazwę pliku na ..."
+
+msgid "text_advanced_settings"
+msgstr "Zaawansowane ustawienia"
+
+msgid "text_path"
+msgstr "Ścieżka"
+
+msgid "text_resolution"
+msgstr "Rozdzielczość"
+
+msgid "text_framerate"
+msgstr "Liczba klatek na sekundę"
+
+msgid "placeholder_text_search_files"
+msgstr "Szukaj plików ..."
+
+msgid "tooltip_ignore_changes_close_settings"
+msgstr "Ignoruj zmiany i zamknij menu ustawień."
+
+msgid "tooltip_setting_background_color"
+msgstr "Domyślny kolor tła twojego projektu."
+
+msgid "setting_background_color"
+msgstr "Kolor tła"
+
+msgid "setting_language"
+msgstr "Język"
+
+msgid "setting_theme"
+msgstr "Motyw"
+
+msgid "setting_tooltip_theme"
+msgstr "Jasny motyw jest lepszy ;)"
+
+msgid "setting_show_menu_bar"
+msgstr "Pokaż pasek menu"
+
+msgid "setting_waveform_style"
+msgstr "Wygląd wykresu fali dźwiękowej"
+
+msgid "setting_default_image_duration"
+msgstr "Domyślna długość trwania obrazu"
+
+msgid "setting_default_color_duration"
+msgstr "Domyślna długość trwania koloru"
+
+msgid "setting_default_text_duration"
+msgstr "Domyślna długość trwania tekstu"
+
+msgid "setting_tooltip_duration_in_frames"
+msgstr "Czas trwania w klatkach."
+
+msgid "setting_default_project_resolution"
+msgstr "Domyślna rozdzielczość projektu"
+
+msgid "setting_tooltip_default_project_resolution_x"
+msgstr "Domyślna szerokość wideo projektu."
+
+msgid "setting_tooltip_default_project_resolution_y"
+msgstr "Domyślna wysokość wideo projektu."
+
+msgid "setting_default_project_framerate"
+msgstr "Domyślna liczba klatek na sekundę projektu"
+
+msgid "setting_tooltip_default_project_framerate"
+msgstr "Domyślna liczba klatek na sekundę  w projekcie."
+
+msgid "setting_default_track_amount"
+msgstr "Domyślna liczba ścieżek"
+
+msgid "setting_pause_after_dragging"
+msgstr "Pauzuj po przeciągnięciu"
+
+msgid "setting_delete_empty_space_mod"
+msgstr "Modyfikator usunięcia pustej przestrzeni"
+
+msgid "setting_tooltip_delete_empty_space_mod"
+msgstr ""
+"Podwójne kliknięcie pustych przestrzeni na osi czasu powoduje ich usunięcie "
+"i przesunięcie wszystkiego. Ustawienie modyfikatora powoduje że musisz "
+"nacisnąć ten klawisz by podwójne kliknięcie usunęło pustą przestrzeń."
+
+msgid "setting_check_version"
+msgstr "Sprawdź wersję"
+
+msgid "setting_tooltip_check_version"
+msgstr ""
+"Ta opcja sprawdza wersję z repozytorium Github, a więc wykona połączenie "
+"przez internet. Niektórzy wolą by ich programy nie wykonywały połączeń "
+"internetowych, więc ta opcja jest domyślnie wyłączona."
+
+msgid "setting_auto_save"
+msgstr "Auto zapis"
+
+msgid "setting_tooltip_auto_save"
+msgstr "Automatycznie zapisuje twój projekt co kilka minut."
+
+msgid "encoding_progress_text_setup"
+msgstr "Przygotowywanie enkodera ..."
+
+msgid "encoding_progress_text_open_error"
+msgstr "Enkoder nie mógł zostać otwarty, sprawdź ścieżkę i ustawienia!"
+
+msgid "encoding_progress_text_compiling_audio"
+msgstr "Kompilowanie danych dźwięku ..."
+
+msgid "encoding_progress_text_sending_audio"
+msgstr "Przesyłanie danych dźwięku ..."
+
+msgid "encoding_progress_text_sending_audio_error"
+msgstr "Coś poszło nie tak przy przesyłaniu dźwięku do enkodera!"
+
+msgid "encoding_progress_text_creating_sending_data"
+msgstr "Tworzenie i wysyłanie danych klatek ..."
+
+msgid "encoding_progress_text_sending_data_error"
+msgstr "Coś poszło nie tak przy przesyłaniu klatek do enkodera!"
+
+msgid "encoding_progress_text_canceling"
+msgstr "Anulowanie procesu eksportu ..."
+
+msgid "encoding_progress_text_last_frame"
+msgstr "Wysyłanie ostatnich klatek ..."
+
+msgid "rendering_warning"
+msgstr "Coś poszło nie tak!"
+
+msgid "render_option_path"
+msgstr "Ścieżka"
+
+msgid "render_option_profile"
+msgstr "Profil eksportu"
+
+msgid "render_option_audio_codec"
+msgstr "Kodek dźwięku"
+
+msgid "render_option_video_codec"
+msgstr "Kodek wideo"
+
+msgid "render_option_quality"
+msgstr "Jakość"
+
+msgid "render_option_tooltip_quality"
+msgstr ""
+"Dostosowuje wartość CRF (Constant Rate Factor), mniejsza wartość = lepsza "
+"jakość, ale wolniejsze enkodowanie. Wyższa wartość = gorsza jakość, szybsze "
+"enkodowanie. Dla większości kodeków wartość w zakresie 15-18 jest polecana, "
+"jako że wpływ na jakość nie będzie wtedy zauważalny."
+
+msgid "render_option_speed"
+msgstr "Prędkość"
+
+msgid "render_option_tooltip_speed"
+msgstr ""
+"Dostosowuje prędkość enkodowania H264. Ustawienie zbyt dużej prędkości może "
+"mieć negatywny wpływ na końcową jakość wideo."
+
+msgid "render_option_gop_size"
+msgstr "Rozmiar GOP"
+
+msgid "render_option_tooltip_gop_size"
+msgstr ""
+"Grupa obrazków (Group Of Pictures). Wyższa wartość daje lepszą kompresję, "
+"ale im jest większa tym wolniejsze jest przeskakiwanie po klatkach wideo. "
+"Użyj małe wartości jeśli zamierzasz użyć wyeksporotwanego wideo do montażu."
+
+msgid "render_option_threads_cores"
+msgstr "Wątki/rdzenie"
+
+msgid "render_option_tooltip_threads_cores"
+msgstr "Wstaw '0' aby użyć wszystkich dostępnych wątków."
+
+msgid "render_option_video_length"
+msgstr "Długość wideo"
+
+msgid "render_option_render_time"
+msgstr "Czas eksportu"
+
+msgid "notification_update_available"
+msgstr "Nowa aktualizacja jest dostępna!"
+
+msgid "status_project_loading_init"
+msgstr "Otwieranie projektu ..."
+
+msgid "status_project_preparing_timeline"
+msgstr "Przygotowywanie osi czasu ..."
+
+msgid "status_project_loading_files"
+msgstr "Ładowanie plików ..."
+
+msgid "status_project_playback_setup"
+msgstr "Przygotowywanie odtwarzania ..."
+
+msgid "status_project_finalizing"
+msgstr "Kończenie ..."
+
+msgid "status_new_project_init"
+msgstr "Tworzenie nowego projektu ..."
+
+msgid "command_editor_settings"
+msgstr "Ustawienia edytora"
+
+msgid "command_project_settings"
+msgstr "Ustawienia projektu"
+
+msgid "command_render_menu"
+msgstr "Menu eksportu"
+
+msgid "menu_bar_project"
+msgstr "Projekt"
+
+msgid "menu_bar_editor"
+msgstr "Edytor"
+
+msgid "menu_bar_project_save"
+msgstr "Zapisz"
+
+msgid "menu_bar_project_save_as"
+msgstr "Zapisz jako ..."
+
+msgid "menu_bar_project_open_project"
+msgstr "Otwórz"
+
+msgid "menu_bar_project_open_settings"
+msgstr "Ustawienia projektu"
+
+msgid "menu_bar_editor_open_settings"
+msgstr "Ustawienia edytora"
+
+msgid "menu_bar_editor_open_url_site"
+msgstr "Strona GoZen"
+
+msgid "menu_bar_editor_open_url_manual"
+msgstr "Podręcznik"
+
+msgid "menu_bar_editor_open_url_tutorials"
+msgstr "Poradniki"
+
+msgid "menu_bar_editor_open_url_discord"
+msgstr "Serwer Discord"
+
+msgid "menu_bar_editor_open_url_support"
+msgstr "Wesprzyj GoZen"
+
+msgid "menu_bar_editor_open_about_gozen"
+msgstr "O GoZen"
+
+msgid "file_dialog_title_add_files"
+msgstr "Dodaj pliki"
+
+msgid "file_dialog_title_select_save_path"
+msgstr "Wybierz ścieżkę zapisu"
+
+msgid "file_panel_item_add_files"
+msgstr "Dodaj plik(i)"
+
+msgid "file_panel_item_add_text"
+msgstr "Dodaj tekst"
+
+msgid "file_panel_item_add_color"
+msgstr "Dodaj kolor"
+
+msgid "popup_item_rename"
+msgstr "Zmień nazwę"
+
+msgid "popup_item_reload"
+msgstr "Przeładuj"
+
+msgid "popup_item_delete"
+msgstr "Usuń"
+
+msgid "popup_item_duplicate"
+msgstr "Duplikuj"
+
+msgid "popup_item_save_as_file"
+msgstr "Zapisz jako plik ..."
+
+msgid "popup_item_extract_audio"
+msgstr "Wyekstraktuj dźwięk (WAV)"
+
+msgid "popup_separator_image_options"
+msgstr "Opcje obrazu"
+
+msgid "popup_separator_video_options"
+msgstr "Opcje wideo"
+
+msgid "popup_separator_text_options"
+msgstr "Opcje tekstu"

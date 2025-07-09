@@ -199,156 +199,156 @@ func _on_position_x_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.position.x = floor(value)
 	reset_transform_effects.visible = !Project.get_clip(current_clip_id).effects_video.transforms_equal_to_defaults()
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_position_y_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.position.y = floor(value)
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_size_x_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.size.x = floor(value)
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_size_y_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.size.y = floor(value)
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_scale_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.scale = value
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_rotation_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.rotation = value
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_alpha_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.alpha = value
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_pivot_x_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.pivot.x = floor(value)
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_pivot_y_spin_box_value_changed(value:float) -> void:
 	Project.get_clip(current_clip_id).effects_video.pivot.y = floor(value)
 	check_reset_transform_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_enable_color_correction_button_toggled(toggled_on: bool) -> void:
 	Project.get_clip(current_clip_id).effects_video.enable_color_correction = toggled_on
 	color_correction_effects_grid.visible = toggled_on
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_brightness_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.brightness = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_contrast_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.contrast = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_saturation_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.saturation = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_red_value_spin_box_value_changed(value: float) -> void: 
 	Project.get_clip(current_clip_id).effects_video.red_value = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_green_value_spin_box_value_changed(value: float) -> void: 
 	Project.get_clip(current_clip_id).effects_video.green_value = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_blue_value_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.blue_value = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_tint_color_picker_button_color_changed(color: Color) -> void:
 	Project.get_clip(current_clip_id).effects_video.tint_color = color
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_tint_color_effect_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.tint_effect_factor = value
 	check_reset_color_correction_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_enable_chroma_key_button_toggled(toggled_on: bool) -> void:
 	Project.get_clip(current_clip_id).effects_video.enable_chroma_key = toggled_on
 	chroma_effects_grid.visible = toggled_on
 	check_reset_chroma_key_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_chroma_key_color_picker_button_color_changed(color: Color) -> void:
 	Project.get_clip(current_clip_id).effects_video.chroma_key_color = color
 	check_reset_chroma_key_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_chroma_key_tolerance_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.chroma_key_tolerance = value
 	check_reset_chroma_key_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_chroma_key_softness_spin_box_value_changed(value: float) -> void:
 	Project.get_clip(current_clip_id).effects_video.chroma_key_softness = value
 	check_reset_chroma_key_button()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 # Reset buttons
 
 func _on_reset_transform_effects_button_pressed() -> void:
 	Project.get_clip(current_clip_id).effects_video.reset_transform()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 	reset_transform_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 func _on_reset_color_correction_effects_button_pressed() -> void:
 	Project.get_clip(current_clip_id).effects_video.reset_color_correction()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 	reset_color_correction_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 func _on_reset_chroma_key_effects_button_pressed() -> void:
 	Project.get_clip(current_clip_id).effects_video.reset_chroma_key()
-	Editor.set_frame(Editor.frame_nr)
+	EditorCore.set_frame(EditorCore.frame_nr)
 	reset_chroma_key_effects.visible = false
 	on_clip_pressed(current_clip_id)
 

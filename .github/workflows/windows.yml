@@ -1,0 +1,136 @@
+name: 05 | Windows
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        type: string
+        default: v0.0
+
+env:
+  GODOT_VERSION: 4.4.1
+  EXPORT_FOLDER: libs/bin/windows_x86_64
+
+run-name: 'Windows version: ${{ inputs.version }} by @${{ github.actor }}'
+jobs:
+  build-gozen-windows:
+    name: Build GoZen
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: |
+            git
+            subversion
+            unzip
+            mingw-w64-ucrt-x86_64-binutils
+            mingw-w64-ucrt-x86_64-crt-git
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-gdb
+            mingw-w64-ucrt-x86_64-gdb-multiarch
+            mingw-w64-ucrt-x86_64-headers-git
+            mingw-w64-ucrt-x86_64-libmangle-git
+            mingw-w64-ucrt-x86_64-libwinpthread
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-tools-git
+            mingw-w64-ucrt-x86_64-winpthreads
+            mingw-w64-ucrt-x86_64-winstorecompat-git
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-make
+            mingw-w64-ucrt-x86_64-diffutils
+            mingw-w64-ucrt-x86_64-yasm
+            mingw-w64-ucrt-x86_64-nasm
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-scons
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-autotools
+
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Get latest run ID for "Compile GDE"
+        id: get_ffmpeg_workflow_run_id
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WORKFLOW_NAME="11 | Compile GDE"
+          LATEST_RUN_ID=$(gh run list --workflow "${WORKFLOW_NAME}" --json databaseId --jq '.[0].databaseId')
+
+          if [ -z "$LATEST_RUN_ID" ]; then
+            echo "Error: Could not find latest run ID for workflow '${WORKFLOW_NAME}'."
+            exit 1
+          fi
+
+          echo "Found latest run ID: $LATEST_RUN_ID"
+          echo "latest_run_id=$LATEST_RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Get GDE artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows_gde
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get_ffmpeg_workflow_run_id.outputs.latest_run_id }}
+          path: ./libs/bin/windows_x86_64
+
+      - name: Cache Godot
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot
+          key: ${{ runner.os }}-windows-godot-${{ env.GODOT_VERSION }}
+
+      - name: Prepare Godot
+        run: |
+          if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
+            echo "Downloading Godot editor ..."
+            wget -q -O godot_windows.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe.zip 
+            unzip -o godot_windows.zip
+          else
+            echo "Godot editor found in cache."
+          fi
+
+          export exportPath=$(cygpath -u "$APPDATA/Godot/export_templates/${{ env.GODOT_VERSION }}.stable")
+          if [ ! -d $exportPath ]; then
+            echo "Downloading Godot export templates ..."
+            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+            mkdir -p $exportPath
+            unzip -o godot_export_templates.tpz -d $exportPath
+            mv $exportPath/templates/* $exportPath/
+            rm -rf $exportPath/templates
+          else
+            echo "Godot export templates found in cache."
+          fi
+
+          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
+
+      - name: Prepare folder
+        run: |
+          cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
+          cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
+
+      - name: Export for Windows
+        working-directory: ./src
+        run: |
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless
+          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+
+      - name: Upload Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: GoZen_Windows_x86_64_${{ inputs.version }}
+          path: ${{ env.EXPORT_FOLDER }}
+          retention-days: 2
+

@@ -29,7 +29,7 @@ func get_end_frame() -> int:
 func get_frame(frame_nr: int) -> Texture:
 	var type: File.TYPE = Project.get_clip_type(clip_id)
 
-	if type not in Editor.VISUAL_TYPES:
+	if type not in EditorCore.VISUAL_TYPES:
 		return null
 	elif type == File.TYPE.VIDEO:
 		# For the video stuff, we load in the data for the shader. The FileData
@@ -68,17 +68,17 @@ func get_frame(frame_nr: int) -> Texture:
 func get_clip_audio_data() -> PackedByteArray:
 	var file_data: FileData = Project.get_file_data(file_id)
 	var data: PackedByteArray = file_data.audio.data.slice(
-			RenderingWindow.get_sample_count(begin),
-			RenderingWindow.get_sample_count(begin+duration))
+			Toolbox.get_sample_count(begin),
+			Toolbox.get_sample_count(begin+duration))
 
 	if effects_audio.mute:
 		data.fill(0)
 		return data
 
-	data = Audio.change_db(data, effects_audio.gain)
+	data = GoZenAudio.change_db(data, effects_audio.gain)
 
 	if effects_audio.mono != effects_audio.MONO.DISABLE:
-		data = Audio.change_to_mono(data, effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
+		data = GoZenAudio.change_to_mono(data, effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
 
 	return data
 

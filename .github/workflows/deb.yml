@@ -1,0 +1,41 @@
+name: 04 | DEB Package
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        type: string
+        default: v0.0
+
+run-name: 'DEB version: ${{ inputs.version }} by @${{ github.actor }}'
+env:
+  GODOT_VERSION: 4.4.1
+  EXPORT_FOLDER: libs/bin/linux_x86_64
+  DEB_DIR: ${{ github.workspace }}/gozen-deb
+  APP_NAME: gozen
+
+jobs:
+  build-linux:
+    name: Build Linux
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/linux.yml
+    with:
+      version: ${{ inputs.version }}
+
+
+  build-deb:
+    needs: [build-linux]
+    permissions:
+      actions: read
+      contents: read
+    uses: ./.github/workflows/build_package_deb.yml
+    with:
+      version: ${{ inputs.version }}
+

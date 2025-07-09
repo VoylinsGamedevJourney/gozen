@@ -36,10 +36,11 @@ func _ready() -> void:
 	_add_resize_button(PRESET_RIGHT_WIDE, false)
 
 	Toolbox.connect_func(button_down, _on_button_down)
+	Toolbox.connect_func(pressed, _on_pressed)
 	Toolbox.connect_func(gui_input, _on_gui_input)
 	Toolbox.connect_func(Timeline.instance.zoom_changed, queue_redraw)
 
-	if Project.get_file(clip_data.file_id).type in Editor.AUDIO_TYPES:
+	if Project.get_file(clip_data.file_id).type in EditorCore.AUDIO_TYPES:
 		wave = true
 		Toolbox.connect_func(Project.get_file_data(clip_data.file_id).update_wave, queue_redraw)
 
@@ -64,7 +65,6 @@ func _process(_delta: float) -> void:
 
 		position.x = Timeline.get_frame_pos(_visual_start_frame)
 		size.x = Timeline.get_clip_size(_visual_duration)
-
 		queue_redraw()
 
 
@@ -121,10 +121,15 @@ func _on_button_down() -> void:
 	get_viewport().set_input_as_handled()	
 
 
+func _on_pressed() -> void:
+	if Input.is_key_pressed(KEY_SHIFT):
+		Timeline.instance.selected_clips.append(clip_data.clip_id)
+	else:
+		Timeline.instance.selected_clips = [clip_data.clip_id]
+
+
 func _input(event: InputEvent) -> void:
-	if !has_focus():
-		return
-	if event.is_action_pressed("ctrl_click", false, true):
+	if has_focus() and event.is_action_pressed("ctrl_click", false, true):
 		print("---")
 		print("Clip id: ", clip_data.clip_id)
 		print("Clip track: ", clip_data.track_id)
@@ -133,21 +138,6 @@ func _input(event: InputEvent) -> void:
 		print("Clip start frame: ", clip_data.start_frame)
 		print("Clip end frame: ", clip_data.end_frame)
 		print("Clip begin: ", clip_data.begin)
-	elif event.is_action_pressed("clip_split"):
-		# Check if playhead is inside of clip, else we skip creating undo and
-		# redo entries.
-		if Editor.frame_nr <= clip_data.start_frame or Editor.frame_nr >= clip_data.end_frame:
-			return # Playhead is left/right of the clip
-
-		InputManager.undo_redo.create_action("Deleting clip on timeline")
-
-		InputManager.undo_redo.add_do_method(_cut_clip.bind(Editor.frame_nr, clip_data))
-		InputManager.undo_redo.add_do_method(queue_redraw)
-
-		InputManager.undo_redo.add_undo_method(_uncut_clip.bind(Editor.frame_nr, clip_data))
-		InputManager.undo_redo.add_undo_method(queue_redraw)
-
-		InputManager.undo_redo.commit_action()
 
 
 func _on_gui_input(event: InputEvent) -> void:
@@ -160,7 +150,6 @@ func _on_gui_input(event: InputEvent) -> void:
 
 		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			EffectsPanel.instance.on_clip_pressed(name.to_int())
-			get_viewport().set_input_as_handled()
 
 		if mouse_event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
 			return
@@ -174,8 +163,8 @@ func _on_gui_input(event: InputEvent) -> void:
 		InputManager.undo_redo.add_do_method(Timeline.instance.delete_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(Timeline.instance.undelete_clip.bind(clip_data))
 
-		InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
-		InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
+		InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
+		InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 		InputManager.undo_redo.commit_action()
 
 
@@ -243,22 +232,27 @@ func _on_resize_engaged(left: bool) -> void:
 
 	# First calculate spacing left of handle to other clips
 	if left:
-		for i: int in Project.get_track_keys(clip_data.track_id):
-			if i >= clip_data.start_frame:
-				break
-			previous = max(0, i - 1)
-
-		if previous != -1:
-			max_left_resize = clip_data.duration + previous
+		# Left resize can't go further than end frame.
 		max_right_resize = clip_data.end_frame
+		max_left_resize = clip_data.start_frame - clip_data.begin
+
+		for i: int in Project.get_track_keys(clip_data.track_id):
+			if i < clip_data.start_frame:
+				previous = i
+				continue
+
+			var front_clip_id: int = Project.get_track_data(clip_data.track_id)[previous]
+			max_left_resize = maxi(Project.get_clip(front_clip_id).get_end_frame(), max_left_resize)
 	else:
+		# Right resize can't go further than frame beginning
+		max_left_resize = clip_data.start_frame + 1
+
 		for i: int in Project.get_track_keys(clip_data.track_id):
 			if i > clip_data.start_frame:
 				previous = i
 				break
-
-		max_left_resize = clip_data.start_frame + 1
 		max_right_resize = maxi(previous, -1)
+
 
 	# Check if audio/video how much space is left to extend, take minimum
 	if Project.get_clip_type(name.to_int()) in [File.TYPE.VIDEO, File.TYPE.AUDIO]:
@@ -287,11 +281,11 @@ func _on_commit_resize() -> void:
 	InputManager.undo_redo.create_action("Resizing clip on timeline")
 	InputManager.undo_redo.add_do_method(_set_resize_data.bind(
 			_visual_start_frame, _visual_duration))
-	InputManager.undo_redo.add_do_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_do_method(queue_redraw)
 
 	InputManager.undo_redo.add_undo_method(_set_resize_data.bind(clip_data.start_frame, clip_data.duration))
-	InputManager.undo_redo.add_undo_method(Editor.set_frame.bind(Editor.frame_nr))
+	InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 	InputManager.undo_redo.add_undo_method(queue_redraw)
 
 	InputManager.undo_redo.commit_action()
@@ -311,37 +305,4 @@ func _set_resize_data(new_start: int, new_duration: int) -> void:
 	clip_data.duration = new_duration
 
 	Timeline.instance.update_end()
-
-
-func _cut_clip(playhead: int, current_clip_data: ClipData) -> void:
-	var new_clip: ClipData = ClipData.new()
-	var frame: int = playhead - current_clip_data.start_frame
-
-	new_clip.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
-	new_clip.file_id = current_clip_data.file_id
-
-	new_clip.start_frame = playhead
-	new_clip.duration = abs(current_clip_data.duration - frame + 1)
-	new_clip.begin = current_clip_data.begin + frame
-	new_clip.track_id = current_clip_data.track_id
-	new_clip.effects_video = clip_data.effects_video.duplicate()
-	new_clip.effects_audio = clip_data.effects_audio.duplicate()
-
-	current_clip_data.duration -= new_clip.duration
-	size.x = Timeline.get_clip_size(current_clip_data.duration)
-
-	Project.set_clip(new_clip.clip_id, new_clip)
-	Project.set_track_data(new_clip.track_id, new_clip.start_frame, new_clip.clip_id)
-
-	Timeline.instance.add_clip(new_clip)
-
-
-func _uncut_clip(playhead: int, current_clip: ClipData) -> void:
-	var track: int = Timeline.get_track_id(position.y)
-	var split_clip: ClipData = Project.get_clip(Project.get_track_data(track)[playhead])
-
-	current_clip.duration += split_clip.duration
-	size.x = Timeline.get_frame_pos(current_clip.duration)
-
-	Timeline.instance.delete_clip(split_clip)
 

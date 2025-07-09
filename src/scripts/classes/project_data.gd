@@ -20,3 +20,7 @@ var background_color: Color = Color.BLACK
 var timeline_scroll_h: int = 0
 var zoom: float = 1.0
 
+var folders: PackedStringArray = []
+
+var markers: Dictionary = {} # { Frame: Text }
+

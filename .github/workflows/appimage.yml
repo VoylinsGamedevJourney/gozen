@@ -1,43 +1,81 @@
-name: 'AppImage'
+name: 02 | AppImage
 
 on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version'
+        description: Version
         type: string
-        default: 'v0.0'
+        default: v0.0
         
 env:
   GODOT_VERSION: 4.4.1
-  EXPORT_FOLDER: bin/linux_x86_64
+  EXPORT_FOLDER: libs/bin/linux_x86_64
   APP_NAME: gozen
   APPIMAGE_DIR: ${{ github.workspace }}/gozen.AppDir
+  ARTIFACT_NAME: ffmpeg_windows_x86_64
 
-run-name: 'Build GoZen AppImage: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'AppImage version: ${{ inputs.version }} by @${{ github.actor }}'
 
 jobs:
   build-appimage:
-    name: 'Build GoZen AppImage'
+    name: Build GoZen AppImage
     runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
     steps:
-      - name: 'Installing dependencies'
+      - name: Installing dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y git bash yasm python3 python3-pip scons gcc diffutils make wget unzip tar ffmpeg binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu pkg-config libx264-dev libx265-dev libnuma-dev fuse libfuse2 desktop-file-utils patchelf
+          sudo add-apt-repository ppa:git-core/ppa
+          sudo apt update
 
-      - name: 'Checkout submodules'
+          sudo apt-get install -y git git-svn bash yasm nasm python3 python3-pip scons gcc diffutils make wget unzip tar \
+          cmake autoconf automake libtool ninja-build pkg-config \
+          binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu \
+          libnuma-dev fuse libfuse2 desktop-file-utils patchelf
+
+      - name: Checkout submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: 'Cache Godot'
+      - name: Get latest run ID for "Compile GDE"
+        id: get_ffmpeg_workflow_run_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WORKFLOW_NAME="11 | Compile GDE"
+          LATEST_RUN_ID=$(gh run list --workflow "${WORKFLOW_NAME}" --json databaseId --jq '.[0].databaseId')
+
+          if [ -z "$LATEST_RUN_ID" ]; then
+            echo "Error: Could not find latest run ID for workflow '${WORKFLOW_NAME}'."
+            exit 1
+          fi
+
+          echo "Found latest run ID: $LATEST_RUN_ID"
+          echo "latest_run_id=$LATEST_RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Get GDE artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux_gde
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get_ffmpeg_workflow_run_id.outputs.latest_run_id }}
+          path: ./libs/bin/linux_x86_64
+
+      - name: Cache Godot
         uses: actions/cache@v4
         with:
           path: ~/.local/share/godot
           key: ${{ runner.os }}-ubuntu-godot-${{ env.GODOT_VERSION }}
 
-      - name: 'Prepare Godot'
+      - name: Prepare Godot
         run: |
           if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
             echo "Downloading Godot editor ..."
@@ -60,37 +98,17 @@ jobs:
 
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
-      - name: 'Compiling GDE GoZen Debug'
-        working-directory: ./libs
-        run: |
-          export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
-
-          python3 -c 'import sys; sys.path.append("."); import build; build.compile_ffmpeg_linux("x86_64")'
-
-          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 -c
-          scons -j$(nproc) target=template_release platform=linux arch=x86_64 -c
-
-          python3 -c 'import sys; sys.path.append("."); import build; build.copy_lib_files_linux("x86_64")'
-
-          scons -j$(nproc) target=template_debug platform=linux arch=x86_64 cache_dir=scons_linux_debug
-          scons -j$(nproc) target=template_release platform=linux arch=x86_64 cache_dir=scons_linux_release
-
-      - name: 'Export for Linux'
+      - name: Export for Linux
         working-directory: ./src
         run: |
           mkdir -p ../${{ env.EXPORT_FOLDER }}
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
           ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
 
-      - name: 'Copy extra libs'
-        run: |
-          cp libs/bin/linux_x86_64/*.s* ${{ env.EXPORT_FOLDER }}
-          cp /usr/lib/x86_64-linux-gnu/libx26*.so ${{ env.EXPORT_FOLDER }}
-          echo "reading bin"
-          ls libs/bin/linux_x86_64
-          rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
+      - name: Removing debug gde
+        run: rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so
 
-      - name: 'Create AppDir structure'
+      - name: Create AppDir structure
         run: |
           mkdir -p ${{ env.APPIMAGE_DIR }}/usr/bin
           mkdir -p ${{ env.APPIMAGE_DIR }}/usr/lib
@@ -99,7 +117,7 @@ jobs:
           mkdir -p ${{ env.APPIMAGE_DIR }}/usr/share/doc/${{ env.APP_NAME }}
           echo "AppDir structure created at ${{ env.APPIMAGE_DIR }}"
 
-      - name: 'Copy app files to AppDir'
+      - name: Copy app files to AppDir
         run : |
           cp ${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64 ${{ env.APPIMAGE_DIR }}/usr/bin/${{ env.APP_NAME }}
           cp ${{ env.EXPORT_FOLDER }}/libgozen*.so ${{ env.APPIMAGE_DIR }}/usr/lib/
@@ -117,7 +135,7 @@ jobs:
           desktop-file-validate ${{ env.APPIMAGE_DIR }}/${{ env.APP_NAME }}.desktop
           echo "Application files copied to AppDir."
 
-      - name: 'Create AppRun script'
+      - name: Create AppRun script
         run: |
           cat <<EOF > ${{ env.APPIMAGE_DIR }}/AppRun
           #!/bin/bash
@@ -132,13 +150,13 @@ jobs:
           chmod +x ${{ env.APPIMAGE_DIR }}/AppRun
           echo "AppRun script created."
 
-      - name: 'Download linuxdeploy'
+      - name: Download linuxdeploy
         run: |
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O linuxdeploy
           chmod +x linuxdeploy
           echo "linuxdeploy downloaded."
 
-      - name: 'Bundle dependencies and create AppImage'
+      - name: Bundle dependencies and create AppImage
         run: |
           export LD_LIBRARY_PATH="${{ env.APPIMAGE_DIR }}/usr/lib:$LD_LIBRARY_PATH"
 
@@ -160,9 +178,10 @@ jobs:
           echo "AppImage created and renamed to: ${{ env.APP_NAME }}-${{ inputs.version }}-x86_64.AppImage"
           ls -l *.AppImage
 
-      - name: 'Upload AppImage Artifact'
+      - name: Upload AppImage Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-Linux-AppImage-${{ inputs.version }}
+          name: GoZen_Linux_AppImage_${{ inputs.version }}
           path: ${{ env.APP_NAME }}-${{ inputs.version }}-x86_64.AppImage
           if-no-files-found: error # Fails the workflow if the AppImage isn't found
+

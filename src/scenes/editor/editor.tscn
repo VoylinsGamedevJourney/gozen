@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://b0r37lfkj7wl6"]
+
+[ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scenes/editor/editor.gd" id="1_nbwom"]
+[ext_resource type="PackedScene" uid="uid://6snp6sstgbb5" path="res://scenes/menu_bar/menu_bar.tscn" id="2_7gtdv"]
+[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline_bar/timeline_bar.tscn" id="5_jwsr6"]
+[ext_resource type="PackedScene" uid="uid://l1tap0q8rgjc" path="res://scenes/edit_screen/edit_screen.tscn" id="8_rolao"]
+[ext_resource type="PackedScene" uid="uid://71mkki6432yy" path="res://scenes/render_screen/render_screen.tscn" id="9_p4u40"]
+
+[node name="Editor" type="PanelContainer" node_paths=PackedStringArray("menu_bar", "screen_tab_container")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"background"
+script = ExtResource("1_nbwom")
+menu_bar = NodePath("VBox/MenuBarHBox")
+screen_tab_container = NodePath("VBox/VSplitContainer/ScreenTabContainer")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_direction = 2
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MenuBarHBox" parent="VBox" instance=ExtResource("2_7gtdv")]
+layout_mode = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScreenTabContainer" type="TabContainer" parent="VBox/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+tabs_visible = false
+
+[node name="EditTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("8_rolao")]
+layout_mode = 2
+
+[node name="RenderTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("9_p4u40")]
+visible = false
+layout_mode = 2
+
+[node name="TimelineBar" parent="VBox/VSplitContainer" instance=ExtResource("5_jwsr6")]
+layout_mode = 2
+
+[node name="ProjectViewSubViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+size = Vector2i(1920, 1080)
+size_2d_override_stretch = true
+
+[node name="Background" type="ColorRect" parent="ProjectViewSubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

@@ -1,1 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#808080"><path d="M319-249.52h322v-62.63H319v62.63Zm0-170h322v-62.63H319v62.63Zm-96.85 345.5q-27.6 0-47.86-20.27-20.27-20.26-20.27-47.86v-675.7q0-27.7 20.27-48.03 20.26-20.34 47.86-20.34h361.48l222.59 222.59v521.48q0 27.6-20.34 47.86-20.33 20.27-48.03 20.27h-515.7Zm326.7-557.83h189l-189-186v186Z"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="48px"
+   viewBox="0 -960 960 960"
+   width="48px"
+   fill="#808080"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="text_file.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="13.317178"
+     inkscape:cx="25.343207"
+     inkscape:cy="26.432026"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <path
+     id="path1"
+     d="M 222.14844 -886.21094 C 203.74844 -886.21094 187.80354 -879.45844 174.29688 -865.89844 C 160.78355 -852.34511 154.02344 -836.31823 154.02344 -817.85156 L 154.02344 -142.14844 C 154.02344 -123.74844 160.78355 -107.80354 174.29688 -94.296875 C 187.80354 -80.783542 203.74844 -74.023438 222.14844 -74.023438 L 737.85156 -74.023438 C 756.31823 -74.023438 772.34511 -80.783542 785.89844 -94.296875 C 799.45844 -107.80354 806.21094 -123.74844 806.21094 -142.14844 L 806.21094 -663.63281 L 583.63281 -886.21094 L 222.14844 -886.21094 z M 548.86719 -817.85156 L 737.85156 -631.83594 L 548.86719 -631.83594 L 548.86719 -817.85156 z M 316.91406 -538.94531 L 643.24219 -538.94531 L 643.24219 -466.91406 L 520.89844 -466.91406 L 520.89844 -179.0625 L 439.53125 -179.0625 L 439.53125 -466.91406 L 316.91406 -466.91406 L 316.91406 -538.94531 z " />
+</svg>
