@@ -4,9 +4,9 @@ msgstr ""
 "Project-Id-Version: GoZen\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Slander\n"
 "Language-Team: \n"
-"Language: fr\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,14 +24,11 @@ msgstr "Par défaut"
 msgid "title_timeline"
 msgstr "Timeline"
 
-#, fuzzy
 msgid "title_extras"
-msgstr "Par défaut"
+msgstr "Divers"
 
-#, fuzzy
-#| msgid "title_rendering"
 msgid "title_render_settings"
-msgstr "Rendu"
+msgstr "Configuration du rendu"
 
 msgid "title_rendering"
 msgstr "Rendu"
@@ -39,10 +36,8 @@ msgstr "Rendu"
 msgid "title_rendering_finished"
 msgstr "Rendu terminé"
 
-#, fuzzy
-#| msgid "title_rendering"
 msgid "title_rendering_error"
-msgstr "Rendu"
+msgstr "Rendu : une erreur s'est produite."
 
 msgid "title_render_video"
 msgstr "Rendu vidéo"
@@ -62,45 +57,32 @@ msgstr "Démarrer"
 msgid "title_new_project"
 msgstr "Nouveau projet"
 
-#, fuzzy
 msgid "title_loading_project"
-msgstr "Nouveau projet"
+msgstr "Chargement du projet"
 
-#, fuzzy
 msgid "title_files_dropped"
-msgstr "Nouveau projet"
+msgstr "Fichiers déposés"
 
-#, fuzzy
 msgid "title_sponsors"
-msgstr ""
+msgstr "Mécènes"
 
-#, fuzzy
-#| msgid "button_tooltip_editor_settings"
 msgid "title_editor_settings"
-msgstr "Configuration de l'éditeur."
+msgstr "Configuration de l'éditeur"
 
-#, fuzzy
-#| msgid "title_new_project"
 msgid "title_project_settings"
-msgstr "Nouveau projet"
+msgstr "Configuration du projet"
 
-#, fuzzy
-#| msgid "title_cpu_threads"
 msgid "title_chapters"
-msgstr "Threads CPU"
+msgstr "Chapitres"
 
-#, fuzzy
 msgid "title_save_image_to_file"
-msgstr ""
+msgstr "Sauvegarder l'image"
 
-#, fuzzy
-#| msgid "title_render_audio"
 msgid "title_save_video_audio_to_wav"
-msgstr "Rendu audio"
+msgstr "Sauvegarder la piste audio"
 
-#, fuzzy
 msgid "title_add_color_file"
-msgstr ""
+msgstr "Ajouter un clip de couleur"
 
 msgid "button_tooltip_create_new_project"
 msgstr "Créer un nouveau projet avec les réglages sélectionnés."
@@ -118,15 +100,13 @@ msgid "button_discord_server"
 msgstr "Serveur Discord"
 
 msgid "button_support_gozen"
-msgstr "Aider GoZen"
+msgstr "Soutenir GoZen"
 
-#, fuzzy
 msgid "button_view_sponsors"
-msgstr "Sauvegarder les réglages"
+msgstr "Afficher les mécènes"
 
-#, fuzzy
 msgid "button_become_sponsor"
-msgstr "Fermer"
+msgstr "Devenir mécène"
 
 msgid "button_open_project"
 msgstr "Ouvrir un projet"
@@ -134,10 +114,8 @@ msgstr "Ouvrir un projet"
 msgid "button_create_new_project"
 msgstr "Créer un nouveau projet"
 
-#, fuzzy
-#| msgid "button_create_new_project"
 msgid "button_create_new_color_file"
-msgstr "Créer un nouveau projet"
+msgstr "Créer un clip de couleur"
 
 msgid "button_tooltip_editor_settings"
 msgstr "Configuration de l'éditeur."
@@ -154,15 +132,11 @@ msgstr "Réinitialiser"
 msgid "button_return"
 msgstr "Retour"
 
-#, fuzzy
-#| msgid "button_save_settings"
 msgid "button_screen_editing"
-msgstr "Sauvegarder les réglages"
+msgstr "Éditer"
 
-#, fuzzy
-#| msgid "button_start_render"
 msgid "button_screen_render"
-msgstr "Démarrer le rendu"
+msgstr "Rendu"
 
 msgid "button_start_render"
 msgstr "Démarrer le rendu"
@@ -189,13 +163,12 @@ msgid "text_discord_link"
 msgstr "Lien Discord"
 
 msgid "text_support_gozen"
-msgstr "Aider GoZen"
+msgstr "Soutenir GoZen"
 
-#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
 msgid "text_gozen_made_by"
-msgstr "GoZen est un éditeur vidéo conçu par"
+msgstr "GoZen est un éditeur vidéo conçu par :"
 
 msgid "text_rename_file_to"
 msgstr "Renommer le fichier en ..."
@@ -212,9 +185,8 @@ msgstr "Résolution"
 msgid "text_framerate"
 msgstr "Fréquence d'images"
 
-#, fuzzy
 msgid "placeholder_text_search_files"
-msgstr ""
+msgstr "Rechercher des fichiers ..."
 
 msgid "tooltip_ignore_changes_close_settings"
 msgstr "Ignorer les changements et fermer le menu de configuration."
@@ -226,7 +198,7 @@ msgid "setting_background_color"
 msgstr "Couleur d'arrière-plan"
 
 msgid "setting_language"
-msgstr "Langage"
+msgstr "Langue"
 
 msgid "setting_theme"
 msgstr "Thème"
@@ -241,18 +213,14 @@ msgid "setting_waveform_style"
 msgstr "Style des ondes audio"
 
 msgid "setting_default_image_duration"
-msgstr "Durée d'image par défaut"
+msgstr "Durée par défaut des images"
 
-#, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "setting_default_color_duration"
-msgstr "Durée d'image par défaut"
-#, fuzzy
-#| msgid "setting_default_image_duration"
-msgid "setting_default_text_duration"
-msgstr "Durée d'image par défaut"
+msgstr "Durée par défaut des clips de couleur"
 
-#, fuzzy
+msgid "setting_default_text_duration"
+msgstr "Durée par défaut des textes"
+
 msgid "setting_tooltip_duration_in_frames"
 msgstr "La durée en nombre d'images."
 
@@ -287,29 +255,24 @@ msgstr ""
 "touche spécifique pour que le double-clic supprime l'espace vide entre les "
 "clips."
 
-#, fuzzy
 msgid "setting_check_version"
-msgstr "Thème"
+msgstr "Vérifier la version"
 
-#, fuzzy
 msgid "setting_tooltip_check_version"
-msgstr "Le mode sombre est le meilleur."
+msgstr ""
+"Ceci repose sur une vérification du dépôt GitHub et requiers une connexion à "
+"Internet. Certaines personnes préfèrent ne pas connecter leur application au "
+"web, donc cette option est désactivée par défaut."
 
-#, fuzzy
-#| msgid "setting_language"
 msgid "setting_auto_save"
-msgstr "Langage"
+msgstr "Sauvegarde automatique du projet"
 
-#, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_auto_save"
-msgstr "Le mode sombre est le meilleur."
+msgstr "Sauvegarde automatiquement votre projet au bout de quelques minutes."
 
-#, fuzzy
 msgid "encoding_progress_text_setup"
 msgstr "Préparation du moteur de rendu ..."
 
-#, fuzzy
 msgid "encoding_progress_text_open_error"
 msgstr ""
 "Le moteur de rendu ne peut être ouvert, vérifiez le chemin et les réglages !"
@@ -317,18 +280,15 @@ msgstr ""
 msgid "encoding_progress_text_compiling_audio"
 msgstr "Compilation des données audio ..."
 
-#, fuzzy
 msgid "encoding_progress_text_sending_audio"
-msgstr "Une erreur est apparue pendant l'envoi de l'audio au moteur de rendu !"
+msgstr "Envoi des données audio ..."
 
-#, fuzzy
 msgid "encoding_progress_text_sending_audio_error"
 msgstr "Une erreur est apparue pendant l'envoi de l'audio au moteur de rendu !"
 
 msgid "encoding_progress_text_creating_sending_data"
 msgstr "Création et envoi des données d'image ..."
 
-#, fuzzy
 msgid "encoding_progress_text_sending_data_error"
 msgstr "Une erreur est apparue pendant l'envoi de l'image au moteur de rendu !"
 
@@ -356,7 +316,6 @@ msgstr "Codec vidéo"
 msgid "render_option_quality"
 msgstr "Qualité"
 
-#, fuzzy
 msgid "render_option_tooltip_quality"
 msgstr ""
 "Ajuste le Facteur de Taux Constant (CRF), la qualité la plus basse étant 50, "
@@ -395,153 +354,113 @@ msgstr "Longueur de la vidéo"
 msgid "render_option_render_time"
 msgstr "Temps de rendu"
 
-#, fuzzy
 msgid "notification_update_available"
-msgstr ""
+msgstr "Mise-à-jour disponible !"
 
-#, fuzzy
 msgid "status_project_loading_init"
-msgstr ""
+msgstr "Ouverture du projet ..."
 
-#, fuzzy
 msgid "status_project_preparing_timeline"
-msgstr ""
+msgstr "Préparation de la timeline ..."
 
-#, fuzzy
 msgid "status_project_loading_files"
-msgstr ""
+msgstr "Chargement des fichiers ..."
 
-#, fuzzy
 msgid "status_project_playback_setup"
-msgstr ""
+msgstr "Configuration de la lecture ..."
 
-#, fuzzy
 msgid "status_project_finalizing"
-msgstr ""
+msgstr "Finalisation ..."
 
-#, fuzzy
 msgid "status_new_project_init"
-msgstr "Nouveau projet"
+msgstr "Création du nouveau projet ..."
 
-#, fuzzy
 msgid "command_editor_settings"
-msgstr "Configuration de l'éditeur."
+msgstr "Configuration de l'éditeur"
 
-#, fuzzy
 msgid "command_project_settings"
-msgstr ""
+msgstr "Configuration du projet"
 
-#, fuzzy
 msgid "command_render_menu"
-msgstr ""
+msgstr "Menu de rendu"
 
-#, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_project"
-msgstr "Nouveau projet"
+msgstr "Projet"
 
-#, fuzzy
 msgid "menu_bar_editor"
-msgstr ""
+msgstr "Éditeur"
 
-#, fuzzy
 msgid "menu_bar_project_save"
-msgstr ""
+msgstr "Sauvegarder"
 
-#, fuzzy
 msgid "menu_bar_project_save_as"
-msgstr ""
+msgstr "Sauvegarder sous ..."
 
-#, fuzzy
-#| msgid "button_open_project"
 msgid "menu_bar_project_open_project"
-msgstr "Ouvrir un projet"
+msgstr "Ouvrir"
 
-#, fuzzy
 msgid "menu_bar_project_open_settings"
-msgstr ""
+msgstr "Ouvrir les réglages"
 
-#, fuzzy
 msgid "menu_bar_editor_open_settings"
-msgstr "Configuration de l'éditeur."
+msgstr "Ouvrir les réglages"
 
-#, fuzzy
 msgid "menu_bar_editor_open_url_site"
-msgstr ""
+msgstr "Site Internet de GoZen"
 
-#, fuzzy
 msgid "menu_bar_editor_open_url_manual"
-msgstr ""
+msgstr "Manuel"
 
-#, fuzzy
 msgid "menu_bar_editor_open_url_tutorials"
-msgstr ""
+msgstr "Tutoriels"
 
-#, fuzzy
 msgid "menu_bar_editor_open_url_discord"
-msgstr ""
+msgstr "Serveur Discord"
 
-#, fuzzy
 msgid "menu_bar_editor_open_url_support"
-msgstr ""
+msgstr "Soutenir GoZen"
 
-#, fuzzy
-#| msgid "title_about_gozen"
 msgid "menu_bar_editor_open_about_gozen"
 msgstr "À Propos de GoZen"
 
-#, fuzzy
 msgid "file_dialog_title_add_files"
-msgstr ""
+msgstr "Ajouter des fichiers"
 
-#, fuzzy
 msgid "file_dialog_title_select_save_path"
-msgstr ""
+msgstr "Sélectionner le chemin de sauvegarde"
 
-#, fuzzy
 msgid "file_panel_item_add_files"
-msgstr ""
+msgstr "Ajouter un/des fichier(s)"
 
-#, fuzzy
 msgid "file_panel_item_add_text"
-msgstr ""
+msgstr "Ajouter du texte"
 
-#, fuzzy
 msgid "file_panel_item_add_color"
-msgstr ""
+msgstr "Ajouter une couleur"
 
-#, fuzzy
 msgid "popup_item_rename"
-msgstr ""
+msgstr "Renommer"
 
-#, fuzzy
 msgid "popup_item_reload"
-msgstr ""
+msgstr "Recharger"
 
-#, fuzzy
 msgid "popup_item_delete"
-msgstr ""
+msgstr "Supprimer"
 
-#, fuzzy
 msgid "popup_item_duplicate"
-msgstr ""
+msgstr "Dupliquer"
 
-#, fuzzy
 msgid "popup_item_save_as_file"
-msgstr ""
+msgstr "Sauvegarder sous ..."
 
-#, fuzzy
 msgid "popup_item_extract_audio"
-msgstr ""
+msgstr "Extraire l'audio (WAV)"
 
-#, fuzzy
 msgid "popup_separator_image_options"
-msgstr ""
+msgstr "Réglages d'image"
 
-#, fuzzy
 msgid "popup_separator_video_options"
-msgstr ""
+msgstr "Réglages vidéo"
 
-#, fuzzy
 msgid "popup_separator_text_options"
-msgstr ""
+msgstr "Réglages de texte"
