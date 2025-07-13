@@ -42,9 +42,7 @@ func _on_actual_close() -> void:
 
 	Settings._on_actual_close()
 	EditorCore._on_actual_close()
-	Threader._on_actual_close()
 	InputManager._on_actual_close()
-	RenderManager._on_actual_close()
 	get_tree().quit()
 
 
@@ -345,6 +343,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 
 	var dropped_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
 	var file_status: Dictionary = {}
+	var file_ids: Dictionary = {}
 	var still_loading: PackedInt64Array = []
 	var progress_increment: float = 0.0
 
@@ -364,6 +363,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 
 	for file_path: String in file_status.keys():
 		var id: int = add_file(file_path)
+		file_ids[id] = file_path
 		dropped_overlay.increment_progress_bar(progress_increment)
 		await RenderingServer.frame_post_draw
 
@@ -384,12 +384,17 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 
 	while still_loading.size() != 0:
 		for id: int in still_loading:
-			if get_file(id).type != File.TYPE.VIDEO:
+			if !has_file(id):
+				# Error, file was most likely too big.
+				file_status[file_ids[id]] = -3 # Too big error code.
+				dropped_overlay.update_files(file_status)
+				dropped_overlay.increment_progress_bar(progress_increment)
+				still_loading.remove_at(still_loading.find(id))
+			elif get_file(id).type != File.TYPE.VIDEO:
 				printerr("This should not happen! File is type: ", get_file(id).type)
 				dropped_overlay.increment_progress_bar(progress_increment)
 				still_loading.remove_at(still_loading.find(id))
-				continue
-			if get_file_data(id).video != null and get_file_data(id).video.is_open():
+			elif get_file_data(id).video != null and get_file_data(id).video.is_open():
 				file_status[get_file(id).path] = 1
 				dropped_overlay.update_files(file_status)
 				dropped_overlay.increment_progress_bar(progress_increment)
@@ -399,6 +404,22 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 		await RenderingServer.frame_post_draw
 
 	dropped_overlay.queue_free()
+
+
+func _on_file_too_big(file_id: int) -> void:
+	# TODO: Show popup.
+	var dialog: AcceptDialog = AcceptDialog.new()
+	var file_path: String = data.files[file_id].path
+
+	dialog.title = tr("title_dialog_file_too_big")
+	dialog.dialog_text = file_path
+	add_child(dialog)
+	dialog.popup_centered()
+
+	if !data.files.erase(file_id):
+		Toolbox.print_erase_error()
+	if !file_data.erase(file_id):
+		Toolbox.print_erase_error()
 
 
 func _on_close_requested() -> void:
@@ -460,6 +481,10 @@ func set_file_nickname(file_id: int, nickname: String) -> void:
 	data.files[file_id].nickname = nickname
 	file_nickname_changed.emit(file_id)
 	unsaved_changes = true
+
+
+func has_file(file_id: int) -> bool:
+	return data.files.has(file_id)
 
 
 func get_files() -> Dictionary[int, File]:

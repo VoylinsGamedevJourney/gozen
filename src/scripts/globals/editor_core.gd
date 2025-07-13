@@ -82,13 +82,6 @@ func _on_actual_close() -> void:
 	loaded_clips.clear()
 	default_effects_video.queue_free()
 	
-	for tex: ImageTexture in y_textures:
-		tex.free()
-	for tex: ImageTexture in u_textures:
-		tex.free()
-	for tex: ImageTexture in v_textures:
-		tex.free()
-
 	y_textures.clear()
 	u_textures.clear()
 	v_textures.clear()
