@@ -68,11 +68,11 @@ func get_thumb(file_id: int) -> Texture2D:
 		# Add the correct placeholder image.
 		match Project.get_file(file_id).type:
 			File.TYPE.AUDIO:
-				return preload("uid://cs5gcg8kix42x")
+				return _get_default_thumb_audio()
 			File.TYPE.TEXT:
-				return preload("uid://dqv5j4hytkcya")
+				return _get_default_thumb_text()
 			_: # Video placeholder.
-				return preload("uid://dpg11eiuwgv38")
+				return _get_default_thumb_video()
 
 	# Return the saved thumbnail.
 	image = Image.load_from_file(ProjectSettings.globalize_path(FILE_PATH % data[path]))
@@ -80,9 +80,27 @@ func get_thumb(file_id: int) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
+func _get_default_thumb_audio() -> Texture2D:
+	var tex: Texture2D = preload("uid://cs5gcg8kix42x")
+	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
+
+
+func _get_default_thumb_text() -> Texture2D:
+	var tex: Texture2D = preload("uid://dqv5j4hytkcya")
+	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
+
+
+func _get_default_thumb_video() -> Texture2D:
+	var tex: Texture2D = preload("uid://dpg11eiuwgv38")
+	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
+
+
 # This function is for generating thumbnails, should only be called from the
 # _process function and in a thread through Threader.
 func _gen_thumb(file_id: int) -> void:
+	if !Project.has_file(file_id):
+		return
+
 	var file: File = Project.get_file(file_id)
 	var path: String = file.path
 	var type: File.TYPE = file.type
@@ -118,7 +136,14 @@ func scale_thumbnail(image: Image) -> Image:
 			int(image.get_width() * image_scale),
 			int(image.get_height() * image_scale),
 			Image.INTERPOLATE_BILINEAR)
+	
+	var border_extra: int = int(float(107 - image.get_width()) / 2.0)
+
+	if border_extra != 0:
+		image.flip_x()
+		image.crop(image.get_width() + border_extra, 60)
+		image.flip_x()
+		image.crop(107, 60)
 
 	return image
-
 
