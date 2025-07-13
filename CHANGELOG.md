@@ -1,6 +1,36 @@
 # Changelog
 This is the changelog of all releases which can be found on the [GoZen repo release page](https://github.com/VoylinsGamedevJourney/gozen/releases)
 
+## Version 0.4-alpha - 2025/**/**
+### Added
+- RPM build;
+- DEB build;
+- GIF playback;
+- De-interlacing support;
+- SAR support (non-square pixels);
+- Rotation by default (for videos with rotation tag);
+- On quit dialog when unsaved changes are present;
+- Error when trying to add +3 hour 23 minutes videos (2GB array limitation audio);
+- Support for Forward+ (but compatibility mode is faster in most cases);
+- Local clip video instancing;
+
+### Fixed
+- Light theme having unreadable menu buttons;
+- "About GoZen" popup is now a "popup";
+- Some translation strings;
+- Pure Linux build crash on startup;
+- File panel popup not showing;
+- Seeking video would skip 1 frame;
+- Thumbnailer sizing not working well for non 9:16 aspect ratio;
+
+### Improved
+- Windows workflow takes less time;
+- Better indication for screen buttons;
+- Cut down Workflow build time by 60%;
+- Locale getter on first launch;
+- Better cleanup for faster closing of GoZen;
+
+
 ## Version 0.3-alpha - 2025/07/05
 Big thanks to https://github.com/ManpreetXSingh for the massive PR which fixed and added a lot of encoding capabilities and for the improvements on the build system!
 Also a big thank you to all the translators, some languages aren't fully up to date, but that's my fault for going too fast and adding too many strings on a weekly/daily basis.
