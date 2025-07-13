@@ -40,8 +40,15 @@ func get_frame(frame_nr: int) -> Texture:
 
 		# Changing from global frame nr to clip frame nr
 		var file_data: FileData = Project.get_file_data(file_id)
-		var video_framerate: float = file_data.video.get_framerate()
-		var video_frame_nr: int = file_data.video.get_current_frame()
+		var video: GoZenVideo
+
+		if file_data.clip_only_video.has(clip_id):
+			video = file_data.clip_only_video[clip_id]
+		else:
+			video = file_data.video
+
+		var video_framerate: float = video.get_framerate()
+		var video_frame_nr: int = video.get_current_frame()
 
 		frame_nr = frame_nr - start_frame + begin
 		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
@@ -54,12 +61,12 @@ func get_frame(frame_nr: int) -> Texture:
 		var skips: int = frame_nr - video_frame_nr
 
 		if frame_nr < video_frame_nr or skips > MAX_FRAME_SKIPS:
-			if !file_data.video.seek_frame(frame_nr):
+			if !video.seek_frame(frame_nr):
 				printerr("Couldn't seek frame!")
 		else:
 			# go through skips and set frame
 			for i: int in skips:
-				if !file_data.video.next_frame(i == skips):
+				if !video.next_frame(i == skips):
 					print("Something went wrong skipping next frame!")
 
 	return Project.get_file_data(file_id).image

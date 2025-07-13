@@ -157,6 +157,24 @@ func _on_gui_input(event: InputEvent) -> void:
 #			EffectsPanel.instance.open_clip_effects(name.to_int())
 #			get_viewport().set_input_as_handled()
 
+		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
+			var popup_menu: PopupMenu = PopupMenu.new()
+
+			#Toolbox.connect_func(popup_menu.id_pressed, _on_id_pressed.bind(popup_menu))
+			popup_menu.name = "oi"
+			popup_menu.add_theme_constant_override("icon_max_width", 20)
+
+			if Project.get_clip_type(clip_data.clip_id) == File.TYPE.VIDEO:
+				popup_menu.add_check_item("Clip only video instance", 0)
+				popup_menu.set_item_checked(0, Project.get_file_data(clip_data.file_id).clip_only_video.has(clip_data.clip_id))
+				Toolbox.connect_func(popup_menu.id_pressed, _on_clip_popup_menu_pressed.bind(popup_menu))
+
+			add_child(popup_menu)
+			popup_menu.popup()
+			popup_menu.size = Vector2i(100, 0)
+			popup_menu.position.x = int(get_viewport().get_mouse_position().x + 18)
+			popup_menu.position.y = int(get_viewport().get_mouse_position().y + (popup_menu.size.y / 2.0))
+
 	if event.is_action_pressed("delete_clip"):
 		InputManager.undo_redo.create_action("Deleting clip on timeline")
 
@@ -166,6 +184,14 @@ func _on_gui_input(event: InputEvent) -> void:
 		InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 		InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
 		InputManager.undo_redo.commit_action()
+
+
+func _on_clip_popup_menu_pressed(id: int, popup_menu: PopupMenu) -> void:
+	# 0 = Clip video only instance
+	if !popup_menu.is_item_checked(id):
+		Project.get_file(clip_data.file_id).enable_clip_only_video(clip_data.clip_id)
+	else:
+		Project.get_file(clip_data.file_id).disable_clip_only_video(clip_data.clip_id)
 
 
 func _get_drag_data(_pos: Vector2) -> Draggable:

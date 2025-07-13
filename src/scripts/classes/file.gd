@@ -11,6 +11,8 @@ var nickname: String
 var type: TYPE = TYPE.EMPTY
 var folder: String = "/" # Folder inside the editor.
 
+var clip_only_video_ids: PackedInt32Array = []
+
 var modified_time: int = -1
 
 var duration: int = -1
@@ -70,4 +72,27 @@ static func check_valid(file_path: String) -> bool:
 		return true
 
 	return false
+
+
+func enable_clip_only_video(clip_id: int) -> void:
+	var file_data: FileData = Project.get_file_data(id)
+	var video: GoZenVideo = GoZenVideo.new()
+
+	if video.open(path):
+		printerr("Loading video at path '%s' failed!" % path)
+		return
+
+	if clip_only_video_ids.append(clip_id):
+		Toolbox.print_append_error()
+	file_data.clip_only_video[clip_id] = video
+
+
+func disable_clip_only_video(clip_id: int) -> void:
+	var file_data: FileData = Project.get_file_data(id)
+
+	if clip_only_video_ids.has(clip_id):
+		clip_only_video_ids.remove_at(clip_only_video_ids.find(clip_id))
+
+	if file_data.clip_only_video.has(clip_id) and !file_data.clip_only_video.erase(clip_id):
+		Toolbox.print_erase_error()
 

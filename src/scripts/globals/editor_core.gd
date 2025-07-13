@@ -284,9 +284,16 @@ func update_view(track_id: int) -> void:
 			updated = true
 
 		if !updated:
-			y_textures[track_id].update(file_data.video.get_y_data())
-			u_textures[track_id].update(file_data.video.get_u_data())
-			v_textures[track_id].update(file_data.video.get_v_data())
+			var video: GoZenVideo
+
+			if file_data.clip_only_video.has(loaded_clips[track_id].clip_id):
+				video = file_data.clip_only_video[loaded_clips[track_id].clip_id]
+			else:
+				video = file_data.video
+
+			y_textures[track_id].update(video.get_y_data())
+			u_textures[track_id].update(video.get_u_data())
+			v_textures[track_id].update(video.get_v_data())
 		material.set_shader_parameter("resolution", file_data.video.get_actual_resolution() as Vector2)
 		material.set_shader_parameter("rotation", deg_to_rad(float(file_data.video.get_rotation())))
 

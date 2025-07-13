@@ -20,6 +20,8 @@ var color: Color = Color.WHITE
 var audio_wave_data: PackedFloat32Array = []
 var color_profile: Vector4 = Vector4.ZERO
 
+var clip_only_video: Dictionary[int, GoZenVideo] = {} # { Clip id: Video }
+
 
 
 func _update_duration() -> void:
