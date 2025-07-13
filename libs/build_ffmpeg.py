@@ -315,7 +315,7 @@ def find_file(name: str, search_paths: list[Path]) -> Path | None:
 
 
 def copy_lib_files_linux(arch: str):
-    dest_dir = Path(".") / "bin" / f"linux_{arch}"
+    dest_dir = Path("..") / "bin" / f"linux_{arch}"
     host, sysroot = get_host_and_sysroot("linux", arch)
 
     # User defined environment variable takes priority if present
@@ -393,7 +393,7 @@ def copy_lib_files_linux(arch: str):
 
 
 def copy_lib_files_windows(arch: str):
-    dest_dir = Path(".") / "bin" / f"windows_{arch}"
+    dest_dir = Path("..") / "bin" / f"windows_{arch}"
     host, sysroot = get_host_and_sysroot("windows", arch)
 
     # On msys2 the dlls are present in sysroot/bin, on Ubuntu in sysroot/lib

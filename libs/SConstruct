@@ -17,10 +17,11 @@ jobs = ARGUMENTS.get("jobs", 4)
 platform = ARGUMENTS.get("platform", "linux")
 arch = ARGUMENTS.get("arch", "x86_64")
 target = ARGUMENTS.get("target", "template_debug").split("_")[-1]
-libpath = f"bin/{platform}_{arch}/libgozen{env_suffix}{env_shlibsuffix}"
-use_mingw = ARGUMENTS.get("use_mingw", "no")
+libpath = f"../bin/{platform}_{arch}/libgozen{env_suffix}{env_shlibsuffix}"
 
+use_mingw = ARGUMENTS.get("use_mingw", "no")
 use_system = ARGUMENTS.get("use_system", "no")
+
 
 if arch == "arm64":
     env["CC"] = "aarch64-linux-gnu-gcc"
