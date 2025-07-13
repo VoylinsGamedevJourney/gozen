@@ -15,7 +15,6 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 
 	PackedByteArray audio_data = PackedByteArray();
 
-
 	const AVCodec *codec = avcodec_find_decoder(
 			stream->codecpar->codec_id);
 	if (!codec) {
@@ -67,9 +66,26 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 				"Couldn't allocate frames/packet for audio!");
 		return audio_data;
 	}
-
+	
 	size_t audio_size = 0;
 	int bytes_per_samples = av_get_bytes_per_sample(TARGET_FORMAT);
+
+	int64_t duration = (stream->duration != AV_NOPTS_VALUE)
+		? stream->duration
+		: format_ctx->duration;
+
+	double stream_duration_sec = (stream->duration != AV_NOPTS_VALUE)
+		? (stream->duration * av_q2d(stream->time_base))
+		: ((double)format_ctx->duration / AV_TIME_BASE);
+	size_t estimated_total_samples = (size_t)(stream_duration_sec * TARGET_SAMPLE_RATE);
+	int64_t total_size = estimated_total_samples * bytes_per_samples * 2;
+
+	if (total_size >= 2147483600) {
+		_log_err("Audio is too big");
+		audio_data.resize(1);
+		return audio_data;
+	}
+	audio_data.resize(total_size);
 
 	while (!(FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index,
 							   av_frame.get(), av_packet.get()))) {
@@ -108,7 +124,11 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 
 		size_t byte_size = av_decoded_frame->nb_samples * bytes_per_samples * 2;
 
-		audio_data.resize(audio_size + byte_size);
+		if (audio_size + byte_size > audio_data.size()) {
+			size_t new_size = audio_size + byte_size + 4096;
+			audio_data.resize(new_size);
+		}
+
 		memcpy(&(audio_data.ptrw()[audio_size]), 
 				av_decoded_frame->extended_data[0],
 				byte_size);
@@ -117,6 +137,9 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 	}
+
+	if (audio_size < audio_data.size())
+		audio_data.resize(audio_size);
 
 	// Cleanup
 	avcodec_flush_buffers(codec_ctx.get());

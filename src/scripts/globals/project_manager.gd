@@ -7,6 +7,8 @@ signal file_deleted(id: int)
 signal file_nickname_changed(id: int)
 signal file_path_updated(id: int)
 
+signal error_file_too_big(id: int)
+
 signal _markers_updated # Used for chapters
 
 
@@ -25,6 +27,7 @@ var unsaved_changes: bool = false
 func _ready() -> void:
 	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
 	Toolbox.connect_func(get_window().close_requested, _on_close_requested)
+	Toolbox.connect_func(error_file_too_big, _on_file_too_big)
 
 
 func _on_actual_close() -> void:

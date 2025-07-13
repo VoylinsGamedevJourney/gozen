@@ -87,6 +87,9 @@ msgstr "Add color file"
 msgid "title_close_without_saving"
 msgstr "Close without saving?"
 
+msgid "title_dialog_file_too_big"
+msgstr "File is too big!"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Create new project with the chosen settings."
 

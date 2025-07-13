@@ -532,8 +532,7 @@ func add_clip(clip_data: ClipData) -> void:
 	button.add_theme_stylebox_override("pressed", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
 	@warning_ignore_restore("unsafe_call_argument")
 
-	button.set_script(load("uid://cvdbyqqvy1rl1"))
-
+	button.set_script(load("uid://cvdbyqqvy1rl1")) # Clip Button script.
 	clips.add_child(button)
 
 

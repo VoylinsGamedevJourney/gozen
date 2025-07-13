@@ -84,6 +84,9 @@ msgstr ""
 msgid "title_close_without_saving"
 msgstr ""
 
+msgid "title_dialog_file_too_big"
+msgstr ""
+
 msgid "button_tooltip_create_new_project"
 msgstr ""
 

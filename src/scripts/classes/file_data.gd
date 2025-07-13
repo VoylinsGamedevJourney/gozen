@@ -71,6 +71,10 @@ func _load_audio_data(file_path: String) -> void:
 
 	if audio_data.size() == 0:
 		return
+	if audio_data.size() == 1:
+		# This video is not usable since the size it too large (2 GB limit).
+		Project.error_file_too_big.emit.call_deferred(id)
+		return
 
 	audio = AudioStreamWAV.new()
 	audio.mix_rate = 44100
@@ -147,6 +151,10 @@ func _create_wave() -> void:
 
 			if frame_max_abs_amplitude > max_abs_amplitude:
 				max_abs_amplitude = frame_max_abs_amplitude
+
+		# Incase we close the editor whilst wave data is still being created.
+		if audio_wave_data.size() == 0:
+			return
 
 		audio_wave_data[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame

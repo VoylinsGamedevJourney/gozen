@@ -52,6 +52,7 @@ func update_files(files: Dictionary) -> void:
 	# - 0: Loading
 	# - -1: Problem
 	# - -2: Already loaded
+	# - -3: Too big (2GB AudioStreamWav limit)
 	if progress_hint.visible:
 		progress_hint.visible = false
 	if !scroll_container.visible:
@@ -70,3 +71,4 @@ func update_files(files: Dictionary) -> void:
 			1:  file_labels[file].self_modulate = Color.GREEN
 			-1: file_labels[file].self_modulate = Color.RED
 			-2: file_labels[file].self_modulate = Color.GRAY
+			-3: file_labels[file].self_modulate = Color.RED

@@ -207,6 +207,8 @@ func _add_folder_to_tree(folder: String) -> void:
 
 
 func _on_file_added(file_id: int) -> void:
+	# There's a possibility that the file was too large
+	# and that it did not get added.
 	_add_file_to_tree(Project.get_file(file_id))
 
 
@@ -240,7 +242,10 @@ func _add_file_to_tree(file: File) -> void:
 
 
 func _on_update_thumb(file_id: int) -> void:
-	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
+	if Project.has_file(file_id):
+		file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
+	else:
+		_on_file_deleted(file_id)
 
 
 func _sort_folder(folder: String) -> void:
