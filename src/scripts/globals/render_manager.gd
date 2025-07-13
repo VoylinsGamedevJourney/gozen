@@ -51,7 +51,7 @@ func start() -> void:
 	start_time = Time.get_ticks_msec()
 	encoding_time = 0
 
-	if !encoder.open():
+	if !encoder.open(viewport.get_image().get_format() == Image.FORMAT_RGBA8):
 		stop_encoder()
 		printerr("Couldn't open encoder!")
 		update_encoder_status.emit(STATUS.ERROR_OPEN)

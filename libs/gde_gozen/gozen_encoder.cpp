@@ -17,7 +17,7 @@ PackedStringArray GoZenEncoder::get_available_codecs(int codec_id) {
 	return codec_names;
 }
 
-bool GoZenEncoder::open() {
+bool GoZenEncoder::open(bool rgba) {
 	if (encoder_open)
 		return _log_err("Already open");
 
@@ -36,6 +36,8 @@ bool GoZenEncoder::open() {
 		else if (sample_rate == -1)
 			_log("A sample rate needs to be set for audio exporting");
 	}
+
+	format_size = rgba ? 4 : 3;
 
 	// Allocating output media context
 	AVFormatContext* temp_format_ctx = nullptr;
@@ -81,7 +83,7 @@ bool GoZenEncoder::open() {
 
 	// Setting up SWS
 	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(sws_getContext(
-			resolution.x, resolution.y, AV_PIX_FMT_RGBA,
+			resolution.x, resolution.y, format_size == 4 ? AV_PIX_FMT_RGBA : AV_PIX_FMT_RGB24,
 			resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
 			sws_quality, nullptr, nullptr, nullptr));
 	if (!sws_ctx)
@@ -275,7 +277,7 @@ bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 
 	PackedByteArray image_pixel_data = frame_image->get_data();
 	uint8_t *src_data[4] = { image_pixel_data.ptrw(), nullptr, nullptr, nullptr};
-	int src_linesize[4] = { frame_image->get_width() * 4, 0, 0, 0 };
+	int src_linesize[4] = { frame_image->get_width() * format_size, 0, 0, 0 };
 
 	response = sws_scale(
 			sws_ctx.get(),
@@ -621,7 +623,7 @@ void GoZenEncoder::_bind_methods() {
 
 	BIND_STATIC_METHOD_ARGS(get_available_codecs, "codec_id");
 
-	BIND_METHOD(open);
+	BIND_METHOD_ARGS(open, "rgba");
 	BIND_METHOD(is_open);
 
 	

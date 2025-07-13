@@ -52,11 +52,13 @@ private:
  
 	int response = 0;
 	int frame_nr = 0;
+	int format_size = 3; // RGB/RGBA
 
 	float framerate = 30.;
 
 	bool encoder_open = false;
 	bool audio_added = false;
+
 
 	bool debug = true;
 
@@ -133,7 +135,7 @@ public:
 	GoZenEncoder() {};
 	~GoZenEncoder();
 
-	bool open();
+	bool open(bool rgba);
 	inline bool is_open() { return encoder_open; }
 
 	bool send_frame(Ref<Image> frame_image);
