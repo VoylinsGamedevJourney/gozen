@@ -32,6 +32,25 @@ static func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: P
 	return dialog
 
 
+static func get_popup() -> PopupMenu:
+	var popup: PopupMenu = PopupMenu.new()
+
+	popup.size = Vector2i(100,0)
+	connect_func(popup.mouse_exited, popup.queue_free)
+
+	return popup
+
+
+static func show_popup(popup: PopupMenu) -> void:
+	var mouse_pos: Vector2 = Project.get_viewport().get_mouse_position()
+
+	popup.position.x = int(mouse_pos.x)
+	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
+
+	Project.add_child(popup)
+	popup.popup()
+
+
 static func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
 	# This function is needed to handle the error in a good way for when
 	# connecting a callable to a signal wasn't successful.

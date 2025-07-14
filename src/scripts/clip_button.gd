@@ -158,22 +158,19 @@ func _on_gui_input(event: InputEvent) -> void:
 #			get_viewport().set_input_as_handled()
 
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
-			var popup_menu: PopupMenu = PopupMenu.new()
+			var popup: PopupMenu = Toolbox.get_popup()
 
 			#Toolbox.connect_func(popup_menu.id_pressed, _on_id_pressed.bind(popup_menu))
-			popup_menu.name = "oi"
-			popup_menu.add_theme_constant_override("icon_max_width", 20)
+			popup.name = "oi"
+			popup.add_theme_constant_override("icon_max_width", 20)
 
 			if Project.get_clip_type(clip_data.clip_id) == File.TYPE.VIDEO:
-				popup_menu.add_check_item("Clip only video instance", 0)
-				popup_menu.set_item_checked(0, Project.get_file_data(clip_data.file_id).clip_only_video.has(clip_data.clip_id))
-				Toolbox.connect_func(popup_menu.id_pressed, _on_clip_popup_menu_pressed.bind(popup_menu))
+				popup.add_check_item("Clip only video instance", 0)
+				popup.set_item_checked(0, Project.get_file_data(clip_data.file_id).clip_only_video.has(clip_data.clip_id))
+				Toolbox.connect_func(popup.id_pressed, _on_clip_popup_menu_pressed.bind(popup))
 
-			add_child(popup_menu)
-			popup_menu.popup()
-			popup_menu.size = Vector2i(100, 0)
-			popup_menu.position.x = int(get_viewport().get_mouse_position().x + 18)
-			popup_menu.position.y = int(get_viewport().get_mouse_position().y + (popup_menu.size.y / 2.0))
+			Toolbox.show_popup(popup)
+
 
 	if event.is_action_pressed("delete_clip"):
 		InputManager.undo_redo.create_action("Deleting clip on timeline")

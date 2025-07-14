@@ -59,17 +59,13 @@ func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
 		return
 
 	var file: File = null
-	var popup: PopupMenu = PopupMenu.new()
-	popup.size = Vector2i(100,0)
+	var popup: PopupMenu = Toolbox.get_popup()
 
 	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
 		popup.add_item(tr("popup_item_rename"), 0)
 		popup.add_item(tr("popup_item_delete"), 2)
 
-		add_child(popup)
-		popup.popup()
-		popup.position.x = int(mouse_pos.x + 18)
-		popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
+		Toolbox.show_popup(popup)
 	else: # FILE
 		var file_id: int = file_item.get_metadata(0)
 		file = Project.get_file(file_id)
@@ -92,11 +88,7 @@ func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
 				popup.add_item(tr("popup_item_save_as_file"), 3)
 
 	Toolbox.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
-	add_child(popup)
-	popup.popup()
-	var padding: int = 18
-	popup.position.x = int(mouse_pos.x + padding)
-	popup.position.y = int(mouse_pos.y + padding + (popup.size.y / 2.0))
+	Toolbox.show_popup(popup)
 
 
 ## For the right click presses of the file popup menu's.
@@ -286,4 +278,3 @@ func _on_file_nickname_changed(file_id: int) -> void:
 
 	file_items[file_id].set_text(0, file.nickname)
 	_sort_folder(file.folder)
-

@@ -13,6 +13,7 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - Error when trying to add +3 hour 23 minutes videos (2GB array limitation audio);
 - Support for Forward+ (but compatibility mode is faster in most cases);
 - Local clip video instancing;
+- Option to save screenshots (and add to project);
 
 ### Fixed
 - Light theme having unreadable menu buttons;
