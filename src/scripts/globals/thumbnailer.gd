@@ -4,10 +4,11 @@ extends Node
 signal thumb_generated(id: int)
 
 
-const THUMB_FOLDER: String = "user://thumbs/"
-const FILE_PATH: String = "user://thumbs/%s.webp"
-const DATA_PATH: String = "user://thumbs/data"
+const FILE_NAME: String = "%s.webp"
+const DATA_NAME: String = "data"
 
+
+var thumb_folder: String = "%s/gozen/thumbs/" % OS.get_cache_dir()
 
 var data: Dictionary[String, int] = {}  # { Path, int }
 var thumbs_todo: PackedInt64Array = []
@@ -16,12 +17,16 @@ var thumbs_todo: PackedInt64Array = []
 
 func _ready() -> void:
 	# Create the thumb directory if not existing.
-	if !DirAccess.dir_exists_absolute(THUMB_FOLDER):
-		if DirAccess.make_dir_absolute(THUMB_FOLDER):
-			printerr("Couldn't create folder at %s!" % THUMB_FOLDER)
+	if !DirAccess.dir_exists_absolute(thumb_folder):
+		var base_cache_dir: String = thumb_folder.trim_suffix("thumbs/")
+
+		if DirAccess.make_dir_absolute(base_cache_dir):
+			printerr("Couldn't create folder at %s!" % base_cache_dir)
+		if DirAccess.make_dir_absolute(thumb_folder):
+			printerr("Couldn't create folder at %s!" % thumb_folder)
 
 	# Create the thumb data file if not existing.
-	if !FileAccess.file_exists(DATA_PATH):
+	if !FileAccess.file_exists(thumb_folder + DATA_NAME):
 		_save_data()
 
 
@@ -35,7 +40,7 @@ func _process(_delta: float) -> void:
 
 
 func _save_data() -> void:
-	if !FileAccess.open(DATA_PATH, FileAccess.WRITE).store_var(data):
+	if !FileAccess.open(thumb_folder + DATA_NAME, FileAccess.WRITE).store_var(data):
 		printerr("Error happened when storing empty thumb data!")
 
 
@@ -54,7 +59,7 @@ func get_thumb(file_id: int) -> Texture2D:
 
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
-	if data.has(path) and !FileAccess.file_exists(FILE_PATH % data[path]):
+	if data.has(path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[path]):
 		if data.erase(path):
 			Toolbox.print_erase_error()
 
@@ -75,7 +80,7 @@ func get_thumb(file_id: int) -> Texture2D:
 				return _get_default_thumb_video()
 
 	# Return the saved thumbnail.
-	image = Image.load_from_file(ProjectSettings.globalize_path(FILE_PATH % data[path]))
+	image = Image.load_from_file(ProjectSettings.globalize_path(thumb_folder + FILE_NAME % data[path]))
 
 	return ImageTexture.create_from_image(image)
 
@@ -118,7 +123,7 @@ func _gen_thumb(file_id: int) -> void:
 	if type != File.TYPE.AUDIO:
 		image = scale_thumbnail(image)
 
-	if image.save_webp(FILE_PATH % file_id):
+	if image.save_webp(thumb_folder + FILE_NAME % file_id):
 		printerr("Something went wrong saving thumb!")
 
 	Threader.mutex.lock()
