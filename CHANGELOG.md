@@ -31,6 +31,7 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - Cut down Workflow build time by 60%;
 - Locale getter on first launch;
 - Better cleanup for faster closing of GoZen;
+- Thumbnailer now uses cache folder;
 
 
 ## Version 0.3-alpha - 2025/07/05

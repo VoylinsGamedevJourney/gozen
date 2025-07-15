@@ -20,7 +20,7 @@ var file_data: Dictionary [int, FileData] = {}
 
 var auto_save_timer: Timer
 var unsaved_changes: bool = false
-
+var editor_closing: bool = false # This is needed for tasks running in threads.
 
 
 func _ready() -> void:
@@ -39,9 +39,8 @@ func _on_actual_close() -> void:
 		file_data_object.queue_free()
 	file_data.clear()
 
-	Settings._on_actual_close()
-	EditorCore._on_actual_close()
-	InputManager._on_actual_close()
+	editor_closing = true
+	get_tree().root.propagate_call("_on_closing_editor")
 	get_tree().quit()
 
 
@@ -438,6 +437,9 @@ func _on_close_requested() -> void:
 		get_tree().root.add_child(popup)
 		popup.popup_centered()
 	else:
+		editor_closing = true
+		get_tree().root.propagate_call("_on_closing_editor")
+		await RenderingServer.frame_post_draw
 		get_tree().quit()
 
 

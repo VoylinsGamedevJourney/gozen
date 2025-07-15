@@ -54,7 +54,7 @@ func _input(event: InputEvent) -> void:
 		clipboard_paste()
 
 
-func _on_actual_close() -> void:
+func _on_closing_editor() -> void:
 	undo_redo.free()
 
 

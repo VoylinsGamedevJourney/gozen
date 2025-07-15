@@ -16,6 +16,8 @@ var video: GoZenVideo = null
 var audio: AudioStreamWAV = null
 var image: Texture2D = null
 var color: Color = Color.WHITE
+var pck: PCK = null
+var pck_scene_instance: Node = null
 
 var audio_wave_data: PackedFloat32Array = []
 var color_profile: Vector4 = Vector4.ZERO
@@ -39,6 +41,7 @@ func _update_duration() -> void:
 			l_file.duration = Settings.get_color_duration()
 		File.TYPE.TEXT:
 			l_file.duration = Settings.get_text_duration()
+		# TODO: Add duration for PCK file.
 
 	if l_file.duration == 0:
 		printerr("Something went wrong loading file '%s', duration is 0!" % id)
@@ -61,6 +64,14 @@ func init_data(file_data_id: int) -> bool:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
 	elif file.type == File.TYPE.VIDEO:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
+	elif file.type == File.TYPE.PCK:
+		if !ProjectSettings.load_resource_pack(file.path):
+			printerr("Something went wrong loading pck data from '%s'!" % file.path)
+			return false
+		# TODO: Check the path to see if there is an actual folder with the data.
+		# TODO: Set the pck_instance correctly.
+		pck = load(PCK.MODULES_PATH + file.path.get_basename().to_lower())
+		pck_scene_instance = pck.scene.instantiate()
 
 	if file.type in EditorCore.AUDIO_TYPES:
 		Threader.add_task(_load_audio_data.bind(file.path), create_wave)
@@ -139,6 +150,9 @@ func _create_wave() -> void:
 		var end_frame: int = min(start_frame + frames_per_block, total_frames)
 
 		for frame_index: int in range(start_frame, end_frame):
+			if Project.editor_closing:
+				return # Ability to stop early in case of closing editor since this runs in a thread.
+
 			var byte_offset: int = int(frame_index * bytes_size)
 			var frame_max_abs_amplitude: float = 0.0
 

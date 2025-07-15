@@ -24,7 +24,7 @@ func _ready() -> void:
 	apply_theme()
 
 
-func _on_actual_close() -> void:
+func _on_closing_editor() -> void:
 	data.queue_free()
 	
 

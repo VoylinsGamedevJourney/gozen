@@ -68,7 +68,7 @@ func _process(delta: float) -> void:
 	set_frame(frame_nr)
 
 
-func _on_actual_close() -> void:
+func _on_closing_editor() -> void:
 	viewport.queue_free()
 
 	for tex: TextureRect in view_textures:
