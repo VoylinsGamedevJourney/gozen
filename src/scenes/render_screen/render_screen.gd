@@ -38,7 +38,6 @@ var current_progress: float = 0.0
 
 func _ready() -> void:
 	Toolbox.connect_func(RenderManager.update_encoder_status, update_encoder_status)
-	Toolbox.connect_func(Project.project_ready, _set_default_path)
 	Toolbox.connect_func(Project._markers_updated, _on_chapters_updated)
 
 	# Setup the codec option buttons.
@@ -73,7 +72,7 @@ func _ready() -> void:
 	_on_render_audio_check_button_toggled(true)
 
 
-func _set_default_path() -> void:
+func _on_project_ready() -> void:
 	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
 
 

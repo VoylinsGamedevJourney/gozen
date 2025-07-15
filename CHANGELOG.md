@@ -14,6 +14,7 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - Support for Forward+ (but compatibility mode is faster in most cases);
 - Local clip video instancing;
 - Option to save screenshots (and add to project);
+- Timeline bar with timestamps;
 
 ### Fixed
 - Light theme having unreadable menu buttons;

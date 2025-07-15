@@ -13,7 +13,6 @@ func _ready() -> void:
 	Toolbox.connect_func(Project.file_deleted, _on_file_deleted)
 	Toolbox.connect_func(Project.file_path_updated, _on_file_path_updated)
 	Toolbox.connect_func(Project.file_nickname_changed, _on_file_nickname_changed)
-	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
 	Toolbox.connect_func(Thumbnailer.thumb_generated, _on_update_thumb)
 	Toolbox.connect_func(tree.item_mouse_selected, _file_item_clicked)
 
@@ -26,7 +25,7 @@ func _ready() -> void:
 	Toolbox.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
 
 
-func _on_project_loaded() -> void:
+func _on_project_ready() -> void:
 	for folder: String in Project.get_folders():
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
@@ -52,7 +51,7 @@ func _file_menu_pressed(id: int) -> void:
 			EditorUI.instance.add_child(color_popup)
 
 
-func _file_item_clicked(mouse_pos: Vector2, button_index: int) -> void:
+func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 	var file_item: TreeItem = tree.get_selected()
 
 	if button_index != MOUSE_BUTTON_RIGHT:

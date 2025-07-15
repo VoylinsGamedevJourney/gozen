@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://clx31ubx70lv0"]
+[gd_scene load_steps=5 format=3 uid="uid://clx31ubx70lv0"]
 
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scripts/timeline.gd" id="1_p3xsq"]
+[ext_resource type="Script" uid="uid://cf5vcudryr0b0" path="res://scenes/timeline_bar/timestamp_box.gd" id="2_p0ld5"]
 [ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="2_scqra"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wrb8p"]
@@ -10,6 +11,10 @@ thickness = 2
 vertical = true
 
 [node name="TimelineBar" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 200.0
+grow_horizontal = 2
 
 [node name="Timeline" type="PanelContainer" parent="." node_paths=PackedStringArray("lines", "scroll_bar", "scroll_main", "main_control", "clips", "preview", "playhead")]
 custom_minimum_size = Vector2(0, 200)
@@ -18,7 +23,7 @@ size_flags_horizontal = 3
 theme_type_variation = &"box"
 script = ExtResource("1_p3xsq")
 lines = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Lines")
-scroll_bar = NodePath("VBoxContainer/TimelineBoxScroll")
+scroll_bar = NodePath("VBoxContainer/TimestampBoxScroll")
 scroll_main = NodePath("VBoxContainer/TimelinePanel/TimelineScroll")
 main_control = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl")
 clips = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/Clips")
@@ -27,18 +32,20 @@ playhead = NodePath("VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl/
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Timeline"]
 layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="TimelineBoxScroll" type="ScrollContainer" parent="Timeline/VBoxContainer"]
+[node name="TimestampBoxScroll" type="ScrollContainer" parent="Timeline/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
-[node name="TimelineBox" type="PanelContainer" parent="Timeline/VBoxContainer/TimelineBoxScroll"]
+[node name="TimestampBox" type="PanelContainer" parent="Timeline/VBoxContainer/TimestampBoxScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_type_variation = &"box"
+script = ExtResource("2_p0ld5")
 
 [node name="TimelinePanel" type="PanelContainer" parent="Timeline/VBoxContainer"]
 layout_mode = 2
@@ -56,11 +63,9 @@ size_flags_vertical = 3
 
 [node name="Preview" type="Control" parent="Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
 modulate = Color(1, 1, 1, 0.607843)
-layout_mode = 2
 anchors_preset = 0
 
 [node name="Clips" type="Control" parent="Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-layout_mode = 2
 anchors_preset = 0
 mouse_filter = 1
 
@@ -76,11 +81,12 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="Playhead" type="Panel" parent="Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl"]
-layout_mode = 2
+layout_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxLine_wrb8p")
 
 [node name="AudioMeter" parent="." instance=ExtResource("2_scqra")]
 layout_mode = 2
 
+[connection signal="gui_input" from="Timeline/VBoxContainer/TimestampBoxScroll/TimestampBox" to="Timeline/VBoxContainer/TimestampBoxScroll/TimestampBox" method="_on_gui_input"]
 [connection signal="gui_input" from="Timeline/VBoxContainer/TimelinePanel/TimelineScroll" to="Timeline" method="_on_timeline_scroll_gui_input"]
 [connection signal="gui_input" from="Timeline/VBoxContainer/TimelinePanel/TimelineScroll/TimelineControl" to="Timeline" method="_on_main_gui_input"]

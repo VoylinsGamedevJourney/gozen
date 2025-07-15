@@ -5,6 +5,7 @@ extends PanelContainer
 signal zoom_changed
 
 
+const TIMELINE_PADDING: int = 1920 # Amount of frames after timeline_end.
 const TRACK_HEIGHT: int = 30
 const LINE_HEIGHT: int = 4
 
@@ -36,6 +37,7 @@ var playback_before_moving: bool = false
 var zoom: float = 1.0 : set = _set_zoom # How many pixels 1 frame takes
 
 var _offset: int = 0 # Offset for moving/placing clips
+var _syncing_scroll: bool = false
 
 
 
@@ -46,7 +48,8 @@ func _ready() -> void:
 	Toolbox.connect_func(EditorCore.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
 	Toolbox.connect_func(Project.file_deleted, _check_clips)
-	Toolbox.connect_func(Project.project_ready, _on_project_loaded)
+	Toolbox.connect_func(scroll_main.get_h_scroll_bar().value_changed, _on_h_scroll.bind(true))
+	Toolbox.connect_func(scroll_bar.get_h_scroll_bar().value_changed, _on_h_scroll.bind(false))
 
 
 func _process(_delta: float) -> void:
@@ -172,17 +175,19 @@ func _set_zoom(new_zoom: float) -> void:
 		clip_button.position.x = get_frame_pos(data.start_frame)
 		clip_button.size.x = get_clip_size(data.duration)
 
-	update_end()
-
 	var new_mouse_x: float = prev_mouse_frame * zoom
 	scroll_main.scroll_horizontal = int(new_mouse_x - (prev_mouse_x - prev_scroll))
 
+	main_control.custom_minimum_size.x = (Project.get_timeline_end() * zoom) + TIMELINE_PADDING
+	lines.custom_minimum_size.x = (Project.get_timeline_end() * zoom) + TIMELINE_PADDING
+
 	Project.set_timeline_scroll_h(scroll_main.scroll_horizontal)
 	Project.set_zoom(zoom)
+	propagate_call("_on_timeline_zoom_changed")
 	zoom_changed.emit()
 
 
-func _on_project_loaded() -> void:
+func _on_project_ready() -> void:
 	for child: Node in clips.get_children():
 		child.queue_free()
 
@@ -208,7 +213,7 @@ func _on_project_loaded() -> void:
 		lines.add_child(overlay)
 		lines.add_child(line)
 
-	update_end()
+	Project.update_timeline_end()
 	_set_zoom(Project.get_zoom())
 	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
 
@@ -424,10 +429,10 @@ func _main_control_drop_data(_pos: Vector2, data: Variant) -> void:
 		_handle_drop_existing_clips(draggable)
 
 	InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
-	InputManager.undo_redo.add_do_method(update_end)
+	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 
 	InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
-	InputManager.undo_redo.add_undo_method(update_end)
+	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 
 	InputManager.undo_redo.commit_action()
 
@@ -509,6 +514,18 @@ func _remove_new_clips(draggable: Draggable) -> void:
 		var id: int = clip_data.clip_id
 		Project.erase_clip(id)
 		remove_clip(id)
+
+
+func _on_h_scroll(value: float, main: bool = true) -> void:
+	if !_syncing_scroll:
+		_syncing_scroll = true
+
+		if main:
+			scroll_bar.scroll_horizontal = int(value)
+		else:
+			scroll_main.scroll_horizontal = int(value)
+
+		_syncing_scroll = false
 
 
 func add_clip(clip_data: ClipData) -> void:
@@ -594,22 +611,10 @@ func get_highest_frame(track_id: int, frame_nr: int, ignore: Array[Vector2i] = [
 	return -1
 
 
-func update_end() -> void:
-	var new_end: int = 0
-
-	for track: Dictionary[int, int] in Project.get_tracks():
-		if track.size() == 0:
-			continue
-
-		var clip: ClipData = Project.get_clip(track[track.keys().max()])
-		var value: int = clip.get_end_frame()
-
-		if new_end < value:
-			new_end = value
-	
-	main_control.custom_minimum_size.x = (new_end + 1080) * zoom
-	lines.custom_minimum_size.x = (new_end + 1080) * zoom
-	Project.set_timeline_end(new_end)
+func _on_timeline_end_update(new_end: int) -> void:
+	main_control.custom_minimum_size.x = (new_end * zoom) + TIMELINE_PADDING
+	lines.custom_minimum_size.x = (new_end * zoom) + TIMELINE_PADDING
+	propagate_call("_on_timeline_update")
 
 
 func delete_clip(clip_data: ClipData) -> void:
@@ -617,7 +622,7 @@ func delete_clip(clip_data: ClipData) -> void:
 
 	Project.erase_clip(id)
 	remove_clip(id)
-	update_end()
+	Project.update_timeline_end()
 
 
 func undelete_clip(clip_data: ClipData) -> void:
@@ -625,7 +630,7 @@ func undelete_clip(clip_data: ClipData) -> void:
 	Project.set_track_data(clip_data.track_id, clip_data.start_frame, clip_data.clip_id)
 
 	add_clip(clip_data)
-	update_end()
+	Project.update_timeline_end()
 
 
 func move_playhead(frame_nr: int) -> void:

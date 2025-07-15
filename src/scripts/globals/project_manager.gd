@@ -1,7 +1,6 @@
 extends Node
 
 
-signal project_ready
 signal file_added(id: int)
 signal file_deleted(id: int)
 signal file_nickname_changed(id: int)
@@ -160,7 +159,7 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 
 	new_project_overlay.update_progress(98, "status_project_finalizing")
 
-	project_ready.emit()
+	get_tree().root.propagate_call("_on_project_ready")
 	_update_recent_projects(path)
 	save()
 	new_project_overlay.update_progress_bar(99)
@@ -235,7 +234,7 @@ func open(project_path: String) -> void:
 	# 99% = Finalizing.
 	loading_overlay.update_progress(99, "status_project_finalizing")
 	_update_recent_projects(project_path)
-	project_ready.emit()
+	get_tree().root.propagate_call("_on_project_ready")
 
 	loading_overlay.update_progress_bar(100)
 	get_window().title = "GoZen - %s" % project_path.get_file().get_basename()
@@ -529,6 +528,23 @@ func get_timeline_end() -> int:
 func set_timeline_end(value: int) -> void:
 	data.timeline_end = value
 	unsaved_changes = true
+
+
+func update_timeline_end() -> void:
+	var new_end: int = 0
+
+	for track: Dictionary[int, int] in Project.get_tracks():
+		if track.size() == 0:
+			continue
+
+		var clip: ClipData = Project.get_clip(track[track.keys().max()])
+		var value: int = clip.get_end_frame()
+
+		if new_end < value:
+			new_end = value
+	
+	set_timeline_end(new_end)
+	get_tree().root.propagate_call("_on_timeline_end_update", [new_end])
 
 
 func set_track_data(track_id: int, key: int, value: int) -> void:
