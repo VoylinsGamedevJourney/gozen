@@ -25,7 +25,7 @@ msgid "title_timeline"
 msgstr "Timeline"
 
 msgid "title_extras"
-msgstr "Divers"
+msgstr "Extras"
 
 msgid "title_render_settings"
 msgstr "Configuration du rendu"
