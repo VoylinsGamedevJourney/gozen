@@ -13,6 +13,7 @@ static var native_locale_names: Dictionary = {
 	"ur": "اُردُو",
 	"es": "Español",
 	"hi": "हिन्दी",
+	"tr": "Türkçe",
 }
 
 
@@ -22,5 +23,6 @@ static var native_country_names: Dictionary = {
 	"PK": "پاکستان",
 	"TW": "台灣",
 	"IN": "भारत",
+	"TR": "Türkiye",
 }
 
