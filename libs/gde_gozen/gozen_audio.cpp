@@ -103,16 +103,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 			av_frame_unref(av_decoded_frame.get());
 			break;
 		}
-		if (wav) {
-			response = swr_config_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
-			if (response < 0) {
-				FFmpeg::print_av_error(
-						"Couldn't config the audio frame!", response);
-				av_frame_unref(av_frame.get());
-				av_frame_unref(av_decoded_frame.get());
-				break;
-			}
-		}
+
 		response = swr_convert_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
 		if (response < 0) {
 			FFmpeg::print_av_error(

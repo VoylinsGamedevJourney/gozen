@@ -193,6 +193,10 @@ func _on_project_ready() -> void:
 
 	for clip: ClipData in Project.get_clip_datas():
 		add_clip(clip)
+		if clip.effects_video != null and clip.effects_video.clip_id == -1:
+			clip.effects_video.clip_id = clip.clip_id
+		if clip.effects_audio != null and clip.effects_audio.clip_id == -1:
+			clip.effects_audio.clip_id = clip.clip_id
 
 	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
 
@@ -456,6 +460,9 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 		new_clip_data.duration = Project.get_file(id).duration
 		new_clip_data.effects_video = EffectsVideo.new()
 		new_clip_data.effects_audio = EffectsAudio.new()
+
+		new_clip_data.effects_video.clip_id = new_clip_data.clip_id
+		new_clip_data.effects_audio.clip_id = new_clip_data.clip_id
 
 		new_clip_data.effects_video.set_default_transform()
 

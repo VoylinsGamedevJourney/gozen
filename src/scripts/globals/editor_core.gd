@@ -320,8 +320,12 @@ func update_view(track_id: int) -> void:
 		default_effects_video.apply_color_correction(material)
 		color_correction_default[track_id] = true
 
-	effects_video.apply_chroma_key(material)
-	effects_video.apply_transform(view_textures[track_id])
+	if effects_video.enable_chroma_key:
+		effects_video.apply_chroma_key(material)
+	elif effects_video.enable_chroma_key:
+		default_effects_video.apply_color_correction(material)
+
+	effects_video.apply_transform(view_textures[track_id], material)
 
 
 func _init_video_textures(track_id: int, video_data: GoZenVideo, material: ShaderMaterial) -> void:

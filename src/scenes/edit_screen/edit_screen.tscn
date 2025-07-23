@@ -125,7 +125,7 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EffectsPanel" type="PanelContainer" parent="HSplit" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "mute_button", "gain_label", "gain_spinbox", "mono_label", "mono_option_button")]
+[node name="EffectsPanel" type="PanelContainer" parent="HSplit" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_fade_effects", "fade_in_spinbox", "fade_out_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "mute_button", "gain_label", "gain_spinbox", "mono_label", "mono_option_button")]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_type_variation = &"box"
@@ -143,6 +143,9 @@ rotation_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabCo
 alpha_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox")
 pivot_x_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotXSpinBox")
 pivot_y_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotYSpinBox")
+reset_fade_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader/ResetFadeEffectsButton")
+fade_in_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeInSpinBox")
+fade_out_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeOutSpinBox")
 reset_color_correction_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/ResetColorCorrectionEffectsButton")
 color_correction_effects_grid = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid")
 enable_color_correction = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/EnableColorCorrectionButton")
@@ -226,11 +229,10 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 0
 tabs_visible = false
 
 [node name="VisualEffects" type="VBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -265,7 +267,7 @@ layout_mode = 2
 [node name="PositionXSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PositionHBox"]
 layout_mode = 2
 min_value = -100000.0
-max_value = 1e+07
+max_value = 10000000.0
 allow_greater = true
 allow_lesser = true
 alignment = 3
@@ -274,7 +276,7 @@ prefix = "X:"
 [node name="PositionYSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PositionHBox"]
 layout_mode = 2
 min_value = -100000.0
-max_value = 1e+07
+max_value = 10000000.0
 allow_greater = true
 allow_lesser = true
 alignment = 3
@@ -290,14 +292,14 @@ layout_mode = 2
 
 [node name="SizeXSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/SizeHBox"]
 layout_mode = 2
-max_value = 1e+07
+max_value = 10000000.0
 allow_greater = true
 alignment = 3
 prefix = "X:"
 
 [node name="SizeYSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/SizeHBox"]
 layout_mode = 2
-max_value = 1e+07
+max_value = 10000000.0
 allow_greater = true
 alignment = 3
 prefix = "Y:"
@@ -315,7 +317,6 @@ value = 100.0
 allow_greater = true
 alignment = 2
 suffix = "%"
-metadata/_edit_lock_ = true
 
 [node name="RotationLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid"]
 layout_mode = 2
@@ -336,7 +337,7 @@ text = "Alpha"
 [node name="AlphaSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid"]
 layout_mode = 2
 max_value = 1.0
-step = 0.001
+step = 0.10000000000582077
 value = 1.0
 alignment = 2
 
@@ -352,7 +353,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 4
 min_value = -100000.0
-max_value = 1e+07
+max_value = 10000000.0
 allow_greater = true
 allow_lesser = true
 alignment = 3
@@ -362,13 +363,64 @@ prefix = "X:"
 layout_mode = 2
 size_flags_vertical = 4
 min_value = -100000.0
-max_value = 1e+07
+max_value = 10000000.0
 allow_greater = true
 allow_lesser = true
 alignment = 3
 prefix = "Y:"
 
 [node name="HSeparator" type="HSeparator" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+
+[node name="FadeHeader" type="HBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
+layout_mode = 2
+
+[node name="FadeEffectsLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "Fade"
+
+[node name="ResetFadeEffectsButton" type="TextureButton" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+texture_normal = ExtResource("10_p6l5x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="FadeEffectsGrid" type="GridContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
+layout_mode = 2
+columns = 2
+
+[node name="FadeInLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fade in"
+
+[node name="FadeInSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000000.0
+allow_greater = true
+allow_lesser = true
+alignment = 3
+
+[node name="FadeOutLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fade out"
+
+[node name="FadeOutSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100000.0
+max_value = 10000000.0
+allow_greater = true
+allow_lesser = true
+alignment = 3
+
+[node name="HSeparator3" type="HSeparator" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
 
@@ -391,9 +443,9 @@ stretch_mode = 5
 [node name="EnableColorCorrectionButton" type="CheckButton" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/hover = SubResource("StyleBoxEmpty_lmvvn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_lmvvn")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_lmvvn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lmvvn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lmvvn")
 
 [node name="ColorCorrectionGrid" type="GridContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 layout_mode = 2
@@ -507,9 +559,9 @@ stretch_mode = 5
 [node name="EnableChromaKeyButton" type="CheckButton" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyHBox"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_styles/hover = SubResource("StyleBoxEmpty_lmvvn")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_lmvvn")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_lmvvn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lmvvn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_lmvvn")
 
 [node name="ChromaKeyGrid" type="GridContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects"]
 layout_mode = 2
@@ -546,6 +598,7 @@ step = 0.01
 value = 0.05
 
 [node name="AudioEffects" type="VBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -616,6 +669,9 @@ metadata/_tab_index = 2
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox" to="HSplit/EffectsPanel" method="_on_alpha_spin_box_value_changed"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotXSpinBox" to="HSplit/EffectsPanel" method="_on_pivot_x_spin_box_value_changed"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotYSpinBox" to="HSplit/EffectsPanel" method="_on_pivot_y_spin_box_value_changed"]
+[connection signal="pressed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader/ResetFadeEffectsButton" to="HSplit/EffectsPanel" method="_on_reset_fade_effects_button_pressed"]
+[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeInSpinBox" to="HSplit/EffectsPanel" method="_on_fade_in_spin_box_value_changed"]
+[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeOutSpinBox" to="HSplit/EffectsPanel" method="_on_fade_out_spin_box_value_changed"]
 [connection signal="pressed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/ResetColorCorrectionEffectsButton" to="HSplit/EffectsPanel" method="_on_reset_color_correction_effects_button_pressed"]
 [connection signal="toggled" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/EnableColorCorrectionButton" to="HSplit/EffectsPanel" method="_on_enable_color_correction_button_toggled"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/BrightnessSpinBox" to="HSplit/EffectsPanel" method="_on_brightness_spin_box_value_changed"]

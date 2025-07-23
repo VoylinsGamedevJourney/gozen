@@ -82,7 +82,7 @@ func get_clip_audio_data() -> PackedByteArray:
 		data.fill(0)
 		return data
 
-	data = GoZenAudio.change_db(data, effects_audio.gain)
+	data = GoZenAudio.change_db(data, effects_audio.gain[0])
 
 	if effects_audio.mono != effects_audio.MONO.DISABLE:
 		data = GoZenAudio.change_to_mono(data, effects_audio.mono == effects_audio.MONO.LEFT_CHANNEL)
