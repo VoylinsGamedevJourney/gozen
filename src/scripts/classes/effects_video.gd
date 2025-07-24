@@ -43,7 +43,7 @@ func set_position_x(frame: int, value: int) -> void:
 	if position.has(frame):
 		position[frame].x = value
 	else:
-		# TODO: get previous frame to set the X.
+		# TODO: get previous frame to set the Y.
 		position[frame] = Vector2i(value, 0)
 
 
@@ -53,6 +53,94 @@ func set_position_y(frame: int, value: int) -> void:
 	else:
 		# TODO: get previous frame to set the X.
 		position[frame] = Vector2i(0, value)
+
+
+func set_size_x(frame: int, value: int) -> void:
+	if position.has(frame):
+		size[frame].x = value
+	else:
+		# TODO: get previous frame to set the Y.
+		size[frame] = Vector2i(value, 0)
+
+
+func set_size_y(frame: int, value: int) -> void:
+	if size.has(frame):
+		size[frame].y = value
+	else:
+		# TODO: get previous frame to set the X.
+		size[frame] = Vector2i(0, value)
+
+
+func set_scale(frame: int, value: float) -> void:
+	scale[frame] = value
+
+
+func set_rotation(frame: int, value: float) -> void:
+	rotation[frame] = value
+
+
+func set_alpha(frame: int, value: float) -> void:
+	alpha[frame] = value
+
+
+func set_pivot_x(frame: int, value: int) -> void:
+	if pivot.has(frame):
+		pivot[frame].x = value
+	else:
+		# TODO: get previous frame to set the Y.
+		pivot[frame] = Vector2i(value, 0)
+
+
+func set_pivot_y(frame: int, value: int) -> void:
+	if pivot.has(frame):
+		pivot[frame].y = value
+	else:
+		# TODO: get previous frame to set the X.
+		pivot[frame] = Vector2i(0, value)
+
+
+func set_brightness(frame: int, value: float) -> void:
+	brightness[frame] = clampf(value, -1.0, 1.0)
+
+
+func set_contrast(frame: int, value: float) -> void:
+	contrast[frame] = clampf(value, -1.0, 1.0)
+
+
+func set_saturation(frame: int, value: float) -> void:
+	saturation[frame] = clampf(value, -1.0, 1.0)
+
+
+func set_red_value(frame: int, value: float) -> void:
+	red_value[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_green_value(frame: int, value: float) -> void:
+	green_value[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_blue_value(frame: int, value: float) -> void:
+	blue_value[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_tint_color(frame: int, value: Color) -> void:
+	tint_color[frame] = value
+
+
+func set_tint_effect_factor(frame: int, value: float) -> void:
+	tint_effect_factor[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_chroma_key_color(frame: int, value: Color) -> void:
+	chroma_key_color[frame] = value
+
+
+func set_chroma_key_tolerance(frame: int, value: float) -> void:
+	chroma_key_tolerance[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_chroma_key_softness(frame: int, value: float) -> void:
+	chroma_key_softness[frame] = clampf(value, 0.0, 0.5)
 
 
 func set_default_transform() -> void:
