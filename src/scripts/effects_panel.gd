@@ -240,14 +240,38 @@ func _on_mute_check_button_toggled(toggled_on: bool) -> void:
 	_change_made(check_reset_basics_audio_button)
 
 
-# Video effects
-
+# Video effects.
 func _on_position_x_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.position[0].x = floor(value)
+	var effects_video: EffectsVideo = Project.get_clip(current_clip_id).effects_video
+	var frame: int = 0
+
+	InputManager.undo_redo.create_action("Change clip position")
+	InputManager.undo_redo.add_do_method(effects_video.set_position_x.bind(frame, floor(value)))
+
+	if effects_video.position.has(frame):
+		InputManager.undo_redo.add_undo_method(effects_video.set_position_x.bind(frame, effects_video.position[frame].x))
+	else:
+		InputManager.undo_redo.add_undo_method(effects_video.set_position_x.bind(frame, effects_video.position.erase(frame)))
+
+	InputManager.undo_redo.commit_action()
+
 	_change_made(check_reset_transform_button)
 
 
 func _on_position_y_spin_box_value_changed(value: float) -> void:
+	var effects_video: EffectsVideo = Project.get_clip(current_clip_id).effects_video
+	var frame: int = 0
+
+	InputManager.undo_redo.create_action("Change clip position")
+	InputManager.undo_redo.add_do_method(effects_video.set_position_y.bind(frame, floor(value)))
+
+	if effects_video.position.has(frame):
+		InputManager.undo_redo.add_undo_method(effects_video.set_position_y.bind(frame, effects_video.position[frame].y))
+	else:
+		InputManager.undo_redo.add_undo_method(effects_video.set_position_y.bind(frame, effects_video.position.erase(frame)))
+
+	InputManager.undo_redo.commit_action()
+
 	Project.get_clip(current_clip_id).effects_video.position[0].y = floor(value)
 	_change_made(check_reset_transform_button)
 

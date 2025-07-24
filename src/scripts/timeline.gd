@@ -2,8 +2,6 @@ class_name Timeline
 extends PanelContainer
 
 
-signal zoom_changed
-
 
 const TIMELINE_PADDING: int = 1920 # Amount of frames after timeline_end.
 const TRACK_HEIGHT: int = 30
@@ -184,7 +182,6 @@ func _set_zoom(new_zoom: float) -> void:
 	Project.set_timeline_scroll_h(scroll_main.scroll_horizontal)
 	Project.set_zoom(zoom)
 	propagate_call("_on_timeline_zoom_changed")
-	zoom_changed.emit()
 
 
 func _on_project_ready() -> void:
@@ -210,7 +207,7 @@ func _on_project_ready() -> void:
 		overlay.custom_minimum_size.y = TRACK_HEIGHT
 		track_overlays.append(overlay)
 
-		line.mouse_filter = Control.MOUSE_FILTER_PASS
+		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
 		line.size.y = LINE_HEIGHT
 
@@ -219,6 +216,7 @@ func _on_project_ready() -> void:
 
 	Project.update_timeline_end()
 	_set_zoom(Project.get_zoom())
+
 	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
 
 
@@ -568,7 +566,6 @@ func get_drop_region(track: int, frame: int, ignores: Array[Vector2i]) -> Vector
 	# X = lowest, Y = highest
 	var region: Vector2i = Vector2i(-1, -1)
 	var keys: PackedInt64Array = Project.get_track_keys(track)
-	keys.sort()
 
 	for track_frame: int in keys:
 		if track_frame < frame and Vector2i(track, track_frame) not in ignores:

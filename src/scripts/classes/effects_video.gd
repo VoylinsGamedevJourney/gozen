@@ -34,10 +34,25 @@ var clip_id: int = -1
 @export var chroma_key_tolerance: Dictionary[int, float] = { 0: 0.3 } # Min: 0.0, Max 1.0
 @export var chroma_key_softness: Dictionary[int, float] = { 0: 0.05 } # Min: 0.0, Max 0.5
 
-@export var fade_in: int = -1 # In frames
-@export var fade_out: int = -1 # In frames
+@export var fade_in: int = 0 # In frames
+@export var fade_out: int = 0 # In frames
 
 
+
+func set_position_x(frame: int, value: int) -> void:
+	if position.has(frame):
+		position[frame].x = value
+	else:
+		# TODO: get previous frame to set the X.
+		position[frame] = Vector2i(value, 0)
+
+
+func set_position_y(frame: int, value: int) -> void:
+	if position.has(frame):
+		position[frame].y = value
+	else:
+		# TODO: get previous frame to set the X.
+		position[frame] = Vector2i(0, value)
 
 
 func set_default_transform() -> void:

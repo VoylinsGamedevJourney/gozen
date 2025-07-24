@@ -45,8 +45,6 @@ func _on_skip_next_button_pressed() -> void:
 	var next_marker_pos: int = Project.get_timeline_end()
 	var frame_nr: int = EditorCore.frame_nr
 
-	marker_positions.sort()
-
 	for marker_pos: int in marker_positions:
 		if marker_pos > frame_nr:
 			next_marker_pos = marker_pos

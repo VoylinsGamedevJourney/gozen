@@ -582,7 +582,6 @@ func get_tracks() -> Array[Dictionary]:
 func get_track_data(track_id: int) -> Dictionary[int, int]:
 	var track_data: Dictionary[int, int] = {}
 	var keys: PackedInt64Array = get_track_keys(track_id)
-	keys.sort()
 
 	for key: int in keys:
 		track_data[key] = data.tracks[track_id][key]
@@ -691,7 +690,9 @@ func get_marker(frame_nr: int) -> String:
 
 
 func get_marker_positions() -> PackedInt64Array:
-	return data.markers.keys()
+	var markers: PackedInt64Array = data.markers.keys()
+	markers.sort()
+	return markers
 
 
 func get_markers() -> Dictionary[int, String]:

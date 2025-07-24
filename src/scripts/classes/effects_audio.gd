@@ -13,8 +13,8 @@ var clip_id: int = -1
 @export var gain: Dictionary[int, float] = { 0: 0 }
 @export var mono: MONO = MONO.DISABLE
 
-@export var fade_in: int # In frames
-@export var fade_out: int # In frames
+@export var fade_in: int = 0 # In frames
+@export var fade_out: int = 0 # In frames
 
 
 var _current_gain: float = 0.0
