@@ -59,7 +59,6 @@ func apply_transform(view_texture: TextureRect, material: ShaderMaterial) -> voi
 		alpha_adjust = lerpf(1, 0, float(current_frame) / fade_in)
 	if fade_out != 0 and current_frame >= Project.get_clip(clip_id).duration - fade_out:
 		current_frame = Project.get_clip(clip_id).duration - current_frame
-
 		alpha_adjust = lerpf(1, 0, float(current_frame) / fade_out)
 
 	view_texture.position = position[0]

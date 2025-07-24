@@ -624,6 +624,8 @@ func erase_clip(clip_id: int) -> void:
 	else:
 		unsaved_changes = true
 
+	get_tree().root.propagate_call("_on_clip_erased", [clip_id])
+
 
 func set_background_color(color: Color) -> void:
 	data.background_color = color

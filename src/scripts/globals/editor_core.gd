@@ -24,6 +24,7 @@ var loaded_clips: Array[ClipData] = []
 var loaded_shaders: Array[SHADER_ID] = []
 
 var default_effects_video: EffectsVideo = EffectsVideo.new()
+var default_effects_audio: EffectsAudio = EffectsAudio.new()
 var color_correction_default: Array[bool] = [] # is true if default colors are loaded.
 
 var y_textures: Array[ImageTexture] = []

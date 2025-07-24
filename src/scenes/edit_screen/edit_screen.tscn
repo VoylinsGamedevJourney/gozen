@@ -125,7 +125,7 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EffectsPanel" type="PanelContainer" parent="HSplit" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_fade_effects", "fade_in_spinbox", "fade_out_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "mute_button", "gain_label", "gain_spinbox", "mono_label", "mono_option_button")]
+[node name="EffectsPanel" type="PanelContainer" parent="HSplit" node_paths=PackedStringArray("button_video_effects", "button_audio_effects", "tab_container", "reset_transform_effects", "position_x_spinbox", "position_y_spinbox", "size_x_spinbox", "size_y_spinbox", "scale_spinbox", "rotation_spinbox", "alpha_spinbox", "pivot_x_spinbox", "pivot_y_spinbox", "reset_fade_video_effects", "fade_in_video_spinbox", "fade_out_video_spinbox", "reset_color_correction_effects", "color_correction_effects_grid", "enable_color_correction", "brightness_spinbox", "contrast_spinbox", "saturation_spinbox", "red_value_spinbox", "green_value_spinbox", "blue_value_spinbox", "tint_color", "tint_effect_factor", "reset_chroma_key_effects", "chroma_effects_grid", "enable_chroma_key", "chroma_key_color", "chroma_key_tolerance", "chroma_key_softness", "reset_audio_basics_key_effects", "mute_button", "gain_label", "gain_spinbox", "mono_label", "mono_option_button", "reset_fade_audio_effects", "fade_in_audio_spinbox", "fade_out_audio_spinbox")]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 theme_type_variation = &"box"
@@ -143,9 +143,9 @@ rotation_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabCo
 alpha_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox")
 pivot_x_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotXSpinBox")
 pivot_y_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotYSpinBox")
-reset_fade_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader/ResetFadeEffectsButton")
-fade_in_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeInSpinBox")
-fade_out_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeOutSpinBox")
+reset_fade_video_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader/ResetFadeEffectsButton")
+fade_in_video_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeInSpinBox")
+fade_out_video_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeOutSpinBox")
 reset_color_correction_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/ResetColorCorrectionEffectsButton")
 color_correction_effects_grid = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid")
 enable_color_correction = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/EnableColorCorrectionButton")
@@ -163,11 +163,15 @@ enable_chroma_key = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabC
 chroma_key_color = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyColorPickerButton")
 chroma_key_tolerance = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeyToleranceSpinBox")
 chroma_key_softness = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ChromaKeyGrid/ChromaKeySoftnessSpinBox")
+reset_audio_basics_key_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/AudioBasicsHeader/ResetBasicsEffectsButton")
 mute_button = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MuteCheckButton")
 gain_label = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainLabel")
 gain_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainSpinBox")
 mono_label = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoLabel")
 mono_option_button = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoOptionButton")
+reset_fade_audio_effects = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeHeader/ResetFadeEffectsButton")
+fade_in_audio_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid/FadeInSpinBox")
+fade_out_audio_spinbox = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid/FadeOutSpinBox")
 
 [node name="Margin" type="MarginContainer" parent="HSplit/EffectsPanel"]
 layout_mode = 2
@@ -229,10 +233,11 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="VisualEffects" type="VBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -598,14 +603,24 @@ step = 0.01
 value = 0.05
 
 [node name="AudioEffects" type="VBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="BasicAudioEffectsLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
+[node name="AudioBasicsHeader" type="HBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
 layout_mode = 2
+
+[node name="BasicAudioEffectsLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/AudioBasicsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Basic audio effects"
+
+[node name="ResetBasicsEffectsButton" type="TextureButton" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/AudioBasicsHeader"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+texture_normal = ExtResource("10_p6l5x")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="BasicEffects" type="GridContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
 layout_mode = 2
@@ -648,6 +663,57 @@ popup/item_1/id = 1
 popup/item_2/text = "Right channel"
 popup/item_2/id = 2
 
+[node name="HSeparator" type="HSeparator" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+
+[node name="FadeHeader" type="HBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
+layout_mode = 2
+
+[node name="FadeEffectsLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "Fade"
+
+[node name="ResetFadeEffectsButton" type="TextureButton" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeHeader"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+texture_normal = ExtResource("10_p6l5x")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="FadeEffectsGrid" type="GridContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects"]
+layout_mode = 2
+columns = 2
+
+[node name="FadeInLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fade in"
+
+[node name="FadeInSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000000.0
+allow_greater = true
+allow_lesser = true
+alignment = 3
+
+[node name="FadeOutLabel" type="Label" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fade out"
+
+[node name="FadeOutSpinBox" type="SpinBox" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100000.0
+max_value = 10000000.0
+allow_greater = true
+allow_lesser = true
+alignment = 3
+
 [node name="Empty" type="VBoxContainer" parent="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
 visible = false
 layout_mode = 2
@@ -669,9 +735,9 @@ metadata/_tab_index = 2
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/AlphaSpinBox" to="HSplit/EffectsPanel" method="_on_alpha_spin_box_value_changed"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotXSpinBox" to="HSplit/EffectsPanel" method="_on_pivot_x_spin_box_value_changed"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/TransformEffectsGrid/PivotHBox/PivotYSpinBox" to="HSplit/EffectsPanel" method="_on_pivot_y_spin_box_value_changed"]
-[connection signal="pressed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader/ResetFadeEffectsButton" to="HSplit/EffectsPanel" method="_on_reset_fade_effects_button_pressed"]
-[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeInSpinBox" to="HSplit/EffectsPanel" method="_on_fade_in_spin_box_value_changed"]
-[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeOutSpinBox" to="HSplit/EffectsPanel" method="_on_fade_out_spin_box_value_changed"]
+[connection signal="pressed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeHeader/ResetFadeEffectsButton" to="HSplit/EffectsPanel" method="_on_reset_fade_video_effects_button_pressed"]
+[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeInSpinBox" to="HSplit/EffectsPanel" method="_on_fade_in_spin_box_value_changed" binds= [true]]
+[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/FadeEffectsGrid/FadeOutSpinBox" to="HSplit/EffectsPanel" method="_on_fade_out_spin_box_value_changed" binds= [true]]
 [connection signal="pressed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/ResetColorCorrectionEffectsButton" to="HSplit/EffectsPanel" method="_on_reset_color_correction_effects_button_pressed"]
 [connection signal="toggled" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/HBoxContainer/EnableColorCorrectionButton" to="HSplit/EffectsPanel" method="_on_enable_color_correction_button_toggled"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/VisualEffects/ColorCorrectionGrid/BrightnessSpinBox" to="HSplit/EffectsPanel" method="_on_brightness_spin_box_value_changed"]
@@ -690,3 +756,6 @@ metadata/_tab_index = 2
 [connection signal="toggled" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MuteCheckButton" to="HSplit/EffectsPanel" method="_on_mute_check_button_toggled"]
 [connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/GainSpinBox" to="HSplit/EffectsPanel" method="_on_gain_spin_box_value_changed"]
 [connection signal="item_selected" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/BasicEffects/MonoOptionButton" to="HSplit/EffectsPanel" method="_on_mono_option_button_item_selected"]
+[connection signal="pressed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeHeader/ResetFadeEffectsButton" to="HSplit/EffectsPanel" method="_on_reset_fade_audio_effects_button_pressed"]
+[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid/FadeInSpinBox" to="HSplit/EffectsPanel" method="_on_fade_in_spin_box_value_changed" binds= [false]]
+[connection signal="value_changed" from="HSplit/EffectsPanel/Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer/AudioEffects/FadeEffectsGrid/FadeOutSpinBox" to="HSplit/EffectsPanel" method="_on_fade_out_spin_box_value_changed" binds= [false]]
