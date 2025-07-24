@@ -205,6 +205,10 @@ func _set_audio_effect_values() -> void:
 	fade_in_audio_spinbox.value = audio_effects_data.fade_in
 	fade_out_audio_spinbox.value = audio_effects_data.fade_out
 
+	var duration: int = Project.get_clip(current_clip_id).duration
+	fade_in_audio_spinbox.max_value = duration
+	fade_out_audio_spinbox.max_value = duration
+
 	_on_mute_check_button_toggled(mute_button.button_pressed)
 
 
