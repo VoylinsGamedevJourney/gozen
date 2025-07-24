@@ -264,6 +264,9 @@ func _on_resize_engaged(left: bool) -> void:
 				previous = i
 				continue
 
+			if previous == -1:
+				break
+
 			var front_clip_id: int = Project.get_track_data(clip_data.track_id)[previous]
 			max_left_resize = maxi(Project.get_clip(front_clip_id).get_end_frame(), max_left_resize)
 	else:
@@ -327,5 +330,4 @@ func _set_resize_data(new_start: int, new_duration: int) -> void:
 	clip_data.start_frame = new_start
 	clip_data.duration = new_duration
 
-	Timeline.instance.update_end()
-
+	Project.update_timeline_end()

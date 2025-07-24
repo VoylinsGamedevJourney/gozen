@@ -201,6 +201,10 @@ func _set_audio_effect_values() -> void:
 	gain_spinbox.value = audio_effects_data.gain[0]
 	mono_option_button.selected = audio_effects_data.mono
 
+	check_reset_fade_audio_button()
+	fade_in_audio_spinbox.value = audio_effects_data.fade_in
+	fade_out_audio_spinbox.value = audio_effects_data.fade_out
+
 	_on_mute_check_button_toggled(mute_button.button_pressed)
 
 

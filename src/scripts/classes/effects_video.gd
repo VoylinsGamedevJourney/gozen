@@ -56,10 +56,10 @@ func apply_transform(view_texture: TextureRect, material: ShaderMaterial) -> voi
 
 	var alpha_adjust: float = 0
 	if fade_in != 0 and current_frame <= fade_in:
-		alpha_adjust = lerpf(1, 0, float(current_frame) / fade_in)
+		alpha_adjust = Toolbox.calculate_fade(current_frame, fade_in)
 	if fade_out != 0 and current_frame >= Project.get_clip(clip_id).duration - fade_out:
 		current_frame = Project.get_clip(clip_id).duration - current_frame
-		alpha_adjust = lerpf(1, 0, float(current_frame) / fade_out)
+		alpha_adjust = Toolbox.calculate_fade(current_frame, fade_out)
 
 	view_texture.position = position[0]
 	view_texture.set_deferred("size", size[0])
