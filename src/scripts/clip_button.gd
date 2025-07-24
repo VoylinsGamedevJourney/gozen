@@ -1,4 +1,13 @@
+class_name ClipButton
 extends Button
+
+# TODO: Move this to settings
+var color_wave: Color = Color(0.82, 0.82, 0.82, 0.8)
+var color_video_fade: Color = Color(0.76, 1, 0.18, 0.3)
+var color_audio_fade: Color = Color(0.80, 0.36, 0.36, 0.3)
+var color_video_fade_line: Color = Color(0.76, 1, 0.18, 0.5)
+var color_audio_fade_line: Color = Color(0.80, 0.36, 0.36, 0.5)
+
 
 @onready var parent: Control = get_parent()
 
@@ -69,48 +78,81 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	if not wave:
-		return
+	# Draw wave.
+	if wave:
+		var full_wave_data: PackedFloat32Array = Project.get_file_data(clip_data.file_id).audio_wave_data
+		var display_duration: int
+		var display_begin_offset: int
 
-	var full_wave_data: PackedFloat32Array = Project.get_file_data(clip_data.file_id).audio_wave_data
-	var display_duration: int
-	var display_begin_offset: int
+		if full_wave_data.is_empty():
+			return
 
-	if full_wave_data.is_empty():
-		return
+		if is_resizing_left or is_resizing_right:
+			display_duration = _visual_duration
+			display_begin_offset = _original_begin + (_visual_start_frame - _original_start_frame)
+		else:
+			display_duration = clip_data.duration
+			display_begin_offset = clip_data.begin
 
-	if is_resizing_left or is_resizing_right:
-		display_duration = _visual_duration
-		display_begin_offset = _original_begin + (_visual_start_frame - _original_start_frame)
-	else:
-		display_duration = clip_data.duration
-		display_begin_offset = clip_data.begin
+		if display_duration <= 0 or size.x <= 0:
+			return
 
-	if display_duration <= 0 or size.x <= 0:
-		return
+		var block_width: float = Timeline.get_zoom()
+		var panel_height: float = size.y
 
-	var block_width: float = Timeline.get_zoom()
-	var panel_height: float = size.y
+		for i: int in display_duration:
+			var wave_data_index: int = display_begin_offset + i
 
-	for i: int in display_duration:
-		var wave_data_index: int = display_begin_offset + i
+			if wave_data_index >= 0 and wave_data_index < full_wave_data.size():
+				var normalized_height: float = full_wave_data[wave_data_index]
+				var block_height: float = clampf(normalized_height * (panel_height * 2), 0, panel_height)
+				var block_pos_y: float = 0.0
 
-		if wave_data_index >= 0 and wave_data_index < full_wave_data.size():
-			var normalized_height: float = full_wave_data[wave_data_index]
-			var block_height: float = clampf(normalized_height * (panel_height * 2), 0, panel_height)
-			var block_pos_y: float = 0.0
+				match Settings.get_audio_waveform_style():
+					SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+						block_pos_y = (panel_height - block_height) / 2.0
+					SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+						block_pos_y = panel_height - block_height
 
-			match Settings.get_audio_waveform_style():
-				SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
-					block_pos_y = (panel_height - block_height) / 2.0
-				SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
-					block_pos_y = panel_height - block_height
+				var block_rect: Rect2 = Rect2(
+						i * block_width, block_pos_y,
+						block_width, block_height)
 
-			var block_rect: Rect2 = Rect2(
-					i * block_width, block_pos_y,
-					block_width, block_height)
+				draw_rect(block_rect, color_wave)
 
-			draw_rect(block_rect, Color.LIGHT_GRAY)
+	# Draw video fade in.
+	if clip_data.effects_video.fade_in != 0:
+		var video_fade_in_pos: PackedVector2Array = [
+				Vector2(0, 0), Vector2(0, size.y),
+				Vector2(Timeline.get_frame_pos(clip_data.effects_video.fade_in), size.y)]
+		draw_colored_polygon(video_fade_in_pos, color_video_fade)
+		draw_polyline(video_fade_in_pos, color_video_fade_line, 3, true)
+
+	# Draw audio fade in.
+	if clip_data.effects_audio.fade_in != 0:
+		var audio_fade_in_pos: PackedVector2Array = [
+				Vector2(0, 0), Vector2(0, size.y),
+				Vector2(Timeline.get_frame_pos(clip_data.effects_audio.fade_in), 0)]
+
+		draw_colored_polygon(audio_fade_in_pos, color_audio_fade)
+		draw_polyline(audio_fade_in_pos, color_audio_fade_line, 3, true)
+
+	# Draw video fade out.
+	if clip_data.effects_video.fade_out != 0:
+		var video_fade_out_pos: PackedVector2Array = [
+				Vector2(size.x, 0), Vector2(size.x, size.y),
+				Vector2(size.x - Timeline.get_frame_pos(clip_data.effects_video.fade_out), size.y)]
+		draw_colored_polygon(video_fade_out_pos, color_video_fade)
+		draw_polyline(video_fade_out_pos, color_video_fade_line, 3, true)
+
+	# Draw audio fade in.
+	if clip_data.effects_audio.fade_out != 0:
+		var audio_fade_out_pos: PackedVector2Array = [
+				Vector2(size.x, 0), Vector2(size.x, size.y),
+				Vector2(size.x - Timeline.get_frame_pos(clip_data.effects_audio.fade_out), 0)]
+
+		draw_colored_polygon(audio_fade_out_pos, color_audio_fade)
+		draw_polyline(audio_fade_out_pos, color_audio_fade_line, 3, true)
 
 
 func _on_button_down() -> void:
@@ -132,8 +174,7 @@ func _input(event: InputEvent) -> void:
 	if has_focus() and event.is_action_pressed("ctrl_click", false, true):
 		print("---")
 		print("Clip id: ", clip_data.clip_id)
-		print("Clip track: ", clip_data.track_id)
-		print()
+		print("Clip track: ", clip_data.track_id, "\n")
 		print("Clip duration: ", clip_data.duration)
 		print("Clip start frame: ", clip_data.start_frame)
 		print("Clip end frame: ", clip_data.end_frame)
@@ -153,15 +194,10 @@ func _on_gui_input(event: InputEvent) -> void:
 
 		if mouse_event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
 			return
-#		if !(l_event as InputEventWithModifiers).alt_pressed and l_event.is_pressed():
-#			EffectsPanel.instance.open_clip_effects(name.to_int())
-#			get_viewport().set_input_as_handled()
 
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
 			var popup: PopupMenu = Toolbox.get_popup()
 
-			#Toolbox.connect_func(popup_menu.id_pressed, _on_id_pressed.bind(popup_menu))
-			popup.name = "oi"
 			popup.add_theme_constant_override("icon_max_width", 20)
 
 			if Project.get_clip_type(clip_data.clip_id) == File.TYPE.VIDEO:
@@ -331,3 +367,8 @@ func _set_resize_data(new_start: int, new_duration: int) -> void:
 	clip_data.duration = new_duration
 
 	Project.update_timeline_end()
+
+
+func on_fade_changed() -> void:
+	queue_redraw()
+

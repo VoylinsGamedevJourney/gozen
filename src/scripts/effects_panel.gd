@@ -288,6 +288,8 @@ func _on_pivot_y_spin_box_value_changed(value:float) -> void:
 
 
 func _on_fade_in_spin_box_value_changed(value: float, video: bool) -> void:
+	var clip_button: ClipButton = Timeline.instance.clips.get_node(str(current_clip_id))
+
 	if video:
 		Project.get_clip(current_clip_id).effects_video.fade_in = floor(value)
 		check_reset_fade_video_button()
@@ -295,16 +297,22 @@ func _on_fade_in_spin_box_value_changed(value: float, video: bool) -> void:
 		Project.get_clip(current_clip_id).effects_audio.fade_in = floor(value)
 		check_reset_fade_audio_button()
 
+	clip_button.on_fade_changed()
 	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_fade_out_spin_box_value_changed(value: float, video: bool) -> void:
+	var clip_button: ClipButton = Timeline.instance.clips.get_node(str(current_clip_id))
+
 	if video:
 		Project.get_clip(current_clip_id).effects_video.fade_out = floor(value)
 		_change_made(check_reset_fade_video_button)
 	else: # audio
 		Project.get_clip(current_clip_id).effects_audio.fade_out = floor(value)
 		_change_made(check_reset_fade_audio_button)
+
+	clip_button.on_fade_changed()
+	EditorCore.set_frame(EditorCore.frame_nr)
 
 
 func _on_enable_color_correction_button_toggled(toggled_on: bool) -> void:

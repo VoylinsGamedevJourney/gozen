@@ -56,6 +56,6 @@ func _on_skip_next_button_pressed() -> void:
 
 
 func _on_frame_changed(frame_nr: int) -> void:
-	frame_label.text = tr("Frame") + ": " + str(frame_nr)
+	frame_label.text = tr("TEXT_FRAME") + ": " + str(frame_nr)
 	time_label.text = Toolbox.format_time_str_from_frame(frame_nr)
 	
