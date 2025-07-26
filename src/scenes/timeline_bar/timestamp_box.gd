@@ -1,11 +1,10 @@
+class_name TimelineBox
 extends PanelContainer
 
 
 enum TIME_STATE { SECOND, FIVE_SECOND, TEN_SECOND, HALF_MINUTE, MINUTE }
 enum FRAME_STATE { SHOW_ALL, SHOW_HALF, SHOW_MINIMUM, HIDE}
 
-
-@onready var default_font: Font = preload("uid://bnubhr3uus8gt")
 
 var time_state: TIME_STATE = TIME_STATE.SECOND
 var frame_state: FRAME_STATE = FRAME_STATE.SHOW_ALL
@@ -65,56 +64,6 @@ func _on_timeline_zoom_changed() -> void:
 
 
 func _draw() -> void:
-	if Project.data == null:
-		return
-
-	var framerate: float = Project.get_framerate()
-	var zoom: float = Project.get_zoom()
-
-	draw_line(Vector2(0, size.y - 1), Vector2(size.x, size.y - 1), Color.DIM_GRAY, 2)
-
-	if frame_state != FRAME_STATE.HIDE:
-		var total: int = total_frames
-		var mod: int = 1
-
-		if frame_state == FRAME_STATE.SHOW_HALF:
-			mod = 2
-		elif frame_state == FRAME_STATE.SHOW_MINIMUM:
-			mod = 4
-
-		total /= mod
-
-		for i: int in total:
-			var x_pos: float = (i * zoom * mod) + 1
-
-			draw_line(Vector2(x_pos, size.y / 1.3), Vector2(x_pos, size.y - 1), Color.DIM_GRAY)
-
-	for i: int in total_seconds:
-		var x_pos: float = i * framerate * zoom
-		var draw_time: bool = true
-
-		if time_state == TIME_STATE.FIVE_SECOND and i % 5:
-			draw_time = false
-		elif time_state == TIME_STATE.TEN_SECOND and i % 10:
-			draw_time = false
-		elif time_state == TIME_STATE.MINUTE and i % 60:
-			draw_time = false
-		elif time_state == TIME_STATE.HALF_MINUTE and i % 30:
-			draw_time = false
-
-		if frame_state == FRAME_STATE.HIDE:
-			if draw_time:
-				draw_line(Vector2(x_pos, size.y / 1.5), Vector2(x_pos, size.y - 1), Color.DIM_GRAY, 2)
-			else:
-				draw_line(Vector2(x_pos, size.y / 1.3), Vector2(x_pos, size.y - 1), Color.DIM_GRAY, 1)
-		else:
-			draw_line(Vector2(x_pos, size.y / 2.3), Vector2(x_pos, size.y - 1), Color.DIM_GRAY, 2)
-
-		if draw_time:
-			draw_string(default_font, Vector2(x_pos + 3, size.y / 2 + 2), Toolbox.format_time_str(i, true), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.DIM_GRAY)
-
-	for i: int in total_minutes:
-		var x_pos: float = i * framerate * 60 * zoom
-
-		draw_line(Vector2(x_pos, size.y), Vector2(x_pos, size.y - 1), Color.DIM_GRAY, 2)
+	if Project.data != null:
+		DrawManager.draw_timestamp_box(self)
 

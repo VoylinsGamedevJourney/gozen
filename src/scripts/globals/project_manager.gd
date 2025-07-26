@@ -324,10 +324,12 @@ func delete_file(id: int) -> void:
 		if clip.file_id == id:
 			Timeline.instance.delete_clip(clip)
 
-	if !file_data.has(id) and !file_data.erase(id):
-		Toolbox.print_erase_error()
-	if !data.files.has(id) and !data.files.erase(id):
-		Toolbox.print_erase_error()
+	if file_data.has(id):
+		if !file_data.erase(id):
+			Toolbox.print_erase_error()
+	if data.files.has(id):
+		if !data.files.erase(id):
+			Toolbox.print_erase_error()
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)
@@ -582,7 +584,6 @@ func get_tracks() -> Array[Dictionary]:
 func get_track_data(track_id: int) -> Dictionary[int, int]:
 	var track_data: Dictionary[int, int] = {}
 	var keys: PackedInt64Array = get_track_keys(track_id)
-	keys.sort()
 
 	for key: int in keys:
 		track_data[key] = data.tracks[track_id][key]
@@ -623,6 +624,8 @@ func erase_clip(clip_id: int) -> void:
 		Toolbox.print_erase_error()
 	else:
 		unsaved_changes = true
+
+	get_tree().root.propagate_call("_on_clip_erased", [clip_id])
 
 
 func set_background_color(color: Color) -> void:
@@ -689,7 +692,9 @@ func get_marker(frame_nr: int) -> String:
 
 
 func get_marker_positions() -> PackedInt64Array:
-	return data.markers.keys()
+	var markers: PackedInt64Array = data.markers.keys()
+	markers.sort()
+	return markers
 
 
 func get_markers() -> Dictionary[int, String]:

@@ -45,8 +45,6 @@ func _on_skip_next_button_pressed() -> void:
 	var next_marker_pos: int = Project.get_timeline_end()
 	var frame_nr: int = EditorCore.frame_nr
 
-	marker_positions.sort()
-
 	for marker_pos: int in marker_positions:
 		if marker_pos > frame_nr:
 			next_marker_pos = marker_pos
@@ -56,6 +54,6 @@ func _on_skip_next_button_pressed() -> void:
 
 
 func _on_frame_changed(frame_nr: int) -> void:
-	frame_label.text = tr("Frame") + ": " + str(frame_nr)
+	frame_label.text = tr("TEXT_FRAME") + ": " + str(frame_nr)
 	time_label.text = Toolbox.format_time_str_from_frame(frame_nr)
 	

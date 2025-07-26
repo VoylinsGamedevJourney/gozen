@@ -1,11 +1,14 @@
 extends PanelContainer
 
+enum POPUP_ACTION { RENAME, DELETE, RELOAD, SAVE_AS, EXTRACT_AUDIO, DUPLICATE }
+
 
 @export var tree: Tree
 @export var file_menu_button: MenuButton
 
 var folder_items: Dictionary[String, TreeItem] = {}
 var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
+
 
 
 func _ready() -> void:
@@ -15,6 +18,7 @@ func _ready() -> void:
 	Toolbox.connect_func(Project.file_nickname_changed, _on_file_nickname_changed)
 	Toolbox.connect_func(Thumbnailer.thumb_generated, _on_update_thumb)
 	Toolbox.connect_func(tree.item_mouse_selected, _file_item_clicked)
+	Toolbox.connect_func(tree.gui_input, _on_tree_gui_input)
 
 	tree.set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
 	folder_items["/"] = tree.create_item()
@@ -23,6 +27,12 @@ func _ready() -> void:
 	for i: int in file_menu_button.item_count:
 		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
 	Toolbox.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
+
+
+func _on_tree_gui_input(event: InputEvent) -> void:
+	if tree.get_selected() != null and event.is_action("delete_file"):
+		var file_id: int = tree.get_selected().get_metadata(0)
+		_on_popup_option_pressed(POPUP_ACTION.DELETE, Project.get_file(file_id))
 
 
 func _on_project_ready() -> void:
@@ -61,30 +71,30 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 	var popup: PopupMenu = Toolbox.get_popup()
 
 	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
-		popup.add_item(tr("popup_item_rename"), 0)
-		popup.add_item(tr("popup_item_delete"), 2)
+		popup.add_item(tr("popup_item_rename"), POPUP_ACTION.RENAME)
+		popup.add_item(tr("popup_item_delete"), POPUP_ACTION.DELETE)
 
 		Toolbox.show_popup(popup)
 	else: # FILE
 		var file_id: int = file_item.get_metadata(0)
 		file = Project.get_file(file_id)
 
-		popup.add_item(tr("popup_item_rename"), 0)
-		popup.add_item(tr("popup_item_reload"), 1)
-		popup.add_item(tr("popup_item_delete"), 2)
+		popup.add_item(tr("popup_item_rename"), POPUP_ACTION.RENAME)
+		popup.add_item(tr("popup_item_reload"), POPUP_ACTION.RELOAD)
+		popup.add_item(tr("popup_item_delete"), POPUP_ACTION.DELETE)
 
 		if file.type == File.TYPE.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator(tr("popup_separator_image_options"))
-				popup.add_item(tr("popup_item_save_as_file"), 3)
+				popup.add_item(tr("popup_item_save_as_file"), POPUP_ACTION.SAVE_AS)
 		if file.type == File.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
-			popup.add_item(tr("popup_item_extract_audio"), 4)
+			popup.add_item(tr("popup_item_extract_audio"), POPUP_ACTION.EXTRACT_AUDIO)
 		if file.type == File.TYPE.TEXT:
 			popup.add_separator(tr("popup_separator_text_options"))
-			popup.add_item(tr("popup_item_duplicate"), 5)
+			popup.add_item(tr("popup_item_duplicate"), POPUP_ACTION.DUPLICATE)
 			if file.path.contains("temp://"):
-				popup.add_item(tr("popup_item_save_as_file"), 3)
+				popup.add_item(tr("popup_item_save_as_file"), POPUP_ACTION.SAVE_AS)
 
 	Toolbox.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
 	Toolbox.show_popup(popup)
@@ -97,14 +107,14 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 		printerr("Folder renaming and deleting not implemented yet!")
 
 	match option_id:
-		0: # Rename file/folder.
+		POPUP_ACTION.RENAME:
 			var rename_dialog: FileRenameDialog = preload("uid://y450a2mtc4om").instantiate()
 
 			rename_dialog.prepare(file.id)
 			get_tree().root.add_child(rename_dialog)
-		1: # Reload current file.
+		POPUP_ACTION.RELOAD:
 			Project.reload_file_data(file.id)
-		2: # Delete file.
+		POPUP_ACTION.DELETE:
 			InputManager.undo_redo.create_action("Delete file")
 			# Deleting file from tree and project data.
 			InputManager.undo_redo.add_do_method(_on_file_deleted.bind(file.id))
@@ -120,7 +130,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 
 			InputManager.undo_redo.add_undo_method(Timeline.instance._check_clips)
 			InputManager.undo_redo.commit_action()
-		3: # Save as file (Only for temp files such as Images).
+		POPUP_ACTION.SAVE_AS: # Only for temp files such as Images.
 			if file.type == File.TYPE.TEXT:
 				# TODO: Implement duplicating text files
 				printerr("Not implemented yet!")
@@ -133,7 +143,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				Toolbox.connect_func(dialog.file_selected, Project._save_image_to_file.bind(file))
 				add_child(dialog)
 				dialog.popup_centered()
-		4: # Extract audio
+		POPUP_ACTION.EXTRACT_AUDIO:
 			var dialog: FileDialog = Toolbox.get_file_dialog(
 					tr("title_save_video_audio_to_wav"),
 					FileDialog.FILE_MODE_SAVE_FILE,
@@ -142,7 +152,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 			Toolbox.connect_func(dialog.file_selected, Project._save_audio_to_wav.bind(file))
 			add_child(dialog)
 			dialog.popup_centered()
-		5: # Duplicate (Only for text)
+		POPUP_ACTION.DUPLICATE: # Only for text
 			# TODO: Implement duplicating text files
 			printerr("Duplicating text not implemented yet!")
 
@@ -204,9 +214,10 @@ func _on_file_added(file_id: int) -> void:
 
 
 func _on_file_deleted(file_id: int) -> void:
-	file_items[file_id].free()
-	if !file_items.erase(file_id):
-		Toolbox.print_erase_error()
+	if file_items.has(file_id):
+		file_items[file_id].get_parent().remove_child(file_items[file_id])
+		if !file_items.erase(file_id):
+			Toolbox.print_erase_error()
 
 
 func _on_file_path_updated(file_id: int) -> void:
@@ -224,7 +235,6 @@ func _add_file_to_tree(file: File) -> void:
 	file_items[file.id].set_metadata(0, file.id)
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file.id))
 	file_items[file.id].set_icon_max_width(0, 70)
-
 	# TODO: Use set_icon_modulate to indicate when a file is still loading,
 	# this would make the files loading overlay obsolete. Just make certain
 	# that the files with a modulate can't be selected yet and change their

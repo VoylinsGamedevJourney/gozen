@@ -193,3 +193,28 @@ static func get_video_extension(video_codec: GoZenEncoder.VIDEO_CODEC) -> String
 	printerr("Unrecognized codec! ", video_codec)
 	return ""
 
+
+static func calculate_fade(frame_nr: int, fade_limit: float) -> float:
+	return lerpf(1, 0, float(frame_nr) / fade_limit)
+
+
+static func get_previous(frame: int, array: PackedInt64Array) -> int:
+	## A function to help getting the number lower than the given number.
+	var prev: int = -1
+
+	for i: int in array:
+		if i >= frame:
+			break
+		prev = i
+
+	return prev
+
+
+static func get_next(frame: int, array: PackedInt64Array) -> int:
+	## A function to help getting the number higher than the given number.
+	for i: int in array:
+		if i > frame:
+			return i
+
+	return -1
+

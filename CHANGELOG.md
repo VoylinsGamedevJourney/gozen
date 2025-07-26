@@ -15,6 +15,8 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - Local clip video instancing;
 - Option to save screenshots (and add to project);
 - Timeline bar with timestamps;
+- Delete key functionality to File tree items;
+- Clip fading;
 
 ### Fixed
 - Light theme having unreadable menu buttons;
@@ -24,6 +26,7 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - File panel popup not showing;
 - Seeking video would skip 1 frame;
 - Thumbnailer sizing not working well for non 9:16 aspect ratio;
+- Deleting files;
 
 ### Improved
 - Windows workflow takes less time;

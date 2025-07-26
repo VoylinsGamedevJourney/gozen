@@ -58,6 +58,7 @@ FFMPEG_DISABLED_MODULES = [
     "--disable-manpages",
     "--disable-podpages",
     "--disable-txtpages",
+    "--disable-network",
 ]
 
 

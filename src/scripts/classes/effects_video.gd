@@ -8,74 +8,201 @@ extends Node
 # anywhere.
 
 
+var clip_id: int = -1
 
-@export var position: Vector2i = Vector2i.ZERO
-@export var size: Vector2i = Vector2i.ZERO
-@export var scale: float = 100
-@export var rotation: float = 0
-@export var alpha: float = 1.0
-@export var pivot: Vector2i = Vector2i.ZERO
+@export var position: Dictionary[int, Vector2i] = { 0: Vector2i.ZERO }
+@export var size: Dictionary[int, Vector2i] = { 0: Vector2i.ZERO }
+@export var scale: Dictionary[int, float] = { 0: 100 }
+@export var rotation: Dictionary[int, float] = { 0: 0 }
+@export var alpha: Dictionary[int, float] = { 0: 1.0 }
+@export var pivot: Dictionary[int, Vector2i] = { 0: Vector2i.ZERO }
 
 @export var enable_color_correction: bool = false
-@export var brightness: float = 0.0 # Min: -1.0, Max: 1.0
-@export var contrast: float = 1.0 # Min: -1.0, Max: 1.0
-@export var saturation: float = 1.0 # Min: -1.0, Max: 1.0
+@export var brightness: Dictionary[int, float] = { 0: 0.0 } # Min: -1.0, Max: 1.0
+@export var contrast: Dictionary[int, float] = { 0: 1.0 } # Min: -1.0, Max: 1.0
+@export var saturation: Dictionary[int, float] = { 0: 1.0 } # Min: -1.0, Max: 1.0
 
-@export var red_value: float = 1.0 # Min: 0.0, Max: 1.0
-@export var green_value: float = 1.0 # Min: 0.0, Max: 1.0
-@export var blue_value: float = 1.0 # Min: 0.0, Max: 1.0
+@export var red_value: Dictionary[int, float] = { 0: 1.0 } # Min: 0.0, Max: 1.0
+@export var green_value: Dictionary[int, float] = { 0: 1.0 } # Min: 0.0, Max: 1.0
+@export var blue_value: Dictionary[int, float] = { 0: 1.0 } # Min: 0.0, Max: 1.0
 
-@export var tint_color: Color = Color.BLACK
-@export var tint_effect_factor: float = 0.0 # Min: 0.0, Max: 1.0
+@export var tint_color: Dictionary[int, Color] = { 0: Color.BLACK }
+@export var tint_effect_factor: Dictionary[int, float] = { 0: 0.0 } # Min: 0.0, Max: 1.0
 
 @export var enable_chroma_key: bool = false
-@export var chroma_key_color: Color = Color.LIME_GREEN
-@export var chroma_key_tolerance: float = 0.3 # Min: 0.0, Max 1.0
-@export var chroma_key_softness: float = 0.05 # Min: 0.0, Max 0.5
+@export var chroma_key_color: Dictionary[int, Color] = { 0: Color.LIME_GREEN }
+@export var chroma_key_tolerance: Dictionary[int, float] = { 0: 0.3 } # Min: 0.0, Max 1.0
+@export var chroma_key_softness: Dictionary[int, float] = { 0: 0.05 } # Min: 0.0, Max 0.5
 
+@export var fade_in: int = 0 # In frames
+@export var fade_out: int = 0 # In frames
+
+
+
+func set_position_x(frame: int, value: int) -> void:
+	if position.has(frame):
+		position[frame].x = value
+	else:
+		# TODO: get previous frame to set the Y.
+		position[frame] = Vector2i(value, 0)
+
+
+func set_position_y(frame: int, value: int) -> void:
+	if position.has(frame):
+		position[frame].y = value
+	else:
+		# TODO: get previous frame to set the X.
+		position[frame] = Vector2i(0, value)
+
+
+func set_size_x(frame: int, value: int) -> void:
+	if position.has(frame):
+		size[frame].x = value
+	else:
+		# TODO: get previous frame to set the Y.
+		size[frame] = Vector2i(value, 0)
+
+
+func set_size_y(frame: int, value: int) -> void:
+	if size.has(frame):
+		size[frame].y = value
+	else:
+		# TODO: get previous frame to set the X.
+		size[frame] = Vector2i(0, value)
+
+
+func set_scale(frame: int, value: float) -> void:
+	scale[frame] = value
+
+
+func set_rotation(frame: int, value: float) -> void:
+	rotation[frame] = value
+
+
+func set_alpha(frame: int, value: float) -> void:
+	alpha[frame] = value
+
+
+func set_pivot_x(frame: int, value: int) -> void:
+	if pivot.has(frame):
+		pivot[frame].x = value
+	else:
+		# TODO: get previous frame to set the Y.
+		pivot[frame] = Vector2i(value, 0)
+
+
+func set_pivot_y(frame: int, value: int) -> void:
+	if pivot.has(frame):
+		pivot[frame].y = value
+	else:
+		# TODO: get previous frame to set the X.
+		pivot[frame] = Vector2i(0, value)
+
+
+func set_brightness(frame: int, value: float) -> void:
+	brightness[frame] = clampf(value, -1.0, 1.0)
+
+
+func set_contrast(frame: int, value: float) -> void:
+	contrast[frame] = clampf(value, -1.0, 1.0)
+
+
+func set_saturation(frame: int, value: float) -> void:
+	saturation[frame] = clampf(value, -1.0, 1.0)
+
+
+func set_red_value(frame: int, value: float) -> void:
+	red_value[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_green_value(frame: int, value: float) -> void:
+	green_value[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_blue_value(frame: int, value: float) -> void:
+	blue_value[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_tint_color(frame: int, value: Color) -> void:
+	tint_color[frame] = value
+
+
+func set_tint_effect_factor(frame: int, value: float) -> void:
+	tint_effect_factor[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_chroma_key_color(frame: int, value: Color) -> void:
+	chroma_key_color[frame] = value
+
+
+func set_chroma_key_tolerance(frame: int, value: float) -> void:
+	chroma_key_tolerance[frame] = clampf(value, 0.0, 1.0)
+
+
+func set_chroma_key_softness(frame: int, value: float) -> void:
+	chroma_key_softness[frame] = clampf(value, 0.0, 0.5)
 
 
 func set_default_transform() -> void:
-	position = Vector2i.ZERO
-	size = Project.get_resolution()
-	scale = 100
-	rotation = 0
-	alpha = 1.0
-	pivot = size / 2
+	position = { 0: Vector2i.ZERO }
+	size = { 0: Project.get_resolution() }
+	scale = { 0: 100 }
+	rotation = { 0: 0 }
+	alpha = { 0: 1.0 }
+	pivot = { 0: Vector2i(size[0] / 2) }
 
 
-func apply_transform(view_texture: TextureRect) -> void:
-	view_texture.position = position
-	view_texture.set_deferred("size", size)
-	view_texture.scale = Vector2(scale / 100, scale / 100)
-	view_texture.rotation = deg_to_rad(rotation)
-	view_texture.pivot_offset = pivot
+# TODO: Add animation smoothness and correct values.
+func apply_transform(view_texture: TextureRect, material: ShaderMaterial) -> void:
+	var start_frame: int = Project.get_clip(clip_id).start_frame
+	var current_frame: int = EditorCore.frame_nr - start_frame
+
+	var alpha_adjust: float = 0
+	if fade_in != 0 and current_frame <= fade_in:
+		alpha_adjust = Toolbox.calculate_fade(current_frame, fade_in)
+	if fade_out != 0 and current_frame >= Project.get_clip(clip_id).duration - fade_out:
+		current_frame = Project.get_clip(clip_id).duration - current_frame
+		alpha_adjust = Toolbox.calculate_fade(current_frame, fade_out)
+
+	view_texture.position = position[0]
+	view_texture.set_deferred("size", size[0])
+	view_texture.scale = Vector2(scale[0] / 100, scale[0] / 100)
+	view_texture.rotation = deg_to_rad(rotation[0])
+	material.set_shader_parameter("alpha", maxf(0, alpha[0] - alpha_adjust))
+	view_texture.pivot_offset = pivot[0]
 
 
+# TODO: Add animation smoothness and correct values.
 func apply_color_correction(material: ShaderMaterial) -> void:
-	material.set_shader_parameter("brightness", brightness)
-	material.set_shader_parameter("contrast", contrast)
-	material.set_shader_parameter("saturation", saturation)
+	material.set_shader_parameter("brightness", brightness[0])
+	material.set_shader_parameter("contrast", contrast[0])
+	material.set_shader_parameter("saturation", saturation[0])
 
-	material.set_shader_parameter("red_value", red_value)
-	material.set_shader_parameter("green_value", green_value)
-	material.set_shader_parameter("blue_value", blue_value)
+	material.set_shader_parameter("red_value", red_value[0])
+	material.set_shader_parameter("green_value", green_value[0])
+	material.set_shader_parameter("blue_value", blue_value[0])
 
-	material.set_shader_parameter("tint_color", tint_color)
-	material.set_shader_parameter("tint_effect_factor", tint_effect_factor)
+	material.set_shader_parameter("tint_color", tint_color[0])
+	material.set_shader_parameter("tint_effect_factor", tint_effect_factor[0])
 
 
+# TODO: Add animation smoothness and correct values.
 func apply_chroma_key(material: ShaderMaterial) -> void:
 	material.set_shader_parameter("apply_chroma_key", enable_chroma_key)
 
 	if enable_chroma_key:
-		material.set_shader_parameter("key_color", chroma_key_color)
-		material.set_shader_parameter("key_tolerance", chroma_key_tolerance)
-		material.set_shader_parameter("key_softness", chroma_key_softness)
+		material.set_shader_parameter("key_color", chroma_key_color[0])
+		material.set_shader_parameter("key_tolerance", chroma_key_tolerance[0])
+		material.set_shader_parameter("key_softness", chroma_key_softness[0])
 
 
 func reset_transform() -> void:
 	set_default_transform()
+
+
+func reset_fade() -> void:
+	fade_in = 0
+	fade_out = 0
 
 
 func reset_color_correction() -> void:
@@ -98,11 +225,24 @@ func reset_chroma_key() -> void:
 
 
 func transforms_equal_to_defaults() -> bool:
-	if position != EditorCore.default_effects_video.position: return false
-	if size != EditorCore.default_effects_video.size: return false
-	if scale != EditorCore.default_effects_video.scale: return false
-	if rotation != EditorCore.default_effects_video.rotation: return false
-	if pivot != EditorCore.default_effects_video.pivot: return false
+	if position != EditorCore.default_effects_video.position:
+		return false
+	if size != EditorCore.default_effects_video.size:
+		return false
+	if scale != EditorCore.default_effects_video.scale:
+		return false
+	if rotation != EditorCore.default_effects_video.rotation:
+		return false
+	if pivot != EditorCore.default_effects_video.pivot:
+		return false
+	return true
+
+
+func fade_equal_to_defaults() -> bool:
+	if fade_in != EditorCore.default_effects_video.fade_in:
+		return false
+	if fade_out != EditorCore.default_effects_video.fade_out:
+		return false
 	return true
 
 

@@ -2,8 +2,6 @@ class_name Timeline
 extends PanelContainer
 
 
-signal zoom_changed
-
 
 const TIMELINE_PADDING: int = 1920 # Amount of frames after timeline_end.
 const TRACK_HEIGHT: int = 30
@@ -184,7 +182,6 @@ func _set_zoom(new_zoom: float) -> void:
 	Project.set_timeline_scroll_h(scroll_main.scroll_horizontal)
 	Project.set_zoom(zoom)
 	propagate_call("_on_timeline_zoom_changed")
-	zoom_changed.emit()
 
 
 func _on_project_ready() -> void:
@@ -193,6 +190,10 @@ func _on_project_ready() -> void:
 
 	for clip: ClipData in Project.get_clip_datas():
 		add_clip(clip)
+		if clip.effects_video != null and clip.effects_video.clip_id == -1:
+			clip.effects_video.clip_id = clip.clip_id
+		if clip.effects_audio != null and clip.effects_audio.clip_id == -1:
+			clip.effects_audio.clip_id = clip.clip_id
 
 	main_control.custom_minimum_size.y = (TRACK_HEIGHT + LINE_HEIGHT) * Project.get_track_count()
 
@@ -206,7 +207,7 @@ func _on_project_ready() -> void:
 		overlay.custom_minimum_size.y = TRACK_HEIGHT
 		track_overlays.append(overlay)
 
-		line.mouse_filter = Control.MOUSE_FILTER_PASS
+		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
 		line.size.y = LINE_HEIGHT
 
@@ -215,10 +216,11 @@ func _on_project_ready() -> void:
 
 	Project.update_timeline_end()
 	_set_zoom(Project.get_zoom())
+
 	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
 
 
-func _check_clips() -> void:
+func _check_clips(_id: int = -1) -> void:
 	# Get's called after deleting of a file.
 	var ids: PackedInt64Array = Project.get_clip_ids()
 
@@ -457,6 +459,9 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 		new_clip_data.effects_video = EffectsVideo.new()
 		new_clip_data.effects_audio = EffectsAudio.new()
 
+		new_clip_data.effects_video.clip_id = new_clip_data.clip_id
+		new_clip_data.effects_audio.clip_id = new_clip_data.clip_id
+
 		new_clip_data.effects_video.set_default_transform()
 
 		ids.append(new_clip_data.clip_id)
@@ -561,7 +566,6 @@ func get_drop_region(track: int, frame: int, ignores: Array[Vector2i]) -> Vector
 	# X = lowest, Y = highest
 	var region: Vector2i = Vector2i(-1, -1)
 	var keys: PackedInt64Array = Project.get_track_keys(track)
-	keys.sort()
 
 	for track_frame: int in keys:
 		if track_frame < frame and Vector2i(track, track_frame) not in ignores:

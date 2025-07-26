@@ -24,6 +24,7 @@ var loaded_clips: Array[ClipData] = []
 var loaded_shaders: Array[SHADER_ID] = []
 
 var default_effects_video: EffectsVideo = EffectsVideo.new()
+var default_effects_audio: EffectsAudio = EffectsAudio.new()
 var color_correction_default: Array[bool] = [] # is true if default colors are loaded.
 
 var y_textures: Array[ImageTexture] = []
@@ -203,23 +204,14 @@ func _setup_audio_players() -> void:
 
 func find_audio(frame: int, track: int) -> int:
 	var pos: PackedInt64Array = Project.get_track_keys(track)
-	var last: int = -1
-	pos.sort()
+	var last: int = Toolbox.get_previous(frame, pos)
 
-	for i: int in pos:
-		if i <= frame:
-			last = i
-			continue
-		break
-
-	if last == -1:
-		return -1
-
+	if last == -1: return -1
 	last = Project.get_track_data(track)[last]
+
 	if frame < Project.get_clip(last).get_end_frame():
 		return last
-	else:
-		return -1
+	return -1
 
 			
 # Video stuff  ----------------------------------------------------------------
@@ -320,8 +312,12 @@ func update_view(track_id: int) -> void:
 		default_effects_video.apply_color_correction(material)
 		color_correction_default[track_id] = true
 
-	effects_video.apply_chroma_key(material)
-	effects_video.apply_transform(view_textures[track_id])
+	if effects_video.enable_chroma_key:
+		effects_video.apply_chroma_key(material)
+	elif effects_video.enable_chroma_key:
+		default_effects_video.apply_color_correction(material)
+
+	effects_video.apply_transform(view_textures[track_id], material)
 
 
 func _init_video_textures(track_id: int, video_data: GoZenVideo, material: ShaderMaterial) -> void:
