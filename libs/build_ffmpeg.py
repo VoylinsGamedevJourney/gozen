@@ -11,41 +11,79 @@ import subprocess
 from pathlib import Path
 from typing import Generator
 
-from .build_deps import (
-    build_aom,
-    build_lib,
-    build_mp3lame,
-    build_ogg,
-    build_opus,
-    build_svt_av1,
-    build_vorbis,
-    build_vpx,
-    build_x264,
-    build_x265,
-)
-from .download_deps import download_ffmpeg_deps
-from .paths import (
-    AOM_INSTALL_DIR_NAME,
-    FFMPEG_SOURCE_DIR,
-    MP3LAME_INSTALL_DIR_NAME,
-    OGG_INSTALL_DIR_NAME,
-    OPUS_INSTALL_DIR_NAME,
-    SVT_AV1_INSTALL_DIR_NAME,
-    VORBIS_INSTALL_DIR_NAME,
-    VPX_INSTALL_DIR_NAME,
-    X264_INSTALL_DIR_NAME,
-    X265_INSTALL_DIR_NAME,
-    get_ffmpeg_install_dir,
-    get_lib_dir,
-)
-from .utils import (
-    _GOZEN_CROSS_SYSROOT,
-    CURR_PLATFORM,
-    clear_dir,
-    convert_to_msys2_path,
-    get_host_and_sysroot,
-    run_command,
-)
+try:
+    from .build_deps import (
+        build_aom,
+        build_lib,
+        build_mp3lame,
+        build_ogg,
+        build_opus,
+        build_svt_av1,
+        build_vorbis,
+        build_vpx,
+        build_x264,
+        build_x265,
+    )
+    from .download_deps import download_ffmpeg_deps
+    from .paths import (
+        AOM_INSTALL_DIR_NAME,
+        FFMPEG_SOURCE_DIR,
+        MP3LAME_INSTALL_DIR_NAME,
+        OGG_INSTALL_DIR_NAME,
+        OPUS_INSTALL_DIR_NAME,
+        SVT_AV1_INSTALL_DIR_NAME,
+        VORBIS_INSTALL_DIR_NAME,
+        VPX_INSTALL_DIR_NAME,
+        X264_INSTALL_DIR_NAME,
+        X265_INSTALL_DIR_NAME,
+        get_ffmpeg_install_dir,
+        get_lib_dir,
+    )
+    from .utils import (
+        _GOZEN_CROSS_SYSROOT,
+        CURR_PLATFORM,
+        clear_dir,
+        convert_to_msys2_path,
+        get_host_and_sysroot,
+        run_command,
+    )
+except ImportError:
+    from build_deps import (
+        build_aom,
+        build_lib,
+        build_mp3lame,
+        build_ogg,
+        build_opus,
+        build_svt_av1,
+        build_vorbis,
+        build_vpx,
+        build_x264,
+        build_x265,
+    )
+    from download_deps import download_ffmpeg_deps
+    from paths import (
+        AOM_INSTALL_DIR_NAME,
+        FFMPEG_SOURCE_DIR,
+        MP3LAME_INSTALL_DIR_NAME,
+        OGG_INSTALL_DIR_NAME,
+        OPUS_INSTALL_DIR_NAME,
+        SVT_AV1_INSTALL_DIR_NAME,
+        VORBIS_INSTALL_DIR_NAME,
+        VPX_INSTALL_DIR_NAME,
+        X264_INSTALL_DIR_NAME,
+        X265_INSTALL_DIR_NAME,
+        get_ffmpeg_install_dir,
+        get_lib_dir,
+    )
+    from utils import (
+        _GOZEN_CROSS_SYSROOT,
+        CURR_PLATFORM,
+        clear_dir,
+        convert_to_msys2_path,
+        get_host_and_sysroot,
+        run_command,
+    )
+
 
 FFMPEG_DISABLED_MODULES = [
     "--disable-avdevice",

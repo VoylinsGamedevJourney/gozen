@@ -4,34 +4,64 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from .paths import (
-    AOM_BUILD_DIR,
-    AOM_REPO,
-    AOM_SOURCE_DIR,
-    MP3LAME_GIT_OPTIONS,
-    MP3LAME_REPO,
-    MP3LAME_SOURCE_DIR,
-    OGG_GIT_OPTIONS,
-    OGG_REPO,
-    OGG_SOURCE_DIR,
-    OPUS_REPO,
-    OPUS_SOURCE_DIR,
-    SVT_AV1_BUILD_DIR,
-    SVT_AV1_GIT_OPTIONS,
-    SVT_AV1_REPO,
-    SVT_AV1_SOURCE_DIR,
-    VORBIS_GIT_OPTIONS,
-    VORBIS_REPO,
-    VORBIS_SOURCE_DIR,
-    VPX_REPO,
-    VPX_SOURCE_DIR,
-    X264_REPO,
-    X264_SOURCE_DIR,
-    X265_BUILD_DIR,
-    X265_REPO,
-    X265_SOURCE_DIR,
-)
-from .utils import GIT_PATH, run_command
+try:
+    from .paths import (
+        AOM_BUILD_DIR,
+        AOM_REPO,
+        AOM_SOURCE_DIR,
+        MP3LAME_GIT_OPTIONS,
+        MP3LAME_REPO,
+        MP3LAME_SOURCE_DIR,
+        OGG_GIT_OPTIONS,
+        OGG_REPO,
+        OGG_SOURCE_DIR,
+        OPUS_REPO,
+        OPUS_SOURCE_DIR,
+        SVT_AV1_BUILD_DIR,
+        SVT_AV1_GIT_OPTIONS,
+        SVT_AV1_REPO,
+        SVT_AV1_SOURCE_DIR,
+        VORBIS_GIT_OPTIONS,
+        VORBIS_REPO,
+        VORBIS_SOURCE_DIR,
+        VPX_REPO,
+        VPX_SOURCE_DIR,
+        X264_REPO,
+        X264_SOURCE_DIR,
+        X265_BUILD_DIR,
+        X265_REPO,
+        X265_SOURCE_DIR,
+    )
+    from .utils import GIT_PATH, run_command
+except ImportError:
+    from paths import (
+        AOM_BUILD_DIR,
+        AOM_REPO,
+        AOM_SOURCE_DIR,
+        MP3LAME_GIT_OPTIONS,
+        MP3LAME_REPO,
+        MP3LAME_SOURCE_DIR,
+        OGG_GIT_OPTIONS,
+        OGG_REPO,
+        OGG_SOURCE_DIR,
+        OPUS_REPO,
+        OPUS_SOURCE_DIR,
+        SVT_AV1_BUILD_DIR,
+        SVT_AV1_GIT_OPTIONS,
+        SVT_AV1_REPO,
+        SVT_AV1_SOURCE_DIR,
+        VORBIS_GIT_OPTIONS,
+        VORBIS_REPO,
+        VORBIS_SOURCE_DIR,
+        VPX_REPO,
+        VPX_SOURCE_DIR,
+        X264_REPO,
+        X264_SOURCE_DIR,
+        X265_BUILD_DIR,
+        X265_REPO,
+        X265_SOURCE_DIR,
+    )
+    from utils import GIT_PATH, run_command
 
 
 def clone_dep(

@@ -56,14 +56,14 @@ jobs:
         working-directory: ./libs
         run: |
           if [ "${{ inputs.dep_name }}" == "ogg_vorbis" ]; then
-          echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import download_deps, build_ffmpeg; download_deps.clone_dep_ogg()"
-          echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.build_ogg('windows', '${{ inputs.architecture }}', 4, {})"
+            python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_ogg()"
+            python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_ogg('windows', '${{ inputs.architecture }}', 4, {})"
 
-            echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import download_deps, build_ffmpeg; download_deps.clone_dep_vorbis()"
-            echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.build_vorbis('windows', '${{ inputs.architecture }}', 4, {})"
+            python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_vorbis()"
+            python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_vorbis('windows', '${{ inputs.architecture }}', 4, {})"
           else
-            echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import download_deps, build_ffmpeg; download_deps.clone_dep_${{ inputs.dep_name }}()"
-            echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.build_${{ inputs.dep_name }}('windows', '${{ inputs.architecture }}', 4, {})"
+            python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_${{ inputs.dep_name }}()"
+            python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_${{ inputs.dep_name }}('windows', '${{ inputs.architecture }}', 4, {})"
           fi
 
       - name: Upload ${{ inputs.dep_name }}

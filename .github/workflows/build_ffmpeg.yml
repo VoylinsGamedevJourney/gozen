@@ -31,10 +31,9 @@ jobs:
           submodules: recursive
 
       - name: Compile FFmpeg
-        working-directory: ./libs
         run: |
           export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
-          echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.compile_ffmpeg('linux', 'x86_64', 4)"
+          python -m libs.build_ffmpeg --platform linux --arch x86_64 --threads 4
 
       - name: Upload bin
         uses: actions/upload-artifact@v4
@@ -146,8 +145,8 @@ jobs:
 
       - name: Compiling
         working-directory: ./libs
-        run: echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.build_ffmpeg_windows('x86_64', 4, {})"
-        
+        run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_ffmpeg_windows('x86_64', 4, {})"
+
       - name: Upload bin
         uses: actions/upload-artifact@v4
         with:

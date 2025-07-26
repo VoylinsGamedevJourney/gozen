@@ -3,12 +3,12 @@ on:
   workflow_call:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 1 * *' # Runs at 00:00 UTC on the 1st day of every month
+    - cron: '0 2 1 * *' # Runs at 00:00 UTC on the 1st day of every month
         
 env:
-  GODOT_VERSION: 4.4.1
-  EXPORT_FOLDER_LINUX: libs/bin/linux_x86_64
-  EXPORT_FOLDER_WINDOWS: libs/bin/windows_x86_64
+  GODOT_VERSION: 4.5.beta3
+  EXPORT_FOLDER_LINUX: bin/linux_x86_64
+  EXPORT_FOLDER_WINDOWS: bin/windows_x86_64
  
 run-name: 'Compile GDE'
 jobs:
@@ -60,7 +60,7 @@ jobs:
 
       - name: Copy ffmpeg libs
         working-directory: ./libs
-        run: echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.copy_lib_files_linux('x86_64')"
+        run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.copy_lib_files_linux('x86_64')"
 
       - name: Compiling GDE GoZen debug
         working-directory: ./libs
@@ -69,7 +69,7 @@ jobs:
       - name: Upload debug
         uses: actions/upload-artifact@v4
         with:
-          name: linux_gde_debug
+          name: linux_gde_debug_x86_64
           path: ${{ env.EXPORT_FOLDER_LINUX }}
           retention-days: 1
 
@@ -122,7 +122,7 @@ jobs:
 
       - name: Copy ffmpeg libs
         working-directory: ./libs
-        run: echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.copy_lib_files_linux('x86_64')"
+        run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.copy_lib_files_linux('x86_64')"
 
       - name: Compiling GDE GoZen release
         working-directory: ./libs
@@ -131,7 +131,7 @@ jobs:
       - name: Upload release
         uses: actions/upload-artifact@v4
         with:
-          name: linux_gde_release
+          name: linux_gde_release_x86_64
           path: ${{ env.EXPORT_FOLDER_LINUX }}
           retention-days: 1
 
@@ -161,19 +161,19 @@ jobs:
       - name: Get debug
         uses: actions/download-artifact@v4
         with:
-          name: linux_gde_debug
+          name: linux_gde_debug_x86_64
           path: ${{ env.EXPORT_FOLDER_LINUX }}
 
       - name: Get release
         uses: actions/download-artifact@v4
         with:
-          name: linux_gde_release
+          name: linux_gde_release_x86_64
           path: ${{ env.EXPORT_FOLDER_LINUX }}
 
       - name: Upload release
         uses: actions/upload-artifact@v4
         with:
-          name: linux_gde
+          name: linux_gde_x86_64
           path: ${{ env.EXPORT_FOLDER_LINUX }}
           retention-days: 30
 
@@ -250,7 +250,7 @@ jobs:
 
       - name: Copy ffmpeg libs
         working-directory: ./libs
-        run: echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.copy_lib_files_windows('x86_64')"
+        run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.copy_lib_files_windows('x86_64')"
 
       - name: Compiling GDE GoZen debug
         working-directory: ./libs
@@ -259,7 +259,7 @@ jobs:
       - name: Upload debug
         uses: actions/upload-artifact@v4
         with:
-          name: windows_gde_debug
+          name: windows_gde_debug_x86_64
           path: ${{ env.EXPORT_FOLDER_WINDOWS }}
           retention-days: 1
 
@@ -337,7 +337,7 @@ jobs:
 
       - name: Copy ffmpeg libs
         working-directory: ./libs
-        run: echo $(nproc) | python3 -c "import sys; sys.path.append('.'); from build_utils import build_ffmpeg; build_ffmpeg.copy_lib_files_windows('x86_64')"
+        run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.copy_lib_files_windows('x86_64')"
 
       - name: Compiling GDE GoZen release
         working-directory: ./libs
@@ -346,7 +346,7 @@ jobs:
       - name: Upload release
         uses: actions/upload-artifact@v4
         with:
-          name: windows_gde_release
+          name: windows_gde_release_x86_64
           path: ${{ env.EXPORT_FOLDER_WINDOWS }}
           retention-days: 1
 
@@ -377,19 +377,19 @@ jobs:
       - name: Get debug
         uses: actions/download-artifact@v4
         with:
-          name: windows_gde_debug
+          name: windows_gde_debug_x86_64
           path: ${{ env.EXPORT_FOLDER_WINDOWS }}
 
       - name: Get release
         uses: actions/download-artifact@v4
         with:
-          name: windows_gde_release
+          name: windows_gde_release_x86_64
           path: ${{ env.EXPORT_FOLDER_WINDOWS }}
 
       - name: Upload release
         uses: actions/upload-artifact@v4
         with:
-          name: windows_gde
+          name: windows_gde_x86_64
           path: ${{ env.EXPORT_FOLDER_WINDOWS }}
           retention-days: 30
 

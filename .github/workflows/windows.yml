@@ -13,7 +13,7 @@ on:
         default: v0.0
 
 env:
-  GODOT_VERSION: 4.4.1
+  GODOT_VERSION: 4.5.beta3
   EXPORT_FOLDER: libs/bin/windows_x86_64
 
 run-name: 'Windows version: ${{ inputs.version }} by @${{ github.actor }}'

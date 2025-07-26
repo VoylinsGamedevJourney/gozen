@@ -1,37 +1,70 @@
 import os
 from typing import Optional, Sequence
 
-from .paths import (
-    AOM_BUILD_DIR,
-    AOM_INSTALL_DIR_NAME,
-    AOM_SOURCE_DIR,
-    MP3LAME_INSTALL_DIR_NAME,
-    MP3LAME_SOURCE_DIR,
-    OGG_INSTALL_DIR_NAME,
-    OGG_SOURCE_DIR,
-    OPUS_INSTALL_DIR_NAME,
-    OPUS_SOURCE_DIR,
-    SVT_AV1_BUILD_DIR,
-    SVT_AV1_INSTALL_DIR_NAME,
-    SVT_AV1_SOURCE_DIR,
-    VORBIS_INSTALL_DIR_NAME,
-    VORBIS_SOURCE_DIR,
-    VPX_INSTALL_DIR_NAME,
-    VPX_SOURCE_DIR,
-    X264_INSTALL_DIR_NAME,
-    X264_SOURCE_DIR,
-    X265_BUILD_DIR,
-    X265_INSTALL_DIR_NAME,
-    X265_SOURCE_DIR,
-    get_ffmpeg_install_dir,
-)
-from .utils import (
-    get_host_and_sysroot,
-    CURR_PLATFORM,
-    clear_dir,
-    convert_to_msys2_path,
-    run_command,
-)
+try:
+    from .paths import (
+        AOM_BUILD_DIR,
+        AOM_INSTALL_DIR_NAME,
+        AOM_SOURCE_DIR,
+        MP3LAME_INSTALL_DIR_NAME,
+        MP3LAME_SOURCE_DIR,
+        OGG_INSTALL_DIR_NAME,
+        OGG_SOURCE_DIR,
+        OPUS_INSTALL_DIR_NAME,
+        OPUS_SOURCE_DIR,
+        SVT_AV1_BUILD_DIR,
+        SVT_AV1_INSTALL_DIR_NAME,
+        SVT_AV1_SOURCE_DIR,
+        VORBIS_INSTALL_DIR_NAME,
+        VORBIS_SOURCE_DIR,
+        VPX_INSTALL_DIR_NAME,
+        VPX_SOURCE_DIR,
+        X264_INSTALL_DIR_NAME,
+        X264_SOURCE_DIR,
+        X265_BUILD_DIR,
+        X265_INSTALL_DIR_NAME,
+        X265_SOURCE_DIR,
+        get_ffmpeg_install_dir,
+    )
+    from .utils import (
+        get_host_and_sysroot,
+        CURR_PLATFORM,
+        clear_dir,
+        convert_to_msys2_path,
+        run_command,
+    )
+except ImportError:
+    from paths import (
+        AOM_BUILD_DIR,
+        AOM_INSTALL_DIR_NAME,
+        AOM_SOURCE_DIR,
+        MP3LAME_INSTALL_DIR_NAME,
+        MP3LAME_SOURCE_DIR,
+        OGG_INSTALL_DIR_NAME,
+        OGG_SOURCE_DIR,
+        OPUS_INSTALL_DIR_NAME,
+        OPUS_SOURCE_DIR,
+        SVT_AV1_BUILD_DIR,
+        SVT_AV1_INSTALL_DIR_NAME,
+        SVT_AV1_SOURCE_DIR,
+        VORBIS_INSTALL_DIR_NAME,
+        VORBIS_SOURCE_DIR,
+        VPX_INSTALL_DIR_NAME,
+        VPX_SOURCE_DIR,
+        X264_INSTALL_DIR_NAME,
+        X264_SOURCE_DIR,
+        X265_BUILD_DIR,
+        X265_INSTALL_DIR_NAME,
+        X265_SOURCE_DIR,
+        get_ffmpeg_install_dir,
+    )
+    from utils import (
+        get_host_and_sysroot,
+        CURR_PLATFORM,
+        clear_dir,
+        convert_to_msys2_path,
+        run_command,
+    )
 
 
 def build_lib(
