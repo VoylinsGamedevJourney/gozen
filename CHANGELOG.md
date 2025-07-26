@@ -16,6 +16,7 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - Option to save screenshots (and add to project);
 - Timeline bar with timestamps;
 - Delete key functionality to File tree items;
+- Clip fading;
 
 ### Fixed
 - Light theme having unreadable menu buttons;
