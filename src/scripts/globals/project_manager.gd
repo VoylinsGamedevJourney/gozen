@@ -324,10 +324,12 @@ func delete_file(id: int) -> void:
 		if clip.file_id == id:
 			Timeline.instance.delete_clip(clip)
 
-	if !file_data.has(id) and !file_data.erase(id):
-		Toolbox.print_erase_error()
-	if !data.files.has(id) and !data.files.erase(id):
-		Toolbox.print_erase_error()
+	if file_data.has(id):
+		if !file_data.erase(id):
+			Toolbox.print_erase_error()
+	if data.files.has(id):
+		if !data.files.erase(id):
+			Toolbox.print_erase_error()
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)

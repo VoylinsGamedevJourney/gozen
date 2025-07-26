@@ -204,9 +204,10 @@ func _on_file_added(file_id: int) -> void:
 
 
 func _on_file_deleted(file_id: int) -> void:
-	file_items[file_id].free()
-	if !file_items.erase(file_id):
-		Toolbox.print_erase_error()
+	if file_items.has(file_id):
+		file_items[file_id].get_parent().remove_child(file_items[file_id])
+		if !file_items.erase(file_id):
+			Toolbox.print_erase_error()
 
 
 func _on_file_path_updated(file_id: int) -> void:
