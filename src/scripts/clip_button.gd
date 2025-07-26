@@ -2,6 +2,14 @@ class_name ClipButton
 extends Button
 
 
+enum STATE_FADE_BUTTON {
+		NULL = -1,
+		AUDIO_IN  = 0,	# 0000
+		AUDIO_OUT = 1,	# 0001
+		VIDEO_IN  = 2,	# 0010
+		VIDEO_OUT = 3,	# 0011
+}
+
 const SIZE_FADE_BUTTON: Vector2 = Vector2(10, 10)
 
 
@@ -28,6 +36,9 @@ var _original_begin: int = 0
 
 var _visual_start_frame: int = 0
 var _visual_duration: int = 0
+
+var _fade_override: int = -1
+var _fade_state: STATE_FADE_BUTTON = STATE_FADE_BUTTON.NULL
 
 var wave: bool = false
 
@@ -63,8 +74,10 @@ func _ready() -> void:
 		fade_in_video_button.custom_minimum_size = SIZE_FADE_BUTTON
 		fade_out_video_button.custom_minimum_size = SIZE_FADE_BUTTON
 
-		fade_in_video_button.pressed.connect(print.bind("video in"))
-		fade_out_video_button.pressed.connect(print.bind("video out"))
+		Toolbox.connect_func(fade_in_video_button.button_down, _on_fade_button_pressed.bind(true, true))
+		Toolbox.connect_func(fade_out_video_button.button_down, _on_fade_button_pressed.bind(false, true))
+		Toolbox.connect_func(fade_in_video_button.button_up, _on_fade_button_released)
+		Toolbox.connect_func(fade_out_video_button.button_up, _on_fade_button_released)
 
 		fade_in_video_button.ignore_texture_size = true
 		fade_out_video_button.ignore_texture_size = true
@@ -88,8 +101,10 @@ func _ready() -> void:
 		fade_in_audio_button.custom_minimum_size = SIZE_FADE_BUTTON
 		fade_out_audio_button.custom_minimum_size = SIZE_FADE_BUTTON
 
-		fade_in_audio_button.pressed.connect(print.bind("audio in"))
-		fade_out_audio_button.pressed.connect(print.bind("audio out"))
+		Toolbox.connect_func(fade_in_audio_button.button_down, _on_fade_button_pressed.bind(true, false))
+		Toolbox.connect_func(fade_out_audio_button.button_down, _on_fade_button_pressed.bind(false, false))
+		Toolbox.connect_func(fade_in_audio_button.button_up, _on_fade_button_released)
+		Toolbox.connect_func(fade_out_audio_button.button_up, _on_fade_button_released)
 
 		fade_in_audio_button.ignore_texture_size = true
 		fade_out_audio_button.ignore_texture_size = true
@@ -110,7 +125,16 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if is_resizing_left or is_resizing_right:
+	if _fade_state != STATE_FADE_BUTTON.NULL:
+		_fade_override = clampi(Timeline.get_frame_id(get_local_mouse_position().x), 0, clip_data.duration)
+
+		if _fade_state & 1:
+			_fade_override = clip_data.duration - _fade_override
+
+		queue_redraw()
+		_update_clip_fade()
+		EditorCore.update_frame()
+	elif is_resizing_left or is_resizing_right:
 		var mouse_x: float = parent.get_local_mouse_position().x
 		var zoom: float = Timeline.get_zoom()
 		var potential_frame: int = floori(mouse_x / zoom)
@@ -135,14 +159,29 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if wave:
 		DrawManager.draw_clip_wave(self)
-	if fade_in_video_button != null and clip_data.effects_video.fade_in > 0:
-		DrawManager.draw_video_fade_in(self)
-	if fade_in_audio_button != null and clip_data.effects_audio.fade_in > 0:
-		DrawManager.draw_audio_fade_in(self)
-	if fade_out_video_button != null and clip_data.effects_video.fade_out > 0:
-		DrawManager.draw_video_fade_out(self)
-	if fade_out_audio_button != null and clip_data.effects_audio.fade_out > 0:
-		DrawManager.draw_audio_fade_out(self)
+
+	if fade_in_video_button != null:
+		var fade_in: int = clip_data.effects_video.fade_in
+		var fade_out: int = clip_data.effects_video.fade_out
+
+		if _fade_state == STATE_FADE_BUTTON.VIDEO_IN:
+			fade_in = _fade_override
+		if _fade_state == STATE_FADE_BUTTON.VIDEO_OUT:
+			fade_out = _fade_override
+
+		if fade_in > 0:  DrawManager.draw_video_fade_in(self, fade_in)
+		if fade_out > 0: DrawManager.draw_video_fade_out(self, fade_out)
+	if fade_in_audio_button != null:
+		var fade_in: int = clip_data.effects_audio.fade_in
+		var fade_out: int = clip_data.effects_audio.fade_out
+
+		if _fade_state == STATE_FADE_BUTTON.AUDIO_IN:
+			fade_in = _fade_override
+		if _fade_state == STATE_FADE_BUTTON.AUDIO_OUT:
+			fade_out = _fade_override
+
+		if fade_in > 0:  DrawManager.draw_audio_fade_in(self, fade_in)
+		if fade_out > 0: DrawManager.draw_audio_fade_out(self, fade_out)
 
 
 func _on_button_down() -> void:
@@ -386,22 +425,34 @@ func _on_timeline_zoom_changed() -> void:
 	queue_redraw()
 
 
+func _on_fade_button_pressed(fade_in: bool, video: bool) -> void:
+	_fade_state = ((0 if fade_in else 1) | (2 if video else 0)) as STATE_FADE_BUTTON
+		
+
+func _update_clip_fade() -> void:
+	match _fade_state:
+		STATE_FADE_BUTTON.VIDEO_IN:  clip_data.effects_video.fade_in = _fade_override
+		STATE_FADE_BUTTON.VIDEO_OUT: clip_data.effects_video.fade_out = _fade_override
+		STATE_FADE_BUTTON.AUDIO_IN:  clip_data.effects_audio.fade_in = _fade_override
+		STATE_FADE_BUTTON.AUDIO_OUT: clip_data.effects_audio.fade_out = _fade_override
+
+
+func _on_fade_button_released() -> void:
+	_fade_override = -1
+	_fade_state = STATE_FADE_BUTTON.NULL
+	update_fade_button_pos()
+
+
 func update_fade_button_pos() -> void:
 	if fade_in_video_button != null:
-		fade_in_video_button.position.x = Timeline.get_frame_pos(maxi(0, clip_data.effects_video.fade_in))
-		fade_out_video_button.position.x = size.x - Timeline.get_frame_pos(maxi(0, clip_data.effects_video.fade_out))
-
-		if clip_data.effects_video.fade_in != 0:
-			fade_in_video_button.position.x -= (SIZE_FADE_BUTTON.x / 2)
-		if clip_data.effects_video.fade_out != 0:
-			fade_out_video_button.position.x -= (SIZE_FADE_BUTTON.x / 2)
+		fade_in_video_button.position.x = Timeline.get_frame_pos(
+				maxi(0, clip_data.effects_video.fade_in)) - (SIZE_FADE_BUTTON.x / 2)
+		fade_out_video_button.position.x = size.x - Timeline.get_frame_pos(
+				maxi(0, clip_data.effects_video.fade_out)) - (SIZE_FADE_BUTTON.x / 2)
 
 	if fade_in_audio_button != null:
-		fade_in_audio_button.position.x = Timeline.get_frame_pos(maxi(0, clip_data.effects_audio.fade_in))
-		fade_out_audio_button.position.x = size.x - Timeline.get_frame_pos(maxi(0, clip_data.effects_audio.fade_out))
-
-		if clip_data.effects_audio.fade_in != 0:
-			fade_in_audio_button.position.x -= (SIZE_FADE_BUTTON.x / 2)
-		if clip_data.effects_audio.fade_out != 0:
-			fade_out_audio_button.position.x -= (SIZE_FADE_BUTTON.x / 2)
+		fade_in_audio_button.position.x = Timeline.get_frame_pos(
+				maxi(0, clip_data.effects_audio.fade_in)) - (SIZE_FADE_BUTTON.x / 2)
+		fade_out_audio_button.position.x = size.x - Timeline.get_frame_pos(
+				maxi(0, clip_data.effects_audio.fade_out)) - (SIZE_FADE_BUTTON.x / 2)
 

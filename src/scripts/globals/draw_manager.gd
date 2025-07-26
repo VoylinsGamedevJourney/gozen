@@ -145,8 +145,7 @@ func draw_clip_wave(clip: ClipButton) -> void:
 
 
 
-func draw_video_fade_in(clip: ClipButton) -> void:
-	var fade: int = clip.clip_data.effects_video.fade_in
+func draw_video_fade_in(clip: ClipButton, fade: int) -> void:
 	var pos: PackedVector2Array = [
 			Vector2(0, 0), Vector2(0, clip.size.y),
 			Vector2(Timeline.get_frame_pos(fade), clip.size.y)]
@@ -155,8 +154,7 @@ func draw_video_fade_in(clip: ClipButton) -> void:
 	clip.draw_polyline(pos, color_video_fade_line, FADE_LINE_WIDTH, true)
 
 
-func draw_audio_fade_in(clip: ClipButton) -> void:
-	var fade: int = clip.clip_data.effects_audio.fade_in
+func draw_audio_fade_in(clip: ClipButton, fade: int) -> void:
 	var pos: PackedVector2Array = [
 			Vector2(0, 0), Vector2(0, clip.size.y),
 			Vector2(Timeline.get_frame_pos(fade), 0)]
@@ -165,8 +163,7 @@ func draw_audio_fade_in(clip: ClipButton) -> void:
 	clip.draw_polyline(pos, color_audio_fade_line, FADE_LINE_WIDTH, true)
 
 
-func draw_video_fade_out(clip: ClipButton) -> void:
-	var fade: int = clip.clip_data.effects_video.fade_out
+func draw_video_fade_out(clip: ClipButton, fade: int) -> void:
 	var pos: PackedVector2Array = [
 			Vector2(clip.size.x, 0), Vector2(clip.size.x, clip.size.y),
 			Vector2(clip.size.x - Timeline.get_frame_pos(fade), clip.size.y)]
@@ -175,8 +172,7 @@ func draw_video_fade_out(clip: ClipButton) -> void:
 	clip.draw_polyline(pos, color_video_fade_line, FADE_LINE_WIDTH, true)
 
 
-func draw_audio_fade_out(clip: ClipButton) -> void:
-	var fade: int = clip.clip_data.effects_audio.fade_out
+func draw_audio_fade_out(clip: ClipButton, fade: int) -> void:
 	var pos: PackedVector2Array = [
 			Vector2(clip.size.x, 0), Vector2(clip.size.x, clip.size.y),
 			Vector2(clip.size.x - Timeline.get_frame_pos(fade), 0)]

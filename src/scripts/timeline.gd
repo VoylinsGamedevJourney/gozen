@@ -220,7 +220,7 @@ func _on_project_ready() -> void:
 	scroll_main.scroll_horizontal = Project.get_timeline_scroll_h()
 
 
-func _check_clips() -> void:
+func _check_clips(_id: int = -1) -> void:
 	# Get's called after deleting of a file.
 	var ids: PackedInt64Array = Project.get_clip_ids()
 
