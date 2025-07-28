@@ -14,11 +14,10 @@ on:
         default: v0.0
         
 env:
-  GODOT_VERSION: 4.5.beta3
-  EXPORT_FOLDER: libs/bin/linux_x86_64
+  GODOT_VERSION: 4.5-beta3
+  EXPORT_FOLDER: bin/linux_x86_64
   APP_NAME: gozen
   APPIMAGE_DIR: ${{ github.workspace }}/gozen.AppDir
-  ARTIFACT_NAME: ffmpeg_windows_x86_64
 
 run-name: 'AppImage version: ${{ inputs.version }} by @${{ github.actor }}'
 
@@ -64,10 +63,10 @@ jobs:
       - name: Get GDE artifact
         uses: actions/download-artifact@v4
         with:
-          name: linux_gde
+          name: linux_gde_x86_64
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.get_ffmpeg_workflow_run_id.outputs.latest_run_id }}
-          path: ./libs/bin/linux_x86_64
+          path: ./bin/linux_x86_64
 
       - name: Cache Godot
         uses: actions/cache@v4
@@ -77,21 +76,22 @@ jobs:
 
       - name: Prepare Godot
         run: |
-          if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
+          TEMPLATE_VERSION="${GODOT_VERSION/-/.}"
+          if [ ! -f Godot_v${{ env.GODOT_VERSION }}.x86_64 ]; then
             echo "Downloading Godot editor ..."
-            wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+            wget -q -O godot_linux.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_linux.x86_64.zip
             unzip -o godot_linux.zip
           else
             echo "Godot editor found in cache."
           fi
 
-          if [ ! -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable ]; then
+          if [ ! -d ~/.local/share/godot/export_templates/${TEMPLATE_VERSION} ]; then
             echo "Downloading Godot export templates ..."
-            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
-            mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-            unzip -o godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
-            mv ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/
-            rm -rf ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable/templates
+            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_export_templates.tpz
+            mkdir -p ~/.local/share/godot/export_templates/${TEMPLATE_VERSION}
+            unzip -o godot_export_templates.tpz -d ~/.local/share/godot/export_templates/${TEMPLATE_VERSION}
+            mv ~/.local/share/godot/export_templates/${TEMPLATE_VERSION}/templates/* ~/.local/share/godot/export_templates/${TEMPLATE_VERSION}/
+            rm -rf ~/.local/share/godot/export_templates/${TEMPLATE_VERSION}/templates
           else
             echo "Godot export templates found in cache."
           fi
@@ -102,8 +102,8 @@ jobs:
         working-directory: ./src
         run: |
           mkdir -p ../${{ env.EXPORT_FOLDER }}
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
+          ../Godot_v${{ env.GODOT_VERSION }}_linux.x86_64 --import godot.project --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
+          ../Godot_v${{ env.GODOT_VERSION }}_linux.x86_64 --headless --export-release Linux_x86_64 ../${{ env.EXPORT_FOLDER }}/${{ env.APP_NAME }}.x86_64
 
       - name: Removing debug gde
         run: rm ${{ env.EXPORT_FOLDER }}/libgozen*debug*.so

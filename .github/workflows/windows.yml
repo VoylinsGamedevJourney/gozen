@@ -13,8 +13,8 @@ on:
         default: v0.0
 
 env:
-  GODOT_VERSION: 4.5.beta3
-  EXPORT_FOLDER: libs/bin/windows_x86_64
+  GODOT_VERSION: 4.5-beta3
+  EXPORT_FOLDER: bin/windows_x86_64
 
 run-name: 'Windows version: ${{ inputs.version }} by @${{ github.actor }}'
 jobs:
@@ -81,10 +81,10 @@ jobs:
       - name: Get GDE artifact
         uses: actions/download-artifact@v4
         with:
-          name: windows_gde
+          name: windows_gde_x86_64
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.get_ffmpeg_workflow_run_id.outputs.latest_run_id }}
-          path: ./libs/bin/windows_x86_64
+          path: ./bin/windows_x86_64
 
       - name: Cache Godot
         uses: actions/cache@v4
@@ -94,18 +94,19 @@ jobs:
 
       - name: Prepare Godot
         run: |
-          if [ ! -f Godot_v${{ env.GODOT_VERSION }}-stable.x86_64 ]; then
+          TEMPLATE_VERSION="${GODOT_VERSION/-/.}"
+          if [ ! -f Godot_v${{ env.GODOT_VERSION }}.x86_64 ]; then
             echo "Downloading Godot editor ..."
-            wget -q -O godot_windows.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_win64.exe.zip 
+            wget -q -O godot_windows.zip https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_win64.exe.zip 
             unzip -o godot_windows.zip
           else
             echo "Godot editor found in cache."
           fi
 
-          export exportPath=$(cygpath -u "$APPDATA/Godot/export_templates/${{ env.GODOT_VERSION }}.stable")
+          export exportPath=$(cygpath -u "$APPDATA/Godot/export_templates/${TEMPLATE_VERSION}")
           if [ ! -d $exportPath ]; then
             echo "Downloading Godot export templates ..."
-            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+            wget -q -O godot_export_templates.tpz https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_export_templates.tpz
             mkdir -p $exportPath
             unzip -o godot_export_templates.tpz -d $exportPath
             mv $exportPath/templates/* $exportPath/
@@ -124,8 +125,8 @@ jobs:
       - name: Export for Windows
         working-directory: ./src
         run: |
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --import godot.project --headless
-          ../Godot_v${{ env.GODOT_VERSION }}-stable_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
+          ../Godot_v${{ env.GODOT_VERSION }}_win64_console.exe --import godot.project --headless
+          ../Godot_v${{ env.GODOT_VERSION }}_win64_console.exe --headless --export-release Windows_x86_64 ../${{ env.EXPORT_FOLDER }}/GoZen.exe
 
       - name: Upload Windows
         uses: actions/upload-artifact@v4
