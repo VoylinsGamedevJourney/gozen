@@ -38,7 +38,7 @@ func reset_settings() -> void:
 
 
 func open_settings_menu() -> void:
-	var settings_panel: SettingsPanel = preload("uid://bjen0oagwidr7").instantiate()
+	var settings_panel: SettingsPanel = preload(Library.SCENE_SETTINGS).instantiate()
 
 	settings_panel.set_mode_editor_settings()
 	EditorUI.instance.add_child(settings_panel)
@@ -100,7 +100,7 @@ func apply_theme() -> void:
 		SettingsData.THEME.DARK:
 			get_tree().root.theme = null  # Default is dark
 		SettingsData.THEME.LIGHT:
-			get_tree().root.theme = load("uid://dxq4vg1l5rwhj")
+			get_tree().root.theme = load(Library.THEME_LIGHT)
 
 
 func get_theme() -> SettingsData.THEME:

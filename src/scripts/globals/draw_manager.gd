@@ -1,7 +1,7 @@
 extends Node
 
 
-const TIMESTAMP_FONT: Font = preload("uid://bnubhr3uus8gt")
+const TIMESTAMP_FONT: Font = preload(Library.FONT_ROBOTO_MEDIUM)
 const TIMESTAMP_LINE_COLOR: Color = Color.DIM_GRAY
 
 const FADE_LINE_WIDTH: int = 3

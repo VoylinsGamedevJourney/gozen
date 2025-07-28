@@ -25,6 +25,7 @@ boot_splash/minimum_display_time=500
 
 [autoload]
 
+Library="*res://scripts/globals/library.gd"
 Threader="*res://scripts/globals/threader.gd"
 Thumbnailer="*res://scripts/globals/thumbnailer.gd"
 InputManager="*res://scripts/globals/input_manager.gd"

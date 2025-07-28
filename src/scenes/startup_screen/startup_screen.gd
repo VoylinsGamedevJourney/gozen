@@ -71,7 +71,7 @@ func _set_recent_projects() -> void:
 
 			Toolbox.connect_func(project_button.pressed, open_project.bind(path))
 
-			delete_button.texture_normal = preload("uid://dyndi17ou8ixo")
+			delete_button.texture_normal = preload(Library.ICON_DELETE)
 			delete_button.ignore_texture_size = true
 			delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			delete_button.custom_minimum_size = Vector2i(18,0)

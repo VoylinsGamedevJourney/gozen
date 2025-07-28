@@ -86,17 +86,17 @@ func get_thumb(file_id: int) -> Texture2D:
 
 
 func _get_default_thumb_audio() -> Texture2D:
-	var tex: Texture2D = preload("uid://cs5gcg8kix42x")
-	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
-
-
-func _get_default_thumb_text() -> Texture2D:
-	var tex: Texture2D = preload("uid://dqv5j4hytkcya")
+	var tex: Texture2D = preload(Library.THUMB_DEFAULT_AUDIO)
 	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
 
 
 func _get_default_thumb_video() -> Texture2D:
-	var tex: Texture2D = preload("uid://dpg11eiuwgv38")
+	var tex: Texture2D = preload(Library.THUMB_DEFAULT_VIDEO)
+	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
+
+
+func _get_default_thumb_text() -> Texture2D:
+	var tex: Texture2D = preload(Library.THUMB_DEFAULT_TEXT)
 	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
 
 

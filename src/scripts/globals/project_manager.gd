@@ -135,7 +135,7 @@ func _save_audio_to_wav(path: String, file: File) -> void:
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
-	var new_project_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
+	var new_project_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
 	data = ProjectData.new()
 	file_data = {}
 
@@ -187,7 +187,7 @@ func save_as() -> void:
 
 	
 func open(project_path: String) -> void:
-	var loading_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
+	var loading_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
 	
 	get_tree().root.add_child(loading_overlay)
 	loading_overlay.update_title("title_loading_project")
@@ -254,7 +254,7 @@ func open_project() -> void:
 
 
 func open_settings_menu() -> void:
-	var settings_panel: SettingsPanel = preload("uid://bjen0oagwidr7").instantiate()
+	var settings_panel: SettingsPanel = preload(Library.SCENE_SETTINGS).instantiate()
 
 	settings_panel.set_mode_project_settings()
 	EditorUI.instance.add_child(settings_panel)
@@ -341,7 +341,7 @@ func _on_files_dropped(files: PackedStringArray) -> void:
 	if data == null:
 		return
 
-	var dropped_overlay: ProgressOverlay = preload("uid://d4h7t8ccus0yv").instantiate()
+	var dropped_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
 	var file_status: Dictionary = {}
 	var file_ids: Dictionary = {}
 	var still_loading: PackedInt64Array = []

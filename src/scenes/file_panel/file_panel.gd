@@ -56,8 +56,8 @@ func _file_menu_pressed(id: int) -> void:
 			dialog.popup_centered()
 		1: # TODO: Add text
 			pass
-		2: # TODO: Add color
-			var color_popup: PanelContainer = preload("uid://brbxvynl0y3ha").instantiate()
+		2:
+			var color_popup: PanelContainer = preload(Library.SCENE_COLOR_PICKER_DIALOG).instantiate()
 			EditorUI.instance.add_child(color_popup)
 
 
@@ -108,7 +108,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 
 	match option_id:
 		POPUP_ACTION.RENAME:
-			var rename_dialog: FileRenameDialog = preload("uid://y450a2mtc4om").instantiate()
+			var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
 
 			rename_dialog.prepare(file.id)
 			get_tree().root.add_child(rename_dialog)

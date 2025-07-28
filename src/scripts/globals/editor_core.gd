@@ -256,20 +256,20 @@ func update_view(track_id: int) -> void:
 		if file_data.video.get_full_color_range():
 			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
 				if interlaced != 0:
-					material.shader = preload("uid://c43nm0hgg6y14")
+					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P_FULL)
 					material.set_shader_parameter("interlaced", interlaced)
 				else:
-					material.shader = preload("uid://btyavn64bvbu2")
+					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P)
 
 				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
 				_init_video_textures(track_id, file_data.video, material)
 				updated = true
 		elif loaded_shaders[track_id] != SHADER_ID.YUV:
 			if interlaced != 0:
-				material.shader = preload("uid://dyrtgm3mxg1af")
+				material.shader = preload(Library.SHADER_YUV420P_FULL)
 				material.set_shader_parameter("interlaced", interlaced)
 			else:
-				material.shader = preload("uid://do37k5eu6tfbc")
+				material.shader = preload(Library.SHADER_YUV420P)
 
 			loaded_shaders[track_id] = SHADER_ID.YUV
 			_init_video_textures(track_id, file_data.video, material)
@@ -291,7 +291,7 @@ func update_view(track_id: int) -> void:
 
 		material.set_shader_parameter("color_profile", file_data.color_profile)
 	elif file_data.image != null:
-		material.shader = preload("uid://vc1lwmduyaub")
+		material.shader = preload(Library.SHADER_IMAGE)
 		loaded_shaders[track_id] = SHADER_ID.IMAGE
 
 		if material.get_shader_parameter("resolution") != file_data.image.get_size():

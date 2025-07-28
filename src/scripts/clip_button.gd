@@ -85,8 +85,8 @@ func _ready() -> void:
 		fade_in_video_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		fade_out_video_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 
-		fade_in_video_button.texture_hover = preload("uid://buwillf888csp")
-		fade_out_video_button.texture_hover = preload("uid://buwillf888csp")
+		fade_in_video_button.texture_hover = preload(Library.ICON_BUTTON_FADE)
+		fade_out_video_button.texture_hover = preload(Library.ICON_BUTTON_FADE)
 
 		fade_in_video_button.position.y = size.y - (SIZE_FADE_BUTTON.y / 2)
 		fade_out_video_button.position.y = size.y - (SIZE_FADE_BUTTON.y / 2)
@@ -112,8 +112,8 @@ func _ready() -> void:
 		fade_in_audio_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		fade_out_audio_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 
-		fade_in_audio_button.texture_hover = preload("uid://buwillf888csp")
-		fade_out_audio_button.texture_hover = preload("uid://buwillf888csp")
+		fade_in_audio_button.texture_hover = preload(Library.ICON_BUTTON_FADE)
+		fade_out_audio_button.texture_hover = preload(Library.ICON_BUTTON_FADE)
 
 		fade_in_audio_button.position.y = -2
 		fade_out_audio_button.position.y = -2

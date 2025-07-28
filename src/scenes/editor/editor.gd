@@ -35,7 +35,7 @@ func _ready() -> void:
 			return
 
 	# Showing Startup Screen.
-	add_child(preload("uid://bqlcn30hs8qp5").instantiate())
+	add_child(preload(Library.SCENE_STARTUP).instantiate())
 	
 
 func print_startup_info() -> void:

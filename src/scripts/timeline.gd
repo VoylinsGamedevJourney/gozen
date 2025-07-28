@@ -9,11 +9,11 @@ const LINE_HEIGHT: int = 4
 
 # Normal, Focus
 const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
-    File.TYPE.IMAGE: [preload("uid://dlxa6tecfxvwa"), preload("uid://bwnfn42mtulgg")],
-    File.TYPE.AUDIO: [preload("uid://b4hr3qnksucav"), preload("uid://dxu1itu4lip5q")],
-    File.TYPE.VIDEO: [preload("uid://dvjs7m2ktd528"), preload("uid://wied1chri6pt")],
-    File.TYPE.COLOR: [preload("uid://df0jxk11tracv"), preload("uid://cwxo126dikkbh")],
-    File.TYPE.TEXT:  [preload("uid://c8iincian78e3"), preload("uid://vtif6uw34cqe")],
+    File.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
+    File.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
+    File.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+    File.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
+    File.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
 
 static var instance: Timeline
@@ -208,7 +208,7 @@ func _on_project_ready() -> void:
 		track_overlays.append(overlay)
 
 		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		line.add_theme_stylebox_override("separator", load("uid://ccq8hdcqq8xrc") as StyleBoxLine)
+		line.add_theme_stylebox_override("separator", load(Library.STYLE_LINE_TRACK) as StyleBoxLine)
 		line.size.y = LINE_HEIGHT
 
 		lines.add_child(overlay)
@@ -277,7 +277,7 @@ func _can_drop_new_clips(pos: Vector2, draggable: Draggable) -> bool:
 	panel.size = Vector2(get_frame_pos(duration), TRACK_HEIGHT)
 	panel.position = Vector2(get_frame_pos(frame), get_track_pos(track))
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", preload("uid://dx2v44643hfvy"))
+	panel.add_theme_stylebox_override("panel", preload(Library.STYLE_BOX_CLIP_PREVIEW))
 
 	preview.add_child(panel)
 
@@ -406,7 +406,7 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 		new_button.position = button.position
 		new_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		new_button.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
-		new_button.add_theme_stylebox_override("normal", preload("uid://dx2v44643hfvy"))
+		new_button.add_theme_stylebox_override("normal", preload(Library.STYLE_BOX_CLIP_PREVIEW))
 		# NOTE: Modulate alpha does not work when texture has alpha layers :/
 		#		new_button.modulate = Color(255,255,255,130)
 		new_button.modulate = Color(240,240,240)
@@ -554,7 +554,7 @@ func add_clip(clip_data: ClipData) -> void:
 	button.add_theme_stylebox_override("pressed", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
 	@warning_ignore_restore("unsafe_call_argument")
 
-	button.set_script(load("uid://cvdbyqqvy1rl1")) # Clip Button script.
+	button.set_script(preload(Library.BUTTON_CLIP))
 	clips.add_child(button)
 
 

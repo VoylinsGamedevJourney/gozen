@@ -83,12 +83,12 @@ func _get_current_extension() -> String:
 func _add_default_profiles() -> void:
 	# Default projects should appear in this order. User profiles get added
 	# after these default profiles separated by a line.
-	add_profile(preload("uid://bp6oahvgcklvc")) # YouTube
-	add_profile(preload("uid://f5ffyfe5gb5b"))  # YouTube HQ
-	add_profile(preload("uid://du35gfskoijp"))  # AV1
-	add_profile(preload("uid://b8lmmvi0gnujr")) # VP9
-	add_profile(preload("uid://drlbs008bf7so")) # VP8
-	add_profile(preload("uid://bcktb6d5bti7t")) # HEVC
+	add_profile(preload(Library.RENDER_PROFILE_YOUTUBE))
+	add_profile(preload(Library.RENDER_PROFILE_YOUTUBE_HQ))
+	add_profile(preload(Library.RENDER_PROFILE_AV1))
+	add_profile(preload(Library.RENDER_PROFILE_VP9))
+	add_profile(preload(Library.RENDER_PROFILE_VP8))
+	add_profile(preload(Library.RENDER_PROFILE_HEVC))
 
 
 func _setup_codec_option_buttons() -> void:
@@ -303,8 +303,8 @@ func _on_start_render_button_pressed() -> void:
 	current_progress = 0.0
 
 	# Changing icon to indicate that GoZen is rendering.
-	var gozen_icon: CompressedTexture2D = preload("uid://cwv5gaisvmwv7")
-	var rendering_icon: CompressedTexture2D = preload("uid://b6r37nt1xhvq6")
+	var gozen_icon: CompressedTexture2D = preload(Library.ICON_GOZEN)
+	var rendering_icon: CompressedTexture2D = preload(Library.ICON_RENDERING)
 
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(rendering_icon.get_image())
@@ -316,7 +316,7 @@ func _on_start_render_button_pressed() -> void:
 		progress_overlay.queue_free()
 		progress_overlay = null
 
-	progress_overlay = preload("uid://d4h7t8ccus0yv").instantiate()
+	progress_overlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
 	progress_overlay.update_title("title_rendering")
 	progress_overlay.update_progress(0, "")
 
