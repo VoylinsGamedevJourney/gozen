@@ -1,7 +1,7 @@
 # Changelog
 This is the changelog of all releases which can be found on the [GoZen repo release page](https://github.com/VoylinsGamedevJourney/gozen/releases)
 
-## Version 0.4-alpha - 2025/**/**
+## Version 0.4-alpha - 2025/07/28
 ### Added
 - RPM build;
 - DEB build;
