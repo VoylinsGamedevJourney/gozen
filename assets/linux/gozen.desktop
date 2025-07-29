@@ -2,6 +2,7 @@
 Name=GoZen
 Comment=A minimalistic video editor
 Exec=gozen
+MimeType=application/x-gozen;
 Icon=gozen
 Terminal=false
 Type=Application

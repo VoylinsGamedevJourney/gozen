@@ -17,7 +17,7 @@ This is the changelog of all releases which can be found on the [GoZen repo rele
 - Timeline bar with timestamps;
 - Delete key functionality to File tree items;
 - Clip fading;
-- Libary autoload (for managing UID's);
+- Library autoload (for managing UID's);
 
 ### Fixed
 - Light theme having unreadable menu buttons;
