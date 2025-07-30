@@ -121,6 +121,7 @@ jobs:
         run: |
           cp LICENSE ${{ env.EXPORT_FOLDER }}/LICENSE
           cp MANUAL.md ${{ env.EXPORT_FOLDER }}/MANUAL.md
+          cp assets/windows/gozen-filetype.reg
 
       - name: Export for Windows
         working-directory: ./src

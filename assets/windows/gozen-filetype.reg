@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.gozen]
+@="GoZen.File"
+
+[HKEY_CLASSES_ROOT\GoZen.File]
+@="GoZen Project File"
+
+[HKEY_CLASSES_ROOT\GoZen.File\DefaultIcon]
+@="\"C:\\Path\\To\\GoZen.exe\",0"
+
+[HKEY_CLASSES_ROOT\GoZen.File\shell\open\command]
+@="\"C:\\Path\\To\\GoZen.exe\" \"%1\""
