@@ -24,6 +24,7 @@ func _ready() -> void:
 	print_startup_info()
 	Toolbox.connect_func(InputManager.on_show_editor_screen, switch_screen.bind(0))
 	Toolbox.connect_func(InputManager.on_show_render_screen, switch_screen.bind(1))
+	Toolbox.connect_func(InputManager.on_show_subtitle_screen, switch_screen.bind(2))
 	Toolbox.connect_func(InputManager.on_switch_screen, switch_screen_quick)
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)

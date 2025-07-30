@@ -1,4 +1,4 @@
-extends VSplitContainer
+extends HSplitContainer
 
 
 const USER_PROFILES_PATH: String = "user://render_profiles/"

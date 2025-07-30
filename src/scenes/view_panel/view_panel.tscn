@@ -1,0 +1,97 @@
+[gd_scene load_steps=8 format=3 uid="uid://yfososo2t8n4"]
+
+[ext_resource type="Script" uid="uid://dq0sbkf6cfqnp" path="res://scenes/view_panel/view_panel.gd" id="1_f3tql"]
+[ext_resource type="Script" uid="uid://0tlwabkx4t4m" path="res://scripts/project_view_texture.gd" id="2_l50ca"]
+[ext_resource type="Texture2D" uid="uid://c6u5jisjppwl5" path="res://assets/icons/skip_previous.svg" id="3_lodf8"]
+[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/play.svg" id="4_k374p"]
+[ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/pause.svg" id="5_nh5w4"]
+[ext_resource type="Texture2D" uid="uid://5sdky8df2641" path="res://assets/icons/skip_next.svg" id="6_pf2aw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cre3o"]
+
+[node name="ViewPanel" type="PanelContainer" node_paths=PackedStringArray("button_play", "button_pause", "frame_label", "time_label")]
+size_flags_horizontal = 3
+script = ExtResource("1_f3tql")
+button_play = NodePath("Margin/VBox/ButtonsHBox/PlayButton")
+button_pause = NodePath("Margin/VBox/ButtonsHBox/PauseButton")
+frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
+time_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/TimeLabel")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox"]
+material = SubResource("ShaderMaterial_cre3o")
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("2_l50ca")
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="TimeDataVBox" type="VBoxContainer" parent="Margin/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="FrameLabel" type="Label" parent="Margin/VBox/ButtonsHBox/TimeDataVBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "Frame: 0"
+
+[node name="TimeLabel" type="Label" parent="Margin/VBox/ButtonsHBox/TimeDataVBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "00:00:00.00"
+
+[node name="SkipPrevButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_lodf8")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PlayButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_k374p")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PauseButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("5_nh5w4")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SkipNextButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("6_pf2aw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SpacerControl" type="Control" parent="Margin/VBox/ButtonsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="Margin/VBox/ButtonsHBox/SkipPrevButton" to="." method="_on_skip_prev_button_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsHBox/PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="Margin/VBox/ButtonsHBox/SkipNextButton" to="." method="_on_skip_next_button_pressed"]
