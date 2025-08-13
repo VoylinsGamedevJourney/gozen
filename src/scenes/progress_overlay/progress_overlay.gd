@@ -1,5 +1,5 @@
 class_name ProgressOverlay
-extends PanelContainer
+extends Control
 
 
 @export var title_label: Label
@@ -14,7 +14,7 @@ var file_labels: Dictionary = {}
 
 
 func update_title(title: String) -> void:
-	title_label.text = tr(title)
+	title_label.text = title
 
 
 func update_progress(value: int, text: String) -> void:
@@ -34,7 +34,7 @@ func update_progress_bar(value: int, wait_frame: bool = false) -> void:
 
 
 func update_progress_hint(text: String) -> void:
-	progress_hint.text = tr(text)
+	progress_hint.text = text
 
 
 func increment_progress_bar(value: float) -> void:

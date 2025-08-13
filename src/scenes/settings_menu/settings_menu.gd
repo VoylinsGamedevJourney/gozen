@@ -1,5 +1,5 @@
 class_name SettingsPanel
-extends PanelContainer
+extends Control
 
 
 @export var panel_label: Label
@@ -19,11 +19,11 @@ func _input(event: InputEvent) -> void:
 
 func _on_close_button_pressed() -> void:
 	Settings.save()
-	self.queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
 
 
 func set_mode_editor_settings() -> void:
-	panel_label.text = tr("title_editor_settings") 
+	panel_label.text = "title_editor_settings"
 
 	# Data needed for some settings options.
 	var language_data: Dictionary[String, String] = Settings.get_languages()
@@ -134,7 +134,7 @@ func set_mode_editor_settings() -> void:
 
 
 func set_mode_project_settings() -> void:
-	panel_label.text = tr("title_project_settings") 
+	panel_label.text = "title_project_settings"
 	_add_section("title_appearance", [
 		_create_label("setting_background_color"),
 		_create_color_picker(
@@ -180,7 +180,7 @@ func _show_section(section_name: String) -> void:
 func _add_side_bar_option(section_name: String) -> void:
 	var button: Button = Button.new()
 	
-	button.text = tr(section_name)
+	button.text = section_name
 	button.toggle_mode = true
 	button.button_group = side_bar_button_group
 	button.theme_type_variation = "side_bar_button"
@@ -229,7 +229,7 @@ func _create_option_button(options: Dictionary, default: int, callable: Callable
 		i += 1
 
 	option_button.selected = default
-	option_button.tooltip_text = tr(tooltip)
+	option_button.tooltip_text = tooltip
 	option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	option_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 

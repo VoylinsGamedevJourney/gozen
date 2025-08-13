@@ -252,7 +252,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 func _render_finished() -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
 
-	dialog.title = tr("title_rendering_finished")
+	dialog.title = "title_rendering_finished"
 	dialog.dialog_text = "Path: %s\n" % path_line_edit.text
 	dialog.dialog_text += "Render time: %s" % Toolbox.format_time_str(
 			RenderManager.encoding_time / 1000.0)
@@ -271,8 +271,8 @@ func _cancel_render() -> void:
 func _show_error(message: String) -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
 
-	dialog.title = tr("title_rendering_error")
-	dialog.dialog_text = tr(message)
+	dialog.title = "title_rendering_error"
+	dialog.dialog_text = message
 	dialog.exclusive = true
 	
 	add_child(dialog)
@@ -309,7 +309,7 @@ func _on_start_render_button_pressed() -> void:
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(rendering_icon.get_image())
 		status_indicator_id = DisplayServer.create_status_indicator(
-				rendering_icon, tr("title_rendering"), Callable())
+				rendering_icon, "title_rendering", Callable())
 
 	# Display the progress popup.
 	if progress_overlay != null:
@@ -322,7 +322,7 @@ func _on_start_render_button_pressed() -> void:
 
 	var button: Button = Button.new()
 
-	button.text = tr("button_cancel_rendering")
+	button.text = "button_cancel_rendering"
 	Toolbox.connect_func(button.pressed, _cancel_render)
 
 	get_tree().root.add_child(progress_overlay)

@@ -54,6 +54,9 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_paste"):
 		clipboard_paste()
 
+	if event.is_action_pressed("open_marker_popup"):
+		open_marker_popup()
+
 
 func _on_closing_editor() -> void:
 	undo_redo.free()
@@ -102,3 +105,7 @@ func clipboard_paste() -> void:
 	# All paths pasted are files so we use _on_files_dropped.
 	Project._on_files_dropped(data)
 
+
+func open_marker_popup() -> void:
+	# TODO:
+	pass
