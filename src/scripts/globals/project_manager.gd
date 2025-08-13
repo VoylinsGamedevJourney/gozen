@@ -135,7 +135,8 @@ func _save_audio_to_wav(path: String, file: File) -> void:
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
-	var new_project_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
+	var new_project_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+
 	data = ProjectData.new()
 	file_data = {}
 
@@ -177,7 +178,7 @@ func save() -> void:
 
 func save_as() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			tr("Save project as ..."),
+			"Save project as ...", # TODO: Localize
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;GoZen project files" % EXTENSION])
 
@@ -244,7 +245,7 @@ func open(project_path: String) -> void:
 
 func open_project() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			tr("Open project"),
+			"Open project", # TODO: Localize
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;GoZen project files" % EXTENSION])
 
@@ -254,10 +255,7 @@ func open_project() -> void:
 
 
 func open_settings_menu() -> void:
-	var settings_panel: SettingsPanel = preload(Library.SCENE_SETTINGS).instantiate()
-
-	settings_panel.set_mode_project_settings()
-	EditorUI.instance.add_child(settings_panel)
+	PopupManager.show_popup(PopupManager.POPUP.PROJECT_SETTINGS)
 
 
 func load_file_data(id: int) -> bool:
@@ -411,7 +409,7 @@ func _on_file_too_big(file_id: int) -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
 	var file_path: String = data.files[file_id].path
 
-	dialog.title = tr("title_dialog_file_too_big")
+	dialog.title = "title_dialog_file_too_big"
 	dialog.dialog_text = file_path
 	add_child(dialog)
 	dialog.popup_centered()
@@ -425,12 +423,12 @@ func _on_file_too_big(file_id: int) -> void:
 func _on_close_requested() -> void:
 	if data != null and unsaved_changes:
 		var popup: AcceptDialog = AcceptDialog.new()
-		var dont_save_button: Button = popup.add_button(tr("button_dont_save"))
-		var cancel_button: Button = popup.add_cancel_button(tr("button_cancel"))
+		var dont_save_button: Button = popup.add_button("button_dont_save")
+		var cancel_button: Button = popup.add_cancel_button("button_cancel")
 
 		auto_save_timer.paused = true
-		popup.title = tr("title_close_without_saving")
-		popup.ok_button_text = tr("button_save")
+		popup.title = "title_close_without_saving"
+		popup.ok_button_text = "button_save"
 
 		Toolbox.connect_func(popup.confirmed, _on_save_close)
 		Toolbox.connect_func(cancel_button.pressed, _on_cancel_close)
@@ -670,11 +668,22 @@ func get_folders() -> PackedStringArray:
 
 func add_marker(frame_nr: int, marker: String) -> void:
 	if data.markers.has(frame_nr):
-		printerr("Already marker in postition %s!" % frame_nr)
+		update_marker(frame_nr, frame_nr, marker)
 	else:
 		data.markers[frame_nr] = marker
 		_markers_updated.emit()
 		unsaved_changes = true
+		propagate_call("_on_marker_added", [frame_nr, marker])
+
+
+func update_marker(old_frame_nr: int, new_frame_nr: int, marker: String) -> void:
+	data.markers[new_frame_nr] = marker
+	if !data.markers.erase(old_frame_nr):
+		Toolbox.print_erase_error()
+
+	_markers_updated.emit()
+	unsaved_changes = true
+	propagate_call("_on_marker_updated", [old_frame_nr, new_frame_nr, marker])
 
 
 func remove_marker(frame_nr: int) -> void:
@@ -685,6 +694,7 @@ func remove_marker(frame_nr: int) -> void:
 	else:
 		_markers_updated.emit()
 		unsaved_changes = true
+		propagate_call("_on_marker_removed", [frame_nr])
 
 
 func get_marker(frame_nr: int) -> String:

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvp6a4xgk5pa8"]
+
+[ext_resource type="Script" uid="uid://cmlvcsodme2b8" path="res://scenes/timeline_bar/marker_button.gd" id="1_sftln"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sftln"]
+bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
+
+[node name="MarkerButton" type="Button"]
+custom_minimum_size = Vector2(5, 5)
+theme_override_styles/normal = SubResource("StyleBoxFlat_sftln")
+script = ExtResource("1_sftln")

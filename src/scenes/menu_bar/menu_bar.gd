@@ -50,7 +50,7 @@ func _add_popup_menu(title: String, options: Array[MenuItem]) -> void:
 		if item.title == "line":
 			popup.add_separator()
 		else:
-			popup.add_item(tr(item.title))
+			popup.add_item(item.title)
 			popup.set_item_icon(index, item.icon)
 			popup.set_item_metadata(index, item.title)
 			callables[item.title] = item.callable

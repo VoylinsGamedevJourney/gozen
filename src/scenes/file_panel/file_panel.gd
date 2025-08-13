@@ -48,7 +48,7 @@ func _file_menu_pressed(id: int) -> void:
 	match id:
 		0: # Add file(s)
 			var dialog: FileDialog = Toolbox.get_file_dialog(
-					tr("file_dialog_title_add_files"),
+					"file_dialog_title_add_files",
 					FileDialog.FILE_MODE_OPEN_FILES)
 
 			Toolbox.connect_func(dialog.files_selected, Project._on_files_dropped)
@@ -56,9 +56,7 @@ func _file_menu_pressed(id: int) -> void:
 			dialog.popup_centered()
 		1: # TODO: Add text
 			pass
-		2:
-			var color_popup: PanelContainer = preload(Library.SCENE_COLOR_PICKER_DIALOG).instantiate()
-			EditorUI.instance.add_child(color_popup)
+		2: PopupManager.show_popup(PopupManager.POPUP.COLOR)
 
 
 func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
@@ -71,30 +69,30 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 	var popup: PopupMenu = Toolbox.get_popup()
 
 	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
-		popup.add_item(tr("popup_item_rename"), POPUP_ACTION.RENAME)
-		popup.add_item(tr("popup_item_delete"), POPUP_ACTION.DELETE)
+		popup.add_item("popup_item_rename", POPUP_ACTION.RENAME)
+		popup.add_item("popup_item_delete", POPUP_ACTION.DELETE)
 
 		Toolbox.show_popup(popup)
 	else: # FILE
 		var file_id: int = file_item.get_metadata(0)
 		file = Project.get_file(file_id)
 
-		popup.add_item(tr("popup_item_rename"), POPUP_ACTION.RENAME)
-		popup.add_item(tr("popup_item_reload"), POPUP_ACTION.RELOAD)
-		popup.add_item(tr("popup_item_delete"), POPUP_ACTION.DELETE)
+		popup.add_item("popup_item_rename", POPUP_ACTION.RENAME)
+		popup.add_item("popup_item_reload", POPUP_ACTION.RELOAD)
+		popup.add_item("popup_item_delete", POPUP_ACTION.DELETE)
 
 		if file.type == File.TYPE.IMAGE:
 			if file.path.contains("temp://"):
-				popup.add_separator(tr("popup_separator_image_options"))
-				popup.add_item(tr("popup_item_save_as_file"), POPUP_ACTION.SAVE_AS)
+				popup.add_separator("popup_separator_image_options")
+				popup.add_item("popup_item_save_as_file", POPUP_ACTION.SAVE_AS)
 		if file.type == File.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
-			popup.add_item(tr("popup_item_extract_audio"), POPUP_ACTION.EXTRACT_AUDIO)
+			popup.add_item("popup_item_extract_audio", POPUP_ACTION.EXTRACT_AUDIO)
 		if file.type == File.TYPE.TEXT:
-			popup.add_separator(tr("popup_separator_text_options"))
-			popup.add_item(tr("popup_item_duplicate"), POPUP_ACTION.DUPLICATE)
+			popup.add_separator("popup_separator_text_options")
+			popup.add_item("popup_item_duplicate", POPUP_ACTION.DUPLICATE)
 			if file.path.contains("temp://"):
-				popup.add_item(tr("popup_item_save_as_file"), POPUP_ACTION.SAVE_AS)
+				popup.add_item("popup_item_save_as_file", POPUP_ACTION.SAVE_AS)
 
 	Toolbox.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
 	Toolbox.show_popup(popup)
@@ -136,7 +134,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				printerr("Not implemented yet!")
 			elif file.type == File.TYPE.IMAGE:
 				var dialog: FileDialog = Toolbox.get_file_dialog(
-						tr("title_save_image_to_file"),
+						"title_save_image_to_file",
 						FileDialog.FILE_MODE_SAVE_FILE,
 						["*.png", "*.jpg", "*.webp"])
 
@@ -145,7 +143,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				dialog.popup_centered()
 		POPUP_ACTION.EXTRACT_AUDIO:
 			var dialog: FileDialog = Toolbox.get_file_dialog(
-					tr("title_save_video_audio_to_wav"),
+					"title_save_video_audio_to_wav",
 					FileDialog.FILE_MODE_SAVE_FILE,
 					["*.wav"])
 

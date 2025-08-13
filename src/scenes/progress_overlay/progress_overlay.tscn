@@ -10,7 +10,8 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="PanelContainer" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "scroll_container", "status_hbox", "vbox")]
+[node name="ProgressOverlay" type="Control" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "scroll_container", "status_hbox", "vbox")]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,7 +28,11 @@ vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVB
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(700, 0)
-layout_mode = 2
+layout_mode = 0
+offset_left = 610.0
+offset_top = 488.0
+offset_right = 1310.0
+offset_bottom = 591.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"

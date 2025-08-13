@@ -38,10 +38,7 @@ func reset_settings() -> void:
 
 
 func open_settings_menu() -> void:
-	var settings_panel: SettingsPanel = preload(Library.SCENE_SETTINGS).instantiate()
-
-	settings_panel.set_mode_editor_settings()
-	EditorUI.instance.add_child(settings_panel)
+	PopupManager.show_popup(PopupManager.POPUP.PROJECT_SETTINGS)
 
 
 # Appearance set/get

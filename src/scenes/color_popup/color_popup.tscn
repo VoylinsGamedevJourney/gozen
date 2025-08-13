@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://c0xok1x6l3kwv" path="res://scenes/color_popup/color_popup.gd" id="1_oig83"]
 
-[node name="ColorPopup" type="PanelContainer" node_paths=PackedStringArray("color_picker")]
+[node name="ColorPopup" type="Control" node_paths=PackedStringArray("color_picker")]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,7 +15,18 @@ color_picker = NodePath("Panel/Margin/VBox/ColorFilePanel/Margin/VBox/ColorPicke
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(500, 0)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -327.0
+offset_right = 250.0
+offset_bottom = 327.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
