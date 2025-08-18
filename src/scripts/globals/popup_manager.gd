@@ -25,13 +25,19 @@ var popup_uids: Dictionary [POPUP, String] = {
 var non_closeable: Array[POPUP] = [
 	
 ]
+var control: Control = Control.new()
 var background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
 
 
 
 func _ready() -> void:
-	add_child(background)
-	background.visible = false
+	Toolbox.connect_func(get_window().size_changed, _on_size_changed)
+
+	await get_tree().root.ready
+	get_tree().root.add_child(control)
+	control.add_child(background)
+	control.visible = false
+	control.top_level = true
 
 
 func _input(event: InputEvent) -> void:
@@ -42,7 +48,7 @@ func _input(event: InputEvent) -> void:
 		show_popup(POPUP.CREDITS)
 
 	if open_popups.size() == 0:
-		background.visible = false
+		control.visible = false
 
 
 func show_popup(popup: POPUP) -> void:
@@ -52,12 +58,11 @@ func show_popup(popup: POPUP) -> void:
 	open_popups[popup] = (load(popup_uids[popup]) as PackedScene).instantiate()
 	
 	match popup:
-		POPUP.SETTINGS: (open_popups[popup] as SettingsPanel).set_mode_project_settings()
+		POPUP.SETTINGS: (open_popups[popup] as SettingsPanel).set_mode_editor_settings()
 		POPUP.PROJECT_SETTINGS: (open_popups[popup] as SettingsPanel).set_mode_project_settings()
 
-	add_child(open_popups[popup])
-	background.visible = true
-
+	control.add_child(open_popups[popup])
+	control.visible = true
 
 
 func close_popup(popup: POPUP) -> void:
@@ -66,7 +71,7 @@ func close_popup(popup: POPUP) -> void:
 	else:
 		open_popups[popup].queue_free()
 
-		if open_popups.erase(popup):
+		if !open_popups.erase(popup):
 			printerr("Could not erase popup '%s' from open_popups!" % popup)
 
 
@@ -75,4 +80,8 @@ func get_popup(popup: POPUP) -> Control:
 		show_popup(popup)
 
 	return open_popups[popup]
+
+
+func _on_size_changed() -> void:
+	control.size = get_window().size
 

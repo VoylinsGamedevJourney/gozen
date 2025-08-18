@@ -49,7 +49,7 @@ func set_audio(audio_clip_id: int) -> void:
 	var data: ClipData = Project.get_clip(audio_clip_id)
 	var old_file_id: int = file_id
 
-	if Project.get_file_data(data.file_id).audio == null:
+	if FileManager.get_file_data(data.file_id).audio == null:
 		return
 
 	clip_id = audio_clip_id
@@ -63,7 +63,7 @@ func set_audio(audio_clip_id: int) -> void:
 
 	# Set stream if changed.
 	if old_file_id != file_id or !player.stream:
-		var file_data: FileData = Project.get_file_data(file_id)
+		var file_data: FileData = FileManager.get_file_data(file_id)
 
 		if file_data and file_data.audio:
 			player.stream = file_data.audio

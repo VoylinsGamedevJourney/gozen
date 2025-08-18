@@ -44,7 +44,7 @@ func _input(event: InputEvent) -> void:
 		breakpoint
 
 	if get_window().gui_get_focus_owner() is not LineEdit and event.is_action_pressed("open_command_bar"):
-		get_tree().root.add_child(preload(Library.SCENE_COMMAND_BAR).instantiate())
+		PopupManager.show_popup(PopupManager.POPUP.COMMAND_BAR)
 		get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("switch_screen"):
@@ -92,7 +92,7 @@ func clipboard_paste() -> void:
 		file.temp_file = TempFile.new()
 		file.temp_file.image_data = ImageTexture.create_from_image(image)
 
-		Project.add_file_object(file)
+		FileManager.add_file_object(file)
 		return
 
 	# Checking if the pasted data is a path.
@@ -103,7 +103,7 @@ func clipboard_paste() -> void:
 			return
 
 	# All paths pasted are files so we use _on_files_dropped.
-	Project._on_files_dropped(data)
+	FileManager.files_dropped(data)
 
 
 func open_marker_popup() -> void:

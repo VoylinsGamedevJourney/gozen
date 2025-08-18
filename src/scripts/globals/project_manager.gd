@@ -1,13 +1,6 @@
 extends Node
 
 
-signal file_added(id: int)
-signal file_deleted(id: int)
-signal file_nickname_changed(id: int)
-signal file_path_updated(id: int)
-
-signal error_file_too_big(id: int)
-
 signal _markers_updated # Used for chapters
 
 
@@ -16,129 +9,23 @@ const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 
 
 var data: ProjectData
-var file_data: Dictionary [int, FileData] = {}
 
 var auto_save_timer: Timer
 var unsaved_changes: bool = false
 var editor_closing: bool = false # This is needed for tasks running in threads.
 
 
+
+#--- Project Manager functions ---
 func _ready() -> void:
-	Toolbox.connect_func(get_window().files_dropped, _on_files_dropped)
 	Toolbox.connect_func(get_window().close_requested, _on_close_requested)
-	Toolbox.connect_func(error_file_too_big, _on_file_too_big)
-
-
-func _on_actual_close() -> void:
-	# Cleaning up is necessary to not have leaked memory and to not have
-	# a very slow shutdown of GoZen.
-	data.queue_free()
-	auto_save_timer.queue_free()
-
-	for file_data_object: FileData in file_data.values():
-		file_data_object.queue_free()
-	file_data.clear()
-
-	editor_closing = true
-	get_tree().root.propagate_call("_on_closing_editor")
-	get_tree().quit()
-
-
-func _auto_save() -> void:
-	if auto_save_timer == null:
-		auto_save_timer = Timer.new()
-		add_child(auto_save_timer)
-		Toolbox.connect_func(auto_save_timer.timeout, _auto_save)
-
-	if data != null:
-		save()
-	auto_save_timer.start(5*60) # Default time is every 5 minutes
-
-
-func _update_recent_projects(new_path: String) -> void:
-	var content: String = ""
-	var file: FileAccess
-
-	if FileAccess.file_exists(RECENT_PROJECTS_FILE):
-		file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.READ)
-		content = file.get_as_text()
-		file.close()
-		
-	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if !file.store_string(new_path + "\n" + content):
-		printerr("Error storing String for recent_projects!")
-
-
-func _open_project(file_path: String) -> void:
-	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
-		printerr("ProjectManager: Something went wrong opening project from file dialog!")
-
-
-func _save_as(new_project_path: String) -> void:
-	set_project_path(new_project_path)
-	save()
-
-
-func _modified_files_check() -> void:
-	# Check to see if a file needs reloading or not.
-	if Project.data == null:
-		return
-
-	for file: File in Project.get_files().values():
-		# Temp files can't change.
-		if file.path.begins_with("temp://"):
-			continue
-
-		# File doesn't exist anymore, removing file.
-		if !FileAccess.file_exists(file.path):
-			print("File %s at %s doesn't exist anymore!" % [file.id, file.path])
-			delete_file(file.id)
-			continue
-
-		# Check if an actual file, maybe wasn't updated yet.
-		if file.modified_time == -1: 
-			file.modified_time = FileAccess.get_modified_time(file.path)
-
-		var new_modified_time: int = FileAccess.get_modified_time(file.path)
-		if file.modified_time != new_modified_time:
-			file.modified_time = new_modified_time
-			Project.reload_file_data(file.id)
-
-
-func _save_image_to_file(path: String, file: File) -> void:
-	# We save the image, and replace the path to the new file
-	var extension: String = path.get_extension().to_lower()
-
-	if extension == "png" and file.temp_file.image_data.get_image().save_png(path):
-		printerr("Couldn't save image to png!\n", get_stack())
-		return
-	elif extension == "webp" and file.temp_file.image_data.get_image().save_webp(path, false, 1.0):
-		printerr("Couldn't save image to webp!\n", get_stack())
-		return
-	elif file.temp_file.image_data.get_image().save_jpg(path, 1.0):
-		printerr("Couldn't save image to jpg!\n", get_stack())
-		return
-
-	file.path = path
-	file.temp_file.free()
-	file.temp_file = null
-
-	if !load_file_data(file.id):
-		printerr("Something went wrong loading file '%s' after saving temp image to real image!" % path)
-
-	file_path_updated.emit(file.id)
-
-
-func _save_audio_to_wav(path: String, file: File) -> void:
-	if get_file_data(file.id).audio.save_to_wav(path):
-		printerr("Error occured when saving to WAV!")
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	var new_project_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 
 	data = ProjectData.new()
-	file_data = {}
+	FileManager.reset_data()
 
 	get_tree().root.add_child(new_project_overlay)
 	new_project_overlay.update_title("title_new_project")
@@ -195,7 +82,7 @@ func open(project_path: String) -> void:
 	loading_overlay.update_progress(0, "status_project_loading_init")
 
 	data = ProjectData.new()
-	file_data = {}
+	FileManager.reset_data()
 
 	# 1% = Loading has started.
 	loading_overlay.update_progress_bar(1, true)
@@ -214,15 +101,15 @@ func open(project_path: String) -> void:
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update_progress(7, "status_project_loading_files")
 
-	var progress_increment: float = (1 / float(get_file_ids().size())) * 73
-	for i: int in get_file_ids():
-		if !load_file_data(i):
+	var progress_increment: float = (1 / float(FileManager.get_file_ids().size())) * 73
+	for i: int in FileManager.get_file_ids():
+		if !FileManager.load_file_data(i):
 			continue # File became invaled so entry got deleted.
 
 		var type: File.TYPE = data.files[i].type
 
-		if type == File.TYPE.VIDEO and file_data[i].video == null:
-			await file_data[i].video_loaded
+		if type == File.TYPE.VIDEO and FileManager.data[i].video == null:
+			await FileManager.data[i].video_loaded
 		loading_overlay.increment_progress_bar(progress_increment)
 
 	# 80% = Files loaded, setting up playback.
@@ -258,166 +145,61 @@ func open_settings_menu() -> void:
 	PopupManager.show_popup(PopupManager.POPUP.PROJECT_SETTINGS)
 
 
-func load_file_data(id: int) -> bool:
-	var temp_file_data: FileData = FileData.new()
-
-	if !temp_file_data.init_data(id):
-		delete_file(id)
-		return false
-		
-	file_data[id] = temp_file_data
-	return true
-
-
-func reload_file_data(id: int) -> void:
-	file_data[id].queue_free()
-	await RenderingServer.frame_pre_draw
-	if !load_file_data(id):
-		delete_file(id)
-		print("File became invalid!")
-
-
-func add_file(file_path: String) -> int:
-	# Check if file already exists inside of the project.
-	for existing: File in get_files().values():
-		if existing.path == file_path:
-			print("File already loaded with path '%s'!" % file_path)
-			return -2
-
-	var file: File = File.create(file_path)
-
-	if file == null:
-		return -1
-
-	set_file(file.id, file)
-	if !load_file_data(file.id):
-		printerr("Problem happened adding file!")
-		return -1
-
-	unsaved_changes = true
-	return file.id
-
-
-func add_file_object(file: File) -> void:
-	# Used for adding temp files.
-	set_file(file.id, file)
-
-	if !load_file_data(file.id):
-		print("Something went wrong loading file '", file.path, "'!")
-
-	# We only emit this one since for dropped/selected actual files this gets
-	# called inside of _on_files_dropped.
-	file_added.emit(file.id)
-	unsaved_changes = true
-
-
 func _add_clip(clip_data: ClipData) -> void:
 	# Used for undoing the deletion of a file.
 	data.clips[clip_data.clip_id] = clip_data
 	unsaved_changes = true
 
-	
-func delete_file(id: int) -> void:
-	for clip: ClipData in data.clips.values():
-		if clip.file_id == id:
-			Timeline.instance.delete_clip(clip)
 
-	if file_data.has(id):
-		if !file_data.erase(id):
-			Toolbox.print_erase_error()
-	if data.files.has(id):
-		if !data.files.erase(id):
-			Toolbox.print_erase_error()
+func _on_actual_close() -> void:
+	# Cleaning up is necessary to not have leaked memory and to not have
+	# a very slow shutdown of GoZen.
+	data.queue_free()
+	auto_save_timer.queue_free()
 
-	await RenderingServer.frame_pre_draw
-	file_deleted.emit(id)
-	unsaved_changes = true
+	for file_data_object: FileData in FileManager.data.values():
+		file_data_object.queue_free()
+	FileManager.reset_data()
+
+	editor_closing = true
+	get_tree().root.propagate_call("_on_closing_editor")
+	get_tree().quit()
 
 
-func _on_files_dropped(files: PackedStringArray) -> void:
-	# Only allow files to be dropped in non-empty projects.
-	if data == null:
-		return
+func _auto_save() -> void:
+	if auto_save_timer == null:
+		auto_save_timer = Timer.new()
+		add_child(auto_save_timer)
+		Toolbox.connect_func(auto_save_timer.timeout, _auto_save)
 
-	var dropped_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
-	var file_status: Dictionary = {}
-	var file_ids: Dictionary = {}
-	var still_loading: PackedInt64Array = []
-	var progress_increment: float = 0.0
-
-	for file_path: String in Toolbox.find_subfolder_files(files):
-		file_status[file_path] = 0
-	for file_path: String in files:
-		if FileAccess.file_exists(file_path):
-			file_status[file_path] = 0
-
-	progress_increment = (1 / float(file_status.keys().size())) * 50
-
-	get_tree().root.add_child(dropped_overlay)
-	dropped_overlay.update_title("title_files_dropped")
-	dropped_overlay.update_progress(0, "")
-	dropped_overlay.update_files(file_status)
-	await RenderingServer.frame_post_draw
-
-	for file_path: String in file_status.keys():
-		var id: int = add_file(file_path)
-		file_ids[id] = file_path
-		dropped_overlay.increment_progress_bar(progress_increment)
-		await RenderingServer.frame_post_draw
-
-		if id in [-2, -1]: # -2 = Already loaded, -1 = Problem loading.
-			file_status[file_path] = id
-			dropped_overlay.update_files(file_status)
-			dropped_overlay.increment_progress_bar(progress_increment)
-			continue
-
-		if get_file_data(id) == null or get_file(id).type == File.TYPE.VIDEO:
-			if still_loading.append(id):
-				Toolbox.print_append_error()
-		else:
-			file_status[file_path] = 1
-			dropped_overlay.update_files(file_status)
-			dropped_overlay.increment_progress_bar(progress_increment)
-			file_added.emit(id)
-
-	while still_loading.size() != 0:
-		for id: int in still_loading:
-			if !has_file(id):
-				# Error, file was most likely too big.
-				file_status[file_ids[id]] = -3 # Too big error code.
-				dropped_overlay.update_files(file_status)
-				dropped_overlay.increment_progress_bar(progress_increment)
-				still_loading.remove_at(still_loading.find(id))
-			elif get_file(id).type != File.TYPE.VIDEO:
-				printerr("This should not happen! File is type: ", get_file(id).type)
-				dropped_overlay.increment_progress_bar(progress_increment)
-				still_loading.remove_at(still_loading.find(id))
-			elif get_file_data(id).video != null and get_file_data(id).video.is_open():
-				file_status[get_file(id).path] = 1
-				dropped_overlay.update_files(file_status)
-				dropped_overlay.increment_progress_bar(progress_increment)
-				file_added.emit(id)
-				still_loading.remove_at(still_loading.find(id))
-
-		await RenderingServer.frame_post_draw
-
-	dropped_overlay.queue_free()
+	if data != null:
+		save()
+	auto_save_timer.start(5*60) # Default time is every 5 minutes
 
 
-func _on_file_too_big(file_id: int) -> void:
-	# TODO: Show popup.
-	var dialog: AcceptDialog = AcceptDialog.new()
-	var file_path: String = data.files[file_id].path
+func _update_recent_projects(new_path: String) -> void:
+	var content: String = ""
+	var file: FileAccess
 
-	dialog.title = "title_dialog_file_too_big"
-	dialog.dialog_text = file_path
-	add_child(dialog)
-	dialog.popup_centered()
+	if FileAccess.file_exists(RECENT_PROJECTS_FILE):
+		file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.READ)
+		content = file.get_as_text()
+		file.close()
+		
+	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
+	if !file.store_string(new_path + "\n" + content):
+		printerr("Error storing String for recent_projects!")
 
-	if !data.files.erase(file_id):
-		Toolbox.print_erase_error()
-	if !file_data.erase(file_id):
-		Toolbox.print_erase_error()
+
+func _open_project(file_path: String) -> void:
+	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
+		printerr("ProjectManager: Something went wrong opening project from file dialog!")
+
+
+func _save_as(new_project_path: String) -> void:
+	set_project_path(new_project_path)
+	save()
+
 
 
 func _on_close_requested() -> void:
@@ -454,7 +236,7 @@ func _on_cancel_close() -> void:
 
 
 
-# Setters and Getters  --------------------------------------------------------
+#--- Project setters & getters ---
 func set_project_path(project_path: String) -> void:
 	data.project_path = project_path
 	unsaved_changes = true
@@ -471,37 +253,6 @@ func get_project_name() -> String:
 
 func get_project_base_folder() -> String:
 	return data.project_path.get_base_dir()
-
- 
-func set_file(file_id: int, file: File) -> void:
-	data.files[file_id] = file
-	unsaved_changes = true
-
-
-func set_file_nickname(file_id: int, nickname: String) -> void:
-	data.files[file_id].nickname = nickname
-	file_nickname_changed.emit(file_id)
-	unsaved_changes = true
-
-
-func has_file(file_id: int) -> bool:
-	return data.files.has(file_id)
-
-
-func get_files() -> Dictionary[int, File]:
-	return data.files
-
-
-func get_file_ids() -> PackedInt64Array:
-	return data.files.keys()
-
-
-func get_file(id: int) -> File:
-	return data.files[id]
-	
-
-func get_file_data(id: int) -> FileData:
-	return file_data[id]
 
 
 func set_resolution(res: Vector2i) -> void:

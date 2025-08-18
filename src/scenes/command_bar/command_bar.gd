@@ -6,9 +6,9 @@ const MAX_COMMANDS: int = 5
 
 
 var commands: Dictionary[String, Callable] = {
-	"command_editor_settings": open_editor_settings,
-	"command_project_settings": open_project_settings,
-	"command_render_menu": open_render_menu
+	"command_editor_settings": Settings.open_settings_menu,
+	"command_project_settings": Project.open_settings_menu,
+	"command_render_menu": InputManager.on_show_render_screen.emit,
 }
 
 
@@ -34,6 +34,7 @@ func _ready() -> void:
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		Toolbox.connect_func(button.pressed, commands[command])
+		Toolbox.connect_func(button.pressed, _close)
 		button.button_group = button_group
 		button.toggle_mode = true
 
@@ -86,19 +87,11 @@ func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 				return
 			else:
 				selected_button -= 1
+	print("oi")
+
+	_close()
 
 
-func open_editor_settings() -> void:
-	Settings.open_settings_menu()
-	PopupManager.close_popup(PopupManager.POPUP.COMMAND_BAR)
-
-
-func open_project_settings() -> void:
-	Project.open_settings_menu()
-	PopupManager.close_popup(PopupManager.POPUP.COMMAND_BAR)
-
-
-func open_render_menu() -> void:
-	InputManager.show_render_screen()
+func _close() -> void:
 	PopupManager.close_popup(PopupManager.POPUP.COMMAND_BAR)
 

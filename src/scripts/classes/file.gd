@@ -46,7 +46,7 @@ static func create(file_path: String) -> File:
 		printerr("Invalid file: ", file_path)
 		return null
 
-	file.id = Toolbox.get_unique_id(Project.get_file_ids())
+	file.id = Toolbox.get_unique_id(FileManager.get_file_ids())
 	file.path = file_path
 
 	if file_path.contains("temp://"):
@@ -75,7 +75,7 @@ static func check_valid(file_path: String) -> bool:
 
 
 func enable_clip_only_video(clip_id: int) -> void:
-	var file_data: FileData = Project.get_file_data(id)
+	var file_data: FileData = FileManager.get_file_data(id)
 	var video: GoZenVideo = GoZenVideo.new()
 
 	if video.open(path):
@@ -88,7 +88,7 @@ func enable_clip_only_video(clip_id: int) -> void:
 
 
 func disable_clip_only_video(clip_id: int) -> void:
-	var file_data: FileData = Project.get_file_data(id)
+	var file_data: FileData = FileManager.get_file_data(id)
 
 	if clip_only_video_ids.has(clip_id):
 		clip_only_video_ids.remove_at(clip_only_video_ids.find(clip_id))

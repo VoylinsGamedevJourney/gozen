@@ -115,7 +115,7 @@ func on_clip_pressed(id: int) -> void:
 			button_audio_effects.pressed.emit()
 			_set_audio_effect_values()
 		File.TYPE.VIDEO:
-			var showing: bool = Project.get_file_data(data.file_id).audio != null
+			var showing: bool = FileManager.get_file_data(data.file_id).audio != null
 
 			button_video_effects.visible = true
 			button_audio_effects.visible = showing
