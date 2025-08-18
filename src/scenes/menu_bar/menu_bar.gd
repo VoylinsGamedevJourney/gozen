@@ -38,19 +38,18 @@ func build_menu_bar() -> void:
 
 
 func _add_popup_menu(title: String, options: Array[MenuItem]) -> void:
-	var popup: PopupMenu = Toolbox.get_popup()
+	var popup: PopupMenu = Toolbox.get_popup(true)
+	var index: int = 0
 
 	Toolbox.connect_func(popup.id_pressed, _on_id_pressed.bind(popup))
 	popup.name = title
 	popup.add_theme_constant_override("icon_max_width", 20)
 
-
-	var index: int = 0
 	for item: MenuItem in options:
 		if item.title == "line":
 			popup.add_separator()
 		else:
-			popup.add_item(tr(item.title))
+			popup.add_item(item.title)
 			popup.set_item_icon(index, item.icon)
 			popup.set_item_metadata(index, item.title)
 			callables[item.title] = item.callable

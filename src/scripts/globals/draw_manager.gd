@@ -101,7 +101,7 @@ func draw_timestamp_box(box: TimelineBox) -> void:
 
 
 func draw_clip_wave(clip: ClipButton) -> void:
-	var file_data: FileData = Project.get_file_data(clip.clip_data.file_id)
+	var file_data: FileData = FileManager.get_file_data(clip.clip_data.file_id)
 	var full_wave_data: PackedFloat32Array = file_data.audio_wave_data
 	var block_width: float = Timeline.get_zoom()
 	var display_begin_offset: int = 0

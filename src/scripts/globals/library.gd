@@ -26,9 +26,10 @@ const SCENE_ABOUT_GOZEN: String = "uid://d4e5ndtm65ok3"
 const SCENE_COMMAND_BAR: String = "uid://rj2h8g761jr1"
 const SCENE_SETTINGS: String = "uid://bjen0oagwidr7"
 const SCENE_PROGRESS_OVERLAY: String = "uid://d4h7t8ccus0yv"
-
+const SCENE_POPUP_BACKGROUND: String = "uid://xu8ndgud6cox"
 const SCENE_RENAME_DIALOG: String = "uid://y450a2mtc4om"
 const SCENE_COLOR_PICKER_DIALOG: String = "uid://brbxvynl0y3ha"
+const SCENE_MARKER_DIALOG: String = "uid://ce1hy5ks465h7"
 
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"
@@ -42,6 +43,7 @@ const RENDER_PROFILE_VP8: String = "uid://drlbs008bf7so"
 const RENDER_PROFILE_HEVC: String = "uid://bcktb6d5bti7t"
 
 const BUTTON_CLIP: String = "uid://cvdbyqqvy1rl1" 
+const BUTTON_MARKER: String = "uid://dvp6a4xgk5pa8"
 
 const STYLE_BOX_CLIP_IMAGE_NORMAL: String = "uid://dlxa6tecfxvwa"
 const STYLE_BOX_CLIP_IMAGE_FOCUS: String = "uid://bwnfn42mtulgg"

@@ -243,7 +243,7 @@ func update_view(track_id: int) -> void:
 	if loaded_clips[track_id] == null:
 		return
 
-	var file_data: FileData = Project.get_file_data(loaded_clips[track_id].file_id)
+	var file_data: FileData = FileManager.get_file_data(loaded_clips[track_id].file_id)
 	var material: ShaderMaterial = view_textures[track_id].get_material()
 	var updated: bool = false
 

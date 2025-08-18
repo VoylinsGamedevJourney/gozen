@@ -39,7 +39,7 @@ func get_frame(frame_nr: int) -> Texture:
 		# through the editor.
 
 		# Changing from global frame nr to clip frame nr
-		var file_data: FileData = Project.get_file_data(file_id)
+		var file_data: FileData = FileManager.get_file_data(file_id)
 		var video: GoZenVideo
 
 		if file_data.clip_only_video.has(clip_id):
@@ -55,7 +55,7 @@ func get_frame(frame_nr: int) -> Texture:
 
 		# check if not reloading same frame
 		if frame_nr == video_frame_nr:
-			return Project.get_file_data(file_id).image
+			return FileManager.get_file_data(file_id).image
 
 		# check if frame is before current one or after max skip
 		var skips: int = frame_nr - video_frame_nr
@@ -69,11 +69,11 @@ func get_frame(frame_nr: int) -> Texture:
 				if !video.next_frame(i == skips):
 					print("Something went wrong skipping next frame!")
 
-	return Project.get_file_data(file_id).image
+	return FileManager.get_file_data(file_id).image
 
 
 func get_clip_audio_data() -> PackedByteArray:
-	var file_data: FileData = Project.get_file_data(file_id)
+	var file_data: FileData = FileManager.get_file_data(file_id)
 	var sample_size: int = Toolbox.get_sample_count(1)
 	var data: PackedByteArray = file_data.audio.data.slice(
 			Toolbox.get_sample_count(begin),

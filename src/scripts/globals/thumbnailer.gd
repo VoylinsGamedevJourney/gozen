@@ -45,7 +45,7 @@ func _save_data() -> void:
 
 
 func get_thumb(file_id: int) -> Texture2D:
-	var file: File = Project.get_file(file_id)
+	var file: File = FileManager.get_file(file_id)
 	var path: String = file.path
 	var image: Image
 
@@ -71,7 +71,7 @@ func get_thumb(file_id: int) -> Texture2D:
 			Toolbox.print_append_error()
 
 		# Add the correct placeholder image.
-		match Project.get_file(file_id).type:
+		match FileManager.get_file(file_id).type:
 			File.TYPE.AUDIO:
 				return _get_default_thumb_audio()
 			File.TYPE.TEXT:
@@ -103,10 +103,10 @@ func _get_default_thumb_text() -> Texture2D:
 # This function is for generating thumbnails, should only be called from the
 # _process function and in a thread through Threader.
 func _gen_thumb(file_id: int) -> void:
-	if !Project.has_file(file_id):
+	if !FileManager.has_file(file_id):
 		return
 
-	var file: File = Project.get_file(file_id)
+	var file: File = FileManager.get_file(file_id)
 	var path: String = file.path
 	var type: File.TYPE = file.type
 	var image: Image
@@ -115,9 +115,9 @@ func _gen_thumb(file_id: int) -> void:
 		File.TYPE.IMAGE:
 			image = Image.load_from_file(path)
 		File.TYPE.VIDEO:
-			image = Project.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
+			image = FileManager.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
 		File.TYPE.AUDIO:
-			image = await Project.get_file_data(file_id).generate_audio_thumb()
+			image = await FileManager.get_file_data(file_id).generate_audio_thumb()
 	
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
 	if type != File.TYPE.AUDIO:

@@ -27,7 +27,7 @@ var clip_only_video: Dictionary[int, GoZenVideo] = {} # { Clip id: Video }
 
 
 func _update_duration() -> void:
-	var l_file: File = Project.get_file(id)
+	var l_file: File = FileManager.get_file(id)
 
 	match l_file.type:
 		File.TYPE.IMAGE:
@@ -50,7 +50,7 @@ func _update_duration() -> void:
 func init_data(file_data_id: int) -> bool:
 	id = file_data_id
 
-	var file: File = Project.get_file(id)
+	var file: File = FileManager.get_file(id)
 	if file == null:
 		printerr("Can't init data as file %s is null!")
 		return false
@@ -86,7 +86,7 @@ func _load_audio_data(file_path: String) -> void:
 		return
 	if audio_data.size() == 1:
 		# This video is not usable since the size it too large (2 GB limit).
-		Project.error_file_too_big.emit.call_deferred(id)
+		FileManager.error_file_too_big.emit.call_deferred(id)
 		return
 
 	audio = AudioStreamWAV.new()

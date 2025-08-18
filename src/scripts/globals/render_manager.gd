@@ -163,7 +163,7 @@ func _get_track_audio(audio: PackedByteArray, track_id: int) -> PackedByteArray:
 
 	for frame_point: int in Project.get_track_keys(track_id):
 		var clip: ClipData = Project.get_clip(track_data[frame_point])
-		var file: File = Project.get_file(clip.file_id)
+		var file: File = FileManager.get_file(clip.file_id)
 
 		if file.type in EditorCore.AUDIO_TYPES:
 			var sample_count: int = Toolbox.get_sample_count(clip.start_frame)

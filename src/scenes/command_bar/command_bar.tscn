@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cc5bnmmakhd8r" path="res://scenes/command_bar/command_bar.gd" id="1_maggb"]
 
-[node name="CommandBar" type="PanelContainer" node_paths=PackedStringArray("command_line", "command_buttons")]
+[node name="CommandBar" type="Control" node_paths=PackedStringArray("command_line", "command_buttons")]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,7 +15,12 @@ command_line = NodePath("MarginContainer/Panel/VBoxContainer/MarginContainer/Com
 command_buttons = NodePath("MarginContainer/Panel/VBoxContainer/SettingsPanel/MarginContainer/ButtonVBoxContainer")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_top = 150
 
 [node name="Panel" type="PanelContainer" parent="MarginContainer"]

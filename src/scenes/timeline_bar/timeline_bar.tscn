@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://clx31ubx70lv0"]
+[gd_scene load_steps=6 format=3 uid="uid://clx31ubx70lv0"]
 
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scripts/timeline.gd" id="1_p3xsq"]
 [ext_resource type="Script" uid="uid://cf5vcudryr0b0" path="res://scenes/timeline_bar/timestamp_box.gd" id="2_p0ld5"]
 [ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="2_scqra"]
+[ext_resource type="Script" uid="uid://bvy6hgy1vk6g2" path="res://scenes/timeline_bar/markers.gd" id="3_p0ld5"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_wrb8p"]
 color = Color(0.654902, 0.0941176, 0.945098, 1)
@@ -46,6 +47,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("2_p0ld5")
+
+[node name="Markers" type="Control" parent="Timeline/VBoxContainer/TimestampBoxScroll/TimestampBox"]
+layout_mode = 2
+script = ExtResource("3_p0ld5")
 
 [node name="TimelinePanel" type="PanelContainer" parent="Timeline/VBoxContainer"]
 layout_mode = 2

@@ -45,7 +45,7 @@ func _ready() -> void:
 
 	Toolbox.connect_func(EditorCore.frame_changed, move_playhead)
 	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
-	Toolbox.connect_func(Project.file_deleted, _check_clips)
+	Toolbox.connect_func(FileManager.file_deleted, _check_clips)
 	Toolbox.connect_func(scroll_main.get_h_scroll_bar().value_changed, _on_h_scroll.bind(true))
 	Toolbox.connect_func(scroll_bar.get_h_scroll_bar().value_changed, _on_h_scroll.bind(false))
 
@@ -268,7 +268,7 @@ func _can_drop_new_clips(pos: Vector2, draggable: Draggable) -> bool:
 
 	# Calculate total duration of all clips together
 	for file_id: int in draggable.ids:
-		duration += Project.get_file(file_id).duration
+		duration += FileManager.get_file(file_id).duration
 	end = frame + duration
 
 	# Create a preview
@@ -455,7 +455,7 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 		new_clip_data.file_id = id
 		new_clip_data.start_frame = start_frame
 		new_clip_data.track_id = track
-		new_clip_data.duration = Project.get_file(id).duration
+		new_clip_data.duration = FileManager.get_file(id).duration
 		new_clip_data.effects_video = EffectsVideo.new()
 		new_clip_data.effects_audio = EffectsAudio.new()
 
@@ -538,7 +538,7 @@ func add_clip(clip_data: ClipData) -> void:
 
 	button.clip_text = true
 	button.name = str(clip_data.clip_id)
-	button.text = " " + Project.get_file(clip_data.file_id).nickname
+	button.text = " " + FileManager.get_file(clip_data.file_id).nickname
 	button.size.x = get_clip_size(clip_data.duration)
 	button.size.y = TRACK_HEIGHT
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -548,10 +548,10 @@ func add_clip(clip_data: ClipData) -> void:
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 	@warning_ignore_start("unsafe_call_argument")
-	button.add_theme_stylebox_override("normal", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
-	button.add_theme_stylebox_override("focus", STYLE_BOXES[Project.get_file(clip_data.file_id).type][1])
-	button.add_theme_stylebox_override("hover", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
-	button.add_theme_stylebox_override("pressed", STYLE_BOXES[Project.get_file(clip_data.file_id).type][0])
+	button.add_theme_stylebox_override("normal", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][0])
+	button.add_theme_stylebox_override("focus", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][1])
+	button.add_theme_stylebox_override("hover", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][0])
+	button.add_theme_stylebox_override("pressed", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][0])
 	@warning_ignore_restore("unsafe_call_argument")
 
 	button.set_script(preload(Library.BUTTON_CLIP))

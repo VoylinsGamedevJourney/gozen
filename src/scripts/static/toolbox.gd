@@ -32,12 +32,13 @@ static func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: P
 	return dialog
 
 
-static func get_popup() -> PopupMenu:
+static func get_popup(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
 
-	popup.size = Vector2i(100,0)
-	connect_func(popup.mouse_exited, popup.queue_free)
+	if !permanent:
+		connect_func(popup.mouse_exited, popup.queue_free)
 
+	popup.size = Vector2i(100,0)
 	return popup
 
 

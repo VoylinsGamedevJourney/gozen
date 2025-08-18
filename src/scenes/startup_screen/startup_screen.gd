@@ -162,7 +162,7 @@ func _on_discord_server_button_pressed() -> void:
 
 func _on_open_project_button_pressed() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			tr("Open project"),
+			"Open project", # TODO: localize
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;GoZen project files" % Project.EXTENSION])
 
@@ -210,7 +210,7 @@ func _on_create_new_project_button_pressed() -> void:
 
 func _on_project_path_button_pressed() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			tr("Select project path"),
+			"Select project path", # TODO: localize
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;GoZen project files" % Project.EXTENSION])
 

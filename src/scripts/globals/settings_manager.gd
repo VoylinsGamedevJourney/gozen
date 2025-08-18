@@ -38,10 +38,7 @@ func reset_settings() -> void:
 
 
 func open_settings_menu() -> void:
-	var settings_panel: SettingsPanel = preload(Library.SCENE_SETTINGS).instantiate()
-
-	settings_panel.set_mode_editor_settings()
-	EditorUI.instance.add_child(settings_panel)
+	PopupManager.show_popup(PopupManager.POPUP.SETTINGS)
 
 
 # Appearance set/get
@@ -126,7 +123,7 @@ func get_show_menu_bar() -> bool:
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	data.audio_waveform_style = style
-	for file_data: FileData in Project.file_data.values():
+	for file_data: FileData in FileManager.data.values():
 		file_data.update_wave.emit()
 
 
@@ -208,7 +205,7 @@ func get_default_framerate() -> float:
 	return data.default_framerate
 
 
-# Timeline set/get
+#--- Timeline set/get ---
 func set_tracks_amount(track_amount: int) -> void:
 	data.tracks_amount = track_amount
 
@@ -242,6 +239,20 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 	return mods
 
 
+#--- Markers set/get ---
+func set_marker_color(index: int, color: Color) -> void:
+	data.marker_colors[index] = color
+
+
+func get_marker_color(index: int) -> Color:
+	return data.marker_colors[index]
+
+
+func get_marker_colors() -> PackedColorArray:
+	return data.marker_colors
+
+
+#--- Extra set/get ---
 func set_check_version(value: bool) -> void:
 	data.check_version = value
 	

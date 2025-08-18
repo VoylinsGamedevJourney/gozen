@@ -46,7 +46,7 @@ var wave: bool = false
 
 func _ready() -> void:
 	clip_data = Project.get_clip(name.to_int())
-	var type: File.TYPE = Project.get_file(clip_data.file_id).type
+	var type: File.TYPE = FileManager.get_file(clip_data.file_id).type
 
 	_original_start_frame = clip_data.start_frame
 	_original_duration = clip_data.duration
@@ -62,9 +62,9 @@ func _ready() -> void:
 	Toolbox.connect_func(pressed, _on_pressed)
 	Toolbox.connect_func(gui_input, _on_gui_input)
 
-	if Project.get_file(clip_data.file_id).type in EditorCore.AUDIO_TYPES:
+	if FileManager.get_file(clip_data.file_id).type in EditorCore.AUDIO_TYPES:
 		wave = true
-		Toolbox.connect_func(Project.get_file_data(clip_data.file_id).update_wave, queue_redraw)
+		Toolbox.connect_func(FileManager.get_file_data(clip_data.file_id).update_wave, queue_redraw)
 
 	# Add fade buttons.
 	if type in EditorCore.VISUAL_TYPES:
@@ -229,7 +229,7 @@ func _on_gui_input(event: InputEvent) -> void:
 
 			if Project.get_clip_type(clip_data.clip_id) == File.TYPE.VIDEO:
 				popup.add_check_item("Clip only video instance", 0)
-				popup.set_item_checked(0, Project.get_file_data(clip_data.file_id).clip_only_video.has(clip_data.clip_id))
+				popup.set_item_checked(0, FileManager.get_file_data(clip_data.file_id).clip_only_video.has(clip_data.clip_id))
 				Toolbox.connect_func(popup.id_pressed, _on_clip_popup_menu_pressed.bind(popup))
 
 			Toolbox.show_popup(popup)
@@ -249,9 +249,9 @@ func _on_gui_input(event: InputEvent) -> void:
 func _on_clip_popup_menu_pressed(id: int, popup_menu: PopupMenu) -> void:
 	# 0 = Clip video only instance
 	if !popup_menu.is_item_checked(id):
-		Project.get_file(clip_data.file_id).enable_clip_only_video(clip_data.clip_id)
+		FileManager.get_file(clip_data.file_id).enable_clip_only_video(clip_data.clip_id)
 	else:
-		Project.get_file(clip_data.file_id).disable_clip_only_video(clip_data.clip_id)
+		FileManager.get_file(clip_data.file_id).disable_clip_only_video(clip_data.clip_id)
 
 
 func _get_drag_data(_pos: Vector2) -> Draggable:
@@ -357,7 +357,7 @@ func _on_resize_engaged(left: bool) -> void:
 		if left:
 			max_left_resize = max(max_left_resize, clip_data.start_frame - clip_data.begin)
 		else:
-			var duration_left: int = Project.get_file(clip_data.file_id).duration
+			var duration_left: int = FileManager.get_file(clip_data.file_id).duration
 
 			duration_left -= clip_data.begin
 			duration_left += clip_data.start_frame
