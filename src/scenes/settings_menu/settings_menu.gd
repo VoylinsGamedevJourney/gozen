@@ -118,6 +118,36 @@ func set_mode_editor_settings() -> void:
 				"setting_tooltip_delete_empty_space_mod"),
 	])
 
+	# Adding the Markers section.
+	# NOTE: We only have 5 main markers for now.
+	_add_section("title_markers", [
+		_create_label("settings_marker_one"),
+		_create_color_picker(
+				Settings.get_marker_color(0),
+				Settings.set_marker_color.bind(0),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_two"),
+		_create_color_picker(
+				Settings.get_marker_color(1),
+				Settings.set_marker_color.bind(1),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_three"),
+		_create_color_picker(
+				Settings.get_marker_color(2),
+				Settings.set_marker_color.bind(2),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_four"),
+		_create_color_picker(
+				Settings.get_marker_color(3),
+				Settings.set_marker_color.bind(3),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_five"),
+		_create_color_picker(
+				Settings.get_marker_color(4),
+				Settings.set_marker_color.bind(4),
+				"tooltip_setting_marker_color"),
+	])
+
 	# Adding the Extras section.
 	_add_section("title_extras", [
 		_create_label("setting_check_version"),

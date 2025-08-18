@@ -205,7 +205,7 @@ func get_default_framerate() -> float:
 	return data.default_framerate
 
 
-# Timeline set/get
+#--- Timeline set/get ---
 func set_tracks_amount(track_amount: int) -> void:
 	data.tracks_amount = track_amount
 
@@ -239,6 +239,20 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 	return mods
 
 
+#--- Markers set/get ---
+func set_marker_color(index: int, color: Color) -> void:
+	data.marker_colors[index] = color
+
+
+func get_marker_color(index: int) -> Color:
+	return data.marker_colors[index]
+
+
+func get_marker_colors() -> PackedColorArray:
+	return data.marker_colors
+
+
+#--- Extra set/get ---
 func set_check_version(value: bool) -> void:
 	data.check_version = value
 	

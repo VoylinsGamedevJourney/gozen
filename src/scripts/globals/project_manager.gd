@@ -417,7 +417,7 @@ func get_folders() -> PackedStringArray:
 	return data.folders
 
 
-func add_marker(frame_nr: int, marker: String) -> void:
+func add_marker(frame_nr: int, marker: MarkerData) -> void:
 	if data.markers.has(frame_nr):
 		update_marker(frame_nr, frame_nr, marker)
 	else:
@@ -427,7 +427,7 @@ func add_marker(frame_nr: int, marker: String) -> void:
 		propagate_call("_on_marker_added", [frame_nr, marker])
 
 
-func update_marker(old_frame_nr: int, new_frame_nr: int, marker: String) -> void:
+func update_marker(old_frame_nr: int, new_frame_nr: int, marker: MarkerData) -> void:
 	data.markers[new_frame_nr] = marker
 	if !data.markers.erase(old_frame_nr):
 		Toolbox.print_erase_error()
@@ -448,7 +448,7 @@ func remove_marker(frame_nr: int) -> void:
 		propagate_call("_on_marker_removed", [frame_nr])
 
 
-func get_marker(frame_nr: int) -> String:
+func get_marker(frame_nr: int) -> MarkerData:
 	return data.markers[frame_nr]
 
 
@@ -458,6 +458,6 @@ func get_marker_positions() -> PackedInt64Array:
 	return markers
 
 
-func get_markers() -> Dictionary[int, String]:
+func get_markers() -> Dictionary[int, MarkerData]:
 	return data.markers
 

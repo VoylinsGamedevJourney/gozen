@@ -47,8 +47,7 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("help"):
 		show_popup(POPUP.CREDITS)
 
-	if open_popups.size() == 0:
-		control.visible = false
+	_check_background()
 
 
 func show_popup(popup: POPUP) -> void:
@@ -74,6 +73,8 @@ func close_popup(popup: POPUP) -> void:
 		if !open_popups.erase(popup):
 			printerr("Could not erase popup '%s' from open_popups!" % popup)
 
+	_check_background()
+
 
 func get_popup(popup: POPUP) -> Control:
 	if !open_popups.has(popup):	
@@ -84,4 +85,9 @@ func get_popup(popup: POPUP) -> Control:
 
 func _on_size_changed() -> void:
 	control.size = get_window().size
+
+
+func _check_background() -> void:
+	if open_popups.size() == 0:
+		control.visible = false
 

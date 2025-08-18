@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://ce1hy5ks465h7"]
+[gd_scene load_steps=3 format=3 uid="uid://ce1hy5ks465h7"]
 
 [ext_resource type="Script" uid="uid://ds4exxdlc67ib" path="res://scenes/marker_popup/marker_popup.gd" id="1_df1gq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_df1gq"]
+bg_color = Color(1, 1, 1, 1)
 
 [node name="MarkerPopup" type="Control"]
 layout_mode = 3
@@ -56,6 +59,31 @@ text = "title_margin_popup"
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
+[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="MarkerOptionLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Marker"
+
+[node name="MarkerLineEdit" type="LineEdit" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Type"
+
+[node name="TypeOptionButton" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_df1gq")
+expand_icon = true
+
 [node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
 layout_mode = 2
 
@@ -68,4 +96,7 @@ text = "button_cancel"
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
-text = "button_create_new_color_file"
+text = "button_update_marker"
+
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CreateMarker" to="." method="_on_create_marker_pressed"]

@@ -159,12 +159,12 @@ func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
 
 
 func _on_chapters_updated() -> void:
-	var chapters: Dictionary[int, String] = Project.get_markers()
+	var chapters: Dictionary[int, MarkerData] = Project.get_markers()
 	chapters_text_edit.text = ""
 
 	for i: int in chapters:
 		var time: String = Toolbox.format_time_str_from_frame(i)
-		chapters_text_edit.text += "%s %s\n" % [time, chapters[i]]
+		chapters_text_edit.text += "%s %s\n" % [time, chapters[i].text]
 
 
 func _on_copy_chapters_button_pressed() -> void:
@@ -201,7 +201,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	video_speed_hslider.visible = is_h264
 
 	# Changing the extension in path line edit.
-	path_line_edit.text = path.trim_suffix(path.get_extension()) + extension
+	path_line_edit.text = path.trim_suffix("." + path.get_extension()) + extension
 
 	# First option is also the option it will select in case the currently
 	# selected audio codec does not fit the selected video codec.

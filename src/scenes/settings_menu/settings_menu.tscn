@@ -61,6 +61,10 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"side_bar_button"
 text = "button_close"
 
+[node name="Spacer" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+
 [node name="VBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3

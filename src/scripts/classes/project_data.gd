@@ -22,5 +22,5 @@ var zoom: float = 1.0
 
 var folders: PackedStringArray = []
 
-var markers: Dictionary[int, String] = {} # { Frame: Text }
+var markers: Dictionary[int, MarkerData] = {} # { Frame: Marker data }
 
