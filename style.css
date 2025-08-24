@@ -295,7 +295,7 @@ section {
     height: 100%;
     background-color: var(--accent);
     border-radius: 15px;
-    width: 30%;
+    width: 55%;
 }
 
 .status-label {
