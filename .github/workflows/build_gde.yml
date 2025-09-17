@@ -2,8 +2,8 @@ name: 11 | Compile GDE
 on:
   workflow_call:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 1 * *' # Runs at 00:00 UTC on the 1st day of every month
+#  schedule:
+#    - cron: '0 2 1 * *' # Runs at 00:00 UTC on the 1st day of every month
         
 env:
   GODOT_VERSION: 4.5.beta3
