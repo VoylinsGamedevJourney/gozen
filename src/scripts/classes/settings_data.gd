@@ -25,6 +25,9 @@ var tracks_amount: int = 6 # The amount of tracks
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
 
+# Markers
+var marker_colors: PackedColorArray = [ Color.PURPLE, Color.GREEN, Color.BLUE, Color.ORANGE, Color.RED ]
+
 # Extra
 var check_version: bool = false
 var auto_save: bool = true

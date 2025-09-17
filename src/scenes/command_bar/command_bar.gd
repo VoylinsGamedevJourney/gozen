@@ -1,15 +1,14 @@
 class_name CommandBar
-extends PanelContainer
+extends Control
 
 
 const MAX_COMMANDS: int = 5
 
 
-static var instance: CommandBar
-static var commands: Dictionary[String, Callable] = {
-	"command_editor_settings": open_editor_settings,
-	"command_project_settings": open_project_settings,
-	"command_render_menu": open_render_menu
+var commands: Dictionary[String, Callable] = {
+	"command_editor_settings": Settings.open_settings_menu,
+	"command_project_settings": Project.open_settings_menu,
+	"command_render_menu": InputManager.on_show_render_screen.emit,
 }
 
 
@@ -22,7 +21,6 @@ var selected_button: int = 0
 
 
 func _ready() -> void:
-	instance = self
 	command_line.grab_focus()
 
 	var command_keys: PackedStringArray = commands.keys()
@@ -32,10 +30,11 @@ func _ready() -> void:
 	for command: String in command_keys:
 		var button: Button = Button.new()
 		
-		button.text = tr(command)
+		button.text = command
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		Toolbox.connect_func(button.pressed, commands[command])
+		Toolbox.connect_func(button.pressed, _close)
 		button.button_group = button_group
 		button.toggle_mode = true
 
@@ -51,7 +50,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		self.queue_free()
+		PopupManager.close_popup(PopupManager.POPUP.COMMAND_BAR)
 	if event.is_action_pressed("ui_up"):
 		selected_button = clampi(
 				selected_button - 1, 0, mini(shown_buttons.size() - 1, MAX_COMMANDS))
@@ -88,19 +87,11 @@ func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 				return
 			else:
 				selected_button -= 1
+	print("oi")
+
+	_close()
 
 
-static func open_editor_settings() -> void:
-	Settings.open_settings_menu()
-	instance.queue_free()
-
-
-static func open_project_settings() -> void:
-	Project.open_settings_menu()
-	instance.queue_free()
-
-
-static func open_render_menu() -> void:
-	InputManager.show_render_screen()
-	instance.queue_free()
+func _close() -> void:
+	PopupManager.close_popup(PopupManager.POPUP.COMMAND_BAR)
 

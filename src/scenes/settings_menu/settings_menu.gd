@@ -1,5 +1,5 @@
 class_name SettingsPanel
-extends PanelContainer
+extends Control
 
 
 @export var panel_label: Label
@@ -19,11 +19,11 @@ func _input(event: InputEvent) -> void:
 
 func _on_close_button_pressed() -> void:
 	Settings.save()
-	self.queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
 
 
 func set_mode_editor_settings() -> void:
-	panel_label.text = tr("title_editor_settings") 
+	panel_label.text = "title_editor_settings"
 
 	# Data needed for some settings options.
 	var language_data: Dictionary[String, String] = Settings.get_languages()
@@ -118,6 +118,36 @@ func set_mode_editor_settings() -> void:
 				"setting_tooltip_delete_empty_space_mod"),
 	])
 
+	# Adding the Markers section.
+	# NOTE: We only have 5 main markers for now.
+	_add_section("title_markers", [
+		_create_label("settings_marker_one"),
+		_create_color_picker(
+				Settings.get_marker_color(0),
+				Settings.set_marker_color.bind(0),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_two"),
+		_create_color_picker(
+				Settings.get_marker_color(1),
+				Settings.set_marker_color.bind(1),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_three"),
+		_create_color_picker(
+				Settings.get_marker_color(2),
+				Settings.set_marker_color.bind(2),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_four"),
+		_create_color_picker(
+				Settings.get_marker_color(3),
+				Settings.set_marker_color.bind(3),
+				"tooltip_setting_marker_color"),
+		_create_label("settings_marker_five"),
+		_create_color_picker(
+				Settings.get_marker_color(4),
+				Settings.set_marker_color.bind(4),
+				"tooltip_setting_marker_color"),
+	])
+
 	# Adding the Extras section.
 	_add_section("title_extras", [
 		_create_label("setting_check_version"),
@@ -134,7 +164,7 @@ func set_mode_editor_settings() -> void:
 
 
 func set_mode_project_settings() -> void:
-	panel_label.text = tr("title_project_settings") 
+	panel_label.text = "title_project_settings"
 	_add_section("title_appearance", [
 		_create_label("setting_background_color"),
 		_create_color_picker(
@@ -180,7 +210,7 @@ func _show_section(section_name: String) -> void:
 func _add_side_bar_option(section_name: String) -> void:
 	var button: Button = Button.new()
 	
-	button.text = tr(section_name)
+	button.text = section_name
 	button.toggle_mode = true
 	button.button_group = side_bar_button_group
 	button.theme_type_variation = "side_bar_button"
@@ -229,7 +259,7 @@ func _create_option_button(options: Dictionary, default: int, callable: Callable
 		i += 1
 
 	option_button.selected = default
-	option_button.tooltip_text = tr(tooltip)
+	option_button.tooltip_text = tooltip
 	option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	option_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 

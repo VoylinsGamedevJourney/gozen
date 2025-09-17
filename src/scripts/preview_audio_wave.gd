@@ -7,7 +7,7 @@ var clip_data: ClipData
 
 
 func _draw() -> void:
-	var full_wave_data: PackedFloat32Array = Project.get_file_data(clip_data.file_id).audio_wave_data
+	var full_wave_data: PackedFloat32Array = FileManager.get_file_data(clip_data.file_id).audio_wave_data
 
 	if full_wave_data.is_empty():
 		return

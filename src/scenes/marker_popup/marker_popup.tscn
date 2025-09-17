@@ -1,0 +1,102 @@
+[gd_scene load_steps=3 format=3 uid="uid://ce1hy5ks465h7"]
+
+[ext_resource type="Script" uid="uid://ds4exxdlc67ib" path="res://scenes/marker_popup/marker_popup.gd" id="1_df1gq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_df1gq"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="MarkerPopup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_df1gq")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -41.0
+offset_right = 250.0
+offset_bottom = 41.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="MarkerFilePanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/MarkerFilePanel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_margin_popup"
+
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="MarkerOptionLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Marker"
+
+[node name="MarkerLineEdit" type="LineEdit" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Type"
+
+[node name="TypeOptionButton" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_df1gq")
+expand_icon = true
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "button_cancel"
+
+[node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"main_button"
+text = "button_update_marker"
+
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CreateMarker" to="." method="_on_create_marker_pressed"]
