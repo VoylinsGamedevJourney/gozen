@@ -108,6 +108,108 @@ def str_dt(dt: datetime.timedelta) -> str:
     return "%d hours %02d minutes %02d seconds" % (hh, mm, ss)
 
 
+def windows_detected() -> ExitCode:
+    if not utils.find_program(utils.GIT_PATH):
+        print("Git is not installed in Windows!\nSteps to install Git:")
+        print("\t1. Download Git installer from https://git-scm.com/")
+        print("\t2. Run the installer to install Git")
+
+        print(
+            "If Git is installed at a non-standard path, please set the GOZEN_GIT_PATH environment variable."
+        )
+        print("Use --help for more information.")
+
+        input("After installation, run this script again.\nPress Enter to exit...")
+        return ExitCode.DEP_NOT_FOUND
+
+    if utils.is_current_msys2_ucrt64():
+        # UCRT64
+        print("Running in UCRT64.")
+    elif utils.is_current_msys2():
+        # MSYS2
+        print("Running in MSYS2. Restarting in UCRT64...")
+
+        # Running the script from any MSYS2 environment others than UCRT64 is not tested
+        # and may not work.
+        # So, we restart the script in the UCRT64 environment.
+        # Restarting in UCRT64 is a better option than restarting in a windows environment
+        # because we will already know the install path of MSYS2="/".
+        res = utils.run_command(
+            ["python3", __file__],
+            cwd="./",
+            use_msys2=True,
+            env={
+                "GOZEN_GIT_PATH": utils.GIT_PATH,
+            },
+        )
+
+        # For restarting in a windows environment:
+        # explorer.exe resets the PATH environment variable then executes `python3 build.py`
+        # utils.run_command(['explorer', sys.executable, __file__], cwd='./libs/')
+        return res.returncode  # type: ignore
+    else:
+        # Cmd or Powershell
+        # Try to check if MSYS2 is installed
+        if not utils.is_msys2_installed():
+            print("MSYS2 is not installed!\nSteps to install MSYS2:")
+            print("\t1. Download MSYS2 installer from https://www.msys2.org/")
+            print("\t2. Run the installer to install MSYS2")
+
+            print(
+                "If MSYS2 is installed at a custom location, please set the GOZEN_MSYS2_DIR environment variable."
+            )
+            print("Use --help for more information.")
+
+            input(
+                "After installation, run this script again.\nPress Enter to exit..."
+            )
+            return ExitCode.DEP_NOT_FOUND
+
+
+def install_windows_deps() -> ExitCode:
+    print("Checking for missing MSYS2 dependencies ...")
+    missing_packages = utils.check_required_programs_msys2()
+
+    if missing_packages:
+        print("Installing necessary MSYS2 dependencies ...")
+
+        if utils.is_current_msys2():
+            input(
+                "The terminal will automatically close after update.\nPress Enter to continue..."
+            )
+
+        install_success = utils.install_msys2_required_deps(missing_packages)
+
+        if not install_success:
+            print("Error installing dependencies!")
+            print(
+                'Please run the following commands in the MSYS2\'s "ucrt64.exe" shell manually:'
+            )
+            print("\tpacman -Syu --noconfirm")
+            print(
+                f"\tpacman -S {' '.join(utils.MSYS2_REQUIRED_PACKAGES)} --noconfirm"
+            )
+
+            input("Press Enter to exit...")
+            return ExitCode.DEP_NOT_FOUND
+
+        print("Successfully installed the required MSYS2 dependencies!")
+
+
+def git_check() -> None:
+    match _print_options("Init/Update submodules", ["no", "initialize", "update"]):
+        case "initialize":
+            subprocess.run(
+                [utils.GIT_PATH, "submodule", "update", "--init", "--recursive"],
+                cwd="./",
+            )
+        case "update":
+            subprocess.run(
+                [utils.GIT_PATH, "submodule", "update", "--recursive", "--remote"],
+                cwd="./",
+            )
+
+
 def main() -> ExitCode:
     print()
     print("v===================v")
@@ -120,76 +222,13 @@ def main() -> ExitCode:
     if sys.version_info < (3, 10):
         print("Python 3.10+ is required to run this script!")
         return ExitCode.UNSUPPORTED_PYTHON_VERSION
-
-    if utils.CURR_PLATFORM == "windows":
+    elif utils.CURR_PLATFORM == "windows":
         # Oh no, Windows detected. ^^"
-        if not utils.find_program(utils.GIT_PATH):
-            print("Git is not installed in Windows!\nSteps to install Git:")
-            print("\t1. Download Git installer from https://git-scm.com/")
-            print("\t2. Run the installer to install Git")
+        err = windows_detected()
+        if err != 0:
+            return err
 
-            print(
-                "If Git is installed at a non-standard path, please set the GOZEN_GIT_PATH environment variable."
-            )
-            print("Use --help for more information.")
-
-            input("After installation, run this script again.\nPress Enter to exit...")
-            return ExitCode.DEP_NOT_FOUND
-
-        if utils.is_current_msys2_ucrt64():
-            # UCRT64
-            print("Running in UCRT64.")
-        elif utils.is_current_msys2():
-            # MSYS2
-            print("Running in MSYS2. Restarting in UCRT64...")
-
-            # Running the script from any MSYS2 environment others than UCRT64 is not tested
-            # and may not work.
-            # So, we restart the script in the UCRT64 environment.
-            # Restarting in UCRT64 is a better option than restarting in a windows environment
-            # because we will already know the install path of MSYS2="/".
-            res = utils.run_command(
-                ["python3", __file__],
-                cwd="./",
-                use_msys2=True,
-                env={
-                    "GOZEN_GIT_PATH": utils.GIT_PATH,
-                },
-            )
-            return res.returncode  # type: ignore
-
-            # For restarting in a windows environment:
-            # explorer.exe resets the PATH environment variable then executes `python3 build.py`
-            # utils.run_command(['explorer', sys.executable, __file__], cwd='./libs/')
-        else:
-            # Cmd or Powershell
-            # Try to check if MSYS2 is installed
-            if not utils.is_msys2_installed():
-                print("MSYS2 is not installed!\nSteps to install MSYS2:")
-                print("\t1. Download MSYS2 installer from https://www.msys2.org/")
-                print("\t2. Run the installer to install MSYS2")
-
-                print(
-                    "If MSYS2 is installed at a custom location, please set the GOZEN_MSYS2_DIR environment variable."
-                )
-                print("Use --help for more information.")
-
-                input(
-                    "After installation, run this script again.\nPress Enter to exit..."
-                )
-                return ExitCode.DEP_NOT_FOUND
-
-    match _print_options("Init/Update submodules", ["no", "initialize", "update"]):
-        case "initialize":
-            subprocess.run(
-                [utils.GIT_PATH, "submodule", "update", "--init", "--recursive"],
-                cwd="./",
-            )
-        case "update":
-            subprocess.run(
-                [utils.GIT_PATH, "submodule", "update", "--recursive", "--remote"],
-                cwd="./",
-            )
+    git_check()
 
     target_platform = (
         "windows"
@@ -222,33 +261,10 @@ def main() -> ExitCode:
 
     # Install dependencies
     if utils.CURR_PLATFORM == "windows":
-        print("Checking for missing MSYS2 dependencies ...")
-        missing_packages = utils.check_required_programs_msys2()
+        err = install_windows_deps()
 
-        if missing_packages:
-            print("Installing necessary MSYS2 dependencies ...")
-
-            if utils.is_current_msys2():
-                input(
-                    "The terminal will automatically close after update.\nPress Enter to continue..."
-                )
-
-            install_success = utils.install_msys2_required_deps(missing_packages)
-
-            if not install_success:
-                print("Error installing dependencies!")
-                print(
-                    'Please run the following commands in the MSYS2\'s "ucrt64.exe" shell manually:'
-                )
-                print("\tpacman -Syu --noconfirm")
-                print(
-                    f"\tpacman -S {' '.join(utils.MSYS2_REQUIRED_PACKAGES)} --noconfirm"
-                )
-
-                input("Press Enter to exit...")
-                return ExitCode.DEP_NOT_FOUND
-
-            print("Successfully installed the required MSYS2 dependencies!")
+        if err != 0:
+            return err
 
     # Make sure that sysroot can be found
     try:
