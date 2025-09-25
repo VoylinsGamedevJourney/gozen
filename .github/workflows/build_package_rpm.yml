@@ -87,12 +87,12 @@ jobs:
           cp gozen.desktop %{buildroot}/usr/share/applications/
 
           mkdir -p %{buildroot}/usr/share/icons/hicolor/128x128/apps
-          cp assets/linux/gozen.png %{buildroot}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+          cp gozen.png %{buildroot}/usr/share/icons/hicolor/128x128/apps/gozen.png
 
           %files
           /opt/${{ env.APP_NAME }}
           /usr/share/applications/gozen.desktop
-          /usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+          /usr/share/icons/hicolor/128x128/apps/gozen.png
 
           %changelog
           * $(date +"%a %b %d %Y") Voylin <voylinslife@gmail.com> - ${{ inputs.version }}-1
