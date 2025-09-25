@@ -321,6 +321,31 @@ if __name__ == "__main__":
             print(prompt)
             return ""
 
+    if "--quick" in sys.argv:
+        os.chdir("./libs")
+        target_platform = "linux"
+        arch = "x86_64"
+        target = TARGET_DEV
+        threads = os.cpu_count() - 1
+
+        try:
+            utils.get_host_and_sysroot(target_platform, arch)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"{type(e)}: {e}")
+
+        # Compile GDE GoZen
+        res = utils.run_command(
+            [
+                "scons",
+                f"-j{threads}",
+                f"target=template_{target}",
+                f"platform={target_platform}",
+                f"arch={arch}",
+            ],
+            cwd="./",
+            use_msys2=utils.CURR_PLATFORM == "windows",
+        )
+        sys.exit(0)
     elif len(sys.argv) > 1:
         print("Unknown argument:", sys.argv[1])
         sys.exit(ExitCode.ERROR)
