@@ -50,8 +50,8 @@ jobs:
           cp ${{ env.EXPORT_FOLDER }}/libgozen*.so ${{ env.DEB_DIR }}/usr/lib/${{ env.APP_NAME }}/ || true
           cp LICENSE ${{ env.DEB_DIR }}/usr/share/doc/${{ env.APP_NAME }}/
           cp MANUAL.md ${{ env.DEB_DIR }}/usr/share/doc/${{ env.APP_NAME }}/
-          cp assets/gozen_icon.png ${{ env.DEB_DIR }}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
-          cp gozen.desktop ${{ env.DEB_DIR }}/usr/share/applications/
+          cp assets/linux/gozen.png ${{ env.DEB_DIR }}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+          cp assets/linux/gozen.desktop ${{ env.DEB_DIR }}/usr/share/applications/
           desktop-file-validate ${{ env.DEB_DIR }}/usr/share/applications/gozen.desktop
 
       - name: Clean version string

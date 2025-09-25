@@ -55,12 +55,11 @@ jobs:
           cp -r ${{ env.EXPORT_FOLDER }}/* ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}
           chmod +x ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/GoZen.x86_64
 
-          sed -i 's|^Exec=.*|Exec=/opt/GoZen.x86_64|' gozen.desktop
-          cp gozen.desktop ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/
-          cp assets/gozen_icon.png ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/
+          sed -i 's|^Exec=.*|Exec=/opt/GoZen.x86_64|' assets/linux/gozen.desktop
+          cp assets/linux/gozen.desktop ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/
+          cp assets/linux/gozen.png ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}/
 
           tar -czf ${{ env.RPM_BUILD_DIR }}/SOURCES/${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.tar.gz -C ${{ env.RPM_BUILD_DIR }}/SOURCES ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}
-
 
       - name: Create RPM spec file
         run: |
@@ -88,7 +87,7 @@ jobs:
           cp gozen.desktop %{buildroot}/usr/share/applications/
 
           mkdir -p %{buildroot}/usr/share/icons/hicolor/128x128/apps
-          cp gozen_icon.png %{buildroot}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+          cp assets/linux/gozen.png %{buildroot}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
 
           %files
           /opt/${{ env.APP_NAME }}

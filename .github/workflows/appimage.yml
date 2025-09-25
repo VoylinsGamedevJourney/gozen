@@ -125,13 +125,13 @@ jobs:
           cp ${{ env.EXPORT_FOLDER }}/*.so ${{ env.APPIMAGE_DIR }}/usr/lib/
           ls ${{ env.EXPORT_FOLDER }}/
           
-          cp assets/gozen_icon.png "${{ env.APPIMAGE_DIR }}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png"
-          cp assets/gozen_icon.png "${{ env.APPIMAGE_DIR }}/${{ env.APP_NAME }}.png"
+          cp assets/linux/gozen.png "${{ env.APPIMAGE_DIR }}/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png"
+          cp assets/linux/gozen.png "${{ env.APPIMAGE_DIR }}/${{ env.APP_NAME }}.png"
 
           cp LICENSE ${{ env.APPIMAGE_DIR }}/usr/share/doc/${{ env.APP_NAME }}/LICENSE
           cp MANUAL.md ${{ env.APPIMAGE_DIR }}/usr/share/doc/${{ env.APP_NAME }}/MANUAL.md
-          cp gozen.desktop ${{ env.APPIMAGE_DIR }}/gozen.desktop
-          cp gozen.desktop ${{ env.APPIMAGE_DIR }}/usr/share/applications/gozen.desktop
+          cp assets/linux/gozen.desktop ${{ env.APPIMAGE_DIR }}/gozen.desktop
+          cp assets/linux/gozen.desktop ${{ env.APPIMAGE_DIR }}/usr/share/applications/gozen.desktop
           desktop-file-validate ${{ env.APPIMAGE_DIR }}/${{ env.APP_NAME }}.desktop
           echo "Application files copied to AppDir."
 
