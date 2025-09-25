@@ -21,7 +21,7 @@ class GoZenAudio : public Resource {
 
 private:
 	static PackedByteArray _get_audio(AVFormatContext *&format_ctx,
-									  AVStream *&stream, bool wav);
+									  AVStream *&stream);
 
 	static inline void _log(String message) {
 		UtilityFunctions::print("GoZenAudio: ", message, ".");

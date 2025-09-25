@@ -1,11 +1,10 @@
 #include "gozen_audio.hpp"
 
 
-PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
-								  AVStream *&stream, bool wav) {
-	const int TARGET_SAMPLE_RATE = 44100;
-	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
+PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx, AVStream *&stream) {
 	const AVChannelLayout TARGET_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
+	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
+	const int TARGET_SAMPLE_RATE = 44100;
 
 	UniqueAVCodecCtx codec_ctx;
 	UniqueSwrCtx swr_ctx;
@@ -13,42 +12,57 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 	UniqueAVFrame av_frame;
 	UniqueAVFrame av_decoded_frame;
 
-	PackedByteArray audio_data = PackedByteArray();
+	int bytes_per_samples = av_get_bytes_per_sample(TARGET_FORMAT);
+	size_t audio_size = 0;
 
-	const AVCodec *codec = avcodec_find_decoder(
-			stream->codecpar->codec_id);
+	PackedByteArray audio_data = PackedByteArray();
+	audio_data.resize(1024 * 1024); // Start with 1MB.
+
+	const AVCodec *codec = avcodec_find_decoder(stream->codecpar->codec_id);
 	if (!codec) {
 		UtilityFunctions::printerr("Couldn't find any decoder for audio!");
 		return audio_data;
 	}
 
-	codec_ctx = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(
-			avcodec_alloc_context3(codec));
+	codec_ctx = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(avcodec_alloc_context3(codec));
 	if (codec_ctx == NULL) {
 		UtilityFunctions::printerr("Couldn't allocate context for audio!");
 		return audio_data;
-	} 
-	if (avcodec_parameters_to_context(codec_ctx.get(), stream->codecpar)) {
+	} else if (avcodec_parameters_to_context(codec_ctx.get(), stream->codecpar)) {
 		UtilityFunctions::printerr("Couldn't initialize audio codec context!");
 		return audio_data;
 	}
 
 	FFmpeg::enable_multithreading(codec_ctx.get(), codec);
-	codec_ctx->request_sample_fmt = TARGET_FORMAT;
-
 	if (avcodec_open2(codec_ctx.get(), codec, NULL)) {
 		UtilityFunctions::printerr("Couldn't open audio codec!");
 		return audio_data;
 	}
 	
+	av_packet = make_unique_avpacket();
+	av_frame = make_unique_avframe();
+	av_decoded_frame = make_unique_avframe();
+
+	if (!av_frame || !av_decoded_frame || !av_packet) {
+		UtilityFunctions::printerr("Couldn't allocate frames/packet for audio!");
+		return audio_data;
+	}
+
+	// Get first frame to see what we're working with.
+	if (FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index, av_frame.get(), av_packet.get())) {
+		UtilityFunctions::printerr("Couldn't get first frame!");
+		return audio_data;
+	}
+	
+	// Initialize SWR with actual first frame parameters.
 	SwrContext* temp_swr_ctx = nullptr;
 	int response = swr_alloc_set_opts2(&temp_swr_ctx,
-			&TARGET_LAYOUT,			// Out channel layout: Stereo
-			TARGET_FORMAT,			// We need 16 bits
-			TARGET_SAMPLE_RATE,		// Sample rate should be the Godot default
-			&codec_ctx->ch_layout,	// In channel layout
-			codec_ctx->sample_fmt,	// In sample format
-			codec_ctx->sample_rate,	// In sample rate
+			&TARGET_LAYOUT,
+			TARGET_FORMAT,
+			TARGET_SAMPLE_RATE,
+			&av_frame->ch_layout,
+			(AVSampleFormat)av_frame->format,
+			av_frame->sample_rate,
 			0, nullptr);
 	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
 
@@ -57,84 +71,60 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext *&format_ctx,
 		return audio_data;
 	}
 
-	av_packet = make_unique_avpacket();
-	av_frame = make_unique_avframe();
-	av_decoded_frame = make_unique_avframe();
-
-	if (!av_frame || !av_decoded_frame || !av_packet) {
-		UtilityFunctions::printerr(
-				"Couldn't allocate frames/packet for audio!");
-		return audio_data;
-	}
-	
-	size_t audio_size = 0;
-	int bytes_per_samples = av_get_bytes_per_sample(TARGET_FORMAT);
-
-	int64_t duration = (stream->duration != AV_NOPTS_VALUE)
-		? stream->duration
-		: format_ctx->duration;
-
-	double stream_duration_sec = (stream->duration != AV_NOPTS_VALUE)
-		? (stream->duration * av_q2d(stream->time_base))
-		: ((double)format_ctx->duration / AV_TIME_BASE);
-	size_t estimated_total_samples = (size_t)(stream_duration_sec * TARGET_SAMPLE_RATE);
-	int64_t total_size = estimated_total_samples * bytes_per_samples * 2;
-
-	if (total_size >= 2147483600) {
-		_log_err("Audio is too big");
-		audio_data.resize(1);
-		return audio_data;
-	}
-	audio_data.resize(total_size);
-
-	while (!(FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index,
-							   av_frame.get(), av_packet.get()))) {
-		// Copy decoded data to new frame
-		av_decoded_frame->format = TARGET_FORMAT;
-		av_decoded_frame->ch_layout = TARGET_LAYOUT;
-		av_decoded_frame->sample_rate = TARGET_SAMPLE_RATE;
-		av_decoded_frame->nb_samples = swr_get_out_samples(
-				swr_ctx.get(), av_frame->nb_samples);
-
-		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
-			FFmpeg::print_av_error(
-					"Couldn't create new frame for swr!", response);
-			av_frame_unref(av_frame.get());
-			av_frame_unref(av_decoded_frame.get());
-			break;
-		}
-
-		response = swr_convert_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
+	do {
+		// Calculate output samples needed.
+		int out_samples = swr_get_out_samples(swr_ctx.get(), av_frame->nb_samples);
+		
+		// Allocate output buffer manually.
+		int out_linesize;
+		uint8_t **out_data = nullptr;
+		response = av_samples_alloc_array_and_samples(&out_data, &out_linesize, 
+			2, out_samples, TARGET_FORMAT, 0); // 2 channels for stereo.
+		
 		if (response < 0) {
-			FFmpeg::print_av_error(
-					"Couldn't convert the audio frame!", response);
-			av_frame_unref(av_frame.get());
-			av_frame_unref(av_decoded_frame.get());
+			FFmpeg::print_av_error("Couldn't allocate output buffer!", response);
 			break;
 		}
 
-		size_t byte_size = av_decoded_frame->nb_samples * bytes_per_samples * 2;
+		// Convert using raw buffer approach.
+		const uint8_t **in_data = (const uint8_t**)av_frame->extended_data;
+		int converted_samples = swr_convert(swr_ctx.get(),
+			out_data, out_samples,
+			in_data, av_frame->nb_samples);
+			
+		if (converted_samples < 0) {
+			FFmpeg::print_av_error("Couldn't convert audio frame!", converted_samples);
+			av_freep(&out_data[0]);
+			av_freep(&out_data);
+			break;
+		}
 
+		size_t byte_size = converted_samples * bytes_per_samples * 2; // 2 channels.
+
+		// Ensure we have enough space.
 		if (audio_size + byte_size > audio_data.size()) {
-			size_t new_size = audio_size + byte_size + 4096;
+			size_t new_size = (audio_size + byte_size) * 2; // Double the size.
 			audio_data.resize(new_size);
 		}
 
-		memcpy(&(audio_data.ptrw()[audio_size]), 
-				av_decoded_frame->extended_data[0],
-				byte_size);
+		// Copy converted data.
+		memcpy(&(audio_data.ptrw()[audio_size]), out_data[0], byte_size);
 		audio_size += byte_size;
 
+		// Clean up output buffer.
+		av_freep(&out_data[0]);
+		av_freep(&out_data);
+		
 		av_frame_unref(av_frame.get());
-		av_frame_unref(av_decoded_frame.get());
-	}
+		
+	} while (!(FFmpeg::get_frame(
+			format_ctx, codec_ctx.get(), stream->index, av_frame.get(), av_packet.get())));
 
+	// Trim to actual size.
 	if (audio_size < audio_data.size())
 		audio_data.resize(audio_size);
 
-	// Cleanup
 	avcodec_flush_buffers(codec_ctx.get());
-
 	return audio_data;
 }
 
@@ -166,8 +156,7 @@ PackedByteArray GoZenAudio::get_audio_data(String file_path) {
 			format_ctx->streams[i]->discard = AVDISCARD_ALL;
 			continue;
 		} else if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO) {
-			data = _get_audio(format_ctx, format_ctx->streams[i],
-						file_path.get_extension().to_lower() == "wav");
+			data = _get_audio(format_ctx, format_ctx->streams[i]);
 			break;
 		}
 	}
