@@ -40,7 +40,7 @@ jobs:
         with:
           name: ffmpeg_linux_x86_64
           path: ${{ env.PATH_LINUX }}
-          retention-days: 30
+          retention-days: 90
 
 
   compile-windows-x86_64:
@@ -152,7 +152,7 @@ jobs:
         with:
           name: ffmpeg_windows_x86_64
           path: ${{ env.PATH_WINDOWS }}
-          retention-days: 30
+          retention-days: 90
 
 
   build-win-x86_64-dep-x264:
