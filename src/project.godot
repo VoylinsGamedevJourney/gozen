@@ -186,9 +186,9 @@ renderer/rendering_method.mobile="gl_compatibility"
 
 [urls]
 
-site="https://voylinsgamedevjourney.github.io/gozen/"
-support="https://voylinsgamedevjourney.github.io/gozen/#support"
-manual="https://voylinsgamedevjourney.github.io/gozen/"
+site="https://gozen.voylin.com"
+support="https://gozen.voylin.com/#support"
+manual="https://gozen.voylin.com"
 tutorials="https://www.youtube.com/playlist?list=PL8opQePBSY5kE0bsegp82mcfC6DfOaHdR"
 discord="https://discord.gg/BdbUf7VKYC"
 github="https://github.com/VoylinsGamedevJourney/gozen"
