@@ -62,7 +62,7 @@ static func check_valid(file_path: String) -> bool:
 	# Only for real files, not temp ones.
 	if !FileAccess.file_exists(file_path):
 		return false
-	var ext: String = file_path.get_extension()
+	var ext: String = file_path.get_extension().to_lower()
 
 	if ext in ProjectSettings.get_setting("extensions/image"):
 		return true

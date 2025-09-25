@@ -46,7 +46,7 @@ func files_dropped(file_paths: PackedStringArray) -> void:
 	for path: String in file_paths:
 		files.append(FileDrop.new(path))
 
-	if files.size() == 0:
+	if file_paths.size() == 0:
 		return
 
 	var dropped_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()

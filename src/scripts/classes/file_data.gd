@@ -178,9 +178,7 @@ func _create_wave() -> void:
 
 func generate_audio_thumb() -> Image:
 	if !audio_wave_data.size():
-		print("waiting")
 		await update_wave
-	print(audio_wave_data.size())
 		
 	var size: Vector2i = Vector2i(854, 480)
 	var thumb: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGB8)
