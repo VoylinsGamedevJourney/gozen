@@ -21,6 +21,7 @@ func _ready() -> void:
 	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
 		printerr("Something went wrong loading settings! ", data.error)
 	apply_language()
+	apply_display_scale()
 	apply_theme()
 
 
@@ -85,6 +86,28 @@ func get_languages() -> Dictionary:
 		language_data[key] = temp_language_data[key]
 
 	return language_data
+
+
+func set_display_scale(value: float) -> void:
+	data.display_scale = value
+	apply_display_scale()
+
+
+func set_display_scale_int(value: int) -> void:
+	data.display_scale = float(value) / 100
+	apply_display_scale()
+
+
+func apply_display_scale() -> void:
+	get_tree().root.content_scale_factor = data.display_scale
+
+
+func get_display_scale() -> float:
+	return data.display_scale
+
+
+func get_display_scale_int() -> int:
+	return int(data.display_scale * 100)
 
 
 func set_theme(theme: SettingsData.THEME) -> void:

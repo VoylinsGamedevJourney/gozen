@@ -38,6 +38,7 @@ func _ready() -> void:
 	control.add_child(background)
 	control.visible = false
 	control.top_level = true
+	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func _input(event: InputEvent) -> void:
@@ -85,6 +86,7 @@ func get_popup(popup: POPUP) -> Control:
 
 func _on_size_changed() -> void:
 	control.size = get_window().size
+	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func _check_background() -> void:

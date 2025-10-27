@@ -206,6 +206,12 @@ msgstr ""
 msgid "setting_language"
 msgstr ""
 
+msgid "setting_display_scale"
+msgstr ""
+
+msgid "setting_tooltip_display_scale"
+msgstr ""
+
 msgid "setting_theme"
 msgstr ""
 

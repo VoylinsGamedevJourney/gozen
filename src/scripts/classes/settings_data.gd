@@ -8,6 +8,7 @@ enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
 
 # Appearance
 var language: String = get_system_locale()
+var display_scale: float = get_display_scale()
 var theme: THEME = THEME.DARK
 var show_menu_bar: bool = true
 var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER 
@@ -55,4 +56,15 @@ func get_system_locale() -> String:
 
 	# Return English as a default
 	return "en"
+
+
+func get_display_scale() -> float:
+	var size: Vector2 = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
+
+	if size.y > 1100:
+		return 1.5
+	elif size.y < 1000:
+		return 0.5
+
+	return 1.0
 

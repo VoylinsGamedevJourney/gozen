@@ -40,6 +40,14 @@ func set_mode_editor_settings() -> void:
 				Settings.set_language,
 				TYPE_STRING,
 				""),
+		_create_label("setting_display_scale"),
+		_create_spinbox(
+				Settings.get_display_scale_int(),
+				50, 300, 5, false, false,
+				Settings.set_display_scale_int,
+				"setting_tooltip_display_scale",
+				"%"
+				),
 		_create_label("setting_theme"),
 		_create_option_button(
 				theme_data,
@@ -66,21 +74,21 @@ func set_mode_editor_settings() -> void:
 		_create_label("setting_default_image_duration"),
 		_create_spinbox(
 				Settings.get_image_duration(),
-				1, 100, false, true,
+				1, 100, 1, false, true,
 				Settings.set_image_duration,
 				"setting_tooltip_duration_in_frames"
 		),
 		_create_label("setting_default_color_duration"),
 		_create_spinbox(
 				Settings.get_color_duration(),
-				1, 100, false, true,
+				1, 100, 1, false, true,
 				Settings.set_color_duration,
 				"setting_tooltip_duration_in_frames"
 		),
 		_create_label("setting_default_text_duration"),
 		_create_spinbox(
 				Settings.get_text_duration(),
-				1, 100, false, true,
+				1, 100, 1, false, true,
 				Settings.set_text_duration,
 				"setting_tooltip_duration_in_frames"
 		),
@@ -89,7 +97,7 @@ func set_mode_editor_settings() -> void:
 		_create_label("setting_default_project_framerate"),
 		_create_spinbox(
 				Settings.get_default_framerate(),
-				1, 100, false, true,
+				1, 100, 1, false, true,
 				Settings.set_default_framerate,
 				"setting_tooltip_default_project_framerate"
 		),
@@ -100,7 +108,7 @@ func set_mode_editor_settings() -> void:
 		_create_label("setting_default_track_amount"),
 		_create_spinbox(
 				Settings.get_tracks_amount(),
-				1, 32, false, false,
+				1, 32, 1, false, false,
 				Settings.set_default_framerate,
 				""
 		),
@@ -189,13 +197,13 @@ func _create_default_resolution_hbox() -> HBoxContainer:
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(_create_spinbox(
 			Settings.get_default_resolution_x(),
-			1, 100, false, true,
+			1, 100, 1, false, true,
 			Settings.set_default_resolution_x,
 			"setting_tooltip_default_project_resolution_x"))
 	resolution_hbox.add_child(y_label)
 	resolution_hbox.add_child(_create_spinbox(
 			Settings.get_default_resolution_y(),
-			1, 100, false, true,
+			1, 100, 1, false, true,
 			Settings.set_default_resolution_y,
 			"setting_tooltip_default_project_resolution_y"))
 
@@ -295,13 +303,15 @@ func _create_check_button(default: bool, callable: Callable, tooltip: String) ->
 	return check_button
 
 
-func _create_spinbox(default: float, min_value: float, max_value: float, allow_lesser: bool, allow_greater: bool, callable: Callable, tooltip: String) -> SpinBox:
+func _create_spinbox(default: float, min_value: float, max_value: float, step: float, allow_lesser: bool, allow_greater: bool, callable: Callable, tooltip: String, suffix: String = "") -> SpinBox:
 	var spinbox: SpinBox = SpinBox.new()
 
 	spinbox.allow_greater = allow_greater
 	spinbox.allow_lesser = allow_lesser
 	spinbox.min_value = min_value
 	spinbox.max_value = max_value
+	spinbox.step = step
+	spinbox.suffix = suffix
 
 	# Value needs to go last else it may cause problems if the value
 	# wasn't within the boundaries of min/max.

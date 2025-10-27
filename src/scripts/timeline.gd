@@ -2,7 +2,6 @@ class_name Timeline
 extends PanelContainer
 
 
-
 const TIMELINE_PADDING: int = 1920 # Amount of frames after timeline_end.
 const TRACK_HEIGHT: int = 30
 const LINE_HEIGHT: int = 4
