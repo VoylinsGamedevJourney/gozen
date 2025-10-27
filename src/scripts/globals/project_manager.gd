@@ -64,9 +64,9 @@ func save() -> void:
 
 func save_as() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			"Save project as ...", # TODO: Localize
+			"file_dialog_title_save_project_as",
 			FileDialog.FILE_MODE_SAVE_FILE,
-			["*%s;GoZen project files" % EXTENSION])
+			["*%s;%s" % [EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
 	Toolbox.connect_func(dialog.file_selected, _save_as)
 	add_child(dialog)
@@ -131,9 +131,9 @@ func open(project_path: String) -> void:
 
 func open_project() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			"Open project", # TODO: Localize
+			"file_dialog_title_open_project",
 			FileDialog.FILE_MODE_OPEN_FILE,
-			["*%s;GoZen project files" % EXTENSION])
+			["*%s;%s" % [EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
 	Toolbox.connect_func(dialog.file_selected, _open_project)
 	add_child(dialog)

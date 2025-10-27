@@ -162,9 +162,9 @@ func _on_discord_server_button_pressed() -> void:
 
 func _on_open_project_button_pressed() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			"Open project", # TODO: localize
+			"file_dialog_title_open_project",
 			FileDialog.FILE_MODE_OPEN_FILE,
-			["*%s;GoZen project files" % Project.EXTENSION])
+			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
 	Toolbox.connect_func(dialog.file_selected, open_project)
 
@@ -210,9 +210,9 @@ func _on_create_new_project_button_pressed() -> void:
 
 func _on_project_path_button_pressed() -> void:
 	var dialog: FileDialog = Toolbox.get_file_dialog(
-			"Select project path", # TODO: localize
+			"file_dialog_title_select_save_path",
 			FileDialog.FILE_MODE_SAVE_FILE,
-			["*%s;GoZen project files" % Project.EXTENSION])
+			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
 	Toolbox.connect_func(dialog.file_selected, _set_project_path)
 	dialog.ok_button_text = "Select"

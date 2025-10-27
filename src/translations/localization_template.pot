@@ -419,7 +419,16 @@ msgstr ""
 msgid "file_dialog_title_add_files"
 msgstr ""
 
+msgid "file_dialog_title_save_project_as"
+msgstr ""
+
+msgid "file_dialog_title_open_project"
+msgstr ""
+
 msgid "file_dialog_title_select_save_path"
+msgstr ""
+
+msgid "file_dialog_tooltip_gozen_project_files"
 msgstr ""
 
 msgid "file_panel_item_add_files"
