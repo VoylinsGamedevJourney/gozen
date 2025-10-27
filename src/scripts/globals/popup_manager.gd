@@ -77,6 +77,16 @@ func close_popup(popup: POPUP) -> void:
 	_check_background()
 
 
+func close_popups() -> void:
+	for popup: POPUP in open_popups:
+		open_popups[popup].queue_free()
+
+		if !open_popups.erase(popup):
+			printerr("Could not erase popup '%s' from open_popups!" % popup)
+
+	_check_background()
+
+
 func get_popup(popup: POPUP) -> Control:
 	if !open_popups.has(popup):	
 		show_popup(popup)
@@ -85,7 +95,6 @@ func get_popup(popup: POPUP) -> Control:
 
 
 func _on_size_changed() -> void:
-	control.size = get_window().size
 	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
