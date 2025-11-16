@@ -7,6 +7,7 @@ const PATH: String = "user://settings"
 
 
 var data: SettingsData = SettingsData.new()
+var fonts: Dictionary[String, SystemFont] = {}
 
 var menu_bar: MenuBar
 
@@ -20,6 +21,9 @@ func _ready() -> void:
 
 	if data.load_data(PATH) not in [OK, ERR_FILE_NOT_FOUND]:
 		printerr("Something went wrong loading settings! ", data.error)
+
+	load_system_fonts()
+
 	apply_language()
 	apply_display_scale()
 	apply_theme()
@@ -40,6 +44,14 @@ func reset_settings() -> void:
 
 func open_settings_menu() -> void:
 	PopupManager.show_popup(PopupManager.POPUP.SETTINGS)
+
+
+func load_system_fonts() -> void:
+	for font: String in OS.get_system_fonts():
+		var system_font: SystemFont = SystemFont.new()
+
+		system_font.font_names = [font]
+		fonts[font] = system_font
 
 
 # Appearance set/get
