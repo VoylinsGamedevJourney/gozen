@@ -142,7 +142,7 @@ func _create_wave() -> void:
 	var current_frame_index: int = 0
 
 	if audio_wave_data.resize(total_blocks):
-		Toolbox.print_resize_error()
+		Print.resize_error()
 
 	for i: int in total_blocks:
 		var max_abs_amplitude: float = 0.0

@@ -40,10 +40,10 @@ func apply_fade(bus_index: int) -> void:
 
 	var gain_adjust: float = 0
 	if fade_in != 0 and current_frame <= fade_in:
-		gain_adjust = Toolbox.calculate_fade(current_frame, fade_in)
+		gain_adjust = Utils.calculate_fade(current_frame, fade_in)
 	if fade_out != 0 and current_frame >= Project.get_clip(clip_id).duration - fade_out:
 		current_frame = Project.get_clip(clip_id).duration - current_frame
-		gain_adjust = Toolbox.calculate_fade(current_frame, fade_out)
+		gain_adjust = Utils.calculate_fade(current_frame, fade_out)
 
 	AudioServer.set_bus_volume_db(bus_index, _current_gain + (gain_adjust * FADE_OUT_LIMIT))
 

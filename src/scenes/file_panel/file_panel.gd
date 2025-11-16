@@ -12,13 +12,13 @@ var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
 
 
 func _ready() -> void:
-	Toolbox.connect_func(FileManager.file_added, _on_file_added)
-	Toolbox.connect_func(FileManager.file_deleted, _on_file_deleted)
-	Toolbox.connect_func(FileManager.file_path_updated, _on_file_path_updated)
-	Toolbox.connect_func(FileManager.file_nickname_changed, _on_file_nickname_changed)
-	Toolbox.connect_func(Thumbnailer.thumb_generated, _on_update_thumb)
-	Toolbox.connect_func(tree.item_mouse_selected, _file_item_clicked)
-	Toolbox.connect_func(tree.gui_input, _on_tree_gui_input)
+	Utils.connect_func(FileManager.file_added, _on_file_added)
+	Utils.connect_func(FileManager.file_deleted, _on_file_deleted)
+	Utils.connect_func(FileManager.file_path_updated, _on_file_path_updated)
+	Utils.connect_func(FileManager.file_nickname_changed, _on_file_nickname_changed)
+	Utils.connect_func(Thumbnailer.thumb_generated, _on_update_thumb)
+	Utils.connect_func(tree.item_mouse_selected, _file_item_clicked)
+	Utils.connect_func(tree.gui_input, _on_tree_gui_input)
 
 	tree.set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
 	folder_items["/"] = tree.create_item()
@@ -26,7 +26,7 @@ func _ready() -> void:
 	# Setting the max width needs to be done in this way.
 	for i: int in file_menu_button.item_count:
 		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
-	Toolbox.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
+	Utils.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
 
 
 func _on_tree_gui_input(event: InputEvent) -> void:
@@ -47,11 +47,11 @@ func _on_project_ready() -> void:
 func _file_menu_pressed(id: int) -> void:
 	match id:
 		0: # Add file(s)
-			var dialog: FileDialog = Toolbox.get_file_dialog(
+			var dialog: FileDialog = PopupManager.create_file_dialog(
 					"file_dialog_title_add_files",
 					FileDialog.FILE_MODE_OPEN_FILES)
 
-			Toolbox.connect_func(dialog.files_selected, FileManager.files_dropped)
+			Utils.connect_func(dialog.files_selected, FileManager.files_dropped)
 			add_child(dialog)
 			dialog.popup_centered()
 		1: # TODO: Add text
@@ -66,13 +66,13 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 		return
 
 	var file: File = null
-	var popup: PopupMenu = Toolbox.get_popup()
+	var popup: PopupMenu = PopupManager.create_popup_menu()
 
 	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
 		popup.add_item("popup_item_rename", POPUP_ACTION.RENAME)
 		popup.add_item("popup_item_delete", POPUP_ACTION.DELETE)
 
-		Toolbox.show_popup(popup)
+		PopupManager.show_popup_menu(popup)
 	else: # FILE
 		var file_id: int = file_item.get_metadata(0)
 		file = FileManager.get_file(file_id)
@@ -94,8 +94,8 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 			if file.path.contains("temp://"):
 				popup.add_item("popup_item_save_as_file", POPUP_ACTION.SAVE_AS)
 
-	Toolbox.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
-	Toolbox.show_popup(popup)
+	Utils.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
+	PopupManager.show_popup_menu(popup)
 
 
 ## For the right click presses of the file popup menu's.
@@ -133,21 +133,21 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				# TODO: Implement duplicating text files
 				printerr("Not implemented yet!")
 			elif file.type == File.TYPE.IMAGE:
-				var dialog: FileDialog = Toolbox.get_file_dialog(
+				var dialog: FileDialog = PopupManager.create_file_dialog(
 						"title_save_image_to_file",
 						FileDialog.FILE_MODE_SAVE_FILE,
 						["*.png", "*.jpg", "*.webp"])
 
-				Toolbox.connect_func(dialog.file_selected, FileManager.save_image_to_file.bind(file))
+				Utils.connect_func(dialog.file_selected, FileManager.save_image_to_file.bind(file))
 				add_child(dialog)
 				dialog.popup_centered()
 		POPUP_ACTION.EXTRACT_AUDIO:
-			var dialog: FileDialog = Toolbox.get_file_dialog(
+			var dialog: FileDialog = PopupManager.create_file_dialog(
 					"title_save_video_audio_to_wav",
 					FileDialog.FILE_MODE_SAVE_FILE,
 					["*.wav"])
 
-			Toolbox.connect_func(dialog.file_selected, FileManager.save_audio_to_wav.bind(file))
+			Utils.connect_func(dialog.file_selected, FileManager.save_audio_to_wav.bind(file))
 			add_child(dialog)
 			dialog.popup_centered()
 		POPUP_ACTION.DUPLICATE: # Only for text
@@ -170,7 +170,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 
 		var file_id: int = selected.get_metadata(0)
 		if draggable.ids.append(file_id):
-			Toolbox.print_append_error()
+			Print.append_error()
 
 		if FileManager.get_file(file_id).duration <= 0:
 			FileManager.get_file_data(file_id)._update_duration()
@@ -215,7 +215,7 @@ func _on_file_deleted(file_id: int) -> void:
 	if file_items.has(file_id):
 		file_items[file_id].get_parent().remove_child(file_items[file_id])
 		if !file_items.erase(file_id):
-			Toolbox.print_erase_error()
+			Print.erase_error()
 
 
 func _on_file_path_updated(file_id: int) -> void:

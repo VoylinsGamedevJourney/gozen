@@ -57,7 +57,7 @@ func _set_recent_projects() -> void:
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
 				if new_paths.append(path):
-					Toolbox.print_append_error()
+					Print.append_error()
 				continue
 
 			var hbox: HBoxContainer = HBoxContainer.new()
@@ -69,7 +69,7 @@ func _set_recent_projects() -> void:
 			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-			Toolbox.connect_func(project_button.pressed, open_project.bind(path))
+			Utils.connect_func(project_button.pressed, open_project.bind(path))
 
 			delete_button.texture_normal = preload(Library.ICON_DELETE)
 			delete_button.ignore_texture_size = true
@@ -77,7 +77,7 @@ func _set_recent_projects() -> void:
 			delete_button.custom_minimum_size = Vector2i(18,0)
 			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-			Toolbox.connect_func(
+			Utils.connect_func(
 					delete_button.pressed,
 					_on_delete_recent_project.bind(hbox, path))
 
@@ -86,7 +86,7 @@ func _set_recent_projects() -> void:
 
 			recent_projects_vbox.add_child(hbox)
 			if new_paths.append(path):
-				Toolbox.print_append_error()
+				Print.append_error()
 
 		path = file.get_line()
 
@@ -133,40 +133,40 @@ func _on_editor_settings_button_pressed() -> void:
 
 
 func _on_image_author_meta_clicked(meta: Variant) -> void:
-	Toolbox.open_url(str(meta))
+	Utils.open_url(str(meta))
 
 
 func _on_support_project_button_pressed() -> void:
-	Toolbox.open_url("support")
+	Utils.open_url("support")
 	
 
 func _on_go_zen_logo_button_pressed() -> void:
-	Toolbox.open_url("site")
+	Utils.open_url("site")
 
 
 func _on_site_button_pressed() -> void:
-	Toolbox.open_url("site")
+	Utils.open_url("site")
 
 
 func _on_manual_button_pressed() -> void:
-	Toolbox.open_url("manual")
+	Utils.open_url("manual")
 
 
 func _on_tutorials_button_pressed() -> void:
-	Toolbox.open_url("tutorials")
+	Utils.open_url("tutorials")
 
 
 func _on_discord_server_button_pressed() -> void:
-	Toolbox.open_url("discord")
+	Utils.open_url("discord")
 
 
 func _on_open_project_button_pressed() -> void:
-	var dialog: FileDialog = Toolbox.get_file_dialog(
+	var dialog: FileDialog = PopupManager.create_file_dialog(
 			"file_dialog_title_open_project",
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
-	Toolbox.connect_func(dialog.file_selected, open_project)
+	Utils.connect_func(dialog.file_selected, open_project)
 
 	add_child(dialog)
 	dialog.popup_centered()
@@ -209,12 +209,12 @@ func _on_create_new_project_button_pressed() -> void:
 		
 
 func _on_project_path_button_pressed() -> void:
-	var dialog: FileDialog = Toolbox.get_file_dialog(
+	var dialog: FileDialog = PopupManager.create_file_dialog(
 			"file_dialog_title_select_save_path",
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
-	Toolbox.connect_func(dialog.file_selected, _set_project_path)
+	Utils.connect_func(dialog.file_selected, _set_project_path)
 	dialog.ok_button_text = "Select"
 
 	add_child(dialog)
@@ -231,15 +231,15 @@ func _set_project_path(path: String) -> void:
 func _check_new_version() -> void:
 	http_request = HTTPRequest.new()
 	add_child(http_request)
-	Toolbox.connect_func(
+	Utils.connect_func(
 		http_request.request_completed,
 		_check_new_version_request_completed)
 
 	if !http_request.request("latest_release_check"):
 		printerr("Couldn't send an http request for the version check!")
 
-	Toolbox.connect_func(new_version_available_button.pressed, func() -> void:
-			Toolbox.open_url("latest_release"))
+	Utils.connect_func(new_version_available_button.pressed, func() -> void:
+			Utils.open_url("latest_release"))
 
 
 func _check_new_version_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -329,16 +329,16 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 
 func _on_sponsor_logo_input(event: InputEvent, sponsor: String) -> void:
 	if event.is_pressed():
-		Toolbox.open_url("sponsors/%s" % sponsor)
+		Utils.open_url("sponsors/%s" % sponsor)
 
 
 func _on_sponsor_name_input(event: InputEvent, sponsor: String) -> void:
 	if event.is_pressed():
-		Toolbox.open_url("sponsors/%s" % sponsor)
+		Utils.open_url("sponsors/%s" % sponsor)
 
 
 func _on_become_sponsor_button_pressed() -> void:
-	Toolbox.open_url("become_sponsor_info")
+	Utils.open_url("become_sponsor_info")
 
 
 func _on_close_sponsors_button_pressed() -> void:

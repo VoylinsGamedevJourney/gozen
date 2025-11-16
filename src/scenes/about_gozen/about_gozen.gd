@@ -52,5 +52,5 @@ func _on_close_button_pressed() -> void:
 
 
 func _on_links_label_meta_clicked(meta: Variant) -> void:
-	Toolbox.open_url(str(meta))
+	Utils.open_url(str(meta))
 

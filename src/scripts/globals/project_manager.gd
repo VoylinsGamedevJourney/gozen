@@ -18,7 +18,7 @@ var editor_closing: bool = false # This is needed for tasks running in threads.
 
 #--- Project Manager functions ---
 func _ready() -> void:
-	Toolbox.connect_func(get_window().close_requested, _on_close_requested)
+	Utils.connect_func(get_window().close_requested, _on_close_requested)
 
 
 func new_project(path: String, res: Vector2i, framerate: float) -> void:
@@ -36,7 +36,7 @@ func new_project(path: String, res: Vector2i, framerate: float) -> void:
 	for i: int in Settings.get_tracks_amount():
 		data.tracks.append({})
 	if EditorCore.loaded_clips.resize(get_track_count()):
-		Toolbox.print_resize_error()
+		Print.resize_error()
 
 	new_project_overlay.update_progress(50, "status_project_playback_setup")
 	EditorCore._setup_playback()
@@ -63,12 +63,12 @@ func save() -> void:
 
 
 func save_as() -> void:
-	var dialog: FileDialog = Toolbox.get_file_dialog(
+	var dialog: FileDialog = PopupManager.create_file_dialog(
 			"file_dialog_title_save_project_as",
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
-	Toolbox.connect_func(dialog.file_selected, _save_as)
+	Utils.connect_func(dialog.file_selected, _save_as)
 	add_child(dialog)
 	dialog.popup_centered()
 
@@ -95,7 +95,7 @@ func open(project_path: String) -> void:
 	set_project_path(project_path)
 	set_framerate(data.framerate)
 	if EditorCore.loaded_clips.resize(get_track_count()):
-		Toolbox.print_resize_error()
+		Print.resize_error()
 
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update_progress(7, "status_project_loading_files")
@@ -130,12 +130,12 @@ func open(project_path: String) -> void:
 
 
 func open_project() -> void:
-	var dialog: FileDialog = Toolbox.get_file_dialog(
+	var dialog: FileDialog = PopupManager.create_file_dialog(
 			"file_dialog_title_open_project",
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
-	Toolbox.connect_func(dialog.file_selected, _open_project)
+	Utils.connect_func(dialog.file_selected, _open_project)
 	add_child(dialog)
 	dialog.popup_centered()
 
@@ -169,7 +169,7 @@ func _auto_save() -> void:
 	if auto_save_timer == null:
 		auto_save_timer = Timer.new()
 		add_child(auto_save_timer)
-		Toolbox.connect_func(auto_save_timer.timeout, _auto_save)
+		Utils.connect_func(auto_save_timer.timeout, _auto_save)
 
 	if data != null:
 		save()
@@ -211,9 +211,9 @@ func _on_close_requested() -> void:
 		popup.title = "title_close_without_saving"
 		popup.ok_button_text = "button_save"
 
-		Toolbox.connect_func(popup.confirmed, _on_save_close)
-		Toolbox.connect_func(cancel_button.pressed, _on_cancel_close)
-		Toolbox.connect_func(dont_save_button.pressed, _on_actual_close)
+		Utils.connect_func(popup.confirmed, _on_save_close)
+		Utils.connect_func(cancel_button.pressed, _on_cancel_close)
+		Utils.connect_func(dont_save_button.pressed, _on_actual_close)
 
 		get_tree().root.add_child(popup)
 		popup.popup_centered()
@@ -367,9 +367,9 @@ func set_clip(id: int, clip: ClipData) -> void:
 
 func erase_clip(clip_id: int) -> void:
 	if !data.tracks[data.clips[clip_id].track_id].erase(data.clips[clip_id].start_frame):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 	elif !data.clips.erase(clip_id):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 	else:
 		unsaved_changes = true
 
@@ -407,7 +407,7 @@ func add_folder(folder: String) -> void:
 	if data.folders.has(folder):
 		print("Folder %s already exists!")
 	elif data.folders.append(folder):
-		Toolbox.print_append_error()
+		Print.append_error()
 	else:
 		unsaved_changes = true
 
@@ -429,7 +429,7 @@ func add_marker(frame_nr: int, marker: MarkerData) -> void:
 func update_marker(old_frame_nr: int, new_frame_nr: int, marker: MarkerData) -> void:
 	data.markers[new_frame_nr] = marker
 	if !data.markers.erase(old_frame_nr):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 
 	_markers_updated.emit()
 	unsaved_changes = true
@@ -440,7 +440,7 @@ func remove_marker(frame_nr: int) -> void:
 	if !data.markers.has(frame_nr):
 		printerr("No marker at %s!" % frame_nr)
 	elif !data.markers.erase(frame_nr):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 	else:
 		_markers_updated.emit()
 		unsaved_changes = true

@@ -61,14 +61,14 @@ func get_thumb(file_id: int) -> Texture2D:
 	# If file didn't exist, deleting entry to create new.
 	if data.has(path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[path]):
 		if data.erase(path):
-			Toolbox.print_erase_error()
+			Print.erase_error()
 
 		_save_data()
 
 	# Not thumb has been made yet, return default and put id in waiting line.
 	if !data.has(path):
 		if thumbs_todo.append(file_id):
-			Toolbox.print_append_error()
+			Print.append_error()
 
 		# Add the correct placeholder image.
 		match FileManager.get_file(file_id).type:

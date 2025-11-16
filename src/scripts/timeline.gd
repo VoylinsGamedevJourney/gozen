@@ -42,11 +42,11 @@ func _ready() -> void:
 	instance = self
 	main_control.set_drag_forwarding(Callable(), _main_control_can_drop_data, _main_control_drop_data)
 
-	Toolbox.connect_func(EditorCore.frame_changed, move_playhead)
-	Toolbox.connect_func(mouse_exited, func() -> void: preview.visible = false)
-	Toolbox.connect_func(FileManager.file_deleted, _check_clips)
-	Toolbox.connect_func(scroll_main.get_h_scroll_bar().value_changed, _on_h_scroll.bind(true))
-	Toolbox.connect_func(scroll_bar.get_h_scroll_bar().value_changed, _on_h_scroll.bind(false))
+	Utils.connect_func(EditorCore.frame_changed, move_playhead)
+	Utils.connect_func(mouse_exited, func() -> void: preview.visible = false)
+	Utils.connect_func(FileManager.file_deleted, _check_clips)
+	Utils.connect_func(scroll_main.get_h_scroll_bar().value_changed, _on_h_scroll.bind(true))
+	Utils.connect_func(scroll_bar.get_h_scroll_bar().value_changed, _on_h_scroll.bind(false))
 
 
 func _process(_delta: float) -> void:
@@ -320,7 +320,7 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 
 	# Initial boundary check (Track only)
 	for id: int in draggable.ids:
-		if !Toolbox.in_range(
+		if !Utils.in_range(
 				Project.get_clip(id).track_id + draggable.differences.y as int,
 				0, Project.get_track_count()):
 			return false
@@ -450,7 +450,7 @@ func _handle_drop_new_clips(draggable: Draggable) -> void:
 	for id: int in draggable.ids:
 		var new_clip_data: ClipData = ClipData.new()
 
-		new_clip_data.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
+		new_clip_data.clip_id = Utils.get_unique_id(Project.get_clip_ids())
 		new_clip_data.file_id = id
 		new_clip_data.start_frame = start_frame
 		new_clip_data.track_id = track
@@ -683,7 +683,7 @@ func _delete_empty_space() -> void:
 
 		draggable.clip_buttons.append(clips.get_node(str(track_data[frame_nr])))
 		if draggable.ids.append(track_data[frame_nr]):
-			Toolbox.print_append_error()
+			Print.append_error()
 			continue
 
 	InputManager.undo_redo.create_action("Delete empty space")
@@ -772,7 +772,7 @@ func _cut_clip(frame_nr: int, current_clip_data: ClipData) -> void:
 	var new_clip: ClipData = ClipData.new()
 	var frame: int = frame_nr - current_clip_data.start_frame
 
-	new_clip.clip_id = Toolbox.get_unique_id(Project.get_clip_ids())
+	new_clip.clip_id = Utils.get_unique_id(Project.get_clip_ids())
 	new_clip.file_id = current_clip_data.file_id
 
 	new_clip.start_frame = frame_nr

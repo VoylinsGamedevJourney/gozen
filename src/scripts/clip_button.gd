@@ -58,13 +58,13 @@ func _ready() -> void:
 	_add_resize_button(PRESET_LEFT_WIDE, true)
 	_add_resize_button(PRESET_RIGHT_WIDE, false)
 
-	Toolbox.connect_func(button_down, _on_button_down)
-	Toolbox.connect_func(pressed, _on_pressed)
-	Toolbox.connect_func(gui_input, _on_gui_input)
+	Utils.connect_func(button_down, _on_button_down)
+	Utils.connect_func(pressed, _on_pressed)
+	Utils.connect_func(gui_input, _on_gui_input)
 
 	if FileManager.get_file(clip_data.file_id).type in EditorCore.AUDIO_TYPES:
 		wave = true
-		Toolbox.connect_func(FileManager.get_file_data(clip_data.file_id).update_wave, queue_redraw)
+		Utils.connect_func(FileManager.get_file_data(clip_data.file_id).update_wave, queue_redraw)
 
 	# Add fade buttons.
 	if type in EditorCore.VISUAL_TYPES:
@@ -74,10 +74,10 @@ func _ready() -> void:
 		fade_in_video_button.custom_minimum_size = SIZE_FADE_BUTTON
 		fade_out_video_button.custom_minimum_size = SIZE_FADE_BUTTON
 
-		Toolbox.connect_func(fade_in_video_button.button_down, _on_fade_button_pressed.bind(true, true))
-		Toolbox.connect_func(fade_out_video_button.button_down, _on_fade_button_pressed.bind(false, true))
-		Toolbox.connect_func(fade_in_video_button.button_up, _on_fade_button_released)
-		Toolbox.connect_func(fade_out_video_button.button_up, _on_fade_button_released)
+		Utils.connect_func(fade_in_video_button.button_down, _on_fade_button_pressed.bind(true, true))
+		Utils.connect_func(fade_out_video_button.button_down, _on_fade_button_pressed.bind(false, true))
+		Utils.connect_func(fade_in_video_button.button_up, _on_fade_button_released)
+		Utils.connect_func(fade_out_video_button.button_up, _on_fade_button_released)
 
 		fade_in_video_button.ignore_texture_size = true
 		fade_out_video_button.ignore_texture_size = true
@@ -101,10 +101,10 @@ func _ready() -> void:
 		fade_in_audio_button.custom_minimum_size = SIZE_FADE_BUTTON
 		fade_out_audio_button.custom_minimum_size = SIZE_FADE_BUTTON
 
-		Toolbox.connect_func(fade_in_audio_button.button_down, _on_fade_button_pressed.bind(true, false))
-		Toolbox.connect_func(fade_out_audio_button.button_down, _on_fade_button_pressed.bind(false, false))
-		Toolbox.connect_func(fade_in_audio_button.button_up, _on_fade_button_released)
-		Toolbox.connect_func(fade_out_audio_button.button_up, _on_fade_button_released)
+		Utils.connect_func(fade_in_audio_button.button_down, _on_fade_button_pressed.bind(true, false))
+		Utils.connect_func(fade_out_audio_button.button_down, _on_fade_button_pressed.bind(false, false))
+		Utils.connect_func(fade_in_audio_button.button_up, _on_fade_button_released)
+		Utils.connect_func(fade_out_audio_button.button_up, _on_fade_button_released)
 
 		fade_in_audio_button.ignore_texture_size = true
 		fade_out_audio_button.ignore_texture_size = true
@@ -223,16 +223,16 @@ func _on_gui_input(event: InputEvent) -> void:
 			return
 
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
-			var popup: PopupMenu = Toolbox.get_popup()
+			var popup: PopupMenu = PopupManager.create_popup_menu()
 
 			popup.add_theme_constant_override("icon_max_width", 20)
 
 			if Project.get_clip_type(clip_data.clip_id) == File.TYPE.VIDEO:
 				popup.add_check_item("Clip only video instance", 0)
 				popup.set_item_checked(0, FileManager.get_file_data(clip_data.file_id).clip_only_video.has(clip_data.clip_id))
-				Toolbox.connect_func(popup.id_pressed, _on_clip_popup_menu_pressed.bind(popup))
+				Utils.connect_func(popup.id_pressed, _on_clip_popup_menu_pressed.bind(popup))
 
-			Toolbox.show_popup(popup)
+			PopupManager.show_popup_menu(popup)
 
 
 	if event.is_action_pressed("delete_clip"):

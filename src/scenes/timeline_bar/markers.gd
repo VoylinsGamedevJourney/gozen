@@ -27,7 +27,7 @@ func _on_marker_updated(old_frame_nr: int, new_frame_nr: int, marker: MarkerData
 	var button: Button = markers[old_frame_nr]
 
 	if markers.erase(old_frame_nr):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 
 	markers[new_frame_nr] = button
 	button.text = marker.text
@@ -37,5 +37,5 @@ func _on_marker_removed(frame_nr: int) -> void:
 	markers[frame_nr].queue_free()
 
 	if markers.erase(frame_nr):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 

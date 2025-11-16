@@ -6,7 +6,7 @@ var callables: Dictionary[String, Callable] = {}
 
 func _ready() -> void:
 	_show_menu_bar(Settings.get_show_menu_bar())
-	Toolbox.connect_func(Settings.on_show_menu_bar_changed, _show_menu_bar)
+	Utils.connect_func(Settings.on_show_menu_bar_changed, _show_menu_bar)
 
 	build_menu_bar()
 
@@ -27,21 +27,21 @@ func build_menu_bar() -> void:
 	_add_popup_menu("menu_bar_editor", [
 		MenuItem.new("menu_bar_editor_open_settings", Settings.open_settings_menu, preload(Library.ICON_PROJECT_SETTINGS)),
 		MenuItem.new("line"),
-		MenuItem.new("menu_bar_editor_open_url_site", Toolbox.open_url.bind("site"), preload(Library.ICON_LINK)),
-		MenuItem.new("menu_bar_editor_open_url_manual", Toolbox.open_url.bind("manual"), preload(Library.ICON_MANUAL)),
-		MenuItem.new("menu_bar_editor_open_url_tutorials", Toolbox.open_url.bind("tutorials"), preload(Library.ICON_TUTORIALS)),
-		MenuItem.new("menu_bar_editor_open_url_discord", Toolbox.open_url.bind("discord"), preload(Library.ICON_LINK)),
+		MenuItem.new("menu_bar_editor_open_url_site", Utils.open_url.bind("site"), preload(Library.ICON_LINK)),
+		MenuItem.new("menu_bar_editor_open_url_manual", Utils.open_url.bind("manual"), preload(Library.ICON_MANUAL)),
+		MenuItem.new("menu_bar_editor_open_url_tutorials", Utils.open_url.bind("tutorials"), preload(Library.ICON_TUTORIALS)),
+		MenuItem.new("menu_bar_editor_open_url_discord", Utils.open_url.bind("discord"), preload(Library.ICON_LINK)),
 		MenuItem.new("line"),
-		MenuItem.new("menu_bar_editor_open_url_support", Toolbox.open_url.bind("support"), preload(Library.ICON_SUPPORT)),
+		MenuItem.new("menu_bar_editor_open_url_support", Utils.open_url.bind("support"), preload(Library.ICON_SUPPORT)),
 		MenuItem.new("menu_bar_editor_open_about_gozen", _open_about_gozen, preload(Library.ICON_ABOUT_GOZEN)),
 	])
 
 
 func _add_popup_menu(title: String, options: Array[MenuItem]) -> void:
-	var popup: PopupMenu = Toolbox.get_popup(true)
+	var popup: PopupMenu = PopupManager.create_popup_menu(true)
 	var index: int = 0
 
-	Toolbox.connect_func(popup.id_pressed, _on_id_pressed.bind(popup))
+	Utils.connect_func(popup.id_pressed, _on_id_pressed.bind(popup))
 	popup.name = title
 	popup.add_theme_constant_override("icon_max_width", 20)
 

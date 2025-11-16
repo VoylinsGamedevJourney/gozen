@@ -74,10 +74,10 @@ func get_frame(frame_nr: int) -> Texture:
 
 func get_clip_audio_data() -> PackedByteArray:
 	var file_data: FileData = FileManager.get_file_data(file_id)
-	var sample_size: int = Toolbox.get_sample_count(1)
+	var sample_size: int = Utils.get_sample_count(1)
 	var data: PackedByteArray = file_data.audio.data.slice(
-			Toolbox.get_sample_count(begin),
-			Toolbox.get_sample_count(begin+duration))
+			Utils.get_sample_count(begin),
+			Utils.get_sample_count(begin+duration))
 
 	if effects_audio.mute:
 		data.fill(0)
@@ -89,7 +89,7 @@ func get_clip_audio_data() -> PackedByteArray:
 		var new_data: PackedByteArray = []
 
 		for i: int in effects_audio.fade_in:
-			var gain: float = Toolbox.calculate_fade(i, effects_audio.fade_in) * effects_audio.FADE_OUT_LIMIT
+			var gain: float = Utils.calculate_fade(i, effects_audio.fade_in) * effects_audio.FADE_OUT_LIMIT
 			var pos: int = sample_size * i
 
 			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
@@ -101,7 +101,7 @@ func get_clip_audio_data() -> PackedByteArray:
 		var start_pos: int = duration - effects_audio.fade_out
 
 		for i: int in effects_audio.fade_out:
-			var gain: float = Toolbox.calculate_fade(effects_audio.fade_out - i, effects_audio.fade_out) * effects_audio.FADE_OUT_LIMIT
+			var gain: float = Utils.calculate_fade(effects_audio.fade_out - i, effects_audio.fade_out) * effects_audio.FADE_OUT_LIMIT
 			var pos: int = sample_size * (i + start_pos)
 
 			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))

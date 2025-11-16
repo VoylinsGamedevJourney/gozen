@@ -31,7 +31,7 @@ var background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instant
 
 
 func _ready() -> void:
-	Toolbox.connect_func(get_window().size_changed, _on_size_changed)
+	Utils.connect_func(get_window().size_changed, _on_size_changed)
 
 	await get_tree().root.ready
 	get_tree().root.add_child(control)
@@ -94,6 +94,40 @@ func get_popup(popup: POPUP) -> Control:
 	return open_popups[popup]
 
 
+func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray = []) -> FileDialog:
+	var dialog: FileDialog = FileDialog.new()
+
+	dialog.force_native = true
+	dialog.use_native_dialog = true
+	dialog.title = title
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	dialog.file_mode = mode
+	dialog.filters = filters
+
+	return dialog
+
+
+func create_popup_menu(permanent: bool = false) -> PopupMenu:
+	var popup: PopupMenu = PopupMenu.new()
+
+	if !permanent:
+		Utils.connect_func(popup.mouse_exited, popup.queue_free)
+
+	popup.size = Vector2i(100,0)
+	return popup
+
+
+func show_popup_menu(popup: PopupMenu) -> void:
+	var mouse_pos: Vector2 = Project.get_viewport().get_mouse_position()
+
+	popup.position.x = int(mouse_pos.x)
+	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
+
+	Project.add_child(popup)
+	popup.popup()
+
+
+# Private functions
 func _on_size_changed() -> void:
 	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
@@ -101,4 +135,3 @@ func _on_size_changed() -> void:
 func _check_background() -> void:
 	if open_popups.size() == 0:
 		control.visible = false
-

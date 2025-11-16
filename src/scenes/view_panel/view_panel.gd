@@ -10,8 +10,8 @@ extends PanelContainer
 
 
 func _ready() -> void:
-	Toolbox.connect_func(EditorCore.play_changed, _on_play_changed)
-	Toolbox.connect_func(EditorCore.frame_changed, _on_frame_changed)
+	Utils.connect_func(EditorCore.play_changed, _on_play_changed)
+	Utils.connect_func(EditorCore.frame_changed, _on_frame_changed)
 
 
 func _on_play_changed(value: bool) -> void:
@@ -55,5 +55,5 @@ func _on_skip_next_button_pressed() -> void:
 
 func _on_frame_changed(frame_nr: int) -> void:
 	frame_label.text = tr("text_frame") + ": " + str(frame_nr)
-	time_label.text = Toolbox.format_time_str_from_frame(frame_nr)
+	time_label.text = Utils.format_time_str_from_frame(frame_nr)
 	

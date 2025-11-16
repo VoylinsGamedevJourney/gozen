@@ -22,8 +22,8 @@ var data: Dictionary [int, FileData] = {}
 
 #--- File Manager functions ---
 func _ready() -> void:
-	Toolbox.connect_func(get_window().files_dropped, files_dropped)
-	Toolbox.connect_func(error_file_too_big, _on_file_too_big)
+	Utils.connect_func(get_window().files_dropped, files_dropped)
+	Utils.connect_func(error_file_too_big, _on_file_too_big)
 
 
 func files_dropped(file_paths: PackedStringArray) -> void:
@@ -34,12 +34,12 @@ func files_dropped(file_paths: PackedStringArray) -> void:
 	var files: Array[FileDrop] = []
 
 	# Find files inside of subfolders.
-	file_paths = Toolbox.find_subfolder_files(file_paths)
+	file_paths = Utils.find_subfolder_files(file_paths)
 
 	# Check for file duplicates.
 	for path: String in get_file_paths():
 		if path in file_paths and !file_paths.erase(path):
-			Toolbox.print_erase_error()
+			Print.erase_error()
 			continue
 
 	# Add files for processing.
@@ -163,10 +163,8 @@ func delete_file(id: int) -> void:
 		if clip.file_id == id:
 			Timeline.instance.delete_clip(clip)
 
-	if data.has(id) and !data.erase(id):
-		Toolbox.print_erase_error()
-	if get_files().has(id) and !get_files().erase(id):
-		Toolbox.print_erase_error()
+	if (data.has(id) and !data.erase(id)) or (get_files().has(id) and !get_files().erase(id)):
+		Print.erase_error()
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)
@@ -248,7 +246,7 @@ func get_file_paths() -> PackedStringArray:
 
 	for file: File in get_files().values():
 		if paths.append(file.path):
-			Toolbox.print_append_error()
+			Print.append_error()
 
 	return paths
 
@@ -291,7 +289,7 @@ func _on_file_too_big(file_id: int) -> void:
 	dialog.popup_centered()
 
 	if !get_files().erase(file_id) or !data.erase(file_id):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 
 
 

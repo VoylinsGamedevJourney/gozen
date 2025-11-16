@@ -85,7 +85,7 @@ func draw_timestamp_box(box: TimelineBox) -> void:
 			box.draw_string(
 					TIMESTAMP_FONT,
 					Vector2(x_pos + 3, size_y / 2 + 2),
-					Toolbox.format_time_str(i, true),
+					Utils.format_time_str(i, true),
 					HORIZONTAL_ALIGNMENT_LEFT,
 					-1, # Width.
 					12, # Font size.

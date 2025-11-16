@@ -204,7 +204,7 @@ func _setup_audio_players() -> void:
 
 func find_audio(frame: int, track: int) -> int:
 	var pos: PackedInt64Array = Project.get_track_keys(track)
-	var last: int = Toolbox.get_previous(frame, pos)
+	var last: int = Utils.get_previous(frame, pos)
 
 	if last == -1: return -1
 	last = Project.get_track_data(track)[last]

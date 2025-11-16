@@ -1,4 +1,4 @@
-class_name Toolbox
+class_name Utils
 extends Node
 
 
@@ -7,49 +7,15 @@ static func format_file_nickname(file_name: String, size: int) -> String:
 	var new_name: String = ""
 
 	while file_name.length() > size:
-		if new_name.length() != 0:
+		if new_name.length() == 0:
 			new_name += "\n"
 
-		var data: String = file_name.left(size)
-		new_name += data
-		file_name = file_name.trim_prefix(data)
+		new_name += file_name.left(size)
+		file_name = file_name.trim_prefix(file_name.left(size))
 
 	new_name += file_name
 
 	return new_name
-
-
-static func get_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray = []) -> FileDialog:
-	var dialog: FileDialog = FileDialog.new()
-
-	dialog.force_native = true
-	dialog.use_native_dialog = true
-	dialog.title = title
-	dialog.access = FileDialog.ACCESS_FILESYSTEM
-	dialog.file_mode = mode
-	dialog.filters = filters
-
-	return dialog
-
-
-static func get_popup(permanent: bool = false) -> PopupMenu:
-	var popup: PopupMenu = PopupMenu.new()
-
-	if !permanent:
-		connect_func(popup.mouse_exited, popup.queue_free)
-
-	popup.size = Vector2i(100,0)
-	return popup
-
-
-static func show_popup(popup: PopupMenu) -> void:
-	var mouse_pos: Vector2 = Project.get_viewport().get_mouse_position()
-
-	popup.position.x = int(mouse_pos.x)
-	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
-
-	Project.add_child(popup)
-	popup.popup()
 
 
 static func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
@@ -60,36 +26,6 @@ static func connect_func(connect_signal: Signal, connect_callable: Callable) -> 
 				connect_signal.get_name(), connect_callable.get_method()])
 
 
-static func print_header(text: String, color: String = "white") -> void:
-	print_rich("[color=%s][b]" % color, text)
-
-
-static func print_info(title: String, context: Variant, color: String = "white") -> void:
-	print_rich("[color=%s][b]" % color, title, "[/b]: [color=gray]", context)
-
-	
-static func print_resize_error() -> void:
-	# This func is needed so we don't have the same error message everywhere.
-	printerr("Couldn't resize array!")
-	printerr(get_stack())
-
-
-static func print_append_error() -> void:
-	# This func is needed so we don't have the same error message everywhere.
-	printerr("Couldn't append to array!")
-	printerr(get_stack())
-
-
-static func print_insert_error() -> void:
-	# This func is needed so we don't have the same error message everywhere.
-	printerr("Couldn't insert to array!")
-	printerr(get_stack())
-	
-
-static func print_erase_error() -> void:
-	# This func is needed so we don't have the same error message everywhere.
-	printerr("Couldn't erase entry!")
-	printerr(get_stack())
 
 
 static func open_url(url: String) -> void:
@@ -152,10 +88,10 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 	for path: String in files:
 		if FileAccess.file_exists(path):
 			if File.check_valid(path) and actual_files.append(path):
-				print_append_error()
+				Print.append_error()
 		elif DirAccess.dir_exists_absolute(path):
 			if folders.append(path):
-				print_append_error()
+				Print.append_error()
 
 	while folders.size() != 0:
 		var new_folders: PackedStringArray = []
@@ -165,10 +101,10 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 				var full_path: String = path + '/' + file_path
 
 				if File.check_valid(full_path) and actual_files.append(full_path):
-					print_append_error()
+					Print.append_error()
 			for dir_path: String in DirAccess.get_directories_at(path):
 				if new_folders.append(path + '/' + dir_path):
-					print_append_error()
+					Print.append_error()
 
 		folders = new_folders
 	

@@ -22,10 +22,10 @@ func _ready() -> void:
 
 	switch_screen(0)
 	print_startup_info()
-	Toolbox.connect_func(InputManager.on_show_editor_screen, switch_screen.bind(0))
-	Toolbox.connect_func(InputManager.on_show_render_screen, switch_screen.bind(1))
-	Toolbox.connect_func(InputManager.on_show_subtitle_screen, switch_screen.bind(2))
-	Toolbox.connect_func(InputManager.on_switch_screen, switch_screen_quick)
+	Utils.connect_func(InputManager.on_show_editor_screen, switch_screen.bind(0))
+	Utils.connect_func(InputManager.on_show_render_screen, switch_screen.bind(1))
+	Utils.connect_func(InputManager.on_show_subtitle_screen, switch_screen.bind(2))
+	Utils.connect_func(InputManager.on_switch_screen, switch_screen_quick)
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
 
@@ -43,7 +43,7 @@ func _check_startup_args() -> void:
 
 func print_startup_info() -> void:
 	var color: String = "purple"
-	Toolbox.print_header("--==  GoZen - Video Editor  ==--", color)
+	Print.header("--==  GoZen - Video Editor  ==--", color)
 
 	for info_print: PackedStringArray in [
 			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
@@ -61,9 +61,9 @@ func print_startup_info() -> void:
 				RenderingServer.get_video_adapter_type()]],
 			["Locale", OS.get_locale()],
 			["Startup args", OS.get_cmdline_args()]]:
-		Toolbox.print_info(info_print[0], info_print[1], color)
+		Print.info(info_print[0], info_print[1], color)
 
-	Toolbox.print_header("--==--================--==--", color)
+	Print.header("--==--================--==--", color)
 
 
 func switch_screen(index: int) -> void:

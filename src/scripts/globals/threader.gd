@@ -13,7 +13,7 @@ func _process(_delta: float) -> void:
 		if timed_tasks[i].check():
 			timed_tasks[i].execute()
 			if !timed_tasks.erase(i):
-				Toolbox.print_erase_error()
+				Print.erase_error()
 
 	for task: Task in tasks:
 		if WorkerThreadPool.is_task_completed(task.id):

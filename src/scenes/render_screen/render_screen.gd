@@ -37,8 +37,8 @@ var current_progress: float = 0.0
 
 
 func _ready() -> void:
-	Toolbox.connect_func(RenderManager.update_encoder_status, update_encoder_status)
-	Toolbox.connect_func(Project._markers_updated, _on_chapters_updated)
+	Utils.connect_func(RenderManager.update_encoder_status, update_encoder_status)
+	Utils.connect_func(Project._markers_updated, _on_chapters_updated)
 
 	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
@@ -77,7 +77,7 @@ func _on_project_ready() -> void:
 
 
 func _get_current_extension() -> String:
-	return Toolbox.get_video_extension(video_codec_option_button.get_selected_id())
+	return Utils.get_video_extension(video_codec_option_button.get_selected_id())
 
 
 func _add_default_profiles() -> void:
@@ -125,7 +125,7 @@ func add_profile(profile: RenderProfile) -> void:
 	button.button_group = button_group
 	button.theme_type_variation = "render_profile_button"
 	button.tooltip_text = "Profile: %s" % profile.profile_name
-	Toolbox.connect_func(button.pressed, load_profile.bind(profile))
+	Utils.connect_func(button.pressed, load_profile.bind(profile))
 
 	render_profiles_hbox.add_child(button)
 
@@ -163,7 +163,7 @@ func _on_chapters_updated() -> void:
 	chapters_text_edit.text = ""
 
 	for i: int in chapters:
-		var time: String = Toolbox.format_time_str_from_frame(i)
+		var time: String = Utils.format_time_str_from_frame(i)
 		chapters_text_edit.text += "%s %s\n" % [time, chapters[i].text]
 
 
@@ -172,14 +172,14 @@ func _on_copy_chapters_button_pressed() -> void:
 
 
 func _on_select_save_path_button_pressed() -> void:
-	var dialog: FileDialog = Toolbox.get_file_dialog(
+	var dialog: FileDialog = PopupManager.create_file_dialog(
 			"file_dialog_title_select_save_path",
 			FileDialog.FileMode.FILE_MODE_SAVE_FILE,
 			["*" +_get_current_extension()])
 
 	dialog.current_dir = Project.get_project_base_folder()
 	dialog.current_file = Project.get_project_name()
-	Toolbox.connect_func(dialog.file_selected, _save_path_selected)
+	Utils.connect_func(dialog.file_selected, _save_path_selected)
 
 	add_child(dialog)
 	dialog.popup_centered()
@@ -191,7 +191,7 @@ func _save_path_selected(file_path: String) -> void:
 
 func _on_video_codec_option_button_item_selected(index: int) -> void:
 	var video_codec_id: int = video_codec_option_button.get_item_id(index)
-	var extension: String = Toolbox.get_video_extension(video_codec_id)
+	var extension: String = Utils.get_video_extension(video_codec_id)
 	var is_h264: bool = video_codec_id == GoZenEncoder.VIDEO_CODEC.V_H264
 	var path: String = path_line_edit.text
 	var allowed: PackedInt64Array = []
@@ -254,7 +254,7 @@ func _render_finished() -> void:
 
 	dialog.title = "title_rendering_finished"
 	dialog.dialog_text = "Path: %s\n" % path_line_edit.text
-	dialog.dialog_text += "Render time: %s" % Toolbox.format_time_str(
+	dialog.dialog_text += "Render time: %s" % Utils.format_time_str(
 			RenderManager.encoding_time / 1000.0)
 	dialog.exclusive = true
 	
@@ -284,18 +284,18 @@ func _show_error(message: String) -> void:
 func _on_start_render_button_pressed() -> void:
 	# Printing info about the rendering process.
 	print("--------------------")
-	Toolbox.print_header("Rendering process started")
-	Toolbox.print_info("Path", path_line_edit.text)
-	Toolbox.print_info("Resolution", Project.get_resolution())
-	Toolbox.print_info("Framerate", Project.get_framerate())
-	Toolbox.print_info("Video codec", video_codec_option_button.get_selected_id())
-	Toolbox.print_info("CRF", int(0 - video_quality_hslider.value))
-	Toolbox.print_info("GOP", int(video_gop_spin_box.value))
+	Print.header("Rendering process started")
+	Print.info("Path", path_line_edit.text)
+	Print.info("Resolution", Project.get_resolution())
+	Print.info("Framerate", Project.get_framerate())
+	Print.info("Video codec", video_codec_option_button.get_selected_id())
+	Print.info("CRF", int(0 - video_quality_hslider.value))
+	Print.info("GOP", int(video_gop_spin_box.value))
 	if video_codec_option_button.get_selected_id() == GoZenEncoder.VIDEO_CODEC.V_H264:
-		Toolbox.print_info("h264 preset", int(video_speed_hslider.value))
-	Toolbox.print_info("Audio codec", audio_codec_option_button.get_selected_id())
-	Toolbox.print_info("Cores/threads", threads_spin_box.value)
-	Toolbox.print_info("Frames to process", Project.get_timeline_end() + 1)
+		Print.info("h264 preset", int(video_speed_hslider.value))
+	Print.info("Audio codec", audio_codec_option_button.get_selected_id())
+	Print.info("Cores/threads", threads_spin_box.value)
+	Print.info("Frames to process", Project.get_timeline_end() + 1)
 	print("--------------------")
 
 	# Resetting progress values.
@@ -323,7 +323,7 @@ func _on_start_render_button_pressed() -> void:
 	var button: Button = Button.new()
 
 	button.text = "button_cancel_rendering"
-	Toolbox.connect_func(button.pressed, _cancel_render)
+	Utils.connect_func(button.pressed, _cancel_render)
 
 	get_tree().root.add_child(progress_overlay)
 	var status_label: Label = progress_overlay.status_hbox.get_child(0)

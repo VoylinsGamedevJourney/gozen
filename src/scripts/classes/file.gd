@@ -46,7 +46,7 @@ static func create(file_path: String) -> File:
 		printerr("Invalid file: ", file_path)
 		return null
 
-	file.id = Toolbox.get_unique_id(FileManager.get_file_ids())
+	file.id = Utils.get_unique_id(FileManager.get_file_ids())
 	file.path = file_path
 
 	if file_path.contains("temp://"):
@@ -83,7 +83,7 @@ func enable_clip_only_video(clip_id: int) -> void:
 		return
 
 	if clip_only_video_ids.append(clip_id):
-		Toolbox.print_append_error()
+		Print.append_error()
 	file_data.clip_only_video[clip_id] = video
 
 
@@ -94,5 +94,5 @@ func disable_clip_only_video(clip_id: int) -> void:
 		clip_only_video_ids.remove_at(clip_only_video_ids.find(clip_id))
 
 	if file_data.clip_only_video.has(clip_id) and !file_data.clip_only_video.erase(clip_id):
-		Toolbox.print_erase_error()
+		Print.erase_error()
 

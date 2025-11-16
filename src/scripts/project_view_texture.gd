@@ -4,7 +4,7 @@ enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
 
 
 func _ready() -> void:
-	Toolbox.connect_func(gui_input, _on_gui_input)
+	Utils.connect_func(gui_input, _on_gui_input)
 
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
@@ -17,27 +17,27 @@ func _on_gui_input(event: InputEvent) -> void:
 		var mouse_event: InputEventMouseButton = event
 
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
-			var popup: PopupMenu = Toolbox.get_popup()
+			var popup: PopupMenu = PopupManager.create_popup_menu()
 
 			popup.add_item("Save screenshot ...", POPUP.SAVE_SCREENSHOT)
 			popup.add_item("Save screenshot to project ...", POPUP.SAVE_SCREENSHOT_TO_PROJECT)
 
-			Toolbox.connect_func(popup.id_pressed, _on_popup_id_pressed)
+			Utils.connect_func(popup.id_pressed, _on_popup_id_pressed)
 
-			Toolbox.show_popup(popup)
+			PopupManager.show_popup_menu(popup)
 
 
 func _on_popup_id_pressed(id: int) -> void:
 	if id in [POPUP.SAVE_SCREENSHOT, POPUP.SAVE_SCREENSHOT_TO_PROJECT]:
-		var file_dialog: FileDialog = Toolbox.get_file_dialog(
+		var file_dialog: FileDialog = PopupManager.create_file_dialog(
 				"Save screenshot ...",
 				FileDialog.FILE_MODE_SAVE_FILE,
 				["*.webp", "*.png", "*.jpg", "*.jpeg"])
 
 		if id == POPUP.SAVE_SCREENSHOT:
-			Toolbox.connect_func(file_dialog.file_selected, _on_save_screenshot)
+			Utils.connect_func(file_dialog.file_selected, _on_save_screenshot)
 		else:
-			Toolbox.connect_func(file_dialog.file_selected, _on_save_screenshot_to_project)
+			Utils.connect_func(file_dialog.file_selected, _on_save_screenshot_to_project)
 
 		var folder: String = Project.get_project_path().get_base_dir() + "/"
 		var file_name: String = "image_%03d.webp"
