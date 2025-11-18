@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -431,6 +431,10 @@ msgstr "Module manager"
 
 msgid "menu_bar_preferences_command_bar"
 msgstr "Command bar"
+
+#, fuzzy
+msgid "menu_bar_help"
+msgstr "GoZen site"
 
 msgid "menu_bar_help_report_issue"
 msgstr "Report issue/bug"

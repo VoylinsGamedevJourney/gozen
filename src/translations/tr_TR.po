@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -209,12 +209,10 @@ msgid "setting_language"
 msgstr "Dil"
 
 #, fuzzy
-#| msgid "setting_auto_save"
 msgid "setting_display_scale"
 msgstr "Projeyi otomatik kaydet"
 
 #, fuzzy
-#| msgid "setting_tooltip_auto_save"
 msgid "setting_tooltip_display_scale"
 msgstr "Projeyi birkaç dakikada bir otomatik kaydeder."
 
@@ -405,12 +403,10 @@ msgid "menu_bar_project_open_project"
 msgstr "Aç"
 
 #, fuzzy
-#| msgid "menu_bar_project_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "Aç"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_project_quit"
 msgstr "Proje"
 
@@ -418,12 +414,10 @@ msgid "menu_bar_project_open_settings"
 msgstr "Ayarları aç"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_preferences"
 msgstr "Proje"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "Ayarları aç"
 
@@ -431,52 +425,46 @@ msgid "menu_bar_preferences_keyboard_shortcuts"
 msgstr ""
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_preferences_module_manager"
 msgstr "Kılavuz"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_preferences_command_bar"
 msgstr "Farklı kaydet..."
 
 #, fuzzy
-#| msgid "menu_bar_project_save"
+msgid "menu_bar_help"
+msgstr "Düzenleyici"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "Kaydet"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_help_check_updates"
 msgstr "Farklı kaydet..."
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_help_manual"
 msgstr "Kılavuz"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_tutorials"
 msgid "menu_bar_help_tutorials"
 msgstr "Eğitimler"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_discord"
 msgstr "Düzenleyici"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_site"
 msgstr "Düzenleyici"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "GoZen hakkında"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "GoZen'i destekle"
 
@@ -484,12 +472,10 @@ msgid "file_dialog_title_add_files"
 msgstr "Dosya ekle"
 
 #, fuzzy
-#| msgid "file_dialog_title_select_save_path"
 msgid "file_dialog_title_save_project_as"
 msgstr "Kaydetme yolu seç"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_title_open_project"
 msgstr "Dosya ekle"
 
@@ -497,7 +483,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr "Kaydetme yolu seç"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "Dosya ekle"
 

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -88,7 +88,6 @@ msgid "title_close_without_saving"
 msgstr "Wyjść bez zapisywania?"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "title_dialog_file_too_big"
 msgstr "Dodaj pliki"
 
@@ -212,12 +211,10 @@ msgid "setting_language"
 msgstr "Język"
 
 #, fuzzy
-#| msgid "setting_auto_save"
 msgid "setting_display_scale"
 msgstr "Auto zapis"
 
 #, fuzzy
-#| msgid "setting_tooltip_auto_save"
 msgid "setting_tooltip_display_scale"
 msgstr "Automatycznie zapisuje twój projekt co kilka minut."
 
@@ -414,12 +411,10 @@ msgid "menu_bar_project_open_project"
 msgstr "Otwórz"
 
 #, fuzzy
-#| msgid "menu_bar_project_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "Otwórz"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_project_quit"
 msgstr "Projekt"
 
@@ -427,12 +422,10 @@ msgid "menu_bar_project_open_settings"
 msgstr "Ustawienia projektu"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_preferences"
 msgstr "Projekt"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "Ustawienia edytora"
 
@@ -440,52 +433,46 @@ msgid "menu_bar_preferences_keyboard_shortcuts"
 msgstr ""
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_preferences_module_manager"
 msgstr "Podręcznik"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_preferences_command_bar"
 msgstr "Zapisz jako ..."
 
 #, fuzzy
-#| msgid "menu_bar_project_save"
+msgid "menu_bar_help"
+msgstr "Edytor"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "Zapisz"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_help_check_updates"
 msgstr "Zapisz jako ..."
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_help_manual"
 msgstr "Podręcznik"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_tutorials"
 msgid "menu_bar_help_tutorials"
 msgstr "Poradniki"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_discord"
 msgstr "Edytor"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_site"
 msgstr "Edytor"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "O GoZen"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "Wesprzyj GoZen"
 
@@ -493,12 +480,10 @@ msgid "file_dialog_title_add_files"
 msgstr "Dodaj pliki"
 
 #, fuzzy
-#| msgid "file_dialog_title_select_save_path"
 msgid "file_dialog_title_save_project_as"
 msgstr "Wybierz ścieżkę zapisu"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_title_open_project"
 msgstr "Dodaj pliki"
 
@@ -506,7 +491,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr "Wybierz ścieżkę zapisu"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "Dodaj pliki"
 

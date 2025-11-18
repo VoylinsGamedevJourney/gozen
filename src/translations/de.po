@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,7 +28,6 @@ msgid "title_extras"
 msgstr "Extras"
 
 #, fuzzy
-#| msgid "title_rendering"
 msgid "title_render_settings"
 msgstr "Rendern"
 
@@ -39,7 +38,6 @@ msgid "title_rendering_finished"
 msgstr "Rendern abgeschlossen"
 
 #, fuzzy
-#| msgid "title_rendering"
 msgid "title_rendering_error"
 msgstr "Rendern"
 
@@ -74,7 +72,6 @@ msgid "title_sponsors"
 msgstr "Extras"
 
 #, fuzzy
-#| msgid "button_tooltip_editor_settings"
 msgid "title_editor_settings"
 msgstr "Editor Einstellungen"
 
@@ -89,7 +86,6 @@ msgid "title_save_image_to_file"
 msgstr "Bild in Datei speichern"
 
 #, fuzzy
-#| msgid "title_render_audio"
 msgid "title_save_video_audio_to_wav"
 msgstr "Audio rendern"
 
@@ -98,7 +94,6 @@ msgid "title_add_color_file"
 msgstr "Farbdatei hinzufügen"
 
 #, fuzzy
-#| msgid "button_tooltip_editor_settings"
 msgid "title_close_without_saving"
 msgstr "Editor Einstellungen"
 
@@ -139,7 +134,6 @@ msgid "button_create_new_project"
 msgstr "Neues Projekt erstellen"
 
 #, fuzzy
-#| msgid "button_create_new_project"
 msgid "button_create_new_color_file"
 msgstr "Neue Farbdatei erstellen"
 
@@ -173,7 +167,6 @@ msgid "button_save"
 msgstr "Speichern"
 
 #, fuzzy
-#| msgid "button_save"
 msgid "button_dont_save"
 msgstr "Speichern"
 
@@ -236,12 +229,10 @@ msgid "setting_language"
 msgstr "Sprache"
 
 #, fuzzy
-#| msgid "setting_language"
 msgid "setting_display_scale"
 msgstr "Sprache"
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_display_scale"
 msgstr "Einfach Dunkelmodus verwenden"
 
@@ -261,12 +252,10 @@ msgid "setting_default_image_duration"
 msgstr "Standard Bilddauer"
 
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "setting_default_color_duration"
 msgstr "Standard Bilddauer"
 
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "setting_default_text_duration"
 msgstr "Standard Bilddauer"
 
@@ -314,12 +303,10 @@ msgstr ""
 "Funktion standardmäßig deaktiviert."
 
 #, fuzzy
-#| msgid "setting_language"
 msgid "setting_auto_save"
 msgstr "Sprache"
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_auto_save"
 msgstr "Einfach Dunkelmodus verwenden"
 
@@ -463,12 +450,10 @@ msgid "menu_bar_project_open_project"
 msgstr "Projekt öffnen"
 
 #, fuzzy
-#| msgid "menu_bar_project_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "Projekt öffnen"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_project_quit"
 msgstr "Projekt"
 
@@ -476,12 +461,10 @@ msgid "menu_bar_project_open_settings"
 msgstr "Einstellungen"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_preferences"
 msgstr "Projekt"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "Einstellungen"
 
@@ -495,6 +478,10 @@ msgstr "Handbuch öffnen"
 #, fuzzy
 msgid "menu_bar_preferences_command_bar"
 msgstr "Speichern unter..."
+
+#, fuzzy
+msgid "menu_bar_help"
+msgstr "Editor"
 
 #, fuzzy
 msgid "menu_bar_help_report_issue"
@@ -513,12 +500,10 @@ msgid "menu_bar_help_tutorials"
 msgstr "Tutorials öffnen"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_discord"
 msgstr "Editor"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_site"
 msgstr "Editor"
 
@@ -527,7 +512,6 @@ msgid "menu_bar_about_gozen"
 msgstr "Über GoZen"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "GoZen unterstützen"
 

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,7 +28,6 @@ msgid "title_extras"
 msgstr "其他"
 
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "title_render_settings"
 msgstr "編輯器設定"
 
@@ -91,7 +90,6 @@ msgid "title_add_color_file"
 msgstr "新增顏色檔案"
 
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "title_close_without_saving"
 msgstr "編輯器設定"
 
@@ -163,7 +161,6 @@ msgid "button_save"
 msgstr "儲存"
 
 #, fuzzy
-#| msgid "button_save"
 msgid "button_dont_save"
 msgstr "儲存"
 
@@ -226,12 +223,10 @@ msgid "setting_language"
 msgstr "語言"
 
 #, fuzzy
-#| msgid "setting_language"
 msgid "setting_display_scale"
 msgstr "語言"
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_display_scale"
 msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
@@ -257,7 +252,6 @@ msgid "setting_default_text_duration"
 msgstr ""
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_duration_in_frames"
 msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
@@ -287,25 +281,22 @@ msgstr "刪除空白區間修飾鍵"
 
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr ""
-"在時間軸上雙擊空白處會刪除該空白區間並移動後方所有"
-"片段。設定修飾鍵後，您需要按住該特定按鍵再雙擊，才"
-"能移除片段之間的空白區間。"
+"在時間軸上雙擊空白處會刪除該空白區間並移動後方所有片段。設定修飾鍵後，您需要"
+"按住該特定按鍵再雙擊，才能移除片段之間的空白區間。"
 
 msgid "setting_check_version"
 msgstr "檢查更新"
 
 msgid "setting_tooltip_check_version"
 msgstr ""
-"此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些"
-"人不希望應用程式連網，因此此功能預設為「停用」。"
+"此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些人不希望應用程式連網，因此"
+"此功能預設為「停用」。"
 
 #, fuzzy
-#| msgid "setting_language"
 msgid "setting_auto_save"
 msgstr "語言"
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_auto_save"
 msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
@@ -366,9 +357,8 @@ msgstr "品質"
 #, fuzzy
 msgid "render_option_tooltip_quality"
 msgstr ""
-"調整 CRF (恆定速率因子)。最低品質設定為 50，最高品"
-"質設定為 15。預設值為 18。此設定用於調整位元率，會"
-"影響品質與檔案大小。數值 0 為最佳品質，51 為最差品"
+"調整 CRF (恆定速率因子)。最低品質設定為 50，最高品質設定為 15。預設值為 18。"
+"此設定用於調整位元率，會影響品質與檔案大小。數值 0 為最佳品質，51 為最差品"
 "質，18 的畫質損失通常難以察覺。"
 
 msgid "render_option_speed"
@@ -376,18 +366,15 @@ msgstr "速度"
 
 msgid "render_option_tooltip_speed"
 msgstr ""
-"調整 H.264 的編碼速度。設定過高的速度可能會對最終"
-"影片品質產生負面影響。"
+"調整 H.264 的編碼速度。設定過高的速度可能會對最終影片品質產生負面影響。"
 
 msgid "render_option_gop_size"
 msgstr "GOP 大小"
 
 msgid "render_option_tooltip_gop_size"
 msgstr ""
-"GOP (Group Of Pictures，圖像群組)。數值越高，壓縮"
-"率越好。但數值越高，在影片中跳轉的精確度就越低。如"
-"果您打算將渲染後的影片用於後續編輯，請設定較低的數"
-"值。"
+"GOP (Group Of Pictures，圖像群組)。數值越高，壓縮率越好。但數值越高，在影片中"
+"跳轉的精確度就越低。如果您打算將渲染後的影片用於後續編輯，請設定較低的數值。"
 
 msgid "render_option_threads_cores"
 msgstr "執行緒/核心數"
@@ -432,7 +419,6 @@ msgid "command_render_menu"
 msgstr "渲染選單"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_project"
 msgstr "新增專案"
 
@@ -443,32 +429,26 @@ msgid "menu_bar_project_save_as"
 msgstr ""
 
 #, fuzzy
-#| msgid "button_open_project"
 msgid "menu_bar_project_open_project"
 msgstr "開啟專案"
 
 #, fuzzy
-#| msgid "button_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "開啟專案"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_project_quit"
 msgstr "新增專案"
 
 #, fuzzy
-#| msgid "command_project_settings"
 msgid "menu_bar_project_open_settings"
 msgstr "專案設定"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_preferences"
 msgstr "新增專案"
 
 #, fuzzy
-#| msgid "command_editor_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "編輯器設定"
 
@@ -482,12 +462,14 @@ msgid "menu_bar_preferences_command_bar"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
+msgid "menu_bar_help"
+msgstr "新增專案"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "新增專案"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_help_check_updates"
 msgstr "新增專案"
 
@@ -495,7 +477,6 @@ msgid "menu_bar_help_manual"
 msgstr ""
 
 #, fuzzy
-#| msgid "command_editor_settings"
 msgid "menu_bar_help_tutorials"
 msgstr "編輯器設定"
 
@@ -503,17 +484,14 @@ msgid "menu_bar_help_discord"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_help_site"
 msgstr "新增專案"
 
 #, fuzzy
-#| msgid "title_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "關於 GoZen"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "支持 GoZen"
 
@@ -521,12 +499,10 @@ msgid "file_dialog_title_add_files"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "file_dialog_title_save_project_as"
 msgstr "新增專案"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "file_dialog_title_open_project"
 msgstr "新增專案"
 
@@ -534,7 +510,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr ""
 
 #, fuzzy
-#| msgid "setting_tooltip_default_project_framerate"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "預設影片專案的幀率。"
 

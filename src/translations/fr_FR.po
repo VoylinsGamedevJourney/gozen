@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Slander\n"
 "Language-Team: \n"
@@ -85,12 +85,10 @@ msgid "title_add_color_file"
 msgstr "Ajouter un clip de couleur"
 
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "title_close_without_saving"
 msgstr "Configuration de l'éditeur"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "title_dialog_file_too_big"
 msgstr "Ajouter des fichiers"
 
@@ -155,7 +153,6 @@ msgid "button_save"
 msgstr "Sauvegarder"
 
 #, fuzzy
-#| msgid "button_save"
 msgid "button_dont_save"
 msgstr "Sauvegarder"
 
@@ -216,12 +213,10 @@ msgid "setting_language"
 msgstr "Langue"
 
 #, fuzzy
-#| msgid "setting_auto_save"
 msgid "setting_display_scale"
 msgstr "Sauvegarde automatique du projet"
 
 #, fuzzy
-#| msgid "setting_tooltip_auto_save"
 msgid "setting_tooltip_display_scale"
 msgstr "Sauvegarde automatiquement votre projet au bout de quelques minutes."
 
@@ -422,12 +417,10 @@ msgid "menu_bar_project_open_project"
 msgstr "Ouvrir"
 
 #, fuzzy
-#| msgid "menu_bar_project_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "Ouvrir"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_project_quit"
 msgstr "Projet"
 
@@ -435,12 +428,10 @@ msgid "menu_bar_project_open_settings"
 msgstr "Ouvrir les réglages"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_preferences"
 msgstr "Projet"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "Ouvrir les réglages"
 
@@ -448,52 +439,46 @@ msgid "menu_bar_preferences_keyboard_shortcuts"
 msgstr ""
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_preferences_module_manager"
 msgstr "Manuel"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_preferences_command_bar"
 msgstr "Sauvegarder sous ..."
 
 #, fuzzy
-#| msgid "menu_bar_project_save"
+msgid "menu_bar_help"
+msgstr "Éditeur"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "Sauvegarder"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_help_check_updates"
 msgstr "Sauvegarder sous ..."
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_help_manual"
 msgstr "Manuel"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_tutorials"
 msgid "menu_bar_help_tutorials"
 msgstr "Tutoriels"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_discord"
 msgstr "Éditeur"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_site"
 msgstr "Éditeur"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "À Propos de GoZen"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "Soutenir GoZen"
 
@@ -501,12 +486,10 @@ msgid "file_dialog_title_add_files"
 msgstr "Ajouter des fichiers"
 
 #, fuzzy
-#| msgid "file_dialog_title_select_save_path"
 msgid "file_dialog_title_save_project_as"
 msgstr "Sélectionner le chemin de sauvegarde"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_title_open_project"
 msgstr "Ajouter des fichiers"
 
@@ -514,7 +497,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr "Sélectionner le chemin de sauvegarde"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "Ajouter des fichiers"
 

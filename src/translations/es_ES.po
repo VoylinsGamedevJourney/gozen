@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -29,7 +29,6 @@ msgid "title_extras"
 msgstr "Valores por defecto"
 
 #, fuzzy
-#| msgid "title_rendering"
 msgid "title_render_settings"
 msgstr "Renderizado"
 
@@ -40,7 +39,6 @@ msgid "title_rendering_finished"
 msgstr "Renderizado finalizado"
 
 #, fuzzy
-#| msgid "title_rendering"
 msgid "title_rendering_error"
 msgstr "Renderizado"
 
@@ -74,17 +72,14 @@ msgid "title_sponsors"
 msgstr ""
 
 #, fuzzy
-#| msgid "button_tooltip_editor_settings"
 msgid "title_editor_settings"
 msgstr "Configuración del editor."
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "title_project_settings"
 msgstr "Nuevo proyecto"
 
 #, fuzzy
-#| msgid "title_cpu_threads"
 msgid "title_chapters"
 msgstr "Hilos de CPU"
 
@@ -92,7 +87,6 @@ msgid "title_save_image_to_file"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_render_audio"
 msgid "title_save_video_audio_to_wav"
 msgstr "Renderizar audio"
 
@@ -100,12 +94,10 @@ msgid "title_add_color_file"
 msgstr ""
 
 #, fuzzy
-#| msgid "button_tooltip_editor_settings"
 msgid "title_close_without_saving"
 msgstr "Configuración del editor."
 
 #, fuzzy
-#| msgid "button_tooltip_editor_settings"
 msgid "title_dialog_file_too_big"
 msgstr "Configuración del editor."
 
@@ -142,7 +134,6 @@ msgid "button_create_new_project"
 msgstr "Crear nuevo proyecto"
 
 #, fuzzy
-#| msgid "button_create_new_project"
 msgid "button_create_new_color_file"
 msgstr "Crear nuevo proyecto"
 
@@ -162,12 +153,10 @@ msgid "button_return"
 msgstr "Volver"
 
 #, fuzzy
-#| msgid "button_save_settings"
 msgid "button_screen_editing"
 msgstr "Guardar configuración"
 
 #, fuzzy
-#| msgid "button_start_render"
 msgid "button_screen_render"
 msgstr "Iniciar renderizado"
 
@@ -178,7 +167,6 @@ msgid "button_save"
 msgstr "Guardar"
 
 #, fuzzy
-#| msgid "button_save"
 msgid "button_dont_save"
 msgstr "Guardar"
 
@@ -240,12 +228,10 @@ msgid "setting_language"
 msgstr "Idioma"
 
 #, fuzzy
-#| msgid "setting_language"
 msgid "setting_display_scale"
 msgstr "Idioma"
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_display_scale"
 msgstr "El modo claro es mejor."
 
@@ -265,12 +251,10 @@ msgid "setting_default_image_duration"
 msgstr "Duración predeterminada de la imagen"
 
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "setting_default_color_duration"
 msgstr "Duración predeterminada de la imagen"
 
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "setting_default_text_duration"
 msgstr "Duración predeterminada de la imagen"
 
@@ -319,12 +303,10 @@ msgid "setting_tooltip_check_version"
 msgstr "El modo claro es mejor."
 
 #, fuzzy
-#| msgid "setting_language"
 msgid "setting_auto_save"
 msgstr "Idioma"
 
 #, fuzzy
-#| msgid "setting_tooltip_theme"
 msgid "setting_tooltip_auto_save"
 msgstr "El modo claro es mejor."
 
@@ -452,7 +434,6 @@ msgid "command_render_menu"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_project"
 msgstr "Nuevo proyecto"
 
@@ -463,17 +444,14 @@ msgid "menu_bar_project_save_as"
 msgstr ""
 
 #, fuzzy
-#| msgid "button_open_project"
 msgid "menu_bar_project_open_project"
 msgstr "Abrir proyecto"
 
 #, fuzzy
-#| msgid "button_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "Abrir proyecto"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_project_quit"
 msgstr "Nuevo proyecto"
 
@@ -481,7 +459,6 @@ msgid "menu_bar_project_open_settings"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_preferences"
 msgstr "Nuevo proyecto"
 
@@ -499,12 +476,14 @@ msgid "menu_bar_preferences_command_bar"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
+msgid "menu_bar_help"
+msgstr "Nuevo proyecto"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "Nuevo proyecto"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_help_check_updates"
 msgstr "Nuevo proyecto"
 
@@ -519,17 +498,14 @@ msgid "menu_bar_help_discord"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "menu_bar_help_site"
 msgstr "Nuevo proyecto"
 
 #, fuzzy
-#| msgid "title_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "Acerca de GoZen"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "Apoyar a GoZen"
 
@@ -537,12 +513,10 @@ msgid "file_dialog_title_add_files"
 msgstr ""
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "file_dialog_title_save_project_as"
 msgstr "Nuevo proyecto"
 
 #, fuzzy
-#| msgid "title_new_project"
 msgid "file_dialog_title_open_project"
 msgstr "Nuevo proyecto"
 
@@ -550,7 +524,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr ""
 
 #, fuzzy
-#| msgid "setting_tooltip_default_project_framerate"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "Los fotogramas por segundo predeterminados del proyecto."
 

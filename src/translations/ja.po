@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -85,18 +85,15 @@ msgid "title_add_color_file"
 msgstr "カラーファイルを追加"
 
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "title_close_without_saving"
 msgstr "エディター設定"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "title_dialog_file_too_big"
 msgstr "ファイルを追加"
 
 msgid "button_tooltip_create_new_project"
-msgstr ""
-"選択した設定で新しいプロジェクトを作成します。"
+msgstr "選択した設定で新しいプロジェクトを作成します。"
 
 msgid "button_gozen_site"
 msgstr "GoZenサイト"
@@ -156,7 +153,6 @@ msgid "button_save"
 msgstr "保存"
 
 #, fuzzy
-#| msgid "button_save"
 msgid "button_dont_save"
 msgstr "保存"
 
@@ -217,12 +213,10 @@ msgid "setting_language"
 msgstr "言語"
 
 #, fuzzy
-#| msgid "setting_auto_save"
 msgid "setting_display_scale"
 msgstr "プロジェクトを自動保存"
 
 #, fuzzy
-#| msgid "setting_tooltip_auto_save"
 msgid "setting_tooltip_display_scale"
 msgstr "数分ごとにプロジェクトを自動保存します。"
 
@@ -263,8 +257,7 @@ msgid "setting_default_project_framerate"
 msgstr "デフォルトプロジェクトフレームレート"
 
 msgid "setting_tooltip_default_project_framerate"
-msgstr ""
-"デフォルトの動画プロジェクトのフレームレートです。"
+msgstr "デフォルトの動画プロジェクトのフレームレートです。"
 
 msgid "setting_default_track_amount"
 msgstr "デフォルトのトラック数"
@@ -277,20 +270,18 @@ msgstr "空白削除修飾キー"
 
 msgid "setting_tooltip_delete_empty_space_mod"
 msgstr ""
-"タイムライン上の空白部分をダブルクリックすると、そ"
-"の空白を削除して全てを移動させます。修飾キーを設定"
-"すると、その特定のキーを押しながらダブルクリックす"
-"る必要があり、クリップ間の空白を削除します。"
+"タイムライン上の空白部分をダブルクリックすると、その空白を削除して全てを移動"
+"させます。修飾キーを設定すると、その特定のキーを押しながらダブルクリックする"
+"必要があり、クリップ間の空白を削除します。"
 
 msgid "setting_check_version"
 msgstr "バージョンを確認"
 
 msgid "setting_tooltip_check_version"
 msgstr ""
-"この機能はGitHubリポジトリを確認するためインター"
-"ネットに接続します。アプリケーションがインターネッ"
-"トに接続することを好まないユーザーもいるため、この"
-"設定はデフォルトで「無効」になっています。"
+"この機能はGitHubリポジトリを確認するためインターネットに接続します。アプリ"
+"ケーションがインターネットに接続することを好まないユーザーもいるため、この設"
+"定はデフォルトで「無効」になっています。"
 
 msgid "setting_auto_save"
 msgstr "プロジェクトを自動保存"
@@ -302,29 +293,22 @@ msgid "encoding_progress_text_setup"
 msgstr "エンコードを準備中..."
 
 msgid "encoding_progress_text_open_error"
-msgstr ""
-"エンコードを開けませんでした。パスと設定を確認して"
-"ください！"
+msgstr "エンコードを開けませんでした。パスと設定を確認してください！"
 
 msgid "encoding_progress_text_compiling_audio"
 msgstr "音声データをコンパイル中..."
 
 msgid "encoding_progress_text_sending_audio"
-msgstr ""
-"エンコードへの音声データ送信中に問題が発生しまし"
-"た！"
+msgstr "エンコードへの音声データ送信中に問題が発生しました！"
 
 msgid "encoding_progress_text_sending_audio_error"
-msgstr ""
-"エンコードへの音声データ送信中に問題が発生しまし"
-"た！"
+msgstr "エンコードへの音声データ送信中に問題が発生しました！"
 
 msgid "encoding_progress_text_creating_sending_data"
 msgstr "フレームデータを作成・送信中..."
 
 msgid "encoding_progress_text_sending_data_error"
-msgstr ""
-"エンコードへのフレーム送信中に問題が発生しました！"
+msgstr "エンコードへのフレーム送信中に問題が発生しました！"
 
 msgid "encoding_progress_text_canceling"
 msgstr "エンコードプロセスをキャンセル中..."
@@ -352,39 +336,34 @@ msgstr "品質"
 
 msgid "render_option_tooltip_quality"
 msgstr ""
-"CRF（一定レート係数）を調整します。数値が低いほど"
-"高画質ですが、エンコードが遅くなります。数値が高い"
-"ほど低画質になりますが、エンコードは速くなります。"
-"ほとんどのコーデックでは15〜18の範囲が推奨されてお"
-"り、画質の違いはほとんど感じられません。"
+"CRF（一定レート係数）を調整します。数値が低いほど高画質ですが、エンコードが遅"
+"くなります。数値が高いほど低画質になりますが、エンコードは速くなります。ほと"
+"んどのコーデックでは15〜18の範囲が推奨されており、画質の違いはほとんど感じら"
+"れません。"
 
 msgid "render_option_speed"
 msgstr "速度"
 
 msgid "render_option_tooltip_speed"
 msgstr ""
-"H264エンコードの速度を調整します。速度を高くしすぎ"
-"ると、最終的な動画品質に悪影響を与える可能性があり"
-"ます。"
+"H264エンコードの速度を調整します。速度を高くしすぎると、最終的な動画品質に悪"
+"影響を与える可能性があります。"
 
 msgid "render_option_gop_size"
 msgstr "GOPサイズ"
 
 msgid "render_option_tooltip_gop_size"
 msgstr ""
-"Group Of Pictures（ピクチャのグループ）。値が高い"
-"ほど、低い値と比較して圧縮に適しています。しかし、"
-"値が高いほど、動画再生中のシークやスクラブの精度が"
-"低くなります。レンダリングされた動画を編集に使用す"
-"るつもりなら、低い値に設定してください。"
+"Group Of Pictures（ピクチャのグループ）。値が高いほど、低い値と比較して圧縮に"
+"適しています。しかし、値が高いほど、動画再生中のシークやスクラブの精度が低く"
+"なります。レンダリングされた動画を編集に使用するつもりなら、低い値に設定して"
+"ください。"
 
 msgid "render_option_threads_cores"
 msgstr "スレッド/コア数"
 
 msgid "render_option_tooltip_threads_cores"
-msgstr ""
-"利用可能な全てのスレッドを使用するには「0」を入力"
-"してください。"
+msgstr "利用可能な全てのスレッドを使用するには「0」を入力してください。"
 
 msgid "render_option_video_length"
 msgstr "動画の長さ"
@@ -435,12 +414,10 @@ msgid "menu_bar_project_open_project"
 msgstr "開く"
 
 #, fuzzy
-#| msgid "menu_bar_project_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "開く"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_project_quit"
 msgstr "プロジェクト"
 
@@ -448,12 +425,10 @@ msgid "menu_bar_project_open_settings"
 msgstr "設定を開く"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_preferences"
 msgstr "プロジェクト"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "設定を開く"
 
@@ -461,52 +436,46 @@ msgid "menu_bar_preferences_keyboard_shortcuts"
 msgstr ""
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_preferences_module_manager"
 msgstr "マニュアル"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_preferences_command_bar"
 msgstr "名前を付けて保存..."
 
 #, fuzzy
-#| msgid "menu_bar_project_save"
+msgid "menu_bar_help"
+msgstr "エディター"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "保存"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_help_check_updates"
 msgstr "名前を付けて保存..."
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_help_manual"
 msgstr "マニュアル"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_tutorials"
 msgid "menu_bar_help_tutorials"
 msgstr "チュートリアル"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_discord"
 msgstr "エディター"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_site"
 msgstr "エディター"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "GoZenについて"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "GoZenを支援する"
 
@@ -514,12 +483,10 @@ msgid "file_dialog_title_add_files"
 msgstr "ファイルを追加"
 
 #, fuzzy
-#| msgid "file_dialog_title_select_save_path"
 msgid "file_dialog_title_save_project_as"
 msgstr "保存パスを選択"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_title_open_project"
 msgstr "ファイルを追加"
 
@@ -527,7 +494,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr "保存パスを選択"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "ファイルを追加"
 

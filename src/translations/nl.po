@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -85,12 +85,10 @@ msgid "title_add_color_file"
 msgstr "Kleur clip toevoegen"
 
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "title_close_without_saving"
 msgstr "Editor instellingen"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "title_dialog_file_too_big"
 msgstr "Bestanden toevoegen"
 
@@ -155,7 +153,6 @@ msgid "button_save"
 msgstr "Opslaan"
 
 #, fuzzy
-#| msgid "button_save"
 msgid "button_dont_save"
 msgstr "Opslaan"
 
@@ -216,12 +213,10 @@ msgid "setting_language"
 msgstr "Taal"
 
 #, fuzzy
-#| msgid "setting_auto_save"
 msgid "setting_display_scale"
 msgstr "Project automatisch opslaan"
 
 #, fuzzy
-#| msgid "setting_tooltip_auto_save"
 msgid "setting_tooltip_display_scale"
 msgstr "Sla je project elke paar minuten automatisch op."
 
@@ -421,12 +416,10 @@ msgid "menu_bar_project_open_project"
 msgstr "Openen"
 
 #, fuzzy
-#| msgid "menu_bar_project_open_project"
 msgid "menu_bar_project_recent_projects"
 msgstr "Openen"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_project_quit"
 msgstr "Project"
 
@@ -434,12 +427,10 @@ msgid "menu_bar_project_open_settings"
 msgstr "Instellingen"
 
 #, fuzzy
-#| msgid "menu_bar_project"
 msgid "menu_bar_preferences"
 msgstr "Project"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_settings"
 msgid "menu_bar_preferences_editor_settings"
 msgstr "Instellingen"
 
@@ -447,52 +438,46 @@ msgid "menu_bar_preferences_keyboard_shortcuts"
 msgstr ""
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_preferences_module_manager"
 msgstr "Handleiding"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_preferences_command_bar"
 msgstr "Opslaan als ..."
 
 #, fuzzy
-#| msgid "menu_bar_project_save"
+msgid "menu_bar_help"
+msgstr "Editor"
+
+#, fuzzy
 msgid "menu_bar_help_report_issue"
 msgstr "Opslaan"
 
 #, fuzzy
-#| msgid "menu_bar_project_save_as"
 msgid "menu_bar_help_check_updates"
 msgstr "Opslaan als ..."
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_manual"
 msgid "menu_bar_help_manual"
 msgstr "Handleiding"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_url_tutorials"
 msgid "menu_bar_help_tutorials"
 msgstr "Tutorials"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_discord"
 msgstr "Editor"
 
 #, fuzzy
-#| msgid "menu_bar_editor"
 msgid "menu_bar_help_site"
 msgstr "Editor"
 
 #, fuzzy
-#| msgid "menu_bar_editor_open_about_gozen"
 msgid "menu_bar_about_gozen"
 msgstr "Over GoZen"
 
 #, fuzzy
-#| msgid "text_support_gozen"
 msgid "menu_bar_support_gozen"
 msgstr "Steun GoZen"
 
@@ -500,12 +485,10 @@ msgid "file_dialog_title_add_files"
 msgstr "Bestanden toevoegen"
 
 #, fuzzy
-#| msgid "file_dialog_title_select_save_path"
 msgid "file_dialog_title_save_project_as"
 msgstr "Opslaglocatie selecteren"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_title_open_project"
 msgstr "Bestanden toevoegen"
 
@@ -513,7 +496,6 @@ msgid "file_dialog_title_select_save_path"
 msgstr "Opslaglocatie selecteren"
 
 #, fuzzy
-#| msgid "file_dialog_title_add_files"
 msgid "file_dialog_tooltip_gozen_project_files"
 msgstr "Bestanden toevoegen"
 
