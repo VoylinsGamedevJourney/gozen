@@ -141,7 +141,7 @@ func open_project() -> void:
 
 
 func open_settings_menu() -> void:
-	PopupManager.show_popup(PopupManager.POPUP.PROJECT_SETTINGS)
+	PopupManager.open_popup(PopupManager.POPUP.PROJECT_SETTINGS)
 
 
 func _add_clip(clip_data: ClipData) -> void:

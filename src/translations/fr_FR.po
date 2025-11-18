@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "À Propos de GoZen"
@@ -84,6 +84,16 @@ msgstr "Sauvegarder la piste audio"
 msgid "title_add_color_file"
 msgstr "Ajouter un clip de couleur"
 
+#, fuzzy
+#| msgid "title_editor_settings"
+msgid "title_close_without_saving"
+msgstr "Configuration de l'éditeur"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "title_dialog_file_too_big"
+msgstr "Ajouter des fichiers"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Créer un nouveau projet avec les réglages sélectionnés."
 
@@ -144,6 +154,11 @@ msgstr "Démarrer le rendu"
 msgid "button_save"
 msgstr "Sauvegarder"
 
+#, fuzzy
+#| msgid "button_save"
+msgid "button_dont_save"
+msgstr "Sauvegarder"
+
 msgid "button_save_settings"
 msgstr "Sauvegarder les réglages"
 
@@ -199,6 +214,16 @@ msgstr "Couleur d'arrière-plan"
 
 msgid "setting_language"
 msgstr "Langue"
+
+#, fuzzy
+#| msgid "setting_auto_save"
+msgid "setting_display_scale"
+msgstr "Sauvegarde automatique du projet"
+
+#, fuzzy
+#| msgid "setting_tooltip_auto_save"
+msgid "setting_tooltip_display_scale"
+msgstr "Sauvegarde automatiquement votre projet au bout de quelques minutes."
 
 msgid "setting_theme"
 msgstr "Thème"
@@ -387,9 +412,6 @@ msgstr "Menu de rendu"
 msgid "menu_bar_project"
 msgstr "Projet"
 
-msgid "menu_bar_editor"
-msgstr "Éditeur"
-
 msgid "menu_bar_project_save"
 msgstr "Sauvegarder"
 
@@ -399,35 +421,102 @@ msgstr "Sauvegarder sous ..."
 msgid "menu_bar_project_open_project"
 msgstr "Ouvrir"
 
+#, fuzzy
+#| msgid "menu_bar_project_open_project"
+msgid "menu_bar_project_recent_projects"
+msgstr "Ouvrir"
+
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_project_quit"
+msgstr "Projet"
+
 msgid "menu_bar_project_open_settings"
 msgstr "Ouvrir les réglages"
 
-msgid "menu_bar_editor_open_settings"
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_preferences"
+msgstr "Projet"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_settings"
+msgid "menu_bar_preferences_editor_settings"
 msgstr "Ouvrir les réglages"
 
-msgid "menu_bar_editor_open_url_site"
-msgstr "Site Internet de GoZen"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr ""
 
-msgid "menu_bar_editor_open_url_manual"
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_preferences_module_manager"
 msgstr "Manuel"
 
-msgid "menu_bar_editor_open_url_tutorials"
+#, fuzzy
+#| msgid "menu_bar_project_save_as"
+msgid "menu_bar_preferences_command_bar"
+msgstr "Sauvegarder sous ..."
+
+#, fuzzy
+#| msgid "menu_bar_project_save"
+msgid "menu_bar_help_report_issue"
+msgstr "Sauvegarder"
+
+#, fuzzy
+#| msgid "menu_bar_project_save_as"
+msgid "menu_bar_help_check_updates"
+msgstr "Sauvegarder sous ..."
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_help_manual"
+msgstr "Manuel"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_help_tutorials"
 msgstr "Tutoriels"
 
-msgid "menu_bar_editor_open_url_discord"
-msgstr "Serveur Discord"
+#, fuzzy
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_discord"
+msgstr "Éditeur"
 
-msgid "menu_bar_editor_open_url_support"
-msgstr "Soutenir GoZen"
+#, fuzzy
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_site"
+msgstr "Éditeur"
 
-msgid "menu_bar_editor_open_about_gozen"
+#, fuzzy
+#| msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "À Propos de GoZen"
+
+#, fuzzy
+#| msgid "text_support_gozen"
+msgid "menu_bar_support_gozen"
+msgstr "Soutenir GoZen"
 
 msgid "file_dialog_title_add_files"
 msgstr "Ajouter des fichiers"
 
+#, fuzzy
+#| msgid "file_dialog_title_select_save_path"
+msgid "file_dialog_title_save_project_as"
+msgstr "Sélectionner le chemin de sauvegarde"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "file_dialog_title_open_project"
+msgstr "Ajouter des fichiers"
+
 msgid "file_dialog_title_select_save_path"
 msgstr "Sélectionner le chemin de sauvegarde"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "Ajouter des fichiers"
 
 msgid "file_panel_item_add_files"
 msgstr "Ajouter un/des fichier(s)"
@@ -464,3 +553,12 @@ msgstr "Réglages vidéo"
 
 msgid "popup_separator_text_options"
 msgstr "Réglages de texte"
+
+#~ msgid "menu_bar_editor_open_url_site"
+#~ msgstr "Site Internet de GoZen"
+
+#~ msgid "menu_bar_editor_open_url_discord"
+#~ msgstr "Serveur Discord"
+
+#~ msgid "menu_bar_editor_open_url_support"
+#~ msgstr "Soutenir GoZen"

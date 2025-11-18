@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "Über GoZen"
@@ -97,6 +97,15 @@ msgstr "Audio rendern"
 msgid "title_add_color_file"
 msgstr "Farbdatei hinzufügen"
 
+#, fuzzy
+#| msgid "button_tooltip_editor_settings"
+msgid "title_close_without_saving"
+msgstr "Editor Einstellungen"
+
+#, fuzzy
+msgid "title_dialog_file_too_big"
+msgstr "Dateien hinzufügen"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Neues Projekt mit gewählten Einstellungen erstellen"
 
@@ -163,6 +172,11 @@ msgstr "Render starten"
 msgid "button_save"
 msgstr "Speichern"
 
+#, fuzzy
+#| msgid "button_save"
+msgid "button_dont_save"
+msgstr "Speichern"
+
 msgid "button_save_settings"
 msgstr "Einstellungen speichern"
 
@@ -184,9 +198,9 @@ msgstr "Discord Link"
 msgid "text_support_gozen"
 msgstr "GoZen unterstützen"
 
-#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
+#, fuzzy
 msgid "text_gozen_made_by"
 msgstr "GoZen ist ein Video Editor erstellt von"
 
@@ -220,6 +234,16 @@ msgstr "Hintergrundfarbe"
 
 msgid "setting_language"
 msgstr "Sprache"
+
+#, fuzzy
+#| msgid "setting_language"
+msgid "setting_display_scale"
+msgstr "Sprache"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_display_scale"
+msgstr "Einfach Dunkelmodus verwenden"
 
 msgid "setting_theme"
 msgstr "Theme"
@@ -427,9 +451,6 @@ msgstr "Rendermenü"
 msgid "menu_bar_project"
 msgstr "Projekt"
 
-msgid "menu_bar_editor"
-msgstr "Editor"
-
 #, fuzzy
 msgid "menu_bar_project_save"
 msgstr "Speichern"
@@ -441,43 +462,94 @@ msgstr "Speichern unter..."
 msgid "menu_bar_project_open_project"
 msgstr "Projekt öffnen"
 
+#, fuzzy
+#| msgid "menu_bar_project_open_project"
+msgid "menu_bar_project_recent_projects"
+msgstr "Projekt öffnen"
+
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_project_quit"
+msgstr "Projekt"
+
 msgid "menu_bar_project_open_settings"
 msgstr "Einstellungen"
 
-msgid "menu_bar_editor_open_settings"
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_preferences"
+msgstr "Projekt"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_settings"
+msgid "menu_bar_preferences_editor_settings"
 msgstr "Einstellungen"
 
-#, fuzzy
-msgid "menu_bar_editor_open_url_site"
-msgstr "GoZen Website öffnen"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_preferences_module_manager"
 msgstr "Handbuch öffnen"
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_preferences_command_bar"
+msgstr "Speichern unter..."
+
+#, fuzzy
+msgid "menu_bar_help_report_issue"
+msgstr "Speichern"
+
+#, fuzzy
+msgid "menu_bar_help_check_updates"
+msgstr "Speichern unter..."
+
+#, fuzzy
+msgid "menu_bar_help_manual"
+msgstr "Handbuch öffnen"
+
+#, fuzzy
+msgid "menu_bar_help_tutorials"
 msgstr "Tutorials öffnen"
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_discord"
-msgstr "Discord öffnen"
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_discord"
+msgstr "Editor"
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_support"
-msgstr "GoZen unterstützen"
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_site"
+msgstr "Editor"
 
 #, fuzzy
-msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "Über GoZen"
+
+#, fuzzy
+#| msgid "text_support_gozen"
+msgid "menu_bar_support_gozen"
+msgstr "GoZen unterstützen"
 
 #, fuzzy
 msgid "file_dialog_title_add_files"
 msgstr "Dateien hinzufügen"
 
 #, fuzzy
+msgid "file_dialog_title_save_project_as"
+msgstr "Speicherpfad wählen"
+
+#, fuzzy
+msgid "file_dialog_title_open_project"
+msgstr "Dateien hinzufügen"
+
+#, fuzzy
 msgid "file_dialog_title_select_save_path"
 msgstr "Speicherpfad wählen"
+
+#, fuzzy
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "Dateien hinzufügen"
 
 #, fuzzy
 msgid "file_panel_item_add_files"
@@ -526,3 +598,15 @@ msgstr "Videooptionen"
 #, fuzzy
 msgid "popup_separator_text_options"
 msgstr "Textoptionen"
+
+#, fuzzy
+#~ msgid "menu_bar_editor_open_url_site"
+#~ msgstr "GoZen Website öffnen"
+
+#, fuzzy
+#~ msgid "menu_bar_editor_open_url_discord"
+#~ msgstr "Discord öffnen"
+
+#, fuzzy
+#~ msgid "menu_bar_editor_open_url_support"
+#~ msgstr "GoZen unterstützen"

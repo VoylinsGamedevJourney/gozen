@@ -56,7 +56,7 @@ func _file_menu_pressed(id: int) -> void:
 			dialog.popup_centered()
 		1: # TODO: Add text
 			pass
-		2: PopupManager.show_popup(PopupManager.POPUP.COLOR)
+		2: PopupManager.open_popup(PopupManager.POPUP.COLOR)
 
 
 func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:

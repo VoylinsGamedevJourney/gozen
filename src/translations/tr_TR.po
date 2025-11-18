@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "GoZen hakkında"
@@ -208,6 +208,16 @@ msgstr "Arka plan rengi"
 msgid "setting_language"
 msgstr "Dil"
 
+#, fuzzy
+#| msgid "setting_auto_save"
+msgid "setting_display_scale"
+msgstr "Projeyi otomatik kaydet"
+
+#, fuzzy
+#| msgid "setting_tooltip_auto_save"
+msgid "setting_tooltip_display_scale"
+msgstr "Projeyi birkaç dakikada bir otomatik kaydeder."
+
 msgid "setting_theme"
 msgstr "Tema"
 
@@ -223,19 +233,13 @@ msgstr "Ses dalga formu stili"
 msgid "setting_default_image_duration"
 msgstr "Varsayılan resim süresi"
 
-msgid "setting_tooltip_duration_in_frames"
-msgstr "Süre (kare cinsinden)."
-
 msgid "setting_default_color_duration"
 msgstr "Varsayılan renk süresi"
-
-msgid "setting_tooltip_default_color_duration"
-msgstr "Süre (kare cinsinden)."
 
 msgid "setting_default_text_duration"
 msgstr "Varsayılan metin süresi"
 
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "Süre (kare cinsinden)."
 
 msgid "setting_default_project_resolution"
@@ -263,13 +267,16 @@ msgid "setting_delete_empty_space_mod"
 msgstr "Boş alan silme değiştirici"
 
 msgid "setting_tooltip_delete_empty_space_mod"
-msgstr "Zaman çizelgesinde boşluğa çift tıklamak boşluğu siler ve her şeyi taşır. Değiştirici tuşu etkinse, o tuşa basmanız gerekir."
+msgstr ""
+"Zaman çizelgesinde boşluğa çift tıklamak boşluğu siler ve her şeyi taşır. "
+"Değiştirici tuşu etkinse, o tuşa basmanız gerekir."
 
 msgid "setting_check_version"
 msgstr "Sürüm kontrolü"
 
 msgid "setting_tooltip_check_version"
-msgstr "Bu özellik GitHub deposunu kontrol eder ve internet bağlantısı gerektirir."
+msgstr ""
+"Bu özellik GitHub deposunu kontrol eder ve internet bağlantısı gerektirir."
 
 msgid "setting_auto_save"
 msgstr "Projeyi otomatik kaydet"
@@ -323,19 +330,25 @@ msgid "render_option_quality"
 msgstr "Kalite"
 
 msgid "render_option_tooltip_quality"
-msgstr "CRF (Sabit Oran Faktörü) ayarını değiştirir; düşük değer = yüksek kalite (yavaş), yüksek değer = düşük kalite (hızlı). Genellikle 15–18 arası önerilir."
+msgstr ""
+"CRF (Sabit Oran Faktörü) ayarını değiştirir; düşük değer = yüksek kalite "
+"(yavaş), yüksek değer = düşük kalite (hızlı). Genellikle 15–18 arası "
+"önerilir."
 
 msgid "render_option_speed"
 msgstr "Hız"
 
 msgid "render_option_tooltip_speed"
-msgstr "H264 kodlama hızı ayarı. Çok yüksek ayar kaliteyi olumsuz etkileyebilir."
+msgstr ""
+"H264 kodlama hızı ayarı. Çok yüksek ayar kaliteyi olumsuz etkileyebilir."
 
 msgid "render_option_gop_size"
 msgstr "GOP Boyutu"
 
 msgid "render_option_tooltip_gop_size"
-msgstr "GOP (Group Of Pictures) boyutu. Yüksek değer sıkıştırmayı artırır ama arama hassasiyetini düşürür."
+msgstr ""
+"GOP (Group Of Pictures) boyutu. Yüksek değer sıkıştırmayı artırır ama arama "
+"hassasiyetini düşürür."
 
 msgid "render_option_threads_cores"
 msgstr "İş parçacıkları/çekirdekleri"
@@ -382,9 +395,6 @@ msgstr "İşleme menüsü"
 msgid "menu_bar_project"
 msgstr "Proje"
 
-msgid "menu_bar_editor"
-msgstr "Düzenleyici"
-
 msgid "menu_bar_project_save"
 msgstr "Kaydet"
 
@@ -394,35 +404,102 @@ msgstr "Farklı kaydet..."
 msgid "menu_bar_project_open_project"
 msgstr "Aç"
 
+#, fuzzy
+#| msgid "menu_bar_project_open_project"
+msgid "menu_bar_project_recent_projects"
+msgstr "Aç"
+
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_project_quit"
+msgstr "Proje"
+
 msgid "menu_bar_project_open_settings"
 msgstr "Ayarları aç"
 
-msgid "menu_bar_editor_open_settings"
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_preferences"
+msgstr "Proje"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_settings"
+msgid "menu_bar_preferences_editor_settings"
 msgstr "Ayarları aç"
 
-msgid "menu_bar_editor_open_url_site"
-msgstr "GoZen sitesi"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr ""
 
-msgid "menu_bar_editor_open_url_manual"
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_preferences_module_manager"
 msgstr "Kılavuz"
 
-msgid "menu_bar_editor_open_url_tutorials"
+#, fuzzy
+#| msgid "menu_bar_project_save_as"
+msgid "menu_bar_preferences_command_bar"
+msgstr "Farklı kaydet..."
+
+#, fuzzy
+#| msgid "menu_bar_project_save"
+msgid "menu_bar_help_report_issue"
+msgstr "Kaydet"
+
+#, fuzzy
+#| msgid "menu_bar_project_save_as"
+msgid "menu_bar_help_check_updates"
+msgstr "Farklı kaydet..."
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_help_manual"
+msgstr "Kılavuz"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_help_tutorials"
 msgstr "Eğitimler"
 
-msgid "menu_bar_editor_open_url_discord"
-msgstr "Discord sunucusu"
+#, fuzzy
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_discord"
+msgstr "Düzenleyici"
 
-msgid "menu_bar_editor_open_url_support"
-msgstr "GoZen'i destekle"
+#, fuzzy
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_site"
+msgstr "Düzenleyici"
 
-msgid "menu_bar_editor_open_about_gozen"
+#, fuzzy
+#| msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "GoZen hakkında"
+
+#, fuzzy
+#| msgid "text_support_gozen"
+msgid "menu_bar_support_gozen"
+msgstr "GoZen'i destekle"
 
 msgid "file_dialog_title_add_files"
 msgstr "Dosya ekle"
 
+#, fuzzy
+#| msgid "file_dialog_title_select_save_path"
+msgid "file_dialog_title_save_project_as"
+msgstr "Kaydetme yolu seç"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "file_dialog_title_open_project"
+msgstr "Dosya ekle"
+
 msgid "file_dialog_title_select_save_path"
 msgstr "Kaydetme yolu seç"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "Dosya ekle"
 
 msgid "file_panel_item_add_files"
 msgstr "Dosya(ları) ekle"
@@ -459,3 +536,18 @@ msgstr "Video seçenekleri"
 
 msgid "popup_separator_text_options"
 msgstr "Metin seçenekleri"
+
+#~ msgid "setting_tooltip_default_color_duration"
+#~ msgstr "Süre (kare cinsinden)."
+
+#~ msgid "setting_tooltip_default_text_duration"
+#~ msgstr "Süre (kare cinsinden)."
+
+#~ msgid "menu_bar_editor_open_url_site"
+#~ msgstr "GoZen sitesi"
+
+#~ msgid "menu_bar_editor_open_url_discord"
+#~ msgstr "Discord sunucusu"
+
+#~ msgid "menu_bar_editor_open_url_support"
+#~ msgstr "GoZen'i destekle"

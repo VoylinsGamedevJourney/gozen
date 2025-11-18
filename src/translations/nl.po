@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "Over GoZen"
@@ -84,6 +84,16 @@ msgstr "Video audio opslaan naar WAV"
 msgid "title_add_color_file"
 msgstr "Kleur clip toevoegen"
 
+#, fuzzy
+#| msgid "title_editor_settings"
+msgid "title_close_without_saving"
+msgstr "Editor instellingen"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "title_dialog_file_too_big"
+msgstr "Bestanden toevoegen"
+
 msgid "button_tooltip_create_new_project"
 msgstr "Maak een nieuw project met de gekozen instellingen."
 
@@ -144,6 +154,11 @@ msgstr "Start renderen"
 msgid "button_save"
 msgstr "Opslaan"
 
+#, fuzzy
+#| msgid "button_save"
+msgid "button_dont_save"
+msgstr "Opslaan"
+
 msgid "button_save_settings"
 msgstr "Instellingen opslaan"
 
@@ -199,6 +214,16 @@ msgstr "Achtergrondkleur"
 
 msgid "setting_language"
 msgstr "Taal"
+
+#, fuzzy
+#| msgid "setting_auto_save"
+msgid "setting_display_scale"
+msgstr "Project automatisch opslaan"
+
+#, fuzzy
+#| msgid "setting_tooltip_auto_save"
+msgid "setting_tooltip_display_scale"
+msgstr "Sla je project elke paar minuten automatisch op."
 
 msgid "setting_theme"
 msgstr "Thema"
@@ -318,9 +343,10 @@ msgstr "Kwaliteit"
 
 msgid "render_option_tooltip_quality"
 msgstr ""
-"Past de CRF (Constant Rate Factor) aan. Lager getal = hogere kwaliteit maar tragere encodering. "
-"Hoger getal = lagere kwaliteit maar snellere encodering. Voor de meeste codecs wordt een waarde tussen 15 en 18 aanbevolen, "
-"aangezien het kwaliteitsverlies dan nauwelijks merkbaar is."
+"Past de CRF (Constant Rate Factor) aan. Lager getal = hogere kwaliteit maar "
+"tragere encodering. Hoger getal = lagere kwaliteit maar snellere encodering. "
+"Voor de meeste codecs wordt een waarde tussen 15 en 18 aanbevolen, aangezien "
+"het kwaliteitsverlies dan nauwelijks merkbaar is."
 
 msgid "render_option_speed"
 msgstr "Snelheid"
@@ -385,9 +411,6 @@ msgstr "Render menu"
 msgid "menu_bar_project"
 msgstr "Project"
 
-msgid "menu_bar_editor"
-msgstr "Editor"
-
 msgid "menu_bar_project_save"
 msgstr "Opslaan"
 
@@ -397,35 +420,102 @@ msgstr "Opslaan als ..."
 msgid "menu_bar_project_open_project"
 msgstr "Openen"
 
+#, fuzzy
+#| msgid "menu_bar_project_open_project"
+msgid "menu_bar_project_recent_projects"
+msgstr "Openen"
+
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_project_quit"
+msgstr "Project"
+
 msgid "menu_bar_project_open_settings"
 msgstr "Instellingen"
 
-msgid "menu_bar_editor_open_settings"
+#, fuzzy
+#| msgid "menu_bar_project"
+msgid "menu_bar_preferences"
+msgstr "Project"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_settings"
+msgid "menu_bar_preferences_editor_settings"
 msgstr "Instellingen"
 
-msgid "menu_bar_editor_open_url_site"
-msgstr "GoZen website"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr ""
 
-msgid "menu_bar_editor_open_url_manual"
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_preferences_module_manager"
 msgstr "Handleiding"
 
-msgid "menu_bar_editor_open_url_tutorials"
+#, fuzzy
+#| msgid "menu_bar_project_save_as"
+msgid "menu_bar_preferences_command_bar"
+msgstr "Opslaan als ..."
+
+#, fuzzy
+#| msgid "menu_bar_project_save"
+msgid "menu_bar_help_report_issue"
+msgstr "Opslaan"
+
+#, fuzzy
+#| msgid "menu_bar_project_save_as"
+msgid "menu_bar_help_check_updates"
+msgstr "Opslaan als ..."
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_help_manual"
+msgstr "Handleiding"
+
+#, fuzzy
+#| msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_help_tutorials"
 msgstr "Tutorials"
 
-msgid "menu_bar_editor_open_url_discord"
-msgstr "Discord server"
+#, fuzzy
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_discord"
+msgstr "Editor"
 
-msgid "menu_bar_editor_open_url_support"
-msgstr "Steun GoZen"
+#, fuzzy
+#| msgid "menu_bar_editor"
+msgid "menu_bar_help_site"
+msgstr "Editor"
 
-msgid "menu_bar_editor_open_about_gozen"
+#, fuzzy
+#| msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "Over GoZen"
+
+#, fuzzy
+#| msgid "text_support_gozen"
+msgid "menu_bar_support_gozen"
+msgstr "Steun GoZen"
 
 msgid "file_dialog_title_add_files"
 msgstr "Bestanden toevoegen"
 
+#, fuzzy
+#| msgid "file_dialog_title_select_save_path"
+msgid "file_dialog_title_save_project_as"
+msgstr "Opslaglocatie selecteren"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "file_dialog_title_open_project"
+msgstr "Bestanden toevoegen"
+
 msgid "file_dialog_title_select_save_path"
 msgstr "Opslaglocatie selecteren"
+
+#, fuzzy
+#| msgid "file_dialog_title_add_files"
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "Bestanden toevoegen"
 
 msgid "file_panel_item_add_files"
 msgstr "Bestand(en) toevoegen"
@@ -462,3 +552,12 @@ msgstr "Video-opties"
 
 msgid "popup_separator_text_options"
 msgstr "Tekstopties"
+
+#~ msgid "menu_bar_editor_open_url_site"
+#~ msgstr "GoZen website"
+
+#~ msgid "menu_bar_editor_open_url_discord"
+#~ msgstr "Discord server"
+
+#~ msgid "menu_bar_editor_open_url_support"
+#~ msgstr "Steun GoZen"

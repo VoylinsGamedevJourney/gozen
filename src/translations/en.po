@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "About GoZen"
@@ -209,6 +209,12 @@ msgstr "Background color"
 msgid "setting_language"
 msgstr "Language"
 
+msgid "setting_display_scale"
+msgstr "Display scale"
+
+msgid "setting_tooltip_display_scale"
+msgstr "Scaling the display for better readability."
+
 msgid "setting_theme"
 msgstr "Theme"
 
@@ -224,19 +230,13 @@ msgstr "Audio waveform style"
 msgid "setting_default_image_duration"
 msgstr "Default image duration"
 
-msgid "setting_tooltip_duration_in_frames"
-msgstr "The duration in frames."
-
 msgid "setting_default_color_duration"
 msgstr "Default color duration"
-
-msgid "setting_tooltip_default_color_duration"
-msgstr "The duration in frames."
 
 msgid "setting_default_text_duration"
 msgstr "Default text duration"
 
-msgid "setting_tooltip_default_text_duration"
+msgid "setting_tooltip_duration_in_frames"
 msgstr "The duration in frames."
 
 msgid "setting_default_project_resolution"
@@ -399,9 +399,6 @@ msgstr "Render menu"
 msgid "menu_bar_project"
 msgstr "Project"
 
-msgid "menu_bar_editor"
-msgstr "Editor"
-
 msgid "menu_bar_project_save"
 msgstr "Save"
 
@@ -411,35 +408,68 @@ msgstr "Save as ..."
 msgid "menu_bar_project_open_project"
 msgstr "Open"
 
+msgid "menu_bar_project_recent_projects"
+msgstr "Recent projects"
+
+msgid "menu_bar_project_quit"
+msgstr "Quit GoZen"
+
 msgid "menu_bar_project_open_settings"
 msgstr "Open settings"
 
-msgid "menu_bar_editor_open_settings"
-msgstr "Open settings"
+msgid "menu_bar_preferences"
+msgstr "Editor"
 
-msgid "menu_bar_editor_open_url_site"
-msgstr "GoZen site"
+msgid "menu_bar_preferences_editor_settings"
+msgstr "Editor settings"
 
-msgid "menu_bar_editor_open_url_manual"
-msgstr "Manual"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr "Keyboard shortcuts"
 
-msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_preferences_module_manager"
+msgstr "Module manager"
+
+msgid "menu_bar_preferences_command_bar"
+msgstr "Command bar"
+
+msgid "menu_bar_help_report_issue"
+msgstr "Report issue/bug"
+
+msgid "menu_bar_help_check_updates"
+msgstr "Check for updates ..."
+
+msgid "menu_bar_help_manual"
+msgstr "Documentation"
+
+msgid "menu_bar_help_tutorials"
 msgstr "Tutorials"
 
-msgid "menu_bar_editor_open_url_discord"
-msgstr "Discord server"
+msgid "menu_bar_help_discord"
+msgstr "Discord"
 
-msgid "menu_bar_editor_open_url_support"
-msgstr "Support GoZen"
+msgid "menu_bar_help_site"
+msgstr "GoZen site"
 
-msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "About GoZen"
+
+msgid "menu_bar_support_gozen"
+msgstr "Support GoZen"
 
 msgid "file_dialog_title_add_files"
 msgstr "Add files"
 
+msgid "file_dialog_title_save_project_as"
+msgstr "Select save path"
+
+msgid "file_dialog_title_open_project"
+msgstr "Open project"
+
 msgid "file_dialog_title_select_save_path"
 msgstr "Select save path"
+
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "GoZen project files."
 
 msgid "file_panel_item_add_files"
 msgstr "Add file(s)"
@@ -476,3 +506,18 @@ msgstr "Video options"
 
 msgid "popup_separator_text_options"
 msgstr "Text options"
+
+#~ msgid "setting_tooltip_default_color_duration"
+#~ msgstr "The duration in frames."
+
+#~ msgid "setting_tooltip_default_text_duration"
+#~ msgstr "The duration in frames."
+
+#~ msgid "menu_bar_editor_open_url_site"
+#~ msgstr "GoZen site"
+
+#~ msgid "menu_bar_editor_open_url_discord"
+#~ msgstr "Discord server"
+
+#~ msgid "menu_bar_editor_open_url_support"
+#~ msgstr "Support GoZen"

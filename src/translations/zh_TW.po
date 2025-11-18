@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "關於 GoZen"
@@ -38,7 +38,6 @@ msgstr "渲染"
 msgid "title_rendering_finished"
 msgstr "渲染完成"
 
-#, fuzzy
 msgid "title_rendering_error"
 msgstr ""
 
@@ -89,6 +88,15 @@ msgstr "將影片音訊儲存為 （WAV）"
 
 #, fuzzy
 msgid "title_add_color_file"
+msgstr "新增顏色檔案"
+
+#, fuzzy
+#| msgid "title_editor_settings"
+msgid "title_close_without_saving"
+msgstr "編輯器設定"
+
+#, fuzzy
+msgid "title_dialog_file_too_big"
 msgstr "新增顏色檔案"
 
 msgid "button_tooltip_create_new_project"
@@ -154,6 +162,11 @@ msgstr "開始渲染"
 msgid "button_save"
 msgstr "儲存"
 
+#, fuzzy
+#| msgid "button_save"
+msgid "button_dont_save"
+msgstr "儲存"
+
 msgid "button_save_settings"
 msgstr "儲存設定"
 
@@ -175,9 +188,9 @@ msgstr "Discord 連結"
 msgid "text_support_gozen"
 msgstr "支持 GoZen"
 
-#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
+#, fuzzy
 msgid "text_gozen_made_by"
 msgstr "開發者為"
 
@@ -212,6 +225,16 @@ msgstr "背景顏色"
 msgid "setting_language"
 msgstr "語言"
 
+#, fuzzy
+#| msgid "setting_language"
+msgid "setting_display_scale"
+msgstr "語言"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_display_scale"
+msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
+
 msgid "setting_theme"
 msgstr "佈景主題"
 
@@ -227,17 +250,16 @@ msgstr "音訊波形樣式"
 msgid "setting_default_image_duration"
 msgstr "預設圖片持續時間"
 
-#, fuzzy
 msgid "setting_default_color_duration"
 msgstr ""
 
-#, fuzzy
 msgid "setting_default_text_duration"
 msgstr ""
 
 #, fuzzy
-msgid "setting_tooltip_default_image_duration"
-msgstr "以影格為單位的持續時間。"
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_duration_in_frames"
+msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
 msgid "setting_default_project_resolution"
 msgstr "預設專案解析度"
@@ -414,15 +436,9 @@ msgstr "渲染選單"
 msgid "menu_bar_project"
 msgstr "新增專案"
 
-#, fuzzy
-msgid "menu_bar_editor"
-msgstr ""
-
-#, fuzzy
 msgid "menu_bar_project_save"
 msgstr ""
 
-#, fuzzy
 msgid "menu_bar_project_save_as"
 msgstr ""
 
@@ -432,92 +448,132 @@ msgid "menu_bar_project_open_project"
 msgstr "開啟專案"
 
 #, fuzzy
+#| msgid "button_open_project"
+msgid "menu_bar_project_recent_projects"
+msgstr "開啟專案"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_project_quit"
+msgstr "新增專案"
+
+#, fuzzy
 #| msgid "command_project_settings"
 msgid "menu_bar_project_open_settings"
 msgstr "專案設定"
 
 #, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_preferences"
+msgstr "新增專案"
+
+#, fuzzy
 #| msgid "command_editor_settings"
-msgid "menu_bar_editor_open_settings"
+msgid "menu_bar_preferences_editor_settings"
 msgstr "編輯器設定"
 
-#, fuzzy
-msgid "menu_bar_editor_open_url_site"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr ""
+
+msgid "menu_bar_preferences_module_manager"
+msgstr ""
+
+msgid "menu_bar_preferences_command_bar"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_manual"
+#| msgid "title_new_project"
+msgid "menu_bar_help_report_issue"
+msgstr "新增專案"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_help_check_updates"
+msgstr "新增專案"
+
+msgid "menu_bar_help_manual"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_tutorials"
+#| msgid "command_editor_settings"
+msgid "menu_bar_help_tutorials"
+msgstr "編輯器設定"
+
+msgid "menu_bar_help_discord"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_discord"
-msgstr ""
-
-#, fuzzy
-msgid "menu_bar_editor_open_url_support"
-msgstr ""
+#| msgid "title_new_project"
+msgid "menu_bar_help_site"
+msgstr "新增專案"
 
 #, fuzzy
 #| msgid "title_about_gozen"
-msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "關於 GoZen"
 
 #, fuzzy
+#| msgid "text_support_gozen"
+msgid "menu_bar_support_gozen"
+msgstr "支持 GoZen"
+
 msgid "file_dialog_title_add_files"
 msgstr ""
 
 #, fuzzy
+#| msgid "title_new_project"
+msgid "file_dialog_title_save_project_as"
+msgstr "新增專案"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "file_dialog_title_open_project"
+msgstr "新增專案"
+
 msgid "file_dialog_title_select_save_path"
 msgstr ""
 
 #, fuzzy
+#| msgid "setting_tooltip_default_project_framerate"
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "預設影片專案的幀率。"
+
 msgid "file_panel_item_add_files"
 msgstr ""
 
-#, fuzzy
 msgid "file_panel_item_add_text"
 msgstr ""
 
-#, fuzzy
 msgid "file_panel_item_add_color"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_rename"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_reload"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_delete"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_duplicate"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_save_as_file"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_extract_audio"
 msgstr ""
 
-#, fuzzy
 msgid "popup_separator_image_options"
 msgstr ""
 
-#, fuzzy
 msgid "popup_separator_video_options"
 msgstr ""
 
-#, fuzzy
 msgid "popup_separator_text_options"
 msgstr ""
+
+#, fuzzy
+#~ msgid "setting_tooltip_default_image_duration"
+#~ msgstr "以影格為單位的持續時間。"

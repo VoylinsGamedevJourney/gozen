@@ -43,7 +43,7 @@ func reset_settings() -> void:
 
 
 func open_settings_menu() -> void:
-	PopupManager.show_popup(PopupManager.POPUP.SETTINGS)
+	PopupManager.open_popup(PopupManager.POPUP.SETTINGS)
 
 
 func load_system_fonts() -> void:
@@ -52,6 +52,11 @@ func load_system_fonts() -> void:
 
 		system_font.font_names = [font]
 		fonts[font] = system_font
+
+
+func check_version() -> bool:
+	# Returns true if update available.
+	return false
 
 
 # Appearance set/get

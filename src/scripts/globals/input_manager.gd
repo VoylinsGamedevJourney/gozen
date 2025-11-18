@@ -44,7 +44,7 @@ func _input(event: InputEvent) -> void:
 		breakpoint
 
 	if get_window().gui_get_focus_owner() is not LineEdit and event.is_action_pressed("open_command_bar"):
-		PopupManager.show_popup(PopupManager.POPUP.COMMAND_BAR)
+		PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
 		get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("switch_screen"):

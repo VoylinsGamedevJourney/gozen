@@ -380,9 +380,6 @@ msgstr ""
 msgid "menu_bar_project"
 msgstr ""
 
-msgid "menu_bar_editor"
-msgstr ""
-
 msgid "menu_bar_project_save"
 msgstr ""
 
@@ -392,28 +389,52 @@ msgstr ""
 msgid "menu_bar_project_open_project"
 msgstr ""
 
+msgid "menu_bar_project_recent_projects"
+msgstr ""
+
+msgid "menu_bar_project_quit"
+msgstr ""
+
 msgid "menu_bar_project_open_settings"
 msgstr ""
 
-msgid "menu_bar_editor_open_settings"
+msgid "menu_bar_preferences"
 msgstr ""
 
-msgid "menu_bar_editor_open_url_site"
+msgid "menu_bar_preferences_editor_settings"
 msgstr ""
 
-msgid "menu_bar_editor_open_url_manual"
+msgid "menu_bar_preferences_keyboard_shortcuts"
 msgstr ""
 
-msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_preferences_module_manager"
 msgstr ""
 
-msgid "menu_bar_editor_open_url_discord"
+msgid "menu_bar_preferences_command_bar"
 msgstr ""
 
-msgid "menu_bar_editor_open_url_support"
+msgid "menu_bar_help_report_issue"
 msgstr ""
 
-msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_help_check_updates"
+msgstr ""
+
+msgid "menu_bar_help_manual"
+msgstr ""
+
+msgid "menu_bar_help_tutorials"
+msgstr ""
+
+msgid "menu_bar_help_discord"
+msgstr ""
+
+msgid "menu_bar_help_site"
+msgstr ""
+
+msgid "menu_bar_about_gozen"
+msgstr ""
+
+msgid "menu_bar_support_gozen"
 msgstr ""
 
 msgid "file_dialog_title_add_files"

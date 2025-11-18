@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "title_about_gozen"
 msgstr "Acerca de GoZen"
@@ -70,7 +70,6 @@ msgstr "Nuevo proyecto"
 msgid "title_files_dropped"
 msgstr "Nuevo proyecto"
 
-#, fuzzy
 msgid "title_sponsors"
 msgstr ""
 
@@ -89,7 +88,6 @@ msgstr "Nuevo proyecto"
 msgid "title_chapters"
 msgstr "Hilos de CPU"
 
-#, fuzzy
 msgid "title_save_image_to_file"
 msgstr ""
 
@@ -98,9 +96,18 @@ msgstr ""
 msgid "title_save_video_audio_to_wav"
 msgstr "Renderizar audio"
 
-#, fuzzy
 msgid "title_add_color_file"
 msgstr ""
+
+#, fuzzy
+#| msgid "button_tooltip_editor_settings"
+msgid "title_close_without_saving"
+msgstr "Configuración del editor."
+
+#, fuzzy
+#| msgid "button_tooltip_editor_settings"
+msgid "title_dialog_file_too_big"
+msgstr "Configuración del editor."
 
 msgid "button_tooltip_create_new_project"
 msgstr "Crear nuevo proyecto con la configuración elegida."
@@ -170,6 +177,11 @@ msgstr "Iniciar renderizado"
 msgid "button_save"
 msgstr "Guardar"
 
+#, fuzzy
+#| msgid "button_save"
+msgid "button_dont_save"
+msgstr "Guardar"
+
 msgid "button_save_settings"
 msgstr "Guardar configuración"
 
@@ -191,9 +203,9 @@ msgstr "Enlace de Discord"
 msgid "text_support_gozen"
 msgstr "Apoyar a GoZen"
 
-#, fuzzy
 # Note: This is part of the string for the "about gozen" screen.
 #: scripts/about_gozen.gd
+#, fuzzy
 msgid "text_gozen_made_by"
 msgstr "GoZen es un editor de vídeo creado por"
 
@@ -212,7 +224,6 @@ msgstr "Resolución"
 msgid "text_framerate"
 msgstr "Fotogramas por segundo"
 
-#, fuzzy
 msgid "placeholder_text_search_files"
 msgstr ""
 
@@ -227,6 +238,16 @@ msgstr "Color de fondo"
 
 msgid "setting_language"
 msgstr "Idioma"
+
+#, fuzzy
+#| msgid "setting_language"
+msgid "setting_display_scale"
+msgstr "Idioma"
+
+#, fuzzy
+#| msgid "setting_tooltip_theme"
+msgid "setting_tooltip_display_scale"
+msgstr "El modo claro es mejor."
 
 msgid "setting_theme"
 msgstr "Tema"
@@ -398,27 +419,21 @@ msgstr "Duración del vídeo"
 msgid "render_option_render_time"
 msgstr "Tiempo de renderizado"
 
-#, fuzzy
 msgid "notification_update_available"
 msgstr ""
 
-#, fuzzy
 msgid "status_project_loading_init"
 msgstr ""
 
-#, fuzzy
 msgid "status_project_preparing_timeline"
 msgstr ""
 
-#, fuzzy
 msgid "status_project_loading_files"
 msgstr ""
 
-#, fuzzy
 msgid "status_project_playback_setup"
 msgstr ""
 
-#, fuzzy
 msgid "status_project_finalizing"
 msgstr ""
 
@@ -430,11 +445,9 @@ msgstr "Nuevo proyecto"
 msgid "command_editor_settings"
 msgstr "Configuración del editor."
 
-#, fuzzy
 msgid "command_project_settings"
 msgstr ""
 
-#, fuzzy
 msgid "command_render_menu"
 msgstr ""
 
@@ -443,15 +456,9 @@ msgstr ""
 msgid "menu_bar_project"
 msgstr "Nuevo proyecto"
 
-#, fuzzy
-msgid "menu_bar_editor"
-msgstr ""
-
-#, fuzzy
 msgid "menu_bar_project_save"
 msgstr ""
 
-#, fuzzy
 msgid "menu_bar_project_save_as"
 msgstr ""
 
@@ -461,90 +468,124 @@ msgid "menu_bar_project_open_project"
 msgstr "Abrir proyecto"
 
 #, fuzzy
+#| msgid "button_open_project"
+msgid "menu_bar_project_recent_projects"
+msgstr "Abrir proyecto"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_project_quit"
+msgstr "Nuevo proyecto"
+
 msgid "menu_bar_project_open_settings"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_settings"
+#| msgid "title_new_project"
+msgid "menu_bar_preferences"
+msgstr "Nuevo proyecto"
+
+#, fuzzy
+msgid "menu_bar_preferences_editor_settings"
 msgstr "Configuración del editor."
 
-#, fuzzy
-msgid "menu_bar_editor_open_url_site"
+msgid "menu_bar_preferences_keyboard_shortcuts"
+msgstr ""
+
+msgid "menu_bar_preferences_module_manager"
+msgstr ""
+
+msgid "menu_bar_preferences_command_bar"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_manual"
+#| msgid "title_new_project"
+msgid "menu_bar_help_report_issue"
+msgstr "Nuevo proyecto"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "menu_bar_help_check_updates"
+msgstr "Nuevo proyecto"
+
+msgid "menu_bar_help_manual"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_tutorials"
+msgid "menu_bar_help_tutorials"
+msgstr "Configuración del editor."
+
+msgid "menu_bar_help_discord"
 msgstr ""
 
 #, fuzzy
-msgid "menu_bar_editor_open_url_discord"
-msgstr ""
-
-#, fuzzy
-msgid "menu_bar_editor_open_url_support"
-msgstr ""
+#| msgid "title_new_project"
+msgid "menu_bar_help_site"
+msgstr "Nuevo proyecto"
 
 #, fuzzy
 #| msgid "title_about_gozen"
-msgid "menu_bar_editor_open_about_gozen"
+msgid "menu_bar_about_gozen"
 msgstr "Acerca de GoZen"
 
 #, fuzzy
+#| msgid "text_support_gozen"
+msgid "menu_bar_support_gozen"
+msgstr "Apoyar a GoZen"
+
 msgid "file_dialog_title_add_files"
 msgstr ""
 
 #, fuzzy
+#| msgid "title_new_project"
+msgid "file_dialog_title_save_project_as"
+msgstr "Nuevo proyecto"
+
+#, fuzzy
+#| msgid "title_new_project"
+msgid "file_dialog_title_open_project"
+msgstr "Nuevo proyecto"
+
 msgid "file_dialog_title_select_save_path"
 msgstr ""
 
 #, fuzzy
+#| msgid "setting_tooltip_default_project_framerate"
+msgid "file_dialog_tooltip_gozen_project_files"
+msgstr "Los fotogramas por segundo predeterminados del proyecto."
+
 msgid "file_panel_item_add_files"
 msgstr ""
 
-#, fuzzy
 msgid "file_panel_item_add_text"
 msgstr ""
 
-#, fuzzy
 msgid "file_panel_item_add_color"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_rename"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_reload"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_delete"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_duplicate"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_save_as_file"
 msgstr ""
 
-#, fuzzy
 msgid "popup_item_extract_audio"
 msgstr ""
 
-#, fuzzy
 msgid "popup_separator_image_options"
 msgstr ""
 
-#, fuzzy
 msgid "popup_separator_video_options"
 msgstr ""
 
-#, fuzzy
 msgid "popup_separator_text_options"
 msgstr ""

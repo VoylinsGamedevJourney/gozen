@@ -264,7 +264,6 @@ current_tab = 2
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -494,6 +493,7 @@ mouse_default_cursor_shape = 2
 text = "button_create_new_project"
 
 [node name="Sponsors" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 20
 metadata/_tab_index = 2

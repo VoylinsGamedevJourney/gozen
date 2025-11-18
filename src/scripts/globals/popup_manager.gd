@@ -9,11 +9,15 @@ enum POPUP {
 	MARKER,
 	PROGRESS,
 	COMMAND_BAR,
+	MODULE_MANAGER,
+	SHORTCUT_MANAGER,
+	VERSION_CHECK,
+	RECENT_PROJECTS
 }
 
 
-var open_popups: Dictionary [POPUP, Control] = {}
-var popup_uids: Dictionary [POPUP, String] = {
+var _open_popups: Dictionary [POPUP, Control] = {}
+var _popup_uids: Dictionary [POPUP, String] = {
 	POPUP.SETTINGS: Library.SCENE_SETTINGS,
 	POPUP.PROJECT_SETTINGS: Library.SCENE_SETTINGS,
 	POPUP.CREDITS: Library.SCENE_ABOUT_GOZEN,
@@ -21,12 +25,13 @@ var popup_uids: Dictionary [POPUP, String] = {
 	POPUP.MARKER: Library.SCENE_MARKER_DIALOG,
 	POPUP.PROGRESS: Library.SCENE_PROGRESS_OVERLAY,
 	POPUP.COMMAND_BAR: Library.SCENE_COMMAND_BAR,
+	POPUP.MODULE_MANAGER: Library.SCENE_MODULE_MANAGER,
+	POPUP.SHORTCUT_MANAGER: Library.SCENE_SHORTCUT_MANAGER,
+	POPUP.VERSION_CHECK: Library.SCENE_VERSION_CHECK,
+	POPUP.RECENT_PROJECTS: Library.SCENE_RECENT_PROJECTS,
 }
-var non_closeable: Array[POPUP] = [
-	
-]
-var control: Control = Control.new()
-var background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
+var _control: Control = Control.new()
+var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
 
 
 
@@ -34,64 +39,64 @@ func _ready() -> void:
 	Utils.connect_func(get_window().size_changed, _on_size_changed)
 
 	await get_tree().root.ready
-	get_tree().root.add_child(control)
-	control.add_child(background)
-	control.visible = false
-	control.top_level = true
-	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	get_tree().root.add_child(_control)
+	_control.add_child(_background)
+	_control.visible = false
+	_control.top_level = true
+	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		for popup: POPUP in open_popups.keys():
+		for popup: POPUP in _open_popups.keys():
 			close_popup(popup)
 	elif event.is_action_pressed("help"):
-		show_popup(POPUP.CREDITS)
+		open_popup(POPUP.CREDITS)
 
 	_check_background()
 
 
-func show_popup(popup: POPUP) -> void:
-	if popup in open_popups:
+func open_popup(popup: POPUP) -> void:
+	if popup in _open_popups:
 		return
 
-	open_popups[popup] = (load(popup_uids[popup]) as PackedScene).instantiate()
+	_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
 	
 	match popup:
-		POPUP.SETTINGS: (open_popups[popup] as SettingsPanel).set_mode_editor_settings()
-		POPUP.PROJECT_SETTINGS: (open_popups[popup] as SettingsPanel).set_mode_project_settings()
+		POPUP.SETTINGS: (_open_popups[popup] as SettingsPanel).set_mode_editor_settings()
+		POPUP.PROJECT_SETTINGS: (_open_popups[popup] as SettingsPanel).set_mode_project_settings()
 
-	control.add_child(open_popups[popup])
-	control.visible = true
+	_control.add_child(_open_popups[popup])
+	_control.visible = true
 
 
 func close_popup(popup: POPUP) -> void:
-	if !open_popups.has(popup):
+	if !_open_popups.has(popup):
 		printerr("Popup with id '%s' not open!" % popup)
 	else:
-		open_popups[popup].queue_free()
+		_open_popups[popup].queue_free()
 
-		if !open_popups.erase(popup):
+		if !_open_popups.erase(popup):
 			printerr("Could not erase popup '%s' from open_popups!" % popup)
 
 	_check_background()
 
 
 func close_popups() -> void:
-	for popup: POPUP in open_popups:
-		open_popups[popup].queue_free()
+	for popup: POPUP in _open_popups:
+		_open_popups[popup].queue_free()
 
-		if !open_popups.erase(popup):
+		if !_open_popups.erase(popup):
 			printerr("Could not erase popup '%s' from open_popups!" % popup)
 
 	_check_background()
 
 
 func get_popup(popup: POPUP) -> Control:
-	if !open_popups.has(popup):	
-		show_popup(popup)
+	if !_open_popups.has(popup):	
+		open_popup(popup)
 
-	return open_popups[popup]
+	return _open_popups[popup]
 
 
 func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray = []) -> FileDialog:
@@ -129,9 +134,9 @@ func show_popup_menu(popup: PopupMenu) -> void:
 
 # Private functions
 func _on_size_changed() -> void:
-	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func _check_background() -> void:
-	if open_popups.size() == 0:
-		control.visible = false
+	if _open_popups.size() == 0:
+		_control.visible = false

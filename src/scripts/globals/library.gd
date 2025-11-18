@@ -30,6 +30,10 @@ const SCENE_POPUP_BACKGROUND: String = "uid://xu8ndgud6cox"
 const SCENE_RENAME_DIALOG: String = "uid://y450a2mtc4om"
 const SCENE_COLOR_PICKER_DIALOG: String = "uid://brbxvynl0y3ha"
 const SCENE_MARKER_DIALOG: String = "uid://ce1hy5ks465h7"
+const SCENE_MODULE_MANAGER: String = "" # TODO:
+const SCENE_SHORTCUT_MANAGER: String = "" # TODO:
+const SCENE_VERSION_CHECK: String = "" # TODO:
+const SCENE_RECENT_PROJECTS: String = "" # TODO:
 
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"
