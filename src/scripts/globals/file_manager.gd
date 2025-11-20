@@ -94,7 +94,7 @@ func files_dropped(file_paths: PackedStringArray) -> void:
 
 				files.erase(file)
 
-	Project.unsaved_changes = true
+	Project._unsaved_changes = true
 	await RenderingServer.frame_post_draw
 	dropped_overlay.queue_free()
 
@@ -155,7 +155,7 @@ func add_file_object(file: File) -> void:
 	# We only emit this one since for dropped/selected actual files this gets
 	# called inside of _on_files_dropped.
 	file_added.emit(file.id)
-	Project.unsaved_changes = true
+	Project._unsaved_changes = true
 
 
 func delete_file(id: int) -> void:
@@ -168,7 +168,7 @@ func delete_file(id: int) -> void:
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)
-	Project.unsaved_changes = true
+	Project._unsaved_changes = true
 
 
 ## Check to see if a file needs reloading or not.
@@ -227,18 +227,18 @@ func has_file(file_id: int) -> bool:
 
 func set_file(file_id: int, file: File) -> void:
 	get_files()[file_id] = file
-	Project.unsaved_changes = true
+	Project._unsaved_changes = true
 
 
 func set_file_nickname(file_id: int, nickname: String) -> void:
 	get_files()[file_id].nickname = nickname
-	Project.unsaved_changes = true
+	Project._unsaved_changes = true
 
 	file_nickname_changed.emit(file_id)
 
 
 func get_files() -> Dictionary[int, File]:
-	return Project.data.files
+	return Project.get_files()
 
 
 func get_file_paths() -> PackedStringArray:

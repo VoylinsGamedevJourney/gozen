@@ -32,6 +32,7 @@ func add_task(todo: Callable, after_todo: Callable) -> void:
 	tasks.append(task)
 
 
+
 class Task:
 	var id: int = -1
 	var after_task: Callable

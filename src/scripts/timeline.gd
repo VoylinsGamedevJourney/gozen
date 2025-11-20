@@ -61,7 +61,7 @@ func _process(_delta: float) -> void:
 
 	
 func _input(event: InputEvent) -> void:
-	if Project.data == null:
+	if !Project.is_loaded():
 		return
 
 	if !EditorCore.is_playing:
@@ -89,7 +89,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_timeline_scroll_gui_input(event: InputEvent) -> void:
-	if Project.data == null:
+	if Project.is_loaded() == null:
 		return
 
 	if event.is_action_pressed("timeline_zoom_in", false, true):
@@ -180,6 +180,7 @@ func _set_zoom(new_zoom: float) -> void:
 
 	Project.set_timeline_scroll_h(scroll_main.scroll_horizontal)
 	Project.set_zoom(zoom)
+
 	propagate_call("_on_timeline_zoom_changed")
 
 

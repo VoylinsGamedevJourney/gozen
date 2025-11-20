@@ -112,11 +112,11 @@ item_6/separator = true
 item_7/text = "menu_bar_help_site"
 item_7/icon = ExtResource("14_i8xr0")
 item_7/id = 7
-item_8/text = "menu_bar_about_gozen"
-item_8/icon = ExtResource("15_bb4p5")
+item_8/text = "menu_bar_support_gozen"
+item_8/icon = ExtResource("16_dmgqw")
 item_8/id = 8
-item_9/text = "menu_bar_support_gozen"
-item_9/icon = ExtResource("16_dmgqw")
+item_9/text = "menu_bar_about_gozen"
+item_9/icon = ExtResource("15_bb4p5")
 item_9/id = 9
 
 [node name="EditorScreenButton" type="Button" parent="."]

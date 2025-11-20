@@ -18,14 +18,12 @@ static func format_file_nickname(file_name: String, size: int) -> String:
 	return new_name
 
 
+## This function is needed to handle the error in a good way for when
+## connecting a callable to a signal wasn't successful.
 static func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
-	# This function is needed to handle the error in a good way for when
-	# connecting a callable to a signal wasn't successful.
 	if connect_signal.connect(connect_callable):
 		push_error("Error connecting to signal '%s' to '%s'!" % [
 				connect_signal.get_name(), connect_callable.get_method()])
-
-
 
 
 static func open_url(url: String) -> void:
@@ -48,22 +46,22 @@ static func get_unique_id(keys: PackedInt64Array) -> int:
 	return id
 
 
+## Easier way to check if a value is within a range.
 static func in_range(value: int, min_value: int, max_value: int, include_last: bool = true) -> bool:
-	## Easier way to check if a value is within a range.
 	if include_last:
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
 
 
+## Same as in_range but for floats
 static func in_rangef(value: float, min_value: float, max_value: float, include_last: bool = true) -> bool:
-	## Same as in_range but for floats
 	if include_last:
 		return value >= min_value and value <= max_value
 	return value >= min_value and value < max_value
 
 
-static func format_time_str_from_frame(frame_count: int) -> String:
-	return format_time_str(float(frame_count) / Project.get_framerate())
+static func format_time_str_from_frame(frame_count: int, framerate: float) -> String:
+	return format_time_str(float(frame_count) / framerate)
 	
 
 static func format_time_str(total_seconds: float, short: bool = false) -> String:
@@ -111,8 +109,8 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 	return actual_files
 
 
-static func get_sample_count(frames: int) -> int:
-	return int(44100 * 4 * float(frames) / Project.get_framerate())
+static func get_sample_count(frames: int, framerate: float) -> int:
+	return int(44100 * 4 * float(frames) / framerate)
 
 
 static func get_video_extension(video_codec: GoZenEncoder.VIDEO_CODEC) -> String:
@@ -135,8 +133,8 @@ static func calculate_fade(frame_nr: int, fade_limit: float) -> float:
 	return lerpf(1, 0, float(frame_nr) / fade_limit)
 
 
+## A function to help getting the number lower than the given number.
 static func get_previous(frame: int, array: PackedInt64Array) -> int:
-	## A function to help getting the number lower than the given number.
 	var prev: int = -1
 
 	for i: int in array:
@@ -147,8 +145,8 @@ static func get_previous(frame: int, array: PackedInt64Array) -> int:
 	return prev
 
 
+## A function to help getting the number higher than the given number.
 static func get_next(frame: int, array: PackedInt64Array) -> int:
-	## A function to help getting the number higher than the given number.
 	for i: int in array:
 		if i > frame:
 			return i

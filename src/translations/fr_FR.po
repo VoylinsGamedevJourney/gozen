@@ -535,12 +535,3 @@ msgstr "Réglages vidéo"
 
 msgid "popup_separator_text_options"
 msgstr "Réglages de texte"
-
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "Site Internet de GoZen"
-
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "Serveur Discord"
-
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "Soutenir GoZen"

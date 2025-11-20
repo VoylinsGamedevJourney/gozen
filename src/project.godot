@@ -25,17 +25,16 @@ boot_splash/minimum_display_time=500
 
 [autoload]
 
-Library="*res://scripts/globals/library.gd"
+Settings="*res://scripts/globals/settings.gd"
+Project="*res://scripts/globals/project.gd"
 Threader="*res://scripts/globals/threader.gd"
-Thumbnailer="*res://scripts/globals/thumbnailer.gd"
 EditorCore="*res://scripts/globals/editor_core.gd"
-Settings="*res://scripts/globals/settings_manager.gd"
-Project="*res://scripts/globals/project_manager.gd"
+Thumbnailer="*res://scripts/globals/thumbnailer.gd"
+FileManager="*res://scripts/globals/file_manager.gd"
 InputManager="*res://scripts/globals/input_manager.gd"
-RenderManager="*res://scripts/globals/render_manager.gd"
 DrawManager="*res://scripts/globals/draw_manager.gd"
 PopupManager="*res://scripts/globals/popup_manager.gd"
-FileManager="*res://scripts/globals/file_manager.gd"
+RenderManager="*res://scripts/globals/render_manager.gd"
 
 [debug]
 

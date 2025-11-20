@@ -4,7 +4,8 @@ extends HBoxContainer
 @export var popup_menu_project: PopupMenu
 
 # TODO: Make a submenu popup for recent projects and make it update when the recent projects list got updated
-#4: menu_bar_project_recent_projects", Project.open_project, preload(Library.ICON_OPEN)),
+# TODO: Make the shortcut commands next to the action update when shortcuts got changed.
+# TODO: Get the shortcuts from the settings to put next to the action item.
 
 
 func _ready() -> void:
@@ -14,18 +15,6 @@ func _ready() -> void:
 
 func _show_menu_bar(value: bool) -> void:
 	visible = value
-
-#	_add_popup_menu("menu_bar_editor", [
-#		MenuItem.new("menu_bar_editor_open_settings", Settings.open_settings_menu, preload(Library.ICON_PROJECT_SETTINGS)),
-#		MenuItem.new("line"),
-#		MenuItem.new("menu_bar_editor_open_url_site", Utils.open_url.bind("site"), preload(Library.ICON_LINK)),
-#		MenuItem.new("menu_bar_editor_open_url_manual", Utils.open_url.bind("manual"), preload(Library.ICON_MANUAL)),
-#		MenuItem.new("menu_bar_editor_open_url_tutorials", Utils.open_url.bind("tutorials"), preload(Library.ICON_TUTORIALS)),
-#		MenuItem.new("menu_bar_editor_open_url_discord", Utils.open_url.bind("discord"), preload(Library.ICON_LINK)),
-#		MenuItem.new("line"),
-#		MenuItem.new("menu_bar_editor_open_url_support", Utils.open_url.bind("support"), preload(Library.ICON_SUPPORT)),
-#		MenuItem.new("menu_bar_editor_open_about_gozen", _open_about_gozen, preload(Library.ICON_ABOUT_GOZEN)),
-#	])
 
 
 func _open_about_gozen() -> void:
@@ -72,6 +61,10 @@ func _on_help_popup_menu_id_pressed(id: int) -> void:
 		5: Utils.open_url("discord")
 		# Line
 		7: Utils.open_url("site")
-		8: PopupManager.open_popup(PopupManager.POPUP.CREDITS)
-		9: Utils.open_url("support")
+		8: Utils.open_url("support")
+		9: PopupManager.open_popup(PopupManager.POPUP.CREDITS)
+
+
+func _set_shortcuts() -> void:
+	pass
 

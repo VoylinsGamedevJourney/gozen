@@ -124,7 +124,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 			# Making certain clips will be returned when deleting of file is un-done.
 			for clip_data: ClipData in Project.get_clip_datas():
 				if clip_data.file_id == file.id:
-					InputManager.undo_redo.add_undo_method(Project._add_clip.bind(clip_data))
+					InputManager.undo_redo.add_undo_method(Project.add_clip.bind(clip_data))
 
 			InputManager.undo_redo.add_undo_method(Timeline.instance._check_clips)
 			InputManager.undo_redo.commit_action()

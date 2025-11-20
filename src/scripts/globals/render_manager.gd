@@ -140,7 +140,7 @@ func _send_frames(frame_array: Array[Image]) -> void:
 func encode_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
 
-	if audio.resize(Utils.get_sample_count(Project.get_timeline_end() + 1)):
+	if audio.resize(Utils.get_sample_count(Project.get_timeline_end() + 1, Project.get_framerate())):
 		Print.resize_error()
 
 	for i: int in Project.get_track_count():
@@ -166,7 +166,7 @@ func _get_track_audio(audio: PackedByteArray, track_id: int) -> PackedByteArray:
 		var file: File = FileManager.get_file(clip.file_id)
 
 		if file.type in EditorCore.AUDIO_TYPES:
-			var sample_count: int = Utils.get_sample_count(clip.start_frame)
+			var sample_count: int = Utils.get_sample_count(clip.start_frame, Project.get_framerate())
 
 			if track_audio.size() != sample_count:
 				if track_audio.resize(sample_count):
@@ -175,7 +175,7 @@ func _get_track_audio(audio: PackedByteArray, track_id: int) -> PackedByteArray:
 			track_audio.append_array(clip.get_clip_audio_data())
 
 	# Making the audio data the correct length
-	if track_audio.resize(Utils.get_sample_count(Project.get_timeline_end() + 1)):
+	if track_audio.resize(Utils.get_sample_count(Project.get_timeline_end() + 1, Project.get_framerate())):
 		Print.resize_error()
 
 	return GoZenAudio.combine_data(audio, track_audio)

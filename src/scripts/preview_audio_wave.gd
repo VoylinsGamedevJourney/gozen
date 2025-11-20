@@ -30,9 +30,9 @@ func _draw() -> void:
 			var block_pos_y: float = 0.0
 
 			match Settings.get_audio_waveform_style():
-				SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+				Settings.AUDIO_WAVEFORM_STYLE.CENTER:
 					block_pos_y = (panel_height - block_height) / 2.0
-				SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+				Settings.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
 					block_pos_y = panel_height - block_height
 
 			var block_rect: Rect2 = Rect2(

@@ -529,12 +529,3 @@ msgstr "Opcje wideo"
 
 msgid "popup_separator_text_options"
 msgstr "Opcje tekstu"
-
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "Strona GoZen"
-
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "Serwer Discord"
-
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "Wesprzyj GoZen"

@@ -45,6 +45,7 @@ visible = false
 layout_mode = 2
 
 [node name="SubtitleTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("5_qbwwq")]
+visible = false
 layout_mode = 2
 script = ExtResource("6_5q5vg")
 

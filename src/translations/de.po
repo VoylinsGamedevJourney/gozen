@@ -582,15 +582,3 @@ msgstr "Videooptionen"
 #, fuzzy
 msgid "popup_separator_text_options"
 msgstr "Textoptionen"
-
-#, fuzzy
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "GoZen Website öffnen"
-
-#, fuzzy
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "Discord öffnen"
-
-#, fuzzy
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "GoZen unterstützen"

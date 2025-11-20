@@ -64,6 +64,6 @@ func _on_timeline_zoom_changed() -> void:
 
 
 func _draw() -> void:
-	if Project.data != null:
+	if Project.is_loaded() != null:
 		DrawManager.draw_timestamp_box(self)
 

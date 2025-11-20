@@ -18,6 +18,9 @@ var color_audio_fade_line: Color = Color(0.80, 0.36, 0.36, 0.5)
 
 # Timestamp_box.gd
 func draw_timestamp_box(box: TimelineBox) -> void:
+	if !Project.is_loaded():
+		return
+
 	var framerate: float = Project.get_framerate()
 	var zoom: float = Project.get_zoom()
 	var size_x: float = box.size.x
@@ -132,9 +135,9 @@ func draw_clip_wave(clip: ClipButton) -> void:
 			var block_pos_y: float = 0.0
 
 			match Settings.get_audio_waveform_style():
-				SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+				Settings.AUDIO_WAVEFORM_STYLE.CENTER:
 					block_pos_y = (size_y - block_height) / 2.0
-				SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+				Settings.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
 					block_pos_y = size_y - block_height
 
 			var block_rect: Rect2 = Rect2(

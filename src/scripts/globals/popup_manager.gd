@@ -63,11 +63,23 @@ func open_popup(popup: POPUP) -> void:
 	_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
 	
 	match popup:
-		POPUP.SETTINGS: (_open_popups[popup] as SettingsPanel).set_mode_editor_settings()
-		POPUP.PROJECT_SETTINGS: (_open_popups[popup] as SettingsPanel).set_mode_project_settings()
+		POPUP.SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
+		POPUP.PROJECT_SETTINGS: _open_project_settings(_open_popups[popup] as SettingsPanel)
 
 	_control.add_child(_open_popups[popup])
 	_control.visible = true
+
+
+func _open_editor_settings(settings_panel: SettingsPanel) -> void:
+	settings_panel.set_mode_settings(
+			"title_editor_settings",
+			Settings.get_settings_menu_options())
+
+
+func _open_project_settings(settings_panel: SettingsPanel) -> void:
+	settings_panel.set_mode_settings(
+			"title_project_settings",
+			Project.get_settings_menu_options())
 
 
 func close_popup(popup: POPUP) -> void:
@@ -123,12 +135,12 @@ func create_popup_menu(permanent: bool = false) -> PopupMenu:
 
 
 func show_popup_menu(popup: PopupMenu) -> void:
-	var mouse_pos: Vector2 = Project.get_viewport().get_mouse_position()
+	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 
 	popup.position.x = int(mouse_pos.x)
 	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
 
-	Project.add_child(popup)
+	add_child(popup)
 	popup.popup()
 
 

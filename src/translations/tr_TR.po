@@ -521,18 +521,3 @@ msgstr "Video seçenekleri"
 
 msgid "popup_separator_text_options"
 msgstr "Metin seçenekleri"
-
-#~ msgid "setting_tooltip_default_color_duration"
-#~ msgstr "Süre (kare cinsinden)."
-
-#~ msgid "setting_tooltip_default_text_duration"
-#~ msgstr "Süre (kare cinsinden)."
-
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "GoZen sitesi"
-
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "Discord sunucusu"
-
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "GoZen'i destekle"

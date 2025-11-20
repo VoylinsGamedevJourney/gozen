@@ -81,7 +81,9 @@ var current_clip_id: int = -1
 
 func _ready() -> void:
 	instance = self
-	on_clip_pressed(-1)
+	button_video_effects.visible = false
+	tab_container.current_tab = 2 # Empty
+	button_audio_effects.visible = false
 
 
 func _on_clip_erased(clip_id: int) -> void:
@@ -92,7 +94,7 @@ func _on_clip_erased(clip_id: int) -> void:
 func on_clip_pressed(id: int) -> void:
 	current_clip_id = id
 
-	if Project.data == null or id not in Project.get_clip_ids():
+	if Project.is_loaded() == null or id not in Project.get_clip_ids():
 		tab_container.current_tab = 2 # Empty
 		button_video_effects.visible = false
 		button_audio_effects.visible = false

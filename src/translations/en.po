@@ -432,9 +432,8 @@ msgstr "Module manager"
 msgid "menu_bar_preferences_command_bar"
 msgstr "Command bar"
 
-#, fuzzy
 msgid "menu_bar_help"
-msgstr "GoZen site"
+msgstr "Help"
 
 msgid "menu_bar_help_report_issue"
 msgstr "Report issue/bug"
@@ -510,18 +509,3 @@ msgstr "Video options"
 
 msgid "popup_separator_text_options"
 msgstr "Text options"
-
-#~ msgid "setting_tooltip_default_color_duration"
-#~ msgstr "The duration in frames."
-
-#~ msgid "setting_tooltip_default_text_duration"
-#~ msgstr "The duration in frames."
-
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "GoZen site"
-
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "Discord server"
-
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "Support GoZen"

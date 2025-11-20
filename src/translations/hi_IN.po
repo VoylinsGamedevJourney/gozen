@@ -532,21 +532,3 @@ msgstr "वीडियो विकल्प"
 
 msgid "popup_separator_text_options"
 msgstr "टेक्स्ट विकल्प"
-
-#~ msgid "setting_tooltip_default_image_duration"
-#~ msgstr "फ़्रेम में अवधि।"
-
-#~ msgid "setting_tooltip_default_color_duration"
-#~ msgstr "फ़्रेम में अवधि।"
-
-#~ msgid "setting_tooltip_default_text_duration"
-#~ msgstr "फ़्रेम में अवधि।"
-
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "GoZen साइट"
-
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "डिस्कोर्ड सर्वर"
-
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "GoZen को सहायता करें"

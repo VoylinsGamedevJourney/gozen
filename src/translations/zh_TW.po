@@ -548,7 +548,3 @@ msgstr ""
 
 msgid "popup_separator_text_options"
 msgstr ""
-
-#, fuzzy
-#~ msgid "setting_tooltip_default_image_duration"
-#~ msgstr "以影格為單位的持續時間。"

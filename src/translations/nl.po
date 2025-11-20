@@ -534,12 +534,3 @@ msgstr "Video-opties"
 
 msgid "popup_separator_text_options"
 msgstr "Tekstopties"
-
-#~ msgid "menu_bar_editor_open_url_site"
-#~ msgstr "GoZen website"
-
-#~ msgid "menu_bar_editor_open_url_discord"
-#~ msgstr "Discord server"
-
-#~ msgid "menu_bar_editor_open_url_support"
-#~ msgstr "Steun GoZen"

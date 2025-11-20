@@ -150,7 +150,7 @@ func _create_wave() -> void:
 		var end_frame: int = min(start_frame + frames_per_block, total_frames)
 
 		for frame_index: int in range(start_frame, end_frame):
-			if Project.editor_closing:
+			if Project._editor_closing:
 				return # Ability to stop early in case of closing editor since this runs in a thread.
 
 			var byte_offset: int = int(frame_index * bytes_size)

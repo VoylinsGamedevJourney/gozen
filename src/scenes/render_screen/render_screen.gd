@@ -163,7 +163,7 @@ func _on_chapters_updated() -> void:
 	chapters_text_edit.text = ""
 
 	for i: int in chapters:
-		var time: String = Utils.format_time_str_from_frame(i)
+		var time: String = Utils.format_time_str_from_frame(i, Project.get_framerate())
 		chapters_text_edit.text += "%s %s\n" % [time, chapters[i].text]
 
 

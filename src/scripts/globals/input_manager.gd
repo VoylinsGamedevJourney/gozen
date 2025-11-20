@@ -19,7 +19,7 @@ func _input(event: InputEvent) -> void:
 		get_tree().root.add_child(preload(Library.SCENE_ABOUT_GOZEN).instantiate())
 
 	# EVERYTHING which is only allowed to open after the start screen goes below!
-	if Project.data == null:
+	if Project.is_loaded() == null:
 		return
 
 	if event.is_action_pressed("save_project", false, true):
@@ -81,7 +81,7 @@ func switch_screen() -> void:
 func clipboard_paste() -> void:
 	var image: Image = DisplayServer.clipboard_get_image()
 
-	if Project.data == null:
+	if Project.is_loaded() == null:
 		return
 
 	# The pasted data is an image/screenshot.
