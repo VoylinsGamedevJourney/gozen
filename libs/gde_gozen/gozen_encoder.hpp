@@ -1,15 +1,15 @@
 #pragma once
 
-#include <godot_cpp/classes/audio_stream_wav.hpp>
-#include <godot_cpp/classes/image.hpp>
-#include <godot_cpp/classes/resource.hpp>
-#include <godot_cpp/variant/packed_byte_array.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/time.hpp>
-#include <godot_cpp/classes/rendering_server.hpp>
-
 #include "ffmpeg.hpp"
 #include "ffmpeg_helpers.hpp"
+
+#include <godot_cpp/classes/audio_stream_wav.hpp>
+#include <godot_cpp/classes/image.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/time.hpp>
+#include <godot_cpp/variant/packed_byte_array.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 
 using namespace godot;
@@ -17,20 +17,20 @@ using namespace godot;
 class GoZenEncoder : public Resource {
 	GDCLASS(GoZenEncoder, Resource);
 
-private:
+  private:
 	// FFmpeg classes
 	UniqueAVFormatCtxOutput av_format_ctx;
 	UniqueAVCodecCtx av_codec_ctx_video;
 	UniqueAVPacket av_packet_video;
 	UniqueAVFrame av_frame_video;
-	AVStream *av_stream_video = nullptr;
+	AVStream* av_stream_video = nullptr;
 
 	UniqueAVFrame av_frame_hw_video;
-	AVBufferRef *hw_device_ctx = nullptr;
+	AVBufferRef* hw_device_ctx = nullptr;
 
 	UniqueAVCodecCtx av_codec_ctx_audio;
 	UniqueAVPacket av_packet_audio;
-	AVStream *av_stream_audio = nullptr;
+	AVStream* av_stream_audio = nullptr;
 
 	UniqueSwsCtx sws_ctx;
 
@@ -42,14 +42,14 @@ private:
 	int gop_size = 15;
 	int crf = 23; // 0 best quality, 51 worst quality, 18 not really noticable.
 	int threads = 0;
-	
+
 	int sws_quality = SWS_QUALITY_BILINEAR;
 
 	// The maximum for B-frames
 	// B-frames can improve the compression of a video as it looks to
 	// previous and future frames to make up the image.
 	int b_frames = 0;
- 
+
 	int response = 0;
 	int frame_nr = 0;
 	int format_size = 3; // RGB/RGBA
@@ -64,7 +64,7 @@ private:
 
 	std::string h264_preset = "medium";
 	int hw_device_type = HW_DEVICE_TYPE_NVENC;
-	
+
 	// Godot classes
 	String path = "";
 	Vector2i resolution = Vector2i(1920, 1080);
@@ -76,16 +76,14 @@ private:
 	bool _write_header();
 	bool _finalize_encoding();
 
-	static inline void _log(String message) {
-		UtilityFunctions::print("GoZenEncoder: ", message, ".");
-	}
+	static inline void _log(String message) { UtilityFunctions::print("GoZenEncoder: ", message, "."); }
 	static inline bool _log_err(String message) {
 		UtilityFunctions::printerr("GoZenEncoder: ", message, "!");
 		return false;
 	}
 
 
-public:
+  public:
 	enum VIDEO_CODEC {
 		V_HEVC = AV_CODEC_ID_HEVC, // H265
 		V_H264 = AV_CODEC_ID_H264,
@@ -112,7 +110,7 @@ public:
 	enum H264_PRESETS { // Only works for H.H264
 		H264_PRESET_VERYSLOW,
 		H264_PRESET_SLOWER,
-		H264_PRESET_SLOW,   // recommended
+		H264_PRESET_SLOW,	// recommended
 		H264_PRESET_MEDIUM, // default preset
 		H264_PRESET_FAST,
 		H264_PRESET_FASTER,
@@ -122,14 +120,14 @@ public:
 	};
 	enum SWS_QUALITY {
 		SWS_QUALITY_FAST_BILINEAR = SWS_FAST_BILINEAR, // (Fast, lower quality)
-		SWS_QUALITY_BILINEAR = SWS_BILINEAR, // (Good balance between speed and quality)
-		SWS_QUALITY_BICUBIC = SWS_BICUBIC, // (Better quality, but slower)
+		SWS_QUALITY_BILINEAR = SWS_BILINEAR,		   // (Good balance between speed and quality)
+		SWS_QUALITY_BICUBIC = SWS_BICUBIC,			   // (Better quality, but slower)
 	};
 	enum HW_DEVICE_TYPES {
 		HW_DEVICE_TYPE_NONE = -1,
 		HW_DEVICE_TYPE_NVENC, // NVidia
 		HW_DEVICE_TYPE_VAAPI, // AMD/Intel on Linux
-		HW_DEVICE_TYPE_QSV, // Intel
+		HW_DEVICE_TYPE_QSV,	  // Intel
 	};
 
 	GoZenEncoder() {};
@@ -145,9 +143,18 @@ public:
 
 	static PackedStringArray get_available_codecs(int codec_id);
 
-	inline void enable_debug() { av_log_set_level(AV_LOG_DEBUG); debug = true; }
-	inline void enable_trace() { av_log_set_level(AV_LOG_TRACE); debug = true; }
-	inline void disable_debug() { av_log_set_level(AV_LOG_INFO); debug = false; }
+	inline void enable_debug() {
+		av_log_set_level(AV_LOG_DEBUG);
+		debug = true;
+	}
+	inline void enable_trace() {
+		av_log_set_level(AV_LOG_TRACE);
+		debug = true;
+	}
+	inline void disable_debug() {
+		av_log_set_level(AV_LOG_INFO);
+		debug = false;
+	}
 
 	inline void set_video_codec_id(VIDEO_CODEC codec_id) { video_codec_id = (AVCodecID)codec_id; }
 	inline void set_audio_codec_id(AUDIO_CODEC codec_id) { audio_codec_id = (AVCodecID)codec_id; }
@@ -165,21 +172,39 @@ public:
 
 	inline void set_h264_preset(int value) {
 		switch (value) {
-			case H264_PRESET_VERYSLOW:	h264_preset = "veryslow"; break;
-			case H264_PRESET_SLOWER:	h264_preset = "slower";	break;
-			case H264_PRESET_SLOW:		h264_preset = "slow"; break;
-			case H264_PRESET_MEDIUM:	h264_preset = "medium"; break;
-			case H264_PRESET_FAST:		h264_preset = "fast"; break;
-			case H264_PRESET_FASTER:	h264_preset = "faster"; break;
-			case H264_PRESET_VERYFAST:	h264_preset = "veryfast"; break;
-			case H264_PRESET_SUPERFAST: h264_preset = "superfast"; break;
-			case H264_PRESET_ULTRAFAST: h264_preset = "ultrafast"; break;
+		case H264_PRESET_VERYSLOW:
+			h264_preset = "veryslow";
+			break;
+		case H264_PRESET_SLOWER:
+			h264_preset = "slower";
+			break;
+		case H264_PRESET_SLOW:
+			h264_preset = "slow";
+			break;
+		case H264_PRESET_MEDIUM:
+			h264_preset = "medium";
+			break;
+		case H264_PRESET_FAST:
+			h264_preset = "fast";
+			break;
+		case H264_PRESET_FASTER:
+			h264_preset = "faster";
+			break;
+		case H264_PRESET_VERYFAST:
+			h264_preset = "veryfast";
+			break;
+		case H264_PRESET_SUPERFAST:
+			h264_preset = "superfast";
+			break;
+		case H264_PRESET_ULTRAFAST:
+			h264_preset = "ultrafast";
+			break;
 		}
 	}
 
 	inline void set_sample_rate(int value) { sample_rate = value; }
 
-protected:
+  protected:
 	static void _bind_methods();
 };
 
@@ -188,4 +213,3 @@ VARIANT_ENUM_CAST(GoZenEncoder::AUDIO_CODEC);
 VARIANT_ENUM_CAST(GoZenEncoder::H264_PRESETS);
 VARIANT_ENUM_CAST(GoZenEncoder::SWS_QUALITY);
 VARIANT_ENUM_CAST(GoZenEncoder::HW_DEVICE_TYPES);
-

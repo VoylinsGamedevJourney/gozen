@@ -253,7 +253,7 @@ func update_view(track_id: int) -> void:
 	if file_data.video != null:
 		var interlaced: int = file_data.video.get_interlaced() 
 
-		if file_data.video.get_full_color_range():
+		if file_data.video.is_full_color_range():
 			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
 				if interlaced != 0:
 					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P_FULL)

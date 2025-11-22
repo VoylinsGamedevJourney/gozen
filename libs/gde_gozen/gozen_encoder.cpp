@@ -1,14 +1,12 @@
 #include "gozen_encoder.hpp"
 
 
-GoZenEncoder::~GoZenEncoder() {
-	close();
-}
+GoZenEncoder::~GoZenEncoder() { close(); }
 
 PackedStringArray GoZenEncoder::get_available_codecs(int codec_id) {
 	PackedStringArray codec_names = PackedStringArray();
-	const AVCodec *current_codec = nullptr;
-	void *i = nullptr;
+	const AVCodec* current_codec = nullptr;
+	void* i = nullptr;
 
 	while ((current_codec = av_codec_iterate(&i)))
 		if (current_codec->id == codec_id && av_codec_is_encoder(current_codec))
@@ -45,14 +43,12 @@ bool GoZenEncoder::open(bool rgba) {
 	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, path.utf8())) {
 		_log_err("Error creating AV Format by path extension, using MPEG");
 		_log("Trying MPEG default");
-		if (avformat_alloc_output_context2(
-				&temp_format_ctx, nullptr, "mpeg", path.utf8())) {
+		if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, "mpeg", path.utf8())) {
 			return _log_err("Error creating AV Format");
 		}
 	}
 
-	av_format_ctx = make_unique_ffmpeg<AVFormatContext, AVFormatCtxOutputDeleter>(
-			temp_format_ctx);
+	av_format_ctx = make_unique_ffmpeg<AVFormatContext, AVFormatCtxOutputDeleter>(temp_format_ctx);
 
 	// Setting up video stream
 	if (!_add_video_stream()) {
@@ -82,10 +78,9 @@ bool GoZenEncoder::open(bool rgba) {
 	}
 
 	// Setting up SWS
-	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(sws_getContext(
-			resolution.x, resolution.y, format_size == 4 ? AV_PIX_FMT_RGBA : AV_PIX_FMT_RGB24,
-			resolution.x, resolution.y, AV_PIX_FMT_YUV420P,
-			sws_quality, nullptr, nullptr, nullptr));
+	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(
+		sws_getContext(resolution.x, resolution.y, format_size == 4 ? AV_PIX_FMT_RGBA : AV_PIX_FMT_RGB24, resolution.x,
+					   resolution.y, AV_PIX_FMT_YUV420P, sws_quality, nullptr, nullptr, nullptr));
 	if (!sws_ctx)
 		return _log_err("Couldn't create SWS");
 
@@ -95,7 +90,7 @@ bool GoZenEncoder::open(bool rgba) {
 }
 
 bool GoZenEncoder::_add_video_stream() {
-	const AVCodec *av_codec = avcodec_find_encoder(video_codec_id);
+	const AVCodec* av_codec = avcodec_find_encoder(video_codec_id);
 	if (!av_codec) {
 		_log_err(avcodec_get_name(video_codec_id));
 		return _log_err("Couldn't open video codec");
@@ -110,8 +105,7 @@ bool GoZenEncoder::_add_video_stream() {
 
 	av_stream_video->id = av_format_ctx->nb_streams - 1;
 
-	av_codec_ctx_video = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(
-			avcodec_alloc_context3(av_codec));
+	av_codec_ctx_video = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(avcodec_alloc_context3(av_codec));
 	if (!av_codec_ctx_video)
 		return _log_err("Couldn't alloc video codec");
 
@@ -140,13 +134,11 @@ bool GoZenEncoder::_add_video_stream() {
 		av_codec_ctx_video->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 	// Setting the CRF
-	av_opt_set(av_codec_ctx_video->priv_data, "crf",
-			std::to_string(crf).c_str(), 0);
+	av_opt_set(av_codec_ctx_video->priv_data, "crf", std::to_string(crf).c_str(), 0);
 
 	// Encoding options for different codecs
 	if (av_codec->id == AV_CODEC_ID_H264)
-		av_opt_set(av_codec_ctx_video->priv_data, "preset",
-			 h264_preset.c_str(), 0);
+		av_opt_set(av_codec_ctx_video->priv_data, "preset", h264_preset.c_str(), 0);
 
 	// Opening the video encoder codec
 	response = avcodec_open2(av_codec_ctx_video.get(), av_codec, nullptr);
@@ -168,8 +160,7 @@ bool GoZenEncoder::_add_video_stream() {
 		return _log_err("Couldn't get frame buffer");
 
 	// Copy video stream params to muxer
-	if (avcodec_parameters_from_context(av_stream_video->codecpar,
-										av_codec_ctx_video.get()) < 0) {
+	if (avcodec_parameters_from_context(av_stream_video->codecpar, av_codec_ctx_video.get()) < 0) {
 		return _log_err("Couldn't copy stream params");
 	}
 
@@ -177,7 +168,7 @@ bool GoZenEncoder::_add_video_stream() {
 }
 
 bool GoZenEncoder::_add_audio_stream() {
-	const AVCodec *av_codec = avcodec_find_encoder(audio_codec_id);
+	const AVCodec* av_codec = avcodec_find_encoder(audio_codec_id);
 	if (!av_codec) {
 		_log_err(avcodec_get_name(audio_codec_id));
 		return _log_err("Couldn't find audio encoder");
@@ -192,8 +183,7 @@ bool GoZenEncoder::_add_audio_stream() {
 
 	av_stream_audio->id = av_format_ctx->nb_streams - 1;
 
-	av_codec_ctx_audio = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(
-				avcodec_alloc_context3(av_codec));
+	av_codec_ctx_audio = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(avcodec_alloc_context3(av_codec));
 	if (!av_codec_ctx_audio)
 		return _log_err("Couln't alloc audio codec");
 
@@ -226,13 +216,12 @@ bool GoZenEncoder::_add_audio_stream() {
 	}
 
 	// Copy audio stream params to muxer.
-	if (avcodec_parameters_from_context(av_stream_audio->codecpar,
-										av_codec_ctx_audio.get()))
+	if (avcodec_parameters_from_context(av_stream_audio->codecpar, av_codec_ctx_audio.get()))
 		return _log_err("Couldn't copy stream params");
 
 	if (av_format_ctx->oformat->flags & AVFMT_GLOBALHEADER)
 		av_codec_ctx_audio->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-	
+
 	return true;
 }
 
@@ -269,20 +258,17 @@ bool GoZenEncoder::_write_header() {
 bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 	if (!encoder_open)
 		return _log_err("Not open");
-	else if (audio_codec_id != AV_CODEC_ID_NONE && audio_codec_id != AV_CODEC_ID_NONE
-			&& !audio_added)
+	else if (audio_codec_id != AV_CODEC_ID_NONE && audio_codec_id != AV_CODEC_ID_NONE && !audio_added)
 		return _log_err("Audio hasn't been send");
 	else if (av_frame_make_writable(av_frame_video.get()) < 0)
 		return _log_err("Frame not writable");
 
 	PackedByteArray image_pixel_data = frame_image->get_data();
-	uint8_t *src_data[4] = { image_pixel_data.ptrw(), nullptr, nullptr, nullptr};
-	int src_linesize[4] = { frame_image->get_width() * format_size, 0, 0, 0 };
+	uint8_t* src_data[4] = {image_pixel_data.ptrw(), nullptr, nullptr, nullptr};
+	int src_linesize[4] = {frame_image->get_width() * format_size, 0, 0, 0};
 
-	response = sws_scale(
-			sws_ctx.get(),
-			src_data, src_linesize, 0, frame_image->get_height(),
-			av_frame_video->data, av_frame_video->linesize);
+	response = sws_scale(sws_ctx.get(), src_data, src_linesize, 0, frame_image->get_height(), av_frame_video->data,
+						 av_frame_video->linesize);
 	if (response < 0) {
 		FFmpeg::print_av_error("Scaling frame data failed!", response);
 		return false;
@@ -310,9 +296,7 @@ bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 
 		// Rescale output packet timestamp values from codec to stream timebase
 		av_packet_video->stream_index = av_stream_video->index;
-		av_packet_rescale_ts(av_packet_video.get(),
-							 av_codec_ctx_video->time_base,
-							 av_stream_video->time_base);
+		av_packet_rescale_ts(av_packet_video.get(), av_codec_ctx_video->time_base, av_stream_video->time_base);
 
 		// Write the frame to file
 		response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_video.get());
@@ -335,17 +319,15 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 		return _log_err("Audio not enabled");
 	if (audio_added)
 		return _log_err("Audio already send");
-	
-	const uint8_t *input_data = wav_data.ptr();
+
+	const uint8_t* input_data = wav_data.ptr();
 	UniqueSwrCtx swr_ctx;
 	AVChannelLayout ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 
 	// Allocate and setup SWR
 	SwrContext* temp_swr_ctx = nullptr;
-	swr_alloc_set_opts2(&temp_swr_ctx,
-			&ch_layout,av_codec_ctx_audio->sample_fmt,
-			av_codec_ctx_audio->sample_rate,
-			&ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, nullptr);
+	swr_alloc_set_opts2(&temp_swr_ctx, &ch_layout, av_codec_ctx_audio->sample_fmt, av_codec_ctx_audio->sample_rate,
+						&ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, nullptr);
 	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
 	if (!swr_ctx || swr_init(swr_ctx.get()) < 0)
 		return _log_err("Couldn't create SWR");
@@ -370,13 +352,11 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 	int64_t pts = 0;
 
 	while (remaining_samples > 0) {
-		int samples_to_convert = FFMIN(remaining_samples,
-									   av_codec_ctx_audio->frame_size);
-		
-		// Resample the data 
-		int converted_samples = swr_convert(swr_ctx.get(),
-				av_frame_out->data, av_frame_out->nb_samples,
-				&input_data, samples_to_convert);
+		int samples_to_convert = FFMIN(remaining_samples, av_codec_ctx_audio->frame_size);
+
+		// Resample the data
+		int converted_samples =
+			swr_convert(swr_ctx.get(), av_frame_out->data, av_frame_out->nb_samples, &input_data, samples_to_convert);
 
 		if (converted_samples < 0)
 			return _log_err("Couldn't resample");
@@ -392,17 +372,12 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 				return false;
 			}
 
-			while ((response = avcodec_receive_packet(av_codec_ctx_audio.get(),
-													  av_packet_audio.get())) >= 0) {
+			while ((response = avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get())) >= 0) {
 				// Rescale packet timestamp if necessary
 				av_packet_audio->stream_index = av_stream_audio->index;
-				av_packet_rescale_ts(
-						av_packet_audio.get(),
-						av_codec_ctx_audio->time_base,
-						av_stream_audio->time_base);
+				av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
 
-				response = av_interleaved_write_frame(av_format_ctx.get(),
-													  av_packet_audio.get());
+				response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
 				if (response < 0) {
 					FFmpeg::print_av_error("Error writing audio packet!", response);
 					return false;
@@ -418,9 +393,7 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 
 	// Flush remaining samples
 	while (true) {
-		int converted_samples = swr_convert(swr_ctx.get(),
-								   av_frame_out->data, av_frame_out->nb_samples,
-								   nullptr, 0);
+		int converted_samples = swr_convert(swr_ctx.get(), av_frame_out->data, av_frame_out->nb_samples, nullptr, 0);
 		if (converted_samples <= 0)
 			break;
 
@@ -429,15 +402,12 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 		pts += converted_samples;
 
 		int response = avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
-		if (converted_samples <= 0) break;
+		if (converted_samples <= 0)
+			break;
 
-		while ((response = avcodec_receive_packet(av_codec_ctx_audio.get(),
-												  av_packet_audio.get())) >= 0) {
+		while ((response = avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get())) >= 0) {
 			av_packet_audio->stream_index = av_stream_audio->index;
-			av_packet_rescale_ts(
-					av_packet_audio.get(),
-					av_codec_ctx_audio->time_base,
-					av_stream_audio->time_base);
+			av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
 			av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
 			av_packet_unref(av_packet_audio.get());
 		}
@@ -447,8 +417,7 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 	avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
 	while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
 		av_packet_audio->stream_index = av_stream_audio->index;
-		av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base,
-							 av_stream_audio->time_base);
+		av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
 		av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
 		av_packet_unref(av_packet_audio.get());
 	}
@@ -478,7 +447,7 @@ bool GoZenEncoder::_finalize_encoding() {
 			FFmpeg::print_av_error("Error sending null frame to video encoder!", response);
 			return response;
 		}
-		
+
 		while (true) {
 			response = avcodec_receive_packet(av_codec_ctx_video.get(), av_packet_video.get());
 			if (response == AVERROR_EOF) {
@@ -497,10 +466,7 @@ bool GoZenEncoder::_finalize_encoding() {
 
 			// Valid packet received, writing to file.
 			av_packet_video->stream_index = av_stream_video->index;
-			av_packet_rescale_ts(
-					av_packet_video.get(),
-					av_codec_ctx_video->time_base,
-					av_stream_video->time_base);
+			av_packet_rescale_ts(av_packet_video.get(), av_codec_ctx_video->time_base, av_stream_video->time_base);
 
 			_log("Writing flushed video packet PTS: " + String::num_int64(av_packet_video->pts));
 			response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_video.get());
@@ -515,11 +481,10 @@ bool GoZenEncoder::_finalize_encoding() {
 
 	// Flush audio encoder (send_audio already does this, this is just an extra check).
 	if (audio_codec_id != AV_CODEC_ID_NONE && av_codec_ctx_audio) {
-        av_packet_audio = make_unique_avpacket();
+		av_packet_audio = make_unique_avpacket();
 		avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
 
-		while (avcodec_receive_packet(
-				av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0)
+		while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0)
 			av_packet_unref(av_packet_audio.get());
 	}
 
@@ -564,16 +529,13 @@ void GoZenEncoder::close() {
 }
 
 
-#define BIND_STATIC_METHOD_ARGS(method_name, ...) \
-    ClassDB::bind_static_method("GoZenEncoder", \
-        D_METHOD(#method_name, __VA_ARGS__), &GoZenEncoder::method_name)
+#define BIND_STATIC_METHOD_ARGS(method_name, ...)                                                                      \
+	ClassDB::bind_static_method("GoZenEncoder", D_METHOD(#method_name, __VA_ARGS__), &GoZenEncoder::method_name)
 
-#define BIND_METHOD(method_name) \
-    ClassDB::bind_method(D_METHOD(#method_name), &GoZenEncoder::method_name)
+#define BIND_METHOD(method_name) ClassDB::bind_method(D_METHOD(#method_name), &GoZenEncoder::method_name)
 
-#define BIND_METHOD_ARGS(method_name, ...) \
-    ClassDB::bind_method( \
-        D_METHOD(#method_name, __VA_ARGS__), &GoZenEncoder::method_name)
+#define BIND_METHOD_ARGS(method_name, ...)                                                                             \
+	ClassDB::bind_method(D_METHOD(#method_name, __VA_ARGS__), &GoZenEncoder::method_name)
 
 void GoZenEncoder::_bind_methods() {
 	/* VIDEO CODEC ENUMS */
@@ -626,7 +588,7 @@ void GoZenEncoder::_bind_methods() {
 	BIND_METHOD_ARGS(open, "rgba");
 	BIND_METHOD(is_open);
 
-	
+
 	BIND_METHOD_ARGS(send_frame, "frame_image");
 	BIND_METHOD_ARGS(send_audio, "wav_data");
 
@@ -654,4 +616,3 @@ void GoZenEncoder::_bind_methods() {
 
 	BIND_METHOD_ARGS(set_sample_rate, "value");
 }
-
