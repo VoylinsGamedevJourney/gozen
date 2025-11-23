@@ -63,10 +63,10 @@ GoZen is an open-source video editor developed using the Godot game engine (we f
     * [Fork the GoZen project from GitHub](https://github.com/VoylinsGamedevJourney/GoZen/fork) to create your own copy of GoZen to work in;
     * Clone your fork to your local machine
 1. **Build the GDE:**
-    * Go into the libs folder and run `build.py` with python3;
+    * Run `build.py` with python3 from the main project folder;
     * Follow the steps to build for your system (choose debug);
 1. **Open project in Godot:**
-    * Opening the project can be done through launching Godot and opening the project which is inside the src folder.
+    * Opening the project can be done through launching Godot and opening the project which is inside the `src` folder.
 
 ### Your first code contribution
 1. Make certain you have pulled all commits from upstream and that you are inside of the `master` branch;
@@ -90,7 +90,6 @@ Translation contributions are not yet necessary due to the early alpha stage, bu
 
 ## Financial contributions
 If you want to support GoZen financially, you can do so via:
-- **Contribute financially via Open Collective:** Funds go directly towards GoZen-related expenses (e.g., software licenses, hardware). [Open Collective page](https://opencollective.com/gozen)
 - **Support me personally via Ko-fi:** This helps support my overall work, including GoZen development, videos, and other projects.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
