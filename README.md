@@ -1,10 +1,10 @@
 # GoZen
 
-[![Linux](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/linux.yml)
-[![AppImage](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/appimage.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/appimage.yml)
-[![RPM Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/rpm.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/rpm.yml)
-[![DEB Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/deb.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/deb.yml)
-[![Windows](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/windows.yml) <br>
+[![Linux](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_linux.yml)
+[![AppImage](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_appimage.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_appimage.yml)
+[![RPM Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_rpm.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_rpm.yml)
+[![DEB Package](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_deb.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_deb.yml)
+[![Windows](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml/badge.svg)](https://github.com/VoylinsGamedevJourney/gozen/actions/workflows/build_windows.yml) <br>
 [![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen)
 [![Discord](https://img.shields.io/discord/1120566516899926068?label=Discord&logo=discord&logoColor=white)](https://discord.gg/BdbUf7VKYC)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)

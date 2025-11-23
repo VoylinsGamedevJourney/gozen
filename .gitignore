@@ -8,6 +8,8 @@ aom_build
 *.so*
 *.dblite
 *.os*
+*.os
+*.os
 
 *.sh
 *.exe
