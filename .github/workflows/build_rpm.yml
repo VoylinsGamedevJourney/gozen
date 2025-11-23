@@ -5,20 +5,21 @@ on:
       version:
         required: true
         type: string
+        default: test
   workflow_dispatch:
     inputs:
       version:
         description: Version
         type: string
-        default: 0.0
+        default: test
 
 env:
-  GODOT_VERSION: 4.5.1
+  GODOT_VERSION: 4.5.1-stable
   EXPORT_FOLDER: bin/linux_x86_64
   APP_NAME: gozen
   RPM_BUILD_DIR: ${{ github.workspace }}/rpmbuild
 
-run-name: 'RPM version: v${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'RPM version: ${{ inputs.version }} by @${{ github.actor }}'
 jobs:
   build-linux:
     name: Build Linux
@@ -27,7 +28,7 @@ jobs:
       contents: read
     uses: ./.github/workflows/build_linux.yml
     with:
-      version: v${{ inputs.version }}
+      version: ${{ inputs.version }}
 
 
   build-rpm:
@@ -37,5 +38,5 @@ jobs:
       contents: read
     uses: ./.github/workflows/compile_package_rpm.yml
     with:
-      version: v${{ inputs.version }}
+      version: ${{ inputs.version }}
 

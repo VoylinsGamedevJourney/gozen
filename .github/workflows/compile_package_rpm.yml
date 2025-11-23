@@ -7,7 +7,7 @@ on:
         type: string
 
 env:
-  GODOT_VERSION: 4.5.1
+  GODOT_VERSION: 4.5.1-stable
   EXPORT_FOLDER: libs/bin/linux_x86_64
   APP_NAME: gozen
   RPM_BUILD_DIR: ${{ github.workspace }}/rpmbuild

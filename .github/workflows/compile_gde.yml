@@ -2,9 +2,12 @@ name: 11 | Compile GDE
 on:
   workflow_call:
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 1 * *' # At 04:00 on the 1st of every month
+      timezone: 'Asia/Tokyo'
         
 env:
-  GODOT_VERSION: 4.5.1
+  GODOT_VERSION: 4.5.1-stable
   EXPORT_FOLDER_LINUX: bin/linux_x86_64
   EXPORT_FOLDER_WINDOWS: bin/windows_x86_64
  

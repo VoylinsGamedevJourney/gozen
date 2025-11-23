@@ -5,18 +5,19 @@ on:
       version:
         required: true
         type: string
+        default: test
   workflow_dispatch:
     inputs:
       version:
         description: Version
         type: string
-        default: 0.0
+        default: test
 
 env:
-  GODOT_VERSION: 4.5.1
+  GODOT_VERSION: 4.5.1-stable
   EXPORT_FOLDER: bin/windows_x86_64
 
-run-name: 'Windows version: v${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'Windows version: ${{ inputs.version }} by @${{ github.actor }}'
 jobs:
   build-gozen-windows:
     name: Build GoZen
@@ -115,7 +116,7 @@ jobs:
             echo "Godot export templates found in cache."
           fi
 
-          sed -i 's|^config/version\s*=.*|config/version="v${{ inputs.version }}"|' src/project.godot
+          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
 
       - name: Prepare folder
         run: |
@@ -132,7 +133,7 @@ jobs:
       - name: Upload Windows
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Windows_x86_64_v${{ inputs.version }}
+          name: GoZen_Windows_x86_64_${{ inputs.version }}
           path: ${{ env.EXPORT_FOLDER }}
           retention-days: 2
 

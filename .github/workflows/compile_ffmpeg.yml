@@ -2,7 +2,10 @@ name: 10 | Compile FFmpeg
 on:
   workflow_call:
   workflow_dispatch:
-        
+  schedule:
+    - cron: '0 2 1 * *' # At 02:00 on the 1st of every month
+      timezone: 'Asia/Tokyo'
+
 env:
   PATH_LINUX: libs/ffmpeg/bin_linux
   PATH_WINDOWS: libs/ffmpeg/bin_windows

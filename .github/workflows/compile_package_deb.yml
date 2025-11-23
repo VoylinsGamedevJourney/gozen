@@ -8,7 +8,7 @@ on:
 
 run-name: 'DEB version: v${{ inputs.version }} by @${{ github.actor }}'
 env:
-  GODOT_VERSION: 4.5.1
+  GODOT_VERSION: 4.5.1-stable
   EXPORT_FOLDER: libs/bin/linux_x86_64
   DEB_DIR: ${{ github.workspace }}/gozen-deb
   APP_NAME: gozen
