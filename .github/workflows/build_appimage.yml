@@ -11,7 +11,7 @@ on:
       version:
         description: Version
         type: string
-        default: v0.0
+        default: 0.0
         
 env:
   GODOT_VERSION: 4.5.1
