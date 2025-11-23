@@ -1,4 +1,4 @@
-name: 02 | AppImage
+name: 02 | Build AppImage
 
 on:
   workflow_call:
@@ -14,12 +14,12 @@ on:
         default: v0.0
         
 env:
-  GODOT_VERSION: 4.5-beta3
+  GODOT_VERSION: 4.5.1
   EXPORT_FOLDER: bin/linux_x86_64
   APP_NAME: gozen
   APPIMAGE_DIR: ${{ github.workspace }}/gozen.AppDir
 
-run-name: 'AppImage version: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'AppImage version: v${{ inputs.version }} by @${{ github.actor }}'
 
 jobs:
   build-appimage:
@@ -96,7 +96,7 @@ jobs:
             echo "Godot export templates found in cache."
           fi
 
-          sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' src/project.godot
+          sed -i 's|^config/version\s*=.*|config/version="v${{ inputs.version }}"|' src/project.godot
 
       - name: Export for Linux
         working-directory: ./src
@@ -161,7 +161,7 @@ jobs:
           export LD_LIBRARY_PATH="${{ env.APPIMAGE_DIR }}/usr/lib:$LD_LIBRARY_PATH"
 
           chmod +x ${{ env.APPIMAGE_DIR }}/usr/bin/${{ env.APP_NAME }}
-          export VERSION=${{ inputs.version }}
+          export VERSION=v${{ inputs.version }}
           
           ./linuxdeploy --appdir ${{ env.APPIMAGE_DIR }} \
             -e ${{ env.APPIMAGE_DIR }}/usr/bin/${{ env.APP_NAME }} \
@@ -174,14 +174,14 @@ jobs:
             echo "Error: linuxdeploy did not create an AppImage."
             exit 1
           fi
-          mv "${GENERATED_APPIMAGE_NAME}" "${{ env.APP_NAME }}-${{ inputs.version }}-x86_64.AppImage"
-          echo "AppImage created and renamed to: ${{ env.APP_NAME }}-${{ inputs.version }}-x86_64.AppImage"
+          mv "${GENERATED_APPIMAGE_NAME}" "${{ env.APP_NAME }}-v${{ inputs.version }}-x86_64.AppImage"
+          echo "AppImage created and renamed to: ${{ env.APP_NAME }}-v${{ inputs.version }}-x86_64.AppImage"
           ls -l *.AppImage
 
       - name: Upload AppImage Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Linux_AppImage_${{ inputs.version }}
-          path: ${{ env.APP_NAME }}-${{ inputs.version }}-x86_64.AppImage
+          name: GoZen_Linux_AppImage_v${{ inputs.version }}
+          path: ${{ env.APP_NAME }}-v${{ inputs.version }}-x86_64.AppImage
           if-no-files-found: error # Fails the workflow if the AppImage isn't found
 

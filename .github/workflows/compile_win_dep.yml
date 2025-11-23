@@ -1,4 +1,4 @@
-name: Windows FFmpeg Dependency
+name: 22 | Compile Windows FFmpeg Dependencies
 on:
   workflow_call:
     inputs:

@@ -5,27 +5,27 @@ on:
       version:
         description: 'Version'
         type: string
-        default: 'v0.0'
+        default: '0.0'
 
-run-name: 'Build GoZen Release: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'Build GoZen Release: v${{ inputs.version }} by @${{ github.actor }}'
 jobs:
   build-linux:
     name: Build Linux
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/linux.yml
+    uses: ./.github/workflows/build_linux.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 
   build-appimage:
     name: Build AppImage
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/appimage.yml
+    uses: ./.github/workflows/build_appimage.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 
   build-rpm:
     needs: [build-linux]
@@ -33,9 +33,9 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/build_package_rpm.yml
+    uses: ./.github/workflows/compile_package_rpm.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 
   build-deb:
     needs: [build-linux]
@@ -43,16 +43,16 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/build_package_deb.yml
+    uses: ./.github/workflows/compile_package_deb.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 
   build-windows:
     name: Build Windows
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/windows.yml
+    uses: ./.github/workflows/build_windows.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 

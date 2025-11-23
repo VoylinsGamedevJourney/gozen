@@ -1,4 +1,4 @@
-name: Build DEB Package
+name: 20 | Compile DEB Package
 on:
   workflow_call:
     inputs:
@@ -6,9 +6,9 @@ on:
         required: true
         type: string
 
-run-name: 'DEB version: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'DEB version: v${{ inputs.version }} by @${{ github.actor }}'
 env:
-  GODOT_VERSION: 4.5.beta3
+  GODOT_VERSION: 4.5.1
   EXPORT_FOLDER: libs/bin/linux_x86_64
   DEB_DIR: ${{ github.workspace }}/gozen-deb
   APP_NAME: gozen
@@ -34,7 +34,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: GoZen_Linux_x86_64_${{ inputs.version }}
+          name: GoZen_Linux_x86_64_v${{ inputs.version }}
           path: ${{ env.EXPORT_FOLDER }}
 
       - name: Create DEB package structure
@@ -56,7 +56,7 @@ jobs:
 
       - name: Clean version string
         id: version
-        run: echo "cleaned_version=$(echo '${{ inputs.version }}' | sed 's/^v//')" >> $GITHUB_OUTPUT
+        run: echo "cleaned_version=$(echo 'v${{ inputs.version }}' | sed 's/^v//')" >> $GITHUB_OUTPUT
 
       - name: Create control file
         run: |
@@ -80,12 +80,12 @@ jobs:
       - name: Build DEB
         run: |
           fakeroot dpkg-deb --build ${{ env.DEB_DIR }}
-          mv gozen-deb.deb ${{ env.APP_NAME }}_${{ inputs.version }}_amd64.deb
+          mv gozen-deb.deb ${{ env.APP_NAME }}_v${{ inputs.version }}_amd64.deb
 
       - name: Upload DEB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Linux_DEB_${{ inputs.version }}
-          path: ${{ env.APP_NAME }}_${{ inputs.version }}_amd64.deb
+          name: GoZen_Linux_DEB_v${{ inputs.version }}
+          path: ${{ env.APP_NAME }}_v${{ inputs.version }}_amd64.deb
 
 

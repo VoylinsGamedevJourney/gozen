@@ -1,4 +1,4 @@
-name: 04 | DEB Package
+name: 03 | Build RPM Package
 on:
   workflow_call:
     inputs:
@@ -12,30 +12,30 @@ on:
         type: string
         default: v0.0
 
-run-name: 'DEB version: ${{ inputs.version }} by @${{ github.actor }}'
 env:
-  GODOT_VERSION: 4.5.beta3
+  GODOT_VERSION: 4.5.1
   EXPORT_FOLDER: bin/linux_x86_64
-  DEB_DIR: ${{ github.workspace }}/gozen-deb
   APP_NAME: gozen
+  RPM_BUILD_DIR: ${{ github.workspace }}/rpmbuild
 
+run-name: 'RPM version: v${{ inputs.version }} by @${{ github.actor }}'
 jobs:
   build-linux:
     name: Build Linux
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/linux.yml
+    uses: ./.github/workflows/build_linux.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 
 
-  build-deb:
+  build-rpm:
     needs: [build-linux]
     permissions:
       actions: read
       contents: read
-    uses: ./.github/workflows/build_package_deb.yml
+    uses: ./.github/workflows/compile_package_rpm.yml
     with:
-      version: ${{ inputs.version }}
+      version: v${{ inputs.version }}
 

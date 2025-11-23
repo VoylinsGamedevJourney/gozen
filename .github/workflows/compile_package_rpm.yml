@@ -1,4 +1,4 @@
-name: Build RPM Package
+name: 21 | Compile RPM Package
 on:
   workflow_call:
     inputs:
@@ -7,12 +7,12 @@ on:
         type: string
 
 env:
-  GODOT_VERSION: 4.5.beta3
+  GODOT_VERSION: 4.5.1
   EXPORT_FOLDER: libs/bin/linux_x86_64
   APP_NAME: gozen
   RPM_BUILD_DIR: ${{ github.workspace }}/rpmbuild
 
-run-name: 'RPM version: ${{ inputs.version }} by @${{ github.actor }}'
+run-name: 'RPM version: v${{ inputs.version }} by @${{ github.actor }}'
 jobs:
   build-rpm:
     name: Build RPM Package
@@ -34,13 +34,13 @@ jobs:
       - name: Download Linux Artifact
         uses: actions/download-artifact@v4
         with:
-          name: GoZen_Linux_x86_64_${{ inputs.version }}
+          name: GoZen_Linux_x86_64_v${{ inputs.version }}
           path: ${{ env.EXPORT_FOLDER }}
 
       - name: Parse version
         id: version
         run: |
-          FULL_VERSION=${{ inputs.version }}
+          FULL_VERSION=v${{ inputs.version }}
           VERSION_CLEAN=$(echo "$FULL_VERSION" | sed -E 's/^v//; s/-.*//')
           RELEASE_CLEAN=$(echo "$FULL_VERSION" | grep -oP '(?<=-).*' || echo "1")
 
@@ -95,7 +95,7 @@ jobs:
           /usr/share/icons/hicolor/128x128/apps/gozen.png
 
           %changelog
-          * $(date +"%a %b %d %Y") Voylin <voylinslife@gmail.com> - ${{ inputs.version }}-1
+          * $(date +"%a %b %d %Y") Voylin <voylinslife@gmail.com> - v${{ inputs.version }}-1
           - Initial RPM build
           EOF
 
@@ -110,7 +110,7 @@ jobs:
       - name: Upload RPM
         uses: actions/upload-artifact@v4
         with:
-          name: GoZen_Linux_RPM_${{ inputs.version }}
+          name: GoZen_Linux_RPM_v${{ inputs.version }}
           path: rpm
           if-no-files-found: error
 

@@ -2,15 +2,14 @@ name: 11 | Compile GDE
 on:
   workflow_call:
   workflow_dispatch:
-#  schedule:
-#    - cron: '0 2 1 * *' # Runs at 00:00 UTC on the 1st day of every month
         
 env:
-  GODOT_VERSION: 4.5.beta3
+  GODOT_VERSION: 4.5.1
   EXPORT_FOLDER_LINUX: bin/linux_x86_64
   EXPORT_FOLDER_WINDOWS: bin/windows_x86_64
  
 run-name: 'Compile GDE'
+
 jobs:
   build-linux-gde-debug:
     name: Linux GDE debug

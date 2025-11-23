@@ -2,8 +2,6 @@ name: 10 | Compile FFmpeg
 on:
   workflow_call:
   workflow_dispatch:
-#  schedule:
-#    - cron: '0 0 1 * *' # Runs at 00:00 UTC on the 1st day of every month
         
 env:
   PATH_LINUX: libs/ffmpeg/bin_linux
@@ -45,14 +43,14 @@ jobs:
 
   compile-windows-x86_64:
     needs: [
-      build-win-x86_64-dep-x264,
-      build-win-x86_64-dep-x265,
-      build-win-x86_64-dep-aom,
-      build-win-x86_64-dep-svt_av1,
-      build-win-x86_64-dep-vpx,
-      build-win-x86_64-dep-opus,
-      build-win-x86_64-dep-ogg-vorbis,
-      build-win-x86_64-dep-mp3lame]
+      compile-win-x86_64-dep-x264,
+      compile-win-x86_64-dep-x265,
+      compile-win-x86_64-dep-aom,
+      compile-win-x86_64-dep-svt_av1,
+      compile-win-x86_64-dep-vpx,
+      compile-win-x86_64-dep-opus,
+      compile-win-x86_64-dep-ogg-vorbis,
+      compile-win-x86_64-dep-mp3lame]
     name: Windows x86_64
     runs-on: windows-latest
     defaults:
@@ -155,65 +153,65 @@ jobs:
           retention-days: 90
 
 
-  build-win-x86_64-dep-x264:
+  compile-win-x86_64-dep-x264:
     name: x264
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: x264
       architecture: x86_64
 
 
-  build-win-x86_64-dep-x265:
+  compile-win-x86_64-dep-x265:
     name: x265
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: x265
       architecture: x86_64
 
 
-  build-win-x86_64-dep-aom:
+  compile-win-x86_64-dep-aom:
     name: aom
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: aom
       architecture: x86_64
 
 
-  build-win-x86_64-dep-svt_av1:
+  compile-win-x86_64-dep-svt_av1:
     name: svt_av1
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: svt_av1
       architecture: x86_64
 
 
-  build-win-x86_64-dep-vpx:
+  compile-win-x86_64-dep-vpx:
     name: vpx
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: vpx
       architecture: x86_64
 
           
-  build-win-x86_64-dep-opus:
+  compile-win-x86_64-dep-opus:
     name: opus
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: opus
       architecture: x86_64
 
           
-  build-win-x86_64-dep-ogg-vorbis:
+  compile-win-x86_64-dep-ogg-vorbis:
     name: ogg & vorbis
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: ogg_vorbis
       architecture: x86_64
 
 
-  build-win-x86_64-dep-mp3lame:
+  compile-win-x86_64-dep-mp3lame:
     name: mp3lame
-    uses: ./.github/workflows/build_win_dep.yml
+    uses: ./.github/workflows/compile_win_dep.yml
     with:
       dep_name: mp3lame
       architecture: x86_64
