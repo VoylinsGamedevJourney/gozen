@@ -3,6 +3,7 @@
 #include "ffmpeg.hpp"
 #include "ffmpeg_helpers.hpp"
 
+#include <string>
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>

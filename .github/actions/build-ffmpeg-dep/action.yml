@@ -1,0 +1,26 @@
+name: Build FFmpeg Dependency
+description: Builds a specific FFmpeg dependency on Windows
+inputs:
+  dep_name:
+    required: true
+  arch:
+    required: true
+    default: x86_64
+
+runs:
+  using: composite
+  steps:
+    - name: Compile ${{ inputs.dep_name }}
+      shell: msys2 {0}
+      working-directory: ./libs
+      run: |
+        if [ "${{ inputs.dep_name }}" == "ogg_vorbis" ]; then
+          python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_ogg()"
+          python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_ogg('windows', '${{ inputs.arch }}', 4, {})"
+
+          python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_vorbis()"
+          python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_vorbis('windows', '${{ inputs.arch }}', 4, {})"
+        else
+          python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_${{ inputs.dep_name }}()"
+          python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_${{ inputs.dep_name }}('windows', '${{ inputs.arch }}', 4, {})"
+        fi

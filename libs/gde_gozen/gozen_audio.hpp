@@ -10,8 +10,10 @@
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/core/math.hpp>
+#include <godot_cpp/variant/array.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <unordered_map>
 
 
 using namespace godot;

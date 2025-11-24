@@ -1,0 +1,26 @@
+name: Setup Windows build env
+description: Sets up MSYS2 and installs build tools
+runs:
+  using: composite
+  steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        update: true
+        install: >-
+          git subversion unzip make diffutils yasm nasm python 
+          mingw-w64-ucrt-x86_64-binutils
+          mingw-w64-ucrt-x86_64-crt-git
+          mingw-w64-ucrt-x86_64-gcc
+          mingw-w64-ucrt-x86_64-gdb
+          mingw-w64-ucrt-x86_64-headers-git
+          mingw-w64-ucrt-x86_64-libmangle-git
+          mingw-w64-ucrt-x86_64-libwinpthread
+          mingw-w64-ucrt-x86_64-pkgconf
+          mingw-w64-ucrt-x86_64-tools-git
+          mingw-w64-ucrt-x86_64-winpthreads
+          mingw-w64-ucrt-x86_64-winstorecompat-git
+          mingw-w64-ucrt-x86_64-ninja
+          mingw-w64-ucrt-x86_64-scons
+          mingw-w64-ucrt-x86_64-cmake
+          mingw-w64-ucrt-x86_64-autotools

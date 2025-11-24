@@ -463,6 +463,28 @@ def copy_lib_files_windows(arch: str):
     print("Finished copying files!", flush=True)
 
 
+def copy_lib_files_windows_ci(arch: str):
+    """
+    Windows CI version:
+    Just copy the FFmpeg artifact DLLs into the final bin directory.
+    No GCC/MSYS detection, no cross-compile sysroot.
+    """
+    dest_dir = Path("..") / "bin" / f"windows_{arch}"
+    src_bin = get_ffmpeg_install_dir("windows")
+
+    print(f"Copying FFmpeg Windows DLLs to {dest_dir} ...")
+    os.makedirs(dest_dir, exist_ok=True)
+
+    if not src_bin.exists():
+        raise RuntimeError(f"FFmpeg bin directory not found: {src_bin}")
+
+    for dll in src_bin.glob("*.dll"):
+        print(f"Copying {dll.name}")
+        shutil.copy2(dll, dest_dir)
+
+    print("Finished copying Windows FFmpeg files!", flush=True)
+
+
 if __name__ == "__main__":
     import argparse
 
