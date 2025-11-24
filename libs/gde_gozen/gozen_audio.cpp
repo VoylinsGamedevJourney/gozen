@@ -291,7 +291,7 @@ PackedByteArray GoZenAudio::change_to_mono(PackedByteArray audio_data, bool left
 	ClassDB::bind_static_method("GoZenAudio", D_METHOD(#method_name, __VA_ARGS__), &GoZenAudio::method_name)
 
 void GoZenAudio::_bind_methods() {
-	BIND_STATIC_METHOD_ARGS(get_audio_data, "file_path");
+	BIND_STATIC_METHOD_ARGS(get_audio_data, "file_path", "stream_index");
 
 	BIND_STATIC_METHOD_ARGS(combine_data, "audio_one", "audio_two");
 	BIND_STATIC_METHOD_ARGS(change_db, "audio_data", "db");
