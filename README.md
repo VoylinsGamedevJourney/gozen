@@ -36,7 +36,7 @@ Due to GoZen still being in alpha, there is no available build yet through each 
 - [GitHub release page](https://github.com/VoylinsGamedevJourney/gozen/releases);
 - [Itch.io page](https://voylin.itch.io/gozen);
 - [GoZen AUR](https://aur.archlinux.org/packages/gozen);
-- [GoZen-git AUR](https://aur.archlinux.org/packages/gozen); (This is the most up to-date, but most likely to break)
+- [GoZen-git AUR](https://aur.archlinux.org/packages/gozen-git); (This is the most up to-date, but most likely to break)
 
 At this moment there are three builds:
 - Linux: This version works on more up-to-date distro's;
