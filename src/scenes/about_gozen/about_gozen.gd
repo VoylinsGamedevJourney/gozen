@@ -48,7 +48,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.CREDITS)
 
 
 func _on_links_label_meta_clicked(meta: Variant) -> void:
