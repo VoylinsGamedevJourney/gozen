@@ -25,16 +25,17 @@ boot_splash/minimum_display_time=500
 
 [autoload]
 
-Settings="*res://scripts/globals/settings.gd"
-Project="*res://scripts/globals/project.gd"
-Threader="*res://scripts/globals/threader.gd"
-EditorCore="*res://scripts/globals/editor_core.gd"
-Thumbnailer="*res://scripts/globals/thumbnailer.gd"
-FileManager="*res://scripts/globals/file_manager.gd"
-InputManager="*res://scripts/globals/input_manager.gd"
-DrawManager="*res://scripts/globals/draw_manager.gd"
-PopupManager="*res://scripts/globals/popup_manager.gd"
-RenderManager="*res://scripts/globals/render_manager.gd"
+Settings="*res://scripts/autoloads/settings.gd"
+ClipHandler="*res://scripts/autoloads/clip_handler.gd"
+Project="*res://scripts/autoloads/project.gd"
+Threader="*res://scripts/autoloads/threader.gd"
+EditorCore="*res://scripts/autoloads/editor_core.gd"
+Thumbnailer="*res://scripts/autoloads/thumbnailer.gd"
+FileManager="*res://scripts/autoloads/file_manager.gd"
+InputManager="*res://scripts/autoloads/input_manager.gd"
+DrawManager="*res://scripts/autoloads/draw_manager.gd"
+PopupManager="*res://scripts/autoloads/popup_manager.gd"
+RenderManager="*res://scripts/autoloads/render_manager.gd"
 
 [debug]
 
@@ -44,11 +45,6 @@ file_logging/enable_file_logging=true
 file_logging/log_path="user://logs/gozen.log"
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
-gdscript/warnings/unsafe_property_access=1
-gdscript/warnings/unsafe_method_access=1
-gdscript/warnings/unsafe_cast=1
-gdscript/warnings/unsafe_call_argument=1
-gdscript/warnings/return_value_discarded=1
 shader_language/warnings/treat_warnings_as_errors=true
 
 [display]

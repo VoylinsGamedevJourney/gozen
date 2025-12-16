@@ -16,10 +16,12 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
-		get_tree().root.add_child(preload(Library.SCENE_ABOUT_GOZEN).instantiate())
+		PopupManager.open_popup(PopupManager.POPUP.CREDITS)
+	if event.is_action_pressed("ui_cancel"):
+		PopupManager.close_popups()
 
 	# EVERYTHING which is only allowed to open after the start screen goes below!
-	if Project.is_loaded() == null:
+	if !Project.loaded:
 		return
 
 	if event.is_action_pressed("save_project", false, true):

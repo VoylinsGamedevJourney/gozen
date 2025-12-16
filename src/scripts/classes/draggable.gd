@@ -1,5 +1,5 @@
 class_name Draggable
-extends Node
+extends RefCounted
 
 # TODO: To move multiple clips, code is mostly in place, but not tested yet!
 # To fully implement this we would need to add all clips to the
@@ -21,6 +21,8 @@ var clip_buttons: Array[Button] = []
 var differences: Vector2i = Vector2i.ZERO # (Frame_difference, Track_difference)
 
 var start_mouse_pos: Vector2
+
+var rects: Array[Rect2] = []
 
 
 

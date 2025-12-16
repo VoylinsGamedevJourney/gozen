@@ -82,8 +82,7 @@ func enable_clip_only_video(clip_id: int) -> void:
 		printerr("Loading video at path '%s' failed!" % path)
 		return
 
-	if clip_only_video_ids.append(clip_id):
-		Print.append_error()
+	clip_only_video_ids.append(clip_id)
 	file_data.clip_only_video[clip_id] = video
 
 
@@ -92,7 +91,6 @@ func disable_clip_only_video(clip_id: int) -> void:
 
 	if clip_only_video_ids.has(clip_id):
 		clip_only_video_ids.remove_at(clip_only_video_ids.find(clip_id))
-
-	if file_data.clip_only_video.has(clip_id) and !file_data.clip_only_video.erase(clip_id):
-		Print.erase_error()
+	if file_data.clip_only_video.has(clip_id):
+		file_data.clip_only_video.erase(clip_id)
 

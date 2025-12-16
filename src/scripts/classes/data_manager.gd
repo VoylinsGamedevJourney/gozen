@@ -1,19 +1,19 @@
 class_name DataManager
-extends Node
+extends RefCounted
 
 
 
-static func get_data(instance: Node) -> Dictionary[String, Variant]:
+static func get_data(instance: RefCounted) -> Dictionary[String, Variant]:
 	var data: Dictionary[String, Variant] = {}
 
 	for property: Dictionary in instance.get_property_list():
 		if property.name[0] != '_' and property.usage in [4096, 4102, 69632]:
 			data[property.name] = instance.get(str(property.name))
-
+	
 	return data
 
 
-static func save_data(save_path: String, instance: Node) -> int:
+static func save_data(save_path: String, instance: RefCounted) -> int:
 	var error: int = OK
 	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 
@@ -30,7 +30,7 @@ static func save_data(save_path: String, instance: Node) -> int:
 	return error
 
 
-static func load_data(a_path: String, instance: Node) -> int:
+static func load_data(a_path: String, instance: RefCounted) -> int:
 	var error: int = OK
 	var file: FileAccess
 	var data: Dictionary

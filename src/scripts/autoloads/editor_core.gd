@@ -1,7 +1,7 @@
 extends Node
 
 
-signal frame_changed(nr: int)
+signal frame_changed()
 signal play_changed(value: bool)
 
 
@@ -91,6 +91,9 @@ func _on_closing_editor() -> void:
 func on_play_pressed() -> void:
 	is_playing = false if frame_nr == Project.get_timeline_end() else !is_playing
 
+	if !is_playing:
+		Project.set_playhead_position(frame_nr)
+
 
 func _set_frame_nr(value: int) -> void:
 	if value >= Project.get_timeline_end():
@@ -104,9 +107,10 @@ func _set_frame_nr(value: int) -> void:
 	frame_nr = value
 	if frame_nr == prev_frame + 1:
 		for i: int in audio_players.size():
-			var track_data: Dictionary[int, int] = Project.get_track_data(i)
-			if track_data.keys().has(frame_nr):
-				audio_players[i].set_audio(track_data[frame_nr])
+			var track: TrackData = Project.get_track_data(i)
+
+			if track.has_frame_nr(frame_nr):
+				audio_players[i].set_audio(track.get_clip_id(frame_nr))
 			elif audio_players[i].stop_frame == frame_nr:
 				audio_players[i].stop()
 		return
@@ -143,9 +147,9 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			continue
 
 		# Getting the next frame if possible
-		var clip_id: int = _get_next_clip(frame_nr, i)
+		var id: int = _get_next_clip(frame_nr, i)
 
-		if clip_id == -1:
+		if id == -1:
 			loaded_clips[i] = null
 
 			if view_textures[i].texture != null:
@@ -154,31 +158,32 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 				loaded_shaders[i] = SHADER_ID.EMPTY
 			continue
 		else:
-			loaded_clips[i] = Project.get_clip(clip_id)
+			loaded_clips[i] = Project.get_clip(id)
 
 		update_view(i)
 	
 	if frame_nr == Project.get_timeline_end():
 		is_playing = false
 
-	frame_changed.emit(frame_nr)
+	frame_changed.emit()
 
 
-func _get_next_clip(new_frame_nr: int, track: int) -> int:
-	var clip_id: int = -1
+func _get_next_clip(new_frame_nr: int, track_id: int) -> int:
+	var track: TrackData = Project.get_track(track_id)
+	var id: int = -1
 
-	if Project.get_track_keys(track).size() == 0:
+	if track.get_size() == 0:
 		return -1
 
 	# Looking for the correct clip
-	for frame: int in Project.get_track_keys(track):
+	for frame: int in track.get_frame_nrs():
 		if frame <= new_frame_nr:
-			clip_id = Project.get_track_data(track)[frame]
+			id = Project.get_track_data(track).get_clip_id(frame)
 		else:
 			break
 
-	if clip_id != -1 and _check_clip_end(new_frame_nr, clip_id):
-		return clip_id
+	if id != -1 and _check_clip_end(new_frame_nr, id):
+		return id
 
 	return -1
 
@@ -194,7 +199,7 @@ func _check_clip_end(new_frame_nr: int, id: int) -> bool:
 
 
 # Audio stuff  ----------------------------------------------------------------
-func _setup_audio_players() -> void:
+func setup_audio_players() -> void:
 	audio_players = []
 
 	for i: int in 6:
@@ -206,16 +211,19 @@ func find_audio(frame: int, track: int) -> int:
 	var pos: PackedInt64Array = Project.get_track_keys(track)
 	var last: int = Utils.get_previous(frame, pos)
 
-	if last == -1: return -1
-	last = Project.get_track_data(track)[last]
+	if last == -1:
+		return -1
+
+	last = Project.get_track_data(track).get_clip_id(last)
 
 	if frame < Project.get_clip(last).get_end_frame():
 		return last
+
 	return -1
 
 			
 # Video stuff  ----------------------------------------------------------------
-func _setup_playback() -> void:
+func setup_playback() -> void:
 	viewport.size = Project.get_resolution()
 
 	for i: int in Project.get_track_count():
@@ -278,8 +286,8 @@ func update_view(track_id: int) -> void:
 		if !updated:
 			var video: GoZenVideo
 
-			if file_data.clip_only_video.has(loaded_clips[track_id].clip_id):
-				video = file_data.clip_only_video[loaded_clips[track_id].clip_id]
+			if file_data.clip_only_video.has(loaded_clips[track_id].id):
+				video = file_data.clip_only_video[loaded_clips[track_id].id]
 			else:
 				video = file_data.video
 
@@ -337,7 +345,7 @@ func _check_clip(id: int, new_frame_nr: int) -> bool:
 		return false
 
 	# Check if clip really still exists or not.
-	if !Project.get_clips().has(loaded_clips[id].clip_id):
+	if !Project.get_clips().has(loaded_clips[id].id):
 		loaded_clips[id] = null
 		return false
 

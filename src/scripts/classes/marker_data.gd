@@ -1,5 +1,5 @@
 class_name MarkerData
-extends Node
+extends Resource
 
 
 var text: String = ""

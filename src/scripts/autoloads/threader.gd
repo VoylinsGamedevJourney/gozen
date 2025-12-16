@@ -12,8 +12,7 @@ func _process(_delta: float) -> void:
 	for i: int in timed_tasks.keys():
 		if timed_tasks[i].check():
 			timed_tasks[i].execute()
-			if !timed_tasks.erase(i):
-				Print.erase_error()
+			timed_tasks.erase(i)
 
 	for task: Task in tasks:
 		if WorkerThreadPool.is_task_completed(task.id):

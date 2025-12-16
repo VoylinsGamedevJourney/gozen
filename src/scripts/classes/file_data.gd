@@ -1,5 +1,5 @@
 class_name FileData
-extends Node
+extends RefCounted
 
 
 signal video_loaded
@@ -80,7 +80,7 @@ func init_data(file_data_id: int) -> bool:
 
 
 func _load_audio_data(file_path: String) -> void:
-	var audio_data: PackedByteArray = GoZenAudio.get_audio_data(file_path)
+	var audio_data: PackedByteArray = GoZenAudio.get_audio_data(file_path, -1)
 
 	if audio_data.size() == 0:
 		return
@@ -141,8 +141,7 @@ func _create_wave() -> void:
 	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
 	var current_frame_index: int = 0
 
-	if audio_wave_data.resize(total_blocks):
-		Print.resize_error()
+	audio_wave_data.resize(total_blocks)
 
 	for i: int in total_blocks:
 		var max_abs_amplitude: float = 0.0
@@ -150,9 +149,6 @@ func _create_wave() -> void:
 		var end_frame: int = min(start_frame + frames_per_block, total_frames)
 
 		for frame_index: int in range(start_frame, end_frame):
-			if Project._editor_closing:
-				return # Ability to stop early in case of closing editor since this runs in a thread.
-
 			var byte_offset: int = int(frame_index * bytes_size)
 			var frame_max_abs_amplitude: float = 0.0
 

@@ -85,11 +85,10 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 
 	for path: String in files:
 		if FileAccess.file_exists(path):
-			if File.check_valid(path) and actual_files.append(path):
-				Print.append_error()
+			if File.check_valid(path):
+				actual_files.append(path)
 		elif DirAccess.dir_exists_absolute(path):
-			if folders.append(path):
-				Print.append_error()
+			folders.append(path)
 
 	while folders.size() != 0:
 		var new_folders: PackedStringArray = []
@@ -98,11 +97,10 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 			for file_path: String in DirAccess.get_files_at(path):
 				var full_path: String = path + '/' + file_path
 
-				if File.check_valid(full_path) and actual_files.append(full_path):
-					Print.append_error()
+				if File.check_valid(full_path):
+					actual_files.append(full_path)
 			for dir_path: String in DirAccess.get_directories_at(path):
-				if new_folders.append(path + '/' + dir_path):
-					Print.append_error()
+				new_folders.append(path + '/' + dir_path)
 
 		folders = new_folders
 	

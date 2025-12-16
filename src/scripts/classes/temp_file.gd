@@ -1,5 +1,5 @@
 class_name TempFile
-extends Node
+extends RefCounted
 
 # A project specific file, this could be because a picture got copy/pasted,
 # or duplicated. Same for text, could be a Text object which got created or

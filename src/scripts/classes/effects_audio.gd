@@ -1,5 +1,5 @@
 class_name EffectsAudio
-extends Node
+extends RefCounted
 
 
 enum MONO { DISABLE = 0, LEFT_CHANNEL = 1, RIGHT_CHANNEL = 2 }

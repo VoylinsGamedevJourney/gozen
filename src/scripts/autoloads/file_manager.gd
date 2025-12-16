@@ -22,11 +22,11 @@ var data: Dictionary [int, FileData] = {}
 
 #--- File Manager functions ---
 func _ready() -> void:
-	Utils.connect_func(get_window().files_dropped, files_dropped)
+	Utils.connect_func(get_window().files_dropped, _on_files_dropped)
 	Utils.connect_func(error_file_too_big, _on_file_too_big)
 
 
-func files_dropped(file_paths: PackedStringArray) -> void:
+func _on_files_dropped(file_paths: PackedStringArray) -> void:
 	# Only allow files to be dropped in non-empty projects.
 	if data == null:
 		return
@@ -38,9 +38,9 @@ func files_dropped(file_paths: PackedStringArray) -> void:
 
 	# Check for file duplicates.
 	for path: String in get_file_paths():
-		if path in file_paths and !file_paths.erase(path):
-			Print.erase_error()
-			continue
+		if path in file_paths:
+			file_paths.erase(path)
+			Print.info("Duplicate file was dropped from path: %s", path)
 
 	# Add files for processing.
 	for path: String in file_paths:
@@ -94,7 +94,7 @@ func files_dropped(file_paths: PackedStringArray) -> void:
 
 				files.erase(file)
 
-	Project._unsaved_changes = true
+	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
 	dropped_overlay.queue_free()
 
@@ -155,20 +155,22 @@ func add_file_object(file: File) -> void:
 	# We only emit this one since for dropped/selected actual files this gets
 	# called inside of _on_files_dropped.
 	file_added.emit(file.id)
-	Project._unsaved_changes = true
+	Project.unsaved_changes = true
 
 
 func delete_file(id: int) -> void:
 	for clip: ClipData in Project.get_clip_datas():
 		if clip.file_id == id:
-			Timeline.instance.delete_clip(clip)
+			Project.delete_clip(clip.id)
 
-	if (data.has(id) and !data.erase(id)) or (get_files().has(id) and !get_files().erase(id)):
-		Print.erase_error()
+	if data.has(id):
+		data.erase(id)
+	elif get_files().has(id):
+		get_files().erase(id)
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)
-	Project._unsaved_changes = true
+	Project.unsaved_changes = true
 
 
 ## Check to see if a file needs reloading or not.
@@ -221,20 +223,25 @@ func save_audio_to_wav(path: String, file: File) -> void:
 
 
 #-- File setters & getters --- 
-func has_file(file_id: int) -> bool:
-	return get_files().has(file_id)
+func has_file(id: int) -> bool:
+	return get_files().has(id)
 
 
-func set_file(file_id: int, file: File) -> void:
-	get_files()[file_id] = file
-	Project._unsaved_changes = true
+func set_file(id: int, file: File) -> void:
+	get_files()[id] = file
+	Project.unsaved_changes = true
 
 
-func set_file_nickname(file_id: int, nickname: String) -> void:
-	get_files()[file_id].nickname = nickname
-	Project._unsaved_changes = true
+func set_file_nickname(id: int, nickname: String) -> void:
+	get_files()[id].nickname = nickname
+	Project.unsaved_changes = true
 
-	file_nickname_changed.emit(file_id)
+	file_nickname_changed.emit(id)
+
+
+func update_file_duration(id: int) -> int:
+	data[id]._update_duration()
+	return get_file_duration(id)
 
 
 func get_files() -> Dictionary[int, File]:
@@ -245,8 +252,7 @@ func get_file_paths() -> PackedStringArray:
 	var paths: PackedStringArray = []
 
 	for file: File in get_files().values():
-		if paths.append(file.path):
-			Print.append_error()
+		paths.append(file.path)
 
 	return paths
 
@@ -255,8 +261,20 @@ func get_file_ids() -> PackedInt64Array:
 	return get_files().keys()
 
 
+func get_file_objects() -> Array[File]:
+	return get_files().values()
+
+
 func get_file(id: int) -> File:
 	return get_files()[id]
+
+
+func get_file_path(id: int) -> String:
+	return get_file(id).path
+
+
+func get_file_duration(id: int) -> int:
+	return get_file(id).duration
 
 
 func get_file_data(id: int) -> FileData:
@@ -279,17 +297,17 @@ func _check_if_file_modified(file: File) -> bool:
 	return true
 
 
-func _on_file_too_big(file_id: int) -> void:
+func _on_file_too_big(id: int) -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
-	var file_path: String = get_files()[file_id].path
+	var file_path: String = get_file_path(id)
 
 	dialog.title = "title_dialog_file_too_big"
 	dialog.dialog_text = file_path
 	add_child(dialog)
 	dialog.popup_centered()
 
-	if !get_files().erase(file_id) or !data.erase(file_id):
-		Print.erase_error()
+	get_files().erase(id)
+	data.erase(id)
 
 
 

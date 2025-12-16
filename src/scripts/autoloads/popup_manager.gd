@@ -46,16 +46,6 @@ func _ready() -> void:
 	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		for popup: POPUP in _open_popups.keys():
-			close_popup(popup)
-	elif event.is_action_pressed("help"):
-		open_popup(POPUP.CREDITS)
-
-	_check_background()
-
-
 func open_popup(popup: POPUP) -> void:
 	if popup in _open_popups:
 		return
@@ -101,7 +91,7 @@ func close_popups() -> void:
 		if !_open_popups.erase(popup):
 			printerr("Could not erase popup '%s' from open_popups!" % popup)
 
-	_check_background()
+	_background.visible = false
 
 
 func get_popup(popup: POPUP) -> Control:
@@ -150,5 +140,5 @@ func _on_size_changed() -> void:
 
 
 func _check_background() -> void:
-	if _open_popups.size() == 0:
-		_control.visible = false
+	_control.visible = _open_popups.size() != 0
+		

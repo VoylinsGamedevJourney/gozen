@@ -1,5 +1,5 @@
 class_name AudioPlayer
-extends Node
+extends RefCounted
 
 
 var player: AudioStreamPlayer = AudioStreamPlayer.new()
