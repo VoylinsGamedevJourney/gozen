@@ -16,7 +16,11 @@ func _ready() -> void:
 	Utils.connect_func(FileManager.file_deleted, _on_file_deleted)
 	Utils.connect_func(FileManager.file_path_updated, _on_file_path_updated)
 	Utils.connect_func(FileManager.file_nickname_changed, _on_file_nickname_changed)
+
+	Utils.connect_func(Project.project_ready, _on_project_ready)
+
 	Utils.connect_func(Thumbnailer.thumb_generated, _on_update_thumb)
+
 	Utils.connect_func(tree.item_mouse_selected, _file_item_clicked)
 	Utils.connect_func(tree.gui_input, _on_tree_gui_input)
 
@@ -26,6 +30,7 @@ func _ready() -> void:
 	# Setting the max width needs to be done in this way.
 	for i: int in file_menu_button.item_count:
 		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
+
 	Utils.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
 
 
@@ -40,7 +45,7 @@ func _on_project_ready() -> void:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
 
-	for file: File in FileManager.get_files().values():
+	for file: File in FileManager.get_file_objects():
 		_add_file_to_tree(file)
 
 
@@ -60,6 +65,7 @@ func _file_menu_pressed(id: int) -> void:
 
 
 func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
+	# TODO: Create popup menu's and save them as scene's instead.
 	var file_item: TreeItem = tree.get_selected()
 
 	if button_index != MOUSE_BUTTON_RIGHT:
@@ -100,6 +106,8 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 
 ## For the right click presses of the file popup menu's.
 func _on_popup_option_pressed(option_id: int, file: File) -> void:
+	# TODO: Change this with the change to make popups into separate scene's instead.
+
 	if file == null:
 		# TODO:
 		printerr("Folder renaming and deleting not implemented yet!")
@@ -126,7 +134,6 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				if clip_data.file_id == file.id:
 					InputManager.undo_redo.add_undo_method(Project.add_clip.bind(clip_data))
 
-			InputManager.undo_redo.add_undo_method(Timeline.instance._check_clips)
 			InputManager.undo_redo.commit_action()
 		POPUP_ACTION.SAVE_AS: # Only for temp files such as Images.
 			if file.type == File.TYPE.TEXT:
@@ -158,6 +165,10 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
 	var draggable: Draggable = Draggable.new()
 	var selected: TreeItem = tree.get_next_selected(folder_items["/"])
+	var rect_spacing: int = 0
+
+	if selected == null:
+		return
 
 	draggable.files = true
 
@@ -169,13 +180,16 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 			continue # Folder
 
 		var file_id: int = selected.get_metadata(0)
-		if draggable.ids.append(file_id):
-			Print.append_error()
+		draggable.ids.append(file_id)
 
-		if FileManager.get_file(file_id).duration <= 0:
-			FileManager.get_file_data(file_id)._update_duration()
+		var file_duration: int = FileManager.get_file_duration(file_id) 
+		if file_duration <= 0:
+			file_duration = FileManager.update_file_duration(file_id)
 
-		draggable.duration += FileManager.get_file(file_id).duration
+		draggable.rects.append(Rect2(Vector2(rect_spacing, 0), Vector2(file_duration, 0)))
+		draggable.duration += file_duration
+		rect_spacing += file_duration
+
 		selected = tree.get_next_selected(selected)
 		if selected == null:
 			break # End of selected TreeItem's.
@@ -214,8 +228,7 @@ func _on_file_added(file_id: int) -> void:
 func _on_file_deleted(file_id: int) -> void:
 	if file_items.has(file_id):
 		file_items[file_id].get_parent().remove_child(file_items[file_id])
-		if !file_items.erase(file_id):
-			Print.erase_error()
+		file_items.erase(file_id)
 
 
 func _on_file_path_updated(file_id: int) -> void:

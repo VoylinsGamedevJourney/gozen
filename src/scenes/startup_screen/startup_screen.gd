@@ -56,8 +56,7 @@ func _set_recent_projects() -> void:
 				# We still add non-found projects in case people have projects
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
-				if new_paths.append(path):
-					Print.append_error()
+				new_paths.append(path)
 				continue
 
 			var hbox: HBoxContainer = HBoxContainer.new()
@@ -85,8 +84,7 @@ func _set_recent_projects() -> void:
 			hbox.add_child(project_button)
 
 			recent_projects_vbox.add_child(hbox)
-			if new_paths.append(path):
-				Print.append_error()
+			new_paths.append(path)
 
 		path = file.get_line()
 

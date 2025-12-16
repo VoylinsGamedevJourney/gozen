@@ -38,7 +38,7 @@ var current_progress: float = 0.0
 
 func _ready() -> void:
 	Utils.connect_func(RenderManager.update_encoder_status, update_encoder_status)
-	Utils.connect_func(Project._markers_updated, _on_chapters_updated)
+	# TODO: Fix this with the new timeline stuff : Utils.connect_func(Events.markers_updated, _on_chapters_updated)
 
 	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
@@ -158,13 +158,13 @@ func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
 	grid_audio.visible = toggled_on
 
 
-func _on_chapters_updated() -> void:
-	var chapters: Dictionary[int, MarkerData] = Project.get_markers()
-	chapters_text_edit.text = ""
-
-	for i: int in chapters:
-		var time: String = Utils.format_time_str_from_frame(i, Project.get_framerate())
-		chapters_text_edit.text += "%s %s\n" % [time, chapters[i].text]
+#func _on_chapters_updated() -> void:
+#	var chapters: Dictionary[int, MarkerData] = Project.get_markers()
+#	chapters_text_edit.text = ""
+#
+#	for i: int in chapters:
+#		var time: String = Utils.format_time_str_from_frame(i, Project.get_framerate())
+#		chapters_text_edit.text += "%s %s\n" % [time, chapters[i].text]
 
 
 func _on_copy_chapters_button_pressed() -> void:

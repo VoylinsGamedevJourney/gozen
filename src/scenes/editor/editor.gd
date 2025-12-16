@@ -42,8 +42,7 @@ func _check_startup_args() -> void:
 
 
 func print_startup_info() -> void:
-	var color: String = "purple"
-	Print.header("--==  GoZen - Video Editor  ==--", color)
+	Print.header_editor("--==  GoZen - Video Editor  ==--")
 
 	for info_print: PackedStringArray in [
 			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
@@ -61,9 +60,9 @@ func print_startup_info() -> void:
 				RenderingServer.get_video_adapter_type()]],
 			["Locale", OS.get_locale()],
 			["Startup args", OS.get_cmdline_args()]]:
-		Print.info(info_print[0], info_print[1], color)
+		Print.info_editor(info_print[0], info_print[1])
 
-	Print.header("--==--================--==--", color)
+	Print.header_editor("--==--================--==--")
 
 
 func switch_screen(index: int) -> void:
