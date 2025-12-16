@@ -53,7 +53,7 @@ func _on_skip_next_button_pressed() -> void:
 	EditorCore.set_frame(mini(0, next_marker_pos))
 
 
-func _on_frame_changed(frame_nr: int) -> void:
-	frame_label.text = tr("text_frame") + ": " + str(frame_nr)
-	time_label.text = Utils.format_time_str_from_frame(frame_nr, Project.get_framerate())
+func _on_frame_changed() -> void:
+	frame_label.text = tr("text_frame") + ": %s" % EditorCore.frame_nr
+	time_label.text = Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.get_framerate())
 	
