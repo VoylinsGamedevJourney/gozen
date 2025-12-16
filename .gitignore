@@ -23,3 +23,6 @@ libs/opus_src
 libs/svtav1_src
 libs/vorbis_src
 libs/vpx_src
+.github/Archive.zip
+
+bin

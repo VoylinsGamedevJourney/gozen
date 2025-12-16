@@ -30,7 +30,7 @@ import subprocess
 import sys
 from enum import IntEnum
 
-from libs import build_ffmpeg, utils
+from core import build_ffmpeg, utils
 
 DEFAULT_THREADS: int = os.cpu_count() or 4
 
@@ -145,7 +145,7 @@ def windows_detected() -> ExitCode:
 
         # For restarting in a windows environment:
         # explorer.exe resets the PATH environment variable then executes `python3 build.py`
-        # utils.run_command(['explorer', sys.executable, __file__], cwd='./libs/')
+        # utils.run_command(['explorer', sys.executable, __file__], cwd='./core/')
         return res.returncode  # type: ignore
     else:
         # Cmd or Powershell
@@ -217,7 +217,7 @@ def main() -> ExitCode:
     print("^===================^")
     print()
 
-    os.chdir("./libs")
+    os.chdir("./core")
 
     if sys.version_info < (3, 10):
         print("Python 3.10+ is required to run this script!")
@@ -322,7 +322,7 @@ if __name__ == "__main__":
             return ""
 
     if "--quick" in sys.argv:
-        os.chdir("./libs")
+        os.chdir("./core")
         target_platform = "linux"
         arch = "x86_64"
         target = TARGET_DEV
