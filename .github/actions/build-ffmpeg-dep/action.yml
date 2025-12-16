@@ -1,4 +1,4 @@
-name: Build FFmpeg Dependency
+name: Build FFmpeg dependency
 description: Builds a specific FFmpeg dependency on Windows
 inputs:
   dep_name:
