@@ -20,24 +20,20 @@ theme_type_variation = &"box"
 [node name="Margin" type="MarginContainer" parent="TimelineBox"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="TimelineBox/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="Timeline" type="PanelContainer" parent="TimelineBox/Margin/VBox" node_paths=PackedStringArray("scroll_bar")]
-clip_contents = true
+[node name="ScrollContainer" type="ScrollContainer" parent="TimelineBox/Margin"]
 custom_minimum_size = Vector2(0, 185)
+layout_mode = 2
+
+[node name="Timeline" type="PanelContainer" parent="TimelineBox/Margin/ScrollContainer"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_p3xsq")
 script = ExtResource("1_p3xsq")
-scroll_bar = NodePath("../HScrollBar")
-
-[node name="HScrollBar" type="HScrollBar" parent="TimelineBox/Margin/VBox"]
-layout_mode = 2
 
 [node name="AudioMeter" parent="." instance=ExtResource("2_scqra")]
 layout_mode = 2
 
-[connection signal="gui_input" from="TimelineBox/Margin/VBox/Timeline" to="TimelineBox/Margin/VBox/Timeline" method="_on_gui_input"]
+[connection signal="gui_input" from="TimelineBox/Margin/ScrollContainer/Timeline" to="TimelineBox/Margin/ScrollContainer/Timeline" method="_on_gui_input"]
+[connection signal="mouse_exited" from="TimelineBox/Margin/ScrollContainer/Timeline" to="TimelineBox/Margin/ScrollContainer/Timeline" method="_on_mouse_exited"]

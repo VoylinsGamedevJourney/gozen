@@ -16,7 +16,7 @@ var offset: int = 30 # Mouse offset
 var new_clips: Array[ClipData] = []
 
 # For clips only
-var ignores: Array[Vector2i] = [] # Vector2i(Track id, start_frame)
+var ignores: Array[PackedInt32Array] = [] # Array = Track, PackedInt32Array = clip_id's
 var clip_buttons: Array[Button] = []
 var differences: Vector2i = Vector2i.ZERO # (Frame_difference, Track_difference)
 

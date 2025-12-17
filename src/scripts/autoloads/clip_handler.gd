@@ -15,6 +15,9 @@ func get_end_frame(clip_id: int, clip: ClipData = _get_data(clip_id)) -> int:
 	return clip.start_frame + clip.duration - 1
 
 
+func get_clip_type(clip: ClipData) -> File.TYPE:
+	return FileManager.get_file_type(clip.file_id)
+
 
 func get_frame(clip_id: int, frame_nr: int, clip: ClipData = _get_data(clip_id)) -> Texture:
 	var type: File.TYPE = Project.get_clip_type(clip.id)
@@ -105,3 +108,57 @@ func get_clip_audio_data(clip_id: int, clip: ClipData = _get_data(clip_id)) -> P
 
 	return data
 
+
+func add_clips(data: Array[CreateClipRequest]) -> void:
+	InputManager.undo_redo.create_action("Adding new clip(s)")
+
+	for clip_request: CreateClipRequest in data:
+		var clip_data: ClipData = ClipData.new()
+		var file_data: File = FileManager.get_file(clip_request.file_id)
+
+		clip_data.id = Utils.get_unique_id(Project.get_clip_ids())
+		clip_data.file_id = file_data.id
+		clip_data.track_id = clip_request.track_id
+		clip_data.start_frame = clip_request.frame_nr
+		clip_data.duration = file_data.duration
+
+		if file_data.type in EditorCore.VISUAL_TYPES:
+			clip_data.effects_video = EffectsVideo.new()
+			clip_data.effects_video.clip_id = clip_data.id
+		if file_data.type in EditorCore.AUDIO_TYPES:
+			clip_data.effects_audio = EffectsAudio.new()
+			clip_data.effects_audio.clip_id = clip_data.id
+
+		InputManager.undo_redo.add_do_method(Project.add_clip.bind(clip_data))
+		InputManager.undo_redo.add_undo_method(Project.delete_clip.bind(clip_data))
+
+	InputManager.undo_redo.commit_action()
+	
+
+func remove_clips(data: Array[ClipData]) -> void:
+	InputManager.undo_redo.create_action("Removing clip(s)")
+
+	for clip_data: ClipData in data:
+		InputManager.undo_redo.add_do_method(Project.delete_clip.bind(clip_data))
+		InputManager.undo_redo.add_undo_method(Project.add_clip.bind(clip_data))
+
+	InputManager.undo_redo.commit_action()
+
+
+func move_clips(data: Array[MoveClipRequest]) -> void:
+	InputManager.undo_redo.create_action("Moving clip(s)")
+
+	for clip_request: MoveClipRequest in data:
+		print("TODO")
+
+	InputManager.undo_redo.commit_action()
+#	InputManager.undo_redo.create_action("Moving clips on timeline")
+#
+#	InputManager.undo_redo.add_do_method(_move_clips.bind(
+#			draggable,
+#			draggable.differences.y,
+#			draggable.differences.x + _offset))
+#	InputManager.undo_redo.add_undo_method(_move_clips.bind(
+#			draggable,
+#			-draggable.differences.y,
+#			-(draggable.differences.x + _offset)))

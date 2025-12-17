@@ -7,7 +7,7 @@ var id: int
 var file_id: int
 var track_id: int
 
-var start_frame: int # Timeline begin position of clip, use ClipHandler to get end_frame.
+var start_frame: int
 var duration: int
 var end_frame: int:
 	get: return start_frame + duration

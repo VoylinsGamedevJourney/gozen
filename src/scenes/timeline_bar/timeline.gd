@@ -11,9 +11,14 @@ extends PanelContainer
 # TODO: Implement multi clip select with draggable rectangle
 
 const TIMELINE_PADDING: int = 3000 # Amount of frames after timeline_end.
+
 const TRACK_HEIGHT: int = 30
 const TRACK_LINE_HEIGHT: int = 1
+const TOTAL_TRACK_HEIGHT: int = TRACK_HEIGHT + TRACK_LINE_HEIGHT
+
 const PLAYHEAD_WIDTH: int = 2
+
+const DRAG_FLEXIBILITY: int = 30
 
 const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
 const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
@@ -23,65 +28,124 @@ const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
     File.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
     File.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
+const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 
-
-@export var scroll_bar: HScrollBar
-
+@onready var scroll_container: ScrollContainer = self.get_parent()
 
 var track_line_heights: PackedInt64Array = []
 var drag_previews: Array[Rect2] = []
+var visible_clips: Array[ClipData] = []
+var selected_clips: PackedInt32Array = []
+var zoom: float = 1.0
+
+var _drag_offset: int = 0
+var _drag_offset_track: int = 0
 
 
 
 func _ready() -> void:
 	Utils.connect_func(Project.project_ready, _project_ready)
+	Utils.connect_func(Project.timeline_end_update, _timeline_end_update)
+	Utils.connect_func(Project.clip_added, _force_refresh)
+	Utils.connect_func(Project.clip_deleted, _force_refresh)
 	Utils.connect_func(EditorCore.frame_changed, queue_redraw)
-	set_drag_forwarding(queue_redraw, _can_drop_data, _drop_data)
+
+	set_drag_forwarding(_drag, _can_drop_data, _drop_data)
 
 
 func _on_gui_input(_event: InputEvent) -> void:
-	if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+	if !Project.loaded:
+		return
+	elif !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		drag_previews = []
 		queue_redraw()
 
 
 func _draw() -> void:
-	var cursor_track: int = min(floor(get_local_mouse_position().y / (TRACK_HEIGHT + TRACK_LINE_HEIGHT)), Project.get_track_count() - 1)
+	var mouse_track: int = get_track_from_mouse_pos()
+	var mouse_frame: int = get_frame_from_mouse_pos()
+	var playhead_pos_x: float = EditorCore.frame_nr * zoom
 
-	# Track lines
+	_get_visible_clips()
+
+	# - Track lines
 	for i: int in track_line_heights:
-		draw_line(Vector2(0, i), Vector2(size.x, i), Color(0.3,0.3,0.3), TRACK_LINE_HEIGHT)
+		draw_dashed_line(
+				Vector2(0, i), Vector2(size.x, i),
+				Color(0.3,0.3,0.3), TRACK_LINE_HEIGHT)
 
-	# Playhead
-	var playhead_pos_x: float = EditorCore.frame_nr * Project.get_zoom()
-	draw_line(Vector2(playhead_pos_x, 0), Vector2(playhead_pos_x, size.y), Color(0.4, 0.4, 0.4), PLAYHEAD_WIDTH)
+	# - Playhead
+	draw_line(
+			Vector2(playhead_pos_x, 0), Vector2(playhead_pos_x, size.y),
+			Color(0.4, 0.4, 0.4), PLAYHEAD_WIDTH)
 
-	# Clip preview (moving or dragging new clip)
+	# - Clip preview(s) - moving or dragging new clip
 	for preview: Rect2 in drag_previews:
 		var new_preview: Rect2 = preview.grow_side(SIDE_BOTTOM, TRACK_HEIGHT)
 
-		new_preview.position.y += (TRACK_HEIGHT + TRACK_LINE_HEIGHT) * cursor_track
+		new_preview.position.y += TOTAL_TRACK_HEIGHT * mouse_track
+		new_preview.position.x = max(0, mouse_frame - _drag_offset)
 		draw_style_box(STYLE_BOX_PREVIEW, new_preview)
 
-	# Clip blocks
+	# - Clip blocks
+	for clip: ClipData in visible_clips:
+		var box_type: int = 0 if clip.id in selected_clips else 1
+		var pos: Vector2 = Vector2(clip.start_frame * zoom, TOTAL_TRACK_HEIGHT * clip.track_id)
+		var new_clip: Rect2 = Rect2(pos, Vector2(clip.duration * zoom, TOTAL_TRACK_HEIGHT))
 
-	# Audio waves
+		draw_style_box(STYLE_BOXES[ClipHandler.get_clip_type(clip)][box_type], new_clip)
+		draw_string(
+				get_theme_default_font(),
+				pos + TEXT_OFFSET,
+				FileManager.get_file_name(clip.file_id),
+				HORIZONTAL_ALIGNMENT_LEFT, 0,
+				11, # Font size
+				Color(0.9, 0.9, 0.9))
+		
+	# TODO: - Audio waves
 
-	# Fading handles + amount
+	# TODO: - Fading handles + amount
 
-	# Selected clips
 
-	pass
+func _on_mouse_exited() -> void:
+	# Making sure drag previews dissapear when mouse leaves the timeline.
+	drag_previews = []
+	queue_redraw()
+
+	
+func _get_visible_clips() -> void:
+	var visible_frame_start: int = floori(scroll_container.scroll_horizontal * zoom)
+	var visible_frame_end: int = floori(visible_frame_start + (scroll_container.size.x / zoom))
+
+	visible_clips = []
+
+	for track_data: TrackData in Project.get_tracks():
+		visible_clips.append_array(track_data.get_clips_in(visible_frame_start, visible_frame_end))
 
 
 func _project_ready() -> void:
+	var track_count: int = Project.get_track_count()
+
 	track_line_heights.clear()
+	custom_minimum_size.x = track_count * TOTAL_TRACK_HEIGHT
 
-	for i: int in Project.get_track_count():
-		track_line_heights.append(((i+1) * TRACK_HEIGHT) + (i * TRACK_LINE_HEIGHT))
-
+	for i: int in track_count:
+		track_line_heights.append((i+1) * TOTAL_TRACK_HEIGHT)
+	
+	_timeline_end_update(Project.get_timeline_end())
 	queue_redraw()
 
+
+func _timeline_end_update(new_end: int) -> void:
+	custom_minimum_size.x = max(ceili(new_end * zoom), TIMELINE_PADDING)
+
+
+func _drag(at_position: Vector2) -> void:
+	# TODO:
+	# Decide if I'm in an empty space on the timeline to create a selection box.
+	# Also check if I'm not dragging a fade handle.
+	# If not, check if selected clip is part of selected group and move the selected clip(s)
+	pass
 
 
 func _can_drop_data(pos: Vector2, data: Variant) -> bool:
@@ -91,8 +155,10 @@ func _can_drop_data(pos: Vector2, data: Variant) -> bool:
 
 	if draggable.files:
 		if !_can_drop_new_clips(pos, draggable):
+			queue_redraw()
 			return false
 	elif !_can_move_clips(pos, draggable):
+		queue_redraw()
 		return false
 	
 	drag_previews = draggable.rects
@@ -100,82 +166,31 @@ func _can_drop_data(pos: Vector2, data: Variant) -> bool:
 	return true
 
 
-func _drop_data(pos: Vector2, data: Variant) -> void:
-	drag_previews = []
-	queue_redraw()
-	pass
-#	var draggable: Draggable = data
-#
-#	drag_previews.clear()
-#
-#	if draggable.files:
-#		_handle_drop_new_clips(draggable)
-#	else:
-#		_handle_drop_existing_clips(draggable)
-#
-#	InputManager.undo_redo.add_do_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
-#	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-#
-#	InputManager.undo_redo.add_undo_method(EditorCore.set_frame.bind(EditorCore.frame_nr))
-#	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
-#
-#	InputManager.undo_redo.commit_action()
+func _can_drop_new_clips(_p: Vector2, draggable: Draggable) -> bool:
+	var track_nr: int = get_track_from_mouse_pos()
+	var frame_nr: int = max(0, get_frame_from_mouse_pos() - draggable.offset)
+	var duration: int = draggable.duration
+	var difference: int = 0
+
+	var track_data: TrackData = Project.get_track(track_nr)
+	var region: Vector2i = track_data.get_free_region(frame_nr)
+	var region_space: int = region.y - region.x
+
+	if region_space < duration:
+		return false # No space for the clip(s)
+
+	_drag_offset = draggable.offset
+
+	if frame_nr < region.x:
+		difference = frame_nr - region.x
+	elif frame_nr + duration > region.y:
+		difference = frame_nr + duration - region.y
+
+	_drag_offset += difference
+	return abs(difference) <= DRAG_FLEXIBILITY
 
 
-func _can_drop_new_clips(pos: Vector2, draggable: Draggable) -> bool:
-#	var track: int = clampi(get_track_id(pos.y), 0, Project.get_track_count() - 1)
-#	var frame: int = maxi(int(pos.x / zoom) - draggable.offset, 0)
-#	var region: Vector2i = get_drop_region(track, frame, draggable.ignores)
-#
-#	var end: int = frame
-#	var duration: int = 0
-#	_offset = 0
-#
-#	# Calculate total duration of all clips together
-#	for file_id: int in draggable.ids:
-#		duration += FileManager.get_file(file_id).duration
-#	end = frame + duration
-#
-#	# Create a preview
-#	var panel: PanelContainer = PanelContainer.new()
-#
-#	panel.size = Vector2(get_frame_pos(duration), TRACK_HEIGHT)
-#	panel.position = Vector2(get_frame_pos(frame), get_track_pos(track))
-#	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-#	panel.add_theme_stylebox_override("panel", preload(Library.STYLE_BOX_CLIP_PREVIEW))
-#
-#	preview.add_child(panel)
-#
-#	# Check if highest
-#	if region.x < frame and region.y == -1:
-#		return true
-#
-#	# Check if clips fits
-#	if region.x < frame and end < region.y:
-#		return true
-#	if duration > region.y - region.x:
-#		if region.x != -1 and region.y != -1:
-#			return false
-#
-#	# Check if overlapping works
-#	if frame <= region.x:
-#		_offset = region.x - frame
-#
-#		if frame + _offset < region.y or region.y == -1:
-#			panel.position.x += _offset * zoom
-#			return true
-#	elif end >= region.y:
-#		_offset = region.y - end
-#
-#		if frame - _offset > region.x and frame + _offset >= 0:
-#			panel.position.x += _offset * zoom
-#			return true
-#
-#	preview.remove_child(panel)
-	return true
-
-
-func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
+func _can_move_clips(_pos: Vector2, _draggable: Draggable) -> bool:
 #	var first_clip: ClipData = draggable.get_clip_data(0)
 #	var track: int = clampi(get_track_id(pos.y), 0, Project.get_track_count() - 1)
 #	var frame: int = maxi(int(pos.x / zoom) - draggable.offset, 0)
@@ -286,53 +301,34 @@ func _can_move_clips(pos: Vector2, draggable: Draggable) -> bool:
 	return true
 
 
-func _handle_drop_new_clips(draggable: Draggable) -> void:
-	InputManager.undo_redo.create_action("Adding new clips to timeline")
+func _drop_data(_pos: Vector2, data: Variant) -> void:
+	var draggable: Draggable = data
 
-#	var pos: Vector2 = main_control.get_local_mouse_position()
-#	var ids: Array = []
-#	var track: int = get_track_id(pos.y)
-#	var start_frame: int = maxi(
-#			get_frame_id(pos.x) - draggable.offset + _offset, 0)
-#
-#	for id: int in draggable.ids:
-#		var new_clip_data: ClipData = ClipData.new()
-#
-#		new_clip_data.clip_id = Utils.get_unique_id(Project.get_clip_ids())
-#		new_clip_data.file_id = id
-#		new_clip_data.start_frame = start_frame
-#		new_clip_data.track_id = track
-#		new_clip_data.duration = FileManager.get_file(id).duration
-#		new_clip_data.effects_video = EffectsVideo.new()
-#		new_clip_data.effects_audio = EffectsAudio.new()
-#
-#		new_clip_data.effects_video.clip_id = new_clip_data.clip_id
-#		new_clip_data.effects_audio.clip_id = new_clip_data.clip_id
-#
-#		new_clip_data.effects_video.set_default_transform()
-#
-#		ids.append(new_clip_data.clip_id)
-#		draggable.new_clips.append(new_clip_data)
-#		start_frame += new_clip_data.duration - 1
-#
-#	draggable.ids = ids
-#
-#	InputManager.undo_redo.add_do_method(_add_new_clips.bind(draggable))
-#	InputManager.undo_redo.add_undo_method(_remove_new_clips.bind(draggable))
+	drag_previews = []
+
+	if draggable.files: # Creating new clips
+		var frame_nr: int = get_frame_from_mouse_pos() - _drag_offset
+		var track_id: int = get_track_from_mouse_pos()
+		var new_clips: Array[CreateClipRequest] = []
+
+		for file_id: int in draggable.ids:
+			new_clips.append(CreateClipRequest.new(file_id, track_id, frame_nr))
+			frame_nr += FileManager.get_file(file_id).duration
+
+		ClipHandler.add_clips(new_clips)
+	else:
+		var clips: Array[MoveClipRequest] = []
+
+		for clip_id: int in draggable.ids:
+			clips.append(MoveClipRequest.new(clip_id, _drag_offset, _drag_offset_track))
+
+		ClipHandler.move_clips(clips)
+
+	queue_redraw()
 
 
-func _handle_drop_existing_clips(draggable: Draggable) -> void:
-	pass
-#	InputManager.undo_redo.create_action("Moving clips on timeline")
-#
-#	InputManager.undo_redo.add_do_method(_move_clips.bind(
-#			draggable,
-#			draggable.differences.y,
-#			draggable.differences.x + _offset))
-#	InputManager.undo_redo.add_undo_method(_move_clips.bind(
-#			draggable,
-#			-draggable.differences.y,
-#			-(draggable.differences.x + _offset)))
+func _force_refresh(_v: Variant) -> void:
+	queue_redraw() # Function is needed to avoid errors `queue_redraw()`.
 
 
 
@@ -713,26 +709,6 @@ func _handle_drop_existing_clips(draggable: Draggable) -> void:
 #	return instance.zoom * duration
 #
 #
-#static func get_zoom() -> float:
-#	return instance.zoom
-#
-#
-#static func get_frame_id(pos: float) -> int:
-#	return floor(pos / get_zoom())
-#
-#
-#static func get_track_id(pos: float) -> int:
-#	return floor(pos / (TRACK_HEIGHT + LINE_HEIGHT))
-#
-#
-#static func get_frame_pos(frame_nr: int) -> float:
-#	return frame_nr * get_zoom()
-#
-#
-#static func get_track_pos(track_id: int) -> float:
-#	return track_id * (TRACK_HEIGHT + LINE_HEIGHT)
-#
-#
 #func _delete_empty_space() -> void:
 #	var mouse_track: int = get_track_id(main_control.get_local_mouse_position().y)
 #	var mouse_frame: int = get_frame_id(main_control.get_local_mouse_position().x)
@@ -869,10 +845,12 @@ func _handle_drop_existing_clips(draggable: Draggable) -> void:
 #	_update_clip_size(current_clip.clip_id, Timeline.get_frame_pos(current_clip.duration))
 #
 #	delete_clip(split_clip)
-#
-#
-#func _update_clip_size(clip_id: int, new_size_x: float) -> void:
-#	var clip_button: Control = clips.get_node(str(clip_id))
-#	clip_button.size.x = new_size_x
-#	
+
+
+func get_track_from_mouse_pos() -> int:
+	return min(floor(get_local_mouse_position().y / (TRACK_HEIGHT + TRACK_LINE_HEIGHT)), Project.get_track_count() - 1)
+
+
+func get_frame_from_mouse_pos() -> int:
+	return floori(get_local_mouse_position().x / zoom)
 

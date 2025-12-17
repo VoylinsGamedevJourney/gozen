@@ -7,6 +7,7 @@ signal folder_added(folder_name: String)
 
 signal timeline_end_update(new_end: int)
 
+signal clip_added(clip_id: int)
 signal clip_deleted(clip_id: int)
 
 signal marker_added(frame_nr: int)
@@ -328,13 +329,19 @@ func set_clip(id: int, clip: ClipData) -> void:
 func add_clip(clip_data: ClipData) -> void:
 	# Used for undoing the deletion of a file.
 	_data.clips[clip_data.id] = clip_data
+	_data.tracks[clip_data.track_id].set_frame_to_clip(clip_data)
+	clip_added.emit(clip_data.id)
 	unsaved_changes = true
 
 
-func delete_clip(id: int) -> void:
-	_data.tracks[_data.clips[id].track_id].erase(_data.clips[id].start_frame)
-	_data.clips.erase(id)
-	clip_deleted.emit(id)
+func delete_clip(clip_data: ClipData) -> void:
+	var clip_id: int = clip_data.id
+	var track_id: int = clip_data.track_id
+	var frame_nr: int = clip_data.start_frame
+
+	_data.tracks[track_id].remove_clip_from_frame(frame_nr)
+	_data.clips.erase(clip_id)
+	clip_deleted.emit(clip_id)
 	unsaved_changes = true
 
 

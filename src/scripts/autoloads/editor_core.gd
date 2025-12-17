@@ -1,7 +1,7 @@
 extends Node
 
 
-signal frame_changed()
+signal frame_changed
 signal play_changed(value: bool)
 
 

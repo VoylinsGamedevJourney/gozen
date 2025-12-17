@@ -161,7 +161,7 @@ func add_file_object(file: File) -> void:
 func delete_file(id: int) -> void:
 	for clip: ClipData in Project.get_clip_datas():
 		if clip.file_id == id:
-			Project.delete_clip(clip.id)
+			Project.delete_clip(clip)
 
 	if data.has(id):
 		data.erase(id)
@@ -184,6 +184,13 @@ func check_modified_files() -> void:
 				file.modified_time = new_modified_time
 				reload_file_data(file.id)
 
+
+func get_file_type(file_id: int) -> File.TYPE:
+	return get_file(file_id).type
+
+
+func get_file_name(file_id: int) -> String:
+	return get_file(file_id).nickname
 
 
 #-- File creators ---
