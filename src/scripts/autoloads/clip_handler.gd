@@ -1,25 +1,44 @@
 extends Node
 
+
+signal clip_added(clip_id: int)
+signal clip_deleted(clip_id: int)
+
 # This is the amount that we allow to use next_frame before using seek_frame
 # for the video data since seek_frame is usually slower
 # TODO: Make this into a setting
 const MAX_FRAME_SKIPS: int = 20
 
 
-
-func _get_data(clip_id: int) -> ClipData:
-	return Project.get_clip(clip_id)
+var clips: Dictionary[int, ClipData] = {}
 
 
-func get_end_frame(clip_id: int, clip: ClipData = _get_data(clip_id)) -> int:
+
+func get_clip(id: int) -> ClipData:
+	return clips[id]
+
+
+func get_type(id: int) -> File.TYPE:
+	return FileHandler.get_files()[clips[id].file_id].type
+
+
+func get_clip_datas() -> Array[ClipData]:
+	return clips.values()
+
+
+func get_clip_ids() -> PackedInt64Array:
+	return clips.keys()
+
+
+func get_end_frame(id: int, clip: ClipData = clips[id]) -> int:
 	return clip.start_frame + clip.duration - 1
 
 
 func get_clip_type(clip: ClipData) -> File.TYPE:
-	return FileManager.get_file_type(clip.file_id)
+	return FileHandler.get_file_type(clip.file_id)
 
 
-func get_frame(clip_id: int, frame_nr: int, clip: ClipData = _get_data(clip_id)) -> Texture:
+func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
 	var type: File.TYPE = Project.get_clip_type(clip.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
@@ -32,7 +51,7 @@ func get_frame(clip_id: int, frame_nr: int, clip: ClipData = _get_data(clip_id))
 		# through the editor.
 
 		# Changing from global frame nr to clip frame nr
-		var file_data: FileData = FileManager.get_file_data(clip.file_id)
+		var file_data: FileData = FileHandler.get_file_data(clip.file_id)
 		var video: GoZenVideo
 
 		if file_data.clip_only_video.has(clip.id):
@@ -48,7 +67,7 @@ func get_frame(clip_id: int, frame_nr: int, clip: ClipData = _get_data(clip_id))
 
 		# check if not reloading same frame
 		if frame_nr == video_frame_nr:
-			return FileManager.get_file_data(clip.file_id).image
+			return FileHandler.get_file_data(clip.file_id).image
 
 		# check if frame is before current one or after max skip
 		var skips: int = frame_nr - video_frame_nr
@@ -62,11 +81,11 @@ func get_frame(clip_id: int, frame_nr: int, clip: ClipData = _get_data(clip_id))
 				if !video.next_frame(i == skips):
 					print("Something went wrong skipping next frame!")
 
-	return FileManager.get_file_data(clip.file_id).image
+	return FileHandler.get_file_data(clip.file_id).image
 
 
-func get_clip_audio_data(clip_id: int, clip: ClipData = _get_data(clip_id)) -> PackedByteArray:
-	var file_data: FileData = FileManager.get_file_data(clip.file_id)
+func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
+	var file_data: FileData = FileHandler.get_file_data(clip.file_id)
 	var sample_size: int = Utils.get_sample_count(1, Project.get_framerate())
 	var data: PackedByteArray = file_data.audio.data.slice(
 			Utils.get_sample_count(clip.begin, Project.get_framerate()),
@@ -114,9 +133,9 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 
 	for clip_request: CreateClipRequest in data:
 		var clip_data: ClipData = ClipData.new()
-		var file_data: File = FileManager.get_file(clip_request.file_id)
+		var file_data: File = FileHandler.get_file(clip_request.file_id)
 
-		clip_data.id = Utils.get_unique_id(Project.get_clip_ids())
+		clip_data.id = Utils.get_unique_id(ClipHandler.get_clip_ids())
 		clip_data.file_id = file_data.id
 		clip_data.track_id = clip_request.track_id
 		clip_data.start_frame = clip_request.frame_nr
@@ -129,18 +148,20 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 			clip_data.effects_audio = EffectsAudio.new()
 			clip_data.effects_audio.clip_id = clip_data.id
 
-		InputManager.undo_redo.add_do_method(Project.add_clip.bind(clip_data))
-		InputManager.undo_redo.add_undo_method(Project.delete_clip.bind(clip_data))
+		InputManager.undo_redo.add_do_method(add_clip.bind(clip_data))
+		InputManager.undo_redo.add_undo_method(delete_clip.bind(clip_data))
 
 	InputManager.undo_redo.commit_action()
 	
 
-func remove_clips(data: Array[ClipData]) -> void:
+func delete_clips(data: PackedInt64Array) -> void:
 	InputManager.undo_redo.create_action("Removing clip(s)")
 
-	for clip_data: ClipData in data:
-		InputManager.undo_redo.add_do_method(Project.delete_clip.bind(clip_data))
-		InputManager.undo_redo.add_undo_method(Project.add_clip.bind(clip_data))
+	for clip_id: int in data:
+		var clip: ClipData = get_clip(clip_id)
+
+		InputManager.undo_redo.add_do_method(delete_clip.bind(clip))
+		InputManager.undo_redo.add_undo_method(add_clip.bind(clip))
 
 	InputManager.undo_redo.commit_action()
 
@@ -162,3 +183,27 @@ func move_clips(data: Array[MoveClipRequest]) -> void:
 #			draggable,
 #			-draggable.differences.y,
 #			-(draggable.differences.x + _offset)))
+
+func set_clip(id: int, clip: ClipData) -> void:
+	clip.id = id
+	clips[id] = clip
+	Project.unsaved_changes = true
+
+
+func add_clip(clip_data: ClipData) -> void:
+	# Used for undoing the deletion of a file.
+	clips[clip_data.id] = clip_data
+	TrackHandler.set_frame_to_clip(clip_data.track_id, clip_data)
+	clip_added.emit(clip_data.id)
+	Project.unsaved_changes = true
+
+
+func delete_clip(clip_data: ClipData) -> void:
+	var clip_id: int = clip_data.id
+	var track_id: int = clip_data.track_id
+	var frame_nr: int = clip_data.start_frame
+
+	TrackHandler.remove_clip_from_frame(track_id, frame_nr)
+	clips.erase(clip_id)
+	clip_deleted.emit(clip_id)
+	Project.unsaved_changes = true

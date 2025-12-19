@@ -176,7 +176,7 @@ func get_show_menu_bar() -> bool:
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	_data.audio_waveform_style = style
 
-	for file_data: FileData in FileManager.data.values():
+	for file_data: FileData in FileHandler.data.values():
 		file_data.update_wave.emit()
 
 

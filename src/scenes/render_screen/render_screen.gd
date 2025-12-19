@@ -37,8 +37,8 @@ var current_progress: float = 0.0
 
 
 func _ready() -> void:
-	Utils.connect_func(RenderManager.update_encoder_status, update_encoder_status)
-	# TODO: Fix this with the new timeline stuff : Utils.connect_func(Events.markers_updated, _on_chapters_updated)
+	RenderManager.update_encoder_status.connect(update_encoder_status)
+	# TODO: Fix this with the new timeline stuff : Events.markers_updated.connect(_on_chapters_updated)
 
 	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
@@ -125,7 +125,7 @@ func add_profile(profile: RenderProfile) -> void:
 	button.button_group = button_group
 	button.theme_type_variation = "render_profile_button"
 	button.tooltip_text = "Profile: %s" % profile.profile_name
-	Utils.connect_func(button.pressed, load_profile.bind(profile))
+	button.pressed.connect(load_profile.bind(profile))
 
 	render_profiles_hbox.add_child(button)
 
@@ -179,7 +179,7 @@ func _on_select_save_path_button_pressed() -> void:
 
 	dialog.current_dir = Project.get_project_base_folder()
 	dialog.current_file = Project.get_project_name()
-	Utils.connect_func(dialog.file_selected, _save_path_selected)
+	dialog.file_selected.connect(_save_path_selected)
 
 	add_child(dialog)
 	dialog.popup_centered()
@@ -323,7 +323,7 @@ func _on_start_render_button_pressed() -> void:
 	var button: Button = Button.new()
 
 	button.text = "button_cancel_rendering"
-	Utils.connect_func(button.pressed, _cancel_render)
+	button.pressed.connect(_cancel_render)
 
 	get_tree().root.add_child(progress_overlay)
 	var status_label: Label = progress_overlay.status_hbox.get_child(0)

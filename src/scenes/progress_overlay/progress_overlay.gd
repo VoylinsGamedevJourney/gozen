@@ -52,7 +52,7 @@ func set_state_file_loading(loading_size: int) -> void:
 		scroll_container.custom_minimum_size.y = clampi(loading_size, 0, 10) * 25
 
 
-func update_file(file: FileManager.FileDrop) -> void:
+func update_file(file: FileHandler.FileDrop) -> void:
 	var path: String = file.path
 
 	if !file_labels.has(path):
@@ -64,7 +64,7 @@ func update_file(file: FileManager.FileDrop) -> void:
 		vbox.add_child(new_label)			
 
 	match file.status:
-		FileManager.STATUS.ALREADY_LOADED: file_labels[path].self_modulate = Color.GRAY
-		FileManager.STATUS.PROBLEM: file_labels[path].self_modulate = Color.RED
-		FileManager.STATUS.LOADED:  file_labels[path].self_modulate = Color.GREEN
+		FileHandler.STATUS.ALREADY_LOADED: file_labels[path].self_modulate = Color.GRAY
+		FileHandler.STATUS.PROBLEM: file_labels[path].self_modulate = Color.RED
+		FileHandler.STATUS.LOADED:  file_labels[path].self_modulate = Color.GREEN
 

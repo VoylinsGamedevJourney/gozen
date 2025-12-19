@@ -34,8 +34,8 @@ const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 
 var track_line_heights: PackedInt64Array = []
 var drag_previews: Array[Rect2] = []
-var visible_clips: Array[ClipData] = []
-var selected_clips: PackedInt32Array = []
+var visible_clip_ids: PackedInt64Array = []
+var selected_clip_ids: PackedInt64Array = []
 var zoom: float = 1.0
 
 var _drag_offset: int = 0
@@ -44,21 +44,55 @@ var _drag_offset_track: int = 0
 
 
 func _ready() -> void:
-	Utils.connect_func(Project.project_ready, _project_ready)
-	Utils.connect_func(Project.timeline_end_update, _timeline_end_update)
-	Utils.connect_func(Project.clip_added, _force_refresh)
-	Utils.connect_func(Project.clip_deleted, _force_refresh)
-	Utils.connect_func(EditorCore.frame_changed, queue_redraw)
+	Project.project_ready.connect(_project_ready)
+	Project.timeline_end_update.connect(_timeline_end_update)
+	ClipHandler.clip_added.connect(_force_refresh)
+	ClipHandler.clip_deleted.connect(_force_refresh)
+	TrackHandler.updated.connect(update_track_count)
+	EditorCore.frame_changed.connect(queue_redraw)
 
 	set_drag_forwarding(_drag, _can_drop_data, _drop_data)
 
 
-func _on_gui_input(_event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("delete_clips"):
+		ClipHandler.delete_clips(selected_clip_ids)
+
+
+func _on_gui_input(event: InputEvent) -> void:
 	if !Project.loaded:
 		return
 	elif !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		drag_previews = []
 		queue_redraw()
+
+	if event is InputEventMouseButton:
+		get_window().gui_release_focus()
+		_on_gui_input_mouse(event)
+
+
+func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
+	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		# Check if clip is pressed or not.
+		var clip: ClipData = _get_clip_on_mouse()
+
+		if clip != null:
+			if event.shift_pressed:
+				selected_clip_ids.append(clip.id)
+			else:
+				selected_clip_ids = [clip.id]
+		else:
+			selected_clip_ids = []
+	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
+		# TODO: Right click menu
+		pass
+
+
+func _get_clip_on_mouse() -> ClipData:
+	var mouse_track: int = get_track_from_mouse_pos()
+	var mouse_frame: int = get_frame_from_mouse_pos()
+
+	return TrackHandler.get_clip_at(mouse_track, mouse_frame)
 
 
 func _draw() -> void:
@@ -88,16 +122,17 @@ func _draw() -> void:
 		draw_style_box(STYLE_BOX_PREVIEW, new_preview)
 
 	# - Clip blocks
-	for clip: ClipData in visible_clips:
-		var box_type: int = 0 if clip.id in selected_clips else 1
+	for clip_id: int in visible_clip_ids:
+		var clip: ClipData = ClipHandler.get_clip(clip_id)
+		var box_type: int = 1 if clip.id in selected_clip_ids else 0
 		var pos: Vector2 = Vector2(clip.start_frame * zoom, TOTAL_TRACK_HEIGHT * clip.track_id)
-		var new_clip: Rect2 = Rect2(pos, Vector2(clip.duration * zoom, TOTAL_TRACK_HEIGHT))
+		var new_clip: Rect2 = Rect2(pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
 
 		draw_style_box(STYLE_BOXES[ClipHandler.get_clip_type(clip)][box_type], new_clip)
 		draw_string(
 				get_theme_default_font(),
 				pos + TEXT_OFFSET,
-				FileManager.get_file_name(clip.file_id),
+				FileHandler.get_file_name(clip.file_id),
 				HORIZONTAL_ALIGNMENT_LEFT, 0,
 				11, # Font size
 				Color(0.9, 0.9, 0.9))
@@ -114,33 +149,25 @@ func _on_mouse_exited() -> void:
 
 	
 func _get_visible_clips() -> void:
-	var visible_frame_start: int = floori(scroll_container.scroll_horizontal * zoom)
-	var visible_frame_end: int = floori(visible_frame_start + (scroll_container.size.x / zoom))
+	var visible_start: int = floori(scroll_container.scroll_horizontal * zoom)
+	var visible_end: int = floori(visible_start + (scroll_container.size.x / zoom))
 
-	visible_clips = []
+	visible_clip_ids = []
 
-	for track_data: TrackData in Project.get_tracks():
-		visible_clips.append_array(track_data.get_clips_in(visible_frame_start, visible_frame_end))
+	for track_id: int in TrackHandler.get_tracks_size():
+		for clip: ClipData in TrackHandler.get_clips_in(track_id, visible_start, visible_end):
+			visible_clip_ids.append(clip.id)
 
 
 func _project_ready() -> void:
-	var track_count: int = Project.get_track_count()
-
-	track_line_heights.clear()
-	custom_minimum_size.x = track_count * TOTAL_TRACK_HEIGHT
-
-	for i: int in track_count:
-		track_line_heights.append((i+1) * TOTAL_TRACK_HEIGHT)
-	
-	_timeline_end_update(Project.get_timeline_end())
-	queue_redraw()
+	update_track_count()
 
 
 func _timeline_end_update(new_end: int) -> void:
 	custom_minimum_size.x = max(ceili(new_end * zoom), TIMELINE_PADDING)
 
 
-func _drag(at_position: Vector2) -> void:
+func _drag(_at_position: Vector2) -> void:
 	# TODO:
 	# Decide if I'm in an empty space on the timeline to create a selection box.
 	# Also check if I'm not dragging a fade handle.
@@ -167,13 +194,11 @@ func _can_drop_data(pos: Vector2, data: Variant) -> bool:
 
 
 func _can_drop_new_clips(_p: Vector2, draggable: Draggable) -> bool:
-	var track_nr: int = get_track_from_mouse_pos()
+	var track_id: int = get_track_from_mouse_pos()
 	var frame_nr: int = max(0, get_frame_from_mouse_pos() - draggable.offset)
 	var duration: int = draggable.duration
 	var difference: int = 0
-
-	var track_data: TrackData = Project.get_track(track_nr)
-	var region: Vector2i = track_data.get_free_region(frame_nr)
+	var region: Vector2i = TrackHandler.get_free_region(track_id, frame_nr)
 	var region_space: int = region.y - region.x
 
 	if region_space < duration:
@@ -307,13 +332,13 @@ func _drop_data(_pos: Vector2, data: Variant) -> void:
 	drag_previews = []
 
 	if draggable.files: # Creating new clips
-		var frame_nr: int = get_frame_from_mouse_pos() - _drag_offset
 		var track_id: int = get_track_from_mouse_pos()
+		var frame_nr: int = get_frame_from_mouse_pos() - _drag_offset
 		var new_clips: Array[CreateClipRequest] = []
 
 		for file_id: int in draggable.ids:
 			new_clips.append(CreateClipRequest.new(file_id, track_id, frame_nr))
-			frame_nr += FileManager.get_file(file_id).duration
+			frame_nr += FileHandler.get_file(file_id).duration
 
 		ClipHandler.add_clips(new_clips)
 	else:
@@ -350,11 +375,11 @@ func _force_refresh(_v: Variant) -> void:
 #	instance = self
 #	main_control.set_drag_forwarding(Callable(), _main_control_can_drop_data, _main_control_drop_data)
 #
-#	Utils.connect_func(EditorCore.frame_changed, move_playhead)
-#	Utils.connect_func(mouse_exited, func() -> void: preview.visible = false)
-#	Utils.connect_func(FileManager.file_deleted, _check_clips)
-#	Utils.connect_func(scroll_main.get_h_scroll_bar().value_changed, _on_h_scroll.bind(true))
-#	Utils.connect_func(scroll_bar.get_h_scroll_bar().value_changed, _on_h_scroll.bind(false))
+#	EditorCore.frame_changed.connect(move_playhead)
+#	mouse_exited.connect(func() -> void: preview.visible = false)
+#	FileHandler.file_deleted.connect(_check_clips)
+#	scroll_main.get_h_scroll_bar().connect(alue_changed, _on_h_scroll.bind(true))
+#	scroll_bar.get_h_scroll_bar().connect(alue_changed, _on_h_scroll.bind(false))
 #
 #
 #func _process(_delta: float) -> void:
@@ -602,7 +627,7 @@ func _force_refresh(_v: Variant) -> void:
 #
 #	button.clip_text = true
 #	button.name = str(clip_data.clip_id)
-#	button.text = " " + FileManager.get_file(clip_data.file_id).nickname
+#	button.text = " " + FileHandler.get_file(clip_data.file_id).nickname
 #	button.size.x = get_clip_size(clip_data.duration)
 #	button.size.y = TRACK_HEIGHT
 #	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -612,10 +637,10 @@ func _force_refresh(_v: Variant) -> void:
 #	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 #
 #	@warning_ignore_start("unsafe_call_argument")
-#	button.add_theme_stylebox_override("normal", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][0])
-#	button.add_theme_stylebox_override("focus", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][1])
-#	button.add_theme_stylebox_override("hover", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][0])
-#	button.add_theme_stylebox_override("pressed", STYLE_BOXES[FileManager.get_file(clip_data.file_id).type][0])
+#	button.add_theme_stylebox_override("normal", STYLE_BOXES[FileHandler.get_file(clip_data.file_id).type][0])
+#	button.add_theme_stylebox_override("focus", STYLE_BOXES[FileHandler.get_file(clip_data.file_id).type][1])
+#	button.add_theme_stylebox_override("hover", STYLE_BOXES[FileHandler.get_file(clip_data.file_id).type][0])
+#	button.add_theme_stylebox_override("pressed", STYLE_BOXES[FileHandler.get_file(clip_data.file_id).type][0])
 #	@warning_ignore_restore("unsafe_call_argument")
 #
 #	button.set_script(preload(Library.BUTTON_CLIP))
@@ -848,9 +873,22 @@ func _force_refresh(_v: Variant) -> void:
 
 
 func get_track_from_mouse_pos() -> int:
-	return min(floor(get_local_mouse_position().y / (TRACK_HEIGHT + TRACK_LINE_HEIGHT)), Project.get_track_count() - 1)
+	return min(floor(get_local_mouse_position().y / (TRACK_HEIGHT + TRACK_LINE_HEIGHT)), TrackHandler.get_tracks_size() - 1)
 
 
 func get_frame_from_mouse_pos() -> int:
 	return floori(get_local_mouse_position().x / zoom)
+
+
+func update_track_count() -> void:
+	var track_count: int = TrackHandler.get_tracks_size()
+
+	track_line_heights.clear()
+	custom_minimum_size.x = track_count * TOTAL_TRACK_HEIGHT
+
+	for i: int in track_count:
+		track_line_heights.append((i+1) * TOTAL_TRACK_HEIGHT)
+	
+	_timeline_end_update(Project.get_timeline_end())
+	queue_redraw()
 

@@ -36,7 +36,7 @@ var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instan
 
 
 func _ready() -> void:
-	Utils.connect_func(get_window().size_changed, _on_size_changed)
+	get_window().size_changed.connect(_on_size_changed)
 
 	await get_tree().root.ready
 	get_tree().root.add_child(_control)
@@ -118,7 +118,7 @@ func create_popup_menu(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
 
 	if !permanent:
-		Utils.connect_func(popup.mouse_exited, popup.queue_free)
+		popup.mouse_exited.connect(popup.queue_free)
 
 	popup.size = Vector2i(100,0)
 	return popup

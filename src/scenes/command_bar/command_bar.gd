@@ -87,7 +87,6 @@ func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 				return
 			else:
 				selected_button -= 1
-	print("oi")
 
 	_close()
 

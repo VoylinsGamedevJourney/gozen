@@ -46,7 +46,7 @@ func _add_side_bar_option(section_name: String) -> void:
 	button.theme_type_variation = "side_bar_button"
 	button.button_pressed = side_bar_vbox.get_child_count() == 0
 
-	Utils.connect_func(button.pressed, _show_section.bind(section_name))
+	button.pressed.connect(_show_section.bind(section_name))
 	side_bar_vbox.add_child(button)
 
 
@@ -226,7 +226,7 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 	# callable as value.
 	var option_button: OptionButton = OptionButton.new()
 
-	Utils.connect_func(option_button.item_selected, _option_button_item_selected.bind(option_button, callable, type))
+	option_button.item_selected.connect(_option_button_item_selected.bind(option_button, callable, type))
 
 	var i: int = 0
 	for option: String in options:
@@ -263,7 +263,7 @@ func create_check_button(default: bool, callable: Callable, tooltip: String) -> 
 	check_button.button_pressed = default
 	check_button.tooltip_text = tooltip
 	check_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	Utils.connect_func(check_button.toggled, callable)
+	check_button.toggled.connect(callable)
 
 	check_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	check_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -286,7 +286,7 @@ func create_spinbox(default: float, min_value: float, max_value: float, step: fl
 	spinbox.value = default
 	spinbox.tooltip_text = tooltip
 	spinbox.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	Utils.connect_func(spinbox.value_changed, callable)
+	spinbox.value_changed.connect(callable)
 
 	spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spinbox.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -300,7 +300,7 @@ func create_color_picker(default: Color, callable: Callable, tooltip: String) ->
 	color_picker.color = default
 	color_picker.tooltip_text = tooltip
 	color_picker.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	Utils.connect_func(color_picker.color_changed, callable)
+	color_picker.color_changed.connect(callable)
 
 	color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	color_picker.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

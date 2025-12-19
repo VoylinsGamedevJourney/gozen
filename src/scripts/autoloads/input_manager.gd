@@ -94,7 +94,7 @@ func clipboard_paste() -> void:
 		file.temp_file = TempFile.new()
 		file.temp_file.image_data = ImageTexture.create_from_image(image)
 
-		FileManager.add_file_object(file)
+		FileHandler.add_file_object(file)
 		return
 
 	# Checking if the pasted data is a path.
@@ -105,7 +105,7 @@ func clipboard_paste() -> void:
 			return
 
 	# All paths pasted are files so we use _on_files_dropped.
-	FileManager.files_dropped(data)
+	FileHandler.files_dropped(data)
 
 
 func open_marker_popup() -> void:

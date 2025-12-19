@@ -169,16 +169,15 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 
 
 func _get_next_clip(new_frame_nr: int, track_id: int) -> int:
-	var track: TrackData = Project.get_track(track_id)
 	var id: int = -1
 
-	if track.get_size() == 0:
+	if TrackHandler.get_clips_size(track_id) == 0:
 		return -1
 
 	# Looking for the correct clip
-	for frame: int in track.get_frame_nrs():
+	for frame: int in TrackHandler.get_frame_nrs(track_id):
 		if frame <= new_frame_nr:
-			id = Project.get_track_data(track).get_clip_id(frame)
+			id = TrackHandler.get_clip_id(track_id, frame)
 		else:
 			break
 
@@ -226,7 +225,7 @@ func find_audio(frame: int, track: int) -> int:
 func setup_playback() -> void:
 	viewport.size = Project.get_resolution()
 
-	for i: int in Project.get_track_count():
+	for i: int in Project.data.tracks.size():
 		var texture_rect: TextureRect = TextureRect.new()
 
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -251,7 +250,7 @@ func update_view(track_id: int) -> void:
 	if loaded_clips[track_id] == null:
 		return
 
-	var file_data: FileData = FileManager.get_file_data(loaded_clips[track_id].file_id)
+	var file_data: FileData = FileHandler.get_file_data(loaded_clips[track_id].file_id)
 	var material: ShaderMaterial = view_textures[track_id].get_material()
 	var updated: bool = false
 

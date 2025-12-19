@@ -17,3 +17,8 @@ var begin: int = 0 # Only for video and audio files
 var effects_video: EffectsVideo
 var effects_audio: EffectsAudio
 
+
+
+func _to_string() -> String:
+	return "<clip:%s>" % id
+

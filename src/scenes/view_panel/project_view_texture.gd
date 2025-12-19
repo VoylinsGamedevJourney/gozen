@@ -4,7 +4,7 @@ enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
 
 
 func _ready() -> void:
-	Utils.connect_func(gui_input, _on_gui_input)
+	gui_input.connect(_on_gui_input)
 
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
@@ -22,7 +22,7 @@ func _on_gui_input(event: InputEvent) -> void:
 			popup.add_item("Save screenshot ...", POPUP.SAVE_SCREENSHOT)
 			popup.add_item("Save screenshot to project ...", POPUP.SAVE_SCREENSHOT_TO_PROJECT)
 
-			Utils.connect_func(popup.id_pressed, _on_popup_id_pressed)
+			popup.id_pressed.connect(_on_popup_id_pressed)
 
 			PopupManager.show_popup_menu(popup)
 
@@ -35,9 +35,9 @@ func _on_popup_id_pressed(id: int) -> void:
 				["*.webp", "*.png", "*.jpg", "*.jpeg"])
 
 		if id == POPUP.SAVE_SCREENSHOT:
-			Utils.connect_func(file_dialog.file_selected, _on_save_screenshot)
+			file_dialog.file_selected.connect(_on_save_screenshot)
 		else:
-			Utils.connect_func(file_dialog.file_selected, _on_save_screenshot_to_project)
+			file_dialog.file_selected.connect(_on_save_screenshot_to_project)
 
 		var folder: String = Project.get_project_path().get_base_dir() + "/"
 		var file_name: String = "image_%03d.webp"
@@ -57,7 +57,7 @@ func _on_popup_id_pressed(id: int) -> void:
 
 func _on_save_screenshot_to_project(path: String) -> void:
 	_on_save_screenshot(path)
-	FileManager.files_dropped([path])
+	FileHandler.files_dropped([path])
 
 
 func _on_save_screenshot(path: String) -> void:

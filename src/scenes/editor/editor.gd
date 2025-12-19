@@ -22,10 +22,10 @@ func _ready() -> void:
 
 	switch_screen(0)
 	print_startup_info()
-	Utils.connect_func(InputManager.on_show_editor_screen, switch_screen.bind(0))
-	Utils.connect_func(InputManager.on_show_render_screen, switch_screen.bind(1))
-	Utils.connect_func(InputManager.on_show_subtitle_screen, switch_screen.bind(2))
-	Utils.connect_func(InputManager.on_switch_screen, switch_screen_quick)
+	InputManager.on_show_editor_screen.connect(switch_screen.bind(0))
+	InputManager.on_show_render_screen.connect(switch_screen.bind(1))
+	InputManager.on_show_subtitle_screen.connect(switch_screen.bind(2))
+	InputManager.on_switch_screen.connect(switch_screen_quick)
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
 

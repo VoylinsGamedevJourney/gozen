@@ -18,14 +18,6 @@ static func format_file_nickname(file_name: String, size: int) -> String:
 	return new_name
 
 
-## This function is needed to handle the error in a good way for when
-## connecting a callable to a signal wasn't successful.
-static func connect_func(connect_signal: Signal, connect_callable: Callable) -> void:
-	if connect_signal.connect(connect_callable):
-		push_error("Error connecting to signal '%s' to '%s'!" % [
-				connect_signal.get_name(), connect_callable.get_method()])
-
-
 static func open_url(url: String) -> void:
 	if url.begins_with("http") or url.begins_with("www"):
 		@warning_ignore("return_value_discarded")

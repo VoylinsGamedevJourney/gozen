@@ -10,7 +10,7 @@ extends HBoxContainer
 
 func _ready() -> void:
 	_show_menu_bar(Settings.get_show_menu_bar())
-	Utils.connect_func(Settings.on_show_menu_bar_changed, _show_menu_bar)
+	Settings.on_show_menu_bar_changed.connect(_show_menu_bar)
 
 
 func _show_menu_bar(value: bool) -> void:

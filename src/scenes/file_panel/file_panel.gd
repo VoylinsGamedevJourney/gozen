@@ -12,17 +12,17 @@ var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
 
 
 func _ready() -> void:
-	Utils.connect_func(FileManager.file_added, _on_file_added)
-	Utils.connect_func(FileManager.file_deleted, _on_file_deleted)
-	Utils.connect_func(FileManager.file_path_updated, _on_file_path_updated)
-	Utils.connect_func(FileManager.file_nickname_changed, _on_file_nickname_changed)
+	FileHandler.file_added.connect(_on_file_added)
+	FileHandler.file_deleted.connect(_on_file_deleted)
+	FileHandler.file_path_updated.connect(_on_file_path_updated)
+	FileHandler.file_nickname_changed.connect(_on_file_nickname_changed)
 
-	Utils.connect_func(Project.project_ready, _on_project_ready)
+	Project.project_ready.connect(_on_project_ready)
 
-	Utils.connect_func(Thumbnailer.thumb_generated, _on_update_thumb)
+	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
-	Utils.connect_func(tree.item_mouse_selected, _file_item_clicked)
-	Utils.connect_func(tree.gui_input, _on_tree_gui_input)
+	tree.item_mouse_selected.connect(_file_item_clicked)
+	tree.gui_input.connect(_on_tree_gui_input)
 
 	tree.set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
 	folder_items["/"] = tree.create_item()
@@ -31,13 +31,13 @@ func _ready() -> void:
 	for i: int in file_menu_button.item_count:
 		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
 
-	Utils.connect_func(file_menu_button.get_popup().id_pressed, _file_menu_pressed)
+	file_menu_button.get_popup().id_pressed.connect(_file_menu_pressed)
 
 
 func _on_tree_gui_input(event: InputEvent) -> void:
 	if tree.get_selected() != null and event.is_action("delete_file"):
 		var file_id: int = tree.get_selected().get_metadata(0)
-		_on_popup_option_pressed(POPUP_ACTION.DELETE, FileManager.get_file(file_id))
+		_on_popup_option_pressed(POPUP_ACTION.DELETE, FileHandler.get_file(file_id))
 
 
 func _on_project_ready() -> void:
@@ -45,7 +45,7 @@ func _on_project_ready() -> void:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
 
-	for file: File in FileManager.get_file_objects():
+	for file: File in FileHandler.get_file_objects():
 		_add_file_to_tree(file)
 
 
@@ -56,7 +56,7 @@ func _file_menu_pressed(id: int) -> void:
 					"file_dialog_title_add_files",
 					FileDialog.FILE_MODE_OPEN_FILES)
 
-			Utils.connect_func(dialog.files_selected, FileManager.files_dropped)
+			dialog.files_selected.connect(FileHandler.files_dropped)
 			add_child(dialog)
 			dialog.popup_centered()
 		1: # TODO: Add text
@@ -81,7 +81,7 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 		PopupManager.show_popup_menu(popup)
 	else: # FILE
 		var file_id: int = file_item.get_metadata(0)
-		file = FileManager.get_file(file_id)
+		file = FileHandler.get_file(file_id)
 
 		popup.add_item("popup_item_rename", POPUP_ACTION.RENAME)
 		popup.add_item("popup_item_reload", POPUP_ACTION.RELOAD)
@@ -100,7 +100,7 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 			if file.path.contains("temp://"):
 				popup.add_item("popup_item_save_as_file", POPUP_ACTION.SAVE_AS)
 
-	Utils.connect_func(popup.id_pressed, _on_popup_option_pressed.bind(file))
+	popup.id_pressed.connect(_on_popup_option_pressed.bind(file))
 	PopupManager.show_popup_menu(popup)
 
 
@@ -119,20 +119,20 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 			rename_dialog.prepare(file.id)
 			get_tree().root.add_child(rename_dialog)
 		POPUP_ACTION.RELOAD:
-			FileManager.reload_file_data(file.id)
+			FileHandler.reload_file_data(file.id)
 		POPUP_ACTION.DELETE:
 			InputManager.undo_redo.create_action("Delete file")
 			# Deleting file from tree and project data.
 			InputManager.undo_redo.add_do_method(_on_file_deleted.bind(file.id))
-			InputManager.undo_redo.add_do_method(FileManager.delete_file.bind(file.id))
+			InputManager.undo_redo.add_do_method(FileHandler.delete_file.bind(file.id))
 
-			InputManager.undo_redo.add_undo_method(FileManager.add_file_object.bind(file))
+			InputManager.undo_redo.add_undo_method(FileHandler.add_file_object.bind(file))
 			InputManager.undo_redo.add_undo_method(_add_file_to_tree.bind(file.id))
 
 			# Making certain clips will be returned when deleting of file is un-done.
-			for clip_data: ClipData in Project.get_clip_datas():
+			for clip_data: ClipData in ClipHandler.get_clip_datas():
 				if clip_data.file_id == file.id:
-					InputManager.undo_redo.add_undo_method(Project.add_clip.bind(clip_data))
+					InputManager.undo_redo.add_undo_method(ClipHandler.add_clip.bind(clip_data))
 
 			InputManager.undo_redo.commit_action()
 		POPUP_ACTION.SAVE_AS: # Only for temp files such as Images.
@@ -145,7 +145,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 						FileDialog.FILE_MODE_SAVE_FILE,
 						["*.png", "*.jpg", "*.webp"])
 
-				Utils.connect_func(dialog.file_selected, FileManager.save_image_to_file.bind(file))
+				dialog.file_selected.connect(FileHandler.save_image_to_file.bind(file))
 				add_child(dialog)
 				dialog.popup_centered()
 		POPUP_ACTION.EXTRACT_AUDIO:
@@ -154,7 +154,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 					FileDialog.FILE_MODE_SAVE_FILE,
 					["*.wav"])
 
-			Utils.connect_func(dialog.file_selected, FileManager.save_audio_to_wav.bind(file))
+			dialog.file_selected.connect(FileHandler.save_audio_to_wav.bind(file))
 			add_child(dialog)
 			dialog.popup_centered()
 		POPUP_ACTION.DUPLICATE: # Only for text
@@ -182,9 +182,9 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		var file_id: int = selected.get_metadata(0)
 		draggable.ids.append(file_id)
 
-		var file_duration: int = FileManager.get_file_duration(file_id) 
+		var file_duration: int = FileHandler.get_file_duration(file_id) 
 		if file_duration <= 0:
-			file_duration = FileManager.update_file_duration(file_id)
+			file_duration = FileHandler.update_file_duration(file_id)
 
 		draggable.rects.append(Rect2(Vector2(rect_spacing, 0), Vector2(file_duration, 0)))
 		draggable.duration += file_duration
@@ -222,7 +222,7 @@ func _add_folder_to_tree(folder: String) -> void:
 func _on_file_added(file_id: int) -> void:
 	# There's a possibility that the file was too large
 	# and that it did not get added.
-	_add_file_to_tree(FileManager.get_file(file_id))
+	_add_file_to_tree(FileHandler.get_file(file_id))
 
 
 func _on_file_deleted(file_id: int) -> void:
@@ -232,7 +232,7 @@ func _on_file_deleted(file_id: int) -> void:
 
 
 func _on_file_path_updated(file_id: int) -> void:
-	file_items[file_id].set_tooltip_text(0, FileManager.get_file(file_id).path)
+	file_items[file_id].set_tooltip_text(0, FileHandler.get_file(file_id).path)
 
 
 func _add_file_to_tree(file: File) -> void:
@@ -254,7 +254,7 @@ func _add_file_to_tree(file: File) -> void:
 
 
 func _on_update_thumb(file_id: int) -> void:
-	if FileManager.has_file(file_id):
+	if FileHandler.has_file(file_id):
 		file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
 	else:
 		_on_file_deleted(file_id)
@@ -294,7 +294,7 @@ func _sort_folder(folder: String) -> void:
 
 
 func _on_file_nickname_changed(file_id: int) -> void:
-	var file: File = FileManager.get_file(file_id)
+	var file: File = FileHandler.get_file(file_id)
 
 	file_items[file_id].set_text(0, file.nickname)
 	_sort_folder(file.folder)

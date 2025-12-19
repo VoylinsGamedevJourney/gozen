@@ -10,8 +10,8 @@ extends PanelContainer
 
 
 func _ready() -> void:
-	Utils.connect_func(EditorCore.play_changed, _on_play_changed)
-	Utils.connect_func(EditorCore.frame_changed, _on_frame_changed)
+	EditorCore.play_changed.connect(_on_play_changed)
+	EditorCore.frame_changed.connect(_on_frame_changed)
 
 
 func _on_play_changed(value: bool) -> void:

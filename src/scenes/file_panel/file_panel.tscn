@@ -55,6 +55,7 @@ popup/item_2/id = 2
 [node name="FileTree" type="Tree" parent="Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 0
 allow_rmb_select = true
 hide_root = true
 select_mode = 2

@@ -16,14 +16,17 @@ enum STATUS {
 }
 
 
+
+
+var files: Dictionary[int, File] = {}
 var data: Dictionary [int, FileData] = {}
 
 
 
 #--- File Manager functions ---
 func _ready() -> void:
-	Utils.connect_func(get_window().files_dropped, _on_files_dropped)
-	Utils.connect_func(error_file_too_big, _on_file_too_big)
+	get_window().files_dropped.connect(_on_files_dropped)
+	error_file_too_big.connect(_on_file_too_big)
 
 
 func _on_files_dropped(file_paths: PackedStringArray) -> void:
@@ -31,7 +34,7 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 	if data == null:
 		return
 
-	var files: Array[FileDrop] = []
+	var dropped_files: Array[FileDrop] = []
 
 	# Find files inside of subfolders.
 	file_paths = Utils.find_subfolder_files(file_paths)
@@ -44,26 +47,26 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 
 	# Add files for processing.
 	for path: String in file_paths:
-		files.append(FileDrop.new(path))
+		dropped_files.append(FileDrop.new(path))
 
 	if file_paths.size() == 0:
 		return
 
 	var dropped_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
-	var progress_increment: float = (1 / float(files.size())) * 50
+	var progress_increment: float = (1 / float(dropped_files.size())) * 50
 
 	get_tree().root.add_child(dropped_overlay)
-	dropped_overlay.set_state_file_loading(files.size())
+	dropped_overlay.set_state_file_loading(dropped_files.size())
 	dropped_overlay.update_title("title_files_dropped")
 	dropped_overlay.update_progress(0, "")
 	await RenderingServer.frame_post_draw
 
 	# Updating the overlay to show all files in the list for files to load.
-	for file: FileDrop in files:
+	for file: FileDrop in dropped_files:
 		dropped_overlay.update_file(file)
 
-	while files.size() != 0:
-		for file: FileDrop in files:
+	while dropped_files.size() != 0:
+		for file: FileDrop in dropped_files:
 			if file.id == -1:
 				add_file(file)
 				dropped_overlay.update_file(file)
@@ -73,7 +76,7 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 			if file.status == STATUS.ALREADY_LOADED:
 				dropped_overlay.update_file(file)
 				dropped_overlay.increment_progress_bar(progress_increment)
-				files.erase(file)
+				dropped_files.erase(file)
 				await RenderingServer.frame_post_draw
 				continue
 
@@ -92,7 +95,7 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 				dropped_overlay.increment_progress_bar(progress_increment)
 				await RenderingServer.frame_post_draw
 
-				files.erase(file)
+				dropped_files.erase(file)
 
 	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
@@ -116,6 +119,7 @@ func load_file_data(file_id: int) -> bool:
 
 func reload_file_data(id: int) -> void:
 	data[id].queue_free()
+
 	await RenderingServer.frame_pre_draw
 	if !load_file_data(id):
 		delete_file(id)
@@ -124,7 +128,7 @@ func reload_file_data(id: int) -> void:
 
 func add_file(file_drop: FileDrop) -> void:
 	# Check if file already exists inside of the project.
-	for existing: File in get_files().values():
+	for existing: File in files.values():
 		if existing.path == file_drop.path:
 			print("File already loaded with path '%s'!" % file_drop.path)
 			file_drop.status = STATUS.ALREADY_LOADED
@@ -159,14 +163,14 @@ func add_file_object(file: File) -> void:
 
 
 func delete_file(id: int) -> void:
-	for clip: ClipData in Project.get_clip_datas():
+	for clip: ClipData in ClipHandler.get_clip_datas():
 		if clip.file_id == id:
-			Project.delete_clip(clip)
+			ClipHandler.delete_clip(clip)
 
 	if data.has(id):
 		data.erase(id)
-	elif get_files().has(id):
-		get_files().erase(id)
+	elif files.has(id):
+		files.erase(id)
 
 	await RenderingServer.frame_pre_draw
 	file_deleted.emit(id)
@@ -176,7 +180,7 @@ func delete_file(id: int) -> void:
 ## Check to see if a file needs reloading or not.
 func check_modified_files() -> void:
 	# TODO: Run function on re-focussing on the editor.
-	for file: File in get_files().values():
+	for file: File in files.values():
 		if _check_if_file_modified(file):
 			var new_modified_time: int = FileAccess.get_modified_time(file.path)
 
@@ -231,16 +235,16 @@ func save_audio_to_wav(path: String, file: File) -> void:
 
 #-- File setters & getters --- 
 func has_file(id: int) -> bool:
-	return get_files().has(id)
+	return files.has(id)
 
 
 func set_file(id: int, file: File) -> void:
-	get_files()[id] = file
+	files[id] = file
 	Project.unsaved_changes = true
 
 
 func set_file_nickname(id: int, nickname: String) -> void:
-	get_files()[id].nickname = nickname
+	files[id].nickname = nickname
 	Project.unsaved_changes = true
 
 	file_nickname_changed.emit(id)
@@ -251,29 +255,25 @@ func update_file_duration(id: int) -> int:
 	return get_file_duration(id)
 
 
-func get_files() -> Dictionary[int, File]:
-	return Project.get_files()
-
-
 func get_file_paths() -> PackedStringArray:
 	var paths: PackedStringArray = []
 
-	for file: File in get_files().values():
+	for file: File in files.values():
 		paths.append(file.path)
 
 	return paths
 
 
 func get_file_ids() -> PackedInt64Array:
-	return get_files().keys()
+	return files.keys()
 
 
 func get_file_objects() -> Array[File]:
-	return get_files().values()
+	return files.values()
 
 
 func get_file(id: int) -> File:
-	return get_files()[id]
+	return files[id]
 
 
 func get_file_path(id: int) -> String:
@@ -313,7 +313,7 @@ func _on_file_too_big(id: int) -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	get_files().erase(id)
+	files.erase(id)
 	data.erase(id)
 
 
@@ -322,7 +322,7 @@ func _on_file_too_big(id: int) -> void:
 class FileDrop:
 	var id: int = -1
 	var path: String = ""
-	var status: FileManager.STATUS = FileManager.STATUS.LOADING
+	var status: STATUS = STATUS.LOADING
 
 
 	func _init(_path: String) -> void:

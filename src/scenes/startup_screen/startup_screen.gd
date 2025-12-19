@@ -67,18 +67,14 @@ func _set_recent_projects() -> void:
 			project_button.tooltip_text = path
 			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-			Utils.connect_func(project_button.pressed, open_project.bind(path))
+			project_button.pressed.connect(open_project.bind(path))
 
 			delete_button.texture_normal = preload(Library.ICON_DELETE)
 			delete_button.ignore_texture_size = true
 			delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			delete_button.custom_minimum_size = Vector2i(18,0)
 			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-			Utils.connect_func(
-					delete_button.pressed,
-					_on_delete_recent_project.bind(hbox, path))
+			delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path))
 
 			hbox.add_child(delete_button)
 			hbox.add_child(project_button)
@@ -164,7 +160,7 @@ func _on_open_project_button_pressed() -> void:
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
-	Utils.connect_func(dialog.file_selected, open_project)
+	dialog.file_selected.connect(open_project)
 
 	add_child(dialog)
 	dialog.popup_centered()
@@ -212,7 +208,7 @@ func _on_project_path_button_pressed() -> void:
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
 
-	Utils.connect_func(dialog.file_selected, _set_project_path)
+	dialog.file_selected.connect(_set_project_path)
 	dialog.ok_button_text = "Select"
 
 	add_child(dialog)
@@ -229,15 +225,12 @@ func _set_project_path(path: String) -> void:
 func _check_new_version() -> void:
 	http_request = HTTPRequest.new()
 	add_child(http_request)
-	Utils.connect_func(
-		http_request.request_completed,
-		_check_new_version_request_completed)
+	http_request.request_completed.connect(_check_new_version_request_completed)
 
 	if !http_request.request("latest_release_check"):
 		printerr("Couldn't send an http request for the version check!")
 
-	Utils.connect_func(new_version_available_button.pressed, func() -> void:
-			Utils.open_url("latest_release"))
+	new_version_available_button.pressed.connect(func() -> void: Utils.open_url("latest_release"))
 
 
 func _check_new_version_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
