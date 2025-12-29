@@ -15,12 +15,16 @@ var clips: Dictionary[int, ClipData] = {}
 
 
 
+func has_clip(id: int) -> bool:
+	return clips.has(id)
+
+
 func get_clip(id: int) -> ClipData:
 	return clips[id]
 
 
 func get_type(id: int) -> File.TYPE:
-	return FileHandler.get_files()[clips[id].file_id].type
+	return FileHandler.get_file(clips[id].file_id).type
 
 
 func get_clip_datas() -> Array[ClipData]:
@@ -31,16 +35,28 @@ func get_clip_ids() -> PackedInt64Array:
 	return clips.keys()
 
 
+func get_start_frame(id: int, clip: ClipData = clips[id]) -> int:
+	return clip.start_frame
+
+
 func get_end_frame(id: int, clip: ClipData = clips[id]) -> int:
 	return clip.start_frame + clip.duration - 1
 
 
-func get_clip_type(clip: ClipData) -> File.TYPE:
-	return FileHandler.get_file_type(clip.file_id)
+func get_clip_track_id(id: int, clip: ClipData = clips[id]) -> int:
+	return clip.track_id
+
+
+func get_clip_file_id(id: int, clip: ClipData = clips[id]) -> int:
+	return clip.file_id
+
+
+func get_clip_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
+	return FileHandler.get_file_data(clip.file_id)
 
 
 func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
-	var type: File.TYPE = Project.get_clip_type(clip.id)
+	var type: File.TYPE = ClipHandler.get_type(clip.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
 		return null
@@ -145,6 +161,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		if file_data.type in EditorCore.VISUAL_TYPES:
 			clip_data.effects_video = EffectsVideo.new()
 			clip_data.effects_video.clip_id = clip_data.id
+			clip_data.effects_video.set_default_transform()
 		if file_data.type in EditorCore.AUDIO_TYPES:
 			clip_data.effects_audio = EffectsAudio.new()
 			clip_data.effects_audio.clip_id = clip_data.id

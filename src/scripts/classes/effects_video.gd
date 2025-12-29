@@ -154,14 +154,14 @@ func set_default_transform() -> void:
 
 # TODO: Add animation smoothness and correct values.
 func apply_transform(view_texture: TextureRect, material: ShaderMaterial) -> void:
-	var start_frame: int = Project.get_clip(clip_id).start_frame
+	var start_frame: int = ClipHandler.get_start_frame(clip_id)
 	var current_frame: int = EditorCore.frame_nr - start_frame
 
 	var alpha_adjust: float = 0
 	if fade_in != 0 and current_frame <= fade_in:
 		alpha_adjust = Utils.calculate_fade(current_frame, fade_in)
-	if fade_out != 0 and current_frame >= Project.get_clip(clip_id).duration - fade_out:
-		current_frame = Project.get_clip(clip_id).duration - current_frame
+	if fade_out != 0 and current_frame >= ClipHandler.get_clip(clip_id).duration - fade_out:
+		current_frame = ClipHandler.get_clip(clip_id).duration - current_frame
 		alpha_adjust = Utils.calculate_fade(current_frame, fade_out)
 
 	view_texture.position = position[0]

@@ -94,14 +94,14 @@ func _on_clip_erased(clip_id: int) -> void:
 func on_clip_pressed(id: int) -> void:
 	current_clip_id = id
 
-	if Project.is_loaded() == null or id not in Project.get_clip_ids():
+	if Project.is_loaded() == null or id not in ClipHandler.get_clip_ids():
 		tab_container.current_tab = 2 # Empty
 		button_video_effects.visible = false
 		button_audio_effects.visible = false
 		return
 
-	var data: ClipData = Project.get_clip(id)
-	var type: File.TYPE = Project.get_clip_type(id)
+	var data: ClipData = ClipHandler.get_clip(id)
+	var type: File.TYPE = ClipHandler.get_clip_type(id)
 	
 	match type:
 		File.TYPE.IMAGE:
@@ -142,7 +142,7 @@ func _on_audio_effects_button_pressed() -> void:
 
 
 func _set_video_effect_values() -> void:
-	var video_effects_data: EffectsVideo = Project.get_clip(current_clip_id).effects_video
+	var video_effects_data: EffectsVideo = ClipHandler.get_clip(current_clip_id).effects_video
 
 	if video_effects_data.clip_id == -1:
 		video_effects_data.clip_id = current_clip_id
@@ -193,7 +193,7 @@ func _set_video_effect_values() -> void:
 
 
 func _set_audio_effect_values() -> void:
-	var audio_effects_data: EffectsAudio = Project.get_clip(current_clip_id).effects_audio
+	var audio_effects_data: EffectsAudio = ClipHandler.get_clip(current_clip_id).effects_audio
 
 	if audio_effects_data.clip_id == -1:
 		audio_effects_data.clip_id = current_clip_id
@@ -207,7 +207,7 @@ func _set_audio_effect_values() -> void:
 	fade_in_audio_spinbox.value = audio_effects_data.fade_in
 	fade_out_audio_spinbox.value = audio_effects_data.fade_out
 
-	var duration: int = Project.get_clip(current_clip_id).duration
+	var duration: int = ClipHandler.get_clip(current_clip_id).duration
 	fade_in_audio_spinbox.max_value = duration
 	fade_out_audio_spinbox.max_value = duration
 
@@ -221,20 +221,20 @@ func _change_made(check_func: Callable) -> void:
 
 # Audio effects
 func _on_gain_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_audio.gain[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_audio.gain[0] = value
 	_change_made(check_reset_basics_audio_button)
 
 
 func _on_mono_option_button_item_selected(value: int) -> void:
 	match value:
-		0: Project.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.DISABLE
-		1: Project.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.LEFT_CHANNEL
-		2: Project.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.RIGHT_CHANNEL
+		0: ClipHandler.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.DISABLE
+		1: ClipHandler.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.LEFT_CHANNEL
+		2: ClipHandler.get_clip(current_clip_id).effects_audio.mono = EffectsAudio.MONO.RIGHT_CHANNEL
 	_change_made(check_reset_basics_audio_button)
 
 
 func _on_mute_check_button_toggled(toggled_on: bool) -> void:
-	Project.get_clip(current_clip_id).effects_audio.mute = toggled_on
+	ClipHandler.get_clip(current_clip_id).effects_audio.mute = toggled_on
 	gain_label.visible = !toggled_on
 	gain_spinbox.visible = !toggled_on
 	mono_label.visible = !toggled_on
@@ -244,7 +244,7 @@ func _on_mute_check_button_toggled(toggled_on: bool) -> void:
 
 # Video effects.
 func _on_position_x_spin_box_value_changed(value: float) -> void:
-	var effects_video: EffectsVideo = Project.get_clip(current_clip_id).effects_video
+	var effects_video: EffectsVideo = ClipHandler.get_clip(current_clip_id).effects_video
 	var frame: int = 0
 
 	InputManager.undo_redo.create_action("Change clip position")
@@ -261,7 +261,7 @@ func _on_position_x_spin_box_value_changed(value: float) -> void:
 
 
 func _on_position_y_spin_box_value_changed(value: float) -> void:
-	var effects_video: EffectsVideo = Project.get_clip(current_clip_id).effects_video
+	var effects_video: EffectsVideo = ClipHandler.get_clip(current_clip_id).effects_video
 	var frame: int = 0
 
 	InputManager.undo_redo.create_action("Change clip position")
@@ -274,42 +274,42 @@ func _on_position_y_spin_box_value_changed(value: float) -> void:
 
 	InputManager.undo_redo.commit_action()
 
-	Project.get_clip(current_clip_id).effects_video.position[0].y = floor(value)
+	ClipHandler.get_clip(current_clip_id).effects_video.position[0].y = floor(value)
 	_change_made(check_reset_transform_button)
 
 
 func _on_size_x_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.size[0].x = floor(value)
+	ClipHandler.get_clip(current_clip_id).effects_video.size[0].x = floor(value)
 	_change_made(check_reset_transform_button)
 
 
 func _on_size_y_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.size[0].y = floor(value)
+	ClipHandler.get_clip(current_clip_id).effects_video.size[0].y = floor(value)
 	_change_made(check_reset_transform_button)
 
 
 func _on_scale_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.scale[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.scale[0] = value
 	_change_made(check_reset_transform_button)
 
 
 func _on_rotation_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.rotation[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.rotation[0] = value
 	_change_made(check_reset_transform_button)
 
 
 func _on_alpha_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.alpha[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.alpha[0] = value
 	_change_made(check_reset_transform_button)
 
 
 func _on_pivot_x_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.pivot[0].x = floor(value)
+	ClipHandler.get_clip(current_clip_id).effects_video.pivot[0].x = floor(value)
 	_change_made(check_reset_transform_button)
 
 
 func _on_pivot_y_spin_box_value_changed(value:float) -> void:
-	Project.get_clip(current_clip_id).effects_video.pivot[0].y = floor(value)
+	ClipHandler.get_clip(current_clip_id).effects_video.pivot[0].y = floor(value)
 	_change_made(check_reset_transform_button)
 
 
@@ -317,10 +317,10 @@ func _on_pivot_y_spin_box_value_changed(value:float) -> void:
 #	var clip_button: ClipButton = Timeline.instance.clips.get_node(str(current_clip_id))
 #
 #	if video:
-#		Project.get_clip(current_clip_id).effects_video.fade_in = floor(value)
+#		ClipHandler.get_clip(current_clip_id).effects_video.fade_in = floor(value)
 #		check_reset_fade_video_button()
 #	else: # audio
-#		Project.get_clip(current_clip_id).effects_audio.fade_in = floor(value)
+#		ClipHandler.get_clip(current_clip_id).effects_audio.fade_in = floor(value)
 #		check_reset_fade_audio_button()
 #
 #	clip_button.on_fade_changed()
@@ -331,10 +331,10 @@ func _on_pivot_y_spin_box_value_changed(value:float) -> void:
 #	var clip_button: ClipButton = Timeline.instance.clips.get_node(str(current_clip_id))
 #
 #	if video:
-#		Project.get_clip(current_clip_id).effects_video.fade_out = floor(value)
+#		ClipHandler.get_clip(current_clip_id).effects_video.fade_out = floor(value)
 #		_change_made(check_reset_fade_video_button)
 #	else: # audio
-#		Project.get_clip(current_clip_id).effects_audio.fade_out = floor(value)
+#		ClipHandler.get_clip(current_clip_id).effects_audio.fade_out = floor(value)
 #		_change_made(check_reset_fade_audio_button)
 #
 #	clip_button.on_fade_changed()
@@ -342,136 +342,136 @@ func _on_pivot_y_spin_box_value_changed(value:float) -> void:
 
 
 func _on_enable_color_correction_button_toggled(toggled_on: bool) -> void:
-	Project.get_clip(current_clip_id).effects_video.enable_color_correction = toggled_on
+	ClipHandler.get_clip(current_clip_id).effects_video.enable_color_correction = toggled_on
 	color_correction_effects_grid.visible = toggled_on
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_brightness_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.brightness[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.brightness[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_contrast_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.contrast[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.contrast[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_saturation_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.saturation[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.saturation[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_red_value_spin_box_value_changed(value: float) -> void: 
-	Project.get_clip(current_clip_id).effects_video.red_value[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.red_value[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_green_value_spin_box_value_changed(value: float) -> void: 
-	Project.get_clip(current_clip_id).effects_video.green_value[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.green_value[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_blue_value_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.blue_value[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.blue_value[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_tint_color_picker_button_color_changed(color: Color) -> void:
-	Project.get_clip(current_clip_id).effects_video.tint_color[0] = color
+	ClipHandler.get_clip(current_clip_id).effects_video.tint_color[0] = color
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_tint_color_effect_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.tint_effect_factor[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.tint_effect_factor[0] = value
 	_change_made(check_reset_color_correction_button)
 
 
 func _on_enable_chroma_key_button_toggled(toggled_on: bool) -> void:
-	Project.get_clip(current_clip_id).effects_video.enable_chroma_key = toggled_on
+	ClipHandler.get_clip(current_clip_id).effects_video.enable_chroma_key = toggled_on
 	chroma_effects_grid.visible = toggled_on
 	_change_made(check_reset_chroma_key_button)
 
 
 func _on_chroma_key_color_picker_button_color_changed(color: Color) -> void:
-	Project.get_clip(current_clip_id).effects_video.chroma_key_color[0] = color
+	ClipHandler.get_clip(current_clip_id).effects_video.chroma_key_color[0] = color
 	_change_made(check_reset_chroma_key_button)
 
 
 func _on_chroma_key_tolerance_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.chroma_key_tolerance[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.chroma_key_tolerance[0] = value
 	_change_made(check_reset_chroma_key_button)
 
 
 func _on_chroma_key_softness_spin_box_value_changed(value: float) -> void:
-	Project.get_clip(current_clip_id).effects_video.chroma_key_softness[0] = value
+	ClipHandler.get_clip(current_clip_id).effects_video.chroma_key_softness[0] = value
 	_change_made(check_reset_chroma_key_button)
 
 
 # Reset buttons.
 func _on_reset_transform_effects_button_pressed() -> void:
-	_change_made(Project.get_clip(current_clip_id).effects_video.reset_transform)
+	_change_made(ClipHandler.get_clip(current_clip_id).effects_video.reset_transform)
 	reset_transform_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 func _on_reset_fade_video_effects_button_pressed() -> void:
-	_change_made(Project.get_clip(current_clip_id).effects_video.reset_fade)
+	_change_made(ClipHandler.get_clip(current_clip_id).effects_video.reset_fade)
 	reset_fade_video_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 func _on_reset_fade_audio_effects_button_pressed() -> void:
-	_change_made(Project.get_clip(current_clip_id).effects_audio.reset_fade)
+	_change_made(ClipHandler.get_clip(current_clip_id).effects_audio.reset_fade)
 	reset_fade_audio_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 func _on_reset_color_correction_effects_button_pressed() -> void:
-	_change_made(Project.get_clip(current_clip_id).effects_video.reset_color_correction)
+	_change_made(ClipHandler.get_clip(current_clip_id).effects_video.reset_color_correction)
 	reset_color_correction_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 func _on_reset_chroma_key_effects_button_pressed() -> void:
-	_change_made(Project.get_clip(current_clip_id).effects_video.reset_chroma_key)
+	_change_made(ClipHandler.get_clip(current_clip_id).effects_video.reset_chroma_key)
 	reset_chroma_key_effects.visible = false
 	on_clip_pressed(current_clip_id)
 
 
 # Reset button visibility.
 func check_reset_transform_button() -> void:
-	reset_transform_effects.visible = !Project.get_clip(
+	reset_transform_effects.visible = !ClipHandler.get_clip(
 			current_clip_id).effects_video.transforms_equal_to_defaults()
 
 
 func check_reset_fade_video_button() -> void:
-	reset_transform_effects.visible = !Project.get_clip(
+	reset_transform_effects.visible = !ClipHandler.get_clip(
 			current_clip_id).effects_video.fade_equal_to_defaults()
 
 
 func check_reset_fade_audio_button() -> void:
-	reset_transform_effects.visible = !Project.get_clip(
+	reset_transform_effects.visible = !ClipHandler.get_clip(
 			current_clip_id).effects_audio.fade_equal_to_defaults()
 
 
 func check_reset_color_correction_button() -> void:
-	if !Project.get_clip(current_clip_id).effects_video.enable_color_correction:
+	if !ClipHandler.get_clip(current_clip_id).effects_video.enable_color_correction:
 		reset_color_correction_effects.visible = false
 		return
-	reset_color_correction_effects.visible = !Project.get_clip(
+	reset_color_correction_effects.visible = !ClipHandler.get_clip(
 			current_clip_id).effects_video.color_correction_equal_to_defaults()
 
 
 func check_reset_chroma_key_button() -> void:
-	if !Project.get_clip(current_clip_id).effects_video.enable_chroma_key:
+	if !ClipHandler.get_clip(current_clip_id).effects_video.enable_chroma_key:
 		reset_chroma_key_effects.visible = false
 		return
-	reset_chroma_key_effects.visible = !Project.get_clip(
+	reset_chroma_key_effects.visible = !ClipHandler.get_clip(
 			current_clip_id).effects_video.chroma_key_equal_to_defaults()
 
 
 func check_reset_basics_audio_button() -> void:
-	reset_audio_basics_key_effects.visible = !Project.get_clip(
+	reset_audio_basics_key_effects.visible = !ClipHandler.get_clip(
 			current_clip_id).effects_audio.basics_equal_to_defaults()
 

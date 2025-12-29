@@ -20,7 +20,7 @@ var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = _set_is_playing
-var loaded_clips: Array[ClipData] = []
+var loaded_clips: Array[int] = []
 var loaded_shaders: Array[SHADER_ID] = []
 
 var default_effects_video: EffectsVideo = EffectsVideo.new()
@@ -78,11 +78,10 @@ func _on_closing_editor() -> void:
 
 	for player: AudioPlayer in audio_players:
 		player.queue_free()
-	audio_players.clear()
 	
-	loaded_clips.clear()
 	default_effects_video.queue_free()
-	
+
+	audio_players.clear()
 	y_textures.clear()
 	u_textures.clear()
 	v_textures.clear()
@@ -107,17 +106,15 @@ func set_frame_nr(value: int) -> void:
 	frame_nr = value
 	if frame_nr == prev_frame + 1:
 		for i: int in audio_players.size():
-			var track: TrackData = Project.get_track_data(i)
-
-			if track.has_frame_nr(frame_nr):
-				audio_players[i].set_audio(track.get_clip_id(frame_nr))
+			if TrackHandler.has_frame_nr(i, frame_nr):
+				audio_players[i].set_audio(TrackHandler.get_clip_id(i, frame_nr))
 			elif audio_players[i].stop_frame == frame_nr:
 				audio_players[i].stop()
 		return
 	
 	# Reset/update all audio players
 	for i: int in audio_players.size():
-		if loaded_clips[i] != null:
+		if loaded_clips[i] != -1:
 			audio_players[i].set_audio(find_audio(frame_nr, i))
 	
 	prev_frame = frame_nr
@@ -150,7 +147,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 		var id: int = _get_next_clip(frame_nr, i)
 
 		if id == -1:
-			loaded_clips[i] = null
+			loaded_clips[i] = -1
 
 			if view_textures[i].texture != null:
 				view_textures[i].texture = null
@@ -158,7 +155,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 				loaded_shaders[i] = SHADER_ID.EMPTY
 			continue
 		else:
-			loaded_clips[i] = Project.get_clip(id)
+			loaded_clips[i] = id
 
 		update_view(i)
 	
@@ -187,14 +184,12 @@ func _get_next_clip(new_frame_nr: int, track_id: int) -> int:
 	return -1
 
 
-func _check_clip_end(new_frame_nr: int, id: int) -> bool:
-	var clip: ClipData = Project.get_clip(id)
-
-	if !clip:
+func _check_clip_end(new_frame_nr: int, clip_id: int) -> bool:
+	if !ClipHandler.has_clip(clip_id):
 		print("clip false")
 		return false
 	else:
-		return new_frame_nr <= clip.get_end_frame()
+		return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
 
 
 # Audio stuff  ----------------------------------------------------------------
@@ -206,16 +201,16 @@ func setup_audio_players() -> void:
 		add_child(audio_players[i].player)
 
 
-func find_audio(frame: int, track: int) -> int:
-	var pos: PackedInt64Array = Project.get_track_keys(track)
+func find_audio(frame: int, track_id: int) -> int:
+	var pos: PackedInt64Array = TrackHandler.get_frame_nrs(track_id)
 	var last: int = Utils.get_previous(frame, pos)
 
 	if last == -1:
 		return -1
 
-	last = Project.get_track_data(track).get_clip_id(last)
+	last = TrackHandler.get_clip_at(track_id, last).id
 
-	if frame < Project.get_clip(last).get_end_frame():
+	if frame < ClipHandler.get_end_frame(last):
 		return last
 
 	return -1
@@ -247,14 +242,14 @@ func setup_playback() -> void:
 
 
 func update_view(track_id: int) -> void:
-	if loaded_clips[track_id] == null:
+	if loaded_clips[track_id] == -1:
 		return
 
-	var file_data: FileData = FileHandler.get_file_data(loaded_clips[track_id].file_id)
+	var file_data: FileData = ClipHandler.get_clip_file_data(loaded_clips[track_id])
 	var material: ShaderMaterial = view_textures[track_id].get_material()
 	var updated: bool = false
 
-	view_textures[track_id].texture = loaded_clips[track_id].get_frame(frame_nr)
+	view_textures[track_id].texture = ClipHandler.get_frame(loaded_clips[track_id], frame_nr)
 
 	# Check if correct shader is applied or not, if not, set correct shader.
 	if file_data.video != null:
@@ -285,8 +280,8 @@ func update_view(track_id: int) -> void:
 		if !updated:
 			var video: GoZenVideo
 
-			if file_data.clip_only_video.has(loaded_clips[track_id].id):
-				video = file_data.clip_only_video[loaded_clips[track_id].id]
+			if file_data.clip_only_video.has(loaded_clips[track_id]):
+				video = file_data.clip_only_video[loaded_clips[track_id]]
 			else:
 				video = file_data.video
 
@@ -309,7 +304,7 @@ func update_view(track_id: int) -> void:
 		loaded_shaders[track_id] = SHADER_ID.EMPTY
 		return
 	
-	var effects_video: EffectsVideo = loaded_clips[track_id].effects_video
+	var effects_video: EffectsVideo = ClipHandler.get_clip(loaded_clips[track_id]).effects_video
 	material.set_shader_parameter("alpha", effects_video.alpha)
  
 	if effects_video.enable_color_correction:
@@ -337,25 +332,23 @@ func _init_video_textures(track_id: int, video_data: GoZenVideo, material: Shade
 
 
 ## Update display/audio and continue if within clip bounds.
-func _check_clip(id: int, new_frame_nr: int) -> bool:
-	if loaded_clips[id] == null:
-		if audio_players[id].clip_id != -1:
-			audio_players[id].stop()
+func _check_clip(track_id: int, new_frame_nr: int) -> bool:
+	if loaded_clips[track_id] == -1:
+		if audio_players[track_id].clip_id != -1:
+			audio_players[track_id].stop()
 		return false
 
 	# Check if clip really still exists or not.
-	if !Project.get_clips().has(loaded_clips[id].id):
-		loaded_clips[id] = null
+	if !ClipHandler.has_clip(loaded_clips[track_id]):
+		loaded_clips[track_id] = -1
 		return false
 
 	# Track check
-	if loaded_clips[id].track_id != id:
+	if ClipHandler.get_clip_track_id(loaded_clips[track_id]) != track_id:
 		return false
-
-	if loaded_clips[id].start_frame > new_frame_nr:
+	elif ClipHandler.get_start_frame(loaded_clips[track_id]) > new_frame_nr:
 		return false
-
-	if frame_nr > loaded_clips[id].get_end_frame():
+	elif frame_nr > ClipHandler.get_end_frame(loaded_clips[track_id]):
 		return false
 
 	return true

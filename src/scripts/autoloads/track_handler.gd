@@ -94,6 +94,10 @@ func remove_clip_from_frame(track_id: int, frame_nr: int) -> void:
 		Project.unsaved_changes = true
 
 
+func get_track_data(track_id: int) -> TrackData:
+	return tracks[track_id]
+
+
 func get_tracks_size() -> int:
 	return tracks.size()
 

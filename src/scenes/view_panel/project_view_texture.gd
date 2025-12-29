@@ -1,6 +1,8 @@
 extends TextureRect
 
+
 enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
+
 
 
 func _ready() -> void:

@@ -46,7 +46,7 @@ func set_audio(audio_clip_id: int) -> void:
 	if RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return
 
-	var data: ClipData = Project.get_clip(audio_clip_id)
+	var data: ClipData = ClipHandler.get_clip(audio_clip_id)
 	var old_file_id: int = file_id
 
 	if FileHandler.get_file_data(data.file_id).audio == null:

@@ -135,7 +135,7 @@ func _draw() -> void:
 		var pos: Vector2 = Vector2(clip.start_frame * zoom, TRACK_TOTAL_SIZE * clip.track_id)
 		var new_clip: Rect2 = Rect2(pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
 
-		draw_style_box(STYLE_BOXES[ClipHandler.get_clip_type(clip)][box_type], new_clip)
+		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip.id)][box_type], new_clip)
 		draw_string(
 				get_theme_default_font(),
 				pos + TEXT_OFFSET,
