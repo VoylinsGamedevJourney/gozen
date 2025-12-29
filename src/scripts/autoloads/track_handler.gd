@@ -142,15 +142,15 @@ func get_last_clip(track_id: int) -> ClipData:
 
 
 func get_clip_at(track_id: int, frame_nr: int) -> ClipData:
+	# TODO: Check if this would be faster if going backwards
 	for frame_point: int in get_frame_nrs(track_id):
 		if frame_nr < frame_point:
 			continue
 
 		var clip: ClipData = ClipHandler.get_clip(tracks[track_id].clips[frame_point])
 
-		if clip.end_frame >= frame_nr: # Check if this is the correct clip.
+		if clip.end_frame > frame_nr: # Check if this is the correct clip.
 			return clip
-		break
 			
 	return null
 
@@ -173,19 +173,17 @@ func get_clips_in(track_id: int, start: int, end: int) -> Array[ClipData]:
 
 
 ## Returns start frame of empty area as x and end frame of free area as y
-func get_free_region(track_id: int, frame_nr: int, ignores: PackedInt32Array = []) -> Vector2i:
+func get_free_region(track_id: int, frame_nr: int, ignores: PackedInt64Array = []) -> Vector2i:
 	var data: Vector2i = Vector2i.ZERO
 	data.y = Vector2i.MAX.y
 
 	for clip_data: ClipData in get_all_clips(track_id):
 		if clip_data.id in ignores:
 			continue
-		elif clip_data.end_frame < frame_nr:
-			data.x = clip_data.end_frame # Beginning free region
-		elif clip_data.start_frame > frame_nr:
-			data.y = clip_data.start_frame # End of free region
-			return data
-		else:
+		elif clip_data.end_frame <= frame_nr: # Finding beginning free region
+			data.x = max(data.x, clip_data.end_frame)
+		elif clip_data.start_frame >= frame_nr: # End of free region
+			data.y = clip_data.start_frame
 			break
 
 	return data

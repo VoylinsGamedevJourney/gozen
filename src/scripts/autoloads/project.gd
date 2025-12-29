@@ -2,7 +2,6 @@ extends Node
 
 
 signal project_ready
-signal project_ready_files # Specifically for the FileHandler
 
 signal timeline_end_update(new_end: int)
 
@@ -280,11 +279,11 @@ func set_timeline_end(value: int) -> void:
 func update_timeline_end() -> void:
 	var end: int = 0
 
-	for track: TrackData in data.tracks:
-		if track.get_size() == 0:
+	for track_id: int in data.tracks.size():
+		if TrackHandler.get_clips_size(track_id) == 0:
 			continue
 
-		end = max(end, ClipHandler.get_end_frame(track.get_last_clip_id()))
+		end = max(end, ClipHandler.get_end_frame(TrackHandler.get_last_clip(track_id).id))
 	
 	set_timeline_end(end)
 	timeline_end_update.emit(end)

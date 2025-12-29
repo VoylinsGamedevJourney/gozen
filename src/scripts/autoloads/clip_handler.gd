@@ -3,6 +3,7 @@ extends Node
 
 signal clip_added(clip_id: int)
 signal clip_deleted(clip_id: int)
+signal clips_updated
 
 # This is the amount that we allow to use next_frame before using seek_frame
 # for the video data since seek_frame is usually slower
@@ -129,7 +130,7 @@ func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray
 
 
 func add_clips(data: Array[CreateClipRequest]) -> void:
-	InputManager.undo_redo.create_action("Adding new clip(s)")
+	InputManager.undo_redo.create_action("Add new clip(s)")
 
 	for clip_request: CreateClipRequest in data:
 		var clip_data: ClipData = ClipData.new()
@@ -148,41 +149,50 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 			clip_data.effects_audio = EffectsAudio.new()
 			clip_data.effects_audio.clip_id = clip_data.id
 
-		InputManager.undo_redo.add_do_method(add_clip.bind(clip_data))
-		InputManager.undo_redo.add_undo_method(delete_clip.bind(clip_data))
+		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
+		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
 
 	InputManager.undo_redo.commit_action()
 	
 
 func delete_clips(data: PackedInt64Array) -> void:
-	InputManager.undo_redo.create_action("Removing clip(s)")
+	# First check if clips still exist.
+	var correct_data: PackedInt64Array = []
 
 	for clip_id: int in data:
+		if clips.has(clip_id):
+			correct_data.append(clip_id)
+
+	InputManager.undo_redo.create_action("Remove clip(s)")
+
+	for clip_id: int in correct_data:
 		var clip: ClipData = get_clip(clip_id)
 
-		InputManager.undo_redo.add_do_method(delete_clip.bind(clip))
-		InputManager.undo_redo.add_undo_method(add_clip.bind(clip))
+		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip))
+		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
 
 	InputManager.undo_redo.commit_action()
 
 
 func move_clips(data: Array[MoveClipRequest]) -> void:
-	InputManager.undo_redo.create_action("Moving clip(s)")
+	InputManager.undo_redo.create_action("Move clip(s)")
 
 	for clip_request: MoveClipRequest in data:
-		print("TODO")
+		var clip: ClipData = clips[clip_request.clip_id]
+
+		var new_track: int = clip.track_id + clip_request.track_offset
+		var new_frame: int = clip.start_frame + clip_request.frame_offset
+
+		InputManager.undo_redo.add_do_method(_apply_clip_move.bind(clip.id, new_track, new_frame))
+		InputManager.undo_redo.add_undo_method(_apply_clip_move.bind(clip.id, clip.track_id, clip.start_frame))
+
+	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_do_method(clips_updated.emit)
+	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_undo_method(clips_updated.emit)
 
 	InputManager.undo_redo.commit_action()
-#	InputManager.undo_redo.create_action("Moving clips on timeline")
-#
-#	InputManager.undo_redo.add_do_method(_move_clips.bind(
-#			draggable,
-#			draggable.differences.y,
-#			draggable.differences.x + _offset))
-#	InputManager.undo_redo.add_undo_method(_move_clips.bind(
-#			draggable,
-#			-draggable.differences.y,
-#			-(draggable.differences.x + _offset)))
+
 
 func set_clip(id: int, clip: ClipData) -> void:
 	clip.id = id
@@ -190,7 +200,7 @@ func set_clip(id: int, clip: ClipData) -> void:
 	Project.unsaved_changes = true
 
 
-func add_clip(clip_data: ClipData) -> void:
+func _add_clip(clip_data: ClipData) -> void:
 	# Used for undoing the deletion of a file.
 	clips[clip_data.id] = clip_data
 	TrackHandler.set_frame_to_clip(clip_data.track_id, clip_data)
@@ -198,7 +208,7 @@ func add_clip(clip_data: ClipData) -> void:
 	Project.unsaved_changes = true
 
 
-func delete_clip(clip_data: ClipData) -> void:
+func _delete_clip(clip_data: ClipData) -> void:
 	var clip_id: int = clip_data.id
 	var track_id: int = clip_data.track_id
 	var frame_nr: int = clip_data.start_frame
@@ -207,3 +217,15 @@ func delete_clip(clip_data: ClipData) -> void:
 	clips.erase(clip_id)
 	clip_deleted.emit(clip_id)
 	Project.unsaved_changes = true
+
+
+func _apply_clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
+	var clip: ClipData = clips[clip_id]
+
+	TrackHandler.remove_clip_from_frame(clip.track_id, clip.start_frame)
+	clip.track_id = new_track
+	clip.start_frame = new_frame
+	TrackHandler.set_frame_to_clip(new_track, clip)
+
+	Project.unsaved_changes = true
+

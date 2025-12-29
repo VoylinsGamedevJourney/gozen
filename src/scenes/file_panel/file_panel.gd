@@ -165,7 +165,6 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
 	var draggable: Draggable = Draggable.new()
 	var selected: TreeItem = tree.get_next_selected(folder_items["/"])
-	var rect_spacing: int = 0
 
 	if selected == null:
 		return
@@ -186,9 +185,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		if file_duration <= 0:
 			file_duration = FileHandler.update_file_duration(file_id)
 
-		draggable.rects.append(Rect2(Vector2(rect_spacing, 0), Vector2(file_duration, 0)))
 		draggable.duration += file_duration
-		rect_spacing += file_duration
 
 		selected = tree.get_next_selected(selected)
 		if selected == null:

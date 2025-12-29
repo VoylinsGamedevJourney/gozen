@@ -52,8 +52,8 @@ static func in_rangef(value: float, min_value: float, max_value: float, include_
 	return value >= min_value and value < max_value
 
 
-static func format_time_str_from_frame(frame_count: int, framerate: float) -> String:
-	return format_time_str(float(frame_count) / framerate)
+static func format_time_str_from_frame(frame_count: int, framerate: float, short: bool) -> String:
+	return format_time_str(float(frame_count) / framerate, short)
 	
 
 static func format_time_str(total_seconds: float, short: bool = false) -> String:

@@ -1,12 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://b0r37lfkj7wl6"]
+[gd_scene load_steps=10 format=3 uid="uid://b0r37lfkj7wl6"]
 
 [ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scenes/editor/editor.gd" id="1_nbwom"]
 [ext_resource type="PackedScene" uid="uid://6snp6sstgbb5" path="res://scenes/menu_bar/menu_bar.tscn" id="2_7gtdv"]
-[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline_bar/timeline_bar.tscn" id="5_jwsr6"]
+[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline/timeline.tscn" id="5_jwsr6"]
 [ext_resource type="PackedScene" uid="uid://c31pnruuo1wyg" path="res://scenes/subtitle_screen/subtitle_screen.tscn" id="5_qbwwq"]
 [ext_resource type="Script" uid="uid://bith34611mej7" path="res://scenes/subtitle_screen/subtitle_screen.gd" id="6_5q5vg"]
+[ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="7_qbwwq"]
 [ext_resource type="PackedScene" uid="uid://l1tap0q8rgjc" path="res://scenes/edit_screen/edit_screen.tscn" id="8_rolao"]
 [ext_resource type="PackedScene" uid="uid://71mkki6432yy" path="res://scenes/render_screen/render_screen.tscn" id="9_p4u40"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5q5vg"]
 
 [node name="Editor" type="PanelContainer" node_paths=PackedStringArray("menu_bar", "screen_tab_container")]
 anchors_preset = 15
@@ -34,6 +37,7 @@ size_flags_vertical = 3
 [node name="ScreenTabContainer" type="TabContainer" parent="VBox/VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5q5vg")
 current_tab = 0
 tabs_visible = false
 
@@ -49,7 +53,14 @@ visible = false
 layout_mode = 2
 script = ExtResource("6_5q5vg")
 
-[node name="TimelineBar" parent="VBox/VSplitContainer" instance=ExtResource("5_jwsr6")]
+[node name="Bottom" type="HBoxContainer" parent="VBox/VSplitContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="Timeline" parent="VBox/VSplitContainer/Bottom" instance=ExtResource("5_jwsr6")]
+layout_mode = 2
+
+[node name="AudioMeter" parent="VBox/VSplitContainer/Bottom" instance=ExtResource("7_qbwwq")]
 layout_mode = 2
 
 [node name="ProjectViewSubViewport" type="SubViewport" parent="."]

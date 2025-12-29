@@ -16,7 +16,7 @@ var viewport: SubViewport
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
 
-var frame_nr: int = 0: set = _set_frame_nr
+var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = _set_is_playing
@@ -95,7 +95,7 @@ func on_play_pressed() -> void:
 		Project.set_playhead_position(frame_nr)
 
 
-func _set_frame_nr(value: int) -> void:
+func set_frame_nr(value: int) -> void:
 	if value >= Project.get_timeline_end():
 		is_playing = false
 		frame_nr = Project.get_timeline_end()
