@@ -28,7 +28,7 @@ layout_mode = 2
 scroll_horizontal_custom_step = 30.0
 horizontal_scroll_mode = 3
 
-[node name="TimeStamps" type="PanelContainer" parent="TimestampScroll"]
+[node name="TimeStamps" type="PanelContainer" parent="TimestampScroll" node_paths=PackedStringArray("timeline_scroll")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -36,6 +36,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_likvl")
 script = ExtResource("2_jxg8b")
+timeline_scroll = NodePath("../../TimelineScroll")
 
 [node name="TimelineScroll" type="ScrollContainer" parent="." node_paths=PackedStringArray("timestamp_scroll")]
 custom_minimum_size = Vector2(0, 185)
@@ -55,5 +56,5 @@ script = ExtResource("2_2or7f")
 [connection signal="gui_input" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_gui_input"]
 [connection signal="mouse_exited" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_mouse_exited"]
 [connection signal="zoom_changed" from="TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="TimelineScroll/Timeline" to="TimelineScroll" method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="TimelineScroll/Timeline" to="TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
+[connection signal="zoom_changed" from="TimelineScroll/Timeline" to="TimelineScroll" method="_on_timeline_zoom_changed"]

@@ -7,6 +7,7 @@ const STEPS: PackedInt32Array = [1, 5, 10, 30, 60, 150, 300, 600, 1800, 3600]
 
 
 @onready var scroll: ScrollContainer = get_parent()
+@export var timeline_scroll: ScrollContainer = get_parent()
 
 
 var current_zoom: float = 1.0
@@ -14,6 +15,7 @@ var current_zoom: float = 1.0
 
 func _ready() -> void:
 	scroll.get_h_scroll_bar().value_changed.connect(_force_refresh)
+	timeline_scroll.get_h_scroll_bar().value_changed.connect(_force_refresh)
 
 
 func _force_refresh(_v: float) -> void:
@@ -27,10 +29,12 @@ func _draw() -> void:
 	var major_step: int = _get_major_frame_step()
 	var minor_step: int = int(major_step / 5.0)
 
-	for frame: int in range(first_frame - first_frame % major_step, last_frame, minor_step):
-		var x: float = frame * current_zoom - scroll.scroll_horizontal
+	var start_frame: int = first_frame - (first_frame % minor_step)
 
-		if x < 0 or x > size.x:
+	for frame: int in range(start_frame, last_frame, minor_step):
+		var x: float = frame * current_zoom
+
+		if x < scroll.scroll_horizontal - 100 or x > scroll.scroll_horizontal + size.x + 100:
 			continue
 
 		var is_major: int = frame % major_step == 0
