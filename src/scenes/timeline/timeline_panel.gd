@@ -40,6 +40,7 @@ const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 
 
 var zoom: float = 1.0
+var scrubbing: bool = false
 var selected_clip_ids: PackedInt64Array = []
 
 var draggable: Draggable = null
@@ -75,6 +76,8 @@ func _gui_input(event: InputEvent) -> void:
 		if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
 			scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
 			queue_redraw()
+		if event.button_mask & MOUSE_BUTTON_LEFT:
+			move_playhead(get_frame_from_mouse())
 
 
 func _input(event: InputEvent) -> void:
@@ -93,6 +96,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
+	if event.is_released():
+		scrubbing = false
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		# Check if clip is pressed or not.
 		var clip: ClipData = _get_clip_on_mouse()
@@ -103,7 +108,7 @@ func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
 			else:
 				selected_clip_ids = [clip.id]
 		else:
-			selected_clip_ids = []
+			scrubbing = true
 			move_playhead(get_frame_from_mouse())
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_popup_menu()
@@ -200,6 +205,9 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
+	if scrubbing:
+		return null
+
 	# TODO:
 	# Moving clip logic
 	# Decide if I'm in an empty space on the timeline to create a selection box.
@@ -342,7 +350,7 @@ func get_track_from_mouse() -> int:
 
 
 func move_playhead(frame_nr: int) -> void:
-	EditorCore.set_frame_nr(frame_nr)
+	EditorCore.set_frame(frame_nr)
 	queue_redraw()
 
 
