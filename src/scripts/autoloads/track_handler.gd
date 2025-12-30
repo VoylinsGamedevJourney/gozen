@@ -194,6 +194,11 @@ func get_free_region(track_id: int, frame_nr: int, ignores: PackedInt64Array = [
 	var data: Vector2i = Vector2i.ZERO
 	data.y = Vector2i.MAX.y
 
+	var collision_clip: ClipData = get_clip_at(track_id, frame_nr)
+
+	if collision_clip != null and collision_clip.id not in ignores:
+		return Vector2i(-1, -1) # Early check if collision is happening
+
 	for clip_data: ClipData in get_all_clips(track_id):
 		if clip_data.id in ignores:
 			continue

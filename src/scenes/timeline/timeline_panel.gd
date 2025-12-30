@@ -23,7 +23,7 @@ const ZOOM_STEP: float = 1.1
 
 const PLAYHEAD_WIDTH: int = 2
 
-const SNAPPING: int = 30
+const SNAPPING: int = 200
 
 const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
 const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
@@ -299,30 +299,49 @@ func _can_drop_new_clips() -> bool:
 
 func _can_move_clips() -> bool:
 	var anchor_clip: ClipData = ClipHandler.get_clip(draggable.ids[0])
-	var mouse_frame: int = get_frame_from_mouse()
 	var mouse_track: int = get_track_from_mouse()
+	var mouse_frame: int = get_frame_from_mouse()
 	var target_start: int = mouse_frame - draggable.mouse_offset
 	var track_difference: int = mouse_track - anchor_clip.track_id
 	var frame_difference: int = target_start - anchor_clip.start_frame
 
-	# Validate every clip in the selection
+	var min_allowed_diff: int = -1000000000 # Effectively -Infinity
+	var max_allowed_diff: int = 1000000000  # Effectively +Infinity
+
 	for id: int in draggable.ids:
 		var clip: ClipData = ClipHandler.get_clip(id)
-		var new_start: int = clip.start_frame + frame_difference
 		var new_track: int = clip.track_id + track_difference
-		var new_end: int = new_start + clip.duration
-		var middle_frame: int = new_start + floori(clip.duration / 2.0)
+		var middle_frame: int = clip.start_frame + floori(clip.duration / 2.0)
 		
-		if new_start < 0 or new_track < 0 or new_track >= TrackHandler.get_tracks_size():
+		if new_track < 0 or new_track >= TrackHandler.get_tracks_size():
+			return false # First boundary check
+
+		var free_region: Vector2i = TrackHandler.get_free_region(new_track, middle_frame + frame_difference, draggable.ids)
+
+		if free_region == Vector2i(-1, -1):
 			return false
 
-		var free_region: Vector2i = TrackHandler.get_free_region(new_track, middle_frame, draggable.ids)
-		
-		# If the new start is outside the free region boundaries, collision detected
-		if new_start < free_region.x or new_end > free_region.y:
-			return false
-			
-	# Store the valid deltas for use in _drop_data and _draw
+		# Calculating clip constrains
+		min_allowed_diff = max(min_allowed_diff, free_region.x - clip.start_frame)
+		max_allowed_diff = min(max_allowed_diff, free_region.y - clip.start_frame - clip.duration)
+
+	if min_allowed_diff > max_allowed_diff:
+		return false # No space for all clips
+
+	if frame_difference < min_allowed_diff:
+		# Overlapping to the left. Check if within snap distance.
+		if min_allowed_diff - frame_difference <= SNAPPING:
+			frame_difference = min_allowed_diff # Snap to valid start
+		else:
+			return false # Too far overlap
+	elif frame_difference > max_allowed_diff:
+		# Overlapping to the right. Check if within snap distance.
+		if frame_difference - max_allowed_diff <= SNAPPING:
+			frame_difference = max_allowed_diff # Snap to valid end
+		else:
+			return false # Too far overlap
+
+	# If we got here, frame_difference is either originally valid or successfully snapped.
 	draggable.track_offset = track_difference
 	draggable.frame_offset = frame_difference
 	return true
