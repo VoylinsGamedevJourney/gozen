@@ -1,5 +1,5 @@
 class_name EffectsVideo
-extends RefCounted
+extends Resource
 
 # Default variables can be gotten from anywhere through
 # EditorCore.default_effects_video

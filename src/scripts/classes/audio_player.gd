@@ -86,7 +86,9 @@ func set_audio(audio_clip_id: int) -> void:
 
 
 func update_effects(effects: EffectsAudio) -> void:
-	if !effects.apply_basics(bus_index):
+	if !effects:
+		return
+	elif !effects.apply_basics(bus_index):
 		return # Early exit if muted.
 	
 	effects.apply_fade(bus_index)

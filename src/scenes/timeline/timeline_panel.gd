@@ -3,6 +3,7 @@ extends PanelContainer
 enum POPUP_ACTION { 
 	# Clip options
 	DELETE_CLIP,
+	CUT_CLIP,
 	# Track options
 	REMOVE_EMPTY_SPACE,
 	ADD_TRACK,
@@ -79,6 +80,10 @@ func _gui_input(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("delete_clips"):
 		ClipHandler.delete_clips(selected_clip_ids)
+	elif event.is_action_pressed("cut_clips_at_playhead", false, true):
+		cut_clips_at(EditorCore.frame_nr)
+	elif event.is_action_pressed("cut_clips_at_mouse", false, true):
+		cut_clips_at(get_frame_from_mouse())
 	elif event.is_action_pressed("remove_empty_space"):
 		var track_id: int = get_track_from_mouse()
 		var frame_nr: int = get_frame_from_mouse()
@@ -113,6 +118,7 @@ func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
 
 			# TODO: Set icons and shortcuts
 			popup.add_item("popup_item_clip_delete", POPUP_ACTION.DELETE_CLIP)
+			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CUT_CLIP)
 			popup.add_separator()
 		else:
 			popup.add_item("popup_item_track_remove_empty_space", POPUP_ACTION.REMOVE_EMPTY_SPACE)
@@ -298,6 +304,7 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	match id:
 		# Clip options
 		POPUP_ACTION.DELETE_CLIP: ClipHandler.delete_clips(selected_clip_ids)
+		POPUP_ACTION.CUT_CLIP: cut_clips_at(_right_click_pos.y)
 		# Track options
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: remove_empty_space_at(_right_click_pos.x, _right_click_pos.y)
 		POPUP_ACTION.ADD_TRACK: TrackHandler.add_track(_right_click_pos.x)
@@ -350,3 +357,32 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 
 	ClipHandler.move_clips(move_requests)
 
+
+func cut_clips_at(frame_pos: int) -> void:
+	# WARN: Make certain that cutting is possible (space available)
+
+	# Check if any of the clips in the tracks is in selected clips
+	# if there are selected clips present, we only cut the selected ones
+	var requests: Array[CutClipRequest] = []
+
+	# Checking if we only want selected clips to be cut.
+	for clip_id: int in selected_clip_ids:
+		var clip: ClipData = ClipHandler.get_clip(clip_id)
+
+		if clip.start_frame < frame_pos and clip.end_frame > frame_pos:
+			requests.append(CutClipRequest.new(clip.id, frame_pos - clip.start_frame))
+
+	if requests.size() != 0:
+		ClipHandler.cut_clips(requests)
+		queue_redraw()
+		return
+
+	# No selected clips present so cutting all possible clips
+	for track_id: int in TrackHandler.get_tracks_size():
+		var clip: ClipData = TrackHandler.get_clip_at(track_id, frame_pos)
+
+		if clip != null and clip.start_frame < frame_pos and clip.end_frame > frame_pos:
+			requests.append(CutClipRequest.new(clip.id, frame_pos - clip.start_frame))
+
+	ClipHandler.cut_clips(requests)
+	queue_redraw()

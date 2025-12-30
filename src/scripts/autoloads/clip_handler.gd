@@ -191,6 +191,38 @@ func delete_clips(data: PackedInt64Array) -> void:
 	InputManager.undo_redo.commit_action()
 
 
+func cut_clips(data: Array[CutClipRequest]) -> void:
+	InputManager.undo_redo.create_action("Cut clip(s)")
+
+	for clip_request: CutClipRequest in data:
+		var clip_data: ClipData = clips[clip_request.clip_id]
+		var new_duration: int = clip_data.duration - clip_request.cut_frame_pos
+
+		# Editing the main clip
+		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip_data, -new_duration, true))
+		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip_data, new_duration, true))
+
+		# Adding the new clip (clone of old clip + duration changes)
+		var new_clip_data: ClipData = ClipData.new()
+
+		new_clip_data.id = Utils.get_unique_id(ClipHandler.get_clip_ids())
+		new_clip_data.file_id = clip_data.file_id
+		new_clip_data.track_id = clip_data.track_id
+		new_clip_data.begin = clip_data.begin + clip_request.cut_frame_pos
+		new_clip_data.start_frame = clip_data.start_frame + clip_request.cut_frame_pos
+		new_clip_data.duration = new_duration
+
+		# TODO: Copy effects stuff, can't do that yet due to the new
+		# effects system which I'm working on.
+		InputManager.undo_redo.add_do_method(_add_clip.bind(new_clip_data))
+		InputManager.undo_redo.add_undo_method(_delete_clip.bind(new_clip_data))
+
+	InputManager.undo_redo.add_do_method(clips_updated.emit)
+	InputManager.undo_redo.add_undo_method(clips_updated.emit)
+
+	InputManager.undo_redo.commit_action()
+
+
 func move_clips(data: Array[MoveClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Move clip(s)")
 
@@ -246,3 +278,10 @@ func _apply_clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
 
 	Project.unsaved_changes = true
 
+
+func _resize_clip(clip_data: ClipData, resize_amount: int, end: bool) -> void:
+	clip_data.duration += resize_amount
+
+	if !end:
+		clip_data.start_frame += resize_amount
+		clip_data.begin += resize_amount
