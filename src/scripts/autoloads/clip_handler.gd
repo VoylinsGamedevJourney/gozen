@@ -232,16 +232,32 @@ func move_clips(data: Array[MoveClipRequest]) -> void:
 		var new_track: int = clip.track_id + clip_request.track_offset
 		var new_frame: int = clip.start_frame + clip_request.frame_offset
 
-		InputManager.undo_redo.add_do_method(_apply_clip_move.bind(clip.id, new_track, new_frame))
-		InputManager.undo_redo.add_undo_method(_apply_clip_move.bind(clip.id, clip.track_id, clip.start_frame))
+		InputManager.undo_redo.add_do_method(_clip_move.bind(clip.id, new_track, new_frame))
+		InputManager.undo_redo.add_undo_method(_clip_move.bind(clip.id, clip.track_id, clip.start_frame))
 
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_do_method(clips_updated.emit)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_do_method(clips_updated.emit)
 	InputManager.undo_redo.add_undo_method(clips_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
+
+func resize_clips(data: Array[ResizeClipRequest]) -> void:
+	InputManager.undo_redo.create_action("Resize clip(s)")
+
+	for request: ResizeClipRequest in data:
+		var clip: ClipData = clips[request.clip_id]
+
+		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip, request.resize_amount, request.from_end))
+		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip, -request.resize_amount, request.from_end))
+
+	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_do_method(clips_updated.emit)
+	InputManager.undo_redo.add_undo_method(clips_updated.emit)
+
+	InputManager.undo_redo.commit_action()
 
 func set_clip(id: int, clip: ClipData) -> void:
 	clip.id = id
@@ -268,7 +284,7 @@ func _delete_clip(clip_data: ClipData) -> void:
 	Project.unsaved_changes = true
 
 
-func _apply_clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
+func _clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
 	var clip: ClipData = clips[clip_id]
 
 	TrackHandler.remove_clip_from_frame(clip.track_id, clip.start_frame)
