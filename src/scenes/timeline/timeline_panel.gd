@@ -76,7 +76,7 @@ func _gui_input(event: InputEvent) -> void:
 		if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
 			scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
 			queue_redraw()
-		if event.button_mask & MOUSE_BUTTON_LEFT:
+		if scrubbing and event.button_mask & MOUSE_BUTTON_LEFT:
 			move_playhead(get_frame_from_mouse())
 
 
@@ -157,22 +157,29 @@ func _draw() -> void:
 			Color(0.4, 0.4, 0.4), PLAYHEAD_WIDTH)
 
 	# - Clip preview(s) - moving or dragging new clip
-	if can_drop_data and draggable.files:
-		var preview_position: Vector2 = Vector2(
-				(draggable.frame_offset) * zoom,
-				draggable.track_offset * TRACK_TOTAL_SIZE)
-		var preview_size: Vector2 = Vector2(draggable.duration * zoom, TRACK_HEIGHT)
-
-		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-	elif can_drop_data:
-		for clip_id: int in draggable.ids:
-			var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	if can_drop_data:
+		if draggable.files:
 			var preview_position: Vector2 = Vector2(
-					(clip_data.start_frame - draggable.offset.x) * zoom,
-					(clip_data.track_id - draggable.offset.y) * TRACK_TOTAL_SIZE)
-			var preview_size: Vector2 = Vector2(clip_data.duration * zoom, TRACK_HEIGHT)
+					(draggable.frame_offset) * zoom,
+					draggable.track_offset * TRACK_TOTAL_SIZE)
+			var preview_size: Vector2 = Vector2(draggable.duration * zoom, TRACK_HEIGHT)
 
 			draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+		else:
+			for clip_id: int in draggable.ids:
+				var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+				var new_start: int = clip_data.start_frame + draggable.frame_offset
+				var new_track: int = clip_data.track_id + draggable.track_offset
+				
+				var preview_position: Vector2 = Vector2(
+						new_start * zoom,
+						new_track * TRACK_TOTAL_SIZE)
+				var preview_size: Vector2 = Vector2(clip_data.duration * zoom, TRACK_HEIGHT)
+
+				draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+
+				if clip_id in visible_clip_ids:
+					visible_clip_ids.remove_at(visible_clip_ids.find(clip_id))
 
 	# - Clip blocks
 	for clip_id: int in visible_clip_ids:
@@ -208,12 +215,27 @@ func _get_drag_data(_p: Vector2) -> Variant:
 	if scrubbing:
 		return null
 
-	# TODO:
-	# Moving clip logic
-	# Decide if I'm in an empty space on the timeline to create a selection box.
-	# Also check if I'm not dragging a fade handle.
-	# If not, check if selected clip is part of selected group and move the selected clip(s)
-	return Draggable.new()
+	var clicked_clip: ClipData = _get_clip_on_mouse()
+	
+	if clicked_clip == null:
+		return null
+		
+	if clicked_clip.id not in selected_clip_ids:
+		selected_clip_ids = [clicked_clip.id]
+		queue_redraw()
+
+	var data: Draggable = Draggable.new()
+	var clip_ids: PackedInt64Array = selected_clip_ids.duplicate()
+	var anchor_index: int = clip_ids.find(clicked_clip.id)
+
+	if anchor_index != -1:
+		clip_ids.remove_at(anchor_index)
+		clip_ids.insert(0, clicked_clip.id)
+
+	data.ids = clip_ids
+	data.mouse_offset = get_frame_from_mouse() - clicked_clip.start_frame
+	
+	return data
 
 
 func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
@@ -276,7 +298,34 @@ func _can_drop_new_clips() -> bool:
 
 
 func _can_move_clips() -> bool:
-	return false
+	var anchor_clip: ClipData = ClipHandler.get_clip(draggable.ids[0])
+	var mouse_frame: int = get_frame_from_mouse()
+	var mouse_track: int = get_track_from_mouse()
+	var target_start: int = mouse_frame - draggable.mouse_offset
+	var track_difference: int = mouse_track - anchor_clip.track_id
+	var frame_difference: int = target_start - anchor_clip.start_frame
+
+	# Validate every clip in the selection
+	for id: int in draggable.ids:
+		var clip: ClipData = ClipHandler.get_clip(id)
+		var new_start: int = clip.start_frame + frame_difference
+		var new_track: int = clip.track_id + track_difference
+		var new_end: int = new_start + clip.duration
+		var middle_frame: int = new_start + floori(clip.duration / 2.0)
+		
+		if new_start < 0 or new_track < 0 or new_track >= TrackHandler.get_tracks_size():
+			return false
+
+		var free_region: Vector2i = TrackHandler.get_free_region(new_track, middle_frame, draggable.ids)
+		
+		# If the new start is outside the free region boundaries, collision detected
+		if new_start < free_region.x or new_end > free_region.y:
+			return false
+			
+	# Store the valid deltas for use in _drop_data and _draw
+	draggable.track_offset = track_difference
+	draggable.frame_offset = frame_difference
+	return true
 
 
 func _drop_data(_p: Vector2, data: Variant) -> void:
@@ -295,7 +344,15 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 
 		ClipHandler.add_clips(clips)
 	else: # Moving clips
-		pass
+		var move_requests: Array[MoveClipRequest] = []
+		
+		for id: int in draggable.ids:
+			var request: MoveClipRequest = MoveClipRequest.new(
+					id, draggable.frame_offset, draggable.track_offset)
+			move_requests.append(request)
+			
+		if not move_requests.is_empty():
+			ClipHandler.move_clips(move_requests)
 
 	can_drop_data = false
 	draggable = null
