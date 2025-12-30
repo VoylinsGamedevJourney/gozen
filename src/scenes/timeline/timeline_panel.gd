@@ -1,5 +1,12 @@
 extends PanelContainer
 
+enum POPUP_ACTION { 
+	# Clip options
+	DELETE_CLIP,
+	# Track options
+	REMOVE_EMPTY_SPACE,
+	ADD_TRACK,
+	REMOVE_TRACK }
 
 signal zoom_changed(new_zoom: float)
 
@@ -37,6 +44,8 @@ var selected_clip_ids: PackedInt64Array = []
 var draggable: Draggable = null
 var can_drop_data: bool = false
 
+var _right_click_pos: Vector2i = Vector2i.ZERO
+
 
 
 func _ready() -> void:
@@ -70,6 +79,12 @@ func _gui_input(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("delete_clips"):
 		ClipHandler.delete_clips(selected_clip_ids)
+	elif event.is_action_pressed("remove_empty_space"):
+		var track_id: int = get_track_from_mouse()
+		var frame_nr: int = get_frame_from_mouse()
+
+		if !TrackHandler.get_clip_at(track_id, frame_nr):
+			remove_empty_space_at(track_id, frame_nr)
 
 
 func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
@@ -84,9 +99,29 @@ func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
 				selected_clip_ids = [clip.id]
 		else:
 			selected_clip_ids = []
+			move_playhead(get_frame_from_mouse())
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
-		# TODO: Right click menu
-		pass
+		var popup: PopupMenu = PopupManager.create_popup_menu()
+		var clip: ClipData = _get_clip_on_mouse()
+
+		_right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
+
+		if clip != null:
+			if clip.id not in selected_clip_ids:
+				selected_clip_ids = [clip.id]
+				queue_redraw()
+
+			# TODO: Set icons and shortcuts
+			popup.add_item("popup_item_clip_delete", POPUP_ACTION.DELETE_CLIP)
+			popup.add_separator()
+		else:
+			popup.add_item("popup_item_track_remove_empty_space", POPUP_ACTION.REMOVE_EMPTY_SPACE)
+
+		popup.add_item("popup_item_track_add", POPUP_ACTION.ADD_TRACK)
+		popup.add_item("popup_item_track_remove", POPUP_ACTION.REMOVE_TRACK)
+
+		popup.id_pressed.connect(_on_popup_menu_id_pressed)
+		PopupManager.show_popup_menu(popup)
 
 
 func _draw() -> void:
@@ -259,6 +294,18 @@ func _on_mouse_exited() -> void:
 	queue_redraw()
 
 
+func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
+	match id:
+		# Clip options
+		POPUP_ACTION.DELETE_CLIP: ClipHandler.delete_clips(selected_clip_ids)
+		# Track options
+		POPUP_ACTION.REMOVE_EMPTY_SPACE: remove_empty_space_at(_right_click_pos.x, _right_click_pos.y)
+		POPUP_ACTION.ADD_TRACK: TrackHandler.add_track(_right_click_pos.x)
+		POPUP_ACTION.REMOVE_TRACK: TrackHandler.remove_track(_right_click_pos.x)
+
+	queue_redraw()
+
+
 func zoom_at_mouse(factor: float) -> void:
 	var old_zoom: float = zoom
 	var old_mouse_pos_x: float = get_local_mouse_position().x
@@ -290,4 +337,16 @@ func get_track_from_mouse() -> int:
 func move_playhead(frame_nr: int) -> void:
 	EditorCore.set_frame_nr(frame_nr)
 	queue_redraw()
+
+
+func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
+	var clips: PackedInt64Array = TrackHandler.get_clip_ids_after(track_id, frame_nr)
+	var region: Vector2i = TrackHandler.get_free_region(track_id, frame_nr)
+	var empty_size: int = region.y - region.x
+	var move_requests: Array[MoveClipRequest] = []
+
+	for clip_id: int in clips:
+		move_requests.append(MoveClipRequest.new(clip_id, -empty_size, 0))
+
+	ClipHandler.move_clips(move_requests)
 

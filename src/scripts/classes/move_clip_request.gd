@@ -8,8 +8,8 @@ var track_offset: int = 0
 
 
 
-func _init(id: int, f_offset: int, t_offset: int) -> void:
+func _init(id: int, _frame_offset: int, _track_offset: int) -> void:
 	clip_id = id
-	frame_offset = f_offset
-	track_offset = t_offset
+	frame_offset = _frame_offset
+	track_offset = _track_offset
 

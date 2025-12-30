@@ -24,17 +24,18 @@ func _reset_track_ids() -> void:
 
 		for clip: ClipData in get_all_clips(id):
 			clip.track_id = id
-			print(clip.id)
-			print(clip.track_id)
 
 	updated.emit()
 	
 
 func _add_track(id: int) -> void:
+	var new_track_data: TrackData = TrackData.new()
+	new_track_data.id = id
+
 	if tracks.size() == id:
-		tracks.append([])
+		tracks.append(new_track_data)
 	else:
-		tracks.insert(id, [])
+		tracks.insert(id, new_track_data)
 
 
 func _remove_track(id: int) -> void:
@@ -48,14 +49,10 @@ func _fix_removed_track(id: int, data: TrackData) -> void:
 func add_track(id: int = tracks.size()) -> void:
 	InputManager.undo_redo.create_action("Adding track: %s" % id)
 
-	if id == tracks.size():
-		InputManager.undo_redo.add_do_method(_add_track.bind(tracks.size()))
-		InputManager.undo_redo.add_undo_method(_remove_track.bind(tracks.size()))
-	else:
-		InputManager.undo_redo.add_do_method(_add_track.bind(id, []))
-		InputManager.undo_redo.add_undo_method(_remove_track.bind(id))
-
+	InputManager.undo_redo.add_do_method(_add_track.bind(id))
 	InputManager.undo_redo.add_do_method(_reset_track_ids)
+
+	InputManager.undo_redo.add_undo_method(_remove_track.bind(id))
 	InputManager.undo_redo.add_undo_method(_reset_track_ids)
 
 	InputManager.undo_redo.commit_action()
@@ -104,6 +101,22 @@ func get_tracks_size() -> int:
 
 func get_clip_id(track_id: int, frame_nr: int) -> int:
 	return tracks[track_id].clips[frame_nr]
+
+
+func get_clip_ids_after(track_id: int, frame_nr: int) -> PackedInt64Array:
+	var arr: PackedInt64Array = []
+	var keys: PackedInt32Array = tracks[track_id].clips.keys()
+
+	keys.sort(); keys.reverse()
+
+	for key: int in keys:
+		if key < frame_nr:
+			break
+
+		arr.append(tracks[track_id].clips[key])
+
+	arr.sort()
+	return arr
 
 
 func get_clip_at_frame(track_id: int, frame_nr: int) -> ClipData:

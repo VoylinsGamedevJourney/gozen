@@ -11,6 +11,8 @@ const STEPS: PackedInt32Array = [1, 5, 10, 30, 60, 150, 300, 600, 1800, 3600]
 
 
 var current_zoom: float = 1.0
+var scrubbing: bool = false
+
 
 
 func _ready() -> void:
@@ -20,6 +22,23 @@ func _ready() -> void:
 
 func _force_refresh(_v: float) -> void:
 	queue_redraw()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				scrubbing = true
+				_seek_to_mouse()
+			else:
+				scrubbing = false
+	elif event is InputEventMouseMotion and scrubbing:
+		_seek_to_mouse()
+
+
+func _seek_to_mouse() -> void:
+	var frame: int = maxi(0, floori(get_local_mouse_position().x / current_zoom))
+	EditorCore.set_frame(frame)
 
 
 func _draw() -> void:
@@ -71,3 +90,5 @@ func _get_major_frame_step() -> int:
 			return step
 
 	return STEPS[-1]
+
+
