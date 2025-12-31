@@ -2,6 +2,8 @@ class_name SettingsPanel
 extends Control
 
 
+enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
+
 @export var panel_label: Label
 @export var side_bar_vbox: VBoxContainer
 @export var settings_vbox: VBoxContainer
@@ -22,8 +24,12 @@ func _on_close_button_pressed() -> void:
 	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
 
 
-func set_mode_settings(mode_name: String, menu_options: Dictionary[String, Array]) -> void:
-	panel_label.text = mode_name
+func set_mode(mode: MODE) -> void:
+	var menu_options: Dictionary[String, Array] = {}
+
+	match mode:
+		MODE.EDITOR_SETTINGS: menu_options = get_settings_menu_options()
+		MODE.PROJECT_SETTINGS: menu_options = get_project_settings_menu_options()
 
 	for section_name: String in menu_options:
 		var section_grid: Node = _create_section(section_name)
@@ -65,7 +71,9 @@ func _create_section(section_name: String) -> GridContainer:
 
 
 func get_settings_menu_options() -> Dictionary[String, Array]:
-	return {	
+	panel_label.text = "title_editor_settings"
+
+	return {
 		"title_appearance" = [
 			create_label("setting_language"),
 			create_option_button(
@@ -200,6 +208,8 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 
 func get_project_settings_menu_options() -> Dictionary[String, Array]:
+	panel_label.text = "title_project_settings"
+
 	return {
 		"title_appearance" = [
 			create_label("setting_background_color"),
