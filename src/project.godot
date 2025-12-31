@@ -25,6 +25,7 @@ boot_splash/minimum_display_time=500
 
 [autoload]
 
+CommandManager="*res://scripts/autoloads/command_manager.gd"
 Settings="*res://scripts/autoloads/settings.gd"
 FileHandler="*res://scripts/autoloads/file_handler.gd"
 TrackHandler="*res://scripts/autoloads/track_handler.gd"

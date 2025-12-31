@@ -31,6 +31,9 @@ func _ready() -> void:
 	apply_display_scale()
 	apply_theme()
 
+	CommandManager.register(
+			"command_editor_settings", open_settings_menu, "open_settings")
+
 
 func save() -> void:
 	if DataManager.save_data(PATH, _data):
