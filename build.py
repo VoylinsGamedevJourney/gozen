@@ -233,18 +233,15 @@ def main() -> ExitCode:
     target_platform = (
         "windows"
         if utils.CURR_PLATFORM == "windows"
-        else _print_options(
-            "Choose target platform",
-            ["linux", "windows"],
-        )
+        else _print_options("Choose target platform", ["linux", "windows", "macos"])
     )
-    if target_platform not in ["linux", "windows"]:
+    if target_platform not in ["linux", "windows", "macos"]:
         print(f"Unsupported platform ({target_platform})")
         return ExitCode.UNSUPPORTED_PLATFORM
 
     # arm64 isn't supported yet by mingw for Windows, so x86_64 only.
     arch = "x86_64"
-    if target_platform == "linux":
+    if target_platform in ["linux", "macos"]:
         arch = _print_options("Choose architecture", ["x86_64", "arm64"])
 
     target = _print_options("Select target", [TARGET_DEV, TARGET_RELEASE])

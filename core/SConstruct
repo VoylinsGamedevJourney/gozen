@@ -144,6 +144,14 @@ elif "windows" in platform:
         else:
             env.Append(LIBS=LIBS_COMMON + libs)
 
+elif "macos" in platform:
+    env.Append(LINKFLAGS=["-Wl,-rpath,@loader_path"], LIBS=LIBS_COMMON)
+
+    if arch == "arm64":
+        env.Append(CCFLAGS=["-arch", "arm64"], LINKFLAGS=["-arch", "arm64"])
+    else:
+        env.Append(CCFLAGS=["-arch", "x86_64"], LINKFLAGS=["-arch", "x86_64"])
+
 
 src = Glob("gde_gozen/*.cpp")
 sharedlib = env.SharedLibrary(libpath, src)

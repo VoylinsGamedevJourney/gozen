@@ -256,7 +256,7 @@ def get_host_and_sysroot(target_platform: str, arch: str) -> tuple[str, Path]:
         # Windows x86_64
         return "", MSYS2_DIR / "ucrt64"
 
-    assert CURR_PLATFORM == "linux", (
+    assert CURR_PLATFORM in ["linux", "darwin"], (
         f"Platform and arch combination ({target_platform}, {arch}) not supported on ({CURR_PLATFORM})"
     )
 
@@ -282,10 +282,16 @@ def get_host_and_sysroot(target_platform: str, arch: str) -> tuple[str, Path]:
         return "x86_64-w64-mingw32", sysroot
 
     # Cross compile for arm linux
-    if arch == "arm64" and CURR_ARCH != "arm64":
+    if target_platform == "linux" and arch == "arm64" and CURR_ARCH != "arm64":
         return "aarch64-linux-gnu", Path(
             _GOZEN_CROSS_SYSROOT
         ) if _GOZEN_CROSS_SYSROOT else Path("/") / "usr" / "aarch64-linux-gnu"
+
+    # Compile for macos (native)
+    if target_platform == "macos":
+        if CURR_PLATFORM == "darwin":
+            return "", Path("/")
+        raise NotImplementedError("Cross-compiling for macOS is not supported.")
 
     # Compile for current platform and arch
     return "", Path("/")

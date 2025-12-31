@@ -201,10 +201,9 @@ def build_x265(
             "-DENABLE_SHARED=OFF",
             "-DENABLE_PIC=ON",
             f"{convert_to_msys2_path(source_dir)}",
-        ]
-        + (
+        ] + (
             [
-                f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Linux'}",
+                f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Darwin' if platform == 'macos' else 'Linux'}",
                 f"-DCMAKE_SYSTEM_PROCESSOR={arch if arch == 'x86_64' else 'aarch64'}",
                 f"-DCMAKE_C_COMPILER={host}-gcc",
                 f"-DCMAKE_CXX_COMPILER={host}-g++",
@@ -257,11 +256,9 @@ def build_aom(
             "-DENABLE_TESTS=OFF",
             "-DCONFIG_PIC=1",
             f"{convert_to_msys2_path(AOM_SOURCE_DIR)}",
-        ]
-        + (
+        ] + (
             [
-                "-DCMAKE_TOOLCHAIN_FILE="
-                + convert_to_msys2_path(
+                "-DCMAKE_TOOLCHAIN_FILE=" + convert_to_msys2_path(
                     AOM_SOURCE_DIR / "build" / "cmake" / "toolchains" / toolchain_file
                 )
             ]
@@ -303,10 +300,9 @@ def build_svt_av1(
             "-DBUILD_APPS=OFF",
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
             f"{convert_to_msys2_path(SVT_AV1_SOURCE_DIR)}",
-        ]
-        + (
+        ] + (
             [
-                f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Linux'}",
+                f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Darwin' if platform == 'macos' else 'Linux'}",
                 f"-DCMAKE_SYSTEM_PROCESSOR={arch if arch == 'x86_64' else 'aarch64'}",
                 f"-DCMAKE_C_COMPILER={host}-gcc",
                 f"-DCMAKE_CXX_COMPILER={host}-g++",
@@ -360,8 +356,7 @@ def build_vpx(
             "--enable-vp9-highbitdepth",
             "--disable-docs",
             "--enable-pic",
-        ]
-        + ([f"--target={target}"] if target else []),
+        ] + ([f"--target={target}"] if target else []),
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",
@@ -394,8 +389,7 @@ def build_opus(
                 "--disable-shared",
                 "--with-pic",
                 "--disable-doc",
-            ]
-            + ([f"--host={host}"] if host else []),
+            ] + ([f"--host={host}"] if host else []),
         ),
         threads=threads,
         env=env,
@@ -428,8 +422,7 @@ def build_ogg(
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ]
-            + ([f"--host={host}"] if host else []),
+            ] + ([f"--host={host}"] if host else []),
         ),
         threads=threads,
         env=env,
@@ -477,8 +470,7 @@ def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ]
-            + ([f"--host={host}"] if host else []),
+            ] + ([f"--host={host}"] if host else []),
         ),
         threads=threads,
         env=env,
@@ -512,8 +504,7 @@ def build_mp3lame(
             "--disable-decoder",
             "--disable-frontend",
             "--with-pic=yes",
-        ]
-        + ([f"--host={host}"] if host else []),
+        ] + ([f"--host={host}"] if host else []),
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",

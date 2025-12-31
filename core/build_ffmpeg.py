@@ -137,6 +137,11 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
         copy_lib_files_windows(arch)
         return
 
+    if platform == "macos":
+        build_ffmpeg_macos(arch, threads, env)
+        copy_lib_files_macos(arch)
+        return
+
     raise ValueError(f"Platform not supported for compiling ffmpeg: {platform}")
 
 
@@ -173,8 +178,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
                 convert_to_msys2_path(vorbis_pc_dir),
                 convert_to_msys2_path(mp3lame_pc_dir),
             ]
-        )
-        + ((":" + pc_paths) if pc_paths else ""),
+        ) + ((":" + pc_paths) if pc_paths else "")
     }
     host, _ = get_host_and_sysroot("linux", arch)
 
@@ -314,6 +318,59 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
     )
 
 
+def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
+    ffmpeg_install_dir = get_ffmpeg_install_dir("macos")
+    pkg_paths = []
+    pkgs = [
+        X264_INSTALL_DIR_NAME, X265_INSTALL_DIR_NAME, AOM_INSTALL_DIR_NAME,
+        SVT_AV1_INSTALL_DIR_NAME, VPX_INSTALL_DIR_NAME, OPUS_INSTALL_DIR_NAME,
+        OGG_INSTALL_DIR_NAME, VORBIS_INSTALL_DIR_NAME
+    ]
+
+    for pkg in pkgs:
+        pkg_paths.append(convert_to_msys2_path(get_lib_dir(ffmpeg_install_dir / pkg) / "pkgconfig"))
+
+    mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
+    mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
+    pkg_paths.append(convert_to_msys2_path(mp3lame_lib_dir / "pkgconfig"))
+
+    existing_pkg_path = os.environ.get("PKG_CONFIG_PATH", "")
+    env["PKG_CONFIG_PATH"] = ":".join(pkg_paths) + ((":" + existing_pkg_path) if existing_pkg_path else "")
+
+    cmd = [
+        "./configure",
+        f"--prefix={ffmpeg_install_dir}",
+        "--enable-shared",
+        "--enable-gpl",
+        "--enable-version3",
+        "--enable-pthreads",
+        f"--arch={'aarch64' if arch == 'arm64' else 'x86_64'}",
+        "--target-os=darwin",
+        "--enable-pic",
+        "--extra-ldflags=-Wl,-rpath,@loader_path",
+        f"--extra-cflags=-I{convert_to_msys2_path(mp3lame_include_dir)}",
+        f"--extra-ldflags=-L{convert_to_msys2_path(mp3lame_lib_dir)}",
+        "--enable-libx264",
+        "--enable-libx265",
+        "--enable-libaom",
+        "--enable-libvpx",
+        "--enable-libmp3lame",
+        "--enable-libopus",
+        "--enable-libvorbis",
+        "--enable-libsvtav1",
+    ]
+    cmd += FFMPEG_DISABLED_MODULES
+
+    build_lib(
+        "FFmpeg",
+        build_dir=FFMPEG_SOURCE_DIR,
+        configure_cmd=cmd,
+        threads=threads,
+        env=env,
+        use_msys2=False,
+    )
+
+
 def get_lib_search_paths(host: str) -> list[Path]:
     cc = f"{host}-gcc" if host else "gcc"
     try:
@@ -359,10 +416,7 @@ def copy_lib_files_linux(arch: str):
 
     # User defined environment variable takes priority if present
     search_paths = (
-        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else [])
-        + get_lib_search_paths(host)
-        + [sysroot]
-    )
+        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else []) + get_lib_search_paths(host) + [sysroot])
 
     dest_dir.mkdir(parents=True, exist_ok=True)
 
@@ -387,7 +441,7 @@ def copy_lib_files_linux(arch: str):
             )
             return
 
-        out: str = output.stdout # type: ignore
+        out: str = output.stdout  # type: ignore
         for line in out.splitlines():
             if "NEEDED" not in line:
                 continue
@@ -438,10 +492,7 @@ def copy_lib_files_windows(arch: str):
     # On msys2 the dlls are present in sysroot/bin, on Ubuntu in sysroot/lib
     # So we just use recursive search instad of specifying the full path
     search_paths = (
-        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else [])
-        + get_lib_search_paths(host)
-        + [sysroot]
-    )
+        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else []) + get_lib_search_paths(host) + [sysroot])
 
     extra_libs = [
         "libwinpthread-1.dll",
@@ -483,6 +534,23 @@ def copy_lib_files_windows_ci(arch: str):
         shutil.copy2(dll, dest_dir)
 
     print("Finished copying Windows FFmpeg files!", flush=True)
+
+
+def copy_lib_files_macos(arch: str):
+    dest_dir = Path("..") / "bin" / f"macos_{arch}"
+    ffmpeg_install_dir = get_ffmpeg_install_dir("macos")
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    print(f"Copying lib files to {dest_dir} ...")
+
+    for file in (ffmpeg_install_dir / "lib").glob("*.dylib"):
+        if file.is_symlink():
+            continue
+
+        print(f"Copying {file.name}")
+        shutil.copy2(file, dest_dir)
+
+    print("Finished copying files!", flush=True)
 
 
 if __name__ == "__main__":
