@@ -1,6 +1,18 @@
 extends PanelContainer
 
-enum POPUP_ACTION { RENAME, DELETE, RELOAD, SAVE_AS, EXTRACT_AUDIO, DUPLICATE }
+enum POPUP_ACTION {
+	# File actions
+	FILE_RENAME,
+	FILE_DELETE,
+	FILE_RELOAD,
+	FILE_SAVE_AS,
+	FILE_EXTRACT_AUDIO,
+	FILE_DUPLICATE,
+	# Folder actions
+	FOLDER_CREATE,
+	FOLDER_RENAME,
+	FOLDER_DELETE,
+}
 
 
 @export var tree: Tree
@@ -16,6 +28,7 @@ func _ready() -> void:
 	FileHandler.file_deleted.connect(_on_file_deleted)
 	FileHandler.file_path_updated.connect(_on_file_path_updated)
 	FileHandler.file_nickname_changed.connect(_on_file_nickname_changed)
+	FileHandler.folder_added.connect(_on_folder_added)
 
 	Project.project_ready.connect(_on_project_ready)
 
@@ -37,7 +50,7 @@ func _ready() -> void:
 func _on_tree_gui_input(event: InputEvent) -> void:
 	if tree.get_selected() != null and event.is_action("delete_file"):
 		var file_id: int = tree.get_selected().get_metadata(0)
-		_on_popup_option_pressed(POPUP_ACTION.DELETE, FileHandler.get_file(file_id))
+		_on_popup_option_pressed(POPUP_ACTION.FILE_DELETE, FileHandler.get_file(file_id))
 
 
 func _on_project_ready() -> void:
@@ -75,30 +88,30 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 	var popup: PopupMenu = PopupManager.create_popup_menu()
 
 	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
-		popup.add_item("popup_item_rename", POPUP_ACTION.RENAME)
-		popup.add_item("popup_item_delete", POPUP_ACTION.DELETE)
+		popup.add_item("popup_item_rename", POPUP_ACTION.FILE_RENAME)
+		popup.add_item("popup_item_delete", POPUP_ACTION.FILE_DELETE)
 
 		PopupManager.show_popup_menu(popup)
 	else: # FILE
 		var file_id: int = file_item.get_metadata(0)
 		file = FileHandler.get_file(file_id)
 
-		popup.add_item("popup_item_rename", POPUP_ACTION.RENAME)
-		popup.add_item("popup_item_reload", POPUP_ACTION.RELOAD)
-		popup.add_item("popup_item_delete", POPUP_ACTION.DELETE)
+		popup.add_item("popup_item_rename", POPUP_ACTION.FILE_RENAME)
+		popup.add_item("popup_item_reload", POPUP_ACTION.FILE_RELOAD)
+		popup.add_item("popup_item_delete", POPUP_ACTION.FILE_DELETE)
 
 		if file.type == File.TYPE.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator("popup_separator_image_options")
-				popup.add_item("popup_item_save_as_file", POPUP_ACTION.SAVE_AS)
+				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_AS)
 		if file.type == File.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
-			popup.add_item("popup_item_extract_audio", POPUP_ACTION.EXTRACT_AUDIO)
+			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
 		if file.type == File.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
-			popup.add_item("popup_item_duplicate", POPUP_ACTION.DUPLICATE)
+			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
 			if file.path.contains("temp://"):
-				popup.add_item("popup_item_save_as_file", POPUP_ACTION.SAVE_AS)
+				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_AS)
 
 	popup.id_pressed.connect(_on_popup_option_pressed.bind(file))
 	PopupManager.show_popup_menu(popup)
@@ -113,14 +126,14 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 		printerr("Folder renaming and deleting not implemented yet!")
 
 	match option_id:
-		POPUP_ACTION.RENAME:
+		POPUP_ACTION.FILE_RENAME:
 			var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
 
 			rename_dialog.prepare(file.id)
 			get_tree().root.add_child(rename_dialog)
-		POPUP_ACTION.RELOAD:
+		POPUP_ACTION.FILE_RELOAD:
 			FileHandler.reload_file_data(file.id)
-		POPUP_ACTION.DELETE:
+		POPUP_ACTION.FILE_DELETE:
 			InputManager.undo_redo.create_action("Delete file")
 			# Deleting file from tree and project data.
 			InputManager.undo_redo.add_do_method(_on_file_deleted.bind(file.id))
@@ -135,7 +148,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 					InputManager.undo_redo.add_undo_method(ClipHandler.add_clip.bind(clip_data))
 
 			InputManager.undo_redo.commit_action()
-		POPUP_ACTION.SAVE_AS: # Only for temp files such as Images.
+		POPUP_ACTION.FILE_SAVE_AS: # Only for temp files such as Images.
 			if file.type == File.TYPE.TEXT:
 				# TODO: Implement duplicating text files
 				printerr("Not implemented yet!")
@@ -148,7 +161,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 				dialog.file_selected.connect(FileHandler.save_image_to_file.bind(file))
 				add_child(dialog)
 				dialog.popup_centered()
-		POPUP_ACTION.EXTRACT_AUDIO:
+		POPUP_ACTION.FILE_EXTRACT_AUDIO:
 			var dialog: FileDialog = PopupManager.create_file_dialog(
 					"title_save_video_audio_to_wav",
 					FileDialog.FILE_MODE_SAVE_FILE,
@@ -157,7 +170,7 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 			dialog.file_selected.connect(FileHandler.save_audio_to_wav.bind(file))
 			add_child(dialog)
 			dialog.popup_centered()
-		POPUP_ACTION.DUPLICATE: # Only for text
+		POPUP_ACTION.FILE_DUPLICATE: # Only for text
 			# TODO: Implement duplicating text files
 			printerr("Duplicating text not implemented yet!")
 
@@ -295,3 +308,8 @@ func _on_file_nickname_changed(file_id: int) -> void:
 
 	file_items[file_id].set_text(0, file.nickname)
 	_sort_folder(file.folder)
+
+
+func _on_folder_added(_folder_name: String) -> void:
+	# Placeholder
+	pass

@@ -6,8 +6,6 @@ signal project_ready
 signal timeline_end_update(new_end: int)
 
 
-signal folder_added(folder_name: String)
-
 const EXTENSION: String = ".gozen"
 const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 
@@ -299,17 +297,6 @@ func set_background_color(color: Color) -> void:
 
 func get_background_color() -> Color:
 	return data.background_color
-
-
-# TODO: Change this to FileHandler in the future
-func add_folder(folder: String) -> void:
-	if data.folders.has(folder):
-		print("Folder %s already exists!")
-		return
-
-	data.folders.append(folder)
-	folder_added.emit(folder)
-	unsaved_changes = true
 
 
 func get_folders() -> PackedStringArray:

@@ -5,6 +5,8 @@ signal file_deleted(id: int)
 signal file_nickname_changed(id: int)
 signal file_path_updated(id: int)
 
+signal folder_added(folder_name: String)
+
 signal error_file_too_big(id: int)
 
 
@@ -233,6 +235,7 @@ func save_audio_to_wav(path: String, file: File) -> void:
 
 
 
+
 #-- File setters & getters --- 
 func has_file(id: int) -> bool:
 	return files.has(id)
@@ -287,6 +290,15 @@ func get_file_duration(id: int) -> int:
 func get_file_data(id: int) -> FileData:
 	return data[id]
 
+
+func add_folder(folder: String) -> void:
+	if Project.data.folders.has(folder):
+		print("Folder %s already exists!")
+		return
+
+	Project.data.folders.append(folder)
+	Project.unsaved_changes = true
+	folder_added.emit(folder)
 
 
 #--- Private functions ---
