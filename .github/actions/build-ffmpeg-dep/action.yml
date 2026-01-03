@@ -12,7 +12,7 @@ runs:
   steps:
     - name: Compile ${{ inputs.dep_name }}
       shell: msys2 {0}
-      working-directory: ./libs
+      working-directory: ./core
       run: |
         if [ "${{ inputs.dep_name }}" == "ogg_vorbis" ]; then
           python3 -c "import sys; sys.path.append('.'); import download_deps; download_deps.clone_dep_ogg()"

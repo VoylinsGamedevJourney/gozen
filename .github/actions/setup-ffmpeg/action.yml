@@ -39,11 +39,11 @@ runs:
         name: ffmpeg_${{ inputs.os }}_${{ inputs.arch }}
         github-token: ${{ inputs.token }}
         run-id: ${{ steps.get-run-id.outputs.run_id }}
-        path: ./libs/ffmpeg/bin_${{ inputs.os }}
+        path: ./core/ffmpeg/bin_${{ inputs.os }}
 
     - name: Copy libs (Linux)
       if: inputs.os == 'linux'
-      working-directory: ./libs
+      working-directory: ./core
       shell: bash
       run: |
         echo "Copying FFmpeg libraries for Linux..."
@@ -57,7 +57,7 @@ runs:
 
     - name: Copy libs (Windows)
       if: inputs.os == 'windows'
-      working-directory: ./libs
+      working-directory: ./core
       shell: pwsh
       run: |
         Write-Host "Copying FFmpeg libraries for Windows..."

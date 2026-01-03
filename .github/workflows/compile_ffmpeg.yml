@@ -7,8 +7,8 @@ on:
       timezone: 'Asia/Tokyo'
 
 env:
-  PATH_LINUX: libs/ffmpeg/bin_linux
-  PATH_WINDOWS: libs/ffmpeg/bin_windows
+  PATH_LINUX: core/ffmpeg/bin_linux
+  PATH_WINDOWS: core/ffmpeg/bin_windows
 
 run-name: Compile FFmpeg
 jobs:
@@ -34,7 +34,7 @@ jobs:
       - name: Compile FFmpeg
         run: |
           export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
-          python -m libs.build_ffmpeg --platform linux --arch x86_64 --threads 4
+          python -m core.build_ffmpeg --platform linux --arch x86_64 --threads 4
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -65,7 +65,7 @@ jobs:
           merge-multiple: true
 
       - name: Compile FFmpeg
-        working-directory: ./libs
+        working-directory: ./core
         run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_ffmpeg_windows('x86_64', 4, {})"
 
       - name: Upload artifact
@@ -101,5 +101,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: dep_win_x86_64_${{ matrix.dep }}
-          path: libs/ffmpeg/bin_windows
+          path: core/ffmpeg/bin_windows
           retention-days: 2
