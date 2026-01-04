@@ -21,7 +21,7 @@ var auto_save_timer: Timer
 
 func _ready() -> void:
 	get_window().close_requested.connect(_on_close_requested)
-	ClipHandler.clip_added.connect(func(_c: int) -> void: update_timeline_end())
+	ClipHandler.clips_updated.connect(update_timeline_end)
 	CommandManager.register(
 			"command_project_settings", open_settings_menu, "open_project_settings")
 

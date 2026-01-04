@@ -196,6 +196,14 @@ func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFO
 	return styles
 
 
+func set_use_native_dialog(value: bool) -> void:
+	_data.use_native_dialog = value
+
+
+func get_use_native_dialog() -> bool:
+	return _data.use_native_dialog
+
+
 # Defaults set/get
 func set_image_duration(duration: int) -> void:
 	_data.image_duration = duration

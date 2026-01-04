@@ -141,7 +141,6 @@ int GoZenVideo::open(const String& video_path) {
 		resolution.x /= sar;
 
 	pixel_format = av_get_pix_fmt_name(av_codec_ctx->pix_fmt);
-	_log(String("Selected pixel format is: ") + pixel_format);
 
 	if (av_stream->start_time != AV_NOPTS_VALUE)
 		start_time_video = (int64_t)(av_stream->start_time * stream_time_base_video);

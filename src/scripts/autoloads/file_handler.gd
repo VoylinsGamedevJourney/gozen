@@ -4,8 +4,10 @@ signal file_added(id: int)
 signal file_deleted(id: int)
 signal file_nickname_changed(id: int)
 signal file_path_updated(id: int)
+signal file_moved(id: int)
 
 signal folder_added(folder_name: String)
+signal folder_deleted(folder_name: String)
 
 signal error_file_too_big(id: int)
 
@@ -120,7 +122,7 @@ func load_file_data(file_id: int) -> bool:
 	var temp_file_data: FileData = FileData.new()
 
 	if !temp_file_data.init_data(file_id):
-		delete_file(file_id)
+		_delete_file(file_id)
 		return false
 
 	data[file_id] = temp_file_data
@@ -132,7 +134,7 @@ func reload_file_data(id: int) -> void:
 
 	await RenderingServer.frame_pre_draw
 	if !load_file_data(id):
-		delete_file(id)
+		_delete_file(id)
 		print("File became invalid!")
 
 
@@ -157,6 +159,44 @@ func add_file(file_drop: FileDrop) -> void:
 		return
 	else:
 		file_drop.id = file.id
+
+
+func delete_file(file_id: int) -> void:
+	InputManager.undo_redo.create_action("Delete file")
+	var file: File = FileHandler.get_file(file_id)
+
+	# Deleting file from tree and project data.
+	InputManager.undo_redo.add_do_method(delete_file.bind(file_id))
+	InputManager.undo_redo.add_do_method(file_deleted.emit.bind(file_id))
+
+	InputManager.undo_redo.add_undo_method(add_file_object.bind(file))
+	InputManager.undo_redo.add_undo_method(file_added.emit.bind(file_id))
+
+	# Making certain clips will be returned when deleting of file is un-done.
+	for clip_data: ClipData in ClipHandler.get_clip_datas():
+		if clip_data.file_id == file.id:
+			InputManager.undo_redo.add_do_method(ClipHandler._delete_clip.bind(clip_data))
+			InputManager.undo_redo.add_undo_method(ClipHandler._add_clip.bind(clip_data))
+
+	InputManager.undo_redo.commit_action()
+
+
+func move_files(file_ids: PackedInt64Array, target_folder: String) -> void:
+	InputManager.undo_redo.create_action("Move file(s)")
+
+	for file_id: int in file_ids:
+		var file: File = get_file(file_id)
+
+		InputManager.undo_redo.add_do_method(_move_file.bind(file_id, target_folder))
+		InputManager.undo_redo.add_undo_method(_move_file.bind(file_id, file.folder))
+
+	InputManager.undo_redo.commit_action()
+
+
+func _move_file(file_id: int, target_folder: String) -> void:
+	files[file_id].folder = target_folder
+	file_moved.emit(file_id)
+	Project.unsaved_changes = true
 
 
 func create_file(file_path: String) -> File:
@@ -212,31 +252,6 @@ func check_valid(file_path: String) -> bool:
 	return false
 
 
-func enable_clip_only_video(file_id: int, clip_id: int) -> void:
-	var file: File = get_file(file_id)
-	var file_data: FileData = get_file_data(file_id)
-	var video: GoZenVideo = GoZenVideo.new()
-
-	if video.open(file.path):
-		printerr("Loading video at path '%s' failed!" % file.path)
-		return
-
-	file.clip_only_video_ids.append(clip_id)
-	file_data.clip_only_video[clip_id] = video
-
-
-func disable_clip_only_video(file_id: int, clip_id: int) -> void:
-	var file_data: FileData = FileHandler.get_file_data(file_id)
-
-	if file_data.clip_only_video_ids.has(clip_id):
-		var position: int = file_data.clip_only_video_ids.find(clip_id)
-
-		file_data.clip_only_video_ids.remove_at(position)
-
-	if file_data.clip_only_video.has(clip_id):
-		file_data.clip_only_video.erase(clip_id)
-
-
 func add_file_object(file: File) -> void:
 	# Used for adding temp files.
 	set_file(file.id, file)
@@ -250,7 +265,7 @@ func add_file_object(file: File) -> void:
 	Project.unsaved_changes = true
 
 
-func delete_file(id: int) -> void:
+func _delete_file(id: int) -> void:
 	for clip: ClipData in ClipHandler.get_clip_datas():
 		if clip.file_id == id:
 			ClipHandler.delete_clip(clip)
@@ -380,9 +395,70 @@ func add_folder(folder: String) -> void:
 		print("Folder %s already exists!")
 		return
 
-	Project.data.folders.append(folder)
+	print("folder added, ", folder)
+	InputManager.undo_redo.create_action("Create folder")
+
+	InputManager.undo_redo.add_do_method(_add_folder.bind(folder))
+	InputManager.undo_redo.add_undo_method(_delete_folder.bind(folder))
+
+	InputManager.undo_redo.commit_action()
 	Project.unsaved_changes = true
+
+
+func _add_folder(folder: String) -> void:
+	Project.data.folders.append(folder)
 	folder_added.emit(folder)
+
+
+func delete_folder(folder: String) -> void:
+	InputManager.undo_redo.create_action("Delete folder")
+	var files_to_delete: Array[File] = []
+
+	for file: File in get_file_objects():
+		if file.folder.begins_with(folder):
+			files_to_delete.append(file)
+	
+	if !files_to_delete.is_empty():
+		for file: File in files_to_delete:
+			InputManager.undo_redo.add_do_method(_delete_file.bind(file.id))
+			InputManager.undo_redo.add_undo_method(add_file_object.bind(file))
+	
+	InputManager.undo_redo.add_do_method(_delete_folder.bind(folder))
+	InputManager.undo_redo.add_undo_method(_add_folder.bind(folder))
+
+	InputManager.undo_redo.commit_action()
+	Project.unsaved_changes = true
+
+
+func _delete_folder(folder: String) -> void:
+	if Project.data.folders.has(folder):
+		Project.data.folders.remove_at(Project.data.folders.find(folder))
+		folder_deleted.emit(folder)
+
+
+func enable_clip_only_video(file_id: int, clip_id: int) -> void:
+	var file: File = get_file(file_id)
+	var file_data: FileData = get_file_data(file_id)
+	var video: GoZenVideo = GoZenVideo.new()
+
+	if video.open(file.path):
+		printerr("Loading video at path '%s' failed!" % file.path)
+		return
+
+	file.clip_only_video_ids.append(clip_id)
+	file_data.clip_only_video[clip_id] = video
+
+
+func disable_clip_only_video(file_id: int, clip_id: int) -> void:
+	var file_data: FileData = FileHandler.get_file_data(file_id)
+
+	if file_data.clip_only_video_ids.has(clip_id):
+		var position: int = file_data.clip_only_video_ids.find(clip_id)
+
+		file_data.clip_only_video_ids.remove_at(position)
+
+	if file_data.clip_only_video.has(clip_id):
+		file_data.clip_only_video.erase(clip_id)
 
 
 #--- Private functions ---
@@ -394,7 +470,7 @@ func _check_if_file_modified(file: File) -> bool:
 	# File doesn't exist anymore, removing file.
 	if !FileAccess.file_exists(file.path):
 		print("File %s at %s doesn't exist anymore!" % [file.id, file.path])
-		delete_file(file.id)
+		_delete_file(file.id)
 		return false
 
 	return true

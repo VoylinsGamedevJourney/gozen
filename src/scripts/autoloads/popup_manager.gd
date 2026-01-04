@@ -99,14 +99,25 @@ func get_popup(popup: POPUP) -> Control:
 
 func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: PackedStringArray = []) -> FileDialog:
 	var dialog: FileDialog = FileDialog.new()
+	var use_native_dialog: bool = Settings.get_use_native_dialog()
 
-	dialog.force_native = true
-	dialog.use_native_dialog = true
+	dialog.force_native = use_native_dialog
+	dialog.use_native_dialog = use_native_dialog
 	dialog.title = title
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.file_mode = mode
 	dialog.filters = filters
 
+	return dialog
+
+
+func create_accept_dialog(title: String) -> AcceptDialog:
+	var dialog: AcceptDialog = AcceptDialog.new()
+	var use_native_dialog: bool = Settings.get_use_native_dialog()
+
+	dialog.force_native = use_native_dialog
+	dialog.title = title
+	
 	return dialog
 
 

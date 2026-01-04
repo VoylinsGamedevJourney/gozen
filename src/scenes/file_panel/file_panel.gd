@@ -5,7 +5,7 @@ enum POPUP_ACTION {
 	FILE_RENAME,
 	FILE_DELETE,
 	FILE_RELOAD,
-	FILE_SAVE_AS,
+	FILE_SAVE_TEMP_AS,
 	FILE_EXTRACT_AUDIO,
 	FILE_DUPLICATE,
 	# Folder actions
@@ -26,18 +26,21 @@ var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
 func _ready() -> void:
 	FileHandler.file_added.connect(_on_file_added)
 	FileHandler.file_deleted.connect(_on_file_deleted)
+	FileHandler.file_moved.connect(_on_file_moved)
 	FileHandler.file_path_updated.connect(_on_file_path_updated)
 	FileHandler.file_nickname_changed.connect(_on_file_nickname_changed)
 	FileHandler.folder_added.connect(_on_folder_added)
+	FileHandler.folder_deleted.connect(_on_folder_deleted)
 
 	Project.project_ready.connect(_on_project_ready)
 
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
-	tree.item_mouse_selected.connect(_file_item_clicked)
+	tree.item_mouse_selected.connect(_tree_item_clicked)
+	tree.empty_clicked.connect(_tree_item_clicked.bind(true))
 	tree.gui_input.connect(_on_tree_gui_input)
 
-	tree.set_drag_forwarding(_get_list_drag_data, Callable(), Callable())
+	tree.set_drag_forwarding(_get_list_drag_data, _can_drop_list_data, _drop_list_data)
 	folder_items["/"] = tree.create_item()
 
 	# Setting the max width needs to be done in this way.
@@ -49,8 +52,7 @@ func _ready() -> void:
 
 func _on_tree_gui_input(event: InputEvent) -> void:
 	if tree.get_selected() != null and event.is_action("delete_file"):
-		var file_id: int = tree.get_selected().get_metadata(0)
-		_on_popup_option_pressed(POPUP_ACTION.FILE_DELETE, FileHandler.get_file(file_id))
+		_on_popup_option_pressed(POPUP_ACTION.FILE_DELETE)
 
 
 func _on_project_ready() -> void:
@@ -77,23 +79,19 @@ func _file_menu_pressed(id: int) -> void:
 		2: PopupManager.open_popup(PopupManager.POPUP.COLOR)
 
 
-func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
-	# TODO: Create popup menu's and save them as scene's instead.
-	var file_item: TreeItem = tree.get_selected()
+func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
+	var file_item: TreeItem = folder_items["/"] if empty else tree.get_selected()
 
 	if button_index != MOUSE_BUTTON_RIGHT:
 		return
 
 	var file: File = null
 	var popup: PopupMenu = PopupManager.create_popup_menu()
+	var metadata: Variant = file_item.get_metadata(0)
 
-	if !str(file_item.get_metadata(0)).is_valid_int(): # FOLDER
-		popup.add_item("popup_item_rename", POPUP_ACTION.FILE_RENAME)
-		popup.add_item("popup_item_delete", POPUP_ACTION.FILE_DELETE)
+	if str(metadata).is_valid_int(): # File
+		var file_id: int = int(metadata)
 
-		PopupManager.show_popup_menu(popup)
-	else: # FILE
-		var file_id: int = file_item.get_metadata(0)
 		file = FileHandler.get_file(file_id)
 
 		popup.add_item("popup_item_rename", POPUP_ACTION.FILE_RENAME)
@@ -103,76 +101,109 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 		if file.type == FileHandler.TYPE.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator("popup_separator_image_options")
-				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_AS)
+				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_TEMP_AS)
 		if file.type == FileHandler.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
 		if file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
 			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
-			if file.path.contains("temp://"):
-				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_AS)
 
-	popup.id_pressed.connect(_on_popup_option_pressed.bind(file))
+			if file.path.contains("temp://"):
+				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_TEMP_AS)
+
+		popup.add_separator("popup_separator_folder_options")
+		popup.add_item("popup_item_create_folder", POPUP_ACTION.FOLDER_CREATE)
+	else: # Folder
+		var folder_path: String = str(metadata)
+
+		popup.add_item("popup_item_create_folder", POPUP_ACTION.FOLDER_CREATE)
+
+		if folder_path != "/":
+			popup.add_item("popup_item_rename_folder", POPUP_ACTION.FOLDER_RENAME)
+			popup.add_item("popup_item_delete_folder", POPUP_ACTION.FOLDER_DELETE)
+
+	popup.id_pressed.connect(_on_popup_option_pressed)
 	PopupManager.show_popup_menu(popup)
 
 
 ## For the right click presses of the file popup menu's.
-func _on_popup_option_pressed(option_id: int, file: File) -> void:
-	# TODO: Change this with the change to make popups into separate scene's instead.
-
-	if file == null:
-		# TODO:
-		printerr("Folder renaming and deleting not implemented yet!")
-
+func _on_popup_option_pressed(option_id: int) -> void:
 	match option_id:
-		POPUP_ACTION.FILE_RENAME:
-			var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
+		POPUP_ACTION.FOLDER_CREATE: _on_popup_action_folder_create()
+		POPUP_ACTION.FOLDER_RENAME: _on_popup_action_folder_rename()
+		POPUP_ACTION.FOLDER_DELETE: _on_popup_action_folder_delete()
+		POPUP_ACTION.FILE_RENAME: _on_popup_action_file_rename()
+		POPUP_ACTION.FILE_RELOAD: _on_popup_action_file_reload()
+		POPUP_ACTION.FILE_DELETE: _on_popup_action_file_delete()
+		POPUP_ACTION.FILE_SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
+		POPUP_ACTION.FILE_EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
+		POPUP_ACTION.FILE_DUPLICATE: _on_popup_action_file_duplicate()
 
-			rename_dialog.prepare(file.id)
-			get_tree().root.add_child(rename_dialog)
-		POPUP_ACTION.FILE_RELOAD:
-			FileHandler.reload_file_data(file.id)
-		POPUP_ACTION.FILE_DELETE:
-			InputManager.undo_redo.create_action("Delete file")
-			# Deleting file from tree and project data.
-			InputManager.undo_redo.add_do_method(_on_file_deleted.bind(file.id))
-			InputManager.undo_redo.add_do_method(FileHandler.delete_file.bind(file.id))
 
-			InputManager.undo_redo.add_undo_method(FileHandler.add_file_object.bind(file))
-			InputManager.undo_redo.add_undo_method(_add_file_to_tree.bind(file.id))
+func _on_popup_action_folder_create() -> void:
+	_show_create_folder_dialog()
 
-			# Making certain clips will be returned when deleting of file is un-done.
-			for clip_data: ClipData in ClipHandler.get_clip_datas():
-				if clip_data.file_id == file.id:
-					InputManager.undo_redo.add_undo_method(ClipHandler.add_clip.bind(clip_data))
 
-			InputManager.undo_redo.commit_action()
-		POPUP_ACTION.FILE_SAVE_AS: # Only for temp files such as Images.
-			if file.type == FileHandler.TYPE.TEXT:
-				# TODO: Implement duplicating text files
-				printerr("Not implemented yet!")
-			elif file.type == FileHandler.TYPE.IMAGE:
-				var dialog: FileDialog = PopupManager.create_file_dialog(
-						"title_save_image_to_file",
-						FileDialog.FILE_MODE_SAVE_FILE,
-						["*.png", "*.jpg", "*.webp"])
+func _on_popup_action_folder_rename() -> void:
+	print("Folder renaming not implemented yet!")
 
-				dialog.file_selected.connect(FileHandler.save_image_to_file.bind(file))
-				add_child(dialog)
-				dialog.popup_centered()
-		POPUP_ACTION.FILE_EXTRACT_AUDIO:
-			var dialog: FileDialog = PopupManager.create_file_dialog(
-					"title_save_video_audio_to_wav",
-					FileDialog.FILE_MODE_SAVE_FILE,
-					["*.wav"])
 
-			dialog.file_selected.connect(FileHandler.save_audio_to_wav.bind(file))
-			add_child(dialog)
-			dialog.popup_centered()
-		POPUP_ACTION.FILE_DUPLICATE: # Only for text
-			# TODO: Implement duplicating text files
-			printerr("Duplicating text not implemented yet!")
+func _on_popup_action_folder_delete() -> void:
+	FileHandler.delete_folder(str(tree.get_selected().get_metadata(0)))
+
+
+func _on_popup_action_file_rename() -> void: 
+	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+	var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
+
+	rename_dialog.prepare(file.id)
+	add_child(rename_dialog)
+
+
+func _on_popup_action_file_reload() -> void:
+	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+
+	FileHandler.reload_file_data(file.id)
+
+
+func _on_popup_action_file_delete() -> void:
+	FileHandler.delete_file(tree.get_selected().get_metadata(0))
+
+
+func _on_popup_action_file_save_temp_as() -> void:
+	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+
+	if file.type == FileHandler.TYPE.TEXT: # TODO: Implement duplicating text files
+		printerr("Not implemented yet!")
+	elif file.type == FileHandler.TYPE.IMAGE:
+		var dialog: FileDialog = PopupManager.create_file_dialog(
+				"title_save_image_to_file",
+				FileDialog.FILE_MODE_SAVE_FILE,
+				["*.png", "*.jpg", "*.webp"])
+
+		dialog.file_selected.connect(FileHandler.save_image_to_file.bind(file))
+		add_child(dialog)
+		dialog.popup_centered()
+
+
+func _on_popup_action_file_extract_audio() -> void:
+	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+	var dialog: FileDialog = PopupManager.create_file_dialog(
+		"title_save_video_audio_to_wav",
+		FileDialog.FILE_MODE_SAVE_FILE,
+		["*.wav"])
+
+	dialog.file_selected.connect(FileHandler.save_audio_to_wav.bind(file))
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _on_popup_action_file_duplicate() -> void:
+	# Only for text. TODO: Implement duplicating text files
+	var _file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+
+	printerr("Duplicating text not implemented yet!")
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
@@ -184,23 +215,29 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 
 	draggable.files = true
 
-	# TODO: Make this work when dragging folders.
-	# For this we need to make certain that when dragging folders, we don't add
-	# them but their sub-files.
 	while true:
-		if !str(selected.get_metadata(0)).is_valid_int():
-			continue # Folder
+		var metadata: Variant = selected.get_metadata(0)
+		var file_ids: PackedInt64Array = []
 
-		var file_id: int = selected.get_metadata(0)
-		draggable.ids.append(file_id)
+		if str(metadata).is_valid_int(): # Single file
+			file_ids.append(int(metadata))
+		else: # Folder
+			file_ids = _get_recursive_file_ids(selected)
 
-		var file_duration: int = FileHandler.get_file_duration(file_id) 
-		if file_duration <= 0:
-			file_duration = FileHandler.update_file_duration(file_id)
+		for file_id: int in file_ids:
+			if file_id in draggable.ids:
+				continue
 
-		draggable.duration += file_duration
+			var file_duration: int = FileHandler.get_file_duration(file_id) 
+
+			if file_duration <= 0:
+				file_duration = FileHandler.update_file_duration(file_id)
+
+			draggable.ids.append(file_id)
+			draggable.duration += file_duration
 
 		selected = tree.get_next_selected(selected)
+
 		if selected == null:
 			break # End of selected TreeItem's.
 
@@ -222,27 +259,14 @@ func _add_folder_to_tree(folder: String) -> void:
 
 		if !folder_items.has(check_path):
 			folder_items[check_path] = tree.create_item(previous_folder)
-			folder_items[check_path].set_text(0, folders[-1])
+			folder_items[check_path].set_text(0, folders[i])
+			folder_items[check_path].set_icon(0, preload(Library.ICON_FOLDER))
+			folder_items[check_path].set_icon_max_width(0, 20)
+			folder_items[check_path].set_selectable(0, false)
 			folder_items[check_path].set_metadata(0, check_path)
 			_sort_folder(check_path)
 			
 		previous_folder = folder_items[check_path]
-
-
-func _on_file_added(file_id: int) -> void:
-	# There's a possibility that the file was too large
-	# and that it did not get added.
-	_add_file_to_tree(FileHandler.get_file(file_id))
-
-
-func _on_file_deleted(file_id: int) -> void:
-	if file_items.has(file_id):
-		file_items[file_id].get_parent().remove_child(file_items[file_id])
-		file_items.erase(file_id)
-
-
-func _on_file_path_updated(file_id: int) -> void:
-	file_items[file_id].set_tooltip_text(0, FileHandler.get_file(file_id).path)
 
 
 func _add_file_to_tree(file: File) -> void:
@@ -303,6 +327,28 @@ func _sort_folder(folder: String) -> void:
 		last_item = files[file_name]
 
 
+func _on_file_added(file_id: int) -> void:
+	# There's a possibility that the file was too large
+	# and that it did not get added.
+	_add_file_to_tree(FileHandler.get_file(file_id))
+
+
+func _on_file_deleted(file_id: int) -> void:
+	if file_items.has(file_id):
+		file_items[file_id].get_parent().remove_child(file_items[file_id])
+		file_items.erase(file_id)
+
+
+func _on_file_moved(file_id: int) -> void:
+	if file_items.has(file_id):
+		_on_file_deleted(file_id)
+		_add_file_to_tree(FileHandler.get_file(file_id))
+
+
+func _on_file_path_updated(file_id: int) -> void:
+	file_items[file_id].set_tooltip_text(0, FileHandler.get_file(file_id).path)
+
+
 func _on_file_nickname_changed(file_id: int) -> void:
 	var file: File = FileHandler.get_file(file_id)
 
@@ -310,6 +356,113 @@ func _on_file_nickname_changed(file_id: int) -> void:
 	_sort_folder(file.folder)
 
 
-func _on_folder_added(_folder_name: String) -> void:
-	# Placeholder
-	pass
+func _on_folder_added(folder_name: String) -> void:
+	if !folder_items.has(folder_name):
+		_add_folder_to_tree(folder_name)
+
+
+func _on_folder_deleted(folder_path: String) -> void:
+	if folder_items.has(folder_path):
+		var item: TreeItem = folder_items[folder_path]
+
+		item.free() # Remove from Tree
+		folder_items.erase(folder_path)
+
+
+func _get_recursive_file_ids(item: TreeItem) -> PackedInt64Array:
+	var ids: PackedInt64Array = []
+	var child: TreeItem = item.get_first_child()
+
+	while child:
+		var metadata: Variant = child.get_metadata(0)
+
+		if str(metadata).is_valid_int(): # File
+			ids.append(int(metadata))
+		else: # Folder
+			ids.append_array(_get_recursive_file_ids(child))
+	
+	return ids
+
+
+func _show_create_folder_dialog() -> void:
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog("accept_dialog_title_create_folder")
+	var vbox: VBoxContainer = VBoxContainer.new()
+	var line_edit: LineEdit = LineEdit.new()
+	var label: Label = Label.new()
+
+	label.text = "accept_dialog_text_folder_name" # "Folder name:"
+
+	vbox.add_child(label)
+	vbox.add_child(line_edit)
+	dialog.add_child(vbox)
+
+	var confirm_lambda: Callable = func(_t: String = "") -> void:
+		var new_folder_name: String = line_edit.text.strip_edges()
+
+		if new_folder_name not in ["", "/"]:
+			_create_folder_at_selected(new_folder_name)
+
+		dialog.queue_free()
+
+	dialog.confirmed.connect(confirm_lambda)
+	line_edit.text_submitted.connect(confirm_lambda)
+
+	add_child(dialog)
+	dialog.popup_centered(Vector2(300, 100))
+	line_edit.grab_focus()
+
+
+func _create_folder_at_selected(folder_name: String) -> void:
+	var selected_item: TreeItem = tree.get_selected()
+	var parent_path: String = "/"
+
+	if selected_item:
+		var metadata: Variant = selected_item.get_metadata(0)
+
+		if str(metadata).is_valid_int(): # File
+			parent_path = FileHandler.get_file(int(metadata)).folder
+		else:
+			parent_path = str(metadata)
+
+	if not parent_path.ends_with("/"):
+		parent_path += "/"
+
+	var full_path: String = parent_path + folder_name + "/" 
+
+	if full_path not in folder_items:
+		FileHandler.add_folder(full_path)
+
+
+func _can_drop_list_data(at_position: Vector2, data: Variant) -> bool:
+	if not data is Draggable:
+		return false
+
+	var item: TreeItem = tree.get_item_at_position(at_position)
+	var section: int = tree.get_drop_section_at_position(at_position)
+
+	tree.drop_mode_flags = Tree.DROP_MODE_ON_ITEM | Tree.DROP_MODE_INBETWEEN
+	
+	# Can't drop in files
+	return not (item and section == 0 and str(item.get_metadata(0)).is_valid_int())
+
+
+func _drop_list_data(at_position: Vector2, data: Variant) -> void:
+	if not data is Draggable:
+		return
+
+	var item: TreeItem = tree.get_item_at_position(at_position)
+	var section: int = tree.get_drop_section_at_position(at_position)
+	var target_folder: String = "/"
+	
+	if item:
+		var metadata: Variant = item.get_metadata(0)
+		
+		if section == 0: 
+			target_folder = str(metadata)
+		else: 
+			var parent_item: TreeItem = item.get_parent()
+
+			if parent_item:
+				target_folder = str(parent_item.get_metadata(0))
+	
+	FileHandler.move_files(data.ids, target_folder)

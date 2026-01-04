@@ -55,9 +55,7 @@ var _right_click_clip: ClipData = null
 func _ready() -> void:
 	Project.project_ready.connect(_project_ready)
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
-	Project.timeline_end_update.connect(func(_v :Variant) -> void: queue_redraw())
-	ClipHandler.clip_added.connect(func(_v :Variant) -> void: queue_redraw())
-	ClipHandler.clip_deleted.connect(func(_v :Variant) -> void: queue_redraw())
+	ClipHandler.clips_updated.connect(queue_redraw)
 	EditorCore.frame_changed.connect(queue_redraw)
 
 

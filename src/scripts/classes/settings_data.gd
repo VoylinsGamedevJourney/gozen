@@ -12,6 +12,7 @@ var display_scale: float = 1.0
 var theme: THEME = THEME.DARK
 var show_menu_bar: bool = true
 var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER 
+var use_native_dialog: bool = true
 
 # Defaults
 var image_duration: int = 300

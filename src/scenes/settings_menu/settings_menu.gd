@@ -81,7 +81,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_languages().values().find(Settings.get_language()),
 					Settings.set_language,
 					TYPE_STRING,
-					""),
+					"setting_tooltip_language"),
 			create_label("setting_display_scale"),
 			create_spinbox(
 					Settings.get_display_scale_int(),
@@ -101,14 +101,19 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_check_button(
 					Settings.get_show_menu_bar(),
 					Settings.set_show_menu_bar,
-					""),
+					"setting_tooltip_show_menu_bar"),
 			create_label("setting_waveform_style"),
 			create_option_button(
 					Settings.get_audio_waveform_styles(),
 					Settings.get_audio_waveform_styles().values().find(Settings.get_audio_waveform_style()),
 					Settings.set_audio_waveform_style,
 					TYPE_INT,
-					"setting_tooltip_theme")
+					"setting_tooltip_theme"),
+			create_label("setting_use_native_dialog"),
+			create_check_button(
+					Settings.get_use_native_dialog(),
+					Settings.set_use_native_dialog,
+					"setting_tooltip_use_native_dialog")
 		],
 	
 		"title_defaults" = [
@@ -146,12 +151,12 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_tracks_amount(),
 					1, 32, 1, false, false,
 					Settings.set_default_framerate,
-					""),
+					"setting_tooltip_default_track_amount"),
 			create_label("setting_pause_after_dragging"),
 			create_check_button(
 					Settings.get_pause_after_drag(),
 					Settings.set_pause_after_drag,
-					""),
+					"setting_tooltip_pause_after_dragging"),
 			create_label("setting_delete_empty_space_mod"),
 			create_option_button(
 					Settings.get_delete_empty_modifiers(), 

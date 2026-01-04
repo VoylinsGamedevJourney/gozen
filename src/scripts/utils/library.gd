@@ -15,6 +15,7 @@ const ICON_SUPPORT: String = "uid://qin4ceo74nw6"
 const ICON_ABOUT_GOZEN: String = "uid://rfesonobkxh1"
 const ICON_BUTTON_FADE: String = "uid://buwillf888csp"
 const ICON_DELETE: String = "uid://dyndi17ou8ixo"
+const ICON_FOLDER: String = "uid://8yvgi81apxxg"
 
 const SHADER_IMAGE: String = "uid://vc1lwmduyaub"
 const SHADER_YUV420P: String = "uid://do37k5eu6tfbc"
