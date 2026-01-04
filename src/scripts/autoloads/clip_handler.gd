@@ -169,6 +169,9 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
 
+	InputManager.undo_redo.add_do_method(clips_updated.emit)
+	InputManager.undo_redo.add_undo_method(clips_updated.emit)
+
 	InputManager.undo_redo.commit_action()
 	
 
@@ -187,6 +190,9 @@ func delete_clips(data: PackedInt64Array) -> void:
 
 		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip))
 		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
+
+	InputManager.undo_redo.add_do_method(clips_updated.emit)
+	InputManager.undo_redo.add_undo_method(clips_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
@@ -254,8 +260,6 @@ func resize_clips(data: Array[ResizeClipRequest]) -> void:
 
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_do_method(clips_updated.emit)
-	InputManager.undo_redo.add_undo_method(clips_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
@@ -268,8 +272,10 @@ func set_clip(id: int, clip: ClipData) -> void:
 func _add_clip(clip_data: ClipData) -> void:
 	# Used for undoing the deletion of a file.
 	clips[clip_data.id] = clip_data
+
 	TrackHandler.set_frame_to_clip(clip_data.track_id, clip_data)
 	clip_added.emit(clip_data.id)
+	clips_updated.emit()
 	Project.unsaved_changes = true
 
 
@@ -281,6 +287,7 @@ func _delete_clip(clip_data: ClipData) -> void:
 	TrackHandler.remove_clip_from_frame(track_id, frame_nr)
 	clips.erase(clip_id)
 	clip_deleted.emit(clip_id)
+	clips_updated.emit()
 	Project.unsaved_changes = true
 
 
@@ -292,6 +299,7 @@ func _clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
 	clip.start_frame = new_frame
 	TrackHandler.set_frame_to_clip(new_track, clip)
 
+	clips_updated.emit()
 	Project.unsaved_changes = true
 
 
@@ -301,3 +309,5 @@ func _resize_clip(clip_data: ClipData, resize_amount: int, end: bool) -> void:
 	if !end:
 		clip_data.start_frame += resize_amount
 		clip_data.begin += resize_amount
+
+	clips_updated.emit()

@@ -116,6 +116,26 @@ func _load_video_data(file_path: String) -> void:
 		_: # bt709 and unknown.
 			color_profile = Vector4(1.5748, 0.1873, 0.4681, 1.8556)
 
+	# Loading the clip only video data
+	var file: File = FileHandler.get_file(id)
+
+	for clip_id: int in file.clip_only_video_ids:
+		if ClipHandler.has_clip(clip_id):
+			var clip_video: GoZenVideo = GoZenVideo.new()
+
+			if clip_video.open(file_path) == OK:
+				Threader.mutex.lock()
+				clip_only_video[clip_id] = clip_video
+				Threader.mutex.unlock()
+			else:
+				printerr("Failed to create a clip only video instance for clip id: ", clip_id)
+		else:
+			var clip_id_index: int = file.clip_only_video_ids.find(clip_id)
+
+			Threader.mutex.lock()
+			file.clip_only_video_ids.remove_at(clip_id_index)
+			Threader.mutex.unlock()
+
 	Threader.mutex.lock()
 	video = temp_video
 	image = placeholder
