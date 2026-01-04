@@ -16,13 +16,13 @@ aom_build
 *.tmp
 
 *.dll
-libs/aom_src
-libs/mp3lame_src
-libs/ogg_src
-libs/opus_src
-libs/svtav1_src
-libs/vorbis_src
-libs/vpx_src
+core/aom_src
+core/mp3lame_src
+core/ogg_src
+core/opus_src
+core/svtav1_src
+core/vorbis_src
+core/vpx_src
 .github/Archive.zip
 
 bin

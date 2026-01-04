@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import platform as os_platform
 
-LIBS_COMMON = ["avcodec", "avformat", "avutil", "swresample", "swscale"]
-MARCH_FLAGS = {
-    "x86_64": "x86-64",
-    "arm64": "armv8-a",
-}
-
+LIBS_COMMON = [
+    "avformat",
+    "avcodec",
+    "swscale",
+    "swresample",
+    "avutil"]
 
 env = SConscript("godot_cpp/SConstruct")
 
@@ -57,19 +57,43 @@ env.Append(
 )
 
 
-if "linux" in platform:
-    if use_system == "yes":
-        env.Append(
-            CPPPATH=["/usr/include/ffmpeg/"],
-            LIBS=LIBS_COMMON,
-        )
-    else:
-        env.Append(
-            # LINKFLAGS=["-static-libstdc++", '-Wl,-rpath,"$ORIGIN"'],
-            LINKFLAGS="-fPIC",
-            CCFLAGS=[f"-march={MARCH_FLAGS[arch]}"],
-            LIBS=LIBS_COMMON,
-        )
+if "linux" in platform and use_system == "yes":
+    env.Append(
+        CPPPATH=["/usr/include/ffmpeg/"],
+        LIBS=LIBS_COMMON,
+    )
+elif "linux" in platform:
+    march_flags = {"x86_64": "x86-64", "arm64": "armv8-a"}
+
+    if arch != "arm64":
+        env.Append(LIBS=["z", "bz2", "lzma"])
+
+    libs = [
+        "SvtAv1Enc",
+        "aom",
+        "mp3lame",
+        "opus",
+        "vorbis",
+        "vorbisenc",
+        "ogg",
+        "vpx",
+        "x264",
+        "x265",
+        "va",
+        "va-drm",
+        "va-x11",
+        "vdpau",  # Often enabled by default too (Nvidia)
+        "X11",
+        "m",
+        "pthread",
+        "dl",
+    ]
+
+    env.Append(
+        LINKFLAGS=["-static-libstdc++", "-fPIC", "-Wl,-Bsymbolic"],
+        CCFLAGS=[f"-march={march_flags[arch]}"],
+        LIBS=LIBS_COMMON + libs,
+    )
 elif "windows" in platform:
     if os_platform.system().lower() == "windows" and use_mingw != "yes":
         env.Append(
@@ -93,25 +117,16 @@ elif "windows" in platform:
             "-lvpx",
             "-lx264",
             "-lx265",
-            # '-lX11',
-            # '-lXext',
-            # '-lXv',
             "-ladvapi32",
-            # '-landroid',
-            # '-lasound',
             "-latomic",
             "-lbcrypt",
             "-lbz2",
-            # '-lcamera2ndk',
-            # '-lcrystalhd',
-            # '-ldl',
             "-lgcc",
             "-lgcc_s",
             "-lgdi32",
             "-liconv",
             "-llzma",
             "-lm",
-            # '-lmediandk',
             "-lmfplat",
             "-lole32",
             "-loleaut32",

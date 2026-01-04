@@ -185,7 +185,9 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
     cmd = [
         "./configure",
         f"--prefix={ffmpeg_install_dir}",
-        "--enable-shared",
+        "--disable-shared",
+        "--enable-static",
+        "--disable-asm",
         "--enable-gpl",
         "--enable-version3",
         "--enable-pthreads",
@@ -340,7 +342,9 @@ def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
     cmd = [
         "./configure",
         f"--prefix={ffmpeg_install_dir}",
-        "--enable-shared",
+        "--disable-shared",
+        "--enable-static",
+        "--disable-asm",
         "--enable-gpl",
         "--enable-version3",
         "--enable-pthreads",
