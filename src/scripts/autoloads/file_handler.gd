@@ -8,6 +8,7 @@ signal file_moved(id: int)
 
 signal folder_added(folder_name: String)
 signal folder_deleted(folder_name: String)
+signal folder_renamed(old_folder_name: String, new_folder_name: String)
 
 signal error_file_too_big(id: int)
 
@@ -395,7 +396,6 @@ func add_folder(folder: String) -> void:
 		print("Folder %s already exists!")
 		return
 
-	print("folder added, ", folder)
 	InputManager.undo_redo.create_action("Create folder")
 
 	InputManager.undo_redo.add_do_method(_add_folder.bind(folder))
@@ -403,11 +403,6 @@ func add_folder(folder: String) -> void:
 
 	InputManager.undo_redo.commit_action()
 	Project.unsaved_changes = true
-
-
-func _add_folder(folder: String) -> void:
-	Project.data.folders.append(folder)
-	folder_added.emit(folder)
 
 
 func delete_folder(folder: String) -> void:
@@ -430,10 +425,52 @@ func delete_folder(folder: String) -> void:
 	Project.unsaved_changes = true
 
 
+func rename_folder(old_folder: String, new_folder: String) -> void:
+	if old_folder == "/" or Project.data.folders.has(new_folder):
+		return
+
+	InputManager.undo_redo.create_action("Rename folder")
+
+	InputManager.undo_redo.add_do_method(_rename_folder.bind(old_folder, new_folder))
+	InputManager.undo_redo.add_undo_method(_rename_folder.bind(new_folder, old_folder))
+
+	InputManager.undo_redo.commit_action()
+
+
+func _add_folder(folder: String) -> void:
+	Project.data.folders.append(folder)
+	folder_added.emit(folder)
+
+
 func _delete_folder(folder: String) -> void:
 	if Project.data.folders.has(folder):
 		Project.data.folders.remove_at(Project.data.folders.find(folder))
 		folder_deleted.emit(folder)
+
+
+func _rename_folder(old_folder: String, new_folder: String) -> void:
+	var changed_paths: Dictionary[String, String] = {}
+	var length: int = old_folder.length()
+
+	# First changing all folder paths
+	for index: int in Project.data.folders.size():
+		var current_folder: String = Project.data.folders[index]
+
+		if current_folder.begins_with(old_folder):
+			var new_path: String = new_folder + Project.data.folders[index].substr(length)
+
+			changed_paths[Project.data.folders[index]] = new_path
+			Project.data.folders[index] = new_path
+
+	# Next up we need to update all file paths
+	var keys: PackedStringArray = changed_paths.keys()
+
+	for file_id: int in FileHandler.get_file_ids():
+		if files[file_id].folder in keys:
+			files[file_id].folder = changed_paths[files[file_id].folder]
+
+	folder_renamed.emit(old_folder, new_folder)
+	Project.unsaved_changes = true
 
 
 func enable_clip_only_video(file_id: int, clip_id: int) -> void:

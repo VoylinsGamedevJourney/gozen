@@ -31,6 +31,7 @@ func _ready() -> void:
 	FileHandler.file_nickname_changed.connect(_on_file_nickname_changed)
 	FileHandler.folder_added.connect(_on_folder_added)
 	FileHandler.folder_deleted.connect(_on_folder_deleted)
+	FileHandler.folder_renamed.connect(_on_folder_renamed)
 
 	Project.project_ready.connect(_on_project_ready)
 
@@ -146,7 +147,49 @@ func _on_popup_action_folder_create() -> void:
 
 
 func _on_popup_action_folder_rename() -> void:
-	print("Folder renaming not implemented yet!")
+	var selected_item: TreeItem = tree.get_selected()
+	var folder_path: String = str(selected_item.get_metadata(0))
+
+	# Ensure it is a folder and not root
+	if not folder_path.ends_with("/") or folder_path == "/":
+		return
+	
+	var current_name: String = folder_path.trim_suffix("/").get_file()
+
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog("popup_item_rename")
+	var vbox: VBoxContainer = VBoxContainer.new()
+	var line_edit: LineEdit = LineEdit.new()
+	var label: Label = Label.new()
+
+	label.text = "accept_dialog_text_folder_name" 
+	line_edit.text = current_name
+	line_edit.select_all()
+
+	vbox.add_child(label)
+	vbox.add_child(line_edit)
+	dialog.add_child(vbox)
+
+	var confirm_lambda: Callable = func(_t: String = "") -> void:
+		var new_folder_name: String = line_edit.text.strip_edges()
+
+		if new_folder_name not in ["", "/"] and new_folder_name != current_name:
+			var parent_path: String = folder_path.trim_suffix("/").get_base_dir()
+			var new_folder_path: String = ""
+
+			if parent_path == "/":
+				new_folder_path = "/" + new_folder_name + "/"
+			else:
+				new_folder_path = parent_path + "/" + new_folder_name + "/"
+
+			FileHandler.rename_folder(folder_path, new_folder_path)
+		dialog.queue_free()
+
+	dialog.confirmed.connect(confirm_lambda)
+	line_edit.text_submitted.connect(confirm_lambda)
+
+	add_child(dialog)
+	dialog.popup_centered(Vector2(300, 100))
+	line_edit.grab_focus()
 
 
 func _on_popup_action_folder_delete() -> void:
@@ -262,7 +305,6 @@ func _add_folder_to_tree(folder: String) -> void:
 			folder_items[check_path].set_text(0, folders[i])
 			folder_items[check_path].set_icon(0, preload(Library.ICON_FOLDER))
 			folder_items[check_path].set_icon_max_width(0, 20)
-			folder_items[check_path].set_selectable(0, false)
 			folder_items[check_path].set_metadata(0, check_path)
 			_sort_folder(check_path)
 			
@@ -368,6 +410,38 @@ func _on_folder_deleted(folder_path: String) -> void:
 		item.free() # Remove from Tree
 		folder_items.erase(folder_path)
 
+
+func _on_folder_renamed(old_folder_path: String, new_folder_path: String) -> void:
+	var paths_to_update: PackedStringArray = []
+	var length: int = old_folder_path.length()
+
+	for folder_path: String in folder_items.keys():
+		if folder_path.begins_with(old_folder_path):
+			paths_to_update.append(folder_path)
+	
+	# Update items mapping and metadata
+	for folder_path: String in paths_to_update:
+		var updated_path: String = new_folder_path + folder_path.substr(length)
+		var item: TreeItem = folder_items[folder_path]
+		
+		folder_items.erase(folder_path)
+		folder_items[updated_path] = item
+		item.set_metadata(0, updated_path)
+
+		# Rename the actual path of the exact folder
+		if folder_path == old_folder_path:
+			var new_folder_name: String = new_folder_path.trim_suffix("/").get_file()
+			item.set_text(0, new_folder_name)
+			
+	var parent_path: String = new_folder_path.trim_suffix("/").get_base_dir()
+
+	if parent_path in ["", "/"]:
+		parent_path = "/"
+	else:
+		parent_path += "/"
+	
+	_sort_folder(parent_path)
+	
 
 func _get_recursive_file_ids(item: TreeItem) -> PackedInt64Array:
 	var ids: PackedInt64Array = []
