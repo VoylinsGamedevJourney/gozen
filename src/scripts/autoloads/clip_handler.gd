@@ -20,7 +20,9 @@ func has_clip(id: int) -> bool:
 
 
 func get_clip(id: int) -> ClipData:
-	return clips[id]
+	if has_clip(id):
+		return clips[id]
+	return null
 
 
 func get_type(id: int) -> FileHandler.TYPE:
@@ -255,13 +257,14 @@ func resize_clips(data: Array[ResizeClipRequest]) -> void:
 	for request: ResizeClipRequest in data:
 		var clip: ClipData = clips[request.clip_id]
 
-		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip, request.resize_amount, request.from_end))
-		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip, -request.resize_amount, request.from_end))
+		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip.id, request.resize_amount, request.from_end))
+		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip.id, -request.resize_amount, request.from_end))
 
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 
 	InputManager.undo_redo.commit_action()
+
 
 func set_clip(id: int, clip: ClipData) -> void:
 	clip.id = id
@@ -303,11 +306,18 @@ func _clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
 	Project.unsaved_changes = true
 
 
-func _resize_clip(clip_data: ClipData, resize_amount: int, end: bool) -> void:
-	clip_data.duration += resize_amount
+func _resize_clip(clip_id: int, resize_amount: int, end: bool) -> void:
+	var clip_data: ClipData = clips[clip_id]
 
 	if !end:
-		clip_data.start_frame += resize_amount
-		clip_data.begin += resize_amount
+		var old_start_frame: int = clip_data.start_frame
+		var new_start_frame: int = old_start_frame - resize_amount
 
+		clip_data.start_frame = new_start_frame
+		clip_data.begin -= resize_amount
+
+		TrackHandler.remove_clip_from_frame(clip_data.track_id, old_start_frame)
+		TrackHandler.set_frame_to_clip(clip_data.track_id, clip_data)
+
+	clip_data.duration += resize_amount
 	clips_updated.emit()

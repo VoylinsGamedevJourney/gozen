@@ -155,6 +155,18 @@ func get_all_clips(track_id: int) -> Array[ClipData]:
 
 ## Used for calculating the end of the timeline.
 func get_last_clip(track_id: int) -> ClipData:
+	while true:
+		if tracks[track_id].clips.size() == 0:
+			return null
+
+		var frame_nr: int = get_frame_nrs(track_id)[-1]
+		var clip_id: int = tracks[track_id].clips[frame_nr]
+
+		if !ClipHandler.has_clip(clip_id):
+			tracks[track_id].clips.erase(frame_nr)
+			continue
+		break
+
 	return ClipHandler.get_clip(tracks[track_id].clips[get_frame_nrs(track_id)[-1]])
 
 
@@ -164,10 +176,13 @@ func get_clip_at(track_id: int, frame_nr: int) -> ClipData:
 		if frame_nr < frame_point:
 			continue
 
-		var clip: ClipData = ClipHandler.get_clip(tracks[track_id].clips[frame_point])
+		var clip_data: ClipData = ClipHandler.get_clip(tracks[track_id].clips[frame_point])
 
-		if clip.end_frame > frame_nr: # Check if this is the correct clip.
-			return clip
+		if clip_data == null:
+			remove_clip_from_frame(track_id, frame_nr)
+			continue
+		elif clip_data.end_frame > frame_nr: # Check if this is the correct clip.
+			return clip_data
 			
 	return null
 
@@ -179,9 +194,12 @@ func get_clips_in(track_id: int, start: int, end: int) -> Array[ClipData]:
 		if frame_nr > end:
 			break # We reached the end of possible clips in this track.
 
-		var clip_data: ClipData = ClipHandler.get_clip(get_clip_id(track_id, frame_nr))
+		var clip_data: ClipData = ClipHandler.get_clip(tracks[track_id].clips[frame_nr])
 
-		if clip_data.end_frame < start:
+		if clip_data == null:
+			remove_clip_from_frame(track_id, frame_nr)
+			continue
+		elif clip_data.end_frame < start:
 			continue # Not reached the point of usable data yet
 
 		data.append(clip_data)

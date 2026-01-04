@@ -49,6 +49,8 @@ func _ready() -> void:
 	viewport.add_child(background)
 	add_child(viewport)
 
+	ClipHandler.clips_updated.connect(_on_clips_updated)
+
 
 func _process(delta: float) -> void:
 	if !is_playing:
@@ -186,10 +188,13 @@ func _get_next_clip(new_frame_nr: int, track_id: int) -> int:
 
 func _check_clip_end(new_frame_nr: int, clip_id: int) -> bool:
 	if !ClipHandler.has_clip(clip_id):
-		print("clip false")
 		return false
-	else:
-		return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
+	return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
+	
+
+func _on_clips_updated() -> void:
+	update_audio()
+	update_frame()
 
 
 # Audio stuff  ----------------------------------------------------------------
@@ -208,12 +213,31 @@ func find_audio(frame: int, track_id: int) -> int:
 	if last == -1:
 		return -1
 
-	last = TrackHandler.get_clip_at(track_id, last).id
+	var clip_data: ClipData = TrackHandler.get_clip_at(track_id, last)
+
+	if clip_data == null:
+		printerr("Clip empty at: ", last)
+		return -1
+
+	last = clip_data.id
 
 	if frame < ClipHandler.get_end_frame(last):
 		return last
 
 	return -1
+
+
+func update_audio() -> void:
+	for player: AudioPlayer in audio_players:
+		if player.clip_id != -1:
+			if !ClipHandler.has_clip(player.clip_id):
+				player.stop()
+			else:
+				var clip: ClipData = ClipHandler.get_clip(player.clip_id)
+				player.stop_frame = clip.end_frame
+				
+				if frame_nr < clip.start_frame or frame_nr > clip.end_frame:
+					player.stop()
 
 			
 # Video stuff  ----------------------------------------------------------------

@@ -54,6 +54,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_p3xsq")
 script = ExtResource("2_2or7f")
 
 [connection signal="gui_input" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_gui_input"]
+[connection signal="mouse_entered" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_mouse_exited"]
 [connection signal="zoom_changed" from="TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="TimelineScroll/Timeline" to="TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
