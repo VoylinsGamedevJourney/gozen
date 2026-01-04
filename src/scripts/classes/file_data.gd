@@ -30,16 +30,16 @@ func _update_duration() -> void:
 	var l_file: File = FileHandler.get_file(id)
 
 	match l_file.type:
-		File.TYPE.IMAGE:
+		FileHandler.TYPE.IMAGE:
 			l_file.duration = Settings.get_image_duration()
-		File.TYPE.AUDIO:
+		FileHandler.TYPE.AUDIO:
 			l_file.duration = floor(float(audio.data.size()) / (4 * 44101) * Project.get_framerate())
-		File.TYPE.VIDEO:
+		FileHandler.TYPE.VIDEO:
 			var frame_time: float = video.get_frame_count() / video.get_framerate()
 			l_file.duration = floor(frame_time * Project.get_framerate())
-		File.TYPE.COLOR:
+		FileHandler.TYPE.COLOR:
 			l_file.duration = Settings.get_color_duration()
-		File.TYPE.TEXT:
+		FileHandler.TYPE.TEXT:
 			l_file.duration = Settings.get_text_duration()
 		# TODO: Add duration for PCK file.
 
@@ -60,11 +60,11 @@ func init_data(file_data_id: int) -> bool:
 		image = file.temp_file.image_data
 	elif file.path == "temp://image":
 		image = file.temp_file.image_data
-	elif file.type == File.TYPE.IMAGE:
+	elif file.type == FileHandler.TYPE.IMAGE:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
-	elif file.type == File.TYPE.VIDEO:
+	elif file.type == FileHandler.TYPE.VIDEO:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
-	elif file.type == File.TYPE.PCK:
+	elif file.type == FileHandler.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(file.path):
 			printerr("Something went wrong loading pck data from '%s'!" % file.path)
 			return false

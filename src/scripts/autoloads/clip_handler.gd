@@ -23,7 +23,7 @@ func get_clip(id: int) -> ClipData:
 	return clips[id]
 
 
-func get_type(id: int) -> File.TYPE:
+func get_type(id: int) -> FileHandler.TYPE:
 	return FileHandler.get_file(clips[id].file_id).type
 
 
@@ -56,11 +56,11 @@ func get_clip_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
 
 
 func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
-	var type: File.TYPE = ClipHandler.get_type(clip.id)
+	var type: FileHandler.TYPE = ClipHandler.get_type(clip.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
 		return null
-	elif type == File.TYPE.VIDEO:
+	elif type == FileHandler.TYPE.VIDEO:
 		# For the video stuff, we load in the data for the shader. The FileData
 		# has a placeholder texture of the size of the video so in the end we
 		# do the same as for the images, we return the picture. Only difference

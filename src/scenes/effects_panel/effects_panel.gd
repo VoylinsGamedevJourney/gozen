@@ -101,22 +101,22 @@ func on_clip_pressed(id: int) -> void:
 		return
 
 	var data: ClipData = ClipHandler.get_clip(id)
-	var type: File.TYPE = ClipHandler.get_clip_type(id)
+	var type: FileHandler.TYPE = ClipHandler.get_clip_type(id)
 	
 	match type:
-		File.TYPE.IMAGE:
+		FileHandler.TYPE.IMAGE:
 			button_video_effects.visible = false
 			button_audio_effects.visible = false
 			button_video_effects.button_pressed = true
 			button_video_effects.pressed.emit()
 			_set_video_effect_values()
-		File.TYPE.AUDIO:
+		FileHandler.TYPE.AUDIO:
 			button_video_effects.visible = false
 			button_audio_effects.visible = false
 			button_audio_effects.button_pressed = true
 			button_audio_effects.pressed.emit()
 			_set_audio_effect_values()
-		File.TYPE.VIDEO:
+		FileHandler.TYPE.VIDEO:
 			var showing: bool = FileHandler.get_file_data(data.file_id).audio != null
 
 			button_video_effects.visible = true
@@ -125,7 +125,7 @@ func on_clip_pressed(id: int) -> void:
 
 			if button_audio_effects.visible:
 				_set_audio_effect_values()
-		File.TYPE.TEXT:
+		FileHandler.TYPE.TEXT:
 			button_video_effects.visible = true
 			button_audio_effects.visible = false
 			button_video_effects.button_pressed = true

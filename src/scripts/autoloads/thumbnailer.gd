@@ -70,9 +70,9 @@ func get_thumb(file_id: int) -> Texture2D:
 
 		# Add the correct placeholder image.
 		match FileHandler.get_file(file_id).type:
-			File.TYPE.AUDIO:
+			FileHandler.TYPE.AUDIO:
 				return _get_default_thumb_audio()
-			File.TYPE.TEXT:
+			FileHandler.TYPE.TEXT:
 				return _get_default_thumb_text()
 			_: # Video placeholder.
 				return _get_default_thumb_video()
@@ -106,19 +106,19 @@ func _gen_thumb(file_id: int) -> void:
 
 	var file: File = FileHandler.get_file(file_id)
 	var path: String = file.path
-	var type: File.TYPE = file.type
+	var type: FileHandler.TYPE = file.type
 	var image: Image
 
 	match type:
-		File.TYPE.IMAGE:
+		FileHandler.TYPE.IMAGE:
 			image = Image.load_from_file(path)
-		File.TYPE.VIDEO:
+		FileHandler.TYPE.VIDEO:
 			image = FileHandler.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
-		File.TYPE.AUDIO:
+		FileHandler.TYPE.AUDIO:
 			image = await FileHandler.get_file_data(file_id).generate_audio_thumb()
 	
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
-	if type != File.TYPE.AUDIO:
+	if type != FileHandler.TYPE.AUDIO:
 		image = scale_thumbnail(image)
 
 	if image.save_webp(thumb_folder + FILE_NAME % file_id):

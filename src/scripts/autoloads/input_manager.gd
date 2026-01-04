@@ -89,7 +89,7 @@ func clipboard_paste() -> void:
 
 	# The pasted data is an image/screenshot.
 	if image != null:
-		var file: File = File.create("temp://image")
+		var file: File = FileHandler.create("temp://image")
 
 		file.nickname = "Image %s" % file.id
 		file.temp_file = TempFile.new()

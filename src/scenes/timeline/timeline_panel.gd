@@ -2,12 +2,13 @@ extends PanelContainer
 
 enum POPUP_ACTION { 
 	# Clip options
-	DELETE_CLIP,
-	CUT_CLIP,
+	CLIP_ONLY_VIDEO,
+	CLIP_DELETE,
+	CLIP_CUT,
 	# Track options
 	REMOVE_EMPTY_SPACE,
-	ADD_TRACK,
-	REMOVE_TRACK }
+	TRACK_ADD,
+	TRACK_REMOVE }
 
 signal zoom_changed(new_zoom: float)
 
@@ -26,12 +27,12 @@ const PLAYHEAD_WIDTH: int = 2
 const SNAPPING: int = 200
 
 const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
-const STYLE_BOXES: Dictionary[File.TYPE, Array] = {
-    File.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
-    File.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
-    File.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
-    File.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
-    File.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
+const STYLE_BOXES: Dictionary[FileHandler.TYPE, Array] = {
+    FileHandler.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
+    FileHandler.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
+    FileHandler.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+    FileHandler.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
+    FileHandler.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
 const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 
@@ -47,6 +48,7 @@ var draggable: Draggable = null
 var can_drop_data: bool = false
 
 var _right_click_pos: Vector2i = Vector2i.ZERO
+var _right_click_clip: ClipData = null
 
 
 
@@ -112,24 +114,26 @@ func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
 			move_playhead(get_frame_from_mouse())
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_popup_menu()
-		var clip: ClipData = _get_clip_on_mouse()
+		_right_click_clip = _get_clip_on_mouse()
 
 		_right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
 
-		if clip != null:
-			if clip.id not in selected_clip_ids:
-				selected_clip_ids = [clip.id]
+		if _right_click_clip != null:
+			if _right_click_clip.id not in selected_clip_ids:
+				selected_clip_ids = [_right_click_clip.id]
 				queue_redraw()
 
 			# TODO: Set icons and shortcuts
-			popup.add_item("popup_item_clip_delete", POPUP_ACTION.DELETE_CLIP)
-			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CUT_CLIP)
+			if ClipHandler.get_type(_right_click_clip.id) in EditorCore.VISUAL_TYPES:
+				popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_ONLY_VIDEO)
+			popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
+			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
 			popup.add_separator()
 		else:
 			popup.add_item("popup_item_track_remove_empty_space", POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
-		popup.add_item("popup_item_track_add", POPUP_ACTION.ADD_TRACK)
-		popup.add_item("popup_item_track_remove", POPUP_ACTION.REMOVE_TRACK)
+		popup.add_item("popup_item_track_add", POPUP_ACTION.TRACK_ADD)
+		popup.add_item("popup_item_track_remove", POPUP_ACTION.TRACK_REMOVE)
 
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_popup_menu(popup)
@@ -387,12 +391,14 @@ func _on_mouse_exited() -> void:
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	match id:
 		# Clip options
-		POPUP_ACTION.DELETE_CLIP: ClipHandler.delete_clips(selected_clip_ids)
-		POPUP_ACTION.CUT_CLIP: cut_clips_at(_right_click_pos.y)
+		POPUP_ACTION.CLIP_ONLY_VIDEO: 
+			FileHandler.enable_clip_only_video(_right_click_clip.file_id, _right_click_clip.id)
+		POPUP_ACTION.CLIP_DELETE: ClipHandler.delete_clips(selected_clip_ids)
+		POPUP_ACTION.CLIP_CUT: cut_clips_at(_right_click_pos.y)
 		# Track options
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: remove_empty_space_at(_right_click_pos.x, _right_click_pos.y)
-		POPUP_ACTION.ADD_TRACK: TrackHandler.add_track(_right_click_pos.x)
-		POPUP_ACTION.REMOVE_TRACK: TrackHandler.remove_track(_right_click_pos.x)
+		POPUP_ACTION.TRACK_ADD: TrackHandler.add_track(_right_click_pos.x)
+		POPUP_ACTION.TRACK_REMOVE: TrackHandler.remove_track(_right_click_pos.x)
 
 	queue_redraw()
 

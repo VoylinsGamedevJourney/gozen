@@ -8,8 +8,8 @@ signal play_changed(value: bool)
 enum SHADER_ID { EMPTY, YUV, YUV_FULL, IMAGE }
 
 const VISUAL_TYPES: PackedInt64Array = [
-		File.TYPE.IMAGE, File.TYPE.COLOR, File.TYPE.TEXT, File.TYPE.VIDEO ]
-const AUDIO_TYPES: PackedInt64Array = [ File.TYPE.AUDIO, File.TYPE.VIDEO ]
+		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT, FileHandler.TYPE.VIDEO ]
+const AUDIO_TYPES: PackedInt64Array = [ FileHandler.TYPE.AUDIO, FileHandler.TYPE.VIDEO ]
 
 
 var viewport: SubViewport

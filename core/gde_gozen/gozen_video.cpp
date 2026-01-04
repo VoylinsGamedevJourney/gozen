@@ -332,7 +332,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 				_log_err("End of file reached! Going back 1 frame!");
 
 				if ((response = _seek_frame(frame_nr--)) < 0)
-					return _log_err("Couldn't seek");
+					return _log_err("Couldn't seek frame! Error core: " + String::num_int64(response));
 
 				continue;
 			}
@@ -363,7 +363,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 	av_frame_unref(av_frame.get());
 	av_packet_unref(av_packet.get());
 
-	return OK;
+	return true;
 }
 
 bool GoZenVideo::next_frame(bool skip) {

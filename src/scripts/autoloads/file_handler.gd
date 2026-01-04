@@ -16,7 +16,15 @@ enum STATUS {
 	LOADING = 0,
 	LOADED = 1,
 }
-
+enum TYPE {
+	EMPTY = -1,
+	IMAGE,
+	AUDIO,
+	VIDEO,
+	TEXT,
+	COLOR,
+	PCK
+}
 
 
 
@@ -83,7 +91,7 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 				continue
 
 			if get_file_data(file.id) != null:
-				if get_file(file.id).type == File.TYPE.VIDEO:
+				if get_file(file.id).type == TYPE.VIDEO:
 					if !has_file(file.id):
 						file.status = STATUS.PROBLEM
 					elif get_file_data(file.id).video == null or !get_file_data(file.id).video.is_open():
@@ -136,7 +144,7 @@ func add_file(file_drop: FileDrop) -> void:
 			file_drop.status = STATUS.ALREADY_LOADED
 			return
 
-	var file: File = File.create(file_drop.path)
+	var file: File = create_file(file_drop.path)
 
 	if file == null:
 		file_drop.status = STATUS.PROBLEM
@@ -149,6 +157,84 @@ func add_file(file_drop: FileDrop) -> void:
 		return
 	else:
 		file_drop.id = file.id
+
+
+func create_file(file_path: String) -> File:
+	var file: File = File.new()
+	var extension: String = file_path.get_extension().to_lower()
+
+	if extension in ProjectSettings.get_setting("extensions/image"):
+		file.type = TYPE.IMAGE
+		file.modified_time = FileAccess.get_modified_time(file_path)
+	elif extension in ProjectSettings.get_setting("extensions/audio"):
+		file.type = TYPE.AUDIO
+		file.modified_time = FileAccess.get_modified_time(file_path)
+	elif extension in ProjectSettings.get_setting("extensions/video"):
+		file.type = TYPE.VIDEO
+		file.modified_time = FileAccess.get_modified_time(file_path)
+	elif file_path == "temp://image":
+		file.type = TYPE.IMAGE
+	elif file_path == "temp://text":
+		file.type = TYPE.TEXT
+	elif file_path == "temp://color":
+		file.type = TYPE.COLOR
+	elif extension == "pck":
+		file.type = TYPE.PCK
+	else:
+		printerr("Invalid file: ", file_path)
+		return null
+
+	file.id = Utils.get_unique_id(FileHandler.get_file_ids())
+	file.path = file_path
+
+	if file_path.contains("temp://"):
+		var file_type: String = file_path.trim_prefix("temp://").capitalize()
+		file.nickname = "%s %s" % [file_type, file.id]
+	else:
+		file.nickname = file_path.get_file()
+
+	return file
+
+
+func check_valid(file_path: String) -> bool:
+	# Only for real files, not temp ones.
+	if !FileAccess.file_exists(file_path):
+		return false
+	var ext: String = file_path.get_extension().to_lower()
+
+	if ext in ProjectSettings.get_setting("extensions/image"):
+		return true
+	elif ext in ProjectSettings.get_setting("extensions/audio"):
+		return true
+	elif ext in ProjectSettings.get_setting("extensions/video"):
+		return true
+
+	return false
+
+
+func enable_clip_only_video(file_id: int, clip_id: int) -> void:
+	var file: File = get_file(file_id)
+	var file_data: FileData = get_file_data(file_id)
+	var video: GoZenVideo = GoZenVideo.new()
+
+	if video.open(file.path):
+		printerr("Loading video at path '%s' failed!" % file.path)
+		return
+
+	file.clip_only_video_ids.append(clip_id)
+	file_data.clip_only_video[clip_id] = video
+
+
+func disable_clip_only_video(file_id: int, clip_id: int) -> void:
+	var file_data: FileData = FileHandler.get_file_data(file_id)
+
+	if file_data.clip_only_video_ids.has(clip_id):
+		var position: int = file_data.clip_only_video_ids.find(clip_id)
+
+		file_data.clip_only_video_ids.remove_at(position)
+
+	if file_data.clip_only_video.has(clip_id):
+		file_data.clip_only_video.erase(clip_id)
 
 
 func add_file_object(file: File) -> void:
@@ -191,7 +277,7 @@ func check_modified_files() -> void:
 				reload_file_data(file.id)
 
 
-func get_file_type(file_id: int) -> File.TYPE:
+func get_file_type(file_id: int) -> TYPE:
 	return get_file(file_id).type
 
 
@@ -232,8 +318,6 @@ func save_image_to_file(path: String, file: File) -> void:
 func save_audio_to_wav(path: String, file: File) -> void:
 	if get_file_data(file.id).audio.save_to_wav(path):
 		printerr("Error occured when saving to WAV!")
-
-
 
 
 #-- File setters & getters --- 

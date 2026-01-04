@@ -21,6 +21,7 @@ var auto_save_timer: Timer
 
 func _ready() -> void:
 	get_window().close_requested.connect(_on_close_requested)
+	ClipHandler.clip_added.connect(func(_c: int) -> void: update_timeline_end())
 	CommandManager.register(
 			"command_project_settings", open_settings_menu, "open_project_settings")
 
@@ -112,9 +113,9 @@ func open(new_project_path: String) -> void:
 		if !FileHandler.load_file_data(i):
 			continue # File became invaled so entry got deleted.
 
-		var type: File.TYPE = data.files[i].type
+		var type: FileHandler.TYPE = data.files[i].type
 
-		if type == File.TYPE.VIDEO and FileHandler.data[i].video == null:
+		if type == FileHandler.TYPE.VIDEO and FileHandler.data[i].video == null:
 			await FileHandler.data[i].video_loaded
 
 		loading_overlay.increment_progress_bar(progress_increment)

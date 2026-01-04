@@ -100,14 +100,14 @@ func _file_item_clicked(_mouse_pos: Vector2, button_index: int) -> void:
 		popup.add_item("popup_item_reload", POPUP_ACTION.FILE_RELOAD)
 		popup.add_item("popup_item_delete", POPUP_ACTION.FILE_DELETE)
 
-		if file.type == File.TYPE.IMAGE:
+		if file.type == FileHandler.TYPE.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator("popup_separator_image_options")
 				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_AS)
-		if file.type == File.TYPE.VIDEO:
+		if file.type == FileHandler.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
-		if file.type == File.TYPE.TEXT:
+		if file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
 			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
 			if file.path.contains("temp://"):
@@ -149,10 +149,10 @@ func _on_popup_option_pressed(option_id: int, file: File) -> void:
 
 			InputManager.undo_redo.commit_action()
 		POPUP_ACTION.FILE_SAVE_AS: # Only for temp files such as Images.
-			if file.type == File.TYPE.TEXT:
+			if file.type == FileHandler.TYPE.TEXT:
 				# TODO: Implement duplicating text files
 				printerr("Not implemented yet!")
-			elif file.type == File.TYPE.IMAGE:
+			elif file.type == FileHandler.TYPE.IMAGE:
 				var dialog: FileDialog = PopupManager.create_file_dialog(
 						"title_save_image_to_file",
 						FileDialog.FILE_MODE_SAVE_FILE,
