@@ -39,8 +39,10 @@ script = ExtResource("2_jxg8b")
 timeline_scroll = NodePath("../../TimelineScroll")
 
 [node name="TimelineScroll" type="ScrollContainer" parent="." node_paths=PackedStringArray("timestamp_scroll")]
-custom_minimum_size = Vector2(0, 185)
+custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
+scroll_horizontal_custom_step = 30.0
+scroll_vertical_custom_step = 30.0
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 

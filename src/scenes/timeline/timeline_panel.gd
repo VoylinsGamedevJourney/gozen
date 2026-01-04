@@ -59,10 +59,11 @@ var state: STATE = STATE.NORMAL
 
 var draggable: Draggable = null
 
-var _right_click_pos: Vector2i = Vector2i.ZERO
-var _right_click_clip: ClipData = null
+var right_click_pos: Vector2i = Vector2i.ZERO
+var right_click_clip: ClipData = null
 
-var _resize_target: ResizeTarget = null
+var resize_target: ResizeTarget = null
+var pressed_clip: ClipData = null
 
 
 
@@ -71,6 +72,15 @@ func _ready() -> void:
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	ClipHandler.clips_updated.connect(queue_redraw)
 	EditorCore.frame_changed.connect(queue_redraw)
+	scroll.get_h_scroll_bar().value_changed.connect(func(_f: float) -> void: queue_redraw())
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DRAG_END:
+		if state == STATE.MOVING or state == STATE.DROPPING:
+			state = STATE.NORMAL
+			draggable = null
+			queue_redraw()
 
 
 func _input(event: InputEvent) -> void:
@@ -100,71 +110,51 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("timeline_zoom_out", false, true):
 			zoom_at_mouse(1.0 / ZOOM_STEP)
 		else:
-			_on_gui_input_mouse(event)
+			_on_gui_input_mouse_button(event)
 			get_window().gui_release_focus()
-			queue_redraw()
+		queue_redraw()
 	elif event is InputEventMouseMotion:
-		if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
-			scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
-			queue_redraw()
-
-		var clip_on_mouse: ClipData = _get_clip_on_mouse()
-
-		if state == STATE.SCRUBBING and event.button_mask & MOUSE_BUTTON_LEFT:
-			move_playhead(get_frame_from_mouse())
-		elif state == STATE.MOVING:
-			mouse_default_cursor_shape = Control.CURSOR_DRAG
-		elif state == STATE.DROPPING:
-			mouse_default_cursor_shape = Control.CURSOR_CAN_DROP
-		elif state == STATE.RESIZING:
-			mouse_default_cursor_shape = Control.CURSOR_HSIZE
-			_handle_resize_motion()
-		elif clip_on_mouse != null:
-			if _get_resize_target() != null and clip_on_mouse.duration * zoom > RESIZE_CLIP_MIN_WIDTH:
-				mouse_default_cursor_shape = Control.CURSOR_HSIZE
-			else:
-				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		else:
-			mouse_default_cursor_shape = Control.CURSOR_ARROW
+		_on_gui_input_mouse_motion(event)
 
 
-func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
+func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	if event.is_released():
 		if state == STATE.RESIZING:
 			_commit_current_resize()
 
-		state = STATE.NORMAL
+		_on_ui_cancel()
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		# Check if clip is pressed or not.
-		var clip: ClipData = _get_clip_on_mouse()
+		state = STATE.NORMAL
+		pressed_clip = _get_clip_on_mouse()
 
-		if clip == null:
+		if pressed_clip == null:
 			state = STATE.SCRUBBING
 			move_playhead(get_frame_from_mouse())
 			return
 
-		_resize_target = _get_resize_target()
+		resize_target = _get_resize_target()
 
-		if _resize_target:
+		if resize_target:
 			state = STATE.RESIZING
 		else:
 			if event.shift_pressed:
-				selected_clip_ids.append(clip.id)
+				selected_clip_ids.append(pressed_clip.id)
 			else:
-				selected_clip_ids = [clip.id]
+				selected_clip_ids = [pressed_clip.id]
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_popup_menu()
-		_right_click_clip = _get_clip_on_mouse()
+		right_click_clip = _get_clip_on_mouse()
 
-		_right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
+		right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
 
-		if _right_click_clip != null:
-			if _right_click_clip.id not in selected_clip_ids:
-				selected_clip_ids = [_right_click_clip.id]
+		if right_click_clip != null:
+			if right_click_clip.id not in selected_clip_ids:
+				selected_clip_ids = [right_click_clip.id]
 				queue_redraw()
 
 			# TODO: Set icons and shortcuts
-			if ClipHandler.get_type(_right_click_clip.id) in EditorCore.VISUAL_TYPES:
+			if ClipHandler.get_type(right_click_clip.id) in EditorCore.VISUAL_TYPES:
 				popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_ONLY_VIDEO)
 			popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
 			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
@@ -179,9 +169,40 @@ func _on_gui_input_mouse(event: InputEventMouseButton) -> void:
 		PopupManager.show_popup_menu(popup)
 
 
+func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
+	if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
+		scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
+		queue_redraw()
+
+	var clip_on_mouse: ClipData = _get_clip_on_mouse()
+
+	if clip_on_mouse != null:
+		var clip_name: String = FileHandler.get_file_name(clip_on_mouse.file_id)
+
+		if tooltip_text != clip_name:
+			tooltip_text = clip_name
+	elif tooltip_text != "" or state != STATE.NORMAL:
+		tooltip_text = ""
+
+	if state == STATE.NORMAL and clip_on_mouse != null:
+		if _get_resize_target() != null:
+			mouse_default_cursor_shape = Control.CURSOR_HSIZE
+		else:
+			mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	elif state == STATE.SCRUBBING and event.button_mask & MOUSE_BUTTON_LEFT:
+		move_playhead(get_frame_from_mouse())
+	elif state == STATE.RESIZING:
+		mouse_default_cursor_shape = Control.CURSOR_HSIZE
+		_handle_resize_motion()
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW
+
+
 func _on_ui_cancel() -> void:
 	state = STATE.NORMAL
-	_resize_target = null
+	draggable = null
+	pressed_clip = null
+	resize_target = null
 	mouse_default_cursor_shape = Control.CURSOR_ARROW
 	queue_redraw()
 
@@ -190,6 +211,8 @@ func _draw() -> void:
 	var visible_clip_ids: PackedInt64Array = []
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili(visible_start + (size.x / zoom))
+	var visible_left: float = scroll.scroll_horizontal
+	var visible_right: float = visible_left + scroll.size.x
 
 	for track_id: int in TrackHandler.get_tracks_size():
 		for clip: ClipData in TrackHandler.get_clips_in(track_id, visible_start, visible_end):
@@ -199,13 +222,15 @@ func _draw() -> void:
 	for i: int in TrackHandler.tracks.size() - 1:
 		var y: int  = TRACK_TOTAL_SIZE * (i + 1)
 
-		draw_dashed_line(Vector2(0, y), Vector2(size.x, y), TRACK_LINE_COLOR, TRACK_LINE_WIDTH)
+		draw_dashed_line(Vector2(visible_left, y), Vector2(visible_right, y), TRACK_LINE_COLOR, TRACK_LINE_WIDTH)
 
 	# - Playhead
 	var playhead_pos: float = EditorCore.frame_nr * zoom
 	draw_line(
-			Vector2(playhead_pos, 0), Vector2(playhead_pos, size.y),
-			Color(0.4, 0.4, 0.4), PLAYHEAD_WIDTH)
+			Vector2(playhead_pos, 0),
+			Vector2(playhead_pos, size.y),
+			Color(0.4, 0.4, 0.4),
+			PLAYHEAD_WIDTH)
 
 	# - Clip preview(s)
 	if state in [STATE.MOVING, STATE.DROPPING] and draggable != null: # Moving + Dropping preview
@@ -232,37 +257,42 @@ func _draw() -> void:
 				if clip_id in visible_clip_ids:
 					visible_clip_ids.remove_at(visible_clip_ids.find(clip_id))
 	elif state == STATE.RESIZING: # Resizing preview
-		var clip_data: ClipData = ClipHandler.get_clip(_resize_target.clip_id)
+		var clip_data: ClipData = ClipHandler.get_clip(resize_target.clip_id)
 		var draw_start: float = clip_data.start_frame
 		var draw_length: int = clip_data.duration
 
-		if _resize_target.is_end:
-			draw_length += _resize_target.delta
+		if resize_target.is_end:
+			draw_length += resize_target.delta
 		else:
-			draw_start += _resize_target.delta * zoom
-			draw_length -= _resize_target.delta
+			draw_start += resize_target.delta * zoom
+			draw_length -= resize_target.delta
 
 		var preview_position: Vector2 = Vector2(draw_start, clip_data.track_id * TRACK_TOTAL_SIZE)
 		var preview_size: Vector2 = Vector2(draw_length * zoom, TRACK_HEIGHT)
 		
 		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 
-		if _resize_target.clip_id in visible_clip_ids:
-			visible_clip_ids.remove_at(visible_clip_ids.find(_resize_target.clip_id))
+		if resize_target.clip_id in visible_clip_ids:
+			visible_clip_ids.remove_at(visible_clip_ids.find(resize_target.clip_id))
 
 	# - Clip blocks
 	for clip_id: int in visible_clip_ids:
 		var clip: ClipData = ClipHandler.get_clip(clip_id)
 		var box_type: int = 1 if clip.id in selected_clip_ids else 0
-		var pos: Vector2 = Vector2(clip.start_frame * zoom, TRACK_TOTAL_SIZE * clip.track_id)
-		var new_clip: Rect2 = Rect2(pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
+		var box_pos: Vector2 = Vector2(clip.start_frame * zoom, TRACK_TOTAL_SIZE * clip.track_id)
+		var new_clip: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
+		var text_pos_x: float = box_pos.x
+		var clip_end_x: float = box_pos.x + (clip.duration * zoom)
+
+		if text_pos_x < scroll.scroll_horizontal and text_pos_x + TEXT_OFFSET.x <= clip_end_x:
+			text_pos_x = scroll.scroll_horizontal
 
 		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip.id)][box_type], new_clip)
 		draw_string(
 				get_theme_default_font(),
-				pos + TEXT_OFFSET,
+				Vector2(text_pos_x, box_pos.y) + TEXT_OFFSET,
 				FileHandler.get_file_name(clip.file_id),
-				HORIZONTAL_ALIGNMENT_LEFT, 0,
+				HORIZONTAL_ALIGNMENT_LEFT, clip.duration * zoom - TEXT_OFFSET.x,
 				11, # Font size
 				Color(0.9, 0.9, 0.9))
 		
@@ -272,7 +302,12 @@ func _draw() -> void:
 
 
 func _get_clip_on_mouse() -> ClipData:
-	return TrackHandler.get_clip_at(get_track_from_mouse(), get_frame_from_mouse())
+	var track_id: int = get_track_from_mouse()
+
+	if track_id < 0 or track_id >= TrackHandler.get_tracks_size():
+		return null
+
+	return TrackHandler.get_clip_at(track_id, get_frame_from_mouse())
 
 
 func _get_resize_target() -> ResizeTarget:
@@ -281,6 +316,13 @@ func _get_resize_target() -> ResizeTarget:
 
 	if track_id < 0 or track_id >= TrackHandler.get_tracks_size():
 		return null
+
+	var clip_on_mouse: ClipData = _get_clip_on_mouse()
+
+	if clip_on_mouse == null:
+		return null
+	elif clip_on_mouse.duration * zoom > RESIZE_CLIP_MIN_WIDTH:
+		return null # Too small
 
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
@@ -304,16 +346,13 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
-	if state != STATE.NORMAL:
+	if state != STATE.NORMAL or pressed_clip == null:
 		return null
 
-	var clicked_clip: ClipData = _get_clip_on_mouse()
-	
-	if clicked_clip == null:
-		return null
+	var clicked_clip: ClipData = pressed_clip
 		
-	if clicked_clip.id not in selected_clip_ids:
-		selected_clip_ids = [clicked_clip.id]
+	if pressed_clip.id not in selected_clip_ids:
+		selected_clip_ids = [pressed_clip.id]
 		queue_redraw()
 
 	var data: Draggable = Draggable.new()
@@ -486,52 +525,52 @@ func _on_mouse_exited() -> void:
 
 
 func _commit_current_resize() -> void:
-	if _resize_target.delta != 0:
+	if resize_target.delta != 0:
 		var request: ResizeClipRequest = ResizeClipRequest.new(
-			_resize_target.clip_id,
-			_resize_target.delta if _resize_target.is_end else -_resize_target.delta,
-			_resize_target.is_end)
+			resize_target.clip_id,
+			resize_target.delta if resize_target.is_end else -resize_target.delta,
+			resize_target.is_end)
 
 		ClipHandler.resize_clips([request])
 
-	_resize_target = null
+	resize_target = null
 	queue_redraw()
 
 
 func _handle_resize_motion() -> void:
-	var track_id: int = ClipHandler.get_clip(_resize_target.clip_id).track_id
+	var track_id: int = ClipHandler.get_clip(resize_target.clip_id).track_id
 	var current_frame: int = get_frame_from_mouse()
 	
-	if _resize_target.is_end: # Resizing end
-		var new_duration: int = current_frame - _resize_target.original_start
+	if resize_target.is_end: # Resizing end
+		var new_duration: int = current_frame - resize_target.original_start
 		
 		if new_duration < 1:
 			new_duration = 1
 		
 		# Collision detection
 		var free_region: Vector2i = TrackHandler.get_free_region(
-			track_id, _resize_target.original_start + 1, [_resize_target.clip_id])
+			track_id, resize_target.original_start + 1, [resize_target.clip_id])
 
-		if (_resize_target.original_start + new_duration) > free_region.y:
-			new_duration = free_region.y - _resize_target.original_start
+		if (resize_target.original_start + new_duration) > free_region.y:
+			new_duration = free_region.y - resize_target.original_start
 			
-		_resize_target.delta = new_duration - _resize_target.original_duration
+		resize_target.delta = new_duration - resize_target.original_duration
 	else: # Resizing beginning
 		var new_start: int = current_frame
 		
-		if new_start > (_resize_target.original_start + _resize_target.original_duration - 1):
-			new_start = (_resize_target.original_start + _resize_target.original_duration - 1)
+		if new_start > (resize_target.original_start + resize_target.original_duration - 1):
+			new_start = (resize_target.original_start + resize_target.original_duration - 1)
 			
 		# Collision detection
 		var free_region: Vector2i = TrackHandler.get_free_region(
 				track_id,
-				_resize_target.original_start + _resize_target.original_duration - 1,
-				[_resize_target.clip_id])
+				resize_target.original_start + resize_target.original_duration - 1,
+				[resize_target.clip_id])
 
 		if new_start < free_region.x:
 			new_start = free_region.x
 			
-		_resize_target.delta = new_start - _resize_target.original_start
+		resize_target.delta = new_start - resize_target.original_start
 	
 	queue_redraw()
 
@@ -551,7 +590,7 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 
 
 func _on_popup_action_clip_only_video() -> void:
-	FileHandler.enable_clip_only_video(_right_click_clip.file_id, _right_click_clip.id)
+	FileHandler.enable_clip_only_video(right_click_clip.file_id, right_click_clip.id)
 
 
 func _on_popup_action_clip_delete() -> void:
@@ -559,19 +598,19 @@ func _on_popup_action_clip_delete() -> void:
 
 
 func _on_popup_action_clip_cut() -> void:
-	cut_clips_at(_right_click_pos.y)
+	cut_clips_at(right_click_pos.y)
 
 
 func _on_popup_action_remove_empty_space() -> void:
-	remove_empty_space_at(_right_click_pos.x, _right_click_pos.y)
+	remove_empty_space_at(right_click_pos.x, right_click_pos.y)
 
 
 func _on_popup_action_track_add() -> void:
-	TrackHandler.add_track(_right_click_pos.x)
+	TrackHandler.add_track(right_click_pos.x)
 
 
 func _on_popup_action_track_remove() -> void:
-	TrackHandler.remove_track(_right_click_pos.x)
+	TrackHandler.remove_track(right_click_pos.x)
 
 
 func zoom_at_mouse(factor: float) -> void:
@@ -591,7 +630,6 @@ func zoom_at_mouse(factor: float) -> void:
 
 	zoom_changed.emit(zoom)
 	accept_event()
-	queue_redraw()
 
 
 func get_frame_from_mouse() -> int:

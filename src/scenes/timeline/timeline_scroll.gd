@@ -18,20 +18,23 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		# We need to change the scroll direction of this node
 		# TODO: Implement as a PR for Godot
+		var h_step: float = scroll_horizontal_custom_step
+		var v_step: int = floori(scroll_vertical_custom_step)
+
 		if event.is_action_pressed("scroll_left", false, true):
-			scroll_horizontal -= floor(70 * current_zoom)
+			scroll_horizontal -= floori(h_step * current_zoom)
 			accept_event()
 			get_h_scroll_bar().scrolling.emit()
 		elif event.is_action_pressed("scroll_right", false, true):
-			scroll_horizontal += floor(70 * current_zoom)
+			scroll_horizontal += floori(h_step * current_zoom)
 			accept_event()
 			get_h_scroll_bar().scrolling.emit()
 		elif event.is_action_pressed("scroll_up", false, true):
-			scroll_vertical -= floor(10 * current_zoom)
+			scroll_vertical -= v_step
 			accept_event()
 			get_h_scroll_bar().scrolling.emit()
 		elif event.is_action_pressed("scroll_down", false, true):
-			scroll_vertical += floor(10 * current_zoom)
+			scroll_vertical += v_step
 			accept_event()
 			get_h_scroll_bar().scrolling.emit()
 
