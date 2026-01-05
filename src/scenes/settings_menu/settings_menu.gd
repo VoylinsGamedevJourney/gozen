@@ -166,34 +166,18 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					"setting_tooltip_delete_empty_space_mod")
 		],
 	
-		# NOTE: We only have 5 main markers for now.
 		# TODO: Change this into a loop
 		"title_markers" = [
 			create_label("settings_marker_one"),
-			create_color_picker(
-					Settings.get_marker_color(0),
-					Settings.set_marker_color.bind(0),
-					"tooltip_setting_marker_color"),
+			create_marker_setting(0),
 			create_label("settings_marker_two"),
-			create_color_picker(
-					Settings.get_marker_color(1),
-					Settings.set_marker_color.bind(1),
-					"tooltip_setting_marker_color"),
+			create_marker_setting(1),
 			create_label("settings_marker_three"),
-			create_color_picker(
-					Settings.get_marker_color(2),
-					Settings.set_marker_color.bind(2),
-					"tooltip_setting_marker_color"),
+			create_marker_setting(2),
 			create_label("settings_marker_four"),
-			create_color_picker(
-					Settings.get_marker_color(3),
-					Settings.set_marker_color.bind(3),
-					"tooltip_setting_marker_color"),
+			create_marker_setting(3),
 			create_label("settings_marker_five"),
-			create_color_picker(
-					Settings.get_marker_color(4),
-					Settings.set_marker_color.bind(4),
-					"tooltip_setting_marker_color")
+			create_marker_setting(4),
 		],
 	
 		"title_extras" = [
@@ -244,6 +228,7 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 	option_button.item_selected.connect(_option_button_item_selected.bind(option_button, callable, type))
 
 	var i: int = 0
+
 	for option: String in options:
 		option_button.add_item(option)
 		option_button.set_item_metadata(i, options[option])
@@ -350,3 +335,30 @@ func create_default_resolution_hbox() -> HBoxContainer:
 
 	return resolution_hbox
 
+
+func create_marker_setting(index: int) -> HBoxContainer:
+	# Marker text
+	var line_edit: LineEdit = LineEdit.new()
+	var name_function: Callable = func(text: String) -> void:
+			Settings.set_marker_name(index, text)
+
+	line_edit.text = Settings.get_marker_name(index)
+	line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line_edit.text_submitted.connect(name_function)
+	line_edit.focus_exited.connect(name_function.bind(line_edit.text))
+	
+	# Marker color
+	var color_picker: ColorPickerButton = create_color_picker(
+		Settings.get_marker_color(index),
+		Settings.set_marker_color.bind(index),
+		"tooltip_setting_marker_color"
+	)
+	
+	# Bundling
+	var hbox: HBoxContainer = HBoxContainer.new()
+
+	hbox.add_child(line_edit)
+	hbox.add_child(color_picker)
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	return hbox

@@ -28,6 +28,7 @@ var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
 
 # Markers
+var marker_names: PackedStringArray = [ "Marker type 1", "Marker type 2", "Marker type 3", "Marker type 4", "Marker type 5" ]
 var marker_colors: PackedColorArray = [ Color.PURPLE, Color.GREEN, Color.BLUE, Color.ORANGE, Color.RED ]
 
 # Extra

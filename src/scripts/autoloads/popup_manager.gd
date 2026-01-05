@@ -84,10 +84,8 @@ func close_popups() -> void:
 	for popup: POPUP in _open_popups:
 		_open_popups[popup].queue_free()
 
-		if !_open_popups.erase(popup):
-			printerr("Could not erase popup '%s' from open_popups!" % popup)
-
-	_background.visible = false
+	_open_popups.clear()
+	_check_background()
 
 
 func get_popup(popup: POPUP) -> Control:

@@ -3,5 +3,5 @@ extends Resource
 
 
 var text: String = ""
-var marker_id: int = 0
+var type_id: int = 0
 

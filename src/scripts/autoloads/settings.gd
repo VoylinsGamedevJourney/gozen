@@ -304,6 +304,18 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 
 
 #--- Markers set/get ---
+func set_marker_name(index: int, text: String) -> void:
+	_data.marker_names[index] = text
+
+
+func get_marker_name(index: int) -> String:
+	return _data.marker_names[index]
+
+
+func get_marker_names() -> PackedStringArray:
+	return _data.marker_names
+
+
 func set_marker_color(index: int, color: Color) -> void:
 	_data.marker_colors[index] = color
 

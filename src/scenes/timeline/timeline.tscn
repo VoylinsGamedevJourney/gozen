@@ -18,12 +18,13 @@ offset_bottom = 209.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 0
 script = ExtResource("1_p3xsq")
 timestamp_panel = NodePath("TimestampScroll/TimeStamps")
 timeline_panel = NodePath("TimelineScroll/Timeline")
 
 [node name="TimestampScroll" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 scroll_horizontal_custom_step = 30.0
 horizontal_scroll_mode = 3

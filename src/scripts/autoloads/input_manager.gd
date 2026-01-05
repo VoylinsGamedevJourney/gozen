@@ -110,5 +110,4 @@ func clipboard_paste() -> void:
 
 
 func open_marker_popup() -> void:
-	# TODO:
-	pass
+	PopupManager.open_popup(PopupManager.POPUP.MARKER)

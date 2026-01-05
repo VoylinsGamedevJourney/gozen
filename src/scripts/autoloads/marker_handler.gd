@@ -3,9 +3,15 @@ extends Node
 signal marker_added(frame_nr: int)
 signal marker_updated(old_frame_nr: int, new_frame_nr: int)
 signal marker_removed(frame_nr: int)
+signal marker_moving
 
 
 var markers: Dictionary[int, MarkerData] = {} # { Frame: Marker }
+var dragged_marker: int = -1
+var dragged_marker_offset: float = 0:
+	set(value):
+		dragged_marker_offset = value
+		marker_moving.emit()
 
 
 

@@ -68,11 +68,22 @@ var pressed_clip: ClipData = null
 
 
 func _ready() -> void:
-	Project.project_ready.connect(_project_ready)
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
-	ClipHandler.clips_updated.connect(queue_redraw)
+
+	Project.project_ready.connect(_project_ready)
 	EditorCore.frame_changed.connect(queue_redraw)
-	scroll.get_h_scroll_bar().value_changed.connect(func(_f: float) -> void: queue_redraw())
+	ClipHandler.clips_updated.connect(queue_redraw)
+
+	MarkerHandler.marker_added.connect(_force_queue_redraw)
+	MarkerHandler.marker_updated.connect(_force_queue_redraw)
+	MarkerHandler.marker_removed.connect(_force_queue_redraw)
+	MarkerHandler.marker_moving.connect(queue_redraw)
+
+	scroll.get_h_scroll_bar().value_changed.connect(_force_queue_redraw)
+
+
+func _force_queue_redraw(_x: Variant = 0, _y: Variant = 0) -> void:
+	queue_redraw()
 
 
 func _notification(what: int) -> void:
@@ -224,14 +235,6 @@ func _draw() -> void:
 
 		draw_dashed_line(Vector2(visible_left, y), Vector2(visible_right, y), TRACK_LINE_COLOR, TRACK_LINE_WIDTH)
 
-	# - Playhead
-	var playhead_pos: float = EditorCore.frame_nr * zoom
-	draw_line(
-			Vector2(playhead_pos, 0),
-			Vector2(playhead_pos, size.y),
-			Color(0.4, 0.4, 0.4),
-			PLAYHEAD_WIDTH)
-
 	# - Clip preview(s)
 	if state in [STATE.MOVING, STATE.DROPPING] and draggable != null: # Moving + Dropping preview
 		if draggable.files:
@@ -299,6 +302,34 @@ func _draw() -> void:
 	# TODO: - Audio waves
 
 	# TODO: - Fading handles + amount
+
+	# - Playhead
+	var playhead_pos: float = EditorCore.frame_nr * zoom
+	draw_line(
+			Vector2(playhead_pos, 0),
+			Vector2(playhead_pos, size.y),
+			Color(0.4, 0.4, 0.4),
+			PLAYHEAD_WIDTH)
+
+	# - Marker lines
+	for frame_nr: int in MarkerHandler.markers.keys():
+		var marker_data: MarkerData = MarkerHandler.markers[frame_nr]
+		var pos_x: float = frame_nr * zoom
+
+		if frame_nr == MarkerHandler.dragged_marker:
+			pos_x = MarkerHandler.dragged_marker_offset			
+
+		draw_line(
+				Vector2(pos_x, 0),
+				Vector2(pos_x, size.y),
+				Settings.get_marker_color(marker_data.type_id) * Color(1.0, 1.0, 1.0, 0.3),
+				1.0)
+		pos_x += 1
+		draw_line(
+				Vector2(pos_x, 0),
+				Vector2(pos_x, size.y),
+				Settings.get_marker_color(marker_data.type_id) * Color(1.0, 1.0, 1.0, 0.1),
+				1.0)
 
 
 func _get_clip_on_mouse() -> ClipData:
