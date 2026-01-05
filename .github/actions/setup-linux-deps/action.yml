@@ -11,4 +11,4 @@ runs:
         sudo apt-get install -y git yasm nasm python3 python3-pip scons gcc diffutils make \
         cmake autoconf automake libtool ninja-build pkg-config \
         binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu \
-        libnuma-dev fuse libfuse2 desktop-file-utils patchelf rpm
+        libnuma-dev fuse libfuse2 desktop-file-utils patchelf rpm libva-dev libvdpau-dev
