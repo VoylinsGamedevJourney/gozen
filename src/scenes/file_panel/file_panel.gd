@@ -57,7 +57,7 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 
 
 func _on_project_ready() -> void:
-	for folder: String in Project.get_folders():
+	for folder: String in Project.data.folders:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
 

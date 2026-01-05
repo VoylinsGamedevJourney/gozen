@@ -32,12 +32,12 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	Project.project_ready.connect(queue_redraw)
-	scroll.get_h_scroll_bar().value_changed.connect(_force_refresh)
-	timeline_scroll.get_h_scroll_bar().value_changed.connect(_force_refresh)
+	scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
+	timeline_scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 
-	MarkerHandler.marker_added.connect(_force_refresh)
-	MarkerHandler.marker_updated.connect(_force_refresh)
-	MarkerHandler.marker_removed.connect(_force_refresh)
+	MarkerHandler.marker_added.connect(queue_redraw.unbind(1))
+	MarkerHandler.marker_updated.connect(queue_redraw.unbind(2))
+	MarkerHandler.marker_removed.connect(queue_redraw.unbind(1))
 
 	_setup_marker_style_box()
 
@@ -201,10 +201,6 @@ func _update_tooltip() -> void:
 
 	if tooltip_text != full_tooltip:
 		tooltip_text = full_tooltip
-
-
-func _force_refresh(_x: float = 0., _y: float = 0.) -> void:
-	queue_redraw()
 
 
 func _on_timeline_zoom_changed(new_zoom: float) -> void:

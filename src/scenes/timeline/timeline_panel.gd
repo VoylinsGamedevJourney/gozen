@@ -74,16 +74,12 @@ func _ready() -> void:
 	EditorCore.frame_changed.connect(queue_redraw)
 	ClipHandler.clips_updated.connect(queue_redraw)
 
-	MarkerHandler.marker_added.connect(_force_queue_redraw)
-	MarkerHandler.marker_updated.connect(_force_queue_redraw)
-	MarkerHandler.marker_removed.connect(_force_queue_redraw)
+	MarkerHandler.marker_added.connect(queue_redraw.unbind(1))
+	MarkerHandler.marker_updated.connect(queue_redraw.unbind(2))
+	MarkerHandler.marker_removed.connect(queue_redraw.unbind(1))
 	MarkerHandler.marker_moving.connect(queue_redraw)
 
-	scroll.get_h_scroll_bar().value_changed.connect(_force_queue_redraw)
-
-
-func _force_queue_redraw(_x: Variant = 0, _y: Variant = 0) -> void:
-	queue_redraw()
+	scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 
 
 func _notification(what: int) -> void:

@@ -298,12 +298,3 @@ func set_background_color(color: Color) -> void:
 
 func get_background_color() -> Color:
 	return data.background_color
-
-
-func get_folders() -> PackedStringArray:
-	return data.folders
-
-
-func get_markers() -> Dictionary[int, MarkerData]:
-	return data.markers
-
