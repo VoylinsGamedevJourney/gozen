@@ -102,7 +102,6 @@ jobs:
         with:
           name: export_linux
           path: ${{ env.EXPORT_PATH_LINUX }}
-          retention-days: 2
 
   export-windows:
     name: Export Windows
@@ -166,7 +165,7 @@ jobs:
       - name: Export Windows
         working-directory: ./src
         run: |
-          export PATH=$PATH:"/c/Program Files/Godot"
+          export PATH=$PATH:"/c/Program Files/Godot":"$(pwd)/../${{ env.EXPORT_PATH_WINDOWS }}"
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
           mkdir -p ../${{ env.EXPORT_PATH_WINDOWS }}
           godot --import godot.project --headless --quit
@@ -178,7 +177,6 @@ jobs:
           cp ../../LICENSE .
           cp ../../MANUAL.md .
           zip -r "GoZen_Windows_v${{ inputs.version }}.zip" *
-          #zip -r "GoZen_Windows_v${{ inputs.version }}.zip" .
 
       - uses: actions/upload-artifact@v4
         with:
@@ -291,6 +289,7 @@ jobs:
 
       - name: Build RPM
         run: |
+          VERSION=$(echo "${{ inputs.version }}" | tr '-' '_')
           mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
           
           SRC_DIR=rpmbuild/SOURCES/${{ env.APP_NAME }}-${{ inputs.version }}
@@ -304,7 +303,7 @@ jobs:
           cat <<EOF > rpmbuild/SPECS/${{ env.APP_NAME }}.spec
           %define _topdir $(pwd)/rpmbuild
           Name:           ${{ env.APP_NAME }}
-          Version:        ${{ inputs.version }}
+          Version:        $VERSION
           Release:        1
           Summary:        GoZen Video Editor
           License:        GPLv3

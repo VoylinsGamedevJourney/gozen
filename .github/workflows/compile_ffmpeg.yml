@@ -102,4 +102,4 @@ jobs:
         with:
           name: dep_win_x86_64_${{ matrix.dep }}
           path: core/ffmpeg/bin_windows
-          retention-days: 2
+          retention-days: 90

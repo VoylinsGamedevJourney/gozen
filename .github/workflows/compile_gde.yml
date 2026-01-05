@@ -75,4 +75,4 @@ jobs:
         with:
           name: ${{ matrix.platform }}_gde_${{ matrix.target }}_x86_64
           path: bin/${{ matrix.platform }}_x86_64
-          retention-days: 2
+          retention-days: 90

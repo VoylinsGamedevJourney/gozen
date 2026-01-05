@@ -65,9 +65,6 @@ if "linux" in platform and use_system == "yes":
 elif "linux" in platform:
     march_flags = {"x86_64": "x86-64", "arm64": "armv8-a"}
 
-    if arch != "arm64":
-        env.Append(LIBS=["z", "bz2", "lzma"])
-
     libs = [
         "SvtAv1Enc",
         "aom",
@@ -79,10 +76,11 @@ elif "linux" in platform:
         "vpx",
         "x264",
         "x265",
+        "numa",
         "va",
         "va-drm",
         "va-x11",
-        "vdpau",  # Often enabled by default too (Nvidia)
+        "vdpau",
         "X11",
         "m",
         "pthread",
@@ -94,6 +92,10 @@ elif "linux" in platform:
         CCFLAGS=[f"-march={march_flags[arch]}"],
         LIBS=LIBS_COMMON + libs,
     )
+
+    if arch != "arm64":
+        env.Append(LIBS=["z", "bz2", "lzma"])
+
 elif "windows" in platform:
     if os_platform.system().lower() == "windows" and use_mingw != "yes":
         env.Append(
