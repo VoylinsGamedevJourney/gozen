@@ -24,9 +24,6 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export_group("Threads")
 @export var threads_spin_box: SpinBox
 
-@export_group("Chapters")
-@export var chapters_text_edit: TextEdit
-
 var button_group: ButtonGroup = ButtonGroup.new()
 var status_indicator_id: int 
 
@@ -38,10 +35,6 @@ var current_progress: float = 0.0
 
 func _ready() -> void:
 	RenderManager.update_encoder_status.connect(update_encoder_status)
-
-	MarkerHandler.marker_added.connect(_on_markers_updated.unbind(1))
-	MarkerHandler.marker_updated.connect(_on_markers_updated.unbind(2))
-	MarkerHandler.marker_removed.connect(_on_markers_updated.unbind(1))
 
 	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
@@ -159,10 +152,6 @@ func load_profile(profile: RenderProfile) -> void:
 
 func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
 	grid_audio.visible = toggled_on
-
-
-func _on_copy_chapters_button_pressed() -> void:
-	DisplayServer.clipboard_set(chapters_text_edit.text)
 
 
 func _on_select_save_path_button_pressed() -> void:
@@ -372,20 +361,3 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 			current_progress = status
 	if progress_overlay != null:
 		progress_overlay.update_progress(floori(current_progress), status_str)
-
-
-func _on_markers_updated() -> void:
-	# TODO: Save all lines into an Array with a separate array to save their type
-	# This will allow for making only the chapter list of selected marker types.
-	var frames: PackedInt64Array = MarkerHandler.get_markers()
-	var text: String = ""
-
-	frames.sort()
-
-	for frame_nr: int in frames:
-		var time: String = Utils.format_time_str_from_frame(frame_nr, Project.get_framerate(), true)
-
-		text += "\n%s %s" % [time, MarkerHandler.markers[frame_nr]]
-
-	chapters_text_edit.text = text
-

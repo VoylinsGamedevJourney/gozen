@@ -55,6 +55,13 @@ func get_marker(frame_nr: int) -> MarkerData:
 	return markers[frame_nr]
 
 
+func get_frame_nrs() -> PackedInt64Array:
+	var arr: PackedInt64Array = markers.keys()
+
+	arr.sort()
+	return arr
+
+
 func get_marker_positions() -> PackedInt64Array:
 	var project_markers: PackedInt64Array = markers.keys()
 
