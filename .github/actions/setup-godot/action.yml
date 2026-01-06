@@ -16,9 +16,10 @@ runs:
       uses: actions/cache@v4
       with:
         path: |
-          ${{ inputs.os == 'linux' && '~/.local/share/godot' || env.APPDATA }}/Godot
-          ${{ inputs.os == 'linux' && '~/.local/bin' || 'C:/Program Files/Godot' }}
-        key: ${{ inputs.os }}-godot-${{ inputs.godot-version }}
+          ${{ inputs.os == 'linux' && '/home/runner/.local/share/godot' || '' }}
+          ${{ inputs.os == 'windows' && format('{0}/Godot', env.APPDATA) || '' }}
+          ${{ inputs.os == 'linux' && '/home/runner/.local/bin' || 'C:/Program Files/Godot' }}
+        key: ${{ inputs.os }}-godot-${{ inputs.godot-version }}-v2
 
     - name: Install Godot (Linux)
       if: inputs.os == 'linux' && steps.cache-godot.outputs.cache-hit != 'true'
