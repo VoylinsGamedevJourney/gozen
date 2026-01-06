@@ -55,7 +55,7 @@ func set_audio(audio_clip_id: int) -> void:
 	clip_id = audio_clip_id
 	file_id = data.file_id
 	stop_frame = data.end_frame
-	update_effects(data.effects_audio)
+#	update_effects(data.effects_audio)
 
 	# Getting timings in seconds.
 	var position: float = float(EditorCore.frame_nr - data.start_frame + data.begin)
@@ -69,7 +69,7 @@ func set_audio(audio_clip_id: int) -> void:
 			player.stream = file_data.audio
 			player.play(position)
 			player.stream_paused = !EditorCore.is_playing
-			update_effects(data.effects_audio)
+#			update_effects(data.effects_audio)
 			return
 		return stop()
 

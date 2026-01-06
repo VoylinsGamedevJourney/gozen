@@ -146,8 +146,8 @@ func encode_audio() -> PackedByteArray:
 		for clip_id: int in Project.get_track_data(i).values():
 			if ClipHandler.get_type(clip_id) not in EditorCore.AUDIO_TYPES:
 				continue
-			if ClipHandler.get_clip(clip_id).effects_audio.mute:
-				continue
+#			if ClipHandler.get_clip(clip_id).effects_audio.mute:
+#				continue
 
 			# Audio is present so we can get all the track audio.
 			audio = _get_track_audio(audio, i)

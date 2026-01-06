@@ -328,24 +328,24 @@ func update_view(track_id: int) -> void:
 		loaded_shaders[track_id] = SHADER_ID.EMPTY
 		return
 	
-	var effects_video: EffectsVideo = ClipHandler.get_clip(loaded_clips[track_id]).effects_video
-
-	if effects_video:
-		material.set_shader_parameter("alpha", effects_video.alpha)
-	 
-		if effects_video.enable_color_correction:
-			effects_video.apply_color_correction(material)
-			color_correction_default[track_id] = false
-		elif !color_correction_default[track_id]:
-			default_effects_video.apply_color_correction(material)
-			color_correction_default[track_id] = true
-
-		if effects_video.enable_chroma_key:
-			effects_video.apply_chroma_key(material)
-		elif effects_video.enable_chroma_key:
-			default_effects_video.apply_color_correction(material)
-
-		effects_video.apply_transform(view_textures[track_id], material)
+#	var effects_video: Array[VideoEffect] = ClipHandler.get_clip(loaded_clips[track_id]).effects_video
+#
+#	if effects_video:
+#		material.set_shader_parameter("alpha", effects_video.alpha)
+#	 
+#		if effects_video.enable_color_correction:
+#			effects_video.apply_color_correction(material)
+#			color_correction_default[track_id] = false
+#		elif !color_correction_default[track_id]:
+#			default_effects_video.apply_color_correction(material)
+#			color_correction_default[track_id] = true
+#
+#		if effects_video.enable_chroma_key:
+#			effects_video.apply_chroma_key(material)
+#		elif effects_video.enable_chroma_key:
+#			default_effects_video.apply_color_correction(material)
+#
+#		effects_video.apply_transform(view_textures[track_id], material)
 
 
 func _init_video_textures(track_id: int, video_data: GoZenVideo, material: ShaderMaterial) -> void:

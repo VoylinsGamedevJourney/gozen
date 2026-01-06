@@ -110,39 +110,39 @@ func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray
 			Utils.get_sample_count(clip.begin, Project.get_framerate()),
 			Utils.get_sample_count(clip.begin + clip.duration, Project.get_framerate()))
 
-	if clip.effects_audio.mute:
-		data.fill(0)
-		return data
-
-	data = GoZenAudio.change_db(data, clip.effects_audio.gain[0])
-
-	if clip.effects_audio.fade_in != 0:
-		var new_data: PackedByteArray = []
-
-		for i: int in clip.effects_audio.fade_in:
-			var gain: float = Utils.calculate_fade(i, clip.effects_audio.fade_in) * clip.effects_audio.FADE_OUT_LIMIT
-			var pos: int = sample_size * i
-
-			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
-
-		new_data.append_array(data.slice(sample_size * (clip.effects_audio.fade_in + 1), data.size()))
-		data = new_data
-	if clip.effects_audio.fade_out != 0:
-		var new_data: PackedByteArray = []
-		var start_pos: int = clip.duration - clip.effects_audio.fade_out
-
-		for i: int in clip.effects_audio.fade_out:
-			var pos: int = sample_size * (i + start_pos)
-			var gain: float = Utils.calculate_fade(clip.effects_audio.fade_out - i, clip.effects_audio.fade_out)
-
-			gain *= clip.effects_audio.FADE_OUT_LIMIT
-			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
-
-		data = data.slice(0, sample_size * (clip.duration - clip.effects_audio.fade_out - 1))
-		data.append_array(new_data)
-
-	if clip.effects_audio.mono != clip.effects_audio.MONO.DISABLE:
-		data = GoZenAudio.change_to_mono(data, clip.effects_audio.mono == clip.effects_audio.MONO.LEFT_CHANNEL)
+#	if clip.effects_audio.mute:
+#		data.fill(0)
+#		return data
+#
+#	data = GoZenAudio.change_db(data, clip.effects_audio.gain[0])
+#
+#	if clip.effects_audio.fade_in != 0:
+#		var new_data: PackedByteArray = []
+#
+#		for i: int in clip.effects_audio.fade_in:
+#			var gain: float = Utils.calculate_fade(i, clip.effects_audio.fade_in) * clip.effects_audio.FADE_OUT_LIMIT
+#			var pos: int = sample_size * i
+#
+#			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
+#
+#		new_data.append_array(data.slice(sample_size * (clip.effects_audio.fade_in + 1), data.size()))
+#		data = new_data
+#	if clip.effects_audio.fade_out != 0:
+#		var new_data: PackedByteArray = []
+#		var start_pos: int = clip.duration - clip.effects_audio.fade_out
+#
+#		for i: int in clip.effects_audio.fade_out:
+#			var pos: int = sample_size * (i + start_pos)
+#			var gain: float = Utils.calculate_fade(clip.effects_audio.fade_out - i, clip.effects_audio.fade_out)
+#
+#			gain *= clip.effects_audio.FADE_OUT_LIMIT
+#			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
+#
+#		data = data.slice(0, sample_size * (clip.duration - clip.effects_audio.fade_out - 1))
+#		data.append_array(new_data)
+#
+#	if clip.effects_audio.mono != clip.effects_audio.MONO.DISABLE:
+#		data = GoZenAudio.change_to_mono(data, clip.effects_audio.mono == clip.effects_audio.MONO.LEFT_CHANNEL)
 
 	return data
 
@@ -160,13 +160,13 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		clip_data.start_frame = clip_request.frame_nr
 		clip_data.duration = file_data.duration
 
-		if file_data.type in EditorCore.VISUAL_TYPES:
-			clip_data.effects_video = EffectsVideo.new()
-			clip_data.effects_video.clip_id = clip_data.id
-			clip_data.effects_video.set_default_transform()
-		if file_data.type in EditorCore.AUDIO_TYPES:
-			clip_data.effects_audio = EffectsAudio.new()
-			clip_data.effects_audio.clip_id = clip_data.id
+#		if file_data.type in EditorCore.VISUAL_TYPES:
+#			clip_data.effects_video = EffectsVideo.new()
+#			clip_data.effects_video.clip_id = clip_data.id
+#			clip_data.effects_video.set_default_transform()
+#		if file_data.type in EditorCore.AUDIO_TYPES:
+#			clip_data.effects_audio = EffectsAudio.new()
+#			clip_data.effects_audio.clip_id = clip_data.id
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
