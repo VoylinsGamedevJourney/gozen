@@ -167,7 +167,7 @@ func delete_file(file_id: int) -> void:
 	var file: File = FileHandler.get_file(file_id)
 
 	# Deleting file from tree and project data.
-	InputManager.undo_redo.add_do_method(delete_file.bind(file_id))
+	InputManager.undo_redo.add_do_method(_delete_file.bind(file_id))
 	InputManager.undo_redo.add_do_method(file_deleted.emit.bind(file_id))
 
 	InputManager.undo_redo.add_undo_method(add_file_object.bind(file))
@@ -273,7 +273,7 @@ func _delete_file(id: int) -> void:
 
 	if data.has(id):
 		data.erase(id)
-	elif files.has(id):
+	if files.has(id):
 		files.erase(id)
 
 	await RenderingServer.frame_pre_draw
