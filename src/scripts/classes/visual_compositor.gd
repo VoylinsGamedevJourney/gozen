@@ -212,6 +212,11 @@ func cleanup() -> void:
 	if shader_yuv.is_valid(): device.free_rid(shader_yuv)
 	if pipeline_yuv.is_valid(): device.free_rid(pipeline_yuv)
 
+	for shader_path: String in effects_cache:
+		effects_cache[shader_path].free_rids(device)
+
+	effects_cache.clear()
+
 
 func _create_storage_buffer(size_bytes: int) -> RID:
 	var buffer_data: PackedByteArray = []
@@ -314,3 +319,8 @@ class EffectCache:
 
 		if param_data.size() < 128:
 			param_data.resize(128) # Add padding if needed
+
+	func free_rids(device: RenderingDevice) -> void:
+		if shader.is_valid(): device.free_rid(shader)
+		if pipeline.is_valid(): device.free_rid(pipeline)
+		if param_buffer.is_valid(): device.free_rid(param_buffer)
