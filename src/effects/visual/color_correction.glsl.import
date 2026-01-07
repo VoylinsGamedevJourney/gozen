@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dfvavj2472tgp"
+path="res://.godot/imported/color_correction.glsl-ffa7db6cd16e608a5ea792cc4f5a1a9e.res"
+
+[deps]
+
+source_file="res://effects/visual/color_correction.glsl"
+dest_files=["res://.godot/imported/color_correction.glsl-ffa7db6cd16e608a5ea792cc4f5a1a9e.res"]
+
+[params]
+

@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bdxe5wu7c771"
+path="res://.godot/imported/yuv420p_full.glsl-c2ece89015def12054b7969e82912c46.res"
+
+[deps]
+
+source_file="res://shaders/yuv420p_full.glsl"
+dest_files=["res://.godot/imported/yuv420p_full.glsl-c2ece89015def12054b7969e82912c46.res"]
+
+[params]
+

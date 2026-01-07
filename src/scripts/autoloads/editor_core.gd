@@ -146,7 +146,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 
 			if view_textures[i].texture != null:
 				view_textures[i].texture = null
-				(view_textures[i].get_material() as ShaderMaterial).shader = null
 				loaded_shaders[i] = SHADER_ID.EMPTY
 			continue
 		else:
@@ -248,7 +247,7 @@ func setup_playback() -> void:
 		loaded_shaders.append(SHADER_ID.EMPTY)
 
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		visual_compositor.initialize(Project.get_resolution())
+		visual_compositor.initialize(Project.get_resolution(), true, load(Library.SHADER_YUV420P))
 		visual_compositors.append(visual_compositor)
 		
 		viewport.add_child(texture_rect)
@@ -270,6 +269,14 @@ func update_view(track_id: int) -> void:
 		var v_data: Image = file_data.video.get_v_data()
 		var rotation: float = deg_to_rad(file_data.video.get_rotation())
 		var color_profile: Vector4 = file_data.color_profile
+
+		# TODO: Add deinterlacing support again!
+		if file_data.video.is_full_color_range():
+			visual_compositors[track_id].initialize(
+					Project.get_resolution(), true, load(Library.SHADER_YUV420P))
+		else:
+			visual_compositors[track_id].initialize(
+					Project.get_resolution(), true, load(Library.SHADER_YUV420P))
 
 		visual_compositors[track_id].process_video_frame(
 				y_data, u_data, v_data, rotation, color_profile, 0.0,

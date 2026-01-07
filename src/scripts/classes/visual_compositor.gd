@@ -3,6 +3,7 @@ extends RefCounted
 # TODO: Add deinterlacing to the main YUV shaders ... or add deinterlacing as an effect?
 
 const PARAM_BUFFER_SIZE: int = 128
+const YUV_PARAM_BUFFER_SIZE: int = 64
 
 const USAGE_BITS_R8: int = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
@@ -33,38 +34,55 @@ var effects_cache: Dictionary[String, EffectCache] = {} # { shader_path : shader
 var resolution: Vector2i
 var initialized: bool = false
 
+# Compute shaders use x=8, y=8, and z=1
+var groups_x: int
+var groups_y: int
 
 
-func initialize(p_resolution: Vector2i, is_video: bool = true) -> void:
+
+func initialize(p_resolution: Vector2i, is_video: bool = true, shader_file: RDShaderFile = null) -> void:
 	if initialized:
 		cleanup()
 
 	resolution = p_resolution
+	display_texture = Texture2DRD.new()
+
+	groups_x = ceili(resolution.x / 8.0)
+	groups_y = ceili(resolution.x / 8.0)
 
 	if is_video:
-		# Creating the Y input texture
-		var format_y: RDTextureFormat = RDTextureFormat.new()
+		if !shader_file:
+			push_error("No shader file was given!")
+			return
 
+		var spirv: RDShaderSPIRV = shader_file.get_spirv()
+		var format_y: RDTextureFormat = RDTextureFormat.new()
+		var format_uv: RDTextureFormat = RDTextureFormat.new()
+
+		# Setup YUV pipeline
+		shader_yuv = device.shader_create_from_spirv(spirv)
+		pipeline_yuv = device.compute_pipeline_create(shader_yuv)
+
+		# Creating the Y format
 		format_y.format = device.DATA_FORMAT_R8_UNORM
 		format_y.width = resolution.x
 		format_y.height = resolution.y
 		format_y.usage_bits = USAGE_BITS_R8
 		format_y.texture_type = device.TEXTURE_TYPE_2D
 
-		y_texture = device.texture_create(format_y, RDTextureView.new(), [])
-
-		# Creating the UV input textures
-		var format_uv: RDTextureFormat = RDTextureFormat.new()
-
+		# Creating the UV format
 		format_uv.format = device.DATA_FORMAT_R8_UNORM
 		format_uv.width = floori(resolution.x / 2.0)
 		format_uv.height = floori(resolution.y / 2.0)
 		format_uv.usage_bits = USAGE_BITS_R8
 		format_uv.texture_type = device.TEXTURE_TYPE_2D
+
+		# Create YUV textures
+		y_texture = device.texture_create(format_y, RDTextureView.new(), [])
 		u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
 		v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
 
-	# Create RGBA8 output textures
+	# Create RGBA8 format
 	var format_rgba: RDTextureFormat = RDTextureFormat.new()
 
 	format_rgba.format = device.DATA_FORMAT_R8G8B8A8_UNORM
@@ -73,31 +91,16 @@ func initialize(p_resolution: Vector2i, is_video: bool = true) -> void:
 	format_rgba.usage_bits = USAGE_BITS_RGBA
 	format_rgba.texture_type = device.TEXTURE_TYPE_2D
 
+	# Create textures
 	ping_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
 	pong_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
-
-	# Create display texture
-	display_texture = Texture2DRD.new()
 	display_texture.texture_rd_rid = ping_texture
 
 	# Allocate space for YUV params
-	yuv_params = _create_storage_buffer(64)
+	yuv_params = _create_storage_buffer(YUV_PARAM_BUFFER_SIZE)
 
 	initialized = true
 	print("VisualCompositor: initialization complete")
-
-
-func setup_yuv_pipeline(shader_file: RDShaderFile) -> void:
-	var spirv: RDShaderSPIRV = shader_file.get_spirv()
-
-	# Quick cleanup check
-	if shader_yuv.is_valid():
-		device.free_rid(shader_yuv)
-	if pipeline_yuv.is_valid():
-		device.free_rid(pipeline_yuv)
-
-	shader_yuv = device.shader_create_from_spirv(spirv)
-	pipeline_yuv = device.compute_pipeline_create(shader_yuv)
 
 
 func process_video_frame(y_data: Image, u_data: Image, v_data: Image, rotation: float,
@@ -154,15 +157,20 @@ func process_video_frame(y_data: Image, u_data: Image, v_data: Image, rotation: 
 
 	device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
 
-	# Compute shaders use x=8, y=8, and z=1
-	var groups_x: int = ceili(resolution.x / 8.0)
-	var groups_y: int = ceili(resolution.x / 8.0)
-
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 
 	# Make certain that YUV conversion finished before continuing
 	device.compute_list_add_barrier(compute_list)
+	_process_frame(compute_list, effects, current_frame)
 
+
+func process_image_frame(_data: Image, effects: Array[VisualEffect], current_frame: int) -> void:
+	# TODO: Add data to ping_texture,
+	#ping_texture = _create_image_uniform(data.get_rid(), 0)
+	_process_frame(device.compute_list_begin(), effects, current_frame)
+
+
+func _process_frame(compute_list: int, effects: Array[VisualEffect], current_frame: int) -> void:
 	# Start handling the effects
 	for effect: VisualEffect in effects:
 		if not effect.enabled:
