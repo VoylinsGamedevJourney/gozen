@@ -2,5 +2,11 @@ class_name VideoEffectParam
 extends Resource
 
 
-var param_name: String
-var param_type: VideoEffect.PARAM_TYPE
+@export var param_id: String
+@export var param_name: String
+@export var type: VideoEffect.PARAM_TYPE
+
+@export var default_value: Variant
+
+@export var min_value: float
+@export var max_value: float
