@@ -16,6 +16,8 @@ var viewport: SubViewport
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
 
+var visual_compositors: Array[VisualCompositor] = []
+
 var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
 
@@ -246,7 +248,8 @@ func setup_playback() -> void:
 
 	for i: int in Project.data.tracks.size():
 		var texture_rect: TextureRect = TextureRect.new()
-
+		var visual_compositor: VisualCompositor = VisualCompositor.new()
+		
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 
@@ -256,10 +259,12 @@ func setup_playback() -> void:
 		color_correction_default.append(false)
 
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		texture_rect.material = ShaderMaterial.new()
 		y_textures.append(null)
 		u_textures.append(null)
 		v_textures.append(null)
+
+		visual_compositor.initialize(Project.get_resolution())
+		visual_compositors.append(visual_compositor)
 		
 		viewport.add_child(texture_rect)
 		viewport.move_child(texture_rect, 1)
@@ -278,56 +283,57 @@ func update_view(track_id: int) -> void:
 	# Check if correct shader is applied or not, if not, set correct shader.
 	if file_data.video != null:
 		var interlaced: int = file_data.video.get_interlaced() 
+		# TODO: This all needs changing
 
-		if file_data.video.is_full_color_range():
-			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
-				if interlaced != 0:
-					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P_FULL)
-					material.set_shader_parameter("interlaced", interlaced)
-				else:
-					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P)
-
-				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
-				_init_video_textures(track_id, file_data.video, material)
-				updated = true
-		elif loaded_shaders[track_id] != SHADER_ID.YUV:
-			if interlaced != 0:
-				material.shader = preload(Library.SHADER_YUV420P_FULL)
-				material.set_shader_parameter("interlaced", interlaced)
-			else:
-				material.shader = preload(Library.SHADER_YUV420P)
-
-			loaded_shaders[track_id] = SHADER_ID.YUV
-			_init_video_textures(track_id, file_data.video, material)
-			updated = true
-
-		if !updated:
-			var video: GoZenVideo
-
-			if file_data.clip_only_video.has(loaded_clips[track_id]):
-				video = file_data.clip_only_video[loaded_clips[track_id]]
-			else:
-				video = file_data.video
-
-			y_textures[track_id].update(video.get_y_data())
-			u_textures[track_id].update(video.get_u_data())
-			v_textures[track_id].update(video.get_v_data())
-		material.set_shader_parameter("resolution", file_data.video.get_actual_resolution() as Vector2)
-		material.set_shader_parameter("rotation", deg_to_rad(float(file_data.video.get_rotation())))
-
-		material.set_shader_parameter("color_profile", file_data.color_profile)
-	elif file_data.image != null:
-		material.shader = preload(Library.SHADER_IMAGE)
-		loaded_shaders[track_id] = SHADER_ID.IMAGE
-
-		if material.get_shader_parameter("resolution") != file_data.image.get_size():
-			material.set_shader_parameter("resolution", file_data.image.get_size())
-	else:
-		# Just in case we remove the shader.
-		material.shader = null
-		loaded_shaders[track_id] = SHADER_ID.EMPTY
-		return
-	
+		#		if file_data.video.is_full_color_range():
+		#			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
+		#				if interlaced != 0:
+		#					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P_FULL)
+		#					material.set_shader_parameter("interlaced", interlaced)
+		#				else:
+		#					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P)
+		#
+		#				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
+		#				_init_video_textures(track_id, file_data.video, material)
+		#				updated = true
+		#		elif loaded_shaders[track_id] != SHADER_ID.YUV:
+		#			if interlaced != 0:
+		#				material.shader = preload(Library.SHADER_YUV420P_FULL)
+		#				material.set_shader_parameter("interlaced", interlaced)
+		#			else:
+		#				material.shader = preload(Library.SHADER_YUV420P)
+		#
+		#			loaded_shaders[track_id] = SHADER_ID.YUV
+		#			_init_video_textures(track_id, file_data.video, material)
+		#			updated = true
+		#
+		#		if !updated:
+		#			var video: GoZenVideo
+		#
+		#			if file_data.clip_only_video.has(loaded_clips[track_id]):
+		#				video = file_data.clip_only_video[loaded_clips[track_id]]
+		#			else:
+		#				video = file_data.video
+		#
+		#			y_textures[track_id].update(video.get_y_data())
+		#			u_textures[track_id].update(video.get_u_data())
+		#			v_textures[track_id].update(video.get_v_data())
+		#		material.set_shader_parameter("resolution", file_data.video.get_actual_resolution() as Vector2)
+		#		material.set_shader_parameter("rotation", deg_to_rad(float(file_data.video.get_rotation())))
+		#
+		#		material.set_shader_parameter("color_profile", file_data.color_profile)
+		#	elif file_data.image != null:
+		#		material.shader = preload(Library.SHADER_IMAGE)
+		#		loaded_shaders[track_id] = SHADER_ID.IMAGE
+		#
+		#		if material.get_shader_parameter("resolution") != file_data.image.get_size():
+		#			material.set_shader_parameter("resolution", file_data.image.get_size())
+		#	else:
+		#		# Just in case we remove the shader.
+		#		material.shader = null
+		#		loaded_shaders[track_id] = SHADER_ID.EMPTY
+		#		return
+		#	
 #	var effects_video: Array[VideoEffect] = ClipHandler.get_clip(loaded_clips[track_id]).effects_video
 #
 #	if effects_video:

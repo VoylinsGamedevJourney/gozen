@@ -80,6 +80,15 @@ func initialize(p_resolution: Vector2i) -> void:
 	print("VisualCompositor: initialization complete")
 
 
+func setup_yuv_pipeline(shader_file: RDShaderFile) -> void:
+	# TODO: Make this more flexible since we sometimes need to change the YUV shader
+	# due to deinterlacing and full/standard yuv.
+	var spirv: RDShaderSPIRV = shader_file.get_spirv()
+
+	shader_yuv = device.shader_create_from_spirv(spirv)
+	pipeline_yuv = device.compute_pipeline_create(shader_yuv)
+
+
 func process_video_frame(y_data: Image, u_data: Image, v_data: Image, effects: Array[VideoEffect]) -> void:
 	if not initialized:
 		return
