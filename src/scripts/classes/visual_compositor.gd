@@ -1,5 +1,6 @@
 class_name VisualCompositor
 extends RefCounted
+# TODO: Add deinterlacing to the main YUV shaders ... or add deinterlacing as an effect?
 
 const PARAM_BUFFER_SIZE: int = 128
 
@@ -303,10 +304,13 @@ class EffectCache:
 			var value: Variant = effect.get_param_value(param.param_id, frame_nr)
 
 			if param.type == VisualEffect.PARAM_TYPE.FLOAT:
+				_pad_stream(stream_writer, 4)
 				stream_writer.put_float(value)
 			elif value == VisualEffect.PARAM_TYPE.INT:
+				_pad_stream(stream_writer, 4)
 				stream_writer.put_32(value)
 			elif value == VisualEffect.PARAM_TYPE.COLOR: #Color should be RGBA
+				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.r)
 				stream_writer.put_float(value.g)
 				stream_writer.put_float(value.b)
@@ -314,13 +318,34 @@ class EffectCache:
 			elif value == VisualEffect.PARAM_TYPE.VEC2:
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
+			elif value == VisualEffect.PARAM_TYPE.VEC3:
+				_pad_stream(stream_writer, 16)
+				stream_writer.put_float(value.x)
+				stream_writer.put_float(value.y)
+				stream_writer.put_float(value.z)
+			elif value == VisualEffect.PARAM_TYPE.VEC4:
+				_pad_stream(stream_writer, 16)
+				stream_writer.put_float(value.x)
+				stream_writer.put_float(value.y)
+				stream_writer.put_float(value.z)
+				stream_writer.put_float(value.w)
 
 		param_data = stream_writer.data_array
 
-		if param_data.size() < 128:
-			param_data.resize(128) # Add padding if needed
+		if param_data.size() < PARAM_BUFFER_SIZE:
+			param_data.resize(PARAM_BUFFER_SIZE) # Add padding if needed to end
+
 
 	func free_rids(device: RenderingDevice) -> void:
 		if shader.is_valid(): device.free_rid(shader)
 		if pipeline.is_valid(): device.free_rid(pipeline)
 		if param_buffer.is_valid(): device.free_rid(param_buffer)
+
+
+	func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
+		var current_offset: int = stream_buffer.get_position()
+		var remainder: int = current_offset % alignment
+		
+		if remainder != 0:
+			for i: int in alignment - remainder:
+				stream_buffer.put_8(0)

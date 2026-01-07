@@ -1,7 +1,7 @@
 class_name VisualEffect
 extends Resource
 
-enum PARAM_TYPE { FLOAT, COLOR, INT, VEC2 }
+enum PARAM_TYPE { FLOAT, COLOR, INT, VEC2, VEC3, VEC4 }
 
 
 @export var effect_name: String
