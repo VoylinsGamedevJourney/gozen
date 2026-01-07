@@ -14,7 +14,7 @@ var end_frame: int:
 
 var begin: int = 0 # Only for video and audio files
 
-var effects_video: Array[VideoEffect]
+var effects_video: Array[VisualEffect]
 var effects_audio: Array[AudioEffect]
 
 var transform: TransformEffect # Only for clips with visuals

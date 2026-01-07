@@ -57,11 +57,11 @@ func get_clip_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
 	return FileHandler.get_file_data(clip.file_id)
 
 
-func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
+func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 	var type: FileHandler.TYPE = ClipHandler.get_type(clip.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
-		return null
+		return
 	elif type == FileHandler.TYPE.VIDEO:
 		# For the video stuff, we load in the data for the shader. The FileData
 		# has a placeholder texture of the size of the video so in the end we
@@ -86,7 +86,7 @@ func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
 
 		# check if not reloading same frame
 		if frame_nr == video_frame_nr:
-			return FileHandler.get_file_data(clip.file_id).image
+			return # FileHandler.get_file_data(clip.file_id).image
 
 		# check if frame is before current one or after max skip
 		var skips: int = frame_nr - video_frame_nr
@@ -99,8 +99,7 @@ func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
 			for i: int in skips:
 				if !video.next_frame(i == skips):
 					print("Something went wrong skipping next frame!")
-
-	return FileHandler.get_file_data(clip.file_id).image
+	#return FileHandler.get_file_data(clip.file_id).image
 
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:

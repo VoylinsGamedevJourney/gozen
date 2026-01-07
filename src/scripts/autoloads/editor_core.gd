@@ -5,7 +5,7 @@ signal frame_changed
 signal play_changed(value: bool)
 
 
-enum SHADER_ID { EMPTY, YUV, YUV_FULL, IMAGE }
+enum SHADER_ID { EMPTY, YUV_STANDARD, YUV_FULL, IMAGE }
 
 const VISUAL_TYPES: PackedInt64Array = [
 		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT, FileHandler.TYPE.VIDEO ]
@@ -22,16 +22,11 @@ var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = _set_is_playing
-var loaded_clips: Array[int] = []
+var loaded_clips: PackedInt64Array = []
 var loaded_shaders: Array[SHADER_ID] = []
 
 var default_effects_video: EffectsVideo = EffectsVideo.new()
 var default_effects_audio: EffectsAudio = EffectsAudio.new()
-var color_correction_default: Array[bool] = [] # is true if default colors are loaded.
-
-var y_textures: Array[ImageTexture] = []
-var u_textures: Array[ImageTexture] = []
-var v_textures: Array[ImageTexture] = []
 
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0  # Get's set when changing framerate
@@ -84,11 +79,7 @@ func _on_closing_editor() -> void:
 		player.queue_free()
 	
 	default_effects_video.queue_free()
-
 	audio_players.clear()
-	y_textures.clear()
-	u_textures.clear()
-	v_textures.clear()
 
 
 func on_play_pressed() -> void:
@@ -256,13 +247,7 @@ func setup_playback() -> void:
 		view_textures.append(texture_rect)
 		loaded_shaders.append(SHADER_ID.EMPTY)
 
-		color_correction_default.append(false)
-
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		y_textures.append(null)
-		u_textures.append(null)
-		v_textures.append(null)
-
 		visual_compositor.initialize(Project.get_resolution())
 		visual_compositors.append(visual_compositor)
 		
@@ -275,92 +260,22 @@ func update_view(track_id: int) -> void:
 		return
 
 	var file_data: FileData = ClipHandler.get_clip_file_data(loaded_clips[track_id])
-	var material: ShaderMaterial = view_textures[track_id].get_material()
-	var updated: bool = false
+	var clip_data: ClipData = ClipHandler.get_clip(loaded_clips[track_id])
 
-	view_textures[track_id].texture = ClipHandler.get_frame(loaded_clips[track_id], frame_nr)
+	ClipHandler.load_frame(loaded_clips[track_id], frame_nr)
 
-	# Check if correct shader is applied or not, if not, set correct shader.
 	if file_data.video != null:
-		var interlaced: int = file_data.video.get_interlaced() 
-		# TODO: This all needs changing
+		var y_data: Image = file_data.video.get_y_data()
+		var u_data: Image = file_data.video.get_u_data()
+		var v_data: Image = file_data.video.get_v_data()
+		var rotation: float = deg_to_rad(file_data.video.get_rotation())
+		var color_profile: Vector4 = file_data.color_profile
 
-		#		if file_data.video.is_full_color_range():
-		#			if loaded_shaders[track_id] != SHADER_ID.YUV_FULL:
-		#				if interlaced != 0:
-		#					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P_FULL)
-		#					material.set_shader_parameter("interlaced", interlaced)
-		#				else:
-		#					material.shader = preload(Library.SHADER_DEINTERLACE_YUV420P)
-		#
-		#				loaded_shaders[track_id] = SHADER_ID.YUV_FULL
-		#				_init_video_textures(track_id, file_data.video, material)
-		#				updated = true
-		#		elif loaded_shaders[track_id] != SHADER_ID.YUV:
-		#			if interlaced != 0:
-		#				material.shader = preload(Library.SHADER_YUV420P_FULL)
-		#				material.set_shader_parameter("interlaced", interlaced)
-		#			else:
-		#				material.shader = preload(Library.SHADER_YUV420P)
-		#
-		#			loaded_shaders[track_id] = SHADER_ID.YUV
-		#			_init_video_textures(track_id, file_data.video, material)
-		#			updated = true
-		#
-		#		if !updated:
-		#			var video: GoZenVideo
-		#
-		#			if file_data.clip_only_video.has(loaded_clips[track_id]):
-		#				video = file_data.clip_only_video[loaded_clips[track_id]]
-		#			else:
-		#				video = file_data.video
-		#
-		#			y_textures[track_id].update(video.get_y_data())
-		#			u_textures[track_id].update(video.get_u_data())
-		#			v_textures[track_id].update(video.get_v_data())
-		#		material.set_shader_parameter("resolution", file_data.video.get_actual_resolution() as Vector2)
-		#		material.set_shader_parameter("rotation", deg_to_rad(float(file_data.video.get_rotation())))
-		#
-		#		material.set_shader_parameter("color_profile", file_data.color_profile)
-		#	elif file_data.image != null:
-		#		material.shader = preload(Library.SHADER_IMAGE)
-		#		loaded_shaders[track_id] = SHADER_ID.IMAGE
-		#
-		#		if material.get_shader_parameter("resolution") != file_data.image.get_size():
-		#			material.set_shader_parameter("resolution", file_data.image.get_size())
-		#	else:
-		#		# Just in case we remove the shader.
-		#		material.shader = null
-		#		loaded_shaders[track_id] = SHADER_ID.EMPTY
-		#		return
-		#	
-#	var effects_video: Array[VideoEffect] = ClipHandler.get_clip(loaded_clips[track_id]).effects_video
-#
-#	if effects_video:
-#		material.set_shader_parameter("alpha", effects_video.alpha)
-#	 
-#		if effects_video.enable_color_correction:
-#			effects_video.apply_color_correction(material)
-#			color_correction_default[track_id] = false
-#		elif !color_correction_default[track_id]:
-#			default_effects_video.apply_color_correction(material)
-#			color_correction_default[track_id] = true
-#
-#		if effects_video.enable_chroma_key:
-#			effects_video.apply_chroma_key(material)
-#		elif effects_video.enable_chroma_key:
-#			default_effects_video.apply_color_correction(material)
-#
-#		effects_video.apply_transform(view_textures[track_id], material)
-
-
-func _init_video_textures(track_id: int, video_data: GoZenVideo, material: ShaderMaterial) -> void:
-	y_textures[track_id] = ImageTexture.create_from_image(video_data.get_y_data())
-	u_textures[track_id] = ImageTexture.create_from_image(video_data.get_u_data())
-	v_textures[track_id] = ImageTexture.create_from_image(video_data.get_v_data())
-	material.set_shader_parameter("y_data", y_textures[track_id])
-	material.set_shader_parameter("u_data", u_textures[track_id])
-	material.set_shader_parameter("v_data", v_textures[track_id])
+		visual_compositors[track_id].process_video_frame(
+				y_data, u_data, v_data, rotation, color_profile, 0.0,
+				clip_data.effects_video, frame_nr)
+		
+		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 
 
 ## Update display/audio and continue if within clip bounds.
