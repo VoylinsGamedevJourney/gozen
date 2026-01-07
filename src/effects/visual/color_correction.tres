@@ -1,0 +1,75 @@
+[gd_resource type="Resource" script_class="VideoEffect" load_steps=11 format=3 uid="uid://c7mrh1ify5m32"]
+
+[ext_resource type="Script" uid="uid://duoa7hc3qb473" path="res://scripts/classes/video_effect_param.gd" id="1_3s0gb"]
+[ext_resource type="Script" uid="uid://djsawp7xk7ilr" path="res://scripts/classes/video_effect.gd" id="2_45v4p"]
+
+[sub_resource type="Resource" id="Resource_3s0gb"]
+script = ExtResource("1_3s0gb")
+param_id = "brightness"
+param_name = "param_brightness"
+default_value = 0.0
+min_value = -1.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_45v4p"]
+script = ExtResource("1_3s0gb")
+param_id = "contrast"
+param_name = "param_contrast"
+default_value = 1.0
+max_value = 3.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_0cd3o"]
+script = ExtResource("1_3s0gb")
+param_id = "saturation"
+param_name = "param_saturation"
+default_value = 1.0
+max_value = 3.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_cr1pe"]
+script = ExtResource("1_3s0gb")
+param_id = "tint_color"
+param_name = "param_tint_color"
+type = 1
+default_value = Color(0, 0, 0, 1)
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_0xk5j"]
+script = ExtResource("1_3s0gb")
+param_id = "tint_amount"
+param_name = "param_tint_amount"
+default_value = 0.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_bcyk7"]
+script = ExtResource("1_3s0gb")
+param_id = "red_value"
+param_name = "param_red_value"
+default_value = 1.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_jduvr"]
+script = ExtResource("1_3s0gb")
+param_id = "green_value"
+param_name = "param_green_value"
+default_value = 1.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_bbw45"]
+script = ExtResource("1_3s0gb")
+param_id = "blue_value"
+param_name = "param_blue_value"
+default_value = 1.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[resource]
+script = ExtResource("2_45v4p")
+effect_name = "Color Correction"
+params = Array[ExtResource("1_3s0gb")]([SubResource("Resource_3s0gb"), SubResource("Resource_45v4p"), SubResource("Resource_0cd3o"), SubResource("Resource_cr1pe"), SubResource("Resource_0xk5j"), SubResource("Resource_bcyk7"), SubResource("Resource_jduvr"), SubResource("Resource_bbw45")])
+metadata/_custom_type_script = "uid://djsawp7xk7ilr"
