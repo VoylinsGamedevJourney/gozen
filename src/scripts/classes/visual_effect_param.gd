@@ -1,10 +1,10 @@
-class_name VideoEffectParam
+class_name VisualEffectParam
 extends Resource
 
 
 @export var param_id: String
 @export var param_name: String
-@export var type: VideoEffect.PARAM_TYPE
+@export var type: VisualEffect.PARAM_TYPE
 
 @export var default_value: Variant
 
