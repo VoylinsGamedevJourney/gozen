@@ -17,12 +17,13 @@ var begin: int = 0 # Only for video and audio files
 var effects_video: Array[VideoEffect]
 var effects_audio: Array[AudioEffect]
 
-var transform: TransformEffect
+var transform: TransformEffect # Only for clips with visuals
 
 
 
 func _to_string() -> String:
 	return "<clip:%s>" % id
+
 
 
 class TransformEffect:

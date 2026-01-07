@@ -1,95 +1,71 @@
-shader_type canvas_item;
+shader_type compute;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 
-// Image
+// Input data
 uniform sampler2D y_data;
 uniform sampler2D u_data;
 uniform sampler2D v_data;
 
-uniform vec2 resolution;
+// Output image
+layout(rgba8, binding = 0) uniform writeonly image2D out_image;
+
+// Params
+uniform ivec2 resolution;
 uniform vec4 color_profile;
 uniform float rotation;
 
-// Effects
-uniform float alpha: hint_range(0.0, 1, 0.001) = 1;
-
-uniform float brightness: hint_range(-1, 1) = 0.0;
-uniform float contrast: hint_range(0, 3) = 1.0;
-uniform float saturation: hint_range(0, 3) = 1.0;
-
-uniform float red_value: hint_range(0, 1) = 1.0;
-uniform float green_value: hint_range(0, 1) = 1.0;
-uniform float blue_value: hint_range(0, 1) = 1.0;
-
-uniform vec4 tint_color: source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform float tint_effect_factor: hint_range(0, 1) = 0.0;
-
-uniform bool apply_chroma_key = false;
-uniform vec4 key_color: source_color = vec4(0.0, 1.0, 0.0, 1.0);
-uniform float key_tolerance: hint_range(0.0, 1.0, 0.01) = 0.3;
-uniform float key_softness: hint_range(0.0, 0.5, 0.01) = 0.05;
 
 
+void main() {
+	ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
 
-void fragment() {
-	vec2 uv = UV;
-	vec2 centered_uv = uv - vec2(0.5);
-	float cos_angle = cos(rotation);
-	float sin_angle = sin(rotation);
-	vec2 rotated_uv = vec2(
-		centered_uv.x * cos_angle - centered_uv.y * sin_angle,
-		centered_uv.x * sin_angle + centered_uv.y * cos_angle
-	);
+    if (pixel.x >= resolution.x || pixel.y >= resolution.y) {
+        return;
+    }
 
-	uv = rotated_uv + vec2(0.5);
+    // Normalized UV
+    vec2 uv = (vec2(pixel) + 0.5) / vec2(resolution);
 
-	vec2 y_uv = uv * resolution / vec2(textureSize(y_data, 0));
-	y_uv = clamp(y_uv, vec2(0.0), vec2(1.0));
+    // Rotation
+    vec2 centered = uv - vec2(0.5);
+    float c = cos(rotation);
+    float s = sin(rotation);
+    vec2 rotated = vec2(
+        centered.x * c - centered.y * s,
+        centered.x * s + centered.y * c
+    );
+    uv = rotated + vec2(0.5);
 
-	vec2 u_uv = uv * ((resolution / 2.0) / vec2(textureSize(u_data, 0)));
-    vec2 v_uv = uv * ((resolution / 2.0) / vec2(textureSize(v_data, 0)));
+    // YUV sampling
+    vec2 y_uv = clamp(
+        uv * vec2(resolution) / vec2(textureSize(y_data, 0)),
+        vec2(0.0), vec2(1.0)
+    );
 
-    u_uv = clamp(u_uv, vec2(0.0), vec2(1.0));
-    v_uv = clamp(v_uv, vec2(0.0), vec2(1.0));
-	
-	float Y = float(texture(y_data, y_uv).r);
-	float U = float(texture(u_data, u_uv).r - 0.5);
-	float V = float(texture(v_data, v_uv).r - 0.5);
-	
-	float R = Y + color_profile.x * V;
-	float G = Y - color_profile.y * U - color_profile.z * V;
-	float B = Y + color_profile.w * U;
-	
-	vec3 rgb = vec3(R, G, B);
+    vec2 uv_half = resolution / 2;
+    vec2 u_uv = clamp(
+        uv * uv_half / vec2(textureSize(u_data, 0)),
+        vec2(0.0), vec2(1.0)
+    );
+    vec2 v_uv = clamp(
+        uv * uv_half / vec2(textureSize(v_data, 0)),
+        vec2(0.0), vec2(1.0)
+    );
 
-	// Brightness + Contrast
-	rgb = rgb + vec3(brightness);
-	rgb = (rgb - 0.5) * contrast + 0.5;
+    float Y = texture(y_data, y_uv).r;
+    float U = texture(u_data, u_uv).r - 0.5;
+    float V = texture(v_data, v_uv).r - 0.5;
 
-	// Saturation
-	float grey = dot(rgb, vec3(0.3086, 0.6094, 0.0820)); // Luminance
-	rgb = mix(vec3(grey), rgb, saturation);
+    // YUV to RGB
+    vec3 rgb;
+    rgb.r = Y + color_profile.x * V;
+    rgb.g = Y - color_profile.y * U - color_profile.z * V;
+    rgb.b = Y + color_profile.w * U;
 
-	// Color adjustments
-	rgb.r *= red_value;
-	rgb.g *= green_value;
-	rgb.b *= blue_value;
+    rgb = clamp(rgb, 0.0, 1.0);
 
-	// Apply tint
-	rgb = mix(rgb, rgb * tint_color.rgb, tint_effect_factor);
-
-	rgb = clamp(rgb, 0.0, 1.0);
-
-	// Chroma key
-	float chroma_alpha_multiplier = 1.0;
-
-	if (apply_chroma_key) {
-		float dist = distance(rgb, key_color.rgb);
-
-		chroma_alpha_multiplier = smoothstep(key_tolerance, key_tolerance + key_softness, dist);
-	}
-
-	// Set RGB + alpha
-	COLOR = vec4(rgb, alpha * chroma_alpha_multiplier);
+	// Storing final RGBA image
+    imageStore(out_image, pixel, vec4(rgb, 1.0));
 }
 
