@@ -1,19 +1,23 @@
-shader_type compute;
+#[compute]
+#version 450
+
 layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
-
 // Input data
-uniform sampler2D y_data;
-uniform sampler2D u_data;
-uniform sampler2D v_data;
+layout(set = 0, binding = 0)uniform sampler2D y_data;
+layout(set = 0, binding = 1)uniform sampler2D u_data;
+layout(set = 0, binding = 2)uniform sampler2D v_data;
 
 // Output image
-layout(rgba8, binding = 0) uniform writeonly image2D out_image;
+layout(rgba8, set = 0, binding = 3) uniform writeonly image2D out_image;
 
 // Params
-uniform ivec2 resolution;
-uniform vec4 color_profile;
-uniform float rotation;
+layout(set = 0, binding = 4, std140) uniform Params {
+	ivec2 resolution;
+	vec4 color_profile;
+	float rotation;
+	float interlaced;
+} params;
 
 
 
