@@ -1,6 +1,7 @@
 class_name VisualCompositor
 extends RefCounted
 
+const PARAM_BUFFER_SIZE: int = 128
 
 const USAGE_BITS_R8: int = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
@@ -100,7 +101,7 @@ func setup_yuv_pipeline(shader_file: RDShaderFile) -> void:
 
 func process_video_frame(y_data: Image, u_data: Image, v_data: Image, rotation: float,
 						 color_profile: Vector4, interlaced: float,
-						 effects: Array[VideoEffect], current_frame: int) -> void:
+						 effects: Array[VisualEffect], current_frame: int) -> void:
 	if not initialized:
 		return
 
@@ -162,19 +163,31 @@ func process_video_frame(y_data: Image, u_data: Image, v_data: Image, rotation: 
 	device.compute_list_add_barrier(compute_list)
 
 	# Start handling the effects
-	for effect: VideoEffect in effects:
+	for effect: VisualEffect in effects:
 		if not effect.enabled:
 			continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path)
 		if not cache: continue
 
-		device.compute_list_bind_compute_pipeline(compute_list, pipeline_data.pipeline)
+		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 		cache.pack_effect_params(effect, current_frame)
+		device.buffer_update(cache.param_buffer, 0, cache.param_size, cache.param_data)
 
-		device.buffer_update(cache.param_buffer, 0, cache.param_size)
+		# Create uniforms for effect
+		# - binding 0: input image
+		# - binding 1: output image
+		# - binding 2: params
+		var effect_uniforms: Array[RDUniform] = [
+			_create_sampler_uniform(ping_texture, 0),
+			_create_image_uniform(pong_texture, 1),
+			_create_buffer_uniform(cache.param_buffer, 2)
+		]
 
-		# Make certain data is handled and ready
+		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
+
+		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
+		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 		device.compute_list_add_barrier(compute_list)
 
 		# Swap buffers
@@ -191,9 +204,13 @@ func cleanup() -> void:
 	if y_texture.is_valid(): device.free_rid(y_texture)
 	if u_texture.is_valid(): device.free_rid(u_texture)
 	if v_texture.is_valid(): device.free_rid(v_texture)
+
 	if ping_texture.is_valid(): device.free_rid(ping_texture)
 	if pong_texture.is_valid(): device.free_rid(pong_texture)
-	# TODO: Cleanup YUV pipeline and effect shaders
+
+	if yuv_params.is_valid(): device.free_rid(yuv_params)
+	if shader_yuv.is_valid(): device.free_rid(shader_yuv)
+	if pipeline_yuv.is_valid(): device.free_rid(pipeline_yuv)
 
 
 func _create_storage_buffer(size_bytes: int) -> RID:
@@ -226,6 +243,16 @@ func _create_image_uniform(texture_rid: RID, binding: int) -> RDUniform:
 	return uniform
 
 
+func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
+	var uniform: RDUniform = RDUniform.new()
+
+	uniform.uniform_type = device.UNIFORM_TYPE_UNIFORM_BUFFER
+	uniform.binding = binding
+	uniform.add_id(buffer_rid)
+
+	return uniform
+
+
 func _get_effect_pipeline(shader_path: String) -> EffectCache:
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
@@ -237,7 +264,8 @@ func _get_effect_pipeline(shader_path: String) -> EffectCache:
 		printerr("Effect shader is not RDShaderFile (compute shader): ", shader_path)
 		return null
 
-	effect_cache.initialize(device, shader_file.get_spirv()) 
+	effect_cache.initialize(device, shader_file.get_spirv(), PARAM_BUFFER_SIZE)
+	effects_cache[shader_path] = effect_cache
 
 	return effect_cache
 
@@ -246,24 +274,43 @@ func _get_effect_pipeline(shader_path: String) -> EffectCache:
 class EffectCache:
 	var shader: RID
 	var pipeline: RID
+
 	var param_buffer: RID
 	var param_size: int
+	var param_data: PackedByteArray = PackedByteArray()
 
 
-	func initialize(device: RenderingDevice, spirv: RDShaderSPIRV) -> void:
+	func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, buffer_size: int) -> void:
 		shader = device.shader_create_from_spirv(spirv)
 		pipeline = device.compute_pipeline_create(shader)
 
+		var empty_buffer: PackedByteArray = PackedByteArray()
 
-	func pack_effect_params(effect: VideoEffect, frame_nr: int) -> PackedByteArray:
+		empty_buffer.resize(buffer_size)
+		param_buffer = device.uniform_buffer_create(buffer_size, empty_buffer)
+
+
+
+	func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
 		var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
-		var param_data: PackedByteArray = PackedByteArray()
 
-		for param: VideoEffectParam in effect.params:
-			if param.type == VideoEffect.PARAM_TYPE.FLOAT:
-				writer.put_float(param.
+		for param: VisualEffectParam in effect.params:
+			var value: Variant = effect.get_param_value(param.param_id, frame_nr)
 
-	
+			if param.type == VisualEffect.PARAM_TYPE.FLOAT:
+				stream_writer.put_float(value)
+			elif value == VisualEffect.PARAM_TYPE.INT:
+				stream_writer.put_32(value)
+			elif value == VisualEffect.PARAM_TYPE.COLOR: #Color should be RGBA
+				stream_writer.put_float(value.r)
+				stream_writer.put_float(value.g)
+				stream_writer.put_float(value.b)
+				stream_writer.put_float(value.a)
+			elif value == VisualEffect.PARAM_TYPE.VEC2:
+				stream_writer.put_float(value.x)
+				stream_writer.put_float(value.y)
 
+		param_data = stream_writer.data_array
 
-
+		if param_data.size() < 128:
+			param_data.resize(128) # Add padding if needed
