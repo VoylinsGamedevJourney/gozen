@@ -129,9 +129,7 @@ func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
 	ping_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
 	pong_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
 	display_texture.texture_rd_rid = ping_texture
-
 	initialized = true
-	print("VisualCompositor: initialization complete")
 
 
 func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], current_frame: int) -> void:

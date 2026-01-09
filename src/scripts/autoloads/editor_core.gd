@@ -135,7 +135,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct
 		if _check_clip(i, frame_nr):
-			update_view(i)
+			update_view(i, false)
 			continue
 
 		# Getting the next frame if possible
@@ -151,7 +151,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 		else:
 			loaded_clips[i] = id
 
-		update_view(i)
+		update_view(i, true)
 	
 	if frame_nr == Project.get_timeline_end():
 		is_playing = false
@@ -253,7 +253,7 @@ func setup_playback() -> void:
 		viewport.move_child(texture_rect, 1)
 
 
-func update_view(track_id: int) -> void:
+func update_view(track_id: int, update: bool) -> void:
 	if loaded_clips[track_id] == -1:
 		return
 
@@ -263,9 +263,10 @@ func update_view(track_id: int) -> void:
 	ClipHandler.load_frame(loaded_clips[track_id], frame_nr)
 
 	if file_data.video != null:
-		visual_compositors[track_id].initialize(file_data.video.get_resolution(), file_data.video)
+		if update:
+			visual_compositors[track_id].initialize(file_data.video.get_resolution(), file_data.video)
+
 		visual_compositors[track_id].process_video_frame(file_data.video, clip_data.effects_video, frame_nr)
-		
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 
 
