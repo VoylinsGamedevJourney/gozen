@@ -1,6 +1,5 @@
 class_name VisualCompositor
 extends RefCounted
-# TODO: Add deinterlacing to the main YUV shaders ... or add deinterlacing as an effect?
 
 const PARAM_BUFFER_SIZE: int = 128
 const YUV_PARAM_BUFFER_SIZE: int = 80
@@ -15,32 +14,32 @@ const USAGE_BITS_RGBA: int = (
 		RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT)
 
 const BT709: PackedFloat32Array = [
-    1.164,  1.164,  1.164,  0.0,
-    0.0,   -0.213,  2.112,  0.0,
-    1.793, -0.533,  0.0,    0.0,
-   -0.969,  0.301, -1.129,  1.0]
+	 1.164,  1.164,  1.164, 0.0,
+	 0.000, -0.213,  2.112, 0.0,
+	 1.793, -0.533,  0.000, 0.0,
+	-0.969,  0.301, -1.129, 1.0]
 
 const BT601_LIMITED: PackedFloat32Array = [
-    1.164,  1.164,  1.164,  0.0,
-    0.0,   -0.392,  2.017,  0.0,
-    1.596, -0.813,  0.0,    0.0,
-   -0.871,  0.530, -1.086,  1.0]
+	 1.164,  1.164,  1.164, 0.0,
+	 0.000, -0.392,  2.017, 0.0,
+	 1.596, -0.813,  0.000, 0.0,
+	-0.871,  0.530, -1.086, 1.0]
 const BT601_FULL: PackedFloat32Array = [
-    1.0,    1.0,    1.0,    0.0,
-    0.0,   -0.344,  1.772,  0.0,
-    1.402, -0.714,  0.0,    0.0,
-   -0.701,  0.529, -0.886,  1.0]
+	 1.000,  1.000,  1.000, 0.0,
+	 0.000, -0.344,  1.772, 0.0,
+	 1.402, -0.714,  0.000, 0.0,
+	-0.701,  0.529, -0.886, 1.0]
 
 const BT2020_LIMITED: PackedFloat32Array = [
-    1.164,  1.164,  1.164,  0.0,
-    0.0,   -0.16455, 1.8814, 0.0,
-    1.4746, -0.57135, 0.0,   0.0,
-   -0.813,  0.296,  -1.017, 1.0]
+	 1.1640,  1.16400,  1.1640, 0.0,
+	 0.0000, -0.16455,  1.8814, 0.0,
+	 1.4746, -0.57135,  0.0000, 0.0,
+	-0.8130,  0.29600, -1.0170, 1.0]
 const BT2020_FULL: PackedFloat32Array = [
-    1.0,    1.0,     1.0,    0.0,
-    0.0,   -0.18733, 1.85563, 0.0,
-    1.4746, -0.46813, 0.0,   0.0,
-   -0.7373, 0.3313, -0.9278, 1.0]
+	 1.0000,  1.00000,  1.00000, 0.0,
+	 0.0000, -0.18733,  1.85563, 0.0,
+	 1.4746, -0.46813,  0.00000, 0.0,
+	-0.7373,  0.33130, -0.92780, 1.0]
 
 
 var device: RenderingDevice = RenderingServer.get_rendering_device()
@@ -123,9 +122,6 @@ func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
 	ping_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
 	pong_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
 	display_texture.texture_rd_rid = ping_texture
-
-	# Allocate space for YUV params
-	yuv_params = _create_storage_buffer(YUV_PARAM_BUFFER_SIZE)
 
 	initialized = true
 	print("VisualCompositor: initialization complete")
