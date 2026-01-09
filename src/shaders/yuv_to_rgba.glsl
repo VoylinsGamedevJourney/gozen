@@ -50,6 +50,6 @@ void main() {
 		yuv = mix(yuv, yuv_neighbor, 0.5);
 	}
 
-	vec3 rgb = (params.color_matrix * vec4(yuv)).rgb;
+	vec3 rgb = (params.color_matrix * vec4(yuv, 1.0)).rgb;
     imageStore(output_image, id, vec4(rgb, texture(a_data, texture_uv).r));
 }
