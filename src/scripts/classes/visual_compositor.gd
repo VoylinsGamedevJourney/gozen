@@ -48,6 +48,7 @@ var device: RenderingDevice = RenderingServer.get_rendering_device()
 var y_texture: RID
 var u_texture: RID
 var v_texture: RID
+var a_texture: RID
 var yuv_params: RID
 
 var ping_texture: RID
@@ -68,7 +69,7 @@ var groups_y: int
 
 
 
-func initialize(p_resolution: Vector2i, is_video: bool = true, shader_file: RDShaderFile = null) -> void:
+func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
 	if initialized:
 		cleanup()
 
@@ -78,12 +79,8 @@ func initialize(p_resolution: Vector2i, is_video: bool = true, shader_file: RDSh
 	groups_x = ceili(resolution.x / 8.0)
 	groups_y = ceili(resolution.x / 8.0)
 
-	if is_video:
-		if !shader_file:
-			push_error("No shader file was given!")
-			return
-
-		var spirv: RDShaderSPIRV = shader_file.get_spirv()
+	if video != null:
+		var spirv: RDShaderSPIRV = preload("res://shaders/yuv_to_rgba.glsl").get_spirv()
 		var format_y: RDTextureFormat = RDTextureFormat.new()
 		var format_uv: RDTextureFormat = RDTextureFormat.new()
 
@@ -109,6 +106,9 @@ func initialize(p_resolution: Vector2i, is_video: bool = true, shader_file: RDSh
 		y_texture = device.texture_create(format_y, RDTextureView.new(), [])
 		u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
 		v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
+		a_texture = device.texture_create(format_y, RDTextureView.new(), [])
+
+		yuv_params = _create_yuv_params(video)
 
 	# Create RGBA8 format
 	var format_rgba: RDTextureFormat = RDTextureFormat.new()
@@ -131,41 +131,15 @@ func initialize(p_resolution: Vector2i, is_video: bool = true, shader_file: RDSh
 	print("VisualCompositor: initialization complete")
 
 
-func process_video_frame(y_data: Image, u_data: Image, v_data: Image, rotation: float,
-						 color_profile: Vector4, interlaced: float,
-						 effects: Array[VisualEffect], current_frame: int) -> void:
+func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], current_frame: int) -> void:
 	if not initialized:
 		return
 
-	var yuv_buffer_data: PackedByteArray = PackedByteArray()
-	var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
-
 	# Update the YUV input textures
-	device.texture_update(y_texture, 0, y_data.get_data())
-	device.texture_update(u_texture, 0, u_data.get_data())
-	device.texture_update(v_texture, 0, v_data.get_data())
-
-	# YUV params buffer
-	# - ivec2 resolution; offset 0
-	# - vec4 color_prof;  offset 16
-	# - float rotation;   offset 32
-	# - float rotation;   offset 32
-	yuv_buffer_data.resize(64)
-	stream_writer.data_array = yuv_buffer_data
-
-	stream_writer.put_32(resolution.x)
-	stream_writer.put_32(resolution.y)
-	stream_writer.put_64(0) # Padding to reach 16 bytes for vec4 alignment
-
-	stream_writer.put_float(color_profile.x)
-	stream_writer.put_float(color_profile.y)
-	stream_writer.put_float(color_profile.z)
-	stream_writer.put_float(color_profile.w)
-
-	stream_writer.put_float(rotation)
-	stream_writer.put_float(interlaced)
-
-	device.buffer_update(yuv_params, 0, stream_writer.data_array.size(), stream_writer.data_array)
+	device.texture_update(y_texture, 0, video.get_y_data().get_data())
+	device.texture_update(u_texture, 0, video.get_u_data().get_data())
+	device.texture_update(v_texture, 0, video.get_v_data().get_data())
+	device.texture_update(a_texture, 0, video.get_a_data().get_data())
 
 	# Start of compute list
 	# Convert YUV to RGBA (and write to ping)
@@ -178,17 +152,15 @@ func process_video_frame(y_data: Image, u_data: Image, v_data: Image, rotation: 
 		_create_sampler_uniform(y_texture, 0), # Input
 		_create_sampler_uniform(u_texture, 1), # Input
 		_create_sampler_uniform(v_texture, 2), # Input
-		_create_image_uniform(ping_texture, 3) # Output
-	]
-	
+		_create_sampler_uniform(a_texture, 3), # Input
+		_create_image_uniform(ping_texture, 4), # Output
+		_create_buffer_uniform(yuv_params, 5)] # Video info
 	var yuv_set: RID = device.uniform_set_create(yuv_uniforms, shader_yuv, 0)
 
 	device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
-
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
-
-	# Make certain that YUV conversion finished before continuing
 	device.compute_list_add_barrier(compute_list)
+
 	_process_frame(compute_list, effects, current_frame)
 
 
@@ -196,6 +168,24 @@ func process_image_frame(_data: Image, effects: Array[VisualEffect], current_fra
 	# TODO: Add data to ping_texture,
 	#ping_texture = _create_image_uniform(data.get_rid(), 0)
 	_process_frame(device.compute_list_begin(), effects, current_frame)
+
+
+func cleanup() -> void:
+	if y_texture.is_valid(): device.free_rid(y_texture)
+	if u_texture.is_valid(): device.free_rid(u_texture)
+	if v_texture.is_valid(): device.free_rid(v_texture)
+
+	if ping_texture.is_valid(): device.free_rid(ping_texture)
+	if pong_texture.is_valid(): device.free_rid(pong_texture)
+
+	if yuv_params.is_valid(): device.free_rid(yuv_params)
+	if shader_yuv.is_valid(): device.free_rid(shader_yuv)
+	if pipeline_yuv.is_valid(): device.free_rid(pipeline_yuv)
+
+	for shader_path: String in effects_cache:
+		effects_cache[shader_path].free_rids(device)
+
+	effects_cache.clear()
 
 
 func _process_frame(compute_list: int, effects: Array[VisualEffect], current_frame: int) -> void:
@@ -237,22 +227,31 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 	display_texture.texture_rd_rid = ping_texture
 
 
-func cleanup() -> void:
-	if y_texture.is_valid(): device.free_rid(y_texture)
-	if u_texture.is_valid(): device.free_rid(u_texture)
-	if v_texture.is_valid(): device.free_rid(v_texture)
+func _create_yuv_params(video: GoZenVideo) -> RID:
+	var yuv_buffer_data: PackedByteArray = PackedByteArray()
+	var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
+	var matrix_data: PackedFloat32Array
 
-	if ping_texture.is_valid(): device.free_rid(ping_texture)
-	if pong_texture.is_valid(): device.free_rid(pong_texture)
+	yuv_buffer_data.resize(YUV_PARAM_BUFFER_SIZE)
+	stream_writer.data_array = yuv_buffer_data
 
-	if yuv_params.is_valid(): device.free_rid(yuv_params)
-	if shader_yuv.is_valid(): device.free_rid(shader_yuv)
-	if pipeline_yuv.is_valid(): device.free_rid(pipeline_yuv)
+	match video.get_color_profile():
+		"bt2020", "bt2100":
+			matrix_data = BT2020_FULL if video.is_full_color_range() else BT2020_LIMITED
+		"bt601", "bt470":
+			matrix_data = BT601_FULL if video.is_full_color_range() else BT601_LIMITED
+		_: # bt709 and unknown
+			matrix_data = BT709 
 
-	for shader_path: String in effects_cache:
-		effects_cache[shader_path].free_rids(device)
+	for value: float in matrix_data:
+		stream_writer.put_float(value)
 
-	effects_cache.clear()
+	stream_writer.put_32(resolution.x)
+	stream_writer.put_32(resolution.y)
+	stream_writer.put_32(video.get_interlaced())
+	stream_writer.put_32(0) # Necessary padding
+
+	return device.storage_buffer_create(stream_writer.data_array.size(), stream_writer.data_array)
 
 
 func _create_storage_buffer(size_bytes: int) -> RID:
