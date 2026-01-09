@@ -15,7 +15,7 @@ layout(rgba8, set = 0, binding = 4) uniform writeonly image2D output_image;
 // --- PARAMS --- (std140 requires 16 byte blocks)
 // mat4 = 64 bytes
 // ivec2 = 8 bytes
-// int/float = 4 bytes
+// int = 4 bytes
 layout(set = 0, binding = 5, std140) uniform Params {
 	mat4 color_matrix;	// Offset 0
 	ivec2 resolution;	// Offset 64
@@ -34,8 +34,7 @@ void main() {
 	vec3 yuv = vec3(
 		texture(y_data, texture_uv).r,
 		texture(u_data, texture_uv).r,
-		texture(v_data, texture_uv).r
-	);
+		texture(v_data, texture_uv).r);
 
 	if (params.interlaced > 0) {
 		float pixel_height = 1.0 / params.resolution.y;
@@ -44,12 +43,12 @@ void main() {
 		vec3 yuv_neighbor = vec3(
 			texture(y_data, offset_uv).r,
 			texture(u_data, offset_uv).r,
-			texture(v_data, offset_uv).r
-		);
+			texture(v_data, offset_uv).r);
 
 		yuv = mix(yuv, yuv_neighbor, 0.5);
 	}
 
 	vec3 rgb = (params.color_matrix * vec4(yuv, 1.0)).rgb;
+
     imageStore(output_image, id, vec4(rgb, texture(a_data, texture_uv).r));
 }
