@@ -11,7 +11,9 @@ const USAGE_BITS_R8: int = (
 const USAGE_BITS_RGBA: int = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
 		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT |
-		RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT)
+		RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT |
+		RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT |
+		RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT)
 
 const BT709: PackedFloat32Array = [
 	 1.164,  1.164,  1.164, 0.0,
@@ -44,11 +46,15 @@ const BT2020_FULL: PackedFloat32Array = [
 
 var device: RenderingDevice = RenderingServer.get_rendering_device()
 
+# For videos
 var y_texture: RID
 var u_texture: RID
 var v_texture: RID
 var a_texture: RID
 var yuv_params: RID
+
+# For images
+var base_image: RID
 
 var ping_texture: RID
 var pong_texture: RID
@@ -67,8 +73,7 @@ var groups_x: int
 var groups_y: int
 
 
-
-func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
+func _init_start(p_resolution: Vector2i) -> void:
 	if initialized:
 		cleanup()
 
@@ -78,44 +83,8 @@ func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
 	groups_x = ceili(resolution.x / 8.0)
 	groups_y = ceili(resolution.x / 8.0)
 
-	if video != null:
-		var spirv: RDShaderSPIRV = preload("res://shaders/yuv_to_rgba.glsl").get_spirv()
-		var format_y: RDTextureFormat = RDTextureFormat.new()
-		var format_uv: RDTextureFormat = RDTextureFormat.new()
 
-		# Setup YUV pipeline
-		shader_yuv = device.shader_create_from_spirv(spirv)
-		pipeline_yuv = device.compute_pipeline_create(shader_yuv)
-
-		# Creating the Y format
-		format_y.format = device.DATA_FORMAT_R8_UNORM
-		format_y.width = resolution.x
-		format_y.height = resolution.y
-		format_y.usage_bits = USAGE_BITS_R8
-		format_y.texture_type = device.TEXTURE_TYPE_2D
-
-		# Creating the UV format
-		format_uv.format = device.DATA_FORMAT_R8_UNORM
-		format_uv.width = floori(resolution.x / 2.0)
-		format_uv.height = floori(resolution.y / 2.0)
-		format_uv.usage_bits = USAGE_BITS_R8
-		format_uv.texture_type = device.TEXTURE_TYPE_2D
-
-		# Create YUV textures
-		y_texture = device.texture_create(format_y, RDTextureView.new(), [])
-		u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
-		v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
-
-		if video.get_has_alpha():
-			a_texture = device.texture_create(format_y, RDTextureView.new(), [])
-		else:
-			var white_image: Image = Image.create(resolution.x, resolution.y, false, Image.FORMAT_R8)
-
-			white_image.fill(Color.WHITE)
-			a_texture = device.texture_create(format_y, RDTextureView.new(), [white_image.get_data()])
-
-		yuv_params = _create_yuv_params(video)
-
+func _init_ping_pong() -> void:
 	# Create RGBA8 format
 	var format_rgba: RDTextureFormat = RDTextureFormat.new()
 
@@ -130,6 +99,67 @@ func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
 	pong_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
 	display_texture.texture_rd_rid = ping_texture
 	initialized = true
+
+
+func initialize_image(image: Texture2D) -> void:
+	_init_start(image.get_size())
+
+	var format: RDTextureFormat = RDTextureFormat.new()
+	var new_image: Image = image.get_image()
+
+	format.format = device.DATA_FORMAT_R8G8B8A8_UNORM
+	format.width = new_image.get_width()
+	format.height = new_image.get_height()
+	format.usage_bits = USAGE_BITS_RGBA
+	format.texture_type = device.TEXTURE_TYPE_2D
+
+	if new_image.get_format() != Image.FORMAT_RGBA8:
+		new_image.convert(Image.FORMAT_RGBA8)
+
+	base_image = device.texture_create(format, RDTextureView.new(), [new_image.get_data()])
+	_init_ping_pong()
+
+
+func initialize_video(video: GoZenVideo) -> void:
+	_init_start(video.get_resolution())
+
+	var spirv: RDShaderSPIRV = preload("res://shaders/yuv_to_rgba.glsl").get_spirv()
+	var format_y: RDTextureFormat = RDTextureFormat.new()
+	var format_uv: RDTextureFormat = RDTextureFormat.new()
+
+	# Setup YUV pipeline
+	shader_yuv = device.shader_create_from_spirv(spirv)
+	pipeline_yuv = device.compute_pipeline_create(shader_yuv)
+
+	# Creating the Y format
+	format_y.format = device.DATA_FORMAT_R8_UNORM
+	format_y.width = resolution.x
+	format_y.height = resolution.y
+	format_y.usage_bits = USAGE_BITS_R8
+	format_y.texture_type = device.TEXTURE_TYPE_2D
+
+	# Creating the UV format
+	format_uv.format = device.DATA_FORMAT_R8_UNORM
+	format_uv.width = floori(resolution.x / 2.0)
+	format_uv.height = floori(resolution.y / 2.0)
+	format_uv.usage_bits = USAGE_BITS_R8
+	format_uv.texture_type = device.TEXTURE_TYPE_2D
+
+	# Create YUV textures
+	y_texture = device.texture_create(format_y, RDTextureView.new(), [])
+	u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
+	v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
+
+	if video.get_has_alpha():
+		a_texture = device.texture_create(format_y, RDTextureView.new(), [])
+	else:
+		var white_image: Image = Image.create(resolution.x, resolution.y, false, Image.FORMAT_R8)
+
+		white_image.fill(Color.WHITE)
+		a_texture = device.texture_create(format_y, RDTextureView.new(), [white_image.get_data()])
+
+	yuv_params = _create_yuv_params(video)
+	_init_ping_pong()
 
 
 func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], current_frame: int) -> void:
@@ -167,44 +197,46 @@ func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], curren
 	_process_frame(compute_list, effects, current_frame)
 
 
-func process_image_frame(_data: Image, effects: Array[VisualEffect], current_frame: int) -> void:
-	# TODO: Add data to ping_texture,
-	#ping_texture = _create_image_uniform(data.get_rid(), 0)
+func process_image_frame(effects: Array[VisualEffect], current_frame: int) -> void:
+	if not initialized:
+		return
+
+	device.texture_copy(
+		base_image, ping_texture,
+		Vector3.ZERO, Vector3.ZERO,
+		Vector3(resolution.x, resolution.y, 1),
+		0, 0, 0, 0)
+
 	_process_frame(device.compute_list_begin(), effects, current_frame)
 
 
 func cleanup() -> void:
-	if y_texture.is_valid():
-		device.free_rid(y_texture)
-		y_texture = RID()
-	if u_texture.is_valid():
-		device.free_rid(u_texture)
-		u_texture = RID()
-	if v_texture.is_valid():
-		device.free_rid(v_texture)
-		v_texture = RID()
+	ping_texture = _cleanup(ping_texture)
+	pong_texture = _cleanup(pong_texture)
 
-	if ping_texture.is_valid():
-		device.free_rid(ping_texture)
-		ping_texture = RID()
-	if pong_texture.is_valid():
-		device.free_rid(pong_texture)
-		pong_texture = RID()
+	# Video cleanup
+	y_texture = _cleanup(y_texture)
+	u_texture = _cleanup(u_texture)
+	v_texture = _cleanup(v_texture)
+	a_texture = _cleanup(a_texture)
+	yuv_params = _cleanup(yuv_params)
+	pipeline_yuv = _cleanup(pipeline_yuv)
+	shader_yuv = _cleanup(shader_yuv)
 
-	if yuv_params.is_valid():
-		device.free_rid(yuv_params)
-		yuv_params = RID()
-	if pipeline_yuv.is_valid():
-		device.free_rid(pipeline_yuv)
-		pipeline_yuv = RID()
-	if shader_yuv.is_valid():
-		device.free_rid(shader_yuv)
-		shader_yuv = RID()
+	# Image cleanup
+	base_image = _cleanup(base_image)
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)
 
 	effects_cache.clear()
+
+
+func _cleanup(rid: RID) -> RID:
+	if rid.is_valid():
+		device.free_rid(rid)
+
+	return RID()
 
 
 func _process_frame(compute_list: int, effects: Array[VisualEffect], current_frame: int) -> void:

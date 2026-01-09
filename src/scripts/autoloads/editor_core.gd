@@ -264,9 +264,15 @@ func update_view(track_id: int, update: bool) -> void:
 
 	if file_data.video != null:
 		if update:
-			visual_compositors[track_id].initialize(file_data.video.get_resolution(), file_data.video)
+			visual_compositors[track_id].initialize_video(file_data.video)
 
 		visual_compositors[track_id].process_video_frame(file_data.video, clip_data.effects_video, frame_nr)
+		view_textures[track_id].texture = visual_compositors[track_id].display_texture
+	elif file_data.image != null:
+		if update:
+			visual_compositors[track_id].initialize_image(file_data.image)
+
+		visual_compositors[track_id].process_image_frame(clip_data.effects_video, frame_nr)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 
 
