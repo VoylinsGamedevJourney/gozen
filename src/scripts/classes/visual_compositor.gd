@@ -105,7 +105,14 @@ func initialize(p_resolution: Vector2i, video: GoZenVideo = null) -> void:
 		y_texture = device.texture_create(format_y, RDTextureView.new(), [])
 		u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
 		v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
-		a_texture = device.texture_create(format_y, RDTextureView.new(), [])
+
+		if video.get_has_alpha():
+			a_texture = device.texture_create(format_y, RDTextureView.new(), [])
+		else:
+			var white_image: Image = Image.create(resolution.x, resolution.y, false, Image.FORMAT_R8)
+
+			white_image.fill(Color.WHITE)
+			a_texture = device.texture_create(format_y, RDTextureView.new(), [white_image.get_data()])
 
 		yuv_params = _create_yuv_params(video)
 
@@ -135,7 +142,9 @@ func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], curren
 	device.texture_update(y_texture, 0, video.get_y_data().get_data())
 	device.texture_update(u_texture, 0, video.get_u_data().get_data())
 	device.texture_update(v_texture, 0, video.get_v_data().get_data())
-	device.texture_update(a_texture, 0, video.get_a_data().get_data())
+
+	if video.get_has_alpha():
+		device.texture_update(a_texture, 0, video.get_a_data().get_data())
 
 	# Start of compute list
 	# Convert YUV to RGBA (and write to ping)
@@ -167,16 +176,32 @@ func process_image_frame(_data: Image, effects: Array[VisualEffect], current_fra
 
 
 func cleanup() -> void:
-	if y_texture.is_valid(): device.free_rid(y_texture)
-	if u_texture.is_valid(): device.free_rid(u_texture)
-	if v_texture.is_valid(): device.free_rid(v_texture)
+	if y_texture.is_valid():
+		device.free_rid(y_texture)
+		y_texture = RID()
+	if u_texture.is_valid():
+		device.free_rid(u_texture)
+		u_texture = RID()
+	if v_texture.is_valid():
+		device.free_rid(v_texture)
+		v_texture = RID()
 
-	if ping_texture.is_valid(): device.free_rid(ping_texture)
-	if pong_texture.is_valid(): device.free_rid(pong_texture)
+	if ping_texture.is_valid():
+		device.free_rid(ping_texture)
+		ping_texture = RID()
+	if pong_texture.is_valid():
+		device.free_rid(pong_texture)
+		pong_texture = RID()
 
-	if yuv_params.is_valid(): device.free_rid(yuv_params)
-	if shader_yuv.is_valid(): device.free_rid(shader_yuv)
-	if pipeline_yuv.is_valid(): device.free_rid(pipeline_yuv)
+	if yuv_params.is_valid():
+		device.free_rid(yuv_params)
+		yuv_params = RID()
+	if pipeline_yuv.is_valid():
+		device.free_rid(pipeline_yuv)
+		pipeline_yuv = RID()
+	if shader_yuv.is_valid():
+		device.free_rid(shader_yuv)
+		shader_yuv = RID()
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)
@@ -247,7 +272,7 @@ func _create_yuv_params(video: GoZenVideo) -> RID:
 	stream_writer.put_32(video.get_interlaced())
 	stream_writer.put_32(0) # Necessary padding
 
-	return device.storage_buffer_create(stream_writer.data_array.size(), stream_writer.data_array)
+	return device.uniform_buffer_create(stream_writer.data_array.size(), stream_writer.data_array)
 
 
 func _create_storage_buffer(size_bytes: int) -> RID:

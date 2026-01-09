@@ -131,7 +131,7 @@ class GoZenVideo : public Resource {
 	inline Ref<Image> get_y_data() const { return y_data; }
 	inline Ref<Image> get_u_data() const { return u_data; }
 	inline Ref<Image> get_v_data() const { return v_data; }
-	inline Ref<Image> get_a_data() const { return v_data; }
+	inline Ref<Image> get_a_data() const { return a_data; }
 
 	// Metadata getters
 	inline String get_path() const { return path; }
