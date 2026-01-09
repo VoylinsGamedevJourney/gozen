@@ -14,11 +14,11 @@ layout(rgba8, set = 0, binding = 4) uniform writeonly image2D output_image;
 
 // --- PARAMS --- (std140 requires 16 byte blocks)
 // mat4 = 64 bytes
-// vec2 = 8 bytes
+// ivec2 = 8 bytes
 // int/float = 4 bytes
 layout(set = 0, binding = 5, std140) uniform Params {
 	mat4 color_matrix;	// Offset 0
-	vec2 resolution;	// Offset 64
+	ivec2 resolution;	// Offset 64
 	int interlaced;		// Offset 72
 } params; // Ends at byte 80 (/16 = 5 blocks)
 
