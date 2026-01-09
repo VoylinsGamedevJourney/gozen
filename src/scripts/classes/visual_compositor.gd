@@ -14,6 +14,22 @@ const USAGE_BITS_RGBA: int = (
 		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT |
 		RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT)
 
+const BT709: PackedFloat32Array = [
+    1.164,  1.164,  1.164,  0.0,
+    0.0,   -0.213,  2.112,  0.0,
+    1.793, -0.533,  0.0,    0.0,
+   -0.969,  0.301, -1.129,  1.0]
+const BT601_LIMITED: PackedFloat32Array = [
+    1.164,  1.164,  1.164,  0.0,
+    0.0,   -0.392,  2.017,  0.0,
+    1.596, -0.813,  0.0,    0.0,
+   -0.871,  0.530, -1.086,  1.0]
+const BT601_FULL_RANGE: PackedFloat32Array = [
+    1.0,    1.0,    1.0,    0.0,
+    0.0,   -0.344,  1.772,  0.0,
+    1.402, -0.714,  0.0,    0.0,
+   -0.701,  0.529, -0.886,  1.0]
+
 
 var device: RenderingDevice = RenderingServer.get_rendering_device()
 
