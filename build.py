@@ -256,6 +256,9 @@ def main() -> ExitCode:
         _print_options("Do you want to (re)compile ffmpeg?", ["yes", "no"]) == "yes"
     )
 
+    if _print_options("Clean Scons?", ["yes", "no"]) == 1:
+        subprocess.run(["scons", "--clean"], cwd="./")
+
     # Install dependencies
     if utils.CURR_PLATFORM == "windows":
         err = install_windows_deps()
