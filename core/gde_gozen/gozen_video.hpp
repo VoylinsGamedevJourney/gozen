@@ -78,6 +78,9 @@ class GoZenVideo : public Resource {
 	Ref<Image> y_data;
 	Ref<Image> u_data;
 	Ref<Image> v_data;
+	Ref<Image> a_data;
+
+	bool has_alpha = false;
 
 	PackedByteArray file_buffer; // For `res://` videos.
 
@@ -115,6 +118,11 @@ class GoZenVideo : public Resource {
 	PackedInt32Array get_streams(int stream_type);
 	Dictionary get_stream_metadata(int stream_index);
 
+	int get_chapter_count();
+	float get_chapter_start(int chapter_index);
+	float get_chapter_end(int chapter_index);
+	Dictionary get_chapter_metadata(int chapter_index);
+
 	Ref<Image> generate_thumbnail_at_frame(int frame_nr);
 
 	inline void set_sws_flag_bilinear() { sws_flag = SWS_BILINEAR; }
@@ -123,6 +131,7 @@ class GoZenVideo : public Resource {
 	inline Ref<Image> get_y_data() const { return y_data; }
 	inline Ref<Image> get_u_data() const { return u_data; }
 	inline Ref<Image> get_v_data() const { return v_data; }
+	inline Ref<Image> get_a_data() const { return v_data; }
 
 	// Metadata getters
 	inline String get_path() const { return path; }
@@ -146,6 +155,8 @@ class GoZenVideo : public Resource {
 
 	inline String get_pixel_format() const { return pixel_format; }
 	inline String get_color_profile() { return av_color_primaries_name(color_profile); }
+	
+	inline bool get_has_alpha() const { return has_alpha; }
 
 	inline bool is_full_color_range() const { return full_color_range; }
 	inline bool is_using_sws() const { return using_sws; }

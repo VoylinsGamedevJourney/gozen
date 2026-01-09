@@ -140,8 +140,6 @@ int GoZenVideo::open(const String& video_path) {
 	else if (sar != 0.0 && sar != 1.0)
 		resolution.x /= sar;
 
-	pixel_format = av_get_pix_fmt_name(av_codec_ctx->pix_fmt);
-
 	if (av_stream->start_time != AV_NOPTS_VALUE)
 		start_time_video = (int64_t)(av_stream->start_time * stream_time_base_video);
 	else
@@ -232,26 +230,47 @@ int GoZenVideo::open(const String& video_path) {
 	average_frame_duration = 10000000.0 / framerate; // eg. 1 sec / 25 fps = 400.000 ticks (40ms).
 	stream_time_base_video = av_q2d(av_stream->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks.
 
+	// Check for alpha layer.
+	has_alpha = (av_frame->format == AV_PIX_FMT_YUVA420P || av_frame->format == AV_PIX_FMT_YUVA444P ||
+				 av_frame->format == AV_PIX_FMT_ARGB || av_frame->format == AV_PIX_FMT_BGRA ||
+				 av_frame->format == AV_PIX_FMT_ABGR || av_frame->format == AV_PIX_FMT_RGBA);
+
+	pixel_format = av_get_pix_fmt_name((AVPixelFormat)av_frame->format);
+	_log(String("Selected pixel format is: ") + pixel_format);
+
 	// Preparing the data images.
-	if (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P) {
+	bool is_natively_supported = (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P ||
+								  av_frame->format == AV_PIX_FMT_YUVA420P);
+
+	if (is_natively_supported) {
+		padding = av_frame->linesize[0] - resolution.x;
 		y_data = Image::create_empty(av_frame->linesize[0], resolution.y, false, Image::FORMAT_R8);
 		u_data = Image::create_empty(av_frame->linesize[1], resolution.y / 2, false, Image::FORMAT_R8);
 		v_data = Image::create_empty(av_frame->linesize[2], resolution.y / 2, false, Image::FORMAT_R8);
-		padding = av_frame->linesize[0] - resolution.x;
+
+		if (has_alpha)
+			a_data = Image::create_empty(av_frame->linesize[3], resolution.y, false, Image::FORMAT_R8);
 	} else {
+		AVPixelFormat new_format = has_alpha ? AV_PIX_FMT_YUVA420P : AV_PIX_FMT_YUV420P;
+
 		using_sws = true;
 		sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(
-			sws_getContext(resolution.x, resolution.y, av_codec_ctx->pix_fmt, resolution.x, resolution.y,
-						   AV_PIX_FMT_YUV420P, sws_flag, NULL, NULL, NULL));
+			sws_getContext(resolution.x, resolution.y, (AVPixelFormat)av_frame->format, resolution.x, resolution.y,
+						   new_format, sws_flag, NULL, NULL, NULL));
 
 		// We will use av_hw_frame to convert the frame data to as we won't use it anyway without hw decoding.
 		av_sws_frame = make_unique_avframe();
 		sws_scale_frame(sws_ctx.get(), av_sws_frame.get(), av_frame.get());
 
+		// NOTE: It's possible that linesize is empty so we should switch to resolution.x and to resolution.x / 2.
+		// If that's the case, padding is automatically 0 due to how SWR works.
+		padding = av_sws_frame->linesize[0] - resolution.x;
 		y_data = Image::create_empty(av_sws_frame->linesize[0], resolution.y, false, Image::FORMAT_R8);
 		u_data = Image::create_empty(av_sws_frame->linesize[1], resolution.y / 2, false, Image::FORMAT_R8);
 		v_data = Image::create_empty(av_sws_frame->linesize[2], resolution.y / 2, false, Image::FORMAT_R8);
-		padding = av_sws_frame->linesize[0] - resolution.x;
+
+		if (has_alpha)
+			a_data = Image::create_empty(av_sws_frame->linesize[3], resolution.y, false, Image::FORMAT_R8);
 
 		av_frame_unref(av_sws_frame.get());
 	}
@@ -288,6 +307,7 @@ int GoZenVideo::open(const String& video_path) {
 	return OK;
 }
 
+
 void GoZenVideo::close() {
 	_log("Closing video file on path: " + path);
 	loaded = false;
@@ -304,6 +324,7 @@ void GoZenVideo::close() {
 	av_codec_ctx.reset();
 	av_format_ctx.reset();
 }
+
 
 bool GoZenVideo::seek_frame(int frame_nr) {
 	if (!loaded)
@@ -364,6 +385,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 
 	return true;
 }
+
 
 bool GoZenVideo::next_frame(bool skip) {
 	if (!loaded)
@@ -549,6 +571,7 @@ PackedInt32Array GoZenVideo::get_streams(int stream_type) {
 	return PackedInt32Array();
 }
 
+
 Dictionary GoZenVideo::get_stream_metadata(int stream_index) {
 	if (!loaded) {
 		_log_err("file is not open");
@@ -576,6 +599,70 @@ Dictionary GoZenVideo::get_stream_metadata(int stream_index) {
 }
 
 
+int GoZenVideo::get_chapter_count() {
+	if (!loaded) {
+		_log_err("file is not open");
+		return 0;
+	}
+
+	return av_format_ctx->nb_chapters;
+}
+
+
+float GoZenVideo::get_chapter_start(int chapter_index) {
+	if (!loaded) {
+		_log_err("file is not open");
+		return -1.0f;
+	}
+
+	if (chapter_index < 0 || chapter_index >= av_format_ctx->nb_chapters) {
+		_log_err("invalid chapter index");
+		return -1.0f;
+	}
+
+	AVChapter* chapter = av_format_ctx->chapters[chapter_index];
+	return chapter->start * av_q2d(chapter->time_base);
+}
+
+
+float GoZenVideo::get_chapter_end(int chapter_index) {
+	if (!loaded) {
+		_log_err("file is not open");
+		return -1.0f;
+	}
+
+	if (chapter_index < 0 || chapter_index >= av_format_ctx->nb_chapters) {
+		_log_err("invalid chapter index");
+		return -1.0f;
+	}
+
+	AVChapter* chapter = av_format_ctx->chapters[chapter_index];
+	return chapter->end * av_q2d(chapter->time_base);
+}
+
+
+Dictionary GoZenVideo::get_chapter_metadata(int chapter_index) {
+	if (!loaded) {
+		_log_err("file is not open");
+		return Dictionary();
+	}
+
+	if (chapter_index < 0 || chapter_index >= av_format_ctx->nb_chapters) {
+		_log_err("invalid chapter index");
+		return Dictionary();
+	}
+
+	Dictionary dict = Dictionary();
+
+	AVDictionaryEntry* entry = nullptr;
+	while ((entry = av_dict_get(av_format_ctx->chapters[chapter_index]->metadata, "", entry, AV_DICT_IGNORE_SUFFIX))) {
+		dict[entry->key] = entry->value;
+	}
+
+	return dict;
+}
+
+
 void GoZenVideo::_copy_frame_data() {
 	if (av_frame->data[0] == nullptr) {
 		_log_err("Frame is empty!");
@@ -589,13 +676,20 @@ void GoZenVideo::_copy_frame_data() {
 		memcpy(u_data->ptrw(), av_sws_frame->data[1], u_data->get_size().x * u_data->get_size().y);
 		memcpy(v_data->ptrw(), av_sws_frame->data[2], v_data->get_size().x * v_data->get_size().y);
 
+		if (has_alpha)
+			memcpy(a_data->ptrw(), av_sws_frame->data[3], a_data->get_size().x * a_data->get_size().y);
+
 		av_frame_unref(av_sws_frame.get());
 	} else {
 		memcpy(y_data->ptrw(), av_frame->data[0], y_data->get_size().x * y_data->get_size().y);
 		memcpy(u_data->ptrw(), av_frame->data[1], u_data->get_size().x * u_data->get_size().y);
 		memcpy(v_data->ptrw(), av_frame->data[2], v_data->get_size().x * v_data->get_size().y);
+
+		if (has_alpha)
+			memcpy(a_data->ptrw(), av_frame->data[3], a_data->get_size().x * a_data->get_size().y);
 	}
 }
+
 
 int GoZenVideo::_seek_frame(int frame_nr) {
 	avcodec_flush_buffers(av_codec_ctx.get());
@@ -623,6 +717,11 @@ void GoZenVideo::_bind_methods() {
 	BIND_METHOD_ARGS(get_streams, "stream_type");
 	BIND_METHOD_ARGS(get_stream_metadata, "stream_index");
 
+	BIND_METHOD(get_chapter_count);
+	BIND_METHOD_ARGS(get_chapter_start, "chapter_index");
+	BIND_METHOD_ARGS(get_chapter_end, "chapter_index");
+	BIND_METHOD_ARGS(get_chapter_metadata, "chapter_index");
+
 	BIND_METHOD_ARGS(generate_thumbnail_at_frame, "frame_nr");
 
 	BIND_METHOD(set_sws_flag_bilinear);
@@ -631,6 +730,7 @@ void GoZenVideo::_bind_methods() {
 	BIND_METHOD(get_y_data);
 	BIND_METHOD(get_u_data);
 	BIND_METHOD(get_v_data);
+	BIND_METHOD(get_a_data);
 
 	// Metadata getters
 	BIND_METHOD(get_path);
@@ -654,6 +754,8 @@ void GoZenVideo::_bind_methods() {
 
 	BIND_METHOD(get_pixel_format);
 	BIND_METHOD(get_color_profile);
+
+	BIND_METHOD(get_has_alpha);
 
 	BIND_METHOD(is_full_color_range);
 	BIND_METHOD(is_using_sws);
