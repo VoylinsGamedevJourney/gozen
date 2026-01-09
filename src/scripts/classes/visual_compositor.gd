@@ -3,7 +3,7 @@ extends RefCounted
 # TODO: Add deinterlacing to the main YUV shaders ... or add deinterlacing as an effect?
 
 const PARAM_BUFFER_SIZE: int = 128
-const YUV_PARAM_BUFFER_SIZE: int = 64
+const YUV_PARAM_BUFFER_SIZE: int = 80
 
 const USAGE_BITS_R8: int = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
@@ -320,7 +320,6 @@ class EffectCache:
 		param_buffer = device.uniform_buffer_create(buffer_size, empty_buffer)
 
 
-
 	func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
 		var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
 
@@ -330,24 +329,24 @@ class EffectCache:
 			if param.type == VisualEffect.PARAM_TYPE.FLOAT:
 				_pad_stream(stream_writer, 4)
 				stream_writer.put_float(value)
-			elif value == VisualEffect.PARAM_TYPE.INT:
+			elif param.type == VisualEffect.PARAM_TYPE.INT:
 				_pad_stream(stream_writer, 4)
 				stream_writer.put_32(value)
-			elif value == VisualEffect.PARAM_TYPE.COLOR: #Color should be RGBA
+			elif param.type == VisualEffect.PARAM_TYPE.COLOR: #Color should be RGBA
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.r)
 				stream_writer.put_float(value.g)
 				stream_writer.put_float(value.b)
 				stream_writer.put_float(value.a)
-			elif value == VisualEffect.PARAM_TYPE.VEC2:
+			elif param.type == VisualEffect.PARAM_TYPE.VEC2:
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
-			elif value == VisualEffect.PARAM_TYPE.VEC3:
+			elif param.type == VisualEffect.PARAM_TYPE.VEC3:
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
 				stream_writer.put_float(value.z)
-			elif value == VisualEffect.PARAM_TYPE.VEC4:
+			elif param.type == VisualEffect.PARAM_TYPE.VEC4:
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
