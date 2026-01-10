@@ -163,7 +163,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 			var transform_effect: VisualEffect = preload("res://shaders/transform.tres") # TODO: Move this path to Library
 
 			# Setting default values
-			for param: VisualEffectParam in transform_effect.params:
+			for param: EffectParam in transform_effect.params:
 				if param.param_id == "size":
 					param.default_value = Project.get_resolution()
 				elif param.param_id == "pivot":

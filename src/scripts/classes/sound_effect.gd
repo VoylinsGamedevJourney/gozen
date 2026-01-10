@@ -1,9 +1,9 @@
-class_name VisualEffect
+class_name SoundEffect
 extends Resource
 
 
 @export var effect_name: String
-@export var shader_path: String
+@export var base_effect: AudioEffect
 @export var params: Array[EffectParam] = []
 
 
@@ -77,15 +77,6 @@ func get_param_value(param_id: String, frame_nr: int) -> Variant:
 						float(frame_nr - prev_frame) / float(next_frame - prev_frame))
 
 
-func get_param_types() -> Array[PARAM_TYPE]:
-	var types: Array[VisualEffect.PARAM_TYPE] = []
-
-	for param: EffectParam in params:
-		types.append(param.type)
-
-	return types
-
-
 func _get_default_value(param_id: String) -> Variant:
 	for param: EffectParam in params:
 		if param.param_id == param_id:
@@ -109,4 +100,4 @@ func _interpolate(value_a: Variant, value_b: Variant, weight: float) -> Variant:
 
 
 func _to_string() -> String:
-	return "<VideoEffect: %s>" % effect_name
+	return "<SoundEffect: %s>" % effect_name

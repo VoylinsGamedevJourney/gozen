@@ -451,25 +451,20 @@ class EffectCache:
 			var align: int = 0
 
 			match type:
-				VisualEffect.PARAM_TYPE.FLOAT, VisualEffect.PARAM_TYPE.INT:
+				EffectParam.PARAM_TYPE.FLOAT, EffectParam.PARAM_TYPE.INT:
 					size = 4
 					align = 4
-				VisualEffect.PARAM_TYPE.VEC2, VisualEffect.PARAM_TYPE.IVEC2:
+				EffectParam.PARAM_TYPE.VEC2, EffectParam.PARAM_TYPE.IVEC2:
 					size = 8
 					align = 8
-				VisualEffect.PARAM_TYPE.VEC3, VisualEffect.PARAM_TYPE.IVEC3, VisualEffect.PARAM_TYPE.COLOR:
+				EffectParam.PARAM_TYPE.VEC3, EffectParam.PARAM_TYPE.IVEC3, EffectParam.PARAM_TYPE.COLOR:
 					size = 12
 					align = 16
-				VisualEffect.PARAM_TYPE.VEC4, VisualEffect.PARAM_TYPE.IVEC4:
+				EffectParam.PARAM_TYPE.VEC4, EffectParam.PARAM_TYPE.IVEC4:
 					size = 16
 					align = 16
-				VisualEffect.PARAM_TYPE.MAT4:
-					size = 64
-					align = 16
 
-			var padding: int = (align - (offset % align)) % align
-
-			offset += padding
+			offset += (align - (offset % align)) % align # Padding
 			offset += size
 
 		# Adding final padding to offset
