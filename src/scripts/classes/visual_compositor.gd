@@ -1,7 +1,7 @@
 class_name VisualCompositor
 extends RefCounted
 
-const PARAM_BUFFER_SIZE: int = 128
+#const PARAM_BUFFER_SIZE: int = 128 # TODO: make this more dynamic
 const YUV_PARAM_BUFFER_SIZE: int = 80
 
 const USAGE_BITS_R8: int = (
@@ -245,7 +245,7 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 		if not effect.enabled:
 			continue
 
-		var cache: EffectCache = _get_effect_pipeline(effect.shader_path)
+		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effects)
 		if not cache: continue
 
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
@@ -345,7 +345,7 @@ func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 	return uniform
 
 
-func _get_effect_pipeline(shader_path: String) -> EffectCache:
+func _get_effect_pipeline(shader_path: String, effects: Array[VisualEffect]) -> EffectCache:
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
 
@@ -356,7 +356,7 @@ func _get_effect_pipeline(shader_path: String) -> EffectCache:
 		printerr("Effect shader is not RDShaderFile (compute shader): ", shader_path)
 		return null
 
-	effect_cache.initialize(device, shader_file.get_spirv(), PARAM_BUFFER_SIZE)
+	effect_cache.initialize(device, shader_file.get_spirv(), effects)
 	effects_cache[shader_path] = effect_cache
 
 	return effect_cache
@@ -368,18 +368,19 @@ class EffectCache:
 	var pipeline: RID
 
 	var param_buffer: RID
-	var param_size: int
+	var param_buffer_size: int
 	var param_data: PackedByteArray = PackedByteArray()
 
 
-	func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, buffer_size: int) -> void:
+	func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: VisualEffect) -> void:
 		shader = device.shader_create_from_spirv(spirv)
 		pipeline = device.compute_pipeline_create(shader)
+		param_buffer_size = calculate_std140_size(effect.get_param_types())
 
 		var empty_buffer: PackedByteArray = PackedByteArray()
 
-		empty_buffer.resize(buffer_size)
-		param_buffer = device.uniform_buffer_create(buffer_size, empty_buffer)
+		empty_buffer.resize(param_buffer_size)
+		param_buffer = device.uniform_buffer_create(param_buffer_size, empty_buffer)
 
 
 	func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
@@ -417,8 +418,8 @@ class EffectCache:
 
 		param_data = stream_writer.data_array
 
-		if param_data.size() < PARAM_BUFFER_SIZE:
-			param_data.resize(PARAM_BUFFER_SIZE) # Add padding if needed to end
+		if param_data.size() < param_buffer_size:
+			param_data.resize(param_buffer_size) # Add padding if needed to end
 
 
 	func free_rids(device: RenderingDevice) -> void:
@@ -434,3 +435,37 @@ class EffectCache:
 		if remainder != 0:
 			for i: int in alignment - remainder:
 				stream_buffer.put_8(0)
+
+
+	func calculate_std140_size(types: Array[VisualEffect.PARAM_TYPE]) -> int:
+		var offset: int = 0
+
+		for type: int in types:
+			var size: int = 0
+			var align: int = 0
+
+			match type:
+				VisualEffect.PARAM_TYPE.FLOAT, VisualEffect.PARAM_TYPE.INT:
+					size = 4
+					align = 4
+				VisualEffect.PARAM_TYPE.VEC2, VisualEffect.PARAM_TYPE.IVEC2:
+					size = 8
+					align = 8
+				VisualEffect.PARAM_TYPE.VEC3, VisualEffect.PARAM_TYPE.IVEC3, VisualEffect.PARAM_TYPE.COLOR:
+					size = 12
+					align = 16
+				VisualEffect.PARAM_TYPE.VEC4, VisualEffect.PARAM_TYPE.IVEC4:
+					size = 16
+					align = 16
+				VisualEffect.PARAM_TYPE.MAT4:
+					size = 64
+					align = 16
+
+			var padding: int = (align - (offset % align)) % align
+
+			offset += padding
+			offset += size
+
+		# Adding final padding to offset
+		return offset + ((16 - (offset % 16)) % 16)
+			

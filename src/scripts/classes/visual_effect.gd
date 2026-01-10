@@ -1,7 +1,7 @@
 class_name VisualEffect
 extends Resource
 
-enum PARAM_TYPE { FLOAT, COLOR, INT, VEC2, VEC3, VEC4 }
+enum PARAM_TYPE { FLOAT, COLOR, INT, VEC2, VEC3, VEC4, IVEC2, IVEC3, IVEC4, MAT4 }
 
 
 @export var effect_name: String
@@ -77,6 +77,15 @@ func get_param_value(param_id: String, frame_nr: int) -> Variant:
 	# TODO: Find a way to let users choose which interpolation they want
 	return _interpolate(frames[prev_frame][param_id], frames[next_frame][param_id],
 						float(frame_nr - prev_frame) / float(next_frame - prev_frame))
+
+
+func get_param_types() -> Array[PARAM_TYPE]:
+	var types: Array[VisualEffect.PARAM_TYPE] = []
+
+	for param: VisualEffectParam in params:
+		types.append(param.type)
+
+	return types
 
 
 func _get_default_value(param_id: String) -> Variant:
