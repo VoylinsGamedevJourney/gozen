@@ -104,44 +104,12 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
 	var file_data: FileData = FileHandler.get_file_data(clip.file_id)
-	var sample_size: int = Utils.get_sample_count(1, Project.get_framerate())
+	#var sample_size: int = Utils.get_sample_count(1, Project.get_framerate())
 	var data: PackedByteArray = file_data.audio.data.slice(
 			Utils.get_sample_count(clip.begin, Project.get_framerate()),
 			Utils.get_sample_count(clip.begin + clip.duration, Project.get_framerate()))
 
-#	if clip.effects_audio.mute:
-#		data.fill(0)
-#		return data
-#
-#	data = GoZenAudio.change_db(data, clip.effects_audio.gain[0])
-#
-#	if clip.effects_audio.fade_in != 0:
-#		var new_data: PackedByteArray = []
-#
-#		for i: int in clip.effects_audio.fade_in:
-#			var gain: float = Utils.calculate_fade(i, clip.effects_audio.fade_in) * clip.effects_audio.FADE_OUT_LIMIT
-#			var pos: int = sample_size * i
-#
-#			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
-#
-#		new_data.append_array(data.slice(sample_size * (clip.effects_audio.fade_in + 1), data.size()))
-#		data = new_data
-#	if clip.effects_audio.fade_out != 0:
-#		var new_data: PackedByteArray = []
-#		var start_pos: int = clip.duration - clip.effects_audio.fade_out
-#
-#		for i: int in clip.effects_audio.fade_out:
-#			var pos: int = sample_size * (i + start_pos)
-#			var gain: float = Utils.calculate_fade(clip.effects_audio.fade_out - i, clip.effects_audio.fade_out)
-#
-#			gain *= clip.effects_audio.FADE_OUT_LIMIT
-#			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
-#
-#		data = data.slice(0, sample_size * (clip.duration - clip.effects_audio.fade_out - 1))
-#		data.append_array(new_data)
-#
-#	if clip.effects_audio.mono != clip.effects_audio.MONO.DISABLE:
-#		data = GoZenAudio.change_to_mono(data, clip.effects_audio.mono == clip.effects_audio.MONO.LEFT_CHANNEL)
+	# TODO: Make this work with the new effects system
 
 	return data
 

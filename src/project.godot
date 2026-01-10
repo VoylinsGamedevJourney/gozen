@@ -39,6 +39,7 @@ InputManager="*res://scripts/autoloads/input_manager.gd"
 DrawManager="*res://scripts/autoloads/draw_manager.gd"
 PopupManager="*res://scripts/autoloads/popup_manager.gd"
 RenderManager="*res://scripts/autoloads/render_manager.gd"
+EffectsHandler="*res://scripts/autoloads/effects_handler.gd"
 
 [debug]
 

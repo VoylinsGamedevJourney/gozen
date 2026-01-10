@@ -7,7 +7,10 @@
 [sub_resource type="ButtonGroup" id="ButtonGroup_3btpq"]
 
 [node name="EffectsPanel" type="PanelContainer" node_paths=PackedStringArray("button_video", "button_sound", "tab_container")]
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(260, 200)
+offset_right = 260.0
+offset_bottom = 43.0
+size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_k5peu")
 button_video = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton")
