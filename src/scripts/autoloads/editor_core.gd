@@ -25,9 +25,6 @@ var is_playing: bool = false: set = _set_is_playing
 var loaded_clips: PackedInt64Array = []
 var loaded_shaders: Array[SHADER_ID] = []
 
-var default_effects_video: EffectsVideo = EffectsVideo.new()
-var default_effects_audio: EffectsAudio = EffectsAudio.new()
-
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0  # Get's set when changing framerate
 var skips: int = 0
@@ -77,8 +74,7 @@ func _on_closing_editor() -> void:
 
 	for player: AudioPlayer in audio_players:
 		player.queue_free()
-	
-	default_effects_video.queue_free()
+
 	audio_players.clear()
 
 
@@ -303,4 +299,3 @@ func set_background_color(color: Color) -> void:
 	var background: ColorRect = viewport.get_node("Background")
 
 	background.color = color
-

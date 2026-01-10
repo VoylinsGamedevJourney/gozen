@@ -1,7 +1,11 @@
 class_name VisualCompositor
 extends RefCounted
 
-#const PARAM_BUFFER_SIZE: int = 128 # TODO: make this more dynamic
+
+enum MATRIX { TRANSFORM }
+enum MATRIX_VAR { POSITION, SCALE, ROTATION, PIVOT }
+
+
 const YUV_PARAM_BUFFER_SIZE: int = 80
 
 const USAGE_BITS_R8: int = (
@@ -362,9 +366,7 @@ func _calculate_transform_matrix(pos: Vector2, scale: float, rotation: float, pi
 		transform.x.x,		transform.x.y,		0.0, 0.0,
 		transform.y.x,		transform.y.y,		0.0, 0.0,
 		0.0, 	   		 	0.0,				1.0, 0.0,
-		transform.origin.x, transform.origin.y,	0.0, 1.0
-	])
-	
+		transform.origin.x, transform.origin.y,	0.0, 1.0])
 
 
 func _get_effect_pipeline(shader_path: String, effects: Array[VisualEffect]) -> EffectCache:
@@ -410,27 +412,27 @@ class EffectCache:
 		for param: VisualEffectParam in effect.params:
 			var value: Variant = effect.get_param_value(param.param_id, frame_nr)
 
-			if param.type == VisualEffect.PARAM_TYPE.FLOAT:
+			if param.type == EffectParam.PARAM_TYPE.FLOAT:
 				_pad_stream(stream_writer, 4)
 				stream_writer.put_float(value)
-			elif param.type == VisualEffect.PARAM_TYPE.INT:
+			elif param.type == EffectParam.PARAM_TYPE.INT:
 				_pad_stream(stream_writer, 4)
 				stream_writer.put_32(value)
-			elif param.type == VisualEffect.PARAM_TYPE.COLOR: #Color should be RGBA
+			elif param.type == EffectParam.PARAM_TYPE.COLOR: #Color should be RGBA
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.r)
 				stream_writer.put_float(value.g)
 				stream_writer.put_float(value.b)
 				stream_writer.put_float(value.a)
-			elif param.type == VisualEffect.PARAM_TYPE.VEC2:
+			elif param.type == EffectParam.PARAM_TYPE.VEC2:
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
-			elif param.type == VisualEffect.PARAM_TYPE.VEC3:
+			elif param.type == EffectParam.PARAM_TYPE.VEC3:
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
 				stream_writer.put_float(value.z)
-			elif param.type == VisualEffect.PARAM_TYPE.VEC4:
+			elif param.type == EffectParam.PARAM_TYPE.VEC4:
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)

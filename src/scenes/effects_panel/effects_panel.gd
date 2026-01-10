@@ -79,9 +79,7 @@ func _load_video_effects() -> void:
 		return
 
 	for effect: VisualEffect in ClipHandler.get_clip(current_clip_id).effects_video:
-		var container: FoldableContainer = _create_container(effect.effect_name)
-
-		video_container.add_child(container)
+		video_container.add_child(_create_container(effect.effect_name, effect.params))
 
 
 func _load_sound_effects() -> void:
@@ -92,17 +90,16 @@ func _load_sound_effects() -> void:
 		return
 
 	for effect: SoundEffect in ClipHandler.get_clip(current_clip_id).effects_sound:
-		var container: FoldableContainer = _create_container(effect.effect_name)
-
-		sound_container.add_child(container)
+		sound_container.add_child(_create_container(effect.effect_name, effect.params))
 
 
 func _update_ui_values() -> void:
 	pass
 
 
-func _create_container(title: String) -> FoldableContainer:
+func _create_container(title: String, effect_params: Array[EffectParam]) -> FoldableContainer:
 	var container: FoldableContainer = FoldableContainer.new()
+	var inner_container: GridContainer = GridContainer.new()
 
 	container.title = title
 	container.title_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -123,4 +120,21 @@ func _create_container(title: String) -> FoldableContainer:
 	container.add_title_bar_control(button_move_down)
 	container.add_title_bar_control(button_delete)
 
+	inner_container.columns = 2
+	container.add_child(inner_container)
+
+	for effect_param: EffectParam in effect_params:
+		_create_effect_ui(container, effect_param)
+
 	return container
+
+
+func _create_effect_ui(container: FoldableContainer, effect_param: EffectParam) -> void:
+	var grid: GridContainer = container.get_child(0)
+	var title_label: Label = Label.new()
+	
+	# TODO: Create variable specific nodes (for vec2 stuff we need a separate container)
+
+	title_label.text = tr(effect_param.param_name)
+
+	grid.add_child(title_label)
