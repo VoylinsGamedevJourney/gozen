@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="VisualEffect" load_steps=9 format=3 uid="uid://dw4tjdq8jnvui"]
+
+[ext_resource type="Script" uid="uid://duoa7hc3qb473" path="res://scripts/classes/visual_effect_param.gd" id="1_ny2jm"]
+[ext_resource type="Script" uid="uid://djsawp7xk7ilr" path="res://scripts/classes/visual_effect.gd" id="2_brup6"]
+
+[sub_resource type="Resource" id="Resource_ny2jm"]
+script = ExtResource("1_ny2jm")
+param_id = "position"
+param_name = "param_position"
+type = 6
+default_value = Vector2i(0, 0)
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_brup6"]
+script = ExtResource("1_ny2jm")
+param_id = "size"
+param_name = "param_size"
+type = 6
+default_value = Vector2i(0, 0)
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_t7kk6"]
+script = ExtResource("1_ny2jm")
+param_id = "scale"
+param_name = "param_scale"
+default_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_iu02s"]
+script = ExtResource("1_ny2jm")
+param_id = "rotation"
+param_name = "param_rotation"
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_jrrt5"]
+script = ExtResource("1_ny2jm")
+param_id = "pivot"
+param_name = "param_pivot"
+type = 6
+default_value = Vector2i(0, 0)
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[sub_resource type="Resource" id="Resource_br8sl"]
+script = ExtResource("1_ny2jm")
+param_id = "alpha"
+param_name = "param_alpha"
+default_value = 1.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://duoa7hc3qb473"
+
+[resource]
+script = ExtResource("2_brup6")
+effect_name = "Transform"
+shader_path = "res://shaders/transform.glsl"
+params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_ny2jm"), SubResource("Resource_brup6"), SubResource("Resource_t7kk6"), SubResource("Resource_iu02s"), SubResource("Resource_jrrt5"), SubResource("Resource_br8sl")])
+metadata/_custom_type_script = "uid://djsawp7xk7ilr"
