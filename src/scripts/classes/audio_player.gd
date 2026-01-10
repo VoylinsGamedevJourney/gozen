@@ -55,7 +55,7 @@ func set_audio(audio_clip_id: int) -> void:
 	clip_id = audio_clip_id
 	file_id = data.file_id
 	stop_frame = data.end_frame
-#	update_effects(data.effects_audio)
+	update_effects(data.effects_audio)
 
 	# Getting timings in seconds.
 	var position: float = float(EditorCore.frame_nr - data.start_frame + data.begin)
@@ -65,11 +65,13 @@ func set_audio(audio_clip_id: int) -> void:
 	if old_file_id != file_id or !player.stream:
 		var file_data: FileData = FileHandler.get_file_data(file_id)
 
+		_setup_bus_effects(data.effects_audio)
+
 		if file_data and file_data.audio:
 			player.stream = file_data.audio
 			player.play(position)
 			player.stream_paused = !EditorCore.is_playing
-#			update_effects(data.effects_audio)
+			update_effects(data.effects_audio)
 			return
 		return stop()
 
@@ -85,11 +87,32 @@ func set_audio(audio_clip_id: int) -> void:
 	player.stream_paused = !EditorCore.is_playing
 
 
-func update_effects(effects: EffectsAudio) -> void:
-	if !effects:
-		return
-	elif !effects.apply_basics(bus_index):
-		return # Early exit if muted.
-	
-	effects.apply_fade(bus_index)
+func update_effects(effects: Array[SoundEffect]) -> void:
+	var start_frame: int = ClipHandler.get_start_frame(clip_id)
+	var begin_frame: int = ClipHandler.get_clip(clip_id).begin
+	var current_frame: int = EditorCore.frame_nr - start_frame + begin_frame
 
+	for i: int in effects.size():
+		var effect: SoundEffect = effects[i]
+		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
+
+		for param: EffectParam in effect.params:
+			var value: Variant = effect.get_param_value(param.param_id, current_frame)
+
+			effect_instance.set(param.param_id, value)
+
+
+
+func _setup_bus_effects(effects: Array[SoundEffect]) -> void:
+	var effect_count: int = AudioServer.get_bus_effect_count(bus_index)
+
+	# Cleaning all previous effects
+	for i: int in range(effect_count - 1, -1, -1):
+		AudioServer.remove_bus_effect(bus_index, i)
+
+	# Creating all effects
+	for i: int in effects.size():
+		var effect: SoundEffect = effects[i]
+
+		AudioServer.add_bus_effect(bus_index, effect.base_effect)
+		AudioServer.set_bus_effect_enabled(bus_index, i, effect.enabled)

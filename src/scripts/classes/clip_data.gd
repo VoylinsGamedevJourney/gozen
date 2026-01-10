@@ -20,4 +20,4 @@ var effects_audio: Array[SoundEffect]
 
 
 func _to_string() -> String:
-	return "<clip:%s>" % id
+	return "<Clip:%s>" % id

@@ -170,10 +170,10 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 					param.default_value = Project.get_resolution() / 2
 
 			clip_data.effects_video.append(transform_effect)
-		# TODO: Create default volume effect for Audio
-		#if file_data.type in EditorCore.AUDIO_TYPES:
-		#	clip_data.effects_audio = EffectsAudio.new()
-		#	clip_data.effects_audio.clip_id = clip_data.id
+		if file_data.type in EditorCore.AUDIO_TYPES:
+			var volume_effect: SoundEffect = preload("res://effects/sound/volume.tres") # TODO: Move this path to Library
+
+			clip_data.effects_audio.append(volume_effect)
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
