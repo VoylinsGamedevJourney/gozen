@@ -345,6 +345,28 @@ func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 	return uniform
 
 
+func _calculate_transform_matrix(pos: Vector2, scale: float, rotation: float, pivot: Vector2) -> PackedFloat32Array:
+	var scale_factor: float = scale / 100.0
+	var scale_vector: Vector2 = Vector2(scale_factor, scale_factor)
+	var transform: Transform2D = Transform2D.IDENTITY
+
+	transform = transform.translated(pos) # move to position
+	transform = transform.translated(pivot) # Move to pivot
+	transform = transform.rotated(deg_to_rad(rotation))
+	transform = transform.scaled(scale_vector)
+	transform = transform.translated(-pivot) # Move back from pivot
+	transform = transform.affine_inverse()
+
+	# Create mat4 usable data
+	return PackedFloat32Array([
+		transform.x.x,		transform.x.y,		0.0, 0.0,
+		transform.y.x,		transform.y.y,		0.0, 0.0,
+		0.0, 	   		 	0.0,				1.0, 0.0,
+		transform.origin.x, transform.origin.y,	0.0, 1.0
+	])
+	
+
+
 func _get_effect_pipeline(shader_path: String, effects: Array[VisualEffect]) -> EffectCache:
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
@@ -373,12 +395,11 @@ class EffectCache:
 
 
 	func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: VisualEffect) -> void:
+		var empty_buffer: PackedByteArray = PackedByteArray()
+
 		shader = device.shader_create_from_spirv(spirv)
 		pipeline = device.compute_pipeline_create(shader)
 		param_buffer_size = calculate_std140_size(effect.get_param_types())
-
-		var empty_buffer: PackedByteArray = PackedByteArray()
-
 		empty_buffer.resize(param_buffer_size)
 		param_buffer = device.uniform_buffer_create(param_buffer_size, empty_buffer)
 
@@ -422,21 +443,6 @@ class EffectCache:
 			param_data.resize(param_buffer_size) # Add padding if needed to end
 
 
-	func free_rids(device: RenderingDevice) -> void:
-		if shader.is_valid(): device.free_rid(shader)
-		if pipeline.is_valid(): device.free_rid(pipeline)
-		if param_buffer.is_valid(): device.free_rid(param_buffer)
-
-
-	func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
-		var current_offset: int = stream_buffer.get_position()
-		var remainder: int = current_offset % alignment
-		
-		if remainder != 0:
-			for i: int in alignment - remainder:
-				stream_buffer.put_8(0)
-
-
 	func calculate_std140_size(types: Array[VisualEffect.PARAM_TYPE]) -> int:
 		var offset: int = 0
 
@@ -468,4 +474,18 @@ class EffectCache:
 
 		# Adding final padding to offset
 		return offset + ((16 - (offset % 16)) % 16)
-			
+
+
+	func free_rids(device: RenderingDevice) -> void:
+		if shader.is_valid(): device.free_rid(shader)
+		if pipeline.is_valid(): device.free_rid(pipeline)
+		if param_buffer.is_valid(): device.free_rid(param_buffer)
+
+
+	func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
+		var current_offset: int = stream_buffer.get_position()
+		var remainder: int = current_offset % alignment
+		
+		if remainder != 0:
+			for i: int in alignment - remainder:
+				stream_buffer.put_8(0)
