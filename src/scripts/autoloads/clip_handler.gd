@@ -159,13 +159,21 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		clip_data.start_frame = clip_request.frame_nr
 		clip_data.duration = file_data.duration
 
-#		if file_data.type in EditorCore.VISUAL_TYPES:
-#			clip_data.effects_video = EffectsVideo.new()
-#			clip_data.effects_video.clip_id = clip_data.id
-#			clip_data.effects_video.set_default_transform()
-#		if file_data.type in EditorCore.AUDIO_TYPES:
-#			clip_data.effects_audio = EffectsAudio.new()
-#			clip_data.effects_audio.clip_id = clip_data.id
+		if file_data.type in EditorCore.VISUAL_TYPES:
+			var transform_effect: VisualEffect = preload("res://shaders/transform.tres") # TODO: Move this path to Library
+
+			# Setting default values
+			for param: VisualEffectParam in transform_effect.params:
+				if param.param_id == "size":
+					param.default_value = Project.get_resolution()
+				elif param.param_id == "pivot":
+					param.default_value = Project.get_resolution() / 2
+
+			clip_data.effects_video.append(transform_effect)
+		# TODO: Create default volume effect for Audio
+		#if file_data.type in EditorCore.AUDIO_TYPES:
+		#	clip_data.effects_audio = EffectsAudio.new()
+		#	clip_data.effects_audio.clip_id = clip_data.id
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
