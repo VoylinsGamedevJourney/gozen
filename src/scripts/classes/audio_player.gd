@@ -92,18 +92,19 @@ func set_audio(audio_clip_id: int) -> void:
 
 
 func update_effects(effects: Array[SoundEffect]) -> void:
-	var start_frame: int = ClipHandler.get_start_frame(clip_id)
-	var begin_frame: int = ClipHandler.get_clip(clip_id).begin
-	var current_frame: int = EditorCore.frame_nr - start_frame + begin_frame
-
-	for i: int in effects.size():
-		var effect: SoundEffect = effects[i]
-		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
-
-		for param: EffectParam in effect.params:
-			var value: Variant = effect.get_param_value(param.param_id, current_frame)
-
-			effect_instance.set(param.param_id, value)
+	return
+#	var start_frame: int = ClipHandler.get_start_frame(clip_id)
+#	var begin_frame: int = ClipHandler.get_clip(clip_id).begin
+#	var current_frame: int = EditorCore.frame_nr - start_frame + begin_frame
+#
+#	for i: int in effects.size():
+#		var effect: SoundEffect = effects[i]
+#		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
+#
+#		for param: EffectParam in effect.params:
+#			var value: Variant = effect.get_param_value(param.param_id, current_frame)
+#
+#			effect_instance.set(param.param_id, value)
 
 
 func _setup_bus_effects(effects: Array[SoundEffect]) -> void:

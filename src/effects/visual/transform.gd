@@ -37,8 +37,6 @@ func get_buffer_data(frame_nr: int) -> PackedByteArray:
 	#layout(set = 0, binding = 2, std140) uniform Params {
 	#layout(set = 0, binding = 2, std140) uniform Params {
 	#	mat4 transform_matrix;	// Inverse transform matrix (offset = 0)
-	#	vec2 texture_size;		// Source image size (offset = 64)
-	#	ivec2 output_size;		// Project size (offset = 72)
 	#	float alpha;			// Alpha value (offset = 80)
 	#} params; // Ends at byte 94 (/16 = 6 blocks - 12 bytes padding)
 
