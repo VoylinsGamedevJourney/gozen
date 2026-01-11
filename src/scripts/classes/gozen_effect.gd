@@ -2,8 +2,11 @@ class_name GoZenEffect
 extends Resource
 
 
+@export var effect_name: String
 @export var is_enabled: bool = true
-@export var keyframes: Dictionary = {} ## { param_name: { frame_number: value }}
+
+
+var keyframes: Dictionary = {} ## { param_name: { frame_number: value }}
 
 
 var _key_cache: Dictionary = {}

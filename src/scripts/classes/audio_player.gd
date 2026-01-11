@@ -3,6 +3,8 @@ extends RefCounted
 
 
 var player: AudioStreamPlayer = AudioStreamPlayer.new()
+
+var bus_name: String
 var bus_index: int = -1
 
 var stop_frame: int = -1
@@ -14,7 +16,9 @@ var clip_id: int = -1
 func _init() -> void:
 	AudioServer.add_bus()
 	bus_index = AudioServer.bus_count - 1
-	player.bus = AudioServer.get_bus_name(bus_index)
+	bus_name = "TrackBus_%d" % bus_index
+	AudioServer.set_bus_name(bus_index, bus_name)
+	player.bus = bus_name
 
 
 func play(value: bool) -> void:
@@ -69,18 +73,17 @@ func set_audio(audio_clip_id: int) -> void:
 	# Set stream if changed.
 	if old_file_id != file_id or !player.stream:
 		var file_data: FileData = FileHandler.get_file_data(file_id)
-		#_setup_bus_effects(data.effects_sound)
 
 		if file_data and file_data.audio:
 			player.stream = file_data.audio
 			player.play(position)
 			player.stream_paused = !EditorCore.is_playing
-			#update_effects(data.effects_sound)
 			return
 		return stop()
 
 	# Check if playback is close enough ONLY if stream is the same.
 	var frame_duration: float = 1.0 / Project.get_framerate()
+
 	if abs(player.get_playback_position() - position) < frame_duration:
 		if player.playing:
 			player.stream_paused = !EditorCore.is_playing
@@ -92,19 +95,29 @@ func set_audio(audio_clip_id: int) -> void:
 
 
 func update_effects(effects: Array[SoundEffect]) -> void:
-	return
-#	var start_frame: int = ClipHandler.get_start_frame(clip_id)
-#	var begin_frame: int = ClipHandler.get_clip(clip_id).begin
-#	var current_frame: int = EditorCore.frame_nr - start_frame + begin_frame
-#
-#	for i: int in effects.size():
-#		var effect: SoundEffect = effects[i]
-#		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
-#
-#		for param: EffectParam in effect.params:
-#			var value: Variant = effect.get_param_value(param.param_id, current_frame)
-#
-#			effect_instance.set(param.param_id, value)
+	if clip_id == 1:
+		return
+
+	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var current_relative_frame: int = EditorCore.frame_nr - clip_data.start_frame
+
+	for i: int in effects.size():
+		var effect: SoundEffect = effects[i]
+		
+		if i >= AudioServer.get_bus_effect_count(bus_index):
+			break
+
+		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
+
+		AudioServer.set_bus_effect_enabled(bus_index, i, effect.enabled)
+
+		if not effect.enabled:
+			continue
+
+		for param_id: String in effect.params:
+			var value: Variant = effect.get_param_value(param_id, current_relative_frame)
+
+			effect_instance.set(param_id, value)
 
 
 func _setup_bus_effects(effects: Array[SoundEffect]) -> void:

@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="GoZenEffectVisual" load_steps=11 format=3 uid="uid://4mtlh3uaahui"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_ny2jm"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/gozen_effect_visual.gd" id="1_x451f"]
+[ext_resource type="Script" path="res://scripts/classes/matrix_map.gd" id="1_yojuv"]
+
+[sub_resource type="Resource" id="Resource_yojuv"]
+script = ExtResource("1_yojuv")
+metadata/_custom_type_script = "uid://bhfei2no280yk"
+
+[sub_resource type="Resource" id="Resource_q7ney"]
+script = ExtResource("1_yojuv")
+metadata/_custom_type_script = "uid://bhfei2no280yk"
+
+[sub_resource type="Resource" id="Resource_cpby2"]
+script = ExtResource("1_ny2jm")
+param_id = "position"
+param_name = "param_position"
+default_value = Vector2i(0, 0)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_p0oov"]
+script = ExtResource("1_ny2jm")
+param_id = "size"
+param_name = "param_size"
+default_value = Vector2(0, 0)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_qhav0"]
+script = ExtResource("1_ny2jm")
+param_id = "rotation"
+param_name = "param_rotation"
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_ii5di"]
+script = ExtResource("1_ny2jm")
+param_id = "pivot"
+param_name = "param_pivot"
+default_value = Vector2i(0, 0)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_bdb61"]
+script = ExtResource("1_ny2jm")
+param_id = "alpha"
+param_name = "param_alpha"
+default_value = 1.0
+min_value = 0.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("1_x451f")
+shader_path = "res://effects/visual/transform.glsl"
+params = Array[Object]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
+matrix_map = Dictionary[String, ExtResource("1_yojuv")]({
+"pivot": 0,
+"position": SubResource("Resource_yojuv"),
+"rotation": 0,
+"size": SubResource("Resource_q7ney")
+})
+effect_name = "effect_visual_transform"
+metadata/_custom_type_script = "uid://e26q35ad13vv"
