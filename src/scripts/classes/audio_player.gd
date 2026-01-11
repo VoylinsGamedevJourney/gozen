@@ -102,7 +102,6 @@ func update_effects(effects: Array[SoundEffect]) -> void:
 			effect_instance.set(param.param_id, value)
 
 
-
 func _setup_bus_effects(effects: Array[SoundEffect]) -> void:
 	var effect_count: int = AudioServer.get_bus_effect_count(bus_index)
 

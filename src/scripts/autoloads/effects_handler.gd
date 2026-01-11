@@ -1,4 +1,5 @@
 extends Node
+# TODO: Fix the commented lines
 
 signal effect_added(clip_id: int)
 signal effect_removed(clip_id: int)
@@ -13,10 +14,10 @@ func add_visual_effect(clip_id: int, effect: VisualEffect) -> void:
 
 	InputManager.undo_redo.create_action("Add effect")
 	InputManager.undo_redo.add_do_method(_add_visual_effect.bind(clip_id, effect))
-	InputManager.undo_redo.add_undo_method(_remove_visual_effect.bind(clip_id, effect_index))
+	#InputManager.undo_redo.add_undo_method(_remove_visual_effect.bind(clip_id, effect_index))
 
-	InputManager.undo_redo.add_do_method(ClipHandler.clips_updated.emit())
-	InputManager.undo_redo.add_undo_method(ClipHandler.clips_updated.emit())
+	#InputManager.undo_redo.add_do_method(ClipHandler.clips_updated.emit())
+	#InputManager.undo_redo.add_undo_method(ClipHandler.clips_updated.emit())
 	InputManager.undo_redo.commit_action()
 
 
@@ -31,10 +32,10 @@ func remove_visual_effect(clip_id: int, effect_index: int) -> void:
 
 	InputManager.undo_redo.create_action("Remove effect")
 	InputManager.undo_redo.add_do_method(_remove_visual_effect.bind(clip_id, effect_index))
-	InputManager.undo_redo.add_undo_method(_add_visual_effect.bind(clip_id, effect))
+	#InputManager.undo_redo.add_undo_method(_add_visual_effect.bind(clip_id, effect))
 
-	InputManager.undo_redo.add_do_method(ClipHandler.clips_updated.emit())
-	InputManager.undo_redo.add_undo_method(ClipHandler.clips_updated.emit())
+	#InputManager.undo_redo.add_do_method(ClipHandler.clips_updated.emit())
+	#InputManager.undo_redo.add_undo_method(ClipHandler.clips_updated.emit())
 	InputManager.undo_redo.commit_action()
 
 

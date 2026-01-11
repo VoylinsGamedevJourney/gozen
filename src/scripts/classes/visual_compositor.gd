@@ -2,10 +2,6 @@ class_name VisualCompositor
 extends RefCounted
 
 
-enum MATRIX { TRANSFORM }
-enum MATRIX_VAR { POSITION, SCALE, ROTATION, PIVOT }
-
-
 const YUV_PARAM_BUFFER_SIZE: int = 80
 
 const USAGE_BITS_R8: int = (
@@ -249,7 +245,7 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 		if not effect.enabled:
 			continue
 
-		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effects)
+		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
 		if not cache: continue
 
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
@@ -369,7 +365,7 @@ func _calculate_transform_matrix(pos: Vector2, scale: float, rotation: float, pi
 		transform.origin.x, transform.origin.y,	0.0, 1.0])
 
 
-func _get_effect_pipeline(shader_path: String, effects: Array[VisualEffect]) -> EffectCache:
+func _get_effect_pipeline(shader_path: String, effect: VisualEffect) -> EffectCache:
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
 
@@ -380,7 +376,7 @@ func _get_effect_pipeline(shader_path: String, effects: Array[VisualEffect]) -> 
 		printerr("Effect shader is not RDShaderFile (compute shader): ", shader_path)
 		return null
 
-	effect_cache.initialize(device, shader_file.get_spirv(), effects)
+	effect_cache.initialize(device, shader_file.get_spirv(), effect)
 	effects_cache[shader_path] = effect_cache
 
 	return effect_cache
@@ -401,38 +397,39 @@ class EffectCache:
 
 		shader = device.shader_create_from_spirv(spirv)
 		pipeline = device.compute_pipeline_create(shader)
-		param_buffer_size = calculate_std140_size(effect.get_param_types())
+		param_buffer_size = calculate_std140_size(effect)
 		empty_buffer.resize(param_buffer_size)
 		param_buffer = device.uniform_buffer_create(param_buffer_size, empty_buffer)
 
 
 	func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
+		# TODO: Take in mind the matrix data
 		var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
 
-		for param: VisualEffectParam in effect.params:
-			var value: Variant = effect.get_param_value(param.param_id, frame_nr)
+		for effect_param: EffectParam in effect.params:
+			var value: Variant = effect.get_param_value(effect_param.param_id, frame_nr)
 
-			if param.type == EffectParam.PARAM_TYPE.FLOAT:
+			if effect_param.type == EffectParam.PARAM_TYPE.FLOAT:
 				_pad_stream(stream_writer, 4)
 				stream_writer.put_float(value)
-			elif param.type == EffectParam.PARAM_TYPE.INT:
+			elif effect_param.type == EffectParam.PARAM_TYPE.INT:
 				_pad_stream(stream_writer, 4)
 				stream_writer.put_32(value)
-			elif param.type == EffectParam.PARAM_TYPE.COLOR: #Color should be RGBA
+			elif effect_param.type == EffectParam.PARAM_TYPE.COLOR: #Color should be RGBA
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.r)
 				stream_writer.put_float(value.g)
 				stream_writer.put_float(value.b)
 				stream_writer.put_float(value.a)
-			elif param.type == EffectParam.PARAM_TYPE.VEC2:
+			elif effect_param.type == EffectParam.PARAM_TYPE.VEC2:
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
-			elif param.type == EffectParam.PARAM_TYPE.VEC3:
+			elif effect_param.type == EffectParam.PARAM_TYPE.VEC3:
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
 				stream_writer.put_float(value.z)
-			elif param.type == EffectParam.PARAM_TYPE.VEC4:
+			elif effect_param.type == EffectParam.PARAM_TYPE.VEC4:
 				_pad_stream(stream_writer, 16)
 				stream_writer.put_float(value.x)
 				stream_writer.put_float(value.y)
@@ -445,12 +442,21 @@ class EffectCache:
 			param_data.resize(param_buffer_size) # Add padding if needed to end
 
 
-	func calculate_std140_size(types: Array[VisualEffect.PARAM_TYPE]) -> int:
+	func calculate_std140_size(effect: VisualEffect) -> int:
+		var matrix_data: Dictionary[String, MatrixData] = effect.matrix_data
+		var added_matrix: Array[MatrixData.MATRIX] = []
 		var offset: int = 0
 
-		for type: int in types:
+		for effect_param: EffectParam in effect.params:
+			var type: EffectParam.PARAM_TYPE = effect_param.type
 			var size: int = 0
-			var align: int = 0
+			var align: int = 16
+
+			if matrix_data.has(effect_param.param_id):
+				if added_matrix.has(matrix_data[effect_param.param_id]):
+					continue # Already been added
+
+				type = matrix_data[effect_param.param_id].matrix_type
 
 			match type:
 				EffectParam.PARAM_TYPE.FLOAT, EffectParam.PARAM_TYPE.INT:
@@ -459,12 +465,12 @@ class EffectCache:
 				EffectParam.PARAM_TYPE.VEC2, EffectParam.PARAM_TYPE.IVEC2:
 					size = 8
 					align = 8
-				EffectParam.PARAM_TYPE.VEC3, EffectParam.PARAM_TYPE.IVEC3, EffectParam.PARAM_TYPE.COLOR:
-					size = 12
-					align = 16
-				EffectParam.PARAM_TYPE.VEC4, EffectParam.PARAM_TYPE.IVEC4:
-					size = 16
-					align = 16
+				EffectParam.PARAM_TYPE.COLOR: size = 12
+				EffectParam.PARAM_TYPE.VEC3, EffectParam.PARAM_TYPE.IVEC3: size = 12
+				EffectParam.PARAM_TYPE.VEC4, EffectParam.PARAM_TYPE.IVEC4: size = 16
+				EffectParam.PARAM_TYPE.MAT3: size = 48
+				EffectParam.PARAM_TYPE.MAT4: size = 64
+				_: continue
 
 			offset += (align - (offset % align)) % align # Padding
 			offset += size

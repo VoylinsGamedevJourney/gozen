@@ -128,7 +128,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		clip_data.duration = file_data.duration
 
 		if file_data.type in EditorCore.VISUAL_TYPES:
-			var transform_effect: VisualEffect = preload("res://shaders/transform.tres") # TODO: Move this path to Library
+			var transform_effect: VisualEffect = preload(Library.EFFECT_VISUAL_TRANSFORM).duplicate_deep()
 
 			# Setting default values
 			for param: EffectParam in transform_effect.params:
@@ -139,9 +139,9 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
-			var volume_effect: SoundEffect = preload("res://effects/sound/volume.tres") # TODO: Move this path to Library
+			var volume_effect: SoundEffect = preload(Library.EFFECT_SOUND_VOLUME)
 
-			clip_data.effects_audio.append(volume_effect)
+			clip_data.effects_sound.append(volume_effect)
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))

@@ -3,8 +3,11 @@ extends Resource
 
 
 @export var effect_name: String
-@export var shader_path: String
+@export_file_path var shader_path: String
 @export var params: Array[EffectParam] = []
+
+@export var matrix_data: Dictionary[String, MatrixData] = {} # { param_id: matrix_data }
+
 
 
 # { frame_nr : (dictionary of all changed params) }

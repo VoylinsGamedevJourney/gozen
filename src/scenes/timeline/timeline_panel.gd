@@ -664,7 +664,7 @@ func get_frame_from_mouse() -> int:
 
 
 func get_track_from_mouse() -> int:
-	return floori(get_local_mouse_position().y / TRACK_TOTAL_SIZE)
+	return clampi(floori(get_local_mouse_position().y / TRACK_TOTAL_SIZE), 0, TrackHandler.tracks.size())
 
 
 func move_playhead(frame_nr: int) -> void:

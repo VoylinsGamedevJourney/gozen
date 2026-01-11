@@ -2,7 +2,7 @@ class_name EffectParam
 extends Resource
 
 
-enum PARAM_TYPE { FLOAT, COLOR, INT, VEC2, VEC3, VEC4, IVEC2, IVEC3, IVEC4 }
+enum PARAM_TYPE { FLOAT, COLOR, INT, VEC2, VEC3, VEC4, IVEC2, IVEC3, IVEC4, MAT3, MAT4 }
 
 
 @export var param_id: String ## The same id used in the shader or in the audio effect
