@@ -144,7 +144,7 @@ func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
 
 func _matrix_transform(effect: VisualEffect, type: MatrixData.MATRIX) -> PackedFloat32Array:
 	var position: Vector2 = Vector2.ZERO
-	var scale: float = 1.0
+	var scale: Vector2 = Vector2.ZERO
 	var rotation: float = 0.0
 	var pivot: Vector2 = Vector2.ZERO
 
@@ -161,8 +161,8 @@ func _matrix_transform(effect: VisualEffect, type: MatrixData.MATRIX) -> PackedF
 		
 		match matrix_data.type:
 			MatrixData.MATRIX_VAR.POSITION: position = value
+			MatrixData.MATRIX_VAR.SIZE: scale = Vector2(value) / Vector2(Project.get_resolution())
 			MatrixData.MATRIX_VAR.ROTATION: rotation = value
-			MatrixData.MATRIX_VAR.SCALE: scale = value
 			MatrixData.MATRIX_VAR.PIVOT: pivot = value
 
 	# Calculate matrix

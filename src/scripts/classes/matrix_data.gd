@@ -10,14 +10,14 @@ enum MATRIX_VAR { NULL, POSITION, SIZE, SCALE, ROTATION, PIVOT }
 
 
 
-static func calculate_transform_matrix(pos: Vector2, scale: float, rotation: float, pivot: Vector2) -> PackedFloat32Array:
+static func calculate_transform_matrix(pos: Vector2, scale: Vector2, rotation: float, pivot: Vector2) -> PackedFloat32Array:
 	#var scale_factor: float = scale / 100.0
 	var transform: Transform2D = Transform2D.IDENTITY
 
 	transform = transform.translated(pos) # move to position
 	transform = transform.translated(pivot) # Move to pivot
 	transform = transform.rotated(deg_to_rad(rotation))
-	transform = transform.scaled(Vector2(scale, scale))
+	transform = transform.scaled(scale)
 	transform = transform.translated(-pivot) # Move back from pivot
 	transform = transform.affine_inverse() # Inverse the transform
 
