@@ -103,21 +103,22 @@ func calculate_std140_size(effect: VisualEffect) -> int:
 			if added_matrix.has(_matrix_data_map[effect_param.param_id]):
 				continue # Already been added
 
-			type = _matrix_data_map[effect_param.param_id].matrix_type
-
-		match type:
-			EffectParam.PARAM_TYPE.FLOAT, EffectParam.PARAM_TYPE.INT:
-				size = 4
-				align = 4
-			EffectParam.PARAM_TYPE.VEC2, EffectParam.PARAM_TYPE.IVEC2:
-				size = 8
-				align = 8
-			EffectParam.PARAM_TYPE.COLOR: size = 12
-			EffectParam.PARAM_TYPE.VEC3, EffectParam.PARAM_TYPE.IVEC3: size = 12
-			EffectParam.PARAM_TYPE.VEC4, EffectParam.PARAM_TYPE.IVEC4: size = 16
-			EffectParam.PARAM_TYPE.MAT3: size = 48
-			EffectParam.PARAM_TYPE.MAT4: size = 64
-			_: continue
+			# MAT4 = 64, MAT3 = 48
+			match _matrix_data_map[effect_param.param_id].matrix:
+				MatrixData.MATRIX.TRANSFORM: size = 64
+				_: continue
+		else:
+			match type:
+				EffectParam.PARAM_TYPE.FLOAT, EffectParam.PARAM_TYPE.INT:
+					size = 4
+					align = 4
+				EffectParam.PARAM_TYPE.VEC2, EffectParam.PARAM_TYPE.IVEC2:
+					size = 8
+					align = 8
+				EffectParam.PARAM_TYPE.COLOR: size = 12
+				EffectParam.PARAM_TYPE.VEC3, EffectParam.PARAM_TYPE.IVEC3: size = 12
+				EffectParam.PARAM_TYPE.VEC4, EffectParam.PARAM_TYPE.IVEC4: size = 16
+				_: continue
 
 		offset += (align - (offset % align)) % align # Padding
 		offset += size
@@ -158,7 +159,7 @@ func _matrix_transform(effect: VisualEffect, type: MatrixData.MATRIX) -> PackedF
 
 		var value: Variant = effect.get_param_value(param.param_id, _frame_nr)
 		
-		match matrix_data.var_type:
+		match matrix_data.type:
 			MatrixData.MATRIX_VAR.POSITION: position = value
 			MatrixData.MATRIX_VAR.ROTATION: rotation = value
 			MatrixData.MATRIX_VAR.SCALE: scale = value

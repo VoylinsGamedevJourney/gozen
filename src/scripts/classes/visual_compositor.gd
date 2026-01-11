@@ -174,6 +174,8 @@ func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], curren
 	if video.get_has_alpha():
 		device.texture_update(a_texture, 0, video.get_a_data().get_data())
 
+	_update_effect_buffers(effects, current_frame)
+
 	# Start of compute list
 	# Convert YUV to RGBA (and write to ping)
 	var compute_list: int = device.compute_list_begin()
@@ -200,6 +202,8 @@ func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], curren
 func process_image_frame(effects: Array[VisualEffect], current_frame: int) -> void:
 	if not initialized:
 		return
+
+	_update_effect_buffers(effects, current_frame)
 
 	device.texture_copy(
 		base_image, ping_texture,
@@ -232,6 +236,18 @@ func cleanup() -> void:
 	effects_cache.clear()
 
 
+func _update_effect_buffers(effects: Array[VisualEffect], current_frame: int) -> void:
+	for effect: VisualEffect in effects:
+		if not effect.enabled:
+			continue
+
+		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
+		if not cache: continue
+
+		cache.pack_effect_params(effect, current_frame)
+		device.buffer_update(cache.buffer, 0, cache.buffer_size, cache.data)
+
+
 func _process_frame(compute_list: int, effects: Array[VisualEffect], current_frame: int) -> void:
 	# Start handling the effects
 	for effect: VisualEffect in effects:
@@ -242,8 +258,6 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 		if not cache: continue
 
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
-		cache.pack_effect_params(effect, current_frame)
-		device.buffer_update(cache.buffer, 0, cache.buffer_size, cache.data)
 
 		# Create uniforms for effect
 		# - binding 0: input image
@@ -252,9 +266,7 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 		var effect_uniforms: Array[RDUniform] = [
 			_create_sampler_uniform(ping_texture, 0),
 			_create_image_uniform(pong_texture, 1),
-			_create_buffer_uniform(cache.buffer, 2)
-		]
-
+			_create_buffer_uniform(cache.buffer, 2)]
 		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
 
 		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
