@@ -7,10 +7,10 @@ layout(set = 0, binding = 0) uniform sampler2D input_image;
 layout(rgba8, set = 0, binding = 1) uniform image2D output_image;
 
 layout(set = 0, binding = 2, std140) uniform Params {
+	vec4 tint;
     float brightness;
     float contrast;
     float saturation;
-    vec4 tint;
     float tint_amount;
     float red_value;
     float green_value;
