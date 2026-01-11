@@ -2,19 +2,23 @@ class_name VisualEffectColorCorrection
 extends VisualEffect
 
 
-
-@export_range(-1, 1) var brightness: float = 0.0
-@export_range(0, 3) var contrast: float = 1.0
-@export_range(0, 3) var saturation: float = 1.0
-@export var tint_color: Color = Color.BLACK
-@export_range(0, 1) var tint_amount: float = 0.0
-@export_range(0, 1) var red_value: float = 1.0
-@export_range(0, 1) var green_value: float = 1.0
-@export_range(0, 1) var blue_value: float = 1.0
+const EFFECT_NAME: String = "visual_effect_color_correction"
 
 
-func get_shader_rid() -> RID:
-	return load("res://effects/visual/color_correction.glsl").get_spirv()
+var brightness: float = 0.0 # -1 to 1
+var contrast: float = 1.0 # 0 to 3
+var saturation: float = 1.0 # 0 to 3
+
+var tint_color: Color = Color.BLACK
+var tint_amount: float = 0.0 # 0 to 1
+var red_value: float = 1.0 # 0 to 1
+var green_value: float = 1.0 # 0 to 1
+var blue_value: float = 1.0 # 0 to 1
+
+
+
+func get_effect_name() -> String:
+	return EFFECT_NAME
 
 
 func get_effects_panel() -> Container:
@@ -22,7 +26,7 @@ func get_effects_panel() -> Container:
 	return Container.new()
 
 
-func get_buffer_data(frame_nr: int, context_data: Dictionary) -> PackedByteArray:
+func get_buffer_data(frame_nr: int) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 
 	var current_brightness: float = get_value_at("brightness", brightness, frame_nr)
@@ -48,11 +52,11 @@ func get_buffer_data(frame_nr: int, context_data: Dictionary) -> PackedByteArray
 	
 	push_color(stream, current_tint_color)
 	push_float(stream, current_brightness)
-	push_float(stream, contrast)
-	push_float(stream, saturation)
-	push_float(stream, tint_amount)
-	push_float(stream, red_value)
-	push_float(stream, green_value)
-	push_float(stream, blue_value)
+	push_float(stream, current_contrast)
+	push_float(stream, current_saturation)
+	push_float(stream, current_tint_amount)
+	push_float(stream, current_red_value)
+	push_float(stream, current_green_value)
+	push_float(stream, current_blue_value)
 
 	return stream.data_array
