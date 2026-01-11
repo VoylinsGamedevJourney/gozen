@@ -18,7 +18,7 @@ layout(set = 0, binding = 2, std140) uniform Params {
 	vec2 texture_size;		// Source image size (offset = 64)
 	ivec2 output_size;		// Project size (offset = 72)
 	float alpha;			// Alpha value (offset = 80)
-} params; // Ends at byte 84 (/16 = 6 blocks - 12 bytes padding)
+} params; // Ends at byte 94 (/16 = 6 blocks - 12 bytes padding)
 
 
 

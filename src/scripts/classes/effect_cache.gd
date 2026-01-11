@@ -100,7 +100,7 @@ func calculate_std140_size(effect: VisualEffect) -> int:
 		var align: int = 16
 
 		if _matrix_data_map.has(effect_param.param_id):
-			if added_matrix.has(_matrix_data_map[effect_param.param_id]):
+			if added_matrix.has(_matrix_data_map[effect_param.param_id].matrix):
 				continue # Already been added
 
 			# MAT4 = 64, MAT3 = 48
@@ -128,8 +128,8 @@ func calculate_std140_size(effect: VisualEffect) -> int:
 
 
 func free_rids(device: RenderingDevice) -> void:
-	shader = Utils.cleanup_rid(device, shader)
 	pipeline = Utils.cleanup_rid(device, pipeline)
+	shader = Utils.cleanup_rid(device, shader)
 	buffer = Utils.cleanup_rid(device, buffer)
 
 

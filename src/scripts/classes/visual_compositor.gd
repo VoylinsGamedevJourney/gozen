@@ -196,7 +196,7 @@ func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], curren
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
 
-	_process_frame(compute_list, effects, current_frame)
+	_process_frame(compute_list, effects)
 
 
 func process_image_frame(effects: Array[VisualEffect], current_frame: int) -> void:
@@ -211,7 +211,7 @@ func process_image_frame(effects: Array[VisualEffect], current_frame: int) -> vo
 		Vector3(resolution.x, resolution.y, 1),
 		0, 0, 0, 0)
 
-	_process_frame(device.compute_list_begin(), effects, current_frame)
+	_process_frame(device.compute_list_begin(), effects)
 
 
 func cleanup() -> void:
@@ -248,7 +248,7 @@ func _update_effect_buffers(effects: Array[VisualEffect], current_frame: int) ->
 		device.buffer_update(cache.buffer, 0, cache.buffer_size, cache.data)
 
 
-func _process_frame(compute_list: int, effects: Array[VisualEffect], current_frame: int) -> void:
+func _process_frame(compute_list: int, effects: Array[VisualEffect]) -> void:
 	# Start handling the effects
 	for effect: VisualEffect in effects:
 		if not effect.enabled:
