@@ -128,7 +128,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		clip_data.duration = file_data.duration
 
 		if file_data.type in EditorCore.VISUAL_TYPES:
-			var transform_effect: VisualEffect = preload(Library.EFFECT_VISUAL_TRANSFORM).duplicate_deep()
+			var transform_effect: VisualEffect = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
 
 			# Setting default values
 			for param: EffectParam in transform_effect.params:
@@ -139,7 +139,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
-			var volume_effect: SoundEffect = preload(Library.EFFECT_SOUND_VOLUME)
+			var volume_effect: SoundEffect = load(Library.EFFECT_SOUND_VOLUME).duplicate(true)
 
 			clip_data.effects_sound.append(volume_effect)
 

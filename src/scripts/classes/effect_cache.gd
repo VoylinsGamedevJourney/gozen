@@ -4,9 +4,9 @@ extends RefCounted
 var shader: RID
 var pipeline: RID
 
-var param_buffer: RID
-var param_buffer_size: int
-var param_data: PackedByteArray = PackedByteArray()
+var buffer: RID
+var buffer_size: int
+var data: PackedByteArray = PackedByteArray()
 
 var _frame_nr: int = 0
 var _matrix_data_map: Dictionary[String, MatrixData]
@@ -16,19 +16,21 @@ var _matrix_data_map: Dictionary[String, MatrixData]
 func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: VisualEffect) -> void:
 	var empty_buffer: PackedByteArray = PackedByteArray()
 
+	_matrix_data_map = effect.matrix_data
+
 	shader = device.shader_create_from_spirv(spirv)
 	pipeline = device.compute_pipeline_create(shader)
-	param_buffer_size = calculate_std140_size(effect)
-	empty_buffer.resize(param_buffer_size)
-	param_buffer = device.uniform_buffer_create(param_buffer_size, empty_buffer)
+	buffer_size = calculate_std140_size(effect)
+	empty_buffer.resize(buffer_size)
+	buffer = device.uniform_buffer_create(buffer_size, empty_buffer)
 
 
 func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
 	var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
-	_matrix_data_map = effect.matrix_data
 	var processed_matrices: Array[MatrixData.MATRIX] = []
 
 	_frame_nr = frame_nr
+	_matrix_data_map = effect.matrix_data
 
 	for effect_param: EffectParam in effect.params:
 		var param_id: String = effect_param.param_id
@@ -41,7 +43,7 @@ func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
 			if matrix_type in processed_matrices:
 				continue
 			elif matrix_type == MatrixData.MATRIX.TRANSFORM:
-				var matrix_floats: PackedFloat32Array = _handle_matrix_transform(effect, matrix_type)
+				var matrix_floats: PackedFloat32Array = _matrix_transform(effect, matrix_type)
 
 				_pad_stream(stream_writer, 16)
 				for value: float in matrix_floats:
@@ -80,10 +82,10 @@ func pack_effect_params(effect: VisualEffect, frame_nr: int) -> void:
 			stream_writer.put_float(value.z)
 			stream_writer.put_float(value.w)
 
-	param_data = stream_writer.data_array
+	data = stream_writer.data_array
 
-	if param_data.size() < param_buffer_size:
-		param_data.resize(param_buffer_size) # Add padding if needed to end
+	if data.size() < buffer_size:
+		data.resize(buffer_size) # Add padding if needed to end
 
 
 func calculate_std140_size(effect: VisualEffect) -> int:
@@ -125,9 +127,9 @@ func calculate_std140_size(effect: VisualEffect) -> int:
 
 
 func free_rids(device: RenderingDevice) -> void:
-	if shader.is_valid(): device.free_rid(shader)
-	if pipeline.is_valid(): device.free_rid(pipeline)
-	if param_buffer.is_valid(): device.free_rid(param_buffer)
+	shader = Utils.cleanup_rid(device, shader)
+	pipeline = Utils.cleanup_rid(device, pipeline)
+	buffer = Utils.cleanup_rid(device, buffer)
 
 
 func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
@@ -139,7 +141,7 @@ func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
 			stream_buffer.put_8(0)
 
 
-func _handle_matrix_transform(effect: VisualEffect, type: MatrixData.MATRIX) -> PackedFloat32Array:
+func _matrix_transform(effect: VisualEffect, type: MatrixData.MATRIX) -> PackedFloat32Array:
 	var position: Vector2 = Vector2.ZERO
 	var scale: float = 1.0
 	var rotation: float = 0.0

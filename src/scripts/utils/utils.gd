@@ -143,3 +143,10 @@ static func get_next(frame: int, array: PackedInt64Array) -> int:
 
 	return -1
 
+
+static func cleanup_rid(device: RenderingDevice, rid: RID) -> RID:
+	if rid.is_valid():
+		device.free_rid(rid)
+
+	return RID()
+

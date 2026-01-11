@@ -211,32 +211,25 @@ func process_image_frame(effects: Array[VisualEffect], current_frame: int) -> vo
 
 
 func cleanup() -> void:
-	ping_texture = _cleanup(ping_texture)
-	pong_texture = _cleanup(pong_texture)
+	ping_texture = Utils.cleanup_rid(device, ping_texture)
+	pong_texture = Utils.cleanup_rid(device, pong_texture)
 
 	# Video cleanup
-	y_texture = _cleanup(y_texture)
-	u_texture = _cleanup(u_texture)
-	v_texture = _cleanup(v_texture)
-	a_texture = _cleanup(a_texture)
-	yuv_params = _cleanup(yuv_params)
-	pipeline_yuv = _cleanup(pipeline_yuv)
-	shader_yuv = _cleanup(shader_yuv)
+	y_texture = Utils.cleanup_rid(device, y_texture)
+	u_texture = Utils.cleanup_rid(device, u_texture)
+	v_texture = Utils.cleanup_rid(device, v_texture)
+	a_texture = Utils.cleanup_rid(device, a_texture)
+	yuv_params = Utils.cleanup_rid(device, yuv_params)
+	pipeline_yuv = Utils.cleanup_rid(device, pipeline_yuv)
+	shader_yuv = Utils.cleanup_rid(device, shader_yuv)
 
 	# Image cleanup
-	base_image = _cleanup(base_image)
+	base_image = Utils.cleanup_rid(device, base_image)
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)
 
 	effects_cache.clear()
-
-
-func _cleanup(rid: RID) -> RID:
-	if rid.is_valid():
-		device.free_rid(rid)
-
-	return RID()
 
 
 func _process_frame(compute_list: int, effects: Array[VisualEffect], current_frame: int) -> void:
@@ -250,7 +243,7 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 		cache.pack_effect_params(effect, current_frame)
-		device.buffer_update(cache.param_buffer, 0, cache.param_size, cache.param_data)
+		device.buffer_update(cache.buffer, 0, cache.buffer_size, cache.data)
 
 		# Create uniforms for effect
 		# - binding 0: input image
@@ -259,7 +252,7 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect], current_fra
 		var effect_uniforms: Array[RDUniform] = [
 			_create_sampler_uniform(ping_texture, 0),
 			_create_image_uniform(pong_texture, 1),
-			_create_buffer_uniform(cache.param_buffer, 2)
+			_create_buffer_uniform(cache.buffer, 2)
 		]
 
 		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
