@@ -268,6 +268,7 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect]) -> void:
 			_create_image_uniform(pong_texture, 1),
 			_create_buffer_uniform(cache.buffer, 2)]
 		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
+		print(cache.buffer)
 
 		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
 		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)

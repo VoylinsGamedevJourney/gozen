@@ -1,6 +1,9 @@
 class_name EffectCache
 extends RefCounted
 
+#The problem is that we aren't sending texture_size or output_size.
+#HAve an extra effect param called "project_resolution" and another one called "video_resolution" and have them not show up in the effects panel and be asigned automatically
+
 var shader: RID
 var pipeline: RID
 
