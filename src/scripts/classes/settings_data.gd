@@ -35,3 +35,7 @@ var marker_colors: PackedColorArray = [ Color.PURPLE, Color.GREEN, Color.BLUE, C
 # Extra
 var check_version: bool = false
 var auto_save: bool = true
+
+# Input
+var shortcuts: Dictionary = {} # { action_name: [InputEvent, InputEvent] }
+

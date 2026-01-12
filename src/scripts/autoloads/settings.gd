@@ -30,6 +30,9 @@ func _ready() -> void:
 	apply_language()
 	apply_display_scale()
 	apply_theme()
+	apply_shortcuts()
+
+	load_new_shortcuts()
 
 	CommandManager.register(
 			"command_editor_settings", open_settings_menu, "open_settings")
@@ -353,3 +356,76 @@ func set_auto_save(value: bool) -> void:
 
 func get_auto_save() -> bool:
 	return _data.auto_save
+
+
+#--- Input set/get ---
+func load_new_shortcuts(reset: bool = false) -> void:
+	# Add new (or all) shortcuts to the Settings data
+	for action: StringName in InputMap.get_actions():
+		if reset:
+			_data.shortcuts[action] = InputMap.action_get_events(action)
+		elif _data.shortcuts.has(action):
+			continue
+		elif action.begins_with("ui_") or action.begins_with("_"):
+			continue
+		else:
+			_data.shortcuts[action] = InputMap.action_get_events(action)
+
+
+func apply_shortcuts() -> void:
+	for action: String in _data.shortcuts:
+		if !InputMap.has_action(action):
+			continue
+
+		InputMap.action_erase_events(action)
+
+		for event: InputEvent in _data.shortcuts[action]:
+			InputMap.action_add_event(action, event)
+
+
+func reset_shortcuts_to_default() -> void:
+	InputMap.load_from_project_settings()
+	load_new_shortcuts(true)
+	apply_shortcuts()
+
+
+func set_shortcut(action: String, events: Array[InputEvent]) -> void:
+	if !_data.shortcuts.has(action):
+		return
+
+	_data.shortcuts[action] = events
+	InputMap.action_erase_events(action)
+
+	for event: InputEvent in events:
+		InputMap.action_add_event(action, event)
+
+
+func set_shortcut_event_at_index(action: String, index: int, event: InputEvent) -> void:
+	var events: Array[InputEvent] = get_events_for_action(action)
+	
+	if index >= 0 and index < events.size():
+		events[index] = event
+
+	# Clean nulls
+	var cleaned_events: Array[InputEvent] = []
+	
+	for action_event: InputEvent in events:
+		if action_event != null:
+			cleaned_events.append(action_event)
+
+	set_shortcut(action, cleaned_events)
+
+
+func get_events_for_action(action: String) -> Array[InputEvent]:
+	var events: Array[InputEvent] = _data.shortcuts[action]
+
+	# We need to make certain we have exactly 2
+	if events.size() > 2:
+		events.resize(2)
+		return events
+
+	while events.size() < 2:
+		events.append(null)
+
+	return events
+		

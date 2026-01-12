@@ -12,14 +12,31 @@ enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 var sections: Dictionary[String, GridContainer] = {}
 var side_bar_button_group: ButtonGroup = ButtonGroup.new()
 
+var listening_active: bool = false
+var listening_action: String = ""
+var listening_index: int = -1
+var listening_button: Button = null
+
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if listening_active and listening_button != null:
+		get_viewport().set_input_as_handled()
+
+		if event.is_action_pressed("ui_cancel"):
+			_stop_listening()
+			return
+
+		if (event is InputEventKey and event.is_pressed()) or (event is InputEventMouseButton and event.is_pressed()):
+			Settings.set_shortcut_event_at_index(listening_action, listening_index, event)
+			listening_button.text = _get_event_text(event)
+			_stop_listening()
+	elif event.is_action_pressed("ui_cancel"):
 		_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:
+	_stop_listening()
 	Settings.save()
 	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
 
@@ -72,6 +89,15 @@ func _create_section(section_name: String) -> GridContainer:
 
 func get_settings_menu_options() -> Dictionary[String, Array]:
 	panel_label.text = "title_editor_settings"
+
+	var shortcut_nodes: Array = []
+	var action_keys: PackedStringArray = Settings._data.shortcuts.keys()
+
+	action_keys.sort()
+
+	for action: String in action_keys:
+		shortcut_nodes.append(create_label(action.capitalize()))
+		shortcut_nodes.append(create_shortcut_buttons(action))
 
 	return {
 		"title_appearance" = [
@@ -155,7 +181,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_spinbox(
 					Settings.get_tracks_amount(),
 					1, 32, 1, false, false,
-					Settings.set_default_framerate,
+					Settings.set_tracks_amount,
 					"setting_tooltip_default_track_amount"),
 			create_label("setting_pause_after_dragging"),
 			create_check_button(
@@ -197,6 +223,8 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_auto_save,
 					"setting_tooltip_auto_save")
 		],
+
+		"title_shortcuts" = shortcut_nodes,
 
 	}
 
@@ -367,3 +395,57 @@ func create_marker_setting(index: int) -> HBoxContainer:
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	return hbox
+
+
+func create_shortcut_buttons(action: String) -> HBoxContainer:
+	var events: Array[InputEvent] = Settings.get_events_for_action(action)
+	var hbox: HBoxContainer = HBoxContainer.new()
+
+	hbox.size_flags_horizontal = SIZE_EXPAND_FILL
+
+	for i: int in 2:
+		var button: Button = Button.new()
+
+		button.size_flags_horizontal = SIZE_EXPAND_FILL
+		button.toggle_mode = true
+		button.text = _get_event_text(events[i])
+		button.tooltip_text = tr("tooltip_setting_shortcut")
+		button.pressed.connect(_on_shortcut_button_pressed.bind(button, action, i))
+		hbox.add_child(button)
+
+	return hbox
+
+
+func _on_shortcut_button_pressed(button: Button, action: String, index: int) -> void:
+	# We should only be able to listen to one button each
+	if listening_active and listening_button != null and listening_button != button:
+		listening_button.button_pressed = false
+		listening_button.text = _get_event_text(Settings.get_events_for_action(listening_action)[listening_index])
+	
+	listening_active = true
+	listening_action = action
+	listening_index = index
+	listening_button = button
+	listening_button.text = "Press any key..."
+
+
+func _stop_listening() -> void:
+	if listening_button != null:
+		var events: Array[InputEvent] = Settings.get_events_for_action(listening_action)
+
+		listening_button.button_pressed = false
+		listening_button.text = _get_event_text(events[listening_index])
+	listening_active = false
+	listening_button = null
+	listening_action = ""
+	listening_index = -1
+
+
+func _get_event_text(event: InputEvent) -> String:
+	if event == null:
+		return "None"
+	elif event is InputEventKey:
+		return event.as_text_physical_keycode()
+		
+	return event.as_text()
+
