@@ -10,7 +10,7 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="Control" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "scroll_container", "status_hbox", "vbox")]
+[node name="ProgressOverlay" type="Control" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "estimated_time_label", "scroll_container", "status_hbox", "vbox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,9 +19,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_7woll")
-title_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TitleLabel")
+title_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox/TitleLabel")
 progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator/ProgressBar")
 progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox/LoadingHintLabel")
+estimated_time_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox/EstimatedTimeLabel")
 scroll_container = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer")
 status_hbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox")
 vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVBox")
@@ -61,10 +62,19 @@ layout_mode = 2
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
 layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "title_loading_projects"
+
+[node name="EstimatedTimeLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox"]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "Estimated time: 59:59:59"
 
 [node name="Spacer" type="Control" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
 custom_minimum_size = Vector2(0, 5)

@@ -5,12 +5,18 @@ extends Control
 @export var title_label: Label
 @export var progress_bar: ProgressBar
 @export var progress_hint: Label
+@export var estimated_time_label: Label
 @export var scroll_container: ScrollContainer
 @export var status_hbox: HBoxContainer
 @export var vbox: VBoxContainer
 
 var file_labels: Dictionary = {}
+var start_time: int = 0
 
+
+
+func _ready() -> void:
+	start_time = Time.get_ticks_msec()
 
 
 func update_title(title: String) -> void:
@@ -20,6 +26,14 @@ func update_title(title: String) -> void:
 func update_progress(value: int, text: String) -> void:
 	update_progress_bar(value)
 	update_progress_hint(text)
+
+	# Updating estimated time
+	var time_elapsed: float = (Time.get_ticks_msec() - start_time) / 1000.0
+	var rate: float = time_elapsed / float(value)
+	var remaining: String = Utils.format_time_str(rate * (100 - float(value)), true)
+
+	estimated_time_label.text = "Estimated time - %s" % remaining
+
 	await RenderingServer.frame_post_draw
 
 
