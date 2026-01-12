@@ -7,6 +7,7 @@ signal updated
 var tracks: Array[TrackData] = []
 
 
+
 func _ready() -> void:
 	Project.project_ready.connect(_project_ready)
 
@@ -16,34 +17,6 @@ func _project_ready() -> void:
 
 	for id: int in tracks.size():
 		tracks[id].id = id
-
-
-func _reset_track_ids() -> void:
-	for id: int in tracks.size():
-		tracks[id].id = id
-
-		for clip: ClipData in get_all_clips(id):
-			clip.track_id = id
-
-	updated.emit()
-	
-
-func _add_track(id: int) -> void:
-	var new_track_data: TrackData = TrackData.new()
-	new_track_data.id = id
-
-	if tracks.size() == id:
-		tracks.append(new_track_data)
-	else:
-		tracks.insert(id, new_track_data)
-
-
-func _remove_track(id: int) -> void:
-	tracks.remove_at(id)
-
-
-func _fix_removed_track(id: int, data: TrackData) -> void:
-	tracks.insert(id, data)
 
 
 func add_track(id: int = tracks.size()) -> void:
@@ -66,14 +39,14 @@ func remove_track(id: int) -> void:
 
 	InputManager.undo_redo.create_action("Removing track: %s" % id)
 
-	# NOTE: Clips don't get removed in this way to avoid complexity.
-	# Something which I could figure out later on if there is an actual need
-	# for this. (Maybe I can have a cleanup on project startup to check which
-	# clips are actually used in tracks and which not and remove the remaining
-	# references at that moment since it'll only be referenced in one place?)
+	for clip: ClipData in get_all_clips(id):
+		InputManager.undo_redo.add_do_method(ClipHandler._delete_clip.bind(clip))
+		InputManager.undo_redo.add_undo_method(ClipHandler._add_clip.bind(clip))
+
 	InputManager.undo_redo.add_do_method(_remove_track.bind(id))
 	InputManager.undo_redo.add_do_method(_reset_track_ids)
 	InputManager.undo_redo.add_do_method(updated.emit)
+
 	InputManager.undo_redo.add_undo_method(_fix_removed_track.bind(id, tracks[id]))
 	InputManager.undo_redo.add_undo_method(_reset_track_ids)
 	InputManager.undo_redo.add_undo_method(updated.emit)
@@ -231,4 +204,33 @@ func get_free_region(track_id: int, frame_nr: int, ignores: PackedInt64Array = [
 
 func has_frame_nr(track_id: int, frame_nr: int) -> bool:
 	return tracks[track_id].clips.has(frame_nr)
+
+
+func _reset_track_ids() -> void:
+	for id: int in tracks.size():
+		tracks[id].id = id
+
+		for clip: ClipData in get_all_clips(id):
+			clip.track_id = id
+
+	updated.emit()
+	
+
+func _add_track(id: int) -> void:
+	var new_track_data: TrackData = TrackData.new()
+	new_track_data.id = id
+
+	if tracks.size() == id:
+		tracks.append(new_track_data)
+	else:
+		tracks.insert(id, new_track_data)
+
+
+func _remove_track(id: int) -> void:
+	tracks.remove_at(id)
+
+
+func _fix_removed_track(id: int, data: TrackData) -> void:
+	tracks.insert(id, data)
+
 

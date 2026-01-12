@@ -56,7 +56,7 @@ func _validate_cache(param_id: String) -> PackedInt64Array:
 			keys.sort()
 
 		_key_cache[param_id] = keys
-		_cache_dirty = false
+#		_cache_dirty = false
 
 	return _key_cache[param_id]
 

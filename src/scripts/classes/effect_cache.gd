@@ -26,7 +26,7 @@ func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: GoZenEffe
 
 func process_buffer(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector2i) -> void:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
-	var processed_matrices: Array[MatrixData.TYPE] = []
+	var processed_matrices: Array[MatrixHandler.TYPE] = []
 
 	_effect = effect
 	_frame_nr = frame_nr
@@ -35,7 +35,7 @@ func process_buffer(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector
 	for effect_param: EffectParam in effect.params:
 		# First do matrix handling
 		if effect_param.param_id in effect.matrix_map:
-			var matrix_type: MatrixData.TYPE = effect.matrix_map[effect_param.param_id]
+			var matrix_type: MatrixHandler.TYPE = effect.matrix_map[effect_param.param_id]
 
 			if matrix_type not in processed_matrices:
 				_pad_stream(stream, 16)
@@ -86,7 +86,7 @@ func process_buffer(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector
 		buffer_data.resize(buffer_data.size() + padding)
 
 
-func _handle_matrix(type: MatrixData.TYPE) -> PackedFloat32Array:
+func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
 	var data: Dictionary[String, Variant] = {}
 	var param_map: Dictionary[String, EffectParam] = {}
 	
@@ -94,11 +94,11 @@ func _handle_matrix(type: MatrixData.TYPE) -> PackedFloat32Array:
 		param_map[effect_param.param_id] = effect_param
 
 	match type:
-		MatrixData.TYPE.TRANSFORM:
-			for key: String in MatrixData.get_transform_matrix_variables():
+		MatrixHandler.TYPE.TRANSFORM:
+			for key: String in MatrixHandler.get_transform_matrix_variables():
 				data[key] = _effect.get_value(param_map[key], _frame_nr)
 
-			return MatrixData.calculate_transform_matrix(data, _resolution)
+			return MatrixHandler.calculate_transform_matrix(data, _resolution)
 		_:
 			printerr("EffectCache: Invalid matrix data type! %s" % type)
 			return []
