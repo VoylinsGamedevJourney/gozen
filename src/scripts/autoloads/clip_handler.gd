@@ -63,12 +63,6 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 	if type not in EditorCore.VISUAL_TYPES:
 		return
 	elif type == FileHandler.TYPE.VIDEO:
-		# For the video stuff, we load in the data for the shader. The FileData
-		# has a placeholder texture of the size of the video so in the end we
-		# do the same as for the images, we return the picture. Only difference
-		# is that we need to update the data which we send to the shader
-		# through the editor.
-
 		# Changing from global frame nr to clip frame nr
 		var file_data: FileData = FileHandler.get_file_data(clip.file_id)
 		var video: GoZenVideo
@@ -85,21 +79,19 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
 
 		# check if not reloading same frame
-		if frame_nr == video_frame_nr:
-			return # FileHandler.get_file_data(clip.file_id).image
+		if frame_nr != video_frame_nr:
+			return
 
 		# check if frame is before current one or after max skip
 		var skips: int = frame_nr - video_frame_nr
 
 		if frame_nr < video_frame_nr or skips > MAX_FRAME_SKIPS:
 			if !video.seek_frame(frame_nr):
-				printerr("Couldn't seek frame!")
-		else:
-			# go through skips and set frame
+				printerr("ClipHandler: Couldn't seek frame!")
+		else: # go through skips and set frame
 			for i: int in skips:
 				if !video.next_frame(i == skips):
-					print("Something went wrong skipping next frame!")
-	#return FileHandler.get_file_data(clip.file_id).image
+					printerr("ClipHandler: Something went wrong skipping next frame!")
 
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
@@ -175,8 +167,9 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Cut clip(s)")
 
 	for clip_request: CutClipRequest in data:
+		var cut_frame_pos: int = clip_request.cut_frame_pos
 		var clip_data: ClipData = clips[clip_request.clip_id]
-		var new_duration: int = clip_data.duration - clip_request.cut_frame_pos
+		var new_duration: int = clip_data.duration - cut_frame_pos
 
 		# Editing the main clip
 		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip_data, -new_duration, true))
@@ -188,12 +181,16 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		new_clip_data.id = Utils.get_unique_id(ClipHandler.get_clip_ids())
 		new_clip_data.file_id = clip_data.file_id
 		new_clip_data.track_id = clip_data.track_id
-		new_clip_data.begin = clip_data.begin + clip_request.cut_frame_pos
-		new_clip_data.start_frame = clip_data.start_frame + clip_request.cut_frame_pos
+		new_clip_data.begin = clip_data.begin + cut_frame_pos
+		new_clip_data.start_frame = clip_data.start_frame + cut_frame_pos
 		new_clip_data.duration = new_duration
 
-		# TODO: Copy effects stuff, can't do that yet due to the new
-		# effects system which I'm working on.
+		# Copy effects of main clip
+		new_clip_data.effects_video.assign(
+				_copy_visual_effects(clip_data.effects_video, cut_frame_pos))
+		new_clip_data.effects_sound.assign(
+				_copy_audio_effects(clip_data.effects_sound, cut_frame_pos))
+
 		InputManager.undo_redo.add_do_method(_add_clip.bind(new_clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(new_clip_data))
 
@@ -293,3 +290,64 @@ func _resize_clip(clip_id: int, resize_amount: int, end: bool) -> void:
 
 	clip_data.duration += resize_amount
 	clips_updated.emit()
+
+
+## This function is intended to be used when cutting clips to copy over the effects.
+func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Array[GoZenEffectVisual]:
+	var new_effects: Array[GoZenEffectVisual] = []
+
+	for effect: GoZenEffectVisual in effects:
+		var new_effect: GoZenEffectVisual = effect.duplicate(true)
+
+		new_effect.keyframes = {}
+		new_effect._cache_dirty = true
+
+		for param: EffectParam in new_effect.params:
+			var param_id: String = param.param_id
+			var value_at_cut: Variant = effect.get_value(param, cut_pos)
+
+			if not new_effect.keyframes.has(param_id):
+				new_effect.keyframes[param_id] = {}
+
+			new_effect.keyframes[param_id][0] = value_at_cut
+
+			# 2. Shift existing keyframes that appear after the cut.
+			if effect.keyframes.has(param_id):
+				for frame: int in effect.keyframes[param_id]:
+					if frame > cut_pos:
+						new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
+
+			new_effects.append(new_effect)
+
+	return new_effects
+
+
+## This function is intended to be used when cutting clips to copy over the effects.
+func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Array[GoZenEffectAudio]:
+	var new_effects: Array[GoZenEffectAudio] = []
+
+	for effect: GoZenEffectAudio in effects:
+		var new_effect: GoZenEffectAudio = effect.duplicate(true)
+
+		new_effect.keyframes = {}
+		new_effect._cache_dirty = true
+
+		for param: EffectParam in new_effect.params:
+			var param_id: String = param.param_id
+			var value_at_cut: Variant = effect.get_value(param, cut_pos)
+
+			if not new_effect.keyframes.has(param_id):
+				new_effect.keyframes[param_id] = {}
+
+			new_effect.keyframes[param_id][0] = value_at_cut
+
+			# 2. Shift existing keyframes that appear after the cut.
+			if effect.keyframes.has(param_id):
+				for frame: int in effect.keyframes[param_id]:
+					if frame > cut_pos:
+						new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
+
+			new_effects.append(new_effect)
+
+	return new_effects
+

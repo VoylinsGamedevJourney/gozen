@@ -67,3 +67,5 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 func _update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: String, new_value: Variant) -> void:
 	param_changed.emit(clip_id, effect_index)
 	effects_updated.emit()
+
+
