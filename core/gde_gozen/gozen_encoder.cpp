@@ -445,7 +445,7 @@ bool GoZenEncoder::_finalize_encoding() {
 
 		if (response < 0 && response != AVERROR_EOF) {
 			FFmpeg::print_av_error("Error sending null frame to video encoder!", response);
-			return response;
+			return false;
 		}
 
 		while (true) {
@@ -461,7 +461,7 @@ bool GoZenEncoder::_finalize_encoding() {
 				break;
 			} else if (response < 0) {
 				FFmpeg::print_av_error("Error receiving flushed video packet!", response);
-				return response;
+				return false;
 			}
 
 			// Valid packet received, writing to file.
@@ -474,7 +474,7 @@ bool GoZenEncoder::_finalize_encoding() {
 
 			if (response < 0) {
 				FFmpeg::print_av_error("Error writing flushed video packet to file!", response);
-				return response;
+				return false;
 			}
 		}
 	}
@@ -497,7 +497,7 @@ bool GoZenEncoder::_finalize_encoding() {
 	}
 
 	_log("Video encoding finished successfully.");
-	return 0;
+	return true;
 }
 
 
@@ -505,8 +505,7 @@ void GoZenEncoder::close() {
 	if (frame_nr == 0)
 		return;
 
-	response = _finalize_encoding();
-	if (response != OK)
+	if (!_finalize_encoding())
 		_log_err("_finalize_encoding failed with: " + String::num_int64(response));
 
 	_log("Closing encoder and cleaning up resources...");
