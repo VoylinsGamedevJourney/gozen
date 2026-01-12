@@ -124,7 +124,7 @@ func set_display_scale_int(value: int) -> void:
 
 
 func apply_display_scale() -> void:
-	get_tree().root.content_scale_factor = get_display_scale()
+	get_tree().root.content_scale_factor = _data.display_scale
 
 
 func get_display_scale() -> float:
