@@ -1,4 +1,10 @@
 extends PanelContainer
+# TODO: When resizing we should consider to have the existing clip to just be
+# greyed out or a bit transparent, would help to align with the audio wave data.
+
+
+signal zoom_changed(new_zoom: float)
+
 
 enum POPUP_ACTION { 
 	# Clip options
@@ -17,9 +23,6 @@ enum STATE {
 	DROPPING,
 	RESIZING,
 }
-
-
-signal zoom_changed(new_zoom: float)
 
 
 const TRACK_HEIGHT: int = 30
@@ -47,6 +50,8 @@ const STYLE_BOXES: Dictionary[FileHandler.TYPE, Array] = {
     FileHandler.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
 const TEXT_OFFSET: Vector2 = Vector2(5, 20)
+
+const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.8)
 
 
 @onready var scroll: ScrollContainer = get_parent()
@@ -216,10 +221,15 @@ func _on_ui_cancel() -> void:
 
 func _draw() -> void:
 	var visible_clip_ids: PackedInt64Array = []
+	var handled_clip_ids: PackedInt64Array = []
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili(visible_start + (size.x / zoom))
 	var visible_left: float = scroll.scroll_horizontal
 	var visible_right: float = visible_left + scroll.size.x
+
+	# Audio waveform
+	var waveform_style: int = Settings.get_audio_waveform_style()
+	var waveform_amp: float = Settings.get_audio_waveform_amp()
 
 	for track_id: int in TrackHandler.get_tracks_size():
 		for clip: ClipData in TrackHandler.get_clips_in(track_id, visible_start, visible_end):
@@ -254,7 +264,7 @@ func _draw() -> void:
 				draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 
 				if clip_id in visible_clip_ids:
-					visible_clip_ids.remove_at(visible_clip_ids.find(clip_id))
+					handled_clip_ids.append(clip_id)
 	elif state == STATE.RESIZING: # Resizing preview
 		var clip_data: ClipData = ClipHandler.get_clip(resize_target.clip_id)
 		var draw_start: float = clip_data.start_frame
@@ -272,21 +282,24 @@ func _draw() -> void:
 		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 
 		if resize_target.clip_id in visible_clip_ids:
-			visible_clip_ids.remove_at(visible_clip_ids.find(resize_target.clip_id))
+			handled_clip_ids.append(resize_target.clip_id)
 
 	# - Clip blocks
 	for clip_id: int in visible_clip_ids:
+		if clip_id in handled_clip_ids:
+			continue
+
 		var clip: ClipData = ClipHandler.get_clip(clip_id)
 		var box_type: int = 1 if clip.id in selected_clip_ids else 0
 		var box_pos: Vector2 = Vector2(clip.start_frame * zoom, TRACK_TOTAL_SIZE * clip.track_id)
-		var new_clip: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
+		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
 		var text_pos_x: float = box_pos.x
 		var clip_end_x: float = box_pos.x + (clip.duration * zoom)
 
 		if text_pos_x < scroll.scroll_horizontal and text_pos_x + TEXT_OFFSET.x <= clip_end_x:
 			text_pos_x = scroll.scroll_horizontal
 
-		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip.id)][box_type], new_clip)
+		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip.id)][box_type], clip_rect)
 		draw_string(
 				get_theme_default_font(),
 				Vector2(text_pos_x, box_pos.y) + TEXT_OFFSET,
@@ -295,7 +308,40 @@ func _draw() -> void:
 				11, # Font size
 				Color(0.9, 0.9, 0.9))
 		
-	# TODO: - Audio waves
+		# - Audio waves (Part of clip blocks)
+		var wave_data: PackedFloat32Array = FileHandler.get_file_data(clip.file_id).audio_wave_data
+		if wave_data.is_empty():
+			continue
+
+		var display_duration: int = clip.duration
+		var display_begin_offset: int = clip.begin
+		var height: float = clip_rect.size.y
+		var base_x: float = clip_rect.position.x
+		var base_y: float = clip_rect.position.y
+
+		for i: int in display_duration:
+			var index: int = display_begin_offset + i
+
+			if index >= wave_data.size():
+				break
+
+			var normalized_height: float = wave_data[index] * waveform_amp
+			var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
+			var block_pos_y: float = base_y # TOP_TO_BOTTOM style
+
+			match waveform_style:
+				SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+					block_pos_y = base_y + (height - block_height) / 2.0
+				SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+					block_pos_y = base_y + height - block_height
+
+			var sample_rect: Rect2 = Rect2(
+				base_x + (i * zoom),
+				block_pos_y,
+				zoom,
+				block_height)
+
+			draw_rect(sample_rect, COLOR_AUDIO_WAVE)
 
 	# TODO: - Fading handles + amount
 

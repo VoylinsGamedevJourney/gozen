@@ -196,6 +196,14 @@ func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFO
 	return styles
 
 
+func set_audio_waveform_amp(value: float) -> void:
+	_data.audio_waveform_amp = value
+
+
+func get_audio_waveform_amp() -> float:
+	return _data.audio_waveform_amp
+
+
 func set_use_native_dialog(value: bool) -> void:
 	_data.use_native_dialog = value
 

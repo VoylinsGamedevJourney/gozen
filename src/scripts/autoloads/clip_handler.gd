@@ -79,7 +79,7 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
 
 		# check if not reloading same frame
-		if frame_nr != video_frame_nr:
+		if frame_nr == video_frame_nr:
 			return
 
 		# check if frame is before current one or after max skip

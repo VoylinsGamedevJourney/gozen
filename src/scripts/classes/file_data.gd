@@ -138,10 +138,9 @@ func _load_video_data(file_path: String) -> void:
 
 
 func _create_wave(file_path: String) -> void:
-	# TODO: Large audio lengths will still crash this function.
-	# Could possibly use the get_audio improvements by cutting the data into
-	# pieces.
-	var data: PackedByteArray = GoZenAudio.get_audio_data(file_path, 0)
+	# TODO: Large audio lengths will still crash this function. Could possibly
+	# use the get_audio improvements by cutting the data into pieces.
+	var data: PackedByteArray = GoZenAudio.get_audio_data(file_path, -1)
 
 	audio_wave_data.clear()
 

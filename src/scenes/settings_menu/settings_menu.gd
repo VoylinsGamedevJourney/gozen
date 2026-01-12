@@ -88,8 +88,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					50, 300, 5, false, false,
 					Settings.set_display_scale_int,
 					"setting_tooltip_display_scale",
-					"%"
-					),
+					"%"),
 			create_label("setting_theme"),
 			create_option_button(
 					Settings.get_themes(),
@@ -109,6 +108,12 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_audio_waveform_style,
 					TYPE_INT,
 					"setting_tooltip_theme"),
+			create_label("setting_waveform_amp"),
+			create_spinbox(
+					Settings.get_audio_waveform_amp(),
+					0.5, 6, 0.5, false, false,
+					Settings.set_audio_waveform_amp,
+					"setting_tooltip_audio_waveform_amp",),
 			create_label("setting_use_native_dialog"),
 			create_check_button(
 					Settings.get_use_native_dialog(),
