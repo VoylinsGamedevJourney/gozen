@@ -162,7 +162,7 @@ func initialize_video(video: GoZenVideo) -> void:
 	_init_ping_pong()
 
 
-func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], current_frame: int) -> void:
+func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], current_frame: int) -> void:
 	if not initialized:
 		return
 
@@ -199,7 +199,7 @@ func process_video_frame(video: GoZenVideo, effects: Array[VisualEffect], curren
 	_process_frame(compute_list, effects)
 
 
-func process_image_frame(effects: Array[VisualEffect], current_frame: int) -> void:
+func process_image_frame(effects: Array[GoZenEffectVisual], current_frame: int) -> void:
 	if not initialized:
 		return
 
@@ -236,22 +236,24 @@ func cleanup() -> void:
 	effects_cache.clear()
 
 
-func _update_effect_buffers(effects: Array[VisualEffect], current_frame: int) -> void:
-	for effect: VisualEffect in effects:
-		if not effect.enabled:
+func _update_effect_buffers(effects: Array[GoZenEffectVisual], current_frame: int) -> void:
+	for effect: GoZenEffectVisual in effects:
+		if not effect.is_enabled:
 			continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
-		if not cache: continue
 
-		cache.pack_effect_params(effect, current_frame)
-		device.buffer_update(cache.buffer, 0, cache.buffer_size, cache.data)
+		if not cache:
+			continue
+
+		cache.process_buffer(effect, current_frame, resolution)
+		device.buffer_update(cache.buffer, 0, cache.buffer_data.size(), cache.buffer_data)
 
 
-func _process_frame(compute_list: int, effects: Array[VisualEffect]) -> void:
+func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual]) -> void:
 	# Start handling the effects
-	for effect: VisualEffect in effects:
-		if not effect.enabled:
+	for effect: GoZenEffectVisual in effects:
+		if not effect.is_enabled:
 			continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
@@ -268,7 +270,6 @@ func _process_frame(compute_list: int, effects: Array[VisualEffect]) -> void:
 			_create_image_uniform(pong_texture, 1),
 			_create_buffer_uniform(cache.buffer, 2)]
 		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
-		print(cache.buffer)
 
 		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
 		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
@@ -351,7 +352,7 @@ func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 	return uniform
 
 
-func _get_effect_pipeline(shader_path: String, effect: VisualEffect) -> EffectCache:
+func _get_effect_pipeline(shader_path: String, effect: GoZenEffectVisual) -> EffectCache:
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
 

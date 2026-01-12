@@ -67,6 +67,6 @@ const THEME_LIGHT: String = "uid://dxq4vg1l5rwhj"
 const FONT_ROBOTO_MEDIUM: String = "uid://bnubhr3uus8gt"
 const FONT_ROBOTO_REGULAR: String = "uid://dq00mn4msotdf"
 
-const EFFECT_VISUAL_TRANSFORM: String = "uid://dw4tjdq8jnvui"
+const EFFECT_VISUAL_TRANSFORM: String = "uid://4mtlh3uaahui"
 
 const EFFECT_SOUND_VOLUME: String = "uid://dxp7sisypvq8b"

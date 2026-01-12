@@ -78,7 +78,7 @@ func _load_video_effects() -> void:
 	if current_clip_id != -1:
 		return
 
-	for effect: VisualEffect in ClipHandler.get_clip(current_clip_id).effects_video:
+	for effect: GoZenEffectVisual in ClipHandler.get_clip(current_clip_id).effects_video:
 		var container: FoldableContainer = _create_container(effect.get_effect_name())
 
 		container.add_child(effect.get_effects_panel())
@@ -92,7 +92,7 @@ func _load_sound_effects() -> void:
 	if current_clip_id != -1:
 		return
 
-	for effect: SoundEffect in ClipHandler.get_clip(current_clip_id).effects_sound:
+	for effect: GoZenEffectAudio in ClipHandler.get_clip(current_clip_id).effects_sound:
 		var container: FoldableContainer = _create_container(effect.get_effect_name())
 
 		container.add_child(effect.get_effects_panel())

@@ -94,7 +94,7 @@ func set_audio(audio_clip_id: int) -> void:
 	player.stream_paused = !EditorCore.is_playing
 
 
-func update_effects(effects: Array[SoundEffect]) -> void:
+func update_effects(effects: Array[GoZenEffectAudio]) -> void:
 	if clip_id == 1:
 		return
 
@@ -102,25 +102,25 @@ func update_effects(effects: Array[SoundEffect]) -> void:
 	var current_relative_frame: int = EditorCore.frame_nr - clip_data.start_frame
 
 	for i: int in effects.size():
-		var effect: SoundEffect = effects[i]
+		var effect: GoZenEffectAudio = effects[i]
 		
 		if i >= AudioServer.get_bus_effect_count(bus_index):
 			break
 
 		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
 
-		AudioServer.set_bus_effect_enabled(bus_index, i, effect.enabled)
+		AudioServer.set_bus_effect_enabled(bus_index, i, effect.is_enabled)
 
-		if not effect.enabled:
+		if not effect.is_enabled:
 			continue
 
-		for param_id: String in effect.params:
-			var value: Variant = effect.get_param_value(param_id, current_relative_frame)
+		for param: EffectParam in effect.params:
+			var value: Variant = effect.get_value(param, current_relative_frame)
 
-			effect_instance.set(param_id, value)
+			effect_instance.set(param.param_id, value)
 
 
-func _setup_bus_effects(effects: Array[SoundEffect]) -> void:
+func _setup_bus_effects(effects: Array[GoZenEffectAudio]) -> void:
 	var effect_count: int = AudioServer.get_bus_effect_count(bus_index)
 
 	# Cleaning all previous effects
@@ -129,7 +129,7 @@ func _setup_bus_effects(effects: Array[SoundEffect]) -> void:
 
 	# Creating all effects
 	for i: int in effects.size():
-		var effect: SoundEffect = effects[i]
+		var effect: GoZenEffectAudio = effects[i]
 
-		AudioServer.add_bus_effect(bus_index, effect.base_effect)
-		AudioServer.set_bus_effect_enabled(bus_index, i, effect.enabled)
+		AudioServer.add_bus_effect(bus_index, effect.audio_effect)
+		AudioServer.set_bus_effect_enabled(bus_index, i, effect.is_enabled)

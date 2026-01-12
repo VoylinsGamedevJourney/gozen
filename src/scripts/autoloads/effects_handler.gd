@@ -8,7 +8,7 @@ signal param_changed(clip_id: int, effect_index: int)
 
 
 
-func add_visual_effect(clip_id: int, effect: VisualEffect) -> void:
+func add_visual_effect(clip_id: int, effect: GoZenEffectVisual) -> void:
 	if !ClipHandler.has_clip(clip_id):
 		return
 
@@ -21,7 +21,7 @@ func add_visual_effect(clip_id: int, effect: VisualEffect) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func _add_visual_effect(clip_id: int, effect: VisualEffect) -> void:
+func _add_visual_effect(clip_id: int, effect: GoZenEffectVisual) -> void:
 	effect_added.emit(clip_id)
 	effects_updated.emit()
 

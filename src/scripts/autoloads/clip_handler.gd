@@ -128,18 +128,18 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		clip_data.duration = file_data.duration
 
 		if file_data.type in EditorCore.VISUAL_TYPES:
-			var transform_effect: VisualEffect = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
+			var transform_effect: GoZenEffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
 
 			# Setting default values
 			for param: EffectParam in transform_effect.params:
 				if param.param_id == "size":
 					param.default_value = Project.get_resolution()
 				elif param.param_id == "pivot":
-					param.default_value = Project.get_resolution() / 2
+					param.default_value = Vector2i(Project.get_resolution() / 2)
 
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
-			var volume_effect: SoundEffect = load(Library.EFFECT_SOUND_VOLUME).duplicate(true)
+			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_SOUND_VOLUME).duplicate(true)
 
 			clip_data.effects_sound.append(volume_effect)
 
