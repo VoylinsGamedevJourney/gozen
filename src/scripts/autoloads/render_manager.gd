@@ -40,12 +40,11 @@ func stop_encoder() -> void:
 
 func start() -> void:
 	if encoder != null and encoder.is_open():
-		printerr("Can't encode whilst another encoder is still busy!")
+		printerr("RenderManager: Can't encode whilst another encoder is still busy!")
 		return
 	if viewport == null:
 		viewport = EditorCore.viewport.get_texture()
 
-	print("Encoder is preparing ...")
 	update_encoder_status.emit(STATUS.SETUP)
 	await RenderingServer.frame_post_draw
 	start_time = Time.get_ticks_msec()
@@ -53,14 +52,13 @@ func start() -> void:
 
 	if !encoder.open(viewport.get_image().get_format() == Image.FORMAT_RGBA8):
 		stop_encoder()
-		printerr("Couldn't open encoder!")
+		printerr("RenderManager: Couldn't open encoder!")
 		update_encoder_status.emit(STATUS.ERROR_OPEN)
 		await RenderingServer.frame_post_draw
 		return
 
 	# Creating + sending audio
 	if encoder.audio_codec_set():
-		print("Encoder is compiling audio ...")
 		update_encoder_status.emit(STATUS.COMPILING_AUDIO)
 		await RenderingServer.frame_post_draw
 
@@ -70,12 +68,11 @@ func start() -> void:
 			stop_encoder()
 			update_encoder_status.emit(STATUS.ERROR_AUDIO)
 			await RenderingServer.frame_post_draw
-			printerr("Something went wrong sending audio!")
+			printerr("RenderManager: Something went wrong sending audio!")
 			return
 
 	# Sending the frame data.
 	EditorCore.set_frame(0)
-	print("Encoder starts sending frames ...")
 	update_encoder_status.emit(STATUS.SENDING_FRAMES)
 
 	var frame_array: Array[Image] = []
@@ -91,7 +88,7 @@ func start() -> void:
 			if thread.is_started():
 				await thread.wait_to_finish()
 			if thread.start(_send_frames.bind(frame_array.duplicate())):
-				printerr("Something with encoder thread went wrong!")
+				printerr("RenderManager: Something with encoder thread went wrong!")
 			update_encoder_status.emit(STATUS.FRAMES_SEND)
 			frame_array.fill(null)
 			frame_pos = 0
@@ -105,17 +102,15 @@ func start() -> void:
 		await thread.wait_to_finish()
 	if frame_array.size() != 0:
 		if thread.start(_send_frames.bind(frame_array.duplicate())):
-			printerr("Something with encoder thread went wrong!")
+			printerr("RenderManager: Something with encoder thread went wrong!")
 		await thread.wait_to_finish()
 
 	if cancel_encoding:
-		print("Encoding got canceled.")
 		update_encoder_status.emit(STATUS.ERROR_CANCELED)
 		await RenderingServer.frame_post_draw
 		stop_encoder()
 		return
 
-	print("Encoder processing last frame.")
 	update_encoder_status.emit(STATUS.LAST_FRAMES)
 	await RenderingServer.frame_post_draw
 	encoder.close()
@@ -123,8 +118,6 @@ func start() -> void:
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
-
-	print("Encoding finished. Time taken (msec): ", encoding_time)
 
 
 func _send_frames(frame_array: Array[Image]) -> void:
@@ -138,25 +131,25 @@ func _send_frames(frame_array: Array[Image]) -> void:
 
 func encode_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
+	var full_audio_length: int = Utils.get_sample_count(
+			Project.get_timeline_end() + 1, Project.get_framerate())
 
-	audio.resize(Utils.get_sample_count(
-			Project.get_timeline_end() + 1, Project.get_framerate()))
+	audio.resize(full_audio_length)
 
 	for i: int in Project.get_track_count():
 		for clip_id: int in Project.get_track_data(i).values():
 			if ClipHandler.get_type(clip_id) not in EditorCore.AUDIO_TYPES:
 				continue
-#			if ClipHandler.get_clip(clip_id).effects_audio.mute:
-#				continue
 
 			# Audio is present so we can get all the track audio.
-			audio = _get_track_audio(audio, i)
+			audio = _add_track_audio(audio, i, full_audio_length)
+
 			break
 
 	return audio
 
 
-func _get_track_audio(audio: PackedByteArray, track_id: int) -> PackedByteArray:
+func _add_track_audio(audio: PackedByteArray, track_id: int, full_length: int) -> PackedByteArray:
 	var track_audio: PackedByteArray = []
 	var track: TrackData = Project.get_track_data(track_id)
 
@@ -165,17 +158,46 @@ func _get_track_audio(audio: PackedByteArray, track_id: int) -> PackedByteArray:
 		var file: File = FileHandler.get_file(clip.file_id)
 
 		if file.type in EditorCore.AUDIO_TYPES:
-			var sample_count: int = Utils.get_sample_count(
-					clip.start_frame, Project.get_framerate())
-
-			if track_audio.size() != sample_count:
-				track_audio.resize(sample_count)
-			
-			track_audio.append_array(clip.get_clip_audio_data())
+			track_audio = _handle_audio(clip, track_audio)
 
 	# Making the audio data the correct length
-	track_audio.resize(Utils.get_sample_count(
-			Project.get_timeline_end() + 1, Project.get_framerate()))
+	track_audio.resize(full_length)
 
 	return GoZenAudio.combine_data(audio, track_audio)
 
+
+func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteArray:
+	# Getting the raw clip audio data
+	var audio_data: PackedByteArray = ClipHandler.get_clip_audio_data(clip.id, clip)
+	var framerate: float = Project.get_framerate()
+
+	# Apply all available effects to the clip audio data
+	for effect: GoZenEffectAudio in clip.effects_sound:
+		match effect.effect_id:
+			"volume": audio_data = _apply_effect_volume(audio_data, effect)
+			_: printerr("RenderManager: Unknown effect '%s'!" % effect.effect_name)
+
+	
+	var start_sample: int = Utils.get_sample_count(clip.start_frame - 1, framerate)
+
+	# Resize the audio data so we're certain the audio will be
+	# added at the correct moment.
+	# TODO: Check if we should do -1 of clip.start_frame in start_sample incase
+	# the audio starts one sample too late
+	if start_sample != 0 and track_audio.size() != start_sample:
+		track_audio.resize(start_sample)
+	
+	# Add the data to the track audio and send back
+	track_audio.append_array(clip.get_clip_audio_data())
+	return track_audio
+
+
+func _apply_effect_volume(audio_data: PackedByteArray, effect: GoZenEffectAudio) -> PackedByteArray:
+	# TODO: Apply keyframing here!
+	var data: PackedByteArray = audio_data
+	var volume_db: float = effect.get_value(effect.params[0], 0)
+
+	if volume_db == 0.0:
+		return data
+
+	return GoZenAudio.change_db(data, volume_db)

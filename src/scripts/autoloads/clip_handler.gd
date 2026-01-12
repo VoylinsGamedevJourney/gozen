@@ -103,15 +103,12 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
-	var file_data: FileData = FileHandler.get_file_data(clip.file_id)
-	#var sample_size: int = Utils.get_sample_count(1, Project.get_framerate())
-	var data: PackedByteArray = file_data.audio.data.slice(
-			Utils.get_sample_count(clip.begin, Project.get_framerate()),
-			Utils.get_sample_count(clip.begin + clip.duration, Project.get_framerate()))
+	var file: File = FileHandler.get_file(clip.file_id)
 
-	# TODO: Make this work with the new effects system
+	var start_sec: float = float(clip.begin) / Project.get_framerate()
+	var duration_sec: float = float(clip.duration) / Project.get_framerate()
 
-	return data
+	return GoZenAudio.get_audio_data(file.path, -1, start_sec, duration_sec)
 
 
 func add_clips(data: Array[CreateClipRequest]) -> void:

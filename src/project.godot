@@ -57,7 +57,9 @@ shader_language/warnings/treat_warnings_as_errors=true
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=2
+window/stretch/mode="canvas_items"
 window/size/mode.editor=0
+window/stretch/mode.editor="disabled"
 
 [extensions]
 

@@ -2,6 +2,7 @@ class_name GoZenEffect
 extends Resource
 
 
+@export var effect_id: String
 @export var effect_name: String
 @export var is_enabled: bool = true
 

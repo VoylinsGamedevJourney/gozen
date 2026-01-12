@@ -18,5 +18,6 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_7fg1e")
 audio_effect = SubResource("AudioEffectAmplify_7fg1e")
 params = Array[ExtResource("1_7fg1e")]([SubResource("Resource_c7eta")])
+effect_id = "volume"
 effect_name = "effect_audio_volume"
 metadata/_custom_type_script = "uid://cddcl2omddlan"

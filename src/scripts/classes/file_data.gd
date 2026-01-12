@@ -13,7 +13,7 @@ const MAX_16_BIT_VALUE: float = 32767.0
 var id: int
 
 var video: GoZenVideo = null
-var audio: AudioStreamWAV = null
+var audio: AudioStreamFFmpeg = null
 var image: Texture2D = null
 var color: Color = Color.WHITE
 var pck: PCK = null
@@ -44,7 +44,7 @@ func _update_duration() -> void:
 		# TODO: Add duration for PCK file.
 
 	if l_file.duration == 0:
-		printerr("Something went wrong loading file '%s', duration is 0!" % id)
+		printerr("FileData: Something went wrong loading file '%s', duration is 0!" % id)
 
 
 func init_data(file_data_id: int) -> bool:
@@ -52,7 +52,7 @@ func init_data(file_data_id: int) -> bool:
 
 	var file: File = FileHandler.get_file(id)
 	if file == null:
-		printerr("Can't init data as file %s is null!")
+		printerr("FileData: Can't init data as file %s is null!")
 		return false
 
 	if file.path == "temp://color":
@@ -66,7 +66,7 @@ func init_data(file_data_id: int) -> bool:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
 	elif file.type == FileHandler.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(file.path):
-			printerr("Something went wrong loading pck data from '%s'!" % file.path)
+			printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 			return false
 		# TODO: Check the path to see if there is an actual folder with the data.
 		# TODO: Set the pck_instance correctly.
@@ -74,26 +74,21 @@ func init_data(file_data_id: int) -> bool:
 		pck_scene_instance = pck.scene.instantiate()
 
 	if file.type in EditorCore.AUDIO_TYPES:
-		Threader.add_task(_load_audio_data.bind(file.path), create_wave)
+		_load_audio_data(file.path)
+		Threader.add_task(_create_wave.bind(file.path), Callable())
 
 	return true
 
 
 func _load_audio_data(file_path: String) -> void:
-	var audio_data: PackedByteArray = GoZenAudio.get_audio_data(file_path, -1)
+	var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
+	var error: int = stream.open(file_path)
 
-	if audio_data.size() == 0:
-		return
-	if audio_data.size() == 1:
-		# This video is not usable since the size it too large (2 GB limit).
-		FileHandler.error_file_too_big.emit.call_deferred(id)
+	if error != OK:
+		printerr("FileData: Failed to open audio '%s'!" % file_path)
 		return
 
-	audio = AudioStreamWAV.new()
-	audio.mix_rate = 44100
-	audio.stereo = true
-	audio.format = AudioStreamWAV.FORMAT_16_BITS
-	audio.data = audio_data
+	audio = stream
 
 
 func _load_video_data(file_path: String) -> void:
@@ -101,7 +96,7 @@ func _load_video_data(file_path: String) -> void:
 	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
 
 	if temp_video.open(file_path):
-		printerr("Couldn't open video at path '%s'!" % file_path)
+		printerr("FileData: Couldn't open video at path '%s'!" % file_path)
 		return
 	placeholder.size = temp_video.get_resolution()
 
@@ -128,7 +123,7 @@ func _load_video_data(file_path: String) -> void:
 				clip_only_video[clip_id] = clip_video
 				Threader.mutex.unlock()
 			else:
-				printerr("Failed to create a clip only video instance for clip id: ", clip_id)
+				printerr("FileData: Failed to create a clip only video instance for clip id: ", clip_id)
 		else:
 			var clip_id_index: int = file.clip_only_video_ids.find(clip_id)
 
@@ -142,13 +137,12 @@ func _load_video_data(file_path: String) -> void:
 	Threader.mutex.unlock()
 
 
-func create_wave() -> void:
-	if audio != null:
-		Threader.add_task(_create_wave, update_wave.emit)
+func _create_wave(file_path: String) -> void:
+	# TODO: Large audio lengths will still crash this function.
+	# Could possibly use the get_audio improvements by cutting the data into
+	# pieces.
+	var data: PackedByteArray = GoZenAudio.get_audio_data(file_path, 0)
 
-
-func _create_wave() -> void:
-	var data: PackedByteArray = audio.data
 	audio_wave_data.clear()
 
 	if data.is_empty():

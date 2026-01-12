@@ -58,5 +58,6 @@ matrix_map = Dictionary[String, int]({
 "rotation": 0,
 "size": 0
 })
+effect_id = "transform"
 effect_name = "effect_visual_transform"
 metadata/_custom_type_script = "uid://e26q35ad13vv"
