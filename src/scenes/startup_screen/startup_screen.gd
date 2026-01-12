@@ -1,4 +1,18 @@
 extends PanelContainer
+# TODO: Add popup, with fuzzy searching, to browse through all projects.
+# Save a thumbnail of each project at 2 seconds in the timeline to show in the
+# popup to make it easy for people to select the project they are looking for.
+# Set the default focus on the button which opens the popup to browse through
+# all projects.
+
+const PRESETS: Dictionary[String, Vector3i] = {
+	"Custom": Vector3i.ZERO,
+	"FHD (1080p) 30fps": Vector3i(1920, 1080, 30),
+	"FHD (1080p) 60fps": Vector3i(1920, 1080, 60),
+	"Vertical (1080p) 30fps": Vector3i(1080, 1920, 30),
+	"Vertical (1080p) 60fps": Vector3i(1080, 1920, 60),
+	"UHD (4K) 30fps": Vector3i(1920, 1080, 30),
+	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)}
 
 
 @export var version_label: RichTextLabel
@@ -10,6 +24,8 @@ extends PanelContainer
 @export var animation_player: AnimationPlayer
 
 @export_category("New project menu")
+@export var presets_option_button: OptionButton
+
 @export var project_path_line_edit: LineEdit
 @export var resolution_x_spinbox: SpinBox
 @export var resolution_y_spinbox: SpinBox
@@ -123,11 +139,21 @@ func _set_version_label() -> void:
 
 
 func _set_new_project_defaults() -> void:
+	# Setting the preset options
+	presets_option_button.clear()
+
+	for preset: String in PRESETS:
+		presets_option_button.add_item(preset)
+
+	presets_option_button.selected = 0
+
+	# Setting the normal project settings
 	project_path_line_edit.text = Settings.get_default_project_path()
 	resolution_x_spinbox.value = Settings.get_default_resolution_x()
 	resolution_y_spinbox.value = Settings.get_default_resolution_y()
 	framerate_spinbox.value = Settings.get_default_framerate()
 
+	# Setting the advanced project settings
 	background_color_picker.color = Color.BLACK
 
 
@@ -351,4 +377,17 @@ func _on_view_sponsors_button_pressed() -> void:
 
 func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:
 	advanced_options.visible = toggled_on
+
+
+func _on_new_project_option_button_item_selected(index: int) -> void:
+	if index == 0: # Custom
+		_set_new_project_defaults()
+		return
+	
+	var keys: PackedStringArray = PRESETS.keys()
+	var presets_data: Vector3 = PRESETS[keys[index]]
+	
+	resolution_x_spinbox.value = presets_data.x
+	resolution_y_spinbox.value = presets_data.y
+	framerate_spinbox.value = presets_data.z
 

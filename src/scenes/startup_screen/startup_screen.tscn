@@ -109,7 +109,7 @@ _data = {
 &"show_sponsors": SubResource("Animation_donii")
 }
 
-[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "animation_player", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
+[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "animation_player", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -123,6 +123,7 @@ new_version_available_button = NodePath("Panel/VBox/StartupImage/UpdateAvailable
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
 recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
 animation_player = NodePath("AnimationPlayer")
+presets_option_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton")
 project_path_line_edit = NodePath("Panel/VBox/StartupTabContainer/NewProject/PathHBox/PathLineEdit")
 resolution_x_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionXSpinBox")
 resolution_y_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionYSpinBox")
@@ -243,6 +244,7 @@ current_tab = 2
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -359,14 +361,20 @@ alignment = 0
 expand_icon = true
 
 [node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="NewProjectLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject"]
+[node name="NewProjectTopHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject"]
 layout_mode = 2
+
+[node name="NewProjectLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "title_new_project"
+
+[node name="NewProjectOptionButton" type="OptionButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox"]
+layout_mode = 2
 
 [node name="HSeparator1" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject"]
 layout_mode = 2
@@ -569,6 +577,7 @@ libraries = {
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/DiscordServerButton" to="." method="_on_discord_server_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ViewSponsorsButton" to="." method="_on_view_sponsors_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="item_selected" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton" to="." method="_on_new_project_option_button_item_selected"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
 [connection signal="toggled" from="Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton" to="." method="_on_advanced_options_check_button_toggled"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]
