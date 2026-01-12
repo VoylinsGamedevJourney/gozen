@@ -14,11 +14,10 @@ var end_frame: int:
 
 var begin: int = 0 # Only for video and audio files
 
-var effects_video: EffectsVideo
-var effects_audio: EffectsAudio
+var effects_video: Array[GoZenEffectVisual]
+var effects_sound: Array[GoZenEffectAudio]
 
 
 
 func _to_string() -> String:
-	return "<clip:%s>" % id
-
+	return "<Clip:%s>" % id

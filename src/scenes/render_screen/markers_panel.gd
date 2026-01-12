@@ -47,7 +47,6 @@ func _on_markers_updated() -> void:
 
 	markers_option_button.selected = max(0, selected)
 	_on_markers_button_item_selected(markers_option_button.selected)
-	print(markers_text)
 
 
 func _on_markers_button_item_selected(index: int) -> void:

@@ -57,11 +57,11 @@ func get_clip_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
 	return FileHandler.get_file_data(clip.file_id)
 
 
-func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
+func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 	var type: FileHandler.TYPE = ClipHandler.get_type(clip.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
-		return null
+		return
 	elif type == FileHandler.TYPE.VIDEO:
 		# For the video stuff, we load in the data for the shader. The FileData
 		# has a placeholder texture of the size of the video so in the end we
@@ -86,7 +86,7 @@ func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
 
 		# check if not reloading same frame
 		if frame_nr == video_frame_nr:
-			return FileHandler.get_file_data(clip.file_id).image
+			return # FileHandler.get_file_data(clip.file_id).image
 
 		# check if frame is before current one or after max skip
 		var skips: int = frame_nr - video_frame_nr
@@ -99,50 +99,17 @@ func get_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> Texture:
 			for i: int in skips:
 				if !video.next_frame(i == skips):
 					print("Something went wrong skipping next frame!")
-
-	return FileHandler.get_file_data(clip.file_id).image
+	#return FileHandler.get_file_data(clip.file_id).image
 
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
 	var file_data: FileData = FileHandler.get_file_data(clip.file_id)
-	var sample_size: int = Utils.get_sample_count(1, Project.get_framerate())
+	#var sample_size: int = Utils.get_sample_count(1, Project.get_framerate())
 	var data: PackedByteArray = file_data.audio.data.slice(
 			Utils.get_sample_count(clip.begin, Project.get_framerate()),
 			Utils.get_sample_count(clip.begin + clip.duration, Project.get_framerate()))
 
-	if clip.effects_audio.mute:
-		data.fill(0)
-		return data
-
-	data = GoZenAudio.change_db(data, clip.effects_audio.gain[0])
-
-	if clip.effects_audio.fade_in != 0:
-		var new_data: PackedByteArray = []
-
-		for i: int in clip.effects_audio.fade_in:
-			var gain: float = Utils.calculate_fade(i, clip.effects_audio.fade_in) * clip.effects_audio.FADE_OUT_LIMIT
-			var pos: int = sample_size * i
-
-			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
-
-		new_data.append_array(data.slice(sample_size * (clip.effects_audio.fade_in + 1), data.size()))
-		data = new_data
-	if clip.effects_audio.fade_out != 0:
-		var new_data: PackedByteArray = []
-		var start_pos: int = clip.duration - clip.effects_audio.fade_out
-
-		for i: int in clip.effects_audio.fade_out:
-			var pos: int = sample_size * (i + start_pos)
-			var gain: float = Utils.calculate_fade(clip.effects_audio.fade_out - i, clip.effects_audio.fade_out)
-
-			gain *= clip.effects_audio.FADE_OUT_LIMIT
-			new_data.append_array(GoZenAudio.change_db(data.slice(pos, pos + sample_size), gain))
-
-		data = data.slice(0, sample_size * (clip.duration - clip.effects_audio.fade_out - 1))
-		data.append_array(new_data)
-
-	if clip.effects_audio.mono != clip.effects_audio.MONO.DISABLE:
-		data = GoZenAudio.change_to_mono(data, clip.effects_audio.mono == clip.effects_audio.MONO.LEFT_CHANNEL)
+	# TODO: Make this work with the new effects system
 
 	return data
 
@@ -161,12 +128,20 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		clip_data.duration = file_data.duration
 
 		if file_data.type in EditorCore.VISUAL_TYPES:
-			clip_data.effects_video = EffectsVideo.new()
-			clip_data.effects_video.clip_id = clip_data.id
-			clip_data.effects_video.set_default_transform()
+			var transform_effect: GoZenEffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
+
+			# Setting default values
+			for param: EffectParam in transform_effect.params:
+				if param.param_id == "size":
+					param.default_value = Project.get_resolution()
+				elif param.param_id == "pivot":
+					param.default_value = Vector2i(Project.get_resolution() / 2)
+
+			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
-			clip_data.effects_audio = EffectsAudio.new()
-			clip_data.effects_audio.clip_id = clip_data.id
+			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_SOUND_VOLUME).duplicate(true)
+
+			clip_data.effects_sound.append(volume_effect)
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))

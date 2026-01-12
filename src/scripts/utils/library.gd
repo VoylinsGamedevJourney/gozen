@@ -17,11 +17,8 @@ const ICON_BUTTON_FADE: String = "uid://buwillf888csp"
 const ICON_DELETE: String = "uid://dyndi17ou8ixo"
 const ICON_FOLDER: String = "uid://8yvgi81apxxg"
 
-const SHADER_IMAGE: String = "uid://vc1lwmduyaub"
-const SHADER_YUV420P: String = "uid://do37k5eu6tfbc"
-const SHADER_YUV420P_FULL: String = "uid://btyavn64bvbu2"
-const SHADER_DEINTERLACE_YUV420P: String = "uid://dyrtgm3mxg1af"
-const SHADER_DEINTERLACE_YUV420P_FULL: String = "uid://c43nm0hgg6y14"
+const SHADER_YUV420P: String = "res://shaders/yuv420p_standard.glsl"
+const SHADER_YUV420P_FULL: String = "res://shaders/yuv420p_full.glsl"
 
 const SCENE_STARTUP: String = "uid://bqlcn30hs8qp5"
 const SCENE_ABOUT_GOZEN: String = "uid://d4e5ndtm65ok3"
@@ -70,3 +67,6 @@ const THEME_LIGHT: String = "uid://dxq4vg1l5rwhj"
 const FONT_ROBOTO_MEDIUM: String = "uid://bnubhr3uus8gt"
 const FONT_ROBOTO_REGULAR: String = "uid://dq00mn4msotdf"
 
+const EFFECT_VISUAL_TRANSFORM: String = "uid://4mtlh3uaahui"
+
+const EFFECT_SOUND_VOLUME: String = "uid://dxp7sisypvq8b"

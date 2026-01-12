@@ -136,7 +136,7 @@ func reload_file_data(id: int) -> void:
 	await RenderingServer.frame_pre_draw
 	if !load_file_data(id):
 		_delete_file(id)
-		print("File became invalid!")
+		print_debug("File became invalid!")
 
 
 func add_file(file_drop: FileDrop) -> void:
