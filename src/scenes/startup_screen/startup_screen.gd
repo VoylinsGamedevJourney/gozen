@@ -16,6 +16,10 @@ extends PanelContainer
 @export var framerate_spinbox: SpinBox
 @export var warning_label: Label
 
+@export var advanced_options_button: CheckButton
+@export var advanced_options: GridContainer
+@export var background_color_picker: ColorPickerButton
+
 
 var http_request: HTTPRequest # For version check
 
@@ -25,6 +29,9 @@ func _ready() -> void:
 		tab_container.current_tab = 0
 	else:
 		animation_player.play("show_sponsors")
+
+	advanced_options_button.button_pressed = false
+	advanced_options.visible = false
 
 	_set_recent_projects()
 	_set_version_label()
@@ -121,6 +128,8 @@ func _set_new_project_defaults() -> void:
 	resolution_y_spinbox.value = Settings.get_default_resolution_y()
 	framerate_spinbox.value = Settings.get_default_framerate()
 
+	background_color_picker.color = Color.BLACK
+
 
 func _on_editor_settings_button_pressed() -> void:
 	Settings.open_settings_menu()
@@ -181,6 +190,7 @@ func _on_cancel_create_project_button_pressed() -> void:
 
 func _on_create_new_project_button_pressed() -> void:
 	var path: String = project_path_line_edit.text
+	var resolution: Vector2i = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
 
 	if path[-1] == '/':
 		path += "project" + Project.EXTENSION
@@ -193,11 +203,10 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
-	Project.new_project(
-		path,
-		Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value)),
-		framerate_spinbox.value
-	)
+	Project.new_project(path, resolution, framerate_spinbox.value)
+
+	if advanced_options_button.button_pressed:
+		Project.set_background_color(background_color_picker.color)
 
 	self.queue_free()
 		
@@ -338,4 +347,8 @@ func _on_close_sponsors_button_pressed() -> void:
 
 func _on_view_sponsors_button_pressed() -> void:
 	tab_container.current_tab = 2
+
+
+func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:
+	advanced_options.visible = toggled_on
 

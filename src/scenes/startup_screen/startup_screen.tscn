@@ -53,22 +53,10 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/CloseSponsorsButton:visible")
+tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -97,7 +85,7 @@ tracks/1/path = NodePath("Panel/VBox/StartupTabContainer:current_tab")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 3.06667),
+"times": PackedFloat32Array(0, 3.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [2, 0]
@@ -105,23 +93,11 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/CloseSponsorsButton:visible")
+tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 3.23333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, true]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 3.33333),
+"times": PackedFloat32Array(0, 3.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -133,7 +109,7 @@ _data = {
 &"show_sponsors": SubResource("Animation_donii")
 }
 
-[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "animation_player", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label")]
+[node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "animation_player", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -152,6 +128,9 @@ resolution_x_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewPr
 resolution_y_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionYSpinBox")
 framerate_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/FramerateSpinBox")
 warning_label = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectWarningLabel")
+advanced_options_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton")
+advanced_options = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid")
+background_color_picker = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/BackgroundColorPickerButton")
 metadata/_edit_lock_ = true
 
 [node name="Panel" type="PanelContainer" parent="."]
@@ -455,7 +434,6 @@ allow_greater = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "text_framerate"
-metadata/_edit_lock_ = true
 
 [node name="FramerateSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid"]
 layout_mode = 2
@@ -465,6 +443,25 @@ mouse_default_cursor_shape = 1
 min_value = 1.0
 value = 1.0
 allow_greater = true
+
+[node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "title_show_advanced_options"
+
+[node name="NewProjectAdvancedGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="BackgroundColorLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "text_background_color"
+
+[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject"]
 layout_mode = 2
@@ -573,6 +570,7 @@ libraries = {
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ViewSponsorsButton" to="." method="_on_view_sponsors_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
+[connection signal="toggled" from="Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton" to="." method="_on_advanced_options_check_button_toggled"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CreateNewProjectButton" to="." method="_on_create_new_project_button_pressed"]
 [connection signal="gui_input" from="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox/VGJ/Logo" to="." method="_on_sponsor_logo_input" binds= ["vgj"]]
