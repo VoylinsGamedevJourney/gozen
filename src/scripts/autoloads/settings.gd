@@ -380,7 +380,8 @@ func apply_shortcuts() -> void:
 		InputMap.action_erase_events(action)
 
 		for event: InputEvent in _data.shortcuts[action]:
-			InputMap.action_add_event(action, event)
+			if event != null:
+				InputMap.action_add_event(action, event)
 
 
 func reset_shortcuts_to_default() -> void:
