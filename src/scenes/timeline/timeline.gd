@@ -2,6 +2,7 @@ extends Node
 # Handles the sizing of the timeline
 
 
+
 const END_PADDING: int = 5000
 
 

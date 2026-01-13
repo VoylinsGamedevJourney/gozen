@@ -35,13 +35,11 @@ func _update_duration() -> void:
 		FileHandler.TYPE.AUDIO:
 			l_file.duration = floor(float(audio.data.size()) / (4 * 44101) * Project.get_framerate())
 		FileHandler.TYPE.VIDEO:
-			var frame_time: float = video.get_frame_count() / video.get_framerate()
-			l_file.duration = floor(frame_time * Project.get_framerate())
+			l_file.duration = floor(video.get_frame_count() / video.get_framerate() * Project.get_framerate())
 		FileHandler.TYPE.COLOR:
 			l_file.duration = Settings.get_color_duration()
 		FileHandler.TYPE.TEXT:
 			l_file.duration = Settings.get_text_duration()
-		# TODO: Add duration for PCK file.
 
 	if l_file.duration == 0:
 		printerr("FileData: Something went wrong loading file '%s', duration is 0!" % id)

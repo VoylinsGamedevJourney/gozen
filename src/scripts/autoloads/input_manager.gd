@@ -1,4 +1,6 @@
 extends Node
+# TODO: Maybe add a duplicate shortcut which adds a duplicate of the clip right
+# behind it (if space is available)
 
 signal on_show_editor_screen
 signal on_show_render_screen

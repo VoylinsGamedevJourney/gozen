@@ -1,5 +1,6 @@
-[gd_scene load_steps=18 format=3 uid="uid://bqlcn30hs8qp5"]
+[gd_scene load_steps=20 format=3 uid="uid://bqlcn30hs8qp5"]
 
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://shaders/background_blur.gdshader" id="1_5viva"]
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scenes/startup_screen/startup_screen.gd" id="1_sgta6"]
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_5viva"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_gatud"]
@@ -12,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://d34rtkurt6qhl" path="res://assets/icons/sponsors.svg" id="10_1nlba"]
 [ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="11_0i7o8"]
 [ext_resource type="Texture2D" uid="uid://brw0l3u8bd2bb" path="res://assets/sponsors/vgj.webp" id="12_xyrqg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
+shader = ExtResource("1_5viva")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2wpv"]
 content_margin_left = 20.0
@@ -110,6 +114,7 @@ _data = {
 }
 
 [node name="StartupPanel" type="PanelContainer" node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "animation_player", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
+material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -361,6 +366,7 @@ alignment = 0
 expand_icon = true
 
 [node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -498,7 +504,6 @@ mouse_default_cursor_shape = 2
 text = "button_create_new_project"
 
 [node name="Sponsors" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 20
 metadata/_tab_index = 2

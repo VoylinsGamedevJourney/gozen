@@ -1,5 +1,8 @@
 extends PanelContainer
-
+# TODO: Make it possible to detach the view panel into a floating window.
+# TODO: Video guidelines (Safe margins + focus cross)
+# TODO: Add option to preview at lower quality (performance, needs to be done through EditorCore)
+# TODO: Make frame_label and time_label into line inputs instead to quickly go to specific times.
 
 @export var button_play: TextureButton
 @export var button_pause: TextureButton

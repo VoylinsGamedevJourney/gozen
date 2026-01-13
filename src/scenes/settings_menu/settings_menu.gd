@@ -1,6 +1,11 @@
 class_name SettingsPanel
 extends Control
-
+# TODO: Add a search bar to find settings more easily.
+# TODO: Add "reset to default" button for everything.
+# TODO: Add "reset to default" button for setting.
+# TODO: Add headers to break options down on each tab.
+# TODO: Make certain that resolution input is mod-2, if entering a non mod-2
+# number, we can maybe turn the spinbox orange to indicate an issue.
 
 enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
@@ -90,6 +95,17 @@ func _create_section(section_name: String) -> GridContainer:
 func get_settings_menu_options() -> Dictionary[String, Array]:
 	panel_label.text = "title_editor_settings"
 
+	# Creating the marker nodes
+	var marker_nodes: Array = []
+	var marker_texts: Array = [
+		"settings_marker_one", "settings_marker_two", "settings_marker_three",
+		"settings_marker_four", "settings_marker_five"]
+
+	for i: int in marker_texts.size():
+		marker_nodes.append(create_label(marker_texts[i]))
+		marker_nodes.append(create_marker_setting(i))
+
+	# Creating the shortcut nodes
 	var shortcut_nodes: Array = []
 	var action_keys: PackedStringArray = Settings._data.shortcuts.keys()
 
@@ -197,19 +213,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					"setting_tooltip_delete_empty_space_mod")
 		],
 	
-		# TODO: Change this into a loop
-		"title_markers" = [
-			create_label("settings_marker_one"),
-			create_marker_setting(0),
-			create_label("settings_marker_two"),
-			create_marker_setting(1),
-			create_label("settings_marker_three"),
-			create_marker_setting(2),
-			create_label("settings_marker_four"),
-			create_marker_setting(3),
-			create_label("settings_marker_five"),
-			create_marker_setting(4),
-		],
+		"title_markers" = marker_nodes,
 	
 		"title_extras" = [
 			create_label("setting_check_version"),

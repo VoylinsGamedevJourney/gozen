@@ -1,7 +1,11 @@
 extends Control
 # TODO: Make the button open a popupmenu through toolbox get_popup()
 # When pressing one of the options, color of button should save.
-
+# TODO: Switch the option button by a palette instead with the currently
+# selected one being the bigger one. (maybe self_modulate the background to
+# give more of an indication of the selected marker color)
+# TODO: Add a delete button. (Removing all text deletes it already, but a
+# button might help users)
 
 static var selected_type_index: int = 0 # We want to save the last used type
 

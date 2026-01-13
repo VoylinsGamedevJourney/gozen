@@ -1,5 +1,6 @@
 class_name ProgressOverlay
 extends Control
+# TODO: Add a "Show details" button to explain why files failed to import
 
 
 @export var title_label: Label
@@ -30,7 +31,8 @@ func update_progress(value: int, text: String) -> void:
 	# Updating estimated time
 	var time_elapsed: float = (Time.get_ticks_msec() - start_time) / 1000.0
 	var rate: float = time_elapsed / float(value)
-	var remaining: String = Utils.format_time_str(rate * (100 - float(value)), true)
+	var remaining_sec: float = rate * (100 - float(value))
+	var remaining: String = Utils.format_time_str(remaining_sec, true)
 
 	estimated_time_label.text = "Estimated time - %s" % remaining
 
@@ -72,13 +74,18 @@ func update_file(file: FileHandler.FileDrop) -> void:
 	if !file_labels.has(path):
 		var new_label: Label = Label.new()
 
-		new_label.text = "- " + file.path.get_file()
+		new_label.text = "- " + path.get_file()
 		new_label.self_modulate = Color.ORANGE
+		new_label.tooltip_text = path
 		file_labels[file.path] = new_label
 		vbox.add_child(new_label)			
 
 	match file.status:
-		FileHandler.STATUS.ALREADY_LOADED: file_labels[path].self_modulate = Color.GRAY
-		FileHandler.STATUS.PROBLEM: file_labels[path].self_modulate = Color.RED
-		FileHandler.STATUS.LOADED:  file_labels[path].self_modulate = Color.GREEN
+		FileHandler.STATUS.ALREADY_LOADED:
+			file_labels[path].self_modulate = Color.GRAY
+		FileHandler.STATUS.PROBLEM:
+			file_labels[path].self_modulate = Color.RED
+			file_labels[path].tooltip_text = path + "\nThis file could not be loaded."
+		FileHandler.STATUS.LOADED:
+			file_labels[path].self_modulate = Color.GREEN
 

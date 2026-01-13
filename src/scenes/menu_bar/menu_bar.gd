@@ -1,11 +1,14 @@
 extends HBoxContainer
-
-
-@export var popup_menu_project: PopupMenu
-
 # TODO: Make a submenu popup for recent projects and make it update when the recent projects list got updated
 # TODO: Make the shortcut commands next to the action update when shortcuts got changed.
 # TODO: Get the shortcuts from the settings to put next to the action item.
+# TODO: Add Edit option with Undo/Redo buttons (maybe add cut/copy/paste/delete)
+# Also add the options to import files here.
+# TODO: Add an indicator (circle or rectangle in a color) on the right which indicates when ram
+# usage is getting high or CPU usage is getting too high.
+
+@export var popup_menu_project: PopupMenu
+
 
 
 func _ready() -> void:
@@ -27,6 +30,10 @@ func _on_editor_screen_button_pressed() -> void:
 
 func _on_render_screen_button_pressed() -> void:
 	InputManager.show_render_screen()
+
+
+func _on_subtitle_screen_button_pressed() -> void:
+	InputManager.show_subtitle_screen()
 
 
 func _on_project_popup_menu_id_pressed(id: int) -> void:
@@ -67,4 +74,5 @@ func _on_help_popup_menu_id_pressed(id: int) -> void:
 
 func _set_shortcuts() -> void:
 	pass
+
 

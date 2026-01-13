@@ -1,5 +1,10 @@
 extends HSplitContainer
-
+# TODO: Add render range (in - out points)
+# TODO: Add render draft (Quicker export in 480p)
+# TODO: Disk space pre-check (make an estimate of the size required and check
+# if there's enough available space in the location you want to save.
+# TODO: Add UI to save/manage custom render profiles.
+# TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
 const USER_PROFILES_PATH: String = "user://render_profiles/"
 

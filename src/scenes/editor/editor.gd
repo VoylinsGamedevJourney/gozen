@@ -1,6 +1,6 @@
 class_name EditorUI
 extends Control
-
+# TODO: Add a proxy workflow
 
 static var instance: EditorUI
 

@@ -56,6 +56,8 @@ static func format_time_str_from_frame(frame_count: int, framerate: float, short
 	return format_time_str(float(frame_count) / framerate, short)
 	
 
+## Short = 00:00:00
+## Long = 00:00:00.00
 static func format_time_str(total_seconds: float, short: bool = false) -> String:
 	var total_seconds_int: int = floor(total_seconds)
 
@@ -144,9 +146,24 @@ static func get_next(frame: int, array: PackedInt64Array) -> int:
 	return -1
 
 
+## Cleaning up render stuff.
 static func cleanup_rid(device: RenderingDevice, rid: RID) -> RID:
 	if rid.is_valid():
 		device.free_rid(rid)
 
 	return RID()
 
+
+## Removind the middle the path so it fits in a certain amount of width without
+## bleeding to the next line.
+static func path_remove_middle(path: String, max_length: int) -> String:
+	if path.length() <= max_length:
+		return path
+
+	# "..." takes 3 characters
+	var split_size: int = floori((max_length - 3) / 2.0)
+	
+	var left_part: String = path.left(split_size)
+	var right_part: String = path.right(split_size)
+	
+	return "%s...%s" % [left_part, right_part]

@@ -1,6 +1,8 @@
 extends PanelContainer
 # TODO: When resizing we should consider to have the existing clip to just be
 # greyed out or a bit transparent, would help to align with the audio wave data.
+# TODO: Look into caching the waveform data (not an issue right now, but might become one)
+# TODO: Add ripple editing (Shift+delete) removes the clip and moves the others closer.
 
 
 signal zoom_changed(new_zoom: float)

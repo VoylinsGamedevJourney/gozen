@@ -1,4 +1,9 @@
 extends PanelContainer
+# TODO: Maybe add a tabbed interface.
+# General tab: Logo, version (With a new version available indicator), short description, and links (to site, github, and socials)
+# Credits: A list of Sponsors and main contributors (Requirement would be 10 PR's I guess)
+# System Info: Technical details for debugging (OS, GPU, RAM) (Add button to copy debug info)
+# Licenses: Show the GPLv3 license for GoZen (and the third party licenses?)
 
 const URL: String = "[color=#A718F1][url=URL]URL[/url][/color]"
 
@@ -8,7 +13,6 @@ const URL: String = "[color=#A718F1][url=URL]URL[/url][/color]"
 
 
 func _ready() -> void:
-	# Load in info
 	_set_version_label()
 	_set_links_label()
 

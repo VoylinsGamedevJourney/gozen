@@ -1,4 +1,6 @@
 extends Node
+# TODO: Add a marker ripple (would probably need to link the marker with a
+# specific clip for this to work correctly)
 
 signal marker_added(frame_nr: int)
 signal marker_updated(old_frame_nr: int, new_frame_nr: int)

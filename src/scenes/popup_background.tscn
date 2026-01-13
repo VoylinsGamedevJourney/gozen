@@ -1,6 +1,13 @@
-[gd_scene format=3 uid="uid://xu8ndgud6cox"]
+[gd_scene load_steps=3 format=3 uid="uid://xu8ndgud6cox"]
+
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://shaders/background_blur.gdshader" id="1_lwlt1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3lcis"]
+shader = ExtResource("1_lwlt1")
+shader_parameter/lod = 2.2310001059725
 
 [node name="PopupBackground" type="PanelContainer"]
+material = SubResource("ShaderMaterial_3lcis")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

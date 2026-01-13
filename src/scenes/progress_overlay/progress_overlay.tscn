@@ -74,7 +74,7 @@ text = "title_loading_projects"
 [node name="EstimatedTimeLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox"]
 layout_mode = 2
 theme_type_variation = &"info_label"
-text = "Estimated time: 59:59:59"
+text = "Estimated time - 59:59:59"
 
 [node name="Spacer" type="Control" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
 custom_minimum_size = Vector2(0, 5)
