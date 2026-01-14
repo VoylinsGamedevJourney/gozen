@@ -58,7 +58,7 @@ func _ready() -> void:
 			add_profile(load(USER_PROFILES_PATH + file_name) as RenderProfile)
 	elif DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
 		# Else we create the directory in case we need to save a profile to it.
-		printerr("Couldn't create folder at %s!" % USER_PROFILES_PATH)
+		printerr("RenderScreen: Couldn't create folder at %s!" % USER_PROFILES_PATH)
 
 	# Setting "YouTube" to the default loaded profile
 	var first_profile: Button = render_profiles_hbox.get_child(0)
@@ -337,7 +337,7 @@ func _on_start_render_button_pressed() -> void:
 
 func update_encoder_status(status: RenderManager.STATUS) -> void:
 	if progress_overlay == null:
-		printerr("ProgressOverlay is null!")
+		printerr("RenderScreen: ProgressOverlay is null!")
 		return
 
 	var status_str: String = ""

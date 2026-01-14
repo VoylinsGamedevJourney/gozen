@@ -112,7 +112,7 @@ func _set_recent_projects() -> void:
 
 	for new_path: String in new_paths:
 		if !file.store_line(new_path):
-			printerr("Error storing line for recent_projects!\n", get_stack())
+			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
 
 	file.close()
 
@@ -124,7 +124,7 @@ func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if !file.store_string(context):
-		printerr("Error storing String for recent_projects!\n", get_stack())
+		printerr("StartupScreen: Error storing String for recent_projects!\n", get_stack())
 	hbox.queue_free()
 
 
@@ -263,7 +263,7 @@ func _check_new_version() -> void:
 	http_request.request_completed.connect(_check_new_version_request_completed)
 
 	if !http_request.request("latest_release_check"):
-		printerr("Couldn't send an http request for the version check!")
+		printerr("StartupScreen: Couldn't send an http request for the version check!")
 
 	new_version_available_button.pressed.connect(func() -> void: Utils.open_url("latest_release"))
 
@@ -272,27 +272,27 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 	# Initial check to see if the request was successful or not.
 	if result != HTTPRequest.RESULT_SUCCESS:
 		new_version_available_panel.visible = false
-		print("Check for new version failed! ", result)
+		print("StartupScreen: Check for new version failed! ", result)
 	elif response_code == 404:
-		print("No releases found for repo! ", response_code)
+		print("StartupScreen: No releases found for repo! ", response_code)
 	elif response_code != 200:
-		print("HTTPRequest failed with status code: ", response_code)
+		print("StartupScreen: HTTPRequest failed with status code: ", response_code)
 		return
 
 	# Request was successful, not checking the JSON data.
 	var json: Variant = JSON.parse_string(body.get_string_from_utf8())
 
 	if json == null:
-		print("Failed to parse JSON response for checking version!")
+		print("StartupScreen: Failed to parse JSON response for checking version!")
 		return
 	elif typeof(json) != TYPE_DICTIONARY:
-		print("Failed to get dictionary from json for checking version!")
+		print("StartupScreen: Failed to get dictionary from json for checking version!")
 		return
 
 	var json_data: Dictionary = json
 
 	if !json_data.has("tag_name"):
-		print("No releases found for repo!")
+		print("StartupScreen: StartupScreen: No releases found for repo!")
 		return
 
 	# Checking the version from the latest release vs the current editor version.

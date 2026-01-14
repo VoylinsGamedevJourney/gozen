@@ -67,7 +67,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 func save() -> void:
 	if DataManager.save_data(get_project_path(), data):
-		printerr("Something went wrong whilst saving project! ", FileAccess.get_open_error())
+		printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
 	else:
 		unsaved_changes = false
 
@@ -92,7 +92,7 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update_progress_bar(1, true)
 
 	if DataManager.load_data(new_project_path, data):
-		printerr("Something went wrong whilst loading project! ", FileAccess.get_open_error())
+		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
 	loading_overlay.update_progress(5, "status_project_preparing_timeline")
 
@@ -177,12 +177,12 @@ func _update_recent_projects(new_path: String) -> void:
 		
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if !file.store_string(new_path + "\n" + content):
-		printerr("Error storing String for recent_projects!")
+		printerr("Project: Error storing String for recent_projects!")
 
 
 func _open_project(file_path: String) -> void:
 	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
-		printerr("ProjectManager: Something went wrong opening project from file dialog!")
+		printerr("Project: Something went wrong opening project from file dialog!")
 
 
 func _save_as(new_project_path: String) -> void:

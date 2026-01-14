@@ -45,7 +45,7 @@ func update_marker(old_frame_nr: int, new_frame_nr: int, marker: MarkerData) -> 
 
 func remove_marker(frame_nr: int) -> void:
 	if !markers.has(frame_nr):
-		printerr("No marker at %s!" % frame_nr)
+		printerr("MarkerHandler: No marker at %s!" % frame_nr)
 		return
 
 	markers.erase(frame_nr)

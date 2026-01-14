@@ -117,7 +117,7 @@ static func get_video_extension(video_codec: GoZenEncoder.VIDEO_CODEC) -> String
 		GoZenEncoder.VIDEO_CODEC.V_VP9: return ".webm"
 		GoZenEncoder.VIDEO_CODEC.V_VP8: return ".webm"
 
-	printerr("Unrecognized codec! ", video_codec)
+	printerr("Utils: Unrecognized codec! ", video_codec)
 	return ""
 
 

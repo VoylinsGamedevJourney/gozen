@@ -19,7 +19,7 @@ func _process(_delta: float) -> void:
 			error = WorkerThreadPool.wait_for_task_completion(task.id)
 
 			if error:
-				printerr("Error with task: ", task.id, " - Error: ", error)
+				printerr("Threader: Error with task: ", task.id, " - Error: ", error)
 			elif !task.after_task.is_null():
 				task.after_task.call()
 

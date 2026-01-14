@@ -68,12 +68,12 @@ func _open_project_settings(settings_panel: SettingsPanel) -> void:
 
 func close_popup(popup: POPUP) -> void:
 	if !_open_popups.has(popup):
-		printerr("Popup with id '%s' not open!" % popup)
+		printerr("PopupManager: Popup with id '%s' not open!" % popup)
 	else:
 		_open_popups[popup].queue_free()
 
 		if !_open_popups.erase(popup):
-			printerr("Could not erase popup '%s' from open_popups!" % popup)
+			printerr("PopupManager: Could not erase popup '%s' from open_popups!" % popup)
 
 	_check_background()
 

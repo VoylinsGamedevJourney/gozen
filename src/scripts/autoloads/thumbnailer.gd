@@ -21,9 +21,9 @@ func _ready() -> void:
 		var base_cache_dir: String = thumb_folder.trim_suffix("thumbs/")
 
 		if DirAccess.make_dir_absolute(base_cache_dir):
-			printerr("Couldn't create folder at %s!" % base_cache_dir)
+			printerr("FilePanel: Couldn't create folder at %s!" % base_cache_dir)
 		if DirAccess.make_dir_absolute(thumb_folder):
-			printerr("Couldn't create folder at %s!" % thumb_folder)
+			printerr("FilePanel: Couldn't create folder at %s!" % thumb_folder)
 
 	# Create the thumb data file if not existing.
 	if !FileAccess.file_exists(thumb_folder + DATA_NAME):
@@ -41,7 +41,7 @@ func _process(_delta: float) -> void:
 
 func _save_data() -> void:
 	if !FileAccess.open(thumb_folder + DATA_NAME, FileAccess.WRITE).store_var(data):
-		printerr("Error happened when storing empty thumb data!")
+		printerr("FilePanel: Error happened when storing empty thumb data!")
 
 
 func get_thumb(file_id: int) -> Texture2D:
@@ -54,7 +54,7 @@ func get_thumb(file_id: int) -> Texture2D:
 		image = scale_thumbnail(file.temp_file.image_data.get_image())
 		return ImageTexture.create_from_image(image)
 	elif file.path == "temp://text":
-		printerr("No thumbnails for text yet!")
+		printerr("FilePanel: Thumbnailer: No thumbnails for text yet!")
 		return
 
 	# Check if thumb has been made and actually exists.
@@ -122,7 +122,7 @@ func _gen_thumb(file_id: int) -> void:
 		image = scale_thumbnail(image)
 
 	if image.save_webp(thumb_folder + FILE_NAME % file_id):
-		printerr("Something went wrong saving thumb!")
+		printerr("FilePanel: Something went wrong saving thumb!")
 
 	Threader.mutex.lock()
 	data[path] = file_id

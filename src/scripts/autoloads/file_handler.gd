@@ -143,7 +143,7 @@ func add_file(file_drop: FileDrop) -> void:
 	# Check if file already exists inside of the project.
 	for existing: File in files.values():
 		if existing.path == file_drop.path:
-			print("File already loaded with path '%s'!" % file_drop.path)
+			print("FileHandler: File already loaded with path '%s'!" % file_drop.path)
 			file_drop.status = STATUS.ALREADY_LOADED
 			return
 
@@ -155,7 +155,7 @@ func add_file(file_drop: FileDrop) -> void:
 
 	set_file(file.id, file)
 	if !load_file_data(file.id):
-		printerr("Problem happened adding file!")
+		printerr("FileHandler: Problem happened adding file!")
 		file_drop.status = STATUS.PROBLEM
 		return
 	else:
@@ -222,7 +222,7 @@ func create_file(file_path: String) -> File:
 	elif extension == "pck":
 		file.type = TYPE.PCK
 	else:
-		printerr("Invalid file: ", file_path)
+		printerr("FileHandler: Invalid file: ", file_path)
 		return null
 
 	file.id = Utils.get_unique_id(FileHandler.get_file_ids())
@@ -258,7 +258,7 @@ func add_file_object(file: File) -> void:
 	set_file(file.id, file)
 
 	if !load_file_data(file.id):
-		print("Something went wrong loading file '", file.path, "'!")
+		print("FileHandler: Something went wrong loading file '", file.path, "'!")
 
 	# We only emit this one since for dropped/selected actual files this gets
 	# called inside of _on_files_dropped.
@@ -310,15 +310,15 @@ func save_image_to_file(path: String, file: File) -> void:
 	match extension:
 		"png":
 			if image.save_png(path):
-				printerr("Couldn't save image to png!\n", get_stack())
+				printerr("FileHandler: Couldn't save image to png!\n", get_stack())
 				return
 		"webp":
 			if image.save_webp(path, false, 1.0):
-				printerr("Couldn't save image to webp!\n", get_stack())
+				printerr("FileHandler: Couldn't save image to webp!\n", get_stack())
 				return
 		_: # JPG is default.
 			if image.save_jpg(path, 1.0):
-				printerr("Couldn't save image to jpg!\n", get_stack())
+				printerr("FileHandler: Couldn't save image to jpg!\n", get_stack())
 				return
 
 	file.path = path
@@ -326,14 +326,14 @@ func save_image_to_file(path: String, file: File) -> void:
 	file.temp_file = null
 
 	if !load_file_data(file.id):
-		printerr("Something went wrong loading file '%s' after saving temp image to real image!" % path)
+		printerr("FileHandler: Something went wrong loading file '%s' after saving temp image to real image!" % path)
 
 	file_path_updated.emit(file.id)
 
 
 func save_audio_to_wav(path: String, file: File) -> void:
 	if get_file_data(file.id).audio.save_to_wav(path):
-		printerr("Error occured when saving to WAV!")
+		printerr("FileHandler: Error occured when saving to WAV!")
 
 
 #-- File setters & getters --- 
@@ -393,7 +393,7 @@ func get_file_data(id: int) -> FileData:
 
 func add_folder(folder: String) -> void:
 	if Project.data.folders.has(folder):
-		print("Folder %s already exists!")
+		print("FileHandler: Folder %s already exists!")
 		return
 
 	InputManager.undo_redo.create_action("Create folder")
@@ -479,7 +479,7 @@ func enable_clip_only_video(file_id: int, clip_id: int) -> void:
 	var video: GoZenVideo = GoZenVideo.new()
 
 	if video.open(file.path):
-		printerr("Loading video at path '%s' failed!" % file.path)
+		printerr("FileHandler: Loading video at path '%s' failed!" % file.path)
 		return
 
 	file.clip_only_video_ids.append(clip_id)
@@ -506,7 +506,7 @@ func _check_if_file_modified(file: File) -> bool:
 
 	# File doesn't exist anymore, removing file.
 	if !FileAccess.file_exists(file.path):
-		print("File %s at %s doesn't exist anymore!" % [file.id, file.path])
+		print("FileHandler: File %s at %s doesn't exist anymore!" % [file.id, file.path])
 		_delete_file(file.id)
 		return false
 

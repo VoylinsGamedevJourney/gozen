@@ -125,7 +125,7 @@ func _send_frames(frame_array: Array[Image]) -> void:
 		if frame == null: break # No more frames to be send.
 		if !encoder.send_frame(frame):
 			stop_encoder()
-			printerr("Something went wrong sending frame(s)!")
+			printerr("RenderManager: Something went wrong sending frame(s)!")
 			return
 
 

@@ -204,7 +204,7 @@ func find_audio(frame: int, track_id: int) -> int:
 	var clip_data: ClipData = TrackHandler.get_clip_at(track_id, last)
 
 	if clip_data == null:
-		printerr("Clip empty at: ", last)
+		printerr("EditorCore: Clip empty at: ", last)
 		return -1
 
 	last = clip_data.id

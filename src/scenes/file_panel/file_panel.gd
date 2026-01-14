@@ -218,7 +218,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 
 	if file.type == FileHandler.TYPE.TEXT: # TODO: Implement duplicating text files
-		printerr("Not implemented yet!")
+		printerr("FilePanel: Not implemented yet!")
 	elif file.type == FileHandler.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
 				"title_save_image_to_file",
@@ -246,7 +246,7 @@ func _on_popup_action_file_duplicate() -> void:
 	# Only for text. TODO: Implement duplicating text files
 	var _file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 
-	printerr("Duplicating text not implemented yet!")
+	printerr("FilePanel: Duplicating text not implemented yet!")
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
@@ -289,7 +289,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 
 func _add_folder_to_tree(folder: String) -> void:
 	if folder_items.has(folder):
-		print("Folder '%s' already exists!" % folder)
+		print("FilePanel: Folder '%s' already exists!" % folder)
 		return
 
 	# Check if all parent folders exist or not.

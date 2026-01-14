@@ -24,7 +24,7 @@ static func save_data(save_path: String, instance: RefCounted) -> int:
 	var data: Dictionary[String, Variant] = get_data(instance)
 
 	if !file.store_string(var_to_str(data)):
-		printerr("Something went wrong storing data to file: ", save_path)
+		printerr("DataManager: Something went wrong storing data to file: ", save_path)
 
 	error = file.get_error()
 	return error
