@@ -4,6 +4,7 @@ extends Resource
 
 @export var effect_id: String
 @export var effect_name: String
+@export var params: Array[EffectParam]
 @export var is_enabled: bool = true
 
 
@@ -11,7 +12,7 @@ var keyframes: Dictionary = {} ## { param_id: { frame_number: value }}
 
 
 var _key_cache: Dictionary = {}
-var _cache_dirty: bool = true # TODO: Set this to true, whenever the UI changes a keyframe!
+var _cache_dirty: bool = true
 
 
 
@@ -46,6 +47,18 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 	var value_b: Variant = keyframes[id][next_frame]
 
 	return _interpolate_variant(value_a, value_b, weight)
+
+
+func set_default_keyframe() -> void:
+	for effect_param: EffectParam in params:
+		var param_id: String = effect_param.param_id
+
+		if not keyframes.has(param_id):
+			keyframes[param_id] = {}
+		if not keyframes[param_id].has(0):
+			keyframes[param_id][0] = effect_param.default_value
+
+	_cache_dirty = true
 
 
 func _validate_cache(param_id: String) -> PackedInt64Array:

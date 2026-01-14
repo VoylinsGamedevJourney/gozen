@@ -334,22 +334,23 @@ func _update_ui_values() -> void:
 
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
-	match param_settings:
-		SpinBox:
-			if param_settings.value != value:
-				param_settings.set_value_no_signal(value)
-		CheckButton:
-			if param_settings.value != value:
-				(param_settings as CheckButton).set_pressed_no_signal(value)
-		HBoxContainer:
-			if typeof(value) == TYPE_VECTOR2 or typeof(value) == TYPE_VECTOR2I:
-				var spinbox_x: SpinBox = param_settings.get_child(0)
-				var spinbox_y: SpinBox = param_settings.get_child(1)
+	if param_settings is SpinBox:
+		if param_settings.value != value:
+			param_settings.set_value_no_signal(value)
+	elif param_settings is CheckButton:
+		if param_settings.value != value:
+			(param_settings as CheckButton).set_pressed_no_signal(value)
+	elif param_settings is HBoxContainer:
+		if typeof(value) == TYPE_VECTOR2 or typeof(value) == TYPE_VECTOR2I:
+			var spinbox_x: SpinBox = param_settings.get_child(0)
+			var spinbox_y: SpinBox = param_settings.get_child(1)
 
-				if spinbox_x.value != value.x:
-					spinbox_x.set_value_no_signal(value.x)
-				if spinbox_y.value != value.y:
-					spinbox_y.set_value_no_signal(value.y)
-		ColorPickerButton:
-			if param_settings.color != value:
-				(param_settings as ColorPickerButton).color = value
+			if spinbox_x.value != value.x:
+				spinbox_x.set_value_no_signal(value.x)
+			if spinbox_y.value != value.y:
+				spinbox_y.set_value_no_signal(value.y)
+	elif param_settings is ColorPickerButton:
+		if param_settings.color != value:
+			(param_settings as ColorPickerButton).color = value
+	else:
+		printerr("EffectsPanel: Invalid param settings control! %s" % param_settings)

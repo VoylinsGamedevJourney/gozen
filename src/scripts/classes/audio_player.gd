@@ -114,10 +114,10 @@ func update_effects(effects: Array[GoZenEffectAudio]) -> void:
 		if not effect.is_enabled:
 			continue
 
-		for param: EffectParam in effect.params:
-			var value: Variant = effect.get_value(param, current_relative_frame)
+		for effect_param: EffectParam in effect.params:
+			var value: Variant = effect.get_value(effect_param, current_relative_frame)
 
-			effect_instance.set(param.param_id, value)
+			effect_instance.set(effect_param.param_id, value)
 
 
 func _setup_bus_effects(effects: Array[GoZenEffectAudio]) -> void:

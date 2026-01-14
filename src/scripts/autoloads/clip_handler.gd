@@ -128,11 +128,13 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 					param.default_value = Project.get_resolution()
 				elif param.param_id == "pivot":
 					param.default_value = Vector2i(Project.get_resolution() / 2)
-
+			
+			transform_effect.set_default_keyframe()
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
 			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
 
+			volume_effect.set_default_keyframe()
 			clip_data.effects_audio.append(volume_effect)
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))

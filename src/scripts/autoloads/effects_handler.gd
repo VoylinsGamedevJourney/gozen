@@ -16,6 +16,8 @@ func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
 
 	var index: int = list.size()
 
+	effect.set_default_keyframe()
+
 	InputManager.undo_redo.create_action("Add effect: %s" % effect.effect_name)
 
 	InputManager.undo_redo.add_do_method(_add_effect.bind(clip_id, index, effect, is_visual))
