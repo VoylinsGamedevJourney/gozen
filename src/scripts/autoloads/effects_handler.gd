@@ -89,8 +89,8 @@ func move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> v
 	InputManager.undo_redo.add_do_method(_move_effect.bind(clip_id, index, new_index, is_visual))
 	InputManager.undo_redo.add_undo_method(_move_effect.bind(clip_id, new_index, index, is_visual))
 
-	InputManager.undo_redo.add_do_method(effects_updated.emit.bind(clip_id))
-	InputManager.undo_redo.add_undo_method(effects_updated.emit.bind(clip_id))
+	InputManager.undo_redo.add_do_method(effects_updated.emit)
+	InputManager.undo_redo.add_undo_method(effects_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
@@ -150,8 +150,8 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 		InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
 				clip_id, index, is_visual, param_id, frame_nr))
 
-	InputManager.undo_redo.add_do_method(effects_updated.emit.bind(clip_id))
-	InputManager.undo_redo.add_undo_method(effects_updated.emit.bind(clip_id))
+	InputManager.undo_redo.add_do_method(effects_updated.emit)
+	InputManager.undo_redo.add_undo_method(effects_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 

@@ -44,6 +44,7 @@ func _ready() -> void:
 	add_child(viewport)
 
 	ClipHandler.clips_updated.connect(_on_clips_updated)
+	EffectsHandler.effects_updated.connect(_on_clips_updated)
 
 
 func _process(delta: float) -> void:
@@ -183,6 +184,7 @@ func _check_clip_end(new_frame_nr: int, clip_id: int) -> bool:
 func _on_clips_updated() -> void:
 	update_audio()
 	update_frame()
+	set_frame(frame_nr)
 
 
 # Audio stuff  ----------------------------------------------------------------

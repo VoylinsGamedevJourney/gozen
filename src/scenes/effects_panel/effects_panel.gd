@@ -18,6 +18,7 @@ var current_clip_id: int = -1
 func _ready() -> void:
 	EditorCore.frame_changed.connect(_on_frame_changed)
 	ClipHandler.clip_deleted.connect(_on_clip_erased)
+	ClipHandler.clip_selected.connect(_on_clip_pressed)
 	EffectsHandler.effects_updated.connect(_on_effects_updated)
 
 
@@ -30,7 +31,7 @@ func _on_clip_pressed(id: int) -> void:
 		button_audio.disabled = true
 		return
 
-	var type: FileHandler.TYPE = ClipHandler.get_clip_type(id)
+	var type: FileHandler.TYPE = ClipHandler.get_type(id)
 	var is_visual: bool = type in EditorCore.VISUAL_TYPES
 	var is_audio: bool = type not in EditorCore.AUDIO_TYPES
 
@@ -143,6 +144,14 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 	button_move_down.custom_minimum_size.x = 20
 	button_delete.custom_minimum_size.x = 20
 
+	button_move_up.ignore_texture_size = true
+	button_move_down.ignore_texture_size = true
+	button_delete.ignore_texture_size = true
+
+	button_move_up.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	button_move_down.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+
 	button_move_up.texture_normal = preload(Library.ICON_MOVE_UP)
 	button_move_down.texture_normal = preload(Library.ICON_MOVE_DOWN)
 	button_delete.texture_normal = preload(Library.ICON_DELETE)
@@ -163,8 +172,9 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 		var param_title: Label = Label.new()
 		var param_settings: Control = _create_param_control(param, index, is_visual)
 
-		param_title.text = param.param_name.capitalize() # TODO: Localize this
+		param_title.text = param.param_name.replace("param_", "").capitalize() # TODO: Localize this
 		param_title.tooltip_text = param.param_id # TODO: Create better descriptions
+		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 		param_settings.name = "PARAM_" + param.param_id
 
@@ -184,6 +194,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			var check_button: CheckButton = CheckButton.new()
 
 			check_button.toggled.connect(update_call)
+			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return check_button
 		TYPE_INT, TYPE_FLOAT:
@@ -197,6 +208,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
 			spinbox.value_changed.connect(update_call)
+			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return spinbox
 		TYPE_VECTOR2, TYPE_VECTOR2I:
@@ -205,12 +217,12 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			var spinbox_y: SpinBox = SpinBox.new()
 
 			# X
-			spinbox_x.min_value = param.min_value.x if param.min_value.x != null else -INF
-			spinbox_x.max_value = param.max_value.x if param.max_value.x != null else INF
+			spinbox_x.min_value = param.min_value.x if param.min_value != null else -INF
+			spinbox_x.max_value = param.max_value.x if param.max_value != null else INF
 
 			spinbox_x.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
-			spinbox_x.allow_lesser = param.min_value.x == null
-			spinbox_x.allow_greater = param.max_value.x == null
+			spinbox_x.allow_lesser = param.min_value == null
+			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
 
 			spinbox_x.value_changed.connect(func(val: float) -> void:
@@ -220,12 +232,12 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 				update_call.call(current_value))
 			
 			# Y
-			spinbox_y.min_value = param.min_value.y if param.min_value.y != null else -INF
-			spinbox_y.max_value = param.max_value.y if param.max_value.y != null else INF
+			spinbox_y.min_value = param.min_value.y if param.min_value != null else -INF
+			spinbox_y.max_value = param.max_value.y if param.max_value != null else INF
 
 			spinbox_y.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
-			spinbox_y.allow_lesser = param.min_value.y == null
-			spinbox_y.allow_greater = param.max_value.y == null
+			spinbox_y.allow_lesser = param.min_value == null
+			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
 			
 			spinbox_y.value_changed.connect(func(val: float) -> void:
@@ -236,6 +248,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 
 			hbox.add_child(spinbox_x)
 			hbox.add_child(spinbox_y)
+			hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return hbox
 		TYPE_COLOR:
@@ -243,6 +256,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 
 			color_picker.custom_minimum_size.x = 40
 			color_picker.color_changed.connect(update_call)
+			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return color_picker
 

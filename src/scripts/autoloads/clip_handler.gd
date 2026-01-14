@@ -5,6 +5,9 @@ signal clip_added(clip_id: int)
 signal clip_deleted(clip_id: int)
 signal clips_updated
 
+signal clip_selected(clip_id: int)
+
+
 # This is the amount that we allow to use next_frame before using seek_frame
 # for the video data since seek_frame is usually slower
 # TODO: Make this into a setting
