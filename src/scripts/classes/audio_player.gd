@@ -61,10 +61,10 @@ func set_audio(audio_clip_id: int) -> void:
 	file_id = data.file_id
 	stop_frame = data.end_frame
 
-	if old_clip_id != clip_id or AudioServer.get_bus_effect_count(bus_index) != data.effects_sound.size():
-		_setup_bus_effects(data.effects_sound)
+	if old_clip_id != clip_id or AudioServer.get_bus_effect_count(bus_index) != data.effects_audio.size():
+		_setup_bus_effects(data.effects_audio)
 	
-	update_effects(data.effects_sound)
+	update_effects(data.effects_audio)
 
 	# Getting timings in seconds.
 	var position: float = float(EditorCore.frame_nr - data.start_frame + data.begin)

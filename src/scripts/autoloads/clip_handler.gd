@@ -128,9 +128,9 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
-			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_SOUND_VOLUME).duplicate(true)
+			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
 
-			clip_data.effects_sound.append(volume_effect)
+			clip_data.effects_audio.append(volume_effect)
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
@@ -188,8 +188,8 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		# Copy effects of main clip
 		new_clip_data.effects_video.assign(
 				_copy_visual_effects(clip_data.effects_video, cut_frame_pos))
-		new_clip_data.effects_sound.assign(
-				_copy_audio_effects(clip_data.effects_sound, cut_frame_pos))
+		new_clip_data.effects_audio.assign(
+				_copy_audio_effects(clip_data.effects_audio, cut_frame_pos))
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(new_clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(new_clip_data))

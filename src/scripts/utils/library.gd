@@ -16,6 +16,8 @@ const ICON_ABOUT_GOZEN: String = "uid://rfesonobkxh1"
 const ICON_BUTTON_FADE: String = "uid://buwillf888csp"
 const ICON_DELETE: String = "uid://dyndi17ou8ixo"
 const ICON_FOLDER: String = "uid://8yvgi81apxxg"
+const ICON_MOVE_UP: String = "uid://cf8slnfkfkgry"
+const ICON_MOVE_DOWN: String = "uid://ck6ynhi0466wi"
 
 const SHADER_YUV420P: String = "res://shaders/yuv420p_standard.glsl"
 const SHADER_YUV420P_FULL: String = "res://shaders/yuv420p_full.glsl"
@@ -30,7 +32,6 @@ const SCENE_RENAME_DIALOG: String = "uid://y450a2mtc4om"
 const SCENE_COLOR_PICKER_DIALOG: String = "uid://brbxvynl0y3ha"
 const SCENE_MARKER_DIALOG: String = "uid://ce1hy5ks465h7"
 const SCENE_MODULE_MANAGER: String = "" # TODO:
-const SCENE_SHORTCUT_MANAGER: String = "" # TODO:
 const SCENE_VERSION_CHECK: String = "" # TODO:
 const SCENE_RECENT_PROJECTS: String = "" # TODO:
 
@@ -69,4 +70,4 @@ const FONT_ROBOTO_REGULAR: String = "uid://dq00mn4msotdf"
 
 const EFFECT_VISUAL_TRANSFORM: String = "uid://4mtlh3uaahui"
 
-const EFFECT_SOUND_VOLUME: String = "uid://dxp7sisypvq8b"
+const EFFECT_AUDIO_VOLUME: String = "uid://dxp7sisypvq8b"
