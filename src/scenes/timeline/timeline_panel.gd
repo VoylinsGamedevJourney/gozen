@@ -111,6 +111,7 @@ func _input(event: InputEvent) -> void:
 		if !TrackHandler.get_clip_at(track_id, frame_nr):
 			remove_empty_space_at(track_id, frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
+		selected_clip_ids = []
 		_on_ui_cancel()
 
 
@@ -144,7 +145,6 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 		if pressed_clip == null:
 			state = STATE.SCRUBBING
-			ClipHandler.clip_selected.emit(-1)
 			move_playhead(get_frame_from_mouse())
 			return
 
@@ -184,7 +184,6 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
 			popup.add_separator()
 		else:
-			ClipHandler.clip_selected.emit(-1)
 			popup.add_item("popup_item_track_remove_empty_space", POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
 		popup.add_item("popup_item_track_add", POPUP_ACTION.TRACK_ADD)

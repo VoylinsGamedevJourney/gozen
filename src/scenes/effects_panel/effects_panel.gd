@@ -3,6 +3,9 @@ extends PanelContainer
 # TODO: Add extra tab for text
 # TODO: Deleting, adding, updating effects should be done through EffectsHandler
 
+const MIN_VALUE: float = -100000
+const MAX_VALUE: float = 100000
+
 
 @export var button_video: Button
 @export var button_audio: Button
@@ -22,7 +25,16 @@ func _ready() -> void:
 	EffectsHandler.effects_updated.connect(_on_effects_updated)
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_clip_pressed(-1)
+
+
 func _on_clip_pressed(id: int) -> void:
+	if id == current_clip_id:
+		_update_ui_values()
+		return
+
 	current_clip_id = id
 	_clear_ui()
 
@@ -97,10 +109,10 @@ func _load_video_effects() -> void:
 	if !ClipHandler.has_clip(current_clip_id):
 		return
 
-	var clip: ClipData = ClipHandler.get_clip(current_clip_id)	
+	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)	
 	
-	for i: int in clip.effects_video.size():
-		var effect: GoZenEffectVisual = clip.effects_video[i]
+	for i: int in clip_data.effects_video.size():
+		var effect: GoZenEffectVisual = clip_data.effects_video[i]
 		var container: FoldableContainer = _create_effect_ui(effect, i, true)
 
 		video_container.add_child(container)
@@ -114,10 +126,10 @@ func _load_audio_effects() -> void:
 	if !ClipHandler.has_clip(current_clip_id):
 		return
 
-	var clip: ClipData = ClipHandler.get_clip(current_clip_id)	
+	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)	
 	
-	for i: int in clip.effects_video.size():
-		var effect: GoZenEffectAudio = clip.effects_audio[i]
+	for i: int in clip_data.effects_video.size():
+		var effect: GoZenEffectAudio = clip_data.effects_audio[i]
 		var container: FoldableContainer = _create_effect_ui(effect, i, true)
 
 		audio_container.add_child(container)
@@ -143,6 +155,14 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 	button_move_up.custom_minimum_size.x = 20
 	button_move_down.custom_minimum_size.x = 20
 	button_delete.custom_minimum_size.x = 20
+
+	button_move_up.custom_minimum_size.y = 20
+	button_move_down.custom_minimum_size.y = 20
+	button_delete.custom_minimum_size.y = 20
+
+	button_move_up.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button_move_down.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button_delete.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 	button_move_up.ignore_texture_size = true
 	button_move_down.ignore_texture_size = true
@@ -200,8 +220,8 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 		TYPE_INT, TYPE_FLOAT:
 			var spinbox: SpinBox = SpinBox.new()
 
-			spinbox.min_value = param.min_value if param.min_value != null else -INF
-			spinbox.max_value = param.max_value if param.max_value != null else INF
+			spinbox.min_value = param.min_value if param.min_value != null else MIN_VALUE
+			spinbox.max_value = param.max_value if param.max_value != null else MAX_VALUE
 
 			spinbox.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
 			spinbox.allow_lesser = param.min_value == null
@@ -217,8 +237,8 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			var spinbox_y: SpinBox = SpinBox.new()
 
 			# X
-			spinbox_x.min_value = param.min_value.x if param.min_value != null else -INF
-			spinbox_x.max_value = param.max_value.x if param.max_value != null else INF
+			spinbox_x.min_value = param.min_value.x if param.min_value != null else MIN_VALUE
+			spinbox_x.max_value = param.max_value.x if param.max_value != null else MAX_VALUE
 
 			spinbox_x.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
 			spinbox_x.allow_lesser = param.min_value == null
@@ -232,8 +252,8 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 				update_call.call(current_value))
 			
 			# Y
-			spinbox_y.min_value = param.min_value.y if param.min_value != null else -INF
-			spinbox_y.max_value = param.max_value.y if param.max_value != null else INF
+			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
+			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
 
 			spinbox_y.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
 			spinbox_y.allow_lesser = param.min_value == null
@@ -285,24 +305,20 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1:
+	if current_clip_id == -1 or !ClipHandler.has_clip(current_clip_id):
 		return
 
-	var clip: ClipData = ClipHandler.get_clip(current_clip_id)
-	
-	if not clip:
-		return
-
-	var frame_nr: int = EditorCore.frame_nr - clip.start_frame
+	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 	var container: VBoxContainer
 	var effects: Array
 
 	if tab_container.current_tab == 0:
 		container = video_container
-		effects = clip.effects_video
+		effects = clip_data.effects_video
 	else:
 		container = audio_container
-		effects = clip.effects_audio
+		effects = clip_data.effects_audio
 
 	for i: int in container.get_child_count():
 		var effect: GoZenEffect = effects[i]
