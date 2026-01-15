@@ -5,6 +5,22 @@ signal effect_removed(clip_id: int)
 signal effects_updated()
 signal effect_values_updated()
 
+const PATH_EFFECTS_VISUAL: String = "res://effects/visual/"
+const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
+
+
+#---- Getting all available effects ---
+## Get's a list of all usable effects which can be aplied to a clip.
+func get_available_effects(is_visual: bool) -> Array[GoZenEffect]:
+	var array: Array[GoZenEffect] = []
+	var path: String = PATH_EFFECTS_VISUAL if is_visual else PATH_EFFECTS_AUDIO
+	var dir: DirAccess = DirAccess.open(path)
+
+	for file_name: String in dir.get_files():
+		if file_name.ends_with(".tres"):
+			array.append(load(path + file_name))
+
+	return array
 
 
 #---- Adding effects ----

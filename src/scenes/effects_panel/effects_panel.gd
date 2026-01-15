@@ -50,8 +50,8 @@ func _on_clip_pressed(id: int) -> void:
 	var is_visual: bool = type in EditorCore.VISUAL_TYPES
 	var is_audio: bool = type not in EditorCore.AUDIO_TYPES
 
-	button_video.disabled = !is_visual
-	button_audio.disabled = !is_audio
+	button_video.disabled = type not in EditorCore.VISUAL_TYPES
+	button_audio.disabled = type not in EditorCore.AUDIO_TYPES
 
 	# Auto-switch tabs
 	var current_tab: int = tab_container.current_tab
@@ -120,6 +120,8 @@ func _load_video_effects() -> void:
 
 		video_container.add_child(container)
 
+	video_container.add_child(HSeparator.new())
+	video_container.add_child(_add_add_effects_button(true))
 	_update_ui_values()
 
 
@@ -137,6 +139,8 @@ func _load_audio_effects() -> void:
 
 		audio_container.add_child(container)
 
+	audio_container.add_child(HSeparator.new())
+	audio_container.add_child(_add_add_effects_button(false))
 	_update_ui_values()
 
 
@@ -339,7 +343,7 @@ func _update_ui_values() -> void:
 		container = audio_container
 		effects = clip_data.effects_audio
 
-	for i: int in container.get_child_count():
+	for i: int in container.get_child_count() - 2: # - 2 because of separator + add_effects button
 		var effect: GoZenEffect = effects[i]
 		var foldable_container: FoldableContainer = container.get_child(i)
 		var grid: GridContainer = foldable_container.get_child(0)
@@ -401,3 +405,19 @@ func _on_switch_enabled(index: int, is_visual: bool) -> void:
 	else:
 		visible_button.texture_normal = load(Library.ICON_INVISIBLE)
 
+
+func _add_add_effects_button(is_visual: bool) -> Button:
+	var button: Button = Button.new()
+
+	button.text = tr("button_add_effects")
+	button.tooltip_text = tr("button_tooltip_add_effects")
+	button.custom_minimum_size.y = 30
+	button.pressed.connect(_open_add_effects_popup.bind(is_visual))
+
+	return button
+
+
+func _open_add_effects_popup(is_visual: bool) -> void:
+	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.ADD_EFFECTS)
+
+	popup.load_effects(is_visual, current_clip_id)

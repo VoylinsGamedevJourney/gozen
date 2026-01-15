@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqsbn4yb7nd0"]
+
+[ext_resource type="Script" uid="uid://didhk4wfastnl" path="res://scenes/add_effects_popup/add_effects_popup.gd" id="1_rcm8h"]
+
+[node name="AddEffectsPopup" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_rcm8h")
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(700, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+
+[node name="AboutPanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AboutPanel"]
+layout_mode = 2
+
+[node name="AboutVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AboutPanel/Margin"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox"]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "title_add_effects"
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+text = "button_close"
+
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]

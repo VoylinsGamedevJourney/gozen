@@ -11,7 +11,8 @@ enum POPUP {
 	COMMAND_BAR,
 	MODULE_MANAGER,
 	VERSION_CHECK,
-	RECENT_PROJECTS
+	RECENT_PROJECTS,
+	ADD_EFFECTS,
 }
 
 
@@ -27,6 +28,7 @@ var _popup_uids: Dictionary [POPUP, String] = {
 	POPUP.MODULE_MANAGER: Library.SCENE_MODULE_MANAGER,
 	POPUP.VERSION_CHECK: Library.SCENE_VERSION_CHECK,
 	POPUP.RECENT_PROJECTS: Library.SCENE_RECENT_PROJECTS,
+	POPUP.ADD_EFFECTS: Library.SCENE_ADD_EFFECTS,
 }
 var _control: Control = Control.new()
 var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
@@ -37,7 +39,7 @@ func _ready() -> void:
 	get_window().size_changed.connect(_on_size_changed)
 
 	await get_tree().root.ready
-	add_child(_control)
+	get_tree().root.add_child(_control)
 	_control.add_child(_background)
 	_control.visible = false
 	_control.top_level = true

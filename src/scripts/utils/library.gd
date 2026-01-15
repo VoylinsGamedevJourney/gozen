@@ -36,6 +36,7 @@ const SCENE_MARKER_DIALOG: String = "uid://ce1hy5ks465h7"
 const SCENE_MODULE_MANAGER: String = "" # TODO:
 const SCENE_VERSION_CHECK: String = "" # TODO:
 const SCENE_RECENT_PROJECTS: String = "" # TODO:
+const SCENE_ADD_EFFECTS: String = "uid://dqsbn4yb7nd0"
 
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"

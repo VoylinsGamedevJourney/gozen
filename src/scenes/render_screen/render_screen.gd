@@ -348,7 +348,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		RenderManager.STATUS.ERROR_OPEN: _show_error("encoding_progress_text_open_error")
 		RenderManager.STATUS.ERROR_AUDIO: _show_error("encoding_progress_text_sending_audio_error")
 		RenderManager.STATUS.ERROR_CANCELED:
-			progress_overlay = PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+			PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.
