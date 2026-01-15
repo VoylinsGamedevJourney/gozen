@@ -78,7 +78,6 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 		var video_framerate: float = video.get_framerate()
 		var video_frame_nr: int = video.get_current_frame()
 
-		frame_nr = frame_nr - clip.start_frame + clip.begin
 		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
 
 		# check if not reloading same frame

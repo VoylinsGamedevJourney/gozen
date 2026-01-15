@@ -45,6 +45,7 @@ func _ready() -> void:
 
 	ClipHandler.clips_updated.connect(_on_clips_updated)
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
+	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
 
 
 func _process(delta: float) -> void:
@@ -257,20 +258,21 @@ func update_view(track_id: int, update: bool) -> void:
 
 	var file_data: FileData = ClipHandler.get_clip_file_data(loaded_clips[track_id])
 	var clip_data: ClipData = ClipHandler.get_clip(loaded_clips[track_id])
+	var relative_frame: int = frame_nr - clip_data.start_frame + clip_data.begin
 
-	ClipHandler.load_frame(loaded_clips[track_id], frame_nr)
+	ClipHandler.load_frame(loaded_clips[track_id], relative_frame)
 
 	if file_data.video != null:
 		if update:
 			visual_compositors[track_id].initialize_video(file_data.video)
 
-		visual_compositors[track_id].process_video_frame(file_data.video, clip_data.effects_video, frame_nr)
+		visual_compositors[track_id].process_video_frame(file_data.video, clip_data.effects_video, relative_frame)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 	elif file_data.image != null:
 		if update:
 			visual_compositors[track_id].initialize_image(file_data.image)
 
-		visual_compositors[track_id].process_image_frame(clip_data.effects_video, frame_nr)
+		visual_compositors[track_id].process_image_frame(clip_data.effects_video, relative_frame)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 
 

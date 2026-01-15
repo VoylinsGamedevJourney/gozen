@@ -25,6 +25,7 @@ func _ready() -> void:
 	ClipHandler.clip_deleted.connect(_on_clip_erased)
 	ClipHandler.clip_selected.connect(_on_clip_pressed)
 	EffectsHandler.effects_updated.connect(_on_effects_updated)
+	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
 
 func _input(event: InputEvent) -> void:

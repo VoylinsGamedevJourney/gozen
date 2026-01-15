@@ -3,6 +3,7 @@ extends Node
 signal effect_added(clip_id: int)
 signal effect_removed(clip_id: int)
 signal effects_updated()
+signal effect_values_updated()
 
 
 
@@ -120,6 +121,7 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 		return
 
+
 	var effect: GoZenEffect = list[index]
 	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 
@@ -152,8 +154,8 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 		InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
 				clip_id, index, is_visual, param_id, frame_nr))
 
-	InputManager.undo_redo.add_do_method(effects_updated.emit)
-	InputManager.undo_redo.add_undo_method(effects_updated.emit)
+	InputManager.undo_redo.add_do_method(effect_values_updated.emit)
+	InputManager.undo_redo.add_undo_method(effect_values_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
