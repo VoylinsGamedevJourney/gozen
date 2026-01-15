@@ -84,9 +84,8 @@ func save_as() -> void:
 
 	
 func open(new_project_path: String) -> void:
-	var loading_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 	
-	get_tree().root.add_child(loading_overlay)
 	loading_overlay.update_title("title_loading_project")
 	loading_overlay.update_progress(0, "status_project_loading_init")
 	loading_overlay.update_progress_bar(1, true)
@@ -131,7 +130,7 @@ func open(new_project_path: String) -> void:
 
 	loading_overlay.update_progress_bar(100)
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
-	loading_overlay.queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 
 	loaded = true
 	unsaved_changes = false
@@ -207,7 +206,7 @@ func _on_close_requested() -> void:
 	cancel_button.pressed.connect(_on_cancel_close)
 	dont_save_button.pressed.connect(get_tree().quit)
 
-	get_tree().root.add_child(popup)
+	add_child(popup)
 	popup.popup_centered()
 
 

@@ -248,7 +248,8 @@ func _render_finished() -> void:
 	
 	add_child(dialog)
 	dialog.popup_centered()
-	progress_overlay.queue_free()
+
+	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 	progress_overlay = null
 
 
@@ -265,7 +266,8 @@ func _show_error(message: String) -> void:
 	
 	add_child(dialog)
 	dialog.popup_centered()
-	progress_overlay.queue_free()
+
+	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 	progress_overlay = null
 
 
@@ -301,10 +303,10 @@ func _on_start_render_button_pressed() -> void:
 
 	# Display the progress popup.
 	if progress_overlay != null:
-		progress_overlay.queue_free()
+		PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 		progress_overlay = null
 
-	progress_overlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
+	progress_overlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 	progress_overlay.update_title("title_rendering")
 	progress_overlay.update_progress(0, "")
 
@@ -313,7 +315,6 @@ func _on_start_render_button_pressed() -> void:
 	button.text = "button_cancel_rendering"
 	button.pressed.connect(_cancel_render)
 
-	get_tree().root.add_child(progress_overlay)
 	var status_label: Label = progress_overlay.status_hbox.get_child(0)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	progress_overlay.status_hbox.add_child(button)
@@ -347,7 +348,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		RenderManager.STATUS.ERROR_OPEN: _show_error("encoding_progress_text_open_error")
 		RenderManager.STATUS.ERROR_AUDIO: _show_error("encoding_progress_text_sending_audio_error")
 		RenderManager.STATUS.ERROR_CANCELED:
-			progress_overlay.queue_free()
+			progress_overlay = PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.

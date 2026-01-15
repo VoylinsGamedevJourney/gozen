@@ -21,7 +21,7 @@ func _show_menu_bar(value: bool) -> void:
 
 
 func _open_about_gozen() -> void:
-	get_tree().root.add_child(preload(Library.SCENE_ABOUT_GOZEN).instantiate())
+	PopupManager.open_popup(PopupManager.POPUP.CREDITS)
 
 
 func _on_editor_screen_button_pressed() -> void:

@@ -37,7 +37,7 @@ func _ready() -> void:
 	get_window().size_changed.connect(_on_size_changed)
 
 	await get_tree().root.ready
-	get_tree().root.add_child(_control)
+	add_child(_control)
 	_control.add_child(_background)
 	_control.visible = false
 	_control.top_level = true
@@ -68,7 +68,7 @@ func _open_project_settings(settings_panel: SettingsPanel) -> void:
 
 func close_popup(popup: POPUP) -> void:
 	if !_open_popups.has(popup):
-		printerr("PopupManager: Popup with id '%s' not open!" % popup)
+		printerr(":PopupManager: Popup with id '%s' not open!" % popup)
 	else:
 		_open_popups[popup].queue_free()
 

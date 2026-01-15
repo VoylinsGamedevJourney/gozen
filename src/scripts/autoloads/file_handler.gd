@@ -65,10 +65,9 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 	if file_paths.size() == 0:
 		return
 
-	var dropped_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
+	var dropped_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 	var progress_increment: float = (1 / float(dropped_files.size())) * 50
 
-	get_tree().root.add_child(dropped_overlay)
 	dropped_overlay.set_state_file_loading(dropped_files.size())
 	dropped_overlay.update_title("title_files_dropped")
 	dropped_overlay.update_progress(0, "")
@@ -112,7 +111,7 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 
 	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
-	dropped_overlay.queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 
 
 func reset_data() -> void:
