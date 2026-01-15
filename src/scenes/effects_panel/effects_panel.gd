@@ -6,6 +6,8 @@ extends PanelContainer
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
+const SIZE_EFFECT_HEADER_ICON: int = 16
+
 
 @export var button_video: Button
 @export var button_audio: Button
@@ -142,49 +144,64 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
 
+	# TODO: Replace up and down arrows with dragging behaviour
+
 	var container: FoldableContainer = FoldableContainer.new()
 	var button_move_up: TextureButton = TextureButton.new()
 	var button_move_down: TextureButton = TextureButton.new()
 	var button_delete: TextureButton = TextureButton.new()
+	var button_visible: TextureButton = TextureButton.new()
 	var grid: GridContainer = GridContainer.new()
 
 	container.title = effect.effect_name
 	container.title_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark)
 
-	button_move_up.custom_minimum_size.x = 20
-	button_move_down.custom_minimum_size.x = 20
-	button_delete.custom_minimum_size.x = 20
+	button_move_up.custom_minimum_size.x = SIZE_EFFECT_HEADER_ICON
+	button_move_down.custom_minimum_size.x = SIZE_EFFECT_HEADER_ICON
+	button_delete.custom_minimum_size.x = SIZE_EFFECT_HEADER_ICON
+	button_visible.custom_minimum_size.x = SIZE_EFFECT_HEADER_ICON
 
-	button_move_up.custom_minimum_size.y = 20
-	button_move_down.custom_minimum_size.y = 20
-	button_delete.custom_minimum_size.y = 20
+	button_move_up.custom_minimum_size.y = SIZE_EFFECT_HEADER_ICON
+	button_move_down.custom_minimum_size.y = SIZE_EFFECT_HEADER_ICON
+	button_delete.custom_minimum_size.y = SIZE_EFFECT_HEADER_ICON
+	button_visible.custom_minimum_size.y = SIZE_EFFECT_HEADER_ICON
 
 	button_move_up.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button_move_down.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button_delete.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button_visible.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 	button_move_up.ignore_texture_size = true
 	button_move_down.ignore_texture_size = true
 	button_delete.ignore_texture_size = true
+	button_visible.ignore_texture_size = true
 
 	button_move_up.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	button_move_down.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	button_visible.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 
 	button_move_up.texture_normal = preload(Library.ICON_MOVE_UP)
 	button_move_down.texture_normal = preload(Library.ICON_MOVE_DOWN)
 	button_delete.texture_normal = preload(Library.ICON_DELETE)
 
+	if effect.is_enabled:
+		button_visible.texture_normal = preload(Library.ICON_VISIBLE)
+	else:
+		button_visible.texture_normal = preload(Library.ICON_INVISIBLE)
+
 	button_move_up.pressed.connect(_on_move_up.bind(index, is_visual))
 	button_move_down.pressed.connect(_on_move_down.bind(index, is_visual))
 	button_delete.pressed.connect(_on_remove_effect.bind(index, is_visual))
+	button_visible.pressed.connect(_on_switch_enabled.bind(index, is_visual))
 
 	grid.columns = 2
 
 	container.add_title_bar_control(button_move_up)
 	container.add_title_bar_control(button_move_down)
 	container.add_title_bar_control(button_delete)
+	container.add_title_bar_control(button_visible)
 	container.add_child(grid)
 
 	# Adding effect params
@@ -322,7 +339,13 @@ func _update_ui_values() -> void:
 
 	for i: int in container.get_child_count():
 		var effect: GoZenEffect = effects[i]
-		var grid: GridContainer = container.get_child(i).get_child(0)
+		var foldable_container: FoldableContainer = container.get_child(i)
+		var grid: GridContainer = foldable_container.get_child(0)
+
+		if !effect.is_enabled:
+			foldable_container.folded = true
+			#foldable_container.
+			pass
 
 		for param: EffectParam in effect.params:
 			var param_settings: Control = grid.get_node_or_null("PARAM_" + param.param_id)
@@ -354,3 +377,25 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 			(param_settings as ColorPickerButton).color = value
 	else:
 		printerr("EffectsPanel: Invalid param settings control! %s" % param_settings)
+
+
+func _on_switch_enabled(index: int, is_visual: bool) -> void:
+	EffectsHandler.switch_enabled(current_clip_id, index, is_visual)
+
+
+	var container: FoldableContainer = tab_container.get_current_tab_control().get_child(index)
+	var visible_button: TextureButton = container.get_child(-2, true)
+	var is_enabled: bool
+
+	if is_visual:
+		is_enabled = ClipHandler.get_clip(current_clip_id).effects_video[index].is_enabled
+	else:
+		is_enabled = ClipHandler.get_clip(current_clip_id).effects_audio[index].is_enabled
+
+	container.folded = !is_enabled
+
+	if is_enabled:
+		visible_button.texture_normal = load(Library.ICON_VISIBLE)
+	else:
+		visible_button.texture_normal = load(Library.ICON_INVISIBLE)
+

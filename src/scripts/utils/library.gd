@@ -18,6 +18,8 @@ const ICON_DELETE: String = "uid://dyndi17ou8ixo"
 const ICON_FOLDER: String = "uid://8yvgi81apxxg"
 const ICON_MOVE_UP: String = "uid://cf8slnfkfkgry"
 const ICON_MOVE_DOWN: String = "uid://ck6ynhi0466wi"
+const ICON_VISIBLE: String = "uid://cjiu43fvjigrn"
+const ICON_INVISIBLE: String = "uid://dclwilgl1wq3f"
 
 const SHADER_YUV420P: String = "res://shaders/yuv420p_standard.glsl"
 const SHADER_YUV420P_FULL: String = "res://shaders/yuv420p_full.glsl"

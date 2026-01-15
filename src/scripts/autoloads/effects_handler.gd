@@ -182,6 +182,39 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 	effect._cache_dirty = true
 
 
+#---- Switch enabled ----
+func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
+	if !ClipHandler.has_clip(clip_id):
+		return
+
+	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var list: Array = _get_effect_list(clip_data, is_visual)
+
+	if index < 0 or index >= list.size():
+		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
+		return
+
+	var effect: GoZenEffect = list[index]
+	var enabled: bool = effect.is_enabled
+
+	InputManager.undo_redo.create_action("Move effect: %s" % effect.effect_name)
+
+	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip_id, index, is_visual, !enabled))
+	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip_id, index, is_visual, enabled))
+
+	InputManager.undo_redo.add_do_method(effects_updated.emit)
+	InputManager.undo_redo.add_undo_method(effects_updated.emit)
+
+	InputManager.undo_redo.commit_action()
+
+
+func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> void:
+	if is_visual:
+		ClipHandler.clips[clip_id].effects_video[index].is_enabled = value
+	else:
+		ClipHandler.clips[clip_id].effects_audio[index].is_enabled = value
+
+
 #---- Helper functions ----
 func _get_effect_list(clip_data: ClipData, is_visual: bool) -> Array:
 	if is_visual:
