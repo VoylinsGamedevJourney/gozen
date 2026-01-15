@@ -11,13 +11,14 @@ func get_transform_matrix_variables() -> PackedStringArray:
 func calculate_transform_matrix(data: Dictionary[String, Variant], resolution: Vector2) -> PackedFloat32Array:
 	# First check if data has the needed params.
 	for key: String in data.keys():
-		if data[key] == null:
-			printerr("MatrixHandler: Transform: Key '%s' is missing from params! %s" % [key, data[key]])
-			return PackedFloat32Array([ # Returning empty data to prevent crashing
-				1.0, 0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0, 0.0,
-				0.0, 0.0, 1.0, 0.0,
-				0.0, 0.0, 0.0, 1.0])
+		if data[key] != null:
+			continue
+
+		printerr("MatrixHandler: Transform: Key '%s' is missing from params! %s" % [key, data[key]])
+		match key: # Attempt on filling in some data to avoid crash.
+			"size": data[key] = resolution
+			"rotation": data[key] = 0
+			_: data[key] = Vector2i(0, 0)
 
 	# Create transform
 	var transform: Transform2D = Transform2D.IDENTITY

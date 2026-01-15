@@ -155,6 +155,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	container.title = effect.effect_name
 	container.title_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	container.tooltip_text = effect.effect_tooltip
 	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark)
 
 	button_move_up.custom_minimum_size.x = SIZE_EFFECT_HEADER_ICON
@@ -210,7 +211,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 		var param_settings: Control = _create_param_control(param, index, is_visual)
 
 		param_title.text = param.param_name.replace("param_", "").capitalize() # TODO: Localize this
-		param_title.tooltip_text = param.param_id # TODO: Create better descriptions
+		param_title.tooltip_text = param.param_tooltip
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 		param_settings.name = "PARAM_" + param.param_id
@@ -305,7 +306,7 @@ func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
 	var y: float = container.get_child(1).value
 
 	if type == TYPE_VECTOR2I:
-		Vector2i(int(x), int(y))
+		return Vector2i(int(x), int(y))
 	return Vector2(x, y)
 
 

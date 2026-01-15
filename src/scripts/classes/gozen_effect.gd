@@ -4,6 +4,8 @@ extends Resource
 
 @export var effect_id: String
 @export var effect_name: String
+@export var effect_tooltip: String
+
 @export var params: Array[EffectParam]
 @export var is_enabled: bool = true
 
@@ -81,7 +83,11 @@ func _interpolate_variant(value_a: Variant, value_b: Variant, weight: float) -> 
 		return lerp(float(value_a), float(value_b), weight)
 	elif value_a is Vector2:
 		return value_a.lerp(value_b, weight)
+	elif value_a is Vector2i:
+		return value_a.lerp(value_b, weight)
 	elif value_a is Vector3:
+		return value_a.lerp(value_b, weight)
+	elif value_a is Vector3i:
 		return value_a.lerp(value_b, weight)
 	elif value_a is Color:
 		return value_a.lerp(value_b, weight)
