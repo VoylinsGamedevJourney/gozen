@@ -62,8 +62,10 @@ var base_image: RID
 var ping_texture: RID
 var pong_texture: RID
 var display_texture: Texture2DRD
+var default_sampler: RID
 
 var effects_cache: Dictionary[String, EffectCache] = {} # { shader_path : shader cache }
+var effect_buffers: Dictionary[int, RID] = {} # { effect_instance_id : RID }
 
 var resolution: Vector2i
 var initialized: bool = false
@@ -76,6 +78,10 @@ var groups_y: int
 func _init_start(p_resolution: Vector2i) -> void:
 	if initialized:
 		cleanup()
+
+	var sampler_state: RDSamplerState = RDSamplerState.new()
+
+	default_sampler = device.sampler_create(sampler_state)
 
 	resolution = p_resolution
 	display_texture = Texture2DRD.new()
@@ -217,6 +223,7 @@ func process_image_frame(effects: Array[GoZenEffectVisual], current_frame: int) 
 func cleanup() -> void:
 	ping_texture = Utils.cleanup_rid(device, ping_texture)
 	pong_texture = Utils.cleanup_rid(device, pong_texture)
+	default_sampler = Utils.cleanup_rid(device, default_sampler)
 
 	# Video cleanup
 	y_texture = Utils.cleanup_rid(device, y_texture)
@@ -235,6 +242,11 @@ func cleanup() -> void:
 
 	effects_cache.clear()
 
+	for buffer: RID in effect_buffers.values():
+		Utils.cleanup_rid(device, buffer)
+
+	effect_buffers.clear()
+
 
 func _update_effect_buffers(effects: Array[GoZenEffectVisual], current_frame: int) -> void:
 	for effect: GoZenEffectVisual in effects:
@@ -246,8 +258,13 @@ func _update_effect_buffers(effects: Array[GoZenEffectVisual], current_frame: in
 		if not cache:
 			continue
 
-		cache.process_buffer(effect, current_frame, resolution)
-		device.buffer_update(cache.buffer, 0, cache.buffer_data.size(), cache.buffer_data)
+		var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution)
+		var id: int = effect.get_instance_id()
+
+		if effect_buffers.has(id):
+			device.buffer_update(effect_buffers[id], 0, buffer_data.size(), buffer_data)
+		else:
+			effect_buffers[id] = device.uniform_buffer_create(buffer_data.size(), buffer_data)
 
 
 func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual]) -> void:
@@ -268,7 +285,7 @@ func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual]) -> voi
 		var effect_uniforms: Array[RDUniform] = [
 			_create_sampler_uniform(ping_texture, 0),
 			_create_image_uniform(pong_texture, 1),
-			_create_buffer_uniform(cache.buffer, 2)]
+			_create_buffer_uniform(effect_buffers[effect.get_instance_id()], 2)]
 		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
 
 		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)

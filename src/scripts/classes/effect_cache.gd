@@ -6,9 +6,6 @@ var effect_name: String
 var shader: RID
 var pipeline: RID
 
-var buffer: RID
-var buffer_data: PackedByteArray
-
 var _effect: GoZenEffectVisual
 var _frame_nr: int = -1
 var _resolution: Vector2i
@@ -20,11 +17,8 @@ func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: GoZenEffe
 	shader = device.shader_create_from_spirv(spirv)
 	pipeline = device.compute_pipeline_create(shader)
 
-	process_buffer(effect, 0, Vector2i(1920, 1080)) # Dummy run
-	buffer = device.uniform_buffer_create(buffer_data.size(), buffer_data)
 
-
-func process_buffer(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector2i) -> void:
+func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector2i) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 	var processed_matrices: Array[MatrixHandler.TYPE] = []
 
@@ -78,12 +72,13 @@ func process_buffer(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector
 				stream.put_float(value.a)
 			_: printerr("EffectCache: Unsupported type! %s-%s" % [value, typeof(value)])
 
-	buffer_data = stream.data_array
-
+	var buffer_data: PackedByteArray = stream.data_array
 	var padding: int = 16 - (buffer_data.size() % 16)
 
 	if padding != 0: # Add final padding
 		buffer_data.resize(buffer_data.size() + padding)
+
+	return buffer_data
 
 
 func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
@@ -107,7 +102,6 @@ func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
 func free_rids(device: RenderingDevice) -> void:
 	pipeline = Utils.cleanup_rid(device, pipeline)
 	shader = Utils.cleanup_rid(device, shader)
-	buffer = Utils.cleanup_rid(device, buffer)
 
 
 func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
