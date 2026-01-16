@@ -24,9 +24,9 @@ func _ready() -> void:
 	EditorCore.frame_changed.connect(_on_frame_changed)
 	ClipHandler.clip_deleted.connect(_on_clip_erased)
 	ClipHandler.clip_selected.connect(_on_clip_pressed)
-	EffectsHandler.effect_added.connect(_on_effects_updated.unbind(1))
-	EffectsHandler.effect_removed.connect(_on_effects_updated.unbind(1))
-	EffectsHandler.effects_updated.connect(_on_effects_updated)
+	EffectsHandler.effect_added.connect(_on_effects_updated)
+	EffectsHandler.effect_removed.connect(_on_effects_updated)
+	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(-1))
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
 
@@ -103,8 +103,10 @@ func _refresh_current_tab() -> void:
 
 func _clear_ui() -> void:
 	for child: Node in video_container.get_children():
+		video_container.remove_child(child)
 		child.queue_free()
 	for child: Node in audio_container.get_children():
+		audio_container.remove_child(child)
 		child.queue_free()
 
 
