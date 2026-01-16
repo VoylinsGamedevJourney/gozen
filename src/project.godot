@@ -47,6 +47,7 @@ settings/crash_handler/message="Please include this when reporting the bug. Repo
 settings/crash_handler/message.editor="Please include this when reporting the bug: https://github.com/VoylinsGamedevJourney/gozen/issues"
 file_logging/enable_file_logging=true
 file_logging/log_path="user://logs/gozen.log"
+gdscript/warnings/unused_signal=0
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
 shader_language/warnings/treat_warnings_as_errors=true

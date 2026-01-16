@@ -5,6 +5,9 @@ signal clip_added(clip_id: int)
 signal clip_deleted(clip_id: int)
 signal clips_updated
 
+signal clip_selected(clip_id: int)
+
+
 # This is the amount that we allow to use next_frame before using seek_frame
 # for the video data since seek_frame is usually slower
 # TODO: Make this into a setting
@@ -75,7 +78,6 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 		var video_framerate: float = video.get_framerate()
 		var video_frame_nr: int = video.get_current_frame()
 
-		frame_nr = frame_nr - clip.start_frame + clip.begin
 		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
 
 		# check if not reloading same frame
@@ -125,12 +127,14 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 					param.default_value = Project.get_resolution()
 				elif param.param_id == "pivot":
 					param.default_value = Vector2i(Project.get_resolution() / 2)
-
+			
+			transform_effect.set_default_keyframe()
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
-			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_SOUND_VOLUME).duplicate(true)
+			var volume_effect: GoZenEffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
 
-			clip_data.effects_sound.append(volume_effect)
+			volume_effect.set_default_keyframe()
+			clip_data.effects_audio.append(volume_effect)
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
@@ -188,8 +192,8 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		# Copy effects of main clip
 		new_clip_data.effects_video.assign(
 				_copy_visual_effects(clip_data.effects_video, cut_frame_pos))
-		new_clip_data.effects_sound.assign(
-				_copy_audio_effects(clip_data.effects_sound, cut_frame_pos))
+		new_clip_data.effects_audio.assign(
+				_copy_audio_effects(clip_data.effects_audio, cut_frame_pos))
 
 		InputManager.undo_redo.add_do_method(_add_clip.bind(new_clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(new_clip_data))

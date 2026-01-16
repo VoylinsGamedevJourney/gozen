@@ -15,7 +15,7 @@ var end_frame: int:
 var begin: int = 0 # Only for video and audio files
 
 var effects_video: Array[GoZenEffectVisual]
-var effects_sound: Array[GoZenEffectAudio]
+var effects_audio: Array[GoZenEffectAudio]
 
 
 

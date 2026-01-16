@@ -24,7 +24,7 @@ func _ready() -> void:
 		_data.default_project_path = OS.get_executable_path().trim_suffix(
 				OS.get_executable_path().get_file())
 	elif DataManager.load_data(PATH, _data):
-		printerr("Couldn't load settings! ", FileAccess.get_open_error())
+		printerr("Settings: Couldn't load settings! ", FileAccess.get_open_error())
 
 	load_system_fonts()
 	apply_language()
@@ -40,7 +40,7 @@ func _ready() -> void:
 
 func save() -> void:
 	if DataManager.save_data(PATH, _data):
-		printerr("Something went wrong saving settings! ", FileAccess.get_open_error())
+		printerr("Settings: Something went wrong saving settings! ", FileAccess.get_open_error())
 
 
 func open_settings_menu() -> void:

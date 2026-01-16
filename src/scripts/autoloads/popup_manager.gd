@@ -10,9 +10,9 @@ enum POPUP {
 	PROGRESS,
 	COMMAND_BAR,
 	MODULE_MANAGER,
-	SHORTCUT_MANAGER,
 	VERSION_CHECK,
-	RECENT_PROJECTS
+	RECENT_PROJECTS,
+	ADD_EFFECTS,
 }
 
 
@@ -26,9 +26,9 @@ var _popup_uids: Dictionary [POPUP, String] = {
 	POPUP.PROGRESS: Library.SCENE_PROGRESS_OVERLAY,
 	POPUP.COMMAND_BAR: Library.SCENE_COMMAND_BAR,
 	POPUP.MODULE_MANAGER: Library.SCENE_MODULE_MANAGER,
-	POPUP.SHORTCUT_MANAGER: Library.SCENE_SHORTCUT_MANAGER,
 	POPUP.VERSION_CHECK: Library.SCENE_VERSION_CHECK,
 	POPUP.RECENT_PROJECTS: Library.SCENE_RECENT_PROJECTS,
+	POPUP.ADD_EFFECTS: Library.SCENE_ADD_EFFECTS,
 }
 var _control: Control = Control.new()
 var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
@@ -69,13 +69,11 @@ func _open_project_settings(settings_panel: SettingsPanel) -> void:
 
 
 func close_popup(popup: POPUP) -> void:
-	if !_open_popups.has(popup):
-		printerr("Popup with id '%s' not open!" % popup)
-	else:
+	if _open_popups.has(popup):
 		_open_popups[popup].queue_free()
 
 		if !_open_popups.erase(popup):
-			printerr("Could not erase popup '%s' from open_popups!" % popup)
+			printerr("PopupManager: Could not erase popup '%s' from open_popups!" % popup)
 
 	_check_background()
 

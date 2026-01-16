@@ -11,7 +11,7 @@ func _ready() -> void:
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
 	else:
-		printerr("Couldn't get viewport texture from EditorCore!")
+		printerr("ProjectViewTexture: Couldn't get viewport texture from EditorCore!")
 
 
 func _on_gui_input(event: InputEvent) -> void:
@@ -69,10 +69,10 @@ func _on_save_screenshot(path: String) -> void:
 	match extension:
 		"png":
 			if texture.get_image().save_png(path):
-				printerr("Problem saving screenshot to system!")
+				printerr("ProjectViewTexture: Problem saving screenshot to system!")
 		"webp":
 			if texture.get_image().save_webp(path):
-				printerr("Problem saving screenshot to system!")
+				printerr("ProjectViewTexture: Problem saving screenshot to system!")
 		_: # JPG/JPEG
 			if texture.get_image().save_jpg(path):
-				printerr("Problem saving screenshot to system!")
+				printerr("ProjectViewTexture: Problem saving screenshot to system!")

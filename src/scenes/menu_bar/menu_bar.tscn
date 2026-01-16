@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://6snp6sstgbb5"]
+[gd_scene load_steps=17 format=3 uid="uid://6snp6sstgbb5"]
 
 [ext_resource type="Script" uid="uid://cey31yt1rd71u" path="res://scenes/menu_bar/menu_bar.gd" id="1_tjpug"]
 [ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/files/video_file.svg" id="2_e5ovf"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://dpsmt1do2u4xl" path="res://assets/icons/project_settings.svg" id="4_a4kme"]
 [ext_resource type="Texture2D" uid="uid://b8no3y4op4mr8" path="res://assets/icons/close.svg" id="5_pamk7"]
 [ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="6_tjpug"]
-[ext_resource type="Texture2D" uid="uid://cc7fopgapt68r" path="res://assets/icons/keyboard.svg" id="7_3r1tv"]
 [ext_resource type="Texture2D" uid="uid://duj68x5c76aaj" path="res://assets/icons/brick.svg" id="8_vnmkc"]
 [ext_resource type="Texture2D" uid="uid://b50mpqfvpjuik" path="res://assets/icons/terminal.svg" id="9_jrb8t"]
 [ext_resource type="Texture2D" uid="uid://ba63ssktyuxfk" path="res://assets/icons/bug_report.svg" id="10_sct8o"]
@@ -69,21 +68,18 @@ item_8/id = 8
 oversampling_override = 1.0
 title = "menu_bar_preferences"
 theme_override_constants/icon_max_width = 20
-item_count = 5
+item_count = 4
 item_0/text = "menu_bar_preferences_editor_settings"
 item_0/icon = ExtResource("6_tjpug")
 item_0/id = 0
-item_1/text = "menu_bar_preferences_keyboard_shortcuts"
-item_1/icon = ExtResource("7_3r1tv")
+item_1/text = "menu_bar_preferences_module_manager"
+item_1/icon = ExtResource("8_vnmkc")
 item_1/id = 1
-item_2/text = "menu_bar_preferences_module_manager"
-item_2/icon = ExtResource("8_vnmkc")
 item_2/id = 2
+item_2/separator = true
+item_3/text = "menu_bar_preferences_command_bar"
+item_3/icon = ExtResource("9_jrb8t")
 item_3/id = 3
-item_3/separator = true
-item_4/text = "menu_bar_preferences_command_bar"
-item_4/icon = ExtResource("9_jrb8t")
-item_4/id = 4
 
 [node name="HelpPopupMenu" type="PopupMenu" parent="MenuBar"]
 oversampling_override = 1.0

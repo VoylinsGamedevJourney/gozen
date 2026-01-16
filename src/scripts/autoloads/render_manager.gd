@@ -125,7 +125,7 @@ func _send_frames(frame_array: Array[Image]) -> void:
 		if frame == null: break # No more frames to be send.
 		if !encoder.send_frame(frame):
 			stop_encoder()
-			printerr("Something went wrong sending frame(s)!")
+			printerr("RenderManager: Something went wrong sending frame(s)!")
 			return
 
 
@@ -172,7 +172,7 @@ func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteAr
 	var framerate: float = Project.get_framerate()
 
 	# Apply all available effects to the clip audio data
-	for effect: GoZenEffectAudio in clip.effects_sound:
+	for effect: GoZenEffectAudio in clip.effects_audio:
 		match effect.effect_id:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.effect_name)

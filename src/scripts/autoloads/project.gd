@@ -67,7 +67,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 func save() -> void:
 	if DataManager.save_data(get_project_path(), data):
-		printerr("Something went wrong whilst saving project! ", FileAccess.get_open_error())
+		printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
 	else:
 		unsaved_changes = false
 
@@ -84,15 +84,14 @@ func save_as() -> void:
 
 	
 func open(new_project_path: String) -> void:
-	var loading_overlay: ProgressOverlay = preload(Library.SCENE_PROGRESS_OVERLAY).instantiate()
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 	
-	get_tree().root.add_child(loading_overlay)
 	loading_overlay.update_title("title_loading_project")
 	loading_overlay.update_progress(0, "status_project_loading_init")
 	loading_overlay.update_progress_bar(1, true)
 
 	if DataManager.load_data(new_project_path, data):
-		printerr("Something went wrong whilst loading project! ", FileAccess.get_open_error())
+		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
 	loading_overlay.update_progress(5, "status_project_preparing_timeline")
 
@@ -131,7 +130,7 @@ func open(new_project_path: String) -> void:
 
 	loading_overlay.update_progress_bar(100)
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
-	loading_overlay.queue_free()
+	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 
 	loaded = true
 	unsaved_changes = false
@@ -177,12 +176,12 @@ func _update_recent_projects(new_path: String) -> void:
 		
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if !file.store_string(new_path + "\n" + content):
-		printerr("Error storing String for recent_projects!")
+		printerr("Project: Error storing String for recent_projects!")
 
 
 func _open_project(file_path: String) -> void:
 	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
-		printerr("ProjectManager: Something went wrong opening project from file dialog!")
+		printerr("Project: Something went wrong opening project from file dialog!")
 
 
 func _save_as(new_project_path: String) -> void:
@@ -207,7 +206,7 @@ func _on_close_requested() -> void:
 	cancel_button.pressed.connect(_on_cancel_close)
 	dont_save_button.pressed.connect(get_tree().quit)
 
-	get_tree().root.add_child(popup)
+	add_child(popup)
 	popup.popup_centered()
 
 
@@ -247,6 +246,10 @@ func set_resolution(res: Vector2i) -> void:
 
 func get_resolution() -> Vector2i:
 	return data.resolution
+
+
+func get_resolution_center() -> Vector2i:
+	return data.resolution / 2
 
 
 func set_framerate(new_framerate: float) -> void:

@@ -6,15 +6,15 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_3btpq"]
 
-[node name="EffectsPanel" type="PanelContainer" node_paths=PackedStringArray("button_video", "button_sound", "tab_container")]
-custom_minimum_size = Vector2(260, 200)
+[node name="EffectsPanel" type="PanelContainer" node_paths=PackedStringArray("button_video", "button_audio", "tab_container")]
+custom_minimum_size = Vector2(300, 200)
 offset_right = 260.0
 offset_bottom = 43.0
 size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_k5peu")
 button_video = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton")
-button_sound = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/SoundEffectsButton")
+button_audio = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton")
 tab_container = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -44,6 +44,7 @@ size_flags_horizontal = 3
 tooltip_text = "Show Image files."
 mouse_default_cursor_shape = 2
 theme_type_variation = &"file_tab_button"
+disabled = true
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_3btpq")
@@ -51,13 +52,14 @@ icon = ExtResource("2_tqtp8")
 icon_alignment = 1
 expand_icon = true
 
-[node name="SoundEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox"]
+[node name="AudioEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Show Audio files."
 mouse_default_cursor_shape = 2
 theme_type_variation = &"file_tab_button"
+disabled = true
 toggle_mode = true
 button_group = SubResource("ButtonGroup_3btpq")
 icon = ExtResource("3_kufqk")
@@ -82,12 +84,14 @@ tabs_visible = false
 
 [node name="VisualEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 metadata/_tab_index = 0
 
-[node name="SoundEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
+[node name="AudioEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
 visible = false
 layout_mode = 2
+theme_override_constants/separation = 10
 metadata/_tab_index = 1
 
 [connection signal="pressed" from="Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton" to="." method="_on_video_effects_button_pressed"]
-[connection signal="pressed" from="Margin/VBoxContainer/EffectsButtonsHBox/SoundEffectsButton" to="." method="_on_sound_effects_button_pressed"]
+[connection signal="pressed" from="Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton" to="." method="_on_audio_effects_button_pressed"]

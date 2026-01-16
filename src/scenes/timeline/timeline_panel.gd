@@ -111,6 +111,7 @@ func _input(event: InputEvent) -> void:
 		if !TrackHandler.get_clip_at(track_id, frame_nr):
 			remove_empty_space_at(track_id, frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
+		selected_clip_ids = []
 		_on_ui_cancel()
 
 
@@ -152,10 +153,14 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		if resize_target:
 			state = STATE.RESIZING
 		else:
+			var clip_id: int = pressed_clip.id
+
 			if event.shift_pressed:
-				selected_clip_ids.append(pressed_clip.id)
+				selected_clip_ids.append(clip_id)
 			else:
-				selected_clip_ids = [pressed_clip.id]
+				selected_clip_ids = [clip_id]
+
+			ClipHandler.clip_selected.emit(clip_id)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_popup_menu()
 		right_click_clip = _get_clip_on_mouse()
@@ -163,13 +168,18 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
 
 		if right_click_clip != null:
-			if right_click_clip.id not in selected_clip_ids:
-				selected_clip_ids = [right_click_clip.id]
+			var clip_id: int = right_click_clip.id
+
+			if clip_id not in selected_clip_ids:
+				selected_clip_ids = [clip_id]
+				ClipHandler.clip_selected.emit(clip_id)
+
 				queue_redraw()
 
 			# TODO: Set icons and shortcuts
-			if ClipHandler.get_type(right_click_clip.id) in EditorCore.VISUAL_TYPES:
+			if ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES:
 				popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_ONLY_VIDEO)
+
 			popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
 			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
 			popup.add_separator()

@@ -21,7 +21,7 @@ func _show_menu_bar(value: bool) -> void:
 
 
 func _open_about_gozen() -> void:
-	get_tree().root.add_child(preload(Library.SCENE_ABOUT_GOZEN).instantiate())
+	PopupManager.open_popup(PopupManager.POPUP.CREDITS)
 
 
 func _on_editor_screen_button_pressed() -> void:
@@ -52,10 +52,9 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Settings.open_settings_menu()
-		1: PopupManager.open_popup(PopupManager.POPUP.SHORTCUT_MANAGER)
-		2: PopupManager.open_popup(PopupManager.POPUP.MODULE_MANAGER)
+		1: PopupManager.open_popup(PopupManager.POPUP.MODULE_MANAGER)
 		# Line
-		4: PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
+		3: PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
 
 
 func _on_help_popup_menu_id_pressed(id: int) -> void:

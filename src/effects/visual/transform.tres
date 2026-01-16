@@ -51,13 +51,13 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [resource]
 script = ExtResource("1_x451f")
 shader_path = "res://effects/visual/transform.glsl"
-params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
 matrix_map = Dictionary[String, int]({
-"Pivot": 0,
+"pivot": 0,
 "position": 0,
 "rotation": 0,
 "size": 0
 })
 effect_id = "transform"
 effect_name = "effect_visual_transform"
+params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"

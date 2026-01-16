@@ -35,10 +35,10 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
 		if !undo_redo.undo():
-			printerr("Couldn't undo!")
+			printerr("InputManager: Couldn't undo!")
 	if event.is_action_pressed("ui_redo", false, true) and undo_redo.has_redo():
 		if !undo_redo.redo():
-			printerr("Couldn't redo!")
+			printerr("InputManager: Couldn't redo!")
 
 	if event.is_action_pressed("timeline_play_pause", false, true):
 		if get_viewport().gui_get_focus_owner() is not LineEdit:
