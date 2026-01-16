@@ -26,3 +26,5 @@ core/vpx_src
 .github/Archive.zip
 
 bin
+core/x264_src
+core/x265_src
