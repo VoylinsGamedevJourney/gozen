@@ -1,4 +1,5 @@
 extends Node
+# TODO: Load custom effects.
 
 signal effect_added(clip_id: int)
 signal effect_removed(clip_id: int)
@@ -9,18 +10,48 @@ const PATH_EFFECTS_VISUAL: String = "res://effects/visual/"
 const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
 
 
-#---- Getting all available effects ---
-## Get's a list of all usable effects which can be aplied to a clip.
-func get_available_effects(is_visual: bool) -> Array[GoZenEffect]:
-	var array: Array[GoZenEffect] = []
-	var path: String = PATH_EFFECTS_VISUAL if is_visual else PATH_EFFECTS_AUDIO
-	var dir: DirAccess = DirAccess.open(path)
+var visual_effects: Dictionary[String, String] = {} # { effect_name: effect_id }
+var visual_effect_instances: Dictionary[String, GoZenEffectVisual] = {} # { effect_id: effect_class }
 
-	for file_name: String in dir.get_files():
+var audio_effects: Dictionary[String, String] = {} # { effect_name: effect_id }
+var audio_effect_instances: Dictionary[String, GoZenEffectAudio] = {} # { effect_id: effect_class }
+
+var effect_param_exceptions: Dictionary[String, Dictionary] = {
+	"transform": {
+		"size": Project.get_resolution,
+		"pivot": Project.get_resolution_center
+	}
+}
+
+
+
+func _ready() -> void:
+	_load_video_effects()
+	_load_audio_effects()
+
+	
+func _load_video_effects() -> void:
+	visual_effects.clear()
+	visual_effect_instances.clear()
+
+	for file_name: String in DirAccess.open(PATH_EFFECTS_VISUAL).get_files():
 		if file_name.ends_with(".tres"):
-			array.append(load(path + file_name))
+			var effect: GoZenEffectVisual = load(PATH_EFFECTS_VISUAL + file_name)
 
-	return array
+			visual_effects[effect.effect_name] = effect.effect_id
+			visual_effect_instances[effect.effect_id] = effect
+
+
+func _load_audio_effects() -> void:
+	audio_effects.clear()
+	audio_effect_instances.clear()
+
+	for file_name: String in DirAccess.open(PATH_EFFECTS_AUDIO).get_files():
+		if file_name.ends_with(".tres"):
+			var effect: GoZenEffectAudio = load(PATH_EFFECTS_AUDIO + file_name)
+
+			audio_effects[effect.effect_name] = effect.effect_id
+			audio_effect_instances[effect.effect_id] = effect
 
 
 #---- Adding effects ----
@@ -30,8 +61,18 @@ func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
 
 	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
-
 	var index: int = list.size()
+
+	if effect.effect_id in effect_param_exceptions:
+		var id: String = effect.effect_id
+
+		for exception: String in effect_param_exceptions[id]:
+			var exception_value: Variant = effect_param_exceptions[id][exception]
+
+			if exception_value is Callable:
+				effect.change_default_param(exception, exception_value.call())
+			else:
+				effect.change_default_param(exception, exception_value)
 
 	effect.set_default_keyframe()
 

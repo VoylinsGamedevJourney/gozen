@@ -4,8 +4,6 @@ extends Control
 # TODO: Display the actions in a better way
 
 const MAX_COMMANDS: int = 5
-const FUZZY_SCORE_POINT: int = 1
-const FUZZY_SCORE_BONUS: int = 10
 
 
 @export var command_line: LineEdit
@@ -100,32 +98,7 @@ class ButtonScore:
 
 	func _init(button_node: Button, command_text: String) -> void:
 		button = button_node
-		score = _get_fuzzy_score(command_text, button.text)
-
-
-	func _get_fuzzy_score(query: String, text: String) -> int:
-		if query.is_empty():
-			return 1
-		elif query.length() > text.length():
-			return 0
-		
-		var query_index: int = 0
-		var text_index: int = 0
-		
-		query = query.to_lower()
-		text = text.to_lower()
-		
-		while query_index < query.length() and text_index < text.length():
-			if query[query_index] == text[text_index]:
-				score += FUZZY_SCORE_POINT # Match found
-
-				# Bonus for start of word
-				if text_index == 0 or text[text_index - 1] == " " or text[text_index - 1] == "_":
-					score += FUZZY_SCORE_BONUS # Start word found so extra bonus
-				query_index += 1
-			text_index += 1
-		
-		return score if query_index == query.length() else 0
+		score = Utils.get_fuzzy_score(command_text, button.text)
 
 
 	static func sort_scores(a: ButtonScore, b: ButtonScore) -> bool:

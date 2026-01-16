@@ -2,6 +2,11 @@ class_name Utils
 extends Node
 
 
+# const variables for get_fuzzy_score()
+const FUZZY_SCORE_POINT: int = 1
+const FUZZY_SCORE_BONUS: int = 10
+
+
 
 static func format_file_nickname(file_name: String, size: int) -> String:
 	var new_name: String = ""
@@ -167,3 +172,32 @@ static func path_remove_middle(path: String, max_length: int) -> String:
 	var right_part: String = path.right(split_size)
 	
 	return "%s...%s" % [left_part, right_part]
+
+
+## For fuzzy searching.
+static func get_fuzzy_score(query: String, text: String) -> int:
+	if query.is_empty():
+		return 1
+	elif query.length() > text.length():
+		return 0
+	
+	var query_index: int = 0
+	var text_index: int = 0
+	var score : int = 0
+	
+	query = query.to_lower()
+	text = text.to_lower()
+	
+	while query_index < query.length() and text_index < text.length():
+		if query[query_index] == text[text_index]:
+			score += FUZZY_SCORE_POINT # Match found
+
+			# Bonus for start of word
+			if text_index == 0 or text[text_index - 1] == " " or text[text_index - 1] == "_":
+				score += FUZZY_SCORE_BONUS # Start word found so extra bonus
+			query_index += 1
+		text_index += 1
+	
+	return score if query_index == query.length() else 0
+
+

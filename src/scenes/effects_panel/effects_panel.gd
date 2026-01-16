@@ -24,6 +24,8 @@ func _ready() -> void:
 	EditorCore.frame_changed.connect(_on_frame_changed)
 	ClipHandler.clip_deleted.connect(_on_clip_erased)
 	ClipHandler.clip_selected.connect(_on_clip_pressed)
+	EffectsHandler.effect_added.connect(_on_effects_updated.unbind(1))
+	EffectsHandler.effect_removed.connect(_on_effects_updated.unbind(1))
 	EffectsHandler.effects_updated.connect(_on_effects_updated)
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
@@ -350,8 +352,6 @@ func _update_ui_values() -> void:
 
 		if !effect.is_enabled:
 			foldable_container.folded = true
-			#foldable_container.
-			pass
 
 		for param: EffectParam in effect.params:
 			var param_settings: Control = grid.get_node_or_null("PARAM_" + param.param_id)

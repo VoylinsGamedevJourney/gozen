@@ -248,6 +248,10 @@ func get_resolution() -> Vector2i:
 	return data.resolution
 
 
+func get_resolution_center() -> Vector2i:
+	return data.resolution / 2
+
+
 func set_framerate(new_framerate: float) -> void:
 	data.framerate = new_framerate
 	EditorCore.frame_time = 1.0 / data.framerate

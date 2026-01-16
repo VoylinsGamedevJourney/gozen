@@ -51,6 +51,13 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 	return _interpolate_variant(value_a, value_b, weight)
 
 
+func change_default_param(param_id: String, new_default: Variant) -> void:
+	for effect_param: EffectParam in params:
+		if effect_param.param_id == param_id:
+			effect_param.default_value = new_default
+			return
+
+
 func set_default_keyframe() -> void:
 	for effect_param: EffectParam in params:
 		var param_id: String = effect_param.param_id
