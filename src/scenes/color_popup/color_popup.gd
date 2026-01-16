@@ -6,7 +6,7 @@ extends PanelContainer
 
 
 func _on_create_color_pressed() -> void:
-	var file: File = File.create("temp://color")
+	var file: File = FileHandler.create_file("temp://color")
 	var color: Color = color_picker.color
 
 	file.nickname = "Color #" + color.to_html(true)
