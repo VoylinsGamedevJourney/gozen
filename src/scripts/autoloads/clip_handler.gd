@@ -65,7 +65,7 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 
 	if type not in EditorCore.VISUAL_TYPES:
 		return
-	elif type == FileHandler.TYPE.VIDEO:
+	elif type in [FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]:
 		# Changing from global frame nr to clip frame nr
 		var file_data: FileData = FileHandler.get_file_data(clip.file_id)
 		var video: GoZenVideo

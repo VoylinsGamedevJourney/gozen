@@ -24,6 +24,7 @@ enum TYPE {
 	IMAGE,
 	AUDIO,
 	VIDEO,
+	VIDEO_ONLY, # No audio
 	TEXT,
 	COLOR,
 	PCK
@@ -93,7 +94,7 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 				continue
 
 			if get_file_data(file.id) != null:
-				if get_file(file.id).type == TYPE.VIDEO:
+				if get_file(file.id).type in [TYPE.VIDEO, TYPE.VIDEO_ONLY]:
 					if !has_file(file.id):
 						file.status = STATUS.PROBLEM
 					elif get_file_data(file.id).video == null or !get_file_data(file.id).video.is_open():
@@ -210,7 +211,7 @@ func create_file(file_path: String) -> File:
 		file.type = TYPE.AUDIO
 		file.modified_time = FileAccess.get_modified_time(file_path)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
-		file.type = TYPE.VIDEO
+		file.type = TYPE.VIDEO # We check later if the video is audio only.
 		file.modified_time = FileAccess.get_modified_time(file_path)
 	elif file_path == "temp://image":
 		file.type = TYPE.IMAGE

@@ -34,7 +34,7 @@ func _update_duration() -> void:
 			l_file.duration = Settings.get_image_duration()
 		FileHandler.TYPE.AUDIO:
 			l_file.duration = floor(float(audio.data.size()) / (4 * 44101) * Project.get_framerate())
-		FileHandler.TYPE.VIDEO:
+		FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY:
 			l_file.duration = floor(video.get_frame_count() / video.get_framerate() * Project.get_framerate())
 		FileHandler.TYPE.COLOR:
 			l_file.duration = Settings.get_color_duration()
@@ -60,7 +60,7 @@ func init_data(file_data_id: int) -> bool:
 		image = file.temp_file.image_data
 	elif file.type == FileHandler.TYPE.IMAGE:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
-	elif file.type == FileHandler.TYPE.VIDEO:
+	elif file.type in [FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
 	elif file.type == FileHandler.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(file.path):
@@ -72,21 +72,26 @@ func init_data(file_data_id: int) -> bool:
 		pck_scene_instance = pck.scene.instantiate()
 
 	if file.type in EditorCore.AUDIO_TYPES:
-		_load_audio_data(file.path)
-		Threader.add_task(_create_wave.bind(file.path), Callable())
+		if !_load_audio_data(file.path) and file.type == FileHandler.TYPE.VIDEO:
+			file.type = FileHandler.TYPE.AUDIO
+		else:
+			Threader.add_task(_create_wave.bind(file.path), Callable())
 
 	return true
 
 
-func _load_audio_data(file_path: String) -> void:
+func _load_audio_data(file_path: String) -> bool:
 	var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 	var error: int = stream.open(file_path)
 
 	if error != OK:
-		printerr("FileData: Failed to open audio '%s'!" % file_path)
-		return
+		printerr("FileData: Failed to open audio '%s'! %s" % [file_path, error])
+		return false # No audio was found, might be invalid codec, so we change type to VIDEO_ONLY
+	elif stream.get_length() == 0:
+		return false # Video without audio so we change the TYPE to VIDEO_ONLY as well
 
 	audio = stream
+	return true
 
 
 func _load_video_data(file_path: String) -> void:

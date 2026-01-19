@@ -99,14 +99,15 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 		popup.add_item("popup_item_reload", POPUP_ACTION.FILE_RELOAD)
 		popup.add_item("popup_item_delete", POPUP_ACTION.FILE_DELETE)
 
+		# TODO: Add VIDEO_ONLY when we have more video options
 		if file.type == FileHandler.TYPE.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator("popup_separator_image_options")
 				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_TEMP_AS)
-		if file.type == FileHandler.TYPE.VIDEO:
+		elif file.type == FileHandler.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
-		if file.type == FileHandler.TYPE.TEXT:
+		elif file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
 			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
 

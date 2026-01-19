@@ -112,7 +112,7 @@ func _gen_thumb(file_id: int) -> void:
 	match type:
 		FileHandler.TYPE.IMAGE:
 			image = Image.load_from_file(path)
-		FileHandler.TYPE.VIDEO:
+		FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY:
 			image = FileHandler.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
 		FileHandler.TYPE.AUDIO:
 			image = await FileHandler.get_file_data(file_id).generate_audio_thumb()

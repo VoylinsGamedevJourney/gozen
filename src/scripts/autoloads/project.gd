@@ -114,7 +114,7 @@ func open(new_project_path: String) -> void:
 
 		var type: FileHandler.TYPE = data.files[i].type
 
-		if type == FileHandler.TYPE.VIDEO and FileHandler.data[i].video == null:
+		if type in [FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY] and FileHandler.data[i].video == null:
 			await FileHandler.data[i].video_loaded
 
 		loading_overlay.increment_progress_bar(progress_increment)
