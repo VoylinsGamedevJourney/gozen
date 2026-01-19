@@ -2,7 +2,7 @@ class_name VisualCompositor
 extends RefCounted
 
 
-const YUV_PARAM_BUFFER_SIZE: int = 80
+const YUV_PARAM_BUFFER_SIZE: int = 96
 
 const USAGE_BITS_R8: int = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
@@ -87,7 +87,7 @@ func _init_start(p_resolution: Vector2i) -> void:
 	display_texture = Texture2DRD.new()
 
 	groups_x = ceili(resolution.x / 8.0)
-	groups_y = ceili(resolution.x / 8.0)
+	groups_y = ceili(resolution.y / 8.0)
 
 
 func _init_ping_pong() -> void:
@@ -139,14 +139,14 @@ func initialize_video(video: GoZenVideo) -> void:
 
 	# Creating the Y format
 	format_y.format = device.DATA_FORMAT_R8_UNORM
-	format_y.width = resolution.x
+	format_y.width = video.get_y_data().get_width()
 	format_y.height = resolution.y
 	format_y.usage_bits = USAGE_BITS_R8
 	format_y.texture_type = device.TEXTURE_TYPE_2D
 
 	# Creating the UV format
 	format_uv.format = device.DATA_FORMAT_R8_UNORM
-	format_uv.width = floori(resolution.x / 2.0)
+	format_uv.width = video.get_u_data().get_width()
 	format_uv.height = floori(resolution.y / 2.0)
 	format_uv.usage_bits = USAGE_BITS_R8
 	format_uv.texture_type = device.TEXTURE_TYPE_2D
@@ -159,7 +159,7 @@ func initialize_video(video: GoZenVideo) -> void:
 	if video.get_has_alpha():
 		a_texture = device.texture_create(format_y, RDTextureView.new(), [])
 	else:
-		var white_image: Image = Image.create(resolution.x, resolution.y, false, Image.FORMAT_R8)
+		var white_image: Image = Image.create(video.get_y_data().get_width(), resolution.y, false, Image.FORMAT_R8)
 
 		white_image.fill(Color.WHITE)
 		a_texture = device.texture_create(format_y, RDTextureView.new(), [white_image.get_data()])
@@ -324,6 +324,10 @@ func _create_yuv_params(video: GoZenVideo) -> RID:
 	stream_writer.put_32(resolution.x)
 	stream_writer.put_32(resolution.y)
 	stream_writer.put_32(video.get_interlaced())
+	stream_writer.put_32(video.get_y_data().get_width())
+	stream_writer.put_32(video.get_u_data().get_width())
+	stream_writer.put_32(video.get_actual_width())
+	stream_writer.put_32(0) # Necessary padding
 	stream_writer.put_32(0) # Necessary padding
 
 	return device.uniform_buffer_create(stream_writer.data_array.size(), stream_writer.data_array)
