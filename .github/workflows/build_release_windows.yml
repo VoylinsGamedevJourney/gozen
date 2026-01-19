@@ -194,16 +194,15 @@ jobs:
           godot --import godot.project --headless --quit
           godot --headless --export-release "Windows_x86_64" ../${{ env.PATH_EXPORT }}/GoZen.exe
 
-      - name: Bundle Windows
+      - name: Add files
         working-directory: ${{ env.PATH_EXPORT }}
         run: |
           cp ../../LICENSE .
           cp ../../MANUAL.md .
-          zip -r "GoZen_Windows_v${{ inputs.version }}.zip" *
 
       - uses: actions/upload-artifact@v4
         with:
           name: GoZen_Windows_v${{ inputs.version }}
-          path: ${{ env.PATH_EXPORT }}/GoZen_Windows_v${{ inputs.version }}.zip 
+          path: ${{ env.PATH_EXPORT }}
 # End GoZen build
 
