@@ -65,6 +65,7 @@ class GoZenVideo : public Resource {
 	bool full_color_range = true;
 
 	int sws_flag = SWS_BILINEAR;
+	int smart_seek_threshold = 100;
 
 	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1, STREAM_SUBTITLE = 2 };
 
@@ -127,6 +128,8 @@ class GoZenVideo : public Resource {
 
 	inline void set_sws_flag_bilinear() { sws_flag = SWS_BILINEAR; }
 	inline void set_sws_flag_bicubic() { sws_flag = SWS_BICUBIC; }
+
+	inline void set_smart_seek_threshold(int frames) { smart_seek_threshold = frames; }
 
 	inline Ref<Image> get_y_data() const { return y_data; }
 	inline Ref<Image> get_u_data() const { return u_data; }

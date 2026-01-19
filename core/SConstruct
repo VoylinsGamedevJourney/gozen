@@ -108,6 +108,8 @@ elif "windows" in platform:
             ]
         )
     else:
+        env.Append(LINKFLAGS=["-static"])
+
         libs = [
             "-lSvtAv1Enc",
             "-laom",
