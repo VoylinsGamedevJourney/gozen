@@ -333,6 +333,23 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 	int response = 0;
 	int attempts = 0;
 
+	int frame_difference = frame_nr - current_frame;
+
+	if (frame_difference > 0 && frame_difference <= smart_seek_threshold) {
+		for (int i = 0; i < frame_difference; i++) {
+			if (!next_frame(true)) {
+				_log_err("Smart seek failed, falling back to hard seeking");
+				frame_difference = 0;
+				break;
+			}
+		}
+
+		if (frame_difference != 0) {
+			_copy_frame_data();
+			return true;
+		}
+	}
+
 	// Video seeking.
 	if ((response = _seek_frame(frame_nr)) < 0)
 		return _log_err("Couldn't seek");
@@ -391,7 +408,17 @@ bool GoZenVideo::next_frame(bool skip) {
 	if (!loaded)
 		return false;
 
-	FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
+	int response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
+
+	if (response < 0) {
+		if (response == AVERROR_EOF)
+			_log("End of file reached in next_frame");
+		else FFmpeg::print_av_error("Error in next_frame", response);
+	}
+
+	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
+		current_pts = av_frame->pts;
+	else current_pts = av_frame->best_effort_timestamp;
 
 	if (!skip)
 		_copy_frame_data();
@@ -720,6 +747,8 @@ void GoZenVideo::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &GoZenVideo::set_sws_flag_bilinear);
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &GoZenVideo::set_sws_flag_bicubic);
+
+	ClassDB::bind_method(D_METHOD("set_smart_seek_threshold", "frames"), &GoZenVideo::set_smart_seek_threshold);
 
 	ClassDB::bind_method(D_METHOD("get_y_data"), &GoZenVideo::get_y_data);
 	ClassDB::bind_method(D_METHOD("get_u_data"), &GoZenVideo::get_u_data);

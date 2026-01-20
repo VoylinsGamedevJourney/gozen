@@ -269,7 +269,7 @@ func add_file_object(file: File) -> void:
 func _delete_file(id: int) -> void:
 	for clip: ClipData in ClipHandler.get_clip_datas():
 		if clip.file_id == id:
-			ClipHandler.delete_clip(clip)
+			ClipHandler._delete_clip(clip)
 
 	if data.has(id):
 		data.erase(id)

@@ -88,7 +88,7 @@ elif "linux" in platform:
     ]
 
     env.Append(
-        LINKFLAGS=["-static-libstdc++", "-fPIC", "-Wl,-Bsymbolic"],
+        LINKFLAGS=["-static-libstdc++", "-static-libgcc", "-fPIC", "-Wl,-Bsymbolic"],
         CCFLAGS=[f"-march={march_flags[arch]}"],
         LIBS=LIBS_COMMON + libs,
     )

@@ -73,7 +73,7 @@ func init_data(file_data_id: int) -> bool:
 
 	if file.type in EditorCore.AUDIO_TYPES:
 		if !_load_audio_data(file.path) and file.type == FileHandler.TYPE.VIDEO:
-			file.type = FileHandler.TYPE.AUDIO
+			file.type = FileHandler.TYPE.VIDEO_ONLY
 		else:
 			Threader.add_task(_create_wave.bind(file.path), Callable())
 
