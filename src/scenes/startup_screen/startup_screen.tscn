@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://bqlcn30hs8qp5"]
 
-[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://shaders/background_blur.gdshader" id="1_5viva"]
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_5viva"]
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scenes/startup_screen/startup_screen.gd" id="1_sgta6"]
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_5viva"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_gatud"]

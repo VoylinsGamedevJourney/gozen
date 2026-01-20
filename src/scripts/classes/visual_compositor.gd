@@ -53,11 +53,16 @@ var v_texture: RID
 var a_texture: RID
 
 var yuv_params: RID
-var pipeline_yuv: RID
-var shader_yuv: RID
+var yuv_pipeline: RID
+var yuv_shader: RID
 
 # For images
 var base_image: RID
+
+# Fading stuff
+var fade_shader: RID
+var fade_pipeline: RID
+var fade_buffer: RID
 
 var ping_texture: RID
 var pong_texture: RID
@@ -88,6 +93,14 @@ func _init_start(p_resolution: Vector2i) -> void:
 
 	groups_x = ceili(resolution.x / 8.0)
 	groups_y = ceili(resolution.y / 8.0)
+
+	var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/fade.glsl").get_spirv()
+	var fade_buffer_data: PackedByteArray = PackedByteArray()
+	
+	fade_shader = device.shader_create_from_spirv(fade_spirv)
+	fade_pipeline = device.compute_pipeline_create(fade_shader)
+	fade_buffer_data.resize(16)
+	fade_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
 
 
 func _init_ping_pong() -> void:
@@ -129,13 +142,13 @@ func initialize_image(image: Texture2D) -> void:
 func initialize_video(video: GoZenVideo) -> void:
 	_init_start(video.get_resolution())
 
-	var spirv: RDShaderSPIRV = preload("res://shaders/yuv_to_rgba.glsl").get_spirv()
+	var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
 	var format_y: RDTextureFormat = RDTextureFormat.new()
 	var format_uv: RDTextureFormat = RDTextureFormat.new()
 
 	# Setup YUV pipeline
-	shader_yuv = device.shader_create_from_spirv(spirv)
-	pipeline_yuv = device.compute_pipeline_create(shader_yuv)
+	yuv_shader = device.shader_create_from_spirv(spirv)
+	yuv_pipeline = device.compute_pipeline_create(yuv_shader)
 
 	# Creating the Y format
 	format_y.format = device.DATA_FORMAT_R8_UNORM
@@ -168,7 +181,7 @@ func initialize_video(video: GoZenVideo) -> void:
 	_init_ping_pong()
 
 
-func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], current_frame: int) -> void:
+func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], frame_nr: int, fade_alpha: float) -> void:
 	if not initialized:
 		return
 
@@ -180,13 +193,20 @@ func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], c
 	if video.get_has_alpha():
 		device.texture_update(a_texture, 0, video.get_a_data().get_data())
 
-	_update_effect_buffers(effects, current_frame)
+	_update_effect_buffers(effects, frame_nr)
+
+	if fade_alpha < 1.0:
+		var buffer_data: PackedByteArray = PackedByteArray()
+
+		buffer_data.resize(16)
+		buffer_data.encode_float(0, fade_alpha)
+		device.buffer_update(fade_buffer, 0, 16, buffer_data)
 
 	# Start of compute list
 	# Convert YUV to RGBA (and write to ping)
 	var compute_list: int = device.compute_list_begin()
 	
-	device.compute_list_bind_compute_pipeline(compute_list, pipeline_yuv)
+	device.compute_list_bind_compute_pipeline(compute_list, yuv_pipeline)
 
 	# Create uniform set for YUV pass
 	var yuv_uniforms: Array[RDUniform] = [
@@ -196,20 +216,20 @@ func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], c
 		_create_sampler_uniform(a_texture, 3), # Input
 		_create_image_uniform(ping_texture, 4), # Output
 		_create_buffer_uniform(yuv_params, 5)] # Video info
-	var yuv_set: RID = device.uniform_set_create(yuv_uniforms, shader_yuv, 0)
+	var yuv_set: RID = device.uniform_set_create(yuv_uniforms, yuv_shader, 0)
 
 	device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
 
-	_process_frame(compute_list, effects)
+	_process_frame(compute_list, effects, fade_alpha)
 
 
-func process_image_frame(effects: Array[GoZenEffectVisual], current_frame: int) -> void:
+func process_image_frame(effects: Array[GoZenEffectVisual], frame_nr: int, fade_alpha: float) -> void:
 	if not initialized:
 		return
 
-	_update_effect_buffers(effects, current_frame)
+	_update_effect_buffers(effects, frame_nr)
 
 	device.texture_copy(
 		base_image, ping_texture,
@@ -217,7 +237,7 @@ func process_image_frame(effects: Array[GoZenEffectVisual], current_frame: int) 
 		Vector3(resolution.x, resolution.y, 1),
 		0, 0, 0, 0)
 
-	_process_frame(device.compute_list_begin(), effects)
+	_process_frame(device.compute_list_begin(), effects, fade_alpha)
 
 
 func cleanup() -> void:
@@ -231,8 +251,8 @@ func cleanup() -> void:
 	v_texture = Utils.cleanup_rid(device, v_texture)
 	a_texture = Utils.cleanup_rid(device, a_texture)
 	yuv_params = Utils.cleanup_rid(device, yuv_params)
-	pipeline_yuv = Utils.cleanup_rid(device, pipeline_yuv)
-	shader_yuv = Utils.cleanup_rid(device, shader_yuv)
+	yuv_pipeline = Utils.cleanup_rid(device, yuv_pipeline)
+	yuv_shader = Utils.cleanup_rid(device, yuv_shader)
 
 	# Image cleanup
 	base_image = Utils.cleanup_rid(device, base_image)
@@ -267,7 +287,7 @@ func _update_effect_buffers(effects: Array[GoZenEffectVisual], current_frame: in
 			effect_buffers[id] = device.uniform_buffer_create(buffer_data.size(), buffer_data)
 
 
-func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual]) -> void:
+func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual], fade_alpha: float) -> void:
 	# Start handling the effects
 	for effect: GoZenEffectVisual in effects:
 		if not effect.is_enabled:
@@ -292,6 +312,25 @@ func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual]) -> voi
 		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 		device.compute_list_add_barrier(compute_list)
 
+		# Swap buffers
+		var temp_texture: RID = ping_texture
+
+		ping_texture = pong_texture
+		pong_texture = temp_texture
+
+	if fade_alpha < 1.0:
+		device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
+		
+		var fade_uniforms: Array[RDUniform] = [
+			_create_sampler_uniform(ping_texture, 0),
+			_create_image_uniform(pong_texture, 1),
+			_create_buffer_uniform(fade_buffer, 2)]
+		var fade_set: RID = device.uniform_set_create(fade_uniforms, fade_shader, 0)
+		
+		device.compute_list_bind_uniform_set(compute_list, fade_set, 0)
+		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
+		device.compute_list_add_barrier(compute_list)
+		
 		# Swap buffers
 		var temp_texture: RID = ping_texture
 

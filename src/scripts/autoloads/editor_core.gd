@@ -8,8 +8,10 @@ signal play_changed(value: bool)
 enum SHADER_ID { EMPTY, YUV_STANDARD, YUV_FULL, IMAGE }
 
 const VISUAL_TYPES: PackedInt64Array = [
-		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT, FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY ]
-const AUDIO_TYPES: PackedInt64Array = [ FileHandler.TYPE.AUDIO, FileHandler.TYPE.VIDEO ]
+		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT,
+		FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]
+const AUDIO_TYPES: PackedInt64Array = [
+		FileHandler.TYPE.AUDIO, FileHandler.TYPE.VIDEO]
 
 
 var viewport: SubViewport
@@ -263,21 +265,21 @@ func update_view(track_id: int, update: bool) -> void:
 	var clip_frame: int = frame_nr - clip_data.start_frame
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_data, true)
 
-	view_textures[track_id].modulate.a = fade_alpha
-
 	ClipHandler.load_frame(loaded_clips[track_id], relative_frame)
 
 	if file_data.video != null:
 		if update:
 			visual_compositors[track_id].initialize_video(file_data.video)
 
-		visual_compositors[track_id].process_video_frame(file_data.video, clip_data.effects_video, relative_frame)
+		visual_compositors[track_id].process_video_frame(
+				file_data.video, clip_data.effects_video, relative_frame, fade_alpha)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 	elif file_data.image != null:
 		if update:
 			visual_compositors[track_id].initialize_image(file_data.image)
 
-		visual_compositors[track_id].process_image_frame(clip_data.effects_video, relative_frame)
+		visual_compositors[track_id].process_image_frame(
+				clip_data.effects_video, relative_frame, fade_alpha)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 
 
