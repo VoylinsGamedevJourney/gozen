@@ -87,7 +87,6 @@ int GoZenVideo::open(const String& video_path) {
 	// Get all streams.
 	video_streams = PackedInt32Array();
 	audio_streams = PackedInt32Array();
-	subtitle_streams = PackedInt32Array();
 
 	for (int i = 0; i < av_format_ctx->nb_streams; i++) {
 		AVCodecParameters* av_codec_params = av_format_ctx->streams[i]->codecpar;
@@ -100,8 +99,6 @@ int GoZenVideo::open(const String& video_path) {
 			video_streams.append(i);
 		else if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
 			audio_streams.append(i);
-		else if (av_codec_params->codec_type == AVMEDIA_TYPE_SUBTITLE)
-			subtitle_streams.append(i);
 	}
 
 	// Setup Decoder codec context.
@@ -608,8 +605,6 @@ PackedInt32Array GoZenVideo::get_streams(int stream_type) {
 		return video_streams;
 	case STREAM_AUDIO:
 		return audio_streams;
-	case STREAM_SUBTITLE:
-		return subtitle_streams;
 	}
 
 	_log_err("invalid stream type requested");

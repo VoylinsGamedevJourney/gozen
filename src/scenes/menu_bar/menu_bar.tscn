@@ -134,18 +134,8 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_2bycd")
 text = "button_screen_render"
 
-[node name="SubtitleScreenButton" type="Button" parent="."]
-layout_mode = 2
-theme_type_variation = &"screen_button"
-theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-toggle_mode = true
-button_group = SubResource("ButtonGroup_2bycd")
-text = "button_screen_render"
-
 [connection signal="id_pressed" from="MenuBar/ProjectPopupMenu" to="." method="_on_project_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/PreferencesPopupMenu" to="." method="_on_preferences_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/HelpPopupMenu" to="." method="_on_help_popup_menu_id_pressed"]
 [connection signal="pressed" from="EditorScreenButton" to="." method="_on_editor_screen_button_pressed"]
 [connection signal="pressed" from="RenderScreenButton" to="." method="_on_render_screen_button_pressed"]
-[connection signal="pressed" from="SubtitleScreenButton" to="." method="_on_subtitle_screen_button_pressed"]

@@ -4,7 +4,6 @@ extends Node
 
 signal on_show_editor_screen
 signal on_show_render_screen
-signal on_show_subtitle_screen
 signal on_switch_screen
 
 
@@ -73,10 +72,6 @@ func show_editor_screen() -> void:
 
 func show_render_screen() -> void:
 	on_show_render_screen.emit()
-
-
-func show_subtitle_screen() -> void:
-	on_show_subtitle_screen.emit()
 
 
 func switch_screen() -> void:

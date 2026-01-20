@@ -32,10 +32,6 @@ func _on_render_screen_button_pressed() -> void:
 	InputManager.show_render_screen()
 
 
-func _on_subtitle_screen_button_pressed() -> void:
-	InputManager.show_subtitle_screen()
-
-
 func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Project.save()

@@ -74,7 +74,7 @@ class GoZenVideo : public Resource {
 	int sws_flag = SWS_BILINEAR;
 	int smart_seek_threshold = 100;
 
-	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1, STREAM_SUBTITLE = 2 };
+	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1 };
 
 	// Caching - Increases ram usage, but provides smoother backwards seeking
 	std::deque<CachedFrame> frame_cache;
@@ -98,7 +98,6 @@ class GoZenVideo : public Resource {
 
 	PackedInt32Array video_streams;
 	PackedInt32Array audio_streams;
-	PackedInt32Array subtitle_streams;
 
 	// Private functions
 	void _copy_frame_data();
