@@ -260,6 +260,11 @@ func update_view(track_id: int, update: bool) -> void:
 	var clip_data: ClipData = ClipHandler.get_clip(loaded_clips[track_id])
 	var relative_frame: int = frame_nr - clip_data.start_frame + clip_data.begin
 
+	var clip_frame: int = frame_nr - clip_data.start_frame
+	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_data, true)
+
+	view_textures[track_id].modulate.a = fade_alpha
+
 	ClipHandler.load_frame(loaded_clips[track_id], relative_frame)
 
 	if file_data.video != null:

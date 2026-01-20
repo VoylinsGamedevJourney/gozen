@@ -8,7 +8,7 @@ signal zoom_changed(new_zoom: float)
 
 enum POPUP_ACTION { 
 	# Clip options
-	CLIP_ONLY_VIDEO,
+	CLIP_VIDEO_ONLY,
 	CLIP_DELETE,
 	CLIP_CUT,
 	# Track options
@@ -22,6 +22,7 @@ enum STATE {
 	MOVING,
 	DROPPING,
 	RESIZING,
+	FADING,
 }
 
 
@@ -36,6 +37,10 @@ const ZOOM_STEP: float = 1.1
 
 const RESIZE_HANDLE_WIDTH: int = 5
 const RESIZE_CLIP_MIN_WIDTH: float = 14
+
+const FADE_HANDLE_SIZE: int = 6
+const FADE_HANDLE_COLOR: Color = Color(1.0, 1.0, 1.0, 0.7)
+const FADE_LINE_COLOR: Color = Color(1.0, 1.0, 1.0, 0.5)
 
 const PLAYHEAD_WIDTH: int = 2
 
@@ -69,7 +74,9 @@ var right_click_pos: Vector2i = Vector2i.ZERO
 var right_click_clip: ClipData = null
 
 var resize_target: ResizeTarget = null
+var fade_target: FadeTarget = null
 var pressed_clip: ClipData = null
+var hovered_clip: ClipData = null
 
 
 
@@ -142,8 +149,11 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		state = STATE.NORMAL
 		pressed_clip = _get_clip_on_mouse()
 		resize_target = _get_resize_target()
+		fade_target = _get_fade_target()
 
-		if resize_target:
+		if fade_target:
+			state = STATE.FADING
+		elif resize_target:
 			state = STATE.RESIZING
 		elif pressed_clip == null:
 			state = STATE.SCRUBBING
@@ -174,7 +184,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 			# TODO: Set icons and shortcuts
 			if ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES:
-				popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_ONLY_VIDEO)
+				popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_VIDEO_ONLY)
 
 			popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
 			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
@@ -201,21 +211,29 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 
 		if tooltip_text != clip_name:
 			tooltip_text = clip_name
+		if hovered_clip != clip_on_mouse:
+			hovered_clip = clip_on_mouse
 	elif tooltip_text != "" or state != STATE.NORMAL:
 		tooltip_text = ""
 
-	if state == STATE.NORMAL and clip_on_mouse != null:
+	if state == STATE.NORMAL:
 		if _get_resize_target() != null:
-			mouse_default_cursor_shape = Control.CURSOR_HSIZE
-		else:
+			mouse_default_cursor_shape = Control. CURSOR_HSIZE
+		elif _get_fade_target() != null or clip_on_mouse != null:
+			mouse_default_cursor_shape = Control.CURSOR_CROSS
+		elif clip_on_mouse != null:
 			mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		else:
+			mouse_default_cursor_shape = Control.CURSOR_ARROW
 	elif state == STATE.SCRUBBING and event.button_mask & MOUSE_BUTTON_LEFT:
 		move_playhead(get_frame_from_mouse())
 	elif state == STATE.RESIZING:
 		mouse_default_cursor_shape = Control.CURSOR_HSIZE
 		_handle_resize_motion()
-	else:
-		mouse_default_cursor_shape = Control.CURSOR_ARROW
+	elif state == STATE.FADING:
+		_handle_fade_motion()
+
+	queue_redraw()
 
 
 func _on_ui_cancel() -> void:
@@ -223,6 +241,7 @@ func _on_ui_cancel() -> void:
 	draggable = null
 	pressed_clip = null
 	resize_target = null
+	fade_target = null
 	mouse_default_cursor_shape = Control.CURSOR_ARROW
 	queue_redraw()
 
@@ -358,7 +377,71 @@ func _draw() -> void:
 
 			draw_rect(sample_rect, COLOR_AUDIO_WAVE)
 
-	# TODO: - Fading handles + amount
+		# - Fading handles + amount
+		var is_video: bool = ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES
+		var is_audio: bool = ClipHandler.get_type(clip_id) in EditorCore.AUDIO_TYPES
+		var show_handles: bool = (hovered_clip != null and hovered_clip.id == clip_id) or \
+				(state == STATE.FADING and fade_target.clip_id == clip_id)
+
+
+		if is_video: # Bottom handles
+			var fade_in: float = box_pos.x + (clip_data.fade_in_visual * zoom)
+			var fade_out: float = box_pos.x + (clip_data.duration * zoom) - (clip_data.fade_out_visual * zoom)
+			var handle_y: float = box_pos.y + TRACK_HEIGHT
+
+			# Draw handle fade in
+			if show_handles:
+				draw_circle(
+						Vector2(fade_in, handle_y),
+						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
+
+			# Draw line fade in (Top Left to Bottom Right/Handle)
+			if clip_data.fade_in_visual > 0:
+				draw_line(
+						Vector2(box_pos.x, box_pos.y),
+						Vector2(fade_in, handle_y), FADE_LINE_COLOR, 1.0, true)
+
+			# Draw handle fade out
+			if show_handles:
+				draw_circle(
+						Vector2(fade_out, handle_y),
+						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
+
+			# Draw line fade out (Bottom Left/Handle to Top Right)
+			if clip_data.fade_out_visual > 0:
+				draw_line(
+						Vector2(fade_out, handle_y),
+						Vector2(box_pos.x + (clip_data.duration * zoom), box_pos.y),
+						FADE_LINE_COLOR, 1.0, true)
+
+		if is_audio: # Top handles
+			var fade_in: float = box_pos.x + (clip_data.fade_in_audio * zoom)
+			var fade_out: float = box_pos.x + (clip_data.duration * zoom) - (clip_data.fade_out_audio * zoom)
+			var handle_y: float = box_pos.y
+
+			# Draw handle fade in
+			if show_handles:
+				draw_circle(
+						Vector2(fade_in, handle_y),
+						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
+
+			# Draw line fade in (Bottom Left to Top Right/Handle)
+			if clip_data.fade_in_audio > 0:
+				draw_line(
+						Vector2(box_pos.x, box_pos.y + TRACK_HEIGHT),
+						Vector2(fade_in, handle_y), FADE_LINE_COLOR, 1.0, true)
+
+			# Draw handle fade out
+			if show_handles:
+				draw_circle(
+						Vector2(fade_out, handle_y),
+						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
+
+			# Draw line fade out (Top Left/Handle to Bottom Right)
+			if clip_data.fade_out_audio > 0:
+				draw_line(
+						Vector2(fade_out, handle_y),
+						Vector2(box_pos.x + (clip_data.duration * zoom), box_pos.y + TRACK_HEIGHT), FADE_LINE_COLOR, 1.0, true)
 
 	# - Playhead
 	var playhead_pos: float = EditorCore.frame_nr * zoom
@@ -425,6 +508,49 @@ func _get_resize_target() -> ResizeTarget:
 		elif abs(frame_pos - end) <= RESIZE_HANDLE_WIDTH:
 			return ResizeTarget.new(clip_data.id, true, clip_data.start_frame, clip_data.duration)
 	
+	return null
+
+
+func _get_fade_target() -> FadeTarget:
+	var track_id: int = get_track_from_mouse()
+	var mouse_pos: Vector2 = get_local_mouse_position()
+	
+	if track_id < 0 or track_id >= TrackHandler.get_tracks_size():
+		return null
+		
+	# Check for clips in visible area
+	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
+	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
+	
+	for clip: ClipData in TrackHandler.get_clips_in(track_id, visible_start, visible_end):
+		var is_video: bool = ClipHandler.get_type(clip.id) in EditorCore.VISUAL_TYPES
+		var is_audio: bool = ClipHandler.get_type(clip.id) in EditorCore.AUDIO_TYPES
+		
+		var start_x: float = clip.start_frame * zoom
+		var end_x: float = (clip.start_frame + clip.duration) * zoom
+		var y_pos: float = clip.track_id * TRACK_TOTAL_SIZE
+		
+		# Hitbox tolerance
+		var r: float = FADE_HANDLE_SIZE * 1.5 
+		
+		# Check Video Handles (Bottom)
+		if is_video:
+			var video_y_pos: float = y_pos + TRACK_HEIGHT - FADE_HANDLE_SIZE
+			var in_pos: Vector2 = Vector2(start_x + (clip.fade_in_visual * zoom), video_y_pos)
+			var out_pos: Vector2 = Vector2(end_x - (clip.fade_out_visual * zoom), video_y_pos)
+			
+			if mouse_pos.distance_to(in_pos) < r: return FadeTarget.new(clip.id, false, true)
+			if mouse_pos.distance_to(out_pos) < r: return FadeTarget.new(clip.id, true, true)
+			
+		# Check Audio Handles (Top)
+		if is_audio:
+			var audio_y_pos: float = y_pos + FADE_HANDLE_SIZE
+			var in_pos: Vector2 = Vector2(start_x + (clip.fade_in_audio * zoom), audio_y_pos)
+			var out_pos: Vector2 = Vector2(end_x - (clip.fade_out_audio * zoom), audio_y_pos)
+
+			if mouse_pos.distance_to(in_pos) < r: return FadeTarget.new(clip.id, false, false)
+			if mouse_pos.distance_to(out_pos) < r: return FadeTarget.new(clip.id, true, false)
+			
 	return null
 
 
@@ -609,6 +735,7 @@ func _on_mouse_entered() -> void:
 
 
 func _on_mouse_exited() -> void:
+	hovered_clip = null
 	queue_redraw()
 
 
@@ -626,14 +753,19 @@ func _commit_current_resize() -> void:
 
 
 func _handle_resize_motion() -> void:
-	var track_id: int = ClipHandler.get_clip(resize_target.clip_id).track_id
+	var clip_data: ClipData = ClipHandler.get_clip(resize_target.clip_id)
+	var track_id: int = clip_data.track_id
+	var file_duration: int = FileHandler.get_file(clip_data.file_id).duration
 	var current_frame: int = get_frame_from_mouse()
 	
 	if resize_target.is_end: # Resizing end
 		var new_duration: int = current_frame - resize_target.original_start
+		var max_allowed_duration: int = file_duration - clip_data.begin
 		
 		if new_duration < 1:
 			new_duration = 1
+		if new_duration > max_allowed_duration:
+			new_duration = max_allowed_duration
 		
 		# Collision detection
 		var free_region: Vector2i = TrackHandler.get_free_region(
@@ -645,9 +777,12 @@ func _handle_resize_motion() -> void:
 		resize_target.delta = new_duration - resize_target.original_duration
 	else: # Resizing beginning
 		var new_start: int = current_frame
+		var min_allowed_duration: int = resize_target.original_start - clip_data.begin
 		
 		if new_start > (resize_target.original_start + resize_target.original_duration - 1):
 			new_start = (resize_target.original_start + resize_target.original_duration - 1)
+		if new_start < min_allowed_duration:
+			new_start = min_allowed_duration
 			
 		# Collision detection
 		var free_region: Vector2i = TrackHandler.get_free_region(
@@ -663,10 +798,37 @@ func _handle_resize_motion() -> void:
 	queue_redraw()
 
 
+func _handle_fade_motion() -> void:
+	var clip: ClipData = ClipHandler.get_clip(fade_target.clip_id)
+	var mouse_x: float = get_local_mouse_position().x
+	var start_x: float = clip.start_frame * zoom
+	var end_x: float = (clip.start_frame + clip.duration) * zoom
+	
+	# Convert pixel drag to frame amount
+	var drag_frames: int = 0
+	
+	if not fade_target.is_end: # Fade In
+		drag_frames = floori((mouse_x - start_x) / zoom)
+		drag_frames = clamp(drag_frames, 0, clip.duration / 2.0)
+		
+		if fade_target.is_visual: clip.fade_in_visual = drag_frames
+		else: clip.fade_in_audio = drag_frames
+		
+	else: # Fade Out
+		drag_frames = floori((end_x - mouse_x) / zoom)
+		drag_frames = clamp(drag_frames, 0, clip.duration / 2.0)
+		
+		if fade_target.is_visual: clip.fade_out_visual = drag_frames
+		else: clip.fade_out_audio = drag_frames
+
+	queue_redraw()
+	EditorCore.update_frame()
+
+
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	match id:
 		# Clip options
-		POPUP_ACTION.CLIP_ONLY_VIDEO: _on_popup_action_clip_only_video()
+		POPUP_ACTION.CLIP_VIDEO_ONLY: _on_popup_action_clip_only_video()
 		POPUP_ACTION.CLIP_DELETE: _on_popup_action_clip_delete()
 		POPUP_ACTION.CLIP_CUT: _on_popup_action_clip_cut()
 		# Track options
@@ -789,3 +951,15 @@ class ResizeTarget:
 		is_end = _is_end
 		original_start = start
 		original_duration = duration
+
+
+class FadeTarget:
+	var clip_id: int
+	var is_end: bool
+	var is_visual: bool
+
+
+	func _init(_clip_id: int, _is_end: bool, _is_visual: bool) -> void:
+		clip_id = _clip_id
+		is_end = _is_end
+		is_visual = _is_visual

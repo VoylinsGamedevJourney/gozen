@@ -126,10 +126,6 @@ static func get_video_extension(video_codec: GoZenEncoder.VIDEO_CODEC) -> String
 	return ""
 
 
-static func calculate_fade(frame_nr: int, fade_limit: float) -> float:
-	return lerpf(1, 0, float(frame_nr) / fade_limit)
-
-
 ## A function to help getting the number lower than the given number.
 static func get_previous(frame: int, array: PackedInt64Array) -> int:
 	var prev: int = -1
@@ -201,3 +197,14 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 	return score if query_index == query.length() else 0
 
 
+static func calculate_fade(current_frame: int, clip_data: ClipData, is_visual: bool) -> float:
+	var fade_in: int = clip_data.fade_in_visual if is_visual else clip_data.fade_in_audio
+	var fade_out: int = clip_data.fade_out_visual if is_visual else clip_data.fade_out_audio
+	var value: float = 1.0
+	
+	if fade_in > 0 and current_frame < fade_in:
+		value = float(current_frame) / float(fade_in)
+	elif fade_out > 0 and current_frame >= (clip_data.duration - fade_out):
+		value = float(clip_data.duration - current_frame) / float(fade_out)
+
+	return clampf(value, 0.0, 1.0)

@@ -166,19 +166,21 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, full_length: int) -
 	return GoZenAudio.combine_data(audio, track_audio)
 
 
-func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteArray:
+func _handle_audio(clip_data: ClipData, track_audio: PackedByteArray) -> PackedByteArray:
 	# Getting the raw clip audio data
-	var audio_data: PackedByteArray = ClipHandler.get_clip_audio_data(clip.id, clip)
+	var audio_data: PackedByteArray = ClipHandler.get_clip_audio_data(clip_data.id, clip_data)
 	var framerate: float = Project.get_framerate()
 
+	if clip_data.fade_in_audio > 0 or clip_data.fade_out_visual > 0:
+		audio_data = _apply_audio_fade(audio_data, clip_data)
+
 	# Apply all available effects to the clip audio data
-	for effect: GoZenEffectAudio in clip.effects_audio:
+	for effect: GoZenEffectAudio in clip_data.effects_audio:
 		match effect.effect_id:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.effect_name)
-
 	
-	var start_sample: int = Utils.get_sample_count(clip.start_frame - 1, framerate)
+	var start_sample: int = Utils.get_sample_count(clip_data.start_frame - 1, framerate)
 
 	# Resize the audio data so we're certain the audio will be
 	# added at the correct moment.
@@ -188,7 +190,7 @@ func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteAr
 		track_audio.resize(start_sample)
 	
 	# Add the data to the track audio and send back
-	track_audio.append_array(clip.get_clip_audio_data())
+	track_audio.append_array(clip_data.get_clip_audio_data())
 	return track_audio
 
 
@@ -201,3 +203,49 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: GoZenEffectAudio)
 		return data
 
 	return GoZenAudio.change_db(data, volume_db)
+
+
+func _apply_audio_fade(audio_data: PackedByteArray, clip: ClipData) -> PackedByteArray:
+	# TODO: Move this logic to the GDExtension
+	var sample_count: int = floori(audio_data.size() / 4.0) # 16-bit stereo = 4 bytes per sample
+	var samples_per_frame: float = 44100.0 / Project.get_framerate()
+	
+	# Pre-calculate ranges
+	var fade_in_samples: int = int(clip.fade_in_audio * samples_per_frame)
+	var fade_out_samples: int = int(clip.fade_out_audio * samples_per_frame)
+	var fade_out_start_sample: int = sample_count - fade_out_samples
+	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
+
+	stream.data_array = audio_data
+	
+	# Process Fade In
+	if fade_in_samples > 0:
+		for i: int in mini(fade_in_samples, sample_count):
+			var volume: float = float(i) / float(fade_in_samples)
+			
+			stream.seek(i * 4)
+
+			var l: int = stream.get_16()
+			var r: int = stream.get_16()
+			
+			stream.seek(i * 4)
+			stream.put_16(int(l * volume))
+			stream.put_16(int(r * volume))
+
+	# Process Fade Out
+	if fade_out_samples > 0 and fade_out_start_sample < sample_count:
+		var start_i: int = maxi(0, fade_out_start_sample)
+
+		for i: int in range(start_i, sample_count):
+			var volume: float = 1.0 - (float(i - start_i) / float(fade_out_samples))
+			
+			stream.seek(i * 4)
+
+			var l: int = stream.get_16()
+			var r: int = stream.get_16()
+			
+			stream.seek(i * 4)
+			stream.put_16(int(l * volume))
+			stream.put_16(int(r * volume))
+			
+	return stream.data_array

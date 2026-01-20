@@ -66,6 +66,12 @@ func set_audio(audio_clip_id: int) -> void:
 	
 	update_effects(data.effects_audio)
 
+	# Apply fade
+	var clip_frame: int = EditorCore.frame_nr - data.start_frame
+	var fade_volume: float = Utils.calculate_fade(clip_frame, data, false)
+
+	player.volume_db = linear_to_db(max(fade_volume, 0.0001))
+
 	# Getting timings in seconds.
 	var position: float = float(EditorCore.frame_nr - data.start_frame + data.begin)
 	position /= Project.get_framerate()

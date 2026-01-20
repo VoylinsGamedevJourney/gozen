@@ -17,6 +17,12 @@ var begin: int = 0 # Only for video and audio files
 var effects_video: Array[GoZenEffectVisual]
 var effects_audio: Array[GoZenEffectAudio]
 
+var fade_in_visual: int = 0
+var fade_out_visual: int = 0
+
+var fade_in_audio: int = 0
+var fade_out_audio: int = 0
+
 
 
 func _to_string() -> String:
