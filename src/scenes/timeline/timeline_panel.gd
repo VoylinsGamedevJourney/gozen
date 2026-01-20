@@ -219,7 +219,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 	if state == STATE.NORMAL:
 		if _get_resize_target() != null:
 			mouse_default_cursor_shape = Control. CURSOR_HSIZE
-		elif _get_fade_target() != null or clip_on_mouse != null:
+		elif _get_fade_target() != null:
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
 		elif clip_on_mouse != null:
 			mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -344,38 +344,37 @@ func _draw() -> void:
 		
 		# - Audio waves (Part of clip blocks)
 		var wave_data: PackedFloat32Array = FileHandler.get_file_data(clip_data.file_id).audio_wave_data
-		if wave_data.is_empty():
-			continue
 
-		var display_duration: int = clip_data.duration
-		var display_begin_offset: int = clip_data.begin
-		var height: float = clip_rect.size.y
-		var base_x: float = clip_rect.position.x
-		var base_y: float = clip_rect.position.y
+		if !wave_data.is_empty():
+			var display_duration: int = clip_data.duration
+			var display_begin_offset: int = clip_data.begin
+			var height: float = clip_rect.size.y
+			var base_x: float = clip_rect.position.x
+			var base_y: float = clip_rect.position.y
 
-		for i: int in display_duration:
-			var index: int = display_begin_offset + i
+			for i: int in display_duration:
+				var index: int = display_begin_offset + i
 
-			if index >= wave_data.size():
-				break
+				if index >= wave_data.size():
+					break
 
-			var normalized_height: float = wave_data[index] * waveform_amp
-			var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
-			var block_pos_y: float = base_y # TOP_TO_BOTTOM style
+				var normalized_height: float = wave_data[index] * waveform_amp
+				var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
+				var block_pos_y: float = base_y # TOP_TO_BOTTOM style
 
-			match waveform_style:
-				SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
-					block_pos_y = base_y + (height - block_height) / 2.0
-				SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
-					block_pos_y = base_y + height - block_height
+				match waveform_style:
+					SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+						block_pos_y = base_y + (height - block_height) / 2.0
+					SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+						block_pos_y = base_y + height - block_height
 
-			var sample_rect: Rect2 = Rect2(
-				base_x + (i * zoom),
-				block_pos_y,
-				zoom,
-				block_height)
+				var sample_rect: Rect2 = Rect2(
+					base_x + (i * zoom),
+					block_pos_y,
+					zoom,
+					block_height)
 
-			draw_rect(sample_rect, COLOR_AUDIO_WAVE)
+				draw_rect(sample_rect, COLOR_AUDIO_WAVE)
 
 		# - Fading handles + amount
 		var is_video: bool = ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES
@@ -504,9 +503,11 @@ func _get_resize_target() -> ResizeTarget:
 		var end: float = (clip_data.start_frame + clip_data.duration) * zoom
 		
 		if abs(frame_pos - start) <= RESIZE_HANDLE_WIDTH:
-			return ResizeTarget.new(clip_data.id, false, clip_data.start_frame, clip_data.duration)
+			return ResizeTarget.new(
+					clip_data.id, false, clip_data.start_frame, clip_data.duration)
 		elif abs(frame_pos - end) <= RESIZE_HANDLE_WIDTH:
-			return ResizeTarget.new(clip_data.id, true, clip_data.start_frame, clip_data.duration)
+			return ResizeTarget.new(
+					clip_data.id, true, clip_data.start_frame, clip_data.duration)
 	
 	return null
 
