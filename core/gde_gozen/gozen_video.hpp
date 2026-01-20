@@ -175,7 +175,7 @@ class GoZenVideo : public Resource {
 
 	inline String get_pixel_format() const { return pixel_format; }
 	inline String get_color_profile() { return av_color_primaries_name(color_profile); }
-	
+
 	inline bool get_has_alpha() const { return has_alpha; }
 
 	inline bool is_full_color_range() const { return full_color_range; }

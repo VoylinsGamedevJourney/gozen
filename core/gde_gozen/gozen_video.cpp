@@ -331,8 +331,10 @@ void GoZenVideo::close() {
 
 
 bool GoZenVideo::seek_frame(int frame_nr) {
-	if (!loaded) return _log_err("Not open");
-	else if (_load_from_cache(frame_nr)) return true;
+	if (!loaded)
+		return _log_err("Not open");
+	else if (_load_from_cache(frame_nr))
+		return true;
 
 	int response = 0;
 	int attempts = 0;
@@ -411,21 +413,27 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 
 
 bool GoZenVideo::next_frame(bool skip) {
-	if (!loaded) return false;
-	else if (_load_from_cache(current_frame + 1)) return true;
-	else if (last_decoded_frame != current_frame) return seek_frame(current_frame + 1);
+	if (!loaded)
+		return false;
+	else if (_load_from_cache(current_frame + 1))
+		return true;
+	else if (last_decoded_frame != current_frame)
+		return seek_frame(current_frame + 1);
 
-	int response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
+	int response =
+		FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
 
 	if (response < 0) {
 		if (response == AVERROR_EOF)
 			_log("End of file reached in next_frame");
-		else FFmpeg::print_av_error("Error in next_frame", response);
+		else
+			FFmpeg::print_av_error("Error in next_frame", response);
 	}
 
 	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
 		current_pts = av_frame->pts;
-	else current_pts = av_frame->best_effort_timestamp;
+	else
+		current_pts = av_frame->best_effort_timestamp;
 
 	if (!skip)
 		_copy_frame_data();
@@ -738,22 +746,25 @@ int GoZenVideo::_seek_frame(int frame_nr) {
 
 
 void GoZenVideo::_add_to_cache(int frame_nr) {
-	if (max_cache_size <= 0) return;
+	if (max_cache_size <= 0)
+		return;
 
 	// Check if cached already
-	for (const CachedFrame& cache: frame_cache)
-		if (cache.frame_nr == frame_nr) return;
+	for (const CachedFrame& cache : frame_cache)
+		if (cache.frame_nr == frame_nr)
+			return;
 
 	// Create a new ref-counted frame
 	AVFrame* new_frame = av_frame_alloc();
 
-	if (!new_frame) return;
+	if (!new_frame)
+		return;
 	else if (av_frame_ref(new_frame, av_frame.get()) < 0)
 		return av_frame_free(&new_frame);
 
 
 	frame_cache.push_back({frame_nr, new_frame});
-	
+
 	// Checking/Fixing max size
 	if (frame_cache.size() > max_cache_size) {
 		CachedFrame& old = frame_cache.front();
@@ -765,17 +776,20 @@ void GoZenVideo::_add_to_cache(int frame_nr) {
 
 bool GoZenVideo::_load_from_cache(int frame_nr) {
 	for (const CachedFrame& cache : frame_cache) {
-		if (cache.frame_nr != frame_nr) continue;
+		if (cache.frame_nr != frame_nr)
+			continue;
 
 		av_frame_unref(av_frame.get());
-		if (av_frame_ref(av_frame.get(), cache.frame) < 0) return false;
+		if (av_frame_ref(av_frame.get(), cache.frame) < 0)
+			return false;
 
 		current_frame = frame_nr;
 
 		// Updating PTS
 		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
 			current_pts = av_frame->pts;
-		else current_pts = av_frame->best_effort_timestamp;
+		else
+			current_pts = av_frame->best_effort_timestamp;
 
 		_copy_frame_data();
 		return true;

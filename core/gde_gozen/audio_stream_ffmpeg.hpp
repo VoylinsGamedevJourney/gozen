@@ -33,9 +33,10 @@ class AudioStreamFFmpeg : public AudioStream {
 	bool stereo = true;
 	int bytes_per_sample = 0;
 	int sample_rate = 44100;
+	int start_time = 0;
 	double length = 0;
 
-	Mutex *mutex; // We need thread safety
+	Mutex* mutex; // We need thread safety
 
 	String file_path;
 

@@ -152,6 +152,11 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 		return _log_err("Failed to initialize SWR");
 	}
 
+	if (av_stream->start_time != AV_NOPTS_VALUE)
+		start_time = av_stream->start_time;
+	else
+		start_time = 0;
+
 	loaded = true;
 	mutex->unlock();
 	return 0;
@@ -188,6 +193,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 
 	int64_t target_ts =
 		av_rescale_q(p_position * AV_TIME_BASE, AV_TIME_BASE_Q, audio_stream_ffmpeg->av_stream->time_base);
+	target_ts += audio_stream_ffmpeg->start_time;
 
 	avcodec_flush_buffers(audio_stream_ffmpeg->av_codec_ctx.get());
 	if (int err = av_seek_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_stream->index,
@@ -215,7 +221,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 			found_target = true;
 
 			av_decoded_frame->format = AV_SAMPLE_FMT_S16;
-            av_decoded_frame->ch_layout = (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
+			av_decoded_frame->ch_layout = (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
 			av_decoded_frame->sample_rate = av_frame->sample_rate;
 			av_decoded_frame->nb_samples =
 				swr_get_out_samples(audio_stream_ffmpeg->swr_ctx.get(), av_frame->nb_samples);
@@ -260,8 +266,9 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 					mixed = static_cast<int64_t>(p_position * mix_rate);
 				}
 			} else
-				mixed = av_rescale_q(frame_pts, audio_stream_ffmpeg->av_stream->time_base,
-									 AVRational{1, static_cast<int>(mix_rate)});
+				mixed =
+					av_rescale_q(frame_pts - audio_stream_ffmpeg->start_time, audio_stream_ffmpeg->av_stream->time_base,
+								 AVRational{1, static_cast<int>(mix_rate)});
 		}
 
 		av_frame_unref(av_frame.get());
@@ -321,7 +328,7 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 	}
 
 	av_decoded_frame.get()->format = AV_SAMPLE_FMT_S16;
-    av_decoded_frame->ch_layout = (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
+	av_decoded_frame->ch_layout = (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
 	av_decoded_frame.get()->sample_rate = av_frame.get()->sample_rate;
 	av_decoded_frame.get()->nb_samples =
 		swr_get_out_samples(audio_stream_ffmpeg->swr_ctx.get(), av_frame.get()->nb_samples);
