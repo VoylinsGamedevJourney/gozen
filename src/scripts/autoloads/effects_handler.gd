@@ -176,36 +176,46 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 
 
 	var effect: GoZenEffect = list[index]
-	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
-
-	var old_value: Variant = null
-	var keyframe_exists: bool = false
-
-	if effect.keyframes.has(param_id) and effect.keyframes[param_id].has(frame_nr):
-		old_value = effect.keyframes[param_id][frame_nr]
-		keyframe_exists = true
-	else:
-		# New keyframe, interpolate the value
-		var effect_param: EffectParam = null
-
-		for param: EffectParam in effect.params:
-			if param.param_id == param_id:
-				effect_param = param
-				break
-
-		if effect_param:
-			old_value = effect.get_value(effect_param, frame_nr)
 
 	InputManager.undo_redo.create_action("Update effect param: %s" % effect.effect_name)
 
-	InputManager.undo_redo.add_do_method(_set_keyframe.bind(clip_id, index, is_visual, param_id, frame_nr, new_value))
+	# No keyframes (except 0) made, so we change main value
+	if effect.keyframes[param_id].size == 1:
+		var old_value: Variant = effect.keyframes[param_id][0]
 
-	if keyframe_exists: # If keyframe already existed, we just adjust the keyframe
+		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+				clip_id, index, is_visual, param_id, 0, new_value))
 		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-				clip_id, index, is_visual, param_id, frame_nr, old_value))
-	else: # If the keyframe didn't exist yet, we remove the newly created one on undo
-		InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
-				clip_id, index, is_visual, param_id, frame_nr))
+				clip_id, index, is_visual, param_id, 0, old_value))
+	else:
+		var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+
+		var old_value: Variant = null
+		var keyframe_exists: bool = false
+
+		if effect.keyframes.has(param_id) and effect.keyframes[param_id].has(frame_nr):
+			old_value = effect.keyframes[param_id][frame_nr]
+			keyframe_exists = true
+		else:
+			# New keyframe, interpolate the value
+			var effect_param: EffectParam = null
+
+			for param: EffectParam in effect.params:
+				if param.param_id == param_id:
+					effect_param = param
+					break
+
+			if effect_param:
+				old_value = effect.get_value(effect_param, frame_nr)
+
+		InputManager.undo_redo.add_do_method(_set_keyframe.bind(clip_id, index, is_visual, param_id, frame_nr, new_value))
+
+		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe
+			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+					clip_id, index, is_visual, param_id, frame_nr, old_value))
+		else: # If the keyframe didn't exist yet, we remove the newly created one on undo
+			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+					clip_id, index, is_visual, param_id, frame_nr))
 
 	InputManager.undo_redo.commit_action()
 
@@ -216,11 +226,9 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 	
 	if not effect.keyframes.has(param_id):
 		effect.keyframes[param_id] = {}
-	
+
 	effect.keyframes[param_id][frame_nr] = value
 	effect._cache_dirty = true
-
-	effect_values_updated.emit()
 	effect_values_updated.emit()
 
 
@@ -235,6 +243,7 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 			effect.keyframes.erase(param_id)
 		
 	effect._cache_dirty = true
+	effect_values_updated.emit()
 
 
 #---- Switch enabled ----
@@ -257,9 +266,6 @@ func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
 	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip_id, index, is_visual, !enabled))
 	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip_id, index, is_visual, enabled))
 
-	InputManager.undo_redo.add_do_method(effects_updated.emit)
-	InputManager.undo_redo.add_undo_method(effects_updated.emit)
-
 	InputManager.undo_redo.commit_action()
 
 
@@ -268,6 +274,8 @@ func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> 
 		ClipHandler.clips[clip_id].effects_video[index].is_enabled = value
 	else:
 		ClipHandler.clips[clip_id].effects_audio[index].is_enabled = value
+	
+	effects_updated.emit()
 
 
 #---- Helper functions ----

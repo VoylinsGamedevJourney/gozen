@@ -146,8 +146,7 @@ elif "windows" in platform:
             # '-lws2',
             "-lws2_32",
             "-lz",
-            # "-lpthread",  # must be after everything
-            "-l:libwinpthread.a"
+            "-lpthread",  # must be after everything
         ]
 
         if os_platform.system().lower() != "windows":
