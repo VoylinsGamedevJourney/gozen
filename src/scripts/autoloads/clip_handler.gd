@@ -127,9 +127,6 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		InputManager.undo_redo.add_do_method(_add_clip.bind(clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
 
-	InputManager.undo_redo.add_do_method(clips_updated.emit)
-	InputManager.undo_redo.add_undo_method(clips_updated.emit)
-
 	InputManager.undo_redo.commit_action()
 	
 
@@ -148,9 +145,6 @@ func delete_clips(data: PackedInt64Array) -> void:
 
 		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip))
 		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
-
-	InputManager.undo_redo.add_do_method(clips_updated.emit)
-	InputManager.undo_redo.add_undo_method(clips_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
@@ -186,9 +180,6 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		InputManager.undo_redo.add_do_method(_add_clip.bind(new_clip_data))
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(new_clip_data))
 
-	InputManager.undo_redo.add_do_method(clips_updated.emit)
-	InputManager.undo_redo.add_undo_method(clips_updated.emit)
-
 	InputManager.undo_redo.commit_action()
 
 
@@ -206,8 +197,6 @@ func move_clips(data: Array[MoveClipRequest]) -> void:
 
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_do_method(clips_updated.emit)
-	InputManager.undo_redo.add_undo_method(clips_updated.emit)
 
 	InputManager.undo_redo.commit_action()
 

@@ -45,11 +45,9 @@ func remove_track(id: int) -> void:
 
 	InputManager.undo_redo.add_do_method(_remove_track.bind(id))
 	InputManager.undo_redo.add_do_method(_reset_track_ids)
-	InputManager.undo_redo.add_do_method(updated.emit)
 
 	InputManager.undo_redo.add_undo_method(_fix_removed_track.bind(id, tracks[id]))
 	InputManager.undo_redo.add_undo_method(_reset_track_ids)
-	InputManager.undo_redo.add_undo_method(updated.emit)
 
 	InputManager.undo_redo.commit_action()
 
