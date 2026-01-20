@@ -143,16 +143,13 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		# Check if clip is pressed or not.
 		state = STATE.NORMAL
 		pressed_clip = _get_clip_on_mouse()
-
-		if pressed_clip == null:
-			state = STATE.SCRUBBING
-			move_playhead(get_frame_from_mouse())
-			return
-
 		resize_target = _get_resize_target()
 
 		if resize_target:
 			state = STATE.RESIZING
+		elif pressed_clip == null:
+			state = STATE.SCRUBBING
+			move_playhead(get_frame_from_mouse())
 		else:
 			var clip_id: int = pressed_clip.id
 
@@ -407,7 +404,7 @@ func _get_resize_target() -> ResizeTarget:
 
 	if clip_on_mouse == null:
 		return null
-	elif clip_on_mouse.duration * zoom > RESIZE_CLIP_MIN_WIDTH:
+	elif clip_on_mouse.duration * zoom < RESIZE_CLIP_MIN_WIDTH:
 		return null # Too small
 
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
