@@ -5,7 +5,7 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.5.0-alpha'
+        default: '0.5.1-alpha'
       godot_version:
         description: The Godot version to use
         type: string

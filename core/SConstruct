@@ -108,7 +108,7 @@ elif "windows" in platform:
             ]
         )
     else:
-        env.Append(LINKFLAGS=["-static"])
+        env.Append(LINKFLAGS=["-static", "-static-libgcc", "-static-libstdc++"])
 
         libs = [
             "-lSvtAv1Enc",
@@ -146,7 +146,8 @@ elif "windows" in platform:
             # '-lws2',
             "-lws2_32",
             "-lz",
-            "-lpthread",  # must be after everything
+            # "-lpthread",  # must be after everything
+            "-l:libwinpthread.a"
         ]
 
         if os_platform.system().lower() != "windows":
