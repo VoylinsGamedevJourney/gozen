@@ -76,7 +76,7 @@ class GoZenVideo : public Resource {
 
 	// Caching - Increases ram usage, but provides smoother backwards seeking
 	std::list<CachedFrame> frame_cache;
-	int max_cache_size = 60;
+	int max_cache_size = 100;
 
 	// Godot classes.
 	String path = "";

@@ -335,7 +335,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 	int response = 0;
 	int attempts = 0;
 
-	int frame_difference = frame_nr - current_frame;
+	int frame_difference = frame_nr - current_frame - 1;
 
 	if (frame_difference > 0 && frame_difference <= smart_seek_threshold) {
 		for (int i = 0; i < frame_difference; i++) {
@@ -347,7 +347,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 		}
 
 		if (frame_difference != 0) {
-			_copy_frame_data();
+			next_frame(false);
 			return true;
 		}
 	}
