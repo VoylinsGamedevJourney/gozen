@@ -1,6 +1,4 @@
 extends PanelContainer
-# TODO: When resizing we should consider to have the existing clip to just be
-# greyed out or a bit transparent, would help to align with the audio wave data.
 # TODO: Look into caching the waveform data (not an issue right now, but might become one)
 # TODO: Add ripple editing (Shift+delete) removes the clip and moves the others closer.
 
@@ -288,7 +286,14 @@ func _draw() -> void:
 
 		var preview_position: Vector2 = Vector2(draw_start, clip_data.track_id * TRACK_TOTAL_SIZE)
 		var preview_size: Vector2 = Vector2(draw_length * zoom, TRACK_HEIGHT)
+
+		var box_pos: Vector2 = Vector2(clip_data.start_frame * zoom, TRACK_TOTAL_SIZE * clip_data.track_id)
+		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_data.duration * zoom, TRACK_HEIGHT))
+
+		# Drawing the original clip box
+		draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
 		
+		# Drawing the actual resized box
 		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 
 		if resize_target.clip_id in visible_clip_ids:
@@ -299,32 +304,32 @@ func _draw() -> void:
 		if clip_id in handled_clip_ids:
 			continue
 
-		var clip: ClipData = ClipHandler.get_clip(clip_id)
-		var box_type: int = 1 if clip.id in selected_clip_ids else 0
-		var box_pos: Vector2 = Vector2(clip.start_frame * zoom, TRACK_TOTAL_SIZE * clip.track_id)
-		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, TRACK_HEIGHT))
+		var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+		var box_type: int = 1 if clip_data.id in selected_clip_ids else 0
+		var box_pos: Vector2 = Vector2(clip_data.start_frame * zoom, TRACK_TOTAL_SIZE * clip_data.track_id)
+		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_data.duration * zoom, TRACK_HEIGHT))
 		var text_pos_x: float = box_pos.x
-		var clip_end_x: float = box_pos.x + (clip.duration * zoom)
+		var clip_end_x: float = box_pos.x + (clip_data.duration * zoom)
 
 		if text_pos_x < scroll.scroll_horizontal and text_pos_x + TEXT_OFFSET.x <= clip_end_x:
 			text_pos_x = scroll.scroll_horizontal
 
-		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip.id)][box_type], clip_rect)
+		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip_data.id)][box_type], clip_rect)
 		draw_string(
 				get_theme_default_font(),
 				Vector2(text_pos_x, box_pos.y) + TEXT_OFFSET,
-				FileHandler.get_file_name(clip.file_id),
-				HORIZONTAL_ALIGNMENT_LEFT, clip.duration * zoom - TEXT_OFFSET.x,
+				FileHandler.get_file_name(clip_data.file_id),
+				HORIZONTAL_ALIGNMENT_LEFT, clip_data.duration * zoom - TEXT_OFFSET.x,
 				11, # Font size
 				Color(0.9, 0.9, 0.9))
 		
 		# - Audio waves (Part of clip blocks)
-		var wave_data: PackedFloat32Array = FileHandler.get_file_data(clip.file_id).audio_wave_data
+		var wave_data: PackedFloat32Array = FileHandler.get_file_data(clip_data.file_id).audio_wave_data
 		if wave_data.is_empty():
 			continue
 
-		var display_duration: int = clip.duration
-		var display_begin_offset: int = clip.begin
+		var display_duration: int = clip_data.duration
+		var display_begin_offset: int = clip_data.begin
 		var height: float = clip_rect.size.y
 		var base_x: float = clip_rect.position.x
 		var base_y: float = clip_rect.position.y
