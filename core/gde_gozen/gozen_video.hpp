@@ -20,6 +20,11 @@
 
 using namespace godot;
 
+struct CachedFrame {
+	int frame_nr;
+	AVFrame* frame;
+};
+
 class GoZenVideo : public Resource {
 	GDCLASS(GoZenVideo, Resource);
 
@@ -69,6 +74,10 @@ class GoZenVideo : public Resource {
 
 	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1, STREAM_SUBTITLE = 2 };
 
+	// Caching - Increases ram usage, but provides smoother backwards seeking
+	std::list<CachedFrame> frame_cache;
+	int max_cache_size = 60;
+
 	// Godot classes.
 	String path = "";
 	String pixel_format = "";
@@ -94,6 +103,10 @@ class GoZenVideo : public Resource {
 	void _clean_frame_data();
 
 	int _seek_frame(int frame_nr);
+
+	void _add_to_cache(int frame_nr);
+	bool _load_from_cache(int frame_nr);
+	void _clear_cache();
 
 	inline void _log(const String& message) {
 		if (debug)
@@ -130,6 +143,7 @@ class GoZenVideo : public Resource {
 	inline void set_sws_flag_bicubic() { sws_flag = SWS_BICUBIC; }
 
 	inline void set_smart_seek_threshold(int frames) { smart_seek_threshold = frames; }
+	inline void set_cache_size(int size) { max_cache_size = size; }
 
 	inline Ref<Image> get_y_data() const { return y_data; }
 	inline Ref<Image> get_u_data() const { return u_data; }

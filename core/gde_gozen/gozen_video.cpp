@@ -310,6 +310,8 @@ int GoZenVideo::open(const String& video_path) {
 
 void GoZenVideo::close() {
 	_log("Closing video file on path: " + path);
+	_clear_cache();
+
 	loaded = false;
 	current_frame = -1;
 
@@ -327,8 +329,8 @@ void GoZenVideo::close() {
 
 
 bool GoZenVideo::seek_frame(int frame_nr) {
-	if (!loaded)
-		return _log_err("Not open");
+	if (!loaded) return _log_err("Not open");
+	else if (_load_from_cache(frame_nr)) return true;
 
 	int response = 0;
 	int attempts = 0;
@@ -391,6 +393,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 		// Skip to actual requested frame.
 		if ((int64_t)(current_pts * stream_time_base_video) / 10000 >= frame_timestamp / 10000) {
 			_copy_frame_data();
+			_add_to_cache(frame_nr);
 			break;
 		}
 	}
@@ -424,6 +427,7 @@ bool GoZenVideo::next_frame(bool skip) {
 		_copy_frame_data();
 
 	current_frame++;
+	_add_to_cache(current_frame);
 
 	av_frame_unref(av_frame.get());
 	av_packet_unref(av_packet.get());
@@ -692,7 +696,7 @@ Dictionary GoZenVideo::get_chapter_metadata(int chapter_index) {
 
 void GoZenVideo::_copy_frame_data() {
 	if (av_frame->data[0] == nullptr) {
-		_log_err("Frame is empty!");
+		_log_err("Frame is empty");
 		return;
 	}
 
@@ -727,6 +731,62 @@ int GoZenVideo::_seek_frame(int frame_nr) {
 }
 
 
+void GoZenVideo::_add_to_cache(int frame_nr) {
+	if (max_cache_size <= 0) return;
+
+	// Check if cached already
+	for (const CachedFrame& cache: frame_cache)
+		if (cache.frame_nr == frame_nr) return;
+
+	// Create a new ref-counted frame
+	AVFrame* new_frame = av_frame_alloc();
+
+	if (!new_frame) return;
+	else if (av_frame_ref(new_frame, av_frame.get()) < 0)
+		return av_frame_free(&new_frame);
+
+
+	frame_cache.push_back({frame_nr, new_frame});
+	
+	// Checking/Fixing max size
+	if (frame_cache.size() > max_cache_size) {
+		CachedFrame& old = frame_cache.front();
+		av_frame_free(&old.frame);
+		frame_cache.pop_front();
+	}
+}
+
+
+bool GoZenVideo::_load_from_cache(int frame_nr) {
+	for (const CachedFrame& cache : frame_cache) {
+		if (cache.frame_nr != frame_nr) continue;
+
+		av_frame_unref(av_frame.get());
+		if (av_frame_ref(av_frame.get(), cache.frame) < 0) return false;
+
+		current_frame = frame_nr;
+
+		// Updating PTS
+		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
+			current_pts = av_frame->pts;
+		else current_pts = av_frame->best_effort_timestamp;
+
+		_copy_frame_data();
+		return true;
+	}
+
+	return false;
+}
+
+
+void GoZenVideo::_clear_cache() {
+	for (CachedFrame& cache : frame_cache)
+		av_frame_free(&cache.frame);
+
+	frame_cache.clear();
+}
+
+
 void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("open", "video_path"), &GoZenVideo::open);
 
@@ -748,7 +808,9 @@ void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &GoZenVideo::set_sws_flag_bilinear);
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &GoZenVideo::set_sws_flag_bicubic);
 
+	// TODO: Add these to the settings menu
 	ClassDB::bind_method(D_METHOD("set_smart_seek_threshold", "frames"), &GoZenVideo::set_smart_seek_threshold);
+	ClassDB::bind_method(D_METHOD("set_cache_size", "size"), &GoZenVideo::set_cache_size);
 
 	ClassDB::bind_method(D_METHOD("get_y_data"), &GoZenVideo::get_y_data);
 	ClassDB::bind_method(D_METHOD("get_u_data"), &GoZenVideo::get_u_data);

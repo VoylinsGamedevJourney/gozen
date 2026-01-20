@@ -8,12 +8,6 @@ signal clips_updated
 signal clip_selected(clip_id: int)
 
 
-# This is the amount that we allow to use next_frame before using seek_frame
-# for the video data since seek_frame is usually slower
-# TODO: Make this into a setting
-const MAX_FRAME_SKIPS: int = 20
-
-
 var clips: Dictionary[int, ClipData] = {}
 
 
@@ -84,16 +78,10 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 		if frame_nr == video_frame_nr:
 			return
 
-		# check if frame is before current one or after max skip
-		var skips: int = frame_nr - video_frame_nr
-
-		if frame_nr < video_frame_nr or skips > MAX_FRAME_SKIPS:
-			if !video.seek_frame(frame_nr):
-				printerr("ClipHandler: Couldn't seek frame!")
-		else: # go through skips and set frame
-			for i: int in skips:
-				if !video.next_frame(i == skips):
-					printerr("ClipHandler: Something went wrong skipping next frame!")
+		if frame_nr == video_frame_nr + 1:
+			video.next_frame(false)
+		elif !video.seek_frame(frame_nr):
+			printerr("ClipHandler: Couldn't seek frame!")
 
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
