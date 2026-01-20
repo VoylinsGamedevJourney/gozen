@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <deque>
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/file_access.hpp>
@@ -46,6 +47,7 @@ class GoZenVideo : public Resource {
 
 	// Default variable types.
 	int current_frame = 0;
+	int last_decoded_frame = -1;
 	int padding = 0;
 
 	int8_t rotation = 0;
@@ -75,7 +77,7 @@ class GoZenVideo : public Resource {
 	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1, STREAM_SUBTITLE = 2 };
 
 	// Caching - Increases ram usage, but provides smoother backwards seeking
-	std::list<CachedFrame> frame_cache;
+	std::deque<CachedFrame> frame_cache;
 	int max_cache_size = 100;
 
 	// Godot classes.
@@ -166,6 +168,7 @@ class GoZenVideo : public Resource {
 	inline int get_interlaced() const { return interlaced; }
 	inline int get_frame_count() const { return static_cast<int>(frame_count); }
 	inline int get_current_frame() const { return current_frame; }
+	inline int get_last_decoded_frame() const { return last_decoded_frame; }
 
 	inline float get_sar() const { return sar; }
 	inline float get_framerate() const { return framerate; }

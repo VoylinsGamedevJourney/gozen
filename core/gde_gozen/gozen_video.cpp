@@ -10,6 +10,7 @@ int GoZenVideo::open(const String& video_path) {
 
 	path = video_path;
 	resolution = Vector2i(0, 0);
+	last_decoded_frame = -1;
 
 	if (path.begins_with("res://") || path.begins_with("user://")) {
 		if (!(temp_format_ctx = avformat_alloc_context()))
@@ -314,6 +315,7 @@ void GoZenVideo::close() {
 
 	loaded = false;
 	current_frame = -1;
+	last_decoded_frame = -1;
 
 	av_packet.reset();
 	av_frame.reset();
@@ -399,6 +401,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 	}
 
 	current_frame = frame_nr;
+	last_decoded_frame = current_frame;
 
 	av_frame_unref(av_frame.get());
 	av_packet_unref(av_packet.get());
@@ -408,8 +411,9 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 
 
 bool GoZenVideo::next_frame(bool skip) {
-	if (!loaded)
-		return false;
+	if (!loaded) return false;
+	else if (_load_from_cache(current_frame + 1)) return true;
+	else if (last_decoded_frame != current_frame) return seek_frame(current_frame + 1);
 
 	int response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
 
@@ -427,6 +431,7 @@ bool GoZenVideo::next_frame(bool skip) {
 		_copy_frame_data();
 
 	current_frame++;
+	last_decoded_frame = current_frame;
 	_add_to_cache(current_frame);
 
 	av_frame_unref(av_frame.get());
@@ -517,6 +522,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 	// We still have to set the frame_nr since that's where the "playhead" is
 	// inside of the file.
 	current_frame = frame_nr;
+	last_decoded_frame = current_frame;
 
 	if (!frame_found) {
 		av_frame_unref(av_frame.get());
@@ -833,6 +839,7 @@ void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_interlaced"), &GoZenVideo::get_interlaced);
 	ClassDB::bind_method(D_METHOD("get_frame_count"), &GoZenVideo::get_frame_count);
 	ClassDB::bind_method(D_METHOD("get_current_frame"), &GoZenVideo::get_current_frame);
+	ClassDB::bind_method(D_METHOD("get_last_decoded_frame"), &GoZenVideo::get_last_decoded_frame);
 
 	ClassDB::bind_method(D_METHOD("get_sar"), &GoZenVideo::get_sar);
 	ClassDB::bind_method(D_METHOD("get_framerate"), &GoZenVideo::get_framerate);
