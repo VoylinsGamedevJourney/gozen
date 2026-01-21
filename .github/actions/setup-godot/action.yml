@@ -8,6 +8,9 @@ inputs:
     required: true
     default: linux
 
+env:
+  ACTION_VERSION: 1 # When changing this action, increase this number
+
 runs:
   using: composite
   steps:
@@ -19,7 +22,7 @@ runs:
           ${{ inputs.os == 'linux' && '/home/runner/.local/share/godot' || '' }}
           ${{ inputs.os == 'windows' && format('{0}/Godot', env.APPDATA) || '' }}
           ${{ inputs.os == 'linux' && '/home/runner/.local/bin' || 'C:/Program Files/Godot' }}
-        key: ${{ inputs.os }}-godot-${{ inputs.godot-version }}-v2
+        key: ${{ inputs.os }}-godot-${{ inputs.godot-version }}-v${{ env.ACTION_VERSION }}
 
     - name: Install Godot (Linux)
       if: inputs.os == 'linux' && steps.cache-godot.outputs.cache-hit != 'true'
