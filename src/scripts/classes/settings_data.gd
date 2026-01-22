@@ -27,6 +27,7 @@ var default_framerate: float = 30.0
 var tracks_amount: int = 6 # The amount of tracks
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
+var show_time_mode_bar: bool = true
 
 # Markers
 var marker_names: PackedStringArray = [ "Marker type 1", "Marker type 2", "Marker type 3", "Marker type 4", "Marker type 5" ]

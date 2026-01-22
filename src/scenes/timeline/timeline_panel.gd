@@ -17,7 +17,8 @@ enum POPUP_ACTION {
 	TRACK_REMOVE,
 }
 enum STATE {
-	NORMAL,
+	CURSOR_MODE_SELECT,
+	CURSOR_MODE_CUT,
 	SCRUBBING,
 	MOVING,
 	DROPPING,
@@ -66,7 +67,7 @@ const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.8)
 var zoom: float = 1.0
 var selected_clip_ids: PackedInt64Array = []
 
-var state: STATE = STATE.NORMAL
+var state: STATE = STATE.CURSOR_MODE_SELECT
 
 var draggable: Draggable = null
 
@@ -92,13 +93,16 @@ func _ready() -> void:
 	MarkerHandler.marker_removed.connect(queue_redraw.unbind(1))
 	MarkerHandler.marker_moving.connect(queue_redraw)
 
+	InputManager.switch_timeline_mode_select.connect(switch_state.bind(STATE.CURSOR_MODE_SELECT))
+	InputManager.switch_timeline_mode_cut.connect(switch_state.bind(STATE.CURSOR_MODE_CUT))
+
 	scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_DRAG_END:
 		if state == STATE.MOVING or state == STATE.DROPPING:
-			state = STATE.NORMAL
+			state = STATE.CURSOR_MODE_SELECT
 			draggable = null
 			queue_redraw()
 
@@ -139,14 +143,20 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
-	if event.is_released():
+	if state == STATE.CURSOR_MODE_CUT:
+		var clip_data: ClipData = _get_clip_on_mouse()
+
+		cut_clip_at(clip_data, get_frame_from_mouse())
+		return
+	elif event.is_released():
 		if state == STATE.RESIZING:
 			_commit_current_resize()
 
 		_on_ui_cancel()
+	
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		# Check if clip is pressed or not.
-		state = STATE.NORMAL
+		state = STATE.CURSOR_MODE_SELECT
 		pressed_clip = _get_clip_on_mouse()
 		resize_target = _get_resize_target()
 		fade_target = _get_fade_target()
@@ -213,10 +223,10 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			tooltip_text = clip_name
 		if hovered_clip != clip_on_mouse:
 			hovered_clip = clip_on_mouse
-	elif tooltip_text != "" or state != STATE.NORMAL:
+	elif tooltip_text != "" or state != STATE.CURSOR_MODE_SELECT:
 		tooltip_text = ""
 
-	if state == STATE.NORMAL:
+	if state == STATE.CURSOR_MODE_SELECT:
 		if _get_resize_target() != null:
 			mouse_default_cursor_shape = Control. CURSOR_HSIZE
 		elif _get_fade_target() != null:
@@ -225,6 +235,8 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		else:
 			mouse_default_cursor_shape = Control.CURSOR_ARROW
+	elif state == STATE.CURSOR_MODE_CUT:
+		mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
 	elif state == STATE.SCRUBBING and event.button_mask & MOUSE_BUTTON_LEFT:
 		move_playhead(get_frame_from_mouse())
 	elif state == STATE.RESIZING:
@@ -237,7 +249,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 
 
 func _on_ui_cancel() -> void:
-	state = STATE.NORMAL
+	state = STATE.CURSOR_MODE_SELECT
 	draggable = null
 	pressed_clip = null
 	resize_target = null
@@ -561,7 +573,7 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
-	if state != STATE.NORMAL or pressed_clip == null:
+	if state != STATE.CURSOR_MODE_SELECT or pressed_clip == null:
 		return null
 
 	var clicked_clip: ClipData = pressed_clip
@@ -908,6 +920,12 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 	ClipHandler.move_clips(move_requests)
 
 
+func cut_clip_at(clip_data: ClipData, frame_pos: int) -> void:
+	if clip_data.start_frame <= frame_pos and clip_data.end_frame >= frame_pos:
+		ClipHandler.cut_clips([CutClipRequest.new(clip_data.id, frame_pos - clip_data.start_frame)])
+
+	queue_redraw()
+
 func cut_clips_at(frame_pos: int) -> void:
 	# WARN: Make certain that cutting is possible (space available)
 
@@ -917,10 +935,10 @@ func cut_clips_at(frame_pos: int) -> void:
 
 	# Checking if we only want selected clips to be cut.
 	for clip_id: int in selected_clip_ids:
-		var clip: ClipData = ClipHandler.get_clip(clip_id)
+		var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 
-		if clip.start_frame < frame_pos and clip.end_frame > frame_pos:
-			requests.append(CutClipRequest.new(clip.id, frame_pos - clip.start_frame))
+		if clip_data.start_frame < frame_pos and clip_data.end_frame > frame_pos:
+			requests.append(CutClipRequest.new(clip_data.id, frame_pos - clip_data.start_frame))
 
 	if requests.size() != 0:
 		ClipHandler.cut_clips(requests)
@@ -929,13 +947,17 @@ func cut_clips_at(frame_pos: int) -> void:
 
 	# No selected clips present so cutting all possible clips
 	for track_id: int in TrackHandler.get_tracks_size():
-		var clip: ClipData = TrackHandler.get_clip_at(track_id, frame_pos)
+		var clip_data: ClipData = TrackHandler.get_clip_at(track_id, frame_pos)
 
-		if clip != null and clip.start_frame < frame_pos and clip.end_frame > frame_pos:
-			requests.append(CutClipRequest.new(clip.id, frame_pos - clip.start_frame))
+		if clip_data != null and clip_data.start_frame < frame_pos and clip_data.end_frame > frame_pos:
+			requests.append(CutClipRequest.new(clip_data.id, frame_pos - clip_data.start_frame))
 
 	ClipHandler.cut_clips(requests)
 	queue_redraw()
+
+
+func switch_state(new_state: STATE) -> void:
+	state = new_state
 
 
 

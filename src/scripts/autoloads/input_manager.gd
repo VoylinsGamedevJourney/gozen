@@ -6,6 +6,9 @@ signal on_show_editor_screen
 signal on_show_render_screen
 signal on_switch_screen
 
+signal switch_timeline_mode_select
+signal switch_timeline_mode_cut
+
 
 var undo_redo: UndoRedo = UndoRedo.new()
 
@@ -18,12 +21,14 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
 		PopupManager.open_popup(PopupManager.POPUP.CREDITS)
-	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close_popups()
 
 	# EVERYTHING which is only allowed to open after the start screen goes below!
 	if !Project.loaded:
 		return
+
+	# Check if in line edit or not:
+	if _strict_input_check(event):
+		return get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("save_project", false, true):
 		Project.save()
@@ -31,35 +36,37 @@ func _input(event: InputEvent) -> void:
 		Project.save_as()
 	if event.is_action_pressed("open_project", false, true):
 		Project.open_project()
-
 	if event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
-		if !undo_redo.undo():
-			printerr("InputManager: Couldn't undo!")
+		if !undo_redo.undo(): printerr("InputManager: Couldn't undo!")
 	if event.is_action_pressed("ui_redo", false, true) and undo_redo.has_redo():
-		if !undo_redo.redo():
-			printerr("InputManager: Couldn't redo!")
-
-	if event.is_action_pressed("timeline_play_pause", false, true):
-		if get_viewport().gui_get_focus_owner() is not LineEdit:
-			EditorCore.on_play_pressed()
-			get_viewport().set_input_as_handled()
-
+		if !undo_redo.redo(): printerr("InputManager: Couldn't redo!")
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
-
-	if get_window().gui_get_focus_owner() is not LineEdit and event.is_action_pressed("open_command_bar"):
-		PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
-		get_viewport().set_input_as_handled()
-
 	if event.is_action_pressed("switch_screen"):
 		if RenderManager.encoder == null or !RenderManager.encoder.is_open():
 			switch_screen()
-
 	if event.is_action_pressed("ui_paste"):
 		clipboard_paste()
 
-	if event.is_action_pressed("open_marker_popup"):
+
+func _strict_input_check(event: InputEvent) -> bool:
+	if get_viewport().gui_get_focus_owner() is LineEdit:
+		return false
+
+	if event.is_action_pressed("timeline_play_pause", false, true):
+		EditorCore.on_play_pressed()
+		return true
+	elif event.is_action_pressed("timeline_mode_select", false, true):
+		switch_timeline_mode_select.emit()
+	elif event.is_action_pressed("timeline_mode_cut", false, true):
+		switch_timeline_mode_cut.emit()
+	elif event.is_action_pressed("open_marker_popup"):
 		open_marker_popup()
+	elif event.is_action_pressed("open_command_bar"):
+		PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
+		return true
+
+	return false
 
 
 func _on_closing_editor() -> void:

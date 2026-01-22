@@ -94,11 +94,11 @@ func _interpolate_variant(value_a: Variant, value_b: Variant, weight: float) -> 
 	elif value_a is Vector2:
 		return value_a.lerp(value_b, weight)
 	elif value_a is Vector2i:
-		return value_a.lerp(value_b, weight)
+		return Vector2i(Vector2(value_a).lerp(Vector2(value_b), weight))
 	elif value_a is Vector3:
 		return value_a.lerp(value_b, weight)
 	elif value_a is Vector3i:
-		return value_a.lerp(value_b, weight)
+		return Vector3i(Vector3(value_a).lerp(Vector3(value_b), weight))
 	elif value_a is Color:
 		return value_a.lerp(value_b, weight)
 

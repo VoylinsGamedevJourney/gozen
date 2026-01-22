@@ -2,12 +2,13 @@ extends Node
 
 
 signal on_show_menu_bar_changed(value: bool)
+signal on_show_time_mode_bar_changed(value: bool)
 
 
 const PATH: String = "user://settings"
 
 
-var _data: SettingsData = SettingsData.new()
+var data: SettingsData = SettingsData.new()
 
 
 var fonts: Dictionary[String, SystemFont] = {}
@@ -19,11 +20,11 @@ func _ready() -> void:
 		if arg.to_lower() == "reset_settings": save()
 
 	if !FileAccess.file_exists(PATH):
-		_data.language = get_system_locale()
-		_data.display_scale = get_display_scale()
-		_data.default_project_path = OS.get_executable_path().trim_suffix(
+		data.language = get_system_locale()
+		data.display_scale = get_display_scale()
+		data.default_project_path = OS.get_executable_path().trim_suffix(
 				OS.get_executable_path().get_file())
-	elif DataManager.load_data(PATH, _data):
+	elif DataManager.load_data(PATH, data):
 		printerr("Settings: Couldn't load settings! ", FileAccess.get_open_error())
 
 	load_system_fonts()
@@ -39,7 +40,7 @@ func _ready() -> void:
 
 
 func save() -> void:
-	if DataManager.save_data(PATH, _data):
+	if DataManager.save_data(PATH, data):
 		printerr("Settings: Something went wrong saving settings! ", FileAccess.get_open_error())
 
 
@@ -72,7 +73,7 @@ func get_system_locale() -> String:
 
 # Appearance set/get
 func set_language(code: String) -> void:
-	_data.language = code
+	data.language = code
 	apply_language()
 
 
@@ -81,7 +82,7 @@ func apply_language() -> void:
 
 
 func get_language() -> String:
-	return _data.language
+	return data.language
 
 
 func get_languages() -> Dictionary:
@@ -117,17 +118,17 @@ func get_languages() -> Dictionary:
 
 
 func set_display_scale(value: float) -> void:
-	_data.display_scale = value
+	data.display_scale = value
 	apply_display_scale()
 
 
 func set_display_scale_int(value: int) -> void:
-	_data.display_scale = float(value) / 100
+	data.display_scale = float(value) / 100
 	apply_display_scale()
 
 
 func apply_display_scale() -> void:
-	get_tree().root.content_scale_factor = _data.display_scale
+	get_tree().root.content_scale_factor = data.display_scale
 
 
 func get_display_scale() -> float:
@@ -142,52 +143,52 @@ func get_display_scale() -> float:
 
 
 func get_display_scale_int() -> int:
-	return int(_data.display_scale * 100)
+	return int(data.display_scale * 100)
 
 
 func set_theme(new_theme: SettingsData.THEME) -> void:
-	_data.theme = new_theme
+	data.theme = new_theme
 	apply_theme()
 
 
 func apply_theme() -> void:
-	match _data.theme:
-		_data.THEME.DARK:
+	match data.theme:
+		data.THEME.DARK:
 			get_tree().root.theme = null  # Default is dark
-		_data.THEME.LIGHT:
+		data.THEME.LIGHT:
 			get_tree().root.theme = load(Library.THEME_LIGHT)
 
 
 func get_theme() -> SettingsData.THEME:
-	return _data.theme
+	return data.theme
 
 
 func get_themes() -> Dictionary[String, SettingsData.THEME]:
 	var themes: Dictionary[String, SettingsData.THEME] = {
-		"Dark": _data.THEME.DARK,
-		"Light": _data.THEME.LIGHT}
+		"Dark": data.THEME.DARK,
+		"Light": data.THEME.LIGHT}
 
 	return themes
 
 
 func set_show_menu_bar(value: bool) -> void:
-	_data.show_menu_bar = value
+	data.show_menu_bar = value
 	on_show_menu_bar_changed.emit(value)
 
 
 func get_show_menu_bar() -> bool:
-	return _data.show_menu_bar
+	return data.show_menu_bar
 
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
-	_data.audio_waveform_style = style
+	data.audio_waveform_style = style
 
 	for file_data: FileData in FileHandler.data.values():
 		file_data.update_wave.emit()
 
 
 func get_audio_waveform_style() -> int:
-	return _data.audio_waveform_style
+	return data.audio_waveform_style
 
 
 func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE]:
@@ -200,109 +201,109 @@ func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFO
 
 
 func set_audio_waveform_amp(value: float) -> void:
-	_data.audio_waveform_amp = value
+	data.audio_waveform_amp = value
 
 
 func get_audio_waveform_amp() -> float:
-	return _data.audio_waveform_amp
+	return data.audio_waveform_amp
 
 
 func set_use_native_dialog(value: bool) -> void:
-	_data.use_native_dialog = value
+	data.use_native_dialog = value
 
 
 func get_use_native_dialog() -> bool:
-	return _data.use_native_dialog
+	return data.use_native_dialog
 
 
 # Defaults set/get
 func set_image_duration(duration: int) -> void:
-	_data.image_duration = duration
+	data.image_duration = duration
 
 
 func get_image_duration() -> int:
-	return _data.image_duration
+	return data.image_duration
 
 
 func set_color_duration(duration: int) -> void:
-	_data.color_duration = duration
+	data.color_duration = duration
 
 
 func get_color_duration() -> int:
-	return _data.color_duration
+	return data.color_duration
 
 
 func set_text_duration(duration: int) -> void:
-	_data.text_duration = duration
+	data.text_duration = duration
 
 
 func get_text_duration() -> int:
-	return _data.text_duration
+	return data.text_duration
 
 
 func set_default_project_path(path: String) -> void:
-	_data.default_project_path = path
+	data.default_project_path = path
 
 
 func get_default_project_path() -> String:
-	return _data.default_project_path
+	return data.default_project_path
 
 
 func set_default_resolution(res: Vector2i) -> void:
-	_data.default_resolution = res
+	data.default_resolution = res
 
 
 func set_default_resolution_x(x_value: int) -> void:
-	_data.default_resolution.x = x_value
+	data.default_resolution.x = x_value
 
 
 func set_default_resolution_y(y_value: int) -> void:
-	_data.default_resolution.y = y_value
+	data.default_resolution.y = y_value
 
 
 func get_default_resolution() -> Vector2i:
-	return _data.default_resolution
+	return data.default_resolution
 
 
 func get_default_resolution_x() -> int:
-	return _data.default_resolution.x
+	return data.default_resolution.x
 
 
 func get_default_resolution_y() -> int:
-	return _data.default_resolution.y
+	return data.default_resolution.y
 
 
 func set_default_framerate(framerate: float) -> void:
-	_data.default_framerate = framerate
+	data.default_framerate = framerate
 	
 
 func get_default_framerate() -> float:
-	return _data.default_framerate
+	return data.default_framerate
 
 
 #--- Timeline set/get ---
 func set_tracks_amount(track_amount: int) -> void:
-	_data.tracks_amount = track_amount
+	data.tracks_amount = track_amount
 
 
 func get_tracks_amount() -> int:
-	return _data.tracks_amount
+	return data.tracks_amount
 
 
 func set_pause_after_drag(value: bool) -> void:
-	_data.pause_after_drag = value
+	data.pause_after_drag = value
 
 
 func get_pause_after_drag() -> bool:
-	return _data.pause_after_drag
+	return data.pause_after_drag
 
 
 func set_delete_empty_modifier(new_key: int) -> void:
-	_data.delete_empty_modifier = new_key
+	data.delete_empty_modifier = new_key
 	
 
 func get_delete_empty_modifier() -> int:
-	return _data.delete_empty_modifier
+	return data.delete_empty_modifier
 
 
 func get_delete_empty_modifiers() -> Dictionary[String, int]:
@@ -314,48 +315,57 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 	return mods
 
 
+func set_show_time_mode_bar(value: bool) -> void:
+	data.show_time_mode_bar = value
+	on_show_time_mode_bar_changed.emit(value)
+
+
+func get_show_time_mode_bar() -> bool:
+	return data.show_time_mode_bar
+
+
 #--- Markers set/get ---
 func set_marker_name(index: int, text: String) -> void:
-	_data.marker_names[index] = text
+	data.marker_names[index] = text
 
 
 func get_marker_name(index: int) -> String:
-	return _data.marker_names[index]
+	return data.marker_names[index]
 
 
 func get_marker_names() -> PackedStringArray:
-	return _data.marker_names
+	return data.marker_names
 
 
 func set_marker_color(index: int, color: Color) -> void:
-	_data.marker_colors[index] = color
+	data.marker_colors[index] = color
 
 
 func get_marker_color(index: int) -> Color:
-	return _data.marker_colors[index]
+	return data.marker_colors[index]
 
 
 func get_marker_colors() -> PackedColorArray:
-	return _data.marker_colors
+	return data.marker_colors
 
 
 #--- Extra set/get ---
 func set_check_version(value: bool) -> void:
-	_data.check_version = value
+	data.check_version = value
 	
 
 func get_check_version() -> int:
-	return _data.check_version
+	return data.check_version
 
 
 func set_auto_save(value: bool) -> void:
-	_data.auto_save = value
+	data.auto_save = value
 	if value:
 		Project._auto_save()
 	
 
 func get_auto_save() -> bool:
-	return _data.auto_save
+	return data.auto_save
 
 
 #--- Input set/get ---
@@ -363,23 +373,23 @@ func load_new_shortcuts(reset: bool = false) -> void:
 	# Add new (or all) shortcuts to the Settings data
 	for action: StringName in InputMap.get_actions():
 		if reset:
-			_data.shortcuts[action] = InputMap.action_get_events(action)
-		elif _data.shortcuts.has(action):
+			data.shortcuts[action] = InputMap.action_get_events(action)
+		elif data.shortcuts.has(action):
 			continue
 		elif action.begins_with("ui_") or action.begins_with("_"):
 			continue
 		else:
-			_data.shortcuts[action] = InputMap.action_get_events(action)
+			data.shortcuts[action] = InputMap.action_get_events(action)
 
 
 func apply_shortcuts() -> void:
-	for action: String in _data.shortcuts:
+	for action: String in data.shortcuts:
 		if !InputMap.has_action(action):
 			continue
 
 		InputMap.action_erase_events(action)
 
-		for event: InputEvent in _data.shortcuts[action]:
+		for event: InputEvent in data.shortcuts[action]:
 			if event != null:
 				InputMap.action_add_event(action, event)
 
@@ -391,10 +401,10 @@ func reset_shortcuts_to_default() -> void:
 
 
 func set_shortcut(action: String, events: Array[InputEvent]) -> void:
-	if !_data.shortcuts.has(action):
+	if !data.shortcuts.has(action):
 		return
 
-	_data.shortcuts[action] = events
+	data.shortcuts[action] = events
 	InputMap.action_erase_events(action)
 
 	for event: InputEvent in events:
@@ -418,7 +428,7 @@ func set_shortcut_event_at_index(action: String, index: int, event: InputEvent) 
 
 
 func get_events_for_action(action: String) -> Array[InputEvent]:
-	var events: Array[InputEvent] = _data.shortcuts[action]
+	var events: Array[InputEvent] = data.shortcuts[action]
 
 	# We need to make certain we have exactly 2
 	if events.size() > 2:

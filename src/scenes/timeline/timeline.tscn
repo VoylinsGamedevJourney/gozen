@@ -1,9 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://clx31ubx70lv0"]
+[gd_scene load_steps=11 format=3 uid="uid://clx31ubx70lv0"]
 
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scenes/timeline/timeline.gd" id="1_p3xsq"]
 [ext_resource type="Script" uid="uid://yfoq75slyooi" path="res://scenes/timeline/timeline_panel.gd" id="2_2or7f"]
 [ext_resource type="Script" uid="uid://btjvbysh6x45y" path="res://scenes/timeline/timeline_scroll.gd" id="2_6dfq3"]
+[ext_resource type="Script" uid="uid://depcslam548ev" path="res://scenes/timeline/timeline_modes.gd" id="2_ak2ly"]
 [ext_resource type="Script" uid="uid://7ojbq5n6igoh" path="res://scenes/timeline/time_stamps.gd" id="2_jxg8b"]
+[ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
+[ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ak2ly"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_likvl"]
 bg_color = Color(0.2, 0.2, 0.2, 1)
@@ -11,25 +16,58 @@ bg_color = Color(0.2, 0.2, 0.2, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3xsq"]
 bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
 
-[node name="Timeline" type="VBoxContainer" node_paths=PackedStringArray("timestamp_panel", "timeline_panel")]
+[node name="Timeline" type="HBoxContainer" node_paths=PackedStringArray("timestamp_panel", "timeline_panel")]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 209.0
+offset_bottom = 216.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 0
 script = ExtResource("1_p3xsq")
-timestamp_panel = NodePath("TimestampScroll/TimeStamps")
-timeline_panel = NodePath("TimelineScroll/Timeline")
+timestamp_panel = NodePath("VBox/TimestampScroll/TimeStamps")
+timeline_panel = NodePath("VBox/TimelineScroll/Timeline")
 
-[node name="TimestampScroll" type="ScrollContainer" parent="."]
+[node name="TimelineModes" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="TimelineModes"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="TimelineModes/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="SelectModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox"]
+custom_minimum_size = Vector2(16, 18)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_ak2ly")
+texture_normal = ExtResource("3_vuipj")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="CutModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox"]
+custom_minimum_size = Vector2(16, 18)
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ak2ly")
+texture_normal = ExtResource("4_qnybs")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="TimestampScroll" type="ScrollContainer" parent="VBox"]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 scroll_horizontal_custom_step = 30.0
 horizontal_scroll_mode = 3
 
-[node name="TimeStamps" type="PanelContainer" parent="TimestampScroll" node_paths=PackedStringArray("timeline_scroll")]
+[node name="TimeStamps" type="PanelContainer" parent="VBox/TimestampScroll" node_paths=PackedStringArray("timeline_scroll")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -39,7 +77,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_likvl")
 script = ExtResource("2_jxg8b")
 timeline_scroll = NodePath("../../TimelineScroll")
 
-[node name="TimelineScroll" type="ScrollContainer" parent="." node_paths=PackedStringArray("timestamp_scroll")]
+[node name="TimelineScroll" type="ScrollContainer" parent="VBox" node_paths=PackedStringArray("timestamp_scroll")]
 custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
 scroll_horizontal_custom_step = 30.0
@@ -47,7 +85,7 @@ scroll_vertical_custom_step = 30.0
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 
-[node name="Timeline" type="PanelContainer" parent="TimelineScroll"]
+[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll"]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -56,9 +94,20 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_p3xsq")
 script = ExtResource("2_2or7f")
 
-[connection signal="gui_input" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_gui_input"]
-[connection signal="mouse_entered" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="TimelineScroll/Timeline" to="TimelineScroll/Timeline" method="_on_mouse_exited"]
-[connection signal="zoom_changed" from="TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="TimelineScroll/Timeline" to="TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="TimelineScroll/Timeline" to="TimelineScroll" method="_on_timeline_zoom_changed"]
+[node name="ModeDraw" type="Control" parent="VBox/TimelineScroll/Timeline" node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
+layout_mode = 2
+mouse_filter = 1
+script = ExtResource("2_ak2ly")
+mode_panel = NodePath("../../../../TimelineModes")
+button_select = NodePath("../../../../TimelineModes/Margin/VBox/SelectModeButton")
+button_cut = NodePath("../../../../TimelineModes/Margin/VBox/CutModeButton")
+
+[connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_select_mode_button_pressed"]
+[connection signal="pressed" from="TimelineModes/Margin/VBox/CutModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_cut_mode_button_pressed"]
+[connection signal="gui_input" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_gui_input"]
+[connection signal="mouse_entered" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_exited"]
+[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
+[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll" method="_on_timeline_zoom_changed"]
+[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
+[connection signal="gui_input" from="VBox/TimelineScroll/Timeline/ModeDraw" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_mode_draw_gui_input"]

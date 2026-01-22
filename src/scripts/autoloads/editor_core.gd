@@ -18,6 +18,8 @@ var viewport: SubViewport
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
 
+var background: ColorRect
+
 var visual_compositors: Array[VisualCompositor] = []
 
 var frame_nr: int = 0: set = set_frame_nr
@@ -38,8 +40,7 @@ func _ready() -> void:
 	viewport.size = Vector2i(1920, 1080)
 	viewport.size_2d_override_stretch = true
 
-	var background: ColorRect = ColorRect.new()
-
+	background = ColorRect.new()
 	background.color = Color("#000000")
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	viewport.add_child(background)
@@ -307,6 +308,4 @@ func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 
 
 func set_background_color(color: Color) -> void:
-	var background: ColorRect = viewport.get_node("Background")
-
 	background.color = color

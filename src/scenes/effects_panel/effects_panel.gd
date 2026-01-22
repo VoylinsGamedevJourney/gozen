@@ -1,4 +1,3 @@
-class_name EffectsPanel
 extends PanelContainer
 # TODO: Add extra tab for text
 # TODO: Deleting, adding, updating effects should be done through EffectsHandler
@@ -206,7 +205,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 	button_delete.pressed.connect(_on_remove_effect.bind(index, is_visual))
 	button_visible.pressed.connect(_on_switch_enabled.bind(index, is_visual))
 
-	grid.columns = 2
+	grid.columns = 3
 
 	container.add_title_bar_control(button_move_up)
 	container.add_title_bar_control(button_move_down)
@@ -218,6 +217,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 	for param: EffectParam in effect.params:
 		var param_title: Label = Label.new()
 		var param_settings: Control = _create_param_control(param, index, is_visual)
+		var param_keyframe_button: TextureButton = TextureButton.new()
 
 		param_title.text = param.param_name.replace("param_", "").capitalize() # TODO: Localize this
 		param_title.tooltip_text = param.param_tooltip
@@ -225,22 +225,28 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 		param_settings.name = "PARAM_" + param.param_id
 
+		param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+		param_keyframe_button.ignore_texture_size = true
+		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_keyframe_button.custom_minimum_size.x = 14
+		param_keyframe_button.pressed.connect(_keyframe_button_pressed)
+		# TODO: Link function to make keyframing work
+
 		grid.add_child(param_title)
 		grid.add_child(param_settings)
+		grid.add_child(param_keyframe_button)
 
 	return container
 
 
 func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> Control:
 	var value: Variant = param.default_value
-	var update_call: Callable = func(val: Variant) -> void:
-		EffectsHandler.update_param(current_clip_id, index, is_visual, param.param_id, val)
 
 	match typeof(value):
 		TYPE_BOOL:
 			var check_button: CheckButton = CheckButton.new()
 
-			check_button.toggled.connect(update_call)
+			check_button.toggled.connect(_effect_param_update_call)
 			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return check_button
@@ -254,7 +260,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
-			spinbox.value_changed.connect(update_call)
+			spinbox.value_changed.connect(_effect_param_update_call)
 			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return spinbox
@@ -276,7 +282,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 
 				current_value.x = val
-				update_call.call(current_value))
+				_effect_param_update_call.call(current_value))
 			
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
@@ -291,7 +297,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 
 				current_value.y = val
-				update_call.call(current_value))
+				_effect_param_update_call.call(current_value))
 
 			hbox.add_child(spinbox_x)
 			hbox.add_child(spinbox_y)
@@ -302,7 +308,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			var color_picker: ColorPickerButton = ColorPickerButton.new()
 
 			color_picker.custom_minimum_size.x = 40
-			color_picker.color_changed.connect(update_call)
+			color_picker.color_changed.connect(_effect_param_update_call)
 			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return color_picker
@@ -423,3 +429,14 @@ func _open_add_effects_popup(is_visual: bool) -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.ADD_EFFECTS)
 
 	popup.load_effects(is_visual, current_clip_id)
+
+
+func _effect_param_update_call(value: Variant) -> void:
+	#EffectsHandler.update_param(current_clip_id, index, is_visual, param.param_id, val, false)
+	# TODO: Fix new_keyframe
+	pass
+
+
+func _keyframe_button_pressed() -> void:
+	# TODO: Make this work
+	pass

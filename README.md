@@ -1,6 +1,6 @@
 # GoZen
 
-[![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen)
+[![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen/releases)
 [![Discord](https://img.shields.io/discord/1120566516899926068?label=Discord&logo=discord&logoColor=white)](https://discord.gg/BdbUf7VKYC)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 

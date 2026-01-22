@@ -44,6 +44,7 @@ func _on_close_button_pressed() -> void:
 	_stop_listening()
 	Settings.save()
 	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
+	PopupManager.close_popup(PopupManager.POPUP.PROJECT_SETTINGS)
 
 
 func set_mode(mode: MODE) -> void:
@@ -107,7 +108,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 	# Creating the shortcut nodes
 	var shortcut_nodes: Array = []
-	var action_keys: PackedStringArray = Settings._data.shortcuts.keys()
+	var action_keys: PackedStringArray = Settings.data.shortcuts.keys()
 
 	action_keys.sort()
 
@@ -210,7 +211,12 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_delete_empty_modifiers().values().find(Settings.get_delete_empty_modifier()),
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
-					"setting_tooltip_delete_empty_space_mod")
+					"setting_tooltip_delete_empty_space_mod"),
+			create_label("setting_show_time_mode_bar"),
+			create_check_button(
+					Settings.get_show_time_mode_bar(),
+					Settings.set_show_time_mode_bar,
+					"setting_tooltip_show_time_mode_bar"),
 		],
 	
 		"title_markers" = marker_nodes,

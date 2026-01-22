@@ -1,4 +1,4 @@
-extends Node
+extends BoxContainer
 # Handles the sizing of the timeline
 
 

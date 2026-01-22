@@ -158,8 +158,8 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		var new_duration: int = clip_data.duration - cut_frame_pos
 
 		# Editing the main clip
-		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip_data, -new_duration, true))
-		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip_data, new_duration, true))
+		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip_data.id, -new_duration, true))
+		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip_data.id, new_duration, true))
 
 		# Adding the new clip (clone of old clip + duration changes)
 		var new_clip_data: ClipData = ClipData.new()
