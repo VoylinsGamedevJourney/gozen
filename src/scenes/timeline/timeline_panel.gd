@@ -635,10 +635,12 @@ func _can_drop_new_clips() -> bool:
 		# Check what space is needed on right side and if within snapping
 		# Possible with snapping so checking if enough space on left side
 		var distance_necessary: int = target_end - free_region.y
-		if distance_necessary > SNAPPING or target_frame - free_region.x > distance_necessary:
+
+		if distance_necessary > SNAPPING or target_frame - free_region.x < distance_necessary:
 			return false
 
-		draggable.frame_offset = target_frame + distance_necessary
+		draggable.frame_offset = target_frame - distance_necessary
+
 		return true
 	elif clip_at_end != null:
 		return false # Not possible to find space
