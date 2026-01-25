@@ -120,6 +120,8 @@ func _input(event: InputEvent) -> void:
 
 		if !TrackHandler.get_clip_at(track_id, frame_nr):
 			remove_empty_space_at(track_id, frame_nr)
+	elif event.is_action_pressed("duplicate_selected_clips"):
+		duplicate_selected_clips()
 	elif event.is_action_pressed("ui_cancel"):
 		selected_clip_ids = []
 		_on_ui_cancel()
@@ -956,6 +958,27 @@ func cut_clips_at(frame_pos: int) -> void:
 
 	ClipHandler.cut_clips(requests)
 	queue_redraw()
+
+
+func duplicate_selected_clips() -> void:
+	if selected_clip_ids.is_empty():
+		return
+
+	var requests: Array[CreateClipRequest] = []
+	for clip_id: int in selected_clip_ids:
+		var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+
+		if not clip_data:
+			return # Invalid clip id
+
+		var target_frame: int = clip_data.start_frame + clip_data.duration
+		var free_region: Vector2i = TrackHandler.get_free_region(clip_data.track_id, target_frame)
+
+		if free_region.y - target_frame >= clip_data.duration:
+			requests.append(CreateClipRequest.new(clip_data.file_id, clip_data.track_id, target_frame))
+
+	if not requests.is_empty():
+		ClipHandler.add_clips(requests)
 
 
 func switch_state(new_state: STATE) -> void:

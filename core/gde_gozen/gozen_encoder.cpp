@@ -189,7 +189,7 @@ bool GoZenEncoder::_add_audio_stream() {
 
 	FFmpeg::enable_multithreading(av_codec_ctx_audio.get(), av_codec, threads);
 
-	av_codec_ctx_audio->bit_rate = 128000;
+	av_codec_ctx_audio->bit_rate = audio_bit_rate;
 	av_codec_ctx_audio->sample_fmt = av_codec->sample_fmts[0];
 	av_codec_ctx_audio->sample_rate = sample_rate;
 
@@ -606,6 +606,7 @@ void GoZenEncoder::_bind_methods() {
 	BIND_METHOD_ARGS(set_resolution, "video_resolution");
 	BIND_METHOD_ARGS(set_framerate, "video_framerate");
 	BIND_METHOD_ARGS(set_crf, "video_crf");
+	BIND_METHOD_ARGS(set_audio_bit_rate, "bit_rate");
 	BIND_METHOD_ARGS(set_threads, "thread_count");
 	BIND_METHOD_ARGS(set_gop_size, "video_gop_size");
 
