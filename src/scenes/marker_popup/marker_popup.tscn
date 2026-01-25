@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://ce1hy5ks465h7"]
+[gd_scene load_steps=3 format=3 uid="uid://ce1hy5ks465h7"]
 
 [ext_resource type="Script" uid="uid://ds4exxdlc67ib" path="res://scenes/marker_popup/marker_popup.gd" id="1_df1gq"]
+[ext_resource type="Texture2D" uid="uid://dyndi17ou8ixo" path="res://assets/icons/delete.svg" id="2_yxvoa"]
 
-[node name="MarkerPopup" type="Control" node_paths=PackedStringArray("marker_line_edit", "type_option_button", "time_label")]
+[node name="MarkerPopup" type="Control" node_paths=PackedStringArray("marker_line_edit", "type_option_button", "time_label", "delete_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +15,7 @@ script = ExtResource("1_df1gq")
 marker_line_edit = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid/MarkerLineEdit")
 type_option_button = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid/TypeOptionButton")
 time_label = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer/TimeLabel")
+delete_button = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/DeleteMarkerButton")
 
 [node name="Panel" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(500, 0)
@@ -106,6 +108,16 @@ size_flags_horizontal = 3
 theme_type_variation = &"main_button"
 text = "button_update_marker"
 
+[node name="DeleteMarkerButton" type="TextureButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "tooltip_button_delete_marker"
+texture_normal = ExtResource("2_yxvoa")
+ignore_texture_size = true
+stretch_mode = 5
+
 [connection signal="item_selected" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid/TypeOptionButton" to="." method="_on_type_selected"]
 [connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CreateMarker" to="." method="_on_create_marker_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/DeleteMarkerButton" to="." method="_on_delete_marker_button_pressed"]

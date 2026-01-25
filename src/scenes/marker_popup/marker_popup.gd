@@ -4,14 +4,13 @@ extends Control
 # TODO: Switch the option button by a palette instead with the currently
 # selected one being the bigger one. (maybe self_modulate the background to
 # give more of an indication of the selected marker color)
-# TODO: Add a delete button. (Removing all text deletes it already, but a
-# button might help users)
 
 static var selected_type_index: int = 0 # We want to save the last used type
 
 @export var marker_line_edit: LineEdit
 @export var type_option_button: OptionButton
 @export var time_label: Label
+@export var delete_button: TextureButton
 
 var current_frame: int = 0
 
@@ -38,6 +37,8 @@ func _ready() -> void:
 	time_label.text = "%s (Frame: %d)" % [
 			Utils.format_time_str_from_frame(current_frame, Project.get_framerate(), false),
 			current_frame]
+
+	delete_button.disabled = !MarkerHandler.markers.has(current_frame)
 
 
 func _setup_type_option_button() -> void:
@@ -73,3 +74,9 @@ func _on_create_marker_pressed() -> void:
 
 func _on_cancel_button_pressed() -> void:
 	PopupManager.close_popup(PopupManager.POPUP.MARKER)
+
+
+func _on_delete_marker_button_pressed() -> void:
+	MarkerHandler.remove_marker(current_frame)
+	PopupManager.close_popup(PopupManager.POPUP.MARKER)
+
