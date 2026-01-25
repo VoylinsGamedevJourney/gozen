@@ -1,6 +1,5 @@
 extends PanelContainer
 # TODO: Make it possible to detach the view panel into a floating window.
-# TODO: Video guidelines (Safe margins + focus cross)
 # TODO: Add option to preview at lower quality (performance, needs to be done through EditorCore)
 # TODO: Make frame_label and time_label into line inputs instead to quickly go to specific times.
 
@@ -59,4 +58,3 @@ func _on_skip_next_button_pressed() -> void:
 func _on_frame_changed() -> void:
 	frame_label.text = tr("text_frame") + ": %s" % EditorCore.frame_nr
 	time_label.text = Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.get_framerate(), false)
-	
