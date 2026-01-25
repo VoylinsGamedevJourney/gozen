@@ -180,7 +180,7 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 	InputManager.undo_redo.create_action("Update effect param: %s" % effect.effect_name)
 
 	# No keyframes (except 0) made, so we change main value, unless new keyframe requested
-	if !new_keyframe and effect.keyframes[param_id].size == 1:
+	if !new_keyframe and effect.keyframes[param_id].size() == 1:
 		var old_value: Variant = effect.keyframes[param_id][0]
 
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(

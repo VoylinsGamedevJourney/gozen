@@ -246,7 +246,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 		TYPE_BOOL:
 			var check_button: CheckButton = CheckButton.new()
 
-			check_button.toggled.connect(_effect_param_update_call)
+			check_button.toggled.connect(_effect_param_update_call.bind(index, is_visual, param.param_id))
 			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return check_button
@@ -260,7 +260,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
-			spinbox.value_changed.connect(_effect_param_update_call)
+			spinbox.value_changed.connect(_effect_param_update_call.bind(index, is_visual, param.param_id))
 			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return spinbox
@@ -282,7 +282,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 
 				current_value.x = val
-				_effect_param_update_call.call(current_value))
+				_effect_param_update_call.call(current_value, index, is_visual, param.param_id))
 			
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
@@ -297,7 +297,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 
 				current_value.y = val
-				_effect_param_update_call.call(current_value))
+				_effect_param_update_call.call(current_value, index, is_visual, param.param_id))
 
 			hbox.add_child(spinbox_x)
 			hbox.add_child(spinbox_y)
@@ -308,7 +308,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			var color_picker: ColorPickerButton = ColorPickerButton.new()
 
 			color_picker.custom_minimum_size.x = 40
-			color_picker.color_changed.connect(_effect_param_update_call)
+			color_picker.color_changed.connect(_effect_param_update_call.bind(index, is_visual, param.param_id))
 			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return color_picker
@@ -431,10 +431,8 @@ func _open_add_effects_popup(is_visual: bool) -> void:
 	popup.load_effects(is_visual, current_clip_id)
 
 
-func _effect_param_update_call(value: Variant) -> void:
-	#EffectsHandler.update_param(current_clip_id, index, is_visual, param.param_id, val, false)
-	# TODO: Fix new_keyframe
-	pass
+func _effect_param_update_call(value: Variant, index: int, is_visual: bool, param_id: String) -> void:
+	EffectsHandler.update_param(current_clip_id, index, is_visual, param_id, value, false)
 
 
 func _keyframe_button_pressed() -> void:
