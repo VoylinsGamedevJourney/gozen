@@ -72,7 +72,7 @@ func _file_menu_pressed(id: int) -> void:
 					"file_dialog_title_add_files",
 					FileDialog.FILE_MODE_OPEN_FILES)
 
-			dialog.files_selected.connect(FileHandler.files_dropped)
+			dialog.files_selected.connect(FileHandler._on_files_dropped)
 			add_child(dialog)
 			dialog.popup_centered()
 		1: # TODO: Add text
