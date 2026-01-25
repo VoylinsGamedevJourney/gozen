@@ -195,14 +195,37 @@ func _handle_audio(clip_data: ClipData, track_audio: PackedByteArray) -> PackedB
 
 
 func _apply_effect_volume(audio_data: PackedByteArray, effect: GoZenEffectAudio) -> PackedByteArray:
-	# TODO: Apply keyframing here!
-	var data: PackedByteArray = audio_data
-	var volume_db: float = effect.get_value(effect.params[0], 0)
+	# TODO: Move this to the GDExtension
+	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
+	stream.data_array = audio_data
 
-	if volume_db == 0.0:
-		return data
+	var sample_count: int = floori(audio_data.size() / 4.0) # 16 bit stereo
+	var framerate: float = Project.get_framerate()
+	var volume_param: EffectParam = effect.params[0]
 
-	return GoZenAudio.change_db(data, volume_db)
+	for i: int in sample_count:
+		var current_sample_time_sec: float = float(i) / 44100.0
+		var relative_frame: int = int(current_sample_time_sec * framerate)
+
+		var volume_db: float = effect.get_value(volume_param, relative_frame)
+		var volume_linear: float = db_to_linear(volume_db)
+
+		# Read samples
+		stream.seek(i * 4)
+
+		var left_channel: int = stream.get_16()
+		var right_channel: int = stream.get_16()
+
+		# Apply volume
+		left_channel = clampi(int(left_channel * volume_linear), -32768, 32767)
+		right_channel = clampi(int(right_channel * volume_linear), -32768, 32767)
+
+		# Write changes
+		stream.seek(i * 4)
+		stream.put_16(left_channel)
+		stream.put_16(right_channel)
+
+	return stream.data_array
 
 
 func _apply_audio_fade(audio_data: PackedByteArray, clip: ClipData) -> PackedByteArray:
