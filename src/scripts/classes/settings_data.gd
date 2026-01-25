@@ -2,14 +2,13 @@ class_name SettingsData
 extends RefCounted
 
 
-enum THEME { DARK, LIGHT }
 enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
 
 
 # Appearance
 var language: String = "en"
 var display_scale: float = 1.0
-var theme: THEME = THEME.DARK
+var theme: String = Library.THEME_DARK
 var show_menu_bar: bool = true
 var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER 
 var audio_waveform_amp: float = 1.0

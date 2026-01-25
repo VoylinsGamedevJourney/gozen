@@ -57,7 +57,8 @@ func set_mode(mode: MODE) -> void:
 		var section_grid: Node = _create_section(section_name)
 	
 		for node: Node in menu_options[section_name]:
-			section_grid.add_child(node)
+			if !node.get_parent():
+				section_grid.add_child(node)
 
 
 func _show_section(section_name: String) -> void:
@@ -101,6 +102,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		"settings_marker_one", "settings_marker_two", "settings_marker_three",
 		"settings_marker_four", "settings_marker_five"]
 	marker_nodes.append(create_header("setting_header_markers"))
+	marker_nodes.append(Control.new())
 
 	for i: int in marker_texts.size():
 		marker_nodes.append(create_label(marker_texts[i]))
@@ -111,6 +113,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 	var action_keys: PackedStringArray = Settings.data.shortcuts.keys()
 
 	shortcut_nodes.append(create_header("setting_header_shortcuts"))
+	shortcut_nodes.append(Control.new())
 	action_keys.sort()
 
 	for action: String in action_keys:
@@ -119,7 +122,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 	return {
 		"title_appearance" = [
-			create_header("setting_header_display"),
+			create_header("setting_header_display"), Control.new(),
 			create_label("setting_language"),
 			create_option_button(
 					Settings.get_languages(), 
@@ -137,16 +140,16 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_label("setting_theme"),
 			create_option_button(
 					Settings.get_themes(),
-					Settings.get_themes().values().find(Settings.get_theme()),
-					set_theme,
-					TYPE_INT,
+					Settings.get_themes().values().find(Settings.get_theme_path()),
+					Settings.set_theme_path,
+					TYPE_STRING,
 					"setting_tooltip_theme"),
 			create_label("setting_show_menu_bar"),
 			create_check_button(
 					Settings.get_show_menu_bar(),
 					Settings.set_show_menu_bar,
 					"setting_tooltip_show_menu_bar"),
-			create_header("setting_header_waveform"),
+			create_header("setting_header_waveform"), Control.new(),
 			create_label("setting_waveform_style"),
 			create_option_button(
 					Settings.get_audio_waveform_styles(),
@@ -160,7 +163,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					0.5, 6, 0.5, false, false,
 					Settings.set_audio_waveform_amp,
 					"setting_tooltip_audio_waveform_amp",),
-			create_header("setting_header_dialogues"),
+			create_header("setting_header_dialogues"), Control.new(),
 			create_label("setting_use_native_dialog"),
 			create_check_button(
 					Settings.get_use_native_dialog(),
@@ -169,7 +172,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		],
 	
 		"title_defaults" = [
-			create_header("setting_header_default_durations"),
+			create_header("setting_header_default_durations"), Control.new(),
 			create_label("setting_default_image_duration"),
 			create_spinbox(
 					Settings.get_image_duration(),
@@ -199,14 +202,14 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		],
 	
 		"title_timeline" = [
-			create_header("setting_header_default_timeline"),
+			create_header("setting_header_default_timeline"), Control.new(),
 			create_label("setting_default_track_amount"),
 			create_spinbox(
 					Settings.get_tracks_amount(),
 					1, 32, 1, false, false,
 					Settings.set_tracks_amount,
 					"setting_tooltip_default_track_amount"),
-			create_header("setting_header_timeline_controls"),
+			create_header("setting_header_timeline_controls"), Control.new(),
 			create_label("setting_pause_after_dragging"),
 			create_check_button(
 					Settings.get_pause_after_drag(),
@@ -219,7 +222,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
 					"setting_tooltip_delete_empty_space_mod"),
-			create_header("setting_header_timeline_addons"),
+			create_header("setting_header_timeline_addons"), Control.new(),
 			create_label("setting_show_time_mode_bar"),
 			create_check_button(
 					Settings.get_show_time_mode_bar(),
@@ -230,7 +233,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		"title_markers" = marker_nodes,
 	
 		"title_extras" = [
-			create_header("setting_header_extras"),
+			create_header("setting_header_extras"), Control.new(),
 			create_label("setting_check_version"),
 			create_check_button(
 					Settings.get_check_version(),
@@ -253,7 +256,7 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 
 	return {
 		"title_appearance" = [
-			create_header("setting_header_project_appearance"),
+			create_header("setting_header_project_appearance"), Control.new(),
 			create_label("setting_background_color"),
 			create_color_picker(
 					Project.get_background_color(),
@@ -264,18 +267,13 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 
 
 func create_header(title: String) -> Control:
-	var vbox: VBoxContainer = VBoxContainer.new()
 	var header: Label = Label.new()
 
 	header.text = title
 	header.theme_type_variation = "title_label"
 	header.custom_minimum_size.y = 30
-	header.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-	vbox.add_child(Control.new())
-	vbox.add_child(header)
-	vbox.add_child(HSeparator.new())
 
 	return header
 
@@ -299,8 +297,11 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 	var i: int = 0
 
 	for option: String in options:
-		option_button.add_item(option)
-		option_button.set_item_metadata(i, options[option])
+		if option == "":
+			option_button.add_separator()
+		else:
+			option_button.add_item(option)
+			option_button.set_item_metadata(i, options[option])
 		i += 1
 
 	option_button.selected = default

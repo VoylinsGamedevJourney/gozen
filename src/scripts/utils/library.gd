@@ -72,6 +72,7 @@ const STYLE_BOX_CLIP_PREVIEW: String = "uid://dx2v44643hfvy"
 
 const STYLE_LINE_TRACK: String = "uid://ccq8hdcqq8xrc"
 
+const THEME_DARK: String = "uid://715mkakin2bb"
 const THEME_LIGHT: String = "uid://dxq4vg1l5rwhj"
 
 const FONT_ROBOTO_MEDIUM: String = "uid://bnubhr3uus8gt"

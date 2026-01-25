@@ -6,12 +6,14 @@ signal on_show_time_mode_bar_changed(value: bool)
 
 
 const PATH: String = "user://settings"
+const PATH_THEMES: String = "user://themes/"
 
 
 var data: SettingsData = SettingsData.new()
 
 
 var fonts: Dictionary[String, SystemFont] = {}
+var custom_themes: Dictionary = {} # { Name: Path }
 
 
 
@@ -27,7 +29,12 @@ func _ready() -> void:
 	elif DataManager.load_data(PATH, data):
 		printerr("Settings: Couldn't load settings! ", FileAccess.get_open_error())
 
+	if !DirAccess.dir_exists_absolute(PATH_THEMES):
+		DirAccess.make_dir_absolute(PATH_THEMES)
+
 	load_system_fonts()
+	load_custom_themes()
+
 	apply_language()
 	apply_display_scale()
 	apply_theme()
@@ -54,6 +61,25 @@ func load_system_fonts() -> void:
 
 		system_font.font_names = [font]
 		fonts[font] = system_font
+
+
+func load_custom_themes() -> void:
+	var default_themes: Dictionary[String, String] = get_themes()
+	var dir: DirAccess = DirAccess.open(PATH_THEMES)
+	if !dir: return
+
+	dir.list_dir_begin()
+
+	var file_name: String = dir.get_next()
+
+	while file_name != "":
+		if !dir.current_is_dir() and file_name.ends_with(".tres"):
+			var theme_name: String = file_name.get_basename().replace('_', ' ')
+
+			if not theme_name in default_themes and not theme_name in custom_themes:
+				custom_themes[theme_name] = PATH_THEMES + file_name
+
+		file_name = dir.get_next()
 
 
 func get_system_locale() -> String:
@@ -146,27 +172,31 @@ func get_display_scale_int() -> int:
 	return int(data.display_scale * 100)
 
 
-func set_theme(new_theme: SettingsData.THEME) -> void:
-	data.theme = new_theme
+func set_theme_path(new_path: String) -> void:
+	data.theme = new_path
 	apply_theme()
 
 
 func apply_theme() -> void:
-	match data.theme:
-		data.THEME.DARK:
-			get_tree().root.theme = null  # Default is dark
-		data.THEME.LIGHT:
-			get_tree().root.theme = load(Library.THEME_LIGHT)
+	if FileAccess.file_exists(data.theme):
+		get_tree().root.theme = load(data.theme)
+	else: # Default is dark
+		get_tree().root.theme = null
 
 
-func get_theme() -> SettingsData.THEME:
+func get_theme_path() -> String:
 	return data.theme
 
 
-func get_themes() -> Dictionary[String, SettingsData.THEME]:
-	var themes: Dictionary[String, SettingsData.THEME] = {
-		"Dark": data.THEME.DARK,
-		"Light": data.THEME.LIGHT}
+func get_themes() -> Dictionary[String, String]:
+	var themes: Dictionary[String, String] = {
+		"Default Dark": Library.THEME_DARK,
+		"Default Light": Library.THEME_LIGHT,
+		"": "" } # Separator
+
+	for custom_theme_name: String in custom_themes:
+		if !themes.has(custom_theme_name):
+			themes[custom_theme_name] = custom_themes[custom_theme_name]
 
 	return themes
 
