@@ -204,7 +204,6 @@ jobs:
         working-directory: ${{ env.PATH_EXPORT }}
         run: |
           cp ../../LICENSE .
-          cp ../../MANUAL.md .
           zip -r "GoZen_Windows_v${{ inputs.version }}.zip" *
 
       - uses: actions/upload-artifact@v4
