@@ -39,8 +39,13 @@ var data: Dictionary [int, FileData] = {}
 
 #--- File Manager functions ---
 func _ready() -> void:
+	get_tree().root.focus_entered.connect(_on_window_focus_entered)
 	get_window().files_dropped.connect(_on_files_dropped)
 	error_file_too_big.connect(_on_file_too_big)
+
+
+func _on_window_focus_entered() -> void:
+	FileHandler.check_modified_files()
 
 
 func _on_files_dropped(file_paths: PackedStringArray) -> void:
@@ -283,7 +288,9 @@ func _delete_file(id: int) -> void:
 
 ## Check to see if a file needs reloading or not.
 func check_modified_files() -> void:
-	# TODO: Run function on re-focussing on the editor.
+	if !Project.loaded:
+		return
+
 	for file: File in files.values():
 		if _check_if_file_modified(file):
 			var new_modified_time: int = FileAccess.get_modified_time(file.path)
