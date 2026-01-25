@@ -3,7 +3,6 @@ extends Control
 # TODO: Add a search bar to find settings more easily.
 # TODO: Add "reset to default" button for everything.
 # TODO: Add "reset to default" button for setting.
-# TODO: Add headers to break options down on each tab.
 # TODO: Make certain that resolution input is mod-2, if entering a non mod-2
 # number, we can maybe turn the spinbox orange to indicate an issue.
 
@@ -101,6 +100,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 	var marker_texts: Array = [
 		"settings_marker_one", "settings_marker_two", "settings_marker_three",
 		"settings_marker_four", "settings_marker_five"]
+	marker_nodes.append(create_header("setting_header_markers"))
 
 	for i: int in marker_texts.size():
 		marker_nodes.append(create_label(marker_texts[i]))
@@ -110,6 +110,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 	var shortcut_nodes: Array = []
 	var action_keys: PackedStringArray = Settings.data.shortcuts.keys()
 
+	shortcut_nodes.append(create_header("setting_header_shortcuts"))
 	action_keys.sort()
 
 	for action: String in action_keys:
@@ -118,6 +119,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 	return {
 		"title_appearance" = [
+			create_header("setting_header_display"),
 			create_label("setting_language"),
 			create_option_button(
 					Settings.get_languages(), 
@@ -144,6 +146,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_show_menu_bar(),
 					Settings.set_show_menu_bar,
 					"setting_tooltip_show_menu_bar"),
+			create_header("setting_header_waveform"),
 			create_label("setting_waveform_style"),
 			create_option_button(
 					Settings.get_audio_waveform_styles(),
@@ -157,6 +160,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					0.5, 6, 0.5, false, false,
 					Settings.set_audio_waveform_amp,
 					"setting_tooltip_audio_waveform_amp",),
+			create_header("setting_header_dialogues"),
 			create_label("setting_use_native_dialog"),
 			create_check_button(
 					Settings.get_use_native_dialog(),
@@ -165,6 +169,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		],
 	
 		"title_defaults" = [
+			create_header("setting_header_default_durations"),
 			create_label("setting_default_image_duration"),
 			create_spinbox(
 					Settings.get_image_duration(),
@@ -194,12 +199,14 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		],
 	
 		"title_timeline" = [
+			create_header("setting_header_default_timeline"),
 			create_label("setting_default_track_amount"),
 			create_spinbox(
 					Settings.get_tracks_amount(),
 					1, 32, 1, false, false,
 					Settings.set_tracks_amount,
 					"setting_tooltip_default_track_amount"),
+			create_header("setting_header_timeline_controls"),
 			create_label("setting_pause_after_dragging"),
 			create_check_button(
 					Settings.get_pause_after_drag(),
@@ -212,6 +219,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
 					"setting_tooltip_delete_empty_space_mod"),
+			create_header("setting_header_timeline_addons"),
 			create_label("setting_show_time_mode_bar"),
 			create_check_button(
 					Settings.get_show_time_mode_bar(),
@@ -222,6 +230,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		"title_markers" = marker_nodes,
 	
 		"title_extras" = [
+			create_header("setting_header_extras"),
 			create_label("setting_check_version"),
 			create_check_button(
 					Settings.get_check_version(),
@@ -244,6 +253,7 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 
 	return {
 		"title_appearance" = [
+			create_header("setting_header_project_appearance"),
 			create_label("setting_background_color"),
 			create_color_picker(
 					Project.get_background_color(),
@@ -252,6 +262,22 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 		],
 	}
 
+
+func create_header(title: String) -> Control:
+	var vbox: VBoxContainer = VBoxContainer.new()
+	var header: Label = Label.new()
+
+	header.text = title
+	header.theme_type_variation = "title_label"
+	header.custom_minimum_size.y = 30
+	header.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	vbox.add_child(Control.new())
+	vbox.add_child(header)
+	vbox.add_child(HSeparator.new())
+
+	return header
 
 
 func create_label(title: String) -> Label:
