@@ -251,46 +251,8 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: GoZenEffectAudio)
 
 
 func _apply_audio_fade(audio_data: PackedByteArray, clip: ClipData) -> PackedByteArray:
-	# TODO: Move this logic to the GDExtension
-	var sample_count: int = floori(audio_data.size() / 4.0) # 16-bit stereo = 4 bytes per sample
 	var samples_per_frame: float = 44100.0 / Project.get_framerate()
-	
-	# Pre-calculate ranges
 	var fade_in_samples: int = int(clip.fade_in_audio * samples_per_frame)
 	var fade_out_samples: int = int(clip.fade_out_audio * samples_per_frame)
-	var fade_out_start_sample: int = sample_count - fade_out_samples
-	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 
-	stream.data_array = audio_data
-	
-	# Process Fade In
-	if fade_in_samples > 0:
-		for i: int in mini(fade_in_samples, sample_count):
-			var volume: float = float(i) / float(fade_in_samples)
-			
-			stream.seek(i * 4)
-
-			var l: int = stream.get_16()
-			var r: int = stream.get_16()
-			
-			stream.seek(i * 4)
-			stream.put_16(int(l * volume))
-			stream.put_16(int(r * volume))
-
-	# Process Fade Out
-	if fade_out_samples > 0 and fade_out_start_sample < sample_count:
-		var start_i: int = maxi(0, fade_out_start_sample)
-
-		for i: int in range(start_i, sample_count):
-			var volume: float = 1.0 - (float(i - start_i) / float(fade_out_samples))
-			
-			stream.seek(i * 4)
-
-			var l: int = stream.get_16()
-			var r: int = stream.get_16()
-			
-			stream.seek(i * 4)
-			stream.put_16(int(l * volume))
-			stream.put_16(int(r * volume))
-			
-	return stream.data_array
+	return GoZenAudio.apply_fade(audio_data, fade_in_samples, fade_out_samples)

@@ -39,6 +39,8 @@ class GoZenAudio : public Resource {
 	static PackedByteArray change_db(PackedByteArray audio_data, float db);
 	static PackedByteArray change_to_mono(PackedByteArray audio_data, bool left);
 
+	static PackedByteArray apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples);
+
   protected:
 	static void _bind_methods();
 };
