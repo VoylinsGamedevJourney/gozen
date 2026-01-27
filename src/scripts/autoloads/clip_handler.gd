@@ -49,6 +49,8 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 		else:
 			video = file_data.video
 
+		if video == null: return # Probably still loading.
+
 		video_frame_nr = video.get_current_frame()
 		frame_nr = int((frame_nr / Project.get_framerate()) * video.get_framerate())
 
@@ -74,7 +76,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		var clip_data: ClipData = ClipData.new()
 		var file_data: File = FileHandler.get_file(clip_request.file_id)
 
-		clip_data.id = Utils.get_unique_id(ClipHandler.get_ids())
+		clip_data.id = Utils.get_unique_id(ClipHandler.clips.keys())
 		clip_data.file_id = file_data.id
 		clip_data.track_id = clip_request.track_id
 		clip_data.start_frame = clip_request.frame_nr

@@ -10,6 +10,7 @@ enum POPUP_ACTION {
 	FILE_EXTRACT_AUDIO,
 	FILE_DUPLICATE,
 	FILE_CREATE_PROXY,
+	FILE_RECREATE_PROXY,
 	FILE_REMOVE_PROXY,
 
 	# Folder actions
@@ -115,6 +116,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				if file.proxy_path == "":
 					popup.add_item("popup_item_create_proxy", POPUP_ACTION.FILE_CREATE_PROXY)
 				else:
+					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
 
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
@@ -125,6 +127,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				if file.proxy_path == "":
 					popup.add_item("popup_item_create_proxy", POPUP_ACTION.FILE_CREATE_PROXY)
 				else:
+					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
 		elif file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
@@ -161,6 +164,7 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		POPUP_ACTION.FILE_EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
 		POPUP_ACTION.FILE_DUPLICATE: _on_popup_action_file_duplicate()
 		POPUP_ACTION.FILE_CREATE_PROXY: _on_popup_action_file_create_proxy()
+		POPUP_ACTION.FILE_RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
 		POPUP_ACTION.FILE_REMOVE_PROXY: _on_popup_action_file_remove_proxy()
 
 
@@ -275,11 +279,19 @@ func _on_popup_action_file_create_proxy() -> void:
 	ProxyHandler.request_proxy_generation(tree.get_selected().get_metadata(0))
 
 
+func _on_popup_action_file_recreate_proxy() -> void:
+	var file_id: int = tree.get_selected().get_metadata(0)
+
+	ProxyHandler.delete_proxy(file_id)
+	ProxyHandler.request_proxy_generation(file_id)
+
 func _on_popup_action_file_remove_proxy() -> void:
 	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 
 	file.proxy_path = ""
 	FileHandler.reload_file_data(file.id)
+	FileHandler.file_nickname_changed.emit(file.id) # To update the name
+	ProxyHandler.delete_proxy(file.id)
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
@@ -348,9 +360,14 @@ func _add_file_to_tree(file: File) -> void:
 	# Create item for the file panel tree.
 	if !folder_items.keys().has(file.folder):
 		_add_folder_to_tree(file.folder)
-	
+
+	var display_name: String = file.nickname
+
+	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
+		display_name += " [P]"
+
 	file_items[file.id] = tree.create_item(folder_items[file.folder])
-	file_items[file.id].set_text(0, file.nickname)
+	file_items[file.id].set_text(0, display_name)
 	file_items[file.id].set_tooltip_text(0, file.path)
 	file_items[file.id].set_metadata(0, file.id)
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file.id))
@@ -426,8 +443,12 @@ func _on_file_path_updated(file_id: int) -> void:
 
 func _on_file_nickname_changed(file_id: int) -> void:
 	var file: File = FileHandler.get_file(file_id)
+	var display_name: String = file.nickname
 
-	file_items[file_id].set_text(0, file.nickname)
+	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
+		display_name += " [P]"
+
+	file_items[file_id].set_text(0, display_name)
 	_sort_folder(file.folder)
 
 

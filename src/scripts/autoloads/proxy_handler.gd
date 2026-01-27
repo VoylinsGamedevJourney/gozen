@@ -14,44 +14,50 @@ func _ready() -> void:
 
 func request_proxy_generation(file_id: int) -> void:
 	var file: File = FileHandler.get_file(file_id)
-	var file_name: String
-	var new_path: String 
-
 	if file.type not in FileHandler.TYPE_VIDEOS: return # Only proxies for videos possible
 
-	file_name = file.path.get_file().get_basename() + "_proxy.mp4"
-	new_path = PROXY_PATH + file_name
+	var file_name: String = _get_proxy_file_name(file)
+	var new_path: String = PROXY_PATH + file_name
 
 	# Check if already exists, if yes, we link
 	if FileAccess.file_exists(new_path):
 		file.proxy_path = new_path
+
+		if Settings.get_use_proxies():
+			FileHandler.reload_file_data(file_id)
 		return
 
 	Threader.add_task(_generate_proxy_task.bind(file_id, new_path), _on_proxy_finished.bind(file_id))
 
 
+func delete_proxy(file_id: int) -> void:
+	var file: File = FileHandler.get_file(file_id)
+	if !file or file.proxy_path.is_empty(): return
+
+	DirAccess.remove_absolute(file.proxy_path)
+
+
 func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	var file: File = FileHandler.get_file(file_id)
-	var video: GoZenVideo = GoZenVideo.new()
-	var encoder: GoZenEncoder = GoZenEncoder.new()
-	output_path = ProjectSettings.globalize_path(output_path)
-
 	if !file:
 		printerr("ProxyHandler: Failed to find file!")
 		return
-	elif video.open(file.path) != OK:
+
+	var global_output_path: String = ProjectSettings.globalize_path(output_path)
+	var global_input_path: String = ProjectSettings.globalize_path(file.path)
+	var encoder: GoZenEncoder = GoZenEncoder.new()
+	var video: GoZenVideo = GoZenVideo.new()
+	if video.open(global_input_path) != OK:
 		printerr("ProxyHandler: Failed to open source!")
 		return
-	
+
 	var original_resolution: Vector2i = video.get_resolution()
 	var scale: float = float(PROXY_HEIGHT) / float(original_resolution.y)
-	var new_width: int = int(original_resolution.x * scale)
-	if new_width % 2 != 0: new_width += 1 # Width needs to be equal
+	var target_resolution: Vector2i = Vector2i(int(original_resolution.x * scale), PROXY_HEIGHT)
+	if target_resolution.x % 2 != 0: target_resolution.x += 1 # Width needs to be equal
 
-	var target_resolution: Vector2i = Vector2i(new_width, PROXY_HEIGHT)
-	
 	# Encoder setup
-	encoder.set_file_path(output_path)
+	encoder.set_file_path(global_output_path)
 	encoder.set_resolution(target_resolution)
 	encoder.set_framerate(video.get_framerate())
 	encoder.set_audio_codec_id(GoZenEncoder.AUDIO_CODEC.A_NONE) # Only visual is needed
@@ -59,27 +65,33 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	encoder.set_h264_preset(GoZenEncoder.H264_PRESETS.H264_PRESET_ULTRAFAST)
 	encoder.set_crf(32)
 
-	if !encoder.open(false): # false = input is RGB (Image), not RGBA
+	if !encoder.open(true):
 		printerr("ProxyHandler: Failed to open encoder!")
+		video.close()
 		return
-		
+
 	# Encoding
 	# TODO: Maybe show a progress bar on clips to show encoding process.
 	video.seek_frame(0)
-	
+
 	for i: int in video.get_frame_count():
 		var image: Image = video.generate_thumbnail_at_current_frame() # RGBA Image
-		
 		if image:
 			image.resize(target_resolution.x, target_resolution.y, Image.INTERPOLATE_BILINEAR)
 			encoder.send_frame(image)
-			
+
 		# We skip decoding since generate_thumbnail_at_frame handles that.
 		if !video.next_frame(true): break
-			 
+
 	encoder.close()
 	video.close()
 	file.proxy_path = output_path
+
+
+func _get_proxy_file_name(file: File) -> String:
+	return  "%s_%s_proxy.mp4" % [
+			FileAccess.get_md5(file.path).left(6),
+			file.path.get_file().get_basename()]
 
 
 func _on_proxy_finished(file_id: int) -> void:
@@ -87,4 +99,5 @@ func _on_proxy_finished(file_id: int) -> void:
 
 	if Settings.get_use_proxies():
 		FileHandler.reload_file_data(file_id) # Switch to proxy directly.
+	FileHandler.file_nickname_changed.emit(file_id) # To update the name
 

@@ -44,6 +44,7 @@ func _ready() -> void:
 	viewport.add_child(background)
 	add_child(viewport)
 
+	FileHandler.file_reloaded.connect(_on_clips_updated.unbind(1))
 	ClipHandler.clips_updated.connect(_on_clips_updated)
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
 	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
@@ -207,7 +208,7 @@ func find_audio(frame: int, track_id: int) -> int:
 func update_audio() -> void:
 	for player: AudioPlayer in audio_players:
 		if player.clip_id == -1: continue
-		elif !ClipHandler.clip.has(player.clip_id):
+		elif !ClipHandler.clips.has(player.clip_id):
 			player.stop()
 		else:
 			var clip: ClipData = ClipHandler.get_clip(player.clip_id)
@@ -241,15 +242,18 @@ func update_view(track_id: int, update: bool) -> void:
 	if loaded_clips[track_id] == -1: return
 
 	var file_data: FileData = ClipHandler.get_file_data(loaded_clips[track_id])
+	if file_data == null: return # Possible if file is still reloading.
+
 	var clip_data: ClipData = ClipHandler.get_clip(loaded_clips[track_id])
 	var relative_frame: int = frame_nr - clip_data.start_frame + clip_data.begin
-
 	var clip_frame: int = frame_nr - clip_data.start_frame
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_data, true)
 
 	ClipHandler.load_frame(loaded_clips[track_id], relative_frame)
 
 	if file_data.video != null:
+		if !update and visual_compositors[track_id].resolution != file_data.video.get_resolution():
+			update = true
 		if update:
 			visual_compositors[track_id].initialize_video(file_data.video)
 

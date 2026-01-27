@@ -5,6 +5,7 @@ signal file_deleted(id: int)
 signal file_nickname_changed(id: int)
 signal file_path_updated(id: int)
 signal file_moved(id: int)
+signal file_reloaded(id: int)
 
 signal folder_added(folder_name: String)
 signal folder_deleted(folder_name: String)
@@ -142,6 +143,7 @@ func reload_file_data(id: int) -> void:
 	if !load_file_data(id):
 		_delete_file(id)
 		print_debug("File became invalid!")
+	file_reloaded.emit(id)
 
 
 func reload_all_video_files() -> void:
@@ -394,6 +396,7 @@ func get_file_duration(id: int) -> int:
 
 
 func get_file_data(id: int) -> FileData:
+	if data.has(id): return data[id]
 	return data[id]
 
 

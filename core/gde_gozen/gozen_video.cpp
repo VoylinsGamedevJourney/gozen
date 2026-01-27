@@ -401,10 +401,6 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 
 	current_frame = frame_nr;
 	last_decoded_frame = current_frame;
-
-	av_frame_unref(av_frame.get());
-	av_packet_unref(av_packet.get());
-
 	return true;
 }
 
@@ -438,9 +434,6 @@ bool GoZenVideo::next_frame(bool skip) {
 	current_frame++;
 	last_decoded_frame = current_frame;
 	_add_to_cache(current_frame);
-
-	av_frame_unref(av_frame.get());
-	av_packet_unref(av_packet.get());
 
 	return true;
 }
@@ -550,7 +543,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
 	AVPixelFormat source_pix_fmt = static_cast<AVPixelFormat>(av_frame->format);
 
 	UniqueSwsCtx sws_ctx_thumb = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(
-		sws_getContext(resolution.x, resolution.y, source_pix_fmt,	// Source
+		sws_getContext(av_frame->width, av_frame->height, source_pix_fmt,	// Source
 					   resolution.x, resolution.y, AV_PIX_FMT_RGBA, // Target
 					   SWS_FAST_BILINEAR, nullptr, nullptr, nullptr));
 
@@ -597,8 +590,6 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
 
 	Ref<Image> thumbnail_image =
 		Image::create_from_data(resolution.x, resolution.y, false, Image::FORMAT_RGBA8, pixel_data);
-	av_frame_unref(av_frame.get());
-	av_packet_unref(av_packet.get());
 
 	return thumbnail_image;
 }
@@ -813,6 +804,7 @@ void GoZenVideo::_clear_cache() {
 
 void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("open", "video_path"), &GoZenVideo::open);
+	ClassDB::bind_method(D_METHOD("close"), &GoZenVideo::close);
 
 	ClassDB::bind_method(D_METHOD("is_open"), &GoZenVideo::is_open);
 
@@ -828,7 +820,8 @@ void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_chapter_metadata", "chapter_index"), &GoZenVideo::get_chapter_metadata);
 
 	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_frame", "frame_nr"), &GoZenVideo::generate_thumbnail_at_frame);
-	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_current_frame"), &GoZenVideo::generate_thumbnail_at_current_frame);
+	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_current_frame"),
+						 &GoZenVideo::generate_thumbnail_at_current_frame);
 
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &GoZenVideo::set_sws_flag_bilinear);
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &GoZenVideo::set_sws_flag_bicubic);

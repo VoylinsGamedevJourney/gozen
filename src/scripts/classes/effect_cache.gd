@@ -88,10 +88,20 @@ func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
 	for effect_param: EffectParam in _effect.params:
 		param_map[effect_param.param_id] = effect_param
 
+	# Proxy adjustments
+	var project_resolution: Vector2 = Vector2(Project.get_resolution())
+	var current_resolution: Vector2 = Vector2(_resolution)
+	var ratio: Vector2 = Vector2(1, 1)
+
+	ratio = current_resolution / project_resolution
+
 	match type:
 		MatrixHandler.TYPE.TRANSFORM:
 			for key: String in MatrixHandler.get_transform_matrix_variables():
 				data[key] = _effect.get_value(param_map[key], _frame_nr)
+
+				if key == "position" or key == "size" or key == "pivot":
+					data[key] = Vector2(data[key]) * ratio
 
 			return MatrixHandler.calculate_transform_matrix(data, _resolution)
 		_:
