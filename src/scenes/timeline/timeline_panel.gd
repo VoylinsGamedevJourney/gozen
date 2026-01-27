@@ -1,7 +1,5 @@
 extends PanelContainer
 # TODO: Look into caching the waveform data (not an issue right now, but might become one)
-# TODO: Add ripple editing (Shift+delete) removes the clip and moves the others closer.
-
 
 signal zoom_changed(new_zoom: float)
 
@@ -110,6 +108,8 @@ func _notification(what: int) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("delete_clips"):
 		ClipHandler.delete_clips(selected_clip_ids)
+	elif event.is_action_pressed("ripple_delete_clips"):
+		ClipHandler.ripple_delete_clips(selected_clip_ids)
 	elif event.is_action_pressed("cut_clips_at_playhead", false, true):
 		cut_clips_at(EditorCore.frame_nr)
 	elif event.is_action_pressed("cut_clips_at_mouse", false, true):

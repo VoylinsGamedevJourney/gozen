@@ -115,7 +115,7 @@ func delete_clips(data: PackedInt64Array) -> void:
 		if clips.has(clip_id):
 			correct_data.append(clip_id)
 
-	InputManager.undo_redo.create_action("Remove clip(s)")
+	InputManager.undo_redo.create_action("Delete clip(s)")
 
 	for clip_id: int in correct_data:
 		var clip: ClipData = get_clip(clip_id)
@@ -124,6 +124,46 @@ func delete_clips(data: PackedInt64Array) -> void:
 		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
 
 	InputManager.undo_redo.commit_action()
+
+
+func ripple_delete_clips(data: PackedInt64Array) -> void:
+	if data.is_empty(): return
+	var clips_by_track: Dictionary[int, PackedInt64Array] = {}
+	var ranges_by_track: Dictionary[int, Vector2i] = {} # Store min start and total duration per track.
+
+	for id: int in data:
+		var clip: ClipData = ClipHandler.get_clip(id)
+		if not clip: continue
+		if not clips_by_track.has(clip.track_id):
+			clips_by_track[clip.track_id] = []
+			ranges_by_track[clip.track_id] = Vector2i(clip.start_frame, clip.end_frame)
+		
+		clips_by_track[clip.track_id].append(id)
+		ranges_by_track[clip.track_id].x = mini(ranges_by_track[clip.track_id].x, clip.start_frame)
+		ranges_by_track[clip.track_id].y = maxi(ranges_by_track[clip.track_id].y, clip.end_frame)
+
+	InputManager.undo_redo.create_action("Ripple delete clip(s)")
+
+	# First delete the clips.
+	for clip_id: int in data:
+		if !clips.has(clip_id): continue
+		var clip: ClipData = get_clip(clip_id)
+
+		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip))
+		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
+
+	# Move remaining clips to fill the gap.
+	var move_requests: Array[MoveClipRequest] = []
+	
+	for track_id: int in ranges_by_track:
+		var gap_start: int = ranges_by_track[track_id].x
+		var gap_size: int = ranges_by_track[track_id].y - ranges_by_track[track_id].x
+
+		for clip_id: int in TrackHandler.get_clip_ids_after(track_id, gap_start):
+			move_requests.append(MoveClipRequest.new(clip_id, -gap_size, 0))
+
+	if not move_requests.is_empty():
+		ClipHandler.move_clips(move_requests)
 
 
 func cut_clips(data: Array[CutClipRequest]) -> void:
