@@ -420,7 +420,7 @@ func _get_effect_pipeline(shader_path: String, effect: GoZenEffectVisual) -> Eff
 	var effect_cache: EffectCache = EffectCache.new()
 
 	if not shader_file is RDShaderFile:
-		printerr("Effect shader is not RDShaderFile (compute shader): ", shader_path)
+		printerr("VisualCompositor: Effect shader is not RDShaderFile (compute shader): ", shader_path)
 		return null
 
 	effect_cache.initialize(device, shader_file.get_spirv(), effect)

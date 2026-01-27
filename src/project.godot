@@ -40,6 +40,7 @@ PopupManager="*res://scripts/autoloads/popup_manager.gd"
 RenderManager="*res://scripts/autoloads/render_manager.gd"
 EffectsHandler="*res://scripts/autoloads/effects_handler.gd"
 MatrixHandler="*res://scripts/autoloads/matrix_handler.gd"
+ProxyHandler="*res://scripts/autoloads/proxy_handler.gd"
 
 [debug]
 

@@ -1,6 +1,5 @@
 extends Node
 
-
 signal on_show_menu_bar_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
 
@@ -309,6 +308,15 @@ func set_default_framerate(framerate: float) -> void:
 
 func get_default_framerate() -> float:
 	return data.default_framerate
+
+
+func set_use_proxies(value: bool) -> void:
+	data.use_proxies = value
+	FileHandler.reload_all_video_files()
+
+
+func get_use_proxies() -> bool:
+	return data.use_proxies
 
 
 #--- Timeline set/get ---

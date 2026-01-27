@@ -112,7 +112,7 @@ func _clear_ui() -> void:
 func _load_video_effects() -> void:
 	_clear_ui()
 
-	if !ClipHandler.has_clip(current_clip_id):
+	if !ClipHandler.clips.has(current_clip_id):
 		return
 
 	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)	
@@ -131,7 +131,7 @@ func _load_video_effects() -> void:
 func _load_audio_effects() -> void:
 	_clear_ui()
 
-	if !ClipHandler.has_clip(current_clip_id):
+	if !ClipHandler.clips.has(current_clip_id):
 		return
 
 	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)	
@@ -338,7 +338,7 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1 or !ClipHandler.has_clip(current_clip_id):
+	if current_clip_id == -1 or !ClipHandler.clips.has(current_clip_id):
 		return
 
 	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)

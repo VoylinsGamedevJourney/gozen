@@ -1,11 +1,11 @@
 extends Node
 
-
 signal frame_changed
 signal play_changed(value: bool)
 
 
 enum SHADER_ID { EMPTY, YUV_STANDARD, YUV_FULL, IMAGE }
+
 
 const VISUAL_TYPES: PackedInt64Array = [
 		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT,
@@ -17,10 +17,8 @@ const AUDIO_TYPES: PackedInt64Array = [
 var viewport: SubViewport
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
-
-var background: ColorRect
-
 var visual_compositors: Array[VisualCompositor] = []
+var background: ColorRect
 
 var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
@@ -52,15 +50,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if !is_playing:
-		return
-
+	if !is_playing: return
 	skips = 0
 	time_elapsed += delta
 
 	# Check if enough time has passed for next frame or not.
-	if time_elapsed < frame_time:
-		return
+	if time_elapsed < frame_time: return
 
 	while time_elapsed >= frame_time:
 		time_elapsed -= frame_time
@@ -79,7 +74,6 @@ func _on_closing_editor() -> void:
 
 	for player: AudioPlayer in audio_players:
 		player.queue_free()
-
 	audio_players.clear()
 
 
@@ -110,8 +104,7 @@ func set_frame_nr(value: int) -> void:
 	
 	# Reset/update all audio players
 	for i: int in audio_players.size():
-		if loaded_clips[i] != -1:
-			audio_players[i].set_audio(find_audio(frame_nr, i))
+		if loaded_clips[i] != -1: audio_players[i].set_audio(find_audio(frame_nr, i))
 	
 	prev_frame = frame_nr
 		
@@ -121,12 +114,10 @@ func _set_is_playing(value: bool) -> void:
 
 	for player: AudioPlayer in audio_players:
 		player.play(value)
-
 	play_changed.emit(value)
 
 
-func update_frame() -> void:
-	set_frame(frame_nr)
+func update_frame() -> void: set_frame(frame_nr)
 
 
 func set_frame(new_frame: int = frame_nr + 1) -> void:
@@ -156,7 +147,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 	
 	if frame_nr == Project.get_timeline_end():
 		is_playing = false
-
 	frame_changed.emit()
 
 
@@ -164,25 +154,21 @@ func _get_next_clip(new_frame_nr: int, track_id: int) -> int:
 	var id: int = -1
 
 	if TrackHandler.get_clips_size(track_id) == 0:
-		return -1
+		return id
 
 	# Looking for the correct clip
 	for frame: int in TrackHandler.get_frame_nrs(track_id):
 		if frame <= new_frame_nr:
 			id = TrackHandler.get_clip_id(track_id, frame)
-		else:
-			break
+		else: break
 
-	if id != -1 and _check_clip_end(new_frame_nr, id):
-		return id
-
-	return -1
+	return id if id != -1 and _check_clip_end(new_frame_nr, id) else -1
 
 
 func _check_clip_end(new_frame_nr: int, clip_id: int) -> bool:
-	if !ClipHandler.has_clip(clip_id):
-		return false
-	return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
+	if ClipHandler.clips.has(clip_id):
+		return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
+	return false
 	
 
 func _on_clips_updated() -> void:
@@ -203,35 +189,32 @@ func setup_audio_players() -> void:
 func find_audio(frame: int, track_id: int) -> int:
 	var pos: PackedInt64Array = TrackHandler.get_frame_nrs(track_id)
 	var last: int = Utils.get_previous(frame, pos)
+	var clip_data: ClipData
 
 	if last == -1:
 		return -1
 
-	var clip_data: ClipData = TrackHandler.get_clip_at(track_id, last)
+	clip_data = TrackHandler.get_clip_at(track_id, last)
 
 	if clip_data == null:
 		printerr("EditorCore: Clip empty at: ", last)
 		return -1
 
 	last = clip_data.id
-
-	if frame < ClipHandler.get_end_frame(last):
-		return last
-
-	return -1
+	return last if frame < ClipHandler.get_end_frame(last) else -1
 
 
 func update_audio() -> void:
 	for player: AudioPlayer in audio_players:
-		if player.clip_id != -1:
-			if !ClipHandler.has_clip(player.clip_id):
-				player.stop()
-			else:
-				var clip: ClipData = ClipHandler.get_clip(player.clip_id)
-				player.stop_frame = clip.end_frame
-				
-				if frame_nr < clip.start_frame or frame_nr > clip.end_frame:
-					player.stop()
+		if player.clip_id == -1: continue
+		elif !ClipHandler.clip.has(player.clip_id):
+			player.stop()
+		else:
+			var clip: ClipData = ClipHandler.get_clip(player.clip_id)
+			player.stop_frame = clip.end_frame
+			
+			if frame_nr < clip.start_frame: player.stop()
+			elif frame_nr > clip.end_frame: player.stop()
 
 			
 # Video stuff  ----------------------------------------------------------------
@@ -240,7 +223,6 @@ func setup_playback() -> void:
 
 	for i: int in Project.data.tracks.size():
 		var texture_rect: TextureRect = TextureRect.new()
-		var visual_compositor: VisualCompositor = VisualCompositor.new()
 		
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -249,17 +231,16 @@ func setup_playback() -> void:
 		loaded_shaders.append(SHADER_ID.EMPTY)
 
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		visual_compositors.append(visual_compositor)
+		visual_compositors.append(VisualCompositor.new())
 		
 		viewport.add_child(texture_rect)
 		viewport.move_child(texture_rect, 1)
 
 
 func update_view(track_id: int, update: bool) -> void:
-	if loaded_clips[track_id] == -1:
-		return
+	if loaded_clips[track_id] == -1: return
 
-	var file_data: FileData = ClipHandler.get_clip_file_data(loaded_clips[track_id])
+	var file_data: FileData = ClipHandler.get_file_data(loaded_clips[track_id])
 	var clip_data: ClipData = ClipHandler.get_clip(loaded_clips[track_id])
 	var relative_frame: int = frame_nr - clip_data.start_frame + clip_data.begin
 
@@ -273,14 +254,19 @@ func update_view(track_id: int, update: bool) -> void:
 			visual_compositors[track_id].initialize_video(file_data.video)
 
 		visual_compositors[track_id].process_video_frame(
-				file_data.video, clip_data.effects_video, relative_frame, fade_alpha)
+				file_data.video,
+				clip_data.effects_video,
+				relative_frame,
+				fade_alpha)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 	elif file_data.image != null:
 		if update:
 			visual_compositors[track_id].initialize_image(file_data.image)
 
 		visual_compositors[track_id].process_image_frame(
-				clip_data.effects_video, relative_frame, fade_alpha)
+				clip_data.effects_video,
+				relative_frame,
+				fade_alpha)
 		view_textures[track_id].texture = visual_compositors[track_id].display_texture
 
 
@@ -292,19 +278,15 @@ func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 		return false
 
 	# Check if clip really still exists or not.
-	if !ClipHandler.has_clip(loaded_clips[track_id]):
+	if !ClipHandler.clips.has(loaded_clips[track_id]):
 		loaded_clips[track_id] = -1
 		return false
 
 	# Track check
-	if ClipHandler.get_clip_track_id(loaded_clips[track_id]) != track_id:
-		return false
-	elif ClipHandler.get_start_frame(loaded_clips[track_id]) > new_frame_nr:
-		return false
-	elif frame_nr > ClipHandler.get_end_frame(loaded_clips[track_id]):
-		return false
-
-	return true
+	return !(
+		ClipHandler.get_clip(loaded_clips[track_id]).track_id != track_id or
+		ClipHandler.get_start_frame(loaded_clips[track_id]) > new_frame_nr or
+		frame_nr > ClipHandler.get_end_frame(loaded_clips[track_id]))
 
 
 func set_background_color(color: Color) -> void:

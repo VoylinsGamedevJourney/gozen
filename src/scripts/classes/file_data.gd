@@ -20,7 +20,6 @@ var pck: PCK = null
 var pck_scene_instance: Node = null
 
 var audio_wave_data: PackedFloat32Array = []
-var color_profile: Vector4 = Vector4.ZERO
 
 var clip_only_video: Dictionary[int, GoZenVideo] = {} # { Clip id: Video }
 
@@ -60,7 +59,7 @@ func init_data(file_data_id: int) -> bool:
 		image = file.temp_file.image_data
 	elif file.type == FileHandler.TYPE.IMAGE:
 		image = ImageTexture.create_from_image(Image.load_from_file(file.path))
-	elif file.type in [FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]:
+	elif file.type in FileHandler.TYPE_VIDEOS:
 		Threader.add_task(_load_video_data.bind(file.path), video_loaded.emit)
 	elif file.type == FileHandler.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(file.path):
@@ -98,30 +97,30 @@ func _load_video_data(file_path: String) -> void:
 	var temp_video: GoZenVideo = GoZenVideo.new()
 	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
 
-	if temp_video.open(file_path):
+	var file: File = FileHandler.get_file(id)
+	var path_to_load: String = file_path
+
+	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
+		path_to_load = file.proxy_path
+
+	if temp_video.open(path_to_load):
 		printerr("FileData: Couldn't open video at path '%s'!" % file_path)
 		return
-	placeholder.size = temp_video.get_resolution()
+	
+	var video_resolution: Vector2i = temp_video.get_resolution()
+	var rotated: bool = abs(temp_video.get_rotation()) == 90
 
-	if abs(temp_video.get_rotation()) == 90:
-		placeholder.size = Vector2(placeholder.size.y, placeholder.size.x)
-	else:
-		placeholder.size = Vector2(placeholder.size.x, placeholder.size.y)
-
-	match temp_video.get_color_profile():
-		"bt601", "bt470": color_profile = Vector4(1.402, 0.344136, 0.714136, 1.772)
-		"bt2020", "bt2100": color_profile = Vector4(1.4746, 0.16455, 0.57135, 1.8814)
-		_: # bt709 and unknown.
-			color_profile = Vector4(1.5748, 0.1873, 0.4681, 1.8556)
+	placeholder.size.x = video_resolution.y if rotated else video_resolution.x
+	placeholder.size.y = video_resolution.x if rotated else video_resolution.y
 
 	# Loading the clip only video data
-	var file: File = FileHandler.get_file(id)
+	file = FileHandler.get_file(id)
 
 	for clip_id: int in file.clip_only_video_ids:
-		if ClipHandler.has_clip(clip_id):
+		if ClipHandler.clips.has(clip_id):
 			var clip_video: GoZenVideo = GoZenVideo.new()
 
-			if clip_video.open(file_path) == OK:
+			if clip_video.open(path_to_load) == OK:
 				Threader.mutex.lock()
 				clip_only_video[clip_id] = clip_video
 				Threader.mutex.unlock()

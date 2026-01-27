@@ -133,7 +133,7 @@ func get_last_clip(track_id: int) -> ClipData:
 		var frame_nr: int = get_frame_nrs(track_id)[-1]
 		var clip_id: int = tracks[track_id].clips[frame_nr]
 
-		if !ClipHandler.has_clip(clip_id):
+		if !ClipHandler.clips.has(clip_id):
 			tracks[track_id].clips.erase(frame_nr)
 			continue
 		break

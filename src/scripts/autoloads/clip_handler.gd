@@ -1,37 +1,23 @@
 extends Node
 
-
 signal clip_added(clip_id: int)
 signal clip_deleted(clip_id: int)
-signal clips_updated
-
 signal clip_selected(clip_id: int)
+
+signal clips_updated
 
 
 var clips: Dictionary[int, ClipData] = {}
 
 
-
-func has_clip(id: int) -> bool:
-	return clips.has(id)
-
+#--- Setters/Getters ---
 
 func get_clip(id: int) -> ClipData:
-	if has_clip(id):
-		return clips[id]
-	return null
+	return clips[id] if clips.has(id) else null
 
 
 func get_type(id: int) -> FileHandler.TYPE:
-	return FileHandler.get_file(clips[id].file_id).type
-
-
-func get_clip_datas() -> Array[ClipData]:
-	return clips.values()
-
-
-func get_clip_ids() -> PackedInt64Array:
-	return clips.keys()
+	return FileHandler.get_file_type(clips[id].file_id)
 
 
 func get_start_frame(id: int, clip: ClipData = clips[id]) -> int:
@@ -42,51 +28,39 @@ func get_end_frame(id: int, clip: ClipData = clips[id]) -> int:
 	return clip.start_frame + clip.duration - 1
 
 
-func get_clip_track_id(id: int, clip: ClipData = clips[id]) -> int:
-	return clip.track_id
-
-
-func get_clip_file_id(id: int, clip: ClipData = clips[id]) -> int:
-	return clip.file_id
-
-
-func get_clip_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
+func get_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
 	return FileHandler.get_file_data(clip.file_id)
 
+
+#--- Clip handling functions ---
 
 func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 	var type: FileHandler.TYPE = ClipHandler.get_type(clip.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
 		return
-	elif type in [FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]:
-		# Changing from global frame nr to clip frame nr
+	elif type in FileHandler.TYPE_VIDEOS:
 		var file_data: FileData = FileHandler.get_file_data(clip.file_id)
 		var video: GoZenVideo
+		var video_frame_nr: int
 
 		if file_data.clip_only_video.has(clip.id):
 			video = file_data.clip_only_video[clip.id]
 		else:
 			video = file_data.video
 
-		var video_framerate: float = video.get_framerate()
-		var video_frame_nr: int = video.get_current_frame()
+		video_frame_nr = video.get_current_frame()
+		frame_nr = int((frame_nr / Project.get_framerate()) * video.get_framerate())
 
-		frame_nr = int((frame_nr / Project.get_framerate()) * video_framerate)
-
-		# check if not reloading same frame
-		if frame_nr == video_frame_nr:
-			return
-
-		if frame_nr == video_frame_nr + 1:
-			video.next_frame(false)
-		elif !video.seek_frame(frame_nr):
-			printerr("ClipHandler: Couldn't seek frame!")
+		if frame_nr != video_frame_nr: # Shouldn't reload same frame
+			if frame_nr == video_frame_nr + 1:
+				video.next_frame(false)
+			elif !video.seek_frame(frame_nr):
+				printerr("ClipHandler: Couldn't seek frame!")
 
 
 func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
 	var file: File = FileHandler.get_file(clip.file_id)
-
 	var start_sec: float = float(clip.begin) / Project.get_framerate()
 	var duration_sec: float = float(clip.duration) / Project.get_framerate()
 
@@ -100,14 +74,15 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		var clip_data: ClipData = ClipData.new()
 		var file_data: File = FileHandler.get_file(clip_request.file_id)
 
-		clip_data.id = Utils.get_unique_id(ClipHandler.get_clip_ids())
+		clip_data.id = Utils.get_unique_id(ClipHandler.get_ids())
 		clip_data.file_id = file_data.id
 		clip_data.track_id = clip_request.track_id
 		clip_data.start_frame = clip_request.frame_nr
 		clip_data.duration = file_data.duration
 
 		if file_data.type in EditorCore.VISUAL_TYPES:
-			var transform_effect: GoZenEffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
+			var transform_effect: GoZenEffectVisual = load(
+					Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
 
 			# Setting default values
 			for param: EffectParam in transform_effect.params:
@@ -153,8 +128,9 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Cut clip(s)")
 
 	for clip_request: CutClipRequest in data:
-		var cut_frame_pos: int = clip_request.cut_frame_pos
 		var clip_data: ClipData = clips[clip_request.clip_id]
+		var new_clip_data: ClipData = ClipData.new()
+		var cut_frame_pos: int = clip_request.cut_frame_pos
 		var new_duration: int = clip_data.duration - cut_frame_pos
 
 		# Editing the main clip
@@ -162,9 +138,8 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip_data.id, new_duration, true))
 
 		# Adding the new clip (clone of old clip + duration changes)
-		var new_clip_data: ClipData = ClipData.new()
 
-		new_clip_data.id = Utils.get_unique_id(ClipHandler.get_clip_ids())
+		new_clip_data.id = Utils.get_unique_id(ClipHandler.get_ids())
 		new_clip_data.file_id = clip_data.file_id
 		new_clip_data.track_id = clip_data.track_id
 		new_clip_data.begin = clip_data.begin + cut_frame_pos
@@ -292,11 +267,10 @@ func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Ar
 
 			new_effect.keyframes[param_id][0] = value_at_cut
 
-			# 2. Shift existing keyframes that appear after the cut.
-			if effect.keyframes.has(param_id):
-				for frame: int in effect.keyframes[param_id]:
-					if frame > cut_pos:
-						new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
+			# Shift existing keyframes that appear after the cut.
+			for frame: int in effect.keyframes[param_id]:
+				if frame > cut_pos:
+					new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
 
 			new_effects.append(new_effect)
 
@@ -322,11 +296,10 @@ func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Arra
 
 			new_effect.keyframes[param_id][0] = value_at_cut
 
-			# 2. Shift existing keyframes that appear after the cut.
-			if effect.keyframes.has(param_id):
-				for frame: int in effect.keyframes[param_id]:
-					if frame > cut_pos:
-						new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
+			# Shift existing keyframes that appear after the cut.
+			for frame: int in effect.keyframes[param_id]:
+				if frame > cut_pos:
+					new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
 
 			new_effects.append(new_effect)
 

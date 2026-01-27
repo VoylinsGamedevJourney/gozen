@@ -85,6 +85,7 @@ func save_as() -> void:
 	
 func open(new_project_path: String) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	var progress_increment: float
 	
 	loading_overlay.update_title("title_loading_project")
 	loading_overlay.update_progress(0, "status_project_loading_init")
@@ -106,15 +107,15 @@ func open(new_project_path: String) -> void:
 
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update_progress(7, "status_project_loading_files")
+	progress_increment = (1 / float(data.files.size())) * 73
 
-	var progress_increment: float = (1 / float(data.files.size())) * 73
 	for i: int in data.files.keys():
 		if !FileHandler.load_file_data(i):
 			continue # File became invaled so entry got deleted.
 
 		var type: FileHandler.TYPE = data.files[i].type
 
-		if type in [FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY] and FileHandler.data[i].video == null:
+		if type in FileHandler.TYPE_VIDEOS and FileHandler.data[i].video == null:
 			await FileHandler.data[i].video_loaded
 
 		loading_overlay.increment_progress_bar(progress_increment)
@@ -216,7 +217,8 @@ func _on_save_close() -> void:
 
 
 func _on_cancel_close() -> void:
-	if Settings.get_auto_save(): auto_save_timer.start()
+	if Settings.get_auto_save():
+		auto_save_timer.start()
 
 
 #--- Project setters & getters ---
@@ -230,9 +232,7 @@ func get_project_path() -> String:
 
 
 func get_project_name() -> String:
-	var project_path: String = data.project_path.get_file()
-
-	return project_path.trim_suffix("." + project_path.get_extension())
+	return data.project_path.get_file().trim_suffix("." + data.project_path.get_extension())
 
 
 func get_project_base_folder() -> String:
@@ -263,8 +263,7 @@ func get_framerate() -> float:
 
 
 func set_playhead_position(new_pos: int) -> void:
-	# No need to set "unsaved_changes" here.
-	data.playhead_position = new_pos
+	data.playhead_position = new_pos # No need to set "unsaved_changes" here.
 
 
 func get_playhead_position() -> int:

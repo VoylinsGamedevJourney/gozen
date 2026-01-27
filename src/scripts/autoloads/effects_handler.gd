@@ -35,11 +35,12 @@ func _load_video_effects() -> void:
 	visual_effect_instances.clear()
 
 	for file_name: String in DirAccess.open(PATH_EFFECTS_VISUAL).get_files():
-		if file_name.ends_with(".tres"):
-			var effect: GoZenEffectVisual = load(PATH_EFFECTS_VISUAL + file_name)
+		if !file_name.ends_with(".tres"):
+			continue
 
-			visual_effects[effect.effect_name] = effect.effect_id
-			visual_effect_instances[effect.effect_id] = effect
+		var effect: GoZenEffectVisual = load(PATH_EFFECTS_VISUAL + file_name)
+		visual_effects[effect.effect_name] = effect.effect_id
+		visual_effect_instances[effect.effect_id] = effect
 
 
 func _load_audio_effects() -> void:
@@ -47,18 +48,16 @@ func _load_audio_effects() -> void:
 	audio_effect_instances.clear()
 
 	for file_name: String in DirAccess.open(PATH_EFFECTS_AUDIO).get_files():
-		if file_name.ends_with(".tres"):
-			var effect: GoZenEffectAudio = load(PATH_EFFECTS_AUDIO + file_name)
+		if !file_name.ends_with(".tres"): continue
 
-			audio_effects[effect.effect_name] = effect.effect_id
-			audio_effect_instances[effect.effect_id] = effect
+		var effect: GoZenEffectAudio = load(PATH_EFFECTS_AUDIO + file_name)
+		audio_effects[effect.effect_name] = effect.effect_id
+		audio_effect_instances[effect.effect_id] = effect
 
 
 #---- Adding effects ----
 func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
-	if !ClipHandler.has_clip(clip_id):
-		return
-
+	if !ClipHandler.clips.has(clip_id): return
 	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
 	var index: int = list.size()
@@ -96,17 +95,17 @@ func _add_effect(clip_id: int, index: int, effect: GoZenEffect, is_visual: bool)
 
 #---- Removing effects ----
 func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
-	if !ClipHandler.has_clip(clip_id):
-		return
+	if !ClipHandler.clips.has(clip_id): return
 
 	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
+	var effect: GoZenEffect
 
 	if index < 0 or index >= list.size():
 		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 		return
 
-	var effect: GoZenEffect = list[index]
+	effect = list[index]
 
 	InputManager.undo_redo.create_action("Remove effect: %s" % effect.effect_name)
 
@@ -128,17 +127,17 @@ func _remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
 
 #---- Moving effects ----
 func move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> void:
-	if !ClipHandler.has_clip(clip_id):
-		return
+	if !ClipHandler.clips.has(clip_id): return
 
 	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
+	var effect: GoZenEffect
 
 	if index < 0 or index >= list.size():
 		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 		return
 
-	var effect: GoZenEffect = list[index]
+	effect = list[index]
 
 	InputManager.undo_redo.create_action("Move effect: %s" % effect.effect_name)
 
@@ -151,31 +150,28 @@ func move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> v
 func _move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> void:
 	if is_visual:
 		var effect: GoZenEffect = ClipHandler.clips[clip_id].effects_video.pop_at(index)
-
 		ClipHandler.clips[clip_id].effects_video.insert(new_index, effect)
 	else:
 		var effect: GoZenEffect = ClipHandler.clips[clip_id].effects_audio.pop_at(index)
-
 		ClipHandler.clips[clip_id].effects_audio.insert(new_index, effect)
 
 	effects_updated.emit()
 
 
-
 #---- Updating effect params ----
+
 func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
-	if !ClipHandler.has_clip(clip_id):
-		return
+	if !ClipHandler.clips.has(clip_id): return
 
 	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
+	var effect: GoZenEffect
 
 	if index < 0 or index >= list.size():
 		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 		return
 
-
-	var effect: GoZenEffect = list[index]
+	effect = list[index]
 
 	InputManager.undo_redo.create_action("Update effect param: %s" % effect.effect_name)
 
@@ -189,7 +185,6 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 				clip_id, index, is_visual, param_id, 0, old_value))
 	else:
 		var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
-
 		var old_value: Variant = null
 		var keyframe_exists: bool = false
 
@@ -201,14 +196,16 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 			var effect_param: EffectParam = null
 
 			for param: EffectParam in effect.params:
-				if param.param_id == param_id:
-					effect_param = param
-					break
+				if param.param_id != param_id: continue
+
+				effect_param = param
+				break
 
 			if effect_param:
 				old_value = effect.get_value(effect_param, frame_nr)
 
-		InputManager.undo_redo.add_do_method(_set_keyframe.bind(clip_id, index, is_visual, param_id, frame_nr, new_value))
+		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+				clip_id, index, is_visual, param_id, frame_nr, new_value))
 
 		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe
 			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
@@ -239,7 +236,7 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 	if effect.keyframes.has(param_id):
 		effect.keyframes[param_id].erase(frame_nr)
 
-		if effect.keyframes[param_id].is_empty(): # Clean up dictionary if empty
+		if effect.keyframes[param_id].is_empty():
 			effect.keyframes.erase(param_id)
 		
 	effect._cache_dirty = true
@@ -248,23 +245,21 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 
 #---- Switch enabled ----
 func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
-	if !ClipHandler.has_clip(clip_id):
-		return
-
+	if !ClipHandler.clips.has(clip_id): return
 	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
+	var effect: GoZenEffect
 
 	if index < 0 or index >= list.size():
 		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 		return
 
-	var effect: GoZenEffect = list[index]
-	var enabled: bool = effect.is_enabled
+	effect = list[index]
 
 	InputManager.undo_redo.create_action("Move effect: %s" % effect.effect_name)
 
-	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip_id, index, is_visual, !enabled))
-	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip_id, index, is_visual, enabled))
+	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip_id, index, is_visual, !effect.is_enabled))
+	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip_id, index, is_visual, effect.is_enabled))
 
 	InputManager.undo_redo.commit_action()
 

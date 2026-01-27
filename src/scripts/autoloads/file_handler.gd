@@ -30,6 +30,7 @@ enum TYPE {
 	PCK
 }
 
+const TYPE_VIDEOS: Array = [TYPE.VIDEO, TYPE.VIDEO_ONLY]
 
 
 var files: Dictionary[int, File] = {}
@@ -50,30 +51,29 @@ func _on_window_focus_entered() -> void:
 
 func _on_files_dropped(file_paths: PackedStringArray) -> void:
 	# Only allow files to be dropped in non-empty projects.
-	if data == null:
-		return
+	if data == null: return
 
 	var dropped_files: Array[FileDrop] = []
+	var dropped_overlay: ProgressOverlay
+	var progress_increment: float
 
 	# Find files inside of subfolders.
 	file_paths = Utils.find_subfolder_files(file_paths)
 
 	# Check for file duplicates.
 	for path: String in get_file_paths():
-		if path in file_paths:
-			file_paths.erase(path)
-			Print.info("Duplicate file was dropped from path: %s", path)
+		if path not in file_paths: continue
+
+		file_paths.erase(path)
+		Print.info("Duplicate file was dropped from path: %s", path)
 
 	# Add files for processing.
 	for path: String in file_paths:
 		dropped_files.append(FileDrop.new(path))
+	if file_paths.size() == 0: return
 
-	if file_paths.size() == 0:
-		return
-
-	var dropped_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
-	var progress_increment: float = (1 / float(dropped_files.size())) * 50
-
+	dropped_overlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	progress_increment = (1 / float(dropped_files.size())) * 50
 	dropped_overlay.set_state_file_loading(dropped_files.size())
 	dropped_overlay.update_title("title_files_dropped")
 	dropped_overlay.update_progress(0, "")
@@ -98,22 +98,22 @@ func _on_files_dropped(file_paths: PackedStringArray) -> void:
 				await RenderingServer.frame_post_draw
 				continue
 
-			if get_file_data(file.id) != null:
-				if get_file(file.id).type in [TYPE.VIDEO, TYPE.VIDEO_ONLY]:
-					if !has_file(file.id):
-						file.status = STATUS.PROBLEM
-					elif get_file_data(file.id).video == null or !get_file_data(file.id).video.is_open():
-						continue
+			if get_file_data(file.id) == null: continue
 
-				if file.status != STATUS.PROBLEM:
-					file.status = STATUS.LOADED
-					file_added.emit(file.id)
+			if get_file(file.id).type in TYPE_VIDEOS:
+				if !has_file(file.id): file.status = STATUS.PROBLEM
+				elif get_file_data(file.id).video == null: continue
+				elif !get_file_data(file.id).video.is_open(): continue
 
-				dropped_overlay.update_file(file)
-				dropped_overlay.increment_progress_bar(progress_increment)
-				await RenderingServer.frame_post_draw
+			if file.status != STATUS.PROBLEM:
+				file.status = STATUS.LOADED
+				file_added.emit(file.id)
 
-				dropped_files.erase(file)
+			dropped_overlay.update_file(file)
+			dropped_overlay.increment_progress_bar(progress_increment)
+			await RenderingServer.frame_post_draw
+
+			dropped_files.erase(file)
 
 	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
@@ -136,12 +136,18 @@ func load_file_data(file_id: int) -> bool:
 
 
 func reload_file_data(id: int) -> void:
-	data[id].queue_free()
+	if data.has(id): data.erase(id)
 
 	await RenderingServer.frame_pre_draw
 	if !load_file_data(id):
 		_delete_file(id)
 		print_debug("File became invalid!")
+
+
+func reload_all_video_files() -> void:
+	for id: int in files:
+		if files[id].type in TYPE_VIDEOS:
+			reload_file_data(id)
 
 
 func add_file(file_drop: FileDrop) -> void:
@@ -179,7 +185,7 @@ func delete_file(file_id: int) -> void:
 	InputManager.undo_redo.add_undo_method(file_added.emit.bind(file_id))
 
 	# Making certain clips will be returned when deleting of file is un-done.
-	for clip_data: ClipData in ClipHandler.get_clip_datas():
+	for clip_data: ClipData in ClipHandler.clips.values():
 		if clip_data.file_id == file.id:
 			InputManager.undo_redo.add_do_method(ClipHandler._delete_clip.bind(clip_data))
 			InputManager.undo_redo.add_undo_method(ClipHandler._add_clip.bind(clip_data))
@@ -234,8 +240,7 @@ func create_file(file_path: String) -> File:
 	file.path = file_path
 
 	if file_path.contains("temp://"):
-		var file_type: String = file_path.trim_prefix("temp://").capitalize()
-		file.nickname = "%s %s" % [file_type, file.id]
+		file.nickname = "%s %s" % [file_path.trim_prefix("temp://").capitalize(), file.id]
 	else:
 		file.nickname = file_path.get_file()
 
@@ -243,19 +248,13 @@ func create_file(file_path: String) -> File:
 
 
 func check_valid(file_path: String) -> bool:
-	# Only for real files, not temp ones.
-	if !FileAccess.file_exists(file_path):
-		return false
+	if !FileAccess.file_exists(file_path): return false # Probably a temp file.
+
 	var ext: String = file_path.get_extension().to_lower()
-
-	if ext in ProjectSettings.get_setting("extensions/image"):
-		return true
-	elif ext in ProjectSettings.get_setting("extensions/audio"):
-		return true
-	elif ext in ProjectSettings.get_setting("extensions/video"):
-		return true
-
-	return false
+	return (
+		ext in ProjectSettings.get_setting("extensions/image") or
+		ext in ProjectSettings.get_setting("extensions/audio") or
+		ext in ProjectSettings.get_setting("extensions/video"))
 
 
 func add_file_object(file: File) -> void:
@@ -272,9 +271,8 @@ func add_file_object(file: File) -> void:
 
 
 func _delete_file(id: int) -> void:
-	for clip: ClipData in ClipHandler.get_clip_datas():
-		if clip.file_id == id:
-			ClipHandler._delete_clip(clip)
+	for clip: ClipData in ClipHandler.clips.values():
+		if clip.file_id == id: ClipHandler._delete_clip(clip)
 
 	if data.has(id):
 		data.erase(id)
@@ -288,16 +286,18 @@ func _delete_file(id: int) -> void:
 
 ## Check to see if a file needs reloading or not.
 func check_modified_files() -> void:
-	if !Project.loaded:
-		return
+	if !Project.loaded: return
 
 	for file: File in files.values():
-		if _check_if_file_modified(file):
-			var new_modified_time: int = FileAccess.get_modified_time(file.path)
+		if !_check_if_file_modified(file):
+			continue
 
-			if file.modified_time != new_modified_time or file.modified_time == -1:
-				file.modified_time = new_modified_time
-				reload_file_data(file.id)
+		# File modified, adjust time/date
+		var new_modified_time: int = FileAccess.get_modified_time(file.path)
+
+		if file.modified_time != new_modified_time or file.modified_time == -1:
+			file.modified_time = new_modified_time
+			reload_file_data(file.id)
 
 
 func get_file_type(file_id: int) -> TYPE:
@@ -311,21 +311,22 @@ func get_file_name(file_id: int) -> String:
 #-- File creators ---
 ## Save the image and replace the path in the file object to the new image file.
 func save_image_to_file(path: String, file: File) -> void:
+	const ERROR_MESSAGE: String = "FileHandler: Couldn't save image to %s!\n"
 	var extension: String = path.get_extension().to_lower()
 	var image: Image = file.temp_file.image_data.get_image()
 
 	match extension:
 		"png":
 			if image.save_png(path):
-				printerr("FileHandler: Couldn't save image to png!\n", get_stack())
+				printerr(ERROR_MESSAGE % "png", get_stack())
 				return
 		"webp":
 			if image.save_webp(path, false, 1.0):
-				printerr("FileHandler: Couldn't save image to webp!\n", get_stack())
+				printerr(ERROR_MESSAGE % "webp", get_stack())
 				return
 		_: # JPG is default.
 			if image.save_jpg(path, 1.0):
-				printerr("FileHandler: Couldn't save image to jpg!\n", get_stack())
+				printerr(ERROR_MESSAGE % "jpg", get_stack())
 				return
 
 	file.path = path
@@ -356,7 +357,6 @@ func set_file(id: int, file: File) -> void:
 func set_file_nickname(id: int, nickname: String) -> void:
 	files[id].nickname = nickname
 	Project.unsaved_changes = true
-
 	file_nickname_changed.emit(id)
 
 
@@ -370,7 +370,6 @@ func get_file_paths() -> PackedStringArray:
 
 	for file: File in files.values():
 		paths.append(file.path)
-
 	return paths
 
 
@@ -409,7 +408,6 @@ func add_folder(folder: String) -> void:
 	InputManager.undo_redo.add_undo_method(_delete_folder.bind(folder))
 
 	InputManager.undo_redo.commit_action()
-	Project.unsaved_changes = true
 
 
 func delete_folder(folder: String) -> void:
@@ -429,12 +427,10 @@ func delete_folder(folder: String) -> void:
 	InputManager.undo_redo.add_undo_method(_add_folder.bind(folder))
 
 	InputManager.undo_redo.commit_action()
-	Project.unsaved_changes = true
 
 
 func rename_folder(old_folder: String, new_folder: String) -> void:
-	if old_folder == "/" or Project.data.folders.has(new_folder):
-		return
+	if old_folder == "/" or Project.data.folders.has(new_folder): return
 
 	InputManager.undo_redo.create_action("Rename folder")
 
@@ -447,6 +443,7 @@ func rename_folder(old_folder: String, new_folder: String) -> void:
 func _add_folder(folder: String) -> void:
 	Project.data.folders.append(folder)
 	folder_added.emit(folder)
+	Project.unsaved_changes = true
 
 
 func _delete_folder(folder: String) -> void:
@@ -454,23 +451,24 @@ func _delete_folder(folder: String) -> void:
 		Project.data.folders.remove_at(Project.data.folders.find(folder))
 		folder_deleted.emit(folder)
 
+	Project.unsaved_changes = true
+
 
 func _rename_folder(old_folder: String, new_folder: String) -> void:
 	var changed_paths: Dictionary[String, String] = {}
 	var length: int = old_folder.length()
+	var keys: PackedStringArray
 
 	# First changing all folder paths
 	for index: int in Project.data.folders.size():
-		var current_folder: String = Project.data.folders[index]
-
-		if current_folder.begins_with(old_folder):
+		if Project.data.folders[index].begins_with(old_folder):
 			var new_path: String = new_folder + Project.data.folders[index].substr(length)
 
 			changed_paths[Project.data.folders[index]] = new_path
 			Project.data.folders[index] = new_path
 
 	# Next up we need to update all file paths
-	var keys: PackedStringArray = changed_paths.keys()
+	keys = changed_paths.keys()
 
 	for file_id: int in FileHandler.get_file_ids():
 		if files[file_id].folder in keys:
@@ -497,25 +495,18 @@ func disable_clip_only_video(file_id: int, clip_id: int) -> void:
 	var file_data: FileData = FileHandler.get_file_data(file_id)
 
 	if file_data.clip_only_video_ids.has(clip_id):
-		var position: int = file_data.clip_only_video_ids.find(clip_id)
-
-		file_data.clip_only_video_ids.remove_at(position)
-
+		file_data.clip_only_video_ids.remove_at(file_data.clip_only_video_ids.find(clip_id))
 	if file_data.clip_only_video.has(clip_id):
 		file_data.clip_only_video.erase(clip_id)
 
 
 #--- Private functions ---
 func _check_if_file_modified(file: File) -> bool:
-	# Temp files can't change.
-	if file.path.begins_with("temp://"):
-		return false
-
-	# File doesn't exist anymore, removing file.
-	if !FileAccess.file_exists(file.path):
+	if file.path.begins_with("temp://"): return false # Temp files can't change.
+	elif !FileAccess.file_exists(file.path):
 		print("FileHandler: File %s at %s doesn't exist anymore!" % [file.id, file.path])
 		_delete_file(file.id)
-		return false
+		return false # File doesn't exist anymore, removing file.
 
 	return true
 
@@ -543,4 +534,3 @@ class FileDrop:
 
 	func _init(_path: String) -> void:
 		path = _path
-

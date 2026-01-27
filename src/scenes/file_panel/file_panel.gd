@@ -1,4 +1,5 @@
 extends PanelContainer
+# TODO: Add an indicater for files which are using a proxy clip.
 
 enum POPUP_ACTION {
 	# File actions
@@ -8,6 +9,9 @@ enum POPUP_ACTION {
 	FILE_SAVE_TEMP_AS,
 	FILE_EXTRACT_AUDIO,
 	FILE_DUPLICATE,
+	FILE_CREATE_PROXY,
+	FILE_REMOVE_PROXY,
+
 	# Folder actions
 	FOLDER_CREATE,
 	FOLDER_RENAME,
@@ -106,7 +110,22 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_TEMP_AS)
 		elif file.type == FileHandler.TYPE.VIDEO:
 			popup.add_separator("popup_separator_video_options")
+
+			if Settings.get_use_proxies():
+				if file.proxy_path == "":
+					popup.add_item("popup_item_create_proxy", POPUP_ACTION.FILE_CREATE_PROXY)
+				else:
+					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
+
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
+		elif file.type == FileHandler.TYPE.VIDEO_ONLY:
+			popup.add_separator("popup_separator_video_options")
+
+			if Settings.get_use_proxies():
+				if file.proxy_path == "":
+					popup.add_item("popup_item_create_proxy", POPUP_ACTION.FILE_CREATE_PROXY)
+				else:
+					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
 		elif file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
 			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
@@ -141,6 +160,8 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		POPUP_ACTION.FILE_SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
 		POPUP_ACTION.FILE_EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
 		POPUP_ACTION.FILE_DUPLICATE: _on_popup_action_file_duplicate()
+		POPUP_ACTION.FILE_CREATE_PROXY: _on_popup_action_file_create_proxy()
+		POPUP_ACTION.FILE_REMOVE_PROXY: _on_popup_action_file_remove_proxy()
 
 
 func _on_popup_action_folder_create() -> void:
@@ -248,6 +269,17 @@ func _on_popup_action_file_duplicate() -> void:
 	var _file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 
 	printerr("FilePanel: Duplicating text not implemented yet!")
+
+
+func _on_popup_action_file_create_proxy() -> void:
+	ProxyHandler.request_proxy_generation(tree.get_selected().get_metadata(0))
+
+
+func _on_popup_action_file_remove_proxy() -> void:
+	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+
+	file.proxy_path = ""
+	FileHandler.reload_file_data(file.id)
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:

@@ -198,7 +198,12 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_default_framerate(),
 					1, 100, 1, false, true,
 					Settings.set_default_framerate,
-					"setting_tooltip_default_project_framerate")
+					"setting_tooltip_default_project_framerate"),
+			create_label("setting_default_use_proxies"),
+			create_check_button(
+				Settings.get_use_proxies(),
+				Settings.set_use_proxies,
+				"setting_tooltip_default_use_proxies"),
 		],
 	
 		"title_timeline" = [

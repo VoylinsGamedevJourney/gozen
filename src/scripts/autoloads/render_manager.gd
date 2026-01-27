@@ -30,11 +30,17 @@ var encoding_time: int = 0
 
 var buffer_size: int = 5
 
+var proxies_used: bool
+
 
 
 func stop_encoder() -> void:
 	if encoder.is_open():
 		encoder.close()
+	if proxies_used:
+		print("RenderManager: Re-enabling proxies ...")
+		Settings.set_use_proxies(true)
+
 	cancel_encoding = false
 
 
@@ -45,6 +51,18 @@ func start() -> void:
 	if viewport == null:
 		viewport = EditorCore.viewport.get_texture()
 
+	# Making certain proxies aren't being used for this
+	proxies_used = Settings.get_use_proxies()
+
+	if proxies_used:
+		print("RenderManager: Disabling proxies for rendering ...")
+		Settings.set_use_proxies(false)
+
+		# Necessary waiting time to make certain all clips are ready.
+		await RenderingServer.frame_post_draw
+		await get_tree().process_frame
+
+	# Setup encoder
 	update_encoder_status.emit(STATUS.SETUP)
 	await RenderingServer.frame_post_draw
 	start_time = Time.get_ticks_msec()
@@ -118,6 +136,10 @@ func start() -> void:
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
+
+	if proxies_used:
+		print("RenderManager: Re-enabling proxies ...")
+		Settings.set_use_proxies(true)
 
 
 func _send_frames(frame_array: Array[Image]) -> void:

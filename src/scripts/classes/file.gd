@@ -5,6 +5,7 @@ extends Node
 
 var id: int
 var path: String # Temporary files start with "temp://".
+var proxy_path: String
 var nickname: String
 var type: FileHandler.TYPE = FileHandler.TYPE.EMPTY
 var folder: String = "/" # Folder inside the editor.
