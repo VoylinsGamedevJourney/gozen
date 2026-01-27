@@ -17,17 +17,17 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 
 	const AVCodec* codec = avcodec_find_decoder(stream->codecpar->codec_id);
 	if (!codec) {
-		UtilityFunctions::printerr("Couldn't find any decoder for audio!");
+		_log_err("Couldn't find any decoder for audio!");
 		return audio_data;
 	}
 
 	codec_ctx = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(avcodec_alloc_context3(codec));
 	if (codec_ctx == NULL) {
-		UtilityFunctions::printerr("Couldn't allocate context for audio!");
+		_log_err("Couldn't allocate context for audio!");
 		return audio_data;
 	}
 	if (avcodec_parameters_to_context(codec_ctx.get(), stream->codecpar)) {
-		UtilityFunctions::printerr("Couldn't initialize audio codec context!");
+		_log_err("Couldn't initialize audio codec context!");
 		return audio_data;
 	}
 
@@ -35,7 +35,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 	codec_ctx->request_sample_fmt = TARGET_FORMAT;
 
 	if (avcodec_open2(codec_ctx.get(), codec, NULL)) {
-		UtilityFunctions::printerr("Couldn't open audio codec!");
+		_log_err("Couldn't open audio codec!");
 		return audio_data;
 	}
 
@@ -58,7 +58,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
 
 	if (response < 0 || (response = swr_init(swr_ctx.get()))) {
-		FFmpeg::print_av_error("Couldn't initialize SWR!", response);
+		FFmpeg::print_av_error("GoZenAudio: Couldn't initialize SWR!", response);
 		return audio_data;
 	}
 
@@ -67,7 +67,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 	av_decoded_frame = make_unique_avframe();
 
 	if (!av_frame || !av_decoded_frame || !av_packet) {
-		UtilityFunctions::printerr("Couldn't allocate frames/packet for audio!");
+		_log_err("Couldn't allocate frames/packet for audio!");
 		return audio_data;
 	}
 
@@ -102,7 +102,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 		av_decoded_frame->nb_samples = swr_get_out_samples(swr_ctx.get(), av_frame->nb_samples);
 
 		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
-			FFmpeg::print_av_error("Couldn't create new frame for swr!", response);
+			FFmpeg::print_av_error("GoZenAudio: Couldn't create new frame for swr!", response);
 			av_frame_unref(av_frame.get());
 			av_frame_unref(av_decoded_frame.get());
 			break;
@@ -110,7 +110,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 
 		response = swr_convert_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
 		if (response < 0) {
-			FFmpeg::print_av_error("Couldn't convert the audio frame!", response);
+			FFmpeg::print_av_error("GoZenAudio: Couldn't convert the audio frame!", response);
 			av_frame_unref(av_frame.get());
 			av_frame_unref(av_decoded_frame.get());
 			break;
@@ -289,9 +289,13 @@ PackedByteArray GoZenAudio::change_to_mono(PackedByteArray audio_data, bool left
 
 
 void GoZenAudio::_bind_methods() {
-	ClassDB::bind_static_method("GoZenAudio", D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"), &GoZenAudio::get_audio_data, DEFVAL(-1), DEFVAL(0.0), DEFVAL(-1.0));
+	ClassDB::bind_static_method("GoZenAudio",
+								D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"),
+								&GoZenAudio::get_audio_data, DEFVAL(-1), DEFVAL(0.0), DEFVAL(-1.0));
 
-	ClassDB::bind_static_method("GoZenAudio", D_METHOD("combine_data", "audio_one", "audio_two"), &GoZenAudio::combine_data);
+	ClassDB::bind_static_method("GoZenAudio", D_METHOD("combine_data", "audio_one", "audio_two"),
+								&GoZenAudio::combine_data);
 	ClassDB::bind_static_method("GoZenAudio", D_METHOD("change_db", "audio_data", "db"), &GoZenAudio::change_db);
-	ClassDB::bind_static_method("GoZenAudio", D_METHOD("change_to_mono", "audio_data", "left_channel"), &GoZenAudio::change_to_mono);
+	ClassDB::bind_static_method("GoZenAudio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
+								&GoZenAudio::change_to_mono);
 }

@@ -105,6 +105,8 @@ class GoZenVideo : public Resource {
 
 	int _seek_frame(int frame_nr);
 
+	Ref<Image> _generate_thumb_image();
+
 	void _add_to_cache(int frame_nr);
 	bool _load_from_cache(int frame_nr);
 	void _clear_cache();
@@ -139,6 +141,7 @@ class GoZenVideo : public Resource {
 	Dictionary get_chapter_metadata(int chapter_index);
 
 	Ref<Image> generate_thumbnail_at_frame(int frame_nr);
+	Ref<Image> generate_thumbnail_at_current_frame();
 
 	inline void set_sws_flag_bilinear() { sws_flag = SWS_BILINEAR; }
 	inline void set_sws_flag_bicubic() { sws_flag = SWS_BICUBIC; }

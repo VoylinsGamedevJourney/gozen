@@ -4,7 +4,7 @@ void FFmpeg::print_av_error(const char* message, int error) {
 	char error_buffer[AV_ERROR_MAX_STRING_SIZE];
 
 	av_strerror(error, error_buffer, sizeof(error_buffer));
-	UtilityFunctions::printerr("FFmpeg error: ", message, " ", error_buffer);
+	FFmpeg::_log_err(String(message) + " " + error_buffer);
 }
 
 void FFmpeg::enable_multithreading(AVCodecContext* codec_ctx, const AVCodec* codec, int thread_count) {
@@ -34,12 +34,12 @@ int FFmpeg::get_frame(AVFormatContext* format_ctx, AVCodecContext* codec_ctx, in
 			eof = true;
 			avcodec_send_packet(codec_ctx, nullptr); // Send null packet to signal end
 		} else if (response < 0) {
-			UtilityFunctions::printerr("Error reading frame! ", response);
+			FFmpeg::_log_err("Error reading frame! " + String::num_int64(response));
 			break;
 		} else {
 			response = avcodec_send_packet(codec_ctx, packet);
 			if (response < 0 && response != AVERROR_INVALIDDATA) {
-				UtilityFunctions::printerr("Problem sending package! ", response);
+				FFmpeg::_log_err("Problem sending package! " + String::num_int64(response));
 				break;
 			}
 		}
@@ -56,7 +56,7 @@ enum AVPixelFormat FFmpeg::get_hw_format(const enum AVPixelFormat* pix_fmt, enum
 		if (*p == *hw_pix_fmt)
 			return *p;
 
-	UtilityFunctions::printerr("Failed to get HW surface format!");
+	FFmpeg::_log_err("Failed to get HW surface format!");
 	return AV_PIX_FMT_NONE;
 }
 

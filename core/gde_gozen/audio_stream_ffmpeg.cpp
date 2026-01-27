@@ -198,7 +198,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 	avcodec_flush_buffers(audio_stream_ffmpeg->av_codec_ctx.get());
 	if (int err = av_seek_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_stream->index,
 								target_ts, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME)) {
-		FFmpeg::print_av_error("audio_decoder: Error while seeking", err);
+		FFmpeg::print_av_error("AudioStreamFFmpeg: audio_decoder: Error while seeking", err);
 		audio_stream_ffmpeg->mutex->unlock();
 		return;
 	}
@@ -227,7 +227,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 				swr_get_out_samples(audio_stream_ffmpeg->swr_ctx.get(), av_frame->nb_samples);
 
 			if (av_frame_get_buffer(av_decoded_frame.get(), 0) < 0) {
-				FFmpeg::print_av_error("Couldn't create new frame for swr!", response);
+				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't create new frame for swr!", response);
 				av_frame_unref(av_frame.get());
 				av_frame_unref(av_decoded_frame.get());
 				audio_stream_ffmpeg->mutex->unlock();
@@ -235,7 +235,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 			}
 
 			if (swr_config_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
-				FFmpeg::print_av_error("Couldn't config the audio frame!", response);
+				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't config the audio frame!", response);
 				av_frame_unref(av_frame.get());
 				av_frame_unref(av_decoded_frame.get());
 				audio_stream_ffmpeg->mutex->unlock();
@@ -243,7 +243,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 			}
 
 			if (swr_convert_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
-				FFmpeg::print_av_error("Couldn't convert the audio frame!", response);
+				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio frame!", response);
 				av_frame_unref(av_frame.get());
 				av_frame_unref(av_decoded_frame.get());
 				audio_stream_ffmpeg->mutex->unlock();
@@ -315,14 +315,14 @@ int32_t AudioStreamFFmpegPlayback::_mix_resampled(AudioFrame* p_buffer, int32_t 
 bool AudioStreamFFmpegPlayback::fill_buffer() {
 	audio_stream_ffmpeg->mutex->lock();
 	if (audio_stream_ffmpeg->file_path == "") {
-		UtilityFunctions::printerr("Can't fill buffer, path is null!");
+		AudioStreamFFmpeg::_log_err("Can't fill buffer, path is null!");
 		audio_stream_ffmpeg->mutex->unlock();
 		return false;
 	}
 
 	if (FFmpeg::get_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_codec_ctx.get(),
 						  audio_stream_ffmpeg->av_stream->index, av_frame.get(), av_packet.get())) {
-		UtilityFunctions::print("End of file");
+		AudioStreamFFmpeg::_log("End of file");
 		audio_stream_ffmpeg->mutex->unlock();
 		return false;
 	}
@@ -334,7 +334,7 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 		swr_get_out_samples(audio_stream_ffmpeg->swr_ctx.get(), av_frame.get()->nb_samples);
 
 	if (auto resp = (av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
-		FFmpeg::print_av_error("Couldn't create new frame for swr!", resp);
+		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't create new frame for swr!", resp);
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 		audio_stream_ffmpeg->mutex->unlock();
@@ -342,7 +342,7 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 	}
 
 	if (auto resp = swr_config_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
-		FFmpeg::print_av_error("Couldn't config the audio frame!", resp);
+		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't config the audio frame!", resp);
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 		audio_stream_ffmpeg->mutex->unlock();
@@ -350,7 +350,7 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 	}
 
 	if (auto resp = swr_convert_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
-		FFmpeg::print_av_error("Couldn't convert the audio frame!", resp);
+		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio frame!", resp);
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 		audio_stream_ffmpeg->mutex->unlock();

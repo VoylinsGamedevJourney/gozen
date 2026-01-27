@@ -143,7 +143,7 @@ bool GoZenEncoder::_add_video_stream() {
 	// Opening the video encoder codec
 	response = avcodec_open2(av_codec_ctx_video.get(), av_codec, nullptr);
 	if (response < 0) {
-		FFmpeg::print_av_error("Couldn't open video codec context!", response);
+		FFmpeg::print_av_error("GoZenEncoder: Couldn't open video codec context!", response);
 		return _log_err("Couldn't open video codec");
 	}
 
@@ -211,7 +211,7 @@ bool GoZenEncoder::_add_audio_stream() {
 	// Opening the audio encoder codec.
 	response = avcodec_open2(av_codec_ctx_audio.get(), av_codec, nullptr);
 	if (response < 0) {
-		FFmpeg::print_av_error("Couldn't open audio codec!", response);
+		FFmpeg::print_av_error("GoZenEncoder: Couldn't open audio codec!", response);
 		return false;
 	}
 
@@ -230,7 +230,7 @@ bool GoZenEncoder::_open_output_file() {
 		response = avio_open(&av_format_ctx->pb, path.utf8(), AVIO_FLAG_WRITE);
 
 		if (response < 0) {
-			FFmpeg::print_av_error("Couldn't open output file!", response);
+			FFmpeg::print_av_error("GoZenEncoder: Couldn't open output file!", response);
 			return false;
 		}
 	}
@@ -248,7 +248,7 @@ bool GoZenEncoder::_write_header() {
 	av_dict_free(&options);
 
 	if (response < 0) {
-		FFmpeg::print_av_error("Error when writing header!", response);
+		FFmpeg::print_av_error("GoZenEncoder: Error when writing header!", response);
 		return false;
 	}
 
@@ -270,7 +270,7 @@ bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 	response = sws_scale(sws_ctx.get(), src_data, src_linesize, 0, frame_image->get_height(), av_frame_video->data,
 						 av_frame_video->linesize);
 	if (response < 0) {
-		FFmpeg::print_av_error("Scaling frame data failed!", response);
+		FFmpeg::print_av_error("GoZenEncoder: Scaling frame data failed!", response);
 		return false;
 	}
 
@@ -280,7 +280,7 @@ bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 	// Adding frame
 	response = avcodec_send_frame(av_codec_ctx_video.get(), av_frame_video.get());
 	if (response < 0) {
-		FFmpeg::print_av_error("Error sending video frame!", response);
+		FFmpeg::print_av_error("GoZenEncoder: Error sending video frame!", response);
 		return false;
 	}
 
@@ -289,7 +289,7 @@ bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 		if (response == AVERROR(EAGAIN) || response == AVERROR_EOF)
 			break;
 		else if (response < 0) {
-			FFmpeg::print_av_error("Error encoding video frame!", response);
+			FFmpeg::print_av_error("GoZenEncoder: Error encoding video frame!", response);
 			av_packet_unref(av_packet_video.get());
 			return false;
 		}
@@ -301,7 +301,7 @@ bool GoZenEncoder::send_frame(Ref<Image> frame_image) {
 		// Write the frame to file
 		response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_video.get());
 		if (response < 0) {
-			FFmpeg::print_av_error("Error writing output packet!", response);
+			FFmpeg::print_av_error("GoZenEncoder: Error writing output packet!", response);
 			response = -1;
 			return false;
 		}
@@ -368,7 +368,7 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 			// Send audio frame to the encoder
 			response = avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
 			if (response < 0) {
-				FFmpeg::print_av_error("Error sending audio frame!", response);
+				FFmpeg::print_av_error("GoZenEncoder: Error sending audio frame!", response);
 				return false;
 			}
 
@@ -379,7 +379,7 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 
 				response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
 				if (response < 0) {
-					FFmpeg::print_av_error("Error writing audio packet!", response);
+					FFmpeg::print_av_error("GoZenEncoder: Error writing audio packet!", response);
 					return false;
 				}
 
@@ -444,7 +444,7 @@ bool GoZenEncoder::_finalize_encoding() {
 		response = avcodec_send_frame(av_codec_ctx_video.get(), nullptr);
 
 		if (response < 0 && response != AVERROR_EOF) {
-			FFmpeg::print_av_error("Error sending null frame to video encoder!", response);
+			FFmpeg::print_av_error("GoZenEncoder: Error sending null frame to video encoder!", response);
 			return false;
 		}
 
@@ -460,7 +460,7 @@ bool GoZenEncoder::_finalize_encoding() {
 				av_packet_unref(av_packet_video.get());
 				break;
 			} else if (response < 0) {
-				FFmpeg::print_av_error("Error receiving flushed video packet!", response);
+				FFmpeg::print_av_error("GoZenEncoder: Error receiving flushed video packet!", response);
 				return false;
 			}
 
@@ -473,7 +473,7 @@ bool GoZenEncoder::_finalize_encoding() {
 			av_packet_unref(av_packet_video.get());
 
 			if (response < 0) {
-				FFmpeg::print_av_error("Error writing flushed video packet to file!", response);
+				FFmpeg::print_av_error("GoZenEncoder: Error writing flushed video packet to file!", response);
 				return false;
 			}
 		}
@@ -493,7 +493,7 @@ bool GoZenEncoder::_finalize_encoding() {
 		_log("Writing trailer to file ...");
 		response = av_write_trailer(av_format_ctx.get());
 		if (response < 0)
-			FFmpeg::print_av_error("Error writing trailer to video file!", response);
+			FFmpeg::print_av_error("GoZenEncoder: Error writing trailer to video file!", response);
 	}
 
 	_log("Video encoding finished successfully.");

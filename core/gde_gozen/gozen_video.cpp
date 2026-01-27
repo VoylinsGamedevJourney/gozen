@@ -172,16 +172,16 @@ int GoZenVideo::open(const String& video_path) {
 			break;
 		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 			if (attempts > 10) {
-				FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+				FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
 				break;
 			}
 
 			attempts++;
 		} else if (response == AVERROR_EOF) {
-			FFmpeg::print_av_error("Reached EOF trying to get first frame!", response);
+			FFmpeg::print_av_error("GoZenVideo: Reached EOF trying to get first frame!", response);
 			break;
 		} else {
-			FFmpeg::print_av_error("Something went wrong getting first frame!", response);
+			FFmpeg::print_av_error("GoZenVideo: Something went wrong getting first frame!", response);
 			break;
 		}
 	}
@@ -362,7 +362,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 										  av_packet.get()))) {
 			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 				if (attempts > 10) {
-					FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+					FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
 					break;
 				}
 
@@ -377,7 +377,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 				continue;
 			}
 
-			FFmpeg::print_av_error("Problem happened getting frame in seek_frame! ", response);
+			FFmpeg::print_av_error("GoZenVideo: Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
 		}
@@ -424,7 +424,7 @@ bool GoZenVideo::next_frame(bool skip) {
 		if (response == AVERROR_EOF)
 			_log("End of file reached in next_frame");
 		else
-			FFmpeg::print_av_error("Error in next_frame", response);
+			FFmpeg::print_av_error("GoZenVideo: Error in next_frame", response);
 	}
 
 	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
@@ -471,16 +471,16 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 			break;
 		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 			if (attempts > 10) {
-				FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+				FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
 				break;
 			}
 
 			attempts++;
 		} else if (response == AVERROR_EOF) {
-			FFmpeg::print_av_error("Reached EOF trying to get first frame!", response);
+			FFmpeg::print_av_error("GoZenVideo: Reached EOF trying to get first frame!", response);
 			break;
 		} else {
-			FFmpeg::print_av_error("Something went wrong getting first frame!", response);
+			FFmpeg::print_av_error("GoZenVideo: Something went wrong getting first frame!", response);
 			break;
 		}
 	}
@@ -491,7 +491,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 		if (response) {
 			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 				if (attempts > 10) {
-					FFmpeg::print_av_error("Reached max attempts trying to get first frame!", response);
+					FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
 					break;
 				}
 				attempts++;
@@ -506,7 +506,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 				continue;
 			}
 
-			FFmpeg::print_av_error("Problem happened getting frame in seek_frame! ", response);
+			FFmpeg::print_av_error("GoZenVideo: Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
 		}
@@ -536,6 +536,16 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 		return Ref<Image>();
 	}
 
+	return generate_thumbnail_at_current_frame();
+}
+
+
+Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
+	if (!loaded) {
+		_log_err("Not open");
+		return Ref<Image>();
+	}
+
 	// Creation of the thumbnail.
 	AVPixelFormat source_pix_fmt = static_cast<AVPixelFormat>(av_frame->format);
 
@@ -559,9 +569,9 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 	rgba_frame->height = resolution.y;
 
 	// Allocate buffer for the RGBA frame.
-	response = av_frame_get_buffer(rgba_frame.get(), 0); // Use default alignment (usually 32)
+	int response = av_frame_get_buffer(rgba_frame.get(), 0); // Use default alignment (usually 32)
 	if (response < 0) {
-		FFmpeg::print_av_error("Failed to allocate buffer for RGBA frame: ", response);
+		FFmpeg::print_av_error("GoZenVideo: Failed to allocate buffer for RGBA frame: ", response);
 		return Ref<Image>();
 	}
 
@@ -592,7 +602,6 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 
 	return thumbnail_image;
 }
-
 
 PackedInt32Array GoZenVideo::get_streams(int stream_type) {
 	if (!loaded) {
@@ -819,6 +828,7 @@ void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_chapter_metadata", "chapter_index"), &GoZenVideo::get_chapter_metadata);
 
 	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_frame", "frame_nr"), &GoZenVideo::generate_thumbnail_at_frame);
+	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_current_frame"), &GoZenVideo::generate_thumbnail_at_current_frame);
 
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &GoZenVideo::set_sws_flag_bilinear);
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &GoZenVideo::set_sws_flag_bicubic);

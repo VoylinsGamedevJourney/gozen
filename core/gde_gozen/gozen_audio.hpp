@@ -22,7 +22,8 @@ class GoZenAudio : public Resource {
 	GDCLASS(GoZenAudio, Resource);
 
   private:
-	static PackedByteArray _get_audio(AVFormatContext*& format_ctx, AVStream*& stream, double start_time, double duration);
+	static PackedByteArray _get_audio(AVFormatContext*& format_ctx, AVStream*& stream, double start_time,
+									  double duration);
 
 	static inline void _log(String message) { UtilityFunctions::print("GoZenAudio: ", message, "."); }
 	static inline bool _log_err(String message) {
