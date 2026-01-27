@@ -18,7 +18,7 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_2bycd"]
 
-[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project")]
+[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 28.0
@@ -26,6 +26,7 @@ grow_horizontal = 2
 theme_override_constants/separation = 0
 script = ExtResource("1_tjpug")
 popup_menu_project = NodePath("MenuBar/ProjectPopupMenu")
+popup_menu_edit = NodePath("MenuBar/EditPopupMenu")
 metadata/_edit_lock_ = true
 
 [node name="MenuBar" type="MenuBar" parent="." unique_id=1385584842]
@@ -63,6 +64,24 @@ item_7/separator = true
 item_8/text = "menu_bar_project_quit"
 item_8/icon = ExtResource("5_pamk7")
 item_8/id = 8
+
+[node name="EditPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1378862301]
+title = "menu_bar_edit"
+item_count = 7
+item_0/text = "menu_bar_edit_undo"
+item_0/id = 0
+item_1/text = "menu_bar_edit_redo"
+item_1/id = 1
+item_2/id = 2
+item_2/separator = true
+item_3/text = "menu_bar_edit_cut"
+item_3/id = 3
+item_4/text = "menu_bar_edit_copy"
+item_4/id = 4
+item_5/text = "menu_bar_edit_paste"
+item_5/id = 5
+item_6/text = "menu_bar_edit_delete"
+item_6/id = 6
 
 [node name="PreferencesPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1830296643]
 oversampling_override = 1.0
@@ -140,6 +159,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [connection signal="id_pressed" from="MenuBar/ProjectPopupMenu" to="." method="_on_project_popup_menu_id_pressed"]
+[connection signal="id_pressed" from="MenuBar/EditPopupMenu" to="." method="_on_edit_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/PreferencesPopupMenu" to="." method="_on_preferences_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/HelpPopupMenu" to="." method="_on_help_popup_menu_id_pressed"]
 [connection signal="pressed" from="EditorScreenButton" to="." method="_on_editor_screen_button_pressed"]

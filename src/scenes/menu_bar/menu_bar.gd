@@ -1,12 +1,11 @@
 extends HBoxContainer
 # TODO: Make the shortcut commands next to the action update when shortcuts got changed.
 # TODO: Get the shortcuts from the settings to put next to the action item.
-# TODO: Add Edit option with Undo/Redo buttons (maybe add cut/copy/paste/delete)
-# Also add the options to import files here.
 # TODO: Add an indicator (circle or rectangle in a color) on the right which indicates when ram
 # usage is getting high or CPU usage is getting too high.
 
 @export var popup_menu_project: PopupMenu
+@export var popup_menu_edit: PopupMenu
 
 
 
@@ -42,6 +41,17 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 		6: Project.open_settings_menu()
 		# Line
 		8: get_tree().quit()
+
+
+func _on_edit_popup_menu_id_pressed(id: int) -> void:
+	# TODO: Figure out how I can get the input events to work.
+	match id:
+		0: InputManager.undo_redo.undo()
+		1: InputManager.undo_redo.redo()
+		2: get_viewport().push_input(InputMap.action_get_events("cut_clips_at_mouse")[0])
+		3: pass # Copy  TODO: Implement ClipHandler copy logic
+		4: InputManager.clipboard_paste()
+		5: get_viewport().push_input(InputMap.action_get_events("delete_clips")[0])
 
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:
