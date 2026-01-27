@@ -1,6 +1,5 @@
 extends HSplitContainer
 # TODO: Add render range (in - out points)
-# TODO: Add render draft (Quicker export in 480p)
 # TODO: Add UI to save/manage custom render profiles.
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
@@ -9,6 +8,7 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 
 @export var render_profiles_hbox: HBoxContainer
 @export var grid_audio: GridContainer
+@export var render_draft_button: CheckButton
 
 @export_group("Path")
 @export var path_line_edit: LineEdit
@@ -276,11 +276,23 @@ func _on_start_render_button_pressed() -> void:
 	if dir.get_space_left() < 500 * 1024 * 1024:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
+	var draft: bool = render_draft_button.button_pressed
+	var render_resolution: Vector2i = Project.get_resolution()
+
+	if draft:
+		var target_height: int = 480
+		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
+
+		render_resolution =	Vector2i(int(target_height * aspect), target_height)
+		if render_resolution.x % 2 != 0: render_resolution.x += 1
+		print("RenderManager: Draft mode enabled. Scaling to ", target_resolution)
+
+
 	# Printing info about the rendering process.
 	print("--------------------")
 	Print.header("Rendering process started")
 	Print.info("Path", path_line_edit.text)
-	Print.info("Resolution", Project.get_resolution())
+	Print.info("Resolution", render_resolution)
 	Print.info("Framerate", Project.get_framerate())
 	Print.info("Video codec", video_codec_option_button.get_selected_id())
 	Print.info("CRF", int(0 - video_quality_hslider.value))
@@ -315,11 +327,10 @@ func _on_start_render_button_pressed() -> void:
 	progress_overlay.update_progress(0, "")
 
 	var button: Button = Button.new()
+	var status_label: Label = progress_overlay.status_hbox.get_child(0)
 
 	button.text = "button_cancel_rendering"
 	button.pressed.connect(_cancel_render)
-
-	var status_label: Label = progress_overlay.status_hbox.get_child(0)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	progress_overlay.status_hbox.add_child(button)
 
@@ -328,7 +339,7 @@ func _on_start_render_button_pressed() -> void:
 		DisplayServer.delete_status_indicator(status_indicator_id)
 
 	RenderManager.encoder = GoZenEncoder.new()
-	RenderManager.encoder.set_resolution(Project.get_resolution())
+	RenderManager.encoder.set_resolution(render_resolution)
 	RenderManager.encoder.set_framerate(Project.get_framerate())
 	RenderManager.encoder.set_file_path(path_line_edit.text)
 	RenderManager.encoder.set_video_codec_id(video_codec_option_button.get_selected_id())

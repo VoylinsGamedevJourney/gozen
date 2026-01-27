@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="3_s6tus"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="4_kywnc"]
 
-[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
+[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "render_draft_button", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,6 +16,7 @@ size_flags_vertical = 3
 script = ExtResource("1_xqju4")
 render_profiles_hbox = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderProfilesScroll/RenderProfilesHBox")
 grid_audio = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
+render_draft_button = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
 path_line_edit = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
 video_codec_option_button = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
 video_quality_hslider = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider")
@@ -219,8 +220,17 @@ tooltip_text = "render_option_tooltip_threads_cores"
 [node name="Line3" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=659322685]
 layout_mode = 2
 
-[node name="StartRenderButton" type="Button" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1206446587]
+[node name="HBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=167796106]
 layout_mode = 2
+
+[node name="DraftCheckButton" type="CheckButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1048576767]
+layout_mode = 2
+tooltip_text = "render_option_tooltip_draft"
+text = "render_option_draft"
+
+[node name="StartRenderButton" type="Button" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1206446587]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "button_start_render"
 
 [node name="MarkersPanel" type="PanelContainer" parent="VSplit" unique_id=954369601 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
@@ -278,6 +288,6 @@ layout_mode = 2
 [connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
 [connection signal="item_selected" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
 [connection signal="toggled" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
-[connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
+[connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
 [connection signal="item_selected" from="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="VSplit/MarkersPanel" method="_on_markers_button_item_selected"]
 [connection signal="pressed" from="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="VSplit/MarkersPanel" method="_on_copy_markers_button_pressed"]
