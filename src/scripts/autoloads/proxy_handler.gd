@@ -2,6 +2,8 @@ extends Node
 # TODO: We should make it possible to have a UI to see all the proxy clips
 # with how much data they use and maybe with when they were last accessed.
 
+signal proxy_loading(file_id: int, progress: int) ## Progess is 0/100
+
 const PROXY_PATH: String = "user://proxies/" # TODO: Make this path a setting
 const PROXY_HEIGHT: int = 540
 
@@ -35,6 +37,7 @@ func delete_proxy(file_id: int) -> void:
 	if !file or file.proxy_path.is_empty(): return
 
 	DirAccess.remove_absolute(file.proxy_path)
+	file.proxy_path = ""
 
 
 func _generate_proxy_task(file_id: int, output_path: String) -> void:
@@ -71,7 +74,8 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 		return
 
 	# Encoding
-	# TODO: Maybe show a progress bar on clips to show encoding process.
+	var total_frames: float = float(video.get_frame_count())
+	var loaded_amount: int = 0
 	video.seek_frame(0)
 
 	for i: int in video.get_frame_count():
@@ -83,6 +87,10 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 		# We skip decoding since generate_thumbnail_at_frame handles that.
 		if !video.next_frame(true): break
 
+		loaded_amount += 1
+		proxy_loading.emit.call_deferred(file_id, int((loaded_amount / total_frames) * 100.0))
+
+	proxy_loading.emit.call_deferred(file_id, 100)
 	encoder.close()
 	video.close()
 	file.proxy_path = output_path

@@ -131,6 +131,7 @@ func _gen_thumb(file_id: int) -> void:
 
 
 func scale_thumbnail(image: Image) -> Image:
+	if !image: return Image.create_empty(1, 1, false, Image.FORMAT_L8)
 	var image_scale: float = min(
 			107 / float(image.get_width()),
 			60 / float(image.get_height()))

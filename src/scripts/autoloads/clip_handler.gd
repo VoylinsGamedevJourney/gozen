@@ -91,7 +91,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 				if param.param_id == "size":
 					param.default_value = Project.get_resolution()
 				elif param.param_id == "pivot":
-					param.default_value = Vector2i(Project.get_resolution() / 2)
+					param.default_value = Vector2i(Project.get_resolution() / 2.0)
 			
 			transform_effect.set_default_keyframe()
 			clip_data.effects_video.append(transform_effect)

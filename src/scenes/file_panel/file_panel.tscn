@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/files/video_file.svg" id="3_iyj14"]
 [ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/files/text_file.svg" id="4_4eim5"]
 [ext_resource type="Texture2D" uid="uid://krvormuf3rd3" path="res://assets/icons/files/color_file.svg" id="5_almox"]
+[ext_resource type="Script" uid="uid://cb5766jdntcrh" path="res://scenes/file_panel/file_tree_proxy_progress.gd" id="6_4eim5"]
 
 [node name="FilePanel" type="PanelContainer" unique_id=611161492 node_paths=PackedStringArray("tree", "file_menu_button")]
 custom_minimum_size = Vector2(260, 0)
@@ -52,7 +53,7 @@ popup/item_2/text = "file_panel_item_add_color"
 popup/item_2/icon = ExtResource("5_almox")
 popup/item_2/id = 2
 
-[node name="FileTree" type="Tree" parent="Margin/VBox" unique_id=157642089]
+[node name="FileTree" type="Tree" parent="Margin/VBox" unique_id=157642089 node_paths=PackedStringArray("main_file_panel")]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
@@ -61,3 +62,5 @@ theme_override_constants/draw_relationship_lines = 1
 allow_rmb_select = true
 hide_root = true
 select_mode = 2
+script = ExtResource("6_4eim5")
+main_file_panel = NodePath("../../..")

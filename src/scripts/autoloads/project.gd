@@ -240,6 +240,9 @@ func get_project_base_folder() -> String:
 
 
 func set_resolution(res: Vector2i) -> void:
+	if res.x % 2 != 0: res.x += 1
+	if res.y % 2 != 0: res.y += 1
+
 	data.resolution = res
 	unsaved_changes = true
 
@@ -249,7 +252,7 @@ func get_resolution() -> Vector2i:
 
 
 func get_resolution_center() -> Vector2i:
-	return data.resolution / 2
+	return data.resolution / 2.0
 
 
 func set_framerate(new_framerate: float) -> void:

@@ -39,7 +39,6 @@ func _ready() -> void:
 	FileHandler.folder_renamed.connect(_on_folder_renamed)
 
 	Project.project_ready.connect(_on_project_ready)
-
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
 	tree.item_mouse_selected.connect(_tree_item_clicked)
@@ -268,11 +267,13 @@ func _on_popup_action_file_extract_audio() -> void:
 	dialog.popup_centered()
 
 
-func _on_popup_action_file_duplicate() -> void:
-	# Only for text. TODO: Implement duplicating text files
-	var _file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
-
-	printerr("FilePanel: Duplicating text not implemented yet!")
+func _on_popup_action_file_duplicate() -> void: # Only for text.
+	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+	
+	if file.type == FileHandler.TYPE.TEXT:
+		FileHandler.duplicate_text_file(file.id)
+	else:
+		printerr("FilePanel: Duplicating only supported for text files right now!")
 
 
 func _on_popup_action_file_create_proxy() -> void:
@@ -284,6 +285,7 @@ func _on_popup_action_file_recreate_proxy() -> void:
 
 	ProxyHandler.delete_proxy(file_id)
 	ProxyHandler.request_proxy_generation(file_id)
+
 
 func _on_popup_action_file_remove_proxy() -> void:
 	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))

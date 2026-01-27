@@ -503,6 +503,21 @@ func disable_clip_only_video(file_id: int, clip_id: int) -> void:
 		file_data.clip_only_video.erase(clip_id)
 
 
+func duplicate_text_file(original_file_id: int) -> void:
+	var original_file: File = get_file(original_file_id)
+	if original_file.type != TYPE.TEXT: return
+
+	var new_file: File = create_file("temp://text")
+
+	new_file.temp_file = TempFile.new()
+	new_file.temp_file.text_data = original_file.temp_file.text_data
+	new_file.temp_file.font = original_file.temp_file.font
+	new_file.temp_file.font_size = original_file.temp_file.font_size
+	new_file.duration = original_file.duration
+	add_file_object(new_file)
+
+
+
 #--- Private functions ---
 func _check_if_file_modified(file: File) -> bool:
 	if file.path.begins_with("temp://"): return false # Temp files can't change.
