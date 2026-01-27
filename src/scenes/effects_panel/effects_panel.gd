@@ -219,7 +219,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 		var param_settings: Control = _create_param_control(param, index, is_visual)
 		var param_keyframe_button: TextureButton = TextureButton.new()
 
-		param_title.text = param.param_name.replace("param_", "").capitalize() # TODO: Localize this
+		param_title.text = param.param_name.replace("param_", "").capitalize()
 		param_title.tooltip_text = param.param_tooltip
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 

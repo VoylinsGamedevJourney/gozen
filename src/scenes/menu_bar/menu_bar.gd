@@ -1,5 +1,4 @@
 extends HBoxContainer
-# TODO: Make a submenu popup for recent projects and make it update when the recent projects list got updated
 # TODO: Make the shortcut commands next to the action update when shortcuts got changed.
 # TODO: Get the shortcuts from the settings to put next to the action item.
 # TODO: Add Edit option with Undo/Redo buttons (maybe add cut/copy/paste/delete)
@@ -68,6 +67,4 @@ func _on_help_popup_menu_id_pressed(id: int) -> void:
 
 
 func _set_shortcuts() -> void:
-	pass
-
-
+	pass # TODO:

@@ -1,8 +1,6 @@
 extends HSplitContainer
 # TODO: Add render range (in - out points)
 # TODO: Add render draft (Quicker export in 480p)
-# TODO: Disk space pre-check (make an estimate of the size required and check
-# if there's enough available space in the location you want to save.
 # TODO: Add UI to save/manage custom render profiles.
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
@@ -272,6 +270,12 @@ func _show_error(message: String) -> void:
 
 
 func _on_start_render_button_pressed() -> void:
+	# Disk space check
+	# NOTE: This needs to improve later on to create an estimate instead of 500MB.
+	var dir: DirAccess = DirAccess.open(path_line_edit.text.get_base_dir())
+	if dir.get_space_left() < 500 * 1024 * 1024:
+		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
+
 	# Printing info about the rendering process.
 	print("--------------------")
 	Print.header("Rendering process started")
