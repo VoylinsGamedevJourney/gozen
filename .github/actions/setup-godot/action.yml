@@ -3,7 +3,7 @@ description: Downloads and configures Godot
 inputs:
   godot-version:
     required: true
-    description: e.g. 4.5.1-stable
+    description: e.g. 4.6-stable
   os:
     required: true
     default: linux
@@ -18,7 +18,7 @@ runs:
         GODOT_VERSION: ${{ inputs.godot-version }}
       run: |
         TEMPLATE_VERSION="${GODOT_VERSION/-/.}"
-        
+
         echo "Setting up Godot $GODOT_VERSION..."
         mkdir -p ~/.local/bin
 
@@ -30,10 +30,10 @@ runs:
         rm godot_linux.zip
 
         TEMPLATES_PATH=~/.local/share/godot/export_templates/${TEMPLATE_VERSION}
-        
+
         echo "Downloading Export Templates..."
         wget -q -O godot_templates.tpz "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
-        
+
         mkdir -p "$TEMPLATES_PATH"
         unzip -q -o godot_templates.tpz -d /tmp/godot_templates
         mv /tmp/godot_templates/templates/* "$TEMPLATES_PATH"/
@@ -60,7 +60,7 @@ runs:
         unzip -q -o godot_win.zip
         mv Godot_v${GODOT_VERSION}_win64.exe "$INSTALL_DIR/godot.exe"
         rm godot_win.zip
-        
+
         # Templates
         APPDATA_PATH=$(cygpath "$APPDATA")/Godot/export_templates/${TEMPLATE_VERSION}
         echo "Downloading Templates (Windows)..."

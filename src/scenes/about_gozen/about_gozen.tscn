@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://d4e5ndtm65ok3"]
+[gd_scene format=3 uid="uid://d4e5ndtm65ok3"]
 
 [ext_resource type="Script" uid="uid://cd0krdlykelvg" path="res://scenes/about_gozen/about_gozen.gd" id="1_ecejt"]
 
-[node name="AboutGoZen" type="PanelContainer" node_paths=PackedStringArray("version_label", "links_label")]
+[node name="AboutGoZen" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("version_label", "links_label")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -13,49 +13,49 @@ script = ExtResource("1_ecejt")
 version_label = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/VersionLabel")
 links_label = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/LinksLabel")
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=1266970552]
 custom_minimum_size = Vector2(700, 350)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="Panel"]
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=212659776]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1028420814]
 layout_mode = 2
 
-[node name="AboutPanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+[node name="AboutPanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=395823643]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AboutPanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AboutPanel" unique_id=161842517]
 layout_mode = 2
 
-[node name="AboutVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AboutPanel/Margin"]
+[node name="AboutVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AboutPanel/Margin" unique_id=1452054961]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=2004354628]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_about_gozen"
 
-[node name="VersionLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox"]
+[node name="VersionLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1195228794]
 layout_mode = 2
 text = "Version: "
 
-[node name="LinksLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox"]
+[node name="LinksLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1271187117]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 context_menu_enabled = true
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=1272766922]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=1783019013]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3

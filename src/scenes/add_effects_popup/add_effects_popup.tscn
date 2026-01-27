@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqsbn4yb7nd0"]
+[gd_scene format=3 uid="uid://dqsbn4yb7nd0"]
 
 [ext_resource type="Script" uid="uid://didhk4wfastnl" path="res://scenes/add_effects_popup/add_effects_popup.gd" id="1_rcm8h"]
 
-[node name="AddEffectsPopup" type="PanelContainer" node_paths=PackedStringArray("search_line_edit", "effect_buttons")]
+[node name="AddEffectsPopup" type="PanelContainer" unique_id=1600151441 node_paths=PackedStringArray("search_line_edit", "effect_buttons")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -13,47 +13,47 @@ script = ExtResource("1_rcm8h")
 search_line_edit = NodePath("Panel/Margin/VBox/SearchBox")
 effect_buttons = NodePath("Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll/AddEffectsVBox")
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=483563730]
 custom_minimum_size = Vector2(300, 350)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="Panel"]
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=683844105]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1503547117]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox" unique_id=1462194663]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_add_effects"
 
-[node name="SearchBox" type="LineEdit" parent="Panel/Margin/VBox"]
+[node name="SearchBox" type="LineEdit" parent="Panel/Margin/VBox" unique_id=979914212]
 layout_mode = 2
 
-[node name="AddEffectsPanel" type="PanelContainer" parent="Panel/Margin/VBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AddEffectsPanel"]
-layout_mode = 2
-
-[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VBox/AddEffectsPanel/Margin"]
-layout_mode = 2
-
-[node name="AddEffectsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll"]
+[node name="AddEffectsPanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=2009601869]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AddEffectsPanel" unique_id=1547627352]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VBox/AddEffectsPanel/Margin" unique_id=1033694491]
+layout_mode = 2
+
+[node name="AddEffectsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll" unique_id=1855124781]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=1449212041]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=1026846797]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3

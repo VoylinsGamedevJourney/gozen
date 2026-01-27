@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://ce1hy5ks465h7"]
+[gd_scene format=3 uid="uid://ce1hy5ks465h7"]
 
 [ext_resource type="Script" uid="uid://ds4exxdlc67ib" path="res://scenes/marker_popup/marker_popup.gd" id="1_df1gq"]
 [ext_resource type="Texture2D" uid="uid://dyndi17ou8ixo" path="res://assets/icons/delete.svg" id="2_yxvoa"]
 
-[node name="MarkerPopup" type="Control" node_paths=PackedStringArray("marker_line_edit", "type_option_button", "time_label", "delete_button")]
+[node name="MarkerPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("marker_line_edit", "type_option_button", "time_label", "delete_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +17,7 @@ type_option_button = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/Opt
 time_label = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer/TimeLabel")
 delete_button = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/DeleteMarkerButton")
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=534759731]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -35,80 +35,80 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="Panel"]
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=971078827]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1627860491]
 layout_mode = 2
 
-[node name="MarkerFilePanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+[node name="MarkerFilePanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=276719360]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/MarkerFilePanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/MarkerFilePanel" unique_id=1917826217]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin" unique_id=66387807]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=1221761160]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer" unique_id=2002969846]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_margin_popup"
 
-[node name="TimeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer"]
+[node name="TimeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer" unique_id=1390499018]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "time (frame)"
 horizontal_alignment = 2
 
-[node name="Spacer" type="Control" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=622957202]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=285997304]
 layout_mode = 2
 columns = 2
 
-[node name="MarkerOptionLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+[node name="MarkerOptionLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=918442600]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Marker"
 
-[node name="MarkerLineEdit" type="LineEdit" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+[node name="MarkerLineEdit" type="LineEdit" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=71693817]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=1209083961]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Type"
 
-[node name="TypeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid"]
+[node name="TypeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=1254877999]
 layout_mode = 2
 size_flags_horizontal = 3
 expand_icon = true
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=1246168130]
 layout_mode = 2
 
-[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox"]
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox" unique_id=2131483463]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "button_cancel"
 
-[node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox"]
+[node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
 text = "button_update_marker"
 
-[node name="DeleteMarkerButton" type="TextureButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox"]
+[node name="DeleteMarkerButton" type="TextureButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox" unique_id=1478814314]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 8

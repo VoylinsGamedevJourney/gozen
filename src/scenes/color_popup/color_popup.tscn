@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://brbxvynl0y3ha"]
+[gd_scene format=3 uid="uid://brbxvynl0y3ha"]
 
 [ext_resource type="Script" uid="uid://c0xok1x6l3kwv" path="res://scenes/color_popup/color_popup.gd" id="1_oig83"]
 
-[node name="ColorPopup" type="Control" node_paths=PackedStringArray("color_picker")]
+[node name="ColorPopup" type="Control" unique_id=1879262583 node_paths=PackedStringArray("color_picker")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ theme_type_variation = &"overlay_background"
 script = ExtResource("1_oig83")
 color_picker = NodePath("Panel/Margin/VBox/ColorFilePanel/Margin/VBox/ColorPicker")
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=812189598]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -31,44 +31,44 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="Panel"]
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=947275750]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1473639613]
 layout_mode = 2
 
-[node name="ColorFilePanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+[node name="ColorFilePanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=1532718486]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ColorFilePanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/ColorFilePanel" unique_id=2015010574]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/ColorFilePanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/ColorFilePanel/Margin" unique_id=1752357183]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox" unique_id=554087779]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_add_color_file"
 
-[node name="Spacer" type="Control" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox" unique_id=2049764209]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="ColorPicker" type="ColorPicker" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+[node name="ColorPicker" type="ColorPicker" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox" unique_id=178323966]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox" unique_id=817998905]
 layout_mode = 2
 
-[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox"]
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox" unique_id=1247645485]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "button_cancel"
 
-[node name="CreateColor" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox"]
+[node name="CreateColor" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox" unique_id=1181847637]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"

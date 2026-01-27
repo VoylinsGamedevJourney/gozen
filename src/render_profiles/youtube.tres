@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RenderProfile" load_steps=3 format=3 uid="uid://bp6oahvgcklvc"]
+[gd_resource type="Resource" script_class="RenderProfile" format=3 uid="uid://bp6oahvgcklvc"]
 
 [ext_resource type="Script" uid="uid://bcxushh1wsu1b" path="res://scripts/classes/render_profile.gd" id="1_lchot"]
 [ext_resource type="Texture2D" uid="uid://cm3rtjfdjvqti" path="res://assets/profiles/youtube.svg" id="1_u6yna"]
@@ -9,7 +9,6 @@ profile_name = "YouTube"
 icon = ExtResource("1_u6yna")
 video_codec = 27
 crf = 20
-gop = 15
 h264_preset = 6
 audio_codec = 86018
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"

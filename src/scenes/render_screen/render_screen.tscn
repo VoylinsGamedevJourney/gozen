@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://71mkki6432yy"]
+[gd_scene format=3 uid="uid://71mkki6432yy"]
 
 [ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="1_qx788"]
 [ext_resource type="Script" uid="uid://cnh2n6srqnkxk" path="res://scenes/render_screen/render_screen.gd" id="1_xqju4"]
@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="3_s6tus"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="4_kywnc"]
 
-[node name="RenderScreen" type="HSplitContainer" node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
+[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -26,106 +26,106 @@ audio_codec_option_button = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Mar
 threads_spin_box = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
 metadata/_tab_index = 1
 
-[node name="VSplit" type="VSplitContainer" parent="."]
+[node name="VSplit" type="VSplitContainer" parent="." unique_id=882812116]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="RenderOptionsPanel" type="PanelContainer" parent="VSplit"]
+[node name="RenderOptionsPanel" type="PanelContainer" parent="VSplit" unique_id=320643140]
 custom_minimum_size = Vector2(500, 100)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="VSplit/RenderOptionsPanel"]
+[node name="Margin" type="MarginContainer" parent="VSplit/RenderOptionsPanel" unique_id=103304975]
 layout_mode = 2
 
-[node name="Panel" type="PanelContainer" parent="VSplit/RenderOptionsPanel/Margin"]
+[node name="Panel" type="PanelContainer" parent="VSplit/RenderOptionsPanel/Margin" unique_id=913984965]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel"]
+[node name="Margin" type="MarginContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel" unique_id=1589296785]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin" unique_id=5402295]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="VBox" type="VBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer"]
+[node name="VBox" type="VBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer" unique_id=1695172238]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TitleLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="TitleLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=551090344]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_render_settings"
 
-[node name="RenderProfilesLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="RenderProfilesLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=825339369]
 layout_mode = 2
 text = "render_option_profile"
 
-[node name="RenderProfilesScroll" type="ScrollContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="RenderProfilesScroll" type="ScrollContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1221961349]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 draw_focus_border = true
 vertical_scroll_mode = 0
 
-[node name="RenderProfilesHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderProfilesScroll"]
+[node name="RenderProfilesHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderProfilesScroll" unique_id=1264437043]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TopSettingsHBox" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="TopSettingsHBox" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=126554430]
 layout_mode = 2
 columns = 2
 
-[node name="PathLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox"]
+[node name="PathLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=521887475]
 layout_mode = 2
 text = "render_option_path"
 
-[node name="RenderPathHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox"]
+[node name="RenderPathHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=233639431]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PathLineEdit" type="LineEdit" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox"]
+[node name="PathLineEdit" type="LineEdit" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=1640164144]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SelectPathButton" type="TextureButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox"]
+[node name="SelectPathButton" type="TextureButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=794295174]
 custom_minimum_size = Vector2(21, 0)
 layout_mode = 2
 texture_normal = ExtResource("1_qx788")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Line0" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="Line0" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1982436311]
 layout_mode = 2
 
-[node name="VideoLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="VideoLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1993433232]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_render_video"
 
-[node name="VideoGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="VideoGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=934166150]
 layout_mode = 2
 columns = 2
 
-[node name="CodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="CodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=499554428]
 layout_mode = 2
 text = "render_option_video_codec"
 
-[node name="VideoCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="VideoCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=445035793]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="QualityLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="QualityLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=562777014]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 mouse_filter = 1
 text = "render_option_quality"
 
-[node name="QualityHSlider" type="HSlider" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="QualityHSlider" type="HSlider" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=2006349503]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -134,14 +134,14 @@ min_value = -50.0
 max_value = -15.0
 value = -18.0
 
-[node name="SpeedLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="SpeedLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1588468737]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 mouse_filter = 1
 text = "render_option_speed"
 
-[node name="SpeedHSlider" type="HSlider" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="SpeedHSlider" type="HSlider" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=481175201]
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "render_option_tooltip_speed"
@@ -150,14 +150,14 @@ value = 3.0
 tick_count = 9
 ticks_on_borders = true
 
-[node name="GOPSizeLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="GOPSizeLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=282949279]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 mouse_filter = 1
 text = "render_option_gop_size"
 
-[node name="GOPSizeSpinBox" type="SpinBox" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid"]
+[node name="GOPSizeSpinBox" type="SpinBox" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=275935804]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "render_option_tooltip_gop_size"
@@ -165,65 +165,65 @@ value = 15.0
 allow_greater = true
 alignment = 2
 
-[node name="Line1" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="Line1" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=477291297]
 layout_mode = 2
 
-[node name="AudioTitleHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="AudioTitleHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=833948901]
 layout_mode = 2
 
-[node name="AudioLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox"]
+[node name="AudioLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1229947372]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "title_render_audio"
 
-[node name="RenderAudioCheckButton" type="CheckButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox"]
+[node name="RenderAudioCheckButton" type="CheckButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=912503888]
 layout_mode = 2
 button_pressed = true
 flat = true
 
-[node name="AudioGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="AudioGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=784025072]
 layout_mode = 2
 columns = 2
 
-[node name="CodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid"]
+[node name="CodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1975231366]
 layout_mode = 2
 text = "render_option_audio_codec"
 
-[node name="AudioCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid"]
+[node name="AudioCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=2102339823]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Line2" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="Line2" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1942202810]
 layout_mode = 2
 
-[node name="ThreadsBoxLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="ThreadsBoxLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=602579963]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "title_cpu_threads"
 
-[node name="ThreadsGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="ThreadsGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=62052778]
 layout_mode = 2
 columns = 2
 
-[node name="ThreadsCodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid"]
+[node name="ThreadsCodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=1435755952]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "render_option_threads_cores"
 
-[node name="ThreadsSpinBox" type="SpinBox" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid"]
+[node name="ThreadsSpinBox" type="SpinBox" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=79929963]
 layout_mode = 2
 tooltip_text = "render_option_tooltip_threads_cores"
 
-[node name="Line3" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="Line3" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=659322685]
 layout_mode = 2
 
-[node name="StartRenderButton" type="Button" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox"]
+[node name="StartRenderButton" type="Button" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1206446587]
 layout_mode = 2
 text = "button_start_render"
 
-[node name="MarkersPanel" type="PanelContainer" parent="VSplit" node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
+[node name="MarkersPanel" type="PanelContainer" parent="VSplit" unique_id=954369601 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
@@ -232,39 +232,39 @@ script = ExtResource("3_ph73d")
 markers_text_edit = NodePath("Margin/Panel/Margin/VBox/MarkersTextEdit")
 markers_option_button = NodePath("Margin/Panel/Margin/VBox/HBox/MarkersOptionButton")
 
-[node name="Margin" type="MarginContainer" parent="VSplit/MarkersPanel"]
+[node name="Margin" type="MarginContainer" parent="VSplit/MarkersPanel" unique_id=1505583020]
 layout_mode = 2
 
-[node name="Panel" type="PanelContainer" parent="VSplit/MarkersPanel/Margin"]
+[node name="Panel" type="PanelContainer" parent="VSplit/MarkersPanel/Margin" unique_id=1920946489]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="VSplit/MarkersPanel/Margin/Panel"]
+[node name="Margin" type="MarginContainer" parent="VSplit/MarkersPanel/Margin/Panel" unique_id=696118770]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="VSplit/MarkersPanel/Margin/Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="VSplit/MarkersPanel/Margin/Panel/Margin" unique_id=554863772]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox"]
+[node name="HBox" type="HBoxContainer" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox" unique_id=574841995]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox"]
+[node name="TitleLabel" type="Label" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=746890284]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "title_markers"
 
-[node name="MarkersOptionButton" type="OptionButton" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox"]
+[node name="MarkersOptionButton" type="OptionButton" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1523866582]
 layout_mode = 2
 flat = true
 
-[node name="CopyMarkersButton" type="TextureButton" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox"]
+[node name="CopyMarkersButton" type="TextureButton" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1736109284]
 custom_minimum_size = Vector2(17, 0)
 layout_mode = 2
 texture_normal = ExtResource("3_s6tus")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="MarkersTextEdit" type="TextEdit" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox"]
+[node name="MarkersTextEdit" type="TextEdit" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox" unique_id=670353901]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_readonly_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
@@ -272,7 +272,7 @@ editable = false
 scroll_smooth = true
 scroll_fit_content_width = true
 
-[node name="ViewPanel" parent="." instance=ExtResource("4_kywnc")]
+[node name="ViewPanel" parent="." unique_id=1292878286 instance=ExtResource("4_kywnc")]
 layout_mode = 2
 
 [connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]

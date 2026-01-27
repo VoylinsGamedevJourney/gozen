@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://clx31ubx70lv0"]
+[gd_scene format=3 uid="uid://clx31ubx70lv0"]
 
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scenes/timeline/timeline.gd" id="1_p3xsq"]
 [ext_resource type="Script" uid="uid://yfoq75slyooi" path="res://scenes/timeline/timeline_panel.gd" id="2_2or7f"]
@@ -16,7 +16,7 @@ bg_color = Color(0.2, 0.2, 0.2, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3xsq"]
 bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
 
-[node name="Timeline" type="HBoxContainer" node_paths=PackedStringArray("timestamp_panel", "timeline_panel")]
+[node name="Timeline" type="HBoxContainer" unique_id=699018798 node_paths=PackedStringArray("timestamp_panel", "timeline_panel")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 216.0
@@ -27,17 +27,17 @@ script = ExtResource("1_p3xsq")
 timestamp_panel = NodePath("VBox/TimestampScroll/TimeStamps")
 timeline_panel = NodePath("VBox/TimelineScroll/Timeline")
 
-[node name="TimelineModes" type="PanelContainer" parent="."]
+[node name="TimelineModes" type="PanelContainer" parent="." unique_id=30590064]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="TimelineModes"]
+[node name="Margin" type="MarginContainer" parent="TimelineModes" unique_id=1664132972]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="TimelineModes/Margin"]
+[node name="VBox" type="VBoxContainer" parent="TimelineModes/Margin" unique_id=742633297]
 layout_mode = 2
 theme_override_constants/separation = 7
 
-[node name="SelectModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox"]
+[node name="SelectModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=307167767]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
 toggle_mode = true
@@ -47,7 +47,7 @@ texture_normal = ExtResource("3_vuipj")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="CutModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox"]
+[node name="CutModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=601517066]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
 toggle_mode = true
@@ -56,18 +56,18 @@ texture_normal = ExtResource("4_qnybs")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1967898322]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="TimestampScroll" type="ScrollContainer" parent="VBox"]
+[node name="TimestampScroll" type="ScrollContainer" parent="VBox" unique_id=418098194]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 scroll_horizontal_custom_step = 30.0
 horizontal_scroll_mode = 3
 
-[node name="TimeStamps" type="PanelContainer" parent="VBox/TimestampScroll" node_paths=PackedStringArray("timeline_scroll")]
+[node name="TimeStamps" type="PanelContainer" parent="VBox/TimestampScroll" unique_id=156332910 node_paths=PackedStringArray("timeline_scroll")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -77,7 +77,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_likvl")
 script = ExtResource("2_jxg8b")
 timeline_scroll = NodePath("../../TimelineScroll")
 
-[node name="TimelineScroll" type="ScrollContainer" parent="VBox" node_paths=PackedStringArray("timestamp_scroll")]
+[node name="TimelineScroll" type="ScrollContainer" parent="VBox" unique_id=1891472025 node_paths=PackedStringArray("timestamp_scroll")]
 custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
 scroll_horizontal_custom_step = 30.0
@@ -85,7 +85,7 @@ scroll_vertical_custom_step = 30.0
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 
-[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll"]
+[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll" unique_id=915200831]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -94,7 +94,7 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_p3xsq")
 script = ExtResource("2_2or7f")
 
-[node name="ModeDraw" type="Control" parent="VBox/TimelineScroll/Timeline" node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
+[node name="ModeDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=71389255 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("2_ak2ly")
@@ -107,7 +107,7 @@ button_cut = NodePath("../../../../TimelineModes/Margin/VBox/CutModeButton")
 [connection signal="gui_input" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_gui_input"]
 [connection signal="mouse_entered" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_exited"]
+[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
 [connection signal="gui_input" from="VBox/TimelineScroll/Timeline/ModeDraw" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_mode_draw_gui_input"]

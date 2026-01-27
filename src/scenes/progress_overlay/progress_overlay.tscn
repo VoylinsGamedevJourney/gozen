@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4h7t8ccus0yv"]
+[gd_scene format=3 uid="uid://d4h7t8ccus0yv"]
 
 [ext_resource type="Script" uid="uid://qkskvhw6if0k" path="res://scenes/progress_overlay/progress_overlay.gd" id="1_7woll"]
 
@@ -10,7 +10,7 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="Control" node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "estimated_time_label", "scroll_container", "status_hbox", "vbox")]
+[node name="ProgressOverlay" type="Control" unique_id=2135541930 node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "estimated_time_label", "scroll_container", "status_hbox", "vbox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +27,7 @@ scroll_container = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollConta
 status_hbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox")
 vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVBox")
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=107973071]
 custom_minimum_size = Vector2(700, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -45,48 +45,48 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="Panel"]
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=1078841012]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1634886634]
 layout_mode = 2
 
-[node name="LoadPanel" type="PanelContainer" parent="Panel/Margin/VBox"]
+[node name="LoadPanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=765825268]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/LoadPanel"]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/LoadPanel" unique_id=120075647]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin" unique_id=1593484459]
 layout_mode = 2
 
-[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=625888095]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox"]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox" unique_id=481086953]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "title_loading_projects"
 
-[node name="EstimatedTimeLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox"]
+[node name="EstimatedTimeLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox" unique_id=792411073]
 layout_mode = 2
 theme_type_variation = &"info_label"
 text = "Estimated time - 59:59:59"
 
-[node name="Spacer" type="Control" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=387091150]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="ProgressBarIndicator" type="ProgressBar" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="ProgressBarIndicator" type="ProgressBar" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=1395516665]
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_gqr8q")
 indeterminate = true
 editor_preview_indeterminate = true
 
-[node name="ProgressBar" type="ProgressBar" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator"]
+[node name="ProgressBar" type="ProgressBar" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator" unique_id=88505364]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -96,20 +96,20 @@ grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_757g1")
 theme_override_styles/fill = SubResource("StyleBoxFlat_kw4wx")
 
-[node name="StatusHBox" type="HBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="StatusHBox" type="HBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=1721308374]
 layout_mode = 2
 
-[node name="LoadingHintLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox"]
+[node name="LoadingHintLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox" unique_id=1410817522]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"info_label"
 text = "status_project_loading_init"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=1001193419]
 visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
-[node name="FilesVBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer"]
+[node name="FilesVBox" type="VBoxContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer" unique_id=1501340350]
 layout_mode = 2

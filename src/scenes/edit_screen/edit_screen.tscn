@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://l1tap0q8rgjc"]
+[gd_scene format=3 uid="uid://l1tap0q8rgjc"]
 
 [ext_resource type="Script" uid="uid://c2d6titke1rt8" path="res://scenes/edit_screen/edit_screen.gd" id="1_qa2ll"]
 [ext_resource type="PackedScene" uid="uid://dktafpwgtv5m3" path="res://scenes/file_panel/file_panel.tscn" id="2_rp1uh"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="3_qul4d"]
 [ext_resource type="PackedScene" uid="uid://7gty5dfdid1e" path="res://scenes/effects_panel/effects_panel.tscn" id="4_wnrwj"]
 
-[node name="EditScreen" type="HSplitContainer"]
+[node name="EditScreen" type="HSplitContainer" unique_id=485993837]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,17 +15,18 @@ size_flags_vertical = 3
 script = ExtResource("1_qa2ll")
 metadata/_tab_index = 0
 
-[node name="LeftHSplit" type="HSplitContainer" parent="."]
+[node name="LeftHSplit" type="HSplitContainer" parent="." unique_id=328494768]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+split_offsets = PackedInt32Array(-500)
 split_offset = -500
 
-[node name="FilePanel" parent="LeftHSplit" instance=ExtResource("2_rp1uh")]
+[node name="FilePanel" parent="LeftHSplit" unique_id=125925803 instance=ExtResource("2_rp1uh")]
 layout_mode = 2
 
-[node name="ViewPanel" parent="LeftHSplit" instance=ExtResource("3_qul4d")]
+[node name="ViewPanel" parent="LeftHSplit" unique_id=605257406 instance=ExtResource("3_qul4d")]
 layout_mode = 2
 
-[node name="EffectsPanel" parent="." instance=ExtResource("4_wnrwj")]
+[node name="EffectsPanel" parent="." unique_id=720021721 instance=ExtResource("4_wnrwj")]
 layout_mode = 2

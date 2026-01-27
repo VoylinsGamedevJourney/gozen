@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GoZenEffectAudio" load_steps=5 format=3 uid="uid://dxp7sisypvq8b"]
+[gd_resource type="Resource" script_class="GoZenEffectAudio" format=3 uid="uid://dxp7sisypvq8b"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_7fg1e"]
 [ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/gozen_effect_audio.gd" id="2_7fg1e"]
@@ -17,7 +17,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [resource]
 script = ExtResource("2_7fg1e")
 audio_effect = SubResource("AudioEffectAmplify_7fg1e")
-params = Array[ExtResource("1_7fg1e")]([SubResource("Resource_c7eta")])
 effect_id = "volume"
 effect_name = "effect_audio_volume"
+params = Array[ExtResource("1_7fg1e")]([SubResource("Resource_c7eta")])
 metadata/_custom_type_script = "uid://cddcl2omddlan"

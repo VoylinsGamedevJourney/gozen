@@ -5,11 +5,11 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.5.1-alpha'
+        default: '0.6.1-alpha'
       godot_version:
         description: The Godot version to use
         type: string
-        default: '4.5.1-stable'
+        default: '4.6-stable'
 
 env:
   APP_NAME: gozen
@@ -121,7 +121,7 @@ jobs:
       - name: Compile GDE
         working-directory: ./core
         run: scons -j$(nproc) target=${{ matrix.target }} platform=windows arch=x86_64 use_static_cpp=yes use_mingw=yes
-        
+
       # Upload
       - name: Upload artifact
         uses: actions/upload-artifact@v4

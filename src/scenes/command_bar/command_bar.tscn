@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://rj2h8g761jr1"]
+[gd_scene format=3 uid="uid://rj2h8g761jr1"]
 
 [ext_resource type="Script" uid="uid://cc5bnmmakhd8r" path="res://scenes/command_bar/command_bar.gd" id="1_maggb"]
 
-[node name="CommandBar" type="Control" node_paths=PackedStringArray("command_line", "command_buttons")]
+[node name="CommandBar" type="Control" unique_id=2001191161 node_paths=PackedStringArray("command_line", "command_buttons")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +14,7 @@ script = ExtResource("1_maggb")
 command_line = NodePath("MarginContainer/Panel/VBoxContainer/MarginContainer/CommandLineEdit")
 command_buttons = NodePath("MarginContainer/Panel/VBoxContainer/SettingsPanel/MarginContainer/ButtonVBoxContainer")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=519441212]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,32 +23,32 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_top = 150
 
-[node name="Panel" type="PanelContainer" parent="MarginContainer"]
+[node name="Panel" type="PanelContainer" parent="MarginContainer" unique_id=150309250]
 custom_minimum_size = Vector2(700, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_type_variation = &"box"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel" unique_id=1716632158]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel/VBoxContainer" unique_id=1314583053]
 layout_mode = 2
 
-[node name="CommandLineEdit" type="LineEdit" parent="MarginContainer/Panel/VBoxContainer/MarginContainer"]
+[node name="CommandLineEdit" type="LineEdit" parent="MarginContainer/Panel/VBoxContainer/MarginContainer" unique_id=697675738]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="SettingsPanel" type="PanelContainer" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="SettingsPanel" type="PanelContainer" parent="MarginContainer/Panel/VBoxContainer" unique_id=951763123]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel/VBoxContainer/SettingsPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel/VBoxContainer/SettingsPanel" unique_id=227913880]
 layout_mode = 2
 
-[node name="ButtonVBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/SettingsPanel/MarginContainer"]
+[node name="ButtonVBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/SettingsPanel/MarginContainer" unique_id=1262083051]
 layout_mode = 2
 theme_override_constants/separation = 5
 

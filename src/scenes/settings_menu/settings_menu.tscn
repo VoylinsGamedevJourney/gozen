@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjen0oagwidr7"]
+[gd_scene format=3 uid="uid://bjen0oagwidr7"]
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
 
-[node name="Settings" type="Control" node_paths=PackedStringArray("panel_label", "side_bar_vbox", "settings_vbox")]
+[node name="Settings" type="Control" unique_id=2082599071 node_paths=PackedStringArray("panel_label", "side_bar_vbox", "settings_vbox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +15,7 @@ panel_label = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/PanelLabel")
 side_bar_vbox = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SideBarVBox")
 settings_vbox = NodePath("SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin/SettingsVBox")
 
-[node name="SettingsPanel" type="PanelContainer" parent="."]
+[node name="SettingsPanel" type="PanelContainer" parent="." unique_id=228170693]
 custom_minimum_size = Vector2(900, 450)
 layout_mode = 1
 anchors_preset = -1
@@ -33,27 +33,27 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="SettingsPanel"]
+[node name="Margin" type="MarginContainer" parent="SettingsPanel" unique_id=819768824]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="SettingsPanel/Margin"]
+[node name="HBox" type="HBoxContainer" parent="SettingsPanel/Margin" unique_id=1165330021]
 layout_mode = 2
 theme_override_constants/separation = -1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel/Margin/HBox"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel/Margin/HBox" unique_id=289096838]
 layout_mode = 2
 
-[node name="PanelLabel" type="Label" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+[node name="PanelLabel" type="Label" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=1048226686]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "Editor settings"
 
-[node name="SideBarVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+[node name="SideBarVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=386574672]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CloseButton" type="Button" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+[node name="CloseButton" type="Button" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=899518087]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -61,28 +61,28 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"side_bar_button"
 text = "button_close"
 
-[node name="Spacer" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer"]
+[node name="Spacer" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=1334027548]
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox"]
+[node name="VBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox" unique_id=8772152]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Scroll" type="ScrollContainer" parent="SettingsPanel/Margin/HBox/VBox"]
+[node name="Scroll" type="ScrollContainer" parent="SettingsPanel/Margin/HBox/VBox" unique_id=576336750]
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 
-[node name="SettingsOptionsPanel" type="PanelContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll"]
+[node name="SettingsOptionsPanel" type="PanelContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll" unique_id=1816437660]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel"]
+[node name="Margin" type="MarginContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel" unique_id=1224188731]
 layout_mode = 2
 
-[node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin"]
+[node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin" unique_id=98796412]
 layout_mode = 2
 
 [connection signal="pressed" from="SettingsPanel/Margin/HBox/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

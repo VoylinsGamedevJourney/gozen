@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://7gty5dfdid1e"]
+[gd_scene format=3 uid="uid://7gty5dfdid1e"]
 
 [ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://scenes/effects_panel/effects_panel.gd" id="1_k5peu"]
 [ext_resource type="Texture2D" uid="uid://dbpodibqe4ml1" path="res://assets/icons/video_effects.svg" id="2_tqtp8"]
@@ -6,7 +6,7 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_3btpq"]
 
-[node name="EffectsPanel" type="PanelContainer" node_paths=PackedStringArray("button_video", "button_audio", "tab_container")]
+[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("button_video", "button_audio", "tab_container")]
 custom_minimum_size = Vector2(300, 200)
 offset_right = 260.0
 offset_bottom = 43.0
@@ -17,27 +17,27 @@ button_video = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsBut
 button_audio = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton")
 tab_container = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=1256017663]
 layout_mode = 2
 theme_override_constants/margin_left = 7
 theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 7
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margin"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin" unique_id=1400588315]
 layout_mode = 2
 theme_override_constants/separation = -1
 
-[node name="EffectsButtonsHBox" type="HBoxContainer" parent="Margin/VBoxContainer"]
+[node name="EffectsButtonsHBox" type="HBoxContainer" parent="Margin/VBoxContainer" unique_id=457373552]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="SpacerBegin" type="Control" parent="Margin/VBoxContainer/EffectsButtonsHBox"]
+[node name="SpacerBegin" type="Control" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=1480992706]
 custom_minimum_size = Vector2(7, 0)
 layout_mode = 2
 
-[node name="VideoEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox"]
+[node name="VideoEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=2026522453]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -52,7 +52,7 @@ icon = ExtResource("2_tqtp8")
 icon_alignment = 1
 expand_icon = true
 
-[node name="AudioEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox"]
+[node name="AudioEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=5701129]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -66,28 +66,28 @@ icon = ExtResource("3_kufqk")
 icon_alignment = 1
 expand_icon = true
 
-[node name="SpacerEnd" type="Control" parent="Margin/VBoxContainer/EffectsButtonsHBox"]
+[node name="SpacerEnd" type="Control" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=867560336]
 custom_minimum_size = Vector2(7, 0)
 layout_mode = 2
 
-[node name="EffectsListScroll" type="ScrollContainer" parent="Margin/VBoxContainer"]
+[node name="EffectsListScroll" type="ScrollContainer" parent="Margin/VBoxContainer" unique_id=808570826]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="EffectsTabContainer" type="TabContainer" parent="Margin/VBoxContainer/EffectsListScroll"]
+[node name="EffectsTabContainer" type="TabContainer" parent="Margin/VBoxContainer/EffectsListScroll" unique_id=480899933]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 current_tab = 0
 tabs_visible = false
 
-[node name="VisualEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
+[node name="VisualEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer" unique_id=561469809]
 layout_mode = 2
 theme_override_constants/separation = 10
 metadata/_tab_index = 0
 
-[node name="AudioEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer"]
+[node name="AudioEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer" unique_id=457146236]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 10

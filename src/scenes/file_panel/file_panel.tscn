@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dktafpwgtv5m3"]
+[gd_scene format=3 uid="uid://dktafpwgtv5m3"]
 
 [ext_resource type="Script" uid="uid://brrldnnd060ok" path="res://scenes/file_panel/file_panel.gd" id="1_b4ee2"]
 [ext_resource type="Texture2D" uid="uid://fg500ydw1r6i" path="res://assets/icons/files/file.svg" id="2_40fut"]
@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dqv5j4hytkcya" path="res://assets/icons/files/text_file.svg" id="4_4eim5"]
 [ext_resource type="Texture2D" uid="uid://krvormuf3rd3" path="res://assets/icons/files/color_file.svg" id="5_almox"]
 
-[node name="FilePanel" type="PanelContainer" node_paths=PackedStringArray("tree", "file_menu_button")]
+[node name="FilePanel" type="PanelContainer" unique_id=611161492 node_paths=PackedStringArray("tree", "file_menu_button")]
 custom_minimum_size = Vector2(260, 0)
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,24 +18,24 @@ script = ExtResource("1_b4ee2")
 tree = NodePath("Margin/VBox/FileTree")
 file_menu_button = NodePath("Margin/VBox/HBox/AddFileButton")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=212783385]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=92480100]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="Margin/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox" unique_id=704826959]
 layout_mode = 2
 theme_override_constants/separation = -1
 
-[node name="SearchLineEdit" type="LineEdit" parent="Margin/VBox/HBox"]
+[node name="SearchLineEdit" type="LineEdit" parent="Margin/VBox/HBox" unique_id=1716752614]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
 placeholder_text = "placeholder_text_search_files"
 clear_button_enabled = true
 
-[node name="AddFileButton" type="MenuButton" parent="Margin/VBox/HBox"]
+[node name="AddFileButton" type="MenuButton" parent="Margin/VBox/HBox" unique_id=1440161296]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 icon = ExtResource("2_40fut")
@@ -52,7 +52,7 @@ popup/item_2/text = "file_panel_item_add_color"
 popup/item_2/icon = ExtResource("5_almox")
 popup/item_2/id = 2
 
-[node name="FileTree" type="Tree" parent="Margin/VBox"]
+[node name="FileTree" type="Tree" parent="Margin/VBox" unique_id=157642089]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0

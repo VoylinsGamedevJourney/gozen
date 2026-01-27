@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://6snp6sstgbb5"]
+[gd_scene format=3 uid="uid://6snp6sstgbb5"]
 
 [ext_resource type="Script" uid="uid://cey31yt1rd71u" path="res://scenes/menu_bar/menu_bar.gd" id="1_tjpug"]
 [ext_resource type="Texture2D" uid="uid://crolsp3m3n14" path="res://assets/icons/files/video_file.svg" id="2_e5ovf"]
@@ -18,7 +18,7 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_2bycd"]
 
-[node name="MenuBarHBox" type="HBoxContainer" node_paths=PackedStringArray("popup_menu_project")]
+[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 28.0
@@ -28,13 +28,13 @@ script = ExtResource("1_tjpug")
 popup_menu_project = NodePath("MenuBar/ProjectPopupMenu")
 metadata/_edit_lock_ = true
 
-[node name="MenuBar" type="MenuBar" parent="."]
+[node name="MenuBar" type="MenuBar" parent="." unique_id=1385584842]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 flat = true
 
-[node name="ProjectPopupMenu" type="PopupMenu" parent="MenuBar"]
+[node name="ProjectPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1428006282]
 oversampling_override = 1.0
 title = "menu_bar_project"
 theme_override_constants/icon_max_width = 20
@@ -64,7 +64,7 @@ item_8/text = "menu_bar_project_quit"
 item_8/icon = ExtResource("5_pamk7")
 item_8/id = 8
 
-[node name="PreferencesPopupMenu" type="PopupMenu" parent="MenuBar"]
+[node name="PreferencesPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1830296643]
 oversampling_override = 1.0
 title = "menu_bar_preferences"
 theme_override_constants/icon_max_width = 20
@@ -81,7 +81,7 @@ item_3/text = "menu_bar_preferences_command_bar"
 item_3/icon = ExtResource("9_jrb8t")
 item_3/id = 3
 
-[node name="HelpPopupMenu" type="PopupMenu" parent="MenuBar"]
+[node name="HelpPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1305404919]
 oversampling_override = 1.0
 title = "menu_bar_help"
 theme_override_constants/icon_max_width = 20
@@ -115,7 +115,7 @@ item_9/text = "menu_bar_about_gozen"
 item_9/icon = ExtResource("15_bb4p5")
 item_9/id = 9
 
-[node name="EditorScreenButton" type="Button" parent="."]
+[node name="EditorScreenButton" type="Button" parent="." unique_id=1810598]
 layout_mode = 2
 theme_type_variation = &"screen_button"
 theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
@@ -125,7 +125,7 @@ button_pressed = true
 button_group = SubResource("ButtonGroup_2bycd")
 text = "button_screen_editing"
 
-[node name="RenderScreenButton" type="Button" parent="."]
+[node name="RenderScreenButton" type="Button" parent="." unique_id=2137987159]
 layout_mode = 2
 theme_type_variation = &"screen_button"
 theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
@@ -134,7 +134,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_2bycd")
 text = "button_screen_render"
 
-[node name="TextureButton" type="TextureButton" parent="RenderScreenButton"]
+[node name="TextureButton" type="TextureButton" parent="RenderScreenButton" unique_id=1712319759]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0

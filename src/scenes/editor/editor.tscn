@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b0r37lfkj7wl6"]
+[gd_scene format=3 uid="uid://b0r37lfkj7wl6"]
 
 [ext_resource type="Script" uid="uid://kb8f0hfwqg61" path="res://scenes/editor/editor.gd" id="1_nbwom"]
 [ext_resource type="PackedScene" uid="uid://6snp6sstgbb5" path="res://scenes/menu_bar/menu_bar.tscn" id="2_7gtdv"]
@@ -9,7 +9,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5q5vg"]
 
-[node name="Editor" type="PanelContainer" node_paths=PackedStringArray("menu_bar", "screen_tab_container")]
+[node name="Editor" type="PanelContainer" unique_id=46089087 node_paths=PackedStringArray("menu_bar", "screen_tab_container")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,48 +20,48 @@ script = ExtResource("1_nbwom")
 menu_bar = NodePath("VBox/MenuBarHBox")
 screen_tab_container = NodePath("VBox/VSplitContainer/ScreenTabContainer")
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1299273465]
 layout_direction = 2
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MenuBarHBox" parent="VBox" instance=ExtResource("2_7gtdv")]
+[node name="MenuBarHBox" parent="VBox" unique_id=1860760368 instance=ExtResource("2_7gtdv")]
 layout_mode = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="VBox"]
+[node name="VSplitContainer" type="VSplitContainer" parent="VBox" unique_id=516295569]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ScreenTabContainer" type="TabContainer" parent="VBox/VSplitContainer"]
+[node name="ScreenTabContainer" type="TabContainer" parent="VBox/VSplitContainer" unique_id=21616074]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5q5vg")
 current_tab = 0
 tabs_visible = false
 
-[node name="EditTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("8_rolao")]
+[node name="EditTab" parent="VBox/VSplitContainer/ScreenTabContainer" unique_id=2040617319 instance=ExtResource("8_rolao")]
 layout_mode = 2
 
-[node name="RenderTab" parent="VBox/VSplitContainer/ScreenTabContainer" instance=ExtResource("9_p4u40")]
+[node name="RenderTab" parent="VBox/VSplitContainer/ScreenTabContainer" unique_id=755075727 instance=ExtResource("9_p4u40")]
 visible = false
 layout_mode = 2
 
-[node name="Bottom" type="HBoxContainer" parent="VBox/VSplitContainer"]
+[node name="Bottom" type="HBoxContainer" parent="VBox/VSplitContainer" unique_id=805400122]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 
-[node name="Timeline" parent="VBox/VSplitContainer/Bottom" instance=ExtResource("5_jwsr6")]
+[node name="Timeline" parent="VBox/VSplitContainer/Bottom" unique_id=1755643008 instance=ExtResource("5_jwsr6")]
 layout_mode = 2
 
-[node name="AudioMeter" parent="VBox/VSplitContainer/Bottom" instance=ExtResource("7_qbwwq")]
+[node name="AudioMeter" parent="VBox/VSplitContainer/Bottom" unique_id=580584013 instance=ExtResource("7_qbwwq")]
 layout_mode = 2
 
-[node name="ProjectViewSubViewport" type="SubViewport" parent="."]
+[node name="ProjectViewSubViewport" type="SubViewport" parent="." unique_id=880674287]
 unique_name_in_owner = true
 size = Vector2i(1920, 1080)
 size_2d_override_stretch = true
 
-[node name="Background" type="ColorRect" parent="ProjectViewSubViewport"]
+[node name="Background" type="ColorRect" parent="ProjectViewSubViewport" unique_id=717021100]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
