@@ -362,6 +362,11 @@ func set_file_nickname(id: int, nickname: String) -> void:
 	file_nickname_changed.emit(id)
 
 
+func set_ato_active(id: int, value: bool) -> void:
+	files[id].ato_active = value
+	Project.unsaved_changes = true
+
+
 func update_file_duration(id: int) -> int:
 	data[id]._update_duration()
 	return get_file_duration(id)
