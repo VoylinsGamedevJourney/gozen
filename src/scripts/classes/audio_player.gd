@@ -99,9 +99,10 @@ func set_audio(audio_clip_id: int) -> void:
 
 	# Check if playback is close enough ONLY if stream is the same.
 	var frame_duration: float = 1.0 / Project.get_framerate()
-	if abs(player.get_playback_position() - position) < frame_duration:
-		if !player.playing: return
+	var sync_threshold: float = max(frame_duration * 4, 0.15) # (4 frame buffer)
+	if player.playing and abs(player.get_playback_position() - position) < sync_threshold:
 		player.stream_paused = !EditorCore.is_playing
+		return
 
 	player.play(position) # Play audio from the position otherwise.
 	player.stream_paused = !EditorCore.is_playing
