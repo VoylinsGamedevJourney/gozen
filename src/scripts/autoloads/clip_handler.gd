@@ -12,6 +12,10 @@ var clips: Dictionary[int, ClipData] = {}
 
 #--- Setters/Getters ---
 
+func set_ato_active(id: int, value: bool) -> void:
+	clips[id].ato_active = value
+
+
 func get_clip(id: int) -> ClipData:
 	return clips[id] if clips.has(id) else null
 

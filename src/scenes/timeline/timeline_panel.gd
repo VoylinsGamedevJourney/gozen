@@ -9,6 +9,9 @@ enum POPUP_ACTION {
 	CLIP_VIDEO_ONLY,
 	CLIP_DELETE,
 	CLIP_CUT,
+	CLIP_AUDIO_TAKE_OVER,
+	CLIP_AUDIO_TAKE_OVER_ENABLE,
+	CLIP_AUDIO_TAKE_OVER_DISABLE,
 	# Track options
 	REMOVE_EMPTY_SPACE,
 	TRACK_ADD,
@@ -186,21 +189,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
 
 		if right_click_clip != null:
-			var clip_id: int = right_click_clip.id
-
-			if clip_id not in selected_clip_ids:
-				selected_clip_ids = [clip_id]
-				ClipHandler.clip_selected.emit(clip_id)
-
-				queue_redraw()
-
-			# TODO: Set icons and shortcuts
-			if ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES:
-				popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_VIDEO_ONLY)
-
-			popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
-			popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
-			popup.add_separator()
+			_add_popup_menu_items_clip(popup)
 		else:
 			popup.add_item("popup_item_track_remove_empty_space", POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
@@ -806,22 +795,55 @@ func _handle_fade_motion() -> void:
 	EditorCore.update_frame()
 
 
+func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
+	var clip_data: ClipData = ClipHandler.get_clip(right_click_clip.id)
+	var clip_id: int = clip_data.id
+	var clip_type: FileHandler.TYPE = ClipHandler.get_type(clip_id)
+
+	if clip_id not in selected_clip_ids:
+		selected_clip_ids = [clip_id]
+		ClipHandler.clip_selected.emit(clip_id)
+		queue_redraw()
+
+	# TODO: Set icons and shortcuts
+	popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
+	popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
+
+	if clip_type in FileHandler.TYPE_VIDEOS:
+		popup.add_separator("popup_menu_separator_video")
+		popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_VIDEO_ONLY)
+
+	if clip_type == FileHandler.TYPE.VIDEO:
+		popup.add_item("popup_item_clip_audio_take_over", POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
+
+	if clip_data.ato_file_id != -1: # Can only be not -1 if clip is video
+		if clip_data.ato_active:
+			popup.add_item(
+					"popup_item_clip_audio_take_over_disable",
+					POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_DISABLE)
+		else:
+			popup.add_item(
+					"popup_item_clip_audio_take_over_enable",
+					POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_ENABLE)
+
+	popup.add_separator("popup_menu_separator_track")
+
+
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	match id:
 		# Clip options
-		POPUP_ACTION.CLIP_VIDEO_ONLY: _on_popup_action_clip_only_video()
 		POPUP_ACTION.CLIP_DELETE: _on_popup_action_clip_delete()
 		POPUP_ACTION.CLIP_CUT: _on_popup_action_clip_cut()
+		# Video options
+		POPUP_ACTION.CLIP_VIDEO_ONLY: _on_popup_action_clip_only_video()
+		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
+		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_ENABLE: _on_popup_action_clip_ato_enable()
+		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_DISABLE: _on_popup_action_clip_ato_disable()
 		# Track options
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
 		POPUP_ACTION.TRACK_ADD: _on_popup_action_track_add()
 		POPUP_ACTION.TRACK_REMOVE: _on_popup_action_track_remove()
-
 	queue_redraw()
-
-
-func _on_popup_action_clip_only_video() -> void:
-	FileHandler.enable_clip_only_video(right_click_clip.file_id, right_click_clip.id)
 
 
 func _on_popup_action_clip_delete() -> void:
@@ -834,6 +856,33 @@ func _on_popup_action_clip_cut() -> void:
 
 func _on_popup_action_remove_empty_space() -> void:
 	remove_empty_space_at(right_click_pos.x, right_click_pos.y)
+
+
+func _on_popup_action_clip_ato() -> void:
+	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.AUDIO_TAKE_OVER)
+	popup.load_data(right_click_clip.id, false)
+
+
+func _on_popup_action_clip_ato_enable() -> void:
+	InputManager.undo_redo.create_action("Enable clip audio take over")
+	InputManager.undo_redo.add_do_method(
+			ClipHandler.set_ato_active.bind(right_click_clip.id, true))
+	InputManager.undo_redo.add_undo_method(
+			ClipHandler.set_ato_active.bind(right_click_clip.id, false))
+	InputManager.undo_redo.commit_action()
+
+
+func _on_popup_action_clip_ato_disable() -> void:
+	InputManager.undo_redo.create_action("Disable clip audio take over")
+	InputManager.undo_redo.add_do_method(
+			ClipHandler.set_ato_active.bind(right_click_clip.id, false))
+	InputManager.undo_redo.add_undo_method(
+			ClipHandler.set_ato_active.bind(right_click_clip.id, true))
+	InputManager.undo_redo.commit_action()
+
+
+func _on_popup_action_clip_only_video() -> void:
+	FileHandler.enable_clip_only_video(right_click_clip.file_id, right_click_clip.id)
 
 
 func _on_popup_action_track_add() -> void:
