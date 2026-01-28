@@ -522,6 +522,15 @@ func duplicate_text_file(original_file_id: int) -> void:
 	add_file_object(new_file)
 
 
+## { file_nickname: file_id }
+func get_all_audio_files() -> Dictionary[String, int]:
+	var dictionary: Dictionary[String, int] = {}
+	for file: File in files.values():
+		if file.type == TYPE.AUDIO:
+			dictionary[file.nickname] = file.id
+	return dictionary
+
+
 
 #--- Private functions ---
 func _check_if_file_modified(file: File) -> bool:

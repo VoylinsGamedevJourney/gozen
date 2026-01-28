@@ -32,6 +32,10 @@ func get_end_frame(id: int, clip_data: ClipData = clips[id]) -> int:
 	return clip_data.start_frame + clip_data.duration - 1
 
 
+func get_file(id: int, clip_data: ClipData = clips[id]) -> File:
+	return FileHandler.get_file(clip_data.file_id)
+
+
 func get_file_data(id: int, clip_data: ClipData = clips[id]) -> FileData:
 	return FileHandler.get_file_data(clip_data.file_id)
 
