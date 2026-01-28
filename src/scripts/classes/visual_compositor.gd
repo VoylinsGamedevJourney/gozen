@@ -96,7 +96,7 @@ func _init_start(p_resolution: Vector2i) -> void:
 
 	var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/fade.glsl").get_spirv()
 	var fade_buffer_data: PackedByteArray = PackedByteArray()
-	
+
 	fade_shader = device.shader_create_from_spirv(fade_spirv)
 	fade_pipeline = device.compute_pipeline_create(fade_shader)
 	fade_buffer_data.resize(16)
@@ -205,7 +205,7 @@ func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], f
 	# Start of compute list
 	# Convert YUV to RGBA (and write to ping)
 	var compute_list: int = device.compute_list_begin()
-	
+
 	device.compute_list_bind_compute_pipeline(compute_list, yuv_pipeline)
 
 	# Create uniform set for YUV pass
@@ -320,17 +320,17 @@ func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual], fade_a
 
 	if fade_alpha < 1.0:
 		device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
-		
+
 		var fade_uniforms: Array[RDUniform] = [
 			_create_sampler_uniform(ping_texture, 0),
 			_create_image_uniform(pong_texture, 1),
 			_create_buffer_uniform(fade_buffer, 2)]
 		var fade_set: RID = device.uniform_set_create(fade_uniforms, fade_shader, 0)
-		
+
 		device.compute_list_bind_uniform_set(compute_list, fade_set, 0)
 		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 		device.compute_list_add_barrier(compute_list)
-		
+
 		# Swap buffers
 		var temp_texture: RID = ping_texture
 
@@ -355,7 +355,7 @@ func _create_yuv_params(video: GoZenVideo) -> RID:
 		"bt601", "bt470":
 			matrix_data = BT601_FULL if video.is_full_color_range() else BT601_LIMITED
 		_: # bt709 and unknown
-			matrix_data = BT709 
+			matrix_data = BT709
 
 	for value: float in matrix_data:
 		stream_writer.put_float(value)

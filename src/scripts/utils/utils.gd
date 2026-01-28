@@ -55,7 +55,7 @@ static func in_rangef(value: float, min_value: float, max_value: float, include_
 
 static func format_time_str_from_frame(frame_count: int, framerate: float, short: bool) -> String:
 	return format_time_str(float(frame_count) / framerate, short)
-	
+
 
 ## Short = 00:00:00
 ## Long = 00:00:00.00
@@ -72,7 +72,7 @@ static func format_time_str(total_seconds: float, short: bool = false) -> String
 		return "%02d:%02d:%02d" % [hours, minutes, seconds]
 	else:
 		return "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
-	
+
 
 static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 	var folders: PackedStringArray = []
@@ -98,7 +98,7 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 				new_folders.append(path + '/' + dir_path)
 
 		folders = new_folders
-	
+
 	return actual_files
 
 
@@ -159,27 +159,24 @@ static func path_remove_middle(path: String, max_length: int) -> String:
 
 	# "..." takes 3 characters
 	var split_size: int = floori((max_length - 3) / 2.0)
-	
 	var left_part: String = path.left(split_size)
 	var right_part: String = path.right(split_size)
-	
+
 	return "%s...%s" % [left_part, right_part]
 
 
 ## For fuzzy searching.
 static func get_fuzzy_score(query: String, text: String) -> int:
-	if query.is_empty():
-		return 1
-	elif query.length() > text.length():
-		return 0
-	
+	if query.is_empty(): return 1
+	elif query.length() > text.length(): return 0
+
 	var query_index: int = 0
 	var text_index: int = 0
 	var score : int = 0
-	
+
 	query = query.to_lower()
 	text = text.to_lower()
-	
+
 	while query_index < query.length() and text_index < text.length():
 		if query[query_index] == text[text_index]:
 			score += FUZZY_SCORE_POINT # Match found
@@ -189,7 +186,7 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 				score += FUZZY_SCORE_BONUS # Start word found so extra bonus
 			query_index += 1
 		text_index += 1
-	
+
 	return score if query_index == query.length() else 0
 
 
@@ -197,7 +194,7 @@ static func calculate_fade(current_frame: int, clip_data: ClipData, is_visual: b
 	var fade_in: int = clip_data.fade_in_visual if is_visual else clip_data.fade_in_audio
 	var fade_out: int = clip_data.fade_out_visual if is_visual else clip_data.fade_out_audio
 	var value: float = 1.0
-	
+
 	if fade_in > 0 and current_frame < fade_in:
 		value = float(current_frame) / float(fade_in)
 	elif fade_out > 0 and current_frame >= (clip_data.duration - fade_out):

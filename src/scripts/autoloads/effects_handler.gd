@@ -29,7 +29,7 @@ func _ready() -> void:
 	_load_video_effects()
 	_load_audio_effects()
 
-	
+
 func _load_video_effects() -> void:
 	visual_effects.clear()
 	visual_effect_instances.clear()
@@ -225,10 +225,10 @@ func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String
 		return printerr("EffectsHandler: Trying to remove keyframe from invalid effect! ", index)
 
 	var effect: GoZenEffect = effect_list[index]
-	
+
 	# Check if there is actually a keyframe to remove
 	if not effect.keyframes.has(param_id): return
-	if not effect.keyframes[param_id].has(frame_nr):return 
+	if not effect.keyframes[param_id].has(frame_nr):return
 
 	var old_value: Variant = effect.keyframes[param_id][frame_nr]
 
@@ -255,13 +255,13 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
 	var list: Array = _get_effect_list(ClipHandler.get_clip(clip_id), is_visual)
 	var effect: GoZenEffect = list[index]
-	
+
 	if effect.keyframes.has(param_id):
 		effect.keyframes[param_id].erase(frame_nr)
 
 		if effect.keyframes[param_id].is_empty():
 			effect.keyframes.erase(param_id)
-		
+
 	effect._cache_dirty = true
 	effect_values_updated.emit()
 
@@ -292,7 +292,6 @@ func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> 
 		ClipHandler.clips[clip_id].effects_video[index].is_enabled = value
 	else:
 		ClipHandler.clips[clip_id].effects_audio[index].is_enabled = value
-	
 	effects_updated.emit()
 
 

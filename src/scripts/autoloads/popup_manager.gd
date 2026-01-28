@@ -85,7 +85,7 @@ func close_popups() -> void:
 
 
 func get_popup(popup: POPUP) -> Control:
-	if !_open_popups.has(popup):	
+	if !_open_popups.has(popup):
 		open_popup(popup)
 	return _open_popups[popup]
 
@@ -110,7 +110,7 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 
 	dialog.force_native = use_native_dialog
 	dialog.title = title
-	
+
 	return dialog
 
 
@@ -141,4 +141,3 @@ func _on_size_changed() -> void:
 
 func _check_background() -> void:
 	_control.visible = _open_popups.size() != 0
-		

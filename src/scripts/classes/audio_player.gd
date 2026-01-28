@@ -25,7 +25,7 @@ func play(value: bool) -> void:
 	if stop_frame != -1 or clip_id != -1:
 		player.stream_paused = !value
 
-	
+
 func stop() -> void:
 	if player.playing:
 		player.stop()
@@ -63,7 +63,7 @@ func set_audio(audio_clip_id: int) -> void:
 
 	if old_clip_id != clip_id or AudioServer.get_bus_effect_count(bus_index) != data.effects_audio.size():
 		_setup_bus_effects(data.effects_audio)
-	
+
 	update_effects(data.effects_audio)
 
 	# Apply fade
@@ -109,7 +109,7 @@ func update_effects(effects: Array[GoZenEffectAudio]) -> void:
 
 	for i: int in effects.size():
 		var effect: GoZenEffectAudio = effects[i]
-		
+
 		if i >= AudioServer.get_bus_effect_count(bus_index):
 			break
 

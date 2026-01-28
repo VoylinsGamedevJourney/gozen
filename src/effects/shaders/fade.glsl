@@ -11,20 +11,19 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-	float opacity;
+    float opacity;
 } params;
 
-
 void main() {
-	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
-	ivec2 size = imageSize(output_image);
+    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 size = imageSize(output_image);
 
-	if (id.x >= size.x || id.y >= size.y)
-		return;
+    if (id.x >= size.x || id.y >= size.y)
+        return;
 
-	vec4 color = texelFetch(input_image, id, 0);
-	
-	color.a *= params.opacity;
+    vec4 color = texelFetch(input_image, id, 0);
 
-	imageStore(output_image, id, color);
+    color.a *= params.opacity;
+
+    imageStore(output_image, id, color);
 }

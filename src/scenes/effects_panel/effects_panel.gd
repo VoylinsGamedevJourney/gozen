@@ -5,8 +5,8 @@ extends PanelContainer
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
-const COLOR_KEYFRAMING_ON: Color = Color(1,1,1,0.5)
-const COLOR_KEYFRAMING_OFF: Color = Color(1,1,1,1)
+const COLOR_KEYFRAMING_ON: Color = Color(1,1,1,1)
+const COLOR_KEYFRAMING_OFF: Color = Color(1,1,1,0.5)
 
 const SIZE_EFFECT_HEADER_ICON: int = 16
 
@@ -118,8 +118,8 @@ func _load_video_effects() -> void:
 	if !ClipHandler.clips.has(current_clip_id):
 		return
 
-	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)	
-	
+	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+
 	for i: int in clip_data.effects_video.size():
 		var effect: GoZenEffectVisual = clip_data.effects_video[i]
 		var container: FoldableContainer = _create_effect_ui(effect, i, true)
@@ -137,8 +137,8 @@ func _load_audio_effects() -> void:
 	if !ClipHandler.clips.has(current_clip_id):
 		return
 
-	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)	
-	
+	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+
 	for i: int in clip_data.effects_video.size():
 		var effect: GoZenEffectAudio = clip_data.effects_audio[i]
 		var container: FoldableContainer = _create_effect_ui(effect, i, true)
@@ -295,7 +295,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 
 				current_value.x = val
 				_effect_param_update_call.call(current_value, index, is_visual, param.param_id))
-			
+
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
 			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
@@ -304,7 +304,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox_y.allow_lesser = param.min_value == null
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
-			
+
 			spinbox_y.value_changed.connect(func(val: float) -> void:
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 
@@ -384,7 +384,7 @@ func _update_ui_values() -> void:
 			if param_settings:
 				var value: Variant = effect.get_value(param, frame_nr)
 				_set_param_settings_value(param_settings, value)
-			
+
 			var keyframe_button: TextureButton = grid.get_node_or_null("KEYFRAME_" + param_id)
 			if !keyframe_button: continue
 			if effect.keyframes[param_id].has(frame_nr):

@@ -167,7 +167,7 @@ func _on_image_author_meta_clicked(meta: Variant) -> void:
 
 func _on_support_project_button_pressed() -> void:
 	Utils.open_url("support")
-	
+
 
 func _on_go_zen_logo_button_pressed() -> void:
 	Utils.open_url("site")
@@ -235,7 +235,7 @@ func _on_create_new_project_button_pressed() -> void:
 		Project.set_background_color(background_color_picker.color)
 
 	self.queue_free()
-		
+
 
 func _on_project_path_button_pressed() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
@@ -307,7 +307,7 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 	var current_minor: int = int(current_release.split('.')[0])
 	var current_patch: int = -1
 	var current_tag: int = 3
-	
+
 	if latest_release.count('.') == 3:
 		patch = int(latest_release.split('.')[2])
 	if current_release.count('.') == 3:
@@ -383,10 +383,10 @@ func _on_new_project_option_button_item_selected(index: int) -> void:
 	if index == 0: # Custom
 		_set_new_project_defaults()
 		return
-	
+
 	var keys: PackedStringArray = PRESETS.keys()
 	var presets_data: Vector3 = PRESETS[keys[index]]
-	
+
 	resolution_x_spinbox.value = presets_data.x
 	resolution_y_spinbox.value = presets_data.y
 	framerate_spinbox.value = presets_data.z

@@ -143,7 +143,7 @@ func _draw() -> void:
 
 		if !is_being_dragged and frame_nr < visible_start_nr or frame_nr > visible_end_nr:
 			continue # Only visible markers and the one being dragged get drawn
-			
+
 		var marker_data: MarkerData = MarkerHandler.markers[frame_nr]
 		var color: Color = Settings.get_marker_color(marker_data.type_id)
 		var pos_x: float = frame_nr * current_zoom
@@ -162,15 +162,15 @@ func _draw() -> void:
 
 		var bubble_width: float = text_size.x + (MARKER_PADDING * 2)
 		var bubble_rect: Rect2 = Rect2(
-			pos_x + (MARKER_LINE_WIDTH / 2.0), 
-			0, 
-			bubble_width, 
+			pos_x + (MARKER_LINE_WIDTH / 2.0),
+			0,
+			bubble_width,
 			MARKER_HANDLE_HEIGHT)
 
 		if !is_being_dragged:
 			marker_rects[frame_nr] = bubble_rect
 			marker_style_box.bg_color = color * Color(1.0, 1.0, 1.0, 0.5)
-		
+
 		draw_line(
 			Vector2(pos_x, 0),
 			Vector2(pos_x, size.y),
@@ -230,17 +230,17 @@ func _setup_marker_style_box() -> void:
 func _update_hovered_marker() -> void:
 	var mouse_pos: Vector2 = get_local_mouse_position()
 	var found_frame: int = -1
-	
+
 	for frame_nr: int in marker_rects:
 		if marker_rects[frame_nr].has_point(mouse_pos):
 			found_frame = frame_nr
 			break
-	
+
 	if _possible_drag != found_frame:
 		_possible_drag = found_frame
 		_drag_offset = (found_frame * current_zoom) - mouse_pos.x
 		queue_redraw() # Redraw to show highlight if desired
-	
+
 	if _possible_drag != -1:
 		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	else:

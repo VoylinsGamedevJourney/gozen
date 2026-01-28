@@ -92,7 +92,7 @@ func get_system_locale() -> String:
 	for loaded_locale: String in TranslationServer.get_loaded_locales():
 		if loaded_locale.begins_with(OS.get_locale_language()):
 			return loaded_locale
-	
+
 	return "en" # Return English as a default.
 
 
@@ -114,7 +114,7 @@ func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
 
-	# Get all the 
+	# Get all the
 	for code: String in TranslationServer.get_loaded_locales():
 		var key: String = code.split('_')[0]
 
@@ -132,7 +132,7 @@ func get_languages() -> Dictionary:
 				key += " (" + TranslationServer.get_country_name(country_code) + ")"
 
 		temp_language_data[key] = code
-	
+
 	var keys: PackedStringArray = temp_language_data.keys()
 	keys.sort()
 
@@ -304,7 +304,7 @@ func get_default_resolution_y() -> int:
 
 func set_default_framerate(framerate: float) -> void:
 	data.default_framerate = framerate
-	
+
 
 func get_default_framerate() -> float:
 	return data.default_framerate
@@ -338,7 +338,7 @@ func get_pause_after_drag() -> bool:
 
 func set_delete_empty_modifier(new_key: int) -> void:
 	data.delete_empty_modifier = new_key
-	
+
 
 func get_delete_empty_modifier() -> int:
 	return data.delete_empty_modifier
@@ -390,7 +390,7 @@ func get_marker_colors() -> PackedColorArray:
 #--- Extra set/get ---
 func set_check_version(value: bool) -> void:
 	data.check_version = value
-	
+
 
 func get_check_version() -> int:
 	return data.check_version
@@ -400,7 +400,7 @@ func set_auto_save(value: bool) -> void:
 	data.auto_save = value
 	if value:
 		Project._auto_save()
-	
+
 
 func get_auto_save() -> bool:
 	return data.auto_save
@@ -451,13 +451,13 @@ func set_shortcut(action: String, events: Array[InputEvent]) -> void:
 
 func set_shortcut_event_at_index(action: String, index: int, event: InputEvent) -> void:
 	var events: Array[InputEvent] = get_events_for_action(action)
-	
+
 	if index >= 0 and index < events.size():
 		events[index] = event
 
 	# Clean nulls
 	var cleaned_events: Array[InputEvent] = []
-	
+
 	for action_event: InputEvent in events:
 		if action_event != null:
 			cleaned_events.append(action_event)
@@ -477,4 +477,4 @@ func get_events_for_action(action: String) -> Array[InputEvent]:
 		events.append(null)
 
 	return events
-		
+

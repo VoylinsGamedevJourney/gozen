@@ -21,7 +21,7 @@ func _ready() -> void:
 
 	_setup_type_option_button()
 	accept_event()
-	
+
 	# Check if marker present, if yes, we edit
 	if MarkerHandler.markers.has(current_frame):
 		var existing_marker: MarkerData = MarkerHandler.get_marker(current_frame)
@@ -30,7 +30,7 @@ func _ready() -> void:
 		selected_type_index = existing_marker.type_id
 	else:
 		marker_line_edit.text = ""
-		
+
 	marker_line_edit.grab_focus()
 	marker_line_edit.select_all()
 	type_option_button.selected = selected_type_index
@@ -58,7 +58,7 @@ func _on_type_selected(id: int) -> void:
 
 func _on_create_marker_pressed() -> void:
 	var text_content: String = marker_line_edit.text
-	
+
 	if text_content.strip_edges() == "": # Delete if empty
 		if MarkerHandler.markers.has(current_frame):
 			MarkerHandler.remove_marker(current_frame)
@@ -68,7 +68,7 @@ func _on_create_marker_pressed() -> void:
 		marker.text = text_content
 		marker.type_id = selected_type_index
 		MarkerHandler.add_marker(current_frame, marker)
-		
+
 	PopupManager.close_popup(PopupManager.POPUP.MARKER)
 
 

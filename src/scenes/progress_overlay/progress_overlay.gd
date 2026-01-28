@@ -78,7 +78,7 @@ func update_file(file: FileHandler.FileDrop) -> void:
 		new_label.self_modulate = Color.ORANGE
 		new_label.tooltip_text = path
 		file_labels[file.path] = new_label
-		vbox.add_child(new_label)			
+		vbox.add_child(new_label)
 
 	match file.status:
 		FileHandler.STATUS.ALREADY_LOADED:

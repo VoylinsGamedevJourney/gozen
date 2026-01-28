@@ -70,7 +70,7 @@ func _on_command_line_edit_text_changed(command_text: String) -> void:
 		button.visible = buttons[i].score != 0
 		command_buttons.move_child(button, i)
 		shown_buttons.append(button)
-		
+
 	if shown_buttons.size() > 0:
 		shown_buttons[0].button_pressed = true
 

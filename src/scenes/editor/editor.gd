@@ -33,7 +33,7 @@ func _ready() -> void:
 
 	CommandManager.register(
 			"command_render_menu", switch_screen.bind(1), "open_render_screen")
-	
+
 
 func _check_startup_args() -> void:
 	# Check if editor got opened with a project path as argument.
@@ -54,7 +54,7 @@ func print_startup_info() -> void:
 			["Processor", OS.get_processor_name()],
 			["Threads", OS.get_processor_count()],
 			["Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
-				str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)), 
+				str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)),
 				str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))]],
 			["Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
 				RenderingServer.get_video_adapter_name(),

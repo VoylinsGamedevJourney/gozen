@@ -92,7 +92,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 					param.default_value = Project.get_resolution()
 				elif param.param_id == "pivot":
 					param.default_value = Vector2i(Project.get_resolution() / 2.0)
-			
+
 			transform_effect.set_default_keyframe()
 			clip_data.effects_video.append(transform_effect)
 		if file_data.type in EditorCore.AUDIO_TYPES:
@@ -105,7 +105,7 @@ func add_clips(data: Array[CreateClipRequest]) -> void:
 		InputManager.undo_redo.add_undo_method(_delete_clip.bind(clip_data))
 
 	InputManager.undo_redo.commit_action()
-	
+
 
 func delete_clips(data: PackedInt64Array) -> void:
 	# First check if clips still exist.
@@ -137,7 +137,7 @@ func ripple_delete_clips(data: PackedInt64Array) -> void:
 		if not clips_by_track.has(clip.track_id):
 			clips_by_track[clip.track_id] = []
 			ranges_by_track[clip.track_id] = Vector2i(clip.start_frame, clip.end_frame)
-		
+
 		clips_by_track[clip.track_id].append(id)
 		ranges_by_track[clip.track_id].x = mini(ranges_by_track[clip.track_id].x, clip.start_frame)
 		ranges_by_track[clip.track_id].y = maxi(ranges_by_track[clip.track_id].y, clip.end_frame)
@@ -154,7 +154,7 @@ func ripple_delete_clips(data: PackedInt64Array) -> void:
 
 	# Move remaining clips to fill the gap.
 	var move_requests: Array[MoveClipRequest] = []
-	
+
 	for track_id: int in ranges_by_track:
 		var gap_start: int = ranges_by_track[track_id].x
 		var gap_size: int = ranges_by_track[track_id].y - ranges_by_track[track_id].x

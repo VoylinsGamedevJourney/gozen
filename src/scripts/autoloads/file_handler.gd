@@ -346,7 +346,7 @@ func save_audio_to_wav(path: String, file: File) -> void:
 		printerr("FileHandler: Error occured when saving to WAV!")
 
 
-#-- File setters & getters --- 
+#-- File setters & getters ---
 func has_file(id: int) -> bool:
 	return files.has(id)
 
@@ -420,12 +420,12 @@ func delete_folder(folder: String) -> void:
 	for file: File in get_file_objects():
 		if file.folder.begins_with(folder):
 			files_to_delete.append(file)
-	
+
 	if !files_to_delete.is_empty():
 		for file: File in files_to_delete:
 			InputManager.undo_redo.add_do_method(_delete_file.bind(file.id))
 			InputManager.undo_redo.add_undo_method(add_file_object.bind(file))
-	
+
 	InputManager.undo_redo.add_do_method(_delete_folder.bind(folder))
 	InputManager.undo_redo.add_undo_method(_add_folder.bind(folder))
 

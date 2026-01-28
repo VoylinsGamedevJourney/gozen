@@ -23,7 +23,7 @@ func _ready() -> void:
 
 func _project_ready() -> void:
 	markers = Project.data.markers
-	
+
 
 func add_marker(frame_nr: int, marker: MarkerData) -> void:
 	if markers.has(frame_nr):

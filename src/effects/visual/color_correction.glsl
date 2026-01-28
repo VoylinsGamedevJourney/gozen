@@ -7,7 +7,7 @@ layout(set = 0, binding = 0) uniform sampler2D input_image;
 layout(rgba8, set = 0, binding = 1) uniform image2D output_image;
 
 layout(set = 0, binding = 2, std140) uniform Params {
-	vec4 tint;
+    vec4 tint;
     float brightness;
     float contrast;
     float saturation;
@@ -17,10 +17,8 @@ layout(set = 0, binding = 2, std140) uniform Params {
     float blue_value;
 } params;
 
-
-
 void main() {
-	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
     ivec2 size = textureSize(input_image, 0);
 
     if (id.x >= size.x || id.y >= size.y) {
@@ -28,8 +26,8 @@ void main() {
     }
 
     vec4 color = texelFetch(input_image, id, 0);
-    
-	// Adjust color values
+
+    // Adjust color values
     color.r *= params.red_value;
     color.g *= params.green_value;
     color.b *= params.blue_value;

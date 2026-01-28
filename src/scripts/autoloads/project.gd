@@ -82,11 +82,11 @@ func save_as() -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	
+
 func open(new_project_path: String) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 	var progress_increment: float
-	
+
 	loading_overlay.update_title("title_loading_project")
 	loading_overlay.update_progress(0, "status_project_loading_init")
 	loading_overlay.update_progress_bar(1, true)
@@ -174,7 +174,7 @@ func _update_recent_projects(new_path: String) -> void:
 		file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.READ)
 		content = file.get_as_text()
 		file.close()
-		
+
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if !file.store_string(new_path + "\n" + content):
 		printerr("Project: Error storing String for recent_projects!")
@@ -287,10 +287,8 @@ func update_timeline_end() -> void:
 
 	for track_id: int in data.tracks.size():
 		var clip: ClipData = TrackHandler.get_last_clip(track_id)
-		
-		if clip != null:
-			end = max(end, ClipHandler.get_end_frame(clip.id))
-	
+		if clip != null: end = max(end, ClipHandler.get_end_frame(clip.id))
+
 	set_timeline_end(end)
 	timeline_end_update.emit(end)
 

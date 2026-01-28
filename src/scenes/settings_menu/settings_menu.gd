@@ -55,7 +55,7 @@ func set_mode(mode: MODE) -> void:
 
 	for section_name: String in menu_options:
 		var section_grid: Node = _create_section(section_name)
-	
+
 		for node: Node in menu_options[section_name]:
 			if !node.get_parent():
 				section_grid.add_child(node)
@@ -68,7 +68,7 @@ func _show_section(section_name: String) -> void:
 
 func _add_side_bar_option(section_name: String) -> void:
 	var button: Button = Button.new()
-	
+
 	button.text = section_name
 	button.toggle_mode = true
 	button.button_group = side_bar_button_group
@@ -125,7 +125,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_header("setting_header_display"), Control.new(),
 			create_label("setting_language"),
 			create_option_button(
-					Settings.get_languages(), 
+					Settings.get_languages(),
 					Settings.get_languages().values().find(Settings.get_language()),
 					Settings.set_language,
 					TYPE_STRING,
@@ -170,7 +170,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_use_native_dialog,
 					"setting_tooltip_use_native_dialog")
 		],
-	
+
 		"title_defaults" = [
 			create_header("setting_header_default_durations"), Control.new(),
 			create_label("setting_default_image_duration"),
@@ -205,7 +205,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 				Settings.set_use_proxies,
 				"setting_tooltip_default_use_proxies"),
 		],
-	
+
 		"title_timeline" = [
 			create_header("setting_header_default_timeline"), Control.new(),
 			create_label("setting_default_track_amount"),
@@ -222,7 +222,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					"setting_tooltip_pause_after_dragging"),
 			create_label("setting_delete_empty_space_mod"),
 			create_option_button(
-					Settings.get_delete_empty_modifiers(), 
+					Settings.get_delete_empty_modifiers(),
 					Settings.get_delete_empty_modifiers().values().find(Settings.get_delete_empty_modifier()),
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
@@ -234,9 +234,9 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_show_time_mode_bar,
 					"setting_tooltip_show_time_mode_bar"),
 		],
-	
+
 		"title_markers" = marker_nodes,
-	
+
 		"title_extras" = [
 			create_header("setting_header_extras"), Control.new(),
 			create_label("setting_check_version"),
@@ -325,7 +325,7 @@ func _option_button_item_selected(id: int, option_button: OptionButton, callable
 		callable.call(option_button.get_item_metadata(id) as float)
 	elif type == TYPE_STRING:
 		callable.call(option_button.get_item_metadata(id) as String)
-	
+
 	if callable == Settings.set_language:
 		Settings.set_language(option_button.get_item_metadata(id) as String)
 	@warning_ignore_restore("unsafe_cast")
@@ -421,21 +421,21 @@ func create_marker_setting(index: int) -> HBoxContainer:
 	line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line_edit.text_submitted.connect(name_function)
 	line_edit.focus_exited.connect(name_function.bind(line_edit.text))
-	
+
 	# Marker color
 	var color_picker: ColorPickerButton = create_color_picker(
 		Settings.get_marker_color(index),
 		Settings.set_marker_color.bind(index),
 		"tooltip_setting_marker_color"
 	)
-	
+
 	# Bundling
 	var hbox: HBoxContainer = HBoxContainer.new()
 
 	hbox.add_child(line_edit)
 	hbox.add_child(color_picker)
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
+
 	return hbox
 
 
@@ -463,7 +463,7 @@ func _on_shortcut_button_pressed(button: Button, action: String, index: int) -> 
 	if listening_active and listening_button != null and listening_button != button:
 		listening_button.button_pressed = false
 		listening_button.text = _get_event_text(Settings.get_events_for_action(listening_action)[listening_index])
-	
+
 	listening_active = true
 	listening_action = action
 	listening_index = index
@@ -484,10 +484,8 @@ func _stop_listening() -> void:
 
 
 func _get_event_text(event: InputEvent) -> String:
-	if event == null:
-		return "None"
+	if event == null: return "None"
 	elif event is InputEventKey:
 		return event.as_text_physical_keycode()
-		
 	return event.as_text()
 

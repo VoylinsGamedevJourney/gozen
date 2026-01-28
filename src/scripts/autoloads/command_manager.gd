@@ -32,7 +32,7 @@ class Command:
 	func get_button_text() -> String:
 		return String(command) if action == "" else "%s [%s]" % [command, action]
 
-	
+
 	static func get_all_keys(commands: Array[Command]) -> PackedStringArray:
 		var arr: PackedStringArray = []
 		for command_option: Command in commands:

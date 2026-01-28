@@ -105,7 +105,7 @@ func _gen_thumb(file_id: int) -> void:
 			image = FileHandler.get_file_data(file_id).video.generate_thumbnail_at_frame(0)
 		FileHandler.TYPE.AUDIO:
 			image = await FileHandler.get_file_data(file_id).generate_audio_thumb()
-	
+
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
 	if type != FileHandler.TYPE.AUDIO:
 		image = scale_thumbnail(image)
@@ -129,7 +129,7 @@ func scale_thumbnail(image: Image) -> Image:
 			int(image.get_width() * image_scale),
 			int(image.get_height() * image_scale),
 			Image.INTERPOLATE_BILINEAR)
-	
+
 	var border_extra: int = int(float(107 - image.get_width()) / 2.0)
 
 	if border_extra != 0:

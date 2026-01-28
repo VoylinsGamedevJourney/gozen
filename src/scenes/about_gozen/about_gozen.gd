@@ -25,8 +25,8 @@ func _set_version_label() -> void:
 		version_string += "-debug"
 
 	version_label.text += version_string
-	
-	
+
+
 func _set_links_label() -> void:
 	var site_url: String = ProjectSettings.get_setting("urls/site")
 	var github_url: String = ProjectSettings.get_setting("urls/github")

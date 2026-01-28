@@ -9,7 +9,7 @@ static func get_data(instance: RefCounted) -> Dictionary[String, Variant]:
 	for property: Dictionary in instance.get_property_list():
 		if property.name[0] != '_' and property.usage in [4096, 4102, 69632]:
 			data[property.name] = instance.get(str(property.name))
-	
+
 	return data
 
 

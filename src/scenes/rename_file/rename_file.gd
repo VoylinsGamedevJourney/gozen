@@ -29,4 +29,4 @@ func _on_rename_file_line_edit_text_submitted(new_nickname: String) -> void:
 		FileHandler.set_file_nickname(id, new_nickname)
 
 	self.queue_free()
-	
+

@@ -32,7 +32,7 @@ func _show_hide_mode_bar(value: bool = Settings.get_show_time_mode_bar()) -> voi
 
 func _draw() -> void:
 	var pos_x: float = get_local_mouse_position().x
-	
+
 	if mode == MODE.CUT:
 		var fade_pos: float = pos_x + 1
 		draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), COLOR_CUT)

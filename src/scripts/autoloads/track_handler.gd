@@ -116,7 +116,7 @@ func get_all_frame_nrs(track_id: int) -> PackedInt64Array:
 func get_all_clips(track_id: int) -> Array[ClipData]:
 	var array: Array[ClipData] = []
 	var keys: PackedInt32Array = tracks[track_id].clips.keys()
-	
+
 	keys.sort()
 	for key: int in keys:
 		array.append(ClipHandler.get_clip(get_clip_id(track_id, key)))
@@ -154,7 +154,7 @@ func get_clip_at(track_id: int, frame_nr: int) -> ClipData:
 			continue
 		elif clip_data.end_frame > frame_nr: # Check if this is the correct clip.
 			return clip_data
-			
+
 	return null
 
 
@@ -207,12 +207,10 @@ func has_frame_nr(track_id: int, frame_nr: int) -> bool:
 func _reset_track_ids() -> void:
 	for id: int in tracks.size():
 		tracks[id].id = id
-
 		for clip: ClipData in get_all_clips(id):
 			clip.track_id = id
-
 	updated.emit()
-	
+
 
 func _add_track(id: int) -> void:
 	var new_track_data: TrackData = TrackData.new()

@@ -55,7 +55,7 @@ const RENDER_PROFILE_VP9: String = "uid://b8lmmvi0gnujr"
 const RENDER_PROFILE_VP8: String = "uid://drlbs008bf7so"
 const RENDER_PROFILE_HEVC: String = "uid://bcktb6d5bti7t"
 
-const BUTTON_CLIP: String = "uid://cvdbyqqvy1rl1" 
+const BUTTON_CLIP: String = "uid://cvdbyqqvy1rl1"
 const BUTTON_MARKER: String = "uid://dvp6a4xgk5pa8"
 
 const STYLE_BOX_CLIP_IMAGE_NORMAL: String = "uid://dlxa6tecfxvwa"

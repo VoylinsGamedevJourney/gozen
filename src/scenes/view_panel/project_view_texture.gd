@@ -114,7 +114,7 @@ func _on_save_screenshot(path: String) -> void:
 		_: # JPG/JPEG
 			if texture.get_image().save_jpg(path):
 				printerr("ProjectViewTexture: Problem saving screenshot to system!")
-	
+
 
 func _update_safe_areas_button() -> void:
 	if show_safe_areas:

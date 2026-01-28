@@ -4,7 +4,7 @@ extends PanelContainer
 signal zoom_changed(new_zoom: float)
 
 
-enum POPUP_ACTION { 
+enum POPUP_ACTION {
 	# Clip options
 	CLIP_VIDEO_ONLY,
 	CLIP_DELETE,
@@ -155,7 +155,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			_commit_current_resize()
 
 		_on_ui_cancel()
-	
+
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		# Check if clip is pressed or not.
 		state = STATE.CURSOR_MODE_SELECT
@@ -296,7 +296,7 @@ func _draw() -> void:
 				var clip_data: ClipData = ClipHandler.get_clip(clip_id)
 				var new_start: int = clip_data.start_frame + draggable.frame_offset
 				var new_track: int = clip_data.track_id + draggable.track_offset
-				
+
 				var preview_position: Vector2 = Vector2(
 						new_start * zoom,
 						new_track * TRACK_TOTAL_SIZE)
@@ -325,7 +325,7 @@ func _draw() -> void:
 
 		# Drawing the original clip box
 		draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
-		
+
 		# Drawing the actual resized box
 		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 
@@ -355,7 +355,7 @@ func _draw() -> void:
 				HORIZONTAL_ALIGNMENT_LEFT, clip_data.duration * zoom - TEXT_OFFSET.x,
 				11, # Font size
 				Color(0.9, 0.9, 0.9))
-		
+
 		# - Audio waves (Part of clip blocks)
 		var wave_data: PackedFloat32Array = FileHandler.get_file_data(clip_data.file_id).audio_wave_data
 
@@ -481,52 +481,52 @@ func _get_resize_target() -> ResizeTarget:
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
 	var clips: Array[ClipData] = TrackHandler.get_clips_in(track_id, visible_start, visible_end)
-	
+
 	for clip_data: ClipData in clips:
 		var start: float = clip_data.start_frame * zoom
 		var end: float = (clip_data.start_frame + clip_data.duration) * zoom
-		
+
 		if abs(frame_pos - start) <= RESIZE_HANDLE_WIDTH:
 			return ResizeTarget.new(
 					clip_data.id, false, clip_data.start_frame, clip_data.duration)
 		elif abs(frame_pos - end) <= RESIZE_HANDLE_WIDTH:
 			return ResizeTarget.new(
 					clip_data.id, true, clip_data.start_frame, clip_data.duration)
-	
+
 	return null
 
 
 func _get_fade_target() -> FadeTarget:
 	var track_id: int = get_track_from_mouse()
 	var mouse_pos: Vector2 = get_local_mouse_position()
-	
+
 	if track_id < 0 or track_id >= TrackHandler.get_tracks_size():
 		return null
-		
+
 	# Check for clips in visible area
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
-	
+
 	for clip: ClipData in TrackHandler.get_clips_in(track_id, visible_start, visible_end):
 		var is_video: bool = ClipHandler.get_type(clip.id) in EditorCore.VISUAL_TYPES
 		var is_audio: bool = ClipHandler.get_type(clip.id) in EditorCore.AUDIO_TYPES
-		
+
 		var start_x: float = clip.start_frame * zoom
 		var end_x: float = (clip.start_frame + clip.duration) * zoom
 		var y_pos: float = clip.track_id * TRACK_TOTAL_SIZE
-		
+
 		# Hitbox tolerance
-		var r: float = FADE_HANDLE_SIZE * 1.5 
-		
+		var r: float = FADE_HANDLE_SIZE * 1.5
+
 		# Check Video Handles (Bottom)
 		if is_video:
 			var video_y_pos: float = y_pos + TRACK_HEIGHT - FADE_HANDLE_SIZE
 			var in_pos: Vector2 = Vector2(start_x + (clip.fade_in_visual * zoom), video_y_pos)
 			var out_pos: Vector2 = Vector2(end_x - (clip.fade_out_visual * zoom), video_y_pos)
-			
+
 			if mouse_pos.distance_to(in_pos) < r: return FadeTarget.new(clip.id, false, true)
 			if mouse_pos.distance_to(out_pos) < r: return FadeTarget.new(clip.id, true, true)
-			
+
 		# Check Audio Handles (Top)
 		if is_audio:
 			var audio_y_pos: float = y_pos + FADE_HANDLE_SIZE
@@ -535,7 +535,6 @@ func _get_fade_target() -> FadeTarget:
 
 			if mouse_pos.distance_to(in_pos) < r: return FadeTarget.new(clip.id, false, false)
 			if mouse_pos.distance_to(out_pos) < r: return FadeTarget.new(clip.id, true, false)
-			
 	return null
 
 
@@ -549,7 +548,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 		return null
 
 	var clicked_clip: ClipData = pressed_clip
-		
+
 	if pressed_clip.id not in selected_clip_ids:
 		selected_clip_ids = [pressed_clip.id]
 		queue_redraw()
@@ -564,9 +563,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 
 	data.ids = clip_ids
 	data.mouse_offset = get_frame_from_mouse() - clicked_clip.start_frame
-	
 	state = STATE.MOVING
-
 	return data
 
 
@@ -647,7 +644,7 @@ func _can_move_clips() -> bool:
 		var clip: ClipData = ClipHandler.get_clip(id)
 		var new_track: int = clip.track_id + track_difference
 		var middle_frame: int = clip.start_frame + floori(clip.duration / 2.0)
-		
+
 		if new_track < 0 or new_track >= TrackHandler.get_tracks_size():
 			return false # First boundary check
 
@@ -702,12 +699,12 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 		ClipHandler.add_clips(clips)
 	else: # Moving clips
 		var move_requests: Array[MoveClipRequest] = []
-		
+
 		for id: int in draggable.ids:
 			var request: MoveClipRequest = MoveClipRequest.new(
 					id, draggable.frame_offset, draggable.track_offset)
 			move_requests.append(request)
-			
+
 		if not move_requests.is_empty():
 			ClipHandler.move_clips(move_requests)
 
@@ -744,33 +741,33 @@ func _handle_resize_motion() -> void:
 	var track_id: int = clip_data.track_id
 	var file_duration: int = FileHandler.get_file(clip_data.file_id).duration
 	var current_frame: int = get_frame_from_mouse()
-	
+
 	if resize_target.is_end: # Resizing end
 		var new_duration: int = current_frame - resize_target.original_start
 		var max_allowed_duration: int = file_duration - clip_data.begin
-		
+
 		if new_duration < 1:
 			new_duration = 1
 		if new_duration > max_allowed_duration:
 			new_duration = max_allowed_duration
-		
+
 		# Collision detection
 		var free_region: Vector2i = TrackHandler.get_free_region(
 			track_id, resize_target.original_start + 1, [resize_target.clip_id])
 
 		if (resize_target.original_start + new_duration) > free_region.y:
 			new_duration = free_region.y - resize_target.original_start
-			
+
 		resize_target.delta = new_duration - resize_target.original_duration
 	else: # Resizing beginning
 		var new_start: int = current_frame
 		var min_allowed_duration: int = resize_target.original_start - clip_data.begin
-		
+
 		if new_start > (resize_target.original_start + resize_target.original_duration - 1):
 			new_start = (resize_target.original_start + resize_target.original_duration - 1)
 		if new_start < min_allowed_duration:
 			new_start = min_allowed_duration
-			
+
 		# Collision detection
 		var free_region: Vector2i = TrackHandler.get_free_region(
 				track_id,
@@ -779,9 +776,7 @@ func _handle_resize_motion() -> void:
 
 		if new_start < free_region.x:
 			new_start = free_region.x
-			
 		resize_target.delta = new_start - resize_target.original_start
-	
 	queue_redraw()
 
 
@@ -790,21 +785,20 @@ func _handle_fade_motion() -> void:
 	var mouse_x: float = get_local_mouse_position().x
 	var start_x: float = clip.start_frame * zoom
 	var end_x: float = (clip.start_frame + clip.duration) * zoom
-	
+
 	# Convert pixel drag to frame amount
 	var drag_frames: int = 0
-	
+
 	if not fade_target.is_end: # Fade In
 		drag_frames = floori((mouse_x - start_x) / zoom)
 		drag_frames = clamp(drag_frames, 0, clip.duration / 2.0)
-		
+
 		if fade_target.is_visual: clip.fade_in_visual = drag_frames
 		else: clip.fade_in_audio = drag_frames
-		
 	else: # Fade Out
 		drag_frames = floori((end_x - mouse_x) / zoom)
 		drag_frames = clamp(drag_frames, 0, clip.duration / 2.0)
-		
+
 		if fade_target.is_visual: clip.fade_out_visual = drag_frames
 		else: clip.fade_out_audio = drag_frames
 
@@ -856,15 +850,12 @@ func zoom_at_mouse(factor: float) -> void:
 	var mouse_viewport_offset: float = old_mouse_pos_x - scroll.scroll_horizontal
 
 	zoom = clamp(zoom * factor, ZOOM_MIN, ZOOM_MAX)
-
-	if old_zoom == zoom:
-		return
+	if old_zoom == zoom: return
 
 	var zoom_ratio: float = zoom / old_zoom
 	var new_mouse_pos_x: float = old_mouse_pos_x * zoom_ratio
-	
-	scroll.scroll_horizontal = int(new_mouse_pos_x - mouse_viewport_offset)
 
+	scroll.scroll_horizontal = int(new_mouse_pos_x - mouse_viewport_offset)
 	zoom_changed.emit(zoom)
 	accept_event()
 
@@ -890,18 +881,17 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 
 	for clip_id: int in clips:
 		move_requests.append(MoveClipRequest.new(clip_id, -empty_size, 0))
-
 	ClipHandler.move_clips(move_requests)
 
 
 func cut_clip_at(clip_data: ClipData, frame_pos: int) -> void:
 	if clip_data.start_frame <= frame_pos and clip_data.end_frame >= frame_pos:
 		ClipHandler.cut_clips([CutClipRequest.new(clip_data.id, frame_pos - clip_data.start_frame)])
-
 	queue_redraw()
 
+
+# WARN: Make certain that cutting is possible (space available)
 func cut_clips_at(frame_pos: int) -> void:
-	# WARN: Make certain that cutting is possible (space available)
 
 	# Check if any of the clips in the tracks is in selected clips
 	# if there are selected clips present, we only cut the selected ones

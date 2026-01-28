@@ -84,7 +84,7 @@ func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vecto
 func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
 	var data: Dictionary[String, Variant] = {}
 	var param_map: Dictionary[String, EffectParam] = {}
-	
+
 	for effect_param: EffectParam in _effect.params:
 		param_map[effect_param.param_id] = effect_param
 
@@ -117,7 +117,7 @@ func free_rids(device: RenderingDevice) -> void:
 func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
 	var current_offset: int = stream_buffer.get_position()
 	var remainder: int = current_offset % alignment
-	
+
 	if remainder != 0:
 		for i: int in alignment - remainder:
 			stream_buffer.put_8(0)

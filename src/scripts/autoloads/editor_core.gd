@@ -89,7 +89,7 @@ func set_frame_nr(value: int) -> void:
 		for i: int in audio_players.size():
 			audio_players[i].stop()
 		return
-	
+
 	frame_nr = value
 	if frame_nr == prev_frame + 1:
 		for i: int in audio_players.size():
@@ -98,13 +98,12 @@ func set_frame_nr(value: int) -> void:
 			elif audio_players[i].stop_frame == frame_nr:
 				audio_players[i].stop()
 		return
-	
+
 	# Reset/update all audio players
 	for i: int in audio_players.size():
 		if loaded_clips[i] != -1: audio_players[i].set_audio(find_audio(frame_nr, i))
-	
 	prev_frame = frame_nr
-		
+
 
 func _set_is_playing(value: bool) -> void:
 	is_playing = value
@@ -140,7 +139,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			loaded_clips[i] = id
 
 		update_view(i, true)
-	
+
 	if frame_nr == Project.get_timeline_end():
 		is_playing = false
 	frame_changed.emit()
@@ -165,7 +164,7 @@ func _check_clip_end(new_frame_nr: int, clip_id: int) -> bool:
 	if ClipHandler.clips.has(clip_id):
 		return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
 	return false
-	
+
 
 func _on_clips_updated() -> void:
 	update_audio()
@@ -208,25 +207,25 @@ func update_audio() -> void:
 		else:
 			var clip: ClipData = ClipHandler.get_clip(player.clip_id)
 			player.stop_frame = clip.end_frame
-			
+
 			if frame_nr < clip.start_frame: player.stop()
 			elif frame_nr > clip.end_frame: player.stop()
 
-			
+
 # Video stuff  ----------------------------------------------------------------
 func setup_playback() -> void:
 	viewport.size = Project.get_resolution()
 
 	for i: int in Project.data.tracks.size():
 		var texture_rect: TextureRect = TextureRect.new()
-		
+
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 
 		view_textures.append(texture_rect)
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		visual_compositors.append(VisualCompositor.new())
-		
+
 		viewport.add_child(texture_rect)
 		viewport.move_child(texture_rect, 1)
 

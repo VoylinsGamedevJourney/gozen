@@ -106,7 +106,7 @@ func _load_video_data(file_path: String) -> void:
 	if temp_video.open(path_to_load):
 		printerr("FileData: Couldn't open video at path '%s'!" % file_path)
 		return
-	
+
 	var video_resolution: Vector2i = temp_video.get_resolution()
 	var rotated: bool = abs(temp_video.get_rotation()) == 90
 
@@ -190,7 +190,7 @@ func _create_wave(file_path: String) -> void:
 func generate_audio_thumb() -> Image:
 	if !audio_wave_data.size():
 		await update_wave
-		
+
 	var size: Vector2i = Vector2i(854, 480)
 	var thumb: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGB8)
 
@@ -219,6 +219,5 @@ func generate_audio_thumb() -> Image:
 
 	for x_pos: int in size.x: # Center line.
 		thumb.set_pixel(x_pos, center, Color.GRAY)
-	
 	return thumb
 

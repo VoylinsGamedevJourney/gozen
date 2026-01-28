@@ -201,7 +201,7 @@ func _handle_audio(clip_data: ClipData, track_audio: PackedByteArray) -> PackedB
 		match effect.effect_id:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.effect_name)
-	
+
 	var start_sample: int = Utils.get_sample_count(clip_data.start_frame - 1, framerate)
 
 	# Resize the audio data so we're certain the audio will be
@@ -210,7 +210,7 @@ func _handle_audio(clip_data: ClipData, track_audio: PackedByteArray) -> PackedB
 	# the audio starts one sample too late
 	if start_sample != 0 and track_audio.size() != start_sample:
 		track_audio.resize(start_sample)
-	
+
 	# Add the data to the track audio and send back
 	track_audio.append_array(clip_data.get_clip_audio_data())
 	return track_audio

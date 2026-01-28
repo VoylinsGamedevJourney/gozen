@@ -28,7 +28,7 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export var threads_spin_box: SpinBox
 
 var button_group: ButtonGroup = ButtonGroup.new()
-var status_indicator_id: int 
+var status_indicator_id: int
 
 var progress_overlay: ProgressOverlay
 var progress_frame_increase: float = 0.0
@@ -243,7 +243,7 @@ func _render_finished() -> void:
 	dialog.dialog_text += "Render time: %s" % Utils.format_time_str(
 			RenderManager.encoding_time / 1000.0)
 	dialog.exclusive = true
-	
+
 	add_child(dialog)
 	dialog.popup_centered()
 
@@ -261,7 +261,7 @@ func _show_error(message: String) -> void:
 	dialog.title = "title_rendering_error"
 	dialog.dialog_text = message
 	dialog.exclusive = true
-	
+
 	add_child(dialog)
 	dialog.popup_centered()
 

@@ -30,7 +30,7 @@ func _on_skip_prev_button_pressed() -> void:
 		if marker_pos < frame_nr:
 			prev_marker_pos = marker_pos
 		else: break
-	
+
 	EditorCore.set_frame(maxi(0, prev_marker_pos))
 
 
@@ -51,7 +51,7 @@ func _on_skip_next_button_pressed() -> void:
 		if marker_pos > frame_nr:
 			next_marker_pos = marker_pos
 			break
-	
+
 	EditorCore.set_frame(next_marker_pos)
 
 

@@ -178,7 +178,7 @@ func _on_popup_action_folder_rename() -> void:
 	# Ensure it is a folder and not root
 	if not folder_path.ends_with("/") or folder_path == "/":
 		return
-	
+
 	var current_name: String = folder_path.trim_suffix("/").get_file()
 
 	var dialog: AcceptDialog = PopupManager.create_accept_dialog("popup_item_rename")
@@ -186,7 +186,7 @@ func _on_popup_action_folder_rename() -> void:
 	var line_edit: LineEdit = LineEdit.new()
 	var label: Label = Label.new()
 
-	label.text = "accept_dialog_text_folder_name" 
+	label.text = "accept_dialog_text_folder_name"
 	line_edit.text = current_name
 	line_edit.select_all()
 
@@ -221,7 +221,7 @@ func _on_popup_action_folder_delete() -> void:
 	FileHandler.delete_folder(str(tree.get_selected().get_metadata(0)))
 
 
-func _on_popup_action_file_rename() -> void: 
+func _on_popup_action_file_rename() -> void:
 	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 	var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
 
@@ -269,7 +269,7 @@ func _on_popup_action_file_extract_audio() -> void:
 
 func _on_popup_action_file_duplicate() -> void: # Only for text.
 	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
-	
+
 	if file.type == FileHandler.TYPE.TEXT:
 		FileHandler.duplicate_text_file(file.id)
 	else:
@@ -318,7 +318,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 			if file_id in draggable.ids:
 				continue
 
-			var file_duration: int = FileHandler.get_file_duration(file_id) 
+			var file_duration: int = FileHandler.get_file_duration(file_id)
 
 			if file_duration <= 0:
 				file_duration = FileHandler.update_file_duration(file_id)
@@ -354,7 +354,7 @@ func _add_folder_to_tree(folder: String) -> void:
 			folder_items[check_path].set_icon_max_width(0, 20)
 			folder_items[check_path].set_metadata(0, check_path)
 			_sort_folder(check_path)
-			
+
 		previous_folder = folder_items[check_path]
 
 
@@ -413,7 +413,7 @@ func _sort_folder(folder: String) -> void:
 		if last_item != null:
 			folders[folder_name].move_after(last_item)
 		last_item = folders[folder_name]
-		
+
 
 	for file_name: String in files_order:
 		if last_item != null:
@@ -474,12 +474,12 @@ func _on_folder_renamed(old_folder_path: String, new_folder_path: String) -> voi
 	for folder_path: String in folder_items.keys():
 		if folder_path.begins_with(old_folder_path):
 			paths_to_update.append(folder_path)
-	
+
 	# Update items mapping and metadata
 	for folder_path: String in paths_to_update:
 		var updated_path: String = new_folder_path + folder_path.substr(length)
 		var item: TreeItem = folder_items[folder_path]
-		
+
 		folder_items.erase(folder_path)
 		folder_items[updated_path] = item
 		item.set_metadata(0, updated_path)
@@ -488,16 +488,16 @@ func _on_folder_renamed(old_folder_path: String, new_folder_path: String) -> voi
 		if folder_path == old_folder_path:
 			var new_folder_name: String = new_folder_path.trim_suffix("/").get_file()
 			item.set_text(0, new_folder_name)
-			
+
 	var parent_path: String = new_folder_path.trim_suffix("/").get_base_dir()
 
 	if parent_path in ["", "/"]:
 		parent_path = "/"
 	else:
 		parent_path += "/"
-	
+
 	_sort_folder(parent_path)
-	
+
 
 func _get_recursive_file_ids(item: TreeItem) -> PackedInt64Array:
 	var ids: PackedInt64Array = []
@@ -510,7 +510,7 @@ func _get_recursive_file_ids(item: TreeItem) -> PackedInt64Array:
 			ids.append(int(metadata))
 		else: # Folder
 			ids.append_array(_get_recursive_file_ids(child))
-	
+
 	return ids
 
 
@@ -557,7 +557,7 @@ func _create_folder_at_selected(folder_name: String) -> void:
 	if not parent_path.ends_with("/"):
 		parent_path += "/"
 
-	var full_path: String = parent_path + folder_name + "/" 
+	var full_path: String = parent_path + folder_name + "/"
 
 	if full_path not in folder_items:
 		FileHandler.add_folder(full_path)
@@ -571,7 +571,7 @@ func _can_drop_list_data(at_position: Vector2, data: Variant) -> bool:
 	var section: int = tree.get_drop_section_at_position(at_position)
 
 	tree.drop_mode_flags = Tree.DROP_MODE_ON_ITEM | Tree.DROP_MODE_INBETWEEN
-	
+
 	# Can't drop in files
 	return not (item and section == 0 and str(item.get_metadata(0)).is_valid_int())
 
@@ -583,16 +583,16 @@ func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 	var item: TreeItem = tree.get_item_at_position(at_position)
 	var section: int = tree.get_drop_section_at_position(at_position)
 	var target_folder: String = "/"
-	
+
 	if item:
 		var metadata: Variant = item.get_metadata(0)
-		
-		if section == 0: 
+
+		if section == 0:
 			target_folder = str(metadata)
-		else: 
+		else:
 			var parent_item: TreeItem = item.get_parent()
 
 			if parent_item:
 				target_folder = str(parent_item.get_metadata(0))
-	
+
 	FileHandler.move_files(data.ids, target_folder)
