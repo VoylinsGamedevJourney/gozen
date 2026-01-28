@@ -71,11 +71,11 @@ func get_thumb(file_id: int) -> Texture2D:
 		# Add the correct placeholder image.
 		match FileHandler.get_file(file_id).type:
 			FileHandler.TYPE.AUDIO:
-				return _get_default_thumb_audio()
+				return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
 			FileHandler.TYPE.TEXT:
-				return _get_default_thumb_text()
+				return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
 			_: # Video placeholder.
-				return _get_default_thumb_video()
+				return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO)
 
 	# Return the saved thumbnail.
 	image = Image.load_from_file(ProjectSettings.globalize_path(thumb_folder + FILE_NAME % data[path]))
@@ -83,19 +83,8 @@ func get_thumb(file_id: int) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
-func _get_default_thumb_audio() -> Texture2D:
-	var tex: Texture2D = preload(Library.THUMB_DEFAULT_AUDIO)
-	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
-
-
-func _get_default_thumb_video() -> Texture2D:
-	var tex: Texture2D = preload(Library.THUMB_DEFAULT_VIDEO)
-	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
-
-
-func _get_default_thumb_text() -> Texture2D:
-	var tex: Texture2D = preload(Library.THUMB_DEFAULT_TEXT)
-	return ImageTexture.create_from_image(scale_thumbnail(tex.get_image()))
+func _get_default_thumb(icon_uid: String) -> Texture2D:
+	return ImageTexture.create_from_image(scale_thumbnail(load(icon_uid).get_image()))
 
 
 # This function is for generating thumbnails, should only be called from the

@@ -387,74 +387,15 @@ func _draw() -> void:
 					block_pos_y,
 					zoom,
 					block_height)
-
 				draw_rect(sample_rect, COLOR_AUDIO_WAVE)
 
 		# - Fading handles + amount
-		var is_video: bool = ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES
-		var is_audio: bool = ClipHandler.get_type(clip_id) in EditorCore.AUDIO_TYPES
 		var show_handles: bool = (hovered_clip != null and hovered_clip.id == clip_id) or \
 				(state == STATE.FADING and fade_target.clip_id == clip_id)
-
-
-		if is_video: # Bottom handles
-			var fade_in: float = box_pos.x + (clip_data.fade_in_visual * zoom)
-			var fade_out: float = box_pos.x + (clip_data.duration * zoom) - (clip_data.fade_out_visual * zoom)
-			var handle_y: float = box_pos.y + TRACK_HEIGHT
-
-			# Draw handle fade in
-			if show_handles:
-				draw_circle(
-						Vector2(fade_in, handle_y),
-						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
-
-			# Draw line fade in (Top Left to Bottom Right/Handle)
-			if clip_data.fade_in_visual > 0:
-				draw_line(
-						Vector2(box_pos.x, box_pos.y),
-						Vector2(fade_in, handle_y), FADE_LINE_COLOR, 1.0, true)
-
-			# Draw handle fade out
-			if show_handles:
-				draw_circle(
-						Vector2(fade_out, handle_y),
-						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
-
-			# Draw line fade out (Bottom Left/Handle to Top Right)
-			if clip_data.fade_out_visual > 0:
-				draw_line(
-						Vector2(fade_out, handle_y),
-						Vector2(box_pos.x + (clip_data.duration * zoom), box_pos.y),
-						FADE_LINE_COLOR, 1.0, true)
-
-		if is_audio: # Top handles
-			var fade_in: float = box_pos.x + (clip_data.fade_in_audio * zoom)
-			var fade_out: float = box_pos.x + (clip_data.duration * zoom) - (clip_data.fade_out_audio * zoom)
-			var handle_y: float = box_pos.y
-
-			# Draw handle fade in
-			if show_handles:
-				draw_circle(
-						Vector2(fade_in, handle_y),
-						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
-
-			# Draw line fade in (Bottom Left to Top Right/Handle)
-			if clip_data.fade_in_audio > 0:
-				draw_line(
-						Vector2(box_pos.x, box_pos.y + TRACK_HEIGHT),
-						Vector2(fade_in, handle_y), FADE_LINE_COLOR, 1.0, true)
-
-			# Draw handle fade out
-			if show_handles:
-				draw_circle(
-						Vector2(fade_out, handle_y),
-						FADE_HANDLE_SIZE / 2.0, FADE_HANDLE_COLOR)
-
-			# Draw line fade out (Top Left/Handle to Bottom Right)
-			if clip_data.fade_out_audio > 0:
-				draw_line(
-						Vector2(fade_out, handle_y),
-						Vector2(box_pos.x + (clip_data.duration * zoom), box_pos.y + TRACK_HEIGHT), FADE_LINE_COLOR, 1.0, true)
+		if ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES: # Bottom handles
+			_draw_fade_handles(clip_data, box_pos, true, show_handles)
+		if ClipHandler.get_type(clip_id) in EditorCore.AUDIO_TYPES: # Top handles
+			_draw_fade_handles(clip_data, box_pos, false, show_handles)
 
 	# - Playhead
 	var playhead_pos: float = EditorCore.frame_nr * zoom
@@ -470,7 +411,7 @@ func _draw() -> void:
 		var pos_x: float = frame_nr * zoom
 
 		if frame_nr == MarkerHandler.dragged_marker:
-			pos_x = MarkerHandler.dragged_marker_offset			
+			pos_x = MarkerHandler.dragged_marker_offset
 
 		draw_line(
 				Vector2(pos_x, 0),
@@ -483,6 +424,35 @@ func _draw() -> void:
 				Vector2(pos_x, size.y),
 				Settings.get_marker_color(marker_data.type_id) * Color(1.0, 1.0, 1.0, 0.1),
 				1.0)
+
+
+func _draw_fade_handles(clip_data: ClipData, box_pos: Vector2, is_visual: bool, show_handles: bool) -> void:
+	var handle_radius: float = FADE_HANDLE_SIZE / 4.0
+	var clip_end_x: float = box_pos.x + (clip_data.duration * zoom)
+	var fade_in_length: int = clip_data.fade_in_visual if is_visual else clip_data.fade_in_audio
+	var fade_out_length: int = clip_data.fade_out_visual if is_visual else clip_data.fade_out_audio
+
+	var fade_in_x: float = box_pos.x + (fade_in_length * zoom)
+	var fade_out_x: float = clip_end_x - (fade_out_length * zoom)
+	var handle_y: float = box_pos.y
+	if is_visual:
+		handle_y += TRACK_HEIGHT - (handle_radius/2.0)
+	else:
+		handle_y += (handle_radius/2.0)
+
+	if show_handles:
+		handle_radius *= 2
+		draw_circle(Vector2(fade_in_x, handle_y), handle_radius, FADE_HANDLE_COLOR) # Fade in handle
+		draw_circle(Vector2(fade_out_x, handle_y), handle_radius, FADE_HANDLE_COLOR) # Fade out handle
+
+	if fade_in_length > 0: # Draw line fade in (Top Left to Bottom Right/Handle)
+		var start_y: float = box_pos.y if is_visual else (box_pos.y + TRACK_HEIGHT)
+		draw_line(Vector2(box_pos.x, start_y), Vector2(fade_in_x, handle_y), FADE_LINE_COLOR, 1.0, true)
+	if fade_out_length > 0: # Draw line fade out (Bottom Left/Handle to Top Right)
+		var end_y: float = box_pos.y if is_visual else (box_pos.y + TRACK_HEIGHT)
+		var from_pos: Vector2 = Vector2(fade_out_x, handle_y)
+		var to_pos: Vector2 = Vector2(box_pos.x + (clip_data.duration * zoom), end_y)
+		draw_line(from_pos, to_pos, FADE_LINE_COLOR, 1.0, true)
 
 
 func _get_clip_on_mouse() -> ClipData:

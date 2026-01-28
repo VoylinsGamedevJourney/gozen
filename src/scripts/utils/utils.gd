@@ -45,16 +45,12 @@ static func get_unique_id(keys: PackedInt64Array) -> int:
 
 ## Easier way to check if a value is within a range.
 static func in_range(value: int, min_value: int, max_value: int, include_last: bool = true) -> bool:
-	if include_last:
-		return value >= min_value and value <= max_value
-	return value >= min_value and value < max_value
+	return value >= min_value and (value <= max_value if include_last else value < max_value)
 
 
 ## Same as in_range but for floats
 static func in_rangef(value: float, min_value: float, max_value: float, include_last: bool = true) -> bool:
-	if include_last:
-		return value >= min_value and value <= max_value
-	return value >= min_value and value < max_value
+	return value >= min_value and (value <= max_value if include_last else value < max_value)
 
 
 static func format_time_str_from_frame(frame_count: int, framerate: float, short: bool) -> String:

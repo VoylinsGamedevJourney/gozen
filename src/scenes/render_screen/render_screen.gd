@@ -285,8 +285,7 @@ func _on_start_render_button_pressed() -> void:
 
 		render_resolution =	Vector2i(int(target_height * aspect), target_height)
 		if render_resolution.x % 2 != 0: render_resolution.x += 1
-		print("RenderManager: Draft mode enabled. Scaling to ", target_resolution)
-
+		print("RenderManager: Draft mode enabled. Scaling to ", render_resolution)
 
 	# Printing info about the rendering process.
 	print("--------------------")

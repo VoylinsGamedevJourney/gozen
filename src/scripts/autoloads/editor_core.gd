@@ -4,9 +4,6 @@ signal frame_changed
 signal play_changed(value: bool)
 
 
-enum SHADER_ID { EMPTY, YUV_STANDARD, YUV_FULL, IMAGE }
-
-
 const VISUAL_TYPES: PackedInt64Array = [
 		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT,
 		FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]
@@ -25,7 +22,6 @@ var prev_frame: int = -1
 
 var is_playing: bool = false: set = _set_is_playing
 var loaded_clips: PackedInt64Array = []
-var loaded_shaders: Array[SHADER_ID] = []
 
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0  # Get's set when changing framerate
@@ -139,7 +135,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 
 			if view_textures[i].texture != null:
 				view_textures[i].texture = null
-				loaded_shaders[i] = SHADER_ID.EMPTY
 			continue
 		else:
 			loaded_clips[i] = id
@@ -229,8 +224,6 @@ func setup_playback() -> void:
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 
 		view_textures.append(texture_rect)
-		loaded_shaders.append(SHADER_ID.EMPTY)
-
 		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		visual_compositors.append(VisualCompositor.new())
 		
