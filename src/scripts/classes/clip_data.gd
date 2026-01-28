@@ -23,6 +23,11 @@ var fade_out_visual: int = 0
 var fade_in_audio: int = 0
 var fade_out_audio: int = 0
 
+# Audio take-over variables.
+var ato_file_id: int = -1
+var ato_offset: float = 0.0 # Seconds
+var ato_active: bool = false
+
 
 
 func _to_string() -> String:
