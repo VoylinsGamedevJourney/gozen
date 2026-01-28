@@ -188,7 +188,7 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 		var old_value: Variant = null
 		var keyframe_exists: bool = false
 
-		if effect.keyframes.has(param_id) and effect.keyframes[param_id].has(frame_nr):
+		if effect.keyframes[param_id].has(frame_nr):
 			old_value = effect.keyframes[param_id][frame_nr]
 			keyframe_exists = true
 		else:
@@ -217,12 +217,35 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 	InputManager.undo_redo.commit_action()
 
 
+func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
+	if !ClipHandler.clips.has(clip_id): return
+	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var effect_list: Array = _get_effect_list(clip_data, is_visual)
+	if index < 0 or index >= effect_list.size():
+		return printerr("EffectsHandler: Trying to remove keyframe from invalid effect! ", index)
+
+	var effect: GoZenEffect = effect_list[index]
+	
+	# Check if there is actually a keyframe to remove
+	if not effect.keyframes.has(param_id): return
+	if not effect.keyframes[param_id].has(frame_nr):return 
+
+	var old_value: Variant = effect.keyframes[param_id][frame_nr]
+
+	InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.effect_name)
+
+	InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
+			clip_id, index, is_visual, param_id, frame_nr))
+	InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+			clip_id, index, is_visual, param_id, frame_nr, old_value))
+
+	InputManager.undo_redo.commit_action()
+
+
 func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
 	var list: Array = _get_effect_list(ClipHandler.get_clip(clip_id), is_visual)
 	var effect: GoZenEffect = list[index]
-	
-	if not effect.keyframes.has(param_id):
-		effect.keyframes[param_id] = {}
+	if not effect.keyframes.has(param_id): effect.keyframes[param_id] = {}
 
 	effect.keyframes[param_id][frame_nr] = value
 	effect._cache_dirty = true

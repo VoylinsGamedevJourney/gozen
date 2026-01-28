@@ -5,6 +5,9 @@ extends PanelContainer
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
+const COLOR_KEYFRAMING_ON: Color = Color(1,1,1,0.5)
+const COLOR_KEYFRAMING_OFF: Color = Color(1,1,1,1)
+
 const SIZE_EFFECT_HEADER_ICON: int = 16
 
 
@@ -154,6 +157,9 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	# TODO: Replace up and down arrows with dragging behaviour
 
+	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+
 	var container: FoldableContainer = FoldableContainer.new()
 	var button_move_up: TextureButton = TextureButton.new()
 	var button_move_down: TextureButton = TextureButton.new()
@@ -215,6 +221,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	# Adding effect params
 	for param: EffectParam in effect.params:
+		var param_id: String = param.param_id
 		var param_title: Label = Label.new()
 		var param_settings: Control = _create_param_control(param, index, is_visual)
 		var param_keyframe_button: TextureButton = TextureButton.new()
@@ -223,14 +230,19 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 		param_title.tooltip_text = param.param_tooltip
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-		param_settings.name = "PARAM_" + param.param_id
+		param_settings.name = "PARAM_" + param_id
 
-		param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+		param_keyframe_button.name = "KEYFRAME_" + param_id
 		param_keyframe_button.ignore_texture_size = true
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_keyframe_button.custom_minimum_size.x = 14
-		param_keyframe_button.pressed.connect(_keyframe_button_pressed)
-		# TODO: Link function to make keyframing work
+		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
+				current_clip_id, index, is_visual, param_id))
+
+		if effect.keyframes.has(param.param_id) and effect.keyframes[param_id].has(relative_frame_nr):
+			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+		else:
+			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
 
 		grid.add_child(param_title)
 		grid.add_child(param_settings)
@@ -325,6 +337,12 @@ func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
 	return Vector2(x, y)
 
 
+func _get_current_ui_value_for_param(effect: GoZenEffect, param_id: String, relative_frame_nr: int) -> Variant:
+	for param: EffectParam in effect.params:
+		if param.param_id == param_id:
+			return effect.get_value(param, relative_frame_nr)
+	return null
+
 func _on_move_up(index: int, is_visual: bool) -> void:
 	EffectsHandler.move_effect(current_clip_id, index, index + 1, is_visual)
 
@@ -338,9 +356,7 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1 or !ClipHandler.clips.has(current_clip_id):
-		return
-
+	if current_clip_id == -1 or !ClipHandler.clips.has(current_clip_id): return
 	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
 	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 	var container: VBoxContainer
@@ -362,12 +378,23 @@ func _update_ui_values() -> void:
 			foldable_container.folded = true
 
 		for param: EffectParam in effect.params:
-			var param_settings: Control = grid.get_node_or_null("PARAM_" + param.param_id)
+			var param_id: String = param.param_id
+			var param_settings: Control = grid.get_node_or_null("PARAM_" + param_id)
 
 			if param_settings:
 				var value: Variant = effect.get_value(param, frame_nr)
-
 				_set_param_settings_value(param_settings, value)
+			
+			var keyframe_button: TextureButton = grid.get_node_or_null("KEYFRAME_" + param_id)
+			if !keyframe_button: continue
+			if effect.keyframes[param_id].has(frame_nr):
+				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+			else:
+				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+			if effect.keyframes[param_id].size() <= 1:
+				keyframe_button.modulate = COLOR_KEYFRAMING_OFF
+			else:
+				keyframe_button.modulate = COLOR_KEYFRAMING_ON
 
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
@@ -435,6 +462,17 @@ func _effect_param_update_call(value: Variant, index: int, is_visual: bool, para
 	EffectsHandler.update_param(current_clip_id, index, is_visual, param_id, value, false)
 
 
-func _keyframe_button_pressed() -> void:
-	# TODO: Make this work
-	pass
+func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_id: String) -> void:
+	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+	var effect: GoZenEffect
+	if is_visual: effect = clip_data.effects_video[index]
+	else: effect = clip_data.effects_audio[index]
+
+	if effect.keyframes[param_id].has(relative_frame_nr):
+		EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)
+	else:
+		var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
+		EffectsHandler.update_param(clip_id, index, is_visual, param_id, value, true)
+
+	_update_ui_values()

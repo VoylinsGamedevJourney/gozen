@@ -306,7 +306,6 @@ func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Ar
 
 			if not new_effect.keyframes.has(param_id):
 				new_effect.keyframes[param_id] = {}
-
 			new_effect.keyframes[param_id][0] = value_at_cut
 
 			# Shift existing keyframes that appear after the cut.
@@ -335,7 +334,6 @@ func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Arra
 
 			if not new_effect.keyframes.has(param_id):
 				new_effect.keyframes[param_id] = {}
-
 			new_effect.keyframes[param_id][0] = value_at_cut
 
 			# Shift existing keyframes that appear after the cut.

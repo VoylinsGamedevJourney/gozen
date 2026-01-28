@@ -61,9 +61,7 @@ func change_default_param(param_id: String, new_default: Variant) -> void:
 func set_default_keyframe() -> void:
 	for effect_param: EffectParam in params:
 		var param_id: String = effect_param.param_id
-
-		if not keyframes.has(param_id):
-			keyframes[param_id] = {}
+		if not keyframes.has(param_id): keyframes[param_id] = {}
 		if not keyframes[param_id].has(0):
 			keyframes[param_id][0] = effect_param.default_value
 
@@ -77,10 +75,8 @@ func _validate_cache(param_id: String) -> PackedInt64Array:
 
 	if not _key_cache.has(param_id):
 		var keys: PackedInt64Array = []
-
-		if keyframes.has(param_id):
-			keys = keyframes[param_id].keys()
-			keys.sort()
+		keys = keyframes[param_id].keys()
+		keys.sort()
 
 		_key_cache[param_id] = keys
 
