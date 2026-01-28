@@ -12,10 +12,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_df1gq")
-marker_line_edit = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid/MarkerLineEdit")
-type_option_button = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid/TypeOptionButton")
-time_label = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer/TimeLabel")
-delete_button = NodePath("Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/DeleteMarkerButton")
+marker_line_edit = NodePath("Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid/MarkerLineEdit")
+type_option_button = NodePath("Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid/TypeOptionButton")
+time_label = NodePath("Panel/Margin/VBox/MarkerPanel/Margin/VBox/TitleHBox/TimeLabel")
+delete_button = NodePath("Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox/DeleteMarkerButton")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=534759731]
 custom_minimum_size = Vector2(500, 0)
@@ -41,74 +41,74 @@ layout_mode = 2
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1627860491]
 layout_mode = 2
 
-[node name="MarkerFilePanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=276719360]
+[node name="MarkerPanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=276719360]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/MarkerFilePanel" unique_id=1917826217]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/MarkerPanel" unique_id=1917826217]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin" unique_id=66387807]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/MarkerPanel/Margin" unique_id=66387807]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=1221761160]
+[node name="TitleHBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox" unique_id=1221761160]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer" unique_id=2002969846]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/TitleHBox" unique_id=2002969846]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_margin_popup"
 
-[node name="TimeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBoxContainer" unique_id=1390499018]
+[node name="TimeLabel" type="Label" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/TitleHBox" unique_id=1390499018]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "time (frame)"
 horizontal_alignment = 2
 
-[node name="Spacer" type="Control" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=622957202]
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox" unique_id=622957202]
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
-[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=285997304]
+[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox" unique_id=285997304]
 layout_mode = 2
 columns = 2
 
-[node name="MarkerOptionLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=918442600]
+[node name="MarkerOptionLabel" type="Label" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid" unique_id=918442600]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Marker"
 
-[node name="MarkerLineEdit" type="LineEdit" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=71693817]
+[node name="MarkerLineEdit" type="LineEdit" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid" unique_id=71693817]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=1209083961]
+[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid" unique_id=1209083961]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Type"
 
-[node name="TypeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid" unique_id=1254877999]
+[node name="TypeOptionButton" type="OptionButton" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid" unique_id=1254877999]
 layout_mode = 2
 size_flags_horizontal = 3
 expand_icon = true
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox" unique_id=1246168130]
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox" unique_id=1246168130]
 layout_mode = 2
 
-[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox" unique_id=2131483463]
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox" unique_id=2131483463]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "button_cancel"
 
-[node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox" unique_id=1296090825]
+[node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
 text = "button_update_marker"
 
-[node name="DeleteMarkerButton" type="TextureButton" parent="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox" unique_id=1478814314]
+[node name="DeleteMarkerButton" type="TextureButton" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox" unique_id=1478814314]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -117,7 +117,7 @@ texture_normal = ExtResource("2_yxvoa")
 ignore_texture_size = true
 stretch_mode = 5
 
-[connection signal="item_selected" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/OptionsGrid/TypeOptionButton" to="." method="_on_type_selected"]
-[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/CreateMarker" to="." method="_on_create_marker_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/MarkerFilePanel/Margin/VBox/HBox/DeleteMarkerButton" to="." method="_on_delete_marker_button_pressed"]
+[connection signal="item_selected" from="Panel/Margin/VBox/MarkerPanel/Margin/VBox/OptionsGrid/TypeOptionButton" to="." method="_on_type_selected"]
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox/CreateMarker" to="." method="_on_create_marker_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox/DeleteMarkerButton" to="." method="_on_delete_marker_button_pressed"]

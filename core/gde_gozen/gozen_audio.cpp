@@ -25,23 +25,20 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 	if (codec_ctx == NULL) {
 		_log_err("Couldn't allocate context for audio!");
 		return audio_data;
-	}
-	if (avcodec_parameters_to_context(codec_ctx.get(), stream->codecpar)) {
+	} else if (avcodec_parameters_to_context(codec_ctx.get(), stream->codecpar)) {
 		_log_err("Couldn't initialize audio codec context!");
 		return audio_data;
 	}
 
 	FFmpeg::enable_multithreading(codec_ctx.get(), codec);
 	codec_ctx->request_sample_fmt = TARGET_FORMAT;
-
 	if (avcodec_open2(codec_ctx.get(), codec, NULL)) {
 		_log_err("Couldn't open audio codec!");
 		return audio_data;
 	}
 
-	int64_t seek_target = start_time * AV_TIME_BASE;
-
 	if (start_time > 0) {
+		int64_t seek_target = start_time * AV_TIME_BASE;
 		av_seek_frame(format_ctx, stream->index, seek_target, AVSEEK_FLAG_BACKWARD);
 		avcodec_flush_buffers(codec_ctx.get());
 	}
@@ -56,7 +53,6 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 									   codec_ctx->sample_rate, // In sample rate.
 									   0, nullptr);
 	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
-
 	if (response < 0 || (response = swr_init(swr_ctx.get()))) {
 		FFmpeg::print_av_error("GoZenAudio: Couldn't initialize SWR!", response);
 		return audio_data;
@@ -65,15 +61,14 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 	av_packet = make_unique_avpacket();
 	av_frame = make_unique_avframe();
 	av_decoded_frame = make_unique_avframe();
-
 	if (!av_frame || !av_decoded_frame || !av_packet) {
 		_log_err("Couldn't allocate frames/packet for audio!");
 		return audio_data;
 	}
 
+	size_t current_size = 0;
 	int64_t max_bytes = -1;
 	int bytes_per_sample = av_get_bytes_per_sample(TARGET_FORMAT);
-
 	if (duration > 0) {
 		max_bytes = (int64_t)(duration * TARGET_SAMPLE_RATE * bytes_per_sample * 2);
 		audio_data.resize(max_bytes);
@@ -82,14 +77,12 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 										 ? (stream->duration * av_q2d(stream->time_base))
 										 : ((double)format_ctx->duration / AV_TIME_BASE);
 		int64_t total_size = (size_t)(stream_duration_sec * TARGET_SAMPLE_RATE) * bytes_per_sample * 2;
-
+		// TODO: Create a fix for this size issue. Possible solution would be
+		// to handle most of the render manager inside of C++.
 		if (total_size >= 2147483600)
 			return audio_data;
-
 		audio_data.resize(total_size);
 	}
-
-	size_t current_size = 0;
 
 	while (!(FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index, av_frame.get(), av_packet.get()))) {
 		if (av_frame->nb_samples <= 0)
@@ -143,12 +136,21 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 
 
 PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, double start_time, double duration) {
-	av_log_set_level(AV_LOG_VERBOSE);
 	AVFormatContext* format_ctx = nullptr;
 	PackedByteArray data = PackedByteArray();
 	PackedByteArray file_buffer; // For `res://` videos.
 	UniqueAVIOContext avio_ctx;
 	BufferData buffer_data;
+
+	int64_t pre_padding_bytes = 0;
+	double fetch_start_time = start_time;
+	double fetch_duration = duration;
+	if (start_time < 0) {
+		pre_padding_bytes = (int64_t)(start_time * 44100 * 4);
+		fetch_start_time = 0;
+		if (duration > 0)
+			fetch_duration = Math::max(0.0, duration - start_time);
+	}
 
 	if (file_path.begins_with("res://") || file_path.begins_with("user://")) {
 		if (!(format_ctx = avformat_alloc_context())) {
@@ -157,7 +159,6 @@ PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, d
 		}
 
 		file_buffer = FileAccess::get_file_as_bytes(file_path);
-
 		if (file_buffer.is_empty()) {
 			avformat_free_context(format_ctx);
 			_log_err("Couldn't load file from res:// at path '" + file_path + "'");
@@ -180,23 +181,19 @@ PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, d
 		}
 
 		format_ctx->pb = avio_ctx.get();
-
 		if (avformat_open_input(&format_ctx, nullptr, nullptr, nullptr) != 0) {
 			_log_err("Failed to open input from memory buffer");
 			return data;
 		}
+	}
 
-	} else if (avformat_open_input(&format_ctx, file_path.utf8(), NULL, NULL)) {
+	if (avformat_open_input(&format_ctx, file_path.utf8(), NULL, NULL)) {
 		_log_err("Couldn't open audio");
 		return data;
-	}
-
-	if (avformat_find_stream_info(format_ctx, NULL)) {
+	} else if (avformat_find_stream_info(format_ctx, NULL)) {
 		_log_err("Couldn't find stream info");
 		return data;
-	}
-
-	if (stream_index == -1) {
+	} else if (stream_index == -1) {
 		for (int i = 0; i < format_ctx->nb_streams; i++) {
 			AVCodecParameters* av_codec_params = format_ctx->streams[i]->codecpar;
 
@@ -214,15 +211,13 @@ PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, d
 	for (int i = 0; i < format_ctx->nb_streams; i++) {
 		AVCodecParameters* av_codec_params = format_ctx->streams[i]->codecpar;
 		if (!avcodec_find_decoder(av_codec_params->codec_id) || av_codec_params->codec_type != AVMEDIA_TYPE_AUDIO) {
-			if (i != stream_index) {
+			if (i != stream_index)
 				format_ctx->streams[i]->discard = AVDISCARD_ALL;
-			}
 		}
 	}
 
 	if (stream_index >= 0 && stream_index < format_ctx->nb_streams) {
 		AVCodecParameters* av_codec_params = format_ctx->streams[stream_index]->codecpar;
-
 		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
 			data = _get_audio(format_ctx, format_ctx->streams[stream_index], start_time, duration);
 	} else {
@@ -230,9 +225,28 @@ PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, d
 		return data;
 	}
 
-
 	avformat_close_input(&format_ctx);
-	av_log_set_level(AV_LOG_INFO);
+
+	// Apply pre-padding.
+	if (pre_padding_bytes > 0) {
+		PackedByteArray silence;
+		silence.resize(pre_padding_bytes);
+		memset(silence.ptrw(), 0, pre_padding_bytes);
+		silence.append_array(data);
+		data = silence;
+	}
+
+	// Apply post-padding
+	if (duration > 0) {
+		int64_t target_size = (int64_t)(duration * 44100 * 4);
+		if (data.size() < target_size) {
+			int64_t current_size = data.size();
+			int64_t missing_bytes = target_size - current_size;
+			data.resize(target_size);
+			memset(data.ptrw() + current_size, 0, missing_bytes);
+		} else if (data.size() > target_size)
+			data.resize(target_size);
+	}
 	return data;
 }
 
@@ -297,7 +311,7 @@ PackedByteArray GoZenAudio::apply_fade(PackedByteArray audio_data, int fade_in_s
 		for (int i = 0; i < fade_in_samples * 2 && i < sample_count; i += 2) {
 			float volume = (float)(i / 2.0) / (float)fade_in_samples;
 
-			samples[i] = (int16_t)(samples[i] * volume); // Left
+			samples[i] = (int16_t)(samples[i] * volume);		 // Left
 			samples[i + 1] = (int16_t)(samples[i + 1] * volume); // Right
 		}
 	}
@@ -313,9 +327,10 @@ PackedByteArray GoZenAudio::apply_fade(PackedByteArray audio_data, int fade_in_s
 			int current_frame = i / 2;
 			int frames_into_fade = current_frame - fade_out_start;
 			float volume = 1.0f - ((float)frames_into_fade / (float)fade_out_samples);
-			if (volume < 0.0f) volume = 0.0f;
+			if (volume < 0.0f)
+				volume = 0.0f;
 
-			samples[i] = (int16_t)(samples[i] * volume); // Left
+			samples[i] = (int16_t)(samples[i] * volume);		 // Left
 			samples[i + 1] = (int16_t)(samples[i + 1] * volume); // Right
 		}
 	}
