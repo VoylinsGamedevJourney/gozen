@@ -43,6 +43,7 @@ const SCENE_MODULE_MANAGER: String = "" # TODO:
 const SCENE_VERSION_CHECK: String = "" # TODO:
 const SCENE_RECENT_PROJECTS: String = "" # TODO:
 const SCENE_ADD_EFFECTS: String = "uid://dqsbn4yb7nd0"
+const SCENE_AUDIO_TAKE_OVER: String = "uid://c3c08cihs1see"
 
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"
