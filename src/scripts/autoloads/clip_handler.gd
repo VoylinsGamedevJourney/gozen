@@ -20,32 +20,32 @@ func get_type(id: int) -> FileHandler.TYPE:
 	return FileHandler.get_file_type(clips[id].file_id)
 
 
-func get_start_frame(id: int, clip: ClipData = clips[id]) -> int:
-	return clip.start_frame
+func get_start_frame(id: int, clip_data: ClipData = clips[id]) -> int:
+	return clip_data.start_frame
 
 
-func get_end_frame(id: int, clip: ClipData = clips[id]) -> int:
-	return clip.start_frame + clip.duration - 1
+func get_end_frame(id: int, clip_data: ClipData = clips[id]) -> int:
+	return clip_data.start_frame + clip_data.duration - 1
 
 
-func get_file_data(id: int, clip: ClipData = clips[id]) -> FileData:
-	return FileHandler.get_file_data(clip.file_id)
+func get_file_data(id: int, clip_data: ClipData = clips[id]) -> FileData:
+	return FileHandler.get_file_data(clip_data.file_id)
 
 
 #--- Clip handling functions ---
 
-func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
-	var type: FileHandler.TYPE = ClipHandler.get_type(clip.id)
+func load_frame(id: int, frame_nr: int, clip_data: ClipData = clips[id]) -> void:
+	var type: FileHandler.TYPE = ClipHandler.get_type(clip_data.id)
 
 	if type not in EditorCore.VISUAL_TYPES:
 		return
 	elif type in FileHandler.TYPE_VIDEOS:
-		var file_data: FileData = FileHandler.get_file_data(clip.file_id)
+		var file_data: FileData = FileHandler.get_file_data(clip_data.file_id)
 		var video: GoZenVideo
 		var video_frame_nr: int
 
-		if file_data.clip_only_video.has(clip.id):
-			video = file_data.clip_only_video[clip.id]
+		if file_data.clip_only_video.has(clip_data.id):
+			video = file_data.clip_only_video[clip_data.id]
 		else:
 			video = file_data.video
 
@@ -61,16 +61,22 @@ func load_frame(id: int, frame_nr: int, clip: ClipData = clips[id]) -> void:
 				printerr("ClipHandler: Couldn't seek frame!")
 
 
-func get_clip_audio_data(id: int, clip: ClipData = clips[id]) -> PackedByteArray:
-	var file: File = FileHandler.get_file(clip.file_id)
-	var start_sec: float = float(clip.begin) / Project.get_framerate()
-	var duration_sec: float = float(clip.duration) / Project.get_framerate()
+func get_clip_audio_data(id: int, clip_data: ClipData = clips[id]) -> PackedByteArray:
+	var file: File
+	var start_sec: float = clip_data.begin / Project.get_framerate()
+	var duration_sec: float = float(clip_data.duration) / Project.get_framerate()
+
+	if clip_data.ato_active and clip_data.ato_file_id != -1:
+		start_sec -= clip_data.ato_offset
+		file = FileHandler.get_file(clip_data.ato_file_id)
+	else:
+		file = FileHandler.get_file(clip_data.file_id)
 
 	return GoZenAudio.get_audio_data(file.path, -1, start_sec, duration_sec)
 
 
 func add_clips(data: Array[CreateClipRequest]) -> void:
-	InputManager.undo_redo.create_action("Add new clip(s)")
+	InputManager.undo_redo.create_action("Add new clip_data(s)")
 
 	for clip_request: CreateClipRequest in data:
 		var clip_data: ClipData = ClipData.new()
@@ -115,13 +121,13 @@ func delete_clips(data: PackedInt64Array) -> void:
 		if clips.has(clip_id):
 			correct_data.append(clip_id)
 
-	InputManager.undo_redo.create_action("Delete clip(s)")
+	InputManager.undo_redo.create_action("Delete clip_data(s)")
 
 	for clip_id: int in correct_data:
-		var clip: ClipData = get_clip(clip_id)
+		var clip_data: ClipData = get_clip(clip_id)
 
-		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip))
-		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
+		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip_data))
+		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip_data))
 
 	InputManager.undo_redo.commit_action()
 
@@ -132,25 +138,25 @@ func ripple_delete_clips(data: PackedInt64Array) -> void:
 	var ranges_by_track: Dictionary[int, Vector2i] = {} # Store min start and total duration per track.
 
 	for id: int in data:
-		var clip: ClipData = ClipHandler.get_clip(id)
-		if not clip: continue
-		if not clips_by_track.has(clip.track_id):
-			clips_by_track[clip.track_id] = []
-			ranges_by_track[clip.track_id] = Vector2i(clip.start_frame, clip.end_frame)
+		var clip_data: ClipData = ClipHandler.get_clip(id)
+		if not clip_data: continue
+		if not clips_by_track.has(clip_data.track_id):
+			clips_by_track[clip_data.track_id] = []
+			ranges_by_track[clip_data.track_id] = Vector2i(clip_data.start_frame, clip_data.end_frame)
 
-		clips_by_track[clip.track_id].append(id)
-		ranges_by_track[clip.track_id].x = mini(ranges_by_track[clip.track_id].x, clip.start_frame)
-		ranges_by_track[clip.track_id].y = maxi(ranges_by_track[clip.track_id].y, clip.end_frame)
+		clips_by_track[clip_data.track_id].append(id)
+		ranges_by_track[clip_data.track_id].x = mini(ranges_by_track[clip_data.track_id].x, clip_data.start_frame)
+		ranges_by_track[clip_data.track_id].y = maxi(ranges_by_track[clip_data.track_id].y, clip_data.end_frame)
 
-	InputManager.undo_redo.create_action("Ripple delete clip(s)")
+	InputManager.undo_redo.create_action("Ripple delete clip_data(s)")
 
 	# First delete the clips.
 	for clip_id: int in data:
 		if !clips.has(clip_id): continue
-		var clip: ClipData = get_clip(clip_id)
+		var clip_data: ClipData = get_clip(clip_id)
 
-		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip))
-		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip))
+		InputManager.undo_redo.add_do_method(_delete_clip.bind(clip_data))
+		InputManager.undo_redo.add_undo_method(_add_clip.bind(clip_data))
 
 	# Move remaining clips to fill the gap.
 	var move_requests: Array[MoveClipRequest] = []
@@ -167,7 +173,7 @@ func ripple_delete_clips(data: PackedInt64Array) -> void:
 
 
 func cut_clips(data: Array[CutClipRequest]) -> void:
-	InputManager.undo_redo.create_action("Cut clip(s)")
+	InputManager.undo_redo.create_action("Cut clip_data(s)")
 
 	for clip_request: CutClipRequest in data:
 		var clip_data: ClipData = clips[clip_request.clip_id]
@@ -175,11 +181,11 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		var cut_frame_pos: int = clip_request.cut_frame_pos
 		var new_duration: int = clip_data.duration - cut_frame_pos
 
-		# Editing the main clip
+		# Editing the main clip_data
 		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip_data.id, -new_duration, true))
 		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip_data.id, new_duration, true))
 
-		# Adding the new clip (clone of old clip + duration changes)
+		# Adding the new clip_data (clone of old clip_data + duration changes)
 
 		new_clip_data.id = Utils.get_unique_id(ClipHandler.get_ids())
 		new_clip_data.file_id = clip_data.file_id
@@ -188,7 +194,7 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 		new_clip_data.start_frame = clip_data.start_frame + cut_frame_pos
 		new_clip_data.duration = new_duration
 
-		# Copy effects of main clip
+		# Copy effects of main clip_data
 		new_clip_data.effects_video.assign(
 				_copy_visual_effects(clip_data.effects_video, cut_frame_pos))
 		new_clip_data.effects_audio.assign(
@@ -201,16 +207,16 @@ func cut_clips(data: Array[CutClipRequest]) -> void:
 
 
 func move_clips(data: Array[MoveClipRequest]) -> void:
-	InputManager.undo_redo.create_action("Move clip(s)")
+	InputManager.undo_redo.create_action("Move clip_data(s)")
 
 	for clip_request: MoveClipRequest in data:
-		var clip: ClipData = clips[clip_request.clip_id]
+		var clip_data: ClipData = clips[clip_request.clip_id]
 
-		var new_track: int = clip.track_id + clip_request.track_offset
-		var new_frame: int = clip.start_frame + clip_request.frame_offset
+		var new_track: int = clip_data.track_id + clip_request.track_offset
+		var new_frame: int = clip_data.start_frame + clip_request.frame_offset
 
-		InputManager.undo_redo.add_do_method(_clip_move.bind(clip.id, new_track, new_frame))
-		InputManager.undo_redo.add_undo_method(_clip_move.bind(clip.id, clip.track_id, clip.start_frame))
+		InputManager.undo_redo.add_do_method(_clip_move.bind(clip_data.id, new_track, new_frame))
+		InputManager.undo_redo.add_undo_method(_clip_move.bind(clip_data.id, clip_data.track_id, clip_data.start_frame))
 
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
@@ -219,13 +225,13 @@ func move_clips(data: Array[MoveClipRequest]) -> void:
 
 
 func resize_clips(data: Array[ResizeClipRequest]) -> void:
-	InputManager.undo_redo.create_action("Resize clip(s)")
+	InputManager.undo_redo.create_action("Resize clip_data(s)")
 
 	for request: ResizeClipRequest in data:
-		var clip: ClipData = clips[request.clip_id]
+		var clip_data: ClipData = clips[request.clip_id]
 
-		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip.id, request.resize_amount, request.from_end))
-		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip.id, -request.resize_amount, request.from_end))
+		InputManager.undo_redo.add_do_method(_resize_clip.bind(clip_data.id, request.resize_amount, request.from_end))
+		InputManager.undo_redo.add_undo_method(_resize_clip.bind(clip_data.id, -request.resize_amount, request.from_end))
 
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
@@ -233,9 +239,9 @@ func resize_clips(data: Array[ResizeClipRequest]) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func set_clip(id: int, clip: ClipData) -> void:
-	clip.id = id
-	clips[id] = clip
+func set_clip(id: int, clip_data: ClipData) -> void:
+	clip_data.id = id
+	clips[id] = clip_data
 	Project.unsaved_changes = true
 
 
@@ -262,12 +268,12 @@ func _delete_clip(clip_data: ClipData) -> void:
 
 
 func _clip_move(clip_id: int, new_track: int, new_frame: int) -> void:
-	var clip: ClipData = clips[clip_id]
+	var clip_data: ClipData = clips[clip_id]
 
-	TrackHandler.remove_clip_from_frame(clip.track_id, clip.start_frame)
-	clip.track_id = new_track
-	clip.start_frame = new_frame
-	TrackHandler.set_frame_to_clip(new_track, clip)
+	TrackHandler.remove_clip_from_frame(clip_data.track_id, clip_data.start_frame)
+	clip_data.track_id = new_track
+	clip_data.start_frame = new_frame
+	TrackHandler.set_frame_to_clip(new_track, clip_data)
 
 	clips_updated.emit()
 	Project.unsaved_changes = true
