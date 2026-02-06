@@ -531,7 +531,6 @@ func get_all_audio_files() -> Dictionary[String, int]:
 	return dictionary
 
 
-
 #--- Private functions ---
 func _check_if_file_modified(file: File) -> bool:
 	if file.path.begins_with("temp://"): return false # Temp files can't change.

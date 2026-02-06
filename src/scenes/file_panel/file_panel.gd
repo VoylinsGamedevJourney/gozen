@@ -121,12 +121,13 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
 
-			popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
-			if file.ato_file_id != -1:
-				if file.ato_active:
-					popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
-				else:
-					popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
+			if FileHandler.get_all_audio_files().size() != 0:
+				popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
+				if file.ato_file_id != -1:
+					if file.ato_active:
+						popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
+					else:
+						popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
 
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
 		elif file.type == FileHandler.TYPE.VIDEO_ONLY:
@@ -139,12 +140,13 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
 
-			popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
-			if file.ato_file_id != -1:
-				if file.ato_active:
-					popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
-				else:
-					popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
+			if FileHandler.get_all_audio_files().size() != 0:
+				popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
+				if file.ato_file_id != -1:
+					if file.ato_active:
+						popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
+					else:
+						popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
 		elif file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
 			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)

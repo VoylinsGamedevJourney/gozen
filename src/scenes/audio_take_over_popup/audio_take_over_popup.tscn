@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://b7gl7xgmp5prv" path="res://scenes/audio_take_over_popup/audio_take_over_popup.gd" id="1_6g3wj"]
 [ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="2_8tgyo"]
+[ext_resource type="Script" uid="uid://bpy8rtg87clbh" path="res://scenes/audio_take_over_popup/audio_take_over_wave.gd" id="3_8tgyo"]
 
-[node name="MarkerPopup" type="Control" unique_id=96151348]
+[node name="MarkerPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +13,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_6g3wj")
+video_file_label = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/VideoFileLabel")
+audio_play_button = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/PlayAudioButton")
+offset_spinbox = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/AudioFileOffsetSpinBox")
+file_b_list = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/AudioFileOptionButton")
+file_a_wave = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileAColorRect")
+file_b_wave = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileBColorRect")
+file_a_player = NodePath("FileAAudioStreamPlayer")
+file_b_player = NodePath("FileBAudioStreamPlayer")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=534759731]
 custom_minimum_size = Vector2(750, 0)
@@ -91,24 +100,27 @@ layout_mode = 2
 localize_numeral_system = false
 text = "VideoFileName"
 
-[node name="ColorRect" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=403335076]
+[node name="FileAColorRect" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=403335076]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.47843137, 0.47843137, 0.47843137, 1)
+script = ExtResource("3_8tgyo")
 
 [node name="AudioFileOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=353305828]
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "audio_take_over_tooltip_select_audio_file"
+text_overrun_behavior = 3
 fit_to_longest_item = false
 
-[node name="ColorRect2" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=325344312]
+[node name="FileBColorRect" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=325344312]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.47843137, 0.47843137, 0.47843137, 1)
+script = ExtResource("3_8tgyo")
 
 [node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/Panel/Margin/VBox" unique_id=1246168130]
 layout_mode = 2
@@ -118,8 +130,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "button_cancel"
 
-[node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
+[node name="TakeOverAudioButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
 text = "button_take_over_audio"
+
+[node name="FileAAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1609794610]
+
+[node name="FileBAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=294582150]
+
+[connection signal="value_changed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/AudioFileOffsetSpinBox" to="." method="_on_audio_file_offset_spin_box_value_changed"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/PlayAudioButton" to="." method="_on_play_audio_button_pressed"]
+[connection signal="item_selected" from="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/AudioFileOptionButton" to="." method="_on_audio_file_option_button_item_selected"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/TakeOverAudioButton" to="." method="_on_take_over_audio_button_pressed"]
