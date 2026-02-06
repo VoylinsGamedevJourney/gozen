@@ -43,7 +43,7 @@ Have an (awesome) idea for a new feature or improvement? We'd love to hear and c
     *   How it would benefit users.
     *   Any alternative ideas you considered.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > For larger features, it's recommended to discuss them on the [Discord server](https://discord.gg/BdbUf7VKYC).
 
 ## Contributing code
@@ -89,8 +89,7 @@ Since GoZen is a visual editor, feedback on the user interface and experience is
 Translation contributions are not yet necessary due to the early alpha stage, but we plan to add support for internationalization in the future. Stay tuned!
 
 ## Financial contributions
-If you want to support GoZen financially, you can do so via:
-- **Support me personally via Ko-fi:** This helps support my overall work, including GoZen development, videos, and other projects.
+If you want to support GoZen financially, you can do so via Ko-fi. This helps support my overall work, including GoZen development, videos, and other projects.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
 

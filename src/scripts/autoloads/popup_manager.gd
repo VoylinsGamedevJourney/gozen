@@ -13,6 +13,7 @@ enum POPUP {
 	VERSION_CHECK,
 	RECENT_PROJECTS,
 	ADD_EFFECTS,
+	AUDIO_TAKE_OVER,
 }
 
 
@@ -29,6 +30,7 @@ var _popup_uids: Dictionary [POPUP, String] = {
 	POPUP.VERSION_CHECK: Library.SCENE_VERSION_CHECK,
 	POPUP.RECENT_PROJECTS: Library.SCENE_RECENT_PROJECTS,
 	POPUP.ADD_EFFECTS: Library.SCENE_ADD_EFFECTS,
+	POPUP.AUDIO_TAKE_OVER: Library.SCENE_AUDIO_TAKE_OVER,
 }
 var _control: Control = Control.new()
 var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()

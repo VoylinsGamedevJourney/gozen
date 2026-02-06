@@ -362,6 +362,11 @@ func set_file_nickname(id: int, nickname: String) -> void:
 	file_nickname_changed.emit(id)
 
 
+func set_ato_active(id: int, value: bool) -> void:
+	files[id].ato_active = value
+	Project.unsaved_changes = true
+
+
 func update_file_duration(id: int) -> int:
 	data[id]._update_duration()
 	return get_file_duration(id)
@@ -516,6 +521,14 @@ func duplicate_text_file(original_file_id: int) -> void:
 	new_file.duration = original_file.duration
 	add_file_object(new_file)
 
+
+## { file_nickname: file_id }
+func get_all_audio_files() -> Dictionary[String, int]:
+	var dictionary: Dictionary[String, int] = {}
+	for file: File in files.values():
+		if file.type == TYPE.AUDIO:
+			dictionary[file.nickname] = file.id
+	return dictionary
 
 
 #--- Private functions ---

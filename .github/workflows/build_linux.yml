@@ -5,7 +5,7 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.6.1-alpha'
+        default: '0.6.2-alpha'
       godot_version:
         description: The Godot version to use
         type: string
@@ -148,7 +148,7 @@ jobs:
       - name: Cleanup & fix RPATH
         working-directory: ${{ env.PATH_EXPORT }}
         run: |
-          rm -f *template_debug* 
+          rm -f *template_debug*
           chmod +x ${{ env.APP_NAME }}.x86_64
           patchelf --set-rpath '$ORIGIN' ${{ env.APP_NAME }}.x86_64
           find . -name "*.so" -exec patchelf --set-rpath '$ORIGIN' {} \;

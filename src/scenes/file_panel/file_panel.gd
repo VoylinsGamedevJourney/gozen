@@ -12,6 +12,9 @@ enum POPUP_ACTION {
 	FILE_CREATE_PROXY,
 	FILE_RECREATE_PROXY,
 	FILE_REMOVE_PROXY,
+	FILE_AUDIO_TAKE_OVER,
+	FILE_AUDIO_TAKE_OVER_ENABLE,
+	FILE_AUDIO_TAKE_OVER_DISABLE,
 
 	# Folder actions
 	FOLDER_CREATE,
@@ -118,6 +121,14 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
 
+			if FileHandler.get_all_audio_files().size() != 0:
+				popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
+				if file.ato_file_id != -1:
+					if file.ato_active:
+						popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
+					else:
+						popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
+
 			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
 		elif file.type == FileHandler.TYPE.VIDEO_ONLY:
 			popup.add_separator("popup_separator_video_options")
@@ -128,6 +139,14 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				else:
 					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
+
+			if FileHandler.get_all_audio_files().size() != 0:
+				popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
+				if file.ato_file_id != -1:
+					if file.ato_active:
+						popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
+					else:
+						popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
 		elif file.type == FileHandler.TYPE.TEXT:
 			popup.add_separator("popup_separator_text_options")
 			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
@@ -165,6 +184,9 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		POPUP_ACTION.FILE_CREATE_PROXY: _on_popup_action_file_create_proxy()
 		POPUP_ACTION.FILE_RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
 		POPUP_ACTION.FILE_REMOVE_PROXY: _on_popup_action_file_remove_proxy()
+		POPUP_ACTION.FILE_AUDIO_TAKE_OVER: _on_popup_action_audio_take_over()
+		POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE: _on_popup_action_audio_take_over_enable()
+		POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE: _on_popup_action_audio_take_over_disable()
 
 
 func _on_popup_action_folder_create() -> void:
@@ -294,6 +316,30 @@ func _on_popup_action_file_remove_proxy() -> void:
 	FileHandler.reload_file_data(file.id)
 	FileHandler.file_nickname_changed.emit(file.id) # To update the name
 	ProxyHandler.delete_proxy(file.id)
+
+
+func _on_popup_action_audio_take_over() -> void:
+	var file_id: int = tree.get_selected().get_metadata(0)
+	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.AUDIO_TAKE_OVER)
+	popup.load_data(file_id, true)
+
+
+func _on_popup_action_audio_take_over_enable() -> void:
+	InputManager.undo_redo.create_action("Enable file audio take over")
+	InputManager.undo_redo.add_do_method(
+			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), true))
+	InputManager.undo_redo.add_undo_method(
+			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), false))
+	InputManager.undo_redo.commit_action()
+
+
+func _on_popup_action_audio_take_over_disable() -> void:
+	InputManager.undo_redo.create_action("Disable file audio take over")
+	InputManager.undo_redo.add_do_method(
+			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), false))
+	InputManager.undo_redo.add_undo_method(
+			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), true))
+	InputManager.undo_redo.commit_action()
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:

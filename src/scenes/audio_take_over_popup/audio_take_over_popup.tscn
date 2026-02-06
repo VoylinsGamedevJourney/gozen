@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://c3c08cihs1see"]
+
+[ext_resource type="Script" uid="uid://b7gl7xgmp5prv" path="res://scenes/audio_take_over_popup/audio_take_over_popup.gd" id="1_6g3wj"]
+[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="2_8tgyo"]
+[ext_resource type="Script" uid="uid://bpy8rtg87clbh" path="res://scenes/audio_take_over_popup/audio_take_over_wave.gd" id="3_8tgyo"]
+
+[node name="MarkerPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_6g3wj")
+video_file_label = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/VideoFileLabel")
+audio_play_button = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/PlayAudioButton")
+offset_spinbox = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/AudioFileOffsetSpinBox")
+file_b_list = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/AudioFileOptionButton")
+file_a_wave = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileAColorRect")
+file_b_wave = NodePath("Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileBColorRect")
+file_a_player = NodePath("FileAAudioStreamPlayer")
+file_b_player = NodePath("FileBAudioStreamPlayer")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=534759731]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -41.0
+offset_right = 250.0
+offset_bottom = 41.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=971078827]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1627860491]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=276719360]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/Panel" unique_id=1917826217]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/VBox/Panel/Margin" unique_id=66387807]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox/Panel/Margin/VBox" unique_id=1071904560]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=2002969846]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "title_audio_take_over_popup"
+
+[node name="AudioFileOffsetLabel" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=556729055]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_type_variation = &"title_label"
+text = "audio_take_over_popup_audio_file_offset"
+
+[node name="AudioFileOffsetSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=915226872]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+allow_lesser = true
+alignment = 1
+
+[node name="PlayAudioButton" type="TextureButton" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=979822766]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+tooltip_text = "audio_take_over_tooltip_play_pause_audio"
+texture_normal = ExtResource("2_8tgyo")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox/Panel/Margin/VBox" unique_id=285997304]
+layout_mode = 2
+theme_override_constants/v_separation = 2
+columns = 2
+
+[node name="VideoFileLabel" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=918442600]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+localize_numeral_system = false
+text = "VideoFileName"
+
+[node name="FileAColorRect" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=403335076]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.47843137, 0.47843137, 0.47843137, 1)
+script = ExtResource("3_8tgyo")
+
+[node name="AudioFileOptionButton" type="OptionButton" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=353305828]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "audio_take_over_tooltip_select_audio_file"
+text_overrun_behavior = 3
+fit_to_longest_item = false
+
+[node name="FileBColorRect" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=325344312]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.47843137, 0.47843137, 0.47843137, 1)
+script = ExtResource("3_8tgyo")
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox/Panel/Margin/VBox" unique_id=1246168130]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=2131483463]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "button_cancel"
+
+[node name="TakeOverAudioButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"main_button"
+text = "button_take_over_audio"
+
+[node name="FileAAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1609794610]
+
+[node name="FileBAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=294582150]
+
+[connection signal="value_changed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/AudioFileOffsetSpinBox" to="." method="_on_audio_file_offset_spin_box_value_changed"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/PlayAudioButton" to="." method="_on_play_audio_button_pressed"]
+[connection signal="item_selected" from="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/AudioFileOptionButton" to="." method="_on_audio_file_option_button_item_selected"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/TakeOverAudioButton" to="." method="_on_take_over_audio_button_pressed"]

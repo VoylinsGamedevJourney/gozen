@@ -3,6 +3,8 @@ extends Node
 
 
 const ICON_GOZEN: String = "uid://cwv5gaisvmwv7"
+const ICON_PLAY: String = "uid://dt44mb30o2c8e"
+const ICON_PAUSE: String = "uid://drcdxc6b6le8r"
 const ICON_RENDERING: String = "uid://b6r37nt1xhvq6"
 const ICON_SAVE: String = "uid://crolsp3m3n14"
 const ICON_OPEN: String = "uid://8yvgi81apxxg"
@@ -43,6 +45,7 @@ const SCENE_MODULE_MANAGER: String = "" # TODO:
 const SCENE_VERSION_CHECK: String = "" # TODO:
 const SCENE_RECENT_PROJECTS: String = "" # TODO:
 const SCENE_ADD_EFFECTS: String = "uid://dqsbn4yb7nd0"
+const SCENE_AUDIO_TAKE_OVER: String = "uid://c3c08cihs1see"
 
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"

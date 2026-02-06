@@ -17,3 +17,8 @@ var modified_time: int = -1
 var duration: int = -1
 
 var temp_file: TempFile = null # Only filled when file is a temp file.
+
+# Audio take-over variables.
+var ato_file_id: int = -1
+var ato_offset: float = 0.0 # Seconds
+var ato_active: bool = false
