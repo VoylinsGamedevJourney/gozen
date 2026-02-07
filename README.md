@@ -8,10 +8,12 @@
 
 *The Minimalist Video Editor*
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > GoZen is currently in Alpha! Expect bugs and frequent changes to happen! Beta release is planned for late 2025.
-> 
+>
 > Visit the [GoZen project site](https://voylinsgamedevjourney.github.io/gozen/) for more information and updates.
+
+![screenshot of GoZen startup UI](./assets/screenshots/alpha_01.jpg)
 
 ## What is GoZen?
 GoZen is a lightweight, stable, minimalistic, and performant video editor with simplicity in mind. Built using the Godot game engine, GoZen aims to provide a focused video editing  experience without the complexity which other traditional NLE's. It is primarily developed for Linux but includes support for Windows, MacOS support will come in the future.
@@ -26,8 +28,8 @@ GoZen is a lightweight, stable, minimalistic, and performant video editor with s
 - Cross-platform (Linux, Windows);
 
 ## UI overview
-![screenshot of GoZen UI](./assets/screenshots/alpha_01.png)
-The top left displays your media pool, listing your files by type and alphabetically. In the top center you have your video project playback itself with on the right of that your effects panel.
+![screenshot of GoZen editor UI](./assets/screenshots/alpha_02.jpg)
+The top left displays your media pool, listing your files by typne and alphabetically. In the top center you have your video project playback itself with on the right of that your effects panel.
 
 On the bottom you have your timeline with on the right your audio meter to check if your audio is clipping or not.
 

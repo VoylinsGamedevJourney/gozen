@@ -232,9 +232,7 @@ int GoZenVideo::open(const String& video_path) {
 	has_alpha = (av_frame->format == AV_PIX_FMT_YUVA420P || av_frame->format == AV_PIX_FMT_YUVA444P ||
 				 av_frame->format == AV_PIX_FMT_ARGB || av_frame->format == AV_PIX_FMT_BGRA ||
 				 av_frame->format == AV_PIX_FMT_ABGR || av_frame->format == AV_PIX_FMT_RGBA);
-
 	pixel_format = av_get_pix_fmt_name((AVPixelFormat)av_frame->format);
-	_log(String("Selected pixel format is: ") + pixel_format);
 
 	// Preparing the data images.
 	bool is_natively_supported = (av_frame->format == AV_PIX_FMT_YUV420P || av_frame->format == AV_PIX_FMT_YUVJ420P ||
