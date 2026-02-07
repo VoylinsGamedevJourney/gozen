@@ -51,5 +51,6 @@ func _on_cut_mode_button_pressed() -> void:
 	queue_redraw()
 
 
-func _on_mode_draw_gui_input(_event: InputEvent) -> void:
+func update_mode() -> void:
 	queue_redraw()
+

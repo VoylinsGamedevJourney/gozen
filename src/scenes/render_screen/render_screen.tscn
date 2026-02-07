@@ -84,7 +84,6 @@ text = "Save profile"
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/icon_max_width = 30
-button_mask = 3
 expand_icon = true
 allow_reselect = true
 
