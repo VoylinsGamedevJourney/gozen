@@ -153,11 +153,6 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_2bycd")
 text = "button_screen_render"
 
-[node name="TextureButton" type="TextureButton" parent="RenderScreenButton" unique_id=1712319759]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
 [connection signal="id_pressed" from="MenuBar/ProjectPopupMenu" to="." method="_on_project_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/EditPopupMenu" to="." method="_on_edit_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/PreferencesPopupMenu" to="." method="_on_preferences_popup_menu_id_pressed"]

@@ -2,7 +2,7 @@ class_name RenderProfile
 extends Resource
 
 @export var profile_name: String = ""
-@export var icon: CompressedTexture2D
+@export var icon: Texture2D
 
 @export_group("Video")
 @export var video_codec: GoZenEncoder.VIDEO_CODEC = GoZenEncoder.VIDEO_CODEC.V_NONE

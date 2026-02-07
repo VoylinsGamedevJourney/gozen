@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="3_s6tus"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="4_kywnc"]
 
-[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("render_profiles_hbox", "grid_audio", "render_draft_button", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
+[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,9 +14,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 script = ExtResource("1_xqju4")
-render_profiles_hbox = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderProfilesScroll/RenderProfilesHBox")
+button_save_render_profile = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
+option_button_render_profiles = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
 grid_audio = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
-render_draft_button = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
+button_render_draft = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
 path_line_edit = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
 video_codec_option_button = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
 video_quality_hslider = NodePath("VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider")
@@ -61,24 +62,31 @@ layout_mode = 2
 theme_type_variation = &"title_label"
 text = "title_render_settings"
 
-[node name="RenderProfilesLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=825339369]
-layout_mode = 2
-text = "render_option_profile"
-
-[node name="RenderProfilesScroll" type="ScrollContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1221961349]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-draw_focus_border = true
-vertical_scroll_mode = 0
-
-[node name="RenderProfilesHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderProfilesScroll" unique_id=1264437043]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
 [node name="TopSettingsHBox" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=126554430]
 layout_mode = 2
 columns = 2
+
+[node name="RenderProfilesLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=825339369]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "render_option_profile"
+
+[node name="RenderProfilesHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=2061338205]
+layout_mode = 2
+
+[node name="SaveProfileButton" type="Button" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=732520328]
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Save current presets as a custom render profile."
+text = "Save profile"
+
+[node name="RenderProfileOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=1560158541]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/icon_max_width = 30
+button_mask = 3
+expand_icon = true
+allow_reselect = true
 
 [node name="PathLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=521887475]
 layout_mode = 2
@@ -285,9 +293,17 @@ scroll_fit_content_width = true
 [node name="ViewPanel" parent="." unique_id=1292878286 instance=ExtResource("4_kywnc")]
 layout_mode = 2
 
+[connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton" to="." method="_on_save_custom_profile_button_pressed"]
+[connection signal="item_selected" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton" to="." method="_on_render_profile_option_button_item_selected"]
 [connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
 [connection signal="item_selected" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
+[connection signal="item_selected" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
 [connection signal="toggled" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
+[connection signal="item_selected" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
 [connection signal="pressed" from="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
 [connection signal="item_selected" from="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="VSplit/MarkersPanel" method="_on_markers_button_item_selected"]
 [connection signal="pressed" from="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="VSplit/MarkersPanel" method="_on_copy_markers_button_pressed"]

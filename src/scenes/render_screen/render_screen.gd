@@ -1,14 +1,14 @@
 extends HSplitContainer
 # TODO: Add render range (in - out points)
-# TODO: Add UI to save/manage custom render profiles.
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
 const USER_PROFILES_PATH: String = "user://render_profiles/"
 
 
-@export var render_profiles_hbox: HBoxContainer
+@export var button_save_render_profile: Button
+@export var option_button_render_profiles: OptionButton
 @export var grid_audio: GridContainer
-@export var render_draft_button: CheckButton
+@export var button_render_draft: CheckButton
 
 @export_group("Path")
 @export var path_line_edit: LineEdit
@@ -33,11 +33,13 @@ var status_indicator_id: int
 var progress_overlay: ProgressOverlay
 var progress_frame_increase: float = 0.0
 var current_progress: float = 0.0
+var custom_profile_id_start: int = 0
 
 
 
 func _ready() -> void:
 	RenderManager.update_encoder_status.connect(update_encoder_status)
+	button_save_render_profile.visible = false
 
 	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
@@ -45,30 +47,27 @@ func _ready() -> void:
 	# Adding render profiles
 	_add_default_profiles()
 
+	# Adding custom render profiles
+	option_button_render_profiles.add_separator("Custom render profiles")
 	if DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
 		# Dir existed so there might be profiles inside. We go over the files
 		# alphabetically and check if they are valid RenderProfile classes.
-		var files: PackedStringArray = DirAccess.get_files_at(USER_PROFILES_PATH)
-		if files.size() != 0:
-			render_profiles_hbox.add_child(HSeparator.new())
-
-		for file_name: String in files:
-			add_profile(load(USER_PROFILES_PATH + file_name) as RenderProfile)
+		for file_name: String in DirAccess.get_files_at(USER_PROFILES_PATH):
+			var path: String = USER_PROFILES_PATH + file_name
+			add_profile(load(path) as RenderProfile, path)
 	elif DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
 		# Else we create the directory in case we need to save a profile to it.
 		printerr("RenderScreen: Couldn't create folder at %s!" % USER_PROFILES_PATH)
 
-	# Setting "YouTube" to the default loaded profile
-	var first_profile: Button = render_profiles_hbox.get_child(0)
-	first_profile.button_pressed = true
-	first_profile.pressed.emit()
-
 	# Setting thread count to all threads minus 1.
-	threads_spin_box.value = OS.get_processor_count() - 1
+	threads_spin_box.set_value_no_signal(OS.get_processor_count() - 1)
 	threads_spin_box.max_value = OS.get_processor_count()
 
 	# Render audio by default.
 	_on_render_audio_check_button_toggled(true)
+
+	option_button_render_profiles.select(0) # Setting "YouTube" as default.
+	button_save_render_profile.visible = false
 
 
 func _on_project_ready() -> void:
@@ -88,6 +87,7 @@ func _add_default_profiles() -> void:
 	add_profile(preload(Library.RENDER_PROFILE_VP9))
 	add_profile(preload(Library.RENDER_PROFILE_VP8))
 	add_profile(preload(Library.RENDER_PROFILE_HEVC))
+	custom_profile_id_start = option_button_render_profiles.item_count
 
 
 func _setup_codec_option_buttons() -> void:
@@ -112,24 +112,35 @@ func _setup_codec_option_buttons() -> void:
 	audio_codec_option_button.add_item("NONE", GoZenEncoder.AUDIO_CODEC.A_NONE)
 
 
-func add_profile(profile: RenderProfile) -> void:
-	var button: Button = Button.new()
+func _delete_custom_profile(index: int) -> void:
+	var path: String = option_button_render_profiles.get_item_metadata(index)
 
-	button.icon = profile.icon
-	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	button.expand_icon = true
-	button.custom_minimum_size.x = 70
+	option_button_render_profiles.remove_item(index)
+	if path != "" and FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+	_on_render_settings_changed()
 
-	button.toggle_mode = true
-	button.button_group = button_group
-	button.theme_type_variation = "render_profile_button"
-	button.tooltip_text = "Profile: %s" % profile.profile_name
-	button.pressed.connect(load_profile.bind(profile))
 
-	render_profiles_hbox.add_child(button)
+func add_profile(profile: RenderProfile, save_path: String = "") -> void:
+	var id: int = option_button_render_profiles.item_count
+	var tooltip: String = "Profile: %s" % profile.profile_name
+	option_button_render_profiles.add_item(profile.profile_name, id)
+
+	if !save_path.is_empty(): # Custom
+		tooltip += "\n\nShift click to delete."
+		option_button_render_profiles.set_item_metadata(id, save_path)
+	else:
+		option_button_render_profiles.set_item_metadata(id, profile.resource_path)
+
+	option_button_render_profiles.set_item_tooltip(id, tooltip)
+	option_button_render_profiles.set_item_icon(id, profile.icon)
 
 
 func load_profile(profile: RenderProfile) -> void:
+	if !profile:
+		printerr("RenderScreen: Render profile is null!")
+		return
+
 	# Set all the render settings correct.
 	for index: int in video_codec_option_button.item_count:
 		if video_codec_option_button.get_item_id(index) == profile.video_codec:
@@ -151,6 +162,7 @@ func load_profile(profile: RenderProfile) -> void:
 		if audio_codec_option_button.get_item_id(index) == profile.audio_codec:
 			audio_codec_option_button.selected = index
 			break
+	button_save_render_profile.visible = false
 
 
 func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
@@ -234,6 +246,8 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 		var audio_codec_index: int = audio_codec_option_button.get_item_index(allowed[0])
 		audio_codec_option_button.select(audio_codec_index)
 
+	button_save_render_profile.visible = true
+
 
 func _render_finished() -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
@@ -276,7 +290,7 @@ func _on_start_render_button_pressed() -> void:
 	if dir.get_space_left() < 500 * 1024 * 1024:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
-	var draft: bool = render_draft_button.button_pressed
+	var draft: bool = button_render_draft.button_pressed
 	var render_resolution: Vector2i = Project.get_resolution()
 
 	if draft:
@@ -381,3 +395,61 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 			current_progress = status
 	if progress_overlay != null:
 		progress_overlay.update_progress(floori(current_progress), status_str)
+
+
+func _on_render_settings_changed() -> void:
+	button_save_render_profile.visible = true
+	option_button_render_profiles.selected = -1
+
+
+func _on_save_custom_profile_button_pressed() -> void:
+	var dialog: ConfirmationDialog = load("uid://cxfdfmbkkwt51").instantiate()
+	var _err: int = dialog.save_profile.connect(_save_custom_profile)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _save_custom_profile(profile_name: String, icon_path: String) -> void:
+	var new_profile: RenderProfile = RenderProfile.new()
+	var icon: Image = Image.load_from_file(icon_path)
+
+	icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
+
+	new_profile.profile_name = profile_name
+	new_profile.icon = ImageTexture.create_from_image(icon)
+	new_profile.video_codec = video_codec_option_button.get_selected_id() as GoZenEncoder.VIDEO_CODEC
+	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as GoZenEncoder.AUDIO_CODEC
+	new_profile.crf = int(abs(video_quality_hslider.value))
+	new_profile.gop = int(video_gop_spin_box.value)
+	new_profile.h264_preset = int(video_speed_hslider.value) as GoZenEncoder.H264_PRESETS
+
+	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
+		DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
+
+	# Fix filename to not cause issues
+	var save_name: String = profile_name.to_lower().validate_filename()
+	var save_path: String = USER_PROFILES_PATH.path_join(save_name + ".tres")
+	var _err: int = ResourceSaver.save(new_profile, save_path)
+	if _err != OK:
+		printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])
+		return
+	add_profile(new_profile, save_path)
+
+	var id: int = option_button_render_profiles.item_count - 1
+	option_button_render_profiles.selected = id
+	button_save_render_profile.visible = false
+
+
+func _on_render_profile_option_button_item_selected(index: int) -> void:
+	if Input.is_key_pressed(KEY_SHIFT) and index > custom_profile_id_start:
+		var current_id: int = option_button_render_profiles.get_selected_id()
+		var current_index: int = option_button_render_profiles.get_item_index(current_id)
+
+		_delete_custom_profile(index)
+		if current_index != index:
+			option_button_render_profiles.select(index)
+		else:
+			_on_render_settings_changed()
+	else:
+		load_profile(load(option_button_render_profiles.get_item_metadata(index)))
+

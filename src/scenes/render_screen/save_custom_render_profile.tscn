@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://cxfdfmbkkwt51"]
+
+[ext_resource type="Texture2D" uid="uid://chwue2kad3pe2" path="res://assets/profiles/custom.svg" id="1_ibisi"]
+[ext_resource type="Script" uid="uid://bxvi8k726uv7k" path="res://scenes/render_screen/save_custom_render_profile.gd" id="1_l8rja"]
+
+[node name="SaveCustomRenderProfile" type="ConfirmationDialog" unique_id=245149230 node_paths=PackedStringArray("line_edit_profile_name", "texture_button_icon")]
+oversampling_override = 1.0
+position = Vector2i(0, 36)
+size = Vector2i(451, 132)
+visible = true
+ok_button_text = "button_dialog_create_custom_profile"
+cancel_button_text = "button_dialog_cancel"
+script = ExtResource("1_l8rja")
+line_edit_profile_name = NodePath("Grid/ProfileNameLineEdit")
+texture_button_icon = NodePath("Grid/ProfileIconButton")
+
+[node name="Grid" type="GridContainer" parent="." unique_id=1838280946]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 443.0
+offset_bottom = 90.0
+columns = 2
+
+[node name="ProfileNameLabel" type="Label" parent="Grid" unique_id=111819404]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "dialog_text_custom_profile_name"
+
+[node name="ProfileNameLineEdit" type="LineEdit" parent="Grid" unique_id=1977249455]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "New profile"
+
+[node name="ProfileIconLabel" type="Label" parent="Grid" unique_id=1245952957]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "dialog_text_custom_profile_icon"
+
+[node name="ProfileIconButton" type="TextureButton" parent="Grid" unique_id=1903604595]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+texture_normal = ExtResource("1_ibisi")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
+[connection signal="pressed" from="Grid/ProfileIconButton" to="." method="_on_profile_icon_button_pressed"]
