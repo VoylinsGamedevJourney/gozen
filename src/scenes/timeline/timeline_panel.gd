@@ -25,6 +25,7 @@ enum STATE {
 	DROPPING,
 	RESIZING,
 	FADING,
+	BOX_SELECTING,
 }
 
 
@@ -43,6 +44,9 @@ const RESIZE_CLIP_MIN_WIDTH: float = 14
 const FADE_HANDLE_SIZE: int = 6
 const FADE_HANDLE_COLOR: Color = Color(1.0, 1.0, 1.0, 0.7)
 const FADE_LINE_COLOR: Color = Color(1.0, 1.0, 1.0, 0.5)
+
+const COLOR_BOX_SELECT_FILL: Color = Color(0.65, 0.1, 0.95, 0.2)
+const COLOR_BOX_SELECT_BORDER: Color = Color(0.65, 0.1, 0.95, 0.6)
 
 const PLAYHEAD_WIDTH: int = 2
 
@@ -74,6 +78,9 @@ var draggable: Draggable = null
 
 var right_click_pos: Vector2i = Vector2i.ZERO
 var right_click_clip: ClipData = null
+
+var box_select_start: Vector2
+var box_select_end: Vector2
 
 var resize_target: ResizeTarget = null
 var fade_target: FadeTarget = null
@@ -154,8 +161,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		cut_clip_at(clip_data, get_frame_from_mouse())
 		return
 	elif event.is_released():
-		if state == STATE.RESIZING:
-			_commit_current_resize()
+		match state:
+			STATE.RESIZING: _commit_current_resize()
+			STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
 
 		_on_ui_cancel()
 
@@ -171,8 +179,13 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		elif resize_target:
 			state = STATE.RESIZING
 		elif pressed_clip == null:
-			state = STATE.SCRUBBING
-			move_playhead(get_frame_from_mouse())
+			if event.shift_pressed:
+				state = STATE.BOX_SELECTING
+				box_select_start = get_local_mouse_position()
+				box_select_end = box_select_start
+			else:
+				state = STATE.SCRUBBING
+				move_playhead(get_frame_from_mouse())
 		else:
 			var clip_id: int = pressed_clip.id
 
@@ -217,24 +230,29 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 	elif tooltip_text != "" or state != STATE.CURSOR_MODE_SELECT:
 		tooltip_text = ""
 
-	if state == STATE.CURSOR_MODE_SELECT:
-		if _get_resize_target() != null:
-			mouse_default_cursor_shape = Control. CURSOR_HSIZE
-		elif _get_fade_target() != null:
+	match state:
+		STATE.CURSOR_MODE_SELECT:
+			if _get_resize_target() != null:
+				mouse_default_cursor_shape = Control. CURSOR_HSIZE
+			elif _get_fade_target() != null:
+				mouse_default_cursor_shape = Control.CURSOR_CROSS
+			elif clip_on_mouse != null:
+				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			else:
+				mouse_default_cursor_shape = Control.CURSOR_ARROW
+		STATE.CURSOR_MODE_CUT:
+			mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
+		STATE.SCRUBBING:
+			if event.button_mask & MOUSE_BUTTON_LEFT:
+				move_playhead(get_frame_from_mouse())
+		STATE.BOX_SELECTING:
+			box_select_end = get_local_mouse_position()
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
-		elif clip_on_mouse != null:
-			mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		else:
-			mouse_default_cursor_shape = Control.CURSOR_ARROW
-	elif state == STATE.CURSOR_MODE_CUT:
-		mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
-	elif state == STATE.SCRUBBING and event.button_mask & MOUSE_BUTTON_LEFT:
-		move_playhead(get_frame_from_mouse())
-	elif state == STATE.RESIZING:
-		mouse_default_cursor_shape = Control.CURSOR_HSIZE
-		_handle_resize_motion()
-	elif state == STATE.FADING:
-		_handle_fade_motion()
+		STATE.RESIZING:
+			mouse_default_cursor_shape = Control.CURSOR_HSIZE
+			_handle_resize_motion()
+		STATE.FADING:
+			_handle_fade_motion()
 
 	queue_redraw()
 
@@ -385,6 +403,12 @@ func _draw() -> void:
 			_draw_fade_handles(clip_data, box_pos, true, show_handles)
 		if ClipHandler.get_type(clip_id) in EditorCore.AUDIO_TYPES: # Top handles
 			_draw_fade_handles(clip_data, box_pos, false, show_handles)
+
+	# - Box selection
+	if state == STATE.BOX_SELECTING:
+		var rect: Rect2 = Rect2(box_select_start, box_select_end - box_select_start).abs()
+		draw_rect(rect, COLOR_BOX_SELECT_FILL)
+		draw_rect(rect, COLOR_BOX_SELECT_BORDER, false, 1.0)
 
 	# - Playhead
 	var playhead_pos: float = EditorCore.frame_nr * zoom
@@ -723,6 +747,42 @@ func _commit_current_resize() -> void:
 
 	resize_target = null
 	queue_redraw()
+
+
+func _commit_box_selection(is_ctrl_pressed: bool) -> void:
+	var track_start: int = clampi(floori(box_select_start.y / TRACK_TOTAL_SIZE), 0, TrackHandler.tracks.size())
+	var track_end: int = clampi(floori(box_select_end.y / TRACK_TOTAL_SIZE), 0, TrackHandler.tracks.size())
+	var frame_start: int = floori(box_select_start.x / zoom)
+	var frame_end: int = floori(box_select_end.x / zoom)
+
+	if not is_ctrl_pressed: selected_clip_ids.clear()
+
+	if track_start > track_end:
+		var temp: int = track_start
+		track_start = track_end
+		track_end = temp
+	if frame_start > frame_end:
+		var temp: int = frame_start
+		frame_start = frame_end
+		frame_end = temp
+
+	for track_id: int in range(track_start, track_end + 1):
+		for frame_nr: int in TrackHandler.tracks[track_id].clips:
+			if frame_nr > frame_end: break
+			var clip_id: int = TrackHandler.tracks[track_id].clips[frame_nr]
+
+			if frame_nr > frame_start and frame_nr < frame_end:
+				if clip_id not in selected_clip_ids: selected_clip_ids.append(clip_id)
+				continue
+
+			# We should also check if a clip ends inside the selection box.
+			if ClipHandler.get_end_frame(clip_id) > frame_start:
+				if clip_id not in selected_clip_ids: selected_clip_ids.append(clip_id)
+
+	if selected_clip_ids.size() > 0:
+		ClipHandler.clip_selected.emit(selected_clip_ids[-1])
+	else:
+		ClipHandler.clip_selected.emit(-1)
 
 
 func _handle_resize_motion() -> void:
