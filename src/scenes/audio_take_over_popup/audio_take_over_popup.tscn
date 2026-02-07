@@ -65,13 +65,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_audio_take_over_popup"
+text = "Audio-take-over"
 
 [node name="AudioFileOffsetLabel" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=556729055]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_type_variation = &"title_label"
-text = "audio_take_over_popup_audio_file_offset"
+text = "Audio offset"
 
 [node name="AudioFileOffsetSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=915226872]
 layout_mode = 2
@@ -83,7 +83,6 @@ alignment = 1
 [node name="PlayAudioButton" type="TextureButton" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=979822766]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
-tooltip_text = "audio_take_over_tooltip_play_pause_audio"
 texture_normal = ExtResource("2_8tgyo")
 ignore_texture_size = true
 stretch_mode = 5
@@ -111,7 +110,6 @@ script = ExtResource("3_8tgyo")
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 4
-tooltip_text = "audio_take_over_tooltip_select_audio_file"
 text_overrun_behavior = 3
 fit_to_longest_item = false
 
@@ -128,13 +126,13 @@ layout_mode = 2
 [node name="CancelButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=2131483463]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "button_cancel"
+text = "Cancel"
 
 [node name="TakeOverAudioButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
-text = "button_take_over_audio"
+text = "Confirm"
 
 [node name="FileAAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1609794610]
 

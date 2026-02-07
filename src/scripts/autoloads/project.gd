@@ -23,14 +23,14 @@ func _ready() -> void:
 	get_window().close_requested.connect(_on_close_requested)
 	ClipHandler.clips_updated.connect(update_timeline_end)
 	CommandManager.register(
-			"command_project_settings", open_settings_menu, "open_project_settings")
+			"command_project_settings", open_settings_menu, tr("Open project settings"))
 
 
 func new_project(new_path: String, new_resolution: Vector2i, new_framerate: float) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 
-	loading_overlay.update_title("title_new_project")
-	loading_overlay.update_progress(0, "status_new_project_init")
+	loading_overlay.update_title(tr("New project"))
+	loading_overlay.update_progress(0, tr("Initialize new project ..."))
 
 	set_project_path(new_path)
 	set_resolution(new_resolution)
@@ -49,12 +49,12 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 	EditorCore.loaded_clips.resize(data.tracks.size())
 
-	loading_overlay.update_progress(50, "status_project_playback_setup")
+	loading_overlay.update_progress(50, tr("Setting up playback ..."))
 	EditorCore.setup_playback()
 	EditorCore.setup_audio_players()
 	EditorCore.set_frame(get_playhead_position())
 
-	loading_overlay.update_progress(99, "status_project_finalizing")
+	loading_overlay.update_progress(99, tr("Finalizing ..."))
 	get_window().title = "GoZen - %s" % new_path.get_file().get_basename()
 	_update_recent_projects(new_path)
 	PopupManager.close_popups()
@@ -74,9 +74,9 @@ func save() -> void:
 
 func save_as() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-			"file_dialog_title_save_project_as",
+			tr("Save project as ..."),
 			FileDialog.FILE_MODE_SAVE_FILE,
-			["*%s;%s" % [EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
+			["*%s;%s" % [EXTENSION, tr("GoZen project file")]])
 
 	dialog.file_selected.connect(_save_as)
 	add_child(dialog)
@@ -87,15 +87,14 @@ func open(new_project_path: String) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
 	var progress_increment: float
 
-	loading_overlay.update_title("title_loading_project")
-	loading_overlay.update_progress(0, "status_project_loading_init")
+	loading_overlay.update_title(tr("Loading project"))
+	loading_overlay.update_progress(0, tr("Initializing ..."))
 	loading_overlay.update_progress_bar(1, true)
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
-	loading_overlay.update_progress(5, "status_project_preparing_timeline")
-
+	loading_overlay.update_progress(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
 	set_framerate(data.framerate)
 
@@ -106,7 +105,7 @@ func open(new_project_path: String) -> void:
 	EditorCore.loaded_clips.resize(data.tracks.size())
 
 	# 7% = Timeline ready to accept clips.
-	loading_overlay.update_progress(7, "status_project_loading_files")
+	loading_overlay.update_progress(7, tr("Loading project files ..."))
 	progress_increment = (1 / float(data.files.size())) * 73
 
 	for i: int in data.files.keys():
@@ -121,12 +120,12 @@ func open(new_project_path: String) -> void:
 		loading_overlay.increment_progress_bar(progress_increment)
 
 	# 80% = Files loaded, setting up playback.
-	loading_overlay.update_progress(80, "status_project_playback_setup")
+	loading_overlay.update_progress(80, tr("Setting up playback ..."))
 	EditorCore.setup_playback()
 	EditorCore.setup_audio_players()
 
 	# 99% = Finalizing.
-	loading_overlay.update_progress(99, "status_project_finalizing")
+	loading_overlay.update_progress(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
 
 	loading_overlay.update_progress_bar(100)
@@ -142,8 +141,8 @@ func open(new_project_path: String) -> void:
 
 func open_project() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-			"file_dialog_title_open_project", FileDialog.FILE_MODE_OPEN_FILE,
-			["*%s;%s" % [EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
+			tr("Open project"), FileDialog.FILE_MODE_OPEN_FILE,
+			["*%s;%s" % [EXTENSION, tr("GoZen project files")]])
 
 	dialog.file_selected.connect(_open_project)
 	add_child(dialog)
@@ -196,12 +195,12 @@ func _on_close_requested() -> void:
 		return
 
 	var popup: AcceptDialog = AcceptDialog.new()
-	var dont_save_button: Button = popup.add_button("button_dont_save")
-	var cancel_button: Button = popup.add_cancel_button("button_cancel")
+	var dont_save_button: Button = popup.add_button(tr("Don't save"))
+	var cancel_button: Button = popup.add_cancel_button(tr("Cancel"))
 
 	auto_save_timer.paused = true
-	popup.title = "title_close_without_saving"
-	popup.ok_button_text = "button_save"
+	popup.title = tr("Close without saving")
+	popup.ok_button_text = tr("Save")
 
 	popup.confirmed.connect(_on_save_close)
 	cancel_button.pressed.connect(_on_cancel_close)

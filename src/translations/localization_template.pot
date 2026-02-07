@@ -1,492 +1,1120 @@
-# GoZen Localization Template
+# LANGUAGE translation for GoZen for the following files:
+# res://render_profiles/vp9.tres
+# res://render_profiles/av1.tres
+# res://render_profiles/high_quality.tres
+# res://render_profiles/youtube_hq.tres
+# res://render_profiles/youtube.tres
+# res://render_profiles/vp8.tres
+# res://resources/timeline_line.tres
+# res://resources/timeline_box_audio_focus.tres
+# res://resources/timeline_box_preview.tres
+# res://resources/timeline_box_video_focus.tres
+# res://resources/timeline_box_color_normal.tres
+# res://resources/timeline_box_text_focus.tres
+# res://resources/timeline_box_image_normal.tres
+# res://resources/timeline_box_image_focus.tres
+# res://resources/timeline_box_text_normal.tres
+# res://resources/timeline_box_video_normal.tres
+# res://resources/timeline_box_audio_normal.tres
+# res://resources/timeline_box_color_focus.tres
+# res://default_bus_layout.tres
+# res://scenes/effects_panel/effects_panel.gd
+# res://scenes/effects_panel/effects_panel.tscn
+# res://scenes/popup_background.tscn
+# res://scenes/view_panel/view_panel.tscn
+# res://scenes/view_panel/view_panel.gd
+# res://scenes/view_panel/project_view_texture.gd
+# res://scenes/editor/editor.tscn
+# res://scenes/editor/editor.gd
+# res://scenes/add_effects_popup/add_effects_popup.gd
+# res://scenes/add_effects_popup/add_effects_popup.tscn
+# res://scenes/file_panel/file_tree_proxy_progress.gd
+# res://scenes/file_panel/file_panel.tscn
+# res://scenes/file_panel/file_panel.gd
+# res://scenes/timeline/timeline_clip_draw.gd
+# res://scenes/timeline/timeline_panel.gd
+# res://scenes/timeline/time_stamps.gd
+# res://scenes/timeline/timeline_track_lines_draw.gd
+# res://scenes/timeline/timeline_markers_drawn.gd
+# res://scenes/timeline/timeline_scroll.gd
+# res://scenes/timeline/timeline_modes.gd
+# res://scenes/timeline/timeline_playhead_draw.gd
+# res://scenes/timeline/timeline.tscn
+# res://scenes/timeline/timeline.gd
+# res://scenes/timeline/timeline_box_selection_draw.gd
+# res://scenes/color_popup/color_popup.tscn
+# res://scenes/color_popup/color_popup.gd
+# res://scenes/command_bar/command_bar.gd
+# res://scenes/command_bar/command_bar.tscn
+# res://scenes/render_screen/markers_panel.gd
+# res://scenes/render_screen/render_screen.tscn
+# res://scenes/render_screen/render_screen.gd
+# res://scenes/render_screen/save_custom_render_profile.tscn
+# res://scenes/render_screen/save_custom_render_profile.gd
+# res://scenes/audio_meter/audio_meter.gd
+# res://scenes/audio_meter/audio_meter.tscn
+# res://scenes/edit_screen/edit_screen.tscn
+# res://scenes/edit_screen/edit_screen.gd
+# res://scenes/about_gozen/about_gozen.tscn
+# res://scenes/about_gozen/about_gozen.gd
+# res://scenes/progress_overlay/progress_overlay.gd
+# res://scenes/progress_overlay/progress_overlay.tscn
+# res://scenes/settings_menu/settings_menu.gd
+# res://scenes/settings_menu/settings_menu.tscn
+# res://scenes/menu_bar/menu_bar.tscn
+# res://scenes/menu_bar/menu_bar.gd
+# res://scenes/rename_file/rename_file.gd
+# res://scenes/rename_file/rename_file.tscn
+# res://scenes/startup_screen/startup_screen.tscn
+# res://scenes/startup_screen/startup_screen.gd
+# res://scenes/marker_popup/marker_popup.tscn
+# res://scenes/marker_popup/marker_popup.gd
+# res://scenes/audio_take_over_popup/audio_take_over_wave.gd
+# res://scenes/audio_take_over_popup/audio_take_over_popup.tscn
+# res://scenes/audio_take_over_popup/audio_take_over_popup.gd
+# res://effects/audio/volume.tres
+# res://effects/visual/transform.tres
+# res://scripts/utils/settings_option.gd
+# res://scripts/utils/library.gd
+# res://scripts/utils/print.gd
+# res://scripts/utils/utils.gd
+# res://scripts/autoloads/settings.gd
+# res://scripts/autoloads/project.gd
+# res://scripts/autoloads/thumbnailer.gd
+# res://scripts/autoloads/render_manager.gd
+# res://scripts/autoloads/proxy_handler.gd
+# res://scripts/autoloads/threader.gd
+# res://scripts/autoloads/editor_core.gd
+# res://scripts/autoloads/popup_manager.gd
+# res://scripts/autoloads/command_manager.gd
+# res://scripts/autoloads/matrix_handler.gd
+# res://scripts/autoloads/effects_handler.gd
+# res://scripts/autoloads/track_handler.gd
+# res://scripts/autoloads/clip_handler.gd
+# res://scripts/autoloads/marker_handler.gd
+# res://scripts/autoloads/file_handler.gd
+# res://scripts/autoloads/input_manager.gd
+# res://scripts/classes/pck.gd
+# res://scripts/classes/gozen_effect.gd
+# res://scripts/classes/clip_data.gd
+# res://scripts/classes/data_manager.gd
+# res://scripts/classes/temp_file.gd
+# res://scripts/classes/track_data.gd
+# res://scripts/classes/marker_data.gd
+# res://scripts/classes/resize_clip_request.gd
+# res://scripts/classes/move_clip_request.gd
+# res://scripts/classes/audio_player.gd
+# res://scripts/classes/create_clip_request.gd
+# res://scripts/classes/gozen_effect_audio.gd
+# res://scripts/classes/draggable.gd
+# res://scripts/classes/project_data.gd
+# res://scripts/classes/effect_param.gd
+# res://scripts/classes/render_profile.gd
+# res://scripts/classes/cut_clip_request.gd
+# res://scripts/classes/file.gd
+# res://scripts/classes/gozen_effect_visual.gd
+# res://scripts/classes/settings_data.gd
+# res://scripts/classes/visual_compositor.gd
+# res://scripts/classes/effect_cache.gd
+# res://scripts/classes/file_data.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8-bit\n"
 
+#: scenes/effects_panel/effects_panel.gd:447
+msgid "Add effects"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Show Image files."
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Show Audio files."
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "VisualEffects"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "AudioEffects"
+msgstr ""
+
+#: scenes/view_panel/view_panel.tscn
+msgid "Frame: 0"
+msgstr ""
+
+#: scenes/view_panel/view_panel.tscn
+msgid "00:00:00.00"
+msgstr ""
+
+#: scenes/view_panel/view_panel.gd:59
+msgid "Frame"
+msgstr ""
+
+#: scenes/view_panel/project_view_texture.gd:35
+msgid "Save screenshot ..."
+msgstr ""
+
+#: scenes/view_panel/project_view_texture.gd:36
+msgid "Save screenshot to project ..."
+msgstr ""
+
+#: scenes/editor/editor.tscn
+msgid "EditTab"
+msgstr ""
+
+#: scenes/editor/editor.tscn
+msgid "RenderTab"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+msgid "Add effect"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+#: scenes/about_gozen/about_gozen.tscn
+msgid "Close popup"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add files"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add text"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add color"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:79
+msgid "Add files ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:104
+msgid "Rename"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:105
+msgid "Reload"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:106
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Delete"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:111
+msgid "Image options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:112
+msgid "Save image as ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:114
+#: scenes/file_panel/file_panel.gd:133
+#: scenes/timeline/timeline_panel.gd:661
+msgid "Video options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:118
+#: scenes/file_panel/file_panel.gd:137
+msgid "Create proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:120
+#: scenes/file_panel/file_panel.gd:139
+msgid "Re-create proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:121
+#: scenes/file_panel/file_panel.gd:140
+msgid "Remove proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:124
+#: scenes/file_panel/file_panel.gd:143
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio-take-over"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:127
+#: scenes/file_panel/file_panel.gd:146
+msgid "Disable audio-take-over"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:129
+#: scenes/file_panel/file_panel.gd:148
+msgid "Enable audio-take-over"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:131
+msgid "Extract audio to file ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:150
+msgid "Text options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:151
+msgid "Duplicate"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:154
+msgid "Save file as ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:156
+msgid "Folder options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:157
+#: scenes/file_panel/file_panel.gd:161
+#: scenes/file_panel/file_panel.gd:560
+msgid "Create folder"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:164
+msgid "Rename folder"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:165
+msgid "Delete folder"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:205
+#: scenes/rename_file/rename_file.tscn
+msgid "Rename file"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:210
+#: scenes/file_panel/file_panel.gd:565
+msgid "Folder name"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:270
+msgid "Save image to file"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:281
+msgid "Save video audio to WAV"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:197
+msgid "Remove empty space"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:199
+msgid "Add track"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:200
+msgid "Remove track"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:657
+msgid "Delete clip"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:658
+msgid "Cut clip"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:662
+msgid "Add clip only video isntance"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:665
+msgid "Clip audio-take-over"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:670
+msgid "Disable clip audio-take-over"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:674
+msgid "Enable clip audio-take-over"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:677
+msgid "Track options"
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
+msgid "Add color file"
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
+#: scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+#: scripts/autoloads/project.gd:199
+msgid "Cancel"
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
+msgid "Create new color file"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Render settings"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Render profile"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Save current presets as a custom render profile."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Save profile"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Export path"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Render video settings"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Video codec"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Quality"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Speed"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Gop size"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Render audio settings"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Audio codec"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Multi-threading"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Threads"
+msgstr ""
 
-msgid "title_about_gozen"
+#: scenes/render_screen/render_screen.tscn
+msgid "The amount of threads you want to use for exporting your video."
 msgstr ""
 
-msgid "title_appearance"
+#: scenes/render_screen/render_screen.tscn
+msgid "Create a low quality draft version of your video."
 msgstr ""
 
-msgid "title_defaults"
+#: scenes/render_screen/render_screen.tscn
+msgid "Draft"
 msgstr ""
 
-msgid "title_timeline"
+#: scenes/render_screen/render_screen.tscn
+msgid "Start render"
 msgstr ""
 
-msgid "title_extras"
+#: scenes/render_screen/render_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:104
+#: scenes/settings_menu/settings_menu.gd:229
+msgid "Markers"
 msgstr ""
 
-msgid "title_render_settings"
+#: scenes/render_screen/render_screen.gd:51
+msgid "Custom render profiles"
 msgstr ""
 
-msgid "title_rendering"
+#: scenes/render_screen/render_screen.gd:94
+msgid "HEVC"
 msgstr ""
 
-msgid "title_rendering_finished"
+#: scenes/render_screen/render_screen.gd:95
+msgid "H264"
 msgstr ""
 
-msgid "title_rendering_error"
+#: scenes/render_screen/render_screen.gd:96
+msgid "MPEG4"
 msgstr ""
 
-msgid "title_render_video"
+#: scenes/render_screen/render_screen.gd:97
+msgid "MPEG2"
 msgstr ""
 
-msgid "title_render_audio"
+#: scenes/render_screen/render_screen.gd:98
+msgid "MPEG1"
 msgstr ""
 
-msgid "title_cpu_threads"
+#: scenes/render_screen/render_screen.gd:99
+msgid "MJPEG"
 msgstr ""
 
-msgid "title_recent_projects"
+#: scenes/render_screen/render_screen.gd:100
+msgid "AV1"
 msgstr ""
 
-msgid "title_getting_started"
+#: scenes/render_screen/render_screen.gd:101
+msgid "VP9"
 msgstr ""
 
-msgid "title_new_project"
+#: scenes/render_screen/render_screen.gd:102
+msgid "VP8"
 msgstr ""
 
-msgid "title_loading_project"
+#: scenes/render_screen/render_screen.gd:104
+msgid "WAV"
 msgstr ""
 
-msgid "title_files_dropped"
+#: scenes/render_screen/render_screen.gd:105
+msgid "PCM"
 msgstr ""
 
-msgid "title_sponsors"
+#: scenes/render_screen/render_screen.gd:106
+msgid "MP2"
 msgstr ""
 
-msgid "title_editor_settings"
+#: scenes/render_screen/render_screen.gd:107
+msgid "MP3"
 msgstr ""
 
-msgid "title_project_settings"
+#: scenes/render_screen/render_screen.gd:108
+msgid "AAC"
 msgstr ""
 
-msgid "title_chapters"
+#: scenes/render_screen/render_screen.gd:109
+msgid "Opus"
 msgstr ""
 
-msgid "title_save_image_to_file"
+#: scenes/render_screen/render_screen.gd:110
+msgid "Vorbis"
 msgstr ""
 
-msgid "title_save_video_audio_to_wav"
+#: scenes/render_screen/render_screen.gd:111
+msgid "FLAC"
 msgstr ""
 
-msgid "title_add_color_file"
+#: scenes/render_screen/render_screen.gd:112
+msgid "NONE"
 msgstr ""
 
-msgid "title_close_without_saving"
+#: scenes/render_screen/render_screen.gd:174
+msgid "Select export path"
 msgstr ""
 
-msgid "title_dialog_file_too_big"
+#: scenes/render_screen/render_screen.gd:255
+msgid "Rendering finished"
 msgstr ""
 
-msgid "button_tooltip_create_new_project"
+#: scenes/render_screen/render_screen.gd:275
+msgid "Error whilst rendering video"
 msgstr ""
 
-msgid "button_gozen_site"
+#: scenes/render_screen/render_screen.gd:331
+#: scenes/render_screen/render_screen.gd:339
+msgid "Rendering"
 msgstr ""
 
-msgid "button_manual"
+#: scenes/render_screen/render_screen.gd:345
+msgid "Cancel rendering"
 msgstr ""
 
-msgid "button_tutorials"
+#: scenes/render_screen/render_screen.gd:376
+msgid "Error opening file"
 msgstr ""
 
-msgid "button_discord_server"
+#: scenes/render_screen/render_screen.gd:377
+msgid "Error whilst sending audio"
 msgstr ""
 
-msgid "button_support_gozen"
+#: scenes/render_screen/render_screen.gd:383
+msgid "Setting up ..."
 msgstr ""
 
-msgid "button_view_sponsors"
+#: scenes/render_screen/render_screen.gd:384
+#: scenes/render_screen/render_screen.gd:385
+msgid "Compiling audio ..."
 msgstr ""
 
-msgid "button_become_sponsor"
+#: scenes/render_screen/render_screen.gd:386
+#: scenes/render_screen/render_screen.gd:387
+msgid "Sending data ..."
 msgstr ""
 
-msgid "button_open_project"
+#: scenes/render_screen/render_screen.gd:388
+msgid "Sending final frame ..."
 msgstr ""
 
-msgid "button_create_new_project"
+#: scenes/render_screen/save_custom_render_profile.tscn
+msgid "Create render profile"
 msgstr ""
 
-msgid "button_create_new_color_file"
+#: scenes/render_screen/save_custom_render_profile.tscn
+msgid "New profile name"
 msgstr ""
 
-msgid "button_tooltip_editor_settings"
+#: scenes/render_screen/save_custom_render_profile.gd:28
+msgid "Select Icon"
 msgstr ""
 
-msgid "button_cancel"
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+msgid "About GoZen"
 msgstr ""
 
-msgid "button_cancel_rendering"
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Version: "
 msgstr ""
 
-msgid "button_reset"
+#: scenes/about_gozen/about_gozen.gd:22
+msgid "GoZen version"
 msgstr ""
 
-msgid "button_return"
+#: scenes/about_gozen/about_gozen.gd:37
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Website"
 msgstr ""
 
-msgid "button_screen_editing"
+#: scenes/about_gozen/about_gozen.gd:38
+msgid "GitHub repo"
 msgstr ""
 
-msgid "button_screen_render"
+#: scenes/about_gozen/about_gozen.gd:39
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
 msgstr ""
 
-msgid "button_start_render"
+#: scenes/about_gozen/about_gozen.gd:40
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Support GoZen"
 msgstr ""
 
-msgid "button_save"
+#: scenes/about_gozen/about_gozen.gd:42
+msgid "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
 msgstr ""
 
-msgid "button_dont_save"
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:90
+msgid "Loading project"
 msgstr ""
 
-msgid "button_save_settings"
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Estimated time - 59:59:59"
 msgstr ""
 
-msgid "button_close"
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:91
+msgid "Initializing ..."
 msgstr ""
 
-msgid "text_version"
+#: scenes/settings_menu/settings_menu.gd:97
+#: scenes/settings_menu/settings_menu.tscn
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Editor settings"
 msgstr ""
 
-msgid "text_gozen_website"
+#: scenes/settings_menu/settings_menu.gd:102
+msgid "Marker one"
 msgstr ""
 
-msgid "text_github_repo"
+#: scenes/settings_menu/settings_menu.gd:102
+msgid "Marker two"
 msgstr ""
 
-msgid "text_discord_link"
+#: scenes/settings_menu/settings_menu.gd:102
+msgid "Marker three"
 msgstr ""
 
-msgid "text_support_gozen"
+#: scenes/settings_menu/settings_menu.gd:103
+msgid "Marker four"
 msgstr ""
 
-# Note: This is part of the string for the "about gozen" screen.
-#: scripts/about_gozen.gd
-msgid "text_gozen_made_by"
+#: scenes/settings_menu/settings_menu.gd:103
+msgid "Marker five"
 msgstr ""
 
-msgid "text_rename_file_to"
+#: scenes/settings_menu/settings_menu.gd:115
+#: scenes/settings_menu/settings_menu.gd:243
+msgid "Shortcuts"
 msgstr ""
 
-msgid "text_advanced_settings"
+#: scenes/settings_menu/settings_menu.gd:124
+#: scenes/settings_menu/settings_menu.gd:251
+#: scenes/settings_menu/settings_menu.gd:252
+msgid "Appearance"
 msgstr ""
 
-msgid "text_path"
+#: scenes/settings_menu/settings_menu.gd:125
+msgid "Display"
 msgstr ""
 
-msgid "text_resolution"
+#: scenes/settings_menu/settings_menu.gd:126
+msgid "Language"
 msgstr ""
 
-msgid "text_framerate"
+#: scenes/settings_menu/settings_menu.gd:132
+msgid "Display scale"
 msgstr ""
 
-msgid "placeholder_text_search_files"
+#: scenes/settings_menu/settings_menu.gd:138
+msgid "Editor theme"
 msgstr ""
 
-msgid "tooltip_ignore_changes_close_settings"
+#: scenes/settings_menu/settings_menu.gd:144
+msgid "Show menu bar"
 msgstr ""
 
-msgid "tooltip_setting_background_color"
+#: scenes/settings_menu/settings_menu.gd:148
+msgid "Audio waveforms"
 msgstr ""
 
-msgid "setting_background_color"
+#: scenes/settings_menu/settings_menu.gd:149
+msgid "Waveform style"
 msgstr ""
 
-msgid "setting_language"
+#: scenes/settings_menu/settings_menu.gd:155
+msgid "Waveform amplifier"
 msgstr ""
 
-msgid "setting_display_scale"
+#: scenes/settings_menu/settings_menu.gd:160
+msgid "Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity"
 msgstr ""
 
-msgid "setting_tooltip_display_scale"
+#: scenes/settings_menu/settings_menu.gd:161
+msgid "Dialogue's"
 msgstr ""
 
-msgid "setting_theme"
+#: scenes/settings_menu/settings_menu.gd:162
+msgid "Use native dialogs"
 msgstr ""
 
-msgid "setting_tooltip_theme"
+#: scenes/settings_menu/settings_menu.gd:168
+msgid "Defaults"
 msgstr ""
 
-msgid "setting_show_menu_bar"
+#: scenes/settings_menu/settings_menu.gd:169
+msgid "Default durations"
 msgstr ""
 
-msgid "setting_waveform_style"
+#: scenes/settings_menu/settings_menu.gd:170
+msgid "Default image duration"
 msgstr ""
 
-msgid "setting_default_image_duration"
+#: scenes/settings_menu/settings_menu.gd:175
+#: scenes/settings_menu/settings_menu.gd:181
+#: scenes/settings_menu/settings_menu.gd:187
+msgid "Duration in frames per second."
 msgstr ""
 
-msgid "setting_default_color_duration"
+#: scenes/settings_menu/settings_menu.gd:176
+msgid "Default color duration"
 msgstr ""
 
-msgid "setting_default_text_duration"
+#: scenes/settings_menu/settings_menu.gd:188
+msgid "Project resolution"
 msgstr ""
 
-msgid "setting_tooltip_duration_in_frames"
+#: scenes/settings_menu/settings_menu.gd:190
+msgid "Project frame-rate"
 msgstr ""
 
-msgid "setting_default_project_resolution"
+#: scenes/settings_menu/settings_menu.gd:195
+msgid "Use proxies"
 msgstr ""
 
-msgid "setting_tooltip_default_project_resolution_x"
+#: scenes/settings_menu/settings_menu.gd:201
+msgid "Timeline"
 msgstr ""
 
-msgid "setting_tooltip_default_project_resolution_y"
+#: scenes/settings_menu/settings_menu.gd:202
+msgid "Timeline settings"
 msgstr ""
 
-msgid "setting_default_project_framerate"
+#: scenes/settings_menu/settings_menu.gd:203
+msgid "Default track amount"
 msgstr ""
 
-msgid "setting_tooltip_default_project_framerate"
+#: scenes/settings_menu/settings_menu.gd:208
+msgid "Timeline controls"
 msgstr ""
 
-msgid "setting_default_track_amount"
+#: scenes/settings_menu/settings_menu.gd:209
+msgid "Pause after dragging"
 msgstr ""
 
-msgid "setting_pause_after_dragging"
+#: scenes/settings_menu/settings_menu.gd:213
+msgid "Setting this will pause playback after having dragged the playhead around."
 msgstr ""
 
-msgid "setting_delete_empty_space_mod"
+#: scenes/settings_menu/settings_menu.gd:214
+msgid "Empty space delete modifier"
 msgstr ""
 
-msgid "setting_tooltip_delete_empty_space_mod"
+#: scenes/settings_menu/settings_menu.gd:220
+msgid "The modifier you want to easily delete empty space between clips."
 msgstr ""
 
-msgid "setting_check_version"
+#: scenes/settings_menu/settings_menu.gd:222
+msgid "Show mode bar"
 msgstr ""
 
-msgid "setting_tooltip_check_version"
+#: scenes/settings_menu/settings_menu.gd:226
+msgid "The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode."
 msgstr ""
 
-msgid "setting_auto_save"
+#: scenes/settings_menu/settings_menu.gd:231
+#: scenes/settings_menu/settings_menu.gd:232
+msgid "Extras"
 msgstr ""
 
-msgid "setting_tooltip_auto_save"
+#: scenes/settings_menu/settings_menu.gd:233
+msgid "Check version"
 msgstr ""
 
-msgid "encoding_progress_text_setup"
+#: scenes/settings_menu/settings_menu.gd:237
+msgid "Auto save"
 msgstr ""
 
-msgid "encoding_progress_text_open_error"
+#: scenes/settings_menu/settings_menu.gd:248
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Project settings"
 msgstr ""
 
-msgid "encoding_progress_text_compiling_audio"
+#: scenes/settings_menu/settings_menu.gd:253
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Background color"
 msgstr ""
 
-msgid "encoding_progress_text_sending_audio"
+#: scenes/settings_menu/settings_menu.gd:257
+msgid "The background color when no clips are displayed."
 msgstr ""
 
-msgid "encoding_progress_text_sending_audio_error"
+#: scenes/settings_menu/settings_menu.gd:373
+#: scenes/startup_screen/startup_screen.tscn
+msgid "X:"
 msgstr ""
 
-msgid "encoding_progress_text_creating_sending_data"
+#: scenes/settings_menu/settings_menu.gd:374
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Y:"
 msgstr ""
 
-msgid "encoding_progress_text_sending_data_error"
+#: scenes/settings_menu/settings_menu.gd:441
+msgid "Press any key..."
 msgstr ""
 
-msgid "encoding_progress_text_canceling"
+#: scenes/settings_menu/settings_menu.tscn
+msgid "Close settings"
 msgstr ""
 
-msgid "encoding_progress_text_last_frame"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Project"
 msgstr ""
 
-msgid "rendering_warning"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Save project"
 msgstr ""
 
-msgid "render_option_path"
+#: scenes/menu_bar/menu_bar.tscn
+#: scripts/autoloads/project.gd:77
+msgid "Save project as ..."
 msgstr ""
 
-msgid "render_option_profile"
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:194
+#: scripts/autoloads/project.gd:144
+msgid "Open project"
 msgstr ""
 
-msgid "render_option_audio_codec"
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Recent projects"
 msgstr ""
 
-msgid "render_option_video_codec"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Quit"
 msgstr ""
 
-msgid "render_option_quality"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Edit"
 msgstr ""
 
-msgid "render_option_tooltip_quality"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Undo"
 msgstr ""
 
-msgid "render_option_speed"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Redo"
 msgstr ""
 
-msgid "render_option_tooltip_speed"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Cut"
 msgstr ""
 
-msgid "render_option_gop_size"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Copy"
 msgstr ""
 
-msgid "render_option_tooltip_gop_size"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Paste"
 msgstr ""
 
-msgid "render_option_threads_cores"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Preferences"
 msgstr ""
 
-msgid "render_option_tooltip_threads_cores"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Module manager"
 msgstr ""
 
-msgid "render_option_video_length"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Command bar"
 msgstr ""
 
-msgid "render_option_render_time"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Help"
 msgstr ""
 
-msgid "notification_update_available"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Report bug"
 msgstr ""
 
-msgid "status_project_loading_init"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Check for updates"
 msgstr ""
 
-msgid "status_project_preparing_timeline"
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Manual"
 msgstr ""
 
-msgid "status_project_loading_files"
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Tutorials"
 msgstr ""
 
-msgid "status_project_playback_setup"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Render"
 msgstr ""
 
-msgid "status_project_finalizing"
+#: scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Confirm"
 msgstr ""
 
-msgid "status_new_project_init"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
 msgstr ""
 
-msgid "command_editor_settings"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Update available"
 msgstr ""
 
-msgid "command_project_settings"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "MainMenu"
 msgstr ""
 
-msgid "command_render_menu"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Create new project"
 msgstr ""
 
-msgid "menu_bar_project"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Getting started"
 msgstr ""
 
-msgid "menu_bar_project_save"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "View sponsors"
 msgstr ""
 
-msgid "menu_bar_project_save_as"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "NewProject"
 msgstr ""
 
-msgid "menu_bar_project_open_project"
+#: scenes/startup_screen/startup_screen.tscn
+#: scripts/autoloads/project.gd:32
+msgid "New project"
 msgstr ""
 
-msgid "menu_bar_project_recent_projects"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Path"
 msgstr ""
 
-msgid "menu_bar_project_quit"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Resolution"
 msgstr ""
 
-msgid "menu_bar_project_open_settings"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video width."
 msgstr ""
 
-msgid "menu_bar_preferences"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video height."
 msgstr ""
 
-msgid "menu_bar_preferences_editor_settings"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Framerate"
 msgstr ""
 
-msgid "menu_bar_preferences_keyboard_shortcuts"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video framerate (fps)."
 msgstr ""
 
-msgid "menu_bar_preferences_module_manager"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Advanced options"
 msgstr ""
 
-msgid "menu_bar_preferences_command_bar"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Return"
 msgstr ""
 
-msgid "menu_bar_help"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Sponsors"
 msgstr ""
 
-msgid "menu_bar_help_report_issue"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "5"
 msgstr ""
 
-msgid "menu_bar_help_check_updates"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Voylin's Gamedev Journey"
 msgstr ""
 
-msgid "menu_bar_help_manual"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "GoZen creator"
 msgstr ""
 
-msgid "menu_bar_help_tutorials"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Become a sponsor"
 msgstr ""
 
-msgid "menu_bar_help_discord"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Continue"
 msgstr ""
 
-msgid "menu_bar_help_site"
+#: scenes/startup_screen/startup_screen.gd:132
+msgid "Version"
 msgstr ""
 
-msgid "menu_bar_about_gozen"
+#: scenes/startup_screen/startup_screen.gd:196
+#: scenes/startup_screen/startup_screen.gd:244
+#: scripts/autoloads/project.gd:79
+msgid "GoZen project file"
 msgstr ""
 
-msgid "menu_bar_support_gozen"
+#: scenes/startup_screen/startup_screen.gd:242
+msgid "Select project save path"
 msgstr ""
 
-msgid "file_dialog_title_add_files"
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Update marker"
 msgstr ""
 
-msgid "file_dialog_title_save_project_as"
+#: scenes/marker_popup/marker_popup.tscn
+msgid "time (frame)"
 msgstr ""
 
-msgid "file_dialog_title_open_project"
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Marker"
 msgstr ""
 
-msgid "file_dialog_title_select_save_path"
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Type"
 msgstr ""
 
-msgid "file_dialog_tooltip_gozen_project_files"
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Delete the selected marker."
 msgstr ""
 
-msgid "file_panel_item_add_files"
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio offset"
 msgstr ""
 
-msgid "file_panel_item_add_text"
+#: scripts/autoloads/project.gd:26
+msgid "Open project settings"
 msgstr ""
 
-msgid "file_panel_item_add_color"
+#: scripts/autoloads/project.gd:33
+msgid "Initialize new project ..."
 msgstr ""
 
-msgid "popup_item_rename"
+#: scripts/autoloads/project.gd:52
+#: scripts/autoloads/project.gd:123
+msgid "Setting up playback ..."
 msgstr ""
 
-msgid "popup_item_reload"
+#: scripts/autoloads/project.gd:57
+#: scripts/autoloads/project.gd:128
+msgid "Finalizing ..."
 msgstr ""
 
-msgid "popup_item_delete"
+#: scripts/autoloads/project.gd:97
+msgid "Setting up timeline ..."
 msgstr ""
 
-msgid "popup_item_duplicate"
+#: scripts/autoloads/project.gd:108
+msgid "Loading project files ..."
 msgstr ""
 
-msgid "popup_item_save_as_file"
+#: scripts/autoloads/project.gd:145
+msgid "GoZen project files"
 msgstr ""
 
-msgid "popup_item_extract_audio"
+#: scripts/autoloads/project.gd:198
+msgid "Don't save"
 msgstr ""
 
-msgid "popup_separator_image_options"
+#: scripts/autoloads/project.gd:202
+msgid "Close without saving"
 msgstr ""
 
-msgid "popup_separator_video_options"
+#: scripts/autoloads/project.gd:203
+msgid "Save"
 msgstr ""
 
-msgid "popup_separator_text_options"
+msgid "GoZen"
 msgstr ""

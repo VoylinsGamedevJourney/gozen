@@ -33,7 +33,7 @@ theme_override_constants/separation = -1
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
-placeholder_text = "placeholder_text_search_files"
+placeholder_text = "Search files ..."
 clear_button_enabled = true
 
 [node name="AddFileButton" type="MenuButton" parent="Margin/VBox/HBox" unique_id=1440161296]
@@ -43,13 +43,13 @@ icon = ExtResource("2_40fut")
 icon_alignment = 2
 expand_icon = true
 item_count = 3
-popup/item_0/text = "file_panel_item_add_files"
+popup/item_0/text = "Add files"
 popup/item_0/icon = ExtResource("3_iyj14")
 popup/item_0/id = 0
-popup/item_1/text = "file_panel_item_add_text"
+popup/item_1/text = "Add text"
 popup/item_1/icon = ExtResource("4_4eim5")
 popup/item_1/id = 1
-popup/item_2/text = "file_panel_item_add_color"
+popup/item_2/text = "Add color"
 popup/item_2/icon = ExtResource("5_almox")
 popup/item_2/id = 2
 

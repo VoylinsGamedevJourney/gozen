@@ -51,7 +51,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox" unique_id=554087779]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_add_color_file"
+text = "Add color file"
 
 [node name="Spacer" type="Control" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox" unique_id=2049764209]
 custom_minimum_size = Vector2(0, 5)
@@ -66,13 +66,13 @@ layout_mode = 2
 [node name="CancelButton" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox" unique_id=1247645485]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "button_cancel"
+text = "Cancel"
 
 [node name="CreateColor" type="Button" parent="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox" unique_id=1181847637]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
-text = "button_create_new_color_file"
+text = "Create new color file"
 
 [connection signal="pressed" from="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/ColorFilePanel/Margin/VBox/HBox/CreateColor" to="." method="_on_create_color_pressed"]

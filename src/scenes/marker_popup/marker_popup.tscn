@@ -58,7 +58,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/TitleHBox" unique_id=2002969846]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_margin_popup"
+text = "Update marker"
 
 [node name="TimeLabel" type="Label" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/TitleHBox" unique_id=1390499018]
 layout_mode = 2
@@ -100,19 +100,19 @@ layout_mode = 2
 [node name="CancelButton" type="Button" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox" unique_id=2131483463]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "button_cancel"
+text = "Cancel"
 
 [node name="CreateMarker" type="Button" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
-text = "button_update_marker"
+text = "Confirm"
 
 [node name="DeleteMarkerButton" type="TextureButton" parent="Panel/Margin/VBox/MarkerPanel/Margin/VBox/ButtonHBox" unique_id=1478814314]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 8
-tooltip_text = "tooltip_button_delete_marker"
+tooltip_text = "Delete the selected marker."
 texture_normal = ExtResource("2_yxvoa")
 ignore_texture_size = true
 stretch_mode = 5

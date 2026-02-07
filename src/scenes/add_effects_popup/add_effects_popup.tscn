@@ -29,7 +29,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="Panel/Margin/VBox" unique_id=1462194663]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_add_effects"
+text = "Add effect"
 
 [node name="SearchBox" type="LineEdit" parent="Panel/Margin/VBox" unique_id=979914212]
 layout_mode = 2
@@ -58,7 +58,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
-text = "button_close"
+text = "Close popup"
 
 [connection signal="text_changed" from="Panel/Margin/VBox/SearchBox" to="." method="_on_search_box_text_changed"]
 [connection signal="text_submitted" from="Panel/Margin/VBox/SearchBox" to="." method="_on_search_box_text_submitted"]

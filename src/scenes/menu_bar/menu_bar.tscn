@@ -37,100 +37,100 @@ flat = true
 
 [node name="ProjectPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1428006282]
 oversampling_override = 1.0
-title = "menu_bar_project"
+title = "Project"
 theme_override_constants/icon_max_width = 20
 item_count = 9
-item_0/text = "menu_bar_project_save"
+item_0/text = "Save project"
 item_0/icon = ExtResource("2_e5ovf")
 item_0/id = 0
-item_1/text = "menu_bar_project_save_as"
+item_1/text = "Save project as ..."
 item_1/icon = ExtResource("2_e5ovf")
 item_1/id = 1
 item_2/id = 2
 item_2/separator = true
-item_3/text = "menu_bar_project_open_project"
+item_3/text = "Open project"
 item_3/icon = ExtResource("3_pamk7")
 item_3/id = 3
-item_4/text = "menu_bar_project_recent_projects"
+item_4/text = "Recent projects"
 item_4/icon = ExtResource("3_pamk7")
 item_4/id = 4
 item_5/id = 5
 item_5/separator = true
-item_6/text = "menu_bar_project_open_settings"
+item_6/text = "Project settings"
 item_6/icon = ExtResource("4_a4kme")
 item_6/id = 6
 item_7/id = 7
 item_7/separator = true
-item_8/text = "menu_bar_project_quit"
+item_8/text = "Quit"
 item_8/icon = ExtResource("5_pamk7")
 item_8/id = 8
 
 [node name="EditPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1378862301]
-title = "menu_bar_edit"
+title = "Edit"
 item_count = 7
-item_0/text = "menu_bar_edit_undo"
+item_0/text = "Undo"
 item_0/id = 0
-item_1/text = "menu_bar_edit_redo"
+item_1/text = "Redo"
 item_1/id = 1
 item_2/id = 2
 item_2/separator = true
-item_3/text = "menu_bar_edit_cut"
+item_3/text = "Cut"
 item_3/id = 3
-item_4/text = "menu_bar_edit_copy"
+item_4/text = "Copy"
 item_4/id = 4
-item_5/text = "menu_bar_edit_paste"
+item_5/text = "Paste"
 item_5/id = 5
-item_6/text = "menu_bar_edit_delete"
+item_6/text = "Delete"
 item_6/id = 6
 
 [node name="PreferencesPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1830296643]
 oversampling_override = 1.0
-title = "menu_bar_preferences"
+title = "Preferences"
 theme_override_constants/icon_max_width = 20
 item_count = 4
-item_0/text = "menu_bar_preferences_editor_settings"
+item_0/text = "Editor settings"
 item_0/icon = ExtResource("6_tjpug")
 item_0/id = 0
-item_1/text = "menu_bar_preferences_module_manager"
+item_1/text = "Module manager"
 item_1/icon = ExtResource("8_vnmkc")
 item_1/id = 1
 item_2/id = 2
 item_2/separator = true
-item_3/text = "menu_bar_preferences_command_bar"
+item_3/text = "Command bar"
 item_3/icon = ExtResource("9_jrb8t")
 item_3/id = 3
 
 [node name="HelpPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1305404919]
 oversampling_override = 1.0
-title = "menu_bar_help"
+title = "Help"
 theme_override_constants/icon_max_width = 20
 item_count = 10
-item_0/text = "menu_bar_help_report_issue"
+item_0/text = "Report bug"
 item_0/icon = ExtResource("10_sct8o")
 item_0/id = 0
-item_1/text = "menu_bar_help_check_updates"
+item_1/text = "Check for updates"
 item_1/icon = ExtResource("11_x4gkm")
 item_1/id = 1
 item_2/id = 2
 item_2/separator = true
-item_3/text = "menu_bar_help_manual"
+item_3/text = "Manual"
 item_3/icon = ExtResource("12_bveml")
 item_3/id = 3
-item_4/text = "menu_bar_help_tutorials"
+item_4/text = "Tutorials"
 item_4/icon = ExtResource("13_gm422")
 item_4/id = 4
-item_5/text = "menu_bar_help_discord"
+item_5/text = "Discord"
 item_5/icon = ExtResource("14_i8xr0")
 item_5/id = 5
 item_6/id = 6
 item_6/separator = true
-item_7/text = "menu_bar_help_site"
+item_7/text = "Website"
 item_7/icon = ExtResource("14_i8xr0")
 item_7/id = 7
-item_8/text = "menu_bar_support_gozen"
+item_8/text = "Support GoZen"
 item_8/icon = ExtResource("16_dmgqw")
 item_8/id = 8
-item_9/text = "menu_bar_about_gozen"
+item_9/text = "About GoZen"
 item_9/icon = ExtResource("15_bb4p5")
 item_9/id = 9
 
@@ -142,7 +142,7 @@ theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.94
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_2bycd")
-text = "button_screen_editing"
+text = "Edit"
 
 [node name="RenderScreenButton" type="Button" parent="." unique_id=2137987159]
 layout_mode = 2
@@ -151,7 +151,7 @@ theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 
 theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
 toggle_mode = true
 button_group = SubResource("ButtonGroup_2bycd")
-text = "button_screen_render"
+text = "Render"
 
 [connection signal="id_pressed" from="MenuBar/ProjectPopupMenu" to="." method="_on_project_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/EditPopupMenu" to="." method="_on_edit_popup_menu_id_pressed"]

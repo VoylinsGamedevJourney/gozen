@@ -94,14 +94,14 @@ func _create_section(section_name: String) -> GridContainer:
 
 
 func get_settings_menu_options() -> Dictionary[String, Array]:
-	panel_label.text = "title_editor_settings"
+	panel_label.text = tr("Editor settings")
 
 	# Creating the marker nodes
 	var marker_nodes: Array = []
 	var marker_texts: Array = [
-		"settings_marker_one", "settings_marker_two", "settings_marker_three",
-		"settings_marker_four", "settings_marker_five"]
-	marker_nodes.append(create_header("setting_header_markers"))
+		tr("Marker one"), tr("Marker two"), tr("Marker three"),
+		tr("Marker four"), tr("Marker five")]
+	marker_nodes.append(create_header(tr("Markers")))
 	marker_nodes.append(Control.new())
 
 	for i: int in marker_texts.size():
@@ -112,7 +112,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 	var shortcut_nodes: Array = []
 	var action_keys: PackedStringArray = Settings.data.shortcuts.keys()
 
-	shortcut_nodes.append(create_header("setting_header_shortcuts"))
+	shortcut_nodes.append(create_header(tr("Shortcuts")))
 	shortcut_nodes.append(Control.new())
 	action_keys.sort()
 
@@ -121,152 +121,140 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		shortcut_nodes.append(create_shortcut_buttons(action))
 
 	return {
-		"title_appearance" = [
-			create_header("setting_header_display"), Control.new(),
-			create_label("setting_language"),
+		tr("Appearance"): [
+			create_header(tr("Display")), Control.new(),
+			create_label(tr("Language")),
 			create_option_button(
 					Settings.get_languages(),
 					Settings.get_languages().values().find(Settings.get_language()),
 					Settings.set_language,
-					TYPE_STRING,
-					"setting_tooltip_language"),
-			create_label("setting_display_scale"),
+					TYPE_STRING),
+			create_label(tr("Display scale")),
 			create_spinbox(
 					Settings.get_display_scale_int(),
 					50, 300, 5, false, false,
 					Settings.set_display_scale_int,
-					"setting_tooltip_display_scale",
 					"%"),
-			create_label("setting_theme"),
+			create_label(tr("Editor theme")),
 			create_option_button(
 					Settings.get_themes(),
 					Settings.get_themes().values().find(Settings.get_theme_path()),
 					Settings.set_theme_path,
-					TYPE_STRING,
-					"setting_tooltip_theme"),
-			create_label("setting_show_menu_bar"),
+					TYPE_STRING),
+			create_label(tr("Show menu bar")),
 			create_check_button(
 					Settings.get_show_menu_bar(),
-					Settings.set_show_menu_bar,
-					"setting_tooltip_show_menu_bar"),
-			create_header("setting_header_waveform"), Control.new(),
-			create_label("setting_waveform_style"),
+					Settings.set_show_menu_bar),
+			create_header(tr("Audio waveforms")), Control.new(),
+			create_label(tr("Waveform style")),
 			create_option_button(
 					Settings.get_audio_waveform_styles(),
 					Settings.get_audio_waveform_styles().values().find(Settings.get_audio_waveform_style()),
 					Settings.set_audio_waveform_style,
-					TYPE_INT,
-					"setting_tooltip_theme"),
-			create_label("setting_waveform_amp"),
+					TYPE_INT),
+			create_label(tr("Waveform amplifier")),
 			create_spinbox(
 					Settings.get_audio_waveform_amp(),
 					0.5, 6, 0.5, false, false,
 					Settings.set_audio_waveform_amp,
-					"setting_tooltip_audio_waveform_amp",),
-			create_header("setting_header_dialogues"), Control.new(),
-			create_label("setting_use_native_dialog"),
+					tr("Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity")),
+			create_header(tr("Dialogue's")), Control.new(),
+			create_label(tr("Use native dialogs")),
 			create_check_button(
 					Settings.get_use_native_dialog(),
-					Settings.set_use_native_dialog,
-					"setting_tooltip_use_native_dialog")
+					Settings.set_use_native_dialog)
 		],
 
-		"title_defaults" = [
-			create_header("setting_header_default_durations"), Control.new(),
-			create_label("setting_default_image_duration"),
+		tr("Defaults"): [
+			create_header(tr("Default durations")), Control.new(),
+			create_label(tr("Default image duration")),
 			create_spinbox(
 					Settings.get_image_duration(),
 					1, 100, 1, false, true,
 					Settings.set_image_duration,
-					"setting_tooltip_duration_in_frames"),
-			create_label("setting_default_color_duration"),
+					tr("Duration in frames per second.")),
+			create_label(tr("Default color duration")),
 			create_spinbox(
 					Settings.get_color_duration(),
 					1, 100, 1, false, true,
 					Settings.set_color_duration,
-					"setting_tooltip_duration_in_frames"),
+					tr("Duration in frames per second.")),
 			create_label("setting_default_text_duration"),
 			create_spinbox(
 					Settings.get_text_duration(),
 					1, 100, 1, false, true,
 					Settings.set_text_duration,
-					"setting_tooltip_duration_in_frames"),
-			create_label("setting_default_project_resolution"),
+					tr("Duration in frames per second.")),
+			create_label(tr("Project resolution")),
 			create_default_resolution_hbox(),
-			create_label("setting_default_project_framerate"),
+			create_label(tr("Project frame-rate")),
 			create_spinbox(
 					Settings.get_default_framerate(),
 					1, 100, 1, false, true,
-					Settings.set_default_framerate,
-					"setting_tooltip_default_project_framerate"),
-			create_label("setting_default_use_proxies"),
+					Settings.set_default_framerate),
+			create_label(tr("Use proxies")),
 			create_check_button(
 				Settings.get_use_proxies(),
-				Settings.set_use_proxies,
-				"setting_tooltip_default_use_proxies"),
+				Settings.set_use_proxies)
 		],
 
-		"title_timeline" = [
-			create_header("setting_header_default_timeline"), Control.new(),
-			create_label("setting_default_track_amount"),
+		tr("Timeline"): [
+			create_header(tr("Timeline settings")), Control.new(),
+			create_label(tr("Default track amount")),
 			create_spinbox(
 					Settings.get_tracks_amount(),
 					1, 32, 1, false, false,
-					Settings.set_tracks_amount,
-					"setting_tooltip_default_track_amount"),
-			create_header("setting_header_timeline_controls"), Control.new(),
-			create_label("setting_pause_after_dragging"),
+					Settings.set_tracks_amount),
+			create_header(tr("Timeline controls")), Control.new(),
+			create_label(tr("Pause after dragging")),
 			create_check_button(
 					Settings.get_pause_after_drag(),
 					Settings.set_pause_after_drag,
-					"setting_tooltip_pause_after_dragging"),
-			create_label("setting_delete_empty_space_mod"),
+					tr("Setting this will pause playback after having dragged the playhead around.")),
+			create_label(tr("Empty space delete modifier")),
 			create_option_button(
 					Settings.get_delete_empty_modifiers(),
 					Settings.get_delete_empty_modifiers().values().find(Settings.get_delete_empty_modifier()),
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
-					"setting_tooltip_delete_empty_space_mod"),
+					tr("The modifier you want to easily delete empty space between clips.")),
 			create_header("setting_header_timeline_addons"), Control.new(),
-			create_label("setting_show_time_mode_bar"),
+			create_label(tr("Show mode bar")),
 			create_check_button(
 					Settings.get_show_time_mode_bar(),
 					Settings.set_show_time_mode_bar,
-					"setting_tooltip_show_time_mode_bar"),
+					tr("The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode.")),
 		],
 
-		"title_markers" = marker_nodes,
+		tr("Markers"): marker_nodes,
 
-		"title_extras" = [
-			create_header("setting_header_extras"), Control.new(),
-			create_label("setting_check_version"),
+		tr("Extras"): [
+			create_header(tr("Extras")), Control.new(),
+			create_label(tr("Check version")),
 			create_check_button(
 					Settings.get_check_version(),
-					Settings.set_check_version,
-					"setting_tooltip_check_version"),
-			create_label("setting_auto_save"),
+					Settings.set_check_version),
+			create_label(tr("Auto save")),
 			create_check_button(
 					Settings.get_auto_save(),
-					Settings.set_auto_save,
-					"setting_tooltip_auto_save")
+					Settings.set_auto_save)
 		],
 
-		"title_shortcuts" = shortcut_nodes,
-
+		tr("Shortcuts"): shortcut_nodes,
 	}
 
 
 func get_project_settings_menu_options() -> Dictionary[String, Array]:
-	panel_label.text = "title_project_settings"
+	panel_label.text = tr("Project settings")
 
 	return {
-		"title_appearance" = [
-			create_header("setting_header_project_appearance"), Control.new(),
-			create_label("setting_background_color"),
+		tr("Appearance"): [
+			create_header(tr("Appearance")), Control.new(),
+			create_label(tr("Background color")),
 			create_color_picker(
 					Project.get_background_color(),
 					Project.set_background_color,
-					"tooltip_setting_background_color"),
+					tr("The background color when no clips are displayed.")),
 		],
 	}
 
@@ -279,20 +267,17 @@ func create_header(title: String) -> Control:
 	header.custom_minimum_size.y = 30
 	header.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 	return header
 
 
 func create_label(title: String) -> Label:
 	var label: Label = Label.new()
-
 	label.text = title
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 	return label
 
 
-func create_option_button(options: Dictionary, default: int, callable: Callable, type: Variant.Type, tooltip: String) -> OptionButton:
+func create_option_button(options: Dictionary, default: int, callable: Callable, type: Variant.Type, tooltip: String = "") -> OptionButton:
 	# Options should have the option text as key and the value to pass to
 	# callable as value.
 	var option_button: OptionButton = OptionButton.new()
@@ -300,10 +285,8 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 	option_button.item_selected.connect(_option_button_item_selected.bind(option_button, callable, type))
 
 	var i: int = 0
-
 	for option: String in options:
-		if option == "":
-			option_button.add_separator()
+		if option == "": option_button.add_separator()
 		else:
 			option_button.add_item(option)
 			option_button.set_item_metadata(i, options[option])
@@ -331,7 +314,7 @@ func _option_button_item_selected(id: int, option_button: OptionButton, callable
 	@warning_ignore_restore("unsafe_cast")
 
 
-func create_check_button(default: bool, callable: Callable, tooltip: String) -> CheckButton:
+func create_check_button(default: bool, callable: Callable, tooltip: String = "") -> CheckButton:
 	var check_button: CheckButton = CheckButton.new()
 
 	check_button.flat = true
@@ -342,11 +325,10 @@ func create_check_button(default: bool, callable: Callable, tooltip: String) -> 
 
 	check_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	check_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
 	return check_button
 
 
-func create_spinbox(default: float, min_value: float, max_value: float, step: float, allow_lesser: bool, allow_greater: bool, callable: Callable, tooltip: String, suffix: String = "") -> SpinBox:
+func create_spinbox(default: float, min_value: float, max_value: float, step: float, allow_lesser: bool, allow_greater: bool, callable: Callable, suffix: String = "", tooltip: String = "") -> SpinBox:
 	var spinbox: SpinBox = SpinBox.new()
 
 	spinbox.allow_greater = allow_greater
@@ -365,11 +347,10 @@ func create_spinbox(default: float, min_value: float, max_value: float, step: fl
 
 	spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spinbox.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
 	return spinbox
 
 
-func create_color_picker(default: Color, callable: Callable, tooltip: String) -> ColorPickerButton:
+func create_color_picker(default: Color, callable: Callable, tooltip: String = "") -> ColorPickerButton:
 	var color_picker: ColorPickerButton = ColorPickerButton.new()
 
 	color_picker.color = default
@@ -379,7 +360,6 @@ func create_color_picker(default: Color, callable: Callable, tooltip: String) ->
 
 	color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	color_picker.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
 	return color_picker
 
 
@@ -392,22 +372,17 @@ func create_default_resolution_hbox() -> HBoxContainer:
 
 	x_label.text = "X:"
 	y_label.text = "Y:"
-	x_label.tooltip_text = "setting_tooltip_default_project_resolution_x"
-	y_label.tooltip_text = "setting_tooltip_default_project_resolution_y"
 
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(create_spinbox(
 			Settings.get_default_resolution_x(),
 			1, 100, 1, false, true,
-			Settings.set_default_resolution_x,
-			"setting_tooltip_default_project_resolution_x"))
+			Settings.set_default_resolution_x))
 	resolution_hbox.add_child(y_label)
 	resolution_hbox.add_child(create_spinbox(
 			Settings.get_default_resolution_y(),
 			1, 100, 1, false, true,
-			Settings.set_default_resolution_y,
-			"setting_tooltip_default_project_resolution_y"))
-
+			Settings.set_default_resolution_y))
 	return resolution_hbox
 
 
@@ -424,9 +399,7 @@ func create_marker_setting(index: int) -> HBoxContainer:
 
 	# Marker color
 	var color_picker: ColorPickerButton = create_color_picker(
-		Settings.get_marker_color(index),
-		Settings.set_marker_color.bind(index),
-		"tooltip_setting_marker_color"
+		Settings.get_marker_color(index), Settings.set_marker_color.bind(index)
 	)
 
 	# Bundling
@@ -435,7 +408,6 @@ func create_marker_setting(index: int) -> HBoxContainer:
 	hbox.add_child(line_edit)
 	hbox.add_child(color_picker)
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 	return hbox
 
 
@@ -451,10 +423,8 @@ func create_shortcut_buttons(action: String) -> HBoxContainer:
 		button.size_flags_horizontal = SIZE_EXPAND_FILL
 		button.toggle_mode = true
 		button.text = _get_event_text(events[i])
-		button.tooltip_text = tr("tooltip_setting_shortcut")
 		button.pressed.connect(_on_shortcut_button_pressed.bind(button, action, i))
 		hbox.add_child(button)
-
 	return hbox
 
 
@@ -485,7 +455,5 @@ func _stop_listening() -> void:
 
 func _get_event_text(event: InputEvent) -> String:
 	if event == null: return "None"
-	elif event is InputEventKey:
-		return event.as_text_physical_keycode()
-	return event.as_text()
-
+	elif event is not InputEventKey: return event.as_text()
+	return event.as_text_physical_keycode()

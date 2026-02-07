@@ -101,7 +101,6 @@ alignment = 2
 [node name="ShowGuidelinesButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=1324770277]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-tooltip_text = "tooltip_button_show_safe_areas"
 texture_normal = ExtResource("7_l50ca")
 ignore_texture_size = true
 stretch_mode = 5

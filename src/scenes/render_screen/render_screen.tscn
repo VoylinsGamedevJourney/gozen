@@ -60,7 +60,7 @@ size_flags_vertical = 3
 [node name="TitleLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=551090344]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_render_settings"
+text = "Render settings"
 
 [node name="TopSettingsHBox" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=126554430]
 layout_mode = 2
@@ -69,7 +69,7 @@ columns = 2
 [node name="RenderProfilesLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=825339369]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "render_option_profile"
+text = "Render profile"
 
 [node name="RenderProfilesHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=2061338205]
 layout_mode = 2
@@ -89,7 +89,7 @@ allow_reselect = true
 
 [node name="PathLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=521887475]
 layout_mode = 2
-text = "render_option_path"
+text = "Export path"
 
 [node name="RenderPathHBox" type="HBoxContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=233639431]
 layout_mode = 2
@@ -112,7 +112,7 @@ layout_mode = 2
 [node name="VideoLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1993433232]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_render_video"
+text = "Render video settings"
 
 [node name="VideoGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=934166150]
 layout_mode = 2
@@ -120,7 +120,7 @@ columns = 2
 
 [node name="CodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=499554428]
 layout_mode = 2
-text = "render_option_video_codec"
+text = "Video codec"
 
 [node name="VideoCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=445035793]
 layout_mode = 2
@@ -131,13 +131,13 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 mouse_filter = 1
-text = "render_option_quality"
+text = "Quality"
 
 [node name="QualityHSlider" type="HSlider" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=2006349503]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "render_option_tooltip_quality"
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 min_value = -50.0
 max_value = -15.0
 value = -18.0
@@ -147,12 +147,12 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 mouse_filter = 1
-text = "render_option_speed"
+text = "Speed"
 
 [node name="SpeedHSlider" type="HSlider" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=481175201]
 layout_mode = 2
 size_flags_vertical = 3
-tooltip_text = "render_option_tooltip_speed"
+tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 max_value = 8.0
 value = 3.0
 tick_count = 9
@@ -163,12 +163,12 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 mouse_filter = 1
-text = "render_option_gop_size"
+text = "Gop size"
 
 [node name="GOPSizeSpinBox" type="SpinBox" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=275935804]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "render_option_tooltip_gop_size"
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 value = 15.0
 allow_greater = true
 alignment = 2
@@ -183,7 +183,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_render_audio"
+text = "Render audio settings"
 
 [node name="RenderAudioCheckButton" type="CheckButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=912503888]
 layout_mode = 2
@@ -196,7 +196,7 @@ columns = 2
 
 [node name="CodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1975231366]
 layout_mode = 2
-text = "render_option_audio_codec"
+text = "Audio codec"
 
 [node name="AudioCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=2102339823]
 layout_mode = 2
@@ -209,7 +209,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_cpu_threads"
+text = "Multi-threading"
 
 [node name="ThreadsGrid" type="GridContainer" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=62052778]
 layout_mode = 2
@@ -218,11 +218,11 @@ columns = 2
 [node name="ThreadsCodecLabel" type="Label" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=1435755952]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "render_option_threads_cores"
+text = "Threads"
 
 [node name="ThreadsSpinBox" type="SpinBox" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=79929963]
 layout_mode = 2
-tooltip_text = "render_option_tooltip_threads_cores"
+tooltip_text = "The amount of threads you want to use for exporting your video."
 
 [node name="Line3" type="HSeparator" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=659322685]
 layout_mode = 2
@@ -232,13 +232,13 @@ layout_mode = 2
 
 [node name="DraftCheckButton" type="CheckButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1048576767]
 layout_mode = 2
-tooltip_text = "render_option_tooltip_draft"
-text = "render_option_draft"
+tooltip_text = "Create a low quality draft version of your video."
+text = "Draft"
 
 [node name="StartRenderButton" type="Button" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1206446587]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "button_start_render"
+text = "Start render"
 
 [node name="MarkersPanel" type="PanelContainer" parent="VSplit" unique_id=954369601 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
 custom_minimum_size = Vector2(0, 100)
@@ -268,7 +268,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_markers"
+text = "Markers"
 
 [node name="MarkersOptionButton" type="OptionButton" parent="VSplit/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1523866582]
 layout_mode = 2

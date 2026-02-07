@@ -171,7 +171,7 @@ func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
 
 func _on_select_save_path_button_pressed() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-			"file_dialog_title_select_save_path",
+			tr("Select export path"),
 			FileDialog.FileMode.FILE_MODE_SAVE_FILE,
 			["*" +_get_current_extension()])
 
@@ -252,7 +252,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 func _render_finished() -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
 
-	dialog.title = "title_rendering_finished"
+	dialog.title = tr("Rendering finished")
 	dialog.dialog_text = "Path: %s\n" % path_line_edit.text
 	dialog.dialog_text += "Render time: %s" % Utils.format_time_str(
 			RenderManager.encoding_time / 1000.0)
@@ -272,7 +272,7 @@ func _cancel_render() -> void:
 func _show_error(message: String) -> void:
 	var dialog: AcceptDialog = AcceptDialog.new()
 
-	dialog.title = "title_rendering_error"
+	dialog.title = tr("Error whilst rendering video")
 	dialog.dialog_text = message
 	dialog.exclusive = true
 
@@ -328,7 +328,7 @@ func _on_start_render_button_pressed() -> void:
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(rendering_icon.get_image())
 		status_indicator_id = DisplayServer.create_status_indicator(
-				rendering_icon, "title_rendering", Callable())
+				rendering_icon, tr("Rendering"), Callable())
 
 	# Display the progress popup.
 	if progress_overlay != null:
@@ -336,13 +336,13 @@ func _on_start_render_button_pressed() -> void:
 		progress_overlay = null
 
 	progress_overlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
-	progress_overlay.update_title("title_rendering")
+	progress_overlay.update_title(tr("Rendering"))
 	progress_overlay.update_progress(0, "")
 
 	var button: Button = Button.new()
 	var status_label: Label = progress_overlay.status_hbox.get_child(0)
 
-	button.text = "button_cancel_rendering"
+	button.text = tr("Cancel rendering")
 	button.pressed.connect(_cancel_render)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	progress_overlay.status_hbox.add_child(button)
@@ -373,19 +373,19 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 
 	match status:
 		# Errors, something went wrong.
-		RenderManager.STATUS.ERROR_OPEN: _show_error("encoding_progress_text_open_error")
-		RenderManager.STATUS.ERROR_AUDIO: _show_error("encoding_progress_text_sending_audio_error")
+		RenderManager.STATUS.ERROR_OPEN: _show_error(tr("Error opening file"))
+		RenderManager.STATUS.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
 		RenderManager.STATUS.ERROR_CANCELED:
 			PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.
-		RenderManager.STATUS.SETUP: status_str = "encoding_progress_text_setup"
-		RenderManager.STATUS.COMPILING_AUDIO: status_str = "encoding_progress_text_compiling_audio"
-		RenderManager.STATUS.SENDING_AUDIO: status_str = "encoding_progress_text_compiling_audio"
-		RenderManager.STATUS.SENDING_FRAMES: status_str = "encoding_progress_text_creating_sending_data"
-		RenderManager.STATUS.FRAMES_SEND: status_str = "encoding_progress_text_creating_sending_data"
-		RenderManager.STATUS.LAST_FRAMES: status_str = "encoding_progress_text_last_frame"
+		RenderManager.STATUS.SETUP: status_str = tr("Setting up ...")
+		RenderManager.STATUS.COMPILING_AUDIO: status_str = tr("Compiling audio ...")
+		RenderManager.STATUS.SENDING_AUDIO: status_str = tr("Compiling audio ...")
+		RenderManager.STATUS.SENDING_FRAMES: status_str = tr("Sending data ...")
+		RenderManager.STATUS.FRAMES_SEND: status_str = tr("Sending data ...")
+		RenderManager.STATUS.LAST_FRAMES: status_str = tr("Sending final frame ...")
 		RenderManager.STATUS.FINISHED: _render_finished()
 
 	if status >= 0:

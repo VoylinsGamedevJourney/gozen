@@ -178,7 +178,6 @@ offset_top = 5.0
 offset_right = -5.0
 offset_bottom = 25.0
 grow_horizontal = 0
-tooltip_text = "button_tooltip_editor_settings"
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_80ee3")
 ignore_texture_size = true
@@ -232,7 +231,7 @@ layout_mode = 2
 [node name="UpdateAvailableLabel" type="Label" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer" unique_id=990532857]
 layout_mode = 2
 size_flags_horizontal = 6
-text = "notification_update_available"
+text = "Update available"
 label_settings = SubResource("LabelSettings_x2wpv")
 
 [node name="RepoTextureButton" type="TextureButton" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer" unique_id=717927358]
@@ -260,7 +259,7 @@ size_flags_horizontal = 3
 [node name="RecentProjectsLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=818078258]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_recent_projects"
+text = "Recent projects"
 
 [node name="HSeparatorTop" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=582073779]
 layout_mode = 2
@@ -280,7 +279,7 @@ layout_mode = 2
 [node name="OpenProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=1497786979]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_open_project"
+text = "Open project"
 icon = ExtResource("6_j711k")
 flat = true
 alignment = 0
@@ -289,7 +288,7 @@ expand_icon = true
 [node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=77458439]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_create_new_project"
+text = "Create new project"
 icon = ExtResource("7_4kk3e")
 flat = true
 alignment = 0
@@ -302,7 +301,7 @@ size_flags_horizontal = 3
 [node name="GettingStartedLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1358017114]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_getting_started"
+text = "Getting started"
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=980833315]
 layout_mode = 2
@@ -310,7 +309,7 @@ layout_mode = 2
 [node name="SiteButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1139916015]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_gozen_site"
+text = "Website"
 icon = ExtResource("5_pcyft")
 flat = true
 alignment = 0
@@ -319,7 +318,7 @@ expand_icon = true
 [node name="ManualButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=521412357]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_manual"
+text = "Manual"
 icon = ExtResource("8_wn5y3")
 flat = true
 alignment = 0
@@ -328,7 +327,7 @@ expand_icon = true
 [node name="TutorialsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=543175180]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_tutorials"
+text = "Tutorials"
 icon = ExtResource("9_ncffq")
 flat = true
 alignment = 0
@@ -337,7 +336,7 @@ expand_icon = true
 [node name="DiscordServerButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1856029567]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_discord_server"
+text = "Discord"
 icon = ExtResource("5_pcyft")
 flat = true
 alignment = 0
@@ -350,7 +349,7 @@ size_flags_vertical = 3
 [node name="ViewSponsorsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=781079765]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_view_sponsors"
+text = "View sponsors"
 icon = ExtResource("10_1nlba")
 flat = true
 alignment = 0
@@ -359,7 +358,7 @@ expand_icon = true
 [node name="SupportProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=755679904]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "button_support_gozen"
+text = "Support GoZen"
 icon = ExtResource("11_0i7o8")
 flat = true
 alignment = 0
@@ -377,7 +376,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_new_project"
+text = "New project"
 
 [node name="NewProjectOptionButton" type="OptionButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=615592546]
 layout_mode = 2
@@ -390,7 +389,7 @@ layout_mode = 2
 
 [node name="PathLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=450583512]
 layout_mode = 2
-text = "text_path"
+text = "Path"
 
 [node name="PathLineEdit" type="LineEdit" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=1706647658]
 layout_mode = 2
@@ -412,7 +411,7 @@ columns = 2
 [node name="ResolutionLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1324648957]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "text_resolution"
+text = "Resolution"
 
 [node name="ResolutionHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1480364691]
 layout_mode = 2
@@ -447,7 +446,7 @@ allow_greater = true
 [node name="FramerateLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1709459377]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "text_framerate"
+text = "Framerate"
 
 [node name="FramerateSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1059865156]
 layout_mode = 2
@@ -461,7 +460,7 @@ allow_greater = true
 [node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=643237763]
 layout_mode = 2
 size_flags_horizontal = 8
-text = "title_show_advanced_options"
+text = "Advanced options"
 
 [node name="NewProjectAdvancedGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1412518369]
 layout_mode = 2
@@ -471,7 +470,7 @@ columns = 2
 [node name="BackgroundColorLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1593266549]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "text_background_color"
+text = "Background color"
 
 [node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=60239702]
 layout_mode = 2
@@ -493,15 +492,14 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
-text = "button_return"
+text = "Return"
 
 [node name="CreateNewProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox" unique_id=1479349029]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "button_tooltip_create_new_project"
 mouse_default_cursor_shape = 2
-text = "button_create_new_project"
+text = "Create new project"
 
 [node name="Sponsors" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=1109428231]
 layout_mode = 2
@@ -515,7 +513,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_sponsors"
+text = "Sponsors"
 
 [node name="TimerLabel" type="Label" parent="Panel/VBox/StartupTabContainer/Sponsors/TopHBox" unique_id=1944700168]
 visible = false
@@ -559,12 +557,12 @@ alignment = 2
 
 [node name="BecomeSponsorButton" type="Button" parent="Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox" unique_id=458442751]
 layout_mode = 2
-text = "button_become_sponsor"
+text = "Become a sponsor"
 
 [node name="CloseSponsorsButton" type="Button" parent="Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox" unique_id=1654238321]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-text = "button_close"
+text = "Continue"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=561069578]
 libraries/ = SubResource("AnimationLibrary_5plxg")

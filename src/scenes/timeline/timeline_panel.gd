@@ -90,8 +90,8 @@ func _ready() -> void:
 	InputManager.switch_timeline_mode_select.connect(set_state.bind(STATE.CURSOR_MODE_SELECT))
 	InputManager.switch_timeline_mode_cut.connect(set_state.bind(STATE.CURSOR_MODE_CUT))
 
-	scroll.get_h_scroll_bar().value_changed.connect(draw_all.emit)
-	scroll.get_v_scroll_bar().value_changed.connect(draw_all.emit)
+	scroll.get_h_scroll_bar().value_changed.connect(draw_all.emit.unbind(1))
+	scroll.get_v_scroll_bar().value_changed.connect(draw_all.emit.unbind(1))
 
 
 func _notification(what: int) -> void:
@@ -194,11 +194,10 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		if right_click_clip != null:
 			_add_popup_menu_items_clip(popup)
 		else:
-			popup.add_item("popup_item_track_remove_empty_space", POPUP_ACTION.REMOVE_EMPTY_SPACE)
+			popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
-		popup.add_item("popup_item_track_add", POPUP_ACTION.TRACK_ADD)
-		popup.add_item("popup_item_track_remove", POPUP_ACTION.TRACK_REMOVE)
-
+		popup.add_item(tr("Add track"), POPUP_ACTION.TRACK_ADD)
+		popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_popup_menu(popup)
 
@@ -655,27 +654,27 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 		ClipHandler.clip_selected.emit(clip_id)
 
 	# TODO: Set icons and shortcuts
-	popup.add_item("popup_item_clip_delete", POPUP_ACTION.CLIP_DELETE)
-	popup.add_item("popup_item_clip_cut", POPUP_ACTION.CLIP_CUT)
+	popup.add_item(tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
+	popup.add_item(tr("Cut clip"), POPUP_ACTION.CLIP_CUT)
 
 	if clip_type in FileHandler.TYPE_VIDEOS:
-		popup.add_separator("popup_menu_separator_video")
-		popup.add_item("popup_item_clip_only_video", POPUP_ACTION.CLIP_VIDEO_ONLY)
+		popup.add_separator(tr("Video options"))
+		popup.add_item(tr("Add clip only video isntance"), POPUP_ACTION.CLIP_VIDEO_ONLY)
 
 	if clip_type == FileHandler.TYPE.VIDEO:
-		popup.add_item("popup_item_clip_audio_take_over", POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
+		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
 
 	if clip_data.ato_file_id != -1: # Can only be not -1 if clip is video
 		if clip_data.ato_active:
 			popup.add_item(
-					"popup_item_clip_audio_take_over_disable",
+					tr("Disable clip audio-take-over"),
 					POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_DISABLE)
 		else:
 			popup.add_item(
-					"popup_item_clip_audio_take_over_enable",
+					tr("Enable clip audio-take-over"),
 					POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_ENABLE)
 
-	popup.add_separator("popup_menu_separator_track")
+	popup.add_separator(tr("Track options")) # TODO:
 
 
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:

@@ -76,8 +76,7 @@ func _file_menu_pressed(id: int) -> void:
 	match id:
 		0: # Add file(s)
 			var dialog: FileDialog = PopupManager.create_file_dialog(
-					"file_dialog_title_add_files",
-					FileDialog.FILE_MODE_OPEN_FILES)
+					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
 
 			dialog.files_selected.connect(FileHandler._on_files_dropped)
 			add_child(dialog)
@@ -102,68 +101,68 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 
 		file = FileHandler.get_file(file_id)
 
-		popup.add_item("popup_item_rename", POPUP_ACTION.FILE_RENAME)
-		popup.add_item("popup_item_reload", POPUP_ACTION.FILE_RELOAD)
-		popup.add_item("popup_item_delete", POPUP_ACTION.FILE_DELETE)
+		popup.add_item(tr("Rename"), POPUP_ACTION.FILE_RENAME)
+		popup.add_item(tr("Reload"), POPUP_ACTION.FILE_RELOAD)
+		popup.add_item(tr("Delete"), POPUP_ACTION.FILE_DELETE)
 
 		# TODO: Add VIDEO_ONLY when we have more video options
 		if file.type == FileHandler.TYPE.IMAGE:
 			if file.path.contains("temp://"):
-				popup.add_separator("popup_separator_image_options")
-				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_TEMP_AS)
+				popup.add_separator(tr("Image options"))
+				popup.add_item(tr("Save image as ..."), POPUP_ACTION.FILE_SAVE_TEMP_AS)
 		elif file.type == FileHandler.TYPE.VIDEO:
-			popup.add_separator("popup_separator_video_options")
+			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
 				if file.proxy_path == "":
-					popup.add_item("popup_item_create_proxy", POPUP_ACTION.FILE_CREATE_PROXY)
+					popup.add_item(tr("Create proxy"), POPUP_ACTION.FILE_CREATE_PROXY)
 				else:
-					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
-					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
+					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.FILE_RECREATE_PROXY)
+					popup.add_item(tr("Remove proxy"), POPUP_ACTION.FILE_REMOVE_PROXY)
 
 			if FileHandler.get_all_audio_files().size() != 0:
-				popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
+				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
 				if file.ato_file_id != -1:
 					if file.ato_active:
-						popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
+						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
 					else:
-						popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
+						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
 
-			popup.add_item("popup_item_extract_audio", POPUP_ACTION.FILE_EXTRACT_AUDIO)
+			popup.add_item(tr("Extract audio to file ..."), POPUP_ACTION.FILE_EXTRACT_AUDIO)
 		elif file.type == FileHandler.TYPE.VIDEO_ONLY:
-			popup.add_separator("popup_separator_video_options")
+			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
 				if file.proxy_path == "":
-					popup.add_item("popup_item_create_proxy", POPUP_ACTION.FILE_CREATE_PROXY)
+					popup.add_item(tr("Create proxy"), POPUP_ACTION.FILE_CREATE_PROXY)
 				else:
-					popup.add_item("popup_item_recreate_proxy", POPUP_ACTION.FILE_RECREATE_PROXY)
-					popup.add_item("popup_item_remove_proxy", POPUP_ACTION.FILE_REMOVE_PROXY)
+					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.FILE_RECREATE_PROXY)
+					popup.add_item(tr("Remove proxy"), POPUP_ACTION.FILE_REMOVE_PROXY)
 
 			if FileHandler.get_all_audio_files().size() != 0:
-				popup.add_item("popup_item_ato", POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
+				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
 				if file.ato_file_id != -1:
 					if file.ato_active:
-						popup.add_item("popup_item_ato_disable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
+						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
 					else:
-						popup.add_item("popup_item_ato_enable", POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
+						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
 		elif file.type == FileHandler.TYPE.TEXT:
-			popup.add_separator("popup_separator_text_options")
-			popup.add_item("popup_item_duplicate", POPUP_ACTION.FILE_DUPLICATE)
+			popup.add_separator(tr("Text options"))
+			popup.add_item(tr("Duplicate"), POPUP_ACTION.FILE_DUPLICATE)
 
 			if file.path.contains("temp://"):
-				popup.add_item("popup_item_save_as_file", POPUP_ACTION.FILE_SAVE_TEMP_AS)
+				popup.add_item(tr("Save file as ..."), POPUP_ACTION.FILE_SAVE_TEMP_AS)
 
-		popup.add_separator("popup_separator_folder_options")
-		popup.add_item("popup_item_create_folder", POPUP_ACTION.FOLDER_CREATE)
+		popup.add_separator(tr("Folder options"))
+		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
 	else: # Folder
 		var folder_path: String = str(metadata)
 
-		popup.add_item("popup_item_create_folder", POPUP_ACTION.FOLDER_CREATE)
+		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
 
 		if folder_path != "/":
-			popup.add_item("popup_item_rename_folder", POPUP_ACTION.FOLDER_RENAME)
-			popup.add_item("popup_item_delete_folder", POPUP_ACTION.FOLDER_DELETE)
+			popup.add_item(tr("Rename folder"), POPUP_ACTION.FOLDER_RENAME)
+			popup.add_item(tr("Delete folder"), POPUP_ACTION.FOLDER_DELETE)
 
 	popup.id_pressed.connect(_on_popup_option_pressed)
 	PopupManager.show_popup_menu(popup)
@@ -203,12 +202,12 @@ func _on_popup_action_folder_rename() -> void:
 
 	var current_name: String = folder_path.trim_suffix("/").get_file()
 
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog("popup_item_rename")
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rename file"))
 	var vbox: VBoxContainer = VBoxContainer.new()
 	var line_edit: LineEdit = LineEdit.new()
 	var label: Label = Label.new()
 
-	label.text = "accept_dialog_text_folder_name"
+	label.text = tr("Folder name")
 	line_edit.text = current_name
 	line_edit.select_all()
 
@@ -268,8 +267,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 		printerr("FilePanel: Not implemented yet!")
 	elif file.type == FileHandler.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
-				"title_save_image_to_file",
-				FileDialog.FILE_MODE_SAVE_FILE,
+				tr("Save image to file"), FileDialog.FILE_MODE_SAVE_FILE,
 				["*.png", "*.jpg", "*.webp"])
 
 		dialog.file_selected.connect(FileHandler.save_image_to_file.bind(file))
@@ -280,9 +278,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 func _on_popup_action_file_extract_audio() -> void:
 	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-		"title_save_video_audio_to_wav",
-		FileDialog.FILE_MODE_SAVE_FILE,
-		["*.wav"])
+		tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
 
 	dialog.file_selected.connect(FileHandler.save_audio_to_wav.bind(file))
 	add_child(dialog)
@@ -561,12 +557,12 @@ func _get_recursive_file_ids(item: TreeItem) -> PackedInt64Array:
 
 
 func _show_create_folder_dialog() -> void:
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog("accept_dialog_title_create_folder")
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Create folder"))
 	var vbox: VBoxContainer = VBoxContainer.new()
 	var line_edit: LineEdit = LineEdit.new()
 	var label: Label = Label.new()
 
-	label.text = "accept_dialog_text_folder_name" # "Folder name:"
+	label.text = tr("Folder name")
 
 	vbox.add_child(label)
 	vbox.add_child(line_edit)

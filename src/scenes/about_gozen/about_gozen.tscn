@@ -40,7 +40,7 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=2004354628]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "title_about_gozen"
+text = "About GoZen"
 
 [node name="VersionLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1195228794]
 layout_mode = 2
@@ -60,7 +60,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
-text = "button_close"
+text = "Close popup"
 
 [connection signal="meta_clicked" from="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/LinksLabel" to="." method="_on_links_label_meta_clicked"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]

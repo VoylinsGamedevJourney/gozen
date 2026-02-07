@@ -129,7 +129,7 @@ func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 
 
 func _set_version_label() -> void:
-	var version_string: String = tr("text_version") + ": "
+	var version_string: String = tr("Version") + ": "
 	version_string += ProjectSettings.get_setting("application/config/version")
 
 	if OS.is_debug_build():
@@ -191,9 +191,9 @@ func _on_discord_server_button_pressed() -> void:
 
 func _on_open_project_button_pressed() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-			"file_dialog_title_open_project",
+			tr("Open project"),
 			FileDialog.FILE_MODE_OPEN_FILE,
-			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
+			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 
 	dialog.file_selected.connect(open_project)
 
@@ -239,9 +239,9 @@ func _on_create_new_project_button_pressed() -> void:
 
 func _on_project_path_button_pressed() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-			"file_dialog_title_select_save_path",
+			tr("Select project save path"),
 			FileDialog.FILE_MODE_SAVE_FILE,
-			["*%s;%s" % [Project.EXTENSION, tr("file_dialog_tooltip_gozen_project_files")]])
+			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 
 	dialog.file_selected.connect(_set_project_path)
 	dialog.ok_button_text = "Select"

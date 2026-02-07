@@ -444,17 +444,14 @@ func _on_switch_enabled(index: int, is_visual: bool) -> void:
 func _add_add_effects_button(is_visual: bool) -> Button:
 	var button: Button = Button.new()
 
-	button.text = tr("button_add_effects")
-	button.tooltip_text = tr("button_tooltip_add_effects")
+	button.text = tr("Add effects")
 	button.custom_minimum_size.y = 30
 	button.pressed.connect(_open_add_effects_popup.bind(is_visual))
-
 	return button
 
 
 func _open_add_effects_popup(is_visual: bool) -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.ADD_EFFECTS)
-
 	popup.load_effects(is_visual, current_clip_id)
 
 

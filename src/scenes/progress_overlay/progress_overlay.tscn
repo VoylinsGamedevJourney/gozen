@@ -69,7 +69,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "title_loading_projects"
+text = "Loading project"
 
 [node name="EstimatedTimeLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox" unique_id=792411073]
 layout_mode = 2
@@ -103,7 +103,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"info_label"
-text = "status_project_loading_init"
+text = "Initializing ..."
 horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=1001193419]
