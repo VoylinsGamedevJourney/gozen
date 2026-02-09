@@ -19,15 +19,15 @@ func _ready() -> void:
 
 	command_line.grab_focus()
 
-	for command_option: CommandManager.Command in CommandManager.commands:
+	for index: int in CommandManager.get_sorted_indexes():
 		var button: Button = Button.new()
 
-		button.text = command_option.get_button_text()
+		button.text = CommandManager.get_text(index)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.button_group = button_group
 		button.toggle_mode = true
-		button.pressed.connect(command_option.callback)
+		button.pressed.connect(CommandManager.get_call(index))
 		button.pressed.connect(_close)
 
 		if command_buttons.get_child_count() > MAX_COMMANDS:
@@ -77,13 +77,9 @@ func _on_command_line_edit_text_changed(command_text: String) -> void:
 
 func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 	for button: Button in command_buttons.get_children():
-		if button.visible:
-			if selected_button == 0:
-				button.pressed.emit()
-				return
-			else:
-				selected_button -= 1
-
+		if !button.visible: continue
+		elif selected_button != 0: selected_button -= 1
+		else: return button.pressed.emit()
 	_close()
 
 

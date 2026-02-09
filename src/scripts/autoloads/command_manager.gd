@@ -1,45 +1,59 @@
 extends Node
 
-
-var commands: Array[Command] = []
-
-
-
-func register(command: StringName, callback: Callable, action: StringName) -> void:
-	commands.append(Command.new(command, callback, action))
-	commands.sort_custom(Command.sort_commands)
+var commands: PackedStringArray = [] ## Localized strings
+var base_commands: PackedStringArray = [] ## Non-localized strings
+var calls: Array[Callable] = []
+var actions: PackedStringArray = []
 
 
 
-class Command:
-	var command: StringName
-	var callback: Callable
-	var action: String = ""
+func _ready() -> void:
+	base_commands.append("Open editor settings")
+	base_commands.append("Open project settings")
+	base_commands.append("open render menu")
 
-	func _init(_command: StringName, _callback: Callable, _action: StringName) -> void:
-		var events: Array[InputEvent] = InputMap.action_get_events(_action)
-		var shortcut: String
-		command = _command
-		callback = _callback
+	register(tr("Open editor settings"), Settings.open_settings_menu, "open_settings")
+	register(tr("Open project settings"), Project.open_settings_menu, "open_project_settings")
+	register(tr("open render menu"), InputManager.switch_screen.bind(1), "open_render_screen")
 
-		if events.size() == 0: return
-
-		shortcut = events[0].as_text()
-		shortcut = shortcut.replace("(Physical)", "").strip_edges()
-		shortcut = shortcut.replace("period", ",")
+	Settings.localization_updated.connect(_localize_commands)
 
 
-	func get_button_text() -> String:
-		return String(command) if action == "" else "%s [%s]" % [command, action]
+func _localize_commands() -> void:
+	for i: int in commands.size(): commands[i] = tr(base_commands[i])
 
 
-	static func get_all_keys(commands: Array[Command]) -> PackedStringArray:
-		var arr: PackedStringArray = []
-		for command_option: Command in commands:
-			arr.append(command_option.command)
+# --- Command registering ---
 
-		return arr
+func register(command: StringName, callable: Callable, action: StringName) -> void:
+	commands.append(tr(command))
+	base_commands.append(tr(command))
+	calls.append(callable)
+	actions.append(action)
 
 
-	static func sort_commands(a: Command, b: Command) -> bool:
-		return a.command.naturalcasecmp_to(b.command) < 0
+## Only used for the editor itself since we add commands on build. Manually add
+## the command to base_commands as well!
+func _editor_register(command: StringName, callable: Callable, action: StringName) -> void:
+	commands.append(command)
+	calls.append(callable)
+	actions.append(action)
+
+
+# --- Getters ---
+
+func get_text(index: int) -> String: return ("%s [%s]" % [commands[index], actions[index]]).replace(' []', '')
+func get_call(index: int) -> Callable: return calls[index]
+func get_action(index: int) -> String: return actions[index]
+
+
+func get_sorted_indexes() -> Array[int]:
+	var data: Array[int] = []
+	for index: int in commands.size(): data.append(index)
+
+	data.sort_custom(_sort_commands)
+	return data
+
+
+func _sort_commands(a: int, b: int) -> bool:
+	return commands[a].naturalcasecmp_to(commands[b]) < 0
