@@ -2,6 +2,7 @@ extends Node
 
 signal on_show_menu_bar_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
+signal localization_updated
 
 
 const PATH: String = "user://settings"
@@ -40,9 +41,6 @@ func _ready() -> void:
 	apply_shortcuts()
 
 	load_new_shortcuts()
-
-	CommandManager.register(
-			"command_editor_settings", open_settings_menu, "open_settings")
 
 
 func save() -> void:
@@ -100,6 +98,7 @@ func get_system_locale() -> String:
 func set_language(code: String) -> void:
 	data.language = code
 	apply_language()
+	localization_updated.emit()
 
 
 func apply_language() -> void:
@@ -211,9 +210,7 @@ func get_show_menu_bar() -> bool:
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	data.audio_waveform_style = style
-
-	for file_data: FileData in FileHandler.data.values():
-		file_data.update_wave.emit()
+	Project.files.update_audio_waves()
 
 
 func get_audio_waveform_style() -> int:
@@ -312,7 +309,7 @@ func get_default_framerate() -> float:
 
 func set_use_proxies(value: bool) -> void:
 	data.use_proxies = value
-	FileHandler.reload_all_video_files()
+	Project.files.reload_videos()
 
 
 func get_use_proxies() -> bool:

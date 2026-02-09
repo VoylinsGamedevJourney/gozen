@@ -15,7 +15,7 @@ var mouse_offset: int = 30
 
 # Give it the index of the array of ids/clip_buttons/new_position ...
 func get_clip_data(index: int) -> ClipData:
-	return ClipHandler.get_clip(ids[index])
+	return Project.clips.get_clip(ids[index])
 
 
 func _to_string() -> String:

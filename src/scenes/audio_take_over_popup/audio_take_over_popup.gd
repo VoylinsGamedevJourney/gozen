@@ -31,7 +31,7 @@ func load_data(id: int, is_file: bool) -> void:
 		file_a_wave.file_id = current_file_id
 	else:
 		current_clip_id = id
-		file_a_wave.file_id = ClipHandler.get_file(current_clip_id).id
+		file_a_wave.file_id = Project.clips.get_file(current_clip_id).id
 
 	var item_id: int = 0
 	var audio_files: Dictionary[String, int] = FileHandler.get_all_audio_files()
@@ -52,7 +52,7 @@ func _on_take_over_audio_button_pressed() -> void:
 		#FileHandler.apply_audio_take_over(current_file_id, file_b_id, offset_spinbox.value)
 		pass # TODO:
 	else: # Clip
-		#ClipHandler.apply_audio_take_over(current_clip_id, file_b_id, offset_spinbox.value)
+		#Project.clips.apply_audio_take_over(current_clip_id, file_b_id, offset_spinbox.value)
 		pass # TODO:
 
 	PopupManager.close_all()

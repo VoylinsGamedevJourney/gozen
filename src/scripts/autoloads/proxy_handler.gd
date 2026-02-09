@@ -14,16 +14,17 @@ func _ready() -> void:
 		DirAccess.make_dir_absolute(PROXY_PATH)
 
 
-func request_proxy_generation(file_id: int) -> void:
-	var file: File = FileHandler.get_file(file_id)
-	if file.type not in FileHandler.TYPE_VIDEOS: return # Only proxies for videos possible
+func request_generation(file_id: int) -> void:
+	var index: int = Project.files.get_index(file_id)
+	var type: FileLogic.TYPE = Project.files.get_type(index)
+	var path: String = Project.files.get_path(index)
+	if type not in FileLogic.TYPE_VIDEOS: return # Only proxies for videos possible
 
-	var file_name: String = _get_proxy_file_name(file)
-	var new_path: String = PROXY_PATH + file_name
+	var new_path: String = PROXY_PATH + _create_proxy_name(path)
 
 	# Check if already exists, if yes, we link
 	if FileAccess.file_exists(new_path):
-		file.proxy_path = new_path
+		Project.files.add_proxy_path(index, new_path)
 
 		if Settings.get_use_proxies():
 			FileHandler.reload_file_data(file_id)
@@ -96,10 +97,10 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	file.proxy_path = output_path
 
 
-func _get_proxy_file_name(file: File) -> String:
+func _create_proxy_name(file_path: String) -> String:
 	return  "%s_%s_proxy.mp4" % [
-			FileAccess.get_md5(file.path).left(6),
-			file.path.get_file().get_basename()]
+			FileAccess.get_md5(file_path).left(6),
+			file_path.get_file().get_basename()]
 
 
 func _on_proxy_finished(file_id: int) -> void:

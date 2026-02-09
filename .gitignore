@@ -28,3 +28,5 @@ core/vpx_src
 bin
 core/x264_src
 core/x265_src
+
+*.zip

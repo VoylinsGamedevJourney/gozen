@@ -48,7 +48,7 @@ func set_audio(audio_clip_id: int) -> void:
 	# No audio playback needed during rendering.
 	if RenderManager.encoder != null and RenderManager.encoder.is_open(): return
 
-	var clip_data: ClipData = ClipHandler.get_clip(audio_clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(audio_clip_id)
 	var target_file_id: int = clip_data.file_id
 	var time_offset: float = 0.0
 
@@ -110,7 +110,7 @@ func set_audio(audio_clip_id: int) -> void:
 
 func update_effects(effects: Array[GoZenEffectAudio]) -> void:
 	if clip_id == 1: return
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var current_relative_frame: int = EditorCore.frame_nr - clip_data.start_frame
 
 	for i: int in effects.size():

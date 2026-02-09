@@ -5,10 +5,9 @@ signal play_changed(value: bool)
 
 
 const VISUAL_TYPES: PackedInt64Array = [
-		FileHandler.TYPE.IMAGE, FileHandler.TYPE.COLOR, FileHandler.TYPE.TEXT,
-		FileHandler.TYPE.VIDEO, FileHandler.TYPE.VIDEO_ONLY]
-const AUDIO_TYPES: PackedInt64Array = [
-		FileHandler.TYPE.AUDIO, FileHandler.TYPE.VIDEO]
+		FileLogic.TYPE.IMAGE, FileLogic.TYPE.COLOR, FileLogic.TYPE.TEXT,
+		FileLogic.TYPE.VIDEO, FileLogic.TYPE.VIDEO_ONLY]
+const AUDIO_TYPES: PackedInt64Array = [ FileLogic.TYPE.AUDIO, FileLogic.TYPE.VIDEO ]
 
 
 var viewport: SubViewport
@@ -40,8 +39,8 @@ func _ready() -> void:
 	viewport.add_child(background)
 	add_child(viewport)
 
-	FileHandler.file_reloaded.connect(_on_clips_updated.unbind(1))
-	ClipHandler.clips_updated.connect(_on_clips_updated)
+	Project.files.reloaded.connect(_on_clips_updated.unbind(1))
+	Project.clips.updated.connect(_on_clips_updated)
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
 	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
 
@@ -93,8 +92,8 @@ func set_frame_nr(value: int) -> void:
 	frame_nr = value
 	if frame_nr == prev_frame + 1:
 		for i: int in audio_players.size():
-			if TrackHandler.has_frame_nr(i, frame_nr):
-				audio_players[i].set_audio(TrackHandler.get_clip_id(i, frame_nr))
+			if Project.tracks.has_frame_nr(i, frame_nr):
+				audio_players[i].set_audio(Project.tracks.get_clip_id(i, frame_nr))
 			elif audio_players[i].stop_frame == frame_nr:
 				audio_players[i].stop()
 		return
@@ -148,21 +147,21 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 func _get_next_clip(new_frame_nr: int, track_id: int) -> int:
 	var id: int = -1
 
-	if TrackHandler.get_clips_size(track_id) == 0:
+	if Project.tracks.get_clips_size(track_id) == 0:
 		return id
 
 	# Looking for the correct clip
-	for frame: int in TrackHandler.get_frame_nrs(track_id):
+	for frame: int in Project.tracks.get_frame_nrs(track_id):
 		if frame <= new_frame_nr:
-			id = TrackHandler.get_clip_id(track_id, frame)
+			id = Project.tracks.get_clip_id(track_id, frame)
 		else: break
 
 	return id if id != -1 and _check_clip_end(new_frame_nr, id) else -1
 
 
 func _check_clip_end(new_frame_nr: int, clip_id: int) -> bool:
-	if ClipHandler.clips.has(clip_id):
-		return new_frame_nr <= ClipHandler.get_end_frame(clip_id)
+	if Project.clips.clips.has(clip_id):
+		return new_frame_nr <= Project.clips.get_end_frame(clip_id)
 	return false
 
 
@@ -182,30 +181,30 @@ func setup_audio_players() -> void:
 
 
 func find_audio(frame: int, track_id: int) -> int:
-	var pos: PackedInt64Array = TrackHandler.get_frame_nrs(track_id)
+	var pos: PackedInt64Array = Project.tracks.get_frame_nrs(track_id)
 	var last: int = Utils.get_previous(frame, pos)
 	var clip_data: ClipData
 
 	if last == -1:
 		return -1
 
-	clip_data = TrackHandler.get_clip_at(track_id, last)
+	clip_data = Project.tracks.get_clip_at(track_id, last)
 
 	if clip_data == null:
 		printerr("EditorCore: Clip empty at: ", last)
 		return -1
 
 	last = clip_data.id
-	return last if frame < ClipHandler.get_end_frame(last) else -1
+	return last if frame < Project.clips.get_end_frame(last) else -1
 
 
 func update_audio() -> void:
 	for player: AudioPlayer in audio_players:
 		if player.clip_id == -1: continue
-		elif !ClipHandler.clips.has(player.clip_id):
+		elif !Project.clips.clips.has(player.clip_id):
 			player.stop()
 		else:
-			var clip: ClipData = ClipHandler.get_clip(player.clip_id)
+			var clip: ClipData = Project.clips.get_clip(player.clip_id)
 			player.stop_frame = clip.end_frame
 
 			if frame_nr < clip.start_frame: player.stop()
@@ -233,15 +232,15 @@ func setup_playback() -> void:
 func update_view(track_id: int, update: bool) -> void:
 	if loaded_clips[track_id] == -1: return
 
-	var file_data: FileData = ClipHandler.get_file_data(loaded_clips[track_id])
+	var file_data: FileData = Project.clips.get_file_data(loaded_clips[track_id])
 	if file_data == null: return # Possible if file is still reloading.
 
-	var clip_data: ClipData = ClipHandler.get_clip(loaded_clips[track_id])
+	var clip_data: ClipData = Project.clips.get_clip(loaded_clips[track_id])
 	var relative_frame: int = frame_nr - clip_data.start_frame + clip_data.begin
 	var clip_frame: int = frame_nr - clip_data.start_frame
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_data, true)
 
-	ClipHandler.load_frame(loaded_clips[track_id], relative_frame)
+	Project.clips.load_frame(loaded_clips[track_id], relative_frame)
 
 	if file_data.video != null:
 		if !update and visual_compositors[track_id].resolution != file_data.video.get_resolution():
@@ -274,15 +273,15 @@ func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 		return false
 
 	# Check if clip really still exists or not.
-	if !ClipHandler.clips.has(loaded_clips[track_id]):
+	if !Project.clips.clips.has(loaded_clips[track_id]):
 		loaded_clips[track_id] = -1
 		return false
 
 	# Track check
 	return !(
-		ClipHandler.get_clip(loaded_clips[track_id]).track_id != track_id or
-		ClipHandler.get_start_frame(loaded_clips[track_id]) > new_frame_nr or
-		frame_nr > ClipHandler.get_end_frame(loaded_clips[track_id]))
+		Project.clips.get_clip(loaded_clips[track_id]).track_id != track_id or
+		Project.clips.get_start_frame(loaded_clips[track_id]) > new_frame_nr or
+		frame_nr > Project.clips.get_end_frame(loaded_clips[track_id]))
 
 
 func set_background_color(color: Color) -> void:

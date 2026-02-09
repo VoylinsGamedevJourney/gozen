@@ -39,8 +39,8 @@ func _load_video_effects() -> void:
 			continue
 
 		var effect: GoZenEffectVisual = load(PATH_EFFECTS_VISUAL + file_name)
-		visual_effects[effect.effect_name] = effect.effect_id
-		visual_effect_instances[effect.effect_id] = effect
+		visual_effects[effect.nickname] = effect.id
+		visual_effect_instances[effect.id] = effect
 
 
 func _load_audio_effects() -> void:
@@ -57,8 +57,8 @@ func _load_audio_effects() -> void:
 
 #---- Adding effects ----
 func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
-	if !ClipHandler.clips.has(clip_id): return
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	if !Project.clips.clips.has(clip_id): return
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
 	var index: int = list.size()
 
@@ -85,9 +85,9 @@ func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
 
 func _add_effect(clip_id: int, index: int, effect: GoZenEffect, is_visual: bool) -> void:
 	if is_visual:
-		ClipHandler.clips[clip_id].effects_video.insert(index, effect)
+		Project.clips.clips[clip_id].effects_video.insert(index, effect)
 	else:
-		ClipHandler.clips[clip_id].effects_audio.insert(index, effect)
+		Project.clips.clips[clip_id].effects_audio.insert(index, effect)
 
 	effect_added.emit(clip_id)
 	effects_updated.emit()
@@ -95,9 +95,9 @@ func _add_effect(clip_id: int, index: int, effect: GoZenEffect, is_visual: bool)
 
 #---- Removing effects ----
 func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
-	if !ClipHandler.clips.has(clip_id): return
+	if !Project.clips.clips.has(clip_id): return
 
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
 	var effect: GoZenEffect
 
@@ -117,9 +117,9 @@ func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
 
 func _remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
 	if is_visual:
-		ClipHandler.clips[clip_id].effects_video.remove_at(index)
+		Project.clips.clips[clip_id].effects_video.remove_at(index)
 	else:
-		ClipHandler.clips[clip_id].effects_audio.remove_at(index)
+		Project.clips.clips[clip_id].effects_audio.remove_at(index)
 
 	effect_removed.emit(clip_id)
 	effects_updated.emit()
@@ -127,9 +127,9 @@ func _remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
 
 #---- Moving effects ----
 func move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> void:
-	if !ClipHandler.clips.has(clip_id): return
+	if !Project.clips.clips.has(clip_id): return
 
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
 	var effect: GoZenEffect
 
@@ -149,11 +149,11 @@ func move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> v
 
 func _move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> void:
 	if is_visual:
-		var effect: GoZenEffect = ClipHandler.clips[clip_id].effects_video.pop_at(index)
-		ClipHandler.clips[clip_id].effects_video.insert(new_index, effect)
+		var effect: GoZenEffect = Project.clips.clips[clip_id].effects_video.pop_at(index)
+		Project.clips.clips[clip_id].effects_video.insert(new_index, effect)
 	else:
-		var effect: GoZenEffect = ClipHandler.clips[clip_id].effects_audio.pop_at(index)
-		ClipHandler.clips[clip_id].effects_audio.insert(new_index, effect)
+		var effect: GoZenEffect = Project.clips.clips[clip_id].effects_audio.pop_at(index)
+		Project.clips.clips[clip_id].effects_audio.insert(new_index, effect)
 
 	effects_updated.emit()
 
@@ -161,9 +161,9 @@ func _move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> 
 #---- Updating effect params ----
 
 func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
-	if !ClipHandler.clips.has(clip_id): return
+	if !Project.clips.clips.has(clip_id): return
 
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
 	var effect: GoZenEffect
 
@@ -218,8 +218,8 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 
 
 func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	if !ClipHandler.clips.has(clip_id): return
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	if !Project.clips.clips.has(clip_id): return
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var effect_list: Array = _get_effect_list(clip_data, is_visual)
 	if index < 0 or index >= effect_list.size():
 		return printerr("EffectsHandler: Trying to remove keyframe from invalid effect! ", index)
@@ -243,7 +243,7 @@ func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String
 
 
 func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
-	var list: Array = _get_effect_list(ClipHandler.get_clip(clip_id), is_visual)
+	var list: Array = _get_effect_list(Project.clips.get_clip(clip_id), is_visual)
 	var effect: GoZenEffect = list[index]
 	if not effect.keyframes.has(param_id): effect.keyframes[param_id] = {}
 
@@ -253,7 +253,7 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 
 
 func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	var list: Array = _get_effect_list(ClipHandler.get_clip(clip_id), is_visual)
+	var list: Array = _get_effect_list(Project.clips.get_clip(clip_id), is_visual)
 	var effect: GoZenEffect = list[index]
 
 	if effect.keyframes.has(param_id):
@@ -268,8 +268,8 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 
 #---- Switch enabled ----
 func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
-	if !ClipHandler.clips.has(clip_id): return
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	if !Project.clips.clips.has(clip_id): return
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var list: Array = _get_effect_list(clip_data, is_visual)
 	var effect: GoZenEffect
 
@@ -289,9 +289,9 @@ func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
 
 func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> void:
 	if is_visual:
-		ClipHandler.clips[clip_id].effects_video[index].is_enabled = value
+		Project.clips.clips[clip_id].effects_video[index].is_enabled = value
 	else:
-		ClipHandler.clips[clip_id].effects_audio[index].is_enabled = value
+		Project.clips.clips[clip_id].effects_audio[index].is_enabled = value
 	effects_updated.emit()
 
 

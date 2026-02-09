@@ -1,8 +1,6 @@
 extends Node
 
-
 signal project_ready
-
 signal timeline_end_update(new_end: int)
 
 
@@ -10,20 +8,31 @@ const EXTENSION: String = ".gozen"
 const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 
 
-
 var data: ProjectData = ProjectData.new()
-var loaded: bool = false
+var is_loaded: bool = false
 
 var unsaved_changes: bool = false
 var auto_save_timer: Timer
 
+var files: FileLogic
+var clips: ClipLogic
+var tracks: TrackLogic
+var markers: MarkerLogic
+var folders: FolderLogic
+
 
 
 func _ready() -> void:
-	get_window().close_requested.connect(_on_close_requested)
-	ClipHandler.clips_updated.connect(update_timeline_end)
-	CommandManager.register(
-			"command_project_settings", open_settings_menu, tr("Open project settings"))
+	get_window().close_requested.connect(_on_close)
+	clips.updated.connect(update_timeline_end)
+
+
+func _setup_logic() -> void:
+	files = FileLogic.new(data)
+	clips = ClipLogic.new(data)
+	tracks = TrackLogic.new(data)
+	markers = MarkerLogic.new(data)
+	folders = FolderLogic.new(data)
 
 
 func new_project(new_path: String, new_resolution: Vector2i, new_framerate: float) -> void:
@@ -35,18 +44,9 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	set_project_path(new_path)
 	set_resolution(new_resolution)
 	set_framerate(new_framerate)
+	_setup_logic()
 
-	FileHandler.files = data.files
-	TrackHandler.tracks = data.tracks
-	ClipHandler.clips = data.clips
-
-	# Prepare tracks
-	data.tracks.resize(Settings.get_tracks_amount())
-	data.tracks.fill(TrackData.new())
-
-	for track_id: int in data.tracks.size():
-		data.tracks[track_id].id = track_id
-
+	for index: int in Settings.get_tracks_amount(): tracks._add_track(index, false)
 	EditorCore.loaded_clips.resize(data.tracks.size())
 
 	loading_overlay.update_progress(50, tr("Setting up playback ..."))
@@ -60,7 +60,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	PopupManager.close_popups()
 	save()
 
-	loaded = true
+	is_loaded = true
 	_auto_save()
 	project_ready.emit()
 
@@ -97,10 +97,7 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update_progress(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
 	set_framerate(data.framerate)
-
-	FileHandler.files = data.files
-	TrackHandler.tracks = data.tracks
-	ClipHandler.clips = data.clips
+	_setup_logic()
 
 	EditorCore.loaded_clips.resize(data.tracks.size())
 
@@ -109,13 +106,13 @@ func open(new_project_path: String) -> void:
 	progress_increment = (1 / float(data.files.size())) * 73
 
 	for i: int in data.files.keys():
-		if !FileHandler.load_file_data(i):
+		if !files.load_file_data(i):
 			continue # File became invaled so entry got deleted.
 
-		var type: FileHandler.TYPE = data.files[i].type
+		var type: files.TYPE = data.files[i].type
 
-		if type in FileHandler.TYPE_VIDEOS and FileHandler.data[i].video == null:
-			await FileHandler.data[i].video_loaded
+		if type in files.TYPE_VIDEOS and files.data[i].video == null:
+			await files.data[i].video_loaded
 
 		loading_overlay.increment_progress_bar(progress_increment)
 
@@ -132,7 +129,7 @@ func open(new_project_path: String) -> void:
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
 	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 
-	loaded = true
+	is_loaded = true
 	unsaved_changes = false
 	project_ready.emit()
 	EditorCore.set_frame(get_playhead_position())
@@ -159,7 +156,7 @@ func _auto_save() -> void:
 		add_child(auto_save_timer)
 		auto_save_timer.timeout.connect(_auto_save)
 
-	if loaded:
+	if is_loaded:
 		save()
 
 	auto_save_timer.start(5*60) # Default time is every 5 minutes
@@ -189,7 +186,7 @@ func _save_as(new_project_path: String) -> void:
 	save()
 
 
-func _on_close_requested() -> void:
+func _on_close() -> void:
 	if !unsaved_changes:
 		get_tree().quit()
 		return
@@ -284,9 +281,10 @@ func set_timeline_end(value: int) -> void:
 func update_timeline_end() -> void:
 	var end: int = 0
 
-	for track_id: int in data.tracks.size():
-		var clip: ClipData = TrackHandler.get_last_clip(track_id)
-		if clip != null: end = max(end, ClipHandler.get_end_frame(clip.id))
+	for index: int in tracks.get_size():
+		var clip_id: int = tracks.get_last_clip_index(index)
+		if clip_id != -1:
+			end = max(end, clips.get_end_frame(clip_id))
 
 	set_timeline_end(end)
 	timeline_end_update.emit(end)

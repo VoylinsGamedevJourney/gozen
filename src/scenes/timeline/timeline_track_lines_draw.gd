@@ -9,7 +9,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	for i: int in TrackHandler.tracks.size() - 1:
+	for i: int in Project.tracks.size() - 1:
 		var y: int = timeline.TRACK_TOTAL_SIZE * (i + 1)
 
 		draw_dashed_line(

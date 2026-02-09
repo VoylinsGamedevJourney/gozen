@@ -24,8 +24,8 @@ const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 
 
 func _ready() -> void:
-	ClipHandler.clips_updated.connect(update_clips)
-	ClipHandler.clip_selected.connect(update_clips.unbind(1))
+	Project.clips.updated.connect(update_clips)
+	Project.clips.selected.connect(update_clips.unbind(1))
 
 
 func _draw() -> void:
@@ -44,8 +44,8 @@ func _draw() -> void:
 	var waveform_amp: float = Settings.get_audio_waveform_amp()
 
 	# Get all visible clips.
-	for track_id: int in TrackHandler.get_tracks_size():
-		for clip: ClipData in TrackHandler.get_clips_in(track_id, visible_start, visible_end):
+	for track_id: int in Project.tracks.size():
+		for clip: ClipData in Project.tracks.get_clips_in(track_id, visible_start, visible_end):
 			visible_clip_ids.append(clip.id)
 
 	# - Previews
@@ -59,7 +59,7 @@ func _draw() -> void:
 			draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 		else:
 			for clip_id: int in draggable.ids:
-				var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+				var clip_data: ClipData = Project.clips.get_clip(clip_id)
 				var new_start: int = clip_data.start_frame + draggable.frame_offset
 				var new_track: int = clip_data.track_id + draggable.track_offset
 
@@ -73,7 +73,7 @@ func _draw() -> void:
 				if clip_id in timeline.visible_clip_ids:
 					handled_clip_ids.append(clip_id)
 	elif timeline.state == timeline.STATE.RESIZING: # Resizing preview
-		var clip_data: ClipData = ClipHandler.get_clip(timeline.resize_target.clip_id)
+		var clip_data: ClipData = Project.clips.get_clip(timeline.resize_target.clip_id)
 		var draw_start: float = clip_data.start_frame
 		var draw_length: int = clip_data.duration
 
@@ -103,7 +103,7 @@ func _draw() -> void:
 		if clip_id in handled_clip_ids:
 			continue
 
-		var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+		var clip_data: ClipData = Project.clips.get_clip(clip_id)
 		var box_type: int = 1 if clip_data.id in timeline.selected_clip_ids else 0
 		var box_pos: Vector2 = Vector2(clip_data.start_frame * zoom, track_total_size * clip_data.track_id)
 		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_data.duration * zoom, track_height))
@@ -113,7 +113,7 @@ func _draw() -> void:
 		if text_pos_x < scroll.scroll_horizontal and text_pos_x + TEXT_OFFSET.x <= clip_end_x:
 			text_pos_x = scroll.scroll_horizontal
 
-		draw_style_box(STYLE_BOXES[ClipHandler.get_type(clip_data.id)][box_type], clip_rect)
+		draw_style_box(STYLE_BOXES[Project.clips.get_type(clip_data.id)][box_type], clip_rect)
 		draw_string(
 				get_theme_default_font(),
 				Vector2(text_pos_x, box_pos.y) + TEXT_OFFSET,
@@ -158,9 +158,9 @@ func _draw() -> void:
 		# - Fading handles + amount
 		var show_handles: bool = (timeline.hovered_clip != null and timeline.hovered_clip.id == clip_id) or \
 				(timeline.state == timeline.STATE.FADING and timeline.fade_target.clip_id == clip_id)
-		if ClipHandler.get_type(clip_id) in EditorCore.VISUAL_TYPES: # Bottom handles
+		if Project.clips.get_type(clip_id) in EditorCore.VISUAL_TYPES: # Bottom handles
 			_draw_fade_handles(clip_data, box_pos, true, show_handles)
-		if ClipHandler.get_type(clip_id) in EditorCore.AUDIO_TYPES: # Top handles
+		if Project.clips.get_type(clip_id) in EditorCore.AUDIO_TYPES: # Top handles
 			_draw_fade_handles(clip_data, box_pos, false, show_handles)
 
 

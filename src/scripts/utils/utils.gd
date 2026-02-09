@@ -80,8 +80,7 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 
 	for path: String in files:
 		if FileAccess.file_exists(path):
-			if FileHandler.check_valid(path):
-				actual_files.append(path)
+			if Project.files.check_valid(path): actual_files.append(path)
 		elif DirAccess.dir_exists_absolute(path):
 			folders.append(path)
 
@@ -91,9 +90,7 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 		for path: String in folders:
 			for file_path: String in DirAccess.get_files_at(path):
 				var full_path: String = path + '/' + file_path
-
-				if FileHandler.check_valid(full_path):
-					actual_files.append(full_path)
+				if Project.files.check_valid(full_path): actual_files.append(full_path)
 			for dir_path: String in DirAccess.get_directories_at(path):
 				new_folders.append(path + '/' + dir_path)
 
@@ -190,14 +187,13 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 	return score if query_index == query.length() else 0
 
 
-static func calculate_fade(current_frame: int, clip_data: ClipData, is_visual: bool) -> float:
-	var fade_in: int = clip_data.fade_in_visual if is_visual else clip_data.fade_in_audio
-	var fade_out: int = clip_data.fade_out_visual if is_visual else clip_data.fade_out_audio
-	var value: float = 1.0
+static func calculate_fade(frame_nr: int, clip_index: int, is_visual: bool) -> float:
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var clip_duration: int = Project.data.clips_duration[clip_index]
+	var fade: Vector2i = clip_effects.fade_visual if is_visual else clip_effects.fade_audio
 
-	if fade_in > 0 and current_frame < fade_in:
-		value = float(current_frame) / float(fade_in)
-	elif fade_out > 0 and current_frame >= (clip_data.duration - fade_out):
-		value = float(clip_data.duration - current_frame) / float(fade_out)
-
-	return clampf(value, 0.0, 1.0)
+	if fade.x > 0 and frame_nr < fade.x:
+		return clampf(float(frame_nr) / float(fade.x), 0.0, 1.0)
+	elif fade.y > 0 and frame_nr >= (clip_duration - fade.y):
+		return clampf(float(clip_duration - frame_nr) / float(fade.y), 0.0, 1.0)
+	return 1.0

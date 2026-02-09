@@ -1,14 +1,15 @@
+class_name Matrix
 extends Node
 
 enum TYPE { TRANSFORM }
 
 
 
-func get_transform_matrix_variables() -> PackedStringArray:
+static func get_transform_matrix_variables() -> PackedStringArray:
 	return ["position", "rotation", "size", "pivot"]
 
 
-func calculate_transform_matrix(data: Dictionary[String, Variant], resolution: Vector2) -> PackedFloat32Array:
+static func calculate_transform_matrix(data: Dictionary[String, Variant], resolution: Vector2) -> PackedFloat32Array:
 	# First check if data has the needed params.
 	for key: String in data.keys():
 		if data[key] != null:

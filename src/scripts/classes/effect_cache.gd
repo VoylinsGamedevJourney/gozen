@@ -1,7 +1,7 @@
 class_name EffectCache
 extends RefCounted
 
-var effect_name: String
+var nickname: String
 
 var shader: RID
 var pipeline: RID
@@ -13,14 +13,14 @@ var _resolution: Vector2i
 
 
 func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: GoZenEffectVisual) -> void:
-	effect_name = effect.effect_name
+	nickname = effect.nickname
 	shader = device.shader_create_from_spirv(spirv)
 	pipeline = device.compute_pipeline_create(shader)
 
 
 func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector2i) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
-	var processed_matrices: Array[MatrixHandler.TYPE] = []
+	var processed_matrices: Array[Matrix.TYPE] = []
 
 	_effect = effect
 	_frame_nr = frame_nr
@@ -29,7 +29,7 @@ func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vecto
 	for effect_param: EffectParam in effect.params:
 		# First do matrix handling
 		if effect_param.param_id in effect.matrix_map:
-			var matrix_type: MatrixHandler.TYPE = effect.matrix_map[effect_param.param_id]
+			var matrix_type: Matrix.TYPE = effect.matrix_map[effect_param.param_id]
 
 			if matrix_type not in processed_matrices:
 				_pad_stream(stream, 16)
@@ -81,7 +81,7 @@ func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vecto
 	return buffer_data
 
 
-func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
+func _handle_matrix(type: Matrix.TYPE) -> PackedFloat32Array:
 	var data: Dictionary[String, Variant] = {}
 	var param_map: Dictionary[String, EffectParam] = {}
 
@@ -96,14 +96,14 @@ func _handle_matrix(type: MatrixHandler.TYPE) -> PackedFloat32Array:
 	ratio = current_resolution / project_resolution
 
 	match type:
-		MatrixHandler.TYPE.TRANSFORM:
-			for key: String in MatrixHandler.get_transform_matrix_variables():
+		Matrix.TYPE.TRANSFORM:
+			for key: String in Matrix.get_transform_matrix_variables():
 				data[key] = _effect.get_value(param_map[key], _frame_nr)
 
 				if key == "position" or key == "size" or key == "pivot":
 					data[key] = Vector2(data[key]) * ratio
 
-			return MatrixHandler.calculate_transform_matrix(data, _resolution)
+			return Matrix.calculate_transform_matrix(data, _resolution)
 		_:
 			printerr("EffectCache: Invalid matrix data type! %s" % type)
 			return []
@@ -124,4 +124,4 @@ func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
 
 
 func _to_string() -> String:
-	return "<EffectCache:%s-%s>" % [effect_name, get_instance_id()]
+	return "<EffectCache:%s-%s>" % [nickname, get_instance_id()]

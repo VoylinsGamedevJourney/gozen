@@ -160,7 +160,7 @@ func encode_audio() -> PackedByteArray:
 
 	for i: int in Project.get_track_count():
 		for clip_id: int in Project.get_track_data(i).values():
-			if ClipHandler.get_type(clip_id) not in EditorCore.AUDIO_TYPES:
+			if Project.clips.get_type(clip_id) not in EditorCore.AUDIO_TYPES:
 				continue
 
 			# Audio is present so we can get all the track audio.
@@ -176,7 +176,7 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, full_length: int) -
 	var track: TrackData = Project.get_track_data(track_id)
 
 	for frame_nr: int in track.get_frame_nrs():
-		var clip: ClipData = ClipHandler.get_clip(track.get_clip_id(frame_nr))
+		var clip: ClipData = Project.clips.get_clip(track.get_clip_id(frame_nr))
 		var file: File = FileHandler.get_file(clip.file_id)
 
 		if file.type in EditorCore.AUDIO_TYPES:
@@ -190,7 +190,7 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, full_length: int) -
 
 func _handle_audio(clip_data: ClipData, track_audio: PackedByteArray) -> PackedByteArray:
 	# Getting the raw clip audio data
-	var audio_data: PackedByteArray = ClipHandler.get_clip_audio_data(clip_data.id, clip_data)
+	var audio_data: PackedByteArray = Project.clips.get_clip_audio_data(clip_data.id, clip_data)
 	var framerate: float = Project.get_framerate()
 
 	if clip_data.fade_in_audio > 0 or clip_data.fade_out_visual > 0:
@@ -200,7 +200,7 @@ func _handle_audio(clip_data: ClipData, track_audio: PackedByteArray) -> PackedB
 	for effect: GoZenEffectAudio in clip_data.effects_audio:
 		match effect.effect_id:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)
-			_: printerr("RenderManager: Unknown effect '%s'!" % effect.effect_name)
+			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
 	var start_sample: int = Utils.get_sample_count(clip_data.start_frame - 1, framerate)
 

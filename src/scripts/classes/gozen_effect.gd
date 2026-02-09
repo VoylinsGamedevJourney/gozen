@@ -2,9 +2,9 @@ class_name GoZenEffect
 extends Resource
 
 
-@export var effect_id: String
-@export var effect_name: String
-@export var effect_tooltip: String
+@export var id: String
+@export var nickname: String
+@export var tooltip: String
 
 @export var params: Array[EffectParam]
 @export var is_enabled: bool = true
@@ -19,7 +19,7 @@ var _cache_dirty: bool = true
 
 
 func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
-	var id: String = effect_param.param_id
+	var id: String = effect_param.id
 	var sorted_keys: Array = _validate_cache(id)
 
 	if sorted_keys.is_empty():

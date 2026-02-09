@@ -49,7 +49,7 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 		0: InputManager.undo_redo.undo()
 		1: InputManager.undo_redo.redo()
 		2: get_viewport().push_input(InputMap.action_get_events("cut_clips_at_mouse")[0])
-		3: pass # Copy  TODO: Implement ClipHandler copy logic
+		3: pass # Copy  TODO: Implement ClipLogic copy logic
 		4: InputManager.clipboard_paste()
 		5: get_viewport().push_input(InputMap.action_get_events("delete_clips")[0])
 

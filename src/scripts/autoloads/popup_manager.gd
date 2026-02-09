@@ -48,7 +48,7 @@ func _ready() -> void:
 	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
-func open_popup(popup: POPUP) -> void:
+func open(popup: POPUP) -> void:
 	if popup in _open_popups: return
 
 	_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
@@ -68,7 +68,7 @@ func _open_project_settings(settings_panel: SettingsPanel) -> void:
 	settings_panel.set_mode(SettingsPanel.MODE.PROJECT_SETTINGS)
 
 
-func close_popup(popup: POPUP) -> void:
+func close(popup: POPUP) -> void:
 	if _open_popups.has(popup):
 		_open_popups[popup].queue_free()
 
@@ -78,7 +78,7 @@ func close_popup(popup: POPUP) -> void:
 	_check_background()
 
 
-func close_popups() -> void:
+func close_all() -> void:
 	for popup: POPUP in _open_popups:
 		_open_popups[popup].queue_free()
 
@@ -116,7 +116,7 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 	return dialog
 
 
-func create_popup_menu(permanent: bool = false) -> PopupMenu:
+func create_menu(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
 
 	if !permanent:
@@ -126,7 +126,7 @@ func create_popup_menu(permanent: bool = false) -> PopupMenu:
 	return popup
 
 
-func show_popup_menu(popup: PopupMenu) -> void:
+func show_menu(popup: PopupMenu) -> void:
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 
 	popup.position.x = int(mouse_pos.x)
@@ -136,7 +136,8 @@ func show_popup_menu(popup: PopupMenu) -> void:
 	popup.popup()
 
 
-# Private functions
+# --- Helper functions ---
+
 func _on_size_changed() -> void:
 	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 

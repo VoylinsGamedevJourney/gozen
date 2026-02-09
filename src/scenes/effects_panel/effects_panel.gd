@@ -23,9 +23,9 @@ var current_clip_id: int = -1
 
 
 func _ready() -> void:
+	Project.clips.deleted.connect(_on_clip_erased)
+	Project.clips.selected.connect(_on_clip_pressed)
 	EditorCore.frame_changed.connect(_on_frame_changed)
-	ClipHandler.clip_deleted.connect(_on_clip_erased)
-	ClipHandler.clip_selected.connect(_on_clip_pressed)
 	EffectsHandler.effect_added.connect(_on_effects_updated)
 	EffectsHandler.effect_removed.connect(_on_effects_updated)
 	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(-1))
@@ -50,7 +50,7 @@ func _on_clip_pressed(id: int) -> void:
 		button_audio.disabled = true
 		return
 
-	var type: FileHandler.TYPE = ClipHandler.get_type(id)
+	var type: FileHandler.TYPE = Project.clips.get_type(id)
 	var is_visual: bool = type in EditorCore.VISUAL_TYPES
 	var is_audio: bool = type not in EditorCore.AUDIO_TYPES
 
@@ -115,10 +115,10 @@ func _clear_ui() -> void:
 func _load_video_effects() -> void:
 	_clear_ui()
 
-	if !ClipHandler.clips.has(current_clip_id):
+	if !Project.clips.clips.has(current_clip_id):
 		return
 
-	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
 
 	for i: int in clip_data.effects_video.size():
 		var effect: GoZenEffectVisual = clip_data.effects_video[i]
@@ -134,10 +134,10 @@ func _load_video_effects() -> void:
 func _load_audio_effects() -> void:
 	_clear_ui()
 
-	if !ClipHandler.clips.has(current_clip_id):
+	if !Project.clips.clips.has(current_clip_id):
 		return
 
-	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
 
 	for i: int in clip_data.effects_video.size():
 		var effect: GoZenEffectAudio = clip_data.effects_audio[i]
@@ -157,7 +157,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	# TODO: Replace up and down arrows with dragging behaviour
 
-	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 
 	var container: FoldableContainer = FoldableContainer.new()
@@ -167,7 +167,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 	var button_visible: TextureButton = TextureButton.new()
 	var grid: GridContainer = GridContainer.new()
 
-	container.title = effect.effect_name
+	container.title = effect.nickname
 	container.title_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	container.tooltip_text = effect.effect_tooltip
 	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark)
@@ -356,8 +356,8 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1 or !ClipHandler.clips.has(current_clip_id): return
-	var clip_data: ClipData = ClipHandler.get_clip(current_clip_id)
+	if current_clip_id == -1 or !Project.clips.clips.has(current_clip_id): return
+	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
 	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 	var container: VBoxContainer
 	var effects: Array
@@ -429,9 +429,9 @@ func _on_switch_enabled(index: int, is_visual: bool) -> void:
 	var is_enabled: bool
 
 	if is_visual:
-		is_enabled = ClipHandler.get_clip(current_clip_id).effects_video[index].is_enabled
+		is_enabled = Project.clips.get_clip(current_clip_id).effects_video[index].is_enabled
 	else:
-		is_enabled = ClipHandler.get_clip(current_clip_id).effects_audio[index].is_enabled
+		is_enabled = Project.clips.get_clip(current_clip_id).effects_audio[index].is_enabled
 
 	container.folded = !is_enabled
 
@@ -460,7 +460,7 @@ func _effect_param_update_call(value: Variant, index: int, is_visual: bool, para
 
 
 func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_id: String) -> void:
-	var clip_data: ClipData = ClipHandler.get_clip(clip_id)
+	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 	var effect: GoZenEffect
 	if is_visual: effect = clip_data.effects_video[index]
