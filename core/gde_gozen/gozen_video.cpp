@@ -1,6 +1,41 @@
 #include "gozen_video.hpp"
 
 
+double GoZenVideo::get_duration(const String& video_path) {
+	AVFormatContext* format_ctx = nullptr;
+	String path = video_path;
+
+	if (path.begins_with("res://") || path.begins_with("user://"))
+		path = ProjectSettings::get_singleton()->globalize_path(path);
+
+	if (avformat_open_input(&format_ctx, path.utf8().get_data(), nullptr, nullptr) != 0)
+		return -1.0; // Error opening file.
+	else if (avformat_find_stream_info(format_ctx, nullptr) < 0) {
+		avformat_close_input(&format_ctx);
+		return -1.0; // Error finding stream info.
+	}
+
+	int64_t duration = format_ctx->duration;
+	if (duration != AV_NOPTS_VALUE) {
+		avformat_close_input(&format_ctx);
+		return (double)duration / AV_TIME_BASE; // Convert to seconds.
+	}
+
+	// Fallback.
+	double duration_seconds = 0.0;
+	for (unsigned int i = 0; i < format_ctx->nb_streams; i++) {
+		if (format_ctx->streams[i]->duration != AV_NOPTS_VALUE) {
+			double stream_dur = (double)format_ctx->streams[i]->duration * av_q2d(format_ctx->streams[i]->time_base);
+			if (stream_dur > duration_seconds)
+				duration_seconds = stream_dur;
+		}
+	}
+
+	avformat_close_input(&format_ctx);
+	return duration_seconds;
+}
+
+
 int GoZenVideo::open(const String& video_path) {
 	if (loaded)
 		return _log_err("Already open");
@@ -541,8 +576,8 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
 	AVPixelFormat source_pix_fmt = static_cast<AVPixelFormat>(av_frame->format);
 
 	UniqueSwsCtx sws_ctx_thumb = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(
-		sws_getContext(av_frame->width, av_frame->height, source_pix_fmt,	// Source
-					   resolution.x, resolution.y, AV_PIX_FMT_RGBA, // Target
+		sws_getContext(av_frame->width, av_frame->height, source_pix_fmt, // Source
+					   resolution.x, resolution.y, AV_PIX_FMT_RGBA,		  // Target
 					   SWS_FAST_BILINEAR, nullptr, nullptr, nullptr));
 
 	if (!sws_ctx_thumb) {
@@ -801,6 +836,8 @@ void GoZenVideo::_clear_cache() {
 
 
 void GoZenVideo::_bind_methods() {
+	ClassDB::bind_static_method("GoZenVideo", D_METHOD("get_duration", "video_path"), &GoZenVideo::get_duration);
+
 	ClassDB::bind_method(D_METHOD("open", "video_path"), &GoZenVideo::open);
 	ClassDB::bind_method(D_METHOD("close"), &GoZenVideo::close);
 

@@ -12,6 +12,7 @@
 #include <godot_cpp/classes/gd_extension_manager.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
@@ -121,6 +122,8 @@ class GoZenVideo : public Resource {
 	}
 
   public:
+	static double get_duration(const String& video_path);
+
 	GoZenVideo() {}
 	~GoZenVideo() { close(); }
 
