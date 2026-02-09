@@ -22,7 +22,7 @@ var file_b_id: int = -1
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close_popups()
+		PopupManager.close_all()
 
 
 func load_data(id: int, is_file: bool) -> void:
@@ -55,7 +55,7 @@ func _on_take_over_audio_button_pressed() -> void:
 		#ClipHandler.apply_audio_take_over(current_clip_id, file_b_id, offset_spinbox.value)
 		pass # TODO:
 
-	PopupManager.close_popups()
+	PopupManager.close_all()
 
 
 func _on_play_audio_button_pressed() -> void:
@@ -81,4 +81,4 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 
 
 func _on_cancel_button_pressed() -> void:
-	PopupManager.close_popups()
+	PopupManager.close_all()

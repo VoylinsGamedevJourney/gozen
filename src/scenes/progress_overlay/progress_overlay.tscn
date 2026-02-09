@@ -10,7 +10,7 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="Control" unique_id=2135541930 node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "estimated_time_label", "scroll_container", "status_hbox", "vbox")]
+[node name="ProgressOverlay" type="Control" unique_id=2135541930 node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "estimated_time_label", "scroll_container", "vbox", "close_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,8 +24,8 @@ progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndi
 progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox/LoadingHintLabel")
 estimated_time_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox/EstimatedTimeLabel")
 scroll_container = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer")
-status_hbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox")
 vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVBox")
+close_button = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox/CloseButton")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=107973071]
 custom_minimum_size = Vector2(700, 0)
@@ -105,6 +105,10 @@ size_flags_horizontal = 3
 theme_type_variation = &"info_label"
 text = "Initializing ..."
 horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox" unique_id=2086898342]
+layout_mode = 2
+text = "Close popup"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox" unique_id=1001193419]
 visible = false

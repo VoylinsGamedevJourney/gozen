@@ -32,16 +32,18 @@ var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
 
 
 func _ready() -> void:
-	FileHandler.file_added.connect(_on_file_added)
-	FileHandler.file_deleted.connect(_on_file_deleted)
-	FileHandler.file_moved.connect(_on_file_moved)
-	FileHandler.file_path_updated.connect(_on_file_path_updated)
-	FileHandler.file_nickname_changed.connect(_on_file_nickname_changed)
-	FileHandler.folder_added.connect(_on_folder_added)
-	FileHandler.folder_deleted.connect(_on_folder_deleted)
-	FileHandler.folder_renamed.connect(_on_folder_renamed)
+	Project.files.added.connect(_on_file_added)
+	Project.files.deleted.connect(_on_file_deleted)
+	Project.files.moved.connect(_on_file_moved)
+	Project.files.path_updated.connect(_on_file_path_updated)
+	Project.files.nickname_changed.connect(_on_file_nickname_changed)
+
+	Project.folders.folder_added.connect(_on_folder_added)
+	Project.folders.folder_deleted.connect(_on_folder_deleted)
+	Project.folders.folder_renamed.connect(_on_folder_renamed)
 
 	Project.project_ready.connect(_on_project_ready)
+
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
 	tree.item_mouse_selected.connect(_tree_item_clicked)
@@ -68,8 +70,8 @@ func _on_project_ready() -> void:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
 
-	for file: File in FileHandler.get_file_objects():
-		_add_file_to_tree(file)
+	for id: int in Project.files.get_ids():
+		_add_file_to_tree(id)
 
 
 func _file_menu_pressed(id: int) -> void:
@@ -78,79 +80,75 @@ func _file_menu_pressed(id: int) -> void:
 			var dialog: FileDialog = PopupManager.create_file_dialog(
 					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
 
-			dialog.files_selected.connect(FileHandler._on_files_dropped)
 			add_child(dialog)
+			dialog.files_selected.connect(Project.files.dropped)
 			dialog.popup_centered()
-		1: # TODO: Add text
-			pass
+		1: pass # TODO: Add text
 		2: PopupManager.open_popup(PopupManager.POPUP.COLOR)
 
 
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
+	if button_index != MOUSE_BUTTON_RIGHT: return
 	var file_item: TreeItem = folder_items["/"] if empty else tree.get_selected()
-
-	if button_index != MOUSE_BUTTON_RIGHT:
-		return
-
-	var file: File = null
-	var popup: PopupMenu = PopupManager.create_popup_menu()
 	var metadata: Variant = file_item.get_metadata(0)
+	var popup: PopupMenu = PopupManager.create_menu()
 
-	if str(metadata).is_valid_int(): # File
-		var file_id: int = int(metadata)
-
-		file = FileHandler.get_file(file_id)
+	if str(metadata).is_valid_int(): # - File
+		var id: int = int(metadata)
+		var index: int = Project.files.get_index(id)
+		var path: String = Project.files.get_path(index)
+		var proxy_path: String = Project.files.get_proxy_path(index)
+		var type: FileLogic.TYPE = Project.files.get_type(index)
 
 		popup.add_item(tr("Rename"), POPUP_ACTION.FILE_RENAME)
 		popup.add_item(tr("Reload"), POPUP_ACTION.FILE_RELOAD)
 		popup.add_item(tr("Delete"), POPUP_ACTION.FILE_DELETE)
 
-		# TODO: Add VIDEO_ONLY when we have more video options
-		if file.type == FileHandler.TYPE.IMAGE:
-			if file.path.contains("temp://"):
+		if type == FileLogic.TYPE.IMAGE:
+			if path.contains("temp://"):
 				popup.add_separator(tr("Image options"))
 				popup.add_item(tr("Save image as ..."), POPUP_ACTION.FILE_SAVE_TEMP_AS)
-		elif file.type == FileHandler.TYPE.VIDEO:
+		elif type == FileLogic.TYPE.VIDEO:
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
-				if file.proxy_path == "":
+				if proxy_path == "":
 					popup.add_item(tr("Create proxy"), POPUP_ACTION.FILE_CREATE_PROXY)
 				else:
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.FILE_REMOVE_PROXY)
 
-			if FileHandler.get_all_audio_files().size() != 0:
+			if Project.files.has_audio():
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
-				if file.ato_file_id != -1:
-					if file.ato_active:
+				if Project.files.has_ato(id):
+					if Project.files.get_ato_active(id):
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
 					else:
 						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
 
 			popup.add_item(tr("Extract audio to file ..."), POPUP_ACTION.FILE_EXTRACT_AUDIO)
-		elif file.type == FileHandler.TYPE.VIDEO_ONLY:
+		elif type == FileLogic.TYPE.VIDEO_ONLY:
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
-				if file.proxy_path == "":
+				if proxy_path == "":
 					popup.add_item(tr("Create proxy"), POPUP_ACTION.FILE_CREATE_PROXY)
 				else:
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.FILE_RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.FILE_REMOVE_PROXY)
 
-			if FileHandler.get_all_audio_files().size() != 0:
+			if Project.files.has_audio():
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER)
-				if file.ato_file_id != -1:
-					if file.ato_active:
+				if Project.files.has_ato(id):
+					if Project.files.get_ato_active(id):
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_DISABLE)
 					else:
 						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.FILE_AUDIO_TAKE_OVER_ENABLE)
-		elif file.type == FileHandler.TYPE.TEXT:
+		elif type == FileLogic.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), POPUP_ACTION.FILE_DUPLICATE)
 
-			if file.path.contains("temp://"):
+			if path.contains("temp://"):
 				popup.add_item(tr("Save file as ..."), POPUP_ACTION.FILE_SAVE_TEMP_AS)
 
 		popup.add_separator(tr("Folder options"))
@@ -227,7 +225,8 @@ func _on_popup_action_folder_rename() -> void:
 			else:
 				new_folder_path = parent_path + "/" + new_folder_name + "/"
 
-			FileHandler.rename_folder(folder_path, new_folder_path)
+			var folder_index: int = Project.folders.get_index(folder_path)
+			Project.folders.rename(folder_index, new_folder_path)
 		dialog.queue_free()
 
 	dialog.confirmed.connect(confirm_lambda)
@@ -239,78 +238,79 @@ func _on_popup_action_folder_rename() -> void:
 
 
 func _on_popup_action_folder_delete() -> void:
-	FileHandler.delete_folder(str(tree.get_selected().get_metadata(0)))
+	Project.folders.delete(str(tree.get_selected().get_metadata(0)))
 
 
 func _on_popup_action_file_rename() -> void:
-	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
 	var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
-
-	rename_dialog.prepare(file.id)
+	rename_dialog.prepare(tree.get_selected().get_metadata(0))
 	add_child(rename_dialog)
 
 
 func _on_popup_action_file_reload() -> void:
-	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
-
-	FileHandler.reload_file_data(file.id)
+	var id: int = tree.get_selected().get_metadata(0)
+	Project.files._load_data(Project.files.get_id(id))
 
 
 func _on_popup_action_file_delete() -> void:
-	FileHandler.delete_file(tree.get_selected().get_metadata(0))
+	Project.files.delete(tree.get_selected().get_metadata(0))
 
 
 func _on_popup_action_file_save_temp_as() -> void:
-	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+	var id: int = tree.get_selected().get_metadata(0)
+	var type: FileLogic.TYPE = Project.files.get_type(id)
 
-	if file.type == FileHandler.TYPE.TEXT: # TODO: Implement duplicating text files
+	if type == FileLogic.TYPE.TEXT:
+		# TODO: Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
-	elif file.type == FileHandler.TYPE.IMAGE:
+	elif type == FileLogic.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
 				tr("Save image to file"), FileDialog.FILE_MODE_SAVE_FILE,
 				["*.png", "*.jpg", "*.webp"])
-
-		dialog.file_selected.connect(FileHandler.save_image_to_file.bind(file))
+		dialog.file_selected.connect(func(path: String) -> void:
+				Project.files.save_image_to_file(id, path))
 		add_child(dialog)
 		dialog.popup_centered()
 
 
 func _on_popup_action_file_extract_audio() -> void:
-	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+	var id: int = tree.get_selected().get_metadata(0)
 	var dialog: FileDialog = PopupManager.create_file_dialog(
 		tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
 
-	dialog.file_selected.connect(FileHandler.save_audio_to_wav.bind(file))
+	dialog.file_selected.connect(func(path: String) -> void:
+			Project.files.save_audio_to_wav(id, path))
 	add_child(dialog)
 	dialog.popup_centered()
 
 
 func _on_popup_action_file_duplicate() -> void: # Only for text.
-	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
+	var id: int = tree.get_selected().get_metadata(0)
+	var index: int = Project.files.get_index(id)
+	var type: FileLogic.TYPE = Project.files.get_type(index)
 
-	if file.type == FileHandler.TYPE.TEXT:
-		FileHandler.duplicate_text_file(file.id)
-	else:
-		printerr("FilePanel: Duplicating only supported for text files right now!")
+	if type != FileLogic.TYPE.TEXT:
+		return printerr("FilePanel: Duplicating only supported for text files right now!")
+	# TODO: Implement this! Project.files.duplicate_text_file(id)
 
 
 func _on_popup_action_file_create_proxy() -> void:
-	ProxyHandler.request_proxy_generation(tree.get_selected().get_metadata(0))
+	ProxyHandler.request_generation(tree.get_selected().get_metadata(0))
 
 
 func _on_popup_action_file_recreate_proxy() -> void:
 	var file_id: int = tree.get_selected().get_metadata(0)
 
 	ProxyHandler.delete_proxy(file_id)
-	ProxyHandler.request_proxy_generation(file_id)
+	ProxyHandler.request_generation(file_id)
 
 
 func _on_popup_action_file_remove_proxy() -> void:
-	var file: File = FileHandler.get_file(tree.get_selected().get_metadata(0))
-
-	file.proxy_path = ""
-	FileHandler.reload_file_data(file.id)
-	FileHandler.file_nickname_changed.emit(file.id) # To update the name
+	var id: int = tree.get_selected().get_metadata(0)
+	var index: int = Project.files.get_index(id)
+	Project.files.set_proxy_path(index, "")
+	Project.files.load_data((file.id)
+	FileLogic.file_nickname_changed.emit(file.id) # To update the name
 	ProxyHandler.delete_proxy(file.id)
 
 
@@ -323,18 +323,18 @@ func _on_popup_action_audio_take_over() -> void:
 func _on_popup_action_audio_take_over_enable() -> void:
 	InputManager.undo_redo.create_action("Enable file audio take over")
 	InputManager.undo_redo.add_do_method(
-			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), true))
+			FileLogic.set_ato_active.bind(tree.get_selected().get_metadata(0), true))
 	InputManager.undo_redo.add_undo_method(
-			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), false))
+			FileLogic.set_ato_active.bind(tree.get_selected().get_metadata(0), false))
 	InputManager.undo_redo.commit_action()
 
 
 func _on_popup_action_audio_take_over_disable() -> void:
 	InputManager.undo_redo.create_action("Disable file audio take over")
 	InputManager.undo_redo.add_do_method(
-			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), false))
+			FileLogic.set_ato_active.bind(tree.get_selected().get_metadata(0), false))
 	InputManager.undo_redo.add_undo_method(
-			FileHandler.set_ato_active.bind(tree.get_selected().get_metadata(0), true))
+			FileLogic.set_ato_active.bind(tree.get_selected().get_metadata(0), true))
 	InputManager.undo_redo.commit_action()
 
 
@@ -360,10 +360,10 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 			if file_id in draggable.ids:
 				continue
 
-			var file_duration: int = FileHandler.get_file_duration(file_id)
+			var file_duration: int = FileLogic.get_file_duration(file_id)
 
 			if file_duration <= 0:
-				file_duration = FileHandler.update_file_duration(file_id)
+				file_duration = FileLogic.update_file_duration(file_id)
 
 			draggable.ids.append(file_id)
 			draggable.duration += file_duration
@@ -400,15 +400,18 @@ func _add_folder_to_tree(folder: String) -> void:
 		previous_folder = folder_items[check_path]
 
 
-func _add_file_to_tree(file: File) -> void:
+func _add_file_to_tree(id: int) -> void:
+	var index: int = Project.files.get_index(id)
+	var folder: String = Project.files.get_folder(index)
+	var nickname: String = Project.files.get_nickname(index)
+
 	# Create item for the file panel tree.
-	if !folder_items.keys().has(file.folder):
-		_add_folder_to_tree(file.folder)
+	if !folder_items.keys().has(folder): _add_folder_to_tree(folder)
 
-	var display_name: String = file.nickname
-
-	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
-		display_name += " [P]"
+	if Settings.get_use_proxies():
+		var proxy_path: String = Project.files.get_nickname(index)
+		if !proxy_path.is_empty() and FileAccess.file_exists(proxy_path):
+			nickname += " [P]"
 
 	file_items[file.id] = tree.create_item(folder_items[file.folder])
 	file_items[file.id].set_text(0, display_name)
@@ -424,7 +427,7 @@ func _add_file_to_tree(file: File) -> void:
 
 
 func _on_update_thumb(file_id: int) -> void:
-	if FileHandler.has_file(file_id):
+	if FileLogic.has_file(file_id):
 		file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
 	else:
 		_on_file_deleted(file_id)
@@ -466,7 +469,7 @@ func _sort_folder(folder: String) -> void:
 func _on_file_added(file_id: int) -> void:
 	# There's a possibility that the file was too large
 	# and that it did not get added.
-	_add_file_to_tree(FileHandler.get_file(file_id))
+	_add_file_to_tree(FileLogic.get_file(file_id))
 
 
 func _on_file_deleted(file_id: int) -> void:
@@ -478,15 +481,15 @@ func _on_file_deleted(file_id: int) -> void:
 func _on_file_moved(file_id: int) -> void:
 	if file_items.has(file_id):
 		_on_file_deleted(file_id)
-		_add_file_to_tree(FileHandler.get_file(file_id))
+		_add_file_to_tree(FileLogic.get_file(file_id))
 
 
 func _on_file_path_updated(file_id: int) -> void:
-	file_items[file_id].set_tooltip_text(0, FileHandler.get_file(file_id).path)
+	file_items[file_id].set_tooltip_text(0, FileLogic.get_file(file_id).path)
 
 
 func _on_file_nickname_changed(file_id: int) -> void:
-	var file: File = FileHandler.get_file(file_id)
+	var file: File = FileLogic.get_file(file_id)
 	var display_name: String = file.nickname
 
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
@@ -592,7 +595,7 @@ func _create_folder_at_selected(folder_name: String) -> void:
 		var metadata: Variant = selected_item.get_metadata(0)
 
 		if str(metadata).is_valid_int(): # File
-			parent_path = FileHandler.get_file(int(metadata)).folder
+			parent_path = FileLogic.get_file(int(metadata)).folder
 		else:
 			parent_path = str(metadata)
 
@@ -602,7 +605,7 @@ func _create_folder_at_selected(folder_name: String) -> void:
 	var full_path: String = parent_path + folder_name + "/"
 
 	if full_path not in folder_items:
-		FileHandler.add_folder(full_path)
+		FileLogic.add_folder(full_path)
 
 
 func _can_drop_list_data(at_position: Vector2, data: Variant) -> bool:
@@ -637,4 +640,4 @@ func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 			if parent_item:
 				target_folder = str(parent_item.get_metadata(0))
 
-	FileHandler.move_files(data.ids, target_folder)
+	Project.files.move(data.ids, target_folder)

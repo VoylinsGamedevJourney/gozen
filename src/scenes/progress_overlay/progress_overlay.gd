@@ -8,8 +8,10 @@ extends Control
 @export var progress_hint: Label
 @export var estimated_time_label: Label
 @export var scroll_container: ScrollContainer
-@export var status_hbox: HBoxContainer
 @export var vbox: VBoxContainer
+
+@export var close_button: Button
+
 
 var file_labels: Dictionary = {}
 var start_time: int = 0
@@ -18,15 +20,16 @@ var start_time: int = 0
 
 func _ready() -> void:
 	start_time = Time.get_ticks_msec()
+	close_button.visible = false
 
 
 func update_title(title: String) -> void:
 	title_label.text = title
 
 
-func update_progress(value: int, text: String) -> void:
-	update_progress_bar(value)
-	update_progress_hint(text)
+func update(value: int, text: String) -> void:
+	update_bar(value)
+	update_hint(text)
 
 	# Updating estimated time
 	var time_elapsed: float = (Time.get_ticks_msec() - start_time) / 1000.0
@@ -39,7 +42,7 @@ func update_progress(value: int, text: String) -> void:
 	await RenderingServer.frame_post_draw
 
 
-func update_progress_bar(value: int, wait_frame: bool = false) -> void:
+func update_bar(value: int, wait_frame: bool = false) -> void:
 	var tween: Tween = create_tween()
 
 	@warning_ignore("return_value_discarded")
@@ -49,11 +52,11 @@ func update_progress_bar(value: int, wait_frame: bool = false) -> void:
 		await RenderingServer.frame_post_draw
 
 
-func update_progress_hint(text: String) -> void:
+func update_hint(text: String) -> void:
 	progress_hint.text = text
 
 
-func increment_progress_bar(value: float) -> void:
+func increment_bar(value: float) -> void:
 	var tween: Tween = create_tween()
 
 	@warning_ignore("return_value_discarded")
@@ -68,24 +71,23 @@ func set_state_file_loading(loading_size: int) -> void:
 		scroll_container.custom_minimum_size.y = clampi(loading_size, 0, 10) * 25
 
 
-func update_file(file: FileHandler.FileDrop) -> void:
-	var path: String = file.path
-
+## status: 0 = loading, 1 = loaded, -1 = problem
+func update_file(path: String, status: int) -> void:
 	if !file_labels.has(path):
 		var new_label: Label = Label.new()
 
 		new_label.text = "- " + path.get_file()
 		new_label.self_modulate = Color.ORANGE
 		new_label.tooltip_text = path
-		file_labels[file.path] = new_label
+		file_labels[path] = new_label
 		vbox.add_child(new_label)
 
-	match file.status:
-		FileHandler.STATUS.ALREADY_LOADED:
-			file_labels[path].self_modulate = Color.GRAY
-		FileHandler.STATUS.PROBLEM:
-			file_labels[path].self_modulate = Color.RED
-			file_labels[path].tooltip_text = path + "\nThis file could not be loaded."
-		FileHandler.STATUS.LOADED:
-			file_labels[path].self_modulate = Color.GREEN
+	if status == -1: # problem
+		file_labels[path].self_modulate = Color.RED
+		file_labels[path].tooltip_text = path + "\nThis file could not be loaded."
+	elif status == 1: # Loaded
+		file_labels[path].self_modulate = Color.GREEN
 
+
+## If errors happen, we want the user to be able to see them and not close directly.
+func show_close() -> void: close_button.visible = true

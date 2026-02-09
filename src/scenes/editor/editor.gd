@@ -31,9 +31,6 @@ func _ready() -> void:
 	_check_startup_args()
 	add_child(preload(Library.SCENE_STARTUP).instantiate())
 
-	CommandManager.register(
-			"command_render_menu", switch_screen.bind(1), "open_render_screen")
-
 
 func _check_startup_args() -> void:
 	# Check if editor got opened with a project path as argument.
