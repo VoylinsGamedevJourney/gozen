@@ -46,6 +46,7 @@ func _rebuild_map() -> void:
 		load_data(index)
 
 
+## For undo/redo system.
 func _create_snapshot(index: int, id: int = get_id(index)) -> Dictionary:
 	return {
 		"id": id,
@@ -301,7 +302,7 @@ func load_data(index: int) -> void:
 	elif type == FileLogic.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(path):
 			printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
-			return _delete(path)
+			return _delete(id)
 		var pck_path: String = PCK.MODULES_PATH + path.get_basename().to_lower()
 		pck_instances[id] = load(pck_path).scene.instantiate()
 
@@ -485,7 +486,7 @@ func _check_if_modified(index: int) -> void:
 	var path: String = get_path(index)
 	if !path.begins_with("temp://") and !FileAccess.file_exists(path):
 		print("FileHandler: File %s at %s doesn't exist anymore!" % [index, path])
-		_delete(path)
+		_delete(get_id(index))
 
 
 # --- Getters ---
