@@ -3,20 +3,20 @@ extends Node
 
 signal effect_added(clip_id: int)
 signal effect_removed(clip_id: int)
-signal effects_updated()
-signal effect_values_updated()
+signal effects_updated
+signal effect_values_updated
 
 const PATH_EFFECTS_VISUAL: String = "res://effects/visual/"
 const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
 
 
-var visual_effects: Dictionary[String, String] = {} # { effect_name: effect_id }
-var visual_effect_instances: Dictionary[String, GoZenEffectVisual] = {} # { effect_id: effect_class }
+var visual_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
+var visual_effect_instances: Dictionary[String, GoZenEffectVisual] = {} ## { effect_id: effect_class }
 
-var audio_effects: Dictionary[String, String] = {} # { effect_name: effect_id }
-var audio_effect_instances: Dictionary[String, GoZenEffectAudio] = {} # { effect_id: effect_class }
+var audio_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
+var audio_effect_instances: Dictionary[String, GoZenEffectAudio] = {} ## { effect_id: effect_class }
 
-var effect_param_exceptions: Dictionary[String, Dictionary] = {
+var param_exceptions: Dictionary[String, Dictionary] = { ## Exceptions can be a string or callable.
 	"transform": {
 		"size": Project.get_resolution,
 		"pivot": Project.get_resolution_center
@@ -30,15 +30,17 @@ func _ready() -> void:
 	_load_audio_effects()
 
 
+# --- Loaders ---
+
 func _load_video_effects() -> void:
 	visual_effects.clear()
 	visual_effect_instances.clear()
 
 	for file_name: String in DirAccess.open(PATH_EFFECTS_VISUAL).get_files():
-		if !file_name.ends_with(".tres"):
-			continue
-
-		var effect: GoZenEffectVisual = load(PATH_EFFECTS_VISUAL + file_name)
+		if !file_name.ends_with(".tres"): continue
+		var temp: Variant = load(PATH_EFFECTS_VISUAL + file_name)
+		if temp is not GoZenEffectVisual: continue
+		var effect: GoZenEffectVisual = temp
 		visual_effects[effect.nickname] = effect.id
 		visual_effect_instances[effect.id] = effect
 
@@ -49,111 +51,103 @@ func _load_audio_effects() -> void:
 
 	for file_name: String in DirAccess.open(PATH_EFFECTS_AUDIO).get_files():
 		if !file_name.ends_with(".tres"): continue
-
-		var effect: GoZenEffectAudio = load(PATH_EFFECTS_AUDIO + file_name)
-		audio_effects[effect.effect_name] = effect.effect_id
-		audio_effect_instances[effect.effect_id] = effect
+		var temp: Variant = load(PATH_EFFECTS_AUDIO + file_name)
+		if temp is not GoZenEffectAudio: continue
+		var effect: GoZenEffectAudio = temp
+		audio_effects[effect.nickname] = effect.id
+		audio_effect_instances[effect.id] = effect
 
 
 #---- Adding effects ----
+
 func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
-	if !Project.clips.clips.has(clip_id): return
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var list: Array = _get_effect_list(clip_data, is_visual)
-	var index: int = list.size()
+	if !Project.clips.has(clip_id): return
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var effect_id: String = effect.id
+	var index: int
 
-	if effect.effect_id in effect_param_exceptions:
-		var id: String = effect.effect_id
+	if is_visual: index = clip_effects.video.size()
+	else: index = clip_effects.audio.size()
 
-		for exception: String in effect_param_exceptions[id]:
-			var exception_value: Variant = effect_param_exceptions[id][exception]
-
-			if exception_value is Callable:
-				effect.change_default_param(exception, exception_value.call())
-			else:
-				effect.change_default_param(exception, exception_value)
-
+	if effect_id in param_exceptions: # Handle exceptions
+		for exception: String in param_exceptions[effect_id]:
+			var value: Variant = param_exceptions[effect_id][exception]
+			if value is Callable: effect.change_default_param(exception, value.call())
+			else: effect.change_default_param(exception, value)
 	effect.set_default_keyframe()
 
-	InputManager.undo_redo.create_action("Add effect: %s" % effect.effect_name)
-
+	InputManager.undo_redo.create_action("Add effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_add_effect.bind(clip_id, index, effect, is_visual))
 	InputManager.undo_redo.add_undo_method(_remove_effect.bind(clip_id, index, is_visual))
-
 	InputManager.undo_redo.commit_action()
 
 
 func _add_effect(clip_id: int, index: int, effect: GoZenEffect, is_visual: bool) -> void:
-	if is_visual:
-		Project.clips.clips[clip_id].effects_video.insert(index, effect)
-	else:
-		Project.clips.clips[clip_id].effects_audio.insert(index, effect)
+	var clip_index: int = Project.get_index(clip_id)
+	if is_visual: Project.clips.get_effects(clip_index).video.insert(index, effect)
+	else: Project.clips.get_effects(clip_index).audio.insert(index, effect)
 
 	effect_added.emit(clip_id)
 	effects_updated.emit()
 
 
 #---- Removing effects ----
+
 func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
-	if !Project.clips.clips.has(clip_id): return
-
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var list: Array = _get_effect_list(clip_data, is_visual)
+	if !Project.clips.has(clip_id) or index < 0: return
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
 	var effect: GoZenEffect
+	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	if index >= size: return printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 
-	if index < 0 or index >= list.size():
-		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
-		return
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 
-	effect = list[index]
-
-	InputManager.undo_redo.create_action("Remove effect: %s" % effect.effect_name)
-
+	InputManager.undo_redo.create_action("Remove effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_remove_effect.bind(clip_id, index, is_visual))
 	InputManager.undo_redo.add_undo_method(_add_effect.bind(clip_id, index, effect, is_visual))
-
 	InputManager.undo_redo.commit_action()
 
 
 func _remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
-	if is_visual:
-		Project.clips.clips[clip_id].effects_video.remove_at(index)
-	else:
-		Project.clips.clips[clip_id].effects_audio.remove_at(index)
+	var clip_index: int = Project.clips.get_index(clip_id)
+	if is_visual: Project.clips.get_effects(clip_index).video.remove_at(index)
+	else: Project.clips.get_effects(clip_index).audio.remove_at(index)
 
 	effect_removed.emit(clip_id)
 	effects_updated.emit()
 
 
 #---- Moving effects ----
+
 func move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> void:
-	if !Project.clips.clips.has(clip_id): return
-
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var list: Array = _get_effect_list(clip_data, is_visual)
+	if !Project.clips.has(clip_id) or index < 0 or new_index < 0: return
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
 	var effect: GoZenEffect
+	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	if index >= size: return printerr("EffectsHandler: Trying to move invalid effect! ", index)
 
-	if index < 0 or index >= list.size():
-		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
-		return
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 
-	effect = list[index]
-
-	InputManager.undo_redo.create_action("Move effect: %s" % effect.effect_name)
-
+	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_move_effect.bind(clip_id, index, new_index, is_visual))
 	InputManager.undo_redo.add_undo_method(_move_effect.bind(clip_id, new_index, index, is_visual))
-
 	InputManager.undo_redo.commit_action()
 
 
 func _move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> void:
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var effect: ClipEffects = Project.clips.get_effects(clip_index)
 	if is_visual:
-		var effect: GoZenEffect = Project.clips.clips[clip_id].effects_video.pop_at(index)
-		Project.clips.clips[clip_id].effects_video.insert(new_index, effect)
+		effect.video.pop_at(index)
+		effect.video.insert(new_index, effect)
 	else:
-		var effect: GoZenEffect = Project.clips.clips[clip_id].effects_audio.pop_at(index)
-		Project.clips.clips[clip_id].effects_audio.insert(new_index, effect)
+		effect.audio.pop_at(index)
+		effect.audio.insert(new_index, effect)
 
 	effects_updated.emit()
 
@@ -161,30 +155,28 @@ func _move_effect(clip_id: int, index: int, new_index: int, is_visual: bool) -> 
 #---- Updating effect params ----
 
 func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
-	if !Project.clips.clips.has(clip_id): return
-
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var list: Array = _get_effect_list(clip_data, is_visual)
+	if !Project.clips.has(clip_id) or index < 0:  return
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var clip_start: int = Project.clips.get_start(clip_index)
 	var effect: GoZenEffect
+	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	if index >= size: return printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 
-	if index < 0 or index >= list.size():
-		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
-		return
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 
-	effect = list[index]
-
-	InputManager.undo_redo.create_action("Update effect param: %s" % effect.effect_name)
+	InputManager.undo_redo.create_action("Update effect param: %s" % effect.nickname)
 
 	# No keyframes (except 0) made, so we change main value, unless new keyframe requested
 	if !new_keyframe and effect.keyframes[param_id].size() == 1:
 		var old_value: Variant = effect.keyframes[param_id][0]
-
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
 				clip_id, index, is_visual, param_id, 0, new_value))
 		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
 				clip_id, index, is_visual, param_id, 0, old_value))
 	else:
-		var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+		var frame_nr: int = EditorCore.frame_nr - clip_start
 		var old_value: Variant = null
 		var keyframe_exists: bool = false
 
@@ -194,16 +186,11 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 		else:
 			# New keyframe, interpolate the value
 			var effect_param: EffectParam = null
-
 			for param: EffectParam in effect.params:
-				if param.param_id != param_id: continue
-
+				if param.id != param_id: continue
 				effect_param = param
 				break
-
-			if effect_param:
-				old_value = effect.get_value(effect_param, frame_nr)
-
+			if effect_param: old_value = effect.get_value(effect_param, frame_nr)
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
 				clip_id, index, is_visual, param_id, frame_nr, new_value))
 
@@ -213,18 +200,19 @@ func update_param(clip_id: int, index: int, is_visual: bool, param_id: String, n
 		else: # If the keyframe didn't exist yet, we remove the newly created one on undo
 			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
 					clip_id, index, is_visual, param_id, frame_nr))
-
 	InputManager.undo_redo.commit_action()
 
 
 func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	if !Project.clips.clips.has(clip_id): return
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var effect_list: Array = _get_effect_list(clip_data, is_visual)
-	if index < 0 or index >= effect_list.size():
-		return printerr("EffectsHandler: Trying to remove keyframe from invalid effect! ", index)
+	if !Project.clips.has(clip_id) or index < 0:  return
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var effect: GoZenEffect
+	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	if index >= size: return printerr("EffectsHandler: Trying to remove keyframe from invalid effect! ", index)
 
-	var effect: GoZenEffect = effect_list[index]
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 
 	# Check if there is actually a keyframe to remove
 	if not effect.keyframes.has(param_id): return
@@ -232,7 +220,7 @@ func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String
 
 	var old_value: Variant = effect.keyframes[param_id][frame_nr]
 
-	InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.effect_name)
+	InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.nickname)
 
 	InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
 			clip_id, index, is_visual, param_id, frame_nr))
@@ -243,8 +231,12 @@ func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String
 
 
 func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
-	var list: Array = _get_effect_list(Project.clips.get_clip(clip_id), is_visual)
-	var effect: GoZenEffect = list[index]
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var effect: GoZenEffect
+
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 	if not effect.keyframes.has(param_id): effect.keyframes[param_id] = {}
 
 	effect.keyframes[param_id][frame_nr] = value
@@ -253,12 +245,15 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 
 
 func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	var list: Array = _get_effect_list(Project.clips.get_clip(clip_id), is_visual)
-	var effect: GoZenEffect = list[index]
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var effect: GoZenEffect
+
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 
 	if effect.keyframes.has(param_id):
 		effect.keyframes[param_id].erase(frame_nr)
-
 		if effect.keyframes[param_id].is_empty():
 			effect.keyframes.erase(param_id)
 
@@ -267,36 +262,27 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 
 
 #---- Switch enabled ----
+
 func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
-	if !Project.clips.clips.has(clip_id): return
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var list: Array = _get_effect_list(clip_data, is_visual)
+	if !Project.clips.has(clip_id) or index < 0: return
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
 	var effect: GoZenEffect
 
-	if index < 0 or index >= list.size():
-		printerr("EffectsHandler: Trying to remove invalid effect! ", index)
-		return
+	if index >= (clip_effects.video.size() if is_visual else clip_effects.audio.size()):
+		return printerr("EffectsHandler: Trying to remove invalid effect! ", index)
+	if is_visual: effect = clip_effects.video[index]
+	else: effect = clip_effects.audio[index]
 
-	effect = list[index]
-
-	InputManager.undo_redo.create_action("Move effect: %s" % effect.effect_name)
-
+	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip_id, index, is_visual, !effect.is_enabled))
 	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip_id, index, is_visual, effect.is_enabled))
-
 	InputManager.undo_redo.commit_action()
 
 
 func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> void:
-	if is_visual:
-		Project.clips.clips[clip_id].effects_video[index].is_enabled = value
-	else:
-		Project.clips.clips[clip_id].effects_audio[index].is_enabled = value
+	var clip_index: int = Project.clips.get_index(clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	if is_visual: clip_effects.video[index].is_enabled = value
+	else: clip_effects.audio[index].is_enabled = value
 	effects_updated.emit()
-
-
-#---- Helper functions ----
-func _get_effect_list(clip_data: ClipData, is_visual: bool) -> Array:
-	if is_visual:
-		return clip_data.effects_video
-	return clip_data.effects_audio
