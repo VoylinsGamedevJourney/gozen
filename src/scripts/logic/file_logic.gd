@@ -580,6 +580,10 @@ func get_data(index: int) -> Variant: return file_data[index]
 func get_pck_instance(id: int) -> Node: return pck_instances[id]
 func get_audio_wave(id: int) -> PackedFloat32Array: return audio_wave[id]
 
+func get_video_clip_instance(clip_id: int) -> GoZenVideo:
+	if !clip_video_instances.has(clip_id): return null
+	return clip_video_instances[clip_id]
+
 
 # --- Setters ---
 

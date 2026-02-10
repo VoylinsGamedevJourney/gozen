@@ -36,9 +36,9 @@ var tracks_is_invisible: PackedByteArray = [] ## 0 = not invisible, 1 = visible
 var clips_id: PackedInt64Array = []
 var clips_file_id: PackedInt64Array = []
 var clips_track_id: PackedInt64Array = []
-var clips_start_frame: PackedInt64Array = []
-var clips_duration: PackedInt64Array = []
+var clips_start: PackedInt64Array = []
 var clips_begin: PackedInt64Array = [] ## Only for video and audio files
+var clips_duration: PackedInt64Array = []
 var clips_effects: Array[ClipEffects] = []
 
 # This variable is only necessary for video files, so only the id's of clips

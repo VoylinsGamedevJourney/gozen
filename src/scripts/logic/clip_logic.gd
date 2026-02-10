@@ -30,9 +30,9 @@ func _create_snapshot(index: int) -> Dictionary:
 		"id": get_id(index),
 		"file_id": get_file_id(index),
 		"track_id": get_track_id(index),
-		"start_frame": get_start_frame(index),
-		"duration": get_duration(index),
+		"start": get_start(index),
 		"begin": get_begin(index),
+		"duration": get_duration(index),
 		"effects": get_effects(index).duplicate(true)
 	}
 
@@ -45,9 +45,9 @@ func _create_snapshot_from_request(request: ClipRequest) -> Dictionary:
 		"id": id,
 		"file_id": request.file_id,
 		"track_id": request.track_id,
-		"start_frame": request.start_frame,
-		"duration": Project.files.get_duration(file_index),
+		"start": request.start,
 		"begin": 0,
+		"duration": Project.files.get_duration(file_index),
 		"effects": _create_default_effects(file_index)
 	}
 
@@ -71,9 +71,9 @@ func _create_snapshot_for_cut(index: int, offset: int, duration_left: int, durat
 		"id": id,
 		"file_id": file_id,
 		"track_id": get_track_id(index),
-		"start_frame": get_start_frame(index) + duration_left,
-		"duration": duration_right,
+		"start": get_start(index) + duration_left,
 		"begin": get_begin(index) + duration_left,
+		"duration": duration_right,
 		"effects": new_effects
 	}
 
@@ -97,13 +97,13 @@ func _restore_clip_from_snapshot(snapshot: Dictionary) -> void:
 	project_data.clips_id.append(snapshot.id)
 	project_data.clips_file_id.append(snapshot.file_id)
 	project_data.clips_track_id.append(snapshot.track_id)
-	project_data.clips_start_frame.append(snapshot.start_frame)
-	project_data.clips_duration.append(snapshot.duration)
+	project_data.clips_start.append(snapshot.start)
 	project_data.clips_begin.append(snapshot.begin)
+	project_data.clips_duration.append(snapshot.duration)
 	project_data.clips_effects.append(snapshot.effects)
 	_id_map[snapshot.id] = index
 
-	Project.tracks.register_clip(snapshot.track_id, snapshot.id, snapshot.start_frame)
+	Project.tracks.register_clip(snapshot.track_id, snapshot.id, snapshot.start)
 	added.emit(snapshot.id)
 	Project.unsaved_changes = true
 
@@ -124,17 +124,16 @@ func _delete(id: int) -> void:
 	if !has(id): return
 	var index: int = get_index(id)
 	var track_id: int = get_track_id(index)
-	var frame_nr: int = get_start_frame(index)
+	var frame_nr: int = get_start(index)
 
 	Project.tracks.unregister_clip(track_id, frame_nr)
 
 	project_data.clips_id.remove_at(index)
 	project_data.clips_file_id.remove_at(index)
-	project_data.clips_start_frame.remove_at(index)
 	project_data.clips_track_id.remove_at(index)
-	project_data.clips_start_frame.remove_at(index)
-	project_data.clips_duration.remove_at(index)
+	project_data.clips_start.remove_at(index)
 	project_data.clips_begin.remove_at(index)
+	project_data.clips_duration.remove_at(index)
 	project_data.clips_effects.remove_at(index)
 
 	_rebuild_map()
@@ -150,7 +149,7 @@ func ripple_delete(ids: PackedInt64Array) -> void:
 		if !has(id): continue
 		var index: int = get_index(id)
 		var track_id: int = get_track_id(index)
-		var start: int = get_start_frame(index)
+		var start: int = get_start(index)
 		var end: int = get_duration(index)
 
 		if not ranges_by_track.has(track_id):
@@ -178,7 +177,7 @@ func ripple_delete(ids: PackedInt64Array) -> void:
 		for move_id: int in Project.tracks.get_clip_ids_after(track_id, gap_start):
 			if move_id in ids: continue
 			var index: int = get_index(move_id)
-			var current_start: int = get_start_frame(index)
+			var current_start: int = get_start(index)
 			var new_start: int = current_start - gap_size
 
 			InputManager.undo_redo.add_do_method(_move.bind(move_id, track_id, new_start))
@@ -195,7 +194,7 @@ func move(requests: Array[ClipRequest]) -> void:
 		if !has(id): continue
 		var index: int = get_index(id)
 		var current_track: int = get_track_id(index)
-		var current_start: int = get_start_frame(index)
+		var current_start: int = get_start(index)
 		var new_track: int = current_track + request.track_offset
 		var new_start: int = current_start + request.frame_offset
 
@@ -211,15 +210,15 @@ func _move(id: int, new_track: int, new_frame: int) -> void:
 	if !has(id): return
 	var index: int = get_index(id)
 	var old_track: int = get_track_id(index)
-	var old_frame: int = get_start_frame(index)
+	var old_frame: int = get_start(index)
 
 	if old_track != new_track:
 		Project.tracks.unregister_clip(old_track, old_frame)
 		project_data.clips_track_id[index] = new_track
-		project_data.clips_start_frame[index] = new_frame
+		project_data.clips_start[index] = new_frame
 		Project.tracks.register_clip(new_track, id, new_frame)
 	else:
-		project_data.clips_start_frame[index] = new_frame
+		project_data.clips_start[index] = new_frame
 		Project.tracks.update_clip(old_track, old_frame, new_frame)
 
 	updated.emit()
@@ -258,7 +257,7 @@ func resize(requests: Array[ClipRequest]) -> void:
 		var index: int = get_index(id)
 		var amount: int = request.resize_amount
 		var from_end: int = request.from_end
-		var current_start: int = get_start_frame(index)
+		var current_start: int = get_start(index)
 		var current_duration: int = get_duration(index)
 		var current_begin: int = get_begin(index)
 
@@ -278,12 +277,12 @@ func _resize(id: int, amount: int, from_end: bool) -> void:
 
 	var index: int = get_index(id)
 	var track_id: int = get_track_id(index)
-	var old_start: int = project_data.clips_start_frame[index]
+	var old_start: int = get_start(index)
 	var new_start: int = old_start + amount
 
-	project_data.clips_start_frame[index] = new_start
-	project_data.clips_duration[index] -= amount
+	project_data.clips_start[index] = new_start
 	project_data.clips_begin[index] += amount
+	project_data.clips_duration[index] -= amount
 
 	Project.tracks.remove_clip_from_frame(track_id, old_start)
 	Project.tracks.register_clip(track_id, id, new_start)
@@ -292,12 +291,12 @@ func _resize(id: int, amount: int, from_end: bool) -> void:
 
 func _resize_restore(id: int, start: int, duration: int, begin: int) -> void:
 	var index: int = get_index(id)
-	var track_id: int = project_data.clips_track_id[index]
-	var old_start_pos: int = project_data.clips_start_frame[index] # Current state before undo
+	var track_id: int = get_track_id(index)
+	var old_start_pos: int = get_start(index) # Current state before undo
 
-	project_data.clips_start_frame[index] = start
-	project_data.clips_duration[index] = duration
+	project_data.clips_start[index] = start
 	project_data.clips_begin[index] = begin
+	project_data.clips_duration[index] = duration
 
 	if old_start_pos != start:
 		Project.tracks.remove_clip_from_frame(track_id, old_start_pos)
@@ -424,14 +423,14 @@ func get_index(clip_id: int) -> int: return _id_map[clip_id]
 func get_id(index: int) -> int: return project_data.clips_id[index]
 func get_file_id(index: int) -> int: return project_data.clips_file_id[index]
 func get_track_id(index: int) -> int: return project_data.clips_track_id[index]
-func get_start_frame(index: int) -> int: return project_data.clips_start_frame[index]
-func get_duration(index: int) -> int: return project_data.clips_duration[index]
+func get_start(index: int) -> int: return project_data.clips_start[index]
 func get_begin(index: int) -> int: return project_data.clips_begin[index]
+func get_duration(index: int) -> int: return project_data.clips_duration[index]
 func get_effects(index: int) -> ClipEffects: return project_data.clips_effects[index]
 
 func get_type(index: int) -> FileLogic.TYPE: return Project.files.get_type(get_file_id(index))
 
-func get_end(index: int) -> int: return get_start_frame(index) + get_duration(index)
+func get_end(index: int) -> int: return get_start(index) + get_duration(index)
 
 
 # --- Helpers ---

@@ -27,7 +27,7 @@ func _rebuild_structure() -> void:
 
 	for i: int in Project.clips.size():
 		var track_id: int = Project.clips.get_track_id(i)
-		var start: int = Project.clips.get_start_frame(i)
+		var start: int = Project.clips.get_start(i)
 		var id: int = Project.clips.get_id(i)
 
 		if track_id >= 0 and track_id < size(): # Quick check if valid.
@@ -123,8 +123,8 @@ func update_clip_info(clip_id: int) -> void:
 				return
 		return printerr("TrackLogic: Invalid clip id '%s'!" % clip_id)
 
-	var track_index: int = Project.clips.track_ids[clip_index]
-	var frame_nr: int = Project.clips.start_frames[clip_index]
+	var track_index: int = Project.clips.get_track_id(clip_index)
+	var frame_nr: int = Project.clips.get_start(clip_index)
 	clip_index = clip_ids[track_index].find(clip_id)
 
 	if clip_index == -1: # Data not found, let's add it :p
@@ -224,8 +224,9 @@ func get_free_region(index: int, frame_nr: int, ignores: PackedInt64Array = []) 
 		var clip_id: int = clip_ids[index][i]
 		if clip_id in ignores or !Project.clips.has(clip_id): continue
 
+		var clip_index: int = Project.clips.get_index(clip_id)
 		var start: int = frame_nrs[index][i]
-		var end: int = Project.clips.get_end_frame_by_id(clip_id)
+		var end: int = Project.clips.get_end(clip_index)
 		if end <= frame_nr: region.x = maxi(region.x, end)
 		elif start > frame_nr: region.y = mini(region.y, start)
 	return region
