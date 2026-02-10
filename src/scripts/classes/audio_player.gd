@@ -1,6 +1,4 @@
-class_name AudioPlayer
-extends RefCounted
-
+class_name AudioPlayer extends RefCounted
 
 var player: AudioStreamPlayer = AudioStreamPlayer.new()
 
@@ -21,84 +19,88 @@ func _init() -> void:
 	player.bus = bus_name
 
 
+func is_playing() -> bool: return player.playing
 func play(value: bool) -> void:
-	if stop_frame != -1 or clip_id != -1:
-		player.stream_paused = !value
+	if stop_frame != -1 or clip_id != -1: player.stream_paused = !value
 
 
 func stop() -> void:
-	if player.playing:
-		player.stop()
-
+	if player.playing: player.stop()
+	player.stream_paused = true
 	stop_frame = -1
 	clip_id = -1
-	player.stream_paused = true
-
-
-func is_playing() -> bool:
-	return player.playing
 
 
 func set_audio(audio_clip_id: int) -> void:
-	if audio_clip_id == -1:
-		if player.playing: player.stop()
-		stop()
-		return
-
-	# No audio playback needed during rendering.
+	if audio_clip_id == -1: return stop()
 	if RenderManager.encoder != null and RenderManager.encoder.is_open(): return
+	if !Project.clips.has(audio_clip_id): return stop()
 
-	var clip_data: ClipData = Project.clips.get_clip(audio_clip_id)
-	var target_file_id: int = clip_data.file_id
+	var clip_index: int = Project.clips.get_index(audio_clip_id)
+	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var clip_file_id: int = Project.clips.get_file_id(clip_index)
+	var clip_start: int = Project.clips.get_start(clip_index)
+	var clip_duration: int = Project.clips.get_duration(clip_index)
+	var clip_begin: int = Project.clips.get_begin(clip_index)
+	var clip_end: int = clip_start + clip_duration
+
+	# Audio-take-over logic.
+	var target_file_id: int = clip_file_id
 	var time_offset: float = 0.0
+	if clip_effects.ato_active and clip_effects.ato_id != -1:
+		target_file_id = clip_effects.ato_id
+		time_offset = clip_effects.ato_offset
 
-	if clip_data.ato_active and clip_data.ato_file_id != -1:
-		target_file_id = clip_data.ato_file_id
-		time_offset = clip_data.ato_offset
+	# Getting file data.
+	if !Project.files.has(target_file_id): return stop()
+	var file_index: int = Project.files.get_index(target_file_id)
+	var file_data: Variant = Project.files.get_data(file_index)
+	var stream: AudioStream = null
 
+	if file_data is AudioStream: stream = file_data
+	elif file_data and "audio" in file_data: stream = file_data.audio
+
+	if stream == null: return stop() # No valid data found for stream.
+
+	# Managing state.
 	var old_file_id: int = file_id
 	var old_clip_id: int = clip_id
-	var file_data: FileData = FileHandler.get_file_data(target_file_id)
-	if !file_data or !file_data.audio:
-		if player.playing: player.stop()
-		return
 
-	clip_id = audio_clip_id
 	file_id = target_file_id
-	stop_frame = clip_data.end_frame
+	clip_id = audio_clip_id
+	stop_frame = clip_end
 
-	if old_clip_id != clip_id: _setup_bus_effects(clip_data.effects_audio)
-	elif AudioServer.get_bus_effect_count(bus_index) != clip_data.effects_audio.size():
-		_setup_bus_effects(clip_data.effects_audio)
+	# Effecs setup.
+	if old_clip_id != clip_id:
+		_setup_bus_effects(clip_effects.audio)
+	elif AudioServer.get_bus_effect_count(bus_index) != clip_effects.audio.size():
+		_setup_bus_effects(clip_effects.audio)
+	update_effects(clip_index)
 
-	update_effects(clip_data.effects_audio)
+	# Apply fade.
+	var clip_frame: int = EditorCore.frame_nr - clip_start
+	var fade_volume: float = Utils.calculate_fade(clip_frame, clip_index, false)
+	player.volume_db = linear_to_db(max(fade_volume, 0.0001)) # Just 0 can give issues.
 
-	# Apply fade
-	var clip_frame: int = EditorCore.frame_nr - clip_data.start_frame
-	var fade_volume: float = Utils.calculate_fade(clip_frame, clip_data, false)
-	player.volume_db = linear_to_db(max(fade_volume, 0.0001))
-
-	# Boundary check variables.
-	var current_relative_frame: float = EditorCore.frame_nr - clip_data.start_frame + clip_data.begin
-	var audio_file: File = FileHandler.get_file(target_file_id)
-	var audio_duration: float = audio_file.duration / Project.get_framerate()
-	var position: float = (current_relative_frame / Project.get_framerate()) + time_offset
-
-	# Boundary check
+	# Boundary check.
+	var framerate: float = Project.get_framerate()
+	var relative_frame_nr: float = EditorCore.frame_nr - clip_start + clip_begin
+	var audio_duration: float = stream.get_length()
+	var position: float = (relative_frame_nr / framerate) + time_offset
 	if position < 0.0 or position >= audio_duration:
 		if !player.playing: return
 		player.stream_paused = true
+		return # No seeking out of bounds.
 
 	# Set stream if changed.
-	if old_file_id != file_id or !player.stream:
-		if !file_data or !file_data.audio: return stop()
-		player.stream = file_data.audio
+	if old_file_id != file_id or player.stream != stream:
+		player.stream = stream
 		player.play(position)
 		player.stream_paused = !EditorCore.is_playing
 		return
 
 	# Check if playback is close enough ONLY if stream is the same.
-	var frame_duration: float = 1.0 / Project.get_framerate()
+	var frame_duration: float = 1.0 / framerate
 	var sync_threshold: float = max(frame_duration * 4, 0.15) # (4 frame buffer)
 	if player.playing and abs(player.get_playback_position() - position) < sync_threshold:
 		player.stream_paused = !EditorCore.is_playing
@@ -108,10 +110,10 @@ func set_audio(audio_clip_id: int) -> void:
 	player.stream_paused = !EditorCore.is_playing
 
 
-func update_effects(effects: Array[GoZenEffectAudio]) -> void:
-	if clip_id == 1: return
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var current_relative_frame: int = EditorCore.frame_nr - clip_data.start_frame
+func update_effects(clip_index: int) -> void:
+	if clip_id == -1 or clip_index == -1: return
+	var effects: Array[GoZenEffectAudio] = Project.clips.get_effects(clip_index).audio
+	var relative_frame_nr: int = EditorCore.frame_nr - Project.clips.get_start(clip_index)
 
 	for i: int in effects.size():
 		var effect: GoZenEffectAudio = effects[i]
@@ -122,14 +124,13 @@ func update_effects(effects: Array[GoZenEffectAudio]) -> void:
 		if not effect.is_enabled: continue
 
 		for effect_param: EffectParam in effect.params:
-			var value: Variant = effect.get_value(effect_param, current_relative_frame)
-
-			effect_instance.set(effect_param.param_id, value)
+			var value: Variant = effect.get_value(effect_param, relative_frame_nr)
+			effect_instance.set(effect_param.id, value)
 
 
 func _setup_bus_effects(effects: Array[GoZenEffectAudio]) -> void:
 	for i: int in range(AudioServer.get_bus_effect_count(bus_index) - 1, -1, -1):
 		AudioServer.remove_bus_effect(bus_index, i)
 	for i: int in effects.size():
-		AudioServer.add_bus_effect(bus_index, effects[i].audio_effect)
+		AudioServer.add_bus_effect(bus_index, effects[i].effect)
 		AudioServer.set_bus_effect_enabled(bus_index, i, effects[i].is_enabled)
