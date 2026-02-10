@@ -43,7 +43,13 @@ func _rebuild_map() -> void:
 	_id_map.clear()
 	for index: int in size():
 		_id_map[get_id(index)] = index
+
+
+## Load everything on startup and give user indication of the progress.
+func _startup_loading(progress: ProgressOverlay, amount: float) -> void:
+	for index: int in size():
 		load_data(index)
+		progress.increment_bar(amount)
 
 
 ## For undo/redo system.
@@ -65,6 +71,23 @@ func _create_snapshot(index: int, id: int = get_id(index)) -> Dictionary:
 		"ato_id": project_data.files_ato_id.get(id)
 	}
 
+
+## For undo/redo system. (for when creating a pasted temp image)
+func _create_snapshot_temp_image(id: int, temp_file: TempFile) -> Dictionary:
+	return {
+		"id": id,
+		"path": "temp://image",
+		"nickname": "Image %s" % id,
+		"proxy_path": "",
+		"folder": "/",
+		"type": TYPE.IMAGE,
+		"duration": Settings.get_image_duration(),
+		"modified_time": -1,
+		"clip_only_video_ids": [],
+
+		"temp_file": temp_file,
+		"ato_active": null, "ato_offset": null, "ato_id": null
+	}
 
 # --- Handling ---
 
@@ -229,6 +252,21 @@ func _change_nickname(id: int, new_name: String) -> void:
 	Project.unsaved_changes = true
 
 
+## Pasting from clipboard (through InputManager).
+func paste_image(image: Image) -> void:
+	InputManager.undo_redo.create_action("Paste Image")
+	var id: int = Utils.get_unique_id(project_data.files_id)
+	var temp_file: TempFile = TempFile.new()
+	temp_file.image_data = ImageTexture.create_from_image(image)
+	var snapshot: Dictionary = _create_snapshot_temp_image(id, temp_file)
+
+	InputManager.undo_redo.add_do_method(_restore_from_snapshot.bind(snapshot))
+	InputManager.undo_redo.add_do_method(_rebuild_map)
+	InputManager.undo_redo.add_undo_method(_delete.bind(id))
+	InputManager.undo_redo.add_undo_method(_rebuild_map)
+	InputManager.undo_redo.commit_action()
+
+
 # --- File dropping ---
 
 ## File dropping can't be un-done with the undo_redo system!
@@ -373,7 +411,7 @@ func _create_wave(id: int) -> void:
 
 	var bytes_size: float = 4 # 16 bit * stereo
 	var total_frames: int = int(data.size() / bytes_size)
-	var frames_per_block: int = floori(44100.0 / Project.get_framerate())
+	var frames_per_block: int = floori(RenderManager.MIX_RATE / Project.get_framerate())
 	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
 	var current_frame_index: int = 0
 
@@ -474,7 +512,7 @@ func save_audio_to_wav(id: int, save_path: String) -> void:
 	var audio_stream: AudioStreamWAV = AudioStreamWAV.new()
 	audio_stream.stereo = true
 	audio_stream.format = AudioStreamWAV.FORMAT_16_BITS
-	audio_stream.mix_rate = 44100
+	audio_stream.mix_rate = int(RenderManager.MIX_RATE)
 	audio_stream.data = GoZenAudio.get_audio_data(path, -1)
 
 	if audio_stream.save_to_wav(save_path):

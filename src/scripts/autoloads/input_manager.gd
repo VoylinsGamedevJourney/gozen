@@ -18,7 +18,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
-		PopupManager.open_popup(PopupManager.POPUP.CREDITS)
+		PopupManager.open_popup(PopupManager.CREDITS)
 
 	if !Project.loaded: return # EVERYTHING which is only allowed to open after the start screen goes below!
 
@@ -57,53 +57,33 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("timeline_mode_cut", false, true):
 		switch_timeline_mode_cut.emit()
 	elif event.is_action_pressed("open_command_bar"):
-		PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
+		PopupManager.open_popup(PopupManager.COMMAND_BAR)
 		return true
 	return false
 
 
-func _on_closing_editor() -> void:
-	undo_redo.free()
+func _on_closing_editor() -> void: undo_redo.free()
 
-
-func show_editor_screen() -> void:
-	on_show_editor_screen.emit()
-
-
-func show_render_screen() -> void:
-	on_show_render_screen.emit()
-
-
-func switch_screen() -> void:
-	on_switch_screen.emit()
-
-
-func open_marker_popup() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.MARKER)
+func show_editor_screen() -> void: on_show_editor_screen.emit()
+func show_render_screen() -> void: on_show_render_screen.emit()
+func switch_screen() -> void: on_switch_screen.emit()
+func open_marker_popup() -> void: PopupManager.open_popup(PopupManager.MARKER)
 
 
 func clipboard_paste() -> void:
-	if Project.is_loaded() == null: return
+	if Project.is_loaded == null: return
 
+	# Check for image.
 	var image: Image = DisplayServer.clipboard_get_image()
-	var data: PackedStringArray
-
-	# The pasted data is an image/screenshot.
 	if image != null:
-		var file: File = FileHandler.create("temp://image")
+		Project.files.paste_image(image)
 
-		file.nickname = "Image %s" % file.id
-		file.temp_file = TempFile.new()
-		file.temp_file.image_data = ImageTexture.create_from_image(image)
+	# Check for file paths.
+	var raw_paths: PackedStringArray = DisplayServer.clipboard_get().split('\n')
+	var valid_paths: PackedStringArray = []
+	for path: String in raw_paths:
+		var clean_path: String = path.strip_edges().replace('"', '')
+		if FileAccess.file_exists(path): valid_paths.append(clean_path)
 
-		FileHandler.add_file_object(file)
-		return
-
-	# Checking if the pasted data is a path.
-	data = DisplayServer.clipboard_get().split('\n')
-
-	for path: String in data:
-		if !FileAccess.file_exists(path): return
-
-	# All paths pasted are files so we use _on_files_dropped.
-	FileHandler.files_dropped(data)
+	if valid_paths.is_empty(): return
+	Project.files.files_dropped(valid_paths)

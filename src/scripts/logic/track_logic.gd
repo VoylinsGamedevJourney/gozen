@@ -219,7 +219,7 @@ func get_free_region(index: int, frame_nr: int, ignores: PackedInt64Array = []) 
 	if collision_id != -1 and collision_id not in ignores: return region
 
 	region.x = 0
-	region.y = 2147483647 # Max Int
+	region.y = 2147483647 # Max integer value.
 	for i: int in clip_ids[index].size():
 		var clip_id: int = clip_ids[index][i]
 		if clip_id in ignores or !Project.clips.has(clip_id): continue

@@ -85,7 +85,6 @@ func save_as() -> void:
 
 func open(new_project_path: String) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
-	var progress_increment: float
 
 	loading_overlay.update_title(tr("Loading project"))
 	loading_overlay.update_progress(0, tr("Initializing ..."))
@@ -103,18 +102,7 @@ func open(new_project_path: String) -> void:
 
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update_progress(7, tr("Loading project files ..."))
-	progress_increment = (1 / float(data.files.size())) * 73
-
-	for i: int in data.files.keys():
-		if !files.load_file_data(i):
-			continue # File became invaled so entry got deleted.
-
-		var type: files.TYPE = data.files[i].type
-
-		if type in files.TYPE_VIDEOS and files.data[i].video == null:
-			await files.data[i].video_loaded
-
-		loading_overlay.increment_progress_bar(progress_increment)
+	files._startup_loading(loading_overlay, (1 / float(data.files.size())) * 73)
 
 	# 80% = Files loaded, setting up playback.
 	loading_overlay.update_progress(80, tr("Setting up playback ..."))
@@ -146,8 +134,7 @@ func open_project() -> void:
 	dialog.popup_centered()
 
 
-func open_settings_menu() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.PROJECT_SETTINGS)
+func open_settings_menu() -> void: PopupManager.open_popup(PopupManager.POPUP.PROJECT_SETTINGS)
 
 
 func _auto_save() -> void:
@@ -267,6 +254,11 @@ func set_playhead_position(new_pos: int) -> void:
 
 func get_playhead_position() -> int:
 	return data.playhead_position
+
+
+## Get the total amount of frames of a project. (mainly used in render logic)
+func get_total_frames() -> int:
+	return data.timeline_end + 1
 
 
 func get_timeline_end() -> int:

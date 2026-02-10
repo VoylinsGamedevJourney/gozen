@@ -100,7 +100,7 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 
 
 static func get_sample_count(frames: int, framerate: float) -> int:
-	return int(44100 * 4 * float(frames) / framerate)
+	return int(RenderManager.MIX_RATE * 4 * float(frames) / framerate)
 
 
 static func get_video_extension(video_codec: GoZenEncoder.VIDEO_CODEC) -> String:
