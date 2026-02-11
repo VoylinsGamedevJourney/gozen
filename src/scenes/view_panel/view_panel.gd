@@ -21,19 +21,6 @@ func _on_play_changed(value: bool) -> void:
 	button_pause.visible = value
 
 
-func _on_skip_prev_button_pressed() -> void:
-	var marker_positions: PackedInt64Array = MarkerHandler.get_marker_positions()
-	var prev_marker_pos: int = -1
-	var frame_nr: int = EditorCore.frame_nr
-
-	for marker_pos: int in marker_positions:
-		if marker_pos < frame_nr:
-			prev_marker_pos = marker_pos
-		else: break
-
-	EditorCore.set_frame(maxi(0, prev_marker_pos))
-
-
 func _on_play_button_pressed() -> void:
 	EditorCore.on_play_pressed()
 
@@ -42,17 +29,11 @@ func _on_pause_button_pressed() -> void:
 	EditorCore.is_playing = false
 
 
+func _on_skip_prev_button_pressed() -> void:
+	EditorCore.set_frame(maxi(0, Project.markers.get_previous(EditorCore.frame_nr)))
+
 func _on_skip_next_button_pressed() -> void:
-	var marker_positions: PackedInt64Array = MarkerHandler.get_marker_positions()
-	var next_marker_pos: int = Project.get_timeline_end()
-	var frame_nr: int = EditorCore.frame_nr
-
-	for marker_pos: int in marker_positions:
-		if marker_pos > frame_nr:
-			next_marker_pos = marker_pos
-			break
-
-	EditorCore.set_frame(next_marker_pos)
+	EditorCore.set_frame(maxi(0, Project.markers.get_next(EditorCore.frame_nr)))
 
 
 func _on_frame_changed() -> void:

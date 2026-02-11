@@ -89,6 +89,10 @@ func _remove(frame_nr: int) -> void:
 
 # --- Getters ---
 
+func size() -> int:
+	return project_data.markers_frame.size()
+
+
 func get_index(frame_nr: int) -> int:
 	var index: int = project_data.markers_frame.find(frame_nr)
 	if index == -1: printerr("MarkerLogic: Couldn't find marker at '%s'" % frame_nr)
@@ -109,6 +113,37 @@ func get_sorted() -> PackedInt64Array:
 func get_text(index: int) -> String: return project_data.markers_data[index]
 func get_frame(index: int) -> int: return project_data.markers_frame[index]
 func get_type(index: int) -> int: return project_data.markers_data[index]
+
+
+func get_previous(frame_nr: int) -> int:
+	var sorted: PackedInt64Array = get_sorted()
+	if project_data.markers_frame.has(frame_nr):
+		var index: int = project_data.markers_frame[frame_nr]
+		return sorted[max(index - 1, 0)]
+
+	var previous: int = 0
+	for i: int in sorted:
+		var current: int = project_data.markers_frame[i]
+		if current > frame_nr:
+			return previous
+		previous = current
+	return 0
+
+
+func get_next(frame_nr: int) -> int:
+	var sorted: PackedInt64Array = get_sorted()
+	if project_data.markers_frame.has(frame_nr):
+		var index: int = project_data.markers_frame[frame_nr]
+		return sorted[min(index + 1, size())]
+
+	sorted.reverse()
+	var previous: int = 0
+	for i: int in sorted:
+		var current: int = project_data.markers_frame[i]
+		if current < frame_nr:
+			return previous
+		previous = current
+	return Project.get_timeline_end()
 
 
 # --- Helper functions ---

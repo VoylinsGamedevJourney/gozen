@@ -132,19 +132,17 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
-				if proxy_path == "":
-					popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
-				else:
+				if !proxy_path.is_empty():
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
+				else: popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
 
 			if Project.files.has_audio():
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
 				if Project.files.has_ato(id):
 					if Project.files.get_ato_active(id):
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
-					else:
-						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
+					else: popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
 		elif type == FileLogic.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), POPUP_ACTION.DUPLICATE)
@@ -156,7 +154,6 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
 	else: # Folder
 		var folder_path: String = str(metadata)
-
 		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
 
 		if folder_path != "/":
