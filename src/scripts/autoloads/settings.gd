@@ -13,15 +13,14 @@ const PATH_THEMES: String = "user://themes/"
 
 var data: SettingsData = SettingsData.new()
 
-
 var fonts: Dictionary[String, SystemFont] = {}
 var custom_themes: Dictionary = {} # { Name: Path }
 
 
-
 func _ready() -> void:
 	for arg: String in OS.get_cmdline_args():
-		if arg.to_lower() == "reset_settings": save()
+		if arg.to_lower() == "reset_settings":
+			save()
 
 	if !FileAccess.file_exists(PATH):
 		data.language = get_system_locale()
@@ -64,7 +63,8 @@ func load_system_fonts() -> void:
 func load_custom_themes() -> void:
 	var default_themes: Dictionary[String, String] = get_themes()
 	var dir: DirAccess = DirAccess.open(PATH_THEMES)
-	if !dir: return
+	if !dir:
+		return
 	dir.list_dir_begin()
 
 	var file_name: String = dir.get_next()
@@ -85,11 +85,12 @@ func get_system_locale() -> String:
 	# Next up, get the first entry which has the language code, this can happen
 	# if we only have the language available with a certain country code.
 	for loaded_locale: String in TranslationServer.get_loaded_locales():
-		if loaded_locale.begins_with(OS.get_locale_language()): return loaded_locale
+		if loaded_locale.begins_with(OS.get_locale_language()):
+			return loaded_locale
 	return "en" # Return English as a default.
 
-
 # Appearance set/get
+
 func set_language(code: String) -> void:
 	data.language = code
 	apply_language()
@@ -110,20 +111,23 @@ func get_languages() -> Dictionary:
 
 		if Localization.native_locale_names.has(key):
 			key = Localization.native_locale_names[key]
-		else: key = TranslationServer.get_locale_name(key)
+		else:
+			key = TranslationServer.get_locale_name(key)
 
 		if code.contains('_'): # Country code present
 			var country_code: String = code.split('_')[1]
 
 			if Localization.native_country_names.has(country_code):
 				key += " (" + Localization.native_country_names[country_code] + ")"
-			else: key += " (" + TranslationServer.get_country_name(country_code) + ")"
+			else:
+				key += " (" + TranslationServer.get_country_name(country_code) + ")"
 		temp_language_data[key] = code
 
 	var keys: PackedStringArray = temp_language_data.keys()
 	keys.sort()
 
-	for key: String in keys: language_data[key] = temp_language_data[key]
+	for key: String in keys:
+		language_data[key] = temp_language_data[key]
 	return language_data
 
 
@@ -144,8 +148,10 @@ func apply_display_scale() -> void:
 func get_display_scale() -> float:
 	var size: Vector2 = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
 
-	if size.y > 1100: return 1.5
-	elif size.y < 1000: return 0.5
+	if size.y > 1100:
+		return 1.5
+	elif size.y < 1000:
+		return 0.5
 	return 1.0
 
 
@@ -215,8 +221,8 @@ func set_use_native_dialog(value: bool) -> void:
 func get_use_native_dialog() -> bool:
 	return data.use_native_dialog
 
-
 # Defaults set/get
+
 func set_image_duration(duration: int) -> void:
 	data.image_duration = duration
 
@@ -289,8 +295,8 @@ func set_use_proxies(value: bool) -> void:
 func get_use_proxies() -> bool:
 	return data.use_proxies
 
-
 #--- Timeline set/get ---
+
 func set_tracks_amount(track_amount: int) -> void:
 	data.tracks_amount = track_amount
 
@@ -332,8 +338,8 @@ func set_show_time_mode_bar(value: bool) -> void:
 func get_show_time_mode_bar() -> bool:
 	return data.show_time_mode_bar
 
-
 #--- Markers set/get ---
+
 func set_marker_name(index: int, text: String) -> void:
 	data.marker_names[index] = text
 
@@ -357,8 +363,8 @@ func get_marker_color(index: int) -> Color:
 func get_marker_colors() -> PackedColorArray:
 	return data.marker_colors
 
-
 #--- Extra set/get ---
+
 func set_check_version(value: bool) -> void:
 	data.check_version = value
 
@@ -376,8 +382,8 @@ func set_auto_save(value: bool) -> void:
 func get_auto_save() -> bool:
 	return data.auto_save
 
-
 #--- Input set/get ---
+
 func load_new_shortcuts(reset: bool = false) -> void:
 	# Add new (or all) shortcuts to the Settings data
 	for action: StringName in InputMap.get_actions():
@@ -448,4 +454,3 @@ func get_events_for_action(action: String) -> Array[InputEvent]:
 		events.append(null)
 
 	return events
-

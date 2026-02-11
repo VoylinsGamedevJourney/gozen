@@ -21,7 +21,6 @@ var markers: MarkerLogic
 var folders: FolderLogic
 
 
-
 func _ready() -> void:
 	get_window().close_requested.connect(_on_close)
 	clips.updated.connect(update_timeline_end)
@@ -46,7 +45,8 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	set_framerate(new_framerate)
 	_setup_logic()
 
-	for index: int in Settings.get_tracks_amount(): tracks._add_track(index, false)
+	for index: int in Settings.get_tracks_amount():
+		tracks._add_track(index, false)
 	EditorCore.loaded_clips.resize(data.tracks.size())
 
 	loading_overlay.update_progress(50, tr("Setting up playback ..."))
@@ -203,8 +203,8 @@ func _on_cancel_close() -> void:
 	if Settings.get_auto_save():
 		auto_save_timer.start()
 
-
 #--- Project setters & getters ---
+
 func set_project_path(new_project_path: String) -> void:
 	data.project_path = new_project_path
 	unsaved_changes = true
@@ -223,8 +223,10 @@ func get_project_base_folder() -> String:
 
 
 func set_resolution(res: Vector2i) -> void:
-	if res.x % 2 != 0: res.x += 1
-	if res.y % 2 != 0: res.y += 1
+	if res.x % 2 != 0:
+		res.x += 1
+	if res.y % 2 != 0:
+		res.y += 1
 
 	data.resolution = res
 	unsaved_changes = true

@@ -1,6 +1,5 @@
 extends TextureRect
 
-
 enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
 
 
@@ -11,7 +10,6 @@ const SIZE_CROSS: int = 20
 
 
 var show_safe_areas: bool = true: set = set_show_safe_areas
-
 
 
 func _ready() -> void:
@@ -131,4 +129,3 @@ func set_show_safe_areas(value: bool) -> void:
 
 func toggle_safe_areas() -> void:
 	show_safe_areas = !show_safe_areas
-

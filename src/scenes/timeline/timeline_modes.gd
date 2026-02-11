@@ -1,6 +1,5 @@
 extends Control
 
-
 enum MODE { SELECT, CUT }
 
 
@@ -14,7 +13,6 @@ const COLOR_CUT_FADE: Color = Color(1,0,0,0.3)
 
 
 var mode: MODE = MODE.SELECT
-
 
 
 func _ready() -> void:
@@ -53,4 +51,3 @@ func _on_cut_mode_button_pressed() -> void:
 
 func update_mode() -> void:
 	queue_redraw()
-

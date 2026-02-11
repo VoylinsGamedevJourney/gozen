@@ -11,7 +11,6 @@ signal switch_timeline_mode_cut
 var undo_redo: UndoRedo = UndoRedo.new()
 
 
-
 func _ready() -> void:
 	undo_redo.max_steps = 200
 
@@ -20,7 +19,8 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
 		PopupManager.open_popup(PopupManager.CREDITS)
 
-	if !Project.loaded: return # EVERYTHING which is only allowed to open after the start screen goes below!
+	if !Project.loaded:
+		return # EVERYTHING which is only allowed to open after the start screen goes below!
 
 	# Check if in line edit or not:
 	if _strict_input_check(event):
@@ -33,20 +33,24 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("open_project", false, true):
 		Project.open_project()
 
-	if event.is_action_pressed("breakpoint", true): breakpoint
+	if event.is_action_pressed("breakpoint", true):
+		breakpoint
 	elif event.is_action_pressed("ui_paste"):
 		clipboard_paste()
 	elif event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
-		if !undo_redo.undo(): printerr("InputManager: Couldn't undo!")
+		if !undo_redo.undo(): printerr("InputManager:
+			Couldn't undo!")
 	elif event.is_action_pressed("ui_redo", false, true) and undo_redo.has_redo():
-		if !undo_redo.redo(): printerr("InputManager: Couldn't redo!")
+		if !undo_redo.redo(): printerr("InputManager:
+			Couldn't redo!")
 	elif event.is_action_pressed("switch_screen"):
 		if RenderManager.encoder == null and !RenderManager.encoder.is_open():
 			switch_screen()
 
 
 func _strict_input_check(event: InputEvent) -> bool:
-	if get_viewport().gui_get_focus_owner() is LineEdit: return false
+	if get_viewport().gui_get_focus_owner() is LineEdit:
+		return false
 	elif event.is_action_pressed("open_marker_popup"):
 		open_marker_popup()
 	elif event.is_action_pressed("timeline_play_pause", false, true):
@@ -64,6 +68,7 @@ func _strict_input_check(event: InputEvent) -> bool:
 
 func _on_closing_editor() -> void: undo_redo.free()
 
+
 func show_editor_screen() -> void: on_show_editor_screen.emit()
 func show_render_screen() -> void: on_show_render_screen.emit()
 func switch_screen() -> void: on_switch_screen.emit()
@@ -71,7 +76,8 @@ func open_marker_popup() -> void: PopupManager.open_popup(PopupManager.MARKER)
 
 
 func clipboard_paste() -> void:
-	if Project.is_loaded == null: return
+	if Project.is_loaded == null:
+		return
 
 	# Check for image.
 	var image: Image = DisplayServer.clipboard_get_image()
@@ -83,7 +89,9 @@ func clipboard_paste() -> void:
 	var valid_paths: PackedStringArray = []
 	for path: String in raw_paths:
 		var clean_path: String = path.strip_edges().replace('"', '')
-		if FileAccess.file_exists(path): valid_paths.append(clean_path)
+		if FileAccess.file_exists(path):
+			valid_paths.append(clean_path)
 
-	if valid_paths.is_empty(): return
+	if valid_paths.is_empty():
+		return
 	Project.files.files_dropped(valid_paths)

@@ -27,6 +27,7 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export_group("Threads")
 @export var threads_spin_box: SpinBox
 
+
 var button_group: ButtonGroup = ButtonGroup.new()
 var status_indicator_id: int
 
@@ -34,7 +35,6 @@ var progress_overlay: ProgressOverlay
 var progress_frame_increase: float = 0.0
 var current_progress: float = 0.0
 var custom_profile_id_start: int = 0
-
 
 
 func _ready() -> void:
@@ -298,7 +298,8 @@ func _on_start_render_button_pressed() -> void:
 		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
 
 		render_resolution =	Vector2i(int(target_height * aspect), target_height)
-		if render_resolution.x % 2 != 0: render_resolution.x += 1
+		if render_resolution.x % 2 != 0:
+			render_resolution.x += 1
 		print("RenderManager: Draft mode enabled. Scaling to ", render_resolution)
 
 	# Printing info about the rendering process.
@@ -389,7 +390,8 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 	if status >= 0:
 		if status == RenderManager.STATUS.FRAMES_SEND:
 			current_progress += progress_frame_increase # Update bar from 6 to 99.
-		else: current_progress = status
+		else:
+			current_progress = status
 	if progress_overlay != null:
 		progress_overlay.update_progress(floori(current_progress), status_str)
 
@@ -441,7 +443,9 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 		var current_index: int = option_button_render_profiles.get_item_index(current_id)
 
 		_delete_custom_profile(index)
-		if current_index != index: option_button_render_profiles.select(index)
-		else: _on_render_settings_changed()
-	else: load_profile(load(option_button_render_profiles.get_item_metadata(index)))
-
+		if current_index != index:
+			option_button_render_profiles.select(index)
+		else:
+			_on_render_settings_changed()
+	else:
+		load_profile(load(option_button_render_profiles.get_item_metadata(index)))

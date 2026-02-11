@@ -7,11 +7,11 @@ extends Control
 
 static var type: int = 0 # We want to save the last used type
 
+
 @export var marker_line_edit: LineEdit
 @export var type_option_button: OptionButton
 @export var time_label: Label
 @export var delete_button: TextureButton
-
 
 
 func _ready() -> void:
@@ -23,7 +23,8 @@ func _ready() -> void:
 	if index != -1:
 		marker_line_edit.text = Project.markers.get_text(index)
 		type = Project.markers.get_type(index)
-	else: marker_line_edit.text = ""
+	else:
+		marker_line_edit.text = ""
 
 	marker_line_edit.grab_focus()
 	marker_line_edit.select_all()
@@ -51,10 +52,12 @@ func _on_create_marker_pressed() -> void:
 	var index: int = Project.markers.get_index(EditorCore.frame_nr)
 
 	if text_content == "": # Delete if empty
-		if index != -1: Project.markers.remove(EditorCore.frame_nr)
+		if index != -1:
+			Project.markers.remove(EditorCore.frame_nr)
 	elif index != -1:
 		Project.markers.update(index, EditorCore.frame_nr, text_content, type)
-	else: Project.markers.add(EditorCore.frame_nr, text_content, type)
+	else:
+		Project.markers.add(EditorCore.frame_nr, text_content, type)
 
 	PopupManager.close(PopupManager.POPUP.MARKER)
 
@@ -68,4 +71,3 @@ func _on_cancel_button_pressed() -> void: PopupManager.close(PopupManager.POPUP.
 func _on_delete_marker_button_pressed() -> void:
 	Project.markers.remove(EditorCore.frame_nr)
 	PopupManager.close(PopupManager.POPUP.MARKER)
-

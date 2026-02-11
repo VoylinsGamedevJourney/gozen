@@ -4,7 +4,6 @@ var file_id: int = -1: set = set_file_id
 var wave_offset: float = 0.0: set = set_wave_offset
 
 
-
 func set_file_id(new_file_id: int) -> void:
 	file_id = new_file_id
 	queue_redraw()

@@ -8,8 +8,8 @@ static var instance: EditorUI
 @export var menu_bar: HBoxContainer
 @export var screen_tab_container: TabContainer
 
-var screen_buttons: Array[Button] = []
 
+var screen_buttons: Array[Button] = []
 
 
 func _ready() -> void:
@@ -43,7 +43,8 @@ func _check_startup_args() -> void:
 func print_startup_info() -> void:
 	Print.header_editor("--==  GoZen - Video Editor  ==--")
 
-	for info_print: PackedStringArray in [
+	for info_print:
+		PackedStringArray in [
 			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
 			["OS", OS.get_model_name()],
 			["OS Version", OS.get_version()],
@@ -75,4 +76,3 @@ func switch_screen_quick() -> void:
 		if !screen_tab_container.select_next_available():
 			screen_tab_container.current_tab = 0
 		screen_buttons[screen_tab_container.current_tab].button_pressed = true
-

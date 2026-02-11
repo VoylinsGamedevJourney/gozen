@@ -1,7 +1,6 @@
 class_name ClipRequest
 extends RefCounted
 
-
 var clip_id: int = -1
 var file_id: int = -1
 
@@ -13,7 +12,6 @@ var track_offset: int = 0
 
 var resize_amount: int
 var from_end: bool = false
-
 
 
 static func add_request(file: int, track: int, frame: int) -> ClipRequest:

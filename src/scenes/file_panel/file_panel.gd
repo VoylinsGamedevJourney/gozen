@@ -28,9 +28,9 @@ const IMAGE_FORMATS: PackedStringArray = ["*.png", "*.jpg", "*.webp"]
 @export var tree: Tree
 @export var file_menu_button: MenuButton
 
+
 var folder_items: Dictionary[String, TreeItem] = {}
 var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
-
 
 
 func _ready() -> void:
@@ -89,7 +89,8 @@ func _file_menu_pressed(id: int) -> void:
 
 
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
-	if button_index != MOUSE_BUTTON_RIGHT: return
+	if button_index != MOUSE_BUTTON_RIGHT:
+		return
 	var file_item: TreeItem = folder_items["/"] if empty else tree.get_selected()
 	var metadata: Variant = file_item.get_metadata(0)
 	var popup: PopupMenu = PopupManager.create_menu()
@@ -135,14 +136,16 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				if !proxy_path.is_empty():
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
-				else: popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
+				else:
+					popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
 
 			if Project.files.has_audio():
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
 				if Project.files.has_ato(id):
 					if Project.files.get_ato_active(id):
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
-					else: popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
+					else:
+						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
 		elif type == FileLogic.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), POPUP_ACTION.DUPLICATE)
@@ -189,7 +192,8 @@ func _on_popup_action_folder_create() -> void: _show_create_folder_dialog()
 func _on_popup_action_folder_rename() -> void:
 	var selected_item: TreeItem = tree.get_selected()
 	var folder_path: String = str(selected_item.get_metadata(0))
-	if not folder_path.ends_with("/") or folder_path == "/": return # Ensure it is a folder and not root
+	if not folder_path.ends_with("/") or folder_path == "/":
+		return # Ensure it is a folder and not root
 	var current_name: String = folder_path.trim_suffix("/").get_file()
 
 	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rename file"))
@@ -211,8 +215,10 @@ func _on_popup_action_folder_rename() -> void:
 			var parent_path: String = folder_path.trim_suffix("/").get_base_dir()
 			var new_path: String = ""
 
-			if parent_path == "/": new_path = "/" + new_folder_name + "/"
-			else: new_path = parent_path + "/" + new_folder_name + "/"
+			if parent_path == "/":
+				new_path = "/" + new_folder_name + "/"
+			else:
+				new_path = parent_path + "/" + new_folder_name + "/"
 
 			var folder_index: int = Project.folders.get_index(folder_path)
 			Project.folders.rename(folder_index, new_path)
@@ -249,7 +255,8 @@ func _on_popup_action_file_save_temp_as() -> void:
 	var id: int = tree.get_selected().get_metadata(0)
 	var type: FileLogic.TYPE = Project.files.get_type(id)
 
-	if type == FileLogic.TYPE.TEXT: # TODO: Implement duplicating text files
+	if type == FileLogic.TYPE.TEXT: # TODO:
+		Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
 	elif type == FileLogic.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
@@ -314,28 +321,34 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 	var draggable: Draggable = Draggable.new()
 	var selected: TreeItem = tree.get_next_selected(folder_items["/"])
 
-	if selected == null: return
+	if selected == null:
+		return
 	draggable.files = true
 
 	while true:
 		var metadata: Variant = selected.get_metadata(0)
 		var file_ids: PackedInt64Array = []
 
-		if str(metadata).is_valid_int(): file_ids.append(int(metadata)) # Single file
-		else: file_ids = _get_recursive_ids(selected) # Folder
+		if str(metadata).is_valid_int():
+			file_ids.append(int(metadata)) # Single file
+		else:
+			file_ids = _get_recursive_ids(selected) # Folder
 
 		for file_id: int in file_ids:
-			if file_id in draggable.ids: continue
+			if file_id in draggable.ids:
+				continue
 			draggable.ids.append(file_id)
 			draggable.duration += Project.files.get_duration_by_id(file_id)
 
 		selected = tree.get_next_selected(selected)
-		if selected == null: break # End of selected TreeItem's.
+		if selected == null:
+			break # End of selected TreeItem's.
 	return draggable
 
 
 func _add_folder_to_tree(folder: String) -> void:
-	if folder_items.has(folder): return print("FilePanel: Folder '%s' already exists!" % folder)
+	if folder_items.has(folder): return print("FilePanel:
+		Folder '%s' already exists!" % folder)
 
 	# Check if all parent folders exist or not.
 	var folders: PackedStringArray = folder.split('/', false)
@@ -363,7 +376,8 @@ func _add_file_to_tree(id: int) -> void:
 	var nickname: String = Project.files.get_nickname(index)
 
 	# Create item for the file panel tree.
-	if !folder_items.keys().has(folder): _add_folder_to_tree(folder)
+	if !folder_items.keys().has(folder):
+		_add_folder_to_tree(folder)
 
 	if Settings.get_use_proxies():
 		var proxy_path: String = Project.files.get_nickname(index)
@@ -385,7 +399,8 @@ func _add_file_to_tree(id: int) -> void:
 
 
 func _on_update_thumb(file_id: int) -> void:
-	if !Project.files.has(file_id): return _on_deleted(file_id)
+	if !Project.files.has(file_id):
+		return _on_deleted(file_id)
 	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
 
 
@@ -398,7 +413,8 @@ func _sort_folder(folder: String) -> void:
 	while child:
 		if str(child.get_metadata(0)).is_valid_int():
 			files[child.get_text(0).to_lower()] = child
-		else: folders[child.get_text(0).to_lower()] = child
+		else:
+			folders[child.get_text(0).to_lower()] = child
 		child = child.get_next()
 
 	var last_item: TreeItem = null
@@ -413,7 +429,8 @@ func _sort_folder(folder: String) -> void:
 		last_item = folders[folder_name]
 
 	for file_name: String in files_order:
-		if last_item != null: files[file_name].move_after(last_item)
+		if last_item != null:
+			files[file_name].move_after(last_item)
 		last_item = files[file_name]
 
 
@@ -452,7 +469,8 @@ func _on_nickname_changed(id: int) -> void:
 
 
 func _on_folder_added(path: String) -> void:
-	if !folder_items.has(path): _add_folder_to_tree(path)
+	if !folder_items.has(path):
+		_add_folder_to_tree(path)
 
 
 func _on_folder_deleted(path: String) -> void:
@@ -467,7 +485,8 @@ func _on_folder_renamed(old_path: String, new_path: String) -> void:
 	var length: int = old_path.length()
 
 	for folder_path: String in folder_items.keys():
-		if folder_path.begins_with(old_path): paths_to_update.append(folder_path)
+		if folder_path.begins_with(old_path):
+			paths_to_update.append(folder_path)
 
 	# Update items mapping and metadata
 	for folder_path: String in paths_to_update:
@@ -484,8 +503,10 @@ func _on_folder_renamed(old_path: String, new_path: String) -> void:
 			item.set_text(0, new_folder_name)
 
 	var parent_path: String = new_path.trim_suffix("/").get_base_dir()
-	if parent_path in ["", "/"]: parent_path = "/"
-	else: parent_path += "/"
+	if parent_path in ["", "/"]:
+		parent_path = "/"
+	else:
+		parent_path += "/"
 	_sort_folder(parent_path)
 
 
@@ -495,8 +516,10 @@ func _get_recursive_ids(item: TreeItem) -> PackedInt64Array:
 
 	while child:
 		var metadata: Variant = child.get_metadata(0)
-		if str(metadata).is_valid_int(): ids.append(int(metadata)) # File
-		else: ids.append_array(_get_recursive_ids(child)) # Folder
+		if str(metadata).is_valid_int():
+			ids.append(int(metadata)) # File
+		else:
+			ids.append_array(_get_recursive_ids(child)) # Folder
 		child = child.get_next()
 	return ids
 
@@ -514,7 +537,8 @@ func _show_create_folder_dialog() -> void:
 
 	var confirm_lambda: Callable = func(_t: String = "") -> void:
 		var new_folder_name: String = line_edit.text.strip_edges()
-		if new_folder_name not in ["", "/"]: _create_folder_at_selected(new_folder_name)
+		if new_folder_name not in ["", "/"]:
+			_create_folder_at_selected(new_folder_name)
 		dialog.queue_free()
 
 	dialog.confirmed.connect(confirm_lambda)
@@ -534,12 +558,15 @@ func _create_folder_at_selected(folder_name: String) -> void:
 
 		if str(metadata).is_valid_int(): # File
 			parent_path = Project.files.get_folder_by_id(metadata)
-		else: parent_path = str(metadata)
+		else:
+			parent_path = str(metadata)
 
-	if not parent_path.ends_with("/"): parent_path += "/"
+	if not parent_path.ends_with("/"):
+		parent_path += "/"
 
 	var full_path: String = parent_path + folder_name + "/"
-	if full_path not in folder_items: Project.foldes.add(full_path)
+	if full_path not in folder_items:
+		Project.foldes.add(full_path)
 
 
 func _can_drop_list_data(at_position: Vector2, data: Variant) -> bool:

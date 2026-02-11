@@ -1,7 +1,6 @@
 class_name EffectParam
 extends Resource
 
-
 @export var id: String ## The same id used in the shader or in the audio effect
 @export var nickname: String ## The name shown to the user
 @export var tooltip: String ## The description shown to the users when hovering over the param

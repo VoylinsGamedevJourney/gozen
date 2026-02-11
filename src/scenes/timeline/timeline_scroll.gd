@@ -1,12 +1,10 @@
 extends ScrollContainer
 # The scroll handler for the timeline stuff
 
-
 @export var timestamp_scroll: ScrollContainer
 
 
 var current_zoom: float = 1.0
-
 
 
 func _ready() -> void:
@@ -50,4 +48,3 @@ func _on_timeline_scrolling() -> void:
 func _on_timeline_zoom_changed(new_zoom: float) -> void:
 	current_zoom = new_zoom
 	_on_timeline_scrolling()
-

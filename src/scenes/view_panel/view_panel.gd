@@ -10,7 +10,6 @@ extends PanelContainer
 @export var time_label: Label
 
 
-
 func _ready() -> void:
 	EditorCore.play_changed.connect(_on_play_changed)
 	EditorCore.frame_changed.connect(_on_frame_changed)
@@ -31,6 +30,7 @@ func _on_pause_button_pressed() -> void:
 
 func _on_skip_prev_button_pressed() -> void:
 	EditorCore.set_frame(maxi(0, Project.markers.get_previous(EditorCore.frame_nr)))
+
 
 func _on_skip_next_button_pressed() -> void:
 	EditorCore.set_frame(maxi(0, Project.markers.get_next(EditorCore.frame_nr)))

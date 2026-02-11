@@ -15,11 +15,12 @@ const SIZE_EFFECT_HEADER_ICON: int = 16
 @export var button_audio: Button
 @export var tab_container: TabContainer
 
+
 @onready var video_container: VBoxContainer = tab_container.get_tab_control(0)
 @onready var audio_container: VBoxContainer = tab_container.get_tab_control(1)
 
-var current_clip_id: int = -1
 
+var current_clip_id: int = -1
 
 
 func _ready() -> void:
@@ -343,6 +344,7 @@ func _get_current_ui_value_for_param(effect: GoZenEffect, param_id: String, rela
 			return effect.get_value(param, relative_frame_nr)
 	return null
 
+
 func _on_move_up(index: int, is_visual: bool) -> void:
 	EffectsHandler.move_effect(current_clip_id, index, index + 1, is_visual)
 
@@ -356,7 +358,8 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1 or !Project.clips.clips.has(current_clip_id): return
+	if current_clip_id == -1 or !Project.clips.clips.has(current_clip_id):
+		return
 	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
 	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 	var container: VBoxContainer
@@ -386,7 +389,8 @@ func _update_ui_values() -> void:
 				_set_param_settings_value(param_settings, value)
 
 			var keyframe_button: TextureButton = grid.get_node_or_null("KEYFRAME_" + param_id)
-			if !keyframe_button: continue
+			if !keyframe_button:
+				continue
 			if effect.keyframes[param_id].has(frame_nr):
 				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 			else:
@@ -422,7 +426,6 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 
 func _on_switch_enabled(index: int, is_visual: bool) -> void:
 	EffectsHandler.switch_enabled(current_clip_id, index, is_visual)
-
 
 	var container: FoldableContainer = tab_container.get_current_tab_control().get_child(index)
 	var visible_button: TextureButton = container.get_child(-2, true)
@@ -463,8 +466,10 @@ func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_i
 	var clip_data: ClipData = Project.clips.get_clip(clip_id)
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
 	var effect: GoZenEffect
-	if is_visual: effect = clip_data.effects_video[index]
-	else: effect = clip_data.effects_audio[index]
+	if is_visual:
+		effect = clip_data.effects_video[index]
+	else:
+		effect = clip_data.effects_audio[index]
 
 	if effect.keyframes[param_id].has(relative_frame_nr):
 		EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)

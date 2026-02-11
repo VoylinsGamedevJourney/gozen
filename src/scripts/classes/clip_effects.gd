@@ -1,7 +1,6 @@
 class_name ClipEffects
 extends RefCounted
 
-
 var video: Array[GoZenEffectVisual] = []
 var audio: Array[GoZenEffectAudio] = []
 

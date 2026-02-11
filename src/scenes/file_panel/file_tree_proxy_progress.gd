@@ -5,8 +5,8 @@ const COLOR_PROXY_LOADING: Color = Color(0.0, 0.5, 0.5, 0.5)
 
 @export var main_file_panel: Control
 
-var proxy_progress: Dictionary[int, int] = {}
 
+var proxy_progress: Dictionary[int, int] = {}
 
 
 func _ready() -> void:
@@ -25,5 +25,6 @@ func _draw() -> void:
 
 func _on_proxy_loading(file_id: int, progress: int) -> void:
 	proxy_progress[file_id] = progress
-	if progress == 100: proxy_progress.erase(file_id)
+	if progress == 100:
+		proxy_progress.erase(file_id)
 	queue_redraw()

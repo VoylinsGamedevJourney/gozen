@@ -1,7 +1,6 @@
 class_name Localization
 extends Node
 
-
 static var native_locale_names: Dictionary = {
 	"en": "English",
 	"zh": "中文",
@@ -16,7 +15,6 @@ static var native_locale_names: Dictionary = {
 	"tr": "Türkçe",
 }
 
-
 static var native_country_names: Dictionary = {
 	"FR": "France",
 	"ES": "España",
@@ -25,4 +23,3 @@ static var native_country_names: Dictionary = {
 	"IN": "भारत",
 	"TR": "Türkiye",
 }
-

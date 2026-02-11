@@ -12,4 +12,3 @@ const MODULES_PATH: String = "res://modules/"
 @export var max_duration: int = -1 ## In frames. -1 is for unlimited
 
 @export var scene: PackedScene = null
-

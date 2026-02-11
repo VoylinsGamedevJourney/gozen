@@ -1,8 +1,6 @@
 extends PanelContainer
 
-
 @export var color_picker: ColorPicker
-
 
 
 func _on_create_color_pressed() -> void:
@@ -11,4 +9,3 @@ func _on_create_color_pressed() -> void:
 
 
 func _on_cancel_button_pressed() -> void: queue_free()
-

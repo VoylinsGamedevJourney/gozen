@@ -1,12 +1,11 @@
 class_name FileRenameDialog
 extends PanelContainer
 
-
 @export var rename_line_edit: LineEdit
+
 
 var old_nickname: String
 var id: int = -1
-
 
 
 func prepare(file_id: int) -> void:
@@ -25,4 +24,3 @@ func _on_rename_file_line_edit_text_submitted(new_nickname: String) -> void:
 	if new_nickname != "" and old_nickname != new_nickname:
 		Project.files.set_nickname(id, new_nickname)
 	self.queue_free()
-

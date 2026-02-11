@@ -1,12 +1,10 @@
 extends PanelContainer
 
-
 @export var markers_text_edit: TextEdit
 @export var markers_option_button: OptionButton
 
 
 var markers_text: PackedStringArray = []
-
 
 
 func _ready() -> void:
@@ -51,4 +49,3 @@ func _on_markers_updated() -> void:
 
 func _on_markers_button_item_selected(index: int) -> void:
 	markers_text_edit.text = markers_text[index]
-

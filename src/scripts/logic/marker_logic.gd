@@ -15,19 +15,18 @@ var dragged_marker_offset: float = 0:
 		dragged_marker_offset = value
 		moving.emit()
 
-
 var project_data: ProjectData
-
 
 
 func _init(data: ProjectData) -> void: project_data = data
 
-
 # --- Handling ---
+
 
 func add(frame_nr: int, text: String, type: int) -> void:
 	var index: int = get_index(frame_nr)
-	if index != -1: return update(index, frame_nr, text, type)
+	if index != -1:
+		return update(index, frame_nr, text, type)
 
 	InputManager.undo_redo.create_action("Add marker")
 	InputManager.undo_redo.add_do_method(_add.bind(frame_nr, text, type))
@@ -86,8 +85,8 @@ func _remove(frame_nr: int) -> void:
 	Project.unsaved_changes = true
 	removed.emit(index)
 
-
 # --- Getters ---
+
 
 func size() -> int:
 	return project_data.markers_frame.size()
@@ -95,7 +94,8 @@ func size() -> int:
 
 func get_index(frame_nr: int) -> int:
 	var index: int = project_data.markers_frame.find(frame_nr)
-	if index == -1: printerr("MarkerLogic: Couldn't find marker at '%s'" % frame_nr)
+	if index == -1: printerr("MarkerLogic:
+		Couldn't find marker at '%s'" % frame_nr)
 	return index
 
 
@@ -145,8 +145,8 @@ func get_next(frame_nr: int) -> int:
 		previous = current
 	return Project.get_timeline_end()
 
-
 # --- Helper functions ---
+
 
 func _sort(a: int, b: int) -> int:
 	return project_data.markers_frame[a] < project_data.markers_frame[b]

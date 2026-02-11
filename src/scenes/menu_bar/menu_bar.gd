@@ -8,7 +8,6 @@ extends HBoxContainer
 @export var popup_menu_edit: PopupMenu
 
 
-
 func _ready() -> void:
 	_show_menu_bar(Settings.get_show_menu_bar())
 	Settings.on_show_menu_bar_changed.connect(_show_menu_bar)

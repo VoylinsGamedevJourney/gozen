@@ -1,7 +1,6 @@
 class_name GoZenEffect
 extends Resource
 
-
 @export var id: String
 @export var nickname: String
 @export var tooltip: String
@@ -12,10 +11,8 @@ extends Resource
 
 var keyframes: Dictionary = {} ## { param_id: { frame_number: value }}
 
-
 var _key_cache: Dictionary = {}
 var _cache_dirty: bool = true
-
 
 
 func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
@@ -61,7 +58,8 @@ func change_default_param(param_id: String, new_default: Variant) -> void:
 func set_default_keyframe() -> void:
 	for effect_param: EffectParam in params:
 		var param_id: String = effect_param.param_id
-		if not keyframes.has(param_id): keyframes[param_id] = {}
+		if not keyframes.has(param_id):
+			keyframes[param_id] = {}
 		if not keyframes[param_id].has(0):
 			keyframes[param_id][0] = effect_param.default_value
 
@@ -82,8 +80,8 @@ func _validate_cache(param_id: String) -> PackedInt64Array:
 
 	return _key_cache[param_id]
 
-
 # TODO: Implement different interpolation types
+
 func _interpolate_variant(value_a: Variant, value_b: Variant, weight: float) -> Variant:
 	if typeof(value_a) == TYPE_FLOAT or typeof(value_a) == TYPE_INT:
 		return lerp(float(value_a), float(value_b), weight)

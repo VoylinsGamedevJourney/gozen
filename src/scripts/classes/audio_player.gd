@@ -1,4 +1,5 @@
-class_name AudioPlayer extends RefCounted
+class_name AudioPlayer
+extends RefCounted
 
 var player: AudioStreamPlayer = AudioStreamPlayer.new()
 
@@ -8,7 +9,6 @@ var bus_index: int = -1
 var stop_frame: int = -1
 var file_id: int = -1
 var clip_id: int = -1
-
 
 
 func _init() -> void:
@@ -21,20 +21,25 @@ func _init() -> void:
 
 func is_playing() -> bool: return player.playing
 func play(value: bool) -> void:
-	if stop_frame != -1 or clip_id != -1: player.stream_paused = !value
+	if stop_frame != -1 or clip_id != -1:
+		player.stream_paused = !value
 
 
 func stop() -> void:
-	if player.playing: player.stop()
+	if player.playing:
+		player.stop()
 	player.stream_paused = true
 	stop_frame = -1
 	clip_id = -1
 
 
 func set_audio(audio_clip_id: int) -> void:
-	if audio_clip_id == -1: return stop()
-	if RenderManager.encoder != null and RenderManager.encoder.is_open(): return
-	if !Project.clips.has(audio_clip_id): return stop()
+	if audio_clip_id == -1:
+		return stop()
+	if RenderManager.encoder != null and RenderManager.encoder.is_open():
+		return
+	if !Project.clips.has(audio_clip_id):
+		return stop()
 
 	var clip_index: int = Project.clips.get_index(audio_clip_id)
 	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
@@ -52,15 +57,19 @@ func set_audio(audio_clip_id: int) -> void:
 		time_offset = clip_effects.ato_offset
 
 	# Getting file data.
-	if !Project.files.has(target_file_id): return stop()
+	if !Project.files.has(target_file_id):
+		return stop()
 	var file_index: int = Project.files.get_index(target_file_id)
 	var file_data: Variant = Project.files.get_data(file_index)
 	var stream: AudioStream = null
 
-	if file_data is AudioStream: stream = file_data
-	elif file_data and "audio" in file_data: stream = file_data.audio
+	if file_data is AudioStream:
+		stream = file_data
+	elif file_data and "audio" in file_data:
+		stream = file_data.audio
 
-	if stream == null: return stop() # No valid data found for stream.
+	if stream == null:
+		return stop() # No valid data found for stream.
 
 	# Managing state.
 	var old_file_id: int = file_id
@@ -88,7 +97,8 @@ func set_audio(audio_clip_id: int) -> void:
 	var audio_duration: float = stream.get_length()
 	var position: float = (relative_frame_nr / framerate) + time_offset
 	if position < 0.0 or position >= audio_duration:
-		if !player.playing: return
+		if !player.playing:
+			return
 		player.stream_paused = true
 		return # No seeking out of bounds.
 
@@ -111,17 +121,20 @@ func set_audio(audio_clip_id: int) -> void:
 
 
 func update_effects(clip_index: int) -> void:
-	if clip_id == -1 or clip_index == -1: return
+	if clip_id == -1 or clip_index == -1:
+		return
 	var effects: Array[GoZenEffectAudio] = Project.clips.get_effects(clip_index).audio
 	var relative_frame_nr: int = EditorCore.frame_nr - Project.clips.get_start(clip_index)
 
 	for i: int in effects.size():
 		var effect: GoZenEffectAudio = effects[i]
-		if i >= AudioServer.get_bus_effect_count(bus_index): break
+		if i >= AudioServer.get_bus_effect_count(bus_index):
+			break
 
 		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
 		AudioServer.set_bus_effect_enabled(bus_index, i, effect.is_enabled)
-		if not effect.is_enabled: continue
+		if not effect.is_enabled:
+			continue
 
 		for effect_param: EffectParam in effect.params:
 			var value: Variant = effect.get_value(effect_param, relative_frame_nr)

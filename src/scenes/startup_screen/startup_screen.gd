@@ -14,7 +14,6 @@ const PRESETS: Dictionary[String, Vector3i] = {
 	"UHD (4K) 30fps": Vector3i(1920, 1080, 30),
 	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)}
 
-
 @export var version_label: RichTextLabel
 @export var new_version_available_panel: PanelContainer
 @export var new_version_available_button: TextureButton
@@ -390,4 +389,3 @@ func _on_new_project_option_button_item_selected(index: int) -> void:
 	resolution_x_spinbox.value = presets_data.x
 	resolution_y_spinbox.value = presets_data.y
 	framerate_spinbox.value = presets_data.z
-

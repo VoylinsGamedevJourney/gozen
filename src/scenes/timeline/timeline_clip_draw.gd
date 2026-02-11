@@ -3,18 +3,17 @@ extends Control
 
 const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
 const STYLE_BOXES: Dictionary[FileLogic.TYPE, Array] = {
-    FileLogic.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
-    FileLogic.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
-    FileLogic.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
-    FileLogic.TYPE.VIDEO_ONLY: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
-    FileLogic.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
-    FileLogic.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
+	FileLogic.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
+	FileLogic.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
+	FileLogic.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+	FileLogic.TYPE.VIDEO_ONLY: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+	FileLogic.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
+	FileLogic.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
 const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 
 
 @onready var timeline: PanelContainer = get_parent()
-
 
 @onready var zoom: float = timeline.zoom
 @onready var scroll: ScrollContainer = timeline.scroll
@@ -22,9 +21,9 @@ const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 @onready var track_height: float = timeline.TRACK_HEIGHT
 @onready var track_total_size: float = timeline.TRACK_TOTAL_SIZE
 
+
 var waveform_style: int = Settings.get_audio_waveform_style()
 var waveform_amp: float = Settings.get_audio_waveform_amp()
-
 
 
 func _ready() -> void:
@@ -63,7 +62,8 @@ func _draw() -> void:
 				var preview_size: Vector2 = Vector2(duration * zoom, track_height)
 
 				draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-				if clip_id in timeline.visible_clips: handled_clips.append(clip_id)
+				if clip_id in timeline.visible_clips:
+					handled_clips.append(clip_id)
 	elif timeline.state == timeline.STATE.RESIZING: # Resizing preview
 		var index: int = Project.clips.get_index(timeline.resize_target.clip_id)
 		var track_id: int = Project.clips.get_track_id(index)
@@ -75,7 +75,8 @@ func _draw() -> void:
 		if !timeline.resize_target.is_end:
 			draw_start += timeline.resize_target.delta * zoom
 			draw_length -= timeline.resize_target.delta
-		else: draw_length += timeline.resize_target.delta
+		else:
+			draw_length += timeline.resize_target.delta
 
 		var preview_position: Vector2 = Vector2(draw_start, track_id * track_total_size)
 		var preview_size: Vector2 = Vector2(draw_length * zoom, track_height)
@@ -91,7 +92,8 @@ func _draw() -> void:
 
 	# - Clip blocks
 	for id: int in visible_clips:
-		if id in handled_clips: continue
+		if id in handled_clips:
+			continue
 		var index: int = Project.clips.get_index(id)
 		var start: int = Project.clips.get_start(index)
 		var begin: int = Project.clips.get_begin(index)
@@ -122,8 +124,10 @@ func _draw() -> void:
 		# - Fading handles + amount
 		var show_handles: bool = (timeline.hovered_clip != null and timeline.hovered_clip.id == id) or \
 				(timeline.state == timeline.STATE.FADING and timeline.fade_target.clip_id == id)
-		if Project.clips.is_visual(index): _draw_fade_handles(index, box_pos, true, show_handles) # Bottom.
-		if Project.clips.is_audio(index): _draw_fade_handles(index, box_pos, false, show_handles) # Top
+		if Project.clips.is_visual(index):
+			_draw_fade_handles(index, box_pos, true, show_handles) # Bottom.
+		if Project.clips.is_audio(index):
+			_draw_fade_handles(index, box_pos, false, show_handles) # Top
 
 
 func _get_visible(start: int, end: int) -> PackedInt64Array:
@@ -132,8 +136,10 @@ func _get_visible(start: int, end: int) -> PackedInt64Array:
 		data.append_array(Project.tracks.get_clip_ids_in(track_id, start, end))
 	return data
 
+
 func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2) -> void:
-	if wave_data.is_empty(): return
+	if wave_data.is_empty():
+		return
 	var display_duration: int = duration
 	var display_begin_offset: int = begin
 	var height: float = rect.size.y
@@ -142,7 +148,8 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 
 	for i: int in display_duration:
 		var wave_index: int = display_begin_offset + i
-		if wave_index >= wave_data.size(): break
+		if wave_index >= wave_data.size():
+			break
 
 		var normalized_height: float = wave_data[wave_index] * waveform_amp
 		var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
@@ -166,8 +173,10 @@ func _draw_fade_handles(index: int, box_pos: Vector2, is_visual: bool, show_hand
 
 	var clip_end_x: float = box_pos.x + real_duration
 	var handle_y: float = box_pos.y
-	if is_visual: handle_y += track_height - (handle_radius/2.0)
-	else: handle_y += (handle_radius/2.0)
+	if is_visual:
+		handle_y += track_height - (handle_radius/2.0)
+	else:
+		handle_y += (handle_radius/2.0)
 
 	fade.x = box_pos.x + (fade.x * zoom)
 	fade.y = clip_end_x - (fade.y * zoom)

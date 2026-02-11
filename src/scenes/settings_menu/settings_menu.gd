@@ -8,6 +8,7 @@ extends Control
 
 enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
+
 @export var panel_label: Label
 @export var side_bar_vbox: VBoxContainer
 @export var settings_vbox: VBoxContainer
@@ -20,7 +21,6 @@ var listening_active: bool = false
 var listening_action: String = ""
 var listening_index: int = -1
 var listening_button: Button = null
-
 
 
 func _input(event: InputEvent) -> void:
@@ -286,7 +286,8 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 
 	var i: int = 0
 	for option: String in options:
-		if option == "": option_button.add_separator()
+		if option == "":
+			option_button.add_separator()
 		else:
 			option_button.add_item(option)
 			option_button.set_item_metadata(i, options[option])
@@ -454,6 +455,8 @@ func _stop_listening() -> void:
 
 
 func _get_event_text(event: InputEvent) -> String:
-	if event == null: return "None"
-	elif event is not InputEventKey: return event.as_text()
+	if event == null:
+		return "None"
+	elif event is not InputEventKey:
+		return event.as_text()
 	return event.as_text_physical_keycode()

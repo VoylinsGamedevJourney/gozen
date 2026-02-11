@@ -1,11 +1,10 @@
 class_name SettingsData
 extends RefCounted
 
-
 enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
 
-
 # Appearance
+
 var language: String = "en"
 var display_scale: float = 1.0
 var theme: String = Library.THEME_DARK
@@ -39,4 +38,3 @@ var auto_save: bool = true
 
 # Input
 var shortcuts: Dictionary = {} # { action_name: [InputEvent, InputEvent] }
-

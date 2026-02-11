@@ -1,11 +1,9 @@
 class_name Utils
 extends Node
 
-
 # const variables for get_fuzzy_score()
 const FUZZY_SCORE_POINT: int = 1
 const FUZZY_SCORE_BONUS: int = 10
-
 
 
 static func format_file_nickname(file_name: String, size: int) -> String:
@@ -80,7 +78,8 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 
 	for path: String in files:
 		if FileAccess.file_exists(path):
-			if Project.files.check_valid(path): actual_files.append(path)
+			if Project.files.check_valid(path):
+				actual_files.append(path)
 		elif DirAccess.dir_exists_absolute(path):
 			folders.append(path)
 
@@ -90,7 +89,8 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 		for path: String in folders:
 			for file_path: String in DirAccess.get_files_at(path):
 				var full_path: String = path + '/' + file_path
-				if Project.files.check_valid(full_path): actual_files.append(full_path)
+				if Project.files.check_valid(full_path):
+					actual_files.append(full_path)
 			for dir_path: String in DirAccess.get_directories_at(path):
 				new_folders.append(path + '/' + dir_path)
 
@@ -164,8 +164,10 @@ static func path_remove_middle(path: String, max_length: int) -> String:
 
 ## For fuzzy searching.
 static func get_fuzzy_score(query: String, text: String) -> int:
-	if query.is_empty(): return 1
-	elif query.length() > text.length(): return 0
+	if query.is_empty():
+		return 1
+	elif query.length() > text.length():
+		return 0
 
 	var query_index: int = 0
 	var text_index: int = 0

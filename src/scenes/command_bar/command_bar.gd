@@ -9,9 +9,9 @@ const MAX_COMMANDS: int = 5
 @export var command_line: LineEdit
 @export var command_buttons: VBoxContainer
 
+
 var shown_buttons: Array[Button] = []
 var selected_button: int = 0
-
 
 
 func _ready() -> void:
@@ -77,9 +77,12 @@ func _on_command_line_edit_text_changed(command_text: String) -> void:
 
 func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 	for button: Button in command_buttons.get_children():
-		if !button.visible: continue
-		elif selected_button != 0: selected_button -= 1
-		else: return button.pressed.emit()
+		if !button.visible:
+			continue
+		elif selected_button != 0:
+			selected_button -= 1
+		else:
+			return button.pressed.emit()
 	_close()
 
 
@@ -95,7 +98,6 @@ class ButtonScore:
 	func _init(button_node: Button, command_text: String) -> void:
 		button = button_node
 		score = Utils.get_fuzzy_score(command_text, button.text)
-
 
 	static func sort_scores(a: ButtonScore, b: ButtonScore) -> bool:
 		return a.score > b.score

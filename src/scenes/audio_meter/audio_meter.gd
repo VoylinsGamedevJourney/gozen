@@ -8,7 +8,6 @@ const DB_MAX: float = 0.0
 @export var audio_bar_right: TextureProgressBar
 
 
-
 func _process(_delta: float) -> void:
 	if !EditorCore.is_playing:
 		return
@@ -25,4 +24,3 @@ func _process(_delta: float) -> void:
 		audio_bar_right.value = DB_MIN # Silence detected
 	else:
 		audio_bar_right.value = clampf(peak_db_right, DB_MIN, DB_MAX)
-

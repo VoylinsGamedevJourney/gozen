@@ -1,7 +1,6 @@
 class_name FolderLogic
 extends RefCounted
 
-
 signal added(index: int)
 signal deleted(path: String)
 signal renamed(old_path: String, new_path: String)
@@ -10,11 +9,10 @@ signal renamed(old_path: String, new_path: String)
 var project_data: ProjectData
 
 
-
 func _init(data: ProjectData) -> void: project_data = data
 
-
 # --- Handling ---
+
 func add(folder: String) -> void:
 	if project_data.folders.has(folder):
 		return printerr("FolderLogic: Folder %s already exists!")
@@ -93,7 +91,8 @@ func _delete(index: int) -> void:
 
 func rename(index: int, new_name: String) -> void:
 	var old_root: String = project_data.folders[index]
-	if old_root == "/" or project_data.folders.has(new_name): return
+	if old_root == "/" or project_data.folders.has(new_name):
+		return
 
 	var folders_to_rename: PackedInt64Array = []
 	var old_names: PackedStringArray = []
@@ -119,10 +118,11 @@ func _rename(index: int, new_path: String) -> void:
 
 	# Update files.
 	for i: int in Project.files.size():
-		if Project.files.get_folder(i) != old_path: continue
+		if Project.files.get_folder(i) != old_path:
+			continue
 		project_data.files_folder[i] = new_path
 
-
 # --- Getters ---
+
 
 func get_index(path: String) -> int: return project_data.folders.find(path)

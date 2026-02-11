@@ -1,6 +1,5 @@
 extends Node
 
-
 signal thumb_generated(id: int)
 
 
@@ -12,7 +11,6 @@ var thumb_folder: String = "%s/gozen/thumbs/" % OS.get_cache_dir()
 
 var data: Dictionary[String, int] = {}  ## { thumb_path : int }
 var thumbs_todo: PackedInt64Array = []
-
 
 
 func _ready() -> void:
@@ -52,7 +50,8 @@ func get_thumb(file_id: int) -> Texture2D:
 	# Check if color or image.
 	if path in ["temp://color", "temp://image"]:
 		var temp: Variant = Project.files.get_data(index).image_data
-		if !temp or temp != ImageTexture: return null
+		if !temp or temp != ImageTexture:
+			return null
 		return ImageTexture.create_from_image(scale_thumbnail(temp.get_image()))
 	elif path == "temp://text":
 		printerr("FilePanel: Thumbnailer: No thumbnails for text yet!")
@@ -82,11 +81,12 @@ func get_thumb(file_id: int) -> Texture2D:
 func _get_default_thumb(icon_uid: String) -> Texture2D:
 	return ImageTexture.create_from_image(scale_thumbnail(load(icon_uid).get_image()))
 
-
 # This function is for generating thumbnails, should only be called from the
 # _process function and in a thread through Threader.
+
 func _gen_thumb(file_id: int) -> void:
-	if !Project.files.has(file_id): return
+	if !Project.files.has(file_id):
+		return
 	var index: int = Project.files.get_file(file_id)
 	var path: String = Project.files.get_path(index)
 	var type: FileLogic.TYPE = Project.files.get_type(index)
@@ -97,12 +97,14 @@ func _gen_thumb(file_id: int) -> void:
 		FileLogic.TYPE.AUDIO: image = Project.files.generate_audio_thumb(file_id)
 		FileLogic.TYPE.VIDEO, FileLogic.TYPE.VIDEO_ONLY:
 			var temp: Variant = Project.files.get_data(index)
-			if !temp or temp is not GoZenVideo: return
+			if !temp or temp is not GoZenVideo:
+				return
 			var video: GoZenVideo = temp
 			image = video.generate_thumbnail_at_frame(0)
 
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
-	if type != FileLogic.TYPE.AUDIO: image = scale_thumbnail(image)
+	if type != FileLogic.TYPE.AUDIO:
+		image = scale_thumbnail(image)
 	if image.save_webp(thumb_folder + FILE_NAME % file_id):
 		return printerr("FilePanel: Something went wrong saving thumb!")
 
@@ -113,7 +115,8 @@ func _gen_thumb(file_id: int) -> void:
 
 
 func scale_thumbnail(image: Image) -> Image:
-	if !image: return Image.create_empty(1, 1, false, Image.FORMAT_L8)
+	if !image:
+		return Image.create_empty(1, 1, false, Image.FORMAT_L8)
 	var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
 	image.resize(
 			int(image.get_width() * image_scale),
@@ -128,4 +131,3 @@ func scale_thumbnail(image: Image) -> Image:
 		image.crop(107, 60)
 
 	return image
-

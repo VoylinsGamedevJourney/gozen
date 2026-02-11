@@ -1,7 +1,6 @@
 class_name VisualCompositor
 extends RefCounted
 
-
 const YUV_PARAM_BUFFER_SIZE: int = 96
 
 const USAGE_BITS_R8: int = (
@@ -294,7 +293,8 @@ func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual], fade_a
 			continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
-		if not cache: continue
+		if not cache:
+			continue
 
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 

@@ -12,4 +12,3 @@ extends Resource
 
 @export_group("Audio")
 @export var audio_codec: GoZenEncoder.AUDIO_CODEC = GoZenEncoder.AUDIO_CODEC.A_NONE
-

@@ -3,7 +3,6 @@ extends Control
 @onready var timeline: PanelContainer = get_parent()
 
 
-
 func _ready() -> void:
 	EditorCore.frame_changed.connect(queue_redraw)
 
@@ -19,4 +18,3 @@ func _draw() -> void:
 
 func update_track_lines() -> void:
 	queue_redraw()
-

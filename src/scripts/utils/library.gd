@@ -1,7 +1,6 @@
 class_name Library
 extends Node
 
-
 const ICON_GOZEN: String = "uid://cwv5gaisvmwv7"
 const ICON_PLAY: String = "uid://dt44mb30o2c8e"
 const ICON_PAUSE: String = "uid://drcdxc6b6le8r"

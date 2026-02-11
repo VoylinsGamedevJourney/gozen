@@ -11,7 +11,6 @@ var _frame_nr: int = -1
 var _resolution: Vector2i
 
 
-
 func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: GoZenEffectVisual) -> void:
 	nickname = effect.nickname
 	shader = device.shader_create_from_spirv(spirv)

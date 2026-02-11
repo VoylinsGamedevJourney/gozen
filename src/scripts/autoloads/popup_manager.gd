@@ -1,6 +1,5 @@
 extends Node
 
-
 enum {
 	SETTINGS,
 	PROJECT_SETTINGS,
@@ -15,7 +14,6 @@ enum {
 	ADD_EFFECTS,
 	AUDIO_TAKE_OVER,
 }
-
 
 var _open_popups: Dictionary [int, Control] = {}
 var _popup_uids: Dictionary [int, String] = {
@@ -36,7 +34,6 @@ var _control: Control = Control.new()
 var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
 
 
-
 func _ready() -> void:
 	get_window().size_changed.connect(_on_size_changed)
 
@@ -49,7 +46,8 @@ func _ready() -> void:
 
 
 func open(popup: int) -> void:
-	if popup in _open_popups: return
+	if popup in _open_popups:
+		return
 
 	_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
 	match popup:
@@ -79,13 +77,15 @@ func close(popup: int) -> void:
 
 
 func close_all() -> void:
-	for popup: int in _open_popups: _open_popups[popup].queue_free()
+	for popup: int in _open_popups:
+		_open_popups[popup].queue_free()
 	_open_popups.clear()
 	_check_background()
 
 
 func get_popup(popup: int) -> Control:
-	if !_open_popups.has(popup): open(popup)
+	if !_open_popups.has(popup):
+		open(popup)
 	return _open_popups[popup]
 
 
@@ -113,7 +113,8 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 
 func create_menu(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
-	if !permanent: popup.mouse_exited.connect(popup.queue_free)
+	if !permanent:
+		popup.mouse_exited.connect(popup.queue_free)
 	popup.size = Vector2i(100,0)
 	return popup
 
@@ -126,8 +127,8 @@ func show_menu(popup: PopupMenu) -> void:
 	add_child(popup)
 	popup.popup()
 
-
 # --- Helper functions ---
+
 
 func _on_size_changed() -> void: _control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 func _check_background() -> void: _control.visible = !_open_popups.is_empty()

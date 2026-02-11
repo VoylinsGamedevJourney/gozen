@@ -4,7 +4,6 @@ extends Node
 enum TYPE { TRANSFORM }
 
 
-
 static func get_transform_matrix_variables() -> PackedStringArray:
 	return ["position", "rotation", "size", "pivot"]
 
@@ -41,4 +40,3 @@ static func calculate_transform_matrix(data: Dictionary[String, Variant], resolu
 		transform.y.x,		transform.y.y,		0.0, 0.0,
 		0.0, 	   		 	0.0,				1.0, 0.0,
 		transform.origin.x, transform.origin.y,	0.0, 1.0])
-

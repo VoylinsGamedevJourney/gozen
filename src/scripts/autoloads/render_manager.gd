@@ -1,8 +1,6 @@
 extends Node
 
-
 signal update_encoder_status(status: STATUS)
-
 
 enum STATUS {
 	ERROR_OPEN = -1,
@@ -36,12 +34,14 @@ var encoding_time: int = 0
 var buffer_size: int = 5
 var proxies_used: bool
 
-
 # --- Render logic ---
 
+
 func stop_encoder() -> void:
-	if encoder.is_open(): encoder.close()
-	if proxies_used: Settings.set_use_proxies(true)
+	if encoder.is_open():
+		encoder.close()
+	if proxies_used:
+		Settings.set_use_proxies(true)
 	cancel_encoding = false
 
 
@@ -91,9 +91,11 @@ func start_encoder() -> void:
 	frame_array.resize(buffer_size)
 
 	for i: int in Project.get_total_frames():
-		if cancel_encoding: break
+		if cancel_encoding:
+			break
 		elif frame_pos == buffer_size:
-			if thread.is_started(): await thread.wait_to_finish()
+			if thread.is_started():
+				await thread.wait_to_finish()
 			if thread.start(_send_frames.bind(frame_array.duplicate())):
 				printerr("RenderManager: Something with encoder thread went wrong!")
 
@@ -107,7 +109,8 @@ func start_encoder() -> void:
 		EditorCore.set_frame() # Getting the next frame ready.
 
 	# Flushing the system.
-	if thread.is_alive() or thread.is_started(): await thread.wait_to_finish()
+	if thread.is_alive() or thread.is_started():
+		await thread.wait_to_finish()
 	if !frame_array.is_empty():
 		if thread.start(_send_frames.bind(frame_array.duplicate())):
 			printerr("RenderManager: Something with encoder thread went wrong!")
@@ -126,18 +129,20 @@ func start_encoder() -> void:
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
 
-	if proxies_used: Settings.set_use_proxies(true) # Might give a second or so lag.
+	if proxies_used:
+		Settings.set_use_proxies(true) # Might give a second or so lag.
 
 
 func _send_frames(frame_array: Array[Image]) -> void:
 	for frame: Image in frame_array:
-		if frame == null: break # No more frames to be send.
+		if frame == null:
+			break # No more frames to be send.
 		if !encoder.send_frame(frame):
 			stop_encoder()
 			return printerr("RenderManager: Something went wrong sending frame(s)!")
 
-
 # --- Audio handling ---
+
 
 func encode_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
@@ -147,7 +152,8 @@ func encode_audio() -> PackedByteArray:
 	audio.resize(length)
 
 	for track_id: int in Project.tracks.size():
-		if Project.data.tracks_is_muted: continue
+		if Project.data.tracks_is_muted:
+			continue
 		_add_track_audio(audio, track_id, length)
 	return audio
 
@@ -158,17 +164,20 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, length: int) -> voi
 
 	for id: int in Project.tracks.get_clip_ids(track_id):
 		var type: int = Project.clips.get_type_by_id(id)
-		if type not in EditorCore.AUDIO_TYPES: continue
+		if type not in EditorCore.AUDIO_TYPES:
+			continue
 		_handle_audio(id, track_audio)
 	audio = GoZenAudio.combine_data(audio, track_audio)
 
 
 func _handle_audio(id: int, track_audio: PackedByteArray) -> void:
-	if !Project.clips.has(id): return
+	if !Project.clips.has(id):
+		return
 	var framerate: float = Project.get_framerate()
 	var samples_per_frame: float = MIX_RATE / framerate
 	var audio_data: PackedByteArray = Project.clips.get_audio_data(id)
-	if audio_data.is_empty(): return
+	if audio_data.is_empty():
+		return
 
 	var index: int = Project.clips.get_index(id)
 	var effects: ClipEffects = Project.clips.get_effects(index)
@@ -183,7 +192,8 @@ func _handle_audio(id: int, track_audio: PackedByteArray) -> void:
 
 	# Apply all other effects to the clip audio data.
 	for effect: GoZenEffectAudio in effects.audio:
-		if !effect.is_enabled: continue
+		if !effect.is_enabled:
+			continue
 
 		match effect.id:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)

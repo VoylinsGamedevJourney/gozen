@@ -2,7 +2,6 @@ class_name ProgressOverlay
 extends Control
 # TODO: Add a "Show details" button to explain why files failed to import
 
-
 @export var title_label: Label
 @export var progress_bar: ProgressBar
 @export var progress_hint: Label
@@ -15,7 +14,6 @@ extends Control
 
 var file_labels: Dictionary = {}
 var start_time: int = 0
-
 
 
 func _ready() -> void:

@@ -1,6 +1,5 @@
 extends PanelContainer
 
-
 const COLOR_TEXT: Color = Color(0.85, 0.85, 0.85, 0.5)
 const COLOR_TICK: Color = Color(0.4, 0.4, 0.4, 0.5)
 const STEPS: PackedInt32Array = [1, 5, 10, 30, 60, 150, 300, 600, 1800, 3600]
@@ -14,9 +13,10 @@ const FONT_SIZE_MARKER: int = 10
 const FONT_SIZE_TIME_STAMP: int = 10
 
 
-@onready var scroll: ScrollContainer = get_parent()
 @export var timeline_scroll: ScrollContainer = get_parent()
 
+
+@onready var scroll: ScrollContainer = get_parent()
 
 var current_zoom: float = 1.0
 var scrubbing: bool = false
@@ -27,7 +27,6 @@ var marker_rects: Dictionary[int, Rect2] = {} # { frame_nr: hitbox }
 var _possible_drag: int = -1
 var _drag_offset: float = 0.0
 var _drag_start_pos: Vector2 = Vector2.ZERO
-
 
 
 func _ready() -> void:
@@ -156,7 +155,8 @@ func _draw() -> void:
 			if get_local_mouse_position().distance_to(_drag_start_pos) > MARKER_DRAG_THRESHOLD:
 				Project.markers.dragged_marker_offset = _get_frame_on_mouse() * current_zoom + _drag_offset
 				pos_x = Project.markers.dragged_marker_offset
-			else: Project.markers.dragged_marker_offset = 0
+			else:
+				Project.markers.dragged_marker_offset = 0
 			marker_style_box.bg_color = color * Color(1.0, 1.0, 1.0, 0.2)
 
 		var bubble_pos_x: float = pos_x + (MARKER_LINE_WIDTH / 2.0)
@@ -177,13 +177,15 @@ func _draw() -> void:
 func _update_tooltip() -> void:
 	var mouse_x: float = get_local_mouse_position().x
 	if mouse_x < 0 or mouse_x > size.x:
-		if tooltip_text != "": tooltip_text = ""
+		if tooltip_text != "":
+			tooltip_text = ""
 		return # Out of bounds
 
 	var frame_nr: int = maxi(0, floori(mouse_x / current_zoom))
 	var time_str: String = Utils.format_time_str_from_frame(frame_nr, Project.get_framerate(), false)
 	var full_tooltip: String = "%s\n(Frame: %d)" % [time_str, frame_nr]
-	if tooltip_text != full_tooltip: tooltip_text = full_tooltip
+	if tooltip_text != full_tooltip:
+		tooltip_text = full_tooltip
 
 
 func _on_timeline_zoom_changed(new_zoom: float) -> void:
@@ -195,7 +197,8 @@ func _get_major_frame_step() -> int:
 	# 120 pixels between major ticks
 	var frames: float =  120.0 / current_zoom
 	for step: int in STEPS:
-		if step >= frames: return step
+		if step >= frames:
+			return step
 	return STEPS[-1]
 
 
@@ -221,5 +224,7 @@ func _update_hovered_marker() -> void:
 		_drag_offset = (found_frame * current_zoom) - mouse_pos.x
 		queue_redraw() # Redraw to show highlight if desired
 
-	if _possible_drag != -1: mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	else: mouse_default_cursor_shape = Control.CURSOR_ARROW
+	if _possible_drag != -1:
+		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW

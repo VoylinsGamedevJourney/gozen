@@ -1,6 +1,5 @@
 extends PanelContainer
 
-
 @export var search_line_edit: LineEdit
 @export var effect_buttons: VBoxContainer
 
@@ -10,7 +9,6 @@ var is_visual: bool = true
 
 var shown_buttons: Array[Button] = []
 var selected_button: int = 0
-
 
 
 func _ready() -> void:
@@ -109,7 +107,6 @@ class ButtonScore:
 	func _init(button_node: Button, effect_text: String) -> void:
 		button = button_node
 		score = Utils.get_fuzzy_score(effect_text, button.text)
-
 
 	static func sort_scores(a: ButtonScore, b: ButtonScore) -> bool:
 		return a.score > b.score

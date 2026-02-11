@@ -25,4 +25,3 @@ func _end_update(new_end: int = Project.data.timeline_end) -> void:
 
 	timestamp_panel.custom_minimum_size.x = new_size
 	timeline_panel.custom_minimum_size.x = new_size
-

@@ -12,7 +12,6 @@ var project_data: ProjectData
 var _id_map: Dictionary[int, int] = {} # { file_id: index }
 
 
-
 func _init(data: ProjectData) -> void:
 	project_data = data
 	_rebuild_map()
@@ -77,8 +76,8 @@ func _create_snapshot_for_cut(index: int, offset: int, duration_left: int, durat
 		"effects": new_effects
 	}
 
-
 # --- Handling ---
+
 
 func add(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Add new clip(s)")
@@ -111,7 +110,8 @@ func _restore_clip_from_snapshot(snapshot: Dictionary) -> void:
 func delete(ids: PackedInt64Array) -> void:
 	InputManager.undo_redo.create_action("Delete clip_data(s)")
 	for id: int in ids:
-		if !has(id): continue
+		if !has(id):
+			continue
 		var snapshot: Dictionary = _create_snapshot(get_index(id))
 		InputManager.undo_redo.add_do_method(_delete.bind(id))
 		InputManager.undo_redo.add_undo_method(_restore_clip_from_snapshot.bind(snapshot))
@@ -121,7 +121,8 @@ func delete(ids: PackedInt64Array) -> void:
 
 
 func _delete(id: int) -> void:
-	if !has(id): return
+	if !has(id):
+		return
 	var index: int = get_index(id)
 	var track_id: int = get_track_id(index)
 	var frame_nr: int = get_start(index)
@@ -146,7 +147,8 @@ func ripple_delete(ids: PackedInt64Array) -> void:
 	var ranges_by_track: Dictionary[int, Vector2i] = {}
 
 	for id: int in ids:
-		if !has(id): continue
+		if !has(id):
+			continue
 		var index: int = get_index(id)
 		var track_id: int = get_track_id(index)
 		var start: int = get_start(index)
@@ -158,12 +160,12 @@ func ripple_delete(ids: PackedInt64Array) -> void:
 			ranges_by_track[track_id].x = mini(ranges_by_track[track_id].x, start)
 			ranges_by_track[track_id].y = mini(ranges_by_track[track_id].y, end)
 
-
 	InputManager.undo_redo.create_action("Ripple delete clip_data(s)")
 
 	# First delete the clips.
 	for id: int in ids:
-		if !has(id): continue
+		if !has(id):
+			continue
 		var snapshot: Dictionary = _create_snapshot(get_index(id))
 		InputManager.undo_redo.add_do_method(_delete.bind(id))
 		InputManager.undo_redo.add_undo_method(_restore_clip_from_snapshot.bind(snapshot))
@@ -175,7 +177,8 @@ func ripple_delete(ids: PackedInt64Array) -> void:
 		var gap_size: int = gap_range.y - gap_range.x
 
 		for move_id: int in Project.tracks.get_clip_ids_after(track_id, gap_start):
-			if move_id in ids: continue
+			if move_id in ids:
+				continue
 			var index: int = get_index(move_id)
 			var current_start: int = get_start(index)
 			var new_start: int = current_start - gap_size
@@ -191,7 +194,8 @@ func move(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Move clip_data(s)")
 	for request: ClipRequest in requests:
 		var id: int = request.clip_id
-		if !has(id): continue
+		if !has(id):
+			continue
 		var index: int = get_index(id)
 		var current_track: int = get_track_id(index)
 		var current_start: int = get_start(index)
@@ -205,9 +209,9 @@ func move(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-
 func _move(id: int, new_track: int, new_frame: int) -> void:
-	if !has(id): return
+	if !has(id):
+		return
 	var index: int = get_index(id)
 	var old_track: int = get_track_id(index)
 	var old_frame: int = get_start(index)
@@ -230,13 +234,15 @@ func cut(requests: Array[ClipRequest]) -> void:
 
 	for request: ClipRequest in requests:
 		var id: int = request.clip_id
-		if !has(id): continue
+		if !has(id):
+			continue
 		var index: int = get_index(id)
 		var cut_offset: int = request.frame_nr
 		var current_duration: int = project_data.clips_duration[index]
 		var duration_left: int = cut_offset
 		var duration_right: int = current_duration - cut_offset
-		if duration_left <= 0 or duration_right <= 0: continue # Check for invalid cuts.
+		if duration_left <= 0 or duration_right <= 0:
+			continue # Check for invalid cuts.
 
 		# Cutting the main clip.
 		InputManager.undo_redo.add_do_method(_resize.bind(id, -duration_right, true))
@@ -304,7 +310,6 @@ func _resize_restore(id: int, start: int, duration: int, begin: int) -> void:
 	updated.emit()
 
 
-
 ## This function is intended to be used when cutting clips to copy over the effects.
 func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Array[GoZenEffectVisual]:
 	var new_effects: Array[GoZenEffectVisual] = []
@@ -317,7 +322,8 @@ func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Ar
 			var id: String = param.id
 			var value_at_cut: Variant = effect.get_value(param, cut_pos)
 
-			if not new_effect.keyframes.has(id): new_effect.keyframes[id] = {}
+			if not new_effect.keyframes.has(id):
+				new_effect.keyframes[id] = {}
 			new_effect.keyframes[id][0] = value_at_cut
 
 			# Shift existing keyframes that appear after the cut.
@@ -342,36 +348,42 @@ func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Arra
 			var id: String = param.id
 			var value_at_cut: Variant = effect.get_value(param, cut_pos)
 
-			if not new_effect.keyframes.has(id): new_effect.keyframes[id] = {}
+			if not new_effect.keyframes.has(id):
+				new_effect.keyframes[id] = {}
 			new_effect.keyframes[id][0] = value_at_cut
 
 			# Shift existing keyframes that appear after the cut.
 			for frame: int in effect.keyframes[id]:
-				if frame <= cut_pos: continue
+				if frame <= cut_pos:
+					continue
 				new_effect.keyframes[id][frame - cut_pos] = effect.keyframes[id][frame]
 			new_effects.append(new_effect)
 
 	return new_effects
 
-
 # --- Playback helpers ---
 
+
 func load_frame(id: int, frame_nr: int) -> void:
-	if !has(id): return
+	if !has(id):
+		return
 	var index: int = get_index(id)
 	var file_id: int = get_file_id(index)
 	var file_index: int = Project.files.get_index(file_id)
 	var type: FileLogic.TYPE = Project.files.get_type(file_index)
 	var video: GoZenVideo = null
 
-	if type not in EditorCore.VISUAL_TYPES: return
+	if type not in EditorCore.VISUAL_TYPES:
+		return
 	elif type in FileLogic.TYPE_VIDEOS:
 		if has_individual_video(id):
 			video = Project.files.clip_video_instances[id]
 		else:
 			var temp: Variant = Project.files.get_data(file_index)
-			if temp is GoZenVideo: video = temp
-	if video == null: return # Probably still loading.
+			if temp is GoZenVideo:
+				video = temp
+	if video == null:
+		return # Probably still loading.
 
 	var project_fps: float = Project.get_framerate()
 	var video_fps: float = video.get_framerate()
@@ -379,13 +391,15 @@ func load_frame(id: int, frame_nr: int) -> void:
 	var target_frame_nr: int = int((frame_nr / project_fps) * video_fps)
 
 	if target_frame_nr != video_frame_nr: # Shouldn't reload same frame
-		if target_frame_nr == video_frame_nr + 1: video.next_frame(false)
+		if target_frame_nr == video_frame_nr + 1:
+			video.next_frame(false)
 		elif !video.seek_frame(target_frame_nr):
 			printerr("Project.clips: Couldn't seek frame!")
 
 
 func get_audio_data(id: int) -> PackedByteArray:
-	if !has(id): return PackedByteArray()
+	if !has(id):
+		return PackedByteArray()
 	var index: int = get_index(id)
 	var framerate: float = Project.get_framerate()
 	var begin: int = get_begin(index)
@@ -400,7 +414,8 @@ func get_audio_data(id: int) -> PackedByteArray:
 	if effects.ato_active and effects.ato_id != -1:
 		start_sec -= effects.ato_offset
 		target_file_id -= effects.ato_id
-	else: target_file_id = get_file_id(index)
+	else:
+		target_file_id = get_file_id(index)
 
 	if !Project.files.has(target_file_id):
 		printerr("ClipLogic: Audio source %s not found for clip %s!" % [target_file_id, id])
@@ -410,17 +425,20 @@ func get_audio_data(id: int) -> PackedByteArray:
 	var file_path: String = Project.files.get_path(file_index)
 	return GoZenAudio.get_audio_data(file_path, -1, start_sec, duration_sec)
 
-
 # --- Getters ---
+
 
 func size() -> int: return _id_map.size()
 func has(id: int) -> bool: return _id_map.has(id)
 func has_individual_video(id: int) -> bool: return project_data.clips_individual_video.has(id)
 
+
 func is_visual(index: int) -> bool: return get_type(index) in EditorCore.VISUAL_TYPES
 func is_audio(index: int) -> bool: return get_type(index) in EditorCore.AUDIO_TYPES
 
+
 func get_index(clip_id: int) -> int: return _id_map[clip_id]
+
 
 func get_id(index: int) -> int: return project_data.clips_id[index]
 func get_file_id(index: int) -> int: return project_data.clips_file_id[index]
@@ -430,15 +448,18 @@ func get_begin(index: int) -> int: return project_data.clips_begin[index]
 func get_duration(index: int) -> int: return project_data.clips_duration[index]
 func get_effects(index: int) -> ClipEffects: return project_data.clips_effects[index]
 
+
 func get_type(index: int) -> FileLogic.TYPE: return Project.files.get_type(get_file_id(index))
+
 
 func get_end(index: int) -> int: return get_start(index) + get_duration(index)
 
-
 # --- Getters by id ---
+
 
 func is_visual_by_id(id: int) -> bool: return is_visual(get_index(id))
 func is_audio_by_id(id: int) -> bool: return is_audio(get_index(id))
+
 
 func get_id_by_id(id: int) -> int: return project_data.clips_id[get_index(id)]
 func get_file_id_by_id(id: int) -> int: return project_data.clips_file_id[get_index(id)]
@@ -448,19 +469,23 @@ func get_begin_by_id(id: int) -> int: return project_data.clips_begin[get_index(
 func get_duration_by_id(id: int) -> int: return project_data.clips_duration[get_index(id)]
 func get_effects_by_id(id: int) -> ClipEffects: return project_data.clips_effects[get_index(id)]
 
+
 func get_type_by_id(id: int) -> FileLogic.TYPE: return Project.files.get_type(get_file_id(get_index(id)))
+
 
 func get_end_by_id(id: int) -> int:
 	var index: int = get_index(id)
 	return get_start(index) + get_duration(index)
 
-
 # --- Setters ---
+
 
 func switch_ato_active(id: int) -> void: set_ato_active(id, get_effects(id).ato_active)
 func set_ato_active(id: int, value: bool) -> void:
-	if value: InputManager.undo_redo.create_action("Enable clip audio take over")
-	else: InputManager.undo_redo.create_action("Disable clip audio take over")
+	if value:
+		InputManager.undo_redo.create_action("Enable clip audio take over")
+	else:
+		InputManager.undo_redo.create_action("Disable clip audio take over")
 	InputManager.undo_redo.add_do_method(_set_ato_active.bind(id, value))
 	InputManager.undo_redo.add_undo_method(_set_ato_active.bind(id, !value))
 	InputManager.undo_redo.commit_action()
@@ -470,8 +495,8 @@ func _set_ato_active(id: int, value: bool) -> void:
 	get_effects(id).ato_active = value
 	Project.unsaved_changes = true
 
-
 # --- Helpers ---
+
 
 func _create_default_effects(file_index: int) -> ClipEffects:
 	var type: FileLogic.TYPE = Project.files.get_type(file_index)
@@ -482,8 +507,10 @@ func _create_default_effects(file_index: int) -> ClipEffects:
 
 		var transform_effect: GoZenEffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
 		for param: EffectParam in transform_effect.params:
-			if param.id == "size": param.default_value = resolution
-			elif param.id == "pivot": param.default_value = Vector2i(resolution / 2.0)
+			if param.id == "size":
+				param.default_value = resolution
+			elif param.id == "pivot":
+				param.default_value = Vector2i(resolution / 2.0)
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
 
@@ -491,6 +518,5 @@ func _create_default_effects(file_index: int) -> ClipEffects:
 		var volume_effect: GoZenEffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
-
 
 	return effects

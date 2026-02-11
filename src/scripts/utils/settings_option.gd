@@ -1,4 +1,1 @@
 class_name SettingsOption
-
-
-

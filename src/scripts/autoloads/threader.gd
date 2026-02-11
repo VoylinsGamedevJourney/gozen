@@ -1,11 +1,9 @@
 extends Node
 
-
 var timed_tasks: Dictionary[int, TimedTask] = {} # [clip_id, Task]
 var tasks: Array[Task] = []
 var mutex: Mutex = Mutex.new()
 var error: int = -1
-
 
 
 func _process(_delta: float) -> void:
@@ -36,10 +34,10 @@ class Task:
 	var id: int = -1
 	var after_task: Callable
 
-
 	func _init(new_id: int, new_after_task: Callable = Callable()) -> void:
 		id = new_id
 		after_task = new_after_task
+
 
 
 ## Timed tasks are for items such as changing effects too quickly, instead of
@@ -50,18 +48,14 @@ class TimedTask:
 	var after_task: Callable
 	var time: int
 
-
 	func _init(new_task: Callable, new_after_task: Callable = Callable()) -> void:
 		task = new_task
 		after_task = new_after_task
 		time = Time.get_ticks_msec() + 200
 
-
 	func check() -> bool:
 		return time <= Time.get_ticks_msec()
-
 
 	func execute() -> void:
 		Threader.tasks.append(Threader.Task.new(
 				WorkerThreadPool.add_task(task), after_task))
-
