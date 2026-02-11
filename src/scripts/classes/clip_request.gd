@@ -2,14 +2,14 @@ class_name ClipRequest
 extends RefCounted
 
 
-var clip_id: int
-var file_id: int
+var clip_id: int = -1
+var file_id: int = -1
 
-var frame_nr: int
-var track_id: int
+var frame_nr: int = 0
+var track_id: int = 0
 
-var frame_offset: int
-var track_offset: int
+var frame_offset: int = 0
+var track_offset: int = 0
 
 var resize_amount: int
 var from_end: bool = false

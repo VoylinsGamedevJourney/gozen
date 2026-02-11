@@ -301,9 +301,7 @@ func _resize_restore(id: int, start: int, duration: int, begin: int) -> void:
 	if old_start_pos != start:
 		Project.tracks.remove_clip_from_frame(track_id, old_start_pos)
 		Project.tracks.register_clip(track_id, id, start)
-
 	updated.emit()
-
 
 
 
@@ -418,6 +416,10 @@ func get_audio_data(id: int) -> PackedByteArray:
 func size() -> int: return _id_map.size()
 func has(id: int) -> bool: return _id_map.has(id)
 func has_individual_video(id: int) -> bool: return project_data.clips_individual_video.has(id)
+
+func is_visual(index: int) -> bool: return get_type(index) in EditorCore.VISUAL_TYPES
+func is_audio(index: int) -> bool: return get_type(index) in EditorCore.AUDIO_TYPES
+
 func get_index(clip_id: int) -> int: return _id_map[clip_id]
 
 func get_id(index: int) -> int: return project_data.clips_id[index]
@@ -431,6 +433,42 @@ func get_effects(index: int) -> ClipEffects: return project_data.clips_effects[i
 func get_type(index: int) -> FileLogic.TYPE: return Project.files.get_type(get_file_id(index))
 
 func get_end(index: int) -> int: return get_start(index) + get_duration(index)
+
+
+# --- Getters by id ---
+
+func is_visual_by_id(id: int) -> bool: return is_visual(get_index(id))
+func is_audio_by_id(id: int) -> bool: return is_audio(get_index(id))
+
+func get_id_by_id(id: int) -> int: return project_data.clips_id[get_index(id)]
+func get_file_id_by_id(id: int) -> int: return project_data.clips_file_id[get_index(id)]
+func get_track_id_by_id(id: int) -> int: return project_data.clips_track_id[get_index(id)]
+func get_start_by_id(id: int) -> int: return project_data.clips_start[get_index(id)]
+func get_begin_by_id(id: int) -> int: return project_data.clips_begin[get_index(id)]
+func get_duration_by_id(id: int) -> int: return project_data.clips_duration[get_index(id)]
+func get_effects_by_id(id: int) -> ClipEffects: return project_data.clips_effects[get_index(id)]
+
+func get_type_by_id(id: int) -> FileLogic.TYPE: return Project.files.get_type(get_file_id(get_index(id)))
+
+func get_end_by_id(id: int) -> int:
+	var index: int = get_index(id)
+	return get_start(index) + get_duration(index)
+
+
+# --- Setters ---
+
+func switch_ato_active(id: int) -> void: set_ato_active(id, get_effects(id).ato_active)
+func set_ato_active(id: int, value: bool) -> void:
+	if value: InputManager.undo_redo.create_action("Enable clip audio take over")
+	else: InputManager.undo_redo.create_action("Disable clip audio take over")
+	InputManager.undo_redo.add_do_method(_set_ato_active.bind(id, value))
+	InputManager.undo_redo.add_undo_method(_set_ato_active.bind(id, !value))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_ato_active(id: int, value: bool) -> void:
+	get_effects(id).ato_active = value
+	Project.unsaved_changes = true
 
 
 # --- Helpers ---

@@ -45,7 +45,7 @@ func stop_encoder() -> void:
 	cancel_encoding = false
 
 
-func start() -> void:
+func start_encoder() -> void:
 	if encoder != null and encoder.is_open():
 		return printerr("RenderManager: Can't encode whilst another encoder is still busy!")
 	if viewport == null:
@@ -108,7 +108,7 @@ func start() -> void:
 
 	# Flushing the system.
 	if thread.is_alive() or thread.is_started(): await thread.wait_to_finish()
-	if frame_array.size() != 0:
+	if !frame_array.is_empty():
 		if thread.start(_send_frames.bind(frame_array.duplicate())):
 			printerr("RenderManager: Something with encoder thread went wrong!")
 		await thread.wait_to_finish()
@@ -157,11 +157,7 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, length: int) -> voi
 	track_audio.resize(length)
 
 	for id: int in Project.tracks.get_clip_ids(track_id):
-		var index: int = Project.clips.get_index(id)
-		var file_id: int = Project.clips.get_file_id(index)
-		var file_index: int = Project.files.get_index(file_id)
-		var type: int = Project.files.get_type(file_index)
-
+		var type: int = Project.clips.get_type_by_id(id)
 		if type not in EditorCore.AUDIO_TYPES: continue
 		_handle_audio(id, track_audio)
 	audio = GoZenAudio.combine_data(audio, track_audio)
@@ -169,12 +165,12 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, length: int) -> voi
 
 func _handle_audio(id: int, track_audio: PackedByteArray) -> void:
 	if !Project.clips.has(id): return
-	var index: int = Project.clips.get_index(id)
 	var framerate: float = Project.get_framerate()
 	var samples_per_frame: float = MIX_RATE / framerate
 	var audio_data: PackedByteArray = Project.clips.get_audio_data(id)
 	if audio_data.is_empty(): return
 
+	var index: int = Project.clips.get_index(id)
 	var effects: ClipEffects = Project.clips.get_effects(index)
 	var fade_in: int = effects.fade_audio.x
 	var fade_out: int = effects.fade_audio.y
@@ -194,8 +190,8 @@ func _handle_audio(id: int, track_audio: PackedByteArray) -> void:
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
 	# Place in correct position
-	var start_frame: int = Project.data.clips_start_frame[index]
-	var start_sample: int = Utils.get_sample_count(start_frame, framerate)
+	var start: int = Project.clips.get_start(index)
+	var start_sample: int = Utils.get_sample_count(start, framerate)
 	if start_sample + audio_data.size() > track_audio.size(): # Shouldn't happen.
 		var extra: int = (start_sample + audio_data.size()) - track_audio.size()
 		audio_data.resize(audio_data.size() - extra)

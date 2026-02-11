@@ -294,7 +294,7 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 			error_occured = true
 	progress.update_progress(10, tr("Files loading ..."))
 
-	while indexes.size() != 0: # Looping till all files are loaded
+	while !indexes.is_empty(): # Looping till all files are loaded
 		await RenderingServer.frame_post_draw
 		for index: int in indexes:
 			if file_data[index] != null:
@@ -304,9 +304,7 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 
 	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
-
-	if !error_occured:
-		PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	if !error_occured: PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
 	else: progress.show_close()
 
 
@@ -314,9 +312,8 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 
 ## (Re)load the data of a file.
 func load_data(index: int) -> void:
-	if index == -1: # Should normally not happen
-		return printerr("FileLogic: Can't init data as file %s is null!")
-
+	# Should normally not happen
+	if index == -1: return printerr("FileLogic: Can't init data as file %s is null!")
 	var id: int = get_id(index)
 	var path: String = get_path(index)
 	var type: TYPE = get_type(index)
@@ -327,10 +324,9 @@ func load_data(index: int) -> void:
 
 	if path.begins_with("temp://"): # TODO: Add text
 		var temp_file: TempFile = TempFile.new()
-		if path == "temp://color":
+		if path == "temp://image": file_data[index] = temp_file.image_data
+		elif path == "temp://color":
 			temp_file.load_image_from_color()
-			file_data[index] = temp_file.image_data
-		elif path == "temp://image":
 			file_data[index] = temp_file.image_data
 		project_data.files_temp_file[id] = temp_file
 	elif type == FileLogic.TYPE.IMAGE:
@@ -347,8 +343,7 @@ func load_data(index: int) -> void:
 	if type in EditorCore.AUDIO_TYPES:
 		if !_load_audio(id) and type == FileLogic.TYPE.VIDEO:
 			type = FileLogic.TYPE.VIDEO_ONLY
-		else:
-			Threader.add_task(_create_wave.bind(path), Callable())
+		else: Threader.add_task(_create_wave.bind(path), Callable())
 
 
 func _load_audio(id: int) -> bool:
@@ -371,7 +366,6 @@ func _load_video(id: int, clip_id: int = -1) -> void:
 	var index: int = get_index(id)
 	var path: String = get_path(index)
 	var temp_video: GoZenVideo = GoZenVideo.new()
-
 	var path_to_load: String = path
 	var proxy_path: String = get_proxy_path(index)
 
@@ -380,14 +374,12 @@ func _load_video(id: int, clip_id: int = -1) -> void:
 			path_to_load = proxy_path
 
 	if temp_video.open(path_to_load):
-		printerr("FileData: Couldn't open video at path '%s'!" % path)
-		return
+		return printerr("FileData: Couldn't open video at path '%s'!" % path)
 
 	Threader.mutex.lock()
-	if clip_id != -1: # Clip only video got requested
-		clip_video_instances[clip_id] = temp_video
-	else:
-		file_data[index] = temp_video
+	# Clip only video got requested
+	if clip_id != -1: clip_video_instances[clip_id] = temp_video
+	else:file_data[index] = temp_video
 
 	# TODO: Check if this is needed:
 	#var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
@@ -547,6 +539,15 @@ func get_type(index: int) -> TYPE: return project_data.files_type[index] as TYPE
 func get_duration(index: int) -> int: return project_data.files_duration[index]
 func get_modified_time(index: int) -> int: return project_data.files_modified_time[index]
 
+# - Getters by id
+func get_path_by_id(id: int) -> String: return project_data.files_path[get_index(id)]
+func get_proxy_path_by_id(id: int) -> String: return project_data.files_proxy_path[get_index(id)]
+func get_nickname_by_id(id: int) -> String: return project_data.files_nickname[get_index(id)]
+func get_folder_by_id(id: int) -> String: return project_data.files_folder[get_index(id)]
+func get_type_by_id(id: int) -> TYPE: return project_data.files_type[get_index(id)] as TYPE
+func get_duration_by_id(id: int) -> int: return project_data.files_duration[get_index(id)]
+func get_modified_time_by_id(id: int) -> int: return project_data.files_modified_time[get_index(id)]
+
 # Only for temporary files so is a dictionary.
 func get_temp_file(id: int) -> TempFile: return null if !has_temp_file(id) else project_data.files_temp_file[id]
 
@@ -558,7 +559,6 @@ func get_ato_id(id: int) -> int: return -1 if !has_ato(id) else project_data.fil
 # - Group getters
 func get_ids() -> PackedInt64Array: return project_data.files_id
 func get_paths() -> PackedStringArray: return project_data.files_path
-
 
 func get_all_audio_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
@@ -577,6 +577,7 @@ func get_all_video_files() -> PackedInt64Array:
 # --- File data getters ---
 
 func get_data(index: int) -> Variant: return file_data[index]
+func get_data_by_id(id: int) -> Variant: return file_data[get_index(id) ]
 func get_pck_instance(id: int) -> Node: return pck_instances[id]
 func get_audio_wave(id: int) -> PackedFloat32Array: return audio_wave[id]
 
@@ -588,6 +589,26 @@ func get_video_clip_instance(clip_id: int) -> GoZenVideo:
 # --- Setters ---
 
 func add_proxy_path(index: int, path: String) -> void: project_data.files_proxy_path[index] = path
+
+
+func switch_clip_video_instance(id: int, clip_id: int) -> void:
+	var current_value: bool = Project.data.clips_individual_video.has(clip_id)
+	if current_value: InputManager.undo_redo.create_action("Disabling clip video instance")
+	else: InputManager.undo_redo.create_action("Enabling clip video instance")
+	InputManager.undo_redo.add_do_method(_update_clip_video_instance.bind(id, clip_id, !current_value))
+	InputManager.undo_redo.add_do_method(_update_clip_video_instance.bind(id, clip_id, current_value))
+	InputManager.undo_redo.commit_action()
+
+
+func _update_clip_video_instance(id: int, clip_id: int, enabled: bool) -> void:
+	if enabled:
+		Project.data.clips_individual_video.append(clip_id)
+		_load_video(id, clip_id)
+	else:
+		var index: int = Project.data.clips_individual_video.find(clip_id)
+		Project.data.clips_individual_video.remove_at(index)
+		_load_video(id)
+	Project.unsaved_changes = true
 
 
 # --- Updaters ---

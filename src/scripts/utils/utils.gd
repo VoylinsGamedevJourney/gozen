@@ -84,7 +84,7 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 		elif DirAccess.dir_exists_absolute(path):
 			folders.append(path)
 
-	while folders.size() != 0:
+	while !folders.is_empty():
 		var new_folders: PackedStringArray = []
 
 		for path: String in folders:

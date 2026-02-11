@@ -361,16 +361,14 @@ func _on_start_render_button_pressed() -> void:
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
 	RenderManager.encoder.set_audio_codec_id(audio_codec_option_button.get_selected_id())
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
-	RenderManager.start()
+	RenderManager.start_encoder()
 
 
 func update_encoder_status(status: RenderManager.STATUS) -> void:
 	if progress_overlay == null:
-		printerr("RenderScreen: ProgressOverlay is null!")
-		return
+		return printerr("RenderScreen: ProgressOverlay is null!")
 
 	var status_str: String = ""
-
 	match status:
 		# Errors, something went wrong.
 		RenderManager.STATUS.ERROR_OPEN: _show_error(tr("Error opening file"))
@@ -391,8 +389,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 	if status >= 0:
 		if status == RenderManager.STATUS.FRAMES_SEND:
 			current_progress += progress_frame_increase # Update bar from 6 to 99.
-		else:
-			current_progress = status
+		else: current_progress = status
 	if progress_overlay != null:
 		progress_overlay.update_progress(floori(current_progress), status_str)
 
@@ -414,7 +411,6 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	var icon: Image = Image.load_from_file(icon_path)
 
 	icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
-
 	new_profile.profile_name = profile_name
 	new_profile.icon = ImageTexture.create_from_image(icon)
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as GoZenEncoder.VIDEO_CODEC
@@ -431,8 +427,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	var save_path: String = USER_PROFILES_PATH.path_join(save_name + ".tres")
 	var _err: int = ResourceSaver.save(new_profile, save_path)
 	if _err != OK:
-		printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])
-		return
+		return printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])
 	add_profile(new_profile, save_path)
 
 	var id: int = option_button_render_profiles.item_count - 1
@@ -446,10 +441,7 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 		var current_index: int = option_button_render_profiles.get_item_index(current_id)
 
 		_delete_custom_profile(index)
-		if current_index != index:
-			option_button_render_profiles.select(index)
-		else:
-			_on_render_settings_changed()
-	else:
-		load_profile(load(option_button_render_profiles.get_item_metadata(index)))
+		if current_index != index: option_button_render_profiles.select(index)
+		else: _on_render_settings_changed()
+	else: load_profile(load(option_button_render_profiles.get_item_metadata(index)))
 

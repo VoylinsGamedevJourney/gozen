@@ -130,4 +130,4 @@ func show_menu(popup: PopupMenu) -> void:
 # --- Helper functions ---
 
 func _on_size_changed() -> void: _control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-func _check_background() -> void: _control.visible = _open_popups.size() != 0
+func _check_background() -> void: _control.visible = !_open_popups.is_empty()

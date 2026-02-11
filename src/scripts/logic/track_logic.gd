@@ -170,7 +170,7 @@ func get_last_clip_id(track_index: int) -> int:
 	for i: int in clip_ids[track_index].size():
 		var clip_id: int = clip_ids[track_index][i]
 		if !Project.clips.has(clip_id): continue
-		var end: int = Project.clips.get_end(Project.clips.get_index(clip_id))
+		var end: int = Project.clips.get_end_by_id(clip_id)
 		if end > max_end:
 			max_end = end
 			last_clip_id = clip_id
@@ -191,7 +191,7 @@ func get_clip_id_at(index: int, frame_nr: int) -> int:
 		var start: int = frame_nrs[index][i]
 		if frame_nr < start: continue
 		var id: int = clip_ids[index][i]
-		var end: int = Project.clips.get_end(Project.clips.get_index(id))
+		var end: int = Project.clips.get_end_by_id(id)
 		if frame_nr >= start and frame_nr < end: return id
 	return -1
 
@@ -224,9 +224,8 @@ func get_free_region(index: int, frame_nr: int, ignores: PackedInt64Array = []) 
 		var clip_id: int = clip_ids[index][i]
 		if clip_id in ignores or !Project.clips.has(clip_id): continue
 
-		var clip_index: int = Project.clips.get_index(clip_id)
 		var start: int = frame_nrs[index][i]
-		var end: int = Project.clips.get_end(clip_index)
+		var end: int = Project.clips.get_end_by_id(clip_id)
 		if end <= frame_nr: region.x = maxi(region.x, end)
 		elif start > frame_nr: region.y = mini(region.y, start)
 	return region
