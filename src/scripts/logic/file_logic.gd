@@ -124,19 +124,23 @@ func _add(path: String) -> int:
 		duration = floori(GoZenVideo.get_duration(path) / Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck": type = TYPE.PCK
-	else: printerr("FileHandler: Invalid file: ", path)
+	else: printerr("FileLogic: Invalid file: ", path)
 
 	if path.contains("temp://"):
+		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		if path == "temp://text":
 			type = TYPE.TEXT
 			duration = Settings.get_text_duration()
+			nickname = "%s %s" % [temp_nickname, id]
 		elif path == "temp://image":
 			type = TYPE.IMAGE
 			duration = Settings.get_image_duration()
-		elif path == "temp://color":
+			nickname = "%s %s" % [temp_nickname, id]
+		elif path.begins_with("temp://color"):
 			type = TYPE.COLOR
 			duration = Settings.get_color_duration()
-		nickname = "%s %s" % [path.trim_prefix("temp://").capitalize(), id]
+			nickname = temp_nickname.replace("#", " #")
+			path = path.split("#")[0]
 	if type == TYPE.EMPTY: return -1 # Invalid file, don't bother with it.
 
 	project_data.files_id.append(id)
@@ -478,7 +482,7 @@ func reload(id: int) -> void:
 
 ## Save the image and replace the path in the file data to point to the new image file.
 func save_image_to_file(id: int, path: String) -> void:
-	const ERROR_MESSAGE: String = "FileHandler: Couldn't save image to %s!\n"
+	const ERROR_MESSAGE: String = "FileLogic: Couldn't save image to %s!\n"
 	var index: int = get_index(id)
 	var image: Image = get_temp_file(id).image_data.get_image()
 	var extension: String = path.get_extension().to_lower()
@@ -508,14 +512,14 @@ func save_audio_to_wav(id: int, save_path: String) -> void:
 	audio_stream.data = GoZenAudio.get_audio_data(path, -1)
 
 	if audio_stream.save_to_wav(save_path):
-		printerr("FileHandler: Error occured when saving to WAV!")
+		printerr("FileLogic: Error occured when saving to WAV!")
 
 
 #--- Private functions ---
 func _check_if_modified(index: int) -> void:
 	var path: String = get_path(index)
 	if !path.begins_with("temp://") and !FileAccess.file_exists(path):
-		print("FileHandler: File %s at %s doesn't exist anymore!" % [index, path])
+		print("FileLogic: File %s at %s doesn't exist anymore!" % [index, path])
 		_delete(get_id(index))
 
 
@@ -588,7 +592,24 @@ func get_video_clip_instance(clip_id: int) -> GoZenVideo:
 
 # --- Setters ---
 
-func add_proxy_path(index: int, path: String) -> void: project_data.files_proxy_path[index] = path
+func set_proxy_path(index: int, path: String) -> void:
+	project_data.files_proxy_path[index] = path
+
+
+func set_nickname(id: int, new_nickname: String) -> void:
+	if !has(id): return
+	var old_nickname: String = get_nickname_by_id(id)
+	InputManager.undo_redo.create_action("Renaming file")
+	InputManager.undo_redo.add_do_method(_set_nickname.bind(id, new_nickname))
+	InputManager.undo_redo.add_undo_method(_set_nickname.bind(id, old_nickname))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_nickname(id: int, nickname: String) -> void:
+	var index: int = get_index(id)
+	project_data.files_nickname[index] = nickname
+	nickname_changed.emit(id)
+	Project.unsaved_changes = true
 
 
 func switch_clip_video_instance(id: int, clip_id: int) -> void:
@@ -596,7 +617,7 @@ func switch_clip_video_instance(id: int, clip_id: int) -> void:
 	if current_value: InputManager.undo_redo.create_action("Disabling clip video instance")
 	else: InputManager.undo_redo.create_action("Enabling clip video instance")
 	InputManager.undo_redo.add_do_method(_update_clip_video_instance.bind(id, clip_id, !current_value))
-	InputManager.undo_redo.add_do_method(_update_clip_video_instance.bind(id, clip_id, current_value))
+	InputManager.undo_redo.add_undo_method(_update_clip_video_instance.bind(id, clip_id, current_value))
 	InputManager.undo_redo.commit_action()
 
 
@@ -608,6 +629,20 @@ func _update_clip_video_instance(id: int, clip_id: int, enabled: bool) -> void:
 		var index: int = Project.data.clips_individual_video.find(clip_id)
 		Project.data.clips_individual_video.remove_at(index)
 		_load_video(id)
+	Project.unsaved_changes = true
+
+
+func toggle_ato(id: int) -> void:
+	var ato_active: bool = get_ato_active(id)
+	if ato_active: InputManager.undo_redo.create_action("Disable file audio take over")
+	else: InputManager.undo_redo.create_action("Enable file audio take over")
+	InputManager.undo_redo.add_do_method(_toggle_ato.bind(id, !ato_active))
+	InputManager.undo_redo.add_undo_method(_toggle_ato.bind(id, ato_active))
+	InputManager.undo_redo.commit_action()
+
+
+func _toggle_ato(id: int, value: bool) -> void:
+	project_data.files_ato_active[get_index(id)] = value
 	Project.unsaved_changes = true
 
 

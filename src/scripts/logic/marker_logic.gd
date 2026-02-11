@@ -95,15 +95,23 @@ func get_index(frame_nr: int) -> int:
 	return index
 
 
+func get_indexes() -> PackedInt64Array:
+	return PackedInt64Array(range(project_data.markers_frame.size()))
+
+
 ## Get a sorted array of the index numbers according to frame_nr.
 func get_sorted() -> PackedInt64Array:
-	var indexes: Array[int] = []
-	for i: int in project_data.markers_frame.size(): indexes.append(i)
-
-	indexes.sort_custom(func(a: int, b: int) -> int:
-			return project_data.markers_frame[a] < project_data.markers_frame[b])
+	var indexes: Array[int] = range(project_data.markers_frame.size())
+	indexes.sort_custom(_sort)
 	return PackedInt64Array(indexes)
 
 
 func get_text(index: int) -> String: return project_data.markers_data[index]
+func get_frame(index: int) -> int: return project_data.markers_frame[index]
 func get_type(index: int) -> int: return project_data.markers_data[index]
+
+
+# --- Helper functions ---
+
+func _sort(a: int, b: int) -> int:
+	return project_data.markers_frame[a] < project_data.markers_frame[b]

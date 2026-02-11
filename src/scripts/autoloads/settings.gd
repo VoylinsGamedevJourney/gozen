@@ -4,6 +4,8 @@ signal on_show_menu_bar_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
 signal localization_updated
 
+signal on_waveform_update
+
 
 const PATH: String = "user://settings"
 const PATH_THEMES: String = "user://themes/"
@@ -55,7 +57,6 @@ func open_settings_menu() -> void:
 func load_system_fonts() -> void:
 	for font: String in OS.get_system_fonts():
 		var system_font: SystemFont = SystemFont.new()
-
 		system_font.font_names = [font]
 		fonts[font] = system_font
 
@@ -64,18 +65,14 @@ func load_custom_themes() -> void:
 	var default_themes: Dictionary[String, String] = get_themes()
 	var dir: DirAccess = DirAccess.open(PATH_THEMES)
 	if !dir: return
-
 	dir.list_dir_begin()
 
 	var file_name: String = dir.get_next()
-
 	while file_name != "":
 		if !dir.current_is_dir() and file_name.ends_with(".tres"):
 			var theme_name: String = file_name.get_basename().replace('_', ' ')
-
 			if not theme_name in default_themes and not theme_name in custom_themes:
 				custom_themes[theme_name] = PATH_THEMES + file_name
-
 		file_name = dir.get_next()
 
 
@@ -88,9 +85,7 @@ func get_system_locale() -> String:
 	# Next up, get the first entry which has the language code, this can happen
 	# if we only have the language available with a certain country code.
 	for loaded_locale: String in TranslationServer.get_loaded_locales():
-		if loaded_locale.begins_with(OS.get_locale_language()):
-			return loaded_locale
-
+		if loaded_locale.begins_with(OS.get_locale_language()): return loaded_locale
 	return "en" # Return English as a default.
 
 
@@ -101,14 +96,10 @@ func set_language(code: String) -> void:
 	localization_updated.emit()
 
 
-func apply_language() -> void:
-	TranslationServer.set_locale(get_language())
+func apply_language() -> void: TranslationServer.set_locale(get_language())
 
 
-func get_language() -> String:
-	return data.language
-
-
+func get_language() -> String: return data.language
 func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
@@ -119,25 +110,20 @@ func get_languages() -> Dictionary:
 
 		if Localization.native_locale_names.has(key):
 			key = Localization.native_locale_names[key]
-		else:
-			key = TranslationServer.get_locale_name(key)
+		else: key = TranslationServer.get_locale_name(key)
 
 		if code.contains('_'): # Country code present
 			var country_code: String = code.split('_')[1]
 
 			if Localization.native_country_names.has(country_code):
 				key += " (" + Localization.native_country_names[country_code] + ")"
-			else:
-				key += " (" + TranslationServer.get_country_name(country_code) + ")"
-
+			else: key += " (" + TranslationServer.get_country_name(country_code) + ")"
 		temp_language_data[key] = code
 
 	var keys: PackedStringArray = temp_language_data.keys()
 	keys.sort()
 
-	for key: String in keys:
-		language_data[key] = temp_language_data[key]
-
+	for key: String in keys: language_data[key] = temp_language_data[key]
 	return language_data
 
 
@@ -158,16 +144,12 @@ func apply_display_scale() -> void:
 func get_display_scale() -> float:
 	var size: Vector2 = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
 
-	if size.y > 1100:
-		return 1.5
-	elif size.y < 1000:
-		return 0.5
-
+	if size.y > 1100: return 1.5
+	elif size.y < 1000: return 0.5
 	return 1.0
 
 
-func get_display_scale_int() -> int:
-	return int(data.display_scale * 100)
+func get_display_scale_int() -> int: return int(data.display_scale * 100)
 
 
 func set_theme_path(new_path: String) -> void:
@@ -182,10 +164,7 @@ func apply_theme() -> void:
 		get_tree().root.theme = null
 
 
-func get_theme_path() -> String:
-	return data.theme
-
-
+func get_theme_path() -> String: return data.theme
 func get_themes() -> Dictionary[String, String]:
 	var themes: Dictionary[String, String] = {
 		"Default Dark": Library.THEME_DARK,
@@ -195,7 +174,6 @@ func get_themes() -> Dictionary[String, String]:
 	for custom_theme_name: String in custom_themes:
 		if !themes.has(custom_theme_name):
 			themes[custom_theme_name] = custom_themes[custom_theme_name]
-
 	return themes
 
 
@@ -204,30 +182,26 @@ func set_show_menu_bar(value: bool) -> void:
 	on_show_menu_bar_changed.emit(value)
 
 
-func get_show_menu_bar() -> bool:
-	return data.show_menu_bar
+func get_show_menu_bar() -> bool:return data.show_menu_bar
 
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	data.audio_waveform_style = style
 	Project.files.update_audio_waves()
+	on_waveform_update.emit()
 
 
-func get_audio_waveform_style() -> int:
-	return data.audio_waveform_style
-
-
+func get_audio_waveform_style() -> int: return data.audio_waveform_style
 func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE]:
-	var styles: Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE] = {
+	return {
 		"Center": SettingsData.AUDIO_WAVEFORM_STYLE.CENTER,
 		"Bottom to Top": SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP,
 		"Top to bottom": SettingsData.AUDIO_WAVEFORM_STYLE.TOP_TO_BOTTOM}
 
-	return styles
-
 
 func set_audio_waveform_amp(value: float) -> void:
 	data.audio_waveform_amp = value
+	on_waveform_update.emit()
 
 
 func get_audio_waveform_amp() -> float:
