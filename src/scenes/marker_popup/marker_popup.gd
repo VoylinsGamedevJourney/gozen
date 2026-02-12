@@ -5,7 +5,7 @@ extends Control
 # 	selected one being the bigger one. (maybe self_modulate the background to
 # 	give more of an indication of the selected marker color)
 
-static var type: int = 0 # We want to save the last used type
+static var marker_type: int = 0 ## We want to save the last used type.
 
 
 @export var marker_line_edit: LineEdit
@@ -19,21 +19,21 @@ func _ready() -> void:
 	accept_event()
 
 	# Check if marker present, if yes, we edit.
-	var index: int = Project.markers.get_index(EditorCore.frame_nr)
-	if index != -1:
-		marker_line_edit.text = Project.markers.get_text(index)
-		type = Project.markers.get_type(index)
+	var marker_index: int = Project.data.markers_frame.find(EditorCore.frame_nr)
+	if marker_index != -1:
+		marker_line_edit.text = Project.data.markers_text[marker_index]
+		marker_type = Project.data.markers_type[marker_index]
 	else:
 		marker_line_edit.text = ""
 
 	marker_line_edit.grab_focus()
 	marker_line_edit.select_all()
-	type_option_button.selected = type
+	type_option_button.selected = marker_type
 	time_label.text = "%s (Frame: %d)" % [
 			Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.get_framerate(), false),
 			EditorCore.frame_nr]
 
-	delete_button.visible = index != -1
+	delete_button.visible = marker_index != -1
 
 
 func _setup_type_option_button() -> void:
@@ -49,20 +49,20 @@ func _setup_type_option_button() -> void:
 
 func _on_create_marker_pressed() -> void:
 	var text_content: String = marker_line_edit.text.strip_edges()
-	var index: int = Project.markers.get_index(EditorCore.frame_nr)
+	var marker_index: int = Project.data.markers_frame.find(EditorCore.frame_nr)
 
 	if text_content == "": # Delete if empty
-		if index != -1:
+		if marker_index != -1:
 			Project.markers.remove(EditorCore.frame_nr)
-	elif index != -1:
-		Project.markers.update(index, EditorCore.frame_nr, text_content, type)
+	elif marker_index != -1:
+		Project.markers.update(marker_index, EditorCore.frame_nr, text_content, marker_type)
 	else:
-		Project.markers.add(EditorCore.frame_nr, text_content, type)
+		Project.markers.add(EditorCore.frame_nr, text_content, marker_type)
 	PopupManager.close(PopupManager.MARKER)
 
 
-func _on_type_selected(index: int) -> void:
-	type = index
+func _on_type_selected(marker_index: int) -> void:
+	marker_type = marker_index
 
 
 func _on_cancel_button_pressed() -> void:

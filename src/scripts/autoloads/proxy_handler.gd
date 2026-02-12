@@ -9,16 +9,17 @@ const PROXY_PATH: String = "user://proxies/" # TODO: Make this path a setting
 const PROXY_HEIGHT: int = 540
 
 
+
 func _ready() -> void:
 	if !DirAccess.dir_exists_absolute(PROXY_PATH):
 		DirAccess.make_dir_absolute(PROXY_PATH)
 
 
 func request_generation(file_id: int) -> void:
-	var file_index: int = Project.files._id_map[file_id]
-	var file_type: FileLogic.TYPE = Project.data.files_type[file_index] as FileLogic.TYPE
+	var file_index: int = Project.files.index_map[file_id]
+	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 	var file_path: String = Project.data.files_path[file_index]
-	if file_type not in FileLogic.TYPE_VIDEOS:
+	if file_type not in EditorCore.TYPE_VIDEOS:
 		return # Only proxies for videos possible
 	var new_path: String = PROXY_PATH + _create_proxy_name(file_path)
 
@@ -34,9 +35,9 @@ func request_generation(file_id: int) -> void:
 
 
 func delete_proxy(file_id: int) -> void:
-	if !Project.files.has(file_id):
+	if !Project.files.index_map.has(file_id):
 		return
-	var file_index: int = Project.files._id_map[file_id]
+	var file_index: int = Project.files.index_map[file_id]
 	var file_proxy_path: String = Project.data.files_proxy_path[file_index]
 	if !file_proxy_path.is_empty():
 		DirAccess.remove_absolute(file_proxy_path)
@@ -44,9 +45,9 @@ func delete_proxy(file_id: int) -> void:
 
 
 func _generate_proxy_task(file_id: int, output_path: String) -> void:
-	if !Project.files.has(file_id): return printerr("ProxyHandler:
-		Failed to find file!")
-	var file_index: int = Project.files._id_map[file_id]
+	if !Project.files.index_map.has(file_id):
+		return printerr("ProxyHandler: Failed to find file!")
+	var file_index: int = Project.files.index_map[file_id]
 	var file_path: String = Project.data.files_path[file_index]
 	var global_output_path: String = ProjectSettings.globalize_path(output_path)
 	var global_input_path: String = ProjectSettings.globalize_path(file_path)

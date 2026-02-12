@@ -62,16 +62,16 @@ func _on_project_ready() -> void:
 	Project.files.moved.connect(_on_moved)
 	Project.files.path_updated.connect(_on_path_updated)
 	Project.files.nickname_changed.connect(_on_nickname_changed)
-	Project.folders.folder_added.connect(_on_folder_added)
-	Project.folders.folder_deleted.connect(_on_folder_deleted)
-	Project.folders.folder_renamed.connect(_on_folder_renamed)
+	Project.folders.added.connect(_on_folder_added)
+	Project.folders.deleted.connect(_on_folder_deleted)
+	Project.folders.renamed.connect(_on_folder_renamed)
 
 	for folder: String in Project.data.folders:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
 
-	for id: int in Project.files.get_ids():
-		_add_file_to_tree(id)
+	for file_id: int in Project.data.files_id:
+		_add_file_to_tree(file_id)
 
 
 func _file_menu_pressed(id: int) -> void:
@@ -95,25 +95,25 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 	var popup: PopupMenu = PopupManager.create_menu()
 
 	if str(metadata).is_valid_int(): # - File
-		var id: int = int(metadata)
-		var index: int = Project.files.get_index(id)
-		var path: String = Project.files.get_path(index)
-		var proxy_path: String = Project.files.get_proxy_path(index)
-		var type: FileLogic.TYPE = Project.files.get_type(index)
+		var file_id: int = metadata
+		var file_index: int = Project.files.index_map[file_id]
+		var file_path: String = Project.data.files_path[file_index]
+		var file_proxy_path: String = Project.data.files_proxy_path[file_index]
+		var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 
 		popup.add_item(tr("Rename"), POPUP_ACTION.RENAME)
 		popup.add_item(tr("Reload"), POPUP_ACTION.RELOAD)
 		popup.add_item(tr("Delete"), POPUP_ACTION.DELETE)
 
-		if type == FileLogic.TYPE.IMAGE:
-			if path.contains("temp://"):
+		if file_type == EditorCore.TYPE.IMAGE:
+			if file_path.contains("temp://"):
 				popup.add_separator(tr("Image options"))
 				popup.add_item(tr("Save image as ..."), POPUP_ACTION.SAVE_TEMP_AS)
-		elif type == FileLogic.TYPE.VIDEO:
+		elif file_type == EditorCore.TYPE.VIDEO:
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
-				if proxy_path == "":
+				if file_proxy_path == "":
 					popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
 				else:
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
@@ -121,18 +121,18 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 
 			if Project.files.has_audio():
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-				if Project.files.has_ato(id):
-					if Project.files.get_ato_active(id):
+				if Project.files.has_ato(file_id):
+					if Project.data.files_ato_active[file_id]:
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
 					else:
 						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
 
 			popup.add_item(tr("Extract audio to file ..."), POPUP_ACTION.EXTRACT_AUDIO)
-		elif type == FileLogic.TYPE.VIDEO_ONLY:
+		elif file_type == EditorCore.TYPE.VIDEO_ONLY:
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
-				if !proxy_path.is_empty():
+				if !file_proxy_path.is_empty():
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
 				else:
@@ -140,12 +140,12 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 
 			if Project.files.has_audio():
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-				if Project.files.has_ato(id):
-					if Project.files.get_ato_active(id):
+				if Project.files.has_ato(file_id):
+					if Project.data.get_ato_active(id):
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
 					else:
 						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
-		elif type == FileLogic.TYPE.TEXT:
+		elif type == EditorCore.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), POPUP_ACTION.DUPLICATE)
 
@@ -252,11 +252,11 @@ func _on_popup_action_file_delete() -> void:
 
 func _on_popup_action_file_save_temp_as() -> void:
 	var id: int = tree.get_selected().get_metadata(0)
-	var type: FileLogic.TYPE = Project.files.get_type(id)
+	var type: EditorCore.TYPE = Project.files.get_type(id)
 
-	if type == FileLogic.TYPE.TEXT: # TODO: Implement duplicating text files
+	if type == EditorCore.TYPE.TEXT: # TODO: Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
-	elif type == FileLogic.TYPE.IMAGE:
+	elif type == EditorCore.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
 				tr("Save image to file"), FileDialog.FILE_MODE_SAVE_FILE, IMAGE_FORMATS)
 		dialog.file_selected.connect(func(path: String) -> void:
@@ -277,17 +277,17 @@ func _on_popup_action_file_extract_audio() -> void:
 
 
 func _on_popup_action_file_duplicate() -> void: # Only for text.
-	var id: int = tree.get_selected().get_metadata(0)
-	var index: int = Project.files.get_index(id)
-	var type: FileLogic.TYPE = Project.files.get_type(index)
+	var file_id: int = tree.get_selected().get_metadata(0)
+	var file_index: int = Project.files.index_map[file_id]
+	var file_type: EditorCore.TYPE = Project.files.get_type(index)
 
-	if type != FileLogic.TYPE.TEXT:
+	if file_type != EditorCore.TYPE.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
 	# TODO: Implement this! Project.files.duplicate_text_file(id)
 
 
 func _on_popup_action_file_create_proxy() -> void:
-	ProxyHandler.request_generation(tree.get_selected().get_metadata(0))
+	ProxyHandler.request_generation(tree.get_selected().get_metadata(0) as int)
 
 
 func _on_popup_action_file_recreate_proxy() -> void:
@@ -308,11 +308,11 @@ func _on_popup_action_audio_take_over() -> void:
 	# TODO: Add this to undo_redo
 	var file_id: int = tree.get_selected().get_metadata(0)
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
-	popup.load_data(file_id, true)
+	popup.call("load_data", file_id, true)
 
 
 func _on_popup_action_audio_take_over_toggle() -> void:
-	Project.files.toggle_ato(tree.get_selected().get_metadata(0))
+	Project.files.toggle_ato(tree.get_selected().get_metadata(0) as int)
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
@@ -328,15 +328,16 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		var file_ids: PackedInt64Array = []
 
 		if str(metadata).is_valid_int():
-			file_ids.append(int(metadata)) # Single file
+			file_ids.append(metadata as int) # Single file
 		else:
 			file_ids = _get_recursive_ids(selected) # Folder
 
 		for file_id: int in file_ids:
 			if file_id in draggable.ids:
 				continue
+			var file_index: int = Project.files.index_map[file_id]
 			draggable.ids.append(file_id)
-			draggable.duration += Project.files.get_duration_by_id(file_id)
+			draggable.duration += Project.data.files_duration[file_index]
 
 		selected = tree.get_next_selected(selected)
 		if selected == null:
@@ -367,15 +368,15 @@ func _add_folder_to_tree(folder: String) -> void:
 		previous_folder = folder_items[check_path]
 
 
-func _add_file_to_tree(id: int) -> void:
-	var index: int = Project.files.get_index(id)
-	var path: String = Project.files.get_path(index)
-	var folder: String = Project.files.get_folder(index)
-	var nickname: String = Project.files.get_nickname(index)
+func _add_file_to_tree(file_id: int) -> void:
+	var file_index: int = Project.files.index_map[file_id]
+	var file_path: String = Project.data.files_path[file_index]
+	var file_folder: String = Project.data.files_folder[file_index]
+	var file_nickname: String = Project.data.files_nickname[file_index]
 
 	# Create item for the file panel tree.
-	if !folder_items.keys().has(folder):
-		_add_folder_to_tree(folder)
+	if !folder_items.keys().has(file_folder):
+		_add_folder_to_tree(file_folder)
 
 	if Settings.get_use_proxies():
 		var proxy_path: String = Project.files.get_nickname(index)

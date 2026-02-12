@@ -63,9 +63,6 @@ msgstr "Project laden"
 msgid "title_files_dropped"
 msgstr "Bestanden toegevoegd"
 
-msgid "title_sponsors"
-msgstr "Sponsors"
-
 msgid "title_editor_settings"
 msgstr "Editor instellingen"
 
@@ -109,12 +106,6 @@ msgstr "Discord server"
 
 msgid "button_support_gozen"
 msgstr "Steun GoZen"
-
-msgid "button_view_sponsors"
-msgstr "Sponsors"
-
-msgid "button_become_sponsor"
-msgstr "Word een sponsor"
 
 msgid "button_open_project"
 msgstr "Project openen"

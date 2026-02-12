@@ -52,14 +52,14 @@ func delete(folder: String) -> void:
 	for i: int in project_data.files_folder.size():
 		if project_data.files_folder[i].begins_with(folder):
 			files_to_delete.append(i)
-			file_ids.append(project_data.files_id[i])
+			file_ids.append(project_data.files[i])
 	files_to_delete.sort()
 	files_to_delete.reverse()
 
 	# Get all the clips to delete.
 	var clips_to_delete: PackedInt64Array = []
-	for i: int in project_data.clips_file_id.size():
-		if project_data.clips_file_id[i] in files_to_delete:
+	for i: int in project_data.clips_file.size():
+		if project_data.clips_file[i] in files_to_delete:
 			clips_to_delete.append(i)
 	clips_to_delete.sort()
 	clips_to_delete.reverse()
@@ -120,7 +120,7 @@ func _rename(folder_index: int, new_path: String) -> void:
 	project_data.folders[folder_index] = new_path
 	renamed.emit(old_path, new_path)
 
-	for file_index: int in Project.files.size(): # Update files.
+	for file_index: int in Project.data.files.size(): # Update files.
 		if Project.data.files_folder[file_index] != old_path:
 			continue
 		project_data.files_folder[file_index] = new_path

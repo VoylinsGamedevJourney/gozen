@@ -64,9 +64,6 @@ msgstr "正在載入專案"
 msgid "title_files_dropped"
 msgstr "已加入檔案"
 
-msgid "title_sponsors"
-msgstr "贊助者"
-
 msgid "title_editor_settings"
 msgstr "編輯器設定"
 
@@ -114,12 +111,6 @@ msgstr "Discord 伺服器"
 
 msgid "button_support_gozen"
 msgstr "支持 GoZen"
-
-msgid "button_view_sponsors"
-msgstr "查看贊助者"
-
-msgid "button_become_sponsor"
-msgstr "成為贊助者"
 
 msgid "button_open_project"
 msgstr "開啟專案"

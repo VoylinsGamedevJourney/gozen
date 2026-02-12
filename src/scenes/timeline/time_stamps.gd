@@ -47,8 +47,9 @@ func _on_project_ready() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			_on_left_mouse_button(event)
+		var event_mouse_button: InputEventMouseButton = event
+		if (event_mouse_button as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+			_on_left_mouse_button(event_mouse_button)
 	elif event is InputEventMouseMotion:
 		if Project.markers.dragged_marker != -1:
 			queue_redraw()
@@ -148,12 +149,12 @@ func _draw() -> void:
 		if !is_being_dragged and frame_nr < visible_start_nr or frame_nr > visible_end_nr:
 			continue # Only visible markers and the one being dragged get drawn
 
-		var index: int = Project.markers.get_index(frame_nr)
-		var text: String = Project.data.get_text(index)
-		var color: Color = Settings.get_marker_color(Project.markers.get_type(index))
+		var marker_index: int = Project.data.markers_frame.find(frame_nr)
+		var marker_text: String = Project.data.markers_text[marker_index]
+		var marker_color: Color = Settings.get_marker_color(Project.data.markers_type[marker_index])
 
 		var pos_x: float = frame_nr * current_zoom
-		var text_size: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER)
+		var text_size: Vector2 = font.get_string_size(marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER)
 		var text_y_offset: float = (MARKER_HANDLE_HEIGHT - text_size.y) / 2.0 + font.get_ascent(FONT_SIZE_MARKER)
 
 		if is_being_dragged:
@@ -162,21 +163,21 @@ func _draw() -> void:
 				pos_x = Project.markers.dragged_marker_offset
 			else:
 				Project.markers.dragged_marker_offset = 0
-			marker_style_box.bg_color = color * Color(1.0, 1.0, 1.0, 0.2)
+			marker_style_box.bg_color = marker_color * Color(1.0, 1.0, 1.0, 0.2)
 
 		var bubble_pos_x: float = pos_x + (MARKER_LINE_WIDTH / 2.0)
 		var bubble_width: float = text_size.x + (MARKER_PADDING * 2)
 		var bubble_rect: Rect2 = Rect2(bubble_pos_x, 0, bubble_width, MARKER_HANDLE_HEIGHT)
 		var bubble_text_pos: Vector2 = Vector2(pos_x + MARKER_PADDING, text_y_offset)
-		var bubble_text_color: Color = Color.WHITE if color.get_luminance() < 0.5 else Color.BLACK
+		var bubble_text_color: Color = Color.WHITE if marker_color.get_luminance() < 0.5 else Color.BLACK
 
 		if !is_being_dragged:
 			marker_rects[frame_nr] = bubble_rect
-			marker_style_box.bg_color = color * Color(1.0, 1.0, 1.0, 0.5)
+			marker_style_box.bg_color = marker_color * Color(1.0, 1.0, 1.0, 0.5)
 
-		draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), color, MARKER_LINE_WIDTH)
+		draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), marker_color, MARKER_LINE_WIDTH)
 		draw_style_box(marker_style_box, bubble_rect)
-		draw_string(font, bubble_text_pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER, bubble_text_color)
+		draw_string(font, bubble_text_pos, marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER, bubble_text_color)
 
 
 func _update_tooltip() -> void:
@@ -199,7 +200,7 @@ func _on_timeline_zoom_changed(new_zoom: float) -> void:
 
 
 func _get_major_frame_step() -> int:
-	# 120 pixels between major ticks
+	# 120 pixels between major ticks.
 	var frames: float =  120.0 / current_zoom
 	for step: int in STEPS:
 		if step >= frames:

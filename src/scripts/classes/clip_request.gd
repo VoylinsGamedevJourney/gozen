@@ -1,45 +1,46 @@
 class_name ClipRequest
 extends RefCounted
 
-var clip_id: int = -1
-var file_id: int = -1
+var clip: int = -1
+var file: int = -1
 
-var frame_nr: int = 0
-var track_id: int = 0
+var track: int = 0
+var frame: int = 0
 
 var frame_offset: int = 0
 var track_offset: int = 0
 
-var resize_amount: int
-var from_end: bool = false
+var resize: int
+var is_end: bool = false
 
 
-static func add_request(file: int, track: int, frame: int) -> ClipRequest:
+
+static func add_request(file_id: int, track_index: int, frame_nr: int) -> ClipRequest:
 	var request: ClipRequest = ClipRequest.new()
-	request.file_id = file
-	request.track_id = track
-	request.frame_nr = frame
+	request.file = file_id
+	request.track = track_index
+	request.frame = frame_nr
 	return request
 
 
-static func cut_request(id: int, frame_cut_pos: int) -> ClipRequest:
+static func cut_request(clip_id: int, frame_cut_pos: int) -> ClipRequest:
 	var request: ClipRequest = ClipRequest.new()
-	request.clip_id = id
-	request.frame_nr = frame_cut_pos
+	request.clip = clip_id
+	request.frame = frame_cut_pos
 	return request
 
 
-static func move_request(id: int, _frame_offset: int, _track_offset: int) -> ClipRequest:
+static func move_request(clip_id: int, offset_frame: int, offset_track: int = 0) -> ClipRequest:
 	var request: ClipRequest = ClipRequest.new()
-	request.clip_id = id
-	request.frame_offset = _frame_offset
-	request.track_offset = _track_offset
+	request.clip = clip_id
+	request.frame_offset = offset_frame
+	request.track_offset = offset_track
 	return request
 
 
-static func resize_request(id: int, amount: int, end: bool) -> ClipRequest:
+static func resize_request(clip_id: int, resize_amount: int, end: bool) -> ClipRequest:
 	var request: ClipRequest = ClipRequest.new()
-	request.clip_id = id
-	request.resize_amount = amount
-	request.from_end = end
+	request.clip = clip_id
+	request.resize = resize_amount
+	request.is_end = end
 	return request

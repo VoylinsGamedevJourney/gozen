@@ -12,10 +12,6 @@ signal ato_changed(file_id: int)
 signal video_loaded(file_id: int)
 
 
-enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, VIDEO_ONLY, TEXT, COLOR, PCK }
-
-
-const TYPE_VIDEOS: Array = [TYPE.VIDEO, TYPE.VIDEO_ONLY]
 const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo)
 
 
@@ -27,7 +23,7 @@ var pck_instances: Dictionary[int, Node] = {} ## { file_id: PKC instance }
 var audio_wave: Dictionary[int, PackedFloat32Array] = {} ## { file_id: wave_data }
 var clip_video_instances: Dictionary[int, GoZenVideo] = {} ## { clip_id: GoZenVideo }
 
-var _id_map: Dictionary[int, int] = {} ## { file_id: index }
+var index_map: Dictionary[int, int] = {} ## { file_id: index }
 
 
 # --- Main ---
@@ -41,21 +37,21 @@ func _init(data: ProjectData) -> void:
 
 
 func _rebuild_map() -> void:
-	_id_map.clear()
-	for index: int in size():
-		_id_map[project_data.files_id[index]] = index
+	index_map.clear()
+	for index: int in index_map.size():
+		index_map[project_data.files[index]] = index
 
 
 ## Load everything on startup and give user indication of the progress.
 func _startup_loading(progress: ProgressOverlay, amount: float) -> void:
-	for index: int in size():
+	for index: int in index_map.size():
 		load_data(index)
 		progress.increment_bar(amount)
 
 
 ## For undo/redo system.
 func _create_snapshot(index: int) -> Dictionary:
-	var file_id: int = project_data.files_id[index]
+	var file_id: int = project_data.files[index]
 	return {
 		"file_id": file_id,
 		"path": project_data.files_path[index],
@@ -69,7 +65,7 @@ func _create_snapshot(index: int) -> Dictionary:
 		"temp_file": project_data.files_temp_file.get(file_id),
 		"ato_active": project_data.files_ato_active.get(file_id),
 		"ato_offset": project_data.files_ato_offset.get(file_id),
-		"ato_id": project_data.files_ato_id.get(file_id)
+		"ato_file": project_data.files_ato_file.get(file_id)
 	}
 
 
@@ -81,12 +77,12 @@ func _create_snapshot_temp_image(file_id: int, temp_file: TempFile) -> Dictionar
 		"nickname": "Image %s" % file_id,
 		"proxy_path": "",
 		"folder": "/",
-		"type": TYPE.IMAGE,
+		"type": EditorCore.TYPE.IMAGE,
 		"duration": Settings.get_image_duration(),
 		"modified_time": -1,
 
 		"temp_file": temp_file,
-		"ato_active": null, "ato_offset": null, "ato_id": null
+		"ato_active": null, "ato_offset": null, "ato_file": null
 	}
 
 
@@ -108,49 +104,49 @@ func add(paths: PackedStringArray) -> void:
 
 func _add(path: String) -> int:
 	var extension: String = path.get_extension().to_lower()
-	var index: int = size()
-	var file_id: int = Utils.get_unique_id(project_data.files_id)
-	var type: TYPE = TYPE.EMPTY
+	var index: int = index_map.size()
+	var file_id: int = Utils.get_unique_id(project_data.files)
+	var type: EditorCore.TYPE = EditorCore.TYPE.EMPTY
 	var duration: int = -1 # Video and audio first need to be loaded.
 	var nickname: String = path.get_file()
 	var modified_time: int = -1
 
 	if extension in ProjectSettings.get_setting("extensions/image"):
-		type = TYPE.IMAGE
+		type = EditorCore.TYPE.IMAGE
 		duration = Settings.get_image_duration()
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
-		type = TYPE.AUDIO
+		type = EditorCore.TYPE.AUDIO
 		duration = floori(GoZenVideo.get_duration(path) / Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
-		type = TYPE.VIDEO # We check later if the video is audio only.
+		type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
 		duration = floori(GoZenVideo.get_duration(path) / Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck":
-		type = TYPE.PCK
+		type = EditorCore.TYPE.PCK
 	else: printerr("FileLogic: Invalid file:
 		", path)
 
 	if path.contains("temp://"):
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		if path == "temp://text":
-			type = TYPE.TEXT
+			type = EditorCore.TYPE.TEXT
 			duration = Settings.get_text_duration()
 			nickname = "%s %s" % [temp_nickname, file_id]
 		elif path == "temp://image":
-			type = TYPE.IMAGE
+			type = EditorCore.TYPE.IMAGE
 			duration = Settings.get_image_duration()
 			nickname = "%s %s" % [temp_nickname, file_id]
 		elif path.begins_with("temp://color"):
-			type = TYPE.COLOR
+			type = EditorCore.TYPE.COLOR
 			duration = Settings.get_color_duration()
 			nickname = temp_nickname.replace("#", " #")
 			path = path.split("#")[0]
-	if type == TYPE.EMPTY:
+	if type == EditorCore.TYPE.EMPTY:
 		return -1 # Invalid file, don't bother with it.
 
-	project_data.files_id.append(file_id)
+	project_data.files.append(file_id)
 	project_data.files_path.append(path)
 	project_data.files_nickname.append(nickname)
 	project_data.files_proxy_path.append("")
@@ -158,7 +154,7 @@ func _add(path: String) -> int:
 	project_data.files_type.append(type)
 	project_data.files_duration.append(duration)
 	project_data.files_modified_time.append(modified_time)
-	_id_map[file_id] = index
+	index_map[file_id] = index
 
 	load_data(file_id)
 	return file_id
@@ -167,9 +163,9 @@ func _add(path: String) -> int:
 func delete(ids: PackedInt64Array) -> void:
 	InputManager.undo_redo.create_action("Delete file")
 	for file_id: int in ids:
-		if !has(file_id):
+		if !index_map.has(file_id):
 			continue
-		var index: int = _id_map[file_id]
+		var index: int = index_map[file_id]
 		var snapshot: Dictionary = _create_snapshot(index)
 		InputManager.undo_redo.add_do_method(_delete.bind(file_id))
 		InputManager.undo_redo.add_undo_method(_restore_from_snapshot.bind(snapshot))
@@ -179,23 +175,23 @@ func delete(ids: PackedInt64Array) -> void:
 
 
 func _delete(file_id: int) -> void:
-	var index: int = _id_map[file_id]
+	var file_index: int = index_map[file_id]
 
-	project_data.files_id.remove_at(index)
-	project_data.files_path.remove_at(index)
-	project_data.files_nickname.remove_at(index)
-	project_data.files_proxy_path.remove_at(index)
-	project_data.files_folder.remove_at(index)
-	project_data.files_type.remove_at(index)
-	project_data.files_duration.remove_at(index)
-	project_data.files_modified_time.remove_at(index)
+	project_data.files.remove_at(file_index)
+	project_data.files_path.remove_at(file_index)
+	project_data.files_nickname.remove_at(file_index)
+	project_data.files_proxy_path.remove_at(file_index)
+	project_data.files_folder.remove_at(file_index)
+	project_data.files_type.remove_at(file_index)
+	project_data.files_duration.remove_at(file_index)
+	project_data.files_modified_time.remove_at(file_index)
 
-	if has_temp_file(file_id):
-		project_data.files_temp_file.erase(index)
-	if has_ato(file_id):
-		project_data.files_ato_active.erase(index)
-		project_data.files_ato_offset.erase(index)
-		project_data.files_ato_id.erase(index)
+	if project_data.files_temp_file.has(file_id):
+		project_data.files_temp_file.erase(file_index)
+	if project_data.files_ato_file.has(file_id):
+		project_data.files_ato_active.erase(file_index)
+		project_data.files_ato_offset.erase(file_index)
+		project_data.files_ato_file.erase(file_index)
 
 	_rebuild_map()
 	deleted.emit(file_id)
@@ -203,9 +199,9 @@ func _delete(file_id: int) -> void:
 
 
 func _restore_from_snapshot(snapshot: Dictionary) -> void:
-	var index: int = size()
+	var index: int = index_map.size()
 	var file_id: int = snapshot.file_id
-	project_data.files_id.append(file_id)
+	project_data.files.append(file_id)
 	project_data.files_path.append(snapshot.path as String)
 	project_data.files_nickname.append(snapshot.nickname as String)
 	project_data.files_proxy_path.append(snapshot.proxy_path as String)
@@ -221,10 +217,10 @@ func _restore_from_snapshot(snapshot: Dictionary) -> void:
 		project_data.files_ato_active[file_id] = snapshot.ato_active
 	if snapshot.ato_offset != null:
 		project_data.files_ato_offset[file_id] = snapshot.ato_offset
-	if snapshot.ato_id != null:
-		project_data.files_ato_id[file_id] = snapshot.ato_id
+	if snapshot.ato_file != null:
+		project_data.files_ato_file[file_id] = snapshot.ato_file
 
-	_id_map[file_id] = index
+	index_map[file_id] = index
 	load_data(index)
 	added.emit(file_id)
 
@@ -232,7 +228,7 @@ func _restore_from_snapshot(snapshot: Dictionary) -> void:
 func move(ids: PackedInt64Array, target: String) -> void:
 	InputManager.undo_redo.create_action("Move file(s)")
 	for file_id: int in ids:
-		var index: int = _id_map[file_id]
+		var index: int = index_map[file_id]
 		var folder: String = project_data.files_folder[index]
 		InputManager.undo_redo.add_do_method(_move.bind(file_id, target))
 		InputManager.undo_redo.add_undo_method(_move.bind(file_id, folder))
@@ -242,14 +238,14 @@ func move(ids: PackedInt64Array, target: String) -> void:
 
 
 func _move(file_id: int, target: String) -> void:
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	project_data.files_folder[index] = target
 	moved.emit(file_id)
 	Project.unsaved_changes = true
 
 
 func change_nickname(index: int, new_name: String) -> void:
-	var file_id: int = project_data.files_id[index]
+	var file_id: int = project_data.files[index]
 	var old_name: String = project_data.files_nickname[index]
 
 	InputManager.undo_redo.create_action("Change file nickname")
@@ -259,7 +255,7 @@ func change_nickname(index: int, new_name: String) -> void:
 
 
 func _change_nickname(file_id: int, new_name: String) -> void:
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	project_data.files_nickname[index] = new_name
 	nickname_changed.emit(file_id)
 	Project.unsaved_changes = true
@@ -268,7 +264,7 @@ func _change_nickname(file_id: int, new_name: String) -> void:
 ## Pasting from clipboard (through InputManager).
 func paste_image(image: Image) -> void:
 	InputManager.undo_redo.create_action("Paste Image")
-	var file_id: int = Utils.get_unique_id(project_data.files_id)
+	var file_id: int = Utils.get_unique_id(project_data.files)
 	var temp_file: TempFile = TempFile.new()
 	temp_file.image_data = ImageTexture.create_from_image(image)
 	var snapshot: Dictionary = _create_snapshot_temp_image(file_id, temp_file)
@@ -328,16 +324,16 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 # --- Data loading ---
 
 ## (Re)load the data of a file.
-func load_data(index: int) -> void:
+func load_data(file_index: int) -> void:
 	# Should normally not happen
-	if index == -1: return printerr("FileLogic:
-		Can't init data as file %s is null!")
-	var file_id: int = project_data.files_id[index]
-	var path: String = project_data.files_path[index]
-	var type: TYPE = project_data.files_type[index] as TYPE
+	if file_index == -1:
+		return printerr("FileLogic: Can't init data as file %s is null!")
+	var file_id: int = project_data.files[file_index]
+	var path: String = project_data.files_path[file_index]
+	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
 
 	# Create new slot if new file, else copy over existing slot.
-	if file_data.size() -1 != index:
+	if file_data.size() -1 != file_index:
 		file_data.append(null)
 	else:
 		file_data[file_id] = null
@@ -345,16 +341,16 @@ func load_data(index: int) -> void:
 	if path.begins_with("temp://"): # TODO: Add text
 		var temp_file: TempFile = TempFile.new()
 		if path == "temp://image":
-			file_data[index] = temp_file.image_data
+			file_data[file_index] = temp_file.image_data
 		elif path == "temp://color":
 			temp_file.load_image_from_color()
-			file_data[index] = temp_file.image_data
+			file_data[file_index] = temp_file.image_data
 		project_data.files_temp_file[file_id] = temp_file
-	elif type == FileLogic.TYPE.IMAGE:
-		file_data[index] = ImageTexture.create_from_image(Image.load_from_file(path))
-	elif type in FileLogic.TYPE_VIDEOS:
+	elif type == EditorCore.TYPE.IMAGE:
+		file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
+	elif type in EditorCore.TYPE_VIDEOS:
 		Threader.add_task(_load_video.bind(file_id), video_loaded.emit)
-	elif type == FileLogic.TYPE.PCK:
+	elif type == EditorCore.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(path):
 			printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
 			return _delete(file_id)
@@ -363,14 +359,14 @@ func load_data(index: int) -> void:
 		#pck_instances[file_id] = packed_scene.instantiate()
 
 	if type in EditorCore.AUDIO_TYPES:
-		if !_load_audio(file_id) and type == FileLogic.TYPE.VIDEO:
-			type = FileLogic.TYPE.VIDEO_ONLY
+		if !_load_audio(file_id) and type == EditorCore.TYPE.VIDEO:
+			type = EditorCore.TYPE.VIDEO_ONLY
 		else:
 			Threader.add_task(_create_wave.bind(path), Callable())
 
 
 func _load_audio(file_id: int) -> bool:
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	var path: String = project_data.files_path[index]
 	var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 	var error: int = stream.open(path)
@@ -379,14 +375,14 @@ func _load_audio(file_id: int) -> bool:
 		printerr("FileData: Failed to open audio '%s'! - %s" % [path, error])
 		return false # No audio was found, might be invalid codec, so we change type to VIDEO_ONLY
 	elif stream.get_length() == 0:
-		return false # Video without audio so we change the TYPE to VIDEO_ONLY as well
+		return false # Video without audio so we change the EditorCore.TYPE to VIDEO_ONLY as well
 
 	file_data[index] = stream
 	return true
 
 
 func _load_video(file_id: int, clip_id: int = -1) -> void:
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	var path: String = project_data.files_path[index]
 	var temp_video: GoZenVideo = GoZenVideo.new()
 	var path_to_load: String = path
@@ -419,7 +415,7 @@ func _load_video(file_id: int, clip_id: int = -1) -> void:
 func _create_wave(file_id: int) -> void:
 	# TODO: Large audio lengths will still crash this function. Could possibly
 	# use the get_audio improvements by cutting the data into pieces.
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	var path: String = project_data.files_path[index]
 	var data: PackedByteArray = GoZenAudio.get_audio_data(path, -1)
 
@@ -500,7 +496,7 @@ func generate_audio_thumb(file_id: int) -> Image:
 
 
 func reload(file_id: int) -> void:
-	load_data(_id_map[file_id])
+	load_data(index_map[file_id])
 	reloaded.emit(file_id)
 
 
@@ -509,7 +505,7 @@ func reload(file_id: int) -> void:
 ## Save the image and replace the path in the file data to point to the new image file.
 func save_image_to_file(file_id: int, path: String) -> void:
 	const ERROR_MESSAGE: String = "FileLogic: Couldn't save image to %s!\n"
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	var image: Image = project_data.files_temp_file[file_id].image_data.get_image()
 	var extension: String = path.get_extension().to_lower()
 
@@ -530,7 +526,7 @@ func save_image_to_file(file_id: int, path: String) -> void:
 
 
 func save_audio_to_wav(file_id: int, save_path: String) -> void:
-	var path: String = project_data.files_proxy_path[_id_map[file_id]]
+	var path: String = project_data.files_proxy_path[index_map[file_id]]
 	var audio_stream: AudioStreamWAV = AudioStreamWAV.new()
 	audio_stream.stereo = true
 	audio_stream.format = AudioStreamWAV.FORMAT_16_BITS
@@ -543,36 +539,28 @@ func save_audio_to_wav(file_id: int, save_path: String) -> void:
 
 #--- Private functions ---
 
-func _check_if_modified(index: int) -> void:
-	var path: String = project_data.files_path[index]
-	if !path.begins_with("temp://") and !FileAccess.file_exists(path):
-		print("FileLogic: File %s at %s doesn't exist anymore!" % [index, path])
-		_delete(project_data.files_id[index])
+func _check_if_modified(file_index: int) -> void:
+	var file_path: String = project_data.files_path[file_index]
+	if !file_path.begins_with("temp://") and !FileAccess.file_exists(file_path):
+		print("FileLogic: File %s at %s doesn't exist anymore!" % [file_index, file_path])
+		_delete(project_data.files[file_index])
 
 
 # --- Getters ---
 
-func size() -> int: return _id_map.size()
-func has(file_id: int) -> bool: return _id_map.has(file_id)
-func has_path(path: String) -> bool: return project_data.files_path.has(path)
-func has_temp_file(file_id: int) -> bool: return project_data.files_temp_file.has(file_id)
-func has_ato(file_id: int) -> bool: return project_data.files_ato_active.has(file_id)
-func has_audio() -> bool: return project_data.files_type.has(TYPE.AUDIO)
-
-
 func get_all_audio_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
 	for index: int in project_data.files_type.size():
-		if project_data.files_type[index] != TYPE.AUDIO:
-			data.append(project_data.files_id[index])
+		if project_data.files_type[index] != EditorCore.TYPE.AUDIO:
+			data.append(project_data.files[index])
 	return data
 
 
 func get_all_video_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
 	for index: int in project_data.files_type.size():
-		if project_data.files_type[index] in TYPE_VIDEOS:
-			data.append(project_data.files_id[index])
+		if project_data.files_type[index] in EditorCore.TYPE_VIDEOS:
+			data.append(project_data.files[index])
 	return data
 
 
@@ -583,7 +571,7 @@ func get_data(index: int) -> Variant:
 
 
 func get_data_by_id(file_id: int) -> Variant:
-	return file_data[_id_map[file_id]]
+	return file_data[index_map[file_id]]
 
 
 func get_pck_instance(file_id: int) -> Node:
@@ -607,10 +595,10 @@ func set_proxy_path(index: int, path: String) -> void:
 
 
 func set_nickname(file_id: int, new_nickname: String) -> void:
-	if !has(file_id):
+	if !index_map.has(file_id):
 		return
 
-	var old_nickname: String = project_data.files_nickname[_id_map[file_id]]
+	var old_nickname: String = project_data.files_nickname[index_map[file_id]]
 	InputManager.undo_redo.create_action("Renaming file")
 	InputManager.undo_redo.add_do_method(_set_nickname.bind(file_id, new_nickname))
 	InputManager.undo_redo.add_undo_method(_set_nickname.bind(file_id, old_nickname))
@@ -618,7 +606,7 @@ func set_nickname(file_id: int, new_nickname: String) -> void:
 
 
 func _set_nickname(file_id: int, nickname: String) -> void:
-	var index: int = _id_map[file_id]
+	var index: int = index_map[file_id]
 	project_data.files_nickname[index] = nickname
 	nickname_changed.emit(file_id)
 	Project.unsaved_changes = true
@@ -647,7 +635,7 @@ func _update_clip_video_instance(file_id: int, clip_id: int, enabled: bool) -> v
 
 
 func toggle_ato(file_id: int) -> void:
-	var ato_active: bool = project_data.files_ato_id[file_id]
+	var ato_active: bool = project_data.files_ato_file[file_id]
 	if ato_active:
 		InputManager.undo_redo.create_action("Disable file audio take over")
 	else:
@@ -658,7 +646,7 @@ func toggle_ato(file_id: int) -> void:
 
 
 func _toggle_ato(file_id: int, value: bool) -> void:
-	project_data.files_ato_active[_id_map[file_id]] = value
+	project_data.files_ato_active[index_map[file_id]] = value
 	Project.unsaved_changes = true
 
 
@@ -666,16 +654,16 @@ func _toggle_ato(file_id: int, value: bool) -> void:
 
 func update_audio_waves() -> void:
 	for file_id: int in get_all_audio_files():
-		var index: int = _id_map[file_id]
-		if project_data.files_type[index] in EditorCore.AUDIO_TYPES:
-			load_data(index)
+		var file_index: int = index_map[file_id]
+		if project_data.files_type[file_index] in EditorCore.AUDIO_TYPES:
+			load_data(file_index)
 
 
 func reload_videos() -> void:
 	for file_id: int in get_all_video_files():
-		var index: int = _id_map[file_id]
-		if project_data.files_type[index] in TYPE_VIDEOS:
-			load_data(index)
+		var file_index: int = index_map[file_id]
+		if project_data.files_type[file_index] in EditorCore.TYPE_VIDEOS:
+			load_data(file_index)
 
 
 # --- Static ---

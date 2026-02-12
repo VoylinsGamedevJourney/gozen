@@ -28,16 +28,12 @@ func _ready() -> void:
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
 
-	_check_startup_args()
-	add_child(preload(Library.SCENE_STARTUP).instantiate())
-
-
-func _check_startup_args() -> void:
 	# Check if editor got opened with a project path as argument.
 	for arg: String in OS.get_cmdline_args():
 		if arg.to_lower().ends_with(Project.EXTENSION):
-			Project.open(arg)
+			await Project.open(arg)
 			return
+	add_child(preload(Library.SCENE_STARTUP).instantiate())
 
 
 func print_startup_info() -> void:

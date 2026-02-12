@@ -3,11 +3,16 @@ extends Node
 signal frame_changed
 signal play_changed(value: bool)
 
-const VISUAL_TYPES: PackedInt64Array = [
-		FileLogic.TYPE.IMAGE, FileLogic.TYPE.COLOR, FileLogic.TYPE.TEXT,
-		FileLogic.TYPE.VIDEO, FileLogic.TYPE.VIDEO_ONLY]
 
-const AUDIO_TYPES: PackedInt64Array = [ FileLogic.TYPE.AUDIO, FileLogic.TYPE.VIDEO ]
+## File/Clip types.
+enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, VIDEO_ONLY, TEXT, COLOR, PCK }
+
+
+const AUDIO_TYPES: PackedInt64Array = [ TYPE.AUDIO, TYPE.VIDEO ]
+const VISUAL_TYPES: PackedInt64Array = [
+		TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT,
+		TYPE.VIDEO, TYPE.VIDEO_ONLY]
+const TYPE_VIDEOS: Array[TYPE] = [TYPE.VIDEO, TYPE.VIDEO_ONLY]
 
 
 var viewport: SubViewport
@@ -119,13 +124,13 @@ func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 		return false
 
 	# Check if clip really still exists or not.
-	if !Project.clips._id_map.has(clip_id):
+	if !Project.clips.index_map.has(clip_id):
 		loaded_clips[track_id] = -1
 		return false
 
 	# Track check.
-	var clip_index: int = Project.clips._id_map[clip_id]
-	if Project.data.clips_track_id[clip_index] != track_id:
+	var clip_index: int = Project.clips.index_map[clip_id]
+	if Project.data.clips_track[clip_index] != track_id:
 		return false
 	var start: int = Project.data.clips_start[clip_index]
 	var end: int = Project.data.clips_duration[clip_index] + start
@@ -196,9 +201,9 @@ func find_audio(frame: int, track_id: int) -> int:
 	if clip_id == -1:
 		return 1
 
-	var clip_index: int = Project.clips._id_map[clip_id]
-	var file_id: int = Project.data.clips_file_id[clip_index]
-	var file_index: int = Project.files._id_map[file_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
+	var file_id: int = Project.data.clips_file[clip_index]
+	var file_index: int = Project.files.index_map[file_id]
 	return clip_id if Project.data.files_type[file_index] in AUDIO_TYPES else -1
 
 
@@ -207,10 +212,10 @@ func update_audio() -> void:
 		var clip_id: int = player.clip_id
 		if clip_id == -1:
 			return
-		elif !Project.clips._id_map.has(clip_id):
+		elif !Project.clips.index_map.has(clip_id):
 			return player.stop()
 
-		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
 
@@ -225,9 +230,9 @@ func update_view(track_id: int, update: bool) -> void:
 	if loaded_clips[track_id] == -1:
 		return
 	var clip_id: int = loaded_clips[track_id]
-	var clip_index: int = Project.clips._id_map[clip_id]
-	var file_id: int = Project.data.clips_file_id[clip_index]
-	var file_index: int = Project.files._id_map[file_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
+	var file_id: int = Project.data.clips_file[clip_index]
+	var file_index: int = Project.files.index_map[file_id]
 
 	var raw_data: Variant = Project.files.get_data(file_index)
 	if raw_data == null:

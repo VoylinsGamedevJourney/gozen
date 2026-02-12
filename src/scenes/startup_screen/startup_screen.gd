@@ -12,15 +12,15 @@ const PRESETS: Dictionary[String, Vector3i] = {
 	"Vertical (1080p) 30fps": Vector3i(1080, 1920, 30),
 	"Vertical (1080p) 60fps": Vector3i(1080, 1920, 60),
 	"UHD (4K) 30fps": Vector3i(1920, 1080, 30),
-	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)}
+	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)
+}
+
 
 @export var version_label: RichTextLabel
 @export var new_version_available_panel: PanelContainer
 @export var new_version_available_button: TextureButton
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
-
-@export var animation_player: AnimationPlayer
 
 @export_category("New project menu")
 @export var presets_option_button: OptionButton
@@ -36,15 +36,12 @@ const PRESETS: Dictionary[String, Vector3i] = {
 @export var background_color_picker: ColorPickerButton
 
 
-var http_request: HTTPRequest # For version check
+var http_request: HTTPRequest ## For version checking.
+
 
 
 func _ready() -> void:
-	if OS.is_debug_build():
-		tab_container.current_tab = 0
-	else:
-		animation_player.play("show_sponsors")
-
+	tab_container.current_tab = 0
 	advanced_options_button.button_pressed = false
 	advanced_options.visible = false
 
@@ -344,28 +341,6 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 		return
 	elif current_tag > tag:
 		return # Already newest version.
-
-
-func _on_sponsor_logo_input(event: InputEvent, sponsor: String) -> void:
-	if event.is_pressed():
-		Utils.open_url("sponsors/%s" % sponsor)
-
-
-func _on_sponsor_name_input(event: InputEvent, sponsor: String) -> void:
-	if event.is_pressed():
-		Utils.open_url("sponsors/%s" % sponsor)
-
-
-func _on_become_sponsor_button_pressed() -> void:
-	Utils.open_url("become_sponsor_info")
-
-
-func _on_close_sponsors_button_pressed() -> void:
-	tab_container.current_tab = 0
-
-
-func _on_view_sponsors_button_pressed() -> void:
-	tab_container.current_tab = 2
 
 
 func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:

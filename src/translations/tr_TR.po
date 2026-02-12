@@ -63,9 +63,6 @@ msgstr "Proje yükleniyor"
 msgid "title_files_dropped"
 msgstr "Dosyalar eklendi"
 
-msgid "title_sponsors"
-msgstr "Sponsorlar"
-
 msgid "title_editor_settings"
 msgstr "Düzenleyici ayarları"
 
@@ -107,12 +104,6 @@ msgstr "Discord sunucusu"
 
 msgid "button_support_gozen"
 msgstr "GoZen'i destekle"
-
-msgid "button_view_sponsors"
-msgstr "Sponsorları görüntüle"
-
-msgid "button_become_sponsor"
-msgstr "Sponsor ol"
 
 msgid "button_open_project"
 msgstr "Projeyi aç"

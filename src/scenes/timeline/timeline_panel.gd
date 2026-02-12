@@ -2,13 +2,7 @@ extends PanelContainer
 # TODO: Look into caching the waveform data (not an issue right now, but might become one)
 
 signal zoom_changed(new_zoom: float)
-signal draw_track_lines
-signal draw_clips
-signal draw_mode
-signal draw_playhead
-signal draw_selection_box
-signal draw_markers
-signal draw_all
+
 
 enum POPUP_ACTION {
 	# Clip options
@@ -58,9 +52,26 @@ const SNAPPING: int = 200
 
 const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.8)
 
+const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
+const STYLE_BOXES: Dictionary[EditorCore.TYPE, Array] = {
+	EditorCore.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
+	EditorCore.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
+	EditorCore.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+	EditorCore.TYPE.VIDEO_ONLY: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+	EditorCore.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
+	EditorCore.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
+}
+const TEXT_OFFSET: Vector2 = Vector2(5, 20)
+
 
 @onready var scroll: ScrollContainer = get_parent()
 
+@onready var draw_track_lines: Control = $TrackLinesDraw
+@onready var draw_clips: Control = $ClipsDraw
+@onready var draw_mode: Control = $ModeDraw
+@onready var draw_playhead: Control = $PlayheadDraw
+@onready var draw_box_selection: Control = $BoxSelectionDraw
+@onready var draw_markers: Control = $MarkersDrawn
 
 var zoom: float = 1.0
 var selected_clip_ids: PackedInt64Array = []
@@ -80,6 +91,10 @@ var fade_target: FadeTarget = null
 var pressed_clip: int = -1
 var hovered_clip: int = -1
 
+var waveform_style: int = Settings.get_audio_waveform_style()
+var waveform_amp: float = Settings.get_audio_waveform_amp()
+
+
 
 func _ready() -> void:
 	Project.project_ready.connect(_project_ready)
@@ -87,8 +102,191 @@ func _ready() -> void:
 	InputManager.switch_timeline_mode_cut.connect(set_state.bind(STATE.CURSOR_MODE_CUT))
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 
-	scroll.get_h_scroll_bar().value_changed.connect(draw_all.emit.unbind(1))
-	scroll.get_v_scroll_bar().value_changed.connect(draw_all.emit.unbind(1))
+	scroll.get_h_scroll_bar().value_changed.connect(draw_all.unbind(1))
+	scroll.get_v_scroll_bar().value_changed.connect(draw_all.unbind(1))
+
+	EditorCore.frame_changed.connect(draw_track_lines.queue_redraw)
+	EditorCore.frame_changed.connect(draw_playhead.queue_redraw)
+	Settings.on_waveform_update.connect(update_waveform_data)
+
+
+func _on_project_ready() -> void:
+	Project.clips.updated.connect(draw_clips.queue_redraw)
+	Project.clips.selected.connect(draw_clips.queue_redraw.unbind(1))
+
+
+func _draw_track_lines() -> void:
+	for i: int in Project.data.tracks_is_muted.size() - 1:
+		var y: int = TRACK_TOTAL_SIZE * (i + 1)
+		draw_dashed_line(
+				Vector2(0, y), Vector2(size.x, y),
+				TRACK_LINE_COLOR, TRACK_LINE_WIDTH)
+
+
+func _draw_clips() -> void:
+	var scroll_amount: float = scroll.scroll_horizontal
+	var visible_start: int = floori(scroll_amount / zoom)
+	var visible_end: int = ceili(visible_start + (size.x / zoom))
+
+	var visible_clips: PackedInt64Array = _get_visible(visible_start, visible_end)
+	var handled_clips: PackedInt64Array = []
+
+	# - Previews
+	if state in [STATE.MOVING, STATE.DROPPING] and draggable != null: # Moving + Dropping preview
+		if draggable.is_file:
+			var preview_size: Vector2 = Vector2(draggable.duration * zoom, TRACK_HEIGHT)
+			var preview_position: Vector2 = Vector2(
+					(draggable.frame_offset) * zoom,
+					draggable.track_offset * TRACK_TOTAL_SIZE)
+			draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+		else:
+			for clip_id: int in draggable.ids:
+				var clip_index: int = Project.clips.index_map[clip_id]
+				var clip_duration: int = Project.data.clips_duration[clip_index]
+				var clip_start: int = Project.data.clips_start[clip_index] + draggable.frame_offset
+				var clip_track: int = Project.data.clips_track[clip_index] + draggable.track_offset
+				var preview_position: Vector2 = Vector2(clip_start * zoom, clip_track * TRACK_TOTAL_SIZE)
+				var preview_size: Vector2 = Vector2(clip_duration * zoom, TRACK_HEIGHT)
+
+				draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+				if clip_id in visible_clips:
+					handled_clips.append(clip_id)
+	elif state == STATE.RESIZING: # Resizing preview
+		var clip_index: int = Project.clips.index_map[resize_target.clip]
+		var clip_track: int = Project.data.clips_track[clip_index]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_duration: int = Project.data.clips_duration[clip_index]
+		var draw_start: float = clip_start
+		var draw_length: int = clip_duration
+
+		if !resize_target.is_end:
+			draw_start += resize_target.delta * zoom
+			draw_length -= resize_target.delta
+		else:
+			draw_length += resize_target.delta
+
+		var preview_position: Vector2 = Vector2(draw_start, clip_track * TRACK_TOTAL_SIZE)
+		var preview_size: Vector2 = Vector2(draw_length * zoom, TRACK_HEIGHT)
+		var box_pos: Vector2 = Vector2(clip_start * zoom, TRACK_TOTAL_SIZE * clip_track)
+		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_duration * zoom, TRACK_HEIGHT))
+
+		# Drawing the original clip box and actual resized box.
+		draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
+		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+
+		if resize_target.clip in visible_clips:
+			handled_clips.append(resize_target.clip)
+
+	# - Clip blocks
+	for clip_id: int in visible_clips:
+		if clip_id in handled_clips:
+			continue
+		var clip_index: int = Project.clips.index_map[clip_id]
+		var clip_type: int = Project.data.clips_type[clip_index]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_begin: int = Project.data.clips_begin[clip_index]
+		var clip_duration: int = Project.data.clips_duration[clip_index]
+		var clip_track: int = Project.data.clips_track[clip_index]
+		var clip_file: int = Project.data.clips_file[clip_index]
+		var file_index: int = Project.files.index_map[clip_file]
+		var box_type: int = 1 if clip_id in selected_clip_ids else 0
+		var box_pos: Vector2 = Vector2(clip_start * zoom, TRACK_TOTAL_SIZE * clip_track)
+		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_duration * zoom, TRACK_HEIGHT))
+		var text_pos_x: float = box_pos.x
+		var clip_end_x: float = box_pos.x + (clip_duration * zoom)
+
+		if text_pos_x < scroll_amount  and text_pos_x + TEXT_OFFSET.x <= clip_end_x:
+			text_pos_x = scroll_amount
+
+		draw_style_box(STYLE_BOXES[clip_type][box_type] as StyleBox, clip_rect)
+		draw_string(
+				get_theme_default_font(),
+				Vector2(text_pos_x, box_pos.y) + TEXT_OFFSET,
+				Project.data.files_nickname[file_index],
+				HORIZONTAL_ALIGNMENT_LEFT, clip_duration * zoom - TEXT_OFFSET.x,
+				11, # Font size
+				Color(0.9, 0.9, 0.9))
+
+		# - Audio waves (Part of clip blocks)
+		_draw_wave(Project.files.get_audio_wave(clip_file), clip_begin, clip_duration, clip_rect)
+
+		# - Fading handles + amount
+		var show_handles: bool = hovered_clip == clip_id or (state == STATE.FADING and fade_target.clip == clip_id)
+		if clip_type in EditorCore.VISUAL_TYPES:
+			_draw_fade_handles(clip_index, box_pos, true, show_handles) # Bottom.
+		if clip_type in EditorCore.AUDIO_TYPES:
+			_draw_fade_handles(clip_index, box_pos, false, show_handles) # Top
+
+
+func _get_visible(start: int, end: int) -> PackedInt64Array:
+	var data: PackedInt64Array = []
+	for track_id: int in Project.data.tracks_is_muted.size():
+		data.append_array(Project.tracks.get_clip_ids_in(track_id, start, end))
+	return data
+
+
+func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2) -> void:
+	if wave_data.is_empty():
+		return
+	var display_duration: int = duration
+	var display_begin_offset: int = begin
+	var height: float = rect.size.y
+	var base_x: float = rect.position.x
+	var base_y: float = rect.position.y
+
+	for i: int in display_duration:
+		var wave_index: int = display_begin_offset + i
+		if wave_index >= wave_data.size():
+			break
+
+		var normalized_height: float = wave_data[wave_index] * waveform_amp
+		var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
+		var block_pos_y: float = base_y # TOP_TO_BOTTOM style
+
+		match waveform_style:
+			SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+				block_pos_y = base_y + (height - block_height) / 2.0
+			SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+				block_pos_y = base_y + height - block_height
+		draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom, block_height), COLOR_AUDIO_WAVE)
+
+
+func _draw_fade_handles(index: int, box_pos: Vector2, is_visual: bool, show_handles: bool) -> void:
+	var handle_radius: float = FADE_HANDLE_SIZE / 4.0
+	var clip_duration: int = Project.data.clips_duration[clip_index]
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var fade: Vector2 = clip_effects.fade_visual if is_visual else clip_effects.fade_audio
+
+	var real_duration: float = (clip_duration * zoom)
+
+	var clip_end_x: float = box_pos.x + real_duration
+	var handle_y: float = box_pos.y
+	if is_visual:
+		handle_y += TRACK_HEIGHT - (handle_radius/2.0)
+	else:
+		handle_y += (handle_radius/2.0)
+
+	fade.x = box_pos.x + (fade.x * zoom)
+	fade.y = clip_end_x - (fade.y * zoom)
+
+	if show_handles:
+		handle_radius *= 2
+		draw_circle(Vector2(fade.x, handle_y), handle_radius, FADE_HANDLE_COLOR) # Fade in handle
+		draw_circle(Vector2(fade.y, handle_y), handle_radius, FADE_HANDLE_COLOR) # Fade out handle
+
+	if fade.x > 0: # Draw line fade in (Top Left to Bottom Right/Handle)
+		var start_y: float = box_pos.y if is_visual else (box_pos.y + TRACK_HEIGHT)
+		draw_line(Vector2(box_pos.x, start_y), Vector2(fade.x, handle_y), FADE_LINE_COLOR, 1.0, true)
+	if fade.y > 0: # Draw line fade out (Bottom Left/Handle to Top Right)
+		var end_y: float = box_pos.y if is_visual else (box_pos.y + TRACK_HEIGHT)
+		var from_pos: Vector2 = Vector2(fade.y, handle_y)
+		var to_pos: Vector2 = Vector2(box_pos.x + real_duration, end_y)
+		draw_line(from_pos, to_pos, FADE_LINE_COLOR, 1.0, true)
+func _draw_playhead() -> void:
+	var playhead_pos: float = EditorCore.frame_nr * zoom
+	draw_line(
+			Vector2(playhead_pos, 0), Vector2(playhead_pos, size.y),
+			PLAYHEAD_COLOR, PLAYHEAD_WIDTH)
 
 
 func _notification(what: int) -> void:
@@ -96,7 +294,7 @@ func _notification(what: int) -> void:
 		if state == STATE.MOVING or state == STATE.DROPPING:
 			state = STATE.CURSOR_MODE_SELECT
 			draggable = null
-			draw_clips.emit()
+			draw_clips.queue_redraw()
 
 
 func _input(event: InputEvent) -> void:
@@ -155,16 +353,16 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 		if fade_target:
 			state = STATE.FADING
-			draw_clips.emit()
+			draw_clips.queue_redraw()
 		elif resize_target:
 			state = STATE.RESIZING
-			draw_clips.emit()
+			draw_clips.queue_redraw()
 		elif pressed_clip == null:
 			if event.shift_pressed:
 				state = STATE.BOX_SELECTING
 				box_select_start = get_local_mouse_position()
 				box_select_end = box_select_start
-				draw_selection_box.emit()
+				draw_box_selection.queue_redraw()
 			else:
 				state = STATE.SCRUBBING
 				move_playhead(get_frame_from_mouse())
@@ -173,7 +371,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				selected_clip_ids.append(pressed_clip)
 			else:
 				selected_clip_ids = [pressed_clip]
-			draw_clips.emit()
+			draw_clips.queue_redraw()
 			Project.clips.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_menu()
@@ -198,9 +396,9 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 	var clip_on_mouse: int = _get_clip_on_mouse()
 
 	if clip_on_mouse != null:
-		var clip_id: int = Project.clips._id_map[clip_on_mouse]
-		var file_id: int = Project.data.clips_file_id[clip_id]
-		var file_index: int = Project.files._id_map[file_id]
+		var clip_id: int = Project.clips.index_map[clip_on_mouse]
+		var file_id: int = Project.data.clips_file[clip_id]
+		var file_index: int = Project.files.index_map[file_id]
 		var clip_name: String = Project.data.files_nickname[file_index]
 
 		if tooltip_text != clip_name:
@@ -228,7 +426,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 		STATE.BOX_SELECTING:
 			box_select_end = get_local_mouse_position()
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
-			draw_selection_box.emit()
+			draw_box_selection.queue_redraw()
 		STATE.RESIZING:
 			mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			_handle_resize_motion()
@@ -241,7 +439,7 @@ func _on_ui_cancel() -> void:
 	fade_target = null
 	resize_target = null
 	mouse_default_cursor_shape = Control.CURSOR_ARROW
-	draw_all.emit()
+	draw_all()
 
 
 ## Returns the clip_id.
@@ -257,7 +455,7 @@ func _get_resize_target() -> ResizeTarget:
 	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
 		return null
 	var frame_pos: float = get_local_mouse_position().x
-	var index: int = Project.clips._id_map[_get_clip_on_mouse()]
+	var index: int = Project.clips.index_map[_get_clip_on_mouse()]
 	if index == -1:
 		return null
 
@@ -268,7 +466,7 @@ func _get_resize_target() -> ResizeTarget:
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
 	for clip_id: int in Project.tracks.get_clip_ids_in(track_id, visible_start, visible_end):
-		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_duration: int = Project.data.clips_duration[clip_index]
 		var start: float = clip_start * zoom
@@ -291,16 +489,16 @@ func _get_fade_target() -> FadeTarget:
 	var visible_end: int = ceili((scroll_horizontal + size.x) / zoom)
 
 	for clip_id: int in Project.tracks.get_clip_ids_in(track_id, visible_start, visible_end):
-		var clip_index: int = Project.clips._id_map[clip_id]
-		var file_id: int = Project.data.clips_file_id[clip_index]
-		var file_index: int = Project.files._id_map[file_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
+		var file_id: int = Project.data.clips_file[clip_index]
+		var file_index: int = Project.files.index_map[file_id]
 		var file_type: int = Project.data.files_type[file_index]
 		var is_video: bool = file_type in EditorCore.VISUAL_TYPES
 		var is_audio: bool = file_type in EditorCore.AUDIO_TYPES
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var start_x: float = clip_start * zoom
 		var end_x: float = (Project.data.clips_duration[clip_index] + start_x) * zoom
-		var y_pos: float = Project.data.clips_track_id[clip_index] * TRACK_TOTAL_SIZE
+		var y_pos: float = Project.data.clips_track[clip_index] * TRACK_TOTAL_SIZE
 		var tolerance: float = FADE_HANDLE_SIZE * 1.5 # Hitbox tolerance
 		var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 
@@ -332,7 +530,7 @@ func _get_fade_target() -> FadeTarget:
 
 func _project_ready() -> void:
 	custom_minimum_size.y = TRACK_TOTAL_SIZE * Project.data.tracks_is_muted.size()
-	draw_all.emit()
+	draw_all()
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
@@ -342,7 +540,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 
 	if pressed_clip not in selected_clip_ids:
 		selected_clip_ids = [pressed_clip]
-		draw_clips.emit()
+		draw_clips.queue_redraw()
 
 	var data: Draggable = Draggable.new()
 	var clip_ids: PackedInt64Array = selected_clip_ids.duplicate()
@@ -352,7 +550,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 		clip_ids.remove_at(anchor_index)
 		clip_ids.insert(0, clicked_clip)
 
-	var clip_index: int = Project.clips._id_map[clicked_clip]
+	var clip_index: int = Project.clips.index_map[clicked_clip]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	data.ids = clip_ids
 	data.mouse_offset = get_frame_from_mouse() - clip_start
@@ -367,8 +565,8 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 		state = STATE.DROPPING
 
 	draggable = data
-	draw_clips.emit()
-	return _can_drop_new_clips() if draggable.files else _can_move_clips()
+	draw_clips.queue_redraw()
+	return _can_drop_new_clips() if draggable.is_file else _can_move_clips()
 
 
 func _can_drop_new_clips() -> bool:
@@ -422,21 +620,21 @@ func _can_drop_new_clips() -> bool:
 
 
 func _can_move_clips() -> bool:
-	var anchor_clip_index: int = Project.clips._id_map[draggable.ids[0]]
+	var anchor_clip_index: int = Project.clips.index_map[draggable.ids[0]]
 	var mouse_track: int = get_track_from_mouse()
 	var mouse_frame: int = get_frame_from_mouse()
 	var target_start: int = mouse_frame - draggable.mouse_offset
-	var track_difference: int = mouse_track - Project.data.clips_track_id[anchor_clip_index]
-	var frame_difference: int = target_start - Project.data.clips_track_id[anchor_clip_index]
+	var track_difference: int = mouse_track - Project.data.clips_track[anchor_clip_index]
+	var frame_difference: int = target_start - Project.data.clips_track[anchor_clip_index]
 
 	var min_allowed_diff: int = -1000000000 # Effectively -Infinity
 	var max_allowed_diff: int = 1000000000  # Effectively +Infinity
 
 	for clip_id: int in draggable.ids:
-		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_duration: int = Project.data.clips_duration[clip_index]
-		var new_track: int = Project.data.clips_track_id[clip_index] + track_difference
+		var new_track: int = Project.data.clips_track[clip_index] + track_difference
 		var middle_frame: int = clip_start + floori(clip_duration / 2.0)
 		# First boundary check
 		if new_track < 0 or new_track >= Project.data.tracks_is_muted.size():
@@ -479,54 +677,45 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 	if state not in [STATE.DROPPING, STATE.MOVING]:
 		return
 
-	if draggable.files: # Creating new clips (ids are file ids!)
+	if draggable.is_file: # Creating new clips (ids are file ids!)
 		var requests: Array[ClipRequest] = []
 		var total_duration: int = 0
 
 		for file_id: int in draggable.ids:
-			var request: ClipRequest = ClipRequest.new()
-			var file_index: int = Project.files._id_map[file_id]
-			request.file_id = file_id
-			request.track_offset = draggable.track_offset
-			request.frame_offset = draggable.frame_offset + total_duration
+			var file_index: int = Project.files.index_map[file_id]
+			var target_frame: int = draggable.frame_offset + total_duration
+			requests.append(ClipRequest.add_request(file_id, draggable.track_offset, target_frame))
 			total_duration += Project.data.files_duration[file_index]
-			requests.append(request)
 		Project.clips.add(requests)
 	else: # Moving clips
 		var move_requests: Array[ClipRequest] = []
-
 		for clip_id: int in draggable.ids:
-			var request: ClipRequest = ClipRequest.new()
-			request.clip_id = clip_id
-			request.track_offset = draggable.track_offset
-			request.frame_offset = draggable.frame_offset
-			move_requests.append(request)
+			move_requests.append(ClipRequest.move_request(clip_id, draggable.track_offset, draggable.frame_offset))
 		if not move_requests.is_empty():
 			Project.clips.move(move_requests)
 	draggable = null
-	draw_clips.emit()
+	draw_clips.queue_redraw()
 
 
 func _on_mouse_entered() -> void:
 	if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_on_ui_cancel()
-	draw_all.emit()
+	draw_all()
 
 
 func _on_mouse_exited() -> void:
 	hovered_clip = -1
-	draw_all.emit()
+	draw_all()
 
 
 func _commit_current_resize() -> void:
 	if resize_target.delta != 0:
-		var request: ClipRequest = ClipRequest.new()
-		request.clip_id = resize_target.clip_id
-		request.resize_amount = resize_target.delta if resize_target.is_end else -resize_target.delta
-		request.from_end = resize_target.is_end
-		Project.clips.resize([request])
+		Project.clips.resize([ClipRequest.resize_request(
+				resize_target.clip,
+				resize_target.delta if resize_target.is_end else -resize_target.delta,
+				resize_target.is_end)])
 	resize_target = null
-	draw_clips.emit()
+	draw_clips.queue_redraw()
 
 
 func _commit_box_selection(is_ctrl_pressed: bool) -> void:
@@ -560,7 +749,7 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 				continue
 
 			# We should also check if a clip ends inside the selection box.
-			var clip_index: int = Project.clips._id_map[clip_id]
+			var clip_index: int = Project.clips.index_map[clip_id]
 			var clip_duration: int = Project.data.clips_duration[clip_index]
 			if frame_nr + clip_duration > frame_start:
 				if clip_id not in selected_clip_ids:
@@ -570,16 +759,16 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 	else:
 		Project.clips.selected.emit(selected_clip_ids[-1])
 
-	draw_selection_box.emit()
-	draw_clips.emit()
+	draw_box_selection.queue_redraw()
+	draw_clips.queue_redraw()
 
 
 func _handle_resize_motion() -> void:
-	var clip_index: int = Project.clips._id_map[resize_target.clip_id]
+	var clip_index: int = Project.clips.index_map[resize_target.clip_id]
 	var clip_begin: int = Project.data.clips_begin[clip_index]
 	var track_id: int = Project.data.clips_track_id[clip_index]
 	var file_id: int = Project.data.clips_file_id[clip_index]
-	var file_index: int = Project.files._id_map[file_id]
+	var file_index: int = Project.files.index_map[file_id]
 	var file_duration: int = Project.data.files_duration[file_index]
 	var current_frame: int = get_frame_from_mouse()
 
@@ -617,12 +806,12 @@ func _handle_resize_motion() -> void:
 		if new_start < free_region.x:
 			new_start = free_region.x
 		resize_target.delta = new_start - resize_target.original_start
-	draw_clips.emit()
+	draw_clips.queue_redraw()
 
 
 func _handle_fade_motion() -> void:
 	var mouse_x: float = get_local_mouse_position().x
-	var clip_index: int = Project.clips._id_map[fade_target.clip_id]
+	var clip_index: int = Project.clips.index_map[fade_target.clip_id]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var clip_duration: int = Project.data.clips_duration[clip_index] + clip_start
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
@@ -649,14 +838,14 @@ func _handle_fade_motion() -> void:
 		else:
 			clip_fade_audio.y = drag_frames
 
-	draw_clips.emit()
+	draw_clips.queue_redraw()
 	EditorCore.update_frame()
 
 
 func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
-	var clip_index: int = Project.clips._id_map[right_click_clip]
+	var clip_index: int = Project.clips.index_map[right_click_clip]
 	var file_id: int = Project.data.clips_file_id[clip_index]
-	var file_index: int = Project.files._id_map[file_id]
+	var file_index: int = Project.files.index_map[file_id]
 	var clip_type: FileLogic.TYPE = Project.data.files_type[file_index] as FileLogic.TYPE
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if right_click_clip not in selected_clip_ids:
@@ -698,7 +887,7 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
 		POPUP_ACTION.TRACK_ADD: _on_popup_action_track_add()
 		POPUP_ACTION.TRACK_REMOVE: _on_popup_action_track_remove()
-	draw_all.emit()
+	draw_all()
 
 
 func _on_popup_action_clip_delete() -> void: Project.clips.delete(selected_clip_ids)
@@ -713,7 +902,7 @@ func _on_popup_action_clip_ato() -> void:
 
 
 func _on_popup_action_clip_only_video() -> void:
-	var clip_index: int = Project.clips._id_map[right_click_clip]
+	var clip_index: int = Project.clips.index_map[right_click_clip]
 	var file_id: int = Project.data.clips_file_id[clip_index]
 	Project.files.switch_clip_video_instance(file_id, right_click_clip)
 
@@ -748,7 +937,7 @@ func zoom_at_mouse(factor: float) -> void:
 
 	scroll.scroll_horizontal = int(new_mouse_pos_x - mouse_viewport_offset)
 	zoom_changed.emit(zoom)
-	draw_all.emit()
+	draw_all()
 	accept_event()
 
 
@@ -762,7 +951,7 @@ func get_track_from_mouse() -> int:
 
 func move_playhead(frame_nr: int) -> void:
 	EditorCore.set_frame(maxi(0, frame_nr))
-	draw_playhead.emit()
+	draw_playhead.queue_redraw()
 
 
 func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
@@ -772,24 +961,22 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 	var move_requests: Array[ClipRequest] = []
 
 	for clip_id: int in clips:
-		var request: ClipRequest = ClipRequest.new()
-		request.clip_id = clip_id
-		request.frame_offset = -empty_size
-		move_requests.append(request)
+		move_requests.append(ClipRequest.move_request(clip_id, -empty_size, 0))
 	if !move_requests.is_empty():
 		Project.clips.move(move_requests)
 
 
 func cut_clip_at(clip_id: int, frame_pos: int) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
 	if clip_start <= frame_pos and clip_end >= frame_pos:
+		USE the clip_request create!
 		var request: ClipRequest = ClipRequest.new()
 		request.clip_id = clip_id
 		request.frame_nr = frame_pos - clip_start
 		Project.clips.cut([request])
-	draw_clips.emit()
+	draw_clips.queue_redraw()
 
 
 func cut_clips_at(frame_pos: int) -> void:
@@ -799,11 +986,12 @@ func cut_clips_at(frame_pos: int) -> void:
 
 	# Checking if we only want selected clips to be cut.
 	for clip_id: int in selected_clip_ids:
-		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
 
 		if clip_start < frame_pos and clip_end > frame_pos:
+		USE the clip_request create!
 			var request: ClipRequest = ClipRequest.new()
 			request.clip_id = clip_id
 			request.frame_nr = frame_pos - clip_start
@@ -811,26 +999,27 @@ func cut_clips_at(frame_pos: int) -> void:
 
 	if !requests.is_empty():
 		Project.clips.cut(requests)
-		return draw_clips.emit()
+		return draw_clips.queue_redraw()
 
 	# No selected clips present so cutting all possible clips
 	for track_id: int in Project.data.tracks_is_muted.size():
 		var clip_id: int = Project.tracks.get_clip_id_at(track_id, frame_pos)
 		if clip_id == -1:
 			continue
-		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
 
 		if clip_start >= frame_pos or clip_end <= frame_pos:
 			continue
+		USE the clip_request create!
 		var request: ClipRequest = ClipRequest.new()
 		request.clip_id = clip_id
 		request.frame_nr = frame_pos - clip_start
 		requests.append(request)
 
 	Project.clips.cut(requests)
-	draw_clips.emit()
+	draw_clips.queue_redraw()
 
 
 func duplicate_selected_clips() -> void:
@@ -839,7 +1028,7 @@ func duplicate_selected_clips() -> void:
 
 	var requests: Array[ClipRequest] = []
 	for clip_id: int in selected_clip_ids:
-		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_index: int = Project.clips.index_map[clip_id]
 		if clip_index == -1:
 			return # Invalid clip id
 		var clip_start: int = Project.data.clips_start[clip_index]
@@ -849,6 +1038,7 @@ func duplicate_selected_clips() -> void:
 		var free_region: Vector2i = Project.tracks.get_free_region(clip_track_id, target_frame)
 
 		if free_region.y - target_frame >= clip_duration:
+		USE the clip_request create!
 			var request: ClipRequest = ClipRequest.new()
 			request.file_id = Project.data.clips_file_id[clip_index]
 			request.track_id = clip_track_id
@@ -862,16 +1052,31 @@ func set_state(new_state: STATE) -> void:
 	state = new_state
 
 
+func draw_all() -> void:
+	draw_track_lines.queue_redraw()
+	draw_clips.queue_redraw()
+	draw_mode.queue_redraw()
+	draw_playhead.queue_redraw()
+	draw_box_selection.queue_redraw()
+	draw_markers.queue_redraw()
+
+
+func update_waveform_data() -> void:
+	waveform_style = Settings.get_audio_waveform_style()
+	waveform_amp = Settings.get_audio_waveform_amp()
+	draw_clips.queue_redraw()
+
+
 
 class ResizeTarget:
-	var clip_id: int
+	var clip: int
 	var is_end: bool
 	var original_start: int = 0
 	var original_duration: int = 0
 	var delta: int = 0
 
-	func _init(_clip_id: int, _is_end: bool, start: int, duration: int) -> void:
-		clip_id = _clip_id
+	func _init(clip_id: int, _is_end: bool, start: int, duration: int) -> void:
+		clip = clip_id
 		is_end = _is_end
 		original_start = start
 		original_duration = duration
@@ -879,11 +1084,11 @@ class ResizeTarget:
 
 
 class FadeTarget:
-	var clip_id: int
+	var clip: int
 	var is_end: bool
 	var is_visual: bool
 
-	func _init(_clip_id: int, _is_end: bool, _is_visual: bool) -> void:
-		clip_id = _clip_id
+	func _init(clip_id: int, _is_end: bool, _is_visual: bool) -> void:
+		clip = clip_id
 		is_end = _is_end
 		is_visual = _is_visual

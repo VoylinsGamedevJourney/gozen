@@ -43,12 +43,12 @@ func _save_data() -> void:
 
 
 func get_thumb(file_id: int) -> Texture2D:
-	var file_index: int = Project.files._id_map[file_id]
-	var path: String = Project.data.files_path[file_index]
+	var file_index: int = Project.files.index_map[file_id]
+	var file_path: String = Project.data.files_path[file_index]
 	var image: Image
 
 	# Check if color or image.
-	if path in ["temp://color", "temp://image"]:
+	if file_path in ["temp://color", "temp://image"]:
 		var temp: Variant = Project.files.file_data[file_index].image_data
 		if !temp or temp != ImageTexture:
 			return null
@@ -56,27 +56,27 @@ func get_thumb(file_id: int) -> Texture2D:
 		var image_tex: ImageTexture = temp
 		image = scale_thumbnail(image_tex.get_image())
 		return ImageTexture.create_from_image(image)
-	elif path == "temp://text":
+	elif file_path == "temp://text":
 		printerr("FilePanel: Thumbnailer: No thumbnails for text yet!")
 		return null
 
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
-	if data.has(path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[path]):
-		data.erase(path)
+	if data.has(file_path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[file_path]):
+		data.erase(file_path)
 		_save_data()
 
 	# Not thumb has been made yet, return default and put id in waiting line.
-	if !data.has(path):
+	if !data.has(file_path):
 		thumbs_todo.append(file_id)
 		# Add the correct placeholder image.
 		match Project.data.files_type[file_index]:
-			FileLogic.TYPE.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
-			FileLogic.TYPE.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
+			EditorCore.TYPE.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
+			EditorCore.TYPE.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video placeholder.
 
 	# Return the saved thumbnail.
-	var raw_path: String = thumb_folder + FILE_NAME % data[path]
+	var raw_path: String = thumb_folder + FILE_NAME % data[file_path]
 	image = Image.load_from_file(ProjectSettings.globalize_path(raw_path))
 	return ImageTexture.create_from_image(image)
 
@@ -90,17 +90,17 @@ func _get_default_thumb(icon_uid: String) -> Texture2D:
 # _process function and in a thread through Threader.
 
 func _gen_thumb(file_id: int) -> void:
-	if !Project.files.has(file_id):
+	if !Project.files.index_map.has(file_id):
 		return
-	var file_index: int = Project.files._id_map[file_id]
+	var file_index: int = Project.files.index_map[file_id]
 	var file_path: String = Project.data.files_path[file_index]
-	var file_type: FileLogic.TYPE = Project.data.files_type[file_index] as FileLogic.TYPE
+	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 	var image: Image
 
 	match file_type:
-		FileLogic.TYPE.IMAGE: image = Image.load_from_file(file_path)
-		FileLogic.TYPE.AUDIO: image = Project.files.generate_audio_thumb(file_id)
-		FileLogic.TYPE.VIDEO, FileLogic.TYPE.VIDEO_ONLY:
+		EditorCore.TYPE.IMAGE: image = Image.load_from_file(file_path)
+		EditorCore.TYPE.AUDIO: image = Project.files.generate_audio_thumb(file_id)
+		EditorCore.TYPE.VIDEO, EditorCore.TYPE.VIDEO_ONLY:
 			var temp: Variant = Project.files.file_data[file_index]
 			if !temp or temp is not GoZenVideo:
 				return
@@ -108,7 +108,7 @@ func _gen_thumb(file_id: int) -> void:
 			image = video.generate_thumbnail_at_frame(0)
 
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
-	if file_type != FileLogic.TYPE.AUDIO:
+	if file_type != EditorCore.TYPE.AUDIO:
 		image = scale_thumbnail(image)
 	if image.save_webp(thumb_folder + FILE_NAME % file_id):
 		return printerr("FilePanel: Something went wrong saving thumb!")

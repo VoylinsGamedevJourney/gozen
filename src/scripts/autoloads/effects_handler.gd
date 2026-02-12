@@ -65,9 +65,9 @@ func _load_audio_effects() -> void:
 #---- Adding effects ----
 
 func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
-	if !Project.clips._id_map.has(clip_id):
+	if !Project.clips.index_map.has(clip_id):
 		return
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect_id: String = effect.id
 	var index: int
@@ -93,7 +93,7 @@ func add_effect(clip_id: int, effect: GoZenEffect, is_visual: bool) -> void:
 
 
 func _add_effect(clip_id: int, index: int, effect: GoZenEffect, is_visual: bool) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if is_visual:
 		clip_effects.video.insert(index, effect)
@@ -107,9 +107,9 @@ func _add_effect(clip_id: int, index: int, effect: GoZenEffect, is_visual: bool)
 #---- Removing effects ----
 
 func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
-	if !Project.clips._id_map.has(clip_id) or index < 0:
+	if !Project.clips.index_map.has(clip_id) or index < 0:
 		return
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: GoZenEffect
 	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
@@ -128,7 +128,7 @@ func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
 
 
 func _remove_effect(clip_id: int, effect_index: int, is_visual: bool) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if is_visual:
 		clip_effects.video.remove_at(effect_index)
@@ -142,9 +142,9 @@ func _remove_effect(clip_id: int, effect_index: int, is_visual: bool) -> void:
 #---- Moving effects ----
 
 func move_effect(clip_id: int, effect_index: int, new_index: int, is_visual: bool) -> void:
-	if !Project.clips._id_map.has(clip_id) or effect_index < 0 or new_index < 0:
+	if !Project.clips.index_map.has(clip_id) or effect_index < 0 or new_index < 0:
 		return
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: GoZenEffect
 	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
@@ -163,7 +163,7 @@ func move_effect(clip_id: int, effect_index: int, new_index: int, is_visual: boo
 
 
 func _move_effect(clip_id: int, effect_index: int, new_index: int, is_visual: bool) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if is_visual:
 		var effect: GoZenEffect = clip_effects.video.pop_at(effect_index)
@@ -177,9 +177,9 @@ func _move_effect(clip_id: int, effect_index: int, new_index: int, is_visual: bo
 #---- Updating effect params ----
 
 func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
-	if !Project.clips._id_map.has(clip_id) or effect_index < 0:
+	if !Project.clips.index_map.has(clip_id) or effect_index < 0:
 		return
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var effect: GoZenEffect
@@ -233,9 +233,9 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 
 
 func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	if !Project.clips._id_map.has(clip_id) or index < 0:
+	if !Project.clips.index_map.has(clip_id) or index < 0:
 		return
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: GoZenEffect
 	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
@@ -264,7 +264,7 @@ func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String
 
 
 func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: GoZenEffect
 
@@ -281,7 +281,7 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 
 
 func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: GoZenEffect
 
@@ -303,9 +303,9 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 
 
 func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
-	if !Project.clips._id_map.has(clip_id) or index < 0:
+	if !Project.clips.index_map.has(clip_id) or index < 0:
 		return
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: GoZenEffect
 
@@ -323,7 +323,7 @@ func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
 
 
 func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if is_visual:
 		clip_effects.video[index].is_enabled = value

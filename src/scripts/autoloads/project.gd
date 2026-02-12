@@ -100,7 +100,7 @@ func open(new_project_path: String) -> void:
 
 	# 7% = Timeline ready to accept clips.
 	await loading_overlay.update(7, tr("Loading project files ..."))
-	files._startup_loading(loading_overlay, (1 / float(data.files_id.size())) * 85)
+	files._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
 	# 99% = Finalizing.
 	await loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
@@ -268,7 +268,7 @@ func update_timeline_end() -> void:
 	for index: int in data.tracks_is_muted.size():
 		var clip_id: int = tracks.get_last_clip_id(index)
 		if clip_id != -1:
-			var clip_index: int = clips._id_map[clip_id]
+			var clip_index: int = clips.index_map[clip_id]
 			var clip_start: int = data.clips_start[clip_index]
 			var clip_duration: int = data.clips_duration[clip_index]
 			end = max(end, clip_start + clip_duration)

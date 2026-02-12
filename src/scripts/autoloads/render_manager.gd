@@ -163,18 +163,16 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, length: int) -> voi
 	track_audio.resize(length)
 
 	for clip_id: int in Project.tracks.get_clip_ids(track_id):
-		var clip_index: int = Project.clips._id_map[clip_id]
-		var file_id: int = Project.data.clips_file_id[clip_index]
-		var file_index: int = Project.files._id_map[file_id]
-		var type: int = Project.data.files_type[file_index]
-		if type not in EditorCore.AUDIO_TYPES:
+		var clip_index: int = Project.clips.index_map[clip_id]
+		var clip_type: int = Project.data.clips_type[clip_index]
+		if clip_type not in EditorCore.AUDIO_TYPES:
 			continue
 		_handle_audio(clip_id, track_audio)
 	audio = GoZenAudio.combine_data(audio, track_audio)
 
 
 func _handle_audio(clip_id: int, track_audio: PackedByteArray) -> void:
-	if !Project.clips._id_map.has(clip_id):
+	if !Project.clips.index_map.has(clip_id):
 		return
 	var framerate: float = Project.get_framerate()
 	var samples_per_frame: float = MIX_RATE / framerate
@@ -182,7 +180,7 @@ func _handle_audio(clip_id: int, track_audio: PackedByteArray) -> void:
 	if audio_data.is_empty():
 		return
 
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var fade_in: int = clip_effects.fade_audio.x
 	var fade_out: int = clip_effects.fade_audio.y

@@ -13,9 +13,13 @@ func _ready() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
+	if event is InputEventMouseButton:
+		var event_mouse_button: InputEventMouseButton = event
+		if !event_mouse_button.pressed:
+			return
+
 		# We need to change the scroll direction of this node
-		# TODO: Implement as a PR for Godot
+		# TODO: Implemented as a PR for Godot (#115545)
 		var h_step: float = scroll_horizontal_custom_step
 		var v_step: int = floori(scroll_vertical_custom_step)
 

@@ -68,9 +68,6 @@ msgstr "Nuevo proyecto"
 msgid "title_files_dropped"
 msgstr "Nuevo proyecto"
 
-msgid "title_sponsors"
-msgstr ""
-
 #, fuzzy
 msgid "title_editor_settings"
 msgstr "Configuración del editor."
@@ -118,14 +115,6 @@ msgstr "Servidor de Discord"
 
 msgid "button_support_gozen"
 msgstr "Apoyar a GoZen"
-
-#, fuzzy
-msgid "button_view_sponsors"
-msgstr "Guardar configuración"
-
-#, fuzzy
-msgid "button_become_sponsor"
-msgstr "Cerrar"
 
 msgid "button_open_project"
 msgstr "Abrir proyecto"

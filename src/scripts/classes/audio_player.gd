@@ -44,28 +44,28 @@ func set_audio(audio_clip_id: int) -> void:
 		return stop()
 	if RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return
-	if !project_data.clips_id.has(audio_clip_id):
+	if !project_data.clips.has(audio_clip_id):
 		return stop()
 
-	var clip_index: int = Project.clips._id_map[audio_clip_id]
+	var clip_index: int = Project.clips.index_map[audio_clip_id]
 	var clip_effects: ClipEffects = project_data.clips_effects[clip_index]
-	var clip_file_id: int = project_data.clips_file_id[clip_index]
+	var clip_file: int = project_data.clips_file[clip_index]
 	var clip_start: int = project_data.clips_start[clip_index]
 	var clip_duration: int = project_data.clips_duration[clip_index]
 	var clip_begin: int = project_data.clips_begin[clip_index]
 	var clip_end: int = clip_start + clip_duration
 
 	# Audio-take-over logic.
-	var target_file_id: int = clip_file_id
+	var target_file_id: int = clip_file
 	var time_offset: float = 0.0
 	if clip_effects.ato_active and clip_effects.ato_id != -1:
 		target_file_id = clip_effects.ato_id
 		time_offset = clip_effects.ato_offset
 
 	# Getting file data.
-	if !Project.files.has(target_file_id):
+	if !Project.files.index_map.has(target_file_id):
 		return stop()
-	var file_index: int = Project.files._id_map[target_file_id]
+	var file_index: int = Project.files.index_map[target_file_id]
 	var file_data: Variant = Project.files.file_data[file_index]
 	var stream: AudioStream = null
 

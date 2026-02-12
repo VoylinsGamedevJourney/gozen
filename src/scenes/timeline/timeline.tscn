@@ -3,15 +3,10 @@
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://scenes/timeline/timeline.gd" id="1_p3xsq"]
 [ext_resource type="Script" uid="uid://yfoq75slyooi" path="res://scenes/timeline/timeline_panel.gd" id="2_2or7f"]
 [ext_resource type="Script" uid="uid://btjvbysh6x45y" path="res://scenes/timeline/timeline_scroll.gd" id="2_6dfq3"]
-[ext_resource type="Script" uid="uid://depcslam548ev" path="res://scenes/timeline/timeline_modes.gd" id="2_ak2ly"]
 [ext_resource type="Script" uid="uid://7ojbq5n6igoh" path="res://scenes/timeline/time_stamps.gd" id="2_jxg8b"]
 [ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
 [ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
-[ext_resource type="Script" uid="uid://c4ku3pb1a4ygm" path="res://scenes/timeline/timeline_track_lines_draw.gd" id="7_ykhnt"]
-[ext_resource type="Script" uid="uid://du3rffltu23v3" path="res://scenes/timeline/timeline_clip_draw.gd" id="8_anff3"]
-[ext_resource type="Script" uid="uid://cl04hvmsv2g6j" path="res://scenes/timeline/timeline_playhead_draw.gd" id="8_qnybs"]
-[ext_resource type="Script" uid="uid://chvxppph20d7b" path="res://scenes/timeline/timeline_box_selection_draw.gd" id="11_fnoe2"]
-[ext_resource type="Script" uid="uid://cvk2ov0wg1qkj" path="res://scenes/timeline/timeline_markers_drawn.gd" id="12_ctlyi"]
+[ext_resource type="Script" uid="uid://citi833fx6ole" path="res://scenes/timeline/timeline_draw_control.gd" id="7_vuipj"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ak2ly"]
 
@@ -102,44 +97,47 @@ script = ExtResource("2_2or7f")
 [node name="TrackLinesDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=22986217]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("7_ykhnt")
+script = ExtResource("7_vuipj")
+draw_func_name = "_draw_track_lines"
 
-[node name="ClipDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=1323832046]
+[node name="ClipsDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=1323832046]
 layout_mode = 2
-script = ExtResource("8_anff3")
+script = ExtResource("7_vuipj")
+draw_func_name = "_draw_clips"
 
-[node name="ModeDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=71389255 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
+[node name="ModeDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=71389255]
 layout_mode = 2
 mouse_filter = 1
-script = ExtResource("2_ak2ly")
-mode_panel = NodePath("../../../../TimelineModes")
-button_select = NodePath("../../../../TimelineModes/Margin/VBox/SelectModeButton")
-button_cut = NodePath("../../../../TimelineModes/Margin/VBox/CutModeButton")
+script = ExtResource("7_vuipj")
+draw_func_name = "_draw_mode"
 
 [node name="PlayheadDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=1764531311]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("8_qnybs")
+script = ExtResource("7_vuipj")
+draw_func_name = "_draw_playhead"
 
 [node name="BoxSelectionDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=591200297]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("11_fnoe2")
+script = ExtResource("7_vuipj")
+draw_func_name = "_draw_box_selection"
 
 [node name="MarkersDrawn" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=113674296]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("12_ctlyi")
+script = ExtResource("7_vuipj")
+draw_func_name = "_draw_markers"
 
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_select_mode_button_pressed"]
 [connection signal="pressed" from="TimelineModes/Margin/VBox/CutModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_cut_mode_button_pressed"]
+[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/TrackLinesDraw" method="update_track_lines"]
+[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipsDraw" method="update_clips"]
 [connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ModeDraw" method="update_mode"]
 [connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="update_playhead"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/TrackLinesDraw" method="update_track_lines"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipDraw" method="update_clips"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/MarkersDrawn" method="update_markers"]
 [connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/BoxSelectionDraw" method="update_box"]
-[connection signal="draw_clips" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipDraw" method="update_clips"]
+[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/MarkersDrawn" method="update_markers"]
+[connection signal="draw_clips" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipsDraw" method="update_clips"]
 [connection signal="draw_markers" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/MarkersDrawn" method="update_markers"]
 [connection signal="draw_mode" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ModeDraw" method="update_mode"]
 [connection signal="draw_playhead" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="update_playhead"]
@@ -151,7 +149,6 @@ script = ExtResource("12_ctlyi")
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/TrackLinesDraw" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipDraw" method="_on_timeline_zoom_changed"]
-[connection signal="gui_input" from="VBox/TimelineScroll/Timeline/ModeDraw" to="VBox/TimelineScroll/Timeline/ModeDraw" method="update_mode" unbinds=1]
+[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipsDraw" method="_on_timeline_zoom_changed"]
+[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="_on_timeline_zoom_changed"]

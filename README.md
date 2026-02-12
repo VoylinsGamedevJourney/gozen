@@ -19,7 +19,6 @@
 GoZen is a lightweight, stable, minimalistic, and performant video editor with simplicity in mind. Built using the Godot game engine, GoZen aims to provide a focused video editing  experience without the complexity which other traditional NLE's. It is primarily developed for Linux but includes support for Windows, MacOS support will come in the future.
 
 ## Features
-
 - Smooth video playback;
 - Fast rendering;
 - Crash free;
@@ -67,9 +66,6 @@ GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad 
 
 If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through [my Ko-fi page](https://ko-fi.com/voylin).
 
-### Becoming a sponsor
-If you have interest in becoming a sponsor to the GoZen project, please visit [this form](https://forms.gle/boBG9UB6ouSg8vce9) and fill in the details. We'll reply as soon as we can.
-
 ## Changelog
 See the [CHANGELOG.md](./CHANGELOG.md) file for an overview of all changes to the projects from version to version.
 
@@ -79,11 +75,9 @@ I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. The 
 I'm a morning person and seeing/feeling the sunrise each morning always makes me feel like I'll have a productive day, so the meaning of GoZen for me links to being productive and having a zen experience whilst editing videos.
 
 ## License
-
 The project is licensed under the [GPLv3 license](./LICENSE). FFmpeg is being used which has it's own license as well, for compiling FFmpeg we use the `--enable-gpl3` flag.
 
 > This software uses libraries from the FFmpeg project under the LGPLv2.1
 > Other libraries used may come with their own specific licenses so be sure to check before forking the project and/or using code from this project to see if it can be used with your project license.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
-

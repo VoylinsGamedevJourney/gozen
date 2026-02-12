@@ -11,7 +11,7 @@ var playhead_position: int = 0
 
 var folders: PackedStringArray = []
 
-var files_id: PackedInt64Array = []
+var files: PackedInt64Array = [] ## ID's
 var files_path: PackedStringArray = [] ## Temporary files start with "temp://".
 var files_proxy_path: PackedStringArray = []
 var files_nickname: PackedStringArray = []
@@ -25,14 +25,15 @@ var files_modified_time: PackedInt64Array = []
 var files_temp_file: Dictionary[int, TempFile] = {} ## { file_id: temp_file }
 var files_ato_active: Dictionary[int, bool] = {} ## { file_id: bool }
 var files_ato_offset: Dictionary[int, float] = {} ## { file_id: offset }
-var files_ato_id: Dictionary[int, int] = {} ## { file_id: audio-take-over file id }
+var files_ato_file: Dictionary[int, int] = {} ## { file_id: audio-take-over file id }
 
 var tracks_is_muted: PackedByteArray = [] ## 0 = not muted, 1 = muted
 var tracks_is_invisible: PackedByteArray = [] ## 0 = not invisible, 1 = visible
 
-var clips_id: PackedInt64Array = []
-var clips_file_id: PackedInt64Array = []
-var clips_track_id: PackedInt64Array = []
+var clips: PackedInt64Array = [] ## ID's
+var clips_type: PackedInt32Array = []
+var clips_file: PackedInt64Array = []
+var clips_track: PackedInt64Array = []
 var clips_start: PackedInt64Array = []
 var clips_begin: PackedInt64Array = [] ## Only for video and audio files
 var clips_duration: PackedInt64Array = []
