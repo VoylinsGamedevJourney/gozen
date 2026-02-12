@@ -11,6 +11,7 @@ const END_PADDING: int = 5000
 var current_zoom: float = 1.0
 
 
+
 func _ready() -> void:
 	Project.timeline_end_update.connect(_end_update)
 

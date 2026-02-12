@@ -29,16 +29,20 @@ var _drag_offset: float = 0.0
 var _drag_start_pos: Vector2 = Vector2.ZERO
 
 
+
 func _ready() -> void:
-	Project.project_ready.connect(queue_redraw)
+	Project.project_ready.connect(_on_project_ready)
 	scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 	timeline_scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 
-	Project.markers.marker_added.connect(queue_redraw.unbind(1))
-	Project.markers.marker_updated.connect(queue_redraw.unbind(2))
-	Project.markers.marker_removed.connect(queue_redraw.unbind(1))
-
 	_setup_marker_style_box()
+
+
+func _on_project_ready() -> void:
+	Project.markers.added.connect(update_stamps.unbind(1))
+	Project.markers.updated.connect(update_stamps.unbind(2))
+	Project.markers.removed.connect(update_stamps.unbind(1))
+	update_stamps()
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -75,13 +79,14 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 				new_frame_nr = floori(Project.markers.dragged_marker_offset / current_zoom)
 
 			if new_frame_nr != Project.markers.dragged_marker:
-				Project.markers.update_marker(
-						Project.markers.dragged_marker,
-						new_frame_nr,
-						Project.markers.get_marker(Project.markers.dragged_marker))
+				var marker_index: int = Project.markers.dragged_marker
+				Project.markers.update(
+						marker_index, new_frame_nr,
+						Project.data.markers_text[marker_index],
+						Project.data.markers_type[marker_index])
 			else:
 				EditorCore.set_frame(Project.markers.dragged_marker)
-				PopupManager.open_popup(PopupManager.POPUP.MARKER)
+				PopupManager.open(PopupManager.MARKER)
 
 			Project.markers.dragged_marker = -1
 			Project.markers.dragged_marker_offset = 0
@@ -137,14 +142,14 @@ func _draw() -> void:
 	# - Draw markers
 	marker_rects.clear()
 
-	for frame_nr: int in Project.markers.markers.keys():
+	for frame_nr: int in Project.data.markers_frame:
 		var is_being_dragged: bool = frame_nr == Project.markers.dragged_marker
 
 		if !is_being_dragged and frame_nr < visible_start_nr or frame_nr > visible_end_nr:
 			continue # Only visible markers and the one being dragged get drawn
 
 		var index: int = Project.markers.get_index(frame_nr)
-		var text: String = Project.markers.get_text(index)
+		var text: String = Project.data.get_text(index)
 		var color: Color = Settings.get_marker_color(Project.markers.get_type(index))
 
 		var pos_x: float = frame_nr * current_zoom
@@ -228,3 +233,7 @@ func _update_hovered_marker() -> void:
 		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	else:
 		mouse_default_cursor_shape = Control.CURSOR_ARROW
+
+
+func update_stamps() -> void:
+	queue_redraw()

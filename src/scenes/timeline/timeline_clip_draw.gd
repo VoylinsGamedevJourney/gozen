@@ -16,7 +16,7 @@ const TEXT_OFFSET: Vector2 = Vector2(5, 20)
 @onready var timeline: PanelContainer = get_parent()
 
 @onready var zoom: float = timeline.zoom
-@onready var scroll: ScrollContainer = timeline.scroll
+@onready var scroll: ScrollContainer = get_parent().get_parent()
 @onready var draggable: Draggable = timeline.draggable
 @onready var track_height: float = timeline.TRACK_HEIGHT
 @onready var track_total_size: float = timeline.TRACK_TOTAL_SIZE
@@ -27,9 +27,13 @@ var waveform_amp: float = Settings.get_audio_waveform_amp()
 
 
 func _ready() -> void:
+	Project.project_ready.connect(_on_project_ready)
+	Settings.on_waveform_update.connect(update_waveform_data)
+
+
+func _on_project_ready() -> void:
 	Project.clips.updated.connect(update_clips)
 	Project.clips.selected.connect(update_clips.unbind(1))
-	Settings.on_waveform_update.connect(update_waveform_data)
 
 
 func _draw() -> void:
@@ -132,7 +136,7 @@ func _draw() -> void:
 
 func _get_visible(start: int, end: int) -> PackedInt64Array:
 	var data: PackedInt64Array = []
-	for track_id: int in Project.tracks.size():
+	for track_id: int in Project.data.tracks_is_muted.size():
 		data.append_array(Project.tracks.get_clip_ids_in(track_id, start, end))
 	return data
 

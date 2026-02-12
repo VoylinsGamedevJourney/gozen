@@ -22,10 +22,10 @@ static func calculate_transform_matrix(data: Dictionary[String, Variant], resolu
 
 	# Create transform
 	var transform: Transform2D = Transform2D.IDENTITY
-	var scale: Vector2 = Vector2(data.size) / resolution
-	var position: Vector2 = Vector2(data.position)
-	var pivot: Vector2 = Vector2(data.pivot)
-	var rotation: float = deg_to_rad(data.rotation)
+	var scale: Vector2 = data.size / resolution
+	var position: Vector2 = data.position
+	var pivot: Vector2 = data.pivot
+	var rotation: float = deg_to_rad(data.rotation as float)
 
 	transform = transform.translated(position) # move to position
 	transform = transform.translated(-pivot) # Move to pivot

@@ -21,9 +21,9 @@ var markers: MarkerLogic
 var folders: FolderLogic
 
 
+
 func _ready() -> void:
 	get_window().close_requested.connect(_on_close)
-	clips.updated.connect(update_timeline_end)
 
 
 func _setup_logic() -> void:
@@ -33,12 +33,14 @@ func _setup_logic() -> void:
 	markers = MarkerLogic.new(data)
 	folders = FolderLogic.new(data)
 
+	clips.updated.connect(update_timeline_end)
+
 
 func new_project(new_path: String, new_resolution: Vector2i, new_framerate: float) -> void:
-	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("New project"))
-	loading_overlay.update_progress(0, tr("Initialize new project ..."))
+	await loading_overlay.update(0, tr("Initialize new project ..."))
 
 	set_project_path(new_path)
 	set_resolution(new_resolution)
@@ -47,17 +49,13 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 	for index: int in Settings.get_tracks_amount():
 		tracks._add_track(index, false)
-	EditorCore.loaded_clips.resize(data.tracks.size())
+	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
 
-	loading_overlay.update_progress(50, tr("Setting up playback ..."))
-	EditorCore.setup_playback()
-	EditorCore.setup_audio_players()
-	EditorCore.set_frame(get_playhead_position())
-
-	loading_overlay.update_progress(99, tr("Finalizing ..."))
+	await loading_overlay.update(50, tr("Setting up playback ..."))
+	await loading_overlay.update(99, tr("Finalizing ..."))
 	get_window().title = "GoZen - %s" % new_path.get_file().get_basename()
 	_update_recent_projects(new_path)
-	PopupManager.close_popups()
+	PopupManager.close_all()
 	save()
 
 	is_loaded = true
@@ -84,38 +82,32 @@ func save_as() -> void:
 
 
 func open(new_project_path: String) -> void:
-	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("Loading project"))
-	loading_overlay.update_progress(0, tr("Initializing ..."))
-	loading_overlay.update_progress_bar(1, true)
+	await loading_overlay.update(0, tr("Initializing ..."))
+	await loading_overlay.update_bar(1, true)
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
-	loading_overlay.update_progress(5, tr("Setting up timeline ..."))
+	await loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
 	set_framerate(data.framerate)
 	_setup_logic()
 
-	EditorCore.loaded_clips.resize(data.tracks.size())
+	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
 
 	# 7% = Timeline ready to accept clips.
-	loading_overlay.update_progress(7, tr("Loading project files ..."))
-	files._startup_loading(loading_overlay, (1 / float(data.files.size())) * 73)
-
-	# 80% = Files loaded, setting up playback.
-	loading_overlay.update_progress(80, tr("Setting up playback ..."))
-	EditorCore.setup_playback()
-	EditorCore.setup_audio_players()
-
+	await loading_overlay.update(7, tr("Loading project files ..."))
+	files._startup_loading(loading_overlay, (1 / float(data.files_id.size())) * 85)
 	# 99% = Finalizing.
-	loading_overlay.update_progress(99, tr("Finalizing ..."))
+	await loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
 
-	loading_overlay.update_progress_bar(100)
+	await loading_overlay.update_bar(100)
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
-	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	PopupManager.close(PopupManager.PROGRESS)
 
 	is_loaded = true
 	unsaved_changes = false
@@ -134,7 +126,8 @@ func open_project() -> void:
 	dialog.popup_centered()
 
 
-func open_settings_menu() -> void: PopupManager.open_popup(PopupManager.POPUP.PROJECT_SETTINGS)
+func open_settings_menu() -> void:
+	PopupManager.open(PopupManager.PROJECT_SETTINGS)
 
 
 func _auto_save() -> void:
@@ -203,6 +196,7 @@ func _on_cancel_close() -> void:
 	if Settings.get_auto_save():
 		auto_save_timer.start()
 
+
 #--- Project setters & getters ---
 
 func set_project_path(new_project_path: String) -> void:
@@ -222,13 +216,10 @@ func get_project_base_folder() -> String:
 	return data.project_path.get_base_dir()
 
 
-func set_resolution(res: Vector2i) -> void:
-	if res.x % 2 != 0:
-		res.x += 1
-	if res.y % 2 != 0:
-		res.y += 1
-
-	data.resolution = res
+func set_resolution(resolution: Vector2i) -> void:
+	resolution.x += resolution.x % 2
+	resolution.y += resolution.y % 2
+	data.resolution = resolution
 	unsaved_changes = true
 
 
@@ -274,12 +265,13 @@ func set_timeline_end(value: int) -> void:
 
 func update_timeline_end() -> void:
 	var end: int = 0
-
-	for index: int in tracks.get_size():
-		var clip_id: int = tracks.get_last_clip_index(index)
+	for index: int in data.tracks_is_muted.size():
+		var clip_id: int = tracks.get_last_clip_id(index)
 		if clip_id != -1:
-			end = max(end, clips.get_end_frame(clip_id))
-
+			var clip_index: int = clips._id_map[clip_id]
+			var clip_start: int = data.clips_start[clip_index]
+			var clip_duration: int = data.clips_duration[clip_index]
+			end = max(end, clip_start + clip_duration)
 	set_timeline_end(end)
 	timeline_end_update.emit(end)
 

@@ -42,8 +42,8 @@ func _input(event: InputEvent) -> void:
 func _on_close_button_pressed() -> void:
 	_stop_listening()
 	Settings.save()
-	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
-	PopupManager.close_popup(PopupManager.POPUP.PROJECT_SETTINGS)
+	PopupManager.close(PopupManager.SETTINGS)
+	PopupManager.close(PopupManager.PROJECT_SETTINGS)
 
 
 func set_mode(mode: MODE) -> void:
@@ -98,7 +98,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 	# Creating the marker nodes
 	var marker_nodes: Array = []
-	var marker_texts: Array = [
+	var marker_texts: PackedStringArray = [
 		tr("Marker one"), tr("Marker two"), tr("Marker three"),
 		tr("Marker four"), tr("Marker five")]
 	marker_nodes.append(create_header(tr("Markers")))
@@ -459,4 +459,5 @@ func _get_event_text(event: InputEvent) -> String:
 		return "None"
 	elif event is not InputEventKey:
 		return event.as_text()
-	return event.as_text_physical_keycode()
+	var event_key: InputEventKey = event
+	return event_key.as_text_physical_keycode()

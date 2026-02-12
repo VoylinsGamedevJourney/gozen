@@ -18,13 +18,16 @@ var dragged_marker_offset: float = 0:
 var project_data: ProjectData
 
 
-func _init(data: ProjectData) -> void: project_data = data
+# --- Main ---
+
+func _init(data: ProjectData) -> void:
+	project_data = data
+
 
 # --- Handling ---
 
-
 func add(frame_nr: int, text: String, type: int) -> void:
-	var index: int = get_index(frame_nr)
+	var index: int = project_data.markers_frame.find(frame_nr)
 	if index != -1:
 		return update(index, frame_nr, text, type)
 
@@ -32,7 +35,6 @@ func add(frame_nr: int, text: String, type: int) -> void:
 	InputManager.undo_redo.add_do_method(_add.bind(frame_nr, text, type))
 	InputManager.undo_redo.add_undo_method(_remove.bind(frame_nr))
 	InputManager.undo_redo.commit_action()
-
 	index = project_data.markers_frame.size()
 
 
@@ -85,34 +87,14 @@ func _remove(frame_nr: int) -> void:
 	Project.unsaved_changes = true
 	removed.emit(index)
 
+
 # --- Getters ---
-
-
-func size() -> int:
-	return project_data.markers_frame.size()
-
-
-func get_index(frame_nr: int) -> int:
-	var index: int = project_data.markers_frame.find(frame_nr)
-	if index == -1: printerr("MarkerLogic:
-		Couldn't find marker at '%s'" % frame_nr)
-	return index
-
-
-func get_indexes() -> PackedInt64Array:
-	return PackedInt64Array(range(project_data.markers_frame.size()))
-
 
 ## Get a sorted array of the index numbers according to frame_nr.
 func get_sorted() -> PackedInt64Array:
 	var indexes: Array[int] = range(project_data.markers_frame.size())
 	indexes.sort_custom(_sort)
 	return PackedInt64Array(indexes)
-
-
-func get_text(index: int) -> String: return project_data.markers_data[index]
-func get_frame(index: int) -> int: return project_data.markers_frame[index]
-func get_type(index: int) -> int: return project_data.markers_data[index]
 
 
 func get_previous(frame_nr: int) -> int:
@@ -134,7 +116,7 @@ func get_next(frame_nr: int) -> int:
 	var sorted: PackedInt64Array = get_sorted()
 	if project_data.markers_frame.has(frame_nr):
 		var index: int = project_data.markers_frame[frame_nr]
-		return sorted[min(index + 1, size())]
+		return sorted[min(index + 1, project_data.markers_frame.size())]
 
 	sorted.reverse()
 	var previous: int = 0
@@ -145,8 +127,8 @@ func get_next(frame_nr: int) -> int:
 		previous = current
 	return Project.get_timeline_end()
 
-# --- Helper functions ---
 
+# --- Helper functions ---
 
 func _sort(a: int, b: int) -> int:
 	return project_data.markers_frame[a] < project_data.markers_frame[b]

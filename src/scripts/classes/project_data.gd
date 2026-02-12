@@ -10,6 +10,7 @@ var timeline_end: int = 0
 var playhead_position: int = 0
 
 var folders: PackedStringArray = []
+
 var files_id: PackedInt64Array = []
 var files_path: PackedStringArray = [] ## Temporary files start with "temp://".
 var files_proxy_path: PackedStringArray = []

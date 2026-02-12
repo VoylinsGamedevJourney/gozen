@@ -125,8 +125,10 @@ func parse_blocks(text: String) -> Array[Block]:
 		if stripped_line.begins_with("##"):
 			comment_buffer.append(line)
 			continue
-		if stripped_line.begins_with("#"):
-			if indent_count == 0 or current_block != null:
+		elif stripped_line.begins_with("#"):
+			if indent_count == 0:
+				comment_buffer.append(line)
+			elif current_block:
 				current_block.lines.append(line)
 			else:
 				comment_buffer.append(line)
@@ -230,7 +232,7 @@ func assemble_text(blocks: Array[Block]) -> String:
 				needed_newlines = SPACING_CLASS_DEF
 			elif block.type == BLOCKS.FUNC or next_block.type == BLOCKS.FUNC:
 				var is_block_oneliner: bool = block.lines.size() - block.code_start_index == 1
-				var is_next_block_oneliner: bool = block.lines.size() - block.code_start_index == 1
+				var is_next_block_oneliner: bool = next_block.lines.size() - next_block.code_start_index == 1
 				if is_block_oneliner and is_next_block_oneliner:
 					needed_newlines = 1
 				else:
@@ -262,6 +264,12 @@ func process_internal_formatting(block: Block) -> void:
 
 		var search: RegExMatch = regex_one_liner.search(line)
 		if search:
+			var split_index: int = search.get_start(3)
+			var text_before_split: String = line.substr(0, split_index)
+			if text_before_split.contains("#"):
+				new_lines.append(line)
+				continue
+
 			var content_after_colon: String = search.get_string(3)
 			if content_after_colon.strip_edges().begins_with("#"):
 				new_lines.append(line)
@@ -286,5 +294,5 @@ func process_internal_formatting(block: Block) -> void:
 
 class Block:
 	var type: BLOCKS = BLOCKS.OTHER
-	var lines: Array[String] = [] # Includes comments
-	var code_start_index: int = 0 # Index in 'lines' where actual code starts (after comments)
+	var lines: Array[String] = []
+	var code_start_index: int = 0

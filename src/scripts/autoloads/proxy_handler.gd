@@ -15,12 +15,12 @@ func _ready() -> void:
 
 
 func request_generation(file_id: int) -> void:
-	var index: int = Project.files.get_index(file_id)
-	var type: FileLogic.TYPE = Project.files.get_type(index)
-	var path: String = Project.files.get_path(index)
-	if type not in FileLogic.TYPE_VIDEOS:
+	var file_index: int = Project.files._id_map[file_id]
+	var file_type: FileLogic.TYPE = Project.data.files_type[file_index] as FileLogic.TYPE
+	var file_path: String = Project.data.files_path[file_index]
+	if file_type not in FileLogic.TYPE_VIDEOS:
 		return # Only proxies for videos possible
-	var new_path: String = PROXY_PATH + _create_proxy_name(path)
+	var new_path: String = PROXY_PATH + _create_proxy_name(file_path)
 
 	# Check if already exists, if yes, we link
 	if !FileAccess.file_exists(new_path):
@@ -28,7 +28,7 @@ func request_generation(file_id: int) -> void:
 				_generate_proxy_task.bind(file_id, new_path),
 				_on_proxy_finished.bind(file_id))
 
-	Project.files.add_proxy_path(index, new_path)
+	Project.files.set_proxy_path(file_index, new_path)
 	if Settings.get_use_proxies():
 		Project.files.reload(file_id)
 
@@ -36,18 +36,18 @@ func request_generation(file_id: int) -> void:
 func delete_proxy(file_id: int) -> void:
 	if !Project.files.has(file_id):
 		return
-	var index: int = Project.files.get_index(file_id)
-	var proxy_path: String = Project.files.get_proxy_path(index)
-	if !proxy_path.is_empty():
-		DirAccess.remove_absolute(proxy_path)
-		Project.data.files_proxy_path[index] = ""
+	var file_index: int = Project.files._id_map[file_id]
+	var file_proxy_path: String = Project.data.files_proxy_path[file_index]
+	if !file_proxy_path.is_empty():
+		DirAccess.remove_absolute(file_proxy_path)
+		Project.files.set_proxy_path(file_index, "")
 
 
 func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	if !Project.files.has(file_id): return printerr("ProxyHandler:
 		Failed to find file!")
-	var index: int = Project.files.get_index(file_id)
-	var file_path: String = Project.files.get_path(index)
+	var file_index: int = Project.files._id_map[file_id]
+	var file_path: String = Project.data.files_path[file_index]
 	var global_output_path: String = ProjectSettings.globalize_path(output_path)
 	var global_input_path: String = ProjectSettings.globalize_path(file_path)
 	var encoder: GoZenEncoder = GoZenEncoder.new()
@@ -94,7 +94,7 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	proxy_loading.emit.call_deferred(file_id, 100)
 	encoder.close()
 	video.close()
-	Project.data.files_proxy_path[index] = output_path
+	Project.files.set_proxy_path(file_index, output_path)
 
 
 func _create_proxy_name(file_path: String) -> String:

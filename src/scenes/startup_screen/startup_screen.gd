@@ -103,16 +103,12 @@ func _set_recent_projects() -> void:
 
 			recent_projects_vbox.add_child(hbox)
 			new_paths.append(path)
-
 		path = file.get_line()
-
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-
 	for new_path: String in new_paths:
 		if !file.store_line(new_path):
 			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
-
 	file.close()
 
 
@@ -205,7 +201,7 @@ func _on_create_project_button_pressed() -> void:
 
 
 func open_project(path: String) -> void:
-	Project.open(path)
+	await Project.open(path)
 	self.queue_free()
 
 
@@ -228,11 +224,9 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
-	Project.new_project(path, resolution, framerate_spinbox.value)
-
+	await Project.new_project(path, resolution, framerate_spinbox.value)
 	if advanced_options_button.button_pressed:
 		Project.set_background_color(background_color_picker.color)
-
 	self.queue_free()
 
 

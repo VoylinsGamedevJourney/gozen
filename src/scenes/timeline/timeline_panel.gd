@@ -112,7 +112,7 @@ func _input(event: InputEvent) -> void:
 		var track_id: int = get_track_from_mouse()
 		var frame_nr: int = get_frame_from_mouse()
 
-		if !Project.tracks.get_clip_at(track_id, frame_nr):
+		if !Project.tracks.get_clip_id_at(track_id, frame_nr):
 			remove_empty_space_at(track_id, frame_nr)
 	elif event.is_action_pressed("duplicate_selected_clips"):
 		duplicate_selected_clips()
@@ -122,7 +122,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if !Project.loaded:
+	if !Project.is_loaded:
 		return
 
 	if event is InputEventMouseButton:
@@ -131,10 +131,10 @@ func _gui_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("timeline_zoom_out", false, true):
 			zoom_at_mouse(1.0 / ZOOM_STEP)
 		else:
-			_on_gui_input_mouse_button(event)
+			_on_gui_input_mouse_button(event as InputEventMouseButton)
 			get_window().gui_release_focus()
 	elif event is InputEventMouseMotion:
-		_on_gui_input_mouse_motion(event)
+		_on_gui_input_mouse_motion(event as InputEventMouseMotion)
 
 
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
@@ -176,7 +176,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			draw_clips.emit()
 			Project.clips.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
-		var popup: PopupMenu = PopupManager.create_popup_menu()
+		var popup: PopupMenu = PopupManager.create_menu()
 		right_click_clip = _get_clip_on_mouse()
 		right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
 
@@ -188,7 +188,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		popup.add_item(tr("Add track"), POPUP_ACTION.TRACK_ADD)
 		popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
-		PopupManager.show_popup_menu(popup)
+		PopupManager.show_menu(popup)
 
 
 func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
@@ -198,8 +198,10 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 	var clip_on_mouse: int = _get_clip_on_mouse()
 
 	if clip_on_mouse != null:
-		var file_id: int = Project.clips.get_file_id_by_id(clip_on_mouse)
-		var clip_name: String = Project.files.get_nickname(file_id)
+		var clip_id: int = Project.clips._id_map[clip_on_mouse]
+		var file_id: int = Project.data.clips_file_id[clip_id]
+		var file_index: int = Project.files._id_map[file_id]
+		var clip_name: String = Project.data.files_nickname[file_index]
 
 		if tooltip_text != clip_name:
 			tooltip_text = clip_name
@@ -245,30 +247,30 @@ func _on_ui_cancel() -> void:
 ## Returns the clip_id.
 func _get_clip_on_mouse() -> int:
 	var track_id: int = get_track_from_mouse()
-	if track_id < 0 or track_id >= Project.tracks.get_tracks_size():
+	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
 		return -1
-	return Project.tracks.get_clip_at(track_id, get_frame_from_mouse())
+	return Project.tracks.get_clip_id_at(track_id, get_frame_from_mouse())
 
 
 func _get_resize_target() -> ResizeTarget:
 	var track_id: int = get_track_from_mouse()
-	if track_id < 0 or track_id >= Project.tracks.get_tracks_size():
+	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
 		return null
 	var frame_pos: float = get_local_mouse_position().x
-	var index: int = Project.clips.get_index(_get_clip_on_mouse())
+	var index: int = Project.clips._id_map[_get_clip_on_mouse()]
 	if index == -1:
 		return null
 
-	var duration: int = Project.clips.get_duration(index)
+	var duration: int = Project.data.clips_duration[index]
 	if duration * zoom < RESIZE_CLIP_MIN_WIDTH:
 		return null
 
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
 	for clip_id: int in Project.tracks.get_clip_ids_in(track_id, visible_start, visible_end):
-		var clip_index: int = Project.clips.get_index(clip_id)
-		var clip_start: int = Project.clips.get_start(clip_index)
-		var clip_duration: int = Project.clips.get_duration(clip_index)
+		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_duration: int = Project.data.clips_duration[clip_index]
 		var start: float = clip_start * zoom
 		var end: float = (clip_start + clip_duration) * zoom
 
@@ -281,7 +283,7 @@ func _get_resize_target() -> ResizeTarget:
 
 func _get_fade_target() -> FadeTarget:
 	var track_id: int = get_track_from_mouse()
-	if track_id < 0 or track_id >= Project.tracks.get_tracks_size():
+	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
 		return null
 	var mouse_pos: Vector2 = get_local_mouse_position()
 	var scroll_horizontal: float = scroll.scroll_horizontal
@@ -289,17 +291,22 @@ func _get_fade_target() -> FadeTarget:
 	var visible_end: int = ceili((scroll_horizontal + size.x) / zoom)
 
 	for clip_id: int in Project.tracks.get_clip_ids_in(track_id, visible_start, visible_end):
-		var index: int = Project.clips.get_index(clip_id)
-		var is_video: bool = Project.clips.is_visual(index)
-		var is_audio: bool = Project.clips.is_audio(index)
-		var start_x: float = Project.clips.get_start(index) * zoom
-		var end_x: float = Project.clips.get_end(index) * zoom
-		var y_pos: float = Project.clips.get_track_id(index) * TRACK_TOTAL_SIZE
+		var clip_index: int = Project.clips._id_map[clip_id]
+		var file_id: int = Project.data.clips_file_id[clip_index]
+		var file_index: int = Project.files._id_map[file_id]
+		var file_type: int = Project.data.files_type[file_index]
+		var is_video: bool = file_type in EditorCore.VISUAL_TYPES
+		var is_audio: bool = file_type in EditorCore.AUDIO_TYPES
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var start_x: float = clip_start * zoom
+		var end_x: float = (Project.data.clips_duration[clip_index] + start_x) * zoom
+		var y_pos: float = Project.data.clips_track_id[clip_index] * TRACK_TOTAL_SIZE
 		var tolerance: float = FADE_HANDLE_SIZE * 1.5 # Hitbox tolerance
+		var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 
 		# Check Video Handles (Bottom)
 		if is_video:
-			var fade: Vector2i = Project.clips.get_effects(index).fade_visual
+			var fade: Vector2i = clip_effects.fade_visual
 			var video_y_pos: float = y_pos + TRACK_HEIGHT - FADE_HANDLE_SIZE
 			var in_pos: Vector2 = Vector2(start_x + (fade.x * zoom), video_y_pos)
 			var out_pos: Vector2 = Vector2(end_x - (fade.y * zoom), video_y_pos)
@@ -311,7 +318,7 @@ func _get_fade_target() -> FadeTarget:
 
 		# Check Audio Handles (Top)
 		if is_audio:
-			var fade: Vector2i = Project.clips.get_effects(index).fade_audio
+			var fade: Vector2i = clip_effects.fade_audio
 			var audio_y_pos: float = y_pos + FADE_HANDLE_SIZE
 			var in_pos: Vector2 = Vector2(start_x + (fade.x * zoom), audio_y_pos)
 			var out_pos: Vector2 = Vector2(end_x - (fade.y * zoom), audio_y_pos)
@@ -324,7 +331,7 @@ func _get_fade_target() -> FadeTarget:
 
 
 func _project_ready() -> void:
-	custom_minimum_size.y = TRACK_TOTAL_SIZE * Project.tracks.tracks.size()
+	custom_minimum_size.y = TRACK_TOTAL_SIZE * Project.data.tracks_is_muted.size()
 	draw_all.emit()
 
 
@@ -345,9 +352,10 @@ func _get_drag_data(_p: Vector2) -> Variant:
 		clip_ids.remove_at(anchor_index)
 		clip_ids.insert(0, clicked_clip)
 
-	var start: int = Project.clips.get_start_by_id(clicked_clip)
+	var clip_index: int = Project.clips._id_map[clicked_clip]
+	var clip_start: int = Project.data.clips_start[clip_index]
 	data.ids = clip_ids
-	data.mouse_offset = get_frame_from_mouse() - start
+	data.mouse_offset = get_frame_from_mouse() - clip_start
 	state = STATE.MOVING
 	return data
 
@@ -414,24 +422,24 @@ func _can_drop_new_clips() -> bool:
 
 
 func _can_move_clips() -> bool:
-	var anchor_clip_index: int = Project.clips.get_index(draggable.ids[0])
+	var anchor_clip_index: int = Project.clips._id_map[draggable.ids[0]]
 	var mouse_track: int = get_track_from_mouse()
 	var mouse_frame: int = get_frame_from_mouse()
 	var target_start: int = mouse_frame - draggable.mouse_offset
-	var track_difference: int = mouse_track - Project.clips.get_track_id(anchor_clip_index)
-	var frame_difference: int = target_start - Project.clips.get_start(anchor_clip_index)
+	var track_difference: int = mouse_track - Project.data.clips_track_id[anchor_clip_index]
+	var frame_difference: int = target_start - Project.data.clips_track_id[anchor_clip_index]
 
 	var min_allowed_diff: int = -1000000000 # Effectively -Infinity
 	var max_allowed_diff: int = 1000000000  # Effectively +Infinity
 
 	for clip_id: int in draggable.ids:
-		var clip_index: int = Project.clips.get_index(clip_id)
-		var clip_start: int = Project.clips.get_start(clip_index)
-		var clip_duration: int = Project.clips.get_duration(clip_index)
-		var new_track: int = Project.clips.get_track_id(clip_index) + track_difference
+		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_duration: int = Project.data.clips_duration[clip_index]
+		var new_track: int = Project.data.clips_track_id[clip_index] + track_difference
 		var middle_frame: int = clip_start + floori(clip_duration / 2.0)
 		# First boundary check
-		if new_track < 0 or new_track >= Project.tracks.get_tracks_size():
+		if new_track < 0 or new_track >= Project.data.tracks_is_muted.size():
 			return false
 
 		var free_region: Vector2i = Project.tracks.get_free_region(new_track, middle_frame + frame_difference, draggable.ids)
@@ -477,10 +485,11 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 
 		for file_id: int in draggable.ids:
 			var request: ClipRequest = ClipRequest.new()
+			var file_index: int = Project.files._id_map[file_id]
 			request.file_id = file_id
 			request.track_offset = draggable.track_offset
 			request.frame_offset = draggable.frame_offset + total_duration
-			total_duration += Project.files.get_duration_by_id(file_id)
+			total_duration += Project.data.files_duration[file_index]
 			requests.append(request)
 		Project.clips.add(requests)
 	else: # Moving clips
@@ -493,7 +502,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 			request.frame_offset = draggable.frame_offset
 			move_requests.append(request)
 		if not move_requests.is_empty():
-			Project.clips.move_clips(move_requests)
+			Project.clips.move(move_requests)
 	draggable = null
 	draw_clips.emit()
 
@@ -515,14 +524,14 @@ func _commit_current_resize() -> void:
 		request.clip_id = resize_target.clip_id
 		request.resize_amount = resize_target.delta if resize_target.is_end else -resize_target.delta
 		request.from_end = resize_target.is_end
-		Project.clips.resize_clips([request])
+		Project.clips.resize([request])
 	resize_target = null
 	draw_clips.emit()
 
 
 func _commit_box_selection(is_ctrl_pressed: bool) -> void:
-	var track_start: int = clampi(floori(box_select_start.y / TRACK_TOTAL_SIZE), 0, Project.tracks.tracks.size())
-	var track_end: int = clampi(floori(box_select_end.y / TRACK_TOTAL_SIZE), 0, Project.tracks.tracks.size())
+	var track_start: int = clampi(floori(box_select_start.y / TRACK_TOTAL_SIZE), 0, Project.data.tracks_is_muted.size())
+	var track_end: int = clampi(floori(box_select_end.y / TRACK_TOTAL_SIZE), 0, Project.data.tracks_is_muted.size())
 	var frame_start: int = floori(box_select_start.x / zoom)
 	var frame_end: int = floori(box_select_end.x / zoom)
 	var temp: int
@@ -538,19 +547,22 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 		frame_start = frame_end
 		frame_end = temp
 
-	for track_id: int in range(track_start, clamp(track_end + 1, 0, Project.tracks.tracks.size())):
-		for frame_nr: int in Project.tracks.tracks[track_id].clips:
+	for track_id: int in range(track_start, clamp(track_end + 1, 0, Project.data.tracks_is_muted.size())):
+		for frame_index: int in Project.tracks.frame_nrs[track_id].size():
+			var frame_nr: int = Project.tracks.frame_nrs[track_id][frame_index]
 			if frame_nr > frame_end:
 				break
-			var clip_id: int = Project.tracks.tracks[track_id].clips[frame_nr]
 
+			var clip_id: int = Project.tracks.clip_ids[track_id].find(frame_index)
 			if frame_nr > frame_start and frame_nr < frame_end:
 				if clip_id not in selected_clip_ids:
 					selected_clip_ids.append(clip_id)
 				continue
 
 			# We should also check if a clip ends inside the selection box.
-			if Project.clips.get_end_frame(clip_id) > frame_start:
+			var clip_index: int = Project.clips._id_map[clip_id]
+			var clip_duration: int = Project.data.clips_duration[clip_index]
+			if frame_nr + clip_duration > frame_start:
 				if clip_id not in selected_clip_ids:
 					selected_clip_ids.append(clip_id)
 	if selected_clip_ids.is_empty():
@@ -563,11 +575,12 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 
 
 func _handle_resize_motion() -> void:
-	var clip_index: int = Project.clips.get_index(resize_target.clip_id)
-	var clip_begin: int = Project.clips.get_begin(clip_index)
-	var track_id: int = Project.clips.get_track_id(clip_index)
-	var file_id: int = Project.clips.get_file_id(clip_index)
-	var file_duration: int = Project.files.get_duration_by_id(file_id)
+	var clip_index: int = Project.clips._id_map[resize_target.clip_id]
+	var clip_begin: int = Project.data.clips_begin[clip_index]
+	var track_id: int = Project.data.clips_track_id[clip_index]
+	var file_id: int = Project.data.clips_file_id[clip_index]
+	var file_index: int = Project.files._id_map[file_id]
+	var file_duration: int = Project.data.files_duration[file_index]
 	var current_frame: int = get_frame_from_mouse()
 
 	if resize_target.is_end: # Resizing end
@@ -609,10 +622,10 @@ func _handle_resize_motion() -> void:
 
 func _handle_fade_motion() -> void:
 	var mouse_x: float = get_local_mouse_position().x
-	var clip_index: int = Project.clips.get_index(fade_target.clip_id)
-	var clip_start: int = Project.clips.get_start(clip_index)
-	var clip_duration: int = Project.clips.get_duration(clip_index)
-	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
+	var clip_index: int = Project.clips._id_map[fade_target.clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_duration: int = Project.data.clips_duration[clip_index] + clip_start
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var clip_fade_visual: Vector2i = clip_effects.fade_visual
 	var clip_fade_audio: Vector2i = clip_effects.fade_audio
 	var start_x: float = clip_start * zoom
@@ -641,10 +654,11 @@ func _handle_fade_motion() -> void:
 
 
 func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
-	var clip_index: int = Project.clips.get_index(right_click_clip)
-	var clip_type: FileLogic.TYPE = Project.clips.get_type(clip_index)
-	var clip_effects: ClipEffects = Project.clips.get_effects(clip_index)
-
+	var clip_index: int = Project.clips._id_map[right_click_clip]
+	var file_id: int = Project.data.clips_file_id[clip_index]
+	var file_index: int = Project.files._id_map[file_id]
+	var clip_type: FileLogic.TYPE = Project.data.files_type[file_index] as FileLogic.TYPE
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if right_click_clip not in selected_clip_ids:
 		selected_clip_ids = [right_click_clip]
 		Project.clips.selected.emit(right_click_clip)
@@ -693,21 +707,31 @@ func _on_popup_action_remove_empty_space() -> void: remove_empty_space_at(right_
 
 
 func _on_popup_action_clip_ato() -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.AUDIO_TAKE_OVER)
+	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
+	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
 	popup.load_data(right_click_clip, false)
 
 
 func _on_popup_action_clip_only_video() -> void:
-	var file_id: int = Project.clips.get_file_id(right_click_clip)
-	Project.files.switch_clip_only_video(file_id, right_click_clip)
+	var clip_index: int = Project.clips._id_map[right_click_clip]
+	var file_id: int = Project.data.clips_file_id[clip_index]
+	Project.files.switch_clip_video_instance(file_id, right_click_clip)
 
 
-func _on_popup_action_clip_ato_enable() -> void: Project.clips.set_ato_active(right_click_clip, true)
-func _on_popup_action_clip_ato_disable() -> void: Project.clips.set_ato_active(right_click_clip, false)
+func _on_popup_action_clip_ato_enable() -> void:
+	Project.clips.set_ato_active(right_click_clip, true)
 
 
-func _on_popup_action_track_add() -> void: Project.tracks.add_track(right_click_pos.x)
-func _on_popup_action_track_remove() -> void: Project.tracks.remove_track(right_click_pos.x)
+func _on_popup_action_clip_ato_disable() -> void:
+	Project.clips.set_ato_active(right_click_clip, false)
+
+
+func _on_popup_action_track_add() -> void:
+	Project.tracks.add_track(right_click_pos.x)
+
+
+func _on_popup_action_track_remove() -> void:
+	Project.tracks.remove_track(right_click_pos.x)
 
 
 func zoom_at_mouse(factor: float) -> void:
@@ -733,11 +757,11 @@ func get_frame_from_mouse() -> int:
 
 
 func get_track_from_mouse() -> int:
-	return clampi(floori(get_local_mouse_position().y / TRACK_TOTAL_SIZE), 0, Project.tracks.tracks.size())
+	return clampi(floori(get_local_mouse_position().y / TRACK_TOTAL_SIZE), 0, Project.data.tracks_is_muted.size())
 
 
 func move_playhead(frame_nr: int) -> void:
-	EditorCore.set_frame(max(0, frame_nr))
+	EditorCore.set_frame(maxi(0, frame_nr))
 	draw_playhead.emit()
 
 
@@ -753,33 +777,31 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 		request.frame_offset = -empty_size
 		move_requests.append(request)
 	if !move_requests.is_empty():
-		Project.clips.move_clips(move_requests)
+		Project.clips.move(move_requests)
 
 
-func cut_clip_at(id: int, frame_pos: int) -> void:
-	var index: int = Project.clips.get_index(id)
-	var start: int = Project.clips.get_start(index)
-	var end: int = Project.clips.get_end(index)
-	if start <= frame_pos and end >= frame_pos:
+func cut_clip_at(clip_id: int, frame_pos: int) -> void:
+	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
+	if clip_start <= frame_pos and clip_end >= frame_pos:
 		var request: ClipRequest = ClipRequest.new()
-		request.clip_id = id
-		request.frame_nr = frame_pos - start
+		request.clip_id = clip_id
+		request.frame_nr = frame_pos - clip_start
 		Project.clips.cut([request])
 	draw_clips.emit()
 
-# WARN: Make certain that cutting is possible (space available)
 
 func cut_clips_at(frame_pos: int) -> void:
-
 	# Check if any of the clips in the tracks is in selected clips
 	# if there are selected clips present, we only cut the selected ones
 	var requests: Array[ClipRequest] = []
 
 	# Checking if we only want selected clips to be cut.
 	for clip_id: int in selected_clip_ids:
-		var clip_index: int = Project.clips.get_index(clip_id)
-		var clip_start: int = Project.clips.get_start(clip_index)
-		var clip_end: int = Project.clips.get_end(clip_index)
+		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
 
 		if clip_start < frame_pos and clip_end > frame_pos:
 			var request: ClipRequest = ClipRequest.new()
@@ -792,13 +814,13 @@ func cut_clips_at(frame_pos: int) -> void:
 		return draw_clips.emit()
 
 	# No selected clips present so cutting all possible clips
-	for track_id: int in Project.tracks.get_tracks_size():
+	for track_id: int in Project.data.tracks_is_muted.size():
 		var clip_id: int = Project.tracks.get_clip_id_at(track_id, frame_pos)
 		if clip_id == -1:
 			continue
-		var clip_index: int = Project.clips.get_index(clip_id)
-		var clip_start: int = Project.clips.get_start(clip_index)
-		var clip_end: int = Project.clips.get_end(clip_index)
+		var clip_index: int = Project.clips._id_map[clip_id]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
 
 		if clip_start >= frame_pos or clip_end <= frame_pos:
 			continue
@@ -817,18 +839,18 @@ func duplicate_selected_clips() -> void:
 
 	var requests: Array[ClipRequest] = []
 	for clip_id: int in selected_clip_ids:
-		var clip_index: int = Project.clips.get_index(clip_id)
+		var clip_index: int = Project.clips._id_map[clip_id]
 		if clip_index == -1:
 			return # Invalid clip id
-		var clip_start: int = Project.clips.get_start(clip_index)
-		var clip_duration: int = Project.clips.get_duration(clip_index)
-		var clip_track_id: int = Project.clips.get_track_id(clip_index)
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_duration: int = Project.data.clips_duration[clip_index]
+		var clip_track_id: int = Project.data.clips_track_id[clip_index]
 		var target_frame: int = clip_start + clip_duration
 		var free_region: Vector2i = Project.tracks.get_free_region(clip_track_id, target_frame)
 
 		if free_region.y - target_frame >= clip_duration:
 			var request: ClipRequest = ClipRequest.new()
-			request.file_id = Project.clips.get_file_id(clip_index)
+			request.file_id = Project.data.clips_file_id[clip_index]
 			request.track_id = clip_track_id
 			request.frame_nr = target_frame
 			requests.append(request)

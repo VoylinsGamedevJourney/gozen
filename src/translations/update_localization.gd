@@ -5,8 +5,6 @@ const EXTENSIONS_TO_SCAN: PackedStringArray = ["gd", "tscn", "tres"]
 const IGNORE_FOLDERS: PackedStringArray = ["addons", ".godot", "translations", "theming"]
 
 
-@export_tool_button("run") var run_button: Callable = _run
-
 
 func _run() -> void:
 	print("Scanning project for translatable files...")

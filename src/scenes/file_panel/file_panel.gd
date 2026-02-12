@@ -34,17 +34,7 @@ var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
 
 
 func _ready() -> void:
-	Project.files.added.connect(_on_added)
-	Project.files.deleted.connect(_on_deleted)
-	Project.files.moved.connect(_on_moved)
-	Project.files.path_updated.connect(_on_path_updated)
-	Project.files.nickname_changed.connect(_on_nickname_changed)
-	Project.folders.folder_added.connect(_on_folder_added)
-	Project.folders.folder_deleted.connect(_on_folder_deleted)
-	Project.folders.folder_renamed.connect(_on_folder_renamed)
-
 	Project.project_ready.connect(_on_project_ready)
-
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
 	tree.item_mouse_selected.connect(_tree_item_clicked)
@@ -67,6 +57,15 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 
 
 func _on_project_ready() -> void:
+	Project.files.added.connect(_on_added)
+	Project.files.deleted.connect(_on_deleted)
+	Project.files.moved.connect(_on_moved)
+	Project.files.path_updated.connect(_on_path_updated)
+	Project.files.nickname_changed.connect(_on_nickname_changed)
+	Project.folders.folder_added.connect(_on_folder_added)
+	Project.folders.folder_deleted.connect(_on_folder_deleted)
+	Project.folders.folder_renamed.connect(_on_folder_renamed)
+
 	for folder: String in Project.data.folders:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
@@ -85,7 +84,7 @@ func _file_menu_pressed(id: int) -> void:
 			dialog.files_selected.connect(Project.files.dropped)
 			dialog.popup_centered()
 		1: pass # TODO: Add text
-		2: PopupManager.open_popup(PopupManager.POPUP.COLOR)
+		2: PopupManager.open(PopupManager.COLOR)
 
 
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
@@ -255,8 +254,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 	var id: int = tree.get_selected().get_metadata(0)
 	var type: FileLogic.TYPE = Project.files.get_type(id)
 
-	if type == FileLogic.TYPE.TEXT: # TODO:
-		Implement duplicating text files
+	if type == FileLogic.TYPE.TEXT: # TODO: Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
 	elif type == FileLogic.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
@@ -309,7 +307,7 @@ func _on_popup_action_file_remove_proxy() -> void:
 func _on_popup_action_audio_take_over() -> void:
 	# TODO: Add this to undo_redo
 	var file_id: int = tree.get_selected().get_metadata(0)
-	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.AUDIO_TAKE_OVER)
+	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
 	popup.load_data(file_id, true)
 
 

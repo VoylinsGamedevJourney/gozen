@@ -42,9 +42,7 @@ func _check_startup_args() -> void:
 
 func print_startup_info() -> void:
 	Print.header_editor("--==  GoZen - Video Editor  ==--")
-
-	for info_print:
-		PackedStringArray in [
+	for info_print: PackedStringArray in [
 			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
 			["OS", OS.get_model_name()],
 			["OS Version", OS.get_version()],
@@ -61,7 +59,6 @@ func print_startup_info() -> void:
 			["Locale", OS.get_locale()],
 			["Startup args", OS.get_cmdline_args()]]:
 		Print.info_editor(info_print[0], info_print[1])
-
 	Print.header_editor("--==--================--==--")
 
 

@@ -26,7 +26,7 @@ func update_title(title: String) -> void:
 
 
 func update(value: int, text: String) -> void:
-	update_bar(value)
+	await update_bar(value)
 	update_hint(text)
 
 	# Updating estimated time

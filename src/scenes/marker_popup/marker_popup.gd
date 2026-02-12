@@ -58,16 +58,17 @@ func _on_create_marker_pressed() -> void:
 		Project.markers.update(index, EditorCore.frame_nr, text_content, type)
 	else:
 		Project.markers.add(EditorCore.frame_nr, text_content, type)
-
-	PopupManager.close(PopupManager.POPUP.MARKER)
-
-
-func _on_type_selected(index: int) -> void: type = index
+	PopupManager.close(PopupManager.MARKER)
 
 
-func _on_cancel_button_pressed() -> void: PopupManager.close(PopupManager.POPUP.MARKER)
+func _on_type_selected(index: int) -> void:
+	type = index
+
+
+func _on_cancel_button_pressed() -> void:
+	PopupManager.close(PopupManager.MARKER)
 
 
 func _on_delete_marker_button_pressed() -> void:
 	Project.markers.remove(EditorCore.frame_nr)
-	PopupManager.close(PopupManager.POPUP.MARKER)
+	PopupManager.close(PopupManager.MARKER)

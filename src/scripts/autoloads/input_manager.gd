@@ -17,9 +17,9 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
-		PopupManager.open_popup(PopupManager.CREDITS)
+		PopupManager.open(PopupManager.CREDITS)
 
-	if !Project.loaded:
+	if !Project.is_loaded:
 		return # EVERYTHING which is only allowed to open after the start screen goes below!
 
 	# Check if in line edit or not:
@@ -36,7 +36,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
 	elif event.is_action_pressed("ui_paste"):
-		clipboard_paste()
+		await clipboard_paste()
 	elif event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
 		if !undo_redo.undo(): printerr("InputManager:
 			Couldn't undo!")
@@ -61,18 +61,29 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("timeline_mode_cut", false, true):
 		switch_timeline_mode_cut.emit()
 	elif event.is_action_pressed("open_command_bar"):
-		PopupManager.open_popup(PopupManager.COMMAND_BAR)
+		PopupManager.open(PopupManager.COMMAND_BAR)
 		return true
 	return false
 
 
-func _on_closing_editor() -> void: undo_redo.free()
+func _on_closing_editor() -> void:
+	undo_redo.free()
 
 
-func show_editor_screen() -> void: on_show_editor_screen.emit()
-func show_render_screen() -> void: on_show_render_screen.emit()
-func switch_screen() -> void: on_switch_screen.emit()
-func open_marker_popup() -> void: PopupManager.open_popup(PopupManager.MARKER)
+func show_editor_screen() -> void:
+	on_show_editor_screen.emit()
+
+
+func show_render_screen() -> void:
+	on_show_render_screen.emit()
+
+
+func switch_screen() -> void:
+	on_switch_screen.emit()
+
+
+func open_marker_popup() -> void:
+	PopupManager.open(PopupManager.MARKER)
 
 
 func clipboard_paste() -> void:
@@ -92,6 +103,5 @@ func clipboard_paste() -> void:
 		if FileAccess.file_exists(path):
 			valid_paths.append(clean_path)
 
-	if valid_paths.is_empty():
-		return
-	Project.files.files_dropped(valid_paths)
+	if !valid_paths.is_empty():
+		await Project.files.dropped(valid_paths)

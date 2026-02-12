@@ -24,8 +24,7 @@ var current_clip_id: int = -1
 
 
 func _ready() -> void:
-	Project.clips.deleted.connect(_on_clip_erased)
-	Project.clips.selected.connect(_on_clip_pressed)
+	Project.project_ready.connect(_on_project_ready)
 	EditorCore.frame_changed.connect(_on_frame_changed)
 	EffectsHandler.effect_added.connect(_on_effects_updated)
 	EffectsHandler.effect_removed.connect(_on_effects_updated)
@@ -36,6 +35,11 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		_on_clip_pressed(-1)
+
+
+func _on_project_ready() -> void:
+	Project.clips.deleted.connect(_on_clip_erased)
+	Project.clips.selected.connect(_on_clip_pressed)
 
 
 func _on_clip_pressed(id: int) -> void:
@@ -51,7 +55,7 @@ func _on_clip_pressed(id: int) -> void:
 		button_audio.disabled = true
 		return
 
-	var type: FileHandler.TYPE = Project.clips.get_type(id)
+	var type: FileLogic.TYPE = Project.clips.get_type(id)
 	var is_visual: bool = type in EditorCore.VISUAL_TYPES
 	var is_audio: bool = type not in EditorCore.AUDIO_TYPES
 
@@ -116,15 +120,14 @@ func _clear_ui() -> void:
 func _load_video_effects() -> void:
 	_clear_ui()
 
-	if !Project.clips.clips.has(current_clip_id):
+	var clip_index: int = Project.clips._id_map[current_clip_id]
+	if clip_index == -1:
 		return
 
-	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
-
-	for i: int in clip_data.effects_video.size():
-		var effect: GoZenEffectVisual = clip_data.effects_video[i]
-		var container: FoldableContainer = _create_effect_ui(effect, i, true)
-
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	for index: int in clip_effects.video.size():
+		var effect: GoZenEffectVisual = clip_effects.video[index]
+		var container: FoldableContainer = _create_effect_ui(effect, index, true)
 		video_container.add_child(container)
 
 	video_container.add_child(HSeparator.new())
@@ -135,14 +138,14 @@ func _load_video_effects() -> void:
 func _load_audio_effects() -> void:
 	_clear_ui()
 
-	if !Project.clips.clips.has(current_clip_id):
+	var clip_index: int = Project.clips._id_map[current_clip_id]
+	if clip_index == -1:
 		return
 
-	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
-
-	for i: int in clip_data.effects_video.size():
-		var effect: GoZenEffectAudio = clip_data.effects_audio[i]
-		var container: FoldableContainer = _create_effect_ui(effect, i, true)
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	for index: int in clip_effects.audio.size():
+		var effect: GoZenEffectAudio = clip_effects.audio[index]
+		var container: FoldableContainer = _create_effect_ui(effect, index, true)
 
 		audio_container.add_child(container)
 
@@ -158,8 +161,9 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	# TODO: Replace up and down arrows with dragging behaviour
 
-	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
-	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+	var clip_index: int = Project.clips._id_map[current_clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
 
 	var container: FoldableContainer = FoldableContainer.new()
 	var button_move_up: TextureButton = TextureButton.new()
@@ -360,17 +364,19 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 func _update_ui_values() -> void:
 	if current_clip_id == -1 or !Project.clips.clips.has(current_clip_id):
 		return
-	var clip_data: ClipData = Project.clips.get_clip(current_clip_id)
-	var frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+	var clip_index: int = Project.clips._id_map[current_clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var frame_nr: int = EditorCore.frame_nr - clip_start
 	var container: VBoxContainer
 	var effects: Array
 
 	if tab_container.current_tab == 0:
 		container = video_container
-		effects = clip_data.effects_video
+		effects = clip_effects.video
 	else:
 		container = audio_container
-		effects = clip_data.effects_audio
+		effects = clip_effects.audio
 
 	for i: int in container.get_child_count() - 2: # - 2 because of separator + add_effects button
 		var effect: GoZenEffect = effects[i]
@@ -454,7 +460,7 @@ func _add_add_effects_button(is_visual: bool) -> Button:
 
 
 func _open_add_effects_popup(is_visual: bool) -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.POPUP.ADD_EFFECTS)
+	var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
 	popup.load_effects(is_visual, current_clip_id)
 
 
@@ -463,13 +469,15 @@ func _effect_param_update_call(value: Variant, index: int, is_visual: bool, para
 
 
 func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_id: String) -> void:
-	var clip_data: ClipData = Project.clips.get_clip(clip_id)
-	var relative_frame_nr: int = EditorCore.frame_nr - clip_data.start_frame
+	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
 	var effect: GoZenEffect
 	if is_visual:
-		effect = clip_data.effects_video[index]
+		effect = clip_effects.video[index]
 	else:
-		effect = clip_data.effects_audio[index]
+		effect = clip_effects.audio[index]
 
 	if effect.keyframes[param_id].has(relative_frame_nr):
 		EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)

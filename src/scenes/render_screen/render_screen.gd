@@ -261,7 +261,7 @@ func _render_finished() -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	PopupManager.close_popup(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
@@ -279,7 +279,7 @@ func _show_error(message: String) -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	PopupManager.close_popup(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
@@ -333,10 +333,10 @@ func _on_start_render_button_pressed() -> void:
 
 	# Display the progress popup.
 	if progress_overlay != null:
-		PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+		PopupManager.close_popup(PopupManager.PROGRESS)
 		progress_overlay = null
 
-	progress_overlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	progress_overlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	progress_overlay.update_title(tr("Rendering"))
 	progress_overlay.update_progress(0, "")
 
@@ -375,7 +375,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		RenderManager.STATUS.ERROR_OPEN: _show_error(tr("Error opening file"))
 		RenderManager.STATUS.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
 		RenderManager.STATUS.ERROR_CANCELED:
-			PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+			PopupManager.close_popup(PopupManager.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.

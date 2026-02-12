@@ -9,7 +9,10 @@ signal renamed(old_path: String, new_path: String)
 var project_data: ProjectData
 
 
-func _init(data: ProjectData) -> void: project_data = data
+# --- Main ---
+
+func _init(data: ProjectData) -> void:
+	project_data = data
 
 # --- Handling ---
 
@@ -75,10 +78,11 @@ func delete(folder: String) -> void:
 		InputManager.undo_redo.add_undo_method(Project.files._add.bind(index))
 
 	# End by deleting all clips.
-	for index: int in clips_to_delete:
-		InputManager.undo_redo.add_do_method(Project.clips._delete.bind(index))
-		InputManager.undo_redo.add_undo_method(Project.clips._add.bind(index))
-
+	for clip_index: int in clips_to_delete:
+		var clips: ClipLogic = Project.clips
+		var snapshot: Dictionary = clips._create_snapshot(clip_index)
+		InputManager.undo_redo.add_do_method(clips._delete.bind(clip_index))
+		InputManager.undo_redo.add_undo_method(clips._restore_clip_from_snapshot.bind(snapshot))
 	InputManager.undo_redo.commit_action()
 
 
@@ -111,18 +115,12 @@ func rename(index: int, new_name: String) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func _rename(index: int, new_path: String) -> void:
-	var old_path: String = project_data.folders[index]
-	project_data.folders[index] = new_path
+func _rename(folder_index: int, new_path: String) -> void:
+	var old_path: String = project_data.folders[folder_index]
+	project_data.folders[folder_index] = new_path
 	renamed.emit(old_path, new_path)
 
-	# Update files.
-	for i: int in Project.files.size():
-		if Project.files.get_folder(i) != old_path:
+	for file_index: int in Project.files.size(): # Update files.
+		if Project.data.files_folder[file_index] != old_path:
 			continue
-		project_data.files_folder[i] = new_path
-
-# --- Getters ---
-
-
-func get_index(path: String) -> int: return project_data.folders.find(path)
+		project_data.files_folder[file_index] = new_path

@@ -27,8 +27,8 @@ func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vecto
 
 	for effect_param: EffectParam in effect.params:
 		# First do matrix handling
-		if effect_param.param_id in effect.matrix_map:
-			var matrix_type: Matrix.TYPE = effect.matrix_map[effect_param.param_id]
+		if effect_param.id in effect.matrix_map:
+			var matrix_type: Matrix.TYPE = effect.matrix_map[effect_param.id]
 
 			if matrix_type not in processed_matrices:
 				_pad_stream(stream, 16)
@@ -44,31 +44,31 @@ func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vecto
 		match typeof(value):
 			TYPE_INT:
 				_pad_stream(stream, 4)
-				stream.put_32(value)
+				stream.put_32(value as int)
 			TYPE_FLOAT:
 				_pad_stream(stream, 4)
-				stream.put_float(value)
+				stream.put_float(value as float)
 			TYPE_VECTOR2, TYPE_VECTOR2I:
 				_pad_stream(stream, 8)
-				stream.put_float(value.x)
-				stream.put_float(value.y)
+				stream.put_float(value.x as float)
+				stream.put_float(value.y as float)
 			TYPE_VECTOR3, TYPE_VECTOR3I:
 				_pad_stream(stream, 16)
-				stream.put_float(value.x)
-				stream.put_float(value.y)
-				stream.put_float(value.z)
+				stream.put_float(value.x as float)
+				stream.put_float(value.y as float)
+				stream.put_float(value.z as float)
 			TYPE_VECTOR4, TYPE_VECTOR4I:
 				_pad_stream(stream, 16)
-				stream.put_float(value.x)
-				stream.put_float(value.y)
-				stream.put_float(value.z)
-				stream.put_float(value.w)
+				stream.put_float(value.x as float)
+				stream.put_float(value.y as float)
+				stream.put_float(value.z as float)
+				stream.put_float(value.w as float)
 			TYPE_COLOR:
 				_pad_stream(stream, 16)
-				stream.put_float(value.r)
-				stream.put_float(value.g)
-				stream.put_float(value.b)
-				stream.put_float(value.a)
+				stream.put_float(value.r as float)
+				stream.put_float(value.g as float)
+				stream.put_float(value.b as float)
+				stream.put_float(value.a as float)
 			_: printerr("EffectCache: Unsupported type! %s-%s" % [value, typeof(value)])
 
 	var buffer_data: PackedByteArray = stream.data_array
@@ -85,7 +85,7 @@ func _handle_matrix(type: Matrix.TYPE) -> PackedFloat32Array:
 	var param_map: Dictionary[String, EffectParam] = {}
 
 	for effect_param: EffectParam in _effect.params:
-		param_map[effect_param.param_id] = effect_param
+		param_map[effect_param.id] = effect_param
 
 	# Proxy adjustments
 	var project_resolution: Vector2 = Vector2(Project.get_resolution())
@@ -100,8 +100,7 @@ func _handle_matrix(type: Matrix.TYPE) -> PackedFloat32Array:
 				data[key] = _effect.get_value(param_map[key], _frame_nr)
 
 				if key == "position" or key == "size" or key == "pivot":
-					data[key] = Vector2(data[key]) * ratio
-
+					data[key] = data[key] * ratio
 			return Matrix.calculate_transform_matrix(data, _resolution)
 		_:
 			printerr("EffectCache: Invalid matrix data type! %s" % type)

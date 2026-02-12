@@ -95,7 +95,7 @@ func _on_popup_id_pressed(id: int) -> void:
 
 func _on_save_screenshot_to_project(path: String) -> void:
 	_on_save_screenshot(path)
-	FileHandler.files_dropped([path])
+	Project.files.files_dropped([path])
 
 
 func _on_save_screenshot(path: String) -> void:

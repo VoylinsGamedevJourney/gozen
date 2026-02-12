@@ -11,13 +11,14 @@ var shown_buttons: Array[Button] = []
 var selected_button: int = 0
 
 
+
 func _ready() -> void:
 	search_line_edit.grab_focus()
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close_popup(PopupManager.POPUP.ADD_EFFECTS)
+		PopupManager.close_popup(PopupManager.ADD_EFFECTS)
 
 
 func load_effects(visual: bool, clip_id: int) -> void:
@@ -96,7 +97,7 @@ func _on_effect_clicked(effect_id: String) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close_popup(PopupManager.POPUP.ADD_EFFECTS)
+	PopupManager.close_popup(PopupManager.ADD_EFFECTS)
 
 
 

@@ -18,7 +18,7 @@ func _show_menu_bar(value: bool) -> void:
 
 
 func _open_about_gozen() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.CREDITS)
+	PopupManager.open(PopupManager.CREDITS)
 
 
 func _on_editor_screen_button_pressed() -> void:
@@ -35,7 +35,7 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 		1: Project.save_as()
 		# Line
 		3: Project.open_project()
-		4: PopupManager.open_popup(PopupManager.POPUP.RECENT_PROJECTS)
+		4: PopupManager.open(PopupManager.RECENT_PROJECTS)
 		# Line
 		6: Project.open_settings_menu()
 		# Line
@@ -49,22 +49,22 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 		1: InputManager.undo_redo.redo()
 		2: get_viewport().push_input(InputMap.action_get_events("cut_clips_at_mouse")[0])
 		3: pass # Copy  TODO: Implement ClipLogic copy logic
-		4: InputManager.clipboard_paste()
+		4: await InputManager.clipboard_paste()
 		5: get_viewport().push_input(InputMap.action_get_events("delete_clips")[0])
 
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Settings.open_settings_menu()
-		1: PopupManager.open_popup(PopupManager.POPUP.MODULE_MANAGER)
+		1: PopupManager.open(PopupManager.MODULE_MANAGER)
 		# Line
-		3: PopupManager.open_popup(PopupManager.POPUP.COMMAND_BAR)
+		3: PopupManager.open(PopupManager.COMMAND_BAR)
 
 
 func _on_help_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Utils.open_url("support")
-		1: PopupManager.open_popup(PopupManager.POPUP.VERSION_CHECK)
+		1: PopupManager.open(PopupManager.VERSION_CHECK)
 		# Line
 		3: Utils.open_url("manual")
 		4: Utils.open_url("tutorials")
@@ -72,7 +72,7 @@ func _on_help_popup_menu_id_pressed(id: int) -> void:
 		# Line
 		7: Utils.open_url("site")
 		8: Utils.open_url("support")
-		9: PopupManager.open_popup(PopupManager.POPUP.CREDITS)
+		9: PopupManager.open(PopupManager.CREDITS)
 
 
 func _set_shortcuts() -> void:

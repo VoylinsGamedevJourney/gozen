@@ -4,6 +4,10 @@ extends Control
 
 
 func _ready() -> void:
+	Project.project_ready.connect(_on_project_ready)
+
+
+func _on_project_ready() -> void:
 	Project.markers.added.connect(update_markers.unbind(1))
 	Project.markers.updated.connect(update_markers.unbind(1))
 	Project.markers.removed.connect(update_markers.unbind(1))
@@ -11,9 +15,9 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	for index: int in Project.markers.get_indexes():
-		var color: Color = Settings.get_marker_color(Project.markers.get_type(index))
-		var frame_nr: int = Project.markers.get_frame(index)
+	for index: int in Project.data.markers_frame.size():
+		var color: Color = Settings.get_marker_color(Project.data.markers_type[index])
+		var frame_nr: int = Project.data.markers_frame[index]
 		var pos_x: float = frame_nr * timeline.zoom
 		if frame_nr == Project.markers.dragged_marker:
 			pos_x = Project.markers.dragged_marker_offset

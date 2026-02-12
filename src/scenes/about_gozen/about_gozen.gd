@@ -52,7 +52,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close_popup(PopupManager.POPUP.CREDITS)
+	PopupManager.close_popup(PopupManager.CREDITS)
 
 
 func _on_links_label_meta_clicked(meta: Variant) -> void:
