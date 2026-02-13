@@ -85,7 +85,7 @@ scroll_vertical_custom_step = 30.0
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 
-[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll" unique_id=915200831]
+[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -93,6 +93,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_p3xsq")
 script = ExtResource("2_2or7f")
+mode_panel = NodePath("../../../TimelineModes")
+button_select = NodePath("../../../TimelineModes/Margin/VBox/SelectModeButton")
+button_cut = NodePath("../../../TimelineModes/Margin/VBox/CutModeButton")
 
 [node name="TrackLinesDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=22986217]
 layout_mode = 2
@@ -131,18 +134,6 @@ draw_func_name = "_draw_markers"
 
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_select_mode_button_pressed"]
 [connection signal="pressed" from="TimelineModes/Margin/VBox/CutModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_cut_mode_button_pressed"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/TrackLinesDraw" method="update_track_lines"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipsDraw" method="update_clips"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ModeDraw" method="update_mode"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="update_playhead"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/BoxSelectionDraw" method="update_box"]
-[connection signal="draw_all" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/MarkersDrawn" method="update_markers"]
-[connection signal="draw_clips" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipsDraw" method="update_clips"]
-[connection signal="draw_markers" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/MarkersDrawn" method="update_markers"]
-[connection signal="draw_mode" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ModeDraw" method="update_mode"]
-[connection signal="draw_playhead" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="update_playhead"]
-[connection signal="draw_selection_box" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/BoxSelectionDraw" method="update_box"]
-[connection signal="draw_track_lines" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/TrackLinesDraw" method="update_track_lines"]
 [connection signal="gui_input" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_gui_input"]
 [connection signal="mouse_entered" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_exited"]

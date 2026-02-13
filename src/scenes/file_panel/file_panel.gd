@@ -70,7 +70,7 @@ func _on_project_ready() -> void:
 		if !folder_items.has(folder):
 			_add_folder_to_tree(folder)
 
-	for file_id: int in Project.data.files_id:
+	for file_id: int in Project.data.files:
 		_add_file_to_tree(file_id)
 
 
@@ -119,9 +119,9 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
 
-			if Project.files.has_audio():
+			if Project.data.files_type.has(EditorCore.TYPE.AUDIO):
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-				if Project.files.has_ato(file_id):
+				if Project.data.files_ato_file.has(file_id):
 					if Project.data.files_ato_active[file_id]:
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
 					else:
@@ -138,18 +138,18 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				else:
 					popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
 
-			if Project.files.has_audio():
+			if Project.data.files_type.has(EditorCore.TYPE.AUDIO):
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-				if Project.files.has_ato(file_id):
-					if Project.data.get_ato_active(id):
+				if Project.data.files_ato_file.has(file_id):
+					if Project.data.files_ato_active[file_id]:
 						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
 					else:
 						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
-		elif type == EditorCore.TYPE.TEXT:
+		elif file_type == EditorCore.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), POPUP_ACTION.DUPLICATE)
 
-			if path.contains("temp://"):
+			if file_path.contains("temp://"):
 				popup.add_item(tr("Save file as ..."), POPUP_ACTION.SAVE_TEMP_AS)
 
 		popup.add_separator(tr("Folder options"))
@@ -163,7 +163,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_item(tr("Delete folder"), POPUP_ACTION.FOLDER_DELETE)
 
 	popup.id_pressed.connect(_on_popup_option_pressed)
-	PopupManager.show_popup_menu(popup)
+	PopupManager.show_menu(popup)
 
 
 ## For the right click presses of the file popup menu's.
@@ -219,7 +219,7 @@ func _on_popup_action_folder_rename() -> void:
 			else:
 				new_path = parent_path + "/" + new_folder_name + "/"
 
-			var folder_index: int = Project.folders.get_index(folder_path)
+			var folder_index: int = Project.data.folders.find(folder_path)
 			Project.folders.rename(folder_index, new_path)
 		dialog.queue_free()
 
@@ -237,30 +237,33 @@ func _on_popup_action_folder_delete() -> void:
 
 func _on_popup_action_file_rename() -> void:
 	var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
-	rename_dialog.prepare(tree.get_selected().get_metadata(0))
+	rename_dialog.prepare(tree.get_selected().get_metadata(0) as int)
 	add_child(rename_dialog)
 
 
 func _on_popup_action_file_reload() -> void:
-	var id: int = tree.get_selected().get_metadata(0)
-	Project.files._load_data(Project.files.get_id(id))
+	var file_id: int = tree.get_selected().get_metadata(0)
+	Project.files.load_data(file_id)
 
 
 func _on_popup_action_file_delete() -> void:
-	Project.files.delete(tree.get_selected().get_metadata(0))
+	Project.files.delete([tree.get_selected().get_metadata(0) as int])
 
 
 func _on_popup_action_file_save_temp_as() -> void:
-	var id: int = tree.get_selected().get_metadata(0)
-	var type: EditorCore.TYPE = Project.files.get_type(id)
+	var file_id: int = tree.get_selected().get_metadata(0)
+	var file_index: int = Project.files.index_map[file_id]
+	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 
-	if type == EditorCore.TYPE.TEXT: # TODO: Implement duplicating text files
+	if file_type == EditorCore.TYPE.TEXT: # TODO: Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
-	elif type == EditorCore.TYPE.IMAGE:
+	elif file_type == EditorCore.TYPE.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
-				tr("Save image to file"), FileDialog.FILE_MODE_SAVE_FILE, IMAGE_FORMATS)
+				tr("Save image to file"),
+				FileDialog.FILE_MODE_SAVE_FILE,
+				IMAGE_FORMATS)
 		dialog.file_selected.connect(func(path: String) -> void:
-				Project.files.save_image_to_file(id, path))
+				Project.files.save_image_to_file(file_id, path))
 		add_child(dialog)
 		dialog.popup_centered()
 
@@ -279,7 +282,7 @@ func _on_popup_action_file_extract_audio() -> void:
 func _on_popup_action_file_duplicate() -> void: # Only for text.
 	var file_id: int = tree.get_selected().get_metadata(0)
 	var file_index: int = Project.files.index_map[file_id]
-	var file_type: EditorCore.TYPE = Project.files.get_type(index)
+	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 
 	if file_type != EditorCore.TYPE.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
@@ -318,10 +321,9 @@ func _on_popup_action_audio_take_over_toggle() -> void:
 func _get_list_drag_data(_pos: Vector2) -> Draggable:
 	var draggable: Draggable = Draggable.new()
 	var selected: TreeItem = tree.get_next_selected(folder_items["/"])
-
 	if selected == null:
 		return
-	draggable.files = true
+	draggable.is_file = true
 
 	while true:
 		var metadata: Variant = selected.get_metadata(0)
@@ -379,26 +381,26 @@ func _add_file_to_tree(file_id: int) -> void:
 		_add_folder_to_tree(file_folder)
 
 	if Settings.get_use_proxies():
-		var proxy_path: String = Project.files.get_nickname(index)
+		var proxy_path: String = Project.data.files_proxy_path[file_index]
 		if !proxy_path.is_empty() and FileAccess.file_exists(proxy_path):
-			nickname += " [P]"
+			file_nickname += " [P]"
 
-	file_items[id] = tree.create_item(folder_items[folder])
-	file_items[id].set_text(0, nickname)
-	file_items[id].set_tooltip_text(0, path)
-	file_items[id].set_metadata(0, id)
-	file_items[id].set_icon(0, Thumbnailer.get_thumb(id))
-	file_items[id].set_icon_max_width(0, 70)
+	file_items[file_id] = tree.create_item(folder_items[file_folder])
+	file_items[file_id].set_text(0, file_nickname)
+	file_items[file_id].set_tooltip_text(0, file_path)
+	file_items[file_id].set_metadata(0, file_id)
+	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
+	file_items[file_id].set_icon_max_width(0, 70)
 
 	# TODO: Use set_icon_modulate to indicate when a file is still loading,
 	# this would make the files loading overlay obsolete. Just make certain
 	# that the files with a modulate can't be selected yet and change their
 	# tooltip to have "Loading ..." on it.
-	_sort_folder(folder)
+	_sort_folder(file_folder)
 
 
 func _on_update_thumb(file_id: int) -> void:
-	if !Project.files.has(file_id):
+	if !Project.files.index_map.has(file_id):
 		return _on_deleted(file_id)
 	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
 
@@ -451,20 +453,21 @@ func _on_moved(file_id: int) -> void:
 		_add_file_to_tree(file_id)
 
 
-func _on_path_updated(id: int) -> void:
-	file_items[id].set_tooltip_text(0, Project.files.get_path_by_id(id))
+func _on_path_updated(file_id: int) -> void:
+	var file_index: int = Project.files.index_map[file_id]
+	file_items[file_id].set_tooltip_text(0, Project.data.files_path[file_index])
 
 
-func _on_nickname_changed(id: int) -> void:
-	var index: int = Project.files.get_index(id)
-	var proxy_path: String = Project.files.get_proxy_path(index)
-	var display_name: String = Project.files.get_nickname(index)
+func _on_nickname_changed(file_id: int) -> void:
+	var file_index: int = Project.files.index_map[file_id]
+	var file_proxy_path: String = Project.data.files_proxy_path[file_index]
+	var file_nickname: String = Project.data.files_nickname[file_index]
 
-	if Settings.get_use_proxies() and !proxy_path.is_empty() and FileAccess.file_exists(proxy_path):
-		display_name += " [P]"
+	if Settings.get_use_proxies() and !file_proxy_path.is_empty() and FileAccess.file_exists(file_proxy_path):
+		file_nickname += " [P]"
 
-	file_items[id].set_text(0, display_name)
-	_sort_folder(Project.files.get_folder(index))
+	file_items[file_id].set_text(0, file_nickname)
+	_sort_folder(Project.data.files_folder[file_index])
 
 
 func _on_folder_added(path: String) -> void:
@@ -516,7 +519,7 @@ func _get_recursive_ids(item: TreeItem) -> PackedInt64Array:
 	while child:
 		var metadata: Variant = child.get_metadata(0)
 		if str(metadata).is_valid_int():
-			ids.append(int(metadata)) # File
+			ids.append(metadata as int) # File
 		else:
 			ids.append_array(_get_recursive_ids(child)) # Folder
 		child = child.get_next()
@@ -554,50 +557,43 @@ func _create_folder_at_selected(folder_name: String) -> void:
 
 	if selected_item:
 		var metadata: Variant = selected_item.get_metadata(0)
-
 		if str(metadata).is_valid_int(): # File
-			parent_path = Project.files.get_folder_by_id(metadata)
+			var file_index: int = Project.files.index_map[metadata as int]
+			parent_path = Project.data.files_folder[file_index]
 		else:
 			parent_path = str(metadata)
-
 	if not parent_path.ends_with("/"):
 		parent_path += "/"
 
 	var full_path: String = parent_path + folder_name + "/"
 	if full_path not in folder_items:
-		Project.foldes.add(full_path)
+		Project.folders.add(full_path)
 
 
 func _can_drop_list_data(at_position: Vector2, data: Variant) -> bool:
 	if not data is Draggable:
 		return false
-
 	var item: TreeItem = tree.get_item_at_position(at_position)
 	var section: int = tree.get_drop_section_at_position(at_position)
 
 	tree.drop_mode_flags = Tree.DROP_MODE_ON_ITEM | Tree.DROP_MODE_INBETWEEN
-
-	# Can't drop in files
-	return not (item and section == 0 and str(item.get_metadata(0)).is_valid_int())
+	return not (item and section == 0 and str(item.get_metadata(0)).is_valid_int()) # Can't drop in files
 
 
 func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 	if not data is Draggable:
 		return
-
+	var draggable: Draggable = data
 	var item: TreeItem = tree.get_item_at_position(at_position)
 	var section: int = tree.get_drop_section_at_position(at_position)
 	var target_folder: String = "/"
 
 	if item:
 		var metadata: Variant = item.get_metadata(0)
-
 		if section == 0:
 			target_folder = str(metadata)
 		else:
 			var parent_item: TreeItem = item.get_parent()
-
 			if parent_item:
 				target_folder = str(parent_item.get_metadata(0))
-
-	Project.files.move(data.ids, target_folder)
+	Project.files.move(draggable.ids, target_folder)

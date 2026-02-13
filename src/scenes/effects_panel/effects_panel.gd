@@ -42,25 +42,25 @@ func _on_project_ready() -> void:
 	Project.clips.selected.connect(_on_clip_pressed)
 
 
-func _on_clip_pressed(id: int) -> void:
-	if id == current_clip_id:
+func _on_clip_pressed(clip_id: int) -> void:
+	if clip_id == current_clip_id:
 		_update_ui_values()
 		return
-
-	current_clip_id = id
+	current_clip_id = clip_id
 	_clear_ui()
 
-	if id == -1:
+	if clip_id == -1:
 		button_video.disabled = true
 		button_audio.disabled = true
 		return
 
-	var type: FileLogic.TYPE = Project.clips.get_type(id)
-	var is_visual: bool = type in EditorCore.VISUAL_TYPES
-	var is_audio: bool = type not in EditorCore.AUDIO_TYPES
+	var clip_index: int = Project.clips.index_map[clip_id]
+	var clip_type: EditorCore.TYPE = Project.data.clips_type[clip_index] as EditorCore.TYPE
+	var is_visual: bool = clip_type in EditorCore.VISUAL_TYPES
+	var is_audio: bool = clip_type not in EditorCore.AUDIO_TYPES
 
-	button_video.disabled = type not in EditorCore.VISUAL_TYPES
-	button_audio.disabled = type not in EditorCore.AUDIO_TYPES
+	button_video.disabled = clip_type not in EditorCore.VISUAL_TYPES
+	button_audio.disabled = clip_type not in EditorCore.AUDIO_TYPES
 
 	# Auto-switch tabs
 	var current_tab: int = tab_container.current_tab
@@ -120,7 +120,7 @@ func _clear_ui() -> void:
 func _load_video_effects() -> void:
 	_clear_ui()
 
-	var clip_index: int = Project.clips._id_map[current_clip_id]
+	var clip_index: int = Project.clips.index_map[current_clip_id]
 	if clip_index == -1:
 		return
 
@@ -138,7 +138,7 @@ func _load_video_effects() -> void:
 func _load_audio_effects() -> void:
 	_clear_ui()
 
-	var clip_index: int = Project.clips._id_map[current_clip_id]
+	var clip_index: int = Project.clips.index_map[current_clip_id]
 	if clip_index == -1:
 		return
 
@@ -161,7 +161,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	# TODO: Replace up and down arrows with dragging behaviour
 
-	var clip_index: int = Project.clips._id_map[current_clip_id]
+	var clip_index: int = Project.clips.index_map[current_clip_id]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
 
@@ -174,7 +174,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	container.title = effect.nickname
 	container.title_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	container.tooltip_text = effect.effect_tooltip
+	container.tooltip_text = effect.tooltip
 	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark)
 
 	button_move_up.custom_minimum_size.x = SIZE_EFFECT_HEADER_ICON
@@ -226,13 +226,13 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 
 	# Adding effect params
 	for param: EffectParam in effect.params:
-		var param_id: String = param.param_id
+		var param_id: String = param.id
 		var param_title: Label = Label.new()
 		var param_settings: Control = _create_param_control(param, index, is_visual)
 		var param_keyframe_button: TextureButton = TextureButton.new()
 
-		param_title.text = param.param_name.replace("param_", "").capitalize()
-		param_title.tooltip_text = param.param_tooltip
+		param_title.text = param.nickname.replace("param_", "").capitalize()
+		param_title.tooltip_text = param.tooltip
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 		param_settings.name = "PARAM_" + param_id
@@ -244,7 +244,7 @@ func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> Fold
 		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
 				current_clip_id, index, is_visual, param_id))
 
-		if effect.keyframes.has(param.param_id) and effect.keyframes[param_id].has(relative_frame_nr):
+		if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
 			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 		else:
 			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
@@ -263,7 +263,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 		TYPE_BOOL:
 			var check_button: CheckButton = CheckButton.new()
 
-			check_button.toggled.connect(_effect_param_update_call.bind(index, is_visual, param.param_id))
+			check_button.toggled.connect(_effect_param_update_call.bind(index, is_visual, param.id))
 			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return check_button
@@ -277,7 +277,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
-			spinbox.value_changed.connect(_effect_param_update_call.bind(index, is_visual, param.param_id))
+			spinbox.value_changed.connect(_effect_param_update_call.bind(index, is_visual, param.id))
 			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			return spinbox
@@ -297,9 +297,8 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 
 			spinbox_x.value_changed.connect(func(val: float) -> void:
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
-
 				current_value.x = val
-				_effect_param_update_call.call(current_value, index, is_visual, param.param_id))
+				_effect_param_update_call.call(current_value, index, is_visual, param.id))
 
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
@@ -312,31 +311,26 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 
 			spinbox_y.value_changed.connect(func(val: float) -> void:
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
-
 				current_value.y = val
-				_effect_param_update_call.call(current_value, index, is_visual, param.param_id))
+				_effect_param_update_call.call(current_value, index, is_visual, param.id))
 
 			hbox.add_child(spinbox_x)
 			hbox.add_child(spinbox_y)
 			hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 			return hbox
 		TYPE_COLOR:
 			var color_picker: ColorPickerButton = ColorPickerButton.new()
-
 			color_picker.custom_minimum_size.x = 40
-			color_picker.color_changed.connect(_effect_param_update_call.bind(index, is_visual, param.param_id))
+			color_picker.color_changed.connect(_effect_param_update_call.bind(index, is_visual, param.id))
 			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 			return color_picker
-
 	return Control.new() # Fallback
 
 
+## For Spinbox.
 func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
-	var x: float = container.get_child(0).value
-	var y: float = container.get_child(1).value
-
+	var x: float = (container.get_child(0) as SpinBox).value
+	var y: float = (container.get_child(1) as SpinBox).value
 	if type == TYPE_VECTOR2I:
 		return Vector2i(int(x), int(y))
 	return Vector2(x, y)
@@ -344,7 +338,7 @@ func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
 
 func _get_current_ui_value_for_param(effect: GoZenEffect, param_id: String, relative_frame_nr: int) -> Variant:
 	for param: EffectParam in effect.params:
-		if param.param_id == param_id:
+		if param.id == param_id:
 			return effect.get_value(param, relative_frame_nr)
 	return null
 
@@ -362,9 +356,9 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1 or !Project.clips.clips.has(current_clip_id):
+	if current_clip_id == -1 or !Project.clips.index_map.has(current_clip_id):
 		return
-	var clip_index: int = Project.clips._id_map[current_clip_id]
+	var clip_index: int = Project.clips.index_map[current_clip_id]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var frame_nr: int = EditorCore.frame_nr - clip_start
@@ -387,7 +381,7 @@ func _update_ui_values() -> void:
 			foldable_container.folded = true
 
 		for param: EffectParam in effect.params:
-			var param_id: String = param.param_id
+			var param_id: String = param.id
 			var param_settings: Control = grid.get_node_or_null("PARAM_" + param_id)
 
 			if param_settings:
@@ -397,11 +391,12 @@ func _update_ui_values() -> void:
 			var keyframe_button: TextureButton = grid.get_node_or_null("KEYFRAME_" + param_id)
 			if !keyframe_button:
 				continue
-			if effect.keyframes[param_id].has(frame_nr):
+			var effect_keyframes: Dictionary = effect.keyframes[param_id]
+			if effect_keyframes.has(frame_nr):
 				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 			else:
 				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
-			if effect.keyframes[param_id].size() <= 1:
+			if effect_keyframes.size() <= 1:
 				keyframe_button.modulate = COLOR_KEYFRAMING_OFF
 			else:
 				keyframe_button.modulate = COLOR_KEYFRAMING_ON
@@ -409,23 +404,26 @@ func _update_ui_values() -> void:
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 	if param_settings is SpinBox:
-		if param_settings.value != value:
-			param_settings.set_value_no_signal(value)
+		var spinbox: SpinBox = param_settings
+		if spinbox.value != value:
+			spinbox.set_value_no_signal(value as float)
 	elif param_settings is CheckButton:
-		if param_settings.value != value:
-			(param_settings as CheckButton).set_pressed_no_signal(value)
+		var check_button: CheckButton = param_settings
+		if check_button.button_pressed:
+			check_button.set_pressed_no_signal(value as bool)
 	elif param_settings is HBoxContainer:
 		if typeof(value) == TYPE_VECTOR2 or typeof(value) == TYPE_VECTOR2I:
 			var spinbox_x: SpinBox = param_settings.get_child(0)
 			var spinbox_y: SpinBox = param_settings.get_child(1)
 
 			if spinbox_x.value != value.x:
-				spinbox_x.set_value_no_signal(value.x)
+				spinbox_x.set_value_no_signal(value.x as float)
 			if spinbox_y.value != value.y:
-				spinbox_y.set_value_no_signal(value.y)
+				spinbox_y.set_value_no_signal(value.y as float)
 	elif param_settings is ColorPickerButton:
-		if param_settings.color != value:
-			(param_settings as ColorPickerButton).color = value
+		var color_picker: ColorPickerButton = param_settings
+		if color_picker.color != value:
+			color_picker.color = value
 	else:
 		printerr("EffectsPanel: Invalid param settings control! %s" % param_settings)
 
@@ -433,26 +431,25 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 func _on_switch_enabled(index: int, is_visual: bool) -> void:
 	EffectsHandler.switch_enabled(current_clip_id, index, is_visual)
 
+	var clip_index: int = Project.clips.index_map[current_clip_id]
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var container: FoldableContainer = tab_container.get_current_tab_control().get_child(index)
 	var visible_button: TextureButton = container.get_child(-2, true)
 	var is_enabled: bool
 
 	if is_visual:
-		is_enabled = Project.clips.get_clip(current_clip_id).effects_video[index].is_enabled
+		container.folded = !clip_effects.video[index].is_enabled
 	else:
-		is_enabled = Project.clips.get_clip(current_clip_id).effects_audio[index].is_enabled
+		container.folded =!clip_effects.audio[index].is_enabled
 
-	container.folded = !is_enabled
-
-	if is_enabled:
-		visible_button.texture_normal = load(Library.ICON_VISIBLE)
-	else:
+	if container.folded:
 		visible_button.texture_normal = load(Library.ICON_INVISIBLE)
+	else:
+		visible_button.texture_normal = load(Library.ICON_VISIBLE)
 
 
 func _add_add_effects_button(is_visual: bool) -> Button:
 	var button: Button = Button.new()
-
 	button.text = tr("Add effects")
 	button.custom_minimum_size.y = 30
 	button.pressed.connect(_open_add_effects_popup.bind(is_visual))
@@ -461,7 +458,7 @@ func _add_add_effects_button(is_visual: bool) -> Button:
 
 func _open_add_effects_popup(is_visual: bool) -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
-	popup.load_effects(is_visual, current_clip_id)
+	popup.call("load_effects", is_visual, current_clip_id)
 
 
 func _effect_param_update_call(value: Variant, index: int, is_visual: bool, param_id: String) -> void:
@@ -469,7 +466,7 @@ func _effect_param_update_call(value: Variant, index: int, is_visual: bool, para
 
 
 func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_id: String) -> void:
-	var clip_index: int = Project.clips._id_map[clip_id]
+	var clip_index: int = Project.clips.index_map[clip_id]
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
@@ -479,7 +476,8 @@ func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_i
 	else:
 		effect = clip_effects.audio[index]
 
-	if effect.keyframes[param_id].has(relative_frame_nr):
+	var effect_keyframes: Dictionary = effect.keyframes[param_id]
+	if effect_keyframes.has(relative_frame_nr):
 		EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)
 	else:
 		var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)

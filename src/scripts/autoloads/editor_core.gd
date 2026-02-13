@@ -81,22 +81,27 @@ func _rebuild_structure() -> void:
 	for player: AudioPlayer in audio_players:
 		remove_child(player.player)
 	audio_players.resize(track_size) # RefCounted so should be fine. (I hope :p)
-	for i: int in track_size:
-		audio_players.append(AudioPlayer.new())
-		add_child(audio_players[i].player)
+
+	for index: int in track_size:
+		audio_players[index] = AudioPlayer.new()
+		add_child(audio_players[index].player)
 
 	# Visual setup.
 	for texture_rect: TextureRect in view_textures:
 		texture_rect.queue_free()
+	for compositor: VisualCompositor in compositors:
+		compositor.free()
 	view_textures.resize(track_size)
-	for i: int in track_size:
-		compositors.append(VisualCompositor.new())
-		view_textures.append(TextureRect.new())
-		view_textures[i].stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		view_textures[i].expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		view_textures[i].set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		viewport.add_child(view_textures[i])
-		viewport.move_child(view_textures[i], 1)
+	compositors.resize(track_size)
+
+	for index: int in track_size:
+		compositors[index] = VisualCompositor.new()
+		view_textures[index] = TextureRect.new()
+		view_textures[index].stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		view_textures[index].expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		view_textures[index].set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		viewport.add_child(view_textures[index])
+		viewport.move_child(view_textures[index], 1)
 	viewport.size = Project.get_resolution()
 
 

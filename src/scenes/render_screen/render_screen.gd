@@ -261,7 +261,7 @@ func _render_finished() -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	PopupManager.close_popup(PopupManager.PROGRESS)
+	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
@@ -279,7 +279,7 @@ func _show_error(message: String) -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	PopupManager.close_popup(PopupManager.PROGRESS)
+	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
@@ -333,20 +333,21 @@ func _on_start_render_button_pressed() -> void:
 
 	# Display the progress popup.
 	if progress_overlay != null:
-		PopupManager.close_popup(PopupManager.PROGRESS)
+		PopupManager.close(PopupManager.PROGRESS)
 		progress_overlay = null
 
 	progress_overlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	progress_overlay.update_title(tr("Rendering"))
-	progress_overlay.update_progress(0, "")
+	await progress_overlay.update(0, "")
 
 	var button: Button = Button.new()
-	var status_label: Label = progress_overlay.status_hbox.get_child(0)
+	var status_hbox: HBoxContainer = progress_overlay.get("status_hbox")
+	var status_label: Label = status_hbox.get_child(0)
 
 	button.text = tr("Cancel rendering")
 	button.pressed.connect(_cancel_render)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	progress_overlay.status_hbox.add_child(button)
+	status_hbox.add_child(button)
 
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(gozen_icon.get_image())
@@ -362,7 +363,7 @@ func _on_start_render_button_pressed() -> void:
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
 	RenderManager.encoder.set_audio_codec_id(audio_codec_option_button.get_selected_id())
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
-	RenderManager.start_encoder()
+	await RenderManager.start_encoder()
 
 
 func update_encoder_status(status: RenderManager.STATUS) -> void:
@@ -375,7 +376,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		RenderManager.STATUS.ERROR_OPEN: _show_error(tr("Error opening file"))
 		RenderManager.STATUS.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
 		RenderManager.STATUS.ERROR_CANCELED:
-			PopupManager.close_popup(PopupManager.PROGRESS)
+			PopupManager.close(PopupManager.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.
@@ -393,7 +394,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		else:
 			current_progress = status
 	if progress_overlay != null:
-		progress_overlay.update_progress(floori(current_progress), status_str)
+		await progress_overlay.update(floori(current_progress), status_str)
 
 
 func _on_render_settings_changed() -> void:
@@ -402,8 +403,9 @@ func _on_render_settings_changed() -> void:
 
 
 func _on_save_custom_profile_button_pressed() -> void:
-	var dialog: ConfirmationDialog = load("uid://cxfdfmbkkwt51").instantiate()
-	var _err: int = dialog.save_profile.connect(_save_custom_profile)
+	var packed_scene: PackedScene = load("uid://cxfdfmbkkwt51")
+	var dialog: ConfirmationDialog = packed_scene.instantiate()
+	var _err: int = dialog.call("_connect_save_profile", _save_custom_profile)
 	add_child(dialog)
 	dialog.popup_centered()
 
@@ -417,7 +419,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.icon = ImageTexture.create_from_image(icon)
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as GoZenEncoder.VIDEO_CODEC
 	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as GoZenEncoder.AUDIO_CODEC
-	new_profile.crf = int(abs(video_quality_hslider.value))
+	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as GoZenEncoder.H264_PRESETS
 
@@ -448,4 +450,5 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 		else:
 			_on_render_settings_changed()
 	else:
-		load_profile(load(option_button_render_profiles.get_item_metadata(index)))
+		var render_profile: RenderProfile = load(option_button_render_profiles.get_item_metadata(index) as String)
+		load_profile(render_profile)

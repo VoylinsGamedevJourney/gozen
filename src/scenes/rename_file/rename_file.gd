@@ -5,12 +5,13 @@ extends PanelContainer
 
 
 var old_nickname: String
-var id: int = -1
+var file: int = -1
 
 
 func prepare(file_id: int) -> void:
-	file_id = file_id
-	old_nickname = Project.files.get_nickname_by_id(file_id)
+	var file_index: int = Project.files.index_map[file_id]
+	file = file_id
+	old_nickname = Project.data.files_nickname[file_index]
 	rename_line_edit.text = old_nickname
 
 
@@ -22,5 +23,5 @@ func _on_save_button_pressed() -> void:
 func _on_rename_file_line_edit_text_submitted(new_nickname: String) -> void:
 	# Only save if an actual new nickname got given
 	if new_nickname != "" and old_nickname != new_nickname:
-		Project.files.set_nickname(id, new_nickname)
+		Project.files.set_nickname(file, new_nickname)
 	self.queue_free()

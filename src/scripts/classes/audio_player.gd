@@ -1,7 +1,7 @@
 class_name AudioPlayer
 extends RefCounted
 
-var player: AudioStreamPlayer = AudioStreamPlayer.new()
+var player: AudioStreamPlayer
 
 var bus_name: String
 var bus_index: int = -1
@@ -15,11 +15,13 @@ var project_data: ProjectData = Project.data
 
 
 func _init() -> void:
+	player = AudioStreamPlayer.new()
 	AudioServer.add_bus()
 	bus_index = AudioServer.bus_count - 1
 	bus_name = "TrackBus_%d" % bus_index
 	AudioServer.set_bus_name(bus_index, bus_name)
 	player.bus = bus_name
+	print(player)
 
 
 func is_playing() -> bool:

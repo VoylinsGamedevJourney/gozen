@@ -16,10 +16,9 @@ func _ready() -> void:
 func _draw() -> void:
 	# Display indicator of the generating of proxies.
 	for file_id: int in proxy_progress.keys():
-		var rect: Rect2 = get_item_area_rect(main_file_panel.file_items[file_id])
+		var rect: Rect2 = get_item_area_rect(main_file_panel.get("file_items")[file_id] as TreeItem)
 
 		rect.size.x = (rect.size.x / 100.0) * proxy_progress[file_id]
-		print(rect)
 		draw_rect(rect, COLOR_PROXY_LOADING)
 
 

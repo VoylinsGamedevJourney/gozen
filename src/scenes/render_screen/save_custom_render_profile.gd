@@ -10,9 +10,14 @@ signal save_profile(name: String, icon_path: String)
 var selected_icon_path: String = Library.ICON_CUSTOM_RENDER_PROFILE: set = _set_icon
 
 
+
 func _ready() -> void:
 	line_edit_profile_name.select_all()
 	line_edit_profile_name.grab_focus()
+
+
+func _connect_save_profile(function: Callable) -> void:
+	var _err: int = save_profile.connect(function)
 
 
 func _set_icon(path: String) -> void:
