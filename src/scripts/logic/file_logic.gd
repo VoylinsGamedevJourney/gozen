@@ -187,11 +187,11 @@ func _delete(file_id: int) -> void:
 	project_data.files_modified_time.remove_at(file_index)
 
 	if project_data.files_temp_file.has(file_id):
-		project_data.files_temp_file.erase(file_index)
+		project_data.files_temp_file.erase(file_id)
 	if project_data.files_ato_file.has(file_id):
-		project_data.files_ato_active.erase(file_index)
-		project_data.files_ato_offset.erase(file_index)
-		project_data.files_ato_file.erase(file_index)
+		project_data.files_ato_active.erase(file_id)
+		project_data.files_ato_offset.erase(file_id)
+		project_data.files_ato_file.erase(file_id)
 
 	_rebuild_map()
 	deleted.emit(file_id)
