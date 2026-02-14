@@ -444,7 +444,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 
 	var clip_on_mouse: int = _get_clip_on_mouse()
 
-	if clip_on_mouse != null:
+	if clip_on_mouse != -1:
 		var clip_id: int = Project.clips.index_map[clip_on_mouse]
 		var file_id: int = Project.data.clips_file[clip_id]
 		var file_index: int = Project.files.index_map[file_id]
@@ -504,9 +504,10 @@ func _get_resize_target() -> ResizeTarget:
 	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
 		return null
 	var frame_pos: float = get_local_mouse_position().x
-	var index: int = Project.clips.index_map[_get_clip_on_mouse()]
-	if index == -1:
+	var clip_on_mouse: int = _get_clip_on_mouse()
+	if clip_on_mouse == -1:
 		return null
+	var index: int = Project.clips.index_map[_get_clip_on_mouse()]
 
 	var duration: int = Project.data.clips_duration[index]
 	if duration * zoom < RESIZE_CLIP_MIN_WIDTH:

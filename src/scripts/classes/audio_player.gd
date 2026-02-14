@@ -10,18 +10,18 @@ var stop_frame: int = -1
 var file_id: int = -1
 var clip_id: int = -1
 
-var project_data: ProjectData = Project.data
+var project_data: ProjectData
 
 
 
 func _init() -> void:
 	player = AudioStreamPlayer.new()
+	project_data = Project.data
 	AudioServer.add_bus()
 	bus_index = AudioServer.bus_count - 1
 	bus_name = "TrackBus_%d" % bus_index
 	AudioServer.set_bus_name(bus_index, bus_name)
 	player.bus = bus_name
-	print(player)
 
 
 func is_playing() -> bool:
@@ -100,7 +100,7 @@ func set_audio(audio_clip_id: int) -> void:
 	player.volume_db = linear_to_db(maxf(fade_volume, 0.0001)) # Just 0 can give issues.
 
 	# Boundary check.
-	var framerate: float = Project.get_framerate()
+	var framerate: float = project_data.framerate
 	var relative_frame_nr: float = EditorCore.frame_nr - clip_start + clip_begin
 	var audio_duration: float = stream.get_length()
 	var position: float = (relative_frame_nr / framerate) + time_offset

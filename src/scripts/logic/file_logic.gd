@@ -30,9 +30,7 @@ var index_map: Dictionary[int, int] = {} ## { file_id: index }
 
 func _init(data: ProjectData) -> void:
 	project_data = data
-	Project.get_tree().root.focus_entered.connect(check)
 	Project.get_window().files_dropped.connect(dropped)
-
 	_rebuild_map()
 
 

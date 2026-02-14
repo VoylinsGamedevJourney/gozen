@@ -237,32 +237,6 @@ func set_framerate(new_framerate: float) -> void:
 	unsaved_changes = true
 
 
-func get_framerate() -> float:
-	return data.framerate
-
-
-func set_playhead_position(new_pos: int) -> void:
-	data.playhead_position = new_pos # No need to set "unsaved_changes" here.
-
-
-func get_playhead_position() -> int:
-	return data.playhead_position
-
-
-## Get the total amount of frames of a project. (mainly used in render logic)
-func get_total_frames() -> int:
-	return data.timeline_end + 1
-
-
-func get_timeline_end() -> int:
-	return data.timeline_end
-
-
-func set_timeline_end(value: int) -> void:
-	data.timeline_end = value
-	unsaved_changes = true
-
-
 func update_timeline_end() -> void:
 	var end: int = 0
 	for index: int in data.tracks_is_muted.size():
@@ -272,7 +246,8 @@ func update_timeline_end() -> void:
 			var clip_start: int = data.clips_start[clip_index]
 			var clip_duration: int = data.clips_duration[clip_index]
 			end = max(end, clip_start + clip_duration)
-	set_timeline_end(end)
+	data.timeline_end = end
+	unsaved_changes = true
 	timeline_end_update.emit(end)
 
 
@@ -280,7 +255,3 @@ func set_background_color(color: Color) -> void:
 	data.background_color = color
 	EditorCore.set_background_color(color)
 	unsaved_changes = true
-
-
-func get_background_color() -> Color:
-	return data.background_color
