@@ -255,8 +255,9 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 	var height: float = rect.size.y
 	var base_x: float = rect.position.x
 	var base_y: float = rect.position.y
+	var step: int = maxi(1, int(2.0 / zoom))
 
-	for i: int in display_duration:
+	for i: int in range(0, display_duration, step):
 		var wave_index: int = display_begin_offset + i
 		if wave_index >= wave_data.size():
 			break
@@ -270,7 +271,7 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 				block_pos_y = base_y + (height - block_height) / 2.0
 			SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
-		control.draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom, block_height), COLOR_AUDIO_WAVE)
+		control.draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), COLOR_AUDIO_WAVE)
 
 
 func _draw_fade_handles(clip_index: int, box_pos: Vector2, is_visual: bool, show_handles: bool, control: Control) -> void:
@@ -365,26 +366,25 @@ func _input(event: InputEvent) -> void:
 		Project.clips.ripple_delete(selected_clip_ids)
 	elif event.is_action_pressed("cut_clips_at_playhead", false, true):
 		cut_clips_at(EditorCore.frame_nr)
-	elif event.is_action_pressed("cut_clips_at_mouse", false, true):
-		cut_clips_at(get_frame_from_mouse())
-	elif event.is_action_pressed("remove_empty_space"):
-		var track_id: int = get_track_from_mouse()
-		var frame_nr: int = get_frame_from_mouse()
-
-		if !Project.tracks.get_clip_id_at(track_id, frame_nr):
-			remove_empty_space_at(track_id, frame_nr)
 	elif event.is_action_pressed("duplicate_selected_clips"):
 		duplicate_selected_clips()
 	elif event.is_action_pressed("ui_cancel"):
 		selected_clip_ids = []
 		_on_ui_cancel()
+	if get_global_rect().has_point(get_global_mouse_position()):
+		if event.is_action_pressed("cut_clips_at_mouse", false, true):
+			cut_clips_at(get_frame_from_mouse())
+		elif event.is_action_pressed("remove_empty_space"):
+			var track_id: int = get_track_from_mouse()
+			var frame_nr: int = get_frame_from_mouse()
+			if !Project.tracks.get_clip_id_at(track_id, frame_nr):
+				remove_empty_space_at(track_id, frame_nr)
 
 
 func _gui_input(event: InputEvent) -> void:
 	if !Project.is_loaded:
 		return
-
-	if event is InputEventMouseButton:
+	elif event is InputEventMouseButton:
 		if event.is_action_pressed("timeline_zoom_in", false, true):
 			zoom_at_mouse(ZOOM_STEP)
 		elif event.is_action_pressed("timeline_zoom_out", false, true):
@@ -428,10 +428,10 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				state = STATE.SCRUBBING
 				move_playhead(get_frame_from_mouse())
 		else:
-			if event.shift_pressed:
-				selected_clip_ids.append(pressed_clip)
-			else:
+			if !event.shift_pressed:
 				selected_clip_ids = [pressed_clip]
+			elif !selected_clip_ids.has(pressed_clip):
+				selected_clip_ids.append(pressed_clip)
 			draw_clips.queue_redraw()
 			Project.clips.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
@@ -1086,6 +1086,7 @@ func duplicate_selected_clips() -> void:
 	for clip_id: int in selected_clip_ids:
 		var clip_index: int = Project.clips.index_map[clip_id]
 		if clip_index == -1:
+			# TODO: Give a Notification with a warning that there's no space available.
 			return # Invalid clip id
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_duration: int = Project.data.clips_duration[clip_index]
