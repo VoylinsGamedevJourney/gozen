@@ -614,12 +614,16 @@ func _get_drag_data(_p: Vector2) -> Variant:
 func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	if data is not Draggable:
 		return false
-	elif data.files:
-		state = STATE.DROPPING
-
+	var result: bool
 	draggable = data
+	if draggable.is_file:
+		state = STATE.DROPPING
+		result = _can_drop_new_clips()
+	else:
+		result = _can_move_clips()
+
 	draw_clips.queue_redraw()
-	return _can_drop_new_clips() if draggable.is_file else _can_move_clips()
+	return result
 
 
 func _can_drop_new_clips() -> bool:
@@ -652,13 +656,11 @@ func _can_drop_new_clips() -> bool:
 			return false
 
 		draggable.frame_offset = target_frame - distance_necessary
-
 		return true
-	elif clip_at_end != null:
+	elif clip_at_end != -1:
 		return false # Not possible to find space
 	else:
 		free_region = Project.tracks.get_free_region(draggable.track_offset, target_end)
-
 		if free_region.y - free_region.x < draggable.duration:
 			return false # No space
 

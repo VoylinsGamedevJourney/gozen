@@ -125,7 +125,7 @@ func get_next(frame_nr: int) -> int:
 		if current < frame_nr:
 			return previous
 		previous = current
-	return Project.get_timeline_end()
+	return project_data.timeline_end
 
 
 # --- Helper functions ---

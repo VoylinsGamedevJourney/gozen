@@ -291,7 +291,8 @@ func _on_start_render_button_pressed() -> void:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
 	var draft: bool = button_render_draft.button_pressed
-	var render_resolution: Vector2i = Project.get_resolution()
+	var render_resolution: Vector2i = Project.data.resolution
+	var end: int = Project.data.timeline_end
 
 	if draft:
 		var target_height: int = 480
@@ -307,7 +308,7 @@ func _on_start_render_button_pressed() -> void:
 	Print.header("Rendering process started")
 	Print.info("Path", path_line_edit.text)
 	Print.info("Resolution", render_resolution)
-	Print.info("Framerate", Project.get_framerate())
+	Print.info("Framerate", Project.data.framerate)
 	Print.info("Video codec", video_codec_option_button.get_selected_id())
 	Print.info("CRF", int(0 - video_quality_hslider.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
@@ -315,11 +316,11 @@ func _on_start_render_button_pressed() -> void:
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_option_button.get_selected_id())
 	Print.info("Cores/threads", threads_spin_box.value)
-	Print.info("Frames to process", Project.get_timeline_end() + 1)
+	Print.info("Frames to process", end + 1)
 	print("--------------------")
 
 	# Resetting progress values.
-	progress_frame_increase = (97.0 / Project.get_timeline_end()) * RenderManager.buffer_size
+	progress_frame_increase = (97.0 / end) * RenderManager.buffer_size
 	current_progress = 0.0
 
 	# Changing icon to indicate that GoZen is rendering.
@@ -355,7 +356,7 @@ func _on_start_render_button_pressed() -> void:
 
 	RenderManager.encoder = GoZenEncoder.new()
 	RenderManager.encoder.set_resolution(render_resolution)
-	RenderManager.encoder.set_framerate(Project.get_framerate())
+	RenderManager.encoder.set_framerate(Project.data.framerate)
 	RenderManager.encoder.set_file_path(path_line_edit.text)
 	RenderManager.encoder.set_video_codec_id(video_codec_option_button.get_selected_id())
 	RenderManager.encoder.set_crf(int(0 - video_quality_hslider.value))

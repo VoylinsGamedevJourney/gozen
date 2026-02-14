@@ -42,7 +42,7 @@ func _on_markers_updated() -> void:
 
 	# Updating the texts
 	for frame_nr: int in frames:
-		var time: String = Utils.format_time_str_from_frame(frame_nr, Project.get_framerate(), true)
+		var time: String = Utils.format_time_str_from_frame(frame_nr, Project.data.framerate, true)
 		var marker_index: int = Project.data.markers_frame.find(frame_nr)
 		var marker_type: int = Project.data.markers_type[marker_index]
 		var marker_text: String = Project.data.markers_text[marker_index]

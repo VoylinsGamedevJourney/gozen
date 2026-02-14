@@ -82,7 +82,7 @@ func get_thumb(file_id: int) -> Texture2D:
 
 
 func _get_default_thumb(icon_uid: String) -> Texture2D:
-	var image_tex: ImageTexture = load(icon_uid)
+	var image_tex: CompressedTexture2D = load(icon_uid)
 	var image: Image = scale_thumbnail(image_tex.get_image())
 	return ImageTexture.create_from_image(image)
 

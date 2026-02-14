@@ -38,4 +38,4 @@ func _on_skip_next_button_pressed() -> void:
 
 func _on_frame_changed() -> void:
 	frame_label.text = tr("Frame") + ": %s" % EditorCore.frame_nr
-	time_label.text = Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.get_framerate(), false)
+	time_label.text = Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.data.framerate, false)

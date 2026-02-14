@@ -388,7 +388,7 @@ func load_frame(clip_id: int, frame_nr: int) -> void:
 	if video == null:
 		return # Probably still loading.
 
-	var project_fps: float = Project.get_framerate()
+	var project_fps: float = project_data.framerate
 	var video_fps: float = video.get_framerate()
 	var video_frame_nr: int = video.get_current_frame()
 	var target_frame_nr: int = int((frame_nr / project_fps) * video_fps)

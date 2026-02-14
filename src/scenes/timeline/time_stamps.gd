@@ -128,7 +128,7 @@ func _draw() -> void:
 			draw_string(
 				font,
 				Vector2(x + 4, size.y - 8),
-				Utils.format_time_str_from_frame(frame, Project.get_framerate(), true),
+				Utils.format_time_str_from_frame(frame, Project.data.framerate, true),
 				HORIZONTAL_ALIGNMENT_LEFT,
 				-1,
 				FONT_SIZE_TIME_STAMP,
@@ -188,7 +188,7 @@ func _update_tooltip() -> void:
 		return # Out of bounds
 
 	var frame_nr: int = maxi(0, floori(mouse_x / current_zoom))
-	var time_str: String = Utils.format_time_str_from_frame(frame_nr, Project.get_framerate(), false)
+	var time_str: String = Utils.format_time_str_from_frame(frame_nr, Project.data.framerate, false)
 	var full_tooltip: String = "%s\n(Frame: %d)" % [time_str, frame_nr]
 	if tooltip_text != full_tooltip:
 		tooltip_text = full_tooltip

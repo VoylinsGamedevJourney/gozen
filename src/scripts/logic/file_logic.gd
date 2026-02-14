@@ -36,7 +36,7 @@ func _init(data: ProjectData) -> void:
 
 func _rebuild_map() -> void:
 	index_map.clear()
-	for index: int in index_map.size():
+	for index: int in project_data.files.size():
 		index_map[project_data.files[index]] = index
 
 
@@ -155,6 +155,8 @@ func _add(path: String) -> int:
 	index_map[file_id] = file_index
 
 	load_data(file_index)
+	added.emit(file_id)
+	Project.unsaved_changes = true
 	return file_id
 
 
@@ -294,9 +296,9 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 	var error_occured: bool = false
 	var indexes: PackedInt64Array = []
 	for path: String in paths:
-		var index: int = _add(path)
-		if index != -1:
-			indexes.append(index)
+		var file_id: int = _add(path)
+		if file_id != -1:
+			indexes.append(index_map[file_id])
 			progress.update_file(path, 0)
 		else:
 			progress.update_file(path, -1)

@@ -112,7 +112,7 @@ func open(new_project_path: String) -> void:
 	is_loaded = true
 	unsaved_changes = false
 	project_ready.emit()
-	EditorCore.set_frame(data.playhead_position)
+	EditorCore.set_frame(data.playhead)
 	_auto_save()
 
 
