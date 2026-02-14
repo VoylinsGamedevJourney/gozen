@@ -24,6 +24,7 @@ const AUDIO_MIN: int = -32768
 const AUDIO_MAX: int = 32767
 
 
+var project_data: ProjectData
 var encoder: GoZenEncoder
 var viewport: ViewportTexture
 
@@ -34,8 +35,17 @@ var encoding_time: int = 0
 var buffer_size: int = 5
 var proxies_used: bool
 
-# --- Render logic ---
 
+
+func _ready() -> void:
+	Project.project_ready.connect(_on_project_ready)
+
+
+func _on_project_ready() -> void:
+	project_data = Project.data
+
+
+# --- Render logic ---
 
 func stop_encoder() -> void:
 	if encoder.is_open():
@@ -90,7 +100,7 @@ func start_encoder() -> void:
 	var frame_array: Array[Image] = []
 	frame_array.resize(buffer_size)
 
-	for i: int in Project.get_total_frames():
+	for i: int in project_data.timeline_end + 1:
 		if cancel_encoding:
 			break
 		elif frame_pos == buffer_size:
@@ -146,25 +156,25 @@ func _send_frames(frame_array: Array[Image]) -> void:
 
 func encode_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
-	var frames: int = Project.get_total_frames()
-	var framerate: float = Project.get_framerate()
+	var frames: int = project_data.timeline_end + 1
+	var framerate: float = project_data.framerate
 	var length: int = Utils.get_sample_count(frames, framerate)
 	audio.resize(length)
 
-	for track_id: int in Project.data.tracks_is_muted.size():
-		if Project.data.tracks_is_muted:
+	for track: int in project_data.tracks_is_muted.size():
+		if project_data.tracks_is_muted[track]:
 			continue
-		_add_track_audio(audio, track_id, length)
+		_add_track_audio(audio, track, length)
 	return audio
 
 
-func _add_track_audio(audio: PackedByteArray, track_id: int, length: int) -> void:
+func _add_track_audio(audio: PackedByteArray, track: int, length: int) -> void:
 	var track_audio: PackedByteArray = []
 	track_audio.resize(length)
 
-	for clip_id: int in Project.tracks.get_clip_ids(track_id):
+	for clip_id: int in Project.tracks.get_clip_ids(track):
 		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_type: int = Project.data.clips_type[clip_index]
+		var clip_type: int = project_data.clips_type[clip_index]
 		if clip_type not in EditorCore.AUDIO_TYPES:
 			continue
 		_handle_audio(clip_id, track_audio)
@@ -174,14 +184,14 @@ func _add_track_audio(audio: PackedByteArray, track_id: int, length: int) -> voi
 func _handle_audio(clip_id: int, track_audio: PackedByteArray) -> void:
 	if !Project.clips.index_map.has(clip_id):
 		return
-	var framerate: float = Project.get_framerate()
+	var framerate: float = project_data.framerate
 	var samples_per_frame: float = MIX_RATE / framerate
 	var audio_data: PackedByteArray = Project.clips.get_audio_data(clip_id)
 	if audio_data.is_empty():
 		return
 
 	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var clip_effects: ClipEffects = project_data.clips_effects[clip_index]
 	var fade_in: int = clip_effects.fade_audio.x
 	var fade_out: int = clip_effects.fade_audio.y
 
@@ -201,7 +211,7 @@ func _handle_audio(clip_id: int, track_audio: PackedByteArray) -> void:
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
 	# Place in correct position
-	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_start: int = project_data.clips_start[clip_index]
 	var start_sample: int = Utils.get_sample_count(clip_start, framerate)
 	if start_sample + audio_data.size() > track_audio.size(): # Shouldn't happen.
 		var extra: int = (start_sample + audio_data.size()) - track_audio.size()
@@ -220,7 +230,7 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: GoZenEffectAudio)
 	stream.data_array = audio_data
 
 	var sample_count: int = floori(audio_data.size() / 4.0) # 16 bit stereo
-	var framerate: float = Project.get_framerate()
+	var framerate: float = project_data.framerate
 	var volume_param: EffectParam = effect.params[0]
 
 	for i: int in sample_count:

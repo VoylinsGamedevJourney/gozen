@@ -15,6 +15,11 @@ const VISUAL_TYPES: PackedInt64Array = [
 const TYPE_VIDEOS: Array[TYPE] = [TYPE.VIDEO, TYPE.VIDEO_ONLY]
 
 
+var project_data: ProjectData
+var project_clips: ClipLogic
+var project_files: FileLogic
+var project_tracks: TrackLogic
+
 var viewport: SubViewport
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
@@ -64,15 +69,19 @@ func _process(delta: float) -> void:
 
 
 func _on_project_ready() -> void:
-	Project.clips.updated.connect(_on_clips_updated)
-	Project.tracks.updated.connect(_rebuild_structure)
-	Project.files.reloaded.connect(_on_clips_updated.unbind(1))
+	project_data = Project.data
+	project_clips = Project.clips
+	project_files = Project.files
+	project_tracks = Project.tracks
+	project_clips.updated.connect(_on_clips_updated)
+	project_tracks.updated.connect(_rebuild_structure)
+	project_files.reloaded.connect(_on_clips_updated.unbind(1))
 	_rebuild_structure()
-	frame_nr = Project.data.playhead_position
+	frame_nr = project_data.playhead
 
 
 func _rebuild_structure() -> void:
-	var track_size: int = Project.data.tracks_is_muted.size()
+	var track_size: int = project_data.tracks_is_muted.size()
 	# Loaded clips setup.
 	loaded_clips.resize(track_size)
 	loaded_clips.fill(-1)
@@ -102,7 +111,7 @@ func _rebuild_structure() -> void:
 		view_textures[index].set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		viewport.add_child(view_textures[index])
 		viewport.move_child(view_textures[index], 1)
-	viewport.size = Project.get_resolution()
+	viewport.size = project_data.resolution
 
 
 func _on_closing_editor() -> void:
@@ -129,31 +138,32 @@ func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 		return false
 
 	# Check if clip really still exists or not.
-	if !Project.clips.index_map.has(clip_id):
+	if !project_clips.index_map.has(clip_id):
 		loaded_clips[track_id] = -1
 		return false
 
 	# Track check.
-	var clip_index: int = Project.clips.index_map[clip_id]
-	if Project.data.clips_track[clip_index] != track_id:
+	var clip_index: int = project_clips.index_map[clip_id]
+	if project_data.clips_track[clip_index] != track_id:
 		return false
-	var start: int = Project.data.clips_start[clip_index]
-	var end: int = Project.data.clips_duration[clip_index] + start
+	var start: int = project_data.clips_start[clip_index]
+	var end: int = project_data.clips_duration[clip_index] + start
 	return new_frame_nr >= start and new_frame_nr < end
 
 # --- Playback logic ---
 
 
 func on_play_pressed() -> void:
-	is_playing = false if frame_nr == Project.get_timeline_end() else !is_playing
+	is_playing = false if frame_nr == project_data.timeline_end else !is_playing
 	if !is_playing:
-		Project.set_playhead_position(frame_nr)
+		project_data.playhead = frame_nr
 
 
 func set_frame_nr(value: int) -> void:
-	if value >= Project.get_timeline_end():
+	var end: int = project_data.timeline_end
+	if value >= end:
 		is_playing = false
-		frame_nr = Project.get_timeline_end()
+		frame_nr = end
 
 		for i: int in audio_players.size():
 			audio_players[i].stop()
@@ -162,7 +172,7 @@ func set_frame_nr(value: int) -> void:
 	frame_nr = value
 	if frame_nr == prev_frame + 1:
 		for i: int in audio_players.size():
-			var id: int = Project.tracks.get_clip_id_at(i, frame_nr)
+			var id: int = project_tracks.get_clip_id_at(i, frame_nr)
 			if id != -1:
 				audio_players[i].set_audio(id)
 			elif audio_players[i].stop_frame == frame_nr:
@@ -174,7 +184,10 @@ func set_frame_nr(value: int) -> void:
 	prev_frame = frame_nr
 
 
-func update_frame() -> void: set_frame(frame_nr)
+func update_frame() -> void:
+	set_frame(frame_nr)
+
+
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
 		frame_nr = new_frame
@@ -185,7 +198,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			continue
 
 		# Getting the next frame if possible.
-		var id: int = Project.tracks.get_clip_id_at(i, frame_nr)
+		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
 		if id != -1:
 			loaded_clips[i] = id
 			update_view(i, true)
@@ -194,7 +207,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			if view_textures[i].texture != null:
 				view_textures[i].texture = null
 
-	if frame_nr == Project.get_timeline_end():
+	if frame_nr == project_data.timeline_end:
 		is_playing = false
 	frame_changed.emit()
 
@@ -202,14 +215,14 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 # --- Audio handling ---
 
 func find_audio(frame: int, track_id: int) -> int:
-	var clip_id: int = Project.tracks.get_clip_id_at(track_id, frame)
+	var clip_id: int = project_tracks.get_clip_id_at(track_id, frame)
 	if clip_id == -1:
 		return 1
 
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var file_id: int = Project.data.clips_file[clip_index]
-	var file_index: int = Project.files.index_map[file_id]
-	return clip_id if Project.data.files_type[file_index] in AUDIO_TYPES else -1
+	var clip_index: int = project_clips.index_map[clip_id]
+	var file_id: int = project_data.clips_file[clip_index]
+	var file_index: int = project_files.index_map[file_id]
+	return clip_id if project_data.files_type[file_index] in AUDIO_TYPES else -1
 
 
 func update_audio() -> void:
@@ -217,12 +230,12 @@ func update_audio() -> void:
 		var clip_id: int = player.clip_id
 		if clip_id == -1:
 			return
-		elif !Project.clips.index_map.has(clip_id):
+		elif !project_clips.index_map.has(clip_id):
 			return player.stop()
 
-		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_start: int = Project.data.clips_start[clip_index]
-		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
+		var clip_index: int = project_clips.index_map[clip_id]
+		var clip_start: int = project_data.clips_start[clip_index]
+		var clip_end: int = project_data.clips_duration[clip_index] + clip_start
 
 		player.stop_frame = clip_end
 		if frame_nr < clip_start or frame_nr >= clip_end:
@@ -235,26 +248,26 @@ func update_view(track_id: int, update: bool) -> void:
 	if loaded_clips[track_id] == -1:
 		return
 	var clip_id: int = loaded_clips[track_id]
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var file_id: int = Project.data.clips_file[clip_index]
-	var file_index: int = Project.files.index_map[file_id]
+	var clip_index: int = project_clips.index_map[clip_id]
+	var file_id: int = project_data.clips_file[clip_index]
+	var file_index: int = project_files.index_map[file_id]
 
-	var raw_data: Variant = Project.files.get_data(file_index)
+	var raw_data: Variant = project_files.get_data(file_index)
 	if raw_data == null:
 		return
 
-	var start: int = Project.data.clips_start[clip_index]
-	var begin: int = Project.data.clips_begin[clip_index]
+	var start: int = project_data.clips_start[clip_index]
+	var begin: int = project_data.clips_begin[clip_index]
 	var relative_frame: int = frame_nr - start + begin
 	var clip_frame: int = frame_nr - start
 
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_index, true)
-	var effects: Array[GoZenEffectVisual] = Project.data.clips_effects[clip_index].video
-	Project.clips.load_frame(loaded_clips[track_id], relative_frame)
+	var effects: Array[GoZenEffectVisual] = project_data.clips_effects[clip_index].video
+	project_clips.load_frame(loaded_clips[track_id], relative_frame)
 
 	if raw_data is GoZenVideo:
 		var video: GoZenVideo = raw_data
-		var clip_instance: GoZenVideo = Project.files.get_video_clip_instance(clip_id)
+		var clip_instance: GoZenVideo = project_files.get_video_clip_instance(clip_id)
 		if clip_instance:
 			video = clip_instance
 

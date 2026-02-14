@@ -252,7 +252,7 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 			create_header(tr("Appearance")), Control.new(),
 			create_label(tr("Background color")),
 			create_color_picker(
-					Project.get_background_color(),
+					Project.data.background_color,
 					Project.set_background_color,
 					tr("The background color when no clips are displayed.")),
 		],

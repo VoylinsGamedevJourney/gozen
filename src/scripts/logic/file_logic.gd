@@ -102,7 +102,7 @@ func add(paths: PackedStringArray) -> void:
 
 func _add(path: String) -> int:
 	var extension: String = path.get_extension().to_lower()
-	var index: int = index_map.size()
+	var file_index: int = index_map.size()
 	var file_id: int = Utils.get_unique_id(project_data.files)
 	var type: EditorCore.TYPE = EditorCore.TYPE.EMPTY
 	var duration: int = -1 # Video and audio first need to be loaded.
@@ -152,9 +152,9 @@ func _add(path: String) -> int:
 	project_data.files_type.append(type)
 	project_data.files_duration.append(duration)
 	project_data.files_modified_time.append(modified_time)
-	index_map[file_id] = index
+	index_map[file_id] = file_index
 
-	load_data(file_id)
+	load_data(file_index)
 	return file_id
 
 
@@ -423,7 +423,7 @@ func _create_wave(file_id: int) -> void:
 
 	var bytes_size: float = 4 # 16 bit * stereo
 	var total_frames: int = int(data.size() / bytes_size)
-	var frames_per_block: int = floori(RenderManager.MIX_RATE / Project.get_framerate())
+	var frames_per_block: int = floori(RenderManager.MIX_RATE / Project.data.framerate)
 	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
 	var current_frame_index: int = 0
 

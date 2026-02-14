@@ -7,7 +7,7 @@ var framerate: float = 30.0
 var resolution: Vector2i = Vector2i(1920, 1080)
 var background_color: Color = Color.BLACK
 var timeline_end: int = 0
-var playhead_position: int = 0
+var playhead: int = 0 ## Playhead position
 
 var folders: PackedStringArray = []
 
