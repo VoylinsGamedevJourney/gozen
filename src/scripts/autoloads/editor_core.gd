@@ -73,8 +73,9 @@ func _on_project_ready() -> void:
 	project_clips.updated.connect(_on_clips_updated)
 	project_tracks.updated.connect(_rebuild_structure)
 	project_files.reloaded.connect(_on_clips_updated.unbind(1))
+	project_files.video_loaded.connect(_on_clips_updated.unbind(1))
 	_rebuild_structure()
-	frame_nr = project_data.playhead
+	set_frame(project_data.playhead)
 
 
 func _rebuild_structure() -> void:
@@ -126,9 +127,7 @@ func _on_clips_updated() -> void:
 	for i: int in audio_players.size():
 		audio_players[i].stop()
 	loaded_clips.fill(-1)
-	await RenderingServer.frame_pre_draw
-	await RenderingServer.frame_pre_draw
-	set_frame(frame_nr)
+	set_frame_nr(frame_nr)
 
 
 ## Update display/audio and continue if within clip bounds.

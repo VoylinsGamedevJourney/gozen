@@ -351,7 +351,7 @@ func load_data(file_index: int) -> void:
 		EditorCore.TYPE.IMAGE:
 			file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
 		EditorCore.TYPE.VIDEO:
-			Threader.add_task(_load_video.bind(file_id), video_loaded.emit)
+			Threader.add_task(_load_video.bind(file_id), video_loaded.emit.bind(file_id))
 		EditorCore.TYPE.AUDIO:
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 			if stream.open(path) and stream.get_length() != 0:
