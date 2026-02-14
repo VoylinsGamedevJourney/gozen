@@ -58,7 +58,6 @@ const STYLE_BOXES: Dictionary[EditorCore.TYPE, Array] = {
 	EditorCore.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
 	EditorCore.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
 	EditorCore.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
-	EditorCore.TYPE.VIDEO_ONLY: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
 	EditorCore.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
 	EditorCore.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
@@ -922,10 +921,9 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	popup.add_item(tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
 	popup.add_item(tr("Cut clip"), POPUP_ACTION.CLIP_CUT)
 
-	if clip_type in EditorCore.TYPE_VIDEOS:
+	if clip_type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
 		popup.add_item(tr("Add clip only video isntance"), POPUP_ACTION.CLIP_VIDEO_ONLY)
-	if clip_type == EditorCore.TYPE.VIDEO:
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
 	if clip_effects.ato_id != -1: # Can only be not -1 if clip is video
 		if clip_effects.ato_active:

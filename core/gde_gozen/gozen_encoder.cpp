@@ -28,13 +28,6 @@ bool GoZenEncoder::open(bool rgba) {
 	if (framerate <= 0)
 		return _log_err("Invalid framerate set");
 
-	if (audio_codec_id != AV_CODEC_ID_NONE) {
-		if (audio_codec_id == AV_CODEC_ID_NONE)
-			_log("Audio codec not set, not encoding audio");
-		else if (sample_rate == -1)
-			_log("A sample rate needs to be set for audio exporting");
-	}
-
 	format_size = rgba ? 4 : 3;
 
 	// Allocating output media context
@@ -42,7 +35,6 @@ bool GoZenEncoder::open(bool rgba) {
 
 	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, path.utf8())) {
 		_log_err("Error creating AV Format by path extension, using MPEG");
-		_log("Trying MPEG default");
 		if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, "mpeg", path.utf8())) {
 			return _log_err("Error creating AV Format");
 		}
@@ -71,7 +63,6 @@ bool GoZenEncoder::open(bool rgba) {
 	}
 
 	// Write stream header - if any
-	_log("Writing header to file ...");
 	if (!_write_header()) {
 		close();
 		return _log_err("Couldn't write header");
@@ -428,18 +419,14 @@ bool GoZenEncoder::send_audio(PackedByteArray wav_data) {
 
 bool GoZenEncoder::_finalize_encoding() {
 	if (!encoder_open) {
-		_log("Encoder not open, nothing to finalize.");
 		return 2;
 	} else if (!av_format_ctx) {
 		_log_err("Can't finalize encoding, no format context");
 		return 1;
 	}
 
-	_log("Finalizing encoding ..");
-
 	// Flush video encoder.
 	if (av_codec_ctx_video) {
-		_log("Flushing video encoder...");
 		av_packet_video = make_unique_avpacket();
 		response = avcodec_send_frame(av_codec_ctx_video.get(), nullptr);
 
@@ -451,7 +438,6 @@ bool GoZenEncoder::_finalize_encoding() {
 		while (true) {
 			response = avcodec_receive_packet(av_codec_ctx_video.get(), av_packet_video.get());
 			if (response == AVERROR_EOF) {
-				_log("Video encoder flushed.");
 				av_packet_unref(av_packet_video.get());
 				break;
 			} else if (response == AVERROR(EAGAIN)) {
@@ -467,8 +453,6 @@ bool GoZenEncoder::_finalize_encoding() {
 			// Valid packet received, writing to file.
 			av_packet_video->stream_index = av_stream_video->index;
 			av_packet_rescale_ts(av_packet_video.get(), av_codec_ctx_video->time_base, av_stream_video->time_base);
-
-			_log("Writing flushed video packet PTS: " + String::num_int64(av_packet_video->pts));
 			response = av_interleaved_write_frame(av_format_ctx.get(), av_packet_video.get());
 			av_packet_unref(av_packet_video.get());
 
@@ -490,13 +474,10 @@ bool GoZenEncoder::_finalize_encoding() {
 
 	// Writing stream trailer.
 	if (av_format_ctx) {
-		_log("Writing trailer to file ...");
 		response = av_write_trailer(av_format_ctx.get());
 		if (response < 0)
 			FFmpeg::print_av_error("GoZenEncoder: Error writing trailer to video file!", response);
 	}
-
-	_log("Video encoding finished successfully.");
 	return true;
 }
 
@@ -504,11 +485,8 @@ bool GoZenEncoder::_finalize_encoding() {
 void GoZenEncoder::close() {
 	if (frame_nr == 0)
 		return;
-
 	if (!_finalize_encoding())
 		_log_err("_finalize_encoding failed with: " + String::num_int64(response));
-
-	_log("Closing encoder and cleaning up resources...");
 
 	// Cleanup contexts
 	sws_ctx.reset();
@@ -592,10 +570,6 @@ void GoZenEncoder::_bind_methods() {
 	BIND_METHOD_ARGS(send_audio, "wav_data");
 
 	BIND_METHOD(close);
-
-	BIND_METHOD(enable_debug);
-	BIND_METHOD(enable_trace);
-	BIND_METHOD(disable_debug);
 
 	BIND_METHOD_ARGS(set_video_codec_id, "codec_id");
 	BIND_METHOD_ARGS(set_audio_codec_id, "codec_id");

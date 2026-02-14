@@ -68,7 +68,6 @@ class GoZenVideo : public Resource {
 	float framerate = 0;
 
 	bool loaded = false; // Is true after open()
-	bool debug = true;
 	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
 	bool full_color_range = true;
 
@@ -112,10 +111,6 @@ class GoZenVideo : public Resource {
 	bool _load_from_cache(int frame_nr);
 	void _clear_cache();
 
-	inline void _log(const String& message) {
-		if (debug)
-			UtilityFunctions::print("GoZenVideo: ", message, ".");
-	}
 	inline bool _log_err(const String& message) {
 		UtilityFunctions::printerr("GoZenVideo: ", message, "!");
 		return false;
@@ -185,16 +180,6 @@ class GoZenVideo : public Resource {
 
 	inline bool is_full_color_range() const { return full_color_range; }
 	inline bool is_using_sws() const { return using_sws; }
-
-	inline void enable_debug() {
-		av_log_set_level(AV_LOG_VERBOSE);
-		debug = true;
-	}
-	inline void disable_debug() {
-		av_log_set_level(AV_LOG_INFO);
-		debug = false;
-	}
-	inline bool get_debug_enabled() const { return debug; }
 
   protected:
 	static void _bind_methods();

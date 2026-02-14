@@ -340,7 +340,6 @@ int GoZenVideo::open(const String& video_path) {
 
 
 void GoZenVideo::close() {
-	_log("Closing video file on path: " + path);
 	_clear_cache();
 
 	loaded = false;
@@ -449,11 +448,8 @@ bool GoZenVideo::next_frame(bool skip) {
 	int response =
 		FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
 
-	if (response < 0) {
-		if (response == AVERROR_EOF)
-			_log("End of file reached in next_frame");
-		else
-			FFmpeg::print_av_error("GoZenVideo: Error in next_frame", response);
+	if (response < 0 && response != AVERROR_EOF) {
+		FFmpeg::print_av_error("GoZenVideo: Error in next_frame", response);
 	}
 
 	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
@@ -898,8 +894,4 @@ void GoZenVideo::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("is_full_color_range"), &GoZenVideo::is_full_color_range);
 	ClassDB::bind_method(D_METHOD("is_using_sws"), &GoZenVideo::is_using_sws);
-
-	ClassDB::bind_method(D_METHOD("enable_debug"), &GoZenVideo::enable_debug);
-	ClassDB::bind_method(D_METHOD("disable_debug"), &GoZenVideo::disable_debug);
-	ClassDB::bind_method(D_METHOD("get_debug_enabled"), &GoZenVideo::get_debug_enabled);
 }

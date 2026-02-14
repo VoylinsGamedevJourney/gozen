@@ -378,7 +378,7 @@ func load_frame(clip_id: int, frame_nr: int) -> void:
 
 	if clip_type not in EditorCore.VISUAL_TYPES:
 		return
-	elif clip_type in EditorCore.TYPE_VIDEOS:
+	elif clip_type == EditorCore.TYPE.VIDEO:
 		if project_data.clips_individual_video.has(clip_id):
 			video = Project.files.clip_video_instances[clip_id]
 		else:

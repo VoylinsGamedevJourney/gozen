@@ -128,23 +128,6 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
 
 			popup.add_item(tr("Extract audio to file ..."), POPUP_ACTION.EXTRACT_AUDIO)
-		elif file_type == EditorCore.TYPE.VIDEO_ONLY:
-			popup.add_separator(tr("Video options"))
-
-			if Settings.get_use_proxies():
-				if !file_proxy_path.is_empty():
-					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
-					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
-				else:
-					popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
-
-			if Project.data.files_type.has(EditorCore.TYPE.AUDIO):
-				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-				if Project.data.files_ato_file.has(file_id):
-					if Project.data.files_ato_active[file_id]:
-						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
-					else:
-						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
 		elif file_type == EditorCore.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), POPUP_ACTION.DUPLICATE)

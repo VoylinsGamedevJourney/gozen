@@ -40,7 +40,6 @@ class AudioStreamFFmpeg : public AudioStream {
 
 	String file_path;
 
-	static inline void _log(String message) { UtilityFunctions::print("GoZenAudioStream: ", message, "."); }
 	static inline bool _log_err(String message) {
 		UtilityFunctions::printerr("AudioStreamFFmpeg: ", message, "!");
 		return false;

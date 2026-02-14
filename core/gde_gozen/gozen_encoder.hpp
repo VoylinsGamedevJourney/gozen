@@ -61,9 +61,6 @@ class GoZenEncoder : public Resource {
 	bool encoder_open = false;
 	bool audio_added = false;
 
-
-	bool debug = true;
-
 	std::string h264_preset = "medium";
 	int hw_device_type = HW_DEVICE_TYPE_NVENC;
 
@@ -78,12 +75,10 @@ class GoZenEncoder : public Resource {
 	bool _write_header();
 	bool _finalize_encoding();
 
-	static inline void _log(String message) { UtilityFunctions::print("GoZenEncoder: ", message, "."); }
 	static inline bool _log_err(String message) {
 		UtilityFunctions::printerr("GoZenEncoder: ", message, "!");
 		return false;
 	}
-
 
   public:
 	enum VIDEO_CODEC {
@@ -144,19 +139,6 @@ class GoZenEncoder : public Resource {
 	void close();
 
 	static PackedStringArray get_available_codecs(int codec_id);
-
-	inline void enable_debug() {
-		av_log_set_level(AV_LOG_DEBUG);
-		debug = true;
-	}
-	inline void enable_trace() {
-		av_log_set_level(AV_LOG_TRACE);
-		debug = true;
-	}
-	inline void disable_debug() {
-		av_log_set_level(AV_LOG_INFO);
-		debug = false;
-	}
 
 	inline void set_video_codec_id(VIDEO_CODEC codec_id) { video_codec_id = (AVCodecID)codec_id; }
 	inline void set_audio_codec_id(AUDIO_CODEC codec_id) { audio_codec_id = (AVCodecID)codec_id; }

@@ -100,7 +100,7 @@ func _gen_thumb(file_id: int) -> void:
 	match file_type:
 		EditorCore.TYPE.IMAGE: image = Image.load_from_file(file_path)
 		EditorCore.TYPE.AUDIO: image = Project.files.generate_audio_thumb(file_id)
-		EditorCore.TYPE.VIDEO, EditorCore.TYPE.VIDEO_ONLY:
+		EditorCore.TYPE.VIDEO:
 			var temp: Variant = Project.files.file_data[file_index]
 			if !temp or temp is not GoZenVideo:
 				return

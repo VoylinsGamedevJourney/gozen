@@ -348,7 +348,7 @@ func load_data(file_index: int) -> void:
 		project_data.files_temp_file[file_id] = temp_file
 	elif type == EditorCore.TYPE.IMAGE:
 		file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
-	elif type in EditorCore.TYPE_VIDEOS:
+	elif type == EditorCore.TYPE.VIDEO:
 		Threader.add_task(_load_video.bind(file_id), video_loaded.emit)
 	elif type == EditorCore.TYPE.PCK:
 		if !ProjectSettings.load_resource_pack(path):
@@ -359,26 +359,10 @@ func load_data(file_index: int) -> void:
 		#pck_instances[file_id] = packed_scene.instantiate()
 
 	if type in EditorCore.AUDIO_TYPES:
-		if !_load_audio(file_id) and type == EditorCore.TYPE.VIDEO:
-			type = EditorCore.TYPE.VIDEO_ONLY
-		else:
+		var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
+		if stream.open(path) and stream.get_length() != 0:
+			file_data[file_index] = stream
 			Threader.add_task(_create_wave.bind(file_id), Callable())
-
-
-func _load_audio(file_id: int) -> bool:
-	var index: int = index_map[file_id]
-	var path: String = project_data.files_path[index]
-	var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-	var error: int = stream.open(path)
-
-	if error != OK:
-		printerr("FileData: Failed to open audio '%s'! - %s" % [path, error])
-		return false # No audio was found, might be invalid codec, so we change type to VIDEO_ONLY
-	elif stream.get_length() == 0:
-		return false # Video without audio so we change the EditorCore.TYPE to VIDEO_ONLY as well
-
-	file_data[index] = stream
-	return true
 
 
 func _load_video(file_id: int, clip_id: int = -1) -> void:
@@ -391,13 +375,11 @@ func _load_video(file_id: int, clip_id: int = -1) -> void:
 	if Settings.get_use_proxies():
 		if !proxy_path.is_empty() and !FileAccess.file_exists(proxy_path):
 			path_to_load = proxy_path
-
 	if temp_video.open(path_to_load):
 		return printerr("FileData: Couldn't open video at path '%s'!" % path)
 
 	Threader.mutex.lock()
-	# Clip only video got requested
-	if clip_id != -1:
+	if clip_id != -1: # Clip only video got requested
 		clip_video_instances[clip_id] = temp_video
 	else:
 		file_data[index] = temp_video
@@ -559,7 +541,7 @@ func get_all_audio_files() -> PackedInt64Array:
 func get_all_video_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
 	for index: int in project_data.files_type.size():
-		if project_data.files_type[index] in EditorCore.TYPE_VIDEOS:
+		if project_data.files_type[index] == EditorCore.TYPE.VIDEO:
 			data.append(project_data.files[index])
 	return data
 
@@ -664,7 +646,7 @@ func update_audio_waves() -> void:
 func reload_videos() -> void:
 	for file_id: int in get_all_video_files():
 		var file_index: int = index_map[file_id]
-		if project_data.files_type[file_index] in EditorCore.TYPE_VIDEOS:
+		if project_data.files_type[file_index] == EditorCore.TYPE.VIDEO:
 			load_data(file_index)
 
 

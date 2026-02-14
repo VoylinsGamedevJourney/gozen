@@ -5,14 +5,11 @@ signal play_changed(value: bool)
 
 
 ## File/Clip types.
-enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, VIDEO_ONLY, TEXT, COLOR, PCK }
+enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
 
 
 const AUDIO_TYPES: PackedInt64Array = [ TYPE.AUDIO, TYPE.VIDEO ]
-const VISUAL_TYPES: PackedInt64Array = [
-		TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT,
-		TYPE.VIDEO, TYPE.VIDEO_ONLY]
-const TYPE_VIDEOS: Array[TYPE] = [TYPE.VIDEO, TYPE.VIDEO_ONLY]
+const VISUAL_TYPES: PackedInt64Array = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO ]
 
 
 var project_data: ProjectData

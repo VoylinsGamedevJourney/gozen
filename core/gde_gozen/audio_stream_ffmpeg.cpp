@@ -1,8 +1,6 @@
 #include "audio_stream_ffmpeg.hpp"
 
 AudioStreamFFmpeg::~AudioStreamFFmpeg() {
-	_log("Closing video file at path: " + file_path);
-
 	if (!loaded)
 		return;
 
@@ -209,7 +207,6 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 	while (!found_target) {
 		if (FFmpeg::get_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_codec_ctx.get(),
 							  audio_stream_ffmpeg->av_stream->index, av_frame.get(), av_packet.get())) {
-			audio_stream_ffmpeg->_log("End of file during seek");
 			audio_stream_ffmpeg->mutex->unlock();
 			return;
 		}
@@ -322,7 +319,6 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 
 	if (FFmpeg::get_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_codec_ctx.get(),
 						  audio_stream_ffmpeg->av_stream->index, av_frame.get(), av_packet.get())) {
-		AudioStreamFFmpeg::_log("End of file");
 		audio_stream_ffmpeg->mutex->unlock();
 		return false;
 	}

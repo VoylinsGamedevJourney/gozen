@@ -102,7 +102,6 @@ func _remove_track(track: int) -> void:
 
 func update_clip_info(clip_id: int) -> void:
 	var clip_index: int = clips.find(clip_id)
-	printerr("oh")
 
 	if clip_index == -1: # Clip probably got deleted so check the track clips.
 		for track: int in project_data.tracks_is_muted.size():

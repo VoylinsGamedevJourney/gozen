@@ -19,7 +19,7 @@ func request_generation(file_id: int) -> void:
 	var file_index: int = Project.files.index_map[file_id]
 	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 	var file_path: String = Project.data.files_path[file_index]
-	if file_type not in EditorCore.TYPE_VIDEOS:
+	if file_type != EditorCore.TYPE.VIDEO:
 		return # Only proxies for videos possible
 	var new_path: String = PROXY_PATH + _create_proxy_name(file_path)
 
