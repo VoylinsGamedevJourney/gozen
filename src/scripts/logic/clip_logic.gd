@@ -149,6 +149,7 @@ func _delete(clip: int) -> void:
 
 	_rebuild_map()
 	deleted.emit(clip)
+	updated.emit()
 	Project.unsaved_changes = true
 
 
@@ -336,9 +337,7 @@ func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Ar
 			for frame: int in effect.keyframes[param_id]:
 				if frame > cut_pos:
 					new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
-
-			new_effects.append(new_effect)
-
+		new_effects.append(new_effect)
 	return new_effects
 
 

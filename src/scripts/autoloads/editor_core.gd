@@ -122,8 +122,11 @@ func _on_closing_editor() -> void:
 
 
 func _on_clips_updated() -> void:
-	update_audio()
-	update_frame()
+	prev_frame = -1
+	for i: int in audio_players.size():
+		audio_players[i].stop()
+	loaded_clips.fill(-1)
+	set_frame(frame_nr)
 
 
 ## Update display/audio and continue if within clip bounds.
@@ -171,7 +174,10 @@ func set_frame_nr(value: int) -> void:
 		for i: int in audio_players.size():
 			var id: int = project_tracks.get_clip_id_at(i, frame_nr)
 			if id != -1:
-				audio_players[i].set_audio(id)
+				if audio_players[i].clip_id != id:
+					audio_players[i].set_audio(id)
+				else:
+					audio_players[i].update_effects(project_clips.index_map[id])
 			elif audio_players[i].stop_frame == frame_nr:
 				audio_players[i].stop()
 	else: # Reset/update all audio players. (full seek)
@@ -197,8 +203,12 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 		# Getting the next frame if possible.
 		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
 		if id != -1:
+			if loaded_clips[i] != id:
+				compositors[i].free()
+				compositors[i] = VisualCompositor.new()
 			loaded_clips[i] = id
 			update_view(i, true)
+			audio_players[i].set_audio(find_audio(frame_nr, i))
 		else:
 			loaded_clips[i] = -1
 			if view_textures[i].texture != null:
@@ -214,7 +224,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 func find_audio(frame: int, track_id: int) -> int:
 	var clip_id: int = project_tracks.get_clip_id_at(track_id, frame)
 	if clip_id == -1:
-		return 1
+		return -1
 
 	var clip_index: int = project_clips.index_map[clip_id]
 	var file_id: int = project_data.clips_file[clip_index]
@@ -226,14 +236,14 @@ func update_audio() -> void:
 	for player: AudioPlayer in audio_players:
 		var clip_id: int = player.clip_id
 		if clip_id == -1:
-			return
+			continue
 		elif !project_clips.index_map.has(clip_id):
-			return player.stop()
+			player.stop()
+			continue
 
 		var clip_index: int = project_clips.index_map[clip_id]
 		var clip_start: int = project_data.clips_start[clip_index]
 		var clip_end: int = project_data.clips_duration[clip_index] + clip_start
-
 		player.stop_frame = clip_end
 		if frame_nr < clip_start or frame_nr >= clip_end:
 			player.stop()

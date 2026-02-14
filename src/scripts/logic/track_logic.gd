@@ -122,9 +122,6 @@ func update_clip_info(clip_id: int) -> void:
 		frames[track].append(frame_nr)
 	else: # We just update the data.
 		frames[track][clip_index] = frame_nr
-	project_data.tracks_is_invisible.remove_at(track)
-	clips.remove_at(track)
-	frames.remove_at(track)
 
 
 func update_track_info(_index: int) -> void:

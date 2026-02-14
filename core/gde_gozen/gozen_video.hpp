@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audio_stream_ffmpeg.hpp"
 #include "ffmpeg.hpp"
 #include "ffmpeg_helpers.hpp"
 
@@ -46,6 +47,8 @@ class GoZenVideo : public Resource {
 
 	BufferData buffer_data;
 
+	Ref<AudioStreamFFmpeg> audio_stream;
+
 	// Default variable types.
 	int current_frame = 0;
 	int last_decoded_frame = -1;
@@ -67,7 +70,7 @@ class GoZenVideo : public Resource {
 	float sar = 0;
 	float framerate = 0;
 
-	bool loaded = false; // Is true after open()
+	bool loaded = false;	// Is true after open()
 	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
 	bool full_color_range = true;
 
@@ -151,6 +154,8 @@ class GoZenVideo : public Resource {
 	inline Ref<Image> get_u_data() const { return u_data; }
 	inline Ref<Image> get_v_data() const { return v_data; }
 	inline Ref<Image> get_a_data() const { return a_data; }
+
+	inline Ref<AudioStreamFFmpeg> get_audio() const { return audio_stream; }
 
 	// Metadata getters
 	inline String get_path() const { return path; }

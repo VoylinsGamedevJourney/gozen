@@ -688,7 +688,7 @@ func _can_move_clips() -> bool:
 	var mouse_frame: int = get_frame_from_mouse()
 	var target_start: int = mouse_frame - draggable.mouse_offset
 	var track_difference: int = mouse_track - Project.data.clips_track[anchor_clip_index]
-	var frame_difference: int = target_start - Project.data.clips_track[anchor_clip_index]
+	var frame_difference: int = target_start - Project.data.clips_start[anchor_clip_index]
 
 	var min_allowed_diff: int = -1000000000 # Effectively -Infinity
 	var max_allowed_diff: int = 1000000000  # Effectively +Infinity
@@ -775,7 +775,7 @@ func _commit_current_resize() -> void:
 	if resize_target.delta != 0:
 		Project.clips.resize([ClipRequest.resize_request(
 				resize_target.clip,
-				resize_target.delta if resize_target.is_end else -resize_target.delta,
+				resize_target.delta if resize_target.is_end else resize_target.delta,
 				resize_target.is_end)])
 	resize_target = null
 	draw_clips.queue_redraw()

@@ -346,23 +346,24 @@ func load_data(file_index: int) -> void:
 			temp_file.load_image_from_color()
 			file_data[file_index] = temp_file.image_data
 		project_data.files_temp_file[file_id] = temp_file
-	elif type == EditorCore.TYPE.IMAGE:
-		file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
-	elif type == EditorCore.TYPE.VIDEO:
-		Threader.add_task(_load_video.bind(file_id), video_loaded.emit)
-	elif type == EditorCore.TYPE.PCK:
-		if !ProjectSettings.load_resource_pack(path):
-			printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
-			return _delete(file_id)
-		#var pck_path: String = PCK.MODULES_PATH + path.get_basename().to_lower()
-		#var packed_scene: PackedScene = load(pck_path).scene
-		#pck_instances[file_id] = packed_scene.instantiate()
-
-	if type in EditorCore.AUDIO_TYPES:
-		var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-		if stream.open(path) and stream.get_length() != 0:
-			file_data[file_index] = stream
-			Threader.add_task(_create_wave.bind(file_id), Callable())
+		return
+	match type:
+		EditorCore.TYPE.IMAGE:
+			file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
+		EditorCore.TYPE.VIDEO:
+			Threader.add_task(_load_video.bind(file_id), video_loaded.emit)
+		EditorCore.TYPE.AUDIO:
+			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
+			if stream.open(path) and stream.get_length() != 0:
+				file_data[file_index] = stream
+				Threader.add_task(_create_wave.bind(file_id), _on_wave_ready)
+		EditorCore.TYPE.PCK:
+			if !ProjectSettings.load_resource_pack(path):
+				printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
+				return _delete(file_id)
+			#var pck_path: String = PCK.MODULES_PATH + path.get_basename().to_lower()
+			#var packed_scene: PackedScene = load(pck_path).scene
+			#pck_instances[file_id] = packed_scene.instantiate()
 
 
 func _load_video(file_id: int, clip_id: int = -1) -> void:
@@ -383,6 +384,7 @@ func _load_video(file_id: int, clip_id: int = -1) -> void:
 		clip_video_instances[clip_id] = temp_video
 	else:
 		file_data[index] = temp_video
+		Threader.add_task(_create_wave.bind(file_id), _on_wave_ready)
 
 	# TODO: Check if this is needed:
 	#var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
@@ -439,6 +441,10 @@ func _create_wave(file_id: int) -> void:
 
 		audio_wave[file_id][i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
+
+
+func _on_wave_ready() -> void:
+	Settings.on_waveform_update.emit()
 
 
 func generate_audio_thumb(file_id: int) -> Image:

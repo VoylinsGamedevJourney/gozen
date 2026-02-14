@@ -71,10 +71,13 @@ func set_audio(audio_clip_id: int) -> void:
 	var file_data: Variant = Project.files.file_data[file_index]
 	var stream: AudioStream = null
 
-	if file_data is AudioStream:
+	if file_data == null:
+		return stop()
+	elif file_data is AudioStream:
 		stream = file_data
-	elif file_data and "audio" in file_data:
-		stream = file_data.audio
+	elif Project.data.files_type[file_index] == EditorCore.TYPE.VIDEO:
+		var video: GoZenVideo = file_data
+		stream = video.get_audio()
 
 	if stream == null:
 		return stop() # No valid data found for stream.
