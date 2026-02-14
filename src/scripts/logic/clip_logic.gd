@@ -233,7 +233,7 @@ func _move(clip_id: int, new_track: int, new_frame: int) -> void:
 		Project.tracks.register_clip(new_track, clip_id, new_frame)
 	else:
 		project_data.clips_start[clip_index] = new_frame
-		Project.tracks.update_clip(old_track, old_frame, new_frame)
+		Project.tracks.update_clip_info(clip_id)
 	updated.emit()
 	Project.unsaved_changes = true
 

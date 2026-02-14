@@ -115,11 +115,11 @@ func _add(path: String) -> int:
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
 		type = EditorCore.TYPE.AUDIO
-		duration = floori(GoZenVideo.get_duration(path) / Project.data.framerate)
+		duration = floori(GoZenVideo.get_duration(path) * Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
 		type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
-		duration = floori(GoZenVideo.get_duration(path) / Project.data.framerate)
+		duration = floori(GoZenVideo.get_duration(path) * Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck":
 		type = EditorCore.TYPE.PCK
@@ -362,7 +362,7 @@ func load_data(file_index: int) -> void:
 		if !_load_audio(file_id) and type == EditorCore.TYPE.VIDEO:
 			type = EditorCore.TYPE.VIDEO_ONLY
 		else:
-			Threader.add_task(_create_wave.bind(path), Callable())
+			Threader.add_task(_create_wave.bind(file_id), Callable())
 
 
 func _load_audio(file_id: int) -> bool:
@@ -415,11 +415,11 @@ func _load_video(file_id: int, clip_id: int = -1) -> void:
 func _create_wave(file_id: int) -> void:
 	# TODO: Large audio lengths will still crash this function. Could possibly
 	# use the get_audio improvements by cutting the data into pieces.
-	var index: int = index_map[file_id]
-	var path: String = project_data.files_path[index]
-	var data: PackedByteArray = GoZenAudio.get_audio_data(path, -1)
+	var file_index: int = index_map[file_id]
+	var file_path: String = project_data.files_path[file_index]
+	var data: PackedByteArray = GoZenAudio.get_audio_data(file_path, -1)
 
-	audio_wave[file_id].clear()
+	audio_wave[file_id] = PackedFloat32Array()
 	if data.is_empty():
 		return push_warning("Audio data is empty!")
 
@@ -579,7 +579,9 @@ func get_pck_instance(file_id: int) -> Node:
 
 
 func get_audio_wave(file_id: int) -> PackedFloat32Array:
-	return audio_wave[file_id]
+	if audio_wave.has(file_id):
+		return audio_wave[file_id]
+	return []
 
 
 func get_video_clip_instance(clip_id: int) -> GoZenVideo:

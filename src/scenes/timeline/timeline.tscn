@@ -85,7 +85,7 @@ scroll_vertical_custom_step = 30.0
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 
-[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
+[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut", "timestamp_scroll")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -96,6 +96,7 @@ script = ExtResource("2_2or7f")
 mode_panel = NodePath("../../../TimelineModes")
 button_select = NodePath("../../../TimelineModes/Margin/VBox/SelectModeButton")
 button_cut = NodePath("../../../TimelineModes/Margin/VBox/CutModeButton")
+timestamp_scroll = NodePath("../../TimestampScroll")
 
 [node name="TrackLinesDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=22986217]
 layout_mode = 2

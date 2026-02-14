@@ -100,7 +100,7 @@ func _handle_matrix(type: Matrix.TYPE) -> PackedFloat32Array:
 				data[key] = _effect.get_value(param_map[key], _frame_nr)
 
 				if key == "position" or key == "size" or key == "pivot":
-					data[key] = data[key] * ratio
+					data[key] = Vector2(data[key] as Vector2i) * ratio
 			return Matrix.calculate_transform_matrix(data, _resolution)
 		_:
 			printerr("EffectCache: Invalid matrix data type! %s" % type)

@@ -46,20 +46,11 @@ func register_clip(track: int, clip_id: int, frame_nr: int) -> void:
 func unregister_clip(track: int, frame_nr: int) -> void:
 	if track < 0 or track >= project_data.tracks_is_muted.size():
 		return
-	var clip_index: int = frames.find(frame_nr)
+	var clip_index: int = frames[track].find(frame_nr)
 	if clip_index == -1:
 		return
 	clips[track].remove_at(clip_index)
 	frames[track].remove_at(clip_index)
-
-
-func update_clip(track: int, old_frame: int, new_frame: int) -> void:
-	if track < 0 or track >= project_data.tracks_is_muted.size():
-		return
-	var frame_index: int = frames[track].find(old_frame)
-	if frame_index == -1:
-		return
-	frames[track][frame_index] = new_frame
 
 
 # --- Handling ---
@@ -107,19 +98,11 @@ func remove_track(track: int) -> void:
 
 func _remove_track(track: int) -> void:
 	project_data.tracks_is_muted.remove_at(track)
-	project_data.tracks_is_invisible.remove_at(track)
-	clips.remove_at(track)
-	frames.remove_at(track)
-
-
-func update_track_info(_index: int) -> void:
-	# TODO: update clips ( Can only start doing this after I finish ClipLogic )
-	# TODO: update frames ( Can only start doing this after I finish ClipLogic )
-	pass
 
 
 func update_clip_info(clip_id: int) -> void:
 	var clip_index: int = clips.find(clip_id)
+	printerr("oh")
 
 	if clip_index == -1: # Clip probably got deleted so check the track clips.
 		for track: int in project_data.tracks_is_muted.size():
@@ -140,6 +123,15 @@ func update_clip_info(clip_id: int) -> void:
 		frames[track].append(frame_nr)
 	else: # We just update the data.
 		frames[track][clip_index] = frame_nr
+	project_data.tracks_is_invisible.remove_at(track)
+	clips.remove_at(track)
+	frames.remove_at(track)
+
+
+func update_track_info(_index: int) -> void:
+	# TODO: update clips ( Can only start doing this after I finish ClipLogic )
+	# TODO: update frames ( Can only start doing this after I finish ClipLogic )
+	pass
 
 
 # --- Track getters ---

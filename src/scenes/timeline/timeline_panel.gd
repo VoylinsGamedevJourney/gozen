@@ -51,7 +51,7 @@ const ZOOM_STEP: float = 1.1
 
 const SNAPPING: int = 200
 
-const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.8)
+const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.6)
 
 const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
 const STYLE_BOXES: Dictionary[EditorCore.TYPE, Array] = {
@@ -62,7 +62,8 @@ const STYLE_BOXES: Dictionary[EditorCore.TYPE, Array] = {
 	EditorCore.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
 	EditorCore.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
 }
-const CLIP_TEXT_OFFSET: Vector2 = Vector2(5, 20)
+const CLIP_TEXT_OFFSET: Vector2 = Vector2(5, 12)
+const CLIP_TEXT_COLOR: Color = Color.WHITE
 
 const COLOR_BOX_SELECT_FILL: Color = Color(0.65, 0.1, 0.95, 0.2)
 const COLOR_BOX_SELECT_BORDER: Color = Color(0.65, 0.1, 0.95, 0.6)
@@ -89,8 +90,8 @@ const COLOR_CUT_FADE: Color = Color(1,0,0,0.3)
 var zoom: float = 1.0
 var selected_clip_ids: PackedInt64Array = []
 
+var mode: MODE = MODE.SELECT
 var state: STATE = STATE.CURSOR_MODE_SELECT: set = set_state
-
 var draggable: Draggable = null
 
 var right_click_pos: Vector2i = Vector2i.ZERO
@@ -106,8 +107,6 @@ var hovered_clip: int = -1
 
 var waveform_style: int = Settings.get_audio_waveform_style()
 var waveform_amp: float = Settings.get_audio_waveform_amp()
-
-var mode: MODE = MODE.SELECT
 
 
 
@@ -133,6 +132,8 @@ func _on_project_ready() -> void:
 	Project.clips.updated.connect(draw_clips.queue_redraw)
 	Project.clips.selected.connect(draw_clips.queue_redraw.unbind(1))
 
+
+# --- Drawing functions ---
 
 func _draw_track_lines(control: Control) -> void:
 	for i: int in Project.data.tracks_is_muted.size() - 1:
@@ -218,13 +219,6 @@ func _draw_clips(control: Control) -> void:
 			text_pos_x = scroll_amount
 
 		control.draw_style_box(STYLE_BOXES[clip_type][box_type] as StyleBox, clip_rect)
-		control.draw_string(
-				get_theme_default_font(),
-				Vector2(text_pos_x, box_pos.y) + CLIP_TEXT_OFFSET,
-				Project.data.files_nickname[file_index],
-				HORIZONTAL_ALIGNMENT_LEFT, clip_duration * zoom - CLIP_TEXT_OFFSET.x,
-				11, # Font size
-				Color(0.9, 0.9, 0.9))
 
 		# - Audio waves (Part of clip blocks)
 		_draw_wave(Project.files.get_audio_wave(clip_file), clip_begin, clip_duration, clip_rect, control)
@@ -235,6 +229,15 @@ func _draw_clips(control: Control) -> void:
 			_draw_fade_handles(clip_index, box_pos, true, show_handles, control) # Bottom.
 		if clip_type in EditorCore.AUDIO_TYPES:
 			_draw_fade_handles(clip_index, box_pos, false, show_handles, control) # Top
+
+		control.draw_string(
+				get_theme_default_font(),
+				Vector2(text_pos_x, box_pos.y) + CLIP_TEXT_OFFSET,
+				Project.data.files_nickname[file_index],
+				HORIZONTAL_ALIGNMENT_LEFT,
+				clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
+				11, # Font size
+				CLIP_TEXT_COLOR)
 
 
 func _get_visible(start: int, end: int) -> PackedInt64Array:
@@ -338,6 +341,8 @@ func _draw_markers(control: Control) -> void:
 		control.draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), color * Color(1.0, 1.0, 1.0, 0.1), 1.0)
 
 
+# --- Notification handling ---
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_DRAG_END:
 		if state == STATE.MOVING or state == STATE.DROPPING:
@@ -346,7 +351,11 @@ func _notification(what: int) -> void:
 			draw_clips.queue_redraw()
 
 
+# --- Input handling ---
+
 func _input(event: InputEvent) -> void:
+	if !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
+		return
 	if event.is_action_pressed("delete_clips"):
 		Project.clips.delete(selected_clip_ids)
 	elif event.is_action_pressed("ripple_delete_clips"):
@@ -406,7 +415,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		elif resize_target:
 			state = STATE.RESIZING
 			draw_clips.queue_redraw()
-		elif pressed_clip == null:
+		elif pressed_clip == -1:
 			if event.shift_pressed:
 				state = STATE.BOX_SELECTING
 				box_select_start = get_local_mouse_position()
@@ -427,7 +436,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		right_click_clip = _get_clip_on_mouse()
 		right_click_pos = Vector2i(get_track_from_mouse(), get_frame_from_mouse())
 
-		if right_click_clip != null:
+		if right_click_clip != -1:
 			_add_popup_menu_items_clip(popup)
 		else:
 			popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
@@ -463,7 +472,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control. CURSOR_HSIZE
 			elif _get_fade_target() != null:
 				mouse_default_cursor_shape = Control.CURSOR_CROSS
-			elif clip_on_mouse != null:
+			elif clip_on_mouse != -1:
 				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			else:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
@@ -507,7 +516,7 @@ func _get_resize_target() -> ResizeTarget:
 	var clip_on_mouse: int = _get_clip_on_mouse()
 	if clip_on_mouse == -1:
 		return null
-	var index: int = Project.clips.index_map[_get_clip_on_mouse()]
+	var index: int = Project.clips.index_map[clip_on_mouse]
 
 	var duration: int = Project.data.clips_duration[index]
 	if duration * zoom < RESIZE_CLIP_MIN_WIDTH:
@@ -587,10 +596,10 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
-	if state != STATE.CURSOR_MODE_SELECT or pressed_clip == null:
+	if state != STATE.CURSOR_MODE_SELECT or pressed_clip == -1:
 		return null
-	var clicked_clip: int = pressed_clip
 
+	var clicked_clip: int = pressed_clip
 	if pressed_clip not in selected_clip_ids:
 		selected_clip_ids = [pressed_clip]
 		draw_clips.queue_redraw()
@@ -639,7 +648,7 @@ func _can_drop_new_clips() -> bool:
 		target_end += abs(target_frame)
 		target_frame = 0
 
-	if clip_at_pos == null:
+	if clip_at_pos == -1:
 		free_region = Project.tracks.get_free_region(draggable.track_offset, target_frame)
 
 		if free_region.y > target_end:
@@ -898,6 +907,8 @@ func _handle_fade_motion() -> void:
 
 
 func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
+	if right_click_clip == -1:
+		return
 	var clip_index: int = Project.clips.index_map[right_click_clip]
 	var file_id: int = Project.data.clips_file[clip_index]
 	var file_index: int = Project.files.index_map[file_id]

@@ -1,10 +1,13 @@
 extends ScrollContainer
-# The scroll handler for the timeline stuff
+## The scroll handler for the timeline stuff.
+## TODO: Have a setting to disable smooth scrolling.
+
 
 @export var timestamp_scroll: ScrollContainer
 
 
 var current_zoom: float = 1.0
+
 
 
 func _ready() -> void:
