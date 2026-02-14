@@ -126,6 +126,7 @@ func _on_clips_updated() -> void:
 	for i: int in audio_players.size():
 		audio_players[i].stop()
 	loaded_clips.fill(-1)
+	await RenderingServer.frame_pre_draw
 	set_frame(frame_nr)
 
 
@@ -203,9 +204,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 		# Getting the next frame if possible.
 		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
 		if id != -1:
-			if loaded_clips[i] != id:
-				compositors[i].free()
-				compositors[i] = VisualCompositor.new()
 			loaded_clips[i] = id
 			update_view(i, true)
 			audio_players[i].set_audio(find_audio(frame_nr, i))

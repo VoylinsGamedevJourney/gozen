@@ -229,14 +229,15 @@ func _draw_clips(control: Control) -> void:
 		if clip_type in EditorCore.AUDIO_TYPES:
 			_draw_fade_handles(clip_index, box_pos, false, show_handles, control) # Top
 
-		control.draw_string(
-				get_theme_default_font(),
-				Vector2(text_pos_x, box_pos.y) + CLIP_TEXT_OFFSET,
-				Project.data.files_nickname[file_index],
-				HORIZONTAL_ALIGNMENT_LEFT,
-				clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
-				11, # Font size
-				CLIP_TEXT_COLOR)
+		if clip_rect.size.x > 20:
+			control.draw_string(
+					get_theme_default_font(),
+					Vector2(text_pos_x, box_pos.y) + CLIP_TEXT_OFFSET,
+					Project.data.files_nickname[file_index],
+					HORIZONTAL_ALIGNMENT_LEFT,
+					clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
+					11, # Font size
+					CLIP_TEXT_COLOR)
 
 
 func _get_visible(start: int, end: int) -> PackedInt64Array:
