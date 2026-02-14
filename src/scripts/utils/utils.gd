@@ -33,11 +33,10 @@ static func open_url(url: String) -> void:
 
 static func get_unique_id(keys: PackedInt64Array) -> int:
 	var id: int = abs(randi())
-
-	randomize()
-	if keys.has(id):
-		id = get_unique_id(keys)
-
+	while keys.has(id):
+		randomize()
+		if keys.has(id):
+			id = get_unique_id(keys)
 	return id
 
 
