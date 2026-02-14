@@ -1035,7 +1035,7 @@ func move_playhead(frame_nr: int) -> void:
 
 
 func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
-	var clips: PackedInt64Array = Project.tracks.get_clip_ids_after(track_id, frame_nr)
+	var clips: PackedInt64Array = Project.tracks.get_clips_after(track_id, frame_nr)
 	var region: Vector2i = Project.tracks.get_free_region(track_id, frame_nr)
 	var empty_size: int = region.y - region.x
 	var move_requests: Array[ClipRequest] = []

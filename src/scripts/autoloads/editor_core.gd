@@ -147,8 +147,8 @@ func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 	var end: int = project_data.clips_duration[clip_index] + start
 	return new_frame_nr >= start and new_frame_nr < end
 
-# --- Playback logic ---
 
+# --- Playback logic ---
 
 func on_play_pressed() -> void:
 	is_playing = false if frame_nr == project_data.timeline_end else !is_playing

@@ -61,6 +61,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	is_loaded = true
 	_auto_save()
 	project_ready.emit()
+	update_timeline_end()
 
 
 func save() -> void:
@@ -113,6 +114,7 @@ func open(new_project_path: String) -> void:
 	unsaved_changes = false
 	project_ready.emit()
 	EditorCore.set_frame(data.playhead)
+	update_timeline_end()
 	_auto_save()
 
 
@@ -240,13 +242,13 @@ func set_framerate(new_framerate: float) -> void:
 func update_timeline_end() -> void:
 	var end: int = 0
 	for index: int in data.tracks_is_muted.size():
-		var clip_id: int = tracks.get_last_clip_id(index)
-		if clip_id != -1:
-			var clip_index: int = clips.index_map[clip_id]
+		var clip: int = tracks.get_last_clip(index)
+		if clip != -1:
+			var clip_index: int = clips.index_map[clip]
 			var clip_start: int = data.clips_start[clip_index]
 			var clip_duration: int = data.clips_duration[clip_index]
 			end = max(end, clip_start + clip_duration)
-	data.timeline_end = end
+	data.timeline_end = end - 1
 	unsaved_changes = true
 	timeline_end_update.emit(end)
 

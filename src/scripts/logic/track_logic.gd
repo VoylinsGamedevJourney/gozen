@@ -145,7 +145,7 @@ func has_frame_nr(track: int, frame_nr: int) -> bool:
 
 # --- Clip data getters ---
 
-func get_clip_ids(track: int) -> PackedInt64Array:
+func get_clips(track: int) -> PackedInt64Array:
 	return frames[track]
 
 
@@ -153,7 +153,7 @@ func get_frame_nrs(track: int) -> PackedInt64Array:
 	return frames[track]
 
 
-func get_clip_ids_after(track: int, frame_nr: int) -> PackedInt64Array: ## Unsorted
+func get_clips_after(track: int, frame_nr: int) -> PackedInt64Array: ## Unsorted
 	var data: PackedInt64Array = []
 	for clip_index: int in frames[track].size():
 		if frames[track][clip_index] < frame_nr:
@@ -162,12 +162,12 @@ func get_clip_ids_after(track: int, frame_nr: int) -> PackedInt64Array: ## Unsor
 	return data
 
 
-func get_clip_id_at_frame(track: int, frame_nr: int) -> int:
+func get_clip_at_frame(track: int, frame_nr: int) -> int:
 	return clips[track][frames[track].find(frame_nr)]
 
 
 ## Used for calculating the end of the timeline.
-func get_last_clip_id(track: int) -> int:
+func get_last_clip(track: int) -> int:
 	if track < 0 or track >= project_data.tracks_is_muted.size():
 		return -1
 	if clips[track].is_empty():
