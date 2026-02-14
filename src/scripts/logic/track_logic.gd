@@ -8,12 +8,14 @@ var clips: Array[PackedInt64Array] = [] ## { track: [clips] }
 var frames: Array[PackedInt64Array] = [] ## { track: [frames] }
 
 var project_data: ProjectData
+var project_clips: ClipLogic
 
 
 # --- Main ---
 
 func _init(data: ProjectData) -> void:
 	project_data = data
+	project_clips = Project.clips
 	_rebuild_structure()
 
 
@@ -26,10 +28,10 @@ func _rebuild_structure() -> void:
 		clips.append(PackedInt64Array())
 		frames.append(PackedInt64Array())
 
-	for clip_index: int in Project.data.clips.size():
-		var clip_id: int = Project.data.clips[clip_index]
-		var track: int = Project.data.clips_track[clip_index]
-		var clip_start: int = Project.data.clips_start[clip_index]
+	for clip_index: int in project_data.clips.size():
+		var clip_id: int = project_data.clips[clip_index]
+		var track: int = project_data.clips_track[clip_index]
+		var clip_start: int = project_data.clips_start[clip_index]
 
 		if track >= 0 and track < track_size: # Quick check if valid.
 			clips[track].append(clip_id)
@@ -85,10 +87,10 @@ func remove_track(track: int) -> void:
 	InputManager.undo_redo.create_action("Remove track: %s" % track)
 
 	for clip_id: int in clips[track]:
-		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_snapshot: Dictionary = Project.clips._create_snapshot(clip_index)
-		InputManager.undo_redo.add_do_method(Project.clips._delete.bind(clip_id))
-		InputManager.undo_redo.add_undo_method(Project.clips._restore_clip_from_snapshot.bind(clip_snapshot))
+		var clip_index: int = project_clips.index_map[clip_id]
+		var clip_snapshot: Dictionary = project_clips._create_snapshot(clip_index)
+		InputManager.undo_redo.add_do_method(project_clips._delete.bind(clip_id))
+		InputManager.undo_redo.add_undo_method(project_clips._restore_clip_from_snapshot.bind(clip_snapshot))
 
 	InputManager.undo_redo.add_do_method(_remove_track.bind(track))
 	InputManager.undo_redo.add_undo_method(_add_track.bind(track, !is_end))
@@ -98,36 +100,6 @@ func remove_track(track: int) -> void:
 
 func _remove_track(track: int) -> void:
 	project_data.tracks_is_muted.remove_at(track)
-
-
-func update_clip_info(clip_id: int) -> void:
-	var clip_index: int = clips.find(clip_id)
-
-	if clip_index == -1: # Clip probably got deleted so check the track clips.
-		for track: int in project_data.tracks_is_muted.size():
-			clip_index = clips[track].find(clip_id)
-
-			if clip_index != -1:
-				clips.remove_at(track)
-				frames.remove_at(track)
-				return
-		return printerr("TrackLogic: Invalid clip id '%s'!" % clip_id)
-
-	var track: int = Project.data.clips_track[clip_index]
-	var frame_nr: int = Project.data.clips_start[clip_index]
-	clip_index = clips[track].find(clip_id)
-
-	if clip_index == -1: # Data not found, let's add it :p
-		clips[track].append(clip_id)
-		frames[track].append(frame_nr)
-	else: # We just update the data.
-		frames[track][clip_index] = frame_nr
-
-
-func update_track_info(_index: int) -> void:
-	# TODO: update clips ( Can only start doing this after I finish ClipLogic )
-	# TODO: update frames ( Can only start doing this after I finish ClipLogic )
-	pass
 
 
 # --- Track getters ---
@@ -174,11 +146,11 @@ func get_last_clip(track: int) -> int:
 	var last_clip_id: int = -1
 	for i: int in clips[track].size():
 		var clip_id: int = clips[track][i]
-		if !Project.clips.index_map.has(clip_id):
+		if !project_clips.index_map.has(clip_id):
 			continue
-		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_start: int = Project.data.clips_start[clip_index]
-		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
+		var clip_index: int = project_clips.index_map[clip_id]
+		var clip_start: int = project_data.clips_start[clip_index]
+		var clip_end: int = project_data.clips_duration[clip_index] + clip_start
 		if clip_end > max_end:
 			max_end = clip_end
 			last_clip_id = clip_id
@@ -202,9 +174,9 @@ func get_clip_id_at(track: int, frame_nr: int) -> int:
 		if frame_nr < start:
 			continue
 		var clip_id: int = clips[track][i]
-		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_start: int = Project.data.clips_start[clip_index]
-		var clip_end: int = Project.data.clips_duration[clip_index] + clip_start
+		var clip_index: int = project_clips.index_map[clip_id]
+		var clip_start: int = project_data.clips_start[clip_index]
+		var clip_end: int = project_data.clips_duration[clip_index] + clip_start
 		if frame_nr >= clip_start and frame_nr < clip_end:
 			return clip_id
 	return -1
@@ -219,11 +191,11 @@ func get_clip_ids_in(track: int, start: int, end: int) -> PackedInt64Array:
 	for i: int in frames[track].size():
 		var clip_start: int = frames[track][i]
 		var clip_id: int = clips[track][i]
-		if clip_start >= end or !Project.clips.index_map.has(clip_id):
+		if clip_start >= end or !project_clips.index_map.has(clip_id):
 			continue
 
-		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_end: int = clip_start + Project.data.clips_duration[clip_index]
+		var clip_index: int = project_clips.index_map[clip_id]
+		var clip_end: int = clip_start + project_data.clips_duration[clip_index]
 		if clip_end > start and clip_start < end:
 			result.append(clip_id)
 	return result
@@ -242,12 +214,12 @@ func get_free_region(track: int, frame_nr: int, ignores: PackedInt64Array = []) 
 	region.y = 2147483647 # Max integer value.
 	for i: int in clips[track].size():
 		var clip_id: int = clips[track][i]
-		if clip_id in ignores or !Project.clips.index_map.has(clip_id):
+		if clip_id in ignores or !project_clips.index_map.has(clip_id):
 			continue
 
-		var clip_index: int = Project.clips.index_map[clip_id]
+		var clip_index: int = project_clips.index_map[clip_id]
 		var clip_start: int = frames[track][i]
-		var clip_end: int = clip_start + Project.data.clips_duration[clip_index]
+		var clip_end: int = clip_start + project_data.clips_duration[clip_index]
 		if clip_end <= frame_nr:
 			region.x = maxi(region.x, clip_end)
 		elif clip_start > frame_nr:

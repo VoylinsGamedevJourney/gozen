@@ -30,7 +30,7 @@ static func cut_request(clip_id: int, frame_cut_pos: int) -> ClipRequest:
 	return request
 
 
-static func move_request(clip_id: int, offset_frame: int, offset_track: int = 0) -> ClipRequest:
+static func move_request(clip_id: int, offset_track: int, offset_frame: int) -> ClipRequest:
 	var request: ClipRequest = ClipRequest.new()
 	request.clip = clip_id
 	request.frame_offset = offset_frame

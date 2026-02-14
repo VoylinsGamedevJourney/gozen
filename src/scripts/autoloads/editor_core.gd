@@ -127,6 +127,7 @@ func _on_clips_updated() -> void:
 		audio_players[i].stop()
 	loaded_clips.fill(-1)
 	await RenderingServer.frame_pre_draw
+	await RenderingServer.frame_pre_draw
 	set_frame(frame_nr)
 
 
@@ -165,27 +166,27 @@ func set_frame_nr(value: int) -> void:
 	if value >= end:
 		is_playing = false
 		frame_nr = end
-
 		for i: int in audio_players.size():
 			audio_players[i].stop()
 		return
 
 	frame_nr = value
-	if frame_nr == prev_frame + 1:
-		for i: int in audio_players.size():
-			var id: int = project_tracks.get_clip_id_at(i, frame_nr)
-			if id != -1:
-				if audio_players[i].clip_id != id:
-					audio_players[i].set_audio(id)
-				else:
-					audio_players[i].update_effects(project_clips.index_map[id])
-			elif audio_players[i].stop_frame == frame_nr:
-				audio_players[i].stop()
-	else: # Reset/update all audio players. (full seek)
-		for i: int in audio_players.size():
+	for i: int in audio_players.size():
+		if frame_nr != prev_frame + 1: # Reset/update all audio players. (full seek)
 			if loaded_clips.size() > i and loaded_clips[i] != -1:
 				audio_players[i].set_audio(find_audio(frame_nr, i))
+			continue
+		# Next frame.
+		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
+		if id != -1:
+			if audio_players[i].clip_id != id:
+				audio_players[i].set_audio(id)
+			else:
+				audio_players[i].update_effects(project_clips.index_map[id])
+		elif audio_players[i].stop_frame == frame_nr:
+			audio_players[i].stop()
 	prev_frame = frame_nr
+	update_frame()
 
 
 func update_frame() -> void:
@@ -275,8 +276,6 @@ func update_view(track_id: int, update: bool) -> void:
 		var clip_instance: GoZenVideo = project_files.get_video_clip_instance(clip_id)
 		if clip_instance:
 			video = clip_instance
-
-		update = !update and compositors[track_id].resolution != video.get_resolution()
 		if update:
 			compositors[track_id].initialize_video(video)
 

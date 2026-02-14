@@ -227,14 +227,11 @@ func _move(clip: int, new_track: int, new_frame: int) -> void:
 	var old_track: int = project_data.clips_track[clip_index]
 	var old_frame: int = project_data.clips_start[clip_index]
 
+	Project.tracks.unregister_clip(old_track, old_frame)
 	if old_track != new_track:
-		Project.tracks.unregister_clip(old_track, old_frame)
 		project_data.clips_track[clip_index] = new_track
-		project_data.clips_start[clip_index] = new_frame
-		Project.tracks.register_clip(new_track, clip, new_frame)
-	else:
-		project_data.clips_start[clip_index] = new_frame
-		Project.tracks.update_clip_info(clip)
+	project_data.clips_start[clip_index] = new_frame
+	Project.tracks.register_clip(new_track, clip, new_frame)
 	updated.emit()
 	Project.unsaved_changes = true
 

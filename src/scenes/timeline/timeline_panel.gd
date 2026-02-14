@@ -229,6 +229,7 @@ func _draw_clips(control: Control) -> void:
 		if clip_type in EditorCore.AUDIO_TYPES:
 			_draw_fade_handles(clip_index, box_pos, false, show_handles, control) # Top
 
+		# - Clip nickname
 		if clip_rect.size.x > 20:
 			control.draw_string(
 					get_theme_default_font(),
@@ -1042,7 +1043,7 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 	var move_requests: Array[ClipRequest] = []
 
 	for clip_id: int in clips:
-		move_requests.append(ClipRequest.move_request(clip_id, -empty_size, 0))
+		move_requests.append(ClipRequest.move_request(clip_id, 0, -empty_size))
 	if !move_requests.is_empty():
 		Project.clips.move(move_requests)
 
