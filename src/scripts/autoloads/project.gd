@@ -113,9 +113,10 @@ func open(new_project_path: String) -> void:
 	is_loaded = true
 	unsaved_changes = false
 	project_ready.emit()
-	EditorCore.set_frame(data.playhead)
 	update_timeline_end()
 	_auto_save()
+	await RenderingServer.frame_pre_draw
+	EditorCore.set_frame(data.playhead)
 
 
 func open_project() -> void:

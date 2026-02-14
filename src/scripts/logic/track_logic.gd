@@ -4,8 +4,8 @@ extends RefCounted
 signal updated
 
 
-var clips: Array[PackedInt64Array] = [] ## { track: [clips] }
-var frames: Array[PackedInt64Array] = [] ## { track: [frames] }
+var clip_map: Array[PackedInt64Array] = [] ## { track: [clips] }
+var frame_map: Array[PackedInt64Array] = [] ## { track: [frames] }
 
 var project_data: ProjectData
 var project_clips: ClipLogic
@@ -20,39 +20,31 @@ func _init(data: ProjectData) -> void:
 
 
 func _rebuild_structure() -> void:
-	clips.clear()
-	frames.clear()
+	clip_map.clear()
+	frame_map.clear()
 	var track_size: int = project_data.tracks_is_muted.size()
 
 	for _i: int in track_size:
-		clips.append(PackedInt64Array())
-		frames.append(PackedInt64Array())
+		clip_map.append(PackedInt64Array())
+		frame_map.append(PackedInt64Array())
 
-	for clip_index: int in project_data.clips.size():
-		var clip_id: int = project_data.clips[clip_index]
-		var track: int = project_data.clips_track[clip_index]
-		var clip_start: int = project_data.clips_start[clip_index]
-
-		if track >= 0 and track < track_size: # Quick check if valid.
-			clips[track].append(clip_id)
-			frames[track].append(clip_start)
+	for index: int in project_data.clips_track.size():
+		var track: int = project_data.clips_track[index]
+		clip_map[track].append(project_data.clips[index])
+		frame_map[track].append(project_data.clips_start[index])
 
 
 func register_clip(track: int, clip_id: int, frame_nr: int) -> void:
-	if track < 0 or track >= project_data.tracks_is_muted.size():
-		return
-	clips[track].append(clip_id)
-	frames[track].append(frame_nr)
+	clip_map[track].append(clip_id)
+	frame_map[track].append(frame_nr)
 
 
 func unregister_clip(track: int, frame_nr: int) -> void:
-	if track < 0 or track >= project_data.tracks_is_muted.size():
-		return
-	var clip_index: int = frames[track].find(frame_nr)
+	var clip_index: int = frame_map[track].find(frame_nr)
 	if clip_index == -1:
 		return
-	clips[track].remove_at(clip_index)
-	frames[track].remove_at(clip_index)
+	clip_map[track].remove_at(clip_index)
+	frame_map[track].remove_at(clip_index)
 
 
 # --- Handling ---
@@ -69,13 +61,13 @@ func _add_track(track: int, is_inserting: bool) -> void:
 	if is_inserting:
 		project_data.tracks_is_muted.insert(track, 0)
 		project_data.tracks_is_invisible.insert(track, 0)
-		clips.insert(track, [])
-		frames.insert(track, [])
+		clip_map.insert(track, [])
+		frame_map.insert(track, [])
 	else: # Track added to end.
 		project_data.tracks_is_muted.append(0)
 		project_data.tracks_is_invisible.append(0)
-		clips.append([])
-		frames.append([])
+		clip_map.append([])
+		frame_map.append([])
 
 	Project.unsaved_changes = true
 	updated.emit()
@@ -86,15 +78,13 @@ func remove_track(track: int) -> void:
 
 	InputManager.undo_redo.create_action("Remove track: %s" % track)
 
-	for clip_id: int in clips[track]:
+	for clip_id: int in clip_map[track]:
 		var clip_index: int = project_clips.index_map[clip_id]
 		var clip_snapshot: Dictionary = project_clips._create_snapshot(clip_index)
 		InputManager.undo_redo.add_do_method(project_clips._delete.bind(clip_id))
 		InputManager.undo_redo.add_undo_method(project_clips._restore_clip_from_snapshot.bind(clip_snapshot))
-
 	InputManager.undo_redo.add_do_method(_remove_track.bind(track))
 	InputManager.undo_redo.add_undo_method(_add_track.bind(track, !is_end))
-
 	InputManager.undo_redo.commit_action()
 
 
@@ -105,47 +95,47 @@ func _remove_track(track: int) -> void:
 # --- Track getters ---
 
 func has_clip_id(track: int, clip_id: int) -> bool:
-	return clips[track].has(clip_id)
+	return clip_map[track].has(clip_id)
 
 
 func has_frame_nr(track: int, frame_nr: int) -> bool:
-	return frames[track].has(frame_nr)
+	return frame_map[track].has(frame_nr)
 
 
 # --- Clip data getters ---
 
 func get_clips(track: int) -> PackedInt64Array:
-	return frames[track]
+	return frame_map[track]
 
 
 func get_frame_nrs(track: int) -> PackedInt64Array:
-	return frames[track]
+	return frame_map[track]
 
 
 func get_clips_after(track: int, frame_nr: int) -> PackedInt64Array: ## Unsorted
 	var data: PackedInt64Array = []
-	for clip_index: int in frames[track].size():
-		if frames[track][clip_index] < frame_nr:
+	for clip_index: int in frame_map[track].size():
+		if frame_map[track][clip_index] < frame_nr:
 			continue
-		data.append(clips[track][clip_index])
+		data.append(clip_map[track][clip_index])
 	return data
 
 
 func get_clip_at_frame(track: int, frame_nr: int) -> int:
-	return clips[track][frames[track].find(frame_nr)]
+	return clip_map[track][frame_map[track].find(frame_nr)]
 
 
 ## Used for calculating the end of the timeline.
 func get_last_clip(track: int) -> int:
 	if track < 0 or track >= project_data.tracks_is_muted.size():
 		return -1
-	if clips[track].is_empty():
+	if clip_map[track].is_empty():
 		return -1
 
 	var max_end: int = -1
 	var last_clip_id: int = -1
-	for i: int in clips[track].size():
-		var clip_id: int = clips[track][i]
+	for i: int in clip_map[track].size():
+		var clip_id: int = clip_map[track][i]
 		if !project_clips.index_map.has(clip_id):
 			continue
 		var clip_index: int = project_clips.index_map[clip_id]
@@ -159,21 +149,21 @@ func get_last_clip(track: int) -> int:
 
 ## Get a clip which starts at frame_nr.
 func get_clip_id(track: int, frame_nr: int) -> int:
-	var frame_index: int = frames[track].find(frame_nr)
+	var frame_index: int = frame_map[track].find(frame_nr)
 	if frame_index == -1:
 		return -1
-	return clips[track][frame_index]
+	return clip_map[track][frame_index]
 
 
 ## Get a clip which is overlapping with frame_nr.
 func get_clip_id_at(track: int, frame_nr: int) -> int:
 	if track < 0 or track >= project_data.tracks_is_muted.size():
 		return -1
-	for i: int in frames[track].size():
-		var start: int = frames[track][i]
+	for i: int in frame_map[track].size():
+		var start: int = frame_map[track][i]
 		if frame_nr < start:
 			continue
-		var clip_id: int = clips[track][i]
+		var clip_id: int = clip_map[track][i]
 		var clip_index: int = project_clips.index_map[clip_id]
 		var clip_start: int = project_data.clips_start[clip_index]
 		var clip_end: int = project_data.clips_duration[clip_index] + clip_start
@@ -188,9 +178,9 @@ func get_clip_ids_in(track: int, start: int, end: int) -> PackedInt64Array:
 	if track < 0 or track >= project_data.tracks_is_muted.size():
 		return result
 
-	for i: int in frames[track].size():
-		var clip_start: int = frames[track][i]
-		var clip_id: int = clips[track][i]
+	for i: int in frame_map[track].size():
+		var clip_start: int = frame_map[track][i]
+		var clip_id: int = clip_map[track][i]
 		if clip_start >= end or !project_clips.index_map.has(clip_id):
 			continue
 
@@ -212,13 +202,13 @@ func get_free_region(track: int, frame_nr: int, ignores: PackedInt64Array = []) 
 
 	region.x = 0
 	region.y = 2147483647 # Max integer value.
-	for i: int in clips[track].size():
-		var clip_id: int = clips[track][i]
+	for i: int in clip_map[track].size():
+		var clip_id: int = clip_map[track][i]
 		if clip_id in ignores or !project_clips.index_map.has(clip_id):
 			continue
 
 		var clip_index: int = project_clips.index_map[clip_id]
-		var clip_start: int = frames[track][i]
+		var clip_start: int = frame_map[track][i]
 		var clip_end: int = clip_start + project_data.clips_duration[clip_index]
 		if clip_end <= frame_nr:
 			region.x = maxi(region.x, clip_end)

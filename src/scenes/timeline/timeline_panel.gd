@@ -802,12 +802,12 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 		frame_end = temp
 
 	for track_id: int in range(track_start, clamp(track_end + 1, 0, Project.data.tracks_is_muted.size())):
-		for frame_index: int in Project.tracks.frames[track_id].size():
-			var frame_nr: int = Project.tracks.frames[track_id][frame_index]
+		for frame_index: int in Project.tracks.frame_map[track_id].size():
+			var frame_nr: int = Project.tracks.frame_map[track_id][frame_index]
 			if frame_nr > frame_end:
 				break
 
-			var clip_id: int = Project.tracks.clips[track_id].find(frame_index)
+			var clip_id: int = Project.tracks.clip_map[track_id].find(frame_index)
 			if frame_nr > frame_start and frame_nr < frame_end:
 				if clip_id not in selected_clip_ids:
 					selected_clip_ids.append(clip_id)
