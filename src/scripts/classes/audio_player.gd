@@ -97,11 +97,6 @@ func set_audio(audio_clip_id: int) -> void:
 		_setup_bus_effects(clip_effects.audio)
 	update_effects(clip_index)
 
-	# Apply fade.
-	var clip_frame: int = EditorCore.frame_nr - clip_start
-	var fade_volume: float = Utils.calculate_fade(clip_frame, clip_index, false)
-	player.volume_db = linear_to_db(maxf(fade_volume, 0.0001)) # Just 0 can give issues.
-
 	# Boundary check.
 	var framerate: float = project_data.framerate
 	var relative_frame_nr: float = EditorCore.frame_nr - clip_start + clip_begin
@@ -132,11 +127,14 @@ func set_audio(audio_clip_id: int) -> void:
 
 
 func update_effects(clip_index: int) -> void:
-	if clip_id == -1 or clip_index == -1:
-		return
 	var effects: Array[GoZenEffectAudio] = project_data.clips_effects[clip_index].audio
 	var relative_frame_nr: int = EditorCore.frame_nr - project_data.clips_start[clip_index]
 
+	# Apply fade.
+	var fade_volume: float = Utils.calculate_fade(relative_frame_nr, clip_index, false)
+	player.volume_db = linear_to_db(maxf(fade_volume, 0.0001)) # Just 0 can give issues.
+
+	# Apply other effects.
 	for i: int in effects.size():
 		var effect: GoZenEffectAudio = effects[i]
 		if i >= AudioServer.get_bus_effect_count(bus_index):

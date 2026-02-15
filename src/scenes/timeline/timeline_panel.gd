@@ -264,12 +264,12 @@ func _draw_preview(control: Control) -> void:
 		var draw_start: float = clip_start
 		var draw_length: int = clip_duration
 		if !resize_target.is_end:
-			draw_start += resize_target.delta * zoom
+			draw_start += resize_target.delta
 			draw_length -= resize_target.delta
 		else:
 			draw_length += resize_target.delta
 
-		var preview_position: Vector2 = Vector2(draw_start, clip_track * TRACK_TOTAL_SIZE)
+		var preview_position: Vector2 = Vector2(draw_start * zoom, clip_track * TRACK_TOTAL_SIZE)
 		var preview_size: Vector2 = Vector2(draw_length * zoom, TRACK_HEIGHT)
 		var box_pos: Vector2 = Vector2(clip_start * zoom, TRACK_TOTAL_SIZE * clip_track)
 		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_duration * zoom, TRACK_HEIGHT))
@@ -277,7 +277,6 @@ func _draw_preview(control: Control) -> void:
 		# Drawing the original clip box and actual resized box.
 		control.draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
 		control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-
 
 
 func _draw_fade_handles(clip_index: int, box_pos: Vector2, is_visual: bool, show_handles: bool, control: Control) -> void:
@@ -485,8 +484,10 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			else:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
-		STATE.CURSOR_MODE_CUT: mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
-		STATE.FADING: _handle_fade_motion()
+		STATE.CURSOR_MODE_CUT:
+			mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
+		STATE.FADING:
+			_handle_fade_motion()
 		STATE.SCRUBBING:
 			if event.button_mask & MOUSE_BUTTON_LEFT:
 				move_playhead(get_frame_from_mouse())
@@ -497,6 +498,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 		STATE.RESIZING:
 			mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			_handle_resize_motion()
+			draw_preview.queue_redraw()
 
 
 func _on_ui_cancel() -> void:
@@ -892,20 +894,17 @@ func _handle_fade_motion() -> void:
 	var drag_frames: int = 0 ## Convert pixel drag to frame amount
 
 	if not fade_target.is_end: # Fade In
-		drag_frames = floori((mouse_x - start_x) / zoom)
-		drag_frames = clamp(drag_frames, 0, clip_duration / 2.0)
+		drag_frames = clamp(floori((mouse_x - start_x) / zoom), 0, clip_duration)
 		if fade_target.is_visual:
 			clip_effects.fade_visual.x = drag_frames
 		else:
 			clip_effects.fade_audio.x = drag_frames
 	else: # Fade Out
-		drag_frames = floori((end_x - mouse_x) / zoom)
-		drag_frames = clamp(drag_frames, 0, clip_duration / 2.0)
+		drag_frames = clamp(floori((end_x - mouse_x) / zoom), 0, clip_duration)
 		if fade_target.is_visual:
 			clip_effects.fade_visual.y = drag_frames
 		else:
 			clip_effects.fade_audio.y = drag_frames
-
 	draw_clips.queue_redraw()
 	EditorCore.update_frame()
 

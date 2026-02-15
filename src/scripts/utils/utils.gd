@@ -192,9 +192,6 @@ static func calculate_fade(frame_nr: int, clip_index: int, is_visual: bool) -> f
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var clip_duration: int = Project.data.clips_duration[clip_index]
 	var fade: Vector2i = clip_effects.fade_visual if is_visual else clip_effects.fade_audio
-
-	if fade.x > 0 and frame_nr < fade.x:
-		return clampf(float(frame_nr) / float(fade.x), 0.0, 1.0)
-	elif fade.y > 0 and frame_nr >= (clip_duration - fade.y):
-		return clampf(float(clip_duration - frame_nr) / float(fade.y), 0.0, 1.0)
-	return 1.0
+	var fade_in: float = 1.0 if fade.x == 0 else min(frame_nr / float(fade.x), 1.0)
+	var fade_out: float = 1.0 if fade.y == 0 else min((clip_duration - frame_nr) / float(fade.y), 1.0)
+	return fade_in * fade_out
