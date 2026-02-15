@@ -81,6 +81,7 @@ const COLOR_CUT_FADE: Color = Color(1,0,0,0.3)
 
 @onready var draw_track_lines: Control = $TrackLinesDraw
 @onready var draw_clips: Control = $ClipsDraw
+@onready var draw_preview: Control = $PreviewDraw
 @onready var draw_mode: Control = $ModeDraw
 @onready var draw_playhead: Control = $PlayheadDraw
 @onready var draw_box_selection: Control = $BoxSelectionDraw
@@ -107,6 +108,8 @@ var hovered_clip: int = -1
 
 var waveform_style: int = Settings.get_audio_waveform_style()
 var waveform_amp: float = Settings.get_audio_waveform_amp()
+
+var _update_clips: bool = true
 
 
 
@@ -151,49 +154,10 @@ func _draw_clips(control: Control) -> void:
 	var visible_clips: PackedInt64Array = _get_visible(visible_start, visible_end)
 	var handled_clips: PackedInt64Array = []
 
-	# - Previews
-	if state in [STATE.MOVING, STATE.DROPPING] and draggable != null: # Moving + Dropping preview
-		if draggable.is_file:
-			var preview_size: Vector2 = Vector2(draggable.duration * zoom, TRACK_HEIGHT)
-			var preview_position: Vector2 = Vector2(
-					(draggable.frame_offset) * zoom,
-					draggable.track_offset * TRACK_TOTAL_SIZE)
-			control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-		else:
-			for clip: int in draggable.ids:
-				var clip_index: int = Project.clips.index_map[clip]
-				var clip_duration: int = Project.data.clips_duration[clip_index]
-				var clip_start: int = Project.data.clips_start[clip_index] + draggable.frame_offset
-				var clip_track: int = Project.data.clips_track[clip_index] + draggable.track_offset
-				var preview_position: Vector2 = Vector2(clip_start * zoom, clip_track * TRACK_TOTAL_SIZE)
-				var preview_size: Vector2 = Vector2(clip_duration * zoom, TRACK_HEIGHT)
-
-				control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-				if clip in visible_clips:
-					handled_clips.append(clip)
-	elif state == STATE.RESIZING: # Resizing preview
-		var clip_index: int = Project.clips.index_map[resize_target.clip]
-		var clip_track: int = Project.data.clips_track[clip_index]
-		var clip_start: int = Project.data.clips_start[clip_index]
-		var clip_duration: int = Project.data.clips_duration[clip_index]
-		var draw_start: float = clip_start
-		var draw_length: int = clip_duration
-		if !resize_target.is_end:
-			draw_start += resize_target.delta * zoom
-			draw_length -= resize_target.delta
-		else:
-			draw_length += resize_target.delta
-
-		var preview_position: Vector2 = Vector2(draw_start, clip_track * TRACK_TOTAL_SIZE)
-		var preview_size: Vector2 = Vector2(draw_length * zoom, TRACK_HEIGHT)
-		var box_pos: Vector2 = Vector2(clip_start * zoom, TRACK_TOTAL_SIZE * clip_track)
-		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_duration * zoom, TRACK_HEIGHT))
-
-		# Drawing the original clip box and actual resized box.
-		control.draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
-		control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-		if resize_target.clip in visible_clips:
-			handled_clips.append(resize_target.clip)
+	# Remove preview from visible clips.
+	if draggable != null and !draggable.is_file and state in [STATE.MOVING, STATE.DROPPING, STATE.RESIZING]:
+		for clip: int in draggable.ids:
+			visible_clips.remove_at(visible_clips.find(clip))
 
 	# - Clip blocks
 	for clip: int in visible_clips:
@@ -272,6 +236,48 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 			SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
 		control.draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), COLOR_AUDIO_WAVE)
+
+
+func _draw_preview(control: Control) -> void:
+	if state in [STATE.MOVING, STATE.DROPPING] and draggable != null: # Moving + Dropping preview
+		if draggable.is_file:
+			var preview_size: Vector2 = Vector2(draggable.duration * zoom, TRACK_HEIGHT)
+			var preview_position: Vector2 = Vector2(
+					(draggable.frame_offset) * zoom,
+					draggable.track_offset * TRACK_TOTAL_SIZE)
+			control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+		else:
+			for clip: int in draggable.ids:
+				var clip_index: int = Project.clips.index_map[clip]
+				var clip_duration: int = Project.data.clips_duration[clip_index]
+				var clip_start: int = Project.data.clips_start[clip_index] + draggable.frame_offset
+				var clip_track: int = Project.data.clips_track[clip_index] + draggable.track_offset
+				var preview_position: Vector2 = Vector2(clip_start * zoom, clip_track * TRACK_TOTAL_SIZE)
+				var preview_size: Vector2 = Vector2(clip_duration * zoom, TRACK_HEIGHT)
+
+				control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+	elif state == STATE.RESIZING: # Resizing preview
+		var clip_index: int = Project.clips.index_map[resize_target.clip]
+		var clip_track: int = Project.data.clips_track[clip_index]
+		var clip_start: int = Project.data.clips_start[clip_index]
+		var clip_duration: int = Project.data.clips_duration[clip_index]
+		var draw_start: float = clip_start
+		var draw_length: int = clip_duration
+		if !resize_target.is_end:
+			draw_start += resize_target.delta * zoom
+			draw_length -= resize_target.delta
+		else:
+			draw_length += resize_target.delta
+
+		var preview_position: Vector2 = Vector2(draw_start, clip_track * TRACK_TOTAL_SIZE)
+		var preview_size: Vector2 = Vector2(draw_length * zoom, TRACK_HEIGHT)
+		var box_pos: Vector2 = Vector2(clip_start * zoom, TRACK_TOTAL_SIZE * clip_track)
+		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_duration * zoom, TRACK_HEIGHT))
+
+		# Drawing the original clip box and actual resized box.
+		control.draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
+		control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+
 
 
 func _draw_fade_handles(clip_index: int, box_pos: Vector2, is_visual: bool, show_handles: bool, control: Control) -> void:
@@ -614,6 +620,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 
 func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	if data is not Draggable:
+		draw_preview.queue_redraw()
 		return false
 	var result: bool
 	draggable = data
@@ -623,7 +630,13 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	else:
 		result = _can_move_clips()
 
-	draw_clips.queue_redraw()
+	if _update_clips:
+		draw_clips.queue_redraw()
+		_update_clips = false
+	elif !result:
+		draw_clips.queue_redraw()
+		_update_clips = true
+	draw_preview.queue_redraw()
 	return result
 
 
@@ -750,7 +763,9 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 		if not move_requests.is_empty():
 			Project.clips.move(move_requests)
 	draggable = null
+	_update_clips = true
 	draw_clips.queue_redraw()
+	draw_preview.queue_redraw()
 
 
 func _on_mouse_entered() -> void:
@@ -1109,6 +1124,7 @@ func set_state(new_state: STATE) -> void:
 func draw_all() -> void:
 	draw_track_lines.queue_redraw()
 	draw_clips.queue_redraw()
+	draw_preview.queue_redraw()
 	draw_mode.queue_redraw()
 	draw_playhead.queue_redraw()
 	draw_box_selection.queue_redraw()
