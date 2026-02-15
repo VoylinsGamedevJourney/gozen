@@ -1,8 +1,6 @@
 class_name DataManager
 extends RefCounted
 
-
-
 static func get_data(instance: RefCounted) -> Dictionary[String, Variant]:
 	var data: Dictionary[String, Variant] = {}
 
@@ -50,4 +48,3 @@ static func load_data(a_path: String, instance: RefCounted) -> int:
 
 	error = file.get_error()
 	return error
-

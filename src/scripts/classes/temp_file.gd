@@ -16,10 +16,8 @@ var font_size: float = 12.0
 var font: String = ""
 
 
-
 func load_image_from_color() -> void:
 	var image: Image = Image.create(854, 480, false, Image.FORMAT_RGB8)
 
 	image.fill(color)
 	image_data = ImageTexture.create_from_image(image)
-

@@ -1,5 +1,6 @@
 extends ScrollContainer
-# The scroll handler for the timeline stuff
+## The scroll handler for the timeline stuff.
+## TODO: Have a setting to disable smooth scrolling.
 
 
 @export var timestamp_scroll: ScrollContainer
@@ -15,9 +16,13 @@ func _ready() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
+	if event is InputEventMouseButton:
+		var event_mouse_button: InputEventMouseButton = event
+		if !event_mouse_button.pressed:
+			return
+
 		# We need to change the scroll direction of this node
-		# TODO: Implement as a PR for Godot
+		# TODO: Implemented as a PR for Godot (#115545)
 		var h_step: float = scroll_horizontal_custom_step
 		var v_step: int = floori(scroll_vertical_custom_step)
 
@@ -50,4 +55,3 @@ func _on_timeline_scrolling() -> void:
 func _on_timeline_zoom_changed(new_zoom: float) -> void:
 	current_zoom = new_zoom
 	_on_timeline_scrolling()
-

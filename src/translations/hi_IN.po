@@ -63,9 +63,6 @@ msgstr "प्रोजेक्ट लोड हो रहा है"
 msgid "title_files_dropped"
 msgstr "फ़ाइलें डाली गईं"
 
-msgid "title_sponsors"
-msgstr "\tप्रायोजक"
-
 msgid "title_editor_settings"
 msgstr "एडिटर सेटिंग्स"
 
@@ -109,12 +106,6 @@ msgstr "डिस्कोर्ड सर्वर"
 
 msgid "button_support_gozen"
 msgstr "GoZen को सहायता करें"
-
-msgid "button_view_sponsors"
-msgstr "प्रायोजकों को देखें"
-
-msgid "button_become_sponsor"
-msgstr "प्रायोजक बनें"
 
 msgid "button_open_project"
 msgstr "प्रोजेक्ट खोलें"

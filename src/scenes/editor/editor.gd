@@ -8,8 +8,8 @@ static var instance: EditorUI
 @export var menu_bar: HBoxContainer
 @export var screen_tab_container: TabContainer
 
-var screen_buttons: Array[Button] = []
 
+var screen_buttons: Array[Button] = []
 
 
 func _ready() -> void:
@@ -28,24 +28,16 @@ func _ready() -> void:
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
 
-	_check_startup_args()
-	add_child(preload(Library.SCENE_STARTUP).instantiate())
-
-	CommandManager.register(
-			"command_render_menu", switch_screen.bind(1), "open_render_screen")
-
-
-func _check_startup_args() -> void:
 	# Check if editor got opened with a project path as argument.
 	for arg: String in OS.get_cmdline_args():
 		if arg.to_lower().ends_with(Project.EXTENSION):
-			Project.open(arg)
+			await Project.open(arg)
 			return
+	add_child(preload(Library.SCENE_STARTUP).instantiate())
 
 
 func print_startup_info() -> void:
 	Print.header_editor("--==  GoZen - Video Editor  ==--")
-
 	for info_print: PackedStringArray in [
 			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
 			["OS", OS.get_model_name()],
@@ -63,7 +55,6 @@ func print_startup_info() -> void:
 			["Locale", OS.get_locale()],
 			["Startup args", OS.get_cmdline_args()]]:
 		Print.info_editor(info_print[0], info_print[1])
-
 	Print.header_editor("--==--================--==--")
 
 
@@ -78,4 +69,3 @@ func switch_screen_quick() -> void:
 		if !screen_tab_container.select_next_available():
 			screen_tab_container.current_tab = 0
 		screen_buttons[screen_tab_container.current_tab].button_pressed = true
-

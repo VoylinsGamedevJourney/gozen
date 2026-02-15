@@ -1,10 +1,6 @@
 @tool
 extends EditorScript
 
-
-@export_tool_button("run") var run_button: Callable = _run
-
-
 const EXTENSIONS_TO_SCAN: PackedStringArray = ["gd", "tscn", "tres"]
 const IGNORE_FOLDERS: PackedStringArray = ["addons", ".godot", "translations", "theming"]
 
@@ -23,7 +19,8 @@ func _run() -> void:
 
 func scan_dir(path: String, result_array: PackedStringArray) -> void:
 	var dir: DirAccess = DirAccess.open(path)
-	if !dir: return print("An error occurred when trying to access the path: " + path)
+	if !dir: return print("An error occurred when trying to access the path:
+		" + path)
 
 	dir.list_dir_begin()
 	var file_name: String = dir.get_next()

@@ -1,11 +1,9 @@
 class_name Utils
 extends Node
 
-
 # const variables for get_fuzzy_score()
 const FUZZY_SCORE_POINT: int = 1
 const FUZZY_SCORE_BONUS: int = 10
-
 
 
 static func format_file_nickname(file_name: String, size: int) -> String:
@@ -35,11 +33,10 @@ static func open_url(url: String) -> void:
 
 static func get_unique_id(keys: PackedInt64Array) -> int:
 	var id: int = abs(randi())
-
-	randomize()
-	if keys.has(id):
-		id = get_unique_id(keys)
-
+	while keys.has(id):
+		randomize()
+		if keys.has(id):
+			id = get_unique_id(keys)
 	return id
 
 
@@ -80,19 +77,18 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 
 	for path: String in files:
 		if FileAccess.file_exists(path):
-			if FileHandler.check_valid(path):
+			if FileLogic.check(path):
 				actual_files.append(path)
 		elif DirAccess.dir_exists_absolute(path):
 			folders.append(path)
 
-	while folders.size() != 0:
+	while !folders.is_empty():
 		var new_folders: PackedStringArray = []
 
 		for path: String in folders:
 			for file_path: String in DirAccess.get_files_at(path):
 				var full_path: String = path + '/' + file_path
-
-				if FileHandler.check_valid(full_path):
+				if FileLogic.check(full_path):
 					actual_files.append(full_path)
 			for dir_path: String in DirAccess.get_directories_at(path):
 				new_folders.append(path + '/' + dir_path)
@@ -103,7 +99,7 @@ static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
 
 
 static func get_sample_count(frames: int, framerate: float) -> int:
-	return int(44100 * 4 * float(frames) / framerate)
+	return int(RenderManager.MIX_RATE * 4 * float(frames) / framerate)
 
 
 static func get_video_extension(video_codec: GoZenEncoder.VIDEO_CODEC) -> String:
@@ -167,8 +163,10 @@ static func path_remove_middle(path: String, max_length: int) -> String:
 
 ## For fuzzy searching.
 static func get_fuzzy_score(query: String, text: String) -> int:
-	if query.is_empty(): return 1
-	elif query.length() > text.length(): return 0
+	if query.is_empty():
+		return 1
+	elif query.length() > text.length():
+		return 0
 
 	var query_index: int = 0
 	var text_index: int = 0
@@ -190,14 +188,10 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 	return score if query_index == query.length() else 0
 
 
-static func calculate_fade(current_frame: int, clip_data: ClipData, is_visual: bool) -> float:
-	var fade_in: int = clip_data.fade_in_visual if is_visual else clip_data.fade_in_audio
-	var fade_out: int = clip_data.fade_out_visual if is_visual else clip_data.fade_out_audio
-	var value: float = 1.0
-
-	if fade_in > 0 and current_frame < fade_in:
-		value = float(current_frame) / float(fade_in)
-	elif fade_out > 0 and current_frame >= (clip_data.duration - fade_out):
-		value = float(clip_data.duration - current_frame) / float(fade_out)
-
-	return clampf(value, 0.0, 1.0)
+static func calculate_fade(frame_nr: int, clip_index: int, is_visual: bool) -> float:
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var clip_duration: int = Project.data.clips_duration[clip_index]
+	var fade: Vector2i = clip_effects.fade_visual if is_visual else clip_effects.fade_audio
+	var fade_in: float = 1.0 if fade.x == 0 else min(frame_nr / float(fade.x), 1.0)
+	var fade_out: float = 1.0 if fade.y == 0 else min((clip_duration - frame_nr) / float(fade.y), 1.0)
+	return fade_in * fade_out

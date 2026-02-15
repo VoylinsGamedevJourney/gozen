@@ -1,8 +1,6 @@
 extends Node
 
-
 signal project_ready
-
 signal timeline_end_update(new_end: int)
 
 
@@ -10,59 +8,60 @@ const EXTENSION: String = ".gozen"
 const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 
 
-
 var data: ProjectData = ProjectData.new()
-var loaded: bool = false
+var is_loaded: bool = false
 
 var unsaved_changes: bool = false
 var auto_save_timer: Timer
 
+var files: FileLogic
+var clips: ClipLogic
+var tracks: TrackLogic
+var markers: MarkerLogic
+var folders: FolderLogic
+
 
 
 func _ready() -> void:
-	get_window().close_requested.connect(_on_close_requested)
-	ClipHandler.clips_updated.connect(update_timeline_end)
-	CommandManager.register(
-			"command_project_settings", open_settings_menu, tr("Open project settings"))
+	get_window().close_requested.connect(_on_close)
+
+
+func _setup_logic() -> void:
+	files = FileLogic.new(data)
+	clips = ClipLogic.new(data)
+	tracks = TrackLogic.new(data)
+	markers = MarkerLogic.new(data)
+	folders = FolderLogic.new(data)
+
+	clips.updated.connect(update_timeline_end)
 
 
 func new_project(new_path: String, new_resolution: Vector2i, new_framerate: float) -> void:
-	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("New project"))
-	loading_overlay.update_progress(0, tr("Initialize new project ..."))
+	await loading_overlay.update(0, tr("Initialize new project ..."))
 
 	set_project_path(new_path)
 	set_resolution(new_resolution)
 	set_framerate(new_framerate)
+	_setup_logic()
 
-	FileHandler.files = data.files
-	TrackHandler.tracks = data.tracks
-	ClipHandler.clips = data.clips
+	for index: int in Settings.get_tracks_amount():
+		tracks._add_track(index, false)
+	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
 
-	# Prepare tracks
-	data.tracks.resize(Settings.get_tracks_amount())
-	data.tracks.fill(TrackData.new())
-
-	for track_id: int in data.tracks.size():
-		data.tracks[track_id].id = track_id
-
-	EditorCore.loaded_clips.resize(data.tracks.size())
-
-	loading_overlay.update_progress(50, tr("Setting up playback ..."))
-	EditorCore.setup_playback()
-	EditorCore.setup_audio_players()
-	EditorCore.set_frame(get_playhead_position())
-
-	loading_overlay.update_progress(99, tr("Finalizing ..."))
+	await loading_overlay.update(50, tr("Setting up playback ..."))
+	await loading_overlay.update(99, tr("Finalizing ..."))
 	get_window().title = "GoZen - %s" % new_path.get_file().get_basename()
 	_update_recent_projects(new_path)
-	PopupManager.close_popups()
+	PopupManager.close_all()
 	save()
 
-	loaded = true
+	is_loaded = true
 	_auto_save()
 	project_ready.emit()
+	update_timeline_end()
 
 
 func save() -> void:
@@ -84,59 +83,40 @@ func save_as() -> void:
 
 
 func open(new_project_path: String) -> void:
-	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
-	var progress_increment: float
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("Loading project"))
-	loading_overlay.update_progress(0, tr("Initializing ..."))
-	loading_overlay.update_progress_bar(1, true)
+	await loading_overlay.update(0, tr("Initializing ..."))
+	await loading_overlay.update_bar(1, true)
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
-	loading_overlay.update_progress(5, tr("Setting up timeline ..."))
+	await loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
 	set_framerate(data.framerate)
+	_setup_logic()
 
-	FileHandler.files = data.files
-	TrackHandler.tracks = data.tracks
-	ClipHandler.clips = data.clips
-
-	EditorCore.loaded_clips.resize(data.tracks.size())
+	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
 
 	# 7% = Timeline ready to accept clips.
-	loading_overlay.update_progress(7, tr("Loading project files ..."))
-	progress_increment = (1 / float(data.files.size())) * 73
-
-	for i: int in data.files.keys():
-		if !FileHandler.load_file_data(i):
-			continue # File became invaled so entry got deleted.
-
-		var type: FileHandler.TYPE = data.files[i].type
-
-		if type in FileHandler.TYPE_VIDEOS and FileHandler.data[i].video == null:
-			await FileHandler.data[i].video_loaded
-
-		loading_overlay.increment_progress_bar(progress_increment)
-
-	# 80% = Files loaded, setting up playback.
-	loading_overlay.update_progress(80, tr("Setting up playback ..."))
-	EditorCore.setup_playback()
-	EditorCore.setup_audio_players()
-
+	await loading_overlay.update(7, tr("Loading project files ..."))
+	files._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
 	# 99% = Finalizing.
-	loading_overlay.update_progress(99, tr("Finalizing ..."))
+	await loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
 
-	loading_overlay.update_progress_bar(100)
+	await loading_overlay.update_bar(100)
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
-	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	PopupManager.close(PopupManager.PROGRESS)
 
-	loaded = true
+	is_loaded = true
 	unsaved_changes = false
 	project_ready.emit()
-	EditorCore.set_frame(get_playhead_position())
+	update_timeline_end()
 	_auto_save()
+	await RenderingServer.frame_pre_draw
+	EditorCore.set_frame(data.playhead)
 
 
 func open_project() -> void:
@@ -150,7 +130,7 @@ func open_project() -> void:
 
 
 func open_settings_menu() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.PROJECT_SETTINGS)
+	PopupManager.open(PopupManager.PROJECT_SETTINGS)
 
 
 func _auto_save() -> void:
@@ -159,7 +139,7 @@ func _auto_save() -> void:
 		add_child(auto_save_timer)
 		auto_save_timer.timeout.connect(_auto_save)
 
-	if loaded:
+	if is_loaded:
 		save()
 
 	auto_save_timer.start(5*60) # Default time is every 5 minutes
@@ -189,7 +169,7 @@ func _save_as(new_project_path: String) -> void:
 	save()
 
 
-func _on_close_requested() -> void:
+func _on_close() -> void:
 	if !unsaved_changes:
 		get_tree().quit()
 		return
@@ -221,6 +201,7 @@ func _on_cancel_close() -> void:
 
 
 #--- Project setters & getters ---
+
 func set_project_path(new_project_path: String) -> void:
 	data.project_path = new_project_path
 	unsaved_changes = true
@@ -238,11 +219,10 @@ func get_project_base_folder() -> String:
 	return data.project_path.get_base_dir()
 
 
-func set_resolution(res: Vector2i) -> void:
-	if res.x % 2 != 0: res.x += 1
-	if res.y % 2 != 0: res.y += 1
-
-	data.resolution = res
+func set_resolution(resolution: Vector2i) -> void:
+	resolution.x += resolution.x % 2
+	resolution.y += resolution.y % 2
+	data.resolution = resolution
 	unsaved_changes = true
 
 
@@ -260,35 +240,17 @@ func set_framerate(new_framerate: float) -> void:
 	unsaved_changes = true
 
 
-func get_framerate() -> float:
-	return data.framerate
-
-
-func set_playhead_position(new_pos: int) -> void:
-	data.playhead_position = new_pos # No need to set "unsaved_changes" here.
-
-
-func get_playhead_position() -> int:
-	return data.playhead_position
-
-
-func get_timeline_end() -> int:
-	return data.timeline_end
-
-
-func set_timeline_end(value: int) -> void:
-	data.timeline_end = value
-	unsaved_changes = true
-
-
 func update_timeline_end() -> void:
 	var end: int = 0
-
-	for track_id: int in data.tracks.size():
-		var clip: ClipData = TrackHandler.get_last_clip(track_id)
-		if clip != null: end = max(end, ClipHandler.get_end_frame(clip.id))
-
-	set_timeline_end(end)
+	for index: int in data.tracks_is_muted.size():
+		var clip: int = tracks.get_last_clip(index)
+		if clip != -1:
+			var clip_index: int = clips.index_map[clip]
+			var clip_start: int = data.clips_start[clip_index]
+			var clip_duration: int = data.clips_duration[clip_index]
+			end = max(end, clip_start + clip_duration)
+	data.timeline_end = end - 1
+	unsaved_changes = true
 	timeline_end_update.emit(end)
 
 
@@ -296,7 +258,3 @@ func set_background_color(color: Color) -> void:
 	data.background_color = color
 	EditorCore.set_background_color(color)
 	unsaved_changes = true
-
-
-func get_background_color() -> Color:
-	return data.background_color

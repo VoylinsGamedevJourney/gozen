@@ -5,8 +5,8 @@
 
 [sub_resource type="Resource" id="Resource_cpby2"]
 script = ExtResource("1_ny2jm")
-param_id = "position"
-param_name = "param_position"
+id = "position"
+nickname = "param_position"
 default_value = Vector2i(0, 0)
 min_value = null
 max_value = null
@@ -14,8 +14,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_p0oov"]
 script = ExtResource("1_ny2jm")
-param_id = "size"
-param_name = "param_size"
+id = "size"
+nickname = "param_size"
 default_value = Vector2(0, 0)
 min_value = null
 max_value = null
@@ -23,8 +23,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_qhav0"]
 script = ExtResource("1_ny2jm")
-param_id = "rotation"
-param_name = "param_rotation"
+id = "rotation"
+nickname = "param_rotation"
 default_value = 0.0
 min_value = -360.0
 max_value = 360.0
@@ -32,8 +32,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_ii5di"]
 script = ExtResource("1_ny2jm")
-param_id = "pivot"
-param_name = "param_pivot"
+id = "pivot"
+nickname = "param_pivot"
 default_value = Vector2i(0, 0)
 min_value = null
 max_value = null
@@ -41,8 +41,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_bdb61"]
 script = ExtResource("1_ny2jm")
-param_id = "alpha"
-param_name = "param_alpha"
+id = "alpha"
+nickname = "param_alpha"
 default_value = 1.0
 min_value = 0.0
 max_value = 1.0
@@ -57,7 +57,7 @@ matrix_map = Dictionary[String, int]({
 "rotation": 0,
 "size": 0
 })
-effect_id = "transform"
-effect_name = "effect_visual_transform"
+id = "transform"
+nickname = "effect_visual_transform"
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"

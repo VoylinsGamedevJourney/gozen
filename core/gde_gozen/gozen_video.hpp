@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audio_stream_ffmpeg.hpp"
 #include "ffmpeg.hpp"
 #include "ffmpeg_helpers.hpp"
 
@@ -12,6 +13,7 @@
 #include <godot_cpp/classes/gd_extension_manager.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
@@ -45,6 +47,8 @@ class GoZenVideo : public Resource {
 
 	BufferData buffer_data;
 
+	Ref<AudioStreamFFmpeg> audio_stream;
+
 	// Default variable types.
 	int current_frame = 0;
 	int last_decoded_frame = -1;
@@ -66,8 +70,7 @@ class GoZenVideo : public Resource {
 	float sar = 0;
 	float framerate = 0;
 
-	bool loaded = false; // Is true after open()
-	bool debug = true;
+	bool loaded = false;	// Is true after open()
 	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
 	bool full_color_range = true;
 
@@ -111,16 +114,14 @@ class GoZenVideo : public Resource {
 	bool _load_from_cache(int frame_nr);
 	void _clear_cache();
 
-	inline void _log(const String& message) {
-		if (debug)
-			UtilityFunctions::print("GoZenVideo: ", message, ".");
-	}
 	inline bool _log_err(const String& message) {
 		UtilityFunctions::printerr("GoZenVideo: ", message, "!");
 		return false;
 	}
 
   public:
+	static double get_duration(const String& video_path);
+
 	GoZenVideo() {}
 	~GoZenVideo() { close(); }
 
@@ -154,6 +155,8 @@ class GoZenVideo : public Resource {
 	inline Ref<Image> get_v_data() const { return v_data; }
 	inline Ref<Image> get_a_data() const { return a_data; }
 
+	inline Ref<AudioStreamFFmpeg> get_audio() const { return audio_stream; }
+
 	// Metadata getters
 	inline String get_path() const { return path; }
 
@@ -182,16 +185,6 @@ class GoZenVideo : public Resource {
 
 	inline bool is_full_color_range() const { return full_color_range; }
 	inline bool is_using_sws() const { return using_sws; }
-
-	inline void enable_debug() {
-		av_log_set_level(AV_LOG_VERBOSE);
-		debug = true;
-	}
-	inline void disable_debug() {
-		av_log_set_level(AV_LOG_INFO);
-		debug = false;
-	}
-	inline bool get_debug_enabled() const { return debug; }
 
   protected:
 	static void _bind_methods();

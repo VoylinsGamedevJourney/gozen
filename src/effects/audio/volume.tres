@@ -3,12 +3,12 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_7fg1e"]
 [ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/gozen_effect_audio.gd" id="2_7fg1e"]
 
-[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_7fg1e"]
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_glfcg"]
 
 [sub_resource type="Resource" id="Resource_c7eta"]
 script = ExtResource("1_7fg1e")
-param_id = "volume_db"
-param_name = "effect_param_volume_db"
+id = "volume_db"
+nickname = "Volume db"
 default_value = 0.0
 min_value = -50.0
 max_value = 25.0
@@ -16,8 +16,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_7fg1e")
-audio_effect = SubResource("AudioEffectAmplify_7fg1e")
-effect_id = "volume"
-effect_name = "effect_audio_volume"
+effect = SubResource("AudioEffectAmplify_glfcg")
+id = "volume"
+nickname = "Volume"
 params = Array[ExtResource("1_7fg1e")]([SubResource("Resource_c7eta")])
 metadata/_custom_type_script = "uid://cddcl2omddlan"

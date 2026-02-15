@@ -63,9 +63,6 @@ msgstr "Ładowanie projektu"
 msgid "title_files_dropped"
 msgstr "Upuszczone pliki"
 
-msgid "title_sponsors"
-msgstr "Sponsorzy"
-
 msgid "title_editor_settings"
 msgstr "Ustawienia edytora"
 
@@ -108,12 +105,6 @@ msgstr "Serwer Discord"
 
 msgid "button_support_gozen"
 msgstr "Wesprzyj GoZen"
-
-msgid "button_view_sponsors"
-msgstr "Zobacz sponsorów"
-
-msgid "button_become_sponsor"
-msgstr "Zostań sponsorem"
 
 msgid "button_open_project"
 msgstr "Otwórz projekt"

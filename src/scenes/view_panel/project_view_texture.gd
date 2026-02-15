@@ -1,6 +1,5 @@
 extends TextureRect
 
-
 enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
 
 
@@ -11,7 +10,6 @@ const SIZE_CROSS: int = 20
 
 
 var show_safe_areas: bool = true: set = set_show_safe_areas
-
 
 
 func _ready() -> void:
@@ -30,14 +28,12 @@ func _on_gui_input(event: InputEvent) -> void:
 		var mouse_event: InputEventMouseButton = event
 
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
-			var popup: PopupMenu = PopupManager.create_popup_menu()
+			var popup: PopupMenu = PopupManager.create_menu()
 
 			popup.add_item("Save screenshot ...", POPUP.SAVE_SCREENSHOT)
 			popup.add_item("Save screenshot to project ...", POPUP.SAVE_SCREENSHOT_TO_PROJECT)
-
 			popup.id_pressed.connect(_on_popup_id_pressed)
-
-			PopupManager.show_popup_menu(popup)
+			PopupManager.show_menu(popup)
 
 
 func _draw() -> void:
@@ -97,7 +93,7 @@ func _on_popup_id_pressed(id: int) -> void:
 
 func _on_save_screenshot_to_project(path: String) -> void:
 	_on_save_screenshot(path)
-	FileHandler.files_dropped([path])
+	await Project.files.dropped([path])
 
 
 func _on_save_screenshot(path: String) -> void:
@@ -131,4 +127,3 @@ func set_show_safe_areas(value: bool) -> void:
 
 func toggle_safe_areas() -> void:
 	show_safe_areas = !show_safe_areas
-

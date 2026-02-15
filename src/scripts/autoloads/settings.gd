@@ -2,6 +2,9 @@ extends Node
 
 signal on_show_menu_bar_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
+signal localization_updated
+
+signal on_waveform_update
 
 
 const PATH: String = "user://settings"
@@ -10,15 +13,14 @@ const PATH_THEMES: String = "user://themes/"
 
 var data: SettingsData = SettingsData.new()
 
-
 var fonts: Dictionary[String, SystemFont] = {}
 var custom_themes: Dictionary = {} # { Name: Path }
 
 
-
 func _ready() -> void:
 	for arg: String in OS.get_cmdline_args():
-		if arg.to_lower() == "reset_settings": save()
+		if arg.to_lower() == "reset_settings":
+			save()
 
 	if !FileAccess.file_exists(PATH):
 		data.language = get_system_locale()
@@ -41,9 +43,6 @@ func _ready() -> void:
 
 	load_new_shortcuts()
 
-	CommandManager.register(
-			"command_editor_settings", open_settings_menu, "open_settings")
-
 
 func save() -> void:
 	if DataManager.save_data(PATH, data):
@@ -51,13 +50,12 @@ func save() -> void:
 
 
 func open_settings_menu() -> void:
-	PopupManager.open_popup(PopupManager.POPUP.SETTINGS)
+	PopupManager.open(PopupManager.SETTINGS)
 
 
 func load_system_fonts() -> void:
 	for font: String in OS.get_system_fonts():
 		var system_font: SystemFont = SystemFont.new()
-
 		system_font.font_names = [font]
 		fonts[font] = system_font
 
@@ -65,19 +63,16 @@ func load_system_fonts() -> void:
 func load_custom_themes() -> void:
 	var default_themes: Dictionary[String, String] = get_themes()
 	var dir: DirAccess = DirAccess.open(PATH_THEMES)
-	if !dir: return
-
+	if !dir:
+		return
 	dir.list_dir_begin()
 
 	var file_name: String = dir.get_next()
-
 	while file_name != "":
 		if !dir.current_is_dir() and file_name.ends_with(".tres"):
 			var theme_name: String = file_name.get_basename().replace('_', ' ')
-
 			if not theme_name in default_themes and not theme_name in custom_themes:
 				custom_themes[theme_name] = PATH_THEMES + file_name
-
 		file_name = dir.get_next()
 
 
@@ -92,24 +87,20 @@ func get_system_locale() -> String:
 	for loaded_locale: String in TranslationServer.get_loaded_locales():
 		if loaded_locale.begins_with(OS.get_locale_language()):
 			return loaded_locale
-
 	return "en" # Return English as a default.
 
-
 # Appearance set/get
+
 func set_language(code: String) -> void:
 	data.language = code
 	apply_language()
+	localization_updated.emit()
 
 
-func apply_language() -> void:
-	TranslationServer.set_locale(get_language())
+func apply_language() -> void: TranslationServer.set_locale(get_language())
 
 
-func get_language() -> String:
-	return data.language
-
-
+func get_language() -> String: return data.language
 func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
@@ -130,7 +121,6 @@ func get_languages() -> Dictionary:
 				key += " (" + Localization.native_country_names[country_code] + ")"
 			else:
 				key += " (" + TranslationServer.get_country_name(country_code) + ")"
-
 		temp_language_data[key] = code
 
 	var keys: PackedStringArray = temp_language_data.keys()
@@ -138,7 +128,6 @@ func get_languages() -> Dictionary:
 
 	for key: String in keys:
 		language_data[key] = temp_language_data[key]
-
 	return language_data
 
 
@@ -163,12 +152,10 @@ func get_display_scale() -> float:
 		return 1.5
 	elif size.y < 1000:
 		return 0.5
-
 	return 1.0
 
 
-func get_display_scale_int() -> int:
-	return int(data.display_scale * 100)
+func get_display_scale_int() -> int: return int(data.display_scale * 100)
 
 
 func set_theme_path(new_path: String) -> void:
@@ -183,10 +170,7 @@ func apply_theme() -> void:
 		get_tree().root.theme = null
 
 
-func get_theme_path() -> String:
-	return data.theme
-
-
+func get_theme_path() -> String: return data.theme
 func get_themes() -> Dictionary[String, String]:
 	var themes: Dictionary[String, String] = {
 		"Default Dark": Library.THEME_DARK,
@@ -196,7 +180,6 @@ func get_themes() -> Dictionary[String, String]:
 	for custom_theme_name: String in custom_themes:
 		if !themes.has(custom_theme_name):
 			themes[custom_theme_name] = custom_themes[custom_theme_name]
-
 	return themes
 
 
@@ -205,32 +188,26 @@ func set_show_menu_bar(value: bool) -> void:
 	on_show_menu_bar_changed.emit(value)
 
 
-func get_show_menu_bar() -> bool:
-	return data.show_menu_bar
+func get_show_menu_bar() -> bool:return data.show_menu_bar
 
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	data.audio_waveform_style = style
-
-	for file_data: FileData in FileHandler.data.values():
-		file_data.update_wave.emit()
-
-
-func get_audio_waveform_style() -> int:
-	return data.audio_waveform_style
+	Project.files.update_audio_waves()
+	on_waveform_update.emit()
 
 
+func get_audio_waveform_style() -> int: return data.audio_waveform_style
 func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE]:
-	var styles: Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE] = {
+	return {
 		"Center": SettingsData.AUDIO_WAVEFORM_STYLE.CENTER,
 		"Bottom to Top": SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP,
 		"Top to bottom": SettingsData.AUDIO_WAVEFORM_STYLE.TOP_TO_BOTTOM}
 
-	return styles
-
 
 func set_audio_waveform_amp(value: float) -> void:
 	data.audio_waveform_amp = value
+	on_waveform_update.emit()
 
 
 func get_audio_waveform_amp() -> float:
@@ -244,8 +221,8 @@ func set_use_native_dialog(value: bool) -> void:
 func get_use_native_dialog() -> bool:
 	return data.use_native_dialog
 
-
 # Defaults set/get
+
 func set_image_duration(duration: int) -> void:
 	data.image_duration = duration
 
@@ -312,14 +289,14 @@ func get_default_framerate() -> float:
 
 func set_use_proxies(value: bool) -> void:
 	data.use_proxies = value
-	FileHandler.reload_all_video_files()
+	Project.files.reload_videos()
 
 
 func get_use_proxies() -> bool:
 	return data.use_proxies
 
-
 #--- Timeline set/get ---
+
 func set_tracks_amount(track_amount: int) -> void:
 	data.tracks_amount = track_amount
 
@@ -361,8 +338,8 @@ func set_show_time_mode_bar(value: bool) -> void:
 func get_show_time_mode_bar() -> bool:
 	return data.show_time_mode_bar
 
-
 #--- Markers set/get ---
+
 func set_marker_name(index: int, text: String) -> void:
 	data.marker_names[index] = text
 
@@ -386,8 +363,8 @@ func get_marker_color(index: int) -> Color:
 func get_marker_colors() -> PackedColorArray:
 	return data.marker_colors
 
-
 #--- Extra set/get ---
+
 func set_check_version(value: bool) -> void:
 	data.check_version = value
 
@@ -405,8 +382,8 @@ func set_auto_save(value: bool) -> void:
 func get_auto_save() -> bool:
 	return data.auto_save
 
-
 #--- Input set/get ---
+
 func load_new_shortcuts(reset: bool = false) -> void:
 	# Add new (or all) shortcuts to the Settings data
 	for action: StringName in InputMap.get_actions():
@@ -477,4 +454,3 @@ func get_events_for_action(action: String) -> Array[InputEvent]:
 		events.append(null)
 
 	return events
-

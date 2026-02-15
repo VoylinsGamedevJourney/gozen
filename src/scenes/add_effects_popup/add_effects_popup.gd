@@ -1,6 +1,5 @@
 extends PanelContainer
 
-
 @export var search_line_edit: LineEdit
 @export var effect_buttons: VBoxContainer
 
@@ -19,7 +18,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close_popup(PopupManager.POPUP.ADD_EFFECTS)
+		PopupManager.close_popup(PopupManager.ADD_EFFECTS)
 
 
 func load_effects(visual: bool, clip_id: int) -> void:
@@ -98,7 +97,7 @@ func _on_effect_clicked(effect_id: String) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close_popup(PopupManager.POPUP.ADD_EFFECTS)
+	PopupManager.close_popup(PopupManager.ADD_EFFECTS)
 
 
 
@@ -109,7 +108,6 @@ class ButtonScore:
 	func _init(button_node: Button, effect_text: String) -> void:
 		button = button_node
 		score = Utils.get_fuzzy_score(effect_text, button.text)
-
 
 	static func sort_scores(a: ButtonScore, b: ButtonScore) -> bool:
 		return a.score > b.score

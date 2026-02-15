@@ -4,6 +4,7 @@ extends Node
 
 signal proxy_loading(file_id: int, progress: int) ## Progess is 0/100
 
+
 const PROXY_PATH: String = "user://proxies/" # TODO: Make this path a setting
 const PROXY_HEIGHT: int = 540
 
@@ -14,50 +15,52 @@ func _ready() -> void:
 		DirAccess.make_dir_absolute(PROXY_PATH)
 
 
-func request_proxy_generation(file_id: int) -> void:
-	var file: File = FileHandler.get_file(file_id)
-	if file.type not in FileHandler.TYPE_VIDEOS: return # Only proxies for videos possible
-
-	var file_name: String = _get_proxy_file_name(file)
-	var new_path: String = PROXY_PATH + file_name
+func request_generation(file_id: int) -> void:
+	var file_index: int = Project.files.index_map[file_id]
+	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
+	var file_path: String = Project.data.files_path[file_index]
+	if file_type != EditorCore.TYPE.VIDEO:
+		return # Only proxies for videos possible
+	var new_path: String = PROXY_PATH + _create_proxy_name(file_path)
 
 	# Check if already exists, if yes, we link
-	if FileAccess.file_exists(new_path):
-		file.proxy_path = new_path
+	if !FileAccess.file_exists(new_path):
+		return Threader.add_task(
+				_generate_proxy_task.bind(file_id, new_path),
+				_on_proxy_finished.bind(file_id))
 
-		if Settings.get_use_proxies():
-			FileHandler.reload_file_data(file_id)
-		return
-
-	Threader.add_task(_generate_proxy_task.bind(file_id, new_path), _on_proxy_finished.bind(file_id))
+	Project.files.set_proxy_path(file_index, new_path)
+	if Settings.get_use_proxies():
+		Project.files.reload(file_id)
 
 
 func delete_proxy(file_id: int) -> void:
-	var file: File = FileHandler.get_file(file_id)
-	if !file or file.proxy_path.is_empty(): return
-
-	DirAccess.remove_absolute(file.proxy_path)
-	file.proxy_path = ""
+	if !Project.files.index_map.has(file_id):
+		return
+	var file_index: int = Project.files.index_map[file_id]
+	var file_proxy_path: String = Project.data.files_proxy_path[file_index]
+	if !file_proxy_path.is_empty():
+		DirAccess.remove_absolute(file_proxy_path)
+		Project.files.set_proxy_path(file_index, "")
 
 
 func _generate_proxy_task(file_id: int, output_path: String) -> void:
-	var file: File = FileHandler.get_file(file_id)
-	if !file:
-		printerr("ProxyHandler: Failed to find file!")
-		return
-
+	if !Project.files.index_map.has(file_id):
+		return printerr("ProxyHandler: Failed to find file!")
+	var file_index: int = Project.files.index_map[file_id]
+	var file_path: String = Project.data.files_path[file_index]
 	var global_output_path: String = ProjectSettings.globalize_path(output_path)
-	var global_input_path: String = ProjectSettings.globalize_path(file.path)
+	var global_input_path: String = ProjectSettings.globalize_path(file_path)
 	var encoder: GoZenEncoder = GoZenEncoder.new()
 	var video: GoZenVideo = GoZenVideo.new()
-	if video.open(global_input_path) != OK:
-		printerr("ProxyHandler: Failed to open source!")
-		return
+	if video.open(global_input_path) != OK: return printerr("ProxyHandler:
+		Failed to open source!")
 
 	var original_resolution: Vector2i = video.get_resolution()
 	var scale: float = float(PROXY_HEIGHT) / float(original_resolution.y)
 	var target_resolution: Vector2i = Vector2i(int(original_resolution.x * scale), PROXY_HEIGHT)
-	if target_resolution.x % 2 != 0: target_resolution.x += 1 # Width needs to be equal
+	if target_resolution.x % 2 != 0:
+		target_resolution.x += 1 # Width needs to be equal
 
 	# Encoder setup
 	encoder.set_file_path(global_output_path)
@@ -70,8 +73,7 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 
 	if !encoder.open(true):
 		printerr("ProxyHandler: Failed to open encoder!")
-		video.close()
-		return
+		return video.close()
 
 	# Encoding
 	var total_frames: float = float(video.get_frame_count())
@@ -85,27 +87,22 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 			encoder.send_frame(image)
 
 		# We skip decoding since generate_thumbnail_at_frame handles that.
-		if !video.next_frame(true): break
-
+		if !video.next_frame(true):
+			break
 		loaded_amount += 1
 		proxy_loading.emit.call_deferred(file_id, int((loaded_amount / total_frames) * 100.0))
 
 	proxy_loading.emit.call_deferred(file_id, 100)
 	encoder.close()
 	video.close()
-	file.proxy_path = output_path
+	Project.files.set_proxy_path(file_index, output_path)
 
 
-func _get_proxy_file_name(file: File) -> String:
-	return  "%s_%s_proxy.mp4" % [
-			FileAccess.get_md5(file.path).left(6),
-			file.path.get_file().get_basename()]
+func _create_proxy_name(file_path: String) -> String:
+	return  "%s_%s_proxy.mp4" % [FileAccess.get_md5(file_path).left(6), file_path.get_file().get_basename()]
 
 
 func _on_proxy_finished(file_id: int) -> void:
-	print("ProxyHandler: Proxy generation finished for file ", file_id)
-
 	if Settings.get_use_proxies():
-		FileHandler.reload_file_data(file_id) # Switch to proxy directly.
-	FileHandler.file_nickname_changed.emit(file_id) # To update the name
-
+		Project.files.reload(file_id)
+	Project.files.nickname_changed.emit(file_id) # To update the name

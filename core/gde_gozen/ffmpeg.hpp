@@ -36,7 +36,6 @@ using namespace godot;
 
 class FFmpeg {
   private:
-	static inline void _log(String message) { UtilityFunctions::print("FFmpeg: ", message, "."); }
 	static inline bool _log_err(String message) {
 		UtilityFunctions::printerr("FFmpeg: ", message, "!");
 		return false;

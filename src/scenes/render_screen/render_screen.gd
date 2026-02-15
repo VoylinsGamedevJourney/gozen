@@ -27,6 +27,7 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export_group("Threads")
 @export var threads_spin_box: SpinBox
 
+
 var button_group: ButtonGroup = ButtonGroup.new()
 var status_indicator_id: int
 
@@ -34,7 +35,6 @@ var progress_overlay: ProgressOverlay
 var progress_frame_increase: float = 0.0
 var current_progress: float = 0.0
 var custom_profile_id_start: int = 0
-
 
 
 func _ready() -> void:
@@ -261,7 +261,7 @@ func _render_finished() -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
@@ -279,7 +279,7 @@ func _show_error(message: String) -> void:
 	add_child(dialog)
 	dialog.popup_centered()
 
-	PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
@@ -291,14 +291,16 @@ func _on_start_render_button_pressed() -> void:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
 	var draft: bool = button_render_draft.button_pressed
-	var render_resolution: Vector2i = Project.get_resolution()
+	var render_resolution: Vector2i = Project.data.resolution
+	var end: int = Project.data.timeline_end
 
 	if draft:
 		var target_height: int = 480
 		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
 
 		render_resolution =	Vector2i(int(target_height * aspect), target_height)
-		if render_resolution.x % 2 != 0: render_resolution.x += 1
+		if render_resolution.x % 2 != 0:
+			render_resolution.x += 1
 		print("RenderManager: Draft mode enabled. Scaling to ", render_resolution)
 
 	# Printing info about the rendering process.
@@ -306,7 +308,7 @@ func _on_start_render_button_pressed() -> void:
 	Print.header("Rendering process started")
 	Print.info("Path", path_line_edit.text)
 	Print.info("Resolution", render_resolution)
-	Print.info("Framerate", Project.get_framerate())
+	Print.info("Framerate", Project.data.framerate)
 	Print.info("Video codec", video_codec_option_button.get_selected_id())
 	Print.info("CRF", int(0 - video_quality_hslider.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
@@ -314,11 +316,11 @@ func _on_start_render_button_pressed() -> void:
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_option_button.get_selected_id())
 	Print.info("Cores/threads", threads_spin_box.value)
-	Print.info("Frames to process", Project.get_timeline_end() + 1)
+	Print.info("Frames to process", end + 1)
 	print("--------------------")
 
 	# Resetting progress values.
-	progress_frame_increase = (97.0 / Project.get_timeline_end()) * RenderManager.buffer_size
+	progress_frame_increase = (97.0 / end) * RenderManager.buffer_size
 	current_progress = 0.0
 
 	# Changing icon to indicate that GoZen is rendering.
@@ -332,20 +334,21 @@ func _on_start_render_button_pressed() -> void:
 
 	# Display the progress popup.
 	if progress_overlay != null:
-		PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+		PopupManager.close(PopupManager.PROGRESS)
 		progress_overlay = null
 
-	progress_overlay = PopupManager.get_popup(PopupManager.POPUP.PROGRESS)
+	progress_overlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	progress_overlay.update_title(tr("Rendering"))
-	progress_overlay.update_progress(0, "")
+	await progress_overlay.update(0, "")
 
 	var button: Button = Button.new()
-	var status_label: Label = progress_overlay.status_hbox.get_child(0)
+	var status_hbox: HBoxContainer = progress_overlay.get("status_hbox")
+	var status_label: Label = status_hbox.get_child(0)
 
 	button.text = tr("Cancel rendering")
 	button.pressed.connect(_cancel_render)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	progress_overlay.status_hbox.add_child(button)
+	status_hbox.add_child(button)
 
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(gozen_icon.get_image())
@@ -353,7 +356,7 @@ func _on_start_render_button_pressed() -> void:
 
 	RenderManager.encoder = GoZenEncoder.new()
 	RenderManager.encoder.set_resolution(render_resolution)
-	RenderManager.encoder.set_framerate(Project.get_framerate())
+	RenderManager.encoder.set_framerate(Project.data.framerate)
 	RenderManager.encoder.set_file_path(path_line_edit.text)
 	RenderManager.encoder.set_video_codec_id(video_codec_option_button.get_selected_id())
 	RenderManager.encoder.set_crf(int(0 - video_quality_hslider.value))
@@ -361,22 +364,20 @@ func _on_start_render_button_pressed() -> void:
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
 	RenderManager.encoder.set_audio_codec_id(audio_codec_option_button.get_selected_id())
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
-	RenderManager.start()
+	await RenderManager.start_encoder()
 
 
 func update_encoder_status(status: RenderManager.STATUS) -> void:
 	if progress_overlay == null:
-		printerr("RenderScreen: ProgressOverlay is null!")
-		return
+		return printerr("RenderScreen: ProgressOverlay is null!")
 
 	var status_str: String = ""
-
 	match status:
 		# Errors, something went wrong.
 		RenderManager.STATUS.ERROR_OPEN: _show_error(tr("Error opening file"))
 		RenderManager.STATUS.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
 		RenderManager.STATUS.ERROR_CANCELED:
-			PopupManager.close_popup(PopupManager.POPUP.PROGRESS)
+			PopupManager.close(PopupManager.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.
@@ -394,7 +395,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		else:
 			current_progress = status
 	if progress_overlay != null:
-		progress_overlay.update_progress(floori(current_progress), status_str)
+		await progress_overlay.update(floori(current_progress), status_str)
 
 
 func _on_render_settings_changed() -> void:
@@ -403,8 +404,9 @@ func _on_render_settings_changed() -> void:
 
 
 func _on_save_custom_profile_button_pressed() -> void:
-	var dialog: ConfirmationDialog = load("uid://cxfdfmbkkwt51").instantiate()
-	var _err: int = dialog.save_profile.connect(_save_custom_profile)
+	var packed_scene: PackedScene = load("uid://cxfdfmbkkwt51")
+	var dialog: ConfirmationDialog = packed_scene.instantiate()
+	var _err: int = dialog.call("_connect_save_profile", _save_custom_profile)
 	add_child(dialog)
 	dialog.popup_centered()
 
@@ -414,12 +416,11 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	var icon: Image = Image.load_from_file(icon_path)
 
 	icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
-
 	new_profile.profile_name = profile_name
 	new_profile.icon = ImageTexture.create_from_image(icon)
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as GoZenEncoder.VIDEO_CODEC
 	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as GoZenEncoder.AUDIO_CODEC
-	new_profile.crf = int(abs(video_quality_hslider.value))
+	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as GoZenEncoder.H264_PRESETS
 
@@ -431,8 +432,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	var save_path: String = USER_PROFILES_PATH.path_join(save_name + ".tres")
 	var _err: int = ResourceSaver.save(new_profile, save_path)
 	if _err != OK:
-		printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])
-		return
+		return printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])
 	add_profile(new_profile, save_path)
 
 	var id: int = option_button_render_profiles.item_count - 1
@@ -451,5 +451,5 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 		else:
 			_on_render_settings_changed()
 	else:
-		load_profile(load(option_button_render_profiles.get_item_metadata(index)))
-
+		var render_profile: RenderProfile = load(option_button_render_profiles.get_item_metadata(index) as String)
+		load_profile(render_profile)

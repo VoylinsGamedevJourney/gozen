@@ -10,9 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://c2okxbuwsvak2" path="res://assets/icons/add.svg" id="7_4kk3e"]
 [ext_resource type="Texture2D" uid="uid://c8ydairucfdee" path="res://assets/icons/guide.svg" id="8_wn5y3"]
 [ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="9_ncffq"]
-[ext_resource type="Texture2D" uid="uid://d34rtkurt6qhl" path="res://assets/icons/sponsors.svg" id="10_1nlba"]
 [ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="11_0i7o8"]
-[ext_resource type="Texture2D" uid="uid://brw0l3u8bd2bb" path="res://assets/sponsors/vgj.webp" id="12_xyrqg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
 shader = ExtResource("1_5viva")
@@ -28,92 +26,7 @@ corner_detail = 1
 [sub_resource type="LabelSettings" id="LabelSettings_x2wpv"]
 font_size = 13
 
-[sub_resource type="Animation" id="Animation_5plxg"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:text")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["5"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Panel/VBox/StartupTabContainer:current_tab")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [2]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="Animation" id="Animation_donii"]
-resource_name = "show_sponsors"
-length = 3.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:text")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1.03333, 2.03333, 2.96667),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": ["3", "2", "1", ""]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Panel/VBox/StartupTabContainer:current_tab")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 3.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [2, 0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Panel/VBox/StartupTabContainer/Sponsors/TopHBox/TimerLabel:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 3.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_5plxg"]
-_data = {
-&"RESET": SubResource("Animation_5plxg"),
-&"show_sponsors": SubResource("Animation_donii")
-}
-
-[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "animation_player", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
+[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
 material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
 anchor_right = 1.0
@@ -127,7 +40,6 @@ new_version_available_panel = NodePath("Panel/VBox/StartupImage/UpdateAvailableP
 new_version_available_button = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer/RepoTextureButton")
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
 recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
-animation_player = NodePath("AnimationPlayer")
 presets_option_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton")
 project_path_line_edit = NodePath("Panel/VBox/StartupTabContainer/NewProject/PathHBox/PathLineEdit")
 resolution_x_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionXSpinBox")
@@ -244,11 +156,10 @@ stretch_mode = 5
 [node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox" unique_id=611256809]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 2
+current_tab = 0
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=703377150]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -345,15 +256,6 @@ expand_icon = true
 [node name="Spacer" type="Control" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=254480835]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="ViewSponsorsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=781079765]
-layout_mode = 2
-mouse_default_cursor_shape = 2
-text = "View sponsors"
-icon = ExtResource("10_1nlba")
-flat = true
-alignment = 0
-expand_icon = true
 
 [node name="SupportProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=755679904]
 layout_mode = 2
@@ -501,72 +403,6 @@ size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 text = "Create new project"
 
-[node name="Sponsors" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=1109428231]
-layout_mode = 2
-theme_override_constants/separation = 20
-metadata/_tab_index = 2
-
-[node name="TopHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/Sponsors" unique_id=1954512841]
-layout_mode = 2
-
-[node name="SponsoredByLabel" type="Label" parent="Panel/VBox/StartupTabContainer/Sponsors/TopHBox" unique_id=500051295]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title_label"
-text = "Sponsors"
-
-[node name="TimerLabel" type="Label" parent="Panel/VBox/StartupTabContainer/Sponsors/TopHBox" unique_id=1944700168]
-visible = false
-layout_mode = 2
-theme_type_variation = &"title_label"
-text = "5"
-
-[node name="SponsorsHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/Sponsors" unique_id=112365473]
-layout_mode = 2
-size_flags_vertical = 3
-alignment = 1
-
-[node name="VGJ" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox" unique_id=2068076411]
-layout_mode = 2
-alignment = 1
-
-[node name="Logo" type="TextureRect" parent="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox/VGJ" unique_id=1086154489]
-custom_minimum_size = Vector2(130, 130)
-layout_mode = 2
-mouse_default_cursor_shape = 2
-texture = ExtResource("12_xyrqg")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="NameLabel" type="Label" parent="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox/VGJ" unique_id=1240980886]
-layout_mode = 2
-mouse_filter = 1
-mouse_default_cursor_shape = 2
-text = "Voylin's Gamedev Journey"
-horizontal_alignment = 1
-
-[node name="TitleLabel" type="Label" parent="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox/VGJ" unique_id=1814034146]
-layout_mode = 2
-theme_type_variation = &"title_label"
-text = "GoZen creator"
-horizontal_alignment = 1
-
-[node name="ButtonHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/Sponsors" unique_id=1153499749]
-layout_mode = 2
-alignment = 2
-
-[node name="BecomeSponsorButton" type="Button" parent="Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox" unique_id=458442751]
-layout_mode = 2
-text = "Become a sponsor"
-
-[node name="CloseSponsorsButton" type="Button" parent="Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox" unique_id=1654238321]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-text = "Continue"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=561069578]
-libraries/ = SubResource("AnimationLibrary_5plxg")
-
 [connection signal="pressed" from="Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_go_zen_logo_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupImage/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]
 [connection signal="meta_clicked" from="Panel/VBox/StartupImage/OverlayHBox/ImageAuthor" to="." method="_on_image_author_meta_clicked"]
@@ -576,14 +412,9 @@ libraries/ = SubResource("AnimationLibrary_5plxg")
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ManualButton" to="." method="_on_manual_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/DiscordServerButton" to="." method="_on_discord_server_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ViewSponsorsButton" to="." method="_on_view_sponsors_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
 [connection signal="item_selected" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton" to="." method="_on_new_project_option_button_item_selected"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
 [connection signal="toggled" from="Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton" to="." method="_on_advanced_options_check_button_toggled"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CreateNewProjectButton" to="." method="_on_create_new_project_button_pressed"]
-[connection signal="gui_input" from="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox/VGJ/Logo" to="." method="_on_sponsor_logo_input" binds= ["vgj"]]
-[connection signal="gui_input" from="Panel/VBox/StartupTabContainer/Sponsors/SponsorsHBox/VGJ/NameLabel" to="." method="_on_sponsor_name_input" binds= ["vgj"]]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/BecomeSponsorButton" to="." method="_on_become_sponsor_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/Sponsors/ButtonHBox/CloseSponsorsButton" to="." method="_on_close_sponsors_button_pressed"]

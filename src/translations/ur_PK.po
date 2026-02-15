@@ -68,9 +68,6 @@ msgstr "نیا پروجیکت"
 msgid "title_files_dropped"
 msgstr "نیا پروجیکت"
 
-msgid "title_sponsors"
-msgstr ""
-
 #, fuzzy
 msgid "title_editor_settings"
 msgstr "ایڈیٹر کی ترتیبات."
@@ -118,14 +115,6 @@ msgstr "دسکورڈ سرور"
 
 msgid "button_support_gozen"
 msgstr "گوزن کا ساتھ دیں"
-
-#, fuzzy
-msgid "button_view_sponsors"
-msgstr "ترتیبات سیو کریں"
-
-#, fuzzy
-msgid "button_become_sponsor"
-msgstr "بند کریں"
 
 msgid "button_open_project"
 msgstr "پروجیکٹ کھولیں"

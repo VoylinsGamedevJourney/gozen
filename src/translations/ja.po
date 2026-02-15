@@ -63,9 +63,6 @@ msgstr "プロジェクトを読み込み中"
 msgid "title_files_dropped"
 msgstr "ファイル追加"
 
-msgid "title_sponsors"
-msgstr "スポンサー"
-
 msgid "title_editor_settings"
 msgstr "エディター設定"
 
@@ -109,12 +106,6 @@ msgstr "Discordサーバー"
 
 msgid "button_support_gozen"
 msgstr "GoZenをサポートする"
-
-msgid "button_view_sponsors"
-msgstr "スポンサーを見る"
-
-msgid "button_become_sponsor"
-msgstr "スポンサーになる"
 
 msgid "button_open_project"
 msgstr "プロジェクトを開く"

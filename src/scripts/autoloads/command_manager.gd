@@ -6,7 +6,6 @@ var calls: Array[Callable] = []
 var actions: PackedStringArray = []
 
 
-
 func _ready() -> void:
 	base_commands.append("Open editor settings")
 	base_commands.append("Open project settings")
@@ -20,10 +19,11 @@ func _ready() -> void:
 
 
 func _localize_commands() -> void:
-	for i: int in commands.size(): commands[i] = tr(base_commands[i])
-
+	for i: int in commands.size():
+		commands[i] = tr(base_commands[i])
 
 # --- Command registering ---
+
 
 func register(command: StringName, callable: Callable, action: StringName) -> void:
 	commands.append(tr(command))
@@ -39,8 +39,8 @@ func _editor_register(command: StringName, callable: Callable, action: StringNam
 	calls.append(callable)
 	actions.append(action)
 
-
 # --- Getters ---
+
 
 func get_text(index: int) -> String: return ("%s [%s]" % [commands[index], actions[index]]).replace(' []', '')
 func get_call(index: int) -> Callable: return calls[index]
@@ -49,7 +49,8 @@ func get_action(index: int) -> String: return actions[index]
 
 func get_sorted_indexes() -> Array[int]:
 	var data: Array[int] = []
-	for index: int in commands.size(): data.append(index)
+	for index: int in commands.size():
+		data.append(index)
 
 	data.sort_custom(_sort_commands)
 	return data

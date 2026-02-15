@@ -8,6 +8,7 @@ extends Control
 
 enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
+
 @export var panel_label: Label
 @export var side_bar_vbox: VBoxContainer
 @export var settings_vbox: VBoxContainer
@@ -20,7 +21,6 @@ var listening_active: bool = false
 var listening_action: String = ""
 var listening_index: int = -1
 var listening_button: Button = null
-
 
 
 func _input(event: InputEvent) -> void:
@@ -42,8 +42,8 @@ func _input(event: InputEvent) -> void:
 func _on_close_button_pressed() -> void:
 	_stop_listening()
 	Settings.save()
-	PopupManager.close_popup(PopupManager.POPUP.SETTINGS)
-	PopupManager.close_popup(PopupManager.POPUP.PROJECT_SETTINGS)
+	PopupManager.close(PopupManager.SETTINGS)
+	PopupManager.close(PopupManager.PROJECT_SETTINGS)
 
 
 func set_mode(mode: MODE) -> void:
@@ -98,7 +98,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 	# Creating the marker nodes
 	var marker_nodes: Array = []
-	var marker_texts: Array = [
+	var marker_texts: PackedStringArray = [
 		tr("Marker one"), tr("Marker two"), tr("Marker three"),
 		tr("Marker four"), tr("Marker five")]
 	marker_nodes.append(create_header(tr("Markers")))
@@ -252,7 +252,7 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 			create_header(tr("Appearance")), Control.new(),
 			create_label(tr("Background color")),
 			create_color_picker(
-					Project.get_background_color(),
+					Project.data.background_color,
 					Project.set_background_color,
 					tr("The background color when no clips are displayed.")),
 		],
@@ -286,7 +286,8 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 
 	var i: int = 0
 	for option: String in options:
-		if option == "": option_button.add_separator()
+		if option == "":
+			option_button.add_separator()
 		else:
 			option_button.add_item(option)
 			option_button.set_item_metadata(i, options[option])
@@ -454,6 +455,9 @@ func _stop_listening() -> void:
 
 
 func _get_event_text(event: InputEvent) -> String:
-	if event == null: return "None"
-	elif event is not InputEventKey: return event.as_text()
-	return event.as_text_physical_keycode()
+	if event == null:
+		return "None"
+	elif event is not InputEventKey:
+		return event.as_text()
+	var event_key: InputEventKey = event
+	return event_key.as_text_physical_keycode()

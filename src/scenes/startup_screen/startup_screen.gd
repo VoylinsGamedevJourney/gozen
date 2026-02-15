@@ -12,7 +12,8 @@ const PRESETS: Dictionary[String, Vector3i] = {
 	"Vertical (1080p) 30fps": Vector3i(1080, 1920, 30),
 	"Vertical (1080p) 60fps": Vector3i(1080, 1920, 60),
 	"UHD (4K) 30fps": Vector3i(1920, 1080, 30),
-	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)}
+	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)
+}
 
 
 @export var version_label: RichTextLabel
@@ -20,8 +21,6 @@ const PRESETS: Dictionary[String, Vector3i] = {
 @export var new_version_available_button: TextureButton
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
-
-@export var animation_player: AnimationPlayer
 
 @export_category("New project menu")
 @export var presets_option_button: OptionButton
@@ -37,15 +36,12 @@ const PRESETS: Dictionary[String, Vector3i] = {
 @export var background_color_picker: ColorPickerButton
 
 
-var http_request: HTTPRequest # For version check
+var http_request: HTTPRequest ## For version checking.
+
 
 
 func _ready() -> void:
-	if OS.is_debug_build():
-		tab_container.current_tab = 0
-	else:
-		animation_player.play("show_sponsors")
-
+	tab_container.current_tab = 0
 	advanced_options_button.button_pressed = false
 	advanced_options.visible = false
 
@@ -104,16 +100,12 @@ func _set_recent_projects() -> void:
 
 			recent_projects_vbox.add_child(hbox)
 			new_paths.append(path)
-
 		path = file.get_line()
-
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-
 	for new_path: String in new_paths:
 		if !file.store_line(new_path):
 			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
-
 	file.close()
 
 
@@ -206,7 +198,7 @@ func _on_create_project_button_pressed() -> void:
 
 
 func open_project(path: String) -> void:
-	Project.open(path)
+	await Project.open(path)
 	self.queue_free()
 
 
@@ -229,11 +221,9 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
-	Project.new_project(path, resolution, framerate_spinbox.value)
-
+	await Project.new_project(path, resolution, framerate_spinbox.value)
 	if advanced_options_button.button_pressed:
 		Project.set_background_color(background_color_picker.color)
-
 	self.queue_free()
 
 
@@ -353,28 +343,6 @@ func _check_new_version_request_completed(result: int, response_code: int, _head
 		return # Already newest version.
 
 
-func _on_sponsor_logo_input(event: InputEvent, sponsor: String) -> void:
-	if event.is_pressed():
-		Utils.open_url("sponsors/%s" % sponsor)
-
-
-func _on_sponsor_name_input(event: InputEvent, sponsor: String) -> void:
-	if event.is_pressed():
-		Utils.open_url("sponsors/%s" % sponsor)
-
-
-func _on_become_sponsor_button_pressed() -> void:
-	Utils.open_url("become_sponsor_info")
-
-
-func _on_close_sponsors_button_pressed() -> void:
-	tab_container.current_tab = 0
-
-
-func _on_view_sponsors_button_pressed() -> void:
-	tab_container.current_tab = 2
-
-
 func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:
 	advanced_options.visible = toggled_on
 
@@ -390,4 +358,3 @@ func _on_new_project_option_button_item_selected(index: int) -> void:
 	resolution_x_spinbox.value = presets_data.x
 	resolution_y_spinbox.value = presets_data.y
 	framerate_spinbox.value = presets_data.z
-

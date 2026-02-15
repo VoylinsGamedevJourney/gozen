@@ -1,11 +1,9 @@
 extends Node
 
-
 var timed_tasks: Dictionary[int, TimedTask] = {} # [clip_id, Task]
 var tasks: Array[Task] = []
 var mutex: Mutex = Mutex.new()
 var error: int = -1
-
 
 
 func _process(_delta: float) -> void:
@@ -14,16 +12,15 @@ func _process(_delta: float) -> void:
 			timed_tasks[i].execute()
 			timed_tasks.erase(i)
 
-	for task: Task in tasks:
+	for i: int in range(tasks.size() - 1, -1, -1):
+		var task: Task = tasks[i]
 		if WorkerThreadPool.is_task_completed(task.id):
 			error = WorkerThreadPool.wait_for_task_completion(task.id)
-
 			if error:
 				printerr("Threader: Error with task: ", task.id, " - Error: ", error)
-			elif !task.after_task.is_null():
+			if !task.after_task.is_null():
 				task.after_task.call()
-
-			tasks.remove_at(tasks.find(task))
+			tasks.remove_at(i)
 
 
 func add_task(todo: Callable, after_todo: Callable) -> void:
@@ -36,10 +33,10 @@ class Task:
 	var id: int = -1
 	var after_task: Callable
 
-
 	func _init(new_id: int, new_after_task: Callable = Callable()) -> void:
 		id = new_id
 		after_task = new_after_task
+
 
 
 ## Timed tasks are for items such as changing effects too quickly, instead of
@@ -50,18 +47,14 @@ class TimedTask:
 	var after_task: Callable
 	var time: int
 
-
 	func _init(new_task: Callable, new_after_task: Callable = Callable()) -> void:
 		task = new_task
 		after_task = new_after_task
 		time = Time.get_ticks_msec() + 200
 
-
 	func check() -> bool:
 		return time <= Time.get_ticks_msec()
-
 
 	func execute() -> void:
 		Threader.tasks.append(Threader.Task.new(
 				WorkerThreadPool.add_task(task), after_task))
-

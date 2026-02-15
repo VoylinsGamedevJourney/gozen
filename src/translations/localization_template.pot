@@ -968,10 +968,6 @@ msgid "Getting started"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "View sponsors"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
 msgid "NewProject"
 msgstr ""
 
@@ -1013,10 +1009,6 @@ msgid "Return"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "Sponsors"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
 msgid "5"
 msgstr ""
 
@@ -1026,10 +1018,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen creator"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Become a sponsor"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
