@@ -12,16 +12,15 @@ func _process(_delta: float) -> void:
 			timed_tasks[i].execute()
 			timed_tasks.erase(i)
 
-	for task: Task in tasks:
+	for i: int in range(tasks.size() - 1, -1, -1):
+		var task: Task = tasks[i]
 		if WorkerThreadPool.is_task_completed(task.id):
 			error = WorkerThreadPool.wait_for_task_completion(task.id)
-
 			if error:
 				printerr("Threader: Error with task: ", task.id, " - Error: ", error)
-			elif !task.after_task.is_null():
+			if !task.after_task.is_null():
 				task.after_task.call()
-
-			tasks.remove_at(tasks.find(task))
+			tasks.remove_at(i)
 
 
 func add_task(todo: Callable, after_todo: Callable) -> void:
