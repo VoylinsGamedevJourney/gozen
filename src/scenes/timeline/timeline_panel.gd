@@ -275,15 +275,18 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 
 
 func _draw_fade_handles(clip_index: int, box_pos: Vector2, is_visual: bool, show_handles: bool, control: Control) -> void:
+	const BORDER_OFFSET: int = 2
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var duration: float = (Project.data.clips_duration[clip_index] * zoom)
 	var fade: Vector2 = clip_effects.fade_visual if is_visual else clip_effects.fade_audio
 
 	# Getting the edge points of the clip.
-	var fade_in_pts: PackedVector2Array = [box_pos, box_pos + Vector2(0, TRACK_HEIGHT)]
-	var fade_out_pts: PackedVector2Array = []
-	for pts: Vector2 in fade_in_pts:
-		fade_out_pts.append(pts + Vector2(duration, 0))
+	var fade_in_pts: PackedVector2Array = [
+			box_pos + Vector2(BORDER_OFFSET, BORDER_OFFSET),
+			box_pos + Vector2(BORDER_OFFSET, TRACK_HEIGHT - BORDER_OFFSET)]
+	var fade_out_pts: PackedVector2Array = [
+			box_pos + Vector2(duration - BORDER_OFFSET, BORDER_OFFSET),
+			box_pos + Vector2(duration - BORDER_OFFSET, TRACK_HEIGHT - BORDER_OFFSET)]
 
 	# Adding the handle point.
 	var handle_offset: float = (FADE_HANDLE_SIZE / 2.0)
@@ -294,14 +297,12 @@ func _draw_fade_handles(clip_index: int, box_pos: Vector2, is_visual: bool, show
 		fade_in_pts.append(box_pos + Vector2(fade.x * zoom, handle_offset))
 		fade_out_pts.append(box_pos + Vector2(duration - (fade.y * zoom), handle_offset))
 
-	# Draw background.
-	control.draw_colored_polygon(fade_in_pts, FADE_AREA_COLOR)
-	control.draw_colored_polygon(fade_out_pts, FADE_AREA_COLOR)
-
-	# Draw lines. (if fade present)
+	# Draw background and lines. (if fade present)
 	if fade.x > 0: # Draw line fade in.
+		control.draw_colored_polygon(fade_in_pts, FADE_AREA_COLOR)
 		control.draw_line(fade_in_pts[2], fade_in_pts[0 if is_visual else 1], FADE_LINE_COLOR, 1.0, true)
 	if fade.y > 0: # Draw line fade out.
+		control.draw_colored_polygon(fade_out_pts, FADE_AREA_COLOR)
 		control.draw_line(fade_out_pts[2], fade_out_pts[0 if is_visual else 1], FADE_LINE_COLOR, 1.0, true)
 
 	# Draw handles.
@@ -555,7 +556,7 @@ func _get_fade_target() -> FadeTarget:
 		var file_type: int = Project.data.files_type[file_index]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var start_x: float = clip_start * zoom
-		var end_x: float = (Project.data.clips_duration[clip_index] + start_x) * zoom
+		var end_x: float = (Project.data.clips_duration[clip_index] + clip_start) * zoom
 		var y_pos: float = Project.data.clips_track[clip_index] * TRACK_TOTAL_SIZE
 		var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 

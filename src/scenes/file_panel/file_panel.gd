@@ -79,7 +79,6 @@ func _file_menu_pressed(id: int) -> void:
 		0: # Add file(s)
 			var dialog: FileDialog = PopupManager.create_file_dialog(
 					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
-
 			add_child(dialog)
 			dialog.files_selected.connect(Project.files.dropped)
 			dialog.popup_centered()

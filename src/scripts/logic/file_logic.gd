@@ -1,5 +1,6 @@
 class_name FileLogic
 extends RefCounted
+## TODO: Improve _rebuild_map so it doesn't keep rebuilding every single time.
 
 signal added(file_id: int)
 signal moved(file_id: int)
