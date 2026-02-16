@@ -10,7 +10,7 @@ bg_color = Color(0.654902, 0.0941176, 0.945098, 0.498039)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw4wx"]
 bg_color = Color(0.654902, 0.0941176, 0.945098, 1)
 
-[node name="ProgressOverlay" type="Control" unique_id=2135541930 node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "estimated_time_label", "scroll_container", "vbox", "close_button")]
+[node name="ProgressOverlay" type="Control" unique_id=2135541930 node_paths=PackedStringArray("title_label", "progress_bar", "progress_hint", "status_hbox", "estimated_time_label", "scroll_container", "vbox", "close_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,6 +22,7 @@ script = ExtResource("1_7woll")
 title_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox/TitleLabel")
 progress_bar = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ProgressBarIndicator/ProgressBar")
 progress_hint = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox/LoadingHintLabel")
+status_hbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/StatusHBox")
 estimated_time_label = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox/EstimatedTimeLabel")
 scroll_container = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer")
 vbox = NodePath("Panel/Margin/VBox/LoadPanel/Margin/VBox/ScrollContainer/FilesVBox")

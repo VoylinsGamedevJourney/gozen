@@ -5,6 +5,7 @@ extends Control
 @export var title_label: Label
 @export var progress_bar: ProgressBar
 @export var progress_hint: Label
+@export var status_hbox: HBoxContainer
 @export var estimated_time_label: Label
 @export var scroll_container: ScrollContainer
 @export var vbox: VBoxContainer

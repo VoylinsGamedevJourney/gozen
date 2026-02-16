@@ -40,11 +40,7 @@ var custom_profile_id_start: int = 0
 func _ready() -> void:
 	RenderManager.update_encoder_status.connect(update_encoder_status)
 	button_save_render_profile.visible = false
-
-	# Setup the codec option buttons.
 	_setup_codec_option_buttons()
-
-	# Adding render profiles
 	_add_default_profiles()
 
 	# Adding custom render profiles
@@ -63,9 +59,7 @@ func _ready() -> void:
 	threads_spin_box.set_value_no_signal(OS.get_processor_count() - 1)
 	threads_spin_box.max_value = OS.get_processor_count()
 
-	# Render audio by default.
 	_on_render_audio_check_button_toggled(true)
-
 	option_button_render_profiles.select(0) # Setting "YouTube" as default.
 	button_save_render_profile.visible = false
 
@@ -286,7 +280,15 @@ func _show_error(message: String) -> void:
 func _on_start_render_button_pressed() -> void:
 	# Disk space check
 	# NOTE: This needs to improve later on to create an estimate instead of 500MB.
-	var dir: DirAccess = DirAccess.open(path_line_edit.text.get_base_dir())
+	var video_codec_id: int = video_codec_option_button.get_selected_id()
+	var audio_codec_id: int = audio_codec_option_button.get_selected_id()
+	var export_path: String = path_line_edit.text
+	if export_path.is_empty():
+		export_path = Project.get_project_base_folder()
+		export_path += "/%s" % Project.get_project_name()
+		export_path += Utils.get_video_extension(video_codec_id)
+
+	var dir: DirAccess = DirAccess.open(export_path.get_base_dir())
 	if dir.get_space_left() < 500 * 1024 * 1024:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
@@ -306,15 +308,15 @@ func _on_start_render_button_pressed() -> void:
 	# Printing info about the rendering process.
 	print("--------------------")
 	Print.header("Rendering process started")
-	Print.info("Path", path_line_edit.text)
+	Print.info("Path", export_path)
 	Print.info("Resolution", render_resolution)
 	Print.info("Framerate", Project.data.framerate)
-	Print.info("Video codec", video_codec_option_button.get_selected_id())
+	Print.info("Video codec", video_codec_id)
 	Print.info("CRF", int(0 - video_quality_hslider.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
 	if video_codec_option_button.get_selected_id() == GoZenEncoder.VIDEO_CODEC.V_H264:
 		Print.info("h264 preset", int(video_speed_hslider.value))
-	Print.info("Audio codec", audio_codec_option_button.get_selected_id())
+	Print.info("Audio codec", audio_codec_id)
 	Print.info("Cores/threads", threads_spin_box.value)
 	Print.info("Frames to process", end + 1)
 	print("--------------------")
@@ -357,12 +359,12 @@ func _on_start_render_button_pressed() -> void:
 	RenderManager.encoder = GoZenEncoder.new()
 	RenderManager.encoder.set_resolution(render_resolution)
 	RenderManager.encoder.set_framerate(Project.data.framerate)
-	RenderManager.encoder.set_file_path(path_line_edit.text)
-	RenderManager.encoder.set_video_codec_id(video_codec_option_button.get_selected_id())
+	RenderManager.encoder.set_file_path(export_path)
+	RenderManager.encoder.set_video_codec_id(video_codec_id)
 	RenderManager.encoder.set_crf(int(0 - video_quality_hslider.value))
 	RenderManager.encoder.set_h264_preset(int(video_speed_hslider.value))
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
-	RenderManager.encoder.set_audio_codec_id(audio_codec_option_button.get_selected_id())
+	RenderManager.encoder.set_audio_codec_id(audio_codec_id)
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
 	await RenderManager.start_encoder()
 

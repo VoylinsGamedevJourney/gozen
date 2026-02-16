@@ -336,7 +336,7 @@ msgid "Cut clip"
 msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:662
-msgid "Add clip only video isntance"
+msgid "Add clip only video instance"
 msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:665

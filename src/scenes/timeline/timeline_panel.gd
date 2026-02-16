@@ -927,7 +927,7 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if clip_type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
-		popup.add_item(tr("Add clip only video isntance"), POPUP_ACTION.CLIP_VIDEO_ONLY)
+		popup.add_item(tr("Add clip only video instance"), POPUP_ACTION.CLIP_VIDEO_ONLY)
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
 	if clip_effects.ato_id != -1: # Can only be not -1 if clip is video
 		if clip_effects.ato_active:
