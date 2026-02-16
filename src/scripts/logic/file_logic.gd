@@ -278,15 +278,55 @@ func paste_image(image: Image) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func apply_audio_take_over(file_id: int, audio_file_id: int, offset: float) -> void:
-	if !index_map.has(file_id):
+func apply_audio_take_over(file: int, audio_file: int, offset: float) -> void:
+	if !index_map.has(file):
 		return
+	var active: bool = audio_file != -1
+	var affected_clips: PackedInt64Array = []
+	for clip_index: int in project_data.clips_file.size():
+		if project_data.clips_file[clip_index] == file:
+			affected_clips.append(project_data.clips[clip_index])
+
+	if affected_clips.is_empty():
+		_commit_ato(file, active, audio_file, offset, false, [])
+		return
+
+	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
+		tr("Update existing clips?"),
+		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the Audio-Take-Over changes to all existing clips?") % affected_clips.size())
+	dialog.get_ok_button().text = tr("Apply to All")
+	dialog.get_cancel_button().text = tr("Cancel")
+	dialog.add_button(tr("Apply to File Only"), true, "file_only")
+	dialog.confirmed.connect(func() -> void:
+		_commit_ato(file, active, audio_file, offset, true, affected_clips))
+	dialog.custom_action.connect(func(action: String) -> void:
+		if action == "file_only":
+			_commit_ato(file, active, audio_file, offset, false, [])
+			dialog.hide())
+	dialog.popup_centered()
+
+
+func _commit_ato(file_id: int, active: bool, audio_file: int, offset: float, update_clips: bool, clips: PackedInt64Array) -> void:
 	var old_active: bool = project_data.files_ato_active.get(file_id, false)
 	var old_file: int = project_data.files_ato_file.get(file_id, -1)
 	var old_offset: float = project_data.files_ato_offset.get(file_id, 0.0)
+
 	InputManager.undo_redo.create_action("Set file audio-take-over")
-	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file_id, true, audio_file_id, offset))
+	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file_id, active, audio_file, offset))
 	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(file_id, old_active, old_file, old_offset))
+
+	if update_clips: # Clips Undo/Redo
+		for clip_id: int in clips:
+			var clip_index: int = Project.clips.index_map[clip_id]
+			var effects: ClipEffects = project_data.clips_effects[clip_index]
+			var old_clipt_ato_active: bool = effects.ato_active
+			var old_clip_ato_id: int = effects.ato_id
+			var old_clip_ato_offset: float = effects.ato_offset
+			InputManager.undo_redo.add_do_method(
+					Project.clips._apply_audio_take_over.bind(clip_id, active, audio_file, offset))
+			InputManager.undo_redo.add_undo_method(
+					Project.clips._apply_audio_take_over.bind(
+							clip_id, old_clipt_ato_active, old_clip_ato_id, old_clip_ato_offset))
 	InputManager.undo_redo.commit_action()
 
 

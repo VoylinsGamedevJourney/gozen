@@ -590,9 +590,12 @@ func _get_fade_target() -> FadeTarget:
 
 func _project_ready() -> void:
 	custom_minimum_size.y = TRACK_TOTAL_SIZE * Project.data.tracks_is_muted.size()
+	Project.clips.added.connect(draw_clips.queue_redraw.unbind(1))
+	Project.clips.deleted.connect(draw_clips.queue_redraw.unbind(1))
+	Project.clips.updated.connect(draw_clips.queue_redraw)
 	Project.markers.added.connect(draw_markers.queue_redraw.unbind(1))
-	Project.markers.updated.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.removed.connect(draw_markers.queue_redraw.unbind(1))
+	Project.markers.updated.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.moving.connect(draw_markers.queue_redraw)
 	draw_all()
 

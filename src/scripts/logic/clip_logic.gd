@@ -363,13 +363,15 @@ func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Arra
 	return new_effects
 
 
-func apply_audio_take_over(clip: int, audio_file_id: int, offset: float) -> void:
+func apply_audio_take_over(clip: int, audio_file: int, offset: float) -> void:
 	if !index_map.has(clip):
 		return
 	var clip_index: int = index_map[clip]
 	var effects: ClipEffects = project_data.clips_effects[clip_index]
-	InputManager.undo_redo.create_action("Set clip audio-take-over")
-	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(clip, true, audio_file_id, offset))
+	var active: bool = audio_file != -1
+
+	InputManager.undo_redo.create_action("Set clip Audio-Take-Over")
+	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(clip, active, audio_file, offset))
 	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(clip, effects.ato_active, effects.ato_id, effects.ato_offset))
 	InputManager.undo_redo.commit_action()
 

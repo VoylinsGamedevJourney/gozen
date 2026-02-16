@@ -117,15 +117,8 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				else:
 					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
-
 			if Project.data.files_type.has(EditorCore.TYPE.AUDIO):
 				popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-				if Project.data.files_ato_file.has(file_id):
-					if Project.data.files_ato_active[file_id]:
-						popup.add_item(tr("Disable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE)
-					else:
-						popup.add_item(tr("Enable audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE)
-
 			popup.add_item(tr("Extract audio to file ..."), POPUP_ACTION.EXTRACT_AUDIO)
 		elif file_type == EditorCore.TYPE.TEXT:
 			popup.add_separator(tr("Text options"))
@@ -161,8 +154,6 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		POPUP_ACTION.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
 		POPUP_ACTION.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
 		POPUP_ACTION.AUDIO_TAKE_OVER: _on_popup_action_audio_take_over()
-		POPUP_ACTION.AUDIO_TAKE_OVER_ENABLE: _on_popup_action_audio_take_over_toggle()
-		POPUP_ACTION.AUDIO_TAKE_OVER_DISABLE: _on_popup_action_audio_take_over_toggle()
 
 		POPUP_ACTION.FOLDER_CREATE: _on_popup_action_folder_create()
 		POPUP_ACTION.FOLDER_RENAME: _on_popup_action_folder_rename()
@@ -294,10 +285,6 @@ func _on_popup_action_audio_take_over() -> void:
 	var file_id: int = tree.get_selected().get_metadata(0)
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
 	popup.call("load_data", file_id, true)
-
-
-func _on_popup_action_audio_take_over_toggle() -> void:
-	Project.files.toggle_ato(tree.get_selected().get_metadata(0) as int)
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:

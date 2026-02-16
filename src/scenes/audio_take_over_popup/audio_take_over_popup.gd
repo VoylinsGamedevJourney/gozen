@@ -38,9 +38,14 @@ func load_data(id: int, is_file: bool) -> void:
 		file_a_index = Project.files.index_map[file_a]
 		file_a_wave.set("file_id", file_a)
 
-	var item_id: int = 0
+	var item_id: int = 1 # We start at 1 due to adding "None".
 	var audio_files: PackedInt64Array = Project.files.get_all_audio_files()
 	file_b_list.clear()
+
+	# Add none option. (For deleting ATO)
+	file_b_list.add_item(tr("None"))
+	file_b_list.set_item_metadata(0, -1)
+
 	audio_files.sort()
 	for audio_file: int in audio_files:
 		var file_index: int = Project.files.index_map[audio_file]
@@ -82,8 +87,12 @@ func _on_audio_file_offset_spin_box_value_changed(value: float) -> void:
 
 func _on_audio_file_option_button_item_selected(index: int) -> void:
 	file_b_index = file_b_list.get_item_metadata(index)
-	file_b_wave.set("file_id", file_b_index)
-	file_b_player.stream = Project.files.file_data[file_b_index]
+	if file_b_index == -1:
+		file_b_wave.set("file_id", -1)
+		file_b_player.stream = null
+	else:
+		file_b_wave.set("file_id", file_b_index)
+		file_b_player.stream = Project.files.file_data[file_b_index]
 
 
 func _on_cancel_button_pressed() -> void:

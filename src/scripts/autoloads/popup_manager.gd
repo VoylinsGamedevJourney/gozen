@@ -111,6 +111,17 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 	return dialog
 
 
+func create_confirmation_dialog(title: String, text: String) -> ConfirmationDialog:
+	var dialog: ConfirmationDialog = ConfirmationDialog.new()
+	var use_native_dialog: bool = Settings.get_use_native_dialog()
+
+	dialog.force_native = use_native_dialog
+	dialog.title = title
+	dialog.dialog_text = text
+	_control.add_child(dialog)
+	return dialog
+
+
 func create_menu(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
 	if !permanent:
