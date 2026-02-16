@@ -61,7 +61,9 @@ func load_data(id: int, is_file: bool) -> void:
 
 
 func _on_take_over_audio_button_pressed() -> void:
-	var file_b_id: int = Project.data.files[file_b_index]
+	var file_b_id: int = -1
+	if file_b_index != -1:
+		file_b_id = Project.data.files[file_b_index]
 	if current_file_id != -1: # file
 		Project.files.apply_audio_take_over(current_file_id, file_b_id, offset_spinbox.value)
 	elif current_clip_id != -1: # Clip
@@ -91,7 +93,8 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 		file_b_wave.set("file_id", -1)
 		file_b_player.stream = null
 	else:
-		file_b_wave.set("file_id", file_b_index)
+		var file: int = Project.data.files[file_b_index]
+		file_b_wave.set("file_id", file)
 		file_b_player.stream = Project.files.file_data[file_b_index]
 
 

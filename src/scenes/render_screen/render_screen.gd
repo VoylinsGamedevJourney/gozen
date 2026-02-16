@@ -38,6 +38,7 @@ var custom_profile_id_start: int = 0
 
 
 func _ready() -> void:
+	Project.project_ready.connect(_on_project_ready)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
 	button_save_render_profile.visible = false
 	_setup_codec_option_buttons()
@@ -284,9 +285,7 @@ func _on_start_render_button_pressed() -> void:
 	var audio_codec_id: int = audio_codec_option_button.get_selected_id()
 	var export_path: String = path_line_edit.text
 	if export_path.is_empty():
-		export_path = Project.get_project_base_folder()
-		export_path += "/%s" % Project.get_project_name()
-		export_path += Utils.get_video_extension(video_codec_id)
+		export_path = Project.get_project_path().get_basename() + _get_current_extension()
 
 	var dir: DirAccess = DirAccess.open(export_path.get_base_dir())
 	if dir.get_space_left() < 500 * 1024 * 1024:
