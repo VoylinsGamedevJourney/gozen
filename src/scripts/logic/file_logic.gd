@@ -563,7 +563,7 @@ func _check_if_modified(file_index: int) -> void:
 func get_all_audio_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
 	for index: int in project_data.files_type.size():
-		if project_data.files_type[index] != EditorCore.TYPE.AUDIO:
+		if project_data.files_type[index] in EditorCore.AUDIO_TYPES:
 			data.append(project_data.files[index])
 	return data
 

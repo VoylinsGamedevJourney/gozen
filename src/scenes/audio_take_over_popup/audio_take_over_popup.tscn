@@ -112,6 +112,7 @@ layout_mode = 2
 size_flags_vertical = 4
 text_overrun_behavior = 3
 fit_to_longest_item = false
+allow_reselect = true
 
 [node name="FileBColorRect" type="ColorRect" parent="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid" unique_id=325344312]
 custom_minimum_size = Vector2(0, 40)
