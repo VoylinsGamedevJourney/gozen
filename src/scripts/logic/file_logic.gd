@@ -277,6 +277,26 @@ func paste_image(image: Image) -> void:
 	InputManager.undo_redo.commit_action()
 
 
+func apply_audio_take_over(file_id: int, audio_file_id: int, offset: float) -> void:
+	if !index_map.has(file_id):
+		return
+	var old_active: bool = project_data.files_ato_active.get(file_id, false)
+	var old_file: int = project_data.files_ato_file.get(file_id, -1)
+	var old_offset: float = project_data.files_ato_offset.get(file_id, 0.0)
+	InputManager.undo_redo.create_action("Set file audio-take-over")
+	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file_id, true, audio_file_id, offset))
+	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(file_id, old_active, old_file, old_offset))
+	InputManager.undo_redo.commit_action()
+
+
+func _apply_audio_take_over(file_id: int, active: bool, audio_file_id: int, offset: float) -> void:
+	project_data.files_ato_active[file_id] = active
+	project_data.files_ato_file[file_id] = audio_file_id
+	project_data.files_ato_offset[file_id] = offset
+	Project.unsaved_changes = true
+	ato_changed.emit(file_id)
+
+
 # --- File dropping ---
 
 ## File dropping can't be un-done with the undo_redo system!
@@ -355,9 +375,12 @@ func load_data(file_index: int) -> void:
 			Threader.add_task(_load_video.bind(file_id), video_loaded.emit.bind(file_id))
 		EditorCore.TYPE.AUDIO:
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-			if stream.open(path) and stream.get_length() != 0:
+			if stream.open(path) == OK and stream.get_length() != 0:
 				file_data[file_index] = stream
 				Threader.add_task(_create_wave.bind(file_id), _on_wave_ready)
+			else:
+				printerr("FileLogic: Couldn't open audio stream!")
+				file_data[file_index] = AudioStreamWAV.new()
 		EditorCore.TYPE.PCK:
 			if !ProjectSettings.load_resource_pack(path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
@@ -449,7 +472,7 @@ func _on_wave_ready() -> void:
 
 
 func generate_audio_thumb(file_id: int) -> Image:
-	if audio_wave[file_id].size() <= 0:
+	if !audio_wave.has(file_id) or audio_wave[file_id].size() <= 0:
 		return null # Up to the file panel to try and fetch later.
 
 	var thumb_size: Vector2i = Vector2i(854, 480)

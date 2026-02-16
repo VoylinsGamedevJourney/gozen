@@ -363,6 +363,27 @@ func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Arra
 	return new_effects
 
 
+func apply_audio_take_over(clip: int, audio_file_id: int, offset: float) -> void:
+	if !index_map.has(clip):
+		return
+	var clip_index: int = index_map[clip]
+	var effects: ClipEffects = project_data.clips_effects[clip_index]
+	InputManager.undo_redo.create_action("Set clip audio-take-over")
+	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(clip, true, audio_file_id, offset))
+	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(clip, effects.ato_active, effects.ato_id, effects.ato_offset))
+	InputManager.undo_redo.commit_action()
+
+
+func _apply_audio_take_over(clip: int, active: bool, audio_file_id: int, offset: float) -> void:
+	var clip_index: int = index_map[clip]
+	var effects: ClipEffects = project_data.clips_effects[clip_index]
+	effects.ato_active = active
+	effects.ato_id = audio_file_id
+	effects.ato_offset = offset
+	Project.unsaved_changes = true
+	updated.emit()
+
+
 # --- Playback helpers ---
 
 func load_frame(clip: int, frame_nr: int) -> void:

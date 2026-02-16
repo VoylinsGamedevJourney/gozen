@@ -107,6 +107,9 @@ func _gen_thumb(file_id: int) -> void:
 			var video: GoZenVideo = temp
 			image = video.generate_thumbnail_at_frame(0)
 
+	if !image: # TODO: Run this function a second or so later as the data will probably be ready by now.
+		return
+
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
 	if file_type != EditorCore.TYPE.AUDIO:
 		image = scale_thumbnail(image)
