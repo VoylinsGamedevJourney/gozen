@@ -34,12 +34,12 @@ func load_data(id: int, is_file: bool) -> void:
 	else:
 		current_clip_id = id
 		var clip_index: int = Project.clips.index_map[current_clip_id]
-		file_a_index = Project.data.clips_file[clip_index]
-		file_a_wave.set("file_id", Project.files.index_map[file_a_index])
+		var file_a: int = Project.data.clips_file[clip_index]
+		file_a_index = Project.files.index_map[file_a]
+		file_a_wave.set("file_id", file_a)
 
 	var item_id: int = 0
 	var audio_files: PackedInt64Array = Project.files.get_all_audio_files()
-
 	file_b_list.clear()
 	audio_files.sort()
 	for audio_file: int in audio_files:

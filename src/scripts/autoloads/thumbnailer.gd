@@ -13,11 +13,13 @@ var data: Dictionary[String, int] = {}  ## { thumb_path : int }
 var thumbs_todo: PackedInt64Array = []
 
 
+
 func _ready() -> void:
+	Project.project_ready.connect(_on_project_ready)
+
 	# Create the thumb directory if not existing.
 	if !DirAccess.dir_exists_absolute(thumb_folder):
 		var base_cache_dir: String = thumb_folder.trim_suffix("thumbs/")
-
 		if DirAccess.make_dir_absolute(base_cache_dir):
 			printerr("FilePanel: Couldn't create folder at %s!" % base_cache_dir)
 		if DirAccess.make_dir_absolute(thumb_folder):
@@ -26,6 +28,10 @@ func _ready() -> void:
 	# Create the thumb data file if not existing.
 	if !FileAccess.file_exists(thumb_folder + DATA_NAME):
 		_save_data()
+
+
+func _on_project_ready() -> void:
+	Project.files.audio_wave_generated.connect(_on_audio_wave_generated)
 
 
 func _process(_delta: float) -> void:
@@ -120,6 +126,20 @@ func _gen_thumb(file_id: int) -> void:
 	data[file_path] = file_id
 	_save_data()
 	Threader.mutex.unlock()
+
+
+func _on_audio_wave_generated(file: int) -> void:
+	var file_index: int = Project.files.index_map[file]
+	var file_path: String = Project.data.files_path[file_index]
+
+	# Remove the potentially flat/empty cached thumbnail data
+	if data.has(file_path):
+		Threader.mutex.lock()
+		data.erase(file_path)
+		Threader.mutex.unlock()
+
+	# Queue this file for immediate thumbnail regeneration
+	thumbs_todo.insert(0, file)
 
 
 func scale_thumbnail(image: Image) -> Image:

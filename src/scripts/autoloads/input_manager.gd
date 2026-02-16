@@ -44,7 +44,7 @@ func _input(event: InputEvent) -> void:
 		if !undo_redo.redo(): printerr("InputManager:
 			Couldn't redo!")
 	elif event.is_action_pressed("switch_screen"):
-		if RenderManager.encoder == null and !RenderManager.encoder.is_open():
+		if RenderManager.encoder == null or !RenderManager.encoder.is_open():
 			switch_screen()
 
 

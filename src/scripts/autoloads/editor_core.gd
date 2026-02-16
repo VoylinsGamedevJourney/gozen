@@ -74,6 +74,7 @@ func _on_project_ready() -> void:
 	project_tracks.updated.connect(_rebuild_structure)
 	project_files.reloaded.connect(_on_clips_updated.unbind(1))
 	project_files.video_loaded.connect(_on_clips_updated.unbind(1))
+	project_files.ato_changed.connect(_on_clips_updated.unbind(1))
 	_rebuild_structure()
 	set_frame(project_data.playhead)
 

@@ -9,6 +9,7 @@ signal reloaded(file_id: int)
 signal path_updated(file_id: int)
 signal nickname_changed(file_id: int)
 signal ato_changed(file_id: int)
+signal audio_wave_generated(file_id: int)
 
 signal video_loaded(file_id: int)
 
@@ -377,7 +378,7 @@ func load_data(file_index: int) -> void:
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 			if stream.open(path) == OK and stream.get_length() != 0:
 				file_data[file_index] = stream
-				Threader.add_task(_create_wave.bind(file_id), _on_wave_ready)
+				Threader.add_task(_create_wave.bind(file_id), _on_wave_ready.bind(file_id))
 			else:
 				printerr("FileLogic: Couldn't open audio stream!")
 				file_data[file_index] = AudioStreamWAV.new()
@@ -390,8 +391,8 @@ func load_data(file_index: int) -> void:
 			#pck_instances[file_id] = packed_scene.instantiate()
 
 
-func _load_video(file_id: int, clip_id: int = -1) -> void:
-	var index: int = index_map[file_id]
+func _load_video(file: int, clip: int = -1) -> void:
+	var index: int = index_map[file]
 	var path: String = project_data.files_path[index]
 	var temp_video: GoZenVideo = GoZenVideo.new()
 	var path_to_load: String = path
@@ -404,11 +405,11 @@ func _load_video(file_id: int, clip_id: int = -1) -> void:
 		return printerr("FileData: Couldn't open video at path '%s'!" % path)
 
 	Threader.mutex.lock()
-	if clip_id != -1: # Clip only video got requested
-		clip_video_instances[clip_id] = temp_video
+	if clip != -1: # Clip only video got requested
+		clip_video_instances[clip] = temp_video
 	else:
 		file_data[index] = temp_video
-		Threader.add_task(_create_wave.bind(file_id), _on_wave_ready)
+		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 
 	# TODO: Check if this is needed:
 	#var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
@@ -423,6 +424,7 @@ func _load_video(file_id: int, clip_id: int = -1) -> void:
 func _create_wave(file_id: int) -> void:
 	# TODO: Large audio lengths will still crash this function. Could possibly
 	# use the get_audio improvements by cutting the data into pieces.
+	# TODO: We should check if the amplification
 	var file_index: int = index_map[file_id]
 	var file_path: String = project_data.files_path[file_index]
 	var data: PackedByteArray = GoZenAudio.get_audio_data(file_path, -1)
@@ -462,23 +464,23 @@ func _create_wave(file_id: int) -> void:
 		# Incase we close the editor whilst wave data is still being created.
 		if audio_wave[file_id].size() == 0:
 			return
-
 		audio_wave[file_id][i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
 
 
-func _on_wave_ready() -> void:
+func _on_wave_ready(file: int) -> void:
 	Settings.on_waveform_update.emit()
+	audio_wave_generated.emit(file)
 
 
-func generate_audio_thumb(file_id: int) -> Image:
-	if !audio_wave.has(file_id) or audio_wave[file_id].size() <= 0:
+func generate_audio_thumb(file: int) -> Image:
+	if !audio_wave.has(file) or audio_wave[file].size() <= 0:
 		return null # Up to the file panel to try and fetch later.
 
 	var thumb_size: Vector2i = Vector2i(854, 480)
 	var thumb: Image = Image.create_empty(thumb_size.x, thumb_size.y, false, Image.FORMAT_RGB8)
 
-	var data_size: int = audio_wave[file_id].size()
+	var data_size: int = audio_wave[file].size()
 	var data_per_pixel: float = float(data_size) / thumb_size.x
 	var center: int = int(float(thumb_size.y) / 2)
 	var amp: int = int(float(thumb_size.y) / 2 * 0.9)
@@ -492,7 +494,7 @@ func generate_audio_thumb(file_id: int) -> Image:
 		if start_index >= end_index:
 			continue # No data/End of data
 		for i: int in range(start_index, end_index):
-			max_amp = max(max_amp, audio_wave[file_id][i])
+			max_amp = max(max_amp, audio_wave[file][i])
 
 		var half_height: int = floori(max_amp * amp)
 		var y_top: int = clamp(center - half_height, 0, thumb_size.y - 1)
