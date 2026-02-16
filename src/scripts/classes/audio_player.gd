@@ -7,8 +7,8 @@ var bus_name: String
 var bus_index: int = -1
 
 var stop_frame: int = -1
-var file_id: int = -1
-var clip_id: int = -1
+var file: int = -1
+var clip: int = -1
 
 var project_data: ProjectData
 
@@ -29,7 +29,7 @@ func is_playing() -> bool:
 
 
 func play(value: bool) -> void:
-	if stop_frame != -1 or clip_id != -1:
+	if stop_frame != -1 or clip != -1:
 		player.stream_paused = !value
 
 
@@ -38,18 +38,18 @@ func stop() -> void:
 		player.stop()
 	player.stream_paused = true
 	stop_frame = -1
-	clip_id = -1
+	clip = -1
 
 
-func set_audio(audio_clip_id: int) -> void:
-	if audio_clip_id == -1:
+func set_audio(audio_clip: int) -> void:
+	if audio_clip == -1:
 		return stop()
 	if RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return
-	if !project_data.clips.has(audio_clip_id):
+	if !project_data.clips.has(audio_clip):
 		return stop()
 
-	var clip_index: int = Project.clips.index_map[audio_clip_id]
+	var clip_index: int = Project.clips.index_map[audio_clip]
 	var clip_effects: ClipEffects = project_data.clips_effects[clip_index]
 	var clip_file: int = project_data.clips_file[clip_index]
 	var clip_start: int = project_data.clips_start[clip_index]
@@ -58,16 +58,21 @@ func set_audio(audio_clip_id: int) -> void:
 	var clip_end: int = clip_start + clip_duration
 
 	# Audio-take-over logic.
-	var target_file_id: int = clip_file
+	var target_file: int = clip_file
 	var time_offset: float = 0.0
 	if clip_effects.ato_active and clip_effects.ato_id != -1:
-		target_file_id = clip_effects.ato_id
+		target_file = clip_effects.ato_id
 		time_offset = clip_effects.ato_offset
+	elif project_data.files_ato_active.get(clip_file, false):
+		var file_ato_id: int = project_data.files_ato_file.get(clip_file, -1)
+		if file_ato_id != -1:
+			target_file = file_ato_id
+			time_offset = project_data.files_ato_offset.get(clip_file, 0.0)
 
 	# Getting file data.
-	if !Project.files.index_map.has(target_file_id):
+	if !Project.files.index_map.has(target_file):
 		return stop()
-	var file_index: int = Project.files.index_map[target_file_id]
+	var file_index: int = Project.files.index_map[target_file]
 	var file_data: Variant = Project.files.file_data[file_index]
 	var stream: AudioStream = null
 
@@ -83,15 +88,14 @@ func set_audio(audio_clip_id: int) -> void:
 		return stop() # No valid data found for stream.
 
 	# Managing state.
-	var old_file_id: int = file_id
-	var old_clip_id: int = clip_id
-
-	file_id = target_file_id
-	clip_id = audio_clip_id
+	var old_file: int = file
+	var old_clip: int = clip
+	file = target_file
+	clip = audio_clip
 	stop_frame = clip_end
 
 	# Effecs setup.
-	if old_clip_id != clip_id:
+	if old_clip != clip:
 		_setup_bus_effects(clip_effects.audio)
 	elif AudioServer.get_bus_effect_count(bus_index) != clip_effects.audio.size():
 		_setup_bus_effects(clip_effects.audio)
@@ -109,7 +113,7 @@ func set_audio(audio_clip_id: int) -> void:
 		return # No seeking out of bounds.
 
 	# Set stream if changed.
-	if old_file_id != file_id or player.stream != stream:
+	if old_file != file or player.stream != stream:
 		player.stream = stream
 		player.play(position)
 		player.stream_paused = !EditorCore.is_playing

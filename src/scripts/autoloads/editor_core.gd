@@ -135,7 +135,7 @@ func _on_clips_updated() -> void:
 func _check_clip(track_id: int, new_frame_nr: int) -> bool:
 	var clip_id: int = loaded_clips[track_id]
 	if clip_id == -1:
-		if audio_players[track_id].clip_id != -1:
+		if audio_players[track_id].clip != -1:
 			audio_players[track_id].stop()
 		return false
 
@@ -179,7 +179,7 @@ func set_frame_nr(value: int) -> void:
 		# Next frame.
 		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
 		if id != -1:
-			if audio_players[i].clip_id != id:
+			if audio_players[i].clip != id:
 				audio_players[i].set_audio(id)
 			else:
 				audio_players[i].update_effects(project_clips.index_map[id])
@@ -233,7 +233,7 @@ func find_audio(frame: int, track_id: int) -> int:
 
 func update_audio() -> void:
 	for player: AudioPlayer in audio_players:
-		var clip_id: int = player.clip_id
+		var clip_id: int = player.clip
 		if clip_id == -1:
 			continue
 		elif !project_clips.index_map.has(clip_id):
