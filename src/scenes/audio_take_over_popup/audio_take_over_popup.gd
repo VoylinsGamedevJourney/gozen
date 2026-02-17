@@ -1,7 +1,9 @@
 extends Control
 # TODO: When this is done for a file with existing clips attached, we should
 # show a different popup which asks if we want to update the existing clips too.
-# TODO: We should show where in the audio wave where the playback is.
+
+const PREVIEW_DURATION: float = 10.0
+
 
 @export var video_file_label: Label
 @export var audio_play_button: TextureButton
@@ -20,9 +22,32 @@ var current_clip_id: int = -1
 var file_b_index: int = -1
 
 
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		PopupManager.close_all()
+	if event.is_action_pressed("timeline_play_pause"):
+		var is_playing: bool = file_a_player.playing
+		if !is_playing:
+			_start_playback(file_a_wave.get("playback_position") as float)
+		else:
+			_stop_playback()
+		get_viewport().set_input_as_handled()
+
+
+func _process(_delta: float) -> void:
+	if !file_a_player.playing:
+		return
+
+	var playback_position: float = file_a_player.get_playback_position()
+	if playback_position >= PREVIEW_DURATION:
+		_stop_playback()
+		playback_position = 0.0
+
+	file_a_wave.set("playback_position", playback_position)
+	file_b_wave.set("playback_position", playback_position)
+	file_a_wave.queue_redraw()
+	file_b_wave.queue_redraw()
 
 
 func load_data(id: int, is_file: bool) -> void:
@@ -72,19 +97,18 @@ func _on_take_over_audio_button_pressed() -> void:
 
 
 func _on_play_audio_button_pressed() -> void:
-	# TODO: Let the user decide the start position for playback
-	if file_a_player.playing:
-		audio_play_button.texture_normal = load(Library.ICON_PLAY)
-		file_a_player.stop()
-		file_b_player.stop()
+	if file_a_player.playing or file_b_player.playing:
+		_stop_playback()
 	else:
-		audio_play_button.texture_normal = load(Library.ICON_PAUSE)
-		file_a_player.play(0)
-		file_b_player.play(0)
+		_start_playback(file_a_wave.get("playback_position") as float)
 
 
 func _on_audio_file_offset_spin_box_value_changed(value: float) -> void:
 	file_b_wave.set("wave_offset", value)
+	if file_a_player.playing:
+		var playback_position: float = file_a_player.get_playback_position()
+		_stop_playback()
+		_start_playback(playback_position)
 
 
 func _on_audio_file_option_button_item_selected(index: int) -> void:
@@ -99,4 +123,38 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 
 
 func _on_cancel_button_pressed() -> void:
+	_stop_playback()
 	PopupManager.close_all()
+
+
+func _start_playback(start_time: float) -> void:
+	audio_play_button.texture_normal = load(Library.ICON_PAUSE)
+	file_a_player.play(start_time)
+
+	if file_b_index != -1: # Start B only if valid and time is past offset.
+		var offset: float = offset_spinbox.value
+		var b_time: float = start_time - offset
+		if b_time >= 0:
+			file_b_player.play(b_time)
+		else:
+			file_b_player.stop()
+
+
+func _stop_playback() -> void:
+	audio_play_button.texture_normal = load(Library.ICON_PLAY)
+	file_a_player.stop()
+	file_b_player.stop()
+
+
+func _on_wave_seek_request(playback_position: float) -> void:
+	var is_playing: bool = file_a_player.playing or file_b_player.playing
+	if is_playing:
+		_stop_playback()
+
+	file_a_wave.set("playback_position", playback_position)
+	file_b_wave.set("playback_position", playback_position)
+	file_a_wave.queue_redraw()
+	file_b_wave.queue_redraw()
+
+	if is_playing:
+		_start_playback(playback_position)
