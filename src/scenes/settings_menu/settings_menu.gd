@@ -3,8 +3,6 @@ extends Control
 # TODO: Add a search bar to find settings more easily.
 # TODO: Add "reset to default" button for everything.
 # TODO: Add "reset to default" button for setting.
-# TODO: Make certain that resolution input is mod-2, if entering a non mod-2
-# number, we can maybe turn the spinbox orange to indicate an issue.
 
 enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
@@ -382,12 +380,12 @@ func create_default_resolution_hbox() -> HBoxContainer:
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(create_spinbox(
 			Settings.get_default_resolution_x(),
-			1, 100, 1, false, true,
+			2, 100000, 2, false, true,
 			Settings.set_default_resolution_x))
 	resolution_hbox.add_child(y_label)
 	resolution_hbox.add_child(create_spinbox(
 			Settings.get_default_resolution_y(),
-			1, 100, 1, false, true,
+			2, 100000, 2, false, true,
 			Settings.set_default_resolution_y))
 	return resolution_hbox
 
