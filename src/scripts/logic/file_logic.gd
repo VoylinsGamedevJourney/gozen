@@ -24,8 +24,10 @@ var file_data: Array = [] ## Can be GoZenVideo, AudioStreamFFmpeg, Texture2D, Co
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
 var audio_wave: Dictionary[int, PackedFloat32Array] = {} ## { file: wave_data }
 var video_pools: Dictionary[int, Array] = {} ## { file: [GoZenVideo] }
+var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
 var index_map: Dictionary[int, int] = {} ## { file: index }
+
 
 
 # --- Main ---
@@ -199,6 +201,10 @@ func _delete(file: int) -> void:
 		for video: GoZenVideo in video_pools[file]:
 			video.close()
 		video_pools.erase(file)
+	if audio_pools.has(file):
+		for stream: AudioStream in audio_pools[file]:
+			stream.free()
+		audio_pools.erase(file)
 
 	_rebuild_map()
 	deleted.emit(file)
@@ -420,6 +426,11 @@ func load_data(file_index: int) -> void:
 		EditorCore.TYPE.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		EditorCore.TYPE.AUDIO:
+			if audio_pools.has(file):
+				for stream: AudioStream in audio_pools[file]:
+					stream.free()
+				audio_pools[file] = []
+
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 			if stream.open(path) == OK and stream.get_length() != 0:
 				file_data[file_index] = stream
@@ -556,6 +567,7 @@ func get_video_reader(file: int, instance_index: int) -> GoZenVideo:
 	var file_index: int = index_map[file]
 	if instance_index == 0:
 		return file_data[file_index]
+
 	Threader.mutex.lock()
 	if not video_pools.has(file):
 		video_pools[file] = []
@@ -583,6 +595,40 @@ func get_video_reader(file: int, instance_index: int) -> GoZenVideo:
 	pool.append(new_video)
 	Threader.mutex.unlock()
 	return new_video
+
+
+func get_audio_stream(file: int, instance_index: int) -> AudioStreamFFmpeg:
+	var file_index: int = index_map[file]
+	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
+
+	if type == EditorCore.TYPE.VIDEO:
+		var video: GoZenVideo = get_video_reader(file, instance_index)
+		return null if video == null else video.get_audio()
+	if instance_index == 0:
+		return file_data[file_index]
+
+	Threader.mutex.lock()
+	if not audio_pools.has(file):
+		audio_pools[file] = []
+
+	var pool: Array = audio_pools[file]
+	var pool_index: int = instance_index - 1
+	if pool_index < pool.size():
+		var stream: AudioStream = pool[pool_index]
+		Threader.mutex.unlock()
+		return stream
+
+	var file_path: String = project_data.files_path[file_index]
+	var new_stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
+	if new_stream.open(file_path) != OK:
+		printerr("FileLogic: Failed to create audio pool instance for '%s'!" % file_path)
+		Threader.mutex.unlock()
+		return file_data[file_index] # Return main audio as fallback.
+
+	pool.append(new_stream)
+	Threader.mutex.unlock()
+	return new_stream
+
 
 
 #-- File creators ---

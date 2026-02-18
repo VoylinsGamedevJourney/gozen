@@ -170,19 +170,32 @@ func set_frame_nr(value: int) -> void:
 			audio_players[i].stop()
 		return
 
+	var audio_file_counter: Dictionary[int, int] = {}
 	frame_nr = value
 	for i: int in audio_players.size():
+		var clip: int = -1
 		if frame_nr != prev_frame + 1: # Reset/update all audio players. (full seek)
 			if loaded_clips.size() > i and loaded_clips[i] != -1:
-				audio_players[i].set_audio(find_audio(frame_nr, i))
+				clip = find_audio(frame_nr, i)
+				if clip == -1:
+					continue
+				var file: int = project_data.clips_file[project_clips.index_map[clip]]
+				if audio_file_counter.has(file):
+					audio_file_counter[file] += 1
+				else:
+					audio_file_counter[file] = 1
+				audio_players[i].set_audio(clip, audio_file_counter[file])
 			continue
+
 		# Next frame.
-		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
-		if id != -1:
-			if audio_players[i].clip != id:
-				audio_players[i].set_audio(id)
+		clip = project_tracks.get_clip_id_at(i, frame_nr)
+		if clip != -1:
+			var file: int = project_data.clips_file[project_clips.index_map[clip]]
+			if audio_file_counter.has(file):
+				audio_file_counter[file] += 1
 			else:
-				audio_players[i].update_effects(project_clips.index_map[id])
+				audio_file_counter[file] = 1
+			audio_players[i].set_audio(clip, audio_file_counter[file])
 		elif audio_players[i].stop_frame == frame_nr:
 			audio_players[i].stop()
 	prev_frame = frame_nr

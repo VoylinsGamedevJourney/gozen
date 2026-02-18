@@ -41,7 +41,7 @@ func stop() -> void:
 	clip = -1
 
 
-func set_audio(audio_clip: int) -> void:
+func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 	if audio_clip == -1:
 		return stop()
 	if RenderManager.encoder != null and RenderManager.encoder.is_open():
@@ -72,18 +72,7 @@ func set_audio(audio_clip: int) -> void:
 	# Getting file data.
 	if !Project.files.index_map.has(target_file):
 		return stop()
-	var file_index: int = Project.files.index_map[target_file]
-	var file_data: Variant = Project.files.file_data[file_index]
-	var stream: AudioStream = null
-
-	if file_data == null:
-		return stop()
-	elif file_data is AudioStream:
-		stream = file_data
-	elif Project.data.files_type[file_index] == EditorCore.TYPE.VIDEO:
-		var video: GoZenVideo = file_data
-		stream = video.get_audio()
-
+	var stream: AudioStream = Project.files.get_audio_stream(target_file, instance_index)
 	if stream == null:
 		return stop() # No valid data found for stream.
 
