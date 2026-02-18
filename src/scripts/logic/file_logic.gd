@@ -88,6 +88,22 @@ func _create_snapshot_temp_image(file: int, temp_file: TempFile) -> Dictionary:
 	}
 
 
+func _create_snapshot_temp_text(file: int, temp_file: TempFile) -> Dictionary:
+	return {
+		"file": file,
+		"path": "temp://text",
+		"nickname": "Text %s" % file,
+		"proxy_path": "",
+		"folder": "/",
+		"type": EditorCore.TYPE.TEXT,
+		"duration": Settings.get_text_duration(),
+		"modified_time": -1,
+
+		"temp_file": temp_file,
+		"ato_active": null, "ato_offset": null, "ato_file": null
+	}
+
+
 # --- Handling ---
 
 func add(paths: PackedStringArray) -> void:
@@ -347,6 +363,26 @@ func _apply_audio_take_over(file: int, active: bool, audio_file_id: int, offset:
 	project_data.files_ato_offset[file] = offset
 	Project.unsaved_changes = true
 	ato_changed.emit(file)
+
+
+func duplicate_text(file: int) -> void:
+	if !index_map.has(file):
+		return
+
+	var original_temp: TempFile = project_data.files_temp_file[file]
+	var new_file: int = Utils.get_unique_id(project_data.files)
+	var new_temp: TempFile = TempFile.new()
+	new_temp.text_data = original_temp.text_data
+	new_temp.font_size = original_temp.font_size
+	new_temp.font = original_temp.font
+	var snapshot: Dictionary = _create_snapshot_temp_text(new_file, new_temp)
+
+	InputManager.undo_redo.create_action("Duplicate Text File")
+	InputManager.undo_redo.add_do_method(_restore_from_snapshot.bind(snapshot))
+	InputManager.undo_redo.add_do_method(_rebuild_map)
+	InputManager.undo_redo.add_undo_method(_delete.bind(new_file))
+	InputManager.undo_redo.add_undo_method(_rebuild_map)
+	InputManager.undo_redo.commit_action()
 
 
 # --- File dropping ---

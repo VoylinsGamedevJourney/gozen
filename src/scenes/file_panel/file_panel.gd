@@ -1,5 +1,4 @@
 extends PanelContainer
-# TODO: Add an indicater for files which are using a proxy clip.
 
 enum POPUP_ACTION {
 	# File actions
@@ -29,8 +28,9 @@ const IMAGE_FORMATS: PackedStringArray = ["*.png", "*.jpg", "*.webp"]
 @export var file_menu_button: MenuButton
 
 
-var folder_items: Dictionary[String, TreeItem] = {}
-var file_items: Dictionary[int, TreeItem] = {} # { file_id: tree_item }
+var folder_items: Dictionary[String, TreeItem] = {} ## { folder_path: tree_item }
+var file_items: Dictionary[int, TreeItem] = {} ## { file: tree_item }
+
 
 
 func _ready() -> void:
@@ -82,7 +82,7 @@ func _file_menu_pressed(id: int) -> void:
 			add_child(dialog)
 			dialog.files_selected.connect(Project.files.dropped)
 			dialog.popup_centered()
-		1: pass # TODO: Add text
+		1: Project.files.add(["temp://text"])
 		2: PopupManager.open(PopupManager.COLOR)
 
 
@@ -160,7 +160,10 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		POPUP_ACTION.FOLDER_DELETE: _on_popup_action_folder_delete()
 
 
-func _on_popup_action_folder_create() -> void: _show_create_folder_dialog()
+func _on_popup_action_folder_create() -> void:
+	_show_create_folder_dialog()
+
+
 func _on_popup_action_folder_rename() -> void:
 	var selected_item: TreeItem = tree.get_selected()
 	var folder_path: String = str(selected_item.get_metadata(0))
@@ -253,13 +256,13 @@ func _on_popup_action_file_extract_audio() -> void:
 
 
 func _on_popup_action_file_duplicate() -> void: # Only for text.
-	var file_id: int = tree.get_selected().get_metadata(0)
-	var file_index: int = Project.files.index_map[file_id]
+	var file: int = tree.get_selected().get_metadata(0)
+	var file_index: int = Project.files.index_map[file]
 	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 
 	if file_type != EditorCore.TYPE.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
-	# TODO: Implement this! Project.files.duplicate_text_file(id)
+	Project.files.duplicate_text(file)
 
 
 func _on_popup_action_file_create_proxy() -> void:
@@ -268,7 +271,6 @@ func _on_popup_action_file_create_proxy() -> void:
 
 func _on_popup_action_file_recreate_proxy() -> void:
 	var file_id: int = tree.get_selected().get_metadata(0)
-
 	ProxyHandler.delete_proxy(file_id)
 	ProxyHandler.request_generation(file_id)
 
