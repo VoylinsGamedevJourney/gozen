@@ -39,10 +39,6 @@ var clips_begin: PackedInt64Array = [] ## Only for video and audio files
 var clips_duration: PackedInt64Array = []
 var clips_effects: Array[ClipEffects] = []
 
-# This variable is only necessary for video files, so only the id's of clips
-# who require an individual video file will be presented here
-var clips_individual_video: PackedInt64Array = [] ## [ clip_id's ]
-
 var markers_frame: PackedInt64Array = []
 var markers_text: PackedStringArray = []
 var markers_type: PackedInt32Array = []

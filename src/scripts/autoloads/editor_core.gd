@@ -196,23 +196,33 @@ func update_frame() -> void:
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
 		frame_nr = new_frame
+
+	var file_access_counter: Dictionary = {} ## { file: count } (Needed for videos)
 	for i: int in loaded_clips.size():
 		# Check if current clip is correct.
 		if _check_clip(i, frame_nr):
-			update_view(i, false)
+			var clip_index: int = project_clips.index_map[loaded_clips[i]]
+			var file: int = project_data.clips_file[clip_index]
+			var instance_index: int = file_access_counter.get(file, 0)
+			file_access_counter[file] = instance_index + 1
+			update_view(i, false, instance_index)
 			continue
 
 		# Getting the next frame if possible.
-		var id: int = project_tracks.get_clip_id_at(i, frame_nr)
-		if id != -1:
-			loaded_clips[i] = id
-			update_view(i, true)
+		var clip: int = project_tracks.get_clip_id_at(i, frame_nr)
+		if clip != -1:
+			loaded_clips[i] = clip
+			var clip_index: int = project_clips.index_map[clip]
+			var file: int = project_data.clips_file[clip_index]
+			var instance_index: int = file_access_counter.get(file, 0)
+			file_access_counter[file] = instance_index + 1
+			update_view(i, true, instance_index)
 			audio_players[i].set_audio(find_audio(frame_nr, i))
-		else:
-			loaded_clips[i] = -1
-			if view_textures[i].texture != null:
-				view_textures[i].texture = null
-
+			continue
+		# No clip at position.
+		loaded_clips[i] = -1
+		if view_textures[i].texture != null:
+			view_textures[i].texture = null
 	if frame_nr == project_data.timeline_end:
 		is_playing = false
 	frame_changed.emit()
@@ -250,7 +260,7 @@ func update_audio() -> void:
 
 # --- Video stuff ---
 
-func update_view(track_id: int, update: bool) -> void:
+func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 	if loaded_clips[track_id] == -1:
 		return
 	var clip_id: int = loaded_clips[track_id]
@@ -269,13 +279,10 @@ func update_view(track_id: int, update: bool) -> void:
 
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_index, true)
 	var effects: Array[GoZenEffectVisual] = project_data.clips_effects[clip_index].video
-	project_clips.load_frame(loaded_clips[track_id], relative_frame)
+	project_clips.load_video_frame(loaded_clips[track_id], relative_frame, instance_index)
 
 	if raw_data is GoZenVideo:
-		var video: GoZenVideo = raw_data
-		var clip_instance: GoZenVideo = project_files.get_video_clip_instance(clip_id)
-		if clip_instance:
-			video = clip_instance
+		var video: GoZenVideo = project_files.get_video_reader(file_id, instance_index)
 		if update:
 			compositors[track_id].initialize_video(video)
 

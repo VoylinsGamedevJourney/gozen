@@ -45,7 +45,7 @@ func set_audio(audio_clip: int) -> void:
 	if audio_clip == -1:
 		return stop()
 	if RenderManager.encoder != null and RenderManager.encoder.is_open():
-		return
+		return stop()
 	if !project_data.clips.has(audio_clip):
 		return stop()
 

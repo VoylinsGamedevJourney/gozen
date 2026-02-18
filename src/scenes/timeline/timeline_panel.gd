@@ -6,12 +6,9 @@ signal zoom_changed(new_zoom: float)
 
 enum POPUP_ACTION {
 	# Clip options
-	CLIP_VIDEO_ONLY,
 	CLIP_DELETE,
 	CLIP_CUT,
 	CLIP_AUDIO_TAKE_OVER,
-	CLIP_AUDIO_TAKE_OVER_ENABLE,
-	CLIP_AUDIO_TAKE_OVER_DISABLE,
 	# Track options
 	REMOVE_EMPTY_SPACE,
 	TRACK_ADD,
@@ -919,7 +916,6 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	var file_id: int = Project.data.clips_file[clip_index]
 	var file_index: int = Project.files.index_map[file_id]
 	var clip_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	if right_click_clip not in selected_clip_ids:
 		selected_clip_ids = [right_click_clip]
 		Project.clips.selected.emit(right_click_clip)
@@ -930,17 +926,7 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if clip_type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
-		popup.add_item(tr("Add clip only video instance"), POPUP_ACTION.CLIP_VIDEO_ONLY)
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
-	if clip_effects.ato_id != -1: # Can only be not -1 if clip is video
-		if clip_effects.ato_active:
-			popup.add_item(
-					tr("Disable clip audio-take-over"),
-					POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_DISABLE)
-		else:
-			popup.add_item(
-					tr("Enable clip audio-take-over"),
-					POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_ENABLE)
 	popup.add_separator(tr("Track options")) # TODO:
 
 
@@ -950,10 +936,7 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 		POPUP_ACTION.CLIP_DELETE: _on_popup_action_clip_delete()
 		POPUP_ACTION.CLIP_CUT: _on_popup_action_clip_cut()
 		# Video options
-		POPUP_ACTION.CLIP_VIDEO_ONLY: _on_popup_action_clip_only_video()
 		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
-		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_ENABLE: _on_popup_action_clip_ato_enable()
-		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER_DISABLE: _on_popup_action_clip_ato_disable()
 		# Track options
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
 		POPUP_ACTION.TRACK_ADD: _on_popup_action_track_add()
@@ -970,20 +953,6 @@ func _on_popup_action_clip_ato() -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
 	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
 	popup.load_data(right_click_clip, false)
-
-
-func _on_popup_action_clip_only_video() -> void:
-	var clip_index: int = Project.clips.index_map[right_click_clip]
-	var file_id: int = Project.data.clips_file[clip_index]
-	Project.files.switch_clip_video_instance(file_id, right_click_clip)
-
-
-func _on_popup_action_clip_ato_enable() -> void:
-	Project.clips.set_ato_active(right_click_clip, true)
-
-
-func _on_popup_action_clip_ato_disable() -> void:
-	Project.clips.set_ato_active(right_click_clip, false)
 
 
 func _on_popup_action_track_add() -> void:

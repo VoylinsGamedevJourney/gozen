@@ -25,8 +25,13 @@ func _ready() -> void:
 		if DirAccess.make_dir_absolute(thumb_folder):
 			printerr("FilePanel: Couldn't create folder at %s!" % thumb_folder)
 
+	var data_path: String = thumb_folder + DATA_NAME
+
 	# Create the thumb data file if not existing.
-	if !FileAccess.file_exists(thumb_folder + DATA_NAME):
+	if FileAccess.file_exists(data_path):
+		var file: FileAccess = FileAccess.open(data_path, FileAccess.READ)
+		data = file.get_var()
+	else:
 		_save_data()
 
 

@@ -388,23 +388,17 @@ func _apply_audio_take_over(clip: int, active: bool, audio_file_id: int, offset:
 
 # --- Playback helpers ---
 
-func load_frame(clip: int, frame_nr: int) -> void:
+func load_video_frame(clip: int, frame_nr: int, instance_index: int = 0) -> void:
 	if !index_map.has(clip):
 		return
 	var clip_index: int = index_map[clip]
 	var clip_type: EditorCore.TYPE = project_data.clips_type[clip_index] as EditorCore.TYPE
-	var file_index: int = project_data.files.find(project_data.clips_file[clip_index])
+	var file: int = project_data.clips_file[clip_index]
 	var video: GoZenVideo = null
 
 	if clip_type not in EditorCore.VISUAL_TYPES:
 		return
-	elif clip_type == EditorCore.TYPE.VIDEO:
-		if project_data.clips_individual_video.has(clip):
-			video = Project.files.clip_video_instances[clip]
-		else:
-			var temp: Variant = Project.files.get_data(file_index)
-			if temp is GoZenVideo:
-				video = temp
+	video = Project.files.get_video_reader(file, instance_index)
 	if video == null:
 		return # Probably still loading.
 
