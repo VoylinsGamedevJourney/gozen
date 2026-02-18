@@ -205,6 +205,11 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_tracks_amount(),
 					1, 32, 1, false, false,
 					Settings.set_tracks_amount),
+			create_label(tr("Track height")),
+			create_spinbox(
+					Settings.get_track_height(),
+					20, 60, 1, false, false,
+					Settings.set_track_height),
 			create_header(tr("Timeline controls")), Control.new(),
 			create_label(tr("Pause after dragging")),
 			create_check_button(

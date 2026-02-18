@@ -23,7 +23,8 @@ var default_framerate: float = 30.0
 var use_proxies: bool = false
 
 # Timeline
-var tracks_amount: int = 6 # The amount of tracks
+var tracks_amount: int = 6 ## The amount of tracks
+var tracks_height: float = 30
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
 var show_time_mode_bar: bool = true

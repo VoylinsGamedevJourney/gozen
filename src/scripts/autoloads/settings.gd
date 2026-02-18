@@ -2,6 +2,7 @@ extends Node
 
 signal on_show_menu_bar_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
+signal on_track_height_changed(value: float)
 signal localization_updated
 
 signal on_waveform_update
@@ -303,6 +304,15 @@ func set_tracks_amount(track_amount: int) -> void:
 
 func get_tracks_amount() -> int:
 	return data.tracks_amount
+
+
+func set_track_height(new_height: float) -> void:
+	data.tracks_height = new_height
+	on_track_height_changed.emit(new_height)
+
+
+func get_track_height() -> float:
+	return data.tracks_height
 
 
 func set_pause_after_drag(value: bool) -> void:
