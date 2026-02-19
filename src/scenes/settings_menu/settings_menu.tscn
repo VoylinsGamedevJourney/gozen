@@ -106,5 +106,8 @@ layout_mode = 2
 [node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin" unique_id=98796412]
 layout_mode = 2
 
+[node name="SpinBox" type="SpinBox" parent="SettingsPanel/Margin/HBox/VBox" unique_id=1963565339]
+layout_mode = 2
+
 [connection signal="text_changed" from="SettingsPanel/Margin/HBox/VBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="pressed" from="SettingsPanel/Margin/HBox/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

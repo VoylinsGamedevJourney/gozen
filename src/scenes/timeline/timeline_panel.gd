@@ -596,7 +596,7 @@ func _project_ready() -> void:
 	Project.markers.removed.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.updated.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.moving.connect(draw_markers.queue_redraw)
-	track_height = Settings.get_track_height()
+	_update_track_height(Settings.get_track_height())
 	draw_all()
 
 
