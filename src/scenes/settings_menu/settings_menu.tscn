@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://bjen0oagwidr7"]
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
+[ext_resource type="Texture2D" uid="uid://c5th80tg7y31u" path="res://assets/icons/search.svg" id="2_p28av"]
 
-[node name="Settings" type="Control" unique_id=2082599071 node_paths=PackedStringArray("panel_label", "side_bar_vbox", "settings_vbox")]
+[node name="Settings" type="Control" unique_id=2082599071 node_paths=PackedStringArray("panel_label", "side_bar_vbox", "search_line_edit", "settings_vbox")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +14,7 @@ theme_type_variation = &"overlay_background"
 script = ExtResource("1_26ncd")
 panel_label = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/PanelLabel")
 side_bar_vbox = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SideBarVBox")
+search_line_edit = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SearchLineEdit")
 settings_vbox = NodePath("SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin/SettingsVBox")
 
 [node name="SettingsPanel" type="PanelContainer" parent="." unique_id=228170693]
@@ -48,6 +50,24 @@ layout_mode = 2
 theme_type_variation = &"title_label"
 text = "Editor settings"
 
+[node name="Spacer3" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=390093640]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+
+[node name="SearchLineEdit" type="LineEdit" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=1672771449]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+placeholder_text = "Search settings ..."
+keep_editing_on_text_submit = true
+emoji_menu_enabled = false
+clear_button_enabled = true
+right_icon = ExtResource("2_p28av")
+icon_expand_mode = 1
+
+[node name="Spacer" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=1334027548]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+
 [node name="SideBarVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=386574672]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
@@ -61,13 +81,14 @@ mouse_default_cursor_shape = 2
 theme_type_variation = &"side_bar_button"
 text = "Close settings"
 
-[node name="Spacer" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=1334027548]
+[node name="Spacer2" type="Control" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=866554171]
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox" unique_id=8772152]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 3
 
 [node name="Scroll" type="ScrollContainer" parent="SettingsPanel/Margin/HBox/VBox" unique_id=576336750]
 layout_mode = 2
@@ -85,4 +106,5 @@ layout_mode = 2
 [node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin" unique_id=98796412]
 layout_mode = 2
 
+[connection signal="text_changed" from="SettingsPanel/Margin/HBox/VBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]
 [connection signal="pressed" from="SettingsPanel/Margin/HBox/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

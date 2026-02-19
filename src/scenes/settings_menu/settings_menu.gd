@@ -9,6 +9,7 @@ enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
 @export var panel_label: Label
 @export var side_bar_vbox: VBoxContainer
+@export var search_line_edit: LineEdit
 @export var settings_vbox: VBoxContainer
 
 
@@ -19,6 +20,7 @@ var listening_active: bool = false
 var listening_action: String = ""
 var listening_index: int = -1
 var listening_button: Button = null
+
 
 
 func _input(event: InputEvent) -> void:
@@ -62,6 +64,7 @@ func set_mode(mode: MODE) -> void:
 func _show_section(section_name: String) -> void:
 	for section: String in sections.keys():
 		sections[section].visible = section == section_name
+	_on_search_line_edit_text_changed(search_line_edit.text)
 
 
 func _add_side_bar_option(section_name: String) -> void:
@@ -461,3 +464,31 @@ func _get_event_text(event: InputEvent) -> String:
 		return event.as_text()
 	var event_key: InputEventKey = event
 	return event_key.as_text_physical_keycode()
+
+
+func _on_search_line_edit_text_changed(new_text: String) -> void:
+	var search: String = new_text.to_lower()
+	for section: String in sections:
+		var grid: GridContainer = sections[section]
+		if !grid.visible:
+			continue
+
+		var children: Array[Node] = grid.get_children()
+		var i: int = 0
+		while i < children.size():
+			var node: Control = children[i]
+			if node is Label and node.theme_type_variation == "title_label":
+				node.visible = true
+				if i + 1 < children.size():
+					(children[i+1] as Control).visible = true
+				i += 2
+			elif node is Label:
+				var label: Label = node
+				var setting_control: Control = children[i+1] if i + 1 < children.size() else null
+				var match_found: bool = search.is_empty() or label.text.to_lower().contains(search)
+				node.visible = match_found
+				if setting_control:
+					setting_control.visible = match_found
+				i += 2
+			else:
+				i += 1
