@@ -236,6 +236,24 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					tr("The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode.")),
 		],
 
+		tr("Performance"): [
+			create_header(tr("Video Decoding")), Control.new(),
+			create_label(tr("Smart Seek Threshold")),
+			create_spinbox(
+					Settings.get_video_smart_seek_threshold(),
+					0, 500, 1, false, true,
+					Settings.set_video_smart_seek_threshold,
+					"",
+					tr("Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU.")),
+			create_label(tr("Video Cache Size")),
+			create_spinbox(
+					Settings.get_video_cache_size(),
+					0, 1000, 1, false, true,
+					Settings.set_video_cache_size,
+					"",
+					tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage."))
+		],
+
 		tr("Markers"): marker_nodes,
 
 		tr("Extras"): [

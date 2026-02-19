@@ -29,6 +29,10 @@ var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
 var show_time_mode_bar: bool = true
 
+# Performance
+var video_smart_seek_threshold: int = 100
+var video_cache_size: int = 100
+
 # Markers
 var marker_names: PackedStringArray = [ "Marker type 1", "Marker type 2", "Marker type 3", "Marker type 4", "Marker type 5" ]
 var marker_colors: PackedColorArray = [ Color.PURPLE, Color.GREEN, Color.BLUE, Color.ORANGE, Color.RED ]

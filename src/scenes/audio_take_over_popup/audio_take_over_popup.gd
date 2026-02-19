@@ -1,6 +1,4 @@
 extends Control
-# TODO: When this is done for a file with existing clips attached, we should
-# show a different popup which asks if we want to update the existing clips too.
 
 const PREVIEW_DURATION: float = 10.0
 

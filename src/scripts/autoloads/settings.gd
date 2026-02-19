@@ -3,6 +3,9 @@ extends Node
 signal on_show_menu_bar_changed(value: bool)
 signal on_show_ram_usage_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
+
+signal on_video_cache_size_changed(value: int)
+signal on_video_smart_seek_threshold(value: int)
 signal on_track_height_changed(value: float)
 signal localization_updated
 
@@ -92,7 +95,8 @@ func get_system_locale() -> String:
 			return loaded_locale
 	return "en" # Return English as a default.
 
-# Appearance set/get
+
+# --- Appearance set/get ---
 
 func set_language(code: String) -> void:
 	data.language = code
@@ -100,10 +104,14 @@ func set_language(code: String) -> void:
 	localization_updated.emit()
 
 
-func apply_language() -> void: TranslationServer.set_locale(get_language())
+func apply_language() -> void:
+	TranslationServer.set_locale(get_language())
 
 
-func get_language() -> String: return data.language
+func get_language() -> String:
+	return data.language
+
+
 func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
@@ -158,7 +166,8 @@ func get_display_scale() -> float:
 	return 1.0
 
 
-func get_display_scale_int() -> int: return int(data.display_scale * 100)
+func get_display_scale_int() -> int:
+	return int(data.display_scale * 100)
 
 
 func set_theme_path(new_path: String) -> void:
@@ -173,7 +182,10 @@ func apply_theme() -> void:
 		get_tree().root.theme = null
 
 
-func get_theme_path() -> String: return data.theme
+func get_theme_path() -> String:
+	return data.theme
+
+
 func get_themes() -> Dictionary[String, String]:
 	var themes: Dictionary[String, String] = {
 		"Default Dark": Library.THEME_DARK,
@@ -236,6 +248,7 @@ func set_use_native_dialog(value: bool) -> void:
 
 func get_use_native_dialog() -> bool:
 	return data.use_native_dialog
+
 
 # --- Defaults set/get ---
 
@@ -362,6 +375,27 @@ func set_show_time_mode_bar(value: bool) -> void:
 
 func get_show_time_mode_bar() -> bool:
 	return data.show_time_mode_bar
+
+
+# --- Performance set/get ---
+
+func set_video_smart_seek_threshold(value: int) -> void:
+	data.video_smart_seek_threshold = value
+	on_video_smart_seek_threshold.emit(value)
+
+
+func get_video_smart_seek_threshold() -> int:
+	return data.video_smart_seek_threshold
+
+
+func set_video_cache_size(value: int) -> void:
+	data.video_cache_size = value
+	on_video_cache_size_changed.emit(value)
+
+
+func get_video_cache_size() -> int:
+	return data.video_cache_size
+
 
 #--- Markers set/get ---
 

@@ -14,6 +14,7 @@ static var marker_type: int = 0 ## We want to save the last used type.
 @export var delete_button: TextureButton
 
 
+
 func _ready() -> void:
 	_setup_type_option_button()
 	accept_event()
@@ -30,7 +31,7 @@ func _ready() -> void:
 	marker_line_edit.select_all()
 	type_option_button.selected = marker_type
 	time_label.text = "%s (Frame: %d)" % [
-			Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.get_framerate(), false),
+			Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.data.framerate, false),
 			EditorCore.frame_nr]
 
 	delete_button.visible = marker_index != -1

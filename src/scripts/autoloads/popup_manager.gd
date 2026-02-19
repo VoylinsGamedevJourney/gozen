@@ -34,6 +34,7 @@ var _control: Control = Control.new()
 var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
 
 
+
 func _ready() -> void:
 	get_window().size_changed.connect(_on_size_changed)
 
@@ -69,10 +70,8 @@ func _open_project_settings(settings_panel: SettingsPanel) -> void:
 func close(popup: int) -> void:
 	if _open_popups.has(popup):
 		_open_popups[popup].queue_free()
-
 		if !_open_popups.erase(popup):
 			printerr("PopupManager: Could not erase popup '%s' from open_popups!" % popup)
-
 	_check_background()
 
 

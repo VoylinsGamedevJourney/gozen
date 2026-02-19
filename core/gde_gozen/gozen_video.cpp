@@ -854,7 +854,6 @@ void GoZenVideo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &GoZenVideo::set_sws_flag_bilinear);
 	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &GoZenVideo::set_sws_flag_bicubic);
 
-	// TODO: Add these to the settings menu
 	ClassDB::bind_method(D_METHOD("set_smart_seek_threshold", "frames"), &GoZenVideo::set_smart_seek_threshold);
 	ClassDB::bind_method(D_METHOD("set_cache_size", "size"), &GoZenVideo::set_cache_size);
 

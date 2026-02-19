@@ -35,6 +35,8 @@ var index_map: Dictionary[int, int] = {} ## { file: index }
 func _init(data: ProjectData) -> void:
 	project_data = data
 	Project.get_window().files_dropped.connect(dropped)
+	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
+	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
 	_rebuild_map()
 
 
@@ -497,6 +499,8 @@ func _load_video(file: int) -> void:
 		return printerr("FileData: Couldn't open video at path '%s'!" % path)
 
 	Threader.mutex.lock()
+	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
+	temp_video.set_cache_size(Settings.get_video_cache_size())
 	file_data[index] = temp_video
 	if video_pools.has(file):
 		for video: GoZenVideo in video_pools[file]:
@@ -628,6 +632,8 @@ func get_video_reader(file: int, instance_index: int) -> GoZenVideo:
 	if new_video.open(path_to_load) != OK:
 		printerr("FileLogic: Failed to create pool instance for '%s'!" % file_path)
 		return file_data[file_index] # Return main video as fallback.
+	new_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
+	new_video.set_cache_size(Settings.get_video_cache_size())
 	pool.append(new_video)
 	Threader.mutex.unlock()
 	return new_video
@@ -715,6 +721,7 @@ func _check_if_modified(file_index: int) -> void:
 
 # --- Getters ---
 
+## Returns all audio file id's.
 func get_all_audio_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
 	for index: int in project_data.files_type.size():
@@ -723,6 +730,7 @@ func get_all_audio_files() -> PackedInt64Array:
 	return data
 
 
+## Returns all video file id's.
 func get_all_video_files() -> PackedInt64Array:
 	var data: PackedInt64Array = []
 	for index: int in project_data.files_type.size():
@@ -805,6 +813,30 @@ func reload_videos() -> void:
 		var file_index: int = index_map[file]
 		if project_data.files_type[file_index] == EditorCore.TYPE.VIDEO:
 			load_data(file_index)
+
+
+func _update_video_cache_size(value: int) -> void:
+	for file: int in get_all_video_files():
+		var data: Variant = file_data[index_map[file]]
+		if data is not GoZenVideo:
+			continue
+
+		(data as GoZenVideo).set_cache_size(value)
+		if video_pools.has(file):
+			for video: GoZenVideo in video_pools[file]:
+				video.set_cache_size(value)
+
+
+func _update_video_smart_seek_threshold(value: int) -> void:
+	for file: int in get_all_video_files():
+		var data: Variant = file_data[index_map[file]]
+		if data is not GoZenVideo:
+			continue
+
+		(data as GoZenVideo).set_smart_seek_threshold(value)
+		if video_pools.has(file):
+			for video: GoZenVideo in video_pools[file]:
+				video.set_smart_seek_threshold(value)
 
 
 # --- Static ---
