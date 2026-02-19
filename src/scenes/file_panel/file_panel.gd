@@ -14,6 +14,7 @@ enum POPUP_ACTION {
 	AUDIO_TAKE_OVER,
 	AUDIO_TAKE_OVER_ENABLE,
 	AUDIO_TAKE_OVER_DISABLE,
+	OPEN_IN_FILE_MANAGER,
 
 	# Folder actions
 	FOLDER_CREATE,
@@ -127,6 +128,10 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			if file_path.contains("temp://"):
 				popup.add_item(tr("Save file as ..."), POPUP_ACTION.SAVE_TEMP_AS)
 
+		if not file_path.begins_with("temp://"):
+			popup.add_separator()
+			popup.add_item(tr("Open in file manager"), POPUP_ACTION.OPEN_IN_FILE_MANAGER)
+
 		popup.add_separator(tr("Folder options"))
 		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
 	else: # Folder
@@ -154,6 +159,7 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		POPUP_ACTION.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
 		POPUP_ACTION.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
 		POPUP_ACTION.AUDIO_TAKE_OVER: _on_popup_action_audio_take_over()
+		POPUP_ACTION.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
 
 		POPUP_ACTION.FOLDER_CREATE: _on_popup_action_folder_create()
 		POPUP_ACTION.FOLDER_RENAME: _on_popup_action_folder_rename()
@@ -287,6 +293,12 @@ func _on_popup_action_audio_take_over() -> void:
 	var file_id: int = tree.get_selected().get_metadata(0)
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
 	popup.call("load_data", file_id, true)
+
+
+func _on_popup_action_open_in_file_manager() -> void:
+	var file_index: int = Project.files.index_map[tree.get_selected().get_metadata(0)]
+	var file_path: String = Project.data.files_path[file_index]
+	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(file_path))
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:

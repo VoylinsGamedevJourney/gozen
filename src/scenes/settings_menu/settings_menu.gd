@@ -403,12 +403,10 @@ func create_marker_setting(index: int) -> HBoxContainer:
 
 	# Marker color
 	var color_picker: ColorPickerButton = create_color_picker(
-		Settings.get_marker_color(index), Settings.set_marker_color.bind(index)
-	)
+			Settings.get_marker_color(index), Settings.set_marker_color.bind(index))
 
 	# Bundling
 	var hbox: HBoxContainer = HBoxContainer.new()
-
 	hbox.add_child(line_edit)
 	hbox.add_child(color_picker)
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -448,7 +446,6 @@ func _on_shortcut_button_pressed(button: Button, action: String, index: int) -> 
 func _stop_listening() -> void:
 	if listening_button != null:
 		var events: Array[InputEvent] = Settings.get_events_for_action(listening_action)
-
 		listening_button.button_pressed = false
 		listening_button.text = _get_event_text(events[listening_index])
 	listening_active = false
