@@ -588,7 +588,6 @@ func _get_fade_target() -> FadeTarget:
 
 
 func _project_ready() -> void:
-	custom_minimum_size.y = track_total_size * Project.data.tracks_is_muted.size()
 	Project.clips.added.connect(draw_clips.queue_redraw.unbind(1))
 	Project.clips.deleted.connect(draw_clips.queue_redraw.unbind(1))
 	Project.clips.updated.connect(draw_clips.queue_redraw)
@@ -596,6 +595,7 @@ func _project_ready() -> void:
 	Project.markers.removed.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.updated.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.moving.connect(draw_markers.queue_redraw)
+	Project.tracks.updated.connect(_on_tracks_updated)
 	_update_track_height(Settings.get_track_height())
 	draw_all()
 
@@ -989,6 +989,11 @@ func _on_cut_mode_button_pressed() -> void:
 func _update_track_height(new_height: float) -> void:
 	track_height = new_height
 	track_total_size = track_height + TRACK_LINE_WIDTH
+	_on_tracks_updated()
+
+
+func _on_tracks_updated() -> void:
+	custom_minimum_size.y = track_total_size * Project.data.tracks_is_muted.size()
 	draw_all()
 
 

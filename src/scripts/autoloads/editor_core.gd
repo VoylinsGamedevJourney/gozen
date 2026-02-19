@@ -97,8 +97,6 @@ func _rebuild_structure() -> void:
 	# Visual setup.
 	for texture_rect: TextureRect in view_textures:
 		texture_rect.queue_free()
-	for compositor: VisualCompositor in compositors:
-		compositor.free()
 	view_textures.resize(track_size)
 	compositors.resize(track_size)
 
