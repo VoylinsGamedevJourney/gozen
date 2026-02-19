@@ -364,6 +364,7 @@ func _add_folder_to_tree(folder: String) -> void:
 
 func _add_file_to_tree(file_id: int) -> void:
 	var file_index: int = Project.files.index_map[file_id]
+	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 	var file_path: String = Project.data.files_path[file_index]
 	var file_folder: String = Project.data.files_folder[file_index]
 	var file_nickname: String = Project.data.files_nickname[file_index]
@@ -384,17 +385,20 @@ func _add_file_to_tree(file_id: int) -> void:
 	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
 	file_items[file_id].set_icon_max_width(0, 70)
 
-	# TODO: Use set_icon_modulate to indicate when a file is still loading,
-	# this would make the files loading overlay obsolete. Just make certain
-	# that the files with a modulate can't be selected yet and change their
-	# tooltip to have "Loading ..." on it.
+	if not Thumbnailer.data.has(file_path) and file_type != EditorCore.TYPE.AUDIO:
+		file_items[file_id].set_icon_modulate(0, Color(1, 1, 1, 0.4))
+		file_items[file_id].set_tooltip_text(0, file_path + "\n" + tr("(Loading thumbnail...)"))
 	_sort_folder(file_folder)
 
 
 func _on_update_thumb(file_id: int) -> void:
 	if !Project.files.index_map.has(file_id):
 		return _on_deleted(file_id)
+
+	var file_index: int = Project.files.index_map[file_id]
 	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
+	file_items[file_id].set_icon_modulate(0, Color.WHITE)
+	file_items[file_id].set_tooltip_text(0, Project.data.files_path[file_index])
 
 
 func _sort_folder(folder: String) -> void:
