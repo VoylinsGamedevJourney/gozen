@@ -1,6 +1,7 @@
 extends Node
 
 signal on_show_menu_bar_changed(value: bool)
+signal on_show_ram_usage_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
 signal on_track_height_changed(value: float)
 signal localization_updated
@@ -15,7 +16,8 @@ const PATH_THEMES: String = "user://themes/"
 var data: SettingsData = SettingsData.new()
 
 var fonts: Dictionary[String, SystemFont] = {}
-var custom_themes: Dictionary = {} # { Name: Path }
+var custom_themes: Dictionary = {} ## { Name: Path }
+
 
 
 func _ready() -> void:
@@ -189,7 +191,17 @@ func set_show_menu_bar(value: bool) -> void:
 	on_show_menu_bar_changed.emit(value)
 
 
-func get_show_menu_bar() -> bool:return data.show_menu_bar
+func get_show_menu_bar() -> bool:
+	return data.show_menu_bar
+
+
+func set_show_ram_usage(value: bool) -> void:
+	data.show_ram_usage = value
+	on_show_ram_usage_changed.emit(value)
+
+
+func get_show_ram_usage() -> bool:
+	return data.show_ram_usage
 
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
@@ -198,7 +210,10 @@ func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	on_waveform_update.emit()
 
 
-func get_audio_waveform_style() -> int: return data.audio_waveform_style
+func get_audio_waveform_style() -> int:
+	return data.audio_waveform_style
+
+
 func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE]:
 	return {
 		"Center": SettingsData.AUDIO_WAVEFORM_STYLE.CENTER,
@@ -222,7 +237,7 @@ func set_use_native_dialog(value: bool) -> void:
 func get_use_native_dialog() -> bool:
 	return data.use_native_dialog
 
-# Defaults set/get
+# --- Defaults set/get ---
 
 func set_image_duration(duration: int) -> void:
 	data.image_duration = duration

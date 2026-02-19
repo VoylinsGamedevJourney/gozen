@@ -146,6 +146,10 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_check_button(
 					Settings.get_show_menu_bar(),
 					Settings.set_show_menu_bar),
+			create_label(tr("Show ram usage in menu bar")),
+			create_check_button(
+					Settings.get_show_ram_usage(),
+					Settings.set_show_ram_usage),
 			create_header(tr("Audio waveforms")), Control.new(),
 			create_label(tr("Waveform style")),
 			create_option_button(

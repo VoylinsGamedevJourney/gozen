@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bjen0oagwidr7"]
+[gd_scene format=3 uid="uid://dnhn66udpn7vp"]
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
 [ext_resource type="Texture2D" uid="uid://c5th80tg7y31u" path="res://assets/icons/search.svg" id="2_p28av"]
@@ -104,9 +104,6 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin" unique_id=98796412]
-layout_mode = 2
-
-[node name="SpinBox" type="SpinBox" parent="SettingsPanel/Margin/HBox/VBox" unique_id=1963565339]
 layout_mode = 2
 
 [connection signal="text_changed" from="SettingsPanel/Margin/HBox/VBoxContainer/SearchLineEdit" to="." method="_on_search_line_edit_text_changed"]

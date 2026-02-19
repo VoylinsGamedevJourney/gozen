@@ -18,7 +18,7 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_2bycd"]
 
-[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit", "popup_menu_preferences", "popup_menu_help")]
+[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit", "popup_menu_preferences", "popup_menu_help", "label_ram")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 28.0
@@ -29,6 +29,7 @@ popup_menu_project = NodePath("MenuBar/ProjectPopupMenu")
 popup_menu_edit = NodePath("MenuBar/EditPopupMenu")
 popup_menu_preferences = NodePath("MenuBar/PreferencesPopupMenu")
 popup_menu_help = NodePath("MenuBar/HelpPopupMenu")
+label_ram = NodePath("RamLabel")
 metadata/_edit_lock_ = true
 
 [node name="MenuBar" type="MenuBar" parent="." unique_id=1385584842]
@@ -138,6 +139,12 @@ item_8/id = 8
 item_9/text = "About GoZen"
 item_9/icon = ExtResource("15_bb4p5")
 item_9/id = 9
+
+[node name="RamLabel" type="Label" parent="." unique_id=808065346]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "RAM:"
 
 [node name="EditorScreenButton" type="Button" parent="." unique_id=1810598]
 layout_mode = 2
