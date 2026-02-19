@@ -197,10 +197,6 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_default_framerate(),
 					1, 100, 1, false, true,
 					Settings.set_default_framerate),
-			create_label(tr("Use proxies")),
-			create_check_button(
-				Settings.get_use_proxies(),
-				Settings.set_use_proxies)
 		],
 
 		tr("Timeline"): [
@@ -251,7 +247,16 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					0, 1000, 1, false, true,
 					Settings.set_video_cache_size,
 					"",
-					tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage."))
+					tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage.")),
+			create_label(tr("Use proxies")),
+			create_check_button(
+				Settings.get_use_proxies(),
+				Settings.set_use_proxies),
+			create_label(tr("Proxies save path")),
+			create_line_edit(
+				Settings.get_proxies_path(),
+				Settings.set_proxies_path,
+				tr("Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder.")),
 		],
 
 		tr("Markers"): marker_nodes,
@@ -341,6 +346,20 @@ func _option_button_item_selected(id: int, option_button: OptionButton, callable
 	if callable == Settings.set_language:
 		Settings.set_language(option_button.get_item_metadata(id) as String)
 	@warning_ignore_restore("unsafe_cast")
+
+
+func create_line_edit(default: String, callable: Callable, tooltip: String = "") -> LineEdit:
+	var line_edit: LineEdit = LineEdit.new()
+
+	line_edit.flat = true
+	line_edit.text = default
+	line_edit.tooltip_text = tooltip
+	line_edit.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	line_edit.text_submitted.connect(callable)
+
+	line_edit.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	line_edit.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	return line_edit
 
 
 func create_check_button(default: bool, callable: Callable, tooltip: String = "") -> CheckButton:

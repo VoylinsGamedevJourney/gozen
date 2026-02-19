@@ -20,7 +20,6 @@ var text_duration: int = 300
 var default_project_path: String = ""
 var default_resolution: Vector2i = Vector2i(1920, 1080)
 var default_framerate: float = 30.0
-var use_proxies: bool = false
 
 # Timeline
 var tracks_amount: int = 6 ## The amount of tracks
@@ -32,6 +31,8 @@ var show_time_mode_bar: bool = true
 # Performance
 var video_smart_seek_threshold: int = 100
 var video_cache_size: int = 100
+var use_proxies: bool = false
+var proxies_path: String = "user://proxies"
 
 # Markers
 var marker_names: PackedStringArray = [ "Marker type 1", "Marker type 2", "Marker type 3", "Marker type 4", "Marker type 5" ]

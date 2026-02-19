@@ -316,14 +316,6 @@ func get_default_framerate() -> float:
 	return data.default_framerate
 
 
-func set_use_proxies(value: bool) -> void:
-	data.use_proxies = value
-	Project.files.reload_videos()
-
-
-func get_use_proxies() -> bool:
-	return data.use_proxies
-
 #--- Timeline set/get ---
 
 func set_tracks_amount(track_amount: int) -> void:
@@ -364,7 +356,6 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 		"": KEY_NONE,
 		"Control": KEY_CTRL,
 		"Shift": KEY_SHIFT}
-
 	return mods
 
 
@@ -397,6 +388,25 @@ func get_video_cache_size() -> int:
 	return data.video_cache_size
 
 
+func set_use_proxies(value: bool) -> void:
+	data.use_proxies = value
+	Project.files.reload_videos()
+
+
+func get_use_proxies() -> bool:
+	return data.use_proxies
+
+
+func set_proxies_path(new_path: String) -> void:
+	if !DirAccess.dir_exists_absolute(new_path):
+		printerr("Settings: Invalid new path '%s'!" % new_path)
+		return
+	data.proxies_path = new_path
+	Project.files.reload_videos()
+
+
+func get_proxies_path() -> String:
+	return data.proxies_path
 #--- Markers set/get ---
 
 func set_marker_name(index: int, text: String) -> void:
@@ -440,6 +450,7 @@ func set_auto_save(value: bool) -> void:
 
 func get_auto_save() -> bool:
 	return data.auto_save
+
 
 #--- Input set/get ---
 

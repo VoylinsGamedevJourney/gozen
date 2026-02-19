@@ -5,23 +5,24 @@ extends Node
 signal proxy_loading(file_id: int, progress: int) ## Progess is 0/100
 
 
-const PROXY_PATH: String = "user://proxies/" # TODO: Make this path a setting
 const PROXY_HEIGHT: int = 540
 
 
 
 func _ready() -> void:
-	if !DirAccess.dir_exists_absolute(PROXY_PATH):
-		DirAccess.make_dir_absolute(PROXY_PATH)
+	var proxy_path: String = Settings.get_proxies_path()
+	if !DirAccess.dir_exists_absolute(proxy_path):
+		DirAccess.make_dir_absolute(proxy_path)
 
 
 func request_generation(file_id: int) -> void:
+	var proxy_path: String = Settings.get_proxies_path()
 	var file_index: int = Project.files.index_map[file_id]
 	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
 	var file_path: String = Project.data.files_path[file_index]
 	if file_type != EditorCore.TYPE.VIDEO:
 		return # Only proxies for videos possible
-	var new_path: String = PROXY_PATH + _create_proxy_name(file_path)
+	var new_path: String = proxy_path.path_join(_create_proxy_name(file_path))
 
 	# Check if already exists, if yes, we link
 	if !FileAccess.file_exists(new_path):
