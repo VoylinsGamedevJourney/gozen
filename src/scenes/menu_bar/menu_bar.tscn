@@ -18,7 +18,7 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_2bycd"]
 
-[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit")]
+[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit", "popup_menu_preferences", "popup_menu_help")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 28.0
@@ -27,6 +27,8 @@ theme_override_constants/separation = 0
 script = ExtResource("1_tjpug")
 popup_menu_project = NodePath("MenuBar/ProjectPopupMenu")
 popup_menu_edit = NodePath("MenuBar/EditPopupMenu")
+popup_menu_preferences = NodePath("MenuBar/PreferencesPopupMenu")
+popup_menu_help = NodePath("MenuBar/HelpPopupMenu")
 metadata/_edit_lock_ = true
 
 [node name="MenuBar" type="MenuBar" parent="." unique_id=1385584842]
