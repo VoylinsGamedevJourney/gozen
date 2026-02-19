@@ -930,7 +930,10 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	if clip_type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
-	popup.add_separator(tr("Track options")) # TODO:
+
+	popup.add_separator(tr("Track options"))
+	popup.add_item(tr("Add track"), POPUP_ACTION.TRACK_ADD)
+	popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 
 
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
