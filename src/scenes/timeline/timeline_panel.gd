@@ -1079,11 +1079,11 @@ func duplicate_selected_clips() -> void:
 		return
 
 	var requests: Array[ClipRequest] = []
+	var failed_duplicates: int = 0
 	for clip_id: int in selected_clip_ids:
 		var clip_index: int = Project.clips.index_map[clip_id]
 		if clip_index == -1:
-			# TODO: Give a Notification with a warning that there's no space available.
-			return # Invalid clip id
+			continue
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_duration: int = Project.data.clips_duration[clip_index]
 		var clip_track: int = Project.data.clips_track[clip_index]
@@ -1093,8 +1093,15 @@ func duplicate_selected_clips() -> void:
 		if free_region.y - target_frame >= clip_duration:
 			var file_id: int = Project.data.clips_file[clip_index]
 			requests.append(ClipRequest.add_request(file_id, clip_track, target_frame))
+		else:
+			failed_duplicates += 1
 	if not requests.is_empty():
 		Project.clips.add(requests)
+	if failed_duplicates != 0:
+		var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Duplication failed"))
+		dialog.dialog_text = tr("Could not duplicate %d clip(s) because there was not enough empty space.") % failed_duplicates
+		add_child(dialog)
+		dialog.popup_centered()
 
 
 func set_state(new_state: STATE) -> void:
