@@ -98,8 +98,6 @@ func _on_save_screenshot_to_project(path: String) -> void:
 
 func _on_save_screenshot(path: String) -> void:
 	var extension: String = path.get_extension()
-
-	# TODO: Maybe have settings for quality/lossy in editor settings for this.
 	match extension:
 		"png":
 			if texture.get_image().save_png(path):
