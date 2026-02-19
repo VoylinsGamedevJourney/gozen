@@ -127,19 +127,23 @@ func create_menu(permanent: bool = false) -> PopupMenu:
 	if !permanent:
 		popup.mouse_exited.connect(popup.queue_free)
 	popup.size = Vector2i(100,0)
+	popup.add_theme_constant_override("icon_max_width", 20)
 	return popup
 
 
 func show_menu(popup: PopupMenu) -> void:
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
-
 	popup.position.x = int(mouse_pos.x)
 	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
 	add_child(popup)
 	popup.popup()
 
+
 # --- Helper functions ---
 
+func _on_size_changed() -> void:
+	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-func _on_size_changed() -> void: _control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-func _check_background() -> void: _control.visible = !_open_popups.is_empty()
+
+func _check_background() -> void:
+	_control.visible = !_open_popups.is_empty()

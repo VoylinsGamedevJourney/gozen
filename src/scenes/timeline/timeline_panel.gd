@@ -923,17 +923,18 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 		selected_clip_ids = [right_click_clip]
 		Project.clips.selected.emit(right_click_clip)
 
-	# TODO: Set icons and shortcuts
-	popup.add_item(tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
-	popup.add_item(tr("Cut clip"), POPUP_ACTION.CLIP_CUT)
+	# TODO: Set shortcuts
+	popup.add_theme_constant_override("icon_max_width", 20)
+	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
+	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_CUT), tr("Cut clip"), POPUP_ACTION.CLIP_CUT)
 
 	if clip_type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
 
 	popup.add_separator(tr("Track options"))
-	popup.add_item(tr("Add track"), POPUP_ACTION.TRACK_ADD)
-	popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+	popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
+	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 
 
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
