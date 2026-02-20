@@ -58,6 +58,6 @@ matrix_map = Dictionary[String, int]({
 "size": 0
 })
 id = "transform"
-nickname = "effect_visual_transform"
+nickname = "Transform"
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"

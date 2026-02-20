@@ -1,21 +1,20 @@
 [gd_scene format=3 uid="uid://7gty5dfdid1e"]
 
 [ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://scenes/effects_panel/effects_panel.gd" id="1_k5peu"]
-[ext_resource type="Texture2D" uid="uid://dbpodibqe4ml1" path="res://assets/icons/video_effects.svg" id="2_tqtp8"]
-[ext_resource type="Texture2D" uid="uid://yarovsxqsw5" path="res://assets/icons/audio_effects.svg" id="3_kufqk"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_3btpq"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wv8tu"]
+content_margin_left = 6.0
 
-[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("button_video", "button_audio", "tab_container")]
+[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_visuals", "section_audio")]
 custom_minimum_size = Vector2(300, 200)
 offset_right = 260.0
 offset_bottom = 43.0
 size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_k5peu")
-button_video = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton")
-button_audio = NodePath("Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton")
-tab_container = NodePath("Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer")
+section_text = NodePath("Margin/Scroll/Panel/Margin/VBox/TextContainer")
+section_visuals = NodePath("Margin/Scroll/Panel/Margin/VBox/VisualsContainer")
+section_audio = NodePath("Margin/Scroll/Panel/Margin/VBox/AudioContainer")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1256017663]
 layout_mode = 2
@@ -24,74 +23,37 @@ theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 7
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Margin" unique_id=1400588315]
-layout_mode = 2
-theme_override_constants/separation = -1
-
-[node name="EffectsButtonsHBox" type="HBoxContainer" parent="Margin/VBoxContainer" unique_id=457373552]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="SpacerBegin" type="Control" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=1480992706]
-custom_minimum_size = Vector2(7, 0)
+[node name="Scroll" type="ScrollContainer" parent="Margin" unique_id=1094673545]
 layout_mode = 2
 
-[node name="VideoEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=2026522453]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Show Image files."
-mouse_default_cursor_shape = 2
-theme_type_variation = &"file_tab_button"
-disabled = true
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_3btpq")
-icon = ExtResource("2_tqtp8")
-icon_alignment = 1
-expand_icon = true
-
-[node name="AudioEffectsButton" type="Button" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=5701129]
-custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Show Audio files."
-mouse_default_cursor_shape = 2
-theme_type_variation = &"file_tab_button"
-disabled = true
-toggle_mode = true
-button_group = SubResource("ButtonGroup_3btpq")
-icon = ExtResource("3_kufqk")
-icon_alignment = 1
-expand_icon = true
-
-[node name="SpacerEnd" type="Control" parent="Margin/VBoxContainer/EffectsButtonsHBox" unique_id=867560336]
-custom_minimum_size = Vector2(7, 0)
-layout_mode = 2
-
-[node name="EffectsListScroll" type="ScrollContainer" parent="Margin/VBoxContainer" unique_id=808570826]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="EffectsTabContainer" type="TabContainer" parent="Margin/VBoxContainer/EffectsListScroll" unique_id=480899933]
+[node name="Panel" type="PanelContainer" parent="Margin/Scroll" unique_id=1349871711]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-current_tab = 0
-tabs_visible = false
 
-[node name="VisualEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer" unique_id=561469809]
+[node name="Margin" type="MarginContainer" parent="Margin/Scroll/Panel" unique_id=1894938216]
 layout_mode = 2
-theme_override_constants/separation = 10
-metadata/_tab_index = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="AudioEffects" type="VBoxContainer" parent="Margin/VBoxContainer/EffectsListScroll/EffectsTabContainer" unique_id=457146236]
-visible = false
+[node name="VBox" type="VBoxContainer" parent="Margin/Scroll/Panel/Margin" unique_id=1400588315]
 layout_mode = 2
-theme_override_constants/separation = 10
-metadata/_tab_index = 1
 
-[connection signal="pressed" from="Margin/VBoxContainer/EffectsButtonsHBox/VideoEffectsButton" to="." method="_on_video_effects_button_pressed"]
-[connection signal="pressed" from="Margin/VBoxContainer/EffectsButtonsHBox/AudioEffectsButton" to="." method="_on_audio_effects_button_pressed"]
+[node name="TextContainer" type="VBoxContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=654175760]
+layout_mode = 2
+
+[node name="VisualsContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1695060905]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxEmpty_wv8tu")
+title = "Visual effects"
+title_alignment = 1
+
+[node name="AudioContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1481519147]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxEmpty_wv8tu")
+title = "Audio effects"
+title_alignment = 1
