@@ -1,8 +1,8 @@
 class_name ClipEffects
 extends Resource
 
-var video: Array[GoZenEffectVisual] = []
-var audio: Array[GoZenEffectAudio] = []
+var video: Array[EffectVisual] = []
+var audio: Array[EffectAudio] = []
 
 var fade_visual: Vector2i ## { x = fade_in, y = fade_out }
 var fade_audio: Vector2i ## { x = fade_in, y = fade_out }

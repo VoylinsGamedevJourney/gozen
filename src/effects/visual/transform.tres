@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="GoZenEffectVisual" format=3 uid="uid://4mtlh3uaahui"]
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://4mtlh3uaahui"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_ny2jm"]
-[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/gozen_effect_visual.gd" id="1_x451f"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="1_x451f"]
 
 [sub_resource type="Resource" id="Resource_cpby2"]
 script = ExtResource("1_ny2jm")

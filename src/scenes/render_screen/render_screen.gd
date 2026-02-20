@@ -86,25 +86,25 @@ func _add_default_profiles() -> void:
 
 
 func _setup_codec_option_buttons() -> void:
-	video_codec_option_button.add_item("HEVC", GoZenEncoder.VIDEO_CODEC.V_HEVC)
-	video_codec_option_button.add_item("H264", GoZenEncoder.VIDEO_CODEC.V_H264)
-	video_codec_option_button.add_item("MPEG4", GoZenEncoder.VIDEO_CODEC.V_MPEG4)
-	video_codec_option_button.add_item("MPEG2", GoZenEncoder.VIDEO_CODEC.V_MPEG2)
-	video_codec_option_button.add_item("MPEG1", GoZenEncoder.VIDEO_CODEC.V_MPEG1)
-	video_codec_option_button.add_item("MJPEG", GoZenEncoder.VIDEO_CODEC.V_MJPEG)
-	video_codec_option_button.add_item("AV1", GoZenEncoder.VIDEO_CODEC.V_AV1)
-	video_codec_option_button.add_item("VP9", GoZenEncoder.VIDEO_CODEC.V_VP9)
-	video_codec_option_button.add_item("VP8", GoZenEncoder.VIDEO_CODEC.V_VP8)
+	video_codec_option_button.add_item("HEVC", Encoder.VIDEO_CODEC.V_HEVC)
+	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264)
+	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4)
+	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2)
+	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1)
+	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG)
+	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1)
+	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9)
+	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8)
 
-	audio_codec_option_button.add_item("WAV", GoZenEncoder.AUDIO_CODEC.A_WAV)
-	audio_codec_option_button.add_item("PCM", GoZenEncoder.AUDIO_CODEC.A_PCM)
-	audio_codec_option_button.add_item("MP2", GoZenEncoder.AUDIO_CODEC.A_MP2)
-	audio_codec_option_button.add_item("MP3", GoZenEncoder.AUDIO_CODEC.A_MP3)
-	audio_codec_option_button.add_item("AAC", GoZenEncoder.AUDIO_CODEC.A_AAC)
-	audio_codec_option_button.add_item("Opus", GoZenEncoder.AUDIO_CODEC.A_OPUS)
-	audio_codec_option_button.add_item("Vorbis", GoZenEncoder.AUDIO_CODEC.A_VORBIS)
-	audio_codec_option_button.add_item("FLAC", GoZenEncoder.AUDIO_CODEC.A_FLAC)
-	audio_codec_option_button.add_item("NONE", GoZenEncoder.AUDIO_CODEC.A_NONE)
+	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV)
+	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM)
+	audio_codec_option_button.add_item("MP2", Encoder.AUDIO_CODEC.A_MP2)
+	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3)
+	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC)
+	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS)
+	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS)
+	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC)
+	audio_codec_option_button.add_item("NONE", Encoder.AUDIO_CODEC.A_NONE)
 
 
 func _delete_custom_profile(index: int) -> void:
@@ -145,7 +145,7 @@ func load_profile(profile: RenderProfile) -> void:
 	video_quality_hslider.value = profile.crf
 	video_gop_spin_box.value = profile.gop
 
-	if profile.video_codec == GoZenEncoder.VIDEO_CODEC.V_H264:
+	if profile.video_codec == Encoder.VIDEO_CODEC.V_H264:
 		video_speed_label.visible = true
 		video_speed_hslider.visible = true
 		video_speed_hslider.value = profile.h264_preset
@@ -185,7 +185,7 @@ func _save_path_selected(file_path: String) -> void:
 func _on_video_codec_option_button_item_selected(index: int) -> void:
 	var video_codec_id: int = video_codec_option_button.get_item_id(index)
 	var extension: String = Utils.get_video_extension(video_codec_id)
-	var is_h264: bool = video_codec_id == GoZenEncoder.VIDEO_CODEC.V_H264
+	var is_h264: bool = video_codec_id == Encoder.VIDEO_CODEC.V_H264
 	var path: String = path_line_edit.text
 	var allowed: PackedInt64Array = []
 
@@ -201,35 +201,35 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	match extension:
 		".mp4":
 			allowed = [
-				GoZenEncoder.AUDIO_CODEC.A_AAC,
-				GoZenEncoder.AUDIO_CODEC.A_MP3,
-				GoZenEncoder.AUDIO_CODEC.A_FLAC,
-				GoZenEncoder.AUDIO_CODEC.A_OPUS,
-				GoZenEncoder.AUDIO_CODEC.A_VORBIS,
+				Encoder.AUDIO_CODEC.A_AAC,
+				Encoder.AUDIO_CODEC.A_MP3,
+				Encoder.AUDIO_CODEC.A_FLAC,
+				Encoder.AUDIO_CODEC.A_OPUS,
+				Encoder.AUDIO_CODEC.A_VORBIS,
 			]
 		".mpg":
 			allowed = [
-				GoZenEncoder.AUDIO_CODEC.A_MP2,
-				GoZenEncoder.AUDIO_CODEC.A_MP3,
+				Encoder.AUDIO_CODEC.A_MP2,
+				Encoder.AUDIO_CODEC.A_MP3,
 			]
 		".mov":
 			allowed = [
-				GoZenEncoder.AUDIO_CODEC.A_AAC,
-				GoZenEncoder.AUDIO_CODEC.A_PCM,
-				GoZenEncoder.AUDIO_CODEC.A_WAV,
-				GoZenEncoder.AUDIO_CODEC.A_MP3,
-				GoZenEncoder.AUDIO_CODEC.A_FLAC,
+				Encoder.AUDIO_CODEC.A_AAC,
+				Encoder.AUDIO_CODEC.A_PCM,
+				Encoder.AUDIO_CODEC.A_WAV,
+				Encoder.AUDIO_CODEC.A_MP3,
+				Encoder.AUDIO_CODEC.A_FLAC,
 			]
 		".webm":
 			allowed = [
-				GoZenEncoder.AUDIO_CODEC.A_OPUS,
-				GoZenEncoder.AUDIO_CODEC.A_VORBIS,
+				Encoder.AUDIO_CODEC.A_OPUS,
+				Encoder.AUDIO_CODEC.A_VORBIS,
 			]
 		".ogg":
 			allowed = [
-				GoZenEncoder.AUDIO_CODEC.A_OPUS,
-				GoZenEncoder.AUDIO_CODEC.A_VORBIS,
-				GoZenEncoder.AUDIO_CODEC.A_FLAC,
+				Encoder.AUDIO_CODEC.A_OPUS,
+				Encoder.AUDIO_CODEC.A_VORBIS,
+				Encoder.AUDIO_CODEC.A_FLAC,
 			]
 
 	for i: int in audio_codec_option_button.item_count:
@@ -313,7 +313,7 @@ func _on_start_render_button_pressed() -> void:
 	Print.info("Video codec", video_codec_id)
 	Print.info("CRF", int(0 - video_quality_hslider.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
-	if video_codec_option_button.get_selected_id() == GoZenEncoder.VIDEO_CODEC.V_H264:
+	if video_codec_option_button.get_selected_id() == Encoder.VIDEO_CODEC.V_H264:
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_id)
 	Print.info("Cores/threads", threads_spin_box.value)
@@ -355,7 +355,7 @@ func _on_start_render_button_pressed() -> void:
 		DisplayServer.set_icon(gozen_icon.get_image())
 		DisplayServer.delete_status_indicator(status_indicator_id)
 
-	RenderManager.encoder = GoZenEncoder.new()
+	RenderManager.encoder = Encoder.new()
 	RenderManager.encoder.set_resolution(render_resolution)
 	RenderManager.encoder.set_framerate(Project.data.framerate)
 	RenderManager.encoder.set_file_path(export_path)
@@ -419,11 +419,11 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
 	new_profile.profile_name = profile_name
 	new_profile.icon = ImageTexture.create_from_image(icon)
-	new_profile.video_codec = video_codec_option_button.get_selected_id() as GoZenEncoder.VIDEO_CODEC
-	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as GoZenEncoder.AUDIO_CODEC
+	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VIDEO_CODEC
+	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AUDIO_CODEC
 	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
-	new_profile.h264_preset = int(video_speed_hslider.value) as GoZenEncoder.H264_PRESETS
+	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264_PRESETS
 
 	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
 		DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)

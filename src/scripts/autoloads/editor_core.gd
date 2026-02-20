@@ -289,11 +289,11 @@ func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 	var clip_frame: int = frame_nr - start
 
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_index, true)
-	var effects: Array[GoZenEffectVisual] = project_data.clips_effects[clip_index].video
+	var effects: Array[EffectVisual] = project_data.clips_effects[clip_index].video
 	project_clips.load_video_frame(loaded_clips[track_id], relative_frame, instance_index)
 
-	if raw_data is GoZenVideo:
-		var video: GoZenVideo = project_files.get_video_reader(file_id, instance_index)
+	if raw_data is Video:
+		var video: Video = project_files.get_video_reader(file_id, instance_index)
 		if update:
 			compositors[track_id].initialize_video(video)
 

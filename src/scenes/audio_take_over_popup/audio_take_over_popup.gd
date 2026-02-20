@@ -78,7 +78,7 @@ func load_data(id: int, is_file: bool) -> void:
 		file_b_list.set_item_metadata(item_id, file_index)
 		item_id += 1
 
-	var video: GoZenVideo = Project.files.file_data[file_a_index]
+	var video: Video = Project.files.file_data[file_a_index]
 	video_file_label.text = Project.data.files_nickname[file_a_index]
 	file_a_player.stream = video.get_audio()
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ffmpeg.hpp"
-#include "ffmpeg_helpers.hpp"
 
 #include <godot_cpp/classes/audio_stream.hpp>
 #include <godot_cpp/classes/audio_stream_playback.hpp>

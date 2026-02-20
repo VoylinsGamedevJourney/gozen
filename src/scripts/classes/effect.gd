@@ -1,4 +1,4 @@
-class_name GoZenEffect
+class_name Effect
 extends Resource
 
 @export var id: String

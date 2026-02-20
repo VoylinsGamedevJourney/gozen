@@ -6,18 +6,18 @@ var nickname: String
 var shader: RID
 var pipeline: RID
 
-var _effect: GoZenEffectVisual
+var _effect: EffectVisual
 var _frame_nr: int = -1
 var _resolution: Vector2i
 
 
-func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: GoZenEffectVisual) -> void:
+func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: EffectVisual) -> void:
 	nickname = effect.nickname
 	shader = device.shader_create_from_spirv(spirv)
 	pipeline = device.compute_pipeline_create(shader)
 
 
-func get_buffer_data(effect: GoZenEffectVisual, frame_nr: int, resolution: Vector2i) -> PackedByteArray:
+func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 	var processed_matrices: Array[Matrix.TYPE] = []
 

@@ -120,7 +120,7 @@ func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 
 
 func update_effects(clip_index: int) -> void:
-	var effects: Array[GoZenEffectAudio] = project_data.clips_effects[clip_index].audio
+	var effects: Array[EffectAudio] = project_data.clips_effects[clip_index].audio
 	var relative_frame_nr: int = EditorCore.frame_nr - project_data.clips_start[clip_index]
 
 	# Apply fade.
@@ -129,7 +129,7 @@ func update_effects(clip_index: int) -> void:
 
 	# Apply other effects.
 	for i: int in effects.size():
-		var effect: GoZenEffectAudio = effects[i]
+		var effect: EffectAudio = effects[i]
 		if i >= AudioServer.get_bus_effect_count(bus_index):
 			break
 
@@ -143,7 +143,7 @@ func update_effects(clip_index: int) -> void:
 			effect_instance.set(effect_param.id, value)
 
 
-func _setup_bus_effects(effects: Array[GoZenEffectAudio]) -> void:
+func _setup_bus_effects(effects: Array[EffectAudio]) -> void:
 	for i: int in range(AudioServer.get_bus_effect_count(bus_index) - 1, -1, -1):
 		AudioServer.remove_bus_effect(bus_index, i)
 	for i: int in effects.size():

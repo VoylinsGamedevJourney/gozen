@@ -25,7 +25,7 @@ const AUDIO_MAX: int = 32767
 
 
 var project_data: ProjectData
-var encoder: GoZenEncoder
+var encoder: Encoder
 var viewport: ViewportTexture
 
 var cancel_encoding: bool = false
@@ -178,7 +178,7 @@ func _add_track_audio(audio: PackedByteArray, track: int, length: int) -> void:
 		if clip_type not in EditorCore.AUDIO_TYPES:
 			continue
 		_handle_audio(clip, track_audio)
-	audio = GoZenAudio.combine_data(audio, track_audio)
+	audio = Audio.combine_data(audio, track_audio)
 
 
 func _handle_audio(clip: int, track_audio: PackedByteArray) -> void:
@@ -199,10 +199,10 @@ func _handle_audio(clip: int, track_audio: PackedByteArray) -> void:
 	if fade_in > 0 or fade_out > 0:
 		var fade_in_samples: int = floori(fade_in * samples_per_frame)
 		var fade_out_samples: int = floori(fade_out * samples_per_frame)
-		audio_data = GoZenAudio.apply_fade(audio_data, fade_in_samples, fade_out_samples)
+		audio_data = Audio.apply_fade(audio_data, fade_in_samples, fade_out_samples)
 
 	# Apply all other effects to the clip audio data.
-	for effect: GoZenEffectAudio in clip_effects.audio:
+	for effect: EffectAudio in clip_effects.audio:
 		if !effect.is_enabled:
 			continue
 
@@ -224,7 +224,7 @@ func _handle_audio(clip: int, track_audio: PackedByteArray) -> void:
 			track_audio[start_sample + i] = audio_data[i]
 
 
-func _apply_effect_volume(audio_data: PackedByteArray, effect: GoZenEffectAudio) -> PackedByteArray:
+func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> PackedByteArray:
 	# TODO: Move this to the GDExtension
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 	stream.data_array = audio_data

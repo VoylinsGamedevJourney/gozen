@@ -315,10 +315,10 @@ func _resize_restore(clip: int, start: int, duration: int, begin: int) -> void:
 
 
 ## This function is intended to be used when cutting clips to copy over the effects.
-func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Array[GoZenEffectVisual]:
-	var new_effects: Array[GoZenEffectVisual] = []
-	for effect: GoZenEffectVisual in effects:
-		var new_effect: GoZenEffectVisual = effect.duplicate(true)
+func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[EffectVisual]:
+	var new_effects: Array[EffectVisual] = []
+	for effect: EffectVisual in effects:
+		var new_effect: EffectVisual = effect.duplicate(true)
 		new_effect.keyframes = {}
 		new_effect._cache_dirty = true
 
@@ -339,10 +339,10 @@ func _copy_visual_effects(effects: Array[GoZenEffectVisual], cut_pos: int) -> Ar
 
 
 ## This function is intended to be used when cutting clips to copy over the effects.
-func _copy_audio_effects(effects: Array[GoZenEffectAudio], cut_pos: int) -> Array[GoZenEffectAudio]:
-	var new_effects: Array[GoZenEffectAudio] = []
-	for effect: GoZenEffectAudio in effects:
-		var new_effect: GoZenEffectAudio = effect.duplicate(true)
+func _copy_audio_effects(effects: Array[EffectAudio], cut_pos: int) -> Array[EffectAudio]:
+	var new_effects: Array[EffectAudio] = []
+	for effect: EffectAudio in effects:
+		var new_effect: EffectAudio = effect.duplicate(true)
 		new_effect.keyframes = {}
 		new_effect._cache_dirty = true
 
@@ -394,7 +394,7 @@ func load_video_frame(clip: int, frame_nr: int, instance_index: int = 0) -> void
 	var clip_index: int = index_map[clip]
 	var clip_type: EditorCore.TYPE = project_data.clips_type[clip_index] as EditorCore.TYPE
 	var file: int = project_data.clips_file[clip_index]
-	var video: GoZenVideo = null
+	var video: Video = null
 
 	if clip_type not in EditorCore.VISUAL_TYPES:
 		return
@@ -441,7 +441,7 @@ func get_audio_data(clip: int) -> PackedByteArray:
 
 	var file_index: int = Project.data.files.find(target_file_id)
 	var file_path: String = Project.data.files_path[file_index]
-	return GoZenAudio.get_audio_data(file_path, -1, start_sec, duration_sec)
+	return Audio.get_audio_data(file_path, -1, start_sec, duration_sec)
 
 
 # --- Setters ---
@@ -474,7 +474,7 @@ func _create_default_effects(file_index: int) -> ClipEffects:
 	if type in EditorCore.VISUAL_TYPES:
 		var resolution: Vector2i = Project.get_resolution()
 
-		var transform_effect: GoZenEffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
+		var transform_effect: EffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
 		for param: EffectParam in transform_effect.params:
 			if param.id == "size":
 				param.default_value = resolution
@@ -484,7 +484,7 @@ func _create_default_effects(file_index: int) -> ClipEffects:
 		effects.video.append(transform_effect)
 
 	if type in EditorCore.AUDIO_TYPES:
-		var volume_effect: GoZenEffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
+		var volume_effect: EffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
 	return effects

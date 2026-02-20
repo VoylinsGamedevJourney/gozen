@@ -113,9 +113,9 @@ func _gen_thumb(file_id: int) -> void:
 		EditorCore.TYPE.AUDIO: image = Project.files.generate_audio_thumb(file_id)
 		EditorCore.TYPE.VIDEO:
 			var temp: Variant = Project.files.file_data[file_index]
-			if !temp or temp is not GoZenVideo:
+			if !temp or temp is not Video:
 				return
-			var video: GoZenVideo = temp
+			var video: Video = temp
 			image = video.generate_thumbnail_at_frame(0)
 
 	if !image: # TODO: Run this function a second or so later as the data will probably be ready by now.

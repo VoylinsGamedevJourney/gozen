@@ -126,7 +126,7 @@ func _load_video_effects() -> void:
 
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	for index: int in clip_effects.video.size():
-		var effect: GoZenEffectVisual = clip_effects.video[index]
+		var effect: EffectVisual = clip_effects.video[index]
 		var container: FoldableContainer = _create_effect_ui(effect, index, true)
 		video_container.add_child(container)
 
@@ -144,7 +144,7 @@ func _load_audio_effects() -> void:
 
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	for index: int in clip_effects.audio.size():
-		var effect: GoZenEffectAudio = clip_effects.audio[index]
+		var effect: EffectAudio = clip_effects.audio[index]
 		var container: FoldableContainer = _create_effect_ui(effect, index, true)
 
 		audio_container.add_child(container)
@@ -154,7 +154,7 @@ func _load_audio_effects() -> void:
 	_update_ui_values()
 
 
-func _create_effect_ui(effect: GoZenEffect, index: int, is_visual: bool) -> FoldableContainer:
+func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableContainer:
 	# NOTE: We can add the position of the effect inside of the effect array
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
@@ -336,7 +336,7 @@ func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
 	return Vector2(x, y)
 
 
-func _get_current_ui_value_for_param(effect: GoZenEffect, param_id: String, relative_frame_nr: int) -> Variant:
+func _get_current_ui_value_for_param(effect: Effect, param_id: String, relative_frame_nr: int) -> Variant:
 	for param: EffectParam in effect.params:
 		if param.id == param_id:
 			return effect.get_value(param, relative_frame_nr)
@@ -373,7 +373,7 @@ func _update_ui_values() -> void:
 		effects = clip_effects.audio
 
 	for i: int in container.get_child_count() - 2: # - 2 because of separator + add_effects button
-		var effect: GoZenEffect = effects[i]
+		var effect: Effect = effects[i]
 		var foldable_container: FoldableContainer = container.get_child(i)
 		var grid: GridContainer = foldable_container.get_child(0)
 
@@ -470,7 +470,7 @@ func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_i
 	var clip_start: int = Project.data.clips_start[clip_index]
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
-	var effect: GoZenEffect
+	var effect: Effect
 	if is_visual:
 		effect = clip_effects.video[index]
 	else:

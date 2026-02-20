@@ -2,7 +2,6 @@
 
 #include "audio_stream_ffmpeg.hpp"
 #include "ffmpeg.hpp"
-#include "ffmpeg_helpers.hpp"
 
 #include <cmath>
 #include <cstdint>
@@ -28,8 +27,8 @@ struct CachedFrame {
 	AVFrame* frame;
 };
 
-class GoZenVideo : public Resource {
-	GDCLASS(GoZenVideo, Resource);
+class Video : public Resource {
+	GDCLASS(Video, Resource);
 
   private:
 	// FFmpeg classes
@@ -115,15 +114,15 @@ class GoZenVideo : public Resource {
 	void _clear_cache();
 
 	inline bool _log_err(const String& message) {
-		UtilityFunctions::printerr("GoZenVideo: ", message, "!");
+		UtilityFunctions::printerr("Video: ", message, "!");
 		return false;
 	}
 
   public:
 	static double get_duration(const String& video_path);
 
-	GoZenVideo() {}
-	~GoZenVideo() { close(); }
+	Video() {}
+	~Video() { close(); }
 
 	int open(const String& video_path);
 	void close();

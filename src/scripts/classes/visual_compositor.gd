@@ -138,7 +138,7 @@ func initialize_image(image: Texture2D) -> void:
 	_init_ping_pong()
 
 
-func initialize_video(video: GoZenVideo) -> void:
+func initialize_video(video: Video) -> void:
 	_init_start(video.get_resolution())
 
 	var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
@@ -180,7 +180,7 @@ func initialize_video(video: GoZenVideo) -> void:
 	_init_ping_pong()
 
 
-func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], frame_nr: int, fade_alpha: float) -> void:
+func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
 	if not initialized:
 		return
 
@@ -224,7 +224,7 @@ func process_video_frame(video: GoZenVideo, effects: Array[GoZenEffectVisual], f
 	_process_frame(compute_list, effects, fade_alpha)
 
 
-func process_image_frame(effects: Array[GoZenEffectVisual], frame_nr: int, fade_alpha: float) -> void:
+func process_image_frame(effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
 	if not initialized:
 		return
 
@@ -267,8 +267,8 @@ func cleanup() -> void:
 	effect_buffers.clear()
 
 
-func _update_effect_buffers(effects: Array[GoZenEffectVisual], current_frame: int) -> void:
-	for effect: GoZenEffectVisual in effects:
+func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) -> void:
+	for effect: EffectVisual in effects:
 		if not effect.is_enabled:
 			continue
 
@@ -286,9 +286,9 @@ func _update_effect_buffers(effects: Array[GoZenEffectVisual], current_frame: in
 			effect_buffers[id] = device.uniform_buffer_create(buffer_data.size(), buffer_data)
 
 
-func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual], fade_alpha: float) -> void:
+func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha: float) -> void:
 	# Start handling the effects
-	for effect: GoZenEffectVisual in effects:
+	for effect: EffectVisual in effects:
 		if not effect.is_enabled:
 			continue
 
@@ -341,7 +341,7 @@ func _process_frame(compute_list: int, effects: Array[GoZenEffectVisual], fade_a
 	display_texture.texture_rd_rid = ping_texture
 
 
-func _create_yuv_params(video: GoZenVideo) -> RID:
+func _create_yuv_params(video: Video) -> RID:
 	var yuv_buffer_data: PackedByteArray = PackedByteArray()
 	var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
 	var matrix_data: PackedFloat32Array
@@ -412,7 +412,7 @@ func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 	return uniform
 
 
-func _get_effect_pipeline(shader_path: String, effect: GoZenEffectVisual) -> EffectCache:
+func _get_effect_pipeline(shader_path: String, effect: EffectVisual) -> EffectCache:
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
 

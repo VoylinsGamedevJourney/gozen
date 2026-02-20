@@ -1,9 +1,8 @@
 #pragma once
 
+#include "encoder.hpp"
 #include "ffmpeg.hpp"
-#include "ffmpeg_helpers.hpp"
 
-#include <cmath>
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/file_access.hpp>
@@ -13,20 +12,19 @@
 #include <godot_cpp/variant/array.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
-#include <unordered_map>
 
 
 using namespace godot;
 
-class GoZenAudio : public Resource {
-	GDCLASS(GoZenAudio, Resource);
+class Audio : public Resource {
+	GDCLASS(Audio, Resource);
 
   private:
 	static PackedByteArray _get_audio(AVFormatContext*& format_ctx, AVStream*& stream, double start_time,
 									  double duration);
 
 	static inline bool _log_err(String message) {
-		UtilityFunctions::printerr("GoZenAudio: ", message, "!");
+		UtilityFunctions::printerr("Audio: ", message, "!");
 		return false;
 	}
 

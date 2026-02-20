@@ -52,8 +52,8 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	var file_path: String = Project.data.files_path[file_index]
 	var global_output_path: String = ProjectSettings.globalize_path(output_path)
 	var global_input_path: String = ProjectSettings.globalize_path(file_path)
-	var encoder: GoZenEncoder = GoZenEncoder.new()
-	var video: GoZenVideo = GoZenVideo.new()
+	var encoder: Encoder = Encoder.new()
+	var video: Video = Video.new()
 	if video.open(global_input_path) != OK: return printerr("ProxyHandler:
 		Failed to open source!")
 
@@ -67,9 +67,9 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 	encoder.set_file_path(global_output_path)
 	encoder.set_resolution(target_resolution)
 	encoder.set_framerate(video.get_framerate())
-	encoder.set_audio_codec_id(GoZenEncoder.AUDIO_CODEC.A_NONE) # Only visual is needed
-	encoder.set_video_codec_id(GoZenEncoder.VIDEO_CODEC.V_H264)
-	encoder.set_h264_preset(GoZenEncoder.H264_PRESETS.H264_PRESET_ULTRAFAST)
+	encoder.set_audio_codec_id(Encoder.AUDIO_CODEC.A_NONE) # Only visual is needed
+	encoder.set_video_codec_id(Encoder.VIDEO_CODEC.V_H264)
+	encoder.set_h264_preset(Encoder.H264_PRESETS.H264_PRESET_ULTRAFAST)
 	encoder.set_crf(32)
 
 	if !encoder.open(true):

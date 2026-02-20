@@ -1,7 +1,7 @@
-#include "gozen_video.hpp"
+#include "video.hpp"
 
 
-double GoZenVideo::get_duration(const String& video_path) {
+double Video::get_duration(const String& video_path) {
 	AVFormatContext* format_ctx = nullptr;
 	String path = video_path;
 
@@ -36,7 +36,7 @@ double GoZenVideo::get_duration(const String& video_path) {
 }
 
 
-int GoZenVideo::open(const String& video_path) {
+int Video::open(const String& video_path) {
 	if (loaded) {
 		return _log_err("Already open");
 	}
@@ -209,16 +209,16 @@ int GoZenVideo::open(const String& video_path) {
 			break;
 		} else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 			if (attempts > 10) {
-				FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
+				FFmpeg::print_av_error("Video: Reached max attempts trying to get first frame!", response);
 				break;
 			}
 
 			attempts++;
 		} else if (response == AVERROR_EOF) {
-			FFmpeg::print_av_error("GoZenVideo: Reached EOF trying to get first frame!", response);
+			FFmpeg::print_av_error("Video: Reached EOF trying to get first frame!", response);
 			break;
 		} else {
-			FFmpeg::print_av_error("GoZenVideo: Something went wrong getting first frame!", response);
+			FFmpeg::print_av_error("Video: Something went wrong getting first frame!", response);
 			break;
 		}
 	}
@@ -336,7 +336,7 @@ int GoZenVideo::open(const String& video_path) {
 }
 
 
-void GoZenVideo::close() {
+void Video::close() {
 	_clear_cache();
 
 	loaded = false;
@@ -356,7 +356,7 @@ void GoZenVideo::close() {
 }
 
 
-bool GoZenVideo::seek_frame(int frame_nr) {
+bool Video::seek_frame(int frame_nr) {
 	if (!loaded)
 		return _log_err("Not open");
 	else if (_load_from_cache(frame_nr))
@@ -391,7 +391,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 										  av_packet.get()))) {
 			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 				if (attempts > 10) {
-					FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
+					FFmpeg::print_av_error("Video: Reached max attempts trying to get first frame!", response);
 					break;
 				}
 
@@ -406,7 +406,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 				continue;
 			}
 
-			FFmpeg::print_av_error("GoZenVideo: Problem happened getting frame in seek_frame! ", response);
+			FFmpeg::print_av_error("Video: Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
 		}
@@ -434,7 +434,7 @@ bool GoZenVideo::seek_frame(int frame_nr) {
 }
 
 
-bool GoZenVideo::next_frame(bool skip) {
+bool Video::next_frame(bool skip) {
 	if (!loaded)
 		return false;
 	else if (_load_from_cache(current_frame + 1))
@@ -446,7 +446,7 @@ bool GoZenVideo::next_frame(bool skip) {
 		FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
 
 	if (response < 0 && response != AVERROR_EOF) {
-		FFmpeg::print_av_error("GoZenVideo: Error in next_frame", response);
+		FFmpeg::print_av_error("Video: Error in next_frame", response);
 	}
 
 	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
@@ -465,7 +465,7 @@ bool GoZenVideo::next_frame(bool skip) {
 }
 
 
-Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
+Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 	// This is identical to the seek_frame() function, but instead of copying
 	// the data to Y,U,V we create an RGBA Image.
 	if (!loaded) {
@@ -490,16 +490,16 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 			break;
 		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 			if (attempts > 10) {
-				FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
+				FFmpeg::print_av_error("Video: Reached max attempts trying to get first frame!", response);
 				break;
 			}
 
 			attempts++;
 		} else if (response == AVERROR_EOF) {
-			FFmpeg::print_av_error("GoZenVideo: Reached EOF trying to get first frame!", response);
+			FFmpeg::print_av_error("Video: Reached EOF trying to get first frame!", response);
 			break;
 		} else {
-			FFmpeg::print_av_error("GoZenVideo: Something went wrong getting first frame!", response);
+			FFmpeg::print_av_error("Video: Something went wrong getting first frame!", response);
 			break;
 		}
 	}
@@ -510,7 +510,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 		if (response) {
 			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 				if (attempts > 10) {
-					FFmpeg::print_av_error("GoZenVideo: Reached max attempts trying to get first frame!", response);
+					FFmpeg::print_av_error("Video: Reached max attempts trying to get first frame!", response);
 					break;
 				}
 				attempts++;
@@ -525,7 +525,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 				continue;
 			}
 
-			FFmpeg::print_av_error("GoZenVideo: Problem happened getting frame in seek_frame! ", response);
+			FFmpeg::print_av_error("Video: Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
 		}
@@ -559,7 +559,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_frame(int frame_nr) {
 }
 
 
-Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
+Ref<Image> Video::generate_thumbnail_at_current_frame() {
 	if (!loaded) {
 		_log_err("Not open");
 		return Ref<Image>();
@@ -590,7 +590,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
 	// Allocate buffer for the RGBA frame.
 	int response = av_frame_get_buffer(rgba_frame.get(), 0); // Use default alignment (usually 32)
 	if (response < 0) {
-		FFmpeg::print_av_error("GoZenVideo: Failed to allocate buffer for RGBA frame: ", response);
+		FFmpeg::print_av_error("Video: Failed to allocate buffer for RGBA frame: ", response);
 		return Ref<Image>();
 	}
 
@@ -620,7 +620,7 @@ Ref<Image> GoZenVideo::generate_thumbnail_at_current_frame() {
 	return thumbnail_image;
 }
 
-PackedInt32Array GoZenVideo::get_streams(int stream_type) {
+PackedInt32Array Video::get_streams(int stream_type) {
 	if (!loaded) {
 		_log_err("file is not open");
 		return PackedInt32Array();
@@ -638,7 +638,7 @@ PackedInt32Array GoZenVideo::get_streams(int stream_type) {
 }
 
 
-Dictionary GoZenVideo::get_stream_metadata(int stream_index) {
+Dictionary Video::get_stream_metadata(int stream_index) {
 	if (!loaded) {
 		_log_err("file is not open");
 		return Dictionary();
@@ -665,7 +665,7 @@ Dictionary GoZenVideo::get_stream_metadata(int stream_index) {
 }
 
 
-int GoZenVideo::get_chapter_count() {
+int Video::get_chapter_count() {
 	if (!loaded) {
 		_log_err("file is not open");
 		return 0;
@@ -675,7 +675,7 @@ int GoZenVideo::get_chapter_count() {
 }
 
 
-float GoZenVideo::get_chapter_start(int chapter_index) {
+float Video::get_chapter_start(int chapter_index) {
 	if (!loaded) {
 		_log_err("file is not open");
 		return -1.0f;
@@ -691,7 +691,7 @@ float GoZenVideo::get_chapter_start(int chapter_index) {
 }
 
 
-float GoZenVideo::get_chapter_end(int chapter_index) {
+float Video::get_chapter_end(int chapter_index) {
 	if (!loaded) {
 		_log_err("file is not open");
 		return -1.0f;
@@ -707,7 +707,7 @@ float GoZenVideo::get_chapter_end(int chapter_index) {
 }
 
 
-Dictionary GoZenVideo::get_chapter_metadata(int chapter_index) {
+Dictionary Video::get_chapter_metadata(int chapter_index) {
 	if (!loaded) {
 		_log_err("file is not open");
 		return Dictionary();
@@ -729,7 +729,7 @@ Dictionary GoZenVideo::get_chapter_metadata(int chapter_index) {
 }
 
 
-void GoZenVideo::_copy_frame_data() {
+void Video::_copy_frame_data() {
 	if (av_frame->data[0] == nullptr) {
 		_log_err("Frame is empty");
 		return;
@@ -757,7 +757,7 @@ void GoZenVideo::_copy_frame_data() {
 }
 
 
-int GoZenVideo::_seek_frame(int frame_nr) {
+int Video::_seek_frame(int frame_nr) {
 	avcodec_flush_buffers(av_codec_ctx.get());
 
 	frame_timestamp = (int64_t)(frame_nr * average_frame_duration);
@@ -766,7 +766,7 @@ int GoZenVideo::_seek_frame(int frame_nr) {
 }
 
 
-void GoZenVideo::_add_to_cache(int frame_nr) {
+void Video::_add_to_cache(int frame_nr) {
 	if (max_cache_size <= 0)
 		return;
 
@@ -795,7 +795,7 @@ void GoZenVideo::_add_to_cache(int frame_nr) {
 }
 
 
-bool GoZenVideo::_load_from_cache(int frame_nr) {
+bool Video::_load_from_cache(int frame_nr) {
 	for (const CachedFrame& cache : frame_cache) {
 		if (cache.frame_nr != frame_nr)
 			continue;
@@ -820,7 +820,7 @@ bool GoZenVideo::_load_from_cache(int frame_nr) {
 }
 
 
-void GoZenVideo::_clear_cache() {
+void Video::_clear_cache() {
 	for (CachedFrame& cache : frame_cache)
 		av_frame_free(&cache.frame);
 
@@ -828,68 +828,67 @@ void GoZenVideo::_clear_cache() {
 }
 
 
-void GoZenVideo::_bind_methods() {
-	ClassDB::bind_static_method("GoZenVideo", D_METHOD("get_duration", "video_path"), &GoZenVideo::get_duration);
+void Video::_bind_methods() {
+	ClassDB::bind_static_method("Video", D_METHOD("get_duration", "video_path"), &Video::get_duration);
 
-	ClassDB::bind_method(D_METHOD("open", "video_path"), &GoZenVideo::open);
-	ClassDB::bind_method(D_METHOD("close"), &GoZenVideo::close);
+	ClassDB::bind_method(D_METHOD("open", "video_path"), &Video::open);
+	ClassDB::bind_method(D_METHOD("close"), &Video::close);
 
-	ClassDB::bind_method(D_METHOD("is_open"), &GoZenVideo::is_open);
+	ClassDB::bind_method(D_METHOD("is_open"), &Video::is_open);
 
-	ClassDB::bind_method(D_METHOD("seek_frame", "frame_nr"), &GoZenVideo::seek_frame);
-	ClassDB::bind_method(D_METHOD("next_frame", "skip"), &GoZenVideo::next_frame);
+	ClassDB::bind_method(D_METHOD("seek_frame", "frame_nr"), &Video::seek_frame);
+	ClassDB::bind_method(D_METHOD("next_frame", "skip"), &Video::next_frame);
 
-	ClassDB::bind_method(D_METHOD("get_streams", "stream_type"), &GoZenVideo::get_streams);
-	ClassDB::bind_method(D_METHOD("get_stream_metadata", "stream_index"), &GoZenVideo::get_stream_metadata);
+	ClassDB::bind_method(D_METHOD("get_streams", "stream_type"), &Video::get_streams);
+	ClassDB::bind_method(D_METHOD("get_stream_metadata", "stream_index"), &Video::get_stream_metadata);
 
-	ClassDB::bind_method(D_METHOD("get_chapter_count"), &GoZenVideo::get_chapter_count);
-	ClassDB::bind_method(D_METHOD("get_chapter_start", "chapter_index"), &GoZenVideo::get_chapter_start);
-	ClassDB::bind_method(D_METHOD("get_chapter_end", "chapter_index"), &GoZenVideo::get_chapter_end);
-	ClassDB::bind_method(D_METHOD("get_chapter_metadata", "chapter_index"), &GoZenVideo::get_chapter_metadata);
+	ClassDB::bind_method(D_METHOD("get_chapter_count"), &Video::get_chapter_count);
+	ClassDB::bind_method(D_METHOD("get_chapter_start", "chapter_index"), &Video::get_chapter_start);
+	ClassDB::bind_method(D_METHOD("get_chapter_end", "chapter_index"), &Video::get_chapter_end);
+	ClassDB::bind_method(D_METHOD("get_chapter_metadata", "chapter_index"), &Video::get_chapter_metadata);
 
-	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_frame", "frame_nr"), &GoZenVideo::generate_thumbnail_at_frame);
-	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_current_frame"),
-						 &GoZenVideo::generate_thumbnail_at_current_frame);
+	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_frame", "frame_nr"), &Video::generate_thumbnail_at_frame);
+	ClassDB::bind_method(D_METHOD("generate_thumbnail_at_current_frame"), &Video::generate_thumbnail_at_current_frame);
 
-	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &GoZenVideo::set_sws_flag_bilinear);
-	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &GoZenVideo::set_sws_flag_bicubic);
+	ClassDB::bind_method(D_METHOD("set_sws_flag_bilinear"), &Video::set_sws_flag_bilinear);
+	ClassDB::bind_method(D_METHOD("set_sws_flag_bicubic"), &Video::set_sws_flag_bicubic);
 
-	ClassDB::bind_method(D_METHOD("set_smart_seek_threshold", "frames"), &GoZenVideo::set_smart_seek_threshold);
-	ClassDB::bind_method(D_METHOD("set_cache_size", "size"), &GoZenVideo::set_cache_size);
+	ClassDB::bind_method(D_METHOD("set_smart_seek_threshold", "frames"), &Video::set_smart_seek_threshold);
+	ClassDB::bind_method(D_METHOD("set_cache_size", "size"), &Video::set_cache_size);
 
-	ClassDB::bind_method(D_METHOD("get_y_data"), &GoZenVideo::get_y_data);
-	ClassDB::bind_method(D_METHOD("get_u_data"), &GoZenVideo::get_u_data);
-	ClassDB::bind_method(D_METHOD("get_v_data"), &GoZenVideo::get_v_data);
-	ClassDB::bind_method(D_METHOD("get_a_data"), &GoZenVideo::get_a_data);
+	ClassDB::bind_method(D_METHOD("get_y_data"), &Video::get_y_data);
+	ClassDB::bind_method(D_METHOD("get_u_data"), &Video::get_u_data);
+	ClassDB::bind_method(D_METHOD("get_v_data"), &Video::get_v_data);
+	ClassDB::bind_method(D_METHOD("get_a_data"), &Video::get_a_data);
 
-	ClassDB::bind_method(D_METHOD("get_audio"), &GoZenVideo::get_audio);
+	ClassDB::bind_method(D_METHOD("get_audio"), &Video::get_audio);
 
 	// Metadata getters
-	ClassDB::bind_method(D_METHOD("get_path"), &GoZenVideo::get_path);
+	ClassDB::bind_method(D_METHOD("get_path"), &Video::get_path);
 
-	ClassDB::bind_method(D_METHOD("get_resolution"), &GoZenVideo::get_resolution);
-	ClassDB::bind_method(D_METHOD("get_actual_resolution"), &GoZenVideo::get_actual_resolution);
+	ClassDB::bind_method(D_METHOD("get_resolution"), &Video::get_resolution);
+	ClassDB::bind_method(D_METHOD("get_actual_resolution"), &Video::get_actual_resolution);
 
-	ClassDB::bind_method(D_METHOD("get_width"), &GoZenVideo::get_width);
-	ClassDB::bind_method(D_METHOD("get_height"), &GoZenVideo::get_height);
-	ClassDB::bind_method(D_METHOD("get_actual_width"), &GoZenVideo::get_actual_width);
-	ClassDB::bind_method(D_METHOD("get_actual_height"), &GoZenVideo::get_actual_height);
+	ClassDB::bind_method(D_METHOD("get_width"), &Video::get_width);
+	ClassDB::bind_method(D_METHOD("get_height"), &Video::get_height);
+	ClassDB::bind_method(D_METHOD("get_actual_width"), &Video::get_actual_width);
+	ClassDB::bind_method(D_METHOD("get_actual_height"), &Video::get_actual_height);
 
-	ClassDB::bind_method(D_METHOD("get_padding"), &GoZenVideo::get_padding);
-	ClassDB::bind_method(D_METHOD("get_rotation"), &GoZenVideo::get_rotation);
-	ClassDB::bind_method(D_METHOD("get_interlaced"), &GoZenVideo::get_interlaced);
-	ClassDB::bind_method(D_METHOD("get_frame_count"), &GoZenVideo::get_frame_count);
-	ClassDB::bind_method(D_METHOD("get_current_frame"), &GoZenVideo::get_current_frame);
-	ClassDB::bind_method(D_METHOD("get_last_decoded_frame"), &GoZenVideo::get_last_decoded_frame);
+	ClassDB::bind_method(D_METHOD("get_padding"), &Video::get_padding);
+	ClassDB::bind_method(D_METHOD("get_rotation"), &Video::get_rotation);
+	ClassDB::bind_method(D_METHOD("get_interlaced"), &Video::get_interlaced);
+	ClassDB::bind_method(D_METHOD("get_frame_count"), &Video::get_frame_count);
+	ClassDB::bind_method(D_METHOD("get_current_frame"), &Video::get_current_frame);
+	ClassDB::bind_method(D_METHOD("get_last_decoded_frame"), &Video::get_last_decoded_frame);
 
-	ClassDB::bind_method(D_METHOD("get_sar"), &GoZenVideo::get_sar);
-	ClassDB::bind_method(D_METHOD("get_framerate"), &GoZenVideo::get_framerate);
+	ClassDB::bind_method(D_METHOD("get_sar"), &Video::get_sar);
+	ClassDB::bind_method(D_METHOD("get_framerate"), &Video::get_framerate);
 
-	ClassDB::bind_method(D_METHOD("get_pixel_format"), &GoZenVideo::get_pixel_format);
-	ClassDB::bind_method(D_METHOD("get_color_profile"), &GoZenVideo::get_color_profile);
+	ClassDB::bind_method(D_METHOD("get_pixel_format"), &Video::get_pixel_format);
+	ClassDB::bind_method(D_METHOD("get_color_profile"), &Video::get_color_profile);
 
-	ClassDB::bind_method(D_METHOD("get_has_alpha"), &GoZenVideo::get_has_alpha);
+	ClassDB::bind_method(D_METHOD("get_has_alpha"), &Video::get_has_alpha);
 
-	ClassDB::bind_method(D_METHOD("is_full_color_range"), &GoZenVideo::is_full_color_range);
-	ClassDB::bind_method(D_METHOD("is_using_sws"), &GoZenVideo::is_using_sws);
+	ClassDB::bind_method(D_METHOD("is_full_color_range"), &Video::is_full_color_range);
+	ClassDB::bind_method(D_METHOD("is_using_sws"), &Video::is_using_sws);
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ffmpeg.hpp"
-#include "ffmpeg_helpers.hpp"
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/image.hpp>
@@ -15,8 +14,8 @@
 
 using namespace godot;
 
-class GoZenEncoder : public Resource {
-	GDCLASS(GoZenEncoder, Resource);
+class Encoder : public Resource {
+	GDCLASS(Encoder, Resource);
 
   private:
 	// FFmpeg classes
@@ -76,7 +75,7 @@ class GoZenEncoder : public Resource {
 	bool _finalize_encoding();
 
 	static inline bool _log_err(String message) {
-		UtilityFunctions::printerr("GoZenEncoder: ", message, "!");
+		UtilityFunctions::printerr("Encoder: ", message, "!");
 		return false;
 	}
 
@@ -127,8 +126,8 @@ class GoZenEncoder : public Resource {
 		HW_DEVICE_TYPE_QSV,	  // Intel
 	};
 
-	GoZenEncoder() {};
-	~GoZenEncoder();
+	Encoder() {};
+	~Encoder();
 
 	bool open(bool rgba);
 	inline bool is_open() { return encoder_open; }
@@ -193,8 +192,8 @@ class GoZenEncoder : public Resource {
 	static void _bind_methods();
 };
 
-VARIANT_ENUM_CAST(GoZenEncoder::VIDEO_CODEC);
-VARIANT_ENUM_CAST(GoZenEncoder::AUDIO_CODEC);
-VARIANT_ENUM_CAST(GoZenEncoder::H264_PRESETS);
-VARIANT_ENUM_CAST(GoZenEncoder::SWS_QUALITY);
-VARIANT_ENUM_CAST(GoZenEncoder::HW_DEVICE_TYPES);
+VARIANT_ENUM_CAST(Encoder::VIDEO_CODEC);
+VARIANT_ENUM_CAST(Encoder::AUDIO_CODEC);
+VARIANT_ENUM_CAST(Encoder::H264_PRESETS);
+VARIANT_ENUM_CAST(Encoder::SWS_QUALITY);
+VARIANT_ENUM_CAST(Encoder::HW_DEVICE_TYPES);

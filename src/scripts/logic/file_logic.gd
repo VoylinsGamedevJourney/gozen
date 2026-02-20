@@ -20,10 +20,10 @@ const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo)
 var project_data: ProjectData
 
 # Runtime file data
-var file_data: Array = [] ## Can be GoZenVideo, AudioStreamFFmpeg, Texture2D, Color, or PCK
+var file_data: Array = [] ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
 var audio_wave: Dictionary[int, PackedFloat32Array] = {} ## { file: wave_data }
-var video_pools: Dictionary[int, Array] = {} ## { file: [GoZenVideo] }
+var video_pools: Dictionary[int, Array] = {} ## { file: [Video] }
 var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
 var index_map: Dictionary[int, int] = {} ## { file: index }
@@ -137,11 +137,11 @@ func _add(path: String) -> int:
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
 		type = EditorCore.TYPE.AUDIO
-		duration = floori(GoZenVideo.get_duration(path) * Project.data.framerate)
+		duration = floori(Video.get_duration(path) * Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
 		type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
-		duration = floori(GoZenVideo.get_duration(path) * Project.data.framerate)
+		duration = floori(Video.get_duration(path) * Project.data.framerate)
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck":
 		type = EditorCore.TYPE.PCK
@@ -216,7 +216,7 @@ func _delete(file: int) -> void:
 		project_data.files_ato_file.erase(file)
 
 	if video_pools.has(file):
-		for video: GoZenVideo in video_pools[file]:
+		for video: Video in video_pools[file]:
 			video.close()
 		video_pools.erase(file)
 	if audio_pools.has(file):
@@ -488,7 +488,7 @@ func load_data(file_index: int) -> void:
 func _load_video(file: int) -> void:
 	var index: int = index_map[file]
 	var path: String = project_data.files_path[index]
-	var temp_video: GoZenVideo = GoZenVideo.new()
+	var temp_video: Video = Video.new()
 	var path_to_load: String = path
 	var proxy_path: String = project_data.files_proxy_path[index]
 
@@ -503,7 +503,7 @@ func _load_video(file: int) -> void:
 	temp_video.set_cache_size(Settings.get_video_cache_size())
 	file_data[index] = temp_video
 	if video_pools.has(file):
-		for video: GoZenVideo in video_pools[file]:
+		for video: Video in video_pools[file]:
 			video.close()
 		video_pools[file] = []
 	Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
@@ -516,7 +516,7 @@ func _create_wave(file: int) -> void:
 	# TODO: We should check if the amplification
 	var file_index: int = index_map[file]
 	var file_path: String = project_data.files_path[file_index]
-	var data: PackedByteArray = GoZenAudio.get_audio_data(file_path, -1)
+	var data: PackedByteArray = Audio.get_audio_data(file_path, -1)
 
 	audio_wave[file] = PackedFloat32Array()
 	if data.is_empty():
@@ -603,7 +603,7 @@ func reload(file: int) -> void:
 	reloaded.emit(file)
 
 
-func get_video_reader(file: int, instance_index: int) -> GoZenVideo:
+func get_video_reader(file: int, instance_index: int) -> Video:
 	var file_index: int = index_map[file]
 	if instance_index == 0:
 		return file_data[file_index]
@@ -615,7 +615,7 @@ func get_video_reader(file: int, instance_index: int) -> GoZenVideo:
 	var pool: Array = video_pools[file]
 	var pool_index: int = instance_index - 1
 	if pool_index < pool.size():
-		var video: GoZenVideo = pool[pool_index]
+		var video: Video = pool[pool_index]
 		Threader.mutex.unlock()
 		return video
 	Threader.mutex.unlock()
@@ -628,7 +628,7 @@ func get_video_reader(file: int, instance_index: int) -> GoZenVideo:
 		path_to_load = file_proxy_path
 
 	Threader.mutex.lock()
-	var new_video: GoZenVideo = GoZenVideo.new()
+	var new_video: Video = Video.new()
 	if new_video.open(path_to_load) != OK:
 		printerr("FileLogic: Failed to create pool instance for '%s'!" % file_path)
 		return file_data[file_index] # Return main video as fallback.
@@ -644,7 +644,7 @@ func get_audio_stream(file: int, instance_index: int) -> AudioStreamFFmpeg:
 	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
 
 	if type == EditorCore.TYPE.VIDEO:
-		var video: GoZenVideo = get_video_reader(file, instance_index)
+		var video: Video = get_video_reader(file, instance_index)
 		return null if video == null else video.get_audio()
 	if instance_index == 0:
 		return file_data[file_index]
@@ -704,7 +704,7 @@ func save_audio_to_wav(file: int, save_path: String) -> void:
 	audio_stream.stereo = true
 	audio_stream.format = AudioStreamWAV.FORMAT_16_BITS
 	audio_stream.mix_rate = int(RenderManager.MIX_RATE)
-	audio_stream.data = GoZenAudio.get_audio_data(path, -1)
+	audio_stream.data = Audio.get_audio_data(path, -1)
 
 	if audio_stream.save_to_wav(save_path):
 		printerr("FileLogic: Error occured when saving to WAV!")
@@ -818,24 +818,24 @@ func reload_videos() -> void:
 func _update_video_cache_size(value: int) -> void:
 	for file: int in get_all_video_files():
 		var data: Variant = file_data[index_map[file]]
-		if data is not GoZenVideo:
+		if data is not Video:
 			continue
 
-		(data as GoZenVideo).set_cache_size(value)
+		(data as Video).set_cache_size(value)
 		if video_pools.has(file):
-			for video: GoZenVideo in video_pools[file]:
+			for video: Video in video_pools[file]:
 				video.set_cache_size(value)
 
 
 func _update_video_smart_seek_threshold(value: int) -> void:
 	for file: int in get_all_video_files():
 		var data: Variant = file_data[index_map[file]]
-		if data is not GoZenVideo:
+		if data is not Video:
 			continue
 
-		(data as GoZenVideo).set_smart_seek_threshold(value)
+		(data as Video).set_smart_seek_threshold(value)
 		if video_pools.has(file):
-			for video: GoZenVideo in video_pools[file]:
+			for video: Video in video_pools[file]:
 				video.set_smart_seek_threshold(value)
 
 

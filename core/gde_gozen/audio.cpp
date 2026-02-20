@@ -1,8 +1,7 @@
-#include "gozen_audio.hpp"
+#include "audio.hpp"
 
 
-PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& stream, double start_time,
-									   double duration) {
+PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& stream, double start_time, double duration) {
 	const int TARGET_SAMPLE_RATE = 44100;
 	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
 	const AVChannelLayout TARGET_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
@@ -12,7 +11,6 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 	UniqueAVPacket av_packet;
 	UniqueAVFrame av_frame;
 	UniqueAVFrame av_decoded_frame;
-
 	PackedByteArray audio_data = PackedByteArray();
 
 	const AVCodec* codec = avcodec_find_decoder(stream->codecpar->codec_id);
@@ -54,7 +52,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 									   0, nullptr);
 	swr_ctx = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
 	if (response < 0 || (response = swr_init(swr_ctx.get()))) {
-		FFmpeg::print_av_error("GoZenAudio: Couldn't initialize SWR!", response);
+		FFmpeg::print_av_error("Audio: Couldn't initialize SWR!", response);
 		return audio_data;
 	}
 
@@ -77,8 +75,6 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 										 ? (stream->duration * av_q2d(stream->time_base))
 										 : ((double)format_ctx->duration / AV_TIME_BASE);
 		int64_t total_size = (size_t)(stream_duration_sec * TARGET_SAMPLE_RATE) * bytes_per_sample * 2;
-		// TODO: Create a fix for this size issue. Possible solution would be
-		// to handle most of the render manager inside of C++.
 		if (total_size >= 2147483600)
 			return audio_data;
 		audio_data.resize(total_size);
@@ -95,7 +91,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 		av_decoded_frame->nb_samples = swr_get_out_samples(swr_ctx.get(), av_frame->nb_samples);
 
 		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
-			FFmpeg::print_av_error("GoZenAudio: Couldn't create new frame for swr!", response);
+			FFmpeg::print_av_error("Audio: Couldn't create new frame for swr!", response);
 			av_frame_unref(av_frame.get());
 			av_frame_unref(av_decoded_frame.get());
 			break;
@@ -103,7 +99,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 
 		response = swr_convert_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
 		if (response < 0) {
-			FFmpeg::print_av_error("GoZenAudio: Couldn't convert the audio frame!", response);
+			FFmpeg::print_av_error("Audio: Couldn't convert the audio frame!", response);
 			av_frame_unref(av_frame.get());
 			av_frame_unref(av_decoded_frame.get());
 			break;
@@ -135,7 +131,7 @@ PackedByteArray GoZenAudio::_get_audio(AVFormatContext*& format_ctx, AVStream*& 
 }
 
 
-PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, double start_time, double duration) {
+PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double start_time, double duration) {
 	AVFormatContext* format_ctx = nullptr;
 	PackedByteArray data = PackedByteArray();
 	PackedByteArray file_buffer; // For `res://` videos.
@@ -251,7 +247,7 @@ PackedByteArray GoZenAudio::get_audio_data(String file_path, int stream_index, d
 }
 
 
-PackedByteArray GoZenAudio::combine_data(PackedByteArray audio_one, PackedByteArray audio_two) {
+PackedByteArray Audio::combine_data(PackedByteArray audio_one, PackedByteArray audio_two) {
 	const int16_t* p_one = (const int16_t*)audio_one.ptr();
 	const int16_t* p_two = (const int16_t*)audio_two.ptr();
 
@@ -262,7 +258,7 @@ PackedByteArray GoZenAudio::combine_data(PackedByteArray audio_one, PackedByteAr
 }
 
 
-PackedByteArray GoZenAudio::change_db(PackedByteArray audio_data, float db) {
+PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
 	static std::unordered_map<int, double> cache;
 
 	const size_t sample_count = audio_data.size() / 2;
@@ -285,7 +281,7 @@ PackedByteArray GoZenAudio::change_db(PackedByteArray audio_data, float db) {
 }
 
 
-PackedByteArray GoZenAudio::change_to_mono(PackedByteArray audio_data, bool left) {
+PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 	const size_t sample_count = audio_data.size() / 2;
 	const int16_t* p_data = (const int16_t*)audio_data.ptr();
 	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
@@ -302,7 +298,7 @@ PackedByteArray GoZenAudio::change_to_mono(PackedByteArray audio_data, bool left
 }
 
 
-PackedByteArray GoZenAudio::apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples) {
+PackedByteArray Audio::apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples) {
 	int16_t* samples = (int16_t*)audio_data.ptrw();
 	int sample_count = audio_data.size() / 2; // 16-bit stereo samples
 
@@ -339,18 +335,16 @@ PackedByteArray GoZenAudio::apply_fade(PackedByteArray audio_data, int fade_in_s
 }
 
 
-void GoZenAudio::_bind_methods() {
-	ClassDB::bind_static_method("GoZenAudio",
+void Audio::_bind_methods() {
+	ClassDB::bind_static_method("Audio",
 								D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"),
-								&GoZenAudio::get_audio_data, DEFVAL(-1), DEFVAL(0.0), DEFVAL(-1.0));
+								&Audio::get_audio_data, DEFVAL(-1), DEFVAL(0.0), DEFVAL(-1.0));
 
-	ClassDB::bind_static_method("GoZenAudio", D_METHOD("combine_data", "audio_one", "audio_two"),
-								&GoZenAudio::combine_data);
-	ClassDB::bind_static_method("GoZenAudio", D_METHOD("change_db", "audio_data", "db"), &GoZenAudio::change_db);
-	ClassDB::bind_static_method("GoZenAudio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
-								&GoZenAudio::change_to_mono);
+	ClassDB::bind_static_method("Audio", D_METHOD("combine_data", "audio_one", "audio_two"), &Audio::combine_data);
+	ClassDB::bind_static_method("Audio", D_METHOD("change_db", "audio_data", "db"), &Audio::change_db);
+	ClassDB::bind_static_method("Audio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
+								&Audio::change_to_mono);
 
-	ClassDB::bind_static_method("GoZenAudio",
-								D_METHOD("apply_fade", "audio_data", "fade_in_samples", "fade_out_samples"),
-								&GoZenAudio::apply_fade);
+	ClassDB::bind_static_method("Audio", D_METHOD("apply_fade", "audio_data", "fade_in_samples", "fade_out_samples"),
+								&Audio::apply_fade);
 }

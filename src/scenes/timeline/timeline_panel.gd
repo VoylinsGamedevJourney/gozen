@@ -1,5 +1,4 @@
 extends PanelContainer
-# TODO: Look into caching the waveform data (not an issue right now, but might become one)
 
 signal zoom_changed(new_zoom: float)
 
@@ -776,6 +775,7 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	hovered_clip = -1
+	await RenderingServer.frame_pre_draw
 	draw_all()
 
 

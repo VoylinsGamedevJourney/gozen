@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="GoZenEffectAudio" format=3 uid="uid://dxp7sisypvq8b"]
+[gd_resource type="Resource" script_class="EffectAudio" format=3 uid="uid://dxp7sisypvq8b"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_7fg1e"]
-[ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/gozen_effect_audio.gd" id="2_7fg1e"]
+[ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/effect_audio.gd" id="2_7fg1e"]
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_glfcg"]
 
