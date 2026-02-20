@@ -63,6 +63,9 @@ func _add_track(track: int, is_inserting: bool) -> void:
 		project_data.tracks_is_invisible.insert(track, 0)
 		clip_map.insert(track, [])
 		frame_map.insert(track, [])
+		for i: int in project_data.clips_track.size():
+			if project_data.clips_track[i] >= track:
+				project_data.clips_track[i] += 1
 	else: # Track added to end.
 		project_data.tracks_is_muted.append(0)
 		project_data.tracks_is_invisible.append(0)
@@ -75,9 +78,7 @@ func _add_track(track: int, is_inserting: bool) -> void:
 
 func remove_track(track: int) -> void:
 	var is_end: bool = track == project_data.tracks_is_muted.size()
-
 	InputManager.undo_redo.create_action("Remove track: %s" % track)
-
 	for clip_id: int in clip_map[track]:
 		var clip_index: int = project_clips.index_map[clip_id]
 		var clip_snapshot: Dictionary = project_clips._create_snapshot(clip_index)
@@ -90,7 +91,15 @@ func remove_track(track: int) -> void:
 
 func _remove_track(track: int) -> void:
 	project_data.tracks_is_muted.remove_at(track)
+	project_data.tracks_is_invisible.remove_at(track)
+	clip_map.remove_at(track)
+	frame_map.remove_at(track)
+	for i: int in project_data.clips_track.size():
+		if project_data.clips_track[i] > track:
+			project_data.clips_track[i] -= 1
 
+	Project.unsaved_changes = true
+	updated.emit()
 
 # --- Track getters ---
 
