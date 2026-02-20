@@ -1,7 +1,5 @@
 extends ScrollContainer
 ## The scroll handler for the timeline stuff.
-## TODO: Have a setting to disable smooth scrolling.
-
 
 @export var timestamp_scroll: ScrollContainer
 

@@ -1,6 +1,5 @@
 class_name ProgressOverlay
 extends Control
-# TODO: Add a "Show details" button to explain why files failed to import
 
 @export var title_label: Label
 @export var progress_bar: ProgressBar
@@ -15,6 +14,7 @@ extends Control
 
 var file_labels: Dictionary = {}
 var start_time: int = 0
+
 
 
 func _ready() -> void:
@@ -37,16 +37,13 @@ func update(value: int, text: String) -> void:
 	var remaining: String = Utils.format_time_str(remaining_sec, true)
 
 	estimated_time_label.text = "Estimated time - %s" % remaining
-
 	await RenderingServer.frame_post_draw
 
 
 func update_bar(value: int, wait_frame: bool = false) -> void:
 	var tween: Tween = create_tween()
-
 	@warning_ignore("return_value_discarded")
 	tween.tween_property(progress_bar, "value", value, 1)
-
 	if wait_frame:
 		await RenderingServer.frame_post_draw
 
@@ -57,7 +54,6 @@ func update_hint(text: String) -> void:
 
 func increment_bar(value: float) -> void:
 	var tween: Tween = create_tween()
-
 	@warning_ignore("return_value_discarded")
 	tween.tween_property(progress_bar, "value", progress_bar.value + value, 0.1)
 
@@ -74,7 +70,6 @@ func set_state_file_loading(loading_size: int) -> void:
 func update_file(path: String, status: int) -> void:
 	if !file_labels.has(path):
 		var new_label: Label = Label.new()
-
 		new_label.text = "- " + path.get_file()
 		new_label.self_modulate = Color.ORANGE
 		new_label.tooltip_text = path
@@ -89,4 +84,5 @@ func update_file(path: String, status: int) -> void:
 
 
 ## If errors happen, we want the user to be able to see them and not close directly.
-func show_close() -> void: close_button.visible = true
+func show_close() -> void:
+	close_button.visible = true

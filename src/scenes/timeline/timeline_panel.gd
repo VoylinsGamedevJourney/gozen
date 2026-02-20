@@ -129,11 +129,6 @@ func _ready() -> void:
 	_show_hide_mode_bar()
 
 
-func _on_project_ready() -> void:
-	Project.clips.updated.connect(draw_clips.queue_redraw)
-	Project.clips.selected.connect(draw_clips.queue_redraw.unbind(1))
-
-
 # --- Drawing functions ---
 
 func _draw_track_lines(control: Control) -> void:
@@ -352,11 +347,11 @@ func _draw_markers(control: Control) -> void:
 # --- Notification handling ---
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_DRAG_END:
-		if state == STATE.MOVING or state == STATE.DROPPING:
-			state = STATE.CURSOR_MODE_SELECT
-			draggable = null
-			draw_clips.queue_redraw()
+	if what == NOTIFICATION_DRAG_END and state in [STATE.MOVING, STATE.DROPPING]:
+		state = STATE.CURSOR_MODE_SELECT
+		draggable = null
+		draw_clips.queue_redraw()
+		draw_preview.queue_redraw()
 
 
 # --- Input handling ---
@@ -373,6 +368,8 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("duplicate_selected_clips"):
 		duplicate_selected_clips()
 	elif event.is_action_pressed("ui_cancel"):
+		if state in [STATE.MOVING, STATE.DROPPING]:
+			return
 		selected_clip_ids = []
 		_on_ui_cancel()
 	if get_global_rect().has_point(get_global_mouse_position()):
@@ -460,12 +457,12 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 
 	var clip_on_mouse: int = _get_clip_on_mouse()
 	if clip_on_mouse != -1:
-		var clip_id: int = Project.clips.index_map[clip_on_mouse]
-		var file_id: int = Project.data.clips_file[clip_id]
-		var file_index: int = Project.files.index_map[file_id]
-		var clip_name: String = Project.data.files_nickname[file_index]
-		if tooltip_text != clip_name:
-			tooltip_text = clip_name
+		var clip: int = Project.clips.index_map[clip_on_mouse]
+		var file: int = Project.data.clips_file[clip]
+		var file_index: int = Project.files.index_map[file]
+		var nickname: String = Project.data.files_nickname[file_index]
+		if tooltip_text != nickname:
+			tooltip_text = nickname
 		if hovered_clip != clip_on_mouse:
 			hovered_clip = clip_on_mouse
 			draw_clips.queue_redraw()
@@ -627,7 +624,9 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 		state = STATE.DROPPING
 		result = _can_drop_new_clips()
 	else:
+		state = STATE.MOVING
 		result = _can_move_clips()
+		draw_clips.queue_redraw()
 
 	if _update_clips:
 		draw_clips.queue_redraw()
@@ -657,12 +656,12 @@ func _can_drop_new_clips() -> bool:
 
 		if free_region.y > target_end:
 			draggable.frame_offset = target_frame
-			return true # Space fully available from target_frame to target_end
+			return true # Space fully available from target_frame to target_end.
 		elif free_region.y - free_region.x < draggable.duration:
-			return false # No space
+			return false # No space.
 
 		# Check what space is needed on right side and if within snapping
-		# Possible with snapping so checking if enough space on left side
+		# Possible with snapping so checking if enough space on left side.
 		var distance_necessary: int = target_end - free_region.y
 
 		if distance_necessary > SNAPPING or target_frame - free_region.x < distance_necessary:
@@ -670,21 +669,20 @@ func _can_drop_new_clips() -> bool:
 
 		draggable.frame_offset = target_frame - distance_necessary
 		return true
-	elif clip_at_end != -1:
-		return false # Not possible to find space
-	else:
+	elif clip_at_end == -1:
 		free_region = Project.tracks.get_free_region(draggable.track_offset, target_end)
 		if free_region.y - free_region.x < draggable.duration:
 			return false # No space
 
-		# Check what space is needed on left side and if within snapping
-		# Possible with snapping so checking if enough space on left side
+		# Check what space is needed on left side and if within snapping.
+		# Possible with snapping so checking if enough space on left side.
 		var distance_necessary: int = target_frame - free_region.x
 		if distance_necessary > SNAPPING or target_end - free_region.y > distance_necessary:
 			return false
 
 		draggable.frame_offset = target_frame - distance_necessary
 		return true
+	return false # Not possible to find space.
 
 
 func _can_move_clips() -> bool:
@@ -782,9 +780,7 @@ func _on_mouse_exited() -> void:
 func _commit_current_resize() -> void:
 	if resize_target.delta != 0:
 		Project.clips.resize([ClipRequest.resize_request(
-				resize_target.clip,
-				resize_target.delta if resize_target.is_end else resize_target.delta,
-				resize_target.is_end)])
+				resize_target.clip, resize_target.delta, resize_target.is_end)])
 	resize_target = null
 	draw_clips.queue_redraw()
 
@@ -946,9 +942,16 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	draw_all()
 
 
-func _on_popup_action_clip_delete() -> void: Project.clips.delete(selected_clip_ids)
-func _on_popup_action_clip_cut() -> void: cut_clips_at(right_click_pos.y)
-func _on_popup_action_remove_empty_space() -> void: remove_empty_space_at(right_click_pos.x, right_click_pos.y)
+func _on_popup_action_clip_delete() -> void:
+	Project.clips.delete(selected_clip_ids)
+
+
+func _on_popup_action_clip_cut() -> void:
+	cut_clips_at(right_click_pos.y)
+
+
+func _on_popup_action_remove_empty_space() -> void:
+	remove_empty_space_at(right_click_pos.x, right_click_pos.y)
 
 
 func _on_popup_action_clip_ato() -> void:

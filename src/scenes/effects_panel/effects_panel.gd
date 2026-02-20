@@ -23,6 +23,7 @@ const SIZE_EFFECT_HEADER_ICON: int = 16
 var current_clip_id: int = -1
 
 
+
 func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
 	EditorCore.frame_changed.connect(_on_frame_changed)
