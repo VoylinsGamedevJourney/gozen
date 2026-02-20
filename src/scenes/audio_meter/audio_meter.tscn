@@ -4,12 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://daggx7q3ma0l7" path="res://assets/audio_meter/progress.png" id="2_063fn"]
 [ext_resource type="Texture2D" uid="uid://c2ydgv8p4bi18" path="res://assets/audio_meter/overlay_marker.png" id="3_1q77g"]
 
-[node name="AudioMeter" type="PanelContainer" unique_id=605267007 node_paths=PackedStringArray("audio_bar_left", "audio_bar_right")]
+[node name="AudioMeter" type="PanelContainer" unique_id=605267007 node_paths=PackedStringArray("bar_left", "bar_right")]
 custom_minimum_size = Vector2(10, 0)
 theme_type_variation = &"box"
 script = ExtResource("1_slymy")
-audio_bar_left = NodePath("Margin/InnerAudioMeterPanel/HBox/LeftChannelBar")
-audio_bar_right = NodePath("Margin/InnerAudioMeterPanel/HBox/RightChannelBar")
+bar_left = NodePath("Margin/InnerAudioMeterPanel/HBox/LeftChannelBar")
+bar_right = NodePath("Margin/InnerAudioMeterPanel/HBox/RightChannelBar")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1060549104]
 layout_mode = 2

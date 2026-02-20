@@ -1,5 +1,5 @@
 extends BoxContainer
-# Handles the sizing of the timeline
+## Handles the sizing of the timeline.
 
 const END_PADDING: int = 5000
 
