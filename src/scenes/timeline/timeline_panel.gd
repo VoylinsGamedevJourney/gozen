@@ -513,40 +513,35 @@ func _on_ui_cancel() -> void:
 
 ## Returns the clip_id.
 func _get_clip_on_mouse() -> int:
-	var track_id: int = get_track_from_mouse()
-	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
-		return -1
-	return Project.tracks.get_clip_id_at(track_id, get_frame_from_mouse())
+	return Project.tracks.get_clip_id_at(get_track_from_mouse(), get_frame_from_mouse())
 
 
 func _get_resize_target() -> ResizeTarget:
-	var track_id: int = get_track_from_mouse()
-	if track_id < 0 or track_id >= Project.data.tracks_is_muted.size():
-		return null
-	var frame_pos: float = get_local_mouse_position().x
-	var clip_on_mouse: int = _get_clip_on_mouse()
-	if clip_on_mouse == -1:
-		return null
-	var index: int = Project.clips.index_map[clip_on_mouse]
-
-	var duration: int = Project.data.clips_duration[index]
-	if duration * zoom < RESIZE_CLIP_MIN_WIDTH:
-		return null
-
+	var track: int = get_track_from_mouse()
+	var mouse_pos: float = get_local_mouse_position().x
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
-	for clip_id: int in Project.tracks.get_clip_ids_in(track_id, visible_start, visible_end):
+	var best_target: ResizeTarget = null
+	var min_distance: float = RESIZE_HANDLE_WIDTH + 1.0
+	for clip_id: int in Project.tracks.get_clip_ids_in(track, visible_start, visible_end):
 		var clip_index: int = Project.clips.index_map[clip_id]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_duration: int = Project.data.clips_duration[clip_index]
-		var start: float = clip_start * zoom
-		var end: float = (clip_start + clip_duration) * zoom
-
-		if abs(frame_pos - start) <= RESIZE_HANDLE_WIDTH:
-			return ResizeTarget.new(clip_id, false, clip_start, clip_duration)
-		elif abs(frame_pos - end) <= RESIZE_HANDLE_WIDTH:
-			return ResizeTarget.new(clip_id, true, clip_start, clip_duration)
-	return null
+		if (clip_duration * zoom) < RESIZE_CLIP_MIN_WIDTH:
+			continue
+		var start_x: float = clip_start * zoom
+		var end_x: float = (clip_start + clip_duration) * zoom
+		var start_distance: float = abs(mouse_pos - start_x)
+		var end_distance: float = abs(mouse_pos - end_x)
+		if start_distance <= RESIZE_HANDLE_WIDTH:
+			if start_distance < min_distance or (start_distance == min_distance and mouse_pos >= start_x):
+				min_distance = start_distance
+				best_target = ResizeTarget.new(clip_id, false, clip_start, clip_duration)
+		if end_distance <= RESIZE_HANDLE_WIDTH:
+			if end_distance < min_distance or (end_distance == min_distance and mouse_pos <= end_x):
+				min_distance = end_distance
+				best_target = ResizeTarget.new(clip_id, true, clip_start, clip_duration)
+	return best_target
 
 
 func _get_fade_target() -> FadeTarget:
