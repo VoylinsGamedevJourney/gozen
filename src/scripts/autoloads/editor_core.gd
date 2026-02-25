@@ -29,6 +29,9 @@ var prev_frame: int = -1
 var is_playing: bool = false: set = set_is_playing
 var loaded_clips: PackedInt64Array = [] ## Currently visible clip id's.
 
+var playback_speed: float = 1.0: set = set_playback_speed
+var pitch_shift_effect: AudioEffectPitchShift
+
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0 ## Get's set when changing framerate.
 var skips: int = 0
@@ -38,6 +41,11 @@ func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
 	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
+
+	# TODO: Find out why FFT_SIZE_4096 and FFT_SIZE_MAX don't work.
+	pitch_shift_effect = AudioEffectPitchShift.new()
+	pitch_shift_effect.fft_size = AudioEffectPitchShift.FFT_SIZE_2048
+	AudioServer.add_bus_effect(0, pitch_shift_effect)
 
 	# Preparing viewport.
 	viewport = SubViewport.new()
@@ -54,7 +62,7 @@ func _process(delta: float) -> void:
 	if !is_playing:
 		return
 	skips = 0
-	time_elapsed += delta
+	time_elapsed += delta * playback_speed
 	if time_elapsed < frame_time:
 		return # Check if enough time has passed.
 
@@ -315,6 +323,13 @@ func set_is_playing(value: bool) -> void:
 	for player: AudioPlayer in audio_players:
 		player.play(value)
 	play_changed.emit(value)
+
+
+func set_playback_speed(value: float) -> void:
+	playback_speed = value
+	for player: AudioPlayer in audio_players:
+		player.player.pitch_scale = playback_speed
+	pitch_shift_effect.pitch_scale = 1.0 / playback_speed
 
 
 func set_background_color(color: Color) -> void:

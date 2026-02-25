@@ -4,6 +4,7 @@ extends PanelContainer
 
 @export var button_play: TextureButton
 @export var button_pause: TextureButton
+@export var button_playback_speed: Button
 
 @export var frame_label: Label
 @export var time_label: Label
@@ -70,3 +71,16 @@ func _on_skip_next_button_pressed() -> void:
 func _on_frame_changed() -> void:
 	frame_label.text = tr("Frame") + ": %s" % EditorCore.frame_nr
 	time_label.text = Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.data.framerate, false)
+
+
+func _on_playback_speed_button_pressed() -> void:
+	match EditorCore.playback_speed:
+		1.0:
+			EditorCore.playback_speed = 1.5
+		1.5:
+			EditorCore.playback_speed = 2.0
+		2.0:
+			EditorCore.playback_speed = 4.0
+		4.0:
+			EditorCore.playback_speed = 1.0
+	button_playback_speed.text = "x%s" % EditorCore.playback_speed
