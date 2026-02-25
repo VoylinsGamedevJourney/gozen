@@ -378,7 +378,7 @@ func _input(event: InputEvent) -> void:
 		elif event.is_action_pressed("remove_empty_space"):
 			var track_id: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
-			if !Project.tracks.get_clip_id_at(track_id, frame_nr):
+			if Project.tracks.get_clip_id_at(track_id, frame_nr) == -1:
 				remove_empty_space_at(track_id, frame_nr)
 
 
@@ -412,6 +412,19 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		pressed_clip = _get_clip_on_mouse()
 		resize_target = _get_resize_target()
 		fade_target = _get_fade_target()
+
+		if event.double_click and pressed_clip == -1: # Remove empty space.
+			var mod: int = Settings.get_delete_empty_modifier()
+			var valid: bool = false
+			if mod == KEY_NONE:
+				valid = true
+			elif mod == KEY_CTRL and event.ctrl_pressed:
+				valid = true
+			elif mod == KEY_SHIFT and event.shift_pressed:
+				valid = true
+			if valid:
+				remove_empty_space_at(get_track_from_mouse(), get_frame_from_mouse())
+				return
 
 		if fade_target:
 			state = STATE.FADING
