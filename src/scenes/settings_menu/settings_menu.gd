@@ -48,7 +48,6 @@ func _on_close_button_pressed() -> void:
 
 func set_mode(mode: MODE) -> void:
 	var menu_options: Dictionary[String, Array] = {}
-
 	match mode:
 		MODE.EDITOR_SETTINGS: menu_options = get_settings_menu_options()
 		MODE.PROJECT_SETTINGS: menu_options = get_project_settings_menu_options()
@@ -162,6 +161,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_audio_waveform_amp(),
 					0.5, 6, 0.5, false, false,
 					Settings.set_audio_waveform_amp,
+					"",
 					tr("Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity")),
 			create_header(tr("Dialogue's")), Control.new(),
 			create_label(tr("Use native dialogs")),
@@ -177,18 +177,21 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_image_duration(),
 					1, 100, 1, false, true,
 					Settings.set_image_duration,
+					"",
 					tr("Duration in frames per second.")),
 			create_label(tr("Default color duration")),
 			create_spinbox(
 					Settings.get_color_duration(),
 					1, 100, 1, false, true,
 					Settings.set_color_duration,
+					"",
 					tr("Duration in frames per second.")),
 			create_label("setting_default_text_duration"),
 			create_spinbox(
 					Settings.get_text_duration(),
 					1, 100, 1, false, true,
 					Settings.set_text_duration,
+					"",
 					tr("Duration in frames per second.")),
 			create_label(tr("Project resolution")),
 			create_default_resolution_hbox(),
@@ -378,7 +381,6 @@ func create_check_button(default: bool, callable: Callable, tooltip: String = ""
 
 func create_spinbox(default: float, min_value: float, max_value: float, step: float, allow_lesser: bool, allow_greater: bool, callable: Callable, suffix: String = "", tooltip: String = "") -> SpinBox:
 	var spinbox: SpinBox = SpinBox.new()
-
 	spinbox.allow_greater = allow_greater
 	spinbox.allow_lesser = allow_lesser
 	spinbox.min_value = min_value

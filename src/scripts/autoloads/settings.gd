@@ -115,11 +115,13 @@ func get_language() -> String:
 func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
+	var locales: PackedStringArray = TranslationServer.get_loaded_locales()
 
-	# Get all the
-	for code: String in TranslationServer.get_loaded_locales():
+	if not locales.has("en"):
+		locales.append("en")
+
+	for code: String in locales:
 		var key: String = code.split('_')[0]
-
 		if Localization.native_locale_names.has(key):
 			key = Localization.native_locale_names[key]
 		else:

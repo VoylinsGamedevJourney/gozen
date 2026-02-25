@@ -50,9 +50,7 @@ class ExitCode(IntEnum):
 def _print_options(title: str, options: list[str]) -> str:
     assert len(options) > 0
     print(f"{title}:")
-
     i = 1
-
     for option in options:
         if i == 1:
             print(f"{i}. {option}; (default)")
