@@ -37,15 +37,19 @@ func _input(event: InputEvent) -> void:
 		breakpoint
 	elif event.is_action_pressed("ui_paste"):
 		await clipboard_paste()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
-		if !undo_redo.undo(): printerr("InputManager:
-			Couldn't undo!")
+		if !undo_redo.undo():
+			printerr("InputManager: Couldn't undo!")
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_redo", false, true) and undo_redo.has_redo():
-		if !undo_redo.redo(): printerr("InputManager:
-			Couldn't redo!")
+		if !undo_redo.redo():
+			printerr("InputManager: Couldn't redo!")
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("switch_screen"):
 		if RenderManager.encoder == null or !RenderManager.encoder.is_open():
 			switch_screen()
+		get_viewport().set_input_as_handled()
 
 
 func _strict_input_check(event: InputEvent) -> bool:
