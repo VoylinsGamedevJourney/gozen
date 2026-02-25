@@ -71,6 +71,7 @@ image=PackedStringArray("jpg", "jpeg", "png", "svg", "webp")
 
 [gui]
 
+theme/default_font_multichannel_signed_distance_field=true
 theme/custom="uid://715mkakin2bb"
 
 [input]

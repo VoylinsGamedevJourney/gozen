@@ -21,6 +21,8 @@ var listening_action: String = ""
 var listening_index: int = -1
 var listening_button: Button = null
 
+var _editor_settings: bool = false
+
 
 
 func _input(event: InputEvent) -> void:
@@ -49,12 +51,15 @@ func _on_close_button_pressed() -> void:
 func set_mode(mode: MODE) -> void:
 	var menu_options: Dictionary[String, Array] = {}
 	match mode:
-		MODE.EDITOR_SETTINGS: menu_options = get_settings_menu_options()
-		MODE.PROJECT_SETTINGS: menu_options = get_project_settings_menu_options()
+		MODE.EDITOR_SETTINGS:
+			menu_options = get_settings_menu_options()
+			_editor_settings = true
+		MODE.PROJECT_SETTINGS:
+			menu_options = get_project_settings_menu_options()
+			_editor_settings = false
 
 	for section_name: String in menu_options:
 		var section_grid: Node = _create_section(section_name)
-
 		for node: Node in menu_options[section_name]:
 			if !node.get_parent():
 				section_grid.add_child(node)
@@ -141,6 +146,16 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_themes().values().find(Settings.get_theme_path()),
 					Settings.set_theme_path,
 					TYPE_STRING),
+			create_label(tr("Base color")),
+			create_color_picker(
+					Settings.get_base_color(),
+					Settings.set_base_color,
+					tr("The base color of the editor UI.")),
+			create_label(tr("Accent color")),
+			create_color_picker(
+					Settings.get_accent_color(),
+					Settings.set_accent_color,
+					tr("The highlight/accent color of the editor UI.")),
 			create_label(tr("Show menu bar")),
 			create_check_button(
 					Settings.get_show_menu_bar(),
@@ -317,7 +332,6 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 	# Options should have the option text as key and the value to pass to
 	# callable as value.
 	var option_button: OptionButton = OptionButton.new()
-
 	option_button.item_selected.connect(_option_button_item_selected.bind(option_button, callable, type))
 
 	var i: int = 0
@@ -333,22 +347,16 @@ func create_option_button(options: Dictionary, default: int, callable: Callable,
 	option_button.tooltip_text = tooltip
 	option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	option_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
 	return option_button
 
 
 func _option_button_item_selected(id: int, option_button: OptionButton, callable: Callable, type: Variant.Type) -> void:
-	@warning_ignore_start("unsafe_cast")
 	if type == TYPE_INT:
 		callable.call(option_button.get_item_metadata(id) as int)
 	elif type == TYPE_FLOAT:
 		callable.call(option_button.get_item_metadata(id) as float)
 	elif type == TYPE_STRING:
 		callable.call(option_button.get_item_metadata(id) as String)
-
-	if callable == Settings.set_language:
-		Settings.set_language(option_button.get_item_metadata(id) as String)
-	@warning_ignore_restore("unsafe_cast")
 
 
 func create_line_edit(default: String, callable: Callable, tooltip: String = "") -> LineEdit:

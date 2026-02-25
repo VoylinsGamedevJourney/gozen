@@ -15,15 +15,15 @@ func _ready() -> void:
 	register(tr("Open project settings"), Project.open_settings_menu, "open_project_settings")
 	register(tr("open render menu"), InputManager.switch_screen.bind(1), "open_render_screen")
 
-	Settings.localization_updated.connect(_localize_commands)
+	Settings.on_localization_updated.connect(_localize_commands)
 
 
 func _localize_commands() -> void:
 	for i: int in commands.size():
 		commands[i] = tr(base_commands[i])
 
-# --- Command registering ---
 
+# --- Command registering ---
 
 func register(command: StringName, callable: Callable, action: StringName) -> void:
 	commands.append(tr(command))

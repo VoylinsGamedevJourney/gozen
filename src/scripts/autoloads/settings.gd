@@ -7,9 +7,10 @@ signal on_show_time_mode_bar_changed(value: bool)
 signal on_video_cache_size_changed(value: int)
 signal on_video_smart_seek_threshold(value: int)
 signal on_track_height_changed(value: float)
-signal localization_updated
 
+signal on_localization_updated
 signal on_waveform_update
+signal on_theme_updated
 
 
 const PATH: String = "user://settings"
@@ -33,8 +34,10 @@ func _ready() -> void:
 		data.display_scale = get_display_scale()
 		data.default_project_path = OS.get_executable_path().trim_suffix(
 				OS.get_executable_path().get_file())
-	elif DataManager.load_data(PATH, data):
-		printerr("Settings: Couldn't load settings! ", FileAccess.get_open_error())
+	else:
+		var response: int = DataManager.load_data(PATH, data)
+		if response != OK:
+			printerr("Settings: Couldn't load settings! ", response)
 
 	if !DirAccess.dir_exists_absolute(PATH_THEMES):
 		DirAccess.make_dir_absolute(PATH_THEMES)
@@ -51,8 +54,9 @@ func _ready() -> void:
 
 
 func save() -> void:
-	if DataManager.save_data(PATH, data):
-		printerr("Settings: Something went wrong saving settings! ", FileAccess.get_open_error())
+	var response: int = DataManager.save_data(PATH, data)
+	if response != OK:
+		printerr("Settings: Something went wrong saving settings! ", response)
 
 
 func open_settings_menu() -> void:
@@ -99,13 +103,14 @@ func get_system_locale() -> String:
 # --- Appearance set/get ---
 
 func set_language(code: String) -> void:
+	print(code)
 	data.language = code
 	apply_language()
-	localization_updated.emit()
+	on_localization_updated.emit()
 
 
 func apply_language() -> void:
-	TranslationServer.set_locale(get_language())
+	TranslationServer.set_locale(data.language)
 
 
 func get_language() -> String:
@@ -175,13 +180,22 @@ func get_display_scale_int() -> int:
 func set_theme_path(new_path: String) -> void:
 	data.theme = new_path
 	apply_theme()
+	on_theme_updated.emit()
 
 
 func apply_theme() -> void:
+	var theme: Theme
 	if FileAccess.file_exists(data.theme):
-		get_tree().root.theme = load(data.theme)
-	else: # Default is dark
-		get_tree().root.theme = null
+		theme = load(data.theme).duplicate(true)
+	else: # Default theme.
+		theme = load(Library.THEME_DEFAULT).duplicate(true)
+
+	# TODO: Adjust the colors to use the base and accent color. In doing so
+	# we also have to update the text color. Biggest possible issue is that
+	# some theme's might be using textures instead of stylebox which will make
+	# applying the colors a bit more troublesome. The timeline colors right now
+	# are still "hard coded" which will also need updating.
+	get_tree().root.theme = theme
 
 
 func get_theme_path() -> String:
@@ -190,14 +204,31 @@ func get_theme_path() -> String:
 
 func get_themes() -> Dictionary[String, String]:
 	var themes: Dictionary[String, String] = {
-		"Default Dark": Library.THEME_DARK,
-		"Default Light": Library.THEME_LIGHT,
+		"Default": Library.THEME_DEFAULT,
 		"": "" } # Separator
 
 	for custom_theme_name: String in custom_themes:
 		if !themes.has(custom_theme_name):
 			themes[custom_theme_name] = custom_themes[custom_theme_name]
 	return themes
+
+
+func set_base_color(color: Color) -> void:
+	data.base_color = color
+	apply_theme()
+
+
+func get_base_color() -> Color:
+	return data.base_color
+
+
+func set_accent_color(color: Color) -> void:
+	data.accent_color = color
+	apply_theme()
+
+
+func get_accent_color() -> Color:
+	return data.accent_color
 
 
 func set_show_menu_bar(value: bool) -> void:
