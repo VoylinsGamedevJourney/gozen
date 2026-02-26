@@ -20,6 +20,7 @@ enum STATE {
 	MOVING,
 	DROPPING,
 	RESIZING,
+	SPEEDING,
 	FADING,
 	BOX_SELECTING,
 }
@@ -160,6 +161,7 @@ func _draw_clips(control: Control) -> void:
 		var clip_type: int = Project.data.clips_type[clip_index]
 		var clip_start: int = Project.data.clips_start[clip_index]
 		var clip_begin: int = Project.data.clips_begin[clip_index]
+		var clip_speed: float = Project.data.clips_speed[clip_index]
 		var clip_duration: int = Project.data.clips_duration[clip_index]
 		var clip_track: int = Project.data.clips_track[clip_index]
 		var clip_file: int = Project.data.clips_file[clip_index]
@@ -176,7 +178,8 @@ func _draw_clips(control: Control) -> void:
 		control.draw_style_box(STYLE_BOXES[clip_type][box_type] as StyleBox, clip_rect)
 
 		# - Audio waves (Part of clip blocks)
-		_draw_wave(Project.files.get_audio_wave(clip_file), clip_begin, clip_duration, clip_rect, control)
+		_draw_wave(Project.files.get_audio_wave(clip_file), clip_begin,
+				clip_duration, clip_rect, control, clip_speed)
 
 		# - Fading handles + amount
 		var show_handles: bool = hovered_clip == clip or (state == STATE.FADING and fade_target.clip == clip)
@@ -187,10 +190,15 @@ func _draw_clips(control: Control) -> void:
 
 		# - Clip nickname
 		if clip_rect.size.x > 20:
+			var speed: float = Project.data.clips_speed[clip_index]
+			var text: String = Project.data.files_nickname[file_index]
+			if not is_equal_approx(speed, 1.0):
+				text += "  [%d%%]" % int(speed * 100)
+
 			control.draw_string(
 					get_theme_default_font(),
 					Vector2(text_pos_x, box_pos.y) + CLIP_TEXT_OFFSET,
-					Project.data.files_nickname[file_index],
+					text,
 					HORIZONTAL_ALIGNMENT_LEFT,
 					clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
 					11, # Font size
@@ -204,7 +212,7 @@ func _get_visible(start: int, end: int) -> PackedInt64Array:
 	return data
 
 
-func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control) -> void:
+func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control, speed: float) -> void:
 	if wave_data.is_empty():
 		return
 	var display_duration: int = duration
@@ -215,7 +223,7 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 	var step: int = maxi(1, int(2.0 / zoom))
 
 	for i: int in range(0, display_duration, step):
-		var wave_index: int = display_begin_offset + i
+		var wave_index: int = display_begin_offset + int(i * speed)
 		if wave_index >= wave_data.size():
 			break
 
@@ -249,7 +257,7 @@ func _draw_preview(control: Control) -> void:
 				var preview_size: Vector2 = Vector2(clip_duration * zoom, track_height)
 
 				control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
-	elif state == STATE.RESIZING: # Resizing preview
+	elif state == STATE.RESIZING or state == STATE.SPEEDING: # Resizing/speeding preview.
 		var clip_index: int = Project.clips.index_map[resize_target.clip]
 		var clip_track: int = Project.data.clips_track[clip_index]
 		var clip_start: int = Project.data.clips_start[clip_index]
@@ -266,9 +274,12 @@ func _draw_preview(control: Control) -> void:
 		var preview_size: Vector2 = Vector2(draw_length * zoom, track_height)
 		var box_pos: Vector2 = Vector2(clip_start * zoom, track_total_size * clip_track)
 		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip_duration * zoom, track_height))
+		var color: Color = Color(1.0, 1.0, 1.0, 0.3) # Resizing color.
+		if state == STATE.SPEEDING:
+			color = Color(1.0, 0.5, 0.0, 0.3) # Have different color on speeding.
 
 		# Drawing the original clip box and actual resized box.
-		control.draw_rect(clip_rect, Color(1.0, 1.0, 1.0, 0.3))
+		control.draw_rect(clip_rect, color)
 		control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 
 
@@ -403,6 +414,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	elif event.is_released():
 		match state:
 			STATE.RESIZING: _commit_current_resize()
+			STATE.SPEEDING: _commit_current_resize()
 			STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
 		_on_ui_cancel()
 
@@ -430,7 +442,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			state = STATE.FADING
 			draw_clips.queue_redraw()
 		elif resize_target:
-			state = STATE.RESIZING
+			state = STATE.SPEEDING if event.ctrl_pressed else STATE.RESIZING
 			draw_clips.queue_redraw()
 		elif pressed_clip == -1:
 			if event.shift_pressed:
@@ -506,6 +518,10 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 		STATE.RESIZING:
 			mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			_handle_resize_motion()
+			draw_preview.queue_redraw()
+		STATE.SPEEDING:
+			mouse_default_cursor_shape = Control.CURSOR_HSIZE
+			_handle_resize_motion() # We re-use resize logic.
 			draw_preview.queue_redraw()
 
 
@@ -790,10 +806,15 @@ func _on_mouse_exited() -> void:
 	draw_all()
 
 
+## This function is also used to handle speeding.
 func _commit_current_resize() -> void:
 	if resize_target.delta != 0:
-		Project.clips.resize([ClipRequest.resize_request(
+		if state == STATE.SPEEDING:
+			Project.clips.change_speed([ClipRequest.resize_request(
 				resize_target.clip, resize_target.delta, resize_target.is_end)])
+		else:
+			Project.clips.resize([ClipRequest.resize_request(
+					resize_target.clip, resize_target.delta, resize_target.is_end)])
 	resize_target = null
 	draw_clips.queue_redraw()
 
@@ -844,6 +865,7 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 	draw_clips.queue_redraw()
 
 
+## This function is also used to handle speeding.
 func _handle_resize_motion() -> void:
 	var clip_index: int = Project.clips.index_map[resize_target.clip]
 	var clip_begin: int = Project.data.clips_begin[clip_index]
@@ -853,32 +875,33 @@ func _handle_resize_motion() -> void:
 	var file_duration: int = Project.data.files_duration[file_index]
 	var current_frame: int = get_frame_from_mouse()
 
-	if resize_target.is_end: # Resizing end
+	if resize_target.is_end: # Resizing end.
 		var new_duration: int = current_frame - resize_target.original_start
 		var max_allowed_duration: int = file_duration - clip_begin
 
 		if new_duration < 1:
 			new_duration = 1
-		if new_duration > max_allowed_duration:
+		if state != STATE.SPEEDING and new_duration > max_allowed_duration:
 			new_duration = max_allowed_duration
 
-		## Collision detection
+		# Collision detection.
 		var free_region: Vector2i = Project.tracks.get_free_region(
 				track, resize_target.original_start + 1, [resize_target.clip])
 
 		if (resize_target.original_start + new_duration) > free_region.y:
 			new_duration = free_region.y - resize_target.original_start
 		resize_target.delta = new_duration - resize_target.original_duration
-	else: # Resizing beginning
+	else: # Resizing beginning.
 		var new_start: int = current_frame
-		var min_allowed_duration: int = resize_target.original_start - clip_begin
 
 		if new_start > (resize_target.original_start + resize_target.original_duration - 1):
 			new_start = (resize_target.original_start + resize_target.original_duration - 1)
-		if new_start < min_allowed_duration:
-			new_start = min_allowed_duration
+		if state != STATE.SPEEDING:
+			var min_allowed_duration: int = resize_target.original_start - clip_begin
+			if new_start < min_allowed_duration:
+				new_start = min_allowed_duration
 
-		## Collision detection
+		# Collision detection.
 		var free_region: Vector2i = Project.tracks.get_free_region(
 				track,
 				resize_target.original_start + resize_target.original_duration - 1,

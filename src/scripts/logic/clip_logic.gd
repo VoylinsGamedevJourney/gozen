@@ -8,7 +8,6 @@ signal updated ## Signal for when all clips got updated.
 
 
 var project_data: ProjectData
-
 var index_map: Dictionary[int, int] = {} ## { clip: index }
 
 
@@ -16,7 +15,20 @@ var index_map: Dictionary[int, int] = {} ## { clip: index }
 
 func _init(data: ProjectData) -> void:
 	project_data = data
+	_check_sizes()
 	_rebuild_map()
+
+
+## Helper function to update data array's to contain correct info.
+## Only adding checks for newer array's for compatibility with newer versions.
+func _check_sizes() -> void:
+	var total_size: int = project_data.clips.size()
+	# Clip speeding (introduced in 0.8.0-alpha)
+	if project_data.clips_speed.size() != total_size:
+		project_data.clips_speed.resize(total_size)
+		for index: int in project_data.clips_speed.size():
+			if project_data.clips_speed[index] == 0.0:
+				project_data.clips_speed[index] = 1.0
 
 
 func _rebuild_map() -> void:
@@ -34,6 +46,7 @@ func _create_snapshot(clip_index: int) -> Dictionary:
 		"track": project_data.clips_track[clip_index],
 		"start": project_data.clips_start[clip_index],
 		"begin": project_data.clips_begin[clip_index],
+		"speed": project_data.clips_speed[clip_index],
 		"duration": project_data.clips_duration[clip_index],
 		"effects": project_data.clips_effects[clip_index].duplicate(true)
 	}
@@ -50,6 +63,7 @@ func _create_snapshot_from_request(request: ClipRequest) -> Dictionary:
 		"track": request.track,
 		"start": request.frame,
 		"begin": 0,
+		"speed": 1.0,
 		"duration": project_data.files_duration[file_index],
 		"effects": _create_default_effects(file_index)
 	}
@@ -77,6 +91,7 @@ func _create_snapshot_for_cut(clip_index: int, offset: int, duration_left: int, 
 		"track": project_data.clips_track[clip_index],
 		"start": project_data.clips_start[clip_index] + duration_left,
 		"begin": project_data.clips_begin[clip_index] + duration_left,
+		"speed": project_data.clips_speed[clip_index],
 		"duration": duration_right,
 		"effects": new_effects
 	}
@@ -104,6 +119,7 @@ func _restore_clip_from_snapshot(snapshot: Dictionary) -> void:
 	project_data.clips_file.append(snapshot.file as int)
 	project_data.clips_start.append(snapshot.start as int)
 	project_data.clips_begin.append(snapshot.begin as int)
+	project_data.clips_speed.append(snapshot.speed as float)
 	project_data.clips_duration.append(snapshot.duration as int)
 	project_data.clips_effects.append(snapshot.effects as ClipEffects)
 	index_map[snapshot.clip] = clip_index
@@ -144,6 +160,7 @@ func _delete(clip: int) -> void:
 	project_data.clips_track.remove_at(clip_index)
 	project_data.clips_start.remove_at(clip_index)
 	project_data.clips_begin.remove_at(clip_index)
+	project_data.clips_speed.remove_at(clip_index)
 	project_data.clips_duration.remove_at(clip_index)
 	project_data.clips_effects.remove_at(clip_index)
 
@@ -383,6 +400,60 @@ func _apply_audio_take_over(clip: int, active: bool, audio_file_id: int, offset:
 	effects.ato_id = audio_file_id
 	effects.ato_offset = offset
 	Project.unsaved_changes = true
+	updated.emit()
+
+
+func change_speed(requests: Array[ClipRequest]) -> void:
+	InputManager.undo_redo.create_action("Change speed clip(s)")
+	for request: ClipRequest in requests:
+		var clip: int = request.clip
+		var clip_index: int = index_map[clip]
+		var amount: int = request.resize
+		var from_end: int = request.is_end
+		var current_start: int = project_data.clips_start[clip_index]
+		var current_duration: int = project_data.clips_duration[clip_index]
+		var current_speed: float = project_data.clips_speed[clip_index]
+		var new_duration: int = current_duration + amount if from_end else current_duration - amount
+		if new_duration < 1:
+			new_duration = 1
+		var new_speed: float = (float(current_duration) * current_speed) / float(new_duration)
+
+		InputManager.undo_redo.add_do_method(_change_speed.bind(clip, amount, from_end, new_speed))
+		InputManager.undo_redo.add_undo_method(_change_speed_restore.bind(clip, current_start, current_duration, current_speed))
+	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
+	InputManager.undo_redo.commit_action()
+
+
+func _change_speed(clip: int, amount: int, from_end: bool, new_speed: float) -> void:
+	var clip_index: int = index_map[clip]
+	project_data.clips_speed[clip_index] = new_speed
+	if from_end:
+		project_data.clips_duration[clip_index] += amount
+		updated.emit()
+		return
+
+	var track: int = project_data.clips_track[clip_index]
+	var old_start: int = project_data.clips_start[clip_index]
+	var new_start: int = old_start + amount
+	project_data.clips_start[clip_index] = new_start
+	project_data.clips_duration[clip_index] -= amount
+	Project.tracks.unregister_clip(track, old_start)
+	Project.tracks.register_clip(track, clip, new_start)
+	updated.emit()
+
+
+func _change_speed_restore(clip: int, start: int, duration: int, speed: float) -> void:
+	var clip_index: int = index_map[clip]
+	var track: int = project_data.clips_track[clip_index]
+	var old_start_pos: int = project_data.clips_start[clip_index]
+	project_data.clips_start[clip_index] = start
+	project_data.clips_speed[clip_index] = speed
+	project_data.clips_duration[clip_index] = duration
+
+	if old_start_pos != start:
+		Project.tracks.unregister_clip(track, old_start_pos)
+		Project.tracks.register_clip(track, clip, start)
 	updated.emit()
 
 

@@ -36,6 +36,7 @@ var clips_file: PackedInt64Array = []
 var clips_track: PackedInt64Array = []
 var clips_start: PackedInt64Array = []
 var clips_begin: PackedInt64Array = [] ## Only for video and audio files
+var clips_speed: PackedFloat32Array = [] ## x times normal speed.
 var clips_duration: PackedInt64Array = []
 var clips_effects: Array[ClipEffects] = []
 

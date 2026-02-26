@@ -293,8 +293,10 @@ func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 
 	var start: int = project_data.clips_start[clip_index]
 	var begin: int = project_data.clips_begin[clip_index]
-	var relative_frame: int = frame_nr - start + begin
+
+	var speed: float = project_data.clips_speed[clip_index]
 	var clip_frame: int = frame_nr - start
+	var relative_frame: int = int(clip_frame * speed) + begin
 
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_index, true)
 	var effects: Array[EffectVisual] = project_data.clips_effects[clip_index].video
@@ -328,7 +330,10 @@ func set_is_playing(value: bool) -> void:
 func set_playback_speed(value: float) -> void:
 	playback_speed = value
 	for player: AudioPlayer in audio_players:
-		player.player.pitch_scale = playback_speed
+		if player.clip != -1:
+			var clip_index: int = project_clips.index_map[player.clip]
+			var speed: float = project_data.clips_speed[clip_index]
+			player.player.pitch_scale = playback_speed * speed
 	pitch_shift_effect.pitch_scale = 1.0 / playback_speed
 
 

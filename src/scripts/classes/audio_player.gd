@@ -51,6 +51,7 @@ func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 
 	var clip_index: int = Project.clips.index_map[audio_clip]
 	var clip_effects: ClipEffects = project_data.clips_effects[clip_index]
+	var clip_speed: float = project_data.clips_speed[clip_index]
 	var clip_file: int = project_data.clips_file[clip_index]
 	var clip_start: int = project_data.clips_start[clip_index]
 	var clip_duration: int = project_data.clips_duration[clip_index]
@@ -89,12 +90,13 @@ func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 	elif AudioServer.get_bus_effect_count(bus_index) != clip_effects.audio.size():
 		_setup_bus_effects(clip_effects.audio)
 	update_effects(clip_index)
+	player.pitch_scale = clip_speed * EditorCore.playback_speed
 
 	# Boundary check.
 	var framerate: float = project_data.framerate
-	var relative_frame_nr: float = EditorCore.frame_nr - clip_start + clip_begin
 	var audio_duration: float = stream.get_length()
-	var position: float = (relative_frame_nr / framerate) + time_offset
+	var time_from_start: float = float(EditorCore.frame_nr - clip_start) / framerate
+	var position: float = (time_from_start * clip_speed) + (float(clip_begin) / framerate) + time_offset
 	if position < 0.0 or position >= audio_duration:
 		if !player.playing:
 			return
@@ -110,7 +112,7 @@ func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 
 	# Check if playback is close enough ONLY if stream is the same.
 	var frame_duration: float = 1.0 / framerate
-	var sync_threshold: float = max(frame_duration * 4, 0.15) # (4 frame buffer)
+	var sync_threshold: float = max(frame_duration * 4 * clip_speed, 0.15) # (4 frame buffer at normal speed)
 	if player.playing and abs(player.get_playback_position() - position) < sync_threshold:
 		player.stream_paused = !EditorCore.is_playing
 		return
