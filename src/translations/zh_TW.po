@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
+"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,530 +12,1482 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
 
-msgid "title_about_gozen"
-msgstr "關於 GoZen"
-
-msgid "title_appearance"
-msgstr "外觀"
-
-msgid "title_defaults"
-msgstr "預設值"
-
-msgid "title_timeline"
-msgstr "時間軸"
-
-msgid "title_extras"
-msgstr "其他"
-
-#, fuzzy
-msgid "title_render_settings"
-msgstr "編輯器設定"
-
-msgid "title_rendering"
-msgstr "渲染"
-
-msgid "title_rendering_finished"
-msgstr "渲染完成"
-
-msgid "title_rendering_error"
+#: scenes/effects_panel/effects_panel.gd:325
+msgid "Add effects"
 msgstr ""
 
-msgid "title_render_video"
-msgstr "渲染影片"
-
-msgid "title_render_audio"
-msgstr "渲染音訊"
-
-msgid "title_cpu_threads"
-msgstr "CPU 執行緒"
-
-msgid "title_recent_projects"
-msgstr "近期專案"
-
-msgid "title_getting_started"
-msgstr "入門指南"
-
-msgid "title_new_project"
-msgstr "新增專案"
-
-msgid "title_loading_project"
-msgstr "正在載入專案"
-
-msgid "title_files_dropped"
-msgstr "已加入檔案"
-
-msgid "title_editor_settings"
-msgstr "編輯器設定"
-
-msgid "title_project_settings"
-msgstr "專案設定"
-
-#, fuzzy
-msgid "title_chapters"
-msgstr "章節"
-
-#, fuzzy
-msgid "title_save_image_to_file"
-msgstr "儲存圖片到檔案"
-
-#, fuzzy
-msgid "title_save_video_audio_to_wav"
-msgstr "將影片音訊儲存為 （WAV）"
-
-#, fuzzy
-msgid "title_add_color_file"
-msgstr "新增顏色檔案"
-
-#, fuzzy
-msgid "title_close_without_saving"
-msgstr "編輯器設定"
-
-#, fuzzy
-msgid "title_dialog_file_too_big"
-msgstr "新增顏色檔案"
-
-msgid "button_tooltip_create_new_project"
-msgstr "使用所選設定建立新專案。"
-
-msgid "button_gozen_site"
-msgstr "GoZen 網站"
-
-msgid "button_manual"
-msgstr "使用手冊"
-
-msgid "button_tutorials"
-msgstr "教學課程"
-
-msgid "button_discord_server"
-msgstr "Discord 伺服器"
-
-msgid "button_support_gozen"
-msgstr "支持 GoZen"
-
-msgid "button_open_project"
-msgstr "開啟專案"
-
-msgid "button_create_new_project"
-msgstr "建立新專案"
-
-#, fuzzy
-msgid "button_create_new_color_file"
-msgstr "建立新顏色檔案"
-
-msgid "button_tooltip_editor_settings"
-msgstr "編輯器設定。"
-
-msgid "button_cancel"
-msgstr "取消"
-
-msgid "button_cancel_rendering"
-msgstr "取消渲染"
-
-msgid "button_reset"
-msgstr "重設"
-
-msgid "button_return"
-msgstr "返回"
-
-#, fuzzy
-msgid "button_screen_editing"
-msgstr "編輯畫面"
-
-#, fuzzy
-msgid "button_screen_render"
-msgstr "渲染畫面"
-
-msgid "button_start_render"
-msgstr "開始渲染"
-
-msgid "button_save"
-msgstr "儲存"
-
-#, fuzzy
-msgid "button_dont_save"
-msgstr "儲存"
-
-msgid "button_save_settings"
-msgstr "儲存設定"
-
-msgid "button_close"
-msgstr "關閉"
-
-msgid "text_version"
-msgstr "版本"
-
-msgid "text_gozen_website"
-msgstr "GoZen 網站"
-
-msgid "text_github_repo"
-msgstr "GitHub 儲存庫"
-
-msgid "text_discord_link"
-msgstr "Discord 連結"
-
-msgid "text_support_gozen"
-msgstr "支持 GoZen"
-
-# Note: This is part of the string for the "about gozen" screen.
-#: scripts/about_gozen.gd
-#, fuzzy
-msgid "text_gozen_made_by"
-msgstr "開發者為"
-
-msgid "text_rename_file_to"
-msgstr "將檔案重新命名為..."
-
-msgid "text_advanced_settings"
-msgstr "進階設定"
-
-msgid "text_path"
-msgstr "路徑"
-
-msgid "text_resolution"
-msgstr "解析度"
-
-msgid "text_framerate"
-msgstr "幀率"
-
-#, fuzzy
-msgid "placeholder_text_search_files"
-msgstr "搜尋檔案..."
-
-msgid "tooltip_ignore_changes_close_settings"
-msgstr "忽略變更並關閉設定選單。"
-
-msgid "tooltip_setting_background_color"
-msgstr "專案的預設背景顏色。"
-
-msgid "setting_background_color"
-msgstr "背景顏色"
-
-msgid "setting_language"
-msgstr "語言"
-
-#, fuzzy
-msgid "setting_display_scale"
-msgstr "語言"
-
-#, fuzzy
-msgid "setting_tooltip_display_scale"
-msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
-
-msgid "setting_theme"
-msgstr "佈景主題"
-
-msgid "setting_tooltip_theme"
-msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
-
-msgid "setting_show_menu_bar"
-msgstr "顯示選單列"
-
-msgid "setting_waveform_style"
-msgstr "音訊波形樣式"
-
-msgid "setting_default_image_duration"
-msgstr "預設圖片持續時間"
-
-msgid "setting_default_color_duration"
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Visual effects"
 msgstr ""
 
-msgid "setting_default_text_duration"
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Audio effects"
 msgstr ""
 
-#, fuzzy
-msgid "setting_tooltip_duration_in_frames"
-msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
-
-msgid "setting_default_project_resolution"
-msgstr "預設專案解析度"
-
-msgid "setting_tooltip_default_project_resolution_x"
-msgstr "預設影片專案的寬度。"
-
-msgid "setting_tooltip_default_project_resolution_y"
-msgstr "預設影片專案的高度。"
-
-msgid "setting_default_project_framerate"
-msgstr "預設專案幀率"
-
-msgid "setting_tooltip_default_project_framerate"
-msgstr "預設影片專案的幀率。"
-
-msgid "setting_default_track_amount"
-msgstr "預設軌道數量"
-
-msgid "setting_pause_after_dragging"
-msgstr "拖曳後暫停"
-
-msgid "setting_delete_empty_space_mod"
-msgstr "刪除空白區間修飾鍵"
-
-msgid "setting_tooltip_delete_empty_space_mod"
+#: scenes/view_panel/view_panel.tscn
+msgid "Frame: 0"
 msgstr ""
-"在時間軸上雙擊空白處會刪除該空白區間並移動後方所有片段。設定修飾鍵後，您需要"
-"按住該特定按鍵再雙擊，才能移除片段之間的空白區間。"
 
-msgid "setting_check_version"
-msgstr "檢查更新"
-
-msgid "setting_tooltip_check_version"
+#: scenes/view_panel/view_panel.tscn
+msgid "00:00:00.00"
 msgstr ""
-"此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些人不希望應用程式連網，因此"
-"此功能預設為「停用」。"
 
-#, fuzzy
-msgid "setting_auto_save"
-msgstr "語言"
-
-#, fuzzy
-msgid "setting_tooltip_auto_save"
-msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
-
-#, fuzzy
-msgid "encoding_progress_text_setup"
-msgstr "正在設定渲染器..."
-
-#, fuzzy
-msgid "encoding_progress_text_open_error"
-msgstr "無法開啟渲染器，請檢查路徑與設定！"
-
-#, fuzzy
-msgid "encoding_progress_text_compiling_audio"
-msgstr "正在編譯音訊資料..."
-
-#, fuzzy
-msgid "encoding_progress_text_sending_audio"
-msgstr "傳送音訊至渲染器時發生錯誤！"
-
-#, fuzzy
-msgid "encoding_progress_text_sending_audio_error"
-msgstr "傳送音訊至渲染器時發生錯誤！"
-
-#, fuzzy
-msgid "encoding_progress_text_creating_sending_data"
-msgstr "正在建立並傳送影格資料..."
-
-#, fuzzy
-msgid "encoding_progress_text_sending_data_error"
-msgstr "傳送影格至渲染器時發生錯誤！"
-
-#, fuzzy
-msgid "encoding_progress_text_canceling"
-msgstr "正在取消渲染程序..."
-
-#, fuzzy
-msgid "encoding_progress_text_last_frame"
-msgstr "正在傳送最後的影格..."
-
-msgid "rendering_warning"
-msgstr "發生錯誤！"
-
-msgid "render_option_path"
-msgstr "路徑"
-
-msgid "render_option_profile"
-msgstr "渲染設定檔"
-
-msgid "render_option_audio_codec"
-msgstr "音訊編解碼器"
-
-msgid "render_option_video_codec"
-msgstr "視訊編解碼器"
-
-msgid "render_option_quality"
-msgstr "品質"
-
-#, fuzzy
-msgid "render_option_tooltip_quality"
+#: scenes/view_panel/view_panel.tscn
+msgid "x1"
 msgstr ""
-"調整 CRF (恆定速率因子)。最低品質設定為 50，最高品質設定為 15。預設值為 18。"
-"此設定用於調整位元率，會影響品質與檔案大小。數值 0 為最佳品質，51 為最差品"
-"質，18 的畫質損失通常難以察覺。"
 
-msgid "render_option_speed"
+#: scenes/view_panel/view_panel.gd:32
+msgid "Jump to frame"
+msgstr ""
+
+#: scenes/view_panel/view_panel.gd:72
+msgid "Frame"
+msgstr ""
+
+#: scenes/view_panel/project_view_texture.gd:33
+msgid "Save screenshot ..."
+msgstr ""
+
+#: scenes/view_panel/project_view_texture.gd:34
+msgid "Save screenshot to project ..."
+msgstr ""
+
+#: scenes/editor/editor.tscn
+msgid "EditTab"
+msgstr ""
+
+#: scenes/editor/editor.tscn
+msgid "RenderTab"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+msgid "Add effect"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Close popup"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add files"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add text"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add color"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:83
+msgid "Add files ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:105
+msgid "Rename"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:106
+msgid "Reload"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:107 scenes/menu_bar/menu_bar.tscn
+msgid "Delete"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:111
+msgid "Image options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:112
+msgid "Save image as ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:114 scenes/timeline/timeline_panel.gd:959
+msgid "Video options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:118
+msgid "Create proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:120
+msgid "Re-create proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:121
+msgid "Remove proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:123
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio-take-over"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:124
+msgid "Extract audio to file ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:126
+msgid "Text options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:127
+msgid "Duplicate"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:130
+msgid "Save file as ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:134
+msgid "Open in file manager"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:135
+msgid "Copy file path"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:137
+#, fuzzy
+#| msgid "render_option_speed"
+msgid "Folder options"
 msgstr "速度"
 
-msgid "render_option_tooltip_speed"
+#: scenes/file_panel/file_panel.gd:138 scenes/file_panel/file_panel.gd:141
+#: scenes/file_panel/file_panel.gd:526
+msgid "Create folder"
 msgstr ""
-"調整 H.264 的編碼速度。設定過高的速度可能會對最終影片品質產生負面影響。"
 
-msgid "render_option_gop_size"
-msgstr "GOP 大小"
-
-msgid "render_option_tooltip_gop_size"
+#: scenes/file_panel/file_panel.gd:144
+msgid "Rename folder"
 msgstr ""
-"GOP (Group Of Pictures，圖像群組)。數值越高，壓縮率越好。但數值越高，在影片中"
-"跳轉的精確度就越低。如果您打算將渲染後的影片用於後續編輯，請設定較低的數值。"
 
-msgid "render_option_threads_cores"
-msgstr "執行緒/核心數"
+#: scenes/file_panel/file_panel.gd:145
+msgid "Delete folder"
+msgstr ""
 
-msgid "render_option_tooltip_threads_cores"
-msgstr "設定為「0」以使用所有可用的執行緒。"
+#: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
+#, fuzzy
+#| msgid "text_rename_file_to"
+msgid "Rename file"
+msgstr "將檔案重新命名為..."
 
-msgid "render_option_video_length"
-msgstr "影片長度"
+#: scenes/file_panel/file_panel.gd:188 scenes/file_panel/file_panel.gd:531
+msgid "Folder name"
+msgstr ""
 
-msgid "render_option_render_time"
-msgstr "渲染時間"
+#: scenes/file_panel/file_panel.gd:247
+#, fuzzy
+msgid "Save image to file"
+msgstr "儲存圖片到檔案"
 
-msgid "notification_update_available"
+#: scenes/file_panel/file_panel.gd:259
+msgid "Save video audio to WAV"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:390
+msgid "(Loading thumbnail...)"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:471
+msgid "Remove empty space"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:473 scenes/timeline/timeline_panel.gd:963
+msgid "Add track"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:474 scenes/timeline/timeline_panel.gd:964
+msgid "Remove track"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:955
+msgid "Delete clip"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:956
+msgid "Cut clip"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:960
+msgid "Clip audio-take-over"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:962
+msgid "Track options"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:1144
+msgid "Duplication failed"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:1145
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
+#, fuzzy
+msgid "Add color file"
+msgstr "新增顏色檔案"
+
+#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+#: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
+msgid "Cancel"
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
+#, fuzzy
+msgid "Create new color file"
+msgstr "建立新顏色檔案"
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+msgid "Render settings"
+msgstr "編輯器設定"
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+#| msgid "render_option_profile"
+msgid "Render profile"
+msgstr "渲染設定檔"
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Save current presets as a custom render profile."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Save profile"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+#| msgid "text_path"
+msgid "Export path"
+msgstr "路徑"
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+msgid "Render video settings"
+msgstr "編輯器設定"
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Video codec"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Quality"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Speed"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Gop size"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+#| msgid "command_editor_settings"
+msgid "Render audio settings"
+msgstr "編輯器設定"
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Audio codec"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Multi-threading"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Threads"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "The amount of threads you want to use for exporting your video."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Create a low quality draft version of your video."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Draft"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+#| msgid "button_start_render"
+msgid "Start render"
+msgstr "開始渲染"
+
+#: scenes/render_screen/render_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:109
+#: scenes/settings_menu/settings_menu.gd:280
+msgid "Markers"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:48
+#, fuzzy
+#| msgid "render_option_profile"
+msgid "Custom render profiles"
+msgstr "渲染設定檔"
+
+#: scenes/render_screen/render_screen.gd:89
+msgid "HEVC"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:90
+msgid "H264"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:91
+msgid "MPEG4"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:92
+msgid "MPEG2"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:93
+msgid "MPEG1"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:94
+msgid "MJPEG"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:95
+msgid "AV1"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:96
+msgid "VP9"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:97
+msgid "VP8"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:99
+msgid "WAV"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:100
+msgid "PCM"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:101
+msgid "MP2"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:102
+msgid "MP3"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:103
+msgid "AAC"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:104
+msgid "Opus"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:105
+msgid "Vorbis"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:106
+msgid "FLAC"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:107
+msgid "NONE"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:169
+msgid "Select export path"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:250
+#, fuzzy
+#| msgid "title_rendering_finished"
+msgid "Rendering finished"
+msgstr "渲染完成"
+
+#: scenes/render_screen/render_screen.gd:270
+msgid "Error whilst rendering video"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:334
+#: scenes/render_screen/render_screen.gd:342
+#, fuzzy
+#| msgid "title_rendering"
+msgid "Rendering"
+msgstr "渲染"
+
+#: scenes/render_screen/render_screen.gd:349
+#, fuzzy
+#| msgid "button_cancel_rendering"
+msgid "Cancel rendering"
+msgstr "取消渲染"
+
+#: scenes/render_screen/render_screen.gd:378
+msgid "Error opening file"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:379
+msgid "Error whilst sending audio"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:385
+msgid "Setting up ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:386
+#: scenes/render_screen/render_screen.gd:387
+msgid "Compiling audio ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:388
+#: scenes/render_screen/render_screen.gd:389
+msgid "Sending data ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:390
+msgid "Sending final frame ..."
+msgstr ""
+
+#: scenes/render_screen/save_custom_render_profile.tscn
+#, fuzzy
+#| msgid "render_option_profile"
+msgid "Create render profile"
+msgstr "渲染設定檔"
+
+#: scenes/render_screen/save_custom_render_profile.tscn
+msgid "New profile name"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
+msgid "About GoZen"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Version: "
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:22
+#, fuzzy
+#| msgid "text_version"
+msgid "GoZen version"
+msgstr "版本"
+
+#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Website"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:39
+msgid "GitHub repo"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Support GoZen"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:43
+msgid ""
+"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgstr ""
+
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:88
+#, fuzzy
+#| msgid "title_loading_project"
+msgid "Loading project"
+msgstr "正在載入專案"
+
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Estimated time - 59:59:59"
+msgstr ""
+
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:89
+msgid "Initializing ..."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:102
+#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
+#, fuzzy
+#| msgid "title_editor_settings"
+msgid "Editor settings"
+msgstr "編輯器設定"
+
+#: scenes/settings_menu/settings_menu.gd:107
+msgid "Marker one"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:107
+msgid "Marker two"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:107
+msgid "Marker three"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:108
+msgid "Marker four"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:108
+msgid "Marker five"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:120
+#: scenes/settings_menu/settings_menu.gd:294
+msgid "Shortcuts"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:129
+#: scenes/settings_menu/settings_menu.gd:302
+#: scenes/settings_menu/settings_menu.gd:303
+#, fuzzy
+#| msgid "title_appearance"
+msgid "Appearance"
+msgstr "外觀"
+
+#: scenes/settings_menu/settings_menu.gd:130
+msgid "Display"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:131
+msgid "Language"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:137
+#, fuzzy
+msgid "Display scale"
+msgstr "語言"
+
+#: scenes/settings_menu/settings_menu.gd:143
+msgid "Editor theme"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:149
+#, fuzzy
+#| msgid "setting_background_color"
+msgid "Base color"
+msgstr "背景顏色"
+
+#: scenes/settings_menu/settings_menu.gd:153
+msgid "The base color of the editor UI."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:154
+msgid "Accent color"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:158
+msgid "The highlight/accent color of the editor UI."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:159
+msgid "Show menu bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:163
+msgid "Show ram usage in menu bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:167
+msgid "Audio waveforms"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:168
+#, fuzzy
+#| msgid "setting_waveform_style"
+msgid "Waveform style"
+msgstr "音訊波形樣式"
+
+#: scenes/settings_menu/settings_menu.gd:174
+msgid "Waveform amplifier"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:180
+msgid ""
+"Sometimes the waveforms aren't very clear due to audio levels being too low, "
+"with this setting you can adjust their intensity"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:181
+msgid "Dialogue's"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:182
+msgid "Use native dialogs"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:188
+#, fuzzy
+#| msgid "title_defaults"
+msgid "Defaults"
+msgstr "預設值"
+
+#: scenes/settings_menu/settings_menu.gd:189
+msgid "Default durations"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:190
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "Default image duration"
+msgstr "預設圖片持續時間"
+
+#: scenes/settings_menu/settings_menu.gd:196
+#: scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:210
+msgid "Duration in frames per second."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:197
+msgid "Default color duration"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:211
+#, fuzzy
+#| msgid "text_resolution"
+msgid "Project resolution"
+msgstr "解析度"
+
+#: scenes/settings_menu/settings_menu.gd:213
+#, fuzzy
+#| msgid "text_framerate"
+msgid "Project frame-rate"
+msgstr "幀率"
+
+#: scenes/settings_menu/settings_menu.gd:220
+#, fuzzy
+#| msgid "title_timeline"
+msgid "Timeline"
+msgstr "時間軸"
+
+#: scenes/settings_menu/settings_menu.gd:221
+#, fuzzy
+msgid "Timeline settings"
+msgstr "編輯器設定"
+
+#: scenes/settings_menu/settings_menu.gd:222
+#, fuzzy
+#| msgid "setting_default_track_amount"
+msgid "Default track amount"
+msgstr "預設軌道數量"
+
+#: scenes/settings_menu/settings_menu.gd:227
+msgid "Track height"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:232
+msgid "Timeline controls"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:233
+#, fuzzy
+#| msgid "setting_pause_after_dragging"
+msgid "Pause after dragging"
+msgstr "拖曳後暫停"
+
+#: scenes/settings_menu/settings_menu.gd:237
+msgid ""
+"Setting this will pause playback after having dragged the playhead around."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:238
+msgid "Empty space delete modifier"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:244
+msgid "The modifier you want to easily delete empty space between clips."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:246
+msgid "Show mode bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:250
+msgid ""
+"The mode bar is the bar on the left of the timeline with buttons for "
+"changing the current timeline mode."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:253
+msgid "Performance"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:254
+msgid "Video Decoding"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:255
+msgid "Smart Seek Threshold"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:261
+msgid ""
+"Defines how many frames the decoder will sequentially read ahead instead of "
+"performing a full seek operation. Higher values prevent lag during short "
+"jumps but use more CPU."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:262
+msgid "Video Cache Size"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:268
+msgid ""
+"The maximum number of decoded frames to keep in RAM. Higher values enable "
+"smoother backward seeking and scrubbing but increase memory usage."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:269
+msgid "Use proxies"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:273
+msgid "Proxies save path"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:277
+msgid ""
+"Changing this setting should be done with a path which points to an already "
+"existing folder. All previously made proxy clips will need to be generated "
+"again and deleted manually from the previous folder."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:282
+#: scenes/settings_menu/settings_menu.gd:283
+msgid "Extras"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:284
+#, fuzzy
+#| msgid "setting_check_version"
+msgid "Check version"
+msgstr "檢查更新"
+
+#: scenes/settings_menu/settings_menu.gd:288
+#, fuzzy
+#| msgid "button_save"
+msgid "Auto save"
+msgstr "儲存"
+
+#: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
+#, fuzzy
+#| msgid "title_project_settings"
+msgid "Project settings"
+msgstr "專案設定"
+
+#: scenes/settings_menu/settings_menu.gd:304
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "setting_background_color"
+msgid "Background color"
+msgstr "背景顏色"
+
+#: scenes/settings_menu/settings_menu.gd:308
+msgid "The background color when no clips are displayed."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:431
+#: scenes/startup_screen/startup_screen.tscn
+msgid "X:"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:432
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Y:"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:497
+msgid "Press any key..."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.tscn
+#, fuzzy
+msgid "Search settings ..."
+msgstr "編輯器設定"
+
+#: scenes/settings_menu/settings_menu.tscn
+#, fuzzy
+#| msgid "button_save_settings"
+msgid "Close settings"
+msgstr "儲存設定"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Project"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Save project"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:76
+msgid "Save project as ..."
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
+#, fuzzy
+#| msgid "button_open_project"
+msgid "Open project"
+msgstr "開啟專案"
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "title_recent_projects"
+msgid "Recent projects"
+msgstr "近期專案"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Quit"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Edit"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Undo"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Redo"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Cut"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Copy"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Paste"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+#, fuzzy
+msgid "Preferences"
+msgstr "新增專案"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Module manager"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Command bar"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Help"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Report bug"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Check for updates"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Manual"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "button_tutorials"
+msgid "Tutorials"
+msgstr "教學課程"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "RAM:"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Render"
+msgstr ""
+
+#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Confirm"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid ""
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+"[u]Clay Banks[/u][/url]"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "notification_update_available"
+msgid "Update available"
 msgstr "有可用的更新！"
 
-msgid "status_project_loading_init"
-msgstr "正在開啟專案..."
+#: scenes/startup_screen/startup_screen.tscn
+msgid "MainMenu"
+msgstr ""
 
-msgid "status_project_preparing_timeline"
-msgstr "正在準備時間軸..."
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "button_create_new_project"
+msgid "Create new project"
+msgstr "建立新專案"
 
-msgid "status_project_loading_files"
-msgstr "正在載入檔案..."
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "title_getting_started"
+msgid "Getting started"
+msgstr "入門指南"
 
-msgid "status_project_playback_setup"
-msgstr "正在設定播放..."
+#: scenes/startup_screen/startup_screen.tscn
+msgid "NewProject"
+msgstr ""
 
-msgid "status_project_finalizing"
-msgstr "正在完成最後步驟..."
+#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
+#, fuzzy
+#| msgid "title_new_project"
+msgid "New project"
+msgstr "新增專案"
 
-msgid "status_new_project_init"
-msgstr "正在建立新專案..."
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Path"
+msgstr ""
 
-msgid "command_editor_settings"
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "text_resolution"
+msgid "Resolution"
+msgstr "解析度"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video width."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video height."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "text_framerate"
+msgid "Framerate"
+msgstr "幀率"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video framerate (fps)."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Advanced options"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Return"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:124
+#, fuzzy
+#| msgid "text_version"
+msgid "Version"
+msgstr "版本"
+
+#: scenes/startup_screen/startup_screen.gd:188
+#: scenes/startup_screen/startup_screen.gd:234 scripts/autoloads/project.gd:78
+msgid "GoZen project file"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:232
+msgid "Select project save path"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Update marker"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "time (frame)"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Marker"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Type"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Delete the selected marker."
+msgstr ""
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio offset"
+msgstr ""
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
+msgstr ""
+
+#: scripts/autoloads/project.gd:43
+#, fuzzy
+#| msgid "title_new_project"
+msgid "Initialize new project ..."
+msgstr "新增專案"
+
+#: scripts/autoloads/project.gd:54
+msgid "Setting up playback ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:55 scripts/autoloads/project.gd:106
+msgid "Finalizing ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:95
+msgid "Setting up timeline ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:103
+msgid "Loading project files ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:125
+msgid "GoZen project files"
+msgstr ""
+
+#: scripts/autoloads/project.gd:178
+msgid "Don't save"
+msgstr ""
+
+#: scripts/autoloads/project.gd:182
+#, fuzzy
+msgid "Close without saving"
 msgstr "編輯器設定"
 
-msgid "command_project_settings"
+#: scripts/autoloads/project.gd:183
+msgid "Save"
+msgstr ""
+
+#: scripts/autoloads/command_manager.gd:14
+#, fuzzy
+#| msgid "title_editor_settings"
+msgid "Open editor settings"
+msgstr "編輯器設定"
+
+#: scripts/autoloads/command_manager.gd:15
+#, fuzzy
+#| msgid "title_project_settings"
+msgid "Open project settings"
 msgstr "專案設定"
 
-msgid "command_render_menu"
+#: scripts/autoloads/command_manager.gd:16
+#, fuzzy
+#| msgid "command_render_menu"
+msgid "open render menu"
 msgstr "渲染選單"
 
-#, fuzzy
-msgid "menu_bar_project"
-msgstr "新增專案"
-
-msgid "menu_bar_project_save"
+#: scripts/logic/file_logic.gd:324
+msgid "Update existing clips?"
 msgstr ""
 
-msgid "menu_bar_project_save_as"
+#: scripts/logic/file_logic.gd:325
+msgid ""
+"This file is currently used by '%d' clip(s).\n"
+"Do you want to apply the Audio-Take-Over changes to all existing clips?"
 msgstr ""
 
-#, fuzzy
-msgid "menu_bar_project_open_project"
-msgstr "開啟專案"
-
-#, fuzzy
-msgid "menu_bar_project_recent_projects"
-msgstr "開啟專案"
-
-#, fuzzy
-msgid "menu_bar_project_quit"
-msgstr "新增專案"
-
-#, fuzzy
-msgid "menu_bar_project_open_settings"
-msgstr "專案設定"
-
-#, fuzzy
-msgid "menu_bar_preferences"
-msgstr "新增專案"
-
-#, fuzzy
-msgid "menu_bar_preferences_editor_settings"
-msgstr "編輯器設定"
-
-msgid "menu_bar_preferences_keyboard_shortcuts"
+#: scripts/logic/file_logic.gd:326
+msgid "Apply to All"
 msgstr ""
 
-msgid "menu_bar_preferences_module_manager"
+#: scripts/logic/file_logic.gd:328
+msgid "Apply to File Only"
 msgstr ""
 
-msgid "menu_bar_preferences_command_bar"
+#: scripts/logic/file_logic.gd:404
+#, fuzzy
+#| msgid "title_files_dropped"
+msgid "Files dropped"
+msgstr "已加入檔案"
+
+#: scripts/logic/file_logic.gd:417
+msgid "Files loading ..."
 msgstr ""
 
-#, fuzzy
-msgid "menu_bar_help"
-msgstr "新增專案"
+msgid "GoZen"
+msgstr ""
 
-#, fuzzy
-msgid "menu_bar_help_report_issue"
-msgstr "新增專案"
+#~ msgid "title_about_gozen"
+#~ msgstr "關於 GoZen"
+
+#~ msgid "title_extras"
+#~ msgstr "其他"
+
+#~ msgid "title_render_video"
+#~ msgstr "渲染影片"
+
+#~ msgid "title_render_audio"
+#~ msgstr "渲染音訊"
+
+#~ msgid "title_cpu_threads"
+#~ msgstr "CPU 執行緒"
 
 #, fuzzy
-msgid "menu_bar_help_check_updates"
-msgstr "新增專案"
-
-msgid "menu_bar_help_manual"
-msgstr ""
+#~ msgid "title_chapters"
+#~ msgstr "章節"
 
 #, fuzzy
-msgid "menu_bar_help_tutorials"
-msgstr "編輯器設定"
-
-msgid "menu_bar_help_discord"
-msgstr ""
+#~ msgid "title_save_video_audio_to_wav"
+#~ msgstr "將影片音訊儲存為 （WAV）"
 
 #, fuzzy
-msgid "menu_bar_help_site"
-msgstr "新增專案"
+#~ msgid "title_dialog_file_too_big"
+#~ msgstr "新增顏色檔案"
+
+#~ msgid "button_tooltip_create_new_project"
+#~ msgstr "使用所選設定建立新專案。"
+
+#~ msgid "button_gozen_site"
+#~ msgstr "GoZen 網站"
+
+#~ msgid "button_manual"
+#~ msgstr "使用手冊"
+
+#~ msgid "button_discord_server"
+#~ msgstr "Discord 伺服器"
+
+#~ msgid "button_support_gozen"
+#~ msgstr "支持 GoZen"
+
+#~ msgid "button_tooltip_editor_settings"
+#~ msgstr "編輯器設定。"
+
+#~ msgid "button_cancel"
+#~ msgstr "取消"
+
+#~ msgid "button_reset"
+#~ msgstr "重設"
+
+#~ msgid "button_return"
+#~ msgstr "返回"
 
 #, fuzzy
-msgid "menu_bar_about_gozen"
-msgstr "關於 GoZen"
+#~ msgid "button_screen_editing"
+#~ msgstr "編輯畫面"
 
 #, fuzzy
-msgid "menu_bar_support_gozen"
-msgstr "支持 GoZen"
-
-msgid "file_dialog_title_add_files"
-msgstr ""
+#~ msgid "button_screen_render"
+#~ msgstr "渲染畫面"
 
 #, fuzzy
-msgid "file_dialog_title_save_project_as"
-msgstr "新增專案"
+#~ msgid "button_dont_save"
+#~ msgstr "儲存"
+
+#~ msgid "button_close"
+#~ msgstr "關閉"
+
+#~ msgid "text_gozen_website"
+#~ msgstr "GoZen 網站"
+
+#~ msgid "text_github_repo"
+#~ msgstr "GitHub 儲存庫"
+
+#~ msgid "text_discord_link"
+#~ msgstr "Discord 連結"
+
+#~ msgid "text_support_gozen"
+#~ msgstr "支持 GoZen"
+
+# Note: This is part of the string for the "about gozen" screen.
+#, fuzzy
+#~ msgid "text_gozen_made_by"
+#~ msgstr "開發者為"
+
+#~ msgid "text_advanced_settings"
+#~ msgstr "進階設定"
 
 #, fuzzy
-msgid "file_dialog_title_open_project"
-msgstr "新增專案"
+#~ msgid "placeholder_text_search_files"
+#~ msgstr "搜尋檔案..."
 
-msgid "file_dialog_title_select_save_path"
-msgstr ""
+#~ msgid "tooltip_ignore_changes_close_settings"
+#~ msgstr "忽略變更並關閉設定選單。"
+
+#~ msgid "tooltip_setting_background_color"
+#~ msgstr "專案的預設背景顏色。"
+
+#~ msgid "setting_language"
+#~ msgstr "語言"
 
 #, fuzzy
-msgid "file_dialog_tooltip_gozen_project_files"
-msgstr "預設影片專案的幀率。"
+#~ msgid "setting_tooltip_display_scale"
+#~ msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
-msgid "file_panel_item_add_files"
-msgstr ""
+#~ msgid "setting_theme"
+#~ msgstr "佈景主題"
 
-msgid "file_panel_item_add_text"
-msgstr ""
+#~ msgid "setting_tooltip_theme"
+#~ msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
-msgid "file_panel_item_add_color"
-msgstr ""
+#~ msgid "setting_show_menu_bar"
+#~ msgstr "顯示選單列"
 
-msgid "popup_item_rename"
-msgstr ""
+#, fuzzy
+#~ msgid "setting_tooltip_duration_in_frames"
+#~ msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
 
-msgid "popup_item_reload"
-msgstr ""
+#~ msgid "setting_default_project_resolution"
+#~ msgstr "預設專案解析度"
 
-msgid "popup_item_delete"
-msgstr ""
+#~ msgid "setting_tooltip_default_project_resolution_x"
+#~ msgstr "預設影片專案的寬度。"
 
-msgid "popup_item_duplicate"
-msgstr ""
+#~ msgid "setting_tooltip_default_project_resolution_y"
+#~ msgstr "預設影片專案的高度。"
 
-msgid "popup_item_save_as_file"
-msgstr ""
+#~ msgid "setting_default_project_framerate"
+#~ msgstr "預設專案幀率"
 
-msgid "popup_item_extract_audio"
-msgstr ""
+#~ msgid "setting_tooltip_default_project_framerate"
+#~ msgstr "預設影片專案的幀率。"
 
-msgid "popup_separator_image_options"
-msgstr ""
+#~ msgid "setting_delete_empty_space_mod"
+#~ msgstr "刪除空白區間修飾鍵"
 
-msgid "popup_separator_video_options"
-msgstr ""
+#~ msgid "setting_tooltip_delete_empty_space_mod"
+#~ msgstr ""
+#~ "在時間軸上雙擊空白處會刪除該空白區間並移動後方所有片段。設定修飾鍵後，您需"
+#~ "要按住該特定按鍵再雙擊，才能移除片段之間的空白區間。"
 
-msgid "popup_separator_text_options"
-msgstr ""
+#~ msgid "setting_tooltip_check_version"
+#~ msgstr ""
+#~ "此功能需要連線至網際網路以檢查 GitHub 儲存庫。有些人不希望應用程式連網，因"
+#~ "此此功能預設為「停用」。"
+
+#, fuzzy
+#~ msgid "setting_auto_save"
+#~ msgstr "語言"
+
+#, fuzzy
+#~ msgid "setting_tooltip_auto_save"
+#~ msgstr "深色模式比淺色模式更好。 (sorry Voylin)"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_setup"
+#~ msgstr "正在設定渲染器..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_open_error"
+#~ msgstr "無法開啟渲染器，請檢查路徑與設定！"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_compiling_audio"
+#~ msgstr "正在編譯音訊資料..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_sending_audio"
+#~ msgstr "傳送音訊至渲染器時發生錯誤！"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_sending_audio_error"
+#~ msgstr "傳送音訊至渲染器時發生錯誤！"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_creating_sending_data"
+#~ msgstr "正在建立並傳送影格資料..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_sending_data_error"
+#~ msgstr "傳送影格至渲染器時發生錯誤！"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_canceling"
+#~ msgstr "正在取消渲染程序..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_last_frame"
+#~ msgstr "正在傳送最後的影格..."
+
+#~ msgid "rendering_warning"
+#~ msgstr "發生錯誤！"
+
+#~ msgid "render_option_path"
+#~ msgstr "路徑"
+
+#~ msgid "render_option_audio_codec"
+#~ msgstr "音訊編解碼器"
+
+#~ msgid "render_option_video_codec"
+#~ msgstr "視訊編解碼器"
+
+#~ msgid "render_option_quality"
+#~ msgstr "品質"
+
+#, fuzzy
+#~ msgid "render_option_tooltip_quality"
+#~ msgstr ""
+#~ "調整 CRF (恆定速率因子)。最低品質設定為 50，最高品質設定為 15。預設值為 "
+#~ "18。此設定用於調整位元率，會影響品質與檔案大小。數值 0 為最佳品質，51 為最"
+#~ "差品質，18 的畫質損失通常難以察覺。"
+
+#~ msgid "render_option_tooltip_speed"
+#~ msgstr ""
+#~ "調整 H.264 的編碼速度。設定過高的速度可能會對最終影片品質產生負面影響。"
+
+#~ msgid "render_option_gop_size"
+#~ msgstr "GOP 大小"
+
+#~ msgid "render_option_tooltip_gop_size"
+#~ msgstr ""
+#~ "GOP (Group Of Pictures，圖像群組)。數值越高，壓縮率越好。但數值越高，在影"
+#~ "片中跳轉的精確度就越低。如果您打算將渲染後的影片用於後續編輯，請設定較低的"
+#~ "數值。"
+
+#~ msgid "render_option_threads_cores"
+#~ msgstr "執行緒/核心數"
+
+#~ msgid "render_option_tooltip_threads_cores"
+#~ msgstr "設定為「0」以使用所有可用的執行緒。"
+
+#~ msgid "render_option_video_length"
+#~ msgstr "影片長度"
+
+#~ msgid "render_option_render_time"
+#~ msgstr "渲染時間"
+
+#~ msgid "status_project_loading_init"
+#~ msgstr "正在開啟專案..."
+
+#~ msgid "status_project_preparing_timeline"
+#~ msgstr "正在準備時間軸..."
+
+#~ msgid "status_project_loading_files"
+#~ msgstr "正在載入檔案..."
+
+#~ msgid "status_project_playback_setup"
+#~ msgstr "正在設定播放..."
+
+#~ msgid "status_project_finalizing"
+#~ msgstr "正在完成最後步驟..."
+
+#~ msgid "status_new_project_init"
+#~ msgstr "正在建立新專案..."
+
+#~ msgid "command_project_settings"
+#~ msgstr "專案設定"
+
+#, fuzzy
+#~ msgid "menu_bar_project"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "menu_bar_project_open_project"
+#~ msgstr "開啟專案"
+
+#, fuzzy
+#~ msgid "menu_bar_project_recent_projects"
+#~ msgstr "開啟專案"
+
+#, fuzzy
+#~ msgid "menu_bar_project_quit"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "menu_bar_project_open_settings"
+#~ msgstr "專案設定"
+
+#, fuzzy
+#~ msgid "menu_bar_preferences_editor_settings"
+#~ msgstr "編輯器設定"
+
+#, fuzzy
+#~ msgid "menu_bar_help"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "menu_bar_help_report_issue"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "menu_bar_help_check_updates"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "menu_bar_help_tutorials"
+#~ msgstr "編輯器設定"
+
+#, fuzzy
+#~ msgid "menu_bar_help_site"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "menu_bar_about_gozen"
+#~ msgstr "關於 GoZen"
+
+#, fuzzy
+#~ msgid "menu_bar_support_gozen"
+#~ msgstr "支持 GoZen"
+
+#, fuzzy
+#~ msgid "file_dialog_title_save_project_as"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "file_dialog_title_open_project"
+#~ msgstr "新增專案"
+
+#, fuzzy
+#~ msgid "file_dialog_tooltip_gozen_project_files"
+#~ msgstr "預設影片專案的幀率。"

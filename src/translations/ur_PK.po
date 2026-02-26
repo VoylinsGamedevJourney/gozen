@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: 2025-0-DD HH:MM+ZZZZ\n"
+"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,547 +12,1459 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
 
-msgid "title_about_gozen"
-msgstr "گوزین کی معلومات"
-
-msgid "title_appearance"
-msgstr "ظہور"
-
-msgid "title_defaults"
-msgstr "ڈیفالٹس"
-
-msgid "title_timeline"
-msgstr "ٹائم لائن"
-
-#, fuzzy
-msgid "title_extras"
-msgstr "ڈیفالٹس"
-
-#, fuzzy
-msgid "title_render_settings"
-msgstr "رینڈرنگ"
-
-msgid "title_rendering"
-msgstr "رینڈرنگ"
-
-msgid "title_rendering_finished"
-msgstr "رینڈرنگ مکمل"
-
-#, fuzzy
-msgid "title_rendering_error"
-msgstr "رینڈرنگ"
-
-msgid "title_render_video"
-msgstr "رینڈر ویڈیو"
-
-msgid "title_render_audio"
-msgstr "رینڈر آڈیو"
-
-msgid "title_cpu_threads"
-msgstr "سی پی یو تھریڈز"
-
-msgid "title_recent_projects"
-msgstr "حالیہ پروجیکٹس"
-
-msgid "title_getting_started"
-msgstr "شروعات کریں"
-
-msgid "title_new_project"
-msgstr "نیا پروجیکت"
-
-#, fuzzy
-msgid "title_loading_project"
-msgstr "نیا پروجیکت"
-
-#, fuzzy
-msgid "title_files_dropped"
-msgstr "نیا پروجیکت"
-
-#, fuzzy
-msgid "title_editor_settings"
-msgstr "ایڈیٹر کی ترتیبات."
-
-#, fuzzy
-msgid "title_project_settings"
-msgstr "نیا پروجیکت"
-
-#, fuzzy
-msgid "title_chapters"
-msgstr "سی پی یو تھریڈز"
-
-msgid "title_save_image_to_file"
+#: scenes/effects_panel/effects_panel.gd:325
+msgid "Add effects"
 msgstr ""
 
-#, fuzzy
-msgid "title_save_video_audio_to_wav"
-msgstr "رینڈر آڈیو"
-
-msgid "title_add_color_file"
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Visual effects"
 msgstr ""
 
-#, fuzzy
-msgid "title_close_without_saving"
-msgstr "ایڈیٹر کی ترتیبات."
-
-#, fuzzy
-msgid "title_dialog_file_too_big"
-msgstr "ایڈیٹر کی ترتیبات."
-
-msgid "button_tooltip_create_new_project"
-msgstr "چنی گئ ترتیبات سے نیا پروجیکٹ بنائں."
-
-msgid "button_gozen_site"
-msgstr "گوزین کی سائٹ"
-
-msgid "button_manual"
-msgstr "ہدایت نامہ"
-
-msgid "button_tutorials"
-msgstr "ویڈیو اسباق"
-
-msgid "button_discord_server"
-msgstr "دسکورڈ سرور"
-
-msgid "button_support_gozen"
-msgstr "گوزن کا ساتھ دیں"
-
-msgid "button_open_project"
-msgstr "پروجیکٹ کھولیں"
-
-msgid "button_create_new_project"
-msgstr "نیا پروجیکٹ بنائیں"
-
-#, fuzzy
-msgid "button_create_new_color_file"
-msgstr "نیا پروجیکٹ بنائیں"
-
-msgid "button_tooltip_editor_settings"
-msgstr "ایڈیٹر کی ترتیبات."
-
-msgid "button_cancel"
-msgstr "منسوخ کریں"
-
-msgid "button_cancel_rendering"
-msgstr "رینڈرنگ منسوخ کریں"
-
-msgid "button_reset"
-msgstr "ری سیٹ"
-
-msgid "button_return"
-msgstr "واپس جائیں"
-
-#, fuzzy
-msgid "button_screen_editing"
-msgstr "ترتیبات سیو کریں"
-
-#, fuzzy
-msgid "button_screen_render"
-msgstr "رینڈرنگ شروع کریں"
-
-msgid "button_start_render"
-msgstr "رینڈرنگ شروع کریں"
-
-msgid "button_save"
-msgstr "سیو کریں"
-
-#, fuzzy
-msgid "button_dont_save"
-msgstr "سیو کریں"
-
-msgid "button_save_settings"
-msgstr "ترتیبات سیو کریں"
-
-msgid "button_close"
-msgstr "بند کریں"
-
-msgid "text_version"
-msgstr "ورژن"
-
-msgid "text_gozen_website"
-msgstr "گوزین کی ویب سائیٹ"
-
-msgid "text_github_repo"
-msgstr "گٹہب ریپو"
-
-msgid "text_discord_link"
-msgstr "دسکورڈ لنک"
-
-msgid "text_support_gozen"
-msgstr "گوزین کا ساتھ دیں"
-
-# Note: This is part of the string for the "about gozen" screen.
-#: scripts/about_gozen.gd
-#, fuzzy
-msgid "text_gozen_made_by"
-msgstr "گوزین ایک ویڈیو ایڈیٹر ہے جس کا تخلیق کارہے"
-
-msgid "text_rename_file_to"
-msgstr "فائل کا نام تبدیل کریں ..."
-
-msgid "text_advanced_settings"
-msgstr "اعلیٰ ترتیبات"
-
-msgid "text_path"
-msgstr "مقام"
-
-msgid "text_resolution"
-msgstr "ریزولوشن"
-
-msgid "text_framerate"
-msgstr "فریم ریٹ"
-
-msgid "placeholder_text_search_files"
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Audio effects"
 msgstr ""
 
-msgid "tooltip_ignore_changes_close_settings"
-msgstr "تبدیلیاں نظر انداز کریں اور ترتیبات بند کریں."
-
-msgid "tooltip_setting_background_color"
-msgstr "پروجیکٹ کا ڈیفالٹ بیک گراؤنڈ رنگ."
-
-msgid "setting_background_color"
-msgstr "بیک گراونڈ کا رنگ"
-
-msgid "setting_language"
-msgstr "زبان"
-
-#, fuzzy
-msgid "setting_display_scale"
-msgstr "زبان"
-
-#, fuzzy
-msgid "setting_tooltip_display_scale"
+#: scenes/view_panel/view_panel.tscn
+msgid "Frame: 0"
 msgstr ""
-"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
-"کریں."
 
-msgid "setting_theme"
-msgstr "تھیم"
-
-msgid "setting_tooltip_theme"
+#: scenes/view_panel/view_panel.tscn
+msgid "00:00:00.00"
 msgstr ""
-"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
-"کریں."
 
-msgid "setting_show_menu_bar"
-msgstr "مینو بار دکھائیں"
-
-msgid "setting_waveform_style"
-msgstr "آڈیو ویوفارم کا انداز"
-
-msgid "setting_default_image_duration"
-msgstr "تصویر کا ڈیفالٹ دورانیہ"
-
-#, fuzzy
-msgid "setting_default_color_duration"
-msgstr "تصویر کا ڈیفالٹ دورانیہ"
-
-#, fuzzy
-msgid "setting_default_text_duration"
-msgstr "تصویر کا ڈیفالٹ دورانیہ"
-
-#, fuzzy
-msgid "setting_tooltip_duration_in_frames"
-msgstr "دورانیہ (فریمز میں)"
-
-msgid "setting_default_project_resolution"
-msgstr "پروجیکٹ کی ڈیفالٹ ریزولوشن"
-
-msgid "setting_tooltip_default_project_resolution_x"
-msgstr "پروجیکٹ کی ڈیفالٹ وڈیو چوڑائ."
-
-msgid "setting_tooltip_default_project_resolution_y"
-msgstr "پروجیکٹ کی ڈیفالٹ وڈیو لمبائ."
-
-msgid "setting_default_project_framerate"
-msgstr "ڈیفالٹ پروجیکٹ فریم ریٹ"
-
-msgid "setting_tooltip_default_project_framerate"
-msgstr "ڈیفالٹ وڈیو پروجیکٹ کے فریم ریٹ."
-
-msgid "setting_default_track_amount"
-msgstr "ڈیفالٹ ٹریک کی مقدار"
-
-msgid "setting_pause_after_dragging"
-msgstr "ڈریگ کے بعد توقف"
-
-msgid "setting_delete_empty_space_mod"
-msgstr "خالی جگہ حذف کرنے والا موڈیفائر"
-
-msgid "setting_tooltip_delete_empty_space_mod"
+#: scenes/view_panel/view_panel.tscn
+msgid "x1"
 msgstr ""
-"ٹائم لائن میں خالی جگہ پر ڈبل کلک کرنے سے خالی جگہ حذف ہو جاتی ہے اور سب کچھ "
-"منتقل ہو جاتا ہے۔ ایک موڈیفائر سیٹ کرنے سے آپ کو مخصوص کی کو دبانا پڑے گا "
-"تاکہ ڈبل کلک کے ذریعے کلپس کے درمیان خالی جگہ حذف کی جا سکے."
 
-#, fuzzy
-msgid "setting_check_version"
-msgstr "تھیم"
-
-#, fuzzy
-msgid "setting_tooltip_check_version"
+#: scenes/view_panel/view_panel.gd:32
+msgid "Jump to frame"
 msgstr ""
-"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
-"کریں."
 
-#, fuzzy
-msgid "setting_auto_save"
-msgstr "زبان"
-
-#, fuzzy
-msgid "setting_tooltip_auto_save"
+#: scenes/view_panel/view_panel.gd:72
+msgid "Frame"
 msgstr ""
-"تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے انتخاب "
-"کریں."
 
-#, fuzzy
-msgid "encoding_progress_text_setup"
-msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
-
-#, fuzzy
-msgid "encoding_progress_text_open_error"
-msgstr "رینڈرر کو کھولا نہی جا سکا، مقام اور ترتیبات دیکھیں!"
-
-#, fuzzy
-msgid "encoding_progress_text_compiling_audio"
-msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے ..."
-
-#, fuzzy
-msgid "encoding_progress_text_sending_audio"
-msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
-
-#, fuzzy
-msgid "encoding_progress_text_sending_audio_error"
-msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
-
-#, fuzzy
-msgid "encoding_progress_text_creating_sending_data"
-msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے ..."
-
-#, fuzzy
-msgid "encoding_progress_text_sending_data_error"
-msgstr "فریم رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
-
-#, fuzzy
-msgid "encoding_progress_text_canceling"
-msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
-
-#, fuzzy
-msgid "encoding_progress_text_last_frame"
-msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
-
-msgid "rendering_warning"
-msgstr "کچھ غلط ہو گیا!"
-
-msgid "render_option_path"
-msgstr "فائل کا مقام"
-
-msgid "render_option_profile"
-msgstr "رینڈر پروفائل"
-
-msgid "render_option_audio_codec"
-msgstr "آڈیو کوڈیک"
-
-msgid "render_option_video_codec"
-msgstr "ویڈیو کوڈیک"
-
-msgid "render_option_quality"
-msgstr "وڈیو کامعیار"
-
-#, fuzzy
-msgid "render_option_tooltip_quality"
+#: scenes/view_panel/project_view_texture.gd:33
+msgid "Save screenshot ..."
 msgstr ""
-"سی.آر.ایف ایڈجسٹمنٹ: 50 سب سے کم معیار، 15 سب سے زیادہ معیار، 18 ڈیفالٹ۔ 0 "
-"بہترین معیار، 51 سب سے خراب."
 
-msgid "render_option_speed"
+#: scenes/view_panel/project_view_texture.gd:34
+msgid "Save screenshot to project ..."
+msgstr ""
+
+#: scenes/editor/editor.tscn
+msgid "EditTab"
+msgstr ""
+
+#: scenes/editor/editor.tscn
+msgid "RenderTab"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+msgid "Add effect"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Close popup"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add files"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add text"
+msgstr ""
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add color"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:83
+msgid "Add files ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:105
+msgid "Rename"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:106
+msgid "Reload"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:107 scenes/menu_bar/menu_bar.tscn
+msgid "Delete"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:111
+msgid "Image options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:112
+msgid "Save image as ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:114 scenes/timeline/timeline_panel.gd:959
+msgid "Video options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:118
+msgid "Create proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:120
+msgid "Re-create proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:121
+msgid "Remove proxy"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:123
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio-take-over"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:124
+msgid "Extract audio to file ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:126
+msgid "Text options"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:127
+msgid "Duplicate"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:130
+msgid "Save file as ..."
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:134
+msgid "Open in file manager"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:135
+msgid "Copy file path"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:137
+#, fuzzy
+#| msgid "render_option_speed"
+msgid "Folder options"
 msgstr "رفتار"
 
-msgid "render_option_tooltip_speed"
-msgstr ""
-"ایچ264 کو انکوڈنگ کرنے کی رفتار کو ایڈجسٹ کرتا ہے۔ رفتار کو بہت زیادہ سیٹ "
-"کرنے سے حتمی ویڈیو کے معیار پر منفی اثر پڑ سکتا ہے."
-
-msgid "render_option_gop_size"
-msgstr "جی او پی سائز"
-
-msgid "render_option_tooltip_gop_size"
-msgstr ""
-"تصاویر کا گروپ (GOP)۔ زیادہ قیمت بہتر ہے کمپریشن کے لیے، کم قیمت کے مقابلے "
-"میں۔ تاہم، جتنا زیادہ قیمت ہوگی، ویڈیو پلے بیک کے دوران تلاش اور اسکرابنگ کے "
-"لیے اتنی کم درستگی ہوگی۔ اگر آپ رینڈر شدہ ویڈیو کو ایڈیٹنگ کے لیے استعمال "
-"کرنے کا ارادہ رکھتے ہیں تو اسے کم قیمت پر سیٹ کریں."
-
-msgid "render_option_threads_cores"
-msgstr "تھریڈز/کورز"
-
-msgid "render_option_tooltip_threads_cores"
-msgstr "تمام دستیاب تھریدز استعمال کرنے کے لیِے '0' لگائیں."
-
-msgid "render_option_video_length"
-msgstr "وڈیو کی لمبائ"
-
-msgid "render_option_render_time"
-msgstr "رینڈر کا وقت"
-
-msgid "notification_update_available"
+#: scenes/file_panel/file_panel.gd:138 scenes/file_panel/file_panel.gd:141
+#: scenes/file_panel/file_panel.gd:526
+msgid "Create folder"
 msgstr ""
 
-msgid "status_project_loading_init"
+#: scenes/file_panel/file_panel.gd:144
+msgid "Rename folder"
 msgstr ""
 
-msgid "status_project_preparing_timeline"
+#: scenes/file_panel/file_panel.gd:145
+msgid "Delete folder"
 msgstr ""
 
-msgid "status_project_loading_files"
-msgstr ""
-
-msgid "status_project_playback_setup"
-msgstr ""
-
-msgid "status_project_finalizing"
-msgstr ""
-
+#: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
 #, fuzzy
-msgid "status_new_project_init"
-msgstr "نیا پروجیکت"
+#| msgid "text_rename_file_to"
+msgid "Rename file"
+msgstr "فائل کا نام تبدیل کریں ..."
 
+#: scenes/file_panel/file_panel.gd:188 scenes/file_panel/file_panel.gd:531
+msgid "Folder name"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:247
+msgid "Save image to file"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:259
+msgid "Save video audio to WAV"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:390
+msgid "(Loading thumbnail...)"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:471
+msgid "Remove empty space"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:473 scenes/timeline/timeline_panel.gd:963
+msgid "Add track"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:474 scenes/timeline/timeline_panel.gd:964
+msgid "Remove track"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:955
+msgid "Delete clip"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:956
+msgid "Cut clip"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:960
+msgid "Clip audio-take-over"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:962
+msgid "Track options"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:1144
+msgid "Duplication failed"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:1145
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
+msgid "Add color file"
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+#: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
+msgid "Cancel"
+msgstr ""
+
+#: scenes/color_popup/color_popup.tscn
 #, fuzzy
-msgid "command_editor_settings"
+msgid "Create new color file"
+msgstr "نیا پروجیکٹ بنائیں"
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+msgid "Render settings"
+msgstr "رینڈرنگ"
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+#| msgid "render_option_profile"
+msgid "Render profile"
+msgstr "رینڈر پروفائل"
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Save current presets as a custom render profile."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Save profile"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+#| msgid "text_path"
+msgid "Export path"
+msgstr "مقام"
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+msgid "Render video settings"
+msgstr "رینڈرنگ"
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Video codec"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Quality"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Speed"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Gop size"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+#, fuzzy
+msgid "Render audio settings"
 msgstr "ایڈیٹر کی ترتیبات."
 
-msgid "command_project_settings"
+#: scenes/render_screen/render_screen.tscn
+msgid "Audio codec"
 msgstr ""
 
-msgid "command_render_menu"
+#: scenes/render_screen/render_screen.tscn
+msgid "Multi-threading"
 msgstr ""
 
+#: scenes/render_screen/render_screen.tscn
+msgid "Threads"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "The amount of threads you want to use for exporting your video."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Create a low quality draft version of your video."
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
+msgid "Draft"
+msgstr ""
+
+#: scenes/render_screen/render_screen.tscn
 #, fuzzy
-msgid "menu_bar_project"
+#| msgid "button_start_render"
+msgid "Start render"
+msgstr "رینڈرنگ شروع کریں"
+
+#: scenes/render_screen/render_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:109
+#: scenes/settings_menu/settings_menu.gd:280
+msgid "Markers"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:48
+#, fuzzy
+#| msgid "render_option_profile"
+msgid "Custom render profiles"
+msgstr "رینڈر پروفائل"
+
+#: scenes/render_screen/render_screen.gd:89
+msgid "HEVC"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:90
+msgid "H264"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:91
+msgid "MPEG4"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:92
+msgid "MPEG2"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:93
+msgid "MPEG1"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:94
+msgid "MJPEG"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:95
+msgid "AV1"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:96
+msgid "VP9"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:97
+msgid "VP8"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:99
+msgid "WAV"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:100
+msgid "PCM"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:101
+msgid "MP2"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:102
+msgid "MP3"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:103
+msgid "AAC"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:104
+msgid "Opus"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:105
+msgid "Vorbis"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:106
+msgid "FLAC"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:107
+msgid "NONE"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:169
+msgid "Select export path"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:250
+#, fuzzy
+#| msgid "title_rendering_finished"
+msgid "Rendering finished"
+msgstr "رینڈرنگ مکمل"
+
+#: scenes/render_screen/render_screen.gd:270
+msgid "Error whilst rendering video"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:334
+#: scenes/render_screen/render_screen.gd:342
+#, fuzzy
+#| msgid "title_rendering"
+msgid "Rendering"
+msgstr "رینڈرنگ"
+
+#: scenes/render_screen/render_screen.gd:349
+#, fuzzy
+#| msgid "button_cancel_rendering"
+msgid "Cancel rendering"
+msgstr "رینڈرنگ منسوخ کریں"
+
+#: scenes/render_screen/render_screen.gd:378
+msgid "Error opening file"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:379
+msgid "Error whilst sending audio"
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:385
+msgid "Setting up ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:386
+#: scenes/render_screen/render_screen.gd:387
+msgid "Compiling audio ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:388
+#: scenes/render_screen/render_screen.gd:389
+msgid "Sending data ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:390
+msgid "Sending final frame ..."
+msgstr ""
+
+#: scenes/render_screen/save_custom_render_profile.tscn
+#, fuzzy
+#| msgid "render_option_profile"
+msgid "Create render profile"
+msgstr "رینڈر پروفائل"
+
+#: scenes/render_screen/save_custom_render_profile.tscn
+msgid "New profile name"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
+msgid "About GoZen"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Version: "
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:22
+#, fuzzy
+#| msgid "text_version"
+msgid "GoZen version"
+msgstr "ورژن"
+
+#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Website"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:39
+msgid "GitHub repo"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Support GoZen"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:43
+msgid ""
+"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgstr ""
+
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:88
+#, fuzzy
+msgid "Loading project"
 msgstr "نیا پروجیکت"
 
-msgid "menu_bar_project_save"
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Estimated time - 59:59:59"
 msgstr ""
 
-msgid "menu_bar_project_save_as"
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:89
+msgid "Initializing ..."
 msgstr ""
 
+#: scenes/settings_menu/settings_menu.gd:102
+#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
 #, fuzzy
-msgid "menu_bar_project_open_project"
+msgid "Editor settings"
+msgstr "ایڈیٹر کی ترتیبات."
+
+#: scenes/settings_menu/settings_menu.gd:107
+msgid "Marker one"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:107
+msgid "Marker two"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:107
+msgid "Marker three"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:108
+msgid "Marker four"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:108
+msgid "Marker five"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:120
+#: scenes/settings_menu/settings_menu.gd:294
+msgid "Shortcuts"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:129
+#: scenes/settings_menu/settings_menu.gd:302
+#: scenes/settings_menu/settings_menu.gd:303
+#, fuzzy
+#| msgid "title_appearance"
+msgid "Appearance"
+msgstr "ظہور"
+
+#: scenes/settings_menu/settings_menu.gd:130
+msgid "Display"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:131
+msgid "Language"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:137
+#, fuzzy
+msgid "Display scale"
+msgstr "زبان"
+
+#: scenes/settings_menu/settings_menu.gd:143
+msgid "Editor theme"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:149
+#, fuzzy
+#| msgid "setting_background_color"
+msgid "Base color"
+msgstr "بیک گراونڈ کا رنگ"
+
+#: scenes/settings_menu/settings_menu.gd:153
+msgid "The base color of the editor UI."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:154
+msgid "Accent color"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:158
+msgid "The highlight/accent color of the editor UI."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:159
+msgid "Show menu bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:163
+msgid "Show ram usage in menu bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:167
+msgid "Audio waveforms"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:168
+#, fuzzy
+#| msgid "setting_waveform_style"
+msgid "Waveform style"
+msgstr "آڈیو ویوفارم کا انداز"
+
+#: scenes/settings_menu/settings_menu.gd:174
+msgid "Waveform amplifier"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:180
+msgid ""
+"Sometimes the waveforms aren't very clear due to audio levels being too low, "
+"with this setting you can adjust their intensity"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:181
+msgid "Dialogue's"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:182
+msgid "Use native dialogs"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:188
+#, fuzzy
+#| msgid "title_defaults"
+msgid "Defaults"
+msgstr "ڈیفالٹس"
+
+#: scenes/settings_menu/settings_menu.gd:189
+#, fuzzy
+msgid "Default durations"
+msgstr "تصویر کا ڈیفالٹ دورانیہ"
+
+#: scenes/settings_menu/settings_menu.gd:190
+#, fuzzy
+#| msgid "setting_default_image_duration"
+msgid "Default image duration"
+msgstr "تصویر کا ڈیفالٹ دورانیہ"
+
+#: scenes/settings_menu/settings_menu.gd:196
+#: scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:210
+msgid "Duration in frames per second."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:197
+#, fuzzy
+msgid "Default color duration"
+msgstr "تصویر کا ڈیفالٹ دورانیہ"
+
+#: scenes/settings_menu/settings_menu.gd:211
+#, fuzzy
+#| msgid "text_resolution"
+msgid "Project resolution"
+msgstr "ریزولوشن"
+
+#: scenes/settings_menu/settings_menu.gd:213
+#, fuzzy
+#| msgid "text_framerate"
+msgid "Project frame-rate"
+msgstr "فریم ریٹ"
+
+#: scenes/settings_menu/settings_menu.gd:220
+#, fuzzy
+#| msgid "title_timeline"
+msgid "Timeline"
+msgstr "ٹائم لائن"
+
+#: scenes/settings_menu/settings_menu.gd:221
+#, fuzzy
+msgid "Timeline settings"
+msgstr "رینڈرنگ"
+
+#: scenes/settings_menu/settings_menu.gd:222
+#, fuzzy
+#| msgid "setting_default_track_amount"
+msgid "Default track amount"
+msgstr "ڈیفالٹ ٹریک کی مقدار"
+
+#: scenes/settings_menu/settings_menu.gd:227
+msgid "Track height"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:232
+msgid "Timeline controls"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:233
+#, fuzzy
+#| msgid "setting_pause_after_dragging"
+msgid "Pause after dragging"
+msgstr "ڈریگ کے بعد توقف"
+
+#: scenes/settings_menu/settings_menu.gd:237
+msgid ""
+"Setting this will pause playback after having dragged the playhead around."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:238
+msgid "Empty space delete modifier"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:244
+msgid "The modifier you want to easily delete empty space between clips."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:246
+msgid "Show mode bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:250
+msgid ""
+"The mode bar is the bar on the left of the timeline with buttons for "
+"changing the current timeline mode."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:253
+msgid "Performance"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:254
+msgid "Video Decoding"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:255
+msgid "Smart Seek Threshold"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:261
+msgid ""
+"Defines how many frames the decoder will sequentially read ahead instead of "
+"performing a full seek operation. Higher values prevent lag during short "
+"jumps but use more CPU."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:262
+msgid "Video Cache Size"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:268
+msgid ""
+"The maximum number of decoded frames to keep in RAM. Higher values enable "
+"smoother backward seeking and scrubbing but increase memory usage."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:269
+msgid "Use proxies"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:273
+msgid "Proxies save path"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:277
+msgid ""
+"Changing this setting should be done with a path which points to an already "
+"existing folder. All previously made proxy clips will need to be generated "
+"again and deleted manually from the previous folder."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:282
+#: scenes/settings_menu/settings_menu.gd:283
+msgid "Extras"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:284
+#, fuzzy
+msgid "Check version"
+msgstr "تھیم"
+
+#: scenes/settings_menu/settings_menu.gd:288
+#, fuzzy
+#| msgid "button_save"
+msgid "Auto save"
+msgstr "سیو کریں"
+
+#: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
+#, fuzzy
+msgid "Project settings"
+msgstr "نیا پروجیکت"
+
+#: scenes/settings_menu/settings_menu.gd:304
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "setting_background_color"
+msgid "Background color"
+msgstr "بیک گراونڈ کا رنگ"
+
+#: scenes/settings_menu/settings_menu.gd:308
+msgid "The background color when no clips are displayed."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:431
+#: scenes/startup_screen/startup_screen.tscn
+msgid "X:"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:432
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Y:"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:497
+msgid "Press any key..."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.tscn
+#, fuzzy
+msgid "Search settings ..."
+msgstr "رینڈرنگ"
+
+#: scenes/settings_menu/settings_menu.tscn
+#, fuzzy
+#| msgid "button_save_settings"
+msgid "Close settings"
+msgstr "ترتیبات سیو کریں"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Project"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Save project"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:76
+msgid "Save project as ..."
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
+#, fuzzy
+#| msgid "button_open_project"
+msgid "Open project"
 msgstr "پروجیکٹ کھولیں"
 
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-msgid "menu_bar_project_recent_projects"
-msgstr "پروجیکٹ کھولیں"
+#| msgid "title_recent_projects"
+msgid "Recent projects"
+msgstr "حالیہ پروجیکٹس"
 
-#, fuzzy
-msgid "menu_bar_project_quit"
-msgstr "نیا پروجیکت"
-
-msgid "menu_bar_project_open_settings"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Quit"
 msgstr ""
 
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Edit"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Undo"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Redo"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Cut"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Copy"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Paste"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
 #, fuzzy
-msgid "menu_bar_preferences"
+msgid "Preferences"
 msgstr "نیا پروجیکت"
 
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Module manager"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Command bar"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Help"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Report bug"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Check for updates"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Manual"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-msgid "menu_bar_preferences_editor_settings"
+#| msgid "button_tutorials"
+msgid "Tutorials"
+msgstr "ویڈیو اسباق"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "RAM:"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Render"
+msgstr ""
+
+#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Confirm"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid ""
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+"[u]Clay Banks[/u][/url]"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Update available"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "MainMenu"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "button_create_new_project"
+msgid "Create new project"
+msgstr "نیا پروجیکٹ بنائیں"
+
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "title_getting_started"
+msgid "Getting started"
+msgstr "شروعات کریں"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "NewProject"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
+#, fuzzy
+#| msgid "title_new_project"
+msgid "New project"
+msgstr "نیا پروجیکت"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Path"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "text_resolution"
+msgid "Resolution"
+msgstr "ریزولوشن"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video width."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video height."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+#| msgid "text_framerate"
+msgid "Framerate"
+msgstr "فریم ریٹ"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video framerate (fps)."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Advanced options"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Return"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:124
+#, fuzzy
+#| msgid "text_version"
+msgid "Version"
+msgstr "ورژن"
+
+#: scenes/startup_screen/startup_screen.gd:188
+#: scenes/startup_screen/startup_screen.gd:234 scripts/autoloads/project.gd:78
+msgid "GoZen project file"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:232
+msgid "Select project save path"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Update marker"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "time (frame)"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Marker"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Type"
+msgstr ""
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Delete the selected marker."
+msgstr ""
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio offset"
+msgstr ""
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
+msgstr ""
+
+#: scripts/autoloads/project.gd:43
+#, fuzzy
+#| msgid "title_new_project"
+msgid "Initialize new project ..."
+msgstr "نیا پروجیکت"
+
+#: scripts/autoloads/project.gd:54
+msgid "Setting up playback ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:55 scripts/autoloads/project.gd:106
+msgid "Finalizing ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:95
+msgid "Setting up timeline ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:103
+msgid "Loading project files ..."
+msgstr ""
+
+#: scripts/autoloads/project.gd:125
+msgid "GoZen project files"
+msgstr ""
+
+#: scripts/autoloads/project.gd:178
+msgid "Don't save"
+msgstr ""
+
+#: scripts/autoloads/project.gd:182
+#, fuzzy
+msgid "Close without saving"
 msgstr "ایڈیٹر کی ترتیبات."
 
-msgid "menu_bar_preferences_keyboard_shortcuts"
+#: scripts/autoloads/project.gd:183
+msgid "Save"
 msgstr ""
 
-msgid "menu_bar_preferences_module_manager"
-msgstr ""
-
-msgid "menu_bar_preferences_command_bar"
-msgstr ""
-
+#: scripts/autoloads/command_manager.gd:14
 #, fuzzy
-msgid "menu_bar_help"
-msgstr "نیا پروجیکت"
-
-#, fuzzy
-msgid "menu_bar_help_report_issue"
-msgstr "نیا پروجیکت"
-
-#, fuzzy
-msgid "menu_bar_help_check_updates"
-msgstr "نیا پروجیکت"
-
-msgid "menu_bar_help_manual"
-msgstr ""
-
-#, fuzzy
-msgid "menu_bar_help_tutorials"
+msgid "Open editor settings"
 msgstr "ایڈیٹر کی ترتیبات."
 
-msgid "menu_bar_help_discord"
-msgstr ""
-
+#: scripts/autoloads/command_manager.gd:15
 #, fuzzy
-msgid "menu_bar_help_site"
+msgid "Open project settings"
 msgstr "نیا پروجیکت"
 
-#, fuzzy
-msgid "menu_bar_about_gozen"
-msgstr "گوزین کی معلومات"
-
-#, fuzzy
-msgid "menu_bar_support_gozen"
-msgstr "گوزین کا ساتھ دیں"
-
-msgid "file_dialog_title_add_files"
+#: scripts/autoloads/command_manager.gd:16
+msgid "open render menu"
 msgstr ""
 
+#: scripts/logic/file_logic.gd:324
+msgid "Update existing clips?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:325
+msgid ""
+"This file is currently used by '%d' clip(s).\n"
+"Do you want to apply the Audio-Take-Over changes to all existing clips?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:326
+msgid "Apply to All"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:328
+msgid "Apply to File Only"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:404
 #, fuzzy
-msgid "file_dialog_title_save_project_as"
+msgid "Files dropped"
 msgstr "نیا پروجیکت"
 
+#: scripts/logic/file_logic.gd:417
+msgid "Files loading ..."
+msgstr ""
+
+msgid "GoZen"
+msgstr ""
+
+#~ msgid "title_about_gozen"
+#~ msgstr "گوزین کی معلومات"
+
 #, fuzzy
-msgid "file_dialog_title_open_project"
-msgstr "نیا پروجیکت"
-
-msgid "file_dialog_title_select_save_path"
-msgstr ""
+#~ msgid "title_extras"
+#~ msgstr "ڈیفالٹس"
 
 #, fuzzy
-msgid "file_dialog_tooltip_gozen_project_files"
-msgstr "ڈیفالٹ وڈیو پروجیکٹ کے فریم ریٹ."
+#~ msgid "title_rendering_error"
+#~ msgstr "رینڈرنگ"
 
-msgid "file_panel_item_add_files"
-msgstr ""
+#~ msgid "title_render_video"
+#~ msgstr "رینڈر ویڈیو"
 
-msgid "file_panel_item_add_text"
-msgstr ""
+#~ msgid "title_render_audio"
+#~ msgstr "رینڈر آڈیو"
 
-msgid "file_panel_item_add_color"
-msgstr ""
+#~ msgid "title_cpu_threads"
+#~ msgstr "سی پی یو تھریڈز"
 
-msgid "popup_item_rename"
-msgstr ""
+#, fuzzy
+#~ msgid "title_chapters"
+#~ msgstr "سی پی یو تھریڈز"
 
-msgid "popup_item_reload"
-msgstr ""
+#, fuzzy
+#~ msgid "title_save_video_audio_to_wav"
+#~ msgstr "رینڈر آڈیو"
 
-msgid "popup_item_delete"
-msgstr ""
+#, fuzzy
+#~ msgid "title_dialog_file_too_big"
+#~ msgstr "ایڈیٹر کی ترتیبات."
 
-msgid "popup_item_duplicate"
-msgstr ""
+#~ msgid "button_tooltip_create_new_project"
+#~ msgstr "چنی گئ ترتیبات سے نیا پروجیکٹ بنائں."
 
-msgid "popup_item_save_as_file"
-msgstr ""
+#~ msgid "button_gozen_site"
+#~ msgstr "گوزین کی سائٹ"
 
-msgid "popup_item_extract_audio"
-msgstr ""
+#~ msgid "button_manual"
+#~ msgstr "ہدایت نامہ"
 
-msgid "popup_separator_image_options"
-msgstr ""
+#~ msgid "button_discord_server"
+#~ msgstr "دسکورڈ سرور"
 
-msgid "popup_separator_video_options"
-msgstr ""
+#~ msgid "button_support_gozen"
+#~ msgstr "گوزن کا ساتھ دیں"
 
-msgid "popup_separator_text_options"
-msgstr ""
+#~ msgid "button_tooltip_editor_settings"
+#~ msgstr "ایڈیٹر کی ترتیبات."
+
+#~ msgid "button_cancel"
+#~ msgstr "منسوخ کریں"
+
+#~ msgid "button_reset"
+#~ msgstr "ری سیٹ"
+
+#~ msgid "button_return"
+#~ msgstr "واپس جائیں"
+
+#, fuzzy
+#~ msgid "button_screen_editing"
+#~ msgstr "ترتیبات سیو کریں"
+
+#, fuzzy
+#~ msgid "button_screen_render"
+#~ msgstr "رینڈرنگ شروع کریں"
+
+#, fuzzy
+#~ msgid "button_dont_save"
+#~ msgstr "سیو کریں"
+
+#~ msgid "button_close"
+#~ msgstr "بند کریں"
+
+#~ msgid "text_gozen_website"
+#~ msgstr "گوزین کی ویب سائیٹ"
+
+#~ msgid "text_github_repo"
+#~ msgstr "گٹہب ریپو"
+
+#~ msgid "text_discord_link"
+#~ msgstr "دسکورڈ لنک"
+
+#~ msgid "text_support_gozen"
+#~ msgstr "گوزین کا ساتھ دیں"
+
+# Note: This is part of the string for the "about gozen" screen.
+#, fuzzy
+#~ msgid "text_gozen_made_by"
+#~ msgstr "گوزین ایک ویڈیو ایڈیٹر ہے جس کا تخلیق کارہے"
+
+#~ msgid "text_advanced_settings"
+#~ msgstr "اعلیٰ ترتیبات"
+
+#~ msgid "tooltip_ignore_changes_close_settings"
+#~ msgstr "تبدیلیاں نظر انداز کریں اور ترتیبات بند کریں."
+
+#~ msgid "tooltip_setting_background_color"
+#~ msgstr "پروجیکٹ کا ڈیفالٹ بیک گراؤنڈ رنگ."
+
+#~ msgid "setting_language"
+#~ msgstr "زبان"
+
+#, fuzzy
+#~ msgid "setting_tooltip_display_scale"
+#~ msgstr ""
+#~ "تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے "
+#~ "انتخاب کریں."
+
+#~ msgid "setting_theme"
+#~ msgstr "تھیم"
+
+#~ msgid "setting_tooltip_theme"
+#~ msgstr ""
+#~ "تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے "
+#~ "انتخاب کریں."
+
+#~ msgid "setting_show_menu_bar"
+#~ msgstr "مینو بار دکھائیں"
+
+#, fuzzy
+#~ msgid "setting_tooltip_duration_in_frames"
+#~ msgstr "دورانیہ (فریمز میں)"
+
+#~ msgid "setting_default_project_resolution"
+#~ msgstr "پروجیکٹ کی ڈیفالٹ ریزولوشن"
+
+#~ msgid "setting_tooltip_default_project_resolution_x"
+#~ msgstr "پروجیکٹ کی ڈیفالٹ وڈیو چوڑائ."
+
+#~ msgid "setting_tooltip_default_project_resolution_y"
+#~ msgstr "پروجیکٹ کی ڈیفالٹ وڈیو لمبائ."
+
+#~ msgid "setting_default_project_framerate"
+#~ msgstr "ڈیفالٹ پروجیکٹ فریم ریٹ"
+
+#~ msgid "setting_tooltip_default_project_framerate"
+#~ msgstr "ڈیفالٹ وڈیو پروجیکٹ کے فریم ریٹ."
+
+#~ msgid "setting_delete_empty_space_mod"
+#~ msgstr "خالی جگہ حذف کرنے والا موڈیفائر"
+
+#~ msgid "setting_tooltip_delete_empty_space_mod"
+#~ msgstr ""
+#~ "ٹائم لائن میں خالی جگہ پر ڈبل کلک کرنے سے خالی جگہ حذف ہو جاتی ہے اور سب "
+#~ "کچھ منتقل ہو جاتا ہے۔ ایک موڈیفائر سیٹ کرنے سے آپ کو مخصوص کی کو دبانا "
+#~ "پڑے گا تاکہ ڈبل کلک کے ذریعے کلپس کے درمیان خالی جگہ حذف کی جا سکے."
+
+#, fuzzy
+#~ msgid "setting_tooltip_check_version"
+#~ msgstr ""
+#~ "تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے "
+#~ "انتخاب کریں."
+
+#, fuzzy
+#~ msgid "setting_auto_save"
+#~ msgstr "زبان"
+
+#, fuzzy
+#~ msgid "setting_tooltip_auto_save"
+#~ msgstr ""
+#~ "تھیم منتخب کریں: اپنے انٹرفیس کے لیے روشنی یا اندھیرے کے موڈ میں سے "
+#~ "انتخاب کریں."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_setup"
+#~ msgstr "رینڈرر کو ترتیب دیا جا رہا ہے ..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_open_error"
+#~ msgstr "رینڈرر کو کھولا نہی جا سکا، مقام اور ترتیبات دیکھیں!"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_compiling_audio"
+#~ msgstr "آڈیو ڈیٹا مرتب کیا جا رہا ہے ..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_sending_audio"
+#~ msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_sending_audio_error"
+#~ msgstr "آڈیو رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_creating_sending_data"
+#~ msgstr "فریم ڈیٹا تخلیق اور بھیجا جا رہا ہے ..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_sending_data_error"
+#~ msgstr "فریم رینڈرر کو بھیجتے وقت کچھ غلط ہو گیا!"
+
+#, fuzzy
+#~ msgid "encoding_progress_text_canceling"
+#~ msgstr "رینڈرعمل کو منسوخ کیا جا رہا ہے ..."
+
+#, fuzzy
+#~ msgid "encoding_progress_text_last_frame"
+#~ msgstr "آخری فریمز بھیجے جا رہی ہیں ..."
+
+#~ msgid "rendering_warning"
+#~ msgstr "کچھ غلط ہو گیا!"
+
+#~ msgid "render_option_path"
+#~ msgstr "فائل کا مقام"
+
+#~ msgid "render_option_audio_codec"
+#~ msgstr "آڈیو کوڈیک"
+
+#~ msgid "render_option_video_codec"
+#~ msgstr "ویڈیو کوڈیک"
+
+#~ msgid "render_option_quality"
+#~ msgstr "وڈیو کامعیار"
+
+#, fuzzy
+#~ msgid "render_option_tooltip_quality"
+#~ msgstr ""
+#~ "سی.آر.ایف ایڈجسٹمنٹ: 50 سب سے کم معیار، 15 سب سے زیادہ معیار، 18 ڈیفالٹ۔ "
+#~ "0 بہترین معیار، 51 سب سے خراب."
+
+#~ msgid "render_option_tooltip_speed"
+#~ msgstr ""
+#~ "ایچ264 کو انکوڈنگ کرنے کی رفتار کو ایڈجسٹ کرتا ہے۔ رفتار کو بہت زیادہ سیٹ "
+#~ "کرنے سے حتمی ویڈیو کے معیار پر منفی اثر پڑ سکتا ہے."
+
+#~ msgid "render_option_gop_size"
+#~ msgstr "جی او پی سائز"
+
+#~ msgid "render_option_tooltip_gop_size"
+#~ msgstr ""
+#~ "تصاویر کا گروپ (GOP)۔ زیادہ قیمت بہتر ہے کمپریشن کے لیے، کم قیمت کے "
+#~ "مقابلے میں۔ تاہم، جتنا زیادہ قیمت ہوگی، ویڈیو پلے بیک کے دوران تلاش اور "
+#~ "اسکرابنگ کے لیے اتنی کم درستگی ہوگی۔ اگر آپ رینڈر شدہ ویڈیو کو ایڈیٹنگ کے "
+#~ "لیے استعمال کرنے کا ارادہ رکھتے ہیں تو اسے کم قیمت پر سیٹ کریں."
+
+#~ msgid "render_option_threads_cores"
+#~ msgstr "تھریڈز/کورز"
+
+#~ msgid "render_option_tooltip_threads_cores"
+#~ msgstr "تمام دستیاب تھریدز استعمال کرنے کے لیِے '0' لگائیں."
+
+#~ msgid "render_option_video_length"
+#~ msgstr "وڈیو کی لمبائ"
+
+#~ msgid "render_option_render_time"
+#~ msgstr "رینڈر کا وقت"
+
+#, fuzzy
+#~ msgid "status_new_project_init"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_project"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_project_open_project"
+#~ msgstr "پروجیکٹ کھولیں"
+
+#, fuzzy
+#~ msgid "menu_bar_project_recent_projects"
+#~ msgstr "پروجیکٹ کھولیں"
+
+#, fuzzy
+#~ msgid "menu_bar_project_quit"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_preferences_editor_settings"
+#~ msgstr "ایڈیٹر کی ترتیبات."
+
+#, fuzzy
+#~ msgid "menu_bar_help"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_help_report_issue"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_help_check_updates"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_help_tutorials"
+#~ msgstr "ایڈیٹر کی ترتیبات."
+
+#, fuzzy
+#~ msgid "menu_bar_help_site"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "menu_bar_about_gozen"
+#~ msgstr "گوزین کی معلومات"
+
+#, fuzzy
+#~ msgid "menu_bar_support_gozen"
+#~ msgstr "گوزین کا ساتھ دیں"
+
+#, fuzzy
+#~ msgid "file_dialog_title_save_project_as"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "file_dialog_title_open_project"
+#~ msgstr "نیا پروجیکت"
+
+#, fuzzy
+#~ msgid "file_dialog_tooltip_gozen_project_files"
+#~ msgstr "ڈیفالٹ وڈیو پروجیکٹ کے فریم ریٹ."

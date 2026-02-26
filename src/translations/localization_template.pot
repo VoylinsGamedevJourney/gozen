@@ -31,17 +31,12 @@
 # res://scenes/file_panel/file_tree_proxy_progress.gd
 # res://scenes/file_panel/file_panel.tscn
 # res://scenes/file_panel/file_panel.gd
-# res://scenes/timeline/timeline_clip_draw.gd
 # res://scenes/timeline/timeline_panel.gd
 # res://scenes/timeline/time_stamps.gd
-# res://scenes/timeline/timeline_track_lines_draw.gd
-# res://scenes/timeline/timeline_markers_drawn.gd
+# res://scenes/timeline/timeline_draw_control.gd
 # res://scenes/timeline/timeline_scroll.gd
-# res://scenes/timeline/timeline_modes.gd
-# res://scenes/timeline/timeline_playhead_draw.gd
 # res://scenes/timeline/timeline.tscn
 # res://scenes/timeline/timeline.gd
-# res://scenes/timeline/timeline_box_selection_draw.gd
 # res://scenes/color_popup/color_popup.tscn
 # res://scenes/color_popup/color_popup.gd
 # res://scenes/command_bar/command_bar.gd
@@ -74,6 +69,7 @@
 # res://scenes/audio_take_over_popup/audio_take_over_popup.gd
 # res://effects/audio/volume.tres
 # res://effects/visual/transform.tres
+# res://scripts/utils/matrix.gd
 # res://scripts/utils/settings_option.gd
 # res://scripts/utils/library.gd
 # res://scripts/utils/print.gd
@@ -87,36 +83,29 @@
 # res://scripts/autoloads/editor_core.gd
 # res://scripts/autoloads/popup_manager.gd
 # res://scripts/autoloads/command_manager.gd
-# res://scripts/autoloads/matrix_handler.gd
 # res://scripts/autoloads/effects_handler.gd
-# res://scripts/autoloads/track_handler.gd
-# res://scripts/autoloads/clip_handler.gd
-# res://scripts/autoloads/marker_handler.gd
-# res://scripts/autoloads/file_handler.gd
 # res://scripts/autoloads/input_manager.gd
 # res://scripts/classes/pck.gd
-# res://scripts/classes/gozen_effect.gd
-# res://scripts/classes/clip_data.gd
 # res://scripts/classes/data_manager.gd
 # res://scripts/classes/temp_file.gd
-# res://scripts/classes/track_data.gd
-# res://scripts/classes/marker_data.gd
-# res://scripts/classes/resize_clip_request.gd
-# res://scripts/classes/move_clip_request.gd
+# res://scripts/classes/effect_audio.gd
+# res://scripts/classes/effect_visual.gd
+# res://scripts/classes/clip_request.gd
 # res://scripts/classes/audio_player.gd
-# res://scripts/classes/create_clip_request.gd
-# res://scripts/classes/gozen_effect_audio.gd
 # res://scripts/classes/draggable.gd
 # res://scripts/classes/project_data.gd
+# res://scripts/classes/effect.gd
+# res://scripts/classes/clip_effects.gd
 # res://scripts/classes/effect_param.gd
 # res://scripts/classes/render_profile.gd
-# res://scripts/classes/cut_clip_request.gd
-# res://scripts/classes/file.gd
-# res://scripts/classes/gozen_effect_visual.gd
 # res://scripts/classes/settings_data.gd
 # res://scripts/classes/visual_compositor.gd
 # res://scripts/classes/effect_cache.gd
-# res://scripts/classes/file_data.gd
+# res://scripts/logic/file_logic.gd
+# res://scripts/logic/folder_logic.gd
+# res://scripts/logic/marker_logic.gd
+# res://scripts/logic/track_logic.gd
+# res://scripts/logic/clip_logic.gd
 #
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -128,24 +117,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: scenes/effects_panel/effects_panel.gd:447
+#: scenes/effects_panel/effects_panel.gd:325
 msgid "Add effects"
 msgstr ""
 
 #: scenes/effects_panel/effects_panel.tscn
-msgid "Show Image files."
+msgid "Visual effects"
 msgstr ""
 
 #: scenes/effects_panel/effects_panel.tscn
-msgid "Show Audio files."
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "VisualEffects"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "AudioEffects"
+msgid "Audio effects"
 msgstr ""
 
 #: scenes/view_panel/view_panel.tscn
@@ -156,15 +137,23 @@ msgstr ""
 msgid "00:00:00.00"
 msgstr ""
 
-#: scenes/view_panel/view_panel.gd:59
+#: scenes/view_panel/view_panel.tscn
+msgid "x1"
+msgstr ""
+
+#: scenes/view_panel/view_panel.gd:32
+msgid "Jump to frame"
+msgstr ""
+
+#: scenes/view_panel/view_panel.gd:72
 msgid "Frame"
 msgstr ""
 
-#: scenes/view_panel/project_view_texture.gd:35
+#: scenes/view_panel/project_view_texture.gd:33
 msgid "Save screenshot ..."
 msgstr ""
 
-#: scenes/view_panel/project_view_texture.gd:36
+#: scenes/view_panel/project_view_texture.gd:34
 msgid "Save screenshot to project ..."
 msgstr ""
 
@@ -182,6 +171,7 @@ msgstr ""
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 #: scenes/about_gozen/about_gozen.tscn
+#: scenes/progress_overlay/progress_overlay.tscn
 msgid "Close popup"
 msgstr ""
 
@@ -201,19 +191,19 @@ msgstr ""
 msgid "Add color"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:79
+#: scenes/file_panel/file_panel.gd:83
 msgid "Add files ..."
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:104
+#: scenes/file_panel/file_panel.gd:105
 msgid "Rename"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:105
+#: scenes/file_panel/file_panel.gd:106
 msgid "Reload"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:106
+#: scenes/file_panel/file_panel.gd:107
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Delete"
 msgstr ""
@@ -227,132 +217,127 @@ msgid "Save image as ..."
 msgstr ""
 
 #: scenes/file_panel/file_panel.gd:114
-#: scenes/file_panel/file_panel.gd:133
-#: scenes/timeline/timeline_panel.gd:661
+#: scenes/timeline/timeline_panel.gd:959
 msgid "Video options"
 msgstr ""
 
 #: scenes/file_panel/file_panel.gd:118
-#: scenes/file_panel/file_panel.gd:137
 msgid "Create proxy"
 msgstr ""
 
 #: scenes/file_panel/file_panel.gd:120
-#: scenes/file_panel/file_panel.gd:139
 msgid "Re-create proxy"
 msgstr ""
 
 #: scenes/file_panel/file_panel.gd:121
-#: scenes/file_panel/file_panel.gd:140
 msgid "Remove proxy"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:124
-#: scenes/file_panel/file_panel.gd:143
+#: scenes/file_panel/file_panel.gd:123
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Audio-take-over"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:127
-#: scenes/file_panel/file_panel.gd:146
-msgid "Disable audio-take-over"
-msgstr ""
-
-#: scenes/file_panel/file_panel.gd:129
-#: scenes/file_panel/file_panel.gd:148
-msgid "Enable audio-take-over"
-msgstr ""
-
-#: scenes/file_panel/file_panel.gd:131
+#: scenes/file_panel/file_panel.gd:124
 msgid "Extract audio to file ..."
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:150
+#: scenes/file_panel/file_panel.gd:126
 msgid "Text options"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:151
+#: scenes/file_panel/file_panel.gd:127
 msgid "Duplicate"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:154
+#: scenes/file_panel/file_panel.gd:130
 msgid "Save file as ..."
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:156
+#: scenes/file_panel/file_panel.gd:134
+msgid "Open in file manager"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:135
+msgid "Copy file path"
+msgstr ""
+
+#: scenes/file_panel/file_panel.gd:137
 msgid "Folder options"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:157
-#: scenes/file_panel/file_panel.gd:161
-#: scenes/file_panel/file_panel.gd:560
+#: scenes/file_panel/file_panel.gd:138
+#: scenes/file_panel/file_panel.gd:141
+#: scenes/file_panel/file_panel.gd:526
 msgid "Create folder"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:164
+#: scenes/file_panel/file_panel.gd:144
 msgid "Rename folder"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:165
+#: scenes/file_panel/file_panel.gd:145
 msgid "Delete folder"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:205
+#: scenes/file_panel/file_panel.gd:183
 #: scenes/rename_file/rename_file.tscn
 msgid "Rename file"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:210
-#: scenes/file_panel/file_panel.gd:565
+#: scenes/file_panel/file_panel.gd:188
+#: scenes/file_panel/file_panel.gd:531
 msgid "Folder name"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:270
+#: scenes/file_panel/file_panel.gd:247
 msgid "Save image to file"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:281
+#: scenes/file_panel/file_panel.gd:259
 msgid "Save video audio to WAV"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:197
+#: scenes/file_panel/file_panel.gd:390
+msgid "(Loading thumbnail...)"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:471
 msgid "Remove empty space"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:199
+#: scenes/timeline/timeline_panel.gd:473
+#: scenes/timeline/timeline_panel.gd:963
 msgid "Add track"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:200
+#: scenes/timeline/timeline_panel.gd:474
+#: scenes/timeline/timeline_panel.gd:964
 msgid "Remove track"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:657
+#: scenes/timeline/timeline_panel.gd:955
 msgid "Delete clip"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:658
+#: scenes/timeline/timeline_panel.gd:956
 msgid "Cut clip"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:662
-msgid "Add clip only video instance"
-msgstr ""
-
-#: scenes/timeline/timeline_panel.gd:665
+#: scenes/timeline/timeline_panel.gd:960
 msgid "Clip audio-take-over"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:670
-msgid "Disable clip audio-take-over"
-msgstr ""
-
-#: scenes/timeline/timeline_panel.gd:674
-msgid "Enable clip audio-take-over"
-msgstr ""
-
-#: scenes/timeline/timeline_panel.gd:677
+#: scenes/timeline/timeline_panel.gd:962
 msgid "Track options"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:1144
+msgid "Duplication failed"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:1145
+msgid "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr ""
 
 #: scenes/color_popup/color_popup.tscn
@@ -363,7 +348,8 @@ msgstr ""
 #: scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:199
+#: scripts/autoloads/project.gd:179
+#: scripts/logic/file_logic.gd:327
 msgid "Cancel"
 msgstr ""
 
@@ -456,131 +442,131 @@ msgid "Start render"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-#: scenes/settings_menu/settings_menu.gd:104
-#: scenes/settings_menu/settings_menu.gd:229
+#: scenes/settings_menu/settings_menu.gd:109
+#: scenes/settings_menu/settings_menu.gd:280
 msgid "Markers"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:51
+#: scenes/render_screen/render_screen.gd:48
 msgid "Custom render profiles"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:94
+#: scenes/render_screen/render_screen.gd:89
 msgid "HEVC"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:95
+#: scenes/render_screen/render_screen.gd:90
 msgid "H264"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:96
+#: scenes/render_screen/render_screen.gd:91
 msgid "MPEG4"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:97
+#: scenes/render_screen/render_screen.gd:92
 msgid "MPEG2"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:98
+#: scenes/render_screen/render_screen.gd:93
 msgid "MPEG1"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:99
+#: scenes/render_screen/render_screen.gd:94
 msgid "MJPEG"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:100
+#: scenes/render_screen/render_screen.gd:95
 msgid "AV1"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:101
+#: scenes/render_screen/render_screen.gd:96
 msgid "VP9"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:102
+#: scenes/render_screen/render_screen.gd:97
 msgid "VP8"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:104
+#: scenes/render_screen/render_screen.gd:99
 msgid "WAV"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:105
+#: scenes/render_screen/render_screen.gd:100
 msgid "PCM"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:106
+#: scenes/render_screen/render_screen.gd:101
 msgid "MP2"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:107
+#: scenes/render_screen/render_screen.gd:102
 msgid "MP3"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:108
+#: scenes/render_screen/render_screen.gd:103
 msgid "AAC"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:109
+#: scenes/render_screen/render_screen.gd:104
 msgid "Opus"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:110
+#: scenes/render_screen/render_screen.gd:105
 msgid "Vorbis"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:111
+#: scenes/render_screen/render_screen.gd:106
 msgid "FLAC"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:112
+#: scenes/render_screen/render_screen.gd:107
 msgid "NONE"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:174
+#: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:255
+#: scenes/render_screen/render_screen.gd:250
 msgid "Rendering finished"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:275
+#: scenes/render_screen/render_screen.gd:270
 msgid "Error whilst rendering video"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:331
-#: scenes/render_screen/render_screen.gd:339
+#: scenes/render_screen/render_screen.gd:334
+#: scenes/render_screen/render_screen.gd:342
 msgid "Rendering"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:345
+#: scenes/render_screen/render_screen.gd:349
 msgid "Cancel rendering"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:376
+#: scenes/render_screen/render_screen.gd:378
 msgid "Error opening file"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:377
+#: scenes/render_screen/render_screen.gd:379
 msgid "Error whilst sending audio"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:383
-msgid "Setting up ..."
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:384
 #: scenes/render_screen/render_screen.gd:385
-msgid "Compiling audio ..."
+msgid "Setting up ..."
 msgstr ""
 
 #: scenes/render_screen/render_screen.gd:386
 #: scenes/render_screen/render_screen.gd:387
-msgid "Sending data ..."
+msgid "Compiling audio ..."
 msgstr ""
 
 #: scenes/render_screen/render_screen.gd:388
+#: scenes/render_screen/render_screen.gd:389
+msgid "Sending data ..."
+msgstr ""
+
+#: scenes/render_screen/render_screen.gd:390
 msgid "Sending final frame ..."
 msgstr ""
 
@@ -590,10 +576,6 @@ msgstr ""
 
 #: scenes/render_screen/save_custom_render_profile.tscn
 msgid "New profile name"
-msgstr ""
-
-#: scenes/render_screen/save_custom_render_profile.gd:28
-msgid "Select Icon"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.tscn
@@ -610,34 +592,34 @@ msgstr ""
 msgid "GoZen version"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:37
+#: scenes/about_gozen/about_gozen.gd:38
 #: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:38
-msgid "GitHub repo"
-msgstr ""
-
 #: scenes/about_gozen/about_gozen.gd:39
-#: scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Discord"
+msgid "GitHub repo"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:40
 #: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
+msgstr ""
+
+#: scenes/about_gozen/about_gozen.gd:41
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:42
+#: scenes/about_gozen/about_gozen.gd:43
 msgid "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:90
+#: scripts/autoloads/project.gd:88
 msgid "Loading project"
 msgstr ""
 
@@ -646,204 +628,264 @@ msgid "Estimated time - 59:59:59"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:91
+#: scripts/autoloads/project.gd:89
 msgid "Initializing ..."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:97
+#: scenes/settings_menu/settings_menu.gd:102
 #: scenes/settings_menu/settings_menu.tscn
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Editor settings"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:102
+#: scenes/settings_menu/settings_menu.gd:107
 msgid "Marker one"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:102
+#: scenes/settings_menu/settings_menu.gd:107
 msgid "Marker two"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:102
+#: scenes/settings_menu/settings_menu.gd:107
 msgid "Marker three"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:103
+#: scenes/settings_menu/settings_menu.gd:108
 msgid "Marker four"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:103
+#: scenes/settings_menu/settings_menu.gd:108
 msgid "Marker five"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:115
-#: scenes/settings_menu/settings_menu.gd:243
+#: scenes/settings_menu/settings_menu.gd:120
+#: scenes/settings_menu/settings_menu.gd:294
 msgid "Shortcuts"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:124
-#: scenes/settings_menu/settings_menu.gd:251
-#: scenes/settings_menu/settings_menu.gd:252
+#: scenes/settings_menu/settings_menu.gd:129
+#: scenes/settings_menu/settings_menu.gd:302
+#: scenes/settings_menu/settings_menu.gd:303
 msgid "Appearance"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:125
+#: scenes/settings_menu/settings_menu.gd:130
 msgid "Display"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:126
+#: scenes/settings_menu/settings_menu.gd:131
 msgid "Language"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:132
+#: scenes/settings_menu/settings_menu.gd:137
 msgid "Display scale"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:138
+#: scenes/settings_menu/settings_menu.gd:143
 msgid "Editor theme"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:144
+#: scenes/settings_menu/settings_menu.gd:149
+msgid "Base color"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:153
+msgid "The base color of the editor UI."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:154
+msgid "Accent color"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:158
+msgid "The highlight/accent color of the editor UI."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:159
 msgid "Show menu bar"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:148
+#: scenes/settings_menu/settings_menu.gd:163
+msgid "Show ram usage in menu bar"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:167
 msgid "Audio waveforms"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:149
+#: scenes/settings_menu/settings_menu.gd:168
 msgid "Waveform style"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:155
+#: scenes/settings_menu/settings_menu.gd:174
 msgid "Waveform amplifier"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:160
+#: scenes/settings_menu/settings_menu.gd:180
 msgid "Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:161
+#: scenes/settings_menu/settings_menu.gd:181
 msgid "Dialogue's"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:162
+#: scenes/settings_menu/settings_menu.gd:182
 msgid "Use native dialogs"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:168
+#: scenes/settings_menu/settings_menu.gd:188
 msgid "Defaults"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:169
+#: scenes/settings_menu/settings_menu.gd:189
 msgid "Default durations"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:170
+#: scenes/settings_menu/settings_menu.gd:190
 msgid "Default image duration"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:175
-#: scenes/settings_menu/settings_menu.gd:181
-#: scenes/settings_menu/settings_menu.gd:187
+#: scenes/settings_menu/settings_menu.gd:196
+#: scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:210
 msgid "Duration in frames per second."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:176
+#: scenes/settings_menu/settings_menu.gd:197
 msgid "Default color duration"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:188
+#: scenes/settings_menu/settings_menu.gd:211
 msgid "Project resolution"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:190
+#: scenes/settings_menu/settings_menu.gd:213
 msgid "Project frame-rate"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:195
-msgid "Use proxies"
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:201
+#: scenes/settings_menu/settings_menu.gd:220
 msgid "Timeline"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:202
+#: scenes/settings_menu/settings_menu.gd:221
 msgid "Timeline settings"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:222
 msgid "Default track amount"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:208
+#: scenes/settings_menu/settings_menu.gd:227
+msgid "Track height"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:232
 msgid "Timeline controls"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:209
+#: scenes/settings_menu/settings_menu.gd:233
 msgid "Pause after dragging"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:213
+#: scenes/settings_menu/settings_menu.gd:237
 msgid "Setting this will pause playback after having dragged the playhead around."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:214
+#: scenes/settings_menu/settings_menu.gd:238
 msgid "Empty space delete modifier"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:220
+#: scenes/settings_menu/settings_menu.gd:244
 msgid "The modifier you want to easily delete empty space between clips."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:222
+#: scenes/settings_menu/settings_menu.gd:246
 msgid "Show mode bar"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:226
+#: scenes/settings_menu/settings_menu.gd:250
 msgid "The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:231
-#: scenes/settings_menu/settings_menu.gd:232
+#: scenes/settings_menu/settings_menu.gd:253
+msgid "Performance"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:254
+msgid "Video Decoding"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:255
+msgid "Smart Seek Threshold"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:261
+msgid "Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:262
+msgid "Video Cache Size"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:268
+msgid "The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:269
+msgid "Use proxies"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:273
+msgid "Proxies save path"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:277
+msgid "Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:282
+#: scenes/settings_menu/settings_menu.gd:283
 msgid "Extras"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:233
+#: scenes/settings_menu/settings_menu.gd:284
 msgid "Check version"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:237
+#: scenes/settings_menu/settings_menu.gd:288
 msgid "Auto save"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:248
+#: scenes/settings_menu/settings_menu.gd:299
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Project settings"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:253
+#: scenes/settings_menu/settings_menu.gd:304
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:257
+#: scenes/settings_menu/settings_menu.gd:308
 msgid "The background color when no clips are displayed."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:373
+#: scenes/settings_menu/settings_menu.gd:431
 #: scenes/startup_screen/startup_screen.tscn
 msgid "X:"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:374
+#: scenes/settings_menu/settings_menu.gd:432
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Y:"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:441
+#: scenes/settings_menu/settings_menu.gd:497
 msgid "Press any key..."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.tscn
+msgid "Search settings ..."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.tscn
@@ -859,14 +901,14 @@ msgid "Save project"
 msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
-#: scripts/autoloads/project.gd:77
+#: scripts/autoloads/project.gd:76
 msgid "Save project as ..."
 msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:194
-#: scripts/autoloads/project.gd:144
+#: scenes/startup_screen/startup_screen.gd:186
+#: scripts/autoloads/project.gd:124
 msgid "Open project"
 msgstr ""
 
@@ -938,6 +980,10 @@ msgid "Tutorials"
 msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
+msgid "RAM:"
+msgstr ""
+
+#: scenes/menu_bar/menu_bar.tscn
 msgid "Render"
 msgstr ""
 
@@ -972,7 +1018,7 @@ msgid "NewProject"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-#: scripts/autoloads/project.gd:32
+#: scripts/autoloads/project.gd:42
 msgid "New project"
 msgstr ""
 
@@ -1008,33 +1054,17 @@ msgstr ""
 msgid "Return"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.tscn
-msgid "5"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Voylin's Gamedev Journey"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "GoZen creator"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Continue"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.gd:132
+#: scenes/startup_screen/startup_screen.gd:124
 msgid "Version"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:196
-#: scenes/startup_screen/startup_screen.gd:244
-#: scripts/autoloads/project.gd:79
+#: scenes/startup_screen/startup_screen.gd:188
+#: scenes/startup_screen/startup_screen.gd:234
+#: scripts/autoloads/project.gd:78
 msgid "GoZen project file"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:242
+#: scenes/startup_screen/startup_screen.gd:232
 msgid "Select project save path"
 msgstr ""
 
@@ -1062,46 +1092,83 @@ msgstr ""
 msgid "Audio offset"
 msgstr ""
 
-#: scripts/autoloads/project.gd:26
-msgid "Open project settings"
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
 msgstr ""
 
-#: scripts/autoloads/project.gd:33
+#: scripts/autoloads/project.gd:43
 msgid "Initialize new project ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:52
-#: scripts/autoloads/project.gd:123
+#: scripts/autoloads/project.gd:54
 msgid "Setting up playback ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:57
-#: scripts/autoloads/project.gd:128
+#: scripts/autoloads/project.gd:55
+#: scripts/autoloads/project.gd:106
 msgid "Finalizing ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:97
+#: scripts/autoloads/project.gd:95
 msgid "Setting up timeline ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:108
+#: scripts/autoloads/project.gd:103
 msgid "Loading project files ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:145
+#: scripts/autoloads/project.gd:125
 msgid "GoZen project files"
 msgstr ""
 
-#: scripts/autoloads/project.gd:198
+#: scripts/autoloads/project.gd:178
 msgid "Don't save"
 msgstr ""
 
-#: scripts/autoloads/project.gd:202
+#: scripts/autoloads/project.gd:182
 msgid "Close without saving"
 msgstr ""
 
-#: scripts/autoloads/project.gd:203
+#: scripts/autoloads/project.gd:183
 msgid "Save"
+msgstr ""
+
+#: scripts/autoloads/command_manager.gd:14
+msgid "Open editor settings"
+msgstr ""
+
+#: scripts/autoloads/command_manager.gd:15
+msgid "Open project settings"
+msgstr ""
+
+#: scripts/autoloads/command_manager.gd:16
+msgid "open render menu"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:324
+msgid "Update existing clips?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:325
+msgid ""
+"This file is currently used by '%d' clip(s).\n"
+"Do you want to apply the Audio-Take-Over changes to all existing clips?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:326
+msgid "Apply to All"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:328
+msgid "Apply to File Only"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:404
+msgid "Files dropped"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:417
+msgid "Files loading ..."
 msgstr ""
 
 msgid "GoZen"
