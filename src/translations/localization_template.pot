@@ -129,18 +129,6 @@ msgstr ""
 msgid "Audio effects"
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
-msgid "Frame: 0"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "00:00:00.00"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "x1"
-msgstr ""
-
 #: scenes/view_panel/view_panel.gd:32
 msgid "Jump to frame"
 msgstr ""
@@ -449,78 +437,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:48
 msgid "Custom render profiles"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:89
-msgid "HEVC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:90
-msgid "H264"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:91
-msgid "MPEG4"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:92
-msgid "MPEG2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:93
-msgid "MPEG1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:94
-msgid "MJPEG"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:95
-msgid "AV1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:96
-msgid "VP9"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:97
-msgid "VP8"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:99
-msgid "WAV"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:100
-msgid "PCM"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:101
-msgid "MP2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:102
-msgid "MP3"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:103
-msgid "AAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:104
-msgid "Opus"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:105
-msgid "Vorbis"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:106
-msgid "FLAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:107
-msgid "NONE"
 msgstr ""
 
 #: scenes/render_screen/render_screen.gd:169
@@ -980,10 +896,6 @@ msgid "Tutorials"
 msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
-msgid "RAM:"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
 msgid "Render"
 msgstr ""
 
@@ -1169,7 +1081,4 @@ msgstr ""
 
 #: scripts/logic/file_logic.gd:417
 msgid "Files loading ..."
-msgstr ""
-
-msgid "GoZen"
 msgstr ""

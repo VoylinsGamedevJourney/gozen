@@ -24,18 +24,6 @@ msgstr ""
 msgid "Audio effects"
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
-msgid "Frame: 0"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "00:00:00.00"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "x1"
-msgstr ""
-
 #: scenes/view_panel/view_panel.gd:32
 msgid "Jump to frame"
 msgstr ""
@@ -157,7 +145,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:137
 #, fuzzy
-#| msgid "render_option_speed"
 msgid "Folder options"
 msgstr "رفتار"
 
@@ -176,7 +163,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
 #, fuzzy
-#| msgid "text_rename_file_to"
 msgid "Rename file"
 msgstr "فائل کا نام تبدیل کریں ..."
 
@@ -256,7 +242,6 @@ msgstr "رینڈرنگ"
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Render profile"
 msgstr "رینڈر پروفائل"
 
@@ -270,7 +255,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "text_path"
 msgid "Export path"
 msgstr "مقام"
 
@@ -348,7 +332,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "button_start_render"
 msgid "Start render"
 msgstr "رینڈرنگ شروع کریں"
 
@@ -360,81 +343,8 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:48
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Custom render profiles"
 msgstr "رینڈر پروفائل"
-
-#: scenes/render_screen/render_screen.gd:89
-msgid "HEVC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:90
-msgid "H264"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:91
-msgid "MPEG4"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:92
-msgid "MPEG2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:93
-msgid "MPEG1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:94
-msgid "MJPEG"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:95
-msgid "AV1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:96
-msgid "VP9"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:97
-msgid "VP8"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:99
-msgid "WAV"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:100
-msgid "PCM"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:101
-msgid "MP2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:102
-msgid "MP3"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:103
-msgid "AAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:104
-msgid "Opus"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:105
-msgid "Vorbis"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:106
-msgid "FLAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:107
-msgid "NONE"
-msgstr ""
 
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
@@ -442,7 +352,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:250
 #, fuzzy
-#| msgid "title_rendering_finished"
 msgid "Rendering finished"
 msgstr "رینڈرنگ مکمل"
 
@@ -453,13 +362,11 @@ msgstr ""
 #: scenes/render_screen/render_screen.gd:334
 #: scenes/render_screen/render_screen.gd:342
 #, fuzzy
-#| msgid "title_rendering"
 msgid "Rendering"
 msgstr "رینڈرنگ"
 
 #: scenes/render_screen/render_screen.gd:349
 #, fuzzy
-#| msgid "button_cancel_rendering"
 msgid "Cancel rendering"
 msgstr "رینڈرنگ منسوخ کریں"
 
@@ -491,7 +398,6 @@ msgstr ""
 
 #: scenes/render_screen/save_custom_render_profile.tscn
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Create render profile"
 msgstr "رینڈر پروفائل"
 
@@ -510,7 +416,6 @@ msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:22
 #, fuzzy
-#| msgid "text_version"
 msgid "GoZen version"
 msgstr "ورژن"
 
@@ -588,7 +493,6 @@ msgstr ""
 #: scenes/settings_menu/settings_menu.gd:302
 #: scenes/settings_menu/settings_menu.gd:303
 #, fuzzy
-#| msgid "title_appearance"
 msgid "Appearance"
 msgstr "ظہور"
 
@@ -611,7 +515,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:149
 #, fuzzy
-#| msgid "setting_background_color"
 msgid "Base color"
 msgstr "بیک گراونڈ کا رنگ"
 
@@ -641,7 +544,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:168
 #, fuzzy
-#| msgid "setting_waveform_style"
 msgid "Waveform style"
 msgstr "آڈیو ویوفارم کا انداز"
 
@@ -665,7 +567,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:188
 #, fuzzy
-#| msgid "title_defaults"
 msgid "Defaults"
 msgstr "ڈیفالٹس"
 
@@ -676,7 +577,6 @@ msgstr "تصویر کا ڈیفالٹ دورانیہ"
 
 #: scenes/settings_menu/settings_menu.gd:190
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "Default image duration"
 msgstr "تصویر کا ڈیفالٹ دورانیہ"
 
@@ -693,19 +593,16 @@ msgstr "تصویر کا ڈیفالٹ دورانیہ"
 
 #: scenes/settings_menu/settings_menu.gd:211
 #, fuzzy
-#| msgid "text_resolution"
 msgid "Project resolution"
 msgstr "ریزولوشن"
 
 #: scenes/settings_menu/settings_menu.gd:213
 #, fuzzy
-#| msgid "text_framerate"
 msgid "Project frame-rate"
 msgstr "فریم ریٹ"
 
 #: scenes/settings_menu/settings_menu.gd:220
 #, fuzzy
-#| msgid "title_timeline"
 msgid "Timeline"
 msgstr "ٹائم لائن"
 
@@ -716,7 +613,6 @@ msgstr "رینڈرنگ"
 
 #: scenes/settings_menu/settings_menu.gd:222
 #, fuzzy
-#| msgid "setting_default_track_amount"
 msgid "Default track amount"
 msgstr "ڈیفالٹ ٹریک کی مقدار"
 
@@ -730,7 +626,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:233
 #, fuzzy
-#| msgid "setting_pause_after_dragging"
 msgid "Pause after dragging"
 msgstr "ڈریگ کے بعد توقف"
 
@@ -813,7 +708,6 @@ msgstr "تھیم"
 
 #: scenes/settings_menu/settings_menu.gd:288
 #, fuzzy
-#| msgid "button_save"
 msgid "Auto save"
 msgstr "سیو کریں"
 
@@ -825,7 +719,6 @@ msgstr "نیا پروجیکت"
 #: scenes/settings_menu/settings_menu.gd:304
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "setting_background_color"
 msgid "Background color"
 msgstr "بیک گراونڈ کا رنگ"
 
@@ -854,7 +747,6 @@ msgstr "رینڈرنگ"
 
 #: scenes/settings_menu/settings_menu.tscn
 #, fuzzy
-#| msgid "button_save_settings"
 msgid "Close settings"
 msgstr "ترتیبات سیو کریں"
 
@@ -873,13 +765,11 @@ msgstr ""
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
 #, fuzzy
-#| msgid "button_open_project"
 msgid "Open project"
 msgstr "پروجیکٹ کھولیں"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "title_recent_projects"
 msgid "Recent projects"
 msgstr "حالیہ پروجیکٹس"
 
@@ -942,13 +832,8 @@ msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "button_tutorials"
 msgid "Tutorials"
 msgstr "ویڈیو اسباق"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "RAM:"
-msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Render"
@@ -975,13 +860,11 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "button_create_new_project"
 msgid "Create new project"
 msgstr "نیا پروجیکٹ بنائیں"
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "title_getting_started"
 msgid "Getting started"
 msgstr "شروعات کریں"
 
@@ -991,7 +874,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
 #, fuzzy
-#| msgid "title_new_project"
 msgid "New project"
 msgstr "نیا پروجیکت"
 
@@ -1001,7 +883,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "text_resolution"
 msgid "Resolution"
 msgstr "ریزولوشن"
 
@@ -1015,7 +896,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "text_framerate"
 msgid "Framerate"
 msgstr "فریم ریٹ"
 
@@ -1033,7 +913,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.gd:124
 #, fuzzy
-#| msgid "text_version"
 msgid "Version"
 msgstr "ورژن"
 
@@ -1076,7 +955,6 @@ msgstr ""
 
 #: scripts/autoloads/project.gd:43
 #, fuzzy
-#| msgid "title_new_project"
 msgid "Initialize new project ..."
 msgstr "نیا پروجیکت"
 
@@ -1152,9 +1030,6 @@ msgstr "نیا پروجیکت"
 
 #: scripts/logic/file_logic.gd:417
 msgid "Files loading ..."
-msgstr ""
-
-msgid "GoZen"
 msgstr ""
 
 #~ msgid "title_about_gozen"

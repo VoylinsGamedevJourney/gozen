@@ -24,18 +24,6 @@ msgstr ""
 msgid "Audio effects"
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
-msgid "Frame: 0"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "00:00:00.00"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "x1"
-msgstr ""
-
 #: scenes/view_panel/view_panel.gd:32
 msgid "Jump to frame"
 msgstr ""
@@ -157,7 +145,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:137
 #, fuzzy
-#| msgid "render_option_speed"
 msgid "Folder options"
 msgstr "速度"
 
@@ -176,7 +163,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
 #, fuzzy
-#| msgid "text_rename_file_to"
 msgid "Rename file"
 msgstr "將檔案重新命名為..."
 
@@ -258,7 +244,6 @@ msgstr "編輯器設定"
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Render profile"
 msgstr "渲染設定檔"
 
@@ -272,7 +257,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "text_path"
 msgid "Export path"
 msgstr "路徑"
 
@@ -321,7 +305,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "command_editor_settings"
 msgid "Render audio settings"
 msgstr "編輯器設定"
 
@@ -351,7 +334,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "button_start_render"
 msgid "Start render"
 msgstr "開始渲染"
 
@@ -363,81 +345,8 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:48
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Custom render profiles"
 msgstr "渲染設定檔"
-
-#: scenes/render_screen/render_screen.gd:89
-msgid "HEVC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:90
-msgid "H264"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:91
-msgid "MPEG4"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:92
-msgid "MPEG2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:93
-msgid "MPEG1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:94
-msgid "MJPEG"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:95
-msgid "AV1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:96
-msgid "VP9"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:97
-msgid "VP8"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:99
-msgid "WAV"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:100
-msgid "PCM"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:101
-msgid "MP2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:102
-msgid "MP3"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:103
-msgid "AAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:104
-msgid "Opus"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:105
-msgid "Vorbis"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:106
-msgid "FLAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:107
-msgid "NONE"
-msgstr ""
 
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
@@ -445,7 +354,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:250
 #, fuzzy
-#| msgid "title_rendering_finished"
 msgid "Rendering finished"
 msgstr "渲染完成"
 
@@ -456,13 +364,11 @@ msgstr ""
 #: scenes/render_screen/render_screen.gd:334
 #: scenes/render_screen/render_screen.gd:342
 #, fuzzy
-#| msgid "title_rendering"
 msgid "Rendering"
 msgstr "渲染"
 
 #: scenes/render_screen/render_screen.gd:349
 #, fuzzy
-#| msgid "button_cancel_rendering"
 msgid "Cancel rendering"
 msgstr "取消渲染"
 
@@ -494,7 +400,6 @@ msgstr ""
 
 #: scenes/render_screen/save_custom_render_profile.tscn
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Create render profile"
 msgstr "渲染設定檔"
 
@@ -513,7 +418,6 @@ msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:22
 #, fuzzy
-#| msgid "text_version"
 msgid "GoZen version"
 msgstr "版本"
 
@@ -544,7 +448,6 @@ msgstr ""
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:88
 #, fuzzy
-#| msgid "title_loading_project"
 msgid "Loading project"
 msgstr "正在載入專案"
 
@@ -560,7 +463,6 @@ msgstr ""
 #: scenes/settings_menu/settings_menu.gd:102
 #: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "Editor settings"
 msgstr "編輯器設定"
 
@@ -593,7 +495,6 @@ msgstr ""
 #: scenes/settings_menu/settings_menu.gd:302
 #: scenes/settings_menu/settings_menu.gd:303
 #, fuzzy
-#| msgid "title_appearance"
 msgid "Appearance"
 msgstr "外觀"
 
@@ -616,7 +517,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:149
 #, fuzzy
-#| msgid "setting_background_color"
 msgid "Base color"
 msgstr "背景顏色"
 
@@ -646,7 +546,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:168
 #, fuzzy
-#| msgid "setting_waveform_style"
 msgid "Waveform style"
 msgstr "音訊波形樣式"
 
@@ -670,7 +569,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:188
 #, fuzzy
-#| msgid "title_defaults"
 msgid "Defaults"
 msgstr "預設值"
 
@@ -680,7 +578,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:190
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "Default image duration"
 msgstr "預設圖片持續時間"
 
@@ -696,19 +593,16 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:211
 #, fuzzy
-#| msgid "text_resolution"
 msgid "Project resolution"
 msgstr "解析度"
 
 #: scenes/settings_menu/settings_menu.gd:213
 #, fuzzy
-#| msgid "text_framerate"
 msgid "Project frame-rate"
 msgstr "幀率"
 
 #: scenes/settings_menu/settings_menu.gd:220
 #, fuzzy
-#| msgid "title_timeline"
 msgid "Timeline"
 msgstr "時間軸"
 
@@ -719,7 +613,6 @@ msgstr "編輯器設定"
 
 #: scenes/settings_menu/settings_menu.gd:222
 #, fuzzy
-#| msgid "setting_default_track_amount"
 msgid "Default track amount"
 msgstr "預設軌道數量"
 
@@ -733,7 +626,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:233
 #, fuzzy
-#| msgid "setting_pause_after_dragging"
 msgid "Pause after dragging"
 msgstr "拖曳後暫停"
 
@@ -811,26 +703,22 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:284
 #, fuzzy
-#| msgid "setting_check_version"
 msgid "Check version"
 msgstr "檢查更新"
 
 #: scenes/settings_menu/settings_menu.gd:288
 #, fuzzy
-#| msgid "button_save"
 msgid "Auto save"
 msgstr "儲存"
 
 #: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
 #, fuzzy
-#| msgid "title_project_settings"
 msgid "Project settings"
 msgstr "專案設定"
 
 #: scenes/settings_menu/settings_menu.gd:304
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "setting_background_color"
 msgid "Background color"
 msgstr "背景顏色"
 
@@ -859,7 +747,6 @@ msgstr "編輯器設定"
 
 #: scenes/settings_menu/settings_menu.tscn
 #, fuzzy
-#| msgid "button_save_settings"
 msgid "Close settings"
 msgstr "儲存設定"
 
@@ -878,13 +765,11 @@ msgstr ""
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
 #, fuzzy
-#| msgid "button_open_project"
 msgid "Open project"
 msgstr "開啟專案"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "title_recent_projects"
 msgid "Recent projects"
 msgstr "近期專案"
 
@@ -947,13 +832,8 @@ msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "button_tutorials"
 msgid "Tutorials"
 msgstr "教學課程"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "RAM:"
-msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Render"
@@ -972,7 +852,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "notification_update_available"
 msgid "Update available"
 msgstr "有可用的更新！"
 
@@ -982,13 +861,11 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "button_create_new_project"
 msgid "Create new project"
 msgstr "建立新專案"
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "title_getting_started"
 msgid "Getting started"
 msgstr "入門指南"
 
@@ -998,7 +875,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
 #, fuzzy
-#| msgid "title_new_project"
 msgid "New project"
 msgstr "新增專案"
 
@@ -1008,7 +884,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "text_resolution"
 msgid "Resolution"
 msgstr "解析度"
 
@@ -1022,7 +897,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "text_framerate"
 msgid "Framerate"
 msgstr "幀率"
 
@@ -1040,7 +914,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.gd:124
 #, fuzzy
-#| msgid "text_version"
 msgid "Version"
 msgstr "版本"
 
@@ -1083,7 +956,6 @@ msgstr ""
 
 #: scripts/autoloads/project.gd:43
 #, fuzzy
-#| msgid "title_new_project"
 msgid "Initialize new project ..."
 msgstr "新增專案"
 
@@ -1122,19 +994,16 @@ msgstr ""
 
 #: scripts/autoloads/command_manager.gd:14
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "Open editor settings"
 msgstr "編輯器設定"
 
 #: scripts/autoloads/command_manager.gd:15
 #, fuzzy
-#| msgid "title_project_settings"
 msgid "Open project settings"
 msgstr "專案設定"
 
 #: scripts/autoloads/command_manager.gd:16
 #, fuzzy
-#| msgid "command_render_menu"
 msgid "open render menu"
 msgstr "渲染選單"
 
@@ -1158,15 +1027,11 @@ msgstr ""
 
 #: scripts/logic/file_logic.gd:404
 #, fuzzy
-#| msgid "title_files_dropped"
 msgid "Files dropped"
 msgstr "已加入檔案"
 
 #: scripts/logic/file_logic.gd:417
 msgid "Files loading ..."
-msgstr ""
-
-msgid "GoZen"
 msgstr ""
 
 #~ msgid "title_about_gozen"

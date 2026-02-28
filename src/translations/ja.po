@@ -14,27 +14,15 @@ msgstr ""
 
 #: scenes/effects_panel/effects_panel.gd:325
 msgid "Add effects"
-msgstr ""
+msgstr "エフェクトを追加"
 
 #: scenes/effects_panel/effects_panel.tscn
 msgid "Visual effects"
-msgstr ""
+msgstr "映像エフェクト"
 
 #: scenes/effects_panel/effects_panel.tscn
 msgid "Audio effects"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "Frame: 0"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "00:00:00.00"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "x1"
-msgstr ""
+msgstr "音声エフェクト"
 
 #: scenes/view_panel/view_panel.gd:32
 msgid "Jump to frame"
@@ -42,89 +30,93 @@ msgstr ""
 
 #: scenes/view_panel/view_panel.gd:72
 msgid "Frame"
-msgstr ""
+msgstr "フレーム"
 
 #: scenes/view_panel/project_view_texture.gd:33
 msgid "Save screenshot ..."
-msgstr ""
+msgstr "スクリーンショットを保存..."
 
 #: scenes/view_panel/project_view_texture.gd:34
 msgid "Save screenshot to project ..."
-msgstr ""
+msgstr "スクリーンショットをプロジェクトに保存..."
 
 #: scenes/editor/editor.tscn
 msgid "EditTab"
-msgstr ""
+msgstr "編集"
 
 #: scenes/editor/editor.tscn
 msgid "RenderTab"
-msgstr ""
+msgstr "レンダリング"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
-msgstr ""
+msgstr "エフェクトを追加"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 #: scenes/about_gozen/about_gozen.tscn
 #: scenes/progress_overlay/progress_overlay.tscn
 msgid "Close popup"
-msgstr ""
+msgstr "閉じる"
 
 #: scenes/file_panel/file_panel.tscn
 msgid "Search files ..."
 msgstr ""
 
 #: scenes/file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr "ファイルを検索..."
+
+#: scenes/file_panel/file_panel.tscn
 msgid "Add files"
-msgstr ""
+msgstr "ファイルを追加"
 
 #: scenes/file_panel/file_panel.tscn
 msgid "Add text"
-msgstr ""
+msgstr "テキストを追加"
 
 #: scenes/file_panel/file_panel.tscn
 msgid "Add color"
-msgstr ""
+msgstr "カラーを追加"
 
 #: scenes/file_panel/file_panel.gd:83
 msgid "Add files ..."
-msgstr ""
+msgstr "ファイルを追加..."
 
 #: scenes/file_panel/file_panel.gd:105
 msgid "Rename"
-msgstr ""
+msgstr "名前を変更"
 
 #: scenes/file_panel/file_panel.gd:106
 msgid "Reload"
-msgstr ""
+msgstr "再読み込み"
 
 #: scenes/file_panel/file_panel.gd:107 scenes/menu_bar/menu_bar.tscn
 msgid "Delete"
-msgstr ""
+msgstr "消す"
 
 #: scenes/file_panel/file_panel.gd:111
 msgid "Image options"
-msgstr ""
+msgstr "画像オプション"
 
 #: scenes/file_panel/file_panel.gd:112
 msgid "Save image as ..."
-msgstr ""
+msgstr "画像を別名で保存..."
 
 #: scenes/file_panel/file_panel.gd:114 scenes/timeline/timeline_panel.gd:959
 msgid "Video options"
-msgstr ""
+msgstr "動画オプション"
 
 #: scenes/file_panel/file_panel.gd:118
 msgid "Create proxy"
-msgstr ""
+msgstr "プロキシを作成"
 
 #: scenes/file_panel/file_panel.gd:120
 msgid "Re-create proxy"
-msgstr ""
+msgstr "プロキシを再作成"
 
 #: scenes/file_panel/file_panel.gd:121
 msgid "Remove proxy"
-msgstr ""
+msgstr "プロキシを削除"
 
 #: scenes/file_panel/file_panel.gd:123
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
@@ -133,111 +125,103 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:124
 msgid "Extract audio to file ..."
-msgstr ""
+msgstr "音声をファイルに抽出..."
 
 #: scenes/file_panel/file_panel.gd:126
 msgid "Text options"
-msgstr ""
+msgstr "テキストオプション"
 
 #: scenes/file_panel/file_panel.gd:127
 msgid "Duplicate"
-msgstr ""
+msgstr "複製"
 
 #: scenes/file_panel/file_panel.gd:130
 msgid "Save file as ..."
-msgstr ""
+msgstr "別名で保存..."
 
 #: scenes/file_panel/file_panel.gd:134
 msgid "Open in file manager"
-msgstr ""
+msgstr "ファイルマネージャーで開く"
 
 #: scenes/file_panel/file_panel.gd:135
 msgid "Copy file path"
-msgstr ""
+msgstr "ファイルパスをコピー"
 
 #: scenes/file_panel/file_panel.gd:137
-#, fuzzy
-#| msgid "render_option_speed"
 msgid "Folder options"
-msgstr "速度"
+msgstr "フォルダーオプション"
 
 #: scenes/file_panel/file_panel.gd:138 scenes/file_panel/file_panel.gd:141
 #: scenes/file_panel/file_panel.gd:526
 msgid "Create folder"
-msgstr ""
+msgstr "フォルダーを作成"
 
 #: scenes/file_panel/file_panel.gd:144
 msgid "Rename folder"
-msgstr ""
+msgstr "フォルダー名を変更"
 
 #: scenes/file_panel/file_panel.gd:145
 msgid "Delete folder"
-msgstr ""
+msgstr "フォルダーを削除"
 
 #: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
-#, fuzzy
-#| msgid "text_rename_file_to"
 msgid "Rename file"
-msgstr "ファイル名を変更..."
+msgstr "ファイル名を変更"
 
 #: scenes/file_panel/file_panel.gd:188 scenes/file_panel/file_panel.gd:531
 msgid "Folder name"
-msgstr ""
+msgstr "フォルダー名"
 
 #: scenes/file_panel/file_panel.gd:247
-#, fuzzy
-#| msgid "title_save_image_to_file"
 msgid "Save image to file"
 msgstr "画像をファイルに保存"
 
 #: scenes/file_panel/file_panel.gd:259
 msgid "Save video audio to WAV"
-msgstr ""
+msgstr "動画音声をWAVで保存"
 
 #: scenes/file_panel/file_panel.gd:390
 msgid "(Loading thumbnail...)"
-msgstr ""
+msgstr "（サムネイル読み込み中...）"
 
 #: scenes/timeline/timeline_panel.gd:471
 msgid "Remove empty space"
-msgstr ""
+msgstr "空白を削除"
 
 #: scenes/timeline/timeline_panel.gd:473 scenes/timeline/timeline_panel.gd:963
 msgid "Add track"
-msgstr ""
+msgstr "トラックを追加"
 
 #: scenes/timeline/timeline_panel.gd:474 scenes/timeline/timeline_panel.gd:964
 msgid "Remove track"
-msgstr ""
+msgstr "トラックを削除"
 
 #: scenes/timeline/timeline_panel.gd:955
 msgid "Delete clip"
-msgstr ""
+msgstr "クリップを削除"
 
 #: scenes/timeline/timeline_panel.gd:956
 msgid "Cut clip"
-msgstr ""
+msgstr "クリップをカット"
 
 #: scenes/timeline/timeline_panel.gd:960
 msgid "Clip audio-take-over"
-msgstr ""
+msgstr "クリップのオーディオ差し替え"
 
 #: scenes/timeline/timeline_panel.gd:962
 msgid "Track options"
-msgstr ""
+msgstr "トラックオプション"
 
 #: scenes/timeline/timeline_panel.gd:1144
 msgid "Duplication failed"
-msgstr ""
+msgstr "複製に失敗しました"
 
 #: scenes/timeline/timeline_panel.gd:1145
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
-msgstr ""
+msgstr "%d個のクリップを複製できませんでした。空きスペースが不足しています。"
 
 #: scenes/color_popup/color_popup.tscn
-#, fuzzy
-#| msgid "title_add_color_file"
 msgid "Add color file"
 msgstr "カラーファイルを追加"
 
@@ -246,23 +230,17 @@ msgstr "カラーファイルを追加"
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 #: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: scenes/color_popup/color_popup.tscn
-#, fuzzy
-#| msgid "button_create_new_color_file"
 msgid "Create new color file"
 msgstr "カラーファイルを作成"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
-#| msgid "title_render_settings"
 msgid "Render settings"
 msgstr "レンダリング設定"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
-#| msgid "render_option_profile"
 msgid "Render profile"
 msgstr "レンダリングプロファイル"
 
@@ -275,20 +253,16 @@ msgid "Save profile"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
-#| msgid "text_path"
 msgid "Export path"
-msgstr "パス"
+msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
-#| msgid "title_render_settings"
 msgid "Render video settings"
-msgstr "レンダリング設定"
+msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Video codec"
-msgstr ""
+msgstr "動画コーデック"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
@@ -300,7 +274,7 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Quality"
-msgstr ""
+msgstr "品質"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
@@ -310,7 +284,7 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Speed"
-msgstr ""
+msgstr "速度"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
@@ -322,25 +296,23 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Gop size"
-msgstr ""
+msgstr "GOPサイズ"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
-#| msgid "command_editor_settings"
 msgid "Render audio settings"
-msgstr "エディター設定"
+msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Audio codec"
-msgstr ""
+msgstr "音声コーデック"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Multi-threading"
-msgstr ""
+msgstr "マルチスレッド"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Threads"
-msgstr ""
+msgstr "スレッド数"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "The amount of threads you want to use for exporting your video."
@@ -352,7 +324,7 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Draft"
-msgstr ""
+msgstr "ドラフト"
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
@@ -372,81 +344,9 @@ msgstr ""
 msgid "Custom render profiles"
 msgstr "レンダリングプロファイル"
 
-#: scenes/render_screen/render_screen.gd:89
-msgid "HEVC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:90
-msgid "H264"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:91
-msgid "MPEG4"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:92
-msgid "MPEG2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:93
-msgid "MPEG1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:94
-msgid "MJPEG"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:95
-msgid "AV1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:96
-msgid "VP9"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:97
-msgid "VP8"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:99
-msgid "WAV"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:100
-msgid "PCM"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:101
-msgid "MP2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:102
-msgid "MP3"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:103
-msgid "AAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:104
-msgid "Opus"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:105
-msgid "Vorbis"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:106
-msgid "FLAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:107
-msgid "NONE"
-msgstr ""
-
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
-msgstr ""
+msgstr "出力パスを選択"
 
 #: scenes/render_screen/render_screen.gd:250
 #, fuzzy
@@ -514,32 +414,30 @@ msgstr ""
 #: scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Version: "
-msgstr ""
+msgstr "バージョン：　"
 
 #: scenes/about_gozen/about_gozen.gd:22
-#, fuzzy
-#| msgid "text_version"
 msgid "GoZen version"
-msgstr "バージョン"
+msgstr "GoZenのバージョン"
 
 #: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
-msgstr ""
+msgstr "GoZenサイト"
 
 #: scenes/about_gozen/about_gozen.gd:39
 msgid "GitHub repo"
-msgstr ""
+msgstr "GitHubリポジトリ"
 
 #: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
-msgstr ""
+msgstr "Discordサーバー"
 
 #: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
-msgstr ""
+msgstr "GoZenをサポート"
 
 #: scenes/about_gozen/about_gozen.gd:43
 msgid ""
@@ -982,8 +880,6 @@ msgid ""
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
-#| msgid "notification_update_available"
 msgid "Update available"
 msgstr "更新があります！"
 
@@ -1050,8 +946,6 @@ msgid "Return"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.gd:124
-#, fuzzy
-#| msgid "text_version"
 msgid "Version"
 msgstr "バージョン"
 
@@ -1129,23 +1023,17 @@ msgstr "エディター設定"
 
 #: scripts/autoloads/project.gd:183
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: scripts/autoloads/command_manager.gd:14
-#, fuzzy
-#| msgid "title_editor_settings"
 msgid "Open editor settings"
 msgstr "エディター設定"
 
 #: scripts/autoloads/command_manager.gd:15
-#, fuzzy
-#| msgid "title_project_settings"
 msgid "Open project settings"
 msgstr "プロジェクト設定"
 
 #: scripts/autoloads/command_manager.gd:16
-#, fuzzy
-#| msgid "command_render_menu"
 msgid "open render menu"
 msgstr "レンダリングメニュー"
 

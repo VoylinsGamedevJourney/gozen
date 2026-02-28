@@ -24,18 +24,6 @@ msgstr ""
 msgid "Audio effects"
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
-msgid "Frame: 0"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "00:00:00.00"
-msgstr ""
-
-#: scenes/view_panel/view_panel.tscn
-msgid "x1"
-msgstr ""
-
 #: scenes/view_panel/view_panel.gd:32
 msgid "Jump to frame"
 msgstr ""
@@ -64,7 +52,8 @@ msgstr ""
 msgid "Add effect"
 msgstr ""
 
-#: scenes/add_effects_popup/add_effects_popup.tscn scenes/about_gozen/about_gozen.tscn
+#: scenes/add_effects_popup/add_effects_popup.tscn
+#: scenes/about_gozen/about_gozen.tscn
 #: scenes/progress_overlay/progress_overlay.tscn
 msgid "Close popup"
 msgstr ""
@@ -156,7 +145,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:137
 #, fuzzy
-#| msgid "render_option_speed"
 msgid "Folder options"
 msgstr "गति"
 
@@ -175,7 +163,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
 #, fuzzy
-#| msgid "text_rename_file_to"
 msgid "Rename file"
 msgstr "फ़ाइल का नाम बदलें ..."
 
@@ -185,7 +172,6 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:247
 #, fuzzy
-#| msgid "title_save_image_to_file"
 msgid "Save image to file"
 msgstr "छवि को फ़ाइल में सहेजें"
 
@@ -230,37 +216,34 @@ msgid "Duplication failed"
 msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:1145
-msgid "Could not duplicate %d clip(s) because there was not enough empty space."
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr ""
 
 #: scenes/color_popup/color_popup.tscn
 #, fuzzy
-#| msgid "title_add_color_file"
 msgid "Add color file"
 msgstr "रंग फ़ाइल जोड़ें"
 
 #: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn scripts/autoloads/project.gd:179
-#: scripts/logic/file_logic.gd:327
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+#: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
 msgid "Cancel"
 msgstr ""
 
 #: scenes/color_popup/color_popup.tscn
 #, fuzzy
-#| msgid "button_create_new_color_file"
 msgid "Create new color file"
 msgstr "रंग फ़ाइल बनाएँ"
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "title_render_settings"
 msgid "Render settings"
 msgstr "रेंडर सेटिंग्स"
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Render profile"
 msgstr "रेंडर प्रोफ़ाइल"
 
@@ -274,13 +257,11 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "text_path"
 msgid "Export path"
 msgstr "पथ"
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "title_render_settings"
 msgid "Render video settings"
 msgstr "रेंडर सेटिंग्स"
 
@@ -290,9 +271,10 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality "
-"setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on "
-"quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -301,8 +283,8 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a negative "
-"impact on the final video quality."
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -311,9 +293,10 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a lower value. But "
-"how higher the value is, the less precise it will get for seeking and scrubbing through "
-"the video playback. Put to a low value if you intend to use the rendered video for editing."
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -322,7 +305,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "command_editor_settings"
 msgid "Render audio settings"
 msgstr "एडिटर सेटिंग्स"
 
@@ -352,92 +334,19 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
-#| msgid "button_start_render"
 msgid "Start render"
 msgstr "रेंडरिंग शुरू करें"
 
-#: scenes/render_screen/render_screen.tscn scenes/settings_menu/settings_menu.gd:109
+#: scenes/render_screen/render_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:109
 #: scenes/settings_menu/settings_menu.gd:280
 msgid "Markers"
 msgstr ""
 
 #: scenes/render_screen/render_screen.gd:48
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Custom render profiles"
 msgstr "रेंडर प्रोफ़ाइल"
-
-#: scenes/render_screen/render_screen.gd:89
-msgid "HEVC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:90
-msgid "H264"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:91
-msgid "MPEG4"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:92
-msgid "MPEG2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:93
-msgid "MPEG1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:94
-msgid "MJPEG"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:95
-msgid "AV1"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:96
-msgid "VP9"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:97
-msgid "VP8"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:99
-msgid "WAV"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:100
-msgid "PCM"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:101
-msgid "MP2"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:102
-msgid "MP3"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:103
-msgid "AAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:104
-msgid "Opus"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:105
-msgid "Vorbis"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:106
-msgid "FLAC"
-msgstr ""
-
-#: scenes/render_screen/render_screen.gd:107
-msgid "NONE"
-msgstr ""
 
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
@@ -445,7 +354,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:250
 #, fuzzy
-#| msgid "title_rendering_finished"
 msgid "Rendering finished"
 msgstr "रेंडरिंग पूरी हुई"
 
@@ -453,15 +361,14 @@ msgstr "रेंडरिंग पूरी हुई"
 msgid "Error whilst rendering video"
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:334 scenes/render_screen/render_screen.gd:342
+#: scenes/render_screen/render_screen.gd:334
+#: scenes/render_screen/render_screen.gd:342
 #, fuzzy
-#| msgid "title_rendering"
 msgid "Rendering"
 msgstr "रेंडरिंग "
 
 #: scenes/render_screen/render_screen.gd:349
 #, fuzzy
-#| msgid "button_cancel_rendering"
 msgid "Cancel rendering"
 msgstr "रेंडरिंग रद्द करें"
 
@@ -477,11 +384,13 @@ msgstr ""
 msgid "Setting up ..."
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:386 scenes/render_screen/render_screen.gd:387
+#: scenes/render_screen/render_screen.gd:386
+#: scenes/render_screen/render_screen.gd:387
 msgid "Compiling audio ..."
 msgstr ""
 
-#: scenes/render_screen/render_screen.gd:388 scenes/render_screen/render_screen.gd:389
+#: scenes/render_screen/render_screen.gd:388
+#: scenes/render_screen/render_screen.gd:389
 msgid "Sending data ..."
 msgstr ""
 
@@ -491,7 +400,6 @@ msgstr ""
 
 #: scenes/render_screen/save_custom_render_profile.tscn
 #, fuzzy
-#| msgid "render_option_profile"
 msgid "Create render profile"
 msgstr "रेंडर प्रोफ़ाइल"
 
@@ -503,13 +411,13 @@ msgstr ""
 msgid "About GoZen"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Version: "
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:22
 #, fuzzy
-#| msgid "text_version"
 msgid "GoZen version"
 msgstr "वर्शन"
 
@@ -533,12 +441,13 @@ msgid "Support GoZen"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:43
-msgid "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgid ""
+"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
 msgstr ""
 
-#: scenes/progress_overlay/progress_overlay.tscn scripts/autoloads/project.gd:88
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:88
 #, fuzzy
-#| msgid "title_loading_project"
 msgid "Loading project"
 msgstr "प्रोजेक्ट लोड हो रहा है"
 
@@ -546,14 +455,14 @@ msgstr "प्रोजेक्ट लोड हो रहा है"
 msgid "Estimated time - 59:59:59"
 msgstr ""
 
-#: scenes/progress_overlay/progress_overlay.tscn scripts/autoloads/project.gd:89
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:89
 msgid "Initializing ..."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:102 scenes/settings_menu/settings_menu.tscn
-#: scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.gd:102
+#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "Editor settings"
 msgstr "एडिटर सेटिंग्स"
 
@@ -577,14 +486,15 @@ msgstr ""
 msgid "Marker five"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:120 scenes/settings_menu/settings_menu.gd:294
+#: scenes/settings_menu/settings_menu.gd:120
+#: scenes/settings_menu/settings_menu.gd:294
 msgid "Shortcuts"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:129 scenes/settings_menu/settings_menu.gd:302
+#: scenes/settings_menu/settings_menu.gd:129
+#: scenes/settings_menu/settings_menu.gd:302
 #: scenes/settings_menu/settings_menu.gd:303
 #, fuzzy
-#| msgid "title_appearance"
 msgid "Appearance"
 msgstr "रूप"
 
@@ -607,7 +517,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:149
 #, fuzzy
-#| msgid "setting_background_color"
 msgid "Base color"
 msgstr "पृष्ठभूमि रंग"
 
@@ -637,7 +546,6 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:168
 #, fuzzy
-#| msgid "setting_waveform_style"
 msgid "Waveform style"
 msgstr "ऑडियो वेवफ़ॉर्म शैली"
 
@@ -647,8 +555,8 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:180
 msgid ""
-"Sometimes the waveforms aren't very clear due to audio levels being too low, with this "
-"setting you can adjust their intensity"
+"Sometimes the waveforms aren't very clear due to audio levels being too low, "
+"with this setting you can adjust their intensity"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:181
@@ -661,60 +569,52 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:188
 #, fuzzy
-#| msgid "title_defaults"
 msgid "Defaults"
 msgstr "डिफ़ॉल्ट"
 
 #: scenes/settings_menu/settings_menu.gd:189
 #, fuzzy
-#| msgid "setting_default_text_duration"
 msgid "Default durations"
 msgstr "डिफ़ॉल्ट टेक्स्ट अवधि"
 
 #: scenes/settings_menu/settings_menu.gd:190
 #, fuzzy
-#| msgid "setting_default_image_duration"
 msgid "Default image duration"
 msgstr "डिफ़ॉल्ट छवि अवधि"
 
-#: scenes/settings_menu/settings_menu.gd:196 scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:196
+#: scenes/settings_menu/settings_menu.gd:203
 #: scenes/settings_menu/settings_menu.gd:210
 msgid "Duration in frames per second."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:197
 #, fuzzy
-#| msgid "setting_default_color_duration"
 msgid "Default color duration"
 msgstr "\tडिफ़ॉल्ट रंग अवधि"
 
 #: scenes/settings_menu/settings_menu.gd:211
 #, fuzzy
-#| msgid "text_resolution"
 msgid "Project resolution"
 msgstr "रिज़ॉल्यूशन"
 
 #: scenes/settings_menu/settings_menu.gd:213
 #, fuzzy
-#| msgid "text_framerate"
 msgid "Project frame-rate"
 msgstr "फ्रेमरेट"
 
 #: scenes/settings_menu/settings_menu.gd:220
 #, fuzzy
-#| msgid "title_timeline"
 msgid "Timeline"
 msgstr "टाइमलाइन"
 
 #: scenes/settings_menu/settings_menu.gd:221
 #, fuzzy
-#| msgid "title_render_settings"
 msgid "Timeline settings"
 msgstr "रेंडर सेटिंग्स"
 
 #: scenes/settings_menu/settings_menu.gd:222
 #, fuzzy
-#| msgid "setting_default_track_amount"
 msgid "Default track amount"
 msgstr "डिफ़ॉल्ट ट्रैक की संख्या"
 
@@ -728,12 +628,12 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:233
 #, fuzzy
-#| msgid "setting_pause_after_dragging"
 msgid "Pause after dragging"
 msgstr "ड्रैग करने के बाद रोकें"
 
 #: scenes/settings_menu/settings_menu.gd:237
-msgid "Setting this will pause playback after having dragged the playhead around."
+msgid ""
+"Setting this will pause playback after having dragged the playhead around."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:238
@@ -750,8 +650,8 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:250
 msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for changing the current "
-"timeline mode."
+"The mode bar is the bar on the left of the timeline with buttons for "
+"changing the current timeline mode."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:253
@@ -768,8 +668,9 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:261
 msgid ""
-"Defines how many frames the decoder will sequentially read ahead instead of performing a "
-"full seek operation. Higher values prevent lag during short jumps but use more CPU."
+"Defines how many frames the decoder will sequentially read ahead instead of "
+"performing a full seek operation. Higher values prevent lag during short "
+"jumps but use more CPU."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:262
@@ -778,8 +679,8 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:268
 msgid ""
-"The maximum number of decoded frames to keep in RAM. Higher values enable smoother "
-"backward seeking and scrubbing but increase memory usage."
+"The maximum number of decoded frames to keep in RAM. Higher values enable "
+"smoother backward seeking and scrubbing but increase memory usage."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:269
@@ -792,36 +693,34 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:277
 msgid ""
-"Changing this setting should be done with a path which points to an already existing "
-"folder. All previously made proxy clips will need to be generated again and deleted "
-"manually from the previous folder."
+"Changing this setting should be done with a path which points to an already "
+"existing folder. All previously made proxy clips will need to be generated "
+"again and deleted manually from the previous folder."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:282 scenes/settings_menu/settings_menu.gd:283
+#: scenes/settings_menu/settings_menu.gd:282
+#: scenes/settings_menu/settings_menu.gd:283
 msgid "Extras"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:284
 #, fuzzy
-#| msgid "setting_check_version"
 msgid "Check version"
 msgstr "वर्शन जांचें"
 
 #: scenes/settings_menu/settings_menu.gd:288
 #, fuzzy
-#| msgid "button_save"
 msgid "Auto save"
 msgstr "सहेजें"
 
 #: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
 #, fuzzy
-#| msgid "title_project_settings"
 msgid "Project settings"
 msgstr "प्रोजेक्ट सेटिंग्स"
 
-#: scenes/settings_menu/settings_menu.gd:304 scenes/startup_screen/startup_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:304
+#: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "setting_background_color"
 msgid "Background color"
 msgstr "पृष्ठभूमि रंग"
 
@@ -829,11 +728,13 @@ msgstr "पृष्ठभूमि रंग"
 msgid "The background color when no clips are displayed."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:431 scenes/startup_screen/startup_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:431
+#: scenes/startup_screen/startup_screen.tscn
 msgid "X:"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:432 scenes/startup_screen/startup_screen.tscn
+#: scenes/settings_menu/settings_menu.gd:432
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Y:"
 msgstr ""
 
@@ -843,13 +744,11 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.tscn
 #, fuzzy
-#| msgid "title_render_settings"
 msgid "Search settings ..."
 msgstr "रेंडर सेटिंग्स"
 
 #: scenes/settings_menu/settings_menu.tscn
 #, fuzzy
-#| msgid "button_save_settings"
 msgid "Close settings"
 msgstr "सेटिंग्स सहेजें"
 
@@ -868,13 +767,11 @@ msgstr ""
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
 #, fuzzy
-#| msgid "button_open_project"
 msgid "Open project"
 msgstr "प्रोजेक्ट खोलें"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "title_recent_projects"
 msgid "Recent projects"
 msgstr "हाल के प्रोजेक्ट्स"
 
@@ -937,13 +834,8 @@ msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "button_tutorials"
 msgid "Tutorials"
 msgstr "ट्यूटोरियल्स"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "RAM:"
-msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Render"
@@ -956,13 +848,12 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/"
-"url]"
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+"[u]Clay Banks[/u][/url]"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "notification_update_available"
 msgid "Update available"
 msgstr "अपडेट उपलब्ध है!"
 
@@ -972,13 +863,11 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "button_create_new_project"
 msgid "Create new project"
 msgstr "नया प्रोजेक्ट बनाएँ"
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "title_getting_started"
 msgid "Getting started"
 msgstr "\tशुरुआत करें"
 
@@ -988,7 +877,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
 #, fuzzy
-#| msgid "title_new_project"
 msgid "New project"
 msgstr "नया प्रोजेक्ट बनाएँ"
 
@@ -998,7 +886,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "text_resolution"
 msgid "Resolution"
 msgstr "रिज़ॉल्यूशन"
 
@@ -1012,7 +899,6 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
-#| msgid "text_framerate"
 msgid "Framerate"
 msgstr "फ्रेमरेट"
 
@@ -1030,12 +916,11 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.gd:124
 #, fuzzy
-#| msgid "text_version"
 msgid "Version"
 msgstr "वर्शन"
 
-#: scenes/startup_screen/startup_screen.gd:188 scenes/startup_screen/startup_screen.gd:234
-#: scripts/autoloads/project.gd:78
+#: scenes/startup_screen/startup_screen.gd:188
+#: scenes/startup_screen/startup_screen.gd:234 scripts/autoloads/project.gd:78
 msgid "GoZen project file"
 msgstr ""
 
@@ -1073,7 +958,6 @@ msgstr ""
 
 #: scripts/autoloads/project.gd:43
 #, fuzzy
-#| msgid "title_new_project"
 msgid "Initialize new project ..."
 msgstr "नया प्रोजेक्ट बनाएँ"
 
@@ -1112,19 +996,16 @@ msgstr ""
 
 #: scripts/autoloads/command_manager.gd:14
 #, fuzzy
-#| msgid "title_editor_settings"
 msgid "Open editor settings"
 msgstr "एडिटर सेटिंग्स"
 
 #: scripts/autoloads/command_manager.gd:15
 #, fuzzy
-#| msgid "title_project_settings"
 msgid "Open project settings"
 msgstr "प्रोजेक्ट सेटिंग्स"
 
 #: scripts/autoloads/command_manager.gd:16
 #, fuzzy
-#| msgid "command_render_menu"
 msgid "open render menu"
 msgstr "रेंडर मेनू"
 
@@ -1148,15 +1029,11 @@ msgstr ""
 
 #: scripts/logic/file_logic.gd:404
 #, fuzzy
-#| msgid "title_files_dropped"
 msgid "Files dropped"
 msgstr "फ़ाइलें डाली गईं"
 
 #: scripts/logic/file_logic.gd:417
 msgid "Files loading ..."
-msgstr ""
-
-msgid "GoZen"
 msgstr ""
 
 #~ msgid "title_about_gozen"
@@ -1295,14 +1172,15 @@ msgstr ""
 
 #~ msgid "setting_tooltip_delete_empty_space_mod"
 #~ msgstr ""
-#~ "टाइमलाइन में खाली स्थान पर डबल-क्लिक करने से वह स्थान हट जाता है और बाकी क्लिप्स आगे खिसक जाती हैं। "
-#~ "यदि आप एक मोडिफायर कुंजी सेट करते हैं, तो डबल-क्लिक से खाली स्थान तभी हटेगा जब वह कुंजी दबाई जाएगी।"
+#~ "टाइमलाइन में खाली स्थान पर डबल-क्लिक करने से वह स्थान हट जाता है और बाकी क्लिप्स आगे "
+#~ "खिसक जाती हैं। यदि आप एक मोडिफायर कुंजी सेट करते हैं, तो डबल-क्लिक से खाली स्थान तभी "
+#~ "हटेगा जब वह कुंजी दबाई जाएगी।"
 
 #~ msgid "setting_tooltip_check_version"
 #~ msgstr ""
-#~ "यह विकल्प GitHub रिपोजिटरी की जांच पर निर्भर करता है, और इसलिए इसके लिए इंटरनेट से कनेक्शन आवश्यक "
-#~ "होता है। कुछ उपयोगकर्ता नहीं चाहते कि उनका ऐप इंटरनेट से जुड़े, इसलिए यह विकल्प डिफ़ॉल्ट रूप से 'अक्षम' "
-#~ "होता है।"
+#~ "यह विकल्प GitHub रिपोजिटरी की जांच पर निर्भर करता है, और इसलिए इसके लिए इंटरनेट "
+#~ "से कनेक्शन आवश्यक होता है। कुछ उपयोगकर्ता नहीं चाहते कि उनका ऐप इंटरनेट से जुड़े, इसलिए "
+#~ "यह विकल्प डिफ़ॉल्ट रूप से 'अक्षम' होता है।"
 
 #~ msgid "setting_auto_save"
 #~ msgstr "स्वतः सहेजना"
@@ -1354,24 +1232,24 @@ msgstr ""
 
 #~ msgid "render_option_tooltip_quality"
 #~ msgstr ""
-#~ "CRF (कॉन्स्टेंट रेट फैक्टर) को समायोजित करता है। गुणवत्ता की सबसे कम सेटिंग 50 है, और सबसे अच्छी गुणवत्ता "
-#~ "के लिए 15। डिफ़ॉल्ट मान 18 है। यह बिटरेट को नियंत्रित करता है, जिससे गुणवत्ता और फ़ाइल साइज़ प्रभावित "
-#~ "होते हैं। मान 0 से सर्वोत्तम गुणवत्ता मिलती है, और 51 से सबसे कम। 18 पर आमतौर पर कोई स्पष्ट अंतर "
-#~ "दिखाई नहीं देता।"
+#~ "CRF (कॉन्स्टेंट रेट फैक्टर) को समायोजित करता है। गुणवत्ता की सबसे कम सेटिंग 50 है, और "
+#~ "सबसे अच्छी गुणवत्ता के लिए 15। डिफ़ॉल्ट मान 18 है। यह बिटरेट को नियंत्रित करता है, "
+#~ "जिससे गुणवत्ता और फ़ाइल साइज़ प्रभावित होते हैं। मान 0 से सर्वोत्तम गुणवत्ता मिलती है, "
+#~ "और 51 से सबसे कम। 18 पर आमतौर पर कोई स्पष्ट अंतर दिखाई नहीं देता।"
 
 #~ msgid "render_option_tooltip_speed"
 #~ msgstr ""
-#~ "H264 एन्कोडिंग की गति को समायोजित करता है। बहुत अधिक गति सेट करने से अंतिम वीडियो की गुणवत्ता पर "
-#~ "नकारात्मक प्रभाव पड़ सकता है।"
+#~ "H264 एन्कोडिंग की गति को समायोजित करता है। बहुत अधिक गति सेट करने से अंतिम वीडियो "
+#~ "की गुणवत्ता पर नकारात्मक प्रभाव पड़ सकता है।"
 
 #~ msgid "render_option_gop_size"
 #~ msgstr "GOP का आकार"
 
 #~ msgid "render_option_tooltip_gop_size"
 #~ msgstr ""
-#~ "Group Of Pictures। अधिक मान बेहतर कंप्रेशन देता है, लेकिन जितना अधिक मान होगा, वीडियो प्लेबैक के "
-#~ "दौरान सीकिंग और स्क्रबिंग की सटीकता उतनी ही कम हो जाएगी। यदि आप इस वीडियो का आगे संपादन करना "
-#~ "चाहते हैं, तो इस मान को कम रखें।"
+#~ "Group Of Pictures। अधिक मान बेहतर कंप्रेशन देता है, लेकिन जितना अधिक मान होगा, "
+#~ "वीडियो प्लेबैक के दौरान सीकिंग और स्क्रबिंग की सटीकता उतनी ही कम हो जाएगी। यदि आप "
+#~ "इस वीडियो का आगे संपादन करना चाहते हैं, तो इस मान को कम रखें।"
 
 #~ msgid "render_option_threads_cores"
 #~ msgstr "थ्रेड्स / कोर"

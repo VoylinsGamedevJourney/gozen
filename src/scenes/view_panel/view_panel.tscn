@@ -49,11 +49,13 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
 [node name="FrameLabel" type="Label" parent="Margin/VBox/ButtonsHBox/TimeDataVBox" unique_id=1105781096]
+auto_translate_mode = 2
 layout_mode = 2
 theme_type_variation = &"info_label"
 text = "Frame: 0"
 
 [node name="TimeLabel" type="Label" parent="Margin/VBox/ButtonsHBox/TimeDataVBox" unique_id=259505988]
+auto_translate_mode = 2
 layout_mode = 2
 theme_type_variation = &"info_label"
 text = "00:00:00.00"
@@ -100,6 +102,7 @@ size_flags_horizontal = 3
 alignment = 2
 
 [node name="PlaybackSpeedButton" type="Button" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=1006123480]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.5019608, 0.5019608, 0.5019608, 1)

@@ -293,7 +293,6 @@ func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 
 	var start: int = project_data.clips_start[clip_index]
 	var begin: int = project_data.clips_begin[clip_index]
-
 	var speed: float = project_data.clips_speed[clip_index]
 	var clip_frame: int = frame_nr - start
 	var relative_frame: int = int(clip_frame * speed) + begin
