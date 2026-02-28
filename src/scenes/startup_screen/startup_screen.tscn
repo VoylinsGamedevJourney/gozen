@@ -160,10 +160,12 @@ current_tab = 0
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=703377150]
+auto_translate_mode = 2
 layout_mode = 2
 metadata/_tab_index = 0
 
 [node name="VBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu" unique_id=1700495365]
+auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -206,6 +208,7 @@ alignment = 0
 expand_icon = true
 
 [node name="MenuVBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu" unique_id=1512113919]
+auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -267,11 +270,13 @@ alignment = 0
 expand_icon = true
 
 [node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=1384044314]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
 [node name="NewProjectTopHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1952408598]
+auto_translate_mode = 1
 layout_mode = 2
 
 [node name="NewProjectLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=1420926093]
@@ -284,9 +289,11 @@ text = "New project"
 layout_mode = 2
 
 [node name="HSeparator1" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=2114054458]
+auto_translate_mode = 1
 layout_mode = 2
 
 [node name="PathHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=868305927]
+auto_translate_mode = 1
 layout_mode = 2
 
 [node name="PathLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=450583512]
@@ -306,6 +313,7 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="NewProjectGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=88688003]
+auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
@@ -360,11 +368,13 @@ value = 1.0
 allow_greater = true
 
 [node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=643237763]
+auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Advanced options"
 
 [node name="NewProjectAdvancedGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1412518369]
+auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
@@ -379,14 +389,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1374780922]
+auto_translate_mode = 1
 layout_mode = 2
 
 [node name="NewProjectWarningLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1283484863]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 theme_type_variation = &"warning_label"
 
 [node name="HBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1298801334]
+auto_translate_mode = 1
 layout_mode = 2
 
 [node name="CancelCreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox" unique_id=832611219]
