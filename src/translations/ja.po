@@ -71,7 +71,8 @@ msgstr "名前を変更"
 msgid "Reload"
 msgstr "リロード"
 
-#: scenes/file_panel/file_panel.gd:107 scenes/menu_bar/menu_bar.tscn
+#: scenes/file_panel/file_panel.gd:107
+#: scenes/menu_bar/menu_bar.tscn
 msgid "Delete"
 msgstr "削除"
 
@@ -83,7 +84,8 @@ msgstr "画像オプション"
 msgid "Save image as ..."
 msgstr "名前を付けて画像を保存..."
 
-#: scenes/file_panel/file_panel.gd:114 scenes/timeline/timeline_panel.gd:959
+#: scenes/file_panel/file_panel.gd:114
+#: scenes/timeline/timeline_panel.gd:959
 msgid "Video options"
 msgstr "動画オプション"
 
@@ -132,7 +134,8 @@ msgstr "ファイルパスをコピー"
 msgid "Folder options"
 msgstr "フォルダオプション"
 
-#: scenes/file_panel/file_panel.gd:138 scenes/file_panel/file_panel.gd:141
+#: scenes/file_panel/file_panel.gd:138
+#: scenes/file_panel/file_panel.gd:141
 #: scenes/file_panel/file_panel.gd:526
 msgid "Create folder"
 msgstr "フォルダを作成"
@@ -145,11 +148,13 @@ msgstr "フォルダ名を変更"
 msgid "Delete folder"
 msgstr "フォルダを削除"
 
-#: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
+#: scenes/file_panel/file_panel.gd:183
+#: scenes/rename_file/rename_file.tscn
 msgid "Rename file"
 msgstr "ファイル名を変更"
 
-#: scenes/file_panel/file_panel.gd:188 scenes/file_panel/file_panel.gd:531
+#: scenes/file_panel/file_panel.gd:188
+#: scenes/file_panel/file_panel.gd:531
 msgid "Folder name"
 msgstr "フォルダ名"
 
@@ -169,11 +174,13 @@ msgstr "(サムネイルを読み込み中...)"
 msgid "Remove empty space"
 msgstr "空白を削除"
 
-#: scenes/timeline/timeline_panel.gd:473 scenes/timeline/timeline_panel.gd:963
+#: scenes/timeline/timeline_panel.gd:473
+#: scenes/timeline/timeline_panel.gd:963
 msgid "Add track"
 msgstr "トラックを追加"
 
-#: scenes/timeline/timeline_panel.gd:474 scenes/timeline/timeline_panel.gd:964
+#: scenes/timeline/timeline_panel.gd:474
+#: scenes/timeline/timeline_panel.gd:964
 msgid "Remove track"
 msgstr "トラックを削除"
 
@@ -198,18 +205,19 @@ msgid "Duplication failed"
 msgstr "複製に失敗しました"
 
 #: scenes/timeline/timeline_panel.gd:1145
-msgid ""
-"Could not duplicate %d clip(s) because there was not enough empty space."
+msgid "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr "十分な空きスペースがないため、%d 個のクリップを複製できませんでした。"
 
 #: scenes/color_popup/color_popup.tscn
 msgid "Add color file"
 msgstr "カラーファイルを追加"
 
-#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
+#: scenes/color_popup/color_popup.tscn
+#: scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
+#: scripts/autoloads/project.gd:179
+#: scripts/logic/file_logic.gd:327
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -247,15 +255,13 @@ msgstr "ビデオコーデック"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and high"
+"est quality setting is 15. Default is set to 18 Used for adjusting bitrate whi"
+"ch has an impact on quality and size. Value 0 gives the best, 51 worst quality"
+", 18 not really noticable."
 msgstr ""
-"CRF (固定レート係数) を調整します。最低品質設定は 50、最高品質設定は 15 で"
-"す。デフォルトは 18 に設定されています。品質とサイズに影響するビットレートの"
-"調整に使用されます。値 0 が最高品質、51 が最低品質、18 は見た目にはほとんど違"
-"いがありません。"
+"CRF (固定レート係数) を調整します。最低品質設定は 50、最高品質設定は 15 です。デフォルトは 18 に設定されています。品質とサイズに影響するビ"
+"ットレートの調整に使用されます。値 0 が最高品質、51 が最低品質、18 は見た目にはほとんど違いがありません。"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Quality"
@@ -263,11 +269,9 @@ msgstr "品質"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
-msgstr ""
-"H264 エンコーディングの速度を調整します。速度を高くしすぎると、最終的なビデオ"
-"品質に悪影響を及ぼす可能性があります。"
+"Adjusts the speed for encoding H264. Setting the speed too high might have a n"
+"egative impact on the final video quality."
+msgstr "H264 エンコーディングの速度を調整します。速度を高くしすぎると、最終的なビデオ品質に悪影響を及ぼす可能性があります。"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Speed"
@@ -275,14 +279,13 @@ msgstr "速度"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
+"Group Of Pictures. Higher value is better for compression compared to a lower "
+"value. But how higher the value is, the less precise it will get for seeking a"
+"nd scrubbing through the video playback. Put to a low value if you intend to u"
+"se the rendered video for editing."
 msgstr ""
-"Group Of Pictures (GOP)。値が高いほど圧縮率は良くなりますが、値が高いほどビデ"
-"オ再生時のシークやスクラブの精度が低下します。書き出したビデオを編集に使用す"
-"る場合は、低い値に設定してください。"
+"Group Of Pictures (GOP)。値が高いほど圧縮率は良くなりますが、値が高いほどビデオ再生時のシークやスクラブの精度が低下します。書き出した"
+"ビデオを編集に使用する場合は、低い値に設定してください。"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Gop size"
@@ -385,7 +388,8 @@ msgstr "書き出しプロファイルを作成"
 msgid "New profile name"
 msgstr "新しいプロファイル名"
 
-#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/menu_bar/menu_bar.tscn
 msgid "About GoZen"
 msgstr "GoZenについて"
 
@@ -398,7 +402,8 @@ msgstr "バージョン: "
 msgid "GoZen version"
 msgstr "GoZenのバージョン"
 
-#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:38
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "ウェブサイト"
@@ -407,22 +412,21 @@ msgstr "ウェブサイト"
 msgid "GitHub repo"
 msgstr "GitHubリポジトリ"
 
-#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:40
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:41
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr "GoZenを支援"
 
 #: scenes/about_gozen/about_gozen.gd:43
-msgid ""
-"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
-msgstr ""
-"[color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color] によって作られ"
-"ました! ;)"
+msgid "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgstr "[color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color] によって作られました! ;)"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:88
@@ -435,7 +439,8 @@ msgid "Initializing ..."
 msgstr "初期化中..."
 
 #: scenes/settings_menu/settings_menu.gd:102
-#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.tscn
+#: scenes/menu_bar/menu_bar.tscn
 msgid "Editor settings"
 msgstr "エディター設定"
 
@@ -524,11 +529,9 @@ msgstr "波形増幅"
 
 #: scenes/settings_menu/settings_menu.gd:180
 msgid ""
-"Sometimes the waveforms aren't very clear due to audio levels being too low, "
-"with this setting you can adjust their intensity"
-msgstr ""
-"オーディオレベルが低すぎて波形がはっきりしない場合があります。この設定で強度"
-"を調整できます"
+"Sometimes the waveforms aren't very clear due to audio levels being too low, w"
+"ith this setting you can adjust their intensity"
+msgstr "オーディオレベルが低すぎて波形がはっきりしない場合があります。この設定で強度を調整できます"
 
 #: scenes/settings_menu/settings_menu.gd:181
 msgid "Dialogue's"
@@ -593,8 +596,7 @@ msgid "Pause after dragging"
 msgstr "ドラッグ後に一時停止"
 
 #: scenes/settings_menu/settings_menu.gd:237
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
+msgid "Setting this will pause playback after having dragged the playhead around."
 msgstr "これを設定すると、再生ヘッドをドラッグした後に再生が一時停止されます。"
 
 #: scenes/settings_menu/settings_menu.gd:238
@@ -611,11 +613,9 @@ msgstr "モードバーを表示"
 
 #: scenes/settings_menu/settings_menu.gd:250
 msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
-msgstr ""
-"モードバーはタイムラインの左側にあるバーで、現在のタイムラインモードを変更す"
-"るボタンがあります。"
+"The mode bar is the bar on the left of the timeline with buttons for changing "
+"the current timeline mode."
+msgstr "モードバーはタイムラインの左側にあるバーで、現在のタイムラインモードを変更するボタンがあります。"
 
 #: scenes/settings_menu/settings_menu.gd:253
 msgid "Performance"
@@ -631,12 +631,11 @@ msgstr "スマートシークしきい値"
 
 #: scenes/settings_menu/settings_menu.gd:261
 msgid ""
-"Defines how many frames the decoder will sequentially read ahead instead of "
-"performing a full seek operation. Higher values prevent lag during short "
-"jumps but use more CPU."
+"Defines how many frames the decoder will sequentially read ahead instead of pe"
+"rforming a full seek operation. Higher values prevent lag during short jumps b"
+"ut use more CPU."
 msgstr ""
-"デコーダーが完全なシーク操作を行う代わりに、シーケンシャルに先読みするフレー"
-"ム数を定義します。値が高いと短いジャンプ中のラグを防げますが、CPU使用率が増加"
+"デコーダーが完全なシーク操作を行う代わりに、シーケンシャルに先読みするフレーム数を定義します。値が高いと短いジャンプ中のラグを防げますが、CPU使用率が増加"
 "します。"
 
 #: scenes/settings_menu/settings_menu.gd:262
@@ -645,11 +644,9 @@ msgstr "ビデオキャッシュサイズ"
 
 #: scenes/settings_menu/settings_menu.gd:268
 msgid ""
-"The maximum number of decoded frames to keep in RAM. Higher values enable "
-"smoother backward seeking and scrubbing but increase memory usage."
-msgstr ""
-"RAMに保持するデコード済みフレームの最大数。値が高いと逆再生シークやスクラブが"
-"スムーズになりますが、メモリ使用量が増加します。"
+"The maximum number of decoded frames to keep in RAM. Higher values enable smoo"
+"ther backward seeking and scrubbing but increase memory usage."
+msgstr "RAMに保持するデコード済みフレームの最大数。値が高いと逆再生シークやスクラブがスムーズになりますが、メモリ使用量が増加します。"
 
 #: scenes/settings_menu/settings_menu.gd:269
 msgid "Use proxies"
@@ -661,13 +658,12 @@ msgstr "プロキシ保存パス"
 
 #: scenes/settings_menu/settings_menu.gd:277
 msgid ""
-"Changing this setting should be done with a path which points to an already "
-"existing folder. All previously made proxy clips will need to be generated "
-"again and deleted manually from the previous folder."
+"Changing this setting should be done with a path which points to an already ex"
+"isting folder. All previously made proxy clips will need to be generated again"
+" and deleted manually from the previous folder."
 msgstr ""
-"この設定を変更する場合は、既存のフォルダへのパスを指定してください。以前作成"
-"されたプロキシクリップはすべて再生成が必要になり、以前のフォルダから手動で削"
-"除する必要があります。"
+"この設定を変更する場合は、既存のフォルダへのパスを指定してください。以前作成されたプロキシクリップはすべて再生成が必要になり、以前のフォルダから手動で削除す"
+"る必要があります。"
 
 #: scenes/settings_menu/settings_menu.gd:282
 #: scenes/settings_menu/settings_menu.gd:283
@@ -682,7 +678,8 @@ msgstr "バージョンを確認"
 msgid "Auto save"
 msgstr "自動保存"
 
-#: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.gd:299
+#: scenes/menu_bar/menu_bar.tscn
 msgid "Project settings"
 msgstr "プロジェクト設定"
 
@@ -725,16 +722,20 @@ msgstr "プロジェクト"
 msgid "Save project"
 msgstr "プロジェクトを保存"
 
-#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:76
+#: scenes/menu_bar/menu_bar.tscn
+#: scripts/autoloads/project.gd:76
 msgid "Save project as ..."
 msgstr "名前を付けてプロジェクトを保存..."
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:186
+#: scripts/autoloads/project.gd:124
 msgid "Open project"
 msgstr "プロジェクトを開く"
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "最近のプロジェクト"
 
@@ -790,11 +791,13 @@ msgstr "バグを報告"
 msgid "Check for updates"
 msgstr "更新を確認"
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "マニュアル"
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "チュートリアル"
 
@@ -802,18 +805,19 @@ msgstr "チュートリアル"
 msgid "Render"
 msgstr "書き出し"
 
-#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Confirm"
 msgstr "確認"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Cla"
+"y Banks[/u][/url]"
 msgstr ""
-"画像提供 [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+"画像提供 [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Ba"
+"nks[/u][/url]"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Update available"
@@ -827,7 +831,8 @@ msgstr "新規プロジェクト作成"
 msgid "Getting started"
 msgstr "はじめに"
 
-#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
+#: scenes/startup_screen/startup_screen.tscn
+#: scripts/autoloads/project.gd:42
 msgid "New project"
 msgstr "新規プロジェクト"
 
@@ -868,7 +873,8 @@ msgid "Version"
 msgstr "バージョン"
 
 #: scenes/startup_screen/startup_screen.gd:188
-#: scenes/startup_screen/startup_screen.gd:234 scripts/autoloads/project.gd:78
+#: scenes/startup_screen/startup_screen.gd:234
+#: scripts/autoloads/project.gd:78
 msgid "GoZen project file"
 msgstr "GoZen プロジェクトファイル"
 
@@ -912,7 +918,8 @@ msgstr "新規プロジェクトを初期化中..."
 msgid "Setting up playback ..."
 msgstr "再生をセットアップ中..."
 
-#: scripts/autoloads/project.gd:55 scripts/autoloads/project.gd:106
+#: scripts/autoloads/project.gd:55
+#: scripts/autoloads/project.gd:106
 msgid "Finalizing ..."
 msgstr "仕上げ中..."
 
@@ -982,3 +989,4 @@ msgstr "ファイルを読み込み中..."
 
 msgid "GoZen"
 msgstr "GoZen"
+

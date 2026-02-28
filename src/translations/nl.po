@@ -33,14 +33,6 @@ msgstr "Screenshot opslaan ..."
 msgid "Save screenshot to project ..."
 msgstr "Screenshot opslaan in project ..."
 
-#: scenes/editor/editor.tscn
-msgid "EditTab"
-msgstr "Bewerken"
-
-#: scenes/editor/editor.tscn
-msgid "RenderTab"
-msgstr "Renderen"
-
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
 msgstr "Effect toevoegen"
@@ -263,15 +255,15 @@ msgstr "Videocodec"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and high"
+"est quality setting is 15. Default is set to 18 Used for adjusting bitrate whi"
+"ch has an impact on quality and size. Value 0 gives the best, 51 worst quality"
+", 18 not really noticable."
 msgstr ""
-"Past de CRF (Constant Rate Factor) aan. Laagste kwaliteit is 50, hoogste "
-"kwaliteit is 15. Standaard is 18. Wordt gebruikt om de bitrate aan te passen, "
-"wat invloed heeft op kwaliteit en grootte. Waarde 0 is het best, 51 het "
-"slechtst, 18 is nauwelijks merkbaar."
+"Past de CRF (Constant Rate Factor) aan. Laagste kwaliteit is 50, hoogste kwali"
+"teit is 15. Standaard is 18. Wordt gebruikt om de bitrate aan te passen, wat i"
+"nvloed heeft op kwaliteit en grootte. Waarde 0 is het best, 51 het slechtst, 1"
+"8 is nauwelijks merkbaar."
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Quality"
@@ -279,11 +271,11 @@ msgstr "Kwaliteit"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
+"Adjusts the speed for encoding H264. Setting the speed too high might have a n"
+"egative impact on the final video quality."
 msgstr ""
-"Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan "
-"een negatieve invloed hebben op de uiteindelijke videokwaliteit."
+"Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een n"
+"egatieve invloed hebben op de uiteindelijke videokwaliteit."
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Speed"
@@ -291,14 +283,14 @@ msgstr "Snelheid"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
+"Group Of Pictures. Higher value is better for compression compared to a lower "
+"value. But how higher the value is, the less precise it will get for seeking a"
+"nd scrubbing through the video playback. Put to a low value if you intend to u"
+"se the rendered video for editing."
 msgstr ""
 "Group Of Pictures. Een hogere waarde is beter voor compressie. Maar hoe hoger "
-"de waarde, hoe minder nauwkeurig het zoeken en navigeren door de video zal "
-"zijn. Zet op een lage waarde als je de gerenderde video wilt bewerken."
+"de waarde, hoe minder nauwkeurig het zoeken en navigeren door de video zal zij"
+"n. Zet op een lage waarde als je de gerenderde video wilt bewerken."
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Gop size"
@@ -438,10 +430,8 @@ msgid "Support GoZen"
 msgstr "Steun GoZen"
 
 #: scenes/about_gozen/about_gozen.gd:43
-msgid ""
-"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
-msgstr ""
-"Gemaakt door [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgid "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgstr "Gemaakt door [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:88
@@ -544,14 +534,14 @@ msgstr "Golfvormstijl"
 
 #: scenes/settings_menu/settings_menu.gd:180
 msgid ""
-"Sometimes the waveforms aren't very clear due to audio levels being too low, "
-"with this setting you can adjust their intensity"
+"Sometimes the waveforms aren't very clear due to audio levels being too low, w"
+"ith this setting you can adjust their intensity"
 msgstr ""
-"Soms zijn golfvormen niet duidelijk door een laag audioniveau. Hiermee pas "
-"je de intensiteit aan"
+"Soms zijn golfvormen niet duidelijk door een laag audioniveau. Hiermee pas je "
+"de intensiteit aan"
 
 #: scenes/settings_menu/settings_menu.gd:181
-msgid "Dialogue\'s"
+msgid "Dialogue's"
 msgstr "Dialogen"
 
 #: scenes/settings_menu/settings_menu.gd:182
@@ -613,10 +603,8 @@ msgid "Pause after dragging"
 msgstr "Pauzeren na slepen"
 
 #: scenes/settings_menu/settings_menu.gd:237
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
-msgstr ""
-"Als dit is ingesteld, pauzeert het afspelen na het verslepen van de afspeelkop."
+msgid "Setting this will pause playback after having dragged the playhead around."
+msgstr "Als dit is ingesteld, pauzeert het afspelen na het verslepen van de afspeelkop."
 
 #: scenes/settings_menu/settings_menu.gd:238
 msgid "Empty space delete modifier"
@@ -632,11 +620,11 @@ msgstr "Modusbalk tonen"
 
 #: scenes/settings_menu/settings_menu.gd:250
 msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
+"The mode bar is the bar on the left of the timeline with buttons for changing "
+"the current timeline mode."
 msgstr ""
-"De modusbalk is de balk links van de tijdlijn met knoppen om de huidige "
-"tijdlijnmodus te wijzigen."
+"De modusbalk is de balk links van de tijdlijn met knoppen om de huidige tijdli"
+"jnmodus te wijzigen."
 
 #: scenes/settings_menu/settings_menu.gd:253
 msgid "Performance"
@@ -652,13 +640,13 @@ msgstr "Slimme zoekdrempel"
 
 #: scenes/settings_menu/settings_menu.gd:261
 msgid ""
-"Defines how many frames the decoder will sequentially read ahead instead of "
-"performing a full seek operation. Higher values prevent lag during short "
-"jumps but use more CPU."
+"Defines how many frames the decoder will sequentially read ahead instead of pe"
+"rforming a full seek operation. Higher values prevent lag during short jumps b"
+"ut use more CPU."
 msgstr ""
-"Bepaalt hoeveel frames de decoder vooruit leest in plaats van een volledige "
-"zoekactie. Hogere waarden voorkomen vertraging bij korte sprongen maar "
-"gebruiken meer CPU."
+"Bepaalt hoeveel frames de decoder vooruit leest in plaats van een volledige zo"
+"ekactie. Hogere waarden voorkomen vertraging bij korte sprongen maar gebruiken"
+" meer CPU."
 
 #: scenes/settings_menu/settings_menu.gd:262
 msgid "Video Cache Size"
@@ -666,11 +654,11 @@ msgstr "Videocachegrootte"
 
 #: scenes/settings_menu/settings_menu.gd:268
 msgid ""
-"The maximum number of decoded frames to keep in RAM. Higher values enable "
-"smoother backward seeking and scrubbing but increase memory usage."
+"The maximum number of decoded frames to keep in RAM. Higher values enable smoo"
+"ther backward seeking and scrubbing but increase memory usage."
 msgstr ""
-"Het maximum aantal gedecodeerde frames in RAM. Hogere waarden zorgen voor "
-"soepeler achteruit zoeken maar verhogen geheugengebruik."
+"Het maximum aantal gedecodeerde frames in RAM. Hogere waarden zorgen voor soep"
+"eler achteruit zoeken maar verhogen geheugengebruik."
 
 #: scenes/settings_menu/settings_menu.gd:269
 msgid "Use proxies"
@@ -682,12 +670,12 @@ msgstr "Opslagpad proxies"
 
 #: scenes/settings_menu/settings_menu.gd:277
 msgid ""
-"Changing this setting should be done with a path which points to an already "
-"existing folder. All previously made proxy clips will need to be generated "
-"again and deleted manually from the previous folder."
+"Changing this setting should be done with a path which points to an already ex"
+"isting folder. All previously made proxy clips will need to be generated again"
+" and deleted manually from the previous folder."
 msgstr ""
-"Verander deze instelling naar een bestaande map. Alle eerdere proxy-clips "
-"moeten opnieuw worden gegenereerd en handmatig uit de oude map worden verwijderd."
+"Verander deze instelling naar een bestaande map. Alle eerdere proxy-clips moet"
+"en opnieuw worden gegenereerd en handmatig uit de oude map worden verwijderd."
 
 #: scenes/settings_menu/settings_menu.gd:282
 #: scenes/settings_menu/settings_menu.gd:283
@@ -715,6 +703,16 @@ msgstr "Achtergrondkleur"
 #: scenes/settings_menu/settings_menu.gd:308
 msgid "The background color when no clips are displayed."
 msgstr "De achtergrondkleur wanneer er geen clips worden weergegeven."
+
+#: scenes/settings_menu/settings_menu.gd:431
+#: scenes/startup_screen/startup_screen.tscn
+msgid "X:"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:432
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Y:"
+msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:497
 msgid "Press any key..."
@@ -827,19 +825,15 @@ msgstr "Bevestigen"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Cla"
+"y Banks[/u][/url]"
 msgstr ""
-"Afbeelding door [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+"Afbeelding door [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc"
+"][u]Clay Banks[/u][/url]"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Update available"
 msgstr "Update beschikbaar!"
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "MainMenu"
-msgstr "Hoofdmenu"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Create new project"
@@ -936,7 +930,8 @@ msgstr "Nieuw project initialiseren ..."
 msgid "Setting up playback ..."
 msgstr "Afspelen instellen ..."
 
-#: scripts/autoloads/project.gd:55 scripts/autoloads/project.gd:106
+#: scripts/autoloads/project.gd:55
+#: scripts/autoloads/project.gd:106
 msgid "Finalizing ..."
 msgstr "Afronden ..."
 
@@ -1006,3 +1001,4 @@ msgstr "Bestanden laden ..."
 
 msgid "GoZen"
 msgstr "GoZen"
+

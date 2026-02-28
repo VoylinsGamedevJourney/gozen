@@ -33,14 +33,6 @@ msgstr ""
 msgid "Save screenshot to project ..."
 msgstr ""
 
-#: scenes/editor/editor.tscn
-msgid "EditTab"
-msgstr ""
-
-#: scenes/editor/editor.tscn
-msgid "RenderTab"
-msgstr ""
-
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
 msgstr ""
@@ -271,7 +263,11 @@ msgid "Video codec"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and high"
+"est quality setting is 15. Default is set to 18 Used for adjusting bitrate whi"
+"ch has an impact on quality and size. Value 0 gives the best, 51 worst quality"
+", 18 not really noticable."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -279,7 +275,9 @@ msgid "Quality"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a n"
+"egative impact on the final video quality."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -287,7 +285,11 @@ msgid "Speed"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a lower "
+"value. But how higher the value is, the less precise it will get for seeking a"
+"nd scrubbing through the video playback. Put to a low value if you intend to u"
+"se the rendered video for editing."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -436,7 +438,7 @@ msgid "Support GoZen"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:43
-msgid "Made by [color=#A718F1][url=URL]Voylin\'s Gamedev Journey[/url][/color]! ;)"
+msgid "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -444,10 +446,6 @@ msgstr ""
 #, fuzzy
 msgid "Loading project"
 msgstr "正在載入專案"
-
-#: scenes/progress_overlay/progress_overlay.tscn
-msgid "Estimated time - 59:59:59"
-msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:89
@@ -549,11 +547,13 @@ msgid "Waveform amplifier"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:180
-msgid "Sometimes the waveforms aren\'t very clear due to audio levels being too low, with this setting you can adjust their intensity"
+msgid ""
+"Sometimes the waveforms aren't very clear due to audio levels being too low, w"
+"ith this setting you can adjust their intensity"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:181
-msgid "Dialogue\'s"
+msgid "Dialogue's"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:182
@@ -639,7 +639,9 @@ msgid "Show mode bar"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:250
-msgid "The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode."
+msgid ""
+"The mode bar is the bar on the left of the timeline with buttons for changing "
+"the current timeline mode."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:253
@@ -655,7 +657,10 @@ msgid "Smart Seek Threshold"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:261
-msgid "Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU."
+msgid ""
+"Defines how many frames the decoder will sequentially read ahead instead of pe"
+"rforming a full seek operation. Higher values prevent lag during short jumps b"
+"ut use more CPU."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:262
@@ -663,7 +668,9 @@ msgid "Video Cache Size"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:268
-msgid "The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage."
+msgid ""
+"The maximum number of decoded frames to keep in RAM. Higher values enable smoo"
+"ther backward seeking and scrubbing but increase memory usage."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:269
@@ -675,7 +682,10 @@ msgid "Proxies save path"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:277
-msgid "Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder."
+msgid ""
+"Changing this setting should be done with a path which points to an already ex"
+"isting folder. All previously made proxy clips will need to be generated again"
+" and deleted manually from the previous folder."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:282
@@ -835,17 +845,15 @@ msgid "Confirm"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
+msgid ""
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Cla"
+"y Banks[/u][/url]"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Update available"
 msgstr "有可用的更新！"
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "MainMenu"
-msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
@@ -856,10 +864,6 @@ msgstr "建立新專案"
 #, fuzzy
 msgid "Getting started"
 msgstr "入門指南"
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "NewProject"
-msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 #: scripts/autoloads/project.gd:42
@@ -971,7 +975,7 @@ msgid "GoZen project files"
 msgstr ""
 
 #: scripts/autoloads/project.gd:178
-msgid "Don\'t save"
+msgid "Don't save"
 msgstr ""
 
 #: scripts/autoloads/project.gd:182
@@ -1003,7 +1007,9 @@ msgid "Update existing clips?"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:325
-msgid "This file is currently used by \'%d\' clip(s).\nDo you want to apply the Audio-Take-Over changes to all existing clips?"
+msgid ""
+"This file is currently used by '%d' clip(s).\n"
+"Do you want to apply the Audio-Take-Over changes to all existing clips?"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:326
@@ -1021,10 +1027,6 @@ msgstr "已加入檔案"
 
 #: scripts/logic/file_logic.gd:417
 msgid "Files loading ..."
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "RAM:"
 msgstr ""
 
 msgid "GoZen"

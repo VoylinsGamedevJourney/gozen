@@ -77,6 +77,7 @@ func _load_existing_po_files():
 
 	var pot_path: String = PATH.path_join("localization_template.pot")
 	_parse_po_file(pot_path, "")
+	var valid_keys: Array = translation_data.keys().duplicate()
 
 	var dir: DirAccess = DirAccess.open(PATH)
 	dir.list_dir_begin()
@@ -88,6 +89,10 @@ func _load_existing_po_files():
 			hidden_languages.append(language)
 			_parse_po_file(PATH.path_join(file_name), language)
 		file_name = dir.get_next()
+
+	for key: String in translation_data.keys():
+		if key not in valid_keys:
+			translation_data.erase(key)
 
 
 func _parse_po_file(file_path: String, language: String):
@@ -297,12 +302,45 @@ func _on_save_pressed():
 				file.store_line("#: " + reference)
 			if translation["fuzzy"]:
 				file.store_line("#, fuzzy")
-			file.store_line('msgid "%s"' % key.c_escape())
-			file.store_line('msgstr "%s"\n' % translation["str"].c_escape())
+
+			_save_po_entry(file, "msgid", key)
+			_save_po_entry(file, "msgstr", translation["str"])
+			file.store_line("") # Empty line between entries.
 
 	button_save.text = "Save progress"
 	button_save.modulate = COLOR_PROGRESS_SAVED
 	print("PO Files Saved successfully!")
+
+
+func _save_po_entry(file: FileAccess, prefix: String, text: String):
+	var escaped_text: String = text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t", "\\t")
+	if escaped_text.length() < 80 and not "\n" in escaped_text:
+		file.store_line('%s "%s"' % [prefix, escaped_text])
+		return
+
+	file.store_line('%s ""' % prefix)
+	var lines: PackedStringArray = escaped_text.split("\n")
+	for i in lines.size():
+		var line_content: String = lines[i]
+
+		# Split at 80 columns.
+		if i < lines.size() - 1:
+			line_content += "\\n"
+		if line_content.length() > 80:
+			var chunks: PackedStringArray = _chunk_string(line_content, 78) # 78 because of "".
+			for chunk: String in chunks:
+				file.store_line('"%s"' % chunk)
+		else:
+			file.store_line('"%s"' % line_content)
+
+
+func _chunk_string(text: String, size: int) -> PackedStringArray:
+	var chunks: PackedStringArray = []
+	var i: int = 0
+	while i < text.length():
+		chunks.append(text.substr(i, size))
+		i += size
+	return chunks
 
 
 func _on_translation_tree_gui_input(event: InputEvent) -> void:
