@@ -293,7 +293,7 @@ func _on_save_pressed():
 	for language: String in list_languages:
 		var path: String = PATH.path_join("%s.po" % language)
 		var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
-		file.store_line('msgid ""\nmsgstr ""\n"Project-Id-Version: GoZen\\n"\n"MIME-Version: 1.0\\n"\n"Content-Type: text/plain; charset=UTF-8\\n"\n"Content-Transfer-Encoding: 8bit\\n"\n' % language)
+		file.store_line('msgid ""\nmsgstr ""\n"Project-Id-Version: GoZen\\n"\n"MIME-Version: 1.0\\n"\n"Content-Type: text/plain; charset=UTF-8\\n"\n"Content-Transfer-Encoding: 8bit\\n"\n"Language: %s\\n"\n' % language)
 
 		for key: String in translation_data.keys():
 			var entry: Dictionary = translation_data[key]
