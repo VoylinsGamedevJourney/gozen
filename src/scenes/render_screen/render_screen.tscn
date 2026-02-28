@@ -124,6 +124,7 @@ layout_mode = 2
 text = "Video codec"
 
 [node name="VideoCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=445035793]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -200,6 +201,7 @@ layout_mode = 2
 text = "Audio codec"
 
 [node name="AudioCodecOptionButton" type="OptionButton" parent="VSplit/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=2102339823]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 

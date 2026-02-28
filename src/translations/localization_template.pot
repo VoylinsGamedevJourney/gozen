@@ -1,23 +1,4 @@
 # LANGUAGE translation for GoZen for the following files:
-# res://render_profiles/vp9.tres
-# res://render_profiles/av1.tres
-# res://render_profiles/high_quality.tres
-# res://render_profiles/youtube_hq.tres
-# res://render_profiles/youtube.tres
-# res://render_profiles/vp8.tres
-# res://resources/timeline_line.tres
-# res://resources/timeline_box_audio_focus.tres
-# res://resources/timeline_box_preview.tres
-# res://resources/timeline_box_video_focus.tres
-# res://resources/timeline_box_color_normal.tres
-# res://resources/timeline_box_text_focus.tres
-# res://resources/timeline_box_image_normal.tres
-# res://resources/timeline_box_image_focus.tres
-# res://resources/timeline_box_text_normal.tres
-# res://resources/timeline_box_video_normal.tres
-# res://resources/timeline_box_audio_normal.tres
-# res://resources/timeline_box_color_focus.tres
-# res://default_bus_layout.tres
 # res://scenes/effects_panel/effects_panel.gd
 # res://scenes/effects_panel/effects_panel.tscn
 # res://scenes/popup_background.tscn
@@ -67,8 +48,6 @@
 # res://scenes/audio_take_over_popup/audio_take_over_wave.gd
 # res://scenes/audio_take_over_popup/audio_take_over_popup.tscn
 # res://scenes/audio_take_over_popup/audio_take_over_popup.gd
-# res://effects/audio/volume.tres
-# res://effects/visual/transform.tres
 # res://scripts/utils/matrix.gd
 # res://scripts/utils/settings_option.gd
 # res://scripts/utils/library.gd
@@ -431,6 +410,11 @@ msgstr ""
 msgid "Custom render profiles"
 msgstr ""
 
+#: scenes/render_screen/render_screen.gd:107
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
+msgstr ""
+
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
 msgstr ""
@@ -774,16 +758,6 @@ msgstr ""
 msgid "The background color when no clips are displayed."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:431
-#: scenes/startup_screen/startup_screen.tscn
-msgid "X:"
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:432
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Y:"
-msgstr ""
-
 #: scenes/settings_menu/settings_menu.gd:497
 msgid "Press any key..."
 msgstr ""
@@ -982,10 +956,6 @@ msgstr ""
 
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Audio offset"
-msgstr ""
-
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
-msgid "None"
 msgstr ""
 
 #: scripts/autoloads/project.gd:43

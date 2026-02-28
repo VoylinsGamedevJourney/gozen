@@ -428,8 +428,8 @@ func create_default_resolution_hbox() -> HBoxContainer:
 	var x_label: Label = Label.new()
 	var y_label: Label = Label.new()
 
-	x_label.text = "X:"
-	y_label.text = "Y:"
+	x_label.text = "X:" # NO_TRANSLATE
+	y_label.text = "Y:" # NO_TRANSLATE
 
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(create_spinbox(

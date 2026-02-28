@@ -86,25 +86,25 @@ func _add_default_profiles() -> void:
 
 
 func _setup_codec_option_buttons() -> void:
-	video_codec_option_button.add_item("HEVC", Encoder.VIDEO_CODEC.V_HEVC)
-	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264)
-	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4)
-	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2)
-	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1)
-	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG)
-	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1)
-	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9)
-	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8)
+	video_codec_option_button.add_item("HEVC", Encoder.VIDEO_CODEC.V_HEVC) # NO_TRANSLATE
+	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264) # NO_TRANSLATE
+	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4) # NO_TRANSLATE
+	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2) # NO_TRANSLATE
+	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1) # NO_TRANSLATE
+	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG) # NO_TRANSLATE
+	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1) # NO_TRANSLATE
+	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9) # NO_TRANSLATE
+	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8) # NO_TRANSLATE
 
-	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV)
-	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM)
-	audio_codec_option_button.add_item("MP2", Encoder.AUDIO_CODEC.A_MP2)
-	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3)
-	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC)
-	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS)
-	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS)
-	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC)
-	audio_codec_option_button.add_item("NONE", Encoder.AUDIO_CODEC.A_NONE)
+	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV) # NO_TRANSLATE
+	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM) # NO_TRANSLATE
+	audio_codec_option_button.add_item("MP2", Encoder.AUDIO_CODEC.A_MP2) # NO_TRANSLATE
+	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3) # NO_TRANSLATE
+	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC) # NO_TRANSLATE
+	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS) # NO_TRANSLATE
+	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS) # NO_TRANSLATE
+	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC) # NO_TRANSLATE
+	audio_codec_option_button.add_item("None", Encoder.AUDIO_CODEC.A_NONE)
 
 
 func _delete_custom_profile(index: int) -> void:

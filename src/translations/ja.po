@@ -334,6 +334,11 @@ msgstr "マーカー"
 msgid "Custom render profiles"
 msgstr "カスタム書き出しプロファイル"
 
+#: scenes/render_screen/render_screen.gd:107
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
+msgstr "なし"
+
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
 msgstr "出力パスを選択"
@@ -693,16 +698,6 @@ msgstr "背景色"
 msgid "The background color when no clips are displayed."
 msgstr "クリップが表示されていない時の背景色。"
 
-#: scenes/settings_menu/settings_menu.gd:431
-#: scenes/startup_screen/startup_screen.tscn
-msgid "X:"
-msgstr "X:"
-
-#: scenes/settings_menu/settings_menu.gd:432
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Y:"
-msgstr "Y:"
-
 #: scenes/settings_menu/settings_menu.gd:497
 msgid "Press any key..."
 msgstr "キーを押してください..."
@@ -906,10 +901,6 @@ msgstr "選択したマーカーを削除します。"
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Audio offset"
 msgstr "音声オフセット"
-
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
-msgid "None"
-msgstr "なし"
 
 #: scripts/autoloads/project.gd:43
 msgid "Initialize new project ..."

@@ -1,7 +1,7 @@
 @tool
 extends EditorScript
 
-const EXTENSIONS_TO_SCAN: PackedStringArray = ["gd", "tscn", "tres"]
+const EXTENSIONS_TO_SCAN: PackedStringArray = ["gd", "tscn"]
 const IGNORE_FOLDERS: PackedStringArray = ["addons", ".godot", "translations", "theming"]
 
 

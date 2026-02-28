@@ -328,6 +328,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="XLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=846695322]
+auto_translate_mode = 2
 layout_mode = 2
 text = "X:"
 
@@ -341,6 +342,7 @@ value = 1.0
 allow_greater = true
 
 [node name="YLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=399971040]
+auto_translate_mode = 2
 layout_mode = 2
 text = "Y:"
 

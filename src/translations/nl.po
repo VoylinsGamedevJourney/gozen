@@ -339,6 +339,11 @@ msgstr "Markeringen"
 msgid "Custom render profiles"
 msgstr "Aangepaste renderprofielen"
 
+#: scenes/render_screen/render_screen.gd:107
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
+msgstr "Geen"
+
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
 msgstr "Selecteer exportpad"
@@ -705,16 +710,6 @@ msgstr "Achtergrondkleur"
 msgid "The background color when no clips are displayed."
 msgstr "De achtergrondkleur wanneer er geen clips worden weergegeven."
 
-#: scenes/settings_menu/settings_menu.gd:431
-#: scenes/startup_screen/startup_screen.tscn
-msgid "X:"
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:432
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Y:"
-msgstr ""
-
 #: scenes/settings_menu/settings_menu.gd:497
 msgid "Press any key..."
 msgstr "Druk op een toets..."
@@ -918,10 +913,6 @@ msgstr "Geselecteerde markering verwijderen."
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Audio offset"
 msgstr "Audio-offset"
-
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
-msgid "None"
-msgstr "Geen"
 
 #: scripts/autoloads/project.gd:43
 msgid "Initialize new project ..."

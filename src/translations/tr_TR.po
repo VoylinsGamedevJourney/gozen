@@ -342,6 +342,11 @@ msgstr ""
 msgid "Custom render profiles"
 msgstr "Profil"
 
+#: scenes/render_screen/render_screen.gd:107
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
+msgid "None"
+msgstr ""
+
 #: scenes/render_screen/render_screen.gd:169
 msgid "Select export path"
 msgstr ""
@@ -722,16 +727,6 @@ msgstr "Arka plan rengi"
 msgid "The background color when no clips are displayed."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:431
-#: scenes/startup_screen/startup_screen.tscn
-msgid "X:"
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:432
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Y:"
-msgstr ""
-
 #: scenes/settings_menu/settings_menu.gd:497
 msgid "Press any key..."
 msgstr ""
@@ -945,10 +940,6 @@ msgstr ""
 
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Audio offset"
-msgstr ""
-
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:69
-msgid "None"
 msgstr ""
 
 #: scripts/autoloads/project.gd:43

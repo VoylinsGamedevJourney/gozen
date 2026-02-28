@@ -3,6 +3,7 @@ extends Control
 
 const PATH: String = "res://translations/"
 
+const COLOR_KEY: Color = Color.DARK_GRAY
 const COLOR_FUZZY: Color = Color(0.6, 0.1, 0.6, 0.2)
 const COLOR_EMPTY: Color = Color(0.6, 0.1, 0.1, 0.2)
 const COLOR_CLEAR: Color = Color(0,0,0,0)
@@ -48,15 +49,7 @@ func _ready() -> void:
 
 	add_child(context_menu)
 	_setup_add_language_dialog()
-	_load_existing_po_files()
-	_update_language_menu()
-	_refresh_grid()
 	_refresh_all()
-
-
-func _gui_input(event: InputEvent) -> void:
-	if event.is_action("save_project"):
-		_on_save_pressed()
 
 
 func _get_all_files(path: String, ignored: Array) -> Array:
@@ -94,7 +87,8 @@ func _load_existing_po_files() -> void:
 		if not dir.current_is_dir() and file_name.ends_with(".po"):
 			var language: String = file_name.get_basename()
 			list_languages.append(language)
-			hidden_languages.append(language)
+			if !hidden_languages.has(language):
+				hidden_languages.append(language)
 			_parse_po_file(PATH.path_join(file_name), language)
 		file_name = dir.get_next()
 
@@ -241,9 +235,18 @@ func _on_language_toggled(id: int) -> void:
 
 
 func _refresh_all() -> void:
-	# TODO: Check if new PO files got added.
+	if button_save.modulate == COLOR_PROGRESS_UNSAVED:
+		print("Please save your changes before refreshing.")
+		return
+	var list: PackedStringArray = hidden_languages.duplicate()
+	_load_existing_po_files()
+	if list.size() != 0:
+		hidden_languages = list
+
 	_update_language_menu()
 	_refresh_grid()
+	button_save.text = "Save progress"
+	button_save.modulate = COLOR_PROGRESS_SAVED
 
 
 func _refresh_grid() -> void:
@@ -265,8 +268,12 @@ func _refresh_grid() -> void:
 	var open_icon: Texture2D = EditorInterface.get_editor_theme().get_icon("FileBrowse", "EditorIcons")
 	for key: String in translation_data.keys():
 		var item: TreeItem = translation_tree.create_item(root)
+		var color: Color = COLOR_KEY
+		color.a = 0.1
 		item.set_text(0, key)
 		item.set_metadata(0, key)
+		item.set_custom_bg_color(0, color)
+		item.set_autowrap_mode(0, TextServer.AUTOWRAP_WORD)
 
 		if translation_data[key]["references"].size() > 0:
 			item.add_button(0, open_icon, 0, false, "Open source file")
@@ -276,6 +283,7 @@ func _refresh_grid() -> void:
 			var language: String = visible_languages[i]
 			var column: int = i + 1
 			item.set_editable(column, true)
+			item.set_autowrap_mode(column, TextServer.AUTOWRAP_WORD)
 
 			if translation_data[key]["translations"].has(language):
 				var translation_info: Dictionary = translation_data[key]["translations"][language]
