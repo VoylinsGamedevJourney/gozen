@@ -3,18 +3,27 @@ extends Control
 
 const PATH: String = "res://translations/"
 
-const COLOR_FUZZY: Color = Color(0.6, 0.1, 0.1, 0.2)
+const COLOR_FUZZY: Color = Color(0.6, 0.1, 0.6, 0.2)
 const COLOR_EMPTY: Color = Color(0.6, 0.1, 0.1, 0.2)
+const COLOR_CLEAR: Color = Color(0,0,0,0)
+
+const COLOR_PROGRESS_SAVED: Color = Color.WHITE
+const COLOR_PROGRESS_UNSAVED: Color = Color.RED
 
 
+@export var key_tree: Tree
 @export var translation_tree: Tree
 @export var button_save: Button
 @export var menu_languages: MenuButton
 
 
 var translation_data: Dictionary = {} ## { "KEY": { "references": PackedStringArray, "translations": { "en": { "str": translation, "fuzzy": bool } } } }
-var active_languages: PackedStringArray = []
+var list_languages: PackedStringArray = []
 var hidden_languages: PackedStringArray =[]
+
+var context_menu: PopupMenu
+var context_item: TreeItem
+var context_column: int
 
 
 
@@ -27,9 +36,19 @@ func _ready():
 	popup.hide_on_checkable_item_selection = false
 	popup.id_pressed.connect(_on_language_toggled)
 
+	context_menu = PopupMenu.new()
+	context_menu.add_item("Toggle Fuzzy", 0)
+	context_menu.id_pressed.connect(_on_context_menu_pressed)
+
+	add_child(context_menu)
 	_load_existing_po_files()
 	_update_language_menu()
 	_refresh_grid()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event.is_action("save_project"):
+		_on_save_pressed()
 
 
 func _get_all_files(path: String, ignored: Array) -> Array:
@@ -53,7 +72,7 @@ func _get_all_files(path: String, ignored: Array) -> Array:
 
 
 func _load_existing_po_files():
-	active_languages.clear()
+	list_languages.clear()
 	translation_data.clear()
 
 	var pot_path: String = PATH.path_join("localization_template.pot")
@@ -65,7 +84,8 @@ func _load_existing_po_files():
 	while file_name != "":
 		if not dir.current_is_dir() and file_name.ends_with(".po"):
 			var language: String = file_name.get_basename()
-			active_languages.append(language)
+			list_languages.append(language)
+			hidden_languages.append(language)
 			_parse_po_file(PATH.path_join(file_name), language)
 		file_name = dir.get_next()
 
@@ -124,19 +144,15 @@ func _parse_po_file(file_path: String, language: String):
 func _add_parsed_entry(msgid: String, msgstr: String, references: Array, fuzzy: bool, language: String):
 	if msgid == "":
 		return
-
-	if not translation_data.has(msgid):
+	elif not translation_data.has(msgid):
 		translation_data[msgid] = { "references":[], "translations": {} }
 
-	for reference in references:
+	for reference: String in references:
 		if not reference in translation_data[msgid]["references"]:
 			translation_data[msgid]["references"].append(reference)
 
 	if language != "":
-		translation_data[msgid]["translations"][language] = {
-			"str": msgstr,
-			"fuzzy": fuzzy
-		}
+		translation_data[msgid]["translations"][language] = {"str": msgstr, "fuzzy": fuzzy}
 
 
 func _extract_string(line: String) -> String:
@@ -150,14 +166,14 @@ func _extract_string(line: String) -> String:
 func _update_language_menu():
 	var popup: PopupMenu = menu_languages.get_popup()
 	popup.clear()
-	for i: int in active_languages.size():
-		popup.add_check_item(active_languages[i], i)
-		popup.set_item_checked(i, not active_languages[i] in hidden_languages)
+	for i: int in list_languages.size():
+		popup.add_check_item(list_languages[i], i)
+		popup.set_item_checked(i, not list_languages[i] in hidden_languages)
 
 
 func _on_language_toggled(id: int):
 	var popup: PopupMenu = menu_languages.get_popup()
-	var language: String = active_languages[id]
+	var language: String = list_languages[id]
 	if popup.is_item_checked(id):
 		hidden_languages.append(language)
 		popup.set_item_checked(id, false)
@@ -170,7 +186,7 @@ func _on_language_toggled(id: int):
 func _refresh_grid():
 	translation_tree.clear()
 	var visible_languages: PackedStringArray =[]
-	for language in active_languages:
+	for language in list_languages:
 		if not language in hidden_languages:
 			visible_languages.append(language)
 
@@ -250,7 +266,7 @@ func _on_item_edited():
 	var column: int = translation_tree.get_edited_column()
 	var key: String = item.get_metadata(0)
 	var visible_languages: PackedStringArray =[]
-	for language: String in active_languages:
+	for language: String in list_languages:
 		if not language in hidden_languages:
 			visible_languages.append(language)
 
@@ -263,11 +279,13 @@ func _on_item_edited():
 	item.set_custom_bg_color(column, Color(0,0,0,0))
 	if item.get_text(column).strip_edges() == "":
 		item.set_custom_bg_color(column, Color(0.6, 0.1, 0.1, 0.5))
+	button_save.text = "Save progress*"
+	button_save.modulate = COLOR_PROGRESS_UNSAVED
 
 
 func _on_save_pressed():
 	DirAccess.make_dir_absolute(PATH)
-	for language: String in active_languages:
+	for language: String in list_languages:
 		var path: String = PATH.path_join("%s.po" % language)
 		var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 		file.store_line('msgid ""\nmsgstr ""\n"Project-Id-Version: GoZen\\n"\n"MIME-Version: 1.0\\n"\n"Content-Type: text/plain; charset=UTF-8\\n"\n"Content-Transfer-Encoding: 8bit\\n"\n' % language)
@@ -281,4 +299,50 @@ func _on_save_pressed():
 				file.store_line("#, fuzzy")
 			file.store_line('msgid "%s"' % key.c_escape())
 			file.store_line('msgstr "%s"\n' % translation["str"].c_escape())
+
+	button_save.text = "Save progress"
+	button_save.modulate = COLOR_PROGRESS_SAVED
 	print("PO Files Saved successfully!")
+
+
+func _on_translation_tree_gui_input(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
+		return
+	var mouse_event: InputEventMouseButton = event
+
+	var item: TreeItem = translation_tree.get_item_at_position(mouse_event.position)
+	if !item:
+		return
+	var column: int = translation_tree.get_column_at_position(mouse_event.position)
+	if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.double_click:
+		if mouse_event.double_click:
+			var key: String = item.get_metadata(0)
+			DisplayServer.clipboard_set(key)
+	if mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and column > 0:
+		context_item = item
+		context_column = column
+		context_menu.position = get_global_mouse_position()
+		context_menu.popup()
+
+
+func _on_context_menu_pressed(id: int):
+	if !context_item:
+		return
+
+	var key: String = context_item.get_metadata(0)
+	var visible_languages: PackedStringArray = []
+	for language: String in list_languages:
+		if language not in hidden_languages:
+			visible_languages.append(language)
+
+	var language: String = visible_languages[context_column - 1]
+	if !translation_data[key]["translations"].has(language):
+		translation_data[key]["translations"][language] = {"str": "", "fuzzy": false }
+
+	var entry = translation_data[key]["translations"][language]
+	entry["fuzzy"] = !entry["fuzzy"]
+
+	if entry["fuzzy"]:
+		context_item.set_custom_bg_color(context_column, COLOR_FUZZY)
+	else:
+		context_item.set_custom_bg_color(context_column, COLOR_CLEAR)

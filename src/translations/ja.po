@@ -19,7 +19,7 @@ msgstr "音声エフェクト"
 
 #: scenes/view_panel/view_panel.gd:32
 msgid "Jump to frame"
-msgstr ""
+msgstr "test"
 
 #: scenes/view_panel/view_panel.gd:72
 msgid "Frame"
@@ -425,6 +425,10 @@ msgstr ""
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:88
 msgid "Loading project"
+msgstr ""
+
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Estimated time - 59:59:59"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
