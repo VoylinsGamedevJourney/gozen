@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://n3st5hcyriqu" path="res://addons/honyaku/honyaku.gd" id="1_64yos"]
 
-[node name="Honyaku" type="Control" unique_id=1904174622 node_paths=PackedStringArray("translation_tree", "button_save", "menu_languages")]
+[node name="Honyaku" type="Control" unique_id=1904174622 node_paths=PackedStringArray("translation_tree", "button_save", "button_add_language", "button_refresh_list", "menu_languages")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,8 @@ size_flags_vertical = 3
 script = ExtResource("1_64yos")
 translation_tree = NodePath("VBox/TranslationTree")
 button_save = NodePath("VBox/TopHBox/SaveButton")
+button_add_language = NodePath("VBox/TopHBox/AddLanguageButton")
+button_refresh_list = NodePath("VBox/TopHBox/RefreshButton")
 menu_languages = NodePath("VBox/TopHBox/LanguagesMenuButton")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=693009723]
@@ -31,6 +33,14 @@ layout_mode = 2
 layout_mode = 2
 text = "Save progress"
 
+[node name="AddLanguageButton" type="Button" parent="VBox/TopHBox" unique_id=974822724]
+layout_mode = 2
+text = "Add language"
+
+[node name="RefreshButton" type="Button" parent="VBox/TopHBox" unique_id=868733097]
+layout_mode = 2
+text = "Refresh list"
+
 [node name="Spacer" type="Control" parent="VBox/TopHBox" unique_id=2777882]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -38,37 +48,6 @@ size_flags_horizontal = 3
 [node name="LanguagesMenuButton" type="MenuButton" parent="VBox/TopHBox" unique_id=737301167]
 layout_mode = 2
 text = "Languages"
-item_count = 10
-popup/item_0/text = "ur_PK"
-popup/item_0/checkable = 1
-popup/item_0/id = 0
-popup/item_1/text = "ja"
-popup/item_1/checkable = 1
-popup/item_1/id = 1
-popup/item_2/text = "nl"
-popup/item_2/checkable = 1
-popup/item_2/id = 2
-popup/item_3/text = "zh_TW"
-popup/item_3/checkable = 1
-popup/item_3/id = 3
-popup/item_4/text = "tr_TR"
-popup/item_4/checkable = 1
-popup/item_4/id = 4
-popup/item_5/text = "hi_IN"
-popup/item_5/checkable = 1
-popup/item_5/id = 5
-popup/item_6/text = "es_ES"
-popup/item_6/checkable = 1
-popup/item_6/id = 6
-popup/item_7/text = "de"
-popup/item_7/checkable = 1
-popup/item_7/id = 7
-popup/item_8/text = "pl"
-popup/item_8/checkable = 1
-popup/item_8/id = 8
-popup/item_9/text = "fr_FR"
-popup/item_9/checkable = 1
-popup/item_9/id = 9
 
 [node name="TranslationTree" type="Tree" parent="VBox" unique_id=307269102]
 layout_mode = 2

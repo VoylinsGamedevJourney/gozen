@@ -11,9 +11,10 @@ const COLOR_PROGRESS_SAVED: Color = Color.WHITE
 const COLOR_PROGRESS_UNSAVED: Color = Color.RED
 
 
-@export var key_tree: Tree
 @export var translation_tree: Tree
 @export var button_save: Button
+@export var button_add_language: Button
+@export var button_refresh_list: Button
 @export var menu_languages: MenuButton
 
 
@@ -25,10 +26,15 @@ var context_menu: PopupMenu
 var context_item: TreeItem
 var context_column: int
 
+var add_language_dialog: ConfirmationDialog
+var add_language_input: LineEdit
 
 
-func _ready():
+
+func _ready() -> void:
 	button_save.pressed.connect(_on_save_pressed)
+	button_add_language.pressed.connect(_on_add_language_pressed)
+	button_refresh_list.pressed.connect(_refresh_all)
 	translation_tree.item_edited.connect(_on_item_edited)
 	translation_tree.button_clicked.connect(_on_grid_button_clicked)
 
@@ -41,9 +47,11 @@ func _ready():
 	context_menu.id_pressed.connect(_on_context_menu_pressed)
 
 	add_child(context_menu)
+	_setup_add_language_dialog()
 	_load_existing_po_files()
 	_update_language_menu()
 	_refresh_grid()
+	_refresh_all()
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -71,7 +79,7 @@ func _get_all_files(path: String, ignored: Array) -> Array:
 	return files
 
 
-func _load_existing_po_files():
+func _load_existing_po_files() -> void:
 	list_languages.clear()
 	translation_data.clear()
 
@@ -95,7 +103,7 @@ func _load_existing_po_files():
 			translation_data.erase(key)
 
 
-func _parse_po_file(file_path: String, language: String):
+func _parse_po_file(file_path: String, language: String) -> void:
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
 	var current_msgid: String = ""
 	var current_msgstr: String = ""
@@ -146,7 +154,7 @@ func _parse_po_file(file_path: String, language: String):
 		_add_parsed_entry(current_msgid, current_msgstr, current_references, is_fuzzy, language)
 
 
-func _add_parsed_entry(msgid: String, msgstr: String, references: Array, fuzzy: bool, language: String):
+func _add_parsed_entry(msgid: String, msgstr: String, references: Array, fuzzy: bool, language: String) -> void:
 	if msgid == "":
 		return
 	elif not translation_data.has(msgid):
@@ -168,7 +176,51 @@ func _extract_string(line: String) -> String:
 	return ""
 
 
-func _update_language_menu():
+func _setup_add_language_dialog() -> void:
+	var vbox: VBoxContainer = VBoxContainer.new()
+	var label: Label = Label.new()
+	label.text = "Enter Locale Code (e.g. en, fr, ja):"
+
+	add_language_dialog = ConfirmationDialog.new()
+	add_language_dialog.title = "Add New Language"
+	add_language_dialog.min_size = Vector2(300, 100)
+
+	add_language_input = LineEdit.new()
+	add_language_input.custom_minimum_size.x = 250
+	add_language_dialog.confirmed.connect(_on_language_confirmed)
+
+	vbox.add_child(label)
+	vbox.add_child(add_language_input)
+	add_language_dialog.add_child(vbox)
+	add_child(add_language_dialog)
+
+
+func _on_add_language_pressed() -> void:
+	add_language_input.text = ""
+	add_language_dialog.popup_centered()
+	add_language_input.grab_focus()
+
+
+func _on_language_confirmed() -> void:
+	var new_language: String = add_language_input.text.strip_edges()
+	if new_language.is_empty():
+		return
+	elif new_language in list_languages:
+		print("Language '%s' already exists." % new_language)
+		return
+
+	list_languages.append(new_language)
+	for key: String in translation_data:
+		if not translation_data[key]["translations"].has(new_language):
+			translation_data[key]["translations"][new_language] = {"str": "", "fuzzy": false}
+
+	button_save.text = "Save progress*"
+	button_save.modulate = COLOR_PROGRESS_UNSAVED
+	_update_language_menu()
+	_refresh_grid()
+
+
+func _update_language_menu() -> void:
 	var popup: PopupMenu = menu_languages.get_popup()
 	popup.clear()
 	for i: int in list_languages.size():
@@ -176,7 +228,7 @@ func _update_language_menu():
 		popup.set_item_checked(i, not list_languages[i] in hidden_languages)
 
 
-func _on_language_toggled(id: int):
+func _on_language_toggled(id: int) -> void:
 	var popup: PopupMenu = menu_languages.get_popup()
 	var language: String = list_languages[id]
 	if popup.is_item_checked(id):
@@ -188,7 +240,13 @@ func _on_language_toggled(id: int):
 	_refresh_grid()
 
 
-func _refresh_grid():
+func _refresh_all() -> void:
+	# TODO: Check if new PO files got added.
+	_update_language_menu()
+	_refresh_grid()
+
+
+func _refresh_grid() -> void:
 	translation_tree.clear()
 	var visible_languages: PackedStringArray =[]
 	for language in list_languages:
@@ -252,7 +310,7 @@ func _generate_context_tooltip(references: Array) -> String:
 	return tooltip
 
 
-func _on_grid_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int):
+func _on_grid_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 	var key: String = item.get_metadata(0)
 	var references: PackedStringArray = translation_data[key]["references"]
 	if references.size() > 0:
@@ -266,7 +324,7 @@ func _on_grid_button_clicked(item: TreeItem, column: int, id: int, mouse_button_
 				EditorInterface.get_script_editor().goto_line(line - 1)
 
 
-func _on_item_edited():
+func _on_item_edited() -> void:
 	var item: TreeItem = translation_tree.get_edited()
 	var column: int = translation_tree.get_edited_column()
 	var key: String = item.get_metadata(0)
@@ -288,7 +346,7 @@ func _on_item_edited():
 	button_save.modulate = COLOR_PROGRESS_UNSAVED
 
 
-func _on_save_pressed():
+func _on_save_pressed() -> void:
 	DirAccess.make_dir_absolute(PATH)
 	for language: String in list_languages:
 		var path: String = PATH.path_join("%s.po" % language)
@@ -312,7 +370,7 @@ func _on_save_pressed():
 	print("PO Files Saved successfully!")
 
 
-func _save_po_entry(file: FileAccess, prefix: String, text: String):
+func _save_po_entry(file: FileAccess, prefix: String, text: String) -> void:
 	var escaped_text: String = text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t", "\\t")
 	if escaped_text.length() < 80 and not "\n" in escaped_text:
 		file.store_line('%s "%s"' % [prefix, escaped_text])
@@ -363,7 +421,7 @@ func _on_translation_tree_gui_input(event: InputEvent) -> void:
 		context_menu.popup()
 
 
-func _on_context_menu_pressed(id: int):
+func _on_context_menu_pressed(id: int) -> void:
 	if !context_item:
 		return
 
