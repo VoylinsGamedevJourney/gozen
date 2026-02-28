@@ -73,6 +73,7 @@ theme_type_variation = &"title_label"
 text = "Loading project"
 
 [node name="EstimatedTimeLabel" type="Label" parent="Panel/Margin/VBox/LoadPanel/Margin/VBox/TopHBox" unique_id=792411073]
+auto_translate_mode = 2
 layout_mode = 2
 theme_type_variation = &"info_label"
 text = "Estimated time - 59:59:59"

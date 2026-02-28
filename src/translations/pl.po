@@ -1,16 +1,9 @@
-# GoZen Localization Template
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.8\n"
 
 #: scenes/effects_panel/effects_panel.gd:325
 msgid "Add effects"
@@ -86,7 +79,8 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:107 scenes/menu_bar/menu_bar.tscn
+#: scenes/file_panel/file_panel.gd:107
+#: scenes/menu_bar/menu_bar.tscn
 msgid "Delete"
 msgstr ""
 
@@ -98,7 +92,8 @@ msgstr ""
 msgid "Save image as ..."
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:114 scenes/timeline/timeline_panel.gd:959
+#: scenes/file_panel/file_panel.gd:114
+#: scenes/timeline/timeline_panel.gd:959
 msgid "Video options"
 msgstr ""
 
@@ -148,7 +143,8 @@ msgstr ""
 msgid "Folder options"
 msgstr "Prędkość"
 
-#: scenes/file_panel/file_panel.gd:138 scenes/file_panel/file_panel.gd:141
+#: scenes/file_panel/file_panel.gd:138
+#: scenes/file_panel/file_panel.gd:141
 #: scenes/file_panel/file_panel.gd:526
 msgid "Create folder"
 msgstr ""
@@ -161,12 +157,14 @@ msgstr ""
 msgid "Delete folder"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
+#: scenes/file_panel/file_panel.gd:183
+#: scenes/rename_file/rename_file.tscn
 #, fuzzy
 msgid "Rename file"
 msgstr "Zmień nazwę pliku na ..."
 
-#: scenes/file_panel/file_panel.gd:188 scenes/file_panel/file_panel.gd:531
+#: scenes/file_panel/file_panel.gd:188
+#: scenes/file_panel/file_panel.gd:531
 msgid "Folder name"
 msgstr ""
 
@@ -187,11 +185,13 @@ msgstr ""
 msgid "Remove empty space"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:473 scenes/timeline/timeline_panel.gd:963
+#: scenes/timeline/timeline_panel.gd:473
+#: scenes/timeline/timeline_panel.gd:963
 msgid "Add track"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:474 scenes/timeline/timeline_panel.gd:964
+#: scenes/timeline/timeline_panel.gd:474
+#: scenes/timeline/timeline_panel.gd:964
 msgid "Remove track"
 msgstr ""
 
@@ -216,8 +216,7 @@ msgid "Duplication failed"
 msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:1145
-msgid ""
-"Could not duplicate %d clip(s) because there was not enough empty space."
+msgid "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr ""
 
 #: scenes/color_popup/color_popup.tscn
@@ -225,10 +224,12 @@ msgstr ""
 msgid "Add color file"
 msgstr "Dodaj plik koloru"
 
-#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
+#: scenes/color_popup/color_popup.tscn
+#: scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
+#: scripts/autoloads/project.gd:179
+#: scripts/logic/file_logic.gd:327
 msgid "Cancel"
 msgstr ""
 
@@ -270,11 +271,7 @@ msgid "Video codec"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
+msgid "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -282,9 +279,7 @@ msgid "Quality"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
+msgid "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -292,11 +287,7 @@ msgid "Speed"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
+msgid "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -407,7 +398,8 @@ msgstr "Profil eksportu"
 msgid "New profile name"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/menu_bar/menu_bar.tscn
 msgid "About GoZen"
 msgstr ""
 
@@ -421,7 +413,8 @@ msgstr ""
 msgid "GoZen version"
 msgstr "Wersja"
 
-#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:38
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr ""
@@ -430,19 +423,20 @@ msgstr ""
 msgid "GitHub repo"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:40
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:41
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:43
-msgid ""
-"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgid "Made by [color=#A718F1][url=URL]Voylin\'s Gamedev Journey[/url][/color]! ;)"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -461,7 +455,8 @@ msgid "Initializing ..."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:102
-#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.tscn
+#: scenes/menu_bar/menu_bar.tscn
 #, fuzzy
 msgid "Editor settings"
 msgstr "Ustawienia edytora"
@@ -554,13 +549,11 @@ msgid "Waveform amplifier"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:180
-msgid ""
-"Sometimes the waveforms aren't very clear due to audio levels being too low, "
-"with this setting you can adjust their intensity"
+msgid "Sometimes the waveforms aren\'t very clear due to audio levels being too low, with this setting you can adjust their intensity"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:181
-msgid "Dialogue's"
+msgid "Dialogue\'s"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:182
@@ -632,8 +625,7 @@ msgid "Pause after dragging"
 msgstr "Pauzuj po przeciągnięciu"
 
 #: scenes/settings_menu/settings_menu.gd:237
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
+msgid "Setting this will pause playback after having dragged the playhead around."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:238
@@ -649,9 +641,7 @@ msgid "Show mode bar"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:250
-msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
+msgid "The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:253
@@ -667,10 +657,7 @@ msgid "Smart Seek Threshold"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:261
-msgid ""
-"Defines how many frames the decoder will sequentially read ahead instead of "
-"performing a full seek operation. Higher values prevent lag during short "
-"jumps but use more CPU."
+msgid "Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:262
@@ -678,9 +665,7 @@ msgid "Video Cache Size"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:268
-msgid ""
-"The maximum number of decoded frames to keep in RAM. Higher values enable "
-"smoother backward seeking and scrubbing but increase memory usage."
+msgid "The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:269
@@ -692,10 +677,7 @@ msgid "Proxies save path"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:277
-msgid ""
-"Changing this setting should be done with a path which points to an already "
-"existing folder. All previously made proxy clips will need to be generated "
-"again and deleted manually from the previous folder."
+msgid "Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:282
@@ -713,7 +695,8 @@ msgstr "Sprawdź wersję"
 msgid "Auto save"
 msgstr "Zapisz"
 
-#: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.gd:299
+#: scenes/menu_bar/menu_bar.tscn
 #, fuzzy
 msgid "Project settings"
 msgstr "Ustawienia projektu"
@@ -760,17 +743,21 @@ msgstr ""
 msgid "Save project"
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:76
+#: scenes/menu_bar/menu_bar.tscn
+#: scripts/autoloads/project.gd:76
 msgid "Save project as ..."
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:186
+#: scripts/autoloads/project.gd:124
 #, fuzzy
 msgid "Open project"
 msgstr "Otwórz projekt"
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Recent projects"
 msgstr "Ostatnie projekty"
@@ -828,11 +815,13 @@ msgstr ""
 msgid "Check for updates"
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Tutorials"
 msgstr "Poradniki"
@@ -841,15 +830,14 @@ msgstr "Poradniki"
 msgid "Render"
 msgstr ""
 
-#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Confirm"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+msgid "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
@@ -875,7 +863,8 @@ msgstr "Jak zacząć"
 msgid "NewProject"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
+#: scenes/startup_screen/startup_screen.tscn
+#: scripts/autoloads/project.gd:42
 #, fuzzy
 msgid "New project"
 msgstr "Nowy projekt"
@@ -920,7 +909,8 @@ msgid "Version"
 msgstr "Wersja"
 
 #: scenes/startup_screen/startup_screen.gd:188
-#: scenes/startup_screen/startup_screen.gd:234 scripts/autoloads/project.gd:78
+#: scenes/startup_screen/startup_screen.gd:234
+#: scripts/autoloads/project.gd:78
 msgid "GoZen project file"
 msgstr ""
 
@@ -965,7 +955,8 @@ msgstr "Nowy projekt"
 msgid "Setting up playback ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:55 scripts/autoloads/project.gd:106
+#: scripts/autoloads/project.gd:55
+#: scripts/autoloads/project.gd:106
 msgid "Finalizing ..."
 msgstr ""
 
@@ -982,7 +973,7 @@ msgid "GoZen project files"
 msgstr ""
 
 #: scripts/autoloads/project.gd:178
-msgid "Don't save"
+msgid "Don\'t save"
 msgstr ""
 
 #: scripts/autoloads/project.gd:182
@@ -1014,9 +1005,7 @@ msgid "Update existing clips?"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:325
-msgid ""
-"This file is currently used by '%d' clip(s).\n"
-"Do you want to apply the Audio-Take-Over changes to all existing clips?"
+msgid "This file is currently used by \'%d\' clip(s).\nDo you want to apply the Audio-Take-Over changes to all existing clips?"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:326
@@ -1036,375 +1025,10 @@ msgstr "Upuszczone pliki"
 msgid "Files loading ..."
 msgstr ""
 
-#~ msgid "title_about_gozen"
-#~ msgstr "O GoZen"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "RAM:"
+msgstr ""
 
-#~ msgid "title_extras"
-#~ msgstr "Inne"
+msgid "GoZen"
+msgstr ""
 
-#~ msgid "title_rendering_error"
-#~ msgstr "Eksport: Nastąpił błąd."
-
-#~ msgid "title_render_video"
-#~ msgstr "Eksport wideo"
-
-#~ msgid "title_render_audio"
-#~ msgstr "Eksport dźwięku"
-
-#~ msgid "title_cpu_threads"
-#~ msgstr "Wątki procesora"
-
-#~ msgid "title_chapters"
-#~ msgstr "Rozdziały"
-
-#~ msgid "title_save_video_audio_to_wav"
-#~ msgstr "Zapisz dźwięk wideo do wav"
-
-#, fuzzy
-#~ msgid "title_dialog_file_too_big"
-#~ msgstr "Dodaj pliki"
-
-#~ msgid "button_tooltip_create_new_project"
-#~ msgstr "Utwórz nowy projekt z wybranymi ustawieniami."
-
-#~ msgid "button_gozen_site"
-#~ msgstr "Strona GoZen"
-
-#~ msgid "button_manual"
-#~ msgstr "Podręcznik"
-
-#~ msgid "button_discord_server"
-#~ msgstr "Serwer Discord"
-
-#~ msgid "button_support_gozen"
-#~ msgstr "Wesprzyj GoZen"
-
-#~ msgid "button_tooltip_editor_settings"
-#~ msgstr "Ustawienia edytora."
-
-#~ msgid "button_cancel"
-#~ msgstr "Anuluj"
-
-#~ msgid "button_reset"
-#~ msgstr "Resetuj"
-
-#~ msgid "button_return"
-#~ msgstr "Wróć"
-
-#~ msgid "button_screen_editing"
-#~ msgstr "Edycja"
-
-#~ msgid "button_screen_render"
-#~ msgstr "Eksport"
-
-#~ msgid "button_dont_save"
-#~ msgstr "Nie zapisuj"
-
-#~ msgid "button_close"
-#~ msgstr "Zamknij"
-
-#~ msgid "text_gozen_website"
-#~ msgstr "Strona internetowa GoZen"
-
-#~ msgid "text_github_repo"
-#~ msgstr "Repozytorium GitHub"
-
-#~ msgid "text_discord_link"
-#~ msgstr "Link Discord"
-
-#~ msgid "text_support_gozen"
-#~ msgstr "Wesprzyj GoZen"
-
-# Note: This is part of the string for the "about gozen" screen.
-#~ msgid "text_gozen_made_by"
-#~ msgstr "Twórca GoZen:"
-
-#~ msgid "text_advanced_settings"
-#~ msgstr "Zaawansowane ustawienia"
-
-#~ msgid "placeholder_text_search_files"
-#~ msgstr "Szukaj plików ..."
-
-#~ msgid "tooltip_ignore_changes_close_settings"
-#~ msgstr "Ignoruj zmiany i zamknij menu ustawień."
-
-#~ msgid "tooltip_setting_background_color"
-#~ msgstr "Domyślny kolor tła twojego projektu."
-
-#~ msgid "setting_language"
-#~ msgstr "Język"
-
-#, fuzzy
-#~ msgid "setting_tooltip_display_scale"
-#~ msgstr "Automatycznie zapisuje twój projekt co kilka minut."
-
-#~ msgid "setting_theme"
-#~ msgstr "Motyw"
-
-#~ msgid "setting_tooltip_theme"
-#~ msgstr "Jasny motyw jest lepszy ;)"
-
-#~ msgid "setting_show_menu_bar"
-#~ msgstr "Pokaż pasek menu"
-
-#~ msgid "setting_tooltip_duration_in_frames"
-#~ msgstr "Czas trwania w klatkach."
-
-#~ msgid "setting_default_project_resolution"
-#~ msgstr "Domyślna rozdzielczość projektu"
-
-#~ msgid "setting_tooltip_default_project_resolution_x"
-#~ msgstr "Domyślna szerokość wideo projektu."
-
-#~ msgid "setting_tooltip_default_project_resolution_y"
-#~ msgstr "Domyślna wysokość wideo projektu."
-
-#~ msgid "setting_default_project_framerate"
-#~ msgstr "Domyślna liczba klatek na sekundę projektu"
-
-#~ msgid "setting_tooltip_default_project_framerate"
-#~ msgstr "Domyślna liczba klatek na sekundę  w projekcie."
-
-#~ msgid "setting_delete_empty_space_mod"
-#~ msgstr "Modyfikator usunięcia pustej przestrzeni"
-
-#~ msgid "setting_tooltip_delete_empty_space_mod"
-#~ msgstr ""
-#~ "Podwójne kliknięcie pustych przestrzeni na osi czasu powoduje ich "
-#~ "usunięcie i przesunięcie wszystkiego. Ustawienie modyfikatora powoduje że "
-#~ "musisz nacisnąć ten klawisz by podwójne kliknięcie usunęło pustą "
-#~ "przestrzeń."
-
-#~ msgid "setting_tooltip_check_version"
-#~ msgstr ""
-#~ "Ta opcja sprawdza wersję z repozytorium Github, a więc wykona połączenie "
-#~ "przez internet. Niektórzy wolą by ich programy nie wykonywały połączeń "
-#~ "internetowych, więc ta opcja jest domyślnie wyłączona."
-
-#~ msgid "setting_auto_save"
-#~ msgstr "Auto zapis"
-
-#~ msgid "setting_tooltip_auto_save"
-#~ msgstr "Automatycznie zapisuje twój projekt co kilka minut."
-
-#~ msgid "encoding_progress_text_setup"
-#~ msgstr "Przygotowywanie enkodera ..."
-
-#~ msgid "encoding_progress_text_open_error"
-#~ msgstr "Enkoder nie mógł zostać otwarty, sprawdź ścieżkę i ustawienia!"
-
-#~ msgid "encoding_progress_text_compiling_audio"
-#~ msgstr "Kompilowanie danych dźwięku ..."
-
-#~ msgid "encoding_progress_text_sending_audio"
-#~ msgstr "Przesyłanie danych dźwięku ..."
-
-#~ msgid "encoding_progress_text_sending_audio_error"
-#~ msgstr "Coś poszło nie tak przy przesyłaniu dźwięku do enkodera!"
-
-#~ msgid "encoding_progress_text_creating_sending_data"
-#~ msgstr "Tworzenie i wysyłanie danych klatek ..."
-
-#~ msgid "encoding_progress_text_sending_data_error"
-#~ msgstr "Coś poszło nie tak przy przesyłaniu klatek do enkodera!"
-
-#~ msgid "encoding_progress_text_canceling"
-#~ msgstr "Anulowanie procesu eksportu ..."
-
-#~ msgid "encoding_progress_text_last_frame"
-#~ msgstr "Wysyłanie ostatnich klatek ..."
-
-#~ msgid "rendering_warning"
-#~ msgstr "Coś poszło nie tak!"
-
-#~ msgid "render_option_path"
-#~ msgstr "Ścieżka"
-
-#~ msgid "render_option_audio_codec"
-#~ msgstr "Kodek dźwięku"
-
-#~ msgid "render_option_video_codec"
-#~ msgstr "Kodek wideo"
-
-#~ msgid "render_option_quality"
-#~ msgstr "Jakość"
-
-#~ msgid "render_option_tooltip_quality"
-#~ msgstr ""
-#~ "Dostosowuje wartość CRF (Constant Rate Factor), mniejsza wartość = lepsza "
-#~ "jakość, ale wolniejsze enkodowanie. Wyższa wartość = gorsza jakość, "
-#~ "szybsze enkodowanie. Dla większości kodeków wartość w zakresie 15-18 jest "
-#~ "polecana, jako że wpływ na jakość nie będzie wtedy zauważalny."
-
-#~ msgid "render_option_tooltip_speed"
-#~ msgstr ""
-#~ "Dostosowuje prędkość enkodowania H264. Ustawienie zbyt dużej prędkości "
-#~ "może mieć negatywny wpływ na końcową jakość wideo."
-
-#~ msgid "render_option_gop_size"
-#~ msgstr "Rozmiar GOP"
-
-#~ msgid "render_option_tooltip_gop_size"
-#~ msgstr ""
-#~ "Grupa obrazków (Group Of Pictures). Wyższa wartość daje lepszą kompresję, "
-#~ "ale im jest większa tym wolniejsze jest przeskakiwanie po klatkach wideo. "
-#~ "Użyj małe wartości jeśli zamierzasz użyć wyeksporotwanego wideo do "
-#~ "montażu."
-
-#~ msgid "render_option_threads_cores"
-#~ msgstr "Wątki/rdzenie"
-
-#~ msgid "render_option_tooltip_threads_cores"
-#~ msgstr "Wstaw '0' aby użyć wszystkich dostępnych wątków."
-
-#~ msgid "render_option_video_length"
-#~ msgstr "Długość wideo"
-
-#~ msgid "render_option_render_time"
-#~ msgstr "Czas eksportu"
-
-#~ msgid "status_project_loading_init"
-#~ msgstr "Otwieranie projektu ..."
-
-#~ msgid "status_project_preparing_timeline"
-#~ msgstr "Przygotowywanie osi czasu ..."
-
-#~ msgid "status_project_loading_files"
-#~ msgstr "Ładowanie plików ..."
-
-#~ msgid "status_project_playback_setup"
-#~ msgstr "Przygotowywanie odtwarzania ..."
-
-#~ msgid "status_project_finalizing"
-#~ msgstr "Kończenie ..."
-
-#~ msgid "status_new_project_init"
-#~ msgstr "Tworzenie nowego projektu ..."
-
-#~ msgid "command_project_settings"
-#~ msgstr "Ustawienia projektu"
-
-#~ msgid "menu_bar_project"
-#~ msgstr "Projekt"
-
-#~ msgid "menu_bar_project_save"
-#~ msgstr "Zapisz"
-
-#~ msgid "menu_bar_project_save_as"
-#~ msgstr "Zapisz jako ..."
-
-#~ msgid "menu_bar_project_open_project"
-#~ msgstr "Otwórz"
-
-#, fuzzy
-#~ msgid "menu_bar_project_recent_projects"
-#~ msgstr "Otwórz"
-
-#, fuzzy
-#~ msgid "menu_bar_project_quit"
-#~ msgstr "Projekt"
-
-#~ msgid "menu_bar_project_open_settings"
-#~ msgstr "Ustawienia projektu"
-
-#, fuzzy
-#~ msgid "menu_bar_preferences_editor_settings"
-#~ msgstr "Ustawienia edytora"
-
-#, fuzzy
-#~ msgid "menu_bar_preferences_module_manager"
-#~ msgstr "Podręcznik"
-
-#, fuzzy
-#~ msgid "menu_bar_preferences_command_bar"
-#~ msgstr "Zapisz jako ..."
-
-#, fuzzy
-#~ msgid "menu_bar_help"
-#~ msgstr "Edytor"
-
-#, fuzzy
-#~ msgid "menu_bar_help_report_issue"
-#~ msgstr "Zapisz"
-
-#, fuzzy
-#~ msgid "menu_bar_help_check_updates"
-#~ msgstr "Zapisz jako ..."
-
-#, fuzzy
-#~ msgid "menu_bar_help_manual"
-#~ msgstr "Podręcznik"
-
-#, fuzzy
-#~ msgid "menu_bar_help_tutorials"
-#~ msgstr "Poradniki"
-
-#, fuzzy
-#~ msgid "menu_bar_help_discord"
-#~ msgstr "Edytor"
-
-#, fuzzy
-#~ msgid "menu_bar_help_site"
-#~ msgstr "Edytor"
-
-#, fuzzy
-#~ msgid "menu_bar_about_gozen"
-#~ msgstr "O GoZen"
-
-#, fuzzy
-#~ msgid "menu_bar_support_gozen"
-#~ msgstr "Wesprzyj GoZen"
-
-#~ msgid "file_dialog_title_add_files"
-#~ msgstr "Dodaj pliki"
-
-#, fuzzy
-#~ msgid "file_dialog_title_save_project_as"
-#~ msgstr "Wybierz ścieżkę zapisu"
-
-#, fuzzy
-#~ msgid "file_dialog_title_open_project"
-#~ msgstr "Dodaj pliki"
-
-#~ msgid "file_dialog_title_select_save_path"
-#~ msgstr "Wybierz ścieżkę zapisu"
-
-#, fuzzy
-#~ msgid "file_dialog_tooltip_gozen_project_files"
-#~ msgstr "Dodaj pliki"
-
-#~ msgid "file_panel_item_add_files"
-#~ msgstr "Dodaj plik(i)"
-
-#~ msgid "file_panel_item_add_text"
-#~ msgstr "Dodaj tekst"
-
-#~ msgid "file_panel_item_add_color"
-#~ msgstr "Dodaj kolor"
-
-#~ msgid "popup_item_rename"
-#~ msgstr "Zmień nazwę"
-
-#~ msgid "popup_item_reload"
-#~ msgstr "Przeładuj"
-
-#~ msgid "popup_item_delete"
-#~ msgstr "Usuń"
-
-#~ msgid "popup_item_duplicate"
-#~ msgstr "Duplikuj"
-
-#~ msgid "popup_item_save_as_file"
-#~ msgstr "Zapisz jako plik ..."
-
-#~ msgid "popup_item_extract_audio"
-#~ msgstr "Wyekstraktuj dźwięk (WAV)"
-
-#~ msgid "popup_separator_image_options"
-#~ msgstr "Opcje obrazu"
-
-#~ msgid "popup_separator_video_options"
-#~ msgstr "Opcje wideo"
-
-#~ msgid "popup_separator_text_options"
-#~ msgstr "Opcje tekstu"

@@ -1,16 +1,9 @@
-# GoZen Localization Template
 msgid ""
 msgstr ""
 "Project-Id-Version: GoZen\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.8\n"
 
 #: scenes/effects_panel/effects_panel.gd:325
 msgid "Add effects"
@@ -86,7 +79,8 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:107 scenes/menu_bar/menu_bar.tscn
+#: scenes/file_panel/file_panel.gd:107
+#: scenes/menu_bar/menu_bar.tscn
 msgid "Delete"
 msgstr ""
 
@@ -98,7 +92,8 @@ msgstr ""
 msgid "Save image as ..."
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:114 scenes/timeline/timeline_panel.gd:959
+#: scenes/file_panel/file_panel.gd:114
+#: scenes/timeline/timeline_panel.gd:959
 msgid "Video options"
 msgstr ""
 
@@ -148,7 +143,8 @@ msgstr ""
 msgid "Folder options"
 msgstr "Velocidad"
 
-#: scenes/file_panel/file_panel.gd:138 scenes/file_panel/file_panel.gd:141
+#: scenes/file_panel/file_panel.gd:138
+#: scenes/file_panel/file_panel.gd:141
 #: scenes/file_panel/file_panel.gd:526
 msgid "Create folder"
 msgstr ""
@@ -161,12 +157,14 @@ msgstr ""
 msgid "Delete folder"
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:183 scenes/rename_file/rename_file.tscn
+#: scenes/file_panel/file_panel.gd:183
+#: scenes/rename_file/rename_file.tscn
 #, fuzzy
 msgid "Rename file"
 msgstr "Renombrar archivo a ..."
 
-#: scenes/file_panel/file_panel.gd:188 scenes/file_panel/file_panel.gd:531
+#: scenes/file_panel/file_panel.gd:188
+#: scenes/file_panel/file_panel.gd:531
 msgid "Folder name"
 msgstr ""
 
@@ -186,11 +184,13 @@ msgstr ""
 msgid "Remove empty space"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:473 scenes/timeline/timeline_panel.gd:963
+#: scenes/timeline/timeline_panel.gd:473
+#: scenes/timeline/timeline_panel.gd:963
 msgid "Add track"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:474 scenes/timeline/timeline_panel.gd:964
+#: scenes/timeline/timeline_panel.gd:474
+#: scenes/timeline/timeline_panel.gd:964
 msgid "Remove track"
 msgstr ""
 
@@ -215,18 +215,19 @@ msgid "Duplication failed"
 msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:1145
-msgid ""
-"Could not duplicate %d clip(s) because there was not enough empty space."
+msgid "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr ""
 
 #: scenes/color_popup/color_popup.tscn
 msgid "Add color file"
 msgstr ""
 
-#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
+#: scenes/color_popup/color_popup.tscn
+#: scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:179 scripts/logic/file_logic.gd:327
+#: scripts/autoloads/project.gd:179
+#: scripts/logic/file_logic.gd:327
 msgid "Cancel"
 msgstr ""
 
@@ -268,11 +269,7 @@ msgid "Video codec"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
+msgid "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -280,9 +277,7 @@ msgid "Quality"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
+msgid "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -290,11 +285,7 @@ msgid "Speed"
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
+msgid "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
@@ -405,7 +396,8 @@ msgstr "Perfil de renderizado"
 msgid "New profile name"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/menu_bar/menu_bar.tscn
 msgid "About GoZen"
 msgstr ""
 
@@ -419,7 +411,8 @@ msgstr ""
 msgid "GoZen version"
 msgstr "Versión"
 
-#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:38
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr ""
@@ -428,19 +421,20 @@ msgstr ""
 msgid "GitHub repo"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:40
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
+#: scenes/about_gozen/about_gozen.gd:41
+#: scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:43
-msgid ""
-"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgid "Made by [color=#A718F1][url=URL]Voylin\'s Gamedev Journey[/url][/color]! ;)"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -459,7 +453,8 @@ msgid "Initializing ..."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:102
-#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.tscn
+#: scenes/menu_bar/menu_bar.tscn
 #, fuzzy
 msgid "Editor settings"
 msgstr "Configuración del editor."
@@ -552,13 +547,11 @@ msgid "Waveform amplifier"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:180
-msgid ""
-"Sometimes the waveforms aren't very clear due to audio levels being too low, "
-"with this setting you can adjust their intensity"
+msgid "Sometimes the waveforms aren\'t very clear due to audio levels being too low, with this setting you can adjust their intensity"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:181
-msgid "Dialogue's"
+msgid "Dialogue\'s"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:182
@@ -630,8 +623,7 @@ msgid "Pause after dragging"
 msgstr "Pausar después de arrastrar"
 
 #: scenes/settings_menu/settings_menu.gd:237
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
+msgid "Setting this will pause playback after having dragged the playhead around."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:238
@@ -647,9 +639,7 @@ msgid "Show mode bar"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:250
-msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
+msgid "The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:253
@@ -665,10 +655,7 @@ msgid "Smart Seek Threshold"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:261
-msgid ""
-"Defines how many frames the decoder will sequentially read ahead instead of "
-"performing a full seek operation. Higher values prevent lag during short "
-"jumps but use more CPU."
+msgid "Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:262
@@ -676,9 +663,7 @@ msgid "Video Cache Size"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:268
-msgid ""
-"The maximum number of decoded frames to keep in RAM. Higher values enable "
-"smoother backward seeking and scrubbing but increase memory usage."
+msgid "The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:269
@@ -690,10 +675,7 @@ msgid "Proxies save path"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:277
-msgid ""
-"Changing this setting should be done with a path which points to an already "
-"existing folder. All previously made proxy clips will need to be generated "
-"again and deleted manually from the previous folder."
+msgid "Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:282
@@ -711,7 +693,8 @@ msgstr "Tema"
 msgid "Auto save"
 msgstr "Guardar"
 
-#: scenes/settings_menu/settings_menu.gd:299 scenes/menu_bar/menu_bar.tscn
+#: scenes/settings_menu/settings_menu.gd:299
+#: scenes/menu_bar/menu_bar.tscn
 #, fuzzy
 msgid "Project settings"
 msgstr "Nuevo proyecto"
@@ -758,17 +741,21 @@ msgstr ""
 msgid "Save project"
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:76
+#: scenes/menu_bar/menu_bar.tscn
+#: scripts/autoloads/project.gd:76
 msgid "Save project as ..."
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:186 scripts/autoloads/project.gd:124
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:186
+#: scripts/autoloads/project.gd:124
 #, fuzzy
 msgid "Open project"
 msgstr "Abrir proyecto"
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Recent projects"
 msgstr "Proyectos recientes"
@@ -826,11 +813,13 @@ msgstr ""
 msgid "Check for updates"
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr ""
 
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Tutorials"
 msgstr "Tutoriales"
@@ -839,15 +828,14 @@ msgstr "Tutoriales"
 msgid "Render"
 msgstr ""
 
-#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Confirm"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+msgid "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
@@ -872,7 +860,8 @@ msgstr "Primeros pasos"
 msgid "NewProject"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:42
+#: scenes/startup_screen/startup_screen.tscn
+#: scripts/autoloads/project.gd:42
 #, fuzzy
 msgid "New project"
 msgstr "Nuevo proyecto"
@@ -917,7 +906,8 @@ msgid "Version"
 msgstr "Versión"
 
 #: scenes/startup_screen/startup_screen.gd:188
-#: scenes/startup_screen/startup_screen.gd:234 scripts/autoloads/project.gd:78
+#: scenes/startup_screen/startup_screen.gd:234
+#: scripts/autoloads/project.gd:78
 msgid "GoZen project file"
 msgstr ""
 
@@ -962,7 +952,8 @@ msgstr "Nuevo proyecto"
 msgid "Setting up playback ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:55 scripts/autoloads/project.gd:106
+#: scripts/autoloads/project.gd:55
+#: scripts/autoloads/project.gd:106
 msgid "Finalizing ..."
 msgstr ""
 
@@ -979,7 +970,7 @@ msgid "GoZen project files"
 msgstr ""
 
 #: scripts/autoloads/project.gd:178
-msgid "Don't save"
+msgid "Don\'t save"
 msgstr ""
 
 #: scripts/autoloads/project.gd:182
@@ -1010,9 +1001,7 @@ msgid "Update existing clips?"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:325
-msgid ""
-"This file is currently used by '%d' clip(s).\n"
-"Do you want to apply the Audio-Take-Over changes to all existing clips?"
+msgid "This file is currently used by \'%d\' clip(s).\nDo you want to apply the Audio-Take-Over changes to all existing clips?"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:326
@@ -1032,310 +1021,10 @@ msgstr "Nuevo proyecto"
 msgid "Files loading ..."
 msgstr ""
 
-#~ msgid "title_about_gozen"
-#~ msgstr "Acerca de GoZen"
+#: scenes/menu_bar/menu_bar.tscn
+msgid "RAM:"
+msgstr ""
 
-#, fuzzy
-#~ msgid "title_extras"
-#~ msgstr "Valores por defecto"
+msgid "GoZen"
+msgstr ""
 
-#, fuzzy
-#~ msgid "title_rendering_error"
-#~ msgstr "Renderizado"
-
-#~ msgid "title_render_video"
-#~ msgstr "Renderizar vídeo"
-
-#~ msgid "title_render_audio"
-#~ msgstr "Renderizar audio"
-
-#~ msgid "title_cpu_threads"
-#~ msgstr "Hilos de CPU"
-
-#, fuzzy
-#~ msgid "title_chapters"
-#~ msgstr "Hilos de CPU"
-
-#, fuzzy
-#~ msgid "title_save_video_audio_to_wav"
-#~ msgstr "Renderizar audio"
-
-#, fuzzy
-#~ msgid "title_dialog_file_too_big"
-#~ msgstr "Configuración del editor."
-
-#~ msgid "button_tooltip_create_new_project"
-#~ msgstr "Crear nuevo proyecto con la configuración elegida."
-
-#~ msgid "button_gozen_site"
-#~ msgstr "Sitio de GoZen"
-
-#~ msgid "button_manual"
-#~ msgstr "Manual"
-
-#~ msgid "button_discord_server"
-#~ msgstr "Servidor de Discord"
-
-#~ msgid "button_support_gozen"
-#~ msgstr "Apoyar a GoZen"
-
-#~ msgid "button_tooltip_editor_settings"
-#~ msgstr "Configuración del editor."
-
-#~ msgid "button_cancel"
-#~ msgstr "Cancelar"
-
-#~ msgid "button_reset"
-#~ msgstr "Restablecer"
-
-#~ msgid "button_return"
-#~ msgstr "Volver"
-
-#, fuzzy
-#~ msgid "button_screen_editing"
-#~ msgstr "Guardar configuración"
-
-#, fuzzy
-#~ msgid "button_screen_render"
-#~ msgstr "Iniciar renderizado"
-
-#, fuzzy
-#~ msgid "button_dont_save"
-#~ msgstr "Guardar"
-
-#~ msgid "button_close"
-#~ msgstr "Cerrar"
-
-#~ msgid "text_gozen_website"
-#~ msgstr "Página web de GoZen"
-
-#~ msgid "text_github_repo"
-#~ msgstr "Repositorio de GitHub"
-
-#~ msgid "text_discord_link"
-#~ msgstr "Enlace de Discord"
-
-#~ msgid "text_support_gozen"
-#~ msgstr "Apoyar a GoZen"
-
-# Note: This is part of the string for the "about gozen" screen.
-#, fuzzy
-#~ msgid "text_gozen_made_by"
-#~ msgstr "GoZen es un editor de vídeo creado por"
-
-#~ msgid "text_advanced_settings"
-#~ msgstr "Configuración avanzada"
-
-#~ msgid "tooltip_ignore_changes_close_settings"
-#~ msgstr "Ignorar cambios y cerrar el menú de configuración."
-
-#~ msgid "tooltip_setting_background_color"
-#~ msgstr "El color de fondo predeterminado de tu proyecto."
-
-#~ msgid "setting_language"
-#~ msgstr "Idioma"
-
-#, fuzzy
-#~ msgid "setting_tooltip_display_scale"
-#~ msgstr "El modo claro es mejor."
-
-#~ msgid "setting_theme"
-#~ msgstr "Tema"
-
-#~ msgid "setting_tooltip_theme"
-#~ msgstr "El modo claro es mejor."
-
-#~ msgid "setting_show_menu_bar"
-#~ msgstr "Mostrar barra de menú"
-
-#, fuzzy
-#~ msgid "setting_tooltip_duration_in_frames"
-#~ msgstr "La duración en fotogramas."
-
-#~ msgid "setting_default_project_resolution"
-#~ msgstr "Resolución predeterminada del proyecto"
-
-#~ msgid "setting_tooltip_default_project_resolution_x"
-#~ msgstr "El ancho de vídeo predeterminado del proyecto."
-
-#~ msgid "setting_tooltip_default_project_resolution_y"
-#~ msgstr "El alto de vídeo predeterminado del proyecto."
-
-#~ msgid "setting_default_project_framerate"
-#~ msgstr "Fotogramas por segundo predeterminados del proyecto"
-
-#~ msgid "setting_tooltip_default_project_framerate"
-#~ msgstr "Los fotogramas por segundo predeterminados del proyecto."
-
-#~ msgid "setting_delete_empty_space_mod"
-#~ msgstr "Modificador para eliminar espacio vacío"
-
-#, fuzzy
-#~ msgid "setting_tooltip_delete_empty_space_mod"
-#~ msgstr ""
-#~ "Hacer doble clic en los espacios vacíos de la línea de tiempo elimina el "
-#~ "espacio vacío y mueve todo. Configurar un modificador hace que necesites "
-#~ "presionar esa tecla específica para que al hacer doble clic se elimine el "
-#~ "espacio vacío entre clips."
-
-#, fuzzy
-#~ msgid "setting_tooltip_check_version"
-#~ msgstr "El modo claro es mejor."
-
-#, fuzzy
-#~ msgid "setting_auto_save"
-#~ msgstr "Idioma"
-
-#, fuzzy
-#~ msgid "setting_tooltip_auto_save"
-#~ msgstr "El modo claro es mejor."
-
-#, fuzzy
-#~ msgid "encoding_progress_text_setup"
-#~ msgstr "Configurando renderizador ..."
-
-#, fuzzy
-#~ msgid "encoding_progress_text_open_error"
-#~ msgstr ""
-#~ "No se pudo abrir el renderizador, ¡Verifica la ruta y la configuración!"
-
-#~ msgid "encoding_progress_text_compiling_audio"
-#~ msgstr "Compilando datos de audio ..."
-
-#, fuzzy
-#~ msgid "encoding_progress_text_sending_audio"
-#~ msgstr "¡Algo salió mal al enviar audio al renderizador!"
-
-#, fuzzy
-#~ msgid "encoding_progress_text_sending_audio_error"
-#~ msgstr "¡Algo salió mal al enviar audio al renderizador!"
-
-#~ msgid "encoding_progress_text_creating_sending_data"
-#~ msgstr "Creando y enviando datos de fotogramas ..."
-
-#, fuzzy
-#~ msgid "encoding_progress_text_sending_data_error"
-#~ msgstr "¡Algo salió mal al enviar fotogramas al renderizador!"
-
-#~ msgid "encoding_progress_text_canceling"
-#~ msgstr "Cancelando proceso de renderizado ..."
-
-#~ msgid "encoding_progress_text_last_frame"
-#~ msgstr "Enviando últimos fotogramas ..."
-
-#~ msgid "rendering_warning"
-#~ msgstr "¡Algo salió mal!"
-
-#~ msgid "render_option_path"
-#~ msgstr "Ruta"
-
-#~ msgid "render_option_audio_codec"
-#~ msgstr "Códec de audio"
-
-#~ msgid "render_option_video_codec"
-#~ msgstr "Códec de vídeo"
-
-#~ msgid "render_option_quality"
-#~ msgstr "Calidad"
-
-#, fuzzy
-#~ msgid "render_option_tooltip_quality"
-#~ msgstr ""
-#~ "Ajusta el CRF (Factor de Tasa Constante), la configuración de menor "
-#~ "calidad es 50 y la de mayor calidad es 15. El valor predeterminado es 18. "
-#~ "Se utiliza para ajustar la tasa de bits, lo que tiene un impacto en la "
-#~ "calidad y el tamaño. El valor 0 ofrece la mejor calidad, 51 la peor, y 18 "
-#~ "no es muy notorio."
-
-#~ msgid "render_option_tooltip_speed"
-#~ msgstr ""
-#~ "Ajusta la velocidad de codificación H264. Configurar la velocidad "
-#~ "demasiado alta podría tener un impacto negativo en la calidad final del "
-#~ "vídeo."
-
-#~ msgid "render_option_gop_size"
-#~ msgstr "Tamaño de GOP"
-
-#~ msgid "render_option_tooltip_gop_size"
-#~ msgstr ""
-#~ "Grupo de Imágenes. Un valor más alto es mejor para la compresión en "
-#~ "comparación con un valor más bajo. Pero cuanto más alto sea el valor, "
-#~ "menos preciso será al buscar y navegar a través de la reproducción del "
-#~ "vídeo. Establece un valor bajo si tienes la intención de utilizar el "
-#~ "vídeo renderizado para editar."
-
-#~ msgid "render_option_threads_cores"
-#~ msgstr "Hilos/núcleos"
-
-#~ msgid "render_option_tooltip_threads_cores"
-#~ msgstr "Pon '0' para usar todos los hilos disponibles."
-
-#~ msgid "render_option_video_length"
-#~ msgstr "Duración del vídeo"
-
-#~ msgid "render_option_render_time"
-#~ msgstr "Tiempo de renderizado"
-
-#, fuzzy
-#~ msgid "status_new_project_init"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_project"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_project_open_project"
-#~ msgstr "Abrir proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_project_recent_projects"
-#~ msgstr "Abrir proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_project_quit"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_preferences_editor_settings"
-#~ msgstr "Configuración del editor."
-
-#, fuzzy
-#~ msgid "menu_bar_help"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_help_report_issue"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_help_check_updates"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_help_tutorials"
-#~ msgstr "Configuración del editor."
-
-#, fuzzy
-#~ msgid "menu_bar_help_site"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "menu_bar_about_gozen"
-#~ msgstr "Acerca de GoZen"
-
-#, fuzzy
-#~ msgid "menu_bar_support_gozen"
-#~ msgstr "Apoyar a GoZen"
-
-#, fuzzy
-#~ msgid "file_dialog_title_save_project_as"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "file_dialog_title_open_project"
-#~ msgstr "Nuevo proyecto"
-
-#, fuzzy
-#~ msgid "file_dialog_tooltip_gozen_project_files"
-#~ msgstr "Los fotogramas por segundo predeterminados del proyecto."

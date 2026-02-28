@@ -63,6 +63,10 @@ window/stretch/aspect="keep_width"
 window/size/mode.editor=0
 window/stretch/mode.editor="disabled"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/honyaku/plugin.cfg")
+
 [extensions]
 
 audio=PackedStringArray("wav", "mp3", "ogg")
