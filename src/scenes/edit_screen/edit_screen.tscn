@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://7gty5dfdid1e" path="res://scenes/effects_panel/effects_panel.tscn" id="4_wnrwj"]
 
 [node name="EditScreen" type="HSplitContainer" unique_id=485993837]
+auto_translate_mode = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

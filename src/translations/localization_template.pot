@@ -145,14 +145,6 @@ msgstr ""
 msgid "Save screenshot to project ..."
 msgstr ""
 
-#: scenes/editor/editor.tscn
-msgid "EditTab"
-msgstr ""
-
-#: scenes/editor/editor.tscn
-msgid "RenderTab"
-msgstr ""
-
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
 msgstr ""

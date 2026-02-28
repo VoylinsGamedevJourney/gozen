@@ -40,9 +40,11 @@ current_tab = 0
 tabs_visible = false
 
 [node name="EditTab" parent="VBox/VSplitContainer/ScreenTabContainer" unique_id=2040617319 instance=ExtResource("8_rolao")]
+auto_translate_mode = 2
 layout_mode = 2
 
 [node name="RenderTab" parent="VBox/VSplitContainer/ScreenTabContainer" unique_id=755075727 instance=ExtResource("9_p4u40")]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 
