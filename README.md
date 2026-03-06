@@ -66,9 +66,6 @@ GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad 
 
 If you find GoZen useful and would like to give me more time and resources to work on this project, you can financially support me through [my Ko-fi page](https://ko-fi.com/voylin).
 
-## Changelog
-See the [CHANGELOG.md](./CHANGELOG.md) file for an overview of all changes to the projects from version to version.
-
 ## About GoZen
 I named the editor GoZen, **Go** comes from Godot and **Zen** from ... zen. The name implies that the video editor is made in Godot, and that it's a _zen-like_ experience to use. 午前 (Gozen) also means morning in Japanese, that's why the logo represents a rising sun.
 
@@ -81,3 +78,4 @@ The project is licensed under the [GPLv3 license](./LICENSE). FFmpeg is being us
 > Other libraries used may come with their own specific licenses so be sure to check before forking the project and/or using code from this project to see if it can be used with your project license.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
+[Patreon page](https://patreon.com/voylin)
