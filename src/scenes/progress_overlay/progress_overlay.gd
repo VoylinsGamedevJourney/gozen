@@ -27,7 +27,7 @@ func update_title(title: String) -> void:
 
 
 func update(value: int, text: String) -> void:
-	await update_bar(value)
+	update_bar(value)
 	update_hint(text)
 
 	# Updating estimated time
@@ -37,15 +37,12 @@ func update(value: int, text: String) -> void:
 	var remaining: String = Utils.format_time_str(remaining_sec, true)
 
 	estimated_time_label.text = "Estimated time - %s" % remaining
-	await RenderingServer.frame_post_draw
 
 
-func update_bar(value: int, wait_frame: bool = false) -> void:
+func update_bar(value: int) -> void:
 	var tween: Tween = create_tween()
 	@warning_ignore("return_value_discarded")
 	tween.tween_property(progress_bar, "value", value, 1)
-	if wait_frame:
-		await RenderingServer.frame_post_draw
 
 
 func update_hint(text: String) -> void:

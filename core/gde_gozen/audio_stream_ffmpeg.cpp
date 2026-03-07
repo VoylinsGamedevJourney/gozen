@@ -1,10 +1,12 @@
 #include "audio_stream_ffmpeg.hpp"
 
 AudioStreamFFmpeg::~AudioStreamFFmpeg() {
+	if (mutex) {
+		memdelete(mutex);
+		mutex = nullptr;
+	}
 	if (!loaded)
 		return;
-
-	memdelete(mutex);
 
 	loaded = false;
 	av_stream = nullptr;

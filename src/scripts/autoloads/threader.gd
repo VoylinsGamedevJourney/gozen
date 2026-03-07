@@ -12,20 +12,28 @@ func _process(_delta: float) -> void:
 			timed_tasks[i].execute()
 			timed_tasks.erase(i)
 
+	mutex.lock()
 	for i: int in range(tasks.size() - 1, -1, -1):
 		var task: Task = tasks[i]
 		if WorkerThreadPool.is_task_completed(task.id):
 			error = WorkerThreadPool.wait_for_task_completion(task.id)
 			if error:
 				printerr("Threader: Error with task: ", task.id, " - Error: ", error)
-			if !task.after_task.is_null():
-				task.after_task.call()
+
+			var next_task: Callable = task.after_task
 			tasks.remove_at(i)
+			mutex.unlock()
+			if !next_task.is_null():
+				next_task.call()
+			mutex.lock()
+	mutex.unlock()
 
 
-func add_task(todo: Callable, after_todo: Callable) -> void:
+func add_task(todo: Callable, after_todo: Callable = Callable()) -> void:
 	var task: Task = Task.new(WorkerThreadPool.add_task(todo), after_todo)
+	mutex.lock()
 	tasks.append(task)
+	mutex.unlock()
 
 
 

@@ -28,6 +28,8 @@ var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
 var index_map: Dictionary[int, int] = {} ## { file: index }
 
+var files_dropping: bool = false
+
 
 
 # --- Main ---
@@ -145,8 +147,8 @@ func _add(path: String) -> int:
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck":
 		type = EditorCore.TYPE.PCK
-	else: printerr("FileLogic: Invalid file:
-		", path)
+	else:
+		printerr("FileLogic: Invalid file:", path)
 
 	if path.contains("temp://"):
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
@@ -397,21 +399,23 @@ func duplicate_text(file: int) -> void:
 
 ## File dropping can't be un-done with the undo_redo system!
 func dropped(dropped_file_paths: PackedStringArray) -> void:
+	files_dropping = true
 	var paths: PackedStringArray = []
 	for path: String in Utils.find_subfolder_files(dropped_file_paths):
 		if path not in project_data.files_path:
 			paths.append(path) # Duplicate check.
 	if paths.size() == 0:
+		files_dropping = false
 		return # Early return check
 
 	var progress: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	var progress_increment: float = (1 / float(paths.size())) * 50
 	progress.set_state_file_loading(paths.size())
 	progress.update_title(tr("Files dropped"))
-	await progress.update(0, "")
+	progress.update(0, "")
 
 	var error_occured: bool = false
-	var indexes: PackedInt64Array = []
+	var indexes: Array[int] = [] # Can NOT be a Packed array!!!!
 	for path: String in paths:
 		var file: int = _add(path)
 		if file != -1:
@@ -420,11 +424,10 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 		else:
 			progress.update_file(path, -1)
 			error_occured = true
-	await progress.update(10, tr("Files loading ..."))
+	progress.update(10, tr("Files loading ..."))
 
 	while !indexes.is_empty(): # Looping till all files are loaded
-		await RenderingServer.frame_post_draw
-		var to_remove: PackedInt64Array = []
+		var to_remove: Array[int] = [] # Can NOT be a Packed array!!!!
 		Threader.mutex.lock()
 		for index: int in indexes:
 			if file_data.size() > index and file_data[index] != null:
@@ -642,7 +645,7 @@ func reload(file: int) -> void:
 func get_video_reader(file: int, instance_index: int) -> Video:
 	var file_index: int = index_map[file]
 	if instance_index == 0:
-		return file_data[file_index]
+		return get_data(file_index)
 
 	Threader.mutex.lock()
 	if not video_pools.has(file):
@@ -667,7 +670,8 @@ func get_video_reader(file: int, instance_index: int) -> Video:
 	var new_video: Video = Video.new()
 	if new_video.open(path_to_load) != OK:
 		printerr("FileLogic: Failed to create pool instance for '%s'!" % file_path)
-		return file_data[file_index] # Return main video as fallback.
+		Threader.mutex.unlock()
+		return get_data(file_index) # Return main video as fallback.
 	new_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	new_video.set_cache_size(Settings.get_video_cache_size())
 	pool.append(new_video)
@@ -680,12 +684,15 @@ func get_audio_stream(file: int, instance_index: int) -> AudioStreamFFmpeg:
 	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
 
 	if type == EditorCore.TYPE.VIDEO:
-		if audio_wave.has(file) and audio_wave[file].is_empty():
+		Threader.mutex.lock()
+		var empty_wave: bool = audio_wave.has(file) and audio_wave[file].is_empty()
+		Threader.mutex.unlock()
+		if empty_wave:
 			return null
 		var video: Video = get_video_reader(file, instance_index)
 		return null if video == null else video.get_audio()
 	if instance_index == 0:
-		return file_data[file_index]
+		return get_data(file_index)
 
 	Threader.mutex.lock()
 	if not audio_pools.has(file):
@@ -703,7 +710,7 @@ func get_audio_stream(file: int, instance_index: int) -> AudioStreamFFmpeg:
 	if new_stream.open(file_path) != OK:
 		printerr("FileLogic: Failed to create audio pool instance for '%s'!" % file_path)
 		Threader.mutex.unlock()
-		return file_data[file_index] # Return main audio as fallback.
+		return get_data(file_index) # Return main audio as fallback.
 
 	pool.append(new_stream)
 	Threader.mutex.unlock()

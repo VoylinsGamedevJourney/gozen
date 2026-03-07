@@ -40,7 +40,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("New project"))
-	await loading_overlay.update(0, tr("Initialize new project ..."))
+	loading_overlay.update(0, tr("Initialize new project ..."))
 
 	set_project_path(new_path)
 	set_resolution(new_resolution)
@@ -51,8 +51,8 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 		tracks._add_track(index, false)
 	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
 
-	await loading_overlay.update(50, tr("Setting up playback ..."))
-	await loading_overlay.update(99, tr("Finalizing ..."))
+	loading_overlay.update(50, tr("Setting up playback ..."))
+	loading_overlay.update(99, tr("Finalizing ..."))
 	get_window().title = "GoZen - %s" % new_path.get_file().get_basename()
 	_update_recent_projects(new_path)
 	PopupManager.close_all()
@@ -86,13 +86,13 @@ func open(new_project_path: String) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("Loading project"))
-	await loading_overlay.update(0, tr("Initializing ..."))
-	await loading_overlay.update_bar(1, true)
+	loading_overlay.update(0, tr("Initializing ..."))
+	loading_overlay.update_bar(1)
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
-	await loading_overlay.update(5, tr("Setting up timeline ..."))
+	loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
 	set_framerate(data.framerate)
 	_setup_logic()
@@ -100,13 +100,13 @@ func open(new_project_path: String) -> void:
 	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
 
 	# 7% = Timeline ready to accept clips.
-	await loading_overlay.update(7, tr("Loading project files ..."))
+	loading_overlay.update(7, tr("Loading project files ..."))
 	files._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
 	# 99% = Finalizing.
-	await loading_overlay.update(99, tr("Finalizing ..."))
+	loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
 
-	await loading_overlay.update_bar(100)
+	loading_overlay.update_bar(100)
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
 	PopupManager.close(PopupManager.PROGRESS)
 

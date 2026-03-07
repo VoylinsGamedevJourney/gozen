@@ -304,16 +304,18 @@ func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 	if raw_data is Video:
 		var video: Video = project_files.get_video_reader(file_id, instance_index)
 		if update:
-			compositors[track_id].initialize_video(video)
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))
 
-		compositors[track_id].process_video_frame(video, effects, relative_frame, fade_alpha)
+		RenderingServer.call_on_render_thread(compositors[track_id].process_video_frame.bind(
+				video, effects, relative_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Texture2D:
 		var image: Texture2D = raw_data
 		if update:
-			compositors[track_id].initialize_image(image)
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image))
 
-		compositors[track_id].process_image_frame(effects, relative_frame, fade_alpha)
+		RenderingServer.call_on_render_thread(compositors[track_id].process_image_frame.bind(
+				effects, relative_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 
 

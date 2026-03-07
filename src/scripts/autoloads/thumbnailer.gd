@@ -60,8 +60,8 @@ func get_thumb(file_id: int) -> Texture2D:
 
 	# Check if color or image.
 	if file_path in ["temp://color", "temp://image"]:
-		var temp: Variant = Project.files.file_data[file_index].image_data
-		if !temp or temp != ImageTexture:
+		var temp: Variant = Project.files.get_data(file_index)
+		if !temp or temp is not ImageTexture:
 			return null
 
 		var image_tex: ImageTexture = temp
@@ -73,12 +73,17 @@ func get_thumb(file_id: int) -> Texture2D:
 
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
+	Threader.mutex.lock()
 	if data.has(file_path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[file_path]):
 		data.erase(file_path)
 		_save_data()
 
 	# Not thumb has been made yet, return default and put id in waiting line.
-	if !data.has(file_path):
+	var has_thumb: bool = data.has(file_path)
+	var thumb_id: int = data.get(file_path, 0)
+	Threader.mutex.unlock()
+
+	if !has_thumb:
 		thumbs_todo.append(file_id)
 		# Add the correct placeholder image.
 		match Project.data.files_type[file_index]:
@@ -87,7 +92,7 @@ func get_thumb(file_id: int) -> Texture2D:
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video placeholder.
 
 	# Return the saved thumbnail.
-	var raw_path: String = thumb_folder + FILE_NAME % data[file_path]
+	var raw_path: String = thumb_folder + FILE_NAME % thumb_id
 	image = Image.load_from_file(ProjectSettings.globalize_path(raw_path))
 	return ImageTexture.create_from_image(image)
 
@@ -97,27 +102,28 @@ func _get_default_thumb(icon_uid: String) -> Texture2D:
 	var image: Image = scale_thumbnail(image_tex.get_image())
 	return ImageTexture.create_from_image(image)
 
-# This function is for generating thumbnails, should only be called from the
-# _process function and in a thread through Threader.
 
+## This function is for generating thumbnails, should only be called from the
+## _process function and in a thread through Threader.
 func _gen_thumb(file_id: int) -> void:
+	Threader.mutex.lock()
 	if !Project.files.index_map.has(file_id):
+		Threader.mutex.unlock()
 		return
 	var file_index: int = Project.files.index_map[file_id]
 	var file_path: String = Project.data.files_path[file_index]
 	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
+	Threader.mutex.unlock()
 	var image: Image
 
 	match file_type:
 		EditorCore.TYPE.IMAGE: image = Image.load_from_file(file_path)
 		EditorCore.TYPE.AUDIO: image = Project.files.generate_audio_thumb(file_id)
 		EditorCore.TYPE.VIDEO:
-			var temp: Variant = Project.files.file_data[file_index]
-			if !temp or temp is not Video:
-				return
-			var video: Video = temp
-			image = video.generate_thumbnail_at_frame(0)
-
+			var video: Video = Video.new()
+			if video.open(file_path) == OK:
+				image = video.generate_thumbnail_at_frame(0)
+				video.close()
 	if !image: # TODO: Run this function a second or so later as the data will probably be ready by now.
 		return
 
@@ -138,10 +144,10 @@ func _on_audio_wave_generated(file: int) -> void:
 	var file_path: String = Project.data.files_path[file_index]
 
 	# Remove the potentially flat/empty cached thumbnail data
+	Threader.mutex.lock()
 	if data.has(file_path):
-		Threader.mutex.lock()
 		data.erase(file_path)
-		Threader.mutex.unlock()
+	Threader.mutex.unlock()
 
 	# Queue this file for immediate thumbnail regeneration
 	thumbs_todo.insert(0, file)

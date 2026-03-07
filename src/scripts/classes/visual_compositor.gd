@@ -79,6 +79,7 @@ var groups_x: int
 var groups_y: int
 
 
+
 func _init_start(p_resolution: Vector2i) -> void:
 	if initialized:
 		cleanup()

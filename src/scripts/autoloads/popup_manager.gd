@@ -49,7 +49,6 @@ func _ready() -> void:
 func open(popup: int) -> void:
 	if popup in _open_popups:
 		return
-
 	_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
 	match popup:
 		SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
