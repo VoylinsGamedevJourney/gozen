@@ -8,11 +8,12 @@ AudioStreamFFmpeg::~AudioStreamFFmpeg() {
 
 	loaded = false;
 	av_stream = nullptr;
-	file_buffer.clear();
-	avio_ctx.reset();
-	swr_ctx.reset();
 	av_codec_ctx.reset();
 	av_format_ctx.reset();
+
+	swr_ctx.reset();
+	avio_ctx.reset();
+	file_buffer.clear();
 }
 
 int AudioStreamFFmpeg::open(const String& path, int stream_index) {

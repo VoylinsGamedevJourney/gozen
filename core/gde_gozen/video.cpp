@@ -142,7 +142,10 @@ int Video::open(const String& video_path) {
 			// but you could return an error here if preferred.
 			audio_stream.unref();
 		}
+	} else {
+		audio_stream.unref();
 	}
+
 	// Setup Decoder codec context.
 	const AVCodec* av_codec = avcodec_find_decoder(av_stream->codecpar->codec_id);
 	if (av_codec == NULL) {
@@ -346,13 +349,12 @@ void Video::close() {
 	av_packet.reset();
 	av_frame.reset();
 	av_sws_frame.reset();
-	avio_ctx.reset();
-
-	file_buffer.clear();
-
-	sws_ctx.reset();
 	av_codec_ctx.reset();
 	av_format_ctx.reset();
+
+	sws_ctx.reset();
+	avio_ctx.reset();
+	file_buffer.clear();
 }
 
 
