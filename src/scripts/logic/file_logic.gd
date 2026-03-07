@@ -215,6 +215,9 @@ func _delete(file: int) -> void:
 		project_data.files_ato_offset.erase(file)
 		project_data.files_ato_file.erase(file)
 
+	Threader.mutex.lock()
+	if file_data.size() > file_index:
+		file_data.remove_at(file_index)
 	if video_pools.has(file):
 		for video: Video in video_pools[file]:
 			video.close()
@@ -223,6 +226,9 @@ func _delete(file: int) -> void:
 		for stream: AudioStream in audio_pools[file]:
 			stream.free()
 		audio_pools.erase(file)
+	if audio_wave.has(file):
+		audio_wave.erase(file)
+	Threader.mutex.unlock()
 
 	_rebuild_map()
 	deleted.emit(file)
@@ -418,11 +424,16 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 
 	while !indexes.is_empty(): # Looping till all files are loaded
 		await RenderingServer.frame_post_draw
+		var to_remove: PackedInt64Array = []
+		Threader.mutex.lock()
 		for index: int in indexes:
-			if file_data[index] != null:
+			if file_data.size() > index and file_data[index] != null:
 				progress.update_file(project_data.files_path[index], 1)
 				progress.increment_bar(progress_increment)
-				indexes.remove_at(indexes.find(index))
+				to_remove.append(index)
+		Threader.mutex.unlock()
+		for index: int in to_remove:
+			indexes.remove_at(indexes.find(index))
 
 	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
@@ -436,7 +447,6 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 
 ## (Re)load the data of a file.
 func load_data(file_index: int) -> void:
-	# Should normally not happen
 	if file_index == -1:
 		return printerr("FileLogic: Can't init data as file %s is null!")
 	var file: int = project_data.files[file_index]
@@ -444,38 +454,51 @@ func load_data(file_index: int) -> void:
 	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
 
 	# Create new slot if new file, else copy over existing slot.
-	if file_data.size() -1 != file_index:
-		file_data.append(null)
-	else:
-		file_data[file] = null
+	Threader.mutex.lock()
+	if file_data.size() <= file_index:
+		file_data.resize(file_index + 1)
+	file_data[file_index] = null
+	Threader.mutex.unlock()
 
 	if path.begins_with("temp://"): # TODO: Add text
-		var temp_file: TempFile = TempFile.new()
+		var temp_file: TempFile = project_data.files_temp_file.get(file, TempFile.new())
 		if path == "temp://image":
+			Threader.mutex.lock()
 			file_data[file_index] = temp_file.image_data
+			Threader.mutex.unlock()
 		elif path == "temp://color":
 			temp_file.load_image_from_color()
+			Threader.mutex.lock()
 			file_data[file_index] = temp_file.image_data
+			Threader.mutex.unlock()
 		project_data.files_temp_file[file] = temp_file
 		return
 	match type:
 		EditorCore.TYPE.IMAGE:
+			Threader.mutex.lock()
 			file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
+			Threader.mutex.unlock()
 		EditorCore.TYPE.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		EditorCore.TYPE.AUDIO:
+			Threader.mutex.lock()
 			if audio_pools.has(file):
 				for stream: AudioStream in audio_pools[file]:
 					stream.free()
 				audio_pools[file] = []
+			Threader.mutex.unlock()
 
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 			if stream.open(path) == OK and stream.get_length() != 0:
+				Threader.mutex.lock()
 				file_data[file_index] = stream
+				Threader.mutex.unlock()
 				Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 			else:
 				printerr("FileLogic: Couldn't open audio stream!")
+				Threader.mutex.lock()
 				file_data[file_index] = AudioStreamWAV.new()
+				Threader.mutex.unlock()
 		EditorCore.TYPE.PCK:
 			if !ProjectSettings.load_resource_pack(path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
@@ -501,13 +524,15 @@ func _load_video(file: int) -> void:
 	Threader.mutex.lock()
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	temp_video.set_cache_size(Settings.get_video_cache_size())
+	if file_data.size() <= index:
+		file_data.resize(index + 1)
 	file_data[index] = temp_video
 	if video_pools.has(file):
 		for video: Video in video_pools[file]:
 			video.close()
 		video_pools[file] = []
-	Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 	Threader.mutex.unlock()
+	Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 
 
 func _create_wave(file: int) -> void:
@@ -518,8 +543,10 @@ func _create_wave(file: int) -> void:
 	var file_path: String = project_data.files_path[file_index]
 	var data: PackedByteArray = Audio.get_audio_data(file_path, -1)
 
-	audio_wave[file] = PackedFloat32Array()
 	if data.is_empty():
+		Threader.mutex.lock()
+		audio_wave[file] = PackedFloat32Array()
+		Threader.mutex.unlock()
 		return push_warning("Audio data is empty!")
 
 	var bytes_size: float = 4 # 16 bit * stereo
@@ -528,7 +555,8 @@ func _create_wave(file: int) -> void:
 	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
 	var current_frame_index: int = 0
 
-	audio_wave[file].resize(total_blocks)
+	var local_wave: PackedFloat32Array = PackedFloat32Array()
+	local_wave.resize(total_blocks)
 	for i: int in total_blocks:
 		var max_abs_amplitude: float = 0.0
 		var start_frame: int = current_frame_index
@@ -551,10 +579,13 @@ func _create_wave(file: int) -> void:
 				max_abs_amplitude = frame_max_abs_amplitude
 
 		# Incase we close the editor whilst wave data is still being created.
-		if audio_wave[file].size() == 0:
+		if local_wave.size() == 0:
 			return
-		audio_wave[file][i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
+		local_wave[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
+	Threader.mutex.lock()
+	audio_wave[file] = local_wave
+	Threader.mutex.unlock()
 
 
 func _on_wave_ready(file: int) -> void:
@@ -563,13 +594,18 @@ func _on_wave_ready(file: int) -> void:
 
 
 func generate_audio_thumb(file: int) -> Image:
-	if !audio_wave.has(file) or audio_wave[file].size() <= 0:
+	Threader.mutex.lock()
+	var has_wave: bool = audio_wave.has(file)
+	var wave_data: PackedFloat32Array = audio_wave[file] if has_wave else PackedFloat32Array()
+	Threader.mutex.unlock()
+
+	if !has_wave or wave_data.size() <= 0:
 		return null # Up to the file panel to try and fetch later.
 
 	var thumb_size: Vector2i = Vector2i(854, 480)
 	var thumb: Image = Image.create_empty(thumb_size.x, thumb_size.y, false, Image.FORMAT_RGB8)
 
-	var data_size: int = audio_wave[file].size()
+	var data_size: int = wave_data.size()
 	var data_per_pixel: float = float(data_size) / thumb_size.x
 	var center: int = int(float(thumb_size.y) / 2)
 	var amp: int = int(float(thumb_size.y) / 2 * 0.9)
@@ -583,7 +619,7 @@ func generate_audio_thumb(file: int) -> Image:
 		if start_index >= end_index:
 			continue # No data/End of data
 		for i: int in range(start_index, end_index):
-			max_amp = max(max_amp, audio_wave[file][i])
+			max_amp = max(max_amp, wave_data[i])
 
 		var half_height: int = floori(max_amp * amp)
 		var y_top: int = clamp(center - half_height, 0, thumb_size.y - 1)
@@ -644,6 +680,8 @@ func get_audio_stream(file: int, instance_index: int) -> AudioStreamFFmpeg:
 	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
 
 	if type == EditorCore.TYPE.VIDEO:
+		if audio_wave.has(file) and audio_wave[file].is_empty():
+			return null
 		var video: Video = get_video_reader(file, instance_index)
 		return null if video == null else video.get_audio()
 	if instance_index == 0:
@@ -742,11 +780,16 @@ func get_all_video_files() -> PackedInt64Array:
 # --- File data getters ---
 
 func get_data(index: int) -> Variant:
-	return file_data[index]
+	Threader.mutex.lock()
+	var data: Variant = null
+	if index < file_data.size():
+		data = file_data[index]
+	Threader.mutex.unlock()
+	return data
 
 
 func get_data_by_id(file: int) -> Variant:
-	return file_data[index_map[file]]
+	return get_data(index_map[file])
 
 
 func get_pck_instance(file: int) -> Node:
@@ -754,9 +797,12 @@ func get_pck_instance(file: int) -> Node:
 
 
 func get_audio_wave(file: int) -> PackedFloat32Array:
+	Threader.mutex.lock()
+	var wave: PackedFloat32Array = PackedFloat32Array()
 	if audio_wave.has(file):
-		return audio_wave[file]
-	return []
+		wave = audio_wave[file]
+	Threader.mutex.unlock()
+	return wave
 
 
 # --- Setters ---
@@ -817,26 +863,30 @@ func reload_videos() -> void:
 
 func _update_video_cache_size(value: int) -> void:
 	for file: int in get_all_video_files():
-		var data: Variant = file_data[index_map[file]]
+		var data: Variant = get_data_by_id(file)
 		if data is not Video:
 			continue
 
 		(data as Video).set_cache_size(value)
+		Threader.mutex.lock()
 		if video_pools.has(file):
 			for video: Video in video_pools[file]:
 				video.set_cache_size(value)
+		Threader.mutex.unlock()
 
 
 func _update_video_smart_seek_threshold(value: int) -> void:
 	for file: int in get_all_video_files():
-		var data: Variant = file_data[index_map[file]]
+		var data: Variant = get_data_by_id(file)
 		if data is not Video:
 			continue
 
 		(data as Video).set_smart_seek_threshold(value)
+		Threader.mutex.lock()
 		if video_pools.has(file):
 			for video: Video in video_pools[file]:
 				video.set_smart_seek_threshold(value)
+		Threader.mutex.unlock()
 
 
 # --- Static ---
