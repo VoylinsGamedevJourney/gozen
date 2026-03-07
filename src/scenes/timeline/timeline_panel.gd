@@ -108,6 +108,7 @@ var track_height: float = 30
 var track_total_size: float = track_height + TRACK_LINE_WIDTH
 
 var _update_clips: bool = true
+var _drop_valid: bool = false
 
 
 
@@ -241,6 +242,8 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 
 func _draw_preview(control: Control) -> void:
 	if state in [STATE.MOVING, STATE.DROPPING] and draggable != null: # Moving + Dropping preview
+		if !_drop_valid:
+			return
 		if draggable.is_file:
 			var preview_size: Vector2 = Vector2(draggable.duration * zoom, track_height)
 			var preview_position: Vector2 = Vector2(
@@ -663,6 +666,7 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	elif !result:
 		draw_clips.queue_redraw()
 		_update_clips = true
+	_drop_valid = result
 	draw_preview.queue_redraw()
 	return result
 
