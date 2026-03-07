@@ -288,6 +288,8 @@ def main() -> ExitCode:
     ]
     if target_platform == "windows":
         command += ["use_static_cpp=yes", "use_mingw=yes"]
+    if target == TARGET_DEV:
+        command += ["dev_build=yes"]
 
     res = utils.run_command(
         command,
@@ -339,6 +341,7 @@ if __name__ == "__main__":
                 f"target=template_{target}",
                 f"platform={target_platform}",
                 f"arch={arch}",
+                "dev_build=yes",
             ],
             cwd="./",
             use_msys2=utils.CURR_PLATFORM == "windows",
