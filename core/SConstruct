@@ -23,7 +23,7 @@ use_mingw = ARGUMENTS.get("use_mingw", "no")
 use_system = ARGUMENTS.get("use_system", "no")
 
 
-if arch == "arm64":
+if "linux" in platform and arch == "arm64":
     env["CC"] = "aarch64-linux-gnu-gcc"
     env["CXX"] = "aarch64-linux-gnu-g++"
     env["LINK"] = "aarch64-linux-gnu-g++"
@@ -164,7 +164,33 @@ elif "windows" in platform:
             env.Append(LIBS=LIBS_COMMON + libs)
 
 elif "macos" in platform:
-    env.Append(LINKFLAGS=["-Wl,-rpath,@loader_path"], LIBS=LIBS_COMMON)
+    libs = [
+        "SvtAv1Enc",
+        "aom",
+        "mp3lame",
+        "opus",
+        "vorbis",
+        "vorbisenc",
+        "ogg",
+        "vpx",
+        "x264",
+        "x265",
+        "z",
+        "bz2",
+        "lzma",
+        "iconv",
+    ]
+    frameworks = [
+        "AudioToolbox",
+        "CoreFoundation",
+        "CoreMedia",
+        "CoreVideo",
+        "VideoToolbox",
+    ]
+    framework_flags = []
+    for fw in frameworks:
+        framework_flags.extend(["-framework", fw])
+    env.Append(LINKFLAGS=framework_flags, LIBS=LIBS_COMMON+libs)
 
     if arch == "arm64":
         env.Append(CCFLAGS=["-arch", "arm64"], LINKFLAGS=["-arch", "arm64"])
