@@ -87,7 +87,6 @@ except ImportError:
 
 FFMPEG_DISABLED_MODULES = [
     "--disable-avdevice",
-    # "--disable-postproc",
     "--disable-avfilter",
     "--disable-sndio",
     "--disable-doc",
@@ -210,7 +209,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         "--enable-libvorbis",
         "--enable-libsvtav1",
     ]
-    cmd += FFMPEG_DISABLED_MODULES
+    cmd += FFMPEG_DISABLED_MODULES + ["--disable-postproc"]
 
     if arch == "arm64":
         cmd += [
@@ -300,7 +299,7 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
         "--enable-libvorbis",
         "--enable-libsvtav1",
     ]
-    cmd += FFMPEG_DISABLED_MODULES
+    cmd += FFMPEG_DISABLED_MODULES + ["--disable-postproc"]
 
     if CURR_PLATFORM != "windows":
         cmd += [
