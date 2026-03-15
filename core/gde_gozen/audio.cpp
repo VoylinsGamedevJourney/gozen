@@ -1,5 +1,7 @@
 #include "audio.hpp"
 
+#include <unordered_map>
+
 
 PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& stream, double start_time, double duration) {
 	const int TARGET_SAMPLE_RATE = 44100;

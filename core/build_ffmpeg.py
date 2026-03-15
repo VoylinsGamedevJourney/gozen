@@ -87,7 +87,6 @@ except ImportError:
 
 FFMPEG_DISABLED_MODULES = [
     "--disable-avdevice",
-    "--disable-postproc",
     "--disable-avfilter",
     "--disable-sndio",
     "--disable-doc",
@@ -210,7 +209,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         "--enable-libvorbis",
         "--enable-libsvtav1",
     ]
-    cmd += FFMPEG_DISABLED_MODULES
+    cmd += FFMPEG_DISABLED_MODULES + ["--disable-postproc"]
 
     if arch == "arm64":
         cmd += [
@@ -300,7 +299,7 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
         "--enable-libvorbis",
         "--enable-libsvtav1",
     ]
-    cmd += FFMPEG_DISABLED_MODULES
+    cmd += FFMPEG_DISABLED_MODULES + ["--disable-postproc"]
 
     if CURR_PLATFORM != "windows":
         cmd += [
@@ -322,22 +321,40 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
 
 def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
     ffmpeg_install_dir = get_ffmpeg_install_dir("macos")
-    pkg_paths = []
-    pkgs = [
-        X264_INSTALL_DIR_NAME, X265_INSTALL_DIR_NAME, AOM_INSTALL_DIR_NAME,
-        SVT_AV1_INSTALL_DIR_NAME, VPX_INSTALL_DIR_NAME, OPUS_INSTALL_DIR_NAME,
-        OGG_INSTALL_DIR_NAME, VORBIS_INSTALL_DIR_NAME
-    ]
-
-    for pkg in pkgs:
-        pkg_paths.append(convert_to_msys2_path(get_lib_dir(ffmpeg_install_dir / pkg) / "pkgconfig"))
-
+    x264_pc_dir = get_lib_dir(ffmpeg_install_dir / X264_INSTALL_DIR_NAME) / "pkgconfig"
+    x265_pc_dir = get_lib_dir(ffmpeg_install_dir / X265_INSTALL_DIR_NAME) / "pkgconfig"
+    aom_pc_dir = get_lib_dir(ffmpeg_install_dir / AOM_INSTALL_DIR_NAME) / "pkgconfig"
+    svt_av1_pc_dir = (
+        get_lib_dir(ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME) / "pkgconfig"
+    )
+    vpx_pc_dir = get_lib_dir(ffmpeg_install_dir / VPX_INSTALL_DIR_NAME) / "pkgconfig"
+    opus_pc_dir = get_lib_dir(ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME) / "pkgconfig"
+    ogg_pc_dir = get_lib_dir(ffmpeg_install_dir / OGG_INSTALL_DIR_NAME) / "pkgconfig"
+    vorbis_pc_dir = (
+        get_lib_dir(ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME) / "pkgconfig"
+    )
     mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
     mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
-    pkg_paths.append(convert_to_msys2_path(mp3lame_lib_dir / "pkgconfig"))
+    mp3lame_pc_dir = mp3lame_lib_dir / "pkgconfig"
 
-    existing_pkg_path = os.environ.get("PKG_CONFIG_PATH", "")
-    env["PKG_CONFIG_PATH"] = ":".join(pkg_paths) + ((":" + existing_pkg_path) if existing_pkg_path else "")
+    pc_paths = os.environ.get("PKG_CONFIG_PATH")
+    env = {
+        **env,
+        "PKG_CONFIG_LIBDIR": ":".join(
+            [
+                convert_to_msys2_path(x264_pc_dir),
+                convert_to_msys2_path(x265_pc_dir),
+                convert_to_msys2_path(aom_pc_dir),
+                convert_to_msys2_path(svt_av1_pc_dir),
+                convert_to_msys2_path(vpx_pc_dir),
+                convert_to_msys2_path(opus_pc_dir),
+                convert_to_msys2_path(ogg_pc_dir),
+                convert_to_msys2_path(vorbis_pc_dir),
+                convert_to_msys2_path(mp3lame_pc_dir),
+            ]
+        )
+        + ((":" + pc_paths) if pc_paths else ""),
+    }
 
     cmd = [
         "./configure",
@@ -351,7 +368,7 @@ def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
         f"--arch={'aarch64' if arch == 'arm64' else 'x86_64'}",
         "--target-os=darwin",
         "--enable-pic",
-        "--extra-ldflags=-Wl,-rpath,@loader_path",
+        "--pkg-config-flags=--static",
         f"--extra-cflags=-I{convert_to_msys2_path(mp3lame_include_dir)}",
         f"--extra-ldflags=-L{convert_to_msys2_path(mp3lame_lib_dir)}",
         "--enable-libx264",
