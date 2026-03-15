@@ -369,7 +369,6 @@ def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
         "--target-os=darwin",
         "--enable-pic",
         "--pkg-config-flags=--static",
-        "--extra-ldflags=-Wl,-rpath,@loader_path",
         f"--extra-cflags=-I{convert_to_msys2_path(mp3lame_include_dir)}",
         f"--extra-ldflags=-L{convert_to_msys2_path(mp3lame_lib_dir)}",
         "--enable-libx264",
