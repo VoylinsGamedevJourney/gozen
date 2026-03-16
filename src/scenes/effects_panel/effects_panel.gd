@@ -1,11 +1,10 @@
 extends PanelContainer
-# TODO: Deleting, adding, updating effects should be done through EffectsHandler
 
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
-const COLOR_KEYFRAMING_ON: Color = Color(1,1,1,1)
-const COLOR_KEYFRAMING_OFF: Color = Color(1,1,1,0.5)
+const COLOR_KEYFRAMING_ON: Color = Color(1, 1, 1, 1)
+const COLOR_KEYFRAMING_OFF: Color = Color(1, 1, 1, 0.5)
 
 const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 
@@ -36,6 +35,24 @@ func _project_ready() -> void:
 func _input(event: InputEvent) -> void:
 	if Project.is_loaded and event.is_action_pressed("ui_cancel"):
 		_on_clip_pressed(-1)
+
+
+func _get_drag_data_effect(_pos: Vector2, _container: FoldableContainer, is_visual: bool) -> void:
+	# TODO: This entire system won't work thanks to the brilliant minds who
+	# decided folding containers should fold on press and not release.
+	# Solution will be to add a button in the title bar of each container to
+	# move the effects instead. I give up for today though ...
+	var drag_data: DragData = DragData.new()
+	drag_data.is_visual = is_visual
+	print("oi")
+
+
+func _can_drop_effect() -> void:
+	pass
+
+
+func _drop_effect() -> void:
+	pass
 
 
 func _on_clip_pressed(clip_id: int) -> void:
@@ -96,6 +113,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	# or bottom to disable the correct buttons.
 	var clip_index: int = Project.clips.index_map[current_clip_id]
 	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_duration: int = Project.data.clips_duration[clip_index]
 	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
 
 	var button_visible: TextureButton = TextureButton.new()
@@ -115,9 +133,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-	var grid: GridContainer = GridContainer.new()
-	grid.columns = 3
-
+	var content_vbox: VBoxContainer = VBoxContainer.new()
 	var container: FoldableContainer = FoldableContainer.new()
 	container.title = effect.nickname
 	container.tooltip_text = effect.tooltip
@@ -126,37 +142,82 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	container.add_theme_color_override("font_color", "#b8b8b8")
 	container.add_title_bar_control(button_delete)
 	container.add_title_bar_control(button_visible)
-	container.add_child(grid)
+	container.add_child(content_vbox)
+
+	container.set_drag_forwarding(
+			_get_drag_data_effect.bind(container, is_visual),
+			_can_drop_effect,
+			_drop_effect)
 
 	# Adding effect params.
 	for param: EffectParam in effect.params:
+		var param_hbox: HBoxContainer = HBoxContainer.new()
 		var param_id: String = param.id
 		var param_title: Label = Label.new()
 		var param_settings: Control = _create_param_control(param, index, is_visual)
-		var param_keyframe_button: TextureButton = TextureButton.new()
 
 		param_title.text = param.nickname.replace("param_", "").capitalize()
 		param_title.tooltip_text = param.tooltip
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		param_title.clip_text = true
 
 		param_settings.name = "PARAM_" + param_id
 
-		param_keyframe_button.name = "KEYFRAME_" + param_id
-		param_keyframe_button.ignore_texture_size = true
-		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		param_keyframe_button.custom_minimum_size.x = 14
-		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
-				current_clip_id, index, is_visual, param_id))
 
-		if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
-			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
-		else:
-			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+		param_hbox.add_child(param_title)
+		param_hbox.add_child(param_settings)
 
-		grid.add_child(param_title)
-		grid.add_child(param_settings)
-		grid.add_child(param_keyframe_button)
+		if param.keyframeable:
+			var param_keyframe_button: TextureButton = TextureButton.new()
+			param_keyframe_button.name = "KEYFRAME_" + param_id
+			param_keyframe_button.ignore_texture_size = true
+			param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+			param_keyframe_button.custom_minimum_size.x = 14
+			param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
+					current_clip_id, index, is_visual, param_id))
+			if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
+				param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+			else:
+				param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+			param_hbox.add_child(param_keyframe_button)
+
+		content_vbox.add_child(param_hbox)
+
+	var track: KeyframeTrack = KeyframeTrack.new()
+	var track_hbox: HBoxContainer = HBoxContainer.new()
+	var track_label: Label = Label.new()
+
+	track_label.text = "Keyframes"
+	track_label.custom_minimum_size.x = 80
+	track_label.modulate = Color(1, 1, 1, 0.5)
+
+	track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	track.setup(effect, clip_duration, relative_frame_nr)
+	track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(current_clip_id, index, is_visual))
+	track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(current_clip_id, index, is_visual))
+	track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui.bind(current_clip_id))
+
+	track_hbox.add_child(track_label)
+	track_hbox.add_child(track)
+	content_vbox.add_child(HSeparator.new())
+	content_vbox.add_child(track_hbox)
 	return container
+
+
+func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, clip_id: int, effect_index: int, is_visual: bool) -> void:
+	EffectsHandler.move_effect_keyframe_at_frame(clip_id, effect_index, is_visual, old_frame, new_frame, preserve_existing)
+	_update_ui_values()
+
+
+func _on_keyframe_deleted_effect_ui(frame: int, clip_id: int, effect_index: int, is_visual: bool) -> void:
+	EffectsHandler.remove_effect_keyframe_at_frame(clip_id, effect_index, is_visual, frame)
+	_update_ui_values()
+
+
+func _on_keyframe_dragged_to_effect_ui(relative_frame: int, clip_id: int) -> void:
+	var clip_index: int = Project.clips.index_map[clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	EditorCore.set_frame(clip_start + relative_frame)
 
 
 func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> Control:
@@ -247,36 +308,44 @@ func _update_ui_values() -> void:
 	var frame_nr: int = EditorCore.frame_nr - clip_start
 
 	for i: int in clip_effects.video.size():
-		_update_ui_values_effect(clip_effects.audio, i, frame_nr)
+		_update_ui_values_effect(clip_effects.video, i, frame_nr)
 	for i: int in clip_effects.audio.size():
 		_update_ui_values_effect(clip_effects.audio, i, frame_nr)
 
 
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
 	var effect: Effect = effects[index]
-	var effect_container: FoldableContainer = section_audio.get_child(index)
-	var grid: GridContainer = effect_container.get_child(0)
+	var section: FoldableContainer
+	if effects == Project.data.clips_effects[Project.clips.index_map[current_clip_id]].video:
+		section = section_visuals
+	else:
+		section = section_audio
+	var effect_container: FoldableContainer = section.get_child(index)
+	var content_vbox: VBoxContainer = effect_container.get_child(0)
 	if !effect.is_enabled:
 		effect_container.folded = true
 
-	for param: EffectParam in effect.params:
+	for i: int in effect.params.size():
+		var param: EffectParam = effect.params[i]
 		var param_id: String = param.id
-		var param_settings: Control = grid.get_node_or_null("PARAM_" + param_id)
-		if param_settings:
-			var value: Variant = effect.get_value(param, frame_nr)
-			_set_param_settings_value(param_settings, value)
+		var param_hbox: HBoxContainer = content_vbox.get_child(i)
+		var param_settings: Control = param_hbox.get_child(1)
+		var value: Variant = effect.get_value(param, frame_nr)
+		_set_param_settings_value(param_settings, value)
 
-		var keyframe_button: TextureButton = grid.get_node_or_null("KEYFRAME_" + param_id)
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
-		if effect_keyframes.has(frame_nr):
-			keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
-		else:
-			keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+		if param.keyframeable:
+			var keyframe_button: TextureButton = param_hbox.get_child(2)
+			if effect_keyframes.has(frame_nr):
+				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+			else:
+				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
 
-		if effect_keyframes.size() <= 1:
-			keyframe_button.modulate = COLOR_KEYFRAMING_OFF
-		else:
-			keyframe_button.modulate = COLOR_KEYFRAMING_ON
+	var track_hbox: HBoxContainer = content_vbox.get_child(-1)
+	if track_hbox:
+		var track: KeyframeTrack = track_hbox.get_child(1)
+		track.current_relative_frame = frame_nr
+		track.queue_redraw()
 
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
@@ -350,8 +419,15 @@ func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_i
 
 	var effect_keyframes: Dictionary = effect.keyframes[param_id]
 	if effect_keyframes.has(relative_frame_nr):
-		EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)
+		if relative_frame_nr != 0:
+			EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)
 	else:
 		var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
 		EffectsHandler.update_param(clip_id, index, is_visual, param_id, value, true)
 	_update_ui_values()
+
+
+
+class DragData:
+	var is_visual: bool
+	var effect_index: int

@@ -18,7 +18,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close_popup(PopupManager.ADD_EFFECTS)
+		PopupManager.close(PopupManager.ADD_EFFECTS)
 
 
 func load_effects(visual: bool, clip_id: int) -> void:
@@ -97,7 +97,7 @@ func _on_effect_clicked(effect_id: String) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close_popup(PopupManager.ADD_EFFECTS)
+	PopupManager.close_all()
 
 
 

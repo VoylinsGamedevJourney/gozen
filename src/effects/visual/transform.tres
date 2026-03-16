@@ -14,10 +14,10 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_p0oov"]
 script = ExtResource("1_ny2jm")
-id = "size"
-nickname = "param_size"
-default_value = Vector2(0, 0)
-min_value = null
+id = "scale"
+nickname = "param_scale"
+default_value = Vector2(1, 1)
+min_value = Vector2(0.1, 0.1)
 max_value = null
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
