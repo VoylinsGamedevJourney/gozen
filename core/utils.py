@@ -243,7 +243,7 @@ def find_msys2_win_dir() -> Path | None:
 
 def get_host_and_sysroot(target_platform: str, arch: str) -> tuple[str, Path]:
     assert arch in ["x86_64", "arm64"]
-    assert target_platform in ["windows", "linux"]
+    assert target_platform in ["windows", "linux", "macos"]
     if CURR_PLATFORM == "windows":
         assert target_platform == "windows", (
             "Cross compilation on windows not supported"

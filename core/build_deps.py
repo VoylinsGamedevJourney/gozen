@@ -458,6 +458,27 @@ def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
             "pkg-config"  # `x86_64-w64-mingw32-pkg-config` prepends `/usr/x86_64-w64-mingw32/sys-root/mingw/` to all paths
         )
 
+    if CURR_PLATFORM == "darwin":
+        FILE_TO_PATCH = VORBIS_SOURCE_DIR / "configure.ac"
+        TXT_TO_REPLACE = (
+            "	*-*-darwin*)\n"
+            + '		DEBUG="-DDARWIN -fno-common -force_cpusubtype_ALL -Wall -g -O0 -fsigned-char"\n'
+            + '		CFLAGS="-DDARWIN -fno-common -force_cpusubtype_ALL -Wall -g -O3 -ffast-math -fsigned-char"\n'
+            + '		PROFILE="-DDARWIN -fno-common -force_cpusubtype_ALL -Wall -g -pg -O3 -ffast-math -fsigned-char";;\n'
+        )
+        TXT_TO_REPLACE_WITH = (
+            "	*-*-darwin*)\n"
+            + '		DEBUG="-DDARWIN -fno-common -Wall -g -O0 -fsigned-char"\n'
+            + '		CFLAGS="-DDARWIN -fno-common -Wall -g -O3 -ffast-math -fsigned-char"\n'
+            + '		PROFILE="-DDARWIN -fno-common -Wall -g -pg -O3 -ffast-math -fsigned-char";;\n'
+        )
+
+        with open(FILE_TO_PATCH, "r") as f:
+            content = f.read()
+        content = content.replace(TXT_TO_REPLACE, TXT_TO_REPLACE_WITH, 1)
+        with open(FILE_TO_PATCH, "w") as f:
+            f.write(content)
+
     host, _ = get_host_and_sysroot(platform, arch)
 
     build_lib(
