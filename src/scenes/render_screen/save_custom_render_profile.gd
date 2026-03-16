@@ -23,7 +23,7 @@ func _connect_save_profile(function: Callable) -> void:
 func _set_icon(path: String) -> void:
 	if !FileAccess.file_exists(path):
 		path = Library.ICON_CUSTOM_RENDER_PROFILE
-	texture_button_icon.texture_normal = Image.load_from_file(path).texture
+	texture_button_icon.texture_normal = ImageTexture.create_from_image(Image.load_from_file(path))
 	selected_icon_path = path
 
 

@@ -17,11 +17,9 @@ var visual_effect_instances: Dictionary[String, EffectVisual] = {} ## { effect_i
 var audio_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
 var audio_effect_instances: Dictionary[String, EffectAudio] = {} ## { effect_id: effect_class }
 
-var param_exceptions: Dictionary[String, Dictionary] = { ## Exceptions can be a string or callable.
-	"transform": {
-		"size": Project.get_resolution,
-		"pivot": Project.get_resolution_center
-	}
+## Exceptions can be a string or callable.
+var param_exceptions: Dictionary[String, Dictionary] = {
+	"transform": { "pivot": Project.get_resolution_center }
 }
 
 
@@ -29,8 +27,8 @@ func _ready() -> void:
 	_load_video_effects()
 	_load_audio_effects()
 
-# --- Loaders ---
 
+# --- Loaders ---
 
 func _load_video_effects() -> void:
 	visual_effects.clear()
@@ -194,9 +192,18 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 
 	InputManager.undo_redo.create_action("Update effect param: %s" % effect.nickname)
 
-	# No keyframes (except 0) made, so we change main value, unless new keyframe requested
+	var effect_param: EffectParam = null
+	for param: EffectParam in effect.params:
+		if param.id == param_id:
+			effect_param = param
+			break
+
+
+	# No keyframes (except 0) made, so we change main value, unless new keyframe requested.
 	var param_keyframes: Dictionary = effect.keyframes[param_id]
-	if !new_keyframe and param_keyframes.size() == 1:
+	var is_keyframeable: bool = effect_param.keyframeable if effect_param else true
+
+	if (!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable:
 		var old_value: Variant = effect.keyframes[param_id][0]
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
 				clip_id, effect_index, is_visual, param_id, 0, new_value))
@@ -210,27 +217,22 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 		if param_keyframes.has(frame_nr):
 			old_value = effect.keyframes[param_id][frame_nr]
 			keyframe_exists = true
-		else:
-			# New keyframe, interpolate the value
-			var effect_param: EffectParam = null
-			for param: EffectParam in effect.params:
-				if param.id != param_id:
-					continue
-				effect_param = param
-				break
-			if effect_param:
-				old_value = effect.get_value(effect_param, frame_nr)
+		elif effect_param: # New keyframe.
+			old_value = effect.get_value(effect_param, frame_nr)
+
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
 				clip_id, effect_index, is_visual, param_id, frame_nr, new_value))
 
-		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe
+		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe.
 			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
 					clip_id, effect_index, is_visual, param_id, frame_nr, old_value))
-		else: # If the keyframe didn't exist yet, we remove the newly created one on undo
+		else: # If the keyframe didn't exist yet, we remove the newly created one on undo.
 			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
 					clip_id, effect_index, is_visual, param_id, frame_nr))
 	InputManager.undo_redo.commit_action()
 
+
+#---- Removing keyframes ----
 
 func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
 	if !Project.clips.index_map.has(clip_id) or index < 0:
@@ -299,8 +301,99 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 	effect._cache_dirty = true
 	effect_values_updated.emit()
 
-#---- Switch enabled ----
 
+#---- Moving effect keyframes ----
+
+## Moves all keyframes from all parameters at old_frame to new_frame.
+## If preserve_existing is true (ctrl pressed), existing values at new_frame
+## are kept. Otherwise, values from old_frame overwrite existing ones.
+func move_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool) -> void:
+	if !Project.clips.index_map.has(clip_id) or old_frame == new_frame:
+		return
+
+	var clip_index: int = Project.clips.index_map[clip_id]
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var effect: Effect
+	if is_visual:
+		effect = clip_effects.video[effect_index]
+	else:
+		effect = clip_effects.audio[effect_index]
+
+	InputManager.undo_redo.create_action("Move Effect Keyframe(s)")
+
+	for param: EffectParam in effect.params:
+		var param_id: String = param.id
+		if not effect.keyframes.has(param_id):
+			continue
+
+		var keyframes: Dictionary = effect.keyframes[param_id]
+		if not keyframes.has(old_frame):
+			continue
+
+		var value_to_move: Variant = effect.keyframes[param_id][old_frame]
+		var value_at_target: Variant = null
+		var has_target: bool = keyframes.has(new_frame)
+		if has_target:
+			value_at_target = effect.keyframes[param_id][new_frame]
+
+		var final_value: Variant = value_to_move
+		if has_target and preserve_existing:
+			final_value = value_at_target
+
+		if old_frame != 0:
+			InputManager.undo_redo.add_do_method(
+					_remove_keyframe.bind(clip_id, effect_index, is_visual, param_id, old_frame))
+			InputManager.undo_redo.add_undo_method(
+					_set_keyframe.bind(clip_id, effect_index, is_visual, param_id, old_frame, value_to_move))
+
+		if !(has_target and preserve_existing):
+			InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+					clip_id, effect_index, is_visual, param_id, new_frame, final_value))
+
+			if has_target:
+				InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+						clip_id, effect_index, is_visual, param_id, new_frame, value_at_target))
+			else:
+				InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+						clip_id, effect_index, is_visual, param_id, new_frame))
+	InputManager.undo_redo.commit_action()
+	effects_updated.emit()
+
+
+#---- Removing effect keyframes ----
+
+## Deletes all parameter keyframes at a specific frame for this effect.
+func remove_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual: bool, frame_nr: int) -> void:
+	if !Project.clips.index_map.has(clip_id) or frame_nr == 0:
+		return
+
+	var clip_index: int = Project.clips.index_map[clip_id]
+	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	var effect: Effect
+	if is_visual:
+		effect = clip_effects.video[effect_index]
+	else:
+		effect = clip_effects.audio[effect_index]
+
+	InputManager.undo_redo.create_action("Remove Effect Keyframe(s)")
+
+	for param: EffectParam in effect.params:
+		var param_id: String = param.id
+		if not effect.keyframes.has(param_id):
+			continue
+
+		var keyframes: Dictionary = effect.keyframes[param_id]
+		if not keyframes.has(frame_nr):
+			continue
+
+		var old_val: Variant = effect.keyframes[param_id][frame_nr]
+		InputManager.undo_redo.add_do_method(_remove_keyframe.bind(clip_id, effect_index, is_visual, param_id, frame_nr))
+		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(clip_id, effect_index, is_visual, param_id, frame_nr, old_val))
+	InputManager.undo_redo.commit_action()
+	effects_updated.emit()
+
+
+#---- Switch enabled ----
 
 func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
 	if !Project.clips.index_map.has(clip_id) or index < 0:

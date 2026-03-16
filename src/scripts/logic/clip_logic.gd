@@ -547,9 +547,7 @@ func _create_default_effects(file_index: int) -> ClipEffects:
 
 		var transform_effect: EffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
 		for param: EffectParam in transform_effect.params:
-			if param.id == "size":
-				param.default_value = resolution
-			elif param.id == "pivot":
+			if param.id == "pivot":
 				param.default_value = Vector2i(resolution / 2.0)
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
