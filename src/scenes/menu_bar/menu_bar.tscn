@@ -71,21 +71,11 @@ item_8/id = 8
 
 [node name="EditPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1378862301]
 title = "Edit"
-item_count = 7
+item_count = 2
 item_0/text = "Undo"
 item_0/id = 0
 item_1/text = "Redo"
 item_1/id = 1
-item_2/id = 2
-item_2/separator = true
-item_3/text = "Cut"
-item_3/id = 3
-item_4/text = "Copy"
-item_4/id = 4
-item_5/text = "Paste"
-item_5/id = 5
-item_6/text = "Delete"
-item_6/id = 6
 
 [node name="PreferencesPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1830296643]
 oversampling_override = 1.0

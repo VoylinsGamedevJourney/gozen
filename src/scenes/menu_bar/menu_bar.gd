@@ -69,24 +69,19 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Project.save()
 		1: Project.save_as()
-		# Line.
+		# -------------
 		3: Project.open_project()
 		4: PopupManager.open(PopupManager.RECENT_PROJECTS)
-		# Line.
+		# -------------
 		6: Project.open_settings_menu()
-		# Line.
+		# -------------
 		8: get_tree().quit()
 
 
 func _on_edit_popup_menu_id_pressed(id: int) -> void:
-	# TODO: Figure out how I can get the input events to work.
 	match id:
 		0: InputManager.undo_redo.undo()
 		1: InputManager.undo_redo.redo()
-		2: get_viewport().push_input(InputMap.action_get_events("cut_clips_at_mouse")[0])
-		3: pass # Copy  TODO: Implement ClipLogic copy logic
-		4: await InputManager.clipboard_paste()
-		5: get_viewport().push_input(InputMap.action_get_events("delete_clips")[0])
 
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:
@@ -101,11 +96,11 @@ func _on_help_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Utils.open_url("support")
 		1: PopupManager.open(PopupManager.VERSION_CHECK)
-		# Line.
+		# -------------
 		3: Utils.open_url("manual")
 		4: Utils.open_url("tutorials")
 		5: Utils.open_url("discord")
-		# Line.
+		# -------------
 		7: Utils.open_url("site")
 		8: Utils.open_url("support")
 		9: PopupManager.open(PopupManager.CREDITS)
@@ -120,10 +115,6 @@ func _set_shortcuts() -> void:
 	# Edit Menu Shortcuts.
 	_set_menu_shortcut(popup_menu_edit, 0, "ui_undo")
 	_set_menu_shortcut(popup_menu_edit, 1, "ui_redo")
-	_set_menu_shortcut(popup_menu_edit, 3, "ui_cut")
-	_set_menu_shortcut(popup_menu_edit, 4, "ui_copy")
-	_set_menu_shortcut(popup_menu_edit, 5, "ui_paste")
-	_set_menu_shortcut(popup_menu_edit, 6, "delete_clips")
 	# Preferences.
 	_set_menu_shortcut(popup_menu_preferences, 0, "open_settings")
 	_set_menu_shortcut(popup_menu_preferences, 3, "open_command_bar")
