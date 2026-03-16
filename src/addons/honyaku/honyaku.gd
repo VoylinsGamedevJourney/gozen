@@ -53,15 +53,16 @@ func _ready() -> void:
 
 
 func _get_all_files(path: String, ignored: Array) -> Array:
+	var files: PackedStringArray =[]
 	for ignore: String in ignored:
 		if path.begins_with(ignore):
-			return []
+			return files
+	if not DirAccess.dir_exists_absolute(path):
+		return files
 
-	var files: PackedStringArray =[]
 	var dir: DirAccess = DirAccess.open(path)
-	if not dir: return files
-
 	dir.list_dir_begin()
+
 	var file_name: String = dir.get_next()
 	while file_name != "":
 		if dir.current_is_dir() and not file_name.begins_with("."):
