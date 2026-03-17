@@ -96,8 +96,9 @@ func clipboard_paste() -> void:
 
 	# Check for image.
 	var image: Image = DisplayServer.clipboard_get_image()
-	if image != null:
+	if image != null and not image.is_empty():
 		Project.files.paste_image(image)
+		return
 
 	# Check for file paths.
 	var raw_paths: PackedStringArray = DisplayServer.clipboard_get().split('\n')
