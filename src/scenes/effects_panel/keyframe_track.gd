@@ -11,10 +11,15 @@ const KEYFRAME_COLOR: Color = Color(0.8, 0.8, 0.8)
 const SELECTED_COLOR: Color = Color(1.0, 0.6, 0.2)
 const TRACK_BAR_COLOR: Color = Color(0.1, 0.1, 0.1, 0.5)
 
+const MIN_ZOOM: float = 1.0
+const MAX_ZOOM: float = 20.0
+
 
 var effect: Effect
 var clip_duration: int
 var current_relative_frame: int = 0
+
+var zoom: float = 1.0
 
 var _hovered_frame: int = -1
 var _dragged_frame: int = -1
@@ -35,6 +40,15 @@ func setup(p_effect: Effect, p_duration: int, p_current_frame: int) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if event.is_action("timeline_zoom_in") and event.is_pressed():
+		set_zoom(zoom * 1.2, get_local_mouse_position().x)
+		accept_event()
+		return
+	elif event.is_action("timeline_zoom_out") and event.is_pressed():
+		set_zoom(zoom / 1.2, get_local_mouse_position().x)
+		accept_event()
+		return
+
 	if event is InputEventMouseMotion:
 		var mouse_x: float = get_local_mouse_position().x
 		var frame: int = _get_frame_at_x(mouse_x)
@@ -86,7 +100,8 @@ func _draw() -> void:
 	if clip_duration > 0:
 		var playhead_x: float = MARGIN + (float(current_relative_frame) / float(clip_duration)) * width
 		playhead_x = clamp(playhead_x, MARGIN, size.x - MARGIN)
-		draw_line(Vector2(playhead_x, 2), Vector2(playhead_x, size.y - 2), Color(1, 1, 1, 0.3), 1.0)
+		draw_line(Vector2(playhead_x, 2), Vector2(playhead_x, size.y - 2), Color(1, 1, 1, 0.5), 1.0)
+		draw_line(Vector2(playhead_x + 1, 2), Vector2(playhead_x + 1, size.y - 2), Color(1, 1, 1, 0.3), 1.0)
 	if not effect:
 		return
 
@@ -99,7 +114,7 @@ func _draw() -> void:
 	for frame_int: int in unique_frames.keys():
 		var draw_frame_val: int = frame_int
 
-		# If dragging this specific keyframe, verify position based on mouse
+		# If dragging this specific keyframe, verify position based on mouse.
 		if _is_dragging and frame_int == _dragged_frame:
 			draw_frame_val = clampi(_get_frame_at_x(get_local_mouse_position().x), 0, clip_duration)
 
@@ -153,3 +168,32 @@ func _find_closest_keyframe(target_frame: int) -> int:
 				found_frame = frame
 	return found_frame
 
+
+func set_zoom(new_zoom: float, mouse_x: float) -> void:
+	var scroll: ScrollContainer = get_parent() as ScrollContainer
+	if not scroll:
+		return
+
+	var old_zoom: float = zoom
+	zoom = clampf(new_zoom, MIN_ZOOM, MAX_ZOOM)
+
+	if zoom == old_zoom:
+		return
+
+	var base_width: float = scroll.size.x
+	if zoom > 1.0:
+		custom_minimum_size.x = base_width * zoom
+	else:
+		custom_minimum_size.x = 0
+
+	if mouse_x >= 0:
+		var zoom_ratio: float = zoom / old_zoom
+		var mouse_viewport_offset: float = mouse_x - scroll.scroll_horizontal
+		var new_mouse_x: float = mouse_x * zoom_ratio
+		_update_scroll.call_deferred(scroll, int(new_mouse_x - mouse_viewport_offset))
+
+	queue_redraw()
+
+
+func _update_scroll(scroll: ScrollContainer, val: int) -> void:
+	scroll.scroll_horizontal = val
