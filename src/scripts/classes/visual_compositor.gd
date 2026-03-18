@@ -181,6 +181,18 @@ func initialize_video(video: Video) -> void:
 	_init_ping_pong()
 
 
+func update_image(image: Texture2D) -> void:
+	if not initialized or Vector2i(image.get_size()) != resolution:
+		initialize_image(image)
+		return
+
+	var new_image: Image = image.get_image()
+	if new_image.get_format() != Image.FORMAT_RGBA8:
+		new_image.convert(Image.FORMAT_RGBA8)
+
+	device.texture_update(base_image, 0, new_image.get_data())
+
+
 func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
 	if not initialized:
 		return

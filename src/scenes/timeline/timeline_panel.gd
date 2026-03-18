@@ -612,7 +612,7 @@ func _get_fade_target() -> FadeTarget:
 
 func _project_ready() -> void:
 	Project.clips.added.connect(draw_clips.queue_redraw.unbind(1))
-	Project.clips.deleted.connect(draw_clips.queue_redraw.unbind(1))
+	Project.clips.deleted.connect(_on_clip_deleted)
 	Project.clips.updated.connect(draw_clips.queue_redraw)
 	Project.markers.added.connect(draw_markers.queue_redraw.unbind(1))
 	Project.markers.removed.connect(draw_markers.queue_redraw.unbind(1))
@@ -1028,6 +1028,19 @@ func _update_track_height(new_height: float) -> void:
 	track_height = new_height
 	track_total_size = track_height + TRACK_LINE_WIDTH
 	_on_tracks_updated()
+
+
+func _on_clip_deleted(clip_id: int) -> void:
+	if selected_clip_ids.has(clip_id):
+		var index: int = selected_clip_ids.find(clip_id)
+		selected_clip_ids.remove_at(index)
+	if hovered_clip == clip_id:
+		hovered_clip = -1
+	if pressed_clip == clip_id:
+		pressed_clip = -1
+	if right_click_clip == clip_id:
+		right_click_clip = -1
+	draw_clips.queue_redraw()
 
 
 func _on_tracks_updated() -> void:

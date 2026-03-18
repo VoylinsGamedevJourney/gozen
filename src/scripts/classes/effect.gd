@@ -29,7 +29,6 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 
 	var prev_frame: int = sorted_keys[0]
 	var next_frame: int = sorted_keys[-1]
-
 	for key: int in sorted_keys:
 		if key <= frame_nr:
 			prev_frame = key
@@ -38,14 +37,12 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 			break
 
 	var difference: float = float(next_frame - prev_frame)
-
 	if difference == 0:
 		return keyframes[param_id][prev_frame]
 
 	var weight: float = float(frame_nr - prev_frame) / difference
 	var value_a: Variant = keyframes[param_id][prev_frame]
 	var value_b: Variant = keyframes[param_id][next_frame]
-
 	return _interpolate_variant(value_a, value_b, weight)
 
 
@@ -60,7 +57,8 @@ func set_default_keyframe() -> void:
 	for effect_param: EffectParam in params:
 		var param_id: String = effect_param.id
 		if not keyframes.has(param_id):
-			keyframes[param_id] = {}
+			var typed_dict: Dictionary[int, Variant] = {}
+			keyframes[param_id] = typed_dict
 		var param_keyframe: Dictionary = keyframes[param_id]
 		if not param_keyframe.has(0):
 			keyframes[param_id][0] = effect_param.default_value
@@ -82,8 +80,7 @@ func _validate_cache(param_id: String) -> PackedInt64Array:
 
 
 # TODO: Implement different interpolation types
-
-func _interpolate_variant(value_a: Variant, value_b: Variant, weight: float) -> Variant:
+static func _interpolate_variant(value_a: Variant, value_b: Variant, weight: float) -> Variant:
 	if typeof(value_a) == TYPE_FLOAT or typeof(value_a) == TYPE_INT:
 		return lerp(value_a, value_b, weight)
 	elif value_a is Vector2:

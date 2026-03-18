@@ -129,6 +129,7 @@ func _restore_clip_from_snapshot(snapshot: Dictionary) -> void:
 			snapshot.clip as int,
 			snapshot.start as int)
 	added.emit(snapshot.clip)
+	updated.emit()
 	Project.unsaved_changes = true
 
 
@@ -465,24 +466,22 @@ func load_video_frame(clip: int, frame_nr: int, instance_index: int = 0) -> void
 	var clip_index: int = index_map[clip]
 	var clip_type: EditorCore.TYPE = project_data.clips_type[clip_index] as EditorCore.TYPE
 	var file: int = project_data.clips_file[clip_index]
-	var video: Video = null
 
-	if clip_type not in EditorCore.VISUAL_TYPES:
-		return
-	video = Project.files.get_video_reader(file, instance_index)
-	if video == null:
-		return # Probably still loading.
+	if clip_type == EditorCore.TYPE.VIDEO:
+		var video: Video = Project.files.get_video_reader(file, instance_index)
+		if video == null:
+			return # Probably still loading.
 
-	var project_fps: float = project_data.framerate
-	var video_fps: float = video.get_framerate()
-	var video_frame_nr: int = video.get_current_frame()
-	var target_frame_nr: int = int((frame_nr / project_fps) * video_fps)
+		var project_fps: float = project_data.framerate
+		var video_fps: float = video.get_framerate()
+		var video_frame_nr: int = video.get_current_frame()
+		var target_frame_nr: int = int((frame_nr / project_fps) * video_fps)
 
-	if target_frame_nr != video_frame_nr: # Shouldn't reload same frame
-		if target_frame_nr == video_frame_nr + 1:
-			video.next_frame(false)
-		elif !video.seek_frame(target_frame_nr):
-			printerr("Project.clips: Couldn't seek frame!")
+		if target_frame_nr != video_frame_nr: # Shouldn't reload same frame
+			if target_frame_nr == video_frame_nr + 1:
+				video.next_frame(false)
+			elif !video.seek_frame(target_frame_nr):
+				printerr("Project.clips: Couldn't seek frame!")
 
 
 func get_audio_data(clip: int) -> PackedByteArray:

@@ -353,6 +353,7 @@ func _add_folder_to_tree(folder: String) -> void:
 
 		if !folder_items.has(check_path):
 			folder_items[check_path] = tree.create_item(previous_folder)
+			folder_items[check_path].set_custom_minimum_height(26)
 			folder_items[check_path].set_text(0, folders[i])
 			folder_items[check_path].set_icon(0, preload(Library.ICON_FOLDER))
 			folder_items[check_path].set_icon_max_width(0, 20)
@@ -385,7 +386,7 @@ func _add_file_to_tree(file_id: int) -> void:
 	file_items[file_id].set_icon(0, Thumbnailer.get_thumb(file_id))
 	file_items[file_id].set_icon_max_width(0, 70)
 
-	if not Thumbnailer.data.has(file_path) and file_type != EditorCore.TYPE.AUDIO:
+	if not Thumbnailer.data.has(file_path) and file_type != EditorCore.TYPE.AUDIO and not file_path.begins_with("temp://"):
 		file_items[file_id].set_icon_modulate(0, Color(1, 1, 1, 0.4))
 		file_items[file_id].set_tooltip_text(0, file_path + "\n" + tr("(Loading thumbnail...)"))
 	_sort_folder(file_folder)

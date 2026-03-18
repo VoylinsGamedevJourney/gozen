@@ -7,13 +7,10 @@ extends RefCounted
 
 # PATH in File objects should start with "temp://"
 
+
 var image_data: ImageTexture = null
-
 var color: Color = Color.WHITE
-
-var text_data: String = ""
-var font_size: float = 12.0
-var font: String = ""
+var text_effect: EffectVisual = null
 
 
 func load_image_from_color() -> void:

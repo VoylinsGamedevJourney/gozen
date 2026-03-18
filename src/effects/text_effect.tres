@@ -1,0 +1,123 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://bl6l8k0pk0bew"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_drc3j"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_xilbx"]
+
+[sub_resource type="Resource" id="Resource_drc3j"]
+script = ExtResource("1_drc3j")
+id = "text_data"
+nickname = "param_text_data"
+default_value = ""
+min_value = null
+max_value = null
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_xilbx"]
+script = ExtResource("1_drc3j")
+id = "font"
+nickname = "param_font"
+default_value = ""
+min_value = null
+max_value = null
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_ptuff"]
+script = ExtResource("1_drc3j")
+id = "text_h_align"
+nickname = "param_text_h_align"
+default_value = 0
+min_value = null
+max_value = null
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_gif22"]
+script = ExtResource("1_drc3j")
+id = "text_v_align"
+nickname = "param_text_v_align"
+default_value = 0
+min_value = null
+max_value = null
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_nmfvc"]
+script = ExtResource("1_drc3j")
+id = "font_size"
+nickname = "param_font_size"
+default_value = 16
+min_value = 1
+max_value = 1500
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_dgkg4"]
+script = ExtResource("1_drc3j")
+id = "font_color"
+nickname = "param_font_color"
+default_value = Color(1, 1, 1, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_jx41m"]
+script = ExtResource("1_drc3j")
+id = "char_spacing"
+nickname = "param_char_spacing"
+default_value = 0
+min_value = -100
+max_value = 100
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_1r4bx"]
+script = ExtResource("1_drc3j")
+id = "text_outline_size"
+nickname = "param_text_outline_size"
+default_value = 0
+min_value = 0
+max_value = 100
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_on0qg"]
+script = ExtResource("1_drc3j")
+id = "text_outline_color"
+nickname = "param_text_outline_color"
+default_value = Color(0.4351923, 0.43519226, 0.43519226, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_530yw"]
+script = ExtResource("1_drc3j")
+id = "text_shadow_size"
+nickname = "param_text_shadow_size"
+default_value = 0
+min_value = 0
+max_value = 250
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_5jxoe"]
+script = ExtResource("1_drc3j")
+id = "text_shadow_offset"
+nickname = "param_text_shadow_offset"
+default_value = Vector2i(0, 0)
+min_value = Vector2i(-1000, -1000)
+max_value = Vector2i(1000, 1000)
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_utf2j"]
+script = ExtResource("1_drc3j")
+id = "text_shadow_color"
+nickname = "param_text_shadow_color"
+default_value = Color(0, 0, 0, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_xilbx")
+id = "text"
+nickname = "Text"
+params = Array[ExtResource("1_drc3j")]([SubResource("Resource_drc3j"), SubResource("Resource_xilbx"), SubResource("Resource_ptuff"), SubResource("Resource_gif22"), SubResource("Resource_nmfvc"), SubResource("Resource_dgkg4"), SubResource("Resource_jx41m"), SubResource("Resource_1r4bx"), SubResource("Resource_on0qg"), SubResource("Resource_530yw"), SubResource("Resource_5jxoe"), SubResource("Resource_utf2j")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"

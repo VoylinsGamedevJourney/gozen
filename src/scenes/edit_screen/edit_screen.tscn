@@ -13,20 +13,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
+split_offsets = PackedInt32Array(260, 1608)
+split_offset = 260
 script = ExtResource("1_qa2ll")
 metadata/_tab_index = 0
 
-[node name="LeftHSplit" type="HSplitContainer" parent="." unique_id=328494768]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-split_offsets = PackedInt32Array(-500)
-split_offset = -500
-
-[node name="FilePanel" parent="LeftHSplit" unique_id=125925803 instance=ExtResource("2_rp1uh")]
+[node name="FilePanel" parent="." unique_id=125925803 instance=ExtResource("2_rp1uh")]
 layout_mode = 2
 
-[node name="ViewPanel" parent="LeftHSplit" unique_id=605257406 instance=ExtResource("3_qul4d")]
+[node name="ViewPanel" parent="." unique_id=605257406 instance=ExtResource("3_qul4d")]
 layout_mode = 2
 
 [node name="EffectsPanel" parent="." unique_id=720021721 instance=ExtResource("4_wnrwj")]

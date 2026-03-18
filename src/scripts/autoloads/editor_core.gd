@@ -18,6 +18,8 @@ var project_files: FileLogic
 var project_tracks: TrackLogic
 
 var viewport: SubViewport
+var text_viewports: Array[SubViewport]
+
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
 var compositors: Array[VisualCompositor] = []
@@ -35,6 +37,7 @@ var pitch_shift_effect: AudioEffectPitchShift
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0 ## Get's set when changing framerate.
 var skips: int = 0
+
 
 
 func _ready() -> void:
@@ -89,6 +92,9 @@ func _on_project_ready() -> void:
 
 func _rebuild_structure() -> void:
 	var track_size: int = project_data.tracks_is_muted.size()
+	viewport.size = project_data.resolution
+	background.size = project_data.resolution
+
 	# Loaded clips setup.
 	loaded_clips.resize(track_size)
 	loaded_clips.fill(-1)
@@ -105,28 +111,47 @@ func _rebuild_structure() -> void:
 	# Visual setup.
 	for texture_rect: TextureRect in view_textures:
 		texture_rect.queue_free()
+	for text_viewport: SubViewport in text_viewports:
+		text_viewport.queue_free()
+
 	view_textures.resize(track_size)
 	compositors.resize(track_size)
+	text_viewports.resize(track_size)
 
 	for index: int in track_size:
 		compositors[index] = VisualCompositor.new()
-		view_textures[index] = TextureRect.new()
-		view_textures[index].stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		view_textures[index].expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		view_textures[index].set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		viewport.add_child(view_textures[index])
-		viewport.move_child(view_textures[index], 1)
-	viewport.size = project_data.resolution
+
+		# View stuff.
+		var texture_rect: TextureRect = TextureRect.new()
+		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		viewport.add_child(texture_rect)
+		viewport.move_child(texture_rect, 1)
+		view_textures[index] = texture_rect
+
+		# Text stuff.
+		var text_viewport: SubViewport = SubViewport.new()
+		var settings: LabelSettings = LabelSettings.new()
+		var text_label: Label = Label.new()
+		text_label.label_settings = settings
+		text_viewport.size = Vector2i(1920, 1080)
+		text_viewport.transparent_bg = true
+		text_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		text_viewport.add_child(text_label)
+		add_child(text_viewport)
+		text_viewports[index] = text_viewport
 
 
 func _on_closing_editor() -> void:
-	for tex: TextureRect in view_textures:
-		tex.queue_free()
-	for player: AudioPlayer in audio_players:
-		player.free()
+	for texture_rect: TextureRect in view_textures:
+		texture_rect.queue_free()
+	for text_viewport: SubViewport in text_viewports:
+		text_viewport.queue_free()
 	view_textures.clear()
 	audio_players.clear()
 	viewport.queue_free()
+	text_viewports.clear()
 
 
 func _on_clips_updated() -> void:
@@ -297,11 +322,66 @@ func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 	var clip_frame: int = frame_nr - start
 	var relative_frame: int = int(clip_frame * speed) + begin
 
+	var file_type: int = project_data.files_type[file_index]
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_index, true)
 	var effects: Array[EffectVisual] = project_data.clips_effects[clip_index].video
 	project_clips.load_video_frame(loaded_clips[track_id], relative_frame, instance_index)
 
-	if raw_data is Video:
+	if file_type == TYPE.TEXT:
+		var temp_file: TempFile = raw_data
+		var text_effect: EffectVisual = temp_file.text_effect
+
+		var text_data: String = text_effect.get_value(text_effect.params[0], relative_frame)
+		var text_font: String = text_effect.get_value(text_effect.params[1], relative_frame)
+		var text_h_align: int = text_effect.get_value(text_effect.params[2], relative_frame)
+		var text_v_align: int = text_effect.get_value(text_effect.params[3], relative_frame)
+		var text_size: int = text_effect.get_value(text_effect.params[4], relative_frame)
+		var text_color: Color = text_effect.get_value(text_effect.params[5], relative_frame)
+		var text_char_spacing: int = text_effect.get_value(text_effect.params[6], relative_frame)
+		var text_outline_size: int = text_effect.get_value(text_effect.params[7], relative_frame)
+		var text_outline_color: Color = text_effect.get_value(text_effect.params[8], relative_frame)
+		var text_shadow_size: int = text_effect.get_value(text_effect.params[9], relative_frame)
+		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[10], relative_frame)
+		var text_shadow_color: Color = text_effect.get_value(text_effect.params[11], relative_frame)
+
+		var font: Font = Settings.fonts.get(text_font, ThemeDB.fallback_font)
+
+		var text_viewport: SubViewport = text_viewports[track_id]
+		var text_label: Label = text_viewport.get_child(0) as Label
+		var text_label_settings: LabelSettings = text_label.label_settings
+
+		text_label.text = text_data
+		text_label.horizontal_alignment = text_h_align as HorizontalAlignment
+		text_label.vertical_alignment = text_v_align as VerticalAlignment
+
+		text_label_settings.font = font
+		text_label_settings.font_size = text_size
+		text_label_settings.font_color = text_color
+		text_label_settings.outline_size = text_outline_size
+		text_label_settings.outline_color = text_outline_color
+		text_label_settings.shadow_size = text_shadow_size
+		text_label_settings.shadow_offset = text_shadow_offset
+		text_label_settings.shadow_color = text_shadow_color
+
+		text_label.add_theme_constant_override("character_spacing", text_char_spacing)
+
+		text_label.size = project_data.resolution
+		text_viewport.size = project_data.resolution
+		text_label.label_settings = text_label_settings
+		RenderingServer.force_draw()
+
+		#var texture_rid: RID = text_viewport.get_texture().get_rid() # TODO: Switch to using the RID directly.
+		var image: Image = text_viewport.get_texture().get_image()
+		var image_texture: ImageTexture = ImageTexture.create_from_image(image)
+		if update or Vector2i(image_texture.get_size()) != compositors[track_id].resolution:
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image_texture))
+		else:
+			RenderingServer.call_on_render_thread(compositors[track_id].update_image.bind(image_texture))
+
+		RenderingServer.call_on_render_thread(compositors[track_id].process_image_frame.bind(
+				effects, relative_frame, fade_alpha))
+		view_textures[track_id].texture = compositors[track_id].display_texture
+	elif raw_data is Video:
 		var video: Video = project_files.get_video_reader(file_id, instance_index)
 		if update:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))

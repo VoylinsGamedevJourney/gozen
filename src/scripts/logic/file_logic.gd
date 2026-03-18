@@ -147,24 +147,34 @@ func _add(path: String) -> int:
 		modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck":
 		type = EditorCore.TYPE.PCK
-	else:
+	elif !path.contains("temp://"):
 		printerr("FileLogic: Invalid file:", path)
 
 	if path.contains("temp://"):
+		var temp_file: TempFile = TempFile.new()
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
+		var time_dict: Dictionary = Time.get_datetime_dict_from_system()
 		if path == "temp://text":
 			type = EditorCore.TYPE.TEXT
 			duration = Settings.get_text_duration()
-			nickname = "%s %s" % [temp_nickname, file]
+			nickname = "Text: Empty text"
+			temp_file.text_effect = load(Library.EFFECT_TEXT).duplicate(true)
+			temp_file.text_effect.set_default_keyframe()
 		elif path == "temp://image":
 			type = EditorCore.TYPE.IMAGE
 			duration = Settings.get_image_duration()
-			nickname = "%s %s" % [temp_nickname, file]
+			nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
+				time_dict.year, time_dict.month, time_dict.day,
+				time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
+			var splits: PackedStringArray = path.split("#")
 			type = EditorCore.TYPE.COLOR
 			duration = Settings.get_color_duration()
 			nickname = temp_nickname.replace("#", " #")
-			path = path.split("#")[0]
+			path = splits[0]
+			temp_file.color = Color(splits[1])
+		project_data.files_temp_file[file] = temp_file
+
 	if type == EditorCore.TYPE.EMPTY:
 		return -1 # Invalid file, don't bother with it.
 
@@ -185,7 +195,19 @@ func _add(path: String) -> int:
 
 
 func delete(ids: PackedInt64Array) -> void:
+	var clips_to_delete: PackedInt64Array =[]
+	for i: int in project_data.clips_file.size():
+		if project_data.clips_file[i] in ids:
+			clips_to_delete.append(project_data.clips[i])
+
 	InputManager.undo_redo.create_action("Delete file")
+	for clip_id: int in clips_to_delete:
+		var clips: ClipLogic = Project.clips
+		var clip_index: int = clips.index_map[clip_id]
+		var snapshot: Dictionary = clips._create_snapshot(clip_index)
+		InputManager.undo_redo.add_do_method(clips._delete.bind(clip_id))
+		InputManager.undo_redo.add_undo_method(clips._restore_clip_from_snapshot.bind(snapshot))
+
 	for file: int in ids:
 		if !index_map.has(file):
 			continue
@@ -195,6 +217,8 @@ func delete(ids: PackedInt64Array) -> void:
 		InputManager.undo_redo.add_undo_method(_restore_from_snapshot.bind(snapshot))
 	InputManager.undo_redo.add_do_method(_rebuild_map)
 	InputManager.undo_redo.add_undo_method(_rebuild_map)
+	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
+	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -225,8 +249,7 @@ func _delete(file: int) -> void:
 			video.close()
 		video_pools.erase(file)
 	if audio_pools.has(file):
-		for stream: AudioStream in audio_pools[file]:
-			stream.free()
+		audio_pools[file] = []
 		audio_pools.erase(file)
 	if audio_wave.has(file):
 		audio_wave.erase(file)
@@ -382,9 +405,8 @@ func duplicate_text(file: int) -> void:
 	var original_temp: TempFile = project_data.files_temp_file[file]
 	var new_file: int = Utils.get_unique_id(project_data.files)
 	var new_temp: TempFile = TempFile.new()
-	new_temp.text_data = original_temp.text_data
-	new_temp.font_size = original_temp.font_size
-	new_temp.font = original_temp.font
+	new_temp.text_effect = original_temp.text_effect.duplicate(true)
+
 	var snapshot: Dictionary = _create_snapshot_temp_text(new_file, new_temp)
 
 	InputManager.undo_redo.create_action("Duplicate Text File")
@@ -463,9 +485,16 @@ func load_data(file_index: int) -> void:
 	file_data[file_index] = null
 	Threader.mutex.unlock()
 
-	if path.begins_with("temp://"): # TODO: Add text
+	if path.begins_with("temp://"):
 		var temp_file: TempFile = project_data.files_temp_file.get(file, TempFile.new())
-		if path == "temp://image":
+		var text_effect: EffectVisual = temp_file.text_effect
+		if path == "temp://text":
+			if text_effect.keyframes.is_empty():
+				text_effect.set_default_keyframe()
+			Threader.mutex.lock()
+			file_data[file_index] = temp_file
+			Threader.mutex.unlock()
+		elif path == "temp://image":
 			Threader.mutex.lock()
 			file_data[file_index] = temp_file.image_data
 			Threader.mutex.unlock()
@@ -476,6 +505,7 @@ func load_data(file_index: int) -> void:
 			Threader.mutex.unlock()
 		project_data.files_temp_file[file] = temp_file
 		return
+
 	match type:
 		EditorCore.TYPE.IMAGE:
 			Threader.mutex.lock()
@@ -834,6 +864,70 @@ func _set_nickname(file: int, nickname: String) -> void:
 	project_data.files_nickname[index] = nickname
 	nickname_changed.emit(file)
 	Project.unsaved_changes = true
+
+
+func update_text_param(file: int, param_id: String, frame_nr: int, new_value: Variant, old_value: Variant, is_new: bool) -> void:
+	InputManager.undo_redo.create_action("Update text property")
+	InputManager.undo_redo.add_do_method(_set_text_keyframe.bind(file, param_id, frame_nr, new_value))
+	if is_new and frame_nr != 0:
+		InputManager.undo_redo.add_undo_method(_remove_text_keyframe.bind(file, param_id, frame_nr))
+	else:
+		InputManager.undo_redo.add_undo_method(_set_text_keyframe.bind(file, param_id, frame_nr, old_value))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_text_keyframe(file: int, param_id: String, frame_nr: int, value: Variant) -> void:
+	var temp_file: TempFile = project_data.files_temp_file[file]
+	var text_effect: EffectVisual = temp_file.text_effect
+	if not text_effect.keyframes.has(param_id):
+		var typed_dict: Dictionary[int, Variant] = {}
+		text_effect.keyframes[param_id] = typed_dict
+	text_effect.keyframes[param_id][frame_nr] = value
+	text_effect._cache_dirty = true
+
+	if param_id == "text_data" and frame_nr == 0:
+		var text_str: String = str(value).strip_edges().replace("\n", " ")
+		if text_str == "":
+			text_str = "Text: Empty text"
+
+		var file_index: int = index_map[file]
+		if project_data.files_nickname[file_index] != text_str:
+			project_data.files_nickname[file_index] = "Text: " + text_str
+			nickname_changed.emit(file)
+
+	Project.unsaved_changes = true
+	Project.clips.updated.emit()
+	var tree: SceneTree = Project.get_tree()
+	if not tree.process_frame.is_connected(EditorCore.update_frame):
+		tree.process_frame.connect(EditorCore.update_frame, CONNECT_ONE_SHOT)
+
+
+func remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
+	var temp_file: TempFile = project_data.files_temp_file[file]
+	var text_effect: EffectVisual = temp_file.text_effect
+	var param_keyframes: Dictionary[int, Variant] = text_effect.keyframes[param_id]
+	if not text_effect.keyframes.has(param_id) or not param_keyframes.has(frame_nr):
+		return
+	var old_value: Variant = text_effect.keyframes[param_id][frame_nr]
+
+	InputManager.undo_redo.create_action("Remove text keyframe")
+	InputManager.undo_redo.add_do_method(_remove_text_keyframe.bind(file, param_id, frame_nr))
+	InputManager.undo_redo.add_undo_method(_set_text_keyframe.bind(file, param_id, frame_nr, old_value))
+	InputManager.undo_redo.commit_action()
+
+
+func _remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
+	var temp_file: TempFile = project_data.files_temp_file[file]
+	var text_effect: EffectVisual = temp_file.text_effect
+	var param_keyframes: Dictionary[int, Variant] = text_effect.keyframes[param_id]
+	if text_effect.keyframes.has(param_id):
+		param_keyframes.erase(frame_nr)
+	text_effect._cache_dirty = true
+	Project.unsaved_changes = true
+	Project.clips.updated.emit()
+	var tree: SceneTree = Project.get_tree()
+	if not tree.process_frame.is_connected(EditorCore.update_frame):
+		tree.process_frame.connect(EditorCore.update_frame, CONNECT_ONE_SHOT)
 
 
 func toggle_ato(file: int) -> void:

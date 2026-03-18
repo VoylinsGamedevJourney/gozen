@@ -14,6 +14,7 @@ var project_data: ProjectData
 func _init(data: ProjectData) -> void:
 	project_data = data
 
+
 # --- Handling ---
 
 func add(folder: String) -> void:
@@ -80,8 +81,9 @@ func delete(folder: String) -> void:
 	# End by deleting all clips.
 	for clip_index: int in clips_to_delete:
 		var clips: ClipLogic = Project.clips
+		var clip_id: int = project_data.clips[clip_index]
 		var snapshot: Dictionary = clips._create_snapshot(clip_index)
-		InputManager.undo_redo.add_do_method(clips._delete.bind(clip_index))
+		InputManager.undo_redo.add_do_method(clips._delete.bind(clip_id))
 		InputManager.undo_redo.add_undo_method(clips._restore_clip_from_snapshot.bind(snapshot))
 	InputManager.undo_redo.commit_action()
 

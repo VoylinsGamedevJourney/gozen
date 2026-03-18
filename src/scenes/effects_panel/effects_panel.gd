@@ -28,7 +28,7 @@ func _ready() -> void:
 
 
 func _project_ready() -> void:
-	Project.clips.deleted.connect(_on_clip_pressed)
+	Project.clips.deleted.connect(_on_clip_deleted)
 	Project.clips.selected.connect(_on_clip_pressed)
 
 
@@ -74,6 +74,11 @@ func _on_clip_pressed(clip_id: int) -> void:
 		_load_effects()
 
 
+func _on_clip_deleted(clip_id: int) -> void:
+	if clip_id == current_clip_id:
+		_on_clip_pressed(-1)
+
+
 func _on_frame_changed() -> void:
 	if current_clip_id != -1:
 		_update_ui_values()
@@ -99,7 +104,7 @@ func _load_effects() -> void:
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 
 	if section_text.visible: # Set text params.
-		pass # TODO: Update text section
+		_create_text_ui(Project.data.files_temp_file[Project.data.clips_file[clip_index]].text_effect)
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		section_visuals.add_child(_create_effect_ui(clip_effects.video[index], index, true))
 	for index: int in clip_effects.audio.size(): # Add audio effects.
@@ -150,19 +155,18 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 			_drop_effect)
 
 	# Adding effect params.
+	var keyframes_found: bool = false
 	for param: EffectParam in effect.params:
 		var param_hbox: HBoxContainer = HBoxContainer.new()
 		var param_id: String = param.id
 		var param_title: Label = Label.new()
-		var param_settings: Control = _create_param_control(param, index, is_visual)
+		var param_settings: Control = _create_param_control(param, index, is_visual, false)
 
 		param_title.text = param.nickname.replace("param_", "").capitalize()
 		param_title.tooltip_text = param.tooltip
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		param_title.clip_text = true
-
 		param_settings.name = "PARAM_" + param_id
-
 
 		param_hbox.add_child(param_title)
 		param_hbox.add_child(param_settings)
@@ -180,27 +184,28 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 			else:
 				param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
 			param_hbox.add_child(param_keyframe_button)
-
+			keyframes_found = true
 		content_vbox.add_child(param_hbox)
 
-	var track: KeyframeTrack = KeyframeTrack.new()
-	var track_hbox: HBoxContainer = HBoxContainer.new()
-	var track_label: Label = Label.new()
+	if keyframes_found:
+		var track_scroll: ScrollContainer = ScrollContainer.new()
+		var track: KeyframeTrack = KeyframeTrack.new()
 
-	track_label.text = "Keyframes"
-	track_label.custom_minimum_size.x = 80
-	track_label.modulate = Color(1, 1, 1, 0.5)
+		track_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		track_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		track_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		track_scroll.custom_minimum_size.y = 32
 
-	track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	track.setup(effect, clip_duration, relative_frame_nr)
-	track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(current_clip_id, index, is_visual))
-	track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(current_clip_id, index, is_visual))
-	track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui.bind(current_clip_id))
+		track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		track.setup(effect, clip_duration, relative_frame_nr)
+		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(current_clip_id, index, is_visual))
+		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(current_clip_id, index, is_visual))
+		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui.bind(current_clip_id))
 
-	track_hbox.add_child(track_label)
-	track_hbox.add_child(track)
-	content_vbox.add_child(HSeparator.new())
-	content_vbox.add_child(track_hbox)
+		track_scroll.add_child(track)
+		content_vbox.add_child(HSeparator.new())
+		content_vbox.add_child(track_scroll)
 	return container
 
 
@@ -220,15 +225,58 @@ func _on_keyframe_dragged_to_effect_ui(relative_frame: int, clip_id: int) -> voi
 	EditorCore.set_frame(clip_start + relative_frame)
 
 
-func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> Control:
+func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_text: bool) -> Control:
 	var value: Variant = param.default_value
+	if value == null:
+		printerr("EffectsPanel: Value is null! %s" % param)
+		value = 0
+
+	var update_call: Callable
+	if is_text:
+		update_call = _text_param_update_call.bind(param.id)
+	else:
+		update_call = _effect_param_update_call.bind(index, is_visual, param.id)
+
 	match typeof(value):
+		TYPE_STRING:
+			if param.id == "font":
+				var opt: OptionButton = OptionButton.new()
+				opt.add_item("Default")
+				opt.set_item_metadata(0, "")
+				var fonts: Array[String] = Settings.fonts.keys()
+				fonts.sort()
+				for i: int in fonts.size():
+					opt.add_item(fonts[i])
+					opt.set_item_metadata(i + 1, fonts[i])
+				opt.item_selected.connect(func(id: int) -> void: update_call.call(opt.get_item_metadata(id)))
+				opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				return opt
+			var line_edit: LineEdit = LineEdit.new()
+			line_edit.text_changed.connect(update_call)
+			line_edit.text_submitted.connect((func() -> void: line_edit.release_focus()).unbind(1))
+			line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			return line_edit
 		TYPE_BOOL:
 			var check_button: CheckButton = CheckButton.new()
-			check_button.toggled.connect(_effect_param_update_call.bind(index, is_visual, param.id))
+			check_button.toggled.connect(update_call)
 			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return check_button
 		TYPE_INT, TYPE_FLOAT:
+			var horizontal: bool = param.id == "text_h_align"
+			if horizontal or param.id == "text_v_align":
+				var option_button: OptionButton = OptionButton.new()
+				if horizontal:
+					option_button.add_item("Left", HORIZONTAL_ALIGNMENT_LEFT)
+					option_button.add_item("Center", HORIZONTAL_ALIGNMENT_CENTER)
+					option_button.add_item("Right", HORIZONTAL_ALIGNMENT_RIGHT)
+				else: # Vertical.
+					option_button.add_item("Top", VERTICAL_ALIGNMENT_TOP)
+					option_button.add_item("Center", VERTICAL_ALIGNMENT_CENTER)
+					option_button.add_item("Bottom", VERTICAL_ALIGNMENT_BOTTOM)
+				option_button.item_selected.connect(func(idx: int) -> void:
+						update_call.call(option_button.get_item_id(idx)))
+				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				return option_button
 			var spinbox: SpinBox = SpinBox.new()
 			spinbox.min_value = param.min_value if param.min_value != null else MIN_VALUE
 			spinbox.max_value = param.max_value if param.max_value != null else MAX_VALUE
@@ -236,7 +284,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
-			spinbox.value_changed.connect(_effect_param_update_call.bind(index, is_visual, param.id))
+			spinbox.value_changed.connect(update_call)
 			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return spinbox
 		TYPE_VECTOR2, TYPE_VECTOR2I:
@@ -253,7 +301,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox_x.value_changed.connect(func(val: float) -> void:
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 				current_value.x = val
-				_effect_param_update_call.call(current_value, index, is_visual, param.id))
+				update_call.call(current_value))
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
 			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
@@ -264,7 +312,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 			spinbox_y.value_changed.connect(func(val: float) -> void:
 				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
 				current_value.y = val
-				_effect_param_update_call.call(current_value, index, is_visual, param.id))
+				update_call.call(current_value))
 
 			hbox.add_child(spinbox_x)
 			hbox.add_child(spinbox_y)
@@ -273,7 +321,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool) -> C
 		TYPE_COLOR:
 			var color_picker: ColorPickerButton = ColorPickerButton.new()
 			color_picker.custom_minimum_size.x = 40
-			color_picker.color_changed.connect(_effect_param_update_call.bind(index, is_visual, param.id))
+			color_picker.color_changed.connect(update_call)
 			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return color_picker
 	return Control.new() # Fallback.
@@ -307,6 +355,41 @@ func _update_ui_values() -> void:
 	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var frame_nr: int = EditorCore.frame_nr - clip_start
 
+	if section_text.visible and section_text.get_child_count() > 0:
+		var file_id: int = Project.data.clips_file[clip_index]
+		var temp_file: TempFile = Project.data.files_temp_file[file_id]
+		var text_effects: EffectVisual = temp_file.text_effect
+		var text_container: FoldableContainer = section_text.get_child(0)
+		var content_vbox: VBoxContainer = text_container.get_child(0)
+
+		for i: int in text_effects.params.size():
+			var param: EffectParam = text_effects.params[i]
+			var param_hbox: HBoxContainer = content_vbox.get_child(i)
+			var param_settings: Control = param_hbox.get_child(1)
+			var keyframe_button: TextureButton = param_hbox.get_child(2)
+			var value: Variant = text_effects.get_value(param, frame_nr)
+			_set_param_settings_value(param_settings, value)
+
+			var param_keyframes: Dictionary = text_effects.keyframes[param.id]
+			if param_keyframes.has(frame_nr):
+				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+			else:
+				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+
+			if param_keyframes.size() <= 1:
+				keyframe_button.modulate = COLOR_KEYFRAMING_OFF
+			else:
+				keyframe_button.modulate = COLOR_KEYFRAMING_ON
+
+		var track_hbox: HBoxContainer = content_vbox.get_child(-1)
+		if track_hbox:
+			var scroll: ScrollContainer = track_hbox.get_child(1)
+			var track: KeyframeTrack = scroll.get_child(0)
+			track.current_relative_frame = frame_nr
+			track.effect.keyframes = text_effects.keyframes
+			track.clip_duration = Project.data.clips_duration[clip_index]
+			track.queue_redraw()
+
 	for i: int in clip_effects.video.size():
 		_update_ui_values_effect(clip_effects.video, i, frame_nr)
 	for i: int in clip_effects.audio.size():
@@ -325,6 +408,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 	if !effect.is_enabled:
 		effect_container.folded = true
 
+	var keyframes_found: bool = false
 	for i: int in effect.params.size():
 		var param: EffectParam = effect.params[i]
 		var param_id: String = param.id
@@ -340,16 +424,29 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 			else:
 				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+			keyframes_found = true
 
-	var track_hbox: HBoxContainer = content_vbox.get_child(-1)
-	if track_hbox:
-		var track: KeyframeTrack = track_hbox.get_child(1)
+	if keyframes_found:
+		var clip_index: int = Project.clips.index_map[current_clip_id]
+		var scroll: ScrollContainer = content_vbox.get_child(-1)
+		var track: KeyframeTrack = scroll.get_child(0)
 		track.current_relative_frame = frame_nr
+		track.clip_duration = Project.data.clips_duration[clip_index]
 		track.queue_redraw()
 
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
-	if param_settings is SpinBox:
+	if param_settings is LineEdit:
+		var line_edit: LineEdit = param_settings
+		if line_edit.text != str(value):
+			line_edit.text = str(value)
+	elif param_settings is OptionButton:
+		var option_button: OptionButton = param_settings
+		for i: int in option_button.item_count:
+			if option_button.get_item_metadata(i) == value:
+				option_button.selected = i
+				break
+	elif param_settings is SpinBox:
 		var spinbox: SpinBox = param_settings
 		spinbox.set_value_no_signal(value as float)
 	elif param_settings is CheckButton:
@@ -365,7 +462,7 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 		var color_picker: ColorPickerButton = param_settings
 		color_picker.color = value
 	else:
-		printerr("EffectsPanel: Invalid param settings control! %s" % param_settings)
+		printerr("EffectsPanel: Invalid param settings control! %s - %s" % [param_settings, typeof(param_settings)])
 
 
 func _on_switch_enabled(index: int, is_visual: bool) -> void:
@@ -424,6 +521,188 @@ func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_i
 	else:
 		var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
 		EffectsHandler.update_param(clip_id, index, is_visual, param_id, value, true)
+	_update_ui_values()
+
+
+func _create_text_ui(text_effect: EffectVisual) -> void:
+	var clip_index: int = Project.clips.index_map[current_clip_id]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var clip_duration: int = Project.data.clips_duration[clip_index]
+	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
+
+	var container: FoldableContainer = FoldableContainer.new()
+	container.title = "Text Properties"
+	container.add_theme_font_size_override("font_size", 11)
+	container.add_theme_color_override("font_color", "#b8b8b8")
+
+	var content_vbox: VBoxContainer = VBoxContainer.new()
+	container.add_child(content_vbox)
+
+	for param: EffectParam in text_effect.params:
+		var param_hbox: HBoxContainer = HBoxContainer.new()
+		var param_id: String = param.id
+		var param_title: Label = Label.new()
+		var param_settings: Control = _create_param_control(param, -1, false, true)
+		var param_keyframe_button: TextureButton = TextureButton.new()
+
+		param_title.text = param.nickname.replace("param_", "").capitalize()
+		param_title.tooltip_text = param.tooltip
+		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		param_title.clip_text = true
+
+		param_settings.name = "PARAM_" + param_id
+		param_keyframe_button.name = "KEYFRAME_" + param_id
+		param_keyframe_button.ignore_texture_size = true
+		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_keyframe_button.custom_minimum_size.x = 14
+		param_keyframe_button.pressed.connect(_text_keyframe_button_pressed.bind(param_id))
+
+		var keyframes: Dictionary = text_effect.keyframes[param.id]
+		if keyframes.has(relative_frame_nr):
+			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+		else:
+			param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+
+		param_keyframe_button.visible = param.keyframeable
+
+		param_hbox.add_child(param_title)
+		param_hbox.add_child(param_settings)
+		param_hbox.add_child(param_keyframe_button)
+		content_vbox.add_child(param_hbox)
+
+	var track: KeyframeTrack = KeyframeTrack.new()
+	var track_scroll: ScrollContainer = ScrollContainer.new()
+	var track_hbox: HBoxContainer = HBoxContainer.new()
+	var track_label: Label = Label.new()
+
+	track_label.text = "Keyframes"
+	track_label.custom_minimum_size.x = 80
+	track_label.modulate = Color(1, 1, 1, 0.5)
+
+	track_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	track_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	track_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	track_scroll.custom_minimum_size.y = 32
+
+	track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	track.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	track.setup(text_effect, clip_duration, relative_frame_nr)
+
+	track.keyframe_moved_effect.connect(_on_text_keyframe_moved.bind())
+	track.keyframe_deleted_effect.connect(_on_text_keyframe_deleted.bind())
+	track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui.bind(current_clip_id))
+
+	track_scroll.add_child(track)
+	track_hbox.add_child(track_label)
+	track_hbox.add_child(track_scroll)
+	content_vbox.add_child(HSeparator.new())
+	content_vbox.add_child(track_hbox)
+
+	section_text.add_child(container)
+
+
+func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool) -> void:
+	var clip_index: int = Project.clips.index_map[current_clip_id]
+	var file_id: int = Project.data.clips_file[clip_index]
+	var temp_file: TempFile = Project.data.files_temp_file[file_id]
+	var text_effect: EffectVisual = temp_file.text_effect
+	var keyframes: Dictionary = text_effect.keyframes
+
+	InputManager.undo_redo.create_action("Move Text Keyframes")
+	for param: EffectParam in text_effect.params:
+		var param_id: String = param.id
+		var param_keyframes: Dictionary = keyframes[param_id]
+		if not param_keyframes.has(old_frame):
+			continue
+
+		var value_move: Variant = param_keyframes[old_frame]
+		var has_target: Variant = param_keyframes.has(new_frame)
+		var value_target: Variant = param_keyframes[new_frame] if has_target else null
+		var value_final: Variant = value_target if (has_target and preserve) else value_move
+
+		if old_frame != 0:
+			InputManager.undo_redo.add_do_method(Project.files.remove_text_keyframe.bind(file_id, param_id, old_frame))
+			InputManager.undo_redo.add_undo_method(Project.files._set_text_keyframe.bind(file_id, param_id, old_frame, value_move))
+
+		if not (has_target and preserve):
+			InputManager.undo_redo.add_do_method(Project.files._set_text_keyframe.bind(file_id, param_id, new_frame, value_final))
+			if has_target:
+				InputManager.undo_redo.add_undo_method(Project.files._set_text_keyframe.bind(file_id, param_id, new_frame, value_target))
+			else:
+				InputManager.undo_redo.add_undo_method(Project.files.remove_text_keyframe.bind(file_id, param_id, new_frame))
+
+	InputManager.undo_redo.commit_action()
+	_update_ui_values()
+
+
+func _on_text_keyframe_deleted(frame_nr: int) -> void:
+	if frame_nr == 0: return
+	var clip_index: int = Project.clips.index_map[current_clip_id]
+	var file_id: int = Project.data.clips_file[clip_index]
+	var temp_file: TempFile = Project.data.files_temp_file[file_id]
+	var text_effect: EffectVisual = temp_file.text_effect
+	var keyframes: Dictionary = text_effect.keyframes
+
+	InputManager.undo_redo.create_action("Delete Text Keyframes")
+	for param: EffectParam in text_effect.params:
+		var param_keyframes: Dictionary = keyframes[param.id]
+		if param_keyframes.has(frame_nr):
+			var old_value: Variant = param_keyframes[frame_nr]
+			InputManager.undo_redo.add_do_method(Project.files.remove_text_keyframe.bind(file_id, param.id, frame_nr))
+			InputManager.undo_redo.add_undo_method(Project.files._set_text_keyframe.bind(file_id, param.id, frame_nr, old_value))
+	InputManager.undo_redo.commit_action()
+	_update_ui_values()
+
+
+func _text_param_update_call(value: Variant, param_id: String) -> void:
+	var clip_index: int = Project.clips.index_map[current_clip_id]
+	var file_id: int = Project.data.clips_file[clip_index]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var frame_nr: int = EditorCore.frame_nr - clip_start
+	var temp_file: TempFile = Project.data.files_temp_file[file_id]
+	var text_effect: EffectVisual = temp_file.text_effect
+	var keyframes: Dictionary = text_effect.keyframes
+
+	var param_obj: EffectParam
+	for param: EffectParam in text_effect.params:
+		if param.id == param_id:
+			param_obj = param
+			break
+
+	var is_keyframeable: bool = param_obj.keyframeable if param_obj else false
+	var param_keyframes: Dictionary = keyframes[param_id]
+
+	if param_keyframes.size() <= 1 or not is_keyframeable:
+		var base_frame: int = param_keyframes.keys()[0] if param_keyframes.size() > 0 else 0
+		var old_value: Variant = param_keyframes.get(base_frame, param_obj.default_value)
+		Project.files.update_text_param(file_id, param_id, base_frame, value, old_value, false)
+	else:
+		var is_new: bool = not param_keyframes.has(frame_nr)
+		var old_value: Variant = param_keyframes[frame_nr] if not is_new else text_effect.get_value(param_obj, frame_nr)
+		Project.files.update_text_param(file_id, param_id, frame_nr, value, old_value, is_new)
+	_update_ui_values()
+
+
+func _text_keyframe_button_pressed(param_id: String) -> void:
+	var clip_index: int = Project.clips.index_map[current_clip_id]
+	var file_id: int = Project.data.clips_file[clip_index]
+	var clip_start: int = Project.data.clips_start[clip_index]
+	var frame_nr: int = EditorCore.frame_nr - clip_start
+	var temp_file: TempFile = Project.data.files_temp_file[file_id]
+	var text_effect: EffectVisual = temp_file.text_effect
+	var keyframes: Dictionary = text_effect.keyframes
+	var param_keyframes: Dictionary = keyframes[param_id]
+
+	if !param_keyframes.has(frame_nr):
+		var param_obj: EffectParam
+		for param: EffectParam in text_effect.params:
+			if param.id == param_id:
+				param_obj = param
+				break
+		var value: Variant = text_effect.get_value(param_obj, frame_nr)
+		Project.files.update_text_param(file_id, param_id, frame_nr, value, null, true)
+	elif frame_nr != 0:
+		Project.files.remove_text_keyframe(file_id, param_id, frame_nr)
 	_update_ui_values()
 
 

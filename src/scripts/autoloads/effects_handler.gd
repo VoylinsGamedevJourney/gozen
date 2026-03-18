@@ -198,7 +198,6 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 			effect_param = param
 			break
 
-
 	# No keyframes (except 0) made, so we change main value, unless new keyframe requested.
 	var param_keyframes: Dictionary = effect.keyframes[param_id]
 	var is_keyframeable: bool = effect_param.keyframeable if effect_param else true
@@ -275,7 +274,8 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 	else:
 		effect = clip_effects.audio[index]
 	if not effect.keyframes.has(param_id):
-		effect.keyframes[param_id] = {}
+		var typed_dict: Dictionary[int, Variant] = {}
+		effect.keyframes[param_id] = typed_dict
 
 	effect.keyframes[param_id][frame_nr] = value
 	effect._cache_dirty = true

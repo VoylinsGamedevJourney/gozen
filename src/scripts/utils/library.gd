@@ -82,6 +82,8 @@ const THEME_DEFAULT: String = "uid://715mkakin2bb"
 const FONT_ROBOTO_MEDIUM: String = "uid://bnubhr3uus8gt"
 const FONT_ROBOTO_REGULAR: String = "uid://dq00mn4msotdf"
 
+const EFFECT_TEXT: String = "uid://bl6l8k0pk0bew"
+
 const EFFECT_VISUAL_TRANSFORM: String = "uid://4mtlh3uaahui"
 
 const EFFECT_AUDIO_VOLUME: String = "uid://dxp7sisypvq8b"
