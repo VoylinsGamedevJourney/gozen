@@ -67,6 +67,10 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("open_command_bar"):
 		PopupManager.open(PopupManager.COMMAND_BAR)
 		return true
+	elif event.is_action_pressed("next_frame", false, true):
+		EditorCore.frame_nr += 1
+	elif event.is_action_pressed("prev_frame", false, true):
+		EditorCore.frame_nr -= 1
 	return false
 
 
