@@ -10,6 +10,8 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cre3o"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_l50ca"]
+
 [node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("button_play", "button_pause", "button_playback_speed", "frame_label", "time_label")]
 size_flags_horizontal = 3
 script = ExtResource("1_f3tql")
@@ -59,6 +61,7 @@ auto_translate_mode = 2
 layout_mode = 2
 theme_type_variation = &"info_label"
 text = "00:00:00.00"
+label_settings = SubResource("LabelSettings_l50ca")
 
 [node name="PlaybackControlsContainer" type="HBoxContainer" parent="Margin/VBox/ButtonsHBox" unique_id=1447006688]
 layout_mode = 2

@@ -29,7 +29,9 @@ var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = set_is_playing
-var loaded_clips: PackedInt64Array = [] ## Currently visible clip id's.
+var loaded_clips: Array[int] = [] ## Currently visible clip id's.
+var clips_to_update: Array[bool] = []
+var clips_instance_index: Array[int] = []
 
 var playback_speed: float = 1.0: set = set_playback_speed
 var pitch_shift_effect: AudioEffectPitchShift
@@ -37,6 +39,9 @@ var pitch_shift_effect: AudioEffectPitchShift
 var time_elapsed: float = 0.0
 var frame_time: float = 0.0 ## Get's set when changing framerate.
 var skips: int = 0
+
+var data_ready: bool = true
+var data_set_frame: int = 0
 
 
 
@@ -62,6 +67,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if data_ready and data_set_frame != Engine.get_process_frames():
+		update_views()
+		return
+
 	if !is_playing:
 		return
 	skips = 0
@@ -98,6 +107,10 @@ func _rebuild_structure() -> void:
 	# Loaded clips setup.
 	loaded_clips.resize(track_size)
 	loaded_clips.fill(-1)
+	clips_to_update.resize(track_size)
+	clips_to_update.fill(false)
+	clips_instance_index.resize(track_size)
+	clips_instance_index.fill(-1)
 
 	# Audio setup.
 	for player: AudioPlayer in audio_players:
@@ -159,6 +172,8 @@ func _on_clips_updated() -> void:
 	for i: int in audio_players.size():
 		audio_players[i].stop()
 	loaded_clips.fill(-1)
+	clips_to_update.fill(false)
+	clips_instance_index.fill(-1)
 	set_frame_nr(frame_nr)
 
 
@@ -249,18 +264,22 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			var file: int = project_data.clips_file[clip_index]
 			var instance_index: int = file_access_counter.get(file, 0)
 			file_access_counter[file] = instance_index + 1
-			update_view(i, false, instance_index)
+			clips_to_update[i] = true
+			clips_instance_index[i] = instance_index
+			update_data(i)
 			continue
 
 		# Getting the next frame if possible.
 		var clip: int = project_tracks.get_clip_id_at(i, frame_nr)
 		if clip != -1:
-			loaded_clips[i] = clip
 			var clip_index: int = project_clips.index_map[clip]
 			var file: int = project_data.clips_file[clip_index]
 			var instance_index: int = file_access_counter.get(file, 0)
+			loaded_clips[i] = clip
+			clips_to_update[i] = true
+			clips_instance_index[i] = instance_index
 			file_access_counter[file] = instance_index + 1
-			update_view(i, true, instance_index)
+			update_data(i)
 			audio_players[i].set_audio(find_audio(frame_nr, i))
 			continue
 		# No clip at position.
@@ -270,6 +289,8 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr == project_data.timeline_end:
 		is_playing = false
 	frame_changed.emit()
+	data_ready = true
+	data_set_frame = Engine.get_process_frames()
 
 
 # --- Audio handling ---
@@ -304,7 +325,69 @@ func update_audio() -> void:
 
 # --- Video stuff ---
 
-func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
+func update_data(track_id: int) -> void:
+	var clip_index: int = project_clips.index_map[loaded_clips[track_id]]
+	var file_index: int = project_files.index_map[project_data.clips_file[clip_index]]
+	var file_type: int = project_data.files_type[file_index]
+	var raw_data: Variant = project_files.get_data(file_index)
+
+	var start: int = project_data.clips_start[clip_index]
+	var begin: int = project_data.clips_begin[clip_index]
+	var speed: float = project_data.clips_speed[clip_index]
+	var clip_frame: int = frame_nr - start
+	var relative_frame: int = int(clip_frame * speed) + begin
+
+	if file_type == TYPE.TEXT:
+		var temp_file: TempFile = raw_data
+		var text_effect: EffectVisual = temp_file.text_effect
+
+		var text_data: String = text_effect.get_value(text_effect.params[0], relative_frame)
+		var text_font: String = text_effect.get_value(text_effect.params[1], relative_frame)
+		var text_h_align: int = text_effect.get_value(text_effect.params[2], relative_frame)
+		var text_v_align: int = text_effect.get_value(text_effect.params[3], relative_frame)
+		var text_size: int = text_effect.get_value(text_effect.params[4], relative_frame)
+		var text_color: Color = text_effect.get_value(text_effect.params[5], relative_frame)
+		var text_outline_size: int = text_effect.get_value(text_effect.params[6], relative_frame)
+		var text_outline_color: Color = text_effect.get_value(text_effect.params[7], relative_frame)
+		var text_shadow_size: int = text_effect.get_value(text_effect.params[8], relative_frame)
+		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[9], relative_frame)
+		var text_shadow_color: Color = text_effect.get_value(text_effect.params[10], relative_frame)
+
+		var font: Font = Settings.fonts.get(text_font, ThemeDB.fallback_font)
+
+		var text_viewport: SubViewport = text_viewports[track_id]
+		var text_label: Label = text_viewport.get_child(0) as Label
+		var text_label_settings: LabelSettings = text_label.label_settings
+
+		text_label.text = text_data
+		text_label.horizontal_alignment = text_h_align as HorizontalAlignment
+		text_label.vertical_alignment = text_v_align as VerticalAlignment
+
+		text_label_settings.font = font
+		text_label_settings.font_size = text_size
+		text_label_settings.font_color = text_color
+		text_label_settings.outline_size = text_outline_size
+		text_label_settings.outline_color = text_outline_color
+		text_label_settings.shadow_size = text_shadow_size
+		text_label_settings.shadow_offset = text_shadow_offset
+		text_label_settings.shadow_color = text_shadow_color
+
+		text_label.size = project_data.resolution
+		text_viewport.size = project_data.resolution
+		text_label.label_settings = text_label_settings
+	elif file_type == TYPE.PCK:
+		# TODO: Add PCK files here
+		pass
+
+
+func update_views() -> void:
+	for track_id: int in loaded_clips.size():
+		update_view(track_id, clips_to_update[track_id], clips_instance_index[track_id])
+		clips_to_update[track_id] = false
+	data_ready = false
+
+
+func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	if loaded_clips[track_id] == -1:
 		return
 	var clip_id: int = loaded_clips[track_id]
@@ -328,50 +411,8 @@ func update_view(track_id: int, update: bool, instance_index: int = 0) -> void:
 	project_clips.load_video_frame(loaded_clips[track_id], relative_frame, instance_index)
 
 	if file_type == TYPE.TEXT:
-		var temp_file: TempFile = raw_data
-		var text_effect: EffectVisual = temp_file.text_effect
-
-		var text_data: String = text_effect.get_value(text_effect.params[0], relative_frame)
-		var text_font: String = text_effect.get_value(text_effect.params[1], relative_frame)
-		var text_h_align: int = text_effect.get_value(text_effect.params[2], relative_frame)
-		var text_v_align: int = text_effect.get_value(text_effect.params[3], relative_frame)
-		var text_size: int = text_effect.get_value(text_effect.params[4], relative_frame)
-		var text_color: Color = text_effect.get_value(text_effect.params[5], relative_frame)
-		var text_char_spacing: int = text_effect.get_value(text_effect.params[6], relative_frame)
-		var text_outline_size: int = text_effect.get_value(text_effect.params[7], relative_frame)
-		var text_outline_color: Color = text_effect.get_value(text_effect.params[8], relative_frame)
-		var text_shadow_size: int = text_effect.get_value(text_effect.params[9], relative_frame)
-		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[10], relative_frame)
-		var text_shadow_color: Color = text_effect.get_value(text_effect.params[11], relative_frame)
-
-		var font: Font = Settings.fonts.get(text_font, ThemeDB.fallback_font)
-
-		var text_viewport: SubViewport = text_viewports[track_id]
-		var text_label: Label = text_viewport.get_child(0) as Label
-		var text_label_settings: LabelSettings = text_label.label_settings
-
-		text_label.text = text_data
-		text_label.horizontal_alignment = text_h_align as HorizontalAlignment
-		text_label.vertical_alignment = text_v_align as VerticalAlignment
-
-		text_label_settings.font = font
-		text_label_settings.font_size = text_size
-		text_label_settings.font_color = text_color
-		text_label_settings.outline_size = text_outline_size
-		text_label_settings.outline_color = text_outline_color
-		text_label_settings.shadow_size = text_shadow_size
-		text_label_settings.shadow_offset = text_shadow_offset
-		text_label_settings.shadow_color = text_shadow_color
-
-		text_label.add_theme_constant_override("character_spacing", text_char_spacing)
-
-		text_label.size = project_data.resolution
-		text_viewport.size = project_data.resolution
-		text_label.label_settings = text_label_settings
-		RenderingServer.force_draw()
-
 		#var texture_rid: RID = text_viewport.get_texture().get_rid() # TODO: Switch to using the RID directly.
-		var image: Image = text_viewport.get_texture().get_image()
+		var image: Image = text_viewports[track_id].get_texture().get_image()
 		var image_texture: ImageTexture = ImageTexture.create_from_image(image)
 		if update or Vector2i(image_texture.get_size()) != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image_texture))

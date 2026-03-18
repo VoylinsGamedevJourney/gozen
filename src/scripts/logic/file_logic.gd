@@ -897,9 +897,6 @@ func _set_text_keyframe(file: int, param_id: String, frame_nr: int, value: Varia
 
 	Project.unsaved_changes = true
 	Project.clips.updated.emit()
-	var tree: SceneTree = Project.get_tree()
-	if not tree.process_frame.is_connected(EditorCore.update_frame):
-		tree.process_frame.connect(EditorCore.update_frame, CONNECT_ONE_SHOT)
 
 
 func remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
@@ -925,9 +922,6 @@ func _remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
 	Project.clips.updated.emit()
-	var tree: SceneTree = Project.get_tree()
-	if not tree.process_frame.is_connected(EditorCore.update_frame):
-		tree.process_frame.connect(EditorCore.update_frame, CONNECT_ONE_SHOT)
 
 
 func toggle_ato(file: int) -> void:

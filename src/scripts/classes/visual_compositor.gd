@@ -146,25 +146,25 @@ func initialize_video(video: Video) -> void:
 	var format_y: RDTextureFormat = RDTextureFormat.new()
 	var format_uv: RDTextureFormat = RDTextureFormat.new()
 
-	# Setup YUV pipeline
+	# Setup YUV pipeline.
 	yuv_shader = device.shader_create_from_spirv(spirv)
 	yuv_pipeline = device.compute_pipeline_create(yuv_shader)
 
-	# Creating the Y format
+	# Creating the Y format.
 	format_y.format = device.DATA_FORMAT_R8_UNORM
 	format_y.width = video.get_y_data().get_width()
 	format_y.height = resolution.y
 	format_y.usage_bits = USAGE_BITS_R8
 	format_y.texture_type = device.TEXTURE_TYPE_2D
 
-	# Creating the UV format
+	# Creating the UV format.
 	format_uv.format = device.DATA_FORMAT_R8_UNORM
 	format_uv.width = video.get_u_data().get_width()
 	format_uv.height = floori(resolution.y / 2.0)
 	format_uv.usage_bits = USAGE_BITS_R8
 	format_uv.texture_type = device.TEXTURE_TYPE_2D
 
-	# Create YUV textures
+	# Create YUV textures.
 	y_texture = device.texture_create(format_y, RDTextureView.new(), [])
 	u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
 	v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
@@ -173,7 +173,6 @@ func initialize_video(video: Video) -> void:
 		a_texture = device.texture_create(format_y, RDTextureView.new(), [])
 	else:
 		var white_image: Image = Image.create(video.get_y_data().get_width(), resolution.y, false, Image.FORMAT_R8)
-
 		white_image.fill(Color.WHITE)
 		a_texture = device.texture_create(format_y, RDTextureView.new(), [white_image.get_data()])
 
