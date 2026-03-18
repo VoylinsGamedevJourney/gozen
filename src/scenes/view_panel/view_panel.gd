@@ -61,11 +61,13 @@ func _on_pause_button_pressed() -> void:
 
 
 func _on_skip_prev_button_pressed() -> void:
-	EditorCore.set_frame(maxi(0, Project.markers.get_previous(EditorCore.frame_nr)))
+	var marker: MarkerData = MarkerLogic.get_prev(EditorCore.frame_nr)
+	EditorCore.set_frame(marker.frame_nr if marker else 0)
 
 
 func _on_skip_next_button_pressed() -> void:
-	EditorCore.set_frame(maxi(0, Project.markers.get_next(EditorCore.frame_nr)))
+	var marker: MarkerData = MarkerLogic.get_next(EditorCore.frame_nr)
+	EditorCore.set_frame(marker.frame_nr if marker else Project.data.timeline_end)
 
 
 func _on_frame_changed() -> void:

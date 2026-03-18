@@ -40,6 +40,4 @@ var clips_speed: PackedFloat32Array = [] ## x times normal speed.
 var clips_duration: PackedInt64Array = []
 var clips_effects: Array[ClipEffects] = []
 
-var markers_frame: PackedInt64Array = []
-var markers_text: PackedStringArray = []
-var markers_type: PackedInt32Array = []
+var markers: Array[MarkerData] = []

@@ -1,6 +1,6 @@
 extends Control
 
-static var last_marker_type: int = 0 ## We want to save the last used type.
+static var last_type: int = 0 ## We want to save the last used type.
 
 
 @export var marker_line_edit: LineEdit
@@ -11,25 +11,26 @@ static var last_marker_type: int = 0 ## We want to save the last used type.
 
 
 func _ready() -> void:
+	marker_line_edit.text_submitted.connect(_on_create_marker_pressed.unbind(1))
 	_setup_type_option_button()
 	accept_event()
 
 	# Check if marker present, if yes, we edit.
-	var marker_index: int = Project.data.markers_frame.find(EditorCore.frame_nr)
-	if marker_index != -1:
-		marker_line_edit.text = Project.data.markers_text[marker_index]
-		last_marker_type = Project.data.markers_type[marker_index]
+	var marker: MarkerData = MarkerLogic.get_marker(EditorCore.frame_nr)
+	if marker:
+		marker_line_edit.text = marker.text
+		last_type = marker.type
 	else:
 		marker_line_edit.text = ""
 
 	marker_line_edit.grab_focus()
 	marker_line_edit.select_all()
-	type_option_button.selected = last_marker_type
+	type_option_button.selected = last_type
 	time_label.text = "%s (Frame: %d)" % [
 			Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.data.framerate, false),
 			EditorCore.frame_nr]
 
-	delete_button.visible = marker_index != -1
+	delete_button.visible = !(not marker)
 
 
 func _setup_type_option_button() -> void:
@@ -43,21 +44,21 @@ func _setup_type_option_button() -> void:
 
 
 func _on_create_marker_pressed() -> void:
-	var text_content: String = marker_line_edit.text.strip_edges()
-	var marker_index: int = Project.data.markers_frame.find(EditorCore.frame_nr)
+	var text: String = marker_line_edit.text.strip_edges()
+	var marker: MarkerData = MarkerLogic.get_marker(EditorCore.frame_nr)
 
-	if text_content == "": # Delete if empty
-		if marker_index != -1:
-			Project.markers.remove(EditorCore.frame_nr)
-	elif marker_index != -1:
-		Project.markers.update(marker_index, EditorCore.frame_nr, text_content, last_marker_type)
+	if marker:
+		if text.is_empty(): # Delete if empty.
+			MarkerLogic.remove(EditorCore.frame_nr)
+		else:
+			MarkerLogic.update(EditorCore.frame_nr, text, last_type, marker)
 	else:
-		Project.markers.add(EditorCore.frame_nr, text_content, last_marker_type)
+		MarkerLogic.add(EditorCore.frame_nr, text, last_type)
 	PopupManager.close(PopupManager.MARKER)
 
 
 func _on_type_selected(marker_index: int) -> void:
-	last_marker_type = marker_index
+	last_type = marker_index
 
 
 func _on_cancel_button_pressed() -> void:
@@ -65,5 +66,5 @@ func _on_cancel_button_pressed() -> void:
 
 
 func _on_delete_marker_button_pressed() -> void:
-	Project.markers.remove(EditorCore.frame_nr)
+	MarkerLogic.remove(EditorCore.frame_nr)
 	PopupManager.close(PopupManager.MARKER)

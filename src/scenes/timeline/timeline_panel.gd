@@ -124,6 +124,12 @@ func _ready() -> void:
 	InputManager.switch_timeline_mode_select.connect(_on_select_mode_button_pressed)
 	InputManager.switch_timeline_mode_cut.connect(_on_cut_mode_button_pressed)
 
+	var markers_redraw: Callable = draw_markers.queue_redraw
+	MarkerLogic.added.connect(markers_redraw.unbind(1))
+	MarkerLogic.removed.connect(markers_redraw.unbind(1))
+	MarkerLogic.updated.connect(markers_redraw.unbind(1))
+	MarkerLogic.moving.connect(markers_redraw)
+
 	scroll.get_h_scroll_bar().value_changed.connect(draw_all.unbind(1))
 	scroll.get_v_scroll_bar().value_changed.connect(draw_all.unbind(1))
 
@@ -346,12 +352,13 @@ func _draw_box_selection(control: Control) -> void:
 
 
 func _draw_markers(control: Control) -> void:
-	for index: int in Project.data.markers_frame.size():
-		var color: Color = Settings.get_marker_color(Project.data.markers_type[index])
-		var frame_nr: int = Project.data.markers_frame[index]
+	var dragged_marker: MarkerData = MarkerLogic.dragged_marker
+	for marker: MarkerData in Project.data.markers:
+		var frame_nr: int = marker.frame_nr
+		var color: Color = Settings.get_marker_color(marker.type)
 		var pos_x: float = frame_nr * zoom
-		if frame_nr == Project.markers.dragged_marker:
-			pos_x = Project.markers.dragged_marker_offset
+		if dragged_marker and frame_nr == dragged_marker.frame_nr:
+			pos_x = MarkerLogic.dragged_marker_offset
 
 		control.draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), color * Color(1.0, 1.0, 1.0, 0.3), 1.0)
 		pos_x += 1 # We want a double line with the second one slightly lighter.
@@ -614,10 +621,6 @@ func _project_ready() -> void:
 	Project.clips.added.connect(draw_clips.queue_redraw.unbind(1))
 	Project.clips.deleted.connect(_on_clip_deleted)
 	Project.clips.updated.connect(draw_clips.queue_redraw)
-	Project.markers.added.connect(draw_markers.queue_redraw.unbind(1))
-	Project.markers.removed.connect(draw_markers.queue_redraw.unbind(1))
-	Project.markers.updated.connect(draw_markers.queue_redraw.unbind(1))
-	Project.markers.moving.connect(draw_markers.queue_redraw)
 	Project.tracks.updated.connect(_on_tracks_updated)
 	_update_track_height(Settings.get_track_height())
 	draw_all()

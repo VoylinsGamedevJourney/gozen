@@ -32,6 +32,11 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
+
+	MarkerLogic.added.connect(update_stamps.unbind(1))
+	MarkerLogic.updated.connect(update_stamps.unbind(1))
+	MarkerLogic.removed.connect(update_stamps.unbind(1))
+
 	scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 	timeline_scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
 
@@ -39,9 +44,6 @@ func _ready() -> void:
 
 
 func _on_project_ready() -> void:
-	Project.markers.added.connect(update_stamps.unbind(1))
-	Project.markers.updated.connect(update_stamps.unbind(2))
-	Project.markers.removed.connect(update_stamps.unbind(1))
 	update_stamps()
 
 
@@ -51,7 +53,7 @@ func _gui_input(event: InputEvent) -> void:
 		if (event_mouse_button as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 			_on_left_mouse_button(event_mouse_button)
 	elif event is InputEventMouseMotion:
-		if Project.markers.dragged_marker != -1:
+		if MarkerLogic.dragged_marker:
 			queue_redraw()
 		elif scrubbing:
 			_seek_to_mouse()
@@ -66,31 +68,24 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 
 		if _possible_drag != -1:
 			_drag_start_pos = get_local_mouse_position()
-			Project.markers.dragged_marker = _possible_drag
+			MarkerLogic.dragged_marker = MarkerLogic.get_marker(_possible_drag)
 			mouse_default_cursor_shape = Control.CURSOR_DRAG
 			scrubbing = false
 		else:
 			scrubbing = true
 			_seek_to_mouse()
 	else: # Mouse released
-		if Project.markers.dragged_marker != -1:
-			var new_frame_nr: int = Project.markers.dragged_marker
-
-			if Project.markers.dragged_marker_offset != 0:
-				new_frame_nr = floori(Project.markers.dragged_marker_offset / current_zoom)
-
-			if new_frame_nr != Project.markers.dragged_marker:
-				var marker_index: int = Project.markers.dragged_marker
-				Project.markers.update(
-						marker_index, new_frame_nr,
-						Project.data.markers_text[marker_index],
-						Project.data.markers_type[marker_index])
+		var marker: MarkerData = MarkerLogic.dragged_marker
+		if marker:
+			var new_frame_nr: int = floori(MarkerLogic.dragged_marker_offset / current_zoom)
+			if new_frame_nr != MarkerLogic.dragged_marker.frame_nr:
+				MarkerLogic.update(new_frame_nr, marker.text, marker.type, marker)
 			else:
-				EditorCore.set_frame(Project.markers.dragged_marker)
+				EditorCore.set_frame(new_frame_nr)
 				PopupManager.open(PopupManager.MARKER)
 
-			Project.markers.dragged_marker = -1
-			Project.markers.dragged_marker_offset = 0
+			MarkerLogic.dragged_marker = null
+			MarkerLogic.dragged_marker_offset = 0
 			queue_redraw()
 		scrubbing = false
 
@@ -143,26 +138,26 @@ func _draw() -> void:
 	# - Draw markers
 	marker_rects.clear()
 
-	for frame_nr: int in Project.data.markers_frame:
-		var is_being_dragged: bool = frame_nr == Project.markers.dragged_marker
-
-		if !is_being_dragged and frame_nr < visible_start_nr or frame_nr > visible_end_nr:
+	for marker: MarkerData in MarkerLogic.markers:
+		var dragged_marker: MarkerData = MarkerLogic.dragged_marker
+		var is_being_dragged: bool = marker == dragged_marker
+		if !is_being_dragged and !Utils.is_between(marker.frame_nr, visible_start_nr, visible_end_nr):
 			continue # Only visible markers and the one being dragged get drawn
 
-		var marker_index: int = Project.data.markers_frame.find(frame_nr)
-		var marker_text: String = Project.data.markers_text[marker_index]
-		var marker_color: Color = Settings.get_marker_color(Project.data.markers_type[marker_index])
+		var marker_text: String = marker.text
+		var marker_color: Color = Settings.get_marker_color(marker.type)
 
-		var pos_x: float = frame_nr * current_zoom
-		var text_size: Vector2 = font.get_string_size(marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER)
+		var pos_x: float = marker.frame_nr * current_zoom
+		var text_size: Vector2 = font.get_string_size(
+				marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER)
 		var text_y_offset: float = (MARKER_HANDLE_HEIGHT - text_size.y) / 2.0 + font.get_ascent(FONT_SIZE_MARKER)
 
 		if is_being_dragged:
 			if get_local_mouse_position().distance_to(_drag_start_pos) > MARKER_DRAG_THRESHOLD:
-				Project.markers.dragged_marker_offset = _get_frame_on_mouse() * current_zoom + _drag_offset
-				pos_x = Project.markers.dragged_marker_offset
+				MarkerLogic.dragged_marker_offset = _get_frame_on_mouse() * current_zoom + _drag_offset
+				pos_x = MarkerLogic.dragged_marker_offset
 			else:
-				Project.markers.dragged_marker_offset = 0
+				MarkerLogic.dragged_marker_offset = 0
 			marker_style_box.bg_color = marker_color * Color(1.0, 1.0, 1.0, 0.2)
 
 		var bubble_pos_x: float = pos_x + (MARKER_LINE_WIDTH / 2.0)
@@ -172,7 +167,7 @@ func _draw() -> void:
 		var bubble_text_color: Color = Color.WHITE if marker_color.get_luminance() < 0.5 else Color.BLACK
 
 		if !is_being_dragged:
-			marker_rects[frame_nr] = bubble_rect
+			marker_rects[marker.frame_nr] = bubble_rect
 			marker_style_box.bg_color = marker_color * Color(1.0, 1.0, 1.0, 0.5)
 
 		draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), marker_color, MARKER_LINE_WIDTH)

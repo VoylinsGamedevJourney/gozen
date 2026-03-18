@@ -195,3 +195,7 @@ static func calculate_fade(frame_nr: int, clip_index: int, is_visual: bool) -> f
 	var fade_in: float = 1.0 if fade.x == 0 else min(frame_nr / float(fade.x), 1.0)
 	var fade_out: float = 1.0 if fade.y == 0 else min((clip_duration - frame_nr) / float(fade.y), 1.0)
 	return fade_in * fade_out
+
+
+static func is_between(value: int, lowest_value: int, highest_value: int) -> bool:
+	return value > lowest_value and value < highest_value

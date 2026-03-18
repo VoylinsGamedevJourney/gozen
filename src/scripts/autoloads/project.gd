@@ -17,7 +17,6 @@ var auto_save_timer: Timer
 var files: FileLogic
 var clips: ClipLogic
 var tracks: TrackLogic
-var markers: MarkerLogic
 var folders: FolderLogic
 
 
@@ -30,7 +29,7 @@ func _setup_logic() -> void:
 	files = FileLogic.new(data)
 	clips = ClipLogic.new(data)
 	tracks = TrackLogic.new(data)
-	markers = MarkerLogic.new(data)
+	MarkerLogic.markers = data.markers
 	folders = FolderLogic.new(data)
 
 	clips.updated.connect(update_timeline_end)
