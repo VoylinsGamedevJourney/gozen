@@ -9,7 +9,7 @@
 *The Minimalist Video Editor*
 
 > [!IMPORTANT]
-> GoZen is currently in Alpha! Expect bugs and frequent changes to happen! Beta release is planned for late 2025.
+> GoZen is currently in Alpha! Expect bugs and frequent changes to happen! Beta release is planned for middle of 2026.
 >
 > Visit the [GoZen project site](https://voylinsgamedevjourney.github.io/gozen/) for more information and updates.
 
