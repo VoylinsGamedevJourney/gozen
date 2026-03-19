@@ -1,354 +1,208 @@
-class_name FileLogic
-extends RefCounted
-## TODO: Improve _rebuild_map so it doesn't keep rebuilding every single time.
+extends Node
 
-signal added(file: int)
-signal moved(file: int)
-signal deleted(file: int)
-signal reloaded(file: int)
-signal path_updated(file: int)
-signal nickname_changed(file: int)
-signal ato_changed(file: int)
-signal audio_wave_generated(file: int)
 
-signal video_loaded(file: int)
+signal added(file: FileData)
+signal moved(file: FileData)
+signal deleted(file_id: int)
+signal reloaded(file: FileData)
+signal path_updated(file: FileData)
+signal nickname_changed(file: FileData)
+signal ato_changed(file: FileData)
+signal audio_wave_generated(file: FileData)
+
+signal video_loaded(file: FileData)
 
 
 const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo)
 
 
-var project_data: ProjectData
+var files: Dictionary[int, FileData]
 
 # Runtime file data
-var file_data: Array = [] ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK
+var file_data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
 var audio_wave: Dictionary[int, PackedFloat32Array] = {} ## { file: wave_data }
 var video_pools: Dictionary[int, Array] = {} ## { file: [Video] }
 var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
-var index_map: Dictionary[int, int] = {} ## { file: index }
-
 var files_dropping: bool = false
 
 
 
-# --- Main ---
-
-func _init(data: ProjectData) -> void:
-	project_data = data
+func _ready() -> void:
 	Project.get_window().files_dropped.connect(dropped)
 	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
 	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
-	_rebuild_map()
-
-
-func _rebuild_map() -> void:
-	index_map.clear()
-	for index: int in project_data.files.size():
-		index_map[project_data.files[index]] = index
 
 
 ## Load everything on startup and give user indication of the progress.
 func _startup_loading(progress: ProgressOverlay, amount: float) -> void:
-	for index: int in index_map.size():
-		load_data(index)
+	for file: FileData in files.values():
+		load_data(file)
 		progress.increment_bar(amount)
-
-
-## For undo/redo system.
-func _create_snapshot(index: int) -> Dictionary:
-	var file: int = project_data.files[index]
-	return {
-		"file": file,
-		"path": project_data.files_path[index],
-		"nickname": project_data.files_nickname[index],
-		"proxy_path": project_data.files_proxy_path[index],
-		"folder": project_data.files_folder[index],
-		"type": project_data.files_type[index],
-		"duration": project_data.files_duration[index],
-		"modified_time": project_data.files_modified_time[index],
-
-		"temp_file": project_data.files_temp_file.get(file),
-		"ato_active": project_data.files_ato_active.get(file),
-		"ato_offset": project_data.files_ato_offset.get(file),
-		"ato_file": project_data.files_ato_file.get(file)
-	}
-
-
-## For undo/redo system. (for when creating a pasted temp image)
-func _create_snapshot_temp_image(file: int, temp_file: TempFile) -> Dictionary:
-	return {
-		"file": file,
-		"path": "temp://image",
-		"nickname": "Image %s" % file,
-		"proxy_path": "",
-		"folder": "/",
-		"type": EditorCore.TYPE.IMAGE,
-		"duration": Settings.get_image_duration(),
-		"modified_time": -1,
-
-		"temp_file": temp_file,
-		"ato_active": null, "ato_offset": null, "ato_file": null
-	}
-
-
-func _create_snapshot_temp_text(file: int, temp_file: TempFile) -> Dictionary:
-	return {
-		"file": file,
-		"path": "temp://text",
-		"nickname": "Text %s" % file,
-		"proxy_path": "",
-		"folder": "/",
-		"type": EditorCore.TYPE.TEXT,
-		"duration": Settings.get_text_duration(),
-		"modified_time": -1,
-
-		"temp_file": temp_file,
-		"ato_active": null, "ato_offset": null, "ato_file": null
-	}
 
 
 # --- Handling ---
 
 func add(paths: PackedStringArray) -> void:
-	InputManager.undo_redo.create_action("Add file")
-	var file_paths: PackedStringArray = project_data.files_path
-	for path: String in paths:
-		if path in file_paths:
-			continue # Duplication check.
+	var existing_file_paths: PackedStringArray = []
+	for file: FileData in files.values():
+		existing_file_paths.append(file.path)
 
-		InputManager.undo_redo.add_do_method(_add.bind(path))
-		InputManager.undo_redo.add_undo_method(_delete.bind(path))
-	InputManager.undo_redo.add_do_method(_rebuild_map)
-	InputManager.undo_redo.add_undo_method(_rebuild_map)
+	InputManager.undo_redo.create_action("Add file(s)")
+	for path: String in paths:
+		if path in existing_file_paths:
+			continue # Duplication check.
+		var file: FileData = _create_file(path)
+		if file:
+			InputManager.undo_redo.add_do_method(_restore.bind(file))
+			InputManager.undo_redo.add_undo_method(_delete.bind(file))
 	InputManager.undo_redo.commit_action()
 
 
-func _add(path: String) -> int:
+func _create_file(path: String) -> FileData:
 	var extension: String = path.get_extension().to_lower()
-	var file_index: int = index_map.size()
-	var file: int = Utils.get_unique_id(project_data.files)
-	var type: EditorCore.TYPE = EditorCore.TYPE.EMPTY
-	var duration: int = -1 # Video and audio first need to be loaded.
-	var nickname: String = path.get_file()
-	var modified_time: int = -1
+	var file: FileData = FileData.new()
+	file.id = Utils.get_unique_id(files.keys())
+	file.path = path
+	file.nickname = path.get_file()
 
 	if extension in ProjectSettings.get_setting("extensions/image"):
-		type = EditorCore.TYPE.IMAGE
-		duration = Settings.get_image_duration()
-		modified_time = FileAccess.get_modified_time(path)
+		file.type = EditorCore.TYPE.IMAGE
+		file.duration = Settings.get_image_duration()
+		file.modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
-		type = EditorCore.TYPE.AUDIO
-		duration = floori(Video.get_duration(path) * Project.data.framerate)
-		modified_time = FileAccess.get_modified_time(path)
+		file.type = EditorCore.TYPE.AUDIO
+		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
+		file.modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
-		type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
-		duration = floori(Video.get_duration(path) * Project.data.framerate)
-		modified_time = FileAccess.get_modified_time(path)
+		file.type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
+		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
+		file.modified_time = FileAccess.get_modified_time(path)
 	elif extension == "pck":
-		type = EditorCore.TYPE.PCK
+		file.type = EditorCore.TYPE.PCK
 	elif !path.contains("temp://"):
 		printerr("FileLogic: Invalid file:", path)
 
 	if path.contains("temp://"):
-		var temp_file: TempFile = TempFile.new()
+		file.temp_file = TempFile.new()
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		var time_dict: Dictionary = Time.get_datetime_dict_from_system()
 		if path == "temp://text":
-			type = EditorCore.TYPE.TEXT
-			duration = Settings.get_text_duration()
-			nickname = "Text: Empty text"
-			temp_file.text_effect = load(Library.EFFECT_TEXT).duplicate(true)
-			temp_file.text_effect.set_default_keyframe()
+			file.type = EditorCore.TYPE.TEXT
+			file.duration = Settings.get_text_duration()
+			file.nickname = "Text: Empty text"
+			file.temp_file.text_effect = load(Library.EFFECT_TEXT).duplicate(true)
+			file.temp_file.text_effect.set_default_keyframe()
 		elif path == "temp://image":
-			type = EditorCore.TYPE.IMAGE
-			duration = Settings.get_image_duration()
-			nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
-				time_dict.year, time_dict.month, time_dict.day,
-				time_dict.hour, time_dict.minute, time_dict.second]
+			file.type = EditorCore.TYPE.IMAGE
+			file.duration = Settings.get_image_duration()
+			file.nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
+					time_dict.year, time_dict.month, time_dict.day,
+					time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
 			var splits: PackedStringArray = path.split("#")
-			type = EditorCore.TYPE.COLOR
-			duration = Settings.get_color_duration()
-			nickname = temp_nickname.replace("#", " #")
-			path = splits[0]
-			temp_file.color = Color(splits[1])
-		project_data.files_temp_file[file] = temp_file
-
-	if type == EditorCore.TYPE.EMPTY:
-		return -1 # Invalid file, don't bother with it.
-
-	project_data.files.append(file)
-	project_data.files_path.append(path)
-	project_data.files_nickname.append(nickname)
-	project_data.files_proxy_path.append("")
-	project_data.files_folder.append("/")
-	project_data.files_type.append(type)
-	project_data.files_duration.append(duration)
-	project_data.files_modified_time.append(modified_time)
-	index_map[file] = file_index
-
-	load_data(file_index)
-	added.emit(file)
-	Project.unsaved_changes = true
-	return file
+			file.type = EditorCore.TYPE.COLOR
+			file.duration = Settings.get_color_duration()
+			file.nickname = temp_nickname.replace("#", " #")
+			file.temp_file.color = Color(splits[1])
+	return null if file.type == EditorCore.TYPE.EMPTY else file
 
 
 func delete(ids: PackedInt64Array) -> void:
-	var clips_to_delete: PackedInt64Array =[]
-	for i: int in project_data.clips_file.size():
-		if project_data.clips_file[i] in ids:
-			clips_to_delete.append(project_data.clips[i])
-
 	InputManager.undo_redo.create_action("Delete file")
-	for clip_id: int in clips_to_delete:
-		var clips: ClipLogic = Project.clips
-		var clip_index: int = clips.index_map[clip_id]
-		var snapshot: Dictionary = clips._create_snapshot(clip_index)
-		InputManager.undo_redo.add_do_method(clips._delete.bind(clip_id))
-		InputManager.undo_redo.add_undo_method(clips._restore_clip_from_snapshot.bind(snapshot))
+	for clip: ClipData in ClipLogic.clips.values():
+		if clip.file in ids:
+			InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
+			InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
 
-	for file: int in ids:
-		if !index_map.has(file):
-			continue
-		var index: int = index_map[file]
-		var snapshot: Dictionary = _create_snapshot(index)
-		InputManager.undo_redo.add_do_method(_delete.bind(file))
-		InputManager.undo_redo.add_undo_method(_restore_from_snapshot.bind(snapshot))
-	InputManager.undo_redo.add_do_method(_rebuild_map)
-	InputManager.undo_redo.add_undo_method(_rebuild_map)
+	for file_id: int in ids:
+		InputManager.undo_redo.add_do_method(_delete.bind(files[file_id]))
+		InputManager.undo_redo.add_undo_method(_restore.bind(files[file_id]))
 	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
 	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
-func _delete(file: int) -> void:
-	var file_index: int = index_map[file]
+func _delete(file: FileData) -> void:
+	# TODO: We should check if some other file relies on using this one as ATO.
+	files.erase(file.id)
+	file_data.erase(file.id)
 
-	project_data.files.remove_at(file_index)
-	project_data.files_path.remove_at(file_index)
-	project_data.files_nickname.remove_at(file_index)
-	project_data.files_proxy_path.remove_at(file_index)
-	project_data.files_folder.remove_at(file_index)
-	project_data.files_type.remove_at(file_index)
-	project_data.files_duration.remove_at(file_index)
-	project_data.files_modified_time.remove_at(file_index)
-
-	if project_data.files_temp_file.has(file):
-		project_data.files_temp_file.erase(file)
-	if project_data.files_ato_file.has(file):
-		project_data.files_ato_active.erase(file)
-		project_data.files_ato_offset.erase(file)
-		project_data.files_ato_file.erase(file)
-
-	Threader.mutex.lock()
-	if file_data.size() > file_index:
-		file_data.remove_at(file_index)
-	if video_pools.has(file):
-		for video: Video in video_pools[file]:
+	if video_pools.has(file.id):
+		for video: Video in video_pools[file.id]:
 			video.close()
-		video_pools.erase(file)
-	if audio_pools.has(file):
-		audio_pools[file] = []
-		audio_pools.erase(file)
-	if audio_wave.has(file):
-		audio_wave.erase(file)
-	Threader.mutex.unlock()
+		video_pools.erase(file.id)
 
-	_rebuild_map()
-	deleted.emit(file)
+	audio_pools.erase(file)
+	audio_wave.erase(file)
 	Project.unsaved_changes = true
+	deleted.emit(file.id)
 
 
-func _restore_from_snapshot(snapshot: Dictionary) -> void:
-	var index: int = index_map.size()
-	var file: int = snapshot.file
-	project_data.files.append(file)
-	project_data.files_path.append(snapshot.path as String)
-	project_data.files_nickname.append(snapshot.nickname as String)
-	project_data.files_proxy_path.append(snapshot.proxy_path as String)
-	project_data.files_folder.append(snapshot.folder as String)
-	project_data.files_type.append(snapshot.type as int)
-	project_data.files_duration.append(snapshot.duration as int)
-	project_data.files_modified_time.append(snapshot.modified_time as int)
-
-	# Restore sparse data
-	if snapshot.temp_file != null:
-		project_data.files_temp_file[file] = snapshot.temp_file
-	if snapshot.ato_active != null:
-		project_data.files_ato_active[file] = snapshot.ato_active
-	if snapshot.ato_offset != null:
-		project_data.files_ato_offset[file] = snapshot.ato_offset
-	if snapshot.ato_file != null:
-		project_data.files_ato_file[file] = snapshot.ato_file
-
-	index_map[file] = index
-	load_data(index)
-	added.emit(file)
+func _restore(snapshot: FileData) -> void:
+	files[snapshot.id] = snapshot
+	load_data(snapshot)
+	Project.unsaved_changes = true
+	added.emit(snapshot)
 
 
-func move(ids: PackedInt64Array, target: String) -> void:
+func move(files_to_move: Array[FileData], target: String) -> void:
 	InputManager.undo_redo.create_action("Move file(s)")
-	for file: int in ids:
-		var index: int = index_map[file]
-		var folder: String = project_data.files_folder[index]
+	for file: FileData in files_to_move:
 		InputManager.undo_redo.add_do_method(_move.bind(file, target))
-		InputManager.undo_redo.add_undo_method(_move.bind(file, folder))
-	InputManager.undo_redo.add_do_method(_rebuild_map)
-	InputManager.undo_redo.add_undo_method(_rebuild_map)
+		InputManager.undo_redo.add_undo_method(_move.bind(file, file.folder))
 	InputManager.undo_redo.commit_action()
 
 
-func _move(file: int, target: String) -> void:
-	var index: int = index_map[file]
-	project_data.files_folder[index] = target
-	moved.emit(file)
+func _move(file: FileData, target: String) -> void:
+	file.folder = target
 	Project.unsaved_changes = true
+	moved.emit(file)
 
 
-func change_nickname(index: int, new_name: String) -> void:
-	var file: int = project_data.files[index]
-	var old_name: String = project_data.files_nickname[index]
-
+func change_nickname(file: FileData, new_name: String) -> void:
 	InputManager.undo_redo.create_action("Change file nickname")
 	InputManager.undo_redo.add_do_method(_change_nickname.bind(file, new_name))
-	InputManager.undo_redo.add_undo_method(_change_nickname.bind(file, old_name))
+	InputManager.undo_redo.add_undo_method(_change_nickname.bind(file, file.nickname))
 	InputManager.undo_redo.commit_action()
 
 
-func _change_nickname(file: int, new_name: String) -> void:
-	var index: int = index_map[file]
-	project_data.files_nickname[index] = new_name
-	nickname_changed.emit(file)
+func _change_nickname(file: FileData, new_name: String) -> void:
+	file.nickname = new_name
 	Project.unsaved_changes = true
+	nickname_changed.emit(file)
 
 
 ## Pasting from clipboard (through InputManager).
 func paste_image(image: Image) -> void:
 	InputManager.undo_redo.create_action("Paste Image")
-	var file: int = Utils.get_unique_id(project_data.files)
-	var temp_file: TempFile = TempFile.new()
-	temp_file.image_data = ImageTexture.create_from_image(image)
-	var snapshot: Dictionary = _create_snapshot_temp_image(file, temp_file)
+	var file: FileData = FileData.new()
+	file.id = Utils.get_unique_id(files.keys())
+	file.path = "temp://image"
+	file.type = EditorCore.TYPE.IMAGE
+	file.duration = Settings.get_image_duration()
+	file.temp_file = TempFile.new()
+	file.temp_file.image_data = ImageTexture.create_from_image(image)
 
-	InputManager.undo_redo.add_do_method(_restore_from_snapshot.bind(snapshot))
-	InputManager.undo_redo.add_do_method(_rebuild_map)
+	var time_dict: Dictionary = Time.get_datetime_dict_from_system()
+	file.nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
+			time_dict.year, time_dict.month, time_dict.day,
+			time_dict.hour, time_dict.minute, time_dict.second]
+
+	InputManager.undo_redo.add_do_method(_restore.bind(file))
 	InputManager.undo_redo.add_undo_method(_delete.bind(file))
-	InputManager.undo_redo.add_undo_method(_rebuild_map)
 	InputManager.undo_redo.commit_action()
 
 
-func apply_audio_take_over(file: int, audio_file: int, offset: float) -> void:
-	if !index_map.has(file):
-		return
-	var active: bool = audio_file != -1
-	var affected_clips: PackedInt64Array = []
-	for clip_index: int in project_data.clips_file.size():
-		if project_data.clips_file[clip_index] == file:
-			affected_clips.append(project_data.clips[clip_index])
+func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) -> void:
+	var affected_clips: Array[ClipData] = []
+	for clip: ClipData in ClipLogic.clips.values():
+		if clip.file == file.id:
+			affected_clips.append(clip)
 
 	if affected_clips.is_empty():
-		_commit_ato(file, active, audio_file, offset, false, [])
+		_commit_ato(file, audio_file.ato_active, audio_file, offset, false, [])
 		return
 
 	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
@@ -358,62 +212,48 @@ func apply_audio_take_over(file: int, audio_file: int, offset: float) -> void:
 	dialog.get_cancel_button().text = tr("Cancel")
 	dialog.add_button(tr("Apply to File Only"), true, "file_only")
 	dialog.confirmed.connect(func() -> void:
-		_commit_ato(file, active, audio_file, offset, true, affected_clips))
+		_commit_ato(file, audio_file.ato_active, audio_file, offset, true, affected_clips))
 	dialog.custom_action.connect(func(action: String) -> void:
 		if action == "file_only":
-			_commit_ato(file, active, audio_file, offset, false, [])
+			_commit_ato(file, audio_file.ato_active, audio_file, offset, false, [])
 			dialog.hide())
 	dialog.popup_centered()
 
 
-func _commit_ato(file: int, active: bool, audio_file: int, offset: float, update_clips: bool, clips: PackedInt64Array) -> void:
-	var old_active: bool = project_data.files_ato_active.get(file, false)
-	var old_file: int = project_data.files_ato_file.get(file, -1)
-	var old_offset: float = project_data.files_ato_offset.get(file, 0.0)
+func _commit_ato(file: FileData, active: bool, audio_file: FileData, offset: float, update_clips: bool, clips: Array[ClipData]) -> void:
+	var old_active: bool = file.ato_active
+	var old_file: int = file.ato_file
+	var old_offset: float = file.ato_offset
 
 	InputManager.undo_redo.create_action("Set file audio-take-over")
 	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file, active, audio_file, offset))
 	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(file, old_active, old_file, old_offset))
 
 	if update_clips: # Clips Undo/Redo
-		for clip_id: int in clips:
-			var clip_index: int = Project.clips.index_map[clip_id]
-			var effects: ClipEffects = project_data.clips_effects[clip_index]
-			var old_clipt_ato_active: bool = effects.ato_active
-			var old_clip_ato_id: int = effects.ato_id
-			var old_clip_ato_offset: float = effects.ato_offset
-			InputManager.undo_redo.add_do_method(
-					Project.clips._apply_audio_take_over.bind(clip_id, active, audio_file, offset))
-			InputManager.undo_redo.add_undo_method(
-					Project.clips._apply_audio_take_over.bind(
-							clip_id, old_clipt_ato_active, old_clip_ato_id, old_clip_ato_offset))
+		for clip: ClipData in clips:
+			var effects: ClipEffects = clip.effects
+			InputManager.undo_redo.add_do_method(ClipLogic._apply_audio_take_over.bind(
+					clip, active, audio_file, offset))
+			InputManager.undo_redo.add_undo_method(ClipLogic._apply_audio_take_over.bind(
+					clip, effects.ato_active, effects.ato_file, effects.ato_offset))
 	InputManager.undo_redo.commit_action()
 
 
-func _apply_audio_take_over(file: int, active: bool, audio_file_id: int, offset: float) -> void:
-	project_data.files_ato_active[file] = active
-	project_data.files_ato_file[file] = audio_file_id
-	project_data.files_ato_offset[file] = offset
+func _apply_audio_take_over(file: FileData, active: bool, audio_file: FileData, offset: float) -> void:
+	file.ato_active = active
+	file.ato_file = audio_file.id
+	file.ato_offset = offset
 	Project.unsaved_changes = true
 	ato_changed.emit(file)
 
 
-func duplicate_text(file: int) -> void:
-	if !index_map.has(file):
-		return
-
-	var original_temp: TempFile = project_data.files_temp_file[file]
-	var new_file: int = Utils.get_unique_id(project_data.files)
-	var new_temp: TempFile = TempFile.new()
-	new_temp.text_effect = original_temp.text_effect.duplicate(true)
-
-	var snapshot: Dictionary = _create_snapshot_temp_text(new_file, new_temp)
+func duplicate_text(file: FileData) -> void:
+	var new_file: FileData = file.duplicate_deep(Resource.DEEP_DUPLICATE_ALL)
+	new_file.id = Utils.get_unique_id(files.keys())
 
 	InputManager.undo_redo.create_action("Duplicate Text File")
-	InputManager.undo_redo.add_do_method(_restore_from_snapshot.bind(snapshot))
-	InputManager.undo_redo.add_do_method(_rebuild_map)
+	InputManager.undo_redo.add_do_method(_restore.bind(file))
 	InputManager.undo_redo.add_undo_method(_delete.bind(new_file))
-	InputManager.undo_redo.add_undo_method(_rebuild_map)
 	InputManager.undo_redo.commit_action()
 
 
@@ -422,9 +262,13 @@ func duplicate_text(file: int) -> void:
 ## File dropping can't be un-done with the undo_redo system!
 func dropped(dropped_file_paths: PackedStringArray) -> void:
 	files_dropping = true
+	var existing_paths: Array[String] = []
+	for file: FileData in files.values():
+		existing_paths.append(file.path)
+
 	var paths: PackedStringArray = []
 	for path: String in Utils.find_subfolder_files(dropped_file_paths):
-		if path not in project_data.files_path:
+		if path not in existing_paths:
 			paths.append(path) # Duplicate check.
 	if paths.size() == 0:
 		files_dropping = false
@@ -437,29 +281,30 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 	progress.update(0, "")
 
 	var error_occured: bool = false
-	var indexes: Array[int] = [] # Can NOT be a Packed array!!!!
+	var dropped_files: Array[FileData] = []
 	for path: String in paths:
-		var file: int = _add(path)
-		if file != -1:
-			indexes.append(index_map[file])
+		var file: FileData = _create_file(path)
+		if file:
+			_restore(file)
 			progress.update_file(path, 0)
+			dropped_files.append(file)
 		else:
 			progress.update_file(path, -1)
 			error_occured = true
 	progress.update(10, tr("Files loading ..."))
 
-	while !indexes.is_empty(): # Looping till all files are loaded
-		var to_remove: Array[int] = [] # Can NOT be a Packed array!!!!
-		Threader.mutex.lock()
-		for index: int in indexes:
-			if file_data.size() > index and file_data[index] != null:
-				progress.update_file(project_data.files_path[index], 1)
+	while !dropped_files.is_empty(): # Looping till all files are loaded.
+		await get_tree().process_frame
+		for file: FileData in dropped_files:
+			if file_data.has(file.id) and file_data[file.id]:
+				progress.update_file(file.path, 1)
 				progress.increment_bar(progress_increment)
-				to_remove.append(index)
-		Threader.mutex.unlock()
-		for index: int in to_remove:
-			indexes.remove_at(indexes.find(index))
-
+				dropped_files.erase(file)
+				break
+			elif !file_data.has(file.id) and !Threader.check_tasks(file):
+				progress.update_file(file.path, -1)
+				dropped_files.erase(file)
+				break
 	Project.unsaved_changes = true
 	await RenderingServer.frame_post_draw
 	if !error_occured:
@@ -468,118 +313,92 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 		progress.show_close()
 
 
+func set_nickname(file: FileData, new_nickname: String) -> void:
+	InputManager.undo_redo.create_action("Renaming file")
+	InputManager.undo_redo.add_do_method(_set_nickname.bind(file, new_nickname))
+	InputManager.undo_redo.add_undo_method(_set_nickname.bind(file, file.nickname))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_nickname(file: FileData, nickname: String) -> void:
+	file.nickname = nickname
+	Project.unsaved_changes = true
+	nickname_changed.emit(file)
+
+
 # --- Data loading ---
 
 ## (Re)load the data of a file.
-func load_data(file_index: int) -> void:
-	if file_index == -1:
-		return printerr("FileLogic: Can't init data as file %s is null!")
-	var file: int = project_data.files[file_index]
-	var path: String = project_data.files_path[file_index]
-	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
+func load_data(file: FileData) -> void:
+	if file.path.begins_with("temp://"):
+		if !file.temp_file:
+			file.temp_file = TempFile.new()
+		var temp_file: TempFile = file.temp_file
 
-	# Create new slot if new file, else copy over existing slot.
-	Threader.mutex.lock()
-	if file_data.size() <= file_index:
-		file_data.resize(file_index + 1)
-	file_data[file_index] = null
-	Threader.mutex.unlock()
-
-	if path.begins_with("temp://"):
-		var temp_file: TempFile = project_data.files_temp_file.get(file, TempFile.new())
-		var text_effect: EffectVisual = temp_file.text_effect
-		if path == "temp://text":
-			if text_effect.keyframes.is_empty():
-				text_effect.set_default_keyframe()
-			Threader.mutex.lock()
-			file_data[file_index] = temp_file
-			Threader.mutex.unlock()
-		elif path == "temp://image":
-			Threader.mutex.lock()
-			file_data[file_index] = temp_file.image_data
-			Threader.mutex.unlock()
-		elif path == "temp://color":
+		if file.path == "temp://text":
+			if temp_file.text_effect.keyframes.is_empty():
+				temp_file.text_effect.set_default_keyframe()
+			file_data[file.id] = temp_file
+		elif file.path == "temp://image":
+			file_data[file.id] = temp_file.image_data
+		elif file.path.begins_with("temp://color"):
 			temp_file.load_image_from_color()
-			Threader.mutex.lock()
-			file_data[file_index] = temp_file.image_data
-			Threader.mutex.unlock()
-		project_data.files_temp_file[file] = temp_file
+			file_data[file.id] = temp_file.image_data
 		return
 
-	match type:
+	match file.type:
 		EditorCore.TYPE.IMAGE:
-			Threader.mutex.lock()
-			file_data[file_index] = ImageTexture.create_from_image(Image.load_from_file(path))
-			Threader.mutex.unlock()
+			file_data[file.id] = ImageTexture.create_from_image(
+					Image.load_from_file(file.path))
 		EditorCore.TYPE.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		EditorCore.TYPE.AUDIO:
-			Threader.mutex.lock()
 			if audio_pools.has(file):
-				for stream: AudioStream in audio_pools[file]:
+				for stream: AudioStream in audio_pools[file.id]:
 					stream.free()
-				audio_pools[file] = []
-			Threader.mutex.unlock()
+				audio_pools[file.id] = []
 
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-			if stream.open(path) == OK and stream.get_length() != 0:
-				Threader.mutex.lock()
-				file_data[file_index] = stream
-				Threader.mutex.unlock()
+			if stream.open(file.path) == OK and stream.get_length() != 0:
+				file_data[file.id] = stream
 				Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 			else:
 				printerr("FileLogic: Couldn't open audio stream!")
-				Threader.mutex.lock()
-				file_data[file_index] = AudioStreamWAV.new()
-				Threader.mutex.unlock()
+				file_data[file.id] = AudioStreamWAV.new()
 		EditorCore.TYPE.PCK:
-			if !ProjectSettings.load_resource_pack(path):
-				printerr("FileData: Something went wrong loading pck data from '%s'!" % path)
+			if !ProjectSettings.load_resource_pack(file.path):
+				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 				return _delete(file)
-			#var pck_path: String = PCK.MODULES_PATH + path.get_basename().to_lower()
-			#var packed_scene: PackedScene = load(pck_path).scene
-			#pck_instances[file] = packed_scene.instantiate()
 
 
-func _load_video(file: int) -> void:
-	var index: int = index_map[file]
-	var path: String = project_data.files_path[index]
+func _load_video(file: FileData) -> void:
 	var temp_video: Video = Video.new()
-	var path_to_load: String = path
-	var proxy_path: String = project_data.files_proxy_path[index]
+	var path_to_load: String = file.path
 
-	if Settings.get_use_proxies():
-		if !proxy_path.is_empty() and !FileAccess.file_exists(proxy_path):
-			path_to_load = proxy_path
-	if temp_video.open(path_to_load):
-		return printerr("FileData: Couldn't open video at path '%s'!" % path)
+	if Settings.get_use_proxies() and !file.proxy_path.is_empty():
+		if FileAccess.file_exists(file.proxy_path):
+			temp_video.open(file.proxy_path)
+	if !temp_video.is_open() and temp_video.open(path_to_load) != OK:
+		return printerr("FileData: Couldn't open video at path '%s'!" % file.path)
 
-	Threader.mutex.lock()
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	temp_video.set_cache_size(Settings.get_video_cache_size())
-	if file_data.size() <= index:
-		file_data.resize(index + 1)
-	file_data[index] = temp_video
-	if video_pools.has(file):
-		for video: Video in video_pools[file]:
+	file_data[file.id] = temp_video
+	if video_pools.has(file.id):
+		for video: Video in video_pools[file.id]:
 			video.close()
-		video_pools[file] = []
-	Threader.mutex.unlock()
+		video_pools[file.id] = []
 	Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 
 
-func _create_wave(file: int) -> void:
+func _create_wave(file: FileData) -> void:
 	# TODO: Large audio lengths will still crash this function. Could possibly
 	# use the get_audio improvements by cutting the data into pieces.
 	# TODO: We should check if the amplification
-	var file_index: int = index_map[file]
-	var file_path: String = project_data.files_path[file_index]
-	var data: PackedByteArray = Audio.get_audio_data(file_path, -1)
+	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 
 	if data.is_empty():
-		Threader.mutex.lock()
-		audio_wave[file] = PackedFloat32Array()
-		Threader.mutex.unlock()
+		audio_wave[file.id] = PackedFloat32Array()
 		return push_warning("Audio data is empty!")
 
 	var bytes_size: float = 4 # 16 bit * stereo
@@ -616,23 +435,17 @@ func _create_wave(file: int) -> void:
 			return
 		local_wave[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
-	Threader.mutex.lock()
-	audio_wave[file] = local_wave
-	Threader.mutex.unlock()
+	audio_wave[file.id] = local_wave
 
 
-func _on_wave_ready(file: int) -> void:
+func _on_wave_ready(file: FileData) -> void:
 	Settings.on_waveform_update.emit()
 	audio_wave_generated.emit(file)
 
 
-func generate_audio_thumb(file: int) -> Image:
-	Threader.mutex.lock()
-	var has_wave: bool = audio_wave.has(file)
-	var wave_data: PackedFloat32Array = audio_wave[file] if has_wave else PackedFloat32Array()
-	Threader.mutex.unlock()
-
-	if !has_wave or wave_data.size() <= 0:
+func generate_audio_thumb(file: FileData) -> Image:
+	var wave_data: PackedFloat32Array = audio_wave.get(file.id, [])
+	if !wave_data or wave_data.size() <= 0:
 		return null # Up to the file panel to try and fetch later.
 
 	var thumb_size: Vector2i = Vector2i(854, 480)
@@ -667,206 +480,133 @@ func generate_audio_thumb(file: int) -> Image:
 	return thumb
 
 
-func reload(file: int) -> void:
-	load_data(index_map[file])
+func reload(file: FileData) -> void:
+	load_data(file)
 	reloaded.emit(file)
 
 
-func get_video_reader(file: int, instance_index: int) -> Video:
-	var file_index: int = index_map[file]
+func get_video_reader(file: FileData, instance_index: int) -> Video:
 	if instance_index == 0:
-		return get_data(file_index)
+		return file_data[file.id]
 
-	Threader.mutex.lock()
-	if not video_pools.has(file):
-		video_pools[file] = []
+	if not video_pools.has(file.id):
+		video_pools[file.id] = []
 
-	var pool: Array = video_pools[file]
+	var pool: Array = video_pools[file.id]
 	var pool_index: int = instance_index - 1
 	if pool_index < pool.size():
 		var video: Video = pool[pool_index]
-		Threader.mutex.unlock()
 		return video
-	Threader.mutex.unlock()
 
 	# No instance found so we create a new one.
-	var file_path: String = project_data.files_path[file_index]
-	var file_proxy_path: String = project_data.files_proxy_path[file_index]
-	var path_to_load: String = file_path
-	if Settings.get_use_proxies() and !file_proxy_path.is_empty() and FileAccess.file_exists(file_proxy_path):
-		path_to_load = file_proxy_path
-
-	Threader.mutex.lock()
 	var new_video: Video = Video.new()
-	if new_video.open(path_to_load) != OK:
-		printerr("FileLogic: Failed to create pool instance for '%s'!" % file_path)
-		Threader.mutex.unlock()
-		return get_data(file_index) # Return main video as fallback.
+	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
+		if new_video.open(file.proxy_path) != OK:
+			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.proxy_path)
+			return file_data[file.id] # Return main video as fallback.
+	if !new_video.is_open() and new_video.open(file.path) != OK:
+			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.path)
+			return file_data[file.id] # Return main video as fallback.
+
 	new_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	new_video.set_cache_size(Settings.get_video_cache_size())
 	pool.append(new_video)
-	Threader.mutex.unlock()
 	return new_video
 
 
-func get_audio_stream(file: int, instance_index: int) -> AudioStreamFFmpeg:
-	var file_index: int = index_map[file]
-	var type: EditorCore.TYPE = project_data.files_type[file_index] as EditorCore.TYPE
-
-	if type == EditorCore.TYPE.VIDEO:
-		Threader.mutex.lock()
-		var empty_wave: bool = audio_wave.has(file) and audio_wave[file].is_empty()
-		Threader.mutex.unlock()
+func get_audio_stream(file: FileData, instance_index: int) -> AudioStreamFFmpeg:
+	if file.type == EditorCore.TYPE.VIDEO:
+		var empty_wave: bool = audio_wave.has(file.id) and audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
 		var video: Video = get_video_reader(file, instance_index)
 		return null if video == null else video.get_audio()
-	if instance_index == 0:
-		return get_data(file_index)
+	elif instance_index == 0:
+		return file_data[file.id]
+	elif not audio_pools.has(file.id):
+		audio_pools[file.id] = []
 
-	Threader.mutex.lock()
-	if not audio_pools.has(file):
-		audio_pools[file] = []
-
-	var pool: Array = audio_pools[file]
+	var pool: Array = audio_pools[file.id]
 	var pool_index: int = instance_index - 1
 	if pool_index < pool.size():
 		var stream: AudioStream = pool[pool_index]
-		Threader.mutex.unlock()
 		return stream
 
-	var file_path: String = project_data.files_path[file_index]
 	var new_stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-	if new_stream.open(file_path) != OK:
-		printerr("FileLogic: Failed to create audio pool instance for '%s'!" % file_path)
-		Threader.mutex.unlock()
-		return get_data(file_index) # Return main audio as fallback.
-
+	if new_stream.open(file.path) != OK:
+		printerr("FileLogic: Failed to create audio pool instance for '%s'!" % file.path)
+		return file_data[file.id] # Return main audio as fallback.
 	pool.append(new_stream)
-	Threader.mutex.unlock()
 	return new_stream
-
 
 
 #-- File creators ---
 
-## Save the image and replace the path in the file data to point to the new image file.
-func save_image_to_file(file: int, path: String) -> void:
+## Save the image (from temp_file) and replace the path in the file data to point to the new image file.
+func save_image_to_file(file: FileData, path: String) -> void:
 	const ERROR_MESSAGE: String = "FileLogic: Couldn't save image to %s!\n"
-	var index: int = index_map[file]
-	var image: Image = project_data.files_temp_file[file].image_data.get_image()
-	var extension: String = path.get_extension().to_lower()
+	var image: Image = file.temp_file.image_data.get_image()
 
-	if extension == "png":
-		if image.save_png(path):
-			return printerr(ERROR_MESSAGE % "png", get_stack())
-	if extension == "webp":
-		if image.save_webp(path, false, 1.0):
-			return printerr(ERROR_MESSAGE % "webp", get_stack())
-	else: # JPG is default.
-		if image.save_jpg(path, 1.0):
-			return printerr(ERROR_MESSAGE % "jpg", get_stack())
-
-	project_data.files_path[index] = path
-	project_data.files_temp_file.erase(file)
-	load_data(index)
+	match path.get_extension().to_lower():
+		"png":
+			if image.save_png(path):
+				return printerr(ERROR_MESSAGE % "png", get_stack())
+		"webp":
+			if image.save_webp(path, false, 1.0):
+				return printerr(ERROR_MESSAGE % "webp", get_stack())
+		_: # JPG is default.
+			if image.save_jpg(path, 1.0):
+				return printerr(ERROR_MESSAGE % "jpg", get_stack())
+	file.path = path
+	file.temp_file = null
+	load_data(file)
+	Project.unsaved_changes = true
 	path_updated.emit(file)
 
 
-func save_audio_to_wav(file: int, save_path: String) -> void:
-	var path: String = project_data.files_proxy_path[index_map[file]]
+func save_audio_to_wav(file: FileData, save_path: String) -> void:
 	var audio_stream: AudioStreamWAV = AudioStreamWAV.new()
 	audio_stream.stereo = true
 	audio_stream.format = AudioStreamWAV.FORMAT_16_BITS
 	audio_stream.mix_rate = int(RenderManager.MIX_RATE)
-	audio_stream.data = Audio.get_audio_data(path, -1)
-
+	audio_stream.data = Audio.get_audio_data(file.path, -1)
 	if audio_stream.save_to_wav(save_path):
 		printerr("FileLogic: Error occured when saving to WAV!")
 
 
 #--- Private functions ---
 
-func _check_if_modified(file_index: int) -> void:
-	var file_path: String = project_data.files_path[file_index]
-	if !file_path.begins_with("temp://") and !FileAccess.file_exists(file_path):
-		print("FileLogic: File %s at %s doesn't exist anymore!" % [file_index, file_path])
-		_delete(project_data.files[file_index])
+func _check_if_modified(file: FileData) -> void:
+	if !file.path.begins_with("temp://") and !FileAccess.file_exists(file.path):
+		print("FileLogic: File %s at %s doesn't exist anymore!" % [file.id, file.path])
+		_delete(file)
 
 
 # --- Getters ---
 
 ## Returns all audio file id's.
-func get_all_audio_files() -> PackedInt64Array:
-	var data: PackedInt64Array = []
-	for index: int in project_data.files_type.size():
-		if project_data.files_type[index] in EditorCore.AUDIO_TYPES:
-			data.append(project_data.files[index])
+func get_all_audio_files() -> Array[FileData]:
+	var data: Array[FileData] = []
+	for file: FileData in files.values():
+		if file.type == EditorCore.TYPE.AUDIO:
+			data.append(file)
 	return data
 
 
 ## Returns all video file id's.
-func get_all_video_files() -> PackedInt64Array:
-	var data: PackedInt64Array = []
-	for index: int in project_data.files_type.size():
-		if project_data.files_type[index] == EditorCore.TYPE.VIDEO:
-			data.append(project_data.files[index])
+func get_all_video_files() -> Array[FileData]:
+	var data: Array[FileData] = []
+	for file: FileData in files.values():
+		if file.type == EditorCore.TYPE.VIDEO:
+			data.append(file)
 	return data
 
 
-# --- File data getters ---
-
-func get_data(index: int) -> Variant:
-	Threader.mutex.lock()
-	var data: Variant = null
-	if index < file_data.size():
-		data = file_data[index]
-	Threader.mutex.unlock()
-	return data
+func set_proxy_path(file: FileData, path: String) -> void:
+	file.proxy_path = path
 
 
-func get_data_by_id(file: int) -> Variant:
-	return get_data(index_map[file])
-
-
-func get_pck_instance(file: int) -> Node:
-	return pck_instances[file]
-
-
-func get_audio_wave(file: int) -> PackedFloat32Array:
-	Threader.mutex.lock()
-	var wave: PackedFloat32Array = PackedFloat32Array()
-	if audio_wave.has(file):
-		wave = audio_wave[file]
-	Threader.mutex.unlock()
-	return wave
-
-
-# --- Setters ---
-
-func set_proxy_path(index: int, path: String) -> void:
-	project_data.files_proxy_path[index] = path
-
-
-func set_nickname(file: int, new_nickname: String) -> void:
-	if !index_map.has(file):
-		return
-
-	var old_nickname: String = project_data.files_nickname[index_map[file]]
-	InputManager.undo_redo.create_action("Renaming file")
-	InputManager.undo_redo.add_do_method(_set_nickname.bind(file, new_nickname))
-	InputManager.undo_redo.add_undo_method(_set_nickname.bind(file, old_nickname))
-	InputManager.undo_redo.commit_action()
-
-
-func _set_nickname(file: int, nickname: String) -> void:
-	var index: int = index_map[file]
-	project_data.files_nickname[index] = nickname
-	nickname_changed.emit(file)
-	Project.unsaved_changes = true
-
-
-func update_text_param(file: int, param_id: String, frame_nr: int, new_value: Variant, old_value: Variant, is_new: bool) -> void:
+func update_text_param(file: FileData, param_id: String, frame_nr: int, new_value: Variant, old_value: Variant, is_new: bool) -> void:
 	InputManager.undo_redo.create_action("Update text property")
 	InputManager.undo_redo.add_do_method(_set_text_keyframe.bind(file, param_id, frame_nr, new_value))
 	if is_new and frame_nr != 0:
@@ -876,9 +616,8 @@ func update_text_param(file: int, param_id: String, frame_nr: int, new_value: Va
 	InputManager.undo_redo.commit_action()
 
 
-func _set_text_keyframe(file: int, param_id: String, frame_nr: int, value: Variant) -> void:
-	var temp_file: TempFile = project_data.files_temp_file[file]
-	var text_effect: EffectVisual = temp_file.text_effect
+func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: Variant) -> void:
+	var text_effect: EffectVisual = file.temp_file.text_effect
 	if not text_effect.keyframes.has(param_id):
 		var typed_dict: Dictionary[int, Variant] = {}
 		text_effect.keyframes[param_id] = typed_dict
@@ -890,18 +629,15 @@ func _set_text_keyframe(file: int, param_id: String, frame_nr: int, value: Varia
 		if text_str == "":
 			text_str = "Text: Empty text"
 
-		var file_index: int = index_map[file]
-		if project_data.files_nickname[file_index] != text_str:
-			project_data.files_nickname[file_index] = "Text: " + text_str
+		if file.nickname != text_str:
+			file.nickname = "Text: " + text_str
+			Project.unsaved_changes = true
+			ClipLogic.updated.emit()
 			nickname_changed.emit(file)
 
-	Project.unsaved_changes = true
-	Project.clips.updated.emit()
 
-
-func remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
-	var temp_file: TempFile = project_data.files_temp_file[file]
-	var text_effect: EffectVisual = temp_file.text_effect
+func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
+	var text_effect: EffectVisual = file.temp_file.text_effect
 	var param_keyframes: Dictionary[int, Variant] = text_effect.keyframes[param_id]
 	if not text_effect.keyframes.has(param_id) or not param_keyframes.has(frame_nr):
 		return
@@ -913,81 +649,67 @@ func remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func _remove_text_keyframe(file: int, param_id: String, frame_nr: int) -> void:
-	var temp_file: TempFile = project_data.files_temp_file[file]
+func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
+	var temp_file: TempFile = file.temp_file
 	var text_effect: EffectVisual = temp_file.text_effect
-	var param_keyframes: Dictionary[int, Variant] = text_effect.keyframes[param_id]
-	if text_effect.keyframes.has(param_id):
-		param_keyframes.erase(frame_nr)
+	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
+	param_keyframes.erase(frame_nr)
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
-	Project.clips.updated.emit()
+	ClipLogic.updated.emit()
 
 
-func toggle_ato(file: int) -> void:
-	var ato_active: bool = project_data.files_ato_file[file]
-	if ato_active:
+func toggle_ato(file: FileData) -> void:
+	if file.ato_active:
 		InputManager.undo_redo.create_action("Disable file audio take over")
 	else:
 		InputManager.undo_redo.create_action("Enable file audio take over")
-	InputManager.undo_redo.add_do_method(_toggle_ato.bind(file, !ato_active))
-	InputManager.undo_redo.add_undo_method(_toggle_ato.bind(file, ato_active))
+	InputManager.undo_redo.add_do_method(_toggle_ato.bind(file, !file.ato_active))
+	InputManager.undo_redo.add_undo_method(_toggle_ato.bind(file, file.ato_active))
 	InputManager.undo_redo.commit_action()
 
 
-func _toggle_ato(file: int, value: bool) -> void:
-	project_data.files_ato_active[index_map[file]] = value
+func _toggle_ato(file: FileData, value: bool) -> void:
+	file.ato_active = value
 	Project.unsaved_changes = true
 
 
 # --- Updaters ---
 
 func update_audio_waves() -> void:
-	for file: int in get_all_audio_files():
-		var file_index: int = index_map[file]
-		if project_data.files_type[file_index] in EditorCore.AUDIO_TYPES:
-			load_data(file_index)
+	for file: FileData in get_all_audio_files():
+		load_data(file)
 
 
 func reload_videos() -> void:
-	for file: int in get_all_video_files():
-		var file_index: int = index_map[file]
-		if project_data.files_type[file_index] == EditorCore.TYPE.VIDEO:
-			load_data(file_index)
+	for file: FileData in get_all_video_files():
+		load_data(file)
 
 
 func _update_video_cache_size(value: int) -> void:
-	for file: int in get_all_video_files():
-		var data: Variant = get_data_by_id(file)
-		if data is not Video:
+	for file: FileData in get_all_video_files():
+		if file_data[file.id] is not Video:
 			continue
-
-		(data as Video).set_cache_size(value)
-		Threader.mutex.lock()
+		var video: Video = file_data[file.id]
+		video.set_cache_size(value)
 		if video_pools.has(file):
-			for video: Video in video_pools[file]:
-				video.set_cache_size(value)
-		Threader.mutex.unlock()
+			for video_instance: Video in video_pools[file.id]:
+				video_instance.set_cache_size(value)
 
 
 func _update_video_smart_seek_threshold(value: int) -> void:
-	for file: int in get_all_video_files():
-		var data: Variant = get_data_by_id(file)
-		if data is not Video:
+	for file: FileData in get_all_video_files():
+		if file_data[file.id] is not Video:
 			continue
-
-		(data as Video).set_smart_seek_threshold(value)
-		Threader.mutex.lock()
+		var video: Video = file_data[file.id]
+		video.set_smart_seek_threshold(value)
 		if video_pools.has(file):
-			for video: Video in video_pools[file]:
-				video.set_smart_seek_threshold(value)
-		Threader.mutex.unlock()
+			for video_instance: Video in video_pools[file.id]:
+				video_instance.set_smart_seek_threshold(value)
 
-
-# --- Static ---
 
 ## Check if a file is (still) valid or not.
-static func check(file_path: String) -> bool:
+func check(file_path: String) -> bool:
 	if !FileAccess.file_exists(file_path):
 		return false # Probably a temp file.
 

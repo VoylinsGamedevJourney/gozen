@@ -1,5 +1,6 @@
 extends Tree
 
+
 const COLOR_PROXY_LOADING: Color = Color(0.0, 0.5, 0.5, 0.5)
 
 
@@ -7,6 +8,7 @@ const COLOR_PROXY_LOADING: Color = Color(0.0, 0.5, 0.5, 0.5)
 
 
 var proxy_progress: Dictionary[int, int] = {}
+
 
 
 func _ready() -> void:

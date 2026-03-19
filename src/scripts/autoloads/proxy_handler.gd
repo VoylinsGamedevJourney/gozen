@@ -2,7 +2,8 @@ extends Node
 # TODO: We should make it possible to have a UI to see all the proxy clips
 # with how much data they use and maybe with when they were last accessed.
 
-signal proxy_loading(file_id: int, progress: int) ## Progess is 0/100
+
+signal proxy_loading(file: FileData, progress: int) ## Progess is 0/100.
 
 
 const PROXY_HEIGHT: int = 540
@@ -15,47 +16,36 @@ func _ready() -> void:
 		DirAccess.make_dir_absolute(proxy_path)
 
 
-func request_generation(file_id: int) -> void:
+func request_generation(file: FileData) -> void:
 	var proxy_path: String = Settings.get_proxies_path()
-	var file_index: int = Project.files.index_map[file_id]
-	var file_type: EditorCore.TYPE = Project.data.files_type[file_index] as EditorCore.TYPE
-	var file_path: String = Project.data.files_path[file_index]
-	if file_type != EditorCore.TYPE.VIDEO:
-		return # Only proxies for videos possible
-	var new_path: String = proxy_path.path_join(_create_proxy_name(file_path))
+	if file.type != EditorCore.TYPE.VIDEO:
+		return # Only proxies for videos possible.
+	var new_path: String = proxy_path.path_join(_create_proxy_name(file.path))
 
-	# Check if already exists, if yes, we link
+	# Check if already exists, if yes, we link.
 	if !FileAccess.file_exists(new_path):
 		return Threader.add_task(
-				_generate_proxy_task.bind(file_id, new_path),
-				_on_proxy_finished.bind(file_id))
+				_generate_proxy_task.bind(file, new_path),
+				_on_proxy_finished.bind(file))
 
-	Project.files.set_proxy_path(file_index, new_path)
+	FileLogic.set_proxy_path(file, new_path)
 	if Settings.get_use_proxies():
-		Project.files.reload(file_id)
+		FileLogic.reload(file)
 
 
-func delete_proxy(file_id: int) -> void:
-	if !Project.files.index_map.has(file_id):
-		return
-	var file_index: int = Project.files.index_map[file_id]
-	var file_proxy_path: String = Project.data.files_proxy_path[file_index]
-	if !file_proxy_path.is_empty():
-		DirAccess.remove_absolute(file_proxy_path)
-		Project.files.set_proxy_path(file_index, "")
+func delete_proxy(file: FileData) -> void:
+	if !file.proxy_path.is_empty():
+		DirAccess.remove_absolute(file.proxy_path)
+		FileLogic.set_proxy_path(file, "")
 
 
-func _generate_proxy_task(file_id: int, output_path: String) -> void:
-	if !Project.files.index_map.has(file_id):
-		return printerr("ProxyHandler: Failed to find file!")
-	var file_index: int = Project.files.index_map[file_id]
-	var file_path: String = Project.data.files_path[file_index]
+func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	var global_output_path: String = ProjectSettings.globalize_path(output_path)
-	var global_input_path: String = ProjectSettings.globalize_path(file_path)
+	var global_input_path: String = ProjectSettings.globalize_path(file.path)
 	var encoder: Encoder = Encoder.new()
 	var video: Video = Video.new()
-	if video.open(global_input_path) != OK: return printerr("ProxyHandler:
-		Failed to open source!")
+	if video.open(global_input_path) != OK:
+		return printerr("ProxyHandler: Failed to open source!")
 
 	var original_resolution: Vector2i = video.get_resolution()
 	var scale: float = float(PROXY_HEIGHT) / float(original_resolution.y)
@@ -91,19 +81,19 @@ func _generate_proxy_task(file_id: int, output_path: String) -> void:
 		if !video.next_frame(true):
 			break
 		loaded_amount += 1
-		proxy_loading.emit.call_deferred(file_id, int((loaded_amount / total_frames) * 100.0))
+		proxy_loading.emit.call_deferred(file, int((loaded_amount / total_frames) * 100.0))
 
-	proxy_loading.emit.call_deferred(file_id, 100)
+	proxy_loading.emit.call_deferred(file, 100)
 	encoder.close()
 	video.close()
-	Project.files.set_proxy_path(file_index, output_path)
+	FileLogic.set_proxy_path(file, output_path)
 
 
 func _create_proxy_name(file_path: String) -> String:
 	return  "%s_%s_proxy.mp4" % [FileAccess.get_md5(file_path).left(6), file_path.get_file().get_basename()]
 
 
-func _on_proxy_finished(file_id: int) -> void:
+func _on_proxy_finished(file: FileData) -> void:
 	if Settings.get_use_proxies():
-		Project.files.reload(file_id)
-	Project.files.nickname_changed.emit(file_id) # To update the name
+		FileLogic.reload(file)
+	FileLogic.nickname_changed.emit(file) # To update the name

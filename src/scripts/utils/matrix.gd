@@ -1,7 +1,9 @@
 class_name Matrix
 extends Node
 
+
 enum TYPE { TRANSFORM }
+
 
 
 static func get_transform_matrix_variables() -> PackedStringArray:

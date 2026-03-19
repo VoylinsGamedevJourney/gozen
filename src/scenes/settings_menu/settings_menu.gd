@@ -4,6 +4,7 @@ extends Control
 # TODO: Add "reset to default" button for everything.
 # TODO: Add "reset to default" button for setting.
 
+
 enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
 

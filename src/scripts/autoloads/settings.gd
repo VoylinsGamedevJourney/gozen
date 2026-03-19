@@ -1,5 +1,6 @@
 extends Node
 
+
 signal on_show_menu_bar_changed(value: bool)
 signal on_show_ram_usage_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
@@ -251,7 +252,7 @@ func get_show_ram_usage() -> bool:
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
 	data.audio_waveform_style = style
-	Project.files.update_audio_waves()
+	FileLogic.update_audio_waves()
 	on_waveform_update.emit()
 
 
@@ -423,7 +424,7 @@ func get_video_cache_size() -> int:
 
 func set_use_proxies(value: bool) -> void:
 	data.use_proxies = value
-	Project.files.reload_videos()
+	FileLogic.reload_videos()
 
 
 func get_use_proxies() -> bool:
@@ -435,11 +436,13 @@ func set_proxies_path(new_path: String) -> void:
 		printerr("Settings: Invalid new path '%s'!" % new_path)
 		return
 	data.proxies_path = new_path
-	Project.files.reload_videos()
+	FileLogic.reload_videos()
 
 
 func get_proxies_path() -> String:
 	return data.proxies_path
+
+
 #--- Markers set/get ---
 
 func set_marker_name(index: int, text: String) -> void:
@@ -464,6 +467,7 @@ func get_marker_color(index: int) -> Color:
 
 func get_marker_colors() -> PackedColorArray:
 	return data.marker_colors
+
 
 #--- Extra set/get ---
 
@@ -504,9 +508,7 @@ func apply_shortcuts() -> void:
 	for action: String in data.shortcuts:
 		if !InputMap.has_action(action):
 			continue
-
 		InputMap.action_erase_events(action)
-
 		for event: InputEvent in data.shortcuts[action]:
 			if event != null:
 				InputMap.action_add_event(action, event)
@@ -521,23 +523,18 @@ func reset_shortcuts_to_default() -> void:
 func set_shortcut(action: String, events: Array[InputEvent]) -> void:
 	if !data.shortcuts.has(action):
 		return
-
 	data.shortcuts[action] = events
 	InputMap.action_erase_events(action)
-
 	for event: InputEvent in events:
 		InputMap.action_add_event(action, event)
 
 
 func set_shortcut_event_at_index(action: String, index: int, event: InputEvent) -> void:
 	var events: Array[InputEvent] = get_events_for_action(action)
-
 	if index >= 0 and index < events.size():
 		events[index] = event
 
-	# Clean nulls
 	var cleaned_events: Array[InputEvent] = []
-
 	for action_event: InputEvent in events:
 		if action_event != null:
 			cleaned_events.append(action_event)
@@ -548,7 +545,7 @@ func set_shortcut_event_at_index(action: String, index: int, event: InputEvent) 
 func get_events_for_action(action: String) -> Array[InputEvent]:
 	var events: Array[InputEvent] = data.shortcuts[action]
 
-	# We need to make certain we have exactly 2
+	# We need to make certain we have exactly 2.
 	if events.size() > 2:
 		events.resize(2)
 		return events

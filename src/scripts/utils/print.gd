@@ -5,14 +5,12 @@ const COLOR_DEFAULT: String = "white"
 const COLOR_EDITOR: String = "purple"
 const SUFFIX: String = "[color=%s][b]"
 
+
+
 # Header prints
+static func header(text: String) -> void: print_rich(SUFFIX % COLOR_DEFAULT, text)
+static func header_editor(text: String) -> void: print_rich(SUFFIX % COLOR_EDITOR, text)
 
-static func header(text: String) -> void:
-	print_rich(SUFFIX % COLOR_DEFAULT, text)
-
-
-static func header_editor(text: String) -> void:
-	print_rich(SUFFIX % COLOR_EDITOR, text)
 
 # Info prints
 

@@ -1,6 +1,8 @@
 extends Node
 
+
 signal update_encoder_status(status: STATUS)
+
 
 enum STATUS {
 	ERROR_OPEN = -1,
@@ -92,7 +94,6 @@ func start_encoder() -> void:
 			return printerr("RenderManager: Something went wrong sending audio!")
 
 	# Sending the video frame data.
-	EditorCore.set_frame(0)
 	update_encoder_status.emit(STATUS.SENDING_FRAMES)
 
 	var thread: Thread = Thread.new()
@@ -113,10 +114,10 @@ func start_encoder() -> void:
 			frame_array.fill(null)
 			frame_pos = 0
 
-		await RenderingServer.frame_post_draw
+		EditorCore.set_frame(i) # Getting the next frame ready.
+		await EditorCore.frame_changed
 		frame_array[frame_pos] = viewport.get_image()
 		frame_pos += 1
-		EditorCore.set_frame() # Getting the next frame ready.
 
 	# Flushing the system.
 	if thread.is_alive() or thread.is_started():
@@ -151,8 +152,8 @@ func _send_frames(frame_array: Array[Image]) -> void:
 			stop_encoder()
 			return printerr("RenderManager: Something went wrong sending frame(s)!")
 
-# --- Audio handling ---
 
+# --- Audio handling ---
 
 func encode_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
@@ -161,8 +162,8 @@ func encode_audio() -> PackedByteArray:
 	var length: int = Utils.get_sample_count(frames, framerate)
 	audio.resize(length)
 
-	for track: int in project_data.tracks_is_muted.size():
-		if project_data.tracks_is_muted[track]:
+	for track: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[track].is_muted:
 			continue
 		_add_track_audio(audio, track, length)
 	return audio
@@ -171,38 +172,31 @@ func encode_audio() -> PackedByteArray:
 func _add_track_audio(audio: PackedByteArray, track: int, length: int) -> void:
 	var track_audio: PackedByteArray = []
 	track_audio.resize(length)
-
-	for clip: int in Project.tracks.get_clips(track):
-		var clip_index: int = Project.clips.index_map[clip]
-		var clip_type: int = project_data.clips_type[clip_index]
-		if clip_type not in EditorCore.AUDIO_TYPES:
+	for clip: ClipData in TrackLogic.track_clips[track].clips:
+		if clip.type not in EditorCore.AUDIO_TYPES:
 			continue
 		_handle_audio(clip, track_audio)
 	audio = Audio.combine_data(audio, track_audio)
 
 
-func _handle_audio(clip: int, track_audio: PackedByteArray) -> void:
-	if !Project.clips.index_map.has(clip):
-		return
+func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> void:
 	var framerate: float = project_data.framerate
 	var samples_per_frame: float = MIX_RATE / framerate
-	var audio_data: PackedByteArray = Project.clips.get_audio_data(clip)
+	var audio_data: PackedByteArray = ClipLogic.get_audio_data(clip)
 	if audio_data.is_empty():
 		return
 
-	var clip_index: int = Project.clips.index_map[clip]
-	var clip_effects: ClipEffects = project_data.clips_effects[clip_index]
-	var fade_in: int = clip_effects.fade_audio.x
-	var fade_out: int = clip_effects.fade_audio.y
+	var fade_in: int = clip.effects.fade_audio.x
+	var fade_out: int = clip.effects.fade_audio.y
 
-	# First apply fades
+	# First apply fades.
 	if fade_in > 0 or fade_out > 0:
 		var fade_in_samples: int = floori(fade_in * samples_per_frame)
 		var fade_out_samples: int = floori(fade_out * samples_per_frame)
 		audio_data = Audio.apply_fade(audio_data, fade_in_samples, fade_out_samples)
 
 	# Apply all other effects to the clip audio data.
-	for effect: EffectAudio in clip_effects.audio:
+	for effect: EffectAudio in clip.effects.audio:
 		if !effect.is_enabled:
 			continue
 
@@ -211,7 +205,7 @@ func _handle_audio(clip: int, track_audio: PackedByteArray) -> void:
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
 	# Place in correct position
-	var clip_start: int = project_data.clips_start[clip_index]
+	var clip_start: int = clip.start
 	var start_sample: int = Utils.get_sample_count(clip_start, framerate)
 	if start_sample + audio_data.size() > track_audio.size(): # Shouldn't happen.
 		var extra: int = (start_sample + audio_data.size()) - track_audio.size()

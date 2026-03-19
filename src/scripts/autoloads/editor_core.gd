@@ -12,11 +12,6 @@ const AUDIO_TYPES: PackedInt64Array = [ TYPE.AUDIO, TYPE.VIDEO ]
 const VISUAL_TYPES: PackedInt64Array = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO ]
 
 
-var project_data: ProjectData
-var project_clips: ClipLogic
-var project_files: FileLogic
-var project_tracks: TrackLogic
-
 var viewport: SubViewport
 var text_viewports: Array[SubViewport]
 
@@ -29,7 +24,7 @@ var frame_nr: int = 0: set = set_frame_nr
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = set_is_playing
-var loaded_clips: Array[int] = [] ## Currently visible clip id's.
+var loaded_clips: Array[ClipData] = [] ## Currently visible clips.
 var clips_to_update: Array[bool] = []
 var clips_instance_index: Array[int] = []
 
@@ -49,6 +44,12 @@ func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
 	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
+
+	ClipLogic.updated.connect(_on_clips_updated)
+	TrackLogic.updated.connect(_rebuild_structure)
+	FileLogic.reloaded.connect(_on_clips_updated.unbind(1))
+	FileLogic.video_loaded.connect(_on_clips_updated.unbind(1))
+	FileLogic.ato_changed.connect(_on_clips_updated.unbind(1))
 
 	# TODO: Find out why FFT_SIZE_4096 and FFT_SIZE_MAX don't work.
 	pitch_shift_effect = AudioEffectPitchShift.new()
@@ -86,27 +87,18 @@ func _process(delta: float) -> void:
 
 
 func _on_project_ready() -> void:
-	project_data = Project.data
-	project_clips = Project.clips
-	project_files = Project.files
-	project_tracks = Project.tracks
-	project_clips.updated.connect(_on_clips_updated)
-	project_tracks.updated.connect(_rebuild_structure)
-	project_files.reloaded.connect(_on_clips_updated.unbind(1))
-	project_files.video_loaded.connect(_on_clips_updated.unbind(1))
-	project_files.ato_changed.connect(_on_clips_updated.unbind(1))
 	_rebuild_structure()
-	set_frame(project_data.playhead)
+	set_frame(Project.data.playhead)
 
 
 func _rebuild_structure() -> void:
-	var track_size: int = project_data.tracks_is_muted.size()
-	viewport.size = project_data.resolution
-	background.size = project_data.resolution
+	var track_size: int = TrackLogic.tracks.size()
+	background.size = Project.data.resolution
+	viewport.size = background.size
 
 	# Loaded clips setup.
 	loaded_clips.resize(track_size)
-	loaded_clips.fill(-1)
+	loaded_clips.fill(null)
 	clips_to_update.resize(track_size)
 	clips_to_update.fill(false)
 	clips_instance_index.resize(track_size)
@@ -171,44 +163,37 @@ func _on_clips_updated() -> void:
 	prev_frame = -1
 	for i: int in audio_players.size():
 		audio_players[i].stop()
-	loaded_clips.fill(-1)
+	loaded_clips.fill(null)
 	clips_to_update.fill(false)
 	clips_instance_index.fill(-1)
 	set_frame_nr(frame_nr)
 
 
 ## Update display/audio and continue if within clip bounds.
-func _check_clip(track_id: int, new_frame_nr: int) -> bool:
-	var clip_id: int = loaded_clips[track_id]
-	if clip_id == -1:
-		if audio_players[track_id].clip != -1:
-			audio_players[track_id].stop()
+func _check_clip(track: int, new_frame_nr: int) -> bool:
+	var clip: ClipData = loaded_clips[track]
+	if !clip:
+		if audio_players[track].clip:
+			audio_players[track].stop()
 		return false
-
-	# Check if clip really still exists or not.
-	if !project_clips.index_map.has(clip_id):
-		loaded_clips[track_id] = -1
+	elif !ClipLogic.clips.has(clip.id): # Check if clip really still exists or not.
+		loaded_clips[track] = null
 		return false
-
-	# Track check.
-	var clip_index: int = project_clips.index_map[clip_id]
-	if project_data.clips_track[clip_index] != track_id:
+	elif clip.track != track: # Track check.
 		return false
-	var start: int = project_data.clips_start[clip_index]
-	var end: int = project_data.clips_duration[clip_index] + start
-	return new_frame_nr >= start and new_frame_nr < end
+	return new_frame_nr >= clip.start and new_frame_nr < clip.end
 
 
 # --- Playback logic ---
 
 func on_play_pressed() -> void:
-	is_playing = false if frame_nr == project_data.timeline_end else !is_playing
+	is_playing = false if frame_nr == Project.data.timeline_end else !is_playing
 	if !is_playing:
-		project_data.playhead = frame_nr
+		Project.data.playhead = frame_nr
 
 
 func set_frame_nr(value: int) -> void:
-	var end: int = project_data.timeline_end
+	var end: int = Project.data.timeline_end
 	if value >= end:
 		is_playing = false
 		frame_nr = end
@@ -218,32 +203,17 @@ func set_frame_nr(value: int) -> void:
 
 	var audio_file_counter: Dictionary[int, int] = {}
 	frame_nr = value
-	for i: int in audio_players.size():
-		var clip: int = -1
-		if frame_nr != prev_frame + 1: # Reset/update all audio players. (full seek)
-			if loaded_clips.size() > i and loaded_clips[i] != -1:
-				clip = find_audio(frame_nr, i)
-				if clip == -1:
-					continue
-				var file: int = project_data.clips_file[project_clips.index_map[clip]]
-				if audio_file_counter.has(file):
-					audio_file_counter[file] += 1
-				else:
-					audio_file_counter[file] = 1
-				audio_players[i].set_audio(clip, audio_file_counter[file])
-			continue
+	var is_seek: bool = frame_nr != prev_frame + 1
 
-		# Next frame.
-		clip = project_tracks.get_clip_id_at(i, frame_nr)
-		if clip != -1:
-			var file: int = project_data.clips_file[project_clips.index_map[clip]]
-			if audio_file_counter.has(file):
-				audio_file_counter[file] += 1
-			else:
-				audio_file_counter[file] = 1
-			audio_players[i].set_audio(clip, audio_file_counter[file])
-		elif audio_players[i].stop_frame == frame_nr:
-			audio_players[i].stop()
+	for track: int in TrackLogic.tracks.size():
+		var audio_clip: ClipData = find_audio(frame_nr, track)
+		if audio_clip:
+			var file_id: int = audio_clip.file
+			audio_file_counter[file_id] = audio_file_counter.get(file_id, 0) + 1
+			audio_players[track].set_audio(audio_clip, audio_file_counter[file_id])
+		elif is_seek or audio_players[track].stop_frame == frame_nr:
+			# Stop track on seek, or if we naturally reached the end of the clip.
+			audio_players[track].stop()
 	prev_frame = frame_nr
 	update_frame()
 
@@ -257,87 +227,69 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 		frame_nr = new_frame
 
 	var file_access_counter: Dictionary = {} ## { file: count } (Needed for videos)
-	for i: int in loaded_clips.size():
+	for track: int in TrackLogic.tracks.size():
+		var clip: ClipData = loaded_clips[track]
 		# Check if current clip is correct.
-		if _check_clip(i, frame_nr):
-			var clip_index: int = project_clips.index_map[loaded_clips[i]]
-			var file: int = project_data.clips_file[clip_index]
+		if _check_clip(track, frame_nr):
+			var file: FileData = FileLogic.files[clip.file]
 			var instance_index: int = file_access_counter.get(file, 0)
 			file_access_counter[file] = instance_index + 1
-			clips_to_update[i] = true
-			clips_instance_index[i] = instance_index
-			update_data(i)
+			clips_to_update[track] = true
+			clips_instance_index[track] = instance_index
+			update_data(track)
 			continue
 
 		# Getting the next frame if possible.
-		var clip: int = project_tracks.get_clip_id_at(i, frame_nr)
-		if clip != -1:
-			var clip_index: int = project_clips.index_map[clip]
-			var file: int = project_data.clips_file[clip_index]
+		clip = TrackLogic.get_clip_at_overlap(track, frame_nr)
+		if clip:
+			var file: FileData = FileLogic.files[clip.file]
 			var instance_index: int = file_access_counter.get(file, 0)
-			loaded_clips[i] = clip
-			clips_to_update[i] = true
-			clips_instance_index[i] = instance_index
+			loaded_clips[track] = clip
+			clips_to_update[track] = true
+			clips_instance_index[track] = instance_index
 			file_access_counter[file] = instance_index + 1
-			update_data(i)
-			audio_players[i].set_audio(find_audio(frame_nr, i))
+			update_data(track)
+			audio_players[track].set_audio(find_audio(frame_nr, track))
 			continue
 		# No clip at position.
-		loaded_clips[i] = -1
-		if view_textures[i].texture != null:
-			view_textures[i].texture = null
-	if frame_nr == project_data.timeline_end:
+		loaded_clips[track] = null
+		if view_textures[track].texture != null:
+			view_textures[track].texture = null
+	if frame_nr == Project.data.timeline_end:
 		is_playing = false
-	frame_changed.emit()
 	data_ready = true
 	data_set_frame = Engine.get_process_frames()
 
 
 # --- Audio handling ---
 
-func find_audio(frame: int, track_id: int) -> int:
-	var clip_id: int = project_tracks.get_clip_id_at(track_id, frame)
-	if clip_id == -1:
-		return -1
-
-	var clip_index: int = project_clips.index_map[clip_id]
-	var file_id: int = project_data.clips_file[clip_index]
-	var file_index: int = project_files.index_map[file_id]
-	return clip_id if project_data.files_type[file_index] in AUDIO_TYPES else -1
+func find_audio(frame: int, track: int) -> ClipData:
+	var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame)
+	return clip if clip and clip.type in AUDIO_TYPES else null
 
 
 func update_audio() -> void:
 	for player: AudioPlayer in audio_players:
-		var clip_id: int = player.clip
-		if clip_id == -1:
+		var clip: ClipData = player.clip
+		if !clip:
 			continue
-		elif !project_clips.index_map.has(clip_id):
+		elif !ClipLogic.clips.has(clip.id):
 			player.stop()
 			continue
 
-		var clip_index: int = project_clips.index_map[clip_id]
-		var clip_start: int = project_data.clips_start[clip_index]
-		var clip_end: int = project_data.clips_duration[clip_index] + clip_start
-		player.stop_frame = clip_end
-		if frame_nr < clip_start or frame_nr >= clip_end:
+		player.stop_frame = clip.end
+		if frame_nr < clip.start or frame_nr >= clip.end:
 			player.stop()
 
 
 # --- Video stuff ---
 
-func update_data(track_id: int) -> void:
-	var clip_index: int = project_clips.index_map[loaded_clips[track_id]]
-	var file_index: int = project_files.index_map[project_data.clips_file[clip_index]]
-	var file_type: int = project_data.files_type[file_index]
-	var raw_data: Variant = project_files.get_data(file_index)
+func update_data(track: int) -> void:
+	var clip: ClipData = loaded_clips[track]
+	var raw_data: Variant = FileLogic.file_data[clip.file]
+	var relative_frame: int = int((frame_nr - clip.start) * clip.speed) + clip.begin
 
-	var start: int = project_data.clips_start[clip_index]
-	var begin: int = project_data.clips_begin[clip_index]
-	var speed: float = project_data.clips_speed[clip_index]
-	var clip_frame: int = frame_nr - start
-	var relative_frame: int = int(clip_frame * speed) + begin
-
-	if file_type == TYPE.TEXT:
+	if clip.type == TYPE.TEXT:
 		var temp_file: TempFile = raw_data
 		var text_effect: EffectVisual = temp_file.text_effect
 
@@ -355,7 +307,7 @@ func update_data(track_id: int) -> void:
 
 		var font: Font = Settings.fonts.get(text_font, ThemeDB.fallback_font)
 
-		var text_viewport: SubViewport = text_viewports[track_id]
+		var text_viewport: SubViewport = text_viewports[track]
 		var text_label: Label = text_viewport.get_child(0) as Label
 		var text_label_settings: LabelSettings = text_label.label_settings
 
@@ -372,10 +324,10 @@ func update_data(track_id: int) -> void:
 		text_label_settings.shadow_offset = text_shadow_offset
 		text_label_settings.shadow_color = text_shadow_color
 
-		text_label.size = project_data.resolution
-		text_viewport.size = project_data.resolution
+		text_label.size = Project.data.resolution
+		text_viewport.size = Project.data.resolution
 		text_label.label_settings = text_label_settings
-	elif file_type == TYPE.PCK:
+	elif clip.type == TYPE.PCK:
 		# TODO: Add PCK files here
 		pass
 
@@ -385,32 +337,26 @@ func update_views() -> void:
 		update_view(track_id, clips_to_update[track_id], clips_instance_index[track_id])
 		clips_to_update[track_id] = false
 	data_ready = false
+	frame_changed.emit()
 
 
 func update_view(track_id: int, update: bool, instance_index: int) -> void:
-	if loaded_clips[track_id] == -1:
+	var clip: ClipData = loaded_clips[track_id]
+	if !clip:
 		return
-	var clip_id: int = loaded_clips[track_id]
-	var clip_index: int = project_clips.index_map[clip_id]
-	var file_id: int = project_data.clips_file[clip_index]
-	var file_index: int = project_files.index_map[file_id]
-
-	var raw_data: Variant = project_files.get_data(file_index)
+	var file: FileData = FileLogic.files[clip.file]
+	var raw_data: Variant = FileLogic.file_data[file.id]
 	if raw_data == null:
 		return
 
-	var start: int = project_data.clips_start[clip_index]
-	var begin: int = project_data.clips_begin[clip_index]
-	var speed: float = project_data.clips_speed[clip_index]
-	var clip_frame: int = frame_nr - start
-	var relative_frame: int = int(clip_frame * speed) + begin
+	var clip_frame: int = frame_nr - clip.start
+	var relative_frame: int = int(clip_frame * clip.speed) + clip.begin
 
-	var file_type: int = project_data.files_type[file_index]
-	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip_index, true)
-	var effects: Array[EffectVisual] = project_data.clips_effects[clip_index].video
-	project_clips.load_video_frame(loaded_clips[track_id], relative_frame, instance_index)
+	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip, true)
+	var effects: Array[EffectVisual] = clip.effects.video
+	ClipLogic.load_video_frame(clip, relative_frame, instance_index)
 
-	if file_type == TYPE.TEXT:
+	if clip.type == TYPE.TEXT:
 		#var texture_rid: RID = text_viewport.get_texture().get_rid() # TODO: Switch to using the RID directly.
 		var image: Image = text_viewports[track_id].get_texture().get_image()
 		var image_texture: ImageTexture = ImageTexture.create_from_image(image)
@@ -423,7 +369,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 				effects, relative_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Video:
-		var video: Video = project_files.get_video_reader(file_id, instance_index)
+		var video: Video = FileLogic.get_video_reader(file, instance_index)
 		if update:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))
 
@@ -452,10 +398,8 @@ func set_is_playing(value: bool) -> void:
 func set_playback_speed(value: float) -> void:
 	playback_speed = value
 	for player: AudioPlayer in audio_players:
-		if player.clip != -1:
-			var clip_index: int = project_clips.index_map[player.clip]
-			var speed: float = project_data.clips_speed[clip_index]
-			player.player.pitch_scale = playback_speed * speed
+		if player.clip:
+			player.player.pitch_scale = playback_speed * player.clip.speed
 	pitch_shift_effect.pitch_scale = 1.0 / playback_speed
 
 

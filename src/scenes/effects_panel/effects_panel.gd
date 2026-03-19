@@ -1,5 +1,6 @@
 extends PanelContainer
 
+
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
@@ -14,7 +15,8 @@ const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 @export var section_audio: FoldableContainer
 
 
-var current_clip_id: int = -1
+var current_clip: ClipData = null
+var current_file: FileData = null
 
 
 
@@ -28,13 +30,13 @@ func _ready() -> void:
 
 
 func _project_ready() -> void:
-	Project.clips.deleted.connect(_on_clip_deleted)
-	Project.clips.selected.connect(_on_clip_pressed)
+	ClipLogic.deleted.connect(_on_clip_deleted)
+	ClipLogic.selected.connect(_on_clip_pressed)
 
 
 func _input(event: InputEvent) -> void:
 	if Project.is_loaded and event.is_action_pressed("ui_cancel"):
-		_on_clip_pressed(-1)
+		_on_clip_pressed(null)
 
 
 func _get_drag_data_effect(_pos: Vector2, _container: FoldableContainer, is_visual: bool) -> void:
@@ -55,42 +57,43 @@ func _drop_effect() -> void:
 	pass
 
 
-func _on_clip_pressed(clip_id: int) -> void:
-	if !Project.clips.index_map.has(clip_id):
+func _on_clip_pressed(clip_data: ClipData) -> void:
+	var clip: ClipData = ClipLogic.clips.get(clip_data)
+	if !clip:
 		section_text.visible = false
 		section_visuals.visible = false
 		section_audio.visible =  false
-		current_clip_id = -1
-		_load_effects() # To clear the ui.
-	elif clip_id == current_clip_id:
+		current_clip = null
+		current_file = null
+		_load_effects() # Clear the ui.
+	elif clip.id == current_clip.id:
 		_update_ui_values()
 	else:
-		var clip_index: int = Project.clips.index_map[clip_id]
-		var clip_type: EditorCore.TYPE = Project.data.clips_type[clip_index] as EditorCore.TYPE
-		section_text.visible = clip_type == EditorCore.TYPE.TEXT
-		section_visuals.visible = clip_type in EditorCore.VISUAL_TYPES
-		section_audio.visible = clip_type in EditorCore.AUDIO_TYPES
-		current_clip_id = clip_id
+		section_text.visible = clip.type == EditorCore.TYPE.TEXT
+		section_visuals.visible = clip.type in EditorCore.VISUAL_TYPES
+		section_audio.visible = clip.type in EditorCore.AUDIO_TYPES
+		current_clip = clip
+		current_file = FileLogic.files[clip.file]
 		_load_effects()
 
 
 func _on_clip_deleted(clip_id: int) -> void:
-	if clip_id == current_clip_id:
-		_on_clip_pressed(-1)
+	if clip_id == current_clip.id:
+		_on_clip_pressed(null)
 
 
 func _on_frame_changed() -> void:
-	if current_clip_id != -1:
+	if current_clip:
 		_update_ui_values()
 
 
-func _on_effects_updated(clip_id: int) -> void:
-	if clip_id == current_clip_id:
-		_on_clip_pressed(clip_id)
+func _on_effects_updated(clip: ClipData) -> void:
+	if clip.id == current_clip.id:
+		_on_clip_pressed(clip)
 
 
 func _load_effects() -> void:
-	if !Project.clips.index_map.has(current_clip_id):
+	if !ClipLogic.clips.has(current_clip.id):
 		return
 
 	# Clean UI.
@@ -100,11 +103,9 @@ func _load_effects() -> void:
 			child.queue_free()
 
 	# Creating/updating new UI.
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
-
+	var clip_effects: ClipEffects = current_clip.effects
 	if section_text.visible: # Set text params.
-		_create_text_ui(Project.data.files_temp_file[Project.data.clips_file[clip_index]].text_effect)
+		_create_text_ui(current_file.temp_file.text_effect)
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		section_visuals.add_child(_create_effect_ui(clip_effects.video[index], index, true))
 	for index: int in clip_effects.audio.size(): # Add audio effects.
@@ -116,11 +117,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	# NOTE: We can add the position of the effect inside of the effect array
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	var clip_duration: int = Project.data.clips_duration[clip_index]
-	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
-
+	var relative_frame_nr: int = EditorCore.frame_nr - current_clip.start
 	var button_visible: TextureButton = TextureButton.new()
 	var button_delete: TextureButton = TextureButton.new()
 
@@ -178,7 +175,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 			param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			param_keyframe_button.custom_minimum_size.x = 14
 			param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
-					current_clip_id, index, is_visual, param_id))
+					index, is_visual, param_id))
 			if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
 				param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 			else:
@@ -198,10 +195,10 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 
 		track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		track.setup(effect, clip_duration, relative_frame_nr)
-		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(current_clip_id, index, is_visual))
-		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(current_clip_id, index, is_visual))
-		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui.bind(current_clip_id))
+		track.setup(effect, current_clip.duration, relative_frame_nr)
+		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(index, is_visual))
+		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(index, is_visual))
+		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
 
 		track_scroll.add_child(track)
 		content_vbox.add_child(HSeparator.new())
@@ -209,20 +206,18 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	return container
 
 
-func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, clip_id: int, effect_index: int, is_visual: bool) -> void:
-	EffectsHandler.move_effect_keyframe_at_frame(clip_id, effect_index, is_visual, old_frame, new_frame, preserve_existing)
+func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, effect_index: int, is_visual: bool) -> void:
+	EffectsHandler.move_effect_keyframe_at_frame(current_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing)
 	_update_ui_values()
 
 
-func _on_keyframe_deleted_effect_ui(frame: int, clip_id: int, effect_index: int, is_visual: bool) -> void:
-	EffectsHandler.remove_effect_keyframe_at_frame(clip_id, effect_index, is_visual, frame)
+func _on_keyframe_deleted_effect_ui(frame: int, effect_index: int, is_visual: bool) -> void:
+	EffectsHandler.remove_effect_keyframe_at_frame(current_clip, effect_index, is_visual, frame)
 	_update_ui_values()
 
 
-func _on_keyframe_dragged_to_effect_ui(relative_frame: int, clip_id: int) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	EditorCore.set_frame(clip_start + relative_frame)
+func _on_keyframe_dragged_to_effect_ui(relative_frame: int) -> void:
+	EditorCore.set_frame(current_clip.start + relative_frame)
 
 
 func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_text: bool) -> Control:
@@ -344,21 +339,17 @@ func _get_current_ui_value_for_param(effect: Effect, param_id: String, relative_
 
 
 func _on_remove_effect(index: int, is_visual: bool) -> void:
-	EffectsHandler.remove_effect(current_clip_id, index, is_visual)
+	EffectsHandler.remove_effect(current_clip, index, is_visual)
 
 
 func _update_ui_values() -> void:
-	if current_clip_id == -1 or !Project.clips.index_map.has(current_clip_id):
+	if !current_clip or !ClipLogic.clips.has(current_clip.id):
+		current_clip = null
 		return
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
-	var frame_nr: int = EditorCore.frame_nr - clip_start
+	var frame_nr: int = EditorCore.frame_nr - current_clip.start
 
 	if section_text.visible and section_text.get_child_count() > 0:
-		var file_id: int = Project.data.clips_file[clip_index]
-		var temp_file: TempFile = Project.data.files_temp_file[file_id]
-		var text_effects: EffectVisual = temp_file.text_effect
+		var text_effects: EffectVisual = current_file.temp_file.text_effect
 		var text_container: FoldableContainer = section_text.get_child(0)
 		var content_vbox: VBoxContainer = text_container.get_child(0)
 
@@ -387,19 +378,19 @@ func _update_ui_values() -> void:
 			var track: KeyframeTrack = scroll.get_child(0)
 			track.current_relative_frame = frame_nr
 			track.effect.keyframes = text_effects.keyframes
-			track.clip_duration = Project.data.clips_duration[clip_index]
+			track.clip_duration = current_clip.duration
 			track.queue_redraw()
 
-	for i: int in clip_effects.video.size():
-		_update_ui_values_effect(clip_effects.video, i, frame_nr)
-	for i: int in clip_effects.audio.size():
-		_update_ui_values_effect(clip_effects.audio, i, frame_nr)
+	for i: int in current_clip.effects.video.size():
+		_update_ui_values_effect(current_clip.effects.video, i, frame_nr)
+	for i: int in current_clip.effects.audio.size():
+		_update_ui_values_effect(current_clip.effects.audio, i, frame_nr)
 
 
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
 	var effect: Effect = effects[index]
 	var section: FoldableContainer
-	if effects == Project.data.clips_effects[Project.clips.index_map[current_clip_id]].video:
+	if effects == current_clip.effects.video:
 		section = section_visuals
 	else:
 		section = section_audio
@@ -427,11 +418,10 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 			keyframes_found = true
 
 	if keyframes_found:
-		var clip_index: int = Project.clips.index_map[current_clip_id]
 		var scroll: ScrollContainer = content_vbox.get_child(-1)
 		var track: KeyframeTrack = scroll.get_child(0)
 		track.current_relative_frame = frame_nr
-		track.clip_duration = Project.data.clips_duration[clip_index]
+		track.clip_duration = current_clip.duration
 		track.queue_redraw()
 
 
@@ -466,19 +456,16 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 
 
 func _on_switch_enabled(index: int, is_visual: bool) -> void:
-	EffectsHandler.switch_enabled(current_clip_id, index, is_visual)
-
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+	EffectsHandler.switch_enabled(current_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
 	var effect_container: FoldableContainer = section.get_child(index)
 	var visible_button: TextureButton = effect_container.get_child(1, true)
 	var is_enabled: bool
 
 	if is_visual:
-		effect_container.folded = !clip_effects.video[index].is_enabled
+		effect_container.folded = !current_clip.effects.video[index].is_enabled
 	else:
-		effect_container.folded =!clip_effects.audio[index].is_enabled
+		effect_container.folded = !current_clip.effects.audio[index].is_enabled
 
 	if effect_container.folded:
 		visible_button.texture_normal = load(Library.ICON_INVISIBLE)
@@ -496,40 +483,33 @@ func _add_add_effects_button(is_visual: bool) -> Button:
 
 func _open_add_effects_popup(is_visual: bool) -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
-	popup.call("load_effects", is_visual, current_clip_id)
+	popup.call("load_effects", is_visual, current_clip)
 
 
 func _effect_param_update_call(value: Variant, index: int, is_visual: bool, param_id: String) -> void:
-	EffectsHandler.update_param(current_clip_id, index, is_visual, param_id, value, false)
+	EffectsHandler.update_param(current_clip, index, is_visual, param_id, value, false)
 
 
-func _keyframe_button_pressed(clip_id: int, index: int, is_visual: bool, param_id: String) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
-	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
+func _keyframe_button_pressed(index: int, is_visual: bool, param_id: String) -> void:
+	var relative_frame_nr: int = EditorCore.frame_nr - current_clip.start
 	var effect: Effect
 	if is_visual:
-		effect = clip_effects.video[index]
+		effect = current_clip.effects.video[index]
 	else:
-		effect = clip_effects.audio[index]
+		effect = current_clip.effects.audio[index]
 
 	var effect_keyframes: Dictionary = effect.keyframes[param_id]
 	if effect_keyframes.has(relative_frame_nr):
 		if relative_frame_nr != 0:
-			EffectsHandler.remove_keyframe(clip_id, index, is_visual, param_id, relative_frame_nr)
+			EffectsHandler.remove_keyframe(current_clip, index, is_visual, param_id, relative_frame_nr)
 	else:
 		var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
-		EffectsHandler.update_param(clip_id, index, is_visual, param_id, value, true)
+		EffectsHandler.update_param(current_clip, index, is_visual, param_id, value, true)
 	_update_ui_values()
 
 
 func _create_text_ui(text_effect: EffectVisual) -> void:
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	var clip_duration: int = Project.data.clips_duration[clip_index]
-	var relative_frame_nr: int = EditorCore.frame_nr - clip_start
-
+	var relative_frame_nr: int = EditorCore.frame_nr - current_clip.start
 	var container: FoldableContainer = FoldableContainer.new()
 	container.title = "Text Properties"
 	container.add_theme_font_size_override("font_size", 11)
@@ -586,11 +566,11 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 
 	track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	track.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	track.setup(text_effect, clip_duration, relative_frame_nr)
+	track.setup(text_effect, current_clip.duration, relative_frame_nr)
 
-	track.keyframe_moved_effect.connect(_on_text_keyframe_moved.bind())
-	track.keyframe_deleted_effect.connect(_on_text_keyframe_deleted.bind())
-	track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui.bind(current_clip_id))
+	track.keyframe_moved_effect.connect(_on_text_keyframe_moved)
+	track.keyframe_deleted_effect.connect(_on_text_keyframe_deleted)
+	track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
 
 	track_scroll.add_child(track)
 	track_hbox.add_child(track_label)
@@ -602,10 +582,7 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 
 
 func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool) -> void:
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var file_id: int = Project.data.clips_file[clip_index]
-	var temp_file: TempFile = Project.data.files_temp_file[file_id]
-	var text_effect: EffectVisual = temp_file.text_effect
+	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
 	InputManager.undo_redo.create_action("Move Text Keyframes")
@@ -621,26 +598,23 @@ func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool) -> 
 		var value_final: Variant = value_target if (has_target and preserve) else value_move
 
 		if old_frame != 0:
-			InputManager.undo_redo.add_do_method(Project.files.remove_text_keyframe.bind(file_id, param_id, old_frame))
-			InputManager.undo_redo.add_undo_method(Project.files._set_text_keyframe.bind(file_id, param_id, old_frame, value_move))
+			InputManager.undo_redo.add_do_method(FileLogic.remove_text_keyframe.bind(current_file, param_id, old_frame))
+			InputManager.undo_redo.add_undo_method(FileLogic._set_text_keyframe.bind(current_file, param_id, old_frame, value_move))
 
 		if not (has_target and preserve):
-			InputManager.undo_redo.add_do_method(Project.files._set_text_keyframe.bind(file_id, param_id, new_frame, value_final))
+			InputManager.undo_redo.add_do_method(FileLogic._set_text_keyframe.bind(current_file, param_id, new_frame, value_final))
 			if has_target:
-				InputManager.undo_redo.add_undo_method(Project.files._set_text_keyframe.bind(file_id, param_id, new_frame, value_target))
+				InputManager.undo_redo.add_undo_method(FileLogic._set_text_keyframe.bind(current_file, param_id, new_frame, value_target))
 			else:
-				InputManager.undo_redo.add_undo_method(Project.files.remove_text_keyframe.bind(file_id, param_id, new_frame))
-
+				InputManager.undo_redo.add_undo_method(FileLogic.remove_text_keyframe.bind(current_file, param_id, new_frame))
 	InputManager.undo_redo.commit_action()
 	_update_ui_values()
 
 
 func _on_text_keyframe_deleted(frame_nr: int) -> void:
-	if frame_nr == 0: return
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var file_id: int = Project.data.clips_file[clip_index]
-	var temp_file: TempFile = Project.data.files_temp_file[file_id]
-	var text_effect: EffectVisual = temp_file.text_effect
+	if frame_nr == 0:
+		return
+	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
 	InputManager.undo_redo.create_action("Delete Text Keyframes")
@@ -648,19 +622,15 @@ func _on_text_keyframe_deleted(frame_nr: int) -> void:
 		var param_keyframes: Dictionary = keyframes[param.id]
 		if param_keyframes.has(frame_nr):
 			var old_value: Variant = param_keyframes[frame_nr]
-			InputManager.undo_redo.add_do_method(Project.files.remove_text_keyframe.bind(file_id, param.id, frame_nr))
-			InputManager.undo_redo.add_undo_method(Project.files._set_text_keyframe.bind(file_id, param.id, frame_nr, old_value))
+			InputManager.undo_redo.add_do_method(FileLogic.remove_text_keyframe.bind(current_file, param.id, frame_nr))
+			InputManager.undo_redo.add_undo_method(FileLogic._set_text_keyframe.bind(current_file, param.id, frame_nr, old_value))
 	InputManager.undo_redo.commit_action()
 	_update_ui_values()
 
 
 func _text_param_update_call(value: Variant, param_id: String) -> void:
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var file_id: int = Project.data.clips_file[clip_index]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	var frame_nr: int = EditorCore.frame_nr - clip_start
-	var temp_file: TempFile = Project.data.files_temp_file[file_id]
-	var text_effect: EffectVisual = temp_file.text_effect
+	var frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
 	var param_obj: EffectParam
@@ -675,21 +645,17 @@ func _text_param_update_call(value: Variant, param_id: String) -> void:
 	if param_keyframes.size() <= 1 or not is_keyframeable:
 		var base_frame: int = param_keyframes.keys()[0] if param_keyframes.size() > 0 else 0
 		var old_value: Variant = param_keyframes.get(base_frame, param_obj.default_value)
-		Project.files.update_text_param(file_id, param_id, base_frame, value, old_value, false)
+		FileLogic.update_text_param(current_file, param_id, base_frame, value, old_value, false)
 	else:
 		var is_new: bool = not param_keyframes.has(frame_nr)
 		var old_value: Variant = param_keyframes[frame_nr] if not is_new else text_effect.get_value(param_obj, frame_nr)
-		Project.files.update_text_param(file_id, param_id, frame_nr, value, old_value, is_new)
+		FileLogic.update_text_param(current_file, param_id, frame_nr, value, old_value, is_new)
 	_update_ui_values()
 
 
 func _text_keyframe_button_pressed(param_id: String) -> void:
-	var clip_index: int = Project.clips.index_map[current_clip_id]
-	var file_id: int = Project.data.clips_file[clip_index]
-	var clip_start: int = Project.data.clips_start[clip_index]
-	var frame_nr: int = EditorCore.frame_nr - clip_start
-	var temp_file: TempFile = Project.data.files_temp_file[file_id]
-	var text_effect: EffectVisual = temp_file.text_effect
+	var frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 	var param_keyframes: Dictionary = keyframes[param_id]
 
@@ -700,9 +666,9 @@ func _text_keyframe_button_pressed(param_id: String) -> void:
 				param_obj = param
 				break
 		var value: Variant = text_effect.get_value(param_obj, frame_nr)
-		Project.files.update_text_param(file_id, param_id, frame_nr, value, null, true)
+		FileLogic.update_text_param(current_file, param_id, frame_nr, value, null, true)
 	elif frame_nr != 0:
-		Project.files.remove_text_keyframe(file_id, param_id, frame_nr)
+		FileLogic.remove_text_keyframe(current_file, param_id, frame_nr)
 	_update_ui_values()
 
 

@@ -1,9 +1,11 @@
 extends Node
 
+
 var timed_tasks: Dictionary[int, TimedTask] = {} # [clip_id, Task]
 var tasks: Array[Task] = []
 var mutex: Mutex = Mutex.new()
 var error: int = -1
+
 
 
 func _process(_delta: float) -> void:
@@ -34,6 +36,16 @@ func add_task(todo: Callable, after_todo: Callable = Callable()) -> void:
 	mutex.lock()
 	tasks.append(task)
 	mutex.unlock()
+
+
+## Usefull for checking if a variable is being used by any thread, checking if
+## videos are loaded or not is one of the use cases.
+func check_tasks(value: Variant) -> bool:
+	return tasks.any(_check_task.bind(value))
+
+
+func _check_task(task: Task, value: Variant) -> bool:
+	return task.after_task.get_bound_arguments().has(value)
 
 
 

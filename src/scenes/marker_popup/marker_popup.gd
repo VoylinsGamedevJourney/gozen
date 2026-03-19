@@ -1,5 +1,6 @@
 extends Control
 
+
 static var last_type: int = 0 ## We want to save the last used type.
 
 

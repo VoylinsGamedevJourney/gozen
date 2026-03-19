@@ -11,6 +11,7 @@ var _frame_nr: int = -1
 var _resolution: Vector2i
 
 
+
 func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: EffectVisual) -> void:
 	nickname = effect.nickname
 	shader = device.shader_create_from_spirv(spirv)
@@ -24,7 +25,6 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i) 
 	_effect = effect
 	_frame_nr = frame_nr
 	_resolution = resolution
-
 	for effect_param: EffectParam in effect.params:
 		# First do matrix handling
 		if effect_param.id in effect.matrix_map:
@@ -73,27 +73,21 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i) 
 
 	var buffer_data: PackedByteArray = stream.data_array
 	var padding: int = 16 - (buffer_data.size() % 16)
-
 	if padding != 0: # Add final padding
 		buffer_data.resize(buffer_data.size() + padding)
-
 	return buffer_data
 
 
 func _handle_matrix(type: Matrix.TYPE) -> PackedFloat32Array:
 	var data: Dictionary[String, Variant] = {}
 	var param_map: Dictionary[String, EffectParam] = {}
-
 	for effect_param: EffectParam in _effect.params:
 		param_map[effect_param.id] = effect_param
 
 	# Proxy adjustments
 	var project_resolution: Vector2 = Vector2(Project.get_resolution())
 	var current_resolution: Vector2 = Vector2(_resolution)
-	var ratio: Vector2 = Vector2(1, 1)
-
-	ratio = current_resolution / project_resolution
-
+	var ratio: Vector2 = current_resolution / project_resolution
 	match type:
 		Matrix.TYPE.TRANSFORM:
 			for key: String in Matrix.get_transform_matrix_variables():
@@ -114,7 +108,6 @@ func free_rids(device: RenderingDevice) -> void:
 func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:
 	var current_offset: int = stream_buffer.get_position()
 	var remainder: int = current_offset % alignment
-
 	if remainder != 0:
 		for i: int in alignment - remainder:
 			stream_buffer.put_8(0)

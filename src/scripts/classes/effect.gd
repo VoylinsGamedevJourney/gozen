@@ -93,4 +93,4 @@ static func _interpolate_variant(value_a: Variant, value_b: Variant, weight: flo
 		return Vector3i((value_a as Vector3).lerp((value_b as Vector3), weight))
 	elif value_a is Color:
 		return (value_a as Color).lerp(value_b as Color, weight)
-	return value_a # Fallback
+	return value_a # Fallback.

@@ -7,8 +7,8 @@ var bus_name: String
 var bus_index: int = -1
 
 var stop_frame: int = -1
-var file: int = -1
-var clip: int = -1
+var file: FileData = null
+var clip: ClipData = null
 
 var project_data: ProjectData
 
@@ -29,7 +29,7 @@ func is_playing() -> bool:
 
 
 func play(value: bool) -> void:
-	if stop_frame != -1 or clip != -1:
+	if stop_frame != -1 or clip:
 		player.stream_paused = !value
 
 
@@ -38,65 +38,55 @@ func stop() -> void:
 		player.stop()
 	player.stream_paused = true
 	stop_frame = -1
-	clip = -1
+	clip = null
 
 
-func set_audio(audio_clip: int, instance_index: int = 0) -> void:
-	if audio_clip == -1:
+func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
+	if !audio_clip:
 		return stop()
 	if RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return stop()
-	if !project_data.clips.has(audio_clip):
+	if !ClipLogic.clips.has(audio_clip.id):
 		return stop()
-
-	var clip_index: int = Project.clips.index_map[audio_clip]
-	var clip_effects: ClipEffects = project_data.clips_effects[clip_index]
-	var clip_speed: float = project_data.clips_speed[clip_index]
-	var clip_file: int = project_data.clips_file[clip_index]
-	var clip_start: int = project_data.clips_start[clip_index]
-	var clip_duration: int = project_data.clips_duration[clip_index]
-	var clip_begin: int = project_data.clips_begin[clip_index]
-	var clip_end: int = clip_start + clip_duration
 
 	# Audio-take-over logic.
-	var target_file: int = clip_file
+	var target_file: FileData = FileLogic.files[audio_clip.file]
 	var time_offset: float = 0.0
-	if clip_effects.ato_active and clip_effects.ato_id != -1:
-		target_file = clip_effects.ato_id
-		time_offset = clip_effects.ato_offset
-	elif project_data.files_ato_active.get(clip_file, false):
-		var file_ato_id: int = project_data.files_ato_file.get(clip_file, -1)
-		if file_ato_id != -1:
-			target_file = file_ato_id
-			time_offset = project_data.files_ato_offset.get(clip_file, 0.0)
+	if audio_clip.effects.ato_active and audio_clip.effects.ato_file != -1:
+		target_file = FileLogic.files[audio_clip.effects.ato_file]
+		time_offset = audio_clip.effects.ato_offset
+	elif target_file.ato_active:
+		if target_file.ato_file != -1:
+			time_offset = target_file.ato_offset
+			target_file = FileLogic.files[file.ato_file]
 
-	# Getting file data.
-	if !Project.files.index_map.has(target_file):
+	# Getting file_id data.
+	if !FileLogic.files.has(target_file.id):
 		return stop()
-	var stream: AudioStream = Project.files.get_audio_stream(target_file, instance_index)
+	var stream: AudioStream = FileLogic.get_audio_stream(target_file, instance_index)
 	if stream == null:
 		return stop() # No valid data found for stream.
 
 	# Managing state.
-	var old_file: int = file
-	var old_clip: int = clip
+	var old_file: FileData = file
+	var old_clip: ClipData = audio_clip
 	file = target_file
 	clip = audio_clip
-	stop_frame = clip_end
+	stop_frame = clip.end
 
 	# Effecs setup.
 	if old_clip != clip:
-		_setup_bus_effects(clip_effects.audio)
-	elif AudioServer.get_bus_effect_count(bus_index) != clip_effects.audio.size():
-		_setup_bus_effects(clip_effects.audio)
-	update_effects(clip_index)
-	player.pitch_scale = clip_speed * EditorCore.playback_speed
+		_setup_bus_effects(clip.effects.audio)
+	elif AudioServer.get_bus_effect_count(bus_index) != clip.effects.audio.size():
+		_setup_bus_effects(clip.effects.audio)
+	update_effects()
+	player.pitch_scale = clip.speed * EditorCore.playback_speed
 
 	# Boundary check.
 	var framerate: float = project_data.framerate
 	var audio_duration: float = stream.get_length()
-	var time_from_start: float = float(EditorCore.frame_nr - clip_start) / framerate
-	var position: float = (time_from_start * clip_speed) + (float(clip_begin) / framerate) + time_offset
+	var time_from_start: float = float(EditorCore.frame_nr - clip.start) / framerate
+	var position: float = (time_from_start * clip.speed) + (float(clip.begin) / framerate) + time_offset
 	if position < 0.0 or position >= audio_duration:
 		if !player.playing:
 			return
@@ -112,7 +102,7 @@ func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 
 	# Check if playback is close enough ONLY if stream is the same.
 	var frame_duration: float = 1.0 / framerate
-	var sync_threshold: float = max(frame_duration * 4 * clip_speed, 0.15) # (4 frame buffer at normal speed)
+	var sync_threshold: float = max(frame_duration * 4 * clip.speed, 0.15) # (4 frame buffer at normal speed)
 	if player.playing and abs(player.get_playback_position() - position) < sync_threshold:
 		player.stream_paused = !EditorCore.is_playing
 		return
@@ -121,12 +111,12 @@ func set_audio(audio_clip: int, instance_index: int = 0) -> void:
 	player.stream_paused = !EditorCore.is_playing
 
 
-func update_effects(clip_index: int) -> void:
-	var effects: Array[EffectAudio] = project_data.clips_effects[clip_index].audio
-	var relative_frame_nr: int = EditorCore.frame_nr - project_data.clips_start[clip_index]
+func update_effects() -> void:
+	var effects: Array[EffectAudio] = clip.effects.audio
+	var relative_frame_nr: int = EditorCore.frame_nr - clip.start
 
 	# Apply fade.
-	var fade_volume: float = Utils.calculate_fade(relative_frame_nr, clip_index, false)
+	var fade_volume: float = Utils.calculate_fade(relative_frame_nr, clip, false)
 	player.volume_db = linear_to_db(maxf(fade_volume, 0.0001)) # Just 0 can give issues.
 
 	# Apply other effects.

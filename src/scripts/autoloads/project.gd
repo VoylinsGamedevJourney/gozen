@@ -14,25 +14,20 @@ var is_loaded: bool = false
 var unsaved_changes: bool = false
 var auto_save_timer: Timer
 
-var files: FileLogic
-var clips: ClipLogic
-var tracks: TrackLogic
-var folders: FolderLogic
-
 
 
 func _ready() -> void:
 	get_window().close_requested.connect(_on_close)
+	ClipLogic.updated.connect(update_timeline_end)
 
 
 func _setup_logic() -> void:
-	files = FileLogic.new(data)
-	clips = ClipLogic.new(data)
-	tracks = TrackLogic.new(data)
+	FileLogic.files = data.files
+	ClipLogic.clips = data.clips
+	TrackLogic.tracks = data.tracks
 	MarkerLogic.markers = data.markers
-	folders = FolderLogic.new(data)
-
-	clips.updated.connect(update_timeline_end)
+	FolderLogic.folders = data.folders
+	TrackLogic.prepare_data()
 
 
 func new_project(new_path: String, new_resolution: Vector2i, new_framerate: float) -> void:
@@ -47,8 +42,8 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	_setup_logic()
 
 	for index: int in Settings.get_tracks_amount():
-		tracks._add_track(index, false)
-	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
+		TrackLogic._add_track(index)
+	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
 	loading_overlay.update(50, tr("Setting up playback ..."))
 	loading_overlay.update(99, tr("Finalizing ..."))
@@ -60,7 +55,6 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	is_loaded = true
 	_auto_save()
 	project_ready.emit()
-	update_timeline_end()
 
 
 func save() -> void:
@@ -96,11 +90,11 @@ func open(new_project_path: String) -> void:
 	set_framerate(data.framerate)
 	_setup_logic()
 
-	EditorCore.loaded_clips.resize(data.tracks_is_muted.size())
+	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update(7, tr("Loading project files ..."))
-	files._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
+	FileLogic._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
 	# 99% = Finalizing.
 	loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
@@ -241,13 +235,11 @@ func set_framerate(new_framerate: float) -> void:
 
 func update_timeline_end() -> void:
 	var end: int = 0
-	for index: int in data.tracks_is_muted.size():
-		var clip: int = tracks.get_last_clip(index)
-		if clip != -1:
-			var clip_index: int = clips.index_map[clip]
-			var clip_start: int = data.clips_start[clip_index]
-			var clip_duration: int = data.clips_duration[clip_index]
-			end = max(end, clip_start + clip_duration)
+	for track: int in TrackLogic.tracks.size():
+		if TrackLogic.track_clips[track].clips.size() != 0:
+			var clip: ClipData = TrackLogic.track_clips[track].clips[-1]
+			if clip:
+				end = max(end, clip.end)
 	data.timeline_end = end - 1
 	unsaved_changes = true
 	timeline_end_update.emit(end)

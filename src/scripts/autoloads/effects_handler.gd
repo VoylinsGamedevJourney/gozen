@@ -1,8 +1,8 @@
 extends Node
 # TODO: Load custom effects.
 
-signal effect_added(clip_id: int)
-signal effect_removed(clip_id: int)
+signal effect_added(clip: ClipData)
+signal effect_removed(clip: ClipData)
 signal effects_updated
 signal effect_values_updated
 
@@ -21,6 +21,7 @@ var audio_effect_instances: Dictionary[String, EffectAudio] = {} ## { effect_id:
 var param_exceptions: Dictionary[String, Dictionary] = {
 	"transform": { "pivot": Project.get_resolution_center }
 }
+
 
 
 func _ready() -> void:
@@ -62,18 +63,9 @@ func _load_audio_effects() -> void:
 
 #---- Adding effects ----
 
-func add_effect(clip_id: int, effect: Effect, is_visual: bool) -> void:
-	if !Project.clips.index_map.has(clip_id):
-		return
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func add_effect(clip: ClipData, effect: Effect, is_visual: bool) -> void:
 	var effect_id: String = effect.id
-	var index: int
-
-	if is_visual:
-		index = clip_effects.video.size()
-	else:
-		index = clip_effects.audio.size()
+	var index: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 
 	if effect_id in param_exceptions: # Handle exceptions
 		for exception: String in param_exceptions[effect_id]:
@@ -85,113 +77,98 @@ func add_effect(clip_id: int, effect: Effect, is_visual: bool) -> void:
 	effect.set_default_keyframe()
 
 	InputManager.undo_redo.create_action("Add effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_add_effect.bind(clip_id, index, effect, is_visual))
-	InputManager.undo_redo.add_undo_method(_remove_effect.bind(clip_id, index, is_visual))
+	InputManager.undo_redo.add_do_method(_add_effect.bind(clip, index, effect, is_visual))
+	InputManager.undo_redo.add_undo_method(_remove_effect.bind(clip, index, is_visual))
 	InputManager.undo_redo.commit_action()
 
 
-func _add_effect(clip_id: int, index: int, effect: Effect, is_visual: bool) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) -> void:
 	if is_visual:
-		clip_effects.video.insert(index, effect)
+		clip.effects.video.insert(index, effect)
 	else:
-		clip_effects.audio.insert(index, effect)
+		clip.effects.audio.insert(index, effect)
 
-	effect_added.emit(clip_id)
+	effect_added.emit(clip)
 	effects_updated.emit()
 
 
 #---- Removing effects ----
 
-func remove_effect(clip_id: int, index: int, is_visual: bool) -> void:
-	if !Project.clips.index_map.has(clip_id) or index < 0:
+func remove_effect(clip: ClipData, index: int, is_visual: bool) -> void:
+	if !ClipLogic.clips.has(clip.id) or index < 0:
 		return
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: Effect
-	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 	if index >= size: return printerr("EffectsHandler:
 		Trying to remove invalid effect! ", index)
 
 	if is_visual:
-		effect = clip_effects.video[index]
+		effect = clip.effects.video[index]
 	else:
-		effect = clip_effects.audio[index]
+		effect = clip.effects.audio[index]
 
 	InputManager.undo_redo.create_action("Remove effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_remove_effect.bind(clip_id, index, is_visual))
-	InputManager.undo_redo.add_undo_method(_add_effect.bind(clip_id, index, effect, is_visual))
+	InputManager.undo_redo.add_do_method(_remove_effect.bind(clip, index, is_visual))
+	InputManager.undo_redo.add_undo_method(_add_effect.bind(clip, index, effect, is_visual))
 	InputManager.undo_redo.commit_action()
 
 
-func _remove_effect(clip_id: int, effect_index: int, is_visual: bool) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func _remove_effect(clip: ClipData, effect_index: int, is_visual: bool) -> void:
 	if is_visual:
-		clip_effects.video.remove_at(effect_index)
+		clip.effects.video.remove_at(effect_index)
 	else:
-		clip_effects.audio.remove_at(effect_index)
+		clip.effects.audio.remove_at(effect_index)
 
-	effect_removed.emit(clip_id)
+	effect_removed.emit(clip)
 	effects_updated.emit()
 
 
 #---- Moving effects ----
 
-func move_effect(clip_id: int, effect_index: int, new_index: int, is_visual: bool) -> void:
-	if !Project.clips.index_map.has(clip_id) or effect_index < 0 or new_index < 0:
+func move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
+	if effect_index < 0 or new_index < 0:
 		return
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: Effect
-	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 	if effect_index >= size:
 		return printerr("EffectsHandler:Trying to move invalid effect! ", effect_index)
 
 	if is_visual:
-		effect = clip_effects.video[effect_index]
+		effect = clip.effects.video[effect_index]
 	else:
-		effect = clip_effects.audio[effect_index]
+		effect = clip.effects.audio[effect_index]
 
 	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_move_effect.bind(clip_id, effect_index, new_index, is_visual))
-	InputManager.undo_redo.add_undo_method(_move_effect.bind(clip_id, new_index, effect_index, is_visual))
+	InputManager.undo_redo.add_do_method(_move_effect.bind(clip, effect_index, new_index, is_visual))
+	InputManager.undo_redo.add_undo_method(_move_effect.bind(clip, new_index, effect_index, is_visual))
 	InputManager.undo_redo.commit_action()
 
 
-func _move_effect(clip_id: int, effect_index: int, new_index: int, is_visual: bool) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
 	if is_visual:
-		var effect: Effect = clip_effects.video.pop_at(effect_index)
-		clip_effects.video.insert(new_index, effect)
+		var effect: Effect = clip.effects.video.pop_at(effect_index)
+		clip.effects.video.insert(new_index, effect)
 	else:
-		var effect: Effect = clip_effects.audio.pop_at(effect_index)
-		clip_effects.audio.insert(new_index, effect)
+		var effect: Effect = clip.effects.audio.pop_at(effect_index)
+		clip.effects.audio.insert(new_index, effect)
 	effects_updated.emit()
 
 
 #---- Updating effect params ----
 
-func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
-	if !Project.clips.index_map.has(clip_id) or effect_index < 0:
+func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
+	if effect_index < 0:
 		return
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
-	var clip_start: int = Project.data.clips_start[clip_index]
 	var effect: Effect
-	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 	if effect_index >= size:
 		return printerr("EffectsHandler: Trying to remove invalid effect! ", effect_index)
-
 	if is_visual:
-		effect = clip_effects.video[effect_index]
+		effect = clip.effects.video[effect_index]
 	else:
-		effect = clip_effects.audio[effect_index]
+		effect = clip.effects.audio[effect_index]
 
 	InputManager.undo_redo.create_action("Update effect param: %s" % effect.nickname)
-
 	var effect_param: EffectParam = null
 	for param: EffectParam in effect.params:
 		if param.id == param_id:
@@ -201,15 +178,14 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 	# No keyframes (except 0) made, so we change main value, unless new keyframe requested.
 	var param_keyframes: Dictionary = effect.keyframes[param_id]
 	var is_keyframeable: bool = effect_param.keyframeable if effect_param else true
-
 	if (!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable:
 		var old_value: Variant = effect.keyframes[param_id][0]
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-				clip_id, effect_index, is_visual, param_id, 0, new_value))
+				clip, effect_index, is_visual, param_id, 0, new_value))
 		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-				clip_id, effect_index, is_visual, param_id, 0, old_value))
+				clip, effect_index, is_visual, param_id, 0, old_value))
 	else:
-		var frame_nr: int = EditorCore.frame_nr - clip_start
+		var frame_nr: int = EditorCore.frame_nr - clip.start
 		var old_value: Variant = null
 		var keyframe_exists: bool = false
 
@@ -220,33 +196,31 @@ func update_param(clip_id: int, effect_index: int, is_visual: bool, param_id: St
 			old_value = effect.get_value(effect_param, frame_nr)
 
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-				clip_id, effect_index, is_visual, param_id, frame_nr, new_value))
+				clip, effect_index, is_visual, param_id, frame_nr, new_value))
 
 		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe.
 			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-					clip_id, effect_index, is_visual, param_id, frame_nr, old_value))
+					clip, effect_index, is_visual, param_id, frame_nr, old_value))
 		else: # If the keyframe didn't exist yet, we remove the newly created one on undo.
 			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
-					clip_id, effect_index, is_visual, param_id, frame_nr))
+					clip, effect_index, is_visual, param_id, frame_nr))
 	InputManager.undo_redo.commit_action()
 
 
 #---- Removing keyframes ----
 
-func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	if !Project.clips.index_map.has(clip_id) or index < 0:
+func remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
+	if index < 0:
 		return
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: Effect
-	var size: int = clip_effects.video.size() if is_visual else clip_effects.audio.size()
+	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 	if index >= size: return printerr("EffectsHandler:
 		Trying to remove keyframe from invalid effect! ", index)
 
 	if is_visual:
-		effect = clip_effects.video[index]
+		effect = clip.effects.video[index]
 	else:
-		effect = clip_effects.audio[index]
+		effect = clip.effects.audio[index]
 
 	# Check if there is actually a keyframe to remove
 	if not effect.keyframes.has(param_id):
@@ -258,21 +232,18 @@ func remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String
 
 	InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
-			clip_id, index, is_visual, param_id, frame_nr))
+			clip, index, is_visual, param_id, frame_nr))
 	InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-			clip_id, index, is_visual, param_id, frame_nr, old_value))
+			clip, index, is_visual, param_id, frame_nr, old_value))
 	InputManager.undo_redo.commit_action()
 
 
-func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
 	var effect: Effect
-
 	if is_visual:
-		effect = clip_effects.video[index]
+		effect = clip.effects.video[index]
 	else:
-		effect = clip_effects.audio[index]
+		effect = clip.effects.audio[index]
 	if not effect.keyframes.has(param_id):
 		var typed_dict: Dictionary[int, Variant] = {}
 		effect.keyframes[param_id] = typed_dict
@@ -282,15 +253,12 @@ func _set_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, 
 	effect_values_updated.emit()
 
 
-func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
 	var effect: Effect
-
 	if is_visual:
-		effect = clip_effects.video[index]
+		effect = clip.effects.video[index]
 	else:
-		effect = clip_effects.audio[index]
+		effect = clip.effects.audio[index]
 
 	if effect.keyframes.has(param_id):
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
@@ -307,20 +275,16 @@ func _remove_keyframe(clip_id: int, index: int, is_visual: bool, param_id: Strin
 ## Moves all keyframes from all parameters at old_frame to new_frame.
 ## If preserve_existing is true (ctrl pressed), existing values at new_frame
 ## are kept. Otherwise, values from old_frame overwrite existing ones.
-func move_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool) -> void:
-	if !Project.clips.index_map.has(clip_id) or old_frame == new_frame:
+func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool) -> void:
+	if old_frame == new_frame:
 		return
-
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: Effect
 	if is_visual:
-		effect = clip_effects.video[effect_index]
+		effect = clip.effects.video[effect_index]
 	else:
-		effect = clip_effects.audio[effect_index]
+		effect = clip.effects.audio[effect_index]
 
 	InputManager.undo_redo.create_action("Move Effect Keyframe(s)")
-
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		if not effect.keyframes.has(param_id):
@@ -342,20 +306,20 @@ func move_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual: b
 
 		if old_frame != 0:
 			InputManager.undo_redo.add_do_method(
-					_remove_keyframe.bind(clip_id, effect_index, is_visual, param_id, old_frame))
+					_remove_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame))
 			InputManager.undo_redo.add_undo_method(
-					_set_keyframe.bind(clip_id, effect_index, is_visual, param_id, old_frame, value_to_move))
+					_set_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame, value_to_move))
 
 		if !(has_target and preserve_existing):
 			InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-					clip_id, effect_index, is_visual, param_id, new_frame, final_value))
+					clip, effect_index, is_visual, param_id, new_frame, final_value))
 
 			if has_target:
 				InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-						clip_id, effect_index, is_visual, param_id, new_frame, value_at_target))
+						clip, effect_index, is_visual, param_id, new_frame, value_at_target))
 			else:
 				InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
-						clip_id, effect_index, is_visual, param_id, new_frame))
+						clip, effect_index, is_visual, param_id, new_frame))
 	InputManager.undo_redo.commit_action()
 	effects_updated.emit()
 
@@ -363,20 +327,16 @@ func move_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual: b
 #---- Removing effect keyframes ----
 
 ## Deletes all parameter keyframes at a specific frame for this effect.
-func remove_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual: bool, frame_nr: int) -> void:
-	if !Project.clips.index_map.has(clip_id) or frame_nr == 0:
+func remove_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, frame_nr: int) -> void:
+	if frame_nr == 0:
 		return
-
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: Effect
 	if is_visual:
-		effect = clip_effects.video[effect_index]
+		effect = clip.effects.video[effect_index]
 	else:
-		effect = clip_effects.audio[effect_index]
+		effect = clip.effects.audio[effect_index]
 
 	InputManager.undo_redo.create_action("Remove Effect Keyframe(s)")
-
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		if not effect.keyframes.has(param_id):
@@ -387,39 +347,35 @@ func remove_effect_keyframe_at_frame(clip_id: int, effect_index: int, is_visual:
 			continue
 
 		var old_val: Variant = effect.keyframes[param_id][frame_nr]
-		InputManager.undo_redo.add_do_method(_remove_keyframe.bind(clip_id, effect_index, is_visual, param_id, frame_nr))
-		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(clip_id, effect_index, is_visual, param_id, frame_nr, old_val))
+		InputManager.undo_redo.add_do_method(_remove_keyframe.bind(clip, effect_index, is_visual, param_id, frame_nr))
+		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(clip, effect_index, is_visual, param_id, frame_nr, old_val))
 	InputManager.undo_redo.commit_action()
 	effects_updated.emit()
 
 
 #---- Switch enabled ----
 
-func switch_enabled(clip_id: int, index: int, is_visual: bool) -> void:
-	if !Project.clips.index_map.has(clip_id) or index < 0:
+func switch_enabled(clip: ClipData, index: int, is_visual: bool) -> void:
+	if index < 0:
 		return
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
 	var effect: Effect
 
-	if index >= (clip_effects.video.size() if is_visual else clip_effects.audio.size()):
+	if index >= (clip.effects.video.size() if is_visual else clip.effects.audio.size()):
 		return printerr("EffectsHandler: Trying to remove invalid effect! ", index)
 	if is_visual:
-		effect = clip_effects.video[index]
+		effect = clip.effects.video[index]
 	else:
-		effect = clip_effects.audio[index]
+		effect = clip.effects.audio[index]
 
 	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip_id, index, is_visual, !effect.is_enabled))
-	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip_id, index, is_visual, effect.is_enabled))
+	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip, index, is_visual, !effect.is_enabled))
+	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip, index, is_visual, effect.is_enabled))
 	InputManager.undo_redo.commit_action()
 
 
-func _switch_enabled(clip_id: int, index: int, is_visual: bool, value: bool) -> void:
-	var clip_index: int = Project.clips.index_map[clip_id]
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
+func _switch_enabled(clip: ClipData, index: int, is_visual: bool, value: bool) -> void:
 	if is_visual:
-		clip_effects.video[index].is_enabled = value
+		clip.effects.video[index].is_enabled = value
 	else:
-		clip_effects.audio[index].is_enabled = value
+		clip.effects.audio[index].is_enabled = value
 	effects_updated.emit()

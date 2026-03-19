@@ -1,6 +1,7 @@
 class_name VisualCompositor
 extends RefCounted
 
+
 const YUV_PARAM_BUFFER_SIZE: int = 96
 
 const USAGE_BITS_R8: int = (

@@ -1,23 +1,20 @@
 class_name Utils
 extends Node
 
-# const variables for get_fuzzy_score()
+# Const variables for get_fuzzy_score().
 const FUZZY_SCORE_POINT: int = 1
 const FUZZY_SCORE_BONUS: int = 10
 
 
+
 static func format_file_nickname(file_name: String, size: int) -> String:
 	var new_name: String = ""
-
 	while file_name.length() > size:
 		if new_name.length() == 0:
 			new_name += "\n"
-
 		new_name += file_name.left(size)
 		file_name = file_name.trim_prefix(file_name.left(size))
-
 	new_name += file_name
-
 	return new_name
 
 
@@ -31,7 +28,7 @@ static func open_url(url: String) -> void:
 		OS.shell_open(str(ProjectSettings.get_setting("urls/%s" % url)))
 
 
-static func get_unique_id(keys: PackedInt64Array) -> int:
+static func get_unique_id(keys: Array[int]) -> int:
 	var id: int = abs(randi())
 	while keys.has(id):
 		randomize()
@@ -188,14 +185,8 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 	return score if query_index == query.length() else 0
 
 
-static func calculate_fade(frame_nr: int, clip_index: int, is_visual: bool) -> float:
-	var clip_effects: ClipEffects = Project.data.clips_effects[clip_index]
-	var clip_duration: int = Project.data.clips_duration[clip_index]
-	var fade: Vector2i = clip_effects.fade_visual if is_visual else clip_effects.fade_audio
+static func calculate_fade(frame_nr: int, clip: ClipData, is_visual: bool) -> float:
+	var fade: Vector2i = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
 	var fade_in: float = 1.0 if fade.x == 0 else min(frame_nr / float(fade.x), 1.0)
-	var fade_out: float = 1.0 if fade.y == 0 else min((clip_duration - frame_nr) / float(fade.y), 1.0)
+	var fade_out: float = 1.0 if fade.y == 0 else min((clip.duration - frame_nr) / float(fade.y), 1.0)
 	return fade_in * fade_out
-
-
-static func is_between(value: int, lowest_value: int, highest_value: int) -> bool:
-	return value > lowest_value and value < highest_value

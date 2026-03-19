@@ -101,7 +101,7 @@ func clipboard_paste() -> void:
 	# Check for image.
 	var image: Image = DisplayServer.clipboard_get_image()
 	if image != null and not image.is_empty():
-		Project.files.paste_image(image)
+		FileLogic.paste_image(image)
 		return
 
 	# Check for file paths.
@@ -113,4 +113,4 @@ func clipboard_paste() -> void:
 			valid_paths.append(clean_path)
 
 	if !valid_paths.is_empty():
-		await Project.files.dropped(valid_paths)
+		await FileLogic.dropped(valid_paths)

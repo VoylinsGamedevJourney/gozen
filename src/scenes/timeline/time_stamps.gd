@@ -141,7 +141,7 @@ func _draw() -> void:
 	for marker: MarkerData in MarkerLogic.markers:
 		var dragged_marker: MarkerData = MarkerLogic.dragged_marker
 		var is_being_dragged: bool = marker == dragged_marker
-		if !is_being_dragged and !Utils.is_between(marker.frame_nr, visible_start_nr, visible_end_nr):
+		if !is_being_dragged and !Utils.in_range(marker.frame_nr, visible_start_nr, visible_end_nr):
 			continue # Only visible markers and the one being dragged get drawn
 
 		var marker_text: String = marker.text

@@ -1,6 +1,7 @@
 class_name Draggable
 extends RefCounted
 
+
 const BASE_NAME: String = "<Draggable:%s-%s>"
 
 
@@ -14,4 +15,6 @@ var frame_offset: int = 0
 var mouse_offset: int = 30
 
 
-func _to_string() -> String: return BASE_NAME % ["new_clips" if is_file else "moving", ids]
+
+func _to_string() -> String:
+	return BASE_NAME % ["new_clips" if is_file else "moving", ids]

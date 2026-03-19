@@ -5,6 +5,7 @@ extends PanelContainer
 # Set the default focus on the button which opens the popup to browse through
 # all projects.
 
+
 const PRESETS: Dictionary[String, Vector3i] = {
 	"Custom": Vector3i.ZERO,
 	"FHD (1080p) 30fps": Vector3i(1920, 1080, 30),

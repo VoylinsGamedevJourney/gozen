@@ -1,11 +1,13 @@
 extends HBoxContainer
 
+
 @export var popup_menu_project: PopupMenu
 @export var popup_menu_edit: PopupMenu
 @export var popup_menu_preferences: PopupMenu
 @export var popup_menu_help: PopupMenu
 
 @export var label_ram: Label
+
 
 var warning_ram_80: int
 var warning_ram_50: int
