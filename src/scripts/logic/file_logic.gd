@@ -39,7 +39,7 @@ func _ready() -> void:
 func _startup_loading(progress: ProgressOverlay, amount: float) -> void:
 	for file: FileData in files.values():
 		load_data(file)
-		progress.increment_bar(amount)
+		await progress.increment_bar(amount)
 
 
 # --- Handling ---
@@ -276,9 +276,9 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 
 	var progress: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	var progress_increment: float = (1 / float(paths.size())) * 50
-	progress.set_state_file_loading(paths.size())
+	await progress.set_state_file_loading(paths.size())
 	progress.update_title(tr("Files dropped"))
-	progress.update(0, "")
+	await progress.update(0, "")
 
 	var error_occured: bool = false
 	var dropped_files: Array[FileData] = []
@@ -286,23 +286,23 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 		var file: FileData = _create_file(path)
 		if file:
 			_restore(file)
-			progress.update_file(path, 0)
+			await progress.update_file(path, 0)
 			dropped_files.append(file)
 		else:
-			progress.update_file(path, -1)
+			await progress.update_file(path, -1)
 			error_occured = true
-	progress.update(10, tr("Files loading ..."))
+	await progress.update(10, tr("Files loading ..."))
 
 	while !dropped_files.is_empty(): # Looping till all files are loaded.
 		await get_tree().process_frame
 		for file: FileData in dropped_files:
 			if file_data.has(file.id) and file_data[file.id]:
-				progress.update_file(file.path, 1)
-				progress.increment_bar(progress_increment)
+				await progress.update_file(file.path, 1)
+				await progress.increment_bar(progress_increment)
 				dropped_files.erase(file)
 				break
 			elif !file_data.has(file.id) and !Threader.check_tasks(file):
-				progress.update_file(file.path, -1)
+				await progress.update_file(file.path, -1)
 				dropped_files.erase(file)
 				break
 	Project.unsaved_changes = true

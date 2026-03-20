@@ -174,6 +174,7 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 		if param.id == param_id:
 			effect_param = param
 			break
+	effect.set_default_keyframe()
 
 	# No keyframes (except 0) made, so we change main value, unless new keyframe requested.
 	var param_keyframes: Dictionary = effect.keyframes[param_id]

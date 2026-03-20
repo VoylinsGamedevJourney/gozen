@@ -340,7 +340,7 @@ func _on_start_render_button_pressed() -> void:
 
 	progress_overlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	progress_overlay.update_title(tr("Rendering"))
-	progress_overlay.update(0, "")
+	await progress_overlay.update(0, "")
 
 	var button: Button = Button.new()
 	var status_hbox: HBoxContainer = progress_overlay.get("status_hbox")
@@ -396,7 +396,7 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 		else:
 			current_progress = status
 	if progress_overlay != null:
-		progress_overlay.update(floori(current_progress), status_str)
+		await progress_overlay.update(floori(current_progress), status_str)
 
 
 func _on_render_settings_changed() -> void:

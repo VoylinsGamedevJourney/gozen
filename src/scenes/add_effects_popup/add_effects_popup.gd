@@ -4,7 +4,7 @@ extends PanelContainer
 @export var effect_buttons: VBoxContainer
 
 
-var current_clip_id: int = -1
+var current_clip: ClipData = null
 var is_visual: bool = true
 
 var shown_buttons: Array[Button] = []
@@ -21,11 +21,11 @@ func _input(event: InputEvent) -> void:
 		PopupManager.close(PopupManager.ADD_EFFECTS)
 
 
-func load_effects(visual: bool, clip_id: int) -> void:
+func load_effects(visual: bool, clip: ClipData) -> void:
 	var effects_data: Dictionary[String, String] = {}
 	var button_group: ButtonGroup = ButtonGroup.new()
 
-	current_clip_id = clip_id
+	current_clip = clip
 	is_visual = visual
 
 	if is_visual:
@@ -92,7 +92,7 @@ func _on_effect_clicked(effect_id: String) -> void:
 	else:
 		effect = EffectsHandler.audio_effect_instances[effect_id].duplicate()
 
-	EffectsHandler.add_effect(current_clip_id, effect, is_visual)
+	EffectsHandler.add_effect(current_clip, effect, is_visual)
 	_on_close_button_pressed()
 
 

@@ -58,7 +58,7 @@ func _drop_effect() -> void:
 
 
 func _on_clip_pressed(clip_data: ClipData) -> void:
-	var clip: ClipData = ClipLogic.clips.get(clip_data)
+	var clip: ClipData = ClipLogic.clips.get(clip_data.id) if clip_data else null
 	if !clip:
 		section_text.visible = false
 		section_visuals.visible = false
@@ -66,7 +66,7 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 		current_clip = null
 		current_file = null
 		_load_effects() # Clear the ui.
-	elif clip.id == current_clip.id:
+	elif current_clip and clip.id == current_clip.id:
 		_update_ui_values()
 	else:
 		section_text.visible = clip.type == EditorCore.TYPE.TEXT
@@ -93,14 +93,14 @@ func _on_effects_updated(clip: ClipData) -> void:
 
 
 func _load_effects() -> void:
-	if !ClipLogic.clips.has(current_clip.id):
-		return
-
 	# Clean UI.
 	for section: FoldableContainer in [section_visuals, section_audio]:
 		for child: Node in section.get_children():
 			section.remove_child(child)
 			child.queue_free()
+
+	if !current_clip or !ClipLogic.clips.has(current_clip.id):
+		return
 
 	# Creating/updating new UI.
 	var clip_effects: ClipEffects = current_clip.effects
@@ -109,7 +109,7 @@ func _load_effects() -> void:
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		section_visuals.add_child(_create_effect_ui(clip_effects.video[index], index, true))
 	for index: int in clip_effects.audio.size(): # Add audio effects.
-		section_audio.add_child(_create_effect_ui(clip_effects.audio[index], index, true))
+		section_audio.add_child(_create_effect_ui(clip_effects.audio[index], index, false))
 	_update_ui_values()
 
 

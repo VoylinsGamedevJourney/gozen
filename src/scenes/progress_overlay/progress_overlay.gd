@@ -15,6 +15,8 @@ extends Control
 var file_labels: Dictionary = {}
 var start_time: int = 0
 
+var _tween: Tween
+
 
 
 func _ready() -> void:
@@ -27,7 +29,7 @@ func update_title(title: String) -> void:
 
 
 func update(value: int, text: String) -> void:
-	update_bar(value)
+	await update_bar(value)
 	update_hint(text)
 
 	# Updating estimated time
@@ -37,12 +39,20 @@ func update(value: int, text: String) -> void:
 	var remaining: String = Utils.format_time_str(remaining_sec, true)
 
 	estimated_time_label.text = "Estimated time - %s" % remaining
+	await get_tree().process_frame
 
 
 func update_bar(value: int) -> void:
-	var tween: Tween = create_tween()
-	@warning_ignore("return_value_discarded")
-	tween.tween_property(progress_bar, "value", value, 1)
+	if _tween:
+		_tween.kill()
+	if value - progress_bar.value > 20:
+		progress_bar.value = value
+		await get_tree().process_frame
+	else:
+		_tween = create_tween()
+		@warning_ignore("return_value_discarded")
+		_tween.tween_property(progress_bar, "value", value, 0.5)
+		await get_tree().process_frame
 
 
 func update_hint(text: String) -> void:
@@ -50,9 +60,12 @@ func update_hint(text: String) -> void:
 
 
 func increment_bar(value: float) -> void:
-	var tween: Tween = create_tween()
+	if _tween:
+		_tween.kill()
+	_tween = create_tween()
 	@warning_ignore("return_value_discarded")
-	tween.tween_property(progress_bar, "value", progress_bar.value + value, 0.1)
+	_tween.tween_property(progress_bar, "value", progress_bar.value + value, 0.1)
+	await get_tree().process_frame
 
 
 func set_state_file_loading(loading_size: int) -> void:
@@ -61,6 +74,7 @@ func set_state_file_loading(loading_size: int) -> void:
 	if !scroll_container.visible:
 		scroll_container.visible = true
 		scroll_container.custom_minimum_size.y = clampi(loading_size, 0, 10) * 25
+	await get_tree().process_frame
 
 
 ## status: 0 = loading, 1 = loaded, -1 = problem
@@ -78,6 +92,7 @@ func update_file(path: String, status: int) -> void:
 		file_labels[path].tooltip_text = path + "\nThis file could not be loaded."
 	elif status == 1: # Loaded
 		file_labels[path].self_modulate = Color.GREEN
+	await get_tree().process_frame
 
 
 ## If errors happen, we want the user to be able to see them and not close directly.
