@@ -123,6 +123,8 @@ def windows_detected() -> ExitCode:
     if utils.is_current_msys2_ucrt64():
         # UCRT64
         print("Running in UCRT64.")
+        return ExitCode.SUCCESS
+
     elif utils.is_current_msys2():
         # MSYS2
         print("Running in MSYS2. Restarting in UCRT64...")
@@ -163,6 +165,8 @@ def windows_detected() -> ExitCode:
             )
             return ExitCode.DEP_NOT_FOUND
 
+        return ExitCode.SUCCESS
+
 
 def install_windows_deps() -> ExitCode:
     print("Checking for missing MSYS2 dependencies ...")
@@ -192,6 +196,8 @@ def install_windows_deps() -> ExitCode:
             return ExitCode.DEP_NOT_FOUND
 
         print("Successfully installed the required MSYS2 dependencies!")
+
+    return ExitCode.SUCCESS
 
 
 def git_check() -> None:
