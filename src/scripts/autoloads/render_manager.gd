@@ -34,6 +34,9 @@ var encoding_time: int = 0
 var buffer_size: int = 5
 var proxies_used: bool
 
+var _original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
+
+
 
 
 func _ready() -> void:
@@ -46,19 +49,15 @@ func _on_project_ready() -> void:
 
 # --- Render logic ---
 
-func stop_encoder() -> void:
-	if encoder.is_open():
-		encoder.close()
-	if proxies_used:
-		Settings.set_use_proxies(true)
-	cancel_encoding = false
-
-
 func start_encoder() -> void:
 	if encoder != null and encoder.is_open():
 		return printerr("RenderManager: Can't encode whilst another encoder is still busy!")
 	if viewport == null:
 		viewport = EditorCore.viewport.get_texture()
+
+	# VSync stuff.
+	_original_vsync_mode = DisplayServer.window_get_vsync_mode()
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 
 	# Making certain proxies aren't being used for this
 	proxies_used = Settings.get_use_proxies()
@@ -149,6 +148,15 @@ func start_encoder() -> void:
 
 	if proxies_used:
 		Settings.set_use_proxies(true) # Might give a second or so lag.
+	DisplayServer.window_set_vsync_mode(_original_vsync_mode)
+
+
+func stop_encoder() -> void:
+	if encoder.is_open():
+		encoder.close()
+	if proxies_used:
+		Settings.set_use_proxies(true)
+	cancel_encoding = false
 
 
 func _send_frames(frame_array: Array[Image]) -> void:

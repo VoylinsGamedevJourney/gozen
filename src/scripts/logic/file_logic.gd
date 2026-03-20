@@ -619,7 +619,7 @@ func update_text_param(file: FileData, param_id: String, frame_nr: int, new_valu
 func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: Variant) -> void:
 	var text_effect: EffectVisual = file.temp_file.text_effect
 	if not text_effect.keyframes.has(param_id):
-		var typed_dict: Dictionary[int, Variant] = {}
+		var typed_dict: Dictionary = {}
 		text_effect.keyframes[param_id] = typed_dict
 	text_effect.keyframes[param_id][frame_nr] = value
 	text_effect._cache_dirty = true
@@ -634,11 +634,12 @@ func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: 
 			Project.unsaved_changes = true
 			ClipLogic.updated.emit()
 			nickname_changed.emit(file)
+	EffectsHandler.effect_values_updated.emit()
 
 
 func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
 	var text_effect: EffectVisual = file.temp_file.text_effect
-	var param_keyframes: Dictionary[int, Variant] = text_effect.keyframes[param_id]
+	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
 	if not text_effect.keyframes.has(param_id) or not param_keyframes.has(frame_nr):
 		return
 	var old_value: Variant = text_effect.keyframes[param_id][frame_nr]
@@ -657,6 +658,7 @@ func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> v
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
+	EffectsHandler.effect_values_updated.emit()
 
 
 func toggle_ato(file: FileData) -> void:
