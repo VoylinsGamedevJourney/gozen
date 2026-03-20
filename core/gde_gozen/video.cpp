@@ -78,7 +78,7 @@ int Video::open(const String& video_path) {
 			close();
 			return _log_err("Failed to open input from memory buffer");
 		}
-	} else if (avformat_open_input(&temp_format_ctx, path.utf8(), NULL, NULL)) {
+	} else if (avformat_open_input(&temp_format_ctx, path.utf8().get_data(), NULL, NULL)) {
 		close();
 		return _log_err("Couldn't open video");
 	}

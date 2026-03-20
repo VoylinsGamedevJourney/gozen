@@ -33,9 +33,9 @@ bool Encoder::open(bool rgba) {
 	// Allocating output media context
 	AVFormatContext* temp_format_ctx = nullptr;
 
-	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, path.utf8())) {
+	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, path.utf8().get_data())) {
 		_log_err("Error creating AV Format by path extension, using MPEG");
-		if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, "mpeg", path.utf8())) {
+		if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, "mpeg", path.utf8().get_data())) {
 			return _log_err("Error creating AV Format");
 		}
 	}
@@ -53,8 +53,7 @@ bool Encoder::open(bool rgba) {
 		close();
 		return _log_err("Couldn't create video stream");
 	}
-
-	av_dump_format(av_format_ctx.get(), 0, path.utf8(), 1);
+	av_dump_format(av_format_ctx.get(), 0, path.utf8().get_data(), 1);
 
 	// Open output file if needed
 	if (!_open_output_file()) {
@@ -199,6 +198,10 @@ bool Encoder::_add_audio_stream() {
 	AVChannelLayout ch_layout = AV_CHANNEL_LAYOUT_STEREO;
 	av_channel_layout_copy(&av_codec_ctx_audio->ch_layout, &(ch_layout));
 
+	if (av_format_ctx->oformat->flags & AVFMT_GLOBALHEADER) {
+		av_codec_ctx_audio->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+	}
+
 	// Opening the audio encoder codec.
 	response = avcodec_open2(av_codec_ctx_audio.get(), av_codec, nullptr);
 	if (response < 0) {
@@ -207,18 +210,16 @@ bool Encoder::_add_audio_stream() {
 	}
 
 	// Copy audio stream params to muxer.
-	if (avcodec_parameters_from_context(av_stream_audio->codecpar, av_codec_ctx_audio.get()))
+	if (avcodec_parameters_from_context(av_stream_audio->codecpar, av_codec_ctx_audio.get())) {
 		return _log_err("Couldn't copy stream params");
-
-	if (av_format_ctx->oformat->flags & AVFMT_GLOBALHEADER)
-		av_codec_ctx_audio->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+	}
 
 	return true;
 }
 
 bool Encoder::_open_output_file() {
 	if (!(av_format_ctx->oformat->flags & AVFMT_NOFILE)) {
-		response = avio_open(&av_format_ctx->pb, path.utf8(), AVIO_FLAG_WRITE);
+		response = avio_open(&av_format_ctx->pb, path.utf8().get_data(), AVIO_FLAG_WRITE);
 
 		if (response < 0) {
 			FFmpeg::print_av_error("Encoder: Couldn't open output file!", response);
@@ -232,7 +233,7 @@ bool Encoder::_open_output_file() {
 bool Encoder::_write_header() {
 	AVDictionary* options = nullptr;
 
-	av_dict_set(&options, "title", path.get_file().utf8(), 0);
+	av_dict_set(&options, "title", path.get_file().utf8().get_data(), 0);
 	av_dict_set(&options, "comment", "Rendered with the GoZen Video editor.", 0);
 
 	response = avformat_write_header(av_format_ctx.get(), &options);

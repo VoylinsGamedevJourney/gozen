@@ -185,7 +185,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 		}
 	}
 
-	if (avformat_open_input(&format_ctx, file_path.utf8(), NULL, NULL)) {
+	if (avformat_open_input(&format_ctx, file_path.utf8().get_data(), NULL, NULL)) {
 		_log_err("Couldn't open audio");
 		return data;
 	} else if (avformat_find_stream_info(format_ctx, NULL)) {

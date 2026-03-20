@@ -59,7 +59,7 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 			mutex->unlock();
 			return _log_err("Failed to open input from memory buffer");
 		}
-	} else if (avformat_open_input(&temp_format_ctx, path.utf8(), NULL, NULL)) {
+	} else if (avformat_open_input(&temp_format_ctx, path.utf8().get_data(), NULL, NULL)) {
 		mutex->unlock();
 		return _log_err("Couldn't open file");
 	}
