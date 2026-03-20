@@ -35,7 +35,7 @@ class AudioStreamFFmpeg : public AudioStream {
 	int start_time = 0;
 	double length = 0;
 
-	Mutex* mutex; // We need thread safety
+	Mutex* mutex = nullptr; // We need thread safety
 
 	String file_path;
 
