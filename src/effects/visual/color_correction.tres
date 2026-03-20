@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://djaemkcftd4w5"][ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"][ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_tint"]
+script = ExtResource("1_param")
+id = "tint"
+nickname = "param_tint"
+default_value = Color(1, 1, 1, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_brightness"]
+script = ExtResource("1_param")
+id = "brightness"
+nickname = "param_brightness"
+default_value = 0.0
+min_value = -1.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_contrast"]
+script = ExtResource("1_param")
+id = "contrast"
+nickname = "param_contrast"
+default_value = 1.0
+min_value = 0.0
+max_value = 5.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_saturation"]
+script = ExtResource("1_param")
+id = "saturation"
+nickname = "param_saturation"
+default_value = 1.0
+min_value = 0.0
+max_value = 5.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_tint_amount"]
+script = ExtResource("1_param")
+id = "tint_amount"
+nickname = "param_tint_amount"
+default_value = 0.0
+min_value = 0.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_red_value"]
+script = ExtResource("1_param")
+id = "red_value"
+nickname = "param_red_value"
+default_value = 1.0
+min_value = 0.0
+max_value = 5.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_green_value"]
+script = ExtResource("1_param")
+id = "green_value"
+nickname = "param_green_value"
+default_value = 1.0
+min_value = 0.0
+max_value = 5.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_blue_value"]
+script = ExtResource("1_param")
+id = "blue_value"
+nickname = "param_blue_value"
+default_value = 1.0
+min_value = 0.0
+max_value = 5.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/color_correction.glsl"
+matrix_map = Dictionary[String, int]({})
+id = "color_correction"
+nickname = "Color Correction"
+params = Array[ExtResource("1_param")]([SubResource("Resource_tint"), SubResource("Resource_brightness"), SubResource("Resource_contrast"), SubResource("Resource_saturation"), SubResource("Resource_tint_amount"), SubResource("Resource_red_value"), SubResource("Resource_green_value"), SubResource("Resource_blue_value")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"

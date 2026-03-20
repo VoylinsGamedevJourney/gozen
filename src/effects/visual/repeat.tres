@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://b8d1v3p6kxra"][ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"][ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_tiling"]
+script = ExtResource("1_param")
+id = "tiling"
+nickname = "param_tiling"
+default_value = Vector2(2, 2)
+min_value = Vector2(0.01, 0.01)
+max_value = Vector2(100, 100)
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_offset"]
+script = ExtResource("1_param")
+id = "offset"
+nickname = "param_offset"
+default_value = Vector2(0, 0)
+min_value = Vector2(-10, -10)
+max_value = Vector2(10, 10)
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_repeat_x"]
+script = ExtResource("1_param")
+id = "repeat_x"
+nickname = "param_repeat_x"
+default_value = true
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_repeat_y"]
+script = ExtResource("1_param")
+id = "repeat_y"
+nickname = "param_repeat_y"
+default_value = true
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/repeat.glsl"
+matrix_map = Dictionary[String, int]({})
+id = "repeat"
+nickname = "Repeat"
+params = Array[ExtResource("1_param")]([SubResource("Resource_tiling"), SubResource("Resource_offset"), SubResource("Resource_repeat_x"), SubResource("Resource_repeat_y")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"
