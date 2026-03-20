@@ -193,6 +193,8 @@ func on_play_pressed() -> void:
 
 
 func set_frame_nr(value: int) -> void:
+	if !Project.is_loaded:
+		return
 	var end: int = Project.data.timeline_end
 	if value > end:
 		is_playing = false
@@ -284,7 +286,7 @@ func update_audio() -> void:
 
 func update_data(track: int) -> void:
 	var clip: ClipData = loaded_clips[track]
-	var raw_data: Variant = FileLogic.file_data[clip.file]
+	var raw_data: Variant = FileLogic.file_data.get(clip.file)
 	var relative_frame: int = int((frame_nr - clip.start) * clip.speed) + clip.begin
 
 	if clip.type == TYPE.TEXT:
@@ -343,7 +345,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	if !clip:
 		return
 	var file: FileData = FileLogic.files[clip.file]
-	var raw_data: Variant = FileLogic.file_data[file.id]
+	var raw_data: Variant = FileLogic.file_data.get(file.id)
 	if raw_data == null:
 		return
 

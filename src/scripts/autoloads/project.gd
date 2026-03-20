@@ -95,6 +95,10 @@ func open(new_project_path: String) -> void:
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update(7, tr("Loading project files ..."))
 	FileLogic._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
+
+	while not Threader.tasks.is_empty():
+		await get_tree().process_frame
+
 	# 99% = Finalizing.
 	loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
