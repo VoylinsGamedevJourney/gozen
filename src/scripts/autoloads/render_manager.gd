@@ -4,18 +4,15 @@ extends Node
 signal update_encoder_status(status: STATUS)
 
 
-enum STATUS {
+enum STATUS { ## The progress amounts.
 	ERROR_OPEN = -1,
 	ERROR_AUDIO = -2,
 	ERROR_CANCELED = -3,
-
 	SETUP = 0,
-
 	COMPILING_AUDIO = 3,
 	SENDING_AUDIO = 4,
 	SENDING_FRAMES = 5,
 	FRAMES_SEND = 6,
-
 	LAST_FRAMES = 99,
 	FINISHED = 100,
 }
@@ -113,7 +110,6 @@ func start_encoder() -> void:
 			update_encoder_status.emit(STATUS.FRAMES_SEND)
 			frame_array.fill(null)
 			frame_pos = 0
-
 		EditorCore.set_frame(i) # Getting the next frame ready.
 		await EditorCore.frame_changed
 		frame_array[frame_pos] = viewport.get_image()

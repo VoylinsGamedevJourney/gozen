@@ -78,7 +78,7 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 
 
 func _on_clip_deleted(clip_id: int) -> void:
-	if clip_id == current_clip.id:
+	if current_clip and clip_id == current_clip.id:
 		_on_clip_pressed(null)
 
 

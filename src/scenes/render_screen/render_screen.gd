@@ -37,6 +37,7 @@ var current_progress: float = 0.0
 var custom_profile_id_start: int = 0
 
 
+
 func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
@@ -44,7 +45,7 @@ func _ready() -> void:
 	_setup_codec_option_buttons()
 	_add_default_profiles()
 
-	# Adding custom render profiles
+	# Adding custom render profiles.
 	option_button_render_profiles.add_separator("Custom render profiles")
 	if DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
 		# Dir existed so there might be profiles inside. We go over the files
@@ -62,6 +63,7 @@ func _ready() -> void:
 
 	_on_render_audio_check_button_toggled(true)
 	option_button_render_profiles.select(0) # Setting "YouTube" as default.
+	_on_render_profile_option_button_item_selected(0)
 	button_save_render_profile.visible = false
 
 
@@ -140,6 +142,7 @@ func load_profile(profile: RenderProfile) -> void:
 	for index: int in video_codec_option_button.item_count:
 		if video_codec_option_button.get_item_id(index) == profile.video_codec:
 			video_codec_option_button.selected = index
+			_on_video_codec_option_button_item_selected(index)
 			break
 
 	video_quality_hslider.value = profile.crf
@@ -279,10 +282,13 @@ func _show_error(message: String) -> void:
 
 
 func _on_start_render_button_pressed() -> void:
-	# Disk space check
 	# NOTE: This needs to improve later on to create an estimate instead of 500MB.
+	# Disk space check.
 	var video_codec_id: int = video_codec_option_button.get_selected_id()
 	var audio_codec_id: int = audio_codec_option_button.get_selected_id()
+	if !grid_audio.visible:
+		audio_codec_id = Encoder.AUDIO_CODEC.A_NONE
+
 	var export_path: String = path_line_edit.text
 	if export_path.is_empty():
 		export_path = Project.get_project_path().get_basename() + _get_current_extension()
@@ -300,9 +306,12 @@ func _on_start_render_button_pressed() -> void:
 		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
 
 		render_resolution =	Vector2i(int(target_height * aspect), target_height)
-		if render_resolution.x % 2 != 0:
-			render_resolution.x += 1
 		print("RenderManager: Draft mode enabled. Scaling to ", render_resolution)
+
+	if render_resolution.x % 2 != 0:
+		render_resolution.x += 1
+	if render_resolution.y % 2 != 0:
+		render_resolution.y += 1
 
 	# Printing info about the rendering process.
 	print("--------------------")

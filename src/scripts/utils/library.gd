@@ -31,6 +31,7 @@ const ICON_TIMELINE_MODE_SELECT: String = "uid://bix5e8n2tjje3"
 const ICON_TIMELINE_MODE_CUT: String = "uid://brrif81b6g1qd"
 const ICON_CUSTOM_RENDER_PROFILE: String = "uid://chwue2kad3pe2"
 
+const SHADER_IMAGE_TO_YUV: String = "uid://bs1u3w6ry2hoa"
 const SHADER_YUV420P: String = "res://shaders/yuv420p_standard.glsl"
 const SHADER_YUV420P_FULL: String = "res://shaders/yuv420p_full.glsl"
 

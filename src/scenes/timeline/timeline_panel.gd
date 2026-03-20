@@ -156,8 +156,10 @@ func _draw_clips(control: Control) -> void:
 
 	# Remove preview from visible clips.
 	if draggable != null and !draggable.is_file and state in [STATE.MOVING, STATE.DROPPING, STATE.RESIZING]:
-		for clip: int in draggable.ids:
-			visible_clips.remove_at(visible_clips.find(clip))
+		for clip_id: int in draggable.ids:
+			var clip: ClipData = ClipLogic.clips.get(clip_id)
+			if clip:
+				visible_clips.erase(clip)
 
 	# - Clip blocks
 	for clip: ClipData in visible_clips:
@@ -250,9 +252,10 @@ func _draw_preview(control: Control) -> void:
 		else:
 			for clip_id: int in draggable.ids:
 				var clip: ClipData = ClipLogic.clips[clip_id]
-				var preview_position: Vector2 = Vector2(clip.start * zoom, clip.track * track_total_size)
+				var preview_position: Vector2 = Vector2(
+						(clip.start + draggable.frame_offset) * zoom,
+						(clip.track + draggable.track_offset) * track_total_size)
 				var preview_size: Vector2 = Vector2(clip.duration * zoom, track_height)
-
 				control.draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
 	elif state == STATE.RESIZING or state == STATE.SPEEDING:
 		var clip: ClipData = resize_target.clip
@@ -465,7 +468,8 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
 		popup.add_item(tr("Add track"), POPUP_ACTION.TRACK_ADD)
-		popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+		if TrackLogic.tracks.size() != 1:
+			popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_menu(popup)
 
@@ -698,59 +702,68 @@ func _can_move_clips() -> bool:
 	var track_difference: int = mouse_track - anchor_clip.track
 	var frame_difference: int = target_start - anchor_clip.start
 
-	var min_allowed_diff: int = -1000000000 # Effectively -Infinity.
-	var max_allowed_diff: int = 1000000000  # Effectively +Infinity.
+	var ignore_ids: Array[int] =[]
+	ignore_ids.assign(draggable.ids)
+
+	var candidates: Array[int] = [frame_difference]
 
 	for clip_id: int in draggable.ids:
 		var clip: ClipData = ClipLogic.clips[clip_id]
 		var new_track: int = clip.track + track_difference
-		var middle_frame: int = clip.start + floori(clip.duration / 2.0)
-		# First boundary check.
 		if new_track < 0 or new_track >= TrackLogic.tracks.size():
 			return false
 
-		var free_region: Vector2i = TrackLogic.get_free_region(
-				new_track, middle_frame + frame_difference, draggable.ids)
-		if free_region == Vector2i(-1, -1):
-			return false
+		candidates.append(0 - clip.start)
 
-		# Calculating clip constrains.
-		min_allowed_diff = max(min_allowed_diff, free_region.x - clip.start)
-		max_allowed_diff = min(max_allowed_diff, free_region.y - clip.end)
+		for other: ClipData in TrackLogic.track_clips[new_track].clips:
+			if other.id in ignore_ids:
+				continue
+			candidates.append(other.start - clip.end)
+			candidates.append(other.end - clip.start)
 
-	if min_allowed_diff > max_allowed_diff:
-		return false # No space for all clips.
-
-	if frame_difference < min_allowed_diff:
-		# Overlapping to the left. Check if within snap distance.
-		if min_allowed_diff - frame_difference <= SNAPPING:
-			frame_difference = min_allowed_diff # Snap to valid start.
-		else:
-			return false # Too far overlap
-	elif frame_difference > max_allowed_diff:
-		# Overlapping to the right. Check if within snap distance.
-		if frame_difference - max_allowed_diff <= SNAPPING:
-			frame_difference = max_allowed_diff # Snap to valid end.
-		else:
-			return false # Too far overlap.
-
-	# If we got here, frame_difference is either originally valid or successfully snapped.
+	var best_frame_difference: int = frame_difference
+	var best_dist: int = 2147483647
+	var valid_found: bool = false
+	for difference: int in candidates:
+		var dist: int = abs(difference - frame_difference)
+		if dist <= SNAPPING and dist < best_dist:
+			var is_valid: bool = true
+			for clip_id: int in draggable.ids:
+				var clip: ClipData = ClipLogic.clips[clip_id]
+				var new_track: int = clip.track + track_difference
+				var new_start: int = clip.start + difference
+				var new_end: int = clip.end + difference
+				if new_start < 0:
+					is_valid = false
+					break
+				for other: ClipData in TrackLogic.track_clips[new_track].clips:
+					if other.id in ignore_ids:
+						continue
+					if new_start < other.end and new_end > other.start:
+						is_valid = false
+						break
+				if not is_valid:
+					break
+			if is_valid:
+				best_dist = dist
+				best_frame_difference = difference
+				valid_found = true
+	if not valid_found:
+		return false
 	draggable.track_offset = track_difference
-	draggable.frame_offset = frame_difference
+	draggable.frame_offset = best_frame_difference
 	return true
 
 
 func _drop_data(_p: Vector2, data: Variant) -> void:
 	if data is not Draggable:
 		return
-
 	if state not in [STATE.DROPPING, STATE.MOVING]:
 		return
 
 	if draggable.is_file: # Creating new clips (ids are file ids!)
 		var requests: Array[ClipRequest] = []
 		var total_duration: int = 0
-
 		for file_id: int in draggable.ids:
 			var file: FileData = FileLogic.files[file_id]
 			var target_frame: int = draggable.frame_offset + total_duration
@@ -842,6 +855,7 @@ func _handle_resize_motion() -> void:
 	var clip: ClipData = resize_target.clip
 	var file: FileData = FileLogic.files[clip.file]
 	var current_frame: int = get_frame_from_mouse()
+	var is_fixed_duration: bool = file.type in [EditorCore.TYPE.AUDIO, EditorCore.TYPE.VIDEO]
 
 	if resize_target.is_end: # Resizing end.
 		var new_duration: int = current_frame - resize_target.original_start
@@ -849,7 +863,7 @@ func _handle_resize_motion() -> void:
 
 		if new_duration < 1:
 			new_duration = 1
-		if state != STATE.SPEEDING and new_duration > max_allowed_duration:
+		if state != STATE.SPEEDING and is_fixed_duration and new_duration > max_allowed_duration:
 			new_duration = max_allowed_duration
 
 		# Collision detection.
@@ -864,7 +878,7 @@ func _handle_resize_motion() -> void:
 
 		if new_start > (resize_target.original_start + resize_target.original_duration - 1):
 			new_start = (resize_target.original_start + resize_target.original_duration - 1)
-		if state != STATE.SPEEDING:
+		if state != STATE.SPEEDING and is_fixed_duration:
 			var min_allowed_duration: int = resize_target.original_start - clip.begin
 			if new_start < min_allowed_duration:
 				new_start = min_allowed_duration
@@ -922,7 +936,8 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	popup.add_separator(tr("Track options"))
 	popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
-	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+	if TrackLogic.tracks.size() != 1:
+		popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 
 
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
@@ -1026,7 +1041,7 @@ func zoom_at_mouse(factor: float) -> void:
 
 
 func get_frame_from_mouse() -> int:
-	return maxi(floori(get_local_mouse_position().x / zoom), 0)
+	return maxi(ceili(get_local_mouse_position().x / zoom), 0)
 
 
 func get_track_from_mouse() -> int:

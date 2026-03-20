@@ -92,7 +92,7 @@ func get_clip_at_frame(track: int, frame_nr: int) -> ClipData:
 ## Get a clip which is overlapping with frame_nr.
 func get_clip_at_overlap(track: int, frame_nr: int) -> ClipData:
 	for clip: ClipData in track_clips[track].clips:
-		if Utils.in_range(frame_nr, clip.start, clip.end):
+		if Utils.in_range(frame_nr, clip.start, clip.end, false):
 			return clip
 	return null
 

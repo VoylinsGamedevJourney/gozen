@@ -5,7 +5,7 @@ width, height = 100, 100
 font = ImageFont.load_default()
 
 
-for i in range(1, 301):
+for i in range(0, 301):
     img = Image.new("RGB", (width, height), color="white")
     draw = ImageDraw.Draw(img)
 
@@ -20,4 +20,4 @@ for i in range(1, 301):
     file_path = f"{i:03}.webp"
     img.save(file_path, "WEBP", quality = 20, method = 6)
 
-print("Done! 300 images generated.")
+print("Done! 301 images generated.")

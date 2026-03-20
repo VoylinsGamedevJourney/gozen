@@ -305,9 +305,9 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		var file_ids: PackedInt64Array = []
 
 		if str(metadata).is_valid_int():
-			file_ids.append(metadata as int) # Single file
+			file_ids.append(metadata as int) # Single file.
 		else:
-			file_ids = _get_recursive_ids(selected) # Folder
+			file_ids = _get_recursive_ids(selected) # Folder.
 
 		for file_id: int in file_ids:
 			if file_id in draggable.ids:
@@ -317,6 +317,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		selected = tree.get_next_selected(selected)
 		if selected == null:
 			break # End of selected TreeItem's.
+	draggable.mouse_offset = mini(floori(draggable.duration / 2.0), draggable.mouse_offset)
 	return draggable
 
 
@@ -564,4 +565,8 @@ func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 			var parent_item: TreeItem = item.get_parent()
 			if parent_item:
 				target_folder = str(parent_item.get_metadata(0))
-	FileLogic.move(draggable.ids, target_folder)
+
+	var files: Array[FileData] = []
+	for file_id: int in draggable.ids:
+		files.append(FileLogic.files[file_id])
+	FileLogic.move(files, target_folder)

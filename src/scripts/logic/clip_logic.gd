@@ -14,9 +14,10 @@ var clips: Dictionary[int, ClipData]
 
 func add(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Add new clip(s)")
+	var existing_keys: Array[int] = clips.keys()
 	for request: ClipRequest in requests:
 		var new_clip: ClipData = ClipData.new()
-		new_clip.id = Utils.get_unique_id(clips.keys())
+		new_clip.id = Utils.get_unique_id(existing_keys)
 		new_clip.type = FileLogic.files[request.file.id].type
 		new_clip.file = request.file.id
 		new_clip.track = request.track
@@ -32,6 +33,7 @@ func add(requests: Array[ClipRequest]) -> void:
 
 func _restore_clip(snapshot: ClipData) -> void:
 	clips[snapshot.id] = snapshot
+	print(FileLogic.files[snapshot.file].nickname)
 	TrackLogic.add_clip_to_track(snapshot.track, snapshot)
 	Project.unsaved_changes = true
 	added.emit(snapshot)
@@ -102,8 +104,9 @@ func move(requests: Array[ClipRequest]) -> void:
 
 
 func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
-	clip.start = new_frame
 	TrackLogic.remove_clip_from_track(clip.track, clip)
+	clip.start = new_frame
+	clip.track = new_track
 	TrackLogic.add_clip_to_track(new_track, clip)
 	Project.unsaved_changes = true
 	updated.emit()

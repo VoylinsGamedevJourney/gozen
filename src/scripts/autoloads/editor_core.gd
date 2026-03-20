@@ -60,6 +60,7 @@ func _ready() -> void:
 	viewport = SubViewport.new()
 	viewport.size = Vector2i(1920, 1080) # Just a default size, get's changed later.
 	viewport.size_2d_override_stretch = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	background = ColorRect.new()
 	background.color = Color("#000000") # Just a default color, get's changed later.
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -181,7 +182,7 @@ func _check_clip(track: int, new_frame_nr: int) -> bool:
 		return false
 	elif clip.track != track: # Track check.
 		return false
-	return new_frame_nr >= clip.start and new_frame_nr < clip.end
+	return Utils.in_range(new_frame_nr, clip.start, clip.end, false)
 
 
 # --- Playback logic ---
@@ -194,17 +195,15 @@ func on_play_pressed() -> void:
 
 func set_frame_nr(value: int) -> void:
 	var end: int = Project.data.timeline_end
-	if value >= end:
+	if value > end:
 		is_playing = false
-		frame_nr = end
+		value = end
 		for i: int in audio_players.size():
 			audio_players[i].stop()
-		return
 
 	var audio_file_counter: Dictionary[int, int] = {}
 	frame_nr = value
 	var is_seek: bool = frame_nr != prev_frame + 1
-
 	for track: int in TrackLogic.tracks.size():
 		var audio_clip: ClipData = find_audio(frame_nr, track)
 		if audio_clip:
@@ -225,6 +224,7 @@ func update_frame() -> void:
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
 		frame_nr = new_frame
+		return
 
 	var file_access_counter: Dictionary = {} ## { file: count } (Needed for videos)
 	for track: int in TrackLogic.tracks.size():
@@ -234,7 +234,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			var file: FileData = FileLogic.files[clip.file]
 			var instance_index: int = file_access_counter.get(file, 0)
 			file_access_counter[file] = instance_index + 1
-			clips_to_update[track] = true
 			clips_instance_index[track] = instance_index
 			update_data(track)
 			continue
