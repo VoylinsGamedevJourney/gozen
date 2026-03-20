@@ -25,8 +25,11 @@ func _ready() -> void:
 	EditorCore.frame_changed.connect(_on_frame_changed)
 	EffectsHandler.effect_added.connect(_on_effects_updated)
 	EffectsHandler.effect_removed.connect(_on_effects_updated)
-	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(-1))
+	#EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
+
+	section_visuals.add_title_bar_control(_get_add_effects_button(true))
+	section_audio.add_title_bar_control(_get_add_effects_button(false))
 
 
 func _project_ready() -> void:
@@ -46,7 +49,6 @@ func _get_drag_data_effect(_pos: Vector2, _container: FoldableContainer, is_visu
 	# move the effects instead. I give up for today though ...
 	var drag_data: DragData = DragData.new()
 	drag_data.is_visual = is_visual
-	print("oi")
 
 
 func _can_drop_effect() -> void:
@@ -88,18 +90,27 @@ func _on_frame_changed() -> void:
 
 
 func _on_effects_updated(clip: ClipData) -> void:
-	if clip.id == current_clip.id:
+	if !clip:
 		_on_clip_pressed(clip)
+	if current_clip and clip.id == current_clip.id:
+		current_clip = null
+	_on_clip_pressed(clip)
 
 
 func _load_effects() -> void:
 	# Clean UI.
-	for section: FoldableContainer in [section_visuals, section_audio]:
-		for child: Node in section.get_children():
-			section.remove_child(child)
-			child.queue_free()
+	if section_visuals.get_child_count() != 0:
+		section_visuals.get_child(0).queue_free()
+	if section_audio.get_child_count() != 0:
+		section_audio.get_child(0).queue_free()
+
+	var vbox_visuals: VBoxContainer = VBoxContainer.new()
+	var vbox_audio: VBoxContainer = VBoxContainer.new()
+	section_visuals.add_child(vbox_visuals)
+	section_audio.add_child(vbox_audio)
 
 	if !current_clip or !ClipLogic.clips.has(current_clip.id):
+		_update_ui_values()
 		return
 
 	# Creating/updating new UI.
@@ -107,9 +118,9 @@ func _load_effects() -> void:
 	if section_text.visible: # Set text params.
 		_create_text_ui(current_file.temp_file.text_effect)
 	for index: int in clip_effects.video.size(): # Add visual effects.
-		section_visuals.add_child(_create_effect_ui(clip_effects.video[index], index, true))
+		vbox_visuals.add_child(_create_effect_ui(clip_effects.video[index], index, true))
 	for index: int in clip_effects.audio.size(): # Add audio effects.
-		section_audio.add_child(_create_effect_ui(clip_effects.audio[index], index, false))
+		vbox_audio.add_child(_create_effect_ui(clip_effects.audio[index], index, false))
 	_update_ui_values()
 
 
@@ -289,7 +300,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_t
 			# X
 			spinbox_x.min_value = param.min_value.x if param.min_value != null else MIN_VALUE
 			spinbox_x.max_value = param.max_value.x if param.max_value != null else MAX_VALUE
-			spinbox_x.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
+			spinbox_x.step = 0.01 if typeof(value) == TYPE_VECTOR2 else 1.0
 			spinbox_x.allow_lesser = param.min_value == null
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
@@ -300,7 +311,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_t
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
 			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
-			spinbox_y.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
+			spinbox_y.step = 0.01 if typeof(value) == TYPE_VECTOR2 else 1.0
 			spinbox_y.allow_lesser = param.min_value == null
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
@@ -473,17 +484,22 @@ func _on_switch_enabled(index: int, is_visual: bool) -> void:
 		visible_button.texture_normal = load(Library.ICON_VISIBLE)
 
 
-func _add_add_effects_button(is_visual: bool) -> Button:
-	var button: Button = Button.new()
-	button.text = tr("Add effects")
-	button.custom_minimum_size.y = 30
-	button.pressed.connect(_open_add_effects_popup.bind(is_visual))
-	return button
+func _get_add_effects_button(is_visual: bool) -> TextureButton:
+	var tex_button: TextureButton = TextureButton.new()
+	tex_button.texture_normal = preload(Library.ICON_ADD)
+	tex_button.tooltip_text = tr("Add effects")
+	tex_button.ignore_texture_size = true
+	tex_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+	tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	tex_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	tex_button.pressed.connect(_open_add_effects_popup.bind(is_visual))
+	return tex_button
 
 
 func _open_add_effects_popup(is_visual: bool) -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
-	popup.call("load_effects", is_visual, current_clip)
+	if current_clip:
+		var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
+		popup.call("load_effects", is_visual, current_clip)
 
 
 func _effect_param_update_call(value: Variant, index: int, is_visual: bool, param_id: String) -> void:
