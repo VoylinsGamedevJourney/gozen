@@ -286,10 +286,10 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 		var file: FileData = _create_file(path)
 		if file:
 			_restore(file)
-			await progress.update_file(path, 0)
+			progress.update_file(path, 0)
 			dropped_files.append(file)
 		else:
-			await progress.update_file(path, -1)
+			progress.update_file(path, -1)
 			error_occured = true
 	await progress.update(10, tr("Files loading ..."))
 
@@ -297,12 +297,12 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 		await get_tree().process_frame
 		for file: FileData in dropped_files:
 			if file_data.has(file.id) and file_data[file.id]:
-				await progress.update_file(file.path, 1)
+				progress.update_file(file.path, 1)
 				await progress.increment_bar(progress_increment)
 				dropped_files.erase(file)
 				break
 			elif !file_data.has(file.id) and !Threader.check_tasks(file):
-				await progress.update_file(file.path, -1)
+				progress.update_file(file.path, -1)
 				dropped_files.erase(file)
 				break
 	Project.unsaved_changes = true
