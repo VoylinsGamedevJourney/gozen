@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bs1u3w6ry2hoa"
+path="res://.godot/imported/image_to_yuv.glsl-0efc381b86f50bcf8a4636514ed4c556.res"
+
+[deps]
+
+source_file="res://effects/shaders/image_to_yuv.glsl"
+dest_files=["res://.godot/imported/image_to_yuv.glsl-0efc381b86f50bcf8a4636514ed4c556.res"]
+
+[params]
+

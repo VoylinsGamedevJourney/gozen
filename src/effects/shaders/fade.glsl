@@ -14,6 +14,7 @@ layout(set = 0, binding = 2, std140) uniform Params {
     float opacity;
 } params;
 
+
 void main() {
     ivec2 id = ivec2(gl_GlobalInvocationID.xy);
     ivec2 size = imageSize(output_image);

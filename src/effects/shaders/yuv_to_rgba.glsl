@@ -25,6 +25,7 @@ layout(set = 0, binding = 5, std140) uniform Params {
     int source_width;
 } params; // Ends at byte 80 (/16 = 5 blocks)
 
+
 void main() {
     ivec2 id = ivec2(gl_GlobalInvocationID.xy);
 
