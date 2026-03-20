@@ -71,7 +71,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if data_ready and data_set_frame != Engine.get_process_frames():
 		update_views()
-		return
 
 	if !is_playing:
 		return

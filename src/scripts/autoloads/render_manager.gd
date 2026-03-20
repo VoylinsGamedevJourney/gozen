@@ -98,6 +98,12 @@ func start_encoder() -> void:
 	var frame_array: Array[Image] = []
 	frame_array.resize(buffer_size)
 
+	# Because of labels and other draw() stuff which takes a frame to show, we
+	# need to prepare the data in one frame and show it in the next frame.
+	EditorCore.set_frame(0) # We set the first frame data ready.
+	await EditorCore.frame_changed # View should be ready.
+	EditorCore.set_frame(1) # We prepare the second frame data directly.
+
 	for i: int in project_data.timeline_end + 1:
 		if cancel_encoding:
 			break
@@ -110,10 +116,15 @@ func start_encoder() -> void:
 			update_encoder_status.emit(STATUS.FRAMES_SEND)
 			frame_array.fill(null)
 			frame_pos = 0
-		EditorCore.set_frame(i) # Getting the next frame ready.
-		await EditorCore.frame_changed
+
+		await get_tree().process_frame
 		frame_array[frame_pos] = viewport.get_image()
 		frame_pos += 1
+
+		if i + 1 <= project_data.timeline_end:
+			await EditorCore.frame_changed
+			if i + 2 <= project_data.timeline_end:
+				EditorCore.set_frame(i + 2)
 
 	# Flushing the system.
 	if thread.is_alive() or thread.is_started():

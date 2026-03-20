@@ -226,7 +226,7 @@ func _on_create_new_project_button_pressed() -> void:
 
 	self.visible = false
 	await get_tree().process_frame
-	await Project.new_project(path, resolution, framerate_spinbox.value)
+	Project.new_project(path, resolution, framerate_spinbox.value)
 	if advanced_options_button.button_pressed:
 		Project.set_background_color(background_color_picker.color)
 	self.queue_free()

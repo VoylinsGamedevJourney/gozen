@@ -23,9 +23,9 @@ var current_file: FileData = null
 func _ready() -> void:
 	Project.project_ready.connect(_project_ready)
 	EditorCore.frame_changed.connect(_on_frame_changed)
-	EffectsHandler.effect_added.connect(_on_effects_updated)
-	EffectsHandler.effect_removed.connect(_on_effects_updated)
-	#EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
+	EffectsHandler.effect_added.connect(_on_effect_added)
+	EffectsHandler.effect_removed.connect(_on_effect_removed)
+	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
 	section_visuals.add_title_bar_control(_get_add_effects_button(true))
@@ -89,20 +89,31 @@ func _on_frame_changed() -> void:
 		_update_ui_values()
 
 
+func _on_effect_added(clip: ClipData) -> void:
+	if current_clip and clip and clip.id == current_clip.id:
+		_load_effects()
+
+
+func _on_effect_removed(clip: ClipData) -> void:
+	if current_clip and clip and clip.id == current_clip.id:
+		_load_effects()
+
+
 func _on_effects_updated(clip: ClipData) -> void:
-	if !clip:
+	if current_clip and clip and clip.id == current_clip.id:
 		_on_clip_pressed(clip)
-	if current_clip and clip.id == current_clip.id:
-		current_clip = null
-	_on_clip_pressed(clip)
 
 
 func _load_effects() -> void:
 	# Clean UI.
 	if section_visuals.get_child_count() != 0:
-		section_visuals.get_child(0).queue_free()
+		var vbox: VBoxContainer = section_visuals.get_child(0)
+		section_visuals.remove_child(vbox)
+		vbox.queue_free()
 	if section_audio.get_child_count() != 0:
-		section_audio.get_child(0).queue_free()
+		var vbox: VBoxContainer = section_audio.get_child(0)
+		section_audio.remove_child(vbox)
+		vbox.queue_free()
 
 	var vbox_visuals: VBoxContainer = VBoxContainer.new()
 	var vbox_audio: VBoxContainer = VBoxContainer.new()
@@ -405,7 +416,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 		section = section_visuals
 	else:
 		section = section_audio
-	var effect_container: FoldableContainer = section.get_child(index)
+	var effect_container: FoldableContainer = section.get_child(0).get_child(index)
 	var content_vbox: VBoxContainer = effect_container.get_child(0)
 	if !effect.is_enabled:
 		effect_container.folded = true
@@ -469,7 +480,7 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 func _on_switch_enabled(index: int, is_visual: bool) -> void:
 	EffectsHandler.switch_enabled(current_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
-	var effect_container: FoldableContainer = section.get_child(index)
+	var effect_container: FoldableContainer = section.get_child(0).get_child(index)
 	var visible_button: TextureButton = effect_container.get_child(1, true)
 	var is_enabled: bool
 

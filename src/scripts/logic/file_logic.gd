@@ -39,7 +39,7 @@ func _ready() -> void:
 func _startup_loading(progress: ProgressOverlay, amount: float) -> void:
 	for file: FileData in files.values():
 		load_data(file)
-		await progress.increment_bar(amount)
+		progress.increment_bar(amount)
 
 
 # --- Handling ---
@@ -276,9 +276,9 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 
 	var progress: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	var progress_increment: float = (1 / float(paths.size())) * 50
-	await progress.set_state_file_loading(paths.size())
+	progress.set_state_file_loading(paths.size())
 	progress.update_title(tr("Files dropped"))
-	await progress.update(0, "")
+	progress.update(0, "")
 
 	var error_occured: bool = false
 	var dropped_files: Array[FileData] = []
@@ -291,14 +291,14 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 		else:
 			progress.update_file(path, -1)
 			error_occured = true
-	await progress.update(10, tr("Files loading ..."))
+	progress.update(10, tr("Files loading ..."))
 
 	while !dropped_files.is_empty(): # Looping till all files are loaded.
 		await get_tree().process_frame
 		for file: FileData in dropped_files:
 			if file_data.has(file.id) and file_data[file.id]:
 				progress.update_file(file.path, 1)
-				await progress.increment_bar(progress_increment)
+				progress.increment_bar(progress_increment)
 				dropped_files.erase(file)
 				break
 			elif !file_data.has(file.id) and !Threader.check_tasks(file):
@@ -353,7 +353,7 @@ func load_data(file: FileData) -> void:
 		EditorCore.TYPE.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		EditorCore.TYPE.AUDIO:
-			if audio_pools.has(file):
+			if audio_pools.has(file.id):
 				for stream: AudioStream in audio_pools[file.id]:
 					stream.free()
 				audio_pools[file.id] = []

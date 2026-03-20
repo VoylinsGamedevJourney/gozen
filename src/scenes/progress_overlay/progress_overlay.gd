@@ -31,10 +31,9 @@ func update_title(title: String) -> void:
 
 func update(value: int, text: String) -> void:
 	_target_value = value
-	await update_bar(value)
+	update_bar(value)
 	update_hint(text)
 	_update_estimate()
-	await get_tree().process_frame
 
 
 func update_bar(value: int) -> void:
@@ -42,12 +41,10 @@ func update_bar(value: int) -> void:
 		_tween.kill()
 	if value - progress_bar.value > 20:
 		progress_bar.value = value
-		await get_tree().process_frame
 	else:
 		_tween = create_tween()
 		@warning_ignore("return_value_discarded")
 		_tween.tween_property(progress_bar, "value", _target_value, 0.5)
-		await get_tree().process_frame
 
 
 func update_hint(text: String) -> void:
@@ -61,9 +58,7 @@ func increment_bar(value: float) -> void:
 	_tween = create_tween()
 	@warning_ignore("return_value_discarded")
 	_tween.tween_property(progress_bar, "value", _target_value, 0.1)
-
 	_update_estimate()
-	await get_tree().process_frame
 
 
 func _update_estimate() -> void:
@@ -72,7 +67,6 @@ func _update_estimate() -> void:
 		var rate: float = time_elapsed / _target_value
 		var remaining_sec: float = rate * (100.0 - _target_value)
 		var remaining: String = Utils.format_time_str(remaining_sec, true)
-
 		estimated_time_label.text = "Estimated time - %s" % remaining
 
 
@@ -82,7 +76,6 @@ func set_state_file_loading(loading_size: int) -> void:
 	if !scroll_container.visible:
 		scroll_container.visible = true
 		scroll_container.custom_minimum_size.y = clampi(loading_size, 0, 10) * 25
-	await get_tree().process_frame
 
 
 ## status: 0 = loading, 1 = loaded, -1 = problem.

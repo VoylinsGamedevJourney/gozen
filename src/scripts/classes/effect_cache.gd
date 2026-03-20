@@ -42,6 +42,9 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i) 
 		var value: Variant = effect.get_value(effect_param, _frame_nr)
 
 		match typeof(value):
+			TYPE_BOOL:
+				_pad_stream(stream, 4)
+				stream.put_32(1 if value else 0)
 			TYPE_INT:
 				_pad_stream(stream, 4)
 				stream.put_32(value as int)
