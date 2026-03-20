@@ -22,10 +22,11 @@ layout(set = 0, binding = 2, std140) uniform Params {
 void main() {
 	ivec2 id = ivec2(gl_GlobalInvocationID.xy); // Target pixel id
 	ivec2 out_size = imageSize(output_image);
+	if (id.x >= out_size.x || id.y >= out_size.y) {
+		return; // Boundary check
+	}
 
-	if (id.x >= out_size.x || id.y >= out_size.y) return; // Boundary check
-
-	vec4 target_pixel = vec4(float(id.x), float(id.y), 0.0, 1.0);
+	vec4 target_pixel = vec4(float(id.x) + 0.5, float(id.y) + 0.5, 0.0, 1.0);
 	vec4 source_position = params.transform_matrix * target_pixel;
 	vec2 src_size = vec2(textureSize(source_image, 0));
 	vec2 uv = source_position.xy / src_size;

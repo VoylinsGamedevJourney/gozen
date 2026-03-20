@@ -55,7 +55,7 @@ matrix_map = Dictionary[String, int]({
 "pivot": 0,
 "position": 0,
 "rotation": 0,
-"size": 0
+"scale": 0
 })
 id = "transform"
 nickname = "Transform"
