@@ -36,6 +36,8 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	loading_overlay.update_title(tr("New project"))
 	loading_overlay.update(0, tr("Initialize new project ..."))
 
+	await get_tree().process_frame
+
 	set_project_path(new_path)
 	set_resolution(new_resolution)
 	set_framerate(new_framerate)
@@ -81,6 +83,7 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update_title(tr("Loading project"))
 	loading_overlay.update(0, tr("Initializing ..."))
 	loading_overlay.update_bar(1)
+	await get_tree().process_frame
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())

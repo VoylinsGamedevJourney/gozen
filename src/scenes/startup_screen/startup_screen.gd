@@ -199,6 +199,8 @@ func _on_create_project_button_pressed() -> void:
 
 
 func open_project(path: String) -> void:
+	self.visible = false
+	await get_tree().process_frame
 	await Project.open(path)
 	self.queue_free()
 
@@ -222,7 +224,9 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
-	Project.new_project(path, resolution, framerate_spinbox.value)
+	self.visible = false
+	await get_tree().process_frame
+	await Project.new_project(path, resolution, framerate_spinbox.value)
 	if advanced_options_button.button_pressed:
 		Project.set_background_color(background_color_picker.color)
 	self.queue_free()
