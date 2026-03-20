@@ -11,8 +11,8 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-    int radius;
-    float sigma;
+    float horizontal_sigma;
+    float vertical_sigma;
 } params;
 
 
@@ -23,21 +23,26 @@ void main() {
 		return;
 	}
 
-    int r = params.radius;
-    if (r <= 0) {
+	int rx = int(ceil(params.horizontal_sigma * 2.0));
+    int ry = int(ceil(params.vertical_sigma * 2.0));
+
+    if (rx <= 0 && ry <= 0) {
         imageStore(output_image, id, texelFetch(source_image, id, 0));
         return;
     }
 
-	// Automatically determine a good sigma if left at 0.
     vec4 color = vec4(0.0);
     float weightSum = 0.0;
-    float sigma = params.sigma <= 0.0 ? max(float(r) / 2.0, 1.0) : params.sigma;
-    float twoSigmaSq = 2.0 * sigma * sigma;
-    for (int x = -r; x <= r; x++) {
-        for (int y = -r; y <= r; y++) {
+
+    float sigma_x = max(params.horizontal_sigma, 0.0001);
+    float sigma_y = max(params.vertical_sigma, 0.0001);
+    float twoSigmaSqX = 2.0 * sigma_x * sigma_x;
+    float twoSigmaSqY = 2.0 * sigma_y * sigma_y;
+
+    for (int x = -rx; x <= rx; x++) {
+        for (int y = -ry; y <= ry; y++) {
             ivec2 coord = clamp(id + ivec2(x, y), ivec2(0), out_size - ivec2(1));
-            float weight = exp(-(float(x * x + y * y)) / twoSigmaSq);
+            float weight = exp(-(float(x * x) / twoSigmaSqX + float(y * y) / twoSigmaSqY));
             color += texelFetch(source_image, coord, 0) * weight;
             weightSum += weight;
         }

@@ -1,16 +1,21 @@
-[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://dxlxe0ua178xu"][ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"][ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://dxlxe0ua178xu"]
 
-[sub_resource type="Resource" id="Resource_radius"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_pauab"]
 script = ExtResource("1_param")
-id = "radius"
-nickname = "param_radius"
-default_value = 0
-min_value = 0
-max_value = 100
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"[sub_resource type="Resource" id="Resource_sigma"]
+id = "horizontal_sigma"
+nickname = "param_horizontal_sigma"
+default_value = 0.0
+min_value = 0.0
+max_value = 50.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_sigma"]
 script = ExtResource("1_param")
-id = "sigma"
-nickname = "param_sigma"
+id = "vertical_sigma"
+nickname = "param_vertical_sigma"
 default_value = 0.0
 min_value = 0.0
 max_value = 50.0
@@ -18,9 +23,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/gaussian_blur.glsl"
-matrix_map = Dictionary[String, int]({})
+shader_path = "res://effects/visual/guassion_blur.glsl"
 id = "gaussian_blur"
 nickname = "Gaussian Blur"
-params = Array[ExtResource("1_param")]([SubResource("Resource_radius"), SubResource("Resource_sigma")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_pauab"), SubResource("Resource_sigma")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"
