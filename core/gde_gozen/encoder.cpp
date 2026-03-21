@@ -129,6 +129,16 @@ bool Encoder::_add_video_stream() {
 	av_codec_ctx_video->gop_size = gop_size;
 	av_codec_ctx_video->pix_fmt = AV_PIX_FMT_YUV420P;
 
+	// Set Sample Aspect Ratio (SAR) to 1:1 (Square Pixels).
+	av_codec_ctx_video->sample_aspect_ratio = {1, 1};
+	av_stream_video->sample_aspect_ratio = {1, 1};
+
+	// Set color space to BT.709 and color range to TV (MPEG).
+	av_codec_ctx_video->color_primaries = AVCOL_PRI_BT709;
+	av_codec_ctx_video->color_trc = AVCOL_TRC_BT709;
+	av_codec_ctx_video->colorspace = AVCOL_SPC_BT709;
+	av_codec_ctx_video->color_range = AVCOL_RANGE_MPEG;
+
 	if (av_codec_ctx_video->codec_id == AV_CODEC_ID_MPEG2VIDEO)
 		av_codec_ctx_video->max_b_frames = b_frames <= 2 ? b_frames : 2;
 	else
@@ -295,6 +305,11 @@ bool Encoder::send_frame(Ref<Image> frame_image) {
 	av_frame_video->format = av_codec_ctx_video->pix_fmt;
 	av_frame_video->width = resolution.x;
 	av_frame_video->height = resolution.y;
+	av_frame_video->sample_aspect_ratio = {1, 1};
+	av_frame_video->color_primaries = AVCOL_PRI_BT709;
+	av_frame_video->color_trc = AVCOL_TRC_BT709;
+	av_frame_video->colorspace = AVCOL_SPC_BT709;
+	av_frame_video->color_range = AVCOL_RANGE_MPEG;
 	if (av_frame_get_buffer(av_frame_video.get(), 32) < 0) {
 		return _log_err("Couldn't allocate frame buffer");
 	}
