@@ -315,14 +315,12 @@ bool Encoder::_write_header() {
 bool Encoder::send_frame(Ref<Image> frame_image) {
 	if (!encoder_open) {
 		return _log_err("Not open");
-	} else if (audio_codec_id != AV_CODEC_ID_NONE && audio_codec_id != AV_CODEC_ID_NONE && !audio_added) {
+	} else if (audio_codec_id != AV_CODEC_ID_NONE && !audio_added) {
 		return _log_err("Audio hasn't been send");
+	} else if (av_frame_make_writable(av_frame_video.get()) < 0) {
+		return _log_err("Couldn't make frame writable");
 	}
 
-	av_frame_unref(av_frame_video.get());
-	av_frame_video->format = av_codec_ctx_video->pix_fmt;
-	av_frame_video->width = resolution.x;
-	av_frame_video->height = resolution.y;
 	av_frame_video->sample_aspect_ratio = {1, 1};
 	av_frame_video->color_primaries = AVCOL_PRI_BT709;
 	av_frame_video->color_trc = AVCOL_TRC_BT709;
