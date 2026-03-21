@@ -78,7 +78,7 @@ bool Encoder::open(bool rgba) {
 	av_opt_set_int(temp_sws, "dstw", resolution.x, 0);
 	av_opt_set_int(temp_sws, "dsth", resolution.y, 0);
 	av_opt_set_int(temp_sws, "dst_format", AV_PIX_FMT_YUV420P, 0);
-	av_opt_set_int(temp_sws, "sws_flags", sws_quality, 0);
+	av_opt_set_int(temp_sws, "sws_flags", SWS_POINT, 0);
 
 	int sws_threads = av_codec_ctx_video ? av_codec_ctx_video->thread_count
 										 : (threads > 0 ? threads : OS::get_singleton()->get_processor_count() - 1);
@@ -331,21 +331,17 @@ bool Encoder::send_frame(Ref<Image> frame_image) {
 	}
 
 	PackedByteArray image_pixel_data = frame_image->get_data();
-	const uint8_t* src_data[4] = {image_pixel_data.ptr(), nullptr, nullptr, nullptr};
-	int src_linesize[4] = {frame_image->get_width() * format_size, 0, 0, 0};
+	UniqueAVFrame input_frame = make_unique_avframe(); // Temporary frame.
+	input_frame->format = format_size == 4 ? AV_PIX_FMT_RGBA : AV_PIX_FMT_RGB24;
+	input_frame->width = frame_image->get_width();
+	input_frame->height = frame_image->get_height();
+	input_frame->data[0] = const_cast<uint8_t*>(image_pixel_data.ptr());
+	input_frame->linesize[0] = frame_image->get_width() * format_size;
 
-	response = sws_scale(sws_ctx.get(), src_data, src_linesize, 0, frame_image->get_height(), av_frame_video->data,
-						 av_frame_video->linesize);
+	response = sws_scale_frame(sws_ctx.get(), av_frame_video.get(), input_frame.get());
 	if (response < 0) {
 		FFmpeg::print_av_error("Encoder: Scaling frame data failed!", response);
 		return false;
-	}
-
-	if (audio_codec_id != AV_CODEC_ID_NONE) {
-		int samples_per_frame = sample_rate / framerate;
-		if (!_encode_audio_chunk(samples_per_frame)) {
-			return false;
-		}
 	}
 
 	av_frame_video->pts = frame_nr;
@@ -398,6 +394,50 @@ bool Encoder::send_audio(PackedByteArray wav_data) {
 	audio_buffer_offset = 0;
 	audio_pts = 0;
 	audio_added = true;
+
+	// Pre-encode the entire audio buffer immediately.
+	if (!_encode_audio_chunk(-1)) {
+		return false;
+	}
+
+	// Flush the SWR buffer and Audio Encoder.
+	int frame_size = av_codec_ctx_audio->frame_size == 0 ? 1024 : av_codec_ctx_audio->frame_size;
+	UniqueAVFrame av_frame_out = make_unique_avframe();
+	while (true) {
+		av_frame_unref(av_frame_out.get());
+		av_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
+		av_frame_out->format = av_codec_ctx_audio->sample_fmt;
+		av_frame_out->sample_rate = av_codec_ctx_audio->sample_rate;
+		av_frame_out->nb_samples = frame_size;
+		if (av_frame_get_buffer(av_frame_out.get(), 0) < 0) {
+			break;
+		}
+
+		int converted_samples = swr_convert(swr_ctx_audio.get(), av_frame_out->data, frame_size, nullptr, 0);
+		if (converted_samples <= 0) {
+			break;
+		}
+
+		av_frame_out->nb_samples = converted_samples;
+		av_frame_out->pts = audio_pts;
+		audio_pts += converted_samples;
+
+		avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
+		while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
+			av_packet_audio->stream_index = av_stream_audio->index;
+			av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
+			av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
+			av_packet_unref(av_packet_audio.get());
+		}
+	}
+	av_packet_audio = make_unique_avpacket();
+	avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
+	while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
+		av_packet_audio->stream_index = av_stream_audio->index;
+		av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
+		av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
+		av_packet_unref(av_packet_audio.get());
+	}
 	return true;
 }
 
@@ -517,52 +557,6 @@ bool Encoder::_finalize_encoding() {
 		}
 	}
 
-	// Flush audio encoder.
-	if (audio_codec_id != AV_CODEC_ID_NONE && av_codec_ctx_audio) {
-		_encode_audio_chunk(-1); // Encode any remaining audio data
-
-		int frame_size = av_codec_ctx_audio->frame_size == 0 ? 1024 : av_codec_ctx_audio->frame_size;
-
-		// Flush SWR buffer.
-		UniqueAVFrame av_frame_out = make_unique_avframe();
-
-		while (true) {
-			av_frame_unref(av_frame_out.get());
-			av_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
-			av_frame_out->format = av_codec_ctx_audio->sample_fmt;
-			av_frame_out->sample_rate = av_codec_ctx_audio->sample_rate;
-			av_frame_out->nb_samples = frame_size;
-			if (av_frame_get_buffer(av_frame_out.get(), 0) < 0)
-				break;
-
-			int converted_samples = swr_convert(swr_ctx_audio.get(), av_frame_out->data, frame_size, nullptr, 0);
-			if (converted_samples <= 0)
-				break;
-
-			av_frame_out->nb_samples = converted_samples;
-			av_frame_out->pts = audio_pts;
-			audio_pts += converted_samples;
-
-			avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
-			while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
-				av_packet_audio->stream_index = av_stream_audio->index;
-				av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
-				av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
-				av_packet_unref(av_packet_audio.get());
-			}
-		}
-
-		av_packet_audio = make_unique_avpacket();
-		avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
-
-		while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
-			av_packet_audio->stream_index = av_stream_audio->index;
-			av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
-			av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
-			av_packet_unref(av_packet_audio.get());
-		}
-	}
-
 	// Writing stream trailer.
 	if (av_format_ctx) {
 		response = av_write_trailer(av_format_ctx.get());
@@ -642,11 +636,6 @@ void Encoder::_bind_methods() {
 	BIND_ENUM_CONSTANT(H264_PRESET_SLOWER);
 	BIND_ENUM_CONSTANT(H264_PRESET_VERYSLOW);
 
-	/* SWS QUALITY */
-	BIND_ENUM_CONSTANT(SWS_QUALITY_FAST_BILINEAR);
-	BIND_ENUM_CONSTANT(SWS_QUALITY_BILINEAR);
-	BIND_ENUM_CONSTANT(SWS_QUALITY_BICUBIC);
-
 	/* HARDWARE API'S */
 	BIND_ENUM_CONSTANT(HW_DEVICE_TYPE_NONE);
 	BIND_ENUM_CONSTANT(HW_DEVICE_TYPE_NVENC);
@@ -677,7 +666,6 @@ void Encoder::_bind_methods() {
 	BIND_METHOD_ARGS(set_threads, "thread_count");
 	BIND_METHOD_ARGS(set_gop_size, "video_gop_size");
 
-	BIND_METHOD_ARGS(set_sws_quality, "value");
 	BIND_METHOD_ARGS(set_b_frames, "value");
 	BIND_METHOD_ARGS(set_h264_preset, "value");
 

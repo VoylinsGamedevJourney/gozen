@@ -45,8 +45,6 @@ class Encoder : public Resource {
 	int audio_bit_rate = 128000;
 	int threads = 0;
 
-	int sws_quality = SWS_QUALITY_BILINEAR;
-
 	// The maximum for B-frames
 	// B-frames can improve the compression of a video as it looks to
 	// previous and future frames to make up the image.
@@ -120,11 +118,6 @@ class Encoder : public Resource {
 		H264_PRESET_SUPERFAST,
 		H264_PRESET_ULTRAFAST,
 	};
-	enum SWS_QUALITY {
-		SWS_QUALITY_FAST_BILINEAR = SWS_FAST_BILINEAR, // (Fast, lower quality)
-		SWS_QUALITY_BILINEAR = SWS_BILINEAR,		   // (Good balance between speed and quality)
-		SWS_QUALITY_BICUBIC = SWS_BICUBIC,			   // (Better quality, but slower)
-	};
 	enum HW_DEVICE_TYPES {
 		HW_DEVICE_TYPE_NONE = -1,
 		HW_DEVICE_TYPE_NVENC, // NVidia
@@ -157,7 +150,6 @@ class Encoder : public Resource {
 	inline void set_audio_bit_rate(int bit_rate) { audio_bit_rate = bit_rate; }
 	inline void set_threads(int thread_count) { threads = thread_count; }
 	inline void set_gop_size(int video_gop_size) { gop_size = video_gop_size; }
-	inline void set_sws_quality(SWS_QUALITY value) { sws_quality = value; }
 	inline void set_b_frames(int value) { b_frames = value; }
 
 	inline void set_h264_preset(int value) {
@@ -201,5 +193,4 @@ class Encoder : public Resource {
 VARIANT_ENUM_CAST(Encoder::VIDEO_CODEC);
 VARIANT_ENUM_CAST(Encoder::AUDIO_CODEC);
 VARIANT_ENUM_CAST(Encoder::H264_PRESETS);
-VARIANT_ENUM_CAST(Encoder::SWS_QUALITY);
 VARIANT_ENUM_CAST(Encoder::HW_DEVICE_TYPES);
