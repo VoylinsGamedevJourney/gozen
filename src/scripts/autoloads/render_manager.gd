@@ -32,13 +32,20 @@ var start_time: int = 0
 var encoding_time: int = 0
 
 var buffer_size: int = 5
-var frame_queue: Array[Image] =[]
+var frame_queue: Array[PackedByteArray] =[]
 var thread: Thread
-var stop_encoding: bool = false
+
+var rendering_device: RenderingDevice
+var yuv_shader: RID
+var yuv_pipeline: RID
+var yuv_output_tex: RID
+var yuv_sampler: RID
+var yuv_params_buffer: RID
 
 var proxies_used: bool
+var original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
 
-var _original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
+var stop_encoding: bool = false
 
 
 
@@ -59,7 +66,7 @@ func start_encoder() -> void:
 		viewport = EditorCore.viewport.get_texture()
 
 	# VSync stuff.
-	_original_vsync_mode = DisplayServer.window_get_vsync_mode()
+	original_vsync_mode = DisplayServer.window_get_vsync_mode()
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 
 	# Making certain proxies aren't being used for this
@@ -92,6 +99,36 @@ func start_encoder() -> void:
 			await RenderingServer.frame_post_draw
 			return printerr("RenderManager: Something went wrong sending audio!")
 
+	# RGBA to YUV shader setup.
+	if !rendering_device:
+		rendering_device = RenderingServer.get_rendering_device()
+	var render_resolution: Vector2i = Project.data.resolution
+	var shader_file: RDShaderFile = load("res://effects/shaders/rgba_to_yuv.glsl")
+	yuv_shader = rendering_device.shader_create_from_spirv(shader_file.get_spirv())
+	yuv_pipeline = rendering_device.compute_pipeline_create(yuv_shader)
+
+	var texture_format: RDTextureFormat = RDTextureFormat.new()
+	texture_format.width = render_resolution.x
+	texture_format.height = int(render_resolution.y * 1.5)
+	texture_format.format = RenderingDevice.DATA_FORMAT_R8_UNORM
+	texture_format.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
+	yuv_output_tex = rendering_device.texture_create(texture_format, RDTextureView.new())
+	yuv_sampler = rendering_device.sampler_create(RDSamplerState.new())
+
+	# BT709 Limited range matrix.
+	var bt709_rgb_to_yuv: PackedFloat32Array = PackedFloat32Array([
+		0.182586, -0.100642,  0.439216, 0.0,
+		0.614231, -0.338574, -0.398942, 0.0,
+		0.062007,  0.439216, -0.040276, 0.0,
+		0.062745,  0.500000,  0.500000, 1.0 ])
+	var params_bytes: PackedByteArray = PackedByteArray()
+	params_bytes.resize(80)
+	for index: int in 16:
+		params_bytes.encode_float(index * 4, bt709_rgb_to_yuv[index])
+	params_bytes.encode_s32(64, render_resolution.x)
+	params_bytes.encode_s32(68, render_resolution.y)
+	yuv_params_buffer = rendering_device.uniform_buffer_create(params_bytes.size(), params_bytes)
+
 	# Sending the video frame data.
 	update_encoder_status.emit(STATUS.SENDING_FRAMES)
 
@@ -111,7 +148,7 @@ func start_encoder() -> void:
 			break
 
 		await get_tree().process_frame
-		var frame: Image = viewport.get_image()
+		var frame_data: PackedByteArray = _convert_rgba_to_yuv(viewport.get_rid(), render_resolution)
 		var frame_pushed: bool = false
 		while not frame_pushed and not cancel_encoding:
 			if not thread.is_alive():
@@ -119,10 +156,9 @@ func start_encoder() -> void:
 
 			Threader.mutex.lock()
 			if frame_queue.size() < buffer_size: # Limiting RAM usage.
-				frame_queue.append(frame)
+				frame_queue.append(frame_data)
 				frame_pushed = true
 			Threader.mutex.unlock()
-
 			if frame_pushed:
 				Threader.semaphore.post()
 			else:
@@ -150,10 +186,7 @@ func start_encoder() -> void:
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
-
-	if proxies_used:
-		Settings.set_use_proxies(true) # Might give a second or so lag.
-	DisplayServer.window_set_vsync_mode(_original_vsync_mode)
+	stop_encoder()
 
 
 func stop_encoder() -> void:
@@ -162,7 +195,23 @@ func stop_encoder() -> void:
 	if proxies_used:
 		Settings.set_use_proxies(true)
 	cancel_encoding = false
-	DisplayServer.window_set_vsync_mode(_original_vsync_mode)
+	DisplayServer.window_set_vsync_mode(original_vsync_mode)
+
+	if yuv_shader.is_valid():
+		rendering_device.free_rid(yuv_shader)
+		yuv_shader = RID()
+	if yuv_pipeline.is_valid():
+		rendering_device.free_rid(yuv_pipeline)
+		yuv_pipeline = RID()
+	if yuv_output_tex.is_valid():
+		rendering_device.free_rid(yuv_output_tex)
+		yuv_output_tex = RID()
+	if yuv_sampler.is_valid():
+		rendering_device.free_rid(yuv_sampler)
+		yuv_sampler = RID()
+	if yuv_params_buffer.is_valid():
+		rendering_device.free_rid(yuv_params_buffer)
+		yuv_params_buffer = RID()
 
 
 func _encoding_loop() -> void:
@@ -170,14 +219,14 @@ func _encoding_loop() -> void:
 		Threader.semaphore.wait()
 		Threader.mutex.lock()
 		var has_frames: bool = not frame_queue.is_empty()
-		var frame: Image = null
+		var frame_data: PackedByteArray = PackedByteArray()
 		if has_frames:
-			frame = frame_queue.pop_front()
+			frame_data = frame_queue.pop_front()
 		update_encoder_status.emit.call_deferred(STATUS.FRAMES_SEND)
 		Threader.mutex.unlock()
 
-		if frame != null:
-			if not encoder.send_frame(frame):
+		if not frame_data.is_empty():
+			if not encoder.send_frame(frame_data):
 				call_deferred("stop_encoder")
 				printerr("RenderManager: Something went wrong sending frame(s)!")
 				break # Error happened in encoder.
@@ -286,3 +335,32 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> P
 			stream.put_16(clampi(int(left * volume_linear), AUDIO_MIN, AUDIO_MAX))
 			stream.put_16(clampi(int(right * volume_linear), AUDIO_MIN, AUDIO_MAX))
 	return stream.data_array
+
+
+# --- RGBA to YUV handling ---
+
+func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteArray:
+	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(input_texture_rid)
+	var uniform_input: RDUniform = RDUniform.new()
+	uniform_input.uniform_type = RenderingDevice.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE
+	uniform_input.binding = 0
+	uniform_input.add_id(yuv_sampler)
+	uniform_input.add_id(rd_input_tex)
+
+	var uniform_output: RDUniform = RDUniform.new()
+	uniform_output.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform_output.binding = 1
+	uniform_output.add_id(yuv_output_tex)
+
+	var uniform_params: RDUniform = RDUniform.new()
+	uniform_params.uniform_type = RenderingDevice.UNIFORM_TYPE_UNIFORM_BUFFER
+	uniform_params.binding = 2
+	uniform_params.add_id(yuv_params_buffer)
+
+	var uniform_set: RID = rendering_device.uniform_set_create([uniform_input, uniform_output, uniform_params], yuv_shader, 0)
+	var compute_list: int = rendering_device.compute_list_begin()
+	rendering_device.compute_list_bind_compute_pipeline(compute_list, yuv_pipeline)
+	rendering_device.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	rendering_device.compute_list_dispatch(compute_list, ceili(res.x / 8.0), ceili(res.y / 8.0), 1)
+	rendering_device.compute_list_end()
+	return rendering_device.texture_get_data(yuv_output_tex, 0)

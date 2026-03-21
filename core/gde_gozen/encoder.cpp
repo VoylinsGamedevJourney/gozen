@@ -67,39 +67,6 @@ bool Encoder::open(bool rgba) {
 		return _log_err("Couldn't write header");
 	}
 
-	// Setting up SWS.
-	SwsContext* temp_sws = sws_alloc_context();
-	if (!temp_sws) {
-		return _log_err("Couldn't alloc SWS");
-	}
-	av_opt_set_int(temp_sws, "srcw", resolution.x, 0);
-	av_opt_set_int(temp_sws, "srch", resolution.y, 0);
-	av_opt_set_int(temp_sws, "src_format", format_size == 4 ? AV_PIX_FMT_RGBA : AV_PIX_FMT_RGB24, 0);
-	av_opt_set_int(temp_sws, "dstw", resolution.x, 0);
-	av_opt_set_int(temp_sws, "dsth", resolution.y, 0);
-	av_opt_set_int(temp_sws, "dst_format", AV_PIX_FMT_YUV420P, 0);
-	av_opt_set_int(temp_sws, "sws_flags", SWS_POINT, 0);
-
-	int sws_threads = av_codec_ctx_video ? av_codec_ctx_video->thread_count
-										 : (threads > 0 ? threads : OS::get_singleton()->get_processor_count() - 1);
-	av_opt_set_int(temp_sws, "threads", sws_threads > 0 ? sws_threads : 1, 0);
-
-	if (sws_init_context(temp_sws, nullptr, nullptr) < 0) {
-		sws_freeContext(temp_sws);
-		return _log_err("Couldn't init SWS");
-	}
-	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(temp_sws);
-	if (!sws_ctx) {
-		return _log_err("Couldn't create SWS");
-	}
-
-	int *inv_table, *table;
-	int src_range, dst_range, brightness, contrast, saturation;
-	sws_getColorspaceDetails(sws_ctx.get(), &inv_table, &src_range, &table, &dst_range, &brightness, &contrast,
-							 &saturation);
-	const int* bt709 = sws_getCoefficients(SWS_CS_ITU709);
-	sws_setColorspaceDetails(sws_ctx.get(), bt709, src_range, bt709, dst_range, brightness, contrast, saturation);
-
 	frame_nr = 0;
 	encoder_open = true;
 	return true;
@@ -312,7 +279,7 @@ bool Encoder::_write_header() {
 	return true;
 }
 
-bool Encoder::send_frame(Ref<Image> frame_image) {
+bool Encoder::send_frame(PackedByteArray yuv_data) {
 	if (!encoder_open) {
 		return _log_err("Not open");
 	} else if (audio_codec_id != AV_CODEC_ID_NONE && !audio_added) {
@@ -320,30 +287,22 @@ bool Encoder::send_frame(Ref<Image> frame_image) {
 	} else if (av_frame_make_writable(av_frame_video.get()) < 0) {
 		return _log_err("Couldn't make frame writable");
 	}
-
 	av_frame_video->sample_aspect_ratio = {1, 1};
 	av_frame_video->color_primaries = AVCOL_PRI_BT709;
 	av_frame_video->color_trc = AVCOL_TRC_BT709;
 	av_frame_video->colorspace = AVCOL_SPC_BT709;
 	av_frame_video->color_range = AVCOL_RANGE_MPEG;
-	if (av_frame_get_buffer(av_frame_video.get(), 32) < 0) {
-		return _log_err("Couldn't allocate frame buffer");
-	}
 
-	PackedByteArray image_pixel_data = frame_image->get_data();
-	UniqueAVFrame input_frame = make_unique_avframe(); // Temporary frame.
-	input_frame->format = format_size == 4 ? AV_PIX_FMT_RGBA : AV_PIX_FMT_RGB24;
-	input_frame->width = frame_image->get_width();
-	input_frame->height = frame_image->get_height();
-	input_frame->data[0] = const_cast<uint8_t*>(image_pixel_data.ptr());
-	input_frame->linesize[0] = frame_image->get_width() * format_size;
+	// Directly copy the continuous YUV buffer from Godot into the AVFrame.
+	int y_size = resolution.x * resolution.y;
+	int u_size = (resolution.x / 2) * (resolution.y / 2);
 
-	response = sws_scale_frame(sws_ctx.get(), av_frame_video.get(), input_frame.get());
-	if (response < 0) {
-		FFmpeg::print_av_error("Encoder: Scaling frame data failed!", response);
-		return false;
-	}
-
+	memcpy(av_frame_video->data[0], yuv_data.ptr(), y_size);				   // Y Plane.
+	memcpy(av_frame_video->data[1], yuv_data.ptr() + y_size, u_size);		   // U Plane.
+	memcpy(av_frame_video->data[2], yuv_data.ptr() + y_size + u_size, u_size); // V Plane.
+	av_frame_video->linesize[0] = resolution.x;
+	av_frame_video->linesize[1] = resolution.x / 2;
+	av_frame_video->linesize[2] = resolution.x / 2;
 	av_frame_video->pts = frame_nr;
 	frame_nr++;
 
@@ -573,8 +532,7 @@ void Encoder::close() {
 	if (!_finalize_encoding())
 		_log_err("_finalize_encoding failed with: " + String::num_int64(response));
 
-	// Cleanup contexts
-	sws_ctx.reset();
+	// Cleanup contexts.
 	swr_ctx_audio.reset();
 	audio_buffer.clear();
 
@@ -648,7 +606,7 @@ void Encoder::_bind_methods() {
 	BIND_METHOD(is_open);
 
 
-	BIND_METHOD_ARGS(send_frame, "frame_image");
+	BIND_METHOD_ARGS(send_frame, "yuv_data");
 	BIND_METHOD_ARGS(send_audio, "wav_data");
 
 	BIND_METHOD(close);

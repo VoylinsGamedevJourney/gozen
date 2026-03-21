@@ -32,7 +32,6 @@ class Encoder : public Resource {
 	UniqueAVPacket av_packet_audio;
 	AVStream* av_stream_audio = nullptr;
 
-	UniqueSwsCtx sws_ctx;
 	UniqueSwrCtx swr_ctx_audio;
 
 	AVCodecID video_codec_id = AV_CODEC_ID_NONE;
@@ -131,7 +130,7 @@ class Encoder : public Resource {
 	bool open(bool rgba);
 	inline bool is_open() { return encoder_open; }
 
-	bool send_frame(Ref<Image> frame_image);
+	bool send_frame(PackedByteArray yuv_data);
 	bool send_audio(PackedByteArray wav_data);
 
 	void close();

@@ -75,7 +75,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 		var image: Image = video.generate_thumbnail_at_current_frame() # RGBA Image
 		if image:
 			image.resize(target_resolution.x, target_resolution.y, Image.INTERPOLATE_BILINEAR)
-			encoder.send_frame(image)
+			# TODO: encoder.send_frame(image)
 
 		# We skip decoding since generate_thumbnail_at_frame handles that.
 		if !video.next_frame(true):
