@@ -34,6 +34,7 @@ var status_indicator_id: int
 var progress_overlay: ProgressOverlay
 var progress_frame_increase: float = 0.0
 var current_progress: float = 0.0
+var last_displayed_progress: int = -1
 var custom_profile_id_start: int = 0
 
 
@@ -145,7 +146,7 @@ func load_profile(profile: RenderProfile) -> void:
 			_on_video_codec_option_button_item_selected(index)
 			break
 
-	video_quality_hslider.value = profile.crf
+	video_quality_hslider.value = -profile.crf
 	video_gop_spin_box.value = profile.gop
 
 	if profile.video_codec == Encoder.VIDEO_CODEC.V_H264:
@@ -330,7 +331,7 @@ func _on_start_render_button_pressed() -> void:
 	print("--------------------")
 
 	# Resetting progress values.
-	progress_frame_increase = (97.0 / end) * RenderManager.buffer_size
+	progress_frame_increase = 90.0 / maxi(1, end)
 	current_progress = 0.0
 
 	# Changing icon to indicate that GoZen is rendering.
@@ -404,8 +405,14 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 			current_progress += progress_frame_increase # Update bar from 6 to 99.
 		else:
 			current_progress = status
+
+	var progress_int: int = floori(current_progress)
+	if progress_int == last_displayed_progress and status == RenderManager.STATUS.FRAMES_SEND:
+		return
+	last_displayed_progress = progress_int
+
 	if progress_overlay != null:
-		progress_overlay.update(floori(current_progress), status_str)
+		progress_overlay.update(progress_int, status_str)
 
 
 func _on_render_settings_changed() -> void:

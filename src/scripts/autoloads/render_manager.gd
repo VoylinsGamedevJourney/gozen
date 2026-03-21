@@ -32,10 +32,13 @@ var start_time: int = 0
 var encoding_time: int = 0
 
 var buffer_size: int = 5
+var frame_queue: Array[Image] =[]
+var thread: Thread
+var stop_encoding: bool = false
+
 var proxies_used: bool
 
 var _original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
-
 
 
 
@@ -92,55 +95,57 @@ func start_encoder() -> void:
 	# Sending the video frame data.
 	update_encoder_status.emit(STATUS.SENDING_FRAMES)
 
-	var thread: Thread = Thread.new()
-	var frame_pos: int = 0
-	var frame_array: Array[Image] = []
-	frame_array.resize(buffer_size)
+	frame_queue.clear()
+	stop_encoding = false
+	thread = Thread.new()
+	thread.start(_encoding_loop)
 
 	# Because of labels and other draw() stuff which takes a frame to show, we
 	# need to prepare the data in one frame and show it in the next frame.
-	EditorCore.set_frame(0) # We set the first frame data ready.
+	EditorCore.frame_nr = 0 # We set the first frame data ready.
 	await EditorCore.frame_changed # View should be ready.
-	EditorCore.set_frame(1) # We prepare the second frame data directly.
+	EditorCore.frame_nr = 1 # We prepare the second frame data directly.
 
 	for i: int in project_data.timeline_end + 1:
 		if cancel_encoding:
 			break
-		elif frame_pos == buffer_size:
-			if thread.is_started():
-				await thread.wait_to_finish()
-			if thread.start(_send_frames.bind(frame_array.duplicate())):
-				printerr("RenderManager: Something with encoder thread went wrong!")
-
-			update_encoder_status.emit(STATUS.FRAMES_SEND)
-			frame_array.fill(null)
-			frame_pos = 0
 
 		await get_tree().process_frame
-		frame_array[frame_pos] = viewport.get_image()
-		frame_pos += 1
+		var frame: Image = viewport.get_image()
+		var frame_pushed: bool = false
+		while not frame_pushed and not cancel_encoding:
+			if not thread.is_alive():
+				break # Error happened in Encoder.
+
+			Threader.mutex.lock()
+			if frame_queue.size() < buffer_size: # Limiting RAM usage.
+				frame_queue.append(frame)
+				frame_pushed = true
+			Threader.mutex.unlock()
+
+			if frame_pushed:
+				Threader.semaphore.post()
+			else:
+				await get_tree().process_frame
 
 		if i + 1 <= project_data.timeline_end:
-			await EditorCore.frame_changed
+			if EditorCore.data_ready:
+				await EditorCore.frame_changed
 			if i + 2 <= project_data.timeline_end:
-				EditorCore.set_frame(i + 2)
+				EditorCore.frame_nr = i + 2
 
 	# Flushing the system.
-	if thread.is_alive() or thread.is_started():
-		await thread.wait_to_finish()
-	if !frame_array.is_empty():
-		if thread.start(_send_frames.bind(frame_array.duplicate())):
-			printerr("RenderManager: Something with encoder thread went wrong!")
-		await thread.wait_to_finish()
+	stop_encoding = true
+	Threader.semaphore.post() # Wake up Encoder one last time to flush.
+	if thread.is_started():
+		while thread.is_alive():
+			await get_tree().process_frame
+		thread.wait_to_finish()
 
 	if cancel_encoding:
 		update_encoder_status.emit(STATUS.ERROR_CANCELED)
 		await RenderingServer.frame_post_draw
 		return stop_encoder()
-
-	update_encoder_status.emit(STATUS.LAST_FRAMES)
-	await RenderingServer.frame_post_draw
-	encoder.close()
 
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
@@ -157,15 +162,33 @@ func stop_encoder() -> void:
 	if proxies_used:
 		Settings.set_use_proxies(true)
 	cancel_encoding = false
+	DisplayServer.window_set_vsync_mode(_original_vsync_mode)
 
 
-func _send_frames(frame_array: Array[Image]) -> void:
-	for frame: Image in frame_array:
-		if frame == null:
-			break # No more frames to be send.
-		if !encoder.send_frame(frame):
-			stop_encoder()
-			return printerr("RenderManager: Something went wrong sending frame(s)!")
+func _encoding_loop() -> void:
+	while true:
+		Threader.semaphore.wait()
+		Threader.mutex.lock()
+		var has_frames: bool = not frame_queue.is_empty()
+		var frame: Image = null
+		if has_frames:
+			frame = frame_queue.pop_front()
+		update_encoder_status.emit.call_deferred(STATUS.FRAMES_SEND)
+		Threader.mutex.unlock()
+
+		if frame != null:
+			if not encoder.send_frame(frame):
+				call_deferred("stop_encoder")
+				printerr("RenderManager: Something went wrong sending frame(s)!")
+				break # Error happened in encoder.
+		if stop_encoding:
+			Threader.mutex.lock()
+			var is_empty: bool = frame_queue.is_empty()
+			Threader.mutex.unlock()
+			if is_empty:
+				update_encoder_status.emit.call_deferred(STATUS.LAST_FRAMES)
+				encoder.close()
+				break
 
 
 # --- Audio handling ---
@@ -178,28 +201,26 @@ func encode_audio() -> PackedByteArray:
 	audio.resize(length)
 
 	for track: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[track].is_muted:
-			continue
-		_add_track_audio(audio, track, length)
+		if !TrackLogic.tracks[track].is_muted:
+			audio = _add_track_audio(audio, track, length)
 	return audio
 
 
-func _add_track_audio(audio: PackedByteArray, track: int, length: int) -> void:
+func _add_track_audio(audio: PackedByteArray, track: int, length: int) -> PackedByteArray:
 	var track_audio: PackedByteArray = []
 	track_audio.resize(length)
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
-		if clip.type not in EditorCore.AUDIO_TYPES:
-			continue
-		_handle_audio(clip, track_audio)
-	audio = Audio.combine_data(audio, track_audio)
+		if clip.type in EditorCore.AUDIO_TYPES:
+			track_audio = _handle_audio(clip, track_audio)
+	return Audio.combine_data(audio, track_audio)
 
 
-func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> void:
+func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteArray:
 	var framerate: float = project_data.framerate
 	var samples_per_frame: float = MIX_RATE / framerate
 	var audio_data: PackedByteArray = ClipLogic.get_audio_data(clip)
 	if audio_data.is_empty():
-		return
+		return track_audio
 
 	var fade_in: int = clip.effects.fade_audio.x
 	var fade_out: int = clip.effects.fade_audio.y
@@ -219,7 +240,7 @@ func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> void:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
-	# Place in correct position
+	# Place in correct position.
 	var clip_start: int = clip.start
 	var start_sample: int = Utils.get_sample_count(clip_start, framerate)
 	if start_sample + audio_data.size() > track_audio.size(): # Shouldn't happen.
@@ -227,10 +248,11 @@ func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> void:
 		audio_data.resize(audio_data.size() - extra)
 		printerr("RenderManager: It happened!")
 
-	# TODO: Do this in C++!
-	for i: int in audio_data.size():
-		if start_sample + i < track_audio.size():
-			track_audio[start_sample + i] = audio_data[i]
+	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
+	stream.data_array = track_audio
+	stream.seek(start_sample)
+	stream.put_data(audio_data)
+	return stream.data_array
 
 
 func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> PackedByteArray:
@@ -242,23 +264,25 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> P
 	var framerate: float = project_data.framerate
 	var volume_param: EffectParam = effect.params[0]
 
-	for i: int in sample_count:
-		var current_sample_time_sec: float = float(i) / MIX_RATE
-		var relative_frame: int = int(current_sample_time_sec * framerate)
-		var volume_db: float = effect.get_value(volume_param, relative_frame)
+	var samples_per_frame: int = ceili(MIX_RATE / framerate)
+	var frame_count: int = ceili(float(sample_count) / samples_per_frame)
+
+	for frame: int in frame_count:
+		var volume_db: float = effect.get_value(volume_param, frame)
 		var volume_linear: float = db_to_linear(volume_db)
+		if is_equal_approx(volume_linear, 1.0):
+			continue
 
-		stream.seek(i * 4) # Read samples
-		var left: int = stream.get_16()
-		var right: int = stream.get_16()
+		var start_sample: int = frame * samples_per_frame
+		var end_sample: int = mini(start_sample + samples_per_frame, sample_count)
+		for i: int in range(start_sample, end_sample):
+			var byte_pos: int = i * 4
+			stream.seek(byte_pos)
+			var left: int = stream.get_16()
+			var right: int = stream.get_16()
 
-		# Apply volume
-		left = clampi(int(left * volume_linear), AUDIO_MIN, AUDIO_MAX)
-		right = clampi(int(right * volume_linear), AUDIO_MIN, AUDIO_MAX)
-
-		# Write changes
-		stream.seek(i * 4)
-		stream.put_16(left)
-		stream.put_16(right)
-
+			# Apply volume and write changes.
+			stream.seek(byte_pos)
+			stream.put_16(clampi(int(left * volume_linear), AUDIO_MIN, AUDIO_MAX))
+			stream.put_16(clampi(int(right * volume_linear), AUDIO_MIN, AUDIO_MAX))
 	return stream.data_array

@@ -8,14 +8,16 @@ void FFmpeg::print_av_error(const char* message, int error) {
 }
 
 void FFmpeg::enable_multithreading(AVCodecContext* codec_ctx, const AVCodec* codec, int thread_count) {
-	codec_ctx->thread_count = OS::get_singleton()->get_processor_count() - 1;
+	codec_ctx->thread_count = thread_count > 0 ? thread_count : OS::get_singleton()->get_processor_count() - 1;
 
+	int thread_type = 0;
 	if (codec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
-		codec_ctx->thread_type = FF_THREAD_FRAME;
-	else if (codec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
-		codec_ctx->thread_type = FF_THREAD_SLICE;
-	else
-		codec_ctx->thread_count = 1; // Don't use multithreading
+		thread_type |= FF_THREAD_FRAME;
+	if (codec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+		thread_type |= FF_THREAD_SLICE;
+
+	if (thread_type != 0)
+		codec_ctx->thread_type = thread_type;
 }
 
 int FFmpeg::get_frame(AVFormatContext* format_ctx, AVCodecContext* codec_ctx, int stream_id, AVFrame* frame,

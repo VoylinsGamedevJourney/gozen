@@ -288,10 +288,14 @@ func load_video_frame(clip: ClipData, frame_nr: int, instance_index: int = 0) ->
 		var project_fps: float = Project.data.framerate
 		var video_fps: float = video.get_framerate()
 		var video_frame_nr: int = video.get_current_frame()
-		var target_frame_nr: int = int((frame_nr / project_fps) * video_fps)
+		var target_frame_nr: int = roundi((float(frame_nr) / project_fps) * video_fps)
 		if target_frame_nr != video_frame_nr: # Shouldn't reload same frame
-			if target_frame_nr == video_frame_nr + 1:
-				video.next_frame(false)
+			var frame_diff: int = target_frame_nr - video_frame_nr
+			if frame_diff > 0 and frame_diff <= 40:
+				# Small forward jump is much faster via next_frame.
+				for i: int in frame_diff:
+					if !video.next_frame(i < frame_diff - 1):
+						break
 			elif !video.seek_frame(target_frame_nr):
 				printerr("Project.clips: Couldn't seek frame!")
 

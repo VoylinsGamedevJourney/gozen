@@ -4,6 +4,7 @@ extends Node
 var timed_tasks: Dictionary[int, TimedTask] = {} # [clip_id, Task]
 var tasks: Array[Task] = []
 var mutex: Mutex = Mutex.new()
+var semaphore: Semaphore = Semaphore.new()
 var error: int = -1
 
 
