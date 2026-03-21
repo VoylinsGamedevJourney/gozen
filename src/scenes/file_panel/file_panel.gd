@@ -54,6 +54,7 @@ func _ready() -> void:
 
 	tree.set_drag_forwarding(_get_list_drag_data, _can_drop_list_data, _drop_list_data)
 	folder_items["/"] = tree.create_item()
+	folder_items["/"].set_metadata(0, "/")
 
 	# Setting the max width needs to be done in this way.
 	for i: int in file_menu_button.item_count:
@@ -389,21 +390,28 @@ func _sort_folder(folder: String) -> void:
 			folders[child.get_text(0).to_lower()] = child
 		child = child.get_next()
 
+	var first_child: TreeItem = folder_item.get_first_child()
 	var last_item: TreeItem = null
-	var folder_order: PackedStringArray = folders.keys()
-	var files_order: PackedStringArray = files.keys()
-	folder_order.sort()
-	files_order.sort()
+	var folder_order: Array[String] = folders.keys()
+	var files_order: Array[String] = files.keys()
+	folder_order.sort_custom(func(a: String, b: String) -> bool: return a.naturalnocasecmp_to(b) < 0)
+	files_order.sort_custom(func(a: String, b: String) -> bool: return a.naturalnocasecmp_to(b) < 0)
 
 	for folder_name: String in folder_order:
+		var item: TreeItem = folders[folder_name]
 		if last_item != null:
-			folders[folder_name].move_after(last_item)
-		last_item = folders[folder_name]
+			item.move_after(last_item)
+		elif item != first_child:
+			item.move_before(first_child)
+		last_item = item
 
 	for file_name: String in files_order:
+		var item: TreeItem = files[file_name]
 		if last_item != null:
-			files[file_name].move_after(last_item)
-		last_item = files[file_name]
+			item.move_after(last_item)
+		elif item != first_child:
+			item.move_before(first_child)
+		last_item = item
 
 
 func _on_added(file: FileData) -> void:
