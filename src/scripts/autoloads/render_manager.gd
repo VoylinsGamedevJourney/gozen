@@ -197,21 +197,22 @@ func stop_encoder() -> void:
 	cancel_encoding = false
 	DisplayServer.window_set_vsync_mode(original_vsync_mode)
 
-	if yuv_shader.is_valid():
-		rendering_device.free_rid(yuv_shader)
-		yuv_shader = RID()
-	if yuv_pipeline.is_valid():
-		rendering_device.free_rid(yuv_pipeline)
-		yuv_pipeline = RID()
-	if yuv_output_tex.is_valid():
-		rendering_device.free_rid(yuv_output_tex)
-		yuv_output_tex = RID()
-	if yuv_sampler.is_valid():
-		rendering_device.free_rid(yuv_sampler)
-		yuv_sampler = RID()
-	if yuv_params_buffer.is_valid():
-		rendering_device.free_rid(yuv_params_buffer)
-		yuv_params_buffer = RID()
+	if rendering_device:
+		if yuv_pipeline.is_valid():
+			rendering_device.free_rid(yuv_pipeline)
+			yuv_pipeline = RID()
+		if yuv_shader.is_valid():
+			rendering_device.free_rid(yuv_shader)
+			yuv_shader = RID()
+		if yuv_output_tex.is_valid():
+			rendering_device.free_rid(yuv_output_tex)
+			yuv_output_tex = RID()
+		if yuv_sampler.is_valid():
+			rendering_device.free_rid(yuv_sampler)
+			yuv_sampler = RID()
+		if yuv_params_buffer.is_valid():
+			rendering_device.free_rid(yuv_params_buffer)
+			yuv_params_buffer = RID()
 
 
 func _encoding_loop() -> void:
