@@ -1,8 +1,9 @@
 extends Node
 # TODO: Load custom effects.
 
-signal effect_added(clip: ClipData)
-signal effect_removed(clip: ClipData)
+signal effect_added(clip: ClipData, index: int, is_visual: bool)
+signal effect_removed(clip: ClipData, index: int, is_visual: bool)
+signal effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool)
 signal effects_updated
 signal effect_values_updated
 
@@ -88,7 +89,7 @@ func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) ->
 	else:
 		clip.effects.audio.insert(index, effect)
 
-	effect_added.emit(clip)
+	effect_added.emit(clip, index, is_visual)
 	effects_updated.emit()
 
 
@@ -119,7 +120,7 @@ func _remove_effect(clip: ClipData, effect_index: int, is_visual: bool) -> void:
 	else:
 		clip.effects.audio.remove_at(effect_index)
 
-	effect_removed.emit(clip)
+	effect_removed.emit(clip, effect_index, is_visual)
 	effects_updated.emit()
 
 
@@ -151,6 +152,7 @@ func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: 
 	else:
 		var effect: Effect = clip.effects.audio.pop_at(effect_index)
 		clip.effects.audio.insert(new_index, effect)
+	effect_moved.emit(clip, effect_index, new_index, is_visual)
 	effects_updated.emit()
 
 

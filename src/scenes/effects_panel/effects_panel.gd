@@ -18,6 +18,9 @@ const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 var current_clip: ClipData = null
 var current_file: FileData = null
 
+var drop_indicator_pos: int = -1
+var drop_indicator_vbox: VBoxContainer = null
+
 
 
 func _ready() -> void:
@@ -25,11 +28,14 @@ func _ready() -> void:
 	EditorCore.frame_changed.connect(_on_frame_changed)
 	EffectsHandler.effect_added.connect(_on_effect_added)
 	EffectsHandler.effect_removed.connect(_on_effect_removed)
+	EffectsHandler.effect_moved.connect(_on_effect_moved)
 	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
 	section_visuals.add_title_bar_control(_get_add_effects_button(true))
 	section_audio.add_title_bar_control(_get_add_effects_button(false))
+	section_visuals.folded = true
+	section_audio.folded = true
 
 
 func _project_ready() -> void:
@@ -42,21 +48,79 @@ func _input(event: InputEvent) -> void:
 		_on_clip_pressed(null)
 
 
-func _get_drag_data_effect(_pos: Vector2, _container: FoldableContainer, is_visual: bool) -> void:
-	# TODO: This entire system won't work thanks to the brilliant minds who
-	# decided folding containers should fold on press and not release.
-	# Solution will be to add a button in the title bar of each container to
-	# move the effects instead. I give up for today though ...
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DRAG_END:
+		drop_indicator_pos = -1
+		if drop_indicator_vbox:
+			drop_indicator_vbox.queue_redraw()
+			drop_indicator_vbox = null
+
+
+func _get_drag_data_effect(_pos: Vector2, index: int, is_visual: bool) -> Variant:
 	var drag_data: DragData = DragData.new()
 	drag_data.is_visual = is_visual
+	drag_data.effect_index = index
+
+	var effect: Effect
+	var preview: Label = Label.new()
+	if is_visual:
+		effect = current_clip.effects.video[index]
+	else:
+		effect = current_clip.effects.audio[index]
+	preview.text = "Moving: " + effect.nickname
+	set_drag_preview(preview)
+
+	return drag_data
 
 
-func _can_drop_effect() -> void:
-	pass
+func _can_drop_effect(at_position: Vector2, data: Variant, is_visual: bool, vbox: VBoxContainer) -> bool:
+	if not data is DragData or data.is_visual != is_visual:
+		drop_indicator_vbox = null
+		drop_indicator_pos = -1
+		vbox.queue_redraw()
+		return false
+
+	var drop_index: int = 0
+	for index: int in vbox.get_child_count():
+		var child: Control = vbox.get_child(index)
+		if at_position.y > child.position.y + (child.size.y / 2.0):
+			drop_index = index + 1
+	drop_indicator_pos = drop_index
+	drop_indicator_vbox = vbox
+	vbox.queue_redraw()
+	return true
 
 
-func _drop_effect() -> void:
-	pass
+func _drop_effect(at_position: Vector2, data: Variant, is_visual: bool, vbox: VBoxContainer) -> void:
+	drop_indicator_pos = -1
+	drop_indicator_vbox = null
+	vbox.queue_redraw()
+	if not data is DragData or data.is_visual != is_visual:
+		return
+
+	var old_index: int = data.effect_index
+	var new_index: int = 0
+	for index: int in vbox.get_child_count():
+		var child: Control = vbox.get_child(index)
+		if at_position.y > child.position.y + (child.size.y / 2.0):
+			new_index = index + 1
+	if new_index > old_index:
+		new_index -= 1 # Adjust since the element itself will be shifted
+	if old_index != new_index:
+		EffectsHandler.move_effect(current_clip, old_index, new_index, is_visual)
+
+
+func _draw_drop_indicator(vbox: VBoxContainer) -> void:
+	if drop_indicator_vbox != vbox or drop_indicator_pos == -1:
+		return
+	var y_pos: float = 0.0
+	if drop_indicator_pos < vbox.get_child_count():
+		var effect_container: Control = vbox.get_child(drop_indicator_pos)
+		y_pos = effect_container.position.y
+	elif vbox.get_child_count() > 0:
+		var last_child: Control = vbox.get_child(vbox.get_child_count() - 1)
+		y_pos = last_child.position.y + last_child.size.y
+	vbox.draw_line(Vector2(0, y_pos), Vector2(vbox.size.x, y_pos), Color(0.65, 0.1, 0.95, 1.0), 3.0)
 
 
 func _on_clip_pressed(clip_data: ClipData) -> void:
@@ -89,14 +153,48 @@ func _on_frame_changed() -> void:
 		_update_ui_values()
 
 
-func _on_effect_added(clip: ClipData) -> void:
+func _on_effect_added(clip: ClipData, _index: int, _is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
 		_load_effects()
+# TODO: Fix the index issue. Right now when running this code to undo a
+# removed effect, it causes the other effects to have a wrong index beind tied
+# to them.
+#		if is_visual:
+#			var effect: EffectVisual = clip.effects.video[index]
+#			var added_effect: FoldableContainer = _create_effect_ui(effect, index, is_visual)
+#			section_visuals.get_child(0).add_child(added_effect)
+#		else:
+#			var effect: EffectAudio = clip.effects.audio[index]
+#			var added_effect: FoldableContainer = _create_effect_ui(effect, index, is_visual)
+#			section_audio.get_child(0).add_child(added_effect)
 
 
-func _on_effect_removed(clip: ClipData) -> void:
+func _on_effect_removed(clip: ClipData, _index: int, _is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
 		_load_effects()
+# TODO: Fix the index issue first before doing this. Removing an effect has to
+# update the effects which come behind it as their index will be off.
+#		var removed_effect: Control
+#		if is_visual:
+#			removed_effect = section_visuals.get_child(0).get_child(index)
+#			section_visuals.get_child(0).remove_child(removed_effect)
+#		else:
+#			removed_effect = section_audio.get_child(0).get_child(index)
+#			section_audio.get_child(0).remove_child(removed_effect)
+#		removed_effect.queue_free()
+
+
+func _on_effect_moved(clip: ClipData, _old_index: int, _new_index: int, _is_visual: bool) -> void:
+	if current_clip and clip and clip.id == current_clip.id:
+		_load_effects()
+# TODO: Fix the index issue first before doing this. Moving an effect has to
+# update the index of all effects inside of the list.
+#		if is_visual:
+#			var moved_effect: Control = section_visuals.get_child(0).get_child(old_index)
+#			section_visuals.get_child(0).move_child(moved_effect, new_index)
+#		else:
+#			var moved_effect: Control = section_audio.get_child(0).get_child(old_index)
+#			section_audio.get_child(0).move_child(moved_effect, new_index)
 
 
 func _on_effects_updated(clip: ClipData) -> void:
@@ -119,6 +217,12 @@ func _load_effects() -> void:
 	var vbox_audio: VBoxContainer = VBoxContainer.new()
 	section_visuals.add_child(vbox_visuals)
 	section_audio.add_child(vbox_audio)
+
+	vbox_visuals.set_drag_forwarding(Callable(), _can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
+	vbox_audio.set_drag_forwarding(Callable(), _can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
+
+	vbox_visuals.draw.connect(_draw_drop_indicator.bind(vbox_visuals))
+	vbox_audio.draw.connect(_draw_drop_indicator.bind(vbox_audio))
 
 	if !current_clip or !ClipLogic.clips.has(current_clip.id):
 		_update_ui_values()
@@ -147,8 +251,8 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 		button_visible.texture_normal = preload(Library.ICON_VISIBLE)
 	else:
 		button_visible.texture_normal = preload(Library.ICON_INVISIBLE)
-	button_visible.pressed.connect(_on_switch_enabled.bind(index, is_visual))
 	button_delete.texture_normal = preload(Library.ICON_DELETE)
+	button_visible.pressed.connect(_on_switch_enabled.bind(index, is_visual))
 	button_delete.pressed.connect(_on_remove_effect.bind(index, is_visual))
 
 	for button: TextureButton in [button_delete, button_visible]:
@@ -156,6 +260,16 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 		button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	# Not a button but will act like a button. Easier to use for this use case.
+	var button_drag: TextureRect = TextureRect.new()
+	button_drag.texture = preload(Library.ICON_MOVE_HANDLE)
+	button_drag.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+	button_drag.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	button_drag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	button_drag.mouse_default_cursor_shape = Control.CURSOR_DRAG
+	button_drag.mouse_filter = Control.MOUSE_FILTER_STOP
+	button_drag.set_drag_forwarding(_get_drag_data_effect.bind(index, is_visual), Callable(), Callable())
 
 	var content_vbox: VBoxContainer = VBoxContainer.new()
 	var container: FoldableContainer = FoldableContainer.new()
@@ -166,12 +280,9 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	container.add_theme_color_override("font_color", "#b8b8b8")
 	container.add_title_bar_control(button_delete)
 	container.add_title_bar_control(button_visible)
+	container.add_title_bar_control(button_drag)
 	container.add_child(content_vbox)
-
-	container.set_drag_forwarding(
-			_get_drag_data_effect.bind(container, is_visual),
-			_can_drop_effect,
-			_drop_effect)
+	container.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	# Adding effect params.
 	var keyframes_found: bool = false
