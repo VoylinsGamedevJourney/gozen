@@ -52,7 +52,7 @@ const SCENE_AUDIO_TAKE_OVER: String = "uid://c3c08cihs1see"
 
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"
-const THUMB_DEFAULT_TEXT: String = "uid://dqv5j4hytkcya"
+const THUMB_DEFAULT_TEXT: String = "uid://nkyfxrdl2o8"
 
 const RENDER_PROFILE_YOUTUBE: String = "uid://bp6oahvgcklvc"
 const RENDER_PROFILE_YOUTUBE_HQ: String = "uid://f5ffyfe5gb5b"

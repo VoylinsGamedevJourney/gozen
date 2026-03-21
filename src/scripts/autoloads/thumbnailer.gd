@@ -65,8 +65,7 @@ func get_thumb(file: FileData) -> Texture2D:
 		image = scale_thumbnail(image_tex.get_image())
 		return ImageTexture.create_from_image(image)
 	elif file.path == "temp://text":
-		printerr("FilePanel: Thumbnailer: No thumbnails for text yet!")
-		return null
+		return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
 
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
