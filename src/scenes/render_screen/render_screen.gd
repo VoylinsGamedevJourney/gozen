@@ -298,6 +298,21 @@ func _on_start_render_button_pressed() -> void:
 	if dir.get_space_left() < 500 * 1024 * 1024:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
+	if FileAccess.file_exists(export_path):
+		var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
+				tr("Overwrite file?"),
+				tr("A file already exists at the chosen export path. Do you want to overwrite it?"))
+		dialog.confirmed.connect(func() -> void:
+			await _start_render_process(export_path, video_codec_id, audio_codec_id)
+			dialog.queue_free()
+		)
+		dialog.canceled.connect(dialog.queue_free)
+		dialog.popup_centered()
+	else:
+		await _start_render_process(export_path, video_codec_id, audio_codec_id)
+
+
+func _start_render_process(export_path: String, video_codec_id: int, audio_codec_id: int) -> void:
 	var draft: bool = button_render_draft.button_pressed
 	var render_resolution: Vector2i = Project.data.resolution
 	var end: int = Project.data.timeline_end
