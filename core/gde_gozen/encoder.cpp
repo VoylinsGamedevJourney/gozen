@@ -89,8 +89,16 @@ bool Encoder::open(bool rgba) {
 		return _log_err("Couldn't init SWS");
 	}
 	sws_ctx = make_unique_ffmpeg<SwsContext, SwsCtxDeleter>(temp_sws);
-	if (!sws_ctx)
+	if (!sws_ctx) {
 		return _log_err("Couldn't create SWS");
+	}
+
+	int *inv_table, *table;
+	int src_range, dst_range, brightness, contrast, saturation;
+	sws_getColorspaceDetails(sws_ctx.get(), &inv_table, &src_range, &table, &dst_range, &brightness, &contrast,
+							 &saturation);
+	const int* bt709 = sws_getCoefficients(SWS_CS_ITU709);
+	sws_setColorspaceDetails(sws_ctx.get(), bt709, src_range, bt709, dst_range, brightness, contrast, saturation);
 
 	frame_nr = 0;
 	encoder_open = true;
@@ -213,12 +221,22 @@ bool Encoder::_add_audio_stream() {
 	FFmpeg::enable_multithreading(av_codec_ctx_audio.get(), av_codec, threads);
 
 	av_codec_ctx_audio->bit_rate = audio_bit_rate;
-	av_codec_ctx_audio->sample_fmt = av_codec->sample_fmts[0];
-	av_codec_ctx_audio->sample_rate = sample_rate;
+	const enum AVSampleFormat* sample_fmts;
+	int num_sample_fmts;
+	avcodec_get_supported_config(nullptr, av_codec, AV_CODEC_CONFIG_SAMPLE_FORMAT, 0, (const void**)&sample_fmts,
+								 &num_sample_fmts);
+	if (sample_fmts && num_sample_fmts > 0) {
+		av_codec_ctx_audio->sample_fmt = sample_fmts[0];
+	}
 
-	if (av_codec->supported_samplerates) {
-		for (int i = 0; av_codec->supported_samplerates[i]; i++) {
-			if (av_codec->supported_samplerates[i] == 48000) {
+	av_codec_ctx_audio->sample_rate = sample_rate;
+	const int* supported_samplerates;
+	int num_supported_samplerates;
+	avcodec_get_supported_config(nullptr, av_codec, AV_CODEC_CONFIG_SAMPLE_RATE, 0,
+								 (const void**)&supported_samplerates, &num_supported_samplerates);
+	if (supported_samplerates && num_supported_samplerates > 0) {
+		for (int i = 0; i < num_supported_samplerates; i++) {
+			if (supported_samplerates[i] == 48000) {
 				av_codec_ctx_audio->sample_rate = 48000;
 				break;
 			}
