@@ -5,11 +5,11 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.7.0-alpha'
+        default: '0.8.0-alpha'
       godot_version:
         description: The Godot version to use
         type: string
-        default: '4.7-dev1'
+        default: '4.7-dev2'
 
 env:
   APP_NAME: gozen

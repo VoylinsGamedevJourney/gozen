@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Installing dependencies
         run: |
-          brew install yasm nasm scons pkg-config automake libtool cmake ninja
+          brew install yasm nasm scons pkg-config automake libtool cmake ninja git-svn
 
       - name: Checkout submodules
         uses: actions/checkout@v4
