@@ -1,0 +1,137 @@
+name: GoZen MacOS release build
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: GoZen version number
+        type: string
+        default: '0.8.0-alpha'
+      godot_version:
+        description: The Godot version to use
+        type: string
+        default: '4.7-dev2'
+
+env:
+  APP_NAME: gozen
+  PATH_FFMPEG: core/ffmpeg/bin_macos
+  PATH_EXPORT: bin/macos_arm64
+
+run-name: 'Build GoZen MacOS Release: v${{ inputs.version }} by @${{ github.actor }}'
+
+jobs:
+# Start FFMPEG build
+  ffmpeg-compile-arm64:
+    name: Compile FFmpeg - MacOS arm64
+    runs-on: macos-latest
+    steps:
+      - name: Installing dependencies
+        run: |
+          brew install yasm nasm scons pkg-config automake libtool cmake ninja
+
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Compile FFmpeg
+        run: |
+          python3 -m core.build_ffmpeg --platform macos --arch arm64 --threads 4
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg_macos_arm64
+          path: ${{ env.PATH_FFMPEG }}
+          retention-days: 1
+# End FFMPEG
+
+# Start GDExtension
+  build-gde:
+    name: Build MacOS GDE (${{ matrix.target }})
+    runs-on: macos-latest
+    needs: ffmpeg-compile-arm64
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos
+            target: template_debug
+          - platform: macos
+            target: template_release
+    steps:
+      - name: Checkout submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MacOS dependencies
+        run: brew install scons pkg-config
+
+      # Fetch FFmpeg.
+      - name: Download FFmpeg
+        uses: actions/download-artifact@v4
+        with:
+          name: ffmpeg_macos_arm64
+          path: ${{ env.PATH_FFMPEG }}
+
+      # Compile.
+      - name: Compile GDE
+        working-directory: ./core
+        run: scons -j$(sysctl -n hw.logicalcpu) target=${{ matrix.target }} platform=macos arch=arm64
+
+      # Upload
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos_gde_${{ matrix.target }}_arm64
+          path: bin/macos_arm64
+          retention-days: 1
+# End GDExtension
+
+# Start GoZen build
+  export-gozen:
+    name: Export macos
+    needs: build-gde
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: ./.github/actions/setup-godot
+        with:
+          godot-version: ${{ inputs.godot_version }}
+          os: macos
+
+      - name: Fetch GDE libs (debug)
+        uses: actions/download-artifact@v4
+        with:
+          name: macos_gde_template_debug_arm64
+          path: ${{ env.PATH_EXPORT }}
+          merge-multiple: true
+
+      - name: Fetch GDE libs (release)
+        uses: actions/download-artifact@v4
+        with:
+          name: macos_gde_template_release_arm64
+          path: ${{ env.PATH_EXPORT }}
+          merge-multiple: true
+
+      - name: Prepare & export
+        working-directory: ./src
+        run: |
+          sed -i '' 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
+
+          mkdir -p ../${{ env.PATH_EXPORT }}
+          Godot --import godot.project --headless --quit
+          Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen.dmg
+
+      - name: Upload raw MacOS export
+        uses: actions/upload-artifact@v4
+        with:
+          name: GoZen_MacOS_v${{ inputs.version }}
+          path: ${{ env.PATH_EXPORT }}/GoZen.dmg
+# End GoZen build

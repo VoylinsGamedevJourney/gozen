@@ -74,3 +74,32 @@ runs:
       if: inputs.os == 'windows'
       shell: bash
       run: echo "C:/Program Files/Godot" >> $GITHUB_PATH
+
+    - name: Install Godot (MacOS)
+      if: inputs.os == 'macos'
+      shell: bash
+      env:
+        GODOT_VERSION: ${{ inputs.godot-version }}
+      run: |
+        TEMPLATE_VERSION="${GODOT_VERSION/-/.}"
+
+        echo "Downloading Godot Editor..."
+        curl -L -o godot_macos.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_macos.universal.zip"
+        unzip -q -o godot_macos.zip
+        sudo mv Godot.app /Applications/Godot.app
+        rm godot_macos.zip
+
+        TEMPLATES_PATH=~/Library/Application\ Support/Godot/export_templates/${TEMPLATE_VERSION}
+
+        echo "Downloading Export Templates..."
+        curl -L -o godot_templates.tpz "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+
+        mkdir -p "$TEMPLATES_PATH"
+        unzip -q -o godot_templates.tpz -d /tmp/godot_templates
+        mv /tmp/godot_templates/templates/* "$TEMPLATES_PATH"/
+        rm -rf /tmp/godot_templates godot_templates.tpz
+
+    - name: Add Godot to PATH (MacOS)
+      if: inputs.os == 'macos'
+      shell: bash
+      run: echo "/Applications/Godot.app/Contents/MacOS" >> $GITHUB_PATH
