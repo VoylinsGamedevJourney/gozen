@@ -33,7 +33,6 @@ func add(requests: Array[ClipRequest]) -> void:
 
 func _restore_clip(snapshot: ClipData) -> void:
 	clips[snapshot.id] = snapshot
-	print(FileLogic.files[snapshot.file].nickname)
 	TrackLogic.add_clip_to_track(snapshot.track, snapshot)
 	Project.unsaved_changes = true
 	added.emit(snapshot)
@@ -127,7 +126,7 @@ func cut(requests: Array[ClipRequest]) -> void:
 		InputManager.undo_redo.add_undo_method(_resize.bind(clip, duration_right, true))
 
 		# Construct the new clip snapshot.
-		var snapshot: ClipData = request.clip.duplicate(true)
+		var snapshot: ClipData = request.clip.duplicate_deep(Resource.DEEP_DUPLICATE_ALL)
 		var effects: ClipEffects = snapshot.effects
 		snapshot.id = Utils.get_unique_id(clips.keys())
 		snapshot.start += duration_left
