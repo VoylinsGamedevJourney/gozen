@@ -278,7 +278,7 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 ## Moves all keyframes from all parameters at old_frame to new_frame.
 ## If preserve_existing is true (ctrl pressed), existing values at new_frame
 ## are kept. Otherwise, values from old_frame overwrite existing ones.
-func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool) -> void:
+func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool = false) -> void:
 	if old_frame == new_frame:
 		return
 	var effect: Effect
@@ -287,7 +287,7 @@ func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual:
 	else:
 		effect = clip.effects.audio[effect_index]
 
-	InputManager.undo_redo.create_action("Move Effect Keyframe(s)")
+	InputManager.undo_redo.create_action("Move/Copy Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		if not effect.keyframes.has(param_id):
@@ -307,7 +307,7 @@ func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual:
 		if has_target and preserve_existing:
 			final_value = value_at_target
 
-		if old_frame != 0:
+		if old_frame != 0 and not is_copy:
 			InputManager.undo_redo.add_do_method(
 					_remove_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame))
 			InputManager.undo_redo.add_undo_method(

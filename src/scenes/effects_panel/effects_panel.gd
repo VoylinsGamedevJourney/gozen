@@ -339,8 +339,8 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	return container
 
 
-func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, effect_index: int, is_visual: bool) -> void:
-	EffectsHandler.move_effect_keyframe_at_frame(current_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing)
+func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect_index: int, is_visual: bool) -> void:
+	EffectsHandler.move_effect_keyframe_at_frame(current_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing, is_copy)
 	_update_ui_values()
 
 
@@ -719,11 +719,11 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 	section_text.add_child(container)
 
 
-func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool) -> void:
+func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool, is_copy: bool) -> void:
 	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
-	InputManager.undo_redo.create_action("Move Text Keyframes")
+	InputManager.undo_redo.create_action("Move/Copy Text Keyframes")
 	for param: EffectParam in text_effect.params:
 		var param_id: String = param.id
 		var param_keyframes: Dictionary = keyframes[param_id]
@@ -734,8 +734,7 @@ func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool) -> 
 		var has_target: Variant = param_keyframes.has(new_frame)
 		var value_target: Variant = param_keyframes[new_frame] if has_target else null
 		var value_final: Variant = value_target if (has_target and preserve) else value_move
-
-		if old_frame != 0:
+		if old_frame != 0 and not is_copy:
 			InputManager.undo_redo.add_do_method(FileLogic.remove_text_keyframe.bind(current_file, param_id, old_frame))
 			InputManager.undo_redo.add_undo_method(FileLogic._set_text_keyframe.bind(current_file, param_id, old_frame, value_move))
 

@@ -1,15 +1,17 @@
 class_name KeyframeTrack
 extends ColorRect
 
-signal keyframe_moved_effect(old_frame: int, new_frame: int, preserve_existing: bool)
+signal keyframe_moved_effect(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool)
 signal keyframe_deleted_effect(frame: int)
 signal keyframe_dragged_to(frame: int)
 
 
 const MARGIN: float = 8.0
+const KEYFRAME_RADIUS: float = 6.0
 const KEYFRAME_COLOR: Color = Color(0.8, 0.8, 0.8)
 const SELECTED_COLOR: Color = Color(1.0, 0.6, 0.2)
 const TRACK_BAR_COLOR: Color = Color(0.1, 0.1, 0.1, 0.5)
+
 
 const MIN_ZOOM: float = 1.0
 const MAX_ZOOM: float = 20.0
@@ -24,6 +26,7 @@ var zoom: float = 1.0
 var _hovered_frame: int = -1
 var _dragged_frame: int = -1
 var _is_dragging: bool = false
+var _is_scrubbing: bool = false
 
 
 
@@ -57,6 +60,10 @@ func _gui_input(event: InputEvent) -> void:
 			frame = clampi(frame, 0, clip_duration)
 			keyframe_dragged_to.emit(frame)
 			queue_redraw()
+		elif _is_scrubbing:
+			frame = clampi(frame, 0, clip_duration)
+			keyframe_dragged_to.emit(frame)
+			queue_redraw()
 		else:
 			_hovered_frame = _find_closest_keyframe(frame)
 			if _hovered_frame != -1:
@@ -70,25 +77,36 @@ func _gui_input(event: InputEvent) -> void:
 
 	var mouse_event: InputEventMouseButton = event
 	if mouse_event.pressed:
-		if mouse_event.button_index == MOUSE_BUTTON_LEFT and _hovered_frame != -1:
-			_is_dragging = true
-			_dragged_frame = _hovered_frame
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if _hovered_frame != -1:
+				_is_dragging = true
+				_dragged_frame = _hovered_frame
+			else:
+				_is_scrubbing = true
+				var mouse_x: float = get_local_mouse_position().x
+				var frame: int = clampi(_get_frame_at_x(mouse_x), 0, clip_duration)
+				keyframe_dragged_to.emit(frame)
+				queue_redraw()
 		elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and _hovered_frame > 0:
 			keyframe_deleted_effect.emit(_hovered_frame)
 			_hovered_frame = -1
 			mouse_default_cursor_shape = CURSOR_ARROW
 			queue_redraw()
 
-	elif not mouse_event.pressed and _is_dragging and mouse_event.button_index == MOUSE_BUTTON_LEFT:
-		var final_x: float = get_local_mouse_position().x
-		var new_frame: int = clampi(_get_frame_at_x(final_x), 0, clip_duration)
+	elif not mouse_event.pressed:
+		if _is_dragging and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			var final_x: float = get_local_mouse_position().x
+			var new_frame: int = clampi(_get_frame_at_x(final_x), 0, clip_duration)
 
-		if _dragged_frame != -1 and new_frame != _dragged_frame:
-			var preserve_existing: bool = Input.is_key_pressed(KEY_CTRL)
-			keyframe_moved_effect.emit(_dragged_frame, new_frame, preserve_existing)
-		_is_dragging = false
-		_dragged_frame = -1
-		queue_redraw()
+			if _dragged_frame != -1 and new_frame != _dragged_frame:
+				var preserve_existing: bool = Input.is_key_pressed(KEY_ALT)
+				var is_copy: bool = Input.is_key_pressed(KEY_CTRL)
+				keyframe_moved_effect.emit(_dragged_frame, new_frame, preserve_existing, is_copy)
+			_is_dragging = false
+			_dragged_frame = -1
+			queue_redraw()
+		elif _is_scrubbing and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			_is_scrubbing = false
 
 
 func _draw() -> void:
@@ -98,6 +116,15 @@ func _draw() -> void:
 	draw_rect(Rect2(MARGIN, mid_y - 2, width, 4), TRACK_BAR_COLOR)
 
 	if clip_duration > 0:
+		var line_color: Color = TRACK_BAR_COLOR
+		line_color.a = 0.8
+		var pixels_per_frame: float = width / float(maxi(1, clip_duration))
+		var step: int = maxi(1, int(5.0 / pixels_per_frame))
+		for i: int in range(0, clip_duration + 1, step):
+			var frame_x: float = MARGIN + (float(i) / float(clip_duration)) * width
+			var line_h: float = 6.0 if i % (step * 5) == 0 else 3.0
+			draw_line(Vector2(frame_x, mid_y - 2 - line_h), Vector2(frame_x, mid_y - 2), line_color, 1.0)
+
 		var playhead_x: float = MARGIN + (float(current_relative_frame) / float(clip_duration)) * width
 		playhead_x = clamp(playhead_x, MARGIN, size.x - MARGIN)
 		draw_line(Vector2(playhead_x, 2), Vector2(playhead_x, size.y - 2), Color(1, 1, 1, 0.5), 1.0)
@@ -125,13 +152,11 @@ func _draw() -> void:
 		if frame_int == _hovered_frame or (_is_dragging and frame_int == _dragged_frame):
 			keyframe_color = SELECTED_COLOR
 
-		# TODO: Replace this by the image we have for the keyframe?
-		var radius: float = 4.0
 		var points: PackedVector2Array = [
-			pos + Vector2(0, -radius),
-			pos + Vector2(radius, 0),
-			pos + Vector2(0, radius),
-			pos + Vector2(-radius, 0)
+			pos + Vector2(0, -KEYFRAME_RADIUS),
+			pos + Vector2(KEYFRAME_RADIUS, 0),
+			pos + Vector2(0, KEYFRAME_RADIUS),
+			pos + Vector2(-KEYFRAME_RADIUS, 0)
 		]
 		draw_colored_polygon(points, keyframe_color)
 		draw_polyline(points, keyframe_color.darkened(0.2), 1.0)
@@ -152,8 +177,9 @@ func _find_closest_keyframe(target_frame: int) -> int:
 
 	var width: float = size.x - (MARGIN * 2)
 	var pixel_per_frame: float = width / maxf(1, clip_duration)
-	var threshold_frames: int = int(5.0 / pixel_per_frame)
-	if threshold_frames < 2: threshold_frames = 2
+	var threshold_frames: int = int(8.0 / pixel_per_frame)
+	if threshold_frames < 2:
+		threshold_frames = 2
 
 	# Check all params for closest frame.
 	var found_frame: int = -1
