@@ -4,7 +4,7 @@ extends Control
 
 
 func _on_create_color_pressed() -> void:
-	Project.files.add(["temp://color#" + color_picker.color.to_html()])
+	FileLogic.add(["temp://color#" + color_picker.color.to_html()])
 	PopupManager.close(PopupManager.COLOR)
 
 

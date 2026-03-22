@@ -4,27 +4,19 @@ from typing import Optional, Sequence
 try:
     from .paths import (
         AOM_BUILD_DIR,
-        AOM_INSTALL_DIR_NAME,
         AOM_SOURCE_DIR,
-        MP3LAME_INSTALL_DIR_NAME,
         MP3LAME_SOURCE_DIR,
-        OGG_INSTALL_DIR_NAME,
         OGG_SOURCE_DIR,
-        OPUS_INSTALL_DIR_NAME,
         OPUS_SOURCE_DIR,
         SVT_AV1_BUILD_DIR,
-        SVT_AV1_INSTALL_DIR_NAME,
         SVT_AV1_SOURCE_DIR,
-        VORBIS_INSTALL_DIR_NAME,
         VORBIS_SOURCE_DIR,
-        VPX_INSTALL_DIR_NAME,
         VPX_SOURCE_DIR,
-        X264_INSTALL_DIR_NAME,
         X264_SOURCE_DIR,
         X265_BUILD_DIR,
-        X265_INSTALL_DIR_NAME,
         X265_SOURCE_DIR,
         get_ffmpeg_install_dir,
+        get_lib_dir,
     )
     from .utils import (
         get_host_and_sysroot,
@@ -36,27 +28,19 @@ try:
 except ImportError:
     from paths import (
         AOM_BUILD_DIR,
-        AOM_INSTALL_DIR_NAME,
         AOM_SOURCE_DIR,
-        MP3LAME_INSTALL_DIR_NAME,
         MP3LAME_SOURCE_DIR,
-        OGG_INSTALL_DIR_NAME,
         OGG_SOURCE_DIR,
-        OPUS_INSTALL_DIR_NAME,
         OPUS_SOURCE_DIR,
         SVT_AV1_BUILD_DIR,
-        SVT_AV1_INSTALL_DIR_NAME,
         SVT_AV1_SOURCE_DIR,
-        VORBIS_INSTALL_DIR_NAME,
         VORBIS_SOURCE_DIR,
-        VPX_INSTALL_DIR_NAME,
         VPX_SOURCE_DIR,
-        X264_INSTALL_DIR_NAME,
         X264_SOURCE_DIR,
         X265_BUILD_DIR,
-        X265_INSTALL_DIR_NAME,
         X265_SOURCE_DIR,
         get_ffmpeg_install_dir,
+        get_lib_dir,
     )
     from utils import (
         get_host_and_sysroot,
@@ -150,8 +134,8 @@ def build_x264(
             cwd=X264_SOURCE_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    install_dir = get_ffmpeg_install_dir(platform) / X264_INSTALL_DIR_NAME
-    clear_dir(install_dir)
+    install_dir = get_ffmpeg_install_dir(platform)
+    os.makedirs(install_dir, exist_ok=True)
 
     host, _ = get_host_and_sysroot(platform, arch)
 
@@ -177,7 +161,7 @@ def build_x264(
 def build_x265(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / X265_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
     source_dir = X265_SOURCE_DIR / "source"
 
     if X265_BUILD_DIR.exists():
@@ -186,10 +170,9 @@ def build_x265(
             cwd=X265_BUILD_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     host, _ = get_host_and_sysroot(platform, arch)
-
     build_lib(
         "x265",
         X265_BUILD_DIR,
@@ -201,7 +184,8 @@ def build_x265(
             "-DENABLE_SHARED=OFF",
             "-DENABLE_PIC=ON",
             f"{convert_to_msys2_path(source_dir)}",
-        ] + (
+        ]
+        + (
             [
                 f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Darwin' if platform == 'macos' else 'Linux'}",
                 f"-DCMAKE_SYSTEM_PROCESSOR={arch if arch == 'x86_64' else 'aarch64'}",
@@ -224,7 +208,7 @@ def build_x265(
 def build_aom(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / AOM_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if AOM_BUILD_DIR.exists():
         run_command(
@@ -232,7 +216,7 @@ def build_aom(
             cwd=AOM_BUILD_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
     clear_dir(AOM_BUILD_DIR)
 
     host, _ = get_host_and_sysroot(platform, arch)
@@ -253,12 +237,15 @@ def build_aom(
             "-G=Ninja",
             "--fresh",
             f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
+            "-DBUILD_SHARED_LIBS=OFF",
             "-DENABLE_TESTS=OFF",
             "-DCONFIG_PIC=1",
             f"{convert_to_msys2_path(AOM_SOURCE_DIR)}",
-        ] + (
+        ]
+        + (
             [
-                "-DCMAKE_TOOLCHAIN_FILE=" + convert_to_msys2_path(
+                "-DCMAKE_TOOLCHAIN_FILE="
+                + convert_to_msys2_path(
                     AOM_SOURCE_DIR / "build" / "cmake" / "toolchains" / toolchain_file
                 )
             ]
@@ -275,7 +262,7 @@ def build_aom(
 def build_svt_av1(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / SVT_AV1_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if SVT_AV1_BUILD_DIR.exists():
         run_command(
@@ -283,7 +270,7 @@ def build_svt_av1(
             cwd=SVT_AV1_BUILD_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     host, _ = get_host_and_sysroot(platform, arch)
 
@@ -300,7 +287,8 @@ def build_svt_av1(
             "-DBUILD_APPS=OFF",
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
             f"{convert_to_msys2_path(SVT_AV1_SOURCE_DIR)}",
-        ] + (
+        ]
+        + (
             [
                 f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Darwin' if platform == 'macos' else 'Linux'}",
                 f"-DCMAKE_SYSTEM_PROCESSOR={arch if arch == 'x86_64' else 'aarch64'}",
@@ -323,7 +311,7 @@ def build_svt_av1(
 def build_vpx(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / VPX_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if VPX_SOURCE_DIR.exists():
         run_command(
@@ -331,7 +319,7 @@ def build_vpx(
             cwd=VPX_SOURCE_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     env = env or {}
 
@@ -351,12 +339,14 @@ def build_vpx(
         configure_cmd=[
             "./configure",
             f"--prefix={convert_to_msys2_path(install_dir)}",
+            "--disable-shared",
             "--disable-examples",
             "--disable-unit-tests",
             "--enable-vp9-highbitdepth",
             "--disable-docs",
             "--enable-pic",
-        ] + ([f"--target={target}"] if target else []),
+        ]
+        + ([f"--target={target}"] if target else []),
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",
@@ -366,7 +356,7 @@ def build_vpx(
 def build_opus(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / OPUS_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if OPUS_SOURCE_DIR.exists():
         run_command(
@@ -374,7 +364,7 @@ def build_opus(
             cwd=OPUS_SOURCE_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     host, _ = get_host_and_sysroot(platform, arch)
 
@@ -389,7 +379,8 @@ def build_opus(
                 "--disable-shared",
                 "--with-pic",
                 "--disable-doc",
-            ] + ([f"--host={host}"] if host else []),
+            ]
+            + ([f"--host={host}"] if host else []),
         ),
         threads=threads,
         env=env,
@@ -400,7 +391,7 @@ def build_opus(
 def build_ogg(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / OGG_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if OGG_SOURCE_DIR.exists():
         run_command(
@@ -408,7 +399,7 @@ def build_ogg(
             cwd=OGG_SOURCE_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     host, _ = get_host_and_sysroot(platform, arch)
 
@@ -422,7 +413,8 @@ def build_ogg(
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ] + ([f"--host={host}"] if host else []),
+            ]
+            + ([f"--host={host}"] if host else []),
         ),
         threads=threads,
         env=env,
@@ -431,7 +423,7 @@ def build_ogg(
 
 
 def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
-    install_dir = get_ffmpeg_install_dir(platform) / VORBIS_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if VORBIS_SOURCE_DIR.exists():
         run_command(
@@ -439,7 +431,7 @@ def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
             cwd=VORBIS_SOURCE_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     pc_path = (
         os.environ.get("PKG_CONFIG_PATH", "")
@@ -447,9 +439,11 @@ def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
         else "$PKG_CONFIG_PATH"  # will expand automatically in use_msys2=True mode
     )
 
-    ogg_pkgconfig_dir = (
-        get_ffmpeg_install_dir(platform) / OGG_INSTALL_DIR_NAME / "lib" / "pkgconfig"
-    )
+    try:
+        ogg_pkgconfig_dir = get_lib_dir(install_dir) / "pkgconfig"
+    except Exception:
+        ogg_pkgconfig_dir = install_dir / "lib" / "pkgconfig"
+
     env["PKG_CONFIG_PATH"] = convert_to_msys2_path(ogg_pkgconfig_dir) + (
         (":" + pc_path) if pc_path else ""
     )
@@ -491,7 +485,8 @@ def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
                 f"--prefix={convert_to_msys2_path(install_dir)}",
                 "--disable-shared",
                 "--enable-pic",
-            ] + ([f"--host={host}"] if host else []),
+            ]
+            + ([f"--host={host}"] if host else []),
         ),
         threads=threads,
         env=env,
@@ -502,7 +497,7 @@ def build_vorbis(platform: str, arch: str, threads: int, env: dict[str, str]):
 def build_mp3lame(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
-    install_dir = get_ffmpeg_install_dir(platform) / MP3LAME_INSTALL_DIR_NAME
+    install_dir = get_ffmpeg_install_dir(platform)
 
     if MP3LAME_SOURCE_DIR.exists():
         run_command(
@@ -510,7 +505,7 @@ def build_mp3lame(
             cwd=MP3LAME_SOURCE_DIR,
             use_msys2=CURR_PLATFORM == "windows",
         )
-    clear_dir(install_dir)
+    os.makedirs(install_dir, exist_ok=True)
 
     host, _ = get_host_and_sysroot(platform, arch)
 
@@ -525,7 +520,8 @@ def build_mp3lame(
             "--disable-decoder",
             "--disable-frontend",
             "--with-pic=yes",
-        ] + ([f"--host={host}"] if host else []),
+        ]
+        + ([f"--host={host}"] if host else []),
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",

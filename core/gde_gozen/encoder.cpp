@@ -30,12 +30,13 @@ bool Encoder::open(bool rgba) {
 
 	format_size = rgba ? 4 : 3;
 
-	// Allocating output media context
+	// Allocating output media context.
 	AVFormatContext* temp_format_ctx = nullptr;
+	CharString local_path = path.utf8();
 
-	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, path.utf8().get_data())) {
+	if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, nullptr, local_path.get_data())) {
 		_log_err("Error creating AV Format by path extension, using MPEG");
-		if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, "mpeg", path.utf8().get_data())) {
+		if (avformat_alloc_output_context2(&temp_format_ctx, nullptr, "mpeg", local_path.get_data())) {
 			return _log_err("Error creating AV Format");
 		}
 	}
@@ -53,7 +54,7 @@ bool Encoder::open(bool rgba) {
 		close();
 		return _log_err("Couldn't create video stream");
 	}
-	av_dump_format(av_format_ctx.get(), 0, path.utf8().get_data(), 1);
+	av_dump_format(av_format_ctx.get(), 0, local_path.get_data(), 1);
 
 	// Open output file if needed.
 	if (!_open_output_file()) {
@@ -247,7 +248,8 @@ bool Encoder::_add_audio_stream() {
 
 bool Encoder::_open_output_file() {
 	if (!(av_format_ctx->oformat->flags & AVFMT_NOFILE)) {
-		response = avio_open(&av_format_ctx->pb, path.utf8().get_data(), AVIO_FLAG_WRITE);
+		CharString local_path = path.utf8();
+		response = avio_open(&av_format_ctx->pb, local_path.get_data(), AVIO_FLAG_WRITE);
 
 		if (response < 0) {
 			FFmpeg::print_av_error("Encoder: Couldn't open output file!", response);
@@ -261,7 +263,8 @@ bool Encoder::_open_output_file() {
 bool Encoder::_write_header() {
 	AVDictionary* options = nullptr;
 
-	av_dict_set(&options, "title", path.get_file().utf8().get_data(), 0);
+	CharString file_name = path.get_file().utf8();
+	av_dict_set(&options, "title", file_name.get_data(), 0);
 	av_dict_set(&options, "comment", "Rendered with the GoZen Video editor.", 0);
 
 	if (path.get_extension().to_lower() == "mp4") {
@@ -472,10 +475,10 @@ bool Encoder::_encode_audio_chunk(int samples_to_read) {
 
 bool Encoder::_finalize_encoding() {
 	if (!encoder_open) {
-		return 2;
+		return true;
 	} else if (!av_format_ctx) {
 		_log_err("Can't finalize encoding, no format context");
-		return 1;
+		return false;
 	}
 
 	// Flush video encoder.

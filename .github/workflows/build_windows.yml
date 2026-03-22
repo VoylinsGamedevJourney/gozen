@@ -9,7 +9,7 @@ on:
       godot_version:
         description: The Godot version to use
         type: string
-        default: '4.7-dev2'
+        default: '4.6.1-stable'
 
 env:
   APP_NAME: gozen
@@ -31,7 +31,7 @@ jobs:
       matrix:
         dep: [x264, x265, aom, svt_av1, vpx, opus, ogg_vorbis, mp3lame]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -43,7 +43,7 @@ jobs:
           dep_name: ${{ matrix.dep }}
           arch: x86_64
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: dep_win_x86_64_${{ matrix.dep }}
           path: ${{ env.PATH_FFMPEG }}
@@ -57,14 +57,14 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - uses: ./.github/actions/setup-windows-build-env
 
       - name: Download all dependencies
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: dep_win_x86_64_*
           path: ${{ env.PATH_FFMPEG }}
@@ -75,7 +75,7 @@ jobs:
         run: python3 -c "import sys; sys.path.append('.'); import build_ffmpeg; build_ffmpeg.build_ffmpeg_windows('x86_64', 4, {})"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ffmpeg_windows_x86_64
           path: ${{ env.PATH_FFMPEG }}
@@ -95,10 +95,12 @@ jobs:
       matrix:
         include:
           - target: template_debug
+            scons_flags: platform=windows arch=x86_64 use_static_cpp=yes use_mingw=yes
           - target: template_release
+            scons_flags: platform=windows arch=x86_64 use_static_cpp=yes use_mingw=yes
     steps:
       - name: Checkout submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -112,7 +114,7 @@ jobs:
 
       # Download FFmpeg.
       - name: Download FFmpeg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ffmpeg_windows_x86_64
           path: ${{ env.PATH_FFMPEG }}
@@ -120,11 +122,11 @@ jobs:
       # Compile.
       - name: Compile GDE
         working-directory: ./core
-        run: scons -j$(nproc) target=${{ matrix.target }} platform=windows arch=x86_64 use_static_cpp=yes use_mingw=yes
+        run: scons -j$(nproc) target=${{ matrix.target }} ${{ matrix.scons_flags }}
 
       # Upload
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: windows_gde_${{ matrix.target }}_x86_64
           path: ${{ env.PATH_EXPORT }}
@@ -140,7 +142,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -163,7 +165,7 @@ jobs:
           os: windows
 
       - name: Fetch GDE libs (debug)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: windows_gde_template_debug_x86_64
           path: ${{ env.PATH_EXPORT }}
@@ -171,7 +173,7 @@ jobs:
           merge-multiple: true
 
       - name: Fetch GDE libs (release)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: windows_gde_template_release_x86_64
           path: ${{ env.PATH_EXPORT }}
@@ -197,7 +199,7 @@ jobs:
           export PATH=$PATH:"/c/Program Files/Godot":"$(pwd)/../${{ env.PATH_EXPORT }}"
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
           mkdir -p ../${{ env.PATH_EXPORT }}
-          godot --import godot.project --headless --quit
+          godot --import project.godot --headless --quit
           godot --headless --export-release "Windows_x86_64" ../${{ env.PATH_EXPORT }}/GoZen.exe
 
       - name: Bundle Windows
@@ -206,7 +208,7 @@ jobs:
           cp ../../LICENSE .
           zip -r "GoZen_Windows_v${{ inputs.version }}.zip" *
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: GoZen_Windows_v${{ inputs.version }}
           path: ${{ env.PATH_EXPORT }}/GoZen_Windows_v${{ inputs.version }}.zip

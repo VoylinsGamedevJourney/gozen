@@ -18,7 +18,7 @@ run/print_header=false
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/auto_accept_quit=false
-config/features=PackedStringArray("4.7", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 boot_splash/image="uid://be26q5shju2ml"
 config/icon="res://icon.svg"
 boot_splash/minimum_display_time=500
@@ -36,11 +36,11 @@ PopupManager="*res://scripts/autoloads/popup_manager.gd"
 RenderManager="*res://scripts/autoloads/render_manager.gd"
 EffectsHandler="*res://scripts/autoloads/effects_handler.gd"
 ProxyHandler="*res://scripts/autoloads/proxy_handler.gd"
-MarkerLogic="*uid://j1cby36skalf"
-FileLogic="*uid://bkf12fkrwxweq"
-ClipLogic="*uid://dpg463meoenq"
-FolderLogic="*uid://dtot8lckuprw6"
-TrackLogic="*uid://d043m0gv85fgr"
+MarkerLogic="*res://scripts/logic/marker_logic.gd"
+FileLogic="*res://scripts/logic/file_logic.gd"
+ClipLogic="*res://scripts/logic/clip_logic.gd"
+FolderLogic="*res://scripts/logic/folder_logic.gd"
+TrackLogic="*res://scripts/logic/track_logic.gd"
 
 [debug]
 
@@ -63,10 +63,7 @@ shader_language/warnings/treat_warnings_as_errors=true
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=2
-window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_width"
 window/size/mode.editor=0
-window/stretch/mode.editor="disabled"
 
 [editor_plugins]
 

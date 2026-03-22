@@ -17,7 +17,7 @@ const PREVIEW_DURATION: float = 10.0
 
 var current_file_id: int = -1
 var current_clip_id: int = -1
-var file_b_index: int = -1
+var file_b_id: int = -1
 
 
 
@@ -49,48 +49,52 @@ func _process(_delta: float) -> void:
 
 
 func load_data(id: int, is_file: bool) -> void:
-	var file_a_index: int
+	var file_a: FileData
 	if is_file:
 		current_file_id = id
-		file_a_index = Project.files.index_map[current_file_id]
+		file_a = FileLogic.files[current_file_id]
 		file_a_wave.set("file_id", current_file_id)
 	else:
 		current_clip_id = id
-		var clip_index: int = Project.clips.index_map[current_clip_id]
-		var file_a: int = Project.data.clips_file[clip_index]
-		file_a_index = Project.files.index_map[file_a]
-		file_a_wave.set("file_id", file_a)
+		var clip: ClipData = ClipLogic.clips[current_clip_id]
+		file_a = FileLogic.files[clip.file]
+		file_a_wave.set("file_id", file_a.id)
 
 	var item_id: int = 1 # We start at 1 due to adding "None".
-	var audio_files: PackedInt64Array = Project.files.get_all_audio_files()
+	var audio_files: Array[FileData] = FileLogic.get_all_audio_files()
 	file_b_list.clear()
 
 	# Add none option. (For deleting ATO)
 	file_b_list.add_item(tr("None"))
 	file_b_list.set_item_metadata(0, -1)
 
-	audio_files.sort()
-	for audio_file: int in audio_files:
-		var file_index: int = Project.files.index_map[audio_file]
-		if file_index == file_a_index:
+	for audio_file: FileData in audio_files:
+		if audio_file.id == file_a.id:
 			continue
-		file_b_list.add_item(Project.data.files_nickname[file_index])
-		file_b_list.set_item_metadata(item_id, file_index)
+		file_b_list.add_item(audio_file.nickname)
+		file_b_list.set_item_metadata(item_id, audio_file.id)
 		item_id += 1
 
-	var video: Video = Project.files.file_data[file_a_index]
-	video_file_label.text = Project.data.files_nickname[file_a_index]
-	file_a_player.stream = video.get_audio()
+	var video: Video = FileLogic.file_data.get(file_a.id)
+	video_file_label.text = file_a.nickname
+	if video:
+		file_a_player.stream = video.get_audio()
 
 
 func _on_take_over_audio_button_pressed() -> void:
-	var file_b_id: int = -1
-	if file_b_index != -1:
-		file_b_id = Project.data.files[file_b_index]
+	var file_b: FileData = FileLogic.files.get(file_b_id)
+	if file_b == null:
+		file_b = FileData.new()
+		file_b.id = -1
+
 	if current_file_id != -1: # file
-		Project.files.apply_audio_take_over(current_file_id, file_b_id, offset_spinbox.value)
+		var file_a: FileData = FileLogic.files.get(current_file_id)
+		if file_a:
+			FileLogic.apply_audio_take_over(file_a, file_b, offset_spinbox.value)
 	elif current_clip_id != -1: # Clip
-		Project.clips.apply_audio_take_over(current_clip_id, file_b_id, offset_spinbox.value)
+		var clip: ClipData = ClipLogic.clips.get(current_clip_id)
+		if clip:
+			ClipLogic.apply_audio_take_over(clip, file_b_id, offset_spinbox.value)
 	PopupManager.close_all()
 
 
@@ -110,14 +114,13 @@ func _on_audio_file_offset_spin_box_value_changed(value: float) -> void:
 
 
 func _on_audio_file_option_button_item_selected(index: int) -> void:
-	file_b_index = file_b_list.get_item_metadata(index)
-	if file_b_index == -1:
+	file_b_id = file_b_list.get_item_metadata(index)
+	if file_b_id == -1:
 		file_b_wave.set("file_id", -1)
 		file_b_player.stream = null
 	else:
-		var file: int = Project.data.files[file_b_index]
-		file_b_wave.set("file_id", file)
-		file_b_player.stream = Project.files.file_data[file_b_index]
+		file_b_wave.set("file_id", file_b_id)
+		file_b_player.stream = FileLogic.file_data.get(file_b_id)
 
 
 func _on_cancel_button_pressed() -> void:
@@ -129,7 +132,7 @@ func _start_playback(start_time: float) -> void:
 	audio_play_button.texture_normal = load(Library.ICON_PAUSE)
 	file_a_player.play(start_time)
 
-	if file_b_index != -1: # Start B only if valid and time is past offset.
+	if file_b_id != -1: # Start B only if valid and time is past offset.
 		var offset: float = offset_spinbox.value
 		var b_time: float = start_time - offset
 		if b_time >= 0:

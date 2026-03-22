@@ -9,7 +9,8 @@ double Video::get_duration(const String& video_path) {
 		path = ProjectSettings::get_singleton()->globalize_path(path);
 	}
 
-	if (avformat_open_input(&format_ctx, path.utf8().get_data(), nullptr, nullptr) != 0) {
+	CharString local_path = path.utf8();
+	if (avformat_open_input(&format_ctx, local_path.get_data(), nullptr, nullptr) != 0) {
 		return -1.0; // Error opening file.
 	} else if (avformat_find_stream_info(format_ctx, nullptr) < 0) {
 		avformat_close_input(&format_ctx);
@@ -42,6 +43,7 @@ int Video::open(const String& video_path) {
 	}
 	// Allocate video file context.
 	AVFormatContext* temp_format_ctx = nullptr;
+	CharString local_path = video_path.utf8();
 	path = video_path;
 	resolution = Vector2i(0, 0);
 	last_decoded_frame = -1;
@@ -78,7 +80,7 @@ int Video::open(const String& video_path) {
 			close();
 			return _log_err("Failed to open input from memory buffer");
 		}
-	} else if (avformat_open_input(&temp_format_ctx, path.utf8().get_data(), NULL, NULL)) {
+	} else if (avformat_open_input(&temp_format_ctx, local_path.get_data(), NULL, NULL)) {
 		close();
 		return _log_err("Couldn't open video");
 	}
@@ -290,6 +292,10 @@ int Video::open(const String& video_path) {
 
 		// We will use av_hw_frame to convert the frame data to as we won't use it anyway without hw decoding.
 		av_sws_frame = make_unique_avframe();
+		av_sws_frame->format = new_format;
+		av_sws_frame->width = resolution.x;
+		av_sws_frame->height = resolution.y;
+		av_frame_get_buffer(av_sws_frame.get(), 0);
 		sws_scale_frame(sws_ctx.get(), av_sws_frame.get(), av_frame.get());
 
 		// NOTE: It's possible that linesize is empty so we should switch to resolution.x and to resolution.x / 2.
@@ -738,6 +744,10 @@ void Video::_copy_frame_data() {
 	}
 
 	if (using_sws) {
+		av_sws_frame->format = has_alpha ? AV_PIX_FMT_YUVA420P : AV_PIX_FMT_YUV420P;
+		av_sws_frame->width = resolution.x;
+		av_sws_frame->height = resolution.y;
+		av_frame_get_buffer(av_sws_frame.get(), 0);
 		sws_scale_frame(sws_ctx.get(), av_sws_frame.get(), av_frame.get());
 
 		memcpy(y_data->ptrw(), av_sws_frame->data[0], y_data->get_size().x * y_data->get_size().y);

@@ -308,9 +308,9 @@ func get_audio_data(clip: ClipData) -> PackedByteArray:
 	# Get the correct file to use for audio.
 	if clip.effects.ato_active and clip.effects.ato_file != -1:
 		start_sec -= clip.effects.ato_offset
-		file_path = Project.data.files[clip.effects.ato_file].path
+		file_path = FileLogic.files[clip.effects.ato_file].path
 	else:
-		file_path = Project.data.files[clip.file].path
+		file_path = FileLogic.files[clip.file].path
 	return Audio.get_audio_data(file_path, -1, start_sec, duration_sec)
 
 

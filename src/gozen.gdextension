@@ -1,21 +1,21 @@
 [configuration]
 
 entry_symbol = "gozen_library_init"
-compatibility_minimum = "4.5"
+compatibility_minimum = "4.6"
 
 [libraries]
 
-linux.debug.x86_64 = "res://../bin/linux_x86_64/libgozen.linux.template_debug.dev.x86_64.so"
+linux.debug.x86_64 = "res://../bin/linux_x86_64/libgozen.linux.template_debug.x86_64.so"
 linux.release.x86_64 = "res://../bin/linux_x86_64/libgozen.linux.template_release.x86_64.so"
 
-linux.debug.arm64 = "res://../bin/linux_arm64/libgozen.linux.template_debug.dev.arm64.so"
+linux.debug.arm64 = "res://../bin/linux_arm64/libgozen.linux.template_debug.arm64.so"
 linux.release.arm64 = "res://../bin/linux_arm64/libgozen.linux.template_release.arm64.so"
 
-windows.debug.x86_64 = "res://../bin/windows_x86_64/libgozen.windows.template_debug.dev.x86_64.dll"
+windows.debug.x86_64 = "res://../bin/windows_x86_64/libgozen.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "res://../bin/windows_x86_64/libgozen.windows.template_release.x86_64.dll"
 
-windows.debug.arm64 = "res://../bin/windows_arm64/libgozen.windows.template_debug.dev.arm64.dll"
+windows.debug.arm64 = "res://../bin/windows_arm64/libgozen.windows.template_debug.arm64.dll"
 windows.release.arm64 = "res://../bin/windows_arm64/libgozen.windows.template_release.arm64.dll"
 
-macos.debug = "res://../bin/macos_arm64/libgozen.macos.template_debug.dev.arm64.dylib"
+macos.debug = "res://../bin/macos_arm64/libgozen.macos.template_debug.arm64.dylib"
 macos.release = "res://../bin/macos_arm64/libgozen.macos.template_release.arm64.dylib"

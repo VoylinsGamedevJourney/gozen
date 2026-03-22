@@ -43,7 +43,7 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	if file_id == -1:
 		return
-	var wave_data: PackedFloat32Array = Project.files.get_audio_wave(file_id)
+	var wave_data: PackedFloat32Array = FileLogic.audio_wave[file_id]
 	if wave_data.is_empty():
 		return
 

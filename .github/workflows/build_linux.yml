@@ -9,7 +9,7 @@ on:
       godot_version:
         description: The Godot version to use
         type: string
-        default: '4.7-dev2'
+        default: '4.6.1-stable'
 
 env:
   APP_NAME: gozen
@@ -35,7 +35,7 @@ jobs:
           libnuma-dev fuse libfuse2 desktop-file-utils patchelf
 
       - name: Checkout submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -45,7 +45,7 @@ jobs:
           python -m core.build_ffmpeg --platform linux --arch x86_64 --threads 4
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ffmpeg_linux_x86_64
           path: ${{ env.PATH_FFMPEG }}
@@ -72,7 +72,7 @@ jobs:
             scons_flags: platform=linux arch=x86_64
     steps:
       - name: Checkout submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -82,7 +82,7 @@ jobs:
 
       # Fetch FFmpeg.
       - name: Download FFmpeg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ffmpeg_linux_x86_64
           path: ${{ env.PATH_FFMPEG }}
@@ -90,11 +90,11 @@ jobs:
       # Compile.
       - name: Compile GDE
         working-directory: ./core
-        run: scons -j$(nproc) target=${{ matrix.target }} platform=linux arch=x86_64
+        run: scons -j$(nproc) target=${{ matrix.target }} ${{ matrix.scons_flags }}
 
       # Upload
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: linux_gde_${{ matrix.target }}_x86_64
           path: bin/linux_x86_64
@@ -107,7 +107,7 @@ jobs:
     needs: build-gde
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -118,7 +118,7 @@ jobs:
           os: linux
 
       - name: Fetch GDE libs (debug)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: linux_gde_template_debug_x86_64
           path: ${{ env.PATH_EXPORT }}
@@ -126,7 +126,7 @@ jobs:
           merge-multiple: true
 
       - name: Fetch GDE libs (release)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: linux_gde_template_release_x86_64
           path: ${{ env.PATH_EXPORT }}
@@ -142,7 +142,7 @@ jobs:
           export LD_LIBRARY_PATH=$(readlink -f ../${{ env.PATH_EXPORT }}):$LD_LIBRARY_PATH
           ls -l ../${{ env.PATH_EXPORT }}
 
-          godot --import godot.project --headless --quit
+          godot --import project.godot --headless --quit
           godot --headless --export-release "Linux_x86_64" ../${{ env.PATH_EXPORT }}/${{ env.APP_NAME }}.x86_64
 
       - name: Cleanup & fix RPATH
@@ -154,7 +154,7 @@ jobs:
           find . -name "*.so" -exec patchelf --set-rpath '$ORIGIN' {} \;
 
       - name: Upload raw Linux export
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: GoZen_Linux_v${{ inputs.version }}
           path: ${{ env.PATH_EXPORT }}
@@ -164,8 +164,8 @@ jobs:
     needs: export-gozen
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
         with:
           name: GoZen_Linux_v${{ inputs.version }}
           path: bin
@@ -203,7 +203,7 @@ jobs:
           # Rename
           mv GoZen*.AppImage ${{ env.APP_NAME }}-v${{ inputs.version }}-x86_64.AppImage
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: GoZen_AppImage_v${{ inputs.version }}
           path: ${{ env.APP_NAME }}-v${{ inputs.version }}-x86_64.AppImage
@@ -213,8 +213,8 @@ jobs:
     needs: export-gozen
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
         with:
           name: GoZen_Linux_v${{ inputs.version }}
           path: bin
@@ -246,7 +246,7 @@ jobs:
 
           dpkg-deb --build $DEB_ROOT ${{ env.APP_NAME }}_v${{ inputs.version }}_amd64.deb
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: GoZen_DEB_v${{ inputs.version }}
           path: "*.deb"
@@ -256,8 +256,8 @@ jobs:
     needs: export-gozen
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
         with:
           name: GoZen_Linux_v${{ inputs.version }}
           path: bin
@@ -310,7 +310,7 @@ jobs:
           # Build
           rpmbuild -bb rpmbuild/SPECS/${{ env.APP_NAME }}.spec
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: GoZen_RPM_v${{ inputs.version }}
           path: rpmbuild/RPMS/x86_64/*.rpm

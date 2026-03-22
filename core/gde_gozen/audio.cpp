@@ -144,7 +144,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 	double fetch_start_time = start_time;
 	double fetch_duration = duration;
 	if (start_time < 0) {
-		pre_padding_bytes = (int64_t)(start_time * 44100 * 4);
+		pre_padding_bytes = (int64_t)(-start_time * 44100 * 4);
 		fetch_start_time = 0;
 		if (duration > 0)
 			fetch_duration = Math::max(0.0, duration - start_time);
@@ -177,18 +177,20 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 			_log_err("Failed to create avio_ctx");
 			return data;
 		}
-
 		format_ctx->pb = avio_ctx.get();
 		if (avformat_open_input(&format_ctx, nullptr, nullptr, nullptr) != 0) {
 			_log_err("Failed to open input from memory buffer");
 			return data;
 		}
+	} else {
+		CharString local_path = file_path.utf8();
+		if (avformat_open_input(&format_ctx, local_path.get_data(), NULL, NULL)) {
+			_log_err("Couldn't open audio");
+			return data;
+		}
 	}
 
-	if (avformat_open_input(&format_ctx, file_path.utf8().get_data(), NULL, NULL)) {
-		_log_err("Couldn't open audio");
-		return data;
-	} else if (avformat_find_stream_info(format_ctx, NULL)) {
+	if (avformat_find_stream_info(format_ctx, NULL)) {
 		_log_err("Couldn't find stream info");
 		return data;
 	} else if (stream_index == -1) {
@@ -261,7 +263,7 @@ PackedByteArray Audio::combine_data(PackedByteArray audio_one, PackedByteArray a
 
 
 PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
-	static std::unordered_map<int, double> cache;
+	static std::unordered_map<float, double> cache;
 
 	const size_t sample_count = audio_data.size() / 2;
 	const int16_t* p_data = reinterpret_cast<const int16_t*>(audio_data.ptr());

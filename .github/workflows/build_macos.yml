@@ -9,7 +9,7 @@ on:
       godot_version:
         description: The Godot version to use
         type: string
-        default: '4.7-dev2'
+        default: '4.6.1-stable'
 
 env:
   APP_NAME: gozen
@@ -29,7 +29,7 @@ jobs:
           brew install yasm nasm scons pkg-config automake libtool cmake ninja git-svn
 
       - name: Checkout submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -38,7 +38,7 @@ jobs:
           python3 -m core.build_ffmpeg --platform macos --arch arm64 --threads 4
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ffmpeg_macos_arm64
           path: ${{ env.PATH_FFMPEG }}
@@ -59,11 +59,13 @@ jobs:
         include:
           - platform: macos
             target: template_debug
+            scons_flags: platform=macos arch=arm64
           - platform: macos
             target: template_release
+            scons_flags: platform=macos arch=arm64
     steps:
       - name: Checkout submodules
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -72,7 +74,7 @@ jobs:
 
       # Fetch FFmpeg.
       - name: Download FFmpeg
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ffmpeg_macos_arm64
           path: ${{ env.PATH_FFMPEG }}
@@ -80,11 +82,11 @@ jobs:
       # Compile.
       - name: Compile GDE
         working-directory: ./core
-        run: scons -j$(sysctl -n hw.logicalcpu) target=${{ matrix.target }} platform=macos arch=arm64
+        run: scons -j$(sysctl -n hw.logicalcpu) target=${{ matrix.target }} ${{ matrix.scons_flags }}
 
       # Upload
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: macos_gde_${{ matrix.target }}_arm64
           path: bin/macos_arm64
@@ -97,7 +99,7 @@ jobs:
     needs: build-gde
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -107,14 +109,14 @@ jobs:
           os: macos
 
       - name: Fetch GDE libs (debug)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: macos_gde_template_debug_arm64
           path: ${{ env.PATH_EXPORT }}
           merge-multiple: true
 
       - name: Fetch GDE libs (release)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: macos_gde_template_release_arm64
           path: ${{ env.PATH_EXPORT }}
@@ -126,11 +128,11 @@ jobs:
           sed -i '' 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
 
           mkdir -p ../${{ env.PATH_EXPORT }}
-          Godot --import godot.project --headless --quit
+          Godot --import project.godot --headless --quit
           Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen.dmg
 
       - name: Upload raw MacOS export
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: GoZen_MacOS_v${{ inputs.version }}
           path: ${{ env.PATH_EXPORT }}/GoZen.dmg

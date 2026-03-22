@@ -26,16 +26,7 @@ try:
     )
     from .download_deps import download_ffmpeg_deps
     from .paths import (
-        AOM_INSTALL_DIR_NAME,
         FFMPEG_SOURCE_DIR,
-        MP3LAME_INSTALL_DIR_NAME,
-        OGG_INSTALL_DIR_NAME,
-        OPUS_INSTALL_DIR_NAME,
-        SVT_AV1_INSTALL_DIR_NAME,
-        VORBIS_INSTALL_DIR_NAME,
-        VPX_INSTALL_DIR_NAME,
-        X264_INSTALL_DIR_NAME,
-        X265_INSTALL_DIR_NAME,
         get_ffmpeg_install_dir,
         get_lib_dir,
     )
@@ -62,16 +53,7 @@ except ImportError:
     )
     from download_deps import download_ffmpeg_deps
     from paths import (
-        AOM_INSTALL_DIR_NAME,
         FFMPEG_SOURCE_DIR,
-        MP3LAME_INSTALL_DIR_NAME,
-        OGG_INSTALL_DIR_NAME,
-        OPUS_INSTALL_DIR_NAME,
-        SVT_AV1_INSTALL_DIR_NAME,
-        VORBIS_INSTALL_DIR_NAME,
-        VPX_INSTALL_DIR_NAME,
-        X264_INSTALL_DIR_NAME,
-        X265_INSTALL_DIR_NAME,
         get_ffmpeg_install_dir,
         get_lib_dir,
     )
@@ -146,38 +128,14 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
 
 def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
     ffmpeg_install_dir = get_ffmpeg_install_dir("linux")
-    x264_pc_dir = get_lib_dir(ffmpeg_install_dir / X264_INSTALL_DIR_NAME) / "pkgconfig"
-    x265_pc_dir = get_lib_dir(ffmpeg_install_dir / X265_INSTALL_DIR_NAME) / "pkgconfig"
-    aom_pc_dir = get_lib_dir(ffmpeg_install_dir / AOM_INSTALL_DIR_NAME) / "pkgconfig"
-    svt_av1_pc_dir = (
-        get_lib_dir(ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME) / "pkgconfig"
-    )
-    vpx_pc_dir = get_lib_dir(ffmpeg_install_dir / VPX_INSTALL_DIR_NAME) / "pkgconfig"
-    opus_pc_dir = get_lib_dir(ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME) / "pkgconfig"
-    ogg_pc_dir = get_lib_dir(ffmpeg_install_dir / OGG_INSTALL_DIR_NAME) / "pkgconfig"
-    vorbis_pc_dir = (
-        get_lib_dir(ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME) / "pkgconfig"
-    )
-    mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
-    mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
-    mp3lame_pc_dir = mp3lame_lib_dir / "pkgconfig"
+    lib_dir = get_lib_dir(ffmpeg_install_dir)
+    pkgconfig_dir = lib_dir / "pkgconfig"
 
     pc_paths = os.environ.get("PKG_CONFIG_PATH")
     env = {
         **env,
-        "PKG_CONFIG_PATH": ":".join(
-            [
-                convert_to_msys2_path(x264_pc_dir),
-                convert_to_msys2_path(x265_pc_dir),
-                convert_to_msys2_path(aom_pc_dir),
-                convert_to_msys2_path(svt_av1_pc_dir),
-                convert_to_msys2_path(vpx_pc_dir),
-                convert_to_msys2_path(opus_pc_dir),
-                convert_to_msys2_path(ogg_pc_dir),
-                convert_to_msys2_path(vorbis_pc_dir),
-                convert_to_msys2_path(mp3lame_pc_dir),
-            ]
-        ) + ((":" + pc_paths) if pc_paths else "")
+        "PKG_CONFIG_PATH": convert_to_msys2_path(pkgconfig_dir)
+        + ((":" + pc_paths) if pc_paths else ""),
     }
     host, _ = get_host_and_sysroot("linux", arch)
 
@@ -197,8 +155,8 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         "--extra-ldflags=-fPIC",
         "--pkg-config-flags=--static",
         # FFmpeg doesn't use pkgconfig to find mp3lame (have to manually specify include and lib paths)
-        f"--extra-cflags=-I{convert_to_msys2_path(mp3lame_include_dir)}",
-        f"--extra-ldflags=-L{convert_to_msys2_path(mp3lame_lib_dir)}",
+        f"--extra-cflags=-I{convert_to_msys2_path(ffmpeg_install_dir / 'include')}",
+        f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         # Enable codecs
         "--enable-libx264",
         "--enable-libx265",
@@ -230,36 +188,11 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
 
 def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
     ffmpeg_install_dir = get_ffmpeg_install_dir("windows")
-    x264_pc_dir = get_lib_dir(ffmpeg_install_dir / X264_INSTALL_DIR_NAME) / "pkgconfig"
-    x265_pc_dir = get_lib_dir(ffmpeg_install_dir / X265_INSTALL_DIR_NAME) / "pkgconfig"
-    aom_pc_dir = get_lib_dir(ffmpeg_install_dir / AOM_INSTALL_DIR_NAME) / "pkgconfig"
-    svt_av1_pc_dir = (
-        get_lib_dir(ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME) / "pkgconfig"
-    )
-    vpx_pc_dir = get_lib_dir(ffmpeg_install_dir / VPX_INSTALL_DIR_NAME) / "pkgconfig"
-    opus_pc_dir = get_lib_dir(ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME) / "pkgconfig"
-    ogg_pc_dir = get_lib_dir(ffmpeg_install_dir / OGG_INSTALL_DIR_NAME) / "pkgconfig"
-    vorbis_pc_dir = (
-        get_lib_dir(ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME) / "pkgconfig"
-    )
-    mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
-    mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
-    mp3lame_pc_dir = mp3lame_lib_dir / "pkgconfig"
+    lib_dir = get_lib_dir(ffmpeg_install_dir)
+    pkgconfig_dir = lib_dir / "pkgconfig"
 
     env = env or {}
-    env["PKG_CONFIG_PATH"] = ":".join(
-        [
-            convert_to_msys2_path(x264_pc_dir),
-            convert_to_msys2_path(x265_pc_dir),
-            convert_to_msys2_path(aom_pc_dir),
-            convert_to_msys2_path(svt_av1_pc_dir),
-            convert_to_msys2_path(vpx_pc_dir),
-            convert_to_msys2_path(opus_pc_dir),
-            convert_to_msys2_path(ogg_pc_dir),
-            convert_to_msys2_path(vorbis_pc_dir),
-            convert_to_msys2_path(mp3lame_pc_dir),
-        ]
-    )
+    env["PKG_CONFIG_PATH"] = convert_to_msys2_path(pkgconfig_dir)
     if CURR_PLATFORM != "windows":
         env["PKG_CONFIG_PATH"] = env["PKG_CONFIG_PATH"] + (
             (":" + os.environ["PKG_CONFIG_PATH"])
@@ -287,8 +220,8 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
         # Tell pkgconfig to use static libs
         "--pkg-config-flags=--static",
         # FFmpeg doesn't use pkgconfig to find mp3lame (have to manually specify include and lib paths)
-        f"--extra-cflags=-I{convert_to_msys2_path(mp3lame_include_dir)}",
-        f"--extra-ldflags=-L{convert_to_msys2_path(mp3lame_lib_dir)}",
+        f"--extra-cflags=-I{convert_to_msys2_path(ffmpeg_install_dir / 'include')}",
+        f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         # Enable codecs
         "--enable-libx264",
         "--enable-libx265",
@@ -321,38 +254,13 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
 
 def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
     ffmpeg_install_dir = get_ffmpeg_install_dir("macos")
-    x264_pc_dir = get_lib_dir(ffmpeg_install_dir / X264_INSTALL_DIR_NAME) / "pkgconfig"
-    x265_pc_dir = get_lib_dir(ffmpeg_install_dir / X265_INSTALL_DIR_NAME) / "pkgconfig"
-    aom_pc_dir = get_lib_dir(ffmpeg_install_dir / AOM_INSTALL_DIR_NAME) / "pkgconfig"
-    svt_av1_pc_dir = (
-        get_lib_dir(ffmpeg_install_dir / SVT_AV1_INSTALL_DIR_NAME) / "pkgconfig"
-    )
-    vpx_pc_dir = get_lib_dir(ffmpeg_install_dir / VPX_INSTALL_DIR_NAME) / "pkgconfig"
-    opus_pc_dir = get_lib_dir(ffmpeg_install_dir / OPUS_INSTALL_DIR_NAME) / "pkgconfig"
-    ogg_pc_dir = get_lib_dir(ffmpeg_install_dir / OGG_INSTALL_DIR_NAME) / "pkgconfig"
-    vorbis_pc_dir = (
-        get_lib_dir(ffmpeg_install_dir / VORBIS_INSTALL_DIR_NAME) / "pkgconfig"
-    )
-    mp3lame_lib_dir = get_lib_dir(ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME)
-    mp3lame_include_dir = ffmpeg_install_dir / MP3LAME_INSTALL_DIR_NAME / "include"
-    mp3lame_pc_dir = mp3lame_lib_dir / "pkgconfig"
+    lib_dir = get_lib_dir(ffmpeg_install_dir)
+    pkgconfig_dir = lib_dir / "pkgconfig"
 
     pc_paths = os.environ.get("PKG_CONFIG_PATH")
     env = {
         **env,
-        "PKG_CONFIG_LIBDIR": ":".join(
-            [
-                convert_to_msys2_path(x264_pc_dir),
-                convert_to_msys2_path(x265_pc_dir),
-                convert_to_msys2_path(aom_pc_dir),
-                convert_to_msys2_path(svt_av1_pc_dir),
-                convert_to_msys2_path(vpx_pc_dir),
-                convert_to_msys2_path(opus_pc_dir),
-                convert_to_msys2_path(ogg_pc_dir),
-                convert_to_msys2_path(vorbis_pc_dir),
-                convert_to_msys2_path(mp3lame_pc_dir),
-            ]
-        )
+        "PKG_CONFIG_LIBDIR": convert_to_msys2_path(pkgconfig_dir)
         + ((":" + pc_paths) if pc_paths else ""),
     }
 
@@ -369,8 +277,8 @@ def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
         "--target-os=darwin",
         "--enable-pic",
         "--pkg-config-flags=--static",
-        f"--extra-cflags=-I{convert_to_msys2_path(mp3lame_include_dir)}",
-        f"--extra-ldflags=-L{convert_to_msys2_path(mp3lame_lib_dir)}",
+        f"--extra-cflags=-I{convert_to_msys2_path(ffmpeg_install_dir / 'include')}",
+        f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         "--enable-libx264",
         "--enable-libx265",
         "--enable-libaom",
@@ -437,7 +345,10 @@ def copy_lib_files_linux(arch: str):
 
     # User defined environment variable takes priority if present
     search_paths = (
-        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else []) + get_lib_search_paths(host) + [sysroot])
+        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else [])
+        + get_lib_search_paths(host)
+        + [sysroot]
+    )
 
     dest_dir.mkdir(parents=True, exist_ok=True)
 
@@ -513,7 +424,10 @@ def copy_lib_files_windows(arch: str):
     # On msys2 the dlls are present in sysroot/bin, on Ubuntu in sysroot/lib
     # So we just use recursive search instad of specifying the full path
     search_paths = (
-        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else []) + get_lib_search_paths(host) + [sysroot])
+        ([Path(_GOZEN_CROSS_SYSROOT)] if _GOZEN_CROSS_SYSROOT else [])
+        + get_lib_search_paths(host)
+        + [sysroot]
+    )
 
     extra_libs = [
         "libwinpthread-1.dll",

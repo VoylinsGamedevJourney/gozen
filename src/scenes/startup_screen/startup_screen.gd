@@ -257,7 +257,8 @@ func _check_new_version() -> void:
 	add_child(http_request)
 	http_request.request_completed.connect(_check_new_version_request_completed)
 
-	if !http_request.request("latest_release_check"):
+	var url: String = ProjectSettings.get_setting("urls/latest_release_check")
+	if http_request.request(url) != OK:
 		printerr("StartupScreen: Couldn't send an http request for the version check!")
 
 	new_version_available_button.pressed.connect(func() -> void: Utils.open_url("latest_release"))

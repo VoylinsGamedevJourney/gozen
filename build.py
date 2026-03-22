@@ -160,9 +160,7 @@ def windows_detected() -> ExitCode:
             )
             print("Use --help for more information.")
 
-            input(
-                "After installation, run this script again.\nPress Enter to exit..."
-            )
+            input("After installation, run this script again.\nPress Enter to exit...")
             return ExitCode.DEP_NOT_FOUND
 
         return ExitCode.SUCCESS
@@ -188,9 +186,7 @@ def install_windows_deps() -> ExitCode:
                 'Please run the following commands in the MSYS2\'s "ucrt64.exe" shell manually:'
             )
             print("\tpacman -Syu --noconfirm")
-            print(
-                f"\tpacman -S {' '.join(utils.MSYS2_REQUIRED_PACKAGES)} --noconfirm"
-            )
+            print(f"\tpacman -S {' '.join(utils.MSYS2_REQUIRED_PACKAGES)} --noconfirm")
 
             input("Press Enter to exit...")
             return ExitCode.DEP_NOT_FOUND
@@ -294,8 +290,6 @@ def main() -> ExitCode:
     ]
     if target_platform == "windows":
         command += ["use_static_cpp=yes", "use_mingw=yes"]
-    if target == TARGET_DEV:
-        command += ["dev_build=yes"]
 
     res = utils.run_command(
         command,
@@ -332,7 +326,7 @@ if __name__ == "__main__":
         target_platform = "linux"
         arch = "x86_64"
         target = TARGET_DEV
-        threads = os.cpu_count() - 1
+        threads = os.cpu_count()
 
         try:
             utils.get_host_and_sysroot(target_platform, arch)
@@ -347,7 +341,6 @@ if __name__ == "__main__":
                 f"target=template_{target}",
                 f"platform={target_platform}",
                 f"arch={arch}",
-                "dev_build=yes",
             ],
             cwd="./",
             use_msys2=utils.CURR_PLATFORM == "windows",

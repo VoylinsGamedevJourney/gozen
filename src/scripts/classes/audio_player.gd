@@ -58,7 +58,7 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 	elif target_file.ato_active:
 		if target_file.ato_file != -1:
 			time_offset = target_file.ato_offset
-			target_file = FileLogic.files[file.ato_file]
+			target_file = FileLogic.files[target_file.ato_file]
 
 	# Getting file_id data.
 	if !FileLogic.files.has(target_file.id):
