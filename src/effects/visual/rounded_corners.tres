@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://i4doaa48yrd6"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_rc_rad"]
+script = ExtResource("1_param")
+id = "radius"
+nickname = "Corner Radius"
+default_value = 50.0
+min_value = 0.0
+max_value = 2000.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_rc_w"]
+script = ExtResource("1_param")
+id = "width"
+nickname = "Width"
+default_value = 1920.0
+min_value = 0.0
+max_value = 10000.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_rc_h"]
+script = ExtResource("1_param")
+id = "height"
+nickname = "Height"
+default_value = 1080.0
+min_value = 0.0
+max_value = 10000.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_rc_cx"]
+script = ExtResource("1_param")
+id = "center_x"
+nickname = "Center X"
+default_value = 960.0
+min_value = -5000.0
+max_value = 5000.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_rc_cy"]
+script = ExtResource("1_param")
+id = "center_y"
+nickname = "Center Y"
+default_value = 540.0
+min_value = -5000.0
+max_value = 5000.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/rounded_corners.glsl"
+id = "rounded_corners"
+nickname = "Rounded Corners"
+tooltip = "This effect is best applied before using transform effects."
+params = Array[ExtResource("1_param")]([SubResource("Resource_rc_rad"), SubResource("Resource_rc_w"), SubResource("Resource_rc_h"), SubResource("Resource_rc_cx"), SubResource("Resource_rc_cy")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"

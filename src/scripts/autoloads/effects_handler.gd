@@ -20,7 +20,13 @@ var audio_effect_instances: Dictionary[String, EffectAudio] = {} ## { effect_id:
 
 ## Exceptions can be a string or callable.
 var param_exceptions: Dictionary[String, Dictionary] = {
-	"transform": { "pivot": Project.get_resolution_center }
+	"transform": { "pivot": func() -> Vector2i: return Project.get_resolution_center() },
+	"rounded_corners": {
+		"width": func() -> float: return Project.get_resolution().x,
+		"height":  func() -> float: return Project.get_resolution().y,
+		"center_x": func() -> float: return Project.get_resolution_center().x,
+		"center_y": func() -> float: return Project.get_resolution_center().y
+	},
 }
 
 
