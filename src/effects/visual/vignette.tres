@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://c5lm6nvny00ef"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_fkoha"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_6wmjw"]
+
+[sub_resource type="Resource" id="Resource_fkoha"]
+script = ExtResource("1_fkoha")
+id = "color"
+nickname = "Color"
+default_value = Color(0, 0, 0, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_6wmjw"]
+script = ExtResource("1_fkoha")
+id = "radius"
+nickname = "Radius"
+default_value = 50.0
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_2rp6f"]
+script = ExtResource("1_fkoha")
+id = "softness"
+nickname = "Softness"
+default_value = 30.0
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_5t1e2"]
+script = ExtResource("1_fkoha")
+id = "center_x"
+nickname = "Center X"
+default_value = 960
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_2yfib"]
+script = ExtResource("1_fkoha")
+id = "center_y"
+nickname = "Center Y"
+default_value = 540
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_6wmjw")
+shader_path = "res://effects/visual/vignette.glsl"
+id = "vignette"
+nickname = "Vignette"
+params = Array[ExtResource("1_fkoha")]([SubResource("Resource_fkoha"), SubResource("Resource_6wmjw"), SubResource("Resource_2rp6f"), SubResource("Resource_5t1e2"), SubResource("Resource_2yfib")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"

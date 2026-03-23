@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="Resource_pauab"]
 script = ExtResource("1_param")
 id = "horizontal_sigma"
-nickname = "param_horizontal_sigma"
+nickname = "Horizontal"
 default_value = 0.0
 min_value = 0.0
 max_value = 50.0
@@ -15,7 +15,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_sigma"]
 script = ExtResource("1_param")
 id = "vertical_sigma"
-nickname = "param_vertical_sigma"
+nickname = "Vertical"
 default_value = 0.0
 min_value = 0.0
 max_value = 50.0
