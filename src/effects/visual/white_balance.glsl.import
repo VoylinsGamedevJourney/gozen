@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://qkfnt7idf5ng"
+path="res://.godot/imported/white_balance.glsl-1f77f02f161059bc56a0f5992ef07d45.res"
+
+[deps]
+
+source_file="res://effects/visual/white_balance.glsl"
+dest_files=["res://.godot/imported/white_balance.glsl-1f77f02f161059bc56a0f5992ef07d45.res"]
+
+[params]
+
