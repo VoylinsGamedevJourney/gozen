@@ -1,0 +1,13 @@
+baseURL = "https://gozen.voylin.com/"
+languageCode = "en-us"
+title = "GoZen - Video editor"
+
+[params]
+  author = "Voylin"
+  default_thumbnail = "default.webp"
+  twitter_handle = "@VoylinsLife"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true # Required to allow raw HTML inside Markdown content files

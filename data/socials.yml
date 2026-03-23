@@ -1,0 +1,15 @@
+- link: https://www.youtube.com/@voylinsgamedevjourney
+  icon: fab fa-youtube
+  label: YouTube
+- link: https://github.com/voylinsgamedevjourney/gozen
+  icon: fab fa-github
+  label: GitHub
+- link: https://discord.gg/BdbUf7VKYC
+  icon: fab fa-discord
+  label: Discord
+- link: https://ko-fi.com/voylin
+  icon: fas fa-mug-hot
+  label: Ko-fi
+- link: https://patreon.com/voylin
+  icon: fa-brands fa-patreon
+  label: Patreon

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>{{ .Site.Title }}</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="{{ .Site.Params.author }}">
+	<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+	<meta name="description" content="{{ .Description }}">
+	{{ with .Params.tags }}
+	<meta name="keywords" content="{{ delimit . " , " }}">{{ end }}
+
+	<!-- Open Graph (for social sharing) -->
+	<meta property="og:title"
+		content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}" />
+	<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+	<meta property="og:url" content="{{ .Permalink }}">
+	<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}GoZen - Video editor{{ end }}" />
+	<meta property="og:image"
+		content='{{ with .Params.image }}{{ . | absURL }}{{ else }}{{ "/default.webp" | absURL }}{{ end }}' />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:creator" content="{{ .Site.Params.twitter_handle }}">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@VoylinsLife" />
+	<meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}" />
+	<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}Voylin's site{{ end }}" />
+	<meta name="twitter:image"
+		content='{{ with .Params.image }}{{ . | absURL }}{{ else }}{{ "/default.webp" | absURL }}{{ end }}' />
+
+	<!-- Favicon -->
+	<link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/favicon/site.webmanifest">
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+	<!-- Javascript -->
+	<script src="/script.js" defer></script>
+</head>
+
+<body>
+	<header>
+		<div class="container nav-container">
+			<div class="logo">
+				<img src="/images/logo.svg" alt="GoZen Logo">
+				<h1>GoZen</h1>
+			</div>
+			<button class="mobile-menu-btn">☰</button>
+			<nav class="nav-links">
+				<ul>
+					<li><a href="#features">Features</a></li>
+					<li><a href="#sponsors">Sponsors</a></li>
+					<li><a href="#support">Support</a></li>
+					<li><a href="#status">Status</a></li>
+					<li><a href="https://github.com/voylinsgamedevjourney/gozen" target="_blank">GitHub</a></li>
+					<li><a href="https://github.com/VoylinsGamedevJourney/gozen/releases" class="btn-top">Download
+							Alpha</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<!-- Floating Social Icons -->
+	<div class="social-icons">
+		{{ range .Site.Data.socials }}
+		<a href="{{ .link }}" aria-label="{{ .label }}" target="_blank"><i class="{{ .icon }}"></i></a>
+		{{ end }}
+	</div>
+
+	<main>
+		{{ block "main" . }}{{ end }}
+	</main>
+
+	<footer>
+		<p>&copy; {{ now.Format "2006" }} GoZen - Voylin's Gamedev Journey. All rights reserved.</p>
+		<div class="social-icons"
+			style="position: static; flex-direction: row; justify-content: center; margin-top: 1rem;">
+			{{ range .Site.Data.socials }}
+			<a href="{{ .link }}" aria-label="{{ .label }}" target="_blank"><i class="{{ .icon }}"></i></a>
+			{{ end }}
+		</div>
+	</footer>
+</body>
+
+</html>
