@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://da8ffh07cspxj"
+path="res://.godot/imported/soften.glsl-3d21b44e3038c228dae54a632548aea9.res"
+
+[deps]
+
+source_file="res://effects/visual/soften.glsl"
+dest_files=["res://.godot/imported/soften.glsl-3d21b44e3038c228dae54a632548aea9.res"]
+
+[params]
+

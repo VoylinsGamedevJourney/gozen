@@ -1,21 +1,24 @@
-[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://wb_effect_visual_uid_1"][ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"][ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"][sub_resource type="Resource" id="Resource_temperature"]
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://kuyj3x43rxyp"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_temperature"]
 script = ExtResource("1_param")
 id = "temperature"
-nickname = "param_temperature"
+nickname = "Temperature"
 default_value = 0.0
 min_value = -1.0
 max_value = 1.0
-keyframeable = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_tint"]
 script = ExtResource("1_param")
 id = "tint"
-nickname = "param_tint"
+nickname = "Tint"
 default_value = 0.0
 min_value = -1.0
 max_value = 1.0
-keyframeable = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]

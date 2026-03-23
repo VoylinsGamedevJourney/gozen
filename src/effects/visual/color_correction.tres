@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="Resource_tint"]
 script = ExtResource("1_param")
 id = "tint"
-nickname = "param_tint"
+nickname = "Tint"
 default_value = Color(1, 1, 1, 1)
 min_value = null
 max_value = null
@@ -15,7 +15,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_brightness"]
 script = ExtResource("1_param")
 id = "brightness"
-nickname = "param_brightness"
+nickname = "Brightness"
 default_value = 0.0
 min_value = -1.0
 max_value = 2.0
@@ -24,7 +24,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_contrast"]
 script = ExtResource("1_param")
 id = "contrast"
-nickname = "param_contrast"
+nickname = "Contrast"
 default_value = 1.0
 min_value = 0.0
 max_value = 5.0
@@ -33,7 +33,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_saturation"]
 script = ExtResource("1_param")
 id = "saturation"
-nickname = "param_saturation"
+nickname = "Saturation"
 default_value = 1.0
 min_value = 0.0
 max_value = 5.0
@@ -42,7 +42,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_tint_amount"]
 script = ExtResource("1_param")
 id = "tint_amount"
-nickname = "param_tint_amount"
+nickname = "Tint amount"
 default_value = 0.0
 min_value = 0.0
 max_value = 1.0
@@ -51,7 +51,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_red_value"]
 script = ExtResource("1_param")
 id = "red_value"
-nickname = "param_red_value"
+nickname = "Red value"
 default_value = 1.0
 min_value = 0.0
 max_value = 5.0
@@ -60,7 +60,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_green_value"]
 script = ExtResource("1_param")
 id = "green_value"
-nickname = "param_green_value"
+nickname = "Green value"
 default_value = 1.0
 min_value = 0.0
 max_value = 5.0
@@ -69,7 +69,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 [sub_resource type="Resource" id="Resource_blue_value"]
 script = ExtResource("1_param")
 id = "blue_value"
-nickname = "param_blue_value"
+nickname = "Blue value"
 default_value = 1.0
 min_value = 0.0
 max_value = 5.0
