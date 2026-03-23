@@ -32,7 +32,7 @@ threads_spin_box = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContai
 metadata/_tab_index = 1
 
 [node name="RenderOptionsPanel" type="PanelContainer" parent="." unique_id=320643140]
-custom_minimum_size = Vector2(500, 100)
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"box"
@@ -51,7 +51,6 @@ layout_mode = 2
 horizontal_scroll_mode = 0
 
 [node name="VBox" type="VBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer" unique_id=1695172238]
-custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

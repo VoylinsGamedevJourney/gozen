@@ -623,9 +623,21 @@ func _get_drag_data(_p: Vector2) -> Variant:
 
 
 func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
+	if data is EffectsPanel.DragData:
+		var drag_data: EffectsPanel.DragData = data
+		var clip_on_mouse: ClipData = _get_clip_on_mouse()
+		if not clip_on_mouse:
+			return false
+		if drag_data.is_visual and clip_on_mouse.type not in EditorCore.VISUAL_TYPES:
+			return false
+		if not drag_data.is_visual and clip_on_mouse.type not in EditorCore.AUDIO_TYPES:
+			return false
+		return true
+
 	if data is not Draggable:
 		draw_preview.queue_redraw()
 		return false
+
 	var result: bool
 	draggable = data
 	if draggable.is_file:
@@ -756,12 +768,18 @@ func _can_move_clips() -> bool:
 
 
 func _drop_data(_p: Vector2, data: Variant) -> void:
-	if data is not Draggable:
+	if data is EffectsPanel.DragData:
+		var drag_data: EffectsPanel.DragData = data
+		var clip: ClipData = _get_clip_on_mouse()
+		if clip:
+			var new_effect: Effect = drag_data.effect.duplicate(true)
+			new_effect.keyframes = drag_data.effect.keyframes.duplicate(true)
+			new_effect._cache_dirty = true
+			EffectsHandler.add_effect(clip, new_effect, drag_data.is_visual)
 		return
-	if state not in [STATE.DROPPING, STATE.MOVING]:
+	elif data is not Draggable or state not in[STATE.DROPPING, STATE.MOVING]:
 		return
-
-	if draggable.is_file: # Creating new clips (ids are file ids!)
+	elif draggable.is_file: # Creating new clips (ids are file ids!)
 		var requests: Array[ClipRequest] = []
 		var total_duration: int = 0
 		for file_id: int in draggable.ids:

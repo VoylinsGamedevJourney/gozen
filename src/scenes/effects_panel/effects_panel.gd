@@ -1,3 +1,4 @@
+class_name EffectsPanel
 extends PanelContainer
 
 
@@ -58,15 +59,15 @@ func _notification(what: int) -> void:
 
 func _get_drag_data_effect(_pos: Vector2, index: int, is_visual: bool) -> Variant:
 	var drag_data: DragData = DragData.new()
-	drag_data.is_visual = is_visual
-	drag_data.effect_index = index
-
 	var effect: Effect
 	var preview: Label = Label.new()
 	if is_visual:
 		effect = current_clip.effects.video[index]
 	else:
 		effect = current_clip.effects.audio[index]
+	drag_data.is_visual = is_visual
+	drag_data.effect_index = index
+	drag_data.effect = effect
 	preview.text = "Moving: " + effect.nickname
 	set_drag_preview(preview)
 
@@ -813,3 +814,4 @@ func _text_keyframe_button_pressed(param_id: String) -> void:
 class DragData:
 	var is_visual: bool
 	var effect_index: int
+	var effect: Effect
