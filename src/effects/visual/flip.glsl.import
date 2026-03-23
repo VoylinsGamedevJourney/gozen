@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dtcpk7vw3ujdx"
+path="res://.godot/imported/flip.glsl-5173053c2fd4c68494783d19cd3e114e.res"
+
+[deps]
+
+source_file="res://effects/visual/flip.glsl"
+dest_files=["res://.godot/imported/flip.glsl-5173053c2fd4c68494783d19cd3e114e.res"]
+
+[params]
+

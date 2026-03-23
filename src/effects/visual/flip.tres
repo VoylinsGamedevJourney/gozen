@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://flip_effect_visual_uid_1"][ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"][ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"][sub_resource type="Resource" id="Resource_horizontal"]
+script = ExtResource("1_param")
+id = "horizontal"
+nickname = "param_horizontal"
+default_value = false
+min_value = null
+max_value = null
+keyframeable = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_vertical"]
+script = ExtResource("1_param")
+id = "vertical"
+nickname = "param_vertical"
+default_value = false
+min_value = null
+max_value = null
+keyframeable = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/flip.glsl"
+id = "flip"
+nickname = "Flip"
+params = Array[ExtResource("1_param")]([SubResource("Resource_horizontal"), SubResource("Resource_vertical")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"
