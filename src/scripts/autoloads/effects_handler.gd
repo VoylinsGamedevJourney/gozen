@@ -27,6 +27,10 @@ var param_exceptions: Dictionary[String, Dictionary] = {
 		"center_x": func() -> float: return Project.get_resolution_center().x,
 		"center_y": func() -> float: return Project.get_resolution_center().y
 	},
+	"vignette": {
+		"center_x": func() -> float: return Project.get_resolution_center().x,
+		"center_y": func() -> float: return Project.get_resolution_center().y
+	},
 }
 
 

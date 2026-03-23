@@ -2,6 +2,9 @@ class_name EffectsPanel
 extends PanelContainer
 
 
+signal update_values(frame_nr: int)
+
+
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
@@ -287,36 +290,43 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 
 	# Adding effect params.
 	var keyframes_found: bool = false
-	for param: EffectParam in effect.params:
-		var param_hbox: HBoxContainer = HBoxContainer.new()
-		var param_id: String = param.id
-		var param_title: Label = Label.new()
-		var param_settings: Control = _create_param_control(param, index, is_visual, false)
+	var custom_ui: EffectUI = effect.get_custom_ui()
+	if custom_ui:
+		content_vbox.add_child(custom_ui.get_ui(update_values))
+		for param: EffectParam in effect.params:
+			if param.keyframeable:
+				keyframes_found = true
+	else:
+		for param: EffectParam in effect.params:
+			var param_hbox: HBoxContainer = HBoxContainer.new()
+			var param_id: String = param.id
+			var param_title: Label = Label.new()
+			var param_settings: Control = _create_param_control(param, index, is_visual, false)
 
-		param_title.text = param.nickname.replace("param_", "").capitalize()
-		param_title.tooltip_text = param.tooltip
-		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		param_title.clip_text = true
-		param_settings.name = "PARAM_" + param_id
+			param_title.text = param.nickname.replace("param_", "").capitalize()
+			param_title.tooltip_text = param.tooltip
+			param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			param_title.clip_text = true
+			param_settings.name = "PARAM_" + param_id
 
-		param_hbox.add_child(param_title)
-		param_hbox.add_child(param_settings)
+			param_hbox.add_child(param_title)
+			param_hbox.add_child(param_settings)
 
-		if param.keyframeable:
-			var param_keyframe_button: TextureButton = TextureButton.new()
-			param_keyframe_button.name = "KEYFRAME_" + param_id
-			param_keyframe_button.ignore_texture_size = true
-			param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-			param_keyframe_button.custom_minimum_size.x = 14
-			param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
-					index, is_visual, param_id))
-			if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
-				param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
-			else:
-				param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
-			param_hbox.add_child(param_keyframe_button)
-			keyframes_found = true
-		content_vbox.add_child(param_hbox)
+			if param.keyframeable:
+				var param_keyframe_button: TextureButton = TextureButton.new()
+				param_keyframe_button.name = "KEYFRAME_" + param_id
+				param_keyframe_button.ignore_texture_size = true
+				param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+				param_keyframe_button.custom_minimum_size.x = 14
+				param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
+						index, is_visual, param_id))
+				if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
+					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+				else:
+					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+				param_hbox.add_child(param_keyframe_button)
+				keyframes_found = true
+			content_vbox.add_child(param_hbox)
 
 	if keyframes_found:
 		var track_scroll: ScrollContainer = ScrollContainer.new()
@@ -534,22 +544,28 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 		effect_container.folded = true
 
 	var keyframes_found: bool = false
-	for i: int in effect.params.size():
-		var param: EffectParam = effect.params[i]
-		var param_id: String = param.id
-		var param_hbox: HBoxContainer = content_vbox.get_child(i)
-		var param_settings: Control = param_hbox.get_child(1)
-		var value: Variant = effect.get_value(param, frame_nr)
-		_set_param_settings_value(param_settings, value)
+	if !effect.custom_ui_path.is_empty():
+		update_values.emit(frame_nr)
+		for param: EffectParam in effect.params:
+			if param.keyframeable:
+				keyframes_found = true
+	else:
+		for i: int in effect.params.size():
+			var param: EffectParam = effect.params[i]
+			var param_id: String = param.id
+			var param_hbox: HBoxContainer = content_vbox.get_child(i)
+			var param_settings: Control = param_hbox.get_child(1)
+			var value: Variant = effect.get_value(param, frame_nr)
+			_set_param_settings_value(param_settings, value)
 
-		var effect_keyframes: Dictionary = effect.keyframes[param_id]
-		if param.keyframeable:
-			var keyframe_button: TextureButton = param_hbox.get_child(2)
-			if effect_keyframes.has(frame_nr):
-				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
-			else:
-				keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
-			keyframes_found = true
+			var effect_keyframes: Dictionary = effect.keyframes[param_id]
+			if param.keyframeable:
+				var keyframe_button: TextureButton = param_hbox.get_child(2)
+				if effect_keyframes.has(frame_nr):
+					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+				else:
+					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+				keyframes_found = true
 
 	if keyframes_found:
 		var scroll: ScrollContainer = content_vbox.get_child(-1)
