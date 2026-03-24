@@ -78,18 +78,12 @@ func _process(delta: float) -> void:
 		if !needs_delay or data_set_frame != Engine.get_process_frames():
 			update_views()
 
-	if !is_playing:
-		return
-	skips = 0
-	time_elapsed += delta * playback_speed
-	if time_elapsed < frame_time:
-		return # Check if enough time has passed.
-
-	while time_elapsed >= frame_time:
-		time_elapsed -= frame_time
-		skips += 1
-	frame_nr += skips
-	set_frame(frame_nr)
+	if is_playing:
+		time_elapsed += delta * playback_speed
+		if time_elapsed >= frame_time:
+			skips = int(time_elapsed / frame_time)
+			time_elapsed -= skips * frame_time
+			set_frame(frame_nr + skips)
 
 
 func _on_project_ready() -> void:
@@ -275,20 +269,6 @@ func find_audio(frame: int, track: int) -> ClipData:
 	return clip if clip and clip.type in AUDIO_TYPES else null
 
 
-func update_audio() -> void:
-	for player: AudioPlayer in audio_players:
-		var clip: ClipData = player.clip
-		if !clip:
-			continue
-		elif !ClipLogic.clips.has(clip.id):
-			player.stop()
-			continue
-
-		player.stop_frame = clip.end
-		if frame_nr < clip.start or frame_nr >= clip.end:
-			player.stop()
-
-
 # --- Video stuff ---
 
 func update_data(track: int) -> void:
@@ -364,7 +344,6 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	ClipLogic.load_video_frame(clip, relative_frame, instance_index)
 
 	if clip.type == TYPE.TEXT:
-		#var texture_rid: RID = text_viewport.get_texture().get_rid() # TODO: Switch to using the RID directly.
 		var image: Image = text_viewports[track_id].get_texture().get_image()
 		var image_texture: ImageTexture = ImageTexture.create_from_image(image)
 		if update or Vector2i(image_texture.get_size()) != compositors[track_id].resolution:
