@@ -27,6 +27,7 @@ var marker_rects: Dictionary[int, Rect2] = {} # { frame_nr: hitbox }
 var _possible_drag: int = -1
 var _drag_offset: float = 0.0
 var _drag_start_pos: Vector2 = Vector2.ZERO
+var _scrub_frame: int = -1
 
 
 
@@ -43,6 +44,12 @@ func _ready() -> void:
 	_setup_marker_style_box()
 
 
+func _process(_delta: float) -> void:
+	if _scrub_frame != -1:
+		EditorCore.set_frame(_scrub_frame)
+		_scrub_frame = -1
+
+
 func _on_project_ready() -> void:
 	update_stamps()
 
@@ -56,7 +63,7 @@ func _gui_input(event: InputEvent) -> void:
 		if MarkerLogic.dragged_marker:
 			queue_redraw()
 		elif scrubbing:
-			_seek_to_mouse()
+			_scrub_frame = _get_frame_on_mouse()
 		else:
 			_update_hovered_marker()
 			_update_tooltip()
@@ -73,7 +80,7 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 			scrubbing = false
 		else:
 			scrubbing = true
-			_seek_to_mouse()
+			_scrub_frame = _get_frame_on_mouse()
 	else: # Mouse released
 		var marker: MarkerData = MarkerLogic.dragged_marker
 		if marker:
@@ -92,10 +99,6 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 
 func _get_frame_on_mouse() -> int:
 	return maxi(0, floori(get_local_mouse_position().x / current_zoom))
-
-
-func _seek_to_mouse() -> void:
-	EditorCore.set_frame(_get_frame_on_mouse())
 
 
 func _draw() -> void:

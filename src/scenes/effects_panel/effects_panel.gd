@@ -25,6 +25,8 @@ var current_file: FileData = null
 var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
 
+var _scrub_frame: int = -1
+
 
 
 func _ready() -> void:
@@ -40,6 +42,12 @@ func _ready() -> void:
 	section_audio.add_title_bar_control(_get_add_effects_button(false))
 	section_visuals.folded = true
 	section_audio.folded = true
+
+
+func _process(_delta: float) -> void:
+	if _scrub_frame != -1:
+		EditorCore.set_frame(_scrub_frame)
+		_scrub_frame = -1
 
 
 func _project_ready() -> void:
@@ -361,7 +369,7 @@ func _on_keyframe_deleted_effect_ui(frame: int, effect_index: int, is_visual: bo
 
 
 func _on_keyframe_dragged_to_effect_ui(relative_frame: int) -> void:
-	EditorCore.set_frame(current_clip.start + relative_frame)
+	_scrub_frame = current_clip.start + relative_frame
 
 
 func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_text: bool) -> Control:

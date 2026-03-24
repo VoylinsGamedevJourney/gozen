@@ -19,6 +19,8 @@ var current_file_id: int = -1
 var current_clip_id: int = -1
 var file_b_id: int = -1
 
+var _scrub_time: float = -1.0
+
 
 
 func _input(event: InputEvent) -> void:
@@ -34,6 +36,20 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
+	if _scrub_time != -1.0:
+		var is_playing: bool = file_a_player.playing or file_b_player.playing
+		if is_playing:
+			_stop_playback()
+
+		file_a_wave.set("playback_position", _scrub_time)
+		file_b_wave.set("playback_position", _scrub_time)
+		file_a_wave.queue_redraw()
+		file_b_wave.queue_redraw()
+
+		if is_playing:
+			_start_playback(_scrub_time)
+		_scrub_time = -1.0
+
 	if !file_a_player.playing:
 		return
 
@@ -148,14 +164,4 @@ func _stop_playback() -> void:
 
 
 func _on_wave_seek_request(playback_position: float) -> void:
-	var is_playing: bool = file_a_player.playing or file_b_player.playing
-	if is_playing:
-		_stop_playback()
-
-	file_a_wave.set("playback_position", playback_position)
-	file_b_wave.set("playback_position", playback_position)
-	file_a_wave.queue_redraw()
-	file_b_wave.queue_redraw()
-
-	if is_playing:
-		_start_playback(playback_position)
+	_scrub_time = playback_position

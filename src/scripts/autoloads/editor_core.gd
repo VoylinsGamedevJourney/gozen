@@ -69,8 +69,14 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if data_ready and data_set_frame != Engine.get_process_frames():
-		update_views()
+	if data_ready:
+		var needs_delay: bool = false
+		for clip: ClipData in loaded_clips:
+			if clip and clip.type in [TYPE.TEXT, TYPE.PCK]:
+				needs_delay = true
+				break
+		if !needs_delay or data_set_frame != Engine.get_process_frames():
+			update_views()
 
 	if !is_playing:
 		return
@@ -224,7 +230,7 @@ func update_frame() -> void:
 
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
-		frame_nr = new_frame
+		self.frame_nr = new_frame
 		return
 
 	var file_access_counter: Dictionary = {} ## { file: count } (Needed for videos)
@@ -257,6 +263,7 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			view_textures[track].texture = null
 	if frame_nr == Project.data.timeline_end:
 		is_playing = false
+
 	data_ready = true
 	data_set_frame = Engine.get_process_frames()
 

@@ -140,7 +140,8 @@ func start_encoder() -> void:
 	# Because of labels and other draw() stuff which takes a frame to show, we
 	# need to prepare the data in one frame and show it in the next frame.
 	EditorCore.frame_nr = 0 # We set the first frame data ready.
-	await EditorCore.frame_changed # View should be ready.
+	if EditorCore.data_ready:
+		await EditorCore.frame_changed # View should be ready.
 	EditorCore.frame_nr = 1 # We prepare the second frame data directly.
 
 	for i: int in project_data.timeline_end + 1:

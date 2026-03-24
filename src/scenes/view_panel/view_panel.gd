@@ -14,6 +14,7 @@ extends PanelContainer
 func _ready() -> void:
 	EditorCore.play_changed.connect(_on_play_changed)
 	EditorCore.frame_changed.connect(_on_frame_changed)
+	_on_play_changed(EditorCore.is_playing)
 
 	frame_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	frame_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

@@ -108,6 +108,7 @@ var track_total_size: float = track_height + TRACK_LINE_WIDTH
 
 var _update_clips: bool = true
 var _drop_valid: bool = false
+var _scrub_frame: int = -1
 
 
 
@@ -134,6 +135,12 @@ func _ready() -> void:
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
+
+
+func _process(_delta: float) -> void:
+	if _scrub_frame != -1:
+		move_playhead(_scrub_frame)
+		_scrub_frame = -1
 
 
 # --- Drawing functions ---
@@ -449,7 +456,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				draw_box_selection.queue_redraw()
 			else:
 				state = STATE.SCRUBBING
-				move_playhead(get_frame_from_mouse())
+				_scrub_frame = get_frame_from_mouse()
 		else:
 			if !event.shift_pressed:
 				selected_clips = [pressed_clip]
@@ -505,7 +512,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			_handle_fade_motion()
 		STATE.SCRUBBING:
 			if event.button_mask & MOUSE_BUTTON_LEFT:
-				move_playhead(get_frame_from_mouse())
+				_scrub_frame = get_frame_from_mouse()
 		STATE.BOX_SELECTING:
 			box_select_end = get_local_mouse_position()
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
