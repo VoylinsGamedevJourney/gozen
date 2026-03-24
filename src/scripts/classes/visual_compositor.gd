@@ -121,6 +121,11 @@ func _init_ping_pong() -> void:
 	initialized = true
 
 
+func initialize_texture(size: Vector2i) -> void:
+	_init_start(size)
+	_init_ping_pong()
+
+
 func initialize_image(image: Texture2D) -> void:
 	_init_start(image.get_size())
 
@@ -242,14 +247,40 @@ func process_image_frame(effects: Array[EffectVisual], frame_nr: int, fade_alpha
 		return
 
 	_update_effect_buffers(effects, frame_nr)
-
 	device.texture_copy(
 		base_image, ping_texture,
 		Vector3.ZERO, Vector3.ZERO,
 		Vector3(resolution.x, resolution.y, 1),
 		0, 0, 0, 0)
-
 	_process_frame(device.compute_list_begin(), effects, fade_alpha)
+
+
+func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
+	if not initialized:
+		return
+
+	_update_effect_buffers(effects, frame_nr)
+	var compute_list: int = device.compute_list_begin()
+	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(texture_rid)
+	if not rd_input_tex.is_valid():
+		device.compute_list_end()
+		return
+
+	device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
+	var buffer_data: PackedByteArray = PackedByteArray()
+	buffer_data.resize(16)
+	buffer_data.encode_float(0, 1.0) # Copy without fade initially
+	device.buffer_update(fade_buffer, 0, 16, buffer_data)
+
+	var copy_uniforms: Array[RDUniform] =[
+			_create_sampler_uniform(rd_input_tex, 0),
+			_create_image_uniform(ping_texture, 1),
+			_create_buffer_uniform(fade_buffer, 2)]
+	var copy_set: RID = device.uniform_set_create(copy_uniforms, fade_shader, 0)
+	device.compute_list_bind_uniform_set(compute_list, copy_set, 0)
+	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
+	device.compute_list_add_barrier(compute_list)
+	_process_frame(compute_list, effects, fade_alpha)
 
 
 func cleanup() -> void:
