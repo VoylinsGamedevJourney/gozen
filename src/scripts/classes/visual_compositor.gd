@@ -70,7 +70,7 @@ var display_texture: Texture2DRD
 var default_sampler: RID
 
 var effects_cache: Dictionary[String, EffectCache] = {} # { shader_path : shader cache }
-var effect_buffers: Dictionary[int, RID] = {} # { effect_instance_id : RID }
+var effect_buffers: Dictionary[int, Array] = {} # { effect_instance_id : [RID, RID, ...] }
 
 var resolution: Vector2i
 var initialized: bool = false
@@ -297,17 +297,16 @@ func cleanup() -> void:
 	yuv_pipeline = Utils.cleanup_rid(device, yuv_pipeline)
 	yuv_shader = Utils.cleanup_rid(device, yuv_shader)
 
-	# Image cleanup
+	# Image cleanup.
 	base_image = Utils.cleanup_rid(device, base_image)
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)
-
 	effects_cache.clear()
 
-	for buffer: RID in effect_buffers.values():
-		Utils.cleanup_rid(device, buffer)
-
+	for buffers: Array in effect_buffers.values():
+		for buffer: RID in buffers:
+			Utils.cleanup_rid(device, buffer)
 	effect_buffers.clear()
 
 
@@ -321,17 +320,27 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 		if not cache:
 			continue
 
-		var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution)
 		var id: int = effect.get_instance_id()
+		if not effect_buffers.has(id):
+			effect_buffers[id] =[]
 
-		if effect_buffers.has(id):
-			device.buffer_update(effect_buffers[id], 0, buffer_data.size(), buffer_data)
+		var buffers: Array = effect_buffers[id]
+
+		if buffers.size() != effect.shader_passes:
+			for b: RID in buffers:
+				Utils.cleanup_rid(device, b)
+			buffers.clear()
+			for i: int in effect.shader_passes:
+				var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution, i)
+				buffers.append(device.uniform_buffer_create(buffer_data.size(), buffer_data))
 		else:
-			effect_buffers[id] = device.uniform_buffer_create(buffer_data.size(), buffer_data)
+			for i: int in effect.shader_passes:
+				var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution, i)
+				device.buffer_update(buffers[i] as RID, 0, buffer_data.size(), buffer_data)
 
 
 func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha: float) -> void:
-	# Start handling the effects
+	# Start handling the effects.
 	for effect: EffectVisual in effects:
 		if not effect.is_enabled:
 			continue
@@ -340,27 +349,27 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha:
 		if not cache:
 			continue
 
-		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
+		for pass_index: int in effect.shader_passes:
+			device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 
-		# Create uniforms for effect
-		# - binding 0: input image
-		# - binding 1: output image
-		# - binding 2: params
-		var effect_uniforms: Array[RDUniform] = [
-			_create_sampler_uniform(ping_texture, 0),
-			_create_image_uniform(pong_texture, 1),
-			_create_buffer_uniform(effect_buffers[effect.get_instance_id()], 2)]
-		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
+			# Create uniforms for effect:
+			# - binding 0: input image
+			# - binding 1: output image
+			# - binding 2: params
+			var effect_uniforms: Array[RDUniform] =[
+				_create_sampler_uniform(ping_texture, 0),
+				_create_image_uniform(pong_texture, 1),
+				_create_buffer_uniform(effect_buffers[effect.get_instance_id()][pass_index] as RID, 2)]
+			var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
 
-		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
-		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
-		device.compute_list_add_barrier(compute_list)
+			device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
+			device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
+			device.compute_list_add_barrier(compute_list)
 
-		# Swap buffers
-		var temp_texture: RID = ping_texture
-
-		ping_texture = pong_texture
-		pong_texture = temp_texture
+			# Swap buffers.
+			var temp_texture: RID = ping_texture
+			ping_texture = pong_texture
+			pong_texture = temp_texture
 
 	if fade_alpha < 1.0:
 		device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)

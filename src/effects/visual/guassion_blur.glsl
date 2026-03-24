@@ -13,6 +13,7 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 layout(set = 0, binding = 2, std140) uniform Params {
     float horizontal_sigma;
     float vertical_sigma;
+    int pass_index;
 } params;
 
 
@@ -23,26 +24,33 @@ void main() {
 		return;
 	}
 
-	int rx = int(ceil(params.horizontal_sigma * 2.0));
-    int ry = int(ceil(params.vertical_sigma * 2.0));
-
-    if (rx <= 0 && ry <= 0) {
-        imageStore(output_image, id, texelFetch(source_image, id, 0));
-        return;
-    }
-
     vec4 color = vec4(0.0);
     float weightSum = 0.0;
-
-    float sigma_x = max(params.horizontal_sigma, 0.0001);
-    float sigma_y = max(params.vertical_sigma, 0.0001);
-    float twoSigmaSqX = 2.0 * sigma_x * sigma_x;
-    float twoSigmaSqY = 2.0 * sigma_y * sigma_y;
-
-    for (int x = -rx; x <= rx; x++) {
+    if (params.pass_index == 0) {
+        int rx = int(ceil(params.horizontal_sigma * 2.0));
+        if (rx <= 0) {
+            imageStore(output_image, id, texelFetch(source_image, id, 0));
+            return;
+        }
+        float sigma_x = max(params.horizontal_sigma, 0.0001);
+        float twoSigmaSqX = 2.0 * sigma_x * sigma_x;
+        for (int x = -rx; x <= rx; x++) {
+            ivec2 coord = clamp(id + ivec2(x, 0), ivec2(0), out_size - ivec2(1));
+            float weight = exp(-(float(x * x) / twoSigmaSqX));
+            color += texelFetch(source_image, coord, 0) * weight;
+            weightSum += weight;
+        }
+    } else {
+        int ry = int(ceil(params.vertical_sigma * 2.0));
+        if (ry <= 0) {
+            imageStore(output_image, id, texelFetch(source_image, id, 0));
+            return;
+        }
+        float sigma_y = max(params.vertical_sigma, 0.0001);
+        float twoSigmaSqY = 2.0 * sigma_y * sigma_y;
         for (int y = -ry; y <= ry; y++) {
-            ivec2 coord = clamp(id + ivec2(x, y), ivec2(0), out_size - ivec2(1));
-            float weight = exp(-(float(x * x) / twoSigmaSqX + float(y * y) / twoSigmaSqY));
+            ivec2 coord = clamp(id + ivec2(0, y), ivec2(0), out_size - ivec2(1));
+            float weight = exp(-(float(y * y) / twoSigmaSqY));
             color += texelFetch(source_image, coord, 0) * weight;
             weightSum += weight;
         }

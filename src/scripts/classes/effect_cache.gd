@@ -18,7 +18,7 @@ func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: EffectVis
 	pipeline = device.compute_pipeline_create(shader)
 
 
-func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i) -> PackedByteArray:
+func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i, pass_index: int = 0) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 	var processed_matrices: Array[Matrix.TYPE] = []
 
@@ -74,6 +74,8 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i) 
 				stream.put_float(value.a as float)
 			_: printerr("EffectCache: Unsupported type! %s-%s" % [value, typeof(value)])
 
+	_pad_stream(stream, 4)
+	stream.put_32(pass_index)
 	var buffer_data: PackedByteArray = stream.data_array
 	var padding: int = 16 - (buffer_data.size() % 16)
 	if padding != 0: # Add final padding
