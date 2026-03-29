@@ -9,7 +9,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5q5vg"]
 
-[node name="Editor" type="PanelContainer" unique_id=46089087 node_paths=PackedStringArray("menu_bar", "screen_tab_container")]
+[node name="Editor" type="PanelContainer" unique_id=46089087 node_paths=PackedStringArray("menu_bar", "screen_tab_container", "vsplit")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,6 +19,7 @@ theme_type_variation = &"background"
 script = ExtResource("1_nbwom")
 menu_bar = NodePath("VBox/MenuBarHBox")
 screen_tab_container = NodePath("VBox/VSplitContainer/ScreenTabContainer")
+vsplit = NodePath("VBox/VSplitContainer")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=1299273465]
 layout_direction = 2

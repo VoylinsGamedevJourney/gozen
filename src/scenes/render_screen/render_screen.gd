@@ -67,6 +67,12 @@ func _ready() -> void:
 	_on_render_profile_option_button_item_selected(0)
 	button_save_render_profile.visible = false
 
+	split_offsets = Settings.data.tab_render_hsplit_offsets
+	dragged.connect(func(_o: int) -> void:
+		Settings.data.tab_render_hsplit_offsets = split_offsets
+		Settings.save()
+	)
+
 
 func _on_project_ready() -> void:
 	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
