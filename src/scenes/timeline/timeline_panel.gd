@@ -146,10 +146,12 @@ func _process(_delta: float) -> void:
 # --- Drawing functions ---
 
 func _draw_track_lines(control: Control) -> void:
+	var scroll_start: float = scroll.scroll_horizontal
+	var scroll_end: float = scroll_start + scroll.size.x
 	for i: int in TrackLogic.tracks.size() - 1:
 		var y_pos: float = track_total_size * (i + 1)
 		control.draw_dashed_line(
-				Vector2(0, y_pos), Vector2(size.x, y_pos),
+				Vector2(scroll_start, y_pos), Vector2(scroll_end, y_pos),
 				TRACK_LINE_COLOR, TRACK_LINE_WIDTH)
 
 
@@ -181,7 +183,10 @@ func _draw_clips(control: Control) -> void:
 		if text_pos_x < scroll_amount  and text_pos_x + CLIP_TEXT_OFFSET.x <= clip_end_x:
 			text_pos_x = scroll_amount
 
-		control.draw_style_box(STYLE_BOXES[clip.type][box_type] as StyleBox, clip_rect)
+		var visible_rect: Rect2 = Rect2(scroll_amount - 100, box_pos.y, scroll.size.x + 200, track_height)
+		var final_rect: Rect2 = clip_rect.intersection(visible_rect)
+		if final_rect.size.x > 0:
+			control.draw_style_box(STYLE_BOXES[clip.type][box_type] as StyleBox, final_rect)
 
 		# - Audio waves (Part of clip blocks)
 		var audio_wave: PackedFloat32Array = FileLogic.audio_wave.get(clip.file, [])
@@ -359,6 +364,9 @@ func _draw_box_selection(control: Control) -> void:
 
 
 func _draw_markers(control: Control) -> void:
+	var scroll_start: float = scroll.scroll_horizontal
+	var scroll_end: float = scroll_start + scroll.size.x
+
 	var dragged_marker: MarkerData = MarkerLogic.dragged_marker
 	for marker: MarkerData in Project.data.markers:
 		var frame_nr: int = marker.frame_nr
@@ -366,6 +374,9 @@ func _draw_markers(control: Control) -> void:
 		var pos_x: float = frame_nr * zoom
 		if dragged_marker and frame_nr == dragged_marker.frame_nr:
 			pos_x = MarkerLogic.dragged_marker_offset
+
+		if pos_x < scroll_start - 10 or pos_x > scroll_end + 10:
+			continue
 
 		control.draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), color * Color(1.0, 1.0, 1.0, 0.3), 1.0)
 		pos_x += 1 # We want a double line with the second one slightly lighter.
