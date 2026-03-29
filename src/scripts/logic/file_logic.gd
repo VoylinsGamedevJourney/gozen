@@ -36,10 +36,9 @@ func _ready() -> void:
 
 
 ## Load everything on startup and give user indication of the progress.
-func _startup_loading(progress: ProgressOverlay, amount: float) -> void:
+func _startup_loading(amount: float) -> void:
 	for file: FileData in files.values():
 		load_data(file)
-		progress.increment_bar(amount)
 
 
 # --- Handling ---
@@ -415,6 +414,7 @@ func _create_wave(file: FileData) -> void:
 
 	var local_wave: PackedFloat32Array = PackedFloat32Array()
 	local_wave.resize(total_blocks)
+	audio_wave[file.id] = local_wave
 	for i: int in total_blocks:
 		var max_abs_amplitude: float = 0.0
 		var start_frame: int = current_frame_index
@@ -441,7 +441,9 @@ func _create_wave(file: FileData) -> void:
 			return
 		local_wave[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
-	audio_wave[file.id] = local_wave
+
+		if i % 50 == 0:
+			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
 
 
 func _on_wave_ready(file: FileData) -> void:

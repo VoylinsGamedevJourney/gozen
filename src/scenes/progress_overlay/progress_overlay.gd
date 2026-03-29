@@ -36,15 +36,20 @@ func update(value: int, text: String) -> void:
 	_update_estimate()
 
 
+func set_bar(value: int) -> void:
+	if _tween:
+		_tween.kill()
+	_target_value = value
+	progress_bar.value = _target_value
+
+
 func update_bar(value: int) -> void:
 	if _tween:
 		_tween.kill()
-	if value - progress_bar.value > 20:
-		progress_bar.value = value
-	else:
-		_tween = create_tween()
-		@warning_ignore("return_value_discarded")
-		_tween.tween_property(progress_bar, "value", _target_value, 0.5)
+	_target_value = value
+	_tween = create_tween()
+	@warning_ignore("return_value_discarded")
+	_tween.tween_property(progress_bar, "value", _target_value, 0.5)
 
 
 func update_hint(text: String) -> void:

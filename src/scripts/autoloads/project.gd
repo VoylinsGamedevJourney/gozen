@@ -115,7 +115,8 @@ func open(new_project_path: String) -> void:
 		add_child(dialog)
 		dialog.popup_centered()
 
-	FileLogic._startup_loading(loading_overlay, (1.0 / maxf(1.0, float(data.files.size()))) * 85.0)
+	FileLogic._startup_loading((1.0 / maxf(1.0, float(data.files.size()))) * 85.0)
+	loading_overlay.update_bar(98)
 
 	var all_loaded: bool = false
 	while not all_loaded:
@@ -132,7 +133,7 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update(99, tr("Finalizing ..."))
 	_update_recent_projects(get_project_path())
 
-	loading_overlay.update_bar(100)
+	loading_overlay.set_bar(100)
 	get_window().title = "GoZen - %s" % get_project_path().get_file().get_basename()
 	PopupManager.close(PopupManager.PROGRESS)
 
