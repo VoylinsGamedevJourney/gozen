@@ -229,7 +229,20 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 	var base_y: float = rect.position.y
 	var step: int = maxi(1, int(2.0 / zoom))
 
-	for i: int in range(0, display_duration, step):
+	var start_i: int = 0
+	var end_i: int = display_duration
+
+	var scroll_start: float = scroll.scroll_horizontal
+	var scroll_end: float = scroll_start + scroll.size.x
+
+	if base_x < scroll_start:
+		start_i = floori((scroll_start - base_x) / zoom)
+	if base_x + (display_duration * zoom) > scroll_end:
+		end_i = ceili((scroll_end - base_x) / zoom)
+
+	start_i -= start_i % step
+
+	for i: int in range(start_i, end_i, step):
 		var wave_index: int = display_begin_offset + int(i * speed)
 		if wave_index >= wave_data.size():
 			break
@@ -416,7 +429,11 @@ func _gui_input(event: InputEvent) -> void:
 
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	if state == STATE.CURSOR_MODE_CUT:
-		return cut_clip_at(_get_clip_on_mouse(), get_frame_from_mouse())
+		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+			var target: ClipData = _get_clip_on_mouse()
+			if target:
+				cut_clip_at(target, get_frame_from_mouse())
+		return
 	elif event.is_released():
 		match state:
 			STATE.RESIZING: _commit_current_resize()
@@ -510,6 +527,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
 		STATE.CURSOR_MODE_CUT:
 			mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
+			draw_mode.queue_redraw()
 		STATE.FADING:
 			_handle_fade_motion()
 		STATE.SCRUBBING:
