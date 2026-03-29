@@ -346,7 +346,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	if clip.type == TYPE.TEXT:
 		var image: Image = text_viewports[track_id].get_texture().get_image()
 		var image_texture: ImageTexture = ImageTexture.create_from_image(image)
-		if update or Vector2i(image_texture.get_size()) != compositors[track_id].resolution:
+		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image_texture))
 		else:
 			RenderingServer.call_on_render_thread(compositors[track_id].update_image.bind(image_texture))
@@ -356,7 +356,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Video:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
-		if update:
+		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_video_frame.bind(
@@ -364,7 +364,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Texture2D:
 		var image: Texture2D = raw_data
-		if update:
+		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_image_frame.bind(

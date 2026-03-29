@@ -127,10 +127,15 @@ func initialize_texture(size: Vector2i) -> void:
 
 
 func initialize_image(image: Texture2D) -> void:
-	_init_start(image.get_size())
+	_init_start(Project.data.resolution)
 
 	var format: RDTextureFormat = RDTextureFormat.new()
 	var new_image: Image = image.get_image()
+
+	if new_image.get_format() != Image.FORMAT_RGBA8:
+		new_image.convert(Image.FORMAT_RGBA8)
+	if new_image.get_size() != resolution:
+		new_image.resize(resolution.x, resolution.y, Image.INTERPOLATE_BILINEAR)
 
 	format.format = device.DATA_FORMAT_R8G8B8A8_UNORM
 	format.width = new_image.get_width()
@@ -138,15 +143,12 @@ func initialize_image(image: Texture2D) -> void:
 	format.usage_bits = USAGE_BITS_RGBA
 	format.texture_type = device.TEXTURE_TYPE_2D
 
-	if new_image.get_format() != Image.FORMAT_RGBA8:
-		new_image.convert(Image.FORMAT_RGBA8)
-
 	base_image = device.texture_create(format, RDTextureView.new(), [new_image.get_data()])
 	_init_ping_pong()
 
 
 func initialize_video(video: Video) -> void:
-	_init_start(video.get_resolution())
+	_init_start(Project.data.resolution)
 
 	var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
 	var format_y: RDTextureFormat = RDTextureFormat.new()
