@@ -19,7 +19,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
 		PopupManager.open(PopupManager.CREDITS)
 
-	if !Project.is_loaded:
+	if !Project.is_loaded or !PopupManager._open_popups.is_empty():
 		return # EVERYTHING which is only allowed to open after the start screen goes below!
 
 	# Check if in line edit or not:

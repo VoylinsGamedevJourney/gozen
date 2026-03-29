@@ -56,6 +56,8 @@ func _project_ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if !PopupManager._open_popups.is_empty():
+		return
 	if Project.is_loaded and event.is_action_pressed("ui_cancel"):
 		_on_clip_pressed(null)
 
