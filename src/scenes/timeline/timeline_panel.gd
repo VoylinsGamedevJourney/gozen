@@ -40,8 +40,8 @@ const FADE_AREA_COLOR: Color = Color(0.0, 0.0, 0.0, 0.3)
 const PLAYHEAD_WIDTH: int = 2
 const PLAYHEAD_COLOR: Color = Color(0.4, 0.4, 0.4)
 
-const ZOOM_MIN: float = 0.1
-const ZOOM_MAX: float = 20.0
+const ZOOM_MIN: float = 0.01
+const ZOOM_MAX: float = 200.0
 const ZOOM_STEP: float = 1.1
 
 const SNAPPING: int = 200
@@ -387,23 +387,23 @@ func _notification(what: int) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
 		return
-	if event.is_action_pressed("delete_clips"):
-		ClipLogic.delete(selected_clips)
-	elif event.is_action_pressed("ripple_delete_clips"):
-		ClipLogic.ripple_delete(selected_clips)
-	elif event.is_action_pressed("cut_clips_at_playhead", false, true):
+
+	if event.is_action_pressed("cut_clips_at_playhead", false, true):
 		cut_clips_at(EditorCore.frame_nr)
-	elif event.is_action_pressed("duplicate_selected_clips"):
-		duplicate_selected_clips()
 	elif event.is_action_pressed("ui_cancel"):
-		if !PopupManager._open_popups.is_empty():
-			return
-		if state in[STATE.MOVING, STATE.DROPPING]:
+		if !PopupManager._open_popups.is_empty() or state in[STATE.MOVING, STATE.DROPPING]:
 			return
 		selected_clips =[]
 		_on_ui_cancel()
+
 	if get_global_rect().has_point(get_global_mouse_position()):
-		if event.is_action_pressed("cut_clips_at_mouse", false, true):
+		if event.is_action_pressed("delete_clips"):
+			ClipLogic.delete(selected_clips)
+		elif event.is_action_pressed("ripple_delete_clips"):
+			ClipLogic.ripple_delete(selected_clips)
+		elif event.is_action_pressed("duplicate_selected_clips"):
+			duplicate_selected_clips()
+		elif event.is_action_pressed("cut_clips_at_mouse", false, true):
 			cut_clips_at(get_frame_from_mouse())
 		elif event.is_action_pressed("remove_empty_space"):
 			var track_id: int = get_track_from_mouse()

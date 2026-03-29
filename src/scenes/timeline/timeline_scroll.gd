@@ -25,11 +25,11 @@ func _gui_input(event: InputEvent) -> void:
 		var v_step: int = floori(scroll_vertical_custom_step)
 
 		if event.is_action_pressed("scroll_left", false, true):
-			scroll_horizontal -= floori(h_step * current_zoom)
+			scroll_horizontal -= floori(h_step * maxf(current_zoom, 2.0))
 			accept_event()
 			get_h_scroll_bar().scrolling.emit()
 		elif event.is_action_pressed("scroll_right", false, true):
-			scroll_horizontal += floori(h_step * current_zoom)
+			scroll_horizontal += floori(h_step * maxf(current_zoom, 2.0))
 			accept_event()
 			get_h_scroll_bar().scrolling.emit()
 		elif event.is_action_pressed("scroll_up", false, true):

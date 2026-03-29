@@ -13,8 +13,8 @@ const SELECTED_COLOR: Color = Color(1.0, 0.6, 0.2)
 const TRACK_BAR_COLOR: Color = Color(0.1, 0.1, 0.1, 0.5)
 
 
-const MIN_ZOOM: float = 1.0
-const MAX_ZOOM: float = 20.0
+const MIN_ZOOM: float = 0.01
+const MAX_ZOOM: float = 200.0
 
 
 var effect: Effect

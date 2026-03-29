@@ -106,7 +106,7 @@ func _draw() -> void:
 	var visible_end_nr: int = int((scroll.scroll_horizontal + size.x) / current_zoom) + 1
 
 	var major_step: int = _get_major_frame_step()
-	var minor_step: int = int(major_step / 5.0)
+	var minor_step: int = maxi(1, int(major_step / 5.0))
 
 	var start_frame: int = visible_start_nr - (visible_start_nr % minor_step)
 
