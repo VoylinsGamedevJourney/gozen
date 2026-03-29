@@ -175,7 +175,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_audio_waveform_amp,
 					"",
 					tr("Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity")),
-			create_header(tr("Dialogue's")), Control.new(),
+			create_header(tr("Dialogs")), Control.new(),
 			create_label(tr("Use native dialogs")),
 			create_check_button(
 					Settings.get_use_native_dialog(),
@@ -198,7 +198,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_color_duration,
 					"",
 					tr("Duration in frames per second.")),
-			create_label("setting_default_text_duration"),
+			create_label(tr("Default text duration")),
 			create_spinbox(
 					Settings.get_text_duration(),
 					1, 100, 1, false, true,
@@ -239,7 +239,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
 					tr("The modifier you want to easily delete empty space between clips.")),
-			create_header("setting_header_timeline_addons"), Control.new(),
+			create_header(tr("Addons")), Control.new(),
 			create_label(tr("Show mode bar")),
 			create_check_button(
 					Settings.get_show_time_mode_bar(),
