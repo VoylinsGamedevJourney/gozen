@@ -104,7 +104,18 @@ func open(new_project_path: String) -> void:
 
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update(7, tr("Loading project files ..."))
-	FileLogic._startup_loading(loading_overlay, (1 / float(data.files.size())) * 85)
+
+	var missing_files: Array[String] = []
+	for file: FileData in data.files.values():
+		if not file.path.begins_with("temp://") and not FileAccess.file_exists(file.path):
+			missing_files.append(file.nickname)
+	if not missing_files.is_empty():
+		var dialog: AcceptDialog = PopupManager.create_accept_dialog("Missing Files")
+		dialog.dialog_text = "The following files are missing and could not be loaded:\n" + "\n\t".join(missing_files)
+		add_child(dialog)
+		dialog.popup_centered()
+
+	FileLogic._startup_loading(loading_overlay, (1.0 / maxf(1.0, float(data.files.size()))) * 85.0)
 
 	var all_loaded: bool = false
 	while not all_loaded:
