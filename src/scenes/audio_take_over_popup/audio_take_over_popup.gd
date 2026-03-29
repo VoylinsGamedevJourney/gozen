@@ -1,15 +1,13 @@
 extends Control
 
-const PREVIEW_DURATION: float = 10.0
-
 
 @export var video_file_label: Label
 @export var audio_play_button: TextureButton
 @export var offset_spinbox: SpinBox
 @export var file_b_list: OptionButton
 
-@export var file_a_wave: ColorRect
-@export var file_b_wave: ColorRect
+@export var file_a_wave: ATOWave
+@export var file_b_wave: ATOWave
 
 @export var file_a_player: AudioStreamPlayer
 @export var file_b_player: AudioStreamPlayer
@@ -21,6 +19,18 @@ var file_b_id: int = -1
 
 var _scrub_time: float = -1.0
 
+
+
+func _ready() -> void:
+	file_a_wave.zoom_requested.connect(_on_wave_zoom_requested)
+	file_b_wave.zoom_requested.connect(_on_wave_zoom_requested)
+
+
+func _on_wave_zoom_requested(new_duration: float) -> void:
+	file_a_wave.preview_duration = new_duration
+	file_b_wave.preview_duration = new_duration
+	file_a_wave.queue_redraw()
+	file_b_wave.queue_redraw()
 
 
 func _input(event: InputEvent) -> void:
@@ -54,7 +64,10 @@ func _process(_delta: float) -> void:
 		return
 
 	var playback_position: float = file_a_player.get_playback_position()
-	if playback_position >= PREVIEW_DURATION:
+	var max_duration: float = 300.0
+	if file_a_player.stream:
+		max_duration = file_a_player.stream.get_length()
+	if playback_position >= max_duration:
 		_stop_playback()
 		playback_position = 0.0
 
@@ -66,15 +79,24 @@ func _process(_delta: float) -> void:
 
 func load_data(id: int, is_file: bool) -> void:
 	var file_a: FileData
+	var target_file_b_id: int = -1
+	var target_offset: float = 0.0
+
 	if is_file:
 		current_file_id = id
 		file_a = FileLogic.files[current_file_id]
 		file_a_wave.set("file_id", current_file_id)
+		if file_a.ato_active:
+			target_file_b_id = file_a.ato_file
+			target_offset = file_a.ato_offset
 	else:
 		current_clip_id = id
 		var clip: ClipData = ClipLogic.clips[current_clip_id]
 		file_a = FileLogic.files[clip.file]
 		file_a_wave.set("file_id", file_a.id)
+		if clip.effects.ato_active:
+			target_file_b_id = clip.effects.ato_file
+			target_offset = clip.effects.ato_offset
 
 	var item_id: int = 1 # We start at 1 due to adding "None".
 	var audio_files: Array[FileData] = FileLogic.get_all_audio_files()
@@ -84,12 +106,19 @@ func load_data(id: int, is_file: bool) -> void:
 	file_b_list.add_item(tr("None"))
 	file_b_list.set_item_metadata(0, -1)
 
+	var selected_idx: int = 0
 	for audio_file: FileData in audio_files:
 		if audio_file.id == file_a.id:
 			continue
 		file_b_list.add_item(audio_file.nickname)
 		file_b_list.set_item_metadata(item_id, audio_file.id)
+		if audio_file.id == target_file_b_id:
+			selected_idx = item_id
 		item_id += 1
+
+	file_b_list.select(selected_idx)
+	offset_spinbox.value = target_offset
+	_on_audio_file_option_button_item_selected(selected_idx)
 
 	var video: Video = FileLogic.file_data.get(file_a.id)
 	video_file_label.text = file_a.nickname

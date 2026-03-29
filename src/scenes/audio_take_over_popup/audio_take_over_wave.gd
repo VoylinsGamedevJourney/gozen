@@ -1,6 +1,9 @@
+class_name ATOWave
 extends ColorRect
 
+
 signal seek_requested(position: float)
+signal zoom_requested(new_duration: float)
 
 
 const COLOR_WAVE: Color = Color(1.0, 1.0, 1.0, 0.5)
@@ -33,11 +36,9 @@ func _gui_input(event: InputEvent) -> void:
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			_seeking = mouse_event.pressed
 		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			preview_duration = maxf(1.0, preview_duration / 1.2)
-			queue_redraw()
+			zoom_requested.emit(maxf(1.0, preview_duration / 1.2))
 		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			preview_duration = minf(300.0, preview_duration * 1.2)
-			queue_redraw()
+			zoom_requested.emit(minf(300.0, preview_duration * 1.2))
 		if _seeking:
 			var seek_time: float = (mouse_event.position.x / size.x) * preview_duration
 			seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
