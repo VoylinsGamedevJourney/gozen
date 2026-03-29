@@ -202,6 +202,7 @@ func _copy_audio_effects(effects: Array[EffectAudio], cut_pos: int) -> Array[Eff
 	var new_effects: Array[EffectAudio] = []
 	for effect: EffectAudio in effects:
 		var new_effect: EffectAudio = effect.duplicate(true)
+		new_effect.effect = effect.effect
 		new_effect.keyframes = {}
 		new_effect._cache_dirty = true
 

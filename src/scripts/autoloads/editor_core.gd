@@ -249,7 +249,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 			clips_instance_index[track] = instance_index
 			file_access_counter[file] = instance_index + 1
 			update_data(track)
-			audio_players[track].set_audio(find_audio(frame_nr, track))
 			continue
 		# No clip at position.
 		loaded_clips[track] = null

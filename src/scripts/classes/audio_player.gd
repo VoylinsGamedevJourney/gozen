@@ -69,15 +69,20 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 
 	# Managing state.
 	var old_file: FileData = file
-	var old_clip: ClipData = audio_clip
 	file = target_file
 	clip = audio_clip
 	stop_frame = clip.end
 
-	# Effecs setup.
-	if old_clip != clip:
-		_setup_bus_effects(clip.effects.audio)
-	elif AudioServer.get_bus_effect_count(bus_index) != clip.effects.audio.size():
+	# Effects setup.
+	var need_rebuild: bool = false
+	if AudioServer.get_bus_effect_count(bus_index) != clip.effects.audio.size():
+		need_rebuild = true
+	else:
+		for i: int in clip.effects.audio.size():
+			if AudioServer.get_bus_effect(bus_index, i) != clip.effects.audio[i].effect:
+				need_rebuild = true
+				break
+	if need_rebuild:
 		_setup_bus_effects(clip.effects.audio)
 	update_effects()
 	player.pitch_scale = clip.speed * EditorCore.playback_speed
