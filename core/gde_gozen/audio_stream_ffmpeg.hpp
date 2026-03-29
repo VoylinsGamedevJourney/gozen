@@ -46,7 +46,7 @@ class AudioStreamFFmpeg : public AudioStream {
 
   public:
 	AudioStreamFFmpeg() = default;
-	~AudioStreamFFmpeg();
+	~AudioStreamFFmpeg() { close(); }
 
 	int open(const String& path, int stream_index = -1);
 	void close();

@@ -1,23 +1,5 @@
 #include "audio_stream_ffmpeg.hpp"
 
-AudioStreamFFmpeg::~AudioStreamFFmpeg() {
-	if (mutex) {
-		memdelete(mutex);
-		mutex = nullptr;
-	}
-	if (!loaded)
-		return;
-
-	loaded = false;
-	av_stream = nullptr;
-	av_codec_ctx.reset();
-	av_format_ctx.reset();
-
-	swr_ctx.reset();
-	avio_ctx.reset();
-	file_buffer.clear();
-}
-
 int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 	mutex = memnew(Mutex);
 	mutex->lock();
@@ -163,6 +145,25 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 	mutex->unlock();
 	return 0;
 }
+
+void AudioStreamFFmpeg::close() {
+	if (mutex) {
+		memdelete(mutex);
+		mutex = nullptr;
+	}
+	if (!loaded)
+		return;
+
+	loaded = false;
+	av_stream = nullptr;
+	av_codec_ctx.reset();
+	av_format_ctx.reset();
+
+	swr_ctx.reset();
+	avio_ctx.reset();
+	file_buffer.clear();
+}
+
 
 Ref<AudioStreamPlayback> AudioStreamFFmpeg::_instantiate_playback() const {
 	if (!loaded)
