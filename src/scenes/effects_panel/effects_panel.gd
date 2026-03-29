@@ -218,6 +218,10 @@ func _on_effects_updated(clip: ClipData) -> void:
 
 func _load_effects() -> void:
 	# Clean UI.
+	if section_text.get_child_count() != 0:
+		for child: Control in section_text.get_children():
+			section_text.remove_child(child)
+			child.queue_free()
 	if section_visuals.get_child_count() != 0:
 		var vbox: VBoxContainer = section_visuals.get_child(0)
 		section_visuals.remove_child(vbox)
