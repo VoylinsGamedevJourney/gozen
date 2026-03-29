@@ -10,7 +10,6 @@ var theme: String = Library.THEME_DEFAULT
 var base_color: Color = Color(0.2, 0.2, 0.2)
 var accent_color: Color = Color(0.69, 0.09, 0.95)
 var show_menu_bar: bool = true
-var show_ram_usage: bool = false
 var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER
 var audio_waveform_amp: float = 1.0
 var use_native_dialog: bool = true

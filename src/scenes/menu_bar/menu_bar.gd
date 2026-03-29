@@ -6,53 +6,17 @@ extends HBoxContainer
 @export var popup_menu_preferences: PopupMenu
 @export var popup_menu_help: PopupMenu
 
-@export var label_ram: Label
-
-
-var warning_ram_80: int
-var warning_ram_50: int
-var elapsed_time: float = 0.0
-
 
 
 func _ready() -> void:
 	Settings.on_show_menu_bar_changed.connect(_show_menu_bar)
-	Settings.on_show_ram_usage_changed.connect(_show_ram_usage)
-
-	var total_ram: int = OS.get_memory_info().physical
-	warning_ram_80 = floori(total_ram * 0.8)
-	warning_ram_50 = floori(total_ram * 0.5)
 
 	_show_menu_bar(Settings.get_show_menu_bar())
-	_show_ram_usage(Settings.get_show_ram_usage())
 	_set_shortcuts()
-
-
-func _process(delta: float) -> void:
-	if !visible or !label_ram.visible:
-		return
-
-	elapsed_time += delta
-	if elapsed_time < 2.0: # Update every 2 seconds
-		return
-	elapsed_time = 0.0
-
-	var memory: float = OS.get_static_memory_usage()
-	label_ram.text = "RAM: " + String.humanize_size(int(memory))
-	if memory > warning_ram_80:
-		label_ram.modulate = Color.RED
-	elif memory > warning_ram_50:
-		label_ram.modulate = Color.ORANGE
-	else:
-		label_ram.modulate = Color.WHITE
 
 
 func _show_menu_bar(value: bool) -> void:
 	visible = value
-
-
-func _show_ram_usage(value: bool) -> void:
-	label_ram.visible = value
 
 
 func _open_about_gozen() -> void:

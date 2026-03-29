@@ -2,7 +2,6 @@ extends Node
 
 
 signal on_show_menu_bar_changed(value: bool)
-signal on_show_ram_usage_changed(value: bool)
 signal on_show_time_mode_bar_changed(value: bool)
 
 signal on_video_cache_size_changed(value: int)
@@ -239,15 +238,6 @@ func set_show_menu_bar(value: bool) -> void:
 
 func get_show_menu_bar() -> bool:
 	return data.show_menu_bar
-
-
-func set_show_ram_usage(value: bool) -> void:
-	data.show_ram_usage = value
-	on_show_ram_usage_changed.emit(value)
-
-
-func get_show_ram_usage() -> bool:
-	return data.show_ram_usage
 
 
 func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
