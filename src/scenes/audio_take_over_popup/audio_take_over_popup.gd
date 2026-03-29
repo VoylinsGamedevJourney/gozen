@@ -136,7 +136,8 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 		file_b_player.stream = null
 	else:
 		file_b_wave.set("file_id", file_b_id)
-		file_b_player.stream = FileLogic.file_data.get(file_b_id)
+		var file_b: FileData = FileLogic.files[file_b_id]
+		file_b_player.stream = FileLogic.get_audio_stream(file_b, 0)
 
 
 func _on_cancel_button_pressed() -> void:

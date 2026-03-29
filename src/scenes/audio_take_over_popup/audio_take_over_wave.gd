@@ -11,6 +11,7 @@ const PREVIEW_DURATION: float = 30 ## Seconds of duration shown.
 var file_id: int = -1: set = set_file_id
 var wave_offset: float = 0.0: set = set_wave_offset
 var playback_position: float = 0.0
+var preview_duration: float = 30.0
 
 var _seeking: bool = false
 
@@ -31,17 +32,23 @@ func _gui_input(event: InputEvent) -> void:
 		var mouse_event: InputEventMouseButton = event
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			_seeking = mouse_event.pressed
+		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			preview_duration = maxf(1.0, preview_duration / 1.2)
+			queue_redraw()
+		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			preview_duration = minf(300.0, preview_duration * 1.2)
+			queue_redraw()
 		if _seeking:
-			var seek_time: float = (mouse_event.position.x / size.x) * PREVIEW_DURATION
-			seek_requested.emit(clampf(seek_time, 0.0, PREVIEW_DURATION))
+			var seek_time: float = (mouse_event.position.x / size.x) * preview_duration
+			seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
 	if event is InputEventMouseMotion:
 		if _seeking:
-			var seek_time: float = (get_local_mouse_position().x / size.x) * PREVIEW_DURATION
-			seek_requested.emit(clampf(seek_time, 0.0, PREVIEW_DURATION))
+			var seek_time: float = (get_local_mouse_position().x / size.x) * preview_duration
+			seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
 
 
 func _draw() -> void:
-	if file_id == -1:
+	if file_id == -1 or !FileLogic.audio_wave.has(file_id):
 		return
 	var wave_data: PackedFloat32Array = FileLogic.audio_wave[file_id]
 	if wave_data.is_empty():
@@ -52,12 +59,12 @@ func _draw() -> void:
 	var center_y: float = area_height / 2.0
 
 	# Calculating preview duration scale.
-	var pixels_per_sec: float = area_width / PREVIEW_DURATION
+	var pixels_per_sec: float = area_width / preview_duration
 	var pixel_offset: float = wave_offset * pixels_per_sec
 
 	var framerate: float = Project.data.framerate
 	var total_frames: int = wave_data.size()
-	var max_visible_frames: int = floori(PREVIEW_DURATION * framerate)
+	var max_visible_frames: int = floori(preview_duration * framerate)
 
 	var step: float = maxi(1, int(max_visible_frames/ area_width))
 	var start_index: int = 0
@@ -79,6 +86,6 @@ func _draw() -> void:
 				COLOR_WAVE)
 
 	# - Draw playhead.
-	var playhead_x: float = (playback_position / PREVIEW_DURATION) * size.x
+	var playhead_x: float = (playback_position / preview_duration) * size.x
 	if playhead_x >= 0 and playhead_x <= size.x:
 		draw_line(Vector2(playhead_x, 0), Vector2(playhead_x, size.y), COLOR_PLAYHEAD, 2.0)
