@@ -92,6 +92,17 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 		av_decoded_frame->sample_rate = TARGET_SAMPLE_RATE;
 		av_decoded_frame->nb_samples = swr_get_out_samples(swr_ctx.get(), av_frame->nb_samples);
 
+		if (av_frame->ch_layout.nb_channels == 0) {
+			av_channel_layout_copy(&av_frame->ch_layout, &codec_ctx->ch_layout);
+		}
+
+		if ((response = swr_config_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get())) < 0) {
+			FFmpeg::print_av_error("Audio: Couldn't config the audio frame!", response);
+			av_frame_unref(av_frame.get());
+			av_frame_unref(av_decoded_frame.get());
+			break;
+		}
+
 		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
 			FFmpeg::print_av_error("Audio: Couldn't create new frame for swr!", response);
 			av_frame_unref(av_frame.get());

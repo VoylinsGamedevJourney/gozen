@@ -225,10 +225,15 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 			av_decoded_frame->format = AV_SAMPLE_FMT_S16;
 			av_decoded_frame->ch_layout = (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
 			av_decoded_frame->sample_rate = av_frame->sample_rate;
+
+			if (av_frame->ch_layout.nb_channels == 0) {
+				av_channel_layout_copy(&av_frame->ch_layout, &audio_stream_ffmpeg->av_codec_ctx->ch_layout);
+			}
+
 			av_decoded_frame->nb_samples =
 				swr_get_out_samples(audio_stream_ffmpeg->swr_ctx.get(), av_frame->nb_samples);
 
-			if (av_frame_get_buffer(av_decoded_frame.get(), 0) < 0) {
+			if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
 				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't create new frame for swr!", response);
 				av_frame_unref(av_frame.get());
 				av_frame_unref(av_decoded_frame.get());
