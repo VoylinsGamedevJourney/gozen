@@ -134,8 +134,8 @@ func _delete(file: FileData) -> void:
 			video.close()
 		video_pools.erase(file.id)
 
-	audio_pools.erase(file)
-	audio_wave.erase(file)
+	audio_pools.erase(file.id)
+	audio_wave.erase(file.id)
 	Project.unsaved_changes = true
 	deleted.emit(file.id)
 
@@ -196,13 +196,14 @@ func paste_image(image: Image) -> void:
 
 
 func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) -> void:
-	var affected_clips: Array[ClipData] = []
+	var active: bool = audio_file.id != -1
+	var affected_clips: Array[ClipData] =[]
 	for clip: ClipData in ClipLogic.clips.values():
 		if clip.file == file.id:
 			affected_clips.append(clip)
 
 	if affected_clips.is_empty():
-		_commit_ato(file, audio_file.ato_active, audio_file, offset, false, [])
+		_commit_ato(file, active, audio_file, offset, false,[])
 		return
 
 	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
@@ -212,10 +213,10 @@ func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) 
 	dialog.get_cancel_button().text = tr("Cancel")
 	dialog.add_button(tr("Apply to File Only"), true, "file_only")
 	dialog.confirmed.connect(func() -> void:
-		_commit_ato(file, audio_file.ato_active, audio_file, offset, true, affected_clips))
+		_commit_ato(file, active, audio_file, offset, true, affected_clips))
 	dialog.custom_action.connect(func(action: String) -> void:
 		if action == "file_only":
-			_commit_ato(file, audio_file.ato_active, audio_file, offset, false, [])
+			_commit_ato(file, active, audio_file, offset, false,[])
 			dialog.hide())
 	dialog.popup_centered()
 
