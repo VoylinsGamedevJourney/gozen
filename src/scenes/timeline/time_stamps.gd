@@ -113,25 +113,27 @@ func _draw() -> void:
 	var font: Font = get_theme_default_font()
 
 	# - Draw ticks and time text
+	var last_text_x: float = -999.0
 	for frame: int in range(start_frame, visible_end_nr, minor_step):
 		var x: float = frame * current_zoom
-
-		if x < scroll.scroll_horizontal - 100 or x > scroll.scroll_horizontal + size.x + 100:
+		if !Utils.in_rangef(x, scroll.scroll_horizontal - 100, scroll.scroll_horizontal + size.x + 100, false):
 			continue
 
 		var is_major: int = frame % major_step == 0
 		var tick_h: int = 12 if is_major else 6
-
 		if is_major:
-			draw_string(
-				font,
-				Vector2(x + 4, size.y - 8),
-				Utils.format_time_str_from_frame(frame, Project.data.framerate, true),
-				HORIZONTAL_ALIGNMENT_LEFT,
-				-1,
-				FONT_SIZE_TIME_STAMP,
-				COLOR_TEXT)
-
+			var label: String = Utils.format_time_str_from_frame(frame, Project.data.framerate, true)
+			var label_width: float = font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_TIME_STAMP).x
+			if x - last_text_x >= label_width + 8.0:  # 8px padding between labels
+				draw_string(
+					font,
+					Vector2(x + 4, size.y - 8),
+					label,
+					HORIZONTAL_ALIGNMENT_LEFT,
+					-1,
+					FONT_SIZE_TIME_STAMP,
+					COLOR_TEXT)
+				last_text_x = x
 		draw_line(
 			Vector2(x, size.y),
 			Vector2(x, size.y - tick_h),
