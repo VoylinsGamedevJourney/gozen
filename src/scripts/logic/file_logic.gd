@@ -51,7 +51,7 @@ func add(paths: PackedStringArray) -> void:
 
 	InputManager.undo_redo.create_action("Add file(s)")
 	for path: String in paths:
-		if path in existing_file_paths:
+		if path in existing_file_paths and not path.begins_with("temp://"):
 			continue # Duplication check.
 		var file: FileData = _create_file(path)
 		if file:

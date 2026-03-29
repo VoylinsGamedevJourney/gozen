@@ -279,9 +279,8 @@ func _on_popup_action_file_remove_proxy() -> void:
 
 func _on_popup_action_audio_take_over() -> void:
 	# TODO: Add this to undo_redo!
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
-	popup.call("load_data", file, true)
+	popup.call("load_data", tree.get_selected().get_metadata(0), true)
 
 
 func _on_popup_action_open_in_file_manager() -> void:
