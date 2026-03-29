@@ -371,7 +371,7 @@ func _notification(what: int) -> void:
 
 # --- Input handling ---
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
 		return
 	if event.is_action_pressed("delete_clips"):
@@ -383,9 +383,11 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("duplicate_selected_clips"):
 		duplicate_selected_clips()
 	elif event.is_action_pressed("ui_cancel"):
-		if state in [STATE.MOVING, STATE.DROPPING]:
+		if !PopupManager._open_popups.is_empty():
 			return
-		selected_clips = []
+		if state in[STATE.MOVING, STATE.DROPPING]:
+			return
+		selected_clips =[]
 		_on_ui_cancel()
 	if get_global_rect().has_point(get_global_mouse_position()):
 		if event.is_action_pressed("cut_clips_at_mouse", false, true):
@@ -994,7 +996,7 @@ func _on_popup_action_remove_empty_space() -> void:
 func _on_popup_action_clip_ato() -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
 	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
-	popup.load_data(right_click_clip, false)
+	popup.load_data(right_click_clip.id, false)
 
 
 func _on_popup_action_track_add() -> void:
