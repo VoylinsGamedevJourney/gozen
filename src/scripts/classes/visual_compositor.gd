@@ -127,6 +127,8 @@ func initialize_texture(size: Vector2i) -> void:
 
 
 func initialize_image(image: Texture2D) -> void:
+	if !image:
+		return
 	_init_start(Project.data.resolution)
 
 	var format: RDTextureFormat = RDTextureFormat.new()
@@ -148,6 +150,8 @@ func initialize_image(image: Texture2D) -> void:
 
 
 func initialize_video(video: Video) -> void:
+	if !video:
+		return
 	_init_start(Project.data.resolution)
 
 	var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
