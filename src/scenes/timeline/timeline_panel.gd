@@ -396,7 +396,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		selected_clips =[]
 		_on_ui_cancel()
 
-	if get_global_rect().has_point(get_global_mouse_position()):
+	if scroll.get_global_rect().has_point(get_global_mouse_position()):
 		if event.is_action_pressed("delete_clips"):
 			ClipLogic.delete(selected_clips)
 		elif event.is_action_pressed("ripple_delete_clips"):
