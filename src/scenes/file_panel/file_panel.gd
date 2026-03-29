@@ -50,7 +50,6 @@ func _ready() -> void:
 
 	tree.item_mouse_selected.connect(_tree_item_clicked)
 	tree.empty_clicked.connect(_tree_item_clicked.bind(true))
-	tree.gui_input.connect(_on_tree_gui_input)
 
 	tree.set_drag_forwarding(_get_list_drag_data, _can_drop_list_data, _drop_list_data)
 	folder_items["/"] = tree.create_item()
@@ -63,9 +62,11 @@ func _ready() -> void:
 	file_menu_button.get_popup().id_pressed.connect(_file_menu_pressed)
 
 
-func _on_tree_gui_input(event: InputEvent) -> void:
-	if tree.get_selected() != null and event.is_action("delete_file"):
-		_on_popup_option_pressed(POPUP_ACTION.DELETE)
+func _input(event: InputEvent) -> void:
+	if get_global_rect().has_point(get_global_mouse_position()):
+		if tree.get_selected() and event.is_action_pressed("delete_file", false, true):
+			_on_popup_option_pressed(POPUP_ACTION.DELETE)
+			accept_event()
 
 
 func _on_project_ready() -> void:
