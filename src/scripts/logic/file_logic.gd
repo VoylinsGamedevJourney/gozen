@@ -203,7 +203,7 @@ func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) 
 			affected_clips.append(clip)
 
 	if affected_clips.is_empty():
-		_commit_ato(file, active, audio_file, offset, false,[])
+		_commit_ato(file, active, audio_file.id, offset, false,[])
 		return
 
 	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
@@ -213,36 +213,36 @@ func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) 
 	dialog.get_cancel_button().text = tr("Cancel")
 	dialog.add_button(tr("Apply to File Only"), true, "file_only")
 	dialog.confirmed.connect(func() -> void:
-		_commit_ato(file, active, audio_file, offset, true, affected_clips))
+		_commit_ato(file, active, audio_file.id, offset, true, affected_clips))
 	dialog.custom_action.connect(func(action: String) -> void:
 		if action == "file_only":
-			_commit_ato(file, active, audio_file, offset, false,[])
+			_commit_ato(file, active, audio_file.id, offset, false,[])
 			dialog.hide())
 	dialog.popup_centered()
 
 
-func _commit_ato(file: FileData, active: bool, audio_file: FileData, offset: float, update_clips: bool, clips: Array[ClipData]) -> void:
+func _commit_ato(file: FileData, active: bool, audio_file_id: int, offset: float, update_clips: bool, clips: Array[ClipData]) -> void:
 	var old_active: bool = file.ato_active
 	var old_file: int = file.ato_file
 	var old_offset: float = file.ato_offset
 
 	InputManager.undo_redo.create_action("Set file audio-take-over")
-	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file, active, audio_file, offset))
+	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file, active, audio_file_id, offset))
 	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(file, old_active, old_file, old_offset))
 
 	if update_clips: # Clips Undo/Redo
 		for clip: ClipData in clips:
 			var effects: ClipEffects = clip.effects
 			InputManager.undo_redo.add_do_method(ClipLogic._apply_audio_take_over.bind(
-					clip, active, audio_file, offset))
+					clip, active, audio_file_id, offset))
 			InputManager.undo_redo.add_undo_method(ClipLogic._apply_audio_take_over.bind(
 					clip, effects.ato_active, effects.ato_file, effects.ato_offset))
 	InputManager.undo_redo.commit_action()
 
 
-func _apply_audio_take_over(file: FileData, active: bool, audio_file: FileData, offset: float) -> void:
+func _apply_audio_take_over(file: FileData, active: bool, audio_file_id: int, offset: float) -> void:
 	file.ato_active = active
-	file.ato_file = audio_file.id
+	file.ato_file = audio_file_id
 	file.ato_offset = offset
 	Project.unsaved_changes = true
 	ato_changed.emit(file)

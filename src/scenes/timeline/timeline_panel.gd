@@ -158,7 +158,7 @@ func _draw_track_lines(control: Control) -> void:
 func _draw_clips(control: Control) -> void:
 	var scroll_amount: float = scroll.scroll_horizontal
 	var visible_start: int = floori(scroll_amount / zoom)
-	var visible_end: int = ceili(visible_start + (size.x / zoom))
+	var visible_end: int = ceili(visible_start + (scroll.size.x / zoom))
 
 	var visible_clips: Array[ClipData] = _get_visible(visible_start, visible_end)
 	var handled_clips: Array[ClipData] = []
@@ -578,7 +578,7 @@ func _get_resize_target() -> ResizeTarget:
 	var track: int = get_track_from_mouse()
 	var mouse_pos: float = get_local_mouse_position().x
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
-	var visible_end: int = ceili((scroll.scroll_horizontal + size.x) / zoom)
+	var visible_end: int = ceili((scroll.scroll_horizontal + scroll.size.x) / zoom)
 	var best_target: ResizeTarget = null
 	var min_distance: float = RESIZE_HANDLE_WIDTH + 1.0
 	for clip: ClipData in TrackLogic.get_clips_in_range(track, visible_start, visible_end):
@@ -604,7 +604,7 @@ func _get_fade_target() -> FadeTarget:
 	var mouse_pos: Vector2 = get_local_mouse_position()
 	var scroll_horizontal: float = scroll.scroll_horizontal
 	var visible_start: int = floori(scroll_horizontal / zoom)
-	var visible_end: int = ceili((scroll_horizontal + size.x) / zoom)
+	var visible_end: int = ceili((scroll_horizontal + scroll.size.x) / zoom)
 
 	for clip: ClipData in TrackLogic.get_clips_in_range(track_id, visible_start, visible_end):
 		var start_x: float = clip.start * zoom

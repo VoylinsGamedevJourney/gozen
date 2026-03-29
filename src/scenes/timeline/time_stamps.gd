@@ -24,6 +24,9 @@ var scrubbing: bool = false
 var marker_style_box: StyleBoxFlat
 var marker_rects: Dictionary[int, Rect2] = {} # { frame_nr: hitbox }
 
+
+var default_font: Font = get_theme_default_font()
+
 var _possible_drag: int = -1
 var _drag_offset: float = 0.0
 var _drag_start_pos: Vector2 = Vector2.ZERO
@@ -102,15 +105,14 @@ func _get_frame_on_mouse() -> int:
 
 
 func _draw() -> void:
+	var scroll_width: float = scroll.size.x
 	var visible_start_nr: int = int(scroll.scroll_horizontal / current_zoom)
-	var visible_end_nr: int = int((scroll.scroll_horizontal + size.x) / current_zoom) + 1
+	var visible_end_nr: int = int((scroll.scroll_horizontal + scroll_width) / current_zoom) + 1
 
 	var major_step: int = _get_major_frame_step()
 	var minor_step: int = maxi(1, int(major_step / 5.0))
 
 	var start_frame: int = visible_start_nr - (visible_start_nr % minor_step)
-
-	var font: Font = get_theme_default_font()
 
 	# - Draw ticks and time text
 	var last_text_x: float = -999.0
@@ -123,10 +125,10 @@ func _draw() -> void:
 		var tick_h: int = 12 if is_major else 6
 		if is_major:
 			var label: String = Utils.format_time_str_from_frame(frame, Project.data.framerate, true)
-			var label_width: float = font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_TIME_STAMP).x
+			var label_width: float = default_font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_TIME_STAMP).x
 			if x - last_text_x >= label_width + 8.0:  # 8px padding between labels
 				draw_string(
-					font,
+					default_font,
 					Vector2(x + 4, size.y - 8),
 					label,
 					HORIZONTAL_ALIGNMENT_LEFT,
@@ -153,9 +155,9 @@ func _draw() -> void:
 		var marker_color: Color = Settings.get_marker_color(marker.type)
 
 		var pos_x: float = marker.frame_nr * current_zoom
-		var text_size: Vector2 = font.get_string_size(
+		var text_size: Vector2 = default_font.get_string_size(
 				marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER)
-		var text_y_offset: float = (MARKER_HANDLE_HEIGHT - text_size.y) / 2.0 + font.get_ascent(FONT_SIZE_MARKER)
+		var text_y_offset: float = (MARKER_HANDLE_HEIGHT - text_size.y) / 2.0 + default_font.get_ascent(FONT_SIZE_MARKER)
 
 		if is_being_dragged:
 			if get_local_mouse_position().distance_to(_drag_start_pos) > MARKER_DRAG_THRESHOLD:
@@ -177,7 +179,7 @@ func _draw() -> void:
 
 		draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), marker_color, MARKER_LINE_WIDTH)
 		draw_style_box(marker_style_box, bubble_rect)
-		draw_string(font, bubble_text_pos, marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER, bubble_text_color)
+		draw_string(default_font, bubble_text_pos, marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER, bubble_text_color)
 
 
 func _update_tooltip() -> void:
