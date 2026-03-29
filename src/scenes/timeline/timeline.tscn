@@ -17,10 +17,11 @@ bg_color = Color(0.2, 0.2, 0.2, 1)
 bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
 
 [node name="Timeline" type="HBoxContainer" unique_id=699018798 node_paths=PackedStringArray("timestamp_panel", "timeline_panel")]
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 216.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_p3xsq")
@@ -80,6 +81,7 @@ timeline_scroll = NodePath("../../TimelineScroll")
 [node name="TimelineScroll" type="ScrollContainer" parent="VBox" unique_id=1891472025 node_paths=PackedStringArray("timestamp_scroll")]
 custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
+size_flags_vertical = 3
 scroll_horizontal_custom_step = 30.0
 scroll_vertical_custom_step = 30.0
 script = ExtResource("2_6dfq3")
