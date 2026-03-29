@@ -331,6 +331,11 @@ func _set_nickname(file: FileData, nickname: String) -> void:
 
 ## (Re)load the data of a file.
 func load_data(file: FileData) -> void:
+	if not file.path.begins_with("temp://") and not FileAccess.file_exists(file.path):
+		# File not available anymore. TODO: Handle this in a better way.
+		file_data[file.id] = null
+		return
+
 	if file.path.begins_with("temp://"):
 		if !file.temp_file:
 			file.temp_file = TempFile.new()

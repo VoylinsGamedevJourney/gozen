@@ -128,12 +128,17 @@ func cut(requests: Array[ClipRequest]) -> void:
 		# Construct the new clip snapshot.
 		var snapshot: ClipData = request.clip.duplicate_deep(Resource.DEEP_DUPLICATE_ALL)
 		var effects: ClipEffects = snapshot.effects
+		effects.fade_visual = request.clip.effects.fade_visual
+		effects.fade_audio = request.clip.effects.fade_audio
+		effects.ato_active = request.clip.effects.ato_active
+		effects.ato_offset = request.clip.effects.ato_offset
+		effects.ato_file = request.clip.effects.ato_file
 		snapshot.id = Utils.get_unique_id(clips.keys())
 		snapshot.start += duration_left
 		snapshot.begin += duration_left
 		snapshot.duration = duration_right
-		effects.video = _copy_visual_effects(effects.video, cut_offset)
-		effects.audio = _copy_audio_effects(effects.audio, cut_offset)
+		effects.video = _copy_visual_effects(request.clip.effects.video, cut_offset)
+		effects.audio = _copy_audio_effects(request.clip.effects.audio, cut_offset)
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(snapshot))
 		InputManager.undo_redo.add_undo_method(_delete.bind(snapshot))
 	InputManager.undo_redo.commit_action()
@@ -311,7 +316,12 @@ func get_audio_data(clip: ClipData) -> PackedByteArray:
 		start_sec -= clip.effects.ato_offset
 		file_path = FileLogic.files[clip.effects.ato_file].path
 	else:
-		file_path = FileLogic.files[clip.file].path
+		var target_file: FileData = FileLogic.files[clip.file]
+		if target_file.ato_active and target_file.ato_file != -1:
+			start_sec -= target_file.ato_offset
+			file_path = FileLogic.files[target_file.ato_file].path
+		else:
+			file_path = target_file.path
 	return Audio.get_audio_data(file_path, -1, start_sec, duration_sec)
 
 
