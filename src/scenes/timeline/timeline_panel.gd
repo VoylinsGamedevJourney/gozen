@@ -1054,6 +1054,7 @@ func zoom_at_mouse(factor: float) -> void:
 
 	zoom = clamp(zoom * factor, ZOOM_MIN, ZOOM_MAX)
 	if old_zoom == zoom:
+		accept_event()
 		return
 
 	var zoom_ratio: float = zoom / old_zoom
