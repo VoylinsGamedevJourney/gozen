@@ -321,8 +321,10 @@ func update_data(track: int) -> void:
 		text_label_settings.shadow_offset = text_shadow_offset
 		text_label_settings.shadow_color = text_shadow_color
 
-		text_label.size = Project.data.resolution
-		text_viewport.size = Project.data.resolution
+		if text_label.size != Vector2(Project.data.resolution):
+			text_label.size = Project.data.resolution
+		if text_viewport.size != Project.data.resolution:
+			text_viewport.size = Project.data.resolution
 		text_label.label_settings = text_label_settings
 
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE

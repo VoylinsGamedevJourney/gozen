@@ -109,6 +109,7 @@ var track_total_size: float = track_height + TRACK_LINE_WIDTH
 var _update_clips: bool = true
 var _drop_valid: bool = false
 var _scrub_frame: int = -1
+var _last_scrub_time: int = 0
 
 
 
@@ -139,8 +140,11 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if _scrub_frame != -1:
-		move_playhead(_scrub_frame)
-		_scrub_frame = -1
+		var current_time: int = Time.get_ticks_msec()
+		if current_time - _last_scrub_time > 40:
+			move_playhead(_scrub_frame)
+			_scrub_frame = -1
+			_last_scrub_time = current_time
 
 
 # --- Drawing functions ---
@@ -450,6 +454,10 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			STATE.RESIZING: _commit_current_resize()
 			STATE.SPEEDING: _commit_current_resize()
 			STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
+			STATE.SCRUBBING:
+				if _scrub_frame != -1:
+					move_playhead(_scrub_frame)
+					_scrub_frame = -1
 		_on_ui_cancel()
 
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
