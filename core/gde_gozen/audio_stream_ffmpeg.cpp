@@ -200,7 +200,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 
 	avcodec_flush_buffers(audio_stream_ffmpeg->av_codec_ctx.get());
 	if (int err = av_seek_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_stream->index,
-								target_ts, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME)) {
+								target_ts, AVSEEK_FLAG_BACKWARD)) {
 		FFmpeg::print_av_error("AudioStreamFFmpeg: audio_decoder: Error while seeking", err);
 		audio_stream_ffmpeg->mutex->unlock();
 		return;

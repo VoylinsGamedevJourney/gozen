@@ -76,6 +76,8 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 			scrubbing = false
 		else:
 			scrubbing = true
+			if EditorCore.is_playing:
+				EditorCore.is_playing = false
 			EditorCore.scrub_to_frame(_get_frame_on_mouse())
 	else: # Mouse released
 		var marker: MarkerData = MarkerLogic.dragged_marker

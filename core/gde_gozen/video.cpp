@@ -402,6 +402,10 @@ bool Video::seek_frame(int frame_nr) {
 	UniqueAVFrame temp_frame = make_unique_avframe();
 	bool frame_found = false;
 
+	// Skip loop filter during catch-up decoding to dramatically improve performance
+	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
+	av_codec_ctx->skip_loop_filter = AVDISCARD_ALL;
+
 	while (true) {
 		if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(),
 										  av_packet.get()))) {
@@ -416,8 +420,8 @@ bool Video::seek_frame(int frame_nr) {
 			} else if (response == AVERROR_EOF) {
 				_log_err("End of file reached during seek!");
 				if (frame_found) {
+					av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 					_copy_frame_data();
-					_add_to_cache(frame_nr);
 				}
 				break;
 			}
@@ -440,13 +444,18 @@ bool Video::seek_frame(int frame_nr) {
 		if (current_pts == AV_NOPTS_VALUE)
 			continue;
 
-		// Skip to actual requested frame.
-		if ((int64_t)(current_pts * stream_time_base_video) / 10000 >= frame_timestamp / 10000) {
+		int decoded_frame_nr =
+			std::round(((current_pts * stream_time_base_video) - start_time_video) / average_frame_duration);
+		_add_to_cache(decoded_frame_nr);
+
+		if (decoded_frame_nr >= frame_nr) {
+			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			_copy_frame_data();
-			_add_to_cache(frame_nr);
 			break;
 		}
 	}
+
+	av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 
 	current_frame = frame_nr;
 	last_decoded_frame = current_frame;
@@ -485,7 +494,7 @@ bool Video::next_frame(bool skip) {
 
 	current_frame++;
 	last_decoded_frame = current_frame;
-	if (!skip && response == 0) {
+	if (response == 0) { // ALWAYS cache frames (even if skipped visually)
 		_add_to_cache(current_frame);
 	}
 
@@ -511,6 +520,7 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 	}
 
 	UniqueAVFrame temp_frame = make_unique_avframe();
+
 	while (true) {
 		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(),
 									 av_packet.get());
@@ -542,8 +552,10 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 		if (current_pts == AV_NOPTS_VALUE)
 			continue;
 
-		// Skip to actual requested frame.
-		if ((int64_t)(current_pts * stream_time_base_video) / 10000 >= frame_timestamp / 10000) {
+		int decoded_frame_nr =
+			std::round(((current_pts * stream_time_base_video) - start_time_video) / average_frame_duration);
+
+		if (decoded_frame_nr >= frame_nr) {
 			break;
 		}
 	}
@@ -770,6 +782,7 @@ int Video::_seek_frame(int frame_nr) {
 	avcodec_flush_buffers(av_codec_ctx.get());
 
 	frame_timestamp = (int64_t)(frame_nr * average_frame_duration);
+	int64_t target_ts = av_rescale_q(start_time_video + frame_timestamp, AVRational{1, 10000000}, av_stream->time_base);
 	return av_seek_frame(av_format_ctx.get(), -1, (start_time_video + frame_timestamp) / 10,
 						 AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
 }

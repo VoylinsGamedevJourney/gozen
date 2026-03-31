@@ -77,7 +77,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if _scrub_frame != -1:
-		if Time.get_ticks_msec() - _last_scrub_time > 40:
+		if Time.get_ticks_msec() - _last_scrub_time > 50:
 			if frame_nr != _scrub_frame:
 				set_frame(_scrub_frame)
 			_last_scrub_time = Time.get_ticks_msec()

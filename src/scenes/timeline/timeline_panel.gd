@@ -480,6 +480,8 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				draw_box_selection.queue_redraw()
 			else:
 				state = STATE.SCRUBBING
+				if EditorCore.is_playing:
+					EditorCore.is_playing = false
 				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		else:
 			if !event.shift_pressed:
