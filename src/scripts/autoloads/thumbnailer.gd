@@ -69,6 +69,7 @@ func get_thumb(file: FileData) -> Texture2D:
 
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
+	Threader.mutex.lock()
 	if data.has(file.path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[file.path]):
 		data.erase(file.path)
 		_save_data()
@@ -76,6 +77,7 @@ func get_thumb(file: FileData) -> Texture2D:
 	# Not thumb has been made yet, return default and put id in waiting line.
 	var has_thumb: bool = data.has(file.path)
 	var thumb_id: int = data.get(file.path, 0)
+	Threader.mutex.unlock()
 
 	if !has_thumb:
 		thumbs_todo.append(file)
@@ -88,6 +90,8 @@ func get_thumb(file: FileData) -> Texture2D:
 	# Return the saved thumbnail.
 	var raw_path: String = thumb_folder + FILE_NAME % thumb_id
 	image = Image.load_from_file(ProjectSettings.globalize_path(raw_path))
+	if not image or image.is_empty():
+		return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO)
 	return ImageTexture.create_from_image(image)
 
 
@@ -119,22 +123,28 @@ func _gen_thumb(file: FileData) -> void:
 	if image.save_webp(thumb_folder + FILE_NAME % file.id):
 		return printerr("FilePanel: Something went wrong saving thumb!")
 
+	Threader.mutex.lock()
 	data[file.path] = file.id
 	_save_data()
+	Threader.mutex.unlock()
 
 
 func _on_audio_wave_generated(file: FileData) -> void:
 	# Remove the potentially flat/empty cached thumbnail data.
+	Threader.mutex.lock()
 	if data.has(file.path):
 		data.erase(file.path)
+		_save_data()
+	Threader.mutex.unlock()
 
 	# Queue this file for immediate thumbnail regeneration.
-	thumbs_todo.insert(0, file)
+	if not thumbs_todo.has(file):
+		thumbs_todo.insert(0, file)
 
 
 func scale_thumbnail(image: Image) -> Image:
-	if !image:
-		return Image.create_empty(1, 1, false, Image.FORMAT_L8)
+	if !image or image.is_empty():
+		return null
 	var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
 	image.resize(
 			int(image.get_width() * image_scale),
