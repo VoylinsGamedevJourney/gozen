@@ -373,18 +373,23 @@ bool Video::seek_frame(int frame_nr) {
 	int response = 0;
 	int attempts = 0;
 
-	int frame_difference = frame_nr - current_frame - 1;
+	int decode_difference = frame_nr - last_decoded_frame;
 
-	if (frame_difference > 0 && frame_difference <= smart_seek_threshold) {
-		for (int i = 0; i < frame_difference; i++) {
+	if (decode_difference == 1) {
+		current_frame = last_decoded_frame;
+		return next_frame(false);
+	} else if (decode_difference > 1 && decode_difference <= smart_seek_threshold) {
+		current_frame = last_decoded_frame;
+		bool success = true;
+		for (int i = 0; i < decode_difference - 1; i++) {
 			if (!next_frame(true)) {
 				_log_err("Smart seek failed, falling back to hard seeking");
-				frame_difference = 0;
+				success = false;
 				break;
 			}
 		}
 
-		if (frame_difference != 0) {
+		if (success) {
 			next_frame(false);
 			return true;
 		}
@@ -394,8 +399,11 @@ bool Video::seek_frame(int frame_nr) {
 	if ((response = _seek_frame(frame_nr)) < 0)
 		return _log_err("Couldn't seek");
 
+	UniqueAVFrame temp_frame = make_unique_avframe();
+	bool frame_found = false;
+
 	while (true) {
-		if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(),
+		if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(),
 										  av_packet.get()))) {
 			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
 				if (attempts > 10) {
@@ -406,18 +414,22 @@ bool Video::seek_frame(int frame_nr) {
 				attempts++;
 				continue;
 			} else if (response == AVERROR_EOF) {
-				_log_err("End of file reached! Going back 1 frame!");
-
-				if ((response = _seek_frame(frame_nr--)) < 0)
-					return _log_err("Couldn't seek frame! Error core: " + String::num_int64(response));
-
-				continue;
+				_log_err("End of file reached during seek!");
+				if (frame_found) {
+					_copy_frame_data();
+					_add_to_cache(frame_nr);
+				}
+				break;
 			}
 
 			FFmpeg::print_av_error("Video: Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
 		}
+
+		av_frame_unref(av_frame.get());
+		av_frame_ref(av_frame.get(), temp_frame.get());
+		frame_found = true;
 
 		// Get frame pts.
 		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
@@ -445,29 +457,37 @@ bool Video::seek_frame(int frame_nr) {
 bool Video::next_frame(bool skip) {
 	if (!loaded)
 		return false;
-	else if (_load_from_cache(current_frame + 1))
+	else if (!skip && _load_from_cache(current_frame + 1))
 		return true;
 	else if (last_decoded_frame != current_frame)
 		return seek_frame(current_frame + 1);
 
+	UniqueAVFrame temp_frame = make_unique_avframe();
 	int response =
-		FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(), av_packet.get());
+		FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(), av_packet.get());
 
 	if (response < 0 && response != AVERROR_EOF) {
 		FFmpeg::print_av_error("Video: Error in next_frame", response);
 	}
 
-	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
-		current_pts = av_frame->pts;
-	else
-		current_pts = av_frame->best_effort_timestamp;
+	if (response == 0) {
+		av_frame_unref(av_frame.get());
+		av_frame_ref(av_frame.get(), temp_frame.get());
 
-	if (!skip)
-		_copy_frame_data();
+		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
+			current_pts = av_frame->pts;
+		else
+			current_pts = av_frame->best_effort_timestamp;
+
+		if (!skip)
+			_copy_frame_data();
+	}
 
 	current_frame++;
 	last_decoded_frame = current_frame;
-	_add_to_cache(current_frame);
+	if (!skip && response == 0) {
+		_add_to_cache(current_frame);
+	}
 
 	return true;
 }
@@ -490,30 +510,9 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 		return Ref<Image>();
 	}
 
+	UniqueAVFrame temp_frame = make_unique_avframe();
 	while (true) {
-		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(),
-									 av_packet.get());
-
-		if (response == 0)
-			break;
-		else if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
-			if (attempts > 10) {
-				FFmpeg::print_av_error("Video: Reached max attempts trying to get first frame!", response);
-				break;
-			}
-
-			attempts++;
-		} else if (response == AVERROR_EOF) {
-			FFmpeg::print_av_error("Video: Reached EOF trying to get first frame!", response);
-			break;
-		} else {
-			FFmpeg::print_av_error("Video: Something went wrong getting first frame!", response);
-			break;
-		}
-	}
-
-	while (true) {
-		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, av_frame.get(),
+		response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(),
 									 av_packet.get());
 		if (response) {
 			if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
@@ -524,19 +523,18 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 				attempts++;
 				continue;
 			} else if (response == AVERROR_EOF) {
-				_log_err("End of file reached! Going back 1 frame!");
-
-				if ((response = _seek_frame(frame_nr--)) < 0) {
-					_log_err("Couldn't seek");
-					return Ref<Image>();
-				}
-				continue;
+				_log_err("End of file reached! Using last decoded frame.");
+				break;
 			}
 
 			FFmpeg::print_av_error("Video: Problem happened getting frame in seek_frame! ", response);
 			response = 1;
 			break;
 		}
+
+		av_frame_unref(av_frame.get());
+		av_frame_ref(av_frame.get(), temp_frame.get());
+		frame_found = true;
 
 		// Get frame pts.
 		current_pts =
@@ -546,7 +544,6 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 
 		// Skip to actual requested frame.
 		if ((int64_t)(current_pts * stream_time_base_video) / 10000 >= frame_timestamp / 10000) {
-			frame_found = true;
 			break;
 		}
 	}

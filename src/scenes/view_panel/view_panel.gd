@@ -13,7 +13,7 @@ extends PanelContainer
 
 func _ready() -> void:
 	EditorCore.play_changed.connect(_on_play_changed)
-	EditorCore.frame_changed.connect(_on_frame_changed)
+	EditorCore.visual_frame_changed.connect(_on_frame_changed)
 	_on_play_changed(EditorCore.is_playing)
 
 	frame_label.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -72,8 +72,8 @@ func _on_skip_next_button_pressed() -> void:
 
 
 func _on_frame_changed() -> void:
-	frame_label.text = tr("Frame") + ": %s" % EditorCore.frame_nr
-	time_label.text = Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.data.framerate, false)
+	frame_label.text = tr("Frame") + ": %s" % EditorCore.visual_frame_nr
+	time_label.text = Utils.format_time_str_from_frame(EditorCore.visual_frame_nr, Project.data.framerate, false)
 
 
 func _on_playback_speed_button_pressed() -> void:

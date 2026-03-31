@@ -107,6 +107,7 @@ func _gui_input(event: InputEvent) -> void:
 			queue_redraw()
 		elif _is_scrubbing and mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			_is_scrubbing = false
+			EditorCore.finish_scrub()
 
 
 func _draw() -> void:

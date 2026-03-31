@@ -1,6 +1,7 @@
 extends Node
 
 signal frame_changed
+signal visual_frame_changed
 signal play_changed(value: bool)
 
 
@@ -21,6 +22,7 @@ var compositors: Array[VisualCompositor] = []
 var background: ColorRect
 
 var frame_nr: int = 0: set = set_frame_nr
+var visual_frame_nr: int = 0
 var prev_frame: int = -1
 
 var is_playing: bool = false: set = set_is_playing
@@ -37,6 +39,9 @@ var skips: int = 0
 
 var data_ready: bool = true
 var data_set_frame: int = 0
+
+var _scrub_frame: int = -1
+var _last_scrub_time: int = 0
 
 
 
@@ -71,6 +76,13 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _scrub_frame != -1:
+		if Time.get_ticks_msec() - _last_scrub_time > 40:
+			if frame_nr != _scrub_frame:
+				set_frame(_scrub_frame)
+			_last_scrub_time = Time.get_ticks_msec()
+			_scrub_frame = -1
+
 	if data_ready:
 		var needs_delay: bool = false
 		for clip: ClipData in loaded_clips:
@@ -214,6 +226,8 @@ func set_frame_nr(value: int) -> void:
 
 	var audio_file_counter: Dictionary[int, int] = {}
 	frame_nr = value
+	visual_frame_nr = value
+	visual_frame_changed.emit()
 	var is_seek: bool = frame_nr != prev_frame + 1
 	for track: int in TrackLogic.tracks.size():
 		var audio_clip: ClipData = find_audio(frame_nr, track)
@@ -270,6 +284,20 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 
 	data_ready = true
 	data_set_frame = Engine.get_process_frames()
+
+
+func scrub_to_frame(frame_target: int) -> void:
+	if frame_target != visual_frame_nr:
+		visual_frame_nr = frame_target
+		visual_frame_changed.emit()
+		_scrub_frame = frame_target
+
+
+func finish_scrub() -> void:
+	if _scrub_frame != -1:
+		if frame_nr != _scrub_frame:
+			set_frame(_scrub_frame)
+		_scrub_frame = -1
 
 
 # --- Audio handling ---

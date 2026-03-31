@@ -25,13 +25,11 @@ var current_file: FileData = null
 var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
 
-var _scrub_frame: int = -1
-
 
 
 func _ready() -> void:
 	Project.project_ready.connect(_project_ready)
-	EditorCore.frame_changed.connect(_on_frame_changed)
+	EditorCore.visual_frame_changed.connect(_on_frame_changed)
 	EffectsHandler.effect_added.connect(_on_effect_added)
 	EffectsHandler.effect_removed.connect(_on_effect_removed)
 	EffectsHandler.effect_moved.connect(_on_effect_moved)
@@ -42,12 +40,6 @@ func _ready() -> void:
 	section_audio.add_title_bar_control(_get_add_effects_button(false))
 	section_visuals.folded = true
 	section_audio.folded = true
-
-
-func _process(_delta: float) -> void:
-	if _scrub_frame != -1:
-		EditorCore.set_frame(_scrub_frame)
-		_scrub_frame = -1
 
 
 func _project_ready() -> void:
@@ -261,7 +253,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	# NOTE: We can add the position of the effect inside of the effect array
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
-	var relative_frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var button_visible: TextureButton = TextureButton.new()
 	var button_delete: TextureButton = TextureButton.new()
 
@@ -375,7 +367,7 @@ func _on_keyframe_deleted_effect_ui(frame: int, effect_index: int, is_visual: bo
 
 
 func _on_keyframe_dragged_to_effect_ui(relative_frame: int) -> void:
-	_scrub_frame = current_clip.start + relative_frame
+	EditorCore.scrub_to_frame(current_clip.start + relative_frame)
 
 
 func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_text: bool) -> Control:
@@ -504,7 +496,7 @@ func _update_ui_values() -> void:
 	if !current_clip or !ClipLogic.clips.has(current_clip.id):
 		current_clip = null
 		return
-	var frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 
 	if section_text.visible and section_text.get_child_count() > 0:
 		var text_effects: EffectVisual = current_file.temp_file.text_effect
@@ -660,7 +652,7 @@ func _effect_param_update_call(value: Variant, index: int, is_visual: bool, para
 
 
 func _keyframe_button_pressed(index: int, is_visual: bool, param_id: String) -> void:
-	var relative_frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var effect: Effect
 	if is_visual:
 		effect = current_clip.effects.video[index]
@@ -678,7 +670,7 @@ func _keyframe_button_pressed(index: int, is_visual: bool, param_id: String) -> 
 
 
 func _create_text_ui(text_effect: EffectVisual) -> void:
-	var relative_frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var container: FoldableContainer = FoldableContainer.new()
 	container.title = "Text Properties"
 	container.add_theme_font_size_override("font_size", 11)
@@ -797,7 +789,7 @@ func _on_text_keyframe_deleted(frame_nr: int) -> void:
 
 
 func _text_param_update_call(value: Variant, param_id: String) -> void:
-	var frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
@@ -822,7 +814,7 @@ func _text_param_update_call(value: Variant, param_id: String) -> void:
 
 
 func _text_keyframe_button_pressed(param_id: String) -> void:
-	var frame_nr: int = EditorCore.frame_nr - current_clip.start
+	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 	var param_keyframes: Dictionary = keyframes[param_id]

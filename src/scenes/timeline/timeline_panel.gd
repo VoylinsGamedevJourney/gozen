@@ -108,8 +108,6 @@ var track_total_size: float = track_height + TRACK_LINE_WIDTH
 
 var _update_clips: bool = true
 var _drop_valid: bool = false
-var _scrub_frame: int = -1
-var _last_scrub_time: int = 0
 
 
 
@@ -119,7 +117,7 @@ func _ready() -> void:
 	Settings.on_show_time_mode_bar_changed.connect(_show_hide_mode_bar)
 	Settings.on_track_height_changed.connect(_update_track_height)
 	EditorCore.frame_changed.connect(draw_track_lines.queue_redraw)
-	EditorCore.frame_changed.connect(draw_playhead.queue_redraw)
+	EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw)
 	InputManager.switch_timeline_mode_select.connect(set_state.bind(STATE.CURSOR_MODE_SELECT))
 	InputManager.switch_timeline_mode_cut.connect(set_state.bind(STATE.CURSOR_MODE_CUT))
 	InputManager.switch_timeline_mode_select.connect(_on_select_mode_button_pressed)
@@ -136,15 +134,6 @@ func _ready() -> void:
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
-
-
-func _process(_delta: float) -> void:
-	if _scrub_frame != -1:
-		var current_time: int = Time.get_ticks_msec()
-		if current_time - _last_scrub_time > 40:
-			move_playhead(_scrub_frame)
-			_scrub_frame = -1
-			_last_scrub_time = current_time
 
 
 # --- Drawing functions ---
@@ -354,7 +343,7 @@ func _draw_mode(control: Control) -> void:
 
 
 func _draw_playhead(control: Control) -> void:
-	var playhead_pos: float = EditorCore.frame_nr * zoom
+	var playhead_pos: float = EditorCore.visual_frame_nr * zoom
 	control.draw_line(
 			Vector2(playhead_pos, 0), Vector2(playhead_pos, size.y),
 			PLAYHEAD_COLOR, PLAYHEAD_WIDTH)
@@ -454,10 +443,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			STATE.RESIZING: _commit_current_resize()
 			STATE.SPEEDING: _commit_current_resize()
 			STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
-			STATE.SCRUBBING:
-				if _scrub_frame != -1:
-					move_playhead(_scrub_frame)
-					_scrub_frame = -1
+			STATE.SCRUBBING: EditorCore.finish_scrub()
 		_on_ui_cancel()
 
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
@@ -494,7 +480,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				draw_box_selection.queue_redraw()
 			else:
 				state = STATE.SCRUBBING
-				_scrub_frame = get_frame_from_mouse()
+				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		else:
 			if !event.shift_pressed:
 				selected_clips = [pressed_clip]
@@ -551,7 +537,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			_handle_fade_motion()
 		STATE.SCRUBBING:
 			if event.button_mask & MOUSE_BUTTON_LEFT:
-				_scrub_frame = get_frame_from_mouse()
+				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		STATE.BOX_SELECTING:
 			box_select_end = get_local_mouse_position()
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
