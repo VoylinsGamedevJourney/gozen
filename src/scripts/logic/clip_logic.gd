@@ -296,7 +296,7 @@ func load_video_frame(clip: ClipData, frame_nr: int, instance_index: int = 0) ->
 		var target_frame_nr: int = roundi((float(frame_nr) / project_fps) * video_fps)
 		if target_frame_nr != video_frame_nr: # Shouldn't reload same frame
 			var frame_diff: int = target_frame_nr - video_frame_nr
-			if frame_diff > 0 and frame_diff <= 40:
+			if Utils.in_range(frame_diff, 0, 60):
 				# Small forward jump is much faster via next_frame.
 				for i: int in frame_diff:
 					if !video.next_frame(i < frame_diff - 1):

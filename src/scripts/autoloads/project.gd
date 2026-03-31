@@ -115,7 +115,7 @@ func open(new_project_path: String) -> void:
 		add_child(dialog)
 		dialog.popup_centered()
 
-	FileLogic._startup_loading((1.0 / maxf(1.0, float(data.files.size()))) * 85.0)
+	FileLogic._startup_loading()
 	loading_overlay.update_bar(98)
 
 	var all_loaded: bool = false

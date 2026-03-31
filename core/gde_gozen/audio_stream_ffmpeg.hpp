@@ -77,8 +77,8 @@ class AudioStreamFFmpegPlayback : public AudioStreamPlaybackResampled {
 	};
 
 	sint16_stereo* buffer = nullptr;
-	size_t buffer_len = 4410000 * 6; // ~1 minute
-	size_t buffer_fill = 0;			 // Number of samples current in buffer
+	size_t buffer_len = 44100 * 10; // 10 seconds.
+	size_t buffer_fill = 0;			// Number of samples current in buffer.
 	bool is_playing = false;
 
 	uint32_t mixed = 0;

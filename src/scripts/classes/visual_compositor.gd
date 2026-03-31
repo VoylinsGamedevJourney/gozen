@@ -81,30 +81,40 @@ var groups_y: int
 
 
 
-func _init_start(p_resolution: Vector2i) -> void:
-	if initialized:
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
 		cleanup()
 
-	var sampler_state: RDSamplerState = RDSamplerState.new()
 
-	default_sampler = device.sampler_create(sampler_state)
+func _init_start(p_resolution: Vector2i) -> void:
+	if initialized and resolution != p_resolution:
+		cleanup()
+
+	if not default_sampler.is_valid():
+		var sampler_state: RDSamplerState = RDSamplerState.new()
+		default_sampler = device.sampler_create(sampler_state)
 
 	resolution = p_resolution
-	display_texture = Texture2DRD.new()
+	if not display_texture:
+		display_texture = Texture2DRD.new()
 
 	groups_x = ceili(resolution.x / 8.0)
 	groups_y = ceili(resolution.y / 8.0)
 
-	var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/fade.glsl").get_spirv()
-	var fade_buffer_data: PackedByteArray = PackedByteArray()
+	if not fade_shader.is_valid():
+		var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/fade.glsl").get_spirv()
+		var fade_buffer_data: PackedByteArray = PackedByteArray()
 
-	fade_shader = device.shader_create_from_spirv(fade_spirv)
-	fade_pipeline = device.compute_pipeline_create(fade_shader)
-	fade_buffer_data.resize(16)
-	fade_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
+		fade_shader = device.shader_create_from_spirv(fade_spirv)
+		fade_pipeline = device.compute_pipeline_create(fade_shader)
+		fade_buffer_data.resize(16)
+		fade_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
 
 
 func _init_ping_pong() -> void:
+	if ping_texture.is_valid():
+		return # Already created and valid for this resolution
+
 	# Create RGBA8 format
 	var format_rgba: RDTextureFormat = RDTextureFormat.new()
 
@@ -115,52 +125,42 @@ func _init_ping_pong() -> void:
 	format_rgba.texture_type = device.TEXTURE_TYPE_2D
 
 	# Create textures
-	ping_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
-	pong_texture = device.texture_create(format_rgba, RDTextureView.new(), [])
+	ping_texture = device.texture_create(format_rgba, RDTextureView.new(),[])
+	pong_texture = device.texture_create(format_rgba, RDTextureView.new(),[])
 	display_texture.texture_rd_rid = ping_texture
 	initialized = true
 
 
 func initialize_texture(size: Vector2i) -> void:
+	if initialized and resolution != size:
+		cleanup()
+
 	_init_start(size)
-	_init_ping_pong()
-
-
-func initialize_image(image: Texture2D) -> void:
-	if !image:
-		return
-	_init_start(Project.data.resolution)
-
-	var format: RDTextureFormat = RDTextureFormat.new()
-	var new_image: Image = image.get_image()
-
-	if new_image.get_format() != Image.FORMAT_RGBA8:
-		new_image.convert(Image.FORMAT_RGBA8)
-	if new_image.get_size() != resolution:
-		new_image.resize(resolution.x, resolution.y, Image.INTERPOLATE_BILINEAR)
-
-	format.format = device.DATA_FORMAT_R8G8B8A8_UNORM
-	format.width = new_image.get_width()
-	format.height = new_image.get_height()
-	format.usage_bits = USAGE_BITS_RGBA
-	format.texture_type = device.TEXTURE_TYPE_2D
-
-	base_image = device.texture_create(format, RDTextureView.new(), [new_image.get_data()])
 	_init_ping_pong()
 
 
 func initialize_video(video: Video) -> void:
 	if !video:
 		return
+
+	if initialized and resolution != Project.data.resolution:
+		cleanup()
+
 	_init_start(Project.data.resolution)
 
-	var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
+	if not yuv_shader.is_valid():
+		var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
+		yuv_shader = device.shader_create_from_spirv(spirv)
+		yuv_pipeline = device.compute_pipeline_create(yuv_shader)
+
+	y_texture = Utils.cleanup_rid(device, y_texture)
+	u_texture = Utils.cleanup_rid(device, u_texture)
+	v_texture = Utils.cleanup_rid(device, v_texture)
+	a_texture = Utils.cleanup_rid(device, a_texture)
+	yuv_params = Utils.cleanup_rid(device, yuv_params)
+
 	var format_y: RDTextureFormat = RDTextureFormat.new()
 	var format_uv: RDTextureFormat = RDTextureFormat.new()
-
-	# Setup YUV pipeline.
-	yuv_shader = device.shader_create_from_spirv(spirv)
-	yuv_pipeline = device.compute_pipeline_create(yuv_shader)
 
 	# Creating the Y format.
 	format_y.format = device.DATA_FORMAT_R8_UNORM
@@ -177,12 +177,12 @@ func initialize_video(video: Video) -> void:
 	format_uv.texture_type = device.TEXTURE_TYPE_2D
 
 	# Create YUV textures.
-	y_texture = device.texture_create(format_y, RDTextureView.new(), [])
-	u_texture = device.texture_create(format_uv, RDTextureView.new(), [])
-	v_texture = device.texture_create(format_uv, RDTextureView.new(), [])
+	y_texture = device.texture_create(format_y, RDTextureView.new(),[])
+	u_texture = device.texture_create(format_uv, RDTextureView.new(),[])
+	v_texture = device.texture_create(format_uv, RDTextureView.new(),[])
 
 	if video.get_has_alpha():
-		a_texture = device.texture_create(format_y, RDTextureView.new(), [])
+		a_texture = device.texture_create(format_y, RDTextureView.new(),[])
 	else:
 		var white_image: Image = Image.create(video.get_y_data().get_width(), resolution.y, false, Image.FORMAT_R8)
 		white_image.fill(Color.WHITE)
@@ -190,18 +190,6 @@ func initialize_video(video: Video) -> void:
 
 	yuv_params = _create_yuv_params(video)
 	_init_ping_pong()
-
-
-func update_image(image: Texture2D) -> void:
-	if not initialized or Vector2i(image.get_size()) != resolution:
-		initialize_image(image)
-		return
-
-	var new_image: Image = image.get_image()
-	if new_image.get_format() != Image.FORMAT_RGBA8:
-		new_image.convert(Image.FORMAT_RGBA8)
-
-	device.texture_update(base_image, 0, new_image.get_data())
 
 
 func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:

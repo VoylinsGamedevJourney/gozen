@@ -36,7 +36,7 @@ func _ready() -> void:
 
 
 ## Load everything on startup and give user indication of the progress.
-func _startup_loading(amount: float) -> void:
+func _startup_loading() -> void:
 	for file: FileData in files.values():
 		load_data(file)
 
@@ -182,6 +182,11 @@ func paste_image(image: Image) -> void:
 	file.type = EditorCore.TYPE.IMAGE
 	file.duration = Settings.get_image_duration()
 	file.temp_file = TempFile.new()
+
+	if image.get_format() != Image.FORMAT_RGBA8:
+		image.convert(Image.FORMAT_RGBA8)
+	if image.get_size() != Project.data.resolution:
+		image.resize(Project.data.resolution.x, Project.data.resolution.y, Image.INTERPOLATE_BILINEAR)
 	file.temp_file.image_data = ImageTexture.create_from_image(image)
 
 	var time_dict: Dictionary = Time.get_datetime_dict_from_system()
@@ -353,8 +358,12 @@ func load_data(file: FileData) -> void:
 
 	match file.type:
 		EditorCore.TYPE.IMAGE:
-			file_data[file.id] = ImageTexture.create_from_image(
-					Image.load_from_file(file.path))
+			var image: Image = Image.load_from_file(file.path)
+			if image.get_format() != Image.FORMAT_RGBA8:
+				image.convert(Image.FORMAT_RGBA8)
+			if image.get_size() != Project.data.resolution:
+				image.resize(Project.data.resolution.x, Project.data.resolution.y, Image.INTERPOLATE_BILINEAR)
+			file_data[file.id] = ImageTexture.create_from_image(image)
 		EditorCore.TYPE.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		EditorCore.TYPE.AUDIO:

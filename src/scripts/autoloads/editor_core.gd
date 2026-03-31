@@ -51,6 +51,8 @@ func _ready() -> void:
 	FileLogic.video_loaded.connect(_on_clips_updated.unbind(1))
 	FileLogic.ato_changed.connect(_on_clips_updated.unbind(1))
 
+	tree_exiting.connect(_on_closing_editor)
+
 	# TODO: Find out why FFT_SIZE_4096 and FFT_SIZE_MAX don't work.
 	pitch_shift_effect = AudioEffectPitchShift.new()
 	pitch_shift_effect.fft_size = AudioEffectPitchShift.FFT_SIZE_2048
@@ -150,13 +152,21 @@ func _rebuild_structure() -> void:
 
 func _on_closing_editor() -> void:
 	for texture_rect: TextureRect in view_textures:
-		texture_rect.queue_free()
+		if is_instance_valid(texture_rect):
+			texture_rect.queue_free()
 	for text_viewport: SubViewport in text_viewports:
-		text_viewport.queue_free()
+		if is_instance_valid(text_viewport):
+			text_viewport.queue_free()
 	view_textures.clear()
 	audio_players.clear()
-	viewport.queue_free()
+	if is_instance_valid(viewport):
+		viewport.queue_free()
 	text_viewports.clear()
+
+	for compositor: VisualCompositor in compositors:
+		if compositor != null:
+			compositor.cleanup()
+	compositors.clear()
 
 
 func _on_clips_updated() -> void:
@@ -343,15 +353,12 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	ClipLogic.load_video_frame(clip, relative_frame, instance_index)
 
 	if clip.type == TYPE.TEXT:
-		var image: Image = text_viewports[track_id].get_texture().get_image()
-		var image_texture: ImageTexture = ImageTexture.create_from_image(image)
+		var texture_rid: RID = text_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
-			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image_texture))
-		else:
-			RenderingServer.call_on_render_thread(compositors[track_id].update_image.bind(image_texture))
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
-		RenderingServer.call_on_render_thread(compositors[track_id].process_image_frame.bind(
-				effects, relative_frame, fade_alpha))
+		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
+				texture_rid, effects, relative_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Video:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
@@ -363,11 +370,12 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Texture2D:
 		var image: Texture2D = raw_data
+		var texture_rid: RID = image.get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
-			RenderingServer.call_on_render_thread(compositors[track_id].initialize_image.bind(image))
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
-		RenderingServer.call_on_render_thread(compositors[track_id].process_image_frame.bind(
-				effects, relative_frame, fade_alpha))
+		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
+				texture_rid, effects, relative_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 
 

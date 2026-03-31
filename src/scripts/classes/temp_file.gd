@@ -14,7 +14,6 @@ var text_effect: EffectVisual = null
 
 
 func load_image_from_color() -> void:
-	var image: Image = Image.create(854, 480, false, Image.FORMAT_RGB8)
-
+	var image: Image = Image.create(Project.data.resolution.x, Project.data.resolution.y, false, Image.FORMAT_RGBA8)
 	image.fill(color)
 	image_data = ImageTexture.create_from_image(image)
