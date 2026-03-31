@@ -14,6 +14,7 @@ const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
 
 var visual_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
 var visual_effect_instances: Dictionary[String, EffectVisual] = {} ## { effect_id: effect_class }
+var shader_cache: Dictionary[String, RDShaderFile] = {}
 
 var audio_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
 var audio_effect_instances: Dictionary[String, EffectAudio] = {} ## { effect_id: effect_class }
@@ -55,6 +56,7 @@ func _load_video_effects() -> void:
 		var effect: EffectVisual = temp
 		visual_effects[effect.nickname] = effect.id
 		visual_effect_instances[effect.id] = effect
+		shader_cache[effect.shader_path] = load(effect.shader_path)
 
 
 func _load_audio_effects() -> void:
