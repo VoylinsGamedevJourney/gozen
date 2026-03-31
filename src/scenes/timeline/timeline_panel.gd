@@ -806,9 +806,8 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 		var drag_data: EffectsPanel.DragData = data
 		var clip: ClipData = _get_clip_on_mouse()
 		if clip:
-			var new_effect: Effect = drag_data.effect.duplicate(true)
+			var new_effect: Effect = drag_data.effect.deep_copy()
 			new_effect.keyframes = drag_data.effect.keyframes.duplicate(true)
-			new_effect._cache_dirty = true
 			EffectsHandler.add_effect(clip, new_effect, drag_data.is_visual)
 		return
 	elif data is not Draggable or state not in[STATE.DROPPING, STATE.MOVING]:

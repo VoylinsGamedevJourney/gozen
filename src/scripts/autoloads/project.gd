@@ -18,7 +18,6 @@ var auto_save_timer: Timer
 
 func _ready() -> void:
 	get_window().close_requested.connect(_on_close)
-	ClipLogic.updated.connect(update_timeline_end)
 
 
 func _unsaved_changes(value: bool) -> void:

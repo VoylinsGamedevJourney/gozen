@@ -26,8 +26,6 @@ func add(requests: Array[ClipRequest]) -> void:
 		new_clip.effects = _create_default_effects(new_clip.type)
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
 		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -35,6 +33,7 @@ func _restore_clip(snapshot: ClipData) -> void:
 	clips[snapshot.id] = snapshot
 	TrackLogic.add_clip_to_track(snapshot.track, snapshot)
 	Project.unsaved_changes = true
+	Project.update_timeline_end()
 	added.emit(snapshot)
 	updated.emit()
 
@@ -44,8 +43,6 @@ func delete(clips_to_delete: Array[ClipData]) -> void:
 	for clip: ClipData in clips_to_delete:
 		InputManager.undo_redo.add_do_method(_delete.bind(clip))
 		InputManager.undo_redo.add_undo_method(_restore_clip.bind(clip))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -53,6 +50,7 @@ func _delete(clip: ClipData) -> void:
 	TrackLogic.remove_clip_from_track(clip.track, clip)
 	clips.erase(clip.id)
 	Project.unsaved_changes = true
+	Project.update_timeline_end()
 	deleted.emit(clip.id)
 	updated.emit()
 
@@ -84,8 +82,6 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 						move_clip, track, move_clip.start - gap_size))
 				InputManager.undo_redo.add_undo_method(_move.bind(
 						move_clip, track, move_clip.start))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -97,8 +93,6 @@ func move(requests: Array[ClipRequest]) -> void:
 		var new_start: int = clip.start + request.frame_offset
 		InputManager.undo_redo.add_do_method(_move.bind(clip, new_track, new_start))
 		InputManager.undo_redo.add_undo_method(_move.bind(clip, clip.track, clip.start))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -108,6 +102,7 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	clip.track = new_track
 	TrackLogic.add_clip_to_track(new_track, clip)
 	Project.unsaved_changes = true
+	Project.update_timeline_end()
 	updated.emit()
 
 
@@ -152,8 +147,6 @@ func resize(requests: Array[ClipRequest]) -> void:
 				clip, request.resize, request.is_end))
 		InputManager.undo_redo.add_undo_method(_resize_restore.bind(
 				clip, clip.start, clip.duration, clip.begin))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -165,6 +158,7 @@ func _resize(clip: ClipData, amount: int, from_end: bool) -> void:
 		clip.begin += amount
 		clip.duration -= amount
 	Project.unsaved_changes = true
+	Project.update_timeline_end()
 	updated.emit()
 
 
@@ -173,6 +167,7 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 	clip.begin = begin
 	clip.duration = duration
 	Project.unsaved_changes = true
+	Project.update_timeline_end()
 	updated.emit()
 
 
@@ -180,9 +175,9 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 
 ## This function is intended to be used when cutting clips to copy over the effects.
 func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[EffectVisual]:
-	var new_effects: Array[EffectVisual] = []
+	var new_effects: Array[EffectVisual] =[]
 	for effect: EffectVisual in effects:
-		var new_effect: EffectVisual = effect.duplicate(true)
+		var new_effect: EffectVisual = effect.deep_copy()
 		new_effect.keyframes = {}
 		new_effect._cache_dirty = true
 
@@ -204,9 +199,9 @@ func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[E
 
 ## This function is intended to be used when cutting clips to copy over the effects.
 func _copy_audio_effects(effects: Array[EffectAudio], cut_pos: int) -> Array[EffectAudio]:
-	var new_effects: Array[EffectAudio] = []
+	var new_effects: Array[EffectAudio] =[]
 	for effect: EffectAudio in effects:
-		var new_effect: EffectAudio = effect.duplicate(true)
+		var new_effect: EffectAudio = effect.deep_copy()
 		new_effect.effect = effect.effect
 		new_effect.keyframes = {}
 		new_effect._cache_dirty = true
@@ -243,6 +238,7 @@ func _apply_audio_take_over(clip: ClipData, active: bool, audio_file_id: int, of
 	effects.ato_file = audio_file_id
 	effects.ato_offset = offset
 	Project.unsaved_changes = true
+	Project.update_timeline_end()
 	updated.emit()
 
 
@@ -259,8 +255,6 @@ func change_speed(requests: Array[ClipRequest]) -> void:
 				clip, amount, from_end, new_speed))
 		InputManager.undo_redo.add_undo_method(_change_speed_restore.bind(
 				clip, clip.start, clip.duration, clip.speed))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 
@@ -271,6 +265,7 @@ func _change_speed(clip: ClipData, amount: int, from_end: bool, new_speed: float
 	else:
 		clip.start += amount
 		clip.duration -= amount
+	Project.update_timeline_end()
 	updated.emit()
 
 
@@ -278,6 +273,7 @@ func _change_speed_restore(clip: ClipData, start: int, duration: int, speed: flo
 	clip.start = start
 	clip.speed = speed
 	clip.duration = duration
+	Project.update_timeline_end()
 	updated.emit()
 
 
@@ -344,10 +340,9 @@ func _set_ato_active(effects: ClipEffects, value: bool) -> void:
 
 func _create_default_effects(file_type: EditorCore.TYPE) -> ClipEffects:
 	var effects: ClipEffects = ClipEffects.new()
-
 	if file_type in EditorCore.VISUAL_TYPES:
 		var resolution: Vector2i = Project.get_resolution()
-		var transform_effect: EffectVisual = load(Library.EFFECT_VISUAL_TRANSFORM).duplicate(true)
+		var transform_effect: EffectVisual = (load(Library.EFFECT_VISUAL_TRANSFORM) as EffectVisual).deep_copy()
 		for param: EffectParam in transform_effect.params:
 			if param.id == "pivot":
 				param.default_value = Vector2i(resolution / 2.0)
@@ -355,7 +350,7 @@ func _create_default_effects(file_type: EditorCore.TYPE) -> ClipEffects:
 		effects.video.append(transform_effect)
 
 	if file_type in EditorCore.AUDIO_TYPES:
-		var volume_effect: EffectAudio = load(Library.EFFECT_AUDIO_VOLUME).duplicate(true)
+		var volume_effect: EffectAudio = (load(Library.EFFECT_AUDIO_VOLUME) as EffectAudio).deep_copy()
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
 	return effects

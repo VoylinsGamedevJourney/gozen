@@ -96,7 +96,7 @@ func _create_file(path: String) -> FileData:
 			file.type = EditorCore.TYPE.TEXT
 			file.duration = Settings.get_text_duration()
 			file.nickname = "Text: Empty text"
-			file.temp_file.text_effect = load(Library.EFFECT_TEXT).duplicate(true)
+			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
 			file.temp_file.text_effect.set_default_keyframe()
 		elif path == "temp://image":
 			file.type = EditorCore.TYPE.IMAGE
@@ -123,8 +123,6 @@ func delete(ids: PackedInt64Array) -> void:
 	for file_id: int in ids:
 		InputManager.undo_redo.add_do_method(_delete.bind(files[file_id]))
 		InputManager.undo_redo.add_undo_method(_restore.bind(files[file_id]))
-	InputManager.undo_redo.add_do_method(Project.update_timeline_end)
-	InputManager.undo_redo.add_undo_method(Project.update_timeline_end)
 	InputManager.undo_redo.commit_action()
 
 

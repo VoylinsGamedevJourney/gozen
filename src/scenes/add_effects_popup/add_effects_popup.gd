@@ -86,11 +86,10 @@ func _on_search_box_text_submitted(_effect_text: String) -> void:
 
 func _on_effect_clicked(effect_id: String) -> void:
 	var effect: Effect
-
 	if is_visual:
-		effect = EffectsHandler.visual_effect_instances[effect_id].duplicate()
+		effect = EffectsHandler.visual_effect_instances[effect_id].deep_copy()
 	else:
-		effect = EffectsHandler.audio_effect_instances[effect_id].duplicate()
+		effect = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
 
 	EffectsHandler.add_effect(current_clip, effect, is_visual)
 	_on_close_button_pressed()

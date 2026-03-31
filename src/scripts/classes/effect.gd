@@ -61,6 +61,19 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 	return _interpolate_variant(value_a, value_b, weight)
 
 
+func deep_copy() -> Effect:
+	var copy: Effect = self.duplicate(true)
+	copy.keyframes = {}
+	copy._cache_dirty = true
+
+	var new_params: Array[EffectParam] =[]
+	for param: EffectParam in self.params:
+		new_params.append(param.duplicate(true))
+	copy.params = new_params
+
+	return copy
+
+
 func change_default_param(param_id: String, new_default: Variant) -> void:
 	for effect_param: EffectParam in params:
 		if effect_param.id == param_id:

@@ -256,16 +256,21 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var button_visible: TextureButton = TextureButton.new()
 	var button_delete: TextureButton = TextureButton.new()
+	var button_reset: TextureButton = TextureButton.new()
 
 	if effect.is_enabled:
 		button_visible.texture_normal = preload(Library.ICON_VISIBLE)
 	else:
 		button_visible.texture_normal = preload(Library.ICON_INVISIBLE)
 	button_delete.texture_normal = preload(Library.ICON_DELETE)
+	button_reset.texture_normal = preload(Library.ICON_REFRESH)
+	button_reset.tooltip_text = tr("Reset to default")
+
 	button_visible.pressed.connect(_on_switch_enabled.bind(index, is_visual))
 	button_delete.pressed.connect(_on_remove_effect.bind(index, is_visual))
+	button_reset.pressed.connect(_on_reset_effect.bind(index, is_visual))
 
-	for button: TextureButton in [button_delete, button_visible]:
+	for button: TextureButton in [button_reset, button_delete, button_visible]:
 		button.ignore_texture_size = true
 		button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -288,6 +293,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark).
 	container.add_theme_font_size_override("font_size", 11)
 	container.add_theme_color_override("font_color", "#b8b8b8")
+	container.add_title_bar_control(button_reset)
 	container.add_title_bar_control(button_delete)
 	container.add_title_bar_control(button_visible)
 	container.add_title_bar_control(button_drag)
@@ -492,6 +498,10 @@ func _on_remove_effect(index: int, is_visual: bool) -> void:
 	EffectsHandler.remove_effect(current_clip, index, is_visual)
 
 
+func _on_reset_effect(index: int, is_visual: bool) -> void:
+	EffectsHandler.reset_effect(current_clip, index, is_visual)
+
+
 func _update_ui_values() -> void:
 	if !current_clip or !ClipLogic.clips.has(current_clip.id):
 		current_clip = null
@@ -676,9 +686,18 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 	container.add_theme_font_size_override("font_size", 11)
 	container.add_theme_color_override("font_color", "#b8b8b8")
 
+	var button_reset: TextureButton = TextureButton.new()
+	button_reset.texture_normal = preload(Library.ICON_REFRESH)
+	button_reset.ignore_texture_size = true
+	button_reset.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+	button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button_reset.tooltip_text = tr("Reset to default")
+	button_reset.pressed.connect(_on_reset_text_effect)
+	container.add_title_bar_control(button_reset)
+
 	var content_vbox: VBoxContainer = VBoxContainer.new()
 	container.add_child(content_vbox)
-
 	for param: EffectParam in text_effect.params:
 		var param_hbox: HBoxContainer = HBoxContainer.new()
 		var param_id: String = param.id
@@ -830,6 +849,34 @@ func _text_keyframe_button_pressed(param_id: String) -> void:
 	elif frame_nr != 0:
 		FileLogic.remove_text_keyframe(current_file, param_id, frame_nr)
 	_update_ui_values()
+
+
+func _on_reset_text_effect() -> void:
+	var text_effect: EffectVisual = current_file.temp_file.text_effect
+	var old_keyframes: Dictionary = text_effect.keyframes.duplicate(true)
+
+	InputManager.undo_redo.create_action("Reset text effect")
+	InputManager.undo_redo.add_do_method(_reset_text_effect.bind(current_file))
+	InputManager.undo_redo.add_undo_method(_restore_text_effect_keyframes.bind(current_file, old_keyframes))
+	InputManager.undo_redo.commit_action()
+
+
+func _reset_text_effect(file: FileData) -> void:
+	var text_effect: EffectVisual = file.temp_file.text_effect
+	text_effect.keyframes.clear()
+	text_effect.set_default_keyframe()
+	Project.unsaved_changes = true
+	ClipLogic.updated.emit()
+	EffectsHandler.effect_values_updated.emit()
+
+
+func _restore_text_effect_keyframes(file: FileData, old_keyframes: Dictionary) -> void:
+	var text_effect: EffectVisual = file.temp_file.text_effect
+	text_effect.keyframes = old_keyframes.duplicate(true)
+	text_effect._cache_dirty = true
+	Project.unsaved_changes = true
+	ClipLogic.updated.emit()
+	EffectsHandler.effect_values_updated.emit()
 
 
 

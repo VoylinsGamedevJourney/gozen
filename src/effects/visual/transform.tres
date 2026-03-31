@@ -59,6 +59,5 @@ matrix_map = Dictionary[String, int]({
 })
 id = "transform"
 nickname = "Transform"
-custom_ui_path = "uid://rxhcwr8cixlg"
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"

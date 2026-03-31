@@ -105,6 +105,60 @@ func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) ->
 	effects_updated.emit()
 
 
+#---- Resetting effects ----
+
+func reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
+	if index < 0:
+		return
+	var effect: Effect
+	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
+	if index >= size: return
+	if is_visual:
+		effect = clip.effects.video[index]
+	else:
+		effect = clip.effects.audio[index]
+
+	var old_keyframes: Dictionary = effect.keyframes.duplicate(true)
+
+	InputManager.undo_redo.create_action("Reset effect: %s" % effect.nickname)
+	InputManager.undo_redo.add_do_method(_reset_effect.bind(clip, index, is_visual))
+	InputManager.undo_redo.add_undo_method(_restore_effect_keyframes.bind(clip, index, is_visual, old_keyframes))
+	InputManager.undo_redo.commit_action()
+
+
+func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
+	var effect: Effect
+	if is_visual:
+		effect = clip.effects.video[index]
+	else:
+		effect = clip.effects.audio[index]
+	effect.keyframes.clear()
+
+	if effect.id in param_exceptions: # Handle exceptions for default values
+		for exception: String in param_exceptions[effect.id]:
+			var value: Variant = param_exceptions[effect.id][exception]
+			if value is Callable:
+				effect.change_default_param(exception, (value as Callable).call())
+			else:
+				effect.change_default_param(exception, value)
+
+	effect.set_default_keyframe()
+	effects_updated.emit()
+	effect_values_updated.emit()
+
+
+func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_keyframes: Dictionary) -> void:
+	var effect: Effect
+	if is_visual:
+		effect = clip.effects.video[index]
+	else:
+		effect = clip.effects.audio[index]
+	effect.keyframes = old_keyframes.duplicate(true)
+	effect._cache_dirty = true
+	effects_updated.emit()
+	effect_values_updated.emit()
+
+
 #---- Removing effects ----
 
 func remove_effect(clip: ClipData, index: int, is_visual: bool) -> void:
