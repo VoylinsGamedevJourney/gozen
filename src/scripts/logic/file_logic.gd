@@ -27,9 +27,14 @@ var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
 var files_dropping: bool = false
 
+var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
+
 
 
 func _ready() -> void:
+	if !DirAccess.dir_exists_absolute(wave_folder):
+		DirAccess.make_dir_recursive_absolute(wave_folder)
+
 	Project.get_window().files_dropped.connect(dropped)
 	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
 	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
@@ -409,8 +414,17 @@ func _create_wave(file: FileData) -> void:
 	# TODO: Large audio lengths will still crash this function. Could possibly
 	# use the get_audio improvements by cutting the data into pieces.
 	# TODO: We should check if the amplification
-	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
+	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + ".wave"
+	if FileAccess.file_exists(cache_path):
+		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
+		if temp_file:
+			var size: int = temp_file.get_length()
+			if size > 0 and size % 4 == 0:
+				audio_wave[file.id] = temp_file.get_buffer(size).to_float32_array()
+				call_deferred("_on_wave_ready", file)
+				return
 
+	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 	if data.is_empty():
 		audio_wave[file.id] = PackedFloat32Array()
 		return push_warning("Audio data is empty!")
@@ -453,6 +467,11 @@ func _create_wave(file: FileData) -> void:
 
 		if i % 50 == 0:
 			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
+
+	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
+	if save_file:
+		save_file.store_buffer(local_wave.to_byte_array())
+	call_deferred("_on_wave_ready", file)
 
 
 func _on_wave_ready(file: FileData) -> void:

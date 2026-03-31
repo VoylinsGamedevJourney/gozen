@@ -62,7 +62,7 @@ func _ready() -> void:
 	viewport = SubViewport.new()
 	viewport.size = Vector2i(1920, 1080) # Just a default size, get's changed later.
 	viewport.size_2d_override_stretch = true
-	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	background = ColorRect.new()
 	background.color = Color("#000000") # Just a default color, get's changed later.
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -144,7 +144,7 @@ func _rebuild_structure() -> void:
 		text_label.label_settings = settings
 		text_viewport.size = Vector2i(1920, 1080)
 		text_viewport.transparent_bg = true
-		text_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 		text_viewport.add_child(text_label)
 		add_child(text_viewport)
 		text_viewports[index] = text_viewport
@@ -323,6 +323,8 @@ func update_data(track: int) -> void:
 		text_label.size = Project.data.resolution
 		text_viewport.size = Project.data.resolution
 		text_label.label_settings = text_label_settings
+
+		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	elif clip.type == TYPE.PCK:
 		# TODO: Add PCK files here
 		pass
@@ -333,6 +335,7 @@ func update_views() -> void:
 		update_view(track_id, clips_to_update[track_id], clips_instance_index[track_id])
 		clips_to_update[track_id] = false
 	data_ready = false
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	frame_changed.emit()
 
 
@@ -398,3 +401,4 @@ func set_playback_speed(value: float) -> void:
 
 func set_background_color(color: Color) -> void:
 	background.color = color
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
