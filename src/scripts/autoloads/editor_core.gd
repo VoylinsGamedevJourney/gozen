@@ -219,8 +219,9 @@ func set_frame_nr(value: int) -> void:
 		var audio_clip: ClipData = find_audio(frame_nr, track)
 		if audio_clip:
 			var file_id: int = audio_clip.file
-			audio_file_counter[file_id] = audio_file_counter.get(file_id, 0) + 1
-			audio_players[track].set_audio(audio_clip, audio_file_counter[file_id])
+			var instance_index: int = audio_file_counter.get(file_id, 0)
+			audio_file_counter[file_id] = instance_index + 1
+			audio_players[track].set_audio(audio_clip, instance_index)
 		elif is_seek or audio_players[track].stop_frame == frame_nr:
 			# Stop track on seek, or if we naturally reached the end of the clip.
 			audio_players[track].stop()

@@ -465,7 +465,7 @@ func _create_wave(file: FileData) -> void:
 		local_wave[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
 		current_frame_index = end_frame
 
-		if i % 50 == 0:
+		if i % 150 == 0:
 			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
 
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)

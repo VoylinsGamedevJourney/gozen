@@ -120,7 +120,7 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 
 		size_t byte_size = av_decoded_frame->nb_samples * bytes_per_sample * 2;
 		if (current_size + byte_size > audio_data.size()) {
-			size_t new_size = current_size + byte_size + 4096;
+			size_t new_size = current_size + byte_size + (1024 * 1024 * 10); // 10MB chunk padding.
 			audio_data.resize(new_size);
 		}
 
