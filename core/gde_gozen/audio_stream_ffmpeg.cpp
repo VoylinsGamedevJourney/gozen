@@ -282,8 +282,8 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 		av_frame_unref(av_decoded_frame.get());
 	}
 
-	fill_buffer();
 	audio_stream_ffmpeg->mutex->unlock();
+	fill_buffer();
 }
 
 int32_t AudioStreamFFmpegPlayback::_mix_resampled(AudioFrame* p_buffer, int32_t p_frames) {
