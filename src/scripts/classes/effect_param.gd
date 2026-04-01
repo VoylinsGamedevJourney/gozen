@@ -10,3 +10,6 @@ extends Resource
 @export var max_value: Variant ## Maximum value.
 
 @export var keyframeable: bool = true ## Set to false if the param has no use for being keyframeable.
+
+@export var is_linkable: bool = false ## Allows X and Y to be linked in the UI (for Vector2/Vector2i).
+@export var is_linked: bool = false ## Default state of the link.

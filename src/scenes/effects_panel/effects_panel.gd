@@ -419,16 +419,22 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			return check_button
 		TYPE_INT, TYPE_FLOAT:
 			var horizontal: bool = param.id == "text_h_align"
-			if horizontal or param.id == "text_v_align":
+			if horizontal or param.id == "text_v_align" or param.id == "mode":
 				var option_button: OptionButton = OptionButton.new()
 				if horizontal:
 					option_button.add_item("Left", HORIZONTAL_ALIGNMENT_LEFT)
 					option_button.add_item("Center", HORIZONTAL_ALIGNMENT_CENTER)
 					option_button.add_item("Right", HORIZONTAL_ALIGNMENT_RIGHT)
-				else: # Vertical.
+				elif param.id == "text_v_align": # Vertical.
 					option_button.add_item("Top", VERTICAL_ALIGNMENT_TOP)
 					option_button.add_item("Center", VERTICAL_ALIGNMENT_CENTER)
 					option_button.add_item("Bottom", VERTICAL_ALIGNMENT_BOTTOM)
+				elif param.id == "mode": # Blend modes.
+					option_button.add_item("Mix (Normal)", 0)
+					option_button.add_item("Add", 1)
+					option_button.add_item("Subtract", 2)
+					option_button.add_item("Multiply", 3)
+					option_button.add_item("Premultiplied Alpha", 4)
 				option_button.item_selected.connect(func(idx: int) -> void:
 						update_call.call(option_button.get_item_id(idx)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -447,6 +453,8 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			var hbox: HBoxContainer = HBoxContainer.new()
 			var spinbox_x: SpinBox = SpinBox.new()
 			var spinbox_y: SpinBox = SpinBox.new()
+			spinbox_x.name = "SpinBoxX"
+			spinbox_y.name = "SpinBoxY"
 			# X
 			spinbox_x.min_value = param.min_value.x if param.min_value != null else MIN_VALUE
 			spinbox_x.max_value = param.max_value.x if param.max_value != null else MAX_VALUE
@@ -454,10 +462,13 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_x.allow_lesser = param.min_value == null
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
-			spinbox_x.value_changed.connect(func(val: float) -> void:
-				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
-				current_value.x = val
-				update_call.call(current_value))
+			spinbox_x.value_changed.connect(func(new_value: float) -> void:
+				if param.get("is_linkable") and param.get("is_linked"):
+					spinbox_y.set_value_no_signal(new_value)
+				var vector_val: Variant = Vector2(new_value, spinbox_y.value)
+				if typeof(value) == TYPE_VECTOR2I:
+					vector_val = Vector2i(vector_val as Vector2)
+				update_call.call(vector_val))
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
 			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
@@ -465,12 +476,35 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_y.allow_lesser = param.min_value == null
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
-			spinbox_y.value_changed.connect(func(val: float) -> void:
-				var current_value: Variant = _get_current_ui_value(hbox, typeof(val))
-				current_value.y = val
-				update_call.call(current_value))
+			spinbox_y.value_changed.connect(func(new_value: float) -> void:
+				if param.get("is_linkable") and param.get("is_linked"):
+					spinbox_x.set_value_no_signal(new_value)
+				var vector_val: Variant = Vector2(spinbox_x.value, new_value)
+				if typeof(value) == TYPE_VECTOR2I:
+					vector_val = Vector2i(vector_val as Vector2)
+				update_call.call(vector_val))
 
 			hbox.add_child(spinbox_x)
+
+			if param.get("is_linkable"):
+				var link_button: TextureButton = TextureButton.new()
+				link_button.texture_normal = preload(Library.ICON_LINK)
+				link_button.toggle_mode = true
+				link_button.button_pressed = param.get("is_linked")
+				link_button.modulate = Color(1, 1, 1, 1) if link_button.button_pressed else Color(1, 1, 1, 0.5)
+				link_button.ignore_texture_size = true
+				link_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+				link_button.custom_minimum_size = Vector2(14, 14)
+				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+				link_button.tooltip_text = tr("Link X and Y")
+				link_button.toggled.connect(func(toggled: bool) -> void:
+					param.set("is_linked", toggled)
+					link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
+					if toggled:
+						spinbox_y.value = spinbox_x.value
+				)
+				hbox.add_child(link_button)
+
 			hbox.add_child(spinbox_y)
 			hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return hbox
@@ -487,15 +521,6 @@ func _get_effect_index(effect: Effect, is_visual: bool) -> int:
 	if is_visual:
 		return current_clip.effects.video.find(effect)
 	return current_clip.effects.audio.find(effect)
-
-
-## For Spinbox.
-func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
-	var x: float = (container.get_child(0) as SpinBox).value
-	var y: float = (container.get_child(1) as SpinBox).value
-	if type == TYPE_VECTOR2I:
-		return Vector2i(int(x), int(y))
-	return Vector2(x, y)
 
 
 func _get_current_ui_value_for_param(effect: Effect, param_id: String, relative_frame_nr: int) -> Variant:
@@ -639,8 +664,8 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 		check_button.set_pressed_no_signal(value as bool)
 	elif param_settings is HBoxContainer:
 		if typeof(value) == TYPE_VECTOR2 or typeof(value) == TYPE_VECTOR2I:
-			var spinbox_x: SpinBox = param_settings.get_child(0)
-			var spinbox_y: SpinBox = param_settings.get_child(1)
+			var spinbox_x: SpinBox = param_settings.get_node("SpinBoxX")
+			var spinbox_y: SpinBox = param_settings.get_node("SpinBoxY")
 			spinbox_x.set_value_no_signal(value.x as float)
 			spinbox_y.set_value_no_signal(value.y as float)
 	elif param_settings is ColorPickerButton:

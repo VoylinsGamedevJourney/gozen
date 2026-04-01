@@ -19,6 +19,8 @@ nickname = "Scale"
 default_value = Vector2(1, 1)
 min_value = Vector2(0.1, 0.1)
 max_value = null
+is_linkable = true
+is_linked = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_qhav0"]

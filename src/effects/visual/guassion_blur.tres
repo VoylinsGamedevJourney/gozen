@@ -5,20 +5,13 @@
 
 [sub_resource type="Resource" id="Resource_pauab"]
 script = ExtResource("1_param")
-id = "horizontal_sigma"
-nickname = "Horizontal"
-default_value = 0.0
-min_value = 0.0
-max_value = 50.0
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
-[sub_resource type="Resource" id="Resource_sigma"]
-script = ExtResource("1_param")
-id = "vertical_sigma"
-nickname = "Vertical"
-default_value = 0.0
-min_value = 0.0
-max_value = 50.0
+id = "sigma"
+nickname = "Sigma"
+default_value = Vector2(0, 0)
+min_value = Vector2(0, 0)
+max_value = Vector2(50, 50)
+is_linkable = true
+is_linked = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
@@ -27,5 +20,5 @@ shader_path = "res://effects/visual/guassion_blur.glsl"
 shader_passes = 2
 id = "gaussian_blur"
 nickname = "Gaussian Blur"
-params = Array[ExtResource("1_param")]([SubResource("Resource_pauab"), SubResource("Resource_sigma")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_pauab")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"
