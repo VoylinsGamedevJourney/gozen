@@ -256,11 +256,15 @@ func _apply_audio_take_over(file: FileData, active: bool, audio_file_id: int, of
 
 
 func duplicate_text(file: FileData) -> void:
-	var new_file: FileData = file.duplicate_deep(Resource.DEEP_DUPLICATE_ALL)
+	var new_file: FileData = file.duplicate(true)
+	if new_file.temp_file:
+		new_file.temp_file = file.temp_file.duplicate(true)
+		if new_file.temp_file.text_effect:
+			new_file.temp_file.text_effect = file.temp_file.text_effect.deep_copy()
 	new_file.id = Utils.get_unique_id(files.keys())
 
 	InputManager.undo_redo.create_action("Duplicate Text File")
-	InputManager.undo_redo.add_do_method(_restore.bind(file))
+	InputManager.undo_redo.add_do_method(_restore.bind(new_file))
 	InputManager.undo_redo.add_undo_method(_delete.bind(new_file))
 	InputManager.undo_redo.commit_action()
 
