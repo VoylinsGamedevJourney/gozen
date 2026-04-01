@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://noise_effect_visual"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_amount"]
+script = ExtResource("1_param")
+id = "amount"
+nickname = "Amount"
+default_value = 0.1
+min_value = 0.0
+max_value = 1.0
+keyframeable = true
+
+[sub_resource type="Resource" id="Resource_seed"]
+script = ExtResource("1_param")
+id = "seed"
+nickname = "Seed (Animate for movement)"
+default_value = 0.0
+min_value = 0.0
+max_value = 1000.0
+keyframeable = true
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/noise.glsl"
+shader_passes = 1
+id = "noise"
+nickname = "Noise / Grain"
+params = Array[ExtResource("1_param")]([SubResource("Resource_amount"), SubResource("Resource_seed")])
