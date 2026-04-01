@@ -437,31 +437,24 @@ func _create_yuv_params(video: Video) -> RID:
 
 func _create_storage_buffer(size_bytes: int) -> RID:
 	var buffer_data: PackedByteArray = []
-
 	buffer_data.resize(size_bytes)
 	return device.storage_buffer_create(size_bytes, buffer_data)
 
 
 func _create_sampler_uniform(texture_rid: RID, binding: int) -> RDUniform:
 	var uniform: RDUniform = RDUniform.new()
-	var sampler_state: RDSamplerState = RDSamplerState.new()
-	var sampler_rid: RID = device.sampler_create(sampler_state)
-
 	uniform.uniform_type = device.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE
 	uniform.binding = binding
-	uniform.add_id(sampler_rid)
+	uniform.add_id(default_sampler)
 	uniform.add_id(texture_rid)
-
 	return uniform
 
 
 func _create_image_uniform(texture_rid: RID, binding: int) -> RDUniform:
 	var uniform: RDUniform = RDUniform.new()
-
 	uniform.uniform_type = device.UNIFORM_TYPE_IMAGE
 	uniform.binding = binding
 	uniform.add_id(texture_rid)
-
 	return uniform
 
 
