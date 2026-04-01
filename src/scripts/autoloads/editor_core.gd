@@ -412,6 +412,22 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 				texture_rid, effects, relative_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 
+	_apply_track_blend_mode(track_id, effects, relative_frame)
+
+
+func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], relative_frame: int) -> void:
+	var target_blend_mode: int = 0
+	for effect: EffectVisual in effects:
+		if effect.id == "blend_mode" and effect.is_enabled:
+			target_blend_mode = effect.get_value(effect.params[0], relative_frame)
+			break
+
+	var current_material: Material = view_textures[track_id].material
+	if current_material == null or not current_material is CanvasItemMaterial or (current_material as CanvasItemMaterial).blend_mode != target_blend_mode:
+		var canvas_material: CanvasItemMaterial = CanvasItemMaterial.new()
+		canvas_material.blend_mode = target_blend_mode as CanvasItemMaterial.BlendMode
+		view_textures[track_id].material = canvas_material
+
 
 # --- Setters ---
 

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://blend_mode_effect"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_mode"]
+script = ExtResource("1_param")
+id = "mode"
+nickname = "Blend Mode"
+default_value = 0
+min_value = 0
+max_value = 4
+keyframeable = false
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/blend_mode.glsl"
+shader_passes = 1
+id = "blend_mode"
+nickname = "Blend Mode"
+params = Array[ExtResource("1_param")]([SubResource("Resource_mode")])

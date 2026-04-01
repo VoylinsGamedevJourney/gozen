@@ -320,13 +320,12 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 			param_reset_button.ignore_texture_size = true
 			param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			param_reset_button.custom_minimum_size = Vector2(14, 14)
-			param_reset_button.pressed.connect(func() -> void:
-				_effect_param_update_call(param.default_value, effect, is_visual, param_id)
-			)
+			param_reset_button.pressed.connect(
+					_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
 
 			param_hbox.add_child(param_title)
-			param_hbox.add_child(param_settings)
 			param_hbox.add_child(param_reset_button)
+			param_hbox.add_child(param_settings)
 
 			if param.keyframeable:
 				var param_keyframe_button: TextureButton = TextureButton.new()
@@ -530,10 +529,13 @@ func _update_ui_values() -> void:
 		for i: int in text_effects.params.size():
 			var param: EffectParam = text_effects.params[i]
 			var param_hbox: HBoxContainer = content_vbox.get_child(i)
-			var param_settings: Control = param_hbox.get_child(1)
+			var reset_button: TextureButton = param_hbox.get_child(1)
+			var param_settings: Control = param_hbox.get_child(2)
 			var keyframe_button: TextureButton = param_hbox.get_child(3)
 			var value: Variant = text_effects.get_value(param, frame_nr)
 			_set_param_settings_value(param_settings, value)
+
+			reset_button.visible = not _is_same_value(value, param.default_value)
 
 			var param_keyframes: Dictionary = text_effects.keyframes[param.id]
 			if param_keyframes.has(frame_nr):
@@ -584,9 +586,12 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 			var param: EffectParam = effect.params[i]
 			var param_id: String = param.id
 			var param_hbox: HBoxContainer = content_vbox.get_child(i)
-			var param_settings: Control = param_hbox.get_child(1)
+			var reset_button: TextureButton = param_hbox.get_child(1)
+			var param_settings: Control = param_hbox.get_child(2)
 			var value: Variant = effect.get_value(param, frame_nr)
 			_set_param_settings_value(param_settings, value)
+
+			reset_button.visible = not _is_same_value(value, param.default_value)
 
 			var effect_keyframes: Dictionary = effect.keyframes[param_id]
 			if param.keyframeable:
@@ -603,6 +608,16 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 		track.current_relative_frame = frame_nr
 		track.clip_duration = current_clip.duration
 		track.queue_redraw()
+
+
+func _is_same_value(value_a: Variant, value_b: Variant) -> bool:
+	if typeof(value_a) in [TYPE_FLOAT, TYPE_INT] and typeof(value_b) in [TYPE_FLOAT, TYPE_INT]:
+		return is_equal_approx(value_a as float, value_b as float)
+	elif typeof(value_a) in [TYPE_VECTOR2, TYPE_VECTOR2I] and typeof(value_b) in [TYPE_VECTOR2, TYPE_VECTOR2I]:
+		return (value_a as Vector2).is_equal_approx(value_b as Vector2)
+	elif value_a is Color and value_b is Color:
+		return (value_a as Color).is_equal_approx(value_b as Color)
+	return value_a == value_b
 
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
@@ -743,9 +758,8 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_reset_button.ignore_texture_size = true
 		param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_reset_button.custom_minimum_size = Vector2(14, 14)
-		param_reset_button.pressed.connect(func() -> void:
-			_text_param_update_call(param.default_value, param_id)
-		)
+		param_reset_button.pressed.connect(
+				_text_param_update_call.bind(param.default_value, param_id))
 
 		param_hbox.add_child(param_title)
 		param_hbox.add_child(param_reset_button)

@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cqy0pix4fcocp"
+path="res://.godot/imported/blend_mode.glsl-c35734e979bdc6a64baa9d82392d89b7.res"
+
+[deps]
+
+source_file="res://effects/visual/blend_mode.glsl"
+dest_files=["res://.godot/imported/blend_mode.glsl-c35734e979bdc6a64baa9d82392d89b7.res"]
+
+[params]
+
