@@ -9,6 +9,8 @@ extends Resource
 @export var min_value: Variant ## Minimum value.
 @export var max_value: Variant ## Maximum value.
 
+@export var step: float = 0.0 ## The step value for SpinBox inputs, 0.0 defaults to 0.01 for floats and 1.0 for integers.
+
 @export var keyframeable: bool = true ## Set to false if the param has no use for being keyframeable.
 
 @export var is_linkable: bool = false ## Allows X and Y to be linked in the UI (for Vector2/Vector2i).

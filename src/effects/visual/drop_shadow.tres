@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://drop_shadow_effect_visual"]
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://bfvs8it7ufe0r"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
@@ -10,7 +10,7 @@ nickname = "Offset X"
 default_value = 20.0
 min_value = -1000.0
 max_value = 1000.0
-keyframeable = true
+step = 1.0
 
 [sub_resource type="Resource" id="Resource_offset_y"]
 script = ExtResource("1_param")
@@ -19,7 +19,7 @@ nickname = "Offset Y"
 default_value = 20.0
 min_value = -1000.0
 max_value = 1000.0
-keyframeable = true
+step = 1.0
 
 [sub_resource type="Resource" id="Resource_fade"]
 script = ExtResource("1_param")
@@ -28,7 +28,7 @@ nickname = "Fade / Softness"
 default_value = 10.0
 min_value = 0.0
 max_value = 200.0
-keyframeable = true
+step = 0.5
 
 [sub_resource type="Resource" id="Resource_color"]
 script = ExtResource("1_param")
@@ -37,12 +37,10 @@ nickname = "Shadow Color"
 default_value = Color(0, 0, 0, 0.75)
 min_value = null
 max_value = null
-keyframeable = true
 
 [resource]
 script = ExtResource("2_effect")
 shader_path = "res://effects/visual/drop_shadow.glsl"
-shader_passes = 1
 id = "drop_shadow"
 nickname = "Drop Shadow"
 params = Array[ExtResource("1_param")]([SubResource("Resource_offset_x"), SubResource("Resource_offset_y"), SubResource("Resource_fade"), SubResource("Resource_color")])

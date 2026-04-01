@@ -442,7 +442,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			var spinbox: SpinBox = SpinBox.new()
 			spinbox.min_value = param.min_value if param.min_value != null else MIN_VALUE
 			spinbox.max_value = param.max_value if param.max_value != null else MAX_VALUE
-			spinbox.step = 0.01 if typeof(value) == TYPE_FLOAT else 1.0
+			spinbox.step = param.step if param.step > 0.0 else (0.01 if typeof(value) == TYPE_FLOAT else 1.0)
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
@@ -458,7 +458,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			# X
 			spinbox_x.min_value = param.min_value.x if param.min_value != null else MIN_VALUE
 			spinbox_x.max_value = param.max_value.x if param.max_value != null else MAX_VALUE
-			spinbox_x.step = 0.01 if typeof(value) == TYPE_VECTOR2 else 1.0
+			spinbox_x.step = param.step if param.step > 0.0 else (0.01 if typeof(value) == TYPE_VECTOR2 else 1.0)
 			spinbox_x.allow_lesser = param.min_value == null
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
@@ -472,7 +472,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
 			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
-			spinbox_y.step = 0.01 if typeof(value) == TYPE_VECTOR2 else 1.0
+			spinbox_y.step = param.step if param.step > 0.0 else (0.01 if typeof(value) == TYPE_VECTOR2 else 1.0)
 			spinbox_y.allow_lesser = param.min_value == null
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
