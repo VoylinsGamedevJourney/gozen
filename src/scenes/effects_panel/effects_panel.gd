@@ -62,14 +62,10 @@ func _notification(what: int) -> void:
 			drop_indicator_vbox = null
 
 
-func _get_drag_data_effect(_pos: Vector2, index: int, is_visual: bool) -> Variant:
+func _get_drag_data_effect(_pos: Vector2, effect: Effect, is_visual: bool) -> Variant:
+	var index: int = _get_effect_index(effect, is_visual)
 	var drag_data: DragData = DragData.new()
-	var effect: Effect
 	var preview: Label = Label.new()
-	if is_visual:
-		effect = current_clip.effects.video[index]
-	else:
-		effect = current_clip.effects.audio[index]
 	drag_data.is_visual = is_visual
 	drag_data.effect_index = index
 	drag_data.effect = effect
@@ -161,48 +157,43 @@ func _on_frame_changed() -> void:
 		_update_ui_values()
 
 
-func _on_effect_added(clip: ClipData, _index: int, _is_visual: bool) -> void:
+func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
-		_load_effects()
-# TODO: Fix the index issue. Right now when running this code to undo a
-# removed effect, it causes the other effects to have a wrong index beind tied
-# to them.
-#		if is_visual:
-#			var effect: EffectVisual = clip.effects.video[index]
-#			var added_effect: FoldableContainer = _create_effect_ui(effect, index, is_visual)
-#			section_visuals.get_child(0).add_child(added_effect)
-#		else:
-#			var effect: EffectAudio = clip.effects.audio[index]
-#			var added_effect: FoldableContainer = _create_effect_ui(effect, index, is_visual)
-#			section_audio.get_child(0).add_child(added_effect)
+		var effect: Effect
+		if is_visual:
+			effect = clip.effects.video[index]
+		else:
+			effect = clip.effects.audio[index]
+
+		var added_effect: FoldableContainer = _create_effect_ui(effect, is_visual)
+		if is_visual:
+			section_visuals.get_child(0).add_child(added_effect)
+			section_visuals.get_child(0).move_child(added_effect, index)
+		else:
+			section_audio.get_child(0).add_child(added_effect)
+			section_audio.get_child(0).move_child(added_effect, index)
 
 
-func _on_effect_removed(clip: ClipData, _index: int, _is_visual: bool) -> void:
+func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
-		_load_effects()
-# TODO: Fix the index issue first before doing this. Removing an effect has to
-# update the effects which come behind it as their index will be off.
-#		var removed_effect: Control
-#		if is_visual:
-#			removed_effect = section_visuals.get_child(0).get_child(index)
-#			section_visuals.get_child(0).remove_child(removed_effect)
-#		else:
-#			removed_effect = section_audio.get_child(0).get_child(index)
-#			section_audio.get_child(0).remove_child(removed_effect)
-#		removed_effect.queue_free()
+		var removed_effect: Control
+		if is_visual:
+			removed_effect = section_visuals.get_child(0).get_child(index)
+			section_visuals.get_child(0).remove_child(removed_effect)
+		else:
+			removed_effect = section_audio.get_child(0).get_child(index)
+			section_audio.get_child(0).remove_child(removed_effect)
+		removed_effect.queue_free()
 
 
-func _on_effect_moved(clip: ClipData, _old_index: int, _new_index: int, _is_visual: bool) -> void:
+func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
-		_load_effects()
-# TODO: Fix the index issue first before doing this. Moving an effect has to
-# update the index of all effects inside of the list.
-#		if is_visual:
-#			var moved_effect: Control = section_visuals.get_child(0).get_child(old_index)
-#			section_visuals.get_child(0).move_child(moved_effect, new_index)
-#		else:
-#			var moved_effect: Control = section_audio.get_child(0).get_child(old_index)
-#			section_audio.get_child(0).move_child(moved_effect, new_index)
+		if is_visual:
+			var moved_effect: Control = section_visuals.get_child(0).get_child(old_index)
+			section_visuals.get_child(0).move_child(moved_effect, new_index)
+		else:
+			var moved_effect: Control = section_audio.get_child(0).get_child(old_index)
+			section_audio.get_child(0).move_child(moved_effect, new_index)
 
 
 func _on_effects_updated(clip: ClipData) -> void:
@@ -245,13 +236,13 @@ func _load_effects() -> void:
 	if section_text.visible: # Set text params.
 		_create_text_ui(current_file.temp_file.text_effect)
 	for index: int in clip_effects.video.size(): # Add visual effects.
-		vbox_visuals.add_child(_create_effect_ui(clip_effects.video[index], index, true))
+		vbox_visuals.add_child(_create_effect_ui(clip_effects.video[index], true))
 	for index: int in clip_effects.audio.size(): # Add audio effects.
-		vbox_audio.add_child(_create_effect_ui(clip_effects.audio[index], index, false))
+		vbox_audio.add_child(_create_effect_ui(clip_effects.audio[index], false))
 	_update_ui_values()
 
 
-func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableContainer:
+func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	# NOTE: We can add the position of the effect inside of the effect array
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
@@ -268,9 +259,9 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	button_reset.texture_normal = preload(Library.ICON_REFRESH)
 	button_reset.tooltip_text = tr("Reset to default")
 
-	button_visible.pressed.connect(_on_switch_enabled.bind(index, is_visual))
-	button_delete.pressed.connect(_on_remove_effect.bind(index, is_visual))
-	button_reset.pressed.connect(_on_reset_effect.bind(index, is_visual))
+	button_visible.pressed.connect(_on_switch_enabled.bind(effect, is_visual))
+	button_delete.pressed.connect(_on_remove_effect.bind(effect, is_visual))
+	button_reset.pressed.connect(_on_reset_effect.bind(effect, is_visual))
 
 	for button: TextureButton in [button_reset, button_delete, button_visible]:
 		button.ignore_texture_size = true
@@ -286,7 +277,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	button_drag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	button_drag.mouse_default_cursor_shape = Control.CURSOR_DRAG
 	button_drag.mouse_filter = Control.MOUSE_FILTER_STOP
-	button_drag.set_drag_forwarding(_get_drag_data_effect.bind(index, is_visual), Callable(), Callable())
+	button_drag.set_drag_forwarding(_get_drag_data_effect.bind(effect, is_visual), Callable(), Callable())
 
 	var content_vbox: VBoxContainer = VBoxContainer.new()
 	var container: FoldableContainer = FoldableContainer.new()
@@ -315,7 +306,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 			var param_hbox: HBoxContainer = HBoxContainer.new()
 			var param_id: String = param.id
 			var param_title: Label = Label.new()
-			var param_settings: Control = _create_param_control(param, index, is_visual, false)
+			var param_settings: Control = _create_param_control(param, effect, is_visual, false)
 
 			param_title.text = param.nickname.replace("param_", "").capitalize()
 			param_title.tooltip_text = param.tooltip
@@ -330,12 +321,12 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 			param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			param_reset_button.custom_minimum_size = Vector2(14, 14)
 			param_reset_button.pressed.connect(func() -> void:
-				_effect_param_update_call(param.default_value, index, is_visual, param_id)
+				_effect_param_update_call(param.default_value, effect, is_visual, param_id)
 			)
 
 			param_hbox.add_child(param_title)
-			param_hbox.add_child(param_reset_button)
 			param_hbox.add_child(param_settings)
+			param_hbox.add_child(param_reset_button)
 
 			if param.keyframeable:
 				var param_keyframe_button: TextureButton = TextureButton.new()
@@ -344,7 +335,7 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 				param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 				param_keyframe_button.custom_minimum_size.x = 14
 				param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
-						index, is_visual, param_id))
+						effect, is_visual, param_id))
 				if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
 					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 				else:
@@ -365,8 +356,8 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 		track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		track.setup(effect, current_clip.duration, relative_frame_nr)
-		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(index, is_visual))
-		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(index, is_visual))
+		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(effect, is_visual))
+		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(effect, is_visual))
 		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
 
 		track_scroll.add_child(track)
@@ -375,12 +366,14 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 	return container
 
 
-func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect_index: int, is_visual: bool) -> void:
+func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect: Effect, is_visual: bool) -> void:
+	var effect_index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.move_effect_keyframe_at_frame(current_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing, is_copy)
 	_update_ui_values()
 
 
-func _on_keyframe_deleted_effect_ui(frame: int, effect_index: int, is_visual: bool) -> void:
+func _on_keyframe_deleted_effect_ui(frame: int, effect: Effect, is_visual: bool) -> void:
+	var effect_index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.remove_effect_keyframe_at_frame(current_clip, effect_index, is_visual, frame)
 	_update_ui_values()
 
@@ -389,7 +382,7 @@ func _on_keyframe_dragged_to_effect_ui(relative_frame: int) -> void:
 	EditorCore.scrub_to_frame(current_clip.start + relative_frame)
 
 
-func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_text: bool) -> Control:
+func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, is_text: bool) -> Control:
 	var value: Variant = param.default_value
 	if value == null:
 		printerr("EffectsPanel: Value is null! %s" % param)
@@ -399,7 +392,7 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_t
 	if is_text:
 		update_call = _text_param_update_call.bind(param.id)
 	else:
-		update_call = _effect_param_update_call.bind(index, is_visual, param.id)
+		update_call = _effect_param_update_call.bind(effect, is_visual, param.id)
 
 	match typeof(value):
 		TYPE_STRING:
@@ -491,6 +484,12 @@ func _create_param_control(param: EffectParam, index: int, is_visual: bool, is_t
 	return Control.new() # Fallback.
 
 
+func _get_effect_index(effect: Effect, is_visual: bool) -> int:
+	if is_visual:
+		return current_clip.effects.video.find(effect)
+	return current_clip.effects.audio.find(effect)
+
+
 ## For Spinbox.
 func _get_current_ui_value(container: HBoxContainer, type: int) -> Variant:
 	var x: float = (container.get_child(0) as SpinBox).value
@@ -507,11 +506,13 @@ func _get_current_ui_value_for_param(effect: Effect, param_id: String, relative_
 	return null
 
 
-func _on_remove_effect(index: int, is_visual: bool) -> void:
+func _on_remove_effect(effect: Effect, is_visual: bool) -> void:
+	var index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.remove_effect(current_clip, index, is_visual)
 
 
-func _on_reset_effect(index: int, is_visual: bool) -> void:
+func _on_reset_effect(effect: Effect, is_visual: bool) -> void:
+	var index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.reset_effect(current_clip, index, is_visual)
 
 
@@ -634,7 +635,8 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 		printerr("EffectsPanel: Invalid param settings control! %s - %s" % [param_settings, typeof(param_settings)])
 
 
-func _on_switch_enabled(index: int, is_visual: bool) -> void:
+func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
+	var index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.switch_enabled(current_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
 	var effect_container: FoldableContainer = section.get_child(0).get_child(index)
@@ -670,17 +672,14 @@ func _open_add_effects_popup(is_visual: bool) -> void:
 		popup.call("load_effects", is_visual, current_clip)
 
 
-func _effect_param_update_call(value: Variant, index: int, is_visual: bool, param_id: String) -> void:
+func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:
+	var index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.update_param(current_clip, index, is_visual, param_id, value, false)
 
 
-func _keyframe_button_pressed(index: int, is_visual: bool, param_id: String) -> void:
+func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String) -> void:
+	var index: int = _get_effect_index(effect, is_visual)
 	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
-	var effect: Effect
-	if is_visual:
-		effect = current_clip.effects.video[index]
-	else:
-		effect = current_clip.effects.audio[index]
 
 	var effect_keyframes: Dictionary = effect.keyframes[param_id]
 	if effect_keyframes.has(relative_frame_nr):
@@ -715,7 +714,7 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		var param_hbox: HBoxContainer = HBoxContainer.new()
 		var param_id: String = param.id
 		var param_title: Label = Label.new()
-		var param_settings: Control = _create_param_control(param, -1, false, true)
+		var param_settings: Control = _create_param_control(param, null, false, true)
 		var param_keyframe_button: TextureButton = TextureButton.new()
 
 		param_title.text = param.nickname.replace("param_", "").capitalize()
