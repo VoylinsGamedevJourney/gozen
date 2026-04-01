@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://uldmav0kgs4f"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_yaw"]
+script = ExtResource("1_param")
+id = "yaw"
+nickname = "Yaw"
+default_value = 0.0
+min_value = -180.0
+max_value = 180.0
+
+[sub_resource type="Resource" id="Resource_pitch"]
+script = ExtResource("1_param")
+id = "pitch"
+nickname = "Pitch"
+default_value = 0.0
+min_value = -90.0
+max_value = 90.0
+
+[sub_resource type="Resource" id="Resource_roll"]
+script = ExtResource("1_param")
+id = "roll"
+nickname = "Roll"
+default_value = 0.0
+min_value = -180.0
+max_value = 180.0
+
+[sub_resource type="Resource" id="Resource_fov"]
+script = ExtResource("1_param")
+id = "fov"
+nickname = "Field of View"
+default_value = 90.0
+min_value = 10.0
+max_value = 150.0
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/360.glsl"
+id = "equirectangular"
+nickname = "360 Video Controller"
+params = Array[ExtResource("1_param")]([SubResource("Resource_yaw"), SubResource("Resource_pitch"), SubResource("Resource_roll"), SubResource("Resource_fov")])
