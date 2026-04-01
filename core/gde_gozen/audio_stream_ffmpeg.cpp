@@ -241,14 +241,6 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 				return;
 			}
 
-			if (swr_config_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
-				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't config the audio frame!", response);
-				av_frame_unref(av_frame.get());
-				av_frame_unref(av_decoded_frame.get());
-				audio_stream_ffmpeg->mutex->unlock();
-				return;
-			}
-
 			if (swr_convert_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
 				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio frame!", response);
 				av_frame_unref(av_frame.get());
@@ -342,14 +334,6 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 	int resp = 0;
 	if ((resp = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
 		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't create new frame for swr!", resp);
-		av_frame_unref(av_frame.get());
-		av_frame_unref(av_decoded_frame.get());
-		audio_stream_ffmpeg->mutex->unlock();
-		return false;
-	}
-
-	if ((resp = swr_config_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get())) < 0) {
-		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't config the audio frame!", resp);
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 		audio_stream_ffmpeg->mutex->unlock();

@@ -96,13 +96,6 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 			av_channel_layout_copy(&av_frame->ch_layout, &codec_ctx->ch_layout);
 		}
 
-		if ((response = swr_config_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get())) < 0) {
-			FFmpeg::print_av_error("Audio: Couldn't config the audio frame!", response);
-			av_frame_unref(av_frame.get());
-			av_frame_unref(av_decoded_frame.get());
-			break;
-		}
-
 		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
 			FFmpeg::print_av_error("Audio: Couldn't create new frame for swr!", response);
 			av_frame_unref(av_frame.get());
@@ -155,10 +148,11 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 	double fetch_start_time = start_time;
 	double fetch_duration = duration;
 	if (start_time < 0) {
-		pre_padding_bytes = (int64_t)(-start_time * 44100 * 4);
+		pre_padding_bytes = (int64_t)(-start_time * 44100) * 4;
 		fetch_start_time = 0;
-		if (duration > 0)
+		if (duration > 0) {
 			fetch_duration = Math::max(0.0, duration - start_time);
+		}
 	}
 
 	if (file_path.begins_with("res://") || file_path.begins_with("user://")) {
@@ -249,7 +243,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 
 	// Apply post-padding
 	if (duration > 0) {
-		int64_t target_size = (int64_t)(duration * 44100 * 4);
+		int64_t target_size = (int64_t)(duration * 44100) * 4;
 		if (data.size() < target_size) {
 			int64_t current_size = data.size();
 			int64_t missing_bytes = target_size - current_size;
@@ -263,11 +257,12 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 
 
 PackedByteArray Audio::combine_data(PackedByteArray audio_one, PackedByteArray audio_two) {
-	const int16_t* p_one = (const int16_t*)audio_one.ptr();
+	int16_t* pw_one = (int16_t*)audio_one.ptrw();
 	const int16_t* p_two = (const int16_t*)audio_two.ptr();
+	size_t min_size = audio_one.size() < audio_two.size() ? audio_one.size() : audio_two.size();
 
-	for (size_t i = 0; i < audio_one.size() / 2; i++)
-		((int16_t*)audio_one.ptrw())[i] = Math::clamp(p_one[i] + p_two[i], -32768, 32767);
+	for (size_t i = 0; i < min_size / 2; i++)
+		pw_one[i] = Math::clamp(pw_one[i] + p_two[i], -32768, 32767);
 
 	return audio_one;
 }
@@ -277,7 +272,6 @@ PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
 	static std::unordered_map<float, double> cache;
 
 	const size_t sample_count = audio_data.size() / 2;
-	const int16_t* p_data = reinterpret_cast<const int16_t*>(audio_data.ptr());
 	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
 
 	const auto search = cache.find(db);
@@ -290,7 +284,7 @@ PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
 		value = search->second;
 
 	for (size_t i = 0; i < sample_count; i++)
-		pw_data[i] = Math::clamp((int32_t)(p_data[i] * value), -32768, 32767);
+		pw_data[i] = Math::clamp((int32_t)(pw_data[i] * value), -32768, 32767);
 
 	return audio_data;
 }
@@ -298,15 +292,14 @@ PackedByteArray Audio::change_db(PackedByteArray audio_data, float db) {
 
 PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 	const size_t sample_count = audio_data.size() / 2;
-	const int16_t* p_data = (const int16_t*)audio_data.ptr();
 	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
 
 	if (left) {
 		for (size_t i = 0; i < sample_count; i += 2)
-			pw_data[i + 1] = p_data[i];
+			pw_data[i + 1] = pw_data[i];
 	} else {
 		for (size_t i = 0; i < sample_count; i += 2)
-			pw_data[i] = p_data[i + 1];
+			pw_data[i] = pw_data[i + 1];
 	}
 
 	return audio_data;
