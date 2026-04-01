@@ -106,7 +106,8 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	updated.emit()
 
 
-func cut(requests: Array[ClipRequest]) -> void:
+func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
+	var new_clips: Array[ClipData] = []
 	InputManager.undo_redo.create_action("Cut clip_data(s)")
 	for request: ClipRequest in requests:
 		var clip: ClipData = request.clip
@@ -117,14 +118,17 @@ func cut(requests: Array[ClipRequest]) -> void:
 			continue # Check for invalid cuts.
 
 		# Cutting the main clip.
-		InputManager.undo_redo.add_do_method(_resize.bind(clip, -duration_right, true))
-		InputManager.undo_redo.add_undo_method(_resize.bind(clip, duration_right, true))
+		InputManager.undo_redo.add_do_method(_resize_and_fade.bind(clip, -duration_right, true, clip.effects.fade_visual.x, 0, clip.effects.fade_audio.x, 0))
+		InputManager.undo_redo.add_undo_method(_resize_and_fade.bind(clip, duration_right, true, clip.effects.fade_visual.x, clip.effects.fade_visual.y, clip.effects.fade_audio.x, clip.effects.fade_audio.y))
 
 		# Construct the new clip snapshot.
-		var snapshot: ClipData = request.clip.duplicate_deep(Resource.DEEP_DUPLICATE_ALL)
+		var snapshot: ClipData = request.clip.duplicate(true)
 		var effects: ClipEffects = snapshot.effects
-		effects.fade_visual = request.clip.effects.fade_visual
-		effects.fade_audio = request.clip.effects.fade_audio
+
+		# Reset fade-in on the new right-hand clip
+		effects.fade_visual = Vector2i(0, request.clip.effects.fade_visual.y)
+		effects.fade_audio = Vector2i(0, request.clip.effects.fade_audio.y)
+
 		effects.ato_active = request.clip.effects.ato_active
 		effects.ato_offset = request.clip.effects.ato_offset
 		effects.ato_file = request.clip.effects.ato_file
@@ -136,7 +140,10 @@ func cut(requests: Array[ClipRequest]) -> void:
 		effects.audio = _copy_audio_effects(request.clip.effects.audio, cut_offset)
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(snapshot))
 		InputManager.undo_redo.add_undo_method(_delete.bind(snapshot))
+
+		new_clips.append(snapshot)
 	InputManager.undo_redo.commit_action()
+	return new_clips
 
 
 func resize(requests: Array[ClipRequest]) -> void:
@@ -160,6 +167,12 @@ func _resize(clip: ClipData, amount: int, from_end: bool) -> void:
 	Project.unsaved_changes = true
 	Project.update_timeline_end()
 	updated.emit()
+
+
+func _resize_and_fade(clip: ClipData, amount: int, from_end: bool, v_fade_in: int, v_fade_out: int, a_fade_in: int, a_fade_out: int) -> void:
+	_resize(clip, amount, from_end)
+	clip.effects.fade_visual = Vector2i(v_fade_in, v_fade_out)
+	clip.effects.fade_audio = Vector2i(a_fade_in, a_fade_out)
 
 
 func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> void:
