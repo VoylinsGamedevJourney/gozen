@@ -312,23 +312,23 @@ func find_audio(frame: int, track: int) -> ClipData:
 func update_data(track: int) -> void:
 	var clip: ClipData = loaded_clips[track]
 	var raw_data: Variant = FileLogic.file_data.get(clip.file)
-	var relative_frame: int = int((frame_nr - clip.start) * clip.speed) + clip.begin
+	var clip_frame: int = frame_nr - clip.start
 
 	if clip.type == TYPE.TEXT:
 		var temp_file: TempFile = raw_data
 		var text_effect: EffectVisual = temp_file.text_effect
 
-		var text_data: String = text_effect.get_value(text_effect.params[0], relative_frame)
-		var text_font: String = text_effect.get_value(text_effect.params[1], relative_frame)
-		var text_h_align: int = text_effect.get_value(text_effect.params[2], relative_frame)
-		var text_v_align: int = text_effect.get_value(text_effect.params[3], relative_frame)
-		var text_size: int = text_effect.get_value(text_effect.params[4], relative_frame)
-		var text_color: Color = text_effect.get_value(text_effect.params[5], relative_frame)
-		var text_outline_size: int = text_effect.get_value(text_effect.params[6], relative_frame)
-		var text_outline_color: Color = text_effect.get_value(text_effect.params[7], relative_frame)
-		var text_shadow_size: int = text_effect.get_value(text_effect.params[8], relative_frame)
-		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[9], relative_frame)
-		var text_shadow_color: Color = text_effect.get_value(text_effect.params[10], relative_frame)
+		var text_data: String = text_effect.get_value(text_effect.params[0], clip_frame)
+		var text_font: String = text_effect.get_value(text_effect.params[1], clip_frame)
+		var text_h_align: int = text_effect.get_value(text_effect.params[2], clip_frame)
+		var text_v_align: int = text_effect.get_value(text_effect.params[3], clip_frame)
+		var text_size: int = text_effect.get_value(text_effect.params[4], clip_frame)
+		var text_color: Color = text_effect.get_value(text_effect.params[5], clip_frame)
+		var text_outline_size: int = text_effect.get_value(text_effect.params[6], clip_frame)
+		var text_outline_color: Color = text_effect.get_value(text_effect.params[7], clip_frame)
+		var text_shadow_size: int = text_effect.get_value(text_effect.params[8], clip_frame)
+		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[9], clip_frame)
+		var text_shadow_color: Color = text_effect.get_value(text_effect.params[10], clip_frame)
 
 		var font: Font = Settings.fonts.get(text_font, ThemeDB.fallback_font)
 
@@ -392,7 +392,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
-				texture_rid, effects, relative_frame, fade_alpha))
+				texture_rid, effects, clip_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Video:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
@@ -400,7 +400,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_video_frame.bind(
-				video, effects, relative_frame, fade_alpha))
+				video, effects, clip_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Texture2D:
 		var image: Texture2D = raw_data
@@ -409,17 +409,17 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
-				texture_rid, effects, relative_frame, fade_alpha))
+				texture_rid, effects, clip_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 
-	_apply_track_blend_mode(track_id, effects, relative_frame)
+	_apply_track_blend_mode(track_id, effects, clip_frame)
 
 
-func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], relative_frame: int) -> void:
+func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], clip_frame: int) -> void:
 	var target_blend_mode: int = 0
 	for effect: EffectVisual in effects:
 		if effect.id == "blend_mode" and effect.is_enabled:
-			target_blend_mode = effect.get_value(effect.params[0], relative_frame)
+			target_blend_mode = effect.get_value(effect.params[0], clip_frame)
 			break
 
 	var current_material: Material = view_textures[track_id].material

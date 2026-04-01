@@ -25,12 +25,12 @@ static func calculate_transform_matrix(data: Dictionary[String, Variant]) -> Pac
 	# Create transform.
 	var pivot: Vector2 = data.pivot
 	var transform: Transform2D = Transform2D.IDENTITY
-	transform = transform.translated(data.position as Vector2) # move to position
-	transform = transform.translated(-pivot) # Move to pivot
-	transform = transform.rotated(deg_to_rad(data.rotation as float))
+	transform = transform.translated(-pivot) # Move to pivot.
 	transform = transform.scaled(data.scale as Vector2)
-	transform = transform.translated(pivot) # Move back from pivot
-	transform = transform.affine_inverse() # Inverse the transform
+	transform = transform.rotated(deg_to_rad(data.rotation as float))
+	transform = transform.translated(pivot) # Move back from pivot.
+	transform = transform.translated(data.position as Vector2) # Move to position.
+	transform = transform.affine_inverse() # Inverse the transform.
 
 	# Create mat4 usable data.
 	return PackedFloat32Array([
