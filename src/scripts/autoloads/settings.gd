@@ -500,7 +500,20 @@ func apply_shortcuts() -> void:
 			continue
 		InputMap.action_erase_events(action)
 		for event: InputEvent in data.shortcuts[action]:
-			if event != null:
+			if event == null:
+				continue
+			if event is InputEventKey:
+				var event_key: InputEventKey = event
+				var clean_event: InputEventKey = InputEventKey.new()
+				clean_event.keycode = event_key.keycode
+				clean_event.physical_keycode = event_key.physical_keycode
+				clean_event.key_label = event_key.key_label
+				clean_event.ctrl_pressed = event_key.ctrl_pressed
+				clean_event.alt_pressed = event_key.alt_pressed
+				clean_event.shift_pressed = event_key.shift_pressed
+				clean_event.meta_pressed = event_key.meta_pressed
+				InputMap.action_add_event(action, clean_event)
+			else:
 				InputMap.action_add_event(action, event)
 
 

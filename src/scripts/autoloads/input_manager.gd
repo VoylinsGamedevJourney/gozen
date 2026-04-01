@@ -55,22 +55,29 @@ func _input(event: InputEvent) -> void:
 func _strict_input_check(event: InputEvent) -> bool:
 	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return false
-	elif event.is_action_pressed("open_marker_popup"):
+
+#	open_marker_popup()
+	if event.is_action_pressed("open_marker_popup"):
 		open_marker_popup()
+		return true
 	elif event.is_action_pressed("timeline_play_pause", false, true):
 		EditorCore.on_play_pressed()
 		return true
 	elif event.is_action_pressed("timeline_mode_select", false, true):
 		switch_timeline_mode_select.emit()
+		return true
 	elif event.is_action_pressed("timeline_mode_cut", false, true):
 		switch_timeline_mode_cut.emit()
+		return true
 	elif event.is_action_pressed("open_command_bar"):
 		PopupManager.open(PopupManager.COMMAND_BAR)
 		return true
 	elif event.is_action_pressed("next_frame", false, true):
 		EditorCore.frame_nr += 1
+		return true
 	elif event.is_action_pressed("prev_frame", false, true):
 		EditorCore.frame_nr -= 1
+		return true
 	return false
 
 
@@ -95,7 +102,7 @@ func open_marker_popup() -> void:
 
 
 func clipboard_paste() -> void:
-	if Project.is_loaded == null:
+	if !Project.is_loaded:
 		return
 
 	# Check for image.
@@ -109,7 +116,7 @@ func clipboard_paste() -> void:
 	var valid_paths: PackedStringArray = []
 	for path: String in raw_paths:
 		var clean_path: String = path.strip_edges().replace('"', '')
-		if FileAccess.file_exists(path):
+		if FileAccess.file_exists(clean_path):
 			valid_paths.append(clean_path)
 
 	if !valid_paths.is_empty():
