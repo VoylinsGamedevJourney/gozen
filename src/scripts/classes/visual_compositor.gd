@@ -63,6 +63,7 @@ var base_image: RID
 var fade_shader: RID
 var fade_pipeline: RID
 var fade_buffer: RID
+var copy_buffer: RID
 
 var ping_texture: RID
 var pong_texture: RID
@@ -110,6 +111,9 @@ func _init_start(p_resolution: Vector2i) -> void:
 		fade_pipeline = device.compute_pipeline_create(fade_shader)
 		fade_buffer_data.resize(16)
 		fade_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
+
+		fade_buffer_data.encode_float(0, 1.0)
+		copy_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
 
 
 func _init_ping_pong() -> void:
@@ -254,27 +258,31 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame
 	if not initialized:
 		return
 
-	_update_effect_buffers(effects, frame_nr)
-	var compute_list: int = device.compute_list_begin()
 	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(texture_rid)
 	if not rd_input_tex.is_valid():
-		device.compute_list_end()
 		return
 
+	_update_effect_buffers(effects, frame_nr)
+
+	if fade_alpha < 1.0:
+		var buffer_data: PackedByteArray = PackedByteArray()
+		buffer_data.resize(16)
+		buffer_data.encode_float(0, fade_alpha)
+		device.buffer_update(fade_buffer, 0, 16, buffer_data)
+
+	var compute_list: int = device.compute_list_begin()
+
 	device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
-	var buffer_data: PackedByteArray = PackedByteArray()
-	buffer_data.resize(16)
-	buffer_data.encode_float(0, 1.0) # Copy without fade initially
-	device.buffer_update(fade_buffer, 0, 16, buffer_data)
 
 	var copy_uniforms: Array[RDUniform] =[
 			_create_sampler_uniform(rd_input_tex, 0),
 			_create_image_uniform(ping_texture, 1),
-			_create_buffer_uniform(fade_buffer, 2)]
+			_create_buffer_uniform(copy_buffer, 2)]
 	var copy_set: RID = device.uniform_set_create(copy_uniforms, fade_shader, 0)
 	device.compute_list_bind_uniform_set(compute_list, copy_set, 0)
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
+
 	_process_frame(compute_list, effects, fade_alpha)
 
 
@@ -294,6 +302,11 @@ func cleanup() -> void:
 
 	# Image cleanup.
 	base_image = Utils.cleanup_rid(device, base_image)
+
+	fade_shader = Utils.cleanup_rid(device, fade_shader)
+	fade_pipeline = Utils.cleanup_rid(device, fade_pipeline)
+	fade_buffer = Utils.cleanup_rid(device, fade_buffer)
+	copy_buffer = Utils.cleanup_rid(device, copy_buffer)
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)
