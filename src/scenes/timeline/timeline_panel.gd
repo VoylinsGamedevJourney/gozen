@@ -349,14 +349,17 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 		if Input.is_key_pressed(KEY_SHIFT):
 			current_handle_size *= 2.0
 
+		var in_x: float = box_pos.x + fade.x * zoom
+		var out_x: float = box_pos.x + duration - fade.y * zoom - current_handle_size * 2
+
 		var in_rect: Rect2
 		var out_rect: Rect2
 		if is_visual:
-			in_rect = Rect2(box_pos.x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
-			out_rect = Rect2(box_pos.x + duration - current_handle_size * 2, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+			in_rect = Rect2(in_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+			out_rect = Rect2(out_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
 		else:
-			in_rect = Rect2(box_pos.x, corner_y, current_handle_size * 2, current_handle_size * 2)
-			out_rect = Rect2(box_pos.x + duration - current_handle_size * 2, corner_y, current_handle_size * 2, current_handle_size * 2)
+			in_rect = Rect2(in_x, corner_y, current_handle_size * 2, current_handle_size * 2)
+			out_rect = Rect2(out_x, corner_y, current_handle_size * 2, current_handle_size * 2)
 
 		control.draw_rect(in_rect, FADE_HANDLE_COLOR)
 		control.draw_rect(out_rect, FADE_HANDLE_COLOR)
@@ -640,9 +643,9 @@ func _get_fade_target() -> FadeTarget:
 	var visible_start: int = floori(scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + scroll.size.x) / zoom)
 
-	var handle_size: float = FADE_HANDLE_SIZE * 2.0
+	var current_handle_size: float = FADE_HANDLE_SIZE
 	if Input.is_key_pressed(KEY_SHIFT):
-		handle_size *= 2.0
+		current_handle_size *= 2.0
 
 	for clip: ClipData in TrackLogic.get_clips_in_range(track_id, visible_start, visible_end):
 		if (clip.duration * zoom) < 20.0:
@@ -653,18 +656,30 @@ func _get_fade_target() -> FadeTarget:
 
 		# Check Video Handles (Bottom).
 		if clip.type in EditorCore.VISUAL_TYPES:
-			var video_y_pos: float = y_pos + track_height
-			if mouse_pos.distance_to(Vector2(start_x, video_y_pos)) < handle_size and mouse_pos.x > start_x:
+			var corner_y: float = y_pos + track_height
+			var in_x: float = start_x + clip.effects.fade_visual.x * zoom
+			var out_x: float = end_x - clip.effects.fade_visual.y * zoom - current_handle_size * 2
+
+			var in_rect: Rect2 = Rect2(in_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+			var out_rect: Rect2 = Rect2(out_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+
+			if in_rect.grow(current_handle_size).has_point(mouse_pos):
 				return FadeTarget.new(clip, false, true)
-			if mouse_pos.distance_to(Vector2(end_x, video_y_pos)) < handle_size and mouse_pos.x < end_x:
+			if out_rect.grow(current_handle_size).has_point(mouse_pos):
 				return FadeTarget.new(clip, true, true)
 
 		# Check Audio Handles (Top).
 		if clip.type in EditorCore.AUDIO_TYPES:
-			var audio_y_pos: float = y_pos
-			if mouse_pos.distance_to(Vector2(start_x, audio_y_pos)) < handle_size and mouse_pos.x > start_x:
+			var corner_y: float = y_pos
+			var in_x: float = start_x + clip.effects.fade_audio.x * zoom
+			var out_x: float = end_x - clip.effects.fade_audio.y * zoom - current_handle_size * 2
+
+			var in_rect: Rect2 = Rect2(in_x, corner_y, current_handle_size * 2, current_handle_size * 2)
+			var out_rect: Rect2 = Rect2(out_x, corner_y, current_handle_size * 2, current_handle_size * 2)
+
+			if in_rect.grow(current_handle_size).has_point(mouse_pos):
 				return FadeTarget.new(clip, false, false)
-			if mouse_pos.distance_to(Vector2(end_x, audio_y_pos)) < handle_size and mouse_pos.x < end_x:
+			if out_rect.grow(current_handle_size).has_point(mouse_pos):
 				return FadeTarget.new(clip, true, false)
 	return null
 
@@ -996,13 +1011,15 @@ func _handle_fade_motion() -> void:
 	var drag_frames: int = 0 ## Convert pixel drag to frame amount
 
 	if not fade_target.is_end: # Fade In
-		drag_frames = clamp(floori((mouse_x - start_x) / zoom), 0, clip.duration)
+		var max_frames: int = clip.duration - (clip.effects.fade_visual.y if fade_target.is_visual else clip.effects.fade_audio.y)
+		drag_frames = clamp(floori((mouse_x - start_x) / zoom), 0, max_frames)
 		if fade_target.is_visual:
 			clip.effects.fade_visual.x = drag_frames
 		else:
 			clip.effects.fade_audio.x = drag_frames
 	else: # Fade Out
-		drag_frames = clamp(floori((end_x - mouse_x) / zoom), 0, clip.duration)
+		var max_frames: int = clip.duration - (clip.effects.fade_visual.x if fade_target.is_visual else clip.effects.fade_audio.x)
+		drag_frames = clamp(floori((end_x - mouse_x) / zoom), 0, max_frames)
 		if fade_target.is_visual:
 			clip.effects.fade_visual.y = drag_frames
 		else:
