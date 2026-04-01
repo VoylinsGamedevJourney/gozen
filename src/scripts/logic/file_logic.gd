@@ -189,7 +189,7 @@ func paste_image(image: Image) -> void:
 	if image.get_format() != Image.FORMAT_RGBA8:
 		image.convert(Image.FORMAT_RGBA8)
 	if image.get_size() != Project.data.resolution:
-		image.resize(Project.data.resolution.x, Project.data.resolution.y, Image.INTERPOLATE_BILINEAR)
+		_scale_image_to_fit(image, Project.data.resolution)
 	file.temp_file.image_data = ImageTexture.create_from_image(image)
 
 	var time_dict: Dictionary = Time.get_datetime_dict_from_system()
@@ -365,7 +365,7 @@ func load_data(file: FileData) -> void:
 			if image.get_format() != Image.FORMAT_RGBA8:
 				image.convert(Image.FORMAT_RGBA8)
 			if image.get_size() != Project.data.resolution:
-				image.resize(Project.data.resolution.x, Project.data.resolution.y, Image.INTERPOLATE_BILINEAR)
+				_scale_image_to_fit(image, Project.data.resolution)
 			file_data[file.id] = ImageTexture.create_from_image(image)
 		EditorCore.TYPE.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
@@ -614,6 +614,27 @@ func _check_if_modified(file: FileData) -> void:
 	if !file.path.begins_with("temp://") and !FileAccess.file_exists(file.path):
 		print("FileLogic: File %s at %s doesn't exist anymore!" % [file.id, file.path])
 		_delete(file)
+
+
+func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
+	var aspect: float = float(image.get_width()) / float(image.get_height())
+	var target_aspect: float = float(target_size.x) / float(target_size.y)
+	var new_size: Vector2i = Vector2i()
+	if aspect > target_aspect:
+		new_size.x = target_size.x
+		new_size.y = int(target_size.x / aspect)
+	else:
+		new_size.y = target_size.y
+		new_size.x = int(target_size.y * aspect)
+	image.resize(new_size.x, new_size.y, Image.INTERPOLATE_BILINEAR)
+
+	var padded_image: Image = Image.create_empty(target_size.x, target_size.y, false, Image.FORMAT_RGBA8)
+	padded_image.fill(Color.TRANSPARENT)
+	var offset: Vector2i = Vector2i(
+			int((target_size.x - new_size.x) / 2.0),
+			int((target_size.y - new_size.y) / 2.0))
+	padded_image.blend_rect(image, Rect2i(Vector2i.ZERO, new_size), offset)
+	image.copy_from(padded_image)
 
 
 # --- Getters ---
