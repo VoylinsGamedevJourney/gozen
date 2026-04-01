@@ -255,8 +255,8 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 
 	for i: int in range(start_i, end_i, step):
 		var wave_index: int = begin + int(i * speed)
-		if wave_index >= wave_data.size():
-			break
+		if wave_index < 0 or wave_index >= wave_data.size():
+			continue
 
 		var max_value: float = 0.0
 		var check_end: int = mini(wave_index + maxi(1, int(step * speed)), wave_data.size())
