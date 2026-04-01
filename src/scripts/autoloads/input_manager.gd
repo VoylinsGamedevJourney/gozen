@@ -54,7 +54,9 @@ func _input(event: InputEvent) -> void:
 
 func _strict_input_check(event: InputEvent) -> bool:
 	if get_viewport().gui_get_focus_owner() is LineEdit:
-		return false
+		var line_edit: LineEdit = get_viewport().gui_get_focus_owner()
+		if line_edit.is_editing():
+			return false
 
 #	open_marker_popup()
 	if event.is_action_pressed("open_marker_popup"):
