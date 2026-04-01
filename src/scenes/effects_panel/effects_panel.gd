@@ -323,7 +323,18 @@ func _create_effect_ui(effect: Effect, index: int, is_visual: bool) -> FoldableC
 			param_title.clip_text = true
 			param_settings.name = "PARAM_" + param_id
 
+			var param_reset_button: TextureButton = TextureButton.new()
+			param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
+			param_reset_button.tooltip_text = tr("Reset parameter")
+			param_reset_button.ignore_texture_size = true
+			param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+			param_reset_button.custom_minimum_size = Vector2(14, 14)
+			param_reset_button.pressed.connect(func() -> void:
+				_effect_param_update_call(param.default_value, index, is_visual, param_id)
+			)
+
 			param_hbox.add_child(param_title)
+			param_hbox.add_child(param_reset_button)
 			param_hbox.add_child(param_settings)
 
 			if param.keyframeable:
@@ -519,7 +530,7 @@ func _update_ui_values() -> void:
 			var param: EffectParam = text_effects.params[i]
 			var param_hbox: HBoxContainer = content_vbox.get_child(i)
 			var param_settings: Control = param_hbox.get_child(1)
-			var keyframe_button: TextureButton = param_hbox.get_child(2)
+			var keyframe_button: TextureButton = param_hbox.get_child(3)
 			var value: Variant = text_effects.get_value(param, frame_nr)
 			_set_param_settings_value(param_settings, value)
 
@@ -578,7 +589,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 
 			var effect_keyframes: Dictionary = effect.keyframes[param_id]
 			if param.keyframeable:
-				var keyframe_button: TextureButton = param_hbox.get_child(2)
+				var keyframe_button: TextureButton = param_hbox.get_child(3)
 				if effect_keyframes.has(frame_nr):
 					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 				else:
@@ -727,7 +738,18 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 
 		param_keyframe_button.visible = param.keyframeable
 
+		var param_reset_button: TextureButton = TextureButton.new()
+		param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
+		param_reset_button.tooltip_text = tr("Reset parameter")
+		param_reset_button.ignore_texture_size = true
+		param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_reset_button.custom_minimum_size = Vector2(14, 14)
+		param_reset_button.pressed.connect(func() -> void:
+			_text_param_update_call(param.default_value, param_id)
+		)
+
 		param_hbox.add_child(param_title)
+		param_hbox.add_child(param_reset_button)
 		param_hbox.add_child(param_settings)
 		param_hbox.add_child(param_keyframe_button)
 		content_vbox.add_child(param_hbox)
