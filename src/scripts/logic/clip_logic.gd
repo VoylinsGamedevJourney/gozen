@@ -125,7 +125,7 @@ func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
 		var snapshot: ClipData = request.clip.duplicate(true)
 		var effects: ClipEffects = snapshot.effects
 
-		# Reset fade-in on the new right-hand clip
+		# Reset fade-in on the new right-hand clip.
 		effects.fade_visual = Vector2i(0, request.clip.effects.fade_visual.y)
 		effects.fade_audio = Vector2i(0, request.clip.effects.fade_audio.y)
 
@@ -134,7 +134,7 @@ func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
 		effects.ato_file = request.clip.effects.ato_file
 		snapshot.id = Utils.get_unique_id(clips.keys())
 		snapshot.start += duration_left
-		snapshot.begin += duration_left
+		snapshot.begin += int(duration_left * request.clip.speed)
 		snapshot.duration = duration_right
 		effects.video = _copy_visual_effects(request.clip.effects.video, cut_offset)
 		effects.audio = _copy_audio_effects(request.clip.effects.audio, cut_offset)
@@ -162,7 +162,7 @@ func _resize(clip: ClipData, amount: int, from_end: bool) -> void:
 		clip.duration += amount
 	else:
 		clip.start += amount
-		clip.begin += amount
+		clip.begin += int(amount * clip.speed)
 		clip.duration -= amount
 	Project.unsaved_changes = true
 	Project.update_timeline_end()
