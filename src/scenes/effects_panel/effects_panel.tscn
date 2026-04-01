@@ -2,8 +2,25 @@
 
 [ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://scenes/effects_panel/effects_panel.gd" id="1_k5peu"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wv8tu"]
-content_margin_left = 6.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wv8tu"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101960786, 1, 0.101960786, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b381o"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101960786, 0.101960786, 1, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_visuals", "section_audio")]
 custom_minimum_size = Vector2(300, 200)
@@ -46,7 +63,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
-theme_override_styles/panel = SubResource("StyleBoxEmpty_wv8tu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wv8tu")
 title = "Visual effects"
 title_alignment = 1
 
@@ -54,6 +71,6 @@ title_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
-theme_override_styles/panel = SubResource("StyleBoxEmpty_wv8tu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_b381o")
 title = "Audio effects"
 title_alignment = 1

@@ -147,6 +147,8 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 		current_clip = clip
 		current_file = FileLogic.files[clip.file]
 		_load_effects()
+		section_visuals.folded = false
+		section_audio.folded = false
 
 
 func _on_clip_deleted(clip_id: int) -> void:
