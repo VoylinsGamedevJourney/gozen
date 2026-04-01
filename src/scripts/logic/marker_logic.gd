@@ -83,7 +83,7 @@ func _remove(frame_nr: int) -> void:
 
 # --- Helper functions ---
 
-func _find(index: int, frame_nr: int) -> bool: return markers[index].frame_nr == frame_nr
+func _find(marker: MarkerData, frame_nr: int) -> bool: return marker.frame_nr == frame_nr
 func _sort(a: MarkerData, b: MarkerData) -> bool: return a.frame_nr < b.frame_nr
 
 
