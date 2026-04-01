@@ -426,6 +426,7 @@ func _create_wave(file: FileData) -> void:
 				call_deferred("_on_wave_ready", file)
 				return
 
+	print("FileLogic: Creating wave for '%s' ..." % file.nickname)
 	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 	if data.is_empty():
 		audio_wave[file.id] = PackedFloat32Array()
@@ -433,17 +434,32 @@ func _create_wave(file: FileData) -> void:
 
 	var bytes_size: float = 4 # 16 bit * stereo
 	var total_frames: int = int(data.size() / bytes_size)
-	var frames_per_block: int = floori(RenderManager.MIX_RATE / Project.data.framerate)
+
+	# Calculate actual mix rate based on the audio length.
+	var stream_length: float = 0.0
+	var raw_data: Variant = file_data.get(file.id)
+	if raw_data != null:
+		if raw_data is Video:
+			var audio_stream: AudioStream = (raw_data as Video).get_audio()
+			if audio_stream != null:
+				stream_length = audio_stream.get_length()
+		elif raw_data is AudioStream:
+			stream_length = (raw_data as AudioStream).get_length()
+
+	var mix_rate: float = RenderManager.MIX_RATE
+	if stream_length > 0.0:
+		mix_rate = float(total_frames) / stream_length
+
+	var frames_per_block: float = mix_rate / Project.data.framerate
 	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
-	var current_frame_index: int = 0
 
 	var local_wave: PackedFloat32Array = PackedFloat32Array()
 	local_wave.resize(total_blocks)
 	audio_wave[file.id] = local_wave
 	for i: int in total_blocks:
 		var max_abs_amplitude: float = 0.0
-		var start_frame: int = current_frame_index
-		var end_frame: int = min(start_frame + frames_per_block, total_frames)
+		var start_frame: int = floori(i * frames_per_block)
+		var end_frame: int = mini(floori((i + 1) * frames_per_block), total_frames)
 
 		for frame_index: int in range(start_frame, end_frame):
 			var byte_offset: int = int(frame_index * bytes_size)
@@ -465,7 +481,6 @@ func _create_wave(file: FileData) -> void:
 		if local_wave.size() == 0:
 			return
 		local_wave[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
-		current_frame_index = end_frame
 
 		if i % 150 == 0:
 			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
@@ -474,6 +489,7 @@ func _create_wave(file: FileData) -> void:
 	if save_file:
 		save_file.store_buffer(local_wave.to_byte_array())
 	call_deferred("_on_wave_ready", file)
+	print("FileLogic: Wave creation done for '%s'!" % file.nickname)
 
 
 func _on_wave_ready(file: FileData) -> void:

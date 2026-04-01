@@ -181,12 +181,28 @@ func _draw_clips(control: Control) -> void:
 			control.draw_style_box(STYLE_BOXES[clip.type][box_type] as StyleBox, final_rect)
 
 		# - Audio waves (Part of clip blocks)
-		var audio_wave: PackedFloat32Array = FileLogic.audio_wave.get(clip.file, [])
+		var wave_file_id: int = clip.file
+		var wave_offset_sec: float = 0.0
+
+		if clip.effects.ato_active and clip.effects.ato_file != -1:
+			wave_file_id = clip.effects.ato_file
+			wave_offset_sec = clip.effects.ato_offset
+		else:
+			var target_file: FileData = FileLogic.files.get(clip.file)
+			if target_file and target_file.ato_active and target_file.ato_file != -1:
+				wave_file_id = target_file.ato_file
+				wave_offset_sec = target_file.ato_offset
+
+		var audio_wave: PackedFloat32Array = FileLogic.audio_wave.get(wave_file_id, [])
 		if audio_wave:
-			_draw_wave(audio_wave, clip.begin, clip.duration, clip_rect, control, clip.speed)
+			var wave_begin: int = clip.begin + int(wave_offset_sec * Project.data.framerate)
+			_draw_wave(audio_wave, wave_begin, clip.duration, clip_rect, control, clip.speed)
 
 		# - Fading handles + amount
-		var show_handles: bool = hovered_clip == clip or (state == STATE.FADING and fade_target.clip == clip)
+		var show_handles: bool = false
+		if (clip.duration * zoom) >= 20.0:
+			show_handles = hovered_clip == clip or (state == STATE.FADING and fade_target != null and fade_target.clip == clip)
+
 		if clip.type in EditorCore.VISUAL_TYPES:
 			_draw_fade_handles(clip, box_pos, true, show_handles, control) # Bottom.
 		if clip.type in EditorCore.AUDIO_TYPES:
@@ -219,34 +235,38 @@ func _get_visible(start: int, end: int) -> Array[ClipData]:
 func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control, speed: float) -> void:
 	if wave_data.is_empty():
 		return
-	var display_duration: int = duration
-	var display_begin_offset: int = begin
 	var height: float = rect.size.y
 	var base_x: float = rect.position.x
 	var base_y: float = rect.position.y
 	var step: int = maxi(1, int(2.0 / zoom))
 
 	var start_i: int = 0
-	var end_i: int = display_duration
+	var end_i: int = duration
 
 	var scroll_start: float = scroll.scroll_horizontal
 	var scroll_end: float = scroll_start + scroll.size.x
 
 	if base_x < scroll_start:
 		start_i = floori((scroll_start - base_x) / zoom)
-	if base_x + (display_duration * zoom) > scroll_end:
+	if base_x + (duration * zoom) > scroll_end:
 		end_i = ceili((scroll_end - base_x) / zoom)
 
 	start_i -= start_i % step
 
 	for i: int in range(start_i, end_i, step):
-		var wave_index: int = display_begin_offset + int(i * speed)
+		var wave_index: int = begin + int(i * speed)
 		if wave_index >= wave_data.size():
 			break
 
-		var normalized_height: float = wave_data[wave_index] * waveform_amp
+		var max_value: float = 0.0
+		var check_end: int = mini(wave_index + maxi(1, int(step * speed)), wave_data.size())
+		for index: int in range(wave_index, check_end):
+			if wave_data[index] > max_value:
+				max_value = wave_data[index]
+
+		var normalized_height: float = max_value * waveform_amp
 		var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
-		var block_pos_y: float = base_y # TOP_TO_BOTTOM style
+		var block_pos_y: float = base_y # TOP_TO_BOTTOM style.
 
 		match waveform_style:
 			SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
@@ -298,39 +318,48 @@ func _draw_preview(control: Control) -> void:
 
 
 func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_handles: bool, control: Control) -> void:
-	const BORDER_OFFSET: int = 2
 	var duration: float = (clip.duration * zoom)
 	var fade: Vector2 = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
 
-	# Getting the edge points of the clip.
-	var fade_in_pts: PackedVector2Array = [
-			box_pos + Vector2(BORDER_OFFSET, BORDER_OFFSET),
-			box_pos + Vector2(BORDER_OFFSET, track_height - BORDER_OFFSET)]
-	var fade_out_pts: PackedVector2Array = [
-			box_pos + Vector2(duration - BORDER_OFFSET, BORDER_OFFSET),
-			box_pos + Vector2(duration - BORDER_OFFSET, track_height - BORDER_OFFSET)]
-
-	# Adding the handle point.
-	var handle_offset: float = (FADE_HANDLE_SIZE / 2.0)
-	if is_visual:
-		fade_in_pts.append(box_pos + Vector2(fade.x * zoom, track_height - handle_offset))
-		fade_out_pts.append(box_pos + Vector2(duration - (fade.y * zoom), track_height - handle_offset))
-	else:
-		fade_in_pts.append(box_pos + Vector2(fade.x * zoom, handle_offset))
-		fade_out_pts.append(box_pos + Vector2(duration - (fade.y * zoom), handle_offset))
+	var corner_y: float = box_pos.y + (track_height if is_visual else 0.0)
+	var opposite_y: float = box_pos.y + (0.0 if is_visual else track_height)
 
 	# Draw background and lines. (if fade present)
 	if fade.x > 0: # Draw line fade in.
+		var fade_in_pts: PackedVector2Array = [
+			Vector2(box_pos.x, opposite_y),
+			Vector2(box_pos.x, corner_y),
+			Vector2(box_pos.x + fade.x * zoom, corner_y)
+		]
 		control.draw_colored_polygon(fade_in_pts, FADE_AREA_COLOR)
-		control.draw_line(fade_in_pts[2], fade_in_pts[0 if is_visual else 1], FADE_LINE_COLOR, 1.0, true)
+		control.draw_line(fade_in_pts[2], fade_in_pts[0], FADE_LINE_COLOR, 1.0, true)
+
 	if fade.y > 0: # Draw line fade out.
+		var fade_out_pts: PackedVector2Array = [
+			Vector2(box_pos.x + duration, opposite_y),
+			Vector2(box_pos.x + duration, corner_y),
+			Vector2(box_pos.x + duration - fade.y * zoom, corner_y)
+		]
 		control.draw_colored_polygon(fade_out_pts, FADE_AREA_COLOR)
-		control.draw_line(fade_out_pts[2], fade_out_pts[0 if is_visual else 1], FADE_LINE_COLOR, 1.0, true)
+		control.draw_line(fade_out_pts[2], fade_out_pts[0], FADE_LINE_COLOR, 1.0, true)
 
 	# Draw handles.
 	if show_handles:
-		control.draw_circle(fade_in_pts[2], FADE_HANDLE_SIZE, FADE_HANDLE_COLOR) # Fade in handle
-		control.draw_circle(fade_out_pts[2], FADE_HANDLE_SIZE, FADE_HANDLE_COLOR) # Fade out handle
+		var current_handle_size: float = FADE_HANDLE_SIZE
+		if Input.is_key_pressed(KEY_SHIFT):
+			current_handle_size *= 2.0
+
+		var in_rect: Rect2
+		var out_rect: Rect2
+		if is_visual:
+			in_rect = Rect2(box_pos.x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+			out_rect = Rect2(box_pos.x + duration - current_handle_size * 2, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+		else:
+			in_rect = Rect2(box_pos.x, corner_y, current_handle_size * 2, current_handle_size * 2)
+			out_rect = Rect2(box_pos.x + duration - current_handle_size * 2, corner_y, current_handle_size * 2, current_handle_size * 2)
+
+		control.draw_rect(in_rect, FADE_HANDLE_COLOR)
+		control.draw_rect(out_rect, FADE_HANDLE_COLOR)
 
 
 func _draw_mode(control: Control) -> void:
@@ -580,19 +609,24 @@ func _get_resize_target() -> ResizeTarget:
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + scroll.size.x) / zoom)
 	var best_target: ResizeTarget = null
-	var min_distance: float = RESIZE_HANDLE_WIDTH + 1.0
+
+	var handle_width: float = RESIZE_HANDLE_WIDTH
+	if Input.is_key_pressed(KEY_SHIFT):
+		handle_width *= 2.0
+
+	var min_distance: float = handle_width + 1.0
 	for clip: ClipData in TrackLogic.get_clips_in_range(track, visible_start, visible_end):
-		if (clip.duration * zoom) < RESIZE_CLIP_MIN_WIDTH:
+		if (clip.duration * zoom) < 20.0:
 			continue
 		var start_x: float = clip.start * zoom
 		var end_x: float = clip.end * zoom
 		var start_distance: float = abs(mouse_pos - start_x)
 		var end_distance: float = abs(mouse_pos - end_x)
-		if start_distance <= RESIZE_HANDLE_WIDTH:
+		if start_distance <= handle_width:
 			if start_distance < min_distance or (start_distance == min_distance and mouse_pos >= start_x):
 				min_distance = start_distance
 				best_target = ResizeTarget.new(clip, false, clip.start, clip.duration)
-		if end_distance <= RESIZE_HANDLE_WIDTH:
+		if end_distance <= handle_width:
 			if end_distance < min_distance or (end_distance == min_distance and mouse_pos <= end_x):
 				min_distance = end_distance
 				best_target = ResizeTarget.new(clip, true, clip.start, clip.duration)
@@ -604,29 +638,33 @@ func _get_fade_target() -> FadeTarget:
 	var mouse_pos: Vector2 = get_local_mouse_position()
 	var scroll_horizontal: float = scroll.scroll_horizontal
 	var visible_start: int = floori(scroll_horizontal / zoom)
-	var visible_end: int = ceili((scroll_horizontal + scroll.size.x) / zoom)
+	var visible_end: int = ceili((scroll.scroll_horizontal + scroll.size.x) / zoom)
+
+	var handle_size: float = FADE_HANDLE_SIZE * 2.0
+	if Input.is_key_pressed(KEY_SHIFT):
+		handle_size *= 2.0
 
 	for clip: ClipData in TrackLogic.get_clips_in_range(track_id, visible_start, visible_end):
+		if (clip.duration * zoom) < 20.0:
+			continue
 		var start_x: float = clip.start * zoom
 		var end_x: float = clip.end * zoom
 		var y_pos: float = clip.track * track_total_size
 
 		# Check Video Handles (Bottom).
 		if clip.type in EditorCore.VISUAL_TYPES:
-			var fade: Vector2i = clip.effects.fade_visual * zoom
-			var video_y_pos: float = y_pos + track_height - (FADE_HANDLE_SIZE / 2.0)
-			if mouse_pos.distance_to(Vector2(start_x + fade.x, video_y_pos)) < FADE_HANDLE_SIZE:
+			var video_y_pos: float = y_pos + track_height
+			if mouse_pos.distance_to(Vector2(start_x, video_y_pos)) < handle_size and mouse_pos.x > start_x:
 				return FadeTarget.new(clip, false, true)
-			if mouse_pos.distance_to(Vector2(end_x - fade.y, video_y_pos)) < FADE_HANDLE_SIZE:
+			if mouse_pos.distance_to(Vector2(end_x, video_y_pos)) < handle_size and mouse_pos.x < end_x:
 				return FadeTarget.new(clip, true, true)
 
 		# Check Audio Handles (Top).
 		if clip.type in EditorCore.AUDIO_TYPES:
-			var fade: Vector2i = clip.effects.fade_audio * zoom
-			var audio_y_pos: float = y_pos + (FADE_HANDLE_SIZE / 2.0)
-			if mouse_pos.distance_to(Vector2(start_x + fade.x, audio_y_pos)) < FADE_HANDLE_SIZE:
+			var audio_y_pos: float = y_pos
+			if mouse_pos.distance_to(Vector2(start_x, audio_y_pos)) < handle_size and mouse_pos.x > start_x:
 				return FadeTarget.new(clip, false, false)
-			if mouse_pos.distance_to(Vector2(end_x - fade.y, audio_y_pos)) < FADE_HANDLE_SIZE:
+			if mouse_pos.distance_to(Vector2(end_x, audio_y_pos)) < handle_size and mouse_pos.x < end_x:
 				return FadeTarget.new(clip, true, false)
 	return null
 
@@ -1129,6 +1167,7 @@ func cut_clips_at(frame_pos: int) -> void:
 	# Check if any of the clips in the tracks is in selected clips
 	# if there are selected clips present, we only cut the selected ones
 	var requests: Array[ClipRequest] = []
+	var new_clips: Array[ClipData]
 
 	# Checking if we only want selected clips to be cut.
 	for clip: ClipData in selected_clips:
@@ -1136,7 +1175,10 @@ func cut_clips_at(frame_pos: int) -> void:
 			requests.append(ClipRequest.cut_request(clip, frame_pos - clip.start))
 
 	if !requests.is_empty():
-		ClipLogic.cut(requests)
+		new_clips = ClipLogic.cut(requests)
+		if new_clips.size() > 0:
+			selected_clips = new_clips
+			ClipLogic.selected.emit(selected_clips[-1])
 		return draw_clips.queue_redraw()
 
 	# No selected clips present so cutting all possible clips
@@ -1147,7 +1189,10 @@ func cut_clips_at(frame_pos: int) -> void:
 		if clip.start < frame_pos and clip.end > frame_pos:
 			requests.append(ClipRequest.cut_request(clip, frame_pos - clip.start))
 
-	ClipLogic.cut(requests)
+	new_clips = ClipLogic.cut(requests)
+	if new_clips.size() > 0:
+		selected_clips = new_clips
+		ClipLogic.selected.emit(selected_clips[-1])
 	draw_clips.queue_redraw()
 
 
