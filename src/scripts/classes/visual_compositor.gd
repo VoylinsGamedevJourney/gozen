@@ -166,18 +166,20 @@ func initialize_video(video: Video) -> void:
 
 	var format_y: RDTextureFormat = RDTextureFormat.new()
 	var format_uv: RDTextureFormat = RDTextureFormat.new()
+	var y_data: Image = video.get_y_data()
+	var u_data: Image = video.get_u_data()
 
 	# Creating the Y format.
 	format_y.format = device.DATA_FORMAT_R8_UNORM
-	format_y.width = video.get_y_data().get_width()
-	format_y.height = resolution.y
+	format_y.width = y_data.get_width()
+	format_y.height = y_data.get_height()
 	format_y.usage_bits = USAGE_BITS_R8
 	format_y.texture_type = device.TEXTURE_TYPE_2D
 
 	# Creating the UV format.
 	format_uv.format = device.DATA_FORMAT_R8_UNORM
-	format_uv.width = video.get_u_data().get_width()
-	format_uv.height = floori(resolution.y / 2.0)
+	format_uv.width = u_data.get_width()
+	format_uv.height = u_data.get_height()
 	format_uv.usage_bits = USAGE_BITS_R8
 	format_uv.texture_type = device.TEXTURE_TYPE_2D
 
@@ -189,7 +191,7 @@ func initialize_video(video: Video) -> void:
 	if video.get_has_alpha():
 		a_texture = device.texture_create(format_y, RDTextureView.new(),[])
 	else:
-		var white_image: Image = Image.create(video.get_y_data().get_width(), resolution.y, false, Image.FORMAT_R8)
+		var white_image: Image = Image.create(y_data.get_width(), y_data.get_height(), false, Image.FORMAT_R8)
 		white_image.fill(Color.WHITE)
 		a_texture = device.texture_create(format_y, RDTextureView.new(), [white_image.get_data()])
 
