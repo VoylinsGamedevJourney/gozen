@@ -93,7 +93,19 @@ func start_encoder() -> void:
 	if encoder.audio_codec_set():
 		update_encoder_status.emit(STATUS.COMPILING_AUDIO)
 		await RenderingServer.frame_post_draw
-		if !encoder.send_audio(encode_audio()):
+
+		var audio_thread: Thread = Thread.new()
+		audio_thread.start(encode_audio)
+		while audio_thread.is_alive():
+			await get_tree().process_frame
+
+		var audio_data: PackedByteArray = audio_thread.wait_to_finish()
+		if !audio_data or audio_data.is_empty():
+			stop_encoder()
+			update_encoder_status.emit(STATUS.ERROR_AUDIO)
+			await RenderingServer.frame_post_draw
+			return printerr("RenderManager: Something went wrong encoding audio!")
+		if !encoder.send_audio(audio_data):
 			stop_encoder()
 			update_encoder_status.emit(STATUS.ERROR_AUDIO)
 			await RenderingServer.frame_post_draw
