@@ -38,7 +38,7 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 	}
 
 	if (start_time > 0) {
-		int64_t seek_target = start_time * AV_TIME_BASE;
+		int64_t seek_target = av_rescale_q(start_time * AV_TIME_BASE, AV_TIME_BASE_Q, stream->time_base);
 		av_seek_frame(format_ctx, stream->index, seek_target, AVSEEK_FLAG_BACKWARD);
 		avcodec_flush_buffers(codec_ctx.get());
 	}

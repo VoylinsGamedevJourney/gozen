@@ -380,7 +380,16 @@ bool Encoder::send_audio(PackedByteArray wav_data) {
 			break;
 		}
 
-		av_frame_out->nb_samples = converted_samples;
+		if (converted_samples < frame_size) {
+			int bytes_per_sample_out = av_get_bytes_per_sample(av_codec_ctx_audio->sample_fmt);
+			for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
+				memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
+					   (frame_size - converted_samples) * bytes_per_sample_out);
+			}
+			av_frame_out->nb_samples = frame_size;
+		} else {
+			av_frame_out->nb_samples = converted_samples;
+		}
 		av_frame_out->pts = audio_pts;
 		audio_pts += converted_samples;
 
@@ -452,10 +461,20 @@ bool Encoder::_encode_audio_chunk(int samples_to_read) {
 		} else if (converted_samples == 0) {
 			break;
 		} else if (converted_samples > 0) {
-			av_frame_out->nb_samples = converted_samples;
+			if (converted_samples < frame_size) {
+				int bytes_per_sample_out = av_get_bytes_per_sample(av_codec_ctx_audio->sample_fmt);
+				for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
+					memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
+						   (frame_size - converted_samples) * bytes_per_sample_out);
+				}
+				av_frame_out->nb_samples = frame_size;
+			} else {
+				av_frame_out->nb_samples = converted_samples;
+			}
 			av_frame_out->pts = audio_pts;
 			audio_pts += converted_samples;
 			response = avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
+
 			if (response < 0) {
 				return _log_err("Error sending audio frame!");
 			}
