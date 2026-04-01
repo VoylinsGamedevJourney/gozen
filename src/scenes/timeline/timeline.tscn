@@ -147,6 +147,3 @@ draw_func_name = "_draw_markers"
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
 [connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/TrackLinesDraw" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/ClipsDraw" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline/PlayheadDraw" method="_on_timeline_zoom_changed"]

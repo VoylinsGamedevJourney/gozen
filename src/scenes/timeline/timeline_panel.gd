@@ -116,7 +116,6 @@ func _ready() -> void:
 	Settings.on_waveform_update.connect(update_waveform_data)
 	Settings.on_show_time_mode_bar_changed.connect(_show_hide_mode_bar)
 	Settings.on_track_height_changed.connect(_update_track_height)
-	EditorCore.frame_changed.connect(draw_track_lines.queue_redraw)
 	EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw)
 	InputManager.switch_timeline_mode_select.connect(set_state.bind(STATE.CURSOR_MODE_SELECT))
 	InputManager.switch_timeline_mode_cut.connect(set_state.bind(STATE.CURSOR_MODE_CUT))
@@ -343,7 +342,12 @@ func _draw_mode(control: Control) -> void:
 
 
 func _draw_playhead(control: Control) -> void:
-	var playhead_pos: float = EditorCore.visual_frame_nr * zoom
+	var playhead_pos: float
+	if state == STATE.SCRUBBING:
+		playhead_pos = get_local_mouse_position().x
+	else:
+		playhead_pos = EditorCore.visual_frame_nr * zoom
+
 	control.draw_line(
 			Vector2(playhead_pos, 0), Vector2(playhead_pos, size.y),
 			PLAYHEAD_COLOR, PLAYHEAD_WIDTH)
@@ -1065,7 +1069,6 @@ func _on_clip_deleted(clip_id: int) -> void:
 	if right_click_clip and right_click_clip.id == clip_id:
 		right_click_clip = null
 	draw_clips.queue_redraw()
-	draw_clips.queue_redraw()
 
 
 func _on_tracks_updated() -> void:
@@ -1102,7 +1105,6 @@ func get_track_from_mouse() -> int:
 
 func move_playhead(frame_nr: int) -> void:
 	EditorCore.set_frame(maxi(0, frame_nr))
-	draw_playhead.queue_redraw()
 
 
 func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
