@@ -33,9 +33,9 @@ func _restore_clip(snapshot: ClipData) -> void:
 	clips[snapshot.id] = snapshot
 	TrackLogic.add_clip_to_track(snapshot.track, snapshot)
 	Project.unsaved_changes = true
-	Project.update_timeline_end()
+	Project.update_timeline_end.call_deferred()
 	added.emit(snapshot)
-	updated.emit()
+	updated.emit.call_deferred()
 
 
 func delete(clips_to_delete: Array[ClipData]) -> void:
@@ -50,9 +50,9 @@ func _delete(clip: ClipData) -> void:
 	TrackLogic.remove_clip_from_track(clip.track, clip)
 	clips.erase(clip.id)
 	Project.unsaved_changes = true
-	Project.update_timeline_end()
+	Project.update_timeline_end.call_deferred()
 	deleted.emit(clip.id)
-	updated.emit()
+	updated.emit.call_deferred()
 
 
 func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
@@ -102,8 +102,8 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	clip.track = new_track
 	TrackLogic.add_clip_to_track(new_track, clip)
 	Project.unsaved_changes = true
-	Project.update_timeline_end()
-	updated.emit()
+	Project.update_timeline_end.call_deferred()
+	updated.emit.call_deferred()
 
 
 func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
@@ -165,8 +165,8 @@ func _resize(clip: ClipData, amount: int, from_end: bool) -> void:
 		clip.begin += int(amount * clip.speed)
 		clip.duration -= amount
 	Project.unsaved_changes = true
-	Project.update_timeline_end()
-	updated.emit()
+	Project.update_timeline_end.call_deferred()
+	updated.emit.call_deferred()
 
 
 func _resize_and_fade(clip: ClipData, amount: int, from_end: bool, v_fade_in: int, v_fade_out: int, a_fade_in: int, a_fade_out: int) -> void:
@@ -180,8 +180,8 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 	clip.begin = begin
 	clip.duration = duration
 	Project.unsaved_changes = true
-	Project.update_timeline_end()
-	updated.emit()
+	Project.update_timeline_end.call_deferred()
+	updated.emit.call_deferred()
 
 
 #---- Helper functions ----
@@ -251,8 +251,8 @@ func _apply_audio_take_over(clip: ClipData, active: bool, audio_file_id: int, of
 	effects.ato_file = audio_file_id
 	effects.ato_offset = offset
 	Project.unsaved_changes = true
-	Project.update_timeline_end()
-	updated.emit()
+	Project.update_timeline_end.call_deferred()
+	updated.emit.call_deferred()
 
 
 func change_speed(requests: Array[ClipRequest]) -> void:
@@ -278,16 +278,16 @@ func _change_speed(clip: ClipData, amount: int, from_end: bool, new_speed: float
 	else:
 		clip.start += amount
 		clip.duration -= amount
-	Project.update_timeline_end()
-	updated.emit()
+	Project.update_timeline_end.call_deferred()
+	updated.emit.call_deferred()
 
 
 func _change_speed_restore(clip: ClipData, start: int, duration: int, speed: float) -> void:
 	clip.start = start
 	clip.speed = speed
 	clip.duration = duration
-	Project.update_timeline_end()
-	updated.emit()
+	Project.update_timeline_end.call_deferred()
+	updated.emit.call_deferred()
 
 
 # --- Playback helpers ---
