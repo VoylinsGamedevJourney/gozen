@@ -69,9 +69,16 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 
 	# Managing state.
 	var old_file: FileData = file
+	var old_clip: ClipData = clip
 	file = target_file
 	clip = audio_clip
 	stop_frame = clip.end
+
+	var contiguous: bool = false
+	if old_file == file and old_clip != null and old_clip.end == clip.start:
+		var expected_begin: int = old_clip.begin + int(old_clip.duration * old_clip.speed)
+		if expected_begin == clip.begin:
+			contiguous = true
 
 	# Effects setup.
 	var need_rebuild: bool = false
@@ -107,8 +114,8 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 
 	# Check if playback is close enough ONLY if stream is the same.
 	var frame_duration: float = 1.0 / framerate
-	var sync_threshold: float = max(frame_duration * 4 * clip.speed, 0.15) # (4 frame buffer at normal speed)
-	if player.playing and abs(player.get_playback_position() - position) < sync_threshold:
+	var sync_threshold: float = max(frame_duration * 4 * clip.speed, 0.30)
+	if player.playing and (contiguous or abs(player.get_playback_position() - position) < sync_threshold):
 		player.stream_paused = !EditorCore.is_playing
 		return
 
