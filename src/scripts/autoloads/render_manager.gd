@@ -199,6 +199,7 @@ func start_encoder() -> void:
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
+	NotificationManager.notify(["Render finished"])
 	stop_encoder()
 
 
