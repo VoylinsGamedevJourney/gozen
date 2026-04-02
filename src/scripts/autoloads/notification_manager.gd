@@ -1,3 +1,4 @@
+extends Node
 ## Different icons for notifications:
 ## dialog-information: Standard information icon (often a blue 'i' or similar).
 ## dialog-warning: Warning symbol (usually a yellow exclamation mark).

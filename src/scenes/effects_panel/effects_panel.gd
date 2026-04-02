@@ -328,6 +328,14 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 			param_hbox.add_child(param_settings)
 
 			if param.keyframeable:
+				var param_prev_button: TextureButton = TextureButton.new()
+				param_prev_button.name = "PREV_KEYFRAME_" + param_id
+				param_prev_button.texture_normal = load(Library.ICON_PREV_KEYFRAME)
+				param_prev_button.ignore_texture_size = true
+				param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+				param_prev_button.custom_minimum_size.x = 8
+				param_prev_button.pressed.connect(_jump_prev_keyframe.bind(effect, param_id))
+
 				var param_keyframe_button: TextureButton = TextureButton.new()
 				param_keyframe_button.name = "KEYFRAME_" + param_id
 				param_keyframe_button.ignore_texture_size = true
@@ -339,7 +347,18 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 				else:
 					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+
+				var param_next_button: TextureButton = TextureButton.new()
+				param_next_button.name = "NEXT_KEYFRAME_" + param_id
+				param_next_button.texture_normal = load(Library.ICON_NEXT_KEYFRAME)
+				param_next_button.ignore_texture_size = true
+				param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+				param_next_button.custom_minimum_size.x = 8
+				param_next_button.pressed.connect(_jump_next_keyframe.bind(effect, param_id))
+
+				param_hbox.add_child(param_prev_button)
 				param_hbox.add_child(param_keyframe_button)
+				param_hbox.add_child(param_next_button)
 				keyframes_found = true
 			content_vbox.add_child(param_hbox)
 
@@ -446,7 +465,11 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
-			spinbox.value_changed.connect(update_call)
+			spinbox.value_changed.connect(func(val: float) -> void:
+				if spinbox.get_line_edit().has_focus():
+					spinbox.get_line_edit().release_focus()
+				update_call.call(val)
+			)
 			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return spinbox
 		TYPE_VECTOR2, TYPE_VECTOR2I:
@@ -463,6 +486,8 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
+				if spinbox_x.get_line_edit().has_focus():
+					spinbox_x.get_line_edit().release_focus()
 				if param.get("is_linkable") and param.get("is_linked"):
 					spinbox_y.set_value_no_signal(new_value)
 				var vector_val: Variant = Vector2(new_value, spinbox_y.value)
@@ -477,6 +502,8 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
 			spinbox_y.value_changed.connect(func(new_value: float) -> void:
+				if spinbox_y.get_line_edit().has_focus():
+					spinbox_y.get_line_edit().release_focus()
 				if param.get("is_linkable") and param.get("is_linked"):
 					spinbox_x.set_value_no_signal(new_value)
 				var vector_val: Variant = Vector2(spinbox_x.value, new_value)
@@ -556,7 +583,7 @@ func _update_ui_values() -> void:
 			var param_hbox: HBoxContainer = content_vbox.get_child(i)
 			var reset_button: TextureButton = param_hbox.get_child(1)
 			var param_settings: Control = param_hbox.get_child(2)
-			var keyframe_button: TextureButton = param_hbox.get_child(3)
+			var keyframe_button: TextureButton = param_hbox.get_child(4)
 			var value: Variant = text_effects.get_value(param, frame_nr)
 			_set_param_settings_value(param_settings, value)
 
@@ -620,7 +647,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 
 			var effect_keyframes: Dictionary = effect.keyframes[param_id]
 			if param.keyframeable:
-				var keyframe_button: TextureButton = param_hbox.get_child(3)
+				var keyframe_button: TextureButton = param_hbox.get_child(4)
 				if effect_keyframes.has(frame_nr):
 					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 				else:
@@ -717,6 +744,36 @@ func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, 
 	EffectsHandler.update_param(current_clip, index, is_visual, param_id, value, false)
 
 
+func _jump_prev_keyframe(effect: Effect, param_id: String) -> void:
+	if not effect.keyframes.has(param_id):
+		EditorCore.set_frame(current_clip.start)
+		return
+	var relative_frame: int = EditorCore.visual_frame_nr - current_clip.start
+	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
+	keys.sort()
+	var target: int = 0
+	for index: int in range(keys.size() - 1, -1, -1):
+		if keys[index] < relative_frame:
+			target = keys[index]
+			break
+	EditorCore.set_frame(current_clip.start + target)
+
+
+func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
+	if not effect.keyframes.has(param_id):
+		EditorCore.set_frame(current_clip.end)
+		return
+	var relative_frame: int = EditorCore.visual_frame_nr - current_clip.start
+	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
+	keys.sort()
+	var target: int = current_clip.duration
+	for key: int in keys:
+		if key > relative_frame:
+			target = key
+			break
+	EditorCore.set_frame(current_clip.start + target)
+
+
 func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
 	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
@@ -762,7 +819,15 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		param_title.clip_text = true
 
-		param_settings.name = "PARAM_" + param_id
+		var param_prev_button: TextureButton = TextureButton.new()
+		param_prev_button.name = "PREV_KEYFRAME_" + param_id
+		param_prev_button.texture_normal = load(Library.ICON_PREV_KEYFRAME)
+		param_prev_button.ignore_texture_size = true
+		param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_prev_button.custom_minimum_size.x = 8
+		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(text_effect, param_id))
+		param_prev_button.visible = param.keyframeable
+
 		param_keyframe_button.name = "KEYFRAME_" + param_id
 		param_keyframe_button.ignore_texture_size = true
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -777,6 +842,15 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 
 		param_keyframe_button.visible = param.keyframeable
 
+		var param_next_button: TextureButton = TextureButton.new()
+		param_next_button.name = "NEXT_KEYFRAME_" + param_id
+		param_next_button.texture_normal = load(Library.ICON_NEXT_KEYFRAME)
+		param_next_button.ignore_texture_size = true
+		param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_next_button.custom_minimum_size.x = 8
+		param_next_button.pressed.connect(_jump_next_keyframe.bind(text_effect, param_id))
+		param_next_button.visible = param.keyframeable
+
 		var param_reset_button: TextureButton = TextureButton.new()
 		param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
 		param_reset_button.tooltip_text = tr("Reset parameter")
@@ -789,7 +863,9 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_hbox.add_child(param_title)
 		param_hbox.add_child(param_reset_button)
 		param_hbox.add_child(param_settings)
+		param_hbox.add_child(param_prev_button)
 		param_hbox.add_child(param_keyframe_button)
+		param_hbox.add_child(param_next_button)
 		content_vbox.add_child(param_hbox)
 
 	var track: KeyframeTrack = KeyframeTrack.new()
