@@ -236,7 +236,6 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 	else:
 		effect = clip.effects.audio[effect_index]
 
-	InputManager.undo_redo.create_action("Update effect param: %s" % effect.nickname)
 	var effect_param: EffectParam = null
 	for param: EffectParam in effect.params:
 		if param.id == param_id:
@@ -244,35 +243,44 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 			break
 	effect.set_default_keyframe()
 
-	# No keyframes (except 0) made, so we change main value, unless new keyframe requested.
 	var param_keyframes: Dictionary = effect.keyframes[param_id]
 	var is_keyframeable: bool = effect_param.keyframeable if effect_param else true
+	var target_frame: int = 0
+
+	# No keyframes (except 0) made, so we change main value, unless new keyframe requested.
 	if (!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable:
+		target_frame = 0
+	else:
+		target_frame = EditorCore.frame_nr - clip.start
+
+	var action_name: String = "Update %s_%s_c%d_f%d" % [effect.nickname, param_id, clip.id, target_frame]
+	InputManager.undo_redo.create_action(action_name, UndoRedo.MERGE_ENDS)
+
+	if target_frame == 0 and ((!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable):
 		var old_value: Variant = effect.keyframes[param_id][0]
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
 				clip, effect_index, is_visual, param_id, 0, new_value))
 		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
 				clip, effect_index, is_visual, param_id, 0, old_value))
 	else:
-		var frame_nr: int = EditorCore.frame_nr - clip.start
 		var old_value: Variant = null
 		var keyframe_exists: bool = false
 
-		if param_keyframes.has(frame_nr):
-			old_value = effect.keyframes[param_id][frame_nr]
+		if param_keyframes.has(target_frame):
+			old_value = effect.keyframes[param_id][target_frame]
 			keyframe_exists = true
 		elif effect_param: # New keyframe.
-			old_value = effect.get_value(effect_param, frame_nr)
+			old_value = effect.get_value(effect_param, target_frame)
 
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-				clip, effect_index, is_visual, param_id, frame_nr, new_value))
+				clip, effect_index, is_visual, param_id, target_frame, new_value))
 
 		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe.
 			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-					clip, effect_index, is_visual, param_id, frame_nr, old_value))
+					clip, effect_index, is_visual, param_id, target_frame, old_value))
 		else: # If the keyframe didn't exist yet, we remove the newly created one on undo.
 			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
-					clip, effect_index, is_visual, param_id, frame_nr))
+					clip, effect_index, is_visual, param_id, target_frame))
 	InputManager.undo_redo.commit_action()
 
 

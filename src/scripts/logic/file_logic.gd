@@ -682,7 +682,8 @@ func set_proxy_path(file: FileData, path: String) -> void:
 
 
 func update_text_param(file: FileData, param_id: String, frame_nr: int, new_value: Variant, old_value: Variant, is_new: bool) -> void:
-	InputManager.undo_redo.create_action("Update text property")
+	var action_name: String = "Update text %s_%d_f%d" % [param_id, file.id, frame_nr]
+	InputManager.undo_redo.create_action(action_name, UndoRedo.MERGE_ENDS)
 	InputManager.undo_redo.add_do_method(_set_text_keyframe.bind(file, param_id, frame_nr, new_value))
 	if is_new and frame_nr != 0:
 		InputManager.undo_redo.add_undo_method(_remove_text_keyframe.bind(file, param_id, frame_nr))
