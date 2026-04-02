@@ -57,11 +57,11 @@ func _gui_input(event: InputEvent) -> void:
 		var frame: int = _get_frame_at_x(mouse_x)
 
 		if _is_dragging:
-			frame = clampi(frame, 0, clip_duration)
+			frame = clampi(frame, 0, clip_duration - 1)
 			keyframe_dragged_to.emit(frame)
 			queue_redraw()
 		elif _is_scrubbing:
-			frame = clampi(frame, 0, clip_duration)
+			frame = clampi(frame, 0, clip_duration - 1)
 			keyframe_dragged_to.emit(frame)
 			queue_redraw()
 		else:
@@ -119,14 +119,15 @@ func _draw() -> void:
 	if clip_duration > 0:
 		var line_color: Color = TRACK_BAR_COLOR
 		line_color.a = 0.8
-		var pixels_per_frame: float = width / float(maxi(1, clip_duration))
+		var max_frame: float = maxf(1.0, float(clip_duration - 1))
+		var pixels_per_frame: float = width / max_frame
 		var step: int = maxi(1, int(5.0 / pixels_per_frame))
-		for i: int in range(0, clip_duration + 1, step):
-			var frame_x: float = MARGIN + (float(i) / float(clip_duration)) * width
+		for i: int in range(0, clip_duration, step):
+			var frame_x: float = MARGIN + (float(i) / max_frame) * width
 			var line_h: float = 6.0 if i % (step * 5) == 0 else 3.0
 			draw_line(Vector2(frame_x, mid_y - 2 - line_h), Vector2(frame_x, mid_y - 2), line_color, 1.0)
 
-		var playhead_x: float = MARGIN + (float(current_relative_frame) / float(clip_duration)) * width
+		var playhead_x: float = MARGIN + (float(current_relative_frame) / max_frame) * width
 		playhead_x = clamp(playhead_x, MARGIN, size.x - MARGIN)
 		draw_line(Vector2(playhead_x, 2), Vector2(playhead_x, size.y - 2), Color(1, 1, 1, 0.5), 1.0)
 		draw_line(Vector2(playhead_x + 1, 2), Vector2(playhead_x + 1, size.y - 2), Color(1, 1, 1, 0.3), 1.0)
@@ -146,7 +147,8 @@ func _draw() -> void:
 		if _is_dragging and frame_int == _dragged_frame:
 			draw_frame_val = clampi(_get_frame_at_x(get_local_mouse_position().x), 0, clip_duration)
 
-		var ratio: float = float(draw_frame_val) / maxf(1, clip_duration)
+		var max_frame: float = maxf(1.0, float(clip_duration - 1))
+		var ratio: float = float(draw_frame_val) / max_frame
 		var pos: Vector2 = Vector2(MARGIN + (ratio * width), mid_y)
 		var keyframe_color: Color = KEYFRAME_COLOR
 
@@ -169,7 +171,7 @@ func _get_frame_at_x(x_pos: float) -> int:
 		return 0
 
 	var ratio: float = (x_pos - MARGIN) / width
-	return int(ratio * clip_duration)
+	return int(ratio * (clip_duration - 1))
 
 
 func _find_closest_keyframe(target_frame: int) -> int:
@@ -177,7 +179,7 @@ func _find_closest_keyframe(target_frame: int) -> int:
 		return -1
 
 	var width: float = size.x - (MARGIN * 2)
-	var pixel_per_frame: float = width / maxf(1, clip_duration)
+	var pixel_per_frame: float = width / maxf(1.0, float(clip_duration - 1))
 	var threshold_frames: int = int(8.0 / pixel_per_frame)
 	if threshold_frames < 2:
 		threshold_frames = 2
