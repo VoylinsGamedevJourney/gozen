@@ -94,6 +94,8 @@ func _init_start(p_resolution: Vector2i) -> void:
 
 	if not default_sampler.is_valid():
 		var sampler_state: RDSamplerState = RDSamplerState.new()
+		sampler_state.mag_filter = RenderingDevice.SAMPLER_FILTER_LINEAR
+		sampler_state.min_filter = RenderingDevice.SAMPLER_FILTER_LINEAR
 		default_sampler = device.sampler_create(sampler_state)
 
 	resolution = p_resolution
