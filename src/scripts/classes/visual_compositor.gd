@@ -82,12 +82,6 @@ var groups_y: int
 
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		if initialized:
-			cleanup()
-
-
 func _init_start(p_resolution: Vector2i) -> void:
 	if initialized and resolution != p_resolution:
 		cleanup()

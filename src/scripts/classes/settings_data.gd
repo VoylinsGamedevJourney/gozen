@@ -23,15 +23,15 @@ var default_resolution: Vector2i = Vector2i(1920, 1080)
 var default_framerate: float = 30.0
 
 # Timeline
-var tracks_amount: int = 6 ## The amount of tracks
+var tracks_amount: int = 6 ## The amount of tracks.
 var tracks_height: float = 30
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
 var show_time_mode_bar: bool = true
 
 # Performance
-var video_smart_seek_threshold: int = 100
-var video_cache_size: int = 100
+var video_smart_seek_threshold: int = 30
+var video_cache_size: int = 30 ## This is a ram eater, we should NOT set this too high.
 var use_proxies: bool = false
 var proxies_path: String = "user://proxies"
 

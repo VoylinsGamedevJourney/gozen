@@ -770,7 +770,7 @@ func _update_video_cache_size(value: int) -> void:
 			continue
 		var video: Video = file_data[file.id]
 		video.set_cache_size(value)
-		if video_pools.has(file):
+		if video_pools.has(file.id):
 			for video_instance: Video in video_pools[file.id]:
 				video_instance.set_cache_size(value)
 
@@ -781,7 +781,7 @@ func _update_video_smart_seek_threshold(value: int) -> void:
 			continue
 		var video: Video = file_data[file.id]
 		video.set_smart_seek_threshold(value)
-		if video_pools.has(file):
+		if video_pools.has(file.id):
 			for video_instance: Video in video_pools[file.id]:
 				video_instance.set_smart_seek_threshold(value)
 
