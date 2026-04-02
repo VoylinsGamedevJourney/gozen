@@ -95,21 +95,16 @@ func start_encoder() -> void:
 		await RenderingServer.frame_post_draw
 
 		var audio_thread: Thread = Thread.new()
-		audio_thread.start(encode_audio)
+		audio_thread.start(_encode_and_send_audio)
 		while audio_thread.is_alive():
 			await get_tree().process_frame
 
-		var audio_data: PackedByteArray = audio_thread.wait_to_finish()
-		if !audio_data or audio_data.is_empty():
+		var success: bool = audio_thread.wait_to_finish()
+		if !success:
 			stop_encoder()
 			update_encoder_status.emit(STATUS.ERROR_AUDIO)
 			await RenderingServer.frame_post_draw
-			return printerr("RenderManager: Something went wrong encoding audio!")
-		if !encoder.send_audio(audio_data):
-			stop_encoder()
-			update_encoder_status.emit(STATUS.ERROR_AUDIO)
-			await RenderingServer.frame_post_draw
-			return printerr("RenderManager: Something went wrong sending audio!")
+			return printerr("RenderManager: Something went wrong encoding/sending audio!")
 
 	# RGBA to YUV shader setup.
 	if !rendering_device:
@@ -257,6 +252,17 @@ func _encoding_loop() -> void:
 
 # --- Audio handling ---
 
+func _encode_and_send_audio() -> bool:
+	var audio_data: PackedByteArray = encode_audio()
+	if !audio_data or audio_data.is_empty():
+		return false
+
+	update_encoder_status.emit.call_deferred(STATUS.SENDING_AUDIO)
+	if !encoder.send_audio(audio_data):
+		return false
+	return true
+
+
 func encode_audio() -> PackedByteArray:
 	var audio: PackedByteArray = []
 	var frames: int = project_data.timeline_end + 1
@@ -266,25 +272,18 @@ func encode_audio() -> PackedByteArray:
 
 	for track: int in TrackLogic.tracks.size():
 		if !TrackLogic.tracks[track].is_muted:
-			audio = _add_track_audio(audio, track, length)
+			for clip: ClipData in TrackLogic.track_clips[track].clips:
+				if clip.type in EditorCore.AUDIO_TYPES:
+					audio = _handle_audio(clip, audio)
 	return audio
 
 
-func _add_track_audio(audio: PackedByteArray, track: int, length: int) -> PackedByteArray:
-	var track_audio: PackedByteArray = []
-	track_audio.resize(length)
-	for clip: ClipData in TrackLogic.track_clips[track].clips:
-		if clip.type in EditorCore.AUDIO_TYPES:
-			track_audio = _handle_audio(clip, track_audio)
-	return Audio.combine_data(audio, track_audio)
-
-
-func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteArray:
+func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteArray:
 	var framerate: float = project_data.framerate
 	var samples_per_frame: float = MIX_RATE / framerate
 	var audio_data: PackedByteArray = ClipLogic.get_audio_data(clip)
 	if audio_data.is_empty():
-		return track_audio
+		return master_audio
 
 	var fade_in: int = clip.effects.fade_audio.x
 	var fade_out: int = clip.effects.fade_audio.y
@@ -304,19 +303,10 @@ func _handle_audio(clip: ClipData, track_audio: PackedByteArray) -> PackedByteAr
 			"volume": audio_data = _apply_effect_volume(audio_data, effect)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
-	# Place in correct position.
+	# Place in correct position natively using combine offset.
 	var clip_start: int = clip.start
-	var start_sample: int = Utils.get_sample_count(clip_start, framerate)
-	if start_sample + audio_data.size() > track_audio.size(): # Shouldn't happen.
-		var extra: int = (start_sample + audio_data.size()) - track_audio.size()
-		audio_data.resize(audio_data.size() - extra)
-		printerr("RenderManager: It happened!")
-
-	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
-	stream.data_array = track_audio
-	stream.seek(start_sample)
-	stream.put_data(audio_data)
-	return stream.data_array
+	var start_bytes: int = Utils.get_sample_count(clip_start, framerate)
+	return Audio.combine_data(master_audio, audio_data, start_bytes)
 
 
 func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> PackedByteArray:

@@ -256,13 +256,22 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 }
 
 
-PackedByteArray Audio::combine_data(PackedByteArray audio_one, PackedByteArray audio_two) {
+PackedByteArray Audio::combine_data(PackedByteArray audio_one, PackedByteArray audio_two, int offset_bytes) {
 	int16_t* pw_one = (int16_t*)audio_one.ptrw();
 	const int16_t* p_two = (const int16_t*)audio_two.ptr();
-	size_t min_size = audio_one.size() < audio_two.size() ? audio_one.size() : audio_two.size();
+	size_t samples_one = audio_one.size() / 2;
+	size_t samples_two = audio_two.size() / 2;
+	size_t start_sample = offset_bytes / 2;
 
-	for (size_t i = 0; i < min_size / 2; i++)
-		pw_one[i] = Math::clamp(pw_one[i] + p_two[i], -32768, 32767);
+	size_t samples_to_mix = samples_two;
+	if (start_sample + samples_to_mix > samples_one) {
+		if (start_sample >= samples_one)
+			return audio_one;
+		samples_to_mix = samples_one - start_sample;
+	}
+
+	for (size_t i = 0; i < samples_to_mix; i++)
+		pw_one[start_sample + i] = Math::clamp(pw_one[start_sample + i] + p_two[i], -32768, 32767);
 
 	return audio_one;
 }
@@ -348,7 +357,8 @@ void Audio::_bind_methods() {
 								D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"),
 								&Audio::get_audio_data, DEFVAL(-1), DEFVAL(0.0), DEFVAL(-1.0));
 
-	ClassDB::bind_static_method("Audio", D_METHOD("combine_data", "audio_one", "audio_two"), &Audio::combine_data);
+	ClassDB::bind_static_method("Audio", D_METHOD("combine_data", "audio_one", "audio_two", "offset_bytes"),
+								&Audio::combine_data, DEFVAL(0));
 	ClassDB::bind_static_method("Audio", D_METHOD("change_db", "audio_data", "db"), &Audio::change_db);
 	ClassDB::bind_static_method("Audio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
 								&Audio::change_to_mono);

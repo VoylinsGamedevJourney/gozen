@@ -32,7 +32,7 @@ class Audio : public Resource {
   public:
 	static PackedByteArray get_audio_data(String file_path, int stream_index, double start_time, double duration);
 
-	static PackedByteArray combine_data(PackedByteArray audio_one, PackedByteArray audio_two);
+	static PackedByteArray combine_data(PackedByteArray audio_one, PackedByteArray audio_two, int offset_bytes = 0);
 
 	static PackedByteArray change_db(PackedByteArray audio_data, float db);
 	static PackedByteArray change_to_mono(PackedByteArray audio_data, bool left);
