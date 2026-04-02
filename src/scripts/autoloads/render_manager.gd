@@ -41,6 +41,7 @@ var yuv_pipeline: RID
 var yuv_output_tex: RID
 var yuv_sampler: RID
 var yuv_params_buffer: RID
+var yuv_input_texture: RID
 
 var proxies_used: bool
 var original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
@@ -124,6 +125,13 @@ func start_encoder() -> void:
 	texture_format.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
 	yuv_output_tex = rendering_device.texture_create(texture_format, RDTextureView.new())
 	yuv_sampler = rendering_device.sampler_create(RDSamplerState.new())
+
+	var input_format: RDTextureFormat = RDTextureFormat.new()
+	input_format.width = render_resolution.x
+	input_format.height = render_resolution.y
+	input_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
+	input_format.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
+	yuv_input_texture = rendering_device.texture_create(input_format, RDTextureView.new())
 
 	# BT709 Limited range matrix.
 	var bt709_rgb_to_yuv: PackedFloat32Array = PackedFloat32Array([
@@ -226,6 +234,9 @@ func stop_encoder() -> void:
 		if yuv_params_buffer.is_valid():
 			rendering_device.free_rid(yuv_params_buffer)
 			yuv_params_buffer = RID()
+		if yuv_input_texture.is_valid():
+			rendering_device.free_rid(yuv_input_texture)
+			yuv_input_texture = RID()
 
 
 func _encoding_loop() -> void:
@@ -424,11 +435,13 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> P
 
 func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteArray:
 	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(input_texture_rid)
+	rendering_device.texture_copy(rd_input_tex, yuv_input_texture, Vector3.ZERO, Vector3.ZERO, Vector3(res.x, res.y, 1), 0, 0, 0, 0)
+
 	var uniform_input: RDUniform = RDUniform.new()
 	uniform_input.uniform_type = RenderingDevice.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE
 	uniform_input.binding = 0
 	uniform_input.add_id(yuv_sampler)
-	uniform_input.add_id(rd_input_tex)
+	uniform_input.add_id(yuv_input_texture)
 
 	var uniform_output: RDUniform = RDUniform.new()
 	uniform_output.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE

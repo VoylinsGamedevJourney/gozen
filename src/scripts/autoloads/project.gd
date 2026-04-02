@@ -147,9 +147,9 @@ func open(new_project_path: String) -> void:
 	PopupManager.close(PopupManager.PROGRESS)
 
 	is_loaded = true
-	unsaved_changes = false
 	project_ready.emit()
 	update_timeline_end()
+	unsaved_changes = false
 	_auto_save()
 	await get_tree().process_frame
 	EditorCore.set_frame(data.playhead)

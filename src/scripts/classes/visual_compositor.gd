@@ -267,7 +267,7 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame
 		return
 
 	_update_effect_buffers(effects, frame_nr)
-
+	device.texture_copy(rd_input_tex, pong_texture, Vector3.ZERO, Vector3.ZERO, Vector3(resolution.x, resolution.y, 1), 0, 0, 0, 0)
 	if fade_alpha < 1.0:
 		var buffer_data: PackedByteArray = PackedByteArray()
 		buffer_data.resize(16)
@@ -279,7 +279,7 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame
 	device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
 
 	var copy_uniforms: Array[RDUniform] =[
-			_create_sampler_uniform(rd_input_tex, 0),
+			_create_sampler_uniform(pong_texture, 0),
 			_create_image_uniform(ping_texture, 1),
 			_create_buffer_uniform(copy_buffer, 2)]
 	var copy_set: RID = device.uniform_set_create(copy_uniforms, fade_shader, 0)
