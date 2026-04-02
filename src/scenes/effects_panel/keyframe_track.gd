@@ -27,6 +27,7 @@ var _hovered_frame: int = -1
 var _dragged_frame: int = -1
 var _is_dragging: bool = false
 var _is_scrubbing: bool = false
+var _drag_start_pos: Vector2 = Vector2.ZERO
 
 
 
@@ -57,9 +58,10 @@ func _gui_input(event: InputEvent) -> void:
 		var frame: int = _get_frame_at_x(mouse_x)
 
 		if _is_dragging:
-			frame = clampi(frame, 0, clip_duration - 1)
-			keyframe_dragged_to.emit(frame)
-			queue_redraw()
+			if get_local_mouse_position().distance_to(_drag_start_pos) > 3.0:
+				frame = clampi(frame, 0, clip_duration)
+				keyframe_dragged_to.emit(frame)
+				queue_redraw()
 		elif _is_scrubbing:
 			frame = clampi(frame, 0, clip_duration - 1)
 			keyframe_dragged_to.emit(frame)
@@ -81,6 +83,8 @@ func _gui_input(event: InputEvent) -> void:
 			if _hovered_frame != -1:
 				_is_dragging = true
 				_dragged_frame = _hovered_frame
+				_drag_start_pos = get_local_mouse_position()
+				keyframe_dragged_to.emit(_dragged_frame)
 			else:
 				_is_scrubbing = true
 				var mouse_x: float = get_local_mouse_position().x
@@ -95,10 +99,10 @@ func _gui_input(event: InputEvent) -> void:
 
 	elif not mouse_event.pressed:
 		if _is_dragging and mouse_event.button_index == MOUSE_BUTTON_LEFT:
-			var final_x: float = get_local_mouse_position().x
-			var new_frame: int = clampi(_get_frame_at_x(final_x), 0, clip_duration)
+			var final_pos: Vector2 = get_local_mouse_position()
+			var new_frame: int = clampi(_get_frame_at_x(final_pos.x), 0, clip_duration)
 
-			if _dragged_frame != -1 and new_frame != _dragged_frame:
+			if _dragged_frame != -1 and new_frame != _dragged_frame and final_pos.distance_to(_drag_start_pos) > 3.0:
 				var preserve_existing: bool = Input.is_key_pressed(KEY_ALT)
 				var is_copy: bool = Input.is_key_pressed(KEY_CTRL)
 				keyframe_moved_effect.emit(_dragged_frame, new_frame, preserve_existing, is_copy)
@@ -145,7 +149,8 @@ func _draw() -> void:
 
 		# If dragging this specific keyframe, verify position based on mouse.
 		if _is_dragging and frame_int == _dragged_frame:
-			draw_frame_val = clampi(_get_frame_at_x(get_local_mouse_position().x), 0, clip_duration)
+			if get_local_mouse_position().distance_to(_drag_start_pos) > 3.0:
+				draw_frame_val = clampi(_get_frame_at_x(get_local_mouse_position().x), 0, clip_duration)
 
 		var max_frame: float = maxf(1.0, float(clip_duration - 1))
 		var ratio: float = float(draw_frame_val) / max_frame
