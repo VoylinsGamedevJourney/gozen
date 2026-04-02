@@ -48,6 +48,9 @@ var original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
 var stop_encoding: bool = false
 
 
+var _audio_cache: Dictionary = {}
+
+
 
 func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
@@ -194,7 +197,7 @@ func start_encoder() -> void:
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(STATUS.FINISHED)
 	await RenderingServer.frame_post_draw
-	NotificationManager.notify("Render finished")
+	NotificationManager.notify("Render finished!")
 	stop_encoder()
 
 
@@ -204,6 +207,7 @@ func stop_encoder() -> void:
 	if proxies_used:
 		Settings.set_use_proxies(true)
 	cancel_encoding = false
+	_audio_cache.clear()
 	DisplayServer.window_set_vsync_mode(original_vsync_mode)
 
 	if rendering_device:
@@ -253,7 +257,10 @@ func _encoding_loop() -> void:
 # --- Audio handling ---
 
 func _encode_and_send_audio() -> bool:
+	_prepare_audio_cache()
 	var audio_data: PackedByteArray = encode_audio()
+	_audio_cache.clear() # Clear cache immediately to free up RAM before video rendering
+
 	if !audio_data or audio_data.is_empty():
 		return false
 
@@ -261,6 +268,52 @@ func _encode_and_send_audio() -> bool:
 	if !encoder.send_audio(audio_data):
 		return false
 	return true
+
+
+func _prepare_audio_cache() -> void:
+	_audio_cache.clear()
+	var file_counts: Dictionary = {}
+
+	for track: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[track].is_muted:
+			continue
+		for clip: ClipData in TrackLogic.track_clips[track].clips:
+			if clip.type in EditorCore.AUDIO_TYPES:
+				var info: Dictionary = _get_clip_audio_info(clip)
+				var path: String = info.path
+				file_counts[path] = file_counts.get(path, 0) + 1
+
+	var sorted_files: Array = file_counts.keys()
+	sorted_files.sort_custom(func(a: String, b: String) -> bool: return file_counts[a] > file_counts[b])
+
+	var cache_limit: int = 3
+	var cached_count: int = 0
+	for path: String in sorted_files:
+		if cached_count >= cache_limit:
+			break
+		elif file_counts[path] > 1: # Only cache if it's re-used across multiple clips.
+			_audio_cache[path] = Audio.get_audio_data(path, -1, 0.0, -1.0)
+			cached_count += 1
+
+
+func _get_clip_audio_info(clip: ClipData) -> Dictionary:
+	var framerate: float = project_data.framerate
+	var start_sec: float = float(clip.begin) / framerate
+	var duration_sec: float = float(clip.duration) / framerate
+	var file_path: String
+
+	if clip.effects.ato_active and clip.effects.ato_file != -1:
+		start_sec -= clip.effects.ato_offset
+		file_path = FileLogic.files[clip.effects.ato_file].path
+	else:
+		var target_file: FileData = FileLogic.files[clip.file]
+		if target_file.ato_active and target_file.ato_file != -1:
+			start_sec -= target_file.ato_offset
+			file_path = FileLogic.files[target_file.ato_file].path
+		else:
+			file_path = target_file.path
+
+	return { "path": file_path, "start": start_sec, "duration": duration_sec }
 
 
 func encode_audio() -> PackedByteArray:
@@ -281,7 +334,32 @@ func encode_audio() -> PackedByteArray:
 func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteArray:
 	var framerate: float = project_data.framerate
 	var samples_per_frame: float = MIX_RATE / framerate
-	var audio_data: PackedByteArray = ClipLogic.get_audio_data(clip)
+
+	var info: Dictionary = _get_clip_audio_info(clip)
+	var audio_data: PackedByteArray
+	var start_bytes: int
+
+	if _audio_cache.has(info.path):
+		var cached_data: PackedByteArray = _audio_cache[info.path]
+		start_bytes = floori((info.start as float) * MIX_RATE) * 4
+		var duration_bytes: int = floori((info.duration as float) * MIX_RATE) * 4
+
+		if start_bytes < 0:
+			var silence_bytes: int = abs(start_bytes)
+			audio_data.resize(silence_bytes)
+			var slice_start: int = 0
+			var slice_end: int = mini(duration_bytes - silence_bytes, cached_data.size())
+			if slice_end > 0:
+				audio_data.append_array(cached_data.slice(slice_start, slice_end))
+		else:
+			var slice_end: int = mini(start_bytes + duration_bytes, cached_data.size())
+			if start_bytes < cached_data.size():
+				audio_data = cached_data.slice(start_bytes, slice_end)
+
+		if audio_data.size() < duration_bytes:
+			audio_data.resize(duration_bytes)
+	else:
+		audio_data = Audio.get_audio_data(info.path as String, -1, info.start as float, info.duration as float)
 	if audio_data.is_empty():
 		return master_audio
 
@@ -305,7 +383,7 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteA
 
 	# Place in correct position natively using combine offset.
 	var clip_start: int = clip.start
-	var start_bytes: int = Utils.get_sample_count(clip_start, framerate)
+	start_bytes = Utils.get_sample_count(clip_start, framerate)
 	return Audio.combine_data(master_audio, audio_data, start_bytes)
 
 
