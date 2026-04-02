@@ -66,13 +66,21 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 	project_ready.emit()
 
 
-func save() -> void:
+func save(auto_saved: bool = false) -> void:
 	if DataManager.save_data(get_project_path(), data):
-		printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
-		NotificationManager.notify("Something went wrong whilst saving project! " + str(FileAccess.get_open_error()))
-	else:
-		unsaved_changes = false
-		NotificationManager.notify("Project saved successfully!")
+		if auto_saved:
+			printerr("Project: Something went wrong whilst auto-saving project! ", FileAccess.get_open_error())
+			NotificationManager.notify("Something went wrong whilst auto-saving project! " + str(FileAccess.get_open_error()))
+		else:
+			printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
+			NotificationManager.notify("Something went wrong whilst saving project! " + str(FileAccess.get_open_error()))
+		return
+	elif unsaved_changes:
+		if auto_saved:
+			NotificationManager.notify("Project saved successfully!")
+		else:
+			NotificationManager.notify("Project auto-saved successfully!")
+	unsaved_changes = false
 
 
 func save_as() -> void:
@@ -168,7 +176,7 @@ func _auto_save() -> void:
 		auto_save_timer.timeout.connect(_auto_save)
 
 	if is_loaded:
-		save()
+		save(true)
 
 	auto_save_timer.start(5 * 60) # Default time is every 5 minutes.
 
