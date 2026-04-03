@@ -363,8 +363,11 @@ func update_data(track: int) -> void:
 
 func update_views() -> void:
 	for track_id: int in loaded_clips.size():
-		update_view(track_id, clips_to_update[track_id], clips_instance_index[track_id])
-		clips_to_update[track_id] = false
+		if TrackLogic.tracks[track_id].is_visible and loaded_clips[track_id]:
+			update_view(track_id, clips_to_update[track_id], clips_instance_index[track_id])
+			clips_to_update[track_id] = false
+		elif view_textures[track_id].texture != null:
+			view_textures[track_id].texture = null
 	data_ready = false
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	frame_changed.emit()
@@ -372,8 +375,6 @@ func update_views() -> void:
 
 func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	var clip: ClipData = loaded_clips[track_id]
-	if !clip:
-		return
 	var file: FileData = FileLogic.files[clip.file]
 	var raw_data: Variant = FileLogic.file_data.get(file.id)
 	if raw_data == null:

@@ -42,11 +42,11 @@ func stop() -> void:
 
 
 func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
-	if !audio_clip:
+	if !audio_clip or TrackLogic.tracks[audio_clip.track].is_muted:
 		return stop()
-	if RenderManager.encoder != null and RenderManager.encoder.is_open():
+	elif RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return stop()
-	if !ClipLogic.clips.has(audio_clip.id):
+	elif !ClipLogic.clips.has(audio_clip.id):
 		return stop()
 
 	# Audio-take-over logic.
