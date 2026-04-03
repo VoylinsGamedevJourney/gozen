@@ -11,8 +11,8 @@ const COLOR_AUDIO: Color = Color(0.101960786, 0.101960786, 1, 0.078431375)
 @onready var scroll: ScrollContainer = effect_buttons.get_parent()
 
 
-var current_clip: ClipData = null
-var is_type: bool = true
+var current_clips: Array[ClipData] = []
+var is_type: int = 0
 
 var button_group: ButtonGroup = ButtonGroup.new()
 var shown_buttons: Array[Button] = []
@@ -42,13 +42,21 @@ func _input(event: InputEvent) -> void:
 
 
 ## Type: 0 = All, 1 = Visuals, 2 = Audio
-func load_effects(type: int, clip: ClipData) -> void:
-	current_clip = clip
+func load_effects(type: int, clips: Array[ClipData]) -> void:
+	current_clips = clips
 	is_type = type
 
-	if type <= 1: # Visuals.
+	var has_visual: bool = false
+	var has_audio: bool = false
+	for clip: ClipData in current_clips:
+		if clip.type in EditorCore.VISUAL_TYPES:
+			has_visual = true
+		if clip.type in EditorCore.AUDIO_TYPES:
+			has_audio = true
+
+	if type <= 1 and has_visual:
 		_add_effects(EffectsHandler.visual_effects, true)
-	if type != 1: # Audio.
+	if type != 1 and has_audio:
 		_add_effects(EffectsHandler.audio_effects, false)
 
 
@@ -104,7 +112,8 @@ func _on_search_box_text_changed(effect_text: String) -> void:
 		var button: Button = buttons[i].button
 		button.visible = buttons[i].score != 0
 		effect_buttons.move_child(button, i)
-		shown_buttons.append(button)
+		if button.visible:
+			shown_buttons.append(button)
 
 	if shown_buttons.size() > 0:
 		shown_buttons[0].button_pressed = true
@@ -118,10 +127,10 @@ func _on_search_box_text_submitted(_effect_text: String) -> void:
 func _on_effect_clicked(effect_id: String, is_visual: bool) -> void:
 	if is_visual:
 		EffectsHandler.add_effect(
-				current_clip, EffectsHandler.visual_effect_instances[effect_id].deep_copy(), is_visual)
+				current_clips, EffectsHandler.visual_effect_instances[effect_id].deep_copy(), is_visual)
 	else:
 		EffectsHandler.add_effect(
-				current_clip, EffectsHandler.audio_effect_instances[effect_id].deep_copy(), is_visual)
+				current_clips, EffectsHandler.audio_effect_instances[effect_id].deep_copy(), is_visual)
 	_on_close_button_pressed()
 
 

@@ -32,7 +32,7 @@ var start_time: int = 0
 var encoding_time: int = 0
 
 var buffer_size: int = 5
-var frame_queue: Array[PackedByteArray] =[]
+var frame_queue: Array[PackedByteArray] = []
 var thread: Thread
 
 var rendering_device: RenderingDevice

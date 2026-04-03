@@ -204,7 +204,7 @@ func paste_image(image: Image) -> void:
 
 func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) -> void:
 	var active: bool = audio_file.id != -1
-	var affected_clips: Array[ClipData] =[]
+	var affected_clips: Array[ClipData] = []
 	for clip: ClipData in ClipLogic.clips.values():
 		if clip.file == file.id:
 			affected_clips.append(clip)

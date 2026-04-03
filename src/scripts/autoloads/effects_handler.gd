@@ -76,22 +76,30 @@ func _load_audio_effects() -> void:
 
 #---- Adding effects ----
 
-func add_effect(clip: ClipData, effect: Effect, is_visual: bool) -> void:
-	var effect_id: String = effect.id
-	var index: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
-
-	if effect_id in param_exceptions: # Handle exceptions
-		for exception: String in param_exceptions[effect_id]:
-			var value: Variant = param_exceptions[effect_id][exception]
-			if value is Callable:
-				effect.change_default_param(exception, (value as Callable).call())
-			else:
-				effect.change_default_param(exception, value)
-	effect.set_default_keyframe()
-
+func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void:
 	InputManager.undo_redo.create_action("Add effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_add_effect.bind(clip, index, effect, is_visual))
-	InputManager.undo_redo.add_undo_method(_remove_effect.bind(clip, index, is_visual))
+	for clip: ClipData in clips:
+		if is_visual and clip.type not in EditorCore.VISUAL_TYPES:
+			continue
+		if !is_visual and clip.type not in EditorCore.AUDIO_TYPES:
+			continue
+
+		var effect_copy: Effect = effect.deep_copy()
+		effect_copy.keyframes = effect.keyframes.duplicate(true)
+		var effect_id: String = effect_copy.id
+		var index: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
+
+		if effect_id in param_exceptions: # Handle exceptions.
+			for exception: String in param_exceptions[effect_id]:
+				var value: Variant = param_exceptions[effect_id][exception]
+				if value is Callable:
+					effect_copy.change_default_param(exception, (value as Callable).call())
+				else:
+					effect_copy.change_default_param(exception, value)
+		effect_copy.set_default_keyframe()
+
+		InputManager.undo_redo.add_do_method(_add_effect.bind(clip, index, effect_copy, is_visual))
+		InputManager.undo_redo.add_undo_method(_remove_effect.bind(clip, index, is_visual))
 	InputManager.undo_redo.commit_action()
 
 

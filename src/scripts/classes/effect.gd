@@ -66,7 +66,7 @@ func deep_copy() -> Effect:
 	copy.keyframes = {}
 	copy._cache_dirty = true
 
-	var new_params: Array[EffectParam] =[]
+	var new_params: Array[EffectParam] = []
 	for param: EffectParam in self.params:
 		new_params.append(param.duplicate(true))
 	copy.params = new_params

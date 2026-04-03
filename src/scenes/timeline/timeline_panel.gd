@@ -83,7 +83,6 @@ const COLOR_CUT_FADE: Color = Color(1,0,0,0.3)
 
 
 var zoom: float = 1.0
-var selected_clips: Array[ClipData] = []
 
 var mode: MODE = MODE.SELECT
 var state: STATE = STATE.CURSOR_MODE_SELECT: set = set_state
@@ -166,7 +165,7 @@ func _draw_clips(control: Control) -> void:
 	for clip: ClipData in visible_clips:
 		if clip in handled_clips:
 			continue
-		var box_type: int = 1 if clip in selected_clips else 0
+		var box_type: int = 1 if clip in ClipLogic.selected_clips else 0
 		var box_pos: Vector2 = Vector2(clip.start * zoom, track_total_size * clip.track)
 		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, track_height))
 		var text_pos_x: float = box_pos.x
@@ -437,14 +436,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_cancel"):
 		if !PopupManager._open_popups.is_empty() or state in[STATE.MOVING, STATE.DROPPING]:
 			return
-		selected_clips =[]
+		ClipLogic.selected_clips.clear()
 		_on_ui_cancel()
 
 	if scroll.get_global_rect().has_point(get_global_mouse_position()):
 		if event.is_action_pressed("ripple_delete_clips"):
-			ClipLogic.ripple_delete(selected_clips)
+			ClipLogic.ripple_delete(ClipLogic.selected_clips)
 		elif event.is_action_pressed("delete_clips"):
-			ClipLogic.delete(selected_clips)
+			ClipLogic.delete(ClipLogic.selected_clips)
 		elif event.is_action_pressed("duplicate_selected_clips"):
 			duplicate_selected_clips()
 		elif event.is_action_pressed("cut_clips_at_mouse", false, true):
@@ -525,9 +524,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		else:
 			if !event.shift_pressed:
-				selected_clips = [pressed_clip]
-			elif !selected_clips.has(pressed_clip):
-				selected_clips.append(pressed_clip)
+				ClipLogic.selected_clips = [pressed_clip]
+			elif !ClipLogic.selected_clips.has(pressed_clip):
+				ClipLogic.selected_clips.append(pressed_clip)
 			draw_clips.queue_redraw()
 			ClipLogic.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
@@ -700,12 +699,12 @@ func _project_ready() -> void:
 func _get_drag_data(_p: Vector2) -> Variant:
 	if state != STATE.CURSOR_MODE_SELECT or !pressed_clip:
 		return null
-	if pressed_clip not in selected_clips:
-		selected_clips = [pressed_clip]
+	if pressed_clip not in ClipLogic.selected_clips:
+		ClipLogic.selected_clips = [pressed_clip]
 		draw_clips.queue_redraw()
 
 	var data: Draggable = Draggable.new()
-	var clips: Array[ClipData] = selected_clips.duplicate()
+	var clips: Array[ClipData] = ClipLogic.selected_clips.duplicate()
 	var anchor_index: int = clips.find(pressed_clip)
 	if anchor_index != -1:
 		clips.remove_at(anchor_index)
@@ -809,7 +808,7 @@ func _can_move_clips() -> bool:
 	var track_difference: int = mouse_track - anchor_clip.track
 	var frame_difference: int = target_start - anchor_clip.start
 
-	var ignore_ids: Array[int] =[]
+	var ignore_ids: Array[int] = []
 	ignore_ids.assign(draggable.ids)
 
 	var candidates: Array[int] = [frame_difference]
@@ -869,7 +868,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 		if clip:
 			var new_effect: Effect = drag_data.effect.deep_copy()
 			new_effect.keyframes = drag_data.effect.keyframes.duplicate(true)
-			EffectsHandler.add_effect(clip, new_effect, drag_data.is_visual)
+			EffectsHandler.add_effect([clip], new_effect, drag_data.is_visual)
 		return
 	elif data is not Draggable or state not in[STATE.DROPPING, STATE.MOVING]:
 		return
@@ -928,7 +927,7 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 	var frame_end: int = floori(box_select_end.x / zoom)
 	var temp: int
 	if not is_ctrl_pressed:
-		selected_clips.clear()
+		ClipLogic.selected_clips.clear()
 
 	if track_start > track_end:
 		temp = track_start
@@ -945,18 +944,18 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 				break
 
 			if clip.start > frame_start and clip.start < frame_end:
-				if clip not in selected_clips:
-					selected_clips.append(clip)
+				if clip not in ClipLogic.selected_clips:
+					ClipLogic.selected_clips.append(clip)
 				continue
 
 			# We should also check if a clip ends inside the selection box.
 			if clip.end > frame_start:
-				if clip not in selected_clips:
-					selected_clips.append(clip)
-	if selected_clips.is_empty():
+				if clip not in ClipLogic.selected_clips:
+					ClipLogic.selected_clips.append(clip)
+	if ClipLogic.selected_clips.is_empty():
 		ClipLogic.selected.emit(null)
 	else:
-		ClipLogic.selected.emit(selected_clips[-1])
+		ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 
 	draw_box_selection.queue_redraw()
 	draw_clips.queue_redraw()
@@ -1035,8 +1034,8 @@ func _handle_fade_motion() -> void:
 func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	if !right_click_clip:
 		return
-	if right_click_clip not in selected_clips:
-		selected_clips = [right_click_clip]
+	if right_click_clip not in ClipLogic.selected_clips:
+		ClipLogic.selected_clips = [right_click_clip]
 		ClipLogic.selected.emit(right_click_clip)
 
 	# TODO: Set shortcuts.
@@ -1069,7 +1068,7 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 
 
 func _on_popup_action_clip_delete() -> void:
-	ClipLogic.delete(selected_clips)
+	ClipLogic.delete(ClipLogic.selected_clips)
 
 
 func _on_popup_action_clip_cut() -> void:
@@ -1117,9 +1116,9 @@ func _update_track_height(new_height: float) -> void:
 
 
 func _on_clip_deleted(clip_id: int) -> void:
-	for i: int in selected_clips.size():
-		if selected_clips[i].id == clip_id:
-			selected_clips.remove_at(i)
+	for i: int in ClipLogic.selected_clips.size():
+		if ClipLogic.selected_clips[i].id == clip_id:
+			ClipLogic.selected_clips.remove_at(i)
 			break
 	if hovered_clip and hovered_clip.id == clip_id:
 		hovered_clip = null
@@ -1191,15 +1190,15 @@ func cut_clips_at(frame_pos: int) -> void:
 	var new_clips: Array[ClipData]
 
 	# Checking if we only want selected clips to be cut.
-	for clip: ClipData in selected_clips:
+	for clip: ClipData in ClipLogic.selected_clips:
 		if clip.start < frame_pos and clip.end > frame_pos:
 			requests.append(ClipRequest.cut_request(clip, frame_pos - clip.start))
 
 	if !requests.is_empty():
 		new_clips = ClipLogic.cut(requests)
 		if new_clips.size() > 0:
-			selected_clips = new_clips
-			ClipLogic.selected.emit(selected_clips[-1])
+			ClipLogic.selected_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 		return draw_clips.queue_redraw()
 
 	# No selected clips present so cutting all possible clips
@@ -1212,18 +1211,18 @@ func cut_clips_at(frame_pos: int) -> void:
 
 	new_clips = ClipLogic.cut(requests)
 	if new_clips.size() > 0:
-		selected_clips = new_clips
-		ClipLogic.selected.emit(selected_clips[-1])
+		ClipLogic.selected_clips = new_clips
+		ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 	draw_clips.queue_redraw()
 
 
 func duplicate_selected_clips() -> void:
-	if selected_clips.is_empty():
+	if ClipLogic.selected_clips.is_empty():
 		return
 
 	var requests: Array[ClipRequest] = []
 	var failed_duplicates: int = 0
-	for clip: ClipData in selected_clips:
+	for clip: ClipData in ClipLogic.selected_clips:
 		if !clip:
 			continue
 		var target_frame: int = clip.end

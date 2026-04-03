@@ -70,6 +70,7 @@ func close(popup: int) -> void:
 		_open_popups[popup].queue_free()
 		if !_open_popups.erase(popup):
 			printerr("PopupManager: Could not erase popup '%s' from open_popups!" % popup)
+	get_viewport().set_input_as_handled()
 	_check_background()
 
 

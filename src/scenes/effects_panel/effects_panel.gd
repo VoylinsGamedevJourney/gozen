@@ -19,6 +19,9 @@ const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 @export var section_audio: FoldableContainer
 
 
+@onready var scroll: ScrollContainer = $Margin/Scroll
+
+
 var current_clip: ClipData = null
 var current_file: FileData = null
 
@@ -53,7 +56,7 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_cancel", false, true):
 		_on_clip_pressed(null)
 	elif event.is_action_pressed("add_effect", false, true):
-		_open_add_effects_popup(0)
+		_open_add_effects_popup(0, false)
 
 
 func _notification(what: int) -> void:
@@ -174,6 +177,10 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 		else:
 			section_audio.get_child(0).add_child(added_effect)
 			section_audio.get_child(0).move_child(added_effect, index)
+
+		await get_tree().process_frame
+		if is_instance_valid(added_effect):
+			scroll.ensure_control_visible(added_effect)
 
 
 func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
@@ -604,8 +611,8 @@ func _update_ui_values() -> void:
 
 		var track_hbox: HBoxContainer = content_vbox.get_child(-1)
 		if track_hbox:
-			var scroll: ScrollContainer = track_hbox.get_child(1)
-			var track: KeyframeTrack = scroll.get_child(0)
+			var track_scroll: ScrollContainer = track_hbox.get_child(1)
+			var track: KeyframeTrack = track_scroll.get_child(0)
 			track.current_relative_frame = frame_nr
 			track.effect.keyframes = text_effects.keyframes
 			track.clip_duration = current_clip.duration
@@ -657,8 +664,8 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 				keyframes_found = true
 
 	if keyframes_found:
-		var scroll: ScrollContainer = content_vbox.get_child(-1)
-		var track: KeyframeTrack = scroll.get_child(0)
+		var track_scroll: ScrollContainer = content_vbox.get_child(-1)
+		var track: KeyframeTrack = track_scroll.get_child(0)
 		track.current_relative_frame = frame_nr
 		track.clip_duration = current_clip.duration
 		track.queue_redraw()
@@ -732,15 +739,16 @@ func _get_add_effects_button(type: int) -> TextureButton:
 	tex_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 	tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	tex_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	tex_button.pressed.connect(_open_add_effects_popup.bind(type))
+	tex_button.pressed.connect(_open_add_effects_popup.bind(type, true))
 	return tex_button
 
 
-## Type: 0 = All, 1 = Visuals, 2 = Audio
-func _open_add_effects_popup(type: int) -> void:
+## Type: 0 = All, 1 = Visuals, 2 = Audio.
+## From_add_button is to avoid adding effects to all clips when using Ctrl+A.
+func _open_add_effects_popup(type: int, from_add_button: bool) -> void:
 	if current_clip:
 		var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
-		popup.call("load_effects", type, current_clip)
+		popup.call("load_effects", type, [current_clip] if from_add_button else ClipLogic.selected_clips)
 
 
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:

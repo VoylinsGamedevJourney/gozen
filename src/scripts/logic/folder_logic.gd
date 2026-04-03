@@ -83,7 +83,7 @@ func rename(old_name: String, new_name: String) -> void:
 		return
 
 	var folders_to_rename: Array[String] = []
-	var new_names: Array[String] =[]
+	var new_names: Array[String] = []
 	for path: String in folders:
 		if path.begins_with(old_name):
 			folders_to_rename.append(path)

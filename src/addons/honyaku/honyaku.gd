@@ -21,7 +21,7 @@ const COLOR_PROGRESS_UNSAVED: Color = Color.RED
 
 var translation_data: Dictionary = {} ## { "KEY": { "references": PackedStringArray, "translations": { "en": { "str": translation, "fuzzy": bool } } } }
 var list_languages: PackedStringArray = []
-var hidden_languages: PackedStringArray =[]
+var hidden_languages: PackedStringArray = []
 
 var context_menu: PopupMenu
 var context_item: TreeItem
@@ -53,7 +53,7 @@ func _ready() -> void:
 
 
 func _get_all_files(path: String, ignored: Array) -> Array:
-	var files: PackedStringArray =[]
+	var files: PackedStringArray = []
 	for ignore: String in ignored:
 		if path.begins_with(ignore):
 			return files
@@ -102,7 +102,7 @@ func _parse_po_file(file_path: String, language: String) -> void:
 	var file: FileAccess = FileAccess.open(file_path, FileAccess.READ)
 	var current_msgid: String = ""
 	var current_msgstr: String = ""
-	var current_references: PackedStringArray =[]
+	var current_references: PackedStringArray = []
 	var is_fuzzy: bool = false
 	var parsing_msgid: bool = false
 	var parsing_msgstr: bool = false
@@ -252,7 +252,7 @@ func _refresh_all() -> void:
 
 func _refresh_grid() -> void:
 	translation_tree.clear()
-	var visible_languages: PackedStringArray =[]
+	var visible_languages: PackedStringArray = []
 	for language in list_languages:
 		if not language in hidden_languages:
 			visible_languages.append(language)
@@ -337,7 +337,7 @@ func _on_item_edited() -> void:
 	var item: TreeItem = translation_tree.get_edited()
 	var column: int = translation_tree.get_edited_column()
 	var key: String = item.get_metadata(0)
-	var visible_languages: PackedStringArray =[]
+	var visible_languages: PackedStringArray = []
 	for language: String in list_languages:
 		if not language in hidden_languages:
 			visible_languages.append(language)

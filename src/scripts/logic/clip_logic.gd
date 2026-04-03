@@ -6,7 +6,8 @@ signal selected(clip: ClipData)
 signal updated ## Signal for when all clips got updated.
 
 
-var clips: Dictionary[int, ClipData]
+var clips: Dictionary[int, ClipData] = {}
+var selected_clips: Array[ClipData] = []
 
 
 
@@ -188,7 +189,7 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 
 ## This function is intended to be used when cutting clips to copy over the effects.
 func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[EffectVisual]:
-	var new_effects: Array[EffectVisual] =[]
+	var new_effects: Array[EffectVisual] = []
 	for effect: EffectVisual in effects:
 		var new_effect: EffectVisual = effect.deep_copy()
 		new_effect.keyframes = {}
@@ -212,7 +213,7 @@ func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[E
 
 ## This function is intended to be used when cutting clips to copy over the effects.
 func _copy_audio_effects(effects: Array[EffectAudio], cut_pos: int) -> Array[EffectAudio]:
-	var new_effects: Array[EffectAudio] =[]
+	var new_effects: Array[EffectAudio] = []
 	for effect: EffectAudio in effects:
 		var new_effect: EffectAudio = effect.deep_copy()
 		new_effect.effect = effect.effect
