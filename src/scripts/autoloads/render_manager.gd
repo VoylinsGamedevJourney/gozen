@@ -45,6 +45,7 @@ var yuv_input_texture: RID
 
 var proxies_used: bool
 var original_vsync_mode: DisplayServer.VSyncMode = DisplayServer.VSYNC_ENABLED
+var original_video_frame_cache_size: int = 30
 
 var stop_encoding: bool = false
 
@@ -72,6 +73,9 @@ func start_encoder() -> void:
 	# VSync stuff.
 	original_vsync_mode = DisplayServer.window_get_vsync_mode()
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+
+	original_video_frame_cache_size = Settings.get_video_cache_size()
+	Settings.set_video_cache_size(0)
 
 	# Making certain proxies aren't being used for this
 	proxies_used = Settings.get_use_proxies()
@@ -217,6 +221,7 @@ func stop_encoder() -> void:
 	cancel_encoding = false
 	_audio_cache.clear()
 	DisplayServer.window_set_vsync_mode(original_vsync_mode)
+	Settings.set_video_cache_size(original_video_frame_cache_size)
 
 	if rendering_device:
 		if yuv_pipeline.is_valid():
