@@ -27,6 +27,11 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export_group("Threads")
 @export var threads_spin_box: SpinBox
 
+@export_group("Render Region")
+@export var render_region_check_button: CheckButton
+@export var region_start_spinbox: SpinBox
+@export var region_end_spinbox: SpinBox
+
 
 var button_group: ButtonGroup = ButtonGroup.new()
 var status_indicator_id: int
@@ -43,6 +48,7 @@ var _is_loading_profile: bool = false
 
 func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
+	Project.render_region_updated.connect(_on_render_region_updated)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
 	button_save_render_profile.visible = false
 	_setup_codec_option_buttons()
@@ -78,6 +84,32 @@ func _ready() -> void:
 
 func _on_project_ready() -> void:
 	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
+	_on_render_region_updated()
+
+
+func _on_render_region_updated() -> void:
+	render_region_check_button.set_pressed_no_signal(Project.data.use_render_region)
+	region_start_spinbox.set_value_no_signal(Project.data.render_region.x)
+	region_end_spinbox.set_value_no_signal(Project.data.render_region.y)
+
+
+func _on_render_region_toggled(toggled_on: bool) -> void:
+	Project.set_render_toggle(toggled_on)
+	_on_render_settings_changed()
+
+
+func _on_region_start_changed(value: float) -> void:
+	var region: Vector2i = Project.data.render_region
+	region.x = int(value)
+	Project.set_render_region(region)
+	_on_render_settings_changed()
+
+
+func _on_region_end_changed(value: float) -> void:
+	var region: Vector2i = Project.data.render_region
+	region.y = int(value)
+	Project.set_render_region(region)
+	_on_render_settings_changed()
 
 
 func _get_current_extension() -> String:
@@ -308,25 +340,32 @@ func _on_start_render_button_pressed() -> void:
 	if dir.get_space_left() < 500 * 1024 * 1024:
 		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
+	var start_frame: int = 0
+	var end_frame: int = Project.data.timeline_end
+	if render_region_check_button.button_pressed:
+		start_frame = int(region_start_spinbox.value)
+		end_frame = int(region_end_spinbox.value)
+		if start_frame > end_frame:
+			return _show_error("Render region start frame cannot be after the end frame.")
+
 	if FileAccess.file_exists(export_path):
 		var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
 				tr("Overwrite file?"),
 				tr("A file already exists at the chosen export path. Do you want to overwrite it?"))
 		dialog.confirmed.connect(func() -> void:
-			await _start_render_process(export_path, video_codec_id, audio_codec_id)
-			dialog.queue_free()
-		)
+				await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
+				dialog.queue_free())
 		dialog.canceled.connect(dialog.queue_free)
 		dialog.popup_centered()
 	else:
-		await _start_render_process(export_path, video_codec_id, audio_codec_id)
+		await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
 
 
-func _start_render_process(export_path: String, video_codec_id: int, audio_codec_id: int) -> void:
+func _start_render_process(export_path: String, video_codec_id: int, audio_codec_id: int, start_frame: int = 0, end_frame: int = -1) -> void:
+	if end_frame == -1:
+		end_frame = Project.data.timeline_end
 	var draft: bool = button_render_draft.button_pressed
 	var render_resolution: Vector2i = Project.data.resolution
-	var end: int = Project.data.timeline_end
-
 	if draft:
 		var target_height: int = 480
 		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
@@ -352,11 +391,11 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_id)
 	Print.info("Cores/threads", threads_spin_box.value)
-	Print.info("Frames to process", end + 1)
+	Print.info("Frames to process", end_frame - start_frame + 1)
 	print("--------------------")
 
 	# Resetting progress values.
-	progress_frame_increase = 90.0 / maxi(1, end)
+	progress_frame_increase = 90.0 / maxi(1, end_frame - start_frame)
 	current_progress = 0.0
 
 	# Changing icon to indicate that GoZen is rendering.
@@ -400,7 +439,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
 	RenderManager.encoder.set_audio_codec_id(audio_codec_id)
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
-	await RenderManager.start_encoder()
+	await RenderManager.start_encoder(start_frame, end_frame)
 
 
 func update_encoder_status(status: RenderManager.STATUS) -> void:
@@ -444,6 +483,8 @@ func _on_render_settings_changed() -> void:
 	if !_is_loading_profile:
 		button_save_render_profile.visible = true
 		option_button_render_profiles.selected = -1
+		region_start_spinbox.visible = render_region_check_button.button_pressed
+		region_end_spinbox.visible = render_region_check_button.button_pressed
 
 
 func _on_save_custom_profile_button_pressed() -> void:

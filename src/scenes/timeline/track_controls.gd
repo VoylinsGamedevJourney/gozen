@@ -55,9 +55,10 @@ func _rebuild() -> void:
 		button_visibility.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_visibility.tooltip_text = tr("Toggle track visibility")
 		button_visibility.toggled.connect(func(toggled: bool) -> void:
-			track_data.is_visible = !toggled
-			EditorCore.set_frame_nr(EditorCore.frame_nr)
-			Project.unsaved_changes = true)
+				track_data.is_visible = !toggled
+				EditorCore.set_frame_nr(EditorCore.frame_nr)
+				Project.unsaved_changes = true
+				ClipLogic.updated.emit())
 
 		var button_mute: Button = Button.new()
 		button_mute.toggle_mode = true
@@ -72,9 +73,10 @@ func _rebuild() -> void:
 		button_mute.add_theme_color_override("font_hover_color", Color(0.8, 0.8, 0.8))
 		button_mute.add_theme_color_override("font_pressed_color", Color(1, 0.3, 0.3))
 		button_mute.toggled.connect(func(toggled: bool) -> void:
-			track_data.is_muted = toggled
-			EditorCore.set_frame_nr(EditorCore.frame_nr)
-			Project.unsaved_changes = true)
+				track_data.is_muted = toggled
+				EditorCore.set_frame_nr(EditorCore.frame_nr)
+				Project.unsaved_changes = true
+				ClipLogic.updated.emit())
 
 		vbox.add_child(button_visibility)
 		vbox.add_child(button_mute)

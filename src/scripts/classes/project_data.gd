@@ -9,6 +9,9 @@ var background_color: Color = Color.BLACK
 var timeline_end: int = 0
 var playhead: int = 0 ## Playhead position.
 
+var render_region: Vector2i = Vector2i(0, 0)
+var use_render_region: bool = false
+
 var files: Dictionary[int, FileData] = {} ## { file_id: file_data }
 var clips: Dictionary[int, ClipData] = {} ## { clip_id: clip_data }
 var tracks: Array[TrackData] = []

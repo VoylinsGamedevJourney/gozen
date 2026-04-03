@@ -35,6 +35,7 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
+	Project.render_region_updated.connect(queue_redraw)
 
 	MarkerLogic.added.connect(update_stamps.unbind(1))
 	MarkerLogic.updated.connect(update_stamps.unbind(1))
@@ -177,6 +178,14 @@ func _draw() -> void:
 		draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), marker_color, MARKER_LINE_WIDTH)
 		draw_style_box(marker_style_box, bubble_rect)
 		draw_string(default_font, bubble_text_pos, marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER, bubble_text_color)
+
+	# - Draw render region
+	if Project.data.use_render_region:
+		var region_start: float = Project.data.render_region.x * current_zoom
+		var region_end: float = Project.data.render_region.y * current_zoom
+		var alpha: float = 0.7 if Project.data.use_render_region else 0.2
+		if region_end >= region_start:
+			draw_rect(Rect2(region_start, 0, region_end - region_start, 4), Color(0.65, 0.1, 0.95, alpha))
 
 
 func _update_tooltip() -> void:

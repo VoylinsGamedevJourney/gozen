@@ -64,7 +64,9 @@ func _on_project_ready() -> void:
 
 # --- Render logic ---
 
-func start_encoder() -> void:
+func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
+	if end_frame == -1:
+		end_frame = project_data.timeline_end
 	if encoder != null and encoder.is_open():
 		return printerr("RenderManager: Can't encode whilst another encoder is still busy!")
 	if viewport == null:
@@ -103,7 +105,7 @@ func start_encoder() -> void:
 		await RenderingServer.frame_post_draw
 
 		var audio_thread: Thread = Thread.new()
-		audio_thread.start(_encode_and_send_audio)
+		audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame))
 		while audio_thread.is_alive():
 			await get_tree().process_frame
 
@@ -161,12 +163,12 @@ func start_encoder() -> void:
 
 	# Because of labels and other draw() stuff which takes a frame to show, we
 	# need to prepare the data in one frame and show it in the next frame.
-	EditorCore.frame_nr = 0 # We set the first frame data ready.
+	EditorCore.frame_nr = start_frame # We set the first frame data ready.
 	if EditorCore.data_ready:
 		await EditorCore.frame_changed # View should be ready.
-	EditorCore.frame_nr = 1 # We prepare the second frame data directly.
+	EditorCore.frame_nr = start_frame + 1 # We prepare the second frame data directly.
 
-	for i: int in project_data.timeline_end + 1:
+	for i: int in range(start_frame, end_frame + 1):
 		if cancel_encoding:
 			break
 
@@ -187,10 +189,10 @@ func start_encoder() -> void:
 			else:
 				await get_tree().process_frame
 
-		if i + 1 <= project_data.timeline_end:
+		if i + 1 <= end_frame:
 			if EditorCore.data_ready:
 				await EditorCore.frame_changed
-			if i + 2 <= project_data.timeline_end:
+			if i + 2 <= end_frame:
 				EditorCore.frame_nr = i + 2
 
 	# Flushing the system.
@@ -272,10 +274,10 @@ func _encoding_loop() -> void:
 
 # --- Audio handling ---
 
-func _encode_and_send_audio() -> bool:
+func _encode_and_send_audio(start_frame: int, end_frame: int) -> bool:
 	_prepare_audio_cache()
-	var audio_data: PackedByteArray = encode_audio()
-	_audio_cache.clear() # Clear cache immediately to free up RAM before video rendering
+	var audio_data: PackedByteArray = encode_audio(start_frame, end_frame)
+	_audio_cache.clear() # Clear cache immediately to free up RAM before video rendering.
 
 	if !audio_data or audio_data.is_empty():
 		return false
@@ -332,19 +334,23 @@ func _get_clip_audio_info(clip: ClipData) -> Dictionary:
 	return { "path": file_path, "start": start_sec, "duration": duration_sec }
 
 
-func encode_audio() -> PackedByteArray:
+func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
+	if end_frame == -1: end_frame = project_data.timeline_end
 	var audio: PackedByteArray = []
-	var frames: int = project_data.timeline_end + 1
 	var framerate: float = project_data.framerate
-	var length: int = Utils.get_sample_count(frames, framerate)
+	var length: int = Utils.get_sample_count(end_frame + 1, framerate)
 	audio.resize(length)
 
 	for track: int in TrackLogic.tracks.size():
 		if !TrackLogic.tracks[track].is_muted:
 			for clip: ClipData in TrackLogic.track_clips[track].clips:
+				if clip.start > end_frame or clip.end < start_frame:
+					continue
 				if clip.type in EditorCore.AUDIO_TYPES:
 					audio = _handle_audio(clip, audio)
-	return audio
+
+	var start_bytes: int = Utils.get_sample_count(start_frame, framerate)
+	return audio.slice(start_bytes)
 
 
 func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteArray:

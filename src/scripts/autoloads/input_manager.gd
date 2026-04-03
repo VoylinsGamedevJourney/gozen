@@ -80,6 +80,16 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("prev_frame", false, true):
 		EditorCore.frame_nr -= 1
 		return true
+	elif event.is_action_pressed("render_region_in", false, true):
+		var region: Vector2i = Project.data.render_region
+		region.x = EditorCore.frame_nr
+		Project.set_render_region(region)
+		return true
+	elif event.is_action_pressed("render_region_out", false, true):
+		var region: Vector2i = Project.data.render_region
+		region.y = EditorCore.frame_nr
+		Project.set_render_region(region)
+		return true
 	return false
 
 

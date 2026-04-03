@@ -2,6 +2,7 @@ extends Node
 
 signal project_ready
 signal timeline_end_update(new_end: int)
+signal render_region_updated
 
 
 const EXTENSION: String = ".gozen"
@@ -13,6 +14,8 @@ var is_loaded: bool = false
 
 var unsaved_changes: bool = false : set = _unsaved_changes
 var auto_save_timer: Timer
+
+var _prev_use_render_region: bool = false
 
 
 
@@ -75,11 +78,11 @@ func save(auto_saved: bool = false) -> void:
 			printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
 			NotificationManager.notify("Something went wrong whilst saving project! " + str(FileAccess.get_open_error()))
 		return
-	elif unsaved_changes:
-		if auto_saved:
-			NotificationManager.notify("Project saved successfully!")
-		else:
+	elif unsaved_changes and auto_saved:
 			NotificationManager.notify("Project auto-saved successfully!")
+			unsaved_changes = false
+	elif !auto_saved:
+		NotificationManager.notify("Project saved successfully!")
 	unsaved_changes = false
 
 
@@ -100,6 +103,9 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update_title(tr("Loading project"))
 	loading_overlay.update(0, tr("Initializing ..."))
 	loading_overlay.update_bar(1)
+
+	data = ProjectData.new()
+	_prev_use_render_region = false
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
@@ -153,6 +159,7 @@ func open(new_project_path: String) -> void:
 	_auto_save()
 	await get_tree().process_frame
 	EditorCore.set_frame(data.playhead)
+	_prev_use_render_region = data.use_render_region
 
 
 func open_project() -> void:
@@ -292,3 +299,22 @@ func set_background_color(color: Color) -> void:
 	data.background_color = color
 	EditorCore.set_background_color(color)
 	unsaved_changes = true
+
+
+func set_render_toggle(value: bool) -> void:
+	data.use_render_region = value
+	_prev_use_render_region = value
+	unsaved_changes = true
+	render_region_updated.emit()
+
+
+func set_render_region(region: Vector2i) -> void:
+	if region.x >= region.y and _prev_use_render_region: # Invalid region.
+		_prev_use_render_region = true
+		data.use_render_region = false
+	elif region.x < region.y and _prev_use_render_region:
+		_prev_use_render_region = false
+		data.use_render_region = true
+	data.render_region = region
+	unsaved_changes = true
+	render_region_updated.emit()

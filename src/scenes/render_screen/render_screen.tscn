@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="3_s6tus"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="4_kywnc"]
 
-[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box")]
+[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 auto_translate_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,6 +29,9 @@ video_speed_label = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollConta
 video_speed_hslider = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider")
 audio_codec_option_button = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
 threads_spin_box = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
+render_region_check_button = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton")
+region_start_spinbox = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox")
+region_end_spinbox = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox")
 metadata/_tab_index = 1
 
 [node name="RenderOptionsPanel" type="PanelContainer" parent="." unique_id=320643140]
@@ -227,6 +230,25 @@ tooltip_text = "The amount of threads you want to use for exporting your video."
 [node name="Line3" type="HSeparator" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=659322685]
 layout_mode = 2
 
+[node name="RenderRegionHBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=307245334]
+layout_mode = 2
+
+[node name="RenderRegionCheckButton" type="CheckButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1904520474]
+layout_mode = 2
+text = "Render region"
+
+[node name="RegionStartSpinBox" type="SpinBox" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1779930809]
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+prefix = "Start:"
+
+[node name="RegionEndSpinBox" type="SpinBox" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1103178594]
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+prefix = "End:"
+
 [node name="HBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=167796106]
 layout_mode = 2
 
@@ -303,6 +325,9 @@ scroll_fit_content_width = true
 [connection signal="toggled" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
 [connection signal="item_selected" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
 [connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="toggled" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton" to="." method="_on_render_region_toggled"]
+[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox" to="." method="_on_render_region_toggled"]
+[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox" to="." method="_on_render_region_toggled"]
 [connection signal="pressed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
 [connection signal="item_selected" from="MarkersPanel/Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="MarkersPanel" method="_on_markers_button_item_selected"]
 [connection signal="pressed" from="MarkersPanel/Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="MarkersPanel" method="_on_copy_markers_button_pressed"]
