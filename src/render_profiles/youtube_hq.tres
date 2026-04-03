@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_burnd")
-profile_name = "YouTube High Quality"
+profile_name = "YouTube HQ"
 icon = ExtResource("1_scxfi")
 video_codec = 167
 h264_preset = 2

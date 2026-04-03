@@ -37,6 +37,8 @@ var current_progress: float = 0.0
 var last_displayed_progress: int = -1
 var custom_profile_id_start: int = 0
 
+var _is_loading_profile: bool = false
+
 
 
 func _ready() -> void:
@@ -144,6 +146,7 @@ func load_profile(profile: RenderProfile) -> void:
 	if !profile:
 		printerr("RenderScreen: Render profile is null!")
 		return
+	_is_loading_profile = true
 
 	# Set all the render settings correct.
 	for index: int in video_codec_option_button.item_count:
@@ -168,6 +171,7 @@ func load_profile(profile: RenderProfile) -> void:
 			audio_codec_option_button.selected = index
 			break
 	button_save_render_profile.visible = false
+	_is_loading_profile = false
 
 
 func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
@@ -437,8 +441,9 @@ func update_encoder_status(status: RenderManager.STATUS) -> void:
 
 
 func _on_render_settings_changed() -> void:
-	button_save_render_profile.visible = true
-	option_button_render_profiles.selected = -1
+	if !_is_loading_profile:
+		button_save_render_profile.visible = true
+		option_button_render_profiles.selected = -1
 
 
 func _on_save_custom_profile_button_pressed() -> void:
