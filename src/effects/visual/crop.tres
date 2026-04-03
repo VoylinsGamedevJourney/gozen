@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://crop_effect_visual_uid"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="Resource_crop_left"]
+script = ExtResource("1_param")
+id = "left"
+nickname = "Left"
+default_value = 0.0
+min_value = 0.0
+max_value = 100.0
+step = 0.1
+keyframeable = true
+is_linkable = false
+is_linked = false
+
+[sub_resource type="Resource" id="Resource_crop_right"]
+script = ExtResource("1_param")
+id = "right"
+nickname = "Right"
+default_value = 0.0
+min_value = 0.0
+max_value = 100.0
+step = 0.1
+keyframeable = true
+is_linkable = false
+is_linked = false
+
+[sub_resource type="Resource" id="Resource_crop_top"]
+script = ExtResource("1_param")
+id = "top"
+nickname = "Top"
+default_value = 0.0
+min_value = 0.0
+max_value = 100.0
+step = 0.1
+keyframeable = true
+is_linkable = false
+is_linked = false
+
+[sub_resource type="Resource" id="Resource_crop_bottom"]
+script = ExtResource("1_param")
+id = "bottom"
+nickname = "Bottom"
+default_value = 0.0
+min_value = 0.0
+max_value = 100.0
+step = 0.1
+keyframeable = true
+is_linkable = false
+is_linked = false
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "res://effects/visual/crop.glsl"
+shader_passes = 1
+id = "crop"
+nickname = "Crop"
+params = Array[ExtResource("1_param")]([SubResource("Resource_crop_left"), SubResource("Resource_crop_right"), SubResource("Resource_crop_top"), SubResource("Resource_crop_bottom")])

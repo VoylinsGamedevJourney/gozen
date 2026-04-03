@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://lycbbkbpxbvl"
+path="res://.godot/imported/crop.glsl-f688d9a2376bacc9fe6355deaecb4caa.res"
+
+[deps]
+
+source_file="res://effects/visual/crop.glsl"
+dest_files=["res://.godot/imported/crop.glsl-f688d9a2376bacc9fe6355deaecb4caa.res"]
+
+[params]
+
