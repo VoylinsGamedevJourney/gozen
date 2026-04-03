@@ -36,8 +36,8 @@ func _ready() -> void:
 	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
-	section_visuals.add_title_bar_control(_get_add_effects_button(true))
-	section_audio.add_title_bar_control(_get_add_effects_button(false))
+	section_visuals.add_title_bar_control(_get_add_effects_button(1))
+	section_audio.add_title_bar_control(_get_add_effects_button(2))
 	section_visuals.folded = true
 	section_audio.folded = true
 
@@ -48,10 +48,12 @@ func _project_ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if !PopupManager._open_popups.is_empty():
+	if !PopupManager._open_popups.is_empty() or !Project.is_loaded:
 		return
-	if Project.is_loaded and event.is_action_pressed("ui_cancel"):
+	elif event.is_action_pressed("ui_cancel", false, true):
 		_on_clip_pressed(null)
+	elif event.is_action_pressed("add_effect", false, true):
+		_open_add_effects_popup(0)
 
 
 func _notification(what: int) -> void:
@@ -721,7 +723,8 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 		visible_button.texture_normal = load(Library.ICON_VISIBLE)
 
 
-func _get_add_effects_button(is_visual: bool) -> TextureButton:
+## Type: 0 = All, 1 = Visuals, 2 = Audio
+func _get_add_effects_button(type: int) -> TextureButton:
 	var tex_button: TextureButton = TextureButton.new()
 	tex_button.texture_normal = preload(Library.ICON_ADD)
 	tex_button.tooltip_text = tr("Add effects")
@@ -729,14 +732,15 @@ func _get_add_effects_button(is_visual: bool) -> TextureButton:
 	tex_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 	tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	tex_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	tex_button.pressed.connect(_open_add_effects_popup.bind(is_visual))
+	tex_button.pressed.connect(_open_add_effects_popup.bind(type))
 	return tex_button
 
 
-func _open_add_effects_popup(is_visual: bool) -> void:
+## Type: 0 = All, 1 = Visuals, 2 = Audio
+func _open_add_effects_popup(type: int) -> void:
 	if current_clip:
 		var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
-		popup.call("load_effects", is_visual, current_clip)
+		popup.call("load_effects", type, current_clip)
 
 
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:

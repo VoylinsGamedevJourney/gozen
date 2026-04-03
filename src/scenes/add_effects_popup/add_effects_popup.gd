@@ -1,12 +1,20 @@
 extends PanelContainer
 
+const COLOR_VISUAL: Color = Color(0.101960786, 1, 0.101960786, 0.078431375)
+const COLOR_AUDIO: Color = Color(0.101960786, 0.101960786, 1, 0.078431375)
+
+
 @export var search_line_edit: LineEdit
 @export var effect_buttons: VBoxContainer
 
 
-var current_clip: ClipData = null
-var is_visual: bool = true
+@onready var scroll: ScrollContainer = effect_buttons.get_parent()
 
+
+var current_clip: ClipData = null
+var is_type: bool = true
+
+var button_group: ButtonGroup = ButtonGroup.new()
 var shown_buttons: Array[Button] = []
 var selected_button: int = 0
 
@@ -19,21 +27,34 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		PopupManager.close(PopupManager.ADD_EFFECTS)
+	elif event.is_action_pressed("ui_up"):
+		if shown_buttons.size() > 0:
+			selected_button = maxi(0, selected_button - 1)
+			shown_buttons[selected_button].button_pressed = true
+			scroll.ensure_control_visible(shown_buttons[selected_button])
+			get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_down"):
+		if shown_buttons.size() > 0:
+			selected_button = mini(shown_buttons.size() - 1, selected_button + 1)
+			shown_buttons[selected_button].button_pressed = true
+			scroll.ensure_control_visible(shown_buttons[selected_button])
+			get_viewport().set_input_as_handled()
 
 
-func load_effects(visual: bool, clip: ClipData) -> void:
-	var effects_data: Dictionary[String, String] = {}
-	var button_group: ButtonGroup = ButtonGroup.new()
-
+## Type: 0 = All, 1 = Visuals, 2 = Audio
+func load_effects(type: int, clip: ClipData) -> void:
 	current_clip = clip
-	is_visual = visual
+	is_type = type
 
-	if is_visual:
-		effects_data = EffectsHandler.visual_effects
-	else:
-		effects_data = EffectsHandler.audio_effects
+	if type <= 1: # Visuals.
+		_add_effects(EffectsHandler.visual_effects, true)
+	if type != 1: # Audio.
+		_add_effects(EffectsHandler.audio_effects, false)
 
+
+func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> void:
 	for effect_option: String in effects_data:
+		var color: Color = COLOR_VISUAL if is_visual else COLOR_AUDIO
 		var button: Button = Button.new()
 
 		button.text = tr(effect_option)
@@ -41,31 +62,46 @@ func load_effects(visual: bool, clip: ClipData) -> void:
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.button_group = button_group
 		button.toggle_mode = true
-		button.pressed.connect(_on_effect_clicked.bind(effects_data[effect_option]))
+
+		var stylebox: StyleBoxFlat = StyleBoxFlat.new()
+		stylebox.bg_color = color
+		stylebox.content_margin_left = 4.0
+		stylebox.content_margin_top = 4.0
+		stylebox.content_margin_right = 4.0
+		stylebox.content_margin_bottom = 4.0
+		stylebox.corner_radius_top_left = 3
+		stylebox.corner_radius_top_right = 3
+		stylebox.corner_radius_bottom_left = 3
+		stylebox.corner_radius_bottom_right = 3
+		button.add_theme_stylebox_override("normal", stylebox)
+
+		var stylebox_pressed: StyleBoxFlat = stylebox.duplicate()
+		stylebox_pressed.bg_color = color.lightened(0.2)
+		button.add_theme_stylebox_override("pressed", stylebox_pressed)
+		button.add_theme_stylebox_override("hover", stylebox_pressed)
+		button.add_theme_stylebox_override("focus", stylebox_pressed)
+
+		button.pressed.connect(_on_effect_clicked.bind(effects_data[effect_option], is_visual))
 		button.pressed.connect(_on_close_button_pressed)
 
 		shown_buttons.append(button)
 		effect_buttons.add_child(button)
 
 	shown_buttons[0].button_pressed = true
-
 	_on_search_box_text_changed("")
 
 
 func _on_search_box_text_changed(effect_text: String) -> void:
 	var buttons: Array[ButtonScore] = []
-
 	shown_buttons.clear()
 	selected_button = 0
 
 	for button: Button in effect_buttons.get_children():
 		buttons.append(ButtonScore.new(button, effect_text))
-
 	buttons.sort_custom(ButtonScore.sort_scores)
 
 	for i: int in buttons.size():
 		var button: Button = buttons[i].button
-
 		button.visible = buttons[i].score != 0
 		effect_buttons.move_child(button, i)
 		shown_buttons.append(button)
@@ -75,23 +111,17 @@ func _on_search_box_text_changed(effect_text: String) -> void:
 
 
 func _on_search_box_text_submitted(_effect_text: String) -> void:
-	for button: Button in effect_buttons.get_children():
-		if button.visible:
-			if selected_button == 0:
-				button.pressed.emit()
-				return
-			else:
-				selected_button -= 1
+	if shown_buttons.size() != 0:
+		shown_buttons[selected_button].pressed.emit()
 
 
-func _on_effect_clicked(effect_id: String) -> void:
-	var effect: Effect
+func _on_effect_clicked(effect_id: String, is_visual: bool) -> void:
 	if is_visual:
-		effect = EffectsHandler.visual_effect_instances[effect_id].deep_copy()
+		EffectsHandler.add_effect(
+				current_clip, EffectsHandler.visual_effect_instances[effect_id].deep_copy(), is_visual)
 	else:
-		effect = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
-
-	EffectsHandler.add_effect(current_clip, effect, is_visual)
+		EffectsHandler.add_effect(
+				current_clip, EffectsHandler.audio_effect_instances[effect_id].deep_copy(), is_visual)
 	_on_close_button_pressed()
 
 
