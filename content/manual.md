@@ -77,3 +77,8 @@ GoZen features a variety of shortcuts and mouse inputs to speed up your editing 
 - **Copy Keyframe**: `Ctrl + Left Click & Drag` a keyframe.
 - **Preserve Existing Values**: `Alt + Left Click & Drag` *(Overrides existing keyframes at the target frame instead of ignoring them).*
 - **Delete Keyframe**: `Right Click` on a keyframe.
+- **Open Add Effects Popup**: `Ctrl + A` when a clip is selected.
+
+### Render region
+- **Set start of render region**: `I` with the playhead on the correct position.
+- **Set end of render region**: `O` with the playhead on the correct position.
