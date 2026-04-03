@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://7ojbq5n6igoh" path="res://scenes/timeline/time_stamps.gd" id="2_jxg8b"]
 [ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
 [ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
+[ext_resource type="Script" uid="uid://b2fv3om3dl86q" path="res://scenes/timeline/track_controls.gd" id="5_qnybs"]
 [ext_resource type="Script" uid="uid://citi833fx6ole" path="res://scenes/timeline/timeline_draw_control.gd" id="7_vuipj"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ak2ly"]
@@ -25,8 +26,8 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_p3xsq")
-timestamp_panel = NodePath("VBox/TimestampScroll/TimeStamps")
-timeline_panel = NodePath("VBox/TimelineScroll/Timeline")
+timestamp_panel = NodePath("Grid/TimestampScroll/TimeStamps")
+timeline_panel = NodePath("Grid/TimelineScroll/Timeline")
 
 [node name="TimelineModes" type="PanelContainer" parent="." unique_id=30590064]
 layout_mode = 2
@@ -57,18 +58,30 @@ texture_normal = ExtResource("4_qnybs")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="VBox" type="VBoxContainer" parent="." unique_id=1967898322]
+[node name="Button" type="Button" parent="TimelineModes/Margin/VBox/CutModeButton" unique_id=1670725053]
+layout_mode = 0
+offset_right = 14.0
+offset_bottom = 4.0
+
+[node name="Grid" type="GridContainer" parent="." unique_id=1105908258]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 2
 
-[node name="TimestampScroll" type="ScrollContainer" parent="VBox" unique_id=418098194]
+[node name="SpacerControl" type="Control" parent="Grid" unique_id=1700312403]
+layout_mode = 2
+
+[node name="TimestampScroll" type="ScrollContainer" parent="Grid" unique_id=418098194]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
 scroll_horizontal_custom_step = 30.0
 horizontal_scroll_mode = 3
 
-[node name="TimeStamps" type="PanelContainer" parent="VBox/TimestampScroll" unique_id=156332910 node_paths=PackedStringArray("timeline_scroll")]
+[node name="TimeStamps" type="PanelContainer" parent="Grid/TimestampScroll" unique_id=156332910 node_paths=PackedStringArray("timeline_scroll")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -78,16 +91,30 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_likvl")
 script = ExtResource("2_jxg8b")
 timeline_scroll = NodePath("../../TimelineScroll")
 
-[node name="TimelineScroll" type="ScrollContainer" parent="VBox" unique_id=1891472025 node_paths=PackedStringArray("timestamp_scroll")]
+[node name="TrackControls" type="ScrollContainer" parent="Grid" unique_id=1411265630]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="TrackControlVBox" type="VBoxContainer" parent="Grid/TrackControls" unique_id=258646919 node_paths=PackedStringArray("timeline_scroll")]
+layout_mode = 2
+script = ExtResource("5_qnybs")
+timeline_scroll = NodePath("../../TimelineScroll")
+
+[node name="TimelineScroll" type="ScrollContainer" parent="Grid" unique_id=1891472025 node_paths=PackedStringArray("timestamp_scroll", "track_controls_scroll")]
 custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_horizontal_custom_step = 30.0
 scroll_vertical_custom_step = 30.0
+vertical_scroll_mode = 3
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
+track_controls_scroll = NodePath("../TrackControls")
 
-[node name="Timeline" type="PanelContainer" parent="VBox/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
+[node name="Timeline" type="PanelContainer" parent="Grid/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_cut")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -99,51 +126,51 @@ mode_panel = NodePath("../../../TimelineModes")
 button_select = NodePath("../../../TimelineModes/Margin/VBox/SelectModeButton")
 button_cut = NodePath("../../../TimelineModes/Margin/VBox/CutModeButton")
 
-[node name="TrackLinesDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=22986217]
+[node name="TrackLinesDraw" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=22986217]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_track_lines"
 
-[node name="ClipsDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=1323832046]
+[node name="ClipsDraw" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=1323832046]
 layout_mode = 2
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_clips"
 
-[node name="PreviewDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=1851300607]
+[node name="PreviewDraw" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=1851300607]
 layout_mode = 2
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_preview"
 
-[node name="ModeDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=71389255]
+[node name="ModeDraw" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=71389255]
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_mode"
 
-[node name="PlayheadDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=1764531311]
+[node name="PlayheadDraw" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=1764531311]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_playhead"
 
-[node name="BoxSelectionDraw" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=591200297]
+[node name="BoxSelectionDraw" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=591200297]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_box_selection"
 
-[node name="MarkersDrawn" type="Control" parent="VBox/TimelineScroll/Timeline" unique_id=113674296]
+[node name="MarkersDrawn" type="Control" parent="Grid/TimelineScroll/Timeline" unique_id=113674296]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("7_vuipj")
 draw_func_name = "_draw_markers"
 
-[connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_select_mode_button_pressed"]
-[connection signal="pressed" from="TimelineModes/Margin/VBox/CutModeButton" to="VBox/TimelineScroll/Timeline/ModeDraw" method="_on_cut_mode_button_pressed"]
-[connection signal="gui_input" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_gui_input"]
-[connection signal="mouse_entered" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll/Timeline" method="_on_mouse_exited"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="VBox/TimelineScroll/Timeline" to="VBox/TimelineScroll" method="_on_timeline_zoom_changed"]
+[connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="Grid/TimelineScroll/Timeline/ModeDraw" method="_on_select_mode_button_pressed"]
+[connection signal="pressed" from="TimelineModes/Margin/VBox/CutModeButton" to="Grid/TimelineScroll/Timeline/ModeDraw" method="_on_cut_mode_button_pressed"]
+[connection signal="gui_input" from="Grid/TimelineScroll/Timeline" to="Grid/TimelineScroll/Timeline" method="_on_gui_input"]
+[connection signal="mouse_entered" from="Grid/TimelineScroll/Timeline" to="Grid/TimelineScroll/Timeline" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Grid/TimelineScroll/Timeline" to="Grid/TimelineScroll/Timeline" method="_on_mouse_exited"]
+[connection signal="zoom_changed" from="Grid/TimelineScroll/Timeline" to="." method="_on_timeline_zoom_changed"]
+[connection signal="zoom_changed" from="Grid/TimelineScroll/Timeline" to="Grid/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
+[connection signal="zoom_changed" from="Grid/TimelineScroll/Timeline" to="Grid/TimelineScroll" method="_on_timeline_zoom_changed"]

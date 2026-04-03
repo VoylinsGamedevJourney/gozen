@@ -196,7 +196,7 @@ func _draw_clips(control: Control) -> void:
 		var audio_wave: PackedFloat32Array = FileLogic.audio_wave.get(wave_file_id, [])
 		if audio_wave:
 			var wave_begin: int = clip.begin + int(wave_offset_sec * Project.data.framerate)
-			_draw_wave(audio_wave, wave_begin, clip.duration, clip_rect, control, clip.speed)
+			_draw_wave(audio_wave, wave_begin, clip.duration, clip_rect, control, clip.speed, clip.track)
 
 		# - Fading handles + amount
 		var show_handles: bool = false
@@ -232,7 +232,7 @@ func _get_visible(start: int, end: int) -> Array[ClipData]:
 	return data
 
 
-func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control, speed: float) -> void:
+func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control, speed: float, track_id: int) -> void:
 	if wave_data.is_empty():
 		return
 	var height: float = rect.size.y
@@ -273,7 +273,11 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 				block_pos_y = base_y + (height - block_height) / 2.0
 			SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
-		control.draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), COLOR_AUDIO_WAVE)
+
+		var wave_color: Color = COLOR_AUDIO_WAVE
+		if TrackLogic.tracks[track_id].is_muted:
+			wave_color.a *= 0.3
+		control.draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
 
 
 func _draw_preview(control: Control) -> void:

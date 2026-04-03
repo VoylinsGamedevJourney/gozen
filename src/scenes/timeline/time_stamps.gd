@@ -13,7 +13,7 @@ const FONT_SIZE_MARKER: int = 10
 const FONT_SIZE_TIME_STAMP: int = 10
 
 
-@export var timeline_scroll: ScrollContainer = get_parent()
+@export var timeline_scroll: ScrollContainer
 
 
 @onready var scroll: ScrollContainer = get_parent()
@@ -79,7 +79,7 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 			if EditorCore.is_playing:
 				EditorCore.is_playing = false
 			EditorCore.scrub_to_frame(_get_frame_on_mouse())
-	else: # Mouse released
+	else: # Mouse released.
 		var marker: MarkerData = MarkerLogic.dragged_marker
 		if marker:
 			var new_frame_nr: int = floori(MarkerLogic.dragged_marker_offset / current_zoom)
@@ -123,7 +123,7 @@ func _draw() -> void:
 		if is_major:
 			var label: String = Utils.format_time_str_from_frame(frame, Project.data.framerate, true)
 			var label_width: float = default_font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_TIME_STAMP).x
-			if x - last_text_x >= label_width + 8.0:  # 8px padding between labels
+			if x - last_text_x >= label_width + 8.0:  # 8px padding between labels.
 				draw_string(
 					default_font,
 					Vector2(x + 4, size.y - 8),
@@ -227,7 +227,7 @@ func _update_hovered_marker() -> void:
 	if _possible_drag != found_frame:
 		_possible_drag = found_frame
 		_drag_offset = (found_frame * current_zoom) - mouse_pos.x
-		queue_redraw() # Redraw to show highlight if desired
+		queue_redraw() # Redraw to show highlight if desired.
 
 	if _possible_drag != -1:
 		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

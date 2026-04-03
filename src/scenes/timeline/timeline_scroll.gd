@@ -2,6 +2,7 @@ extends ScrollContainer
 ## The scroll handler for the timeline stuff.
 
 @export var timestamp_scroll: ScrollContainer
+@export var track_controls_scroll: ScrollContainer
 
 
 var current_zoom: float = 1.0
@@ -10,7 +11,8 @@ var current_zoom: float = 1.0
 
 func _ready() -> void:
 	timestamp_scroll.get_h_scroll_bar().scrolling.connect(_on_timestamp_scrolling)
-	self.get_h_scroll_bar().scrolling.connect(_on_timeline_scrolling)
+	track_controls_scroll.get_v_scroll_bar().scrolling.connect(_on_timeline_v_scrolling)
+	self.get_h_scroll_bar().scrolling.connect(_on_timeline_h_scrolling)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -46,10 +48,14 @@ func _on_timestamp_scrolling() -> void:
 	self.scroll_horizontal = timestamp_scroll.scroll_horizontal
 
 
-func _on_timeline_scrolling() -> void:
+func _on_timeline_v_scrolling() -> void:
+	self.scroll_vertical = track_controls_scroll.scroll_vertical
+
+
+func _on_timeline_h_scrolling() -> void:
 	timestamp_scroll.scroll_horizontal = self.scroll_horizontal
 
 
 func _on_timeline_zoom_changed(new_zoom: float) -> void:
 	current_zoom = new_zoom
-	_on_timeline_scrolling()
+	_on_timeline_h_scrolling()
