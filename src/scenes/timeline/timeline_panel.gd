@@ -32,6 +32,8 @@ enum MODE { SELECT, CUT }
 const TRACK_LINE_WIDTH: int = 1
 const TRACK_LINE_COLOR: Color = Color.DIM_GRAY
 
+const TRACK_HEIGHT_LIMIT: Vector2i = Vector2i(34, 100)
+
 const RESIZE_HANDLE_WIDTH: int = 5
 const RESIZE_CLIP_MIN_WIDTH: float = 14
 
@@ -472,6 +474,19 @@ func _gui_input(event: InputEvent) -> void:
 	if !Project.is_loaded:
 		return
 	elif event is InputEventMouseButton:
+		var mouse_button_event: InputEventMouseButton = event
+		if mouse_button_event.ctrl_pressed and mouse_button_event.shift_pressed and mouse_button_event.pressed:
+			if mouse_button_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				Settings.set_track_height(clampf(
+						Settings.get_track_height() + 2.0, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+				accept_event()
+				return
+			elif mouse_button_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				Settings.set_track_height(clampf(
+						Settings.get_track_height() - 2.0, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+				accept_event()
+				return
+
 		if event.is_action_pressed("timeline_zoom_in", false, true):
 			zoom_at_mouse(ZOOM_STEP)
 		elif event.is_action_pressed("timeline_zoom_out", false, true):
