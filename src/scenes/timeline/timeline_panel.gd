@@ -12,7 +12,10 @@ enum POPUP_ACTION {
 	# Track options
 	REMOVE_EMPTY_SPACE,
 	TRACK_ADD,
-	TRACK_REMOVE }
+	TRACK_REMOVE,
+	TRACK_TOGGLE_VISIBLE,
+	TRACK_TOGGLE_MUTE,
+	TRACK_TOGGLE_LOCK }
 enum STATE {
 	CURSOR_MODE_SELECT,
 	CURSOR_MODE_CUT,
@@ -223,15 +226,21 @@ func _draw_clips(control: Control) -> void:
 					11, # Font size
 					CLIP_TEXT_COLOR)
 
+	# - Draw locked overlay
+	for i: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[i].is_locked:
+			var y_pos: float = track_total_size * i
+			control.draw_rect(Rect2(visible_start, y_pos, visible_end - visible_start, track_total_size), Color(0.5, 0.5, 0.5, 0.8))
+
 
 func _get_visible(start: int, end: int) -> Array[ClipData]:
 	var data: Array[ClipData] = []
-	for track_id: int in TrackLogic.tracks.size():
-		data.append_array(TrackLogic.get_clips_in_range(track_id, start, end))
+	for track: int in TrackLogic.tracks.size():
+		data.append_array(TrackLogic.get_clips_in_range(track, start, end))
 	return data
 
 
-func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control, speed: float, track_id: int) -> void:
+func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, control: Control, speed: float, track: int) -> void:
 	if wave_data.is_empty():
 		return
 	var height: float = rect.size.y
@@ -274,7 +283,7 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 				block_pos_y = base_y + height - block_height
 
 		var wave_color: Color = COLOR_AUDIO_WAVE
-		if TrackLogic.tracks[track_id].is_muted:
+		if TrackLogic.tracks[track].is_muted:
 			wave_color.a *= 0.3
 		control.draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
 
@@ -453,10 +462,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("trim_to_clip_end", false, true):
 			trim_clips_end_at(EditorCore.frame_nr)
 		elif event.is_action_pressed("remove_empty_space"):
-			var track_id: int = get_track_from_mouse()
+			var track: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
-			if !TrackLogic.get_clip_at_overlap(track_id, frame_nr):
-				remove_empty_space_at(track_id, frame_nr)
+			if !TrackLogic.get_clip_at_overlap(track, frame_nr):
+				remove_empty_space_at(track, frame_nr)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -544,11 +553,27 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		else:
 			popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
-		popup.add_item(tr("Add track"), POPUP_ACTION.TRACK_ADD)
+		popup.add_separator(tr("Track options"))
+		var track_data: TrackData = TrackLogic.tracks[right_click_pos.x]
+
+		popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
 		if TrackLogic.tracks.size() != 1:
-			popup.add_item(tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+			popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+
+		popup.add_separator()
+
+		popup.add_check_item(tr("Visible"), POPUP_ACTION.TRACK_TOGGLE_VISIBLE)
+		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
+
+		popup.add_check_item(tr("Muted"), POPUP_ACTION.TRACK_TOGGLE_MUTE)
+		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_MUTE), track_data.is_muted)
+
+		popup.add_check_item(tr("Locked"), POPUP_ACTION.TRACK_TOGGLE_LOCK)
+		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_LOCK), track_data.is_locked)
+
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_menu(popup)
+
 
 
 func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
@@ -616,6 +641,8 @@ func _get_clip_on_mouse() -> ClipData:
 
 func _get_resize_target() -> ResizeTarget:
 	var track: int = get_track_from_mouse()
+	if TrackLogic.tracks[track].is_locked:
+		return null
 	var mouse_pos: float = get_local_mouse_position().x
 	var visible_start: int = floori(scroll.scroll_horizontal / zoom)
 	var visible_end: int = ceili((scroll.scroll_horizontal + scroll.size.x) / zoom)
@@ -645,7 +672,9 @@ func _get_resize_target() -> ResizeTarget:
 
 
 func _get_fade_target() -> FadeTarget:
-	var track_id: int = get_track_from_mouse()
+	var track: int = get_track_from_mouse()
+	if TrackLogic.tracks[track].is_locked:
+		return null
 	var mouse_pos: Vector2 = get_local_mouse_position()
 	var scroll_horizontal: float = scroll.scroll_horizontal
 	var visible_start: int = floori(scroll_horizontal / zoom)
@@ -655,7 +684,7 @@ func _get_fade_target() -> FadeTarget:
 	if Input.is_key_pressed(KEY_SHIFT):
 		current_handle_size *= 2.0
 
-	for clip: ClipData in TrackLogic.get_clips_in_range(track_id, visible_start, visible_end):
+	for clip: ClipData in TrackLogic.get_clips_in_range(track, visible_start, visible_end):
 		if (clip.duration * zoom) < 20.0:
 			continue
 		var start_x: float = clip.start * zoom
@@ -702,7 +731,7 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
-	if state != STATE.CURSOR_MODE_SELECT or !pressed_clip:
+	if state != STATE.CURSOR_MODE_SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked:
 		return null
 	if pressed_clip not in ClipLogic.selected_clips:
 		ClipLogic.selected_clips = [pressed_clip]
@@ -760,6 +789,8 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 
 func _can_drop_new_clips() -> bool:
 	draggable.track_offset = get_track_from_mouse()
+	if TrackLogic.tracks[draggable.track_offset].is_locked:
+		return false
 	var mouse_frame: int = get_frame_from_mouse()
 	var target_frame: int = mouse_frame - draggable.mouse_offset
 	var target_end: int = target_frame + draggable.duration
@@ -821,7 +852,7 @@ func _can_move_clips() -> bool:
 	for clip_id: int in draggable.ids:
 		var clip: ClipData = ClipLogic.clips[clip_id]
 		var new_track: int = clip.track + track_difference
-		if new_track < 0 or new_track >= TrackLogic.tracks.size():
+		if new_track < 0 or new_track >= TrackLogic.tracks.size() or TrackLogic.tracks[new_track].is_locked:
 			return false
 
 		candidates.append(0 - clip.start)
@@ -943,8 +974,8 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 		frame_start = frame_end
 		frame_end = temp
 
-	for track_id: int in range(track_start, clamp(track_end + 1, 0, max_track)):
-		for clip: ClipData in TrackLogic.track_clips[track_id].clips:
+	for track: int in range(track_start, clamp(track_end + 1, 0, max_track)):
+		for clip: ClipData in TrackLogic.track_clips[track].clips:
 			if clip.start > frame_end:
 				break
 
@@ -1052,11 +1083,6 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 		popup.add_separator(tr("Video options"))
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
 
-	popup.add_separator(tr("Track options"))
-	popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
-	if TrackLogic.tracks.size() != 1:
-		popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
-
 
 func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	match id:
@@ -1069,6 +1095,9 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
 		POPUP_ACTION.TRACK_ADD: _on_popup_action_track_add()
 		POPUP_ACTION.TRACK_REMOVE: _on_popup_action_track_remove()
+		POPUP_ACTION.TRACK_TOGGLE_VISIBLE: _on_popup_action_track_toggle_visible()
+		POPUP_ACTION.TRACK_TOGGLE_MUTE: _on_popup_action_track_toggle_mute()
+		POPUP_ACTION.TRACK_TOGGLE_LOCK: _on_popup_action_track_toggle_lock()
 	draw_all()
 
 
@@ -1096,6 +1125,29 @@ func _on_popup_action_track_add() -> void:
 
 func _on_popup_action_track_remove() -> void:
 	TrackLogic.remove_track(right_click_pos.x)
+
+
+func _on_popup_action_track_toggle_visible() -> void:
+	var track_data: TrackData = TrackLogic.tracks[right_click_pos.x]
+	track_data.is_visible = !track_data.is_visible
+	EditorCore.set_frame_nr(EditorCore.frame_nr)
+	Project.unsaved_changes = true
+	TrackLogic.updated.emit()
+
+
+func _on_popup_action_track_toggle_mute() -> void:
+	var track_data: TrackData = TrackLogic.tracks[right_click_pos.x]
+	track_data.is_muted = !track_data.is_muted
+	EditorCore.set_frame_nr(EditorCore.frame_nr)
+	Project.unsaved_changes = true
+	TrackLogic.updated.emit()
+
+
+func _on_popup_action_track_toggle_lock() -> void:
+	var track_data: TrackData = TrackLogic.tracks[right_click_pos.x]
+	track_data.is_locked = !track_data.is_locked
+	Project.unsaved_changes = true
+	TrackLogic.updated.emit()
 
 
 func _show_hide_mode_bar(value: bool = Settings.get_show_time_mode_bar()) -> void:
@@ -1170,9 +1222,11 @@ func move_playhead(frame_nr: int) -> void:
 	EditorCore.set_frame(maxi(0, frame_nr))
 
 
-func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
-	var clips: Array[ClipData] = TrackLogic.get_clips_after(track_id, frame_nr)
-	var region: Vector2i = TrackLogic.get_free_region(track_id, frame_nr)
+func remove_empty_space_at(track: int, frame_nr: int) -> void:
+	if TrackLogic.tracks[track].is_locked:
+		return
+	var clips: Array[ClipData] = TrackLogic.get_clips_after(track, frame_nr)
+	var region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
 	var empty_size: int = region.y - region.x
 	var move_requests: Array[ClipRequest] = []
 
@@ -1183,6 +1237,8 @@ func remove_empty_space_at(track_id: int, frame_nr: int) -> void:
 
 
 func cut_clip_at(clip: ClipData, frame_pos: int) -> void:
+	if TrackLogic.tracks[clip.track].is_locked:
+		return
 	if clip.start <= frame_pos and clip.end >= frame_pos:
 		ClipLogic.cut([ClipRequest.cut_request(clip, frame_pos - clip.start)])
 	draw_clips.queue_redraw()
@@ -1207,8 +1263,10 @@ func cut_clips_at(frame_pos: int) -> void:
 		return draw_clips.queue_redraw()
 
 	# No selected clips present so cutting all possible clips
-	for track_id: int in TrackLogic.tracks.size():
-		var clip: ClipData = TrackLogic.get_clip_at_overlap(track_id, frame_pos)
+	for track: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[track].is_locked:
+			continue
+		var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
 		if !clip:
 			continue
 		if clip.start < frame_pos and clip.end > frame_pos:
@@ -1229,8 +1287,10 @@ func trim_clips_start_at(frame_pos: int) -> void:
 			requests.append(ClipRequest.resize_request(clip, frame_pos - clip.start, false))
 
 	if requests.is_empty():
-		for track_id: int in TrackLogic.tracks.size():
-			var clip: ClipData = TrackLogic.get_clip_at_overlap(track_id, frame_pos)
+		for track: int in TrackLogic.tracks.size():
+			if TrackLogic.tracks[track].is_locked:
+				continue
+			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
 			if clip and clip.start < frame_pos and clip.end > frame_pos:
 				requests.append(ClipRequest.resize_request(clip, frame_pos - clip.start, false))
 
@@ -1247,8 +1307,10 @@ func trim_clips_end_at(frame_pos: int) -> void:
 			requests.append(ClipRequest.resize_request(clip, frame_pos - clip.end, true))
 
 	if requests.is_empty():
-		for track_id: int in TrackLogic.tracks.size():
-			var clip: ClipData = TrackLogic.get_clip_at_overlap(track_id, frame_pos)
+		for track: int in TrackLogic.tracks.size():
+			if TrackLogic.tracks[track].is_locked:
+				continue
+			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
 			if clip and clip.start < frame_pos and clip.end > frame_pos:
 				requests.append(ClipRequest.resize_request(clip, frame_pos - clip.end, true))
 
