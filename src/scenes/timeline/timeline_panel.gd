@@ -448,6 +448,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			duplicate_selected_clips()
 		elif event.is_action_pressed("cut_clips_at_mouse", false, true):
 			cut_clips_at(get_frame_from_mouse())
+		elif event.is_action_pressed("trim_to_clip_start", false, true):
+			trim_clips_start_at(EditorCore.frame_nr)
+		elif event.is_action_pressed("trim_to_clip_end", false, true):
+			trim_clips_end_at(EditorCore.frame_nr)
 		elif event.is_action_pressed("remove_empty_space"):
 			var track_id: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
@@ -468,6 +472,7 @@ func _gui_input(event: InputEvent) -> void:
 			get_window().gui_release_focus()
 	elif event is InputEventMouseMotion:
 		_on_gui_input_mouse_motion(event as InputEventMouseMotion)
+	_unhandled_input(event)
 
 
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
@@ -1214,6 +1219,42 @@ func cut_clips_at(frame_pos: int) -> void:
 		ClipLogic.selected_clips = new_clips
 		ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 	draw_clips.queue_redraw()
+
+
+func trim_clips_start_at(frame_pos: int) -> void:
+	var requests: Array[ClipRequest] = []
+
+	for clip: ClipData in ClipLogic.selected_clips:
+		if clip.start < frame_pos and clip.end > frame_pos:
+			requests.append(ClipRequest.resize_request(clip, frame_pos - clip.start, false))
+
+	if requests.is_empty():
+		for track_id: int in TrackLogic.tracks.size():
+			var clip: ClipData = TrackLogic.get_clip_at_overlap(track_id, frame_pos)
+			if clip and clip.start < frame_pos and clip.end > frame_pos:
+				requests.append(ClipRequest.resize_request(clip, frame_pos - clip.start, false))
+
+	if !requests.is_empty():
+		ClipLogic.resize(requests)
+		draw_clips.queue_redraw()
+
+
+func trim_clips_end_at(frame_pos: int) -> void:
+	var requests: Array[ClipRequest] = []
+
+	for clip: ClipData in ClipLogic.selected_clips:
+		if clip.start < frame_pos and clip.end > frame_pos:
+			requests.append(ClipRequest.resize_request(clip, frame_pos - clip.end, true))
+
+	if requests.is_empty():
+		for track_id: int in TrackLogic.tracks.size():
+			var clip: ClipData = TrackLogic.get_clip_at_overlap(track_id, frame_pos)
+			if clip and clip.start < frame_pos and clip.end > frame_pos:
+				requests.append(ClipRequest.resize_request(clip, frame_pos - clip.end, true))
+
+	if !requests.is_empty():
+		ClipLogic.resize(requests)
+		draw_clips.queue_redraw()
 
 
 func duplicate_selected_clips() -> void:
