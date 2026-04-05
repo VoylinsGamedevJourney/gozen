@@ -79,36 +79,9 @@ min_value = null
 max_value = null
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_530yw"]
-script = ExtResource("1_drc3j")
-id = "text_shadow_size"
-nickname = "param_text_shadow_size"
-default_value = 0
-min_value = 0
-max_value = 250
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
-[sub_resource type="Resource" id="Resource_5jxoe"]
-script = ExtResource("1_drc3j")
-id = "text_shadow_offset"
-nickname = "param_text_shadow_offset"
-default_value = Vector2i(0, 0)
-min_value = Vector2i(-1000, -1000)
-max_value = Vector2i(1000, 1000)
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
-[sub_resource type="Resource" id="Resource_utf2j"]
-script = ExtResource("1_drc3j")
-id = "text_shadow_color"
-nickname = "param_text_shadow_color"
-default_value = Color(0, 0, 0, 1)
-min_value = null
-max_value = null
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
 [resource]
 script = ExtResource("2_xilbx")
 id = "text"
 nickname = "Text"
-params = Array[ExtResource("1_drc3j")]([SubResource("Resource_drc3j"), SubResource("Resource_xilbx"), SubResource("Resource_ptuff"), SubResource("Resource_gif22"), SubResource("Resource_nmfvc"), SubResource("Resource_dgkg4"), SubResource("Resource_1r4bx"), SubResource("Resource_on0qg"), SubResource("Resource_530yw"), SubResource("Resource_5jxoe"), SubResource("Resource_utf2j")])
+params = Array[ExtResource("1_drc3j")]([SubResource("Resource_drc3j"), SubResource("Resource_xilbx"), SubResource("Resource_ptuff"), SubResource("Resource_gif22"), SubResource("Resource_nmfvc"), SubResource("Resource_dgkg4"), SubResource("Resource_1r4bx"), SubResource("Resource_on0qg")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"
