@@ -115,13 +115,15 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 			break;
 		}
 
-		response = swr_convert_frame(swr_ctx.get(), av_decoded_frame.get(), av_frame.get());
+		response = swr_convert(swr_ctx.get(), av_decoded_frame->data, av_decoded_frame->nb_samples,
+							   (const uint8_t**)av_frame->extended_data, av_frame->nb_samples);
 		if (response < 0) {
-			FFmpeg::print_av_error("Audio: Couldn't convert the audio frame!", response);
+			FFmpeg::print_av_error("Audio: Couldn't convert the audio data!", response);
 			av_frame_unref(av_frame.get());
 			av_frame_unref(av_decoded_frame.get());
 			break;
 		}
+		av_decoded_frame->nb_samples = response;
 
 		size_t byte_size = av_decoded_frame->nb_samples * bytes_per_sample * 2;
 		if (current_size + byte_size > audio_data.size()) {

@@ -245,13 +245,17 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 				return;
 			}
 
-			if (swr_convert_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get()) < 0) {
-				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio frame!", response);
+			response =
+				swr_convert(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame->data, av_decoded_frame->nb_samples,
+							(const uint8_t**)av_frame->extended_data, av_frame->nb_samples);
+			if (response < 0) {
+				FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio data!", response);
 				av_frame_unref(av_frame.get());
 				av_frame_unref(av_decoded_frame.get());
 				audio_stream_ffmpeg->mutex->unlock();
 				return;
 			}
+			av_decoded_frame->nb_samples = response;
 
 			size_t byte_size = av_decoded_frame->nb_samples * audio_stream_ffmpeg->bytes_per_sample;
 			byte_size *= 2;
@@ -335,22 +339,25 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 	av_decoded_frame.get()->nb_samples =
 		swr_get_out_samples(audio_stream_ffmpeg->swr_ctx.get(), av_frame.get()->nb_samples);
 
-	int resp = 0;
-	if ((resp = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
-		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't create new frame for swr!", resp);
+	int response = 0;
+	if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
+		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't create new frame for swr!", response);
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 		audio_stream_ffmpeg->mutex->unlock();
 		return false;
 	}
 
-	if ((resp = swr_convert_frame(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame.get(), av_frame.get())) < 0) {
-		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio frame!", resp);
+	response = swr_convert(audio_stream_ffmpeg->swr_ctx.get(), av_decoded_frame->data, av_decoded_frame->nb_samples,
+						   (const uint8_t**)av_frame->extended_data, av_frame->nb_samples);
+	if (response < 0) {
+		FFmpeg::print_av_error("AudioStreamFFmpeg: Couldn't convert the audio data!", response);
 		av_frame_unref(av_frame.get());
 		av_frame_unref(av_decoded_frame.get());
 		audio_stream_ffmpeg->mutex->unlock();
 		return false;
 	}
+	av_decoded_frame->nb_samples = response;
 
 	int new_samples = av_decoded_frame.get()->nb_samples;
 	size_t byte_size = new_samples * audio_stream_ffmpeg->bytes_per_sample;
