@@ -67,7 +67,7 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 
 		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
 			av_stream = av_format_ctx->streams[stream_index];
-	} else {
+	} else if (stream_index != -1) {
 		mutex->unlock();
 		return _log_err("Invalid stream index");
 	}

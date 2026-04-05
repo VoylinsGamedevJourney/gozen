@@ -239,7 +239,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 		AVCodecParameters* av_codec_params = format_ctx->streams[stream_index]->codecpar;
 		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
 			data = _get_audio(format_ctx, format_ctx->streams[stream_index], fetch_start_time, fetch_duration);
-	} else {
+	} else if (stream_index != -1) {
 		_log_err("Invalid stream index");
 	}
 
