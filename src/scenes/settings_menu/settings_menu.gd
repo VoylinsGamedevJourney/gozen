@@ -29,7 +29,14 @@ func _input(event: InputEvent) -> void:
 			_stop_listening()
 			return
 
-		if (event is InputEventKey and event.is_pressed()) or (event is InputEventMouseButton and event.is_pressed()):
+		if event is InputEventKey and event.is_pressed():
+			var key_event: InputEventKey = event
+			if key_event.keycode in [KEY_CTRL, KEY_SHIFT, KEY_ALT, KEY_META] or key_event.physical_keycode in [KEY_CTRL, KEY_SHIFT, KEY_ALT, KEY_META]:
+				return # Wait for the actual key combination
+			Settings.set_shortcut_event_at_index(listening_action, listening_index, event)
+			listening_button.text = _get_event_text(event)
+			_stop_listening()
+		elif event is InputEventMouseButton and event.is_pressed():
 			Settings.set_shortcut_event_at_index(listening_action, listening_index, event)
 			listening_button.text = _get_event_text(event)
 			_stop_listening()
