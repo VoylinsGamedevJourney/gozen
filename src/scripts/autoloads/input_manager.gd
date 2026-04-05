@@ -11,6 +11,7 @@ signal switch_timeline_mode_split
 var undo_redo: UndoRedo = UndoRedo.new()
 
 
+
 func _ready() -> void:
 	undo_redo.max_steps = 200
 
@@ -36,7 +37,8 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
 	elif event.is_action_pressed("ui_paste"):
-		if get_viewport().gui_get_focus_owner() is LineEdit:
+		var focus_owner: Control = get_viewport().gui_get_focus_owner()
+		if focus_owner is LineEdit or focus_owner is TextEdit:
 			return
 		await clipboard_paste()
 		get_viewport().set_input_as_handled()
@@ -55,12 +57,14 @@ func _input(event: InputEvent) -> void:
 
 
 func _strict_input_check(event: InputEvent) -> bool:
-	if get_viewport().gui_get_focus_owner() is LineEdit:
-		var line_edit: LineEdit = get_viewport().gui_get_focus_owner()
+	var focus_owner: Control = get_viewport().gui_get_focus_owner()
+	if focus_owner is LineEdit:
+		var line_edit: LineEdit = focus_owner
 		if line_edit.is_editing():
 			return false
+	elif focus_owner is TextEdit:
+		return false
 
-#	open_marker_popup()
 	if event.is_action_pressed("open_marker_popup"):
 		open_marker_popup()
 		return true

@@ -20,6 +20,10 @@ const CLIP_TEXT_COLOR: Color = Color.WHITE
 
 
 
+func _ready() -> void:
+	Settings.on_waveform_update.connect(queue_redraw)
+
+
 func _draw() -> void:
 	var scroll_container: ScrollContainer = get_parent().get_parent()
 	var zoom: float = Timeline.zoom

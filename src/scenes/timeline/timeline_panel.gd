@@ -77,7 +77,8 @@ func _notification(what: int) -> void:
 # --- Input handling ---
 
 func _unhandled_input(event: InputEvent) -> void:
-	if !is_visible_in_tree() and !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
+	var focus_owner: Control = get_window().gui_get_focus_owner()
+	if !is_visible_in_tree() and !Project.is_loaded or focus_owner is LineEdit or focus_owner is TextEdit:
 		return
 
 	if event.is_action_pressed("split_clips_at_playhead", false, true):

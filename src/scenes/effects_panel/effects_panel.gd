@@ -53,7 +53,15 @@ func _project_ready() -> void:
 func _input(event: InputEvent) -> void:
 	if !PopupManager._open_popups.is_empty() or !Project.is_loaded:
 		return
-	elif event.is_action_pressed("ui_cancel", false, true):
+
+	var focus_owner: Control = get_viewport().gui_get_focus_owner()
+	if focus_owner is LineEdit or focus_owner is TextEdit:
+		if event.is_action_pressed("ui_cancel", false, true):
+			focus_owner.release_focus()
+			get_viewport().set_input_as_handled()
+		return
+
+	if event.is_action_pressed("ui_cancel", false, true):
 		_on_clip_pressed(null)
 	elif event.is_action_pressed("add_effect", false, true):
 		_open_add_effects_popup(0, false)
@@ -424,17 +432,24 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 	match typeof(value):
 		TYPE_STRING:
 			if param.id == "font":
-				var opt: OptionButton = OptionButton.new()
-				opt.add_item("Default")
-				opt.set_item_metadata(0, "")
+				var option_button: OptionButton = OptionButton.new()
+				option_button.add_item("Default")
+				option_button.set_item_metadata(0, "")
 				var fonts: Array[String] = Settings.fonts.keys()
 				fonts.sort()
 				for i: int in fonts.size():
-					opt.add_item(fonts[i])
-					opt.set_item_metadata(i + 1, fonts[i])
-				opt.item_selected.connect(func(id: int) -> void: update_call.call(opt.get_item_metadata(id)))
-				opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				return opt
+					option_button.add_item(fonts[i])
+					option_button.set_item_metadata(i + 1, fonts[i])
+				option_button.item_selected.connect(func(id: int) -> void: update_call.call(option_button.get_item_metadata(id)))
+				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				return option_button
+			elif param.id == "text_data":
+				var text_edit: TextEdit = TextEdit.new()
+				text_edit.text_changed.connect(func() -> void: update_call.call(text_edit.text))
+				text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				text_edit.custom_minimum_size.y = 80
+				text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+				return text_edit
 			var line_edit: LineEdit = LineEdit.new()
 			line_edit.text_changed.connect(update_call)
 			line_edit.text_submitted.connect((func() -> void: line_edit.release_focus()).unbind(1))
@@ -686,6 +701,10 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 		var line_edit: LineEdit = param_settings
 		if line_edit.text != str(value):
 			line_edit.text = str(value)
+	elif param_settings is TextEdit:
+		var text_edit: TextEdit = param_settings
+		if text_edit.text != str(value):
+			text_edit.text = str(value)
 	elif param_settings is OptionButton:
 		var option_button: OptionButton = param_settings
 		for i: int in option_button.item_count:
