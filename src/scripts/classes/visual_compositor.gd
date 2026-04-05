@@ -468,7 +468,13 @@ func _get_effect_pipeline(shader_path: String, effect: EffectVisual) -> EffectCa
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
 
-	var shader_file: RDShaderFile = EffectsHandler.shader_cache[shader_path]
+	var shader_file: RDShaderFile
+	if EffectsHandler.shader_cache.has(shader_path):
+		shader_file = EffectsHandler.shader_cache[shader_path]
+	else:
+		shader_file = load(shader_path) as RDShaderFile
+		EffectsHandler.shader_cache[shader_path] = shader_file
+
 	var effect_cache: EffectCache = EffectCache.new()
 	if not shader_file is RDShaderFile:
 		printerr("VisualCompositor: Effect shader is not RDShaderFile (compute shader): ", shader_path)

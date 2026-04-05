@@ -48,12 +48,15 @@ func _load_video_effects() -> void:
 	visual_effect_instances.clear()
 
 	for file_name: String in DirAccess.open(PATH_EFFECTS_VISUAL).get_files():
+		file_name = file_name.trim_suffix(".remap")
 		if !file_name.ends_with(".tres"):
 			continue
 		var temp: Variant = load(PATH_EFFECTS_VISUAL + file_name)
 		if temp is not EffectVisual:
 			continue
 		var effect: EffectVisual = temp
+		if visual_effect_instances.has(effect.id):
+			continue
 		visual_effects[effect.nickname] = effect.id
 		visual_effect_instances[effect.id] = effect
 		shader_cache[effect.shader_path] = load(effect.shader_path)
@@ -64,12 +67,15 @@ func _load_audio_effects() -> void:
 	audio_effect_instances.clear()
 
 	for file_name: String in DirAccess.open(PATH_EFFECTS_AUDIO).get_files():
+		file_name = file_name.trim_suffix(".remap")
 		if !file_name.ends_with(".tres"):
 			continue
 		var temp: Variant = load(PATH_EFFECTS_AUDIO + file_name)
 		if temp is not EffectAudio:
 			continue
 		var effect: EffectAudio = temp
+		if audio_effect_instances.has(effect.id):
+			continue
 		audio_effects[effect.nickname] = effect.id
 		audio_effect_instances[effect.id] = effect
 
