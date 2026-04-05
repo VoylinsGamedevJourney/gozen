@@ -227,7 +227,6 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 			data = _get_audio(format_ctx, format_ctx->streams[stream_index], start_time, duration);
 	} else {
 		_log_err("Invalid stream index");
-		return data;
 	}
 
 	avformat_close_input(&format_ctx);
@@ -241,7 +240,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 		data = silence;
 	}
 
-	// Apply post-padding
+	// Apply post-padding.
 	if (duration > 0) {
 		int64_t target_size = (int64_t)(duration * 44100) * 4;
 		if (data.size() < target_size) {

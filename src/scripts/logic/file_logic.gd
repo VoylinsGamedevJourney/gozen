@@ -409,7 +409,12 @@ func _load_video(file: FileData) -> void:
 		for video: Video in video_pools[file.id]:
 			video.close()
 		video_pools[file.id] = []
-	Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+
+	if temp_video.get_audio() != null:
+		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+	else:
+		audio_wave[file.id] = PackedFloat32Array()
+		call_deferred("_on_wave_ready", file)
 
 
 func _create_wave(file: FileData) -> void:
@@ -430,7 +435,7 @@ func _create_wave(file: FileData) -> void:
 	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 	if data.is_empty():
 		audio_wave[file.id] = PackedFloat32Array()
-		return push_warning("Audio data is empty!")
+		return push_warning("Audio data is empty for file: " + file.nickname)
 
 	var bytes_size: float = 4 # 16 bit * stereo.
 	var total_frames: int = int(data.size() / bytes_size)
