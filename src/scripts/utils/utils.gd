@@ -5,6 +5,8 @@ extends Node
 const FUZZY_SCORE_POINT: int = 1
 const FUZZY_SCORE_BONUS: int = 10
 
+const INT_32_MAX: int = 2_147_483_647
+
 
 
 static func format_file_nickname(file_name: String, size: int) -> String:

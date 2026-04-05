@@ -451,7 +451,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_ui_cancel()
 
 	if scroll.get_global_rect().has_point(get_global_mouse_position()):
-		if event.is_action_pressed("ripple_delete_clips"):
+		if event.is_action_pressed("ui_copy"):
+			ClipLogic.copy_selected_clips()
+			accept_event()
+		elif event.is_action_pressed("ui_cut"):
+			ClipLogic.cut_selected_clips()
+			accept_event()
+		elif event.is_action_pressed("ripple_delete_clips"):
 			ClipLogic.ripple_delete(ClipLogic.selected_clips)
 		elif event.is_action_pressed("delete_clips"):
 			ClipLogic.delete(ClipLogic.selected_clips)
@@ -879,7 +885,7 @@ func _can_move_clips() -> bool:
 			candidates.append(other.end - clip.start)
 
 	var best_frame_difference: int = frame_difference
-	var best_dist: int = 2147483647
+	var best_dist: int = Utils.INT_32_MAX
 	var valid_found: bool = false
 	for difference: int in candidates:
 		var dist: int = abs(difference - frame_difference)

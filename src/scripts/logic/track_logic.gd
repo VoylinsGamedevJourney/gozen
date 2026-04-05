@@ -114,7 +114,7 @@ func get_free_region(track: int, frame_nr: int, ignores: Array[int] = []) -> Vec
 	if collision_clip and collision_clip.id not in ignores:
 		return Vector2i(-1, -1)
 
-	var region: Vector2i = Vector2i(0, 2147483647)
+	var region: Vector2i = Vector2i(0, Utils.INT_32_MAX)
 	for clip: ClipData in track_clips[track].clips:
 		if clip.id not in ignores:
 			if clip.end <= frame_nr:

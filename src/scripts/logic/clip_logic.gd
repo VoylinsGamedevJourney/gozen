@@ -9,6 +9,10 @@ signal updated ## Signal for when all clips got updated.
 var clips: Dictionary[int, ClipData] = {}
 var selected_clips: Array[ClipData] = []
 
+var copied_clips: Array[ClipData] = []
+var copied_min_start: int = 0
+var copied_min_track: int = 0
+
 
 
 # --- Handling ---
@@ -107,6 +111,7 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	updated.emit.call_deferred()
 
 
+## Cut as in split a clip in two.
 func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
 	var new_clips: Array[ClipData] = []
 	InputManager.undo_redo.create_action("Cut clip_data(s)")
@@ -183,6 +188,79 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
+
+
+func copy_selected_clips() -> void:
+	copied_clips.clear()
+	if selected_clips.is_empty():
+		return
+
+	# 32 bit max.
+	copied_min_start = Utils.INT_32_MAX
+	copied_min_track = Utils.INT_32_MAX
+	for clip: ClipData in selected_clips:
+		var snapshot: ClipData = clip.duplicate(true)
+		snapshot.effects = ClipEffects.new()
+		snapshot.effects.fade_visual = clip.effects.fade_visual
+		snapshot.effects.fade_audio = clip.effects.fade_audio
+		snapshot.effects.ato_active = clip.effects.ato_active
+		snapshot.effects.ato_offset = clip.effects.ato_offset
+		snapshot.effects.ato_file = clip.effects.ato_file
+		snapshot.effects.video = _copy_visual_effects(clip.effects.video, 0)
+		snapshot.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
+		copied_clips.append(snapshot)
+
+		if clip.start < copied_min_start:
+			copied_min_start = clip.start
+		if clip.track < copied_min_track:
+			copied_min_track = clip.track
+
+
+## Cut as in Ctrl+X.
+func cut_selected_clips() -> void:
+	copy_selected_clips()
+	delete(selected_clips)
+
+
+func paste_copied_clips() -> void:
+	if copied_clips.is_empty():
+		return
+
+	var target_frame: int = EditorCore.frame_nr
+	var clips_to_paste: Array[ClipData] = []
+	var existing_keys: Array[int] = clips.keys()
+
+	for copied_clip: ClipData in copied_clips:
+		var new_clip: ClipData = copied_clip.duplicate(true)
+		new_clip.effects = ClipEffects.new()
+		new_clip.effects.fade_visual = copied_clip.effects.fade_visual
+		new_clip.effects.fade_audio = copied_clip.effects.fade_audio
+		new_clip.effects.ato_active = copied_clip.effects.ato_active
+		new_clip.effects.ato_offset = copied_clip.effects.ato_offset
+		new_clip.effects.ato_file = copied_clip.effects.ato_file
+		new_clip.effects.video = _copy_visual_effects(copied_clip.effects.video, 0)
+		new_clip.effects.audio = _copy_audio_effects(copied_clip.effects.audio, 0)
+
+		var relative_start: int = copied_clip.start - copied_min_start
+		new_clip.start = target_frame + relative_start
+		new_clip.id = Utils.get_unique_id(existing_keys)
+		existing_keys.append(new_clip.id)
+		clips_to_paste.append(new_clip)
+	_paste(clips_to_paste)
+
+
+func _paste(clips_to_paste: Array[ClipData]) -> void:
+	InputManager.undo_redo.create_action("Paste clip(s)")
+	var new_selected: Array[ClipData] = []
+	for clip: ClipData in clips_to_paste:
+		InputManager.undo_redo.add_do_method(_restore_clip.bind(clip))
+		InputManager.undo_redo.add_undo_method(_delete.bind(clip))
+		new_selected.append(clip)
+	InputManager.undo_redo.commit_action()
+
+	selected_clips = new_selected
+	if new_selected.size() > 0:
+		selected.emit(selected_clips[-1])
 
 
 #---- Helper functions ----

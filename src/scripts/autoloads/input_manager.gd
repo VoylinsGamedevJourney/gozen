@@ -36,6 +36,8 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
 	elif event.is_action_pressed("ui_paste"):
+		if get_viewport().gui_get_focus_owner() is LineEdit:
+			return
 		await clipboard_paste()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
@@ -115,6 +117,11 @@ func open_marker_popup() -> void:
 
 func clipboard_paste() -> void:
 	if !Project.is_loaded:
+		return
+
+	# Check for clip(s).
+	if !ClipLogic.copied_clips.is_empty():
+		ClipLogic.paste_copied_clips()
 		return
 
 	# Check for image.
