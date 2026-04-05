@@ -30,7 +30,7 @@ const ICON_EFFECT_KEYFRAME_EMPTY: String = "uid://dr38qoeuh0l3f"
 const ICON_EFFECTS_KEYFRAME: String = "uid://cc55c82noxe2h"
 const ICON_EFFECTS_KEYFRAME_EMPTY: String = "uid://bfo4mhrcyuev5"
 const ICON_TIMELINE_MODE_SELECT: String = "uid://bix5e8n2tjje3"
-const ICON_TIMELINE_MODE_CUT: String = "uid://brrif81b6g1qd"
+const ICON_TIMELINE_MODE_SPLIT: String = "uid://brrif81b6g1qd"
 const ICON_CUSTOM_RENDER_PROFILE: String = "uid://chwue2kad3pe2"
 
 const SHADER_IMAGE_TO_YUV: String = "uid://bs1u3w6ry2hoa"

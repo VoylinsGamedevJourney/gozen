@@ -5,7 +5,7 @@ signal on_show_render_screen
 signal on_switch_screen
 
 signal switch_timeline_mode_select
-signal switch_timeline_mode_cut
+signal switch_timeline_mode_split
 
 
 var undo_redo: UndoRedo = UndoRedo.new()
@@ -70,8 +70,8 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("timeline_mode_select", false, true):
 		switch_timeline_mode_select.emit()
 		return true
-	elif event.is_action_pressed("timeline_mode_cut", false, true):
-		switch_timeline_mode_cut.emit()
+	elif event.is_action_pressed("timeline_mode_split", false, true):
+		switch_timeline_mode_split.emit()
 		return true
 	elif event.is_action_pressed("open_command_bar"):
 		PopupManager.open(PopupManager.COMMAND_BAR)

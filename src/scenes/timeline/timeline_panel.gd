@@ -7,7 +7,7 @@ signal zoom_changed(new_zoom: float)
 enum POPUP_ACTION {
 	# Clip options
 	CLIP_DELETE,
-	CLIP_CUT,
+	CLIP_SPLIT,
 	CLIP_AUDIO_TAKE_OVER,
 	# Track options
 	REMOVE_EMPTY_SPACE,
@@ -18,7 +18,7 @@ enum POPUP_ACTION {
 	TRACK_TOGGLE_LOCK }
 enum STATE {
 	CURSOR_MODE_SELECT,
-	CURSOR_MODE_CUT,
+	CURSOR_MODE_SPLIT,
 	SCRUBBING,
 	MOVING,
 	DROPPING,
@@ -26,7 +26,7 @@ enum STATE {
 	SPEEDING,
 	FADING,
 	BOX_SELECTING }
-enum MODE { SELECT, CUT }
+enum MODE { SELECT, SPLIT }
 
 
 const TRACK_LINE_WIDTH: int = 1
@@ -67,13 +67,13 @@ const CLIP_TEXT_COLOR: Color = Color.WHITE
 const COLOR_BOX_SELECT_FILL: Color = Color(0.65, 0.1, 0.95, 0.2)
 const COLOR_BOX_SELECT_BORDER: Color = Color(0.65, 0.1, 0.95, 0.6)
 
-const COLOR_CUT: Color = Color(1,0,0,0.6)
-const COLOR_CUT_FADE: Color = Color(1,0,0,0.3)
+const COLOR_SPLIT: Color = Color(1,0,0,0.6)
+const COLOR_SPLIT_FADE: Color = Color(1,0,0,0.3)
 
 
 @export var mode_panel: PanelContainer
 @export var button_select: TextureButton
-@export var button_cut: TextureButton
+@export var button_split: TextureButton
 
 
 @onready var scroll: ScrollContainer = get_parent()
@@ -122,9 +122,9 @@ func _ready() -> void:
 	Settings.on_track_height_changed.connect(_update_track_height)
 	EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw)
 	InputManager.switch_timeline_mode_select.connect(set_state.bind(STATE.CURSOR_MODE_SELECT))
-	InputManager.switch_timeline_mode_cut.connect(set_state.bind(STATE.CURSOR_MODE_CUT))
 	InputManager.switch_timeline_mode_select.connect(_on_select_mode_button_pressed)
-	InputManager.switch_timeline_mode_cut.connect(_on_cut_mode_button_pressed)
+	InputManager.switch_timeline_mode_split.connect(set_state.bind(STATE.CURSOR_MODE_SPLIT))
+	InputManager.switch_timeline_mode_split.connect(_on_split_mode_button_pressed)
 
 	var markers_redraw: Callable = draw_markers.queue_redraw
 	MarkerLogic.added.connect(markers_redraw.unbind(1))
@@ -381,10 +381,10 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 
 func _draw_mode(control: Control) -> void:
 	var pos_x: float = get_local_mouse_position().x
-	if mode == MODE.CUT:
+	if mode == MODE.SPLIT:
 		var fade_pos: float = pos_x + 1
-		control.draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), COLOR_CUT)
-		control.draw_line(Vector2(fade_pos, 0), Vector2(fade_pos, size.y), COLOR_CUT_FADE)
+		control.draw_line(Vector2(pos_x, 0), Vector2(pos_x, size.y), COLOR_SPLIT)
+		control.draw_line(Vector2(fade_pos, 0), Vector2(fade_pos, size.y), COLOR_SPLIT_FADE)
 
 
 func _draw_playhead(control: Control) -> void:
@@ -442,8 +442,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
 		return
 
-	if event.is_action_pressed("cut_clips_at_playhead", false, true):
-		cut_clips_at(EditorCore.frame_nr)
+	if event.is_action_pressed("split_clips_at_playhead", false, true):
+		split_clips_at(EditorCore.frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
 		if !PopupManager._open_popups.is_empty() or state in[STATE.MOVING, STATE.DROPPING]:
 			return
@@ -463,8 +463,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			ClipLogic.delete(ClipLogic.selected_clips)
 		elif event.is_action_pressed("duplicate_selected_clips"):
 			duplicate_selected_clips()
-		elif event.is_action_pressed("cut_clips_at_mouse", false, true):
-			cut_clips_at(get_frame_from_mouse())
+		elif event.is_action_pressed("split_clips_at_mouse", false, true):
+			split_clips_at(get_frame_from_mouse())
 		elif event.is_action_pressed("trim_to_clip_start", false, true):
 			trim_clips_start_at(EditorCore.frame_nr)
 		elif event.is_action_pressed("trim_to_clip_end", false, true):
@@ -506,11 +506,11 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
-	if state == STATE.CURSOR_MODE_CUT:
+	if state == STATE.CURSOR_MODE_SPLIT:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 			var target: ClipData = _get_clip_on_mouse()
 			if target:
-				cut_clip_at(target, get_frame_from_mouse())
+				split_clip_at(target, get_frame_from_mouse())
 		return
 	elif event.is_released():
 		match state:
@@ -622,7 +622,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			else:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
-		STATE.CURSOR_MODE_CUT:
+		STATE.CURSOR_MODE_SPLIT:
 			mouse_default_cursor_shape = Control.CURSOR_IBEAM # TODO: Create a better cursor shape
 			draw_mode.queue_redraw()
 		STATE.FADING:
@@ -1098,7 +1098,7 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	# TODO: Set shortcuts.
 	popup.add_theme_constant_override("icon_max_width", 20)
 	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
-	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_CUT), tr("Cut clip"), POPUP_ACTION.CLIP_CUT)
+	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_SPLIT), tr("Split clip"), POPUP_ACTION.CLIP_SPLIT)
 
 	if right_click_clip.type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
@@ -1109,7 +1109,7 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 	match id:
 		# Clip options
 		POPUP_ACTION.CLIP_DELETE: _on_popup_action_clip_delete()
-		POPUP_ACTION.CLIP_CUT: _on_popup_action_clip_cut()
+		POPUP_ACTION.CLIP_SPLIT: _on_popup_action_clip_split()
 		# Video options
 		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
 		# Track options
@@ -1126,8 +1126,8 @@ func _on_popup_action_clip_delete() -> void:
 	ClipLogic.delete(ClipLogic.selected_clips)
 
 
-func _on_popup_action_clip_cut() -> void:
-	cut_clips_at(right_click_pos.y)
+func _on_popup_action_clip_split() -> void:
+	split_clips_at(right_click_pos.y)
 
 
 func _on_popup_action_remove_empty_space() -> void:
@@ -1181,9 +1181,9 @@ func _on_select_mode_button_pressed() -> void:
 	draw_mode.queue_redraw()
 
 
-func _on_cut_mode_button_pressed() -> void:
-	button_cut.set_pressed_no_signal(true)
-	mode = MODE.CUT
+func _on_split_mode_button_pressed() -> void:
+	button_split.set_pressed_no_signal(true)
+	mode = MODE.SPLIT
 	draw_mode.queue_redraw()
 
 
@@ -1257,33 +1257,33 @@ func remove_empty_space_at(track: int, frame_nr: int) -> void:
 		ClipLogic.move(move_requests)
 
 
-func cut_clip_at(clip: ClipData, frame_pos: int) -> void:
+func split_clip_at(clip: ClipData, frame_pos: int) -> void:
 	if TrackLogic.tracks[clip.track].is_locked:
 		return
 	if clip.start <= frame_pos and clip.end >= frame_pos:
-		ClipLogic.cut([ClipRequest.cut_request(clip, frame_pos - clip.start)])
+		ClipLogic.split([ClipRequest.split_request(clip, frame_pos - clip.start)])
 	draw_clips.queue_redraw()
 
 
-func cut_clips_at(frame_pos: int) -> void:
+func split_clips_at(frame_pos: int) -> void:
 	# Check if any of the clips in the tracks is in selected clips
-	# if there are selected clips present, we only cut the selected ones
+	# if there are selected clips present, we only split the selected ones
 	var requests: Array[ClipRequest] = []
 	var new_clips: Array[ClipData]
 
-	# Checking if we only want selected clips to be cut.
+	# Checking if we only want selected clips to be split.
 	for clip: ClipData in ClipLogic.selected_clips:
 		if clip.start < frame_pos and clip.end > frame_pos:
-			requests.append(ClipRequest.cut_request(clip, frame_pos - clip.start))
+			requests.append(ClipRequest.split_request(clip, frame_pos - clip.start))
 
 	if !requests.is_empty():
-		new_clips = ClipLogic.cut(requests)
+		new_clips = ClipLogic.split(requests)
 		if new_clips.size() > 0:
 			ClipLogic.selected_clips = new_clips
 			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 		return draw_clips.queue_redraw()
 
-	# No selected clips present so cutting all possible clips
+	# No selected clips present so splitting all possible clips
 	for track: int in TrackLogic.tracks.size():
 		if TrackLogic.tracks[track].is_locked:
 			continue
@@ -1291,9 +1291,9 @@ func cut_clips_at(frame_pos: int) -> void:
 		if !clip:
 			continue
 		if clip.start < frame_pos and clip.end > frame_pos:
-			requests.append(ClipRequest.cut_request(clip, frame_pos - clip.start))
+			requests.append(ClipRequest.split_request(clip, frame_pos - clip.start))
 
-	new_clips = ClipLogic.cut(requests)
+	new_clips = ClipLogic.split(requests)
 	if new_clips.size() > 0:
 		ClipLogic.selected_clips = new_clips
 		ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
@@ -1384,6 +1384,7 @@ func duplicate_selected_clips() -> void:
 
 func set_state(new_state: STATE) -> void:
 	state = new_state
+	draw_playhead.queue_redraw()
 
 
 func draw_all() -> void:

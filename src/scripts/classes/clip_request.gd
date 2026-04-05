@@ -24,10 +24,10 @@ static func add_request(file_data: FileData, track_index: int, frame_nr: int) ->
 	return request
 
 
-static func cut_request(clip_data: ClipData, frame_cut_pos: int) -> ClipRequest:
+static func split_request(clip_data: ClipData, frame_split_pos: int) -> ClipRequest:
 	var request: ClipRequest = ClipRequest.new()
 	request.clip = clip_data
-	request.frame = frame_cut_pos
+	request.frame = frame_split_pos
 	return request
 
 

@@ -111,19 +111,18 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	updated.emit.call_deferred()
 
 
-## Cut as in split a clip in two.
-func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
+func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 	var new_clips: Array[ClipData] = []
-	InputManager.undo_redo.create_action("Cut clip_data(s)")
+	InputManager.undo_redo.create_action("Split clip_data(s)")
 	for request: ClipRequest in requests:
 		var clip: ClipData = request.clip
-		var cut_offset: int = request.frame
-		var duration_left: int = cut_offset
-		var duration_right: int = clip.duration - cut_offset
+		var split_offset: int = request.frame
+		var duration_left: int = split_offset
+		var duration_right: int = clip.duration - split_offset
 		if duration_left <= 0 or duration_right <= 0:
-			continue # Check for invalid cuts.
+			continue # Check for invalid splits.
 
-		# Cutting the main clip.
+		# Splitting the main clip.
 		InputManager.undo_redo.add_do_method(_resize_and_fade.bind(clip, -duration_right, true, clip.effects.fade_visual.x, 0, clip.effects.fade_audio.x, 0))
 		InputManager.undo_redo.add_undo_method(_resize_and_fade.bind(clip, duration_right, true, clip.effects.fade_visual.x, clip.effects.fade_visual.y, clip.effects.fade_audio.x, clip.effects.fade_audio.y))
 
@@ -142,8 +141,8 @@ func cut(requests: Array[ClipRequest]) -> Array[ClipData]:
 		snapshot.start += duration_left
 		snapshot.begin += int(duration_left * request.clip.speed)
 		snapshot.duration = duration_right
-		effects.video = _copy_visual_effects(request.clip.effects.video, cut_offset)
-		effects.audio = _copy_audio_effects(request.clip.effects.audio, cut_offset)
+		effects.video = _copy_visual_effects(request.clip.effects.video, split_offset)
+		effects.audio = _copy_audio_effects(request.clip.effects.audio, split_offset)
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(snapshot))
 		InputManager.undo_redo.add_undo_method(_delete.bind(snapshot))
 
@@ -265,8 +264,8 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void
 
 #---- Helper functions ----
 
-## This function is intended to be used when cutting clips to copy over the effects.
-func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[EffectVisual]:
+## This function is intended to be used when splitting clips to copy over the effects.
+func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array[EffectVisual]:
 	var new_effects: Array[EffectVisual] = []
 	for effect: EffectVisual in effects:
 		var new_effect: EffectVisual = effect.deep_copy()
@@ -275,22 +274,22 @@ func _copy_visual_effects(effects: Array[EffectVisual], cut_pos: int) -> Array[E
 
 		for param: EffectParam in new_effect.params:
 			var param_id: String = param.id
-			var value_at_cut: Variant = effect.get_value(param, cut_pos)
+			var value_at_split: Variant = effect.get_value(param, split_pos)
 
 			if not new_effect.keyframes.has(param_id):
 				new_effect.keyframes[param_id] = {}
-			new_effect.keyframes[param_id][0] = value_at_cut
+			new_effect.keyframes[param_id][0] = value_at_split
 
-			# Shift existing keyframes that appear after the cut.
+			# Shift existing keyframes that appear after the split.
 			for frame: int in effect.keyframes[param_id]:
-				if frame > cut_pos:
-					new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
+				if frame > split_pos:
+					new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
 		new_effects.append(new_effect)
 	return new_effects
 
 
-## This function is intended to be used when cutting clips to copy over the effects.
-func _copy_audio_effects(effects: Array[EffectAudio], cut_pos: int) -> Array[EffectAudio]:
+## This function is intended to be used when splitting clips to copy over the effects.
+func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[EffectAudio]:
 	var new_effects: Array[EffectAudio] = []
 	for effect: EffectAudio in effects:
 		var new_effect: EffectAudio = effect.deep_copy()
@@ -300,17 +299,17 @@ func _copy_audio_effects(effects: Array[EffectAudio], cut_pos: int) -> Array[Eff
 
 		for param: EffectParam in new_effect.params:
 			var param_id: String = param.id
-			var value_at_cut: Variant = effect.get_value(param, cut_pos)
+			var value_at_split: Variant = effect.get_value(param, split_pos)
 
 			if not new_effect.keyframes.has(param_id):
 				new_effect.keyframes[param_id] = {}
-			new_effect.keyframes[param_id][0] = value_at_cut
+			new_effect.keyframes[param_id][0] = value_at_split
 
-			# Shift existing keyframes that appear after the cut.
+			# Shift existing keyframes that appear after the split.
 			for frame: int in effect.keyframes[param_id]:
-				if frame <= cut_pos:
+				if frame <= split_pos:
 					continue
-				new_effect.keyframes[param_id][frame - cut_pos] = effect.keyframes[param_id][frame]
+				new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
 			new_effects.append(new_effect)
 	return new_effects
 
