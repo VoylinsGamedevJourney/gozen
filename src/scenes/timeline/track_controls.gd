@@ -16,8 +16,7 @@ func _ready() -> void:
 	timeline_scroll.get_v_scroll_bar().value_changed.connect(_on_scrolled)
 
 
-func _on_scrolled(value: float) -> void:
-	scroll.scroll_vertical = value as int
+func _on_scrolled(_value: float) -> void:
 	spacer.visible = timeline_scroll.get_h_scroll_bar().visible
 
 

@@ -19,7 +19,6 @@ const FONT_SIZE_TIME_STAMP: int = 10
 @onready var scroll: ScrollContainer = get_parent()
 
 
-var current_zoom: float = 1.0
 var scrubbing: bool = false
 
 var marker_style_box: StyleBoxFlat
@@ -42,8 +41,8 @@ func _ready() -> void:
 	MarkerLogic.updated.connect(update_stamps.unbind(1))
 	MarkerLogic.removed.connect(update_stamps.unbind(1))
 
-	scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
-	timeline_scroll.get_h_scroll_bar().value_changed.connect(queue_redraw.unbind(1))
+	Timeline.zoom_changed.connect(queue_redraw.unbind(1))
+	Timeline.scroll_changed.connect(queue_redraw.unbind(1))
 
 	_setup_marker_style_box()
 
@@ -84,7 +83,7 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 	else: # Mouse released.
 		var marker: MarkerData = MarkerLogic.dragged_marker
 		if marker:
-			var new_frame_nr: int = floori(MarkerLogic.dragged_marker_offset / current_zoom)
+			var new_frame_nr: int = floori(MarkerLogic.dragged_marker_offset / Timeline.zoom)
 			if new_frame_nr != MarkerLogic.dragged_marker.frame_nr:
 				MarkerLogic.update(new_frame_nr, marker.text, marker.type, marker)
 			else:
@@ -100,13 +99,13 @@ func _on_left_mouse_button(event: InputEventMouseButton) -> void:
 
 
 func _get_frame_on_mouse() -> int:
-	return maxi(0, floori(get_local_mouse_position().x / current_zoom))
+	return maxi(0, floori(get_local_mouse_position().x / Timeline.zoom))
 
 
 func _draw() -> void:
 	var scroll_width: float = scroll.size.x
-	var visible_start_nr: int = int(scroll.scroll_horizontal / current_zoom)
-	var visible_end_nr: int = int((scroll.scroll_horizontal + scroll_width) / current_zoom) + 1
+	var visible_start_nr: int = int(Timeline.scroll_x / Timeline.zoom)
+	var visible_end_nr: int = int((Timeline.scroll_x + scroll_width) / Timeline.zoom) + 1
 
 	var major_step: int = _get_major_frame_step()
 	var minor_step: int = maxi(1, int(major_step / 5.0))
@@ -116,8 +115,8 @@ func _draw() -> void:
 	# - Draw ticks and time text
 	var last_text_x: float = -999.0
 	for frame: int in range(start_frame, visible_end_nr, minor_step):
-		var x: float = frame * current_zoom
-		if !Utils.in_rangef(x, scroll.scroll_horizontal - 100, scroll.scroll_horizontal + size.x + 100, false):
+		var x: float = frame * Timeline.zoom
+		if !Utils.in_rangef(x, Timeline.scroll_x - 100, Timeline.scroll_x + size.x + 100, false):
 			continue
 
 		var is_major: int = frame % major_step == 0
@@ -153,14 +152,14 @@ func _draw() -> void:
 		var marker_text: String = marker.text
 		var marker_color: Color = Settings.get_marker_color(marker.type)
 
-		var pos_x: float = marker.frame_nr * current_zoom
+		var pos_x: float = marker.frame_nr * Timeline.zoom
 		var text_size: Vector2 = default_font.get_string_size(
 				marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER)
 		var text_y_offset: float = (MARKER_HANDLE_HEIGHT - text_size.y) / 2.0 + default_font.get_ascent(FONT_SIZE_MARKER)
 
 		if is_being_dragged:
 			if get_local_mouse_position().distance_to(_drag_start_pos) > MARKER_DRAG_THRESHOLD:
-				MarkerLogic.dragged_marker_offset = _get_frame_on_mouse() * current_zoom + _drag_offset
+				MarkerLogic.dragged_marker_offset = _get_frame_on_mouse() * Timeline.zoom + _drag_offset
 				pos_x = MarkerLogic.dragged_marker_offset
 			else:
 				MarkerLogic.dragged_marker_offset = 0
@@ -182,8 +181,8 @@ func _draw() -> void:
 
 	# - Draw render region
 	if Project.data.use_render_region:
-		var region_start: float = Project.data.render_region.x * current_zoom
-		var region_end: float = Project.data.render_region.y * current_zoom
+		var region_start: float = Project.data.render_region.x * Timeline.zoom
+		var region_end: float = Project.data.render_region.y * Timeline.zoom
 		var alpha: float = 0.7 if Project.data.use_render_region else 0.2
 		if region_end >= region_start:
 			draw_rect(Rect2(region_start, 0, region_end - region_start, 4), Color(0.65, 0.1, 0.95, alpha))
@@ -196,21 +195,16 @@ func _update_tooltip() -> void:
 			tooltip_text = ""
 		return # Out of bounds
 
-	var frame_nr: int = maxi(0, floori(mouse_x / current_zoom))
+	var frame_nr: int = maxi(0, floori(mouse_x / Timeline.zoom))
 	var time_str: String = Utils.format_time_str_from_frame(frame_nr, Project.data.framerate, false)
 	var full_tooltip: String = "%s\n(Frame: %d)" % [time_str, frame_nr]
 	if tooltip_text != full_tooltip:
 		tooltip_text = full_tooltip
 
 
-func _on_timeline_zoom_changed(new_zoom: float) -> void:
-	current_zoom = new_zoom
-	queue_redraw()
-
-
 func _get_major_frame_step() -> int:
 	# 120 pixels between major ticks.
-	var frames: float =  120.0 / current_zoom
+	var frames: float =  120.0 / Timeline.zoom
 	for step: int in STEPS:
 		if step >= frames:
 			return step
@@ -236,7 +230,7 @@ func _update_hovered_marker() -> void:
 
 	if _possible_drag != found_frame:
 		_possible_drag = found_frame
-		_drag_offset = (found_frame * current_zoom) - mouse_pos.x
+		_drag_offset = (found_frame * Timeline.zoom) - mouse_pos.x
 		queue_redraw() # Redraw to show highlight if desired.
 
 	if _possible_drag != -1:

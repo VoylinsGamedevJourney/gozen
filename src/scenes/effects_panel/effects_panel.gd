@@ -497,7 +497,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
 				if spinbox_x.get_line_edit().has_focus():
 					spinbox_x.get_line_edit().release_focus()
-				if param.get("is_linkable") and param.get("is_linked"):
+				if param.is_linkable and param.is_linked:
 					spinbox_y.set_value_no_signal(new_value)
 				var vector_val: Variant = Vector2(new_value, spinbox_y.value)
 				if typeof(value) == TYPE_VECTOR2I:
@@ -513,7 +513,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_y.value_changed.connect(func(new_value: float) -> void:
 				if spinbox_y.get_line_edit().has_focus():
 					spinbox_y.get_line_edit().release_focus()
-				if param.get("is_linkable") and param.get("is_linked"):
+				if param.is_linkable and param.is_linked:
 					spinbox_x.set_value_no_signal(new_value)
 				var vector_val: Variant = Vector2(spinbox_x.value, new_value)
 				if typeof(value) == TYPE_VECTOR2I:
@@ -522,11 +522,11 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 
 			hbox.add_child(spinbox_x)
 
-			if param.get("is_linkable"):
+			if param.is_linkable:
 				var link_button: TextureButton = TextureButton.new()
 				link_button.texture_normal = preload(Library.ICON_LINK)
 				link_button.toggle_mode = true
-				link_button.button_pressed = param.get("is_linked")
+				link_button.button_pressed = param.is_linked
 				link_button.modulate = Color(1, 1, 1, 1) if link_button.button_pressed else Color(1, 1, 1, 0.5)
 				link_button.ignore_texture_size = true
 				link_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -534,7 +534,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 				link_button.tooltip_text = tr("Link X and Y")
 				link_button.toggled.connect(func(toggled: bool) -> void:
-					param.set("is_linked", toggled)
+					param.is_linked = toggled
 					link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
 					if toggled:
 						spinbox_y.value = spinbox_x.value
@@ -748,7 +748,12 @@ func _get_add_effects_button(type: int) -> TextureButton:
 func _open_add_effects_popup(type: int, from_add_button: bool) -> void:
 	if current_clip:
 		var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
-		popup.call("load_effects", type, [current_clip] if from_add_button else ClipLogic.selected_clips)
+		var pass_clips: Array[ClipData] = []
+		if from_add_button:
+			pass_clips.append(current_clip)
+		else:
+			pass_clips.assign(ClipLogic.selected_clips)
+		popup.call("load_effects", type, pass_clips)
 
 
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:

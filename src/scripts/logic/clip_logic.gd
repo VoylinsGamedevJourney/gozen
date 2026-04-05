@@ -263,6 +263,42 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void
 		selected.emit(selected_clips[-1])
 
 
+func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
+	if clips_to_duplicate.is_empty():
+		return 0
+
+	var new_clips: Array[ClipData] = []
+	var failed_duplicates: int = 0
+	var existing_keys: Array[int] = clips.keys()
+
+	for clip: ClipData in clips_to_duplicate:
+		if !clip:
+			continue
+		var target_frame: int = clip.end
+		var free_region: Vector2i = TrackLogic.get_free_region(clip.track, target_frame)
+		if free_region.y - target_frame >= clip.duration:
+			var new_clip: ClipData = clip.duplicate(true)
+			new_clip.effects = ClipEffects.new()
+			new_clip.effects.fade_visual = clip.effects.fade_visual
+			new_clip.effects.fade_audio = clip.effects.fade_audio
+			new_clip.effects.ato_active = clip.effects.ato_active
+			new_clip.effects.ato_offset = clip.effects.ato_offset
+			new_clip.effects.ato_file = clip.effects.ato_file
+			new_clip.effects.video = _copy_visual_effects(clip.effects.video, 0)
+			new_clip.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
+			new_clip.start = target_frame
+			new_clip.id = Utils.get_unique_id(existing_keys)
+
+			existing_keys.append(new_clip.id)
+			new_clips.append(new_clip)
+		else:
+			failed_duplicates += 1
+
+	if not new_clips.is_empty():
+		insert_clips(new_clips, "Duplicate clip(s)")
+	return failed_duplicates
+
+
 #---- Helper functions ----
 
 ## This function is intended to be used when splitting clips to copy over the effects.

@@ -42,6 +42,7 @@ ClipLogic="*res://scripts/logic/clip_logic.gd"
 FolderLogic="*res://scripts/logic/folder_logic.gd"
 TrackLogic="*res://scripts/logic/track_logic.gd"
 NotificationManager="*uid://ny63rdy0fegk"
+Timeline="*uid://c34hosqdcr6ie"
 
 [debug]
 

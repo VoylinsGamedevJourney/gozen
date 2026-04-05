@@ -7,7 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
 [ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
 [ext_resource type="Script" uid="uid://b2fv3om3dl86q" path="res://scenes/timeline/track_controls.gd" id="5_qnybs"]
-[ext_resource type="Script" uid="uid://citi833fx6ole" path="res://scenes/timeline/timeline_draw_control.gd" id="7_vuipj"]
+[ext_resource type="Script" uid="uid://cagvlct2dimqn" path="res://scenes/timeline/draw/draw_track_lines.gd" id="8_nb4qx"]
+[ext_resource type="Script" uid="uid://bc4nf46qhfy2f" path="res://scenes/timeline/draw/draw_clips.gd" id="9_scsrl"]
+[ext_resource type="Script" uid="uid://cet1rulaufij4" path="res://scenes/timeline/draw/draw_preview.gd" id="10_gtnhe"]
+[ext_resource type="Script" uid="uid://kcqjjlov2mdt" path="res://scenes/timeline/draw/draw_mode.gd" id="11_3ixqu"]
+[ext_resource type="Script" uid="uid://bfrayg3us4bc4" path="res://scenes/timeline/draw/draw_playhead.gd" id="12_jai1p"]
+[ext_resource type="Script" uid="uid://dmdtrnk28clcd" path="res://scenes/timeline/draw/draw_box_selection.gd" id="13_7sle8"]
+[ext_resource type="Script" uid="uid://dvuveyfg7dshc" path="res://scenes/timeline/draw/draw_markers.gd" id="14_eyvjm"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ak2ly"]
 
@@ -124,48 +130,38 @@ button_split = NodePath("../../../TimelineModes/Margin/VBox/SplitModeButton")
 [node name="TrackLinesDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=22986217]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_track_lines"
+script = ExtResource("8_nb4qx")
 
 [node name="ClipsDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=1323832046]
 layout_mode = 2
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_clips"
+script = ExtResource("9_scsrl")
 
 [node name="PreviewDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=1851300607]
 layout_mode = 2
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_preview"
+script = ExtResource("10_gtnhe")
 
 [node name="ModeDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=71389255]
 layout_mode = 2
 mouse_filter = 1
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_mode"
+script = ExtResource("11_3ixqu")
 
 [node name="PlayheadDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=1764531311]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_playhead"
+script = ExtResource("12_jai1p")
 
 [node name="BoxSelectionDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=591200297]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_box_selection"
+script = ExtResource("13_7sle8")
 
 [node name="MarkersDrawn" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=113674296]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("7_vuipj")
-draw_func_name = "_draw_markers"
+script = ExtResource("14_eyvjm")
 
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="Grid/TimelineScroll/TimelinePanel/ModeDraw" method="_on_select_mode_button_pressed"]
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SplitModeButton" to="Grid/TimelineScroll/TimelinePanel/ModeDraw" method="_on_cut_mode_button_pressed"]
 [connection signal="gui_input" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_on_gui_input"]
 [connection signal="mouse_entered" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_on_mouse_exited"]
-[connection signal="zoom_changed" from="Grid/TimelineScroll/TimelinePanel" to="." method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimestampScroll/TimeStamps" method="_on_timeline_zoom_changed"]
-[connection signal="zoom_changed" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll" method="_on_timeline_zoom_changed"]

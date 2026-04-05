@@ -21,7 +21,7 @@ var files: Dictionary[int, FileData]
 # Runtime file data
 var file_data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
-var audio_wave: Dictionary[int, PackedFloat32Array] = {} ## { file: wave_data }
+var audio_wave: Dictionary[int, Dictionary] = {} ## { file: { 1: wave_1, 5: wave_4, 16: wave_16 }} - Different detail levels.
 var video_pools: Dictionary[int, Array] = {} ## { file: [Video] }
 var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
@@ -413,7 +413,7 @@ func _load_video(file: FileData) -> void:
 	if temp_video.get_audio() != null:
 		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 	else:
-		audio_wave[file.id] = PackedFloat32Array()
+		audio_wave[file.id] = { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() }
 		call_deferred("_on_wave_ready", file)
 
 
@@ -427,14 +427,16 @@ func _create_wave(file: FileData) -> void:
 		if temp_file:
 			var size: int = temp_file.get_length()
 			if size > 0 and size % 4 == 0:
-				audio_wave[file.id] = temp_file.get_buffer(size).to_float32_array()
-				call_deferred("_on_wave_ready", file)
-				return
+				var loaded_wave: Variant = temp_file.get_var()
+				if typeof(loaded_wave) == TYPE_DICTIONARY:
+					audio_wave[file.id] = loaded_wave
+					call_deferred("_on_wave_ready", file)
+					return
 
 	print("FileLogic: Creating wave for '%s' ..." % file.nickname)
 	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 	if data.is_empty():
-		audio_wave[file.id] = PackedFloat32Array()
+		audio_wave[file.id] = { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() }
 		return push_warning("Audio data is empty for file: " + file.nickname)
 
 	var bytes_size: float = 4 # 16 bit * stereo.
@@ -458,9 +460,14 @@ func _create_wave(file: FileData) -> void:
 	var frames_per_block: float = mix_rate / Project.data.framerate
 	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
 
-	var local_wave: PackedFloat32Array = PackedFloat32Array()
-	local_wave.resize(total_blocks)
-	audio_wave[file.id] = local_wave
+	var local_wave_1: PackedFloat32Array = PackedFloat32Array()
+	var local_wave_4: PackedFloat32Array = PackedFloat32Array()
+	var local_wave_16: PackedFloat32Array = PackedFloat32Array()
+	local_wave_1.resize(total_blocks)
+	local_wave_4.resize(ceili(total_blocks / 4.0))
+	local_wave_16.resize(ceili(total_blocks / 16.0))
+	audio_wave[file.id] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
+
 	for i: int in total_blocks:
 		var max_abs_amplitude: float = 0.0
 		var start_frame: int = floori(i * frames_per_block)
@@ -468,29 +475,31 @@ func _create_wave(file: FileData) -> void:
 
 		for frame_index: int in range(start_frame, end_frame):
 			var byte_offset: int = int(frame_index * bytes_size)
-			var frame_max_abs_amplitude: float = 0.0
-
 			if byte_offset + bytes_size > data.size():
-				push_warning("Attempted to read past end of audio data at frame %d." % frame_index)
 				break
 
 			var left_sample: int = data.decode_s16(byte_offset)
 			var right_sample: int = data.decode_s16(byte_offset + 2)
-			frame_max_abs_amplitude = max(abs(float(left_sample)), abs(float(right_sample)))
+			var frame_max_abs_amplitude: float = max(abs(float(left_sample)), abs(float(right_sample)))
 			if frame_max_abs_amplitude > max_abs_amplitude:
 				max_abs_amplitude = frame_max_abs_amplitude
 
-		# Incase we close the editor whilst wave data is still being created.
-		if local_wave.size() == 0:
-			return
-		local_wave[i] = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
+		var normalized: float = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
+		local_wave_1[i] = normalized
+		var i4: int = int(i / 4.0)
+		if normalized > local_wave_4[i4]:
+			local_wave_4[i4] = normalized
+
+		var i16: int = int(i / 16.0)
+		if normalized > local_wave_16[i16]:
+			local_wave_16[i16] = normalized
 
 		if i % 150 == 0:
 			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
 
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
 	if save_file:
-		save_file.store_buffer(local_wave.to_byte_array())
+		save_file.store_var(audio_wave[file.id])
 	call_deferred("_on_wave_ready", file)
 	print("FileLogic: Wave creation done for '%s'!" % file.nickname)
 
@@ -501,10 +510,11 @@ func _on_wave_ready(file: FileData) -> void:
 
 
 func generate_audio_thumb(file: FileData) -> Image:
-	var wave_data: PackedFloat32Array = audio_wave.get(file.id, [])
-	if !wave_data or wave_data.size() <= 0:
+	var wave_dict: Dictionary = audio_wave.get(file.id, {})
+	if wave_dict.is_empty():
 		return null # Up to the file panel to try and fetch later.
 
+	var wave_data: PackedFloat32Array = wave_dict.get(4, PackedFloat32Array())
 	var thumb_size: Vector2i = Vector2i(854, 480)
 	var thumb: Image = Image.create_empty(thumb_size.x, thumb_size.y, false, Image.FORMAT_RGB8)
 
@@ -572,7 +582,7 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 
 func get_audio_stream(file: FileData, instance_index: int) -> AudioStreamFFmpeg:
 	if file.type == EditorCore.TYPE.VIDEO:
-		var empty_wave: bool = audio_wave.has(file.id) and audio_wave[file.id].is_empty()
+		var empty_wave: bool = FileLogic.audio_wave.has(file.id) and FileLogic.audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
 		var video: Video = get_video_reader(file, instance_index)
