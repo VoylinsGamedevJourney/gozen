@@ -8,7 +8,10 @@ const DB_MAX: float = 0.0
 @export var bar_right: TextureProgressBar
 
 
+
 func _process(_delta: float) -> void:
+	if not is_visible_in_tree():
+		return
 	var db_left: float = DB_MIN
 	var db_right: float = DB_MIN
 	if EditorCore.is_playing:

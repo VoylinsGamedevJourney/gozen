@@ -439,7 +439,7 @@ func _notification(what: int) -> void:
 # --- Input handling ---
 
 func _unhandled_input(event: InputEvent) -> void:
-	if !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
+	if !is_visible_in_tree() and !Project.is_loaded or get_window().gui_get_focus_owner() is LineEdit:
 		return
 
 	if event.is_action_pressed("split_clips_at_playhead", false, true):
@@ -1194,10 +1194,6 @@ func _update_track_height(new_height: float) -> void:
 
 
 func _on_clip_deleted(clip_id: int) -> void:
-	for i: int in ClipLogic.selected_clips.size():
-		if ClipLogic.selected_clips[i].id == clip_id:
-			ClipLogic.selected_clips.remove_at(i)
-			break
 	if hovered_clip and hovered_clip.id == clip_id:
 		hovered_clip = null
 	if pressed_clip and pressed_clip.id == clip_id:
