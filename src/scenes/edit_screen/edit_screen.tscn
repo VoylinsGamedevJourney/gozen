@@ -4,8 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://dktafpwgtv5m3" path="res://scenes/file_panel/file_panel.tscn" id="2_rp1uh"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="3_qul4d"]
 [ext_resource type="PackedScene" uid="uid://7gty5dfdid1e" path="res://scenes/effects_panel/effects_panel.tscn" id="4_wnrwj"]
+[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline/timeline.tscn" id="5_timeline"]
+[ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="6_audiometer"]
 
-[node name="EditScreen" type="HSplitContainer" unique_id=485993837]
+[node name="EditScreen" type="VSplitContainer" unique_id=1652647041]
 auto_translate_mode = 2
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,16 +15,29 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-split_offsets = PackedInt32Array(260, 1608)
-split_offset = 260
 script = ExtResource("1_qa2ll")
 metadata/_tab_index = 0
 
-[node name="FilePanel" parent="." unique_id=125925803 instance=ExtResource("2_rp1uh")]
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=554343253]
+layout_mode = 2
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(0, 0)
+
+[node name="FilePanel" parent="HSplitContainer" unique_id=125925803 instance=ExtResource("2_rp1uh")]
 layout_mode = 2
 
-[node name="ViewPanel" parent="." unique_id=605257406 instance=ExtResource("3_qul4d")]
+[node name="ViewPanel" parent="HSplitContainer" unique_id=605257406 instance=ExtResource("3_qul4d")]
 layout_mode = 2
 
-[node name="EffectsPanel" parent="." unique_id=720021721 instance=ExtResource("4_wnrwj")]
+[node name="EffectsPanel" parent="HSplitContainer" unique_id=720021721 instance=ExtResource("4_wnrwj")]
+layout_mode = 2
+
+[node name="Bottom" type="HBoxContainer" parent="." unique_id=429502429]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="Timeline" parent="Bottom" unique_id=699018798 instance=ExtResource("5_timeline")]
+layout_mode = 2
+
+[node name="AudioMeter" parent="Bottom" unique_id=605267007 instance=ExtResource("6_audiometer")]
 layout_mode = 2

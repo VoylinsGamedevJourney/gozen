@@ -6,7 +6,6 @@ static var instance: EditorUI
 
 @export var menu_bar: HBoxContainer
 @export var screen_tab_container: TabContainer
-@export var vsplit: VSplitContainer
 
 
 var screen_buttons: Array[Button] = []
@@ -35,12 +34,6 @@ func _ready() -> void:
 			await Project.open(arg)
 			return
 	add_child(preload(Library.SCENE_STARTUP).instantiate())
-
-	vsplit.split_offsets = Settings.data.tab_vsplit_offsets
-	vsplit.dragged.connect(func(_o: int) -> void:
-		Settings.data.tab_vsplit_offsets = vsplit.split_offsets
-		Settings.save()
-	)
 
 
 func print_startup_info() -> void:

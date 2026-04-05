@@ -18,6 +18,7 @@ const FONT_SIZE_TIME_STAMP: int = 10
 
 @onready var scroll: ScrollContainer = get_parent()
 
+
 var current_zoom: float = 1.0
 var scrubbing: bool = false
 

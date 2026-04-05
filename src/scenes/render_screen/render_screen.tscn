@@ -5,8 +5,10 @@
 [ext_resource type="Script" uid="uid://dpqqceo10bxqs" path="res://scenes/render_screen/markers_panel.gd" id="3_ph73d"]
 [ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="3_s6tus"]
 [ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://scenes/view_panel/view_panel.tscn" id="4_kywnc"]
+[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline/timeline.tscn" id="5_timeline"]
+[ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="6_audiometer"]
 
-[node name="RenderScreen" type="HSplitContainer" unique_id=940456716 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderScreen" type="VSplitContainer" unique_id=1825001056 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 auto_translate_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,128 +16,133 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-split_offsets = PackedInt32Array(260, 1000)
-split_offset = 260
+split_offsets = PackedInt32Array(-100)
+split_offset = -100
 script = ExtResource("1_xqju4")
-button_save_render_profile = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
-option_button_render_profiles = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
-grid_audio = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
-button_render_draft = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
-path_line_edit = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
-video_codec_option_button = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
-video_quality_hslider = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider")
-video_gop_spin_box = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox")
-video_speed_label = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedLabel")
-video_speed_hslider = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider")
-audio_codec_option_button = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
-threads_spin_box = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
-render_region_check_button = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton")
-region_start_spinbox = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox")
-region_end_spinbox = NodePath("RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox")
+button_save_render_profile = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
+option_button_render_profiles = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
+grid_audio = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
+button_render_draft = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
+path_line_edit = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
+video_codec_option_button = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
+video_quality_hslider = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider")
+video_gop_spin_box = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox")
+video_speed_label = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedLabel")
+video_speed_hslider = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider")
+audio_codec_option_button = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
+threads_spin_box = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
+render_region_check_button = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton")
+region_start_spinbox = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox")
+region_end_spinbox = NodePath("HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox")
 metadata/_tab_index = 1
 
-[node name="RenderOptionsPanel" type="PanelContainer" parent="." unique_id=320643140]
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=1716666591]
+layout_mode = 2
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(0, 0)
+
+[node name="RenderOptionsPanel" type="PanelContainer" parent="HSplitContainer" unique_id=320643140]
 custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="RenderOptionsPanel" unique_id=103304975]
+[node name="Margin" type="MarginContainer" parent="HSplitContainer/RenderOptionsPanel" unique_id=103304975]
 layout_mode = 2
 
-[node name="Panel" type="PanelContainer" parent="RenderOptionsPanel/Margin" unique_id=913984965]
+[node name="Panel" type="PanelContainer" parent="HSplitContainer/RenderOptionsPanel/Margin" unique_id=913984965]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="RenderOptionsPanel/Margin/Panel" unique_id=1589296785]
+[node name="Margin" type="MarginContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel" unique_id=1589296785]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="RenderOptionsPanel/Margin/Panel/Margin" unique_id=5402295]
+[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin" unique_id=5402295]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="VBox" type="VBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer" unique_id=1695172238]
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer" unique_id=1695172238]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TitleLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=551090344]
+[node name="TitleLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=551090344]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "Render settings"
 
-[node name="TopSettingsHBox" type="GridContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=126554430]
+[node name="TopSettingsHBox" type="GridContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=126554430]
 layout_mode = 2
 columns = 2
 
-[node name="RenderProfilesLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=825339369]
+[node name="RenderProfilesLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=825339369]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Render profile"
 
-[node name="RenderProfilesHBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=2061338205]
+[node name="RenderProfilesHBox" type="HBoxContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=2061338205]
 layout_mode = 2
 
-[node name="SaveProfileButton" type="Button" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=732520328]
+[node name="SaveProfileButton" type="Button" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=732520328]
 layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Save current presets as a custom render profile."
 text = "Save profile"
 
-[node name="RenderProfileOptionButton" type="OptionButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=1560158541]
+[node name="RenderProfileOptionButton" type="OptionButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=1560158541]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/icon_max_width = 30
 expand_icon = true
 allow_reselect = true
 
-[node name="PathLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=521887475]
+[node name="PathLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=521887475]
 layout_mode = 2
 text = "Export path"
 
-[node name="RenderPathHBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=233639431]
+[node name="RenderPathHBox" type="HBoxContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=233639431]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PathLineEdit" type="LineEdit" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=1640164144]
+[node name="PathLineEdit" type="LineEdit" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=1640164144]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SelectPathButton" type="TextureButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=794295174]
+[node name="SelectPathButton" type="TextureButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=794295174]
 custom_minimum_size = Vector2(21, 0)
 layout_mode = 2
 texture_normal = ExtResource("1_qx788")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Line0" type="HSeparator" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1982436311]
+[node name="Line0" type="HSeparator" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1982436311]
 layout_mode = 2
 
-[node name="VideoLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1993433232]
+[node name="VideoLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1993433232]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "Render video settings"
 
-[node name="VideoGrid" type="GridContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=934166150]
+[node name="VideoGrid" type="GridContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=934166150]
 layout_mode = 2
 columns = 2
 
-[node name="CodecLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=499554428]
+[node name="CodecLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=499554428]
 layout_mode = 2
 text = "Video codec"
 
-[node name="VideoCodecOptionButton" type="OptionButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=445035793]
+[node name="VideoCodecOptionButton" type="OptionButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=445035793]
 auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="QualityLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=562777014]
+[node name="QualityLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=562777014]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
 mouse_filter = 1
 text = "Quality"
 
-[node name="QualityHSlider" type="HSlider" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=2006349503]
+[node name="QualityHSlider" type="HSlider" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=2006349503]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -144,14 +151,14 @@ min_value = -50.0
 max_value = -15.0
 value = -18.0
 
-[node name="SpeedLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1588468737]
+[node name="SpeedLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1588468737]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 mouse_filter = 1
 text = "Speed"
 
-[node name="SpeedHSlider" type="HSlider" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=481175201]
+[node name="SpeedHSlider" type="HSlider" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=481175201]
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
@@ -160,14 +167,14 @@ value = 3.0
 tick_count = 9
 ticks_on_borders = true
 
-[node name="GOPSizeLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=282949279]
+[node name="GOPSizeLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=282949279]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
 mouse_filter = 1
 text = "Gop size"
 
-[node name="GOPSizeSpinBox" type="SpinBox" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=275935804]
+[node name="GOPSizeSpinBox" type="SpinBox" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=275935804]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
@@ -175,97 +182,97 @@ value = 15.0
 allow_greater = true
 alignment = 2
 
-[node name="Line1" type="HSeparator" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=477291297]
+[node name="Line1" type="HSeparator" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=477291297]
 layout_mode = 2
 
-[node name="AudioTitleHBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=833948901]
+[node name="AudioTitleHBox" type="HBoxContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=833948901]
 layout_mode = 2
 
-[node name="AudioLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1229947372]
+[node name="AudioLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1229947372]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render audio settings"
 
-[node name="RenderAudioCheckButton" type="CheckButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=912503888]
+[node name="RenderAudioCheckButton" type="CheckButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=912503888]
 layout_mode = 2
 button_pressed = true
 flat = true
 
-[node name="AudioGrid" type="GridContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=784025072]
+[node name="AudioGrid" type="GridContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=784025072]
 layout_mode = 2
 columns = 2
 
-[node name="CodecLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1975231366]
+[node name="CodecLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1975231366]
 layout_mode = 2
 text = "Audio codec"
 
-[node name="AudioCodecOptionButton" type="OptionButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=2102339823]
+[node name="AudioCodecOptionButton" type="OptionButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=2102339823]
 auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Line2" type="HSeparator" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1942202810]
+[node name="Line2" type="HSeparator" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1942202810]
 layout_mode = 2
 
-[node name="ThreadsBoxLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=602579963]
+[node name="ThreadsBoxLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=602579963]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Multi-threading"
 
-[node name="ThreadsGrid" type="GridContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=62052778]
+[node name="ThreadsGrid" type="GridContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=62052778]
 layout_mode = 2
 columns = 2
 
-[node name="ThreadsCodecLabel" type="Label" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=1435755952]
+[node name="ThreadsCodecLabel" type="Label" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=1435755952]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Threads"
 
-[node name="ThreadsSpinBox" type="SpinBox" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=79929963]
+[node name="ThreadsSpinBox" type="SpinBox" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=79929963]
 layout_mode = 2
 tooltip_text = "The amount of threads you want to use for exporting your video."
 
-[node name="Line3" type="HSeparator" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=659322685]
+[node name="Line3" type="HSeparator" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=659322685]
 layout_mode = 2
 
-[node name="RenderRegionHBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=307245334]
+[node name="RenderRegionHBox" type="HBoxContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=307245334]
 layout_mode = 2
 
-[node name="RenderRegionCheckButton" type="CheckButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1904520474]
+[node name="RenderRegionCheckButton" type="CheckButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1904520474]
 layout_mode = 2
 text = "Render region"
 
-[node name="RegionStartSpinBox" type="SpinBox" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1779930809]
+[node name="RegionStartSpinBox" type="SpinBox" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1779930809]
 layout_mode = 2
 size_flags_horizontal = 3
 allow_greater = true
 prefix = "Start:"
 
-[node name="RegionEndSpinBox" type="SpinBox" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1103178594]
+[node name="RegionEndSpinBox" type="SpinBox" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1103178594]
 layout_mode = 2
 size_flags_horizontal = 3
 allow_greater = true
 prefix = "End:"
 
-[node name="HBox" type="HBoxContainer" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=167796106]
+[node name="HBox" type="HBoxContainer" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=167796106]
 layout_mode = 2
 
-[node name="DraftCheckButton" type="CheckButton" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1048576767]
+[node name="DraftCheckButton" type="CheckButton" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1048576767]
 layout_mode = 2
 tooltip_text = "Create a low quality draft version of your video."
 text = "Draft"
 
-[node name="StartRenderButton" type="Button" parent="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1206446587]
+[node name="StartRenderButton" type="Button" parent="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=1206446587]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Start render"
 
-[node name="ViewPanel" parent="." unique_id=1292878286 instance=ExtResource("4_kywnc")]
+[node name="ViewPanel" parent="HSplitContainer" unique_id=1292878286 instance=ExtResource("4_kywnc")]
 layout_mode = 2
 
-[node name="MarkersPanel" type="PanelContainer" parent="." unique_id=954369601 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
+[node name="MarkersPanel" type="PanelContainer" parent="HSplitContainer" unique_id=954369601 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
@@ -274,39 +281,39 @@ script = ExtResource("3_ph73d")
 markers_text_edit = NodePath("Margin/Panel/Margin/VBox/MarkersTextEdit")
 markers_option_button = NodePath("Margin/Panel/Margin/VBox/HBox/MarkersOptionButton")
 
-[node name="Margin" type="MarginContainer" parent="MarkersPanel" unique_id=1505583020]
+[node name="Margin" type="MarginContainer" parent="HSplitContainer/MarkersPanel" unique_id=1505583020]
 layout_mode = 2
 
-[node name="Panel" type="PanelContainer" parent="MarkersPanel/Margin" unique_id=1920946489]
+[node name="Panel" type="PanelContainer" parent="HSplitContainer/MarkersPanel/Margin" unique_id=1920946489]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="MarkersPanel/Margin/Panel" unique_id=696118770]
+[node name="Margin" type="MarginContainer" parent="HSplitContainer/MarkersPanel/Margin/Panel" unique_id=696118770]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="MarkersPanel/Margin/Panel/Margin" unique_id=554863772]
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/MarkersPanel/Margin/Panel/Margin" unique_id=554863772]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="MarkersPanel/Margin/Panel/Margin/VBox" unique_id=574841995]
+[node name="HBox" type="HBoxContainer" parent="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox" unique_id=574841995]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=746890284]
+[node name="TitleLabel" type="Label" parent="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=746890284]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Markers"
 
-[node name="MarkersOptionButton" type="OptionButton" parent="MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1523866582]
+[node name="MarkersOptionButton" type="OptionButton" parent="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1523866582]
 layout_mode = 2
 flat = true
 
-[node name="CopyMarkersButton" type="TextureButton" parent="MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1736109284]
+[node name="CopyMarkersButton" type="TextureButton" parent="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox/HBox" unique_id=1736109284]
 custom_minimum_size = Vector2(17, 0)
 layout_mode = 2
 texture_normal = ExtResource("3_s6tus")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="MarkersTextEdit" type="TextEdit" parent="MarkersPanel/Margin/Panel/Margin/VBox" unique_id=670353901]
+[node name="MarkersTextEdit" type="TextEdit" parent="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox" unique_id=670353901]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_readonly_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
@@ -314,20 +321,30 @@ editable = false
 scroll_smooth = true
 scroll_fit_content_width = true
 
-[connection signal="pressed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton" to="." method="_on_save_custom_profile_button_pressed"]
-[connection signal="item_selected" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton" to="." method="_on_render_profile_option_button_item_selected"]
-[connection signal="pressed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
-[connection signal="item_selected" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
-[connection signal="item_selected" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
-[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider" to="." method="_on_render_settings_changed" unbinds=1]
-[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider" to="." method="_on_render_settings_changed" unbinds=1]
-[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
-[connection signal="toggled" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
-[connection signal="item_selected" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
-[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
-[connection signal="toggled" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton" to="." method="_on_render_region_toggled"]
-[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox" to="." method="_on_render_region_toggled"]
-[connection signal="value_changed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox" to="." method="_on_render_region_toggled"]
-[connection signal="pressed" from="RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
-[connection signal="item_selected" from="MarkersPanel/Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="MarkersPanel" method="_on_markers_button_item_selected"]
-[connection signal="pressed" from="MarkersPanel/Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="MarkersPanel" method="_on_copy_markers_button_pressed"]
+[node name="Bottom" type="HBoxContainer" parent="." unique_id=1856284629]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="Timeline" parent="Bottom" unique_id=699018798 instance=ExtResource("5_timeline")]
+layout_mode = 2
+
+[node name="AudioMeter" parent="Bottom" unique_id=605267007 instance=ExtResource("6_audiometer")]
+layout_mode = 2
+
+[connection signal="pressed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton" to="." method="_on_save_custom_profile_button_pressed"]
+[connection signal="item_selected" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton" to="." method="_on_render_profile_option_button_item_selected"]
+[connection signal="pressed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
+[connection signal="item_selected" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
+[connection signal="item_selected" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="toggled" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
+[connection signal="item_selected" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="value_changed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="toggled" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton" to="." method="_on_render_region_toggled"]
+[connection signal="value_changed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox" to="." method="_on_render_region_toggled"]
+[connection signal="value_changed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox" to="." method="_on_render_region_toggled"]
+[connection signal="pressed" from="HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
+[connection signal="item_selected" from="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="HSplitContainer/MarkersPanel" method="_on_markers_button_item_selected"]
+[connection signal="pressed" from="HSplitContainer/MarkersPanel/Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="HSplitContainer/MarkersPanel" method="_on_copy_markers_button_pressed"]

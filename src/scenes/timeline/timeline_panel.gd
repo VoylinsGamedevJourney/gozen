@@ -1,3 +1,4 @@
+class_name TimelinePanel
 extends PanelContainer
 
 
@@ -87,7 +88,10 @@ const COLOR_SPLIT_FADE: Color = Color(1,0,0,0.3)
 @onready var draw_markers: Control = $MarkersDrawn
 
 
-var zoom: float = 1.0
+static var instances: Array[TimelinePanel] = []
+static var scroll_pos: Vector2 = Vector2.ZERO
+static var zoom: float = 1.0
+
 
 var mode: MODE = MODE.SELECT
 var state: STATE = STATE.CURSOR_MODE_SELECT: set = set_state
@@ -110,12 +114,14 @@ var waveform_amp: float = Settings.get_audio_waveform_amp()
 var track_height: float = 30
 var track_total_size: float = track_height + TRACK_LINE_WIDTH
 
+var _is_syncing: bool = false
 var _update_clips: bool = true
 var _drop_valid: bool = false
 
 
 
 func _ready() -> void:
+	instances.append(self)
 	Project.project_ready.connect(_project_ready)
 	Settings.on_waveform_update.connect(update_waveform_data)
 	Settings.on_show_time_mode_bar_changed.connect(_show_hide_mode_bar)
@@ -132,11 +138,17 @@ func _ready() -> void:
 	MarkerLogic.updated.connect(markers_redraw.unbind(1))
 	MarkerLogic.moving.connect(markers_redraw)
 
-	scroll.get_h_scroll_bar().value_changed.connect(draw_all.unbind(1))
-	scroll.get_v_scroll_bar().value_changed.connect(draw_all.unbind(1))
+	scroll.get_h_scroll_bar().value_changed.connect(_on_scroll_changed.unbind(1))
+	scroll.get_v_scroll_bar().value_changed.connect(_on_scroll_changed.unbind(1))
+
+	visibility_changed.connect(_on_visibility_changed)
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
+
+
+func _exit_tree() -> void:
+	instances.erase(self)
 
 
 # --- Drawing functions ---
@@ -1213,18 +1225,28 @@ func zoom_at_mouse(factor: float) -> void:
 	var old_mouse_pos_x: float = get_local_mouse_position().x
 	var mouse_viewport_offset: float = old_mouse_pos_x - scroll.scroll_horizontal
 
-	zoom = clamp(zoom * factor, ZOOM_MIN, ZOOM_MAX)
-	if old_zoom == zoom:
+	var new_zoom: float = clamp(zoom * factor, ZOOM_MIN, ZOOM_MAX)
+	if old_zoom == new_zoom:
 		accept_event()
 		return
 
+	zoom = new_zoom
 	var zoom_ratio: float = zoom / old_zoom
 	var new_mouse_pos_x: float = old_mouse_pos_x * zoom_ratio
 
+	_is_syncing = true
 	scroll.scroll_horizontal = int(new_mouse_pos_x - mouse_viewport_offset)
+	_is_syncing = false
+
 	zoom_changed.emit(zoom)
 	draw_all()
 	accept_event()
+
+	scroll_pos.x = scroll.get_h_scroll_bar().value
+	scroll_pos.y = scroll.get_v_scroll_bar().value
+	for instance: TimelinePanel in instances:
+		if instance != self:
+			instance.sync_zoom_and_scroll(zoom, scroll_pos)
 
 
 func get_frame_from_mouse() -> int:
@@ -1397,6 +1419,46 @@ func update_waveform_data() -> void:
 	waveform_style = Settings.get_audio_waveform_style()
 	waveform_amp = Settings.get_audio_waveform_amp()
 	draw_clips.queue_redraw()
+
+
+func sync_scroll(pos: Vector2) -> void:
+	_is_syncing = true
+	scroll.scroll_horizontal = int(pos.x)
+	scroll.scroll_vertical = int(pos.y)
+	draw_all()
+	_is_syncing = false
+
+
+func sync_zoom_and_scroll(new_zoom: float, pos: Vector2) -> void:
+	_is_syncing = true
+	zoom = new_zoom
+	zoom_changed.emit(zoom)
+	_apply_scroll.call_deferred(pos)
+	draw_all()
+
+
+func _apply_scroll(pos: Vector2) -> void:
+	scroll.scroll_horizontal = int(pos.x)
+	scroll.scroll_vertical = int(pos.y)
+	draw_all()
+	_is_syncing = false
+
+
+func _on_scroll_changed() -> void:
+	if _is_syncing:
+		return
+	scroll_pos.x = scroll.get_h_scroll_bar().value
+	scroll_pos.y = scroll.get_v_scroll_bar().value
+	draw_all()
+
+	for instance: TimelinePanel in instances:
+		if instance != self:
+			instance.sync_scroll(scroll_pos)
+
+
+func _on_visibility_changed() -> void:
+	if is_visible_in_tree():
+		sync_zoom_and_scroll(zoom, scroll_pos)
 
 
 
