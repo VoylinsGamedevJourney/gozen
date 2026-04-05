@@ -120,6 +120,10 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 		return _log_err("Couldn't open audio codec");
 	}
 
+	if (av_codec_ctx->ch_layout.nb_channels == 0) {
+		av_channel_layout_default(&av_codec_ctx->ch_layout, 2);
+	}
+
 	stereo = av_codec_ctx->ch_layout.nb_channels >= 2;
 	ch_layout = av_codec_ctx->ch_layout;
 	sample_rate = av_codec_ctx->sample_rate;

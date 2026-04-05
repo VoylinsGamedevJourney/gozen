@@ -37,6 +37,10 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 		return audio_data;
 	}
 
+	if (codec_ctx->ch_layout.nb_channels == 0) {
+		av_channel_layout_default(&codec_ctx->ch_layout, 2);
+	}
+
 	if (start_time > 0) {
 		int64_t seek_target = av_rescale_q(start_time * AV_TIME_BASE, AV_TIME_BASE_Q, stream->time_base);
 		av_seek_frame(format_ctx, stream->index, seek_target, AVSEEK_FLAG_BACKWARD);
@@ -73,12 +77,20 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 		max_bytes = (int64_t)(duration * TARGET_SAMPLE_RATE * bytes_per_sample * 2);
 		audio_data.resize(max_bytes);
 	} else {
-		double stream_duration_sec = (stream->duration != AV_NOPTS_VALUE)
-										 ? (stream->duration * av_q2d(stream->time_base))
-										 : ((double)format_ctx->duration / AV_TIME_BASE);
-		int64_t total_size = (size_t)(stream_duration_sec * TARGET_SAMPLE_RATE) * bytes_per_sample * 2;
-		if (total_size >= 2147483600)
-			return audio_data;
+		double stream_duration_sec = 0.0;
+		if (stream->duration != AV_NOPTS_VALUE && stream->duration > 0) {
+			stream_duration_sec = stream->duration * av_q2d(stream->time_base);
+		} else if (format_ctx->duration != AV_NOPTS_VALUE && format_ctx->duration > 0) {
+			stream_duration_sec = (double)format_ctx->duration / AV_TIME_BASE;
+		}
+
+		int64_t total_size = 0;
+		if (stream_duration_sec > 0.0) {
+			total_size = (int64_t)(stream_duration_sec * TARGET_SAMPLE_RATE) * bytes_per_sample * 2;
+			if (total_size >= 2147483600) {
+				total_size = 2147483600 - 1;
+			}
+		}
 		audio_data.resize(total_size);
 	}
 
@@ -224,7 +236,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 	if (stream_index >= 0 && stream_index < format_ctx->nb_streams) {
 		AVCodecParameters* av_codec_params = format_ctx->streams[stream_index]->codecpar;
 		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
-			data = _get_audio(format_ctx, format_ctx->streams[stream_index], start_time, duration);
+			data = _get_audio(format_ctx, format_ctx->streams[stream_index], fetch_start_time, fetch_duration);
 	} else {
 		_log_err("Invalid stream index");
 	}
