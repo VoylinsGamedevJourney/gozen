@@ -58,11 +58,6 @@ texture_normal = ExtResource("4_qnybs")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Button" type="Button" parent="TimelineModes/Margin/VBox/CutModeButton" unique_id=1670725053]
-layout_mode = 0
-offset_right = 14.0
-offset_bottom = 4.0
-
 [node name="Grid" type="GridContainer" parent="." unique_id=1105908258]
 layout_mode = 2
 size_flags_horizontal = 3

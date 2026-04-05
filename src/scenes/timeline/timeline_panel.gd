@@ -1344,21 +1344,37 @@ func duplicate_selected_clips() -> void:
 	if ClipLogic.selected_clips.is_empty():
 		return
 
-	var requests: Array[ClipRequest] = []
+	var new_clips: Array[ClipData] = []
 	var failed_duplicates: int = 0
+	var existing_keys: Array[int] = ClipLogic.clips.keys()
+
 	for clip: ClipData in ClipLogic.selected_clips:
 		if !clip:
 			continue
 		var target_frame: int = clip.end
 		var free_region: Vector2i = TrackLogic.get_free_region(clip.track, target_frame)
-
 		if free_region.y - target_frame >= clip.duration:
-			var file: FileData = FileLogic.files[clip.file]
-			requests.append(ClipRequest.add_request(file, clip.track, target_frame))
+			var new_clip: ClipData = clip.duplicate(true)
+			new_clip.effects = ClipEffects.new()
+			new_clip.effects.fade_visual = clip.effects.fade_visual
+			new_clip.effects.fade_audio = clip.effects.fade_audio
+			new_clip.effects.ato_active = clip.effects.ato_active
+			new_clip.effects.ato_offset = clip.effects.ato_offset
+			new_clip.effects.ato_file = clip.effects.ato_file
+			new_clip.effects.video = ClipLogic._copy_visual_effects(clip.effects.video, 0)
+			new_clip.effects.audio = ClipLogic._copy_audio_effects(clip.effects.audio, 0)
+			new_clip.start = target_frame
+			new_clip.id = Utils.get_unique_id(existing_keys)
+
+			existing_keys.append(new_clip.id)
+			new_clips.append(new_clip)
 		else:
 			failed_duplicates += 1
-	if not requests.is_empty():
-		ClipLogic.add(requests)
+
+	if not new_clips.is_empty():
+		ClipLogic.insert_clips(new_clips, "Duplicate clip(s)")
+		draw_clips.queue_redraw()
+
 	if failed_duplicates != 0:
 		var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Duplication failed"))
 		dialog.dialog_text = tr("Could not duplicate %d clip(s) because there was not enough empty space.") % failed_duplicates

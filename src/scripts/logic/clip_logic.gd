@@ -246,13 +246,13 @@ func paste_copied_clips() -> void:
 		new_clip.id = Utils.get_unique_id(existing_keys)
 		existing_keys.append(new_clip.id)
 		clips_to_paste.append(new_clip)
-	_paste(clips_to_paste)
+	insert_clips(clips_to_paste, "Paste clip(s)")
 
 
-func _paste(clips_to_paste: Array[ClipData]) -> void:
-	InputManager.undo_redo.create_action("Paste clip(s)")
+func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void:
+	InputManager.undo_redo.create_action(action_name)
 	var new_selected: Array[ClipData] = []
-	for clip: ClipData in clips_to_paste:
+	for clip: ClipData in clips_to_insert:
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(clip))
 		InputManager.undo_redo.add_undo_method(_delete.bind(clip))
 		new_selected.append(clip)

@@ -432,7 +432,7 @@ func _create_wave(file: FileData) -> void:
 		audio_wave[file.id] = PackedFloat32Array()
 		return push_warning("Audio data is empty!")
 
-	var bytes_size: float = 4 # 16 bit * stereo
+	var bytes_size: float = 4 # 16 bit * stereo.
 	var total_frames: int = int(data.size() / bytes_size)
 
 	# Calculate actual mix rate based on the audio length.
@@ -471,9 +471,7 @@ func _create_wave(file: FileData) -> void:
 
 			var left_sample: int = data.decode_s16(byte_offset)
 			var right_sample: int = data.decode_s16(byte_offset + 2)
-
 			frame_max_abs_amplitude = max(abs(float(left_sample)), abs(float(right_sample)))
-
 			if frame_max_abs_amplitude > max_abs_amplitude:
 				max_abs_amplitude = frame_max_abs_amplitude
 
@@ -515,7 +513,6 @@ func generate_audio_thumb(file: FileData) -> Image:
 		var start_index: int = floori(x_pos * data_per_pixel)
 		var end_index: int = min(ceili((x_pos + 1) * data_per_pixel), data_size)
 		var max_amp: float = 0.0
-
 		if start_index >= end_index:
 			continue # No data/End of data
 		for i: int in range(start_index, end_index):
