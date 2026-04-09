@@ -452,6 +452,7 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: 
 
 		match effect.id:
 			"volume": audio_data = _apply_effect_volume(audio_data, effect, offset_in_clip_frames)
+			"volume": audio_data = _apply_effect_volume(audio_data, effect, offset_in_clip_frames)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
 	# Place in correct position natively using combine offset relative to render region.
@@ -461,10 +462,6 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: 
 
 
 func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio, offset_frames: int) -> PackedByteArray:
-	# TODO: Move this to the GDExtension
-	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
-	stream.data_array = audio_data
-
 	var sample_count: int = floori(audio_data.size() / 4.0) # 16 bit stereo.
 	var framerate: float = project_data.framerate
 	var volume_param: EffectParam = effect.params[0]
@@ -472,28 +469,23 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio, offs
 	var samples_per_frame: int = ceili(MIX_RATE / framerate)
 	var frame_count: int = ceili(float(sample_count) / samples_per_frame)
 
+	var frame_volumes: PackedFloat32Array = PackedFloat32Array()
+	frame_volumes.resize(frame_count)
+
+	var all_one: bool = true
 	for frame: int in frame_count:
 		if cancel_encoding:
 			break
 		var actual_frame: int = frame + offset_frames
 		var volume_db: float = effect.get_value(volume_param, actual_frame)
 		var volume_linear: float = db_to_linear(volume_db)
-		if is_equal_approx(volume_linear, 1.0):
-			continue
+		frame_volumes[frame] = volume_linear
+		if not is_equal_approx(volume_linear, 1.0):
+			all_one = false
 
-		var start_sample: int = frame * samples_per_frame
-		var end_sample: int = mini(start_sample + samples_per_frame, sample_count)
-		for i: int in range(start_sample, end_sample):
-			var byte_pos: int = i * 4
-			stream.seek(byte_pos)
-			var left: int = stream.get_16()
-			var right: int = stream.get_16()
-
-			# Apply volume and write changes.
-			stream.seek(byte_pos)
-			stream.put_16(clampi(int(left * volume_linear), AUDIO_MIN, AUDIO_MAX))
-			stream.put_16(clampi(int(right * volume_linear), AUDIO_MIN, AUDIO_MAX))
-	return stream.data_array
+	if all_one:
+		return audio_data
+	return Audio.apply_dynamic_volume(audio_data, frame_volumes, MIX_RATE, framerate)
 
 
 # --- RGBA to YUV handling ---

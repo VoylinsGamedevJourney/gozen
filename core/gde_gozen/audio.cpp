@@ -323,7 +323,34 @@ PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 		for (size_t i = 0; i < sample_count; i += 2)
 			pw_data[i] = pw_data[i + 1];
 	}
+	return audio_data;
+}
 
+PackedByteArray Audio::apply_dynamic_volume(PackedByteArray audio_data, PackedFloat32Array frame_volumes,
+											float mix_rate, float framerate) {
+	if (audio_data.size() == 0 || frame_volumes.size() == 0) {
+		return audio_data;
+	}
+
+	const int sample_count = audio_data.size() / 4; // 16-bit stereo samples.
+	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	int samples_per_frame = std::ceil(mix_rate / framerate);
+	int total_frames = frame_volumes.size();
+
+	for (int frame = 0; frame < total_frames; ++frame) {
+		float volume_linear = frame_volumes[frame];
+		if (Math::is_equal_approx(volume_linear, 1.0f)) {
+			continue;
+		}
+
+		int start_sample = frame * samples_per_frame;
+		int end_sample = MIN(start_sample + samples_per_frame, sample_count);
+		for (int i = start_sample; i < end_sample; ++i) {
+			int idx = i * 2;
+			pw_data[idx] = Math::clamp((int32_t)(pw_data[idx] * volume_linear), -32768, 32767);
+			pw_data[idx + 1] = Math::clamp((int32_t)(pw_data[idx + 1] * volume_linear), -32768, 32767);
+		}
+	}
 	return audio_data;
 }
 
@@ -365,6 +392,9 @@ void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio", D_METHOD("change_db", "audio_data", "db"), &Audio::change_db);
 	ClassDB::bind_static_method("Audio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
 								&Audio::change_to_mono);
+	ClassDB::bind_static_method(
+		"Audio", D_METHOD("apply_dynamic_volume", "audio_data", "frame_volumes", "mix_rate", "framerate"),
+		&Audio::apply_dynamic_volume);
 
 	ClassDB::bind_static_method(
 		"Audio",
