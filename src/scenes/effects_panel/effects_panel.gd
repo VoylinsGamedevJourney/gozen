@@ -490,11 +490,26 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
 			spinbox.value_changed.connect(func(val: float) -> void:
-				if spinbox.get_line_edit().has_focus():
-					spinbox.get_line_edit().release_focus()
-				update_call.call(val)
-			)
+					if spinbox.get_line_edit().has_focus():
+						spinbox.get_line_edit().release_focus()
+					update_call.call(val))
 			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+			var scroll_handler: Callable = func(event: InputEvent) -> void:
+					if event is InputEventMouseButton:
+						var mouse_event: InputEventMouseButton = event
+						if !mouse_event.pressed:
+							return
+						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+							spinbox.value += spinbox.step
+							spinbox.accept_event()
+						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+							spinbox.value -= spinbox.step
+							spinbox.accept_event()
+
+			spinbox.gui_input.connect(scroll_handler)
+			spinbox.get_line_edit().gui_input.connect(scroll_handler)
+
 			return spinbox
 		TYPE_VECTOR2, TYPE_VECTOR2I:
 			var hbox: HBoxContainer = HBoxContainer.new()
@@ -510,14 +525,29 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
-				if spinbox_x.get_line_edit().has_focus():
-					spinbox_x.get_line_edit().release_focus()
-				if param.is_linkable and param.is_linked:
-					spinbox_y.set_value_no_signal(new_value)
-				var vector_val: Variant = Vector2(new_value, spinbox_y.value)
-				if typeof(value) == TYPE_VECTOR2I:
-					vector_val = Vector2i(vector_val as Vector2)
-				update_call.call(vector_val))
+					if spinbox_x.get_line_edit().has_focus():
+						spinbox_x.get_line_edit().release_focus()
+					if param.is_linkable and param.is_linked:
+						spinbox_y.set_value_no_signal(new_value)
+					var vector_val: Variant = Vector2(new_value, spinbox_y.value)
+					if typeof(value) == TYPE_VECTOR2I:
+						vector_val = Vector2i(vector_val as Vector2)
+					update_call.call(vector_val))
+
+			var scroll_handler_x: Callable = func(event: InputEvent) -> void:
+					if event is InputEventMouseButton:
+						var mouse_event: InputEventMouseButton = event
+						if !mouse_event.pressed:
+							return
+						if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+							spinbox_x.value += spinbox_x.step
+							spinbox_x.accept_event()
+						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+							spinbox_x.value -= spinbox_x.step
+							spinbox_x.accept_event()
+			spinbox_x.gui_input.connect(scroll_handler_x)
+			spinbox_x.get_line_edit().gui_input.connect(scroll_handler_x)
+
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
 			spinbox_y.max_value = param.max_value.y if param.max_value != null else MAX_VALUE
@@ -526,14 +556,29 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
 			spinbox_y.value_changed.connect(func(new_value: float) -> void:
-				if spinbox_y.get_line_edit().has_focus():
-					spinbox_y.get_line_edit().release_focus()
-				if param.is_linkable and param.is_linked:
-					spinbox_x.set_value_no_signal(new_value)
-				var vector_val: Variant = Vector2(spinbox_x.value, new_value)
-				if typeof(value) == TYPE_VECTOR2I:
-					vector_val = Vector2i(vector_val as Vector2)
-				update_call.call(vector_val))
+					if spinbox_y.get_line_edit().has_focus():
+						spinbox_y.get_line_edit().release_focus()
+					if param.is_linkable and param.is_linked:
+						spinbox_x.set_value_no_signal(new_value)
+					var vector_val: Variant = Vector2(spinbox_x.value, new_value)
+					if typeof(value) == TYPE_VECTOR2I:
+						vector_val = Vector2i(vector_val as Vector2)
+					update_call.call(vector_val))
+
+
+			var scroll_handler_y: Callable = func(event: InputEvent) -> void:
+					if event is InputEventMouseButton:
+						var mouse_event: InputEventMouseButton = event
+						if !mouse_event.pressed:
+							return
+						if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+							spinbox_y.value += spinbox_y.step
+							spinbox_y.accept_event()
+						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+							spinbox_y.value -= spinbox_y.step
+							spinbox_y.accept_event()
+			spinbox_y.gui_input.connect(scroll_handler_y)
+			spinbox_y.get_line_edit().gui_input.connect(scroll_handler_y)
 
 			hbox.add_child(spinbox_x)
 
