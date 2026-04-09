@@ -140,10 +140,11 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 		return _log_err("Failed to initialize SWR");
 	}
 
-	if (av_stream->start_time != AV_NOPTS_VALUE)
+	if (av_stream->start_time != AV_NOPTS_VALUE) {
 		start_time = av_stream->start_time;
-	else
+	} else {
 		start_time = 0;
+	}
 
 	loaded = true;
 	mutex->unlock();
@@ -305,7 +306,7 @@ int32_t AudioStreamFFmpegPlayback::_mix_resampled(AudioFrame* p_buffer, int32_t 
 		return p_frames;
 	}
 
-	// We still have some data to be sent over
+	// We still have some data to be sent over.
 	else if (buffer_fill > 0) {
 		for (int i = 0; i < buffer_fill; ++i)
 			p_buffer[i] =
@@ -322,7 +323,7 @@ int32_t AudioStreamFFmpegPlayback::_mix_resampled(AudioFrame* p_buffer, int32_t 
 bool AudioStreamFFmpegPlayback::fill_buffer() {
 	audio_stream_ffmpeg->mutex->lock();
 	if (audio_stream_ffmpeg->file_path == "") {
-		AudioStreamFFmpeg::_log_err("Can't fill buffer, path is null!");
+		AudioStreamFFmpeg::_log_err("AudioStreamPlayback: Can't fill buffer, path is null!");
 		audio_stream_ffmpeg->mutex->unlock();
 		return false;
 	}
@@ -363,7 +364,7 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 	size_t byte_size = new_samples * audio_stream_ffmpeg->bytes_per_sample;
 	byte_size *= 2;
 
-	// Check if there is enough space in the buffer
+	// Check if there is enough space in the buffer.
 	if (buffer_fill + new_samples > buffer_len) {
 		audio_stream_ffmpeg->_log_err("Buffer overflow prevented in fill_buffer!");
 		av_frame_unref(av_frame.get());

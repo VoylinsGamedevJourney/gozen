@@ -1,4 +1,4 @@
-extends VSplitContainer
+extends HSplitContainer
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
 const USER_PROFILES_PATH: String = "user://render_profiles/"
@@ -8,6 +8,10 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export var option_button_render_profiles: OptionButton
 @export var grid_audio: GridContainer
 @export var button_render_draft: CheckButton
+
+@export_group("Views")
+@export var view_horizontal: PanelContainer
+@export var view_vertical: PanelContainer
 
 @export_group("Path")
 @export var path_line_edit: LineEdit
@@ -74,16 +78,17 @@ func _ready() -> void:
 	_on_render_profile_option_button_item_selected(0)
 	button_save_render_profile.visible = false
 
+	var v_split: VSplitContainer = $VSplitContainer
 	if Settings.data.tab_vsplit_offsets.size() > 0:
-		split_offset = Settings.data.tab_vsplit_offsets[0]
-	dragged.connect(func(offset: int) -> void:
+		v_split.split_offset = Settings.data.tab_vsplit_offsets[0]
+	v_split.dragged.connect(func(offset: int) -> void:
 			if Settings.data.tab_vsplit_offsets.is_empty():
 				Settings.data.tab_vsplit_offsets.append(offset)
 			else:
 				Settings.data.tab_vsplit_offsets[0] = offset
 			Settings.save())
 
-	var top_split: HSplitContainer = get_child(0)
+	var top_split: HSplitContainer = $VSplitContainer/HSplitContainer
 	top_split.split_offsets = Settings.data.tab_render_hsplit_offsets
 	top_split.dragged.connect(func(_o: int) -> void:
 			Settings.data.tab_render_hsplit_offsets = top_split.split_offsets
@@ -93,6 +98,13 @@ func _ready() -> void:
 func _on_project_ready() -> void:
 	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
 	_on_render_region_updated()
+
+	# "Short" editing mode.
+	var res: Vector2i = Project.data.resolution
+	var horizontal: bool = res.x > res.y
+	view_horizontal.visible = horizontal
+	view_vertical.visible = !horizontal
+
 
 
 func _on_render_region_updated() -> void:
@@ -519,7 +531,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
 		DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
 
-	# Fix filename to not cause issues
+	# Fix filename to not cause issues.
 	var save_name: String = profile_name.to_lower().validate_filename()
 	var save_path: String = USER_PROFILES_PATH.path_join(save_name + ".tres")
 	var _err: int = ResourceSaver.save(new_profile, save_path)
