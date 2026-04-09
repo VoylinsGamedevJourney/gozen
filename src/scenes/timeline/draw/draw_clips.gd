@@ -94,12 +94,25 @@ func _draw() -> void:
 		if clip.type in EditorCore.AUDIO_TYPES:
 			_draw_fade_handles(clip, box_pos, false, show_handles) # Top.
 
+		# - Clip speed tint
+		if not is_equal_approx(clip.speed, 1.0):
+			draw_rect(final_rect, Color(1.0, 1.0, 0.0, 0.3))
+
 		# - Clip nickname
 		if clip_rect.size.x > 20:
 			var speed: float = clip.speed
 			var text: String = FileLogic.files[clip.file].nickname
+
 			if not is_equal_approx(speed, 1.0):
-				text += "  [%d%%]" % int(speed * 100)
+				var speed_text: String = "speed: %d%%" % int(speed * 100)
+				draw_string(
+						get_theme_default_font(),
+						Vector2(text_pos_x, box_pos.y + Timeline.track_height - 4),
+						speed_text,
+						HORIZONTAL_ALIGNMENT_LEFT,
+						clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
+						10,
+						Color(1.0, 1.0, 1.0, 0.5))
 
 			draw_string(
 					get_theme_default_font(),
