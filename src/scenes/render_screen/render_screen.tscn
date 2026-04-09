@@ -251,12 +251,14 @@ layout_mode = 2
 text = "Render region"
 
 [node name="RegionStartSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1779930809]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 allow_greater = true
 prefix = "Start:"
 
 [node name="RegionEndSpinBox" type="SpinBox" parent="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1103178594]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 allow_greater = true

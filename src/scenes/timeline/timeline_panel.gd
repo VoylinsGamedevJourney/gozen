@@ -56,6 +56,7 @@ func _ready() -> void:
 	Settings.on_show_time_mode_bar_changed.connect(_show_hide_mode_bar)
 	Settings.on_track_height_changed.connect(_update_track_height)
 	EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw)
+	FileLogic.files_dropped_and_loaded.connect(_on_files_dropped_and_loaded)
 
 	var markers_redraw: Callable = draw_markers.queue_redraw
 	MarkerLogic.added.connect(markers_redraw.unbind(1))
@@ -66,9 +67,8 @@ func _ready() -> void:
 	button_snap.toggled.connect(func(toggled: bool) -> void:
 			Timeline.snap_enabled = toggled)
 
-	visibility_changed.connect(func() -> void: if is_visible_in_tree():
-			await get_tree().process_frame
-			draw_all())
+	visibility_changed.connect(_redraw_on_change)
+	get_window().size_changed.connect(_redraw_on_change)
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
@@ -893,6 +893,31 @@ func split_clips_at(frame_pos: int) -> void:
 	draw_clips.queue_redraw()
 
 
+func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -> void:
+	if get_global_rect().has_point(screen_pos):
+		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
+		var track_idx: int = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
+		var frame_nr: int = maxi(ceili((local_mouse.x + Timeline.scroll_x) / Timeline.zoom), 0)
+
+		var drag_data: Draggable = Draggable.new()
+		drag_data.is_file = true
+		for file: FileData in files:
+			drag_data.ids.append(file.id)
+			drag_data.duration += file.duration
+		drag_data.mouse_offset = 0
+
+		Timeline.draggable = drag_data
+		if Timeline.can_drop_new_clips(track_idx, frame_nr, SAFE_ZONE):
+			var requests: Array[ClipRequest] = []
+			var total_duration: int = 0
+			for file: FileData in files:
+				requests.append(ClipRequest.add_request(file, track_idx, Timeline.draggable.frame_offset + total_duration))
+				total_duration += file.duration
+			ClipLogic.add(requests)
+		Timeline.draggable = null
+		Timeline.state = Timeline.STATE.SELECT
+
+
 func trim_clips_at(frame_pos: int, from_end: bool) -> void:
 	var requests: Array[ClipRequest] = []
 
@@ -924,6 +949,11 @@ func draw_all() -> void:
 	draw_box_selection.queue_redraw()
 	draw_markers.queue_redraw()
 
+
+func _redraw_on_change() -> void:
+	if is_visible_in_tree():
+		await get_tree().process_frame
+		draw_all()
 
 
 

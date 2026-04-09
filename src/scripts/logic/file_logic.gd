@@ -12,20 +12,23 @@ signal audio_wave_generated(file: FileData)
 
 signal video_loaded(file: FileData)
 
+signal files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2)
 
-const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo)
+
+const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo).
 
 
 var files: Dictionary[int, FileData]
 
 # Runtime file data
-var file_data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK
+var file_data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK.
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
 var audio_wave: Dictionary[int, Dictionary] = {} ## { file: { 1: wave_1, 5: wave_4, 16: wave_16 }} - Different detail levels.
 var video_pools: Dictionary[int, Array] = {} ## { file: [Video] }
 var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
 var files_dropping: bool = false
+var drop_mouse_pos: Vector2 = Vector2.ZERO
 
 var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
 
@@ -273,6 +276,7 @@ func duplicate_text(file: FileData) -> void:
 
 ## File dropping can't be un-done with the undo_redo system!
 func dropped(dropped_file_paths: PackedStringArray) -> void:
+	drop_mouse_pos = get_viewport().get_mouse_position()
 	files_dropping = true
 	var existing_paths: Array[String] = []
 	for file: FileData in files.values():
@@ -305,12 +309,14 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 			error_occured = true
 	progress.update(10, tr("Files loading ..."))
 
+	var final_dropped_files: Array[FileData] = []
 	while !dropped_files.is_empty(): # Looping till all files are loaded.
 		await get_tree().process_frame
 		for file: FileData in dropped_files:
 			if file_data.has(file.id) and file_data[file.id]:
 				progress.update_file(file.path, 1)
 				progress.increment_bar(progress_increment)
+				final_dropped_files.append(file)
 				dropped_files.erase(file)
 				break
 			elif !file_data.has(file.id) and !Threader.check_tasks(file):
@@ -321,6 +327,7 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 	await RenderingServer.frame_post_draw
 	if !error_occured:
 		PopupManager.close(PopupManager.PROGRESS)
+		files_dropped_and_loaded.emit(final_dropped_files, drop_mouse_pos)
 	else:
 		progress.show_close()
 
