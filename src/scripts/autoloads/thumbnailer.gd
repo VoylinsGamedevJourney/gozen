@@ -25,9 +25,8 @@ func _ready() -> void:
 		if DirAccess.make_dir_absolute(thumb_folder):
 			printerr("FilePanel: Couldn't create folder at %s!" % thumb_folder)
 
-	var data_path: String = thumb_folder + DATA_NAME
-
 	# Create the thumb data file if not existing.
+	var data_path: String = thumb_folder + DATA_NAME
 	if FileAccess.file_exists(data_path):
 		var file: FileAccess = FileAccess.open(data_path, FileAccess.READ)
 		data = file.get_var()
@@ -130,6 +129,9 @@ func _gen_thumb(file: FileData) -> void:
 
 
 func _on_audio_wave_generated(file: FileData) -> void:
+	if file.type != EditorCore.TYPE.AUDIO:
+		return
+
 	# Remove the potentially flat/empty cached thumbnail data.
 	Threader.mutex.lock()
 	if data.has(file.path):
