@@ -37,7 +37,8 @@ class Audio : public Resource {
 	static PackedByteArray change_db(PackedByteArray audio_data, float db);
 	static PackedByteArray change_to_mono(PackedByteArray audio_data, bool left);
 
-	static PackedByteArray apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples);
+	static PackedByteArray apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples,
+									  int start_sample = 0, int total_samples = 0);
 
   protected:
 	static void _bind_methods();

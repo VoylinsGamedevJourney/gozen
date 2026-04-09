@@ -51,7 +51,6 @@ var stop_encoding: bool = false
 
 
 var _audio_cache: Dictionary = {}
-var _total_frames: int = 0
 
 
 
@@ -93,7 +92,6 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	await RenderingServer.frame_post_draw
 	start_time = Time.get_ticks_msec()
 	encoding_time = 0
-	_total_frames = end_frame - start_frame + 1
 
 	if !encoder.open(viewport.get_image().get_format() == Image.FORMAT_RGBA8):
 		stop_encoder()
@@ -282,7 +280,7 @@ func _encoding_loop() -> void:
 # --- Audio handling ---
 
 func _encode_and_send_audio(start_frame: int, end_frame: int) -> bool:
-	_prepare_audio_cache()
+	_prepare_audio_cache(start_frame, end_frame)
 	if cancel_encoding:
 		return false
 	var audio_data: PackedByteArray = encode_audio(start_frame, end_frame)
@@ -297,33 +295,50 @@ func _encode_and_send_audio(start_frame: int, end_frame: int) -> bool:
 	return true
 
 
-func _prepare_audio_cache() -> void:
+func _prepare_audio_cache(start_frame: int, end_frame: int) -> void:
 	_audio_cache.clear()
 	var file_counts: Dictionary = {}
+	var file_min_start: Dictionary = {}
+	var file_max_end: Dictionary = {}
 
 	for track: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[track].is_muted:
-			continue
+		if TrackLogic.tracks[track].is_muted: continue
 		for clip: ClipData in TrackLogic.track_clips[track].clips:
-			if clip.type in EditorCore.AUDIO_TYPES:
+			if clip.start > end_frame or clip.end < start_frame:
+				continue
+			elif clip.type in EditorCore.AUDIO_TYPES:
 				var info: Dictionary = _get_clip_audio_info(clip)
 				var path: String = info.path
 				file_counts[path] = file_counts.get(path, 0) + 1
 
+				var framerate: float = project_data.framerate
+				var region_start_frames: int = maxi(clip.start, start_frame)
+				var region_end_frames: int = mini(clip.end, end_frame + 1)
+				var start_offset_frames: int = region_start_frames - clip.start
+				var region_duration_frames: int = region_end_frames - region_start_frames
+
+				var required_start: float = info.start + (float(start_offset_frames) / framerate * clip.speed)
+				var required_end: float = required_start + (float(region_duration_frames) / framerate * clip.speed)
+
+				if !file_min_start.has(path) or required_start < file_min_start[path]:
+					file_min_start[path] = required_start
+				if !file_max_end.has(path) or required_end > file_max_end[path]:
+					file_max_end[path] = required_end
+
 	var sorted_files: Array = file_counts.keys()
 	sorted_files.sort_custom(func(a: String, b: String) -> bool: return file_counts[a] > file_counts[b])
 
-	if _total_frames < floori(project_data.timeline_end / 4.0):
-		# Else it would take too long to cache the audio data if we for example
-		# just need small parts for live-streams by example.
-		return
 	var cache_limit: int = 3
 	var cached_count: int = 0
 	for path: String in sorted_files:
-		if cancel_encoding or cached_count >= cache_limit:
-			break
+		if cancel_encoding or cached_count >= cache_limit: break
 		elif file_counts[path] > 1: # Only cache if it's re-used across multiple clips.
-			_audio_cache[path] = Audio.get_audio_data(path, -1, 0.0, -1.0)
+			var frame_start: float = maxf(0.0, file_min_start[path] as float)
+			var frame_duration: float = file_max_end[path] - frame_start
+			_audio_cache[path] = {
+				"data": Audio.get_audio_data(path, -1, frame_start, frame_duration),
+				"start_time": frame_start
+			}
 			cached_count += 1
 
 
@@ -351,10 +366,13 @@ func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
 	if end_frame == -1: end_frame = project_data.timeline_end
 	var audio: PackedByteArray = []
 	var framerate: float = project_data.framerate
-	var length: int = Utils.get_sample_count(end_frame + 1, framerate)
+	var total_frames: int = end_frame - start_frame + 1
+	var length: int = Utils.get_sample_count(total_frames, framerate)
 	audio.resize(length)
 
 	for track: int in TrackLogic.tracks.size():
+		if cancel_encoding:
+			break
 		if !TrackLogic.tracks[track].is_muted:
 			for clip: ClipData in TrackLogic.track_clips[track].clips:
 				if cancel_encoding:
@@ -362,24 +380,39 @@ func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
 				if clip.start > end_frame or clip.end < start_frame:
 					continue
 				if clip.type in EditorCore.AUDIO_TYPES:
-					audio = _handle_audio(clip, audio)
+					audio = _handle_audio(clip, audio, start_frame, end_frame)
 
-	var start_bytes: int = Utils.get_sample_count(start_frame, framerate)
-	return audio.slice(start_bytes)
+	return audio
 
 
-func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteArray:
+func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: int, region_end: int) -> PackedByteArray:
+	if cancel_encoding:
+		return master_audio
 	var framerate: float = project_data.framerate
 	var samples_per_frame: float = MIX_RATE / framerate
 
 	var info: Dictionary = _get_clip_audio_info(clip)
+
+	var clip_render_start: int = maxi(clip.start, region_start)
+	var clip_render_end: int = mini(clip.end, region_end + 1)
+	var render_frames: int = clip_render_end - clip_render_start
+	if render_frames <= 0:
+		return master_audio
+
+	var offset_in_clip_frames: int = clip_render_start - clip.start
+	var required_start_sec: float = info.start + (float(offset_in_clip_frames) / framerate * clip.speed)
+	var required_duration_sec: float = float(render_frames) / framerate * clip.speed
+
 	var audio_data: PackedByteArray
-	var start_bytes: int
 
 	if _audio_cache.has(info.path):
-		var cached_data: PackedByteArray = _audio_cache[info.path]
-		start_bytes = floori((info.start as float) * MIX_RATE) * 4
-		var duration_bytes: int = floori((info.duration as float) * MIX_RATE) * 4
+		var cache_dict: Dictionary = _audio_cache[info.path]
+		var cached_data: PackedByteArray = cache_dict["data"]
+		var cache_start_time: float = cache_dict["start_time"]
+
+		var relative_start_sec: float = required_start_sec - cache_start_time
+		var start_bytes: int = floori(relative_start_sec * MIX_RATE) * 4
+		var duration_bytes: int = floori(required_duration_sec * MIX_RATE) * 4
 
 		if start_bytes < 0:
 			var silence_bytes: int = abs(start_bytes)
@@ -396,18 +429,21 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteA
 		if audio_data.size() < duration_bytes:
 			audio_data.resize(duration_bytes)
 	else:
-		audio_data = Audio.get_audio_data(info.path as String, -1, info.start as float, info.duration as float)
+		audio_data = Audio.get_audio_data(info.path as String, -1, required_start_sec, required_duration_sec)
+
 	if audio_data.is_empty():
 		return master_audio
 
 	var fade_in: int = clip.effects.fade_audio.x
 	var fade_out: int = clip.effects.fade_audio.y
 
-	# First apply fades.
+	# First apply fades utilizing offset indices
 	if fade_in > 0 or fade_out > 0:
 		var fade_in_samples: int = floori(fade_in * samples_per_frame)
 		var fade_out_samples: int = floori(fade_out * samples_per_frame)
-		audio_data = Audio.apply_fade(audio_data, fade_in_samples, fade_out_samples)
+		var start_sample: int = floori(offset_in_clip_frames * samples_per_frame)
+		var total_samples: int = floori(clip.duration * samples_per_frame)
+		audio_data = Audio.apply_fade(audio_data, fade_in_samples, fade_out_samples, start_sample, total_samples)
 
 	# Apply all other effects to the clip audio data.
 	for effect: EffectAudio in clip.effects.audio:
@@ -415,21 +451,21 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray) -> PackedByteA
 			continue
 
 		match effect.id:
-			"volume": audio_data = _apply_effect_volume(audio_data, effect)
+			"volume": audio_data = _apply_effect_volume(audio_data, effect, offset_in_clip_frames)
 			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
 
-	# Place in correct position natively using combine offset.
-	var clip_start: int = clip.start
-	start_bytes = Utils.get_sample_count(clip_start, framerate)
-	return Audio.combine_data(master_audio, audio_data, start_bytes)
+	# Place in correct position natively using combine offset relative to render region.
+	return Audio.combine_data(
+			master_audio,	audio_data,
+			Utils.get_sample_count(clip_render_start - region_start, framerate))
 
 
-func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> PackedByteArray:
+func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio, offset_frames: int) -> PackedByteArray:
 	# TODO: Move this to the GDExtension
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 	stream.data_array = audio_data
 
-	var sample_count: int = floori(audio_data.size() / 4.0) # 16 bit stereo
+	var sample_count: int = floori(audio_data.size() / 4.0) # 16 bit stereo.
 	var framerate: float = project_data.framerate
 	var volume_param: EffectParam = effect.params[0]
 
@@ -437,7 +473,10 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio) -> P
 	var frame_count: int = ceili(float(sample_count) / samples_per_frame)
 
 	for frame: int in frame_count:
-		var volume_db: float = effect.get_value(volume_param, frame)
+		if cancel_encoding:
+			break
+		var actual_frame: int = frame + offset_frames
+		var volume_db: float = effect.get_value(volume_param, actual_frame)
 		var volume_linear: float = db_to_linear(volume_db)
 		if is_equal_approx(volume_linear, 1.0):
 			continue

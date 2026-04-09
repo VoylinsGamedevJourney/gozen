@@ -327,40 +327,30 @@ PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 	return audio_data;
 }
 
-
-PackedByteArray Audio::apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples) {
+PackedByteArray Audio::apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples,
+								  int start_sample, int total_samples) {
 	int16_t* samples = (int16_t*)audio_data.ptrw();
-	int sample_count = audio_data.size() / 2; // 16-bit stereo samples
+	int sample_count = audio_data.size() / 2; // 16-bit stereo samples.
+	if (fade_in_samples > 0 || fade_out_samples > 0) {
+		for (int i = 0; i < sample_count; i += 2) {
+			int current_sample = start_sample + (i / 2);
+			float volume = 1.0f;
+			if (fade_in_samples > 0 && current_sample < fade_in_samples) {
+				volume = (float)current_sample / (float)fade_in_samples;
+			}
 
-	// Apply fade in
-	if (fade_in_samples > 0) {
-		for (int i = 0; i < fade_in_samples * 2 && i < sample_count; i += 2) {
-			float volume = (float)(i / 2.0) / (float)fade_in_samples;
+			int fade_out_start = total_samples - fade_out_samples;
+			if (fade_out_samples > 0 && current_sample >= fade_out_start) {
+				volume *= 1.0f - ((float)(current_sample - fade_out_start) / (float)fade_out_samples);
+			}
 
-			samples[i] = (int16_t)(samples[i] * volume);		 // Left
-			samples[i + 1] = (int16_t)(samples[i + 1] * volume); // Right
+			if (volume < 1.0f) {
+				volume = Math::clamp(volume, 0.0f, 1.0f);
+				samples[i] = (int16_t)(samples[i] * volume);
+				samples[i + 1] = (int16_t)(samples[i + 1] * volume);
+			}
 		}
 	}
-
-	// Apply fade out
-	int total_stereo_frames = sample_count / 2;
-	int fade_out_start = total_stereo_frames - fade_out_samples;
-
-	if (fade_out_samples > 0 && fade_out_start < total_stereo_frames) {
-		int start_index = std::max(0, fade_out_start) * 2;
-
-		for (int i = start_index; i < sample_count; i += 2) {
-			int current_frame = i / 2;
-			int frames_into_fade = current_frame - fade_out_start;
-			float volume = 1.0f - ((float)frames_into_fade / (float)fade_out_samples);
-			if (volume < 0.0f)
-				volume = 0.0f;
-
-			samples[i] = (int16_t)(samples[i] * volume);		 // Left
-			samples[i + 1] = (int16_t)(samples[i + 1] * volume); // Right
-		}
-	}
-
 	return audio_data;
 }
 
@@ -376,6 +366,8 @@ void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
 								&Audio::change_to_mono);
 
-	ClassDB::bind_static_method("Audio", D_METHOD("apply_fade", "audio_data", "fade_in_samples", "fade_out_samples"),
-								&Audio::apply_fade);
+	ClassDB::bind_static_method(
+		"Audio",
+		D_METHOD("apply_fade", "audio_data", "fade_in_samples", "fade_out_samples", "start_sample", "total_samples"),
+		&Audio::apply_fade, DEFVAL(0), DEFVAL(0));
 }
