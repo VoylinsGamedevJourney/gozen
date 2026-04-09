@@ -53,11 +53,19 @@ func _draw() -> void:
 		var clip: ClipData = Timeline.resize_target.clip
 		var draw_start: float = clip.start
 		var draw_length: int = clip.duration
+		var draw_begin: int = clip.begin
+		var draw_speed: float = clip.speed
+
 		if !Timeline.resize_target.is_end:
 			draw_start += Timeline.resize_target.delta
 			draw_length -= Timeline.resize_target.delta
+			if Timeline.state == Timeline.STATE.RESIZING:
+				draw_begin += int(Timeline.resize_target.delta * clip.speed)
 		else:
 			draw_length += Timeline.resize_target.delta
+
+		if Timeline.state == Timeline.STATE.SPEEDING:
+			draw_speed = (clip.duration * clip.speed) / float(maxi(draw_length, 1))
 
 		var preview_position: Vector2 = Vector2(draw_start * zoom, clip.track * Timeline.track_total_size)
 		var preview_size: Vector2 = Vector2(draw_length * zoom, Timeline.track_height)
@@ -68,9 +76,34 @@ func _draw() -> void:
 			color = Color(1.0, 0.5, 0.0, 0.3) # Have different color on speeding.
 
 		# Drawing the original clip box and actual resized box.
-		# Drawing the original clip box and actual resized box.
 		draw_rect(clip_rect, color)
-		draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+		var preview_rect: Rect2 = Rect2(preview_position, preview_size)
+		draw_style_box(STYLE_BOX_PREVIEW, preview_rect)
+
+		var scroll_container: ScrollContainer = get_parent().get_parent()
+		var wave_file_id: int = clip.file
+		var wave_offset_sec: float = 0.0
+
+		if clip.effects.ato_active and clip.effects.ato_file != -1:
+			wave_file_id = clip.effects.ato_file
+			wave_offset_sec = clip.effects.ato_offset
+		else:
+			var target_file: FileData = FileLogic.files.get(clip.file)
+			if target_file and target_file.ato_active and target_file.ato_file != -1:
+				wave_file_id = target_file.ato_file
+				wave_offset_sec = target_file.ato_offset
+
+		var wave_dict: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
+		if not wave_dict.is_empty():
+			var lod: int = 1
+			if zoom < 0.2:
+				lod = 16
+			elif zoom < 0.8:
+				lod = 4
+
+			var audio_wave: PackedFloat32Array = wave_dict[lod]
+			var wave_begin: int = int((draw_begin + int(wave_offset_sec * Project.data.framerate)) / float(lod))
+			_draw_wave(audio_wave, wave_begin, int(draw_length / float(lod)), preview_rect, draw_speed, lod, scroll_container)
 
 
 func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, speed: float, lod: int, scroll_container: ScrollContainer) -> void:
