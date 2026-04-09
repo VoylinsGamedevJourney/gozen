@@ -425,8 +425,8 @@ func _create_yuv_params(video: Video) -> RID:
 	stream_writer.put_32(video.get_y_data().get_width())
 	stream_writer.put_32(video.get_u_data().get_width())
 	stream_writer.put_32(video.get_actual_width())
-	stream_writer.put_32(0) # Necessary padding
-	stream_writer.put_32(0) # Necessary padding
+	stream_writer.put_32(video.get_resolution().y)
+	stream_writer.put_32(0) # Necessary padding.
 
 	return device.uniform_buffer_create(stream_writer.data_array.size(), stream_writer.data_array)
 

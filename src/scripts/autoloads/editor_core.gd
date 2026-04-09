@@ -70,8 +70,9 @@ func _ready() -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	background = ColorRect.new()
 	background.color = Color("#000000") # Just a default color, get's changed later.
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.size = viewport.size
 	viewport.add_child(background)
+
 	add_child(viewport)
 
 
@@ -144,7 +145,7 @@ func _rebuild_structure() -> void:
 		var texture_rect: TextureRect = TextureRect.new()
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		texture_rect.size = Project.data.resolution
 		viewport.add_child(texture_rect)
 		viewport.move_child(texture_rect, 1)
 		view_textures[index] = texture_rect
@@ -154,25 +155,18 @@ func _rebuild_structure() -> void:
 		var settings: LabelSettings = LabelSettings.new()
 		var text_label: Label = Label.new()
 		text_label.label_settings = settings
-		text_viewport.size = Vector2i(1920, 1080)
+		text_viewport.size = Project.data.resolution
 		text_viewport.transparent_bg = true
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		text_label.size = Project.data.resolution
 		text_viewport.add_child(text_label)
 		add_child(text_viewport)
 		text_viewports[index] = text_viewport
 
 
 func _on_closing_editor() -> void:
-	for texture_rect: TextureRect in view_textures:
-		if is_instance_valid(texture_rect):
-			texture_rect.queue_free()
-	for text_viewport: SubViewport in text_viewports:
-		if is_instance_valid(text_viewport):
-			text_viewport.queue_free()
 	view_textures.clear()
 	audio_players.clear()
-	if is_instance_valid(viewport):
-		viewport.queue_free()
 	text_viewports.clear()
 
 	for compositor: VisualCompositor in compositors:

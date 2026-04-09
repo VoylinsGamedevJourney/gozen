@@ -23,23 +23,46 @@ layout(set = 0, binding = 5, std140) uniform Params {
     int y_width;
     int uv_width;
     int source_width;
-} params; // Ends at byte 80 (/16 = 5 blocks)
+    int source_height;
+} params; // Ends at byte 96 (/16 = 6 blocks)
 
 
 void main() {
     ivec2 id = ivec2(gl_GlobalInvocationID.xy);
 
-    if (id.x >= params.resolution.x || id.y >= params.resolution.y)
-        return; // Checking boundary
+    if (id.x >= params.resolution.x || id.y >= params.resolution.y) {
+        return; // Checking boundary.
+}
 
-    float source_x = (float(id.x) + 0.5) * (float(params.source_width) / float(params.resolution.x));
+    float aspect = float(params.source_width) / float(params.source_height);
+    float target_aspect = float(params.resolution.x) / float(params.resolution.y);
+    vec2 scale = vec2(1.0);
+    vec2 offset = vec2(0.0);
+    if (aspect > target_aspect) {
+        scale.y = target_aspect / aspect;
+        offset.y = (1.0 - scale.y) * 0.5;
+    } else {
+        scale.x = aspect / target_aspect;
+        offset.x = (1.0 - scale.x) * 0.5;
+    }
+
+    vec2 uv = (vec2(id) + 0.5) / vec2(params.resolution);
+    vec2 normalized_uv = (uv - offset) / scale;
+    if (normalized_uv.x < 0.0 || normalized_uv.x > 1.0 || normalized_uv.y < 0.0 || normalized_uv.y > 1.0) {
+        imageStore(output_image, id, vec4(0.0));
+        return;
+    }
+
+    float source_x = normalized_uv.x * float(params.source_width);
+    float source_y = normalized_uv.y * float(params.source_height);
 
     vec2 y_uv = vec2(
             source_x / float(params.y_width),
-            (float(id.y) + 0.5) / float(params.resolution.y));
+            source_y / float(params.source_height));
+
     vec2 uv_uv = vec2(
             (source_x * 0.5) / float(params.uv_width),
-            (float(id.y) * 0.5 + 0.5) / (float(params.resolution.y) * 0.5));
+            source_y / float(params.source_height));
 
     vec3 yuv = vec3(
             texture(y_data, y_uv).r,
@@ -47,7 +70,7 @@ void main() {
             texture(v_data, uv_uv).r);
 
     if (params.interlaced > 0) {
-        float pixel_height = 1.0 / params.resolution.y;
+        float pixel_height = 1.0 / float(params.source_height);
         float offset_direction = (params.interlaced == 1) ? -pixel_height : pixel_height;
         vec2 y_offset_uv = clamp(y_uv + vec2(0.0, offset_direction), 0.0, 1.0);
         vec2 uv_offset_uv = clamp(uv_uv + vec2(0.0, offset_direction), 0.0, 1.0);
@@ -60,6 +83,5 @@ void main() {
     }
 
     vec3 rgb = (params.color_matrix * vec4(yuv, 1.0)).rgb;
-
     imageStore(output_image, id, vec4(rgb, texture(a_data, y_uv).r));
 }
