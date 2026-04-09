@@ -816,7 +816,20 @@ func split_clips_at(frame_pos: int) -> void:
 			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 		return draw_clips.queue_redraw()
 
-	# No selected clips present so splitting all possible clips
+	if not ClipLogic.selected_clips.is_empty():
+		for clip: ClipData in ClipLogic.selected_clips:
+			if clip.start < frame_pos and clip.end > frame_pos:
+				requests.append(ClipRequest.split_request(clip, frame_pos - clip.start))
+
+		if !requests.is_empty():
+			new_clips = ClipLogic.split(requests)
+			if new_clips.size() > 0:
+				ClipLogic.selected_clips = new_clips
+				ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+			draw_clips.queue_redraw()
+		return
+
+	# No selected clips present so splitting all possible clips.
 	for track: int in TrackLogic.tracks.size():
 		if TrackLogic.tracks[track].is_locked:
 			continue
