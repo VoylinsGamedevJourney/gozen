@@ -2,7 +2,9 @@ extends PanelContainer
 
 
 enum POPUP_ACTION {
-	CLIP_DELETE, CLIP_SPLIT, CLIP_AUDIO_TAKE_OVER, # Clip options
+	# Clip options
+	CLIP_DELETE, CLIP_SPLIT, CLIP_AUDIO_TAKE_OVER,
+	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
 	# Track options
 	REMOVE_EMPTY_SPACE, TRACK_ADD, TRACK_REMOVE, TRACK_TOGGLE_VISIBLE,
 	TRACK_TOGGLE_MUTE, TRACK_TOGGLE_LOCK }
@@ -639,6 +641,12 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
 	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_SPLIT), tr("Split clip"), POPUP_ACTION.CLIP_SPLIT)
 
+	if right_click_clip.type in [EditorCore.TYPE.VIDEO, EditorCore.TYPE.AUDIO]:
+		# TODO: Add icons
+		popup.add_item(tr("Change speed"), POPUP_ACTION.CLIP_CHANGE_SPEED)
+		if right_click_clip.speed != 1.0:
+			popup.add_item(tr("Reset speed"), POPUP_ACTION.CLIP_RESET_SPEED)
+
 	if right_click_clip.type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))
 		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
@@ -649,6 +657,8 @@ func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
 		POPUP_ACTION.CLIP_DELETE: _on_popup_action_clip_delete()
 		POPUP_ACTION.CLIP_SPLIT: _on_popup_action_clip_split()
 		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
+		POPUP_ACTION.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
+		POPUP_ACTION.CLIP_RESET_SPEED: _on_popup_action_clip_reset_speed()
 		POPUP_ACTION.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
 		POPUP_ACTION.TRACK_ADD: _on_popup_action_track_add()
 		POPUP_ACTION.TRACK_REMOVE: _on_popup_action_track_remove()
@@ -674,6 +684,43 @@ func _on_popup_action_clip_ato() -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
 	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
 	popup.load_data(right_click_clip.id, false)
+
+
+func _on_popup_action_clip_change_speed() -> void:
+	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("Change speed"), "")
+	var spinbox: SpinBox = SpinBox.new()
+	spinbox.min_value = 0.01
+	spinbox.max_value = 100.0
+	spinbox.step = 0.01
+	spinbox.value = right_click_clip.speed
+	spinbox.suffix = "x"
+	dialog.add_child(spinbox)
+	dialog.confirmed.connect(func() -> void:
+		var new_speed: float = spinbox.value
+		var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
+
+		var free_region: Vector2i = TrackLogic.get_free_region(right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
+		if right_click_clip.start + new_duration > free_region.y:
+			new_duration = free_region.y - right_click_clip.start
+
+		var delta: int = new_duration - right_click_clip.duration
+		ClipLogic.change_speed([ClipRequest.resize_request(right_click_clip, delta, true)])
+		dialog.queue_free()
+	)
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(200, 80))
+
+
+func _on_popup_action_clip_reset_speed() -> void:
+	var new_speed: float = 1.0
+	var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
+
+	var free_region: Vector2i = TrackLogic.get_free_region(right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
+	if right_click_clip.start + new_duration > free_region.y:
+		new_duration = free_region.y - right_click_clip.start
+
+	var delta: int = new_duration - right_click_clip.duration
+	ClipLogic.change_speed([ClipRequest.resize_request(right_click_clip, delta, true)])
 
 
 func _on_popup_action_track_add() -> void:
