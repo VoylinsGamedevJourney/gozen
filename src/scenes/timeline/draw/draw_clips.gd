@@ -205,7 +205,7 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 	# Draw handles.
 	if show_handles:
 		var current_handle_size: float = FADE_HANDLE_SIZE
-		if Input.is_key_pressed(KEY_SHIFT):
+		if Input.is_key_pressed(KEY_CTRL):
 			current_handle_size *= 2.0
 
 		var in_x: float = box_pos.x + fade.x * zoom

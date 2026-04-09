@@ -318,7 +318,7 @@ func _get_resize_target() -> Timeline.ResizeTarget:
 	var mouse_pos: float = get_local_mouse_position().x
 
 	var handle_width: float = RESIZE_HANDLE_WIDTH
-	if Input.is_key_pressed(KEY_SHIFT):
+	if Input.is_key_pressed(KEY_CTRL):
 		handle_width *= 2.0
 
 	var clip: ClipData = Timeline.hovered_clip
@@ -347,7 +347,7 @@ func _get_fade_target() -> Timeline.FadeTarget:
 	var mouse_pos: Vector2 = get_local_mouse_position()
 
 	var current_handle_size: float = 3.5 # FADE_HANDLE_SIZE
-	if Input.is_key_pressed(KEY_SHIFT):
+	if Input.is_key_pressed(KEY_CTRL):
 		current_handle_size *= 2.0
 
 	var clip: ClipData = Timeline.hovered_clip
