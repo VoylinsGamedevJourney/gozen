@@ -64,6 +64,10 @@ func _ready() -> void:
 	button_snap.toggled.connect(func(toggled: bool) -> void:
 			Timeline.snap_enabled = toggled)
 
+	visibility_changed.connect(func() -> void: if is_visible_in_tree():
+			await get_tree().process_frame
+			draw_all())
+
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
 
