@@ -127,7 +127,7 @@ func _draw() -> void:
 	for i: int in TrackLogic.tracks.size():
 		if TrackLogic.tracks[i].is_locked:
 			var y_pos: float = Timeline.track_total_size * i
-			draw_rect(Rect2(visible_start, y_pos, visible_end - visible_start, Timeline.track_total_size), Color(0.5, 0.5, 0.5, 0.8))
+			draw_rect(Rect2(scroll_amount, y_pos, scroll_container.size.x, Timeline.track_total_size), Color(0.5, 0.5, 0.5, 0.8))
 
 
 func _get_visible(start: int, end: int) -> Array[ClipData]:
