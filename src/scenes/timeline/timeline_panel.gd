@@ -171,6 +171,12 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			Timeline.STATE.SPEEDING: _commit_current_resize()
 			Timeline.STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
 			Timeline.STATE.SCRUBBING: EditorCore.finish_scrub()
+			Timeline.STATE.SELECT:
+				if pressed_clip and pressed_clip == _get_clip_on_mouse() and not event.shift_pressed:
+					if ClipLogic.selected_clips.size() > 1:
+						ClipLogic.selected_clips = [pressed_clip]
+						draw_clips.queue_redraw()
+						ClipLogic.selected.emit(pressed_clip)
 		_on_ui_cancel()
 
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
@@ -203,12 +209,13 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 					EditorCore.is_playing = false
 				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		else:
-			if !event.shift_pressed:
-				ClipLogic.selected_clips = [pressed_clip]
-			elif !ClipLogic.selected_clips.has(pressed_clip):
-				ClipLogic.selected_clips.append(pressed_clip)
-			draw_clips.queue_redraw()
-			ClipLogic.selected.emit(pressed_clip)
+			if pressed_clip not in ClipLogic.selected_clips:
+				if !event.shift_pressed:
+					ClipLogic.selected_clips = [pressed_clip]
+				else:
+					ClipLogic.selected_clips.append(pressed_clip)
+				draw_clips.queue_redraw()
+				ClipLogic.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_menu()
 		right_click_clip = _get_clip_on_mouse()
