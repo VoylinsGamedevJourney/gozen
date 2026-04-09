@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://7ojbq5n6igoh" path="res://scenes/timeline/time_stamps.gd" id="2_jxg8b"]
 [ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
 [ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
+[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="4_scsrl"]
 [ext_resource type="Script" uid="uid://b2fv3om3dl86q" path="res://scenes/timeline/track_controls.gd" id="5_qnybs"]
 [ext_resource type="Script" uid="uid://cagvlct2dimqn" path="res://scenes/timeline/draw/draw_track_lines.gd" id="8_nb4qx"]
 [ext_resource type="Script" uid="uid://bc4nf46qhfy2f" path="res://scenes/timeline/draw/draw_clips.gd" id="9_scsrl"]
@@ -64,6 +65,17 @@ texture_normal = ExtResource("4_qnybs")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="Spacer" type="Control" parent="TimelineModes/Margin/VBox" unique_id=923573302]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SnapButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=268986904]
+custom_minimum_size = Vector2(16, 18)
+layout_mode = 2
+texture_normal = ExtResource("4_scsrl")
+ignore_texture_size = true
+stretch_mode = 5
+
 [node name="Grid" type="GridContainer" parent="." unique_id=1105908258]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -115,7 +127,7 @@ script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 track_controls_scroll = NodePath("../TrackControls")
 
-[node name="TimelinePanel" type="PanelContainer" parent="Grid/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_split")]
+[node name="TimelinePanel" type="PanelContainer" parent="Grid/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_split", "button_snap")]
 clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
 layout_mode = 2
@@ -126,6 +138,7 @@ script = ExtResource("2_2or7f")
 mode_panel = NodePath("../../../TimelineModes")
 button_select = NodePath("../../../TimelineModes/Margin/VBox/SelectModeButton")
 button_split = NodePath("../../../TimelineModes/Margin/VBox/SplitModeButton")
+button_snap = NodePath("../../../TimelineModes/Margin/VBox/SnapButton")
 
 [node name="TrackLinesDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=22986217]
 layout_mode = 2

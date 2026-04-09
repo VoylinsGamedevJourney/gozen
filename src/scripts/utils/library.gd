@@ -32,6 +32,7 @@ const ICON_EFFECTS_KEYFRAME_EMPTY: String = "uid://bfo4mhrcyuev5"
 const ICON_TIMELINE_MODE_SELECT: String = "uid://bix5e8n2tjje3"
 const ICON_TIMELINE_MODE_SPLIT: String = "uid://brrif81b6g1qd"
 const ICON_CUSTOM_RENDER_PROFILE: String = "uid://chwue2kad3pe2"
+const ICON_SNAP: String = "uid://npglkea55x8p" # TODO: Improve this one
 
 const SHADER_IMAGE_TO_YUV: String = "uid://bs1u3w6ry2hoa"
 const SHADER_YUV420P: String = "res://shaders/yuv420p_standard.glsl"

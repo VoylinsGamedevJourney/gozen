@@ -24,8 +24,11 @@ corner_detail = 5
 
 [node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_visuals", "section_audio")]
 custom_minimum_size = Vector2(300, 200)
-offset_right = 260.0
-offset_bottom = 43.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_k5peu")

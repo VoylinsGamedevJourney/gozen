@@ -32,6 +32,8 @@ var fade_target: FadeTarget = null
 var box_select_start: Vector2
 var box_select_end: Vector2
 
+var snap_enabled: bool = false
+
 
 
 func _ready() -> void:
@@ -67,12 +69,43 @@ func set_scroll_y(value: float) -> void:
 
 # --- Logic ---
 
-func can_drop_new_clips(track: int, frame: int, snapping: int) -> bool:
+func find_snap_offset(edges: Array[int], threshold: int, ignores: Array[int] = []) -> int:
+	if not snap_enabled:
+		return 0
+
+	var snap_points: Array[int] = [EditorCore.frame_nr]
+	for marker: MarkerData in MarkerLogic.markers:
+		snap_points.append(marker.frame_nr)
+	for track_data: TrackLogic.TrackClips in TrackLogic.track_clips:
+		for clip: ClipData in track_data.clips:
+			if clip.id not in ignores:
+				snap_points.append(clip.start)
+				snap_points.append(clip.end)
+
+	var best_delta: int = 0
+	var min_distance: int = threshold + 1
+	for edge: int in edges:
+		for snap_point: int in snap_points:
+			var distance: int = abs(snap_point - edge)
+			if distance < min_distance:
+				min_distance = distance
+				best_delta = snap_point - edge
+
+	if min_distance <= threshold:
+		return best_delta
+	return 0
+
+
+func can_drop_new_clips(track: int, frame: int, safe_zone: int) -> bool:
 	draggable.track_offset = track
 	if TrackLogic.tracks[draggable.track_offset].is_locked:
 		return false
 	var target_frame: int = frame - draggable.mouse_offset
 	var target_end: int = target_frame + draggable.duration
+
+	var snap_delta: int = find_snap_offset([target_frame, target_end], maxi(1, int(10.0 / zoom)))
+	target_frame += snap_delta
+	target_end += snap_delta
 	var clip_at_pos: ClipData = TrackLogic.get_clip_at_overlap(draggable.track_offset, target_frame)
 	var clip_at_end: ClipData = TrackLogic.get_clip_at_overlap(draggable.track_offset, target_end)
 	var free_region: Vector2i
@@ -90,11 +123,11 @@ func can_drop_new_clips(track: int, frame: int, snapping: int) -> bool:
 		elif free_region.y - free_region.x < draggable.duration:
 			return false # No space.
 
-		# Check what space is needed on right side and if within snapping
-		# Possible with snapping so checking if enough space on left side.
+		# Check what space is needed on right side and if within safe zone
+		# Possible with safe zone so checking if enough space on left side.
 		var distance_necessary: int = target_end - free_region.y
 
-		if distance_necessary > snapping or target_frame - free_region.x < distance_necessary:
+		if distance_necessary > safe_zone or target_frame - free_region.x < distance_necessary:
 			return false
 
 		draggable.frame_offset = target_frame - distance_necessary
@@ -102,12 +135,12 @@ func can_drop_new_clips(track: int, frame: int, snapping: int) -> bool:
 	elif !clip_at_end:
 		free_region = TrackLogic.get_free_region(draggable.track_offset, target_end)
 		if free_region.y - free_region.x < draggable.duration:
-			return false # No space
+			return false # No space.
 
-		# Check what space is needed on left side and if within snapping.
-		# Possible with snapping so checking if enough space on left side.
+		# Check what space is needed on left side and if within safe zone.
+		# Possible with safe zone so checking if enough space on left side.
 		var distance_necessary: int = target_frame - free_region.x
-		if distance_necessary > snapping or target_end - free_region.y > distance_necessary:
+		if distance_necessary > safe_zone or target_end - free_region.y > distance_necessary:
 			return false
 
 		draggable.frame_offset = target_frame - distance_necessary
@@ -115,13 +148,21 @@ func can_drop_new_clips(track: int, frame: int, snapping: int) -> bool:
 	return false # Not possible to find space.
 
 
-func can_move_clips(track: int, frame: int, snapping: int) -> bool:
+func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:
 	var anchor_clip: ClipData = ClipLogic.clips[draggable.ids[0]]
 	var target_start: int = frame - draggable.mouse_offset
 	var track_difference: int = track - anchor_clip.track
 	var frame_difference: int = target_start - anchor_clip.start
 	var ignore_ids: Array[int] = []
 	ignore_ids.assign(draggable.ids)
+
+	var edges: Array[int] = []
+	for clip_id: int in draggable.ids:
+		var c: ClipData = ClipLogic.clips[clip_id]
+		edges.append(c.start + frame_difference)
+		edges.append(c.end + frame_difference)
+	var snap_delta: int = find_snap_offset(edges, maxi(1, int(10.0 / zoom)), ignore_ids)
+	frame_difference += snap_delta
 
 	var candidates: Array[int] = [frame_difference]
 	for clip_id: int in draggable.ids:
@@ -138,11 +179,11 @@ func can_move_clips(track: int, frame: int, snapping: int) -> bool:
 			candidates.append(other.end - clip.start)
 
 	var best_frame_difference: int = frame_difference
-	var best_dist: int = Utils.INT_32_MAX
+	var best_distance: int = Utils.INT_32_MAX
 	var valid_found: bool = false
 	for difference: int in candidates:
 		var distance: int = abs(difference - frame_difference)
-		if distance <= snapping and distance < best_dist:
+		if distance <= safe_zone and distance < best_distance:
 			var is_valid: bool = true
 			for clip_id: int in draggable.ids:
 				var clip: ClipData = ClipLogic.clips[clip_id]
@@ -161,7 +202,7 @@ func can_move_clips(track: int, frame: int, snapping: int) -> bool:
 				if not is_valid:
 					break
 			if is_valid:
-				best_dist = distance
+				best_distance = distance
 				best_frame_difference = difference
 				valid_found = true
 	if not valid_found:

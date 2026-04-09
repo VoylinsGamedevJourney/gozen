@@ -17,12 +17,13 @@ const ZOOM_MIN: float = 0.01
 const ZOOM_MAX: float = 200.0
 const ZOOM_STEP: float = 1.1
 
-const SNAPPING: int = 200
+const SAFE_ZONE: int = 200
 
 
 @export var mode_panel: PanelContainer
 @export var button_select: TextureButton
 @export var button_split: TextureButton
+@export var button_snap: TextureButton
 
 
 @onready var scroll: ScrollContainer = get_parent()
@@ -59,6 +60,9 @@ func _ready() -> void:
 	MarkerLogic.removed.connect(markers_redraw.unbind(1))
 	MarkerLogic.updated.connect(markers_redraw.unbind(1))
 	MarkerLogic.moving.connect(markers_redraw)
+
+	button_snap.toggled.connect(func(toggled: bool) -> void:
+			Timeline.snap_enabled = toggled)
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
@@ -420,10 +424,10 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	Timeline.draggable = data
 	if Timeline.draggable.is_file:
 		Timeline.state = Timeline.STATE.DROPPING
-		result = Timeline.can_drop_new_clips(get_track_from_mouse(), get_frame_from_mouse(), SNAPPING)
+		result = Timeline.can_drop_new_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE)
 	else:
 		Timeline.state = Timeline.STATE.MOVING
-		result = Timeline.can_move_clips(get_track_from_mouse(), get_frame_from_mouse(), SNAPPING)
+		result = Timeline.can_move_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE)
 		draw_clips.queue_redraw()
 
 	if _update_clips:
@@ -544,6 +548,9 @@ func _handle_resize_motion() -> void:
 	var file: FileData = FileLogic.files[clip.file]
 	var current_frame: int = get_frame_from_mouse()
 	var is_fixed_duration: bool = file.type in [EditorCore.TYPE.AUDIO, EditorCore.TYPE.VIDEO]
+
+	var snap_delta: int = Timeline.find_snap_offset([current_frame], maxi(1, int(10.0 / Timeline.zoom)), [clip.id])
+	current_frame += snap_delta
 
 	if Timeline.resize_target.is_end: # Resizing end.
 		var new_duration: int = current_frame - Timeline.resize_target.original_start
