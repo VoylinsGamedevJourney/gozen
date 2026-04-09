@@ -227,7 +227,7 @@ func _on_close() -> void:
 
 	popup.confirmed.connect(_on_save_close)
 	cancel_button.pressed.connect(_on_cancel_close)
-	dont_save_button.pressed.connect(get_tree().quit)
+	dont_save_button.pressed.connect(func() -> void: get_tree().quit.call_deferred())
 
 	add_child(popup)
 	popup.popup_centered()
