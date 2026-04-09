@@ -10,11 +10,29 @@ func _draw() -> void:
 		if !Timeline.drop_valid:
 			return
 		if Timeline.draggable.is_file:
-			var preview_size: Vector2 = Vector2(Timeline.draggable.duration * zoom, Timeline.track_height)
-			var preview_position: Vector2 = Vector2(
-					(Timeline.draggable.frame_offset) * zoom,
-					Timeline.draggable.track_offset * Timeline.track_total_size)
-			draw_style_box(STYLE_BOX_PREVIEW, Rect2(preview_position, preview_size))
+			var scroll_container: ScrollContainer = get_parent().get_parent()
+			var current_offset_frames: int = 0
+			for file_id: int in Timeline.draggable.ids:
+				var file: FileData = FileLogic.files[file_id]
+				var preview_position: Vector2 = Vector2(
+						(Timeline.draggable.frame_offset + current_offset_frames) * zoom,
+						Timeline.draggable.track_offset * Timeline.track_total_size)
+				var preview_size: Vector2 = Vector2(file.duration * zoom, Timeline.track_height)
+				var clip_rect: Rect2 = Rect2(preview_position, preview_size)
+				draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+
+				if file.type in EditorCore.AUDIO_TYPES:
+					var wave_dict: Dictionary = FileLogic.audio_wave.get(file.id, {})
+					if not wave_dict.is_empty():
+						var lod: int = 1
+						if zoom < 0.2:
+							lod = 16
+						elif zoom < 0.8:
+							lod = 4
+						var audio_wave: PackedFloat32Array = wave_dict[lod]
+						_draw_wave(audio_wave, 0, int(file.duration / float(lod)), clip_rect, 1.0, lod, scroll_container)
+
+				current_offset_frames += file.duration
 		else:
 			var scroll_container: ScrollContainer = get_parent().get_parent()
 			for clip_id: int in Timeline.draggable.ids:
