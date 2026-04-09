@@ -51,6 +51,7 @@ var stop_encoding: bool = false
 
 
 var _audio_cache: Dictionary = {}
+var _total_frames: int = 0
 
 
 
@@ -92,6 +93,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	await RenderingServer.frame_post_draw
 	start_time = Time.get_ticks_msec()
 	encoding_time = 0
+	_total_frames = end_frame - start_frame + 1
 
 	if !encoder.open(viewport.get_image().get_format() == Image.FORMAT_RGBA8):
 		stop_encoder()
@@ -110,6 +112,11 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 			await get_tree().process_frame
 
 		var success: bool = audio_thread.wait_to_finish()
+		if cancel_encoding:
+			stop_encoder()
+			update_encoder_status.emit(STATUS.ERROR_CANCELED)
+			await RenderingServer.frame_post_draw
+			return
 		if !success:
 			stop_encoder()
 			update_encoder_status.emit(STATUS.ERROR_AUDIO)
@@ -276,10 +283,12 @@ func _encoding_loop() -> void:
 
 func _encode_and_send_audio(start_frame: int, end_frame: int) -> bool:
 	_prepare_audio_cache()
+	if cancel_encoding:
+		return false
 	var audio_data: PackedByteArray = encode_audio(start_frame, end_frame)
 	_audio_cache.clear() # Clear cache immediately to free up RAM before video rendering.
 
-	if !audio_data or audio_data.is_empty():
+	if cancel_encoding or !audio_data or audio_data.is_empty():
 		return false
 
 	update_encoder_status.emit.call_deferred(STATUS.SENDING_AUDIO)
@@ -304,10 +313,14 @@ func _prepare_audio_cache() -> void:
 	var sorted_files: Array = file_counts.keys()
 	sorted_files.sort_custom(func(a: String, b: String) -> bool: return file_counts[a] > file_counts[b])
 
+	if _total_frames < floori(project_data.timeline_end / 4.0):
+		# Else it would take too long to cache the audio data if we for example
+		# just need small parts for live-streams by example.
+		return
 	var cache_limit: int = 3
 	var cached_count: int = 0
 	for path: String in sorted_files:
-		if cached_count >= cache_limit:
+		if cancel_encoding or cached_count >= cache_limit:
 			break
 		elif file_counts[path] > 1: # Only cache if it's re-used across multiple clips.
 			_audio_cache[path] = Audio.get_audio_data(path, -1, 0.0, -1.0)
@@ -344,6 +357,8 @@ func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
 	for track: int in TrackLogic.tracks.size():
 		if !TrackLogic.tracks[track].is_muted:
 			for clip: ClipData in TrackLogic.track_clips[track].clips:
+				if cancel_encoding:
+					break
 				if clip.start > end_frame or clip.end < start_frame:
 					continue
 				if clip.type in EditorCore.AUDIO_TYPES:
