@@ -1,9 +1,13 @@
 extends TextureRect
 
+
 enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
 
 
 const SIZE_CROSS: int = 20
+
+
+@onready var overlay_control: Control = get_parent()
 
 
 @export var show_safe_areas_button: TextureButton
@@ -11,10 +15,16 @@ const SIZE_CROSS: int = 20
 
 var show_safe_areas: bool = true: set = set_show_safe_areas
 
+var view_zoom: float = 1.0
+
+var active_clip: ClipData = null
+var active_effect: EffectVisual = null
+var active_overlay: EffectVisualOverlay = null
+
+
 
 func _ready() -> void:
 	gui_input.connect(_on_gui_input)
-
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
 	else:
@@ -22,11 +32,75 @@ func _ready() -> void:
 
 	_update_safe_areas_button()
 
+	set_anchors_preset(Control.PRESET_TOP_LEFT)
+	overlay_control.clip_contents = true
+	overlay_control.resized.connect(_update_transform)
+	Project.project_ready.connect(_update_transform)
+	if Project.is_loaded:
+		_update_transform()
+
+	ClipLogic.selected.connect(_on_clip_selected)
+	EffectsHandler.effect_selected.connect(_on_effect_selected)
+	EditorCore.visual_frame_changed.connect(queue_redraw)
+	EditorCore.play_changed.connect(func(_playing: bool) -> void: queue_redraw())
+
+
+func _update_transform() -> void:
+	if not Project.is_loaded:
+		return
+
+	var overlay_size: Vector2 = overlay_control.size
+	if overlay_size.y == 0:
+		return
+
+	var aspect: float = Project.data.resolution.x / float(Project.data.resolution.y)
+	var base_size: Vector2 = overlay_size
+	if overlay_size.x / overlay_size.y > aspect:
+		base_size.x = overlay_size.y * aspect
+	else:
+		base_size.y = overlay_size.x / aspect
+
+	size = base_size * view_zoom
+	position = (overlay_size - size) / 2.0
+
+
+func _on_clip_selected(clip: ClipData) -> void:
+	active_clip = clip
+	active_effect = null
+	active_overlay = null
+	if clip and clip.type in EditorCore.VISUAL_TYPES:
+		for effect_visual: EffectVisual in clip.effects.video:
+			if effect_visual.custom_overlay_path != "":
+				_set_active_effect(effect_visual)
+				break
+	queue_redraw()
+
+
+func _on_effect_selected(effect: Effect) -> void:
+	if effect is not EffectVisual:
+		return
+
+	var effect_visual: EffectVisual = effect
+	if effect_visual.custom_overlay_path != "":
+		_set_active_effect(effect_visual)
+		queue_redraw()
+
+
+func _set_active_effect(effect: EffectVisual) -> void:
+	active_effect = effect
+	active_overlay = effect.get_custom_overlay()
+	if active_overlay:
+		active_overlay.initialize(active_clip, active_effect)
+
 
 func _on_gui_input(event: InputEvent) -> void:
+	if active_overlay:
+		active_overlay.input(event, self)
+		if event.is_canceled() or get_viewport().is_input_handled():
+			return
+
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
-
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
 			var popup: PopupMenu = PopupManager.create_menu()
 
@@ -35,32 +109,39 @@ func _on_gui_input(event: InputEvent) -> void:
 			popup.id_pressed.connect(_on_popup_id_pressed)
 			PopupManager.show_menu(popup)
 
+		elif mouse_event.ctrl_pressed:
+			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				_zoom_view(1.1)
+				accept_event()
+			elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				_zoom_view(1.0 / 1.1)
+				accept_event()
+
+
+func _zoom_view(factor: float) -> void:
+	view_zoom = clampf(view_zoom * factor, 0.1, 1.0)
+	_update_transform()
+
 
 func _draw() -> void:
-	if not show_safe_areas:
-		return
+	draw_rect(Rect2(Vector2.ZERO, size).grow(1.0), Color(1, 1, 1, 0.5), false, 2.0)
+	if show_safe_areas:
+		var width: float = size.x
+		var height: float = size.y
+		var view_rect: Rect2 = Rect2(0, 0, width, height)
+		var center: Vector2i = view_rect.get_center()
+		var color: Color = Color(1, 1, 1, 0.4)
+		var first_border: Rect2 = view_rect.grow(-width * 0.05)
+		var second_border: Rect2 = view_rect.grow(-width * 0.10)
 
-	# Calculate the ratio and apply
-	var width: float = Project.data.resolution.x / (Project.data.resolution.y / size.y)
-	var height: float = Project.data.resolution.y / (Project.data.resolution.x / size.x)
-	var h_ratio: float = max(0, (size.y - height) / 2)
-	var w_ratio: float = max(0, (size.x - width) / 2)
-	var view_rect: Rect2 = Rect2(
-			0.0 if w_ratio == 0 else w_ratio, 0.0 if h_ratio == 0 else h_ratio,
-			width if h_ratio == 0 else size.x, height if w_ratio == 0 else size.y)
-	var center: Vector2i = view_rect.get_center()
-	var color: Color = Color(1, 1, 1, 0.4)
+		draw_rect(first_border, color, false, 1.0)
+		draw_rect(second_border, color, false, 1.0)
+		draw_line(Vector2(center.x - SIZE_CROSS, center.y), Vector2(center.x + SIZE_CROSS, center.y), color, 1.0)
+		draw_line(Vector2(center.x, center.y - SIZE_CROSS), Vector2(center.x, center.y + SIZE_CROSS), color, 1.0)
 
-	var first_border: Rect2 = view_rect.grow(-view_rect.size.x * 0.05)
-	var second_border: Rect2 = view_rect.grow(-view_rect.size.x * 0.10)
-
-	# Drawing borders
-	draw_rect(first_border, color, false, 1.0)
-	draw_rect(second_border, color, false, 1.0)
-
-	# Drawing center cross
-	draw_line(Vector2(center.x - SIZE_CROSS, center.y), Vector2(center.x + SIZE_CROSS, center.y), color, 1.0)
-	draw_line(Vector2(center.x, center.y - SIZE_CROSS), Vector2(center.x, center.y + SIZE_CROSS), color, 1.0)
+	if active_overlay and active_clip:
+		if EditorCore.visual_frame_nr >= active_clip.start and EditorCore.visual_frame_nr < active_clip.end:
+			active_overlay.draw(self)
 
 
 func _on_popup_id_pressed(id: int) -> void:

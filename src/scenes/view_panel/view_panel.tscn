@@ -13,6 +13,11 @@
 [sub_resource type="LabelSettings" id="LabelSettings_l50ca"]
 
 [node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("button_play", "button_pause", "button_playback_speed", "frame_label", "time_label")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_f3tql")
 button_play = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PlayButton")
@@ -32,14 +37,23 @@ theme_override_constants/margin_bottom = 3
 layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox" unique_id=1517280290 node_paths=PackedStringArray("show_safe_areas_button")]
-material = SubResource("ShaderMaterial_cre3o")
+[node name="Effectfoverlay" type="Control" parent="Margin/VBox" unique_id=2030969296]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox/Effectfoverlay" unique_id=1517280290 node_paths=PackedStringArray("show_safe_areas_button")]
+material = SubResource("ShaderMaterial_cre3o")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("2_l50ca")
-show_safe_areas_button = NodePath("../ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton")
+show_safe_areas_button = NodePath("../../ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton")
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="Margin/VBox" unique_id=1040074173]
 layout_mode = 2
@@ -124,4 +138,4 @@ stretch_mode = 5
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/SkipNextButton" to="." method="_on_skip_next_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton" to="." method="_on_playback_speed_button_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton" to="Margin/VBox/ProjectViewTextureRect" method="toggle_safe_areas"]
+[connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton" to="Margin/VBox/Effectfoverlay/ProjectViewTextureRect" method="toggle_safe_areas"]
