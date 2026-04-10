@@ -39,6 +39,9 @@ func _setup_logic() -> void:
 	TrackLogic.tracks = data.tracks
 	MarkerLogic.markers = data.markers
 	FolderLogic.folders = data.folders
+
+	EffectsHandler.sync_project_effects(data.clips, data.files)
+
 	TrackLogic.prepare_data()
 
 

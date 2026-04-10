@@ -82,6 +82,54 @@ func _load_audio_effects() -> void:
 		audio_effect_instances[effect.id] = effect
 
 
+#---- Syncing ----
+
+## Update the existing effects of a project on loading so it has up-to-date
+## extra stuff of the effect such as a change of has_slider, ui, overlay, ...
+func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
+	for clip: ClipData in clips.values():
+		for i: int in clip.effects.video.size():
+			var old_effect: EffectVisual = clip.effects.video[i]
+			if visual_effect_instances.has(old_effect.id):
+				var new_effect: EffectVisual = visual_effect_instances[old_effect.id].deep_copy()
+				_apply_param_exceptions(new_effect)
+				new_effect.keyframes = old_effect.keyframes.duplicate(true)
+				new_effect.is_enabled = old_effect.is_enabled
+				new_effect.set_default_keyframe() # Fills in missing frame 0 values for any newly introduced params.
+				clip.effects.video[i] = new_effect
+
+		for i: int in clip.effects.audio.size():
+			var old_effect: EffectAudio = clip.effects.audio[i]
+			if audio_effect_instances.has(old_effect.id):
+				var new_effect: EffectAudio = audio_effect_instances[old_effect.id].deep_copy()
+				_apply_param_exceptions(new_effect)
+				new_effect.keyframes = old_effect.keyframes.duplicate(true)
+				new_effect.is_enabled = old_effect.is_enabled
+				new_effect.set_default_keyframe() # Fills in missing frame 0 values for any newly introduced params.
+				clip.effects.audio[i] = new_effect
+
+	var base_text_effect: EffectVisual = load(Library.EFFECT_TEXT)
+	for file: FileData in files.values():
+		if file.type == EditorCore.TYPE.TEXT and file.temp_file and file.temp_file.text_effect:
+			var old_effect: EffectVisual = file.temp_file.text_effect
+			var new_effect: EffectVisual = base_text_effect.deep_copy()
+			_apply_param_exceptions(new_effect)
+			new_effect.keyframes = old_effect.keyframes.duplicate(true)
+			new_effect.is_enabled = old_effect.is_enabled
+			new_effect.set_default_keyframe()
+			file.temp_file.text_effect = new_effect
+
+
+func _apply_param_exceptions(effect: Effect) -> void:
+	if effect.id in param_exceptions:
+		for exception: String in param_exceptions[effect.id]:
+			var value: Variant = param_exceptions[effect.id][exception]
+			if value is Callable:
+				effect.change_default_param(exception, (value as Callable).call())
+			else:
+				effect.change_default_param(exception, value)
+
+
 #---- Adding effects ----
 
 func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void:
@@ -94,16 +142,9 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 
 		var effect_copy: Effect = effect.deep_copy()
 		effect_copy.keyframes = effect.keyframes.duplicate(true)
-		var effect_id: String = effect_copy.id
 		var index: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 
-		if effect_id in param_exceptions: # Handle exceptions.
-			for exception: String in param_exceptions[effect_id]:
-				var value: Variant = param_exceptions[effect_id][exception]
-				if value is Callable:
-					effect_copy.change_default_param(exception, (value as Callable).call())
-				else:
-					effect_copy.change_default_param(exception, value)
+		_apply_param_exceptions(effect_copy)
 		effect_copy.set_default_keyframe()
 
 		InputManager.undo_redo.add_do_method(_add_effect.bind(clip, index, effect_copy, is_visual))
@@ -150,13 +191,7 @@ func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 		effect = clip.effects.audio[index]
 	effect.keyframes.clear()
 
-	if effect.id in param_exceptions: # Handle exceptions for default values
-		for exception: String in param_exceptions[effect.id]:
-			var value: Variant = param_exceptions[effect.id][exception]
-			if value is Callable:
-				effect.change_default_param(exception, (value as Callable).call())
-			else:
-				effect.change_default_param(exception, value)
+	_apply_param_exceptions(effect)
 
 	effect.set_default_keyframe()
 	effects_updated.emit()
