@@ -6,7 +6,6 @@ extends Resource
 @export var tooltip: String
 
 @export var custom_ui_path: String ## UID which leads to the EffectUI.
-@export var custom_overlay_path: String ## UID which leads to the EffectOverlay.
 
 @export var params: Array[EffectParam]
 @export var is_enabled: bool = true
@@ -22,12 +21,6 @@ var _cache_dirty: bool = true
 func get_custom_ui() -> EffectUI:
 	if FileAccess.file_exists(custom_ui_path):
 		return load(custom_ui_path) as EffectUI
-	return null
-
-
-func get_custom_overlay() -> EffectOverlay:
-	if FileAccess.file_exists(custom_overlay_path):
-		return load(custom_overlay_path) as EffectOverlay
 	return null
 
 

@@ -63,6 +63,7 @@ matrix_map = Dictionary[String, int]({
 "rotation": 0,
 "scale": 0
 })
+custom_overlay_path = "res://effects/visual/transform_overlay.gd"
 id = "transform"
 nickname = "Transform"
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
