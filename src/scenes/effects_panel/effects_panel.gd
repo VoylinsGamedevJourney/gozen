@@ -309,6 +309,12 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	container.add_title_bar_control(button_drag)
 	container.add_child(content_vbox)
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
+	container.gui_input.connect(func(event: InputEvent) -> void:
+			if event is not InputEventMouseButton:
+				return
+			var event_mouse_button: InputEventMouseButton = event
+			if event_mouse_button.pressed and event_mouse_button.button_index == MOUSE_BUTTON_LEFT:
+				EffectsHandler.effect_selected.emit(effect))
 
 	# Adding effect params.
 	var keyframes_found: bool = false
@@ -821,8 +827,9 @@ func _open_add_effects_popup(type: int, from_add_button: bool) -> void:
 
 
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:
-	var index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.update_param(current_clip, index, is_visual, param_id, value, false)
+	EffectsHandler.effect_selected.emit(effect)
+	EffectsHandler.update_param(
+			current_clip, _get_effect_index(effect, is_visual), is_visual, param_id, value, false)
 
 
 func _jump_prev_keyframe(effect: Effect, param_id: String) -> void:

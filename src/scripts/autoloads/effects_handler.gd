@@ -7,6 +7,8 @@ signal effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: b
 signal effects_updated
 signal effect_values_updated
 
+signal effect_selected(effect: Effect)
+
 
 const PATH_EFFECTS_VISUAL: String = "res://effects/visual/"
 const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
