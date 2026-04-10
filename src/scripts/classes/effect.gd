@@ -20,7 +20,9 @@ var _cache_dirty: bool = true
 
 func get_custom_ui() -> EffectUI:
 	if FileAccess.file_exists(custom_ui_path):
-		return load(custom_ui_path) as EffectUI
+		var script: GDScript = load(custom_ui_path)
+		if script is GDScript:
+			return script.new() as EffectUI
 	return null
 
 

@@ -63,6 +63,7 @@ matrix_map = Dictionary[String, int]({
 "rotation": 0,
 "scale": 0
 })
+custom_ui_path = "res://effects/visual/transform_ui.gd"
 custom_overlay_path = "res://effects/visual/transform_overlay.gd"
 id = "transform"
 nickname = "Transform"

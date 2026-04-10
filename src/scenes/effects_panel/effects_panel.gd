@@ -320,68 +320,14 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	var keyframes_found: bool = false
 	var custom_ui: EffectUI = effect.get_custom_ui()
 	if custom_ui:
-		content_vbox.add_child(custom_ui.get_ui(update_values))
+		content_vbox.add_child(custom_ui.get_ui(effect, current_clip, is_visual, self))
 		for param: EffectParam in effect.params:
 			if param.keyframeable:
 				keyframes_found = true
 	else:
 		for param: EffectParam in effect.params:
-			var param_hbox: HBoxContainer = HBoxContainer.new()
-			var param_id: String = param.id
-			var param_title: Label = Label.new()
-			var param_settings: Control = _create_param_control(param, effect, is_visual, false)
-
-			param_title.text = param.nickname.replace("param_", "").capitalize()
-			param_title.tooltip_text = param.tooltip
-			param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			param_title.clip_text = true
-			param_settings.name = "PARAM_" + param_id
-
-			var param_reset_button: TextureButton = TextureButton.new()
-			param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
-			param_reset_button.tooltip_text = tr("Reset parameter")
-			param_reset_button.ignore_texture_size = true
-			param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-			param_reset_button.custom_minimum_size = Vector2(14, 14)
-			param_reset_button.pressed.connect(
-					_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
-
-			param_hbox.add_child(param_title)
-			param_hbox.add_child(param_reset_button)
-			param_hbox.add_child(param_settings)
-
+			var param_hbox: HBoxContainer = create_effect_param_hbox(param, effect, is_visual)
 			if param.keyframeable:
-				var param_prev_button: TextureButton = TextureButton.new()
-				param_prev_button.name = "PREV_KEYFRAME_" + param_id
-				param_prev_button.texture_normal = load(Library.ICON_PREV_KEYFRAME)
-				param_prev_button.ignore_texture_size = true
-				param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-				param_prev_button.custom_minimum_size.x = 8
-				param_prev_button.pressed.connect(_jump_prev_keyframe.bind(effect, param_id))
-
-				var param_keyframe_button: TextureButton = TextureButton.new()
-				param_keyframe_button.name = "KEYFRAME_" + param_id
-				param_keyframe_button.ignore_texture_size = true
-				param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-				param_keyframe_button.custom_minimum_size.x = 14
-				param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
-						effect, is_visual, param_id))
-				if effect.keyframes.has(param.id) and (effect.keyframes[param_id] as Dictionary).has(relative_frame_nr):
-					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
-				else:
-					param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
-
-				var param_next_button: TextureButton = TextureButton.new()
-				param_next_button.name = "NEXT_KEYFRAME_" + param_id
-				param_next_button.texture_normal = load(Library.ICON_NEXT_KEYFRAME)
-				param_next_button.ignore_texture_size = true
-				param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-				param_next_button.custom_minimum_size.x = 8
-				param_next_button.pressed.connect(_jump_next_keyframe.bind(effect, param_id))
-
-				param_hbox.add_child(param_prev_button)
-				param_hbox.add_child(param_keyframe_button)
-				param_hbox.add_child(param_next_button)
 				keyframes_found = true
 			content_vbox.add_child(param_hbox)
 
@@ -423,17 +369,70 @@ func _on_keyframe_dragged_to_effect_ui(relative_frame: int) -> void:
 	EditorCore.scrub_to_frame(current_clip.start + relative_frame)
 
 
-func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, is_text: bool) -> Control:
+func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: bool) -> HBoxContainer:
+	var param_hbox: HBoxContainer = HBoxContainer.new()
+	var param_id: String = param.id
+	var param_title: Label = Label.new()
+	var update_call: Callable = _effect_param_update_call.bind(effect, is_visual, param_id)
+	var param_settings: Control = create_param_control(param, update_call)
+
+	param_title.text = param.nickname.replace("param_", "").capitalize()
+	param_title.tooltip_text = param.tooltip
+	param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	param_title.clip_text = true
+	param_settings.name = "PARAM_" + param_id
+
+	var param_reset_button: TextureButton = TextureButton.new()
+	param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
+	param_reset_button.tooltip_text = tr("Reset parameter")
+	param_reset_button.ignore_texture_size = true
+	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	param_reset_button.custom_minimum_size = Vector2(14, 14)
+	param_reset_button.pressed.connect(
+			_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
+
+	param_hbox.add_child(param_title)
+	param_hbox.add_child(param_reset_button)
+	param_hbox.add_child(param_settings)
+
+	if param.keyframeable:
+		var param_prev_button: TextureButton = TextureButton.new()
+		param_prev_button.name = "PREV_KEYFRAME_" + param_id
+		param_prev_button.texture_normal = load(Library.ICON_PREV_KEYFRAME)
+		param_prev_button.ignore_texture_size = true
+		param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_prev_button.custom_minimum_size.x = 8
+		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(effect, param_id))
+
+		var param_keyframe_button: TextureButton = TextureButton.new()
+		param_keyframe_button.name = "KEYFRAME_" + param_id
+		param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+		param_keyframe_button.ignore_texture_size = true
+		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_keyframe_button.custom_minimum_size.x = 14
+		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
+				effect, is_visual, param_id))
+
+		var param_next_button: TextureButton = TextureButton.new()
+		param_next_button.name = "NEXT_KEYFRAME_" + param_id
+		param_next_button.texture_normal = load(Library.ICON_NEXT_KEYFRAME)
+		param_next_button.ignore_texture_size = true
+		param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		param_next_button.custom_minimum_size.x = 8
+		param_next_button.pressed.connect(_jump_next_keyframe.bind(effect, param_id))
+
+		param_hbox.add_child(param_prev_button)
+		param_hbox.add_child(param_keyframe_button)
+		param_hbox.add_child(param_next_button)
+
+	return param_hbox
+
+
+static func create_param_control(param: EffectParam, update_call: Callable) -> Control:
 	var value: Variant = param.default_value
 	if value == null:
 		printerr("EffectsPanel: Value is null! %s" % param)
 		value = 0
-
-	var update_call: Callable
-	if is_text:
-		update_call = _text_param_update_call.bind(param.id)
-	else:
-		update_call = _effect_param_update_call.bind(effect, is_visual, param.id)
 
 	match typeof(value):
 		TYPE_STRING:
@@ -633,7 +632,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 				link_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 				link_button.custom_minimum_size = Vector2(14, 14)
 				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-				link_button.tooltip_text = tr("Link X and Y")
+				link_button.tooltip_text = "Link X and Y"
 				link_button.toggled.connect(func(toggled: bool) -> void:
 					param.is_linked = toggled
 					link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
@@ -939,7 +938,7 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		var param_hbox: HBoxContainer = HBoxContainer.new()
 		var param_id: String = param.id
 		var param_title: Label = Label.new()
-		var param_settings: Control = _create_param_control(param, null, false, true)
+		var param_settings: Control = create_param_control(param, _text_param_update_call.bind(param.id))
 		var param_keyframe_button: TextureButton = TextureButton.new()
 
 		param_title.text = param.nickname.replace("param_", "").capitalize()
