@@ -18,30 +18,29 @@ msgid "Reset parameter"
 msgstr ""
 
 #: scenes/effects_panel/effects_panel.gd:442
-#, fuzzy
 msgid "Default"
-msgstr "Voreinstellungen"
+msgstr ""
 
 #: scenes/effects_panel/effects_panel.gd:474
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: scenes/effects_panel/effects_panel.gd:475
 #: scenes/effects_panel/effects_panel.gd:479
 msgid "Center"
-msgstr ""
+msgstr "Mitte"
 
 #: scenes/effects_panel/effects_panel.gd:476
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: scenes/effects_panel/effects_panel.gd:478
 msgid "Top"
-msgstr ""
+msgstr "Oben"
 
 #: scenes/effects_panel/effects_panel.gd:480
 msgid "Bottom"
-msgstr ""
+msgstr "Unten"
 
 #: scenes/effects_panel/effects_panel.gd:482
 msgid "Mix (Normal)"
@@ -49,7 +48,7 @@ msgstr ""
 
 #: scenes/effects_panel/effects_panel.gd:483
 msgid "Add"
-msgstr ""
+msgstr "Addieren"
 
 #: scenes/effects_panel/effects_panel.gd:484
 msgid "Subtract"
@@ -89,7 +88,7 @@ msgstr ""
 
 #: scenes/view_panel/view_panel.gd:75
 msgid "Frame"
-msgstr ""
+msgstr "Frame"
 
 #: scenes/view_panel/project_view_texture.gd:108
 msgid "Save screenshot ..."
@@ -101,7 +100,7 @@ msgstr ""
 
 #: scenes/editor/editor.tscn
 msgid "EditTab"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
@@ -135,15 +134,15 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:101
 msgid "Rename"
-msgstr ""
+msgstr "Umbenennen"
 
 #: scenes/file_panel/file_panel.gd:102
 msgid "Reload"
-msgstr ""
+msgstr "Neu lade"
 
 #: scenes/file_panel/file_panel.gd:103
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: scenes/file_panel/file_panel.gd:107
 msgid "Image options"
@@ -155,7 +154,7 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:110 scenes/timeline/timeline_panel.gd:651
 msgid "Video options"
-msgstr ""
+msgstr "Videooptionen"
 
 #: scenes/file_panel/file_panel.gd:114
 msgid "Create proxy"
@@ -180,11 +179,11 @@ msgstr ""
 
 #: scenes/file_panel/file_panel.gd:121
 msgid "Text options"
-msgstr ""
+msgstr "Textoptionen"
 
 #: scenes/file_panel/file_panel.gd:122
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplizieren"
 
 #: scenes/file_panel/file_panel.gd:125
 msgid "Save file as ..."
@@ -253,7 +252,7 @@ msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:232
 msgid "Track options"
-msgstr ""
+msgstr "Spuroptionen"
 
 #: scenes/timeline/timeline_panel.gd:235
 msgid "Add track"
@@ -265,23 +264,23 @@ msgstr ""
 
 #: scenes/timeline/timeline_panel.gd:241
 msgid "Visible"
-msgstr ""
+msgstr "Sichtbar"
 
 #: scenes/timeline/timeline_panel.gd:244
 msgid "Muted"
-msgstr ""
+msgstr "Stummgeschaltet"
 
 #: scenes/timeline/timeline_panel.gd:247
 msgid "Locked"
-msgstr ""
+msgstr "Gesperrt"
 
 #: scenes/timeline/timeline_panel.gd:641
 msgid "Delete clip"
-msgstr ""
+msgstr "Clip löschen"
 
 #: scenes/timeline/timeline_panel.gd:642
 msgid "Split clip"
-msgstr ""
+msgstr "Clip teilen"
 
 #: scenes/timeline/timeline_panel.gd:646 scenes/timeline/timeline_panel.gd:690
 msgid "Change speed"
@@ -301,7 +300,7 @@ msgstr ""
 
 #: scenes/timeline/track_controls.gd:69
 msgid "Mute track"
-msgstr ""
+msgstr "Spur stummschalten"
 
 #: scenes/color_popup/color_popup.tscn
 #, fuzzy
@@ -313,7 +312,7 @@ msgstr "Farbdatei hinzufügen"
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 #: scripts/autoloads/project.gd:222 scripts/logic/file_logic.gd:223
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: scenes/color_popup/color_popup.tscn
 #, fuzzy
@@ -323,10 +322,9 @@ msgstr "Neue Farbdatei erstellen"
 #: scenes/render_screen/render_screen.tscn
 #, fuzzy
 msgid "Render settings"
-msgstr "Rendern"
+msgstr "Rendern-einstellungen"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
 msgid "Render profile"
 msgstr "Renderprofil"
 
@@ -336,21 +334,19 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Save profile"
-msgstr ""
+msgstr "Profil speichern"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
 msgid "Export path"
-msgstr "Pfad"
+msgstr "Exportpfad"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
 msgid "Render video settings"
-msgstr "Rendern"
+msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Video codec"
-msgstr ""
+msgstr "Video-codec"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
@@ -362,7 +358,7 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Quality"
-msgstr ""
+msgstr "Qualität"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
@@ -372,7 +368,7 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Speed"
-msgstr ""
+msgstr "Geschwindigkeit"
 
 #: scenes/render_screen/render_screen.tscn
 msgid ""
@@ -384,12 +380,11 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Gop size"
-msgstr ""
+msgstr "GOP-Größe"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
 msgid "Render audio settings"
-msgstr "Editoreinstellungen"
+msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Audio codec"
@@ -397,20 +392,19 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Multi-threading"
-msgstr ""
+msgstr "Multi-threading"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Threads"
-msgstr ""
+msgstr "Threads"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "The amount of threads you want to use for exporting your video."
 msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
 msgid "Render region"
-msgstr "Rendern"
+msgstr "Render-Bereich"
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Create a low quality draft version of your video."
@@ -418,35 +412,32 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.tscn
 msgid "Draft"
-msgstr ""
+msgstr "Entwurf"
 
 #: scenes/render_screen/render_screen.tscn
-#, fuzzy
 msgid "Start render"
-msgstr "Render starten"
+msgstr "Rendern starten"
 
 #: scenes/render_screen/render_screen.tscn
 #: scenes/settings_menu/settings_menu.gd:111
 #: scenes/settings_menu/settings_menu.gd:299
 msgid "Markers"
-msgstr ""
+msgstr "Marker"
 
 #: scenes/render_screen/render_screen.gd:61
-#, fuzzy
 msgid "Custom render profiles"
-msgstr "Renderprofil"
+msgstr ""
 
 #: scenes/render_screen/render_screen.gd:170
 #: scenes/audio_take_over_popup/audio_take_over_popup.gd:106
 msgid "None"
-msgstr ""
+msgstr "Keine"
 
 #: scenes/render_screen/render_screen.gd:235
 msgid "Select export path"
 msgstr ""
 
 #: scenes/render_screen/render_screen.gd:316
-#, fuzzy
 msgid "Rendering finished"
 msgstr "Rendern abgeschlossen"
 
@@ -465,7 +456,6 @@ msgstr ""
 
 #: scenes/render_screen/render_screen.gd:428
 #: scenes/render_screen/render_screen.gd:436
-#, fuzzy
 msgid "Rendering"
 msgstr "Rendern"
 
@@ -501,50 +491,49 @@ msgid "Sending final frame ..."
 msgstr ""
 
 #: scenes/render_screen/save_custom_render_profile.tscn
-#, fuzzy
 msgid "Create render profile"
-msgstr "Renderprofil"
+msgstr ""
 
 #: scenes/render_screen/save_custom_render_profile.tscn
 msgid "New profile name"
-msgstr ""
+msgstr "Neuer Profilname"
 
 #: scenes/render_screen/save_custom_render_profile.gd:32
 msgid "Select Icon"
-msgstr ""
+msgstr "Symbol auswählen"
 
 #: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
 msgid "About GoZen"
-msgstr ""
+msgstr "Über GoZen"
 
 #: scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Version: "
-msgstr ""
+msgstr "Version: "
 
 #: scenes/about_gozen/about_gozen.gd:22
 #, fuzzy
 msgid "GoZen version"
-msgstr "Version"
+msgstr "GoZen-Version"
 
 #: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
-msgstr ""
+msgstr "Webseite"
 
 #: scenes/about_gozen/about_gozen.gd:39
 msgid "GitHub repo"
-msgstr ""
+msgstr "GitHub-Repository"
 
 #: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
-msgstr ""
+msgstr "GoZen unterstützen"
 
 #: scenes/about_gozen/about_gozen.gd:43
 msgid ""
@@ -553,9 +542,8 @@ msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:103
-#, fuzzy
 msgid "Loading project"
-msgstr "Neues Projekt"
+msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:104
@@ -564,61 +552,57 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:104
 #: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
-#, fuzzy
 msgid "Editor settings"
 msgstr "Editor Einstellungen"
 
 #: scenes/settings_menu/settings_menu.gd:109
 msgid "Marker one"
-msgstr ""
+msgstr "Marker eins"
 
 #: scenes/settings_menu/settings_menu.gd:109
 msgid "Marker two"
-msgstr ""
+msgstr "Marker zwei"
 
 #: scenes/settings_menu/settings_menu.gd:109
 msgid "Marker three"
-msgstr ""
+msgstr "Marker drei"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker four"
-msgstr ""
+msgstr "Marker vier"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker five"
-msgstr ""
+msgstr "Marker fünf"
 
 #: scenes/settings_menu/settings_menu.gd:121
 #: scenes/settings_menu/settings_menu.gd:315
 msgid "Shortcuts"
-msgstr ""
+msgstr "Tastenkombinationen"
 
 #: scenes/settings_menu/settings_menu.gd:130
 #: scenes/settings_menu/settings_menu.gd:322
 #: scenes/settings_menu/settings_menu.gd:323
-#, fuzzy
 msgid "Appearance"
 msgstr "Darstellung"
 
 #: scenes/settings_menu/settings_menu.gd:131
 msgid "Display"
-msgstr ""
+msgstr "Anzeige"
 
 #: scenes/settings_menu/settings_menu.gd:132
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: scenes/settings_menu/settings_menu.gd:139
-#, fuzzy
 msgid "Display scale"
-msgstr "Sprache"
+msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:146
 msgid "Editor theme"
-msgstr ""
+msgstr "Editor-Design"
 
 #: scenes/settings_menu/settings_menu.gd:153
-#, fuzzy
 msgid "Base color"
 msgstr "Hintergrundfarbe"
 
@@ -628,7 +612,7 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:159
 msgid "Accent color"
-msgstr ""
+msgstr "Akzentfarbe"
 
 #: scenes/settings_menu/settings_menu.gd:164
 msgid "The highlight/accent color of the editor UI."
@@ -643,7 +627,6 @@ msgid "Audio waveforms"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:171
-#, fuzzy
 msgid "Waveform style"
 msgstr "Audiowellenform-Stil"
 
@@ -659,26 +642,23 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:186
 msgid "Dialogs"
-msgstr ""
+msgstr "Dialoge"
 
 #: scenes/settings_menu/settings_menu.gd:187
 msgid "Use native dialogs"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:194
-#, fuzzy
 msgid "Defaults"
 msgstr "Voreinstellungen"
 
 #: scenes/settings_menu/settings_menu.gd:195
-#, fuzzy
 msgid "Default durations"
 msgstr "Standard Bilddauer"
 
 #: scenes/settings_menu/settings_menu.gd:196
-#, fuzzy
 msgid "Default image duration"
-msgstr "Standard Bilddauer"
+msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:203
 #: scenes/settings_menu/settings_menu.gd:211
@@ -687,9 +667,8 @@ msgid "Duration in frames per second."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:204
-#, fuzzy
 msgid "Default color duration"
-msgstr "Standard Bilddauer"
+msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:212
 #, fuzzy
@@ -697,24 +676,20 @@ msgid "Default text duration"
 msgstr "Standard Bilddauer"
 
 #: scenes/settings_menu/settings_menu.gd:220
-#, fuzzy
 msgid "Project resolution"
-msgstr "Auflösung"
+msgstr "Projektauflösung"
 
 #: scenes/settings_menu/settings_menu.gd:222
-#, fuzzy
 msgid "Project frame-rate"
-msgstr "Bildrate"
+msgstr "Projekt-Bildrate"
 
 #: scenes/settings_menu/settings_menu.gd:230
-#, fuzzy
 msgid "Timeline"
 msgstr "Zeitachse"
 
 #: scenes/settings_menu/settings_menu.gd:231
-#, fuzzy
 msgid "Timeline settings"
-msgstr "Rendern"
+msgstr "Zeitleisten-Einstellungen"
 
 #: scenes/settings_menu/settings_menu.gd:232
 #, fuzzy
@@ -723,14 +698,13 @@ msgstr "Standardanzahl der Tracks"
 
 #: scenes/settings_menu/settings_menu.gd:238
 msgid "Track height"
-msgstr ""
+msgstr "Spurhöhe"
 
 #: scenes/settings_menu/settings_menu.gd:244
 msgid "Timeline controls"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:245
-#, fuzzy
 msgid "Pause after dragging"
 msgstr "Pausieren nach Ziehen"
 
@@ -749,7 +723,7 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:259
 msgid "Addons"
-msgstr ""
+msgstr "Erweiterungen"
 
 #: scenes/settings_menu/settings_menu.gd:260
 msgid "Show mode bar"
@@ -763,7 +737,7 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:268
 msgid "Performance"
-msgstr ""
+msgstr "Leistung"
 
 #: scenes/settings_menu/settings_menu.gd:269
 msgid "Video Decoding"
@@ -782,7 +756,7 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:278
 msgid "Video Cache Size"
-msgstr ""
+msgstr "Video-Cache-Größe"
 
 #: scenes/settings_menu/settings_menu.gd:285
 msgid ""
@@ -792,11 +766,11 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:286
 msgid "Use proxies"
-msgstr ""
+msgstr "Proxys verwenden"
 
 #: scenes/settings_menu/settings_menu.gd:291
 msgid "Proxies save path"
-msgstr ""
+msgstr "Proxy-Speicherpfad"
 
 #: scenes/settings_menu/settings_menu.gd:296
 msgid ""
@@ -808,26 +782,22 @@ msgstr ""
 #: scenes/settings_menu/settings_menu.gd:301
 #: scenes/settings_menu/settings_menu.gd:302
 msgid "Extras"
-msgstr ""
+msgstr "Extras"
 
 #: scenes/settings_menu/settings_menu.gd:303
-#, fuzzy
 msgid "Check version"
 msgstr "Version Prüfen"
 
 #: scenes/settings_menu/settings_menu.gd:308
-#, fuzzy
 msgid "Auto save"
-msgstr "Speichern"
+msgstr "Automatisch speichern"
 
 #: scenes/settings_menu/settings_menu.gd:320 scenes/menu_bar/menu_bar.tscn
-#, fuzzy
 msgid "Project settings"
 msgstr "Projekteinstellungen"
 
 #: scenes/settings_menu/settings_menu.gd:324
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Background color"
 msgstr "Hintergrundfarbe"
 
@@ -840,18 +810,16 @@ msgid "Press any key..."
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.tscn
-#, fuzzy
 msgid "Search settings ..."
-msgstr "Rendern"
+msgstr ""
 
 #: scenes/settings_menu/settings_menu.tscn
-#, fuzzy
 msgid "Close settings"
-msgstr "Einstellungen speichern"
+msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Project"
-msgstr ""
+msgstr "Projekt"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Save project"
@@ -863,51 +831,48 @@ msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:187 scripts/autoloads/project.gd:167
-#, fuzzy
 msgid "Open project"
 msgstr "Projekt öffnen"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Recent projects"
 msgstr "Zuletzt geöffnete Projekte"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Quit"
-msgstr ""
+msgstr "Beenden"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Undo"
-msgstr ""
+msgstr "Rückgängig"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Redo"
-msgstr ""
+msgstr "Wiederherstellen"
 
 #: scenes/menu_bar/menu_bar.tscn
-#, fuzzy
 msgid "Preferences"
-msgstr "Projekt"
+msgstr "Einstellungen"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Module manager"
-msgstr ""
+msgstr "Modul-Manager"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Command bar"
-msgstr ""
+msgstr "Befehlsleiste"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Report bug"
-msgstr ""
+msgstr "Fehler melden"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Check for updates"
@@ -915,67 +880,60 @@ msgstr ""
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
-msgstr ""
+msgstr "Handbuch"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Tutorials"
 msgstr "Tutorials"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Render"
-msgstr ""
+msgstr "Rendern"
 
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Confirm"
-msgstr ""
+msgstr "Bestätigen"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid ""
 "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
 "[u]Clay Banks[/u][/url]"
-msgstr ""
+msgstr "Bild von [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Update available"
-msgstr "Update verfügbar!"
+msgstr "Update verfügbar"
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Create new project"
 msgstr "Neues Projekt erstellen"
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Getting started"
 msgstr "Erste Schritte"
 
 #: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:48
-#, fuzzy
 msgid "New project"
 msgstr "Neues Projekt"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Path"
-msgstr ""
+msgstr "Pfad"
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Resolution"
 msgstr "Auflösung"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The video width."
-msgstr ""
+msgstr "Die Videobreite."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The video height."
-msgstr ""
+msgstr "Die Videohöhe."
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Framerate"
 msgstr "Bildrate"
 
@@ -989,17 +947,16 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Return"
-msgstr ""
+msgstr "Zurück"
 
 #: scenes/startup_screen/startup_screen.gd:125
-#, fuzzy
 msgid "Version"
 msgstr "Version"
 
 #: scenes/startup_screen/startup_screen.gd:189
 #: scenes/startup_screen/startup_screen.gd:239 scripts/autoloads/project.gd:93
 msgid "GoZen project file"
-msgstr ""
+msgstr "GoZen Projektdatei"
 
 #: scenes/startup_screen/startup_screen.gd:237
 msgid "Select project save path"
@@ -1007,19 +964,19 @@ msgstr ""
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Update marker"
-msgstr ""
+msgstr "Marker aktualisieren"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "time (frame)"
-msgstr ""
+msgstr "Zeit (frame)"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Marker"
-msgstr ""
+msgstr "Marker"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
@@ -1027,12 +984,11 @@ msgstr ""
 
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 msgid "Audio offset"
-msgstr ""
+msgstr "Audio-versatz"
 
 #: scripts/autoloads/project.gd:49
-#, fuzzy
 msgid "Initialize new project ..."
-msgstr "Neues Projekt"
+msgstr "Neues Projekt initialisieren ..."
 
 #: scripts/autoloads/project.gd:60
 msgid "Setting up playback ..."
@@ -1040,7 +996,7 @@ msgstr ""
 
 #: scripts/autoloads/project.gd:61 scripts/autoloads/project.gd:148
 msgid "Finalizing ..."
-msgstr ""
+msgstr "Abschließen ..."
 
 #: scripts/autoloads/project.gd:113
 msgid "Setting up timeline ..."
@@ -1052,11 +1008,11 @@ msgstr ""
 
 #: scripts/autoloads/project.gd:168
 msgid "GoZen project files"
-msgstr ""
+msgstr "GoZen Projektdateien"
 
 #: scripts/autoloads/project.gd:221
 msgid "Don't save"
-msgstr ""
+msgstr "Nicht speichern"
 
 #: scripts/autoloads/project.gd:225
 #, fuzzy
@@ -1065,22 +1021,20 @@ msgstr "Editor Einstellungen"
 
 #: scripts/autoloads/project.gd:226
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: scripts/autoloads/command_manager.gd:13
 #, fuzzy
 msgid "Open editor settings"
-msgstr "Editor Einstellungen"
+msgstr "Editor-Einstellungen öffnen"
 
 #: scripts/autoloads/command_manager.gd:14
-#, fuzzy
 msgid "Open project settings"
-msgstr "Projekteinstellungen"
+msgstr "Projekteinstellungen öffnen"
 
 #: scripts/autoloads/command_manager.gd:15
-#, fuzzy
 msgid "open render menu"
-msgstr "Rendermenü"
+msgstr "Rendermenü öffnen"
 
 #: scripts/logic/file_logic.gd:220
 msgid "Update existing clips?"
@@ -1094,20 +1048,19 @@ msgstr ""
 
 #: scripts/logic/file_logic.gd:222
 msgid "Apply to All"
-msgstr ""
+msgstr "Auf alle anwenden"
 
 #: scripts/logic/file_logic.gd:224
 msgid "Apply to File Only"
 msgstr ""
 
 #: scripts/logic/file_logic.gd:296
-#, fuzzy
 msgid "Files dropped"
-msgstr "Neues Projekt"
+msgstr "Dateien abgelegt"
 
 #: scripts/logic/file_logic.gd:310
 msgid "Files loading ..."
 msgstr ""
 
 msgid "GoZen"
-msgstr ""
+msgstr "GoZen"
