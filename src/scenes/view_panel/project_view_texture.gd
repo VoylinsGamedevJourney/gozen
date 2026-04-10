@@ -62,6 +62,7 @@ func _update_transform() -> void:
 
 	size = base_size * view_zoom
 	position = (overlay_size - size) / 2.0
+	queue_redraw()
 
 
 func _on_clip_selected(clip: ClipData) -> void:
@@ -111,10 +112,10 @@ func _on_gui_input(event: InputEvent) -> void:
 
 		elif mouse_event.ctrl_pressed:
 			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				_zoom_view(1.1)
+				_zoom_view(1.05)
 				accept_event()
 			elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				_zoom_view(1.0 / 1.1)
+				_zoom_view(1.0 / 1.05)
 				accept_event()
 
 
@@ -124,7 +125,8 @@ func _zoom_view(factor: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size).grow(1.0), Color(1, 1, 1, 0.5), false, 2.0)
+	if view_zoom != 1.0:
+		draw_rect(Rect2(Vector2.ZERO, size).grow(1.0), Color(1, 1, 1, 0.5), false, 2.0)
 	if show_safe_areas:
 		var width: float = size.x
 		var height: float = size.y
