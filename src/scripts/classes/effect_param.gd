@@ -15,3 +15,5 @@ extends Resource
 
 @export var is_linkable: bool = false ## Allows X and Y to be linked in the UI (for Vector2/Vector2i).
 @export var is_linked: bool = false ## Default state of the link.
+
+@export var has_slider: bool = true ## Display's a slider in automatically generated effects UI.

@@ -13,6 +13,7 @@ default_value = 0.0
 min_value = -80.0
 max_value = 25.0
 step = 1.0
+has_slider = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]

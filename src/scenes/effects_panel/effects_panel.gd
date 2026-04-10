@@ -495,11 +495,6 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox.allow_lesser = param.min_value == null
 			spinbox.allow_greater = param.max_value == null
 			spinbox.custom_arrow_step = spinbox.step
-			spinbox.value_changed.connect(func(val: float) -> void:
-					if spinbox.get_line_edit().has_focus():
-						spinbox.get_line_edit().release_focus()
-					update_call.call(val))
-			spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 			var scroll_handler: Callable = func(event: InputEvent) -> void:
 					if event is InputEventMouseButton:
@@ -516,13 +511,51 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox.gui_input.connect(scroll_handler)
 			spinbox.get_line_edit().gui_input.connect(scroll_handler)
 
-			return spinbox
+			if param.has_slider:
+				var hbox: HBoxContainer = HBoxContainer.new()
+				var slider: HSlider = HSlider.new()
+				slider.name = "Slider"
+				spinbox.name = "SpinBox"
+				slider.min_value = param.min_value if param.min_value != null else 0.0
+				slider.max_value = param.max_value if param.max_value != null else 100.0
+				slider.step = spinbox.step
+				slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+				var slider_range: float = slider.max_value - slider.min_value
+				if slider.step > 0.0 and (slider_range / slider.step) <= 20.0:
+					slider.tick_count = int(slider_range / slider.step) + 1
+				else:
+					slider.tick_count = 13
+				slider.ticks_on_borders = true
+
+				slider.value_changed.connect(func(val: float) -> void:
+						spinbox.set_value_no_signal(val)
+						update_call.call(val))
+				spinbox.value_changed.connect(func(val: float) -> void:
+						if spinbox.get_line_edit().has_focus():
+							spinbox.get_line_edit().release_focus()
+						slider.set_value_no_signal(val)
+						update_call.call(val))
+
+				hbox.add_child(slider)
+				hbox.add_child(spinbox)
+				hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				return hbox
+			else:
+				spinbox.value_changed.connect(func(val: float) -> void:
+						if spinbox.get_line_edit().has_focus():
+							spinbox.get_line_edit().release_focus()
+						update_call.call(val))
+				spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				return spinbox
 		TYPE_VECTOR2, TYPE_VECTOR2I:
 			var hbox: HBoxContainer = HBoxContainer.new()
 			var spinbox_x: SpinBox = SpinBox.new()
 			var spinbox_y: SpinBox = SpinBox.new()
 			spinbox_x.name = "SpinBoxX"
 			spinbox_y.name = "SpinBoxY"
+
 			# X
 			spinbox_x.min_value = param.min_value.x if param.min_value != null else MIN_VALUE
 			spinbox_x.max_value = param.max_value.x if param.max_value != null else MAX_VALUE
@@ -530,6 +563,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_x.allow_lesser = param.min_value == null
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
+			spinbox_x.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
 					if spinbox_x.get_line_edit().has_focus():
 						spinbox_x.get_line_edit().release_focus()
@@ -561,6 +595,7 @@ func _create_param_control(param: EffectParam, effect: Effect, is_visual: bool, 
 			spinbox_y.allow_lesser = param.min_value == null
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
+			spinbox_y.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			spinbox_y.value_changed.connect(func(new_value: float) -> void:
 					if spinbox_y.get_line_edit().has_focus():
 						spinbox_y.get_line_edit().release_focus()
@@ -774,6 +809,11 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 			var spinbox_y: SpinBox = param_settings.get_node("SpinBoxY")
 			spinbox_x.set_value_no_signal(value.x as float)
 			spinbox_y.set_value_no_signal(value.y as float)
+		elif param_settings.has_node("Slider") and param_settings.has_node("SpinBox"):
+			var slider: HSlider = param_settings.get_node("Slider")
+			var spinbox: SpinBox = param_settings.get_node("SpinBox")
+			slider.set_value_no_signal(value as float)
+			spinbox.set_value_no_signal(value as float)
 	elif param_settings is ColorPickerButton:
 		var color_picker: ColorPickerButton = param_settings
 		color_picker.color = value

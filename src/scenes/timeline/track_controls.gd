@@ -62,7 +62,7 @@ func _rebuild() -> void:
 		var button_mute: Button = Button.new()
 		button_mute.toggle_mode = true
 		button_mute.flat = true
-		button_mute.text = "M"
+		button_mute.text = "M" # NO_TRANSLATE
 		button_mute.button_pressed = track_data.is_muted
 		button_mute.custom_minimum_size = Vector2(8, 8)
 		button_mute.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
