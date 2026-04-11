@@ -310,12 +310,15 @@ func _on_ui_cancel() -> void:
 	draw_all()
 
 
-## Returns the clip.
 func _get_clip_on_mouse() -> ClipData:
+	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
+		return null
 	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(), get_frame_from_mouse())
 
 
 func _get_resize_target() -> Timeline.ResizeTarget:
+	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
+		return null
 	var track: int = get_track_from_mouse()
 	if TrackLogic.tracks[track].is_locked or not Timeline.hovered_clip:
 		return null
@@ -345,6 +348,8 @@ func _get_resize_target() -> Timeline.ResizeTarget:
 
 
 func _get_fade_target() -> Timeline.FadeTarget:
+	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
+		return null
 	var track: int = get_track_from_mouse()
 	if TrackLogic.tracks[track].is_locked or not Timeline.hovered_clip:
 		return null
