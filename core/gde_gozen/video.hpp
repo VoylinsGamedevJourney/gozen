@@ -94,11 +94,6 @@ class Video : public Resource {
 
 	std::vector<Keyframe> keyframes;
 
-	std::thread index_thread;
-	std::mutex keyframe_mutex;
-	std::atomic<bool> abort_indexing;
-	std::atomic<bool> indexing_done;
-
 	// Godot classes.
 	String path = "";
 	String pixel_format = "";
@@ -129,8 +124,6 @@ class Video : public Resource {
 	void _add_to_cache(int frame_nr);
 	bool _load_from_cache(int frame_nr);
 	void _clear_cache();
-
-	void _build_keyframe_index(String p_path);
 
 	inline bool _log_err(const String& message) {
 		UtilityFunctions::printerr("Video: ", message, "!");

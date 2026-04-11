@@ -217,15 +217,6 @@ int Video::open(const String& video_path) {
 	}
 #endif
 
-	// If FFmpeg didn't provide a native index, we build keyframe_pos in the background.
-	if (keyframes.empty()) {
-		abort_indexing = false;
-		indexing_done = false;
-		index_thread = std::thread(&Video::_build_keyframe_index, this, path);
-	} else {
-		indexing_done = true;
-	}
-
 	avcodec_flush_buffers(av_codec_ctx.get());
 	bool duration_from_bitrate = av_format_ctx->duration_estimation_method == AVFMT_DURATION_FROM_BITRATE;
 	if (duration_from_bitrate) {
@@ -375,11 +366,6 @@ int Video::open(const String& video_path) {
 
 
 void Video::close() {
-	abort_indexing = true;
-	if (index_thread.joinable()) {
-		index_thread.join();
-	}
-
 	_clear_cache();
 	keyframes.clear();
 
@@ -526,9 +512,11 @@ bool Video::next_frame(bool skip) {
 
 	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
 	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
+	AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
 	if (skip) {
 		av_codec_ctx->skip_loop_filter = AVDISCARD_ALL;
 		av_codec_ctx->skip_idct = AVDISCARD_ALL;
+		av_codec_ctx->skip_frame = AVDISCARD_NONREF;
 	}
 
 	UniqueAVFrame temp_frame = make_unique_avframe();
@@ -538,6 +526,7 @@ bool Video::next_frame(bool skip) {
 	if (skip) {
 		av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 		av_codec_ctx->skip_idct = original_skip_idct;
+		av_codec_ctx->skip_frame = original_skip_frame;
 	}
 
 	if (response < 0 && response != AVERROR_EOF) {
@@ -870,7 +859,6 @@ int Video::_seek_frame(int frame_nr) {
 		av_rescale_q(start_time_video + frame_timestamp, AVRational{1, 10000000}, av_stream->time_base);
 
 	// Find the exact keyframe to jump to using binary search on our custom index.
-	keyframe_mutex.lock();
 	if (!keyframes.empty()) {
 		auto keyframe_pos = std::upper_bound(keyframes.begin(), keyframes.end(), target_timestamp,
 											 [](int64_t ts, const Keyframe& kf) { return ts < kf.pts; });
@@ -879,33 +867,33 @@ int Video::_seek_frame(int frame_nr) {
 		}
 
 		int response = av_seek_frame(av_format_ctx.get(), av_stream->index, keyframe_pos->pts, AVSEEK_FLAG_BACKWARD);
-		keyframe_mutex.unlock();
-		if (response >= 0)
+		if (response >= 0) {
 			return response;
-	} else {
-		keyframe_mutex.unlock();
+		}
 	}
 	// Fallback to standard seeking if the index lookup fails for some reason.
 	return av_seek_frame(av_format_ctx.get(), av_stream->index, target_timestamp, AVSEEK_FLAG_BACKWARD);
 }
 
 void Video::_add_to_cache(int frame_nr) {
-	if (max_cache_size <= 0)
+	if (max_cache_size <= 0) {
 		return;
+	}
 
-	// Check if cached already
-	for (const CachedFrame& cache : frame_cache)
-		if (cache.frame_nr == frame_nr)
+	// Check if cached already.
+	for (const CachedFrame& cache : frame_cache) {
+		if (cache.frame_nr == frame_nr) {
 			return;
+		}
+	}
 
-	// Create a new ref-counted frame
+	// Create a new ref-counted frame.
 	AVFrame* new_frame = av_frame_alloc();
-
-	if (!new_frame)
+	if (!new_frame) {
 		return;
-	else if (av_frame_ref(new_frame, av_frame.get()) < 0)
+	} else if (av_frame_ref(new_frame, av_frame.get()) < 0) {
 		return av_frame_free(&new_frame);
-
+	}
 
 	frame_cache.push_back({frame_nr, new_frame});
 
@@ -917,28 +905,27 @@ void Video::_add_to_cache(int frame_nr) {
 	}
 }
 
-
 bool Video::_load_from_cache(int frame_nr) {
 	for (const CachedFrame& cache : frame_cache) {
-		if (cache.frame_nr != frame_nr)
+		if (cache.frame_nr != frame_nr) {
 			continue;
+		}
 
 		av_frame_unref(av_frame.get());
-		if (av_frame_ref(av_frame.get(), cache.frame) < 0)
+		if (av_frame_ref(av_frame.get(), cache.frame) < 0) {
 			return false;
+		}
 
+		// Updating PTS.
 		current_frame = frame_nr;
-
-		// Updating PTS
-		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE)
+		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE) {
 			current_pts = av_frame->pts;
-		else
+		} else {
 			current_pts = av_frame->best_effort_timestamp;
-
+		}
 		_copy_frame_data();
 		return true;
 	}
-
 	return false;
 }
 
@@ -948,53 +935,6 @@ void Video::_clear_cache() {
 		av_frame_free(&cache.frame);
 
 	frame_cache.clear();
-}
-
-
-void Video::_build_keyframe_index(String p_path) {
-	AVFormatContext* thread_format_ctx = nullptr;
-	CharString local_path = p_path.utf8();
-	if (p_path.begins_with("res://") || p_path.begins_with("user://")) {
-		indexing_done = true;
-		return;
-	}
-
-	if (avformat_open_input(&thread_format_ctx, local_path.get_data(), nullptr, nullptr) != 0) {
-		indexing_done = true;
-		return;
-	}
-
-	if (avformat_find_stream_info(thread_format_ctx, nullptr) < 0) {
-		avformat_close_input(&thread_format_ctx);
-		indexing_done = true;
-		return;
-	}
-
-	int video_stream_idx = -1;
-	for (unsigned int i = 0; i < thread_format_ctx->nb_streams; i++) {
-		if (thread_format_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-			video_stream_idx = i;
-			break;
-		}
-	}
-
-	if (video_stream_idx == -1) {
-		avformat_close_input(&thread_format_ctx);
-		indexing_done = true;
-		return;
-	}
-
-	AVPacket* packet = av_packet_alloc();
-	while (!abort_indexing && av_read_frame(thread_format_ctx, packet) >= 0) {
-		if (packet->stream_index == video_stream_idx && (packet->flags & AV_PKT_FLAG_KEY)) {
-			std::lock_guard<std::mutex> lock(keyframe_mutex);
-			keyframes.push_back({packet->pts, packet->pos});
-		}
-		av_packet_unref(packet);
-	}
-	av_packet_free(&packet);
-	avformat_close_input(&thread_format_ctx);
-	indexing_done = true;
 }
 
 
