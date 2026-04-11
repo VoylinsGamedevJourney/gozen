@@ -160,17 +160,14 @@ func set_display_scale_int(value: int) -> void:
 
 
 func apply_display_scale() -> void:
-	get_tree().root.content_scale_factor = data.display_scale
+	apply_theme()
 
 
 func get_display_scale() -> float:
-	var size: Vector2 = DisplayServer.screen_get_size(DisplayServer.window_get_current_screen())
-
-	if size.y > 1100:
-		return 1.5
-	elif size.y < 1000:
-		return 0.5
-	return 1.0
+	var screen: int = DisplayServer.window_get_current_screen()
+	var size: Vector2 = DisplayServer.screen_get_size(screen)
+	var auto_scale: float = snappedf(float(size.y) / 1080.0, 0.25)
+	return clampf(auto_scale, 0.75, 2.5)
 
 
 func get_display_scale_int() -> int:
@@ -189,6 +186,9 @@ func apply_theme() -> void:
 		theme = load(data.theme).duplicate(true)
 	else: # Default theme.
 		theme = load(Library.THEME_DEFAULT).duplicate(true)
+
+	if not is_equal_approx(data.display_scale, 1.0):
+		Utils.apply_scale(theme, data.display_scale)
 
 	# TODO: Adjust the colors to use the base and accent color. In doing so
 	# we also have to update the text color. Biggest possible issue is that
