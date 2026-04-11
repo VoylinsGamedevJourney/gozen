@@ -203,29 +203,32 @@ func _find_closest_keyframe(target_frame: int) -> int:
 	return found_frame
 
 
-func set_zoom(new_zoom: float, mouse_x: float) -> void:
+func set_zoom(new_zoom: float, global_mouse_x: float = -1.0) -> void:
 	var scroll: ScrollContainer = get_parent() as ScrollContainer
 	if not scroll:
 		return
 
 	var old_zoom: float = zoom
-	zoom = clampf(new_zoom, MIN_ZOOM, MAX_ZOOM)
-	if zoom == old_zoom:
+	var clamped_new_zoom: float = clampf(new_zoom, MIN_ZOOM, MAX_ZOOM)
+	if clamped_new_zoom == old_zoom:
 		return
 
 	var base_width: float = scroll.size.x
-	var new_size_x: float = base_width * zoom if zoom > 1.0 else base_width
-	custom_minimum_size.x = base_width * zoom if zoom > 1.0 else 0.0
-	size.x = new_size_x
-
-	var h_scroll: HScrollBar = scroll.get_h_scroll_bar()
-	h_scroll.max_value = new_size_x
-	h_scroll.page = scroll.size.x
-
-	if mouse_x >= 0:
-		var zoom_ratio: float = zoom / old_zoom
-		var mouse_viewport_offset: float = mouse_x - scroll.scroll_horizontal
-		var new_mouse_x: float = mouse_x * zoom_ratio
-		var target_scroll: int = maxi(0, int(new_mouse_x - mouse_viewport_offset))
+	var new_size_x: float = base_width * clamped_new_zoom if clamped_new_zoom > 1.0 else base_width
+	var target_scroll: int = scroll.scroll_horizontal
+	if global_mouse_x >= 0:
+		var mouse_viewport_offset: float = global_mouse_x - scroll.global_position.x
+		var absolute_x: float = scroll.scroll_horizontal + mouse_viewport_offset
+		var zoom_ratio: float = clamped_new_zoom / old_zoom
+		var new_absolute_x: float = absolute_x * zoom_ratio
+		target_scroll = maxi(0, int(new_absolute_x - mouse_viewport_offset))
+	if clamped_new_zoom < old_zoom:
 		scroll.scroll_horizontal = target_scroll
+
+	zoom = clamped_new_zoom
+	custom_minimum_size.x = base_width * zoom if zoom > 1.0 else 0.0
+	scroll.get_h_scroll_bar().max_value = new_size_x
+	if clamped_new_zoom >= old_zoom:
+		scroll.scroll_horizontal = target_scroll
+
 	queue_redraw()

@@ -796,20 +796,26 @@ func zoom_at_mouse(factor: float) -> void:
 
 	var mouse_viewport_offset: float = get_global_mouse_position().x - scroll.global_position.x
 	var absolute_x: float = Timeline.scroll_x + mouse_viewport_offset
-
-	Timeline.zoom = new_zoom
 	var zoom_ratio: float = new_zoom / old_zoom
 	var new_absolute_x: float = absolute_x * zoom_ratio
 	var target_scroll: int = maxi(0, int(new_absolute_x - mouse_viewport_offset))
 	var timestamp_scroll: ScrollContainer = scroll.get("timestamp_scroll")
-	timestamp_scroll.scroll_horizontal = target_scroll
+	if new_zoom < old_zoom:
+		if timestamp_scroll: timestamp_scroll.scroll_horizontal = target_scroll
+		scroll.scroll_horizontal = target_scroll
 
-	scroll.scroll_horizontal = target_scroll
+	Timeline.zoom = new_zoom
 	Timeline.scroll_x = target_scroll
 	Timeline.scroll_y = scroll.scroll_vertical
-
 	draw_all()
 	accept_event()
+	if new_zoom >= old_zoom:
+		_update_scroll.call_deferred(timestamp_scroll, target_scroll)
+
+
+func _update_scroll(timestamp_scroll: ScrollContainer, target_scroll: int) -> void:
+	timestamp_scroll.scroll_horizontal = target_scroll
+	scroll.scroll_horizontal = target_scroll
 
 
 func get_frame_from_mouse() -> int:
