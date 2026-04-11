@@ -3,6 +3,8 @@
 #include "audio_stream_ffmpeg.hpp"
 #include "ffmpeg.hpp"
 
+#include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdint>
 #include <deque>
@@ -18,9 +20,17 @@
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <mutex>
+#include <thread>
+#include <vector>
 
 
 using namespace godot;
+
+struct Keyframe {
+	int64_t pts;
+	int64_t file_pos;
+};
 
 struct CachedFrame {
 	int frame_nr;
@@ -69,8 +79,8 @@ class Video : public Resource {
 	float sar = 0;
 	float framerate = 0;
 
-	bool loaded = false;	// Is true after open()
-	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon
+	bool loaded = false;	// Is true after open().
+	bool using_sws = false; // This is set for when the pixel format is foreign and not directly supported by the addon.
 	bool full_color_range = true;
 
 	int sws_flag = SWS_BILINEAR;
@@ -78,9 +88,16 @@ class Video : public Resource {
 
 	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1 };
 
-	// Caching - Increases ram usage, but provides smoother backwards seeking
+	// Caching - Increases ram usage, but provides smoother backwards seeking.
 	std::deque<CachedFrame> frame_cache;
 	int max_cache_size = 100;
+
+	std::vector<Keyframe> keyframes;
+
+	std::thread index_thread;
+	std::mutex keyframe_mutex;
+	std::atomic<bool> abort_indexing;
+	std::atomic<bool> indexing_done;
 
 	// Godot classes.
 	String path = "";
@@ -101,7 +118,7 @@ class Video : public Resource {
 	PackedInt32Array video_streams;
 	PackedInt32Array audio_streams;
 
-	// Private functions
+	// Private functions.
 	void _copy_frame_data();
 	void _clean_frame_data();
 
@@ -112,6 +129,8 @@ class Video : public Resource {
 	void _add_to_cache(int frame_nr);
 	bool _load_from_cache(int frame_nr);
 	void _clear_cache();
+
+	void _build_keyframe_index(String p_path);
 
 	inline bool _log_err(const String& message) {
 		UtilityFunctions::printerr("Video: ", message, "!");

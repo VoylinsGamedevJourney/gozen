@@ -410,16 +410,9 @@ func load_video_frame(clip: ClipData, frame_nr: int, instance_index: int = 0) ->
 	if clip and clip.type == EditorCore.TYPE.VIDEO:
 		var file: FileData = FileLogic.files[clip.file]
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
-		if video == null:
-			return # Probably still loading.
-
-		var project_fps: float = Project.data.framerate
-		var video_fps: float = video.get_framerate()
-		var video_frame_nr: int = video.get_current_frame()
-		var target_frame_nr: int = roundi((float(frame_nr) / project_fps) * video_fps)
-		if target_frame_nr != video_frame_nr: # Shouldn't reload same frame.
-			if !video.seek_frame(target_frame_nr):
-				printerr("Project.clips: Couldn't seek frame!")
+		if video != null: # Check if video is done loading.
+			var target_frame_nr: int = roundi((float(frame_nr) / Project.data.framerate) * video.get_framerate())
+			video.seek_frame(target_frame_nr)
 
 
 func get_audio_data(clip: ClipData) -> PackedByteArray:

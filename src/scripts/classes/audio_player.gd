@@ -12,6 +12,8 @@ var clip: ClipData = null
 
 var project_data: ProjectData
 
+var _last_seek_time: int = 0
+
 
 
 func _init() -> void:
@@ -109,17 +111,22 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 	if old_file != file or player.stream != stream:
 		player.stream = stream
 		player.play(position)
+		_last_seek_time = Time.get_ticks_msec()
 		player.stream_paused = !EditorCore.is_playing
 		return
 
-	# Check if playback is close enough ONLY if stream is the same.
+	if Time.get_ticks_msec() - _last_seek_time < 150:
+		player.stream_paused = !EditorCore.is_playing
+		return
+
 	var frame_duration: float = 1.0 / framerate
-	var sync_threshold: float = max(frame_duration * 4 * clip.speed, 0.30)
+	var sync_threshold: float = max(frame_duration * 2 * clip.speed, 0.15)
 	if player.playing and (contiguous or abs(player.get_playback_position() - position) < sync_threshold):
 		player.stream_paused = !EditorCore.is_playing
 		return
 
-	player.play(position) # Play audio from the position otherwise.
+	player.play(position)
+	_last_seek_time = Time.get_ticks_msec()
 	player.stream_paused = !EditorCore.is_playing
 
 
