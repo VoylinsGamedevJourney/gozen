@@ -19,8 +19,8 @@ func _gui_input(event: InputEvent) -> void:
 		if !event_mouse_button.pressed:
 			return
 
-		# We need to change the scroll direction of this node
-		# TODO: Implemented as a PR for Godot (#115545)
+		# We need to change the scroll direction of this node.
+		# TODO: Implemented as a PR for Godot (#115545) Got merged, still need 4.7 to actually use it.
 		var h_step: float = scroll_horizontal_custom_step
 		var v_step: int = floori(scroll_vertical_custom_step)
 

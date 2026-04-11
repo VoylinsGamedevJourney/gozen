@@ -65,6 +65,10 @@ func _ready() -> void:
 	MarkerLogic.moving.connect(markers_redraw)
 
 	button_snap.toggled.connect(func(toggled: bool) -> void:
+			if toggled:
+				button_snap.texture_normal = load(Library.ICON_SNAP_ON)
+			else:
+				button_snap.texture_normal = load(Library.ICON_SNAP_OFF)
 			Timeline.snap_enabled = toggled)
 
 	visibility_changed.connect(_redraw_on_change)
@@ -609,9 +613,9 @@ func _handle_fade_motion() -> void:
 	var mouse_x: float = get_local_mouse_position().x
 	var start_x: float = clip.start * zoom
 	var end_x: float = clip.end * zoom
-	var drag_frames: int = 0 ## Convert pixel drag to frame amount
+	var drag_frames: int = 0 ## Convert pixel drag to frame amount.
 
-	if not Timeline.fade_target.is_end: # Fade In
+	if not Timeline.fade_target.is_end: # Fade In.
 		var max_frames: int = clip.duration - (clip.effects.fade_visual.y if Timeline.fade_target.is_visual else clip.effects.fade_audio.y)
 		drag_frames = clamp(floori((mouse_x - start_x) / zoom), 0, max_frames)
 		if Timeline.fade_target.is_visual:
@@ -643,9 +647,9 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if right_click_clip.type in [EditorCore.TYPE.VIDEO, EditorCore.TYPE.AUDIO]:
 		# TODO: Add icons
-		popup.add_item(tr("Change speed"), POPUP_ACTION.CLIP_CHANGE_SPEED)
+		popup.add_icon_item(preload(Library.ICON_SPEED), tr("Change speed"), POPUP_ACTION.CLIP_CHANGE_SPEED)
 		if right_click_clip.speed != 1.0:
-			popup.add_item(tr("Reset speed"), POPUP_ACTION.CLIP_RESET_SPEED)
+			popup.add_icon_item(preload(Library.ICON_SPEED_RESET), tr("Reset speed"), POPUP_ACTION.CLIP_RESET_SPEED)
 
 	if right_click_clip.type == EditorCore.TYPE.VIDEO:
 		popup.add_separator(tr("Video options"))

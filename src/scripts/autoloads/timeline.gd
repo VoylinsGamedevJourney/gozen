@@ -32,7 +32,7 @@ var fade_target: FadeTarget = null
 var box_select_start: Vector2
 var box_select_end: Vector2
 
-var snap_enabled: bool = false
+var snap_enabled: bool = true
 
 
 

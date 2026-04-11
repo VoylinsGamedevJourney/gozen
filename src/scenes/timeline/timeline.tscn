@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://7ojbq5n6igoh" path="res://scenes/timeline/time_stamps.gd" id="2_jxg8b"]
 [ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
 [ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
-[ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="4_scsrl"]
+[ext_resource type="Texture2D" uid="uid://do2vct1lgsblg" path="res://assets/icons/snap_on.svg" id="4_scsrl"]
 [ext_resource type="Script" uid="uid://b2fv3om3dl86q" path="res://scenes/timeline/track_controls.gd" id="5_qnybs"]
 [ext_resource type="Script" uid="uid://cagvlct2dimqn" path="res://scenes/timeline/draw/draw_track_lines.gd" id="8_nb4qx"]
 [ext_resource type="Script" uid="uid://bc4nf46qhfy2f" path="res://scenes/timeline/draw/draw_clips.gd" id="9_scsrl"]
@@ -72,7 +72,9 @@ size_flags_vertical = 3
 [node name="SnapButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=268986904]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
+tooltip_text = "Turn snapping on/off."
 toggle_mode = true
+button_pressed = true
 texture_normal = ExtResource("4_scsrl")
 ignore_texture_size = true
 stretch_mode = 5
