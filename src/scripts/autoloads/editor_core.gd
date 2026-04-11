@@ -12,8 +12,6 @@ enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
 const AUDIO_TYPES: PackedInt64Array = [ TYPE.AUDIO, TYPE.VIDEO ]
 const VISUAL_TYPES: PackedInt64Array = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO ]
 
-const PREFETCH_FRAMES: int = 30 ## Start seeking 30 frames ahead. TODO: Make this equal to 1 second for other framerate projects.
-
 
 var viewport: SubViewport
 var text_viewports: Array[SubViewport]
@@ -42,8 +40,8 @@ var skips: int = 0
 var data_ready: bool = true
 var data_set_frame: int = 0
 
-var active_clip_instances: Dictionary[int, int] = {} ## { clip id: instance index }
-var prefetch_tasks: Dictionary[int, int] = {} ## { clip id: task_id }
+var clip_instances: Dictionary = {} ## { clip id: instance index }
+var active_tasks: Dictionary = {} ## { video instance id: task_id }
 
 var _scrub_frame: int = -1
 var _last_scrub_time: int = 0
@@ -83,6 +81,14 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	var completed: Array[int] = []
+	for video_id: int in active_tasks:
+		if WorkerThreadPool.is_task_completed(active_tasks[video_id] as int):
+			WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int)
+			completed.append(video_id)
+	for video_id: int in completed:
+		active_tasks.erase(video_id)
+
 	if _scrub_frame != -1:
 		if Time.get_ticks_msec() - _last_scrub_time > 50:
 			if frame_nr != _scrub_frame:
@@ -171,39 +177,68 @@ func _rebuild_structure() -> void:
 		text_viewports[index] = text_viewport
 
 
-func _prefetch_upcoming_clips() -> void:
-	for track: int in TrackLogic.tracks.size():
-		var upcoming_frame: int = frame_nr + PREFETCH_FRAMES
-		var upcoming_clip: ClipData = TrackLogic.get_clip_at_overlap(track, upcoming_frame)
+func _get_instance_for_clip(clip: ClipData) -> int:
+	if clip_instances.has(clip.id):
+		return clip_instances[clip.id]
 
-		if upcoming_clip and upcoming_clip != loaded_clips[track] and upcoming_clip.type == TYPE.VIDEO:
-			if not active_clip_instances.has(upcoming_clip.id) and not prefetch_tasks.has(upcoming_clip.id):
-				var file: FileData = FileLogic.files[upcoming_clip.file]
-				var instance_idx: int = _get_free_instance_index(file, upcoming_clip.id)
-				active_clip_instances[upcoming_clip.id] = instance_idx
-
-				var video: Video = FileLogic.get_video_reader(file, instance_idx)
-				var target_frame_nr: int = roundi((float(upcoming_clip.begin) / Project.data.framerate) * video.get_framerate())
-				var task_id: int = WorkerThreadPool.add_task(func() -> void:
-						video.seek_frame(target_frame_nr))
-				prefetch_tasks[upcoming_clip.id] = task_id
-
-				print("prefetching")
-
-
-func _get_free_instance_index(file: FileData, ignore_clip_id: int) -> int:
+	var file_id: int = clip.file
 	var used_indices: Array[int] = []
-	for clip_id: int in active_clip_instances:
-		if clip_id != ignore_clip_id:
-			var clip_data: ClipData = ClipLogic.clips.get(clip_id)
-			if clip_data and clip_data.file == file.id:
-				used_indices.append(active_clip_instances[clip_id])
+	for clip_id: int in clip_instances:
+		var clip_data: ClipData = ClipLogic.clips.get(clip_id)
+		if clip_data and clip_data.file == file_id:
+			used_indices.append(clip_instances[clip_id])
 
 	var index: int = 0
 	while index in used_indices:
 		index += 1
+
+	clip_instances[clip.id] = index
 	return index
 
+
+func _cleanup_unused_instances(current_frame: int) -> void:
+	var needed_clips: Array[int] = []
+	var look_ahead: int = int(Project.data.framerate * 2.0)
+
+	for track: int in TrackLogic.tracks.size():
+		var clip_data: ClipData = TrackLogic.get_clip_at_overlap(track, current_frame)
+		if clip_data: needed_clips.append(clip_data.id)
+
+		var next_clips: Array[ClipData] = TrackLogic.get_clips_in_range(track, current_frame, current_frame + look_ahead)
+		for next_clip: ClipData in next_clips:
+			if next_clip.id not in needed_clips:
+				needed_clips.append(next_clip.id)
+
+	var keys: Array = clip_instances.keys()
+	for key: int in keys:
+		if key not in needed_clips:
+			clip_instances.erase(key)
+
+
+func _prefetch_upcoming_clips() -> void:
+	var look_ahead: int = int(Project.data.framerate * 1.5)
+	for track: int in TrackLogic.tracks.size():
+		var current_clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
+		var upcoming: Array[ClipData] = TrackLogic.get_clips_in_range(track, frame_nr + 1, frame_nr + look_ahead)
+
+		for upcoming_clip: ClipData in upcoming:
+			if upcoming_clip == current_clip:
+				continue
+			if upcoming_clip.type != TYPE.VIDEO:
+				continue
+
+			var index: int = _get_instance_for_clip(upcoming_clip)
+			var file: FileData = FileLogic.files[upcoming_clip.file]
+			var video: Video = FileLogic.get_video_reader(file, index)
+			var video_id: int = video.get_instance_id()
+
+			if active_tasks.has(video_id):
+				continue
+
+			var target: int = roundi((float(upcoming_clip.begin) / Project.data.framerate) * video.get_framerate())
+			if video.get_current_frame() != target:
+				active_tasks[video_id] = WorkerThreadPool.add_task(func() -> void:
+						video.seek_frame(target))
 
 func _on_closing_editor() -> void:
 	view_textures.clear()
@@ -286,57 +321,22 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
 		self.frame_nr = new_frame
 		return
-
-	# Cleanup old instances that are no longer active or in prefetch range.
-	var current_and_upcoming: Array[int] = []
-	for track: int in TrackLogic.tracks.size():
-		var clip_data: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
-		if clip_data:
-			current_and_upcoming.append(clip_data.id)
-		clip_data = TrackLogic.get_clip_at_overlap(track, frame_nr + PREFETCH_FRAMES)
-		if clip_data:
-			current_and_upcoming.append(clip_data.id)
-
-	var keys: Array = active_clip_instances.keys()
-	for key: int in keys:
-		if key not in current_and_upcoming:
-			active_clip_instances.erase(key)
-			if prefetch_tasks.has(key):
-				WorkerThreadPool.wait_for_task_completion(prefetch_tasks[key] as int)
-				prefetch_tasks.erase(key)
+	_cleanup_unused_instances(frame_nr)
 
 	for track: int in TrackLogic.tracks.size():
 		# Check if current clip is correct.
 		var clip: ClipData = loaded_clips[track]
 		if _check_clip(track, frame_nr):
-			var file: FileData = FileLogic.files[clip.file]
-			if not active_clip_instances.has(clip.id):
-				active_clip_instances[clip.id] = _get_free_instance_index(file, clip.id)
-
-			if prefetch_tasks.has(clip.id):
-				WorkerThreadPool.wait_for_task_completion(prefetch_tasks[clip.id])
-				prefetch_tasks.erase(clip.id)
-
-			clips_instance_index[track] = active_clip_instances[clip.id]
+			clips_instance_index[track] = _get_instance_for_clip(clip)
 			update_data(track)
 			continue
 
 		# Getting the next frame if possible.
 		clip = TrackLogic.get_clip_at_overlap(track, frame_nr)
 		if clip:
-			var file: FileData = FileLogic.files[clip.file]
-
-			if not active_clip_instances.has(clip.id):
-				active_clip_instances[clip.id] = _get_free_instance_index(file, clip.id)
-
-			if prefetch_tasks.has(clip.id):
-				WorkerThreadPool.wait_for_task_completion(prefetch_tasks[clip.id])
-				prefetch_tasks.erase(clip.id)
-
-			clips_instance_index[track] = active_clip_instances[clip.id]
-
 			loaded_clips[track] = clip
 			clips_to_update[track] = true
+			clips_instance_index[track] = _get_instance_for_clip(clip)
 			update_data(track)
 			continue
 
@@ -344,7 +344,6 @@ func set_frame(new_frame: int = frame_nr + 1) -> void:
 		loaded_clips[track] = null
 		if view_textures[track].texture != null:
 			view_textures[track].texture = null
-
 	if frame_nr == Project.data.timeline_end:
 		is_playing = false
 

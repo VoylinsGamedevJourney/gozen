@@ -13,28 +13,6 @@ var copied_clips: Array[ClipData] = []
 var copied_min_start: int = 0
 var copied_min_track: int = 0
 
-var active_seeks: Dictionary = {} ## { video id: { "video": Video, "target": frame, "task": task id }
-
-
-
-func _process(_delta: float) -> void:
-	var completed_seeks: Array[int] = []
-	for video_id: int in active_seeks:
-		var data: Dictionary = active_seeks[video_id]
-		if data.task != -1 and WorkerThreadPool.is_task_completed(data.task as int):
-			WorkerThreadPool.wait_for_task_completion(data.task as int)
-			if (data.video as Video).get_current_frame() != data.target as int:
-				var video: Video = data.video
-				var target: int = data.target
-				data.task = WorkerThreadPool.add_task(func() -> void:
-						video.seek_frame(target))
-			else:
-				completed_seeks.append(video_id)
-
-	if completed_seeks.size() > 0:
-		for video_id: int in completed_seeks:
-			active_seeks.erase(video_id)
-		EditorCore.data_ready = true
 
 
 # --- Handling ---
@@ -434,22 +412,16 @@ func load_video_frame(clip: ClipData, frame_nr: int, instance_index: int = 0) ->
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
 		if video != null: # Check if video is done loading.
 			var target_frame_nr: int = roundi((float(frame_nr) / Project.data.framerate) * video.get_framerate())
-			if video.get_current_frame() == target_frame_nr:
-				return
-			elif RenderManager.encoder != null and RenderManager.encoder.is_open():
-				video.seek_frame(target_frame_nr)
-				return
-
 			var vid_id: int = video.get_instance_id()
-			if active_seeks.has(vid_id):
-				active_seeks[vid_id].target = target_frame_nr
-				return
 
-			active_seeks[vid_id] = { "video": video, "target": target_frame_nr, "task": -1 }
-			var task_id: int = WorkerThreadPool.add_task(func() -> void:
+			# If a prefetch task is currently running on this video instance,
+			# we MUST wait for it to finish to prevent multi-threading crashes in C++.
+			if EditorCore.active_tasks.has(vid_id):
+				WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[vid_id] as int)
+				EditorCore.active_tasks.erase(vid_id)
+
+			if video.get_current_frame() != target_frame_nr:
 				video.seek_frame(target_frame_nr)
-			)
-			active_seeks[vid_id].task = task_id
 
 
 func get_audio_data(clip: ClipData) -> PackedByteArray:
