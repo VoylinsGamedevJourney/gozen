@@ -790,25 +790,22 @@ func zoom_at_mouse(factor: float) -> void:
 		accept_event()
 		return
 
-	var old_mouse_pos_x: float = get_local_mouse_position().x
-	var mouse_viewport_offset: float = old_mouse_pos_x - Timeline.scroll_x
+	var mouse_viewport_offset: float = get_global_mouse_position().x - scroll.global_position.x
+	var absolute_x: float = Timeline.scroll_x + mouse_viewport_offset
 
 	Timeline.zoom = new_zoom
 	var zoom_ratio: float = new_zoom / old_zoom
-	var new_mouse_pos_x: float = old_mouse_pos_x * zoom_ratio
-	var target_scroll: int = maxi(0, int(new_mouse_pos_x - mouse_viewport_offset))
-	Timeline.scroll_x = target_scroll
+	var new_absolute_x: float = absolute_x * zoom_ratio
+	var target_scroll: int = maxi(0, int(new_absolute_x - mouse_viewport_offset))
+	var timestamp_scroll: ScrollContainer = scroll.get("timestamp_scroll")
+	timestamp_scroll.scroll_horizontal = target_scroll
 
-	_set_scroll.call_deferred(target_scroll)
+	scroll.scroll_horizontal = target_scroll
+	Timeline.scroll_x = target_scroll
+	Timeline.scroll_y = scroll.scroll_vertical
+
 	draw_all()
 	accept_event()
-
-
-func _set_scroll(target_scroll: int) -> void:
-	if Timeline.scroll_x == target_scroll:
-			scroll.scroll_horizontal = target_scroll
-			Timeline.scroll_x = scroll.scroll_horizontal
-			Timeline.scroll_y = scroll.scroll_vertical
 
 
 func get_frame_from_mouse() -> int:

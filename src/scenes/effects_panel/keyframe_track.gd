@@ -45,11 +45,11 @@ func setup(p_effect: Effect, p_duration: int, p_current_frame: int) -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if event.is_action("timeline_zoom_in") and event.is_pressed():
-		set_zoom(zoom * 1.2, get_local_mouse_position().x)
+		set_zoom(zoom * 1.2, get_global_mouse_position().x)
 		accept_event()
 		return
 	elif event.is_action("timeline_zoom_out") and event.is_pressed():
-		set_zoom(zoom / 1.2, get_local_mouse_position().x)
+		set_zoom(zoom / 1.2, get_global_mouse_position().x)
 		accept_event()
 		return
 
@@ -210,24 +210,22 @@ func set_zoom(new_zoom: float, mouse_x: float) -> void:
 
 	var old_zoom: float = zoom
 	zoom = clampf(new_zoom, MIN_ZOOM, MAX_ZOOM)
-
 	if zoom == old_zoom:
 		return
 
 	var base_width: float = scroll.size.x
-	if zoom > 1.0:
-		custom_minimum_size.x = base_width * zoom
-	else:
-		custom_minimum_size.x = 0
+	var new_size_x: float = base_width * zoom if zoom > 1.0 else base_width
+	custom_minimum_size.x = base_width * zoom if zoom > 1.0 else 0.0
+	size.x = new_size_x
+
+	var h_scroll: HScrollBar = scroll.get_h_scroll_bar()
+	h_scroll.max_value = new_size_x
+	h_scroll.page = scroll.size.x
 
 	if mouse_x >= 0:
 		var zoom_ratio: float = zoom / old_zoom
 		var mouse_viewport_offset: float = mouse_x - scroll.scroll_horizontal
 		var new_mouse_x: float = mouse_x * zoom_ratio
-		_update_scroll.call_deferred(scroll, int(new_mouse_x - mouse_viewport_offset))
-
+		var target_scroll: int = maxi(0, int(new_mouse_x - mouse_viewport_offset))
+		scroll.scroll_horizontal = target_scroll
 	queue_redraw()
-
-
-func _update_scroll(scroll: ScrollContainer, val: int) -> void:
-	scroll.scroll_horizontal = val
