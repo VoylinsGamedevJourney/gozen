@@ -104,17 +104,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_ui_cancel()
 
 	if scroll.get_global_rect().has_point(get_global_mouse_position()):
-		if event.is_action_pressed("ui_copy"):
+		if event.is_action_pressed("ui_copy", false, true):
 			ClipLogic.copy_selected_clips()
 			accept_event()
-		elif event.is_action_pressed("ui_cut"):
+		elif event.is_action_pressed("ui_cut", false, true):
 			ClipLogic.cut_selected_clips()
 			accept_event()
-		elif event.is_action_pressed("ripple_delete_clips"):
+		elif event.is_action_pressed("ripple_delete_clips", false, true):
 			ClipLogic.ripple_delete(ClipLogic.selected_clips)
-		elif event.is_action_pressed("delete_clips"):
+		elif event.is_action_pressed("delete_clips", false, true):
 			ClipLogic.delete(ClipLogic.selected_clips)
-		elif event.is_action_pressed("duplicate_selected_clips"):
+		elif event.is_action_pressed("duplicate_selected_clips", false, true):
 			var failed_dupes: int = ClipLogic.duplicate_clips(ClipLogic.selected_clips)
 			if failed_dupes > 0:
 				var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Duplication failed"))
