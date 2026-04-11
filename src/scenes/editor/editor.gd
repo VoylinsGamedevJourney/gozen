@@ -45,9 +45,6 @@ func print_startup_info() -> void:
 			["Distribution", OS.get_distribution_name()],
 			["Processor", OS.get_processor_name()],
 			["Threads", OS.get_processor_count()],
-			["Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
-				str("%0.2f" % (OS.get_memory_info().physical/1_073_741_824)),
-				str("%0.2f" % (OS.get_memory_info().available/1_073_741_824))]],
 			["Video adapter", "\n\tName: %s\n\tVersion: %s\n\tType: %s" % [
 				RenderingServer.get_video_adapter_name(),
 				RenderingServer.get_video_adapter_api_version(),
