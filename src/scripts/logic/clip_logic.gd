@@ -404,48 +404,6 @@ func _change_speed_restore(clip: ClipData, start: int, duration: int, speed: flo
 	updated.emit.call_deferred()
 
 
-# --- Playback helpers ---
-
-func load_video_frame(clip: ClipData, frame_nr: int, instance_index: int = 0) -> void:
-	if clip and clip.type == EditorCore.TYPE.VIDEO:
-		var file: FileData = FileLogic.files[clip.file]
-		var video: Video = FileLogic.get_video_reader(file, instance_index)
-		if video != null: # Check if video is done loading.
-			var target_frame_nr: int = roundi((float(frame_nr) / Project.data.framerate) * video.get_framerate())
-			target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
-			var vid_id: int = video.get_instance_id()
-
-			# If a prefetch task is currently running on this video instance,
-			# we MUST wait for it to finish to prevent multi-threading crashes in C++.
-			if EditorCore.active_tasks.has(vid_id):
-				var task_id: int = EditorCore.active_tasks[vid_id]
-				if not WorkerThreadPool.is_task_completed(task_id):
-					return
-				EditorCore.active_tasks.erase(vid_id)
-			if video.get_current_frame() != target_frame_nr:
-				video.seek_frame(target_frame_nr)
-
-
-func get_audio_data(clip: ClipData) -> PackedByteArray:
-	var framerate: float = Project.data.framerate
-	var start_sec: float = clip.begin / framerate
-	var duration_sec: float = clip.duration / framerate
-	var file_path: String
-
-	# Get the correct file to use for audio.
-	if clip.effects.ato_active and clip.effects.ato_file != -1:
-		start_sec -= clip.effects.ato_offset
-		file_path = FileLogic.files[clip.effects.ato_file].path
-	else:
-		var target_file: FileData = FileLogic.files[clip.file]
-		if target_file.ato_active and target_file.ato_file != -1:
-			start_sec -= target_file.ato_offset
-			file_path = FileLogic.files[target_file.ato_file].path
-		else:
-			file_path = target_file.path
-	return Audio.get_audio_data(file_path, -1, start_sec, duration_sec)
-
-
 # --- Setters ---
 
 func switch_ato_active(clip: ClipData) -> void:

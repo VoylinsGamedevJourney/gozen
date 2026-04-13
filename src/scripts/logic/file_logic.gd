@@ -417,6 +417,9 @@ func _load_video(file: FileData) -> void:
 			video.close()
 		video_pools[file.id] = []
 
+	for i: int in 2: # Get 2 extra video instances which can help with tight cuts.
+		get_video_reader(file, i)
+
 	if temp_video.get_audio() != null:
 		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 	else:

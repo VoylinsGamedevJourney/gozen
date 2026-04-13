@@ -234,8 +234,7 @@ func _prefetch_upcoming_clips() -> void:
 			var target: int = roundi((float(upcoming_clip.begin) / Project.data.framerate) * video.get_framerate())
 			target = clampi(target, 0, maxi(0, video.get_frame_count() - 1))
 			if video.get_current_frame() != target:
-				active_tasks[video_id] = WorkerThreadPool.add_task(func() -> void:
-						video.seek_frame(target))
+				active_tasks[video_id] = WorkerThreadPool.add_task(video.seek_frame.bind(target))
 
 
 func _on_closing_editor() -> void:
@@ -445,7 +444,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 
 	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip, true)
 	var effects: Array[EffectVisual] = clip.effects.video
-	ClipLogic.load_video_frame(clip, relative_frame, instance_index)
+	load_video_frame(clip, relative_frame, instance_index)
 
 	if clip.type == TYPE.TEXT:
 		var texture_rid: RID = text_viewports[track_id].get_texture().get_rid()
@@ -510,3 +509,29 @@ func set_playback_speed(value: float) -> void:
 func set_background_color(color: Color) -> void:
 	background.color = color
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+
+
+# --- Playback helpers ---
+
+func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
+	if clip and clip.type == EditorCore.TYPE.VIDEO:
+		var file: FileData = FileLogic.files[clip.file]
+		var video: Video = FileLogic.get_video_reader(file, instance_index)
+		if video != null: # Check if video is done loading.
+			var target_frame_nr: int = roundi((float(frame) / Project.data.framerate) * video.get_framerate())
+			target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
+			var vid_id: int = video.get_instance_id()
+
+			# If a prefetch task is currently running on this video instance,
+			# we MUST wait for it to finish to prevent multi-threading crashes in C++.
+			if EditorCore.active_tasks.has(vid_id):
+				var task_id: int = EditorCore.active_tasks[vid_id]
+				if not WorkerThreadPool.is_task_completed(task_id):
+					WorkerThreadPool.wait_for_task_completion(task_id)
+				EditorCore.active_tasks.erase(vid_id)
+			if video.get_current_frame() != target_frame_nr:
+				if is_playing:
+					EditorCore.active_tasks[vid_id] = WorkerThreadPool.add_task(func() -> void:
+							video.seek_frame(target_frame_nr))
+				else:
+					video.seek_frame(target_frame_nr)
