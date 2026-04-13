@@ -53,7 +53,13 @@ func input(event: InputEvent, control: Control) -> void:
 func _set_keyframe_raw(frame: int, position: Vector2) -> void:
 	if not effect.keyframes.has("position"):
 		effect.keyframes["position"] = {}
-	effect.keyframes["position"][frame] = position
+
+	var target_frame: int = frame
+	var param_keyframes: Dictionary = effect.keyframes["position"]
+	if param_keyframes.size() <= 1 and not param_keyframes.has(frame):
+		target_frame = 0
+
+	effect.keyframes["position"][target_frame] = position
 	effect._cache_dirty = true
 	EffectsHandler.effect_values_updated.emit()
 
