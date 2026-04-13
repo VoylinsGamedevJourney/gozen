@@ -512,11 +512,9 @@ bool Video::next_frame(bool skip) {
 
 	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
 	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
-	AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
 	if (skip) {
 		av_codec_ctx->skip_loop_filter = AVDISCARD_ALL;
 		av_codec_ctx->skip_idct = AVDISCARD_ALL;
-		av_codec_ctx->skip_frame = AVDISCARD_NONREF;
 	}
 
 	UniqueAVFrame temp_frame = make_unique_avframe();
@@ -526,7 +524,6 @@ bool Video::next_frame(bool skip) {
 	if (skip) {
 		av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 		av_codec_ctx->skip_idct = original_skip_idct;
-		av_codec_ctx->skip_frame = original_skip_frame;
 	}
 
 	if (response < 0 && response != AVERROR_EOF) {
