@@ -218,20 +218,18 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 	# Draw handles.
 	if show_handles:
 		var current_handle_size: float = FADE_HANDLE_SIZE
-		if Input.is_key_pressed(KEY_CTRL):
-			current_handle_size *= 2.0
-
 		var in_x: float = box_pos.x + fade.x * zoom
 		var out_x: float = box_pos.x + duration - fade.y * zoom - current_handle_size * 2
+		current_handle_size *= 2
 
 		var in_rect: Rect2
 		var out_rect: Rect2
 		if is_visual:
-			in_rect = Rect2(in_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
-			out_rect = Rect2(out_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
+			in_rect = Rect2(in_x, corner_y - current_handle_size, current_handle_size, current_handle_size)
+			out_rect = Rect2(out_x, corner_y - current_handle_size, current_handle_size, current_handle_size)
 		else:
-			in_rect = Rect2(in_x, corner_y, current_handle_size * 2, current_handle_size * 2)
-			out_rect = Rect2(out_x, corner_y, current_handle_size * 2, current_handle_size * 2)
+			in_rect = Rect2(in_x, corner_y, current_handle_size, current_handle_size)
+			out_rect = Rect2(out_x, corner_y, current_handle_size, current_handle_size)
 
 		draw_rect(in_rect, FADE_HANDLE_COLOR)
 		draw_rect(out_rect, FADE_HANDLE_COLOR)

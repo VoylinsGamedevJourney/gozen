@@ -316,7 +316,7 @@ func _on_ui_cancel() -> void:
 func _get_clip_on_mouse() -> ClipData:
 	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
-	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(), get_frame_from_mouse())
+	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(), clampi(get_frame_from_mouse() - 1, 0, Project.data.timeline_end))
 
 
 func _get_resize_target() -> Timeline.ResizeTarget:
@@ -329,9 +329,6 @@ func _get_resize_target() -> Timeline.ResizeTarget:
 	var zoom: float = Timeline.zoom
 	var mouse_pos: float = get_local_mouse_position().x
 	var handle_width: float = RESIZE_HANDLE_WIDTH
-	if Input.is_key_pressed(KEY_CTRL):
-		handle_width *= 2.0
-
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
 		if (clip.duration * zoom) < 20.0:
 			continue
@@ -355,10 +352,7 @@ func _get_fade_target() -> Timeline.FadeTarget:
 
 	var zoom: float = Timeline.zoom
 	var mouse_pos: Vector2 = get_local_mouse_position()
-	var current_handle_size: float = 3.5 # FADE_HANDLE_SIZE
-	if Input.is_key_pressed(KEY_CTRL):
-		current_handle_size *= 2.0
-
+	var handle_size: float = 3.5 # FADE_HANDLE_SIZE
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
 		if (clip.duration * zoom) < 20.0:
 			continue
@@ -369,23 +363,23 @@ func _get_fade_target() -> Timeline.FadeTarget:
 		if clip.type in EditorCore.VISUAL_TYPES:
 			var corner_y: float = y_pos + Timeline.track_height
 			var in_x: float = start_x + clip.effects.fade_visual.x * zoom
-			var out_x: float = end_x - clip.effects.fade_visual.y * zoom - current_handle_size * 2
-			var in_rect: Rect2 = Rect2(in_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
-			var out_rect: Rect2 = Rect2(out_x, corner_y - current_handle_size * 2, current_handle_size * 2, current_handle_size * 2)
-			if in_rect.grow(current_handle_size).has_point(mouse_pos):
+			var out_x: float = end_x - clip.effects.fade_visual.y * zoom - handle_size * 2
+			var in_rect: Rect2 = Rect2(in_x, corner_y - handle_size * 2, handle_size * 2, handle_size * 2)
+			var out_rect: Rect2 = Rect2(out_x, corner_y - handle_size * 2, handle_size * 2, handle_size * 2)
+			if in_rect.grow(handle_size).has_point(mouse_pos):
 				return Timeline.FadeTarget.new(clip, false, true)
-			if out_rect.grow(current_handle_size).has_point(mouse_pos):
+			if out_rect.grow(handle_size).has_point(mouse_pos):
 				return Timeline.FadeTarget.new(clip, true, true)
 
 		if clip.type in EditorCore.AUDIO_TYPES:
 			var corner_y: float = y_pos
 			var in_x: float = start_x + clip.effects.fade_audio.x * zoom
-			var out_x: float = end_x - clip.effects.fade_audio.y * zoom - current_handle_size * 2
-			var in_rect: Rect2 = Rect2(in_x, corner_y, current_handle_size * 2, current_handle_size * 2)
-			var out_rect: Rect2 = Rect2(out_x, corner_y, current_handle_size * 2, current_handle_size * 2)
-			if in_rect.grow(current_handle_size).has_point(mouse_pos):
+			var out_x: float = end_x - clip.effects.fade_audio.y * zoom - handle_size * 2
+			var in_rect: Rect2 = Rect2(in_x, corner_y, handle_size * 2, handle_size * 2)
+			var out_rect: Rect2 = Rect2(out_x, corner_y, handle_size * 2, handle_size * 2)
+			if in_rect.grow(handle_size).has_point(mouse_pos):
 				return Timeline.FadeTarget.new(clip, false, false)
-			if out_rect.grow(current_handle_size).has_point(mouse_pos):
+			if out_rect.grow(handle_size).has_point(mouse_pos):
 				return Timeline.FadeTarget.new(clip, true, false)
 	return null
 
