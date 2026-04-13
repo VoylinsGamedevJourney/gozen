@@ -40,7 +40,9 @@ func _ready() -> void:
 		_update_transform()
 
 	ClipLogic.selected.connect(_on_clip_selected)
+	ClipLogic.deleted.connect(_on_clip_deleted)
 	EffectsHandler.effect_selected.connect(_on_effect_selected)
+	EffectsHandler.effect_removed.connect(_on_effect_removed)
 	EditorCore.visual_frame_changed.connect(queue_redraw)
 	EditorCore.play_changed.connect(func(_playing: bool) -> void: queue_redraw())
 
@@ -75,6 +77,19 @@ func _on_clip_selected(clip: ClipData) -> void:
 				_set_active_effect(effect_visual)
 				break
 	queue_redraw()
+
+
+func _on_clip_deleted(clip_id: int) -> void:
+	if active_clip and active_clip.id == clip_id:
+		active_clip = null
+		active_effect = null
+		active_overlay = null
+		queue_redraw()
+
+
+func _on_effect_removed(clip: ClipData, _index: int, is_visual: bool) -> void:
+	if is_visual and active_clip and active_clip.id == clip.id:
+		_on_clip_selected(active_clip)
 
 
 func _on_effect_selected(effect: Effect) -> void:
