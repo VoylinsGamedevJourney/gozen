@@ -259,8 +259,6 @@ func _on_clips_updated() -> void:
 func _check_clip(track: int, new_frame_nr: int) -> bool:
 	var clip: ClipData = loaded_clips[track]
 	if !clip:
-		if audio_players[track].clip:
-			audio_players[track].stop()
 		return false
 	elif !ClipLogic.clips.has(clip.id): # Check if clip really still exists or not.
 		loaded_clips[track] = null
