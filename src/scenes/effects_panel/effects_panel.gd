@@ -440,10 +440,10 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 				var option_button: OptionButton = OptionButton.new()
 				option_button.add_item("Default")
 				option_button.set_item_metadata(0, "")
-				var fonts: Array[String] = Settings.fonts.keys()
+				var fonts: Array = Array(Settings.available_system_fonts)
 				fonts.sort()
 				for i: int in fonts.size():
-					option_button.add_item(fonts[i])
+					option_button.add_item(fonts[i] as String)
 					option_button.set_item_metadata(i + 1, fonts[i])
 				option_button.item_selected.connect(func(id: int) -> void: update_call.call(option_button.get_item_metadata(id)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL

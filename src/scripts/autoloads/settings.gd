@@ -20,6 +20,7 @@ const PATH_THEMES: String = "user://themes/"
 var data: SettingsData = SettingsData.new()
 
 var fonts: Dictionary[String, SystemFont] = {}
+var available_system_fonts: PackedStringArray = []
 var custom_themes: Dictionary = {} ## { Name: Path }
 
 
@@ -64,10 +65,15 @@ func open_settings_menu() -> void:
 
 
 func load_system_fonts() -> void:
-	for font: String in OS.get_system_fonts():
+	available_system_fonts = OS.get_system_fonts()
+
+
+func get_system_font(font_name: String) -> SystemFont:
+	if not fonts.has(font_name):
 		var system_font: SystemFont = SystemFont.new()
-		system_font.font_names = [font]
-		fonts[font] = system_font
+		system_font.font_names = [font_name]
+		fonts[font_name] = system_font
+	return fonts[font_name]
 
 
 func load_custom_themes() -> void:

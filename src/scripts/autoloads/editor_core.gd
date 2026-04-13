@@ -389,7 +389,7 @@ func update_data(track: int) -> void:
 		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[9], clip_frame)
 		var text_shadow_color: Color = text_effect.get_value(text_effect.params[10], clip_frame)
 
-		var font: Font = Settings.fonts.get(text_font, ThemeDB.fallback_font)
+		var font: Font = Settings.get_system_font(text_font) if text_font != "" else ThemeDB.fallback_font
 
 		var text_viewport: SubViewport = text_viewports[track]
 		var text_label: Label = text_viewport.get_child(0) as Label
