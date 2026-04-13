@@ -100,7 +100,7 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 	var framerate: float = project_data.framerate
 	var audio_duration: float = stream.get_length()
 	var time_from_start: float = float(EditorCore.frame_nr - clip.start) / framerate
-	var position: float = (time_from_start * clip.speed) + (float(clip.begin) / framerate) + time_offset
+	var position: float = (time_from_start * clip.speed) + (float(clip.begin) / framerate) - time_offset
 	if position < 0.0 or position >= audio_duration:
 		if !player.playing:
 			return

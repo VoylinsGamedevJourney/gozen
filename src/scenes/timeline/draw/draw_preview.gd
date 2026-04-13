@@ -65,7 +65,7 @@ func _draw() -> void:
 						lod = 4
 
 					var audio_wave: PackedFloat32Array = wave_dict[lod]
-					var wave_begin: int = int((clip.begin + int(wave_offset_sec * Project.data.framerate)) / float(lod))
+					var wave_begin: int = int((clip.begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
 					_draw_wave(audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, lod, scroll_container)
 	elif Timeline.state in [Timeline.STATE.RESIZING, Timeline.STATE.SPEEDING]:
 		var clip: ClipData = Timeline.resize_target.clip
@@ -120,7 +120,7 @@ func _draw() -> void:
 				lod = 4
 
 			var audio_wave: PackedFloat32Array = wave_dict[lod]
-			var wave_begin: int = int((draw_begin + int(wave_offset_sec * Project.data.framerate)) / float(lod))
+			var wave_begin: int = int((draw_begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
 			_draw_wave(audio_wave, wave_begin, int(draw_length / float(lod)), preview_rect, draw_speed, lod, scroll_container)
 
 
