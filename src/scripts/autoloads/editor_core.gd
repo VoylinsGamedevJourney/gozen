@@ -491,6 +491,8 @@ func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], clip_f
 
 func set_is_playing(value: bool) -> void:
 	is_playing = value
+	if is_playing:
+		time_elapsed = 0.0 # Reset timing on play to ensure perfect sync.
 	for player: AudioPlayer in audio_players:
 		player.play(value)
 	play_changed.emit(value)
