@@ -237,6 +237,7 @@ func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: i
 	device.compute_list_add_barrier(compute_list)
 
 	_process_frame(compute_list, effects, fade_alpha)
+	device.free_rid(yuv_set)
 
 
 func process_image_frame(effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
@@ -282,6 +283,7 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame
 	device.compute_list_add_barrier(compute_list)
 
 	_process_frame(compute_list, effects, fade_alpha)
+	device.free_rid(copy_set)
 
 
 func cleanup() -> void:
@@ -347,6 +349,7 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 
 func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha: float) -> void:
 	# Start handling the effects.
+	var sets_to_free: Array[RID] = []
 	for effect: EffectVisual in effects:
 		if not effect.is_enabled:
 			continue
@@ -367,6 +370,7 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha:
 				_create_image_uniform(pong_texture, 1),
 				_create_buffer_uniform(effect_buffers[effect.get_instance_id()][pass_index] as RID, 2)]
 			var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
+			sets_to_free.append(effect_set)
 
 			device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
 			device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
@@ -385,6 +389,7 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha:
 			_create_image_uniform(pong_texture, 1),
 			_create_buffer_uniform(fade_buffer, 2)]
 		var fade_set: RID = device.uniform_set_create(fade_uniforms, fade_shader, 0)
+		sets_to_free.append(fade_set)
 
 		device.compute_list_bind_uniform_set(compute_list, fade_set, 0)
 		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
@@ -398,6 +403,8 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha:
 
 	device.compute_list_end()
 	display_texture.texture_rd_rid = ping_texture
+	for rid: RID in sets_to_free:
+		device.free_rid(rid)
 
 
 func _create_yuv_params(video: Video) -> RID:

@@ -147,6 +147,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	video.close()
 
 	# Cleanup RD Resources.
+	rendering_device.free_rid(uniform_set)
 	rendering_device.free_rid(rd_yuv_pipeline)
 	rendering_device.free_rid(rd_yuv_shader)
 	rendering_device.free_rid(input_tex)

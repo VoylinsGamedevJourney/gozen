@@ -516,4 +516,5 @@ func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteAr
 	rendering_device.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 	rendering_device.compute_list_dispatch(compute_list, ceili(res.x / 8.0), ceili(res.y / 8.0), 1)
 	rendering_device.compute_list_end()
+	rendering_device.free_rid(uniform_set)
 	return rendering_device.texture_get_data(yuv_output_tex, 0)
