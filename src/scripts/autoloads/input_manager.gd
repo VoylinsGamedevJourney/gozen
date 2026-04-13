@@ -81,10 +81,10 @@ func _strict_input_check(event: InputEvent) -> bool:
 		PopupManager.open(PopupManager.COMMAND_BAR)
 		return true
 	elif event.is_action_pressed("next_frame", false, true):
-		EditorCore.frame_nr += 1
+		EditorCore.frame_nr = clampi(EditorCore.frame_nr + 1, 0, Project.data.timeline_end)
 		return true
 	elif event.is_action_pressed("prev_frame", false, true):
-		EditorCore.frame_nr -= 1
+		EditorCore.frame_nr = clampi(EditorCore.frame_nr - 1, 0, Project.data.timeline_end)
 		return true
 	elif event.is_action_pressed("render_region_in", false, true):
 		var region: Vector2i = Project.data.render_region
