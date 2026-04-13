@@ -73,7 +73,10 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 
 func save(auto_saved: bool = false) -> void:
+	var was_unsaved: bool = unsaved_changes
+	unsaved_changes = false
 	if DataManager.save_data(get_project_path(), data):
+		unsaved_changes = was_unsaved
 		if auto_saved:
 			printerr("Project: Something went wrong whilst auto-saving project! ", FileAccess.get_open_error())
 			NotificationManager.notify("Something went wrong whilst auto-saving project! " + str(FileAccess.get_open_error()))
@@ -81,12 +84,10 @@ func save(auto_saved: bool = false) -> void:
 			printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
 			NotificationManager.notify("Something went wrong whilst saving project! " + str(FileAccess.get_open_error()))
 		return
-	elif unsaved_changes and auto_saved:
-			NotificationManager.notify("Project auto-saved successfully!")
-			unsaved_changes = false
+	elif was_unsaved and auto_saved:
+		NotificationManager.notify("Project auto-saved successfully!")
 	elif !auto_saved:
 		NotificationManager.notify("Project saved successfully!")
-	unsaved_changes = false
 
 
 func save_as() -> void:
