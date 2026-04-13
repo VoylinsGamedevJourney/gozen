@@ -13,14 +13,26 @@ static func get_data(instance: RefCounted) -> Dictionary[String, Variant]:
 
 static func save_data(save_path: String, instance: RefCounted) -> int:
 	var error: int = OK
-	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
+	var tmp_path: String = save_path + ".tmp"
+	var file: FileAccess = FileAccess.open(tmp_path, FileAccess.WRITE)
 	if FileAccess.get_open_error():
 		error = ERR_FILE_CANT_OPEN
 		return error
 	var data: Dictionary[String, Variant] = get_data(instance)
 	if !file.store_string(var_to_str(data)):
-		printerr("DataManager: Something went wrong storing data to file: ", save_path)
+		printerr("DataManager: Something went wrong storing data to file: ", tmp_path)
 	error = file.get_error()
+	file.close()
+
+	if error == OK:
+		var dir: DirAccess = DirAccess.open(save_path.get_base_dir())
+		if dir:
+			var file_name: String = save_path.get_file()
+			var tmp_name: String = file_name + ".tmp"
+			if dir.file_exists(file_name):
+				dir.remove(file_name)
+			dir.rename(tmp_name, file_name)
+
 	return error
 
 
