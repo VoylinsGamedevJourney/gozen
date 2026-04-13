@@ -412,14 +412,16 @@ func load_video_frame(clip: ClipData, frame_nr: int, instance_index: int = 0) ->
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
 		if video != null: # Check if video is done loading.
 			var target_frame_nr: int = roundi((float(frame_nr) / Project.data.framerate) * video.get_framerate())
+			target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
 			var vid_id: int = video.get_instance_id()
 
 			# If a prefetch task is currently running on this video instance,
 			# we MUST wait for it to finish to prevent multi-threading crashes in C++.
 			if EditorCore.active_tasks.has(vid_id):
-				WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[vid_id] as int)
+				var task_id: int = EditorCore.active_tasks[vid_id]
+				if not WorkerThreadPool.is_task_completed(task_id):
+					return
 				EditorCore.active_tasks.erase(vid_id)
-
 			if video.get_current_frame() != target_frame_nr:
 				video.seek_frame(target_frame_nr)
 

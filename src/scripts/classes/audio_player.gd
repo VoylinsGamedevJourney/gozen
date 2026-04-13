@@ -88,9 +88,12 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 		need_rebuild = true
 	else:
 		for i: int in clip.effects.audio.size():
-			if AudioServer.get_bus_effect(bus_index, i) != clip.effects.audio[i].effect:
+			var current_effect: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
+			var target_effect: AudioEffect = clip.effects.audio[i].effect
+			if current_effect.get_class() != target_effect.get_class():
 				need_rebuild = true
 				break
+
 	if need_rebuild:
 		_setup_bus_effects(clip.effects.audio)
 	update_effects()
@@ -158,5 +161,5 @@ func _setup_bus_effects(effects: Array[EffectAudio]) -> void:
 	for i: int in range(AudioServer.get_bus_effect_count(bus_index) - 1, -1, -1):
 		AudioServer.remove_bus_effect(bus_index, i)
 	for i: int in effects.size():
-		AudioServer.add_bus_effect(bus_index, effects[i].effect)
+		AudioServer.add_bus_effect(bus_index, effects[i].effect.duplicate() as AudioEffect)
 		AudioServer.set_bus_effect_enabled(bus_index, i, effects[i].is_enabled)

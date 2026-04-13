@@ -216,35 +216,32 @@ func _cleanup_unused_instances(current_frame: int) -> void:
 
 
 func _prefetch_upcoming_clips() -> void:
-	var look_ahead: int = int(Project.data.framerate * 1.5)
+	var look_ahead: int = int(Project.data.framerate * 1.3)
 	for track: int in TrackLogic.tracks.size():
 		var current_clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
 		var upcoming: Array[ClipData] = TrackLogic.get_clips_in_range(track, frame_nr + 1, frame_nr + look_ahead)
-
 		for upcoming_clip: ClipData in upcoming:
-			if upcoming_clip == current_clip:
-				continue
-			if upcoming_clip.type != TYPE.VIDEO:
+			if upcoming_clip == current_clip or upcoming_clip.type != TYPE.VIDEO:
 				continue
 
 			var index: int = _get_instance_for_clip(upcoming_clip)
 			var file: FileData = FileLogic.files[upcoming_clip.file]
 			var video: Video = FileLogic.get_video_reader(file, index)
 			var video_id: int = video.get_instance_id()
-
 			if active_tasks.has(video_id):
 				continue
 
 			var target: int = roundi((float(upcoming_clip.begin) / Project.data.framerate) * video.get_framerate())
+			target = clampi(target, 0, maxi(0, video.get_frame_count() - 1))
 			if video.get_current_frame() != target:
 				active_tasks[video_id] = WorkerThreadPool.add_task(func() -> void:
 						video.seek_frame(target))
+
 
 func _on_closing_editor() -> void:
 	view_textures.clear()
 	audio_players.clear()
 	text_viewports.clear()
-
 	for compositor: VisualCompositor in compositors:
 		if compositor != null:
 			compositor.cleanup()
@@ -253,8 +250,6 @@ func _on_closing_editor() -> void:
 
 func _on_clips_updated() -> void:
 	prev_frame = -1
-	for i: int in audio_players.size():
-		audio_players[i].stop()
 	loaded_clips.fill(null)
 	clips_to_update.fill(false)
 	clips_instance_index.fill(-1)

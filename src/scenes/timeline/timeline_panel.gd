@@ -902,7 +902,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 	if get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
 		var track_idx: int = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
-		var frame_nr: int = maxi(ceili((local_mouse.x + Timeline.scroll_x) / Timeline.zoom), 0)
+		var frame_nr: int = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
 
 		var drag_data: Draggable = Draggable.new()
 		drag_data.is_file = true
