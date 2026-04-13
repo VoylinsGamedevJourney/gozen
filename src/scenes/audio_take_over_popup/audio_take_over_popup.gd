@@ -195,3 +195,72 @@ func _stop_playback() -> void:
 
 func _on_wave_seek_request(playback_position: float) -> void:
 	_scrub_time = playback_position
+
+
+func _on_audio_wave_modifier_spin_box_value_changed(value: float) -> void:
+	file_a_wave.set("wave_modifier", int(value))
+	file_b_wave.set("wave_modifier", int(value))
+
+
+## Try to do a good attempt on auto aligning the waveforms.
+func _on_auto_align_button_pressed() -> void:
+	if file_b_id == -1: return
+	var file_a_id: int = current_file_id
+	if current_file_id == -1 and current_clip_id != -1:
+		file_a_id = ClipLogic.clips[current_clip_id].file
+
+	var wave_dict_a: Dictionary = FileLogic.audio_wave.get(file_a_id, {})
+	var wave_dict_b: Dictionary = FileLogic.audio_wave.get(file_b_id, {})
+	if wave_dict_a.is_empty() or wave_dict_b.is_empty():
+		return
+
+	var wave_a: PackedFloat32Array = wave_dict_a.get(1, PackedFloat32Array())
+	var wave_b: PackedFloat32Array = wave_dict_b.get(1, PackedFloat32Array())
+	if wave_a.is_empty() or wave_b.is_empty():
+		return
+
+	var framerate: float = Project.data.framerate
+	var window_frames: int = int(120.0 * framerate) # 2 minute window.
+	if wave_a.size() < window_frames or wave_b.size() < window_frames:
+		window_frames = min(wave_a.size(), wave_b.size())
+	if window_frames <= 0:
+		return
+
+	var best_a_start: int = 0
+	var max_a_energy: float = -1.0
+	var step_a: int = max(1, int(framerate)) # Check every second.
+	for i: int in range(0, wave_a.size() - window_frames + 1, step_a):
+		var energy: float = 0.0
+		for j: int in window_frames:
+			energy += wave_a[i + j]
+		if energy > max_a_energy:
+			max_a_energy = energy
+			best_a_start = i
+
+	var best_b_start: int = 0
+	var max_dot: float = -1.0
+	var coarse_step: int = max(1, int(framerate / 5.0)) # Check 5 times per second.
+	var best_coarse_b: int = 0
+	for i: int in range(0, wave_b.size() - window_frames + 1, coarse_step):
+		var dot: float = 0.0
+		for j: int in range(0, window_frames, 2): # Check every other sample for speed.
+			dot += wave_a[best_a_start + j] * wave_b[i + j]
+		if dot > max_dot:
+			max_dot = dot
+			best_coarse_b = i
+
+	max_dot = -1.0
+	var refine_start: int = max(0, best_coarse_b - coarse_step)
+	var refine_end: int = min(wave_b.size() - window_frames, best_coarse_b + coarse_step)
+	for i: int in range(refine_start, refine_end + 1):
+		var dot: float = 0.0
+		for j: int in window_frames:
+			dot += wave_a[best_a_start + j] * wave_b[i + j]
+		if dot > max_dot:
+			max_dot = dot
+			best_b_start = i
+
+	var time_a: float = float(best_a_start) / framerate
+	var time_b: float = float(best_b_start) / framerate
+	var calculated_offset: float = time_a - time_b
+	offset_spinbox.value = calculated_offset

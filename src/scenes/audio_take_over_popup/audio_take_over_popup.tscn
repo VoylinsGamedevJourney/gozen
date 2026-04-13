@@ -67,6 +67,25 @@ size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Audio-take-over"
 
+[node name="AudioWaveModifier" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=456178456]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_type_variation = &"title_label"
+text = "Waveform modifier"
+
+[node name="AudioWaveModifierSpinBox" type="SpinBox" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=613257621]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = 1.0
+max_value = 10.0
+value = 1.0
+rounded = true
+alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=979438702]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
 [node name="AudioFileOffsetLabel" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=556729055]
 layout_mode = 2
 size_flags_horizontal = 8
@@ -129,6 +148,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Cancel"
 
+[node name="AutoAlignButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=908541625]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Auto align"
+
 [node name="TakeOverAudioButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -139,12 +163,14 @@ text = "Confirm"
 
 [node name="FileBAudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=294582150]
 
+[connection signal="value_changed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/AudioWaveModifierSpinBox" to="." method="_on_audio_wave_modifier_spin_box_value_changed"]
 [connection signal="value_changed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/AudioFileOffsetSpinBox" to="." method="_on_audio_file_offset_spin_box_value_changed"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox/PlayAudioButton" to="." method="_on_play_audio_button_pressed"]
 [connection signal="seek_requested" from="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileAColorRect" to="." method="_on_wave_seek_request"]
 [connection signal="item_selected" from="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/AudioFileOptionButton" to="." method="_on_audio_file_option_button_item_selected"]
 [connection signal="seek_requested" from="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileBColorRect" to="." method="_on_wave_seek_request"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/AutoAlignButton" to="." method="_on_auto_align_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/TakeOverAudioButton" to="." method="_on_take_over_audio_button_pressed"]
 [connection signal="finished" from="FileAAudioStreamPlayer" to="." method="_stop_playback"]
 [connection signal="finished" from="FileBAudioStreamPlayer" to="." method="_stop_playback"]

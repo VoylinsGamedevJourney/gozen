@@ -13,6 +13,7 @@ const PREVIEW_DURATION: float = 30 ## Seconds of duration shown.
 
 var file_id: int = -1: set = set_file_id
 var wave_offset: float = 0.0: set = set_wave_offset
+var wave_modifier: int = 1: set = set_wave_modifier
 var playback_position: float = 0.0
 var preview_duration: float = 30.0
 
@@ -27,6 +28,11 @@ func set_file_id(new_file_id: int) -> void:
 
 func set_wave_offset(new_wave_offset: float) -> void:
 	wave_offset = new_wave_offset
+	queue_redraw()
+
+
+func set_wave_modifier(new_wave_modifier: int) -> void:
+	wave_modifier = new_wave_modifier
 	queue_redraw()
 
 
@@ -76,12 +82,12 @@ func _draw() -> void:
 
 	# - Draw wave.
 	for i: int in range(start_index, end_index, step):
-		var val: float = wave_data[i]
+		var value: float = wave_data[i]
 		var time: float = i / framerate
 		var pos_x: float = (time * pixels_per_sec) + pixel_offset
 		if pos_x > area_width:
 			break
-		var height: float = val * (area_height * 0.9)
+		var height: float = clampf(value * wave_modifier, 0.0, 1.0) * (area_height * 0.9)
 		draw_line(
 				Vector2(pos_x, center_y - height / 2.0),
 				Vector2(pos_x, center_y + height / 2.0),
