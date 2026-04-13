@@ -123,8 +123,11 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 		return
 
 	var frame_duration: float = 1.0 / framerate
-	var sync_threshold: float = max(frame_duration * 2 * clip.speed, 0.15)
+	var sync_threshold: float = max(frame_duration * 3 * clip.speed, 0.25)
 	if player.playing and (contiguous or abs(player.get_playback_position() - position) < sync_threshold):
+		player.stream_paused = !EditorCore.is_playing
+		return
+	elif Time.get_ticks_msec() - _last_seek_time < 250:
 		player.stream_paused = !EditorCore.is_playing
 		return
 

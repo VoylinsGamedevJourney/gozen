@@ -85,6 +85,9 @@ class AudioStreamFFmpegPlayback : public AudioStreamPlaybackResampled {
 	uint32_t mix_rate = 44100;
 	bool stereo = true;
 
+	static constexpr int FADE_SAMPLES = 256; // ~6ms at 44100Hz
+	int fade_in_remaining = 0;
+
   public:
 	AudioStreamFFmpegPlayback() {
 		buffer = new sint16_stereo[buffer_len];

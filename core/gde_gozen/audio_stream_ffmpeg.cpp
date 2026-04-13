@@ -185,6 +185,7 @@ Ref<AudioStreamPlayback> AudioStreamFFmpeg::_instantiate_playback() const {
 
 void AudioStreamFFmpegPlayback::_start(double p_from_pos) {
 	is_playing = true;
+	fade_in_remaining = FADE_SAMPLES;
 	_seek(p_from_pos);
 }
 
@@ -294,36 +295,34 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 }
 
 int32_t AudioStreamFFmpegPlayback::_mix_resampled(AudioFrame* p_buffer, int32_t p_frames) {
-	if (!audio_stream_ffmpeg->loaded)
+	if (!audio_stream_ffmpeg->loaded) {
 		return 0;
+	}
 
-	while (buffer_fill < p_frames)
-		if (!fill_buffer())
+	while (buffer_fill < p_frames) {
+		if (!fill_buffer()) {
 			break;
-
-	if (p_frames <= buffer_fill) {
-		for (int i = 0; i < p_frames; ++i)
-			p_buffer[i] =
-				AudioFrame{static_cast<float>(buffer[i].l) / 32767.0f, static_cast<float>(buffer[i].r) / 32767.0f};
-		buffer_fill -= p_frames;
-		std::memmove(buffer, buffer + p_frames, buffer_fill * 4);
-
-		mixed += p_frames;
-		return p_frames;
+		}
 	}
 
-	// We still have some data to be sent over.
-	else if (buffer_fill > 0) {
-		for (int i = 0; i < buffer_fill; ++i)
-			p_buffer[i] =
-				AudioFrame{static_cast<float>(buffer[i].l) / 32767.0f, static_cast<float>(buffer[i].r) / 32767.0f};
-		int32_t copied_frames = buffer_fill;
-		mixed += copied_frames;
-		buffer_fill = 0;
-		return copied_frames;
+	int32_t frames_to_copy = (p_frames <= buffer_fill) ? p_frames : buffer_fill;
+	if (frames_to_copy == 0) {
+		return 0;
+	}
+	for (int i = 0; i < frames_to_copy; ++i) {
+		float fade = 1.0f;
+		if (fade_in_remaining > 0) {
+			fade = 1.0f - ((float)fade_in_remaining / (float)FADE_SAMPLES);
+			fade_in_remaining--;
+		}
+		p_buffer[i] = AudioFrame{static_cast<float>(buffer[i].l) / 32767.0f * fade,
+								 static_cast<float>(buffer[i].r) / 32767.0f * fade};
 	}
 
-	return 0;
+	buffer_fill -= frames_to_copy;
+	std::memmove(buffer, buffer + frames_to_copy, buffer_fill * sizeof(sint16_stereo));
+	mixed += frames_to_copy;
+	return frames_to_copy;
 }
 
 bool AudioStreamFFmpegPlayback::fill_buffer() {
