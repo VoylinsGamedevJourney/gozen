@@ -1,6 +1,9 @@
 extends EffectUI
 
 
+const ALIGN_BUTTON_SIZE: Vector2i = Vector2i(14, 14)
+
+
 var hboxes: Dictionary = {}
 var effect: Effect
 var clip: ClipData
@@ -67,8 +70,8 @@ func _on_update_values(frame_nr: int) -> void:
 	for param_id: String in hboxes:
 		var param_hbox: HBoxContainer = hboxes[param_id]
 		var param: EffectParam = _get_param(param_id)
-		var reset_button: TextureButton = param_hbox.get_child(1)
-		var param_settings: Control = param_hbox.get_child(2)
+		var reset_button: TextureButton = param_hbox.get_child(0).get_child(1)
+		var param_settings: Control = param_hbox.get_child(1)
 		var value: Variant = effect.get_value(param, frame_nr)
 
 		effects_panel._set_param_settings_value(param_settings, value)
@@ -84,35 +87,59 @@ func _on_update_values(frame_nr: int) -> void:
 
 
 func _create_alignment_buttons() -> Control:
-	var grid: GridContainer = GridContainer.new()
-	grid.columns = 4
+	var flow: FlowContainer = HFlowContainer.new()
+	var horizontal_hbox: HBoxContainer = HBoxContainer.new()
+	var horizontal_data: Array[Array] = [
+		[HORIZONTAL_ALIGNMENT_LEFT, preload(Library.ICON_ALIGN_LEFT)],
+		[HORIZONTAL_ALIGNMENT_CENTER, preload(Library.ICON_ALIGN_CENTER)],
+		[HORIZONTAL_ALIGNMENT_RIGHT, preload(Library.ICON_ALIGN_RIGHT)]]
+	var vertical_hbox: HBoxContainer = HBoxContainer.new()
+	var vertical_data: Array[Array] = [
+		[VERTICAL_ALIGNMENT_TOP, preload(Library.ICON_ALIGN_TOP)],
+		[VERTICAL_ALIGNMENT_CENTER, preload(Library.ICON_ALIGN_CENTER)],
+		[VERTICAL_ALIGNMENT_BOTTOM, preload(Library.ICON_ALIGN_BOTTOM)]]
 
-	var alignments: Array = [
-		# Horizontal.
-		{"text": "Left", "id": "left"},
-		{"text": "Center H", "id": "center_h"},
-		{"text": "Right", "id": "right"},
-		# Fit.
-		{"text": "Fit Screen", "id": "fit"},
-		# Vertical.
-		{"text": "Top", "id": "top"},
-		{"text": "Center V", "id": "center_v"},
-		{"text": "Bottom", "id": "bottom"}
-	]
+	for data: Array in horizontal_data:
+		var tex_button: TextureButton = TextureButton.new()
+		tex_button.texture_normal = data[1]
+		tex_button.pressed.connect(_align.bind(data[0]))
+		tex_button.ignore_texture_size = true
+		tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
+		tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
+		horizontal_hbox.add_child(tex_button)
+	for data: Array in vertical_data:
+		var tex_button: TextureButton = TextureButton.new()
+		tex_button.texture_normal = data[1]
+		tex_button.pressed.connect(_align.bind(data[0]))
+		tex_button.ignore_texture_size = true
+		tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
+		tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
+		vertical_hbox.add_child(tex_button)
 
-	for data: Dictionary in alignments:
-		var button: Button = Button.new()
-		button.text = data["text"]
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.add_theme_font_size_override("font_size", 10)
-		button.pressed.connect(_align.bind(data["id"]))
-		grid.add_child(button)
+	var fill_tex_button: TextureButton = TextureButton.new()
+	fill_tex_button.texture_normal = preload(Library.ICON_ALIGN_FILL)
+	fill_tex_button.pressed.connect(_align.bind(HORIZONTAL_ALIGNMENT_FILL)) # We use fill horizontal ... but it's for both. :p
+	fill_tex_button.ignore_texture_size = true
+	fill_tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
+	fill_tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
 
-	grid.add_child(Control.new())
-	return grid
+	flow.add_child(horizontal_hbox)
+	flow.add_child(VSeparator.new())
+	flow.add_child(fill_tex_button)
+	flow.add_child(VSeparator.new())
+	flow.add_child(vertical_hbox)
+	flow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var hbox: HBoxContainer = HBoxContainer.new()
+	var spacer: Control = Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.size_flags_stretch_ratio = 0.4
+	hbox.add_child(spacer)
+	hbox.add_child(flow)
+	return hbox
 
 
-func _align(type: String) -> void:
+func _align(type: int) -> void:
 	var res: Vector2 = Vector2(Project.get_resolution())
 	var frame: int = EditorCore.visual_frame_nr - clip.start
 	var current_position: Vector2 = effect.get_value(_get_param("position"), frame)
@@ -122,7 +149,6 @@ func _align(type: String) -> void:
 	var media_size: Vector2 = res
 	var file: FileData = FileLogic.files[clip.file]
 	var raw_data: Variant = FileLogic.file_data.get(file.id)
-
 	if clip.type == EditorCore.TYPE.VIDEO and raw_data is Video:
 		media_size = Vector2((raw_data as Video).get_resolution())
 	elif clip.type == EditorCore.TYPE.IMAGE:
@@ -133,7 +159,6 @@ func _align(type: String) -> void:
 	var aspect: float = media_size.x / media_size.y
 	var target_aspect: float = res.x / res.y
 	var fit_scale: float = 1.0
-
 	if aspect > target_aspect:
 		fit_scale = res.x / media_size.x
 	else:
@@ -142,25 +167,22 @@ func _align(type: String) -> void:
 	var fitted_size: Vector2 = media_size * fit_scale
 	var min_bounds: Vector2 = (res - fitted_size) / 2.0
 	var max_bounds: Vector2 = (res + fitted_size) / 2.0
-
 	var target_pos: Vector2 = current_position
-
 	match type:
-		"left":
+		HORIZONTAL_ALIGNMENT_LEFT:
 			target_pos.x = current_pivot.x * (current_scale.x - 1.0) - min_bounds.x * current_scale.x
-		"center_h":
+		HORIZONTAL_ALIGNMENT_CENTER:
 			target_pos.x = (res.x / 2.0) - current_pivot.x - ((res.x / 2.0) - current_pivot.x) * current_scale.x
-		"right":
+		HORIZONTAL_ALIGNMENT_RIGHT:
 			target_pos.x = res.x - current_pivot.x - (max_bounds.x - current_pivot.x) * current_scale.x
-		"top":
+		VERTICAL_ALIGNMENT_TOP:
 			target_pos.y = current_pivot.y * (current_scale.y - 1.0) - min_bounds.y * current_scale.y
-		"center_v":
+		VERTICAL_ALIGNMENT_CENTER:
 			target_pos.y = (res.y / 2.0) - current_pivot.y - ((res.y / 2.0) - current_pivot.y) * current_scale.y
-		"bottom":
+		VERTICAL_ALIGNMENT_BOTTOM:
 			target_pos.y = res.y - current_pivot.y - (max_bounds.y - current_pivot.y) * current_scale.y
-		"fit":
+		HORIZONTAL_ALIGNMENT_FILL:
 			target_pos = Vector2.ZERO
 			EffectsHandler.update_param(clip, clip.effects.video.find(effect), true, "scale", Vector2.ONE, false)
 
-	if current_position != target_pos:
-		EffectsHandler.update_param(clip, clip.effects.video.find(effect), true, "position", Vector2i(target_pos), false)
+	EffectsHandler.update_param(clip, clip.effects.video.find(effect), true, "position", Vector2i(target_pos), false)

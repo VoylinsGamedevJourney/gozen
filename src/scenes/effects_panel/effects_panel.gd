@@ -391,8 +391,13 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 	param_reset_button.pressed.connect(
 			_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
 
-	param_hbox.add_child(param_title)
-	param_hbox.add_child(param_reset_button)
+	var title_hbox: HBoxContainer = HBoxContainer.new()
+	title_hbox.add_child(param_title)
+	title_hbox.add_child(param_reset_button)
+	title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_hbox.size_flags_stretch_ratio = 0.4
+
+	param_hbox.add_child(title_hbox)
 	param_hbox.add_child(param_settings)
 
 	if param.keyframeable:
@@ -747,8 +752,8 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 			var param: EffectParam = effect.params[i]
 			var param_id: String = param.id
 			var param_hbox: HBoxContainer = content_vbox.get_child(i)
-			var reset_button: TextureButton = param_hbox.get_child(1)
-			var param_settings: Control = param_hbox.get_child(2)
+			var reset_button: TextureButton = param_hbox.get_child(0).get_child(1)
+			var param_settings: Control = param_hbox.get_child(1)
 			var value: Variant = effect.get_value(param, frame_nr)
 			_set_param_settings_value(param_settings, value)
 
