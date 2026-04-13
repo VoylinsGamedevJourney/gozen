@@ -70,31 +70,38 @@ static func format_time_str(total_seconds: float, short: bool = false) -> String
 		return "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
 
 
-static func find_subfolder_files(files: PackedStringArray) -> PackedStringArray:
-	var folders: PackedStringArray = []
-	var actual_files: PackedStringArray = []
+static func find_subfolder_files(dropped_paths: PackedStringArray) -> Dictionary:
+	var result: Dictionary = {}
+	var folders: Array[Dictionary] = []
 
-	for path: String in files:
+	for path: String in dropped_paths:
+		path = path.replace("\\", "/")
 		if FileAccess.file_exists(path):
 			if FileLogic.check(path):
-				actual_files.append(path)
+				result[path] = "/"
 		elif DirAccess.dir_exists_absolute(path):
-			folders.append(path)
+			var folder_name: String = path.trim_suffix("/").get_file()
+			folders.append({"path": path, "virtual": "/" + folder_name + "/"})
 
 	while !folders.is_empty():
-		var new_folders: PackedStringArray = []
+		var new_folders: Array[Dictionary] = []
 
-		for path: String in folders:
-			for file_path: String in DirAccess.get_files_at(path):
-				var full_path: String = path + '/' + file_path
+		for folder_data: Dictionary in folders:
+			var dir_path: String = folder_data["path"]
+			var virtual_path: String = folder_data["virtual"]
+
+			for file_name: String in DirAccess.get_files_at(dir_path):
+				var full_path: String = dir_path + "/" + file_name
 				if FileLogic.check(full_path):
-					actual_files.append(full_path)
-			for dir_path: String in DirAccess.get_directories_at(path):
-				new_folders.append(path + '/' + dir_path)
+					result[full_path] = virtual_path
 
+			for subdir_name: String in DirAccess.get_directories_at(dir_path):
+				new_folders.append({
+					"path": dir_path + "/" + subdir_name,
+					"virtual": virtual_path + subdir_name + "/"
+				})
 		folders = new_folders
-
-	return actual_files
+	return result
 
 
 static func get_sample_count(frames: int, framerate: float) -> int:

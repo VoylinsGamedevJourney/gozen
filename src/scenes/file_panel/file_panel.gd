@@ -332,6 +332,7 @@ func _add_folder_to_tree(folder: String) -> void:
 	var previous_folder: TreeItem = folder_items["/"]
 
 	for i: int in folders.size():
+		var parent_path: String = check_path
 		check_path += folders[i] + "/"
 
 		if !folder_items.has(check_path):
@@ -341,7 +342,7 @@ func _add_folder_to_tree(folder: String) -> void:
 			folder_items[check_path].set_icon(0, preload(Library.ICON_FOLDER))
 			folder_items[check_path].set_icon_max_width(0, 20)
 			folder_items[check_path].set_metadata(0, check_path)
-			_sort_folder(check_path)
+			_sort_folder(parent_path)
 
 		previous_folder = folder_items[check_path]
 

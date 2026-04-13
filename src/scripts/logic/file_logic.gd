@@ -282,25 +282,40 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 	for file: FileData in files.values():
 		existing_paths.append(file.path)
 
-	var paths: PackedStringArray = []
-	for path: String in Utils.find_subfolder_files(dropped_file_paths):
+	var paths_dict: Dictionary = Utils.find_subfolder_files(dropped_file_paths)
+	var paths_to_process: Dictionary = {}
+	var missing_folders: Dictionary = {}
+	for path: String in paths_dict:
 		if path not in existing_paths:
-			paths.append(path) # Duplicate check.
-	if paths.size() == 0:
+			paths_to_process[path] = paths_dict[path] # Duplicate check.
+			var virtual_folder: String = paths_dict[path]
+			if virtual_folder != "/":
+				var parts: PackedStringArray = virtual_folder.split("/", false)
+				var cur_path: String = "/"
+				for part: String in parts:
+					cur_path += part + "/"
+					if not FolderLogic.folders.has(cur_path) and not missing_folders.has(cur_path):
+						missing_folders[cur_path] = true
+
+	if paths_to_process.is_empty():
 		files_dropping = false
-		return # Early return check
+		return
+
+	for folder: String in missing_folders:
+		FolderLogic._add(folder)
 
 	var progress: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
-	var progress_increment: float = (1 / float(paths.size())) * 50
-	progress.set_state_file_loading(paths.size())
+	var progress_increment: float = (1.0 / float(paths_to_process.size())) * 50.0
+	progress.set_state_file_loading(paths_to_process.size())
 	progress.update_title(tr("Files dropped"))
 	progress.update(0, "")
 
 	var error_occured: bool = false
 	var dropped_files: Array[FileData] = []
-	for path: String in paths:
+	for path: String in paths_to_process:
 		var file: FileData = _create_file(path)
 		if file:
+			file.folder = paths_to_process[path]
 			_restore(file)
 			progress.update_file(path, 0)
 			dropped_files.append(file)
