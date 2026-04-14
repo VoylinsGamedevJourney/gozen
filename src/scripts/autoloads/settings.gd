@@ -188,7 +188,7 @@ func set_theme_path(new_path: String) -> void:
 
 func apply_theme() -> void:
 	var theme: Theme
-	if FileAccess.file_exists(data.theme):
+	if not data.theme.is_empty() and ResourceLoader.exists(data.theme):
 		theme = load(data.theme).duplicate(true)
 	else: # Default theme.
 		theme = load(Library.THEME_DEFAULT).duplicate(true)

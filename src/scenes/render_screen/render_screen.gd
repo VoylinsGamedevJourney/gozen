@@ -511,9 +511,14 @@ func _on_save_custom_profile_button_pressed() -> void:
 
 func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	var new_profile: RenderProfile = RenderProfile.new()
-	var icon: Image = Image.load_from_file(icon_path)
-
+	var icon: Image
+	if icon_path.begins_with("uid://") or icon_path.begins_with("res://"):
+		var icon_texture: Texture2D = load(icon_path)
+		icon = icon_texture.get_image()
+	else: # It's an actual file.
+		icon = Image.load_from_file(icon_path)
 	icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
+
 	new_profile.profile_name = profile_name
 	new_profile.icon = ImageTexture.create_from_image(icon)
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VIDEO_CODEC

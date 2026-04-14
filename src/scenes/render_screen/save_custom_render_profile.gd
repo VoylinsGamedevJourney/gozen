@@ -21,9 +21,17 @@ func _connect_save_profile(function: Callable) -> void:
 
 
 func _set_icon(path: String) -> void:
-	if !FileAccess.file_exists(path):
+	texture_button_icon.texture_normal = null
+	if path.begins_with("uid://") or path.begins_with("res://"):
+		texture_button_icon.texture_normal = load(path)
+	elif FileAccess.file_exists(path):
+		var icon: Image = Image.load_from_file(path)
+		if icon and not icon.is_empty():
+			texture_button_icon.texture_normal = ImageTexture.create_from_image(icon)
+
+	if !texture_button_icon.texture_normal: # Backup.
 		path = Library.ICON_CUSTOM_RENDER_PROFILE
-	texture_button_icon.texture_normal = ImageTexture.create_from_image(Image.load_from_file(path))
+		texture_button_icon.texture_normal = load(path)
 	selected_icon_path = path
 
 
