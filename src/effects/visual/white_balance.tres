@@ -23,7 +23,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/white_balance.glsl"
+shader_path = "uid://qkfnt7idf5ng"
 id = "white_balance"
 nickname = "White Balance"
 params = Array[ExtResource("1_param")]([SubResource("Resource_temperature"), SubResource("Resource_tint")])

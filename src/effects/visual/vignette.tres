@@ -50,7 +50,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_6wmjw")
-shader_path = "res://effects/visual/vignette.glsl"
+shader_path = "uid://cwgewo47ioal7"
 id = "vignette"
 nickname = "Vignette"
 params = Array[ExtResource("1_fkoha")]([SubResource("Resource_fkoha"), SubResource("Resource_6wmjw"), SubResource("Resource_2rp6f"), SubResource("Resource_5t1e2"), SubResource("Resource_2yfib")])

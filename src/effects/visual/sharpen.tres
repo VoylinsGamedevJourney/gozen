@@ -14,7 +14,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/sharpen.glsl"
+shader_path = "uid://dp2txgp5pp6j0"
 id = "sharpen"
 nickname = "Sharpen"
 params = Array[ExtResource("1_param")]([SubResource("Resource_amount")])

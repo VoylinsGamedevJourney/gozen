@@ -17,7 +17,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/guassion_blur.glsl"
+shader_path = "uid://diescjn407csh"
 shader_passes = 2
 id = "gaussian_blur"
 nickname = "Gaussian Blur"

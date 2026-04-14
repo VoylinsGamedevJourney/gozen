@@ -25,7 +25,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/flip.glsl"
+shader_path = "uid://dtcpk7vw3ujdx"
 id = "flip"
 nickname = "Flip"
 params = Array[ExtResource("1_param")]([SubResource("Resource_horizontal"), SubResource("Resource_vertical")])

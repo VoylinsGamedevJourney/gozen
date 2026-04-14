@@ -37,7 +37,7 @@ max_value = 150.0
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/360.glsl"
+shader_path = "uid://bkqtgecyd8bh6"
 id = "equirectangular"
 nickname = "360 Video Controller"
 params = Array[ExtResource("1_param")]([SubResource("Resource_yaw"), SubResource("Resource_pitch"), SubResource("Resource_roll"), SubResource("Resource_fov")])

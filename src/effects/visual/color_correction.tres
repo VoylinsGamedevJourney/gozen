@@ -77,7 +77,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/color_correction.glsl"
+shader_path = "uid://dfvavj2472tgp"
 id = "color_correction"
 nickname = "Color Correction"
 params = Array[ExtResource("1_param")]([SubResource("Resource_tint"), SubResource("Resource_brightness"), SubResource("Resource_contrast"), SubResource("Resource_saturation"), SubResource("Resource_tint_amount"), SubResource("Resource_red_value"), SubResource("Resource_green_value"), SubResource("Resource_blue_value")])

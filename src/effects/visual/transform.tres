@@ -56,16 +56,16 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("1_x451f")
-shader_path = "res://effects/visual/transform.glsl"
+shader_path = "uid://dpcurhtmkmqxc"
 matrix_map = Dictionary[String, int]({
 "pivot": 0,
 "position": 0,
 "rotation": 0,
 "scale": 0
 })
-custom_overlay_path = "res://effects/visual/transform_overlay.gd"
+custom_overlay_path = "uid://bips8ivb5wors"
 id = "transform"
 nickname = "Transform"
-custom_ui_path = "res://effects/visual/transform_ui.gd"
+custom_ui_path = "uid://rxhcwr8cixlg"
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"

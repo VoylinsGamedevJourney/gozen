@@ -40,7 +40,7 @@ max_value = null
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/drop_shadow.glsl"
+shader_path = "uid://cvncclpbfug05"
 id = "drop_shadow"
 nickname = "Drop Shadow"
 params = Array[ExtResource("1_param")]([SubResource("Resource_offset_x"), SubResource("Resource_offset_y"), SubResource("Resource_fade"), SubResource("Resource_color")])

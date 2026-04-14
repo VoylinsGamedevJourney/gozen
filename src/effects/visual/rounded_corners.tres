@@ -50,7 +50,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "res://effects/visual/rounded_corners.glsl"
+shader_path = "uid://b173oxoeakjyq"
 id = "rounded_corners"
 nickname = "Rounded Corners"
 tooltip = "This effect is best applied before using transform effects."
