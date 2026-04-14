@@ -15,6 +15,7 @@ const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 
 
 @export var section_text: VBoxContainer
+@export var section_transitions: FoldableContainer
 @export var section_visuals: FoldableContainer
 @export var section_audio: FoldableContainer
 
@@ -54,10 +55,10 @@ func _ready() -> void:
 	section_visuals.add_title_bar_control(_get_add_effects_button(1))
 	section_audio.add_title_bar_control(clip_mute_button)
 	section_audio.add_title_bar_control(_get_add_effects_button(2))
+	section_transitions.visible = false
+	section_transitions.folded = true
 	section_visuals.folded = true
 	section_audio.folded = true
-
-
 
 
 func _input(event: InputEvent) -> void:

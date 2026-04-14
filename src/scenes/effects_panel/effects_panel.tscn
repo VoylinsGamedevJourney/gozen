@@ -7,7 +7,7 @@ content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
-bg_color = Color(0.101960786, 1, 0.101960786, 0.078431375)
+bg_color = Color(1, 0.77267843, 0.65458363, 0.078431375)
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
@@ -22,7 +22,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_visuals", "section_audio")]
+[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_transitions", "section_visuals", "section_audio")]
 custom_minimum_size = Vector2(300, 200)
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,6 +33,7 @@ size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_k5peu")
 section_text = NodePath("Margin/Scroll/Panel/Margin/VBox/TextContainer")
+section_transitions = NodePath("Margin/Scroll/Panel/Margin/VBox/TransitionsContainer")
 section_visuals = NodePath("Margin/Scroll/Panel/Margin/VBox/VisualsContainer")
 section_audio = NodePath("Margin/Scroll/Panel/Margin/VBox/AudioContainer")
 
@@ -62,13 +63,19 @@ layout_mode = 2
 [node name="TextContainer" type="VBoxContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=654175760]
 layout_mode = 2
 
+[node name="TransitionsContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1507050130]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_wv8tu")
+title = "Transitions"
+
 [node name="VisualsContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1695060905]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_wv8tu")
 title = "Visual effects"
-title_alignment = 1
 
 [node name="AudioContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1481519147]
 layout_mode = 2
@@ -76,4 +83,3 @@ theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_b381o")
 title = "Audio effects"
-title_alignment = 1
