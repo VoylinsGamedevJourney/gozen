@@ -397,8 +397,6 @@ func load_data(file: FileData) -> void:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		EditorCore.TYPE.AUDIO:
 			if audio_pools.has(file.id):
-				for stream: AudioStream in audio_pools[file.id]:
-					stream.free()
 				audio_pools[file.id] = []
 
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()

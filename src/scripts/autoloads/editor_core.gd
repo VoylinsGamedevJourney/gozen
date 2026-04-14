@@ -134,7 +134,9 @@ func _rebuild_structure() -> void:
 
 	# Audio setup.
 	for player: AudioPlayer in audio_players:
-		remove_child(player.player)
+		if player != null:
+			remove_child(player.player)
+			player.cleanup()
 	audio_players.resize(track_size) # RefCounted so should be fine. (I hope :p)
 
 	for index: int in track_size:
@@ -143,9 +145,14 @@ func _rebuild_structure() -> void:
 
 	# Visual setup.
 	for texture_rect: TextureRect in view_textures:
-		texture_rect.queue_free()
+		if texture_rect != null:
+			texture_rect.queue_free()
 	for text_viewport: SubViewport in text_viewports:
-		text_viewport.queue_free()
+		if text_viewport != null:
+			text_viewport.queue_free()
+	for compositor: VisualCompositor in compositors:
+		if compositor != null:
+			compositor.cleanup()
 
 	view_textures.resize(track_size)
 	compositors.resize(track_size)
@@ -239,6 +246,9 @@ func _prefetch_upcoming_clips() -> void:
 
 func _on_closing_editor() -> void:
 	view_textures.clear()
+	for player: AudioPlayer in audio_players:
+		if player != null:
+			player.cleanup()
 	audio_players.clear()
 	text_viewports.clear()
 	for compositor: VisualCompositor in compositors:

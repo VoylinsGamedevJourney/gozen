@@ -26,6 +26,14 @@ func _init() -> void:
 	player.bus = bus_name
 
 
+func cleanup() -> void:
+	if player != null:
+		player.queue_free()
+	var actual_index: int = AudioServer.get_bus_index(bus_name)
+	if actual_index >= 0:
+		AudioServer.remove_bus(actual_index)
+
+
 func is_playing() -> bool:
 	return player.playing
 
