@@ -29,6 +29,8 @@ func add(requests: Array[ClipRequest]) -> void:
 		new_clip.start = request.frame
 		new_clip.duration = FileLogic.files[request.file.id].duration
 		new_clip.effects = _create_default_effects(new_clip.type)
+		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
+			new_clip.effects.is_muted = true
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
 		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
 	InputManager.undo_redo.commit_action()
