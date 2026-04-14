@@ -227,6 +227,11 @@ func stop_encoder() -> void:
 		Settings.set_use_proxies(true)
 	cancel_encoding = false
 	_audio_cache.clear()
+
+	Threader.mutex.lock()
+	frame_queue.clear()
+	Threader.mutex.unlock()
+
 	DisplayServer.window_set_vsync_mode(original_vsync_mode)
 	Settings.set_video_cache_size(original_video_frame_cache_size)
 

@@ -97,6 +97,7 @@ func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Packe
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.file_mode = mode
 	dialog.filters = filters
+	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	return dialog
 
 
@@ -106,6 +107,7 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 
 	dialog.force_native = use_native_dialog
 	dialog.title = title
+	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	return dialog
 
 
@@ -116,6 +118,7 @@ func create_confirmation_dialog(title: String, text: String) -> ConfirmationDial
 	dialog.force_native = use_native_dialog
 	dialog.title = title
 	dialog.dialog_text = text
+	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	_control.add_child(dialog)
 	return dialog
 

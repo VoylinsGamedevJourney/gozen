@@ -319,6 +319,7 @@ func cleanup() -> void:
 
 
 func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) -> void:
+	var active_ids: Array[int] = []
 	for effect: EffectVisual in effects:
 		if not effect.is_enabled:
 			continue
@@ -329,14 +330,15 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 			continue
 
 		var id: int = effect.get_instance_id()
+		active_ids.append(id)
 		if not effect_buffers.has(id):
 			effect_buffers[id] = []
 
 		var buffers: Array = effect_buffers[id]
 
 		if buffers.size() != effect.shader_passes:
-			for b: RID in buffers:
-				Utils.cleanup_rid(device, b)
+			for buffer: RID in buffers:
+				Utils.cleanup_rid(device, buffer)
 			buffers.clear()
 			for i: int in effect.shader_passes:
 				var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution, i)
@@ -345,6 +347,13 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 			for i: int in effect.shader_passes:
 				var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution, i)
 				device.buffer_update(buffers[i] as RID, 0, buffer_data.size(), buffer_data)
+
+	var known_ids: Array = effect_buffers.keys()
+	for buffer_id: int in known_ids:
+		if not buffer_id in active_ids:
+			for buffer: RID in effect_buffers[buffer_id]:
+				Utils.cleanup_rid(device, buffer)
+			effect_buffers.erase(buffer_id)
 
 
 func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha: float) -> void:
