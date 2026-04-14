@@ -311,9 +311,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 
 
 func _render_finished() -> void:
-	var dialog: AcceptDialog = AcceptDialog.new()
-
-	dialog.title = tr("Rendering finished")
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rendering finished"))
 	dialog.dialog_text = "Path: %s\n" % path_line_edit.text
 	dialog.dialog_text += "Render time: %s" % Utils.format_time_str(
 			RenderManager.encoding_time / 1000.0)
@@ -321,7 +319,6 @@ func _render_finished() -> void:
 
 	add_child(dialog)
 	dialog.popup_centered()
-
 	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
@@ -331,15 +328,12 @@ func _cancel_render() -> void:
 
 
 func _show_error(message: String) -> void:
-	var dialog: AcceptDialog = AcceptDialog.new()
-
-	dialog.title = tr("Error whilst rendering video")
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Error whilst rendering video"))
 	dialog.dialog_text = message
 	dialog.exclusive = true
 
 	add_child(dialog)
 	dialog.popup_centered()
-
 	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
