@@ -19,10 +19,8 @@ var _cache_dirty: bool = true
 
 
 func get_custom_ui() -> EffectUI:
-	if FileAccess.file_exists(custom_ui_path):
-		var script: GDScript = load(custom_ui_path)
-		if script is GDScript:
-			return script.new() as EffectUI
+	if not custom_ui_path.is_empty() and ResourceLoader.exists(custom_ui_path):
+		return (load(custom_ui_path) as GDScript).new()
 	return null
 
 

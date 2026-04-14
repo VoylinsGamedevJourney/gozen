@@ -10,8 +10,6 @@ extends Effect
 
 
 func get_custom_overlay() -> EffectVisualOverlay:
-	if FileAccess.file_exists(custom_overlay_path):
-		var script: GDScript = load(custom_overlay_path)
-		if script is GDScript:
-			return script.new() as EffectVisualOverlay
+	if not custom_overlay_path.is_empty() and ResourceLoader.exists(custom_overlay_path):
+		return (load(custom_overlay_path) as GDScript).new()
 	return null
