@@ -32,17 +32,20 @@ var clip_mute_button: CheckButton
 
 
 func _ready() -> void:
-	Project.project_ready.connect(_project_ready)
-	EditorCore.visual_frame_changed.connect(_on_frame_changed)
-	EffectsHandler.effect_added.connect(_on_effect_added)
-	EffectsHandler.effect_removed.connect(_on_effect_removed)
-	EffectsHandler.effect_moved.connect(_on_effect_moved)
-	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
-	EffectsHandler.effect_values_updated.connect(_update_ui_values)
-
 	clip_mute_button = CheckButton.new()
 	clip_mute_button.flat = true
 	clip_mute_button.tooltip_text = tr("Mute clip audio.")
+
+	Project.project_ready.connect(func() -> void:
+			ClipLogic.deleted.connect(func(clip_id: int) -> void:
+					if current_clip and clip_id == current_clip.id: _on_clip_pressed(null))
+			ClipLogic.selected.connect(_on_clip_pressed))
+	EditorCore.visual_frame_changed.connect(func() -> void:
+			if current_clip: _update_ui_values())
+	EffectsHandler.effect_added.connect(_on_effect_added)
+	EffectsHandler.effect_removed.connect(_on_effect_removed)
+	EffectsHandler.effect_moved.connect(_on_effect_moved)
+	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 	clip_mute_button.toggled.connect(func(toggled_on: bool) -> void:
 			if current_clip and current_clip.effects.is_muted == toggled_on:
 				ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
@@ -55,9 +58,6 @@ func _ready() -> void:
 	section_audio.folded = true
 
 
-func _project_ready() -> void:
-	ClipLogic.deleted.connect(_on_clip_deleted)
-	ClipLogic.selected.connect(_on_clip_pressed)
 
 
 func _input(event: InputEvent) -> void:
@@ -170,16 +170,6 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 		section_audio.folded = false
 
 
-func _on_clip_deleted(clip_id: int) -> void:
-	if current_clip and clip_id == current_clip.id:
-		_on_clip_pressed(null)
-
-
-func _on_frame_changed() -> void:
-	if current_clip:
-		_update_ui_values()
-
-
 func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
 		var effect: Effect
@@ -221,11 +211,6 @@ func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual:
 		else:
 			var moved_effect: Control = section_audio.get_child(0).get_child(old_index)
 			section_audio.get_child(0).move_child(moved_effect, new_index)
-
-
-func _on_effects_updated(clip: ClipData) -> void:
-	if current_clip and clip and clip.id == current_clip.id:
-		_on_clip_pressed(clip)
 
 
 func _load_effects() -> void:
