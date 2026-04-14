@@ -27,6 +27,7 @@ var current_file: FileData = null
 
 var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
+var clip_mute_button: CheckButton
 
 
 
@@ -39,7 +40,16 @@ func _ready() -> void:
 	EffectsHandler.effects_updated.connect(_on_effects_updated.bind(null))
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
+	clip_mute_button = CheckButton.new()
+	clip_mute_button.flat = true
+	clip_mute_button.tooltip_text = tr("Mute clip audio.")
+	clip_mute_button.toggled.connect(func(toggled_on: bool) -> void:
+			if current_clip and current_clip.effects.is_muted == toggled_on:
+				ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
+			section_audio.folded = !toggled_on)
+
 	section_visuals.add_title_bar_control(_get_add_effects_button(1))
+	section_audio.add_title_bar_control(clip_mute_button)
 	section_audio.add_title_bar_control(_get_add_effects_button(2))
 	section_visuals.folded = true
 	section_audio.folded = true
@@ -685,8 +695,9 @@ func _update_ui_values() -> void:
 	if !current_clip or !ClipLogic.clips.has(current_clip.id):
 		current_clip = null
 		return
-	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 
+	clip_mute_button.set_pressed_no_signal(!current_clip.effects.is_muted)
+	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	if section_text.visible and section_text.get_child_count() > 0:
 		var text_effects: EffectVisual = current_file.temp_file.text_effect
 		var text_container: FoldableContainer = section_text.get_child(0)

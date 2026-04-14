@@ -10,3 +10,5 @@ var fade_audio: Vector2i ## { x = in, y = out }.
 var ato_active: bool = false
 var ato_offset: float = 0.0 ## Seconds.
 var ato_file: int = -1
+
+var is_muted: bool = false

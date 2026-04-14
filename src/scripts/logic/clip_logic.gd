@@ -138,6 +138,7 @@ func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 		effects.ato_active = request.clip.effects.ato_active
 		effects.ato_offset = request.clip.effects.ato_offset
 		effects.ato_file = request.clip.effects.ato_file
+		effects.is_muted = request.clip.effects.is_muted
 		snapshot.id = Utils.get_unique_id(clips.keys())
 		snapshot.start += duration_left
 		snapshot.begin += int(duration_left * request.clip.speed)
@@ -206,6 +207,7 @@ func copy_selected_clips() -> void:
 		snapshot.effects.ato_active = clip.effects.ato_active
 		snapshot.effects.ato_offset = clip.effects.ato_offset
 		snapshot.effects.ato_file = clip.effects.ato_file
+		snapshot.effects.is_muted = clip.effects.is_muted
 		snapshot.effects.video = _copy_visual_effects(clip.effects.video, 0)
 		snapshot.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
 		copied_clips.append(snapshot)
@@ -238,6 +240,7 @@ func paste_copied_clips() -> void:
 		new_clip.effects.ato_active = copied_clip.effects.ato_active
 		new_clip.effects.ato_offset = copied_clip.effects.ato_offset
 		new_clip.effects.ato_file = copied_clip.effects.ato_file
+		new_clip.effects.is_muted = copied_clip.effects.is_muted
 		new_clip.effects.video = _copy_visual_effects(copied_clip.effects.video, 0)
 		new_clip.effects.audio = _copy_audio_effects(copied_clip.effects.audio, 0)
 
@@ -284,6 +287,7 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 			new_clip.effects.ato_active = clip.effects.ato_active
 			new_clip.effects.ato_offset = clip.effects.ato_offset
 			new_clip.effects.ato_file = clip.effects.ato_file
+			new_clip.effects.is_muted = clip.effects.is_muted
 			new_clip.effects.video = _copy_visual_effects(clip.effects.video, 0)
 			new_clip.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
 			new_clip.start = target_frame
@@ -423,6 +427,19 @@ func set_ato_active(clip: ClipData, value: bool) -> void:
 func _set_ato_active(effects: ClipEffects, value: bool) -> void:
 	effects.ato_active = value
 	Project.unsaved_changes = true
+
+
+func toggle_clip_mute(clip: ClipData, muted: bool) -> void:
+	InputManager.undo_redo.create_action("Mute clip" if muted else "Unmute clip")
+	InputManager.undo_redo.add_do_method(_set_clip_mute.bind(clip.effects, muted))
+	InputManager.undo_redo.add_undo_method(_set_clip_mute.bind(clip.effects, !muted))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_clip_mute(effects: ClipEffects, muted: bool) -> void:
+	effects.is_muted = muted
+	Project.unsaved_changes = true
+	updated.emit.call_deferred()
 
 
 # --- Helpers ---

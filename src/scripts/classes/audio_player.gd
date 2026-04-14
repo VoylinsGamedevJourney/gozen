@@ -44,7 +44,7 @@ func stop() -> void:
 
 
 func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
-	if !audio_clip or TrackLogic.tracks[audio_clip.track].is_muted:
+	if !audio_clip or TrackLogic.tracks[audio_clip.track].is_muted or audio_clip.effects.is_muted:
 		return stop()
 	elif RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return stop()

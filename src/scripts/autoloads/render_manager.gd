@@ -304,7 +304,7 @@ func _prepare_audio_cache(start_frame: int, end_frame: int) -> void:
 	for track: int in TrackLogic.tracks.size():
 		if TrackLogic.tracks[track].is_muted: continue
 		for clip: ClipData in TrackLogic.track_clips[track].clips:
-			if clip.start > end_frame or clip.end < start_frame:
+			if clip.start > end_frame or clip.end < start_frame or clip.effects.is_muted:
 				continue
 			elif clip.type in EditorCore.AUDIO_TYPES:
 				var info: Dictionary = _get_clip_audio_info(clip)
@@ -377,7 +377,7 @@ func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
 			for clip: ClipData in TrackLogic.track_clips[track].clips:
 				if cancel_encoding:
 					break
-				if clip.start > end_frame or clip.end < start_frame:
+				if clip.start > end_frame or clip.end < start_frame or clip.effects.is_muted:
 					continue
 				if clip.type in EditorCore.AUDIO_TYPES:
 					audio = _handle_audio(clip, audio, start_frame, end_frame)

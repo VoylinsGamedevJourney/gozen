@@ -82,7 +82,8 @@ func _draw() -> void:
 
 			var audio_wave: PackedFloat32Array = wave_dict[lod]
 			var wave_begin: int = int((clip.begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
-			_draw_wave(audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, clip.track, lod, scroll_container)
+			var is_muted: bool = TrackLogic.tracks[clip.track].is_muted or clip.effects.is_muted
+			_draw_wave(audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, lod, scroll_container, is_muted)
 
 		# - Fading handles + amount
 		var show_handles: bool = false
@@ -137,7 +138,7 @@ func _get_visible(start: int, end: int) -> Array[ClipData]:
 	return data
 
 
-func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, speed: float, track: int, lod: int, scroll_container: ScrollContainer) -> void:
+func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, speed: float, lod: int, scroll_container: ScrollContainer, is_muted: bool) -> void:
 	if wave_data.is_empty():
 		return
 	var zoom: float = Timeline.zoom * lod
@@ -184,7 +185,7 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 				block_pos_y = base_y + height - block_height
 
 		var wave_color: Color = COLOR_AUDIO_WAVE
-		if TrackLogic.tracks[track].is_muted:
+		if is_muted:
 			wave_color.a *= 0.3
 		draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
 
