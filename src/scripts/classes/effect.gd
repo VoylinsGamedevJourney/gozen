@@ -26,7 +26,7 @@ func get_custom_ui() -> EffectUI:
 
 func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 	var param_id: String = effect_param.id
-	var sorted_keys: PackedInt64Array = _validate_cache(param_id)
+	var sorted_keys: Array[int] = _validate_cache(param_id)
 
 	if sorted_keys.is_empty():
 		return effect_param.default_value
@@ -99,6 +99,33 @@ func _validate_cache(param_id: String) -> PackedInt64Array:
 
 	return _key_cache[param_id]
 
+
+#--- Data handling ---
+
+func serialize() -> Dictionary:
+	var keyframe_dict: Dictionary = {}
+	for param_id: String in keyframes:
+		keyframe_dict[param_id] = {}
+		for frame: int in keyframes[param_id]:
+			keyframe_dict[param_id][frame] = keyframes[param_id][frame]
+	return { "id": id, "is_enabled": is_enabled, "keyframes": keyframe_dict }
+
+
+func deserialize(dict: Dictionary) -> void:
+	is_enabled = dict.get("is_enabled", true)
+	if dict.has("keyframes"):
+		var keyframe_dict: Dictionary = dict["keyframes"]
+		keyframes.clear()
+		for param_id: String in keyframe_dict:
+			var frames: Dictionary = keyframe_dict[param_id]
+			var typed_frames: Dictionary[int, Variant] = {}
+			for frame_key: int in frames:
+				typed_frames[frame_key] = frames[frame_key]
+			keyframes[param_id] = typed_frames
+	_cache_dirty = true
+
+
+#--- Interpolation handling ---
 
 # TODO: Implement different interpolation types
 static func _interpolate_variant(value_a: Variant, value_b: Variant, weight: float) -> Variant:
