@@ -363,7 +363,7 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 			for buffer: RID in effect_buffers[buffer_id]:
 				@warning_ignore("return_value_discarded")
 				Utils.cleanup_rid(device, buffer)
-			if effect_buffers.erase(buffer_id):
+			if !effect_buffers.erase(buffer_id):
 				printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)
 
 

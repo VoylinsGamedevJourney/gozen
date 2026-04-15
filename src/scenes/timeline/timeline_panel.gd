@@ -46,6 +46,7 @@ var right_click_clip: ClipData = null
 var pressed_clip: ClipData = null
 
 var _update_clips: bool = true
+var _last_mouse_button: int = MOUSE_BUTTON_NONE
 
 
 
@@ -92,6 +93,17 @@ func _notification(what: int) -> void:
 
 # --- Input handling ---
 
+func _gui_input(event: InputEvent) -> void:
+	if !Project.is_loaded:
+		return
+	elif event is InputEventMouseButton:
+		_on_gui_input_mouse_button(event as InputEventMouseButton)
+	elif event is InputEventMouseMotion:
+		_on_gui_input_mouse_motion(event as InputEventMouseMotion)
+	_unhandled_input(event)
+
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	var focus_owner: Control = get_window().gui_get_focus_owner()
 	if !is_visible_in_tree() and !Project.is_loaded or focus_owner is LineEdit or focus_owner is TextEdit:
@@ -137,125 +149,114 @@ func _unhandled_input(event: InputEvent) -> void:
 				remove_empty_space_at(track, frame_nr)
 
 
-func _gui_input(event: InputEvent) -> void:
-	if !Project.is_loaded:
-		return
-	elif event is InputEventMouseButton:
-		var mouse_button_event: InputEventMouseButton = event
-		if mouse_button_event.ctrl_pressed and mouse_button_event.shift_pressed and mouse_button_event.pressed:
-			if mouse_button_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				Settings.set_track_height(clampf(
-						Settings.get_track_height() + 2.0, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
-				accept_event()
-				return
-			elif mouse_button_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				Settings.set_track_height(clampf(
-						Settings.get_track_height() - 2.0, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
-				accept_event()
-				return
-
-		if event.is_action_pressed("timeline_zoom_in", false, true):
-			zoom_at_mouse(ZOOM_STEP)
-		elif event.is_action_pressed("timeline_zoom_out", false, true):
-			zoom_at_mouse(1.0 / ZOOM_STEP)
-		else:
-			_on_gui_input_mouse_button(event as InputEventMouseButton)
-			get_window().gui_release_focus()
-	elif event is InputEventMouseMotion:
-		_on_gui_input_mouse_motion(event as InputEventMouseMotion)
-	_unhandled_input(event)
-
-
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
-	if Timeline.state == Timeline.STATE.SPLIT:
+	_last_mouse_button = event.button_index
+	if event.ctrl_pressed and event.shift_pressed and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			Settings.set_track_height(clampf(
+					Settings.get_track_height() + 2.0, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+			accept_event()
+			return
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			Settings.set_track_height(clampf(
+					Settings.get_track_height() - 2.0, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+			accept_event()
+			return
+
+	if event.is_action_pressed("timeline_zoom_in", false, true):
+		zoom_at_mouse(ZOOM_STEP)
+	elif event.is_action_pressed("timeline_zoom_out", false, true):
+		zoom_at_mouse(1.0 / ZOOM_STEP)
+	else:
+		if Timeline.state == Timeline.STATE.SPLIT:
+			if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+				var target: ClipData = _get_clip_on_mouse()
+				if target:
+					split_clip_at(target, get_frame_from_mouse())
+			return
+		elif event.is_released():
+			match Timeline.state:
+				Timeline.STATE.RESIZING: _commit_current_resize()
+				Timeline.STATE.SPEEDING: _commit_current_resize()
+				Timeline.STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
+				Timeline.STATE.SCRUBBING: EditorCore.finish_scrub()
+				Timeline.STATE.SELECT:
+					if pressed_clip and pressed_clip == _get_clip_on_mouse() and not event.shift_pressed:
+						if ClipLogic.selected_clips.size() > 1:
+							ClipLogic.selected_clips = [pressed_clip]
+							draw_clips.queue_redraw()
+							ClipLogic.selected.emit(pressed_clip)
+			_on_ui_cancel()
+
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-			var target: ClipData = _get_clip_on_mouse()
-			if target:
-				split_clip_at(target, get_frame_from_mouse())
-		return
-	elif event.is_released():
-		match Timeline.state:
-			Timeline.STATE.RESIZING: _commit_current_resize()
-			Timeline.STATE.SPEEDING: _commit_current_resize()
-			Timeline.STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
-			Timeline.STATE.SCRUBBING: EditorCore.finish_scrub()
-			Timeline.STATE.SELECT:
-				if pressed_clip and pressed_clip == _get_clip_on_mouse() and not event.shift_pressed:
-					if ClipLogic.selected_clips.size() > 1:
-						ClipLogic.selected_clips = [pressed_clip]
-						draw_clips.queue_redraw()
-						ClipLogic.selected.emit(pressed_clip)
-		_on_ui_cancel()
+			Timeline.state = Timeline.STATE.SELECT
+			pressed_clip = _get_clip_on_mouse()
+			Timeline.resize_target = _get_resize_target()
+			Timeline.fade_target = _get_fade_target()
 
-	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-		Timeline.state = Timeline.STATE.SELECT
-		pressed_clip = _get_clip_on_mouse()
-		Timeline.resize_target = _get_resize_target()
-		Timeline.fade_target = _get_fade_target()
-
-		if Timeline.fade_target:
-			Timeline.state = Timeline.STATE.FADING
-			draw_clips.queue_redraw()
-		elif Timeline.resize_target:
-			Timeline.state = Timeline.STATE.SPEEDING if event.ctrl_pressed else Timeline.STATE.RESIZING
-			draw_clips.queue_redraw()
-		elif event.double_click and !pressed_clip:
-			var mod: int = Settings.get_delete_empty_modifier()
-			if mod == KEY_NONE or (mod == KEY_CTRL and event.ctrl_pressed) or (mod == KEY_SHIFT and event.shift_pressed):
-				remove_empty_space_at(get_track_from_mouse(), get_frame_from_mouse())
-				return
-		elif !pressed_clip:
-			if event.shift_pressed:
-				Timeline.state = Timeline.STATE.BOX_SELECTING
-				Timeline.box_select_start = get_local_mouse_position()
-				Timeline.box_select_end = Timeline.box_select_start
-				draw_box_selection.queue_redraw()
-			else:
-				Timeline.state = Timeline.STATE.SCRUBBING
-				if EditorCore.is_playing:
-					EditorCore.is_playing = false
-				EditorCore.scrub_to_frame(get_frame_from_mouse())
-		else:
-			if pressed_clip not in ClipLogic.selected_clips:
-				if !event.shift_pressed:
-					ClipLogic.selected_clips = [pressed_clip]
-				else:
-					ClipLogic.selected_clips.append(pressed_clip)
+			if Timeline.fade_target:
+				Timeline.state = Timeline.STATE.FADING
 				draw_clips.queue_redraw()
-				ClipLogic.selected.emit(pressed_clip)
-	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
-		var popup: PopupMenu = PopupManager.create_menu()
-		right_click_clip = _get_clip_on_mouse()
-		right_click_track = get_track_from_mouse()
-		right_click_frame = get_frame_from_mouse()
+			elif Timeline.resize_target:
+				Timeline.state = Timeline.STATE.SPEEDING if event.ctrl_pressed else Timeline.STATE.RESIZING
+				draw_clips.queue_redraw()
+			elif _last_mouse_button == MOUSE_BUTTON_LEFT and event.double_click and !pressed_clip:
+				var mod: int = Settings.get_delete_empty_modifier()
+				if mod == KEY_NONE or (mod == KEY_CTRL and event.ctrl_pressed) or (mod == KEY_SHIFT and event.shift_pressed):
+					remove_empty_space_at(get_track_from_mouse(), get_frame_from_mouse())
+					return
+			elif !pressed_clip:
+				if event.shift_pressed:
+					Timeline.state = Timeline.STATE.BOX_SELECTING
+					Timeline.box_select_start = get_local_mouse_position()
+					Timeline.box_select_end = Timeline.box_select_start
+					draw_box_selection.queue_redraw()
+				else:
+					Timeline.state = Timeline.STATE.SCRUBBING
+					if EditorCore.is_playing:
+						EditorCore.is_playing = false
+					EditorCore.scrub_to_frame(get_frame_from_mouse())
+			else:
+				if pressed_clip not in ClipLogic.selected_clips:
+					if !event.shift_pressed:
+						ClipLogic.selected_clips = [pressed_clip]
+					else:
+						ClipLogic.selected_clips.append(pressed_clip)
+					draw_clips.queue_redraw()
+					ClipLogic.selected.emit(pressed_clip)
+		elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
+			var popup: PopupMenu = PopupManager.create_menu()
+			right_click_clip = _get_clip_on_mouse()
+			right_click_track = get_track_from_mouse()
+			right_click_frame = get_frame_from_mouse()
 
-		if right_click_clip:
-			_add_popup_menu_items_clip(popup)
-		else:
-			popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
+			if right_click_clip:
+				_add_popup_menu_items_clip(popup)
+			else:
+				popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
 
-		popup.add_separator(tr("Track options"))
-		var track_data: TrackData = TrackLogic.tracks[right_click_track]
+			popup.add_separator(tr("Track options"))
+			var track_data: TrackData = TrackLogic.tracks[right_click_track]
 
-		popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
-		if TrackLogic.tracks.size() != 1:
-			popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+			popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
+			if TrackLogic.tracks.size() != 1:
+				popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
 
-		popup.add_separator()
+			popup.add_separator()
 
-		popup.add_check_item(tr("Visible"), POPUP_ACTION.TRACK_TOGGLE_VISIBLE)
-		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
+			popup.add_check_item(tr("Visible"), POPUP_ACTION.TRACK_TOGGLE_VISIBLE)
+			popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
 
-		popup.add_check_item(tr("Muted"), POPUP_ACTION.TRACK_TOGGLE_MUTE)
-		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_MUTE), track_data.is_muted)
+			popup.add_check_item(tr("Muted"), POPUP_ACTION.TRACK_TOGGLE_MUTE)
+			popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_MUTE), track_data.is_muted)
 
-		popup.add_check_item(tr("Locked"), POPUP_ACTION.TRACK_TOGGLE_LOCK)
-		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_LOCK), track_data.is_locked)
+			popup.add_check_item(tr("Locked"), POPUP_ACTION.TRACK_TOGGLE_LOCK)
+			popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
-		@warning_ignore("return_value_discarded")
-		popup.id_pressed.connect(_on_popup_menu_id_pressed)
-		PopupManager.show_menu(popup)
-
+			@warning_ignore("return_value_discarded")
+			popup.id_pressed.connect(_on_popup_menu_id_pressed)
+			PopupManager.show_menu(popup)
+		get_window().gui_release_focus()
 
 
 func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
