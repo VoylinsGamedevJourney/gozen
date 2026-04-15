@@ -13,6 +13,8 @@ const COLOR_KEYFRAMING_OFF: Color = Color(1, 1, 1, 0.5)
 
 const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 
+const PRESETS_PATH: String = "user://presets/"
+
 
 @export var section_text: VBoxContainer
 @export var section_transitions: FoldableContainer
@@ -58,12 +60,16 @@ func _ready() -> void:
 			section_audio.folded = !toggled_on)
 	@warning_ignore_restore("return_value_discarded")
 
-	section_visuals.add_title_bar_control(_get_add_effects_button(1))
-	section_audio.add_title_bar_control(clip_mute_button)
-	section_audio.add_title_bar_control(_get_add_effects_button(2))
 	section_transitions.visible = false
 	section_transitions.folded = true
+
+	section_visuals.add_title_bar_control(_get_section_preset_button(true))
+	section_visuals.add_title_bar_control(_get_add_effects_button(1))
 	section_visuals.folded = true
+
+	section_audio.add_title_bar_control(clip_mute_button)
+	section_audio.add_title_bar_control(_get_section_preset_button(false))
+	section_audio.add_title_bar_control(_get_add_effects_button(2))
 	section_audio.folded = true
 
 
@@ -76,9 +82,7 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_cancel", false, true):
 			focus_owner.release_focus()
 			get_viewport().set_input_as_handled()
-		return
-
-	if event.is_action_pressed("ui_cancel", false, true):
+	elif event.is_action_pressed("ui_cancel", false, true):
 		_on_clip_pressed(null)
 	elif event.is_action_pressed("add_effect", false, true):
 		_open_add_effects_popup(0, false)
@@ -269,23 +273,22 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	# or bottom to disable the correct buttons.
 	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
 	var button_visible: TextureButton = TextureButton.new()
-	var button_delete: TextureButton = TextureButton.new()
-	var button_reset: TextureButton = TextureButton.new()
-
+	var button_preset: TextureButton = TextureButton.new()
 	if effect.is_enabled:
 		button_visible.texture_normal = preload(Library.ICON_VISIBLE)
 	else:
 		button_visible.texture_normal = preload(Library.ICON_INVISIBLE)
-	button_delete.texture_normal = preload(Library.ICON_DELETE)
-	button_reset.texture_normal = preload(Library.ICON_REFRESH)
-	button_reset.tooltip_text = tr("Reset to default")
+
+	button_preset.texture_normal = preload(Library.ICON_EFFECT_SETTINGS)
+	button_preset.tooltip_text = tr("Presets & Options")
 
 	@warning_ignore_start("return_value_discarded")
 	button_visible.pressed.connect(_on_switch_enabled.bind(effect, is_visual))
-	button_delete.pressed.connect(_on_remove_effect.bind(effect, is_visual))
-	button_reset.pressed.connect(_on_reset_effect.bind(effect, is_visual))
+	button_preset.pressed.connect(func() -> void:
+			_show_preset_popup(false, is_visual, effect, button_preset))
+	@warning_ignore_restore("return_value_discarded")
 
-	for button: TextureButton in [button_reset, button_delete, button_visible]:
+	for button: TextureButton in [button_preset, button_visible]:
 		button.ignore_texture_size = true
 		button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -308,12 +311,12 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark).
 	container.add_theme_font_size_override("font_size", 11)
 	container.add_theme_color_override("font_color", "#b8b8b8")
-	container.add_title_bar_control(button_reset)
-	container.add_title_bar_control(button_delete)
+	container.add_title_bar_control(button_preset)
 	container.add_title_bar_control(button_visible)
 	container.add_title_bar_control(button_drag)
 	container.add_child(content_vbox)
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
+
 	@warning_ignore("return_value_discarded")
 	container.gui_input.connect(func(event: InputEvent) -> void:
 			if event is not InputEventMouseButton:
@@ -397,6 +400,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 	param_reset_button.ignore_texture_size = true
 	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	param_reset_button.custom_minimum_size = Vector2(14, 14)
+
 	@warning_ignore("return_value_discarded")
 	param_reset_button.pressed.connect(
 			_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
@@ -888,18 +892,17 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 
 ## Type: 0 = All, 1 = Visuals, 2 = Audio
 func _get_add_effects_button(type: int) -> TextureButton:
-	var tex_button: TextureButton = TextureButton.new()
-	tex_button.texture_normal = preload(Library.ICON_ADD)
-	tex_button.tooltip_text = tr("Add effects")
-	tex_button.ignore_texture_size = true
-	tex_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
-	tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	tex_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	tex_button.pressed.connect(_open_add_effects_popup.bind(type, true))
-	return tex_button
+	var texture_button: TextureButton = TextureButton.new()
+	texture_button.texture_normal = preload(Library.ICON_ADD)
+	texture_button.tooltip_text = tr("Add effects")
+	texture_button.ignore_texture_size = true
+	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	texture_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 	@warning_ignore("return_value_discarded")
 	texture_button.pressed.connect(_open_add_effects_popup.bind(type, true))
+	return texture_button
 
 
 ## Type: 0 = All, 1 = Visuals, 2 = Audio.
@@ -979,6 +982,7 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 	button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button_reset.tooltip_text = tr("Reset to default")
+
 	@warning_ignore("return_value_discarded")
 	button_reset.pressed.connect(_on_reset_text_effect)
 	container.add_title_bar_control(button_reset)
@@ -1003,7 +1007,6 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_prev_button.ignore_texture_size = true
 		param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_prev_button.custom_minimum_size.x = 8
-		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(text_effect, param_id))
 		param_prev_button.visible = param.keyframeable
 
 		@warning_ignore("return_value_discarded")
@@ -1204,6 +1207,231 @@ func _restore_text_effect_keyframes(file: FileData, old_keyframes: Dictionary) -
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
 	EffectsHandler.effect_values_updated.emit()
+
+
+#--- Preset stuff ---
+
+func _get_section_preset_button(is_visual: bool) -> TextureButton:
+	var texture_button: TextureButton = TextureButton.new()
+	texture_button.texture_normal = preload(Library.ICON_EFFECT_SETTINGS)
+	texture_button.tooltip_text = tr("Presets")
+	texture_button.ignore_texture_size = true
+	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	texture_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	@warning_ignore("return_value_discarded")
+	texture_button.pressed.connect(func() -> void: _show_preset_popup(true, is_visual, null, texture_button))
+	return texture_button
+
+
+func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, button: Control) -> void:
+	var popup: PopupPanel = PopupPanel.new()
+	var vbox: VBoxContainer = VBoxContainer.new()
+	popup.add_child(vbox)
+	vbox.add_theme_constant_override("separation", 5)
+
+	if !is_section:
+		var button_reset: Button = Button.new()
+		button_reset.text = tr("Reset effect")
+		button_reset.icon = preload(Library.ICON_REFRESH)
+		button_reset.expand_icon = true
+		button_reset.alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+		@warning_ignore("return_value_discarded")
+		button_reset.pressed.connect(func() -> void:
+			_on_reset_effect(effect, is_visual)
+			popup.queue_free()
+		)
+		vbox.add_child(button_reset)
+
+		var button_delete: Button = Button.new()
+		button_delete.text = tr("Delete effect")
+		button_delete.icon = preload(Library.ICON_DELETE)
+		button_delete.expand_icon = true
+		button_delete.alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+		@warning_ignore("return_value_discarded")
+		button_delete.pressed.connect(func() -> void:
+				_on_remove_effect(effect, is_visual)
+				popup.queue_free())
+		vbox.add_child(button_delete)
+		vbox.add_child(HSeparator.new())
+
+	var button_save: Button = Button.new()
+	button_save.text = tr("Save as preset...")
+	button_save.icon = preload(Library.ICON_ADD)
+	button_save.expand_icon = true
+	button_save.alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+	@warning_ignore("return_value_discarded")
+	button_save.pressed.connect(func() -> void:
+			_prompt_save_preset(is_section, is_visual, effect)
+			popup.queue_free())
+	vbox.add_child(button_save)
+	vbox.add_child(HSeparator.new())
+
+	var prefix: String = ("visual" if is_visual else "audio") if is_section else effect.id
+	if is_section:
+		var default_hbox: HBoxContainer = HBoxContainer.new()
+		var button_default: Button = Button.new()
+		button_default.text = tr("Default")
+		button_default.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button_default.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		@warning_ignore("return_value_discarded")
+		button_default.pressed.connect(func() -> void:
+				_apply_default_section_preset(is_visual)
+				popup.queue_free())
+		default_hbox.add_child(button_default)
+		vbox.add_child(default_hbox)
+
+	var dir: DirAccess = DirAccess.open(PRESETS_PATH)
+	if !dir.list_dir_begin():
+		printerr("EffectsPanel: Couldn't go to beginning of '%s' directory!" % PRESETS_PATH)
+
+	var file_name: String = dir.get_next()
+	while file_name != "":
+		if !dir.current_is_dir() and file_name.begins_with(prefix + "_") and file_name.ends_with(".tres"):
+			var preset_name: String = file_name.trim_prefix(prefix + "_").trim_suffix(".tres")
+			var hbox: HBoxContainer = HBoxContainer.new()
+			var button_apply: Button = Button.new()
+			button_apply.text = preset_name
+			button_apply.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			button_apply.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			@warning_ignore("return_value_discarded")
+			button_apply.pressed.connect(func() -> void:
+				_apply_preset(PRESETS_PATH + file_name, is_section, is_visual, effect)
+				popup.queue_free()
+			)
+			var button_delete: TextureButton = TextureButton.new()
+			button_delete.texture_normal = preload(Library.ICON_DELETE)
+			button_delete.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+			button_delete.ignore_texture_size = true
+			button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+			@warning_ignore("return_value_discarded")
+			button_delete.pressed.connect(func() -> void:
+				DirAccess.remove_absolute(PRESETS_PATH + file_name)
+				hbox.queue_free()
+			)
+			hbox.add_child(button_apply)
+			hbox.add_child(button_delete)
+			vbox.add_child(hbox)
+		file_name = dir.get_next()
+	add_child(popup)
+	popup.position = Vector2i(button.get_screen_transform().origin) + Vector2i(0, int(button.size.y))
+	popup.popup()
+
+
+func _prompt_save_preset(is_section: bool, is_visual: bool, effect: Effect) -> void:
+	var dialog: ConfirmationDialog = ConfirmationDialog.new()
+	dialog.title = tr("Save preset")
+
+	var vbox: VBoxContainer = VBoxContainer.new()
+	var line_edit: LineEdit = LineEdit.new()
+	line_edit.placeholder_text = tr("Preset name")
+	vbox.add_child(line_edit)
+	dialog.add_child(vbox)
+
+	@warning_ignore("return_value_discarded")
+	dialog.confirmed.connect(func() -> void:
+			var preset_name: String = line_edit.text.strip_edges()
+			if preset_name.is_empty():
+				preset_name = "Custom"
+			var prefix: String = ("visual" if is_visual else "audio") if is_section else effect.id
+			var path: String = PRESETS_PATH + prefix + "_" + preset_name.validate_filename() + ".tres"
+			var resource_to_save: Resource
+			if is_section:
+				resource_to_save = Resource.new()
+				if is_visual:
+					resource_to_save.set_meta("effects", _copy_effect_array(current_clip.effects.video))
+				else:
+					resource_to_save.set_meta("effects", _copy_effect_array(current_clip.effects.audio))
+			else:
+				resource_to_save = effect.deep_copy()
+
+			ResourceSaver.save(resource_to_save, path)
+			dialog.queue_free())
+	@warning_ignore("return_value_discarded")
+	dialog.canceled.connect(dialog.queue_free)
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(300, 100))
+	line_edit.grab_focus()
+
+
+func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effect) -> void:
+	var resource: Resource = ResourceLoader.load(path)
+	if !resource:
+		return
+	elif is_section:
+		if !resource.has_meta("effects"):
+			return
+		var array: Array = resource.get_meta("effects")
+		var old_effects: Array = _copy_effect_array(current_clip.effects.video as Array if is_visual else current_clip.effects.audio as Array)
+		var new_effects: Array = _copy_effect_array(array)
+
+		InputManager.undo_redo.create_action("Apply section preset")
+		InputManager.undo_redo.add_do_method(_set_section_effects.bind(current_clip, new_effects, is_visual))
+		InputManager.undo_redo.add_undo_method(_set_section_effects.bind(current_clip, old_effects, is_visual))
+		InputManager.undo_redo.commit_action()
+	else:
+		var new_effect: Effect = resource as Effect
+		var index: int = _get_effect_index(effect, is_visual)
+		var old_effect: Effect = effect.deep_copy()
+		var apply_effect: Effect = new_effect.deep_copy()
+
+		InputManager.undo_redo.create_action("Apply effect preset")
+		InputManager.undo_redo.add_do_method(_replace_effect.bind(current_clip, index, apply_effect, is_visual))
+		InputManager.undo_redo.add_undo_method(_replace_effect.bind(current_clip, index, old_effect, is_visual))
+		InputManager.undo_redo.commit_action()
+
+
+func _apply_default_section_preset(is_visual: bool) -> void:
+	InputManager.undo_redo.create_action("Apply default preset")
+	var old_effects: Array = _copy_effect_array(current_clip.effects.video as Array if is_visual else current_clip.effects.audio as Array)
+	var new_effects: Array = []
+	if is_visual:
+		var transform_effect: EffectVisual = (load(Library.EFFECT_VISUAL_TRANSFORM) as EffectVisual).deep_copy()
+		for param: EffectParam in transform_effect.params:
+			if param.id == "pivot":
+				param.default_value = Vector2i(Project.get_resolution() / 2.0)
+		transform_effect.set_default_keyframe()
+		new_effects.append(transform_effect)
+	else:
+		var volume_effect: EffectAudio = (load(Library.EFFECT_AUDIO_VOLUME) as EffectAudio).deep_copy()
+		volume_effect.set_default_keyframe()
+		new_effects.append(volume_effect)
+
+	InputManager.undo_redo.add_do_method(_set_section_effects.bind(current_clip, new_effects, is_visual))
+	InputManager.undo_redo.add_undo_method(_set_section_effects.bind(current_clip, old_effects, is_visual))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_section_effects(clip: ClipData, effects: Array, is_visual: bool) -> void:
+	var cloned_effects: Array = _copy_effect_array(effects)
+	if is_visual:
+		clip.effects.video.assign(cloned_effects)
+	else:
+		clip.effects.audio.assign(cloned_effects)
+	_load_effects()
+	EffectsHandler.effects_updated.emit()
+
+
+func _replace_effect(clip: ClipData, index: int, new_effect: Effect, is_visual: bool) -> void:
+	var cloned_effect: Effect = new_effect.deep_copy()
+	if is_visual:
+		clip.effects.video[index] = cloned_effect
+	else:
+		clip.effects.audio[index] = cloned_effect
+	_load_effects()
+	EffectsHandler.effects_updated.emit()
+
+
+func _copy_effect_array(array: Array) -> Array:
+	var data: Array = []
+	for effect: Effect in array:
+		data.append(effect.deep_copy())
+	return data
 
 
 
