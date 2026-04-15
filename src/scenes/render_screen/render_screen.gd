@@ -50,9 +50,12 @@ var _is_loading_profile: bool = false
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Project.render_region_updated.connect(_on_render_region_updated)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
+	@warning_ignore_restore("return_value_discarded")
+
 	button_save_render_profile.visible = false
 	_setup_codec_option_buttons()
 	_add_default_profiles()
@@ -81,6 +84,8 @@ func _ready() -> void:
 	var v_split: VSplitContainer = $VSplitContainer
 	if Settings.data.tab_vsplit_offsets.size() > 0:
 		v_split.split_offset = Settings.data.tab_vsplit_offsets[0]
+
+	@warning_ignore("return_value_discarded")
 	v_split.dragged.connect(func(offset: int) -> void:
 			if Settings.data.tab_vsplit_offsets.is_empty():
 				Settings.data.tab_vsplit_offsets.append(offset)
@@ -90,6 +95,8 @@ func _ready() -> void:
 
 	var top_split: HSplitContainer = $VSplitContainer/HSplitContainer
 	top_split.split_offsets = Settings.data.tab_render_hsplit_offsets
+
+	@warning_ignore("return_value_discarded")
 	top_split.dragged.connect(func(_o: int) -> void:
 			Settings.data.tab_render_hsplit_offsets = top_split.split_offsets
 			Settings.save())
@@ -174,8 +181,8 @@ func _delete_custom_profile(index: int) -> void:
 	var path: String = option_button_render_profiles.get_item_metadata(index)
 
 	option_button_render_profiles.remove_item(index)
-	if path != "" and FileAccess.file_exists(path):
-		DirAccess.remove_absolute(path)
+	if path != "" and FileAccess.file_exists(path) and !DirAccess.remove_absolute(path):
+		printerr("RenderScreen: Couldn't remove directory '%s'!" % path)
 	_on_render_settings_changed()
 
 
@@ -238,6 +245,8 @@ func _on_select_save_path_button_pressed() -> void:
 
 	dialog.current_dir = Project.get_project_base_folder()
 	dialog.current_file = Project.get_project_name()
+
+	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_save_path_selected)
 
 	add_child(dialog)
@@ -253,7 +262,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	var extension: String = Utils.get_video_extension(video_codec_id)
 	var is_h264: bool = video_codec_id == Encoder.VIDEO_CODEC.V_H264
 	var path: String = path_line_edit.text
-	var allowed: PackedInt64Array = []
+	var allowed: Array[int] = []
 
 	# Hide speed if not H264.
 	video_speed_label.visible = is_h264
@@ -366,10 +375,13 @@ func _on_start_render_button_pressed() -> void:
 		var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
 				tr("Overwrite file?"),
 				tr("A file already exists at the chosen export path. Do you want to overwrite it?"))
+
+		@warning_ignore_start("return_value_discarded")
 		dialog.confirmed.connect(func() -> void:
 				await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
 				dialog.queue_free())
 		dialog.canceled.connect(dialog.queue_free)
+		@warning_ignore_restore("return_value_discarded")
 		dialog.popup_centered()
 	else:
 		await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
@@ -435,6 +447,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	var status_label: Label = status_hbox.get_child(0)
 
 	button.text = tr("Cancel rendering")
+	@warning_ignore("return_value_discarded")
 	button.pressed.connect(_cancel_render)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	status_hbox.add_child(button)
@@ -527,8 +540,8 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264_PRESETS
 
-	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
-		DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
+	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH) and !DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
+		printerr("RenderScreen: Couldn't create directory at '%s'!" % USER_PROFILES_PATH)
 
 	# Fix filename to not cause issues.
 	var save_name: String = profile_name.to_lower().validate_filename()

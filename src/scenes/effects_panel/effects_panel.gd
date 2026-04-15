@@ -28,15 +28,20 @@ var current_file: FileData = null
 
 var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
-var clip_mute_button: CheckButton
+
+var clip_mute_button: CheckButton # Only for section_audio.
 
 
 
 func _ready() -> void:
+	if !DirAccess.dir_exists_absolute(PRESETS_PATH) and !DirAccess.make_dir_absolute(PRESETS_PATH):
+		printerr("EffectsPanel: Couldn't create folder at '%s'!" % PRESETS_PATH)
+
 	clip_mute_button = CheckButton.new()
 	clip_mute_button.flat = true
 	clip_mute_button.tooltip_text = tr("Mute clip audio.")
 
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(func() -> void:
 			ClipLogic.deleted.connect(func(clip_id: int) -> void:
 					if current_clip and clip_id == current_clip.id: _on_clip_pressed(null))
@@ -51,6 +56,7 @@ func _ready() -> void:
 			if current_clip and current_clip.effects.is_muted == toggled_on:
 				ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
 			section_audio.folded = !toggled_on)
+	@warning_ignore_restore("return_value_discarded")
 
 	section_visuals.add_title_bar_control(_get_add_effects_button(1))
 	section_audio.add_title_bar_control(clip_mute_button)
@@ -237,8 +243,10 @@ func _load_effects() -> void:
 	vbox_visuals.set_drag_forwarding(Callable(), _can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
 	vbox_audio.set_drag_forwarding(Callable(), _can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
 
+	@warning_ignore_start("return_value_discarded")
 	vbox_visuals.draw.connect(_draw_drop_indicator.bind(vbox_visuals))
 	vbox_audio.draw.connect(_draw_drop_indicator.bind(vbox_audio))
+	@warning_ignore_restore("return_value_discarded")
 
 	if !current_clip or !ClipLogic.clips.has(current_clip.id):
 		_update_ui_values()
@@ -272,6 +280,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	button_reset.texture_normal = preload(Library.ICON_REFRESH)
 	button_reset.tooltip_text = tr("Reset to default")
 
+	@warning_ignore_start("return_value_discarded")
 	button_visible.pressed.connect(_on_switch_enabled.bind(effect, is_visual))
 	button_delete.pressed.connect(_on_remove_effect.bind(effect, is_visual))
 	button_reset.pressed.connect(_on_reset_effect.bind(effect, is_visual))
@@ -305,6 +314,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	container.add_title_bar_control(button_drag)
 	container.add_child(content_vbox)
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
+	@warning_ignore("return_value_discarded")
 	container.gui_input.connect(func(event: InputEvent) -> void:
 			if event is not InputEventMouseButton:
 				return
@@ -339,9 +349,12 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 		track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		track.setup(effect, current_clip.duration, relative_frame_nr)
+
+		@warning_ignore_start("return_value_discarded")
 		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(effect, is_visual))
 		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(effect, is_visual))
 		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
+		@warning_ignore_restore("return_value_discarded")
 
 		track_scroll.add_child(track)
 		content_vbox.add_child(HSeparator.new())
@@ -384,6 +397,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 	param_reset_button.ignore_texture_size = true
 	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	param_reset_button.custom_minimum_size = Vector2(14, 14)
+	@warning_ignore("return_value_discarded")
 	param_reset_button.pressed.connect(
 			_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
 
@@ -403,6 +417,8 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_prev_button.ignore_texture_size = true
 		param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_prev_button.custom_minimum_size.x = 8
+
+		@warning_ignore("return_value_discarded")
 		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(effect, param_id))
 
 		var param_keyframe_button: TextureButton = TextureButton.new()
@@ -411,6 +427,8 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_keyframe_button.ignore_texture_size = true
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_keyframe_button.custom_minimum_size.x = 14
+
+		@warning_ignore("return_value_discarded")
 		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
 				effect, is_visual, param_id))
 
@@ -420,6 +438,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_next_button.ignore_texture_size = true
 		param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_next_button.custom_minimum_size.x = 8
+		@warning_ignore("return_value_discarded")
 		param_next_button.pressed.connect(_jump_next_keyframe.bind(effect, param_id))
 
 		param_hbox.add_child(param_prev_button)
@@ -446,23 +465,30 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 				for i: int in fonts.size():
 					option_button.add_item(fonts[i] as String)
 					option_button.set_item_metadata(i + 1, fonts[i])
+
+				@warning_ignore("return_value_discarded")
 				option_button.item_selected.connect(func(id: int) -> void: update_call.call(option_button.get_item_metadata(id)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				return option_button
 			elif param.id == "text_data":
 				var text_edit: TextEdit = TextEdit.new()
+
+				@warning_ignore("return_value_discarded")
 				text_edit.text_changed.connect(func() -> void: update_call.call(text_edit.text))
 				text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				text_edit.custom_minimum_size.y = 80
 				text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 				return text_edit
 			var line_edit: LineEdit = LineEdit.new()
+			@warning_ignore_start("return_value_discarded")
 			line_edit.text_changed.connect(update_call)
 			line_edit.text_submitted.connect((func() -> void: line_edit.release_focus()).unbind(1))
+			@warning_ignore_restore("return_value_discarded")
 			line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return line_edit
 		TYPE_BOOL:
 			var check_button: CheckButton = CheckButton.new()
+			@warning_ignore("return_value_discarded")
 			check_button.toggled.connect(update_call)
 			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return check_button
@@ -484,6 +510,7 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 					option_button.add_item("Subtract", 2)
 					option_button.add_item("Multiply", 3)
 					option_button.add_item("Premultiplied Alpha", 4)
+				@warning_ignore("return_value_discarded")
 				option_button.item_selected.connect(func(idx: int) -> void:
 						update_call.call(option_button.get_item_id(idx)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -508,8 +535,10 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 							spinbox.value -= spinbox.step
 							spinbox.accept_event()
 
+			@warning_ignore_start("return_value_discarded")
 			spinbox.gui_input.connect(scroll_handler)
 			spinbox.get_line_edit().gui_input.connect(scroll_handler)
+			@warning_ignore_restore("return_value_discarded")
 
 			if param.has_slider:
 				var hbox: HBoxContainer = HBoxContainer.new()
@@ -529,9 +558,12 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 					slider.tick_count = 13
 				slider.ticks_on_borders = true
 
+				@warning_ignore("return_value_discarded")
 				slider.value_changed.connect(func(val: float) -> void:
 						spinbox.set_value_no_signal(val)
 						update_call.call(val))
+
+				@warning_ignore("return_value_discarded")
 				spinbox.value_changed.connect(func(val: float) -> void:
 						if spinbox.get_line_edit().has_focus():
 							spinbox.get_line_edit().release_focus()
@@ -543,6 +575,7 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 				hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				return hbox
 			else:
+				@warning_ignore("return_value_discarded")
 				spinbox.value_changed.connect(func(val: float) -> void:
 						if spinbox.get_line_edit().has_focus():
 							spinbox.get_line_edit().release_focus()
@@ -564,6 +597,8 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
 			spinbox_x.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+			@warning_ignore("return_value_discarded")
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
 					if spinbox_x.get_line_edit().has_focus():
 						spinbox_x.get_line_edit().release_focus()
@@ -585,8 +620,11 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 							spinbox_x.value -= spinbox_x.step
 							spinbox_x.accept_event()
+
+			@warning_ignore_start("return_value_discarded")
 			spinbox_x.gui_input.connect(scroll_handler_x)
 			spinbox_x.get_line_edit().gui_input.connect(scroll_handler_x)
+			@warning_ignore_restore("return_value_discarded")
 
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
@@ -596,6 +634,7 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
 			spinbox_y.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			@warning_ignore("return_value_discarded")
 			spinbox_y.value_changed.connect(func(new_value: float) -> void:
 					if spinbox_y.get_line_edit().has_focus():
 						spinbox_y.get_line_edit().release_focus()
@@ -618,8 +657,10 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 							spinbox_y.value -= spinbox_y.step
 							spinbox_y.accept_event()
+			@warning_ignore_start("return_value_discarded")
 			spinbox_y.gui_input.connect(scroll_handler_y)
 			spinbox_y.get_line_edit().gui_input.connect(scroll_handler_y)
+			@warning_ignore_restore("return_value_discarded")
 
 			hbox.add_child(spinbox_x)
 
@@ -634,6 +675,8 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 				link_button.custom_minimum_size = Vector2(14, 14)
 				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 				link_button.tooltip_text = "Link X and Y"
+
+				@warning_ignore("return_value_discarded")
 				link_button.toggled.connect(func(toggled: bool) -> void:
 					param.is_linked = toggled
 					link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
@@ -648,8 +691,10 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 		TYPE_COLOR:
 			var color_picker: ColorPickerButton = ColorPickerButton.new()
 			color_picker.custom_minimum_size.x = 40
-			color_picker.color_changed.connect(update_call)
 			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+			@warning_ignore("return_value_discarded")
+			color_picker.color_changed.connect(update_call)
 			return color_picker
 	return Control.new() # Fallback.
 
@@ -853,6 +898,9 @@ func _get_add_effects_button(type: int) -> TextureButton:
 	tex_button.pressed.connect(_open_add_effects_popup.bind(type, true))
 	return tex_button
 
+	@warning_ignore("return_value_discarded")
+	texture_button.pressed.connect(_open_add_effects_popup.bind(type, true))
+
 
 ## Type: 0 = All, 1 = Visuals, 2 = Audio.
 ## From_add_button is to avoid adding effects to all clips when using Ctrl+A.
@@ -931,6 +979,7 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 	button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button_reset.tooltip_text = tr("Reset to default")
+	@warning_ignore("return_value_discarded")
 	button_reset.pressed.connect(_on_reset_text_effect)
 	container.add_title_bar_control(button_reset)
 
@@ -957,10 +1006,15 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(text_effect, param_id))
 		param_prev_button.visible = param.keyframeable
 
+		@warning_ignore("return_value_discarded")
+		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(text_effect, param_id))
+
 		param_keyframe_button.name = "KEYFRAME_" + param_id
 		param_keyframe_button.ignore_texture_size = true
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_keyframe_button.custom_minimum_size.x = 14
+
+		@warning_ignore("return_value_discarded")
 		param_keyframe_button.pressed.connect(_text_keyframe_button_pressed.bind(param_id))
 
 		var keyframes: Dictionary = text_effect.keyframes[param.id]
@@ -977,8 +1031,10 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_next_button.ignore_texture_size = true
 		param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_next_button.custom_minimum_size.x = 8
-		param_next_button.pressed.connect(_jump_next_keyframe.bind(text_effect, param_id))
 		param_next_button.visible = param.keyframeable
+
+		@warning_ignore("return_value_discarded")
+		param_next_button.pressed.connect(_jump_next_keyframe.bind(text_effect, param_id))
 
 		var param_reset_button: TextureButton = TextureButton.new()
 		param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
@@ -986,6 +1042,8 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 		param_reset_button.ignore_texture_size = true
 		param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_reset_button.custom_minimum_size = Vector2(14, 14)
+
+		@warning_ignore("return_value_discarded")
 		param_reset_button.pressed.connect(
 				_text_param_update_call.bind(param.default_value, param_id))
 
@@ -1015,9 +1073,11 @@ func _create_text_ui(text_effect: EffectVisual) -> void:
 	track.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	track.setup(text_effect, current_clip.duration, relative_frame_nr)
 
+	@warning_ignore_start("return_value_discarded")
 	track.keyframe_moved_effect.connect(_on_text_keyframe_moved)
 	track.keyframe_deleted_effect.connect(_on_text_keyframe_deleted)
 	track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
+	@warning_ignore_restore("return_value_discarded")
 
 	track_scroll.add_child(track)
 	track_hbox.add_child(track_label)

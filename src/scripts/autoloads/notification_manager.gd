@@ -20,6 +20,7 @@ func notify_error(text: String) -> void:
 #---- Private helper function ----
 
 func _send_notification(title: String, text: String, linux_icon: String) -> void:
+	@warning_ignore_start("return_value_discarded")
 	match OS.get_name():
 		"Linux": OS.execute("notify-send", ["-i", linux_icon, title, text])
 		"macOS": OS.execute("osascript", ["-e", 'display notification "%s" with title "%s"' % [text.replace('"', '\\"'), title.replace('"', '\\"')] ])
@@ -27,3 +28,4 @@ func _send_notification(title: String, text: String, linux_icon: String) -> void
 			var script: String = "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null; [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] > $null; $xml = New-Object Windows.Data.Xml.Dom.XmlDocument; $xml.LoadXml('<toast><visual><binding template=\"ToastText02\"><text id=\"1\">%s</text><text id=\"2\">%s</text></binding></visual></toast>'); $toast = [Windows.UI.Notifications.ToastNotification]::new($xml); [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('GoZen').Show($toast)" % [title.replace("'", "''"), text.replace("'", "''")]
 			OS.execute("powershell", ["-Command", script])
 		_: print(title, ": ", text)
+	@warning_ignore_restore("return_value_discarded")

@@ -3,7 +3,7 @@ extends Node
 var commands: Array[String] = [] ## Localized strings
 var base_commands: Array[String] = [] ## Non-localized strings
 var calls: Array[Callable] = []
-var actions: PackedStringArray = []
+var actions: Array[String] = []
 
 
 func _ready() -> void:
@@ -13,6 +13,8 @@ func _ready() -> void:
 	register(tr("Open editor settings"), Settings.open_settings_menu, "open_settings")
 	register(tr("Open project settings"), Project.open_settings_menu, "open_project_settings")
 	register(tr("open render menu"), InputManager.switch_screen.bind(1), "open_render_screen")
+
+	@warning_ignore("return_value_discarded")
 	Settings.on_localization_updated.connect(_localize_commands)
 
 

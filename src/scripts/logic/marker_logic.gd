@@ -2,6 +2,7 @@ extends Node
 # TODO: Add a marker ripple (would probably need to link the marker with a
 # specific clip for this to work correctly)
 
+
 signal added(data: MarkerData)
 signal updated(data: MarkerData)
 signal removed(frame_nr: int)

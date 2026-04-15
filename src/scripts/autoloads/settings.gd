@@ -40,8 +40,8 @@ func _ready() -> void:
 		if response != OK:
 			printerr("Settings: Couldn't load settings! ", response)
 
-	if !DirAccess.dir_exists_absolute(PATH_THEMES):
-		DirAccess.make_dir_absolute(PATH_THEMES)
+	if !DirAccess.dir_exists_absolute(PATH_THEMES) and !DirAccess.make_dir_absolute(PATH_THEMES):
+		printerr("Settings: Couldn't create directory at '%s'!" % PATH_THEMES)
 
 	load_system_fonts()
 	load_custom_themes()
@@ -79,9 +79,8 @@ func get_system_font(font_name: String) -> SystemFont:
 func load_custom_themes() -> void:
 	var default_themes: Dictionary[String, String] = get_themes()
 	var dir: DirAccess = DirAccess.open(PATH_THEMES)
-	if !dir:
+	if !dir or !dir.list_dir_begin():
 		return
-	dir.list_dir_begin()
 
 	var file_name: String = dir.get_next()
 	while file_name != "":
@@ -126,7 +125,7 @@ func get_language() -> String:
 func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
-	var locales: PackedStringArray = TranslationServer.get_loaded_locales()
+	var locales: Array[String] = TranslationServer.get_loaded_locales()
 
 	if not locales.has("en"):
 		locales.append("en")
@@ -147,7 +146,7 @@ func get_languages() -> Dictionary:
 				key += " (" + TranslationServer.get_country_name(country_code) + ")"
 		temp_language_data[key] = code
 
-	var keys: PackedStringArray = temp_language_data.keys()
+	var keys: Array[String] = temp_language_data.keys()
 	keys.sort()
 
 	for key: String in keys:
@@ -449,7 +448,7 @@ func get_marker_name(index: int) -> String:
 	return data.marker_names[index]
 
 
-func get_marker_names() -> PackedStringArray:
+func get_marker_names() -> Array[String]:
 	return data.marker_names
 
 
@@ -461,7 +460,7 @@ func get_marker_color(index: int) -> Color:
 	return data.marker_colors[index]
 
 
-func get_marker_colors() -> PackedColorArray:
+func get_marker_colors() -> Array[Color]:
 	return data.marker_colors
 
 
@@ -556,6 +555,7 @@ func get_events_for_action(action: String) -> Array[InputEvent]:
 
 	# We need to make certain we have exactly 2.
 	if events.size() > 2:
+		@warning_ignore("return_value_discarded")
 		events.resize(2)
 		return events
 

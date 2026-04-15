@@ -55,6 +55,7 @@ var _audio_cache: Dictionary = {}
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 
 
@@ -105,7 +106,12 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		await RenderingServer.frame_post_draw
 
 		var audio_thread: Thread = Thread.new()
-		audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame))
+		if !audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame)):
+			printerr("RenderManager: Couldn't start audio thread!")
+			stop_encoder()
+			update_encoder_status.emit(STATUS.ERROR_AUDIO)
+			await RenderingServer.frame_post_draw
+			return
 		while audio_thread.is_alive():
 			await get_tree().process_frame
 
@@ -151,9 +157,12 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		0.062007,  0.439216, -0.040276, 0.0,
 		0.062745,  0.500000,  0.500000, 1.0 ])
 	var params_bytes: PackedByteArray = PackedByteArray()
-	params_bytes.resize(80)
+	if !params_bytes.resize(80):
+		printerr("RenderManager: Couldn't resize params_bytes array!")
+
 	for index: int in 16:
 		params_bytes.encode_float(index * 4, bt709_rgb_to_yuv[index])
+
 	params_bytes.encode_s32(64, render_resolution.x)
 	params_bytes.encode_s32(68, render_resolution.y)
 	yuv_params_buffer = rendering_device.uniform_buffer_create(params_bytes.size(), params_bytes)
@@ -164,7 +173,12 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	frame_queue.clear()
 	stop_encoding = false
 	thread = Thread.new()
-	thread.start(_encoding_loop)
+	if !thread.start(_encoding_loop):
+		printerr("RenderManager: Couldn't start encoder thread!")
+		stop_encoder()
+		update_encoder_status.emit(STATUS.ERROR_CANCELED)
+		await EditorCore.frame_changed
+		return
 
 	# Because of labels and other draw() stuff which takes a frame to show, we
 	# need to prepare the data in one frame and show it in the next frame.
@@ -373,7 +387,8 @@ func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
 	var framerate: float = project_data.framerate
 	var total_frames: int = end_frame - start_frame + 1
 	var length: int = Utils.get_sample_count(total_frames, framerate)
-	audio.resize(length)
+	if !audio.resize(length):
+		printerr("RenderManager: Couldn't resize audio PackedByteArray for encoding!")
 
 	for track: int in TrackLogic.tracks.size():
 		if cancel_encoding:
@@ -421,7 +436,8 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: 
 
 		if start_bytes < 0:
 			var silence_bytes: int = abs(start_bytes)
-			audio_data.resize(silence_bytes)
+			if !audio_data.resize(silence_bytes):
+				printerr("RenderManager: Couldn't resize audio PackedByteArray for adding silence_bytes!")
 			var slice_start: int = 0
 			var slice_end: int = mini(duration_bytes - silence_bytes, cached_data.size())
 			if slice_end > 0:
@@ -431,18 +447,17 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: 
 			if start_bytes < cached_data.size():
 				audio_data = cached_data.slice(start_bytes, slice_end)
 
-		if audio_data.size() < duration_bytes:
-			audio_data.resize(duration_bytes)
+		if audio_data.size() < duration_bytes and !audio_data.resize(duration_bytes):
+			printerr("RenderManager: Couldn't resize audio PackedByteArray for adding end bytes!")
 	else:
 		audio_data = Audio.get_audio_data(info.path as String, -1, required_start_sec, required_duration_sec)
 
 	if audio_data.is_empty():
 		return master_audio
 
+	# First apply fades utilizing offset indices.
 	var fade_in: int = clip.effects.fade_audio.x
 	var fade_out: int = clip.effects.fade_audio.y
-
-	# First apply fades utilizing offset indices
 	if fade_in > 0 or fade_out > 0:
 		var fade_in_samples: int = floori(fade_in * samples_per_frame)
 		var fade_out_samples: int = floori(fade_out * samples_per_frame)
@@ -475,7 +490,8 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio, offs
 	var frame_count: int = ceili(float(sample_count) / samples_per_frame)
 
 	var frame_volumes: PackedFloat32Array = PackedFloat32Array()
-	frame_volumes.resize(frame_count)
+	if !frame_volumes.resize(frame_count):
+		printerr("RenderManager: Couldn't resize frame volumes array!")
 
 	var all_one: bool = true
 	for frame: int in frame_count:
@@ -497,7 +513,8 @@ func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio, offs
 
 func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteArray:
 	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(input_texture_rid)
-	rendering_device.texture_copy(rd_input_tex, yuv_input_texture, Vector3.ZERO, Vector3.ZERO, Vector3(res.x, res.y, 1), 0, 0, 0, 0)
+	if !rendering_device.texture_copy(rd_input_tex, yuv_input_texture, Vector3.ZERO, Vector3.ZERO, Vector3(res.x, res.y, 1), 0, 0, 0, 0):
+		printerr("RenderManager: Failed to copy texture in rendering device to convert RGBA to YUV!")
 
 	var uniform_input: RDUniform = RDUniform.new()
 	uniform_input.uniform_type = RenderingDevice.UNIFORM_TYPE_SAMPLER_WITH_TEXTURE

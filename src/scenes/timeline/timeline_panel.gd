@@ -50,6 +50,7 @@ var _update_clips: bool = true
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_project_ready)
 	Timeline.state_changed.connect(_on_state_changed)
 	Timeline.scroll_changed.connect(draw_all.unbind(1))
@@ -73,6 +74,7 @@ func _ready() -> void:
 
 	visibility_changed.connect(_redraw_on_change)
 	get_window().size_changed.connect(_redraw_on_change)
+	@warning_ignore_restore("return_value_discarded")
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
@@ -250,6 +252,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		popup.add_check_item(tr("Locked"), POPUP_ACTION.TRACK_TOGGLE_LOCK)
 		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
+		@warning_ignore("return_value_discarded")
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_menu(popup)
 
@@ -385,10 +388,13 @@ func _get_fade_target() -> Timeline.FadeTarget:
 
 
 func _project_ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	ClipLogic.added.connect(draw_clips.queue_redraw.unbind(1))
 	ClipLogic.deleted.connect(_on_clip_deleted)
 	ClipLogic.updated.connect(draw_clips.queue_redraw)
 	TrackLogic.updated.connect(_on_tracks_updated)
+	@warning_ignore_restore("return_value_discarded")
+
 	_update_track_height(Settings.get_track_height())
 	draw_all()
 
@@ -405,9 +411,11 @@ func _get_drag_data(_p: Vector2) -> Variant:
 	var anchor_index: int = clips.find(pressed_clip)
 	if anchor_index != -1:
 		clips.remove_at(anchor_index)
-		clips.insert(0, pressed_clip)
+		if !clips.insert(0, pressed_clip):
+			printerr("TimelinePanel: Couldn't insert '%s' into clips!" % pressed_clip.id)
 	for clip: ClipData in clips:
-		data.ids.append(clip.id)
+		if !data.ids.append(clip.id):
+			printerr("TimelinePanel: Couldn't append clip '%s' into draggable!" % clip.id)
 	data.mouse_offset = get_frame_from_mouse() - pressed_clip.start
 	Timeline.state = Timeline.STATE.MOVING
 	return data
@@ -691,6 +699,8 @@ func _on_popup_action_clip_change_speed() -> void:
 	spinbox.value = right_click_clip.speed
 	spinbox.suffix = "x"
 	dialog.add_child(spinbox)
+
+	@warning_ignore("return_value_discarded")
 	dialog.confirmed.connect(func() -> void:
 		var new_speed: float = spinbox.value
 		var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
@@ -840,6 +850,7 @@ func split_clip_at(clip: ClipData, frame_pos: int) -> void:
 	if TrackLogic.tracks[clip.track].is_locked:
 		return
 	if clip.start <= frame_pos and clip.end >= frame_pos:
+		@warning_ignore("return_value_discarded")
 		ClipLogic.split([ClipRequest.split_request(clip, frame_pos - clip.start)])
 	draw_clips.queue_redraw()
 
@@ -901,7 +912,8 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 		var drag_data: Draggable = Draggable.new()
 		drag_data.is_file = true
 		for file: FileData in files:
-			drag_data.ids.append(file.id)
+			if !drag_data.ids.append(file.id):
+				printerr("TimelinePanel: Couldn't append file '%s' into draggable!" % file.id)
 			drag_data.duration += file.duration
 		drag_data.mouse_offset = 0
 

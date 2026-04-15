@@ -31,8 +31,11 @@ func add_track(track: int) -> void:
 
 func _add_track(track: int) -> void:
 	if track < tracks.size():
+		@warning_ignore_start("return_value_discarded")
 		tracks.insert(track, TrackData.new())
 		track_clips.insert(track, TrackClips.new())
+		@warning_ignore_restore("return_value_discarded")
+
 		for track_id: int in range(track + 1, tracks.size()):
 			for clip: ClipData in track_clips[track_id].clips:
 				clip.track = track_id

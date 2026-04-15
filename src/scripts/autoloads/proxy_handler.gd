@@ -12,8 +12,8 @@ const PROXY_HEIGHT: int = 540
 
 func _ready() -> void:
 	var proxy_path: String = Settings.get_proxies_path()
-	if !DirAccess.dir_exists_absolute(proxy_path):
-		DirAccess.make_dir_absolute(proxy_path)
+	if !DirAccess.dir_exists_absolute(proxy_path) and !DirAccess.make_dir_absolute(proxy_path):
+		printerr("ProxyHandler: Couldn't create directory at '%s'!" % proxy_path)
 
 
 func request_generation(file: FileData) -> void:
@@ -35,7 +35,8 @@ func request_generation(file: FileData) -> void:
 
 func delete_proxy(file: FileData) -> void:
 	if !file.proxy_path.is_empty():
-		DirAccess.remove_absolute(file.proxy_path)
+		if !DirAccess.remove_absolute(file.proxy_path):
+			printerr("ProxyHandler: Couldn't remove directory at '%s'!" % file.proxy_path)
 		FileLogic.set_proxy_path(file, "")
 
 
@@ -94,7 +95,8 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 			0.062745,  0.500000,  0.500000, 1.0 ])
 	var yuv_sampler: RID = rendering_device.sampler_create(RDSamplerState.new())
 	var params_bytes: PackedByteArray = PackedByteArray()
-	params_bytes.resize(80)
+	if !params_bytes.resize(80):
+		printerr("ProxyHandler: Couldn't resize params_bytes!")
 	for index: int in 16:
 		params_bytes.encode_float(index * 4, bt709_rgb_to_yuv[index])
 	params_bytes.encode_s32(64, target_resolution.x)
@@ -121,13 +123,15 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	var uniform_set: RID = rendering_device.uniform_set_create([uniform_input, uniform_output, uniform_params], rd_yuv_shader, 0)
 	var total_frames: float = float(video.get_frame_count())
 	var loaded_amount: int = 0
+	@warning_ignore("return_value_discarded")
 	video.seek_frame(0)
 
 	for i: int in video.get_frame_count():
 		var image: Image = video.generate_thumbnail_at_current_frame() # RGBA Image
 		if image:
 			image.resize(target_resolution.x, target_resolution.y, Image.INTERPOLATE_BILINEAR)
-			rendering_device.texture_update(input_tex, 0, image.get_data())
+			if !rendering_device.texture_update(input_tex, 0, image.get_data()):
+				printerr("ProxyHandler: Couldn't update texture for rendering device!")
 
 			var compute_list: int = rendering_device.compute_list_begin()
 			rendering_device.compute_list_bind_compute_pipeline(compute_list, rd_yuv_pipeline)
@@ -135,11 +139,11 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 			rendering_device.compute_list_dispatch(compute_list, ceili(target_resolution.x / 8.0), ceili(target_resolution.y / 8.0), 1)
 			rendering_device.compute_list_end()
 			var yuv_data: PackedByteArray = rendering_device.texture_get_data(yuv_output_tex, 0)
-			encoder.send_frame(yuv_data)
+			if !encoder.send_frame(yuv_data):
+				printerr("ProxyHandler: Couldn't send yuv_data frame to encoder!")
 
 		# We skip decoding since generate_thumbnail_at_frame handles that.
-		if !video.next_frame(true):
-			break
+		if !video.next_frame(true): break
 		loaded_amount += 1
 		proxy_loading.emit.call_deferred(file, int((loaded_amount / total_frames) * 100.0))
 	proxy_loading.emit.call_deferred(file, 100)

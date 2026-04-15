@@ -1,6 +1,7 @@
 class_name EffectCache
 extends RefCounted
 
+
 var nickname: String
 
 var shader: RID
@@ -78,8 +79,10 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i, 
 	stream.put_32(pass_index)
 	var buffer_data: PackedByteArray = stream.data_array
 	var padding: int = 16 - (buffer_data.size() % 16)
-	if padding != 0: # Add final padding
-		buffer_data.resize(buffer_data.size() + padding)
+
+	# Add final padding.
+	if padding != 0 and !buffer_data.resize(buffer_data.size() + padding):
+		printerr("EffectCache: Couldn't resize buffer_data!")
 	return buffer_data
 
 
@@ -89,7 +92,7 @@ func _handle_matrix(type: Matrix.TYPE) -> PackedFloat32Array:
 	for effect_param: EffectParam in _effect.params:
 		param_map[effect_param.id] = effect_param
 
-	# Proxy adjustments
+	# Proxy adjustments.
 	var project_resolution: Vector2 = Vector2(Project.get_resolution())
 	var current_resolution: Vector2 = Vector2(_resolution)
 	var ratio: Vector2 = current_resolution / project_resolution

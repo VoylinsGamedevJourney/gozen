@@ -1,19 +1,23 @@
 extends PanelContainer
 
+
 @export var markers_text_edit: TextEdit
 @export var markers_option_button: OptionButton
 
 
-var markers_text: PackedStringArray = []
+var markers_text: Array[String] = []
 
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	markers_text.resize(5) # Default amount of markers.
+
 	Project.project_ready.connect(_on_markers_updated)
 	MarkerLogic.added.connect(_on_markers_updated.unbind(1))
 	MarkerLogic.updated.connect(_on_markers_updated.unbind(1))
 	MarkerLogic.removed.connect(_on_markers_updated.unbind(1))
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _on_copy_markers_button_pressed() -> void:
@@ -26,8 +30,8 @@ func _on_markers_updated() -> void:
 	markers_option_button.clear()
 
 	# Updating the options button.
-	var marker_names: PackedStringArray = Settings.get_marker_names()
-	var marker_colors: PackedColorArray = Settings.get_marker_colors()
+	var marker_names: Array[String] = Settings.get_marker_names()
+	var marker_colors: Array[Color] = Settings.get_marker_colors()
 	var icon_image: Image = Image.create(16, 16, false, Image.FORMAT_RGB8)
 	for id: int in marker_names.size():
 		var icon: Image = icon_image.duplicate()

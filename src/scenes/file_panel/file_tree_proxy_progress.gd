@@ -12,6 +12,7 @@ var proxy_progress: Dictionary[int, int] = {}
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	ProxyHandler.proxy_loading.connect(_on_proxy_loading)
 
 
@@ -19,13 +20,12 @@ func _draw() -> void:
 	# Display indicator of the generating of proxies.
 	for file_id: int in proxy_progress.keys():
 		var rect: Rect2 = get_item_area_rect(main_file_panel.get("file_items")[file_id] as TreeItem)
-
 		rect.size.x = (rect.size.x / 100.0) * proxy_progress[file_id]
 		draw_rect(rect, COLOR_PROXY_LOADING)
 
 
 func _on_proxy_loading(file_id: int, progress: int) -> void:
 	proxy_progress[file_id] = progress
-	if progress == 100:
-		proxy_progress.erase(file_id)
+	if progress == 100 and !proxy_progress.erase(file_id):
+		printerr("FileTreeProxyProgress: Couldn't erase '%s' from proxy_progress!" % file_id)
 	queue_redraw()

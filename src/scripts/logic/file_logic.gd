@@ -35,12 +35,14 @@ var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
 
 
 func _ready() -> void:
-	if !DirAccess.dir_exists_absolute(wave_folder):
-		DirAccess.make_dir_recursive_absolute(wave_folder)
+	if !DirAccess.dir_exists_absolute(wave_folder) and !DirAccess.make_dir_recursive_absolute(wave_folder):
+		printerr("FileLogic: Couldn't create folder '%s'!" % wave_folder)
 
+	@warning_ignore_start("return_value_discarded")
 	Project.get_window().files_dropped.connect(dropped)
 	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
 	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
+	@warning_ignore_restore("return_value_discarded")
 
 
 ## Load everything on startup and give user indication of the progress.
@@ -51,8 +53,8 @@ func _startup_loading() -> void:
 
 # --- Handling ---
 
-func add(paths: PackedStringArray) -> void:
-	var existing_file_paths: PackedStringArray = []
+func add(paths: Array[String]) -> void:
+	var existing_file_paths: Array[String] = []
 	for file: FileData in files.values():
 		existing_file_paths.append(file.path)
 
@@ -108,7 +110,7 @@ func _create_file(path: String) -> FileData:
 					time_dict.year, time_dict.month, time_dict.day,
 					time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
-			var splits: PackedStringArray = path.split("#")
+			var splits: Array[String] = path.split("#")
 			file.type = EditorCore.TYPE.COLOR
 			file.duration = Settings.get_color_duration()
 			file.nickname = temp_nickname.replace("#", " #")
@@ -116,7 +118,7 @@ func _create_file(path: String) -> FileData:
 	return null if file.type == EditorCore.TYPE.EMPTY else file
 
 
-func delete(ids: PackedInt64Array) -> void:
+func delete(ids: Array[int]) -> void:
 	InputManager.undo_redo.create_action("Delete file")
 	for clip: ClipData in ClipLogic.clips.values():
 		if clip.file in ids:
@@ -131,16 +133,20 @@ func delete(ids: PackedInt64Array) -> void:
 
 func _delete(file: FileData) -> void:
 	# TODO: We should check if some other file relies on using this one as ATO.
-	files.erase(file.id)
-	file_data.erase(file.id)
+	if !files.erase(file.id) or !file_data.erase(file.id):
+		printerr("FileLogic: File id '%s' isn't present in files/file_data!" % file.id)
 
 	if video_pools.has(file.id):
 		for video: Video in video_pools[file.id]:
 			video.close()
+		@warning_ignore("return_value_discarded")
 		video_pools.erase(file.id)
 
+	@warning_ignore_start("return_value_discarded")
 	audio_pools.erase(file.id)
 	audio_wave.erase(file.id)
+	@warning_ignore_restore("return_value_discarded")
+
 	Project.unsaved_changes = true
 	deleted.emit(file.id)
 
@@ -221,6 +227,8 @@ func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) 
 		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the Audio-Take-Over changes to all existing clips?") % affected_clips.size())
 	dialog.get_ok_button().text = tr("Apply to All")
 	dialog.get_cancel_button().text = tr("Cancel")
+
+	@warning_ignore_start("return_value_discarded")
 	dialog.add_button(tr("Apply to File Only"), true, "file_only")
 	dialog.confirmed.connect(func() -> void:
 		_commit_ato(file, active, audio_file.id, offset, true, affected_clips))
@@ -228,6 +236,8 @@ func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) 
 		if action == "file_only":
 			_commit_ato(file, active, audio_file.id, offset, false,[])
 			dialog.hide())
+	@warning_ignore_restore("return_value_discarded")
+
 	dialog.popup_centered()
 
 
@@ -275,7 +285,7 @@ func duplicate_text(file: FileData) -> void:
 # --- File dropping ---
 
 ## File dropping can't be un-done with the undo_redo system!
-func dropped(dropped_file_paths: PackedStringArray) -> void:
+func dropped(dropped_file_paths: Array[String]) -> void:
 	drop_mouse_pos = get_viewport().get_mouse_position()
 	files_dropping = true
 	var existing_paths: Array[String] = []
@@ -290,12 +300,12 @@ func dropped(dropped_file_paths: PackedStringArray) -> void:
 			paths_to_process[path] = paths_dict[path] # Duplicate check.
 			var virtual_folder: String = paths_dict[path]
 			if virtual_folder != "/":
-				var parts: PackedStringArray = virtual_folder.split("/", false)
-				var cur_path: String = "/"
+				var parts: Array[String] = virtual_folder.split("/", false)
+				var current_path: String = "/"
 				for part: String in parts:
-					cur_path += part + "/"
-					if not FolderLogic.folders.has(cur_path) and not missing_folders.has(cur_path):
-						missing_folders[cur_path] = true
+					current_path += part + "/"
+					if not FolderLogic.folders.has(current_path) and not missing_folders.has(current_path):
+						missing_folders[current_path] = true
 
 	if paths_to_process.is_empty():
 		files_dropping = false
@@ -417,9 +427,9 @@ func _load_video(file: FileData) -> void:
 	var path_to_load: String = file.path
 
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty():
-		if FileAccess.file_exists(file.proxy_path):
-			temp_video.open(file.proxy_path)
-	if !temp_video.is_open() and temp_video.open(path_to_load) != OK:
+		if FileAccess.file_exists(file.proxy_path) and !temp_video.open(file.proxy_path):
+			return printerr("FileData: Couldn't open proxy video at path '%s'!" % file.proxy_path)
+	if !temp_video.is_open() and !temp_video.open(path_to_load):
 		return printerr("FileData: Couldn't open video at path '%s'!" % file.path)
 
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
@@ -430,7 +440,10 @@ func _load_video(file: FileData) -> void:
 			video.close()
 		video_pools[file.id] = []
 
-	for i: int in 2: # Get 2 extra video instances which can help with tight cuts.
+	for i: int in 2:
+		# Get 2 extra video instances which can help with tight cuts.
+		# We load the video into the pool, but don't use it here directly.
+		@warning_ignore("return_value_discarded")
 		get_video_reader(file, i)
 
 	if temp_video.get_audio() != null:
@@ -486,9 +499,8 @@ func _create_wave(file: FileData) -> void:
 	var local_wave_1: PackedFloat32Array = PackedFloat32Array()
 	var local_wave_4: PackedFloat32Array = PackedFloat32Array()
 	var local_wave_16: PackedFloat32Array = PackedFloat32Array()
-	local_wave_1.resize(total_blocks)
-	local_wave_4.resize(ceili(total_blocks / 4.0))
-	local_wave_16.resize(ceili(total_blocks / 16.0))
+	if !local_wave_1.resize(total_blocks) or !local_wave_4.resize(ceili(total_blocks / 4.0)) or !local_wave_16.resize(ceili(total_blocks / 16.0)):
+		printerr("FileLogic: Couldn't resize local wave array's!")
 	audio_wave[file.id] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
 
 	for i: int in total_blocks:
@@ -521,8 +533,8 @@ func _create_wave(file: FileData) -> void:
 			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
 
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
-	if save_file:
-		save_file.store_var(audio_wave[file.id])
+	if save_file and !save_file.store_var(audio_wave[file.id]):
+		printerr("FileLogic: Couldn't save wave file for file '%s'!" % file.path)
 	call_deferred("_on_wave_ready", file)
 	print("FileLogic: Wave creation done for '%s'!" % file.nickname)
 
@@ -765,7 +777,8 @@ func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> v
 	var temp_file: TempFile = file.temp_file
 	var text_effect: EffectVisual = temp_file.text_effect
 	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
-	param_keyframes.erase(frame_nr)
+	if !param_keyframes.erase(frame_nr):
+		printerr("FileLogic: '%s' frame number isn't present in text keyframes!" % frame_nr)
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()

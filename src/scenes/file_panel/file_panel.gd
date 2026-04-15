@@ -23,7 +23,7 @@ enum POPUP_ACTION {
 	FOLDER_RENAME,
 	FOLDER_DELETE }
 
-const IMAGE_FORMATS: PackedStringArray = ["*.png", "*.jpg", "*.webp"]
+const IMAGE_FORMATS: Array[String] = ["*.png", "*.jpg", "*.webp"]
 
 
 @export var tree: Tree
@@ -36,6 +36,15 @@ var file_items: Dictionary[int, TreeItem] = {} ## { file: tree_item }
 
 
 func _ready() -> void:
+	tree.set_drag_forwarding(_get_list_drag_data, _can_drop_list_data, _drop_list_data)
+	folder_items["/"] = tree.create_item()
+	folder_items["/"].set_metadata(0, "/")
+
+	# Setting the max width needs to be done in this way.
+	for i: int in file_menu_button.item_count:
+		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
+
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
@@ -51,15 +60,8 @@ func _ready() -> void:
 	tree.item_mouse_selected.connect(_tree_item_clicked)
 	tree.empty_clicked.connect(_tree_item_clicked.bind(true))
 
-	tree.set_drag_forwarding(_get_list_drag_data, _can_drop_list_data, _drop_list_data)
-	folder_items["/"] = tree.create_item()
-	folder_items["/"].set_metadata(0, "/")
-
-	# Setting the max width needs to be done in this way.
-	for i: int in file_menu_button.item_count:
-		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
-
 	file_menu_button.get_popup().id_pressed.connect(_file_menu_pressed)
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _input(event: InputEvent) -> void:
@@ -83,6 +85,7 @@ func _file_menu_pressed(id: int) -> void:
 			var dialog: FileDialog = PopupManager.create_file_dialog(
 					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
 			add_child(dialog)
+			@warning_ignore("return_value_discarded")
 			dialog.files_selected.connect(FileLogic.dropped)
 			dialog.popup_centered()
 		1: FileLogic.add(["temp://text"])
@@ -139,6 +142,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_item(tr("Rename folder"), POPUP_ACTION.FOLDER_RENAME)
 			popup.add_item(tr("Delete folder"), POPUP_ACTION.FOLDER_DELETE)
 
+	@warning_ignore("return_value_discarded")
 	popup.id_pressed.connect(_on_popup_option_pressed)
 	PopupManager.show_menu(popup)
 
@@ -201,8 +205,10 @@ func _on_popup_action_folder_rename() -> void:
 			FolderLogic.rename(folder_path, new_path)
 		dialog.queue_free()
 
+	@warning_ignore_start("return_value_discarded")
 	dialog.confirmed.connect(confirm_lambda)
 	line_edit.text_submitted.connect(confirm_lambda)
+	@warning_ignore_restore("return_value_discarded")
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2(300, 100))
@@ -236,6 +242,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 				tr("Save image to file"),
 				FileDialog.FILE_MODE_SAVE_FILE,
 				IMAGE_FORMATS)
+		@warning_ignore("return_value_discarded")
 		dialog.file_selected.connect(func(path: String) -> void:
 				FileLogic.save_image_to_file(file, path))
 		add_child(dialog)
@@ -245,8 +252,9 @@ func _on_popup_action_file_save_temp_as() -> void:
 func _on_popup_action_file_extract_audio() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
 	var dialog: FileDialog = PopupManager.create_file_dialog(
-		tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
+			tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
 
+	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(func(path: String) -> void:
 			FileLogic.save_audio_to_wav(file, path))
 	add_child(dialog)
@@ -286,6 +294,7 @@ func _on_popup_action_audio_take_over() -> void:
 
 func _on_popup_action_open_in_file_manager() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	@warning_ignore("return_value_discarded")
 	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(file.path))
 
 
@@ -303,7 +312,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 
 	while true:
 		var metadata: Variant = selected.get_metadata(0)
-		var file_ids: PackedInt64Array = []
+		var file_ids: Array[int] = []
 
 		if str(metadata).is_valid_int():
 			file_ids.append(metadata as int) # Single file.
@@ -313,7 +322,8 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		for file_id: int in file_ids:
 			if file_id in draggable.ids:
 				continue
-			draggable.ids.append(file_id)
+			if !draggable.ids.append(file_id):
+				printerr("FilePanel: Couldn't add '%s' to draggable ids!" % file_id)
 			draggable.duration += FileLogic.files[file_id].duration
 		selected = tree.get_next_selected(selected)
 		if selected == null:
@@ -327,7 +337,7 @@ func _add_folder_to_tree(folder: String) -> void:
 		Folder '%s' already exists!" % folder)
 
 	# Check if all parent folders exist or not.
-	var folders: PackedStringArray = folder.split('/', false)
+	var folders: Array[String] = folder.split('/', false)
 	var check_path: String = "/"
 	var previous_folder: TreeItem = folder_items["/"]
 
@@ -424,7 +434,8 @@ func _on_added(file: FileData) -> void:
 func _on_deleted(file_id: int) -> void:
 	if file_items.has(file_id):
 		file_items[file_id].get_parent().remove_child(file_items[file_id])
-		file_items.erase(file_id)
+		if !file_items.erase(file_id):
+			printerr("FilePanel: Couldn't erase '%s' from file_items!" % file_id)
 
 
 func _on_moved(file: FileData) -> void:
@@ -457,23 +468,25 @@ func _on_folder_deleted(path: String) -> void:
 	if folder_items.has(path):
 		var item: TreeItem = folder_items[path]
 		item.free()
-		folder_items.erase(path)
+		if !folder_items.erase(path):
+			printerr("FilePanel: Couldn't erase '%s' from folder_items!" % path)
 
 
 func _on_folder_renamed(old_path: String, new_path: String) -> void:
-	var paths_to_update: PackedStringArray = []
+	var paths_to_update: Array[String] = []
 	var length: int = old_path.length()
 
 	for folder_path: String in folder_items.keys():
 		if folder_path.begins_with(old_path):
 			paths_to_update.append(folder_path)
 
-	# Update items mapping and metadata
+	# Update items mapping and metadata.
 	for folder_path: String in paths_to_update:
 		var updated_path: String = new_path + folder_path.substr(length)
 		var item: TreeItem = folder_items[folder_path]
 
-		folder_items.erase(folder_path)
+		if !folder_items.erase(folder_path):
+			printerr("FilePanel: Couldn't erase '%s' to folder_items!" % folder_path)
 		folder_items[updated_path] = item
 		item.set_metadata(0, updated_path)
 
@@ -491,15 +504,15 @@ func _on_folder_renamed(old_path: String, new_path: String) -> void:
 
 
 func _get_recursive_ids(item: TreeItem) -> PackedInt64Array:
-	var ids: PackedInt64Array = []
+	var ids: Array[int] = []
 	var child: TreeItem = item.get_first_child()
 
 	while child:
 		var metadata: Variant = child.get_metadata(0)
 		if str(metadata).is_valid_int():
-			ids.append(metadata as int) # File
+			ids.append(metadata as int) # File.
 		else:
-			ids.append_array(_get_recursive_ids(child)) # Folder
+			ids.append_array(_get_recursive_ids(child)) # Folder.
 		child = child.get_next()
 	return ids
 
@@ -521,8 +534,10 @@ func _show_create_folder_dialog() -> void:
 			_create_folder_at_selected(new_folder_name)
 		dialog.queue_free()
 
+	@warning_ignore_start("return_value_discarded")
 	dialog.confirmed.connect(confirm_lambda)
 	line_edit.text_submitted.connect(confirm_lambda)
+	@warning_ignore_restore("return_value_discarded")
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2(300, 100))

@@ -15,6 +15,7 @@ var thumbs_todo: Array[FileData] = []
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 
 	# Create the thumb directory if not existing.
@@ -35,6 +36,7 @@ func _ready() -> void:
 
 
 func _on_project_ready() -> void:
+	@warning_ignore("return_value_discarded")
 	FileLogic.audio_wave_generated.connect(_on_audio_wave_generated)
 
 
@@ -70,7 +72,8 @@ func get_thumb(file: FileData) -> Texture2D:
 	# If file didn't exist, deleting entry to create new.
 	Threader.mutex.lock()
 	if data.has(file.path) and !FileAccess.file_exists(thumb_folder + FILE_NAME % data[file.path]):
-		data.erase(file.path)
+		if !data.erase(file.path):
+			printerr("Thumbnailer: Couldn't erase '%s' from data!" % file.path)
 		_save_data()
 
 	# Not thumb has been made yet, return default and put id in waiting line.
@@ -135,13 +138,14 @@ func _on_audio_wave_generated(file: FileData) -> void:
 	# Remove the potentially flat/empty cached thumbnail data.
 	Threader.mutex.lock()
 	if data.has(file.path):
-		data.erase(file.path)
+		if !data.erase(file.path):
+			printerr("Thumbnailer: Couldn't erase '%s' from data!" % file.path)
 		_save_data()
 	Threader.mutex.unlock()
 
 	# Queue this file for immediate thumbnail regeneration.
-	if not thumbs_todo.has(file):
-		thumbs_todo.insert(0, file)
+	if not thumbs_todo.has(file) and !thumbs_todo.insert(0, file):
+		printerr("Thumbnailer: Couldn't insert '%s' in thumbs_todo!" % file.path)
 
 
 func scale_thumbnail(image: Image) -> Image:

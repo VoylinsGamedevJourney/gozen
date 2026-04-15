@@ -1,6 +1,7 @@
 class_name RenderProfile
 extends Resource
 
+
 @export var profile_name: String = ""
 @export var icon: Texture2D
 

@@ -135,8 +135,8 @@ func clipboard_paste() -> void:
 		return
 
 	# Check for file paths.
-	var raw_paths: PackedStringArray = DisplayServer.clipboard_get().split('\n')
-	var valid_paths: PackedStringArray = []
+	var raw_paths: Array[String] = DisplayServer.clipboard_get().split('\n')
+	var valid_paths: Array[String] = []
 	for path: String in raw_paths:
 		var clean_path: String = path.strip_edges().replace('"', '')
 		if FileAccess.file_exists(clean_path):

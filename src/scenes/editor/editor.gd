@@ -22,9 +22,13 @@ func _ready() -> void:
 
 	switch_screen(0)
 	print_startup_info()
+
+	@warning_ignore_start("return_value_discarded")
 	InputManager.on_show_editor_screen.connect(switch_screen.bind(0))
 	InputManager.on_show_render_screen.connect(switch_screen.bind(1))
 	InputManager.on_switch_screen.connect(switch_screen_quick)
+	@warning_ignore_restore("return_value_discarded")
+
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
 

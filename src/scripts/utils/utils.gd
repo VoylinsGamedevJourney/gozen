@@ -1,6 +1,7 @@
 class_name Utils
 extends Node
 
+
 # Const variables for get_fuzzy_score().
 const FUZZY_SCORE_POINT: int = 1
 const FUZZY_SCORE_BONUS: int = 10
@@ -70,7 +71,7 @@ static func format_time_str(total_seconds: float, short: bool = false) -> String
 		return "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
 
 
-static func find_subfolder_files(dropped_paths: PackedStringArray) -> Dictionary:
+static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
 	var result: Dictionary = {}
 	var folders: Array[Dictionary] = []
 
@@ -125,7 +126,7 @@ static func get_video_extension(video_codec: Encoder.VIDEO_CODEC) -> String:
 
 
 ## A function to help getting the number lower than the given number.
-static func get_previous(frame: int, array: PackedInt64Array) -> int:
+static func get_previous(frame: int, array: Array[int]) -> int:
 	var prev: int = -1
 
 	for i: int in array:
@@ -137,7 +138,7 @@ static func get_previous(frame: int, array: PackedInt64Array) -> int:
 
 
 ## A function to help getting the number higher than the given number.
-static func get_next(frame: int, array: PackedInt64Array) -> int:
+static func get_next(frame: int, array: Array[int]) -> int:
 	for i: int in array:
 		if i > frame:
 			return i
@@ -205,7 +206,7 @@ static func apply_scale(new_theme: Theme, ui_scale: float) -> void:
 	ui_scale = maxf(0.1, ui_scale) # Can't be null.
 	new_theme.default_font_size = roundi(new_theme.default_font_size * ui_scale)
 
-	var processed: PackedInt64Array = [] ## So we can avoid scaling same resource.
+	var processed: Array[int] = [] ## So we can avoid scaling same resource.
 	for type_name: String in new_theme.get_type_list():
 		for font_type_name: String in new_theme.get_font_size_list(type_name):
 			var current_size: int = new_theme.get_font_size(font_type_name, type_name)

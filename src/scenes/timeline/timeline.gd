@@ -1,6 +1,7 @@
 extends BoxContainer
 ## Handles the sizing of the timeline.
 
+
 const END_PADDING: int = 80000
 
 
@@ -10,8 +11,10 @@ const END_PADDING: int = 80000
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	Project.timeline_end_update.connect(_end_update)
 	Timeline.zoom_changed.connect(_end_update.unbind(1))
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _end_update(new_end: int = Project.data.timeline_end) -> void:

@@ -20,6 +20,7 @@ var _prev_use_render_region: bool = false
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	get_window().close_requested.connect(_on_close)
 
 
@@ -58,6 +59,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 	for index: int in Settings.get_tracks_amount():
 		TrackLogic._add_track(index)
+	@warning_ignore("return_value_discarded")
 	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
 	loading_overlay.update(50, tr("Setting up playback ..."))
@@ -96,6 +98,7 @@ func save_as() -> void:
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [EXTENSION, tr("GoZen project file")]])
 
+	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_save_as)
 	add_child(dialog)
 	dialog.popup_centered()
@@ -119,6 +122,7 @@ func open(new_project_path: String) -> void:
 	set_framerate(data.framerate)
 	_setup_logic()
 
+	@warning_ignore("return_value_discarded")
 	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
 	# 7% = Timeline ready to accept clips.
@@ -171,6 +175,7 @@ func open_project() -> void:
 			tr("Open project"), FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [EXTENSION, tr("GoZen project files")]])
 
+	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_open_project)
 	add_child(dialog)
 	dialog.popup_centered()
@@ -184,6 +189,7 @@ func _auto_save() -> void:
 	if auto_save_timer == null:
 		auto_save_timer = Timer.new()
 		add_child(auto_save_timer)
+		@warning_ignore("return_value_discarded")
 		auto_save_timer.timeout.connect(_auto_save)
 
 	if is_loaded:
@@ -229,9 +235,11 @@ func _on_close() -> void:
 	popup.title = tr("Close without saving")
 	popup.ok_button_text = tr("Save")
 
+	@warning_ignore_start("return_value_discarded")
 	popup.confirmed.connect(_on_save_close)
 	cancel_button.pressed.connect(_on_cancel_close)
 	dont_save_button.pressed.connect(func() -> void: get_tree().quit.call_deferred())
+	@warning_ignore_restore("return_value_discarded")
 
 	add_child(popup)
 	popup.popup_centered()

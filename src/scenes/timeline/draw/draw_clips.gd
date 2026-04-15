@@ -21,6 +21,7 @@ const CLIP_TEXT_COLOR: Color = Color.WHITE
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	Settings.on_waveform_update.connect(queue_redraw)
 
 

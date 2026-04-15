@@ -6,7 +6,7 @@ enum TYPE { TRANSFORM }
 
 
 
-static func get_transform_matrix_variables() -> PackedStringArray:
+static func get_transform_matrix_variables() -> Array[String]:
 	return ["position", "rotation", "scale", "pivot"]
 
 

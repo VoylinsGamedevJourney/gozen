@@ -1,6 +1,7 @@
 class_name Library
 extends Node
 
+
 const ICON_GOZEN: String = "uid://cwv5gaisvmwv7"
 const ICON_PLAY: String = "uid://dt44mb30o2c8e"
 const ICON_PAUSE: String = "uid://drcdxc6b6le8r"
@@ -9,6 +10,7 @@ const ICON_SAVE: String = "uid://crolsp3m3n14"
 const ICON_OPEN: String = "uid://8yvgi81apxxg"
 const ICON_EDITOR_SETTINGS: String = "uid://dpsmt1do2u4xl"
 const ICON_PROJECT_SETTINGS: String = "uid://c35rwqbeqmush"
+const ICON_EFFECT_SETTINGS: String = "uid://bae7xdf84ne6w"
 const ICON_LINK: String = "uid://npglkea55x8p"
 const ICON_MANUAL: String = "uid://c8ydairucfdee"
 const ICON_TUTORIALS: String = "uid://bbuw3ew0x2ghk"

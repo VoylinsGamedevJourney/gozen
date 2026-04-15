@@ -7,6 +7,7 @@ signal effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: b
 signal effects_updated
 signal effect_values_updated
 
+@warning_ignore("unused_signal") # Signal is used in other scripts.
 signal effect_selected(effect: Effect)
 
 
@@ -154,9 +155,10 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 
 func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) -> void:
 	if is_visual:
-		clip.effects.video.insert(index, effect)
-	else:
-		clip.effects.audio.insert(index, effect)
+		if !clip.effects.video.insert(index, effect):
+			printerr("EffectsHandler: Error when inserting video effect!")
+	elif !clip.effects.audio.insert(index, effect):
+		printerr("EffectsHandler: Error when inserting audio effect!")
 
 	effect_added.emit(clip, index, is_visual)
 	effects_updated.emit()
@@ -264,11 +266,11 @@ func move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: b
 
 func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
 	if is_visual:
-		var effect: Effect = clip.effects.video.pop_at(effect_index)
-		clip.effects.video.insert(new_index, effect)
-	else:
-		var effect: Effect = clip.effects.audio.pop_at(effect_index)
-		clip.effects.audio.insert(new_index, effect)
+		if clip.effects.video.insert(new_index, clip.effects.video.pop_at(effect_index)):
+			printerr("EffectsHandler: Error when inserting video effect!")
+	elif clip.effects.audio.insert(new_index, clip.effects.audio.pop_at(effect_index)):
+		printerr("EffectsHandler: Error when inserting audio effect!")
+
 	effect_moved.emit(clip, effect_index, new_index, is_visual)
 	effects_updated.emit()
 
@@ -390,9 +392,10 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 
 	if effect.keyframes.has(param_id):
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
-		effect_keyframes.erase(frame_nr)
-		if effect_keyframes.is_empty():
-			effect_keyframes.erase(param_id)
+		if effect_keyframes.erase(frame_nr):
+			printerr("Frame nr '%s' wasn't present in effect_keyframes!" % frame_nr)
+		if effect_keyframes.is_empty() and !effect.keyframes.erase(param_id):
+			printerr("Param id '%s' wasn't present in effect.keyframes!" % param_id)
 
 	effect._cache_dirty = true
 	effect_values_updated.emit()

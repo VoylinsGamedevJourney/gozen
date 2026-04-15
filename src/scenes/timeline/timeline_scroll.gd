@@ -1,16 +1,20 @@
 extends ScrollContainer
 ## The scroll handler for the timeline stuff.
 
+
 @export var timestamp_scroll: ScrollContainer
 @export var track_controls_scroll: ScrollContainer
 
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	timestamp_scroll.get_h_scroll_bar().value_changed.connect(_on_timestamp_scrolling)
 	track_controls_scroll.get_v_scroll_bar().value_changed.connect(_on_timeline_v_scrolling)
-	self.get_h_scroll_bar().value_changed.connect(_on_timeline_h_scrolling)
-	self.get_v_scroll_bar().value_changed.connect(_on_timeline_v_scrolling_self)
+
+	get_h_scroll_bar().value_changed.connect(_on_timeline_h_scrolling)
+	get_v_scroll_bar().value_changed.connect(_on_timeline_v_scrolling_self)
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _gui_input(event: InputEvent) -> void:

@@ -9,11 +9,14 @@ var spacer: Control
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 0)
+
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_rebuild)
 	TrackLogic.updated.connect(_rebuild)
 	Settings.on_track_height_changed.connect(_on_track_height_changed)
 
 	timeline_scroll.get_v_scroll_bar().value_changed.connect(_on_scrolled)
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _on_scrolled(_value: float) -> void:
@@ -53,6 +56,8 @@ func _rebuild() -> void:
 		button_visibility.custom_minimum_size = Vector2(12, 12)
 		button_visibility.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_visibility.tooltip_text = tr("Toggle track visibility")
+
+		@warning_ignore("return_value_discarded")
 		button_visibility.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_visible = !toggled
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
@@ -71,6 +76,8 @@ func _rebuild() -> void:
 		button_mute.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 		button_mute.add_theme_color_override("font_hover_color", Color(0.8, 0.8, 0.8))
 		button_mute.add_theme_color_override("font_pressed_color", Color(1, 0.3, 0.3))
+
+		@warning_ignore("return_value_discarded")
 		button_mute.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_muted = toggled
 				EditorCore.set_frame_nr(EditorCore.frame_nr)

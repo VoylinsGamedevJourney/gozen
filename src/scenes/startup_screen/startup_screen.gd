@@ -76,6 +76,7 @@ func _set_recent_projects() -> void:
 				# We still add non-found projects in case people have projects
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
+				@warning_ignore("return_value_discarded")
 				new_paths.append(path)
 				continue
 
@@ -87,6 +88,8 @@ func _set_recent_projects() -> void:
 			project_button.tooltip_text = path
 			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+			@warning_ignore("return_value_discarded")
 			project_button.pressed.connect(open_project.bind(path))
 
 			delete_button.texture_normal = preload(Library.ICON_DELETE)
@@ -94,12 +97,16 @@ func _set_recent_projects() -> void:
 			delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			delete_button.custom_minimum_size = Vector2i(18,0)
 			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+			@warning_ignore("return_value_discarded")
 			delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path))
 
 			hbox.add_child(delete_button)
 			hbox.add_child(project_button)
 
 			recent_projects_vbox.add_child(hbox)
+
+			@warning_ignore("return_value_discarded")
 			new_paths.append(path)
 		path = file.get_line()
 	file.close()
@@ -188,6 +195,7 @@ func _on_open_project_button_pressed() -> void:
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 
+	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(open_project)
 
 	add_child(dialog)
@@ -238,6 +246,7 @@ func _on_project_path_button_pressed() -> void:
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 
+	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_set_project_path)
 	dialog.ok_button_text = "Select"
 
@@ -255,12 +264,14 @@ func _set_project_path(path: String) -> void:
 func _check_new_version() -> void:
 	http_request = HTTPRequest.new()
 	add_child(http_request)
+	@warning_ignore("return_value_discarded")
 	http_request.request_completed.connect(_check_new_version_request_completed)
 
 	var url: String = ProjectSettings.get_setting("urls/latest_release_check")
 	if http_request.request(url) != OK:
 		printerr("StartupScreen: Couldn't send an http request for the version check!")
 
+	@warning_ignore("return_value_discarded")
 	new_version_available_button.pressed.connect(func() -> void: Utils.open_url("latest_release"))
 
 

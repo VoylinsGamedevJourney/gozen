@@ -9,8 +9,8 @@ signal play_changed(value: bool)
 enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
 
 
-const AUDIO_TYPES: PackedInt64Array = [ TYPE.AUDIO, TYPE.VIDEO ]
-const VISUAL_TYPES: PackedInt64Array = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO ]
+const AUDIO_TYPES: Array[int] = [ TYPE.AUDIO, TYPE.VIDEO ]
+const VISUAL_TYPES: Array[int] = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO ]
 
 
 var viewport: SubViewport
@@ -50,6 +50,7 @@ var _last_scrub_time: int = 0
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
 	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
@@ -61,6 +62,7 @@ func _ready() -> void:
 	FileLogic.ato_changed.connect(_on_clips_updated.unbind(1))
 
 	tree_exiting.connect(_on_closing_editor)
+	@warning_ignore_restore("return_value_discarded")
 
 	# TODO: Find out why FFT_SIZE_4096 and FFT_SIZE_MAX don't work.
 	pitch_shift_effect = AudioEffectPitchShift.new()
@@ -84,10 +86,12 @@ func _process(delta: float) -> void:
 	var completed: Array[int] = []
 	for video_id: int in active_tasks:
 		if WorkerThreadPool.is_task_completed(active_tasks[video_id] as int):
-			WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int)
+			if !WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int):
+				printerr("EditorCore: Something went wrong waiting for task completion!")
 			completed.append(video_id)
 	for video_id: int in completed:
-		active_tasks.erase(video_id)
+		if !active_tasks.erase(video_id):
+			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
 
 	if _scrub_frame != -1:
 		if Time.get_ticks_msec() - _last_scrub_time > 50:
@@ -125,18 +129,21 @@ func _rebuild_structure() -> void:
 	viewport.size = background.size
 
 	# Loaded clips setup.
+	@warning_ignore_start("return_value_discarded")
 	loaded_clips.resize(track_size)
 	loaded_clips.fill(null)
 	clips_to_update.resize(track_size)
 	clips_to_update.fill(false)
 	clips_instance_index.resize(track_size)
 	clips_instance_index.fill(-1)
+	@warning_ignore_restore("return_value_discarded")
 
 	# Audio setup.
 	for player: AudioPlayer in audio_players:
 		if player != null:
 			remove_child(player.player)
 			player.cleanup()
+	@warning_ignore("return_value_discarded")
 	audio_players.resize(track_size) # RefCounted so should be fine. (I hope :p)
 
 	for index: int in track_size:
@@ -154,9 +161,11 @@ func _rebuild_structure() -> void:
 		if compositor != null:
 			compositor.cleanup()
 
+	@warning_ignore_start("return_value_discarded")
 	view_textures.resize(track_size)
 	compositors.resize(track_size)
 	text_viewports.resize(track_size)
+	@warning_ignore_restore("return_value_discarded")
 
 	for index: int in track_size:
 		compositors[index] = VisualCompositor.new()
@@ -218,8 +227,8 @@ func _cleanup_unused_instances(current_frame: int) -> void:
 
 	var keys: Array = clip_instances.keys()
 	for key: int in keys:
-		if key not in needed_clips:
-			clip_instances.erase(key)
+		if key not in needed_clips and !clip_instances.erase(key):
+			printerr("EditorCore: Couldn't erase '%s' from clip_instances!" % key)
 
 
 func _prefetch_upcoming_clips() -> void:
@@ -524,24 +533,33 @@ func set_background_color(color: Color) -> void:
 # --- Playback helpers ---
 
 func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
-	if clip and clip.type == EditorCore.TYPE.VIDEO:
-		var file: FileData = FileLogic.files[clip.file]
-		var video: Video = FileLogic.get_video_reader(file, instance_index)
-		if video != null: # Check if video is done loading.
-			var target_frame_nr: int = roundi((float(frame) / Project.data.framerate) * video.get_framerate())
-			target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
-			var vid_id: int = video.get_instance_id()
+	if !clip or clip.type != TYPE.VIDEO:
+		return
 
-			# If a prefetch task is currently running on this video instance,
-			# we MUST wait for it to finish to prevent multi-threading crashes in C++.
-			if EditorCore.active_tasks.has(vid_id):
-				var task_id: int = EditorCore.active_tasks[vid_id]
-				if not WorkerThreadPool.is_task_completed(task_id):
-					WorkerThreadPool.wait_for_task_completion(task_id)
-				EditorCore.active_tasks.erase(vid_id)
-			if video.get_current_frame() != target_frame_nr:
-				if is_playing:
-					EditorCore.active_tasks[vid_id] = WorkerThreadPool.add_task(func() -> void:
-							video.seek_frame(target_frame_nr))
-				else:
-					video.seek_frame(target_frame_nr)
+	var file: FileData = FileLogic.files[clip.file]
+	var video: Video = FileLogic.get_video_reader(file, instance_index)
+	if !video: # Check if video is done loading.
+		return
+
+	var video_id: int = video.get_instance_id()
+	var target_frame_nr: int = roundi((float(frame) / Project.data.framerate) * video.get_framerate())
+	target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
+
+	# If a prefetch task is currently running on this video instance,
+	# we MUST wait for it to finish to prevent multi-threading crashes in C++.
+	if EditorCore.active_tasks.has(video_id):
+		var task_id: int = EditorCore.active_tasks[video_id]
+		if not WorkerThreadPool.is_task_completed(task_id):
+			if !WorkerThreadPool.wait_for_task_completion(task_id):
+				printerr("EditorCore: Something went wrong waiting for task completion!")
+		if !EditorCore.active_tasks.erase(video_id):
+			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
+
+	if video.get_current_frame() != target_frame_nr:
+		if is_playing:
+			EditorCore.active_tasks[video_id] = WorkerThreadPool.add_task(func() -> void:
+					@warning_ignore("return_value_discarded")
+					video.seek_frame(target_frame_nr))
+		else:
+			@warning_ignore("return_value_discarded")
+			video.seek_frame(target_frame_nr)

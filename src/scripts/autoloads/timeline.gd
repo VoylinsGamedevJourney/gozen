@@ -37,8 +37,10 @@ var snap_enabled: bool = true
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	InputManager.switch_timeline_mode_select.connect(set_state.bind(STATE.SELECT))
 	InputManager.switch_timeline_mode_split.connect(set_state.bind(STATE.SPLIT))
+	@warning_ignore_restore("return_value_discarded")
 
 
 # --- Setters ---

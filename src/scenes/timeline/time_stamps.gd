@@ -1,5 +1,6 @@
 extends PanelContainer
 
+
 const COLOR_TEXT: Color = Color(0.85, 0.85, 0.85, 0.5)
 const COLOR_TICK: Color = Color(0.4, 0.4, 0.4, 0.5)
 const STEPS: PackedInt32Array = [1, 5, 10, 30, 60, 150, 300, 600, 1800, 3600]
@@ -34,6 +35,7 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Project.render_region_updated.connect(queue_redraw)
 
@@ -43,6 +45,7 @@ func _ready() -> void:
 
 	Timeline.zoom_changed.connect(queue_redraw.unbind(1))
 	Timeline.scroll_changed.connect(queue_redraw.unbind(1))
+	@warning_ignore_restore("return_value_discarded")
 
 	_setup_marker_style_box()
 

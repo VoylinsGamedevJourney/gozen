@@ -9,6 +9,7 @@ extends HBoxContainer
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	Settings.on_show_menu_bar_changed.connect(_show_menu_bar)
 
 	_show_menu_bar(Settings.get_show_menu_bar())
@@ -45,9 +46,11 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 
 
 func _on_edit_popup_menu_id_pressed(id: int) -> void:
+	@warning_ignore_start("return_value_discarded")
 	match id:
 		0: InputManager.undo_redo.undo()
 		1: InputManager.undo_redo.redo()
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:

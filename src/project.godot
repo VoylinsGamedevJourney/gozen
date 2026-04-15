@@ -50,14 +50,13 @@ settings/crash_handler/message="Please include this when reporting the bug. Repo
 settings/crash_handler/message.editor="Please include this when reporting the bug: https://github.com/VoylinsGamedevJourney/gozen/issues"
 file_logging/enable_file_logging=true
 file_logging/log_path="user://logs/gozen.log"
-gdscript/warnings/unused_signal=0
-gdscript/warnings/untyped_declaration=2
-gdscript/warnings/inferred_declaration=2
-gdscript/warnings/unsafe_property_access=2
-gdscript/warnings/unsafe_method_access=2
-gdscript/warnings/unsafe_call_argument=2
-gdscript/warnings/static_called_on_instance=2
-gdscript/warnings/missing_await=2
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/inferred_declaration=1
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
+gdscript/warnings/unsafe_call_argument=1
+gdscript/warnings/return_value_discarded=1
+gdscript/warnings/missing_await=1
 shader_language/warnings/treat_warnings_as_errors=true
 
 [display]

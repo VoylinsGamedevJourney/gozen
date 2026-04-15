@@ -6,8 +6,8 @@ const BASE_NAME: String = "<Draggable:%s-%s>"
 
 
 var ids: PackedInt64Array = []
-var duration: int = 0 ## Duration in frames
-var is_file: bool = false ## ID's are file ids
+var duration: int = 0 ## Duration in frames.
+var is_file: bool = false ## ID's are file ids.
 
 var ignores: Array[PackedInt32Array] = [] ## Tracks[clip_ids]
 var track_offset: int = 0

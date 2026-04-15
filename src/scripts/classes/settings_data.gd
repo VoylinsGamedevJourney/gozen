@@ -1,7 +1,9 @@
 class_name SettingsData
 extends RefCounted
 
+
 enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
+
 
 # Appearance
 var language: String = "en"
@@ -36,8 +38,8 @@ var use_proxies: bool = false
 var proxies_path: String = "user://proxies"
 
 # Markers
-var marker_names: PackedStringArray = [ "Marker type 1", "Marker type 2", "Marker type 3", "Marker type 4", "Marker type 5" ]
-var marker_colors: PackedColorArray = [ Color.PURPLE, Color.GREEN, Color.BLUE, Color.ORANGE, Color.RED ]
+var marker_names: Array[String] = [ "Marker type 1", "Marker type 2", "Marker type 3", "Marker type 4", "Marker type 5" ]
+var marker_colors: Array[Color] = [ Color.PURPLE, Color.GREEN, Color.BLUE, Color.ORANGE, Color.RED ]
 
 # Extra
 var check_version: bool = false

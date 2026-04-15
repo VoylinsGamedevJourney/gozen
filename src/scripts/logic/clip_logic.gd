@@ -55,7 +55,8 @@ func delete(clips_to_delete: Array[ClipData]) -> void:
 
 func _delete(clip: ClipData) -> void:
 	TrackLogic.remove_clip_from_track(clip.track, clip)
-	clips.erase(clip.id)
+	if !clips.erase(clip.id):
+		printerr("ClipLogic: Couldn't erase clip '%s' in clips!" % clip.id)
 	selected_clips.erase(clip)
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()

@@ -24,6 +24,7 @@ var active_overlay: EffectVisualOverlay = null
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	gui_input.connect(_on_gui_input)
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
@@ -34,6 +35,8 @@ func _ready() -> void:
 
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	overlay_control.clip_contents = true
+
+	@warning_ignore_start("return_value_discarded")
 	overlay_control.resized.connect(_update_transform)
 	Project.project_ready.connect(_update_transform)
 	if Project.is_loaded:
@@ -45,6 +48,7 @@ func _ready() -> void:
 	EffectsHandler.effect_removed.connect(_on_effect_removed)
 	EditorCore.visual_frame_changed.connect(queue_redraw)
 	EditorCore.play_changed.connect(func(_playing: bool) -> void: queue_redraw())
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _update_transform() -> void:
@@ -122,6 +126,8 @@ func _on_gui_input(event: InputEvent) -> void:
 
 			popup.add_item("Save screenshot ...", POPUP.SAVE_SCREENSHOT)
 			popup.add_item("Save screenshot to project ...", POPUP.SAVE_SCREENSHOT_TO_PROJECT)
+
+			@warning_ignore("return_value_discarded")
 			popup.id_pressed.connect(_on_popup_id_pressed)
 			PopupManager.show_menu(popup)
 
@@ -169,8 +175,10 @@ func _on_popup_id_pressed(id: int) -> void:
 				["*.webp", "*.png", "*.jpg", "*.jpeg"])
 
 		if id == POPUP.SAVE_SCREENSHOT:
+			@warning_ignore("return_value_discarded")
 			file_dialog.file_selected.connect(_on_save_screenshot)
 		else:
+			@warning_ignore("return_value_discarded")
 			file_dialog.file_selected.connect(_on_save_screenshot_to_project)
 
 		var folder: String = Project.get_project_path().get_base_dir() + "/"
