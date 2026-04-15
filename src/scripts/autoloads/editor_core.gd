@@ -86,7 +86,7 @@ func _process(delta: float) -> void:
 	var completed: Array[int] = []
 	for video_id: int in active_tasks:
 		if WorkerThreadPool.is_task_completed(active_tasks[video_id] as int):
-			if !WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int):
+			if WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int):
 				printerr("EditorCore: Something went wrong waiting for task completion!")
 			completed.append(video_id)
 	for video_id: int in completed:
@@ -550,7 +550,7 @@ func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> vo
 	if EditorCore.active_tasks.has(video_id):
 		var task_id: int = EditorCore.active_tasks[video_id]
 		if not WorkerThreadPool.is_task_completed(task_id):
-			if !WorkerThreadPool.wait_for_task_completion(task_id):
+			if WorkerThreadPool.wait_for_task_completion(task_id):
 				printerr("EditorCore: Something went wrong waiting for task completion!")
 		if !EditorCore.active_tasks.erase(video_id):
 			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)

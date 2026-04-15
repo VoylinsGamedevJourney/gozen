@@ -52,10 +52,12 @@ func get_ui(_effect: Effect, _clip: ClipData, _is_visual: bool, _effects_panel: 
 	hboxes["alpha"] = alpha_hbox
 	vbox.add_child(alpha_hbox)
 
+	@warning_ignore_start("return_value_discarded")
 	effects_panel.update_values.connect(_on_update_values)
 	vbox.tree_exited.connect(func() -> void:
 			if effects_panel.update_values.is_connected(_on_update_values):
 				effects_panel.update_values.disconnect(_on_update_values))
+	@warning_ignore_restore("return_value_discarded")
 
 	return vbox
 
@@ -102,26 +104,34 @@ func _create_alignment_buttons() -> Control:
 	for data: Array in horizontal_data:
 		var tex_button: TextureButton = TextureButton.new()
 		tex_button.texture_normal = data[1]
-		tex_button.pressed.connect(_align.bind(data[0]))
 		tex_button.ignore_texture_size = true
 		tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 		tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
+
+		@warning_ignore("return_value_discarded")
+		tex_button.pressed.connect(_align.bind(data[0]))
+
 		horizontal_hbox.add_child(tex_button)
 	for data: Array in vertical_data:
 		var tex_button: TextureButton = TextureButton.new()
 		tex_button.texture_normal = data[1]
-		tex_button.pressed.connect(_align.bind(data[0]))
 		tex_button.ignore_texture_size = true
 		tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 		tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
+
+		@warning_ignore("return_value_discarded")
+		tex_button.pressed.connect(_align.bind(data[0]))
+
 		vertical_hbox.add_child(tex_button)
 
 	var fill_tex_button: TextureButton = TextureButton.new()
 	fill_tex_button.texture_normal = preload(Library.ICON_ALIGN_FILL)
-	fill_tex_button.pressed.connect(_align.bind(HORIZONTAL_ALIGNMENT_FILL)) # We use fill horizontal ... but it's for both. :p
 	fill_tex_button.ignore_texture_size = true
 	fill_tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 	fill_tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
+
+	@warning_ignore("return_value_discarded")
+	fill_tex_button.pressed.connect(_align.bind(HORIZONTAL_ALIGNMENT_FILL)) # We use fill horizontal ... but it's for both. :p
 
 	flow.add_child(horizontal_hbox)
 	flow.add_child(VSeparator.new())
@@ -152,9 +162,9 @@ func _align(type: int) -> void:
 	if clip.type == EditorCore.TYPE.VIDEO and raw_data is Video:
 		media_size = Vector2((raw_data as Video).get_resolution())
 	elif clip.type == EditorCore.TYPE.IMAGE:
-		var img: Image = Image.load_from_file(file.path)
-		if img:
-			media_size = img.get_size()
+		var image: Image = Image.load_from_file(file.path)
+		if image:
+			media_size = image.get_size()
 
 	var aspect: float = media_size.x / media_size.y
 	var target_aspect: float = res.x / res.y
