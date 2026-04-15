@@ -16,36 +16,32 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("1_fkoha")
 id = "radius"
 nickname = "Radius"
-default_value = 50.0
+default_value = 800
 min_value = null
 max_value = null
+step = 1.0
+has_slider = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_2rp6f"]
 script = ExtResource("1_fkoha")
 id = "softness"
 nickname = "Softness"
-default_value = 30.0
+default_value = 300
 min_value = null
 max_value = null
+step = 1.0
+has_slider = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_5t1e2"]
 script = ExtResource("1_fkoha")
-id = "center_x"
-nickname = "Center X"
-default_value = 960
+id = "center"
+nickname = "Center"
+default_value = Vector2i(960, 540)
 min_value = null
 max_value = null
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
-[sub_resource type="Resource" id="Resource_2yfib"]
-script = ExtResource("1_fkoha")
-id = "center_y"
-nickname = "Center Y"
-default_value = 540
-min_value = null
-max_value = null
+has_slider = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
@@ -53,5 +49,5 @@ script = ExtResource("2_6wmjw")
 shader_path = "uid://cwgewo47ioal7"
 id = "vignette"
 nickname = "Vignette"
-params = Array[ExtResource("1_fkoha")]([SubResource("Resource_fkoha"), SubResource("Resource_6wmjw"), SubResource("Resource_2rp6f"), SubResource("Resource_5t1e2"), SubResource("Resource_2yfib")])
+params = Array[ExtResource("1_fkoha")]([SubResource("Resource_fkoha"), SubResource("Resource_6wmjw"), SubResource("Resource_2rp6f"), SubResource("Resource_5t1e2")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"

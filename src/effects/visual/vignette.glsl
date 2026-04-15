@@ -14,8 +14,7 @@ layout(set = 0, binding = 2, std140) uniform Params {
     vec4 color;
     float radius;
     float softness;
-    float center_x;
-    float center_y;
+    vec2 center;
 } params;
 
 
@@ -28,9 +27,8 @@ void main() {
     }
 
     vec4 color = texelFetch(source_image, id, 0);
-    vec2 center = vec2(params.center_x, params.center_y);
     vec2 position = vec2(id.x, id.y);
-    float distance = distance(position, center);
+    float distance = distance(position, params.center);
     float mix_value = smoothstep(params.radius, params.radius + max(params.softness, 0.001), distance);
 
     color.rgb = mix(color.rgb, params.color.rgb, mix_value * params.color.a);
