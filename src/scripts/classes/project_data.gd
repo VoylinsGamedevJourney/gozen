@@ -23,7 +23,7 @@ var folders: Array[String] = []
 
 #--- Data handling ---
 
-func serialize() -> Dictionary[String, Variant]:
+func serialize() -> Dictionary:
 	var data: Dictionary = {
 		"project_path": project_path,
 		"framerate": framerate,

@@ -105,7 +105,7 @@ func _init_start(p_resolution: Vector2i) -> void:
 
 		fade_shader = device.shader_create_from_spirv(fade_spirv)
 		fade_pipeline = device.compute_pipeline_create(fade_shader)
-		if !fade_buffer_data.resize(16):
+		if fade_buffer_data.resize(16):
 			printerr("VisualCompositor: Couldn't resize fade_buffer_data!")
 		fade_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
 
@@ -206,7 +206,7 @@ func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: i
 		device.texture_update(v_texture, 0, video.get_v_data().get_data()):
 		printerr("VisualCompositor: Failed to update yuv texture in RenderingDevice!")
 
-	if video.get_has_alpha() and !device.texture_update(a_texture, 0, video.get_a_data().get_data()):
+	if video.get_has_alpha() and device.texture_update(a_texture, 0, video.get_a_data().get_data()):
 		printerr("VisualCompositor: Failed to update alpha texture in RenderingDevice!")
 
 	_update_effect_buffers(effects, frame_nr)
@@ -214,10 +214,10 @@ func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: i
 	if fade_alpha < 1.0:
 		var buffer_data: PackedByteArray = PackedByteArray()
 
-		if !buffer_data.resize(16):
+		if buffer_data.resize(16):
 			printerr("VisualCompositor: Couldn't resize buffer data to 16!")
 		buffer_data.encode_float(0, fade_alpha)
-		if !device.buffer_update(fade_buffer, 0, 16, buffer_data):
+		if device.buffer_update(fade_buffer, 0, 16, buffer_data):
 			printerr("VisualCompositor: Couldn't update fade buffer!")
 
 	# Start of compute list:
@@ -264,15 +264,15 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame
 		return
 
 	_update_effect_buffers(effects, frame_nr)
-	if !device.texture_copy(rd_input_tex, pong_texture, Vector3.ZERO, Vector3.ZERO, Vector3(resolution.x, resolution.y, 1), 0, 0, 0, 0):
+	if device.texture_copy(rd_input_tex, pong_texture, Vector3.ZERO, Vector3.ZERO, Vector3(resolution.x, resolution.y, 1), 0, 0, 0, 0):
 		printerr("VisualCompositor: Failed to copy texture frame on RenderingDevice for processing!")
 
 	if fade_alpha < 1.0:
 		var buffer_data: PackedByteArray = PackedByteArray()
-		if !buffer_data.resize(16):
+		if buffer_data.resize(16):
 			printerr("VisualCompositor: Couldn't resize buffer data to 16!")
 		buffer_data.encode_float(0, fade_alpha)
-		if !device.buffer_update(fade_buffer, 0, 16, buffer_data):
+		if device.buffer_update(fade_buffer, 0, 16, buffer_data):
 			printerr("VisualCompositor: Couldn't update buffer for fade!")
 
 	var compute_list: int = device.compute_list_begin()
@@ -354,7 +354,7 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 		else:
 			for i: int in effect.shader_passes:
 				var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution, i)
-				if !device.buffer_update(buffers[i] as RID, 0, buffer_data.size(), buffer_data):
+				if device.buffer_update(buffers[i] as RID, 0, buffer_data.size(), buffer_data):
 					printerr("VisualCompositor: Coudln't update buffer data!")
 
 	var known_ids: Array = effect_buffers.keys()
@@ -363,7 +363,7 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 			for buffer: RID in effect_buffers[buffer_id]:
 				@warning_ignore("return_value_discarded")
 				Utils.cleanup_rid(device, buffer)
-			if !effect_buffers.erase(buffer_id):
+			if effect_buffers.erase(buffer_id):
 				printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)
 
 
@@ -432,7 +432,7 @@ func _create_yuv_params(video: Video) -> RID:
 	var stream_writer: StreamPeerBuffer = StreamPeerBuffer.new()
 	var matrix_data: PackedFloat32Array
 
-	if !yuv_buffer_data.resize(YUV_PARAM_BUFFER_SIZE):
+	if yuv_buffer_data.resize(YUV_PARAM_BUFFER_SIZE):
 		printerr("VisualCompositor: Couldn't resize yuv_buffer_data!")
 	stream_writer.data_array = yuv_buffer_data
 
@@ -461,7 +461,7 @@ func _create_yuv_params(video: Video) -> RID:
 
 func _create_storage_buffer(size_bytes: int) -> RID:
 	var buffer_data: PackedByteArray = []
-	if !buffer_data.resize(size_bytes):
+	if buffer_data.resize(size_bytes):
 		printerr("VisualCompositor: Couldn't resize buffer data for creating storage buffer!")
 	return device.storage_buffer_create(size_bytes, buffer_data)
 

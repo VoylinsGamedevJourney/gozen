@@ -26,7 +26,7 @@ func get_custom_ui() -> EffectUI:
 
 func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 	var param_id: String = effect_param.id
-	var sorted_keys: Array[int] = _validate_cache(param_id)
+	var sorted_keys: PackedInt64Array = _validate_cache(param_id)
 
 	if sorted_keys.is_empty():
 		return effect_param.default_value

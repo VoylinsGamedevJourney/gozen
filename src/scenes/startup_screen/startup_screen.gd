@@ -112,7 +112,7 @@ func _set_recent_projects() -> void:
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	for new_path: String in new_paths:
-		if !file.store_line(new_path):
+		if !file.store_line(new_path) or file.get_error():
 			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
 	file.close()
 
@@ -123,7 +123,7 @@ func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if !file.store_string(context):
+	if !file.store_string(context) or file.get_error():
 		printerr("StartupScreen: Error storing String for recent_projects!\n", get_stack())
 	hbox.queue_free()
 

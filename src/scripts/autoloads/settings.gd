@@ -40,7 +40,7 @@ func _ready() -> void:
 		if response != OK:
 			printerr("Settings: Couldn't load settings! ", response)
 
-	if !DirAccess.dir_exists_absolute(PATH_THEMES) and !DirAccess.make_dir_absolute(PATH_THEMES):
+	if !DirAccess.dir_exists_absolute(PATH_THEMES) and DirAccess.make_dir_absolute(PATH_THEMES):
 		printerr("Settings: Couldn't create directory at '%s'!" % PATH_THEMES)
 
 	load_system_fonts()
@@ -79,7 +79,7 @@ func get_system_font(font_name: String) -> SystemFont:
 func load_custom_themes() -> void:
 	var default_themes: Dictionary[String, String] = get_themes()
 	var dir: DirAccess = DirAccess.open(PATH_THEMES)
-	if !dir or !dir.list_dir_begin():
+	if !dir or dir.list_dir_begin():
 		return
 
 	var file_name: String = dir.get_next()

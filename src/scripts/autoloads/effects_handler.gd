@@ -155,9 +155,9 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 
 func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) -> void:
 	if is_visual:
-		if !clip.effects.video.insert(index, effect):
+		if clip.effects.video.insert(index, effect):
 			printerr("EffectsHandler: Error when inserting video effect!")
-	elif !clip.effects.audio.insert(index, effect):
+	elif clip.effects.audio.insert(index, effect):
 		printerr("EffectsHandler: Error when inserting audio effect!")
 
 	effect_added.emit(clip, index, is_visual)

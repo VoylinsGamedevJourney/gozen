@@ -3,12 +3,12 @@ extends RefCounted
 
 
 
-static func get_data(instance: RefCounted) -> Dictionary[String, Variant]:
+static func get_data(instance: RefCounted) -> Dictionary:
 	if instance.has_method("serialize"):
 		@warning_ignore("unsafe_method_access")
 		return instance.serialize()
 
-	var data: Dictionary[String, Variant] = {}
+	var data: Dictionary = {}
 	for property: Dictionary in instance.get_property_list():
 		if property.name[0] != '_' and property.usage in [4096, 4102, 69632]:
 			data[property.name] = instance.get(str(property.name))
@@ -22,7 +22,7 @@ static func save_data(save_path: String, instance: RefCounted) -> int:
 		printerr("DataManager: Something went wrong opening file '%s'!" % tmp_path)
 		return ERR_FILE_CANT_OPEN
 
-	var data: Dictionary[String, Variant] = get_data(instance)
+	var data: Dictionary = get_data(instance)
 	if !file.store_string(var_to_str(data)):
 		printerr("DataManager: Something went wrong storing data to file '%s'!" % tmp_path)
 		return file.get_error()
@@ -31,9 +31,9 @@ static func save_data(save_path: String, instance: RefCounted) -> int:
 	var file_name: String = save_path.get_file()
 	var tmp_name: String = file_name + ".tmp"
 	if dir.file_exists(file_name):
-		if !dir.remove(file_name):
+		if dir.remove(file_name):
 			printerr("DataManager: Problem happened on removing '%s'!" % file_name)
-	if !dir.rename(tmp_name, file_name):
+	if dir.rename(tmp_name, file_name):
 		printerr("DataManager: Problem happened on renaming '%s' to '%s'!" % [tmp_name, file_name])
 	return OK
 

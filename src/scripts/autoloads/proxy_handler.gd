@@ -12,7 +12,7 @@ const PROXY_HEIGHT: int = 540
 
 func _ready() -> void:
 	var proxy_path: String = Settings.get_proxies_path()
-	if !DirAccess.dir_exists_absolute(proxy_path) and !DirAccess.make_dir_absolute(proxy_path):
+	if !DirAccess.dir_exists_absolute(proxy_path) and DirAccess.make_dir_absolute(proxy_path):
 		printerr("ProxyHandler: Couldn't create directory at '%s'!" % proxy_path)
 
 
@@ -35,7 +35,7 @@ func request_generation(file: FileData) -> void:
 
 func delete_proxy(file: FileData) -> void:
 	if !file.proxy_path.is_empty():
-		if !DirAccess.remove_absolute(file.proxy_path):
+		if DirAccess.remove_absolute(file.proxy_path):
 			printerr("ProxyHandler: Couldn't remove directory at '%s'!" % file.proxy_path)
 		FileLogic.set_proxy_path(file, "")
 
@@ -95,7 +95,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 			0.062745,  0.500000,  0.500000, 1.0 ])
 	var yuv_sampler: RID = rendering_device.sampler_create(RDSamplerState.new())
 	var params_bytes: PackedByteArray = PackedByteArray()
-	if !params_bytes.resize(80):
+	if params_bytes.resize(80):
 		printerr("ProxyHandler: Couldn't resize params_bytes!")
 	for index: int in 16:
 		params_bytes.encode_float(index * 4, bt709_rgb_to_yuv[index])
@@ -130,7 +130,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 		var image: Image = video.generate_thumbnail_at_current_frame() # RGBA Image
 		if image:
 			image.resize(target_resolution.x, target_resolution.y, Image.INTERPOLATE_BILINEAR)
-			if !rendering_device.texture_update(input_tex, 0, image.get_data()):
+			if rendering_device.texture_update(input_tex, 0, image.get_data()):
 				printerr("ProxyHandler: Couldn't update texture for rendering device!")
 
 			var compute_list: int = rendering_device.compute_list_begin()

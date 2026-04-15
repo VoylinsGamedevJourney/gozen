@@ -144,7 +144,7 @@ func _on_audio_wave_generated(file: FileData) -> void:
 	Threader.mutex.unlock()
 
 	# Queue this file for immediate thumbnail regeneration.
-	if not thumbs_todo.has(file) and !thumbs_todo.insert(0, file):
+	if not thumbs_todo.has(file) and thumbs_todo.insert(0, file):
 		printerr("Thumbnailer: Couldn't insert '%s' in thumbs_todo!" % file.path)
 
 

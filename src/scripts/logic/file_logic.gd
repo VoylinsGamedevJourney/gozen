@@ -35,7 +35,7 @@ var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
 
 
 func _ready() -> void:
-	if !DirAccess.dir_exists_absolute(wave_folder) and !DirAccess.make_dir_recursive_absolute(wave_folder):
+	if !DirAccess.dir_exists_absolute(wave_folder) and DirAccess.make_dir_recursive_absolute(wave_folder):
 		printerr("FileLogic: Couldn't create folder '%s'!" % wave_folder)
 
 	@warning_ignore_start("return_value_discarded")
@@ -427,10 +427,10 @@ func _load_video(file: FileData) -> void:
 	var path_to_load: String = file.path
 
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty():
-		if FileAccess.file_exists(file.proxy_path) and !temp_video.open(file.proxy_path):
-			return printerr("FileData: Couldn't open proxy video at path '%s'!" % file.proxy_path)
-	if !temp_video.is_open() and !temp_video.open(path_to_load):
-		return printerr("FileData: Couldn't open video at path '%s'!" % file.path)
+		if FileAccess.file_exists(file.proxy_path) and temp_video.open(file.proxy_path):
+			return printerr("FileLogic: Couldn't open proxy video at path '%s'!" % file.proxy_path)
+	if !temp_video.is_open() and temp_video.open(path_to_load):
+		return printerr("FileLogic: Couldn't open video at path '%s'!" % file.path)
 
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	temp_video.set_cache_size(Settings.get_video_cache_size())
@@ -499,7 +499,7 @@ func _create_wave(file: FileData) -> void:
 	var local_wave_1: PackedFloat32Array = PackedFloat32Array()
 	var local_wave_4: PackedFloat32Array = PackedFloat32Array()
 	var local_wave_16: PackedFloat32Array = PackedFloat32Array()
-	if !local_wave_1.resize(total_blocks) or !local_wave_4.resize(ceili(total_blocks / 4.0)) or !local_wave_16.resize(ceili(total_blocks / 16.0)):
+	if local_wave_1.resize(total_blocks) or local_wave_4.resize(ceili(total_blocks / 4.0)) or local_wave_16.resize(ceili(total_blocks / 16.0)):
 		printerr("FileLogic: Couldn't resize local wave array's!")
 	audio_wave[file.id] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
 

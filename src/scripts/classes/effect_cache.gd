@@ -81,7 +81,7 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i, 
 	var padding: int = 16 - (buffer_data.size() % 16)
 
 	# Add final padding.
-	if padding != 0 and !buffer_data.resize(buffer_data.size() + padding):
+	if padding != 0 and buffer_data.resize(buffer_data.size() + padding):
 		printerr("EffectCache: Couldn't resize buffer_data!")
 	return buffer_data
 

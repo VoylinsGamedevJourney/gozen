@@ -181,7 +181,7 @@ func _delete_custom_profile(index: int) -> void:
 	var path: String = option_button_render_profiles.get_item_metadata(index)
 
 	option_button_render_profiles.remove_item(index)
-	if path != "" and FileAccess.file_exists(path) and !DirAccess.remove_absolute(path):
+	if path != "" and FileAccess.file_exists(path) and DirAccess.remove_absolute(path):
 		printerr("RenderScreen: Couldn't remove directory '%s'!" % path)
 	_on_render_settings_changed()
 
@@ -540,7 +540,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264_PRESETS
 
-	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH) and !DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
+	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH) and DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
 		printerr("RenderScreen: Couldn't create directory at '%s'!" % USER_PROFILES_PATH)
 
 	# Fix filename to not cause issues.

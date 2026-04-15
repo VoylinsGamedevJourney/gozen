@@ -337,7 +337,7 @@ func _add_folder_to_tree(folder: String) -> void:
 		Folder '%s' already exists!" % folder)
 
 	# Check if all parent folders exist or not.
-	var folders: Array[String] = folder.split('/', false)
+	var folders: PackedStringArray = folder.split('/', false)
 	var check_path: String = "/"
 	var previous_folder: TreeItem = folder_items["/"]
 

@@ -36,7 +36,7 @@ var clip_mute_button: CheckButton # Only for section_audio.
 
 
 func _ready() -> void:
-	if !DirAccess.dir_exists_absolute(PRESETS_PATH) and !DirAccess.make_dir_absolute(PRESETS_PATH):
+	if !DirAccess.dir_exists_absolute(PRESETS_PATH) and DirAccess.make_dir_absolute(PRESETS_PATH):
 		printerr("EffectsPanel: Couldn't create folder at '%s'!" % PRESETS_PATH)
 
 	clip_mute_button = CheckButton.new()
@@ -1287,7 +1287,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		vbox.add_child(default_hbox)
 
 	var dir: DirAccess = DirAccess.open(PRESETS_PATH)
-	if !dir.list_dir_begin():
+	if dir.list_dir_begin():
 		printerr("EffectsPanel: Couldn't go to beginning of '%s' directory!" % PRESETS_PATH)
 
 	var file_name: String = dir.get_next()

@@ -411,7 +411,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 	var anchor_index: int = clips.find(pressed_clip)
 	if anchor_index != -1:
 		clips.remove_at(anchor_index)
-		if !clips.insert(0, pressed_clip):
+		if clips.insert(0, pressed_clip):
 			printerr("TimelinePanel: Couldn't insert '%s' into clips!" % pressed_clip.id)
 	for clip: ClipData in clips:
 		if !data.ids.append(clip.id):
