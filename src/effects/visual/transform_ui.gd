@@ -97,9 +97,9 @@ func _create_alignment_buttons() -> Control:
 		[HORIZONTAL_ALIGNMENT_RIGHT, preload(Library.ICON_ALIGN_RIGHT)]]
 	var vertical_hbox: HBoxContainer = HBoxContainer.new()
 	var vertical_data: Array[Array] = [
-		[VERTICAL_ALIGNMENT_TOP, preload(Library.ICON_ALIGN_TOP)],
-		[VERTICAL_ALIGNMENT_CENTER, preload(Library.ICON_ALIGN_CENTER)],
-		[VERTICAL_ALIGNMENT_BOTTOM, preload(Library.ICON_ALIGN_BOTTOM)]]
+		[VERTICAL_ALIGNMENT_TOP + 3, preload(Library.ICON_ALIGN_TOP)],
+		[VERTICAL_ALIGNMENT_CENTER + 3, preload(Library.ICON_ALIGN_CENTER)],
+		[VERTICAL_ALIGNMENT_BOTTOM + 3, preload(Library.ICON_ALIGN_BOTTOM)]]
 
 	for data: Array in horizontal_data:
 		var tex_button: TextureButton = TextureButton.new()
@@ -185,11 +185,11 @@ func _align(type: int) -> void:
 			target_pos.x = (res.x / 2.0) - current_pivot.x - ((res.x / 2.0) - current_pivot.x) * current_scale.x
 		HORIZONTAL_ALIGNMENT_RIGHT:
 			target_pos.x = res.x - current_pivot.x - (max_bounds.x - current_pivot.x) * current_scale.x
-		VERTICAL_ALIGNMENT_TOP:
+		VERTICAL_ALIGNMENT_TOP + 3:
 			target_pos.y = current_pivot.y * (current_scale.y - 1.0) - min_bounds.y * current_scale.y
-		VERTICAL_ALIGNMENT_CENTER:
+		VERTICAL_ALIGNMENT_CENTER + 3:
 			target_pos.y = (res.y / 2.0) - current_pivot.y - ((res.y / 2.0) - current_pivot.y) * current_scale.y
-		VERTICAL_ALIGNMENT_BOTTOM:
+		VERTICAL_ALIGNMENT_BOTTOM + 3:
 			target_pos.y = res.y - current_pivot.y - (max_bounds.y - current_pivot.y) * current_scale.y
 		HORIZONTAL_ALIGNMENT_FILL:
 			target_pos = Vector2.ZERO
