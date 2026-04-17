@@ -22,8 +22,10 @@ var _scrub_time: float = -1.0
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
 	file_a_wave.zoom_requested.connect(_on_wave_zoom_requested)
 	file_b_wave.zoom_requested.connect(_on_wave_zoom_requested)
+	@warning_ignore_restore("return_value_discarded")
 
 
 func _on_wave_zoom_requested(new_duration: float) -> void:

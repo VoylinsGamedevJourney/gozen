@@ -743,7 +743,7 @@ func _update_ui_values() -> void:
 			var param_hbox: HBoxContainer = content_vbox.get_child(i)
 			var reset_button: TextureButton = param_hbox.get_child(1)
 			var param_settings: Control = param_hbox.get_child(2)
-			var keyframe_button: TextureButton = param_hbox.get_child(4)
+			var keyframe_button: TextureButton = param_hbox.get_child(3)
 			var value: Variant = text_effects.get_value(param, frame_nr)
 			_set_param_settings_value(param_settings, value)
 
@@ -807,7 +807,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 
 			var effect_keyframes: Dictionary = effect.keyframes[param_id]
 			if param.keyframeable:
-				var keyframe_button: TextureButton = param_hbox.get_child(4)
+				var keyframe_button: TextureButton = param_hbox.get_child(3)
 				if effect_keyframes.has(frame_nr):
 					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
 				else:
