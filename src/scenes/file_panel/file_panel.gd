@@ -53,6 +53,7 @@ func _ready() -> void:
 	FileLogic.moved.connect(_on_moved)
 	FileLogic.path_updated.connect(_on_path_updated)
 	FileLogic.nickname_changed.connect(_on_nickname_changed)
+	FileLogic.request_drop_folder.connect(_on_request_drop_folder)
 	FolderLogic.added.connect(_on_folder_added)
 	FolderLogic.deleted.connect(_on_folder_deleted)
 	FolderLogic.path_changed.connect(_on_folder_renamed)
@@ -77,6 +78,21 @@ func _on_project_ready() -> void:
 			_add_folder_to_tree(folder)
 	for file: FileData in FileLogic.files.values():
 		_add_file_to_tree(file)
+
+
+func _on_request_drop_folder(screen_pos: Vector2) -> void:
+	if tree.is_visible_in_tree() and tree.get_global_rect().has_point(screen_pos):
+		var local_pos: Vector2 = tree.get_global_transform().affine_inverse() * screen_pos
+		var item: TreeItem = tree.get_item_at_position(local_pos)
+		var target_folder: String = "/"
+		if item:
+			var metadata: Variant = item.get_metadata(0)
+			if str(metadata).is_valid_int(): # File
+				var file: FileData = FileLogic.files[metadata as int]
+				target_folder = file.folder
+			else: # Folder.
+				target_folder = str(metadata)
+		FileLogic.current_drop_folder = target_folder
 
 
 func _file_menu_pressed(id: int) -> void:
@@ -322,8 +338,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		for file_id: int in file_ids:
 			if file_id in draggable.ids:
 				continue
-			if !draggable.ids.append(file_id):
-				printerr("FilePanel: Couldn't add '%s' to draggable ids!" % file_id)
+			draggable.ids.append(file_id)
 			draggable.duration += FileLogic.files[file_id].duration
 		selected = tree.get_next_selected(selected)
 		if selected == null:

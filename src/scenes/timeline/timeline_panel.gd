@@ -415,8 +415,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 		if clips.insert(0, pressed_clip):
 			printerr("TimelinePanel: Couldn't insert '%s' into clips!" % pressed_clip.id)
 	for clip: ClipData in clips:
-		if !data.ids.append(clip.id):
-			printerr("TimelinePanel: Couldn't append clip '%s' into draggable!" % clip.id)
+		data.ids.append(clip.id)
 	data.mouse_offset = get_frame_from_mouse() - pressed_clip.start
 	Timeline.state = Timeline.STATE.MOVING
 	return data
@@ -905,7 +904,7 @@ func split_clips_at(frame_pos: int) -> void:
 
 
 func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -> void:
-	if get_global_rect().has_point(screen_pos):
+	if is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
 		var track_idx: int = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
 		var frame_nr: int = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
@@ -913,8 +912,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 		var drag_data: Draggable = Draggable.new()
 		drag_data.is_file = true
 		for file: FileData in files:
-			if !drag_data.ids.append(file.id):
-				printerr("TimelinePanel: Couldn't append file '%s' into draggable!" % file.id)
+			drag_data.ids.append(file.id)
 			drag_data.duration += file.duration
 		drag_data.mouse_offset = 0
 
