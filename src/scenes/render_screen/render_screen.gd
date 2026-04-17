@@ -378,8 +378,7 @@ func _on_start_render_button_pressed() -> void:
 
 		@warning_ignore_start("return_value_discarded")
 		dialog.confirmed.connect(func() -> void:
-				await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
-				dialog.queue_free())
+				await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame))
 		dialog.canceled.connect(dialog.queue_free)
 		@warning_ignore_restore("return_value_discarded")
 		dialog.popup_centered()

@@ -173,7 +173,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	frame_queue.clear()
 	stop_encoding = false
 	thread = Thread.new()
-	if !thread.start(_encoding_loop):
+	if thread.start(_encoding_loop):
 		printerr("RenderManager: Couldn't start encoder thread!")
 		stop_encoder()
 		update_encoder_status.emit(STATUS.ERROR_CANCELED)
