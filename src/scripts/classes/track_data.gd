@@ -11,7 +11,14 @@ var is_locked: bool = false
 #--- Data handling ---
 
 func serialize() -> Dictionary:
-	return { "is_muted": is_muted, "is_visible": is_visible, "is_locked": is_locked }
+	var data: Dictionary = {}
+	if is_muted:
+		data["is_muted"] = true
+	if !is_visible:
+		data["is_visible"] = false
+	if is_locked:
+		data["is_locked"] = true
+	return data
 
 
 func deserialize(dict: Dictionary) -> void:

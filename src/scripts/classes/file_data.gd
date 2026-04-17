@@ -27,15 +27,18 @@ func serialize() -> Dictionary:
 	var data: Dictionary = {
 		"id": id,
 		"path": path,
-		"proxy_path": proxy_path,
 		"modified_time": modified_time,
 		"type": type,
 		"nickname": nickname,
-		"folder": folder,
 		"duration": duration,
 		"ato_active": ato_active,
 		"ato_offset": ato_offset,
 		"ato_file": ato_file}
+
+	if !proxy_path.is_empty():
+		data["proxy_path"] = proxy_path
+	if folder != "/":
+		data["folder"] = folder
 
 	if temp_file:
 		@warning_ignore("unsafe_method_access")

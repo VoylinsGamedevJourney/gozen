@@ -26,29 +26,35 @@ var folders: Array[String] = []
 func serialize() -> Dictionary:
 	var data: Dictionary = {
 		"project_path": project_path,
-		"framerate": framerate,
-		"resolution": resolution,
-		"background_color": background_color.to_html(),
 		"timeline_end": timeline_end,
 		"playhead": playhead,
-		"render_region": render_region,
-		"use_render_region": use_render_region,
 		"folders": folders,
-		"files": {},
-		"clips": {},
-		"tracks": [],
-		"markers": []}
+		"files": {}, "clips": {},
+		"tracks": []}
+
+	if background_color != Color.BLACK:
+		data["background_color"] = background_color.to_html()
+	if framerate != 30.0:
+		data["framerate"] = framerate
+	if resolution != Vector2i(1920, 1080):
+		data["resolution"] = resolution
+
+	if render_region.x != render_region.y:
+		data["render_region"] = render_region
+	if use_render_region:
+		data["use_render_region"] = true
+
+	if markers.size() != 0:
+		data["markers"] = []
 
 	@warning_ignore_start("unsafe_method_access")
 	for file_id: int in files:
 		data["files"][file_id] = files[file_id].serialize()
-
 	for clip_id: int in clips:
 		data["clips"][clip_id] = clips[clip_id].serialize()
 
 	for track: TrackData in tracks:
 		data["tracks"].append(track.serialize())
-
 	for marker: MarkerData in markers:
 		data["markers"].append(marker.serialize())
 	@warning_ignore_restore("unsafe_method_access")

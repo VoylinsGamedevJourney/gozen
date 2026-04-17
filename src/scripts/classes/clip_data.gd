@@ -15,7 +15,6 @@ extends Resource
 
 @export var effects: ClipEffects
 
-
 @export var end: int: ## Should never be set.
 		get: return start + duration
 
@@ -24,16 +23,21 @@ extends Resource
 #--- Data handling ---
 
 func serialize() -> Dictionary:
-	return {
+	var data: Dictionary = {
 		"id": id,
 		"track": track,
 		"type": type,
 		"file": file,
 		"start": start,
-		"begin": begin,
-		"speed": speed,
 		"duration": duration,
 		"effects": effects.serialize() if effects else {}}
+
+	if begin != 0:
+		data["begin"] = begin
+	if speed != 1.0:
+		data["speed"] = speed
+
+	return data
 
 
 func deserialize(data: Dictionary) -> void:

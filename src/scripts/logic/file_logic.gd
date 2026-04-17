@@ -12,6 +12,7 @@ signal audio_wave_generated(file: FileData)
 
 signal video_loaded(file: FileData)
 
+signal request_drop_folder(screen_pos: Vector2)
 signal files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2)
 
 
@@ -20,7 +21,7 @@ const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo).
 
 var files: Dictionary[int, FileData]
 
-# Runtime file data
+# Runtime file data.
 var file_data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK.
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
 var audio_wave: Dictionary[int, Dictionary] = {} ## { file: { 1: wave_1, 5: wave_4, 16: wave_16 }} - Different detail levels.
@@ -29,6 +30,7 @@ var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
 
 var files_dropping: bool = false
 var drop_mouse_pos: Vector2 = Vector2.ZERO
+var current_drop_folder: String = "/"
 
 var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
 
@@ -288,6 +290,9 @@ func duplicate_text(file: FileData) -> void:
 func dropped(dropped_file_paths: Array[String]) -> void:
 	drop_mouse_pos = get_viewport().get_mouse_position()
 	files_dropping = true
+	current_drop_folder = "/"
+	request_drop_folder.emit(drop_mouse_pos)
+
 	var existing_paths: Array[String] = []
 	for file: FileData in files.values():
 		existing_paths.append(file.path)
@@ -297,10 +302,13 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 	var missing_folders: Dictionary = {}
 	for path: String in paths_dict:
 		if path not in existing_paths:
-			paths_to_process[path] = paths_dict[path] # Duplicate check.
 			var virtual_folder: String = paths_dict[path]
+			if current_drop_folder != "/":
+				virtual_folder = current_drop_folder + virtual_folder.trim_prefix("/")
+			paths_to_process[path] = virtual_folder # Duplicate check.
+
 			if virtual_folder != "/":
-				var parts: Array[String] = virtual_folder.split("/", false)
+				var parts: PackedStringArray = virtual_folder.split("/", false)
 				var current_path: String = "/"
 				for part: String in parts:
 					current_path += part + "/"

@@ -5,8 +5,8 @@ extends Resource
 var video: Array[EffectVisual] = []
 var audio: Array[EffectAudio] = []
 
-var fade_visual: Vector2i ## { x = in, y = out }.
-var fade_audio: Vector2i ## { x = in, y = out }.
+var fade_visual: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
+var fade_audio: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
 
 var ato_active: bool = false
 var ato_offset: float = 0.0 ## Seconds.
@@ -19,15 +19,26 @@ var is_muted: bool = false
 #--- Data handling ---
 
 func serialize() -> Dictionary:
-	var data: Dictionary = {
-		"fade_visual": fade_visual,
-		"fade_audio": fade_audio,
-		"ato_active": ato_active,
-		"ato_offset": ato_offset,
-		"ato_file": ato_file,
-		"is_muted": is_muted,
-		"video": [],
-		"audio": []}
+	var data: Dictionary = {}
+
+	if video.size() != 0:
+		data["video"] = []
+	if audio.size() != 0:
+		data["audio"] = []
+
+	if fade_visual != Vector2i.ZERO:
+		data["fade_visual"] = fade_visual
+	if fade_audio != Vector2i.ZERO:
+		data["fade_audio"] = fade_audio
+
+	if is_muted != false:
+		data["is_muted"] = is_muted
+	if ato_active != false:
+		data["ato_active"] = ato_active
+	if ato_offset != 0.0:
+		data["ato_offset"] = ato_offset
+	if ato_file != -1:
+		data["ato_file"] = ato_file
 
 	for effect: EffectVisual in video:
 		@warning_ignore("unsafe_method_access")

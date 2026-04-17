@@ -108,7 +108,11 @@ func serialize() -> Dictionary:
 		keyframe_dict[param_id] = {}
 		for frame: int in keyframes[param_id]:
 			keyframe_dict[param_id][frame] = keyframes[param_id][frame]
-	return { "id": id, "is_enabled": is_enabled, "keyframes": keyframe_dict }
+
+	var data: Dictionary = { "id": id, "keyframes": keyframe_dict }
+	if !is_enabled:
+		data["is_enabled"] = false
+	return data
 
 
 func deserialize(dict: Dictionary) -> void:

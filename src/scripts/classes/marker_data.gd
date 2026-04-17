@@ -10,7 +10,10 @@ var type: int
 #--- Data handling ---
 
 func serialize() -> Dictionary:
-	return { "frame_nr": frame_nr, "text": text, "type": type }
+	var data: Dictionary = { "frame_nr": frame_nr, "text": text }
+	if type != 0:
+		data["type"] = type
+	return data
 
 
 func deserialize(dict: Dictionary) -> void:

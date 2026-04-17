@@ -5,7 +5,7 @@ extends RefCounted
 const BASE_NAME: String = "<Draggable:%s-%s>"
 
 
-var ids: PackedInt64Array = []
+var ids: Array[int] = []
 var duration: int = 0 ## Duration in frames.
 var is_file: bool = false ## ID's are file ids.
 
