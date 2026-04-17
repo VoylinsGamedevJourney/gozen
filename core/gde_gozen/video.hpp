@@ -52,6 +52,8 @@ class Video : public Resource {
 	UniqueAVFrame av_sws_frame;
 	UniqueSwsCtx sws_ctx;
 
+	unsigned char* avio_ctx_buffer = nullptr;
+
 	enum AVColorPrimaries color_profile;
 
 	BufferData buffer_data;

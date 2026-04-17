@@ -63,7 +63,7 @@ int Video::open(const String& video_path) {
 		buffer_data.size = file_buffer.size();
 		buffer_data.offset = 0;
 
-		unsigned char* avio_ctx_buffer = (unsigned char*)av_malloc(FFmpeg::AVIO_CTX_BUFFER_SIZE);
+		avio_ctx_buffer = (unsigned char*)av_malloc(FFmpeg::AVIO_CTX_BUFFER_SIZE);
 		avio_ctx = make_unique_ffmpeg<AVIOContext, AVIOContextDeleter>(
 			avio_alloc_context(avio_ctx_buffer, FFmpeg::AVIO_CTX_BUFFER_SIZE, 0, &buffer_data,
 							   &FFmpeg::read_buffer_packet, nullptr, &FFmpeg::seek_buffer));
@@ -71,6 +71,7 @@ int Video::open(const String& video_path) {
 		if (!avio_ctx) {
 			close();
 			av_free(avio_ctx_buffer);
+			avio_ctx_buffer = nullptr;
 			return _log_err("Failed to create avio_ctx");
 		}
 
@@ -381,6 +382,12 @@ void Video::close() {
 
 	sws_ctx.reset();
 	avio_ctx.reset();
+
+	if (avio_ctx_buffer) {
+		av_free(avio_ctx_buffer);
+		avio_ctx_buffer = nullptr;
+	}
+
 	file_buffer.clear();
 }
 
