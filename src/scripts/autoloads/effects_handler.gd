@@ -392,7 +392,7 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 
 	if effect.keyframes.has(param_id):
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
-		if effect_keyframes.erase(frame_nr):
+		if !effect_keyframes.erase(frame_nr):
 			printerr("Frame nr '%s' wasn't present in effect_keyframes!" % frame_nr)
 		if effect_keyframes.is_empty() and !effect.keyframes.erase(param_id):
 			printerr("Param id '%s' wasn't present in effect.keyframes!" % param_id)

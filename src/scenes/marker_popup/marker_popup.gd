@@ -12,6 +12,7 @@ static var last_type: int = 0 ## We want to save the last used type.
 
 
 func _ready() -> void:
+	@warning_ignore("return_value_discarded")
 	marker_line_edit.text_submitted.connect(_on_create_marker_pressed.unbind(1))
 	_setup_type_option_button()
 	accept_event()

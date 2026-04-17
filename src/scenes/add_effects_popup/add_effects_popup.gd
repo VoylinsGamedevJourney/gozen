@@ -89,8 +89,10 @@ func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> 
 		button.add_theme_stylebox_override("hover", stylebox_pressed)
 		button.add_theme_stylebox_override("focus", stylebox_pressed)
 
+		@warning_ignore_start("return_value_discarded")
 		button.pressed.connect(_on_effect_clicked.bind(effects_data[effect_option], is_visual))
 		button.pressed.connect(_on_close_button_pressed)
+		@warning_ignore_restore("return_value_discarded")
 
 		shown_buttons.append(button)
 		effect_buttons.add_child(button)
