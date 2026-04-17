@@ -106,7 +106,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		await RenderingServer.frame_post_draw
 
 		var audio_thread: Thread = Thread.new()
-		if !audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame)):
+		if audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame)):
 			printerr("RenderManager: Couldn't start audio thread!")
 			stop_encoder()
 			update_encoder_status.emit(STATUS.ERROR_AUDIO)

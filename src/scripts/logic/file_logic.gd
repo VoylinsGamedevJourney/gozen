@@ -112,7 +112,7 @@ func _create_file(path: String) -> FileData:
 					time_dict.year, time_dict.month, time_dict.day,
 					time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
-			var splits: Array[String] = path.split("#")
+			var splits: PackedStringArray = path.split("#")
 			file.type = EditorCore.TYPE.COLOR
 			file.duration = Settings.get_color_duration()
 			file.nickname = temp_nickname.replace("#", " #")
