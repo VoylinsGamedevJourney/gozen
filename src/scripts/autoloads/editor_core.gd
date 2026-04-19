@@ -549,17 +549,11 @@ func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> vo
 	# we MUST wait for it to finish to prevent multi-threading crashes in C++.
 	if EditorCore.active_tasks.has(video_id):
 		var task_id: int = EditorCore.active_tasks[video_id]
-		if not WorkerThreadPool.is_task_completed(task_id):
-			if WorkerThreadPool.wait_for_task_completion(task_id):
-				printerr("EditorCore: Something went wrong waiting for task completion!")
+		if WorkerThreadPool.wait_for_task_completion(task_id):
+			printerr("EditorCore: Something went wrong waiting for task completion!")
 		if !EditorCore.active_tasks.erase(video_id):
 			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
 
 	if video.get_current_frame() != target_frame_nr:
-		if is_playing:
-			EditorCore.active_tasks[video_id] = WorkerThreadPool.add_task(func() -> void:
-					@warning_ignore("return_value_discarded")
-					video.seek_frame(target_frame_nr))
-		else:
-			@warning_ignore("return_value_discarded")
-			video.seek_frame(target_frame_nr)
+		@warning_ignore("return_value_discarded")
+		video.seek_frame(target_frame_nr)

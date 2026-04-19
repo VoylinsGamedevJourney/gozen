@@ -382,11 +382,7 @@ void Video::close() {
 
 	sws_ctx.reset();
 	avio_ctx.reset();
-
-	if (avio_ctx_buffer) {
-		av_free(avio_ctx_buffer);
-		avio_ctx_buffer = nullptr;
-	}
+	avio_ctx_buffer = nullptr;
 
 	file_buffer.clear();
 }
@@ -467,7 +463,6 @@ bool Video::seek_frame(int frame_nr) {
 		}
 
 		av_frame_move_ref(av_frame.get(), temp_frame.get());
-		temp_frame = make_unique_avframe();
 		frame_found = true;
 
 		// Get frame pts.
@@ -902,7 +897,7 @@ void Video::_add_to_cache(int frame_nr) {
 	frame_cache.push_back({frame_nr, new_frame});
 
 	// Checking/Fixing max size
-	if (frame_cache.size() > max_cache_size) {
+	while (frame_cache.size() > max_cache_size) {
 		CachedFrame& old = frame_cache.front();
 		av_frame_free(&old.frame);
 		frame_cache.pop_front();
