@@ -165,7 +165,7 @@ func _draw() -> void:
 				MarkerLogic.dragged_marker_offset = _get_frame_on_mouse() * Timeline.zoom + _drag_offset
 				pos_x = MarkerLogic.dragged_marker_offset
 			else:
-				MarkerLogic.dragged_marker_offset = 0
+				MarkerLogic.dragged_marker_offset = marker.frame_nr * Timeline.zoom
 			marker_style_box.bg_color = marker_color * Color(1.0, 1.0, 1.0, 0.2)
 
 		var bubble_pos_x: float = pos_x + (MARKER_LINE_WIDTH / 2.0)
