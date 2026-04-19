@@ -29,10 +29,13 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("save_project", false, true):
 		Project.save()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("save_project_as", false, true):
 		Project.save_as()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("open_project", false, true):
 		Project.open_project()
+		get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
