@@ -337,12 +337,12 @@ func _get_resize_target() -> Timeline.ResizeTarget:
 		if (clip.duration * zoom) < 20.0:
 			continue
 		var start_x: float = clip.start * zoom
-		var end_x: float = clip.end * zoom
+		var end_x: float = (clip.end - 1) * zoom
 		var start_distance: float = abs(mouse_pos - start_x)
 		var end_distance: float = abs(mouse_pos - end_x)
-		if start_distance <= handle_width and (start_distance < end_distance or mouse_pos >= start_x):
+		if start_distance <= handle_width and start_distance < end_distance:
 			return Timeline.ResizeTarget.new(clip, false, clip.start, clip.duration)
-		if end_distance <= handle_width and (end_distance <= start_distance or mouse_pos <= end_x):
+		if end_distance <= handle_width and end_distance <= start_distance:
 			return Timeline.ResizeTarget.new(clip, true, clip.start, clip.duration)
 	return null
 
