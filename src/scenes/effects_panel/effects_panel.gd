@@ -178,7 +178,7 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 		current_file = FileLogic.files[clip.file]
 		_load_effects()
 		section_visuals.folded = false
-		section_audio.folded = false
+		section_audio.folded = clip.effects.is_muted
 
 
 func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
