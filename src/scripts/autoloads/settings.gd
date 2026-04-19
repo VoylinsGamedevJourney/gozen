@@ -125,9 +125,10 @@ func get_language() -> String:
 func get_languages() -> Dictionary:
 	var temp_language_data: Dictionary[String, String] = {}
 	var language_data: Dictionary[String, String] = {}
-	var locales: Array[String] = TranslationServer.get_loaded_locales()
+	var locales: PackedStringArray = TranslationServer.get_loaded_locales()
 
 	if not locales.has("en"):
+		@warning_ignore("return_value_discarded")
 		locales.append("en")
 
 	for code: String in locales:
