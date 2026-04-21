@@ -178,6 +178,8 @@ script = ExtResource("14_eyvjm")
 
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="Grid/TimelineScroll/TimelinePanel/ModeDraw" method="_on_select_mode_button_pressed"]
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SplitModeButton" to="Grid/TimelineScroll/TimelinePanel/ModeDraw" method="_on_cut_mode_button_pressed"]
+[connection signal="toggled" from="TimelineModes/Margin/VBox/SnapButton" to="Grid/TimelineScroll/TimelinePanel" method="_on_snap_button_toggled"]
 [connection signal="gui_input" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_on_gui_input"]
 [connection signal="mouse_entered" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_on_mouse_exited"]
+[connection signal="visibility_changed" from="Grid/TimelineScroll/TimelinePanel" to="Grid/TimelineScroll/TimelinePanel" method="_redraw_on_change"]

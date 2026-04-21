@@ -36,7 +36,7 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
-	Project.project_ready.connect(_on_project_ready)
+	Project.project_ready.connect(update_stamps)
 	Project.render_region_updated.connect(queue_redraw)
 
 	MarkerLogic.added.connect(update_stamps.unbind(1))
@@ -50,55 +50,53 @@ func _ready() -> void:
 	_setup_marker_style_box()
 
 
-func _on_project_ready() -> void:
-	update_stamps()
-
-
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		var event_mouse_button: InputEventMouseButton = event
-		if (event_mouse_button as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
-			_on_left_mouse_button(event_mouse_button)
-	elif event is InputEventMouseMotion:
-		if MarkerLogic.dragged_marker:
-			queue_redraw()
-		elif scrubbing:
-			EditorCore.scrub_to_frame(_get_frame_on_mouse())
-		else:
+	if event is InputEventMouseButton:   _gui_input_mouse_button(event as InputEventMouseButton)
+	elif event is InputEventMouseMotion: _gui_input_mouse_motion(event as InputEventMouseMotion)
+
+
+func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
 			_update_hovered_marker()
-			_update_tooltip()
 
-
-func _on_left_mouse_button(event: InputEventMouseButton) -> void:
-	if event.pressed:
-		_update_hovered_marker()
-
-		if _possible_drag != -1:
-			_drag_start_pos = get_local_mouse_position()
-			MarkerLogic.dragged_marker = MarkerLogic.get_marker(_possible_drag)
-			mouse_default_cursor_shape = Control.CURSOR_DRAG
-			scrubbing = false
-		else:
-			scrubbing = true
-			if EditorCore.is_playing:
-				EditorCore.is_playing = false
-			EditorCore.scrub_to_frame(_get_frame_on_mouse())
-	else: # Mouse released.
-		var marker: MarkerData = MarkerLogic.dragged_marker
-		if marker:
-			var new_frame_nr: int = floori(MarkerLogic.dragged_marker_offset / Timeline.zoom)
-			if new_frame_nr != MarkerLogic.dragged_marker.frame_nr:
-				MarkerLogic.update(new_frame_nr, marker.text, marker.type, marker)
+			if _possible_drag != -1:
+				_drag_start_pos = get_local_mouse_position()
+				MarkerLogic.dragged_marker = MarkerLogic.get_marker(_possible_drag)
+				MarkerLogic.dragged_marker_offset = MarkerLogic.dragged_marker.frame_nr * Timeline.zoom
+				mouse_default_cursor_shape = Control.CURSOR_DRAG
+				scrubbing = false
+				queue_redraw()
 			else:
-				EditorCore.set_frame(new_frame_nr)
-				PopupManager.open(PopupManager.MARKER)
+				scrubbing = true
+				if EditorCore.is_playing:
+					EditorCore.is_playing = false
+				EditorCore.scrub_to_frame(_get_frame_on_mouse())
+		else: # Mouse released.
+			var marker: MarkerData = MarkerLogic.dragged_marker
+			if marker:
+				var is_dragged: bool = get_local_mouse_position().distance_to(_drag_start_pos) > MARKER_DRAG_THRESHOLD
+				var new_frame_nr: int = roundi(MarkerLogic.dragged_marker_offset / Timeline.zoom)
 
-			MarkerLogic.dragged_marker = null
-			MarkerLogic.dragged_marker_offset = 0
-			queue_redraw()
-		if scrubbing:
-			EditorCore.finish_scrub()
-		scrubbing = false
+				if is_dragged and new_frame_nr != marker.frame_nr:
+					MarkerLogic.update(new_frame_nr, marker.text, marker.type, marker)
+				else:
+					EditorCore.set_frame(marker.frame_nr)
+					PopupManager.open(PopupManager.MARKER)
+
+				MarkerLogic.dragged_marker = null
+				MarkerLogic.dragged_marker_offset = 0
+				queue_redraw()
+
+
+func _gui_input_mouse_motion(_event: InputEventMouseMotion) -> void:
+	if MarkerLogic.dragged_marker:
+		queue_redraw()
+	elif scrubbing:
+		EditorCore.scrub_to_frame(_get_frame_on_mouse())
+	else:
+		_update_hovered_marker()
+		_update_tooltip()
 
 
 func _get_frame_on_mouse() -> int:

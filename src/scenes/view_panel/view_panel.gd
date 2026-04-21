@@ -43,10 +43,12 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 
 func _on_label_gui_input(event: InputEvent) -> void:
-	if event is not InputEventMouseButton:
-		return
-	var mouse_event: InputEventMouseButton = event
-	if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton:
+		_on_label_gui_input_mouse_button(event as InputEventMouseButton)
+
+
+func _on_label_gui_input_mouse_button(event: InputEventMouseButton) -> void:
+	if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_show_jump_to_frame_dialog()
 
 
