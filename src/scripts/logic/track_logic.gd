@@ -49,7 +49,7 @@ func _add_track(track: int) -> void:
 func remove_track(track: int) -> void:
 	InputManager.undo_redo.create_action("Remove track: %s" % track)
 	for clip: ClipData in track_clips[track].clips:
-		InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip.id))
+		InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
 		InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
 	InputManager.undo_redo.add_do_method(_remove_track.bind(track))
 	InputManager.undo_redo.add_undo_method(_add_track.bind(track))
