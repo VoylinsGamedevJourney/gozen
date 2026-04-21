@@ -2,6 +2,8 @@ extends PanelContainer
 # TODO: Make it possible to detach the view panel into a floating window.
 # TODO: Add option to preview at lower quality (performance, needs to be done through EditorCore)
 
+@export var project_view: TextureRect
+
 @export var button_play: TextureButton
 @export var button_pause: TextureButton
 @export var button_playback_speed: Button
@@ -24,6 +26,20 @@ func _ready() -> void:
 
 	_on_play_changed(EditorCore.is_playing)
 
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton: _gui_input_mouse_button(event as InputEventMouseButton)
+
+
+func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
+	if !event.ctrl_pressed:
+		return
+	elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		project_view.call("_zoom_view", 1.05)
+		accept_event()
+	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		project_view.call("_zoom_view", 1.0 / 1.05)
+		accept_event()
 
 
 func _on_label_gui_input(event: InputEvent) -> void:

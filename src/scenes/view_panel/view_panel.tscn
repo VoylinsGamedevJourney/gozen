@@ -12,7 +12,7 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_l50ca"]
 
-[node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("button_play", "button_pause", "button_playback_speed", "frame_label", "time_label")]
+[node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("project_view", "button_play", "button_pause", "button_playback_speed", "frame_label", "time_label")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,6 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_f3tql")
+project_view = NodePath("Margin/VBox/Effectfoverlay/ProjectViewTextureRect")
 button_play = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PlayButton")
 button_pause = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PauseButton")
 button_playback_speed = NodePath("Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton")
