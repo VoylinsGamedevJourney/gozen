@@ -682,11 +682,10 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 
 				@warning_ignore("return_value_discarded")
 				link_button.toggled.connect(func(toggled: bool) -> void:
-					param.is_linked = toggled
-					link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
-					if toggled:
-						spinbox_y.value = spinbox_x.value
-				)
+						param.is_linked = toggled
+						link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
+						if toggled:
+							spinbox_y.value = spinbox_x.value)
 				hbox.add_child(link_button)
 
 			hbox.add_child(spinbox_y)
@@ -1240,9 +1239,8 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 
 		@warning_ignore("return_value_discarded")
 		button_reset.pressed.connect(func() -> void:
-			_on_reset_effect(effect, is_visual)
-			popup.queue_free()
-		)
+				_on_reset_effect(effect, is_visual)
+				popup.queue_free())
 		vbox.add_child(button_reset)
 
 		var button_delete: Button = Button.new()
@@ -1287,37 +1285,39 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		vbox.add_child(default_hbox)
 
 	var dir: DirAccess = DirAccess.open(PRESETS_PATH)
-	if dir.list_dir_begin():
-		printerr("EffectsPanel: Couldn't go to beginning of '%s' directory!" % PRESETS_PATH)
+	if dir:
+		if dir.list_dir_begin():
+			printerr("EffectsPanel: Couldn't go to beginning of '%s' directory!" % PRESETS_PATH)
 
-	var file_name: String = dir.get_next()
-	while file_name != "":
-		if !dir.current_is_dir() and file_name.begins_with(prefix + "_") and file_name.ends_with(".tres"):
-			var preset_name: String = file_name.trim_prefix(prefix + "_").trim_suffix(".tres")
-			var hbox: HBoxContainer = HBoxContainer.new()
-			var button_apply: Button = Button.new()
-			button_apply.text = preset_name
-			button_apply.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			button_apply.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			@warning_ignore("return_value_discarded")
-			button_apply.pressed.connect(func() -> void:
-				_apply_preset(PRESETS_PATH + file_name, is_section, is_visual, effect)
-				popup.queue_free()
-			)
-			var button_delete: TextureButton = TextureButton.new()
-			button_delete.texture_normal = preload(Library.ICON_DELETE)
-			button_delete.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
-			button_delete.ignore_texture_size = true
-			button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-			@warning_ignore("return_value_discarded")
-			button_delete.pressed.connect(func() -> void:
-				DirAccess.remove_absolute(PRESETS_PATH + file_name)
-				hbox.queue_free()
-			)
-			hbox.add_child(button_apply)
-			hbox.add_child(button_delete)
-			vbox.add_child(hbox)
-		file_name = dir.get_next()
+		var file_name: String = dir.get_next()
+		while file_name != "":
+			if !dir.current_is_dir() and file_name.begins_with(prefix + "_") and file_name.ends_with(".preset"):
+				var preset_name: String = file_name.trim_prefix(prefix + "_").trim_suffix(".preset")
+				var hbox: HBoxContainer = HBoxContainer.new()
+				var button_apply: Button = Button.new()
+				button_apply.text = preset_name
+				button_apply.alignment = HORIZONTAL_ALIGNMENT_LEFT
+				button_apply.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				@warning_ignore("return_value_discarded")
+				button_apply.pressed.connect(func() -> void:
+						_apply_preset(PRESETS_PATH + file_name, is_section, is_visual, effect)
+						popup.queue_free())
+				var button_delete: TextureButton = TextureButton.new()
+				button_delete.texture_normal = preload(Library.ICON_DELETE)
+				button_delete.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+				button_delete.ignore_texture_size = true
+				button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+				@warning_ignore("return_value_discarded")
+				button_delete.pressed.connect(func() -> void:
+						DirAccess.remove_absolute(PRESETS_PATH + file_name)
+						hbox.queue_free())
+				hbox.add_child(button_apply)
+				hbox.add_child(button_delete)
+				vbox.add_child(hbox)
+			file_name = dir.get_next()
+
+	@warning_ignore("return_value_discarded")
+	popup.popup_hide.connect(popup.queue_free)
 	add_child(popup)
 	popup.position = Vector2i(button.get_screen_transform().origin) + Vector2i(0, int(button.size.y))
 	popup.popup()
@@ -1325,65 +1325,101 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 
 func _prompt_save_preset(is_section: bool, is_visual: bool, effect: Effect) -> void:
 	var dialog: ConfirmationDialog = ConfirmationDialog.new()
-	dialog.title = tr("Save preset")
-
 	var vbox: VBoxContainer = VBoxContainer.new()
 	var line_edit: LineEdit = LineEdit.new()
+	dialog.title = tr("Save preset")
 	line_edit.placeholder_text = tr("Preset name")
 	vbox.add_child(line_edit)
 	dialog.add_child(vbox)
 
-	@warning_ignore("return_value_discarded")
-	dialog.confirmed.connect(func() -> void:
+	var confirm_lambda: Callable = func() -> void:
 			var preset_name: String = line_edit.text.strip_edges()
 			if preset_name.is_empty():
 				preset_name = "Custom"
 			var prefix: String = ("visual" if is_visual else "audio") if is_section else effect.id
-			var path: String = PRESETS_PATH + prefix + "_" + preset_name.validate_filename() + ".tres"
-			var resource_to_save: Resource
-			if is_section:
-				resource_to_save = Resource.new()
-				if is_visual:
-					resource_to_save.set_meta("effects", _copy_effect_array(current_clip.effects.video))
-				else:
-					resource_to_save.set_meta("effects", _copy_effect_array(current_clip.effects.audio))
-			else:
-				resource_to_save = effect.deep_copy()
+			var path: String = PRESETS_PATH + prefix + "_" + preset_name.validate_filename() + ".preset"
 
-			ResourceSaver.save(resource_to_save, path)
-			dialog.queue_free())
-	@warning_ignore("return_value_discarded")
+			var save_data: Variant
+			if is_section:
+				var serialized_effects: Array = []
+				var effects: Array
+				if is_visual:
+					effects = current_clip.effects.video
+				else:
+					effects = current_clip.effects.audio
+
+				for clip_effect: Effect in effects:
+					serialized_effects.append(clip_effect.serialize())
+				save_data = serialized_effects
+			else:
+				save_data = effect.serialize()
+
+			var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+			if file:
+				@warning_ignore("return_value_discarded")
+				file.store_var(save_data)
+				file.close()
+			else:
+				printerr("EffectsPanel: Could not save preset to '%s'!" % path)
+			dialog.queue_free()
+
+	@warning_ignore_start("return_value_discarded")
+	dialog.confirmed.connect(confirm_lambda)
+	line_edit.text_submitted.connect(func(_text: String) -> void: confirm_lambda.call())
 	dialog.canceled.connect(dialog.queue_free)
+	@warning_ignore_restore("return_value_discarded")
+
 	add_child(dialog)
 	dialog.popup_centered(Vector2i(300, 100))
 	line_edit.grab_focus()
 
 
 func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effect) -> void:
-	var resource: Resource = ResourceLoader.load(path)
-	if !resource:
-		return
-	elif is_section:
-		if !resource.has_meta("effects"):
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	var data: Variant = file.get_var()
+	file.close()
+
+	if is_section:
+		if typeof(data) != TYPE_ARRAY:
 			return
-		var array: Array = resource.get_meta("effects")
+
+		var new_effects: Array = []
+		for effect_value: Variant in data as Array:
+			var effect_id: String = (effect_value as Dictionary).get("id", "")
+			var new_effect: Effect
+			if is_visual and EffectsHandler.visual_effect_instances.has(effect_id):
+				new_effect = EffectsHandler.visual_effect_instances[effect_id].deep_copy()
+			elif not is_visual and EffectsHandler.audio_effect_instances.has(effect_id):
+				new_effect = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
+			else:
+				continue
+			new_effect.deserialize(effect_value as Dictionary)
+			EffectsHandler._apply_param_exceptions(new_effect)
+			new_effect.set_default_keyframe()
+			new_effects.append(new_effect)
+
 		var old_effects: Array = _copy_effect_array(current_clip.effects.video as Array if is_visual else current_clip.effects.audio as Array)
-		var new_effects: Array = _copy_effect_array(array)
 
 		InputManager.undo_redo.create_action("Apply section preset")
 		InputManager.undo_redo.add_do_method(_set_section_effects.bind(current_clip, new_effects, is_visual))
 		InputManager.undo_redo.add_undo_method(_set_section_effects.bind(current_clip, old_effects, is_visual))
 		InputManager.undo_redo.commit_action()
-	else:
-		var new_effect: Effect = resource as Effect
-		var index: int = _get_effect_index(effect, is_visual)
-		var old_effect: Effect = effect.deep_copy()
-		var apply_effect: Effect = new_effect.deep_copy()
+	elif typeof(data) == TYPE_DICTIONARY:
+		var effect_id: String = (data as Dictionary).get("id", "")
+		var new_effect: Effect
+		if is_visual and EffectsHandler.visual_effect_instances.has(effect_id):
+			new_effect = EffectsHandler.visual_effect_instances[effect_id].deep_copy()
+		elif not is_visual and EffectsHandler.audio_effect_instances.has(effect_id):
+			new_effect = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
+		else:
+			return
+		new_effect.deserialize(data as Dictionary)
+		EffectsHandler._apply_param_exceptions(new_effect)
+		new_effect.set_default_keyframe()
 
+		var old_effect: Effect = effect.deep_copy()
+		old_effect.keyframes = effect.keyframes.duplicate(true)
 		InputManager.undo_redo.create_action("Apply effect preset")
-		InputManager.undo_redo.add_do_method(_replace_effect.bind(current_clip, index, apply_effect, is_visual))
-		InputManager.undo_redo.add_undo_method(_replace_effect.bind(current_clip, index, old_effect, is_visual))
-		InputManager.undo_redo.commit_action()
 
 
 func _apply_default_section_preset(is_visual: bool) -> void:
@@ -1413,16 +1449,19 @@ func _set_section_effects(clip: ClipData, effects: Array, is_visual: bool) -> vo
 		clip.effects.video.assign(cloned_effects)
 	else:
 		clip.effects.audio.assign(cloned_effects)
+	Project.unsaved_changes = true
 	_load_effects()
 	EffectsHandler.effects_updated.emit()
 
 
 func _replace_effect(clip: ClipData, index: int, new_effect: Effect, is_visual: bool) -> void:
 	var cloned_effect: Effect = new_effect.deep_copy()
+	cloned_effect.keyframes = new_effect.keyframes.duplicate(true)
 	if is_visual:
 		clip.effects.video[index] = cloned_effect
 	else:
 		clip.effects.audio[index] = cloned_effect
+	Project.unsaved_changes = true
 	_load_effects()
 	EffectsHandler.effects_updated.emit()
 
@@ -1430,7 +1469,9 @@ func _replace_effect(clip: ClipData, index: int, new_effect: Effect, is_visual: 
 func _copy_effect_array(array: Array) -> Array:
 	var data: Array = []
 	for effect: Effect in array:
-		data.append(effect.deep_copy())
+		var copy: Effect = effect.deep_copy()
+		copy.keyframes = effect.keyframes.duplicate(true)
+		data.append(copy)
 	return data
 
 
