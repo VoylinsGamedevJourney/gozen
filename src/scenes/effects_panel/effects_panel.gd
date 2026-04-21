@@ -1421,6 +1421,11 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 		old_effect.keyframes = effect.keyframes.duplicate(true)
 		InputManager.undo_redo.create_action("Apply effect preset")
 
+		var index: int = _get_effect_index(effect, is_visual)
+		InputManager.undo_redo.add_do_method(_replace_effect.bind(current_clip, index, new_effect, is_visual))
+		InputManager.undo_redo.add_undo_method(_replace_effect.bind(current_clip, index, old_effect, is_visual))
+		InputManager.undo_redo.commit_action()
+
 
 func _apply_default_section_preset(is_visual: bool) -> void:
 	InputManager.undo_redo.create_action("Apply default preset")
