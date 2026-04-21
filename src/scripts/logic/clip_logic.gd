@@ -445,6 +445,15 @@ func _set_clip_mute(effects: ClipEffects, muted: bool) -> void:
 	updated.emit.call_deferred()
 
 
+func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
+	if is_visual:
+		clip.effects.fade_visual = fade
+	else:
+		clip.effects.fade_audio = fade
+	Project.unsaved_changes = true
+	updated.emit.call_deferred()
+
+
 # --- Helpers ---
 
 func _create_default_effects(file_type: EditorCore.TYPE) -> ClipEffects:

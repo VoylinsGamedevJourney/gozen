@@ -178,6 +178,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			match Timeline.state:
 				Timeline.STATE.RESIZING: _commit_current_resize()
 				Timeline.STATE.SPEEDING: _commit_current_resize()
+				Timeline.STATE.FADING: _commit_current_fade()
 				Timeline.STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
 				Timeline.STATE.SCRUBBING: EditorCore.finish_scrub()
 				Timeline.STATE.SELECT:
@@ -513,6 +514,28 @@ func _commit_current_resize() -> void:
 			ClipLogic.resize([ClipRequest.resize_request(
 					Timeline.resize_target.clip, Timeline.resize_target.delta, Timeline.resize_target.is_end)])
 	Timeline.resize_target = null
+	draw_clips.queue_redraw()
+
+
+func _commit_current_fade() -> void:
+	if Timeline.fade_target == null:
+		return
+
+	var clip: ClipData = Timeline.fade_target.clip
+	var is_visual: bool = Timeline.fade_target.is_visual
+	var new_fade: Vector2i = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
+	var old_fade: Vector2i = Timeline.fade_target.original_fade
+	if new_fade != old_fade:
+		if is_visual:
+			clip.effects.fade_visual = old_fade
+		else:
+			clip.effects.fade_audio = old_fade
+
+		InputManager.undo_redo.create_action("Change fade")
+		InputManager.undo_redo.add_do_method(ClipLogic._set_fade.bind(clip, is_visual, new_fade))
+		InputManager.undo_redo.add_undo_method(ClipLogic._set_fade.bind(clip, is_visual, old_fade))
+		InputManager.undo_redo.commit_action()
+	Timeline.fade_target = null
 	draw_clips.queue_redraw()
 
 
@@ -964,30 +987,3 @@ func _redraw_on_change() -> void:
 	if is_visible_in_tree():
 		await get_tree().process_frame
 		draw_all()
-
-
-
-class ResizeTarget:
-	var clip: ClipData
-	var is_end: bool
-	var original_start: int = 0
-	var original_duration: int = 0
-	var delta: int = 0
-
-	func _init(clip_data: ClipData, _is_end: bool, start: int, duration: int) -> void:
-		clip = clip_data
-		is_end = _is_end
-		original_start = start
-		original_duration = duration
-
-
-
-class FadeTarget:
-	var clip: ClipData
-	var is_end: bool
-	var is_visual: bool
-
-	func _init(clip_data: ClipData, _is_end: bool, _is_visual: bool) -> void:
-		clip = clip_data
-		is_end = _is_end
-		is_visual = _is_visual

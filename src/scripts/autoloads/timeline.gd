@@ -233,8 +233,10 @@ class FadeTarget:
 	var clip: ClipData
 	var is_end: bool
 	var is_visual: bool
+	var original_fade: Vector2i
 
 	func _init(clip_data: ClipData, _is_end: bool, _is_visual: bool) -> void:
 		clip = clip_data
 		is_end = _is_end
 		is_visual = _is_visual
+		original_fade = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
