@@ -33,7 +33,7 @@ var show_time_mode_bar: bool = true
 
 # Performance
 var video_smart_seek_threshold: int = 30
-var video_cache_size: int = 30 ## This is a ram eater, we should NOT set this too high.
+var video_cache_size: int = 15 ## This is a ram eater, we should NOT set this too high.
 var use_proxies: bool = false
 var proxies_path: String = "user://proxies"
 

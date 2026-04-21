@@ -617,8 +617,9 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.path)
 			return file_data[file.id] # Return main video as fallback.
 
+	# Lower cache for extra instances might help with ram consumption.
+	new_video.set_cache_size(ceili(Settings.get_video_cache_size() / 2.0))
 	new_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
-	new_video.set_cache_size(Settings.get_video_cache_size())
 	pool.append(new_video)
 	return new_video
 
