@@ -74,7 +74,7 @@ jobs:
 
       # Fetch FFmpeg.
       - name: Download FFmpeg
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: ffmpeg_macos_arm64
           path: ${{ env.PATH_FFMPEG }}
@@ -109,14 +109,14 @@ jobs:
           os: macos
 
       - name: Fetch GDE libs (debug)
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: macos_gde_template_debug_arm64
           path: ${{ env.PATH_EXPORT }}
           merge-multiple: true
 
       - name: Fetch GDE libs (release)
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: macos_gde_template_release_arm64
           path: ${{ env.PATH_EXPORT }}

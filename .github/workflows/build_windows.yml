@@ -64,7 +64,7 @@ jobs:
       - uses: ./.github/actions/setup-windows-build-env
 
       - name: Download all dependencies
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           pattern: dep_win_x86_64_*
           path: ${{ env.PATH_FFMPEG }}
@@ -114,7 +114,7 @@ jobs:
 
       # Download FFmpeg.
       - name: Download FFmpeg
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: ffmpeg_windows_x86_64
           path: ${{ env.PATH_FFMPEG }}
@@ -165,7 +165,7 @@ jobs:
           os: windows
 
       - name: Fetch GDE libs (debug)
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: windows_gde_template_debug_x86_64
           path: ${{ env.PATH_EXPORT }}
@@ -173,7 +173,7 @@ jobs:
           merge-multiple: true
 
       - name: Fetch GDE libs (release)
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: windows_gde_template_release_x86_64
           path: ${{ env.PATH_EXPORT }}
