@@ -78,11 +78,13 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i, 
 	_pad_stream(stream, 4)
 	stream.put_32(pass_index)
 	var buffer_data: PackedByteArray = stream.data_array
-	var padding: int = 16 - (buffer_data.size() % 16)
+	var remainder: int = buffer_data.size() % 16
 
 	# Add final padding.
-	if padding != 0 and buffer_data.resize(buffer_data.size() + padding):
-		printerr("EffectCache: Couldn't resize buffer_data!")
+	if remainder != 0:
+		var padding: int = 16 - remainder
+		if buffer_data.resize(buffer_data.size() + padding):
+			printerr("EffectCache: Couldn't resize buffer_data!")
 	return buffer_data
 
 
