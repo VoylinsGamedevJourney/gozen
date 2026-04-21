@@ -309,8 +309,8 @@ func cleanup() -> void:
 	# Image cleanup.
 	base_image = Utils.cleanup_rid(device, base_image)
 
-	fade_shader = Utils.cleanup_rid(device, fade_shader)
 	fade_pipeline = Utils.cleanup_rid(device, fade_pipeline)
+	fade_shader = Utils.cleanup_rid(device, fade_shader)
 	fade_buffer = Utils.cleanup_rid(device, fade_buffer)
 	copy_buffer = Utils.cleanup_rid(device, copy_buffer)
 
