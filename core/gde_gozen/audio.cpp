@@ -211,6 +211,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 
 	if (avformat_find_stream_info(format_ctx, NULL)) {
 		_log_err("Couldn't find stream info");
+		avformat_close_input(&format_ctx);
 		return data;
 	} else if (stream_index == -1) {
 		for (int i = 0; i < format_ctx->nb_streams; i++) {
@@ -237,8 +238,9 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 
 	if (stream_index >= 0 && stream_index < format_ctx->nb_streams) {
 		AVCodecParameters* av_codec_params = format_ctx->streams[stream_index]->codecpar;
-		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
+		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO) {
 			data = _get_audio(format_ctx, format_ctx->streams[stream_index], fetch_start_time, fetch_duration);
+		}
 	} else if (stream_index != -1) {
 		_log_err("Invalid stream index");
 	}

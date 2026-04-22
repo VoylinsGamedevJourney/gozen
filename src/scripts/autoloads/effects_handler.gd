@@ -306,7 +306,7 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 	else:
 		target_frame = EditorCore.frame_nr - clip.start
 
-	var action_name: String = "Update %s_%s_c%d_f%d" % [effect.nickname, param_id, clip.id, target_frame]
+	var action_name: String = "Update %s_%s_c%d" % [effect.nickname, param_id, clip.id]
 	InputManager.undo_redo.create_action(action_name, UndoRedo.MERGE_ENDS)
 
 	if target_frame == 0 and ((!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable):

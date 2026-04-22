@@ -40,6 +40,7 @@ int FFmpeg::get_frame(AVFormatContext* format_ctx, AVCodecContext* codec_ctx, in
 			break;
 		} else {
 			response = avcodec_send_packet(codec_ctx, packet);
+			av_packet_unref(packet);
 			if (response < 0 && response != AVERROR_INVALIDDATA) {
 				FFmpeg::_log_err("Problem sending package! " + String::num_int64(response));
 				break;

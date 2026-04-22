@@ -1,6 +1,10 @@
 #include "audio_stream_ffmpeg.hpp"
 
 int AudioStreamFFmpeg::open(const String& path, int stream_index) {
+	if (mutex) {
+		close();
+	}
+
 	mutex = memnew(Mutex);
 	mutex->lock();
 	AVFormatContext* temp_format_ctx = nullptr;

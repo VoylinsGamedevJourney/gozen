@@ -254,6 +254,11 @@ func _prefetch_upcoming_clips() -> void:
 
 
 func _on_closing_editor() -> void:
+	for video_id: int in active_tasks:
+		if WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int):
+			printerr("EditorCore: Failed waiting for task completion on exit.")
+	active_tasks.clear()
+
 	view_textures.clear()
 	for player: AudioPlayer in audio_players:
 		if player != null:
@@ -499,11 +504,11 @@ func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], clip_f
 			target_blend_mode = effect.get_value(effect.params[0], clip_frame)
 			break
 
-	var current_material: Material = view_textures[track_id].material
-	if current_material == null or not current_material is CanvasItemMaterial or (current_material as CanvasItemMaterial).blend_mode != target_blend_mode:
-		var canvas_material: CanvasItemMaterial = CanvasItemMaterial.new()
-		canvas_material.blend_mode = target_blend_mode as CanvasItemMaterial.BlendMode
-		view_textures[track_id].material = canvas_material
+	var current_material: CanvasItemMaterial = view_textures[track_id].material as CanvasItemMaterial
+	if current_material == null or current_material.blend_mode != target_blend_mode:
+		var new_material: CanvasItemMaterial = CanvasItemMaterial.new()
+		new_material.blend_mode = target_blend_mode as CanvasItemMaterial.BlendMode
+		view_textures[track_id].material = new_material
 
 
 # --- Setters ---

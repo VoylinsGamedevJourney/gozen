@@ -324,6 +324,9 @@ func cleanup() -> void:
 			Utils.cleanup_rid(device, buffer)
 	effect_buffers.clear()
 
+	if display_texture:
+		display_texture.texture_rd_rid = RID()
+
 
 func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) -> void:
 	var active_ids: Array[int] = []

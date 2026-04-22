@@ -443,7 +443,6 @@ bool Video::seek_frame(int frame_nr) {
 					FFmpeg::print_av_error("Video: Reached max attempts trying to get first frame!", response);
 					break;
 				}
-
 				attempts++;
 				continue;
 			} else if (response == AVERROR_EOF) {
@@ -462,6 +461,7 @@ bool Video::seek_frame(int frame_nr) {
 			break;
 		}
 
+		av_frame_unref(av_frame.get());
 		av_frame_move_ref(av_frame.get(), temp_frame.get());
 		frame_found = true;
 
