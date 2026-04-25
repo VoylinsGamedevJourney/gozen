@@ -831,7 +831,7 @@ func _update_scroll(timestamp_scroll: ScrollContainer, target_scroll: int) -> vo
 
 
 func get_frame_from_mouse() -> int:
-	return maxi(ceili(get_local_mouse_position().x / Timeline.zoom), 0)
+	return maxi(roundi(get_local_mouse_position().x / Timeline.zoom), 0)
 
 
 func get_track_from_mouse() -> int:

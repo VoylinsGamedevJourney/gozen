@@ -104,7 +104,7 @@ func _gui_input_mouse_motion(_event: InputEventMouseMotion) -> void:
 
 
 func _get_frame_on_mouse() -> int:
-	return maxi(0, floori(get_local_mouse_position().x / Timeline.zoom))
+	return maxi(0, roundi(get_local_mouse_position().x / Timeline.zoom))
 
 
 func _draw() -> void:
