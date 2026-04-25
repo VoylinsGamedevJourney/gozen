@@ -422,8 +422,7 @@ bool Video::seek_frame(int frame_nr) {
 		}
 
 		if (success) {
-			next_frame(false);
-			return true;
+			return next_frame(false);
 		}
 	}
 
@@ -495,24 +494,31 @@ bool Video::seek_frame(int frame_nr) {
 			av_codec_ctx->skip_idct = original_skip_idct;
 		}
 
-		_add_to_cache(decoded_frame_nr);
-
 		if (decoded_frame_nr >= frame_nr) {
 			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			av_codec_ctx->skip_frame = original_skip_frame;
 			av_codec_ctx->skip_idct = original_skip_idct;
 			_copy_frame_data();
+			_add_to_cache(frame_nr);
 			break;
 		}
+
+		_add_to_cache(decoded_frame_nr);
 	}
 	av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 	av_codec_ctx->skip_frame = original_skip_frame;
 
 	current_frame = frame_nr;
 	last_decoded_frame = current_frame;
+
+	if (!frame_found) {
+		av_frame_unref(av_frame.get());
+		av_packet_unref(av_packet.get());
+
+		return false;
+	}
 	return true;
 }
-
 
 bool Video::next_frame(bool skip) {
 	if (!loaded) {
@@ -546,7 +552,7 @@ bool Video::next_frame(bool skip) {
 
 	current_frame++;
 	last_decoded_frame = current_frame;
-	if (response == 0) { // ALWAYS cache frames (even if skipped visually)
+	if (response == 0) { // ALWAYS cache frames (even if skipped visually).
 		_add_to_cache(current_frame);
 	}
 
@@ -626,6 +632,8 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 			av_codec_ctx->skip_frame = original_skip_frame;
 			av_codec_ctx->skip_idct = original_skip_idct;
 			_copy_frame_data();
+			current_frame = decoded_frame_nr;
+			last_decoded_frame = current_frame;
 			break;
 		}
 	}
@@ -633,11 +641,6 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 	av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 	av_codec_ctx->skip_frame = original_skip_frame;
 	av_codec_ctx->skip_idct = original_skip_idct;
-
-	// We still have to set the frame_nr since that's where the "playhead" is
-	// inside of the file.
-	current_frame = frame_nr;
-	last_decoded_frame = current_frame;
 
 	if (!frame_found) {
 		av_frame_unref(av_frame.get());
