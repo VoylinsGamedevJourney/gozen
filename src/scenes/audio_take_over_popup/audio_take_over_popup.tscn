@@ -172,5 +172,3 @@ text = "Confirm"
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/AutoAlignButton" to="." method="_on_auto_align_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/TakeOverAudioButton" to="." method="_on_take_over_audio_button_pressed"]
-[connection signal="finished" from="FileAAudioStreamPlayer" to="." method="_stop_playback"]
-[connection signal="finished" from="FileBAudioStreamPlayer" to="." method="_stop_playback"]

@@ -48,8 +48,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
+	var is_playing: bool = file_a_player.playing or file_b_player.playing
 	if _scrub_time != -1.0:
-		var is_playing: bool = file_a_player.playing or file_b_player.playing
 		if is_playing:
 			_stop_playback()
 
@@ -62,13 +62,28 @@ func _process(_delta: float) -> void:
 			_start_playback(_scrub_time)
 		_scrub_time = -1.0
 
-	if !file_a_player.playing:
+	is_playing = file_a_player.playing or file_b_player.playing
+	if !is_playing:
 		return
 
-	var playback_position: float = file_a_player.get_playback_position()
+	var playback_position: float = 0.0
+	if file_a_player.playing:
+		playback_position = file_a_player.get_playback_position()
+	elif file_b_player.playing:
+		playback_position = file_b_player.get_playback_position() + offset_spinbox.value
+
+	if file_b_id != -1 and not file_b_player.playing and playback_position >= offset_spinbox.value:
+		var b_len: float = file_b_player.stream.get_length() if file_b_player.stream else 0.0
+		if b_len == 0.0 or (playback_position - offset_spinbox.value) < b_len:
+			if file_b_player.stream:
+				file_b_player.play(playback_position - offset_spinbox.value)
+
 	var max_duration: float = 300.0
-	if file_a_player.stream:
+	if file_a_player.stream and file_a_player.stream.get_length() > 0.0:
 		max_duration = file_a_player.stream.get_length()
+	elif file_b_player.stream and file_b_player.stream.get_length() > 0.0:
+		max_duration = file_b_player.stream.get_length() + offset_spinbox.value
+
 	if playback_position >= max_duration:
 		_stop_playback()
 		playback_position = 0.0
@@ -122,10 +137,8 @@ func load_data(id: int, is_file: bool) -> void:
 	offset_spinbox.value = target_offset
 	_on_audio_file_option_button_item_selected(selected_idx)
 
-	var video: Video = FileLogic.file_data.get(file_a.id)
 	video_file_label.text = file_a.nickname
-	if video:
-		file_a_player.stream = video.get_audio()
+	file_a_player.stream = FileLogic.get_audio_stream(file_a, 0)
 
 
 func _on_take_over_audio_button_pressed() -> void:
@@ -178,15 +191,24 @@ func _on_cancel_button_pressed() -> void:
 
 func _start_playback(start_time: float) -> void:
 	audio_play_button.texture_normal = load(Library.ICON_PAUSE)
-	file_a_player.play(start_time)
+	var played_anything: bool = false
+
+	if file_a_player.stream:
+		file_a_player.play(start_time)
+		played_anything = true
 
 	if file_b_id != -1: # Start B only if valid and time is past offset.
 		var offset: float = offset_spinbox.value
 		var b_time: float = start_time - offset
 		if b_time >= 0:
-			file_b_player.play(b_time)
+			if file_b_player.stream:
+				file_b_player.play(b_time)
+				played_anything = true
 		else:
 			file_b_player.stop()
+
+	if not played_anything:
+		_stop_playback()
 
 
 func _stop_playback() -> void:
