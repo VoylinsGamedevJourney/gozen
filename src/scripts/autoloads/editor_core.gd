@@ -310,17 +310,15 @@ func set_frame_nr(value: int) -> void:
 		for i: int in audio_players.size():
 			audio_players[i].stop()
 
-	var audio_file_counter: Dictionary[int, int] = {}
 	frame_nr = value
 	visual_frame_nr = value
 	visual_frame_changed.emit()
 	var is_seek: bool = frame_nr != prev_frame + 1
+
 	for track: int in TrackLogic.tracks.size():
 		var audio_clip: ClipData = find_audio(frame_nr, track)
 		if audio_clip:
-			var file_id: int = audio_clip.file
-			var instance_index: int = audio_file_counter.get(file_id, 0)
-			audio_file_counter[file_id] = instance_index + 1
+			var instance_index: int = _get_instance_for_clip(audio_clip)
 			audio_players[track].set_audio(audio_clip, instance_index)
 		elif is_seek or audio_players[track].stop_frame == frame_nr:
 			# Stop track on seek, or if we naturally reached the end of the clip.

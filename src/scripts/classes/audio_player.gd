@@ -133,7 +133,7 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 
 	var frame_duration: float = 1.0 / framerate
 	var sync_threshold: float = maxf(frame_duration * 2.0 * clip.speed, 0.06)
-	var current_audio_time: float = player.get_playback_position() + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency()
+	var current_audio_time: float = player.get_playback_position() + AudioServer.get_time_since_last_mix()
 	if player.playing and (contiguous or abs(current_audio_time - position) < sync_threshold):
 		player.stream_paused = !EditorCore.is_playing
 		return
