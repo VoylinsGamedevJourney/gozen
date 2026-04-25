@@ -354,14 +354,22 @@ int Video::open(const String& video_path) {
 			std::round((static_cast<double>(duration) / static_cast<double>(AV_TIME_BASE)) * framerate));
 	}
 
+	loaded = true;
+	current_frame = 0;
+	last_decoded_frame = 0;
+
+	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE) {
+		current_pts = av_frame->pts;
+	} else {
+		current_pts = av_frame->best_effort_timestamp;
+	}
+
+	_add_to_cache(0);
+	_copy_frame_data();
+
 	if (av_packet) {
 		av_packet_unref(av_packet.get());
 	}
-	if (av_frame) {
-		av_frame_unref(av_frame.get());
-	}
-	loaded = true;
-	seek_frame(0);
 	return OK;
 }
 
