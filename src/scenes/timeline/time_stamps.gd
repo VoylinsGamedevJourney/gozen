@@ -88,6 +88,10 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				MarkerLogic.dragged_marker_offset = 0
 				queue_redraw()
 
+			scrubbing = false
+			EditorCore.finish_scrub()
+
+
 
 func _gui_input_mouse_motion(_event: InputEventMouseMotion) -> void:
 	if MarkerLogic.dragged_marker:
