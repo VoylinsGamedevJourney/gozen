@@ -151,7 +151,7 @@ func _create_alignment_buttons() -> Control:
 
 func _align(type: int) -> void:
 	var res: Vector2 = Vector2(Project.get_resolution())
-	var frame: int = EditorCore.visual_frame_nr - clip.start
+	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	var current_position: Vector2 = effect.get_value(_get_param("position"), frame)
 	var current_scale: Vector2 = effect.get_value(_get_param("scale"), frame)
 	var current_pivot: Vector2 = effect.get_value(_get_param("pivot"), frame)

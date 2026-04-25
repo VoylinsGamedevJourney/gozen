@@ -32,7 +32,7 @@ func input(event: InputEvent, control: Control) -> void:
 
 
 func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void:
-	var frame: int = EditorCore.visual_frame_nr - clip.start
+	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	var position_param: EffectParam = _get_param("position")
 	var current_pos: Vector2 = effect.get_value(position_param, frame) if position_param else Vector2.ZERO
 	var rotation_param: EffectParam = _get_param("rotation")
@@ -94,7 +94,7 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 
 
 func _input_mouse_motion(event: InputEventMouseMotion, control: Control) -> void:
-	var frame: int = EditorCore.visual_frame_nr - clip.start
+	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	if drag_mode == DragMode.POSITION:
 		var project_delta: Vector2 = _control_to_project(event.position - drag_start_mouse, control)
 		var new_position: Vector2 = (drag_start_val as Vector2) + project_delta
@@ -137,7 +137,7 @@ func _set_keyframe_raw(frame: int, param_id: String, value: Variant) -> void:
 
 
 func draw(control: Control) -> void:
-	var frame: int = EditorCore.visual_frame_nr - clip.start
+	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 
 	# - Position.
 	var position_param: EffectParam = _get_param("position")

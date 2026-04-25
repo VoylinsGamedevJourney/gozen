@@ -271,7 +271,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	# NOTE: We can add the position of the effect inside of the effect array
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
-	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
+	var relative_frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var button_visible: TextureButton = TextureButton.new()
 	var button_preset: TextureButton = TextureButton.new()
 	if effect.is_enabled:
@@ -731,7 +731,7 @@ func _update_ui_values() -> void:
 		return
 
 	clip_mute_button.set_pressed_no_signal(!current_clip.effects.is_muted)
-	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
+	var frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	if section_text.visible and section_text.get_child_count() > 0:
 		var text_effects: EffectVisual = current_file.temp_file.text_effect
 		var text_container: FoldableContainer = section_text.get_child(0)
@@ -927,7 +927,7 @@ func _jump_prev_keyframe(effect: Effect, param_id: String) -> void:
 	if not effect.keyframes.has(param_id):
 		EditorCore.set_frame(current_clip.start)
 		return
-	var relative_frame: int = EditorCore.visual_frame_nr - current_clip.start
+	var relative_frame: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
 	keys.sort()
 	var target: int = 0
@@ -942,7 +942,7 @@ func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 	if not effect.keyframes.has(param_id):
 		EditorCore.set_frame(current_clip.end)
 		return
-	var relative_frame: int = EditorCore.visual_frame_nr - current_clip.start
+	var relative_frame: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
 	keys.sort()
 	var target: int = current_clip.duration
@@ -955,7 +955,7 @@ func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 
 func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
-	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
+	var relative_frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 
 	var effect_keyframes: Dictionary = effect.keyframes[param_id]
 	if effect_keyframes.has(relative_frame_nr):
@@ -968,7 +968,7 @@ func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String)
 
 
 func _create_text_ui(text_effect: EffectVisual) -> void:
-	var relative_frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
+	var relative_frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var container: FoldableContainer = FoldableContainer.new()
 	container.title = "Text Properties"
 	container.add_theme_font_size_override("font_size", 11)
@@ -1137,7 +1137,7 @@ func _on_text_keyframe_deleted(frame_nr: int) -> void:
 
 
 func _text_param_update_call(value: Variant, param_id: String) -> void:
-	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
+	var frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
@@ -1162,7 +1162,7 @@ func _text_param_update_call(value: Variant, param_id: String) -> void:
 
 
 func _text_keyframe_button_pressed(param_id: String) -> void:
-	var frame_nr: int = EditorCore.visual_frame_nr - current_clip.start
+	var frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var text_effect: EffectVisual = current_file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 	var param_keyframes: Dictionary = keyframes[param_id]
