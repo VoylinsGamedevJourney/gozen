@@ -434,13 +434,13 @@ bool Video::seek_frame(int frame_nr) {
 	UniqueAVFrame temp_frame = make_unique_avframe();
 	bool frame_found = false;
 
-	// Skip loop filter during catch-up decoding to dramatically improve performance.
+	// Skip non-reference frames during catch-up decoding to improve performance.
 	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
 	AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
 	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
 
-	av_codec_ctx->skip_loop_filter = AVDISCARD_ALL;
-	av_codec_ctx->skip_idct = AVDISCARD_ALL;
+	av_codec_ctx->skip_loop_filter = AVDISCARD_NONREF;
+	av_codec_ctx->skip_idct = AVDISCARD_NONREF;
 	av_codec_ctx->skip_frame = AVDISCARD_NONREF;
 
 	while (true) {
@@ -490,7 +490,9 @@ bool Video::seek_frame(int frame_nr) {
 		// If we are getting close to the target frame, stop skipping non-reference frames
 		// so we don't overshoot the exact target if keyframe_pos happens to be a B-frame.
 		if (decoded_frame_nr >= frame_nr - 8) {
+			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			av_codec_ctx->skip_frame = original_skip_frame;
+			av_codec_ctx->skip_idct = original_skip_idct;
 		}
 
 		_add_to_cache(decoded_frame_nr);
@@ -498,6 +500,7 @@ bool Video::seek_frame(int frame_nr) {
 		if (decoded_frame_nr >= frame_nr) {
 			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			av_codec_ctx->skip_frame = original_skip_frame;
+			av_codec_ctx->skip_idct = original_skip_idct;
 			_copy_frame_data();
 			break;
 		}
@@ -520,21 +523,9 @@ bool Video::next_frame(bool skip) {
 		return seek_frame(current_frame + 1);
 	}
 
-	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
-	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
-	if (skip) {
-		av_codec_ctx->skip_loop_filter = AVDISCARD_ALL;
-		av_codec_ctx->skip_idct = AVDISCARD_ALL;
-	}
-
 	UniqueAVFrame temp_frame = make_unique_avframe();
 	int response =
 		FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(), av_packet.get());
-
-	if (skip) {
-		av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
-		av_codec_ctx->skip_idct = original_skip_idct;
-	}
 
 	if (response < 0 && response != AVERROR_EOF) {
 		FFmpeg::print_av_error("Video: Error in next_frame", response);
@@ -586,8 +577,8 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 	AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
 	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
 
-	av_codec_ctx->skip_loop_filter = AVDISCARD_ALL;
-	av_codec_ctx->skip_idct = AVDISCARD_ALL;
+	av_codec_ctx->skip_loop_filter = AVDISCARD_NONREF;
+	av_codec_ctx->skip_idct = AVDISCARD_NONREF;
 	av_codec_ctx->skip_frame = AVDISCARD_NONREF;
 
 	while (true) {
@@ -625,6 +616,7 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 			std::round(((current_pts * stream_time_base_video) - start_time_video) / average_frame_duration);
 
 		if (decoded_frame_nr >= frame_nr - 8) {
+			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			av_codec_ctx->skip_frame = original_skip_frame;
 			av_codec_ctx->skip_idct = original_skip_idct;
 		}

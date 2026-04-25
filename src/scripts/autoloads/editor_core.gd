@@ -199,6 +199,9 @@ func _get_instance_for_clip(clip: ClipData) -> int:
 
 	var file_id: int = clip.file
 	var used_indices: Array[int] = []
+	if !clip_instances.is_empty():
+		used_indices.append(0)
+
 	for clip_id: int in clip_instances:
 		var clip_data: ClipData = ClipLogic.clips.get(clip_id)
 		if clip_data and clip_data.file == file_id:
