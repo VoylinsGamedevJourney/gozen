@@ -54,7 +54,7 @@ First of all, you'll need to go into the `libs` folder and run the python script
 ## Contributing
 We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.
 
-Please read our [Contributing Guide](./CONTRIBUTING.md) for more details on how to get involved.
+Please read our [Contributing Guide](./.github/CONTRIBUTING.md) for more details on how to get involved.
 
 Join our [Discord server](https://discord.gg/BdbUf7VKYC) to discuss the GoZen project and ask questions!
 
