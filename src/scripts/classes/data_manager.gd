@@ -27,6 +27,8 @@ static func save_data(save_path: String, instance: RefCounted) -> int:
 		printerr("DataManager: Something went wrong storing data to file '%s'!" % tmp_path)
 		return file.get_error()
 
+	file.close()
+
 	var dir: DirAccess = DirAccess.open(save_path.get_base_dir())
 	var file_name: String = save_path.get_file()
 	var tmp_name: String = file_name + ".tmp"
