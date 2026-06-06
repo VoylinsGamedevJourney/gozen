@@ -69,7 +69,7 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				queue_redraw()
 			else:
 				scrubbing = true
-				if EditorCore.is_playing:
+				if EditorCore.is_playing and Settings.get_pause_after_drag():
 					EditorCore.is_playing = false
 				EditorCore.scrub_to_frame(_get_frame_on_mouse())
 		else: # Mouse released.
