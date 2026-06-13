@@ -7,8 +7,10 @@ extends HSplitContainer
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
+	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_project_ready)
+	Project.resolution_changed.connect(_project_ready)
+	@warning_ignore_restore("return_value_discarded")
 
 	var v_split: VSplitContainer = $VSplit
 	if Settings.data.tab_vsplit_offsets.size() > 0:

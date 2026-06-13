@@ -37,6 +37,7 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(update_stamps)
+	Project.framerate_changed.connect(update_stamps)
 	Project.render_region_updated.connect(queue_redraw)
 
 	MarkerLogic.added.connect(update_stamps.unbind(1))

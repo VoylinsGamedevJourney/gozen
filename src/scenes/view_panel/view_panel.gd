@@ -22,6 +22,8 @@ func _ready() -> void:
 
 	EditorCore.play_changed.connect(_on_play_changed)
 	EditorCore.visual_frame_changed.connect(_on_frame_changed)
+
+	Project.framerate_changed.connect(_on_frame_changed)
 	@warning_ignore_restore("return_value_discarded")
 
 	_on_play_changed(EditorCore.is_playing)

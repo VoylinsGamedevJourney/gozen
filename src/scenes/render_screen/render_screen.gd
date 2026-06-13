@@ -52,6 +52,7 @@ var _is_loading_profile: bool = false
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
+	Project.resolution_changed.connect(_update_view_orientation)
 	Project.render_region_updated.connect(_on_render_region_updated)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
 	@warning_ignore_restore("return_value_discarded")
@@ -105,13 +106,15 @@ func _ready() -> void:
 func _on_project_ready() -> void:
 	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
 	_on_render_region_updated()
+	_update_view_orientation()
 
+
+func _update_view_orientation() -> void:
 	# "Short" editing mode.
 	var res: Vector2i = Project.data.resolution
 	var horizontal: bool = res.x > res.y
 	view_horizontal.visible = horizontal
 	view_vertical.visible = !horizontal
-
 
 
 func _on_render_region_updated() -> void:

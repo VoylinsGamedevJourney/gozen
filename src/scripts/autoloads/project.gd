@@ -4,6 +4,9 @@ signal project_ready
 signal timeline_end_update(new_end: int)
 signal render_region_updated
 
+signal resolution_changed
+signal framerate_changed
+
 
 const EXTENSION: String = ".gozen"
 const RECENT_PROJECTS_FILE: String = "user://recent_projects"
@@ -75,6 +78,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 
 func save(auto_saved: bool = false) -> void:
+	data.playhead = EditorCore.frame_nr
 	var was_unsaved: bool = unsaved_changes
 	unsaved_changes = false
 	if DataManager.save_data(get_project_path(), data):
@@ -119,7 +123,7 @@ func open(new_project_path: String) -> void:
 
 	loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
-	set_framerate(data.framerate)
+	set_framerate(data.framerate, true)
 	_setup_logic()
 
 	@warning_ignore("return_value_discarded")
@@ -279,6 +283,7 @@ func set_resolution(resolution: Vector2i) -> void:
 	resolution.y += resolution.y % 2
 	data.resolution = resolution
 	unsaved_changes = true
+	resolution_changed.emit()
 
 
 func get_resolution() -> Vector2i:
@@ -289,10 +294,76 @@ func get_resolution_center() -> Vector2i:
 	return data.resolution / 2.0
 
 
-func set_framerate(new_framerate: float) -> void:
+func set_framerate(new_framerate: float, force: bool = false) -> void:
+	if !force and is_equal_approx(data.framerate, new_framerate):
+		return
+
+	var old_framerate: float = data.framerate
 	data.framerate = new_framerate
 	EditorCore.frame_time = 1.0 / data.framerate
 	unsaved_changes = true
+
+	if is_loaded:
+		data.playhead = EditorCore.frame_nr
+		var ratio: float = new_framerate / old_framerate
+
+		for file: FileData in FileLogic.files.values():
+			file.duration = maxi(1, roundi(file.duration * ratio))
+			if file.temp_file and file.temp_file.text_effect:
+				_scale_keyframes(file.temp_file.text_effect, ratio)
+			if file.type in [EditorCore.TYPE.AUDIO, EditorCore.TYPE.VIDEO]:
+				@warning_ignore("RETURN_VALUE_DISCARDED")
+				FileLogic.audio_wave.erase(file.id)
+				Threader.add_task(FileLogic._create_wave.bind(file), FileLogic._on_wave_ready.bind(file))
+
+		for clip: ClipData in ClipLogic.clips.values():
+			clip.start = roundi(clip.start * ratio)
+			clip.begin = roundi(clip.begin * ratio)
+			clip.duration = maxi(1, roundi(clip.duration * ratio))
+			clip.effects.fade_visual = Vector2i(roundi(clip.effects.fade_visual.x * ratio), roundi(clip.effects.fade_visual.y * ratio))
+			clip.effects.fade_audio = Vector2i(roundi(clip.effects.fade_audio.x * ratio), roundi(clip.effects.fade_audio.y * ratio))
+
+			for effect: EffectVisual in clip.effects.video:
+				_scale_keyframes(effect, ratio)
+			for effect: EffectAudio in clip.effects.audio:
+				_scale_keyframes(effect, ratio)
+
+		for marker: MarkerData in MarkerLogic.markers:
+			marker.frame_nr = roundi(marker.frame_nr * ratio)
+
+		MarkerLogic.markers.sort_custom(MarkerLogic._sort)
+
+		data.playhead = roundi(data.playhead * ratio)
+		data.render_region = Vector2i(roundi(data.render_region.x * ratio), roundi(data.render_region.y * ratio))
+
+		for track_data: TrackLogic.TrackClips in TrackLogic.track_clips:
+			track_data.sort()
+
+		Timeline.zoom = clampf(Timeline.zoom / ratio, 0.01, 200.0)
+
+		update_timeline_end()
+		EditorCore.is_playing = false
+		EditorCore.frame_nr = data.playhead
+		EditorCore.visual_frame_nr = data.playhead
+		render_region_updated.emit()
+		ClipLogic.updated.emit()
+
+		InputManager.undo_redo.clear_history()
+
+	framerate_changed.emit()
+
+func _scale_keyframes(effect: Effect, ratio: float) -> void:
+	for param_id: String in effect.keyframes.keys():
+		var new_keys: Dictionary[int, Variant] = {}
+		var frames: Dictionary = effect.keyframes[param_id]
+		for frame: int in frames.keys():
+			new_keys[roundi(frame * ratio)] = frames[frame]
+		effect.keyframes[param_id] = new_keys
+	effect._cache_dirty = true
+
+
+func get_framerate() -> float:
+	return data.framerate
 
 
 func update_timeline_end() -> void:

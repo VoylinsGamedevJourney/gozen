@@ -39,6 +39,7 @@ func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	overlay_control.resized.connect(_update_transform)
 	Project.project_ready.connect(_update_transform)
+	Project.resolution_changed.connect(_update_transform)
 	if Project.is_loaded:
 		_update_transform()
 

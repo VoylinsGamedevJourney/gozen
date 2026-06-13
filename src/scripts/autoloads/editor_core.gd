@@ -52,6 +52,8 @@ var _last_scrub_time: int = 0
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
+	Project.resolution_changed.connect(_on_resolution_changed)
+
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
 	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
 
@@ -122,6 +124,19 @@ func _on_project_ready() -> void:
 	_rebuild_structure()
 	set_frame(Project.data.playhead)
 
+
+func _on_resolution_changed() -> void:
+	background.size = Project.data.resolution
+	viewport.size = background.size
+	for texture_rect: TextureRect in view_textures:
+		if texture_rect != null:
+			texture_rect.size = Project.data.resolution
+	for text_viewport: SubViewport in text_viewports:
+		if text_viewport != null:
+			text_viewport.size = Project.data.resolution
+			@warning_ignore("unsafe_property_access")
+			text_viewport.get_child(0).size = Project.data.resolution
+	update_frame()
 
 func _rebuild_structure() -> void:
 	var track_size: int = TrackLogic.tracks.size()
