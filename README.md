@@ -46,10 +46,16 @@ At this moment there are three builds:
 - Windows: ...;
 
 ### For developers (building from source)
-First of all, you'll need to go into the `libs` folder and run the python script `build.py`, just follow the instructions and it should compile FFmpeg and the GDExtension without issues (on both Linux and Windows). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.
+Before you start building from source you'll need to ensure you have following dependencies installed on your system (names can vary depending on the distro you're using):
+- **Compiler:** `gcc`/`clang` and `g++`/`clang++`;
+- **Build tools:** `CMake`, `Ninja`, `NASM`, `SCons`, and `Python` (version 3.10+);
+- **Git tools:** `git` and `git-svn`;
+- **System libraries:** `libaom`, `SVT-AV1`, `NUMA`, `VA-API`, `VDPAU`, `X11` and `bzip2`.
+
+First of all, you'll need to run the python script in the root of the project `build.py`, just follow the instructions and it should compile without issues (on both Linux, Windows, and MacOS). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.
 
 > [!NOTE]
-> You will need `git-svn` in order to compile the Linux builds!
+> You will need `git-svn` in order to compile! It's in the list of requirements but people tend to miss it.
 
 ## Contributing
 We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.
