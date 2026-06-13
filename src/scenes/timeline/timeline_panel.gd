@@ -48,6 +48,9 @@ var pressed_clip: ClipData = null
 var _update_clips: bool = true
 var _last_mouse_button: int = MOUSE_BUTTON_NONE
 
+var _drop_track_idx: int = -1
+var _drop_frame_nr: int = -1
+
 
 
 func _ready() -> void:
@@ -62,6 +65,7 @@ func _ready() -> void:
 	if MarkerLogic.removed.connect(draw_markers.queue_redraw.unbind(1)): print_stack()
 	if MarkerLogic.updated.connect(draw_markers.queue_redraw.unbind(1)): print_stack()
 	if MarkerLogic.moving.connect(draw_markers.queue_redraw): print_stack()
+	if FileLogic.request_drop_folder.connect(_on_request_drop_folder): print_stack()
 
 	if get_window().size_changed.connect(_redraw_on_change): print_stack()
 
@@ -913,12 +917,31 @@ func split_clips_at(frame_pos: int) -> void:
 	draw_clips.queue_redraw()
 
 
-func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -> void:
+func _on_request_drop_folder(screen_pos: Vector2) -> void:
 	if is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
-		var track_idx: int = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
-		var frame_nr: int = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
+		_drop_track_idx = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
+		_drop_frame_nr = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
+	else:
+		_drop_track_idx = -1
+		_drop_frame_nr = -1
 
+
+func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -> void:
+	var track_idx: int = -1
+	var frame_nr: int = -1
+
+	if _drop_track_idx != -1 and _drop_frame_nr != -1:
+		track_idx = _drop_track_idx
+		frame_nr = _drop_frame_nr
+		_drop_track_idx = -1
+		_drop_frame_nr = -1
+	elif is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
+		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
+		track_idx = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
+		frame_nr = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
+
+	if track_idx != -1 and frame_nr != -1:
 		var drag_data: Draggable = Draggable.new()
 		drag_data.is_file = true
 		for file: FileData in files:

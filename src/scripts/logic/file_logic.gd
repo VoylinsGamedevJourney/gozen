@@ -288,7 +288,7 @@ func duplicate_text(file: FileData) -> void:
 
 ## File dropping can't be un-done with the undo_redo system!
 func dropped(dropped_file_paths: Array[String]) -> void:
-	drop_mouse_pos = get_viewport().get_mouse_position()
+	drop_mouse_pos = get_window().get_mouse_position()
 	files_dropping = true
 	current_drop_folder = "/"
 	request_drop_folder.emit(drop_mouse_pos)
