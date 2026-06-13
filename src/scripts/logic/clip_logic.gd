@@ -324,10 +324,12 @@ func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array
 				new_effect.keyframes[param_id] = {}
 			new_effect.keyframes[param_id][0] = value_at_split
 
+
 			# Shift existing keyframes that appear after the split.
-			for frame: int in effect.keyframes[param_id]:
-				if frame > split_pos:
-					new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
+			if effect.keyframes.has(param_id):
+				for frame: int in effect.keyframes[param_id]:
+					if frame > split_pos:
+						new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
 		new_effects.append(new_effect)
 	return new_effects
 
@@ -349,10 +351,11 @@ func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[E
 			new_effect.keyframes[param_id][0] = value_at_split
 
 			# Shift existing keyframes that appear after the split.
-			for frame: int in effect.keyframes[param_id]:
-				if frame <= split_pos:
-					continue
-				new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
+			if effect.keyframes.has(param_id):
+				for frame: int in effect.keyframes[param_id]:
+					if frame <= split_pos:
+						continue
+					new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
 			new_effects.append(new_effect)
 	return new_effects
 

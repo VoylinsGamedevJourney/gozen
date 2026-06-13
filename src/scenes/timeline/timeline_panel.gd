@@ -922,7 +922,7 @@ func _on_request_drop_folder(screen_pos: Vector2) -> void:
 	if is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
 		_drop_track_idx = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
-		_drop_frame_nr = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
+		_drop_frame_nr = maxi(roundi(local_mouse.x / Timeline.zoom), 0)
 	else:
 		_drop_track_idx = -1
 		_drop_frame_nr = -1
@@ -940,7 +940,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 	elif is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
 		track_idx = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
-		frame_nr = maxi(ceili(local_mouse.x / Timeline.zoom), 0)
+		frame_nr = maxi(roundi(local_mouse.x / Timeline.zoom), 0)
 
 	if track_idx != -1 and frame_nr != -1:
 		var drag_data: Draggable = Draggable.new()
