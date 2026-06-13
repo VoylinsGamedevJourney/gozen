@@ -8,9 +8,9 @@ extends Resource
 # PATH in File objects should start with "temp://"
 
 
-var image_data: ImageTexture = null
-var color: Color = Color.WHITE
-var text_effect: EffectVisual = null
+@export var image_data: ImageTexture = null
+@export var color: Color = Color.WHITE
+@export var text_effect: EffectVisual = null
 
 
 
