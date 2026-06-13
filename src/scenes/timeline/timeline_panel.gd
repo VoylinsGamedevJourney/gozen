@@ -71,6 +71,7 @@ func _ready() -> void:
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
+	_on_state_changed(Timeline.state)
 
 
 func _notification(what: int) -> void:
@@ -101,6 +102,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if !PopupManager._open_popups.is_empty(): return
 		if Timeline.state in [Timeline.STATE.MOVING, Timeline.STATE.DROPPING]: return
 		ClipLogic.selected_clips.clear()
+		Timeline.state = Timeline.STATE.SELECT
 		_on_ui_cancel()
 
 	if scroll.get_global_rect().has_point(get_global_mouse_position()):
@@ -289,11 +291,15 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 func _on_ui_cancel() -> void:
 	pressed_clip = null
 	Timeline.hovered_clip = null
-	Timeline.state = Timeline.STATE.SELECT
+	if Timeline.state not in [Timeline.STATE.SELECT, Timeline.STATE.SPLIT]:
+		Timeline.state = Timeline.STATE.SELECT
 	Timeline.draggable = null
 	Timeline.fade_target = null
 	Timeline.resize_target = null
-	mouse_default_cursor_shape = Control.CURSOR_ARROW
+	if Timeline.state == Timeline.STATE.SPLIT:
+		mouse_default_cursor_shape = Control.CURSOR_IBEAM
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW
 	draw_all()
 
 
@@ -767,17 +773,20 @@ func _show_hide_mode_bar(value: bool = Settings.get_show_time_mode_bar()) -> voi
 
 func _on_select_mode_button_pressed() -> void:
 	button_select.set_pressed_no_signal(true)
+	button_split.set_pressed_no_signal(false)
+	Timeline.state = Timeline.STATE.SELECT
 
 
 func _on_split_mode_button_pressed() -> void:
+	button_select.set_pressed_no_signal(false)
 	button_split.set_pressed_no_signal(true)
+	Timeline.state = Timeline.STATE.SPLIT
 
 
 func _on_state_changed(new_state: Timeline.STATE) -> void:
-	if new_state == Timeline.STATE.SELECT:
-		_on_select_mode_button_pressed()
-	elif new_state == Timeline.STATE.SPLIT:
-		_on_split_mode_button_pressed()
+	match new_state:
+		Timeline.STATE.SELECT: _on_select_mode_button_pressed()
+		Timeline.STATE.SPLIT:  _on_split_mode_button_pressed()
 
 	draw_mode.queue_redraw()
 	draw_playhead.queue_redraw()
