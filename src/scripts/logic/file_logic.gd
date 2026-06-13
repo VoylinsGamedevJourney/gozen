@@ -470,7 +470,7 @@ func _create_wave(file: FileData) -> void:
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
 		if temp_file:
 			var size: int = temp_file.get_length()
-			if size > 0 and size % 4 == 0:
+			if size > 0:
 				var loaded_wave: Variant = temp_file.get_var()
 				if typeof(loaded_wave) == TYPE_DICTIONARY:
 					audio_wave[file.id] = loaded_wave
@@ -481,7 +481,10 @@ func _create_wave(file: FileData) -> void:
 	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 	if data.is_empty():
 		audio_wave[file.id] = { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() }
-		return push_warning("Audio data is empty for file: " + file.nickname)
+		var empty_save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
+		if empty_save_file and !empty_save_file.store_var(audio_wave[file.id]):
+			printerr("FileLogic: Couldn't save empty wave file for file '%s'!" % file.path)
+		return push_warning("Empty audio wave saved for file: " + file.nickname)
 
 	var bytes_size: float = 4 # 16 bit * stereo.
 	var total_frames: int = int(data.size() / bytes_size)
