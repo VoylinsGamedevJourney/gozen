@@ -57,6 +57,7 @@ func _ready() -> void:
 	if Project.project_ready.connect(_project_ready): print_stack()
 	if Timeline.state_changed.connect(_on_state_changed): print_stack()
 	if Timeline.scroll_changed.connect(draw_all.unbind(1)): print_stack()
+	if Timeline.zoom_changed.connect(draw_all.unbind(1)): print_stack()
 	if Settings.on_show_time_mode_bar_changed.connect(_show_hide_mode_bar): print_stack()
 	if Settings.on_track_height_changed.connect(_update_track_height): print_stack()
 	if EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw): print_stack()
@@ -734,7 +735,6 @@ func _on_popup_action_clip_change_speed() -> void:
 		ClipLogic.change_speed([ClipRequest.resize_request(right_click_clip, delta, true)])
 		dialog.queue_free()
 	)
-	add_child(dialog)
 	dialog.popup_centered(Vector2i(200, 80))
 
 
