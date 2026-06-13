@@ -441,9 +441,15 @@ func update_data(track: int) -> void:
 		var text_color: Color = text_effect.get_value(text_effect.params[5], clip_frame)
 		var text_outline_size: int = text_effect.get_value(text_effect.params[6], clip_frame)
 		var text_outline_color: Color = text_effect.get_value(text_effect.params[7], clip_frame)
-		var text_shadow_size: int = text_effect.get_value(text_effect.params[8], clip_frame)
-		var text_shadow_offset: Vector2i = text_effect.get_value(text_effect.params[9], clip_frame)
-		var text_shadow_color: Color = text_effect.get_value(text_effect.params[10], clip_frame)
+
+		var text_shadow_size: int = 0
+		var text_shadow_offset: Vector2i = Vector2i(1, 1)
+		var text_shadow_color: Color = Color(0, 0, 0, 0.5)
+
+		if text_effect.params.size() > 10:
+			text_shadow_size = text_effect.get_value(text_effect.params[8], clip_frame)
+			text_shadow_offset = text_effect.get_value(text_effect.params[9], clip_frame)
+			text_shadow_color = text_effect.get_value(text_effect.params[10], clip_frame)
 
 		var font: Font = Settings.get_system_font(text_font) if text_font != "" else ThemeDB.fallback_font
 
