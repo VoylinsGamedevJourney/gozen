@@ -269,6 +269,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
 		Timeline.STATE.SPLIT:
 			mouse_default_cursor_shape = Control.CURSOR_IBEAM
+			draw_mode.set("mouse_pos_x", event.position.x)
 			draw_mode.queue_redraw()
 		Timeline.STATE.FADING:
 			_handle_fade_motion()
