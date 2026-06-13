@@ -36,6 +36,8 @@ class Audio : public Resource {
 
 	static PackedByteArray change_db(PackedByteArray audio_data, float db);
 	static PackedByteArray change_to_mono(PackedByteArray audio_data, bool left);
+	static PackedByteArray change_speed(PackedByteArray audio_data, float speed);
+
 	static PackedByteArray apply_dynamic_volume(PackedByteArray audio_data, PackedFloat32Array frame_volumes,
 												float mix_rate, float framerate);
 

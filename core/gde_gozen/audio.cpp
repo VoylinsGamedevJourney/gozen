@@ -328,6 +328,42 @@ PackedByteArray Audio::change_to_mono(PackedByteArray audio_data, bool left) {
 	return audio_data;
 }
 
+PackedByteArray Audio::change_speed(PackedByteArray audio_data, float speed) {
+	if (Math::is_equal_approx(speed, 1.0f) || audio_data.size() == 0) {
+		return audio_data;
+	}
+
+	const int sample_count = audio_data.size() / 4; // 16-bit stereo samples
+	int new_sample_count = std::ceil(sample_count / speed);
+
+	PackedByteArray new_audio_data;
+	new_audio_data.resize(new_sample_count * 4);
+
+	int16_t* src_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	int16_t* dst_data = reinterpret_cast<int16_t*>(new_audio_data.ptrw());
+
+	for (int i = 0; i < new_sample_count; ++i) {
+		float src_index_f = i * speed;
+		int src_index = (int)src_index_f;
+		float t = src_index_f - src_index;
+
+		if (src_index >= sample_count - 1) {
+			dst_data[i * 2] = src_data[(sample_count - 1) * 2];
+			dst_data[i * 2 + 1] = src_data[(sample_count - 1) * 2 + 1];
+		} else {
+			int16_t l1 = src_data[src_index * 2];
+			int16_t r1 = src_data[src_index * 2 + 1];
+			int16_t l2 = src_data[(src_index + 1) * 2];
+			int16_t r2 = src_data[(src_index + 1) * 2 + 1];
+
+			dst_data[i * 2] = (int16_t)(l1 + t * (l2 - l1));
+			dst_data[i * 2 + 1] = (int16_t)(r1 + t * (r2 - r1));
+		}
+	}
+
+	return new_audio_data;
+}
+
 PackedByteArray Audio::apply_dynamic_volume(PackedByteArray audio_data, PackedFloat32Array frame_volumes,
 											float mix_rate, float framerate) {
 	if (audio_data.size() == 0 || frame_volumes.size() == 0) {
@@ -394,6 +430,7 @@ void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio", D_METHOD("change_db", "audio_data", "db"), &Audio::change_db);
 	ClassDB::bind_static_method("Audio", D_METHOD("change_to_mono", "audio_data", "left_channel"),
 								&Audio::change_to_mono);
+	ClassDB::bind_static_method("Audio", D_METHOD("change_speed", "audio_data", "speed"), &Audio::change_speed);
 	ClassDB::bind_static_method(
 		"Audio", D_METHOD("apply_dynamic_volume", "audio_data", "frame_volumes", "mix_rate", "framerate"),
 		&Audio::apply_dynamic_volume);

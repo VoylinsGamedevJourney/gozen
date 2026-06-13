@@ -455,6 +455,9 @@ func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: 
 	if audio_data.is_empty():
 		return master_audio
 
+	if not is_equal_approx(clip.speed, 1.0):
+		audio_data = Audio.change_speed(audio_data, clip.speed)
+
 	# First apply fades utilizing offset indices.
 	var fade_in: int = clip.effects.fade_audio.x
 	var fade_out: int = clip.effects.fade_audio.y
