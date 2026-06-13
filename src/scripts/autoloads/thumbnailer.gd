@@ -57,7 +57,7 @@ func get_thumb(file: FileData) -> Texture2D:
 	var image: Image
 
 	# Check if color or image.
-	if file.path.begins_with("temp://color") or file.path == "temp://image":
+	if file.path.begins_with("temp://color") or file.path.begins_with("temp://image"):
 		var temp: Variant = FileLogic.file_data[file.id]
 		if !temp or temp is not ImageTexture:
 			return null

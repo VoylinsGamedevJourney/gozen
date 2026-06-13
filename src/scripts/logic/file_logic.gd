@@ -105,7 +105,7 @@ func _create_file(path: String) -> FileData:
 			file.nickname = "Text: Empty text"
 			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
 			file.temp_file.text_effect.set_default_keyframe()
-		elif path == "temp://image":
+		elif path.begins_with("temp://image"):
 			file.type = EditorCore.TYPE.IMAGE
 			file.duration = Settings.get_image_duration()
 			file.nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
@@ -192,7 +192,7 @@ func paste_image(image: Image) -> void:
 	InputManager.undo_redo.create_action("Paste Image")
 	var file: FileData = FileData.new()
 	file.id = Utils.get_unique_id(files.keys())
-	file.path = "temp://image"
+	file.path = "temp://image#" + str(file.id)
 	file.type = EditorCore.TYPE.IMAGE
 	file.duration = Settings.get_image_duration()
 	file.temp_file = TempFile.new()
@@ -396,7 +396,7 @@ func load_data(file: FileData) -> void:
 			if temp_file.text_effect.keyframes.is_empty():
 				temp_file.text_effect.set_default_keyframe()
 			file_data[file.id] = temp_file
-		elif file.path == "temp://image":
+		elif file.path.begins_with("temp://image"):
 			file_data[file.id] = temp_file.image_data
 		elif file.path.begins_with("temp://color"):
 			temp_file.load_image_from_color()
