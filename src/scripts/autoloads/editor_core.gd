@@ -199,12 +199,18 @@ func _get_instance_for_clip(clip: ClipData) -> int:
 
 	var file_id: int = clip.file
 	var used_indices: Array[int] = []
-	if !clip_instances.is_empty():
-		used_indices.append(0)
 
 	for clip_id: int in clip_instances:
 		var clip_data: ClipData = ClipLogic.clips.get(clip_id)
 		if clip_data and clip_data.file == file_id:
+			if clip_data.end == clip.start and clip_data.begin + int(clip_data.duration * clip_data.speed) == clip.begin and is_equal_approx(clip_data.speed, clip.speed):
+				var shared_index: int = clip_instances[clip_id]
+				clip_instances[clip.id] = shared_index
+				return shared_index
+			if clip.end == clip_data.start and clip.begin + int(clip.duration * clip.speed) == clip_data.begin and is_equal_approx(clip.speed, clip_data.speed):
+				var shared_index: int = clip_instances[clip_id]
+				clip_instances[clip.id] = shared_index
+				return shared_index
 			used_indices.append(clip_instances[clip_id])
 
 	var index: int = 0
@@ -236,6 +242,7 @@ func _cleanup_unused_instances(current_frame: int) -> void:
 
 func _prefetch_upcoming_clips() -> void:
 	var look_ahead: int = int(Project.data.framerate * 1.3)
+
 	for track: int in TrackLogic.tracks.size():
 		var current_clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
 		var upcoming: Array[ClipData] = TrackLogic.get_clips_in_range(track, frame_nr + 1, frame_nr + look_ahead)
@@ -244,6 +251,17 @@ func _prefetch_upcoming_clips() -> void:
 				continue
 
 			var index: int = _get_instance_for_clip(upcoming_clip)
+
+			var instance_in_use: bool = false
+			for track_idx: int in loaded_clips.size():
+				var playing_clip: ClipData = loaded_clips[track_idx]
+				if playing_clip and playing_clip.file == upcoming_clip.file and clips_instance_index[track_idx] == index:
+					instance_in_use = true
+					break
+
+			if instance_in_use:
+				continue
+
 			var file: FileData = FileLogic.files[upcoming_clip.file]
 			var video: Video = FileLogic.get_video_reader(file, index)
 			var video_id: int = video.get_instance_id()
