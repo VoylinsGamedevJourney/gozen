@@ -530,6 +530,45 @@ func _commit_current_fade() -> void:
 	var is_visual: bool = Timeline.fade_target.is_visual
 	var new_fade: Vector2i = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
 	var old_fade: Vector2i = Timeline.fade_target.original_fade
+	if new_fade == old_fade:
+		var closest_dist: int = Utils.INT_32_MAX
+		var target_frames: int = 0
+
+		for track_data: TrackLogic.TrackClips in TrackLogic.track_clips:
+			for other_clip: ClipData in track_data.clips:
+				if other_clip == clip: continue
+				if not Timeline.fade_target.is_end: # Fade In.
+					if other_clip.start > clip.start and other_clip.start <= clip.end:
+						var dist: int = other_clip.start - clip.start
+						if dist < closest_dist:
+							closest_dist = dist
+							target_frames = dist
+					if other_clip.end > clip.start and other_clip.end <= clip.end:
+						var dist: int = other_clip.end - clip.start
+						if dist < closest_dist:
+							closest_dist = dist
+							target_frames = dist
+				else: # Fade Out.
+					if other_clip.start >= clip.start and other_clip.start < clip.end:
+						var dist: int = clip.end - other_clip.start
+						if dist < closest_dist:
+							closest_dist = dist
+							target_frames = dist
+					if other_clip.end >= clip.start and other_clip.end < clip.end:
+						var dist: int = clip.end - other_clip.end
+						if dist < closest_dist:
+							closest_dist = dist
+							target_frames = dist
+
+		var max_frames: int = clip.duration - (old_fade.y if not Timeline.fade_target.is_end else old_fade.x)
+		if target_frames > max_frames:
+			target_frames = max_frames
+
+		if not Timeline.fade_target.is_end:
+			new_fade.x = target_frames if target_frames > 0 and old_fade.x != target_frames else 0
+		else:
+			new_fade.y = target_frames if target_frames > 0 and old_fade.y != target_frames else 0
+
 	if new_fade != old_fade:
 		if is_visual:
 			clip.effects.fade_visual = old_fade
