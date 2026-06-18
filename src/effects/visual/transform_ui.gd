@@ -162,9 +162,12 @@ func _align(type: int) -> void:
 	if clip.type == EditorCore.TYPE.VIDEO and raw_data is Video:
 		media_size = Vector2((raw_data as Video).get_resolution())
 	elif clip.type == EditorCore.TYPE.IMAGE:
-		var image: Image = Image.load_from_file(file.path)
-		if image:
-			media_size = image.get_size()
+		if raw_data is Texture2D:
+			media_size = (raw_data as Texture2D).get_size()
+		elif not file.path.begins_with("temp://"):
+			var image: Image = Image.load_from_file(file.path)
+			if image:
+				media_size = image.get_size()
 
 	var aspect: float = media_size.x / media_size.y
 	var target_aspect: float = res.x / res.y
