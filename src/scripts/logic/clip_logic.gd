@@ -235,8 +235,21 @@ func paste_copied_clips() -> void:
 	var clips_to_paste: Array[ClipData] = []
 	var existing_keys: Array[int] = clips.keys()
 
+	var existing_group_ids: Array[int] = _get_all_group_ids()
+	var group_id_map: Dictionary = {}
+
 	for copied_clip: ClipData in copied_clips:
 		var new_clip: ClipData = copied_clip.duplicate(true)
+		var mapped_groups: Array[int] = []
+
+		for group: int in new_clip.groups:
+			if not group_id_map.has(group):
+				var new_group: int = Utils.get_unique_id(existing_group_ids)
+				existing_group_ids.append(new_group)
+				group_id_map[group] = new_group
+			mapped_groups.append(group_id_map[group])
+		new_clip.groups = mapped_groups
+
 		new_clip.effects = ClipEffects.new()
 		new_clip.effects.fade_visual = copied_clip.effects.fade_visual
 		new_clip.effects.fade_audio = copied_clip.effects.fade_audio
@@ -277,6 +290,9 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 	var failed_duplicates: int = 0
 	var existing_keys: Array[int] = clips.keys()
 
+	var existing_group_ids: Array[int] = _get_all_group_ids()
+	var group_id_map: Dictionary = {}
+
 	for clip: ClipData in clips_to_duplicate:
 		if !clip:
 			continue
@@ -284,6 +300,16 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 		var free_region: Vector2i = TrackLogic.get_free_region(clip.track, target_frame)
 		if free_region.y - target_frame >= clip.duration:
 			var new_clip: ClipData = clip.duplicate(true)
+			var mapped_groups: Array[int] = []
+
+			for group: int in new_clip.groups:
+				if not group_id_map.has(group):
+					var new_group: int = Utils.get_unique_id(existing_group_ids)
+					existing_group_ids.append(new_group)
+					group_id_map[group] = new_group
+				mapped_groups.append(group_id_map[group])
+			new_clip.groups = mapped_groups
+
 			new_clip.effects = ClipEffects.new()
 			new_clip.effects.fade_visual = clip.effects.fade_visual
 			new_clip.effects.fade_audio = clip.effects.fade_audio
@@ -304,6 +330,67 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 	if not new_clips.is_empty():
 		insert_clips(new_clips, "Duplicate clip(s)")
 	return failed_duplicates
+
+
+func get_group_clips(clip: ClipData) -> Array[ClipData]:
+	if clip.groups.is_empty():
+		return [clip]
+
+	var out_group: int = clip.groups[-1]
+	var group_clips_data: Array[ClipData] = []
+	for clip_data: ClipData in clips.values():
+		if not clip_data.groups.is_empty() and clip_data.groups[-1] == out_group:
+			group_clips_data.append(clip_data)
+	return group_clips_data
+
+
+func _get_all_group_ids() -> Array[int]:
+	var ids: Array[int] = []
+	for clip: ClipData in clips.values():
+		for group: int in clip.groups:
+			if not group in ids:
+				ids.append(group)
+	return ids
+
+
+func group_clips(clips_to_group: Array[ClipData]) -> void:
+	if clips_to_group.size() > 1:
+		var group_id: int = Utils.get_unique_id(_get_all_group_ids())
+		InputManager.undo_redo.create_action("Group clips")
+		for clip: ClipData in clips_to_group:
+			var new_groups: Array[int] = clip.groups.duplicate()
+			new_groups.append(group_id)
+			InputManager.undo_redo.add_do_method(_set_clip_groups.bind(clip, new_groups))
+			InputManager.undo_redo.add_undo_method(_set_clip_groups.bind(clip, clip.groups))
+		InputManager.undo_redo.commit_action()
+
+
+func ungroup_clips(clips_to_ungroup: Array[ClipData]) -> void:
+	if clips_to_ungroup.is_empty():
+		return
+
+	var groups_to_remove: Array[int] = []
+	for clip: ClipData in clips_to_ungroup:
+		if not clip.groups.is_empty():
+			var out_group: int = clip.groups[-1]
+			if not out_group in groups_to_remove:
+				groups_to_remove.append(out_group)
+
+	if !groups_to_remove.is_empty():
+		InputManager.undo_redo.create_action("Ungroup clips")
+		for clip: ClipData in clips.values():
+			if not clip.groups.is_empty() and clip.groups[-1] in groups_to_remove:
+				var new_groups: Array[int] = clip.groups.duplicate()
+				new_groups.pop_back()
+				InputManager.undo_redo.add_do_method(_set_clip_groups.bind(clip, new_groups))
+				InputManager.undo_redo.add_undo_method(_set_clip_groups.bind(clip, clip.groups))
+		InputManager.undo_redo.commit_action()
+
+
+func _set_clip_groups(clip: ClipData, new_groups: Array[int]) -> void:
+	clip.groups = new_groups
+	Project.unsaved_changes = true
+	updated.emit.call_deferred()
 
 
 #---- Helper functions ----

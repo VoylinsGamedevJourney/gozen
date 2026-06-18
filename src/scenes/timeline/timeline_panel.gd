@@ -142,6 +142,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			var frame_nr: int = get_frame_from_mouse()
 			if !TrackLogic.get_clip_at_overlap(track, frame_nr):
 				remove_empty_space_at(track, frame_nr)
+		elif event.is_action_pressed("group_clips", false, true):
+			ClipLogic.group_clips(ClipLogic.selected_clips)
+			accept_event()
+		elif event.is_action_pressed("ungroup_clips", false, true):
+			ClipLogic.ungroup_clips(ClipLogic.selected_clips)
+			accept_event()
 
 
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
@@ -206,12 +212,16 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 					EditorCore.is_playing = false
 				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		elif pressed_clip not in ClipLogic.selected_clips:
+			var clips_to_select: Array[ClipData] = ClipLogic.get_group_clips(pressed_clip)
+
 			if !event.shift_pressed:
 				ClipLogic.selected_clips = [pressed_clip]
 			else:
-				ClipLogic.selected_clips.append(pressed_clip)
+				for clip: ClipData in clips_to_select:
+					if clip in ClipLogic.selected_clips: continue
+					ClipLogic.selected_clips.append(clip)
 			draw_clips.queue_redraw()
-			ClipLogic.selected.emit(pressed_clip)
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_menu()
 		right_click_clip = _get_clip_on_mouse()
@@ -397,7 +407,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 	if Timeline.state != Timeline.STATE.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked:
 		return null
 	if pressed_clip not in ClipLogic.selected_clips:
-		ClipLogic.selected_clips = [pressed_clip]
+		ClipLogic.selected_clips = ClipLogic.get_group_clips(pressed_clip)
 		draw_clips.queue_redraw()
 
 	var data: Draggable = Draggable.new()
@@ -516,8 +526,17 @@ func _commit_current_resize() -> void:
 
 func _commit_select(shift_pressed: bool) -> void:
 	if pressed_clip and pressed_clip == _get_clip_on_mouse() and not shift_pressed:
-		if ClipLogic.selected_clips.size() > 1:
-			ClipLogic.selected_clips = [pressed_clip]
+		var group_clips: Array[ClipData] = ClipLogic.get_group_clips(pressed_clip)
+		var different: bool = false
+		if ClipLogic.selected_clips.size() != group_clips.size():
+			different = true
+		else:
+			for clip: ClipData in group_clips:
+				if clip in ClipLogic.selected_clips: continue
+				different = true
+				break
+		if different:
+			ClipLogic.selected_clips = group_clips
 			draw_clips.queue_redraw()
 			ClipLogic.selected.emit(pressed_clip)
 
@@ -609,14 +628,18 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 				break
 
 			if clip.start > frame_start and clip.start < frame_end:
-				if clip not in ClipLogic.selected_clips:
-					ClipLogic.selected_clips.append(clip)
+				if clip in ClipLogic.selected_clips: continue
+				for group_clip: ClipData in ClipLogic.get_group_clips(clip):
+					if group_clip in ClipLogic.selected_clips: continue
+					ClipLogic.selected_clips.append(group_clip)
 				continue
 
 			# We should also check if a clip ends inside the selection box.
 			if clip.end > frame_start:
-				if clip not in ClipLogic.selected_clips:
-					ClipLogic.selected_clips.append(clip)
+				if clip in ClipLogic.selected_clips: continue
+				for group_clip: ClipData in ClipLogic.get_group_clips(clip):
+					if group_clip in ClipLogic.selected_clips: continue
+					ClipLogic.selected_clips.append(group_clip)
 	if ClipLogic.selected_clips.is_empty():
 		ClipLogic.selected.emit(null)
 	else:

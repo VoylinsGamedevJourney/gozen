@@ -68,7 +68,7 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif focus_owner is TextEdit:
 		return false
 
-	if event.is_action_pressed("open_marker_popup"):
+	if event.is_action_pressed("open_marker_popup", false, true):
 		open_marker_popup()
 		return true
 	elif event.is_action_pressed("timeline_play_pause", false, true):

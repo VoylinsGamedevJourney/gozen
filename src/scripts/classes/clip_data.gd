@@ -13,6 +13,8 @@ extends Resource
 @export var speed: float = 1.0 ## x times normal speed.
 @export var duration: int
 
+@export var groups: Array[int] = []
+
 @export var effects: ClipEffects
 
 @export var end: int: ## Should never be set.
@@ -36,6 +38,8 @@ func serialize() -> Dictionary:
 		data["begin"] = begin
 	if speed != 1.0:
 		data["speed"] = speed
+	if !groups.is_empty():
+		data["groups"] = groups
 
 	return data
 
@@ -49,6 +53,11 @@ func deserialize(data: Dictionary) -> void:
 	begin = data.get("begin", 0)
 	speed = data.get("speed", 1.0)
 	duration = data.get("duration", 1)
+
+	groups.clear()
+	if data.has("groups"):
+		for group: int in data["groups"]:
+			groups.append(group)
 
 	effects = ClipEffects.new()
 	if data.has("effects"):
