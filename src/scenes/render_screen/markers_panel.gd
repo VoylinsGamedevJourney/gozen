@@ -22,6 +22,7 @@ func _ready() -> void:
 
 func _on_copy_markers_button_pressed() -> void:
 	DisplayServer.clipboard_set(markers_text_edit.text)
+	NotificationManager.notify("Markers copied to clipboard")
 
 
 func _on_markers_updated() -> void:
