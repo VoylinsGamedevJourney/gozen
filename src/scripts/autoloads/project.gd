@@ -57,7 +57,7 @@ func new_project(new_path: String, new_resolution: Vector2i, new_framerate: floa
 
 	set_project_path(new_path)
 	set_resolution(new_resolution)
-	set_framerate(new_framerate)
+	set_framerate(new_framerate, true)
 	_setup_logic()
 
 	for index: int in Settings.get_tracks_amount():
