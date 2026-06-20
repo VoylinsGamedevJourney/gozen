@@ -100,10 +100,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 scroll_horizontal_custom_step = 30.0
 horizontal_scroll_mode = 3
+scroll_horizontal_by_default = true
 
 [node name="TimeStamps" type="PanelContainer" parent="Grid/TimestampScroll" unique_id=156332910 node_paths=PackedStringArray("timeline_scroll")]
-clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -130,13 +131,14 @@ size_flags_vertical = 3
 scroll_horizontal_custom_step = 30.0
 scroll_vertical_custom_step = 30.0
 vertical_scroll_mode = 3
+scroll_horizontal_by_default = true
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 track_controls_scroll = NodePath("../TrackControls")
 
 [node name="TimelinePanel" type="PanelContainer" parent="Grid/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_split", "button_snap")]
-clip_contents = true
 custom_minimum_size = Vector2(5760, 0)
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
