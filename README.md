@@ -1,6 +1,6 @@
 # GoZen
 
-[![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://github.com/VoylinsGamedevJourney/gozen/releases)
+[![Project Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)](https://codeberg.org/gozen/gozen/releases)
 [![Discord](https://img.shields.io/discord/1120566516899926068?label=Discord&logo=discord&logoColor=white)](https://discord.gg/BdbUf7VKYC)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -11,7 +11,7 @@
 > [!IMPORTANT]
 > GoZen is currently in Alpha! Expect bugs and frequent changes to happen! Beta release is planned for middle of 2026.
 >
-> Visit the [GoZen project site](https://voylinsgamedevjourney.github.io/gozen/) for more information and updates.
+> Visit the [GoZen project site](https://gozen.voylin.com/) for more information and updates.
 
 ![screenshot of GoZen startup UI](./assets/screenshots/alpha_01.jpg)
 
@@ -21,7 +21,7 @@ GoZen is a lightweight, stable, minimalistic, and performant video editor with s
 ## Features
 - Smooth video playback;
 - Fast rendering;
-- Crash free;
+- Designed with stability in mind;
 - Support for all codecs (which FFmpeg supports);
 - Clean, minimalist, but usable UI;
 - Cross-platform (Linux, Windows);
@@ -34,7 +34,7 @@ On the bottom you have your timeline with on the right your audio meter to check
 
 ## Installation
 Due to GoZen still being in alpha, there is no available build yet through each distro's package manager (an AUR build is coming). The best way to download the most recent version is through following links:
-- [GitHub release page](https://github.com/VoylinsGamedevJourney/gozen/releases);
+- [Releases](https://codeberg.org/gozen/gozen/releases);
 - [Itch.io page](https://voylin.itch.io/gozen);
 - [GoZen AUR](https://aur.archlinux.org/packages/gozen);
 - [GoZen-git AUR](https://aur.archlinux.org/packages/gozen-git); (This is the most up to-date, but most likely to break)
@@ -60,12 +60,12 @@ First of all, you'll need to run the python script in the root of the project `b
 ## Contributing
 We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.
 
-Please read our [Contributing Guide](./.github/CONTRIBUTING.md) for more details on how to get involved.
+Please read our [Contributing Guide](./CONTRIBUTING.md) for more details on how to get involved.
 
 Join our [Discord server](https://discord.gg/BdbUf7VKYC) to discuss the GoZen project and ask questions!
 
 ### Localization
-We need contributors for the localization of GoZen, more info can be found in [the translation README](/src/translations/README.md)
+We need contributors for the localization of GoZen, more info can be found in [the translation README](./src/translations/README.md)
 
 ## Support the project ❤️
 GoZen is an open-source project developed by me, Voylin. I'm a stay-at-home dad and my time is limited as I'm trying to make it financially work to keep working from home.
@@ -83,5 +83,7 @@ The project is licensed under the [GPLv3 license](./LICENSE). FFmpeg is being us
 > This software uses libraries from the FFmpeg project under the LGPLv2.1
 > Other libraries used may come with their own specific licenses so be sure to check before forking the project and/or using code from this project to see if it can be used with your project license.
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/voylin)
-[Patreon page](https://patreon.com/voylin)
+## Support me and GoZen
+- [My Ko-fi page](https://ko-fi.com/voylin);
+- [My Patreon page](https://patreon.com/voylin)
+
