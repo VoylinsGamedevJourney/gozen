@@ -132,10 +132,11 @@ func clipboard_paste() -> void:
 		return
 
 	# Check for image.
-	var image: Image = DisplayServer.clipboard_get_image()
-	if image != null and not image.is_empty():
-		FileLogic.paste_image(image)
-		return
+	if DisplayServer.clipboard_has_image():
+		var image: Image = DisplayServer.clipboard_get_image()
+		if image != null and not image.is_empty():
+			FileLogic.paste_image(image)
+			return
 
 	# Check for file paths.
 	var raw_paths: Array[String] = DisplayServer.clipboard_get().split('\n')
