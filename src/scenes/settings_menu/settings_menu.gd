@@ -257,6 +257,14 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_delete_empty_modifier,
 					TYPE_INT,
 					tr("The modifier you want to easily delete empty space between clips.")),
+			create_label(tr("Empty space click action")),
+			create_option_button(
+					Settings.get_empty_space_click_actions(),
+					Settings.get_empty_space_click_actions().values().find(Settings.get_empty_space_click_action()),
+					Settings.get_empty_space_click_actions().values().find(default_settings.empty_space_click_action),
+					Settings.set_empty_space_click_action,
+					TYPE_INT,
+					tr("What to do when clicking empty space in the timeline.")),
 			create_header(tr("Addons")), Control.new(),
 			create_label(tr("Show mode bar")),
 			create_check_button(

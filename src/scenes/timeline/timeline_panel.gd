@@ -206,7 +206,15 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				Timeline.box_select_end = Timeline.box_select_start
 				draw_box_selection.queue_redraw()
 			else:
-				Timeline.state = Timeline.STATE.SCRUBBING
+				match Settings.get_empty_space_click_action():
+					SettingsData.EMPTY_SPACE_CLICK_ACTION.CLEAR_SELECTION:
+						ClipLogic.selected_clips.clear()
+						ClipLogic.selected.emit(null)
+					SettingsData.EMPTY_SPACE_CLICK_ACTION.SEEK:
+						Timeline.state = Timeline.STATE.SCRUBBING
+						if EditorCore.is_playing: # Setting is_playing triggers a setter.
+							EditorCore.is_playing = false
+						EditorCore.scrub_to_frame(get_frame_from_mouse())
 
 				if EditorCore.is_playing: # Setting is_playing triggers a setter.
 					EditorCore.is_playing = false

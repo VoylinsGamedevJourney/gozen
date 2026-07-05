@@ -389,6 +389,21 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 	return mods
 
 
+func set_empty_space_click_action(value: SettingsData.EMPTY_SPACE_CLICK_ACTION) -> void:
+	data.empty_space_click_action = value
+
+
+func get_empty_space_click_action() -> int:
+	return data.empty_space_click_action
+
+
+func get_empty_space_click_actions() -> Dictionary[String, SettingsData.EMPTY_SPACE_CLICK_ACTION]:
+	return {
+		"Seek": SettingsData.EMPTY_SPACE_CLICK_ACTION.SEEK,
+		"Clear selection": SettingsData.EMPTY_SPACE_CLICK_ACTION.CLEAR_SELECTION
+	}
+
+
 func set_show_time_mode_bar(value: bool) -> void:
 	data.show_time_mode_bar = value
 	on_show_time_mode_bar_changed.emit(value)

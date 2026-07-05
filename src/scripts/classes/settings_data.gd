@@ -3,6 +3,7 @@ extends RefCounted
 
 
 enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
+enum EMPTY_SPACE_CLICK_ACTION { SEEK, CLEAR_SELECTION }
 
 
 # Appearance
@@ -29,6 +30,7 @@ var tracks_amount: int = 6 ## The amount of tracks.
 var tracks_height: float = 30
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
+var empty_space_click_action: EMPTY_SPACE_CLICK_ACTION = EMPTY_SPACE_CLICK_ACTION.SEEK
 var show_time_mode_bar: bool = true
 
 # Performance
