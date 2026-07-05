@@ -91,6 +91,11 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 						move_clip, track, move_clip.start - gap_size))
 				InputManager.undo_redo.add_undo_method(_move.bind(
 						move_clip, track, move_clip.start))
+
+	var leftmost_frame: int = ranges_by_track.values().map(func(vec: Vector2i) -> int: return vec.x).min()
+	InputManager.undo_redo.add_do_method(EditorCore.scrub_to_frame.bind(leftmost_frame))
+	InputManager.undo_redo.add_undo_method(EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
+
 	InputManager.undo_redo.commit_action()
 
 
