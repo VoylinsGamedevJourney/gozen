@@ -27,6 +27,8 @@ func serialize() -> Dictionary:
 	var data: Dictionary = { "color": color.to_html() }
 	if text_effect:
 		data["text_effect"] = text_effect.serialize()
+	if image_data:
+		data["image_png"] = image_data.get_image().save_png_to_buffer()
 	return data
 
 
@@ -44,3 +46,9 @@ func deserialize(data: Dictionary) -> void:
 		else:
 			text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
 			text_effect.deserialize(text_effect_value as Dictionary)
+
+	if data.has("image_png"):
+		var image: Image = Image.new()
+		@warning_ignore("RETURN_VALUE_DISCARDED")
+		image.load_png_from_buffer(data["image_png"] as PackedByteArray)
+		image_data = ImageTexture.create_from_image(image)
