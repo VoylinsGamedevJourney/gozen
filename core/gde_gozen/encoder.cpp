@@ -435,17 +435,22 @@ bool Encoder::_encode_audio_chunk(int samples_to_read) {
 	if (!av_frame_out) {
 		return _log_err("Out of memory");
 	}
-	if (samples_left > 0) {
-		const uint8_t* input_data = audio_buffer.ptr() + audio_buffer_offset;
-		const uint8_t* in_ptrs[1] = {input_data};
-		int ret = swr_convert(swr_ctx_audio.get(), nullptr, 0, in_ptrs, samples_left);
-		if (ret < 0) {
-			return _log_err("Couldn't feed audio to swr");
-		}
-		audio_buffer_offset += samples_left * in_bytes_per_sample;
-	}
-	while (swr_get_out_samples(swr_ctx_audio.get(), 0) >= frame_size ||
+
+	while (samples_left > 0 || swr_get_out_samples(swr_ctx_audio.get(), 0) >= frame_size ||
 		   (samples_to_read == -1 && swr_get_out_samples(swr_ctx_audio.get(), 0) > 0)) {
+
+		if (swr_get_out_samples(swr_ctx_audio.get(), 0) < frame_size && samples_left > 0) {
+			int to_feed = FFMIN(samples_left, 8192);
+			const uint8_t* input_data = audio_buffer.ptr() + audio_buffer_offset;
+			const uint8_t* in_ptrs[1] = {input_data};
+			int ret = swr_convert(swr_ctx_audio.get(), nullptr, 0, in_ptrs, to_feed);
+			if (ret < 0) {
+				return _log_err("Couldn't feed audio to swr");
+			}
+			audio_buffer_offset += to_feed * in_bytes_per_sample;
+			samples_left -= to_feed;
+			continue;
+		}
 
 		av_frame_unref(av_frame_out.get());
 		av_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
