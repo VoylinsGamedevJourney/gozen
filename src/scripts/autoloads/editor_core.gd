@@ -10,11 +10,12 @@ enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
 
 
 const AUDIO_TYPES: Array[int] = [ TYPE.AUDIO, TYPE.VIDEO ]
-const VISUAL_TYPES: Array[int] = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO ]
+const VISUAL_TYPES: Array[int] = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO, TYPE.PCK ]
 
 
 var viewport: SubViewport
 var text_viewports: Array[SubViewport]
+var pck_viewports: Array[SubViewport]
 
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
@@ -136,6 +137,9 @@ func _on_resolution_changed() -> void:
 			text_viewport.size = Project.data.resolution
 			@warning_ignore("unsafe_property_access")
 			text_viewport.get_child(0).size = Project.data.resolution
+	for pck_viewport: SubViewport in pck_viewports:
+		if pck_viewport != null:
+			pck_viewport.size = Project.data.resolution
 	update_frame()
 
 func _rebuild_structure() -> void:
@@ -172,6 +176,9 @@ func _rebuild_structure() -> void:
 	for text_viewport: SubViewport in text_viewports:
 		if text_viewport != null:
 			text_viewport.queue_free()
+	for pck_viewport: SubViewport in pck_viewports:
+		if pck_viewport != null:
+			pck_viewport.queue_free()
 	for compositor: VisualCompositor in compositors:
 		if compositor != null:
 			compositor.cleanup()
@@ -180,6 +187,7 @@ func _rebuild_structure() -> void:
 	view_textures.resize(track_size)
 	compositors.resize(track_size)
 	text_viewports.resize(track_size)
+	pck_viewports.resize(track_size)
 	@warning_ignore_restore("return_value_discarded")
 
 	for index: int in track_size:
@@ -301,6 +309,7 @@ func _on_closing_editor() -> void:
 			player.cleanup()
 	audio_players.clear()
 	text_viewports.clear()
+	pck_viewports.clear()
 	for compositor: VisualCompositor in compositors:
 		if compositor != null:
 			compositor.cleanup()

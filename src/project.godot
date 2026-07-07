@@ -75,6 +75,7 @@ enabled=PackedStringArray("res://addons/honyaku/plugin.cfg")
 audio=PackedStringArray("wav", "mp3", "ogg")
 video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1", "mov", "mts", "gif")
 image=PackedStringArray("jpg", "jpeg", "png", "svg", "webp")
+pck=PackedStringArray("pck")
 
 [gui]
 
