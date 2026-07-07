@@ -20,6 +20,8 @@ const ZOOM_MAX: float = 200.0
 const ZOOM_STEP: float = 1.1
 
 const SAFE_ZONE: int = 200
+# How many px does the mouse need to move to treat it as a drag?
+const DRAG_START_THRESHOLD_PX: float = 10.0
 
 
 @export var mode_panel: PanelContainer
@@ -44,6 +46,8 @@ var right_click_frame: int
 var right_click_clip: ClipData = null
 
 var pressed_clip: ClipData = null
+
+var _last_press_pos: Vector2 = Vector2()
 
 var _update_clips: bool = true
 var _last_mouse_button: int = MOUSE_BUTTON_NONE
@@ -183,6 +187,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		pressed_clip = _get_clip_on_mouse()
+		_last_press_pos = get_local_mouse_position()
 
 		Timeline.state = Timeline.STATE.SELECT
 		Timeline.fade_target =   _get_fade_target()
@@ -201,10 +206,8 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				return
 		elif !pressed_clip:
 			if event.shift_pressed:
-				Timeline.state = Timeline.STATE.BOX_SELECTING
-				Timeline.box_select_start = get_local_mouse_position()
-				Timeline.box_select_end = Timeline.box_select_start
-				draw_box_selection.queue_redraw()
+				var mouse_pos: Vector2 = get_local_mouse_position()
+				_start_box_select(mouse_pos, mouse_pos)
 			else:
 				match Settings.get_empty_space_click_action():
 					SettingsData.EMPTY_SPACE_CLICK_ACTION.CLEAR_SELECTION:
@@ -282,10 +285,14 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 
 	match Timeline.state:
 		Timeline.STATE.SELECT:
-			if _get_fade_target() != null:
+			if Input.is_key_pressed(KEY_SHIFT) \
+				and event.button_mask & MOUSE_BUTTON_MASK_LEFT \
+				and get_local_mouse_position().distance_to(_last_press_pos) > DRAG_START_THRESHOLD_PX:
+					_start_box_select(_last_press_pos, get_local_mouse_position())
+			elif _get_fade_target() != null:
 				mouse_default_cursor_shape = Control.CURSOR_CROSS
 			elif _get_resize_target() != null:
-				mouse_default_cursor_shape = Control. CURSOR_HSIZE
+				mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			elif clip_on_mouse:
 				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			else:
@@ -408,7 +415,7 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
-	if Timeline.state != Timeline.STATE.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked:
+	if Timeline.state != Timeline.STATE.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked or Input.is_key_pressed(KEY_SHIFT):
 		return null
 	if pressed_clip not in ClipLogic.selected_clips:
 		ClipLogic.selected_clips = ClipLogic.get_group_clips(pressed_clip)
@@ -651,6 +658,14 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 
 	draw_box_selection.queue_redraw()
 	draw_clips.queue_redraw()
+
+
+func _start_box_select(start_pos: Vector2, end_pos: Vector2) -> void:
+	Timeline.state = Timeline.STATE.BOX_SELECTING
+	Timeline.box_select_start = start_pos
+	Timeline.box_select_end = end_pos
+	mouse_default_cursor_shape = Control.CURSOR_CROSS
+	draw_box_selection.queue_redraw()
 
 
 ## This function is also used to handle speeding.
