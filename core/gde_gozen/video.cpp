@@ -502,8 +502,6 @@ bool Video::seek_frame(int frame_nr) {
 			_add_to_cache(frame_nr);
 			break;
 		}
-
-		_add_to_cache(decoded_frame_nr);
 	}
 	av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 	av_codec_ctx->skip_frame = original_skip_frame;

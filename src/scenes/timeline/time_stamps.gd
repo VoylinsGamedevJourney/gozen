@@ -73,6 +73,7 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				if EditorCore.is_playing and Settings.get_pause_after_drag():
 					EditorCore.is_playing = false
 				EditorCore.scrub_to_frame(_get_frame_on_mouse())
+			accept_event()
 		else: # Mouse released.
 			var marker: MarkerData = MarkerLogic.dragged_marker
 			if marker:
@@ -91,6 +92,7 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 			scrubbing = false
 			EditorCore.finish_scrub()
+			accept_event()
 
 
 
@@ -98,7 +100,11 @@ func _gui_input_mouse_motion(_event: InputEventMouseMotion) -> void:
 	if MarkerLogic.dragged_marker:
 		queue_redraw()
 	elif scrubbing:
-		EditorCore.scrub_to_frame(_get_frame_on_mouse())
+		if _event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			EditorCore.scrub_to_frame(_get_frame_on_mouse())
+		else:
+			scrubbing = false
+			EditorCore.finish_scrub()
 	else:
 		_update_hovered_marker()
 		_update_tooltip()

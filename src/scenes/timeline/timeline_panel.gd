@@ -174,6 +174,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			var target: ClipData = _get_clip_on_mouse()
 			if target:
 				split_clip_at(target, get_frame_from_mouse())
+			accept_event()
 		return
 	elif event.is_released():
 		match Timeline.state:
@@ -184,6 +185,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			Timeline.STATE.SCRUBBING: EditorCore.finish_scrub()
 			Timeline.STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
 		_on_ui_cancel()
+		accept_event()
 
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 		pressed_clip = _get_clip_on_mouse()
@@ -261,6 +263,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		@warning_ignore("return_value_discarded")
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_menu(popup)
+
+	if event.is_pressed():
+		accept_event()
 	get_window().gui_release_focus()
 
 
