@@ -81,21 +81,22 @@ func _create_file(path: String) -> FileData:
 	if extension in ProjectSettings.get_setting("extensions/image"):
 		file.type = EditorCore.TYPE.IMAGE
 		file.duration = Settings.get_image_duration()
-		file.modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
 		file.type = EditorCore.TYPE.AUDIO
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
-		file.modified_time = FileAccess.get_modified_time(path)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
 		file.type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
-		file.modified_time = FileAccess.get_modified_time(path)
-	elif extension == "pck":
+	elif extension == ProjectSettings.get_setting("extensions/pck"):
 		file.type = EditorCore.TYPE.PCK
+		file.duration = 300 # Temporary default.
 	elif !path.contains("temp://"):
 		printerr("FileLogic: Invalid file:", path)
 
-	if path.contains("temp://"):
+	if !path.contains("temp://"):
+		# This is the same function for all actual files, so we put it once here.
+		file.modified_time = FileAccess.get_modified_time(path)
+	else:
 		file.temp_file = TempFile.new()
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		var time_dict: Dictionary = Time.get_datetime_dict_from_system()
@@ -855,4 +856,5 @@ func check(file_path: String) -> bool:
 	return (
 		ext in ProjectSettings.get_setting("extensions/image") or
 		ext in ProjectSettings.get_setting("extensions/audio") or
-		ext in ProjectSettings.get_setting("extensions/video"))
+		ext in ProjectSettings.get_setting("extensions/video") or
+		ext in ProjectSettings.get_setting("extensions/pck"))
