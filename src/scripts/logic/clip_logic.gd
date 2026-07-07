@@ -122,6 +122,8 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 
 func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 	var new_clips: Array[ClipData] = []
+	var existing_group_ids: Array[int] = _get_all_group_ids()
+	var group_id_map: Dictionary = {}
 	InputManager.undo_redo.create_action("Split clip_data(s)")
 	for request: ClipRequest in requests:
 		var clip: ClipData = request.clip
@@ -153,6 +155,15 @@ func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 		snapshot.duration = duration_right
 		effects.video = _copy_visual_effects(request.clip.effects.video, split_offset)
 		effects.audio = _copy_audio_effects(request.clip.effects.audio, split_offset)
+
+		if not clip.groups.is_empty():
+			var old_group: int = clip.groups[-1]
+			if not group_id_map.has(old_group):
+				var new_id: int = Utils.get_unique_id(existing_group_ids)
+				group_id_map[old_group] = new_id
+				existing_group_ids.append(new_id)
+			snapshot.groups[-1] = group_id_map[old_group]
+
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(snapshot))
 		InputManager.undo_redo.add_undo_method(_delete.bind(snapshot))
 
