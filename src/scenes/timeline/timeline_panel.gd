@@ -215,10 +215,6 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 						if EditorCore.is_playing: # Setting is_playing triggers a setter.
 							EditorCore.is_playing = false
 						EditorCore.scrub_to_frame(get_frame_from_mouse())
-
-				if EditorCore.is_playing: # Setting is_playing triggers a setter.
-					EditorCore.is_playing = false
-				EditorCore.scrub_to_frame(get_frame_from_mouse())
 		elif pressed_clip not in ClipLogic.selected_clips:
 			var clips_to_select: Array[ClipData] = ClipLogic.get_group_clips(pressed_clip)
 
