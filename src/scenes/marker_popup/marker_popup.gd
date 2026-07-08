@@ -35,6 +35,13 @@ func _ready() -> void:
 	delete_button.visible = !(not marker)
 
 
+func _input(event: InputEvent) -> void:
+	# Needed as focus could be in line edit.
+	if event.is_action_pressed("ui_cancel"):
+		_on_cancel_button_pressed()
+		get_viewport().set_input_as_handled()
+
+
 func _setup_type_option_button() -> void:
 	var marker_names: PackedStringArray = Settings.get_marker_names()
 	var marker_colors: PackedColorArray = Settings.get_marker_colors()
