@@ -264,7 +264,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_menu(popup)
 
-	if event.is_pressed():
+	if event.is_pressed() and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
 		accept_event()
 	get_window().gui_release_focus()
 
