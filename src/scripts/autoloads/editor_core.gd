@@ -215,6 +215,14 @@ func _rebuild_structure() -> void:
 		add_child(text_viewport)
 		text_viewports[index] = text_viewport
 
+		# PCK stuff.
+		var pck_viewport: SubViewport = SubViewport.new()
+		pck_viewport.size = Project.data.resolution
+		pck_viewport.transparent_bg = true
+		pck_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		add_child(pck_viewport)
+		pck_viewports[index] = pck_viewport
+
 
 func _get_instance_for_clip(clip: ClipData) -> int:
 	if clip_instances.has(clip.id):
@@ -487,8 +495,44 @@ func update_data(track: int) -> void:
 
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	elif clip.type == TYPE.PCK:
-		# TODO: Add PCK files here
-		pass
+		var module: GoZenModule = raw_data
+		var pck_viewport: SubViewport = pck_viewports[track]
+
+		# Re-instantiate if clip has changed.
+		if pck_viewport.has_meta("file_id") and pck_viewport.get_meta("file_id") != clip.file:
+			for child: Node in pck_viewport.get_children():
+				if child.has_method("cleanup"):
+					@warning_ignore("unsafe_method_access")
+					child.cleanup()
+				child.queue_free()
+			pck_viewport.remove_meta("file_id")
+
+		# First time scene loading.
+		if pck_viewport.get_child_count() == 0 and not pck_viewport.has_meta("file_id"):
+			if module.scene:
+				var instance: Node = module.scene.instantiate()
+				pck_viewport.add_child(instance)
+				if instance.has_method("setup"):
+					@warning_ignore("unsafe_method_access")
+					instance.setup(Project.data.framerate, Project.data.resolution)
+			pck_viewport.set_meta("file_id", clip.file)
+
+		# Updating the frame/scene/instance.
+		if pck_viewport.get_child_count() > 0:
+			var instance: Node = pck_viewport.get_child(0)
+			var pck_effect_params: Dictionary = {}
+
+			# Gathering the current values for the params.
+			for effect: EffectVisual in clip.effects.video:
+				if effect.id == "pck_effect_params":
+					for param: EffectParam in effect.params:
+						pck_effect_params[param.id] = effect.get_value(param, clip_frame)
+					break
+
+			if instance.has_method("update_frame"):
+				@warning_ignore("unsafe_method_access")
+				instance.update_frame(clip_frame, clip.duration, pck_effect_params)
+			pck_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
 func update_views() -> void:
