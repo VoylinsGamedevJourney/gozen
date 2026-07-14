@@ -29,14 +29,11 @@ static func save_data(save_path: String, instance: RefCounted) -> int:
 
 	file.close()
 
-	var dir: DirAccess = DirAccess.open(save_path.get_base_dir())
-	var file_name: String = save_path.get_file()
-	var tmp_name: String = file_name + ".tmp"
-	if dir.file_exists(file_name):
-		if dir.remove(file_name):
-			printerr("DataManager: Problem happened on removing '%s'!" % file_name)
-	if dir.rename(tmp_name, file_name):
-		printerr("DataManager: Problem happened on renaming '%s' to '%s'!" % [tmp_name, file_name])
+	if FileAccess.file_exists(save_path):
+		if DirAccess.remove_absolute(save_path):
+			printerr("DataManager: Problem happened on removing '%s'!" % save_path)
+	if DirAccess.rename_absolute(tmp_path, save_path):
+		printerr("DataManager: Problem happened on renaming '%s' to '%s'!" % [tmp_path, save_path])
 	return OK
 
 
