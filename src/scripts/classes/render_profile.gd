@@ -13,3 +13,4 @@ extends Resource
 
 @export_group("Audio")
 @export var audio_codec: Encoder.AUDIO_CODEC = Encoder.AUDIO_CODEC.A_NONE
+@export var audio_channels: int = 2

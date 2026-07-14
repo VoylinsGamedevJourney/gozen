@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline/timeline.tscn" id="5_timeline"]
 [ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="6_audiometer"]
 
-[node name="RenderScreen" type="HSplitContainer" unique_id=1212842942 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "view_horizontal", "view_vertical", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderScreen" type="HSplitContainer" unique_id=1212842942 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "view_horizontal", "view_vertical", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 auto_translate_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,6 +32,7 @@ video_gop_spin_box = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPane
 video_speed_label = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedLabel")
 video_speed_hslider = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider")
 audio_codec_option_button = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
+audio_channels_option_button = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioChannelsOptionButton")
 threads_spin_box = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
 render_region_check_button = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton")
 region_start_spinbox = NodePath("VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox")
@@ -218,6 +219,15 @@ auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="ChannelsLabel" type="Label" parent="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=304669051]
+layout_mode = 2
+text = "Audio channels"
+
+[node name="AudioChannelsOptionButton" type="OptionButton" parent="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1062937576]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="Line2" type="HSeparator" parent="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1942202810]
 layout_mode = 2
 
@@ -352,6 +362,7 @@ layout_mode = 2
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
 [connection signal="toggled" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
 [connection signal="item_selected" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
+[connection signal="item_selected" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioChannelsOptionButton" to="." method="_on_render_settings_changed" unbinds=1]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox" to="." method="_on_render_settings_changed" unbinds=1]
 [connection signal="toggled" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton" to="." method="_on_render_region_toggled"]
 [connection signal="value_changed" from="VSplitContainer/HSplitContainer/RenderOptionsPanel/Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox" to="." method="_on_region_start_changed"]

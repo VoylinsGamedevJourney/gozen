@@ -42,6 +42,7 @@ class Encoder : public Resource {
 	int gop_size = 15;
 	int crf = 23; // 0 best quality, 51 worst quality, 18 not really noticable.
 	int audio_bit_rate = 128000;
+	int audio_channels = 2;
 	int threads = 0;
 
 	// The maximum for B-frames
@@ -147,6 +148,7 @@ class Encoder : public Resource {
 	inline void set_framerate(float video_framerate) { framerate = video_framerate; }
 	inline void set_crf(int video_crf) { crf = video_crf; }
 	inline void set_audio_bit_rate(int bit_rate) { audio_bit_rate = bit_rate; }
+	inline void set_audio_channels(int channels) { audio_channels = channels; }
 	inline void set_threads(int thread_count) { threads = thread_count; }
 	inline void set_gop_size(int video_gop_size) { gop_size = video_gop_size; }
 	inline void set_b_frames(int value) { b_frames = value; }

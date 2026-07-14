@@ -214,7 +214,8 @@ bool Encoder::_add_audio_stream() {
 	av_codec_ctx_audio->time_base = AVRational{1, av_codec_ctx_audio->sample_rate};
 	av_stream_audio->time_base = av_codec_ctx_audio->time_base;
 
-	AVChannelLayout ch_layout = AV_CHANNEL_LAYOUT_STEREO;
+	AVChannelLayout ch_layout =
+		(audio_channels == 1) ? (AVChannelLayout)AV_CHANNEL_LAYOUT_MONO : (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
 	av_channel_layout_copy(&av_codec_ctx_audio->ch_layout, &(ch_layout));
 
 	if (av_format_ctx->oformat->flags & AVFMT_GLOBALHEADER) {
@@ -235,9 +236,9 @@ bool Encoder::_add_audio_stream() {
 
 	// Setup SWR.
 	SwrContext* temp_swr_ctx = nullptr;
+	AVChannelLayout in_ch_layout = (AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO;
 	swr_alloc_set_opts2(&temp_swr_ctx, &av_codec_ctx_audio->ch_layout, av_codec_ctx_audio->sample_fmt,
-						av_codec_ctx_audio->sample_rate, &av_codec_ctx_audio->ch_layout, AV_SAMPLE_FMT_S16, sample_rate,
-						0, nullptr);
+						av_codec_ctx_audio->sample_rate, &in_ch_layout, AV_SAMPLE_FMT_S16, sample_rate, 0, nullptr);
 	swr_ctx_audio = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
 	if (!swr_ctx_audio || swr_init(swr_ctx_audio.get()) < 0) {
 		return _log_err("Couldn't create SWR");
@@ -648,6 +649,7 @@ void Encoder::_bind_methods() {
 	BIND_METHOD_ARGS(set_framerate, "video_framerate");
 	BIND_METHOD_ARGS(set_crf, "video_crf");
 	BIND_METHOD_ARGS(set_audio_bit_rate, "bit_rate");
+	BIND_METHOD_ARGS(set_audio_channels, "channels");
 	BIND_METHOD_ARGS(set_threads, "thread_count");
 	BIND_METHOD_ARGS(set_gop_size, "video_gop_size");
 

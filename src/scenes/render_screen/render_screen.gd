@@ -26,6 +26,7 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 
 @export_group("Audio")
 @export var audio_codec_option_button: OptionButton
+@export var audio_channels_option_button: OptionButton
 
 @export_group("Threads")
 @export var threads_spin_box: SpinBox
@@ -179,6 +180,9 @@ func _setup_codec_option_buttons() -> void:
 	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC) # NO_TRANSLATE
 	audio_codec_option_button.add_item("None", Encoder.AUDIO_CODEC.A_NONE)
 
+	audio_channels_option_button.add_item("Stereo", 2)
+	audio_channels_option_button.add_item("Mono", 1)
+
 
 func _delete_custom_profile(index: int) -> void:
 	var path: String = option_button_render_profiles.get_item_metadata(index)
@@ -232,6 +236,12 @@ func load_profile(profile: RenderProfile) -> void:
 		if audio_codec_option_button.get_item_id(index) == profile.audio_codec:
 			audio_codec_option_button.selected = index
 			break
+
+	for index: int in audio_channels_option_button.item_count:
+		if audio_channels_option_button.get_item_index(index) == profile.audio_channels:
+			audio_channels_option_button.selected = index
+			break
+
 	button_save_render_profile.visible = false
 	_is_loading_profile = false
 
@@ -418,6 +428,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	if video_codec_option_button.get_selected_id() == Encoder.VIDEO_CODEC.V_H264:
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_id)
+	Print.info("Audio channels", audio_channels_option_button.get_selected_id())
 	Print.info("Cores/threads", threads_spin_box.value)
 	Print.info("Frames to process", end_frame - start_frame + 1)
 	print("--------------------")
@@ -467,6 +478,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	RenderManager.encoder.set_h264_preset(int(video_speed_hslider.value))
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
 	RenderManager.encoder.set_audio_codec_id(audio_codec_id)
+	RenderManager.encoder.set_audio_channels(audio_channels_option_button.get_selected_id())
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
 	await RenderManager.start_encoder(start_frame, end_frame)
 
@@ -538,6 +550,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.icon = ImageTexture.create_from_image(icon)
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VIDEO_CODEC
 	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AUDIO_CODEC
+	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as Encoder.AUDIO_CODEC
 	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264_PRESETS
