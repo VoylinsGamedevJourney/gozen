@@ -497,6 +497,7 @@ func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 
 
 func _get_effect_pipeline(shader_path: String, effect: EffectVisual) -> EffectCache:
+	if shader_path.is_empty(): return null
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
 
