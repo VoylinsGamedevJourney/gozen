@@ -65,4 +65,4 @@ func deserialize(data: Dictionary) -> void:
 		if effect_value is ClipEffects:
 			effects = effect_value
 		else:
-			effects.deserialize(effect_value as Dictionary)
+			effects.deserialize(effect_value as Dictionary, file)

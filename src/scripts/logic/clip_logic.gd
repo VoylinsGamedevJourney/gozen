@@ -28,7 +28,7 @@ func add(requests: Array[ClipRequest]) -> void:
 		new_clip.track = request.track
 		new_clip.start = request.frame
 		new_clip.duration = FileLogic.files[request.file.id].duration
-		new_clip.effects = _create_default_effects(new_clip.type)
+		new_clip.effects = _create_default_effects(new_clip.type, request.file.id)
 		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
 			new_clip.effects.is_muted = true
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
@@ -93,8 +93,9 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 						move_clip, track, move_clip.start))
 
 	var leftmost_frame: int = ranges_by_track.values().map(func(vec: Vector2i) -> int: return vec.x).min()
-	InputManager.undo_redo.add_do_method(EditorCore.scrub_to_frame.bind(leftmost_frame))
-	InputManager.undo_redo.add_undo_method(EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
+	if !EditorCore.is_playing:
+		InputManager.undo_redo.add_do_method(EditorCore.scrub_to_frame.bind(leftmost_frame))
+		InputManager.undo_redo.add_undo_method(EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
 
 	InputManager.undo_redo.commit_action()
 
@@ -562,7 +563,7 @@ func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 
 # --- Helpers ---
 
-func _create_default_effects(file_type: EditorCore.TYPE) -> ClipEffects:
+func _create_default_effects(file_type: EditorCore.TYPE, file_id: int = -1) -> ClipEffects:
 	var effects: ClipEffects = ClipEffects.new()
 	if file_type in EditorCore.VISUAL_TYPES:
 		var resolution: Vector2i = Project.get_resolution()
@@ -572,6 +573,17 @@ func _create_default_effects(file_type: EditorCore.TYPE) -> ClipEffects:
 				param.default_value = Vector2i(resolution / 2.0)
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
+
+		if file_type == EditorCore.TYPE.PCK and file_id != -1:
+			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
+			if module_data:
+				var pck_effect: EffectVisual = EffectVisual.new()
+				pck_effect.id = "pck_effect_params"
+				pck_effect.nickname = "Module Parameters"
+				for param: EffectParam in module_data.params:
+					pck_effect.params.append(param.duplicate(true))
+				pck_effect.set_default_keyframe()
+				effects.video.append(pck_effect)
 
 	if file_type in EditorCore.AUDIO_TYPES:
 		var volume_effect: EffectAudio = (load(Library.EFFECT_AUDIO_VOLUME) as EffectAudio).deep_copy()

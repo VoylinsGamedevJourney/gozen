@@ -569,6 +569,14 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, clip_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
+	elif clip.type == TYPE.PCK:
+		var texture_rid: RID = pck_viewports[track_id].get_texture().get_rid()
+		if update or Project.data.resolution != compositors[track_id].resolution:
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
+
+		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
+				texture_rid, effects, clip_frame, fade_alpha))
+		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Video:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
 		if update or Project.data.resolution != compositors[track_id].resolution:

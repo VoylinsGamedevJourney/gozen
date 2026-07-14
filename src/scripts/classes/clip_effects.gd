@@ -49,7 +49,7 @@ func serialize() -> Dictionary:
 	return data
 
 
-func deserialize(data: Dictionary) -> void:
+func deserialize(data: Dictionary, file_id: int = -1) -> void:
 	fade_visual = data.get("fade_visual", Vector2i.ZERO)
 	fade_audio = data.get("fade_audio", Vector2i.ZERO)
 	ato_active = data.get("ato_active", false)
@@ -59,26 +59,36 @@ func deserialize(data: Dictionary) -> void:
 
 	video.clear()
 	if data.has("video"):
-		_deserialize_video(data)
+		_deserialize_video(data, file_id)
 
 	audio.clear()
 	if data.has("audio"):
 		_deserialize_audio(data)
 
 
-func _deserialize_video(data: Dictionary) -> void:
+func _deserialize_video(data: Dictionary, file_id: int = -1) -> void:
 	for effect_value: Variant in data["video"]:
 		if effect_value is EffectVisual:
 			video.append(effect_value)
 			continue
 
 		var effect_id: String = (effect_value as Dictionary).get("id", "")
-		if !EffectsHandler.visual_effect_instances.has(effect_id):
-			continue
+		var effect: EffectVisual = null
 
-		var effect: EffectVisual = EffectsHandler.visual_effect_instances[effect_id].deep_copy()
-		effect.deserialize(effect_value as Dictionary)
-		video.append(effect)
+		if effect_id == "pck_effect_params" and file_id != -1:
+			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
+			if module_data:
+				effect = EffectVisual.new()
+				effect.id = "pck_effect_params"
+				effect.nickname = "Module Parameters"
+				for effect_param: EffectParam in module_data.params:
+					effect.params.append(effect_param.duplicate(true))
+		elif EffectsHandler.visual_effect_instances.has(effect_id):
+			effect = EffectsHandler.visual_effect_instances[effect_id].deep_copy()
+
+		if effect:
+			effect.deserialize(effect_value as Dictionary)
+			video.append(effect)
 
 
 func _deserialize_audio(data: Dictionary) -> void:

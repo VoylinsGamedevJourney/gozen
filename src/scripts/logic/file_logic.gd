@@ -436,19 +436,13 @@ func load_data(file: FileData) -> void:
 				printerr("FileLogic: PCK is missing the required `module.tres` at '%s'!" % module_path)
 				return _delete(file)
 
-			var module_script: Script = load(module_path)
-			if !module_script:
-				printerr("FileLogic: Failed to load `module.tres`!")
+			var module_data: GoZenModule = load(module_path)
+			if !module_data:
+				printerr("FileLogic: Failed to load `module.tres` or isn't a GoZenModule!")
 				return _delete(file)
 
-			@warning_ignore("unsafe_method_access")
-			var module_data: Variant = module_script.new()
-			if module_data is GoZenModule:
-				file_data[file.id] = module_data
-				file.duration = module_data.duration
-			else:
-				printerr("FileLogic: `module.tres` does not inherit from PCK class!")
-				return _delete(file)
+			file_data[file.id] = module_data
+			file.duration = module_data.default_duration
 
 
 func _load_video(file: FileData) -> void:
