@@ -430,15 +430,15 @@ func load_data(file: FileData) -> void:
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 				return _delete(file)
 			var module_name: String = file.path.get_file().get_basename()
-			var module_path: String = "res://modules/" + module_name + "/module.gd"
+			var module_path: String = "res://modules/" + module_name + "/module.tres"
 
 			if !FileAccess.file_exists(module_path):
-				printerr("FileLogic: PCK is missing the required `module.gd` at '%s'!" % module_path)
+				printerr("FileLogic: PCK is missing the required `module.tres` at '%s'!" % module_path)
 				return _delete(file)
 
 			var module_script: Script = load(module_path)
 			if !module_script:
-				printerr("FileLogic: Failed to load `module.gd`!")
+				printerr("FileLogic: Failed to load `module.tres`!")
 				return _delete(file)
 
 			@warning_ignore("unsafe_method_access")
@@ -447,7 +447,7 @@ func load_data(file: FileData) -> void:
 				file_data[file.id] = module_data
 				file.duration = module_data.duration
 			else:
-				printerr("FileLogic: `module.gd` does not inherit from PCK class!")
+				printerr("FileLogic: `module.tres` does not inherit from PCK class!")
 				return _delete(file)
 
 
