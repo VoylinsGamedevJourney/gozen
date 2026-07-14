@@ -19,8 +19,8 @@ menu_bar = NodePath("VBox/MenuBarHBox")
 screen_tab_container = NodePath("VBox/VSplitContainer/ScreenTabContainer")
 
 [node name="VBox" type="VBoxContainer" parent="." unique_id=1299273465]
-layout_direction = 2
 layout_mode = 2
+layout_direction = 2
 theme_override_constants/separation = 0
 
 [node name="MenuBarHBox" parent="VBox" unique_id=1860760368 instance=ExtResource("2_7gtdv")]

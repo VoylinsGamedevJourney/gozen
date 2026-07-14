@@ -88,6 +88,8 @@ const STYLE_BOX_CLIP_COLOR_NORMAL: String = "uid://df0jxk11tracv"
 const STYLE_BOX_CLIP_COLOR_FOCUS: String = "uid://cwxo126dikkbh"
 const STYLE_BOX_CLIP_TEXT_NORMAL: String = "uid://c8iincian78e3"
 const STYLE_BOX_CLIP_TEXT_FOCUS: String = "uid://vtif6uw34cqe"
+const STYLE_BOX_CLIP_PCK_NORMAL: String = "uid://d4imyv73ke52c"
+const STYLE_BOX_CLIP_PCK_FOCUS: String = "uid://cbbl73i1eow1v"
 const STYLE_BOX_CLIP_PREVIEW: String = "uid://dx2v44643hfvy"
 
 const STYLE_LINE_TRACK: String = "uid://ccq8hdcqq8xrc"
