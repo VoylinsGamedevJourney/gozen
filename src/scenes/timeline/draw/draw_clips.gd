@@ -13,6 +13,7 @@ const STYLE_BOXES: Dictionary[EditorCore.TYPE, Array] = {
 	EditorCore.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
 	EditorCore.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
 	EditorCore.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
+	EditorCore.TYPE.PCK:  [preload(Library.STYLE_BOX_CLIP_PCK_NORMAL), preload(Library.STYLE_BOX_CLIP_PCK_FOCUS)],
 }
 
 const CLIP_TEXT_OFFSET: Vector2 = Vector2(5, 12)

@@ -87,6 +87,7 @@ func get_thumb(file: FileData) -> Texture2D:
 		match file.type:
 			EditorCore.TYPE.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
 			EditorCore.TYPE.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
+			EditorCore.TYPE.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # TODO: Allow for the PCK file to give it's own thumb.
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video placeholder.
 
 	# Return the saved thumbnail.
@@ -116,6 +117,7 @@ func _gen_thumb(file: FileData) -> void:
 			if video.open(file.path) == OK:
 				image = video.generate_thumbnail_at_frame(0)
 				video.close()
+		EditorCore.TYPE.PCK: image = _get_default_thumb(Library.THUMB_DEFAULT_VIDEO).get_image() # NOTE: Placeholder for now!
 	if !image: # TODO: Run this function a second or so later as the data will probably be ready by now.
 		return
 

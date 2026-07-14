@@ -12,6 +12,13 @@ func prepare(file_data: FileData) -> void:
 	rename_line_edit.text = file.nickname
 
 
+func _input(event: InputEvent) -> void:
+	# Needed as focus could be in line edit.
+	if event.is_action_pressed("ui_cancel"):
+		_on_cancel_button_pressed()
+		get_viewport().set_input_as_handled()
+
+
 func _on_cancel_button_pressed() -> void:
 	self.queue_free()
 
