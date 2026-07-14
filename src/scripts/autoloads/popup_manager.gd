@@ -46,6 +46,13 @@ func _ready() -> void:
 	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and not _open_popups.is_empty():
+		if _open_popups.has(PROGRESS) and _open_popups.size() == 1: return
+		close_all()
+		get_viewport().set_input_as_handled()
+
+
 func open(popup: int) -> void:
 	if popup in _open_popups:
 		return
