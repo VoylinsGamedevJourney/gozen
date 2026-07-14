@@ -87,7 +87,7 @@ func _create_file(path: String) -> FileData:
 	elif extension in ProjectSettings.get_setting("extensions/video"):
 		file.type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
-	elif extension == ProjectSettings.get_setting("extensions/pck"):
+	elif extension in ProjectSettings.get_setting("extensions/pck"):
 		file.type = EditorCore.TYPE.PCK
 		file.duration = 300 # Temporary default.
 	elif !path.contains("temp://"):
@@ -428,6 +428,26 @@ func load_data(file: FileData) -> void:
 		EditorCore.TYPE.PCK:
 			if !ProjectSettings.load_resource_pack(file.path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
+				return _delete(file)
+			var module_name: String = file.path.get_file().get_basename()
+			var module_path: String = "res://modules/" + module_name + "/module.gd"
+
+			if !FileAccess.file_exists(module_path):
+				printerr("FileLogic: PCK is missing the required `module.gd` at '%s'!" % module_path)
+				return _delete(file)
+
+			var module_script: Script = load(module_path)
+			if !module_script:
+				printerr("FileLogic: Failed to load `module.gd`!")
+				return _delete(file)
+
+			@warning_ignore("unsafe_method_access")
+			var module_data: Variant = module_script.new()
+			if module_data is GoZenModule:
+				file_data[file.id] = module_data
+				file.duration = module_data.duration
+			else:
+				printerr("FileLogic: `module.gd` does not inherit from PCK class!")
 				return _delete(file)
 
 
