@@ -1,12 +1,12 @@
 extends Node
 
 
-signal state_changed(new_state: STATE)
+signal state_changed(new_state: State)
 signal zoom_changed(new_zoom: float)
 signal scroll_changed(new_zoom: float)
 
 
-enum STATE {
+enum State {
 	SELECT, SPLIT, SCRUBBING, MOVING, DROPPING,
 	RESIZING, SPEEDING, FADING, BOX_SELECTING }
 
@@ -14,7 +14,7 @@ enum STATE {
 const TRACK_LINE_WIDTH: int = 1
 
 
-var state: STATE = STATE.SELECT: set = set_state
+var current_state: State = State.SELECT: set = set_state
 var zoom: float = 1.0: set = set_zoom
 var scroll_x: float: set = set_scroll_x
 var scroll_y: float: set = set_scroll_y
@@ -38,17 +38,17 @@ var snap_enabled: bool = true
 
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
-	InputManager.switch_timeline_mode_select.connect(set_state.bind(STATE.SELECT))
-	InputManager.switch_timeline_mode_split.connect(set_state.bind(STATE.SPLIT))
+	InputManager.switch_timeline_mode_select.connect(set_state.bind(State.SELECT))
+	InputManager.switch_timeline_mode_split.connect(set_state.bind(State.SPLIT))
 	@warning_ignore_restore("return_value_discarded")
 
 
 # --- Setters ---
 
-func set_state(val: STATE) -> void:
-	if state != val:
-		state = val
-		state_changed.emit(state)
+func set_state(val: State) -> void:
+	if current_state != val:
+		current_state = val
+		state_changed.emit(current_state)
 
 
 func set_zoom(value: float) -> void:

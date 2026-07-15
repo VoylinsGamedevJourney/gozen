@@ -6,11 +6,11 @@ signal play_changed(value: bool)
 
 
 ## File/Clip types.
-enum TYPE { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
+enum Type { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
 
 
-const AUDIO_TYPES: Array[int] = [ TYPE.AUDIO, TYPE.VIDEO ]
-const VISUAL_TYPES: Array[int] = [ TYPE.IMAGE, TYPE.COLOR, TYPE.TEXT, TYPE.VIDEO, TYPE.PCK ]
+const AUDIO_TYPES: Array[int] = [ Type.AUDIO, Type.VIDEO ]
+const VISUAL_TYPES: Array[int] = [ Type.IMAGE, Type.COLOR, Type.TEXT, Type.VIDEO, Type.PCK ]
 
 
 var viewport: SubViewport
@@ -106,7 +106,7 @@ func _process(delta: float) -> void:
 	if data_ready:
 		var needs_delay: bool = false
 		for clip: ClipData in loaded_clips:
-			if clip and clip.type in [TYPE.TEXT, TYPE.PCK]:
+			if clip and clip.type in [Type.TEXT, Type.PCK]:
 				needs_delay = true
 				break
 		if !needs_delay or data_set_frame != Engine.get_process_frames():
@@ -278,7 +278,7 @@ func _prefetch_upcoming_clips() -> void:
 		var current_clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
 		var upcoming: Array[ClipData] = TrackLogic.get_clips_in_range(track, frame_nr + 1, frame_nr + look_ahead)
 		for upcoming_clip: ClipData in upcoming:
-			if upcoming_clip == current_clip or upcoming_clip.type != TYPE.VIDEO:
+			if upcoming_clip == current_clip or upcoming_clip.type != Type.VIDEO:
 				continue
 
 			var index: int = _get_instance_for_clip(upcoming_clip)
@@ -446,7 +446,7 @@ func update_data(track: int) -> void:
 	var raw_data: Variant = FileLogic.file_data.get(clip.file)
 	var clip_frame: int = frame_nr - clip.start
 
-	if clip.type == TYPE.TEXT:
+	if clip.type == Type.TEXT:
 		var temp_file: TempFile = raw_data
 		var text_effect: EffectVisual = temp_file.text_effect
 
@@ -494,7 +494,7 @@ func update_data(track: int) -> void:
 		text_label.label_settings = text_label_settings
 
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-	elif clip.type == TYPE.PCK:
+	elif clip.type == Type.PCK:
 		var module: GoZenModule = raw_data
 		var pck_viewport: SubViewport = pck_viewports[track]
 
@@ -561,7 +561,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	var effects: Array[EffectVisual] = clip.effects.video
 	load_video_frame(clip, relative_frame, instance_index)
 
-	if clip.type == TYPE.TEXT:
+	if clip.type == Type.TEXT:
 		var texture_rid: RID = text_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
@@ -569,7 +569,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, clip_frame, fade_alpha))
 		view_textures[track_id].texture = compositors[track_id].display_texture
-	elif clip.type == TYPE.PCK:
+	elif clip.type == Type.PCK:
 		var texture_rid: RID = pck_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
@@ -639,7 +639,7 @@ func set_background_color(color: Color) -> void:
 # --- Playback helpers ---
 
 func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
-	if !clip or clip.type != TYPE.VIDEO:
+	if !clip or clip.type != Type.VIDEO:
 		return
 
 	var file: FileData = FileLogic.files[clip.file]

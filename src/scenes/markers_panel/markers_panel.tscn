@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://b6vpttfp0ykxp"]
+
+[ext_resource type="Script" uid="uid://dpqqceo10bxqs" path="res://scenes/markers_panel/markers_panel.gd" id="1_336cf"]
+[ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="2_fuqur"]
+
+[node name="MarkersPanel" type="PanelContainer" unique_id=548154008 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
+custom_minimum_size = Vector2(0, 100)
+size_flags_vertical = 3
+theme_type_variation = &"box"
+script = ExtResource("1_336cf")
+markers_text_edit = NodePath("Margin/Panel/Margin/VBox/MarkersTextEdit")
+markers_option_button = NodePath("Margin/Panel/Margin/VBox/HBox/MarkersOptionButton")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=433927477]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Margin" unique_id=767054757]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Margin/Panel" unique_id=220593798]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Panel/Margin" unique_id=1341113964]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Margin/Panel/Margin/VBox" unique_id=259597298]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Margin/Panel/Margin/VBox/HBox" unique_id=617936011]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "Markers"
+
+[node name="MarkersOptionButton" type="OptionButton" parent="Margin/Panel/Margin/VBox/HBox" unique_id=1945821773]
+layout_mode = 2
+flat = true
+
+[node name="CopyMarkersButton" type="TextureButton" parent="Margin/Panel/Margin/VBox/HBox" unique_id=723875809]
+custom_minimum_size = Vector2(17, 0)
+layout_mode = 2
+texture_normal = ExtResource("2_fuqur")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="MarkersTextEdit" type="TextEdit" parent="Margin/Panel/Margin/VBox" unique_id=268981685]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_readonly_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+editable = false
+scroll_smooth = true
+scroll_fit_content_width = true
+
+[connection signal="item_selected" from="Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="." method="_on_markers_button_item_selected"]
+[connection signal="pressed" from="Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="." method="_on_copy_markers_button_pressed"]

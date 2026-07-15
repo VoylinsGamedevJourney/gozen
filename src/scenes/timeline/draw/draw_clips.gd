@@ -7,13 +7,13 @@ const FADE_AREA_COLOR: Color = Color(0.0, 0.0, 0.0, 0.3)
 
 const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.6)
 
-const STYLE_BOXES: Dictionary[EditorCore.TYPE, Array] = {
-	EditorCore.TYPE.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
-	EditorCore.TYPE.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
-	EditorCore.TYPE.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
-	EditorCore.TYPE.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
-	EditorCore.TYPE.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
-	EditorCore.TYPE.PCK:  [preload(Library.STYLE_BOX_CLIP_PCK_NORMAL), preload(Library.STYLE_BOX_CLIP_PCK_FOCUS)],
+const STYLE_BOXES: Dictionary[EditorCore.Type, Array] = {
+	EditorCore.Type.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
+	EditorCore.Type.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
+	EditorCore.Type.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
+	EditorCore.Type.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
+	EditorCore.Type.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
+	EditorCore.Type.PCK:  [preload(Library.STYLE_BOX_CLIP_PCK_NORMAL), preload(Library.STYLE_BOX_CLIP_PCK_FOCUS)],
 }
 
 const CLIP_TEXT_OFFSET: Vector2 = Vector2(5, 12)
@@ -38,7 +38,7 @@ func _draw() -> void:
 
 	# Remove preview from visible clips.
 	if Timeline.draggable != null and !Timeline.draggable.is_file:
-		if Timeline.state in [Timeline.STATE.MOVING, Timeline.STATE.DROPPING, Timeline.STATE.RESIZING]:
+		if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING, Timeline.State.RESIZING]:
 			for clip_id: int in Timeline.draggable.ids:
 				var clip: ClipData = ClipLogic.clips.get(clip_id)
 				if clip: visible_clips.erase(clip)
@@ -90,7 +90,7 @@ func _draw() -> void:
 		# - Fading handles + amount
 		var show_handles: bool = false
 		if (clip.duration * zoom) >= 20.0:
-			show_handles = Timeline.hovered_clip == clip or (Timeline.state == Timeline.STATE.FADING and Timeline.fade_target != null and Timeline.fade_target.clip == clip)
+			show_handles = Timeline.hovered_clip == clip or (Timeline.current_state == Timeline.State.FADING and Timeline.fade_target != null and Timeline.fade_target.clip == clip)
 
 		if clip.type in EditorCore.VISUAL_TYPES:
 			_draw_fade_handles(clip, box_pos, true, show_handles) # Bottom.
@@ -181,9 +181,9 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 		var block_pos_y: float = base_y # TOP_TO_BOTTOM style.
 
 		match waveform_style:
-			SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+			SettingsData.AudioWaveformStyle.CENTER:
 				block_pos_y = base_y + (height - block_height) / 2.0
-			SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+			SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
 
 		var wave_color: Color = COLOR_AUDIO_WAVE

@@ -110,6 +110,10 @@ func _gui_input_mouse_motion(_event: InputEventMouseMotion) -> void:
 		_update_tooltip()
 
 
+func _enter_tree() -> void:
+	queue_redraw.call_deferred()
+
+
 func _get_frame_on_mouse() -> int:
 	return maxi(0, roundi(get_local_mouse_position().x / Timeline.zoom))
 

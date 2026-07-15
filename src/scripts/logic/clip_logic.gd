@@ -563,7 +563,7 @@ func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 
 # --- Helpers ---
 
-func _create_default_effects(file_type: EditorCore.TYPE, file_id: int = -1) -> ClipEffects:
+func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> ClipEffects:
 	var effects: ClipEffects = ClipEffects.new()
 	if file_type in EditorCore.VISUAL_TYPES:
 		var resolution: Vector2i = Project.get_resolution()
@@ -574,7 +574,7 @@ func _create_default_effects(file_type: EditorCore.TYPE, file_id: int = -1) -> C
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
 
-		if file_type == EditorCore.TYPE.PCK and file_id != -1:
+		if file_type == EditorCore.Type.PCK and file_id != -1:
 			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
 			if module_data:
 				var pck_effect: EffectVisual = EffectVisual.new()

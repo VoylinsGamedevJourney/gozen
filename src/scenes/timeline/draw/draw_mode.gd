@@ -9,7 +9,7 @@ var mouse_pos_x: float = 0.0
 
 
 func _draw() -> void:
-	if Timeline.state == Timeline.STATE.SPLIT:
+	if Timeline.current_state == Timeline.State.SPLIT:
 		var fade_pos: float = mouse_pos_x + 1
 		draw_line(Vector2(mouse_pos_x, 0), Vector2(mouse_pos_x, size.y), COLOR_SPLIT)
 		draw_line(Vector2(fade_pos, 0), Vector2(fade_pos, size.y), COLOR_SPLIT_FADE)

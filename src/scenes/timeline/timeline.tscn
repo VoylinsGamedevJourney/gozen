@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://bfrayg3us4bc4" path="res://scenes/timeline/draw/draw_playhead.gd" id="12_jai1p"]
 [ext_resource type="Script" uid="uid://dmdtrnk28clcd" path="res://scenes/timeline/draw/draw_box_selection.gd" id="13_7sle8"]
 [ext_resource type="Script" uid="uid://dvuveyfg7dshc" path="res://scenes/timeline/draw/draw_markers.gd" id="14_eyvjm"]
+[ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/timeline/audio_meter.tscn" id="18_jai1p"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_3ixqu"]
 
@@ -181,6 +182,9 @@ script = ExtResource("13_7sle8")
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("14_eyvjm")
+
+[node name="AudioMeter" parent="." unique_id=605267007 instance=ExtResource("18_jai1p")]
+layout_mode = 2
 
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SelectModeButton" to="Grid/TimelineScroll/TimelinePanel" method="_on_select_mode_button_pressed"]
 [connection signal="pressed" from="TimelineModes/Margin/VBox/SplitModeButton" to="Grid/TimelineScroll/TimelinePanel" method="_on_split_mode_button_pressed"]

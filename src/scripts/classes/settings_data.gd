@@ -2,8 +2,8 @@ class_name SettingsData
 extends RefCounted
 
 
-enum AUDIO_WAVEFORM_STYLE { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
-enum EMPTY_SPACE_CLICK_ACTION { SEEK, CLEAR_SELECTION }
+enum AudioWaveformStyle { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
+enum EmptySpaceClickAction { SEEK, CLEAR_SELECTION }
 
 
 # Appearance
@@ -13,9 +13,10 @@ var theme: String = Library.THEME_DEFAULT
 var base_color: Color = Color(0.2, 0.2, 0.2)
 var accent_color: Color = Color(0.69, 0.09, 0.95)
 var show_menu_bar: bool = true
-var audio_waveform_style: AUDIO_WAVEFORM_STYLE = AUDIO_WAVEFORM_STYLE.CENTER
+var audio_waveform_style: AudioWaveformStyle = AudioWaveformStyle.CENTER
 var audio_waveform_amp: float = 1.0
 var use_native_dialog: bool = true
+var panel_tabs_position: int = 0
 
 # Defaults
 var image_duration: int = 300
@@ -30,7 +31,7 @@ var tracks_amount: int = 6 ## The amount of tracks.
 var tracks_height: float = 30
 var pause_after_drag: bool = false
 var delete_empty_modifier: int = KEY_NONE
-var empty_space_click_action: EMPTY_SPACE_CLICK_ACTION = EMPTY_SPACE_CLICK_ACTION.SEEK
+var empty_space_click_action: EmptySpaceClickAction = EmptySpaceClickAction.SEEK
 var show_time_mode_bar: bool = true
 
 # Performance

@@ -16,9 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="15_bb4p5"]
 [ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="16_dmgqw"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_2bycd"]
-
-[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit", "popup_menu_preferences", "popup_menu_help")]
+[node name="MenuBarHBox" type="HBoxContainer" unique_id=445508084 node_paths=PackedStringArray("popup_menu_project", "popup_menu_edit", "popup_menu_view", "popup_menu_preferences", "popup_menu_help")]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 28.0
@@ -27,6 +25,7 @@ theme_override_constants/separation = 0
 script = ExtResource("1_tjpug")
 popup_menu_project = NodePath("MenuBar/ProjectPopupMenu")
 popup_menu_edit = NodePath("MenuBar/EditPopupMenu")
+popup_menu_view = NodePath("MenuBar/ViewPopupMenu")
 popup_menu_preferences = NodePath("MenuBar/PreferencesPopupMenu")
 popup_menu_help = NodePath("MenuBar/HelpPopupMenu")
 metadata/_edit_lock_ = true
@@ -75,6 +74,21 @@ item_0/text = "Undo"
 item_0/id = 0
 item_1/text = "Redo"
 item_1/id = 1
+
+[node name="ViewPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=589119115]
+title = "View"
+item_count = 5
+item_0/text = "Save workspace"
+item_0/id = 0
+item_1/text = "New workspace"
+item_1/id = 1
+item_2/id = 2
+item_2/separator = true
+item_3/text = "Show panel titles"
+item_3/id = 3
+item_4/text = "Panels"
+item_4/id = 4
+item_4/separator = true
 
 [node name="PreferencesPopupMenu" type="PopupMenu" parent="MenuBar" unique_id=1830296643]
 oversampling_override = 1.0
@@ -129,28 +143,11 @@ item_9/text = "About GoZen"
 item_9/icon = ExtResource("15_bb4p5")
 item_9/id = 9
 
-[node name="EditorScreenButton" type="Button" parent="." unique_id=1810598]
+[node name="WorkspaceButtonsHBox" type="HBoxContainer" parent="." unique_id=1287564484]
 layout_mode = 2
-theme_type_variation = &"screen_button"
-theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_2bycd")
-text = "Edit"
-
-[node name="RenderScreenButton" type="Button" parent="." unique_id=2137987159]
-layout_mode = 2
-theme_type_variation = &"screen_button"
-theme_override_colors/font_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-toggle_mode = true
-button_group = SubResource("ButtonGroup_2bycd")
-text = "Render"
 
 [connection signal="id_pressed" from="MenuBar/ProjectPopupMenu" to="." method="_on_project_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/EditPopupMenu" to="." method="_on_edit_popup_menu_id_pressed"]
+[connection signal="id_pressed" from="MenuBar/ViewPopupMenu" to="." method="_on_view_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/PreferencesPopupMenu" to="." method="_on_preferences_popup_menu_id_pressed"]
 [connection signal="id_pressed" from="MenuBar/HelpPopupMenu" to="." method="_on_help_popup_menu_id_pressed"]
-[connection signal="pressed" from="EditorScreenButton" to="." method="_on_editor_screen_button_pressed"]
-[connection signal="pressed" from="RenderScreenButton" to="." method="_on_render_screen_button_pressed"]

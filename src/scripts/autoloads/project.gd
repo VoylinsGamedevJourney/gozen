@@ -149,7 +149,7 @@ func open(new_project_path: String) -> void:
 	while not all_loaded:
 		all_loaded = true
 		for file: FileData in data.files.values():
-			if file.type in [EditorCore.TYPE.VIDEO, EditorCore.TYPE.AUDIO]:
+			if file.type in [EditorCore.Type.VIDEO, EditorCore.Type.AUDIO]:
 				if not FileLogic.file_data.has(file.id):
 					all_loaded = false
 					break
@@ -311,7 +311,7 @@ func set_framerate(new_framerate: float, force: bool = false) -> void:
 			file.duration = maxi(1, roundi(file.duration * ratio))
 			if file.temp_file and file.temp_file.text_effect:
 				_scale_keyframes(file.temp_file.text_effect, ratio)
-			if file.type in [EditorCore.TYPE.AUDIO, EditorCore.TYPE.VIDEO]:
+			if file.type in [EditorCore.Type.AUDIO, EditorCore.Type.VIDEO]:
 				@warning_ignore("RETURN_VALUE_DISCARDED")
 				FileLogic.audio_wave.erase(file.id)
 				Threader.add_task(FileLogic._create_wave.bind(file), FileLogic._on_wave_ready.bind(file))

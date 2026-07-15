@@ -1,7 +1,7 @@
 class_name SettingsPanel
 extends Control
 
-enum MODE { EDITOR_SETTINGS, PROJECT_SETTINGS }
+enum Mode { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
 
 @export var panel_label: Label
@@ -51,13 +51,13 @@ func _on_close_button_pressed() -> void:
 	PopupManager.close(PopupManager.PROJECT_SETTINGS)
 
 
-func set_mode(mode: MODE) -> void:
+func set_mode(mode: Mode) -> void:
 	var menu_options: Dictionary[String, Array] = {}
 	match mode:
-		MODE.EDITOR_SETTINGS:
+		Mode.EDITOR_SETTINGS:
 			menu_options = get_settings_menu_options()
 			_editor_settings = true
-		MODE.PROJECT_SETTINGS:
+		Mode.PROJECT_SETTINGS:
 			menu_options = get_project_settings_menu_options()
 			_editor_settings = false
 
@@ -189,7 +189,14 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_check_button(
 					Settings.get_use_native_dialog(),
 					default_settings.use_native_dialog,
-					Settings.set_use_native_dialog)
+					Settings.set_use_native_dialog),
+			create_label(tr("Panel tabs position")),
+			create_option_button(
+					Settings.get_panel_tabs_positions(),
+					Settings.get_panel_tabs_positions().values().find(Settings.get_panel_tabs_position()),
+					Settings.get_panel_tabs_positions().values().find(default_settings.panel_tabs_position),
+					Settings.set_panel_tabs_position,
+					TYPE_INT),
 		],
 
 		tr("Defaults"): [

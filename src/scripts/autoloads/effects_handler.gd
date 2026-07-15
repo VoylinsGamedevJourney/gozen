@@ -111,7 +111,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 
 	var base_text_effect: EffectVisual = load(Library.EFFECT_TEXT)
 	for file: FileData in files.values():
-		if file.type == EditorCore.TYPE.TEXT and file.temp_file and file.temp_file.text_effect:
+		if file.type == EditorCore.Type.TEXT and file.temp_file and file.temp_file.text_effect:
 			var old_effect: EffectVisual = file.temp_file.text_effect
 			var new_effect: EffectVisual = base_text_effect.deep_copy()
 			_apply_param_exceptions(new_effect)

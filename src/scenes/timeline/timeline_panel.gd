@@ -1,7 +1,7 @@
 extends PanelContainer
 
 
-enum POPUP_ACTION {
+enum PopupAction {
 	# Clip options.
 	CLIP_DELETE, CLIP_SPLIT, CLIP_AUDIO_TAKE_OVER,
 	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
@@ -82,15 +82,25 @@ func _ready() -> void:
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
-	_on_state_changed(Timeline.state)
+	_on_state_changed(Timeline.current_state)
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_DRAG_END and Timeline.state in [Timeline.STATE.MOVING, Timeline.STATE.DROPPING]:
-		Timeline.state = Timeline.STATE.SELECT
+	if what == NOTIFICATION_DRAG_END and Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING]:
+		Timeline.current_state = Timeline.State.SELECT
 		Timeline.draggable = null
 		draw_clips.queue_redraw()
 		draw_preview.queue_redraw()
+
+
+func _enter_tree() -> void:
+	_sync_and_redraw.call_deferred()
+
+
+func _sync_and_redraw() -> void:
+	if Project.is_loaded:
+		_update_track_height(Settings.get_track_height())
+		draw_all()
 
 
 # --- INPUT HANDLING ---
@@ -111,9 +121,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		split_clips_at(EditorCore.frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
 		if !PopupManager._open_popups.is_empty(): return
-		if Timeline.state in [Timeline.STATE.MOVING, Timeline.STATE.DROPPING]: return
+		if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING]: return
 		ClipLogic.selected_clips.clear()
-		Timeline.state = Timeline.STATE.SELECT
+		Timeline.current_state = Timeline.State.SELECT
 		_on_ui_cancel()
 
 	if scroll.get_global_rect().has_point(get_global_mouse_position()):
@@ -169,7 +179,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	if event.is_action_pressed("timeline_zoom_in", false, true):    return zoom_at_mouse(ZOOM_STEP)
 	elif event.is_action_pressed("timeline_zoom_out", false, true): return zoom_at_mouse(1.0 / ZOOM_STEP)
 
-	if Timeline.state == Timeline.STATE.SPLIT:
+	if Timeline.current_state == Timeline.State.SPLIT:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 			var target: ClipData = _get_clip_on_mouse()
 			if target:
@@ -177,13 +187,13 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			accept_event()
 		return
 	elif event.is_released():
-		match Timeline.state:
-			Timeline.STATE.SELECT:    _commit_select(event.shift_pressed)
-			Timeline.STATE.FADING:    _commit_current_fade()
-			Timeline.STATE.RESIZING:  _commit_current_resize()
-			Timeline.STATE.SPEEDING:  _commit_current_resize()
-			Timeline.STATE.SCRUBBING: EditorCore.finish_scrub()
-			Timeline.STATE.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
+		match Timeline.current_state:
+			Timeline.State.SELECT:    _commit_select(event.shift_pressed)
+			Timeline.State.FADING:    _commit_current_fade()
+			Timeline.State.RESIZING:  _commit_current_resize()
+			Timeline.State.SPEEDING:  _commit_current_resize()
+			Timeline.State.SCRUBBING: EditorCore.finish_scrub()
+			Timeline.State.BOX_SELECTING: _commit_box_selection(event.ctrl_pressed)
 		_on_ui_cancel()
 		accept_event()
 
@@ -191,15 +201,15 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		pressed_clip = _get_clip_on_mouse()
 		_last_press_pos = get_local_mouse_position()
 
-		Timeline.state = Timeline.STATE.SELECT
+		Timeline.current_state = Timeline.State.SELECT
 		Timeline.fade_target =   _get_fade_target()
 		Timeline.resize_target = _get_resize_target()
 
 		if Timeline.fade_target:
-			Timeline.state = Timeline.STATE.FADING
+			Timeline.current_state = Timeline.State.FADING
 			draw_clips.queue_redraw()
 		elif Timeline.resize_target:
-			Timeline.state = Timeline.STATE.SPEEDING if event.ctrl_pressed else Timeline.STATE.RESIZING
+			Timeline.current_state = Timeline.State.SPEEDING if event.ctrl_pressed else Timeline.State.RESIZING
 			draw_clips.queue_redraw()
 		elif _last_mouse_button == MOUSE_BUTTON_LEFT and event.double_click and !pressed_clip:
 			var mod: int = Settings.get_delete_empty_modifier()
@@ -212,11 +222,11 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				_start_box_select(mouse_pos, mouse_pos)
 			else:
 				match Settings.get_empty_space_click_action():
-					SettingsData.EMPTY_SPACE_CLICK_ACTION.CLEAR_SELECTION:
+					SettingsData.EmptySpaceClickAction.CLEAR_SELECTION:
 						ClipLogic.selected_clips.clear()
 						ClipLogic.selected.emit(null)
-					SettingsData.EMPTY_SPACE_CLICK_ACTION.SEEK:
-						Timeline.state = Timeline.STATE.SCRUBBING
+					SettingsData.EmptySpaceClickAction.SEEK:
+						Timeline.current_state = Timeline.State.SCRUBBING
 						if EditorCore.is_playing: # Setting is_playing triggers a setter.
 							EditorCore.is_playing = false
 						EditorCore.scrub_to_frame(get_frame_from_mouse())
@@ -240,25 +250,25 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		if right_click_clip:
 			_add_popup_menu_items_clip(popup)
 		else:
-			popup.add_item(tr("Remove empty space"), POPUP_ACTION.REMOVE_EMPTY_SPACE)
+			popup.add_item(tr("Remove empty space"), PopupAction.REMOVE_EMPTY_SPACE)
 
 		popup.add_separator(tr("Track options"))
 		var track_data: TrackData = TrackLogic.tracks[right_click_track]
 
-		popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), POPUP_ACTION.TRACK_ADD)
+		popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), PopupAction.TRACK_ADD)
 		if TrackLogic.tracks.size() != 1:
-			popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), POPUP_ACTION.TRACK_REMOVE)
+			popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), PopupAction.TRACK_REMOVE)
 
 		popup.add_separator()
 
-		popup.add_check_item(tr("Visible"), POPUP_ACTION.TRACK_TOGGLE_VISIBLE)
-		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
+		popup.add_check_item(tr("Visible"), PopupAction.TRACK_TOGGLE_VISIBLE)
+		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
 
-		popup.add_check_item(tr("Muted"), POPUP_ACTION.TRACK_TOGGLE_MUTE)
-		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_MUTE), track_data.is_muted)
+		popup.add_check_item(tr("Muted"), PopupAction.TRACK_TOGGLE_MUTE)
+		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
 
-		popup.add_check_item(tr("Locked"), POPUP_ACTION.TRACK_TOGGLE_LOCK)
-		popup.set_item_checked(popup.get_item_index(POPUP_ACTION.TRACK_TOGGLE_LOCK), track_data.is_locked)
+		popup.add_check_item(tr("Locked"), PopupAction.TRACK_TOGGLE_LOCK)
+		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
 		@warning_ignore("return_value_discarded")
 		popup.id_pressed.connect(_on_popup_menu_id_pressed)
@@ -282,14 +292,14 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			Timeline.hovered_clip = clip_on_mouse
 			draw_clips.queue_redraw()
 	else:
-		if tooltip_text != "" or Timeline.state != Timeline.STATE.SELECT:
+		if tooltip_text != "" or Timeline.current_state != Timeline.State.SELECT:
 			tooltip_text = ""
 		if Timeline.hovered_clip != null:
 			Timeline.hovered_clip = null
 			draw_clips.queue_redraw()
 
-	match Timeline.state:
-		Timeline.STATE.SELECT:
+	match Timeline.current_state:
+		Timeline.State.SELECT:
 			if Input.is_key_pressed(KEY_SHIFT) \
 				and event.button_mask & MOUSE_BUTTON_MASK_LEFT \
 				and get_local_mouse_position().distance_to(_last_press_pos) > DRAG_START_THRESHOLD_PX:
@@ -302,20 +312,20 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			else:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
-		Timeline.STATE.SPLIT:
+		Timeline.State.SPLIT:
 			mouse_default_cursor_shape = Control.CURSOR_IBEAM
 			draw_mode.set("mouse_pos_x", event.position.x)
 			draw_mode.queue_redraw()
-		Timeline.STATE.FADING:
+		Timeline.State.FADING:
 			_handle_fade_motion()
-		Timeline.STATE.SCRUBBING:
+		Timeline.State.SCRUBBING:
 			if event.button_mask & MOUSE_BUTTON_LEFT:
 				EditorCore.scrub_to_frame(get_frame_from_mouse())
-		Timeline.STATE.BOX_SELECTING:
+		Timeline.State.BOX_SELECTING:
 			Timeline.box_select_end = get_local_mouse_position()
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
 			draw_box_selection.queue_redraw()
-		Timeline.STATE.RESIZING, Timeline.STATE.SPEEDING:
+		Timeline.State.RESIZING, Timeline.State.SPEEDING:
 			mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			_handle_resize_motion()
 			draw_preview.queue_redraw()
@@ -324,12 +334,12 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 func _on_ui_cancel() -> void:
 	pressed_clip = null
 	Timeline.hovered_clip = null
-	if Timeline.state not in [Timeline.STATE.SELECT, Timeline.STATE.SPLIT]:
-		Timeline.state = Timeline.STATE.SELECT
+	if Timeline.current_state not in [Timeline.State.SELECT, Timeline.State.SPLIT]:
+		Timeline.current_state = Timeline.State.SELECT
 	Timeline.draggable = null
 	Timeline.fade_target = null
 	Timeline.resize_target = null
-	if Timeline.state == Timeline.STATE.SPLIT:
+	if Timeline.current_state == Timeline.State.SPLIT:
 		mouse_default_cursor_shape = Control.CURSOR_IBEAM
 	else:
 		mouse_default_cursor_shape = Control.CURSOR_ARROW
@@ -420,7 +430,7 @@ func _project_ready() -> void:
 
 
 func _get_drag_data(_p: Vector2) -> Variant:
-	if Timeline.state != Timeline.STATE.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked or Input.is_key_pressed(KEY_SHIFT):
+	if Timeline.current_state != Timeline.State.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked or Input.is_key_pressed(KEY_SHIFT):
 		return null
 	if pressed_clip not in ClipLogic.selected_clips:
 		ClipLogic.selected_clips = ClipLogic.get_group_clips(pressed_clip)
@@ -436,7 +446,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 	for clip: ClipData in clips:
 		data.ids.append(clip.id)
 	data.mouse_offset = get_frame_from_mouse() - pressed_clip.start
-	Timeline.state = Timeline.STATE.MOVING
+	Timeline.current_state = Timeline.State.MOVING
 	return data
 
 
@@ -459,10 +469,10 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	var result: bool
 	Timeline.draggable = data
 	if Timeline.draggable.is_file:
-		Timeline.state = Timeline.STATE.DROPPING
+		Timeline.current_state = Timeline.State.DROPPING
 		result = Timeline.can_drop_new_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE)
 	else:
-		Timeline.state = Timeline.STATE.MOVING
+		Timeline.current_state = Timeline.State.MOVING
 		result = Timeline.can_move_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE)
 		draw_clips.queue_redraw()
 
@@ -486,7 +496,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 			new_effect.keyframes = drag_data.effect.keyframes.duplicate(true)
 			EffectsHandler.add_effect([clip], new_effect, drag_data.is_visual)
 		return
-	elif data is not Draggable or Timeline.state not in [Timeline.STATE.DROPPING, Timeline.STATE.MOVING]:
+	elif data is not Draggable or Timeline.current_state not in [Timeline.State.DROPPING, Timeline.State.MOVING]:
 		return
 	elif Timeline.draggable.is_file: # Creating new clips (ids are file ids!)
 		var requests: Array[ClipRequest] = []
@@ -530,7 +540,7 @@ func _on_snap_button_toggled(toggled: bool) -> void:
 ## This function is also used to handle speeding.
 func _commit_current_resize() -> void:
 	if Timeline.resize_target.delta != 0:
-		if Timeline.state == Timeline.STATE.SPEEDING:
+		if Timeline.current_state == Timeline.State.SPEEDING:
 			ClipLogic.change_speed([ClipRequest.resize_request(
 				Timeline.resize_target.clip, Timeline.resize_target.delta, Timeline.resize_target.is_end)])
 		else:
@@ -666,7 +676,7 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 
 
 func _start_box_select(start_pos: Vector2, end_pos: Vector2) -> void:
-	Timeline.state = Timeline.STATE.BOX_SELECTING
+	Timeline.current_state = Timeline.State.BOX_SELECTING
 	Timeline.box_select_start = start_pos
 	Timeline.box_select_end = end_pos
 	mouse_default_cursor_shape = Control.CURSOR_CROSS
@@ -678,7 +688,7 @@ func _handle_resize_motion() -> void:
 	var clip: ClipData = Timeline.resize_target.clip
 	var file: FileData = FileLogic.files[clip.file]
 	var current_frame: int = get_frame_from_mouse()
-	var is_fixed_duration: bool = file.type in [EditorCore.TYPE.AUDIO, EditorCore.TYPE.VIDEO]
+	var is_fixed_duration: bool = file.type in [EditorCore.Type.AUDIO, EditorCore.Type.VIDEO]
 
 	var snap_delta: int = Timeline.find_snap_offset([current_frame], maxi(1, int(10.0 / Timeline.zoom)), [clip.id])
 	current_frame += snap_delta
@@ -689,7 +699,7 @@ func _handle_resize_motion() -> void:
 
 		if new_duration < 1:
 			new_duration = 1
-		if Timeline.state != Timeline.STATE.SPEEDING and is_fixed_duration and new_duration > max_allowed_duration:
+		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration and new_duration > max_allowed_duration:
 			new_duration = max_allowed_duration
 
 		# Collision detection.
@@ -704,7 +714,7 @@ func _handle_resize_motion() -> void:
 
 		if new_start > (Timeline.resize_target.original_start + Timeline.resize_target.original_duration - 1):
 			new_start = (Timeline.resize_target.original_start + Timeline.resize_target.original_duration - 1)
-		if Timeline.state != Timeline.STATE.SPEEDING and is_fixed_duration:
+		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration:
 			var min_allowed_duration: int = Timeline.resize_target.original_start - clip.begin
 			if new_start < min_allowed_duration:
 				new_start = min_allowed_duration
@@ -756,33 +766,33 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	# TODO: Set shortcuts.
 	popup.add_theme_constant_override("icon_max_width", 20)
-	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), POPUP_ACTION.CLIP_DELETE)
-	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_SPLIT), tr("Split clip"), POPUP_ACTION.CLIP_SPLIT)
+	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), PopupAction.CLIP_DELETE)
+	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_SPLIT), tr("Split clip"), PopupAction.CLIP_SPLIT)
 
-	if right_click_clip.type in [EditorCore.TYPE.VIDEO, EditorCore.TYPE.AUDIO]:
+	if right_click_clip.type in [EditorCore.Type.VIDEO, EditorCore.Type.AUDIO]:
 		# TODO: Add icons
-		popup.add_icon_item(preload(Library.ICON_SPEED), tr("Change speed"), POPUP_ACTION.CLIP_CHANGE_SPEED)
+		popup.add_icon_item(preload(Library.ICON_SPEED), tr("Change speed"), PopupAction.CLIP_CHANGE_SPEED)
 		if right_click_clip.speed != 1.0:
-			popup.add_icon_item(preload(Library.ICON_SPEED_RESET), tr("Reset speed"), POPUP_ACTION.CLIP_RESET_SPEED)
+			popup.add_icon_item(preload(Library.ICON_SPEED_RESET), tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)
 
-	if right_click_clip.type == EditorCore.TYPE.VIDEO:
+	if right_click_clip.type == EditorCore.Type.VIDEO:
 		popup.add_separator(tr("Video options"))
-		popup.add_item(tr("Clip audio-take-over"), POPUP_ACTION.CLIP_AUDIO_TAKE_OVER)
+		popup.add_item(tr("Clip audio-take-over"), PopupAction.CLIP_AUDIO_TAKE_OVER)
 
 
-func _on_popup_menu_id_pressed(id: POPUP_ACTION) -> void:
+func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 	match id:
-		POPUP_ACTION.CLIP_DELETE: _on_popup_action_clip_delete()
-		POPUP_ACTION.CLIP_SPLIT: _on_popup_action_clip_split()
-		POPUP_ACTION.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
-		POPUP_ACTION.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
-		POPUP_ACTION.CLIP_RESET_SPEED: _on_popup_action_clip_reset_speed()
-		POPUP_ACTION.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
-		POPUP_ACTION.TRACK_ADD: _on_popup_action_track_add()
-		POPUP_ACTION.TRACK_REMOVE: _on_popup_action_track_remove()
-		POPUP_ACTION.TRACK_TOGGLE_VISIBLE: _on_popup_action_track_toggle("is_visible")
-		POPUP_ACTION.TRACK_TOGGLE_MUTE: _on_popup_action_track_toggle("is_muted")
-		POPUP_ACTION.TRACK_TOGGLE_LOCK: _on_popup_action_track_toggle("is_locked")
+		PopupAction.CLIP_DELETE: _on_popup_action_clip_delete()
+		PopupAction.CLIP_SPLIT: _on_popup_action_clip_split()
+		PopupAction.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
+		PopupAction.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
+		PopupAction.CLIP_RESET_SPEED: _on_popup_action_clip_reset_speed()
+		PopupAction.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
+		PopupAction.TRACK_ADD: _on_popup_action_track_add()
+		PopupAction.TRACK_REMOVE: _on_popup_action_track_remove()
+		PopupAction.TRACK_TOGGLE_VISIBLE: _on_popup_action_track_toggle("is_visible")
+		PopupAction.TRACK_TOGGLE_MUTE: _on_popup_action_track_toggle("is_muted")
+		PopupAction.TRACK_TOGGLE_LOCK: _on_popup_action_track_toggle("is_locked")
 	draw_all()
 
 
@@ -866,19 +876,19 @@ func _show_hide_mode_bar(value: bool = Settings.get_show_time_mode_bar()) -> voi
 func _on_select_mode_button_pressed() -> void:
 	button_select.set_pressed_no_signal(true)
 	button_split.set_pressed_no_signal(false)
-	Timeline.state = Timeline.STATE.SELECT
+	Timeline.current_state = Timeline.State.SELECT
 
 
 func _on_split_mode_button_pressed() -> void:
 	button_select.set_pressed_no_signal(false)
 	button_split.set_pressed_no_signal(true)
-	Timeline.state = Timeline.STATE.SPLIT
+	Timeline.current_state = Timeline.State.SPLIT
 
 
-func _on_state_changed(new_state: Timeline.STATE) -> void:
+func _on_state_changed(new_state: Timeline.State) -> void:
 	match new_state:
-		Timeline.STATE.SELECT: _on_select_mode_button_pressed()
-		Timeline.STATE.SPLIT:  _on_split_mode_button_pressed()
+		Timeline.State.SELECT: _on_select_mode_button_pressed()
+		Timeline.State.SPLIT:  _on_split_mode_button_pressed()
 
 	draw_mode.queue_redraw()
 	draw_playhead.queue_redraw()
@@ -1060,7 +1070,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 				total_duration += file.duration
 			ClipLogic.add(requests)
 		Timeline.draggable = null
-		Timeline.state = Timeline.STATE.SELECT
+		Timeline.current_state = Timeline.State.SELECT
 
 
 func trim_clips_at(frame_pos: int, from_end: bool) -> void:

@@ -104,3 +104,5 @@ const EFFECT_TEXT: String = "uid://bl6l8k0pk0bew"
 const EFFECT_VISUAL_TRANSFORM: String = "uid://4mtlh3uaahui"
 
 const EFFECT_AUDIO_VOLUME: String = "uid://dxp7sisypvq8b"
+
+const COLOR_GOZEN_ACCENT: Color = Color(0.65, 0.1, 0.95, 0.4)

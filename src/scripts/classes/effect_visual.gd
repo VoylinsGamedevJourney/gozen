@@ -3,7 +3,7 @@ extends Effect
 
 @export var shader_path: String
 @export var shader_passes: int = 1
-@export var matrix_map: Dictionary[String, Matrix.TYPE]
+@export var matrix_map: Dictionary[String, Matrix.Type]
 
 @export var custom_overlay_path: String ## UID which leads to the EffectOverlay.
 

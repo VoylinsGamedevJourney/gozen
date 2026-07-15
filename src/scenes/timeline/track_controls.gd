@@ -19,6 +19,10 @@ func _ready() -> void:
 	@warning_ignore_restore("return_value_discarded")
 
 
+func _enter_tree() -> void:
+	_rebuild.call_deferred()
+
+
 func _on_scrolled(_value: float) -> void:
 	spacer.visible = timeline_scroll.get_h_scroll_bar().visible
 
