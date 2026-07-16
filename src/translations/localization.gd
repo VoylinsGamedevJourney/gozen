@@ -22,4 +22,5 @@ static var native_country_names: Dictionary = {
 	"TW": "台灣",
 	"IN": "भारत",
 	"TR": "Türkiye",
+	"CN": "中国",
 }
