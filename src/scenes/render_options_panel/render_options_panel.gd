@@ -520,7 +520,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.icon = ImageTexture.create_from_image(icon)
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VideoCodec
 	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec
-	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as Encoder.AudioCodec
+	new_profile.audio_channels = audio_channels_option_button.get_selected_id()
 	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.b_frames = int(video_bframes_spin_box.value)
