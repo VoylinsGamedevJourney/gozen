@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sh8txndv1wtu"
-path="res://.godot/imported/startup_image.png-0960f2605a57f8217b0afb9d945b16a8.ctex"
+uid="uid://bixnh6u1jfb18"
+path="res://.godot/imported/declan_sun.jpg-236f97d2a0d5784572d278a286b19bd0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/startup_image.png"
-dest_files=["res://.godot/imported/startup_image.png-0960f2605a57f8217b0afb9d945b16a8.ctex"]
+source_file="res://assets/startup_images/declan_sun.jpg"
+dest_files=["res://.godot/imported/declan_sun.jpg-236f97d2a0d5784572d278a286b19bd0.ctex"]
 
 [params]
 
