@@ -15,17 +15,6 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
 shader = ExtResource("1_5viva")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2wpv"]
-content_margin_left = 20.0
-content_margin_right = 18.0
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-corner_detail = 1
-
-[sub_resource type="LabelSettings" id="LabelSettings_x2wpv"]
-font_size = 13
-
 [node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
 material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
@@ -36,8 +25,8 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_sgta6")
 version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
-new_version_available_panel = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel")
-new_version_available_button = NodePath("Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer/RepoTextureButton")
+new_version_available_panel = NodePath("")
+new_version_available_button = NodePath("")
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
 recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
 presets_option_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton")
@@ -125,33 +114,6 @@ text = "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]
 scroll_active = false
 horizontal_alignment = 2
 vertical_alignment = 2
-
-[node name="UpdateAvailablePanel" type="PanelContainer" parent="Panel/VBox/StartupImage" unique_id=1447610379]
-custom_minimum_size = Vector2(300, 20)
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -150.0
-offset_right = 150.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_x2wpv")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBox/StartupImage/UpdateAvailablePanel" unique_id=1402368605]
-layout_mode = 2
-
-[node name="UpdateAvailableLabel" type="Label" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer" unique_id=990532857]
-layout_mode = 2
-size_flags_horizontal = 6
-text = "Update available"
-label_settings = SubResource("LabelSettings_x2wpv")
-
-[node name="RepoTextureButton" type="TextureButton" parent="Panel/VBox/StartupImage/UpdateAvailablePanel/HBoxContainer" unique_id=717927358]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-texture_normal = ExtResource("5_pcyft")
-ignore_texture_size = true
-stretch_mode = 5
 
 [node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox" unique_id=611256809]
 layout_mode = 2

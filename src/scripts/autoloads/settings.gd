@@ -507,14 +507,6 @@ func get_marker_colors() -> Array[Color]:
 
 #--- Extra set/get ---
 
-func set_check_version(value: bool) -> void:
-	data.check_version = value
-
-
-func get_check_version() -> int:
-	return data.check_version
-
-
 func set_auto_save(value: bool) -> void:
 	data.auto_save = value
 	if value:

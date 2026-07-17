@@ -18,8 +18,6 @@ const PRESETS: Dictionary[String, Vector3i] = {
 
 
 @export var version_label: RichTextLabel
-@export var new_version_available_panel: PanelContainer
-@export var new_version_available_button: TextureButton
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
 
@@ -50,11 +48,6 @@ func _ready() -> void:
 	_set_version_label()
 	_set_new_project_defaults()
 	project_path_line_edit.text = OS.get_system_dir(OS.SYSTEM_DIR_MOVIES) + "/project.gozen"
-
-	if Settings.get_check_version():
-		_check_new_version()
-	else:
-		new_version_available_panel.visible = false
 
 
 func _input(event: InputEvent) -> void:
@@ -259,105 +252,6 @@ func _set_project_path(path: String) -> void:
 		path += Project.EXTENSION
 
 	project_path_line_edit.text = path
-
-
-func _check_new_version() -> void:
-	http_request = HTTPRequest.new()
-	add_child(http_request)
-	@warning_ignore("return_value_discarded")
-	http_request.request_completed.connect(_check_new_version_request_completed)
-
-	var url: String = ProjectSettings.get_setting("urls/latest_release_check")
-	if http_request.request(url) != OK:
-		printerr("StartupScreen: Couldn't send an http request for the version check!")
-
-	@warning_ignore("return_value_discarded")
-	new_version_available_button.pressed.connect(func() -> void: Utils.open_url("latest_release"))
-
-
-func _check_new_version_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
-	# Initial check to see if the request was successful or not.
-	if result != HTTPRequest.RESULT_SUCCESS:
-		new_version_available_panel.visible = false
-		print("StartupScreen: Check for new version failed! ", result)
-	elif response_code == 404:
-		print("StartupScreen: No releases found for repo! ", response_code)
-	elif response_code != 200:
-		print("StartupScreen: HTTPRequest failed with status code: ", response_code)
-		return
-
-	# Request was successful, not checking the JSON data.
-	var json: Variant = JSON.parse_string(body.get_string_from_utf8())
-
-	if json == null:
-		print("StartupScreen: Failed to parse JSON response for checking version!")
-		return
-	elif typeof(json) != TYPE_DICTIONARY:
-		print("StartupScreen: Failed to get dictionary from json for checking version!")
-		return
-
-	var json_data: Dictionary = json
-
-	if !json_data.has("tag_name"):
-		print("StartupScreen: StartupScreen: No releases found for repo!")
-		return
-
-	# Checking the version from the latest release vs the current editor version.
-	var latest_release: String = str(json_data["tag_name"]).to_lower().lstrip('v')
-	var major: int = int(latest_release.split('.')[0])
-	var minor: int = int(latest_release.split('.')[1])
-	var patch: int = -1
-	var tag: int = 3
-
-	var current_release: String = ProjectSettings.get_setting("application/config/version")
-	var current_major: int = int(current_release.split('.')[0])
-	var current_minor: int = int(current_release.split('.')[0])
-	var current_patch: int = -1
-	var current_tag: int = 3
-
-	if latest_release.count('.') == 3:
-		patch = int(latest_release.split('.')[2])
-	if current_release.count('.') == 3:
-		patch = int(current_release.split('.')[2])
-
-	if latest_release.contains('-'):
-		match latest_release.split('-')[1]:
-			"dev": tag = 0
-			"alpha": tag = 1
-			"beta": tag = 2
-	if current_release.contains('-'):
-		match current_release.split('-')[1]:
-			"dev": current_tag = 0
-			"alpha": current_tag = 1
-			"beta": current_tag = 2
-
-	# Checking Major.
-	if current_major < major:
-		new_version_available_panel.visible = true
-		return
-	elif current_major > major:
-		return # Already newest version.
-
-	# Checking Minor.
-	if current_minor < minor:
-		new_version_available_panel.visible = true
-		return
-	elif current_minor > minor:
-		return # Already newest version.
-
-	# Checking Patch.
-	if current_patch < patch:
-		new_version_available_panel.visible = true
-		return
-	elif current_patch > patch:
-		return # Already newest version.
-
-	# Checking Tag.
-	if current_tag < tag:
-		new_version_available_panel.visible = true
-		return
-	elif current_tag > tag:
-		return # Already newest version.
 
 
 func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:

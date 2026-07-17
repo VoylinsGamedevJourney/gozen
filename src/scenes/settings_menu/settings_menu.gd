@@ -316,11 +316,6 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 		tr("Extras"): [
 			create_header(tr("Extras")), Control.new(),
-			create_label(tr("Check version")),
-			create_check_button(
-					Settings.get_check_version(),
-					default_settings.check_version,
-					Settings.set_check_version),
 			create_label(tr("Auto save")),
 			create_check_button(
 					Settings.get_auto_save(),

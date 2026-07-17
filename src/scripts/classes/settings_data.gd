@@ -45,7 +45,6 @@ var marker_names: Array[String] = [ "Marker type 1", "Marker type 2", "Marker ty
 var marker_colors: Array[Color] = [ Color.PURPLE, Color.GREEN, Color.BLUE, Color.ORANGE, Color.RED ]
 
 # Extra
-var check_version: bool = false
 var auto_save: bool = true
 
 # Input
