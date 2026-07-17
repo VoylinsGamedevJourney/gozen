@@ -28,6 +28,7 @@ const DRAG_START_THRESHOLD_PX: float = 10.0
 @export var button_select: TextureButton
 @export var button_split: TextureButton
 @export var button_snap: TextureButton
+@export var button_group: TextureButton
 
 
 @onready var scroll: ScrollContainer = get_parent()
@@ -231,7 +232,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 							EditorCore.is_playing = false
 						EditorCore.scrub_to_frame(get_frame_from_mouse())
 		elif pressed_clip not in ClipLogic.selected_clips:
-			var clips_to_select: Array[ClipData] = ClipLogic.get_group_clips(pressed_clip)
+			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(pressed_clip)
 
 			if !event.shift_pressed:
 				ClipLogic.selected_clips = [pressed_clip]
@@ -433,7 +434,7 @@ func _get_drag_data(_p: Vector2) -> Variant:
 	if Timeline.current_state != Timeline.State.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked or Input.is_key_pressed(KEY_SHIFT):
 		return null
 	if pressed_clip not in ClipLogic.selected_clips:
-		ClipLogic.selected_clips = ClipLogic.get_group_clips(pressed_clip)
+		ClipLogic.selected_clips = ClipLogic.get_clips_to_select(pressed_clip)
 		draw_clips.queue_redraw()
 
 	var data: Draggable = Draggable.new()
@@ -537,6 +538,11 @@ func _on_snap_button_toggled(toggled: bool) -> void:
 	Timeline.snap_enabled = toggled
 
 
+func _on_group_button_toggled(toggled: bool) -> void:
+	button_group.texture_normal = load(Library.ICON_LINK_ON if toggled else Library.ICON_LINK_OFF)
+	Timeline.group_enabled = toggled
+
+
 ## This function is also used to handle speeding.
 func _commit_current_resize() -> void:
 	if Timeline.resize_target.delta != 0:
@@ -552,7 +558,7 @@ func _commit_current_resize() -> void:
 
 func _commit_select(shift_pressed: bool) -> void:
 	if pressed_clip and pressed_clip == _get_clip_on_mouse() and not shift_pressed:
-		var group_clips: Array[ClipData] = ClipLogic.get_group_clips(pressed_clip)
+		var group_clips: Array[ClipData] = ClipLogic.get_clips_to_select(pressed_clip)
 		var different: bool = false
 		if ClipLogic.selected_clips.size() != group_clips.size():
 			different = true
@@ -653,19 +659,16 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 			if clip.start > frame_end:
 				break
 
-			if clip.start > frame_start and clip.start < frame_end:
-				if clip in ClipLogic.selected_clips: continue
-				for group_clip: ClipData in ClipLogic.get_group_clips(clip):
-					if group_clip in ClipLogic.selected_clips: continue
-					ClipLogic.selected_clips.append(group_clip)
+			if not (clip.start > frame_start or clip.end > frame_start):
 				continue
 
-			# We should also check if a clip ends inside the selection box.
-			if clip.end > frame_start:
-				if clip in ClipLogic.selected_clips: continue
-				for group_clip: ClipData in ClipLogic.get_group_clips(clip):
-					if group_clip in ClipLogic.selected_clips: continue
-					ClipLogic.selected_clips.append(group_clip)
+			if clip in ClipLogic.selected_clips: continue
+			
+			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(clip)
+			for group_clip: ClipData in clips_to_select:
+				if group_clip in ClipLogic.selected_clips: continue
+				ClipLogic.selected_clips.append(group_clip)
+
 	if ClipLogic.selected_clips.is_empty():
 		ClipLogic.selected.emit(null)
 	else:

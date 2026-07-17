@@ -33,6 +33,7 @@ var box_select_start: Vector2
 var box_select_end: Vector2
 
 var snap_enabled: bool = true
+var group_enabled: bool = true
 
 
 
