@@ -55,6 +55,7 @@ class Video : public Resource {
 	unsigned char* avio_ctx_buffer = nullptr;
 
 	enum AVColorPrimaries color_profile;
+	enum StreamType { STREAM_VIDEO = 0, STREAM_AUDIO = 1 };
 
 	BufferData buffer_data;
 
