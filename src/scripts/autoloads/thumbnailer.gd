@@ -85,9 +85,9 @@ func get_thumb(file: FileData) -> Texture2D:
 		thumbs_todo.append(file)
 		# Add the correct placeholder image.
 		match file.type:
-			EditorCore.TYPE.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
-			EditorCore.TYPE.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
-			EditorCore.TYPE.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # TODO: Allow for the PCK file to give it's own thumb.
+			EditorCore.Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
+			EditorCore.Type.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
+			EditorCore.Type.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # TODO: Allow for the PCK file to give it's own thumb.
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video placeholder.
 
 	# Return the saved thumbnail.
@@ -110,19 +110,19 @@ func _gen_thumb(file: FileData) -> void:
 	var image: Image
 
 	match file.type:
-		EditorCore.TYPE.IMAGE: image = Image.load_from_file(file.path)
-		EditorCore.TYPE.AUDIO: image = FileLogic.generate_audio_thumb(file)
-		EditorCore.TYPE.VIDEO:
+		EditorCore.Type.IMAGE: image = Image.load_from_file(file.path)
+		EditorCore.Type.AUDIO: image = FileLogic.generate_audio_thumb(file)
+		EditorCore.Type.VIDEO:
 			var video: Video = Video.new()
 			if video.open(file.path) == OK:
 				image = video.generate_thumbnail_at_frame(0)
 				video.close()
-		EditorCore.TYPE.PCK: image = _get_default_thumb(Library.THUMB_DEFAULT_VIDEO).get_image() # NOTE: Placeholder for now!
+		EditorCore.Type.PCK: image = _get_default_thumb(Library.THUMB_DEFAULT_VIDEO).get_image() # NOTE: Placeholder for now!
 	if !image: # TODO: Run this function a second or so later as the data will probably be ready by now.
 		return
 
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
-	if file.type != EditorCore.TYPE.AUDIO:
+	if file.type != EditorCore.Type.AUDIO:
 		image = scale_thumbnail(image)
 	if image.save_webp(thumb_folder + FILE_NAME % file.id):
 		return printerr("FilePanel: Something went wrong saving thumb!")
@@ -134,7 +134,7 @@ func _gen_thumb(file: FileData) -> void:
 
 
 func _on_audio_wave_generated(file: FileData) -> void:
-	if file.type != EditorCore.TYPE.AUDIO:
+	if file.type != EditorCore.Type.AUDIO:
 		return
 
 	# Remove the potentially flat/empty cached thumbnail data.

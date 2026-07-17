@@ -88,8 +88,6 @@ class Video : public Resource {
 	int sws_flag = SWS_BILINEAR;
 	int smart_seek_threshold = 100;
 
-	enum stream_type { STREAM_VIDEO = 0, STREAM_AUDIO = 1 };
-
 	// Caching - Increases ram usage, but provides smoother backwards seeking.
 	std::deque<CachedFrame> frame_cache;
 	int max_cache_size = 100;

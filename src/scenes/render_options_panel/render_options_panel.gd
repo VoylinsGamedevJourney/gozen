@@ -1,4 +1,4 @@
-extends HSplitContainer
+extends PanelContainer
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
 const USER_PROFILES_PATH: String = "user://render_profiles/"
@@ -8,10 +8,6 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export var option_button_render_profiles: OptionButton
 @export var grid_audio: GridContainer
 @export var button_render_draft: CheckButton
-
-@export_group("Views")
-@export var view_horizontal: PanelContainer
-@export var view_vertical: PanelContainer
 
 @export_group("Path")
 @export var path_line_edit: LineEdit
@@ -53,7 +49,6 @@ var _is_loading_profile: bool = false
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
-	Project.resolution_changed.connect(_update_view_orientation)
 	Project.render_region_updated.connect(_on_render_region_updated)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
 	@warning_ignore_restore("return_value_discarded")
@@ -83,39 +78,10 @@ func _ready() -> void:
 	_on_render_profile_option_button_item_selected(0)
 	button_save_render_profile.visible = false
 
-	var v_split: VSplitContainer = $VSplitContainer
-	if Settings.data.tab_vsplit_offsets.size() > 0:
-		v_split.split_offset = Settings.data.tab_vsplit_offsets[0]
-
-	@warning_ignore("return_value_discarded")
-	v_split.dragged.connect(func(offset: int) -> void:
-			if Settings.data.tab_vsplit_offsets.is_empty():
-				Settings.data.tab_vsplit_offsets.append(offset)
-			else:
-				Settings.data.tab_vsplit_offsets[0] = offset
-			Settings.save())
-
-	var top_split: HSplitContainer = $VSplitContainer/HSplitContainer
-	top_split.split_offsets = Settings.data.tab_render_hsplit_offsets
-
-	@warning_ignore("return_value_discarded")
-	top_split.dragged.connect(func(_o: int) -> void:
-			Settings.data.tab_render_hsplit_offsets = top_split.split_offsets
-			Settings.save())
-
 
 func _on_project_ready() -> void:
 	path_line_edit.text = Project.get_project_path().get_basename() + _get_current_extension()
 	_on_render_region_updated()
-	_update_view_orientation()
-
-
-func _update_view_orientation() -> void:
-	# "Short" editing mode.
-	var res: Vector2i = Project.data.resolution
-	var horizontal: bool = res.x > res.y
-	view_horizontal.visible = horizontal
-	view_vertical.visible = !horizontal
 
 
 func _on_render_region_updated() -> void:
@@ -483,36 +449,36 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	await RenderManager.start_encoder(start_frame, end_frame)
 
 
-func update_encoder_status(status: RenderManager.STATUS) -> void:
+func update_encoder_status(status: RenderManager.Status) -> void:
 	if progress_overlay == null:
 		return printerr("RenderScreen: ProgressOverlay is null!")
 
 	var status_str: String = ""
 	match status:
 		# Errors, something went wrong.
-		RenderManager.STATUS.ERROR_OPEN: _show_error(tr("Error opening file"))
-		RenderManager.STATUS.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
-		RenderManager.STATUS.ERROR_CANCELED:
+		RenderManager.Status.ERROR_OPEN: _show_error(tr("Error opening file"))
+		RenderManager.Status.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
+		RenderManager.Status.ERROR_CANCELED:
 			PopupManager.close(PopupManager.PROGRESS)
 			progress_overlay = null
 
 		# Normal progress.
-		RenderManager.STATUS.SETUP: status_str = tr("Setting up ...")
-		RenderManager.STATUS.COMPILING_AUDIO: status_str = tr("Compiling audio ...")
-		RenderManager.STATUS.SENDING_AUDIO: status_str = tr("Compiling audio ...")
-		RenderManager.STATUS.SENDING_FRAMES: status_str = tr("Sending data ...")
-		RenderManager.STATUS.FRAMES_SEND: status_str = tr("Sending data ...")
-		RenderManager.STATUS.LAST_FRAMES: status_str = tr("Sending final frame ...")
-		RenderManager.STATUS.FINISHED: _render_finished()
+		RenderManager.Status.SETUP: status_str = tr("Setting up ...")
+		RenderManager.Status.COMPILING_AUDIO: status_str = tr("Compiling audio ...")
+		RenderManager.Status.SENDING_AUDIO: status_str = tr("Compiling audio ...")
+		RenderManager.Status.SENDING_FRAMES: status_str = tr("Sending data ...")
+		RenderManager.Status.FRAMES_SEND: status_str = tr("Sending data ...")
+		RenderManager.Status.LAST_FRAMES: status_str = tr("Sending final frame ...")
+		RenderManager.Status.FINISHED: _render_finished()
 
 	if status >= 0:
-		if status == RenderManager.STATUS.FRAMES_SEND:
+		if status == RenderManager.Status.FRAMES_SEND:
 			current_progress += progress_frame_increase # Update bar from 6 to 99.
 		else:
 			current_progress = status
 
 	var progress_int: int = floori(current_progress)
-	if progress_int == last_displayed_progress and status == RenderManager.STATUS.FRAMES_SEND:
+	if progress_int == last_displayed_progress and status == RenderManager.Status.FRAMES_SEND:
 		return
 	last_displayed_progress = progress_int
 

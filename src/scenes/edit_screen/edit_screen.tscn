@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://scenes/timeline/timeline.tscn" id="5_timeline"]
 [ext_resource type="PackedScene" uid="uid://b6gtxtbblg2fy" path="res://scenes/audio_meter/audio_meter.tscn" id="6_audiometer"]
 
-[node name="EditScreen" type="HSplitContainer" unique_id=710533332 node_paths=PackedStringArray("view_horizontal", "view_vertical")]
+[node name="EditScreen" type="HSplitContainer" unique_id=710533332]
 auto_translate_mode = 2
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,8 +18,6 @@ size_flags_vertical = 3
 split_offsets = PackedInt32Array(200)
 split_offset = 200
 script = ExtResource("1_qa2ll")
-view_horizontal = NodePath("VSplit/HSplit/ViewPanelHorizontal")
-view_vertical = NodePath("ViewPanelVertical")
 metadata/_tab_index = 0
 
 [node name="VSplit" type="VSplitContainer" parent="." unique_id=1253525163]
@@ -51,8 +49,4 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="AudioMeter" parent="VSplit/Bottom" unique_id=605267007 instance=ExtResource("6_audiometer")]
-layout_mode = 2
-
-[node name="ViewPanelVertical" parent="." unique_id=1409299652 instance=ExtResource("3_qul4d")]
-visible = false
 layout_mode = 2

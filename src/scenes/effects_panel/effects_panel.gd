@@ -171,7 +171,7 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 	elif current_clip and clip.id == current_clip.id:
 		_update_ui_values()
 	else:
-		section_text.visible = clip.type == EditorCore.TYPE.TEXT
+		section_text.visible = clip.type == EditorCore.Type.TEXT
 		section_visuals.visible = clip.type in EditorCore.VISUAL_TYPES
 		section_audio.visible = clip.type in EditorCore.AUDIO_TYPES
 		current_clip = clip

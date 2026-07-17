@@ -6,7 +6,7 @@ const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
 
 func _draw() -> void:
 	var zoom: float = Timeline.zoom
-	if Timeline.state in [Timeline.STATE.MOVING, Timeline.STATE.DROPPING] and Timeline.draggable != null:
+	if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING] and Timeline.draggable != null:
 		if !Timeline.drop_valid:
 			return
 		if Timeline.draggable.is_file:
@@ -68,7 +68,7 @@ func _draw() -> void:
 					var wave_begin: int = int((clip.begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
 					var is_muted: bool = TrackLogic.tracks[clip.track].is_muted or clip.effects.is_muted
 					_draw_wave(audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, lod, scroll_container, is_muted)
-	elif Timeline.state in [Timeline.STATE.RESIZING, Timeline.STATE.SPEEDING]:
+	elif Timeline.current_state in [Timeline.State.RESIZING, Timeline.State.SPEEDING]:
 		var clip: ClipData = Timeline.resize_target.clip
 		var draw_start: float = clip.start
 		var draw_length: int = clip.duration
@@ -78,12 +78,12 @@ func _draw() -> void:
 		if !Timeline.resize_target.is_end:
 			draw_start += Timeline.resize_target.delta
 			draw_length -= Timeline.resize_target.delta
-			if Timeline.state == Timeline.STATE.RESIZING:
+			if Timeline.current_state == Timeline.State.RESIZING:
 				draw_begin += int(Timeline.resize_target.delta * clip.speed)
 		else:
 			draw_length += Timeline.resize_target.delta
 
-		if Timeline.state == Timeline.STATE.SPEEDING:
+		if Timeline.current_state == Timeline.State.SPEEDING:
 			draw_speed = (clip.duration * clip.speed) / float(maxi(draw_length, 1))
 
 		var preview_position: Vector2 = Vector2(draw_start * zoom, clip.track * Timeline.track_total_size)
@@ -91,7 +91,7 @@ func _draw() -> void:
 		var box_pos: Vector2 = Vector2(clip.start * zoom, Timeline.track_total_size * clip.track)
 		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, Timeline.track_height))
 		var color: Color = Color(1.0, 1.0, 1.0, 0.3) # Resizing color.
-		if Timeline.state == Timeline.STATE.SPEEDING:
+		if Timeline.current_state == Timeline.State.SPEEDING:
 			color = Color(1.0, 0.5, 0.0, 0.3) # Have different color on speeding.
 
 		# Drawing the original clip box and actual resized box.
@@ -167,9 +167,9 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 		var block_pos_y: float = base_y
 
 		match waveform_style:
-			SettingsData.AUDIO_WAVEFORM_STYLE.CENTER:
+			SettingsData.AudioWaveformStyle.CENTER:
 				block_pos_y = base_y + (height - block_height) / 2.0
-			SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP:
+			SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
 
 		var wave_color: Color = Color(0.82, 0.82, 0.82, 0.6)

@@ -2,7 +2,7 @@ class_name Matrix
 extends Node
 
 
-enum TYPE { TRANSFORM }
+enum Type { TRANSFORM }
 
 
 

@@ -1,10 +1,10 @@
 extends Node
 
 
-signal update_encoder_status(status: STATUS)
+signal update_encoder_status(status: Status)
 
 
-enum STATUS { ## The progress amounts.
+enum Status { ## The progress amounts.
 	ERROR_OPEN = -1,
 	ERROR_AUDIO = -2,
 	ERROR_CANCELED = -3,
@@ -89,27 +89,27 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		await get_tree().process_frame
 
 	# Setup encoder.
-	update_encoder_status.emit(STATUS.SETUP)
+	update_encoder_status.emit(Status.SETUP)
 	await RenderingServer.frame_post_draw
 	start_time = Time.get_ticks_msec()
 	encoding_time = 0
 
 	if !encoder.open(viewport.get_image().get_format() == Image.FORMAT_RGBA8):
 		stop_encoder()
-		update_encoder_status.emit(STATUS.ERROR_OPEN)
+		update_encoder_status.emit(Status.ERROR_OPEN)
 		await RenderingServer.frame_post_draw
 		return printerr("RenderManager: Couldn't open encoder!")
 
 	# Creating + sending audio.
 	if encoder.audio_codec_set():
-		update_encoder_status.emit(STATUS.COMPILING_AUDIO)
+		update_encoder_status.emit(Status.COMPILING_AUDIO)
 		await RenderingServer.frame_post_draw
 
 		var audio_thread: Thread = Thread.new()
 		if audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame)):
 			printerr("RenderManager: Couldn't start audio thread!")
 			stop_encoder()
-			update_encoder_status.emit(STATUS.ERROR_AUDIO)
+			update_encoder_status.emit(Status.ERROR_AUDIO)
 			await RenderingServer.frame_post_draw
 			return
 		while audio_thread.is_alive():
@@ -118,12 +118,12 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		var success: bool = audio_thread.wait_to_finish()
 		if cancel_encoding:
 			stop_encoder()
-			update_encoder_status.emit(STATUS.ERROR_CANCELED)
+			update_encoder_status.emit(Status.ERROR_CANCELED)
 			await RenderingServer.frame_post_draw
 			return
 		if !success:
 			stop_encoder()
-			update_encoder_status.emit(STATUS.ERROR_AUDIO)
+			update_encoder_status.emit(Status.ERROR_AUDIO)
 			await RenderingServer.frame_post_draw
 			return printerr("RenderManager: Something went wrong encoding/sending audio!")
 
@@ -168,7 +168,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	yuv_params_buffer = rendering_device.uniform_buffer_create(params_bytes.size(), params_bytes)
 
 	# Sending the video frame data.
-	update_encoder_status.emit(STATUS.SENDING_FRAMES)
+	update_encoder_status.emit(Status.SENDING_FRAMES)
 
 	frame_queue.clear()
 	stop_encoding = false
@@ -176,7 +176,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	if thread.start(_encoding_loop):
 		printerr("RenderManager: Couldn't start encoder thread!")
 		stop_encoder()
-		update_encoder_status.emit(STATUS.ERROR_CANCELED)
+		update_encoder_status.emit(Status.ERROR_CANCELED)
 		await EditorCore.frame_changed
 		return
 
@@ -223,12 +223,12 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		thread.wait_to_finish()
 
 	if cancel_encoding:
-		update_encoder_status.emit(STATUS.ERROR_CANCELED)
+		update_encoder_status.emit(Status.ERROR_CANCELED)
 		await RenderingServer.frame_post_draw
 		return stop_encoder()
 
 	encoding_time = Time.get_ticks_msec() - start_time
-	update_encoder_status.emit(STATUS.FINISHED)
+	update_encoder_status.emit(Status.FINISHED)
 	await RenderingServer.frame_post_draw
 	NotificationManager.notify("Render finished!")
 	stop_encoder()
@@ -278,7 +278,7 @@ func _encoding_loop() -> void:
 		var frame_data: PackedByteArray = PackedByteArray()
 		if has_frames:
 			frame_data = frame_queue.pop_front()
-		update_encoder_status.emit.call_deferred(STATUS.FRAMES_SEND)
+		update_encoder_status.emit.call_deferred(Status.FRAMES_SEND)
 		Threader.mutex.unlock()
 
 		if not frame_data.is_empty():
@@ -291,7 +291,7 @@ func _encoding_loop() -> void:
 			var is_empty: bool = frame_queue.is_empty()
 			Threader.mutex.unlock()
 			if is_empty:
-				update_encoder_status.emit.call_deferred(STATUS.LAST_FRAMES)
+				update_encoder_status.emit.call_deferred(Status.LAST_FRAMES)
 				encoder.close()
 				break
 
@@ -308,7 +308,7 @@ func _encode_and_send_audio(start_frame: int, end_frame: int) -> bool:
 	if cancel_encoding or !audio_data or audio_data.is_empty():
 		return false
 
-	update_encoder_status.emit.call_deferred(STATUS.SENDING_AUDIO)
+	update_encoder_status.emit.call_deferred(Status.SENDING_AUDIO)
 	if !encoder.send_audio(audio_data):
 		return false
 	return true

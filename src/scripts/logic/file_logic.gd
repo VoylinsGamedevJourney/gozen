@@ -79,16 +79,16 @@ func _create_file(path: String) -> FileData:
 	file.nickname = path.get_file()
 
 	if extension in ProjectSettings.get_setting("extensions/image"):
-		file.type = EditorCore.TYPE.IMAGE
+		file.type = EditorCore.Type.IMAGE
 		file.duration = Settings.get_image_duration()
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
-		file.type = EditorCore.TYPE.AUDIO
+		file.type = EditorCore.Type.AUDIO
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
-		file.type = EditorCore.TYPE.VIDEO # We check later if the video is audio only.
+		file.type = EditorCore.Type.VIDEO # We check later if the video is audio only.
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
 	elif extension in ProjectSettings.get_setting("extensions/pck"):
-		file.type = EditorCore.TYPE.PCK
+		file.type = EditorCore.Type.PCK
 		file.duration = 300 # Temporary default.
 	elif !path.contains("temp://"):
 		printerr("FileLogic: Invalid file:", path)
@@ -101,24 +101,24 @@ func _create_file(path: String) -> FileData:
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		var time_dict: Dictionary = Time.get_datetime_dict_from_system()
 		if path == "temp://text":
-			file.type = EditorCore.TYPE.TEXT
+			file.type = EditorCore.Type.TEXT
 			file.duration = Settings.get_text_duration()
 			file.nickname = "Text: Empty text"
 			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
 			file.temp_file.text_effect.set_default_keyframe()
 		elif path.begins_with("temp://image"):
-			file.type = EditorCore.TYPE.IMAGE
+			file.type = EditorCore.Type.IMAGE
 			file.duration = Settings.get_image_duration()
 			file.nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
 					time_dict.year, time_dict.month, time_dict.day,
 					time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
 			var splits: PackedStringArray = path.split("#")
-			file.type = EditorCore.TYPE.COLOR
+			file.type = EditorCore.Type.COLOR
 			file.duration = Settings.get_color_duration()
 			file.nickname = temp_nickname.replace("#", " #")
 			file.temp_file.color = Color(splits[1])
-	return null if file.type == EditorCore.TYPE.EMPTY else file
+	return null if file.type == EditorCore.Type.EMPTY else file
 
 
 func delete(ids: Array[int]) -> void:
@@ -194,7 +194,7 @@ func paste_image(image: Image) -> void:
 	var file: FileData = FileData.new()
 	file.id = Utils.get_unique_id(files.keys())
 	file.path = "temp://image#" + str(file.id)
-	file.type = EditorCore.TYPE.IMAGE
+	file.type = EditorCore.Type.IMAGE
 	file.duration = Settings.get_image_duration()
 	file.temp_file = TempFile.new()
 
@@ -405,16 +405,16 @@ func load_data(file: FileData) -> void:
 		return
 
 	match file.type:
-		EditorCore.TYPE.IMAGE:
+		EditorCore.Type.IMAGE:
 			var image: Image = Image.load_from_file(file.path)
 			if image.get_format() != Image.FORMAT_RGBA8:
 				image.convert(Image.FORMAT_RGBA8)
 			if image.get_size() != Project.data.resolution:
 				_scale_image_to_fit(image, Project.data.resolution)
 			file_data[file.id] = ImageTexture.create_from_image(image)
-		EditorCore.TYPE.VIDEO:
+		EditorCore.Type.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
-		EditorCore.TYPE.AUDIO:
+		EditorCore.Type.AUDIO:
 			if audio_pools.has(file.id):
 				audio_pools[file.id] = []
 
@@ -425,7 +425,7 @@ func load_data(file: FileData) -> void:
 			else:
 				printerr("FileLogic: Couldn't open audio stream!")
 				file_data[file.id] = AudioStreamWAV.new()
-		EditorCore.TYPE.PCK:
+		EditorCore.Type.PCK:
 			if !ProjectSettings.load_resource_pack(file.path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 				return _delete(file)
@@ -643,7 +643,7 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 
 
 func get_audio_stream(file: FileData, instance_index: int) -> AudioStreamFFmpeg:
-	if file.type == EditorCore.TYPE.VIDEO:
+	if file.type == EditorCore.Type.VIDEO:
 		var empty_wave: bool = FileLogic.audio_wave.has(file.id) and FileLogic.audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
@@ -737,7 +737,7 @@ func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
 func get_all_audio_files() -> Array[FileData]:
 	var data: Array[FileData] = []
 	for file: FileData in files.values():
-		if file.type == EditorCore.TYPE.AUDIO:
+		if file.type == EditorCore.Type.AUDIO:
 			data.append(file)
 	return data
 
@@ -746,7 +746,7 @@ func get_all_audio_files() -> Array[FileData]:
 func get_all_video_files() -> Array[FileData]:
 	var data: Array[FileData] = []
 	for file: FileData in files.values():
-		if file.type == EditorCore.TYPE.VIDEO:
+		if file.type == EditorCore.Type.VIDEO:
 			data.append(file)
 	return data
 

@@ -6,6 +6,15 @@
 
 [node name="AudioMeter" type="PanelContainer" unique_id=605267007 node_paths=PackedStringArray("bar_left", "bar_right")]
 custom_minimum_size = Vector2(10, 0)
+custom_maximum_size = Vector2(10, -1)
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_type_variation = &"box"
 script = ExtResource("1_slymy")
 bar_left = NodePath("Margin/InnerAudioMeterPanel/HBox/LeftChannelBar")

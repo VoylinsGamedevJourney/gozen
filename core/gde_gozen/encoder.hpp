@@ -84,7 +84,7 @@ class Encoder : public Resource {
 	}
 
   public:
-	enum VIDEO_CODEC {
+	enum VideoCodec {
 		V_HEVC = AV_CODEC_ID_HEVC, // H265
 		V_H264 = AV_CODEC_ID_H264,
 		V_MPEG4 = AV_CODEC_ID_MPEG4,
@@ -96,7 +96,7 @@ class Encoder : public Resource {
 		V_VP8 = AV_CODEC_ID_VP8,
 		V_NONE = AV_CODEC_ID_NONE,
 	};
-	enum AUDIO_CODEC {
+	enum AudioCodec {
 		A_WAV = AV_CODEC_ID_WAVPACK,
 		A_PCM = AV_CODEC_ID_PCM_S16LE,
 		A_MP2 = AV_CODEC_ID_MP2,
@@ -107,7 +107,7 @@ class Encoder : public Resource {
 		A_FLAC = AV_CODEC_ID_FLAC,
 		A_NONE = AV_CODEC_ID_NONE,
 	};
-	enum H264_PRESETS { // Only works for H.H264
+	enum H264Presets { // Only works for H.H264
 		H264_PRESET_VERYSLOW,
 		H264_PRESET_SLOWER,
 		H264_PRESET_SLOW,	// recommended
@@ -118,7 +118,7 @@ class Encoder : public Resource {
 		H264_PRESET_SUPERFAST,
 		H264_PRESET_ULTRAFAST,
 	};
-	enum HW_DEVICE_TYPES {
+	enum HardwareDeviceTypes {
 		HW_DEVICE_TYPE_NONE = -1,
 		HW_DEVICE_TYPE_NVENC, // NVidia
 		HW_DEVICE_TYPE_VAAPI, // AMD/Intel on Linux
@@ -138,8 +138,8 @@ class Encoder : public Resource {
 
 	static PackedStringArray get_available_codecs(int codec_id);
 
-	inline void set_video_codec_id(VIDEO_CODEC codec_id) { video_codec_id = (AVCodecID)codec_id; }
-	inline void set_audio_codec_id(AUDIO_CODEC codec_id) { audio_codec_id = (AVCodecID)codec_id; }
+	inline void set_video_codec_id(VideoCodec codec_id) { video_codec_id = (AVCodecID)codec_id; }
+	inline void set_audio_codec_id(AudioCodec codec_id) { audio_codec_id = (AVCodecID)codec_id; }
 	inline bool audio_codec_set() const { return AV_CODEC_ID_NONE != audio_codec_id; }
 
 	inline void set_file_path(String file_path) { path = file_path; }
@@ -191,7 +191,7 @@ class Encoder : public Resource {
 	static void _bind_methods();
 };
 
-VARIANT_ENUM_CAST(Encoder::VIDEO_CODEC);
-VARIANT_ENUM_CAST(Encoder::AUDIO_CODEC);
-VARIANT_ENUM_CAST(Encoder::H264_PRESETS);
-VARIANT_ENUM_CAST(Encoder::HW_DEVICE_TYPES);
+VARIANT_ENUM_CAST(Encoder::VideoCodec);
+VARIANT_ENUM_CAST(Encoder::AudioCodec);
+VARIANT_ENUM_CAST(Encoder::H264Presets);
+VARIANT_ENUM_CAST(Encoder::HardwareDeviceTypes);

@@ -3,6 +3,7 @@ extends HBoxContainer
 
 @export var popup_menu_project: PopupMenu
 @export var popup_menu_edit: PopupMenu
+@export var popup_menu_view: PopupMenu
 @export var popup_menu_preferences: PopupMenu
 @export var popup_menu_help: PopupMenu
 
@@ -14,6 +15,9 @@ func _ready() -> void:
 
 	_show_menu_bar(Settings.get_show_menu_bar())
 	_set_shortcuts()
+
+	@warning_ignore("return_value_discarded")
+	popup_menu_view.about_to_popup.connect(_on_view_menu_about_to_popup)
 
 
 func _show_menu_bar(value: bool) -> void:
@@ -51,6 +55,19 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 		0: InputManager.undo_redo.undo()
 		1: InputManager.undo_redo.redo()
 	@warning_ignore_restore("return_value_discarded")
+
+
+func _on_view_popup_menu_id_pressed(id: int) -> void:
+	if id >= 5:
+		var panel_names: Array = WorkspaceManager.active_panels.keys()
+		if id - 5 < panel_names.size():
+			var panel_id: String = panel_names[id - 5]
+			WorkspaceManager.toggle_panel(panel_id)
+
+	match id:
+		0: WorkspaceManager.save_current_workspace()
+		1: _create_new_workspace()
+		3: WorkspaceManager.toggle_tab_titles()
 
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:
@@ -99,3 +116,41 @@ func _set_menu_shortcut(popup: PopupMenu, item_index: int, action: String) -> vo
 	event.keycode = event.keycode if event.keycode != KEY_NONE else event.physical_keycode
 	shortcut.events = [event]
 	popup.set_item_shortcut(item_index, shortcut, true)
+
+
+func _create_new_workspace() -> void:
+	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("New workspace"), "")
+	var line_edit: LineEdit = LineEdit.new()
+	line_edit.placeholder_text = tr("Workspace name")
+	dialog.add_child(line_edit)
+
+	@warning_ignore("return_value_discarded")
+	dialog.confirmed.connect(func() -> void:
+			var workspace_name: String = line_edit.text.strip_edges().capitalize()
+			if not workspace_name.is_empty():
+				if not WorkspaceManager.available_workspaces.has(workspace_name):
+					WorkspaceManager.create_workspace(workspace_name)
+			dialog.queue_free())
+	dialog.popup_centered(Vector2i(250, 80))
+	line_edit.grab_focus()
+
+
+func _on_view_menu_about_to_popup() -> void:
+	const PANEL_ENTRIES_START: int = 5
+	while popup_menu_view.item_count > PANEL_ENTRIES_START:
+		popup_menu_view.remove_item(PANEL_ENTRIES_START)
+
+	var title_item_idx: int = popup_menu_view.get_item_index(4)
+	if WorkspaceManager.show_tab_titles:
+		popup_menu_view.set_item_text(title_item_idx, tr("Hide panel titles"))
+	else:
+		popup_menu_view.set_item_text(title_item_idx, tr("Show panel titles"))
+
+	var panel_names: Array = WorkspaceManager.active_panels.keys()
+	for i: int in panel_names.size():
+		var panel_name: String = panel_names[i]
+		var panel: Control = WorkspaceManager.active_panels[panel_name]
+		popup_menu_view.add_check_item(panel_name, PANEL_ENTRIES_START + i)
+		popup_menu_view.set_item_checked(
+				popup_menu_view.get_item_index(PANEL_ENTRIES_START + i),
+				panel.is_inside_tree())

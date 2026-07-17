@@ -1,7 +1,7 @@
 extends TextureRect
 
 
-enum POPUP { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
+enum PopupType { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
 
 
 const SIZE_CROSS: int = 20
@@ -125,8 +125,8 @@ func _on_gui_input(event: InputEvent) -> void:
 		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
 			var popup: PopupMenu = PopupManager.create_menu()
 
-			popup.add_item("Save screenshot ...", POPUP.SAVE_SCREENSHOT)
-			popup.add_item("Save screenshot to project ...", POPUP.SAVE_SCREENSHOT_TO_PROJECT)
+			popup.add_item("Save screenshot ...", PopupType.SAVE_SCREENSHOT)
+			popup.add_item("Save screenshot to project ...", PopupType.SAVE_SCREENSHOT_TO_PROJECT)
 
 			@warning_ignore("return_value_discarded")
 			popup.id_pressed.connect(_on_popup_id_pressed)
@@ -169,13 +169,13 @@ func _draw() -> void:
 
 
 func _on_popup_id_pressed(id: int) -> void:
-	if id in [POPUP.SAVE_SCREENSHOT, POPUP.SAVE_SCREENSHOT_TO_PROJECT]:
+	if id in [PopupType.SAVE_SCREENSHOT, PopupType.SAVE_SCREENSHOT_TO_PROJECT]:
 		var file_dialog: FileDialog = PopupManager.create_file_dialog(
 				"Save screenshot ...",
 				FileDialog.FILE_MODE_SAVE_FILE,
 				["*.webp", "*.png", "*.jpg", "*.jpeg"])
 
-		if id == POPUP.SAVE_SCREENSHOT:
+		if id == PopupType.SAVE_SCREENSHOT:
 			@warning_ignore("return_value_discarded")
 			file_dialog.file_selected.connect(_on_save_screenshot)
 		else:

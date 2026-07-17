@@ -66,11 +66,11 @@ func open(popup: int) -> void:
 
 
 func _open_editor_settings(settings_panel: SettingsPanel) -> void:
-	settings_panel.set_mode(SettingsPanel.MODE.EDITOR_SETTINGS)
+	settings_panel.set_mode(SettingsPanel.Mode.EDITOR_SETTINGS)
 
 
 func _open_project_settings(settings_panel: SettingsPanel) -> void:
-	settings_panel.set_mode(SettingsPanel.MODE.PROJECT_SETTINGS)
+	settings_panel.set_mode(SettingsPanel.Mode.PROJECT_SETTINGS)
 
 
 func close(popup: int) -> void:

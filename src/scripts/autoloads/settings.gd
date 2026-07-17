@@ -8,9 +8,12 @@ signal on_video_cache_size_changed(value: int)
 signal on_video_smart_seek_threshold(value: int)
 signal on_track_height_changed(value: float)
 
+signal on_panel_tabs_position_changed(value: int)
+
 signal on_localization_updated
 signal on_waveform_update
 signal on_theme_updated
+
 
 
 const PATH: String = "user://settings"
@@ -50,6 +53,7 @@ func _ready() -> void:
 	apply_display_scale()
 	apply_theme()
 	apply_shortcuts()
+	apply_panel_tabs_position()
 
 	load_new_shortcuts()
 
@@ -246,7 +250,7 @@ func get_show_menu_bar() -> bool:
 	return data.show_menu_bar
 
 
-func set_audio_waveform_style(style: SettingsData.AUDIO_WAVEFORM_STYLE) -> void:
+func set_audio_waveform_style(style: SettingsData.AudioWaveformStyle) -> void:
 	data.audio_waveform_style = style
 	FileLogic.update_audio_waves()
 	on_waveform_update.emit()
@@ -256,11 +260,11 @@ func get_audio_waveform_style() -> int:
 	return data.audio_waveform_style
 
 
-func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AUDIO_WAVEFORM_STYLE]:
+func get_audio_waveform_styles() -> Dictionary[String, SettingsData.AudioWaveformStyle]:
 	return {
-		"Center": SettingsData.AUDIO_WAVEFORM_STYLE.CENTER,
-		"Bottom to Top": SettingsData.AUDIO_WAVEFORM_STYLE.BOTTOM_TO_TOP,
-		"Top to bottom": SettingsData.AUDIO_WAVEFORM_STYLE.TOP_TO_BOTTOM}
+		"Center": SettingsData.AudioWaveformStyle.CENTER,
+		"Bottom to Top": SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP,
+		"Top to bottom": SettingsData.AudioWaveformStyle.TOP_TO_BOTTOM}
 
 
 func set_audio_waveform_amp(value: float) -> void:
@@ -278,6 +282,27 @@ func set_use_native_dialog(value: bool) -> void:
 
 func get_use_native_dialog() -> bool:
 	return data.use_native_dialog
+
+
+func set_panel_tabs_position(value: int) -> void:
+	data.panel_tabs_position = value
+	apply_panel_tabs_position()
+	on_panel_tabs_position_changed.emit(value)
+
+
+func apply_panel_tabs_position() -> void:
+	var tabs: Array[Node] = get_tree().get_nodes_in_group("dockable_tabs")
+	for tab: Node in tabs:
+		if tab is TabContainer:
+			(tab as TabContainer).tabs_position = data.panel_tabs_position as TabContainer.TabPosition
+
+
+func get_panel_tabs_position() -> int:
+	return data.panel_tabs_position
+
+
+func get_panel_tabs_positions() -> Dictionary[String, int]:
+	return { "Top": TabContainer.POSITION_TOP, "Bottom": TabContainer.POSITION_BOTTOM }
 
 
 # --- Defaults set/get ---
@@ -389,7 +414,7 @@ func get_delete_empty_modifiers() -> Dictionary[String, int]:
 	return mods
 
 
-func set_empty_space_click_action(value: SettingsData.EMPTY_SPACE_CLICK_ACTION) -> void:
+func set_empty_space_click_action(value: SettingsData.EmptySpaceClickAction) -> void:
 	data.empty_space_click_action = value
 
 
@@ -397,10 +422,10 @@ func get_empty_space_click_action() -> int:
 	return data.empty_space_click_action
 
 
-func get_empty_space_click_actions() -> Dictionary[String, SettingsData.EMPTY_SPACE_CLICK_ACTION]:
+func get_empty_space_click_actions() -> Dictionary[String, SettingsData.EmptySpaceClickAction]:
 	return {
-		"Seek": SettingsData.EMPTY_SPACE_CLICK_ACTION.SEEK,
-		"Clear selection": SettingsData.EMPTY_SPACE_CLICK_ACTION.CLEAR_SELECTION
+		"Seek": SettingsData.EmptySpaceClickAction.SEEK,
+		"Clear selection": SettingsData.EmptySpaceClickAction.CLEAR_SELECTION
 	}
 
 

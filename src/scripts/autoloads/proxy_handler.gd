@@ -18,7 +18,7 @@ func _ready() -> void:
 
 func request_generation(file: FileData) -> void:
 	var proxy_path: String = Settings.get_proxies_path()
-	if file.type != EditorCore.TYPE.VIDEO:
+	if file.type != EditorCore.Type.VIDEO:
 		return # Only proxies for videos possible.
 	var new_path: String = proxy_path.path_join(_create_proxy_name(file.path))
 

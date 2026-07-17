@@ -152,29 +152,6 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_by48d"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07bah"]
-content_margin_left = 7.0
-content_margin_top = 2.0
-content_margin_right = 7.0
-content_margin_bottom = 2.0
-bg_color = Color(0.239216, 0.239216, 0.239216, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3k2yc"]
-content_margin_left = 7.0
-content_margin_top = 2.0
-content_margin_right = 7.0
-content_margin_bottom = 2.0
-bg_color = Color(0.2, 0.2, 0.2, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c21jn"]
-content_margin_left = 7.0
-content_margin_top = 2.0
-content_margin_right = 7.0
-content_margin_bottom = 2.0
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i2lla"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g1jt"]
@@ -203,6 +180,29 @@ content_margin_bottom = 2.0
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 corner_radius_top_left = 7
 corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_by48d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07bah"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3k2yc"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c21jn"]
+content_margin_left = 7.0
+content_margin_top = 2.0
+content_margin_right = 7.0
+content_margin_bottom = 2.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 
 [resource]
 default_font_size = 14
@@ -247,13 +247,6 @@ render_profile_button/styles/focus = SubResource("StyleBoxEmpty_1vteb")
 render_profile_button/styles/hover = SubResource("StyleBoxEmpty_i7l8v")
 render_profile_button/styles/normal = SubResource("StyleBoxEmpty_catyp")
 render_profile_button/styles/pressed = SubResource("StyleBoxFlat_l8pwb")
-screen_button/base_type = &"Button"
-screen_button/colors/font_hover_color = Color(0.654902, 0.0941176, 0.945098, 1)
-screen_button/colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-screen_button/styles/focus = SubResource("StyleBoxEmpty_by48d")
-screen_button/styles/hover = SubResource("StyleBoxFlat_07bah")
-screen_button/styles/normal = SubResource("StyleBoxFlat_3k2yc")
-screen_button/styles/pressed = SubResource("StyleBoxFlat_c21jn")
 side_bar_button/base_type = &"Button"
 side_bar_button/styles/focus = SubResource("StyleBoxEmpty_i2lla")
 side_bar_button/styles/hover = SubResource("StyleBoxFlat_7g1jt")
@@ -264,3 +257,10 @@ title_label/colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
 title_label/font_sizes/font_size = 12
 warning_label/base_type = &"Label"
 warning_label/colors/font_color = Color(1, 0, 0, 1)
+workspace_button/base_type = &"Button"
+workspace_button/colors/font_hover_color = Color(0.654902, 0.0941176, 0.945098, 1)
+workspace_button/colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+workspace_button/styles/focus = SubResource("StyleBoxEmpty_by48d")
+workspace_button/styles/hover = SubResource("StyleBoxFlat_07bah")
+workspace_button/styles/normal = SubResource("StyleBoxFlat_3k2yc")
+workspace_button/styles/pressed = SubResource("StyleBoxFlat_c21jn")

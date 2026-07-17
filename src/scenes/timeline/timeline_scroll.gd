@@ -19,6 +19,14 @@ func _ready() -> void:
 	@warning_ignore_restore("return_value_discarded")
 
 
+func _enter_tree() -> void:
+	_sync_scroll.call_deferred()
+
+
+func _sync_scroll() -> void:
+	_on_global_scroll_changed(Vector2(Timeline.scroll_x, Timeline.scroll_y))
+
+
 func _on_timestamp_scrolling(value: float) -> void:
 	if self.scroll_horizontal != int(value):
 		self.scroll_horizontal = int(value)

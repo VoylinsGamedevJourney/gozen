@@ -4,7 +4,7 @@ extends Resource
 
 @export var id: int
 @export var track: int
-@export var type: EditorCore.TYPE
+@export var type: EditorCore.Type
 
 @export var file: int # File ID.
 
@@ -47,7 +47,7 @@ func serialize() -> Dictionary:
 func deserialize(data: Dictionary) -> void:
 	id = data.get("id", -1)
 	track = data.get("track", 0)
-	type = data.get("type", EditorCore.TYPE.EMPTY) as EditorCore.TYPE
+	type = data.get("type", EditorCore.Type.EMPTY) as EditorCore.Type
 	file = data.get("file", -1)
 	start = data.get("start", 0)
 	begin = data.get("begin", 0)

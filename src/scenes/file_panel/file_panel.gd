@@ -1,7 +1,7 @@
 extends PanelContainer
 
 
-enum POPUP_ACTION {
+enum PopupAction {
 	# File actions
 	RENAME,
 	DELETE,
@@ -68,7 +68,7 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if get_global_rect().has_point(get_global_mouse_position()):
 		if tree.get_selected() and event.is_action_pressed("delete_file", false, true):
-			_on_popup_option_pressed(POPUP_ACTION.DELETE)
+			_on_popup_option_pressed(PopupAction.DELETE)
 			accept_event()
 
 
@@ -117,46 +117,46 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 
 	if str(metadata).is_valid_int(): # - File
 		var file: FileData = FileLogic.files[metadata as int]
-		popup.add_item(tr("Rename"), POPUP_ACTION.RENAME)
-		popup.add_item(tr("Reload"), POPUP_ACTION.RELOAD)
-		popup.add_item(tr("Delete"), POPUP_ACTION.DELETE)
+		popup.add_item(tr("Rename"), PopupAction.RENAME)
+		popup.add_item(tr("Reload"), PopupAction.RELOAD)
+		popup.add_item(tr("Delete"), PopupAction.DELETE)
 
-		if file.type == EditorCore.TYPE.IMAGE:
+		if file.type == EditorCore.Type.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator(tr("Image options"))
-				popup.add_item(tr("Save image as ..."), POPUP_ACTION.SAVE_TEMP_AS)
-		elif file.type == EditorCore.TYPE.VIDEO:
+				popup.add_item(tr("Save image as ..."), PopupAction.SAVE_TEMP_AS)
+		elif file.type == EditorCore.Type.VIDEO:
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
 				if file.proxy_path == "":
-					popup.add_item(tr("Create proxy"), POPUP_ACTION.CREATE_PROXY)
+					popup.add_item(tr("Create proxy"), PopupAction.CREATE_PROXY)
 				else:
-					popup.add_item(tr("Re-create proxy"), POPUP_ACTION.RECREATE_PROXY)
-					popup.add_item(tr("Remove proxy"), POPUP_ACTION.REMOVE_PROXY)
-			popup.add_item(tr("Audio-take-over"), POPUP_ACTION.AUDIO_TAKE_OVER)
-			popup.add_item(tr("Extract audio to file ..."), POPUP_ACTION.EXTRACT_AUDIO)
-		elif file.type == EditorCore.TYPE.TEXT:
+					popup.add_item(tr("Re-create proxy"), PopupAction.RECREATE_PROXY)
+					popup.add_item(tr("Remove proxy"), PopupAction.REMOVE_PROXY)
+			popup.add_item(tr("Audio-take-over"), PopupAction.AUDIO_TAKE_OVER)
+			popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
+		elif file.type == EditorCore.Type.TEXT:
 			popup.add_separator(tr("Text options"))
-			popup.add_item(tr("Duplicate"), POPUP_ACTION.DUPLICATE)
+			popup.add_item(tr("Duplicate"), PopupAction.DUPLICATE)
 
 			if file.path.contains("temp://"):
-				popup.add_item(tr("Save file as ..."), POPUP_ACTION.SAVE_TEMP_AS)
+				popup.add_item(tr("Save file as ..."), PopupAction.SAVE_TEMP_AS)
 
 		if not file.path.begins_with("temp://"):
 			popup.add_separator()
-			popup.add_item(tr("Open in file manager"), POPUP_ACTION.OPEN_IN_FILE_MANAGER)
-			popup.add_item(tr("Copy file path"), POPUP_ACTION.COPY_PATH)
+			popup.add_item(tr("Open in file manager"), PopupAction.OPEN_IN_FILE_MANAGER)
+			popup.add_item(tr("Copy file path"), PopupAction.COPY_PATH)
 
 		popup.add_separator(tr("Folder options"))
-		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
+		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
 	else: # Folder
 		var folder_path: String = str(metadata)
-		popup.add_item(tr("Create folder"), POPUP_ACTION.FOLDER_CREATE)
+		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
 
 		if folder_path != "/":
-			popup.add_item(tr("Rename folder"), POPUP_ACTION.FOLDER_RENAME)
-			popup.add_item(tr("Delete folder"), POPUP_ACTION.FOLDER_DELETE)
+			popup.add_item(tr("Rename folder"), PopupAction.FOLDER_RENAME)
+			popup.add_item(tr("Delete folder"), PopupAction.FOLDER_DELETE)
 
 	@warning_ignore("return_value_discarded")
 	popup.id_pressed.connect(_on_popup_option_pressed)
@@ -166,22 +166,22 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 ## For the right click presses of the file popup menu's.
 func _on_popup_option_pressed(option_id: int) -> void:
 	match option_id:
-		POPUP_ACTION.RENAME: _on_popup_action_file_rename()
-		POPUP_ACTION.RELOAD: _on_popup_action_file_reload()
-		POPUP_ACTION.DELETE: _on_popup_action_file_delete()
-		POPUP_ACTION.SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
-		POPUP_ACTION.EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
-		POPUP_ACTION.DUPLICATE: _on_popup_action_file_duplicate()
-		POPUP_ACTION.CREATE_PROXY: _on_popup_action_file_create_proxy()
-		POPUP_ACTION.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
-		POPUP_ACTION.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
-		POPUP_ACTION.AUDIO_TAKE_OVER: _on_popup_action_audio_take_over()
-		POPUP_ACTION.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
-		POPUP_ACTION.COPY_PATH: _on_popup_action_copy_path()
+		PopupAction.RENAME: _on_popup_action_file_rename()
+		PopupAction.RELOAD: _on_popup_action_file_reload()
+		PopupAction.DELETE: _on_popup_action_file_delete()
+		PopupAction.SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
+		PopupAction.EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
+		PopupAction.DUPLICATE: _on_popup_action_file_duplicate()
+		PopupAction.CREATE_PROXY: _on_popup_action_file_create_proxy()
+		PopupAction.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
+		PopupAction.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
+		PopupAction.AUDIO_TAKE_OVER: _on_popup_action_audio_take_over()
+		PopupAction.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
+		PopupAction.COPY_PATH: _on_popup_action_copy_path()
 
-		POPUP_ACTION.FOLDER_CREATE: _on_popup_action_folder_create()
-		POPUP_ACTION.FOLDER_RENAME: _on_popup_action_folder_rename()
-		POPUP_ACTION.FOLDER_DELETE: _on_popup_action_folder_delete()
+		PopupAction.FOLDER_CREATE: _on_popup_action_folder_create()
+		PopupAction.FOLDER_RENAME: _on_popup_action_folder_rename()
+		PopupAction.FOLDER_DELETE: _on_popup_action_folder_delete()
 
 
 func _on_popup_action_folder_create() -> void:
@@ -251,9 +251,9 @@ func _on_popup_action_file_delete() -> void:
 
 func _on_popup_action_file_save_temp_as() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
-	if file.type == EditorCore.TYPE.TEXT: # TODO: Implement duplicating text files
+	if file.type == EditorCore.Type.TEXT: # TODO: Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
-	elif file.type == EditorCore.TYPE.IMAGE:
+	elif file.type == EditorCore.Type.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
 				tr("Save image to file"),
 				FileDialog.FILE_MODE_SAVE_FILE,
@@ -279,7 +279,7 @@ func _on_popup_action_file_extract_audio() -> void:
 
 func _on_popup_action_file_duplicate() -> void: # Only for text.
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
-	if file.type != EditorCore.TYPE.TEXT:
+	if file.type != EditorCore.Type.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
 	FileLogic.duplicate_text(file)
 
@@ -389,7 +389,7 @@ func _add_file_to_tree(file: FileData) -> void:
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file))
 	file_items[file.id].set_icon_max_width(0, 70)
 
-	if not Thumbnailer.data.has(file.path) and file.type != EditorCore.TYPE.AUDIO and not file.path.begins_with("temp://"):
+	if not Thumbnailer.data.has(file.path) and file.type != EditorCore.Type.AUDIO and not file.path.begins_with("temp://"):
 		file_items[file.id].set_icon_modulate(0, Color(1, 1, 1, 0.4))
 		file_items[file.id].set_tooltip_text(0, file.path + "\n" + tr("(Loading thumbnail...)"))
 	_sort_folder(file.folder)

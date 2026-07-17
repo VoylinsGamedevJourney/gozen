@@ -1,0 +1,264 @@
+[gd_scene format=3 uid="uid://dtks582dair7o"]
+
+[ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="1_kdl0e"]
+[ext_resource type="Script" uid="uid://dym1ks0g5svwb" path="res://scenes/render_options_panel/render_options_panel.gd" id="1_raodm"]
+
+[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+custom_minimum_size = Vector2(300, 100)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_type_variation = &"box"
+script = ExtResource("1_raodm")
+button_save_render_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
+option_button_render_profiles = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
+grid_audio = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
+button_render_draft = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
+path_line_edit = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
+video_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
+video_quality_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider")
+video_gop_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox")
+video_speed_label = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedLabel")
+video_speed_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider")
+audio_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
+audio_channels_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioChannelsOptionButton")
+threads_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
+render_region_check_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton")
+region_start_spinbox = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox")
+region_end_spinbox = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1812715021]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Margin" unique_id=1866157933]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Margin/Panel" unique_id=957653919]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Margin/Panel/Margin" unique_id=1527063705]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Panel/Margin/ScrollContainer" unique_id=1188650558]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=2023486781]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Render settings"
+
+[node name="TopSettingsHBox" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1610987879]
+layout_mode = 2
+columns = 2
+
+[node name="RenderProfilesLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=257110258]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Render profile"
+
+[node name="RenderProfilesHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=1741376081]
+layout_mode = 2
+
+[node name="SaveProfileButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=542494019]
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Save current presets as a custom render profile."
+text = "Save profile"
+
+[node name="RenderProfileOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=871044819]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/icon_max_width = 30
+expand_icon = true
+allow_reselect = true
+
+[node name="PathLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=430655514]
+layout_mode = 2
+text = "Export path"
+
+[node name="RenderPathHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=1540662243]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PathLineEdit" type="LineEdit" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=1501875208]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectPathButton" type="TextureButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=822680023]
+custom_minimum_size = Vector2(21, 0)
+layout_mode = 2
+texture_normal = ExtResource("1_kdl0e")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Line0" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1541658923]
+layout_mode = 2
+
+[node name="VideoLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=629053772]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Render video settings"
+
+[node name="VideoGrid" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=588353333]
+layout_mode = 2
+columns = 2
+
+[node name="CodecLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1045082]
+layout_mode = 2
+text = "Video codec"
+
+[node name="VideoCodecOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1918135312]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QualityLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=594486059]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+mouse_filter = 1
+text = "Quality"
+
+[node name="QualityHSlider" type="HSlider" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1701784239]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+min_value = -50.0
+max_value = -15.0
+value = -18.0
+
+[node name="SpeedLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=2131112934]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+mouse_filter = 1
+text = "Speed"
+
+[node name="SpeedHSlider" type="HSlider" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=799692922]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
+max_value = 8.0
+value = 3.0
+tick_count = 9
+ticks_on_borders = true
+
+[node name="GOPSizeLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=339081235]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+mouse_filter = 1
+text = "Gop size"
+
+[node name="GOPSizeSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=732802790]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+value = 15.0
+allow_greater = true
+alignment = 2
+
+[node name="Line1" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1637046039]
+layout_mode = 2
+
+[node name="AudioTitleHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1066897249]
+layout_mode = 2
+
+[node name="AudioLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1222755429]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "Render audio settings"
+
+[node name="RenderAudioCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1644968205]
+layout_mode = 2
+button_pressed = true
+flat = true
+
+[node name="AudioGrid" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=323372018]
+layout_mode = 2
+columns = 2
+
+[node name="CodecLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1549662471]
+layout_mode = 2
+text = "Audio codec"
+
+[node name="AudioCodecOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=101520640]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChannelsLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=901267617]
+layout_mode = 2
+text = "Audio channels"
+
+[node name="AudioChannelsOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1008727150]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Line2" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=212317307]
+layout_mode = 2
+
+[node name="ThreadsBoxLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=354547580]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "Multi-threading"
+
+[node name="ThreadsGrid" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=2017043396]
+layout_mode = 2
+columns = 2
+
+[node name="ThreadsCodecLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=1668576736]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Threads"
+
+[node name="ThreadsSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid" unique_id=474913723]
+layout_mode = 2
+tooltip_text = "The amount of threads you want to use for exporting your video."
+
+[node name="Line3" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=900785330]
+layout_mode = 2
+
+[node name="RenderRegionHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1770063199]
+layout_mode = 2
+
+[node name="RenderRegionCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=1041098863]
+layout_mode = 2
+text = "Render region"
+
+[node name="RegionStartSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=61235349]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+prefix = "Start:"
+
+[node name="RegionEndSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox" unique_id=2610521]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+prefix = "End:"
+
+[node name="HBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=465246335]
+layout_mode = 2
+
+[node name="DraftCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=324102700]
+layout_mode = 2
+tooltip_text = "Create a low quality draft version of your video."
+text = "Draft"
+
+[node name="StartRenderButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=660434586]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start render"
