@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_5viva"]
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scenes/startup_screen/startup_screen.gd" id="1_sgta6"]
-[ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_image.png" id="2_5viva"]
+[ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_images/clay_banks.png" id="2_5viva"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_gatud"]
 [ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="4_80ee3"]
 [ext_resource type="Texture2D" uid="uid://npglkea55x8p" path="res://assets/icons/link.svg" id="5_pcyft"]
@@ -15,7 +15,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
 shader = ExtResource("1_5viva")
 
-[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "new_version_available_panel", "new_version_available_button", "tab_container", "recent_projects_vbox", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker")]
+[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "startup_image", "startup_image_credit_label")]
 material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,8 +25,6 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_sgta6")
 version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
-new_version_available_panel = NodePath("")
-new_version_available_button = NodePath("")
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
 recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
 presets_option_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton")
@@ -38,6 +36,8 @@ warning_label = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectWa
 advanced_options_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton")
 advanced_options = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid")
 background_color_picker = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/BackgroundColorPickerButton")
+startup_image = NodePath("Panel/VBox/StartupImage")
+startup_image_credit_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/ImageAuthor")
 metadata/_edit_lock_ = true
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=828646470]
@@ -110,7 +110,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/normal_font_size = 9
 bbcode_enabled = true
-text = "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc][u]Clay Banks[/u][/url]"
 scroll_active = false
 horizontal_alignment = 2
 vertical_alignment = 2

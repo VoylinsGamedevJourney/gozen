@@ -126,25 +126,25 @@ func _add_default_profiles() -> void:
 
 
 func _setup_codec_option_buttons() -> void:
-	video_codec_option_button.add_item("HEVC", Encoder.VIDEO_CODEC.V_HEVC) # NO_TRANSLATE
-	video_codec_option_button.add_item("H264", Encoder.VIDEO_CODEC.V_H264) # NO_TRANSLATE
-	video_codec_option_button.add_item("MPEG4", Encoder.VIDEO_CODEC.V_MPEG4) # NO_TRANSLATE
-	video_codec_option_button.add_item("MPEG2", Encoder.VIDEO_CODEC.V_MPEG2) # NO_TRANSLATE
-	video_codec_option_button.add_item("MPEG1", Encoder.VIDEO_CODEC.V_MPEG1) # NO_TRANSLATE
-	video_codec_option_button.add_item("MJPEG", Encoder.VIDEO_CODEC.V_MJPEG) # NO_TRANSLATE
-	video_codec_option_button.add_item("AV1", Encoder.VIDEO_CODEC.V_AV1) # NO_TRANSLATE
-	video_codec_option_button.add_item("VP9", Encoder.VIDEO_CODEC.V_VP9) # NO_TRANSLATE
-	video_codec_option_button.add_item("VP8", Encoder.VIDEO_CODEC.V_VP8) # NO_TRANSLATE
+	video_codec_option_button.add_item("HEVC", Encoder.VideoCodec.V_HEVC) # NO_TRANSLATE
+	video_codec_option_button.add_item("H264", Encoder.VideoCodec.V_H264) # NO_TRANSLATE
+	video_codec_option_button.add_item("MPEG4", Encoder.VideoCodec.V_MPEG4) # NO_TRANSLATE
+	video_codec_option_button.add_item("MPEG2", Encoder.VideoCodec.V_MPEG2) # NO_TRANSLATE
+	video_codec_option_button.add_item("MPEG1", Encoder.VideoCodec.V_MPEG1) # NO_TRANSLATE
+	video_codec_option_button.add_item("MJPEG", Encoder.VideoCodec.V_MJPEG) # NO_TRANSLATE
+	video_codec_option_button.add_item("AV1", Encoder.VideoCodec.V_AV1) # NO_TRANSLATE
+	video_codec_option_button.add_item("VP9", Encoder.VideoCodec.V_VP9) # NO_TRANSLATE
+	video_codec_option_button.add_item("VP8", Encoder.VideoCodec.V_VP8) # NO_TRANSLATE
 
-	audio_codec_option_button.add_item("WAV", Encoder.AUDIO_CODEC.A_WAV) # NO_TRANSLATE
-	audio_codec_option_button.add_item("PCM", Encoder.AUDIO_CODEC.A_PCM) # NO_TRANSLATE
-	audio_codec_option_button.add_item("MP2", Encoder.AUDIO_CODEC.A_MP2) # NO_TRANSLATE
-	audio_codec_option_button.add_item("MP3", Encoder.AUDIO_CODEC.A_MP3) # NO_TRANSLATE
-	audio_codec_option_button.add_item("AAC", Encoder.AUDIO_CODEC.A_AAC) # NO_TRANSLATE
-	audio_codec_option_button.add_item("Opus", Encoder.AUDIO_CODEC.A_OPUS) # NO_TRANSLATE
-	audio_codec_option_button.add_item("Vorbis", Encoder.AUDIO_CODEC.A_VORBIS) # NO_TRANSLATE
-	audio_codec_option_button.add_item("FLAC", Encoder.AUDIO_CODEC.A_FLAC) # NO_TRANSLATE
-	audio_codec_option_button.add_item("None", Encoder.AUDIO_CODEC.A_NONE)
+	audio_codec_option_button.add_item("WAV", Encoder.AudioCodec.A_WAV) # NO_TRANSLATE
+	audio_codec_option_button.add_item("PCM", Encoder.AudioCodec.A_PCM) # NO_TRANSLATE
+	audio_codec_option_button.add_item("MP2", Encoder.AudioCodec.A_MP2) # NO_TRANSLATE
+	audio_codec_option_button.add_item("MP3", Encoder.AudioCodec.A_MP3) # NO_TRANSLATE
+	audio_codec_option_button.add_item("AAC", Encoder.AudioCodec.A_AAC) # NO_TRANSLATE
+	audio_codec_option_button.add_item("Opus", Encoder.AudioCodec.A_OPUS) # NO_TRANSLATE
+	audio_codec_option_button.add_item("Vorbis", Encoder.AudioCodec.A_VORBIS) # NO_TRANSLATE
+	audio_codec_option_button.add_item("FLAC", Encoder.AudioCodec.A_FLAC) # NO_TRANSLATE
+	audio_codec_option_button.add_item("None", Encoder.AudioCodec.A_NONE)
 
 	audio_channels_option_button.add_item("Stereo", 2)
 	audio_channels_option_button.add_item("Mono", 1)
@@ -190,7 +190,7 @@ func load_profile(profile: RenderProfile) -> void:
 	video_quality_hslider.value = -profile.crf
 	video_gop_spin_box.value = profile.gop
 
-	if profile.video_codec == Encoder.VIDEO_CODEC.V_H264:
+	if profile.video_codec == Encoder.VideoCodec.V_H264:
 		video_speed_label.visible = true
 		video_speed_hslider.visible = true
 		video_speed_hslider.value = profile.h264_preset
@@ -239,7 +239,7 @@ func _save_path_selected(file_path: String) -> void:
 func _on_video_codec_option_button_item_selected(index: int) -> void:
 	var video_codec_id: int = video_codec_option_button.get_item_id(index)
 	var extension: String = Utils.get_video_extension(video_codec_id)
-	var is_h264: bool = video_codec_id == Encoder.VIDEO_CODEC.V_H264
+	var is_h264: bool = video_codec_id == Encoder.VideoCodec.V_H264
 	var path: String = path_line_edit.text
 	var allowed: Array[int] = []
 
@@ -255,35 +255,35 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	match extension:
 		".mp4":
 			allowed = [
-				Encoder.AUDIO_CODEC.A_AAC,
-				Encoder.AUDIO_CODEC.A_MP3,
-				Encoder.AUDIO_CODEC.A_FLAC,
-				Encoder.AUDIO_CODEC.A_OPUS,
-				Encoder.AUDIO_CODEC.A_VORBIS,
+				Encoder.AudioCodec.A_AAC,
+				Encoder.AudioCodec.A_MP3,
+				Encoder.AudioCodec.A_FLAC,
+				Encoder.AudioCodec.A_OPUS,
+				Encoder.AudioCodec.A_VORBIS,
 			]
 		".mpg":
 			allowed = [
-				Encoder.AUDIO_CODEC.A_MP2,
-				Encoder.AUDIO_CODEC.A_MP3,
+				Encoder.AudioCodec.A_MP2,
+				Encoder.AudioCodec.A_MP3,
 			]
 		".mov":
 			allowed = [
-				Encoder.AUDIO_CODEC.A_AAC,
-				Encoder.AUDIO_CODEC.A_PCM,
-				Encoder.AUDIO_CODEC.A_WAV,
-				Encoder.AUDIO_CODEC.A_MP3,
-				Encoder.AUDIO_CODEC.A_FLAC,
+				Encoder.AudioCodec.A_AAC,
+				Encoder.AudioCodec.A_PCM,
+				Encoder.AudioCodec.A_WAV,
+				Encoder.AudioCodec.A_MP3,
+				Encoder.AudioCodec.A_FLAC,
 			]
 		".webm":
 			allowed = [
-				Encoder.AUDIO_CODEC.A_OPUS,
-				Encoder.AUDIO_CODEC.A_VORBIS,
+				Encoder.AudioCodec.A_OPUS,
+				Encoder.AudioCodec.A_VORBIS,
 			]
 		".ogg":
 			allowed = [
-				Encoder.AUDIO_CODEC.A_OPUS,
-				Encoder.AUDIO_CODEC.A_VORBIS,
-				Encoder.AUDIO_CODEC.A_FLAC,
+				Encoder.AudioCodec.A_OPUS,
+				Encoder.AudioCodec.A_VORBIS,
+				Encoder.AudioCodec.A_FLAC,
 			]
 
 	for i: int in audio_codec_option_button.item_count:
@@ -332,7 +332,7 @@ func _on_start_render_button_pressed() -> void:
 	var video_codec_id: int = video_codec_option_button.get_selected_id()
 	var audio_codec_id: int = audio_codec_option_button.get_selected_id()
 	if !grid_audio.visible:
-		audio_codec_id = Encoder.AUDIO_CODEC.A_NONE
+		audio_codec_id = Encoder.AudioCodec.A_NONE
 
 	var export_path: String = path_line_edit.text
 	if export_path.is_empty():
@@ -391,7 +391,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	Print.info("Video codec", video_codec_id)
 	Print.info("CRF", int(0 - video_quality_hslider.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
-	if video_codec_option_button.get_selected_id() == Encoder.VIDEO_CODEC.V_H264:
+	if video_codec_option_button.get_selected_id() == Encoder.VideoCodec.V_H264:
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_id)
 	Print.info("Audio channels", audio_channels_option_button.get_selected_id())
@@ -514,12 +514,12 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 
 	new_profile.profile_name = profile_name
 	new_profile.icon = ImageTexture.create_from_image(icon)
-	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VIDEO_CODEC
-	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AUDIO_CODEC
-	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as Encoder.AUDIO_CODEC
+	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VideoCodec
+	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec
+	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as Encoder.AudioCodec
 	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
-	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264_PRESETS
+	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
 
 	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH) and DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
 		printerr("RenderScreen: Couldn't create directory at '%s'!" % USER_PROFILES_PATH)

@@ -109,17 +109,17 @@ static func get_sample_count(frames: int, framerate: float) -> int:
 	return (int((float(frames) / framerate) * RenderManager.MIX_RATE)) * 4
 
 
-static func get_video_extension(video_codec: Encoder.VIDEO_CODEC) -> String:
+static func get_video_extension(video_codec: Encoder.VideoCodec) -> String:
 	match video_codec:
-		Encoder.VIDEO_CODEC.V_HEVC: return ".mp4"
-		Encoder.VIDEO_CODEC.V_H264: return ".mp4"
-		Encoder.VIDEO_CODEC.V_MPEG4: return ".mp4"
-		Encoder.VIDEO_CODEC.V_MPEG2: return ".mpg"
-		Encoder.VIDEO_CODEC.V_MPEG1: return ".mpg"
-		Encoder.VIDEO_CODEC.V_MJPEG: return ".mov"
-		Encoder.VIDEO_CODEC.V_AV1: return ".webm"
-		Encoder.VIDEO_CODEC.V_VP9: return ".webm"
-		Encoder.VIDEO_CODEC.V_VP8: return ".webm"
+		Encoder.VideoCodec.V_HEVC: return ".mp4"
+		Encoder.VideoCodec.V_H264: return ".mp4"
+		Encoder.VideoCodec.V_MPEG4: return ".mp4"
+		Encoder.VideoCodec.V_MPEG2: return ".mpg"
+		Encoder.VideoCodec.V_MPEG1: return ".mpg"
+		Encoder.VideoCodec.V_MJPEG: return ".mov"
+		Encoder.VideoCodec.V_AV1: return ".webm"
+		Encoder.VideoCodec.V_VP9: return ".webm"
+		Encoder.VideoCodec.V_VP8: return ".webm"
 
 	printerr("Utils: Unrecognized codec! ", video_codec)
 	return ""

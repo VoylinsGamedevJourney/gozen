@@ -58,9 +58,9 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	encoder.set_file_path(global_output_path)
 	encoder.set_resolution(target_resolution)
 	encoder.set_framerate(video.get_framerate())
-	encoder.set_audio_codec_id(Encoder.AUDIO_CODEC.A_NONE) # Only visual is needed
-	encoder.set_video_codec_id(Encoder.VIDEO_CODEC.V_H264)
-	encoder.set_h264_preset(Encoder.H264_PRESETS.H264_PRESET_ULTRAFAST)
+	encoder.set_audio_codec_id(Encoder.AudioCodec.A_NONE) # Only visual is needed
+	encoder.set_video_codec_id(Encoder.VideoCodec.V_H264)
+	encoder.set_h264_preset(Encoder.H264Presets.H264_PRESET_ULTRAFAST)
 	encoder.set_crf(32)
 
 	if !encoder.open(true):

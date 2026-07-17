@@ -34,8 +34,18 @@ const PRESETS: Dictionary[String, Vector3i] = {
 @export var advanced_options: GridContainer
 @export var background_color_picker: ColorPickerButton
 
+@export_category("Startup image")
+@export var startup_image: TextureRect
+@export var startup_image_credit_label: RichTextLabel
+
 
 var http_request: HTTPRequest ## For version checking.
+
+var startup_images_data: Array[PackedStringArray] = [ # [ Image UID, unsplash image id ]
+	["uid://sh8txndv1wtu", "u27Rrbs9Dwc"],
+	["uid://bixnh6u1jfb18", "XzbgXfnjclI"],
+	["uid://b68fi43mkp6i1", "A5GmtHW3O9k"],
+]
 
 
 
@@ -48,6 +58,18 @@ func _ready() -> void:
 	_set_version_label()
 	_set_new_project_defaults()
 	project_path_line_edit.text = OS.get_system_dir(OS.SYSTEM_DIR_MOVIES) + "/project.gozen"
+
+	# Set the startup background image.
+	randomize()
+	var weights: Array = [0, 0, 0] # I want the first image to appear most of the time :p
+	for i: int in startup_images_data.size():
+		weights.append(i)
+	var image_index: int = randi() % weights.size()
+	var image_data: PackedStringArray = startup_images_data[weights[image_index]]
+	var image_author: String = ResourceUID.uid_to_path(image_data[0]).get_basename().get_file().replace("_", " ").capitalize()
+	startup_image_credit_label.text = tr("Image by")
+	startup_image_credit_label.text += " [url=https://unsplash.com/photos/%s][u]%s[/u][/url]" % [image_data[1], image_author] # NO_TRANSLATE
+	startup_image.texture = load(image_data[0])
 
 
 func _input(event: InputEvent) -> void:
