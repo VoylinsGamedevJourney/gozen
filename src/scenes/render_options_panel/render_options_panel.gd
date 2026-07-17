@@ -9,25 +9,26 @@ const USER_PROFILES_PATH: String = "user://render_profiles/"
 @export var grid_audio: GridContainer
 @export var button_render_draft: CheckButton
 
-@export_group("Path")
+@export_category("Path")
 @export var path_line_edit: LineEdit
 
-@export_group("Video")
+@export_category("Video")
 @export var video_codec_option_button: OptionButton
 @export var video_quality_hslider: HSlider
 @export var video_gop_spin_box: SpinBox
-@export_subgroup("H264 options")
+@export var video_bframes_spin_box: SpinBox
+@export_group("H264 options")
 @export var video_speed_label: Label
 @export var video_speed_hslider: HSlider
 
-@export_group("Audio")
+@export_category("Audio")
 @export var audio_codec_option_button: OptionButton
 @export var audio_channels_option_button: OptionButton
 
-@export_group("Threads")
+@export_category("Threads")
 @export var threads_spin_box: SpinBox
 
-@export_group("Render Region")
+@export_category("Render Region")
 @export var render_region_check_button: CheckButton
 @export var region_start_spinbox: SpinBox
 @export var region_end_spinbox: SpinBox
@@ -189,6 +190,7 @@ func load_profile(profile: RenderProfile) -> void:
 
 	video_quality_hslider.value = -profile.crf
 	video_gop_spin_box.value = profile.gop
+	video_bframes_spin_box.value = profile.b_frames
 
 	if profile.video_codec == Encoder.VideoCodec.V_H264:
 		video_speed_label.visible = true
@@ -391,6 +393,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	Print.info("Video codec", video_codec_id)
 	Print.info("CRF", int(0 - video_quality_hslider.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
+	Print.info("B-frames", int(video_bframes_spin_box.value))
 	if video_codec_option_button.get_selected_id() == Encoder.VideoCodec.V_H264:
 		Print.info("h264 preset", int(video_speed_hslider.value))
 	Print.info("Audio codec", audio_codec_id)
@@ -443,6 +446,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	RenderManager.encoder.set_crf(int(0 - video_quality_hslider.value))
 	RenderManager.encoder.set_h264_preset(int(video_speed_hslider.value))
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
+	RenderManager.encoder.set_b_frames(int(video_bframes_spin_box.value))
 	RenderManager.encoder.set_audio_codec_id(audio_codec_id)
 	RenderManager.encoder.set_audio_channels(audio_channels_option_button.get_selected_id())
 	RenderManager.encoder.set_threads(int(threads_spin_box.value))
@@ -519,6 +523,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as Encoder.AudioCodec
 	new_profile.crf = abs(video_quality_hslider.value)
 	new_profile.gop = int(video_gop_spin_box.value)
+	new_profile.b_frames = int(video_bframes_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
 
 	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH) and DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):

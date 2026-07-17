@@ -10,4 +10,5 @@ icon = ExtResource("1_o370e")
 video_codec = 139
 crf = 20
 audio_codec = 86076
+b_frames = 2
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"

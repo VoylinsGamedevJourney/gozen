@@ -10,4 +10,5 @@ icon = ExtResource("1_scxfi")
 video_codec = 167
 h264_preset = 2
 audio_codec = 86076
+b_frames = 2
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"

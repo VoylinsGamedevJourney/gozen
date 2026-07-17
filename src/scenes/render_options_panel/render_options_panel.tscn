@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="1_kdl0e"]
 [ext_resource type="Script" uid="uid://dym1ks0g5svwb" path="res://scenes/render_options_panel/render_options_panel.gd" id="1_raodm"]
 
-[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 custom_minimum_size = Vector2(300, 100)
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,6 +21,7 @@ path_line_edit = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsH
 video_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
 video_quality_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHSlider")
 video_gop_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/GOPSizeSpinBox")
+video_bframes_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/BFramesSpinBox")
 video_speed_label = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedLabel")
 video_speed_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHSlider")
 audio_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
@@ -158,6 +159,21 @@ mouse_filter = 1
 text = "Gop size"
 
 [node name="GOPSizeSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=732802790]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+value = 15.0
+allow_greater = true
+alignment = 2
+
+[node name="BFramesLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1994113596]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+mouse_filter = 1
+text = "B frames"
+
+[node name="BFramesSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1441852042]
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
