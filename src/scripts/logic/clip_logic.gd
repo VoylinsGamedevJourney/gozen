@@ -351,14 +351,23 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 
 func get_group_clips(clip: ClipData) -> Array[ClipData]:
 	if clip.groups.is_empty():
-		return [clip]
+		return []
 
 	var out_group: int = clip.groups[-1]
 	var group_clips_data: Array[ClipData] = []
 	for clip_data: ClipData in clips.values():
+		if clip_data == clip:
+			continue
 		if not clip_data.groups.is_empty() and clip_data.groups[-1] == out_group:
 			group_clips_data.append(clip_data)
 	return group_clips_data
+
+
+func get_clips_to_select(clip: ClipData) -> Array[ClipData]:
+	var result: Array[ClipData] = [clip]
+	if Timeline.group_enabled:
+		result.append_array(get_group_clips(clip))
+	return result
 
 
 func _get_all_group_ids() -> Array[int]:
