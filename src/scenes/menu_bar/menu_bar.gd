@@ -140,7 +140,7 @@ func _on_view_menu_about_to_popup() -> void:
 	while popup_menu_view.item_count > PANEL_ENTRIES_START:
 		popup_menu_view.remove_item(PANEL_ENTRIES_START)
 
-	var title_item_idx: int = popup_menu_view.get_item_index(4)
+	var title_item_idx: int = popup_menu_view.get_item_index(3)
 	if WorkspaceManager.show_tab_titles:
 		popup_menu_view.set_item_text(title_item_idx, tr("Hide panel titles"))
 	else:
