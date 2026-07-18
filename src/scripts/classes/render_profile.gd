@@ -18,4 +18,4 @@ enum AudioChannels { MONO = 1, STEREO = 2}
 @export var audio_channels: AudioChannels = AudioChannels.STEREO
 
 @export_category("Advanced Video")
-@export var b_frames: int = 0
+@export var b_frames: int = 0 ## Higher value equals better compression, but longer render times.

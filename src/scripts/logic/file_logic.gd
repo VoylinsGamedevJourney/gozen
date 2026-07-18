@@ -438,7 +438,7 @@ func load_data(file: FileData) -> void:
 
 			var module_data: GoZenModule = load(module_path)
 			if !module_data:
-				printerr("FileLogic: Failed to load `module.tres` or isn't a GoZenModule!")
+				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule!")
 				return _delete(file)
 
 			file_data[file.id] = module_data

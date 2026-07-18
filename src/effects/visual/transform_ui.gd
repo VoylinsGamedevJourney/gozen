@@ -159,9 +159,9 @@ func _align(type: int) -> void:
 	var media_size: Vector2 = res
 	var file: FileData = FileLogic.files[clip.file]
 	var raw_data: Variant = FileLogic.file_data.get(file.id)
-	if clip.type == EditorCore.TYPE.VIDEO and raw_data is Video:
+	if clip.type == EditorCore.Type.VIDEO and raw_data is Video:
 		media_size = Vector2((raw_data as Video).get_resolution())
-	elif clip.type == EditorCore.TYPE.IMAGE:
+	elif clip.type == EditorCore.Type.IMAGE:
 		if raw_data is Texture2D:
 			media_size = (raw_data as Texture2D).get_size()
 		elif not file.path.begins_with("temp://"):
