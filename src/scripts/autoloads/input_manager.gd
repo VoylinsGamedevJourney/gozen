@@ -1,8 +1,8 @@
 extends Node
 
-signal on_show_editor_screen
-signal on_show_render_screen
-signal on_switch_screen
+signal on_show_editor_workspace
+signal on_show_render_workspace
+signal on_switch_workspace
 
 signal switch_timeline_mode_select
 signal switch_timeline_mode_split
@@ -53,9 +53,9 @@ func _input(event: InputEvent) -> void:
 		if !undo_redo.redo():
 			printerr("InputManager: Couldn't redo!")
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("switch_screen"):
+	elif event.is_action_pressed("switch_workspace"):
 		if RenderManager.encoder == null or !RenderManager.encoder.is_open():
-			switch_screen()
+			switch_workspace()
 		get_viewport().set_input_as_handled()
 
 
@@ -106,16 +106,16 @@ func _on_closing_editor() -> void:
 	undo_redo.free()
 
 
-func show_editor_screen() -> void:
-	on_show_editor_screen.emit()
+func show_editor_workspace() -> void:
+	on_show_editor_workspace.emit()
 
 
-func show_render_screen() -> void:
-	on_show_render_screen.emit()
+func show_render_workspace() -> void:
+	on_show_render_workspace.emit()
 
 
-func switch_screen() -> void:
-	on_switch_screen.emit()
+func switch_workspace() -> void:
+	on_switch_workspace.emit()
 
 
 func open_marker_popup() -> void:

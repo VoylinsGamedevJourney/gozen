@@ -12,7 +12,7 @@ func _ready() -> void:
 	base_commands.append("open render menu")
 	register(tr("Open editor settings"), Settings.open_settings_menu, "open_settings")
 	register(tr("Open project settings"), Project.open_settings_menu, "open_project_settings")
-	register(tr("open render menu"), InputManager.switch_screen.bind(1), "open_render_screen")
+	register(tr("open render menu"), InputManager.switch_workspace.bind(1), "open_render_workspace")
 
 	@warning_ignore("return_value_discarded")
 	Settings.on_localization_updated.connect(_localize_commands)
