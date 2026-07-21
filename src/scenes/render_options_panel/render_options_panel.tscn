@@ -278,3 +278,12 @@ text = "Draft"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Start render"
+
+[connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton" to="." method="_on_save_custom_profile_button_pressed"]
+[connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
+[connection signal="item_selected" from="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_select_save_path_button_pressed"]
+[connection signal="toggled" from="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
+[connection signal="toggled" from="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton" to="." method="_on_render_region_toggled"]
+[connection signal="value_changed" from="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox" to="." method="_on_region_start_changed"]
+[connection signal="value_changed" from="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox" to="." method="_on_region_end_changed"]
+[connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
