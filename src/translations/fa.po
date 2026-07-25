@@ -1,0 +1,1330 @@
+# LANGUAGE translation for GoZen for the following files:
+# res://scenes/effects_panel/effects_panel.gd
+# res://scenes/effects_panel/effects_panel.tscn
+# res://scenes/effects_panel/keyframe_track.gd
+# res://scenes/popup_background.tscn
+# res://scenes/view_panel/view_panel.tscn
+# res://scenes/view_panel/view_panel.gd
+# res://scenes/view_panel/project_view_texture.gd
+# res://scenes/editor/editor.tscn
+# res://scenes/editor/editor.gd
+# res://scenes/add_effects_popup/add_effects_popup.gd
+# res://scenes/add_effects_popup/add_effects_popup.tscn
+# res://scenes/file_panel/file_tree_proxy_progress.gd
+# res://scenes/file_panel/file_panel.tscn
+# res://scenes/file_panel/file_panel.gd
+# res://scenes/timeline/audio_meter.gd
+# res://scenes/timeline/draw/draw_markers.gd
+# res://scenes/timeline/draw/draw_clips.gd
+# res://scenes/timeline/draw/draw_mode.gd
+# res://scenes/timeline/draw/draw_preview.gd
+# res://scenes/timeline/draw/draw_playhead.gd
+# res://scenes/timeline/draw/draw_track_lines.gd
+# res://scenes/timeline/draw/draw_box_selection.gd
+# res://scenes/timeline/timeline_panel.gd
+# res://scenes/timeline/time_stamps.gd
+# res://scenes/timeline/timeline_scroll.gd
+# res://scenes/timeline/audio_meter.tscn
+# res://scenes/timeline/timeline.tscn
+# res://scenes/timeline/timeline.gd
+# res://scenes/timeline/track_controls.gd
+# res://scenes/markers_panel/markers_panel.gd
+# res://scenes/markers_panel/markers_panel.tscn
+# res://scenes/color_popup/color_popup.tscn
+# res://scenes/color_popup/color_popup.gd
+# res://scenes/command_bar/command_bar.gd
+# res://scenes/command_bar/command_bar.tscn
+# res://scenes/render_screen/save_custom_render_profile.tscn
+# res://scenes/render_screen/save_custom_render_profile.gd
+# res://scenes/edit_screen/edit_screen.tscn
+# res://scenes/edit_screen/edit_screen.gd
+# res://scenes/about_gozen/about_gozen.tscn
+# res://scenes/about_gozen/about_gozen.gd
+# res://scenes/progress_overlay/progress_overlay.gd
+# res://scenes/progress_overlay/progress_overlay.tscn
+# res://scenes/settings_menu/settings_menu.gd
+# res://scenes/settings_menu/settings_menu.tscn
+# res://scenes/render_options_panel/render_options_panel.tscn
+# res://scenes/render_options_panel/render_options_panel.gd
+# res://scenes/menu_bar/menu_bar.tscn
+# res://scenes/menu_bar/menu_bar.gd
+# res://scenes/rename_file/rename_file.gd
+# res://scenes/rename_file/rename_file.tscn
+# res://scenes/startup_screen/startup_screen.tscn
+# res://scenes/startup_screen/startup_screen.gd
+# res://scenes/marker_popup/marker_popup.tscn
+# res://scenes/marker_popup/marker_popup.gd
+# res://scenes/audio_take_over_popup/audio_take_over_wave.gd
+# res://scenes/audio_take_over_popup/audio_take_over_popup.tscn
+# res://scenes/audio_take_over_popup/audio_take_over_popup.gd
+# res://effects/visual/transform_ui.gd
+# res://effects/visual/transform_overlay.gd
+# res://scripts/utils/matrix.gd
+# res://scripts/utils/library.gd
+# res://scripts/utils/print.gd
+# res://scripts/utils/utils.gd
+# res://scripts/autoloads/settings.gd
+# res://scripts/autoloads/project.gd
+# res://scripts/autoloads/thumbnailer.gd
+# res://scripts/autoloads/render_manager.gd
+# res://scripts/autoloads/workspace_manager.gd
+# res://scripts/autoloads/proxy_handler.gd
+# res://scripts/autoloads/threader.gd
+# res://scripts/autoloads/editor_core.gd
+# res://scripts/autoloads/popup_manager.gd
+# res://scripts/autoloads/command_manager.gd
+# res://scripts/autoloads/effects_handler.gd
+# res://scripts/autoloads/notification_manager.gd
+# res://scripts/autoloads/input_manager.gd
+# res://scripts/autoloads/timeline.gd
+# res://scripts/classes/clip_data.gd
+# res://scripts/classes/effect_visual_overlay.gd
+# res://scripts/classes/data_manager.gd
+# res://scripts/classes/temp_file.gd
+# res://scripts/classes/effect_ui.gd
+# res://scripts/classes/workspace_node.gd
+# res://scripts/classes/effect_audio.gd
+# res://scripts/classes/effect_visual.gd
+# res://scripts/classes/module_panel.gd
+# res://scripts/classes/gozen_module_controller.gd
+# res://scripts/classes/track_data.gd
+# res://scripts/classes/marker_data.gd
+# res://scripts/classes/clip_request.gd
+# res://scripts/classes/audio_player.gd
+# res://scripts/classes/dockable_tab.gd
+# res://scripts/classes/draggable.gd
+# res://scripts/classes/project_data.gd
+# res://scripts/classes/effect.gd
+# res://scripts/classes/clip_effects.gd
+# res://scripts/classes/workspace_layout.gd
+# res://scripts/classes/effect_param.gd
+# res://scripts/classes/render_profile.gd
+# res://scripts/classes/settings_data.gd
+# res://scripts/classes/visual_compositor.gd
+# res://scripts/classes/effect_cache.gd
+# res://scripts/classes/file_data.gd
+# res://scripts/classes/gozen_module.gd
+# res://scripts/logic/file_logic.gd
+# res://scripts/logic/folder_logic.gd
+# res://scripts/logic/marker_logic.gd
+# res://scripts/logic/track_logic.gd
+# res://scripts/logic/clip_logic.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: GoZen\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: scenes/effects_panel/effects_panel.gd:44
+msgid "Mute clip audio."
+msgstr "قطع صدای کلیپ."
+
+#: scenes/effects_panel/effects_panel.gd:283
+msgid "Presets & Options"
+msgstr "پیش تنظیم ها و گزینه ها"
+
+#: scenes/effects_panel/effects_panel.gd:399
+#: scenes/effects_panel/effects_panel.gd:1043
+msgid "Reset parameter"
+msgstr "بازنشانی پارامتر"
+
+#: scenes/effects_panel/effects_panel.gd:465
+#: scenes/effects_panel/effects_panel.gd:1276
+msgid "Default"
+msgstr "پیش فرض"
+
+#: scenes/effects_panel/effects_panel.gd:504
+msgid "Left"
+msgstr "چپ"
+
+#: scenes/effects_panel/effects_panel.gd:505
+#: scenes/effects_panel/effects_panel.gd:509
+msgid "Center"
+msgstr "وسط"
+
+#: scenes/effects_panel/effects_panel.gd:506
+msgid "Right"
+msgstr "راست"
+
+#: scenes/effects_panel/effects_panel.gd:508
+msgid "Top"
+msgstr "بالا"
+
+#: scenes/effects_panel/effects_panel.gd:510
+msgid "Bottom"
+msgstr "پایین"
+
+#: scenes/effects_panel/effects_panel.gd:512
+msgid "Mix (Normal)"
+msgstr "ترکیب (عادی)"
+
+#: scenes/effects_panel/effects_panel.gd:513
+msgid "Add"
+msgstr "افزودن"
+
+#: scenes/effects_panel/effects_panel.gd:514
+msgid "Subtract"
+msgstr "کم کردن"
+
+#: scenes/effects_panel/effects_panel.gd:515
+msgid "Multiply"
+msgstr "ضرب"
+
+#: scenes/effects_panel/effects_panel.gd:516
+msgid "Premultiplied Alpha"
+msgstr "آلفای پیش ضرب"
+
+#: scenes/effects_panel/effects_panel.gd:681
+msgid "Link X and Y"
+msgstr "پیوند X و Y"
+
+#: scenes/effects_panel/effects_panel.gd:896
+msgid "Add effects"
+msgstr "افزودن افکت"
+
+#: scenes/effects_panel/effects_panel.gd:983
+#: scenes/settings_menu/settings_menu.gd:385
+msgid "Reset to default"
+msgstr "بازنشانی به پیش فرض"
+
+#: scenes/effects_panel/effects_panel.gd:1065
+msgid "Keyframes"
+msgstr "فریم های کلیدی"
+
+#: scenes/effects_panel/effects_panel.gd:1216
+msgid "Presets"
+msgstr "پیش تنظیم ها"
+
+#: scenes/effects_panel/effects_panel.gd:1235
+msgid "Reset effect"
+msgstr "بازنشانی افکت"
+
+#: scenes/effects_panel/effects_panel.gd:1247
+msgid "Delete effect"
+msgstr "حذف افکت"
+
+#: scenes/effects_panel/effects_panel.gd:1260
+msgid "Save as preset..."
+msgstr "ذخیره به عنوان پیش تنظیم..."
+
+#: scenes/effects_panel/effects_panel.gd:1330
+msgid "Save preset"
+msgstr "ذخیره پیش تنظیم"
+
+#: scenes/effects_panel/effects_panel.gd:1331
+msgid "Preset name"
+msgstr "نام پیش تنظیم"
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Transitions"
+msgstr "ترانزیشن ها"
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Visual effects"
+msgstr "افکت های تصویری"
+
+#: scenes/effects_panel/effects_panel.tscn
+msgid "Audio effects"
+msgstr "افکت های صوتی"
+
+#: scenes/view_panel/view_panel.gd:58
+msgid "Jump to frame"
+msgstr "رفتن به فریم"
+
+#: scenes/view_panel/view_panel.gd:104
+msgid "Frame"
+msgstr "فریم"
+
+#: scenes/view_panel/project_view_texture.gd:128
+msgid "Save screenshot ..."
+msgstr "ذخیره عکس صفحه ..."
+
+#: scenes/view_panel/project_view_texture.gd:129
+msgid "Save screenshot to project ..."
+msgstr "ذخیره عکس صفحه در پروژه ..."
+
+#: scenes/editor/editor.gd:120
+msgid "Move Left"
+msgstr "حرکت به چپ"
+
+#: scenes/editor/editor.gd:123
+msgid "Move Right"
+msgstr "حرکت به راست"
+
+#: scenes/editor/editor.gd:126 scenes/file_panel/file_panel.gd:122
+msgid "Delete"
+msgstr "حذف"
+
+#: scenes/editor/editor.gd:173
+msgid "Delete Workspace"
+msgstr "حذف فضای کاری"
+
+#: scenes/editor/editor.gd:174
+msgid "Are you sure you want to delete the workspace '%s'?"
+msgstr "آیا از حذف فضای کاری '%s' مطمئنید؟"
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+msgid "Add effect"
+msgstr "افزودن افکت"
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/progress_overlay/progress_overlay.tscn
+msgid "Close popup"
+msgstr "بستن پنجره"
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr "جستجوی فایل ها ..."
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add files"
+msgstr "افزودن فایل ها"
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add text"
+msgstr "افزودن متن"
+
+#: scenes/file_panel/file_panel.tscn
+msgid "Add color"
+msgstr "افزودن رنگ"
+
+#: scenes/file_panel/file_panel.gd:102
+msgid "Add files ..."
+msgstr "افزودن فایل ها ..."
+
+#: scenes/file_panel/file_panel.gd:120
+msgid "Rename"
+msgstr "تغییر نام"
+
+#: scenes/file_panel/file_panel.gd:121
+msgid "Reload"
+msgstr "بارگذاری مجدد"
+
+#: scenes/file_panel/file_panel.gd:126
+msgid "Image options"
+msgstr "گزینه های تصویر"
+
+#: scenes/file_panel/file_panel.gd:127
+msgid "Save image as ..."
+msgstr "ذخیره تصویر به عنوان ..."
+
+#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:779
+msgid "Video options"
+msgstr "گزینه های ویدیو"
+
+#: scenes/file_panel/file_panel.gd:133
+msgid "Create proxy"
+msgstr "ساخت پروکسی"
+
+#: scenes/file_panel/file_panel.gd:135
+msgid "Re-create proxy"
+msgstr "بازسازی پروکسی"
+
+#: scenes/file_panel/file_panel.gd:136
+msgid "Remove proxy"
+msgstr "حذف پروکسی"
+
+#: scenes/file_panel/file_panel.gd:137
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio-take-over"
+msgstr "تصاحب صوت"
+
+#: scenes/file_panel/file_panel.gd:138
+msgid "Extract audio to file ..."
+msgstr "استخراج صدا در قالب فایل ..."
+
+#: scenes/file_panel/file_panel.gd:140
+msgid "Text options"
+msgstr "گزینه های متن"
+
+#: scenes/file_panel/file_panel.gd:141
+msgid "Duplicate"
+msgstr "تکثیر"
+
+#: scenes/file_panel/file_panel.gd:144
+msgid "Save file as ..."
+msgstr "ذخیره فایل به عنوان ..."
+
+#: scenes/file_panel/file_panel.gd:148
+msgid "Open in file manager"
+msgstr "باز کردن در مدیریت فایل"
+
+#: scenes/file_panel/file_panel.gd:149
+msgid "Copy file path"
+msgstr "کپی مسیر فایل"
+
+#: scenes/file_panel/file_panel.gd:151
+msgid "Folder options"
+msgstr "گزینه های پوشه"
+
+#: scenes/file_panel/file_panel.gd:152 scenes/file_panel/file_panel.gd:155
+#: scenes/file_panel/file_panel.gd:536
+msgid "Create folder"
+msgstr "ایجاد پوشه"
+
+#: scenes/file_panel/file_panel.gd:158
+msgid "Rename folder"
+msgstr "تغییر نام پوشه"
+
+#: scenes/file_panel/file_panel.gd:159
+msgid "Delete folder"
+msgstr "حذف پوشه"
+
+#: scenes/file_panel/file_panel.gd:198 scenes/rename_file/rename_file.tscn
+msgid "Rename file"
+msgstr "تغییر نام فایل"
+
+#: scenes/file_panel/file_panel.gd:203 scenes/file_panel/file_panel.gd:541
+msgid "Folder name"
+msgstr "نام پوشه"
+
+#: scenes/file_panel/file_panel.gd:258
+msgid "Save image to file"
+msgstr "ذخیره تصویر در فایل"
+
+#: scenes/file_panel/file_panel.gd:271
+msgid "Save video audio to WAV"
+msgstr "ذخیره صدای ویدیو به صورت WAV"
+
+#: scenes/file_panel/file_panel.gd:394
+msgid "(Loading thumbnail...)"
+msgstr "(بارگذاری تامبنیل...)"
+
+#: scenes/timeline/timeline_panel.gd:143
+msgid "Duplication failed"
+msgstr "تکثیر ناموفق بود"
+
+#: scenes/timeline/timeline_panel.gd:144
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
+msgstr "تکثیر کلیپ(های) %d به دلیل کمبود فضای خالی ناموفق بود."
+
+#: scenes/timeline/timeline_panel.gd:253
+msgid "Remove empty space"
+msgstr "حذف فضای خالی"
+
+#: scenes/timeline/timeline_panel.gd:255
+msgid "Track options"
+msgstr "گزینه های ترک"
+
+#: scenes/timeline/timeline_panel.gd:258
+msgid "Add track"
+msgstr "افزودن ترک"
+
+#: scenes/timeline/timeline_panel.gd:260
+msgid "Remove track"
+msgstr "حذف ترک"
+
+#: scenes/timeline/timeline_panel.gd:264
+msgid "Visible"
+msgstr "قابل مشاهده"
+
+#: scenes/timeline/timeline_panel.gd:267
+msgid "Muted"
+msgstr "بی صدا"
+
+#: scenes/timeline/timeline_panel.gd:270
+msgid "Locked"
+msgstr "قفل"
+
+#: scenes/timeline/timeline_panel.gd:769
+msgid "Delete clip"
+msgstr "حذف کلیپ"
+
+#: scenes/timeline/timeline_panel.gd:770
+msgid "Split clip"
+msgstr "تقسیم کلیپ"
+
+#: scenes/timeline/timeline_panel.gd:774 scenes/timeline/timeline_panel.gd:818
+msgid "Change speed"
+msgstr "تغییر سرعت"
+
+#: scenes/timeline/timeline_panel.gd:776
+msgid "Reset speed"
+msgstr "بازنشانی سرعت"
+
+#: scenes/timeline/timeline_panel.gd:780
+msgid "Clip audio-take-over"
+msgstr "تصاحب صوت کلیپ"
+
+#: scenes/timeline/timeline.tscn
+msgid "Turn snapping on/off."
+msgstr "خاموش/روشن کردن چسبندگی."
+
+#: scenes/timeline/track_controls.gd:62
+msgid "Toggle track visibility"
+msgstr "تغییر وضعیت نمایش ترک"
+
+#: scenes/timeline/track_controls.gd:78
+msgid "Mute track"
+msgstr "بی صدا کردن ترک"
+
+#: scenes/markers_panel/markers_panel.tscn
+#: scenes/settings_menu/settings_menu.gd:112
+#: scenes/settings_menu/settings_menu.gd:315
+msgid "Markers"
+msgstr "نشانگر ها"
+
+#: scenes/color_popup/color_popup.tscn
+msgid "Add color file"
+msgstr "افزودن فایل رنگ"
+
+#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+#: scripts/autoloads/project.gd:236 scripts/logic/file_logic.gd:232
+msgid "Cancel"
+msgstr "لغو"
+
+#: scenes/color_popup/color_popup.tscn
+msgid "Create new color file"
+msgstr "ایجاد فایل رنگ جدید"
+
+#: scenes/render_screen/save_custom_render_profile.tscn
+msgid "Create render profile"
+msgstr "ایجاد نمایه رندر"
+
+#: scenes/render_screen/save_custom_render_profile.tscn
+msgid "New profile name"
+msgstr "نام نمایه جدید"
+
+#: scenes/render_screen/save_custom_render_profile.gd:40
+msgid "Select Icon"
+msgstr "انتخاب آیکون"
+
+#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
+msgid "About GoZen"
+msgstr "درباره GoZen"
+
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Version: "
+msgstr "نسخه: "
+
+#: scenes/about_gozen/about_gozen.gd:22
+msgid "GoZen version"
+msgstr "نسخه GoZen"
+
+#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Website"
+msgstr "وب سایت"
+
+#: scenes/about_gozen/about_gozen.gd:39
+msgid "GitHub repo"
+msgstr "GitHub repo"
+
+#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
+msgstr "Discord"
+
+#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Support GoZen"
+msgstr "حمایت از GoZen"
+
+#: scenes/about_gozen/about_gozen.gd:43
+msgid ""
+"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+msgstr ""
+"ساخته شده توسط [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/"
+"color]! ;)"
+
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:114
+msgid "Loading project"
+msgstr "درحال بارگذاری پروژه"
+
+#: scenes/progress_overlay/progress_overlay.tscn
+#: scripts/autoloads/project.gd:115
+msgid "Initializing ..."
+msgstr "راه اندازی ..."
+
+#: scenes/settings_menu/settings_menu.gd:105
+#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
+msgid "Editor settings"
+msgstr "تنظیمات ویرایشگر"
+
+#: scenes/settings_menu/settings_menu.gd:110
+msgid "Marker one"
+msgstr "نشانگر یک"
+
+#: scenes/settings_menu/settings_menu.gd:110
+msgid "Marker two"
+msgstr "نشانگر دو"
+
+#: scenes/settings_menu/settings_menu.gd:110
+msgid "Marker three"
+msgstr "نشانگر سه"
+
+#: scenes/settings_menu/settings_menu.gd:111
+msgid "Marker four"
+msgstr "نشانگر چهار"
+
+#: scenes/settings_menu/settings_menu.gd:111
+msgid "Marker five"
+msgstr "نشانگر پنج"
+
+#: scenes/settings_menu/settings_menu.gd:122
+#: scenes/settings_menu/settings_menu.gd:331
+msgid "Shortcuts"
+msgstr "میانبرها"
+
+#: scenes/settings_menu/settings_menu.gd:131
+#: scenes/settings_menu/settings_menu.gd:351
+#: scenes/settings_menu/settings_menu.gd:352
+msgid "Appearance"
+msgstr "ظاهر"
+
+#: scenes/settings_menu/settings_menu.gd:132
+msgid "Display"
+msgstr "نمایش"
+
+#: scenes/settings_menu/settings_menu.gd:133
+msgid "Language"
+msgstr "زبان"
+
+#: scenes/settings_menu/settings_menu.gd:140
+msgid "Display scale"
+msgstr "مقیاس نمایش"
+
+#: scenes/settings_menu/settings_menu.gd:147
+msgid "Editor theme"
+msgstr "تم ویرایشگر"
+
+#: scenes/settings_menu/settings_menu.gd:154
+msgid "Base color"
+msgstr "رنگ پایه"
+
+#: scenes/settings_menu/settings_menu.gd:159
+msgid "The base color of the editor UI."
+msgstr "رنگ پایه رابط کاربری ویرایشگر."
+
+#: scenes/settings_menu/settings_menu.gd:160
+msgid "Accent color"
+msgstr "رنگ شاخص"
+
+#: scenes/settings_menu/settings_menu.gd:165
+msgid "The highlight/accent color of the editor UI."
+msgstr "رنگ برجسته/شاخص رابط کاربری ویرایشگر."
+
+#: scenes/settings_menu/settings_menu.gd:166
+msgid "Show menu bar"
+msgstr "نمایش نوار منو"
+
+#: scenes/settings_menu/settings_menu.gd:171
+msgid "Audio waveforms"
+msgstr "موج نگارهای صوت"
+
+#: scenes/settings_menu/settings_menu.gd:172
+msgid "Waveform style"
+msgstr "سبک موج نگار"
+
+#: scenes/settings_menu/settings_menu.gd:179
+msgid "Waveform amplifier"
+msgstr "تقویت کننده موج نگار"
+
+#: scenes/settings_menu/settings_menu.gd:186
+msgid ""
+"Sometimes the waveforms aren't very clear due to audio levels being too low, "
+"with this setting you can adjust their intensity"
+msgstr ""
+"گاهی موج نگار ها به دلیل پایین بودن سطح صدا واضح نیستند. با این گزینه "
+"میتوانید شدت آن ها را تغییر دهید"
+
+#: scenes/settings_menu/settings_menu.gd:187
+msgid "Dialogs"
+msgstr "پنجره های محاوره ای"
+
+#: scenes/settings_menu/settings_menu.gd:188
+msgid "Use native dialogs"
+msgstr "استفاده از پنجره های محاوره ای بومی"
+
+#: scenes/settings_menu/settings_menu.gd:193
+msgid "Panel tabs position"
+msgstr "موقعیت تب های پنل"
+
+#: scenes/settings_menu/settings_menu.gd:202
+msgid "Defaults"
+msgstr "پیش فرض ها"
+
+#: scenes/settings_menu/settings_menu.gd:203
+msgid "Default durations"
+msgstr "مدت زمان های پیش فرض ها"
+
+#: scenes/settings_menu/settings_menu.gd:204
+msgid "Default image duration"
+msgstr "مدت زمان پیش فرض تصویر"
+
+#: scenes/settings_menu/settings_menu.gd:211
+#: scenes/settings_menu/settings_menu.gd:219
+#: scenes/settings_menu/settings_menu.gd:227
+msgid "Duration in frames per second."
+msgstr "مدت زمان بر حسب فریم بر ثانیه."
+
+#: scenes/settings_menu/settings_menu.gd:212
+msgid "Default color duration"
+msgstr "مدت زمان پیش فرض رنگ"
+
+#: scenes/settings_menu/settings_menu.gd:220
+msgid "Default text duration"
+msgstr "مدت زمان پیش فرض متن"
+
+#: scenes/settings_menu/settings_menu.gd:228
+#: scenes/settings_menu/settings_menu.gd:340
+msgid "Project resolution"
+msgstr "وضوح پروژه"
+
+#: scenes/settings_menu/settings_menu.gd:230
+#: scenes/settings_menu/settings_menu.gd:342
+msgid "Project frame-rate"
+msgstr "نرخ فریم پروژه"
+
+#: scenes/settings_menu/settings_menu.gd:238
+msgid "Timeline"
+msgstr "تایم لاین"
+
+#: scenes/settings_menu/settings_menu.gd:239
+msgid "Timeline settings"
+msgstr "تنظیمات تایم لاین"
+
+#: scenes/settings_menu/settings_menu.gd:240
+msgid "Default track amount"
+msgstr "تعداد ترک پیش فرض"
+
+#: scenes/settings_menu/settings_menu.gd:246
+msgid "Track height"
+msgstr "ارتفاع ترک"
+
+#: scenes/settings_menu/settings_menu.gd:252
+msgid "Timeline controls"
+msgstr "کنترل های تایم لاین"
+
+#: scenes/settings_menu/settings_menu.gd:253
+msgid "Pause after dragging"
+msgstr "بعد از جابجایی مکث کن"
+
+#: scenes/settings_menu/settings_menu.gd:258
+msgid ""
+"Setting this will pause playback after having dragged the playhead around."
+msgstr ""
+"با فعال کردن این گزینه، پس از جابجایی نشانگر زمان (playhead)، پخش متوقف "
+"میشود."
+
+#: scenes/settings_menu/settings_menu.gd:259
+msgid "Empty space delete modifier"
+msgstr "تغییردهنده رفتار حذف فضای خالی"
+
+#: scenes/settings_menu/settings_menu.gd:266
+msgid "The modifier you want to easily delete empty space between clips."
+msgstr ""
+"تغییردهنده ای که با آن به راحتی میتوانید فضای خالی بین کلیپ ها را حذف کنید."
+
+#: scenes/settings_menu/settings_menu.gd:267
+msgid "Empty space click action"
+msgstr "عمل کلیک روی فضای خالی"
+
+#: scenes/settings_menu/settings_menu.gd:274
+msgid "What to do when clicking empty space in the timeline."
+msgstr "هنگام کلیک روی فضای خالی در تایم لاین چه کاری انجام شود."
+
+#: scenes/settings_menu/settings_menu.gd:275
+msgid "Addons"
+msgstr "افزونه ها"
+
+#: scenes/settings_menu/settings_menu.gd:276
+msgid "Show mode bar"
+msgstr "نمایش نوار حالت"
+
+#: scenes/settings_menu/settings_menu.gd:281
+msgid ""
+"The mode bar is the bar on the left of the timeline with buttons for "
+"changing the current timeline mode."
+msgstr ""
+"نوار حالت نوار سمت چپ تایم لاین است که دکمه هایی برای تغییر حالت فعلی تایم "
+"لاین دارد."
+
+#: scenes/settings_menu/settings_menu.gd:284
+msgid "Performance"
+msgstr "عملکرد"
+
+#: scenes/settings_menu/settings_menu.gd:285
+msgid "Video Decoding"
+msgstr "دیکود ویدیو"
+
+#: scenes/settings_menu/settings_menu.gd:286
+msgid "Smart Seek Threshold"
+msgstr "آستانه جستجوی هوشمند"
+
+#: scenes/settings_menu/settings_menu.gd:293
+msgid ""
+"Defines how many frames the decoder will sequentially read ahead instead of "
+"performing a full seek operation. Higher values prevent lag during short "
+"jumps but use more CPU."
+msgstr ""
+"مشخص میکند دیکودر چند فریم جلوتر را به صورت پیوسته بخواند به جای اینکه "
+"عملیات جستوجوی کامل انجام دهد. مقدار های بالاتر باعث میشوند هنگام پرش های "
+"کوتاه مکث یا کندی ایجاد نشود، اما پردازنده (CPU) بیشتری مصرف میکنند."
+
+#: scenes/settings_menu/settings_menu.gd:294
+msgid "Video Cache Size"
+msgstr "حجم کش ویدیو"
+
+#: scenes/settings_menu/settings_menu.gd:301
+msgid ""
+"The maximum number of decoded frames to keep in RAM. Higher values enable "
+"smoother backward seeking and scrubbing but increase memory usage."
+msgstr ""
+"حداکثر تعداد فریم های دیکود شده ای است که در حافظه (RAM) نگه داشته میشوند. "
+"مقدار های بالاتر باعث میشوند جستوجوی عقب و جابجایی سریع نرم تر شود. اما مصرف "
+"حافظه بیشتر میشود."
+
+#: scenes/settings_menu/settings_menu.gd:302
+msgid "Use proxies"
+msgstr "استفاده از پروکسی ها"
+
+#: scenes/settings_menu/settings_menu.gd:307
+msgid "Proxies save path"
+msgstr "مسیر ذخیره پروکسی ها"
+
+#: scenes/settings_menu/settings_menu.gd:312
+msgid ""
+"Changing this setting should be done with a path which points to an already "
+"existing folder. All previously made proxy clips will need to be generated "
+"again and deleted manually from the previous folder."
+msgstr ""
+"این تنظیم باید با ارائه مسیری که به یک پوشه موجود اشاره می کند انجام شود. "
+"تمام کلیپ های پروکسی ساخته شده قبلی باید دوباره تولید شوند و به صورت دستی از "
+"پوشه قبلی حذف گردند."
+
+#: scenes/settings_menu/settings_menu.gd:317
+#: scenes/settings_menu/settings_menu.gd:318
+msgid "Extras"
+msgstr "امکانات جانبی"
+
+#: scenes/settings_menu/settings_menu.gd:319
+msgid "Check version"
+msgstr "بررسی نسخه"
+
+#: scenes/settings_menu/settings_menu.gd:324
+msgid "Auto save"
+msgstr "ذخیره خودکار"
+
+#: scenes/settings_menu/settings_menu.gd:336 scenes/menu_bar/menu_bar.tscn
+msgid "Project settings"
+msgstr "تنظیمات پروژه"
+
+#: scenes/settings_menu/settings_menu.gd:338
+msgid "Video"
+msgstr "ویدیو"
+
+#: scenes/settings_menu/settings_menu.gd:339
+msgid "Video settings"
+msgstr "تنظیمات ویدیو"
+
+#: scenes/settings_menu/settings_menu.gd:349
+msgid "Project framerate (fps)."
+msgstr "نرخ فریم پروژه (fps)."
+
+#: scenes/settings_menu/settings_menu.gd:353
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Background color"
+msgstr "رنگ پس زمینه"
+
+#: scenes/settings_menu/settings_menu.gd:358
+msgid "The background color when no clips are displayed."
+msgstr "رنگ پس زمینه هنگامی که کلیپی برای نمایش وجود ندارد."
+
+#: scenes/settings_menu/settings_menu.gd:667
+msgid "Press any key..."
+msgstr "هر کلیدی را فشار دهید..."
+
+#: scenes/settings_menu/settings_menu.tscn
+msgid "Search settings ..."
+msgstr "تنظیمات جستجو ..."
+
+#: scenes/settings_menu/settings_menu.tscn
+msgid "Close settings"
+msgstr "بستن تنظیمات"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Render settings"
+msgstr "تنظیمات رندر"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Render profile"
+msgstr "نمایه رندر"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Save current presets as a custom render profile."
+msgstr "تنظیمات فعلی به عنوان نمایه رندر سفارشی ذخیره شود."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Save profile"
+msgstr "ذخیره نمایه"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Export path"
+msgstr "مسیر خروجی"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Render video settings"
+msgstr "تنظیمات رندر ویدیو"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Video codec"
+msgstr "کودک ویدیو"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
+msgstr ""
+"برای تنظیم CRF (Constant Rate Factor) استفاده میشود، کمترین مقدار کیفیت 50، "
+"و بیشترین مقدار کیفیت 15 است. مقدار پیشفرض 18 تنظیم شده. این گزینه برای "
+"تنظیم نرخ بیت استفاده میشود و روی کیفیت و حجم فایل اثر دارد. مقدار 0 بهترین "
+"کیفیت، 51 بدترین کیفیت و 18 تقریبأ محسوس نیست."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Quality"
+msgstr "کیفیت"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
+msgstr ""
+"سرعت رمزگذاری H264 را تنظیم می کند. اگر این مقدار را خیلی بالا ببرید، ممکن "
+"است کیفیت نهایی ویدیو افت کند."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Speed"
+msgstr "سرعت"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
+msgstr ""
+"برای تنظیم Group Of Pictures استفاده میشود. مقدار های بالاتر عملکرد بهتری "
+"برای فشرده سازی نسبت به مقدار های پایین تر دارند. اما هرچه مقدار بیشتر شود، "
+"دقت جابحایی و جلو و عقب رفتن در ویدیو کمتر میشود. اگر قصد دارید ویدیو خروجی "
+"را برای ویرایش استفاده کنید، مقدار را پایین تنظیم کنید."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Gop size"
+msgstr "اندازه Gop"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Render audio settings"
+msgstr "تنظیمات رندر صدا"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Audio codec"
+msgstr "کودک صدا"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Audio channels"
+msgstr "کانال های صدا"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Multi-threading"
+msgstr "چند ریسگی"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Threads"
+msgstr "رشته ها"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "The amount of threads you want to use for exporting your video."
+msgstr "تعداد رشته هایی که میخواهید برای خروجی گرفتن ویدیو استفاده شود."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Render region"
+msgstr "بخش رندر"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Create a low quality draft version of your video."
+msgstr "یک نسخه پیش نویس با کیفیت پایین از ویدیو ایجاد کنید."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Draft"
+msgstr "پیش نویس"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+msgid "Start render"
+msgstr "شروع رندر"
+
+#: scenes/render_options_panel/render_options_panel.gd:61
+msgid "Custom render profiles"
+msgstr "نمایه های رندر سفارشی"
+
+#: scenes/render_options_panel/render_options_panel.gd:147
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:123
+msgid "None"
+msgstr "هیچ کدام"
+
+#: scenes/render_options_panel/render_options_panel.gd:149
+msgid "Stereo"
+msgstr "استریو"
+
+#: scenes/render_options_panel/render_options_panel.gd:150
+msgid "Mono"
+msgstr "تک کاناله"
+
+#: scenes/render_options_panel/render_options_panel.gd:221
+msgid "Select export path"
+msgstr "انتخاب مسیر خروجی"
+
+#: scenes/render_options_panel/render_options_panel.gd:302
+msgid "Rendering finished"
+msgstr "رندر پایان یافت"
+
+#: scenes/render_options_panel/render_options_panel.gd:319
+msgid "Error whilst rendering video"
+msgstr "خطا هنگام رندر ویدیو"
+
+#: scenes/render_options_panel/render_options_panel.gd:355
+msgid "Overwrite file?"
+msgstr "فایل بازنویسی شود؟"
+
+#: scenes/render_options_panel/render_options_panel.gd:356
+msgid ""
+"A file already exists at the chosen export path. Do you want to overwrite it?"
+msgstr ""
+"در مسیر خروجی انتخاب شده از قبل فایلی وجود دارد. آیا می خواهید آن را "
+"بازنویسی کنید؟"
+
+#: scenes/render_options_panel/render_options_panel.gd:413
+#: scenes/render_options_panel/render_options_panel.gd:421
+msgid "Rendering"
+msgstr "در حال رندر"
+
+#: scenes/render_options_panel/render_options_panel.gd:428
+msgid "Cancel rendering"
+msgstr "لغو رندر"
+
+#: scenes/render_options_panel/render_options_panel.gd:459
+msgid "Error opening file"
+msgstr "خطا در باز کردن فایل"
+
+#: scenes/render_options_panel/render_options_panel.gd:460
+msgid "Error whilst sending audio"
+msgstr "خطا هنگام ارسال صدا"
+
+#: scenes/render_options_panel/render_options_panel.gd:466
+msgid "Setting up ..."
+msgstr "درحال راه اندازی ..."
+
+#: scenes/render_options_panel/render_options_panel.gd:467
+#: scenes/render_options_panel/render_options_panel.gd:468
+msgid "Compiling audio ..."
+msgstr "درحال کامپایل صدا ..."
+
+#: scenes/render_options_panel/render_options_panel.gd:469
+#: scenes/render_options_panel/render_options_panel.gd:470
+msgid "Sending data ..."
+msgstr "درحال ارسال داده ها ..."
+
+#: scenes/render_options_panel/render_options_panel.gd:471
+msgid "Sending final frame ..."
+msgstr "درحال ارسال فریم نهایی ..."
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Project"
+msgstr "پروژه"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Save project"
+msgstr "ذخیره پروژه"
+
+#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:101
+msgid "Save project as ..."
+msgstr "ذخیره پروژه به عنوان ..."
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:194 scripts/autoloads/project.gd:179
+msgid "Open project"
+msgstr "باز کردن پروژه"
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Recent projects"
+msgstr "پروژه های اخیر"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Quit"
+msgstr "خروج"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Edit"
+msgstr "ویرایش"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Undo"
+msgstr "بازگشت"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Redo"
+msgstr "انجام مجدد"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "View"
+msgstr "نما"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Save workspace"
+msgstr "ذخیره فضای کاری"
+
+#: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:122
+msgid "New workspace"
+msgstr "فضای کاری جدید"
+
+#: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:147
+msgid "Show panel titles"
+msgstr "نمایش عنوان پنل ها"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Panels"
+msgstr "پنل ها"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Preferences"
+msgstr "ترجیحات"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Module manager"
+msgstr "مدیریت ماژول ها"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Command bar"
+msgstr "نوار دستورات"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Help"
+msgstr "راهنما"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Report bug"
+msgstr "گزارش مشکل"
+
+#: scenes/menu_bar/menu_bar.tscn
+msgid "Check for updates"
+msgstr "بررسی به روزرسانی ها"
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Manual"
+msgstr "راهنمای کاربر"
+
+#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Tutorials"
+msgstr "آموزش ها"
+
+#: scenes/menu_bar/menu_bar.gd:124
+msgid "Workspace name"
+msgstr "نام فضای کاری"
+
+#: scenes/menu_bar/menu_bar.gd:145
+msgid "Hide panel titles"
+msgstr "مخفی کردن عنوان پنل ها"
+
+#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Confirm"
+msgstr "تأیید"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid ""
+"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+"[u]Clay Banks[/u][/url]"
+msgstr ""
+"تصویر از [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+"[u]Clay Banks[/u][/url]"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Update available"
+msgstr "به روزرسانی موجود است"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Create new project"
+msgstr "ایجاد پروژه جدید"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Getting started"
+msgstr "شروع کردن"
+
+#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:55
+msgid "New project"
+msgstr "پروژه جدید"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Path"
+msgstr "مسیر"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Resolution"
+msgstr "وضوح"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video width."
+msgstr "عرض ویدیو."
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video height."
+msgstr "ارتفاع ویدیو."
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Framerate"
+msgstr "نرخ فریم"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "The video framerate (fps)."
+msgstr "نرخ فریم ویدیو (fps)."
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Advanced options"
+msgstr "گزینه های پیشرفته ویدیو"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Return"
+msgstr "بازگشت"
+
+#: scenes/startup_screen/startup_screen.gd:132
+msgid "Version"
+msgstr "نسخه"
+
+#: scenes/startup_screen/startup_screen.gd:196
+#: scenes/startup_screen/startup_screen.gd:247 scripts/autoloads/project.gd:103
+msgid "GoZen project file"
+msgstr "فایل پروژه GoZen"
+
+#: scenes/startup_screen/startup_screen.gd:245
+msgid "Select project save path"
+msgstr "انتخاب مسیر ذخیره پروژه"
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Update marker"
+msgstr "به روزرسانی نشانگر"
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "time (frame)"
+msgstr "زمان (فریم)"
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Marker"
+msgstr "نشانگر"
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Type"
+msgstr "نوع"
+
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Delete the selected marker."
+msgstr "حذف نشانگر انتخاب شده."
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Waveform modifier"
+msgstr "تغییردهنده موج نگار"
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Audio offset"
+msgstr "آفست صدا"
+
+#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
+msgid "Auto align"
+msgstr "تراز خودکار"
+
+#: scripts/autoloads/project.gd:56
+msgid "Initialize new project ..."
+msgstr "راه اندازی پروژه جدید ..."
+
+#: scripts/autoloads/project.gd:68
+msgid "Setting up playback ..."
+msgstr "درحال راه اندازی پخش ..."
+
+#: scripts/autoloads/project.gd:69 scripts/autoloads/project.gd:160
+msgid "Finalizing ..."
+msgstr "نهایی سازی ..."
+
+#: scripts/autoloads/project.gd:124
+msgid "Setting up timeline ..."
+msgstr "درحال راه اندازی تایم لاین ..."
+
+#: scripts/autoloads/project.gd:133
+msgid "Loading project files ..."
+msgstr "درحال بارگذاری فایل های پروژه ..."
+
+#: scripts/autoloads/project.gd:180
+msgid "GoZen project files"
+msgstr "فایل های پروژه GoZen"
+
+#: scripts/autoloads/project.gd:235
+msgid "Don't save"
+msgstr "ذخیره نکردن"
+
+#: scripts/autoloads/project.gd:239
+msgid "Close without saving"
+msgstr "بستن بدون ذخیره"
+
+#: scripts/autoloads/project.gd:240
+msgid "Save"
+msgstr "ذخیره"
+
+#: scripts/autoloads/command_manager.gd:13
+msgid "Open editor settings"
+msgstr "باز کردن تنظیمات ویرایشگر"
+
+#: scripts/autoloads/command_manager.gd:14
+msgid "Open project settings"
+msgstr "باز کردن تنظیمات پروژه"
+
+#: scripts/autoloads/command_manager.gd:15
+msgid "open render menu"
+msgstr "باز کردن منوی رندر"
+
+#: scripts/logic/file_logic.gd:229
+msgid "Update existing clips?"
+msgstr "آیا کلیپ های موجود به روزرسانی شوند؟"
+
+#: scripts/logic/file_logic.gd:230
+msgid ""
+"This file is currently used by '%d' clip(s).\n"
+"Do you want to apply the Audio-Take-Over changes to all existing clips?"
+msgstr ""
+"این فایل در حال حاضر توسط کلیپ(های) '%d' استفاده می شود.\n"
+"آیا میخواهید تغییرات تصاحب صوت به همه کلیپ های موجود اعمال شود؟"
+
+#: scripts/logic/file_logic.gd:231
+msgid "Apply to All"
+msgstr "اعمال برای همه"
+
+#: scripts/logic/file_logic.gd:235
+msgid "Apply to File Only"
+msgstr "اعمال فقط برای این فایل"
+
+#: scripts/logic/file_logic.gd:329
+msgid "Files dropped"
+msgstr "فایل ها اضافه شدند"
+
+#: scripts/logic/file_logic.gd:344
+msgid "Files loading ..."
+msgstr "درحال بارگذاری فایل ها ..."
+
+msgid "GoZen"
+msgstr "GoZen"
