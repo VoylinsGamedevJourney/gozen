@@ -8,12 +8,11 @@ msgstr ""
 
 #: scenes/effects_panel/effects_panel.gd:44
 msgid "Mute clip audio."
-msgstr ""
+msgstr "静音片段"
 
 #: scenes/effects_panel/effects_panel.gd:283
-#, fuzzy
 msgid "Presets & Options"
-msgstr "文本选项"
+msgstr "预设与选项"
 
 #: scenes/effects_panel/effects_panel.gd:399
 #: scenes/effects_panel/effects_panel.gd:1043
@@ -47,24 +46,29 @@ msgid "Bottom"
 msgstr "下"
 
 #: scenes/effects_panel/effects_panel.gd:512
+#, fuzzy
 msgid "Mix (Normal)"
-msgstr ""
+msgstr "混合（普通）"
 
 #: scenes/effects_panel/effects_panel.gd:513
+#, fuzzy
 msgid "Add"
-msgstr ""
+msgstr "相加"
 
 #: scenes/effects_panel/effects_panel.gd:514
+#, fuzzy
 msgid "Subtract"
-msgstr ""
+msgstr "相减"
 
 #: scenes/effects_panel/effects_panel.gd:515
+#, fuzzy
 msgid "Multiply"
-msgstr ""
+msgstr "相乘"
 
 #: scenes/effects_panel/effects_panel.gd:516
+#, fuzzy
 msgid "Premultiplied Alpha"
-msgstr ""
+msgstr "预乘Alpha"
 
 #: scenes/effects_panel/effects_panel.gd:681
 msgid "Link X and Y"
@@ -85,37 +89,31 @@ msgstr "关键帧"
 
 #: scenes/effects_panel/effects_panel.gd:1216
 msgid "Presets"
-msgstr ""
+msgstr "预设"
 
 #: scenes/effects_panel/effects_panel.gd:1235
-#, fuzzy
 msgid "Reset effect"
-msgstr "重置速度"
+msgstr "重置效果"
 
 #: scenes/effects_panel/effects_panel.gd:1247
-#, fuzzy
 msgid "Delete effect"
 msgstr "删除"
 
 #: scenes/effects_panel/effects_panel.gd:1260
-#, fuzzy
 msgid "Save as preset..."
-msgstr "保存截图..."
+msgstr "保存为预设..."
 
 #: scenes/effects_panel/effects_panel.gd:1330
-#, fuzzy
 msgid "Save preset"
-msgstr "保存"
+msgstr "保存预设"
 
 #: scenes/effects_panel/effects_panel.gd:1331
-#, fuzzy
 msgid "Preset name"
-msgstr "重置"
+msgstr "预设名称"
 
 #: scenes/effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Transitions"
-msgstr "轨道选项"
+msgstr "过渡效果"
 
 #: scenes/effects_panel/effects_panel.tscn
 msgid "Visual effects"
@@ -142,27 +140,24 @@ msgid "Save screenshot to project ..."
 msgstr "保存截图到工程..."
 
 #: scenes/editor/editor.gd:120
-#, fuzzy
 msgid "Move Left"
-msgstr "左"
+msgstr "左移"
 
 #: scenes/editor/editor.gd:123
-#, fuzzy
 msgid "Move Right"
-msgstr "右"
+msgstr "右移"
 
 #: scenes/editor/editor.gd:126 scenes/file_panel/file_panel.gd:122
 msgid "Delete"
 msgstr "删除"
 
 #: scenes/editor/editor.gd:173
-#, fuzzy
 msgid "Delete Workspace"
-msgstr "删除"
+msgstr "删除工作区"
 
 #: scenes/editor/editor.gd:174
 msgid "Are you sure you want to delete the workspace '%s'?"
-msgstr ""
+msgstr "您确定要删除“%s”工作区吗？"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
@@ -294,12 +289,12 @@ msgstr "（加载缩略图中...）"
 
 #: scenes/timeline/timeline_panel.gd:143
 msgid "Duplication failed"
-msgstr ""
+msgstr "创建副本失败"
 
 #: scenes/timeline/timeline_panel.gd:144
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
-msgstr ""
+msgstr "此处没有足够的空间，无法为%d个片段创建副本"
 
 #: scenes/timeline/timeline_panel.gd:253
 msgid "Remove empty space"
@@ -351,7 +346,7 @@ msgstr "音频替换"
 
 #: scenes/timeline/timeline.tscn
 msgid "Turn snapping on/off."
-msgstr ""
+msgstr "开/关吸附"
 
 #: scenes/timeline/track_controls.gd:62
 msgid "Toggle track visibility"
@@ -365,7 +360,7 @@ msgstr "静音"
 #: scenes/settings_menu/settings_menu.gd:112
 #: scenes/settings_menu/settings_menu.gd:315
 msgid "Markers"
-msgstr ""
+msgstr "标记"
 
 #: scenes/color_popup/color_popup.tscn
 msgid "Add color file"
@@ -419,27 +414,29 @@ msgstr "GitHub仓库"
 #: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
 #: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
 msgid "Support GoZen"
-msgstr ""
+msgstr "支持GoZen"
 
 #: scenes/about_gozen/about_gozen.gd:43
 msgid ""
 "Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
 msgstr ""
+"[color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color] 制作! ;)"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:114
 msgid "Loading project"
-msgstr ""
+msgstr "加载工程中"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:115
 msgid "Initializing ..."
-msgstr ""
+msgstr "初始化中..."
 
 #: scenes/settings_menu/settings_menu.gd:105
 #: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
@@ -448,23 +445,23 @@ msgstr "编辑器设置"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker one"
-msgstr ""
+msgstr "第一种标记"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker two"
-msgstr ""
+msgstr "第二种标记"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker three"
-msgstr ""
+msgstr "第三种标记"
 
 #: scenes/settings_menu/settings_menu.gd:111
 msgid "Marker four"
-msgstr ""
+msgstr "第四种标记"
 
 #: scenes/settings_menu/settings_menu.gd:111
 msgid "Marker five"
-msgstr ""
+msgstr "第五种标记"
 
 #: scenes/settings_menu/settings_menu.gd:122
 #: scenes/settings_menu/settings_menu.gd:331
@@ -495,19 +492,19 @@ msgstr "编辑器主题"
 
 #: scenes/settings_menu/settings_menu.gd:154
 msgid "Base color"
-msgstr ""
+msgstr "基础色"
 
 #: scenes/settings_menu/settings_menu.gd:159
 msgid "The base color of the editor UI."
-msgstr ""
+msgstr "编辑器UI的基础颜色"
 
 #: scenes/settings_menu/settings_menu.gd:160
 msgid "Accent color"
-msgstr ""
+msgstr "强调色"
 
 #: scenes/settings_menu/settings_menu.gd:165
 msgid "The highlight/accent color of the editor UI."
-msgstr ""
+msgstr "编辑器UI的高亮/强调颜色"
 
 #: scenes/settings_menu/settings_menu.gd:166
 msgid "Show menu bar"
@@ -530,6 +527,7 @@ msgid ""
 "Sometimes the waveforms aren't very clear due to audio levels being too low, "
 "with this setting you can adjust their intensity"
 msgstr ""
+"有时由于音频电平过低，波形会显得不太清晰，通过此设置，您可以调整波形的强度"
 
 #: scenes/settings_menu/settings_menu.gd:187
 msgid "Dialogs"
@@ -541,7 +539,7 @@ msgstr "使用原生对话框"
 
 #: scenes/settings_menu/settings_menu.gd:193
 msgid "Panel tabs position"
-msgstr ""
+msgstr "面板选项卡位置"
 
 #: scenes/settings_menu/settings_menu.gd:202
 msgid "Defaults"
@@ -606,37 +604,37 @@ msgstr "拖动后暂停"
 #: scenes/settings_menu/settings_menu.gd:258
 msgid ""
 "Setting this will pause playback after having dragged the playhead around."
-msgstr ""
+msgstr "开启此选项时，拖动播放头移动后，播放将暂停。"
 
 #: scenes/settings_menu/settings_menu.gd:259
 msgid "Empty space delete modifier"
-msgstr ""
+msgstr "移除空白区域修饰键"
 
 #: scenes/settings_menu/settings_menu.gd:266
 msgid "The modifier you want to easily delete empty space between clips."
-msgstr ""
+msgstr "该修饰键可让您轻松删除片段之间的空白区域。"
 
 #: scenes/settings_menu/settings_menu.gd:267
 msgid "Empty space click action"
-msgstr ""
+msgstr "空白区域点击行为"
 
 #: scenes/settings_menu/settings_menu.gd:274
 msgid "What to do when clicking empty space in the timeline."
-msgstr ""
+msgstr "点击时间轴空白区域时的行为。"
 
 #: scenes/settings_menu/settings_menu.gd:275
 msgid "Addons"
-msgstr ""
+msgstr "附加"
 
 #: scenes/settings_menu/settings_menu.gd:276
 msgid "Show mode bar"
-msgstr ""
+msgstr "显示模式栏"
 
 #: scenes/settings_menu/settings_menu.gd:281
 msgid ""
 "The mode bar is the bar on the left of the timeline with buttons for "
 "changing the current timeline mode."
-msgstr ""
+msgstr "模式栏位于时间轴左侧，其中包含用于切换当前时间轴模式的按钮。"
 
 #: scenes/settings_menu/settings_menu.gd:284
 msgid "Performance"
@@ -691,11 +689,12 @@ msgstr ""
 #: scenes/settings_menu/settings_menu.gd:317
 #: scenes/settings_menu/settings_menu.gd:318
 msgid "Extras"
-msgstr "额外"
+msgstr "其他"
 
 #: scenes/settings_menu/settings_menu.gd:319
+#, fuzzy
 msgid "Check version"
-msgstr ""
+msgstr "检查版本"
 
 #: scenes/settings_menu/settings_menu.gd:324
 msgid "Auto save"
@@ -706,19 +705,16 @@ msgid "Project settings"
 msgstr "工程设置"
 
 #: scenes/settings_menu/settings_menu.gd:338
-#, fuzzy
 msgid "Video"
-msgstr "视频编码"
+msgstr "视频"
 
 #: scenes/settings_menu/settings_menu.gd:339
-#, fuzzy
 msgid "Video settings"
-msgstr "渲染设置"
+msgstr "视频设置"
 
 #: scenes/settings_menu/settings_menu.gd:349
-#, fuzzy
 msgid "Project framerate (fps)."
-msgstr "默认工程帧率"
+msgstr "工程帧率（FPS）"
 
 #: scenes/settings_menu/settings_menu.gd:353
 #: scenes/startup_screen/startup_screen.tscn
@@ -776,20 +772,26 @@ msgid ""
 "bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
 "worst quality, 18 not really noticable."
 msgstr ""
+"调整CRF（恒定速率因子），最低质量设置为50，最高质量设置为15。默认值为18。"
+"用于调整比特率，这会影响视频质量和文件大小。数值 0 表示最佳质量，"
+"51表示最差质量，18则几乎视觉无损。"
 
 #: scenes/render_options_panel/render_options_panel.tscn
+#, fuzzy
 msgid "Quality"
-msgstr ""
+msgstr "质量"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 msgid ""
 "Adjusts the speed for encoding H264. Setting the speed too high might have a "
 "negative impact on the final video quality."
 msgstr ""
+"调整H264编码的速度。如果设置的速度过高，可能会对最终的视频质量产生负面影响。"
 
 #: scenes/render_options_panel/render_options_panel.tscn
+#, fuzzy
 msgid "Speed"
-msgstr ""
+msgstr "速度"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 msgid ""
@@ -798,10 +800,14 @@ msgid ""
 "seeking and scrubbing through the video playback. Put to a low value if you "
 "intend to use the rendered video for editing."
 msgstr ""
+"Group Of Pictures（图像组）。与较低的数值相比，较高的数值更有利于压缩。"
+"但数值越高，视频播放时的定位和快进/快退操作就越不精确。"
+"如果您打算将渲染后的视频用于编辑，建议将该数值调低。"
 
 #: scenes/render_options_panel/render_options_panel.tscn
+#, fuzzy
 msgid "Gop size"
-msgstr ""
+msgstr "GOP大小"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 msgid "Render audio settings"
@@ -812,9 +818,8 @@ msgid "Audio codec"
 msgstr "音频编码"
 
 #: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Audio channels"
-msgstr "音频编码"
+msgstr "音频通道数"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 msgid "Multi-threading"
@@ -851,15 +856,15 @@ msgstr "自定义渲染配置"
 #: scenes/render_options_panel/render_options_panel.gd:147
 #: scenes/audio_take_over_popup/audio_take_over_popup.gd:123
 msgid "None"
-msgstr ""
+msgstr "无"
 
 #: scenes/render_options_panel/render_options_panel.gd:149
 msgid "Stereo"
-msgstr ""
+msgstr "立体声"
 
 #: scenes/render_options_panel/render_options_panel.gd:150
 msgid "Mono"
-msgstr ""
+msgstr "单声道"
 
 #: scenes/render_options_panel/render_options_panel.gd:221
 msgid "Select export path"
@@ -956,23 +961,23 @@ msgstr "恢复"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "View"
-msgstr ""
+msgstr "视图"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Save workspace"
-msgstr ""
+msgstr "保存工作区"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:122
 msgid "New workspace"
-msgstr ""
+msgstr "新建工作区"
 
 #: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:147
 msgid "Show panel titles"
-msgstr ""
+msgstr "显示面板标题"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Panels"
-msgstr ""
+msgstr "面板"
 
 #: scenes/menu_bar/menu_bar.tscn
 msgid "Preferences"
@@ -1008,11 +1013,11 @@ msgstr "教程"
 
 #: scenes/menu_bar/menu_bar.gd:124
 msgid "Workspace name"
-msgstr ""
+msgstr "工作区名称"
 
 #: scenes/menu_bar/menu_bar.gd:145
 msgid "Hide panel titles"
-msgstr ""
+msgstr "隐藏面板标题"
 
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
@@ -1024,6 +1029,9 @@ msgid ""
 "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
 "[u]Clay Banks[/u][/url]"
 msgstr ""
+"图片来源："
+"[url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+"[u]Clay Banks[/u][/url]"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Update available"
@@ -1088,23 +1096,24 @@ msgstr "选择工程保存路径"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Update marker"
-msgstr ""
+msgstr "更新标记"
 
 #: scenes/marker_popup/marker_popup.tscn
+#, fuzzy
 msgid "time (frame)"
-msgstr ""
+msgstr "时间（帧）"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Marker"
-msgstr ""
+msgstr "标记"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Type"
-msgstr ""
+msgstr "类别"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
-msgstr ""
+msgstr "删除所选的标记。"
 
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
 #, fuzzy
@@ -1116,33 +1125,35 @@ msgid "Audio offset"
 msgstr "音频偏移"
 
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#, fuzzy
 msgid "Auto align"
-msgstr "自动保存"
+msgstr "自动对齐"
 
 #: scripts/autoloads/project.gd:56
 msgid "Initialize new project ..."
 msgstr "初始化新工程中..."
 
 #: scripts/autoloads/project.gd:68
+#, fuzzy
 msgid "Setting up playback ..."
-msgstr ""
+msgstr "正在准备播放..."
 
 #: scripts/autoloads/project.gd:69 scripts/autoloads/project.gd:160
+#, fuzzy
 msgid "Finalizing ..."
-msgstr ""
+msgstr "正在完成..."
 
 #: scripts/autoloads/project.gd:124
+#, fuzzy
 msgid "Setting up timeline ..."
-msgstr ""
+msgstr "正在设置时间轴..."
 
 #: scripts/autoloads/project.gd:133
 msgid "Loading project files ..."
-msgstr ""
+msgstr "正在加载工程文件..."
 
 #: scripts/autoloads/project.gd:180
 msgid "GoZen project files"
-msgstr ""
+msgstr "GoZen工程文件"
 
 #: scripts/autoloads/project.gd:235
 msgid "Don't save"
@@ -1177,6 +1188,8 @@ msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the Audio-Take-Over changes to all existing clips?"
 msgstr ""
+"此文件被%d个片段所使用。\n"
+"您要在所有现存的片段中应用此音频替换吗？"
 
 #: scripts/logic/file_logic.gd:231
 msgid "Apply to All"
@@ -1187,15 +1200,16 @@ msgid "Apply to File Only"
 msgstr "仅应用到文件"
 
 #: scripts/logic/file_logic.gd:329
+#, fuzzy
 msgid "Files dropped"
-msgstr ""
+msgstr "文件已拖放"
 
 #: scripts/logic/file_logic.gd:344
 msgid "Files loading ..."
 msgstr "文件加载中..."
 
 msgid "GoZen"
-msgstr ""
+msgstr "GoZen"
 
 #~ msgid "Render"
 #~ msgstr "渲染"

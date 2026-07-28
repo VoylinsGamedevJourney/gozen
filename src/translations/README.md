@@ -9,6 +9,7 @@ For the localization system we use [Gettext PO files](https://www.gnu.org/softwa
 | --------------------- | ------- | ------------------------------------------- |
 | English (Source)      | `en`    | [Voylin](https://github.com/voylin)         |
 | Chinese (Traditional) | `zh_TW` | [aappaapp](https://github.com/Aappaapp)     |
+| Chinese (Simplified)  | `zh_CN` | [XuanTong](https://github.com/XuanTongYao)  |
 | Dutch                 | `nl`    | [Voylin](https://github.com/Voylin)         |
 | Spanish               | `es_ES` | [Dekotale](https://github.com/dekotale)     |
 | French                | `fr_FR` | [Slander](https://github.com/Slander), [#Guigui](https://github.com/HastagGuigui) |
