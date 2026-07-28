@@ -13,6 +13,7 @@ static var native_locale_names: Dictionary = {
 	"es": "Español",
 	"hi": "हिन्दी",
 	"tr": "Türkçe",
+	"fa": "فارسی",
 }
 
 static var native_country_names: Dictionary = {
