@@ -18,6 +18,7 @@ func _ready() -> void:
 	MarkerLogic.updated.connect(_on_markers_updated.unbind(1))
 	MarkerLogic.removed.connect(_on_markers_updated.unbind(1))
 	@warning_ignore_restore("return_value_discarded")
+	_on_markers_updated()
 
 
 func _on_copy_markers_button_pressed() -> void:
