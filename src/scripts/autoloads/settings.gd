@@ -250,6 +250,14 @@ func get_show_menu_bar() -> bool:
 	return data.show_menu_bar
 
 
+func set_show_safe_areas_on_startup(value: bool) -> void:
+	data.show_safe_areas_on_startup = value
+
+
+func get_show_safe_areas_on_startup() -> bool:
+	return data.show_safe_areas_on_startup
+
+
 func set_audio_waveform_style(style: SettingsData.AudioWaveformStyle) -> void:
 	data.audio_waveform_style = style
 	FileLogic.update_audio_waves()

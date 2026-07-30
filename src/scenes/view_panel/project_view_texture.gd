@@ -13,7 +13,7 @@ const SIZE_CROSS: int = 20
 @export var show_safe_areas_button: TextureButton
 
 
-var show_safe_areas: bool = true: set = set_show_safe_areas
+var show_safe_areas: bool = false: set = set_show_safe_areas
 
 var view_zoom: float = 1.0
 
@@ -31,6 +31,7 @@ func _ready() -> void:
 	else:
 		printerr("ProjectViewTexture: Couldn't get viewport texture from EditorCore!")
 
+	show_safe_areas = Settings.get_show_safe_areas_on_startup()
 	_update_safe_areas_button()
 
 	set_anchors_preset(Control.PRESET_TOP_LEFT)

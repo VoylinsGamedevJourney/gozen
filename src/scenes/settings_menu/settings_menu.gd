@@ -168,6 +168,11 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_show_menu_bar(),
 					default_settings.show_menu_bar,
 					Settings.set_show_menu_bar),
+			create_label(tr("Show safe areas on startup")),
+			create_check_button(
+					Settings.get_show_safe_areas_on_startup(),
+					default_settings.show_safe_areas_on_startup,
+					Settings.set_show_safe_areas_on_startup),
 			create_header(tr("Audio waveforms")), Control.new(),
 			create_label(tr("Waveform style")),
 			create_option_button(
