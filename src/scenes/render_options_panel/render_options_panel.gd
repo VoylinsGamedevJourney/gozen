@@ -78,6 +78,7 @@ func _ready() -> void:
 	option_button_render_profiles.select(0) # Setting "YouTube" as default.
 	_on_render_profile_option_button_item_selected(0)
 	button_save_render_profile.visible = false
+	_on_project_ready()
 
 
 func _on_project_ready() -> void:
