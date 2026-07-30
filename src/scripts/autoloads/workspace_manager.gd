@@ -357,6 +357,8 @@ func handle_panel_drop(id: String, source: TabContainer, target: TabContainer, z
 				new_split = VSplitContainer.new()
 
 			parent.add_child(new_split)
+			if parent == workspace_root:
+				new_split.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 			parent.move_child(new_split, target_idx)
 
 			parent.remove_child(target)
@@ -474,6 +476,8 @@ func _cleanup_split_container(split: SplitContainer) -> void:
 		parent.move_child(single_child, index)
 		parent.remove_child(split)
 		split.queue_free()
+		if parent == workspace_root and single_child is Control:
+			(single_child as Control).set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		if parent is SplitContainer:
 			_cleanup_split_container(parent as SplitContainer)
 
