@@ -296,11 +296,16 @@ func _prefetch_upcoming_clips() -> void:
 			var file: FileData = FileLogic.files[upcoming_clip.file]
 			var video: Video = FileLogic.get_video_reader(file, index)
 			var video_id: int = video.get_instance_id()
-			if active_tasks.has(video_id):
-				continue
+			if active_tasks.has(video_id): continue
 
 			var target: int = roundi((float(upcoming_clip.begin) / Project.data.framerate) * video.get_framerate())
-			target = clampi(target, 0, maxi(0, video.get_frame_count() - 1))
+			if file.path.to_lower().ends_with(".gif"):
+				var frame_count: int = maxi(1, video.get_frame_count())
+				target = target % frame_count
+				if target < 0:
+					target += frame_count
+			else:
+				target = clampi(target, 0, maxi(0, video.get_frame_count() - 1))
 			if video.get_current_frame() != target:
 				active_tasks[video_id] = WorkerThreadPool.add_task(video.seek_frame.bind(target))
 
@@ -649,7 +654,13 @@ func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> vo
 
 	var video_id: int = video.get_instance_id()
 	var target_frame_nr: int = roundi((float(frame) / Project.data.framerate) * video.get_framerate())
-	target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
+	if file.path.to_lower().ends_with(".gif"):
+		var frame_count: int = maxi(1, video.get_frame_count())
+		target_frame_nr = target_frame_nr % frame_count
+		if target_frame_nr < 0:
+			target_frame_nr += frame_count
+	else:
+		target_frame_nr = clampi(target_frame_nr, 0, maxi(0, video.get_frame_count() - 1))
 
 	# If a prefetch task is currently running on this video instance,
 	# we MUST wait for it to finish to prevent multi-threading crashes in C++.

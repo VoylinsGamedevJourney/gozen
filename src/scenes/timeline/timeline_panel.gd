@@ -663,7 +663,7 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 				continue
 
 			if clip in ClipLogic.selected_clips: continue
-			
+
 			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(clip)
 			for group_clip: ClipData in clips_to_select:
 				if group_clip in ClipLogic.selected_clips: continue
@@ -692,6 +692,8 @@ func _handle_resize_motion() -> void:
 	var file: FileData = FileLogic.files[clip.file]
 	var current_frame: int = get_frame_from_mouse()
 	var is_fixed_duration: bool = file.type in [EditorCore.Type.AUDIO, EditorCore.Type.VIDEO]
+	if file.path.to_lower().get_extension() == "gif":
+		is_fixed_duration = false
 
 	var snap_delta: int = Timeline.find_snap_offset([current_frame], maxi(1, int(10.0 / Timeline.zoom)), [clip.id])
 	current_frame += snap_delta
