@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dl5ew5rtryqiw"
+path="res://.godot/imported/wipe.glsl-9358d9332d9fb6df1874dcf8bf5ec5c9.res"
+
+[deps]
+
+source_file="res://effects/transitions/wipe.glsl"
+dest_files=["res://.godot/imported/wipe.glsl-9358d9332d9fb6df1874dcf8bf5ec5c9.res"]
+
+[params]
+
