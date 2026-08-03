@@ -71,6 +71,12 @@ func add(paths: Array[String]) -> void:
 	InputManager.undo_redo.commit_action()
 
 
+func add_colors(html_colors: Array[String]) -> void:
+	var paths: Array[String] = []
+	for color: String in html_colors: paths.append("temp://color#" + color)
+	FileLogic.add(paths)
+
+
 func _create_file(path: String) -> FileData:
 	var extension: String = path.get_extension().to_lower()
 	var file: FileData = FileData.new()

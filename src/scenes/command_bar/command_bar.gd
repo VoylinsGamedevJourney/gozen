@@ -13,9 +13,9 @@ var shown_buttons: Array[Button] = []
 var selected_button: int = 0
 
 
+
 func _ready() -> void:
 	var button_group:ButtonGroup = ButtonGroup.new()
-
 	command_line.grab_focus()
 
 	for index: int in CommandManager.get_sorted_indexes():
@@ -26,8 +26,8 @@ func _ready() -> void:
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.button_group = button_group
 		button.toggle_mode = true
-		button.pressed.connect(CommandManager.get_call(index))
-		button.pressed.connect(_close)
+		if button.pressed.connect(_on_button_pressed):
+			printerr("CommandBar: Couldn't connect command button to '_on_button_pressed'!")
 
 		if command_buttons.get_child_count() > MAX_COMMANDS:
 			button.visible = false
@@ -35,17 +35,18 @@ func _ready() -> void:
 			shown_buttons.append(button)
 
 		command_buttons.add_child(button)
-
 	shown_buttons[0].button_pressed = true
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		PopupManager.close(PopupManager.COMMAND_BAR)
+
 	if event.is_action_pressed("ui_up"):
 		selected_button = clampi(
 				selected_button - 1, 0, mini(shown_buttons.size() - 1, MAX_COMMANDS))
 		shown_buttons[selected_button].button_pressed = true
+
 	if event.is_action_pressed("ui_down"):
 		selected_button = clampi(
 				selected_button + 1, 0, mini(shown_buttons.size() - 1, MAX_COMMANDS))
@@ -54,13 +55,11 @@ func _input(event: InputEvent) -> void:
 
 func _on_command_line_edit_text_changed(command_text: String) -> void:
 	var buttons: Array[ButtonScore] = []
-
 	shown_buttons.clear()
 	selected_button = 0
 
 	for button: Button in command_buttons.get_children():
 		buttons.append(ButtonScore.new(button, command_text))
-
 	buttons.sort_custom(ButtonScore.sort_scores)
 
 	for i: int in min(buttons.size(), MAX_COMMANDS):
@@ -76,12 +75,17 @@ func _on_command_line_edit_text_changed(command_text: String) -> void:
 
 func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 	for button: Button in command_buttons.get_children():
-		if !button.visible:
-			continue
-		elif selected_button != 0:
+		if !button.visible: continue
+
+		if selected_button != 0:
 			selected_button -= 1
 		else:
 			return button.pressed.emit()
+	_close()
+
+
+func _on_button_pressed(index: int) -> void:
+	CommandManager.get_call(index).call()
 	_close()
 
 
@@ -93,6 +97,7 @@ func _close() -> void:
 class ButtonScore:
 	var button: Button
 	var score: int
+
 
 	func _init(button_node: Button, command_text: String) -> void:
 		button = button_node
