@@ -8,6 +8,9 @@ var audio: Array[EffectAudio] = []
 var fade_visual: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
 var fade_audio: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
 
+var transition_left: EffectVisual = null
+var transition_right: EffectVisual = null
+
 var ato_active: bool = false
 var ato_offset: float = 0.0 ## Seconds.
 var ato_file: int = -1
@@ -21,31 +24,23 @@ var is_muted: bool = false
 func serialize() -> Dictionary:
 	var data: Dictionary = {}
 
-	if video.size() != 0:
-		data["video"] = []
-	if audio.size() != 0:
-		data["audio"] = []
+	if video.size() != 0: data["video"] = []
+	if audio.size() != 0: data["audio"] = []
 
-	if fade_visual != Vector2i.ZERO:
-		data["fade_visual"] = fade_visual
-	if fade_audio != Vector2i.ZERO:
-		data["fade_audio"] = fade_audio
+	if fade_visual != Vector2i.ZERO: data["fade_visual"] = fade_visual
+	if fade_audio  != Vector2i.ZERO: data["fade_audio"]  = fade_audio
 
-	if is_muted != false:
-		data["is_muted"] = is_muted
-	if ato_active != false:
-		data["ato_active"] = ato_active
-	if ato_offset != 0.0:
-		data["ato_offset"] = ato_offset
-	if ato_file != -1:
-		data["ato_file"] = ato_file
+	if is_muted != false:	data["is_muted"] = is_muted
+	if ato_active != false: data["ato_active"] = ato_active
+	if ato_offset != 0.0:	data["ato_offset"] = ato_offset
+	if ato_file != -1:		data["ato_file"] = ato_file
 
-	for effect: EffectVisual in video:
-		@warning_ignore("unsafe_method_access")
-		data["video"].append(effect.serialize())
-	for effect: EffectAudio in audio:
-		@warning_ignore("unsafe_method_access")
-		data["audio"].append(effect.serialize())
+	if transition_left:  data["transition_left"] = transition_left.serialize()
+	if transition_right: data["transition_right"] = transition_right.serialize()
+
+	for effect: EffectVisual in video: (data["video"] as Array).append(effect.serialize())
+	for effect: EffectAudio in audio:  (data["audio"] as Array).append(effect.serialize())
+
 	return data
 
 
@@ -58,12 +53,26 @@ func deserialize(data: Dictionary, file_id: int = -1) -> void:
 	is_muted = data.get("is_muted", false)
 
 	video.clear()
-	if data.has("video"):
-		_deserialize_video(data, file_id)
-
 	audio.clear()
-	if data.has("audio"):
-		_deserialize_audio(data)
+
+	if data.has("video"): _deserialize_video(data, file_id)
+	if data.has("audio"): _deserialize_audio(data)
+
+	if data.has("transition_left"):
+		var left_id: String = (data["transition_left"] as Dictionary).get("id", "")
+		if EffectsHandler.transition_instances.has(left_id):
+			transition_left = EffectsHandler.transition_instances[left_id].deep_copy()
+			transition_left.deserialize(data["transition_left"] as Dictionary)
+	elif EffectsHandler.transition_instances.has("fade"):
+		transition_left = EffectsHandler.transition_instances["fade"].deep_copy()
+
+	if data.has("transition_right"):
+		var right_id: String = (data["transition_right"] as Dictionary).get("id", "")
+		if EffectsHandler.transition_instances.has(right_id):
+			transition_right = EffectsHandler.transition_instances[right_id].deep_copy()
+			transition_right.deserialize(data["transition_right"] as Dictionary)
+	elif EffectsHandler.transition_instances.has("fade"):
+		transition_right = EffectsHandler.transition_instances["fade"].deep_copy()
 
 
 func _deserialize_video(data: Dictionary, file_id: int = -1) -> void:
@@ -99,8 +108,7 @@ func _deserialize_audio(data: Dictionary) -> void:
 			continue
 
 		var effect_id: String = (effect_value as Dictionary).get("id", "")
-		if !EffectsHandler.audio_effect_instances.has(effect_id):
-			continue
+		if !EffectsHandler.audio_effect_instances.has(effect_id): continue
 
 		var effect: EffectAudio = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
 		effect.deserialize(effect_value as Dictionary)
