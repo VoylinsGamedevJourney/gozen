@@ -114,8 +114,8 @@ func _create_edit_popup_menu() -> void:
 	menu.title = "Edit"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
-	menu.add_item("Undo", 0)
-	menu.add_item("Redo", 1)
+	menu.add_item(tr("Undo"), 0)
+	menu.add_item(tr("Redo"), 1)
 
 	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_edit_popup_menu_id_pressed)
@@ -136,11 +136,11 @@ func _create_view_popup_menu() -> void:
 	menu.title = "View"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
-	menu.add_item("Save workspace", 0)
-	menu.add_item("New workspace", 1)
+	menu.add_item(tr("Save workspace"), 0)
+	menu.add_item(tr("New workspace"), 1)
 	menu.add_separator("", 2)
-	menu.add_item("Show panel titles", 3)
-	menu.add_separator("Panels", 4)
+	menu.add_item(tr("Show panel titles"), 3)
+	menu.add_separator(tr("Panels"), 4)
 
 	@warning_ignore_start("return_value_discarded")
 	menu.about_to_popup.connect(_on_view_popup_menu_about_to_popup.bind(menu))
@@ -223,7 +223,8 @@ func _create_help_popup_menu() -> void:
 	menu.add_icon_item(preload(Library.ICON_GOZEN), "About GoZen", 6)
 
 	@warning_ignore("return_value_discarded")
-	menu.id_pressed.connect(_on_preferences_popup_menu_id_pressed)
+	menu.id_pressed.connect(_on_help_popup_menu_id_pressed)
+
 
 func _on_help_popup_menu_id_pressed(id: int) -> void:
 	match id:
