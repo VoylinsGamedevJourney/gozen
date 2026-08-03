@@ -1,7 +1,6 @@
 class_name VisualCompositor
 extends RefCounted
 
-
 const YUV_PARAM_BUFFER_SIZE: int = 96
 
 const USAGE_BITS_R8: int = (
@@ -46,7 +45,7 @@ const BT2020_FULL: PackedFloat32Array = [
 
 var device: RenderingDevice = RenderingServer.get_rendering_device()
 
-# For videos
+# For videos.
 var y_texture: RID
 var u_texture: RID
 var v_texture: RID
@@ -56,13 +55,15 @@ var yuv_params: RID
 var yuv_pipeline: RID
 var yuv_shader: RID
 
-# For images
+# For images.
 var base_image: RID
 
-# Fading stuff
+# Fading stuff.
 var fade_shader: RID
 var fade_pipeline: RID
 var fade_buffer: RID
+var fade_in_buffer: RID
+var fade_out_buffer: RID
 var copy_buffer: RID
 
 var ping_texture: RID
@@ -83,6 +84,15 @@ var groups_y: int
 
 
 func _init_start(p_resolution: Vector2i) -> void:
+	if not fade_in_buffer.is_valid():
+		var fade_buffer_data: PackedByteArray = PackedByteArray()
+		var err: int = fade_buffer_data.resize(16)
+		if err != OK:
+			printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
+
+		fade_in_buffer = device.uniform_buffer_create(16, fade_buffer_data)
+		fade_out_buffer = device.uniform_buffer_create(16, fade_buffer_data)
+
 	if initialized and resolution != p_resolution:
 		cleanup()
 
@@ -100,26 +110,25 @@ func _init_start(p_resolution: Vector2i) -> void:
 	groups_y = ceili(resolution.y / 8.0)
 
 	if not fade_shader.is_valid():
-		var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/fade.glsl").get_spirv()
+		@warning_ignore("unsafe_method_access")
+		var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/internal_copy.glsl").get_spirv()
 		var fade_buffer_data: PackedByteArray = PackedByteArray()
 
 		fade_shader = device.shader_create_from_spirv(fade_spirv)
 		fade_pipeline = device.compute_pipeline_create(fade_shader)
-		if fade_buffer_data.resize(16):
-			printerr("VisualCompositor: Couldn't resize fade_buffer_data!")
-		fade_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
+		var err: int = fade_buffer_data.resize(16)
+		if err != OK:
+			printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
 
 		fade_buffer_data.encode_float(0, 1.0)
 		copy_buffer = device.uniform_buffer_create(fade_buffer_data.size(), fade_buffer_data)
 
 
 func _init_ping_pong() -> void:
-	if ping_texture.is_valid():
-		return # Already created and valid for this resolution
+	if ping_texture.is_valid(): return # Already created and valid for this resolution
 
 	# Create RGBA8 format
 	var format_rgba: RDTextureFormat = RDTextureFormat.new()
-
 	format_rgba.format = device.DATA_FORMAT_R8G8B8A8_UNORM
 	format_rgba.width = resolution.x
 	format_rgba.height = resolution.y
@@ -134,16 +143,14 @@ func _init_ping_pong() -> void:
 
 
 func initialize_texture(size: Vector2i) -> void:
-	if initialized and resolution != size:
-		cleanup()
+	if initialized and resolution != size: cleanup()
 
 	_init_start(size)
 	_init_ping_pong()
 
 
 func initialize_video(video: Video) -> void:
-	if !video:
-		return
+	if !video: return
 
 	if initialized and resolution != Project.data.resolution:
 		cleanup()
@@ -196,11 +203,9 @@ func initialize_video(video: Video) -> void:
 	_init_ping_pong()
 
 
-func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
-	if not initialized:
-		return
+func process_video_frame(video: Video, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, frame_nr: int) -> void:
+	if not initialized: return
 
-	# Update the YUV input textures
 	if device.texture_update(y_texture, 0, video.get_y_data().get_data()) or \
 		device.texture_update(u_texture, 0, video.get_u_data().get_data()) or \
 		device.texture_update(v_texture, 0, video.get_v_data().get_data()):
@@ -209,74 +214,63 @@ func process_video_frame(video: Video, effects: Array[EffectVisual], frame_nr: i
 	if video.get_has_alpha() and device.texture_update(a_texture, 0, video.get_a_data().get_data()):
 		printerr("VisualCompositor: Failed to update alpha texture in RenderingDevice!")
 
-	_update_effect_buffers(effects, frame_nr)
+	var all_effects: Array[EffectVisual] = effects.duplicate()
+	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
+	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
+	_update_effect_buffers(all_effects, frame_nr)
+	_update_transition_buffers(transition_left, fade_in, transition_right, fade_out)
 
-	if fade_alpha < 1.0:
-		var buffer_data: PackedByteArray = PackedByteArray()
-
-		if buffer_data.resize(16):
-			printerr("VisualCompositor: Couldn't resize buffer data to 16!")
-		buffer_data.encode_float(0, fade_alpha)
-		if device.buffer_update(fade_buffer, 0, 16, buffer_data):
-			printerr("VisualCompositor: Couldn't update fade buffer!")
-
-	# Start of compute list:
-	# Convert YUV to RGBA (and write to ping).
 	var compute_list: int = device.compute_list_begin()
-
 	device.compute_list_bind_compute_pipeline(compute_list, yuv_pipeline)
 
-	# Create uniform set for YUV pass.
 	var yuv_uniforms: Array[RDUniform] = [
-		_create_sampler_uniform(y_texture, 0), # Input
-		_create_sampler_uniform(u_texture, 1), # Input
-		_create_sampler_uniform(v_texture, 2), # Input
-		_create_sampler_uniform(a_texture, 3), # Input
-		_create_image_uniform(ping_texture, 4), # Output
-		_create_buffer_uniform(yuv_params, 5)] # Video info
+		_create_sampler_uniform(y_texture, 0),
+		_create_sampler_uniform(u_texture, 1),
+		_create_sampler_uniform(v_texture, 2),
+		_create_sampler_uniform(a_texture, 3),
+		_create_image_uniform(ping_texture, 4),
+		_create_buffer_uniform(yuv_params, 5)]
 	var yuv_set: RID = device.uniform_set_create(yuv_uniforms, yuv_shader, 0)
 
 	device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
 
-	_process_frame(compute_list, effects, fade_alpha)
+	_process_frame(compute_list, effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
 	device.free_rid(yuv_set)
 
 
-func process_image_frame(effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
-	if not initialized:
-		return
+func process_image_frame(effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, frame_nr: int) -> void:
+	if not initialized: return
 
-	_update_effect_buffers(effects, frame_nr)
+	var all_effects: Array[EffectVisual] = effects.duplicate()
+	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
+	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
+	_update_effect_buffers(all_effects, frame_nr)
+	_update_transition_buffers(transition_left, fade_in, transition_right, fade_out)
+
 	if device.texture_copy(base_image, ping_texture, Vector3.ZERO, Vector3.ZERO, Vector3(resolution.x, resolution.y, 1), 0, 0, 0, 0):
 		printerr("VisualCompositor: Failed to copy texture on RenderingDevice for processing image frame!")
 
-	_process_frame(device.compute_list_begin(), effects, fade_alpha)
+	_process_frame(device.compute_list_begin(), effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
 
 
-func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame_nr: int, fade_alpha: float) -> void:
-	if not initialized:
-		return
+func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, frame_nr: int) -> void:
+	if not initialized: return
 
 	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(texture_rid)
-	if not rd_input_tex.is_valid():
-		return
+	if not rd_input_tex.is_valid(): return
 
-	_update_effect_buffers(effects, frame_nr)
+	var all_effects: Array[EffectVisual] = effects.duplicate()
+	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
+	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
+	_update_effect_buffers(all_effects, frame_nr)
+	_update_transition_buffers(transition_left, fade_in, transition_right, fade_out)
+
 	if device.texture_copy(rd_input_tex, pong_texture, Vector3.ZERO, Vector3.ZERO, Vector3(resolution.x, resolution.y, 1), 0, 0, 0, 0):
 		printerr("VisualCompositor: Failed to copy texture frame on RenderingDevice for processing!")
 
-	if fade_alpha < 1.0:
-		var buffer_data: PackedByteArray = PackedByteArray()
-		if buffer_data.resize(16):
-			printerr("VisualCompositor: Couldn't resize buffer data to 16!")
-		buffer_data.encode_float(0, fade_alpha)
-		if device.buffer_update(fade_buffer, 0, 16, buffer_data):
-			printerr("VisualCompositor: Couldn't update buffer for fade!")
-
 	var compute_list: int = device.compute_list_begin()
-
 	device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
 
 	var copy_uniforms: Array[RDUniform] = [
@@ -288,7 +282,7 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], frame
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
 
-	_process_frame(compute_list, effects, fade_alpha)
+	_process_frame(compute_list, effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
 	device.free_rid(copy_set)
 
 
@@ -312,6 +306,8 @@ func cleanup() -> void:
 	fade_pipeline = Utils.cleanup_rid(device, fade_pipeline)
 	fade_shader = Utils.cleanup_rid(device, fade_shader)
 	fade_buffer = Utils.cleanup_rid(device, fade_buffer)
+	fade_in_buffer = Utils.cleanup_rid(device, fade_in_buffer)
+	fade_out_buffer = Utils.cleanup_rid(device, fade_out_buffer)
 	copy_buffer = Utils.cleanup_rid(device, copy_buffer)
 
 	for shader_path: String in effects_cache:
@@ -331,13 +327,10 @@ func cleanup() -> void:
 func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) -> void:
 	var active_ids: Array[int] = []
 	for effect: EffectVisual in effects:
-		if not effect.is_enabled:
-			continue
+		if not effect.is_enabled: continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
-
-		if not cache:
-			continue
+		if not cache: continue
 
 		var id: int = effect.get_instance_id()
 		active_ids.append(id)
@@ -351,6 +344,7 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 				@warning_ignore("return_value_discarded")
 				Utils.cleanup_rid(device, buffer)
 			buffers.clear()
+
 			for i: int in effect.shader_passes:
 				var buffer_data: PackedByteArray = cache.get_buffer_data(effect, current_frame, resolution, i)
 				buffers.append(device.uniform_buffer_create(buffer_data.size(), buffer_data))
@@ -366,28 +360,22 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 			for buffer: RID in effect_buffers[buffer_id]:
 				@warning_ignore("return_value_discarded")
 				Utils.cleanup_rid(device, buffer)
+
 			if !effect_buffers.erase(buffer_id):
 				printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)
 
 
-func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha: float) -> void:
-	# Start handling the effects.
+func _process_frame(compute_list: int, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, _current_frame: int) -> void:
 	var sets_to_free: Array[RID] = []
 	for effect: EffectVisual in effects:
-		if not effect.is_enabled:
-			continue
+		if not effect.is_enabled: continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
-		if not cache:
-			continue
+		if not cache: continue
 
 		for pass_index: int in effect.shader_passes:
 			device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 
-			# Create uniforms for effect:
-			# - binding 0: input image
-			# - binding 1: output image
-			# - binding 2: params
 			var effect_uniforms: Array[RDUniform] = [
 				_create_sampler_uniform(ping_texture, 0),
 				_create_image_uniform(pong_texture, 1),
@@ -399,35 +387,68 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], fade_alpha:
 			device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 			device.compute_list_add_barrier(compute_list)
 
-			# Swap buffers.
 			var temp_texture: RID = ping_texture
 			ping_texture = pong_texture
 			pong_texture = temp_texture
 
-	if fade_alpha < 1.0:
-		device.compute_list_bind_compute_pipeline(compute_list, fade_pipeline)
+	if fade_in < 1.0 and transition_left:
+		_apply_transition(compute_list, transition_left, fade_in, fade_in_buffer, sets_to_free)
 
-		var fade_uniforms: Array[RDUniform] = [
-			_create_sampler_uniform(ping_texture, 0),
-			_create_image_uniform(pong_texture, 1),
-			_create_buffer_uniform(fade_buffer, 2)]
-		var fade_set: RID = device.uniform_set_create(fade_uniforms, fade_shader, 0)
-		sets_to_free.append(fade_set)
-
-		device.compute_list_bind_uniform_set(compute_list, fade_set, 0)
-		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
-		device.compute_list_add_barrier(compute_list)
-
-		# Swap buffers
-		var temp_texture: RID = ping_texture
-
-		ping_texture = pong_texture
-		pong_texture = temp_texture
+	if fade_out < 1.0 and transition_right:
+		_apply_transition(compute_list, transition_right, fade_out, fade_out_buffer, sets_to_free)
 
 	device.compute_list_end()
 	display_texture.texture_rd_rid = ping_texture
 	for rid: RID in sets_to_free:
 		device.free_rid(rid)
+
+
+func _update_transition_buffers(transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float) -> void:
+	if fade_in < 1.0 and transition_left:
+		var buffer_data: PackedByteArray = PackedByteArray()
+		var err: int = buffer_data.resize(16)
+		if err != OK:
+			printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
+
+		buffer_data.encode_float(0, fade_in)
+		err = device.buffer_update(fade_in_buffer, 0, 16, buffer_data)
+		if err != OK:
+			printerr("VisualCompositor: Updating device 'fade_in_buffer' failed with '%s'!" % err)
+
+	if fade_out < 1.0 and transition_right:
+		var buffer_data: PackedByteArray = PackedByteArray()
+		var err: int = buffer_data.resize(16)
+		if err != OK:
+			printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
+
+		buffer_data.encode_float(0, fade_out)
+		err = device.buffer_update(fade_out_buffer, 0, 16, buffer_data)
+		if err != OK:
+			printerr("VisualCompositor: Updating device 'fade_out_buffer' failed with '%s'!" % err)
+
+
+func _apply_transition(compute_list: int, transition: EffectVisual, _progress: float, progress_buffer: RID, sets_to_free: Array[RID]) -> void:
+	var cache: EffectCache = _get_effect_pipeline(transition.shader_path, transition)
+	if not cache: return
+
+	for pass_index: int in transition.shader_passes:
+		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
+
+		var effect_uniforms: Array[RDUniform] = [
+			_create_sampler_uniform(ping_texture, 0),
+			_create_image_uniform(pong_texture, 1),
+			_create_buffer_uniform(effect_buffers[transition.get_instance_id()][pass_index] as RID, 2),
+			_create_buffer_uniform(progress_buffer, 3)]
+		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
+		sets_to_free.append(effect_set)
+
+		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
+		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
+		device.compute_list_add_barrier(compute_list)
+
+		var temp_texture: RID = ping_texture
+		ping_texture = pong_texture
+		pong_texture = temp_texture
 
 
 func _create_yuv_params(video: Video) -> RID:
@@ -488,11 +509,9 @@ func _create_image_uniform(texture_rid: RID, binding: int) -> RDUniform:
 
 func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 	var uniform: RDUniform = RDUniform.new()
-
 	uniform.uniform_type = device.UNIFORM_TYPE_UNIFORM_BUFFER
 	uniform.binding = binding
 	uniform.add_id(buffer_rid)
-
 	return uniform
 
 
@@ -515,5 +534,4 @@ func _get_effect_pipeline(shader_path: String, effect: EffectVisual) -> EffectCa
 
 	effect_cache.initialize(device, shader_file.get_spirv(), effect)
 	effects_cache[shader_path] = effect_cache
-
 	return effect_cache
