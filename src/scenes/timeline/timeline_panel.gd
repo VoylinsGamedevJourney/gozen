@@ -627,8 +627,8 @@ func _commit_current_fade() -> void:
 			clip.effects.fade_audio = old_fade
 
 		InputManager.undo_redo.create_action("Change fade")
-		InputManager.undo_redo.add_do_method(ClipLogic._set_fade.bind(clip, is_visual, new_fade))
-		InputManager.undo_redo.add_undo_method(ClipLogic._set_fade.bind(clip, is_visual, old_fade))
+		InputManager.undo_redo.add_do_method(EffectsHandler._set_fade.bind(clip, is_visual, new_fade))
+		InputManager.undo_redo.add_undo_method(EffectsHandler._set_fade.bind(clip, is_visual, old_fade))
 		InputManager.undo_redo.commit_action()
 	Timeline.fade_target = null
 	draw_clips.queue_redraw()
