@@ -367,6 +367,8 @@ func _on_start_render_button_pressed() -> void:
 	else:
 		await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
 
+	get_viewport().gui_get_focus_owner().release_focus()
+
 
 func _start_render_process(export_path: String, video_codec_id: int, audio_codec_id: int, start_frame: int = 0, end_frame: int = -1) -> void:
 	if end_frame == -1:
