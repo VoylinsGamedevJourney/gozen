@@ -94,9 +94,24 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 		audio_data.resize(total_size);
 	}
 
+	bool first_frame = true;
+	int64_t samples_to_discard = 0;
+
 	while (!(FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index, av_frame.get(), av_packet.get()))) {
 		if (av_frame->nb_samples <= 0)
 			break;
+
+		if (first_frame && start_time > 0) {
+			first_frame = false;
+			int64_t frame_pts =
+				av_frame->best_effort_timestamp != AV_NOPTS_VALUE ? av_frame->best_effort_timestamp : av_frame->pts;
+			if (frame_pts != AV_NOPTS_VALUE) {
+				double frame_time = frame_pts * av_q2d(stream->time_base);
+				if (start_time > frame_time) {
+					samples_to_discard = (int64_t)((start_time - frame_time) * TARGET_SAMPLE_RATE);
+				}
+			}
+		}
 
 		// Copy decoded data to new frame.
 		av_decoded_frame->format = TARGET_FORMAT;
@@ -125,13 +140,29 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 		}
 		av_decoded_frame->nb_samples = response;
 
-		size_t byte_size = av_decoded_frame->nb_samples * bytes_per_sample * 2;
+		int samples_to_copy = av_decoded_frame->nb_samples;
+		uint8_t* data_ptr = av_decoded_frame->extended_data[0];
+
+		if (samples_to_discard > 0) {
+			if (samples_to_discard >= samples_to_copy) {
+				samples_to_discard -= samples_to_copy;
+				av_frame_unref(av_frame.get());
+				av_frame_unref(av_decoded_frame.get());
+				continue;
+			} else {
+				data_ptr += samples_to_discard * bytes_per_sample * 2;
+				samples_to_copy -= samples_to_discard;
+				samples_to_discard = 0;
+			}
+		}
+
+		size_t byte_size = samples_to_copy * bytes_per_sample * 2;
 		if (current_size + byte_size > audio_data.size()) {
 			size_t new_size = current_size + byte_size + (1024 * 1024 * 10); // 10MB chunk padding.
 			audio_data.resize(new_size);
 		}
 
-		memcpy(&(audio_data.ptrw()[current_size]), av_decoded_frame->extended_data[0], byte_size);
+		memcpy(&(audio_data.ptrw()[current_size]), data_ptr, byte_size);
 		current_size += byte_size;
 
 		av_frame_unref(av_frame.get());
@@ -332,35 +363,41 @@ PackedByteArray Audio::change_speed(PackedByteArray audio_data, float speed) {
 	if (Math::is_equal_approx(speed, 1.0f) || audio_data.size() == 0) {
 		return audio_data;
 	}
-
-	const int sample_count = audio_data.size() / 4; // 16-bit stereo samples
-	int new_sample_count = std::ceil(sample_count / speed);
-
+	const int64_t sample_count = audio_data.size() / 4; // 16-bit stereo samples.
+	int64_t new_sample_count = (int64_t)std::ceil((double)sample_count / (double)speed);
 	PackedByteArray new_audio_data;
 	new_audio_data.resize(new_sample_count * 4);
-
-	int16_t* src_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	const int16_t* src_data = reinterpret_cast<const int16_t*>(audio_data.ptr());
 	int16_t* dst_data = reinterpret_cast<int16_t*>(new_audio_data.ptrw());
 
-	for (int i = 0; i < new_sample_count; ++i) {
-		float src_index_f = i * speed;
-		int src_index = (int)src_index_f;
-		float t = src_index_f - src_index;
+	auto cubic_interpolate = [](float y0, float y1, float y2, float y3, float mu) -> int16_t {
+		float mu2 = mu * mu;
+		float a0 = y3 - y2 - y0 + y1;
+		float a1 = y0 - y1 - a0;
+		float a2 = y2 - y0;
+		float a3 = y1;
+		float val = a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
 
-		if (src_index >= sample_count - 1) {
-			dst_data[i * 2] = src_data[(sample_count - 1) * 2];
-			dst_data[i * 2 + 1] = src_data[(sample_count - 1) * 2 + 1];
-		} else {
-			int16_t l1 = src_data[src_index * 2];
-			int16_t r1 = src_data[src_index * 2 + 1];
-			int16_t l2 = src_data[(src_index + 1) * 2];
-			int16_t r2 = src_data[(src_index + 1) * 2 + 1];
+		float local_min = std::min(std::min(y0, y1), std::min(y2, y3));
+		float local_max = std::max(std::max(y0, y1), std::max(y2, y3));
+		val = Math::clamp(val, local_min, local_max);
 
-			dst_data[i * 2] = (int16_t)(l1 + t * (l2 - l1));
-			dst_data[i * 2 + 1] = (int16_t)(r1 + t * (r2 - r1));
-		}
+		return (int16_t)Math::clamp(val, -32768.0f, 32767.0f);
+	};
+
+	for (int64_t i = 0; i < new_sample_count; ++i) {
+		double src_index_d = i * (double)speed;
+		int64_t src_index = (int64_t)src_index_d;
+		float t = (float)(src_index_d - src_index);
+		int64_t i0 = Math::clamp(src_index - 1, (int64_t)0, sample_count - 1);
+		int64_t i1 = Math::clamp(src_index, (int64_t)0, sample_count - 1);
+		int64_t i2 = Math::clamp(src_index + 1, (int64_t)0, sample_count - 1);
+		int64_t i3 = Math::clamp(src_index + 2, (int64_t)0, sample_count - 1);
+
+		dst_data[i * 2] = cubic_interpolate(src_data[i0 * 2], src_data[i1 * 2], src_data[i2 * 2], src_data[i3 * 2], t);
+		dst_data[i * 2 + 1] = cubic_interpolate(src_data[i0 * 2 + 1], src_data[i1 * 2 + 1], src_data[i2 * 2 + 1],
+												src_data[i3 * 2 + 1], t);
 	}
-
 	return new_audio_data;
 }
 

@@ -50,9 +50,6 @@ var original_video_frame_cache_size: int = 30
 var stop_encoding: bool = false
 
 
-var _audio_cache: Dictionary = {}
-
-
 
 func _ready() -> void:
 	@warning_ignore("return_value_discarded")
@@ -80,11 +77,11 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	original_video_frame_cache_size = Settings.get_video_cache_size()
 	Settings.set_video_cache_size(0)
 
-	# Making certain proxies aren't being used for this
+	# Making certain proxies aren't being used for this.
 	proxies_used = Settings.get_use_proxies()
 	if proxies_used:
 		Settings.set_use_proxies(false)
-		# Necessary waiting time to make certain all clips are ready.
+		# Necessary waiting time to make certain all clips are ready..
 		await RenderingServer.frame_post_draw
 		await get_tree().process_frame
 
@@ -100,32 +97,11 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		await RenderingServer.frame_post_draw
 		return printerr("RenderManager: Couldn't open encoder!")
 
-	# Creating + sending audio.
-	if encoder.audio_codec_set():
-		update_encoder_status.emit(Status.COMPILING_AUDIO)
-		await RenderingServer.frame_post_draw
-
-		var audio_thread: Thread = Thread.new()
-		if audio_thread.start(_encode_and_send_audio.bind(start_frame, end_frame)):
-			printerr("RenderManager: Couldn't start audio thread!")
-			stop_encoder()
-			update_encoder_status.emit(Status.ERROR_AUDIO)
-			await RenderingServer.frame_post_draw
-			return
-		while audio_thread.is_alive():
-			await get_tree().process_frame
-
-		var success: bool = audio_thread.wait_to_finish()
-		if cancel_encoding:
-			stop_encoder()
-			update_encoder_status.emit(Status.ERROR_CANCELED)
-			await RenderingServer.frame_post_draw
-			return
-		if !success:
-			stop_encoder()
-			update_encoder_status.emit(Status.ERROR_AUDIO)
-			await RenderingServer.frame_post_draw
-			return printerr("RenderManager: Something went wrong encoding/sending audio!")
+	var use_audio: bool = encoder.audio_codec_set()
+	var active_audio_tracks: Array[Dictionary] = []
+	if use_audio:
+		for i: int in TrackLogic.tracks.size():
+			active_audio_tracks.append({})
 
 	# RGBA to YUV shader setup.
 	if !rendering_device:
@@ -171,9 +147,10 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	update_encoder_status.emit(Status.SENDING_FRAMES)
 
 	frame_queue.clear()
+	var audio_queue: Array[PackedByteArray] = []
 	stop_encoding = false
 	thread = Thread.new()
-	if thread.start(_encoding_loop):
+	if thread.start(_encoding_loop.bind(use_audio, audio_queue)):
 		printerr("RenderManager: Couldn't start encoder thread!")
 		stop_encoder()
 		update_encoder_status.emit(Status.ERROR_CANCELED)
@@ -193,6 +170,10 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 
 		await get_tree().process_frame
 		var frame_data: PackedByteArray = _convert_rgba_to_yuv(viewport.get_rid(), render_resolution)
+		var audio_data: PackedByteArray = PackedByteArray()
+		if use_audio:
+			audio_data = _get_audio_for_frame(i, active_audio_tracks)
+
 		var frame_pushed: bool = false
 		while not frame_pushed and not cancel_encoding:
 			if not thread.is_alive():
@@ -201,13 +182,14 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 			Threader.mutex.lock()
 			if frame_queue.size() < buffer_size: # Limiting RAM usage.
 				frame_queue.append(frame_data)
+				if use_audio:
+					audio_queue.append(audio_data)
 				frame_pushed = true
 			Threader.mutex.unlock()
 			if frame_pushed:
 				Threader.semaphore.post()
 			else:
 				await get_tree().process_frame
-
 		if i + 1 <= end_frame:
 			if EditorCore.data_ready:
 				await EditorCore.frame_changed
@@ -240,7 +222,6 @@ func stop_encoder() -> void:
 	if proxies_used:
 		Settings.set_use_proxies(true)
 	cancel_encoding = false
-	_audio_cache.clear()
 
 	Threader.mutex.lock()
 	frame_queue.clear()
@@ -270,18 +251,26 @@ func stop_encoder() -> void:
 			yuv_input_texture = RID()
 
 
-func _encoding_loop() -> void:
+func _encoding_loop(use_audio: bool, audio_queue: Array[PackedByteArray]) -> void:
 	while true:
 		Threader.semaphore.wait()
 		Threader.mutex.lock()
 		var has_frames: bool = not frame_queue.is_empty()
 		var frame_data: PackedByteArray = PackedByteArray()
+		var audio_data: PackedByteArray = PackedByteArray()
 		if has_frames:
 			frame_data = frame_queue.pop_front()
+			if use_audio:
+				audio_data = audio_queue.pop_front()
 		update_encoder_status.emit.call_deferred(Status.FRAMES_SEND)
 		Threader.mutex.unlock()
 
 		if not frame_data.is_empty():
+			if use_audio and not audio_data.is_empty():
+				if not encoder.send_audio(audio_data):
+					call_deferred("stop_encoder")
+					printerr("RenderManager: Something went wrong sending audio frame!")
+					break
 			if not encoder.send_frame(frame_data):
 				call_deferred("stop_encoder")
 				printerr("RenderManager: Something went wrong sending frame(s)!")
@@ -297,69 +286,6 @@ func _encoding_loop() -> void:
 
 
 # --- Audio handling ---
-
-func _encode_and_send_audio(start_frame: int, end_frame: int) -> bool:
-	_prepare_audio_cache(start_frame, end_frame)
-	if cancel_encoding:
-		return false
-	var audio_data: PackedByteArray = encode_audio(start_frame, end_frame)
-	_audio_cache.clear() # Clear cache immediately to free up RAM before video rendering.
-
-	if cancel_encoding or !audio_data or audio_data.is_empty():
-		return false
-
-	update_encoder_status.emit.call_deferred(Status.SENDING_AUDIO)
-	if !encoder.send_audio(audio_data):
-		return false
-	return true
-
-
-func _prepare_audio_cache(start_frame: int, end_frame: int) -> void:
-	_audio_cache.clear()
-	var file_counts: Dictionary = {}
-	var file_min_start: Dictionary = {}
-	var file_max_end: Dictionary = {}
-
-	for track: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[track].is_muted: continue
-		for clip: ClipData in TrackLogic.track_clips[track].clips:
-			if clip.start > end_frame or clip.end < start_frame or clip.effects.is_muted:
-				continue
-			elif clip.type in EditorCore.AUDIO_TYPES:
-				var info: Dictionary = _get_clip_audio_info(clip)
-				var path: String = info.path
-				file_counts[path] = file_counts.get(path, 0) + 1
-
-				var framerate: float = project_data.framerate
-				var region_start_frames: int = maxi(clip.start, start_frame)
-				var region_end_frames: int = mini(clip.end, end_frame + 1)
-				var start_offset_frames: int = region_start_frames - clip.start
-				var region_duration_frames: int = region_end_frames - region_start_frames
-
-				var required_start: float = info.start + (float(start_offset_frames) / framerate * clip.speed)
-				var required_end: float = required_start + (float(region_duration_frames) / framerate * clip.speed)
-
-				if !file_min_start.has(path) or required_start < file_min_start[path]:
-					file_min_start[path] = required_start
-				if !file_max_end.has(path) or required_end > file_max_end[path]:
-					file_max_end[path] = required_end
-
-	var sorted_files: Array = file_counts.keys()
-	sorted_files.sort_custom(func(a: String, b: String) -> bool: return file_counts[a] > file_counts[b])
-
-	var cache_limit: int = 3
-	var cached_count: int = 0
-	for path: String in sorted_files:
-		if cancel_encoding or cached_count >= cache_limit: break
-		elif file_counts[path] > 1: # Only cache if it's re-used across multiple clips.
-			var frame_start: float = maxf(0.0, file_min_start[path] as float)
-			var frame_duration: float = file_max_end[path] - frame_start
-			_audio_cache[path] = {
-				"data": Audio.get_audio_data(path, -1, frame_start, frame_duration),
-				"start_time": frame_start
-			}
-			cached_count += 1
-
 
 func _get_clip_audio_info(clip: ClipData) -> Dictionary:
 	var framerate: float = project_data.framerate
@@ -381,135 +307,101 @@ func _get_clip_audio_info(clip: ClipData) -> Dictionary:
 	return { "path": file_path, "start": start_sec, "duration": duration_sec }
 
 
-func encode_audio(start_frame: int = 0, end_frame: int = -1) -> PackedByteArray:
-	if end_frame == -1: end_frame = project_data.timeline_end
-	var audio: PackedByteArray = []
+func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary]) -> PackedByteArray:
 	var framerate: float = project_data.framerate
-	var total_frames: int = end_frame - start_frame + 1
-	var length: int = Utils.get_sample_count(total_frames, framerate)
-	if audio.resize(length):
-		printerr("RenderManager: Couldn't resize audio PackedByteArray for encoding!")
+
+	var global_start_sample: int = int((float(frame_nr) / framerate) * MIX_RATE)
+	var global_end_sample: int = int((float(frame_nr + 1) / framerate) * MIX_RATE)
+	var samples_count: int = global_end_sample - global_start_sample
+	var length_bytes: int = samples_count * 4
+
+	var master_audio: PackedByteArray = []
+	if master_audio.resize(length_bytes):
+		printerr("RenderManager: Couldn't resize master_audio")
 
 	for track: int in TrackLogic.tracks.size():
-		if cancel_encoding:
-			break
-		if !TrackLogic.tracks[track].is_muted:
-			for clip: ClipData in TrackLogic.track_clips[track].clips:
-				if cancel_encoding:
-					break
-				if clip.start > end_frame or clip.end < start_frame or clip.effects.is_muted:
-					continue
-				if clip.type in EditorCore.AUDIO_TYPES:
-					audio = _handle_audio(clip, audio, start_frame, end_frame)
+		if TrackLogic.tracks[track].is_muted: continue
+		var active_dict: Dictionary = active_audio_tracks[track]
 
-	return audio
+		# Check if clip is still valid.
+		if not active_dict.is_empty():
+			var clip: ClipData = active_dict.clip
+			if frame_nr >= clip.end or clip.effects.is_muted:
+				active_dict.clear() # Clip ended or muted.
 
+		if active_dict.is_empty():
+			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
+			if clip and clip.type in EditorCore.AUDIO_TYPES and not clip.effects.is_muted:
+				var info: Dictionary = _get_clip_audio_info(clip)
+				var clip_global_start: int = int((float(clip.start) / framerate) * MIX_RATE)
+				var clip_global_end: int = int((float(clip.end) / framerate) * MIX_RATE)
+				var expected_bytes: int = (clip_global_end - clip_global_start) * 4
 
-func _handle_audio(clip: ClipData, master_audio: PackedByteArray, region_start: int, region_end: int) -> PackedByteArray:
-	if cancel_encoding:
-		return master_audio
-	var framerate: float = project_data.framerate
-	var samples_per_frame: float = MIX_RATE / framerate
+				# Get full audio for clip.
+				var fetch_duration: float = info.duration * clip.speed
+				var audio_data: PackedByteArray = Audio.get_audio_data(info.path as String, -1, info.start as float, fetch_duration)
+				if not is_equal_approx(clip.speed, 1.0):
+					audio_data = Audio.change_speed(audio_data, clip.speed)
 
-	var info: Dictionary = _get_clip_audio_info(clip)
+				if audio_data.size() < expected_bytes:
+					var padding: int = expected_bytes - audio_data.size()
+					var zeros: PackedByteArray = []
+					if zeros.resize(padding):
+						printerr("RenderManager: Couldn't resize zeros array!")
+					audio_data.append_array(zeros)
+				elif audio_data.size() > expected_bytes:
+					audio_data = audio_data.slice(0, expected_bytes)
 
-	var clip_render_start: int = maxi(clip.start, region_start)
-	var clip_render_end: int = mini(clip.end, region_end + 1)
-	var render_frames: int = clip_render_end - clip_render_start
-	if render_frames <= 0:
-		return master_audio
+				# Apply effects like fade, ...
+				var fade_in: int = clip.effects.fade_audio.x
+				var fade_out: int = clip.effects.fade_audio.y
+				if fade_in > 0 or fade_out > 0:
+					var total_samples: int = int(expected_bytes / 4.0)
+					var fade_in_samples: int = int((float(fade_in) / framerate) * MIX_RATE)
+					var fade_out_samples: int = int((float(fade_out) / framerate) * MIX_RATE)
+					audio_data = Audio.apply_fade(audio_data, fade_in_samples, fade_out_samples, 0, total_samples)
 
-	var offset_in_clip_frames: int = clip_render_start - clip.start
-	var required_start_sec: float = info.start + (float(offset_in_clip_frames) / framerate * clip.speed)
-	var required_duration_sec: float = float(render_frames) / framerate * clip.speed
+				active_dict["clip"] = clip
+				active_dict["audio_data"] = audio_data
+				active_audio_tracks[track] = active_dict
 
-	var audio_data: PackedByteArray
+		if not active_dict.is_empty():
+			var clip: ClipData = active_dict.clip
+			if frame_nr >= clip.start and frame_nr < clip.end:
+				var clip_global_start: int = int((float(clip.start) / framerate) * MIX_RATE)
+				var frame_global_start: int = int((float(frame_nr) / framerate) * MIX_RATE)
+				var frame_global_end: int = int((float(frame_nr + 1) / framerate) * MIX_RATE)
 
-	if _audio_cache.has(info.path):
-		var cache_dict: Dictionary = _audio_cache[info.path]
-		var cached_data: PackedByteArray = cache_dict["data"]
-		var cache_start_time: float = cache_dict["start_time"]
+				var start_byte: int = (frame_global_start - clip_global_start) * 4
+				var bytes_to_copy: int = (frame_global_end - frame_global_start) * 4
 
-		var relative_start_sec: float = required_start_sec - cache_start_time
-		var start_bytes: int = floori(relative_start_sec * MIX_RATE) * 4
-		var duration_bytes: int = floori(required_duration_sec * MIX_RATE) * 4
+				var clip_audio: PackedByteArray = active_dict.audio_data
 
-		if start_bytes < 0:
-			var silence_bytes: int = abs(start_bytes)
-			if audio_data.resize(silence_bytes):
-				printerr("RenderManager: Couldn't resize audio PackedByteArray for adding silence_bytes!")
-			var slice_start: int = 0
-			var slice_end: int = mini(duration_bytes - silence_bytes, cached_data.size())
-			if slice_end > 0:
-				audio_data.append_array(cached_data.slice(slice_start, slice_end))
-		else:
-			var slice_end: int = mini(start_bytes + duration_bytes, cached_data.size())
-			if start_bytes < cached_data.size():
-				audio_data = cached_data.slice(start_bytes, slice_end)
+				if start_byte >= 0 and start_byte < clip_audio.size():
+					var slice_end: int = mini(start_byte + bytes_to_copy, clip_audio.size())
+					var frame_audio: PackedByteArray = clip_audio.slice(start_byte, slice_end)
 
-		if audio_data.size() < duration_bytes and audio_data.resize(duration_bytes):
-			printerr("RenderManager: Couldn't resize audio PackedByteArray for adding end bytes!")
-	else:
-		audio_data = Audio.get_audio_data(info.path as String, -1, required_start_sec, required_duration_sec)
+					# Add padding if needed.
+					if frame_audio.size() < bytes_to_copy:
+						var padding: int = bytes_to_copy - frame_audio.size()
+						var zeros: PackedByteArray = []
+						if zeros.resize(padding):
+							printerr("RenderManager: Couldn't resize zeros array!")
+						frame_audio.append_array(zeros)
 
-	if audio_data.is_empty():
-		return master_audio
+					# Apply per-frame effects.
+					for effect: EffectAudio in clip.effects.audio:
+						if effect.is_enabled and effect.id == "volume":
+							var offset_in_clip_frames: int = frame_nr - clip.start
+							var volume_db: float = effect.get_value(effect.params[0], offset_in_clip_frames)
+							var volume_linear: float = db_to_linear(volume_db)
+							if not is_equal_approx(volume_linear, 1.0):
+								var frame_volumes: PackedFloat32Array = PackedFloat32Array([volume_linear])
+								frame_audio = Audio.apply_dynamic_volume(frame_audio, frame_volumes, MIX_RATE, framerate)
 
-	if not is_equal_approx(clip.speed, 1.0):
-		audio_data = Audio.change_speed(audio_data, clip.speed)
+					master_audio = Audio.combine_data(master_audio, frame_audio, 0)
 
-	# First apply fades utilizing offset indices.
-	var fade_in: int = clip.effects.fade_audio.x
-	var fade_out: int = clip.effects.fade_audio.y
-	if fade_in > 0 or fade_out > 0:
-		var fade_in_samples: int = floori(fade_in * samples_per_frame)
-		var fade_out_samples: int = floori(fade_out * samples_per_frame)
-		var start_sample: int = floori(offset_in_clip_frames * samples_per_frame)
-		var total_samples: int = floori(clip.duration * samples_per_frame)
-		audio_data = Audio.apply_fade(audio_data, fade_in_samples, fade_out_samples, start_sample, total_samples)
-
-	# Apply all other effects to the clip audio data.
-	for effect: EffectAudio in clip.effects.audio:
-		if !effect.is_enabled:
-			continue
-
-		match effect.id:
-			"volume": audio_data = _apply_effect_volume(audio_data, effect, offset_in_clip_frames)
-			"volume": audio_data = _apply_effect_volume(audio_data, effect, offset_in_clip_frames)
-			_: printerr("RenderManager: Unknown effect '%s'!" % effect.nickname)
-
-	# Place in correct position natively using combine offset relative to render region.
-	return Audio.combine_data(
-			master_audio,	audio_data,
-			Utils.get_sample_count(clip_render_start - region_start, framerate))
-
-
-func _apply_effect_volume(audio_data: PackedByteArray, effect: EffectAudio, offset_frames: int) -> PackedByteArray:
-	var sample_count: int = floori(audio_data.size() / 4.0) # 16 bit stereo.
-	var framerate: float = project_data.framerate
-	var volume_param: EffectParam = effect.params[0]
-
-	var samples_per_frame: int = ceili(MIX_RATE / framerate)
-	var frame_count: int = ceili(float(sample_count) / samples_per_frame)
-
-	var frame_volumes: PackedFloat32Array = PackedFloat32Array()
-	if frame_volumes.resize(frame_count):
-		printerr("RenderManager: Couldn't resize frame volumes array!")
-
-	var all_one: bool = true
-	for frame: int in frame_count:
-		if cancel_encoding:
-			break
-		var actual_frame: int = frame + offset_frames
-		var volume_db: float = effect.get_value(volume_param, actual_frame)
-		var volume_linear: float = db_to_linear(volume_db)
-		frame_volumes[frame] = volume_linear
-		if not is_equal_approx(volume_linear, 1.0):
-			all_one = false
-
-	if all_one:
-		return audio_data
-	return Audio.apply_dynamic_volume(audio_data, frame_volumes, MIX_RATE, framerate)
+	return master_audio
 
 
 # --- RGBA to YUV handling ---

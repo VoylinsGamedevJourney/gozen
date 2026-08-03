@@ -57,7 +57,6 @@ class Encoder : public Resource {
 	float framerate = 30.;
 
 	bool encoder_open = false;
-	bool audio_added = false;
 
 	std::string h264_preset = "veryfast";
 	int hw_device_type = HW_DEVICE_TYPE_NVENC;
@@ -72,10 +71,7 @@ class Encoder : public Resource {
 	bool _open_output_file();
 	bool _write_header();
 	bool _finalize_encoding();
-	bool _encode_audio_chunk(int samples_to_read);
 
-	PackedByteArray audio_buffer;
-	int audio_buffer_offset = 0;
 	int64_t audio_pts = 0;
 
 	static inline bool _log_err(String message) {

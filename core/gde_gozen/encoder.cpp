@@ -69,6 +69,7 @@ bool Encoder::open(bool rgba) {
 	}
 
 	frame_nr = 0;
+	audio_pts = 0;
 	encoder_open = true;
 	return true;
 }
@@ -286,8 +287,6 @@ bool Encoder::_write_header() {
 bool Encoder::send_frame(PackedByteArray yuv_data) {
 	if (!encoder_open) {
 		return _log_err("Not open");
-	} else if (audio_codec_id != AV_CODEC_ID_NONE && !audio_added) {
-		return _log_err("Audio hasn't been send");
 	} else if (av_frame_make_writable(av_frame_video.get()) < 0) {
 		return _log_err("Couldn't make frame writable");
 	}
@@ -350,105 +349,28 @@ bool Encoder::send_audio(PackedByteArray wav_data) {
 		return _log_err("Not open");
 	if (audio_codec_id == AV_CODEC_ID_NONE)
 		return _log_err("Audio not enabled");
-	if (audio_added)
-		return _log_err("Audio already send");
 
-	audio_buffer = wav_data;
-	audio_buffer_offset = 0;
-	audio_pts = 0;
-	audio_added = true;
-
-	// Pre-encode the entire audio buffer immediately.
-	if (!_encode_audio_chunk(-1)) {
-		return false;
-	}
-
-	// Flush the SWR buffer and Audio Encoder.
-	int frame_size = av_codec_ctx_audio->frame_size == 0 ? 1024 : av_codec_ctx_audio->frame_size;
-	UniqueAVFrame av_frame_out = make_unique_avframe();
-	while (true) {
-		av_frame_unref(av_frame_out.get());
-		av_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
-		av_frame_out->format = av_codec_ctx_audio->sample_fmt;
-		av_frame_out->sample_rate = av_codec_ctx_audio->sample_rate;
-		av_frame_out->nb_samples = frame_size;
-		if (av_frame_get_buffer(av_frame_out.get(), 0) < 0) {
-			break;
-		}
-
-		int converted_samples = swr_convert(swr_ctx_audio.get(), av_frame_out->data, frame_size, nullptr, 0);
-		if (converted_samples <= 0) {
-			break;
-		}
-
-		if (converted_samples < frame_size) {
-			int bytes_per_sample_out = av_get_bytes_per_sample(av_codec_ctx_audio->sample_fmt);
-			for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
-				memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
-					   (frame_size - converted_samples) * bytes_per_sample_out);
-			}
-			av_frame_out->nb_samples = frame_size;
-		} else {
-			av_frame_out->nb_samples = converted_samples;
-		}
-		av_frame_out->pts = audio_pts;
-		audio_pts += converted_samples;
-
-		avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
-		while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
-			av_packet_audio->stream_index = av_stream_audio->index;
-			av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
-			av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
-			av_packet_unref(av_packet_audio.get());
-		}
-	}
-	av_packet_audio = make_unique_avpacket();
-	avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
-	while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
-		av_packet_audio->stream_index = av_stream_audio->index;
-		av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
-		av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
-		av_packet_unref(av_packet_audio.get());
-	}
-	return true;
-}
-
-bool Encoder::_encode_audio_chunk(int samples_to_read) {
-	if (audio_codec_id == AV_CODEC_ID_NONE || audio_buffer.size() == 0)
-		return true;
-
-	int frame_size = av_codec_ctx_audio->frame_size == 0 ? 1024 : av_codec_ctx_audio->frame_size;
 	int in_bytes_per_sample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16) * 2;
+	int samples_left = wav_data.size() / in_bytes_per_sample;
+	int offset = 0;
 
-	int remaining_in_buffer = (audio_buffer.size() - audio_buffer_offset) / in_bytes_per_sample;
-
-	int samples_left;
-	if (samples_to_read == -1) {
-		samples_left = remaining_in_buffer;
-	} else {
-		int64_t expected_audio_samples = (int64_t)(frame_nr + 1) * sample_rate / framerate;
-		int encoded_audio_samples = audio_buffer_offset / in_bytes_per_sample;
-		samples_left = expected_audio_samples - encoded_audio_samples;
-		samples_left = FFMIN(samples_left, remaining_in_buffer);
-	}
+	int frame_size = av_codec_ctx_audio->frame_size == 0 ? 1024 : av_codec_ctx_audio->frame_size;
 
 	UniqueAVFrame av_frame_out = make_unique_avframe();
 	if (!av_frame_out) {
 		return _log_err("Out of memory");
 	}
 
-	while (samples_left > 0 || swr_get_out_samples(swr_ctx_audio.get(), 0) >= frame_size ||
-		   (samples_to_read == -1 && swr_get_out_samples(swr_ctx_audio.get(), 0) > 0)) {
-
+	while (samples_left > 0 || swr_get_out_samples(swr_ctx_audio.get(), 0) >= frame_size) {
 		if (swr_get_out_samples(swr_ctx_audio.get(), 0) < frame_size && samples_left > 0) {
 			int to_feed = FFMIN(samples_left, 8192);
-			const uint8_t* input_data = audio_buffer.ptr() + audio_buffer_offset;
+			const uint8_t* input_data = wav_data.ptr() + offset;
 			const uint8_t* in_ptrs[1] = {input_data};
 			int ret = swr_convert(swr_ctx_audio.get(), nullptr, 0, in_ptrs, to_feed);
 			if (ret < 0) {
 				return _log_err("Couldn't feed audio to swr");
 			}
-			audio_buffer_offset += to_feed * in_bytes_per_sample;
+			offset += to_feed * in_bytes_per_sample;
 			samples_left -= to_feed;
 			continue;
 		}
@@ -504,6 +426,56 @@ bool Encoder::_finalize_encoding() {
 	} else if (!av_format_ctx) {
 		_log_err("Can't finalize encoding, no format context");
 		return false;
+	}
+
+	// Flush audio encoder.
+	if (av_codec_ctx_audio) {
+		int frame_size = av_codec_ctx_audio->frame_size == 0 ? 1024 : av_codec_ctx_audio->frame_size;
+		UniqueAVFrame av_frame_out = make_unique_avframe();
+		while (true) {
+			av_frame_unref(av_frame_out.get());
+			av_frame_out->ch_layout = av_codec_ctx_audio->ch_layout;
+			av_frame_out->format = av_codec_ctx_audio->sample_fmt;
+			av_frame_out->sample_rate = av_codec_ctx_audio->sample_rate;
+			av_frame_out->nb_samples = frame_size;
+			if (av_frame_get_buffer(av_frame_out.get(), 0) < 0) {
+				break;
+			}
+
+			int converted_samples = swr_convert(swr_ctx_audio.get(), av_frame_out->data, frame_size, nullptr, 0);
+			if (converted_samples <= 0) {
+				break;
+			}
+
+			if (converted_samples < frame_size) {
+				int bytes_per_sample_out = av_get_bytes_per_sample(av_codec_ctx_audio->sample_fmt);
+				for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
+					memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
+						   (frame_size - converted_samples) * bytes_per_sample_out);
+				}
+				av_frame_out->nb_samples = frame_size;
+			} else {
+				av_frame_out->nb_samples = converted_samples;
+			}
+			av_frame_out->pts = audio_pts;
+			audio_pts += converted_samples;
+
+			avcodec_send_frame(av_codec_ctx_audio.get(), av_frame_out.get());
+			while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
+				av_packet_audio->stream_index = av_stream_audio->index;
+				av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
+				av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
+				av_packet_unref(av_packet_audio.get());
+			}
+		}
+		av_packet_audio = make_unique_avpacket();
+		avcodec_send_frame(av_codec_ctx_audio.get(), nullptr);
+		while (avcodec_receive_packet(av_codec_ctx_audio.get(), av_packet_audio.get()) >= 0) {
+			av_packet_audio->stream_index = av_stream_audio->index;
+			av_packet_rescale_ts(av_packet_audio.get(), av_codec_ctx_audio->time_base, av_stream_audio->time_base);
+			av_interleaved_write_frame(av_format_ctx.get(), av_packet_audio.get());
+			av_packet_unref(av_packet_audio.get());
+		}
 	}
 
 	// Flush video encoder.
@@ -562,7 +534,6 @@ void Encoder::close() {
 
 	// Cleanup contexts.
 	swr_ctx_audio.reset();
-	audio_buffer.clear();
 
 	av_packet_video.reset();
 	av_packet_audio.reset();
@@ -574,7 +545,6 @@ void Encoder::close() {
 	av_format_ctx.reset();
 
 	encoder_open = false;
-	audio_added = false;
 	frame_nr = 0;
 }
 
