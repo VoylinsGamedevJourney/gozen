@@ -88,20 +88,19 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	var completed: Array[int] = []
 	for video_id: int in active_tasks:
-		if WorkerThreadPool.is_task_completed(active_tasks[video_id] as int):
-			if WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int):
-				printerr("EditorCore: Something went wrong waiting for task completion!")
-			completed.append(video_id)
+		if !WorkerThreadPool.is_task_completed(active_tasks[video_id] as int): continue
+		if WorkerThreadPool.wait_for_task_completion(active_tasks[video_id] as int):
+			printerr("EditorCore: Something went wrong waiting for task completion!")
+		completed.append(video_id)
 	for video_id: int in completed:
 		if !active_tasks.erase(video_id):
 			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
 
-	if _scrub_frame != -1:
-		if Time.get_ticks_msec() - _last_scrub_time > 50:
-			if frame_nr != _scrub_frame:
-				set_frame(_scrub_frame)
-			_last_scrub_time = Time.get_ticks_msec()
-			_scrub_frame = -1
+	if _scrub_frame != -1 and Time.get_ticks_msec() - _last_scrub_time > 50:
+		if frame_nr != _scrub_frame:
+			set_frame(_scrub_frame)
+		_last_scrub_time = Time.get_ticks_msec()
+		_scrub_frame = -1
 
 	if data_ready:
 		var needs_delay: bool = false
@@ -115,6 +114,7 @@ func _process(delta: float) -> void:
 	if is_playing:
 		_prefetch_upcoming_clips()
 		time_elapsed += delta * playback_speed
+
 		if time_elapsed >= frame_time:
 			skips = int(time_elapsed / frame_time)
 			time_elapsed -= skips * frame_time
@@ -129,14 +129,17 @@ func _on_project_ready() -> void:
 func _on_resolution_changed() -> void:
 	background.size = Project.data.resolution
 	viewport.size = background.size
+
 	for texture_rect: TextureRect in view_textures:
 		if texture_rect != null:
 			texture_rect.size = Project.data.resolution
+
 	for text_viewport: SubViewport in text_viewports:
 		if text_viewport != null:
 			text_viewport.size = Project.data.resolution
 			@warning_ignore("unsafe_property_access")
 			text_viewport.get_child(0).size = Project.data.resolution
+
 	for pck_viewport: SubViewport in pck_viewports:
 		if pck_viewport != null:
 			pck_viewport.size = Project.data.resolution
@@ -159,9 +162,9 @@ func _rebuild_structure() -> void:
 
 	# Audio setup.
 	for player: AudioPlayer in audio_players:
-		if player != null:
-			remove_child(player.player)
-			player.cleanup()
+		if player == null: continue
+		remove_child(player.player)
+		player.cleanup()
 	@warning_ignore("return_value_discarded")
 	audio_players.resize(track_size) # RefCounted so should be fine. (I hope :p)
 
@@ -171,17 +174,17 @@ func _rebuild_structure() -> void:
 
 	# Visual setup.
 	for texture_rect: TextureRect in view_textures:
-		if texture_rect != null:
-			texture_rect.queue_free()
+		if texture_rect == null: continue
+		texture_rect.queue_free()
 	for text_viewport: SubViewport in text_viewports:
-		if text_viewport != null:
-			text_viewport.queue_free()
+		if text_viewport == null: continue
+		text_viewport.queue_free()
 	for pck_viewport: SubViewport in pck_viewports:
-		if pck_viewport != null:
-			pck_viewport.queue_free()
+		if pck_viewport == null: continue
+		pck_viewport.queue_free()
 	for compositor: VisualCompositor in compositors:
-		if compositor != null:
-			compositor.cleanup()
+		if compositor == null: continue
+		compositor.cleanup()
 
 	@warning_ignore_start("return_value_discarded")
 	view_textures.resize(track_size)
@@ -225,28 +228,28 @@ func _rebuild_structure() -> void:
 
 
 func _get_instance_for_clip(clip: ClipData) -> int:
-	if clip_instances.has(clip.id):
-		return clip_instances[clip.id]
+	if clip_instances.has(clip.id): return clip_instances[clip.id]
 
 	var file_id: int = clip.file
 	var used_indices: Array[int] = []
 
 	for clip_id: int in clip_instances:
 		var clip_data: ClipData = ClipLogic.clips.get(clip_id)
-		if clip_data and clip_data.file == file_id:
-			if clip_data.end == clip.start and clip_data.begin + int(clip_data.duration * clip_data.speed) == clip.begin and is_equal_approx(clip_data.speed, clip.speed):
-				var shared_index: int = clip_instances[clip_id]
-				clip_instances[clip.id] = shared_index
-				return shared_index
-			if clip.end == clip_data.start and clip.begin + int(clip.duration * clip.speed) == clip_data.begin and is_equal_approx(clip.speed, clip_data.speed):
-				var shared_index: int = clip_instances[clip_id]
-				clip_instances[clip.id] = shared_index
-				return shared_index
-			used_indices.append(clip_instances[clip_id])
+		if !clip_data or clip_data.file != file_id: continue
+
+		if clip_data.end == clip.start and clip_data.begin + int(clip_data.duration * clip_data.speed) == clip.begin and is_equal_approx(clip_data.speed, clip.speed):
+			var shared_index: int = clip_instances[clip_id]
+			clip_instances[clip.id] = shared_index
+			return shared_index
+
+		if clip.end == clip_data.start and clip.begin + int(clip.duration * clip.speed) == clip_data.begin and is_equal_approx(clip.speed, clip_data.speed):
+			var shared_index: int = clip_instances[clip_id]
+			clip_instances[clip.id] = shared_index
+			return shared_index
+		used_indices.append(clip_instances[clip_id])
 
 	var index: int = 0
-	while index in used_indices:
-		index += 1
+	while index in used_indices: index += 1
 
 	clip_instances[clip.id] = index
 	return index
@@ -262,8 +265,8 @@ func _cleanup_unused_instances(current_frame: int) -> void:
 
 		var next_clips: Array[ClipData] = TrackLogic.get_clips_in_range(track, current_frame, current_frame + look_ahead)
 		for next_clip: ClipData in next_clips:
-			if next_clip.id not in needed_clips:
-				needed_clips.append(next_clip.id)
+			if next_clip.id in needed_clips: continue
+			needed_clips.append(next_clip.id)
 
 	var keys: Array = clip_instances.keys()
 	for key: int in keys:
@@ -278,20 +281,18 @@ func _prefetch_upcoming_clips() -> void:
 		var current_clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
 		var upcoming: Array[ClipData] = TrackLogic.get_clips_in_range(track, frame_nr + 1, frame_nr + look_ahead)
 		for upcoming_clip: ClipData in upcoming:
-			if upcoming_clip == current_clip or upcoming_clip.type != Type.VIDEO:
-				continue
+			if upcoming_clip == current_clip or upcoming_clip.type != Type.VIDEO: continue
 
 			var index: int = _get_instance_for_clip(upcoming_clip)
-
 			var instance_in_use: bool = false
+
 			for track_idx: int in loaded_clips.size():
 				var playing_clip: ClipData = loaded_clips[track_idx]
 				if playing_clip and playing_clip.file == upcoming_clip.file and clips_instance_index[track_idx] == index:
 					instance_in_use = true
 					break
 
-			if instance_in_use:
-				continue
+			if instance_in_use: continue
 
 			var file: FileData = FileLogic.files[upcoming_clip.file]
 			var video: Video = FileLogic.get_video_reader(file, index)
@@ -306,6 +307,7 @@ func _prefetch_upcoming_clips() -> void:
 					target += frame_count
 			else:
 				target = clampi(target, 0, maxi(0, video.get_frame_count() - 1))
+
 			if video.get_current_frame() != target:
 				active_tasks[video_id] = WorkerThreadPool.add_task(video.seek_frame.bind(target))
 
@@ -316,16 +318,19 @@ func _on_closing_editor() -> void:
 			printerr("EditorCore: Failed waiting for task completion on exit.")
 	active_tasks.clear()
 
-	view_textures.clear()
 	for player: AudioPlayer in audio_players:
-		if player != null:
-			player.cleanup()
+		if player == null: continue
+		player.cleanup()
+
+
+	for compositor: VisualCompositor in compositors:
+		if compositor == null: continue
+		compositor.cleanup()
+
+	view_textures.clear()
 	audio_players.clear()
 	text_viewports.clear()
 	pck_viewports.clear()
-	for compositor: VisualCompositor in compositors:
-		if compositor != null:
-			compositor.cleanup()
 	compositors.clear()
 
 
@@ -340,8 +345,7 @@ func _on_clips_updated() -> void:
 ## Update display/audio and continue if within clip bounds.
 func _check_clip(track: int, new_frame_nr: int) -> bool:
 	var clip: ClipData = loaded_clips[track]
-	if !clip:
-		return false
+	if !clip: return false
 	elif !ClipLogic.clips.has(clip.id): # Check if clip really still exists or not.
 		loaded_clips[track] = null
 		return false
@@ -354,13 +358,12 @@ func _check_clip(track: int, new_frame_nr: int) -> bool:
 
 func on_play_pressed() -> void:
 	is_playing = false if frame_nr == Project.data.timeline_end else !is_playing
-	if !is_playing:
-		Project.data.playhead = frame_nr
+	if !is_playing: Project.data.playhead = frame_nr
 
 
 func set_frame_nr(value: int) -> void:
-	if !Project.is_loaded:
-		return
+	if !Project.is_loaded: return
+
 	var end: int = Project.data.timeline_end
 	if value > end:
 		is_playing = false
@@ -432,8 +435,7 @@ func scrub_to_frame(frame_target: int) -> void:
 
 func finish_scrub() -> void:
 	if _scrub_frame != -1:
-		if frame_nr != _scrub_frame:
-			set_frame(_scrub_frame)
+		if frame_nr != _scrub_frame: set_frame(_scrub_frame)
 		_scrub_frame = -1
 
 
@@ -506,9 +508,7 @@ func update_data(track: int) -> void:
 		# Re-instantiate if clip has changed.
 		if pck_viewport.has_meta("file_id") and pck_viewport.get_meta("file_id") != clip.file:
 			for child: Node in pck_viewport.get_children():
-				if child.has_method("cleanup"):
-					@warning_ignore("unsafe_method_access")
-					child.cleanup()
+				child.call("cleanup")
 				child.queue_free()
 			pck_viewport.remove_meta("file_id")
 
@@ -517,9 +517,7 @@ func update_data(track: int) -> void:
 			if module.scene:
 				var instance: Node = module.scene.instantiate()
 				pck_viewport.add_child(instance)
-				if instance.has_method("setup"):
-					@warning_ignore("unsafe_method_access")
-					instance.setup(Project.data.framerate, Project.data.resolution)
+				instance.call("setup", Project.data.framerate, Project.data.resolution)
 			pck_viewport.set_meta("file_id", clip.file)
 
 		# Updating the frame/scene/instance.
@@ -534,9 +532,7 @@ func update_data(track: int) -> void:
 						pck_effect_params[param.id] = effect.get_value(param, clip_frame)
 					break
 
-			if instance.has_method("update_frame"):
-				@warning_ignore("unsafe_method_access")
-				instance.update_frame(clip_frame, clip.duration, pck_effect_params)
+			instance.call("update_frame", clip_frame, clip.duration, pck_effect_params)
 			pck_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
@@ -556,13 +552,15 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	var clip: ClipData = loaded_clips[track_id]
 	var file: FileData = FileLogic.files[clip.file]
 	var raw_data: Variant = FileLogic.file_data.get(file.id)
-	if raw_data == null:
-		return
+	if raw_data == null: return
 
 	var clip_frame: int = frame_nr - clip.start
 	var relative_frame: int = int(clip_frame * clip.speed) + clip.begin
 
-	var fade_alpha: float = Utils.calculate_fade(clip_frame, clip, true)
+	var fade_in: float = Utils.calculate_fade_in(clip_frame, clip)
+	var fade_out: float = Utils.calculate_fade_out(clip_frame, clip)
+	var transition_left: EffectVisual = clip.effects.transition_left
+	var transition_right: EffectVisual = clip.effects.transition_right
 	var effects: Array[EffectVisual] = clip.effects.video
 	load_video_frame(clip, relative_frame, instance_index)
 
@@ -572,7 +570,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
-				texture_rid, effects, clip_frame, fade_alpha))
+				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif clip.type == Type.PCK:
 		var texture_rid: RID = pck_viewports[track_id].get_texture().get_rid()
@@ -580,7 +578,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
-				texture_rid, effects, clip_frame, fade_alpha))
+				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Video:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
@@ -588,7 +586,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_video_frame.bind(
-				video, effects, clip_frame, fade_alpha))
+				video, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif raw_data is Texture2D:
 		var image: Texture2D = raw_data
@@ -597,7 +595,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
-				texture_rid, effects, clip_frame, fade_alpha))
+				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 
 	_apply_track_blend_mode(track_id, effects, clip_frame)
@@ -621,8 +619,8 @@ func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], clip_f
 
 func set_is_playing(value: bool) -> void:
 	is_playing = value
-	if is_playing:
-		time_elapsed = 0.0 # Reset timing on play to ensure perfect sync.
+	if is_playing: time_elapsed = 0.0 # Reset timing on play to ensure perfect sync.
+
 	for player: AudioPlayer in audio_players:
 		player.play(value)
 	play_changed.emit(value)
@@ -631,8 +629,7 @@ func set_is_playing(value: bool) -> void:
 func set_playback_speed(value: float) -> void:
 	playback_speed = value
 	for player: AudioPlayer in audio_players:
-		if player.clip:
-			player.player.pitch_scale = playback_speed * player.clip.speed
+		if player.clip: player.player.pitch_scale = playback_speed * player.clip.speed
 	pitch_shift_effect.pitch_scale = 1.0 / playback_speed
 
 
@@ -644,19 +641,18 @@ func set_background_color(color: Color) -> void:
 # --- Playback helpers ---
 
 func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
-	if !clip or clip.type != Type.VIDEO:
-		return
+	if !clip or clip.type != Type.VIDEO: return
 
 	var file: FileData = FileLogic.files[clip.file]
 	var video: Video = FileLogic.get_video_reader(file, instance_index)
-	if !video: # Check if video is done loading.
-		return
+	if !video: return # Check if video is done loading.
 
 	var video_id: int = video.get_instance_id()
 	var target_frame_nr: int = roundi((float(frame) / Project.data.framerate) * video.get_framerate())
 	if file.path.to_lower().ends_with(".gif"):
 		var frame_count: int = maxi(1, video.get_frame_count())
 		target_frame_nr = target_frame_nr % frame_count
+
 		if target_frame_nr < 0:
 			target_frame_nr += frame_count
 	else:
@@ -666,11 +662,11 @@ func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> vo
 	# we MUST wait for it to finish to prevent multi-threading crashes in C++.
 	if EditorCore.active_tasks.has(video_id):
 		var task_id: int = EditorCore.active_tasks[video_id]
+
 		if WorkerThreadPool.wait_for_task_completion(task_id):
 			printerr("EditorCore: Something went wrong waiting for task completion!")
 		if !EditorCore.active_tasks.erase(video_id):
 			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
 
-	if video.get_current_frame() != target_frame_nr:
-		@warning_ignore("return_value_discarded")
-		video.seek_frame(target_frame_nr)
+	if video.get_current_frame() != target_frame_nr and !video.seek_frame(target_frame_nr):
+		printerr("EditorCore: Error occured when seeking video frame!")
