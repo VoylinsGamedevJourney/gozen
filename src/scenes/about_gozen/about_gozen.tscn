@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cd0krdlykelvg" path="res://scenes/about_gozen/about_gozen.gd" id="1_ecejt"]
 
-[node name="AboutGoZen" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("version_label", "links_label")]
+[node name="AboutGoZen" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("line_edit_version", "rich_text_label_website", "rich_text_label_source_code", "rich_text_label_discord", "rich_text_label_youtube", "rich_text_label_support", "rich_text_label_made_by", "rich_text_label_license")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -10,8 +10,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_ecejt")
-version_label = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/VersionLabel")
-links_label = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/LinksLabel")
+line_edit_version = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/VersionLineEdit")
+rich_text_label_website = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/WebsiteRichTextLabel")
+rich_text_label_source_code = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/SourceCodeRichTextLabel")
+rich_text_label_discord = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/DiscordRichTextLabel")
+rich_text_label_youtube = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/YouTubeRichTextLabel")
+rich_text_label_support = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/SupportRichTextLabel")
+rich_text_label_made_by = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/MadeByLineEdit")
+rich_text_label_license = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/LicenseLineEdit")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1266970552]
 custom_minimum_size = Vector2(700, 350)
@@ -42,15 +48,93 @@ layout_mode = 2
 theme_type_variation = &"title_label"
 text = "About GoZen"
 
-[node name="VersionLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1195228794]
+[node name="GridContainer" type="GridContainer" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1428329145]
 layout_mode = 2
-text = "Version: "
+theme_override_constants/h_separation = 20
+columns = 2
 
-[node name="LinksLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1271187117]
+[node name="VersionLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=1195228794]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 0
+text = "Version"
+
+[node name="VersionLineEdit" type="LineEdit" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=1806183445]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_uneditable_color = Color(1, 1, 1, 1)
+editable = false
+middle_mouse_paste_enabled = false
+
+[node name="WebsiteLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=421101206]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Website"
+
+[node name="WebsiteRichTextLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=1093539749]
+layout_mode = 2
+size_flags_horizontal = 3
 bbcode_enabled = true
-context_menu_enabled = true
+fit_content = true
+
+[node name="SourceCodeLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=800178506]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Source code"
+
+[node name="SourceCodeRichTextLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=1336772227]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="DiscordLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=425179855]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Discord"
+
+[node name="DiscordRichTextLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=1524511250]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="YouTubeLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=369305072]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "YouTube"
+
+[node name="YouTubeRichTextLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=1269337155]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="SupportLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=359865526]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Support the project"
+
+[node name="SupportRichTextLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=297009490]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="Control" type="Control" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=614948309]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="MadeByLineEdit" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1491077099]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="LicenseLineEdit" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1581550427]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
 
 [node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=1272766922]
 layout_mode = 2
@@ -62,5 +146,4 @@ size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 text = "Close popup"
 
-[connection signal="meta_clicked" from="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/LinksLabel" to="." method="_on_links_label_meta_clicked"]
 [connection signal="pressed" from="Panel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]
