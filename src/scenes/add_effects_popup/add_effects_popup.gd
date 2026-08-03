@@ -1,4 +1,5 @@
 extends PanelContainer
+# TODO: In 4.8 we can use the native fuzzy search feature.
 
 const COLOR_VISUAL: Color = Color(0.101960786, 1, 0.101960786, 0.078431375)
 const COLOR_AUDIO: Color = Color(0.101960786, 0.101960786, 1, 0.078431375)
@@ -41,23 +42,25 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 
-## Type: 0 = All, 1 = Visuals, 2 = Audio
-func load_effects(type: int, clips: Array[ClipData]) -> void:
+func load_effects(type: EffectsHandler.TYPE, clips: Array[ClipData]) -> void:
 	current_clips = clips
 	is_type = type
 
 	var has_visual: bool = false
 	var has_audio: bool = false
 	for clip: ClipData in current_clips:
-		if clip.type in EditorCore.VISUAL_TYPES:
-			has_visual = true
-		if clip.type in EditorCore.AUDIO_TYPES:
-			has_audio = true
+		if clip.type in EditorCore.VISUAL_TYPES: has_visual = true
+		if clip.type in EditorCore.AUDIO_TYPES:  has_audio  = true
+		if has_visual and has_audio: break # No need to go over the other clips anymore.
 
-	if type <= 1 and has_visual:
-		_add_effects(EffectsHandler.visual_effects, true)
-	if type != 1 and has_audio:
-		_add_effects(EffectsHandler.audio_effects, false)
+	match type:
+		EffectsHandler.TYPE.ALL:
+			if has_visual: _add_effects(EffectsHandler.visual_effects, true)
+			if has_audio: _add_effects(EffectsHandler.audio_effects, false)
+		EffectsHandler.TYPE.VISUALS:
+			if has_visual: _add_effects(EffectsHandler.visual_effects, true)
+		EffectsHandler.TYPE.AUDIO:
+			if has_audio: _add_effects(EffectsHandler.audio_effects, false)
 
 
 func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> void:
@@ -67,20 +70,14 @@ func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> 
 
 		button.text = tr(effect_option)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		button.button_group = button_group
 		button.toggle_mode = true
+		button.button_group = button_group
+		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 		var stylebox: StyleBoxFlat = StyleBoxFlat.new()
 		stylebox.bg_color = color
-		stylebox.content_margin_left = 4.0
-		stylebox.content_margin_top = 4.0
-		stylebox.content_margin_right = 4.0
-		stylebox.content_margin_bottom = 4.0
-		stylebox.corner_radius_top_left = 3
-		stylebox.corner_radius_top_right = 3
-		stylebox.corner_radius_bottom_left = 3
-		stylebox.corner_radius_bottom_right = 3
+		stylebox.set_corner_radius_all(3)
+		stylebox.set_content_margin_all(4)
 		button.add_theme_stylebox_override("normal", stylebox)
 
 		var stylebox_pressed: StyleBoxFlat = stylebox.duplicate()
@@ -89,14 +86,11 @@ func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> 
 		button.add_theme_stylebox_override("hover", stylebox_pressed)
 		button.add_theme_stylebox_override("focus", stylebox_pressed)
 
-		@warning_ignore_start("return_value_discarded")
-		button.pressed.connect(_on_effect_clicked.bind(effects_data[effect_option], is_visual))
-		button.pressed.connect(_on_close_button_pressed)
-		@warning_ignore_restore("return_value_discarded")
+		if button.pressed.connect(_on_effect_clicked.bind(effects_data[effect_option], is_visual)):
+			printerr("AddEffectsPopup: Couldn't connect 'pressed' on '%s' button!" % tr(effect_option))
 
 		shown_buttons.append(button)
 		effect_buttons.add_child(button)
-
 	shown_buttons[0].button_pressed = true
 	_on_search_box_text_changed("")
 
@@ -127,12 +121,11 @@ func _on_search_box_text_submitted(_effect_text: String) -> void:
 
 
 func _on_effect_clicked(effect_id: String, is_visual: bool) -> void:
-	if is_visual:
-		EffectsHandler.add_effect(
-				current_clips, EffectsHandler.visual_effect_instances[effect_id].deep_copy(), is_visual)
-	else:
-		EffectsHandler.add_effect(
-				current_clips, EffectsHandler.audio_effect_instances[effect_id].deep_copy(), is_visual)
+	EffectsHandler.add_effect(
+			current_clips,
+			EffectsHandler.visual_effect_instances[effect_id].deep_copy() if is_visual else\
+			EffectsHandler.audio_effect_instances[effect_id].deep_copy(),
+ 			is_visual)
 	_on_close_button_pressed()
 
 
@@ -144,6 +137,7 @@ func _on_close_button_pressed() -> void:
 class ButtonScore:
 	var button: Button
 	var score: int
+
 
 	func _init(button_node: Button, effect_text: String) -> void:
 		button = button_node
