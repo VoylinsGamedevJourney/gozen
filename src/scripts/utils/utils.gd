@@ -195,10 +195,20 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 	return score if query_index == query.length() else 0
 
 
+static func calculate_fade_in(frame_nr: int, clip: ClipData) -> float:
+	var fade: Vector2i = clip.effects.fade_visual
+	return 1.0 if fade.x == 0 else clamp(frame_nr / float(fade.x), 0.0, 1.0)
+
+
+static func calculate_fade_out(frame_nr: int, clip: ClipData) -> float:
+	var fade: Vector2i = clip.effects.fade_visual
+	return 1.0 if fade.y == 0 else clamp((clip.duration - frame_nr) / float(fade.y), 0.0, 1.0)
+
+
 static func calculate_fade(frame_nr: int, clip: ClipData, is_visual: bool) -> float:
 	var fade: Vector2i = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
-	var fade_in: float = 1.0 if fade.x == 0 else min(frame_nr / float(fade.x), 1.0)
-	var fade_out: float = 1.0 if fade.y == 0 else min((clip.duration - frame_nr) / float(fade.y), 1.0)
+	var fade_in: float = 1.0 if fade.x == 0 else clamp(frame_nr / float(fade.x), 0.0, 1.0)
+	var fade_out: float = 1.0 if fade.y == 0 else clamp((clip.duration - frame_nr) / float(fade.y), 0.0, 1.0)
 	return fade_in * fade_out
 
 
