@@ -76,11 +76,12 @@ func _deserialize_video(data: Dictionary, file_id: int = -1) -> void:
 		var effect: EffectVisual = null
 
 		if effect_id == "pck_effect_params" and file_id != -1:
+			effect = EffectVisual.new()
+			effect.id = "pck_effect_params"
+			effect.nickname = "Module Parameters"
+
 			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
 			if module_data:
-				effect = EffectVisual.new()
-				effect.id = "pck_effect_params"
-				effect.nickname = "Module Parameters"
 				for effect_param: EffectParam in module_data.params:
 					effect.params.append(effect_param.duplicate(true))
 		elif EffectsHandler.visual_effect_instances.has(effect_id):

@@ -44,8 +44,6 @@ func _setup_logic() -> void:
 	MarkerLogic.markers = data.markers
 	FolderLogic.folders = data.folders
 
-	EffectsHandler.sync_project_effects(data.clips, data.files)
-
 	TrackLogic.prepare_data()
 
 
@@ -155,6 +153,8 @@ func open(new_project_path: String) -> void:
 					break
 		if not all_loaded:
 			await get_tree().process_frame
+
+	EffectsHandler.sync_project_effects(data.clips, data.files)
 
 	# 99% = Finalizing.
 	loading_overlay.update(99, tr("Finalizing ..."))

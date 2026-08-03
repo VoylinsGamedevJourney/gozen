@@ -91,7 +91,19 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 	for clip: ClipData in clips.values():
 		for i: int in clip.effects.video.size():
 			var old_effect: EffectVisual = clip.effects.video[i]
-			if visual_effect_instances.has(old_effect.id):
+			if old_effect.id == "pck_effect_params":
+				var module_data: GoZenModule = FileLogic.file_data.get(clip.file)
+				if module_data:
+					var new_effect: EffectVisual = EffectVisual.new()
+					new_effect.id = "pck_effect_params"
+					new_effect.nickname = "Module Parameters"
+					for param: EffectParam in module_data.params:
+						new_effect.params.append(param.duplicate(true))
+					new_effect.keyframes = old_effect.keyframes.duplicate(true)
+					new_effect.is_enabled = old_effect.is_enabled
+					new_effect.set_default_keyframe()
+					clip.effects.video[i] = new_effect
+			elif visual_effect_instances.has(old_effect.id):
 				var new_effect: EffectVisual = visual_effect_instances[old_effect.id].deep_copy()
 				_apply_param_exceptions(new_effect)
 				new_effect.keyframes = old_effect.keyframes.duplicate(true)
