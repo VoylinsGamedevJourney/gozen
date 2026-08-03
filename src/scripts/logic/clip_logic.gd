@@ -20,6 +20,7 @@ var copied_min_track: int = 0
 func add(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Add new clip(s)")
 	var existing_keys: Array[int] = clips.keys()
+
 	for request: ClipRequest in requests:
 		var new_clip: ClipData = ClipData.new()
 		new_clip.id = Utils.get_unique_id(existing_keys)
@@ -29,6 +30,7 @@ func add(requests: Array[ClipRequest]) -> void:
 		new_clip.start = request.frame
 		new_clip.duration = FileLogic.files[request.file.id].duration
 		new_clip.effects = _create_default_effects(new_clip.type, request.file.id)
+
 		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
 			new_clip.effects.is_muted = true
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
@@ -41,6 +43,7 @@ func _restore_clip(snapshot: ClipData) -> void:
 	TrackLogic.add_clip_to_track(snapshot.track, snapshot)
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
+
 	added.emit(snapshot)
 	updated.emit.call_deferred()
 
@@ -57,6 +60,7 @@ func _delete(clip: ClipData) -> void:
 	TrackLogic.remove_clip_from_track(clip.track, clip)
 	if !clips.erase(clip.id):
 		printerr("ClipLogic: Couldn't erase clip '%s' in clips!" % clip.id)
+
 	selected_clips.erase(clip)
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
@@ -86,11 +90,11 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 		var gap_size: int = gap_range.y - gap_range.x
 
 		for move_clip: ClipData in TrackLogic.get_clips_after(track, gap_start):
-			if move_clip not in clips_to_delete:
-				InputManager.undo_redo.add_do_method(_move.bind(
-						move_clip, track, move_clip.start - gap_size))
-				InputManager.undo_redo.add_undo_method(_move.bind(
-						move_clip, track, move_clip.start))
+			if move_clip in clips_to_delete: continue
+			InputManager.undo_redo.add_do_method(_move.bind(
+					move_clip, track, move_clip.start - gap_size))
+			InputManager.undo_redo.add_undo_method(_move.bind(
+					move_clip, track, move_clip.start))
 
 	var leftmost_frame: int = ranges_by_track.values().map(func(vec: Vector2i) -> int: return vec.x).min()
 	if !EditorCore.is_playing:
@@ -116,6 +120,7 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	clip.start = new_frame
 	clip.track = new_track
 	TrackLogic.add_clip_to_track(new_track, clip)
+
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
@@ -126,6 +131,7 @@ func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 	var existing_group_ids: Array[int] = _get_all_group_ids()
 	var group_id_map: Dictionary = {}
 	InputManager.undo_redo.create_action("Split clip_data(s)")
+
 	for request: ClipRequest in requests:
 		var clip: ClipData = request.clip
 		var split_offset: int = request.frame
@@ -156,6 +162,8 @@ func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 		snapshot.duration = duration_right
 		effects.video = _copy_visual_effects(request.clip.effects.video, split_offset)
 		effects.audio = _copy_audio_effects(request.clip.effects.audio, split_offset)
+		effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
+		effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 
 		if not clip.groups.is_empty():
 			var old_group: int = clip.groups[-1]
@@ -177,10 +185,8 @@ func resize(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Resize clip_data(s)")
 	for request: ClipRequest in requests:
 		var clip: ClipData = request.clip
-		InputManager.undo_redo.add_do_method(_resize.bind(
-				clip, request.resize, request.is_end))
-		InputManager.undo_redo.add_undo_method(_resize_restore.bind(
-				clip, clip.start, clip.duration, clip.begin))
+		InputManager.undo_redo.add_do_method(_resize.bind( clip, request.resize, request.is_end))
+		InputManager.undo_redo.add_undo_method(_resize_restore.bind( clip, clip.start, clip.duration, clip.begin))
 	InputManager.undo_redo.commit_action()
 
 
@@ -213,8 +219,7 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 
 func copy_selected_clips() -> void:
 	copied_clips.clear()
-	if selected_clips.is_empty():
-		return
+	if selected_clips.is_empty(): return
 
 	# 32 bit max.
 	copied_min_start = Utils.INT_32_MAX
@@ -230,12 +235,12 @@ func copy_selected_clips() -> void:
 		snapshot.effects.is_muted = clip.effects.is_muted
 		snapshot.effects.video = _copy_visual_effects(clip.effects.video, 0)
 		snapshot.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
+		snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
+		snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 		copied_clips.append(snapshot)
 
-		if clip.start < copied_min_start:
-			copied_min_start = clip.start
-		if clip.track < copied_min_track:
-			copied_min_track = clip.track
+		if clip.start < copied_min_start: copied_min_start = clip.start
+		if clip.track < copied_min_track: copied_min_track = clip.track
 
 
 ## Cut as in Ctrl+X.
@@ -245,8 +250,7 @@ func cut_selected_clips() -> void:
 
 
 func paste_copied_clips() -> void:
-	if copied_clips.is_empty():
-		return
+	if copied_clips.is_empty(): return
 
 	var target_frame: int = EditorCore.frame_nr
 	var clips_to_paste: Array[ClipData] = []
@@ -276,6 +280,8 @@ func paste_copied_clips() -> void:
 		new_clip.effects.is_muted = copied_clip.effects.is_muted
 		new_clip.effects.video = _copy_visual_effects(copied_clip.effects.video, 0)
 		new_clip.effects.audio = _copy_audio_effects(copied_clip.effects.audio, 0)
+		new_clip.effects.transition_left = copied_clip.effects.transition_left.deep_copy() if copied_clip.effects.transition_left else null
+		new_clip.effects.transition_right = copied_clip.effects.transition_right.deep_copy() if copied_clip.effects.transition_right else null
 
 		var relative_start: int = copied_clip.start - copied_min_start
 		new_clip.start = target_frame + relative_start
@@ -288,6 +294,7 @@ func paste_copied_clips() -> void:
 func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void:
 	InputManager.undo_redo.create_action(action_name)
 	var new_selected: Array[ClipData] = []
+
 	for clip: ClipData in clips_to_insert:
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(clip))
 		InputManager.undo_redo.add_undo_method(_delete.bind(clip))
@@ -300,8 +307,7 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void
 
 
 func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
-	if clips_to_duplicate.is_empty():
-		return 0
+	if clips_to_duplicate.is_empty(): return 0
 
 	var new_clips: Array[ClipData] = []
 	var failed_duplicates: int = 0
@@ -311,8 +317,8 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 	var group_id_map: Dictionary = {}
 
 	for clip: ClipData in clips_to_duplicate:
-		if !clip:
-			continue
+		if !clip: continue
+
 		var target_frame: int = clip.end
 		var free_region: Vector2i = TrackLogic.get_free_region(clip.track, target_frame)
 		if free_region.y - target_frame >= clip.duration:
@@ -336,6 +342,8 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 			new_clip.effects.is_muted = clip.effects.is_muted
 			new_clip.effects.video = _copy_visual_effects(clip.effects.video, 0)
 			new_clip.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
+			new_clip.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
+			new_clip.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 			new_clip.start = target_frame
 			new_clip.id = Utils.get_unique_id(existing_keys)
 
@@ -344,20 +352,18 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 		else:
 			failed_duplicates += 1
 
-	if not new_clips.is_empty():
-		insert_clips(new_clips, "Duplicate clip(s)")
+	if not new_clips.is_empty(): insert_clips(new_clips, "Duplicate clip(s)")
 	return failed_duplicates
 
 
 func get_group_clips(clip: ClipData) -> Array[ClipData]:
-	if clip.groups.is_empty():
-		return []
+	if clip.groups.is_empty(): return []
 
 	var out_group: int = clip.groups[-1]
 	var group_clips_data: Array[ClipData] = []
 	for clip_data: ClipData in clips.values():
-		if clip_data == clip:
-			continue
+		if clip_data == clip: continue
+
 		if not clip_data.groups.is_empty() and clip_data.groups[-1] == out_group:
 			group_clips_data.append(clip_data)
 	return group_clips_data
@@ -374,8 +380,8 @@ func _get_all_group_ids() -> Array[int]:
 	var ids: Array[int] = []
 	for clip: ClipData in clips.values():
 		for group: int in clip.groups:
-			if not group in ids:
-				ids.append(group)
+			if group in ids: continue
+			ids.append(group)
 	return ids
 
 
@@ -383,6 +389,7 @@ func group_clips(clips_to_group: Array[ClipData]) -> void:
 	if clips_to_group.size() > 1:
 		var group_id: int = Utils.get_unique_id(_get_all_group_ids())
 		InputManager.undo_redo.create_action("Group clips")
+
 		for clip: ClipData in clips_to_group:
 			var new_groups: Array[int] = clip.groups.duplicate()
 			new_groups.append(group_id)
@@ -392,15 +399,14 @@ func group_clips(clips_to_group: Array[ClipData]) -> void:
 
 
 func ungroup_clips(clips_to_ungroup: Array[ClipData]) -> void:
-	if clips_to_ungroup.is_empty():
-		return
+	if clips_to_ungroup.is_empty(): return
 
 	var groups_to_remove: Array[int] = []
 	for clip: ClipData in clips_to_ungroup:
 		if not clip.groups.is_empty():
 			var out_group: int = clip.groups[-1]
-			if not out_group in groups_to_remove:
-				groups_to_remove.append(out_group)
+			if out_group in groups_to_remove: continue
+			groups_to_remove.append(out_group)
 
 	if !groups_to_remove.is_empty():
 		InputManager.undo_redo.create_action("Ungroup clips")
@@ -437,12 +443,11 @@ func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array
 				new_effect.keyframes[param_id] = {}
 			new_effect.keyframes[param_id][0] = value_at_split
 
-
 			# Shift existing keyframes that appear after the split.
-			if effect.keyframes.has(param_id):
-				for frame: int in effect.keyframes[param_id]:
-					if frame > split_pos:
-						new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
+			if !effect.keyframes.has(param_id): continue
+			for frame: int in effect.keyframes[param_id]:
+				if frame <= split_pos: continue
+				new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
 		new_effects.append(new_effect)
 	return new_effects
 
@@ -464,18 +469,18 @@ func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[E
 			new_effect.keyframes[param_id][0] = value_at_split
 
 			# Shift existing keyframes that appear after the split.
-			if effect.keyframes.has(param_id):
-				for frame: int in effect.keyframes[param_id]:
-					if frame <= split_pos:
-						continue
-					new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
-			new_effects.append(new_effect)
+			if !effect.keyframes.has(param_id): continue
+			for frame: int in effect.keyframes[param_id]:
+				if frame <= split_pos: continue
+				new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
+		new_effects.append(new_effect)
 	return new_effects
 
 
 func apply_audio_take_over(clip: ClipData, audio_file: int, offset: float) -> void:
 	var effects: ClipEffects = clip.effects
 	var active: bool = audio_file != -1
+
 	InputManager.undo_redo.create_action("Set clip Audio-Take-Over")
 	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(clip, active, audio_file, offset))
 	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(clip, effects.ato_active, effects.ato_file, effects.ato_offset))
@@ -484,6 +489,7 @@ func apply_audio_take_over(clip: ClipData, audio_file: int, offset: float) -> vo
 
 func _apply_audio_take_over(clip: ClipData, active: bool, audio_file_id: int, offset: float) -> void:
 	var effects: ClipEffects = clip.effects
+
 	effects.ato_active = active
 	effects.ato_file = audio_file_id
 	effects.ato_offset = offset
@@ -494,6 +500,7 @@ func _apply_audio_take_over(clip: ClipData, active: bool, audio_file_id: int, of
 
 func change_speed(requests: Array[ClipRequest]) -> void:
 	InputManager.undo_redo.create_action("Change speed clip(s)")
+
 	for request: ClipRequest in requests:
 		var clip: ClipData = request.clip
 		var amount: int = request.resize
@@ -515,6 +522,7 @@ func _change_speed(clip: ClipData, amount: int, from_end: bool, new_speed: float
 	else:
 		clip.start += amount
 		clip.duration -= amount
+
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
 
@@ -577,25 +585,32 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 	if file_type in EditorCore.VISUAL_TYPES:
 		var resolution: Vector2i = Project.get_resolution()
 		var transform_effect: EffectVisual = (load(Library.EFFECT_VISUAL_TRANSFORM) as EffectVisual).deep_copy()
+
 		for param: EffectParam in transform_effect.params:
-			if param.id == "pivot":
-				param.default_value = Vector2i(resolution / 2.0)
+			if param.id == "pivot": param.default_value = Vector2i(resolution / 2.0)
+
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
 
 		if file_type == EditorCore.Type.PCK and file_id != -1:
 			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
-			if module_data:
-				var pck_effect: EffectVisual = EffectVisual.new()
-				pck_effect.id = "pck_effect_params"
-				pck_effect.nickname = "Module Parameters"
-				for param: EffectParam in module_data.params:
-					pck_effect.params.append(param.duplicate(true))
-				pck_effect.set_default_keyframe()
-				effects.video.append(pck_effect)
+			var pck_effect: EffectVisual = EffectVisual.new()
+			pck_effect.id = "pck_effect_params"
+			pck_effect.nickname = "Module Parameters"
+			for param: EffectParam in module_data.params:
+				pck_effect.params.append(param.duplicate(true))
+			pck_effect.set_default_keyframe()
+			effects.video.append(pck_effect)
 
 	if file_type in EditorCore.AUDIO_TYPES:
 		var volume_effect: EffectAudio = (load(Library.EFFECT_AUDIO_VOLUME) as EffectAudio).deep_copy()
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
+
+	if EffectsHandler.transition_instances.has("fade"):
+		effects.transition_left = EffectsHandler.transition_instances["fade"].deep_copy()
+		effects.transition_left.set_default_keyframe()
+		effects.transition_right = EffectsHandler.transition_instances["fade"].deep_copy()
+		effects.transition_right.set_default_keyframe()
+
 	return effects
