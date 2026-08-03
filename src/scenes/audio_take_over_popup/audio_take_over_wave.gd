@@ -1,7 +1,6 @@
 class_name ATOWave
 extends ColorRect
 
-
 signal seek_requested(position: float)
 signal zoom_requested(new_duration: float)
 
@@ -39,27 +38,24 @@ func set_wave_modifier(new_wave_modifier: int) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
-		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
-			_seeking = mouse_event.pressed
-		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			zoom_requested.emit(maxf(1.0, preview_duration / 1.2))
-		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			zoom_requested.emit(minf(300.0, preview_duration * 1.2))
+		match (event as InputEventMouseButton).button_index:
+			MOUSE_BUTTON_LEFT: _seeking = mouse_event.pressed
+			MOUSE_BUTTON_WHEEL_UP: zoom_requested.emit(maxf(1.0, preview_duration / 1.2))
+			MOUSE_BUTTON_WHEEL_DOWN: zoom_requested.emit(minf(300.0, preview_duration * 1.2))
+
 		if _seeking:
 			var seek_time: float = (mouse_event.position.x / size.x) * preview_duration
 			seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
-	if event is InputEventMouseMotion:
-		if _seeking:
-			var seek_time: float = (get_local_mouse_position().x / size.x) * preview_duration
-			seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
+	elif event is InputEventMouseMotion and _seeking:
+		var seek_time: float = (get_local_mouse_position().x / size.x) * preview_duration
+		seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
 
 
 func _draw() -> void:
-	if file_id == -1 or !FileLogic.audio_wave.has(file_id):
-		return
+	if file_id == -1 or !FileLogic.audio_wave.has(file_id): return
+
 	var wave_dict: Dictionary = FileLogic.audio_wave[file_id]
-	if wave_dict.is_empty():
-		return
+	if wave_dict.is_empty(): return
 
 	var wave_data: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
 	var area_width: float = size.x
@@ -85,13 +81,12 @@ func _draw() -> void:
 		var value: float = wave_data[i]
 		var time: float = i / framerate
 		var pos_x: float = (time * pixels_per_sec) + pixel_offset
-		if pos_x > area_width:
-			break
+		if pos_x > area_width: break
+
 		var height: float = clampf(value * wave_modifier, 0.0, 1.0) * (area_height * 0.9)
-		draw_line(
-				Vector2(pos_x, center_y - height / 2.0),
-				Vector2(pos_x, center_y + height / 2.0),
-				COLOR_WAVE)
+		var from: Vector2 = Vector2(pos_x, center_y - height / 2.0)
+		var to: Vector2 = Vector2(pos_x, center_y + height / 2.0)
+		draw_line(from, to, COLOR_WAVE)
 
 	# - Draw playhead.
 	var playhead_x: float = (playback_position / preview_duration) * size.x

@@ -1,5 +1,7 @@
 extends Control
 
+const MAX_DURATION_DEFAULT: float = 300.0
+
 
 @export var video_file_label: Label
 @export var audio_play_button: TextureButton
@@ -22,25 +24,22 @@ var _scrub_time: float = -1.0
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
-	file_a_wave.zoom_requested.connect(_on_wave_zoom_requested)
-	file_b_wave.zoom_requested.connect(_on_wave_zoom_requested)
-	@warning_ignore_restore("return_value_discarded")
+	for wave: ATOWave in [file_a_wave, file_b_wave]:
+		if wave.zoom_requested.connect(_on_wave_zoom_requested):
+			printerr("AudioTakeOverPopup: Couldn't connect 'zoom_requested' on '%s'!" % wave)
 
 
 func _on_wave_zoom_requested(new_duration: float) -> void:
-	file_a_wave.preview_duration = new_duration
-	file_b_wave.preview_duration = new_duration
-	file_a_wave.queue_redraw()
-	file_b_wave.queue_redraw()
+	for wave: ATOWave in [file_a_wave, file_b_wave]:
+		wave.preview_duration = new_duration
+		wave.queue_redraw()
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		PopupManager.close_all()
-	if event.is_action_pressed("timeline_play_pause"):
-		var is_playing: bool = file_a_player.playing
-		if !is_playing:
+	elif event.is_action_pressed("timeline_play_pause"):
+		if !file_a_player.playing:
 			_start_playback(file_a_wave.get("playback_position") as float)
 		else:
 			_stop_playback()
@@ -50,35 +49,25 @@ func _input(event: InputEvent) -> void:
 func _process(_delta: float) -> void:
 	var is_playing: bool = file_a_player.playing or file_b_player.playing
 	if _scrub_time != -1.0:
-		if is_playing:
-			_stop_playback()
+		if is_playing: _stop_playback()
 
-		file_a_wave.set("playback_position", _scrub_time)
-		file_b_wave.set("playback_position", _scrub_time)
-		file_a_wave.queue_redraw()
-		file_b_wave.queue_redraw()
+		for wave: ATOWave in [file_a_wave, file_b_wave]:
+			wave.set("playback_position", _scrub_time)
+			wave.queue_redraw()
 
-		if is_playing:
-			_start_playback(_scrub_time)
+		if is_playing: _start_playback(_scrub_time)
 		_scrub_time = -1.0
-
 	is_playing = file_a_player.playing or file_b_player.playing
-	if !is_playing:
-		return
+	if !is_playing: return
 
-	var playback_position: float = 0.0
-	if file_a_player.playing:
-		playback_position = file_a_player.get_playback_position()
-	elif file_b_player.playing:
-		playback_position = file_b_player.get_playback_position() + offset_spinbox.value
-
+	var playback_position: float = file_a_player.get_playback_position()
 	if file_b_id != -1 and not file_b_player.playing and playback_position >= offset_spinbox.value:
 		var b_len: float = file_b_player.stream.get_length() if file_b_player.stream else 0.0
 		if b_len == 0.0 or (playback_position - offset_spinbox.value) < b_len:
 			if file_b_player.stream:
 				file_b_player.play(playback_position - offset_spinbox.value)
 
-	var max_duration: float = 300.0
+	var max_duration: float = MAX_DURATION_DEFAULT
 	if file_a_player.stream and file_a_player.stream.get_length() > 0.0:
 		max_duration = file_a_player.stream.get_length()
 	elif file_b_player.stream and file_b_player.stream.get_length() > 0.0:
@@ -88,26 +77,24 @@ func _process(_delta: float) -> void:
 		_stop_playback()
 		playback_position = 0.0
 
-	file_a_wave.set("playback_position", playback_position)
-	file_b_wave.set("playback_position", playback_position)
-	file_a_wave.queue_redraw()
-	file_b_wave.queue_redraw()
+	for wave: ATOWave in [file_a_wave, file_b_wave]:
+		wave.set("playback_position", playback_position)
+		wave.queue_redraw()
 
 
 func load_data(id: int, is_file: bool) -> void:
 	var file_a: FileData
 	var target_file_b_id: int = -1
 	var target_offset: float = 0.0
+	current_file_id = id
 
 	if is_file:
-		current_file_id = id
 		file_a = FileLogic.files[current_file_id]
 		file_a_wave.set("file_id", current_file_id)
 		if file_a.ato_active:
 			target_file_b_id = file_a.ato_file
 			target_offset = file_a.ato_offset
 	else:
-		current_clip_id = id
 		var clip: ClipData = ClipLogic.clips[current_clip_id]
 		file_a = FileLogic.files[clip.file]
 		file_a_wave.set("file_id", file_a.id)
@@ -125,8 +112,8 @@ func load_data(id: int, is_file: bool) -> void:
 
 	var selected_idx: int = 0
 	for audio_file: FileData in audio_files:
-		if audio_file.id == file_a.id:
-			continue
+		if audio_file.id == file_a.id: continue
+
 		file_b_list.add_item(audio_file.nickname)
 		file_b_list.set_item_metadata(item_id, audio_file.id)
 		if audio_file.id == target_file_b_id:
@@ -147,11 +134,11 @@ func _on_take_over_audio_button_pressed() -> void:
 		file_b = FileData.new()
 		file_b.id = -1
 
-	if current_file_id != -1: # file
+	if current_file_id != -1:
 		var file_a: FileData = FileLogic.files.get(current_file_id)
 		if file_a:
 			FileLogic.apply_audio_take_over(file_a, file_b, offset_spinbox.value)
-	elif current_clip_id != -1: # Clip
+	elif current_clip_id != -1:
 		var clip: ClipData = ClipLogic.clips.get(current_clip_id)
 		if clip:
 			ClipLogic.apply_audio_take_over(clip, file_b_id, offset_spinbox.value)
@@ -179,8 +166,8 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 		file_b_wave.set("file_id", -1)
 		file_b_player.stream = null
 	else:
-		file_b_wave.set("file_id", file_b_id)
 		var file_b: FileData = FileLogic.files[file_b_id]
+		file_b_wave.set("file_id", file_b_id)
 		file_b_player.stream = FileLogic.get_audio_stream(file_b, 0)
 
 
@@ -200,12 +187,11 @@ func _start_playback(start_time: float) -> void:
 	if file_b_id != -1: # Start B only if valid and time is past offset.
 		var offset: float = offset_spinbox.value
 		var b_time: float = start_time - offset
-		if b_time >= 0:
-			if file_b_player.stream:
+		if b_time < 0:
+			file_b_player.stop()
+		elif file_b_player.stream:
 				file_b_player.play(b_time)
 				played_anything = true
-		else:
-			file_b_player.stop()
 
 	if not played_anything:
 		_stop_playback()
@@ -213,8 +199,8 @@ func _start_playback(start_time: float) -> void:
 
 func _stop_playback() -> void:
 	audio_play_button.texture_normal = load(Library.ICON_PLAY)
-	file_a_player.stop()
-	file_b_player.stop()
+	for player: AudioStreamPlayer in [file_a_player, file_b_player]:
+		player.stop()
 
 
 func _on_wave_seek_request(playback_position: float) -> void:
@@ -222,8 +208,8 @@ func _on_wave_seek_request(playback_position: float) -> void:
 
 
 func _on_audio_wave_modifier_spin_box_value_changed(value: float) -> void:
-	file_a_wave.set("wave_modifier", int(value))
-	file_b_wave.set("wave_modifier", int(value))
+	for wave: ATOWave in [file_a_wave, file_b_wave]:
+		wave.set("wave_modifier", int(value))
 
 
 ## Try to do a good attempt on auto aligning the waveforms.
@@ -257,6 +243,7 @@ func _on_auto_align_button_pressed() -> void:
 		var energy: float = 0.0
 		for j: int in window_frames:
 			energy += wave_a[i + j]
+
 		if energy > max_a_energy:
 			max_a_energy = energy
 			best_a_start = i
@@ -269,6 +256,7 @@ func _on_auto_align_button_pressed() -> void:
 		var dot: float = 0.0
 		for j: int in range(0, window_frames, 2): # Check every other sample for speed.
 			dot += wave_a[best_a_start + j] * wave_b[i + j]
+
 		if dot > max_dot:
 			max_dot = dot
 			best_coarse_b = i
@@ -280,6 +268,7 @@ func _on_auto_align_button_pressed() -> void:
 		var dot: float = 0.0
 		for j: int in window_frames:
 			dot += wave_a[best_a_start + j] * wave_b[i + j]
+
 		if dot > max_dot:
 			max_dot = dot
 			best_b_start = i
