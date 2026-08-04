@@ -65,5 +65,6 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_xilbx")
 id = "text"
 nickname = "Text"
+custom_ui_path = "uid://dg34cqoqscoxc"
 params = Array[ExtResource("1_drc3j")]([SubResource("Resource_drc3j"), SubResource("Resource_xilbx"), SubResource("Resource_ptuff"), SubResource("Resource_gif22"), SubResource("Resource_nmfvc"), SubResource("Resource_dgkg4")])
 metadata/_custom_type_script = "uid://e26q35ad13vv"
