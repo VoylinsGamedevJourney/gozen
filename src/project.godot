@@ -67,10 +67,6 @@ window/size/viewport_height=1080
 window/size/mode=2
 window/size/mode.editor=0
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/honyaku/plugin.cfg")
-
 [extensions]
 
 audio=PackedStringArray("wav", "mp3", "ogg")

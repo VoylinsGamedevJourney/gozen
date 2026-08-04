@@ -498,7 +498,7 @@ func _create_wave(file: FileData) -> void:
 					call_deferred("_on_wave_ready", file)
 					return
 
-	print("FileLogic: Creating wave for '%s' ..." % file.nickname)
+	Print.info("FileLogic", "Creating wave for '%s' ..." % file.nickname)
 	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
 	if data.is_empty():
 		audio_wave[file.id] = { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() }
@@ -568,7 +568,7 @@ func _create_wave(file: FileData) -> void:
 	if save_file and !save_file.store_var(audio_wave[file.id]):
 		printerr("FileLogic: Couldn't save wave file for file '%s'!" % file.path)
 	call_deferred("_on_wave_ready", file)
-	print("FileLogic: Wave creation done for '%s'!" % file.nickname)
+	Print.info("FileLogic", "Wave creation done for '%s'!" % file.nickname)
 
 
 func _on_wave_ready(file: FileData) -> void:
@@ -712,7 +712,7 @@ func save_audio_to_wav(file: FileData, save_path: String) -> void:
 
 func _check_if_modified(file: FileData) -> void:
 	if !file.path.begins_with("temp://") and !FileAccess.file_exists(file.path):
-		print("FileLogic: File %s at %s doesn't exist anymore!" % [file.id, file.path])
+		Print.info("FileLogic", "File %s at %s doesn't exist anymore!" % [file.id, file.path])
 		_delete(file)
 
 

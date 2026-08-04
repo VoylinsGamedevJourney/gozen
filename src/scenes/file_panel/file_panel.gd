@@ -348,8 +348,9 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 
 
 func _add_folder_to_tree(folder: String) -> void:
-	if folder_items.has(folder): return print("FilePanel:
-		Folder '%s' already exists!" % folder)
+	if folder_items.has(folder):
+		Print.info("FilePanel", "Folder '%s' already exists!" % folder)
+		return
 
 	# Check if all parent folders exist or not.
 	var folders: PackedStringArray = folder.split('/', false)

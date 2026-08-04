@@ -7,22 +7,23 @@ const IGNORE_FOLDERS: PackedStringArray = ["addons", ".godot", "translations", "
 
 
 func _run() -> void:
-	print("Scanning project for translatable files...")
+	Print.info("UpdateLocalization", "Scanning project for translatable files...")
 	var files: PackedStringArray = []
 	scan_dir("res://", files)
-	print("Found ", files.size(), " files.")
+	Print.info("UpdateLocalization", "Found ", files.size(), " files.")
 
 	ProjectSettings.set_setting("internationalization/locale/translations_pot_files", files)
-	ProjectSettings.save()
-	print("Project Settings saved! You can now generate your POT file.")
+	var _err: int = ProjectSettings.save()
+	Print.info("UpdateLocalization", "Project Settings saved! You can now generate your POT file.")
 
 
 func scan_dir(path: String, result_array: PackedStringArray) -> void:
 	var dir: DirAccess = DirAccess.open(path)
-	if !dir: return print("An error occurred when trying to access the path:
-		" + path)
+	if !dir:
+		Print.info("UpdateLocalization", "An error occurred when trying to access the path: " + path)
+		return
 
-	dir.list_dir_begin()
+	var _err: int = dir.list_dir_begin()
 	var file_name: String = dir.get_next()
 
 	while file_name != "":
@@ -31,6 +32,6 @@ func scan_dir(path: String, result_array: PackedStringArray) -> void:
 				scan_dir(path.path_join(file_name), result_array)
 		else:
 			if file_name.get_extension() in EXTENSIONS_TO_SCAN:
-				result_array.append(path.path_join(file_name))
+				_err = result_array.append(path.path_join(file_name))
 
 		file_name = dir.get_next()

@@ -27,5 +27,5 @@ func _send_notification(title: String, text: String, linux_icon: String) -> void
 		"Windows":
 			var script: String = "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null; [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] > $null; $xml = New-Object Windows.Data.Xml.Dom.XmlDocument; $xml.LoadXml('<toast><visual><binding template=\"ToastText02\"><text id=\"1\">%s</text><text id=\"2\">%s</text></binding></visual></toast>'); $toast = [Windows.UI.Notifications.ToastNotification]::new($xml); [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('GoZen').Show($toast)" % [title.replace("'", "''"), text.replace("'", "''")]
 			OS.execute("powershell", ["-Command", script])
-		_: print(title, ": ", text)
+		_: Print.info("NotificationManager", title, " - ", text)
 	@warning_ignore_restore("return_value_discarded")

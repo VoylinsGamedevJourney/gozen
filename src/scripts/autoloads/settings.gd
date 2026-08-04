@@ -112,7 +112,6 @@ func get_system_locale() -> String:
 # --- Appearance set/get ---
 
 func set_language(code: String) -> void:
-	print(code)
 	data.language = code
 	apply_language()
 	on_localization_updated.emit()

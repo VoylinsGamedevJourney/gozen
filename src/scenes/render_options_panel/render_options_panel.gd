@@ -380,7 +380,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
 
 		render_resolution =	Vector2i(int(target_height * aspect), target_height)
-		print("RenderManager: Draft mode enabled. Scaling to ", render_resolution)
+		Print.info("RenderOptionsPanel", "Draft mode enabled. Scaling to ", render_resolution)
 
 	if render_resolution.x % 2 != 0:
 		render_resolution.x += 1
