@@ -463,17 +463,6 @@ func update_data(track: int) -> void:
 		var text_v_align: int = text_effect.get_value(text_effect.params[3], clip_frame)
 		var text_size: int = text_effect.get_value(text_effect.params[4], clip_frame)
 		var text_color: Color = text_effect.get_value(text_effect.params[5], clip_frame)
-		var text_outline_size: int = text_effect.get_value(text_effect.params[6], clip_frame)
-		var text_outline_color: Color = text_effect.get_value(text_effect.params[7], clip_frame)
-
-		var text_shadow_size: int = 0
-		var text_shadow_offset: Vector2i = Vector2i(1, 1)
-		var text_shadow_color: Color = Color(0, 0, 0, 0.5)
-
-		if text_effect.params.size() > 10:
-			text_shadow_size = text_effect.get_value(text_effect.params[8], clip_frame)
-			text_shadow_offset = text_effect.get_value(text_effect.params[9], clip_frame)
-			text_shadow_color = text_effect.get_value(text_effect.params[10], clip_frame)
 
 		var font: Font = Settings.get_system_font(text_font) if text_font != "" else ThemeDB.fallback_font
 
@@ -488,11 +477,6 @@ func update_data(track: int) -> void:
 		text_label_settings.font = font
 		text_label_settings.font_size = text_size
 		text_label_settings.font_color = text_color
-		text_label_settings.outline_size = text_outline_size
-		text_label_settings.outline_color = text_outline_color
-		text_label_settings.shadow_size = text_shadow_size
-		text_label_settings.shadow_offset = text_shadow_offset
-		text_label_settings.shadow_color = text_shadow_color
 
 		if text_label.size != Vector2(Project.data.resolution):
 			text_label.size = Project.data.resolution
