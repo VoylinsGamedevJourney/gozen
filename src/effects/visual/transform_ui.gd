@@ -12,54 +12,48 @@ var effects_panel: EffectsPanel
 
 
 
-func get_ui(_effect: Effect, _clip: ClipData, _is_visual: bool, _effects_panel: EffectsPanel) -> Control:
+func load_ui(_effect: Effect, _clip: ClipData, _is_visual: bool, _effects_panel: EffectsPanel) -> void:
 	effect = _effect
 	clip = _clip
 	is_visual = _is_visual
 	effects_panel = _effects_panel
 
-	var vbox: VBoxContainer = VBoxContainer.new()
-
 	# 1. Position.
 	var position_hbox: HBoxContainer = effects_panel.create_effect_param_hbox(_get_param("position"), effect, is_visual)
 	hboxes["position"] = position_hbox
-	vbox.add_child(position_hbox)
+	add_child(position_hbox)
 
 	# 2. Scale.
 	var scale_hbox: HBoxContainer = effects_panel.create_effect_param_hbox(_get_param("scale"), effect, is_visual)
 	hboxes["scale"] = scale_hbox
-	vbox.add_child(scale_hbox)
+	add_child(scale_hbox)
 
 	# 3. Alignment Buttons.
-	vbox.add_child(_create_alignment_buttons())
+	add_child(_create_alignment_buttons())
 
 	# 4. Pivot.
 	var pivot_hbox: HBoxContainer = effects_panel.create_effect_param_hbox(_get_param("pivot"), effect, is_visual)
 	hboxes["pivot"] = pivot_hbox
-	vbox.add_child(pivot_hbox)
+	add_child(pivot_hbox)
 
 	# 5. Rotation.
 	var rotation_param: EffectParam = _get_param("rotation")
 	rotation_param.has_slider = true
 	var rotation_hbox: HBoxContainer = effects_panel.create_effect_param_hbox(rotation_param, effect, is_visual)
 	hboxes["rotation"] = rotation_hbox
-	vbox.add_child(rotation_hbox)
+	add_child(rotation_hbox)
 
 	# 6. Alpha.
 	var alpha_param: EffectParam = _get_param("alpha")
 	alpha_param.has_slider = true
 	var alpha_hbox: HBoxContainer = effects_panel.create_effect_param_hbox(alpha_param, effect, is_visual)
 	hboxes["alpha"] = alpha_hbox
-	vbox.add_child(alpha_hbox)
+	add_child(alpha_hbox)
 
 	@warning_ignore_start("return_value_discarded")
 	effects_panel.update_values.connect(_on_update_values)
-	vbox.tree_exited.connect(func() -> void:
-			if effects_panel.update_values.is_connected(_on_update_values):
-				effects_panel.update_values.disconnect(_on_update_values))
+	tree_exited.connect(_on_tree_exit)
 	@warning_ignore_restore("return_value_discarded")
-
-	return vbox
 
 
 func _get_param(id: String) -> EffectParam:
@@ -199,3 +193,8 @@ func _align(type: int) -> void:
 			EffectsHandler.update_param(clip, clip.effects.video.find(effect), true, "scale", Vector2.ONE, false)
 
 	EffectsHandler.update_param(clip, clip.effects.video.find(effect), true, "position", Vector2i(target_pos), false)
+
+
+func _on_tree_exit() -> void:
+	if effects_panel.update_values.is_connected(_on_update_values):
+		effects_panel.update_values.disconnect(_on_update_values)
