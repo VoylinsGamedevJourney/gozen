@@ -10,100 +10,114 @@ msgstr ""
 msgid "Mute clip audio."
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:283
+#: scenes/effects_panel/effects_panel.gd:234
+#, fuzzy
+msgid "Left Transition"
+msgstr "डिफ़ॉल्ट टेक्स्ट अवधि"
+
+#: scenes/effects_panel/effects_panel.gd:243
+#: scenes/effects_panel/effects_panel.gd:307
+msgid "Visual Fade (frames)"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:260
+#: scenes/effects_panel/effects_panel.gd:324
+msgid "Audio Fade (frames)"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:277
+#: scenes/effects_panel/effects_panel.gd:339
+msgid "Style"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:298
+msgid "Right Transition"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:449
 msgid "Presets & Options"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:399
-#: scenes/effects_panel/effects_panel.gd:1043
+#: scenes/effects_panel/effects_panel.gd:566 effects/text_effect_ui.gd:102
 msgid "Reset parameter"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:465
-#: scenes/effects_panel/effects_panel.gd:1276
+#: scenes/effects_panel/effects_panel.gd:632
+#: scenes/effects_panel/effects_panel.gd:1208
 #, fuzzy
 msgid "Default"
 msgstr "डिफ़ॉल्ट"
 
-#: scenes/effects_panel/effects_panel.gd:504
+#: scenes/effects_panel/effects_panel.gd:662
 msgid "Left"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:505
-#: scenes/effects_panel/effects_panel.gd:509
+#: scenes/effects_panel/effects_panel.gd:663
+#: scenes/effects_panel/effects_panel.gd:667
 msgid "Center"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:506
+#: scenes/effects_panel/effects_panel.gd:664
 msgid "Right"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:508
+#: scenes/effects_panel/effects_panel.gd:666
 msgid "Top"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:510
+#: scenes/effects_panel/effects_panel.gd:668
 msgid "Bottom"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:512
+#: scenes/effects_panel/effects_panel.gd:670
 msgid "Mix (Normal)"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:513
+#: scenes/effects_panel/effects_panel.gd:671
 msgid "Add"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:514
+#: scenes/effects_panel/effects_panel.gd:672
 msgid "Subtract"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:515
+#: scenes/effects_panel/effects_panel.gd:673
 msgid "Multiply"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:516
+#: scenes/effects_panel/effects_panel.gd:674
 msgid "Premultiplied Alpha"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:681
+#: scenes/effects_panel/effects_panel.gd:839
 msgid "Link X and Y"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:896
+#: scenes/effects_panel/effects_panel.gd:1068
 msgid "Add effects"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:983
-#: scenes/settings_menu/settings_menu.gd:385
-msgid "Reset to default"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:1065
-msgid "Keyframes"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:1216
+#: scenes/effects_panel/effects_panel.gd:1148
 msgid "Presets"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:1235
+#: scenes/effects_panel/effects_panel.gd:1167
 msgid "Reset effect"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:1247
+#: scenes/effects_panel/effects_panel.gd:1179
 msgid "Delete effect"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:1260
+#: scenes/effects_panel/effects_panel.gd:1192
 msgid "Save as preset..."
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:1330
+#: scenes/effects_panel/effects_panel.gd:1262
 msgid "Save preset"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:1331
+#: scenes/effects_panel/effects_panel.gd:1263
 msgid "Preset name"
 msgstr ""
 
@@ -127,36 +141,145 @@ msgstr ""
 msgid "Frame"
 msgstr ""
 
-#: scenes/view_panel/project_view_texture.gd:128
+#: scenes/view_panel/project_view_texture.gd:129
 msgid "Save screenshot ..."
 msgstr ""
 
-#: scenes/view_panel/project_view_texture.gd:129
+#: scenes/view_panel/project_view_texture.gd:130
 msgid "Save screenshot to project ..."
 msgstr ""
 
-#: scenes/editor/editor.gd:120
+#: scenes/editor/editor.gd:85
+msgid "Save project"
+msgstr ""
+
+#: scenes/editor/editor.gd:86 scripts/autoloads/project.gd:99
+msgid "Save project as ..."
+msgstr ""
+
+#: scenes/editor/editor.gd:88 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:209 scripts/autoloads/project.gd:179
+#, fuzzy
+msgid "Open project"
+msgstr "प्रोजेक्ट खोलें"
+
+#: scenes/editor/editor.gd:89 scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Recent projects"
+msgstr "हाल के प्रोजेक्ट्स"
+
+#: scenes/editor/editor.gd:91 scenes/settings_menu/settings_menu.gd:336
+#, fuzzy
+msgid "Project settings"
+msgstr "प्रोजेक्ट सेटिंग्स"
+
+#: scenes/editor/editor.gd:92
+msgid "Quit"
+msgstr ""
+
+#: scenes/editor/editor.gd:117
+msgid "Undo"
+msgstr ""
+
+#: scenes/editor/editor.gd:118
+msgid "Redo"
+msgstr ""
+
+#: scenes/editor/editor.gd:139
+msgid "Save workspace"
+msgstr ""
+
+#: scenes/editor/editor.gd:140 scenes/editor/editor.gd:242
+msgid "New workspace"
+msgstr ""
+
+#: scenes/editor/editor.gd:142 scenes/editor/editor.gd:160
+msgid "Show panel titles"
+msgstr ""
+
+#: scenes/editor/editor.gd:143
+msgid "Panels"
+msgstr ""
+
+#: scenes/editor/editor.gd:158
+msgid "Hide panel titles"
+msgstr ""
+
+#: scenes/editor/editor.gd:192 scenes/settings_menu/settings_menu.gd:105
+#: scenes/settings_menu/settings_menu.tscn
+#, fuzzy
+msgid "Editor settings"
+msgstr "एडिटर सेटिंग्स"
+
+#: scenes/editor/editor.gd:193
+msgid "Module manager"
+msgstr ""
+
+#: scenes/editor/editor.gd:195
+msgid "Command bar"
+msgstr ""
+
+#: scenes/editor/editor.gd:216
+msgid "Report bug"
+msgstr ""
+
+#: scenes/editor/editor.gd:217 scenes/startup_screen/startup_screen.tscn
+msgid "Manual"
+msgstr ""
+
+#: scenes/editor/editor.gd:218 scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Tutorials"
+msgstr "ट्यूटोरियल्स"
+
+#: scenes/editor/editor.gd:219 scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
+msgstr ""
+
+#: scenes/editor/editor.gd:221 scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Website"
+msgstr ""
+
+#: scenes/editor/editor.gd:222 scenes/startup_screen/startup_screen.tscn
+msgid "Support GoZen"
+msgstr ""
+
+#: scenes/editor/editor.gd:223 scenes/about_gozen/about_gozen.tscn
+msgid "About GoZen"
+msgstr ""
+
+#: scenes/editor/editor.gd:244
+msgid "Workspace name"
+msgstr ""
+
+#: scenes/editor/editor.gd:304
 msgid "Move Left"
 msgstr ""
 
-#: scenes/editor/editor.gd:123
+#: scenes/editor/editor.gd:307
 msgid "Move Right"
 msgstr ""
 
-#: scenes/editor/editor.gd:126 scenes/file_panel/file_panel.gd:122
+#: scenes/editor/editor.gd:310 scenes/file_panel/file_panel.gd:122
 msgid "Delete"
 msgstr ""
 
-#: scenes/editor/editor.gd:173
+#: scenes/editor/editor.gd:357
 msgid "Delete Workspace"
 msgstr ""
 
-#: scenes/editor/editor.gd:174
+#: scenes/editor/editor.gd:358
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr ""
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
+msgstr ""
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+msgid "Enter effect name ..."
 msgstr ""
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
@@ -201,7 +324,7 @@ msgstr ""
 msgid "Save image as ..."
 msgstr ""
 
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:779
+#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:784
 msgid "Video options"
 msgstr ""
 
@@ -286,61 +409,65 @@ msgstr ""
 msgid "(Loading thumbnail...)"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:143
+#: scenes/timeline/timeline_panel.gd:144
 msgid "Duplication failed"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:144
+#: scenes/timeline/timeline_panel.gd:145
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:253
+#: scenes/timeline/timeline_panel.gd:254
 msgid "Remove empty space"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:255
+#: scenes/timeline/timeline_panel.gd:256
 msgid "Track options"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:258
+#: scenes/timeline/timeline_panel.gd:259
 msgid "Add track"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:260
+#: scenes/timeline/timeline_panel.gd:261
 msgid "Remove track"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:264
+#: scenes/timeline/timeline_panel.gd:265
 msgid "Visible"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:267
+#: scenes/timeline/timeline_panel.gd:268
 msgid "Muted"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:270
+#: scenes/timeline/timeline_panel.gd:271
 msgid "Locked"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:769
+#: scenes/timeline/timeline_panel.gd:774
 msgid "Delete clip"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:770
+#: scenes/timeline/timeline_panel.gd:775
 msgid "Split clip"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:774 scenes/timeline/timeline_panel.gd:818
+#: scenes/timeline/timeline_panel.gd:779 scenes/timeline/timeline_panel.gd:823
 msgid "Change speed"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:776
+#: scenes/timeline/timeline_panel.gd:781
 msgid "Reset speed"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:780
+#: scenes/timeline/timeline_panel.gd:785
 msgid "Clip audio-take-over"
+msgstr ""
+
+#: scenes/timeline/timeline.tscn
+msgid "Turn group selection on/off."
 msgstr ""
 
 #: scenes/timeline/timeline.tscn
@@ -357,7 +484,7 @@ msgstr ""
 
 #: scenes/markers_panel/markers_panel.tscn
 #: scenes/settings_menu/settings_menu.gd:112
-#: scenes/settings_menu/settings_menu.gd:315
+#: scenes/settings_menu/settings_menu.gd:320
 msgid "Markers"
 msgstr ""
 
@@ -369,7 +496,7 @@ msgstr "रंग फ़ाइल जोड़ें"
 #: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:236 scripts/logic/file_logic.gd:232
+#: scripts/autoloads/project.gd:236 scripts/logic/file_logic.gd:238
 msgid "Cancel"
 msgstr ""
 
@@ -378,73 +505,43 @@ msgstr ""
 msgid "Create new color file"
 msgstr "रंग फ़ाइल बनाएँ"
 
-#: scenes/render_screen/save_custom_render_profile.tscn
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.gd:147
 #, fuzzy
-msgid "Create render profile"
-msgstr "रेंडर प्रोफ़ाइल"
+msgid "Version"
+msgstr "वर्शन"
 
-#: scenes/render_screen/save_custom_render_profile.tscn
-msgid "New profile name"
-msgstr ""
-
-#: scenes/render_screen/save_custom_render_profile.gd:40
-msgid "Select Icon"
-msgstr ""
-
-#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
-msgid "About GoZen"
+#: scenes/about_gozen/about_gozen.tscn
+msgid "Source code"
 msgstr ""
 
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Version: "
+msgid "YouTube"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:22
+#: scenes/about_gozen/about_gozen.tscn
 #, fuzzy
-msgid "GoZen version"
-msgstr "वर्शन"
+msgid "Support the project"
+msgstr "नया प्रोजेक्ट बनाएँ"
 
-#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Website"
+#: scenes/about_gozen/about_gozen.gd:30
+msgid "Made by [url=%s]Voylin's Gamedev Journey[/url]!"
 msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:39
-msgid "GitHub repo"
-msgstr ""
-
-#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Discord"
-msgstr ""
-
-#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Support GoZen"
-msgstr ""
-
-#: scenes/about_gozen/about_gozen.gd:43
-msgid ""
-"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+#: scenes/about_gozen/about_gozen.gd:32
+msgid "License"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:114
+#: scripts/autoloads/project.gd:112
 #, fuzzy
 msgid "Loading project"
 msgstr "प्रोजेक्ट लोड हो रहा है"
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:115
+#: scripts/autoloads/project.gd:113
 msgid "Initializing ..."
 msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:105
-#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
-#, fuzzy
-msgid "Editor settings"
-msgstr "एडिटर सेटिंग्स"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker one"
@@ -517,205 +614,199 @@ msgid "Show menu bar"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:171
+msgid "Show safe areas on startup"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:176
 msgid "Audio waveforms"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:172
+#: scenes/settings_menu/settings_menu.gd:177
 #, fuzzy
 msgid "Waveform style"
 msgstr "ऑडियो वेवफ़ॉर्म शैली"
 
-#: scenes/settings_menu/settings_menu.gd:179
+#: scenes/settings_menu/settings_menu.gd:184
 msgid "Waveform amplifier"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:186
+#: scenes/settings_menu/settings_menu.gd:191
 msgid ""
 "Sometimes the waveforms aren't very clear due to audio levels being too low, "
 "with this setting you can adjust their intensity"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:187
+#: scenes/settings_menu/settings_menu.gd:192
 msgid "Dialogs"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:188
+#: scenes/settings_menu/settings_menu.gd:193
 msgid "Use native dialogs"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:193
+#: scenes/settings_menu/settings_menu.gd:198
 msgid "Panel tabs position"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:202
+#: scenes/settings_menu/settings_menu.gd:207
 #, fuzzy
 msgid "Defaults"
 msgstr "डिफ़ॉल्ट"
 
-#: scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:208
 #, fuzzy
 msgid "Default durations"
 msgstr "डिफ़ॉल्ट टेक्स्ट अवधि"
 
-#: scenes/settings_menu/settings_menu.gd:204
+#: scenes/settings_menu/settings_menu.gd:209
 #, fuzzy
 msgid "Default image duration"
 msgstr "डिफ़ॉल्ट छवि अवधि"
 
-#: scenes/settings_menu/settings_menu.gd:211
-#: scenes/settings_menu/settings_menu.gd:219
-#: scenes/settings_menu/settings_menu.gd:227
+#: scenes/settings_menu/settings_menu.gd:216
+#: scenes/settings_menu/settings_menu.gd:224
+#: scenes/settings_menu/settings_menu.gd:232
 msgid "Duration in frames per second."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:212
+#: scenes/settings_menu/settings_menu.gd:217
 #, fuzzy
 msgid "Default color duration"
 msgstr "\tडिफ़ॉल्ट रंग अवधि"
 
-#: scenes/settings_menu/settings_menu.gd:220
+#: scenes/settings_menu/settings_menu.gd:225
 #, fuzzy
 msgid "Default text duration"
 msgstr "डिफ़ॉल्ट टेक्स्ट अवधि"
 
-#: scenes/settings_menu/settings_menu.gd:228
+#: scenes/settings_menu/settings_menu.gd:233
 #: scenes/settings_menu/settings_menu.gd:340
 #, fuzzy
 msgid "Project resolution"
 msgstr "रिज़ॉल्यूशन"
 
-#: scenes/settings_menu/settings_menu.gd:230
+#: scenes/settings_menu/settings_menu.gd:235
 #: scenes/settings_menu/settings_menu.gd:342
 #, fuzzy
 msgid "Project frame-rate"
 msgstr "फ्रेमरेट"
 
-#: scenes/settings_menu/settings_menu.gd:238
+#: scenes/settings_menu/settings_menu.gd:243
 #, fuzzy
 msgid "Timeline"
 msgstr "टाइमलाइन"
 
-#: scenes/settings_menu/settings_menu.gd:239
+#: scenes/settings_menu/settings_menu.gd:244
 #, fuzzy
 msgid "Timeline settings"
 msgstr "रेंडर सेटिंग्स"
 
-#: scenes/settings_menu/settings_menu.gd:240
+#: scenes/settings_menu/settings_menu.gd:245
 #, fuzzy
 msgid "Default track amount"
 msgstr "डिफ़ॉल्ट ट्रैक की संख्या"
 
-#: scenes/settings_menu/settings_menu.gd:246
+#: scenes/settings_menu/settings_menu.gd:251
 msgid "Track height"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:252
+#: scenes/settings_menu/settings_menu.gd:257
 msgid "Timeline controls"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:253
+#: scenes/settings_menu/settings_menu.gd:258
 #, fuzzy
 msgid "Pause after dragging"
 msgstr "ड्रैग करने के बाद रोकें"
 
-#: scenes/settings_menu/settings_menu.gd:258
+#: scenes/settings_menu/settings_menu.gd:263
 msgid ""
 "Setting this will pause playback after having dragged the playhead around."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:259
+#: scenes/settings_menu/settings_menu.gd:264
 msgid "Empty space delete modifier"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:266
+#: scenes/settings_menu/settings_menu.gd:271
 msgid "The modifier you want to easily delete empty space between clips."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:267
+#: scenes/settings_menu/settings_menu.gd:272
 msgid "Empty space click action"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:274
+#: scenes/settings_menu/settings_menu.gd:279
 msgid "What to do when clicking empty space in the timeline."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:275
+#: scenes/settings_menu/settings_menu.gd:280
 msgid "Addons"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:276
+#: scenes/settings_menu/settings_menu.gd:281
 msgid "Show mode bar"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:281
+#: scenes/settings_menu/settings_menu.gd:286
 msgid ""
 "The mode bar is the bar on the left of the timeline with buttons for "
 "changing the current timeline mode."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:284
+#: scenes/settings_menu/settings_menu.gd:289
 msgid "Performance"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:285
+#: scenes/settings_menu/settings_menu.gd:290
 msgid "Video Decoding"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:286
+#: scenes/settings_menu/settings_menu.gd:291
 msgid "Smart Seek Threshold"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:293
+#: scenes/settings_menu/settings_menu.gd:298
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
 "jumps but use more CPU."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:294
+#: scenes/settings_menu/settings_menu.gd:299
 msgid "Video Cache Size"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:301
+#: scenes/settings_menu/settings_menu.gd:306
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:302
+#: scenes/settings_menu/settings_menu.gd:307
 msgid "Use proxies"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:307
+#: scenes/settings_menu/settings_menu.gd:312
 msgid "Proxies save path"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:312
+#: scenes/settings_menu/settings_menu.gd:317
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
 "again and deleted manually from the previous folder."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:317
-#: scenes/settings_menu/settings_menu.gd:318
+#: scenes/settings_menu/settings_menu.gd:322
+#: scenes/settings_menu/settings_menu.gd:323
 msgid "Extras"
 msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:319
-#, fuzzy
-msgid "Check version"
-msgstr "वर्शन जांचें"
 
 #: scenes/settings_menu/settings_menu.gd:324
 #, fuzzy
 msgid "Auto save"
 msgstr "सहेजें"
-
-#: scenes/settings_menu/settings_menu.gd:336 scenes/menu_bar/menu_bar.tscn
-#, fuzzy
-msgid "Project settings"
-msgstr "प्रोजेक्ट सेटिंग्स"
 
 #: scenes/settings_menu/settings_menu.gd:338
 msgid "Video"
@@ -739,6 +830,10 @@ msgstr "पृष्ठभूमि रंग"
 
 #: scenes/settings_menu/settings_menu.gd:358
 msgid "The background color when no clips are displayed."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:385 effects/text_effect_ui.gd:29
+msgid "Reset to default"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:667
@@ -822,6 +917,10 @@ msgid "Gop size"
 msgstr ""
 
 #: scenes/render_options_panel/render_options_panel.tscn
+msgid "B frames"
+msgstr ""
+
+#: scenes/render_options_panel/render_options_panel.tscn
 #, fuzzy
 msgid "Render audio settings"
 msgstr "एडिटर सेटिंग्स"
@@ -864,182 +963,81 @@ msgstr ""
 msgid "Start render"
 msgstr "रेंडरिंग शुरू करें"
 
-#: scenes/render_options_panel/render_options_panel.gd:61
+#: scenes/render_options_panel/render_options_panel.gd:62
 #, fuzzy
 msgid "Custom render profiles"
 msgstr "रेंडर प्रोफ़ाइल"
 
-#: scenes/render_options_panel/render_options_panel.gd:147
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:123
+#: scenes/render_options_panel/render_options_panel.gd:149
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:110
 msgid "None"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:149
+#: scenes/render_options_panel/render_options_panel.gd:151
 msgid "Stereo"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:150
+#: scenes/render_options_panel/render_options_panel.gd:152
 msgid "Mono"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:221
+#: scenes/render_options_panel/render_options_panel.gd:224
 msgid "Select export path"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:302
+#: scenes/render_options_panel/render_options_panel.gd:305
 #, fuzzy
 msgid "Rendering finished"
 msgstr "रेंडरिंग पूरी हुई"
 
-#: scenes/render_options_panel/render_options_panel.gd:319
+#: scenes/render_options_panel/render_options_panel.gd:322
 msgid "Error whilst rendering video"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:355
+#: scenes/render_options_panel/render_options_panel.gd:358
 msgid "Overwrite file?"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:356
+#: scenes/render_options_panel/render_options_panel.gd:359
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:413
-#: scenes/render_options_panel/render_options_panel.gd:421
+#: scenes/render_options_panel/render_options_panel.gd:419
+#: scenes/render_options_panel/render_options_panel.gd:427
 #, fuzzy
 msgid "Rendering"
 msgstr "रेंडरिंग "
 
-#: scenes/render_options_panel/render_options_panel.gd:428
+#: scenes/render_options_panel/render_options_panel.gd:434
 #, fuzzy
 msgid "Cancel rendering"
 msgstr "रेंडरिंग रद्द करें"
 
-#: scenes/render_options_panel/render_options_panel.gd:459
+#: scenes/render_options_panel/render_options_panel.gd:466
 msgid "Error opening file"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:460
+#: scenes/render_options_panel/render_options_panel.gd:467
 msgid "Error whilst sending audio"
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:466
+#: scenes/render_options_panel/render_options_panel.gd:473
 msgid "Setting up ..."
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:467
-#: scenes/render_options_panel/render_options_panel.gd:468
+#: scenes/render_options_panel/render_options_panel.gd:474
+#: scenes/render_options_panel/render_options_panel.gd:475
 msgid "Compiling audio ..."
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:469
-#: scenes/render_options_panel/render_options_panel.gd:470
+#: scenes/render_options_panel/render_options_panel.gd:476
+#: scenes/render_options_panel/render_options_panel.gd:477
 msgid "Sending data ..."
 msgstr ""
 
-#: scenes/render_options_panel/render_options_panel.gd:471
+#: scenes/render_options_panel/render_options_panel.gd:478
 msgid "Sending final frame ..."
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Project"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Save project"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:101
-msgid "Save project as ..."
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:194 scripts/autoloads/project.gd:179
-#, fuzzy
-msgid "Open project"
-msgstr "प्रोजेक्ट खोलें"
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#, fuzzy
-msgid "Recent projects"
-msgstr "हाल के प्रोजेक्ट्स"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Quit"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Edit"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Undo"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Redo"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "View"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Save workspace"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:122
-msgid "New workspace"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:147
-msgid "Show panel titles"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Panels"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-#, fuzzy
-msgid "Preferences"
-msgstr "प्रोजेक्ट"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Module manager"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Command bar"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Help"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Report bug"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Check for updates"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-msgid "Manual"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#, fuzzy
-msgid "Tutorials"
-msgstr "ट्यूटोरियल्स"
-
-#: scenes/menu_bar/menu_bar.gd:124
-msgid "Workspace name"
-msgstr ""
-
-#: scenes/menu_bar/menu_bar.gd:145
-msgid "Hide panel titles"
 msgstr ""
 
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
@@ -1048,15 +1046,8 @@ msgid "Confirm"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
+msgid "Version: "
 msgstr ""
-
-#: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
-msgid "Update available"
-msgstr "अपडेट उपलब्ध है!"
 
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
@@ -1068,7 +1059,7 @@ msgstr "नया प्रोजेक्ट बनाएँ"
 msgid "Getting started"
 msgstr "\tशुरुआत करें"
 
-#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:55
+#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:53
 #, fuzzy
 msgid "New project"
 msgstr "नया प्रोजेक्ट बनाएँ"
@@ -1107,17 +1098,16 @@ msgstr ""
 msgid "Return"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:132
-#, fuzzy
-msgid "Version"
-msgstr "वर्शन"
+#: scenes/startup_screen/startup_screen.gd:70
+msgid "Image by"
+msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:196
-#: scenes/startup_screen/startup_screen.gd:247 scripts/autoloads/project.gd:103
+#: scenes/startup_screen/startup_screen.gd:211
+#: scenes/startup_screen/startup_screen.gd:262 scripts/autoloads/project.gd:101
 msgid "GoZen project file"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:245
+#: scenes/startup_screen/startup_screen.gd:260
 msgid "Select project save path"
 msgstr ""
 
@@ -1155,24 +1145,28 @@ msgstr ""
 msgid "Auto align"
 msgstr "सहेजें"
 
-#: scripts/autoloads/project.gd:56
+#: effects/text_effect_ui.gd:124
+msgid "Keyframes"
+msgstr ""
+
+#: scripts/autoloads/project.gd:54
 #, fuzzy
 msgid "Initialize new project ..."
 msgstr "नया प्रोजेक्ट बनाएँ"
 
-#: scripts/autoloads/project.gd:68
+#: scripts/autoloads/project.gd:66
 msgid "Setting up playback ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:69 scripts/autoloads/project.gd:160
+#: scripts/autoloads/project.gd:67 scripts/autoloads/project.gd:160
 msgid "Finalizing ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:124
+#: scripts/autoloads/project.gd:122
 msgid "Setting up timeline ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:133
+#: scripts/autoloads/project.gd:131
 msgid "Loading project files ..."
 msgstr ""
 
@@ -1208,32 +1202,52 @@ msgstr "प्रोजेक्ट सेटिंग्स"
 msgid "open render menu"
 msgstr "रेंडर मेनू"
 
-#: scripts/logic/file_logic.gd:229
+#: scripts/logic/file_logic.gd:235
 msgid "Update existing clips?"
 msgstr ""
 
-#: scripts/logic/file_logic.gd:230
+#: scripts/logic/file_logic.gd:236
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the Audio-Take-Over changes to all existing clips?"
 msgstr ""
 
-#: scripts/logic/file_logic.gd:231
+#: scripts/logic/file_logic.gd:237
 msgid "Apply to All"
 msgstr ""
 
-#: scripts/logic/file_logic.gd:235
+#: scripts/logic/file_logic.gd:241
 msgid "Apply to File Only"
 msgstr ""
 
-#: scripts/logic/file_logic.gd:329
+#: scripts/logic/file_logic.gd:335
 #, fuzzy
 msgid "Files dropped"
 msgstr "फ़ाइलें डाली गईं"
 
-#: scripts/logic/file_logic.gd:344
+#: scripts/logic/file_logic.gd:350
 msgid "Files loading ..."
 msgstr ""
 
 msgid "GoZen"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Create render profile"
+#~ msgstr "रेंडर प्रोफ़ाइल"
+
+#, fuzzy
+#~ msgid "GoZen version"
+#~ msgstr "वर्शन"
+
+#, fuzzy
+#~ msgid "Check version"
+#~ msgstr "वर्शन जांचें"
+
+#, fuzzy
+#~ msgid "Preferences"
+#~ msgstr "प्रोजेक्ट"
+
+#, fuzzy
+#~ msgid "Update available"
+#~ msgstr "अपडेट उपलब्ध है!"

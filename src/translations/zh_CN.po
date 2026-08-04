@@ -10,104 +10,121 @@ msgstr ""
 msgid "Mute clip audio."
 msgstr "静音片段"
 
-#: scenes/effects_panel/effects_panel.gd:283
+#: scenes/effects_panel/effects_panel.gd:234
+#, fuzzy
+msgid "Left Transition"
+msgstr "过渡效果"
+
+#: scenes/effects_panel/effects_panel.gd:243
+#: scenes/effects_panel/effects_panel.gd:307
+#, fuzzy
+msgid "Visual Fade (frames)"
+msgstr "视觉效果"
+
+#: scenes/effects_panel/effects_panel.gd:260
+#: scenes/effects_panel/effects_panel.gd:324
+#, fuzzy
+msgid "Audio Fade (frames)"
+msgstr "音频波形"
+
+#: scenes/effects_panel/effects_panel.gd:277
+#: scenes/effects_panel/effects_panel.gd:339
+msgid "Style"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:298
+#, fuzzy
+msgid "Right Transition"
+msgstr "过渡效果"
+
+#: scenes/effects_panel/effects_panel.gd:449
 msgid "Presets & Options"
 msgstr "预设与选项"
 
-#: scenes/effects_panel/effects_panel.gd:399
-#: scenes/effects_panel/effects_panel.gd:1043
+#: scenes/effects_panel/effects_panel.gd:566 effects/text_effect_ui.gd:102
 msgid "Reset parameter"
 msgstr "重置"
 
-#: scenes/effects_panel/effects_panel.gd:465
-#: scenes/effects_panel/effects_panel.gd:1276
+#: scenes/effects_panel/effects_panel.gd:632
+#: scenes/effects_panel/effects_panel.gd:1208
 msgid "Default"
 msgstr "默认"
 
-#: scenes/effects_panel/effects_panel.gd:504
+#: scenes/effects_panel/effects_panel.gd:662
 msgid "Left"
 msgstr "左"
 
-#: scenes/effects_panel/effects_panel.gd:505
-#: scenes/effects_panel/effects_panel.gd:509
+#: scenes/effects_panel/effects_panel.gd:663
+#: scenes/effects_panel/effects_panel.gd:667
 msgid "Center"
 msgstr "居中"
 
-#: scenes/effects_panel/effects_panel.gd:506
+#: scenes/effects_panel/effects_panel.gd:664
 msgid "Right"
 msgstr "右"
 
-#: scenes/effects_panel/effects_panel.gd:508
+#: scenes/effects_panel/effects_panel.gd:666
 msgid "Top"
 msgstr "上"
 
-#: scenes/effects_panel/effects_panel.gd:510
+#: scenes/effects_panel/effects_panel.gd:668
 msgid "Bottom"
 msgstr "下"
 
-#: scenes/effects_panel/effects_panel.gd:512
+#: scenes/effects_panel/effects_panel.gd:670
 #, fuzzy
 msgid "Mix (Normal)"
 msgstr "混合（普通）"
 
-#: scenes/effects_panel/effects_panel.gd:513
+#: scenes/effects_panel/effects_panel.gd:671
 #, fuzzy
 msgid "Add"
 msgstr "相加"
 
-#: scenes/effects_panel/effects_panel.gd:514
+#: scenes/effects_panel/effects_panel.gd:672
 #, fuzzy
 msgid "Subtract"
 msgstr "相减"
 
-#: scenes/effects_panel/effects_panel.gd:515
+#: scenes/effects_panel/effects_panel.gd:673
 #, fuzzy
 msgid "Multiply"
 msgstr "相乘"
 
-#: scenes/effects_panel/effects_panel.gd:516
+#: scenes/effects_panel/effects_panel.gd:674
 #, fuzzy
 msgid "Premultiplied Alpha"
 msgstr "预乘Alpha"
 
-#: scenes/effects_panel/effects_panel.gd:681
+#: scenes/effects_panel/effects_panel.gd:839
 msgid "Link X and Y"
 msgstr "等比缩放"
 
-#: scenes/effects_panel/effects_panel.gd:896
+#: scenes/effects_panel/effects_panel.gd:1068
 msgid "Add effects"
 msgstr "添加效果器"
 
-#: scenes/effects_panel/effects_panel.gd:983
-#: scenes/settings_menu/settings_menu.gd:385
-msgid "Reset to default"
-msgstr "重置为默认值"
-
-#: scenes/effects_panel/effects_panel.gd:1065
-msgid "Keyframes"
-msgstr "关键帧"
-
-#: scenes/effects_panel/effects_panel.gd:1216
+#: scenes/effects_panel/effects_panel.gd:1148
 msgid "Presets"
 msgstr "预设"
 
-#: scenes/effects_panel/effects_panel.gd:1235
+#: scenes/effects_panel/effects_panel.gd:1167
 msgid "Reset effect"
 msgstr "重置效果"
 
-#: scenes/effects_panel/effects_panel.gd:1247
+#: scenes/effects_panel/effects_panel.gd:1179
 msgid "Delete effect"
 msgstr "删除"
 
-#: scenes/effects_panel/effects_panel.gd:1260
+#: scenes/effects_panel/effects_panel.gd:1192
 msgid "Save as preset..."
 msgstr "保存为预设..."
 
-#: scenes/effects_panel/effects_panel.gd:1330
+#: scenes/effects_panel/effects_panel.gd:1262
 msgid "Save preset"
 msgstr "保存预设"
 
-#: scenes/effects_panel/effects_panel.gd:1331
+#: scenes/effects_panel/effects_panel.gd:1263
 msgid "Preset name"
 msgstr "预设名称"
 
@@ -131,37 +148,142 @@ msgstr "跳转至帧"
 msgid "Frame"
 msgstr "帧"
 
-#: scenes/view_panel/project_view_texture.gd:128
+#: scenes/view_panel/project_view_texture.gd:129
 msgid "Save screenshot ..."
 msgstr "保存截图..."
 
-#: scenes/view_panel/project_view_texture.gd:129
+#: scenes/view_panel/project_view_texture.gd:130
 msgid "Save screenshot to project ..."
 msgstr "保存截图到工程..."
 
-#: scenes/editor/editor.gd:120
+#: scenes/editor/editor.gd:85
+msgid "Save project"
+msgstr "保存"
+
+#: scenes/editor/editor.gd:86 scripts/autoloads/project.gd:99
+msgid "Save project as ..."
+msgstr "另存为..."
+
+#: scenes/editor/editor.gd:88 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:209 scripts/autoloads/project.gd:179
+msgid "Open project"
+msgstr "打开工程"
+
+#: scenes/editor/editor.gd:89 scenes/startup_screen/startup_screen.tscn
+msgid "Recent projects"
+msgstr "近期工程"
+
+#: scenes/editor/editor.gd:91 scenes/settings_menu/settings_menu.gd:336
+msgid "Project settings"
+msgstr "工程设置"
+
+#: scenes/editor/editor.gd:92
+msgid "Quit"
+msgstr "退出"
+
+#: scenes/editor/editor.gd:117
+msgid "Undo"
+msgstr "撤消"
+
+#: scenes/editor/editor.gd:118
+msgid "Redo"
+msgstr "恢复"
+
+#: scenes/editor/editor.gd:139
+msgid "Save workspace"
+msgstr "保存工作区"
+
+#: scenes/editor/editor.gd:140 scenes/editor/editor.gd:242
+msgid "New workspace"
+msgstr "新建工作区"
+
+#: scenes/editor/editor.gd:142 scenes/editor/editor.gd:160
+msgid "Show panel titles"
+msgstr "显示面板标题"
+
+#: scenes/editor/editor.gd:143
+msgid "Panels"
+msgstr "面板"
+
+#: scenes/editor/editor.gd:158
+msgid "Hide panel titles"
+msgstr "隐藏面板标题"
+
+#: scenes/editor/editor.gd:192 scenes/settings_menu/settings_menu.gd:105
+#: scenes/settings_menu/settings_menu.tscn
+msgid "Editor settings"
+msgstr "编辑器设置"
+
+#: scenes/editor/editor.gd:193
+msgid "Module manager"
+msgstr "模块管理"
+
+#: scenes/editor/editor.gd:195
+msgid "Command bar"
+msgstr "命令行"
+
+#: scenes/editor/editor.gd:216
+msgid "Report bug"
+msgstr "报告 Bug"
+
+#: scenes/editor/editor.gd:217 scenes/startup_screen/startup_screen.tscn
+msgid "Manual"
+msgstr "手册"
+
+#: scenes/editor/editor.gd:218 scenes/startup_screen/startup_screen.tscn
+msgid "Tutorials"
+msgstr "教程"
+
+#: scenes/editor/editor.gd:219 scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Discord"
+msgstr "Discord"
+
+#: scenes/editor/editor.gd:221 scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Website"
+msgstr "官网"
+
+#: scenes/editor/editor.gd:222 scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Support GoZen"
+msgstr "支持GoZen"
+
+#: scenes/editor/editor.gd:223 scenes/about_gozen/about_gozen.tscn
+msgid "About GoZen"
+msgstr "关于GoZen"
+
+#: scenes/editor/editor.gd:244
+msgid "Workspace name"
+msgstr "工作区名称"
+
+#: scenes/editor/editor.gd:304
 msgid "Move Left"
 msgstr "左移"
 
-#: scenes/editor/editor.gd:123
+#: scenes/editor/editor.gd:307
 msgid "Move Right"
 msgstr "右移"
 
-#: scenes/editor/editor.gd:126 scenes/file_panel/file_panel.gd:122
+#: scenes/editor/editor.gd:310 scenes/file_panel/file_panel.gd:122
 msgid "Delete"
 msgstr "删除"
 
-#: scenes/editor/editor.gd:173
+#: scenes/editor/editor.gd:357
 msgid "Delete Workspace"
 msgstr "删除工作区"
 
-#: scenes/editor/editor.gd:174
+#: scenes/editor/editor.gd:358
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr "您确定要删除“%s”工作区吗？"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
 msgstr "添加效果器"
+
+#: scenes/add_effects_popup/add_effects_popup.tscn
+msgid "Enter effect name ..."
+msgstr ""
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 #: scenes/about_gozen/about_gozen.tscn
@@ -205,7 +327,7 @@ msgstr "图像选项"
 msgid "Save image as ..."
 msgstr "保存图像为..."
 
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:779
+#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:784
 msgid "Video options"
 msgstr "视频选项"
 
@@ -287,62 +409,67 @@ msgstr "将视频音频保存为 WAV"
 msgid "(Loading thumbnail...)"
 msgstr "（加载缩略图中...）"
 
-#: scenes/timeline/timeline_panel.gd:143
+#: scenes/timeline/timeline_panel.gd:144
 msgid "Duplication failed"
 msgstr "创建副本失败"
 
-#: scenes/timeline/timeline_panel.gd:144
+#: scenes/timeline/timeline_panel.gd:145
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr "此处没有足够的空间，无法为%d个片段创建副本"
 
-#: scenes/timeline/timeline_panel.gd:253
+#: scenes/timeline/timeline_panel.gd:254
 msgid "Remove empty space"
 msgstr "移除空白区域"
 
-#: scenes/timeline/timeline_panel.gd:255
+#: scenes/timeline/timeline_panel.gd:256
 msgid "Track options"
 msgstr "轨道选项"
 
-#: scenes/timeline/timeline_panel.gd:258
+#: scenes/timeline/timeline_panel.gd:259
 msgid "Add track"
 msgstr "添加轨道"
 
-#: scenes/timeline/timeline_panel.gd:260
+#: scenes/timeline/timeline_panel.gd:261
 msgid "Remove track"
 msgstr "删除轨道"
 
-#: scenes/timeline/timeline_panel.gd:264
+#: scenes/timeline/timeline_panel.gd:265
 msgid "Visible"
 msgstr "可见"
 
-#: scenes/timeline/timeline_panel.gd:267
+#: scenes/timeline/timeline_panel.gd:268
 msgid "Muted"
 msgstr "静音"
 
-#: scenes/timeline/timeline_panel.gd:270
+#: scenes/timeline/timeline_panel.gd:271
 msgid "Locked"
 msgstr "锁定"
 
-#: scenes/timeline/timeline_panel.gd:769
+#: scenes/timeline/timeline_panel.gd:774
 msgid "Delete clip"
 msgstr "删除片段"
 
-#: scenes/timeline/timeline_panel.gd:770
+#: scenes/timeline/timeline_panel.gd:775
 msgid "Split clip"
 msgstr "分割片段"
 
-#: scenes/timeline/timeline_panel.gd:774 scenes/timeline/timeline_panel.gd:818
+#: scenes/timeline/timeline_panel.gd:779 scenes/timeline/timeline_panel.gd:823
 msgid "Change speed"
 msgstr "变速"
 
-#: scenes/timeline/timeline_panel.gd:776
+#: scenes/timeline/timeline_panel.gd:781
 msgid "Reset speed"
 msgstr "重置速度"
 
-#: scenes/timeline/timeline_panel.gd:780
+#: scenes/timeline/timeline_panel.gd:785
 msgid "Clip audio-take-over"
 msgstr "音频替换"
+
+#: scenes/timeline/timeline.tscn
+#, fuzzy
+msgid "Turn group selection on/off."
+msgstr "开/关吸附"
 
 #: scenes/timeline/timeline.tscn
 msgid "Turn snapping on/off."
@@ -358,7 +485,7 @@ msgstr "静音"
 
 #: scenes/markers_panel/markers_panel.tscn
 #: scenes/settings_menu/settings_menu.gd:112
-#: scenes/settings_menu/settings_menu.gd:315
+#: scenes/settings_menu/settings_menu.gd:320
 msgid "Markers"
 msgstr "标记"
 
@@ -369,7 +496,7 @@ msgstr "添加颜色文件"
 #: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
 #: scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:236 scripts/logic/file_logic.gd:232
+#: scripts/autoloads/project.gd:236 scripts/logic/file_logic.gd:238
 msgid "Cancel"
 msgstr "取消"
 
@@ -377,71 +504,43 @@ msgstr "取消"
 msgid "Create new color file"
 msgstr "创建新颜色文件"
 
-#: scenes/render_screen/save_custom_render_profile.tscn
-msgid "Create render profile"
-msgstr "创建渲染配置"
-
-#: scenes/render_screen/save_custom_render_profile.tscn
-msgid "New profile name"
-msgstr "新配置名称"
-
-#: scenes/render_screen/save_custom_render_profile.gd:40
-msgid "Select Icon"
-msgstr "选择图标"
-
-#: scenes/about_gozen/about_gozen.tscn scenes/menu_bar/menu_bar.tscn
-msgid "About GoZen"
-msgstr "关于GoZen"
+#: scenes/about_gozen/about_gozen.tscn
+#: scenes/startup_screen/startup_screen.gd:147
+msgid "Version"
+msgstr "版本"
 
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Version: "
-msgstr "版本："
+msgid "Source code"
+msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:22
-msgid "GoZen version"
-msgstr "GoZen版本"
+#: scenes/about_gozen/about_gozen.tscn
+msgid "YouTube"
+msgstr ""
 
-#: scenes/about_gozen/about_gozen.gd:38 scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Website"
-msgstr "官网"
-
-#: scenes/about_gozen/about_gozen.gd:39
-msgid "GitHub repo"
-msgstr "GitHub仓库"
-
-#: scenes/about_gozen/about_gozen.gd:40 scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Discord"
-msgstr "Discord"
-
-#: scenes/about_gozen/about_gozen.gd:41 scenes/menu_bar/menu_bar.tscn
-#: scenes/startup_screen/startup_screen.tscn
+#: scenes/about_gozen/about_gozen.tscn
 #, fuzzy
-msgid "Support GoZen"
-msgstr "支持GoZen"
+msgid "Support the project"
+msgstr "新建工程"
 
-#: scenes/about_gozen/about_gozen.gd:43
-msgid ""
-"Made by [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color]! ;)"
+#: scenes/about_gozen/about_gozen.gd:30
+#, fuzzy
+msgid "Made by [url=%s]Voylin's Gamedev Journey[/url]!"
 msgstr ""
 "[color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/color] 制作! ;)"
 
+#: scenes/about_gozen/about_gozen.gd:32
+msgid "License"
+msgstr ""
+
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:114
+#: scripts/autoloads/project.gd:112
 msgid "Loading project"
 msgstr "加载工程中"
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:115
+#: scripts/autoloads/project.gd:113
 msgid "Initializing ..."
 msgstr "初始化中..."
-
-#: scenes/settings_menu/settings_menu.gd:105
-#: scenes/settings_menu/settings_menu.tscn scenes/menu_bar/menu_bar.tscn
-msgid "Editor settings"
-msgstr "编辑器设置"
 
 #: scenes/settings_menu/settings_menu.gd:110
 msgid "Marker one"
@@ -511,144 +610,148 @@ msgid "Show menu bar"
 msgstr "显示菜单栏"
 
 #: scenes/settings_menu/settings_menu.gd:171
+msgid "Show safe areas on startup"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:176
 msgid "Audio waveforms"
 msgstr "音频波形"
 
-#: scenes/settings_menu/settings_menu.gd:172
+#: scenes/settings_menu/settings_menu.gd:177
 msgid "Waveform style"
 msgstr "波形样式"
 
-#: scenes/settings_menu/settings_menu.gd:179
+#: scenes/settings_menu/settings_menu.gd:184
 msgid "Waveform amplifier"
 msgstr "波形幅值"
 
-#: scenes/settings_menu/settings_menu.gd:186
+#: scenes/settings_menu/settings_menu.gd:191
 msgid ""
 "Sometimes the waveforms aren't very clear due to audio levels being too low, "
 "with this setting you can adjust their intensity"
 msgstr ""
 "有时由于音频电平过低，波形会显得不太清晰，通过此设置，您可以调整波形的强度"
 
-#: scenes/settings_menu/settings_menu.gd:187
+#: scenes/settings_menu/settings_menu.gd:192
 msgid "Dialogs"
 msgstr "对话框"
 
-#: scenes/settings_menu/settings_menu.gd:188
+#: scenes/settings_menu/settings_menu.gd:193
 msgid "Use native dialogs"
 msgstr "使用原生对话框"
 
-#: scenes/settings_menu/settings_menu.gd:193
+#: scenes/settings_menu/settings_menu.gd:198
 msgid "Panel tabs position"
 msgstr "面板选项卡位置"
 
-#: scenes/settings_menu/settings_menu.gd:202
+#: scenes/settings_menu/settings_menu.gd:207
 msgid "Defaults"
 msgstr "默认值"
 
-#: scenes/settings_menu/settings_menu.gd:203
+#: scenes/settings_menu/settings_menu.gd:208
 msgid "Default durations"
 msgstr "默认时长"
 
-#: scenes/settings_menu/settings_menu.gd:204
+#: scenes/settings_menu/settings_menu.gd:209
 msgid "Default image duration"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:211
-#: scenes/settings_menu/settings_menu.gd:219
-#: scenes/settings_menu/settings_menu.gd:227
+#: scenes/settings_menu/settings_menu.gd:216
+#: scenes/settings_menu/settings_menu.gd:224
+#: scenes/settings_menu/settings_menu.gd:232
 msgid "Duration in frames per second."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:212
+#: scenes/settings_menu/settings_menu.gd:217
 msgid "Default color duration"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:220
+#: scenes/settings_menu/settings_menu.gd:225
 msgid "Default text duration"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:228
+#: scenes/settings_menu/settings_menu.gd:233
 #: scenes/settings_menu/settings_menu.gd:340
 msgid "Project resolution"
 msgstr "默认工程分辨率"
 
-#: scenes/settings_menu/settings_menu.gd:230
+#: scenes/settings_menu/settings_menu.gd:235
 #: scenes/settings_menu/settings_menu.gd:342
 msgid "Project frame-rate"
 msgstr "默认工程帧率"
 
-#: scenes/settings_menu/settings_menu.gd:238
+#: scenes/settings_menu/settings_menu.gd:243
 msgid "Timeline"
 msgstr "时间轴"
 
-#: scenes/settings_menu/settings_menu.gd:239
+#: scenes/settings_menu/settings_menu.gd:244
 msgid "Timeline settings"
 msgstr "时间轴设置"
 
-#: scenes/settings_menu/settings_menu.gd:240
+#: scenes/settings_menu/settings_menu.gd:245
 msgid "Default track amount"
 msgstr "默认轨道数量"
 
-#: scenes/settings_menu/settings_menu.gd:246
+#: scenes/settings_menu/settings_menu.gd:251
 msgid "Track height"
 msgstr "轨道高度"
 
-#: scenes/settings_menu/settings_menu.gd:252
+#: scenes/settings_menu/settings_menu.gd:257
 msgid "Timeline controls"
 msgstr "时间轴控制"
 
-#: scenes/settings_menu/settings_menu.gd:253
+#: scenes/settings_menu/settings_menu.gd:258
 msgid "Pause after dragging"
 msgstr "拖动后暂停"
 
-#: scenes/settings_menu/settings_menu.gd:258
+#: scenes/settings_menu/settings_menu.gd:263
 msgid ""
 "Setting this will pause playback after having dragged the playhead around."
 msgstr "开启此选项时，拖动播放头移动后，播放将暂停。"
 
-#: scenes/settings_menu/settings_menu.gd:259
+#: scenes/settings_menu/settings_menu.gd:264
 msgid "Empty space delete modifier"
 msgstr "移除空白区域修饰键"
 
-#: scenes/settings_menu/settings_menu.gd:266
+#: scenes/settings_menu/settings_menu.gd:271
 msgid "The modifier you want to easily delete empty space between clips."
 msgstr "该修饰键可让您轻松删除片段之间的空白区域。"
 
-#: scenes/settings_menu/settings_menu.gd:267
+#: scenes/settings_menu/settings_menu.gd:272
 msgid "Empty space click action"
 msgstr "空白区域点击行为"
 
-#: scenes/settings_menu/settings_menu.gd:274
+#: scenes/settings_menu/settings_menu.gd:279
 msgid "What to do when clicking empty space in the timeline."
 msgstr "点击时间轴空白区域时的行为。"
 
-#: scenes/settings_menu/settings_menu.gd:275
+#: scenes/settings_menu/settings_menu.gd:280
 msgid "Addons"
 msgstr "附加"
 
-#: scenes/settings_menu/settings_menu.gd:276
+#: scenes/settings_menu/settings_menu.gd:281
 msgid "Show mode bar"
 msgstr "显示模式栏"
 
-#: scenes/settings_menu/settings_menu.gd:281
+#: scenes/settings_menu/settings_menu.gd:286
 msgid ""
 "The mode bar is the bar on the left of the timeline with buttons for "
 "changing the current timeline mode."
 msgstr "模式栏位于时间轴左侧，其中包含用于切换当前时间轴模式的按钮。"
 
-#: scenes/settings_menu/settings_menu.gd:284
+#: scenes/settings_menu/settings_menu.gd:289
 msgid "Performance"
 msgstr "性能"
 
-#: scenes/settings_menu/settings_menu.gd:285
+#: scenes/settings_menu/settings_menu.gd:290
 msgid "Video Decoding"
 msgstr "视频解码"
 
-#: scenes/settings_menu/settings_menu.gd:286
+#: scenes/settings_menu/settings_menu.gd:291
 msgid "Smart Seek Threshold"
 msgstr "智能跳转阈值"
 
-#: scenes/settings_menu/settings_menu.gd:293
+#: scenes/settings_menu/settings_menu.gd:298
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
@@ -657,11 +760,11 @@ msgstr ""
 "定义解码器在执行完整跳转操作之前，将依次预读多少帧。较高的数值可避免短距离跳"
 "转时的卡顿，但会消耗更多CPU资源。"
 
-#: scenes/settings_menu/settings_menu.gd:294
+#: scenes/settings_menu/settings_menu.gd:299
 msgid "Video Cache Size"
 msgstr "视频缓存大小"
 
-#: scenes/settings_menu/settings_menu.gd:301
+#: scenes/settings_menu/settings_menu.gd:306
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
@@ -669,15 +772,15 @@ msgstr ""
 "RAM 中保留的已解码帧的最大数量。数值越大，倒带和快进操作越流畅，但会增加内存"
 "占用。"
 
-#: scenes/settings_menu/settings_menu.gd:302
+#: scenes/settings_menu/settings_menu.gd:307
 msgid "Use proxies"
 msgstr "使用代理片段"
 
-#: scenes/settings_menu/settings_menu.gd:307
+#: scenes/settings_menu/settings_menu.gd:312
 msgid "Proxies save path"
 msgstr "代理片段保存路径"
 
-#: scenes/settings_menu/settings_menu.gd:312
+#: scenes/settings_menu/settings_menu.gd:317
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
@@ -686,23 +789,14 @@ msgstr ""
 "修改此设置时，应选择已存在的文件夹路径。所有之前创建的代理片段都需要重新生"
 "成，并且需要手动从原文件夹中删除。"
 
-#: scenes/settings_menu/settings_menu.gd:317
-#: scenes/settings_menu/settings_menu.gd:318
+#: scenes/settings_menu/settings_menu.gd:322
+#: scenes/settings_menu/settings_menu.gd:323
 msgid "Extras"
 msgstr "其他"
-
-#: scenes/settings_menu/settings_menu.gd:319
-#, fuzzy
-msgid "Check version"
-msgstr "检查版本"
 
 #: scenes/settings_menu/settings_menu.gd:324
 msgid "Auto save"
 msgstr "自动保存"
-
-#: scenes/settings_menu/settings_menu.gd:336 scenes/menu_bar/menu_bar.tscn
-msgid "Project settings"
-msgstr "工程设置"
 
 #: scenes/settings_menu/settings_menu.gd:338
 msgid "Video"
@@ -724,6 +818,10 @@ msgstr "背景色"
 #: scenes/settings_menu/settings_menu.gd:358
 msgid "The background color when no clips are displayed."
 msgstr "无视频片段时显示的背景色"
+
+#: scenes/settings_menu/settings_menu.gd:385 effects/text_effect_ui.gd:29
+msgid "Reset to default"
+msgstr "重置为默认值"
 
 #: scenes/settings_menu/settings_menu.gd:667
 msgid "Press any key..."
@@ -772,9 +870,9 @@ msgid ""
 "bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
 "worst quality, 18 not really noticable."
 msgstr ""
-"调整CRF（恒定速率因子），最低质量设置为50，最高质量设置为15。默认值为18。"
-"用于调整比特率，这会影响视频质量和文件大小。数值 0 表示最佳质量，"
-"51表示最差质量，18则几乎视觉无损。"
+"调整CRF（恒定速率因子），最低质量设置为50，最高质量设置为15。默认值为18。用于"
+"调整比特率，这会影响视频质量和文件大小。数值 0 表示最佳质量，51表示最差质量，"
+"18则几乎视觉无损。"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 #, fuzzy
@@ -800,14 +898,19 @@ msgid ""
 "seeking and scrubbing through the video playback. Put to a low value if you "
 "intend to use the rendered video for editing."
 msgstr ""
-"Group Of Pictures（图像组）。与较低的数值相比，较高的数值更有利于压缩。"
-"但数值越高，视频播放时的定位和快进/快退操作就越不精确。"
-"如果您打算将渲染后的视频用于编辑，建议将该数值调低。"
+"Group Of Pictures（图像组）。与较低的数值相比，较高的数值更有利于压缩。但数值"
+"越高，视频播放时的定位和快进/快退操作就越不精确。如果您打算将渲染后的视频用于"
+"编辑，建议将该数值调低。"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 #, fuzzy
 msgid "Gop size"
 msgstr "GOP大小"
+
+#: scenes/render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "B frames"
+msgstr "关键帧"
 
 #: scenes/render_options_panel/render_options_panel.tscn
 msgid "Render audio settings"
@@ -849,175 +952,78 @@ msgstr "草稿模式"
 msgid "Start render"
 msgstr "开始渲染"
 
-#: scenes/render_options_panel/render_options_panel.gd:61
+#: scenes/render_options_panel/render_options_panel.gd:62
 msgid "Custom render profiles"
 msgstr "自定义渲染配置"
 
-#: scenes/render_options_panel/render_options_panel.gd:147
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:123
+#: scenes/render_options_panel/render_options_panel.gd:149
+#: scenes/audio_take_over_popup/audio_take_over_popup.gd:110
 msgid "None"
 msgstr "无"
 
-#: scenes/render_options_panel/render_options_panel.gd:149
+#: scenes/render_options_panel/render_options_panel.gd:151
 msgid "Stereo"
 msgstr "立体声"
 
-#: scenes/render_options_panel/render_options_panel.gd:150
+#: scenes/render_options_panel/render_options_panel.gd:152
 msgid "Mono"
 msgstr "单声道"
 
-#: scenes/render_options_panel/render_options_panel.gd:221
+#: scenes/render_options_panel/render_options_panel.gd:224
 msgid "Select export path"
 msgstr "选择导出路径"
 
-#: scenes/render_options_panel/render_options_panel.gd:302
+#: scenes/render_options_panel/render_options_panel.gd:305
 msgid "Rendering finished"
 msgstr "渲染完成"
 
-#: scenes/render_options_panel/render_options_panel.gd:319
+#: scenes/render_options_panel/render_options_panel.gd:322
 msgid "Error whilst rendering video"
 msgstr "渲染视频时出错"
 
-#: scenes/render_options_panel/render_options_panel.gd:355
+#: scenes/render_options_panel/render_options_panel.gd:358
 msgid "Overwrite file?"
 msgstr "覆盖文件？"
 
-#: scenes/render_options_panel/render_options_panel.gd:356
+#: scenes/render_options_panel/render_options_panel.gd:359
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
 msgstr "要导出的路径文件已存在，是否覆盖？"
 
-#: scenes/render_options_panel/render_options_panel.gd:413
-#: scenes/render_options_panel/render_options_panel.gd:421
+#: scenes/render_options_panel/render_options_panel.gd:419
+#: scenes/render_options_panel/render_options_panel.gd:427
 msgid "Rendering"
 msgstr "正在渲染"
 
-#: scenes/render_options_panel/render_options_panel.gd:428
+#: scenes/render_options_panel/render_options_panel.gd:434
 msgid "Cancel rendering"
 msgstr "取消渲染"
 
-#: scenes/render_options_panel/render_options_panel.gd:459
+#: scenes/render_options_panel/render_options_panel.gd:466
 msgid "Error opening file"
 msgstr "打开文件出错"
 
-#: scenes/render_options_panel/render_options_panel.gd:460
+#: scenes/render_options_panel/render_options_panel.gd:467
 msgid "Error whilst sending audio"
 msgstr "发送音频时出错"
 
-#: scenes/render_options_panel/render_options_panel.gd:466
+#: scenes/render_options_panel/render_options_panel.gd:473
 msgid "Setting up ..."
 msgstr "正在准备..."
 
-#: scenes/render_options_panel/render_options_panel.gd:467
-#: scenes/render_options_panel/render_options_panel.gd:468
+#: scenes/render_options_panel/render_options_panel.gd:474
+#: scenes/render_options_panel/render_options_panel.gd:475
 msgid "Compiling audio ..."
 msgstr "处理音频..."
 
-#: scenes/render_options_panel/render_options_panel.gd:469
-#: scenes/render_options_panel/render_options_panel.gd:470
+#: scenes/render_options_panel/render_options_panel.gd:476
+#: scenes/render_options_panel/render_options_panel.gd:477
 msgid "Sending data ..."
 msgstr "正在发送数据..."
 
-#: scenes/render_options_panel/render_options_panel.gd:471
+#: scenes/render_options_panel/render_options_panel.gd:478
 msgid "Sending final frame ..."
 msgstr "正在发送最后一帧..."
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Project"
-msgstr "工程"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Save project"
-msgstr "保存"
-
-#: scenes/menu_bar/menu_bar.tscn scripts/autoloads/project.gd:101
-msgid "Save project as ..."
-msgstr "另存为..."
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:194 scripts/autoloads/project.gd:179
-msgid "Open project"
-msgstr "打开工程"
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-msgid "Recent projects"
-msgstr "近期工程"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Quit"
-msgstr "退出"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Edit"
-msgstr "编辑"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Undo"
-msgstr "撤消"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Redo"
-msgstr "恢复"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "View"
-msgstr "视图"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Save workspace"
-msgstr "保存工作区"
-
-#: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:122
-msgid "New workspace"
-msgstr "新建工作区"
-
-#: scenes/menu_bar/menu_bar.tscn scenes/menu_bar/menu_bar.gd:147
-msgid "Show panel titles"
-msgstr "显示面板标题"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Panels"
-msgstr "面板"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Preferences"
-msgstr "偏好"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Module manager"
-msgstr "模块管理"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Command bar"
-msgstr "命令行"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Help"
-msgstr "帮助"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Report bug"
-msgstr "报告 Bug"
-
-#: scenes/menu_bar/menu_bar.tscn
-msgid "Check for updates"
-msgstr "检查更新"
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-msgid "Manual"
-msgstr "手册"
-
-#: scenes/menu_bar/menu_bar.tscn scenes/startup_screen/startup_screen.tscn
-msgid "Tutorials"
-msgstr "教程"
-
-#: scenes/menu_bar/menu_bar.gd:124
-msgid "Workspace name"
-msgstr "工作区名称"
-
-#: scenes/menu_bar/menu_bar.gd:145
-msgid "Hide panel titles"
-msgstr "隐藏面板标题"
 
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
 #: scenes/audio_take_over_popup/audio_take_over_popup.tscn
@@ -1025,17 +1031,8 @@ msgid "Confirm"
 msgstr "确认"
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid ""
-"Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
-msgstr ""
-"图片来源："
-"[url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
-"[u]Clay Banks[/u][/url]"
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Update available"
-msgstr "有可用的更新！"
+msgid "Version: "
+msgstr "版本："
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Create new project"
@@ -1045,7 +1042,7 @@ msgstr "新建工程"
 msgid "Getting started"
 msgstr "快速上手"
 
-#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:55
+#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:53
 msgid "New project"
 msgstr "新工程"
 
@@ -1081,16 +1078,16 @@ msgstr "高级选项"
 msgid "Return"
 msgstr "返回"
 
-#: scenes/startup_screen/startup_screen.gd:132
-msgid "Version"
-msgstr "版本"
+#: scenes/startup_screen/startup_screen.gd:70
+msgid "Image by"
+msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:196
-#: scenes/startup_screen/startup_screen.gd:247 scripts/autoloads/project.gd:103
+#: scenes/startup_screen/startup_screen.gd:211
+#: scenes/startup_screen/startup_screen.gd:262 scripts/autoloads/project.gd:101
 msgid "GoZen project file"
 msgstr "GoZen工程文件"
 
-#: scenes/startup_screen/startup_screen.gd:245
+#: scenes/startup_screen/startup_screen.gd:260
 msgid "Select project save path"
 msgstr "选择工程保存路径"
 
@@ -1128,26 +1125,30 @@ msgstr "音频偏移"
 msgid "Auto align"
 msgstr "自动对齐"
 
-#: scripts/autoloads/project.gd:56
+#: effects/text_effect_ui.gd:124
+msgid "Keyframes"
+msgstr "关键帧"
+
+#: scripts/autoloads/project.gd:54
 msgid "Initialize new project ..."
 msgstr "初始化新工程中..."
 
-#: scripts/autoloads/project.gd:68
+#: scripts/autoloads/project.gd:66
 #, fuzzy
 msgid "Setting up playback ..."
 msgstr "正在准备播放..."
 
-#: scripts/autoloads/project.gd:69 scripts/autoloads/project.gd:160
+#: scripts/autoloads/project.gd:67 scripts/autoloads/project.gd:160
 #, fuzzy
 msgid "Finalizing ..."
 msgstr "正在完成..."
 
-#: scripts/autoloads/project.gd:124
+#: scripts/autoloads/project.gd:122
 #, fuzzy
 msgid "Setting up timeline ..."
 msgstr "正在设置时间轴..."
 
-#: scripts/autoloads/project.gd:133
+#: scripts/autoloads/project.gd:131
 msgid "Loading project files ..."
 msgstr "正在加载工程文件..."
 
@@ -1179,11 +1180,11 @@ msgstr "打开工程设置"
 msgid "open render menu"
 msgstr "打开渲染菜单"
 
-#: scripts/logic/file_logic.gd:229
+#: scripts/logic/file_logic.gd:235
 msgid "Update existing clips?"
 msgstr "更新已存在的片段？"
 
-#: scripts/logic/file_logic.gd:230
+#: scripts/logic/file_logic.gd:236
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the Audio-Take-Over changes to all existing clips?"
@@ -1191,25 +1192,72 @@ msgstr ""
 "此文件被%d个片段所使用。\n"
 "您要在所有现存的片段中应用此音频替换吗？"
 
-#: scripts/logic/file_logic.gd:231
+#: scripts/logic/file_logic.gd:237
 msgid "Apply to All"
 msgstr "应用到所有片段"
 
-#: scripts/logic/file_logic.gd:235
+#: scripts/logic/file_logic.gd:241
 msgid "Apply to File Only"
 msgstr "仅应用到文件"
 
-#: scripts/logic/file_logic.gd:329
+#: scripts/logic/file_logic.gd:335
 #, fuzzy
 msgid "Files dropped"
 msgstr "文件已拖放"
 
-#: scripts/logic/file_logic.gd:344
+#: scripts/logic/file_logic.gd:350
 msgid "Files loading ..."
 msgstr "文件加载中..."
 
 msgid "GoZen"
 msgstr "GoZen"
+
+#~ msgid "Create render profile"
+#~ msgstr "创建渲染配置"
+
+#~ msgid "New profile name"
+#~ msgstr "新配置名称"
+
+#~ msgid "Select Icon"
+#~ msgstr "选择图标"
+
+#~ msgid "GoZen version"
+#~ msgstr "GoZen版本"
+
+#~ msgid "GitHub repo"
+#~ msgstr "GitHub仓库"
+
+#, fuzzy
+#~ msgid "Check version"
+#~ msgstr "检查版本"
+
+#~ msgid "Project"
+#~ msgstr "工程"
+
+#~ msgid "Edit"
+#~ msgstr "编辑"
+
+#~ msgid "View"
+#~ msgstr "视图"
+
+#~ msgid "Preferences"
+#~ msgstr "偏好"
+
+#~ msgid "Help"
+#~ msgstr "帮助"
+
+#~ msgid "Check for updates"
+#~ msgstr "检查更新"
+
+#~ msgid ""
+#~ "Image by [url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+#~ "[u]Clay Banks[/u][/url]"
+#~ msgstr ""
+#~ "图片来源：[url=https://unsplash.com/photos/photo-of-mountain-u27Rrbs9Dwc]"
+#~ "[u]Clay Banks[/u][/url]"
+
+#~ msgid "Update available"
+#~ msgstr "有可用的更新！"
 
 #~ msgid "Render"
 #~ msgstr "渲染"
