@@ -12,8 +12,8 @@ const PRESETS: Dictionary[String, Vector3i] = {
 	"FHD (1080p) 60fps": Vector3i(1920, 1080, 60),
 	"Vertical (1080p) 30fps": Vector3i(1080, 1920, 30),
 	"Vertical (1080p) 60fps": Vector3i(1080, 1920, 60),
-	"UHD (4K) 30fps": Vector3i(1920, 1080, 30),
-	"UHD (4K) 60fps": Vector3i(1920, 1080, 60)
+	"UHD (4K) 30fps": Vector3i(4096, 2160, 30),
+	"UHD (4K) 60fps": Vector3i(4096, 2160, 60)
 }
 
 
