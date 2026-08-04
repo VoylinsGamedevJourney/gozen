@@ -50,14 +50,15 @@ func _ready() -> void:
 			ClipLogic.selected.connect(_on_clip_pressed))
 	EditorCore.visual_frame_changed.connect(func() -> void:
 			if current_clip: _update_ui_values())
+
 	EffectsHandler.effect_added.connect(_on_effect_added)
 	EffectsHandler.effect_removed.connect(_on_effect_removed)
 	EffectsHandler.effect_moved.connect(_on_effect_moved)
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
-	clip_mute_button.toggled.connect(func(toggled_on: bool) -> void:
-			if current_clip and current_clip.effects.is_muted == toggled_on:
-				ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
-			section_audio.folded = !toggled_on)
+
+	EffectsHandler.transition_updated.connect(_on_transition_updated)
+
+	clip_mute_button.toggled.connect(_on_clip_mute_button_toggled)
 	@warning_ignore_restore("return_value_discarded")
 
 	section_transitions.visible = false
@@ -234,52 +235,58 @@ func _create_transitions_ui(parent: Control) -> void:
 	left_label.theme_type_variation = "title_label"
 	parent.add_child(left_label)
 
-	if has_visual:
-		var vis_in_hbox: HBoxContainer = HBoxContainer.new()
-		var vis_in_lbl: Label = Label.new()
-		vis_in_lbl.text = "Visual Fade (frames)"
-		vis_in_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var vis_in_spin: SpinBox = SpinBox.new()
-		vis_in_spin.max_value = 10000
-		vis_in_spin.value = clip_effects.fade_visual.x
-		vis_in_spin.value_changed.connect(func(v: float) -> void:
-			if vis_in_spin.get_line_edit().has_focus():
-				EffectsHandler.set_fade(current_clip, true, Vector2i(int(v), clip_effects.fade_visual.y)))
-		vis_in_hbox.add_child(vis_in_lbl)
-		vis_in_hbox.add_child(vis_in_spin)
-		parent.add_child(vis_in_hbox)
+	if has_visual: # Visual fade in.
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		var spinbox: SpinBox = SpinBox.new()
 
-	if has_audio:
-		var aud_in_hbox: HBoxContainer = HBoxContainer.new()
-		var aud_in_lbl: Label = Label.new()
-		aud_in_lbl.text = "Audio Fade (frames)"
-		aud_in_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var aud_in_spin: SpinBox = SpinBox.new()
-		aud_in_spin.max_value = 10000
-		aud_in_spin.value = clip_effects.fade_audio.x
-		aud_in_spin.value_changed.connect(func(v: float) -> void:
-			if aud_in_spin.get_line_edit().has_focus():
-				EffectsHandler.set_fade(current_clip, false, Vector2i(int(v), clip_effects.fade_audio.y)))
-		aud_in_hbox.add_child(aud_in_lbl)
-		aud_in_hbox.add_child(aud_in_spin)
-		parent.add_child(aud_in_hbox)
+		label.text = "Visual Fade (frames)"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	if has_visual:
-		var left_style_hbox: HBoxContainer = HBoxContainer.new()
-		var left_style_lbl: Label = Label.new()
-		left_style_lbl.text = "Style"
-		left_style_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var left_style_opt: OptionButton = OptionButton.new()
-		for t_name: String in EffectsHandler.transitions:
-			left_style_opt.add_item(t_name)
-			if clip_effects.transition_left and clip_effects.transition_left.id == EffectsHandler.transitions[t_name]:
-				left_style_opt.selected = left_style_opt.item_count - 1
-		left_style_opt.item_selected.connect(func(idx: int) -> void:
-			var t_id: String = EffectsHandler.transitions[left_style_opt.get_item_text(idx)]
-			EffectsHandler.set_transition(current_clip, true, t_id))
-		left_style_hbox.add_child(left_style_lbl)
-		left_style_hbox.add_child(left_style_opt)
-		parent.add_child(left_style_hbox)
+		spinbox.max_value = 10000
+		spinbox.value = clip_effects.fade_visual.x
+		@warning_ignore("return_value_discarded")
+		spinbox.value_changed.connect(_on_visual_in_value_changed.bind(clip_effects, spinbox))
+
+		hbox.add_child(label)
+		hbox.add_child(spinbox)
+		parent.add_child(hbox)
+
+	if has_audio: # Audio fade in.
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		var spinbox: SpinBox = SpinBox.new()
+
+		label.text = "Audio Fade (frames)"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		spinbox.max_value = 10000
+		spinbox.value = clip_effects.fade_audio.x
+		@warning_ignore("return_value_discarded")
+		spinbox.value_changed.connect(_on_audio_in_value_changed.bind(clip_effects, spinbox))
+
+		hbox.add_child(label)
+		hbox.add_child(spinbox)
+		parent.add_child(hbox)
+
+	if has_visual: # Transition in.
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		var option_button: OptionButton = OptionButton.new()
+
+		label.text = "Style"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		for transition_name: String in EffectsHandler.transitions:
+			option_button.add_item(transition_name)
+			if clip_effects.transition_left and clip_effects.transition_left.id == EffectsHandler.transitions[transition_name]:
+				option_button.selected = option_button.item_count - 1
+		@warning_ignore("return_value_discarded")
+		option_button.item_selected.connect(_on_transition_in_style_item_selected.bind(option_button))
+
+		hbox.add_child(label)
+		hbox.add_child(option_button)
+		parent.add_child(hbox)
 
 		if clip_effects.transition_left:
 			for param: EffectParam in clip_effects.transition_left.params:
@@ -292,56 +299,60 @@ func _create_transitions_ui(parent: Control) -> void:
 	right_label.theme_type_variation = "title_label"
 	parent.add_child(right_label)
 
-	if has_visual:
-		var vis_out_hbox: HBoxContainer = HBoxContainer.new()
-		var vis_out_lbl: Label = Label.new()
-		vis_out_lbl.text = "Visual Fade (frames)"
-		vis_out_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var vis_out_spin: SpinBox = SpinBox.new()
-		vis_out_spin.max_value = 10000
-		vis_out_spin.value = clip_effects.fade_visual.y
-		vis_out_spin.value_changed.connect(func(v: float) -> void:
-			if vis_out_spin.get_line_edit().has_focus():
-				EffectsHandler.set_fade(current_clip, true, Vector2i(clip_effects.fade_visual.x, int(v))))
-		vis_out_hbox.add_child(vis_out_lbl)
-		vis_out_hbox.add_child(vis_out_spin)
-		parent.add_child(vis_out_hbox)
+	if has_visual: # Visual fade out.
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		var spinbox: SpinBox = SpinBox.new()
 
-	if has_audio:
-		var aud_out_hbox: HBoxContainer = HBoxContainer.new()
-		var aud_out_lbl: Label = Label.new()
-		aud_out_lbl.text = "Audio Fade (frames)"
-		aud_out_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var aud_out_spin: SpinBox = SpinBox.new()
-		aud_out_spin.max_value = 10000
-		aud_out_spin.value = clip_effects.fade_audio.y
-		aud_out_spin.value_changed.connect(func(v: float) -> void:
-			if aud_out_spin.get_line_edit().has_focus():
-				EffectsHandler.set_fade(current_clip, false, Vector2i(clip_effects.fade_audio.x, int(v))))
-		aud_out_hbox.add_child(aud_out_lbl)
-		aud_out_hbox.add_child(aud_out_spin)
-		parent.add_child(aud_out_hbox)
+		label.text = "Visual Fade (frames)"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	if has_visual:
-		var right_style_hbox: HBoxContainer = HBoxContainer.new()
-		var right_style_lbl: Label = Label.new()
-		right_style_lbl.text = "Style"
-		right_style_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var right_style_opt: OptionButton = OptionButton.new()
-		for t_name: String in EffectsHandler.transitions:
-			right_style_opt.add_item(t_name)
-			if clip_effects.transition_right and clip_effects.transition_right.id == EffectsHandler.transitions[t_name]:
-				right_style_opt.selected = right_style_opt.item_count - 1
-		right_style_opt.item_selected.connect(func(idx: int) -> void:
-			var t_id: String = EffectsHandler.transitions[right_style_opt.get_item_text(idx)]
-			EffectsHandler.set_transition(current_clip, false, t_id))
-		right_style_hbox.add_child(right_style_lbl)
-		right_style_hbox.add_child(right_style_opt)
-		parent.add_child(right_style_hbox)
+		spinbox.max_value = 10000
+		spinbox.value = clip_effects.fade_visual.y
+		@warning_ignore("return_value_discarded")
+		spinbox.value_changed.connect(_on_visual_out_value_changed.bind(clip_effects, spinbox))
+
+		hbox.add_child(label)
+		hbox.add_child(spinbox)
+		parent.add_child(hbox)
+
+	if has_audio: # Audio fade out.
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		var spinbox: SpinBox = SpinBox.new()
+
+		label.text = "Audio Fade (frames)"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		spinbox.max_value = 10000
+		spinbox.value = clip_effects.fade_audio.y
+		@warning_ignore("return_value_discarded")
+		spinbox.value_changed.connect(_on_audio_out_value_changed.bind(clip_effects, spinbox))
+
+		hbox.add_child(label)
+		hbox.add_child(spinbox)
+		parent.add_child(hbox)
+
+	if has_visual: # Transition in.
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		label.text = "Style"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var option_button: OptionButton = OptionButton.new()
+		for transition_name: String in EffectsHandler.transitions:
+			option_button.add_item(transition_name)
+			if clip_effects.transition_right and clip_effects.transition_right.id == EffectsHandler.transitions[transition_name]:
+				option_button.selected = option_button.item_count - 1
+		@warning_ignore("return_value_discarded")
+		option_button.item_selected.connect(_on_transition_out_style_item_selected.bind(option_button))
+		hbox.add_child(label)
+		hbox.add_child(option_button)
+		parent.add_child(hbox)
 
 		if clip_effects.transition_right:
 			for param: EffectParam in clip_effects.transition_right.params:
 				parent.add_child(_create_transition_param_ui(clip_effects.transition_right, param, false))
+
 
 func _create_transition_param_ui(transition: EffectVisual, param: EffectParam, is_left: bool) -> HBoxContainer:
 	var param_hbox: HBoxContainer = HBoxContainer.new()
@@ -355,6 +366,7 @@ func _create_transition_param_ui(transition: EffectVisual, param: EffectParam, i
 	param_title.tooltip_text = param.tooltip
 	param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
+	param_hbox.name = ("LEFT_" if is_left else "RIGHT_") + param.id
 	param_hbox.add_child(param_title)
 	param_hbox.add_child(param_settings)
 
@@ -665,8 +677,8 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 					option_button.add_item("Multiply", 3)
 					option_button.add_item("Premultiplied Alpha", 4)
 				@warning_ignore("return_value_discarded")
-				option_button.item_selected.connect(func(idx: int) -> void:
-						update_call.call(option_button.get_item_id(idx)))
+				option_button.item_selected.connect(func(index: int) -> void:
+						update_call.call(option_button.get_item_id(index)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				return option_button
 			var spinbox: SpinBox = SpinBox.new()
@@ -922,6 +934,21 @@ func _update_ui_values() -> void:
 		_update_ui_values_effect(current_clip.effects.video, i, frame_nr)
 	for i: int in current_clip.effects.audio.size():
 		_update_ui_values_effect(current_clip.effects.audio, i, frame_nr)
+
+	if !section_transitions.visible or section_transitions.get_child_count() <= 0: return
+	var transition_vbox: VBoxContainer = section_transitions.get_child(0)
+
+	if current_clip.effects.transition_left:
+		for param: EffectParam in current_clip.effects.transition_left.params:
+			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("LEFT_" + param.id)) as HBoxContainer
+			if hbox and hbox.get_child_count() > 1:
+				_set_param_settings_value(hbox.get_child(1) as Control, current_clip.effects.transition_left.get_value(param, 0))
+
+	if current_clip.effects.transition_right:
+		for param: EffectParam in current_clip.effects.transition_right.params:
+			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("RIGHT_" + param.id)) as HBoxContainer
+			if hbox and hbox.get_child_count() > 1:
+				_set_param_settings_value(hbox.get_child(1) as Control, current_clip.effects.transition_right.get_value(param, 0))
 
 
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
@@ -1629,6 +1656,54 @@ func _copy_effect_array(array: Array) -> Array:
 		data.append(copy)
 	return data
 
+
+func _on_transition_updated(clip: ClipData, _is_left: bool) -> void:
+	if current_clip and clip.id == current_clip.id:
+		if section_transitions.get_child_count() != 0:
+			var vbox: VBoxContainer = section_transitions.get_child(0)
+			section_transitions.remove_child(vbox)
+			vbox.queue_free()
+		var vbox_transitions: VBoxContainer = VBoxContainer.new()
+		section_transitions.add_child(vbox_transitions)
+		_create_transitions_ui(vbox_transitions)
+
+
+func _on_clip_mute_button_toggled(toggled_on: bool) -> void:
+	if current_clip and current_clip.effects.is_muted == toggled_on:
+		ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
+	section_audio.folded = !toggled_on
+
+
+#---- Transition spinbox stuff ----
+
+func _on_visual_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_line_edit().has_focus():
+		EffectsHandler.set_fade(current_clip, true, Vector2i(int(value), clip_effects.fade_visual.y))
+
+
+func _on_visual_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_line_edit().has_focus():
+		EffectsHandler.set_fade(current_clip, true, Vector2i(clip_effects.fade_visual.x, int(value)))
+
+
+func _on_audio_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_line_edit().has_focus():
+		EffectsHandler.set_fade(current_clip, false, Vector2i(int(value), clip_effects.fade_audio.y))
+
+
+func _on_audio_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_line_edit().has_focus():
+		EffectsHandler.set_fade(current_clip, false, Vector2i(clip_effects.fade_audio.x, int(value)))
+
+
+func _on_transition_in_style_item_selected(index: int, option_button: OptionButton) -> void:
+	var transition_id: String = EffectsHandler.transitions[option_button.get_item_text(index)]
+	EffectsHandler.set_transition(current_clip, true, transition_id)
+
+
+func _on_transition_out_style_item_selected(index: int, option_button: OptionButton) -> void:
+	var transition_id: String = EffectsHandler.transitions[option_button.get_item_text(index)]
+	EffectsHandler.set_transition(current_clip, false, transition_id)
 
 
 class DragData:

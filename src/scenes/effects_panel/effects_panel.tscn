@@ -2,6 +2,16 @@
 
 [ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://scenes/effects_panel/effects_panel.gd" id="1_k5peu"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vdjnm"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.7892687, 0.8352808, 0, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wv8tu"]
 content_margin_left = 4.0
 content_margin_top = 4.0
@@ -67,7 +77,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
-theme_override_styles/panel = SubResource("StyleBoxFlat_wv8tu")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vdjnm")
 title = "Transitions"
 
 [node name="VisualsContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1695060905]

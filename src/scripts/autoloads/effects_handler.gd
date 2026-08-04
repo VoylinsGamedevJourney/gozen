@@ -9,6 +9,8 @@ signal effect_values_updated
 
 signal effect_selected(effect: Effect)
 
+signal transition_updated(clip: ClipData, is_left: bool)
+
 
 enum TYPE { ALL = 0, VISUALS = 1, AUDIO = 2 }
 
@@ -107,6 +109,7 @@ func _set_transition(clip: ClipData, is_left: bool, transition: EffectVisual) ->
 	else:
 		clip.effects.transition_right = transition
 	effects_updated.emit()
+	transition_updated.emit(clip, is_left)
 
 
 func update_transition_param(clip: ClipData, is_left: bool, param_id: String, value: Variant) -> void:
