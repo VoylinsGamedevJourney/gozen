@@ -1706,6 +1706,7 @@ func _on_transition_out_style_item_selected(index: int, option_button: OptionBut
 	EffectsHandler.set_transition(current_clip, false, transition_id)
 
 
+
 class DragData:
 	var is_visual: bool
 	var effect_index: int

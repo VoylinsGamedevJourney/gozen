@@ -25,7 +25,7 @@ void main() {
     vec4 color = texelFetch(input_image, id, 0);
     float p = 0.0;
 
-    if (params.direction == 0) p = float(id.x) / float(size.x);
+    if (params.direction == 0)      p = float(id.x) / float(size.x);
     else if (params.direction == 1) p = 1.0 - float(id.x) / float(size.x);
     else if (params.direction == 2) p = float(id.y) / float(size.y);
     else if (params.direction == 3) p = 1.0 - float(id.y) / float(size.y);

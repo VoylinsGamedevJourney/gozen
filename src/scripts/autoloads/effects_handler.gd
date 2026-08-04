@@ -115,9 +115,11 @@ func _set_transition(clip: ClipData, is_left: bool, transition: EffectVisual) ->
 func update_transition_param(clip: ClipData, is_left: bool, param_id: String, value: Variant) -> void:
 	var transition: EffectVisual = clip.effects.transition_left if is_left else clip.effects.transition_right
 	var old_value: Variant = transition.keyframes[param_id][0]
+	@warning_ignore("unsafe_call_argument")
+	var new_value: Variant = int(value) if typeof(old_value) else value
 
 	InputManager.undo_redo.create_action("Update transition param")
-	InputManager.undo_redo.add_do_method(_set_transition_param.bind(transition, param_id, value))
+	InputManager.undo_redo.add_do_method(_set_transition_param.bind(transition, param_id, new_value))
 	InputManager.undo_redo.add_undo_method(_set_transition_param.bind(transition, param_id, old_value))
 	InputManager.undo_redo.commit_action()
 
