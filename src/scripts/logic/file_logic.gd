@@ -283,6 +283,8 @@ func duplicate_text(file: FileData) -> void:
 		new_file.temp_file = file.temp_file.duplicate(true)
 		if new_file.temp_file.text_effect:
 			new_file.temp_file.text_effect = file.temp_file.text_effect.deep_copy()
+			new_file.temp_file.text_effect.keyframes = file.temp_file.text_effect.keyframes.duplicate(true)
+
 	new_file.id = Utils.get_unique_id(files.keys())
 
 	InputManager.undo_redo.create_action("Duplicate Text File")

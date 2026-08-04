@@ -291,9 +291,13 @@ func paste_copied_clips() -> void:
 	insert_clips(clips_to_paste, "Paste clip(s)")
 
 
-func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void:
+func insert_clips(clips_to_insert: Array[ClipData], action_name: String, files_to_insert: Array[FileData] = []) -> void:
 	InputManager.undo_redo.create_action(action_name)
 	var new_selected: Array[ClipData] = []
+
+	for file: FileData in files_to_insert:
+		InputManager.undo_redo.add_do_method(FileLogic._restore.bind(file))
+		InputManager.undo_redo.add_undo_method(FileLogic._delete.bind(file))
 
 	for clip: ClipData in clips_to_insert:
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(clip))
@@ -306,12 +310,14 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String) -> void
 		selected.emit(selected_clips[-1])
 
 
-func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
+func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool = false) -> int:
 	if clips_to_duplicate.is_empty(): return 0
 
 	var new_clips: Array[ClipData] = []
+	var new_files: Array[FileData] = []
 	var failed_duplicates: int = 0
 	var existing_keys: Array[int] = clips.keys()
+	var existing_file_keys: Array[int] = FileLogic.files.keys()
 
 	var existing_group_ids: Array[int] = _get_all_group_ids()
 	var group_id_map: Dictionary = {}
@@ -347,12 +353,24 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData]) -> int:
 			new_clip.start = target_frame
 			new_clip.id = Utils.get_unique_id(existing_keys)
 
+			if duplicate_files and clip.type == EditorCore.Type.TEXT:
+				var original_file: FileData = FileLogic.files[clip.file]
+				var new_file: FileData = original_file.duplicate(true)
+				if new_file.temp_file:
+					new_file.temp_file = original_file.temp_file.duplicate(true)
+					if new_file.temp_file.text_effect:
+						new_file.temp_file.text_effect = original_file.temp_file.text_effect.deep_copy()
+				new_file.id = Utils.get_unique_id(existing_file_keys)
+				existing_file_keys.append(new_file.id)
+				new_clip.file = new_file.id
+				new_files.append(new_file)
+
 			existing_keys.append(new_clip.id)
 			new_clips.append(new_clip)
 		else:
 			failed_duplicates += 1
 
-	if not new_clips.is_empty(): insert_clips(new_clips, "Duplicate clip(s)")
+	if not new_clips.is_empty(): insert_clips(new_clips, "Duplicate clip(s)", new_files)
 	return failed_duplicates
 
 
@@ -447,7 +465,17 @@ func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array
 			if !effect.keyframes.has(param_id): continue
 			for frame: int in effect.keyframes[param_id]:
 				if frame <= split_pos: continue
-				new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
+
+				var value: Variant = effect.keyframes[param_id][frame]
+
+				@warning_ignore_start("unsafe_method_access")
+				if value is Resource:
+					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
+				elif typeof(value) == TYPE_ARRAY or typeof(value) == TYPE_DICTIONARY:
+					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
+				else:
+					new_effect.keyframes[param_id][frame - split_pos] = value
+				@warning_ignore_restore("unsafe_method_access")
 		new_effects.append(new_effect)
 	return new_effects
 
@@ -472,7 +500,17 @@ func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[E
 			if !effect.keyframes.has(param_id): continue
 			for frame: int in effect.keyframes[param_id]:
 				if frame <= split_pos: continue
-				new_effect.keyframes[param_id][frame - split_pos] = effect.keyframes[param_id][frame]
+
+				var value: Variant = effect.keyframes[param_id][frame]
+
+				@warning_ignore_start("unsafe_method_access")
+				if value is Resource:
+					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
+				elif typeof(value) == TYPE_ARRAY or typeof(value) == TYPE_DICTIONARY:
+					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
+				else:
+					new_effect.keyframes[param_id][frame - split_pos] = value
+				@warning_ignore_restore("unsafe_method_access")
 		new_effects.append(new_effect)
 	return new_effects
 

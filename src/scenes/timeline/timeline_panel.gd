@@ -138,8 +138,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			ClipLogic.ripple_delete(ClipLogic.selected_clips)
 		elif event.is_action_pressed("delete_clips", false, true):
 			ClipLogic.delete(ClipLogic.selected_clips)
-		elif event.is_action_pressed("duplicate_selected_clips", false, true):
-			var failed_dupes: int = ClipLogic.duplicate_clips(ClipLogic.selected_clips)
+		elif event.is_action_pressed("duplicate_selected_clips", false, false):
+			var duplicate_files: bool = (event as InputEventKey).shift_pressed
+			var failed_dupes: int = ClipLogic.duplicate_clips(ClipLogic.selected_clips, duplicate_files)
 			if failed_dupes > 0:
 				var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Duplication failed"))
 				dialog.dialog_text = tr("Could not duplicate %d clip(s) because there was not enough empty space.") % failed_dupes
@@ -494,7 +495,6 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 		var clip: ClipData = _get_clip_on_mouse()
 		if clip:
 			var new_effect: Effect = drag_data.effect.deep_copy()
-			new_effect.keyframes = drag_data.effect.keyframes.duplicate(true)
 			EffectsHandler.add_effect([clip], new_effect, drag_data.is_visual)
 		return
 	elif data is not Draggable or Timeline.current_state not in [Timeline.State.DROPPING, Timeline.State.MOVING]:

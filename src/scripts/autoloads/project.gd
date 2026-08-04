@@ -134,6 +134,7 @@ func open(new_project_path: String) -> void:
 	for file: FileData in data.files.values():
 		if not file.path.begins_with("temp://") and not FileAccess.file_exists(file.path):
 			missing_files.append(file.nickname)
+
 	if not missing_files.is_empty():
 		var dialog: AcceptDialog = PopupManager.create_accept_dialog("Missing Files")
 		dialog.dialog_text = "The following files are missing and could not be loaded:\n" + "\n\t".join(missing_files)

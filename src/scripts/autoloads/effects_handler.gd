@@ -173,7 +173,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				var new_effect: EffectVisual = visual_effect_instances[old_effect.id].deep_copy()
 				_apply_param_exceptions(new_effect)
 
-				new_effect.keyframes = old_effect.keyframes.duplicate(true)
+				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.video[i] = new_effect
@@ -184,7 +184,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				var new_effect: EffectAudio = audio_effect_instances[old_effect.id].deep_copy()
 				_apply_param_exceptions(new_effect)
 
-				new_effect.keyframes = old_effect.keyframes.duplicate(true)
+				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.audio[i] = new_effect
@@ -196,7 +196,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 			var new_effect: EffectVisual = base_text_effect.deep_copy()
 			_apply_param_exceptions(new_effect)
 
-			new_effect.keyframes = old_effect.keyframes.duplicate(true)
+			new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
 			new_effect.is_enabled = old_effect.is_enabled
 			new_effect.set_default_keyframe()
 			file.temp_file.text_effect = new_effect
@@ -222,8 +222,6 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 		if !is_visual and clip.type not in EditorCore.AUDIO_TYPES: continue
 
 		var effect_copy: Effect = effect.deep_copy()
-		effect_copy.keyframes = effect.keyframes.duplicate(true)
-
 		var index: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
 		_apply_param_exceptions(effect_copy)
 		effect_copy.set_default_keyframe()
@@ -257,7 +255,7 @@ func reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 	else:
 		effect = clip.effects.audio[index]
 
-	var old_keyframes: Dictionary = effect.keyframes.duplicate(true)
+	var old_keyframes: Dictionary = Effect.duplicate_keyframes(effect.keyframes)
 
 	InputManager.undo_redo.create_action("Reset effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_reset_effect.bind(clip, index, is_visual))
@@ -287,7 +285,7 @@ func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_
 	else:
 		effect = clip.effects.audio[index]
 
-	effect.keyframes = old_keyframes.duplicate(true)
+	effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	effect._cache_dirty = true
 	effects_updated.emit()
 	effect_values_updated.emit()

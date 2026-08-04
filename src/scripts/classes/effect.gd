@@ -56,7 +56,7 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 
 func deep_copy() -> Effect:
 	var copy: Effect = self.duplicate(true)
-	copy.keyframes = {}
+	copy.keyframes = duplicate_keyframes(self.keyframes)
 	copy._cache_dirty = true
 
 	var new_params: Array[EffectParam] = []
@@ -65,6 +65,27 @@ func deep_copy() -> Effect:
 	copy.params = new_params
 
 	return copy
+
+
+static func duplicate_keyframes(source_keyframes: Dictionary) -> Dictionary:
+	var duplicated_keyframes: Dictionary = {}
+	for param_id: String in source_keyframes:
+		var param_keyframes: Dictionary = source_keyframes[param_id]
+		var new_param_keyframes: Dictionary = {}
+		for frame: int in param_keyframes:
+			var value: Variant = param_keyframes[frame]
+
+			@warning_ignore_start("unsafe_method_access")
+			if value is Resource:
+				new_param_keyframes[frame] = value.duplicate(true)
+			elif typeof(value) == TYPE_ARRAY or typeof(value) == TYPE_DICTIONARY:
+				new_param_keyframes[frame] = value.duplicate(true)
+			else:
+				new_param_keyframes[frame] = value
+			@warning_ignore_restore("unsafe_method_access")
+
+		duplicated_keyframes[param_id] = new_param_keyframes
+	return duplicated_keyframes
 
 
 func change_default_param(param_id: String, new_default: Variant) -> void:

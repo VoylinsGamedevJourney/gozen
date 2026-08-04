@@ -243,7 +243,7 @@ func _text_keyframe_button_pressed(param_id: String) -> void:
 
 func _on_reset_text_effect() -> void:
 	var text_effect: EffectVisual = file.temp_file.text_effect
-	var old_keyframes: Dictionary = text_effect.keyframes.duplicate(true)
+	var old_keyframes: Dictionary = Effect.duplicate_keyframes(text_effect.keyframes)
 
 	InputManager.undo_redo.create_action("Reset text effect")
 	InputManager.undo_redo.add_do_method(_reset_text_effect)
@@ -262,7 +262,7 @@ func _reset_text_effect() -> void:
 
 func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
 	var text_effect: EffectVisual = file.temp_file.text_effect
-	text_effect.keyframes = old_keyframes.duplicate(true)
+	text_effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
