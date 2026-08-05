@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_f3tql")
-project_view = NodePath("Margin/VBox/Effectfoverlay/ProjectViewTextureRect")
+project_view = NodePath("Margin/VBox/EffectOverlay/ProjectViewTextureRect")
 button_play = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PlayButton")
 button_pause = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PauseButton")
 button_playback_speed = NodePath("Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton")
@@ -38,11 +38,11 @@ theme_override_constants/margin_bottom = 3
 layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="Effectfoverlay" type="Control" parent="Margin/VBox" unique_id=2030969296]
+[node name="EffectOverlay" type="Control" parent="Margin/VBox" unique_id=2030969296]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox/Effectfoverlay" unique_id=1517280290 node_paths=PackedStringArray("show_safe_areas_button")]
+[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox/EffectOverlay" unique_id=1517280290 node_paths=PackedStringArray("show_safe_areas_button")]
 material = SubResource("ShaderMaterial_cre3o")
 layout_mode = 1
 anchors_preset = 15
@@ -85,6 +85,7 @@ alignment = 1
 [node name="SkipPrevButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/PlaybackControlsContainer" unique_id=1655384619]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+tooltip_text = "Go to previous chapter marker."
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("3_lodf8")
 ignore_texture_size = true
@@ -93,6 +94,7 @@ stretch_mode = 5
 [node name="PlayButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/PlaybackControlsContainer" unique_id=1606796532]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+tooltip_text = "Start project playback."
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_k374p")
 ignore_texture_size = true
@@ -101,6 +103,7 @@ stretch_mode = 5
 [node name="PauseButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/PlaybackControlsContainer" unique_id=553207108]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+tooltip_text = "Pause project playback."
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("5_nh5w4")
 ignore_texture_size = true
@@ -109,6 +112,7 @@ stretch_mode = 5
 [node name="SkipNextButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/PlaybackControlsContainer" unique_id=456366118]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+tooltip_text = "Go to next chapter marker."
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("6_pf2aw")
 ignore_texture_size = true
@@ -123,6 +127,9 @@ alignment = 2
 auto_translate_mode = 2
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
+tooltip_text = "This button loops between the available project playback speed modifiers.
+- Left click: Increases speed;
+- Shift+Left click: Decreases speed;"
 theme_override_colors/font_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
 text = "x1"
 flat = true
@@ -130,6 +137,7 @@ flat = true
 [node name="ShowGuidelinesButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=1324770277]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
+tooltip_text = "Show video safety guidelines on top of the project preview."
 texture_normal = ExtResource("7_l50ca")
 ignore_texture_size = true
 stretch_mode = 5
@@ -139,4 +147,4 @@ stretch_mode = 5
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/SkipNextButton" to="." method="_on_skip_next_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton" to="." method="_on_playback_speed_button_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton" to="Margin/VBox/Effectfoverlay/ProjectViewTextureRect" method="toggle_safe_areas"]
+[connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton" to="Margin/VBox/EffectOverlay/ProjectViewTextureRect" method="toggle_safe_areas"]

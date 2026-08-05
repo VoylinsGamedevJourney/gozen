@@ -54,12 +54,10 @@ func _ready() -> void:
 
 
 func _update_transform() -> void:
-	if not Project.is_loaded:
-		return
+	if not Project.is_loaded: return
 
 	var overlay_size: Vector2 = overlay_control.size
-	if overlay_size.y == 0:
-		return
+	if overlay_size.y == 0: return
 
 	var aspect: float = Project.data.resolution.x / float(Project.data.resolution.y)
 	var base_size: Vector2 = overlay_size

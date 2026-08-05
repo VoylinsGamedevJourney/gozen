@@ -106,13 +106,11 @@ func _on_frame_changed() -> void:
 
 
 func _on_playback_speed_button_pressed() -> void:
+	var shift_pressed: bool = Input.is_key_pressed(KEY_SHIFT)
+
 	match EditorCore.playback_speed:
-		1.0:
-			EditorCore.playback_speed = 1.5
-		1.5:
-			EditorCore.playback_speed = 2.0
-		2.0:
-			EditorCore.playback_speed = 4.0
-		4.0:
-			EditorCore.playback_speed = 1.0
+		1.0: EditorCore.playback_speed = 4.0 if shift_pressed else 1.5
+		1.5: EditorCore.playback_speed = 1.0 if shift_pressed else 2.0
+		2.0: EditorCore.playback_speed = 1.5 if shift_pressed else 4.0
+		4.0: EditorCore.playback_speed = 2.0 if shift_pressed else 1.0
 	button_playback_speed.text = "x%s" % EditorCore.playback_speed
