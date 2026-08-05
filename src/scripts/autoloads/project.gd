@@ -47,28 +47,30 @@ func _setup_logic() -> void:
 	TrackLogic.prepare_data()
 
 
-func new_project(new_path: String, new_resolution: Vector2i, new_framerate: float) -> void:
+func new_project(request: NewProjectRequest) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("New project"))
 	loading_overlay.update(0, tr("Initialize new project ..."))
 
-	set_project_path(new_path)
-	set_resolution(new_resolution)
-	set_framerate(new_framerate, true)
+	set_project_path(request.project_path)
+	set_resolution(request.resolution)
+	set_framerate(request.framerate, true)
 	_setup_logic()
 
-	for index: int in Settings.get_tracks_amount():
+	for index: int in request.track_amount:
 		TrackLogic._add_track(index)
 	@warning_ignore("return_value_discarded")
 	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
 	loading_overlay.update(50, tr("Setting up playback ..."))
 	loading_overlay.update(99, tr("Finalizing ..."))
-	get_window().title = "GoZen - %s" % new_path.get_file().get_basename()
-	_update_recent_projects(new_path)
+	get_window().title = "GoZen - %s" % get_project_name()
+	_update_recent_projects(get_project_path())
 	PopupManager.close_all()
 	if !data.project_path.is_empty(): save()
+
+	set_background_color(request.background_color)
 
 	is_loaded = true
 	if !data.project_path.is_empty(): _auto_save()
@@ -269,16 +271,9 @@ func set_project_path(new_project_path: String) -> void:
 	unsaved_changes = true
 
 
-func get_project_path() -> String:
-	return data.project_path
-
-
-func get_project_name() -> String:
-	return data.project_path.get_file().trim_suffix("." + data.project_path.get_extension())
-
-
-func get_project_base_folder() -> String:
-	return data.project_path.get_base_dir()
+func get_project_path() -> String: return data.project_path
+func get_project_name() -> String: return data.project_path.get_file().get_basename()
+func get_project_base_folder() -> String: return data.project_path.get_base_dir()
 
 
 func set_resolution(resolution: Vector2i) -> void:
@@ -289,17 +284,12 @@ func set_resolution(resolution: Vector2i) -> void:
 	resolution_changed.emit()
 
 
-func get_resolution() -> Vector2i:
-	return data.resolution
-
-
-func get_resolution_center() -> Vector2i:
-	return data.resolution / 2.0
+func get_resolution() -> Vector2i: 		  return data.resolution
+func get_resolution_center() -> Vector2i: return data.resolution / 2.0
 
 
 func set_framerate(new_framerate: float, force: bool = false) -> void:
-	if !force and is_equal_approx(data.framerate, new_framerate):
-		return
+	if !force and is_equal_approx(data.framerate, new_framerate): return
 
 	var old_framerate: float = data.framerate
 	data.framerate = new_framerate

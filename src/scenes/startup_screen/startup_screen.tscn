@@ -13,11 +13,12 @@
 [ext_resource type="Texture2D" uid="uid://bhh3b5vs2e6kv" path="res://assets/icons/vertical.svg" id="9_gatud"]
 [ext_resource type="Texture2D" uid="uid://bbuw3ew0x2ghk" path="res://assets/icons/video_guide.svg" id="9_ncffq"]
 [ext_resource type="Texture2D" uid="uid://qin4ceo74nw6" path="res://assets/icons/support.svg" id="11_0i7o8"]
+[ext_resource type="Texture2D" uid="uid://dyndi17ou8ixo" path="res://assets/icons/delete.svg" id="14_gatud"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
 shader = ExtResource("1_5viva")
 
-[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "create_new_project_button", "project_presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "save_profile_preset_button", "delete_profile_preset_button", "startup_image", "startup_image_credit_label")]
+[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "create_new_project_button", "project_presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "track_amount_spinbox", "save_profile_preset_button", "delete_profile_preset_button", "startup_image", "startup_image_credit_label")]
 material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
 anchor_right = 1.0
@@ -39,6 +40,9 @@ warning_label = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectWa
 advanced_options_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton")
 advanced_options = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid")
 background_color_picker = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/BackgroundColorPickerButton")
+track_amount_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/TrackAmountSpinBox")
+save_profile_preset_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/SaveProfilePresetButton")
+delete_profile_preset_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/DeleteProfilePresetButton")
 startup_image = NodePath("Panel/VBox/StartupImage")
 startup_image_credit_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/ImageAuthor")
 metadata/_edit_lock_ = true
@@ -123,11 +127,12 @@ vertical_alignment = 2
 [node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox" unique_id=611256809]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=703377150]
 auto_translate_mode = 2
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -166,7 +171,10 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=77458439]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=1841822096]
+layout_mode = 2
+
+[node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer" unique_id=77458439]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Go to the menu to set the settings of your new project."
@@ -262,7 +270,6 @@ expand_icon = true
 
 [node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=1384044314]
 auto_translate_mode = 2
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -276,9 +283,25 @@ size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "New project"
 
-[node name="NewProjectOptionButton" type="OptionButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=615592546]
-custom_minimum_size = Vector2(200, 0)
+[node name="SaveProfilePresetButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=978774459]
+custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("7_4kk3e")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="NewProjectOptionButton" type="OptionButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=615592546]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="DeleteProfilePresetButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=1105959447]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("14_gatud")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="HSeparator1" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=2114054458]
 auto_translate_mode = 1
@@ -361,17 +384,17 @@ min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=643237763]
-auto_translate_mode = 1
-layout_mode = 2
-size_flags_horizontal = 8
-text = "Advanced options"
-
 [node name="NewProjectAdvancedGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1412518369]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=774957028]
+layout_mode = 2
+
+[node name="Control" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=727477064]
+layout_mode = 2
 
 [node name="BackgroundColorLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1593266549]
 layout_mode = 2
@@ -381,6 +404,24 @@ text = "Background color"
 [node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=60239702]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="TrackAmountLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=473212060]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Track amount"
+
+[node name="TrackAmountSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1054672593]
+layout_mode = 2
+tooltip_text = "Amount of tracks in the timeline."
+min_value = 1.0
+max_value = 12.0
+value = 1.0
+
+[node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=643237763]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Advanced options"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1374780922]
 auto_translate_mode = 1
@@ -422,7 +463,9 @@ text = "Create new project"
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/DiscordServerButton" to="." method="_on_discord_server_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/SaveProfilePresetButton" to="." method="_on_save_profile_preset_button_pressed"]
 [connection signal="item_selected" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton" to="." method="_on_new_project_option_button_item_selected"]
+[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/DeleteProfilePresetButton" to="." method="_on_delete_profile_preset_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
 [connection signal="toggled" from="Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton" to="." method="_on_advanced_options_check_button_toggled"]
 [connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]

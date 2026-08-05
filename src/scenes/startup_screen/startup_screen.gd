@@ -8,6 +8,9 @@ extends PanelContainer
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 const USER_PROFILES_PATH: String = "user://project_profiles/"
 
+const COLOR_ENABLED: Color = Color.WHITE
+const COLOR_DISABLED: Color = Color(1.0,1.0,1.0,0.2)
+
 
 @export var version_label: RichTextLabel
 @export var tab_container: TabContainer
@@ -15,7 +18,7 @@ const USER_PROFILES_PATH: String = "user://project_profiles/"
 @export var create_new_project_button: Button
 
 @export_category("New project menu")
-@export var presets_option_button: OptionButton
+@export var project_presets_option_button: OptionButton
 
 @export var project_path_line_edit: LineEdit
 @export var resolution_x_spinbox: SpinBox
@@ -26,6 +29,10 @@ const USER_PROFILES_PATH: String = "user://project_profiles/"
 @export var advanced_options_button: CheckButton
 @export var advanced_options: GridContainer
 @export var background_color_picker: ColorPickerButton
+@export var track_amount_spinbox: SpinBox
+
+@export var save_profile_preset_button: TextureButton
+@export var delete_profile_preset_button: TextureButton
 
 @export_category("Startup image")
 @export var startup_image: TextureRect
@@ -40,9 +47,19 @@ var startup_images_data: Array[PackedStringArray] = [ ## [ Image UID, unsplash i
 	["uid://b68fi43mkp6i1", "A5GmtHW3O9k"],
 ]
 
+var loaded_preset_profiles: Array[ProjectProfile] = [] ## New project profiles.
+var default_profiles_count: int = DirAccess.get_files_at(DEFAULT_PROFILES_PATH).size()
+
 
 
 func _ready() -> void:
+	@warning_ignore_start("return_value_discarded")
+	resolution_x_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
+	resolution_y_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
+	framerate_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
+	background_color_picker.color_changed.connect(_on_new_project_setting_changed.unbind(1))
+	@warning_ignore_restore("return_value_discarded")
+
 	tab_container.current_tab = 0
 	advanced_options_button.button_pressed = false
 	advanced_options.visible = false
@@ -68,6 +85,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_project", false, true):
 		_on_open_project_button_pressed()
+	if event.is_action_pressed("ui_cancel", false, true):
+		tab_container.current_tab = 0
 
 
 func _set_recent_projects() -> void:
@@ -123,6 +142,14 @@ func _set_recent_projects() -> void:
 			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
 	file.close()
 
+	# Set the focus on the first project so it can be opened with enter.
+	if recent_projects_vbox.get_child_count() > 0:
+		var first_hbox: HBoxContainer = recent_projects_vbox.get_child(0)
+		var first_btn: Button = first_hbox.get_child(1) # Since delete_button is child 0
+		first_btn.grab_focus.call_deferred()
+	else:
+		create_new_project_button.grab_focus.call_deferred()
+
 
 func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 	var file: FileAccess = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
@@ -146,24 +173,43 @@ func _set_version_label() -> void:
 
 
 func _set_new_project_defaults() -> void:
-	# Setting the preset options
-	presets_option_button.clear()
+	loaded_preset_profiles.clear()
+	project_presets_option_button.clear()
 
-	for preset: String in PRESETS:
-		presets_option_button.add_item(preset)
+	# Setting the preset options.
+	var profile_files: PackedStringArray = DirAccess.get_files_at(DEFAULT_PROFILES_PATH)
+	for profile_path: String in profile_files:
+		var project_profile: ProjectProfile = load(DEFAULT_PROFILES_PATH.path_join(profile_path))
+		project_presets_option_button.add_item(project_profile.profile_name, loaded_preset_profiles.size())
+		loaded_preset_profiles.append(project_profile)
 
-	presets_option_button.selected = 0
+	project_presets_option_button.add_separator(tr("User presets"))
 
-	# Setting the normal project settings
+	if not DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
+		var _err: int = DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
+	else:
+		var user_profile_files: PackedStringArray = DirAccess.get_files_at(USER_PROFILES_PATH)
+		for profile_path: String in user_profile_files:
+			if profile_path.ends_with(".tres"):
+				var project_profile: ProjectProfile = load(USER_PROFILES_PATH.path_join(profile_path))
+				project_presets_option_button.add_item(project_profile.profile_name, loaded_preset_profiles.size())
+				loaded_preset_profiles.append(project_profile)
+
+	# Setting the normal project settings.
 	project_path_line_edit.text = Settings.get_default_project_path()
-	resolution_x_spinbox.value = Settings.get_default_resolution_x()
-	resolution_y_spinbox.value = Settings.get_default_resolution_y()
-	framerate_spinbox.value = Settings.get_default_framerate()
+	resolution_x_spinbox.set_value_no_signal(Settings.get_default_resolution_x())
+	resolution_y_spinbox.set_value_no_signal(Settings.get_default_resolution_y())
+	framerate_spinbox.set_value_no_signal(Settings.get_default_framerate())
 
 	# Setting the advanced project settings.
 	background_color_picker.color = Color.BLACK
+	track_amount_spinbox.set_value_no_signal(Settings.get_tracks_amount())
 
 	_on_new_project_option_button_item_selected(0)
+	save_profile_preset_button.disabled = true
+	save_profile_preset_button.modulate = COLOR_DISABLED
+	delete_profile_preset_button.disabled = true
+	delete_profile_preset_button.modulate = COLOR_DISABLED
 
 
 func _on_editor_settings_button_pressed() -> void:
@@ -206,7 +252,6 @@ func open_project(path: String) -> void:
 
 func _on_create_new_project_button_pressed() -> void:
 	var path: String = project_path_line_edit.text
-	var resolution: Vector2i = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
 
 	if path.is_empty():
 		pass # TODO: Fix this later, empty projects are allowed now!
@@ -221,21 +266,34 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
+	var request: NewProjectRequest = NewProjectRequest.new()
+	request.project_path = path
+	request.resolution = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
+	request.framerate = framerate_spinbox.value
+
+	if advanced_options_button.button_pressed:
+		request.background_color = background_color_picker.color
+		request.track_amount = int(track_amount_spinbox.value)
+
 	self.visible = false
 	await get_tree().process_frame
-	Project.new_project(path, resolution, framerate_spinbox.value)
-	if advanced_options_button.button_pressed:
-		Project.set_background_color(background_color_picker.color)
+	Project.new_project(request)
 	self.queue_free()
 
 
 func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
-	Project.new_project("", Settings.get_quick_create_horizontal_res(), Settings.get_quick_create_horizontal_fps())
+	var request: NewProjectRequest = NewProjectRequest.new()
+	request.resolution = Settings.get_quick_create_horizontal_res()
+	request.framerate  = Settings.get_quick_create_horizontal_fps()
+	Project.new_project(request)
 	self.queue_free()
 
 
 func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
-	Project.new_project("", Settings.get_quick_create_vertical_res(), Settings.get_quick_create_vertical_fps())
+	var request: NewProjectRequest = NewProjectRequest.new()
+	request.resolution = Settings.get_quick_create_vertical_res()
+	request.framerate  = Settings.get_quick_create_vertical_fps()
+	Project.new_project(request)
 	self.queue_free()
 
 
@@ -262,16 +320,100 @@ func _set_project_path(path: String) -> void:
 
 func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:
 	advanced_options.visible = toggled_on
+	_on_new_project_setting_changed()
 
 
 func _on_new_project_option_button_item_selected(index: int) -> void:
-	if index == 0: # Custom
+	var id: int = project_presets_option_button.get_item_id(index)
+	if id < 0 or id >= loaded_preset_profiles.size(): return
+
+
+	var profile: ProjectProfile = loaded_preset_profiles[id]
+	resolution_x_spinbox.set_value_no_signal(profile.resolution.x)
+	resolution_y_spinbox.set_value_no_signal(profile.resolution.y)
+	framerate_spinbox.set_value_no_signal(profile.framerate)
+
+	advanced_options_button.set_pressed_no_signal(profile.advanced_settings_enabled)
+	advanced_options.visible = profile.advanced_settings_enabled
+	if profile.advanced_settings_enabled:
+		background_color_picker.color = profile.background_color
+
+	save_profile_preset_button.disabled = true
+	save_profile_preset_button.modulate = COLOR_DISABLED
+	if id < default_profiles_count:
+		delete_profile_preset_button.disabled = true
+		delete_profile_preset_button.modulate = COLOR_DISABLED
+	else:
+		delete_profile_preset_button.disabled = false
+		delete_profile_preset_button.modulate = COLOR_ENABLED
+
+
+func _on_save_profile_preset_button_pressed() -> void:
+	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("Save preset"), "")
+	var line_edit: LineEdit = LineEdit.new()
+	line_edit.placeholder_text = tr("Preset name")
+	dialog.add_child(line_edit)
+
+	var confirm_lambda: Callable = func() -> void:
+		var preset_name: String = line_edit.text.strip_edges()
+		if preset_name.is_empty():
+			preset_name = "Custom"
+
+		var profile: ProjectProfile = ProjectProfile.new()
+		profile.profile_name = preset_name
+		profile.resolution = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
+		profile.framerate = framerate_spinbox.value
+		profile.advanced_settings_enabled = advanced_options_button.button_pressed
+		profile.background_color = background_color_picker.color
+
+		if not DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
+			var _dir_err: int = DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
+
+		var save_path: String = USER_PROFILES_PATH.path_join(preset_name.validate_filename() + ".tres")
+		var _err: int = ResourceSaver.save(profile, save_path)
+
 		_set_new_project_defaults()
+
+		for i: int in project_presets_option_button.item_count:
+			var item_id: int = project_presets_option_button.get_item_id(i)
+			if item_id >= 0 and item_id < loaded_preset_profiles.size():
+				if loaded_preset_profiles[item_id].profile_name == preset_name:
+					project_presets_option_button.selected = i
+					_on_new_project_option_button_item_selected(i)
+					break
+
+		dialog.queue_free()
+
+	@warning_ignore_start("return_value_discarded")
+	dialog.confirmed.connect(confirm_lambda)
+	line_edit.text_submitted.connect(func(_text: String) -> void: confirm_lambda.call())
+	@warning_ignore_restore("return_value_discarded")
+
+	add_child(dialog)
+	dialog.popup_centered(Vector2i(250, 80))
+	line_edit.grab_focus()
+
+
+func _on_delete_profile_preset_button_pressed() -> void:
+	var index: int = project_presets_option_button.selected
+	if index == -1: return
+	var id: int = project_presets_option_button.get_item_id(index)
+	if id < default_profiles_count or id >= loaded_preset_profiles.size():
 		return
 
-	var keys: PackedStringArray = PRESETS.keys()
-	var presets_data: Vector3 = PRESETS[keys[index]]
+	var profile: ProjectProfile = loaded_preset_profiles[id]
+	var path: String = USER_PROFILES_PATH.path_join(profile.profile_name.validate_filename() + ".tres")
+	if FileAccess.file_exists(path):
+		var _err: int = DirAccess.remove_absolute(path)
 
-	resolution_x_spinbox.value = presets_data.x
-	resolution_y_spinbox.value = presets_data.y
-	framerate_spinbox.value = presets_data.z
+	_set_new_project_defaults()
+
+
+func _on_new_project_setting_changed() -> void:
+	project_presets_option_button.selected = -1
+
+	save_profile_preset_button.disabled = false
+	save_profile_preset_button.modulate = COLOR_ENABLED
+
+	delete_profile_preset_button.disabled = true
+	delete_profile_preset_button.modulate = COLOR_DISABLED
