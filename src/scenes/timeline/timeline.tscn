@@ -53,6 +53,7 @@ theme_override_constants/separation = 7
 [node name="SelectModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=307167767]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
+tooltip_text = "Select mode: Used for selecting clips on the timeline."
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_3ixqu")
@@ -64,6 +65,7 @@ stretch_mode = 5
 [node name="SplitModeButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=601517066]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
+tooltip_text = "Cut mode: Let's you cut clips on the position of your mouse cursor by clicking."
 toggle_mode = true
 button_group = SubResource("ButtonGroup_3ixqu")
 texture_normal = ExtResource("4_qnybs")
@@ -78,7 +80,7 @@ size_flags_vertical = 3
 [node name="GroupButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=1221913846]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
-tooltip_text = "Turn group selection on/off."
+tooltip_text = "Turn group selection on/off for clips in the timeline."
 toggle_mode = true
 button_pressed = true
 texture_normal = ExtResource("6_7sle8")
@@ -88,7 +90,7 @@ stretch_mode = 5
 [node name="SnapButton" type="TextureButton" parent="TimelineModes/Margin/VBox" unique_id=268986904]
 custom_minimum_size = Vector2(16, 18)
 layout_mode = 2
-tooltip_text = "Turn snapping on/off."
+tooltip_text = "Turn clip snapping on/off when moving clips."
 toggle_mode = true
 button_pressed = true
 texture_normal = ExtResource("4_scsrl")
