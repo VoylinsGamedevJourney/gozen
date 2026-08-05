@@ -49,7 +49,6 @@ var _last_scrub_time: int = 0
 
 
 
-
 func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)

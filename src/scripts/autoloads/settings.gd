@@ -196,11 +196,6 @@ func apply_theme() -> void:
 	else: # Default theme.
 		theme = load(Library.THEME_DEFAULT).duplicate(true)
 
-	# TODO: Adjust the colors to use the base and accent color. In doing so
-	# we also have to update the text color. Biggest possible issue is that
-	# some theme's might be using textures instead of stylebox which will make
-	# applying the colors a bit more troublesome. The timeline colors right now
-	# are still "hard coded" which will also need updating.
 	get_tree().root.theme = theme
 
 

@@ -10,8 +10,6 @@ enum EmptySpaceClickAction { SEEK, CLEAR_SELECTION }
 var language: String = "en"
 var display_scale: float = 1.0
 var theme: String = Library.THEME_DEFAULT
-var base_color: Color = Color(0.2, 0.2, 0.2)
-var accent_color: Color = Color(0.69, 0.09, 0.95)
 var show_menu_bar: bool = true
 var show_safe_areas_on_startup: bool = false
 var audio_waveform_style: AudioWaveformStyle = AudioWaveformStyle.CENTER
