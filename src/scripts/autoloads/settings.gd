@@ -168,7 +168,7 @@ func set_display_scale_int(value: int) -> void:
 
 
 func apply_display_scale() -> void:
-	apply_theme()
+	get_tree().root.content_scale_factor = data.display_scale
 
 
 func get_display_scale() -> float:
@@ -190,13 +190,11 @@ func set_theme_path(new_path: String) -> void:
 
 func apply_theme() -> void:
 	var theme: Theme
+
 	if not data.theme.is_empty() and ResourceLoader.exists(data.theme):
 		theme = load(data.theme).duplicate(true)
 	else: # Default theme.
 		theme = load(Library.THEME_DEFAULT).duplicate(true)
-
-	if not is_equal_approx(data.display_scale, 1.0):
-		Utils.apply_scale(theme, data.display_scale)
 
 	# TODO: Adjust the colors to use the base and accent color. In doing so
 	# we also have to update the text color. Biggest possible issue is that
