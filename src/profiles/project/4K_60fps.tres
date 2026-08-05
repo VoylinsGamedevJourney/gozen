@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ProjectProfile" format=3 uid="uid://bnr2dvaiebx0a"]
+
+[ext_resource type="Script" uid="uid://l4kh0mo0ypqd" path="res://scripts/classes/project_profile.gd" id="1_fg5hx"]
+
+[resource]
+script = ExtResource("1_fg5hx")
+profile_name = "4K 60fps"
+resolution = Vector2i(4096, 2160)
+framerate = 60.0
+track_amount = null
+metadata/_custom_type_script = "uid://l4kh0mo0ypqd"

@@ -1,7 +1,7 @@
 extends PanelContainer
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
-const USER_PROFILES_PATH: String = "user://render_profiles/"
+const USER_PROFILES_PATH: String = "user://profiles/render/"
 
 
 @export var button_save_render_profile: Button

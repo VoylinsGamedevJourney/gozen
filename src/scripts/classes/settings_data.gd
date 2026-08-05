@@ -26,6 +26,10 @@ var text_duration: int = 300
 var default_project_path: String = ""
 var default_resolution: Vector2i = Vector2i(1920, 1080)
 var default_framerate: float = 30.0
+var quick_create_horizontal_res: Vector2i = Vector2i(1920, 1080)
+var quick_create_horizontal_fps: float = 30.0
+var quick_create_vertical_res: Vector2i = Vector2i(1080, 1920)
+var quick_create_vertical_fps: float = 30.0
 
 # Timeline
 var tracks_amount: int = 6 ## The amount of tracks.

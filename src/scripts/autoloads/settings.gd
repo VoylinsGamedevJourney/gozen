@@ -15,7 +15,6 @@ signal on_waveform_update
 signal on_theme_updated
 
 
-
 const PATH: String = "user://settings"
 const PATH_THEMES: String = "user://themes/"
 
@@ -376,6 +375,38 @@ func set_default_framerate(framerate: float) -> void:
 
 func get_default_framerate() -> float:
 	return data.default_framerate
+
+
+func set_quick_create_horizontal_res(res: Vector2i) -> void:
+	data.quick_create_horizontal_res = res
+
+
+func get_quick_create_horizontal_res() -> Vector2i:
+	return data.quick_create_horizontal_res
+
+
+func set_quick_create_horizontal_fps(fps: float) -> void:
+	data.quick_create_horizontal_fps = fps
+
+
+func get_quick_create_horizontal_fps() -> float:
+	return data.quick_create_horizontal_fps
+
+
+func set_quick_create_vertical_res(res: Vector2i) -> void:
+	data.quick_create_vertical_res = res
+
+
+func get_quick_create_vertical_res() -> Vector2i:
+	return data.quick_create_vertical_res
+
+
+func set_quick_create_vertical_fps(fps: float) -> void:
+	data.quick_create_vertical_fps = fps
+
+
+func get_quick_create_vertical_fps() -> float:
+	return data.quick_create_vertical_fps
 
 
 #--- Timeline set/get ---

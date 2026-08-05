@@ -27,6 +27,7 @@ var project_data: ProjectData
 var encoder: Encoder
 var viewport: ViewportTexture
 
+var is_encoding: bool = false
 var cancel_encoding: bool = false
 var start_time: int = 0
 var encoding_time: int = 0
@@ -63,9 +64,12 @@ func _on_project_ready() -> void:
 # --- Render logic ---
 
 func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
+	is_encoding = true
+
 	if end_frame == -1:
 		end_frame = project_data.timeline_end
 	if encoder != null and encoder.is_open():
+		is_encoding = false
 		return printerr("RenderManager: Can't encode whilst another encoder is still busy!")
 	if viewport == null:
 		viewport = EditorCore.viewport.get_texture()
@@ -95,6 +99,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		stop_encoder()
 		update_encoder_status.emit(Status.ERROR_OPEN)
 		await RenderingServer.frame_post_draw
+		is_encoding = false
 		return printerr("RenderManager: Couldn't open encoder!")
 
 	var use_audio: bool = encoder.audio_codec_set()
@@ -155,6 +160,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		stop_encoder()
 		update_encoder_status.emit(Status.ERROR_CANCELED)
 		await EditorCore.frame_changed
+		is_encoding = false
 		return
 
 	# Because of labels and other draw() stuff which takes a frame to show, we
@@ -207,6 +213,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	if cancel_encoding:
 		update_encoder_status.emit(Status.ERROR_CANCELED)
 		await RenderingServer.frame_post_draw
+		is_encoding = false
 		return stop_encoder()
 
 	encoding_time = Time.get_ticks_msec() - start_time
@@ -249,6 +256,7 @@ func stop_encoder() -> void:
 		if yuv_input_texture.is_valid():
 			rendering_device.free_rid(yuv_input_texture)
 			yuv_input_texture = RID()
+	is_encoding = false
 
 
 func _encoding_loop(use_audio: bool, audio_queue: Array[PackedByteArray]) -> void:

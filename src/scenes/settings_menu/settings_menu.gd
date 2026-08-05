@@ -231,13 +231,39 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					"",
 					tr("Duration in frames per second.")),
 			create_label(tr("Project resolution")),
-			create_default_resolution_hbox(default_settings),
+			create_resolution_hbox(
+					Settings.get_default_resolution,
+					default_settings.default_resolution,
+					Settings.set_default_resolution),
 			create_label(tr("Project frame-rate")),
 			create_spinbox(
 					Settings.get_default_framerate(),
 					default_settings.default_framerate,
 					1, 100, 1, false, true,
 					Settings.set_default_framerate),
+			create_header(tr("Quick create project options")), Control.new(),
+			create_label(tr("Horizontal resolution")),
+			create_resolution_hbox(
+					Settings.get_quick_create_horizontal_res,
+					default_settings.quick_create_horizontal_res,
+					Settings.set_quick_create_horizontal_res),
+			create_label(tr("Horizontal framerate")),
+			create_spinbox(
+					Settings.get_quick_create_horizontal_fps(),
+					default_settings.quick_create_horizontal_fps,
+					1, 1000, 1, false, true,
+					Settings.set_quick_create_horizontal_fps),
+			create_label(tr("Vertical resolution")),
+			create_resolution_hbox(
+					Settings.get_quick_create_vertical_res,
+					default_settings.quick_create_vertical_res,
+					Settings.set_quick_create_vertical_res),
+			create_label(tr("Vertical framerate")),
+			create_spinbox(
+					Settings.get_quick_create_vertical_fps(),
+					default_settings.quick_create_vertical_fps,
+					1, 1000, 1, false, true,
+					Settings.set_quick_create_vertical_fps),
 		],
 
 		tr("Timeline"): [
@@ -338,7 +364,10 @@ func get_project_settings_menu_options() -> Dictionary[String, Array]:
 		tr("Video"): [
 			create_header(tr("Video settings")), Control.new(),
 			create_label(tr("Project resolution")),
-			create_project_resolution_hbox(),
+			create_resolution_hbox(
+					Project.get_resolution,
+					Settings.get_default_resolution(),
+					Project.set_resolution),
 			create_label(tr("Project frame-rate")),
 			create_spinbox(
 					Project.data.framerate,
@@ -554,59 +583,33 @@ func _is_same_value(value_a: Variant, value_b: Variant) -> bool:
 	return value_a == value_b
 
 
-func create_default_resolution_hbox(default_settings: SettingsData) -> HBoxContainer:
-	# Resolution HBOX contains 2 labels and 2 spinboxes. That's why we created
-	# a separate function to deal with creating this node instance.
+func create_resolution_hbox(getter: Callable, default_res: Vector2i, setter: Callable) -> HBoxContainer:
 	var resolution_hbox: HBoxContainer = HBoxContainer.new()
 	var x_label: Label = Label.new()
 	var y_label: Label = Label.new()
 
 	x_label.text = "X:" # NO_TRANSLATE
 	y_label.text = "Y:" # NO_TRANSLATE
+	var current_res: Vector2i = getter.call()
 
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(create_spinbox(
-			Settings.get_default_resolution_x(),
-			default_settings.default_resolution.x,
-			2, 100000, 2, false, true,
-			Settings.set_default_resolution_x))
-	resolution_hbox.add_child(y_label)
-	resolution_hbox.add_child(create_spinbox(
-			Settings.get_default_resolution_y(),
-			default_settings.default_resolution.y,
-			2, 100000, 2, false, true,
-			Settings.set_default_resolution_y))
-	return resolution_hbox
-
-
-func create_project_resolution_hbox() -> HBoxContainer:
-	var resolution_hbox: HBoxContainer = HBoxContainer.new()
-	var x_label: Label = Label.new()
-	var y_label: Label = Label.new()
-
-	x_label.text = "X:" # NO_TRANSLATE
-	y_label.text = "Y:" # NO_TRANSLATE
-
-	var default_res: Vector2i = Settings.get_default_resolution()
-
-	resolution_hbox.add_child(x_label)
-	resolution_hbox.add_child(create_spinbox(
-			Project.data.resolution.x,
+			current_res.x,
 			default_res.x,
 			2, 100000, 2, false, true,
 			func(val: float) -> void:
-				var res: Vector2i = Project.get_resolution()
+				var res: Vector2i = getter.call()
 				res.x = int(val)
-				Project.set_resolution(res)))
+				setter.call(res)))
 	resolution_hbox.add_child(y_label)
 	resolution_hbox.add_child(create_spinbox(
-			Project.data.resolution.y,
+			current_res.y,
 			default_res.y,
 			2, 100000, 2, false, true,
 			func(val: float) -> void:
-				var res: Vector2i = Project.get_resolution()
+				var res: Vector2i = getter.call()
 				res.y = int(val)
-				Project.set_resolution(res)))
+				setter.call(res)))
 	return resolution_hbox
 
 

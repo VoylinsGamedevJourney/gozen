@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ProjectProfile" format=3 uid="uid://dcmc7inxp2r5t"]
+
+[ext_resource type="Script" uid="uid://l4kh0mo0ypqd" path="res://scripts/classes/project_profile.gd" id="1_wy3hm"]
+
+[resource]
+script = ExtResource("1_wy3hm")
+profile_name = "1080p 30fps"
+track_amount = null
+metadata/_custom_type_script = "uid://l4kh0mo0ypqd"

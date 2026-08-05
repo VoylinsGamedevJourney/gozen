@@ -5,21 +5,14 @@ extends PanelContainer
 # Set the default focus on the button which opens the popup to browse through
 # all projects.
 
-
-const PRESETS: Dictionary[String, Vector3i] = {
-	"Custom": Vector3i.ZERO,
-	"FHD (1080p) 30fps": Vector3i(1920, 1080, 30),
-	"FHD (1080p) 60fps": Vector3i(1920, 1080, 60),
-	"Vertical (1080p) 30fps": Vector3i(1080, 1920, 30),
-	"Vertical (1080p) 60fps": Vector3i(1080, 1920, 60),
-	"UHD (4K) 30fps": Vector3i(4096, 2160, 30),
-	"UHD (4K) 60fps": Vector3i(4096, 2160, 60)
-}
+const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
+const USER_PROFILES_PATH: String = "user://project_profiles/"
 
 
 @export var version_label: RichTextLabel
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
+@export var create_new_project_button: Button
 
 @export_category("New project menu")
 @export var presets_option_button: OptionButton
@@ -41,7 +34,7 @@ const PRESETS: Dictionary[String, Vector3i] = {
 
 var http_request: HTTPRequest ## For version checking.
 
-var startup_images_data: Array[PackedStringArray] = [ # [ Image UID, unsplash image id ]
+var startup_images_data: Array[PackedStringArray] = [ ## [ Image UID, unsplash image id ]
 	["uid://sh8txndv1wtu", "u27Rrbs9Dwc"],
 	["uid://bixnh6u1jfb18", "XzbgXfnjclI"],
 	["uid://b68fi43mkp6i1", "A5GmtHW3O9k"],
@@ -78,8 +71,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _set_recent_projects() -> void:
-	if !FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
-		return
+	if !FileAccess.file_exists(Project.RECENT_PROJECTS_FILE): return
 
 	var file: FileAccess = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
 	var path: String = file.get_line()
@@ -168,40 +160,27 @@ func _set_new_project_defaults() -> void:
 	resolution_y_spinbox.value = Settings.get_default_resolution_y()
 	framerate_spinbox.value = Settings.get_default_framerate()
 
-	# Setting the advanced project settings
+	# Setting the advanced project settings.
 	background_color_picker.color = Color.BLACK
+
+	_on_new_project_option_button_item_selected(0)
 
 
 func _on_editor_settings_button_pressed() -> void:
 	Settings.open_settings_menu()
 
 
-func _on_image_author_meta_clicked(meta: Variant) -> void:
-	Utils.open_url(str(meta))
+func _on_image_author_meta_clicked(meta: Variant) -> void:  Utils.open_url(str(meta))
+func _on_support_project_button_pressed() -> void:  		Utils.open_url("support")
+func _on_gozen_logo_button_pressed() -> void:				Utils.open_url("site")
+func _on_site_button_pressed() -> void: 					Utils.open_url("site")
+func _on_manual_button_pressed() -> void: 					Utils.open_url("manual")
+func _on_tutorials_button_pressed() -> void: 				Utils.open_url("tutorials")
+func _on_discord_server_button_pressed() -> void: 			Utils.open_url("discord")
 
 
-func _on_support_project_button_pressed() -> void:
-	Utils.open_url("support")
-
-
-func _on_go_zen_logo_button_pressed() -> void:
-	Utils.open_url("site")
-
-
-func _on_site_button_pressed() -> void:
-	Utils.open_url("site")
-
-
-func _on_manual_button_pressed() -> void:
-	Utils.open_url("manual")
-
-
-func _on_tutorials_button_pressed() -> void:
-	Utils.open_url("tutorials")
-
-
-func _on_discord_server_button_pressed() -> void:
-	Utils.open_url("discord")
+func _on_create_project_button_pressed() -> void:		 tab_container.current_tab = 1
+func _on_cancel_create_project_button_pressed() -> void: tab_container.current_tab = 0
 
 
 func _on_open_project_button_pressed() -> void:
@@ -217,9 +196,6 @@ func _on_open_project_button_pressed() -> void:
 	dialog.popup_centered()
 
 
-func _on_create_project_button_pressed() -> void:
-	tab_container.current_tab = 1
-
 
 func open_project(path: String) -> void:
 	self.visible = false
@@ -228,20 +204,18 @@ func open_project(path: String) -> void:
 	self.queue_free()
 
 
-func _on_cancel_create_project_button_pressed() -> void:
-	tab_container.current_tab = 0
-
-
 func _on_create_new_project_button_pressed() -> void:
 	var path: String = project_path_line_edit.text
 	var resolution: Vector2i = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
 
-	if path[-1] == '/':
+	if path.is_empty():
+		pass # TODO: Fix this later, empty projects are allowed now!
+	elif path[-1] == '/':
 		path += "project" + Project.EXTENSION
 	elif path.split('.')[-1] != Project.EXTENSION.replace('.', ''):
 		path += Project.EXTENSION
 
-	if FileAccess.file_exists(path):
+	if !path.is_empty() and FileAccess.file_exists(path):
 		warning_label.text = "Already a project with this name in the current folder! %s" % path
 		warning_label.tooltip_text = warning_label.text
 		warning_label.visible = true
@@ -252,6 +226,16 @@ func _on_create_new_project_button_pressed() -> void:
 	Project.new_project(path, resolution, framerate_spinbox.value)
 	if advanced_options_button.button_pressed:
 		Project.set_background_color(background_color_picker.color)
+	self.queue_free()
+
+
+func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
+	Project.new_project("", Settings.get_quick_create_horizontal_res(), Settings.get_quick_create_horizontal_fps())
+	self.queue_free()
+
+
+func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
+	Project.new_project("", Settings.get_quick_create_vertical_res(), Settings.get_quick_create_vertical_fps())
 	self.queue_free()
 
 
