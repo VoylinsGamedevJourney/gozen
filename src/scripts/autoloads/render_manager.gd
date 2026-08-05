@@ -399,16 +399,28 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 
 					# Apply per-frame effects.
 					for effect: EffectAudio in clip.effects.audio:
-						if effect.is_enabled and effect.id == "volume":
+						if not effect.is_enabled: continue
+
+						var volume_db: float = 0.0
+						var apply: bool = false
+
+						if effect.id == "volume":
 							var offset_in_clip_frames: int = frame_nr - clip.start
-							var volume_db: float = effect.get_value(effect.params[0], offset_in_clip_frames)
+							volume_db = effect.get_value(effect.params[0], offset_in_clip_frames)
+							apply = true
+						elif effect.id == "normalize":
+							var offset_in_clip_frames: int = frame_nr - clip.start
+							var target_db: float = effect.get_value(effect.params[0], offset_in_clip_frames)
+							var peak_db: float = FileLogic.get_clip_peak_db(clip)
+							volume_db = target_db - peak_db
+							apply = true
+
+						if apply:
 							var volume_linear: float = db_to_linear(volume_db)
 							if not is_equal_approx(volume_linear, 1.0):
 								var frame_volumes: PackedFloat32Array = PackedFloat32Array([volume_linear])
 								frame_audio = Audio.apply_dynamic_volume(frame_audio, frame_volumes, MIX_RATE, framerate)
-
 					master_audio = Audio.combine_data(master_audio, frame_audio, 0)
-
 	return master_audio
 
 

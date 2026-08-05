@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EffectAudio" format=3 uid="uid://bc8xynxapll4a"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/effect_audio.gd" id="2_effect"]
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_norm"]
+
+[sub_resource type="Resource" id="Resource_target"]
+script = ExtResource("1_param")
+id = "target_db"
+nickname = "Target dB"
+default_value = 0.0
+min_value = -60.0
+max_value = 0.0
+step = 0.5
+has_slider = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+effect = SubResource("AudioEffectAmplify_norm")
+id = "normalize"
+nickname = "Normalize"
+params = Array[ExtResource("1_param")]([SubResource("Resource_target")])
+metadata/_custom_type_script = "uid://cddcl2omddlan"

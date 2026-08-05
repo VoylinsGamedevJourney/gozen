@@ -578,6 +578,45 @@ func _on_wave_ready(file: FileData) -> void:
 	audio_wave_generated.emit(file)
 
 
+func get_clip_peak_db(clip: ClipData) -> float:
+	var file_id: int = clip.file
+	var time_offset: float = 0.0
+
+	if clip.effects.ato_active and clip.effects.ato_file != -1:
+		file_id = clip.effects.ato_file
+		time_offset = clip.effects.ato_offset
+	else:
+		var target_file: FileData = files.get(file_id)
+		if target_file and target_file.ato_active and target_file.ato_file != -1:
+			file_id = target_file.ato_file
+			time_offset = target_file.ato_offset
+
+	var state_hash: int = hash([clip.begin, clip.duration, clip.speed, file_id, time_offset])
+	if clip.has_meta("peak_hash") and clip.get_meta("peak_hash") == state_hash:
+		return clip.get_meta("peak_db")
+
+	var wave_dict: Dictionary = audio_wave.get(file_id, {})
+	if wave_dict.is_empty(): return 0.0 # Default if wave not ready yet
+
+	var wave_1: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
+	if wave_1.is_empty(): return 0.0
+
+	var wave_begin: int = int(clip.begin - int(time_offset * Project.data.framerate))
+	var wave_end: int = wave_begin + int(clip.duration * clip.speed)
+	wave_begin = clampi(wave_begin, 0, wave_1.size() - 1)
+	wave_end = clampi(wave_end, 0, wave_1.size())
+
+	var max_amp: float = 0.0
+	for i: int in range(wave_begin, wave_end):
+		if wave_1[i] > max_amp: max_amp = wave_1[i]
+
+	var peak_db: float = linear_to_db(max_amp) if max_amp > 0.0001 else -60.0
+
+	clip.set_meta("peak_hash", state_hash)
+	clip.set_meta("peak_db", peak_db)
+	return peak_db
+
+
 func generate_audio_thumb(file: FileData) -> Image:
 	var wave_dict: Dictionary = audio_wave.get(file.id, {})
 	if wave_dict.is_empty():

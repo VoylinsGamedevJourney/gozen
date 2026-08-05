@@ -157,17 +157,21 @@ func update_effects() -> void:
 	# Apply other effects.
 	for i: int in effects.size():
 		var effect: EffectAudio = effects[i]
-		if i >= AudioServer.get_bus_effect_count(bus_index):
-			break
+		if i >= AudioServer.get_bus_effect_count(bus_index): break
 
 		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
-		AudioServer.set_bus_effect_enabled(bus_index, i, effect.is_enabled)
-		if not effect.is_enabled:
-			continue
 
-		for effect_param: EffectParam in effect.params:
-			var value: Variant = effect.get_value(effect_param, relative_frame_nr)
-			effect_instance.set(effect_param.id, value)
+		AudioServer.set_bus_effect_enabled(bus_index, i, effect.is_enabled)
+		if not effect.is_enabled: continue
+
+		if effect.id == "normalize":
+			var target_db: float = effect.get_value(effect.params[0], relative_frame_nr)
+			var peak_db: float = FileLogic.get_clip_peak_db(clip)
+			effect_instance.set("volume_db", target_db - peak_db)
+		else:
+			for effect_param: EffectParam in effect.params:
+				var value: Variant = effect.get_value(effect_param, relative_frame_nr)
+				effect_instance.set(effect_param.id, value)
 
 
 func _setup_bus_effects(effects: Array[EffectAudio]) -> void:

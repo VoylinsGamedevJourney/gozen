@@ -440,6 +440,8 @@ func _create_effect_ui(effect: Effect, is_visual: bool) -> FoldableContainer:
 	var relative_frame_nr: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	var button_visible: TextureButton = TextureButton.new()
 	var button_preset: TextureButton = TextureButton.new()
+	button_visible.name = "VisibleButton"
+
 	if effect.is_enabled:
 		button_visible.texture_normal = preload(Library.ICON_VISIBLE)
 	else:
@@ -1047,7 +1049,7 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 	EffectsHandler.switch_enabled(current_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
 	var effect_container: FoldableContainer = section.get_child(0).get_child(index)
-	var visible_button: TextureButton = effect_container.get_child(2, true)
+	var visible_button: TextureButton = effect_container.find_child("VisibleButton", true, false)
 	var is_enabled: bool
 
 	if is_visual:
