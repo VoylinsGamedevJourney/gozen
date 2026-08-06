@@ -219,7 +219,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	encoding_time = Time.get_ticks_msec() - start_time
 	update_encoder_status.emit(Status.FINISHED)
 	await RenderingServer.frame_post_draw
-	NotificationManager.notify("Render finished!")
+	NotificationManager.info("Render finished!")
 	stop_encoder()
 
 
@@ -419,6 +419,16 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 							var pan_val: float = effect.get_value(effect.params[0], offset_in_clip_frames)
 							if not is_equal_approx(pan_val, 0.0):
 								frame_audio = Audio.apply_pan(frame_audio, pan_val)
+						elif effect.id == "channel_swap":
+							var offset_in_clip_frames: int = frame_nr - clip.start
+							var swap_active: bool = effect.get_value(effect.params[0], offset_in_clip_frames)
+							if swap_active:
+								frame_audio = Audio.apply_channel_swap(frame_audio)
+						elif effect.id == "stereo_to_mono":
+							var offset_in_clip_frames: int = frame_nr - clip.start
+							var mono_active: bool = effect.get_value(effect.params[0], offset_in_clip_frames)
+							if mono_active:
+								frame_audio = Audio.apply_stereo_to_mono(frame_audio)
 
 						if apply:
 							var volume_linear: float = db_to_linear(volume_db)

@@ -45,6 +45,8 @@ class Audio : public Resource {
 									  int start_sample = 0, int total_samples = 0);
 
 	static PackedByteArray apply_pan(PackedByteArray audio_data, float pan);
+	static PackedByteArray apply_channel_swap(PackedByteArray audio_data);
+	static PackedByteArray apply_stereo_to_mono(PackedByteArray audio_data);
   protected:
 	static void _bind_methods();
 };

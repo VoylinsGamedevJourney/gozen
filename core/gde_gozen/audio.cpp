@@ -473,6 +473,28 @@ PackedByteArray Audio::apply_pan(PackedByteArray audio_data, float pan) {
 
 
 PackedByteArray Audio::apply_channel_swap(PackedByteArray audio_data) {
+	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	size_t sample_count = audio_data.size() / 2;
+
+	for (size_t i = 0; i < sample_count; i += 2) {
+		std::swap(pw_data[i], pw_data[i + 1]);
+	}
+	return audio_data;
+}
+
+
+PackedByteArray Audio::apply_stereo_to_mono(PackedByteArray audio_data) {
+	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	size_t sample_count = audio_data.size() / 2;
+
+	for (size_t i = 0; i < sample_count; i += 2) {
+		int32_t mixed = (pw_data[i] + pw_data[i + 1]) / 2;
+		pw_data[i] = (int16_t)mixed;
+		pw_data[i + 1] = (int16_t)mixed;
+	}
+	return audio_data;
+}
+
 void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio",
 								D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"),
