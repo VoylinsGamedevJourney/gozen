@@ -142,7 +142,8 @@ func _on_resolution_changed() -> void:
 	for pck_viewport: SubViewport in pck_viewports:
 		if pck_viewport != null:
 			pck_viewport.size = Project.data.resolution
-	update_frame()
+	set_frame(frame_nr)
+
 
 func _rebuild_structure() -> void:
 	var track_size: int = TrackLogic.tracks.size()
@@ -321,7 +322,6 @@ func _on_closing_editor() -> void:
 		if player == null: continue
 		player.cleanup()
 
-
 	for compositor: VisualCompositor in compositors:
 		if compositor == null: continue
 		compositor.cleanup()
@@ -384,10 +384,6 @@ func set_frame_nr(value: int) -> void:
 			# Stop track on seek, or if we naturally reached the end of the clip.
 			audio_players[track].stop()
 	prev_frame = frame_nr
-	update_frame()
-
-
-func update_frame() -> void:
 	set_frame(frame_nr)
 
 
@@ -584,18 +580,18 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	_apply_track_blend_mode(track_id, effects, clip_frame)
 
 
-func _apply_track_blend_mode(track_id: int, effects: Array[EffectVisual], clip_frame: int) -> void:
+func _apply_track_blend_mode(id: int, effects: Array[EffectVisual], clip_frame: int) -> void:
 	var target_blend_mode: int = 0
 	for effect: EffectVisual in effects:
 		if effect.id == "blend_mode" and effect.is_enabled:
 			target_blend_mode = effect.get_value(effect.params[0], clip_frame)
 			break
 
-	var current_material: CanvasItemMaterial = view_textures[track_id].material as CanvasItemMaterial
+	var current_material: CanvasItemMaterial = view_textures[id].material as CanvasItemMaterial
 	if current_material == null or current_material.blend_mode != target_blend_mode:
 		var new_material: CanvasItemMaterial = CanvasItemMaterial.new()
 		new_material.blend_mode = target_blend_mode as CanvasItemMaterial.BlendMode
-		view_textures[track_id].material = new_material
+		view_textures[id].material = new_material
 
 
 # --- Setters ---

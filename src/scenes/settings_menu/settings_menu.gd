@@ -151,18 +151,6 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.get_themes().values().find(Library.THEME_DEFAULT),
 					Settings.set_theme_path,
 					TYPE_STRING),
-			create_label(tr("Base color")),
-			create_color_picker(
-					Settings.get_base_color(),
-					default_settings.base_color,
-					Settings.set_base_color,
-					tr("The base color of the editor UI.")),
-			create_label(tr("Accent color")),
-			create_color_picker(
-					Settings.get_accent_color(),
-					default_settings.accent_color,
-					Settings.set_accent_color,
-					tr("The highlight/accent color of the editor UI.")),
 			create_label(tr("Show menu bar")),
 			create_check_button(
 					Settings.get_show_menu_bar(),

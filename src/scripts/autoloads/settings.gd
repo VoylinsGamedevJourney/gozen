@@ -214,24 +214,6 @@ func get_themes() -> Dictionary[String, String]:
 	return themes
 
 
-func set_base_color(color: Color) -> void:
-	data.base_color = color
-	apply_theme()
-
-
-func get_base_color() -> Color:
-	return data.base_color
-
-
-func set_accent_color(color: Color) -> void:
-	data.accent_color = color
-	apply_theme()
-
-
-func get_accent_color() -> Color:
-	return data.accent_color
-
-
 func set_show_menu_bar(value: bool) -> void:
 	data.show_menu_bar = value
 	on_show_menu_bar_changed.emit(value)

@@ -17,11 +17,11 @@ var copied_min_track: int = 0
 
 # --- Handling ---
 
-func add(requests: Array[ClipRequest]) -> void:
+func add(requests: Array[Request]) -> void:
 	InputManager.undo_redo.create_action("Add new clip(s)")
 	var existing_keys: Array[int] = clips.keys()
 
-	for request: ClipRequest in requests:
+	for request: Request in requests:
 		var new_clip: ClipData = ClipData.new()
 		new_clip.id = Utils.get_unique_id(existing_keys)
 		new_clip.type = FileLogic.files[request.file.id].type
@@ -104,9 +104,9 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-func move(requests: Array[ClipRequest]) -> void:
+func move(requests: Array[Request]) -> void:
 	InputManager.undo_redo.create_action("Move clip_data(s)")
-	for request: ClipRequest in requests:
+	for request: Request in requests:
 		var clip: ClipData = request.clip
 		var new_track: int = clip.track + request.track_offset
 		var new_start: int = clip.start + request.frame_offset
@@ -126,13 +126,13 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	updated.emit.call_deferred()
 
 
-func split(requests: Array[ClipRequest]) -> Array[ClipData]:
+func split(requests: Array[Request]) -> Array[ClipData]:
 	var new_clips: Array[ClipData] = []
 	var existing_group_ids: Array[int] = _get_all_group_ids()
 	var group_id_map: Dictionary = {}
 	InputManager.undo_redo.create_action("Split clip_data(s)")
 
-	for request: ClipRequest in requests:
+	for request: Request in requests:
 		var clip: ClipData = request.clip
 		var split_offset: int = request.frame
 		var duration_left: int = split_offset
@@ -181,9 +181,9 @@ func split(requests: Array[ClipRequest]) -> Array[ClipData]:
 	return new_clips
 
 
-func resize(requests: Array[ClipRequest]) -> void:
+func resize(requests: Array[Request]) -> void:
 	InputManager.undo_redo.create_action("Resize clip_data(s)")
-	for request: ClipRequest in requests:
+	for request: Request in requests:
 		var clip: ClipData = request.clip
 		InputManager.undo_redo.add_do_method(_resize.bind( clip, request.resize, request.is_end))
 		InputManager.undo_redo.add_undo_method(_resize_restore.bind( clip, clip.start, clip.duration, clip.begin))
@@ -536,10 +536,10 @@ func _apply_audio_take_over(clip: ClipData, active: bool, audio_file_id: int, of
 	updated.emit.call_deferred()
 
 
-func change_speed(requests: Array[ClipRequest]) -> void:
+func change_speed(requests: Array[Request]) -> void:
 	InputManager.undo_redo.create_action("Change speed clip(s)")
 
-	for request: ClipRequest in requests:
+	for request: Request in requests:
 		var clip: ClipData = request.clip
 		var amount: int = request.resize
 		var from_end: int = request.is_end
@@ -652,3 +652,49 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 		effects.transition_right.set_default_keyframe()
 
 	return effects
+
+
+
+class Request:
+	var clip: ClipData = null
+	var file: FileData = null
+
+	var track: int = 0
+	var frame: int = 0
+
+	var frame_offset: int = 0
+	var track_offset: int = 0
+
+	var resize: int
+	var is_end: bool = false
+
+
+	static func add_request(file_data: FileData, track_index: int, frame_nr: int) -> Request:
+		var request: Request = Request.new()
+		request.file = file_data
+		request.track = track_index
+		request.frame = frame_nr
+		return request
+
+
+	static func split_request(clip_data: ClipData, frame_split_pos: int) -> Request:
+		var request: Request = Request.new()
+		request.clip = clip_data
+		request.frame = frame_split_pos
+		return request
+
+
+	static func move_request(clip_data: ClipData, offset_track: int, offset_frame: int) -> Request:
+		var request: Request = Request.new()
+		request.clip = clip_data
+		request.frame_offset = offset_frame
+		request.track_offset = offset_track
+		return request
+
+
+	static func resize_request(clip_data: ClipData, resize_amount: int, end: bool) -> Request:
+		var request: Request = Request.new()
+		request.clip = clip_data
+		request.resize = resize_amount
+		request.is_end = end
+		return request

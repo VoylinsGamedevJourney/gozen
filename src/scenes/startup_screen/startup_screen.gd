@@ -266,7 +266,7 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
-	var request: NewProjectRequest = NewProjectRequest.new()
+	var request: Project.NewRequest = Project.NewRequest.new()
 	request.project_path = path
 	request.resolution = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
 	request.framerate = framerate_spinbox.value
@@ -282,7 +282,7 @@ func _on_create_new_project_button_pressed() -> void:
 
 
 func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
-	var request: NewProjectRequest = NewProjectRequest.new()
+	var request: Project.NewRequest = Project.NewRequest.new()
 	request.resolution = Settings.get_quick_create_horizontal_res()
 	request.framerate  = Settings.get_quick_create_horizontal_fps()
 	Project.new_project(request)
@@ -290,7 +290,7 @@ func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
 
 
 func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
-	var request: NewProjectRequest = NewProjectRequest.new()
+	var request: Project.NewRequest = Project.NewRequest.new()
 	request.resolution = Settings.get_quick_create_vertical_res()
 	request.framerate  = Settings.get_quick_create_vertical_fps()
 	Project.new_project(request)

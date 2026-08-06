@@ -66,6 +66,17 @@ func _ready() -> void:
 	PhysicsServer3D.set_active(false)
 
 	# Check if editor got opened with a project path as argument.
+	# TODO: Add following arguments:
+	# --new-h or --new = quickstarts a horizontal project (similar to the quickstart button in the start screen).
+	# --new-v = quickstarts a vertical project (similar to the quickstart button in the start screen).
+	# --clean-settings = deletes the settings data.
+	# --clean-cache = deletes the cached data.
+	# --clean-all = deletes all the data which is stored in 'user://' (still need to figure out how to put stuff in .config instead of .local).
+	# --view = gives a video player instead of the editor with the current project playing in a loop.
+	# --render <output path> = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it shows the popup, after closing the popup the editor close. The output path is just the same folder and same name as the project file but with a different extension if no output path was provided.
+	# --render-quick = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it closes the editor completely. The output path is just the same folder and same name as the project file but with a different extension.
+	# --safe-mode = starts the editor without any modules activated.
+	# --reset-layout = resets the editor layout to the default edit and render layouts.
 	for arg: String in OS.get_cmdline_args():
 		if arg.to_lower().ends_with(Project.EXTENSION):
 			await Project.open(arg)

@@ -102,29 +102,16 @@ func _strict_input_check(event: InputEvent) -> bool:
 	return false
 
 
-func _on_closing_editor() -> void:
-	undo_redo.free()
+func show_editor_workspace() -> void: on_show_editor_workspace.emit()
+func show_render_workspace() -> void: on_show_render_workspace.emit()
+func switch_workspace() -> void: 	  on_switch_workspace.emit()
 
-
-func show_editor_workspace() -> void:
-	on_show_editor_workspace.emit()
-
-
-func show_render_workspace() -> void:
-	on_show_render_workspace.emit()
-
-
-func switch_workspace() -> void:
-	on_switch_workspace.emit()
-
-
-func open_marker_popup() -> void:
-	PopupManager.open(PopupManager.MARKER)
+func _on_closing_editor() -> void: 	  undo_redo.free()
+func open_marker_popup() -> void:	  PopupManager.open(PopupManager.MARKER)
 
 
 func clipboard_paste() -> void:
-	if !Project.is_loaded:
-		return
+	if !Project.is_loaded: return
 
 	# Check for clip(s).
 	if !ClipLogic.copied_clips.is_empty():

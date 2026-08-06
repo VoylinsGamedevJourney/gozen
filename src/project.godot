@@ -15,6 +15,7 @@ config/description="Video editor "
 config/version="0.10-alpha"
 run/main_scene="uid://b0r37lfkj7wl6"
 run/print_header=false
+run/enable_alt_space_menu=true
 config/use_custom_user_dir=true
 config/custom_user_dir_name="gozen"
 config/auto_accept_quit=false

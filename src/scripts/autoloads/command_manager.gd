@@ -1,59 +1,60 @@
 extends Node
 
-var commands: Array[String] = [] ## Localized strings
-var base_commands: Array[String] = [] ## Non-localized strings
+var commands: Array[String] = [] ## Localized strings.
+var base_commands: Array[String] = [] ## Non-localized strings.
+
 var calls: Array[Callable] = []
 var actions: Array[String] = []
 
 
+
 func _ready() -> void:
-	base_commands.append("Open editor settings")
-	base_commands.append("Open project settings")
-	base_commands.append("open render menu")
-	register(tr("Open editor settings"), Settings.open_settings_menu, "open_settings")
-	register(tr("Open project settings"), Project.open_settings_menu, "open_project_settings")
-	register(tr("open render menu"), InputManager.switch_workspace.bind(1), "open_render_workspace")
+	register(Command.new("Open editor settings", Settings.open_settings_menu, "open_settings"))
+	register(Command.new("Open project settings", Project.open_settings_menu, "open_project_settings"))
+	register(Command.new("open render menu", InputManager.switch_workspace.bind(1), "open_render_workspace"))
 
 	@warning_ignore("return_value_discarded")
 	Settings.on_localization_updated.connect(_localize_commands)
 
 
 func _localize_commands() -> void:
-	for i: int in commands.size():
-		commands[i] = tr(base_commands[i])
+	for i: int in commands.size(): commands[i] = tr(base_commands[i])
 
 
 # --- Command registering ---
 
-func register(command: StringName, callable: Callable, action: StringName) -> void:
-	commands.append(tr(command))
-	base_commands.append(tr(command))
-	calls.append(callable)
-	actions.append(action)
+func register(cmd: Command) -> void:
+	commands.append(tr(cmd.command))
+	base_commands.append(cmd.command) # Has to be the original English translation.
 
-
-## Only used for the editor itself since we add commands on build. Manually add
-## the command to base_commands as well!
-func _editor_register(command: StringName, callable: Callable, action: StringName) -> void:
-	commands.append(command)
-	calls.append(callable)
-	actions.append(action)
+	calls.append(cmd.callable)
+	actions.append(cmd.action)
 
 
 # --- Getters ---
 
-func get_text(index: int) -> String: return ("%s [%s]" % [commands[index], actions[index]]).replace(' []', '')
+func get_text(index: int) -> String:   return ("%s [%s]" % [commands[index], actions[index]]).replace(' []', '')
 func get_call(index: int) -> Callable: return calls[index]
 func get_action(index: int) -> String: return actions[index]
 
 
 func get_sorted_indexes() -> Array[int]:
 	var data: Array[int] = []
-	for index: int in commands.size():
-		data.append(index)
-	data.sort_custom(_sort_commands)
+	for index: int in commands.size(): data.append(index)
+
+	data.sort_custom(func(a: int, b: int) -> bool:
+			return commands[a].naturalcasecmp_to(commands[b]) < 0)
 	return data
 
 
-func _sort_commands(a: int, b: int) -> bool:
-	return commands[a].naturalcasecmp_to(commands[b]) < 0
+
+class Command:
+	var command: StringName
+	var callable: Callable
+	var action: StringName
+
+
+	func _init(_command: StringName, _callable: Callable, _action: StringName) -> void:
+		command = _command
+		callable = _callable
+		action = _action

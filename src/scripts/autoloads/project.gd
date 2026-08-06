@@ -47,7 +47,7 @@ func _setup_logic() -> void:
 	TrackLogic.prepare_data()
 
 
-func new_project(request: NewProjectRequest) -> void:
+func new_project(request: NewRequest) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("New project"))
@@ -87,15 +87,15 @@ func save(auto_saved: bool = false) -> void:
 		unsaved_changes = was_unsaved
 		if auto_saved:
 			printerr("Project: Something went wrong whilst auto-saving project! ", FileAccess.get_open_error())
-			NotificationManager.notify("Something went wrong whilst auto-saving project! " + str(FileAccess.get_open_error()))
+			NotificationManager.info("Something went wrong whilst auto-saving project! " + str(FileAccess.get_open_error()))
 		else:
 			printerr("Project: Something went wrong whilst saving project! ", FileAccess.get_open_error())
-			NotificationManager.notify("Something went wrong whilst saving project! " + str(FileAccess.get_open_error()))
+			NotificationManager.info("Something went wrong whilst saving project! " + str(FileAccess.get_open_error()))
 		return
 	elif was_unsaved and auto_saved:
-		NotificationManager.notify("Project auto-saved successfully!")
+		NotificationManager.info("Project auto-saved successfully!")
 	elif !auto_saved:
-		NotificationManager.notify("Project saved successfully!")
+		NotificationManager.info("Project saved successfully!")
 
 
 func save_as() -> void:
@@ -394,3 +394,14 @@ func set_render_region(region: Vector2i) -> void:
 	data.render_region = region
 	unsaved_changes = true
 	render_region_updated.emit()
+
+
+class NewRequest:
+	# Basic settings.
+	@export var project_path: String = ""
+	@export var resolution: Vector2i
+	@export var framerate: float
+
+	# Advanced settings.
+	@export var track_amount: int = Settings.get_tracks_amount()
+	@export var background_color: Color = Color.BLACK
