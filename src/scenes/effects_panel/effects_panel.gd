@@ -1170,6 +1170,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		button_reset.icon = preload(Library.ICON_REFRESH)
 		button_reset.expand_icon = true
 		button_reset.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button_reset.flat = true
 
 		@warning_ignore("return_value_discarded")
 		button_reset.pressed.connect(func() -> void:
@@ -1182,6 +1183,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		button_delete.icon = preload(Library.ICON_DELETE)
 		button_delete.expand_icon = true
 		button_delete.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button_delete.flat = true
 
 		@warning_ignore("return_value_discarded")
 		button_delete.pressed.connect(func() -> void:
@@ -1195,6 +1197,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 	button_save.icon = preload(Library.ICON_ADD)
 	button_save.expand_icon = true
 	button_save.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button_save.flat = true
 
 	@warning_ignore("return_value_discarded")
 	button_save.pressed.connect(func() -> void:
@@ -1210,6 +1213,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		button_default.text = tr("Default")
 		button_default.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button_default.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button_default.flat = true
 
 		@warning_ignore("return_value_discarded")
 		button_default.pressed.connect(func() -> void:
@@ -1232,6 +1236,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 				button_apply.text = preset_name
 				button_apply.alignment = HORIZONTAL_ALIGNMENT_LEFT
 				button_apply.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				button_apply.flat = true
 				@warning_ignore("return_value_discarded")
 				button_apply.pressed.connect(func() -> void:
 						_apply_preset(PRESETS_PATH + file_name, is_section, is_visual, effect)
