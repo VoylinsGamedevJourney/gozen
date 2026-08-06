@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EffectAudio" format=3 uid="uid://dbrtc4effect0"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/effect_audio.gd" id="2_effect"]
+
+[sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_retro"]
+mode = 2
+
+[sub_resource type="Resource" id="Resource_bit_depth"]
+script = ExtResource("1_param")
+id = "bit_depth"
+nickname = "Bit depth"
+default_value = 16.0
+min_value = 1.0
+max_value = 16.0
+step = 1.0
+has_slider = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+effect = SubResource("AudioEffectDistortion_retro")
+id = "retro_filter"
+nickname = "Retro filter"
+params = Array[ExtResource("1_param")]([SubResource("Resource_bit_depth")])
+metadata/_custom_type_script = "uid://cddcl2omddlan"

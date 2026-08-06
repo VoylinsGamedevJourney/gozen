@@ -12,7 +12,6 @@ nickname = "Active"
 default_value = true
 min_value = null
 max_value = null
-keyframeable = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]

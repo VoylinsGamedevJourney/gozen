@@ -495,6 +495,24 @@ PackedByteArray Audio::apply_stereo_to_mono(PackedByteArray audio_data) {
 	return audio_data;
 }
 
+
+PackedByteArray Audio::apply_retro_filter(PackedByteArray audio_data, int bit_depth) {
+	if (bit_depth >= 16 || bit_depth <= 0) {
+		return audio_data;
+	}
+
+	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	size_t sample_count = audio_data.size() / 2;
+	int shift = 16 - bit_depth;
+	int16_t mask = (int16_t)(0xFFFF << shift);
+
+	for (size_t i = 0; i < sample_count; i++) {
+		pw_data[i] = pw_data[i] & mask;
+	}
+	return audio_data;
+}
+
+
 void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio",
 								D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"),
@@ -514,4 +532,10 @@ void Audio::_bind_methods() {
 		"Audio",
 		D_METHOD("apply_fade", "audio_data", "fade_in_samples", "fade_out_samples", "start_sample", "total_samples"),
 		&Audio::apply_fade, DEFVAL(0), DEFVAL(0));
+
+	ClassDB::bind_static_method("Audio", D_METHOD("apply_pan", "audio_data", "pan"), &Audio::apply_pan);
+	ClassDB::bind_static_method("Audio", D_METHOD("apply_channel_swap", "audio_data"), &Audio::apply_channel_swap);
+	ClassDB::bind_static_method("Audio", D_METHOD("apply_stereo_to_mono", "audio_data"), &Audio::apply_stereo_to_mono);
+	ClassDB::bind_static_method("Audio", D_METHOD("apply_retro_filter", "audio_data", "bit_depth"),
+								&Audio::apply_retro_filter);
 }

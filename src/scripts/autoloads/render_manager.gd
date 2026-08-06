@@ -429,6 +429,11 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 							var mono_active: bool = effect.get_value(effect.params[0], offset_in_clip_frames)
 							if mono_active:
 								frame_audio = Audio.apply_stereo_to_mono(frame_audio)
+						elif effect.id == "retro_filter":
+							var offset_in_clip_frames: int = frame_nr - clip.start
+							var depth: int = effect.get_value(effect.params[0], offset_in_clip_frames) as int
+							if depth < 16:
+								frame_audio = Audio.apply_retro_filter(frame_audio, depth)
 
 						if apply:
 							var volume_linear: float = db_to_linear(volume_db)

@@ -168,6 +168,9 @@ func update_effects() -> void:
 			var target_db: float = effect.get_value(effect.params[0], relative_frame_nr)
 			var peak_db: float = FileLogic.get_clip_peak_db(clip)
 			effect_instance.set("volume_db", target_db - peak_db)
+		elif effect.id == "retro_filter":
+			var bit_depth: float = effect.get_value(effect.params[0], relative_frame_nr)
+			effect_instance.set("drive", 1.0 - ((bit_depth - 1.0) / 15.0))
 		else:
 			for effect_param: EffectParam in effect.params:
 				var value: Variant = effect.get_value(effect_param, relative_frame_nr)
