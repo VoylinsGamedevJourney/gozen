@@ -14,8 +14,7 @@ const VISUAL_TYPES: Array[int] = [ Type.IMAGE, Type.COLOR, Type.TEXT, Type.VIDEO
 
 
 var viewport: SubViewport
-var text_viewports: Array[SubViewport]
-var pck_viewports: Array[SubViewport]
+var track_viewports: Array[SubViewport]
 
 var view_textures: Array[TextureRect] = []
 var audio_players: Array[AudioPlayer] = []
@@ -130,18 +129,14 @@ func _on_resolution_changed() -> void:
 	viewport.size = background.size
 
 	for texture_rect: TextureRect in view_textures:
-		if texture_rect != null:
-			texture_rect.size = Project.data.resolution
+		if texture_rect: texture_rect.size = Project.data.resolution
 
-	for text_viewport: SubViewport in text_viewports:
-		if text_viewport != null:
-			text_viewport.size = Project.data.resolution
+	for track_viewport: SubViewport in track_viewports:
+		if track_viewport:
+			track_viewport.size = Project.data.resolution
 			@warning_ignore("unsafe_property_access")
-			text_viewport.get_child(0).size = Project.data.resolution
+			track_viewport.get_child(0).size = Project.data.resolution
 
-	for pck_viewport: SubViewport in pck_viewports:
-		if pck_viewport != null:
-			pck_viewport.size = Project.data.resolution
 	set_frame(frame_nr)
 
 
@@ -173,24 +168,20 @@ func _rebuild_structure() -> void:
 		add_child(audio_players[index].player)
 
 	# Visual setup.
-	for texture_rect: TextureRect in view_textures:
-		if texture_rect == null: continue
-		texture_rect.queue_free()
-	for text_viewport: SubViewport in text_viewports:
-		if text_viewport == null: continue
-		text_viewport.queue_free()
-	for pck_viewport: SubViewport in pck_viewports:
-		if pck_viewport == null: continue
-		pck_viewport.queue_free()
 	for compositor: VisualCompositor in compositors:
-		if compositor == null: continue
-		compositor.cleanup()
+		if compositor: compositor.cleanup()
+
+	for rect: TextureRect in view_textures:
+		if rect: rect.queue_free()
+
+	for track_viewport: SubViewport in track_viewports:
+		if track_viewport: track_viewport.queue_free()
+
 
 	@warning_ignore_start("return_value_discarded")
-	view_textures.resize(track_size)
 	compositors.resize(track_size)
-	text_viewports.resize(track_size)
-	pck_viewports.resize(track_size)
+	view_textures.resize(track_size)
+	track_viewports.resize(track_size)
 	@warning_ignore_restore("return_value_discarded")
 
 	for index: int in track_size:
@@ -205,26 +196,18 @@ func _rebuild_structure() -> void:
 		viewport.move_child(texture_rect, 1)
 		view_textures[index] = texture_rect
 
-		# Text stuff.
-		var text_viewport: SubViewport = SubViewport.new()
+		# Text + PCK stuff.
+		var track_viewport: SubViewport = SubViewport.new()
 		var settings: LabelSettings = LabelSettings.new()
 		var text_label: Label = Label.new()
 		text_label.label_settings = settings
-		text_viewport.size = Project.data.resolution
-		text_viewport.transparent_bg = true
-		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		track_viewport.size = Project.data.resolution
+		track_viewport.transparent_bg = true
+		track_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 		text_label.size = Project.data.resolution
-		text_viewport.add_child(text_label)
-		add_child(text_viewport)
-		text_viewports[index] = text_viewport
-
-		# PCK stuff.
-		var pck_viewport: SubViewport = SubViewport.new()
-		pck_viewport.size = Project.data.resolution
-		pck_viewport.transparent_bg = true
-		pck_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-		add_child(pck_viewport)
-		pck_viewports[index] = pck_viewport
+		track_viewport.add_child(text_label)
+		add_child(track_viewport)
+		track_viewports[index] = track_viewport
 
 
 func _get_instance_for_clip(clip: ClipData) -> int:
@@ -328,8 +311,7 @@ func _on_closing_editor() -> void:
 
 	view_textures.clear()
 	audio_players.clear()
-	text_viewports.clear()
-	pck_viewports.clear()
+	track_viewports.clear()
 	compositors.clear()
 
 
@@ -461,9 +443,15 @@ func update_data(track: int) -> void:
 
 		var font: Font = Settings.get_system_font(text_font) if text_font != "" else ThemeDB.fallback_font
 
-		var text_viewport: SubViewport = text_viewports[track]
+		var text_viewport: SubViewport = track_viewports[track]
 		var text_label: Label = text_viewport.get_child(0) as Label
 		var text_label_settings: LabelSettings = text_label.label_settings
+
+		if text_viewport.get_child_count() > 1:
+			@warning_ignore("unsafe_property_access")
+			text_viewport.get_child(1).visible = false # Hiding the loaded pck if exists.
+		@warning_ignore("unsafe_property_access")
+		text_viewport.get_child(0).visible = true # Showing the label.
 
 		text_label.text = text_data
 		text_label.horizontal_alignment = text_h_align as HorizontalAlignment
@@ -482,7 +470,13 @@ func update_data(track: int) -> void:
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	elif clip.type == Type.PCK:
 		var module: GoZenModule = raw_data
-		var pck_viewport: SubViewport = pck_viewports[track]
+		var pck_viewport: SubViewport = track_viewports[track]
+
+		@warning_ignore_start("unsafe_property_access")
+		pck_viewport.get_child(0).visible = false # Hiding the label.
+		if pck_viewport.get_child_count() > 1:
+			pck_viewport.get_child(1).visible = true # Showing the label.
+		@warning_ignore_restore("unsafe_property_access")
 
 		# Re-instantiate if clip has changed.
 		if pck_viewport.has_meta("file_id") and pck_viewport.get_meta("file_id") != clip.file:
@@ -492,7 +486,7 @@ func update_data(track: int) -> void:
 			pck_viewport.remove_meta("file_id")
 
 		# First time scene loading.
-		if pck_viewport.get_child_count() == 0 and not pck_viewport.has_meta("file_id"):
+		if pck_viewport.get_child_count() == 1 and not pck_viewport.has_meta("file_id"):
 			if module.scene:
 				var instance: Node = module.scene.instantiate()
 				pck_viewport.add_child(instance)
@@ -500,8 +494,8 @@ func update_data(track: int) -> void:
 			pck_viewport.set_meta("file_id", clip.file)
 
 		# Updating the frame/scene/instance.
-		if pck_viewport.get_child_count() > 0:
-			var instance: Node = pck_viewport.get_child(0)
+		if pck_viewport.get_child_count() > 1:
+			var instance: Node = pck_viewport.get_child(1) # First child is label
 			var pck_effect_params: Dictionary = {}
 
 			# Gathering the current values for the params.
@@ -544,7 +538,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	load_video_frame(clip, relative_frame, instance_index)
 
 	if clip.type == Type.TEXT:
-		var texture_rid: RID = text_viewports[track_id].get_texture().get_rid()
+		var texture_rid: RID = track_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
@@ -552,7 +546,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 	elif clip.type == Type.PCK:
-		var texture_rid: RID = pck_viewports[track_id].get_texture().get_rid()
+		var texture_rid: RID = track_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
 
