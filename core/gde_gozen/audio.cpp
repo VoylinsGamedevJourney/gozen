@@ -457,6 +457,22 @@ PackedByteArray Audio::apply_fade(PackedByteArray audio_data, int fade_in_sample
 }
 
 
+PackedByteArray Audio::apply_pan(PackedByteArray audio_data, float pan) {
+	int16_t* pw_data = reinterpret_cast<int16_t*>(audio_data.ptrw());
+	size_t sample_count = audio_data.size() / 2;
+
+	float left_mult = std::min(1.0f, 1.0f - pan);
+	float right_mult = std::min(1.0f, 1.0f + pan);
+
+	for (size_t i = 0; i < sample_count; i += 2) {
+		pw_data[i] = Math::clamp((int32_t)(pw_data[i] * left_mult), -32768, 32767);
+		pw_data[i + 1] = Math::clamp((int32_t)(pw_data[i + 1] * right_mult), -32768, 32767);
+	}
+	return audio_data;
+}
+
+
+PackedByteArray Audio::apply_channel_swap(PackedByteArray audio_data) {
 void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio",
 								D_METHOD("get_audio_data", "file_path", "stream_index", "start_time", "duration"),

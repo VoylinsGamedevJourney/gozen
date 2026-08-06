@@ -44,6 +44,7 @@ class Audio : public Resource {
 	static PackedByteArray apply_fade(PackedByteArray audio_data, int fade_in_samples, int fade_out_samples,
 									  int start_sample = 0, int total_samples = 0);
 
+	static PackedByteArray apply_pan(PackedByteArray audio_data, float pan);
   protected:
 	static void _bind_methods();
 };

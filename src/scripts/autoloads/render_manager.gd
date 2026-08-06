@@ -414,6 +414,11 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 							var peak_db: float = FileLogic.get_clip_peak_db(clip)
 							volume_db = target_db - peak_db
 							apply = true
+						elif effect.id == "pan":
+							var offset_in_clip_frames: int = frame_nr - clip.start
+							var pan_val: float = effect.get_value(effect.params[0], offset_in_clip_frames)
+							if not is_equal_approx(pan_val, 0.0):
+								frame_audio = Audio.apply_pan(frame_audio, pan_val)
 
 						if apply:
 							var volume_linear: float = db_to_linear(volume_db)
