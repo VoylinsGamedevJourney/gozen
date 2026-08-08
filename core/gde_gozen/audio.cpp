@@ -513,6 +513,352 @@ PackedByteArray Audio::apply_retro_filter(PackedByteArray audio_data, int bit_de
 	return audio_data;
 }
 
+// Mainly used for waveform generating stuff atm.
+Error Audio::open(String file_path, int stream_index) {
+	if (loaded)
+		close();
+
+	AVFormatContext* temp_format_ctx = nullptr;
+
+	if (file_path.begins_with("res://") || file_path.begins_with("user://")) {
+		if (!(temp_format_ctx = avformat_alloc_context())) {
+			_log_err("Failed to allocate AVFormatContext");
+			return ERR_CANT_CREATE;
+		}
+
+		file_buffer_inst = FileAccess::get_file_as_bytes(file_path);
+		if (file_buffer_inst.is_empty()) {
+			avformat_free_context(temp_format_ctx);
+			_log_err("Couldn't load file from res:// at path '" + file_path + "'");
+			return ERR_FILE_NOT_FOUND;
+		}
+
+		buffer_data_inst.ptr = file_buffer_inst.ptrw();
+		buffer_data_inst.size = file_buffer_inst.size();
+		buffer_data_inst.offset = 0;
+
+		unsigned char* avio_ctx_buffer = (unsigned char*)av_malloc(FFmpeg::AVIO_CTX_BUFFER_SIZE);
+		avio_ctx_inst = make_unique_ffmpeg<AVIOContext, AVIOContextDeleter>(
+			avio_alloc_context(avio_ctx_buffer, FFmpeg::AVIO_CTX_BUFFER_SIZE, 0, &buffer_data_inst,
+							   &FFmpeg::read_buffer_packet, nullptr, &FFmpeg::seek_buffer));
+
+		if (!avio_ctx_inst) {
+			av_free(avio_ctx_buffer);
+			_log_err("Failed to create avio_ctx");
+			return ERR_CANT_CREATE;
+		}
+		temp_format_ctx->pb = avio_ctx_inst.get();
+		if (avformat_open_input(&temp_format_ctx, nullptr, nullptr, nullptr) != 0) {
+			_log_err("Failed to open input from memory buffer");
+			return ERR_CANT_OPEN;
+		}
+	} else {
+		CharString local_path = file_path.utf8();
+		if (avformat_open_input(&temp_format_ctx, local_path.get_data(), NULL, NULL)) {
+			_log_err("Couldn't open audio");
+			return ERR_CANT_OPEN;
+		}
+	}
+
+	format_ctx_inst = make_unique_ffmpeg<AVFormatContext, AVFormatCtxInputDeleter>(temp_format_ctx);
+
+	if (avformat_find_stream_info(format_ctx_inst.get(), NULL)) {
+		_log_err("Couldn't find stream info");
+		close();
+		return ERR_CANT_OPEN;
+	} else if (stream_index == -1) {
+		for (int i = 0; i < format_ctx_inst->nb_streams; i++) {
+			AVCodecParameters* av_codec_params = format_ctx_inst->streams[i]->codecpar;
+
+			if (!avcodec_find_decoder(av_codec_params->codec_id)) {
+				format_ctx_inst->streams[i]->discard = AVDISCARD_ALL;
+				continue;
+			} else if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO) {
+				stream_index = i;
+				break;
+			}
+		}
+	}
+
+	// Getting rid of all non-audio streams.
+	for (int i = 0; i < format_ctx_inst->nb_streams; i++) {
+		AVCodecParameters* av_codec_params = format_ctx_inst->streams[i]->codecpar;
+		if (!avcodec_find_decoder(av_codec_params->codec_id) || av_codec_params->codec_type != AVMEDIA_TYPE_AUDIO) {
+			if (i != stream_index)
+				format_ctx_inst->streams[i]->discard = AVDISCARD_ALL;
+		}
+	}
+
+	if (stream_index >= 0 && stream_index < format_ctx_inst->nb_streams) {
+		AVCodecParameters* av_codec_params = format_ctx_inst->streams[stream_index]->codecpar;
+		if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO) {
+			stream_inst = format_ctx_inst->streams[stream_index];
+		} else {
+			close();
+			return ERR_CANT_OPEN;
+		}
+	} else {
+		close();
+		_log_err("Invalid stream index");
+		return ERR_CANT_OPEN;
+	}
+
+	const AVCodec* codec = avcodec_find_decoder(stream_inst->codecpar->codec_id);
+	if (!codec) {
+		_log_err("Couldn't find any decoder for audio!");
+		close();
+		return ERR_CANT_OPEN;
+	}
+
+	codec_ctx_inst = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(avcodec_alloc_context3(codec));
+	if (codec_ctx_inst == NULL) {
+		_log_err("Couldn't allocate context for audio!");
+		close();
+		return ERR_CANT_OPEN;
+	} else if (avcodec_parameters_to_context(codec_ctx_inst.get(), stream_inst->codecpar)) {
+		_log_err("Couldn't initialize audio codec context!");
+		close();
+		return ERR_CANT_OPEN;
+	}
+
+	FFmpeg::enable_multithreading(codec_ctx_inst.get(), codec);
+	codec_ctx_inst->request_sample_fmt = AV_SAMPLE_FMT_S16;
+	if (avcodec_open2(codec_ctx_inst.get(), codec, NULL)) {
+		_log_err("Couldn't open audio codec!");
+		close();
+		return ERR_CANT_OPEN;
+	}
+
+	if (codec_ctx_inst->ch_layout.nb_channels == 0) {
+		av_channel_layout_default(&codec_ctx_inst->ch_layout, 2);
+	}
+
+	const AVChannelLayout TARGET_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
+	SwrContext* temp_swr_ctx = nullptr;
+	int response =
+		swr_alloc_set_opts2(&temp_swr_ctx, &TARGET_LAYOUT, AV_SAMPLE_FMT_S16, 44100, &codec_ctx_inst->ch_layout,
+							codec_ctx_inst->sample_fmt, codec_ctx_inst->sample_rate, 0, nullptr);
+	swr_ctx_inst = make_unique_ffmpeg<SwrContext, SwrCtxDeleter>(temp_swr_ctx);
+	if (response < 0 || (response = swr_init(swr_ctx_inst.get()))) {
+		FFmpeg::print_av_error("Audio: Couldn't initialize SWR!", response);
+		close();
+		return ERR_CANT_OPEN;
+	}
+
+	bytes_per_sample_inst = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+	loaded = true;
+	last_returned_time = -1.0;
+	leftover_buffer_inst.clear();
+	return OK;
+}
+
+PackedByteArray Audio::get_audio_data_chunk(double start_time, double duration) {
+	const int TARGET_SAMPLE_RATE = 44100;
+	const AVSampleFormat TARGET_FORMAT = AV_SAMPLE_FMT_S16;
+	const AVChannelLayout TARGET_LAYOUT = AV_CHANNEL_LAYOUT_STEREO;
+
+	PackedByteArray audio_data = PackedByteArray();
+	if (!loaded)
+		return audio_data;
+
+	int64_t pre_padding_bytes = 0;
+	double fetch_start_time = start_time;
+	double fetch_duration = duration;
+	if (start_time < 0) {
+		pre_padding_bytes = (int64_t)(-start_time * 44100) * 4;
+		fetch_start_time = 0;
+		if (duration > 0) {
+			fetch_duration = Math::max(0.0, duration - start_time);
+		}
+	}
+
+	UniqueAVPacket av_packet = make_unique_avpacket();
+	UniqueAVFrame av_frame = make_unique_avframe();
+	UniqueAVFrame av_decoded_frame = make_unique_avframe();
+	if (!av_frame || !av_decoded_frame || !av_packet) {
+		_log_err("Couldn't allocate frames/packet for audio!");
+		return audio_data;
+	}
+
+	bool needs_seek = false;
+	if (last_returned_time < 0.0) {
+		needs_seek = true;
+	} else if (fetch_start_time > 0 && Math::abs(fetch_start_time - last_returned_time) > 0.05) {
+		needs_seek = true;
+	}
+
+	if (needs_seek) {
+		int64_t seek_target = av_rescale_q(fetch_start_time * AV_TIME_BASE, AV_TIME_BASE_Q, stream_inst->time_base);
+		av_seek_frame(format_ctx_inst.get(), stream_inst->index, seek_target, AVSEEK_FLAG_BACKWARD);
+		avcodec_flush_buffers(codec_ctx_inst.get());
+		leftover_buffer_inst.clear();
+		last_returned_time = fetch_start_time;
+	}
+
+	size_t current_size = 0;
+	int64_t max_bytes = -1;
+	if (fetch_duration > 0) {
+		max_bytes = (int64_t)(fetch_duration * TARGET_SAMPLE_RATE * bytes_per_sample_inst * 2);
+		audio_data.resize(max_bytes);
+	} else {
+		double stream_duration_sec = 0.0;
+		if (stream_inst->duration != AV_NOPTS_VALUE && stream_inst->duration > 0) {
+			stream_duration_sec = stream_inst->duration * av_q2d(stream_inst->time_base);
+		} else if (format_ctx_inst->duration != AV_NOPTS_VALUE && format_ctx_inst->duration > 0) {
+			stream_duration_sec = (double)format_ctx_inst->duration / AV_TIME_BASE;
+		}
+
+		int64_t total_size = 0;
+		if (stream_duration_sec > 0.0) {
+			total_size = (int64_t)(stream_duration_sec * TARGET_SAMPLE_RATE) * bytes_per_sample_inst * 2;
+			if (total_size >= 2147483600) {
+				total_size = 2147483600 - 1;
+			}
+		}
+		audio_data.resize(total_size);
+	}
+
+	if (leftover_buffer_inst.size() > 0) {
+		size_t copy_size = Math::min((size_t)leftover_buffer_inst.size(), (size_t)(max_bytes - current_size));
+		memcpy(audio_data.ptrw(), leftover_buffer_inst.ptr(), copy_size);
+		current_size += copy_size;
+
+		if (copy_size < leftover_buffer_inst.size()) {
+			PackedByteArray new_leftover;
+			size_t remainder = leftover_buffer_inst.size() - copy_size;
+			new_leftover.resize(remainder);
+			memcpy(new_leftover.ptrw(), leftover_buffer_inst.ptr() + copy_size, remainder);
+			leftover_buffer_inst = new_leftover;
+		} else {
+			leftover_buffer_inst.clear();
+		}
+	}
+
+	bool first_frame = needs_seek;
+	int64_t samples_to_discard = 0;
+	int response = 0;
+
+	while (current_size < max_bytes && !(FFmpeg::get_frame(format_ctx_inst.get(), codec_ctx_inst.get(),
+														   stream_inst->index, av_frame.get(), av_packet.get()))) {
+		if (av_frame->nb_samples <= 0)
+			break;
+
+		if (first_frame) {
+			first_frame = false;
+			int64_t frame_pts =
+				av_frame->best_effort_timestamp != AV_NOPTS_VALUE ? av_frame->best_effort_timestamp : av_frame->pts;
+			if (frame_pts != AV_NOPTS_VALUE) {
+				double frame_time = frame_pts * av_q2d(stream_inst->time_base);
+				if (fetch_start_time > frame_time) {
+					samples_to_discard = (int64_t)((fetch_start_time - frame_time) * TARGET_SAMPLE_RATE);
+				}
+			}
+		}
+
+		av_decoded_frame->format = TARGET_FORMAT;
+		av_decoded_frame->ch_layout = TARGET_LAYOUT;
+		av_decoded_frame->sample_rate = TARGET_SAMPLE_RATE;
+		av_decoded_frame->nb_samples = swr_get_out_samples(swr_ctx_inst.get(), av_frame->nb_samples);
+
+		if (av_frame->ch_layout.nb_channels == 0) {
+			av_channel_layout_copy(&av_frame->ch_layout, &codec_ctx_inst->ch_layout);
+		}
+
+		if ((response = av_frame_get_buffer(av_decoded_frame.get(), 0)) < 0) {
+			FFmpeg::print_av_error("Audio: Couldn't create new frame for swr!", response);
+			av_frame_unref(av_frame.get());
+			av_frame_unref(av_decoded_frame.get());
+			break;
+		}
+
+		response = swr_convert(swr_ctx_inst.get(), av_decoded_frame->data, av_decoded_frame->nb_samples,
+							   (const uint8_t**)av_frame->extended_data, av_frame->nb_samples);
+		if (response < 0) {
+			FFmpeg::print_av_error("Audio: Couldn't convert the audio data!", response);
+			av_frame_unref(av_frame.get());
+			av_frame_unref(av_decoded_frame.get());
+			break;
+		}
+		av_decoded_frame->nb_samples = response;
+
+		int samples_to_copy = av_decoded_frame->nb_samples;
+		uint8_t* data_ptr = av_decoded_frame->extended_data[0];
+
+		if (samples_to_discard > 0) {
+			if (samples_to_discard >= samples_to_copy) {
+				samples_to_discard -= samples_to_copy;
+				av_frame_unref(av_frame.get());
+				av_frame_unref(av_decoded_frame.get());
+				continue;
+			} else {
+				data_ptr += samples_to_discard * bytes_per_sample_inst * 2;
+				samples_to_copy -= samples_to_discard;
+				samples_to_discard = 0;
+			}
+		}
+
+		size_t byte_size = samples_to_copy * bytes_per_sample_inst * 2;
+		size_t bytes_needed = max_bytes - current_size;
+
+		if (byte_size <= bytes_needed) {
+			memcpy(audio_data.ptrw() + current_size, data_ptr, byte_size);
+			current_size += byte_size;
+		} else {
+			memcpy(audio_data.ptrw() + current_size, data_ptr, bytes_needed);
+			current_size += bytes_needed;
+			size_t excess_bytes = byte_size - bytes_needed;
+			leftover_buffer_inst.resize(excess_bytes);
+			memcpy(leftover_buffer_inst.ptrw(), data_ptr + bytes_needed, excess_bytes);
+		}
+
+		av_frame_unref(av_frame.get());
+		av_frame_unref(av_decoded_frame.get());
+	}
+
+	if (current_size < audio_data.size()) {
+		audio_data.resize(current_size);
+	}
+
+	// Pre-padding.
+	if (pre_padding_bytes > 0) {
+		PackedByteArray silence;
+		silence.resize(pre_padding_bytes);
+		memset(silence.ptrw(), 0, pre_padding_bytes);
+		silence.append_array(audio_data);
+		audio_data = silence;
+	}
+
+	// Post-padding.
+	if (duration > 0) {
+		int64_t target_size = (int64_t)(duration * 44100) * 4;
+		if (audio_data.size() < target_size) {
+			int64_t old_size = audio_data.size();
+			int64_t missing_bytes = target_size - old_size;
+			audio_data.resize(target_size);
+			memset(audio_data.ptrw() + old_size, 0, missing_bytes);
+
+		} else if (audio_data.size() > target_size) {
+			audio_data.resize(target_size);
+		}
+	}
+
+	last_returned_time += fetch_duration;
+	return audio_data;
+}
+
+void Audio::close() {
+	if (!loaded)
+		return;
+	loaded = false;
+	stream_inst = nullptr;
+
+	swr_ctx_inst.reset();
+	codec_ctx_inst.reset();
+	format_ctx_inst.reset();
+	avio_ctx_inst.reset();
+	file_buffer_inst.clear();
+	leftover_buffer_inst.clear();
+}
 
 void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio",
@@ -539,4 +885,8 @@ void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio", D_METHOD("apply_stereo_to_mono", "audio_data"), &Audio::apply_stereo_to_mono);
 	ClassDB::bind_static_method("Audio", D_METHOD("apply_retro_filter", "audio_data", "bit_depth"),
 								&Audio::apply_retro_filter);
+
+	ClassDB::bind_method(D_METHOD("open", "file_path", "stream_index"), &Audio::open, DEFVAL(-1));
+	ClassDB::bind_method(D_METHOD("get_audio_data_chunk", "start_time", "duration"), &Audio::get_audio_data_chunk);
+	ClassDB::bind_method(D_METHOD("close"), &Audio::close);
 }

@@ -525,14 +525,19 @@ func _create_wave(file: FileData) -> void:
 		printerr("FileLogic: Couldn't resize local wave array's!")
 	audio_wave[file.id] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
 
+
 	var chunk_duration: float = 10.0 # 10 seconds.
 	var current_time: float = 0.0
 	var block_index: int = 0
 	var bytes_size: float = 4.0 # 16 bit * stereo.
 	var sample_step: int = 15
 
+	var audio_reader: Audio = Audio.new()
+	if audio_reader.open(file.path, -1) != OK:
+		return
+
 	while current_time < stream_length:
-		var data: PackedByteArray = Audio.get_audio_data(file.path, -1, current_time, chunk_duration)
+		var data: PackedByteArray = audio_reader.get_audio_data_chunk(current_time, chunk_duration)
 		if data.is_empty(): break
 
 		var chunk_total_frames: int = int(data.size() / bytes_size)
@@ -575,6 +580,7 @@ func _create_wave(file: FileData) -> void:
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
 	if save_file and !save_file.store_var(audio_wave[file.id]):
 		printerr("FileLogic: Couldn't save wave file for file '%s'!" % file.path)
+	audio_reader.close()
 	call_deferred("_on_wave_ready", file)
 	Print.info("FileLogic", "Wave creation done for '%s'!" % file.nickname)
 

@@ -29,6 +29,18 @@ class Audio : public Resource {
 		return false;
 	}
 
+	UniqueAVFormatCtxInput format_ctx_inst;
+	UniqueAVCodecCtx codec_ctx_inst;
+	UniqueSwrCtx swr_ctx_inst;
+	UniqueAVIOContext avio_ctx_inst;
+	BufferData buffer_data_inst;
+	PackedByteArray file_buffer_inst;
+	PackedByteArray leftover_buffer_inst;
+	AVStream* stream_inst = nullptr;
+	int bytes_per_sample_inst = 0;
+	bool loaded = false;
+	double last_returned_time = -1.0;
+
   public:
 	static PackedByteArray get_audio_data(String file_path, int stream_index, double start_time, double duration);
 
@@ -48,6 +60,10 @@ class Audio : public Resource {
 	static PackedByteArray apply_channel_swap(PackedByteArray audio_data);
 	static PackedByteArray apply_stereo_to_mono(PackedByteArray audio_data);
 	static PackedByteArray apply_retro_filter(PackedByteArray audio_data, int bit_depth);
+
+	Error open(String file_path, int stream_index = -1);
+	PackedByteArray get_audio_data_chunk(double start_time, double duration);
+	void close();
 
   protected:
 	static void _bind_methods();
