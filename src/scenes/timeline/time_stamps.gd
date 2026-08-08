@@ -196,12 +196,11 @@ func _draw() -> void:
 		draw_string(default_font, bubble_text_pos, marker_text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_MARKER, bubble_text_color)
 
 	# - Draw render region
-	if Project.data.use_render_region:
-		var region_start: float = Project.data.render_region.x * Timeline.zoom
-		var region_end: float = Project.data.render_region.y * Timeline.zoom
-		var alpha: float = 0.7 if Project.data.use_render_region else 0.2
-		if region_end >= region_start:
-			draw_rect(Rect2(region_start, 0, region_end - region_start, 4), Color(0.65, 0.1, 0.95, alpha))
+	var region_start: float = Project.data.render_region.x * Timeline.zoom
+	var region_end: float = Project.data.render_region.y * Timeline.zoom
+	var alpha: float = 0.7 if Project.data.use_render_region else 0.3
+	if region_end >= region_start:
+		draw_rect(Rect2(region_start, 0, region_end - region_start, 4), Color(0.65, 0.1, 0.95, alpha))
 
 
 func _update_tooltip() -> void:

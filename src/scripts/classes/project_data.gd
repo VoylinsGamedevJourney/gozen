@@ -9,7 +9,7 @@ var background_color: Color = Color.BLACK
 var timeline_end: int = 0
 var playhead: int = 0 ## Playhead position.
 
-var render_region: Vector2i = Vector2i(0, 0)
+var render_region: Vector2i = Vector2i(0, 1200)
 var use_render_region: bool = false
 
 var files: Dictionary[int, FileData] = {} ## { file_id: file_data }
@@ -76,7 +76,7 @@ func deserialize(data: Dictionary) -> void:
 
 	timeline_end = data.get("timeline_end", 0)
 	playhead = data.get("playhead", 0)
-	render_region = data.get("render_region", Vector2i(0, 0))
+	render_region = data.get("render_region", Vector2i(0, int(framerate * 60.0)))
 	use_render_region = data.get("use_render_region", false)
 
 	folders.clear()

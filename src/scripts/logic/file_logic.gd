@@ -487,9 +487,6 @@ func _load_video(file: FileData) -> void:
 
 
 func _create_wave(file: FileData) -> void:
-	# TODO: Large audio lengths will still crash this function. Could possibly
-	# use the get_audio improvements by cutting the data into pieces.
-	# TODO: We should check if the amplification
 	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + ".wave"
 	if FileAccess.file_exists(cache_path):
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)

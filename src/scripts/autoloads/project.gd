@@ -18,8 +18,6 @@ var is_loaded: bool = false
 var unsaved_changes: bool = false : set = _unsaved_changes
 var auto_save_timer: Timer
 
-var _prev_use_render_region: bool = false
-
 
 
 func _ready() -> void:
@@ -56,6 +54,7 @@ func new_project(request: NewRequest) -> void:
 	set_project_path(request.project_path)
 	set_resolution(request.resolution)
 	set_framerate(request.framerate, true)
+	data.render_region = Vector2i(0, int(request.framerate * 60.0))
 	_setup_logic()
 
 	for index: int in request.track_amount:
@@ -118,7 +117,6 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update_bar(1)
 
 	data = ProjectData.new()
-	_prev_use_render_region = false
 
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
@@ -176,7 +174,6 @@ func open(new_project_path: String) -> void:
 	_auto_save()
 	await get_tree().process_frame
 	EditorCore.set_frame(data.playhead)
-	_prev_use_render_region = data.use_render_region
 
 
 func open_project() -> void:
@@ -379,18 +376,13 @@ func set_background_color(color: Color) -> void:
 
 func set_render_toggle(value: bool) -> void:
 	data.use_render_region = value
-	_prev_use_render_region = value
 	unsaved_changes = true
 	render_region_updated.emit()
 
 
 func set_render_region(region: Vector2i) -> void:
-	if region.x >= region.y and _prev_use_render_region: # Invalid region.
-		_prev_use_render_region = true
-		data.use_render_region = false
-	elif region.x < region.y and _prev_use_render_region:
-		_prev_use_render_region = false
-		data.use_render_region = true
+	if region.x >= region.y: # Invalid region.
+		region.y = region.x + int(data.framerate)
 	data.render_region = region
 	unsaved_changes = true
 	render_region_updated.emit()

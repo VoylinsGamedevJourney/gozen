@@ -54,11 +54,8 @@ var stop_encoding: bool = false
 
 func _ready() -> void:
 	@warning_ignore("return_value_discarded")
-	Project.project_ready.connect(_on_project_ready)
+	Project.project_ready.connect(func() -> void: project_data = Project.data)
 
-
-func _on_project_ready() -> void:
-	project_data = Project.data
 
 
 # --- Render logic ---
