@@ -34,6 +34,8 @@ var current_drop_folder: String = "/"
 
 var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
 
+var _mutex: Mutex = Mutex.new()
+
 
 
 func _ready() -> void:
@@ -491,26 +493,12 @@ func _create_wave(file: FileData) -> void:
 	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + ".wave"
 	if FileAccess.file_exists(cache_path):
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
-		if temp_file:
-			var size: int = temp_file.get_length()
-			if size > 0:
-				var loaded_wave: Variant = temp_file.get_var()
-				if typeof(loaded_wave) == TYPE_DICTIONARY:
-					audio_wave[file.id] = loaded_wave
-					call_deferred("_on_wave_ready", file)
-					return
-
-	Print.info("FileLogic", "Creating wave for '%s' ..." % file.nickname)
-	var data: PackedByteArray = Audio.get_audio_data(file.path, -1)
-	if data.is_empty():
-		audio_wave[file.id] = { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() }
-		var empty_save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
-		if empty_save_file and !empty_save_file.store_var(audio_wave[file.id]):
-			printerr("FileLogic: Couldn't save empty wave file for file '%s'!" % file.path)
-		return push_warning("Empty audio wave saved for file: " + file.nickname)
-
-	var bytes_size: float = 4 # 16 bit * stereo.
-	var total_frames: int = int(data.size() / bytes_size)
+		if temp_file.get_length() > 0:
+			var loaded_wave: Variant = temp_file.get_var()
+			if typeof(loaded_wave) == TYPE_DICTIONARY:
+				audio_wave[file.id] = loaded_wave
+				call_deferred("_on_wave_ready", file)
+				return
 
 	# Calculate actual mix rate based on the audio length.
 	var stream_length: float = 0.0
@@ -523,12 +511,12 @@ func _create_wave(file: FileData) -> void:
 		elif raw_data is AudioStream:
 			stream_length = (raw_data as AudioStream).get_length()
 
-	var mix_rate: float = RenderManager.MIX_RATE
-	if stream_length > 0.0:
-		mix_rate = float(total_frames) / stream_length
+	if stream_length <= 0.0: # Simple fallback just in case. :p
+		stream_length = float(file.duration) / Project.data.framerate
 
+	var mix_rate: float = RenderManager.MIX_RATE
 	var frames_per_block: float = mix_rate / Project.data.framerate
-	var total_blocks: int = ceili(float(total_frames) / frames_per_block)
+	var total_blocks: int = ceili(stream_length * Project.data.framerate)
 
 	var local_wave_1: PackedFloat32Array = PackedFloat32Array()
 	var local_wave_4: PackedFloat32Array = PackedFloat32Array()
@@ -537,34 +525,52 @@ func _create_wave(file: FileData) -> void:
 		printerr("FileLogic: Couldn't resize local wave array's!")
 	audio_wave[file.id] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
 
-	for i: int in total_blocks:
-		var max_abs_amplitude: float = 0.0
-		var start_frame: int = floori(i * frames_per_block)
-		var end_frame: int = mini(floori((i + 1) * frames_per_block), total_frames)
+	var chunk_duration: float = 10.0 # 10 seconds.
+	var current_time: float = 0.0
+	var block_index: int = 0
+	var bytes_size: float = 4.0 # 16 bit * stereo.
+	var sample_step: int = 15
 
-		for frame_index: int in range(start_frame, end_frame):
-			var byte_offset: int = int(frame_index * bytes_size)
-			if byte_offset + bytes_size > data.size():
-				break
+	while current_time < stream_length:
+		var data: PackedByteArray = Audio.get_audio_data(file.path, -1, current_time, chunk_duration)
+		if data.is_empty(): break
 
-			var left_sample: int = data.decode_s16(byte_offset)
-			var right_sample: int = data.decode_s16(byte_offset + 2)
-			var frame_max_abs_amplitude: float = max(abs(float(left_sample)), abs(float(right_sample)))
-			if frame_max_abs_amplitude > max_abs_amplitude:
-				max_abs_amplitude = frame_max_abs_amplitude
+		var chunk_total_frames: int = int(data.size() / bytes_size)
+		var chunk_blocks: int = ceili(float(chunk_total_frames) / frames_per_block)
 
-		var normalized: float = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
-		local_wave_1[i] = normalized
-		var i4: int = int(i / 4.0)
-		if normalized > local_wave_4[i4]:
-			local_wave_4[i4] = normalized
+		for i: int in chunk_blocks:
+			if block_index >= total_blocks: break
 
-		var i16: int = int(i / 16.0)
-		if normalized > local_wave_16[i16]:
-			local_wave_16[i16] = normalized
+			var max_abs_amplitude: float = 0.0
+			var start_frame: int = floori(i * frames_per_block)
+			var end_frame: int = mini(floori((i + 1) * frames_per_block), chunk_total_frames)
 
-		if i % 150 == 0:
-			call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
+			for frame_index: int in range(start_frame, end_frame, sample_step):
+				var byte_offset: int = int(frame_index * bytes_size)
+				if byte_offset + 3 >= data.size(): break
+
+				var left_sample: int = data.decode_s16(byte_offset)
+				var right_sample: int = data.decode_s16(byte_offset + 2)
+				var frame_max_abs_amplitude: float = max(abs(float(left_sample)), abs(float(right_sample)))
+				if frame_max_abs_amplitude > max_abs_amplitude:
+					max_abs_amplitude = frame_max_abs_amplitude
+
+			var normalized: float = clamp(max_abs_amplitude / MAX_16_BIT_VALUE, 0.0, 1.0)
+			local_wave_1[block_index] = normalized
+
+			var i4: int = int(block_index / 4.0)
+			if i4 < local_wave_4.size() and normalized > local_wave_4[i4]:
+				local_wave_4[i4] = normalized
+
+			var i16: int = int(block_index / 16.0)
+			if i16 < local_wave_16.size() and normalized > local_wave_16[i16]:
+				local_wave_16[i16] = normalized
+			block_index += 1
+
+		_mutex.lock()
+		call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
+		_mutex.unlock()
+		current_time += chunk_duration
 
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
 	if save_file and !save_file.store_var(audio_wave[file.id]):
