@@ -519,7 +519,7 @@ func _on_folder_renamed(old_path: String, new_path: String) -> void:
 	_sort_folder(parent_path)
 
 
-func _get_recursive_ids(item: TreeItem) -> PackedInt64Array:
+func _get_recursive_ids(item: TreeItem) -> Array[int]:
 	var ids: Array[int] = []
 	var child: TreeItem = item.get_first_child()
 
