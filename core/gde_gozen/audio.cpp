@@ -419,7 +419,8 @@ PackedByteArray Audio::apply_dynamic_volume(PackedByteArray audio_data, PackedFl
 		}
 
 		int start_sample = frame * samples_per_frame;
-		int end_sample = MIN(start_sample + samples_per_frame, sample_count);
+		int end_sample =
+			(frame == total_frames - 1) ? sample_count : MIN(start_sample + samples_per_frame, sample_count);
 		for (int i = start_sample; i < end_sample; ++i) {
 			int idx = i * 2;
 			pw_data[idx] = Math::clamp((int32_t)(pw_data[idx] * volume_linear), -32768, 32767);
