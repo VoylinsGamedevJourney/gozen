@@ -438,18 +438,23 @@ func load_data(file: FileData) -> void:
 		EditorCore.Type.PCK:
 			if !ProjectSettings.load_resource_pack(file.path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
-				return _delete(file)
+				file_data[file.id] = null
+				return
 			var module_name: String = file.path.get_file().get_basename()
+			if module_name.begins_with(str(file.id) + "_"):
+				module_name = module_name.trim_prefix(str(file.id) + "_")
 			var module_path: String = "res://modules/" + module_name + "/module.tres"
 
 			if !FileAccess.file_exists(module_path):
 				printerr("FileLogic: PCK is missing the required `module.tres` at '%s'!" % module_path)
-				return _delete(file)
+				file_data[file.id] = null
+				return
 
 			var module_data: GoZenModule = load(module_path)
 			if !module_data:
 				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule!")
-				return _delete(file)
+				file_data[file.id] = null
+				return
 
 			file_data[file.id] = module_data
 			file.duration = module_data.default_duration
@@ -763,7 +768,7 @@ func save_audio_to_wav(file: FileData, save_path: String) -> void:
 func _check_if_modified(file: FileData) -> void:
 	if !file.path.begins_with("temp://") and !FileAccess.file_exists(file.path):
 		Print.info("FileLogic", "File %s at %s doesn't exist anymore!" % [file.id, file.path])
-		_delete(file)
+		delete([file.id])
 
 
 func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:

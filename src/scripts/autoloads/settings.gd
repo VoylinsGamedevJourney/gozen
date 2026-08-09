@@ -524,6 +524,8 @@ func set_auto_save(value: bool) -> void:
 	data.auto_save = value
 	if value:
 		Project._auto_save()
+	elif Project.auto_save_timer != null:
+		Project.auto_save_timer.stop()
 
 
 func get_auto_save() -> bool:

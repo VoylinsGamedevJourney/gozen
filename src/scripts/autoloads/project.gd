@@ -109,6 +109,93 @@ func save_as() -> void:
 	dialog.popup_centered()
 
 
+func archive_as() -> void:
+	var dialog: FileDialog = PopupManager.create_file_dialog(
+			tr("Archive project as ..."),
+			FileDialog.FILE_MODE_SAVE_FILE,
+			["*.zip;" + tr("ZIP Archive")])
+
+	@warning_ignore("return_value_discarded")
+	dialog.file_selected.connect(_archive_project)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _archive_project(zip_path: String) -> void:
+	if not zip_path.ends_with(".zip"):
+		zip_path += ".zip"
+
+	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
+	loading_overlay.update_title(tr("Archiving project"))
+	loading_overlay.update(0, tr("Preparing files ..."))
+
+	var archive_data: Dictionary = data.serialize()
+	var file_count: int = data.files.size()
+
+	Threader.add_task(
+			_archive_task.bind(zip_path, archive_data, file_count, loading_overlay),
+			_on_archive_finished)
+
+
+func _archive_task(zip_path: String, archive_data: Dictionary, file_count: int, loading_overlay: ProgressOverlay) -> void:
+	var packer: ZIPPacker = ZIPPacker.new()
+	var err: int = packer.open(zip_path)
+	if err != OK:
+		printerr("Failed to open zip packer at ", zip_path)
+		loading_overlay.call_deferred("update", 0, "Failed to open zip packer!")
+		return
+
+	var current_file: int = 0
+	var project_name: String = get_project_name() + EXTENSION
+	archive_data["project_path"] = "./" + project_name
+
+	for file_id: int in archive_data["files"]:
+		var file_dict: Dictionary = archive_data["files"][file_id]
+		var old_path: String = file_dict["path"]
+		if not old_path.begins_with("temp://"):
+			var new_name: String = str(file_id) + "_" + old_path.get_file()
+			var new_path: String = "./raw/" + new_name
+			file_dict["path"] = new_path
+
+			err = packer.start_file("raw/" + new_name)
+			var file: FileAccess = FileAccess.open(old_path, FileAccess.READ)
+			if file:
+				var chunk_size: int = 1024 * 1024 * 10 # 10MB chunks.
+				var file_len: int = file.get_length()
+				var bytes_read: int = 0
+
+				while true:
+					var buffer: PackedByteArray = file.get_buffer(chunk_size)
+					if buffer.size() > 0:
+						err = packer.write_file(buffer)
+						bytes_read += buffer.size()
+
+						var file_progress: float = float(bytes_read) / float(maxi(1, file_len))
+						var total_progress: int = int(((float(current_file) + file_progress) / float(maxi(1, file_count))) * 90)
+						loading_overlay.call_deferred("update", total_progress, "Zipping: " + new_name)
+
+					if buffer.size() < chunk_size:
+						break
+				file.close()
+			err = packer.close_file()
+
+		current_file += 1
+		loading_overlay.call_deferred("update", int((float(current_file) / float(maxi(1, file_count))) * 90), "Zipping files ...")
+	err = packer.start_file(project_name)
+
+	var project_str: String = var_to_str(archive_data)
+	err = packer.write_file(project_str.to_utf8_buffer())
+	err = packer.close_file()
+	err = packer.close()
+	loading_overlay.call_deferred("update", 100, "Archive complete!")
+
+
+func _on_archive_finished() -> void:
+	await get_tree().create_timer(1.0).timeout
+	NotificationManager.info("Archiving finished")
+	PopupManager.close(PopupManager.PROGRESS)
+
+
 func open(new_project_path: String) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
@@ -121,8 +208,13 @@ func open(new_project_path: String) -> void:
 	if DataManager.load_data(new_project_path, data):
 		printerr("Project: Something went wrong whilst loading project! ", FileAccess.get_open_error())
 
-	loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_project_path(new_project_path)
+	var base_dir: String = new_project_path.get_base_dir()
+	for file: FileData in data.files.values():
+		if file.path.begins_with("./"):
+			file.path = base_dir.path_join(file.path.trim_prefix("./"))
+
+	loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_framerate(data.framerate, true)
 	_setup_logic()
 
@@ -198,10 +290,12 @@ func _auto_save() -> void:
 		@warning_ignore("return_value_discarded")
 		auto_save_timer.timeout.connect(_auto_save)
 
-	if is_loaded and !RenderManager.is_encoding and !data.project_path.is_empty():
-		save(true)
-
-	auto_save_timer.start(5 * 60) # Default time is every 5 minutes.
+	if Settings.get_auto_save():
+		if is_loaded and !RenderManager.is_encoding and !data.project_path.is_empty():
+			save(true)
+		auto_save_timer.start(5 * 60) # Default time is every 5 minutes.
+	else:
+		auto_save_timer.stop()
 
 
 func _update_recent_projects(new_path: String) -> void:

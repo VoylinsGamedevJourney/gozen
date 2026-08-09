@@ -89,9 +89,8 @@ func deserialize(data: Dictionary) -> void:
 		if value is FileData:
 			files[int(file_id)] = value
 		else:
-			var file: FileData = FileData.new()
-			file.deserialize(value as Dictionary)
-			files[int(file_id)] = file
+			files[int(file_id)] = FileData.new()
+			files[int(file_id)].deserialize(value as Dictionary)
 
 	clips.clear()
 	if data.has("clips"):

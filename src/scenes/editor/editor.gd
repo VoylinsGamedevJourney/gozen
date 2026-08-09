@@ -95,12 +95,13 @@ func _create_project_popup_menu() -> void:
 
 	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project", 0)
 	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project as ...", 1)
+	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 2)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 2)
-	menu.add_icon_item(preload(Library.ICON_OPEN), "Recent projects", 3)
+	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 3)
+	menu.add_icon_item(preload(Library.ICON_OPEN), "Recent projects", 4)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 4)
-	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 5)
+	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 5)
+	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 6)
 
 	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_project_popup_menu_id_pressed)
@@ -110,12 +111,13 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: Project.save()
 		1: Project.save_as()
+		2: Project.archive_as()
 		# -------------
-		2: Project.open_project()
-		3: PopupManager.open(PopupManager.RECENT_PROJECTS)
+		3: Project.open_project()
+		4: PopupManager.open(PopupManager.RECENT_PROJECTS)
 		# -------------
-		4: Project.open_settings_menu()
-		5: get_tree().quit()
+		5: Project.open_settings_menu()
+		6: get_tree().quit()
 
 
 func _create_edit_popup_menu() -> void:

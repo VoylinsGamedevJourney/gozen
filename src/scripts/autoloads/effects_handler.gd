@@ -162,8 +162,9 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 
 				new_effect.id = "pck_effect_params"
 				new_effect.nickname = "Module Parameters"
-				for param: EffectParam in module_data.params:
-					new_effect.params.append(param.duplicate(true))
+				if module_data:
+					for param: EffectParam in module_data.params:
+						new_effect.params.append(param.duplicate(true))
 
 				new_effect.keyframes = old_effect.keyframes.duplicate(true)
 				new_effect.is_enabled = old_effect.is_enabled
