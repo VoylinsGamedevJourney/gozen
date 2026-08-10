@@ -2,6 +2,7 @@
 
 #include "encoder.hpp"
 #include "ffmpeg.hpp"
+#include "smb_pitch_shift.hpp"
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 #include <godot_cpp/classes/control.hpp>
@@ -16,6 +17,8 @@
 
 
 using namespace godot;
+
+
 
 class Audio : public Resource {
 	GDCLASS(Audio, Resource);
@@ -60,6 +63,7 @@ class Audio : public Resource {
 	static PackedByteArray apply_channel_swap(PackedByteArray audio_data);
 	static PackedByteArray apply_stereo_to_mono(PackedByteArray audio_data);
 	static PackedByteArray apply_retro_filter(PackedByteArray audio_data, int bit_depth);
+	static PackedByteArray apply_pitch(PackedByteArray audio_data, float pitch_scale);
 
 	Error open(String file_path, int stream_index = -1);
 	PackedByteArray get_audio_data_chunk(double start_time, double duration);

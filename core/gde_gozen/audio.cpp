@@ -513,6 +513,51 @@ PackedByteArray Audio::apply_retro_filter(PackedByteArray audio_data, int bit_de
 	return audio_data;
 }
 
+PackedByteArray Audio::apply_pitch(PackedByteArray audio_data, float pitch_scale) {
+	if (Math::is_equal_approx(pitch_scale, 1.0f) || audio_data.size() == 0) {
+		return audio_data;
+	}
+
+	size_t frame_count = audio_data.size() / 4;
+	const int16_t* in_data = reinterpret_cast<const int16_t*>(audio_data.ptr());
+
+	PackedByteArray out_bytes;
+	out_bytes.resize(audio_data.size());
+	int16_t* out_data_16 = reinterpret_cast<int16_t*>(out_bytes.ptrw());
+
+	PackedFloat32Array float_in;
+	float_in.resize(frame_count * 2);
+	float* p_in = (float*)float_in.ptrw();
+
+	PackedFloat32Array float_out;
+	float_out.resize(frame_count * 2);
+	float* p_out = (float*)float_out.ptrw();
+
+	for (size_t i = 0; i < frame_count * 2; ++i) {
+		p_in[i] = in_data[i] / 32768.0f;
+	}
+
+	SMBPitchShift* shift_l = new SMBPitchShift();
+	SMBPitchShift* shift_r = new SMBPitchShift();
+
+	long fft_size = 2048;
+	long osamp = 4;
+	float sample_rate = 44100.0f;
+
+	shift_l->PitchShift(pitch_scale, frame_count, fft_size, osamp, sample_rate, p_in, p_out, 2);
+	shift_r->PitchShift(pitch_scale, frame_count, fft_size, osamp, sample_rate, p_in + 1, p_out + 1, 2);
+
+	delete shift_l;
+	delete shift_r;
+
+	for (size_t i = 0; i < frame_count * 2; ++i) {
+		float val = p_out[i] * 32768.0f;
+		out_data_16[i] = (int16_t)Math::clamp((int32_t)val, -32768, 32767);
+	}
+
+	return out_bytes;
+}
+
 // Mainly used for waveform generating stuff atm.
 Error Audio::open(String file_path, int stream_index) {
 	if (loaded)
@@ -885,6 +930,7 @@ void Audio::_bind_methods() {
 	ClassDB::bind_static_method("Audio", D_METHOD("apply_stereo_to_mono", "audio_data"), &Audio::apply_stereo_to_mono);
 	ClassDB::bind_static_method("Audio", D_METHOD("apply_retro_filter", "audio_data", "bit_depth"),
 								&Audio::apply_retro_filter);
+	ClassDB::bind_static_method("Audio", D_METHOD("apply_pitch", "audio_data", "pitch_scale"), &Audio::apply_pitch);
 
 	ClassDB::bind_method(D_METHOD("open", "file_path", "stream_index"), &Audio::open, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("get_audio_data_chunk", "start_time", "duration"), &Audio::get_audio_data_chunk);

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EffectAudio" format=3 uid="uid://cpq10awxh00b5"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/effect_audio.gd" id="2_effect"]
+
+[sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_pitch"]
+
+[sub_resource type="Resource" id="Resource_pitch"]
+script = ExtResource("1_param")
+id = "pitch_scale"
+nickname = "Pitch scale"
+default_value = 1.0
+min_value = 0.01
+max_value = 16.0
+step = 0.01
+keyframeable = false
+has_slider = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_effect")
+effect = SubResource("AudioEffectPitchShift_pitch")
+id = "pitch"
+nickname = "Pitch shift"
+params = Array[ExtResource("1_param")]([SubResource("Resource_pitch")])
+metadata/_custom_type_script = "uid://cddcl2omddlan"

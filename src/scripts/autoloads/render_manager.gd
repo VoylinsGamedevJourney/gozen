@@ -348,6 +348,14 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 				if not is_equal_approx(clip.speed, 1.0):
 					audio_data = Audio.change_speed(audio_data, clip.speed)
 
+				# Apply static effects.
+				for effect: EffectAudio in clip.effects.audio:
+					if not effect.is_enabled: continue
+					if effect.id == "pitch":
+						var pitch_scale: float = effect.get_value(effect.params[0], 0)
+						if not is_equal_approx(pitch_scale, 1.0):
+							audio_data = Audio.apply_pitch(audio_data, pitch_scale)
+
 				if audio_data.size() < expected_bytes:
 					var padding: int = expected_bytes - audio_data.size()
 					var zeros: PackedByteArray = []
