@@ -72,7 +72,7 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 				scrubbing = true
 				if EditorCore.is_playing and Settings.get_pause_after_drag():
 					EditorCore.is_playing = false
-				EditorCore.scrub_to_frame(_get_frame_on_mouse())
+				EditorCore.scrub_to_frame(_get_frame_on_mouse(event.position.x))
 			accept_event()
 		else: # Mouse released.
 			var marker: MarkerData = MarkerLogic.dragged_marker
@@ -101,7 +101,7 @@ func _gui_input_mouse_motion(_event: InputEventMouseMotion) -> void:
 		queue_redraw()
 	elif scrubbing:
 		if _event.button_mask & MOUSE_BUTTON_MASK_LEFT:
-			EditorCore.scrub_to_frame(_get_frame_on_mouse())
+			EditorCore.scrub_to_frame(_get_frame_on_mouse(_event.position.x))
 		else:
 			scrubbing = false
 			EditorCore.finish_scrub()
@@ -114,8 +114,8 @@ func _enter_tree() -> void:
 	queue_redraw.call_deferred()
 
 
-func _get_frame_on_mouse() -> int:
-	return maxi(0, roundi(get_local_mouse_position().x / Timeline.zoom))
+func _get_frame_on_mouse(mouse_x: float = get_local_mouse_position().x) -> int:
+	return maxi(0, roundi(mouse_x / Timeline.zoom))
 
 
 func _draw() -> void:

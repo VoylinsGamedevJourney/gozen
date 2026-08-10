@@ -183,9 +183,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 	if Timeline.current_state == Timeline.State.SPLIT:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-			var target: ClipData = _get_clip_on_mouse()
+			var target: ClipData = _get_clip_on_mouse(event.position)
 			if target:
-				split_clip_at(target, get_frame_from_mouse())
+				split_clip_at(target, get_frame_from_mouse(event.position))
 			accept_event()
 		return
 	elif event.is_released():
@@ -200,12 +200,12 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		accept_event()
 
 	if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-		pressed_clip = _get_clip_on_mouse()
-		_last_press_pos = get_local_mouse_position()
+		pressed_clip = _get_clip_on_mouse(event.position)
+		_last_press_pos = event.position
 
 		Timeline.current_state = Timeline.State.SELECT
-		Timeline.fade_target =   _get_fade_target()
-		Timeline.resize_target = _get_resize_target()
+		Timeline.fade_target =   _get_fade_target(event.position)
+		Timeline.resize_target = _get_resize_target(event.position)
 
 		if Timeline.fade_target:
 			Timeline.current_state = Timeline.State.FADING
@@ -216,11 +216,11 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		elif _last_mouse_button == MOUSE_BUTTON_LEFT and event.double_click and !pressed_clip:
 			var mod: int = Settings.get_delete_empty_modifier()
 			if mod == KEY_NONE or (mod == KEY_CTRL and event.ctrl_pressed) or (mod == KEY_SHIFT and event.shift_pressed):
-				remove_empty_space_at(get_track_from_mouse(), get_frame_from_mouse())
+				remove_empty_space_at(get_track_from_mouse(event.position), get_frame_from_mouse(event.position))
 				return
 		elif !pressed_clip:
 			if event.shift_pressed:
-				var mouse_pos: Vector2 = get_local_mouse_position()
+				var mouse_pos: Vector2 = event.position
 				_start_box_select(mouse_pos, mouse_pos)
 			else:
 				match Settings.get_empty_space_click_action():
@@ -231,7 +231,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 						Timeline.current_state = Timeline.State.SCRUBBING
 						if EditorCore.is_playing: # Setting is_playing triggers a setter.
 							EditorCore.is_playing = false
-						EditorCore.scrub_to_frame(get_frame_from_mouse())
+						EditorCore.scrub_to_frame(get_frame_from_mouse(event.position))
 		elif pressed_clip not in ClipLogic.selected_clips:
 			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(pressed_clip)
 
@@ -245,9 +245,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_menu()
-		right_click_clip = _get_clip_on_mouse()
-		right_click_track = get_track_from_mouse()
-		right_click_frame = get_frame_from_mouse()
+		right_click_clip = _get_clip_on_mouse(event.position)
+		right_click_track = get_track_from_mouse(event.position)
+		right_click_frame = get_frame_from_mouse(event.position)
 
 		if right_click_clip:
 			_add_popup_menu_items_clip(popup)
@@ -285,7 +285,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 	if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
 		scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
 
-	var clip_on_mouse: ClipData = _get_clip_on_mouse()
+	var clip_on_mouse: ClipData = _get_clip_on_mouse(event.position)
 	if clip_on_mouse:
 		var nickname: String = FileLogic.files[clip_on_mouse.file].nickname
 		if tooltip_text != nickname:
@@ -304,11 +304,11 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 		Timeline.State.SELECT:
 			if Input.is_key_pressed(KEY_SHIFT) \
 				and event.button_mask & MOUSE_BUTTON_MASK_LEFT \
-				and get_local_mouse_position().distance_to(_last_press_pos) > DRAG_START_THRESHOLD_PX:
-					_start_box_select(_last_press_pos, get_local_mouse_position())
-			elif _get_fade_target() != null:
+				and event.position.distance_to(_last_press_pos) > DRAG_START_THRESHOLD_PX:
+					_start_box_select(_last_press_pos, event.position)
+			elif _get_fade_target(event.position) != null:
 				mouse_default_cursor_shape = Control.CURSOR_CROSS
-			elif _get_resize_target() != null:
+			elif _get_resize_target(event.position) != null:
 				mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			elif clip_on_mouse:
 				mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -319,17 +319,17 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			draw_mode.set("mouse_pos_x", event.position.x)
 			draw_mode.queue_redraw()
 		Timeline.State.FADING:
-			_handle_fade_motion()
+			_handle_fade_motion(event.position)
 		Timeline.State.SCRUBBING:
 			if event.button_mask & MOUSE_BUTTON_LEFT:
-				EditorCore.scrub_to_frame(get_frame_from_mouse())
+				EditorCore.scrub_to_frame(get_frame_from_mouse(event.position))
 		Timeline.State.BOX_SELECTING:
-			Timeline.box_select_end = get_local_mouse_position()
+			Timeline.box_select_end = event.position
 			mouse_default_cursor_shape = Control.CURSOR_CROSS
 			draw_box_selection.queue_redraw()
 		Timeline.State.RESIZING, Timeline.State.SPEEDING:
 			mouse_default_cursor_shape = Control.CURSOR_HSIZE
-			_handle_resize_motion()
+			_handle_resize_motion(event.position)
 			draw_preview.queue_redraw()
 
 
@@ -348,29 +348,29 @@ func _on_ui_cancel() -> void:
 	draw_all()
 
 
-func _get_clip_on_mouse() -> ClipData:
-	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
+func _get_clip_on_mouse(mouse_pos: Vector2 = get_local_mouse_position()) -> ClipData:
+	if mouse_pos.y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
-	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(), clampi(get_frame_from_mouse() - 1, 0, Project.data.timeline_end))
+	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(mouse_pos), clampi(get_frame_from_mouse(mouse_pos) - 1, 0, Project.data.timeline_end))
 
 
-func _get_resize_target() -> Timeline.ResizeTarget:
-	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
+func _get_resize_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeline.ResizeTarget:
+	if mouse_pos.y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
-	var track: int = get_track_from_mouse()
+	var track: int = get_track_from_mouse(mouse_pos)
 	if TrackLogic.tracks[track].is_locked:
 		return null
 
 	var zoom: float = Timeline.zoom
-	var mouse_pos: float = get_local_mouse_position().x
+	var mouse_x: float = mouse_pos.x
 	var handle_width: float = RESIZE_HANDLE_WIDTH
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
 		if (clip.duration * zoom) < 20.0:
 			continue
 		var start_x: float = clip.start * zoom
 		var end_x: float = (clip.end - 1) * zoom
-		var start_distance: float = abs(mouse_pos - start_x)
-		var end_distance: float = abs(mouse_pos - end_x)
+		var start_distance: float = abs(mouse_x - start_x)
+		var end_distance: float = abs(mouse_x - end_x)
 		if start_distance <= handle_width and start_distance < end_distance:
 			return Timeline.ResizeTarget.new(clip, false, clip.start, clip.duration)
 		if end_distance <= handle_width and end_distance <= start_distance:
@@ -378,15 +378,14 @@ func _get_resize_target() -> Timeline.ResizeTarget:
 	return null
 
 
-func _get_fade_target() -> Timeline.FadeTarget:
-	if get_local_mouse_position().y >= TrackLogic.tracks.size() * Timeline.track_total_size:
+func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeline.FadeTarget:
+	if mouse_pos.y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
-	var track: int = get_track_from_mouse()
+	var track: int = get_track_from_mouse(mouse_pos)
 	if TrackLogic.tracks[track].is_locked:
 		return null
 
 	var zoom: float = Timeline.zoom
-	var mouse_pos: Vector2 = get_local_mouse_position()
 	var handle_size: float = 3.5 # FADE_HANDLE_SIZE
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
 		if (clip.duration * zoom) < 20.0:
@@ -687,10 +686,10 @@ func _start_box_select(start_pos: Vector2, end_pos: Vector2) -> void:
 
 
 ## This function is also used to handle speeding.
-func _handle_resize_motion() -> void:
+func _handle_resize_motion(mouse_pos: Vector2) -> void:
 	var clip: ClipData = Timeline.resize_target.clip
 	var file: FileData = FileLogic.files[clip.file]
-	var current_frame: int = get_frame_from_mouse()
+	var current_frame: int = get_frame_from_mouse(mouse_pos)
 	var is_fixed_duration: bool = file.type in [EditorCore.Type.AUDIO, EditorCore.Type.VIDEO]
 	if file.path.to_lower().get_extension() == "gif":
 		is_fixed_duration = false
@@ -736,10 +735,10 @@ func _handle_resize_motion() -> void:
 	draw_clips.queue_redraw()
 
 
-func _handle_fade_motion() -> void:
+func _handle_fade_motion(mouse_pos: Vector2) -> void:
 	var zoom: float = Timeline.zoom
 	var clip: ClipData = Timeline.fade_target.clip
-	var mouse_x: float = get_local_mouse_position().x
+	var mouse_x: float = mouse_pos.x
 	var start_x: float = clip.start * zoom
 	var end_x: float = clip.end * zoom
 	var drag_frames: int = 0 ## Convert pixel drag to frame amount.
@@ -951,12 +950,12 @@ func _update_scroll(timestamp_scroll: ScrollContainer, target_scroll: int) -> vo
 	scroll.scroll_horizontal = target_scroll
 
 
-func get_frame_from_mouse() -> int:
-	return maxi(roundi(get_local_mouse_position().x / Timeline.zoom), 0)
+func get_frame_from_mouse(mouse_pos: Vector2 = get_local_mouse_position()) -> int:
+	return maxi(roundi(mouse_pos.x / Timeline.zoom), 0)
 
 
-func get_track_from_mouse() -> int:
-	return clampi(floori(get_local_mouse_position().y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
+func get_track_from_mouse(mouse_pos: Vector2 = get_local_mouse_position()) -> int:
+	return clampi(floori(mouse_pos.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
 
 
 func move_playhead(frame_nr: int) -> void:
