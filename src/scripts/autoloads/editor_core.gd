@@ -46,6 +46,10 @@ var active_tasks: Dictionary = {} ## { video instance id: task_id }
 var _scrub_frame: int = -1
 var _last_scrub_time: int = 0
 
+# Audio variables to fix audio glitching on playing after seek.
+var _last_frame_change_time: int = 0
+var _needs_final_audio_seek: bool = false
+
 
 
 func _ready() -> void:
@@ -99,6 +103,15 @@ func _process(delta: float) -> void:
 			set_frame(_scrub_frame)
 		_last_scrub_time = Time.get_ticks_msec()
 		_scrub_frame = -1
+
+	if not is_playing and _needs_final_audio_seek and Time.get_ticks_msec() - _last_frame_change_time > 300:
+		_needs_final_audio_seek = false
+		for track: int in TrackLogic.tracks.size():
+			var audio_clip: ClipData = find_audio(frame_nr, track)
+			if audio_clip:
+				var instance_index: int = _get_instance_for_clip(audio_clip)
+				audio_players[track]._last_seek_time = 0
+				audio_players[track].set_audio(audio_clip, instance_index)
 
 	if data_ready:
 		var needs_delay: bool = false
@@ -368,6 +381,10 @@ func set_frame_nr(value: int) -> void:
 	prev_frame = frame_nr
 	set_frame(frame_nr)
 
+	if not is_playing:
+		_last_frame_change_time = Time.get_ticks_msec()
+		_needs_final_audio_seek = true
+
 
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
@@ -592,7 +609,16 @@ func _apply_track_blend_mode(id: int, effects: Array[EffectVisual], clip_frame: 
 
 func set_is_playing(value: bool) -> void:
 	is_playing = value
-	if is_playing: time_elapsed = 0.0 # Reset timing on play to ensure perfect sync.
+	if is_playing:
+		time_elapsed = 0.0 # Reset timing on play to ensure perfect sync.
+		if _needs_final_audio_seek:
+			_needs_final_audio_seek = false
+			for track: int in TrackLogic.tracks.size():
+				var audio_clip: ClipData = find_audio(frame_nr, track)
+				if audio_clip:
+					var instance_index: int = _get_instance_for_clip(audio_clip)
+					audio_players[track]._last_seek_time = 0
+					audio_players[track].set_audio(audio_clip, instance_index)
 
 	for player: AudioPlayer in audio_players:
 		player.play(value)
