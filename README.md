@@ -31,19 +31,9 @@ The top left displays your media pool, listing your files by typne and alphabeti
 On the bottom you have your timeline with on the right your audio meter to check if your audio is clipping or not.
 
 ## Installation
-Due to GoZen still being in alpha, there is no available build yet through each distro's package manager (an AUR build is coming). The best way to download the most recent version is through following links:
-- [Releases](https://codeberg.org/gozen/gozen/releases);
-- [Itch.io page](https://voylin.itch.io/gozen);
-- [GoZen AUR](https://aur.archlinux.org/packages/gozen);
-- [GoZen-git AUR](https://aur.archlinux.org/packages/gozen-git); (This is the most up to-date, but most likely to break)
+Due to GoZen still being in alpha, there is no available build yet through each distro's package manager. The best way to download the most recent version is through the [Itch.io page](https://voylin.itch.io/gozen);.
 
-At this moment there are three builds:
-- Linux: This version works on more up-to-date distro's;
-- AppImage: This works on all distro's;
-- AUR: For Arch Linux users, there is a normal version and a git version available;
-- Windows: ...;
-
-### For developers (building from source)
+### Building from source
 Before you start building from source you'll need to ensure you have following dependencies installed on your system (names can vary depending on the distro you're using):
 - **Compiler:** `gcc`/`clang` and `g++`/`clang++`;
 - **Build tools:** `CMake`, `Ninja`, `NASM`, `SCons`, and `Python` (version 3.10+);
