@@ -84,6 +84,9 @@ var groups_y: int
 
 
 func _init_start(p_resolution: Vector2i) -> void:
+	if initialized and resolution != p_resolution:
+		cleanup()
+
 	if not fade_in_buffer.is_valid():
 		var fade_buffer_data: PackedByteArray = PackedByteArray()
 		var err: int = fade_buffer_data.resize(16)
@@ -92,9 +95,6 @@ func _init_start(p_resolution: Vector2i) -> void:
 
 		fade_in_buffer = device.uniform_buffer_create(16, fade_buffer_data)
 		fade_out_buffer = device.uniform_buffer_create(16, fade_buffer_data)
-
-	if initialized and resolution != p_resolution:
-		cleanup()
 
 	if not default_sampler.is_valid():
 		var sampler_state: RDSamplerState = RDSamplerState.new()
@@ -322,6 +322,7 @@ func cleanup() -> void:
 
 	if display_texture:
 		display_texture.texture_rd_rid = RID()
+	initialized = false
 
 
 func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) -> void:

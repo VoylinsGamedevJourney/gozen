@@ -368,9 +368,65 @@ func get_project_base_folder() -> String: return data.project_path.get_base_dir(
 
 
 func set_resolution(resolution: Vector2i) -> void:
+	var old_resolution: Vector2i = data.resolution
 	resolution.x += resolution.x % 2
 	resolution.y += resolution.y % 2
+
+	if old_resolution == resolution: return
+
+	var ratio: Vector2 = Vector2(resolution) / Vector2(old_resolution)
 	data.resolution = resolution
+
+	# Made this build in as it only needs to happen here. Not clean, I know, but
+	# don't care for now. XD
+	var _update_effect: Callable = func(effect: Effect, new_ratio: Vector2) -> void:
+		var scale_params: Array[String] = []
+		if effect.id == "transform":
+			scale_params = ["pivot", "position"]
+		elif effect.id == "rounded_corners":
+			scale_params = ["width", "height", "center_x", "center_y"]
+		elif effect.id == "vignette":
+			scale_params = ["center"]
+
+		if scale_params.is_empty(): return
+
+		for param_id: String in scale_params:
+			if effect.keyframes.has(param_id):
+				var frames: Dictionary = effect.keyframes[param_id]
+				for frame: int in frames.keys():
+					var value: Variant = frames[frame]
+					if typeof(value) == TYPE_VECTOR2I or typeof(value) == TYPE_VECTOR2:
+						frames[frame] = Vector2i(value as Vector2 * new_ratio)
+					elif typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT:
+						if param_id.ends_with("y") or param_id == "height":
+							frames[frame] = value as float * new_ratio.y
+						else:
+							frames[frame] = value as float * new_ratio.x
+
+			for param: EffectParam in effect.params:
+				if param.id == param_id:
+					var value: Variant = param.default_value
+					if typeof(value) == TYPE_VECTOR2I or typeof(value) == TYPE_VECTOR2:
+						param.default_value = Vector2i(value as Vector2 * ratio)
+					elif typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT:
+						if param_id.ends_with("y") or param_id == "height":
+							param.default_value = value as float * ratio.y
+						else:
+							param.default_value = value as float * ratio.x
+
+		effect._cache_dirty = true
+
+	if is_loaded:
+		for file: FileData in FileLogic.files.values():
+			if file.temp_file and file.temp_file.text_effect:
+				_update_effect.call(file.temp_file.text_effect, ratio)
+
+		for clip: ClipData in ClipLogic.clips.values():
+			for effect: EffectVisual in clip.effects.video:
+				_update_effect.call(effect, ratio)
+
+		EffectsHandler.effect_values_updated.emit()
+
 	unsaved_changes = true
 	resolution_changed.emit()
 

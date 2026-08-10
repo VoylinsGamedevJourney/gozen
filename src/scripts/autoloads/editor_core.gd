@@ -152,6 +152,9 @@ func _on_resolution_changed() -> void:
 
 	set_frame(frame_nr)
 
+	if not is_playing:
+		var _err: int = get_tree().create_timer(0.1).timeout.connect(func() -> void: set_frame(frame_nr))
+
 
 func _rebuild_structure() -> void:
 	var track_size: int = TrackLogic.tracks.size()

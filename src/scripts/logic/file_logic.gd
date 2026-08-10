@@ -46,6 +46,7 @@ func _ready() -> void:
 	Project.get_window().files_dropped.connect(dropped)
 	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
 	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
+	Project.resolution_changed.connect(_on_project_resolution_changed)
 	@warning_ignore_restore("return_value_discarded")
 
 
@@ -53,6 +54,13 @@ func _ready() -> void:
 func _startup_loading() -> void:
 	for file: FileData in files.values():
 		load_data(file)
+
+
+func _on_project_resolution_changed() -> void:
+	for file: FileData in files.values():
+		if file.type in [EditorCore.Type.IMAGE, EditorCore.Type.COLOR]:
+			load_data(file)
+			reloaded.emit(file)
 
 
 # --- Handling ---
@@ -408,6 +416,10 @@ func load_data(file: FileData) -> void:
 				temp_file.text_effect.set_default_keyframe()
 			file_data[file.id] = temp_file
 		elif file.path.begins_with("temp://image"):
+			var image: Image = temp_file.image_data.get_image()
+			if image.get_size() != Project.data.resolution:
+				_scale_image_to_fit(image, Project.data.resolution)
+				temp_file.image_data = ImageTexture.create_from_image(image)
 			file_data[file.id] = temp_file.image_data
 		elif file.path.begins_with("temp://color"):
 			temp_file.load_image_from_color()
