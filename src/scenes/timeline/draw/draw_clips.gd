@@ -126,11 +126,17 @@ func _draw() -> void:
 					11, # Font size
 					CLIP_TEXT_COLOR)
 
-	# - Draw locked overlay
+	# - Draw track state overlays (locked, muted, invisible)
 	for i: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[i].is_locked:
-			var y_pos: float = Timeline.track_total_size * i
-			draw_rect(Rect2(scroll_amount, y_pos, scroll_container.size.x, Timeline.track_total_size), Color(0.5, 0.5, 0.5, 0.8))
+		var track: TrackData = TrackLogic.tracks[i]
+		var y_pos: float = Timeline.track_total_size * i
+		var track_rect: Rect2 = Rect2(scroll_amount, y_pos, scroll_container.size.x, Timeline.track_total_size)
+
+		if track.is_muted or not track.is_visible:
+			draw_rect(track_rect, Color(1.0, 0.0, 0.0, 0.1))
+
+		if track.is_locked:
+			draw_rect(track_rect, Color(0.5, 0.5, 0.5, 0.8))
 
 
 func _get_visible(start: int, end: int) -> Array[ClipData]:

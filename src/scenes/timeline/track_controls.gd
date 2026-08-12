@@ -41,10 +41,16 @@ func _rebuild() -> void:
 		var panel: PanelContainer = PanelContainer.new()
 		panel.custom_minimum_size.y = track_total_size
 		var style: StyleBoxFlat = StyleBoxFlat.new()
-		style.bg_color = Color(0, 0, 0, 0)
+		var update_bg_color: Callable = func() -> void:
+			if track_data.is_muted or not track_data.is_visible:
+				style.bg_color = Color(1.0, 0.0, 0.0, 0.15)
+			else:
+				style.bg_color = Color(0, 0, 0, 0)
 		style.border_width_bottom = 1
 		style.border_color = Color.DIM_GRAY
 		panel.add_theme_stylebox_override("panel", style)
+
+		update_bg_color.call()
 
 		var vbox: VBoxContainer = VBoxContainer.new()
 		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -64,6 +70,8 @@ func _rebuild() -> void:
 		@warning_ignore("return_value_discarded")
 		button_visibility.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_visible = !toggled
+				button_visibility.modulate = Color.RED if toggled else Color.WHITE
+				update_bg_color.call()
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
 				Project.unsaved_changes = true
 				ClipLogic.updated.emit())
@@ -84,6 +92,8 @@ func _rebuild() -> void:
 		@warning_ignore("return_value_discarded")
 		button_mute.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_muted = toggled
+				button_mute.modulate = Color.RED if toggled else Color.WHITE
+				update_bg_color.call()
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
 				Project.unsaved_changes = true
 				ClipLogic.updated.emit())
