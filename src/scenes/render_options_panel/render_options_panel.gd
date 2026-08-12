@@ -15,11 +15,13 @@ const USER_PROFILES_PATH: String = "user://profiles/render/"
 @export_category("Video")
 @export var video_codec_option_button: OptionButton
 @export var video_quality_hslider: HSlider
+@export var video_quality_spin_box: SpinBox
 @export var video_gop_spin_box: SpinBox
 @export var video_bframes_spin_box: SpinBox
 @export_group("H264 options")
 @export var video_speed_label: Label
 @export var video_speed_hslider: HSlider
+@export var video_speed_spin_box: SpinBox
 
 @export_category("Audio")
 @export var audio_codec_option_button: OptionButton
@@ -52,6 +54,25 @@ func _ready() -> void:
 	Project.project_ready.connect(_on_project_ready)
 	Project.render_region_updated.connect(_on_render_region_updated)
 	RenderManager.update_encoder_status.connect(update_encoder_status)
+
+	video_quality_hslider.value_changed.connect(func(value: float) -> void:
+			video_quality_spin_box.set_value_no_signal(absf(value))
+			_on_render_settings_changed())
+	video_quality_spin_box.value_changed.connect(func(value: float) -> void:
+			video_quality_hslider.value = 0 - value
+			_on_render_settings_changed())
+	video_speed_hslider.value_changed.connect(func(value: float) -> void:
+			video_speed_spin_box.set_value_no_signal(value)
+			_on_render_settings_changed())
+	video_speed_spin_box.value_changed.connect(func(value: float) -> void:
+			video_speed_hslider.value = value
+			_on_render_settings_changed())
+
+	video_gop_spin_box.value_changed.connect(_on_render_settings_changed.unbind(1))
+	video_bframes_spin_box.value_changed.connect(_on_render_settings_changed.unbind(1))
+	video_codec_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
+	audio_codec_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
+	audio_channels_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 	@warning_ignore_restore("return_value_discarded")
 
 	button_save_render_profile.visible = false
@@ -189,17 +210,19 @@ func load_profile(profile: RenderProfile) -> void:
 			_on_video_codec_option_button_item_selected(index)
 			break
 
-	video_quality_hslider.value = -profile.crf
+	video_quality_hslider.value = 0 - profile.crf
+	video_quality_spin_box.set_value_no_signal(profile.crf)
 	video_gop_spin_box.value = profile.gop
 	video_bframes_spin_box.value = profile.b_frames
 
 	if profile.video_codec == Encoder.VideoCodec.V_H264:
 		video_speed_label.visible = true
-		video_speed_hslider.visible = true
+		(video_speed_hslider.get_parent() as HBoxContainer).visible = true
 		video_speed_hslider.value = profile.h264_preset
+		video_speed_spin_box.set_value_no_signal(profile.h264_preset)
 	else:
 		video_speed_label.visible = false
-		video_speed_hslider.visible = false
+		(video_speed_hslider.get_parent() as HBoxContainer).visible = false
 
 	for index: int in audio_codec_option_button.item_count:
 		if audio_codec_option_button.get_item_id(index) == profile.audio_codec:
@@ -248,7 +271,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 
 	# Hide speed if not H264.
 	video_speed_label.visible = is_h264
-	video_speed_hslider.visible = is_h264
+	(video_speed_hslider.get_parent() as HBoxContainer).visible = is_h264
 
 	# Changing the extension in path line edit.
 	path_line_edit.text = path.trim_suffix("." + path.get_extension()) + extension
@@ -297,8 +320,6 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	if audio_codec_option_button.get_selected_id() not in allowed:
 		var audio_codec_index: int = audio_codec_option_button.get_item_index(allowed[0])
 		audio_codec_option_button.select(audio_codec_index)
-
-	button_save_render_profile.visible = true
 
 
 func _render_finished() -> void:
@@ -394,7 +415,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	Print.info("Resolution", render_resolution)
 	Print.info("Framerate", Project.data.framerate)
 	Print.info("Video codec", video_codec_id)
-	Print.info("CRF", int(0 - video_quality_hslider.value))
+	Print.info("CRF", int(video_quality_spin_box.value))
 	Print.info("GOP", int(video_gop_spin_box.value))
 	Print.info("B-frames", int(video_bframes_spin_box.value))
 	if video_codec_option_button.get_selected_id() == Encoder.VideoCodec.V_H264:
@@ -446,7 +467,7 @@ func _start_render_process(export_path: String, video_codec_id: int, audio_codec
 	RenderManager.encoder.set_framerate(Project.data.framerate)
 	RenderManager.encoder.set_file_path(export_path)
 	RenderManager.encoder.set_video_codec_id(video_codec_id)
-	RenderManager.encoder.set_crf(int(0 - video_quality_hslider.value))
+	RenderManager.encoder.set_crf(int(video_quality_spin_box.value))
 	RenderManager.encoder.set_h264_preset(int(video_speed_hslider.value))
 	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
 	RenderManager.encoder.set_b_frames(int(video_bframes_spin_box.value))
@@ -524,7 +545,7 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VideoCodec
 	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec
 	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as RenderProfile.AudioChannels
-	new_profile.crf = abs(video_quality_hslider.value)
+	new_profile.crf = int(video_quality_spin_box.value)
 	new_profile.gop = int(video_gop_spin_box.value)
 	new_profile.b_frames = int(video_bframes_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
