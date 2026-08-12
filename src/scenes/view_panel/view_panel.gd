@@ -11,6 +11,8 @@ extends PanelContainer
 @export var frame_label: Label
 @export var time_label: Label
 
+@export var prefetch_waiting_screen: ColorRect
+
 
 
 func _ready() -> void:
@@ -20,12 +22,15 @@ func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	frame_label.gui_input.connect(_on_label_gui_input)
 
-	EditorCore.play_changed.connect(_on_play_changed)
 	EditorCore.visual_frame_changed.connect(_on_frame_changed)
+	EditorCore.play_changed.connect(_on_play_changed)
+	EditorCore.is_prefetching_before_play.connect(_show_prefetch_waiting_screen)
+	EditorCore.done_prefetching_before_play.connect(_hide_prefetch_waiting_screen)
 
 	Project.framerate_changed.connect(_on_frame_changed)
 	@warning_ignore_restore("return_value_discarded")
 
+	prefetch_waiting_screen.visible = false
 	_on_play_changed(EditorCore.is_playing)
 
 
@@ -114,3 +119,11 @@ func _on_playback_speed_button_pressed() -> void:
 		2.0: EditorCore.playback_speed = 1.5 if shift_pressed else 4.0
 		4.0: EditorCore.playback_speed = 2.0 if shift_pressed else 1.0
 	button_playback_speed.text = "x%s" % EditorCore.playback_speed
+
+
+func _show_prefetch_waiting_screen() -> void:
+	prefetch_waiting_screen.visible = true
+
+
+func _hide_prefetch_waiting_screen() -> void:
+	prefetch_waiting_screen.visible = false

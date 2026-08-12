@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dq0sbkf6cfqnp" path="res://scenes/view_panel/view_panel.gd" id="1_f3tql"]
 [ext_resource type="Script" uid="uid://0tlwabkx4t4m" path="res://scenes/view_panel/project_view_texture.gd" id="2_l50ca"]
+[ext_resource type="Texture2D" uid="uid://bmsw6dvi6uhg2" path="res://assets/icons/loading.svg" id="2_lodf8"]
 [ext_resource type="Texture2D" uid="uid://c6u5jisjppwl5" path="res://assets/icons/playback/skip_previous.svg" id="3_lodf8"]
 [ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="4_k374p"]
 [ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/playback/pause.svg" id="5_nh5w4"]
@@ -12,7 +13,69 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_l50ca"]
 
-[node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("project_view", "button_play", "button_pause", "button_playback_speed", "frame_label", "time_label")]
+[sub_resource type="Animation" id="Animation_k374p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("InnerLoadingTextureRect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("OuterLoadingTextureRect:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [6.2831855]
+}
+
+[sub_resource type="Animation" id="Animation_lodf8"]
+resource_name = "loading"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("InnerLoadingTextureRect:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [-6.283185307179586, 0.0, 6.283185307179586]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("OuterLoadingTextureRect:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3.0929654, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [6.2831855, -0.3961897402027126, -6.283185307179586]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_k374p"]
+_data = {
+&"RESET": SubResource("Animation_k374p"),
+&"loading": SubResource("Animation_lodf8")
+}
+
+[node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("project_view", "button_play", "button_pause", "button_playback_speed", "frame_label", "time_label", "prefetch_waiting_screen")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -26,6 +89,7 @@ button_pause = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/Pause
 button_playback_speed = NodePath("Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton")
 frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
 time_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/TimeLabel")
+prefetch_waiting_screen = NodePath("Margin/PrefetchingInProgress")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1234861630]
 layout_mode = 2
@@ -141,6 +205,52 @@ tooltip_text = "Show video safety guidelines on top of the project preview."
 texture_normal = ExtResource("7_l50ca")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="PrefetchingInProgress" type="ColorRect" parent="Margin" unique_id=546247977]
+visible = false
+layout_mode = 2
+color = Color(0.22352941, 0.22352941, 0.22352941, 0.37254903)
+
+[node name="InnerLoadingTextureRect" type="TextureRect" parent="Margin/PrefetchingInProgress" unique_id=627427849]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(30, 30)
+texture = ExtResource("2_lodf8")
+
+[node name="OuterLoadingTextureRect" type="TextureRect" parent="Margin/PrefetchingInProgress" unique_id=1495160068]
+modulate = Color(0.33849084, 0.0011021942, 0.7983597, 1)
+custom_minimum_size = Vector2(90, 90)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 6.2831855
+pivot_offset = Vector2(45, 45)
+texture = ExtResource("2_lodf8")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Margin/PrefetchingInProgress" unique_id=909825019]
+libraries/ = SubResource("AnimationLibrary_k374p")
+autoplay = &"loading"
 
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/SkipPrevButton" to="." method="_on_skip_prev_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PlayButton" to="." method="_on_play_button_pressed"]
