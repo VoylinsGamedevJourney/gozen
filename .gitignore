@@ -30,3 +30,6 @@ core/x264_src
 core/x265_src
 
 *.zip
+
+result
+result-*
