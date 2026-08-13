@@ -167,5 +167,14 @@ static func _interpolate_variant(value_a: Variant, value_b: Variant, weight: flo
 			return Vector3i((value_a as Vector3).lerp(value_b as Vector3, weight))
 		TYPE_COLOR:
 			return (value_a as Color).lerp(value_b as Color, weight)
-		_:
-			return value_a # Fallback.
+		TYPE_PACKED_VECTOR2_ARRAY:
+			var arr_a: PackedVector2Array = value_a
+			var arr_b: PackedVector2Array = value_b
+			var result: PackedVector2Array = PackedVector2Array()
+			var size: int = maxi(arr_a.size(), arr_b.size())
+			for i: int in size:
+				var pt_a: Vector2 = arr_a[i] if i < arr_a.size() else (arr_b[i] if arr_a.is_empty() else arr_a[-1])
+				var pt_b: Vector2 = arr_b[i] if i < arr_b.size() else (arr_a[i] if arr_b.is_empty() else arr_b[-1])
+				var _err: int = result.append(pt_a.lerp(pt_b, weight))
+			return result
+		_: return value_a # Fallback.
