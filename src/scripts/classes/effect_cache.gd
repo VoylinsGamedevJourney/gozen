@@ -73,6 +73,20 @@ func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i, 
 				stream.put_float(value.g as float)
 				stream.put_float(value.b as float)
 				stream.put_float(value.a as float)
+			TYPE_PACKED_VECTOR2_ARRAY: # Mainly used for roto-scoping effect right now.
+				_pad_stream(stream, 16)
+				var array_size: int = (value as Array[Vector2]).size()
+				stream.put_32(array_size) # point_count parameter.
+				_pad_stream(stream, 16) # Pad to next 16 for the array layout.
+				for i: int in 64: # Max 64 points.
+					if i < array_size:
+						stream.put_float(value[i].x as float)
+						stream.put_float(value[i].y as float)
+					else:
+						stream.put_float(0.0)
+						stream.put_float(0.0)
+					stream.put_float(0.0) # Padding for vec4.
+					stream.put_float(0.0) # Padding for vec4.
 			_: printerr("EffectCache: Unsupported type! %s-%s" % [value, typeof(value)])
 
 	_pad_stream(stream, 4)
