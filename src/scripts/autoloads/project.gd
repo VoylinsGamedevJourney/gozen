@@ -292,7 +292,7 @@ func _auto_save() -> void:
 
 	if Settings.get_auto_save():
 		if is_loaded and !RenderManager.is_encoding and !data.project_path.is_empty():
-			save(true)
+			save.call_deferred(true)
 		auto_save_timer.start(5 * 60) # Default time is every 5 minutes.
 	else:
 		auto_save_timer.stop()

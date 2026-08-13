@@ -30,6 +30,7 @@ var current_file: FileData = null
 
 var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
+var _drag_overlays: Array[Control] = []
 
 var clip_mute_button: CheckButton # Only for section_audio.
 
@@ -91,6 +92,9 @@ func _input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_DRAG_END:
+		for overlay: Control in _drag_overlays:
+			if is_instance_valid(overlay):
+				overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		drop_indicator_pos = -1
 		if drop_indicator_vbox:
 			drop_indicator_vbox.queue_redraw()
@@ -98,6 +102,10 @@ func _notification(what: int) -> void:
 
 
 func _get_drag_data_effect(_pos: Vector2, effect: Effect, is_visual: bool) -> Variant:
+	for overlay: Control in _drag_overlays:
+		if is_instance_valid(overlay):
+			overlay.mouse_filter = Control.MOUSE_FILTER_PASS
+
 	var index: int = _get_effect_index(effect, is_visual)
 	var drag_data: DragData = DragData.new()
 	var preview: Label = Label.new()
@@ -192,11 +200,11 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 
 		var added_effect: FoldableContainer = _create_effect_ui(effect, is_visual)
 		if is_visual:
-			section_visuals.get_child(0).add_child(added_effect)
-			section_visuals.get_child(0).move_child(added_effect, index)
+			section_visuals.get_child(0).get_child(0).add_child(added_effect)
+			section_visuals.get_child(0).get_child(0).move_child(added_effect, index)
 		else:
-			section_audio.get_child(0).add_child(added_effect)
-			section_audio.get_child(0).move_child(added_effect, index)
+			section_audio.get_child(0).get_child(0).add_child(added_effect)
+			section_audio.get_child(0).get_child(0).move_child(added_effect, index)
 
 		await get_tree().process_frame
 		if is_instance_valid(added_effect):
@@ -207,22 +215,22 @@ func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
 		var removed_effect: Control
 		if is_visual:
-			removed_effect = section_visuals.get_child(0).get_child(index)
-			section_visuals.get_child(0).remove_child(removed_effect)
+			removed_effect = section_visuals.get_child(0).get_child(0).get_child(index)
+			section_visuals.get_child(0).get_child(0).remove_child(removed_effect)
 		else:
-			removed_effect = section_audio.get_child(0).get_child(index)
-			section_audio.get_child(0).remove_child(removed_effect)
+			removed_effect = section_audio.get_child(0).get_child(0).get_child(index)
+			section_audio.get_child(0).get_child(0).remove_child(removed_effect)
 		removed_effect.queue_free()
 
 
 func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
 		if is_visual:
-			var moved_effect: Control = section_visuals.get_child(0).get_child(old_index)
-			section_visuals.get_child(0).move_child(moved_effect, new_index)
+			var moved_effect: Control = section_visuals.get_child(0).get_child(0).get_child(old_index)
+			section_visuals.get_child(0).get_child(0).move_child(moved_effect, new_index)
 		else:
-			var moved_effect: Control = section_audio.get_child(0).get_child(old_index)
-			section_audio.get_child(0).move_child(moved_effect, new_index)
+			var moved_effect: Control = section_audio.get_child(0).get_child(0).get_child(old_index)
+			section_audio.get_child(0).get_child(0).move_child(moved_effect, new_index)
 
 
 func _create_transitions_ui(parent: Control) -> void:
@@ -378,23 +386,43 @@ func _create_transition_param_ui(transition: EffectVisual, param: EffectParam, i
 
 func _load_effects() -> void:
 	# Clean UI.
+	_drag_overlays.clear()
 	if section_text.get_child_count() != 0:
 		for child: Control in section_text.get_children():
 			section_text.remove_child(child)
 			child.queue_free()
 	if section_visuals.get_child_count() != 0:
-		var vbox: VBoxContainer = section_visuals.get_child(0)
-		section_visuals.remove_child(vbox)
-		vbox.queue_free()
+		var container: Container = section_visuals.get_child(0)
+		section_visuals.remove_child(container)
+		container.queue_free()
 	if section_audio.get_child_count() != 0:
-		var vbox: VBoxContainer = section_audio.get_child(0)
-		section_audio.remove_child(vbox)
-		vbox.queue_free()
+		var container: Container = section_audio.get_child(0)
+		section_audio.remove_child(container)
+		container.queue_free()
 
+	var margin_visuals: MarginContainer = MarginContainer.new()
 	var vbox_visuals: VBoxContainer = VBoxContainer.new()
+	var overlay_visuals: Control = Control.new()
+	overlay_visuals.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay_visuals.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	overlay_visuals.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_drag_overlays.append(overlay_visuals)
+
+	margin_visuals.add_child(vbox_visuals)
+	margin_visuals.add_child(overlay_visuals)
+	section_visuals.add_child(margin_visuals)
+
+	var margin_audio: MarginContainer = MarginContainer.new()
 	var vbox_audio: VBoxContainer = VBoxContainer.new()
-	section_visuals.add_child(vbox_visuals)
-	section_audio.add_child(vbox_audio)
+	var overlay_audio: Control = Control.new()
+	overlay_audio.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay_audio.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	overlay_audio.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_drag_overlays.append(overlay_audio)
+
+	margin_audio.add_child(vbox_audio)
+	margin_audio.add_child(overlay_audio)
+	section_audio.add_child(margin_audio)
 
 	if section_transitions.get_child_count() != 0:
 		var vbox: VBoxContainer = section_transitions.get_child(0)
@@ -403,8 +431,8 @@ func _load_effects() -> void:
 	var vbox_transitions: VBoxContainer = VBoxContainer.new()
 	section_transitions.add_child(vbox_transitions)
 
-	vbox_visuals.set_drag_forwarding(Callable(), _can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
-	vbox_audio.set_drag_forwarding(Callable(), _can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
+	overlay_visuals.set_drag_forwarding(Callable(), _can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
+	overlay_audio.set_drag_forwarding(Callable(), _can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
 
 	@warning_ignore_start("return_value_discarded")
 	vbox_visuals.draw.connect(_draw_drop_indicator.bind(vbox_visuals))
@@ -955,7 +983,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 		section = section_visuals
 	else:
 		section = section_audio
-	var effect_container: FoldableContainer = section.get_child(0).get_child(index)
+	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index)
 	var content_vbox: VBoxContainer = effect_container.get_child(0)
 	if !effect.is_enabled:
 		effect_container.folded = true
@@ -1048,7 +1076,7 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.switch_enabled(current_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
-	var effect_container: FoldableContainer = section.get_child(0).get_child(index)
+	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index)
 	var visible_button: TextureButton = effect_container.find_child("VisibleButton", true, false)
 	var is_enabled: bool
 

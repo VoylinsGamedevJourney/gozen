@@ -22,6 +22,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <mutex>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 
@@ -30,11 +31,6 @@ using namespace godot;
 struct Keyframe {
 	int64_t pts;
 	int64_t file_pos;
-};
-
-struct CachedFrame {
-	int frame_nr;
-	AVFrame* frame;
 };
 
 class Video : public Resource {
@@ -90,7 +86,8 @@ class Video : public Resource {
 	int smart_seek_threshold = 100;
 
 	// Caching - Increases ram usage, but provides smoother backwards seeking.
-	std::deque<CachedFrame> frame_cache;
+	std::unordered_map<int, AVFrame*> frame_cache_map;
+	std::deque<int> frame_cache_queue;
 	int max_cache_size = 100;
 
 	std::vector<Keyframe> keyframes;

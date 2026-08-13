@@ -9,6 +9,8 @@ static var last_type: int = 0 ## We want to save the last used type.
 @export var time_label: Label
 @export var delete_button: TextureButton
 
+var current_frame_nr: int = 0
+
 
 
 func _ready() -> void:
@@ -17,8 +19,9 @@ func _ready() -> void:
 	_setup_type_option_button()
 	accept_event()
 
+	current_frame_nr = EditorCore.frame_nr
 	# Check if marker present, if yes, we edit.
-	var marker: MarkerData = MarkerLogic.get_marker(EditorCore.frame_nr)
+	var marker: MarkerData = MarkerLogic.get_marker(current_frame_nr)
 	if marker:
 		marker_line_edit.text = marker.text
 		last_type = marker.type
@@ -29,8 +32,8 @@ func _ready() -> void:
 	marker_line_edit.select_all()
 	type_option_button.selected = last_type
 	time_label.text = "%s (Frame: %d)" % [
-			Utils.format_time_str_from_frame(EditorCore.frame_nr, Project.data.framerate, false),
-			EditorCore.frame_nr]
+			Utils.format_time_str_from_frame(current_frame_nr, Project.data.framerate, false),
+			current_frame_nr]
 
 	delete_button.visible = !(not marker)
 
@@ -54,15 +57,15 @@ func _setup_type_option_button() -> void:
 
 func _on_create_marker_pressed() -> void:
 	var text: String = marker_line_edit.text.strip_edges()
-	var marker: MarkerData = MarkerLogic.get_marker(EditorCore.frame_nr)
+	var marker: MarkerData = MarkerLogic.get_marker(current_frame_nr)
 
 	if marker:
 		if text.is_empty(): # Delete if empty.
-			MarkerLogic.remove(EditorCore.frame_nr)
+			MarkerLogic.remove(current_frame_nr)
 		else:
-			MarkerLogic.update(EditorCore.frame_nr, text, last_type, marker)
+			MarkerLogic.update(current_frame_nr, text, last_type, marker)
 	else:
-		MarkerLogic.add(EditorCore.frame_nr, text, last_type)
+		MarkerLogic.add(current_frame_nr, text, last_type)
 	PopupManager.close(PopupManager.MARKER)
 
 
@@ -75,5 +78,5 @@ func _on_cancel_button_pressed() -> void:
 
 
 func _on_delete_marker_button_pressed() -> void:
-	MarkerLogic.remove(EditorCore.frame_nr)
+	MarkerLogic.remove(current_frame_nr)
 	PopupManager.close(PopupManager.MARKER)

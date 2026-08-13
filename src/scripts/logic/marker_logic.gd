@@ -45,8 +45,8 @@ func _add(frame_nr: int, text: String, type: int) -> void:
 
 
 func update(frame_nr: int, text: String, type: int, marker: MarkerData = null) -> void:
-	if marker == null:
-		marker = get_marker(frame_nr)
+	if marker == null: marker = get_marker(frame_nr)
+	if marker == null: return # To avoid crashing if something went wrong.
 
 	InputManager.undo_redo.create_action("Update marker")
 	InputManager.undo_redo.add_do_method(_update.bind(frame_nr, text, type, marker))

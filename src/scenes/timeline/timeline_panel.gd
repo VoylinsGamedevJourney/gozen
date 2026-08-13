@@ -236,7 +236,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(pressed_clip)
 
 			if !event.shift_pressed:
-				ClipLogic.selected_clips = [pressed_clip]
+				ClipLogic.selected_clips = clips_to_select
 			else:
 				for clip: ClipData in clips_to_select:
 					if clip in ClipLogic.selected_clips: continue

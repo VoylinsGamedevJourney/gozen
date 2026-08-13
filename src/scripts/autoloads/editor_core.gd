@@ -3,6 +3,8 @@ extends Node
 signal frame_changed
 signal visual_frame_changed
 signal play_changed(value: bool)
+signal is_prefetching_before_play
+signal done_prefetching_before_play
 
 
 ## File/Clip types.
@@ -611,6 +613,23 @@ func _apply_track_blend_mode(id: int, effects: Array[EffectVisual], clip_frame: 
 # --- Setters ---
 
 func set_is_playing(value: bool) -> void:
+	if value:
+		_prefetch_upcoming_clips()
+		if active_tasks.size() != 0:
+			is_prefetching_before_play.emit()
+			await RenderingServer.frame_pre_draw
+
+			var completed: Array[int] = []
+			for video_id: int in active_tasks:
+				var task_id: int = active_tasks[video_id]
+				if WorkerThreadPool.wait_for_task_completion(task_id):
+					printerr("EditorCore: Something went wrong waiting for task completion!")
+				completed.append(video_id)
+			for video_id: int in completed:
+				if !active_tasks.erase(video_id):
+					printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
+			done_prefetching_before_play.emit()
+
 	is_playing = value
 	if is_playing:
 		time_elapsed = 0.0 # Reset timing on play to ensure perfect sync.
@@ -662,12 +681,11 @@ func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> vo
 
 	# If a prefetch task is currently running on this video instance,
 	# we MUST wait for it to finish to prevent multi-threading crashes in C++.
-	if EditorCore.active_tasks.has(video_id):
-		var task_id: int = EditorCore.active_tasks[video_id]
-
+	if active_tasks.has(video_id):
+		var task_id: int = active_tasks[video_id]
 		if WorkerThreadPool.wait_for_task_completion(task_id):
 			printerr("EditorCore: Something went wrong waiting for task completion!")
-		if !EditorCore.active_tasks.erase(video_id):
+		if !active_tasks.erase(video_id):
 			printerr("EditorCore: Couldn't erase '%s' from active_tasks!" % video_id)
 
 	if video.get_current_frame() != target_frame_nr and !video.seek_frame(target_frame_nr):
