@@ -875,16 +875,15 @@ int Video::_seek_frame(int frame_nr) {
 	return av_seek_frame(av_format_ctx.get(), av_stream->index, target_timestamp, AVSEEK_FLAG_BACKWARD);
 }
 
+
 void Video::_add_to_cache(int frame_nr) {
 	if (max_cache_size <= 0) {
 		return;
 	}
 
 	// Check if cached already.
-	for (const CachedFrame& cache : frame_cache) {
-		if (cache.frame_nr == frame_nr) {
-			return;
-		}
+	if (frame_cache_map.find(frame_nr) != frame_cache_map.end()) {
+		return;
 	}
 
 	// Create a new ref-counted frame.
@@ -892,49 +891,56 @@ void Video::_add_to_cache(int frame_nr) {
 	if (!new_frame) {
 		return;
 	} else if (av_frame_ref(new_frame, av_frame.get()) < 0) {
-		return av_frame_free(&new_frame);
+		av_frame_free(&new_frame);
+		return;
 	}
 
-	frame_cache.push_back({frame_nr, new_frame});
+	frame_cache_map[frame_nr] = new_frame;
+	frame_cache_queue.push_back(frame_nr);
 
-	// Checking/Fixing max size
-	while (frame_cache.size() > max_cache_size) {
-		CachedFrame& old = frame_cache.front();
-		av_frame_free(&old.frame);
-		frame_cache.pop_front();
+	// Checking/Fixing max size.
+	while (frame_cache_queue.size() > max_cache_size) {
+		int oldest_frame_nr = frame_cache_queue.front();
+		frame_cache_queue.pop_front();
+
+		auto it = frame_cache_map.find(oldest_frame_nr);
+		if (it != frame_cache_map.end()) {
+			av_frame_free(&it->second);
+			frame_cache_map.erase(it);
+		}
 	}
 }
 
+
 bool Video::_load_from_cache(int frame_nr) {
-	for (const CachedFrame& cache : frame_cache) {
-		if (cache.frame_nr != frame_nr) {
-			continue;
-		}
-
-		av_frame_unref(av_frame.get());
-		if (av_frame_ref(av_frame.get(), cache.frame) < 0) {
-			return false;
-		}
-
-		// Updating PTS.
-		current_frame = frame_nr;
-		if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE) {
-			current_pts = av_frame->pts;
-		} else {
-			current_pts = av_frame->best_effort_timestamp;
-		}
-		_copy_frame_data();
-		return true;
+	auto it = frame_cache_map.find(frame_nr);
+	if (it == frame_cache_map.end()) {
+		return false;
 	}
-	return false;
+
+	av_frame_unref(av_frame.get());
+	if (av_frame_ref(av_frame.get(), it->second) < 0) {
+		return false;
+	}
+
+	// Updating PTS.
+	current_frame = frame_nr;
+	if (av_frame->best_effort_timestamp == AV_NOPTS_VALUE) {
+		current_pts = av_frame->pts;
+	} else {
+		current_pts = av_frame->best_effort_timestamp;
+	}
+	_copy_frame_data();
+	return true;
 }
 
 
 void Video::_clear_cache() {
-	for (CachedFrame& cache : frame_cache)
-		av_frame_free(&cache.frame);
-
-	frame_cache.clear();
+	for (auto& pair : frame_cache_map) {
+		av_frame_free(&pair.second);
+	}
+	frame_cache_map.clear();
+	frame_cache_queue.clear();
 }
 
 
