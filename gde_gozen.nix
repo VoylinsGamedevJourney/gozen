@@ -4,6 +4,8 @@
 
   version,
 
+  target ? "release",
+
   scons,
   python3,
   autoPatchelfHook,
@@ -44,7 +46,7 @@ stdenv.mkDerivation {
       -j$NIX_BUILD_CORES \
       platform=linux \
       arch=x86_64 \
-      target=template_release \
+      target=template_${target} \
       use_system=yes
 
     runHook postBuild
