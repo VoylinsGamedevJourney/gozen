@@ -28,7 +28,7 @@ func _input(event: InputEvent) -> void:
 		return get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("save_project", false, true):
-		Project.save()
+		Project.save.call_deferred()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("save_project_as", false, true):
 		Project.save_as()
