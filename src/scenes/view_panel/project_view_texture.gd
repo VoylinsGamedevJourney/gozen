@@ -121,7 +121,7 @@ func _on_gui_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
-		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT:
 			var popup: PopupMenu = PopupManager.create_menu()
 
 			popup.add_item("Save screenshot ...", PopupType.SAVE_SCREENSHOT)
