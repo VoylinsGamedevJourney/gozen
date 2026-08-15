@@ -686,7 +686,7 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 			return check_button
 		TYPE_INT, TYPE_FLOAT:
 			var horizontal: bool = param.id == "text_h_align"
-			if horizontal or param.id == "text_v_align" or param.id == "mode":
+			if horizontal or param.id == "text_v_align" or param.id == "mode" or param.id == "font_weight":
 				var option_button: OptionButton = OptionButton.new()
 				if horizontal:
 					option_button.add_item("Left", HORIZONTAL_ALIGNMENT_LEFT)
@@ -702,6 +702,16 @@ static func create_param_control(param: EffectParam, update_call: Callable) -> C
 					option_button.add_item("Subtract", 2)
 					option_button.add_item("Multiply", 3)
 					option_button.add_item("Premultiplied Alpha", 4)
+				elif param.id == "font_weight":
+					option_button.add_item("Thin", 100)
+					option_button.add_item("Extra Light", 200)
+					option_button.add_item("Light", 300)
+					option_button.add_item("Regular", 400)
+					option_button.add_item("Medium", 500)
+					option_button.add_item("Semi Bold", 600)
+					option_button.add_item("Bold", 700)
+					option_button.add_item("Extra Bold", 800)
+					option_button.add_item("Black", 900)
 				@warning_ignore("return_value_discarded")
 				option_button.item_selected.connect(func(index: int) -> void:
 						update_call.call(option_button.get_item_id(index)))

@@ -463,8 +463,17 @@ func update_data(track: int) -> void:
 		var text_v_align: int = text_effect.get_value(text_effect.params[3], clip_frame)
 		var text_size: int = text_effect.get_value(text_effect.params[4], clip_frame)
 		var text_color: Color = text_effect.get_value(text_effect.params[5], clip_frame)
+		var text_weight: int = text_effect.get_value(text_effect.params[6], clip_frame)
+		var text_italic: bool = text_effect.get_value(text_effect.params[7], clip_frame)
 
-		var font: Font = Settings.get_system_font(text_font) if text_font != "" else ThemeDB.fallback_font
+		var font: Font
+		if text_font != "":
+			var sys_font: SystemFont = Settings.get_system_font(text_font)
+			sys_font.font_weight = text_weight
+			sys_font.font_italic = text_italic
+			font = sys_font
+		else:
+			font = ThemeDB.fallback_font
 
 		var text_viewport: SubViewport = track_viewports[track]
 		var text_label: Label = text_viewport.get_child(0) as Label
