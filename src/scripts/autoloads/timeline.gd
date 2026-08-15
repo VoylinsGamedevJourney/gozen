@@ -219,6 +219,14 @@ func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:
 	return true
 
 
+func focus_on_playhead() -> void:
+	var scroll_container: ScrollContainer = get_tree().root.find_child("TimelineScroll", true, false)
+	if scroll_container:
+		var playhead_x: float = EditorCore.frame_nr * zoom
+		var new_scroll: float = playhead_x - (scroll_container.size.x / 2.0)
+		scroll_x = maxi(0, int(new_scroll))
+
+
 
 class ResizeTarget:
 	var clip: ClipData
