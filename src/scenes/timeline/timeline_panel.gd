@@ -282,6 +282,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 
 func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
+	Timeline.mouse_track = get_track_from_mouse(event.position)
+	Timeline.mouse_frame = get_frame_from_mouse(event.position)
+
 	if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
 		scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
 
@@ -521,12 +524,14 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 
 
 func _on_mouse_entered() -> void:
+	Timeline.is_mouse_over = true
 	if !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_on_ui_cancel()
 	draw_all()
 
 
 func _on_mouse_exited() -> void:
+	Timeline.is_mouse_over = false
 	Timeline.hovered_clip = null
 	await RenderingServer.frame_pre_draw
 	draw_all()

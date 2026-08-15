@@ -35,6 +35,10 @@ var box_select_end: Vector2
 var snap_enabled: bool = true
 var group_enabled: bool = true
 
+var is_mouse_over: bool = false
+var mouse_track: int = 0
+var mouse_frame: int = 0
+
 
 
 func _ready() -> void:

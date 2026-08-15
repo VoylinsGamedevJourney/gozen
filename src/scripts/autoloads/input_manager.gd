@@ -122,7 +122,10 @@ func clipboard_paste() -> void:
 	if DisplayServer.clipboard_has_image():
 		var image: Image = DisplayServer.clipboard_get_image()
 		if image != null and not image.is_empty():
-			FileLogic.paste_image(image)
+			var file: FileData = FileLogic.paste_image(image)
+			if Timeline.is_mouse_over and file:
+				var request: ClipLogic.Request = ClipLogic.Request.add_request(file, Timeline.mouse_track, Timeline.mouse_frame)
+				ClipLogic.add([request])
 			return
 
 	# Check for file paths.

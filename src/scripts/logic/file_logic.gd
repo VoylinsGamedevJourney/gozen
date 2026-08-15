@@ -205,7 +205,7 @@ func _change_nickname(file: FileData, new_name: String) -> void:
 
 
 ## Pasting from clipboard (through InputManager).
-func paste_image(image: Image) -> void:
+func paste_image(image: Image) -> FileData:
 	InputManager.undo_redo.create_action("Paste Image")
 	var file: FileData = FileData.new()
 	file.id = Utils.get_unique_id(files.keys())
@@ -228,6 +228,7 @@ func paste_image(image: Image) -> void:
 	InputManager.undo_redo.add_do_method(_restore.bind(file))
 	InputManager.undo_redo.add_undo_method(_delete.bind(file))
 	InputManager.undo_redo.commit_action()
+	return file
 
 
 func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) -> void:

@@ -182,7 +182,8 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 			create_check_button(
 					Settings.get_use_native_dialog(),
 					default_settings.use_native_dialog,
-					Settings.set_use_native_dialog),
+					Settings.set_use_native_dialog,
+					tr("Native dialogs use your operating system's file browser and windows. Disabling this uses GoZen's built-in dialogs instead.")),
 			create_label(tr("Panel tabs position")),
 			create_option_button(
 					Settings.get_panel_tabs_positions(),
