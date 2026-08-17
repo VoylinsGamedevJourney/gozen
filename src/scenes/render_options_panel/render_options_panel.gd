@@ -79,14 +79,18 @@ func _ready() -> void:
 	_setup_codec_option_buttons()
 	_add_default_profiles()
 
-	# Adding custom render profiles.
 	option_button_render_profiles.add_separator("Custom render profiles")
 	if DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
 		# Dir existed so there might be profiles inside. We go over the files
 		# alphabetically and check if they are valid RenderProfile classes.
 		for file_name: String in DirAccess.get_files_at(USER_PROFILES_PATH):
+			file_name = file_name.trim_suffix(".remap")
+			if !file_name.ends_with(".tres") and !file_name.ends_with(".res"): continue
+
 			var path: String = USER_PROFILES_PATH + file_name
-			add_profile(load(path) as RenderProfile, path)
+			var profile: RenderProfile = load(path)
+			if profile:
+				add_profile(profile, path)
 	elif DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
 		# Else we create the directory in case we need to save a profile to it.
 		printerr("RenderScreen: Couldn't create folder at %s!" % USER_PROFILES_PATH)

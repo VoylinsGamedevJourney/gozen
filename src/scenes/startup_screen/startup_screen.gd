@@ -48,7 +48,7 @@ var startup_images_data: Array[PackedStringArray] = [ ## [ Image UID, unsplash i
 ]
 
 var loaded_preset_profiles: Array[ProjectProfile] = [] ## New project profiles.
-var default_profiles_count: int = DirAccess.get_files_at(DEFAULT_PROFILES_PATH).size()
+var default_profiles_count: int = 0
 
 
 
@@ -179,9 +179,16 @@ func _set_new_project_defaults() -> void:
 	# Setting the preset options.
 	var profile_files: PackedStringArray = DirAccess.get_files_at(DEFAULT_PROFILES_PATH)
 	for profile_path: String in profile_files:
+		profile_path = profile_path.trim_suffix(".remap")
+		if !profile_path.ends_with(".tres") and !profile_path.ends_with(".res"): continue
+
 		var project_profile: ProjectProfile = load(DEFAULT_PROFILES_PATH.path_join(profile_path))
+		if not project_profile: continue
+
 		project_presets_option_button.add_item(project_profile.profile_name, loaded_preset_profiles.size())
 		loaded_preset_profiles.append(project_profile)
+
+	default_profiles_count = loaded_preset_profiles.size()
 
 	project_presets_option_button.add_separator(tr("User presets"))
 
@@ -190,10 +197,14 @@ func _set_new_project_defaults() -> void:
 	else:
 		var user_profile_files: PackedStringArray = DirAccess.get_files_at(USER_PROFILES_PATH)
 		for profile_path: String in user_profile_files:
-			if profile_path.ends_with(".tres"):
-				var project_profile: ProjectProfile = load(USER_PROFILES_PATH.path_join(profile_path))
-				project_presets_option_button.add_item(project_profile.profile_name, loaded_preset_profiles.size())
-				loaded_preset_profiles.append(project_profile)
+			profile_path = profile_path.trim_suffix(".remap")
+			if !profile_path.ends_with(".tres") and !profile_path.ends_with(".res"): continue
+
+			var project_profile: ProjectProfile = load(USER_PROFILES_PATH.path_join(profile_path))
+			if not project_profile: continue
+
+			project_presets_option_button.add_item(project_profile.profile_name, loaded_preset_profiles.size())
+			loaded_preset_profiles.append(project_profile)
 
 	# Setting the normal project settings.
 	project_path_line_edit.text = Settings.get_default_project_path()
