@@ -28,7 +28,7 @@ func add(requests: Array[Request]) -> void:
 		new_clip.file = request.file.id
 		new_clip.track = request.track
 		new_clip.start = request.frame
-		new_clip.duration = FileLogic.files[request.file.id].duration
+		new_clip.duration = request.duration if request.duration > 0 else FileLogic.files[request.file.id].duration
 		new_clip.effects = _create_default_effects(new_clip.type, request.file.id)
 
 		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
@@ -665,6 +665,7 @@ class Request:
 	var frame_offset: int = 0
 	var track_offset: int = 0
 
+	var duration: int = -1
 	var resize: int
 	var is_end: bool = false
 

@@ -127,8 +127,12 @@ func clipboard_paste() -> void:
 		if image != null and not image.is_empty():
 			var file: FileData = FileLogic.paste_image(image)
 			if Timeline.is_mouse_over and file:
-				var request: ClipLogic.Request = ClipLogic.Request.add_request(file, Timeline.mouse_track, Timeline.mouse_frame)
-				ClipLogic.add([request])
+				var free_region: Vector2i = TrackLogic.get_free_region(Timeline.mouse_track, Timeline.mouse_frame)
+				var available_duration: int = free_region.y - Timeline.mouse_frame
+				if available_duration > 0:
+					var request: ClipLogic.Request = ClipLogic.Request.add_request(file, Timeline.mouse_track, Timeline.mouse_frame)
+					request.duration = mini(file.duration, available_duration)
+					ClipLogic.add([request])
 			return
 
 	# Check for file paths.
