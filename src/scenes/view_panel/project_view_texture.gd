@@ -1,7 +1,11 @@
 extends TextureRect
 
 
-enum PopupType { SAVE_SCREENSHOT, SAVE_SCREENSHOT_TO_PROJECT }
+enum PopupType {
+	SAVE_SCREENSHOT,
+	SAVE_SCREENSHOT_TO_PROJECT,
+#	COPY_SCREENSHOT # TODO: Godot doesn't have the option yet to set clipboard image
+}
 
 
 const SIZE_CROSS: int = 20
@@ -126,6 +130,7 @@ func _on_gui_input(event: InputEvent) -> void:
 
 			popup.add_item("Save screenshot ...", PopupType.SAVE_SCREENSHOT)
 			popup.add_item("Save screenshot to project ...", PopupType.SAVE_SCREENSHOT_TO_PROJECT)
+			# popup.add_item("Copy screenshot to clipboard", PopupType.COPY_SCREENSHOT) # TODO: Godot doesn't have the option yet to set clipboard image
 
 			@warning_ignore("return_value_discarded")
 			popup.id_pressed.connect(_on_popup_id_pressed)
@@ -195,6 +200,11 @@ func _on_popup_id_pressed(id: int) -> void:
 
 		add_child(file_dialog)
 		file_dialog.popup_centered()
+#	elif id == PopupType.COPY_SCREENSHOT: # TODO: Godot doesn't have the option yet to set clipboard image
+#		var image: Image = texture.get_image()
+#		if image:
+#			DisplayServer.clipboard_set_image(image)
+#			NotificationManager.info("Screenshot copied to clipboard")
 
 
 func _on_save_screenshot_to_project(path: String) -> void:
