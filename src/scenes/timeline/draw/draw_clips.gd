@@ -74,7 +74,8 @@ func _draw() -> void:
 				wave_file_id = target_file.ato_file
 				wave_offset_sec = target_file.ato_offset
 
-		var wave_dict: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
+		var wave_streams: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
+		var wave_dict: Dictionary = wave_streams.get(clip.effects.audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
 		if not wave_dict.is_empty():
 			var lod: int = 1
 			if zoom < 0.2:

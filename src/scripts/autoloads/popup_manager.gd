@@ -139,7 +139,7 @@ func create_menu(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
 	if !permanent:
 		@warning_ignore("return_value_discarded")
-		popup.mouse_exited.connect(popup.queue_free)
+		popup.popup_hide.connect(popup.queue_free)
 	popup.size = Vector2i(100,0)
 	popup.add_theme_constant_override("icon_max_width", 20)
 	return popup

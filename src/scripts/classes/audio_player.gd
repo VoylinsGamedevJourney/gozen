@@ -74,7 +74,7 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 	# Getting file_id data.
 	if !FileLogic.files.has(target_file.id):
 		return stop()
-	var stream: AudioStream = FileLogic.get_audio_stream(target_file, instance_index)
+	var stream: AudioStream = FileLogic.get_audio_stream(target_file, instance_index, audio_clip.effects.audio_stream_index)
 	if stream == null:
 		return stop() # No valid data found for stream.
 

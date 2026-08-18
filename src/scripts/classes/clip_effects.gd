@@ -16,6 +16,7 @@ var ato_offset: float = 0.0 ## Seconds.
 var ato_file: int = -1
 
 var is_muted: bool = false
+var audio_stream_index: int = -1
 
 
 
@@ -34,6 +35,7 @@ func serialize() -> Dictionary:
 	if ato_active != false: data["ato_active"] = ato_active
 	if ato_offset != 0.0:	data["ato_offset"] = ato_offset
 	if ato_file != -1:		data["ato_file"] = ato_file
+	if audio_stream_index != -1: data["audio_stream_index"] = audio_stream_index
 
 	if transition_left:  data["transition_left"] = transition_left.serialize()
 	if transition_right: data["transition_right"] = transition_right.serialize()
@@ -51,6 +53,7 @@ func deserialize(data: Dictionary, file_id: int = -1) -> void:
 	ato_offset = data.get("ato_offset", 0.0)
 	ato_file = data.get("ato_file", -1)
 	is_muted = data.get("is_muted", false)
+	audio_stream_index = data.get("audio_stream_index", -1)
 
 	video.clear()
 	audio.clear()

@@ -125,8 +125,12 @@ func _can_drop_effect(at_position: Vector2, data: Variant, is_visual: bool, vbox
 		vbox.queue_redraw()
 		return false
 
-	var drop_index: int = 0
-	for index: int in vbox.get_child_count():
+	var child_offset: int = 0
+	if not is_visual and current_file and current_file.audio_streams.size() > 1:
+		child_offset = 2
+
+	var drop_index: int = child_offset
+	for index: int in range(child_offset, vbox.get_child_count()):
 		var child: Control = vbox.get_child(index)
 		if at_position.y > child.position.y + (child.size.y / 2.0):
 			drop_index = index + 1
@@ -143,16 +147,18 @@ func _drop_effect(at_position: Vector2, data: Variant, is_visual: bool, vbox: VB
 	if not data is DragData or data.is_visual != is_visual:
 		return
 
+	var child_offset: int = 0
+	if not is_visual and current_file and current_file.audio_streams.size() > 1:
+		child_offset = 2
+
 	var old_index: int = data.effect_index
 	var new_index: int = 0
-	for index: int in vbox.get_child_count():
+	for index: int in range(child_offset, vbox.get_child_count()):
 		var child: Control = vbox.get_child(index)
 		if at_position.y > child.position.y + (child.size.y / 2.0):
-			new_index = index + 1
-	if new_index > old_index:
-		new_index -= 1 # Adjust since the element itself will be shifted
-	if old_index != new_index:
-		EffectsHandler.move_effect(current_clip, old_index, new_index, is_visual)
+			new_index = index - child_offset + 1
+	if new_index > old_index: new_index -= 1
+	if old_index != new_index: EffectsHandler.move_effect(current_clip, old_index, new_index, is_visual)
 
 
 func _draw_drop_indicator(vbox: VBoxContainer) -> void:
@@ -203,8 +209,11 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 			section_visuals.get_child(0).get_child(0).add_child(added_effect)
 			section_visuals.get_child(0).get_child(0).move_child(added_effect, index)
 		else:
+			var child_offset: int = 0
+			if current_file and current_file.audio_streams.size() > 1:
+				child_offset = 2
 			section_audio.get_child(0).get_child(0).add_child(added_effect)
-			section_audio.get_child(0).get_child(0).move_child(added_effect, index)
+			section_audio.get_child(0).get_child(0).move_child(added_effect, index + child_offset)
 
 		await get_tree().process_frame
 		if is_instance_valid(added_effect):
@@ -218,7 +227,10 @@ func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
 			removed_effect = section_visuals.get_child(0).get_child(0).get_child(index)
 			section_visuals.get_child(0).get_child(0).remove_child(removed_effect)
 		else:
-			removed_effect = section_audio.get_child(0).get_child(0).get_child(index)
+			var child_offset: int = 0
+			if current_file and current_file.audio_streams.size() > 1:
+				child_offset = 2
+			removed_effect = section_audio.get_child(0).get_child(0).get_child(index + child_offset)
 			section_audio.get_child(0).get_child(0).remove_child(removed_effect)
 		removed_effect.queue_free()
 
@@ -229,8 +241,11 @@ func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual:
 			var moved_effect: Control = section_visuals.get_child(0).get_child(0).get_child(old_index)
 			section_visuals.get_child(0).get_child(0).move_child(moved_effect, new_index)
 		else:
-			var moved_effect: Control = section_audio.get_child(0).get_child(0).get_child(old_index)
-			section_audio.get_child(0).get_child(0).move_child(moved_effect, new_index)
+			var child_offset: int = 0
+			if current_file and current_file.audio_streams.size() > 1:
+				child_offset = 2
+			var moved_effect: Control = section_audio.get_child(0).get_child(0).get_child(old_index + child_offset)
+			section_audio.get_child(0).get_child(0).move_child(moved_effect, new_index + child_offset)
 
 
 func _create_transitions_ui(parent: Control) -> void:
@@ -423,6 +438,31 @@ func _load_effects() -> void:
 	margin_audio.add_child(vbox_audio)
 	margin_audio.add_child(overlay_audio)
 	section_audio.add_child(margin_audio)
+
+	if current_clip and current_file and current_file.audio_streams.size() > 1:
+		var hbox: HBoxContainer = HBoxContainer.new()
+		var label: Label = Label.new()
+		label.text = "Audio Track"
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var option_button: OptionButton = OptionButton.new()
+		for i: int in current_file.audio_streams.size():
+			option_button.add_item("Track %d" % (i + 1), current_file.audio_streams[i])
+			var current_index: int = current_clip.effects.audio_stream_index
+			if current_index == -1: current_index = current_file.audio_streams[0]
+			if current_file.audio_streams[i] == current_index:
+				option_button.selected = i
+
+		@warning_ignore("return_value_discarded")
+		option_button.item_selected.connect(func(index: int) -> void:
+				InputManager.undo_redo.create_action("Change audio track")
+				InputManager.undo_redo.add_do_method(ClipLogic._set_audio_stream.bind(current_clip.effects, option_button.get_item_id(index)))
+				InputManager.undo_redo.add_undo_method(ClipLogic._set_audio_stream.bind(current_clip.effects, current_clip.effects.audio_stream_index))
+				InputManager.undo_redo.commit_action())
+
+		hbox.add_child(label)
+		hbox.add_child(option_button)
+		vbox_audio.add_child(hbox)
+		vbox_audio.add_child(HSeparator.new())
 
 	if section_transitions.get_child_count() != 0:
 		var vbox: VBoxContainer = section_transitions.get_child(0)
@@ -989,11 +1029,15 @@ func _update_ui_values() -> void:
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
 	var effect: Effect = effects[index]
 	var section: FoldableContainer
+	var child_offset: int = 0
 	if effects == current_clip.effects.video:
 		section = section_visuals
 	else:
 		section = section_audio
-	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index)
+		if current_file and current_file.audio_streams.size() > 1:
+			child_offset = 2
+
+	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index + child_offset)
 	var content_vbox: VBoxContainer = effect_container.get_child(0)
 	if !effect.is_enabled:
 		effect_container.folded = true
@@ -1086,7 +1130,10 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
 	EffectsHandler.switch_enabled(current_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
-	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index)
+	var child_offset: int = 0
+	if not is_visual and current_file and current_file.audio_streams.size() > 1:
+		child_offset = 2
+	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index + child_offset)
 	var visible_button: TextureButton = effect_container.find_child("VisibleButton", true, false)
 	var is_enabled: bool
 

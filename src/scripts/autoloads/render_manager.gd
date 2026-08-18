@@ -344,7 +344,7 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 
 				# Get full audio for clip.
 				var fetch_duration: float = info.duration * clip.speed
-				var audio_data: PackedByteArray = Audio.get_audio_data(info.path as String, -1, info.start as float, fetch_duration)
+				var audio_data: PackedByteArray = Audio.get_audio_data(info.path as String, clip.effects.audio_stream_index, info.start as float, fetch_duration)
 				if not is_equal_approx(clip.speed, 1.0):
 					audio_data = Audio.change_speed(audio_data, clip.speed)
 

@@ -607,6 +607,13 @@ func _set_clip_mute(effects: ClipEffects, muted: bool) -> void:
 	updated.emit.call_deferred()
 
 
+func _set_audio_stream(effects: ClipEffects, stream_index: int) -> void:
+	effects.audio_stream_index = stream_index
+	Project.unsaved_changes = true
+	updated.emit.call_deferred()
+	EditorCore.set_frame_nr(EditorCore.frame_nr)
+
+
 func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 	if is_visual:
 		clip.effects.fade_visual = fade

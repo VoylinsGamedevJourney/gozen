@@ -497,22 +497,38 @@ func _load_video(file: FileData) -> void:
 		@warning_ignore("return_value_discarded")
 		get_video_reader(file, i)
 
+	file.audio_streams.assign(temp_video.get_streams(1))
 	if temp_video.get_audio() != null:
 		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 	else:
-		audio_wave[file.id] = { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() }
+		audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
 		call_deferred("_on_wave_ready", file)
 
 
 func _create_wave(file: FileData) -> void:
-	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + ".wave"
+	if not audio_wave.has(file.id):
+		audio_wave[file.id] = {}
+
+	var streams_to_process: Array[int] = [-1]
+	if not file.audio_streams.is_empty():
+		streams_to_process.assign(file.audio_streams)
+
+	for stream_index: int in streams_to_process:
+		_create_wave_for_stream(file, stream_index)
+	call_deferred("_on_wave_ready", file)
+	Print.info("FileLogic", "Wave creation done for '%s'!" % file.nickname)
+
+func _create_wave_for_stream(file: FileData, stream_index: int) -> void:
+	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + "_" + str(stream_index) + ".wave"
 	if FileAccess.file_exists(cache_path):
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
 		if temp_file.get_length() > 0:
 			var loaded_wave: Variant = temp_file.get_var()
 			if typeof(loaded_wave) == TYPE_DICTIONARY:
-				audio_wave[file.id] = loaded_wave
+				audio_wave[file.id][stream_index] = loaded_wave
+				_mutex.lock()
 				call_deferred("_on_wave_ready", file)
+				_mutex.unlock()
 				return
 
 	# Calculate actual mix rate based on the audio length.
@@ -538,8 +554,7 @@ func _create_wave(file: FileData) -> void:
 	var local_wave_16: PackedFloat32Array = PackedFloat32Array()
 	if local_wave_1.resize(total_blocks) or local_wave_4.resize(ceili(total_blocks / 4.0)) or local_wave_16.resize(ceili(total_blocks / 16.0)):
 		printerr("FileLogic: Couldn't resize local wave array's!")
-	audio_wave[file.id] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
-
+	audio_wave[file.id][stream_index] = { 1: local_wave_1, 4: local_wave_4, 16: local_wave_16 }
 
 	var chunk_duration: float = 10.0 # 10 seconds.
 	var current_time: float = 0.0
@@ -548,7 +563,7 @@ func _create_wave(file: FileData) -> void:
 	var sample_step: int = 15
 
 	var audio_reader: Audio = Audio.new()
-	if audio_reader.open(file.path, -1) != OK:
+	if audio_reader.open(file.path, stream_index) != OK:
 		return
 
 	while current_time < stream_length:
@@ -593,11 +608,9 @@ func _create_wave(file: FileData) -> void:
 		current_time += chunk_duration
 
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
-	if save_file and !save_file.store_var(audio_wave[file.id]):
+	if save_file and !save_file.store_var(audio_wave[file.id][stream_index]):
 		printerr("FileLogic: Couldn't save wave file for file '%s'!" % file.path)
 	audio_reader.close()
-	call_deferred("_on_wave_ready", file)
-	Print.info("FileLogic", "Wave creation done for '%s'!" % file.nickname)
 
 
 func _on_wave_ready(file: FileData) -> void:
@@ -608,21 +621,25 @@ func _on_wave_ready(file: FileData) -> void:
 func get_clip_peak_db(clip: ClipData) -> float:
 	var file_id: int = clip.file
 	var time_offset: float = 0.0
+	var audio_stream_index: int = clip.effects.audio_stream_index
 
 	if clip.effects.ato_active and clip.effects.ato_file != -1:
 		file_id = clip.effects.ato_file
 		time_offset = clip.effects.ato_offset
+		audio_stream_index = -1
 	else:
 		var target_file: FileData = files.get(file_id)
 		if target_file and target_file.ato_active and target_file.ato_file != -1:
 			file_id = target_file.ato_file
 			time_offset = target_file.ato_offset
+			audio_stream_index = -1
 
-	var state_hash: int = hash([clip.begin, clip.duration, clip.speed, file_id, time_offset])
+	var state_hash: int = hash([clip.begin, clip.duration, clip.speed, file_id, time_offset, audio_stream_index])
 	if clip.has_meta("peak_hash") and clip.get_meta("peak_hash") == state_hash:
 		return clip.get_meta("peak_db")
 
-	var wave_dict: Dictionary = audio_wave.get(file_id, {})
+	var wave_streams: Dictionary = audio_wave.get(file_id, {})
+	var wave_dict: Dictionary = wave_streams.get(audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
 	if wave_dict.is_empty(): return 0.0 # Default if wave not ready yet
 
 	var wave_1: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
@@ -645,7 +662,8 @@ func get_clip_peak_db(clip: ClipData) -> float:
 
 
 func generate_audio_thumb(file: FileData) -> Image:
-	var wave_dict: Dictionary = audio_wave.get(file.id, {})
+	var wave_streams: Dictionary = audio_wave.get(file.id, {})
+	var wave_dict: Dictionary = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
 	if wave_dict.is_empty():
 		return null # Up to the file panel to try and fetch later.
 
@@ -716,29 +734,49 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 	return new_video
 
 
-func get_audio_stream(file: FileData, instance_index: int) -> AudioStreamFFmpeg:
+func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -1) -> AudioStreamFFmpeg:
 	if file.type == EditorCore.Type.VIDEO:
 		var empty_wave: bool = FileLogic.audio_wave.has(file.id) and FileLogic.audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
-		var video: Video = get_video_reader(file, instance_index)
-		return null if video == null else video.get_audio()
-	elif instance_index == 0:
+		if stream_index == -1 or (file.audio_streams.size() > 0 and stream_index == file.audio_streams[0]):
+			var video: Video = get_video_reader(file, instance_index)
+			return null if video == null else video.get_audio()
+
+	if instance_index == 0 and file.type == EditorCore.Type.AUDIO:
 		return file_data[file.id]
 	elif not audio_pools.has(file.id):
 		audio_pools[file.id] = []
 
 	var pool: Array = audio_pools[file.id]
-	var pool_index: int = instance_index - 1
-	if pool_index < pool.size():
-		var stream: AudioStream = pool[pool_index]
-		return stream
+
+	var stream_offset: int = 0
+	var total_streams: int = 1
+	if file.audio_streams.size() > 0:
+		total_streams = file.audio_streams.size()
+		var idx: int = file.audio_streams.find(stream_index)
+		if idx != -1:
+			stream_offset = idx
+
+	var pool_index: int
+	if file.type == EditorCore.Type.VIDEO:
+		pool_index = (instance_index * total_streams) + stream_offset
+	else:
+		pool_index = ((instance_index - 1) * total_streams) + stream_offset
+		if pool_index < 0:
+			pool_index = 0
+
+	while pool.size() <= pool_index:
+		pool.append(null) # Padding.
+
+	if pool[pool_index] != null:
+		return pool[pool_index]
 
 	var new_stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-	if new_stream.open(file.path) != OK:
+	if new_stream.open(file.path, stream_index) != OK:
 		printerr("FileLogic: Failed to create audio pool instance for '%s'!" % file.path)
-		return file_data[file.id] # Return main audio as fallback.
-	pool.append(new_stream)
+		return null
+	pool[pool_index] = new_stream
 	return new_stream
 
 

@@ -19,6 +19,8 @@ extends Resource
 @export var ato_offset: float
 @export var ato_file: int
 
+@export var audio_streams: Array[int] = []
+
 
 
 #--- Data handlers ---
@@ -39,6 +41,8 @@ func serialize() -> Dictionary:
 		data["proxy_path"] = proxy_path
 	if folder != "/":
 		data["folder"] = folder
+	if !audio_streams.is_empty():
+		data["audio_streams"] = audio_streams
 
 	if temp_file:
 		@warning_ignore("unsafe_method_access")
@@ -58,6 +62,7 @@ func deserialize(data: Dictionary) -> void:
 	ato_active = data.get("ato_active", false)
 	ato_offset = data.get("ato_offset", 0.0)
 	ato_file = data.get("ato_file", -1)
+	audio_streams = data.get("audio_streams", [])
 
 	if data.has("temp_file"):
 		var tempfile_value: Variant = data["temp_file"]

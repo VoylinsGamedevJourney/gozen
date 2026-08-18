@@ -788,6 +788,25 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 		popup.add_separator(tr("Video options"))
 		popup.add_item(tr("Clip audio-take-over"), PopupAction.CLIP_AUDIO_TAKE_OVER)
 
+		var file: FileData = FileLogic.files[right_click_clip.file]
+		if file.audio_streams.size() > 1:
+			var audio_submenu: PopupMenu = PopupMenu.new()
+			audio_submenu.name = "AudioStreamsSubMenu"
+			for i: int in file.audio_streams.size():
+				var stream_index: int = file.audio_streams[i]
+				audio_submenu.add_radio_check_item("Audio Track %d" % (i + 1), stream_index)
+				var current_index: int = right_click_clip.effects.audio_stream_index
+				if current_index == -1: current_index = file.audio_streams[0]
+				audio_submenu.set_item_checked(i, stream_index == current_index)
+			popup.add_child(audio_submenu)
+			popup.add_submenu_node_item("Select Audio Track", audio_submenu)
+			@warning_ignore("return_value_discarded")
+			audio_submenu.id_pressed.connect(func(id: int) -> void:
+					InputManager.undo_redo.create_action("Change audio track")
+					InputManager.undo_redo.add_do_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, id))
+					InputManager.undo_redo.add_undo_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, right_click_clip.effects.audio_stream_index))
+					InputManager.undo_redo.commit_action())
+
 
 func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 	match id:

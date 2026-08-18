@@ -54,7 +54,8 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	if file_id == -1 or !FileLogic.audio_wave.has(file_id): return
 
-	var wave_dict: Dictionary = FileLogic.audio_wave[file_id]
+	var wave_streams: Dictionary = FileLogic.audio_wave[file_id]
+	var wave_dict: Dictionary = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
 	if wave_dict.is_empty(): return
 
 	var wave_data: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
