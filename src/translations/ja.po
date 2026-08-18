@@ -6,121 +6,167 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scenes/effects_panel/effects_panel.gd:44
+#: scenes/effects_panel/effects_panel.gd:45
 msgid "Mute clip audio."
 msgstr "クリップの音声をミュートする。"
 
-#: scenes/effects_panel/effects_panel.gd:234
+#: scenes/effects_panel/effects_panel.gd:257
 #, fuzzy
 msgid "Left Transition"
 msgstr "トラックオプション"
 
-#: scenes/effects_panel/effects_panel.gd:243
-#: scenes/effects_panel/effects_panel.gd:307
+#: scenes/effects_panel/effects_panel.gd:266
+#: scenes/effects_panel/effects_panel.gd:330
 #, fuzzy
 msgid "Visual Fade (frames)"
 msgstr "視覚効果"
 
-#: scenes/effects_panel/effects_panel.gd:260
-#: scenes/effects_panel/effects_panel.gd:324
+#: scenes/effects_panel/effects_panel.gd:283
+#: scenes/effects_panel/effects_panel.gd:347
 #, fuzzy
 msgid "Audio Fade (frames)"
 msgstr "オーディオ波形"
 
-#: scenes/effects_panel/effects_panel.gd:277
-#: scenes/effects_panel/effects_panel.gd:339
+#: scenes/effects_panel/effects_panel.gd:300
+#: scenes/effects_panel/effects_panel.gd:362
 msgid "Style"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:298
+#: scenes/effects_panel/effects_panel.gd:321
 #, fuzzy
 msgid "Right Transition"
 msgstr "トラックオプション"
 
-#: scenes/effects_panel/effects_panel.gd:449
+#: scenes/effects_panel/effects_panel.gd:445
+#, fuzzy
+msgid "Audio Track"
+msgstr "トラックを追加"
+
+#: scenes/effects_panel/effects_panel.gd:519
 #, fuzzy
 msgid "Presets & Options"
 msgstr "テキストオプション"
 
-#: scenes/effects_panel/effects_panel.gd:566 effects/text_effect_ui.gd:102
+#: scenes/effects_panel/effects_panel.gd:636 effects/text_effect_ui.gd:104
 msgid "Reset parameter"
 msgstr "パラメータをリセット"
 
-#: scenes/effects_panel/effects_panel.gd:632
-#: scenes/effects_panel/effects_panel.gd:1208
+#: scenes/effects_panel/effects_panel.gd:702
+#: scenes/effects_panel/effects_panel.gd:1298
 msgid "Default"
 msgstr "デフォルト"
 
-#: scenes/effects_panel/effects_panel.gd:662
+#: scenes/effects_panel/effects_panel.gd:732
 msgid "Left"
 msgstr "左"
 
-#: scenes/effects_panel/effects_panel.gd:663
-#: scenes/effects_panel/effects_panel.gd:667
+#: scenes/effects_panel/effects_panel.gd:733
+#: scenes/effects_panel/effects_panel.gd:737
 msgid "Center"
 msgstr "中央"
 
-#: scenes/effects_panel/effects_panel.gd:664
+#: scenes/effects_panel/effects_panel.gd:734
 msgid "Right"
 msgstr "右"
 
-#: scenes/effects_panel/effects_panel.gd:666
+#: scenes/effects_panel/effects_panel.gd:736
 msgid "Top"
 msgstr "上"
 
-#: scenes/effects_panel/effects_panel.gd:668
+#: scenes/effects_panel/effects_panel.gd:738
 msgid "Bottom"
 msgstr "下"
 
-#: scenes/effects_panel/effects_panel.gd:670
+#: scenes/effects_panel/effects_panel.gd:740
 msgid "Mix (Normal)"
 msgstr "ミックス（通常）"
 
-#: scenes/effects_panel/effects_panel.gd:671
+#: scenes/effects_panel/effects_panel.gd:741
 msgid "Add"
 msgstr "加算"
 
-#: scenes/effects_panel/effects_panel.gd:672
+#: scenes/effects_panel/effects_panel.gd:742
 msgid "Subtract"
 msgstr "減算"
 
-#: scenes/effects_panel/effects_panel.gd:673
+#: scenes/effects_panel/effects_panel.gd:743
 msgid "Multiply"
 msgstr "乗算"
 
-#: scenes/effects_panel/effects_panel.gd:674
+#: scenes/effects_panel/effects_panel.gd:744
 msgid "Premultiplied Alpha"
 msgstr "乗算済みアルファ"
 
-#: scenes/effects_panel/effects_panel.gd:839
+#: scenes/effects_panel/effects_panel.gd:746
+msgid "Thin"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:747
+#, fuzzy
+msgid "Extra Light"
+msgstr "トラックの高さ"
+
+#: scenes/effects_panel/effects_panel.gd:748
+#, fuzzy
+msgid "Light"
+msgstr "右"
+
+#: scenes/effects_panel/effects_panel.gd:749
+msgid "Regular"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:750
+msgid "Medium"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:751
+msgid "Semi Bold"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:752
+msgid "Bold"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:753
+#, fuzzy
+msgid "Extra Bold"
+msgstr "その他"
+
+#: scenes/effects_panel/effects_panel.gd:754
+msgid "Black"
+msgstr ""
+
+#: scenes/effects_panel/effects_panel.gd:919
 msgid "Link X and Y"
 msgstr "XとYをリンク"
 
-#: scenes/effects_panel/effects_panel.gd:1068
+#: scenes/effects_panel/effects_panel.gd:1155
 msgid "Add effects"
 msgstr "エフェクトを追加"
 
-#: scenes/effects_panel/effects_panel.gd:1148
+#: scenes/effects_panel/effects_panel.gd:1235
 msgid "Presets"
 msgstr "プリセット"
 
-#: scenes/effects_panel/effects_panel.gd:1167
+#: scenes/effects_panel/effects_panel.gd:1254
 msgid "Reset effect"
 msgstr "速度をリセット"
 
-#: scenes/effects_panel/effects_panel.gd:1179
+#: scenes/effects_panel/effects_panel.gd:1267
 msgid "Delete effect"
 msgstr "フォルダを削除"
 
-#: scenes/effects_panel/effects_panel.gd:1192
+#: scenes/effects_panel/effects_panel.gd:1281
 msgid "Save as preset..."
 msgstr "スクリーンショットを保存..."
 
-#: scenes/effects_panel/effects_panel.gd:1262
+#: scenes/effects_panel/effects_panel.gd:1354
+#: scenes/startup_screen/startup_screen.gd:363
 msgid "Save preset"
 msgstr "プロジェクトを保存"
 
-#: scenes/effects_panel/effects_panel.gd:1263
+#: scenes/effects_panel/effects_panel.gd:1355
+#: scenes/startup_screen/startup_screen.gd:365
 msgid "Preset name"
 msgstr "パラメータをリセット"
 
@@ -136,142 +182,170 @@ msgstr "視覚効果"
 msgid "Audio effects"
 msgstr "音声効果"
 
-#: scenes/view_panel/view_panel.gd:58
+#: scenes/view_panel/view_panel.tscn
+msgid "Go to previous chapter marker."
+msgstr ""
+
+#: scenes/view_panel/view_panel.tscn
+#, fuzzy
+msgid "Start project playback."
+msgstr "再生をセットアップ中..."
+
+#: scenes/view_panel/view_panel.tscn
+#, fuzzy
+msgid "Pause project playback."
+msgstr "名前を付けてプロジェクトを保存..."
+
+#: scenes/view_panel/view_panel.tscn
+msgid "Go to next chapter marker."
+msgstr ""
+
+#: scenes/view_panel/view_panel.tscn
+msgid "Show video safety guidelines on top of the project preview."
+msgstr ""
+
+#: scenes/view_panel/view_panel.gd:63
 msgid "Jump to frame"
 msgstr "フレームに移動"
 
-#: scenes/view_panel/view_panel.gd:104
+#: scenes/view_panel/view_panel.gd:109
 msgid "Frame"
 msgstr "フレーム"
 
-#: scenes/view_panel/project_view_texture.gd:129
+#: scenes/view_panel/project_view_texture.gd:131
 msgid "Save screenshot ..."
 msgstr "スクリーンショットを保存..."
 
-#: scenes/view_panel/project_view_texture.gd:130
+#: scenes/view_panel/project_view_texture.gd:132
 msgid "Save screenshot to project ..."
 msgstr "プロジェクトにスクリーンショットを保存..."
 
-#: scenes/editor/editor.gd:85
+#: scenes/editor/editor.gd:96
 msgid "Save project"
 msgstr "プロジェクトを保存"
 
-#: scenes/editor/editor.gd:86 scripts/autoloads/project.gd:99
+#: scenes/editor/editor.gd:97 scripts/autoloads/project.gd:102
 msgid "Save project as ..."
 msgstr "名前を付けてプロジェクトを保存..."
 
-#: scenes/editor/editor.gd:88 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:209 scripts/autoloads/project.gd:179
+#: scenes/editor/editor.gd:98
+#, fuzzy
+msgid "Archive project ..."
+msgstr "名前を付けてプロジェクトを保存..."
+
+#: scenes/editor/editor.gd:100 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:245 scripts/autoloads/project.gd:273
 msgid "Open project"
 msgstr "プロジェクトを開く"
 
-#: scenes/editor/editor.gd:89 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:101 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "最近のプロジェクト"
 
-#: scenes/editor/editor.gd:91 scenes/settings_menu/settings_menu.gd:336
+#: scenes/editor/editor.gd:103 scenes/settings_menu/settings_menu.gd:351
 msgid "Project settings"
 msgstr "プロジェクト設定"
 
-#: scenes/editor/editor.gd:92
+#: scenes/editor/editor.gd:104
 msgid "Quit"
 msgstr "終了"
 
-#: scenes/editor/editor.gd:117
+#: scenes/editor/editor.gd:130
 msgid "Undo"
 msgstr "元に戻す"
 
-#: scenes/editor/editor.gd:118
+#: scenes/editor/editor.gd:131
 msgid "Redo"
 msgstr "やり直し"
 
-#: scenes/editor/editor.gd:139
+#: scenes/editor/editor.gd:152
 msgid "Save workspace"
 msgstr "ワークスペースを保存"
 
-#: scenes/editor/editor.gd:140 scenes/editor/editor.gd:242
+#: scenes/editor/editor.gd:153 scenes/editor/editor.gd:255
 msgid "New workspace"
 msgstr "新しいワークスペース"
 
-#: scenes/editor/editor.gd:142 scenes/editor/editor.gd:160
+#: scenes/editor/editor.gd:155 scenes/editor/editor.gd:173
 msgid "Show panel titles"
 msgstr "パネルタイトルを表示"
 
-#: scenes/editor/editor.gd:143
+#: scenes/editor/editor.gd:156
 msgid "Panels"
 msgstr "パネル"
 
-#: scenes/editor/editor.gd:158
+#: scenes/editor/editor.gd:171
 msgid "Hide panel titles"
 msgstr "パネルタイトルを非表示"
 
-#: scenes/editor/editor.gd:192 scenes/settings_menu/settings_menu.gd:105
+#: scenes/editor/editor.gd:205 scenes/settings_menu/settings_menu.gd:105
 #: scenes/settings_menu/settings_menu.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "エディター設定"
 
-#: scenes/editor/editor.gd:193
+#: scenes/editor/editor.gd:206
 msgid "Module manager"
 msgstr "モジュールマネージャー"
 
-#: scenes/editor/editor.gd:195
+#: scenes/editor/editor.gd:208
 msgid "Command bar"
 msgstr "コマンドバー"
 
-#: scenes/editor/editor.gd:216
+#: scenes/editor/editor.gd:229
 msgid "Report bug"
 msgstr "バグを報告"
 
-#: scenes/editor/editor.gd:217 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:230 scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "マニュアル"
 
-#: scenes/editor/editor.gd:218 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:231 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "チュートリアル"
 
-#: scenes/editor/editor.gd:219 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:232 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:221 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:234 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "ウェブサイト"
 
-#: scenes/editor/editor.gd:222 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:235 scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr "GoZenを支援"
 
-#: scenes/editor/editor.gd:223 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:236 scenes/about_gozen/about_gozen.tscn
 msgid "About GoZen"
 msgstr "GoZenについて"
 
-#: scenes/editor/editor.gd:244
+#: scenes/editor/editor.gd:257
 msgid "Workspace name"
 msgstr "ワークスペース名"
 
-#: scenes/editor/editor.gd:304
+#: scenes/editor/editor.gd:317
 #, fuzzy
 msgid "Move Left"
 msgstr "左"
 
-#: scenes/editor/editor.gd:307
+#: scenes/editor/editor.gd:320
 #, fuzzy
 msgid "Move Right"
 msgstr "右"
 
-#: scenes/editor/editor.gd:310 scenes/file_panel/file_panel.gd:122
+#: scenes/editor/editor.gd:323 scenes/file_panel/file_panel.gd:122
 msgid "Delete"
 msgstr "削除"
 
-#: scenes/editor/editor.gd:357
+#: scenes/editor/editor.gd:370
 #, fuzzy
 msgid "Delete Workspace"
 msgstr "フォルダを削除"
 
-#: scenes/editor/editor.gd:358
+#: scenes/editor/editor.gd:371
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr "ワークスペース「%s」を削除してもよろしいですか？"
 
@@ -325,7 +399,7 @@ msgstr "画像オプション"
 msgid "Save image as ..."
 msgstr "名前を付けて画像を保存..."
 
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:784
+#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:788
 msgid "Video options"
 msgstr "動画オプション"
 
@@ -342,9 +416,8 @@ msgid "Remove proxy"
 msgstr "プロキシを削除"
 
 #: scenes/file_panel/file_panel.gd:137
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-msgid "Audio-take-over"
-msgstr "音声テイクオーバー"
+msgid "Replace audio"
+msgstr ""
 
 #: scenes/file_panel/file_panel.gd:138
 msgid "Extract audio to file ..."
@@ -375,7 +448,7 @@ msgid "Folder options"
 msgstr "フォルダオプション"
 
 #: scenes/file_panel/file_panel.gd:152 scenes/file_panel/file_panel.gd:155
-#: scenes/file_panel/file_panel.gd:536
+#: scenes/file_panel/file_panel.gd:537
 msgid "Create folder"
 msgstr "フォルダを作成"
 
@@ -391,7 +464,7 @@ msgstr "フォルダを削除"
 msgid "Rename file"
 msgstr "ファイル名を変更"
 
-#: scenes/file_panel/file_panel.gd:203 scenes/file_panel/file_panel.gd:541
+#: scenes/file_panel/file_panel.gd:203 scenes/file_panel/file_panel.gd:542
 msgid "Folder name"
 msgstr "フォルダ名"
 
@@ -403,87 +476,102 @@ msgstr "画像をファイルに保存"
 msgid "Save video audio to WAV"
 msgstr "動画音声をWAVとして保存"
 
-#: scenes/file_panel/file_panel.gd:394
+#: scenes/file_panel/file_panel.gd:395
 msgid "(Loading thumbnail...)"
 msgstr "(サムネイルを読み込み中...)"
 
-#: scenes/timeline/timeline_panel.gd:144
+#: scenes/timeline/timeline_panel.gd:145
 msgid "Duplication failed"
 msgstr "複製に失敗しました"
 
-#: scenes/timeline/timeline_panel.gd:145
+#: scenes/timeline/timeline_panel.gd:146
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr "十分な空きスペースがないため、%d 個のクリップを複製できませんでした。"
 
-#: scenes/timeline/timeline_panel.gd:254
+#: scenes/timeline/timeline_panel.gd:255
 msgid "Remove empty space"
 msgstr "空白を削除"
 
-#: scenes/timeline/timeline_panel.gd:256
+#: scenes/timeline/timeline_panel.gd:257
 msgid "Track options"
 msgstr "トラックオプション"
 
-#: scenes/timeline/timeline_panel.gd:259
+#: scenes/timeline/timeline_panel.gd:260
 msgid "Add track"
 msgstr "トラックを追加"
 
-#: scenes/timeline/timeline_panel.gd:261
+#: scenes/timeline/timeline_panel.gd:262
 msgid "Remove track"
 msgstr "トラックを削除"
 
-#: scenes/timeline/timeline_panel.gd:265
+#: scenes/timeline/timeline_panel.gd:266
 msgid "Visible"
 msgstr "表示"
 
-#: scenes/timeline/timeline_panel.gd:268
+#: scenes/timeline/timeline_panel.gd:269
 msgid "Muted"
 msgstr "ミュート"
 
-#: scenes/timeline/timeline_panel.gd:271
+#: scenes/timeline/timeline_panel.gd:272
 msgid "Locked"
 msgstr "ロック"
 
-#: scenes/timeline/timeline_panel.gd:774
+#: scenes/timeline/timeline_panel.gd:778
 msgid "Delete clip"
 msgstr "クリップを削除"
 
-#: scenes/timeline/timeline_panel.gd:775
+#: scenes/timeline/timeline_panel.gd:779
 msgid "Split clip"
 msgstr "クリップを分割"
 
-#: scenes/timeline/timeline_panel.gd:779 scenes/timeline/timeline_panel.gd:823
+#: scenes/timeline/timeline_panel.gd:783 scenes/timeline/timeline_panel.gd:846
 msgid "Change speed"
 msgstr "速度を変更"
 
-#: scenes/timeline/timeline_panel.gd:781
+#: scenes/timeline/timeline_panel.gd:785
 msgid "Reset speed"
 msgstr "速度をリセット"
 
-#: scenes/timeline/timeline_panel.gd:785
-msgid "Clip audio-take-over"
-msgstr "クリップ音声テイクオーバー"
+#: scenes/timeline/timeline_panel.gd:789
+msgid "Clip replace audio"
+msgstr ""
+
+#: scenes/timeline/timeline_panel.gd:802
+msgid "Select Audio Track"
+msgstr ""
+
+#: scenes/timeline/timeline.tscn
+msgid "Select mode: Used for selecting clips on the timeline."
+msgstr ""
+
+#: scenes/timeline/timeline.tscn
+msgid ""
+"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"clicking."
+msgstr ""
 
 #: scenes/timeline/timeline.tscn
 #, fuzzy
-msgid "Turn group selection on/off."
+msgid "Turn group selection on/off for clips in the timeline."
 msgstr "スナップのオン/オフを切り替えます。"
 
 #: scenes/timeline/timeline.tscn
-msgid "Turn snapping on/off."
+#, fuzzy
+msgid "Turn clip snapping on/off when moving clips."
 msgstr "スナップのオン/オフを切り替えます。"
 
-#: scenes/timeline/track_controls.gd:62
+#: scenes/timeline/track_controls.gd:68
 msgid "Toggle track visibility"
 msgstr "トラックの表示/非表示を切り替え"
 
-#: scenes/timeline/track_controls.gd:78
+#: scenes/timeline/track_controls.gd:86
 msgid "Mute track"
 msgstr "トラックをミュート"
 
 #: scenes/markers_panel/markers_panel.tscn
 #: scenes/settings_menu/settings_menu.gd:112
-#: scenes/settings_menu/settings_menu.gd:320
+#: scenes/settings_menu/settings_menu.gd:335
 msgid "Markers"
 msgstr "マーカー"
 
@@ -491,10 +579,10 @@ msgstr "マーカー"
 msgid "Add color file"
 msgstr "カラーファイルを追加"
 
-#: scenes/color_popup/color_popup.tscn scenes/rename_file/rename_file.tscn
-#: scenes/marker_popup/marker_popup.tscn
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#: scripts/autoloads/project.gd:236 scripts/logic/file_logic.gd:238
+#: scenes/color_popup/color_popup.tscn
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+#: scripts/autoloads/project.gd:332 scripts/logic/file_logic.gd:249
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -502,8 +590,36 @@ msgstr "キャンセル"
 msgid "Create new color file"
 msgstr "新規カラーファイルを作成"
 
+#: scenes/replace_audio_popup/replace_audio_popup.gd:110
+#: scenes/render_options_panel/render_options_panel.gd:174
+msgid "None"
+msgstr "なし"
+
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+msgid "Replace Audio"
+msgstr ""
+
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+#, fuzzy
+msgid "Waveform modifier"
+msgstr "波形増幅"
+
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+msgid "Audio offset"
+msgstr "音声オフセット"
+
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+#, fuzzy
+msgid "Auto align"
+msgstr "自動保存"
+
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
+msgid "Confirm"
+msgstr "確認"
+
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:147
+#: scenes/startup_screen/startup_screen.gd:166
 msgid "Version"
 msgstr "バージョン"
 
@@ -532,12 +648,12 @@ msgid "License"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:112
+#: scripts/autoloads/project.gd:202
 msgid "Loading project"
 msgstr "プロジェクトを読み込み中"
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:113
+#: scripts/autoloads/project.gd:203
 msgid "Initializing ..."
 msgstr "初期化中..."
 
@@ -562,13 +678,13 @@ msgid "Marker five"
 msgstr "マーカー 5"
 
 #: scenes/settings_menu/settings_menu.gd:122
-#: scenes/settings_menu/settings_menu.gd:331
+#: scenes/settings_menu/settings_menu.gd:346
 msgid "Shortcuts"
 msgstr "ショートカット"
 
 #: scenes/settings_menu/settings_menu.gd:131
-#: scenes/settings_menu/settings_menu.gd:351
-#: scenes/settings_menu/settings_menu.gd:352
+#: scenes/settings_menu/settings_menu.gd:369
+#: scenes/settings_menu/settings_menu.gd:370
 msgid "Appearance"
 msgstr "外観"
 
@@ -589,42 +705,26 @@ msgid "Editor theme"
 msgstr "エディターテーマ"
 
 #: scenes/settings_menu/settings_menu.gd:154
-msgid "Base color"
-msgstr "ベースカラー"
-
-#: scenes/settings_menu/settings_menu.gd:159
-msgid "The base color of the editor UI."
-msgstr "エディターUIの基本色。"
-
-#: scenes/settings_menu/settings_menu.gd:160
-msgid "Accent color"
-msgstr "アクセントカラー"
-
-#: scenes/settings_menu/settings_menu.gd:165
-msgid "The highlight/accent color of the editor UI."
-msgstr "エディターUIのハイライト/アクセント色。"
-
-#: scenes/settings_menu/settings_menu.gd:166
 msgid "Show menu bar"
 msgstr "メニューバーを表示"
 
-#: scenes/settings_menu/settings_menu.gd:171
+#: scenes/settings_menu/settings_menu.gd:159
 msgid "Show safe areas on startup"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:176
+#: scenes/settings_menu/settings_menu.gd:164
 msgid "Audio waveforms"
 msgstr "オーディオ波形"
 
-#: scenes/settings_menu/settings_menu.gd:177
+#: scenes/settings_menu/settings_menu.gd:165
 msgid "Waveform style"
 msgstr "波形スタイル"
 
-#: scenes/settings_menu/settings_menu.gd:184
+#: scenes/settings_menu/settings_menu.gd:172
 msgid "Waveform amplifier"
 msgstr "波形増幅"
 
-#: scenes/settings_menu/settings_menu.gd:191
+#: scenes/settings_menu/settings_menu.gd:179
 msgid ""
 "Sometimes the waveforms aren't very clear due to audio levels being too low, "
 "with this setting you can adjust their intensity"
@@ -632,108 +732,138 @@ msgstr ""
 "オーディオレベルが低すぎて波形がはっきりしない場合があります。この設定で強度"
 "を調整できます"
 
-#: scenes/settings_menu/settings_menu.gd:192
+#: scenes/settings_menu/settings_menu.gd:180
 msgid "Dialogs"
 msgstr "ダイアログ"
 
-#: scenes/settings_menu/settings_menu.gd:193
+#: scenes/settings_menu/settings_menu.gd:181
 msgid "Use native dialogs"
 msgstr "ネイティブダイアログを使用"
 
-#: scenes/settings_menu/settings_menu.gd:198
+#: scenes/settings_menu/settings_menu.gd:186
+msgid ""
+"Native dialogs use your operating system's file browser and windows. "
+"Disabling this uses GoZen's built-in dialogs instead."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:187
 msgid "Panel tabs position"
 msgstr "パネルタブの位置"
 
-#: scenes/settings_menu/settings_menu.gd:207
+#: scenes/settings_menu/settings_menu.gd:196
 msgid "Defaults"
 msgstr "デフォルト"
 
-#: scenes/settings_menu/settings_menu.gd:208
+#: scenes/settings_menu/settings_menu.gd:197
 msgid "Default durations"
 msgstr "デフォルトの長さ"
 
-#: scenes/settings_menu/settings_menu.gd:209
+#: scenes/settings_menu/settings_menu.gd:198
 msgid "Default image duration"
 msgstr "画像のデフォルト表示時間"
 
-#: scenes/settings_menu/settings_menu.gd:216
-#: scenes/settings_menu/settings_menu.gd:224
-#: scenes/settings_menu/settings_menu.gd:232
+#: scenes/settings_menu/settings_menu.gd:205
+#: scenes/settings_menu/settings_menu.gd:213
+#: scenes/settings_menu/settings_menu.gd:221
 msgid "Duration in frames per second."
 msgstr "フレーム数単位の長さ。"
 
-#: scenes/settings_menu/settings_menu.gd:217
+#: scenes/settings_menu/settings_menu.gd:206
 msgid "Default color duration"
 msgstr "カラーのデフォルト表示時間"
 
-#: scenes/settings_menu/settings_menu.gd:225
+#: scenes/settings_menu/settings_menu.gd:214
 msgid "Default text duration"
 msgstr "テキストのデフォルト表示時間"
 
-#: scenes/settings_menu/settings_menu.gd:233
-#: scenes/settings_menu/settings_menu.gd:340
+#: scenes/settings_menu/settings_menu.gd:222
+#: scenes/settings_menu/settings_menu.gd:355
 msgid "Project resolution"
 msgstr "プロジェクト解像度"
 
-#: scenes/settings_menu/settings_menu.gd:235
-#: scenes/settings_menu/settings_menu.gd:342
+#: scenes/settings_menu/settings_menu.gd:227
+#: scenes/settings_menu/settings_menu.gd:360
 msgid "Project frame-rate"
 msgstr "プロジェクトフレームレート"
 
-#: scenes/settings_menu/settings_menu.gd:243
+#: scenes/settings_menu/settings_menu.gd:233
+msgid "Quick create project options"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:234
+#, fuzzy
+msgid "Horizontal resolution"
+msgstr "プロジェクト解像度"
+
+#: scenes/settings_menu/settings_menu.gd:239
+#, fuzzy
+msgid "Horizontal framerate"
+msgstr "プロジェクトフレームレート"
+
+#: scenes/settings_menu/settings_menu.gd:245
+#, fuzzy
+msgid "Vertical resolution"
+msgstr "プロジェクト解像度"
+
+#: scenes/settings_menu/settings_menu.gd:250
+#, fuzzy
+msgid "Vertical framerate"
+msgstr "プロジェクトフレームレート"
+
+#: scenes/settings_menu/settings_menu.gd:258
 msgid "Timeline"
 msgstr "タイムライン"
 
-#: scenes/settings_menu/settings_menu.gd:244
+#: scenes/settings_menu/settings_menu.gd:259
 msgid "Timeline settings"
 msgstr "タイムライン設定"
 
-#: scenes/settings_menu/settings_menu.gd:245
+#: scenes/settings_menu/settings_menu.gd:260
 msgid "Default track amount"
 msgstr "デフォルトトラック数"
 
-#: scenes/settings_menu/settings_menu.gd:251
+#: scenes/settings_menu/settings_menu.gd:266
 msgid "Track height"
 msgstr "トラックの高さ"
 
-#: scenes/settings_menu/settings_menu.gd:257
+#: scenes/settings_menu/settings_menu.gd:272
 msgid "Timeline controls"
 msgstr "タイムライン操作"
 
-#: scenes/settings_menu/settings_menu.gd:258
+#: scenes/settings_menu/settings_menu.gd:273
 msgid "Pause after dragging"
 msgstr "ドラッグ後に一時停止"
 
-#: scenes/settings_menu/settings_menu.gd:263
+#: scenes/settings_menu/settings_menu.gd:278
 msgid ""
 "Setting this will pause playback after having dragged the playhead around."
 msgstr "これを設定すると、再生ヘッドをドラッグした後に再生が一時停止されます。"
 
-#: scenes/settings_menu/settings_menu.gd:264
+#: scenes/settings_menu/settings_menu.gd:279
 msgid "Empty space delete modifier"
 msgstr "空白削除修飾キー"
 
-#: scenes/settings_menu/settings_menu.gd:271
+#: scenes/settings_menu/settings_menu.gd:286
 msgid "The modifier you want to easily delete empty space between clips."
 msgstr "クリップ間の空白を簡単に削除するために使用する修飾キー。"
 
-#: scenes/settings_menu/settings_menu.gd:272
+#: scenes/settings_menu/settings_menu.gd:287
 msgid "Empty space click action"
 msgstr "空白部分クリック時の動作"
 
-#: scenes/settings_menu/settings_menu.gd:279
+#: scenes/settings_menu/settings_menu.gd:294
 msgid "What to do when clicking empty space in the timeline."
 msgstr "タイムラインの空白部分をクリックしたときの動作を設定します。"
 
-#: scenes/settings_menu/settings_menu.gd:280
+#: scenes/settings_menu/settings_menu.gd:295
 msgid "Addons"
 msgstr "アドオン"
 
-#: scenes/settings_menu/settings_menu.gd:281
+#: scenes/settings_menu/settings_menu.gd:296
 msgid "Show mode bar"
 msgstr "モードバーを表示"
 
-#: scenes/settings_menu/settings_menu.gd:286
+#: scenes/settings_menu/settings_menu.gd:301
 msgid ""
 "The mode bar is the bar on the left of the timeline with buttons for "
 "changing the current timeline mode."
@@ -741,19 +871,19 @@ msgstr ""
 "モードバーはタイムラインの左側にあるバーで、現在のタイムラインモードを変更す"
 "るボタンがあります。"
 
-#: scenes/settings_menu/settings_menu.gd:289
+#: scenes/settings_menu/settings_menu.gd:304
 msgid "Performance"
 msgstr "パフォーマンス"
 
-#: scenes/settings_menu/settings_menu.gd:290
+#: scenes/settings_menu/settings_menu.gd:305
 msgid "Video Decoding"
 msgstr "ビデオデコード"
 
-#: scenes/settings_menu/settings_menu.gd:291
+#: scenes/settings_menu/settings_menu.gd:306
 msgid "Smart Seek Threshold"
 msgstr "スマートシークしきい値"
 
-#: scenes/settings_menu/settings_menu.gd:298
+#: scenes/settings_menu/settings_menu.gd:313
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
@@ -763,11 +893,11 @@ msgstr ""
 "ム数を定義します。値が高いと短いジャンプ中のラグを防げますが、CPU使用率が増加"
 "します。"
 
-#: scenes/settings_menu/settings_menu.gd:299
+#: scenes/settings_menu/settings_menu.gd:314
 msgid "Video Cache Size"
 msgstr "ビデオキャッシュサイズ"
 
-#: scenes/settings_menu/settings_menu.gd:306
+#: scenes/settings_menu/settings_menu.gd:321
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
@@ -775,15 +905,15 @@ msgstr ""
 "RAMに保持するデコード済みフレームの最大数。値が高いと逆再生シークやスクラブが"
 "スムーズになりますが、メモリ使用量が増加します。"
 
-#: scenes/settings_menu/settings_menu.gd:307
+#: scenes/settings_menu/settings_menu.gd:322
 msgid "Use proxies"
 msgstr "プロキシを使用"
 
-#: scenes/settings_menu/settings_menu.gd:312
+#: scenes/settings_menu/settings_menu.gd:327
 msgid "Proxies save path"
 msgstr "プロキシ保存パス"
 
-#: scenes/settings_menu/settings_menu.gd:317
+#: scenes/settings_menu/settings_menu.gd:332
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
@@ -793,44 +923,44 @@ msgstr ""
 "されたプロキシクリップはすべて再生成が必要になり、以前のフォルダから手動で削"
 "除する必要があります。"
 
-#: scenes/settings_menu/settings_menu.gd:322
-#: scenes/settings_menu/settings_menu.gd:323
+#: scenes/settings_menu/settings_menu.gd:337
+#: scenes/settings_menu/settings_menu.gd:338
 msgid "Extras"
 msgstr "その他"
 
-#: scenes/settings_menu/settings_menu.gd:324
+#: scenes/settings_menu/settings_menu.gd:339
 msgid "Auto save"
 msgstr "自動保存"
 
-#: scenes/settings_menu/settings_menu.gd:338
+#: scenes/settings_menu/settings_menu.gd:353
 #, fuzzy
 msgid "Video"
 msgstr "ビデオコーデック"
 
-#: scenes/settings_menu/settings_menu.gd:339
+#: scenes/settings_menu/settings_menu.gd:354
 #, fuzzy
 msgid "Video settings"
 msgstr "書き出し設定"
 
-#: scenes/settings_menu/settings_menu.gd:349
+#: scenes/settings_menu/settings_menu.gd:367
 #, fuzzy
 msgid "Project framerate (fps)."
 msgstr "プロジェクトフレームレート"
 
-#: scenes/settings_menu/settings_menu.gd:353
+#: scenes/settings_menu/settings_menu.gd:371
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr "背景色"
 
-#: scenes/settings_menu/settings_menu.gd:358
+#: scenes/settings_menu/settings_menu.gd:376
 msgid "The background color when no clips are displayed."
 msgstr "クリップが表示されていない時の背景色。"
 
-#: scenes/settings_menu/settings_menu.gd:385 effects/text_effect_ui.gd:29
+#: scenes/settings_menu/settings_menu.gd:403 effects/text_effect_ui.gd:29
 msgid "Reset to default"
 msgstr "デフォルトにリセット"
 
-#: scenes/settings_menu/settings_menu.gd:667
+#: scenes/settings_menu/settings_menu.gd:659
 msgid "Press any key..."
 msgstr "キーを押してください..."
 
@@ -959,97 +1089,135 @@ msgstr "ドラフト"
 msgid "Start render"
 msgstr "書き出し開始"
 
-#: scenes/render_options_panel/render_options_panel.gd:62
+#: scenes/render_options_panel/render_options_panel.gd:82
 msgid "Custom render profiles"
 msgstr "カスタム書き出しプロファイル"
 
-#: scenes/render_options_panel/render_options_panel.gd:149
-#: scenes/audio_take_over_popup/audio_take_over_popup.gd:110
-msgid "None"
-msgstr "なし"
-
-#: scenes/render_options_panel/render_options_panel.gd:151
+#: scenes/render_options_panel/render_options_panel.gd:176
 msgid "Stereo"
 msgstr "ステレオ"
 
-#: scenes/render_options_panel/render_options_panel.gd:152
+#: scenes/render_options_panel/render_options_panel.gd:177
 msgid "Mono"
 msgstr "モノラル"
 
-#: scenes/render_options_panel/render_options_panel.gd:224
+#: scenes/render_options_panel/render_options_panel.gd:251
 msgid "Select export path"
 msgstr "出力パスを選択"
 
-#: scenes/render_options_panel/render_options_panel.gd:305
+#: scenes/render_options_panel/render_options_panel.gd:330
 msgid "Rendering finished"
 msgstr "書き出し完了"
 
-#: scenes/render_options_panel/render_options_panel.gd:322
+#: scenes/render_options_panel/render_options_panel.gd:347
 msgid "Error whilst rendering video"
 msgstr "ビデオ書き出し中にエラーが発生しました"
 
-#: scenes/render_options_panel/render_options_panel.gd:358
+#: scenes/render_options_panel/render_options_panel.gd:383
 msgid "Overwrite file?"
 msgstr "ファイルを上書きしますか？"
 
-#: scenes/render_options_panel/render_options_panel.gd:359
+#: scenes/render_options_panel/render_options_panel.gd:384
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
 msgstr "選択した出力パスにファイルが既に存在します。上書きしますか？"
 
-#: scenes/render_options_panel/render_options_panel.gd:419
-#: scenes/render_options_panel/render_options_panel.gd:427
+#: scenes/render_options_panel/render_options_panel.gd:444
+#: scenes/render_options_panel/render_options_panel.gd:452
 msgid "Rendering"
 msgstr "書き出し中"
 
-#: scenes/render_options_panel/render_options_panel.gd:434
+#: scenes/render_options_panel/render_options_panel.gd:459
 msgid "Cancel rendering"
 msgstr "書き出しをキャンセル"
 
-#: scenes/render_options_panel/render_options_panel.gd:466
+#: scenes/render_options_panel/render_options_panel.gd:491
 msgid "Error opening file"
 msgstr "ファイルを開く際にエラーが発生しました"
 
-#: scenes/render_options_panel/render_options_panel.gd:467
+#: scenes/render_options_panel/render_options_panel.gd:492
 msgid "Error whilst sending audio"
 msgstr "音声送信中にエラーが発生しました"
 
-#: scenes/render_options_panel/render_options_panel.gd:473
+#: scenes/render_options_panel/render_options_panel.gd:498
 msgid "Setting up ..."
 msgstr "準備中..."
 
-#: scenes/render_options_panel/render_options_panel.gd:474
-#: scenes/render_options_panel/render_options_panel.gd:475
+#: scenes/render_options_panel/render_options_panel.gd:499
+#: scenes/render_options_panel/render_options_panel.gd:500
 msgid "Compiling audio ..."
 msgstr "音声をコンパイル中..."
 
-#: scenes/render_options_panel/render_options_panel.gd:476
-#: scenes/render_options_panel/render_options_panel.gd:477
+#: scenes/render_options_panel/render_options_panel.gd:501
+#: scenes/render_options_panel/render_options_panel.gd:502
 msgid "Sending data ..."
 msgstr "データを送信中..."
 
-#: scenes/render_options_panel/render_options_panel.gd:478
+#: scenes/render_options_panel/render_options_panel.gd:503
 msgid "Sending final frame ..."
 msgstr "最終フレームを送信中..."
 
-#: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-msgid "Confirm"
-msgstr "確認"
+#: scenes/startup_screen/startup_screen.tscn
+msgid "GoZen"
+msgstr "GoZen"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Version: "
 msgstr "バージョン: "
 
 #: scenes/startup_screen/startup_screen.tscn
+msgid "The creator of the startup picture you're seeing right now."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Open a previously created project through your file explorer."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Go to the menu to set the settings of your new project."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Create new project"
 msgstr "新規プロジェクト作成"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid ""
+"Quick option to create a horizontal project with settings defined in the "
+"editor settings menu."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid ""
+"Quick option to create a vertical project with settings defined in the "
+"editor settings menu."
+msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Getting started"
 msgstr "はじめに"
 
-#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:53
+#: scenes/startup_screen/startup_screen.tscn
+msgid "External link to the GoZen website."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "External link to the GoZen manual."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "External link to GoZen tutorials."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "External link to the Discord server."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "External link to the Ko-fi page."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:51
 msgid "New project"
 msgstr "新規プロジェクト"
 
@@ -1078,6 +1246,15 @@ msgid "The video framerate (fps)."
 msgstr "ビデオのフレームレート (fps)。"
 
 #: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Track amount"
+msgstr "デフォルトトラック数"
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Amount of tracks in the timeline."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Advanced options"
 msgstr "詳細オプション"
 
@@ -1085,16 +1262,21 @@ msgstr "詳細オプション"
 msgid "Return"
 msgstr "戻る"
 
-#: scenes/startup_screen/startup_screen.gd:70
+#: scenes/startup_screen/startup_screen.gd:80
 msgid "Image by"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:211
-#: scenes/startup_screen/startup_screen.gd:262 scripts/autoloads/project.gd:101
+#: scenes/startup_screen/startup_screen.gd:193
+#, fuzzy
+msgid "User presets"
+msgstr "プロジェクトを保存"
+
+#: scenes/startup_screen/startup_screen.gd:247
+#: scenes/startup_screen/startup_screen.gd:315 scripts/autoloads/project.gd:104
 msgid "GoZen project file"
 msgstr "GoZen プロジェクトファイル"
 
-#: scenes/startup_screen/startup_screen.gd:260
+#: scenes/startup_screen/startup_screen.gd:313
 msgid "Select project save path"
 msgstr "プロジェクト保存パスを選択"
 
@@ -1118,102 +1300,128 @@ msgstr "タイプ"
 msgid "Delete the selected marker."
 msgstr "選択したマーカーを削除します。"
 
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#, fuzzy
-msgid "Waveform modifier"
-msgstr "波形増幅"
+#: effects/text_effect_ui.gd:47
+msgid "Text ..."
+msgstr ""
 
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-msgid "Audio offset"
-msgstr "音声オフセット"
-
-#: scenes/audio_take_over_popup/audio_take_over_popup.tscn
-#, fuzzy
-msgid "Auto align"
-msgstr "自動保存"
-
-#: effects/text_effect_ui.gd:124
+#: effects/text_effect_ui.gd:126
 msgid "Keyframes"
 msgstr "キーフレーム"
 
-#: scripts/autoloads/project.gd:54
+#: effects/visual/mask_ui.gd:27
+msgid "Clear Mask Points"
+msgstr ""
+
+#: scripts/autoloads/project.gd:52
 msgid "Initialize new project ..."
 msgstr "新規プロジェクトを初期化中..."
 
-#: scripts/autoloads/project.gd:66
+#: scripts/autoloads/project.gd:65
 msgid "Setting up playback ..."
 msgstr "再生をセットアップ中..."
 
-#: scripts/autoloads/project.gd:67 scripts/autoloads/project.gd:160
+#: scripts/autoloads/project.gd:66 scripts/autoloads/project.gd:255
 msgid "Finalizing ..."
 msgstr "仕上げ中..."
 
-#: scripts/autoloads/project.gd:122
+#: scripts/autoloads/project.gd:114
+#, fuzzy
+msgid "Archive project as ..."
+msgstr "名前を付けてプロジェクトを保存..."
+
+#: scripts/autoloads/project.gd:116
+msgid "ZIP Archive"
+msgstr ""
+
+#: scripts/autoloads/project.gd:129
+#, fuzzy
+msgid "Archiving project"
+msgstr "プロジェクトを読み込み中"
+
+#: scripts/autoloads/project.gd:130
+#, fuzzy
+msgid "Preparing files ..."
+msgstr "ファイルを検索..."
+
+#: scripts/autoloads/project.gd:217
 msgid "Setting up timeline ..."
 msgstr "タイムラインをセットアップ中..."
 
-#: scripts/autoloads/project.gd:131
+#: scripts/autoloads/project.gd:225
 msgid "Loading project files ..."
 msgstr "プロジェクトファイルを読み込み中..."
 
-#: scripts/autoloads/project.gd:180
+#: scripts/autoloads/project.gd:274
 msgid "GoZen project files"
 msgstr "GoZen プロジェクトファイル"
 
-#: scripts/autoloads/project.gd:235
+#: scripts/autoloads/project.gd:331
 msgid "Don't save"
 msgstr "保存しない"
 
-#: scripts/autoloads/project.gd:239
+#: scripts/autoloads/project.gd:335
 msgid "Close without saving"
 msgstr "保存せずに閉じる"
 
-#: scripts/autoloads/project.gd:240
+#: scripts/autoloads/project.gd:336
 msgid "Save"
 msgstr "保存"
 
-#: scripts/autoloads/command_manager.gd:13
-msgid "Open editor settings"
-msgstr "エディター設定を開く"
-
-#: scripts/autoloads/command_manager.gd:14
-msgid "Open project settings"
-msgstr "プロジェクト設定を開く"
-
-#: scripts/autoloads/command_manager.gd:15
-msgid "open render menu"
-msgstr "書き出しメニューを開く"
-
-#: scripts/logic/file_logic.gd:235
+#: scripts/logic/file_logic.gd:246
 msgid "Update existing clips?"
 msgstr "既存のクリップを更新しますか？"
 
-#: scripts/logic/file_logic.gd:236
+#: scripts/logic/file_logic.gd:247
+#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
-"Do you want to apply the Audio-Take-Over changes to all existing clips?"
+"Do you want to apply the replace the audio in toall existing clips?"
 msgstr ""
 "このファイルは現在 '%d' 個のクリップで使用されています。\n"
 "音声テイクオーバーの変更をすべての既存クリップに適用しますか？"
 
-#: scripts/logic/file_logic.gd:237
+#: scripts/logic/file_logic.gd:248
 msgid "Apply to All"
 msgstr "すべてに適用"
 
-#: scripts/logic/file_logic.gd:241
+#: scripts/logic/file_logic.gd:252
 msgid "Apply to File Only"
 msgstr "ファイルのみに適用"
 
-#: scripts/logic/file_logic.gd:335
+#: scripts/logic/file_logic.gd:348
 msgid "Files dropped"
 msgstr "ファイルがドロップされました"
 
-#: scripts/logic/file_logic.gd:350
+#: scripts/logic/file_logic.gd:363
 msgid "Files loading ..."
 msgstr "ファイルを読み込み中..."
 
-msgid "GoZen"
-msgstr "GoZen"
+#~ msgid "Audio-take-over"
+#~ msgstr "音声テイクオーバー"
+
+#~ msgid "Clip audio-take-over"
+#~ msgstr "クリップ音声テイクオーバー"
+
+#~ msgid "Base color"
+#~ msgstr "ベースカラー"
+
+#~ msgid "The base color of the editor UI."
+#~ msgstr "エディターUIの基本色。"
+
+#~ msgid "Accent color"
+#~ msgstr "アクセントカラー"
+
+#~ msgid "The highlight/accent color of the editor UI."
+#~ msgstr "エディターUIのハイライト/アクセント色。"
+
+#~ msgid "Open editor settings"
+#~ msgstr "エディター設定を開く"
+
+#~ msgid "Open project settings"
+#~ msgstr "プロジェクト設定を開く"
+
+#~ msgid "open render menu"
+#~ msgstr "書き出しメニューを開く"
 
 #~ msgid "Create render profile"
 #~ msgstr "書き出しプロファイルを作成"

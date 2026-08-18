@@ -515,17 +515,17 @@ func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[E
 	return new_effects
 
 
-func apply_audio_take_over(clip: ClipData, audio_file: int, offset: float) -> void:
+func apply_replace_audio(clip: ClipData, audio_file: int, offset: float) -> void:
 	var effects: ClipEffects = clip.effects
 	var active: bool = audio_file != -1
 
-	InputManager.undo_redo.create_action("Set clip Audio-Take-Over")
-	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(clip, active, audio_file, offset))
-	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(clip, effects.ato_active, effects.ato_file, effects.ato_offset))
+	InputManager.undo_redo.create_action("Set clip replace audio")
+	InputManager.undo_redo.add_do_method(_apply_replace_audio.bind(clip, active, audio_file, offset))
+	InputManager.undo_redo.add_undo_method(_apply_replace_audio.bind(clip, effects.ato_active, effects.ato_file, effects.ato_offset))
 	InputManager.undo_redo.commit_action()
 
 
-func _apply_audio_take_over(clip: ClipData, active: bool, audio_file_id: int, offset: float) -> void:
+func _apply_replace_audio(clip: ClipData, active: bool, audio_file_id: int, offset: float) -> void:
 	var effects: ClipEffects = clip.effects
 
 	effects.ato_active = active
@@ -581,9 +581,9 @@ func switch_ato_active(clip: ClipData) -> void:
 
 func set_ato_active(clip: ClipData, value: bool) -> void:
 	if value:
-		InputManager.undo_redo.create_action("Enable clip audio take over")
+		InputManager.undo_redo.create_action("Enable clip 'replace audio'")
 	else:
-		InputManager.undo_redo.create_action("Disable clip audio take over")
+		InputManager.undo_redo.create_action("Disable clip 'replace audio'")
 	InputManager.undo_redo.add_do_method(_set_ato_active.bind(clip.effects, value))
 	InputManager.undo_redo.add_undo_method(_set_ato_active.bind(clip.effects, !value))
 	InputManager.undo_redo.commit_action()

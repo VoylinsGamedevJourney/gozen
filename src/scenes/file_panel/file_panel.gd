@@ -12,9 +12,9 @@ enum PopupAction {
 	CREATE_PROXY,
 	RECREATE_PROXY,
 	REMOVE_PROXY,
-	AUDIO_TAKE_OVER,
-	AUDIO_TAKE_OVER_ENABLE,
-	AUDIO_TAKE_OVER_DISABLE,
+	REPLACE_AUDIO,
+	REPLACE_AUDIO_ENABLE,
+	REPLACE_AUDIO_DISABLE,
 	OPEN_IN_FILE_MANAGER,
 	COPY_PATH,
 
@@ -134,7 +134,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				else:
 					popup.add_item(tr("Re-create proxy"), PopupAction.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), PopupAction.REMOVE_PROXY)
-			popup.add_item(tr("Audio-take-over"), PopupAction.AUDIO_TAKE_OVER)
+			popup.add_item(tr("Replace audio"), PopupAction.REPLACE_AUDIO)
 			popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
 		elif file.type == EditorCore.Type.TEXT:
 			popup.add_separator(tr("Text options"))
@@ -175,7 +175,7 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		PopupAction.CREATE_PROXY: _on_popup_action_file_create_proxy()
 		PopupAction.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
 		PopupAction.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
-		PopupAction.AUDIO_TAKE_OVER: _on_popup_action_audio_take_over()
+		PopupAction.REPLACE_AUDIO: _on_popup_action_replace_audio()
 		PopupAction.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
 		PopupAction.COPY_PATH: _on_popup_action_copy_path()
 
@@ -302,9 +302,9 @@ func _on_popup_action_file_remove_proxy() -> void:
 	ProxyHandler.delete_proxy(file)
 
 
-func _on_popup_action_audio_take_over() -> void:
+func _on_popup_action_replace_audio() -> void:
 	# TODO: Add this to undo_redo!
-	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
+	var popup: Control = PopupManager.get_popup(PopupManager.REPLACE_AUDIO)
 	popup.call("load_data", tree.get_selected().get_metadata(0), true)
 
 

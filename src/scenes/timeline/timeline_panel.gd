@@ -3,7 +3,7 @@ extends PanelContainer
 
 enum PopupAction {
 	# Clip options.
-	CLIP_DELETE, CLIP_SPLIT, CLIP_AUDIO_TAKE_OVER,
+	CLIP_DELETE, CLIP_SPLIT, CLIP_REPLACE_AUDIO,
 	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
 	# Track options.
 	REMOVE_EMPTY_SPACE, TRACK_ADD, TRACK_REMOVE, TRACK_TOGGLE_VISIBLE,
@@ -786,7 +786,7 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if right_click_clip.type == EditorCore.Type.VIDEO:
 		popup.add_separator(tr("Video options"))
-		popup.add_item(tr("Clip audio-take-over"), PopupAction.CLIP_AUDIO_TAKE_OVER)
+		popup.add_item(tr("Clip replace audio"), PopupAction.CLIP_REPLACE_AUDIO)
 
 		var file: FileData = FileLogic.files[right_click_clip.file]
 		if file.audio_streams.size() > 1:
@@ -812,7 +812,7 @@ func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 	match id:
 		PopupAction.CLIP_DELETE: _on_popup_action_clip_delete()
 		PopupAction.CLIP_SPLIT: _on_popup_action_clip_split()
-		PopupAction.CLIP_AUDIO_TAKE_OVER: _on_popup_action_clip_ato()
+		PopupAction.CLIP_REPLACE_AUDIO: _on_popup_action_clip_ato()
 		PopupAction.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
 		PopupAction.CLIP_RESET_SPEED: _on_popup_action_clip_reset_speed()
 		PopupAction.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
@@ -837,7 +837,7 @@ func _on_popup_action_remove_empty_space() -> void:
 
 
 func _on_popup_action_clip_ato() -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.AUDIO_TAKE_OVER)
+	var popup: Control = PopupManager.get_popup(PopupManager.REPLACE_AUDIO)
 	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
 	popup.load_data(right_click_clip.id, false)
 

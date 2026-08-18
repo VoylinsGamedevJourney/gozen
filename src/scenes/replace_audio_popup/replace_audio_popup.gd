@@ -26,7 +26,7 @@ var _scrub_time: float = -1.0
 func _ready() -> void:
 	for wave: ATOWave in [file_a_wave, file_b_wave]:
 		if wave.zoom_requested.connect(_on_wave_zoom_requested):
-			printerr("AudioTakeOverPopup: Couldn't connect 'zoom_requested' on '%s'!" % wave)
+			printerr("ReplaceAudioPopup: Couldn't connect 'zoom_requested' on '%s'!" % wave)
 
 
 func _on_wave_zoom_requested(new_duration: float) -> void:
@@ -128,7 +128,7 @@ func load_data(id: int, is_file: bool) -> void:
 	file_a_player.stream = FileLogic.get_audio_stream(file_a, 0)
 
 
-func _on_take_over_audio_button_pressed() -> void:
+func _on_replace_audio_button_pressed() -> void:
 	var file_b: FileData = FileLogic.files.get(file_b_id)
 	if file_b == null:
 		file_b = FileData.new()
@@ -137,11 +137,11 @@ func _on_take_over_audio_button_pressed() -> void:
 	if current_file_id != -1:
 		var file_a: FileData = FileLogic.files.get(current_file_id)
 		if file_a:
-			FileLogic.apply_audio_take_over(file_a, file_b, offset_spinbox.value)
+			FileLogic.apply_replace_audio(file_a, file_b, offset_spinbox.value)
 	elif current_clip_id != -1:
 		var clip: ClipData = ClipLogic.clips.get(current_clip_id)
 		if clip:
-			ClipLogic.apply_audio_take_over(clip, file_b_id, offset_spinbox.value)
+			ClipLogic.apply_replace_audio(clip, file_b_id, offset_spinbox.value)
 	PopupManager.close_all()
 
 

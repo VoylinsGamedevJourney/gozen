@@ -62,7 +62,7 @@ func deserialize(data: Dictionary) -> void:
 	ato_active = data.get("ato_active", false)
 	ato_offset = data.get("ato_offset", 0.0)
 	ato_file = data.get("ato_file", -1)
-	audio_streams = data.get("audio_streams", [])
+	audio_streams.assign(data.get("audio_streams", []) as Array[int])
 
 	if data.has("temp_file"):
 		var tempfile_value: Variant = data["temp_file"]

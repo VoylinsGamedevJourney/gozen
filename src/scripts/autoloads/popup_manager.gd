@@ -11,7 +11,7 @@ enum {
 	MODULE_MANAGER,
 	RECENT_PROJECTS,
 	ADD_EFFECTS,
-	AUDIO_TAKE_OVER }
+	REPLACE_AUDIO }
 
 
 var _open_popups: Dictionary [int, Control] = {}
@@ -26,7 +26,7 @@ var _popup_uids: Dictionary [int, String] = {
 	MODULE_MANAGER: Library.SCENE_MODULE_MANAGER,
 	RECENT_PROJECTS: Library.SCENE_RECENT_PROJECTS,
 	ADD_EFFECTS: Library.SCENE_ADD_EFFECTS,
-	AUDIO_TAKE_OVER: Library.SCENE_AUDIO_TAKE_OVER }
+	REPLACE_AUDIO: Library.SCENE_REPLACE_AUDIO }
 var _control: Control = Control.new()
 var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
 

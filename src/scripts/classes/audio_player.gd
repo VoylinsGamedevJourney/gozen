@@ -60,7 +60,7 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 	elif !ClipLogic.clips.has(audio_clip.id):
 		return stop()
 
-	# Audio-take-over logic.
+	# Replace audio logic.
 	var target_file: FileData = FileLogic.files[audio_clip.file]
 	var time_offset: float = 0.0
 	if audio_clip.effects.ato_active and audio_clip.effects.ato_file != -1:

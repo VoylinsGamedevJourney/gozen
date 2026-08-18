@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://c3c08cihs1see"]
 
-[ext_resource type="Script" uid="uid://b7gl7xgmp5prv" path="res://scenes/audio_take_over_popup/audio_take_over_popup.gd" id="1_6g3wj"]
+[ext_resource type="Script" uid="uid://b7gl7xgmp5prv" path="res://scenes/replace_audio_popup/replace_audio_popup.gd" id="1_6g3wj"]
 [ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="2_8tgyo"]
-[ext_resource type="Script" uid="uid://bpy8rtg87clbh" path="res://scenes/audio_take_over_popup/audio_take_over_wave.gd" id="3_8tgyo"]
+[ext_resource type="Script" uid="uid://bpy8rtg87clbh" path="res://scenes/replace_audio_popup/replace_audio_wave.gd" id="3_8tgyo"]
 
 [node name="MarkerPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
 layout_mode = 3
@@ -65,7 +65,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
-text = "Audio-take-over"
+text = "Replace Audio"
 
 [node name="AudioWaveModifier" type="Label" parent="Panel/Margin/VBox/Panel/Margin/VBox/TopHBox" unique_id=456178456]
 layout_mode = 2
@@ -157,7 +157,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Auto align"
 
-[node name="TakeOverAudioButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
+[node name="ReplaceAudioButton" type="Button" parent="Panel/Margin/VBox/Panel/Margin/VBox/HBox" unique_id=1296090825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"main_button"
@@ -175,4 +175,4 @@ text = "Confirm"
 [connection signal="seek_requested" from="Panel/Margin/VBox/Panel/Margin/VBox/OptionsGrid/FileBColorRect" to="." method="_on_wave_seek_request"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/AutoAlignButton" to="." method="_on_auto_align_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/TakeOverAudioButton" to="." method="_on_take_over_audio_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/Panel/Margin/VBox/HBox/ReplaceAudioButton" to="." method="_on_replace_audio_button_pressed"]

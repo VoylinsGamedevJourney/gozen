@@ -231,7 +231,7 @@ func paste_image(image: Image) -> FileData:
 	return file
 
 
-func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) -> void:
+func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) -> void:
 	var active: bool = audio_file.id != -1
 	var affected_clips: Array[ClipData] = []
 	for clip: ClipData in ClipLogic.clips.values():
@@ -244,7 +244,7 @@ func apply_audio_take_over(file: FileData, audio_file: FileData, offset: float) 
 
 	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
 		tr("Update existing clips?"),
-		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the Audio-Take-Over changes to all existing clips?") % affected_clips.size())
+		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the replace the audio in toall existing clips?") % affected_clips.size())
 	dialog.get_ok_button().text = tr("Apply to All")
 	dialog.get_cancel_button().text = tr("Cancel")
 
@@ -266,21 +266,21 @@ func _commit_ato(file: FileData, active: bool, audio_file_id: int, offset: float
 	var old_file: int = file.ato_file
 	var old_offset: float = file.ato_offset
 
-	InputManager.undo_redo.create_action("Set file audio-take-over")
-	InputManager.undo_redo.add_do_method(_apply_audio_take_over.bind(file, active, audio_file_id, offset))
-	InputManager.undo_redo.add_undo_method(_apply_audio_take_over.bind(file, old_active, old_file, old_offset))
+	InputManager.undo_redo.create_action("Replace file audio")
+	InputManager.undo_redo.add_do_method(_apply_replace_audio.bind(file, active, audio_file_id, offset))
+	InputManager.undo_redo.add_undo_method(_apply_replace_audio.bind(file, old_active, old_file, old_offset))
 
 	if update_clips: # Clips Undo/Redo
 		for clip: ClipData in clips:
 			var effects: ClipEffects = clip.effects
-			InputManager.undo_redo.add_do_method(ClipLogic._apply_audio_take_over.bind(
+			InputManager.undo_redo.add_do_method(ClipLogic._apply_replace_audio.bind(
 					clip, active, audio_file_id, offset))
-			InputManager.undo_redo.add_undo_method(ClipLogic._apply_audio_take_over.bind(
+			InputManager.undo_redo.add_undo_method(ClipLogic._apply_replace_audio.bind(
 					clip, effects.ato_active, effects.ato_file, effects.ato_offset))
 	InputManager.undo_redo.commit_action()
 
 
-func _apply_audio_take_over(file: FileData, active: bool, audio_file_id: int, offset: float) -> void:
+func _apply_replace_audio(file: FileData, active: bool, audio_file_id: int, offset: float) -> void:
 	file.ato_active = active
 	file.ato_file = audio_file_id
 	file.ato_offset = offset
@@ -926,9 +926,9 @@ func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> v
 
 func toggle_ato(file: FileData) -> void:
 	if file.ato_active:
-		InputManager.undo_redo.create_action("Disable file audio take over")
+		InputManager.undo_redo.create_action("Disable file 'replace audio'")
 	else:
-		InputManager.undo_redo.create_action("Enable file audio take over")
+		InputManager.undo_redo.create_action("Enable file 'replace audio'")
 	InputManager.undo_redo.add_do_method(_toggle_ato.bind(file, !file.ato_active))
 	InputManager.undo_redo.add_undo_method(_toggle_ato.bind(file, file.ato_active))
 	InputManager.undo_redo.commit_action()
