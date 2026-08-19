@@ -5,6 +5,7 @@ const USER_PROFILES_PATH: String = "user://profiles/render/"
 
 
 @export var button_save_render_profile: Button
+@export var button_set_default_profile: Button
 @export var option_button_render_profiles: OptionButton
 @export var grid_audio: GridContainer
 @export var button_render_draft: CheckButton
@@ -53,7 +54,6 @@ func _ready() -> void:
 	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Project.render_region_updated.connect(_on_render_region_updated)
-	RenderManager.update_encoder_status.connect(update_encoder_status)
 
 	video_quality_hslider.value_changed.connect(func(value: float) -> void:
 			video_quality_spin_box.set_value_no_signal(absf(value))
@@ -73,9 +73,12 @@ func _ready() -> void:
 	video_codec_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 	audio_codec_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 	audio_channels_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
+
+	button_set_default_profile.pressed.connect(_on_set_default_profile_button_pressed)
 	@warning_ignore_restore("return_value_discarded")
 
 	button_save_render_profile.visible = false
+
 	_setup_codec_option_buttons()
 	_add_default_profiles()
 
@@ -100,8 +103,16 @@ func _ready() -> void:
 	threads_spin_box.max_value = OS.get_processor_count()
 
 	_on_render_audio_check_button_toggled(true)
-	option_button_render_profiles.select(0) # Setting "YouTube" as default.
-	_on_render_profile_option_button_item_selected(0)
+
+	var default_profile: String = Settings.get_default_render_profile()
+	var default_index: int = 0
+	for i: int in option_button_render_profiles.item_count:
+		if option_button_render_profiles.get_item_text(i) == default_profile:
+			default_index = i
+			break
+
+	option_button_render_profiles.select(default_index)
+	_on_render_profile_option_button_item_selected(default_index)
 	button_save_render_profile.visible = false
 	_on_project_ready()
 
@@ -175,6 +186,29 @@ func _setup_codec_option_buttons() -> void:
 
 	audio_channels_option_button.add_item("Stereo", 2)
 	audio_channels_option_button.add_item("Mono", 1)
+
+
+func _on_set_default_profile_button_pressed() -> void:
+	var index: int = option_button_render_profiles.selected
+	if index != -1:
+		var profile_name: String = option_button_render_profiles.get_item_text(index)
+		Settings.set_default_render_profile(profile_name)
+		Settings.save()
+		NotificationManager.info("Default render profile set to '%s'." % profile_name)
+
+
+func apply_profile_by_name(profile_name: String) -> void:
+	var found_index: int = -1
+	for i: int in option_button_render_profiles.item_count:
+		if option_button_render_profiles.get_item_text(i) == profile_name:
+			found_index = i
+			break
+
+	if found_index != -1:
+		option_button_render_profiles.select(found_index)
+		_on_render_profile_option_button_item_selected(found_index)
+	else:
+		printerr("RenderOptionsPanel: Profile '%s' not found, using default." % profile_name)
 
 
 func _delete_custom_profile(index: int) -> void:
@@ -326,49 +360,14 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 		audio_codec_option_button.select(audio_codec_index)
 
 
-func _render_finished() -> void:
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rendering finished"))
-	dialog.dialog_text = "Path: %s\n" % path_line_edit.text
-	dialog.dialog_text += "Render time: %s" % Utils.format_time_str(
-			RenderManager.encoding_time / 1000.0)
-	dialog.exclusive = true
-
-	add_child(dialog)
-	dialog.popup_centered()
-	PopupManager.close(PopupManager.PROGRESS)
-	progress_overlay = null
-
-
-func _cancel_render() -> void:
-	RenderManager.cancel_encoding = true
-
-
-func _show_error(message: String) -> void:
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Error whilst rendering video"))
-	dialog.dialog_text = message
-	dialog.exclusive = true
-
-	add_child(dialog)
-	dialog.popup_centered()
-	PopupManager.close(PopupManager.PROGRESS)
-	progress_overlay = null
-
-
 func _on_start_render_button_pressed() -> void:
-	# NOTE: This needs to improve later on to create an estimate instead of 500MB.
-	# Disk space check.
-	var video_codec_id: int = video_codec_option_button.get_selected_id()
-	var audio_codec_id: int = audio_codec_option_button.get_selected_id()
-	if !grid_audio.visible:
-		audio_codec_id = Encoder.AudioCodec.A_NONE
-
 	var export_path: String = path_line_edit.text
 	if export_path.is_empty():
 		export_path = Project.get_project_path().get_basename() + _get_current_extension()
 
 	var dir: DirAccess = DirAccess.open(export_path.get_base_dir())
-	if dir.get_space_left() < 500 * 1024 * 1024:
-		return _show_error("Warning: Low disk space! Less than 500MB available in export location..")
+	if dir and dir.get_space_left() < 500 * 1024 * 1024:
+		return RenderManager.show_error("Warning: Low disk space! Less than 500MB available in export location..")
 
 	var start_frame: int = 0
 	var end_frame: int = Project.data.timeline_end
@@ -376,146 +375,40 @@ func _on_start_render_button_pressed() -> void:
 		start_frame = int(region_start_spinbox.value)
 		end_frame = int(region_end_spinbox.value)
 		if start_frame > end_frame:
-			return _show_error("Render region start frame cannot be after the end frame.")
+			return RenderManager.show_error("Render region start frame cannot be after the end frame.")
 
-	if FileAccess.file_exists(export_path):
+	var is_quick_render: bool = OS.get_cmdline_args().has("--render-quick")
+
+	var profile: RenderProfile = RenderProfile.new()
+	profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VideoCodec
+	profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec if grid_audio.visible else Encoder.AudioCodec.A_NONE
+	profile.audio_channels = audio_channels_option_button.get_selected_id() as RenderProfile.AudioChannels
+	profile.crf = int(video_quality_spin_box.value)
+	profile.gop = int(video_gop_spin_box.value)
+	profile.b_frames = int(video_bframes_spin_box.value)
+	profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
+
+	var draft: bool = button_render_draft.button_pressed
+	var threads: int = int(threads_spin_box.value)
+
+	if FileAccess.file_exists(export_path) and not is_quick_render:
 		var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
 				tr("Overwrite file?"),
 				tr("A file already exists at the chosen export path. Do you want to overwrite it?"))
 
 		@warning_ignore_start("return_value_discarded")
 		dialog.confirmed.connect(func() -> void:
-				await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame))
+				RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
 		dialog.canceled.connect(dialog.queue_free)
 		@warning_ignore_restore("return_value_discarded")
 		dialog.popup_centered()
 	else:
-		await _start_render_process(export_path, video_codec_id, audio_codec_id, start_frame, end_frame)
+		RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft)
 
-	get_viewport().gui_get_focus_owner().release_focus()
-
-
-func _start_render_process(export_path: String, video_codec_id: int, audio_codec_id: int, start_frame: int = 0, end_frame: int = -1) -> void:
-	if end_frame == -1:
-		end_frame = Project.data.timeline_end
-	var draft: bool = button_render_draft.button_pressed
-	var render_resolution: Vector2i = Project.data.resolution
-	if draft:
-		var target_height: int = 480
-		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
-
-		render_resolution =	Vector2i(int(target_height * aspect), target_height)
-		Print.info("RenderOptionsPanel", "Draft mode enabled. Scaling to ", render_resolution)
-
-	if render_resolution.x % 2 != 0:
-		render_resolution.x += 1
-	if render_resolution.y % 2 != 0:
-		render_resolution.y += 1
-
-	# Printing info about the rendering process.
-	print("--------------------")
-	Print.header("Rendering process started")
-	Print.info("Path", export_path)
-	Print.info("Resolution", render_resolution)
-	Print.info("Framerate", Project.data.framerate)
-	Print.info("Video codec", video_codec_id)
-	Print.info("CRF", int(video_quality_spin_box.value))
-	Print.info("GOP", int(video_gop_spin_box.value))
-	Print.info("B-frames", int(video_bframes_spin_box.value))
-	if video_codec_option_button.get_selected_id() == Encoder.VideoCodec.V_H264:
-		Print.info("h264 preset", int(video_speed_hslider.value))
-	Print.info("Audio codec", audio_codec_id)
-	Print.info("Audio channels", audio_channels_option_button.get_selected_id())
-	Print.info("Cores/threads", threads_spin_box.value)
-	Print.info("Frames to process", end_frame - start_frame + 1)
-	print("--------------------")
-
-	# Resetting progress values.
-	progress_frame_increase = 90.0 / maxi(1, end_frame - start_frame)
-	current_progress = 0.0
-
-	# Changing icon to indicate that GoZen is rendering.
-	var gozen_icon: CompressedTexture2D = preload(Library.ICON_GOZEN)
-	var rendering_icon: CompressedTexture2D = preload(Library.ICON_RENDERING)
-
-	if OS.get_name().to_lower() == "windows":
-		DisplayServer.set_icon(rendering_icon.get_image())
-		status_indicator_id = DisplayServer.create_status_indicator(
-				rendering_icon, tr("Rendering"), Callable())
-
-	# Display the progress popup.
-	if progress_overlay != null:
-		PopupManager.close(PopupManager.PROGRESS)
-		progress_overlay = null
-
-	progress_overlay = PopupManager.get_popup(PopupManager.PROGRESS)
-	progress_overlay.update_title(tr("Rendering"))
-	progress_overlay.update(0, "")
-
-	var button: Button = Button.new()
-	var status_hbox: HBoxContainer = progress_overlay.get("status_hbox")
-	var status_label: Label = status_hbox.get_child(0)
-
-	button.text = tr("Cancel rendering")
-	@warning_ignore("return_value_discarded")
-	button.pressed.connect(_cancel_render)
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	status_hbox.add_child(button)
-
-	if OS.get_name().to_lower() == "windows":
-		DisplayServer.set_icon(gozen_icon.get_image())
-		DisplayServer.delete_status_indicator(status_indicator_id)
-
-	RenderManager.encoder = Encoder.new()
-	RenderManager.encoder.set_resolution(render_resolution)
-	RenderManager.encoder.set_framerate(Project.data.framerate)
-	RenderManager.encoder.set_file_path(export_path)
-	RenderManager.encoder.set_video_codec_id(video_codec_id)
-	RenderManager.encoder.set_crf(int(video_quality_spin_box.value))
-	RenderManager.encoder.set_h264_preset(int(video_speed_hslider.value))
-	RenderManager.encoder.set_gop_size(int(video_gop_spin_box.value))
-	RenderManager.encoder.set_b_frames(int(video_bframes_spin_box.value))
-	RenderManager.encoder.set_audio_codec_id(audio_codec_id)
-	RenderManager.encoder.set_audio_channels(audio_channels_option_button.get_selected_id())
-	RenderManager.encoder.set_threads(int(threads_spin_box.value))
-	await RenderManager.start_encoder(start_frame, end_frame)
-
-
-func update_encoder_status(status: RenderManager.Status) -> void:
-	if progress_overlay == null:
-		return printerr("RenderScreen: ProgressOverlay is null!")
-
-	var status_str: String = ""
-	match status:
-		# Errors, something went wrong.
-		RenderManager.Status.ERROR_OPEN: _show_error(tr("Error opening file"))
-		RenderManager.Status.ERROR_AUDIO: _show_error(tr("Error whilst sending audio"))
-		RenderManager.Status.ERROR_CANCELED:
-			PopupManager.close(PopupManager.PROGRESS)
-			progress_overlay = null
-
-		# Normal progress.
-		RenderManager.Status.SETUP: status_str = tr("Setting up ...")
-		RenderManager.Status.COMPILING_AUDIO: status_str = tr("Compiling audio ...")
-		RenderManager.Status.SENDING_AUDIO: status_str = tr("Compiling audio ...")
-		RenderManager.Status.SENDING_FRAMES: status_str = tr("Sending data ...")
-		RenderManager.Status.FRAMES_SEND: status_str = tr("Sending data ...")
-		RenderManager.Status.LAST_FRAMES: status_str = tr("Sending final frame ...")
-		RenderManager.Status.FINISHED: _render_finished()
-
-	if status >= 0:
-		if status == RenderManager.Status.FRAMES_SEND:
-			current_progress += progress_frame_increase # Update bar from 6 to 99.
-		else:
-			current_progress = status
-
-	var progress_int: int = floori(current_progress)
-	if progress_int == last_displayed_progress and status == RenderManager.Status.FRAMES_SEND:
-		return
-	last_displayed_progress = progress_int
-
-	if progress_overlay != null:
-		progress_overlay.update(progress_int, status_str)
+	if is_inside_tree():
+		var focus_owner: Control = get_viewport().gui_get_focus_owner()
+		if focus_owner:
+			focus_owner.release_focus()
 
 
 func _on_render_settings_changed() -> void:

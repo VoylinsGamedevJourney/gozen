@@ -10,7 +10,7 @@ static var instance: EditorUI
 @export var workspace_buttons_hbox: HBoxContainer
 
 
-# Workspace variables
+# Workspace variables.
 var workspace_buttons: Array[Button] = []
 var workspace_button_group: ButtonGroup = ButtonGroup.new()
 
@@ -61,27 +61,163 @@ func _ready() -> void:
 
 	Settings.on_show_menu_bar_changed.emit(Settings.get_show_menu_bar())
 
-	switch_workspace(0)
 	PhysicsServer2D.set_active(false)
 	PhysicsServer3D.set_active(false)
 
 	# Check if editor got opened with a project path as argument.
-	# TODO: Add following arguments:
-	# --new-h or --new = quickstarts a horizontal project (similar to the quickstart button in the start screen).
-	# --new-v = quickstarts a vertical project (similar to the quickstart button in the start screen).
+	# --new-h or --new-horizontal or --new = quickstarts a horizontal project (similar to the quickstart button in the start screen).
+	# --new-v or --new-vertical = quickstarts a vertical project (similar to the quickstart button in the start screen).
 	# --clean-settings = deletes the settings data.
 	# --clean-cache = deletes the cached data.
 	# --clean-all = deletes all the data which is stored in 'user://' (still need to figure out how to put stuff in .config instead of .local).
 	# --view = gives a video player instead of the editor with the current project playing in a loop.
 	# --render <output path> = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it shows the popup, after closing the popup the editor close. The output path is just the same folder and same name as the project file but with a different extension if no output path was provided.
-	# --render-quick = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it closes the editor completely. The output path is just the same folder and same name as the project file but with a different extension.
+	# --render-quick <output path> = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it closes the editor completely. The output path is just the same folder and same name as the project file but with a different extension.
+	# --render-profile <profile name> = uses the profile chosen to render the video out (only applicable with '--render' and '--render-quick').
 	# --safe-mode = starts the editor without any modules activated.
 	# --reset-layout = resets the editor layout to the default edit and render layouts.
-	for arg: String in OS.get_cmdline_args():
-		if arg.to_lower().ends_with(Project.EXTENSION):
-			await Project.open(arg)
+
+	var open_project_path: String = ""
+	var render_output_path: String = ""
+	var render_profile_name: String = ""
+
+	var is_view_mode: bool = false
+	var is_render_mode: bool = false
+	var is_quick_render_mode: bool = false
+
+	var is_clean_cache: bool = false
+	var is_clean_settings: bool = false
+
+	var create_new_horizontal: bool = false
+	var create_new_vertical: bool = false
+
+	var args: PackedStringArray = OS.get_cmdline_args()
+	var i: int = 0
+	while i < args.size():
+		var arg: String = args[i]
+		var clean_arg: String = arg.to_lower()
+
+		if clean_arg.ends_with(Project.EXTENSION): open_project_path = arg
+		# Opening new projects.
+		elif clean_arg in ["--new", "--new_h", "--new-horizontal"]: create_new_horizontal = true
+		elif clean_arg in ["--new_v", "--new-vertical"]: create_new_vertical = true
+		# Cleaning stuff.
+		elif clean_arg == "--clean-cache":    is_clean_cache = true
+		elif clean_arg == "--clean-settings": is_clean_settings = true
+		elif clean_arg == "--clean-all":
+			is_clean_cache = true
+			is_clean_settings = true
+		elif arg == "--reset-layout":
+			_delete_dir_contents(WorkspaceManager.WORKSPACES_DIR)
+			WorkspaceManager.available_workspaces.clear()
+		# Different modes.
+		elif clean_arg == "--view":
+			is_view_mode = true
+		elif clean_arg in ["--render", "--render-quick"]:
+			is_render_mode = true
+			is_quick_render_mode = clean_arg == "--render-quick"
+			if i + 1 < args.size() and not args[i + 1].begins_with("--") and not args[i + 1].ends_with(Project.EXTENSION):
+				render_output_path = args[i + 1]
+				i += 1
+		elif clean_arg == "--render-profile":
+			if i + 1 < args.size() and not args[i + 1].begins_with("--") and not args[i + 1].ends_with(Project.EXTENSION):
+				render_profile_name = args[i + 1]
+				i += 1
+		i += 1
+
+	if is_clean_cache:
+		_delete_dir_contents(Thumbnailer.thumb_folder)
+		_delete_dir_contents(FileLogic.wave_folder)
+		_delete_dir_contents(Settings.get_proxies_path())
+
+	if is_clean_settings:
+		Settings.data = SettingsData.new()
+		Settings.save()
+
+	if !open_project_path.is_empty():
+		await Project.open(open_project_path)
+	elif create_new_horizontal:
+		var request: Project.NewRequest = Project.NewRequest.new()
+		request.resolution = Settings.get_quick_create_horizontal_res()
+		request.framerate = Settings.get_quick_create_horizontal_fps()
+		Project.new_project(request)
+	elif create_new_vertical:
+		var request: Project.NewRequest = Project.NewRequest.new()
+		request.resolution = Settings.get_quick_create_vertical_res()
+		request.framerate = Settings.get_quick_create_vertical_fps()
+		Project.new_project(request)
+	else:
+		add_child(preload(Library.SCENE_STARTUP).instantiate())
+		return
+
+	if not is_view_mode and not is_render_mode:
+		switch_workspace(0)
+	else:
+		menu_bar.visible = false
+		workspace_buttons_hbox.visible = false
+
+		WorkspaceManager.workspace_root = workspaces.get_child(0)
+
+		var layout: WorkspaceLayout = WorkspaceLayout.new()
+		var view_tab: WorkspaceNode = WorkspaceNode.new()
+
+		layout.name = "ViewOnly"
+		view_tab.type = WorkspaceNode.Type.TAB
+		view_tab.panel_ids = ["ViewPanel"]
+
+		layout.root = view_tab
+
+		WorkspaceManager.current_workspace_layout = layout
+		WorkspaceManager._clear_workspace()
+
+		var root: Control = WorkspaceManager._build_node(layout.root)
+		WorkspaceManager.workspace_root.add_child(root)
+		root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+		if is_view_mode:
+			# TODO: Create a better view mode screen with playback controls.
+			if EditorCore.play_changed.connect(func(playing: bool) -> void:
+					if not playing and EditorCore.frame_nr >= Project.data.timeline_end:
+						EditorCore.set_frame(0)
+						EditorCore.on_play_pressed()): print_stack()
+			EditorCore.on_play_pressed()
+		elif is_render_mode:
+			await get_tree().process_frame
+			if RenderManager.update_encoder_status.connect(
+					_on_cli_render_status_check.bind(is_quick_render_mode)): print_stack()
+			await RenderManager.start_cli_render(render_output_path, render_profile_name)
+
+
+func _delete_dir_contents(path: String) -> void:
+	if not DirAccess.dir_exists_absolute(path): return
+	var dir: DirAccess = DirAccess.open(path)
+	if !dir: return
+
+	var _err: int = dir.list_dir_begin()
+	var file_name: String = dir.get_next()
+	while file_name != "":
+		if file_name in [".", ".."]: continue
+
+		var full_path: String = path.path_join(file_name)
+		if dir.current_is_dir():
+			_delete_dir_contents(full_path)
+			_err = dir.remove(file_name)
+		else:
+			_err = dir.remove(file_name)
+		file_name = dir.get_next()
+
+
+func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
+	if status in [RenderManager.Status.FINISHED, RenderManager.Status.ERROR_CANCELED]:
+		if is_quick_render:
+			get_tree().quit()
 			return
-	add_child(preload(Library.SCENE_STARTUP).instantiate())
+
+		var dialogs: Array[Node] = get_tree().root.find_children("*", "AcceptDialog", true, false)
+		for dialog: AcceptDialog in dialogs:
+			if not dialog.canceled.is_connected(get_tree().quit):
+				if dialog.canceled.connect(get_tree().quit): print_stack()
+				if dialog.confirmed.connect(get_tree().quit): print_stack()
 
 
 # --- Menu bar functions ---

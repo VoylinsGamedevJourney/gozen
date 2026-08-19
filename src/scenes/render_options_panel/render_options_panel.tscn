@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://8yvgi81apxxg" path="res://assets/icons/open.svg" id="1_kdl0e"]
 [ext_resource type="Script" uid="uid://dym1ks0g5svwb" path="res://scenes/render_options_panel/render_options_panel.gd" id="1_raodm"]
 
-[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 custom_minimum_size = Vector2(300, 100)
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,7 @@ size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_raodm")
 button_save_render_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
+button_set_default_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SetDefaultProfileButton")
 option_button_render_profiles = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
 grid_audio = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
 button_render_draft = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
@@ -73,6 +74,12 @@ layout_mode = 2
 size_flags_vertical = 4
 tooltip_text = "Save current presets as a custom render profile."
 text = "Save profile"
+
+[node name="SetDefaultProfileButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=1024341994]
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Set selected profile as the default render profile."
+text = "Set default"
 
 [node name="RenderProfileOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=871044819]
 layout_mode = 2

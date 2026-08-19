@@ -57,12 +57,10 @@ func new_project(request: NewRequest) -> void:
 	data.render_region = Vector2i(0, int(request.framerate * 60.0))
 	_setup_logic()
 
+	loading_overlay.update(50, tr("Setting up playback ..."))
 	for index: int in request.track_amount:
 		TrackLogic._add_track(index)
-	@warning_ignore("return_value_discarded")
-	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
-	loading_overlay.update(50, tr("Setting up playback ..."))
 	loading_overlay.update(99, tr("Finalizing ..."))
 	get_window().title = "GoZen - %s" % get_project_name()
 	_update_recent_projects(get_project_path())
@@ -217,9 +215,6 @@ func open(new_project_path: String) -> void:
 	loading_overlay.update(5, tr("Setting up timeline ..."))
 	set_framerate(data.framerate, true)
 	_setup_logic()
-
-	@warning_ignore("return_value_discarded")
-	EditorCore.loaded_clips.resize(TrackLogic.tracks.size())
 
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update(7, tr("Loading project files ..."))

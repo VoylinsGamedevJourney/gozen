@@ -315,7 +315,8 @@ func cleanup() -> void:
 
 	for buffers: Array in effect_buffers.values():
 		for buffer: RID in buffers:
-			if !Utils.cleanup_rid(device, buffer): print_stack()
+			@warning_ignore("return_value_discarded")
+			Utils.cleanup_rid(device, buffer)
 	effect_buffers.clear()
 
 	if display_texture:
@@ -340,7 +341,8 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 
 		if buffers.size() != effect.shader_passes:
 			for buffer: RID in buffers:
-				if !Utils.cleanup_rid(device, buffer): print_stack()
+				@warning_ignore("return_value_discarded")
+				Utils.cleanup_rid(device, buffer)
 			buffers.clear()
 
 			for i: int in effect.shader_passes:
@@ -356,7 +358,8 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 	for buffer_id: int in known_ids:
 		if buffer_id in active_ids: continue
 		for buffer: RID in effect_buffers[buffer_id]:
-			if !Utils.cleanup_rid(device, buffer): print_stack()
+			@warning_ignore("return_value_discarded")
+			Utils.cleanup_rid(device, buffer)
 
 		if !effect_buffers.erase(buffer_id):
 			printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)

@@ -50,15 +50,215 @@ var original_video_frame_cache_size: int = 30
 
 var stop_encoding: bool = false
 
+var progress_overlay: ProgressOverlay = null
+var progress_frame_increase: float = 0.0
+var current_progress: float = 0.0
+var last_displayed_progress: int = -1
+var status_indicator_id: int
+
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
-	Project.project_ready.connect(func() -> void: project_data = Project.data)
-
+	if Project.project_ready.connect(func() -> void: project_data = Project.data): print_stack()
+	if update_encoder_status.connect(_on_update_encoder_status): print_stack()
 
 
 # --- Render logic ---
+
+func get_render_profile(profile_name: String) -> RenderProfile:
+	var defaults: Array[String] = [
+		Library.RENDER_PROFILE_YOUTUBE,
+		Library.RENDER_PROFILE_YOUTUBE_HQ,
+		Library.RENDER_PROFILE_AV1,
+		Library.RENDER_PROFILE_VP9,
+		Library.RENDER_PROFILE_VP8,
+		Library.RENDER_PROFILE_HEVC
+	]
+	for path: String in defaults:
+		var profile: RenderProfile = load(path)
+		if profile and profile.profile_name == profile_name:
+			return profile
+
+	var user_path: String = "user://profiles/render/"
+	if DirAccess.dir_exists_absolute(user_path):
+		for file_name: String in DirAccess.get_files_at(user_path):
+			file_name = file_name.trim_suffix(".remap")
+			if not file_name.ends_with(".tres") and not file_name.ends_with(".res"): continue
+			var profile: RenderProfile = load(user_path.path_join(file_name))
+			if profile and profile.profile_name == profile_name:
+				return profile
+	return null
+
+
+func start_cli_render(export_path: String, profile_name: String) -> void:
+	if profile_name.is_empty():
+		profile_name = Settings.get_default_render_profile()
+
+	var profile: RenderProfile = get_render_profile(profile_name)
+	if not profile:
+		profile = get_render_profile("YouTube")
+		printerr("RenderManager: Profile '%s' not found, falling back to 'YouTube'." % profile_name)
+
+	var ext: String = Utils.get_video_extension(profile.video_codec)
+	if export_path.is_empty():
+		export_path = Project.get_project_path().get_basename() + ext
+	elif not export_path.ends_with(ext):
+		export_path += ext
+
+	var start_frame: int = 0
+	var end_frame: int = Project.data.timeline_end
+	if Project.data.use_render_region:
+		start_frame = Project.data.render_region.x
+		end_frame = Project.data.render_region.y
+		if start_frame > end_frame:
+			printerr("RenderManager: Render region start frame cannot be after the end frame.")
+			return
+
+	await start_render(export_path, profile, OS.get_processor_count() - 1, start_frame, end_frame, false)
+
+
+func start_render(export_path: String, profile: RenderProfile, threads: int, start_frame: int = 0, end_frame: int = -1, draft: bool = false) -> void:
+	if end_frame == -1:
+		end_frame = project_data.timeline_end
+
+	var render_resolution: Vector2i = project_data.resolution
+	if draft:
+		var target_height: int = 480
+		var aspect: float = float(render_resolution.x) / float(render_resolution.y)
+		render_resolution = Vector2i(int(target_height * aspect), target_height)
+		Print.info("RenderManager", "Draft mode enabled. Scaling to ", render_resolution)
+
+	if render_resolution.x % 2 != 0:
+		render_resolution.x += 1
+	if render_resolution.y % 2 != 0:
+		render_resolution.y += 1
+
+	print("--------------------")
+	Print.header("Rendering process started")
+	Print.info("Path", export_path)
+	Print.info("Resolution", render_resolution)
+	Print.info("Framerate", project_data.framerate)
+	Print.info("Video codec", profile.video_codec)
+	Print.info("CRF", profile.crf)
+	Print.info("GOP", profile.gop)
+	Print.info("B-frames", profile.b_frames)
+	if profile.video_codec == Encoder.VideoCodec.V_H264:
+		Print.info("h264 preset", profile.h264_preset)
+	Print.info("Audio codec", profile.audio_codec)
+	Print.info("Audio channels", profile.audio_channels)
+	Print.info("Cores/threads", threads)
+	Print.info("Frames to process", end_frame - start_frame + 1)
+	print("--------------------")
+
+	# Resetting progress values.
+	progress_frame_increase = 90.0 / maxi(1, end_frame - start_frame)
+	current_progress = 0.0
+
+	var gozen_icon: CompressedTexture2D = load(Library.ICON_GOZEN)
+	var rendering_icon: CompressedTexture2D = load(Library.ICON_RENDERING)
+
+	if OS.get_name().to_lower() == "windows":
+		DisplayServer.set_icon(rendering_icon.get_image())
+		status_indicator_id = DisplayServer.create_status_indicator(
+				rendering_icon, tr("Rendering"), Callable())
+
+	if progress_overlay != null:
+		PopupManager.close(PopupManager.PROGRESS)
+		progress_overlay = null
+
+	progress_overlay = PopupManager.get_popup(PopupManager.PROGRESS) as ProgressOverlay
+	progress_overlay.update_title(tr("Rendering"))
+	progress_overlay.update(0, "")
+
+	var button: Button = Button.new()
+	var status_hbox: HBoxContainer = progress_overlay.get("status_hbox")
+	var status_label: Label = status_hbox.get_child(0)
+
+	button.text = tr("Cancel rendering")
+	@warning_ignore("return_value_discarded")
+	button.pressed.connect(_cancel_render)
+	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	status_hbox.add_child(button)
+
+	if OS.get_name().to_lower() == "windows":
+		DisplayServer.set_icon(gozen_icon.get_image())
+		DisplayServer.delete_status_indicator(status_indicator_id)
+
+	encoder = Encoder.new()
+	encoder.set_resolution(render_resolution)
+	encoder.set_framerate(project_data.framerate)
+	encoder.set_file_path(export_path)
+	encoder.set_video_codec_id(profile.video_codec)
+	encoder.set_crf(profile.crf)
+	encoder.set_h264_preset(profile.h264_preset)
+	encoder.set_gop_size(profile.gop)
+	encoder.set_b_frames(profile.b_frames)
+	encoder.set_audio_codec_id(profile.audio_codec)
+	encoder.set_audio_channels(profile.audio_channels)
+	encoder.set_threads(threads)
+
+	await start_encoder(start_frame, end_frame)
+
+
+func _on_update_encoder_status(status: Status) -> void:
+	if progress_overlay == null:
+		return
+
+	var status_str: String = ""
+	match status:
+		Status.ERROR_OPEN: show_error(tr("Error opening file"))
+		Status.ERROR_AUDIO: show_error(tr("Error whilst sending audio"))
+		Status.ERROR_CANCELED:
+			PopupManager.close(PopupManager.PROGRESS)
+			progress_overlay = null
+
+		Status.SETUP: status_str = tr("Setting up ...")
+		Status.COMPILING_AUDIO: status_str = tr("Compiling audio ...")
+		Status.SENDING_AUDIO: status_str = tr("Compiling audio ...")
+		Status.SENDING_FRAMES: status_str = tr("Sending data ...")
+		Status.FRAMES_SEND: status_str = tr("Sending data ...")
+		Status.LAST_FRAMES: status_str = tr("Sending final frame ...")
+		Status.FINISHED: _render_finished()
+
+	if status >= 0:
+		if status == Status.FRAMES_SEND:
+			current_progress += progress_frame_increase
+		else:
+			current_progress = status
+
+	var progress_int: int = floori(current_progress)
+	if progress_int == last_displayed_progress and status == Status.FRAMES_SEND:
+		return
+	last_displayed_progress = progress_int
+
+	if progress_overlay != null:
+		progress_overlay.update(progress_int, status_str)
+
+
+func _render_finished() -> void:
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rendering finished"))
+	dialog.dialog_text = "Render time: %s" % Utils.format_time_str(encoding_time / 1000.0)
+	dialog.exclusive = true
+
+	get_tree().root.add_child(dialog)
+	dialog.popup_centered()
+	PopupManager.close(PopupManager.PROGRESS)
+	progress_overlay = null
+
+
+func _cancel_render() -> void: cancel_encoding = true
+
+
+func show_error(message: String) -> void:
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Error whilst rendering video"))
+	dialog.dialog_text = message
+	dialog.exclusive = true
+
+	get_tree().root.add_child(dialog)
+	dialog.popup_centered()
+	PopupManager.close(PopupManager.PROGRESS)
+	progress_overlay = null
+
 
 func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	is_encoding = true
@@ -82,6 +282,11 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	proxies_used = Settings.get_use_proxies()
 	if proxies_used:
 		Settings.set_use_proxies(false)
+
+		# Wait for tasks like video loading to finish first.
+		while Threader.tasks.size() > 0:
+			await get_tree().process_frame
+
 		# Necessary waiting time to make certain all clips are ready..
 		await RenderingServer.frame_post_draw
 		await get_tree().process_frame

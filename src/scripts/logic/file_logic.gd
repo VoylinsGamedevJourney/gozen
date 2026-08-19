@@ -442,6 +442,9 @@ func load_data(file: FileData) -> void:
 				printerr("FileLogic: Couldn't open audio stream!")
 				file_data[file.id] = AudioStreamWAV.new()
 		EditorCore.Type.PCK:
+			if OS.get_cmdline_args().has("--safe-mode"):
+				file_data[file.id] = null
+				return
 			if !ProjectSettings.load_resource_pack(file.path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 				file_data[file.id] = null
@@ -508,7 +511,8 @@ func _create_wave(file: FileData) -> void:
 	for stream_index: int in streams_to_process:
 		_create_wave_for_stream(file, stream_index)
 	call_deferred("_on_wave_ready", file)
-	Print.info("FileLogic", "Wave creation done for '%s'!" % file.nickname)
+	Print.info("FileLogic", "Wave creation/loading done for '%s'!" % file.nickname)
+
 
 func _create_wave_for_stream(file: FileData, stream_index: int) -> void:
 	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + "_" + str(stream_index) + ".wave"

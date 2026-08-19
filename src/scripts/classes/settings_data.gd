@@ -37,6 +37,9 @@ var delete_empty_modifier: int = KEY_NONE
 var empty_space_click_action: EmptySpaceClickAction = EmptySpaceClickAction.SEEK
 var show_time_mode_bar: bool = true
 
+# Rendering
+var default_render_profile: String = "YouTube"
+
 # Performance
 var video_smart_seek_threshold: int = 30
 var video_cache_size: int = 15 ## This is a ram eater, we should NOT set this too high.

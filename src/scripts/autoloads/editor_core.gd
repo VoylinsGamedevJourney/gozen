@@ -39,7 +39,7 @@ var time_elapsed: float = 0.0
 var frame_time: float = 0.0 ## Get's set when changing framerate.
 var skips: int = 0
 
-var data_ready: bool = true
+var data_ready: bool = false
 var data_set_frame: int = 0
 
 var clip_instances: Dictionary = {} ## { clip id: instance index }

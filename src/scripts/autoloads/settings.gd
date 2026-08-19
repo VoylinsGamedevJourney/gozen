@@ -451,6 +451,16 @@ func get_show_time_mode_bar() -> bool:
 	return data.show_time_mode_bar
 
 
+# --- Rendering set/get ---
+
+func set_default_render_profile(profile_name: String) -> void:
+	data.default_render_profile = profile_name
+
+
+func get_default_render_profile() -> String:
+	return data.default_render_profile
+
+
 # --- Performance set/get ---
 
 func set_video_smart_seek_threshold(value: int) -> void:
