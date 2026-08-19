@@ -239,7 +239,7 @@ func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) ->
 
 	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
 		tr("Update existing clips?"),
-		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the replace the audio in toall existing clips?") % affected_clips.size())
+		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the audio replacement to all existing clips?") % affected_clips.size())
 	dialog.get_ok_button().text = tr("Apply to All")
 	dialog.get_cancel_button().text = tr("Cancel")
 

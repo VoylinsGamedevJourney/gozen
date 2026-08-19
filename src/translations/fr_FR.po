@@ -6,170 +6,171 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scenes/effects_panel/effects_panel.gd:45
-msgid "Mute clip audio."
+#: scenes/effects_panel/effects_panel.gd:48
+#, fuzzy
+msgid "Enable clip audio."
 msgstr "Couper l'audio du clip."
 
-#: scenes/effects_panel/effects_panel.gd:257
+#: scenes/effects_panel/effects_panel.gd:268
 #, fuzzy
 msgid "Left Transition"
 msgstr "Options de la piste"
 
-#: scenes/effects_panel/effects_panel.gd:266
-#: scenes/effects_panel/effects_panel.gd:330
+#: scenes/effects_panel/effects_panel.gd:277
+#: scenes/effects_panel/effects_panel.gd:347
 #, fuzzy
 msgid "Visual Fade (frames)"
 msgstr "Effets visuels"
 
-#: scenes/effects_panel/effects_panel.gd:283
-#: scenes/effects_panel/effects_panel.gd:347
+#: scenes/effects_panel/effects_panel.gd:295
+#: scenes/effects_panel/effects_panel.gd:365
 #, fuzzy
 msgid "Audio Fade (frames)"
 msgstr "Formes d'onde audio"
 
-#: scenes/effects_panel/effects_panel.gd:300
-#: scenes/effects_panel/effects_panel.gd:362
+#: scenes/effects_panel/effects_panel.gd:313
+#: scenes/effects_panel/effects_panel.gd:381
 msgid "Style"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:321
+#: scenes/effects_panel/effects_panel.gd:338
 #, fuzzy
 msgid "Right Transition"
 msgstr "Options de la piste"
 
-#: scenes/effects_panel/effects_panel.gd:445
+#: scenes/effects_panel/effects_panel.gd:464
 #, fuzzy
 msgid "Audio Track"
 msgstr "Ajouter une piste"
 
-#: scenes/effects_panel/effects_panel.gd:519
+#: scenes/effects_panel/effects_panel.gd:546
 #, fuzzy
 msgid "Presets & Options"
 msgstr "Options de texte"
 
-#: scenes/effects_panel/effects_panel.gd:636 effects/text_effect_ui.gd:104
+#: scenes/effects_panel/effects_panel.gd:663 effects/text_effect_ui.gd:104
 msgid "Reset parameter"
 msgstr "Réinitialiser le paramètre"
 
-#: scenes/effects_panel/effects_panel.gd:702
-#: scenes/effects_panel/effects_panel.gd:1298
+#: scenes/effects_panel/effects_panel.gd:729
+#: scenes/effects_panel/effects_panel.gd:1326
 msgid "Default"
 msgstr "Par défaut"
 
-#: scenes/effects_panel/effects_panel.gd:732
+#: scenes/effects_panel/effects_panel.gd:760
 msgid "Left"
 msgstr "Gauche"
 
-#: scenes/effects_panel/effects_panel.gd:733
-#: scenes/effects_panel/effects_panel.gd:737
+#: scenes/effects_panel/effects_panel.gd:761
+#: scenes/effects_panel/effects_panel.gd:765
 msgid "Center"
 msgstr "Centre"
 
-#: scenes/effects_panel/effects_panel.gd:734
+#: scenes/effects_panel/effects_panel.gd:762
 msgid "Right"
 msgstr "Droite"
 
-#: scenes/effects_panel/effects_panel.gd:736
+#: scenes/effects_panel/effects_panel.gd:764
 msgid "Top"
 msgstr "Haut"
 
-#: scenes/effects_panel/effects_panel.gd:738
+#: scenes/effects_panel/effects_panel.gd:766
 msgid "Bottom"
 msgstr "Bas"
 
-#: scenes/effects_panel/effects_panel.gd:740
+#: scenes/effects_panel/effects_panel.gd:768
 msgid "Mix (Normal)"
 msgstr "Mixage (Normal)"
 
-#: scenes/effects_panel/effects_panel.gd:741
+#: scenes/effects_panel/effects_panel.gd:769
 msgid "Add"
 msgstr "Ajouter"
 
-#: scenes/effects_panel/effects_panel.gd:742
+#: scenes/effects_panel/effects_panel.gd:770
 msgid "Subtract"
 msgstr "Soustraire"
 
-#: scenes/effects_panel/effects_panel.gd:743
+#: scenes/effects_panel/effects_panel.gd:771
 msgid "Multiply"
 msgstr "Multiplier"
 
-#: scenes/effects_panel/effects_panel.gd:744
+#: scenes/effects_panel/effects_panel.gd:772
 msgid "Premultiplied Alpha"
 msgstr "Alpha prémultiplié"
 
-#: scenes/effects_panel/effects_panel.gd:746
+#: scenes/effects_panel/effects_panel.gd:774
 msgid "Thin"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:747
+#: scenes/effects_panel/effects_panel.gd:775
 #, fuzzy
 msgid "Extra Light"
 msgstr "Hauteur de piste"
 
-#: scenes/effects_panel/effects_panel.gd:748
+#: scenes/effects_panel/effects_panel.gd:776
 #, fuzzy
 msgid "Light"
 msgstr "Droite"
 
-#: scenes/effects_panel/effects_panel.gd:749
+#: scenes/effects_panel/effects_panel.gd:777
 msgid "Regular"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:750
+#: scenes/effects_panel/effects_panel.gd:778
 msgid "Medium"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:751
+#: scenes/effects_panel/effects_panel.gd:779
 msgid "Semi Bold"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:752
+#: scenes/effects_panel/effects_panel.gd:780
 msgid "Bold"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:753
+#: scenes/effects_panel/effects_panel.gd:781
 #, fuzzy
 msgid "Extra Bold"
 msgstr "Extras"
 
-#: scenes/effects_panel/effects_panel.gd:754
+#: scenes/effects_panel/effects_panel.gd:782
 msgid "Black"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:919
+#: scenes/effects_panel/effects_panel.gd:947
 msgid "Link X and Y"
 msgstr "Lier X et Y"
 
-#: scenes/effects_panel/effects_panel.gd:1155
+#: scenes/effects_panel/effects_panel.gd:1183
 msgid "Add effects"
 msgstr "Ajouter des effets"
 
-#: scenes/effects_panel/effects_panel.gd:1235
+#: scenes/effects_panel/effects_panel.gd:1263
 msgid "Presets"
 msgstr "Préréglages"
 
-#: scenes/effects_panel/effects_panel.gd:1254
+#: scenes/effects_panel/effects_panel.gd:1282
 #, fuzzy
 msgid "Reset effect"
 msgstr "Réinitialiser la vitesse"
 
-#: scenes/effects_panel/effects_panel.gd:1267
+#: scenes/effects_panel/effects_panel.gd:1295
 #, fuzzy
 msgid "Delete effect"
 msgstr "Supprimer le dossier"
 
-#: scenes/effects_panel/effects_panel.gd:1281
+#: scenes/effects_panel/effects_panel.gd:1309
 #, fuzzy
 msgid "Save as preset..."
 msgstr "Enregistrer la capture d'écran..."
 
-#: scenes/effects_panel/effects_panel.gd:1354
+#: scenes/effects_panel/effects_panel.gd:1382
 #: scenes/startup_screen/startup_screen.gd:363
 #, fuzzy
 msgid "Save preset"
 msgstr "Enregistrer le projet"
 
-#: scenes/effects_panel/effects_panel.gd:1355
+#: scenes/effects_panel/effects_panel.gd:1383
 #: scenes/startup_screen/startup_screen.gd:365
 #, fuzzy
 msgid "Preset name"
@@ -226,132 +227,132 @@ msgstr "Enregistrer la capture d'écran..."
 msgid "Save screenshot to project ..."
 msgstr "Enregistrer la capture dans le projet..."
 
-#: scenes/editor/editor.gd:96
+#: scenes/editor/editor.gd:232
 msgid "Save project"
 msgstr "Enregistrer le projet"
 
-#: scenes/editor/editor.gd:97 scripts/autoloads/project.gd:102
+#: scenes/editor/editor.gd:233 scripts/autoloads/project.gd:100
 msgid "Save project as ..."
 msgstr "Enregistrer le projet sous..."
 
-#: scenes/editor/editor.gd:98
+#: scenes/editor/editor.gd:234
 #, fuzzy
 msgid "Archive project ..."
 msgstr "Enregistrer le projet sous..."
 
-#: scenes/editor/editor.gd:100 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:245 scripts/autoloads/project.gd:273
+#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:245 scripts/autoloads/project.gd:268
 msgid "Open project"
 msgstr "Ouvrir le projet"
 
-#: scenes/editor/editor.gd:101 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:237 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "Projets récents"
 
-#: scenes/editor/editor.gd:103 scenes/settings_menu/settings_menu.gd:351
+#: scenes/editor/editor.gd:239 scenes/settings_menu/settings_menu.gd:351
 msgid "Project settings"
 msgstr "Paramètres du projet"
 
-#: scenes/editor/editor.gd:104
+#: scenes/editor/editor.gd:240
 msgid "Quit"
 msgstr "Quitter"
 
-#: scenes/editor/editor.gd:130
+#: scenes/editor/editor.gd:266
 msgid "Undo"
 msgstr "Annuler"
 
-#: scenes/editor/editor.gd:131
+#: scenes/editor/editor.gd:267
 msgid "Redo"
 msgstr "Rétablir"
 
-#: scenes/editor/editor.gd:152
+#: scenes/editor/editor.gd:288
 msgid "Save workspace"
 msgstr "Enregistrer l'espace de travail"
 
-#: scenes/editor/editor.gd:153 scenes/editor/editor.gd:255
+#: scenes/editor/editor.gd:289 scenes/editor/editor.gd:391
 msgid "New workspace"
 msgstr "Nouvelle espace de travail"
 
-#: scenes/editor/editor.gd:155 scenes/editor/editor.gd:173
+#: scenes/editor/editor.gd:291 scenes/editor/editor.gd:309
 msgid "Show panel titles"
 msgstr "Afficher les titres des paneaux"
 
-#: scenes/editor/editor.gd:156
+#: scenes/editor/editor.gd:292
 msgid "Panels"
 msgstr "Paneaux"
 
-#: scenes/editor/editor.gd:171
+#: scenes/editor/editor.gd:307
 msgid "Hide panel titles"
 msgstr "Masquer les titres des panneaux"
 
-#: scenes/editor/editor.gd:205 scenes/settings_menu/settings_menu.gd:105
+#: scenes/editor/editor.gd:341 scenes/settings_menu/settings_menu.gd:105
 #: scenes/settings_menu/settings_menu.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "Paramètres de l'éditeur"
 
-#: scenes/editor/editor.gd:206
+#: scenes/editor/editor.gd:342
 msgid "Module manager"
 msgstr "Gestionnaire de modules"
 
-#: scenes/editor/editor.gd:208
+#: scenes/editor/editor.gd:344
 msgid "Command bar"
 msgstr "Barre de commandes"
 
-#: scenes/editor/editor.gd:229
+#: scenes/editor/editor.gd:365
 msgid "Report bug"
 msgstr "Signaler un bug"
 
-#: scenes/editor/editor.gd:230 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "Manuel"
 
-#: scenes/editor/editor.gd:231 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:367 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "Tutoriels"
 
-#: scenes/editor/editor.gd:232 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:368 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:234 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:370 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "Site web"
 
-#: scenes/editor/editor.gd:235 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:371 scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr "Soutenir GoZen"
 
-#: scenes/editor/editor.gd:236 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:372 scenes/about_gozen/about_gozen.tscn
 msgid "About GoZen"
 msgstr "À propos de GoZen"
 
-#: scenes/editor/editor.gd:257
+#: scenes/editor/editor.gd:393
 msgid "Workspace name"
 msgstr "Nom de l'espace de travail"
 
-#: scenes/editor/editor.gd:317
+#: scenes/editor/editor.gd:453
 #, fuzzy
 msgid "Move Left"
 msgstr "Gauche"
 
-#: scenes/editor/editor.gd:320
+#: scenes/editor/editor.gd:456
 #, fuzzy
 msgid "Move Right"
 msgstr "Droite"
 
-#: scenes/editor/editor.gd:323 scenes/file_panel/file_panel.gd:122
+#: scenes/editor/editor.gd:459 scenes/file_panel/file_panel.gd:122
 msgid "Delete"
 msgstr "Supprimer"
 
-#: scenes/editor/editor.gd:370
+#: scenes/editor/editor.gd:506
 #, fuzzy
 msgid "Delete Workspace"
 msgstr "Supprimer le dossier"
 
-#: scenes/editor/editor.gd:371
+#: scenes/editor/editor.gd:507
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr ""
 
@@ -405,7 +406,7 @@ msgstr "Options d'image"
 msgid "Save image as ..."
 msgstr "Enregistrer l'image sous..."
 
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:788
+#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:830
 msgid "Video options"
 msgstr "Options vidéo"
 
@@ -523,27 +524,27 @@ msgstr "Muet"
 msgid "Locked"
 msgstr "Verrouillé"
 
-#: scenes/timeline/timeline_panel.gd:778
+#: scenes/timeline/timeline_panel.gd:820
 msgid "Delete clip"
 msgstr "Supprimer le clip"
 
-#: scenes/timeline/timeline_panel.gd:779
+#: scenes/timeline/timeline_panel.gd:821
 msgid "Split clip"
 msgstr "Diviser le clip"
 
-#: scenes/timeline/timeline_panel.gd:783 scenes/timeline/timeline_panel.gd:846
+#: scenes/timeline/timeline_panel.gd:825 scenes/timeline/timeline_panel.gd:888
 msgid "Change speed"
 msgstr "Modifier la vitesse"
 
-#: scenes/timeline/timeline_panel.gd:785
+#: scenes/timeline/timeline_panel.gd:827
 msgid "Reset speed"
 msgstr "Réinitialiser la vitesse"
 
-#: scenes/timeline/timeline_panel.gd:789
+#: scenes/timeline/timeline_panel.gd:831
 msgid "Clip replace audio"
 msgstr ""
 
-#: scenes/timeline/timeline_panel.gd:802
+#: scenes/timeline/timeline_panel.gd:844
 msgid "Select Audio Track"
 msgstr ""
 
@@ -588,7 +589,7 @@ msgstr "Ajouter un fichier de couleur"
 #: scenes/color_popup/color_popup.tscn
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
-#: scripts/autoloads/project.gd:332 scripts/logic/file_logic.gd:249
+#: scripts/autoloads/project.gd:327 scripts/logic/file_logic.gd:244
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -596,8 +597,8 @@ msgstr "Annuler"
 msgid "Create new color file"
 msgstr "Créer un fichier de couleur"
 
-#: scenes/replace_audio_popup/replace_audio_popup.gd:110
-#: scenes/render_options_panel/render_options_panel.gd:174
+#: scenes/replace_audio_popup/replace_audio_popup.gd:113
+#: scenes/render_options_panel/render_options_panel.gd:185
 msgid "None"
 msgstr "Aucun"
 
@@ -653,12 +654,12 @@ msgid "License"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:202
+#: scripts/autoloads/project.gd:200
 msgid "Loading project"
 msgstr "Chargement du projet"
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:203
+#: scripts/autoloads/project.gd:201
 msgid "Initializing ..."
 msgstr "Initialisation..."
 
@@ -996,6 +997,16 @@ msgid "Save profile"
 msgstr "Enregistrer le profil"
 
 #: scenes/render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Set selected profile as the default render profile."
+msgstr "Enregistrer les préréglages comme profil personnalisé."
+
+#: scenes/render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Set default"
+msgstr "Réinitialiser par défaut"
+
+#: scenes/render_options_panel/render_options_panel.tscn
 msgid "Export path"
 msgstr "Chemin d'exportation"
 
@@ -1098,75 +1109,32 @@ msgstr "Brouillon"
 msgid "Start render"
 msgstr "Démarrer le rendu"
 
-#: scenes/render_options_panel/render_options_panel.gd:82
+#: scenes/render_options_panel/render_options_panel.gd:85
 msgid "Custom render profiles"
 msgstr "Profils de rendu personnalisés"
 
-#: scenes/render_options_panel/render_options_panel.gd:176
+#: scenes/render_options_panel/render_options_panel.gd:187
 msgid "Stereo"
 msgstr "Stéréo"
 
-#: scenes/render_options_panel/render_options_panel.gd:177
+#: scenes/render_options_panel/render_options_panel.gd:188
 msgid "Mono"
 msgstr "Mono"
 
-#: scenes/render_options_panel/render_options_panel.gd:251
+#: scenes/render_options_panel/render_options_panel.gd:285
 msgid "Select export path"
 msgstr "Sélectionner le chemin d'exportation"
 
-#: scenes/render_options_panel/render_options_panel.gd:330
-msgid "Rendering finished"
-msgstr "Rendu terminé"
-
-#: scenes/render_options_panel/render_options_panel.gd:347
-msgid "Error whilst rendering video"
-msgstr "Erreur lors du rendu de la vidéo"
-
-#: scenes/render_options_panel/render_options_panel.gd:383
+#: scenes/render_options_panel/render_options_panel.gd:396
 msgid "Overwrite file?"
 msgstr "Écraser le fichier ?"
 
-#: scenes/render_options_panel/render_options_panel.gd:384
+#: scenes/render_options_panel/render_options_panel.gd:397
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
 msgstr ""
 "Un fichier existe déjà au chemin d'exportation choisi. Voulez-vous "
 "l'écraser ?"
-
-#: scenes/render_options_panel/render_options_panel.gd:444
-#: scenes/render_options_panel/render_options_panel.gd:452
-msgid "Rendering"
-msgstr "Rendu en cours"
-
-#: scenes/render_options_panel/render_options_panel.gd:459
-msgid "Cancel rendering"
-msgstr "Annuler le rendu"
-
-#: scenes/render_options_panel/render_options_panel.gd:491
-msgid "Error opening file"
-msgstr "Erreur lors de l'ouverture du fichier"
-
-#: scenes/render_options_panel/render_options_panel.gd:492
-msgid "Error whilst sending audio"
-msgstr "Erreur lors de l'envoi de l'audio"
-
-#: scenes/render_options_panel/render_options_panel.gd:498
-msgid "Setting up ..."
-msgstr "Préparation..."
-
-#: scenes/render_options_panel/render_options_panel.gd:499
-#: scenes/render_options_panel/render_options_panel.gd:500
-msgid "Compiling audio ..."
-msgstr "Compilation de l'audio..."
-
-#: scenes/render_options_panel/render_options_panel.gd:501
-#: scenes/render_options_panel/render_options_panel.gd:502
-msgid "Sending data ..."
-msgstr "Envoi des données..."
-
-#: scenes/render_options_panel/render_options_panel.gd:503
-msgid "Sending final frame ..."
-msgstr "Envoi de la dernière image..."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -1283,7 +1251,7 @@ msgid "User presets"
 msgstr "Enregistrer le projet"
 
 #: scenes/startup_screen/startup_screen.gd:247
-#: scenes/startup_screen/startup_screen.gd:315 scripts/autoloads/project.gd:104
+#: scenes/startup_screen/startup_screen.gd:315 scripts/autoloads/project.gd:102
 msgid "GoZen project file"
 msgstr "Fichier de projet GoZen"
 
@@ -1327,84 +1295,127 @@ msgstr ""
 msgid "Initialize new project ..."
 msgstr "Initialisation du nouveau projet..."
 
-#: scripts/autoloads/project.gd:65
+#: scripts/autoloads/project.gd:60
 msgid "Setting up playback ..."
 msgstr "Configuration de la lecture..."
 
-#: scripts/autoloads/project.gd:66 scripts/autoloads/project.gd:255
+#: scripts/autoloads/project.gd:64 scripts/autoloads/project.gd:250
 msgid "Finalizing ..."
 msgstr "Finalisation..."
 
-#: scripts/autoloads/project.gd:114
+#: scripts/autoloads/project.gd:112
 #, fuzzy
 msgid "Archive project as ..."
 msgstr "Enregistrer le projet sous..."
 
-#: scripts/autoloads/project.gd:116
+#: scripts/autoloads/project.gd:114
 msgid "ZIP Archive"
 msgstr ""
 
-#: scripts/autoloads/project.gd:129
+#: scripts/autoloads/project.gd:127
 #, fuzzy
 msgid "Archiving project"
 msgstr "Chargement du projet"
 
-#: scripts/autoloads/project.gd:130
+#: scripts/autoloads/project.gd:128
 #, fuzzy
 msgid "Preparing files ..."
 msgstr "Rechercher des fichiers..."
 
-#: scripts/autoloads/project.gd:217
+#: scripts/autoloads/project.gd:215
 msgid "Setting up timeline ..."
 msgstr "Configuration de la timeline..."
 
-#: scripts/autoloads/project.gd:225
+#: scripts/autoloads/project.gd:220
 msgid "Loading project files ..."
 msgstr "Chargement des fichiers du projet..."
 
-#: scripts/autoloads/project.gd:274
+#: scripts/autoloads/project.gd:269
 msgid "GoZen project files"
 msgstr "Fichiers de projet GoZen"
 
-#: scripts/autoloads/project.gd:331
+#: scripts/autoloads/project.gd:326
 msgid "Don't save"
 msgstr "Ne pas enregistrer"
 
-#: scripts/autoloads/project.gd:335
+#: scripts/autoloads/project.gd:330
 msgid "Close without saving"
 msgstr "Fermer sans enregistrer"
 
-#: scripts/autoloads/project.gd:336
+#: scripts/autoloads/project.gd:331
 msgid "Save"
 msgstr "Enregistrer"
 
-#: scripts/logic/file_logic.gd:246
+#: scripts/autoloads/render_manager.gd:163
+#: scripts/autoloads/render_manager.gd:170
+msgid "Rendering"
+msgstr "Rendu en cours"
+
+#: scripts/autoloads/render_manager.gd:177
+msgid "Cancel rendering"
+msgstr "Annuler le rendu"
+
+#: scripts/autoloads/render_manager.gd:209
+msgid "Error opening file"
+msgstr "Erreur lors de l'ouverture du fichier"
+
+#: scripts/autoloads/render_manager.gd:210
+msgid "Error whilst sending audio"
+msgstr "Erreur lors de l'envoi de l'audio"
+
+#: scripts/autoloads/render_manager.gd:215
+msgid "Setting up ..."
+msgstr "Préparation..."
+
+#: scripts/autoloads/render_manager.gd:216
+#: scripts/autoloads/render_manager.gd:217
+msgid "Compiling audio ..."
+msgstr "Compilation de l'audio..."
+
+#: scripts/autoloads/render_manager.gd:218
+#: scripts/autoloads/render_manager.gd:219
+msgid "Sending data ..."
+msgstr "Envoi des données..."
+
+#: scripts/autoloads/render_manager.gd:220
+msgid "Sending final frame ..."
+msgstr "Envoi de la dernière image..."
+
+#: scripts/autoloads/render_manager.gd:239
+msgid "Rendering finished"
+msgstr "Rendu terminé"
+
+#: scripts/autoloads/render_manager.gd:253
+msgid "Error whilst rendering video"
+msgstr "Erreur lors du rendu de la vidéo"
+
+#: scripts/logic/file_logic.gd:241
 msgid "Update existing clips?"
 msgstr "Mettre à jour les clips existants ?"
 
-#: scripts/logic/file_logic.gd:247
+#: scripts/logic/file_logic.gd:242
 #, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
-"Do you want to apply the replace the audio in toall existing clips?"
+"Do you want to apply the audio replacement to all existing clips?"
 msgstr ""
 "Ce fichier est actuellement utilisé par '%d' clip(s).\n"
 "Voulez-vous appliquer les modifications de remplacement audio à tous les "
 "clips existants ?"
 
-#: scripts/logic/file_logic.gd:248
+#: scripts/logic/file_logic.gd:243
 msgid "Apply to All"
 msgstr "Appliquer à tous"
 
-#: scripts/logic/file_logic.gd:252
+#: scripts/logic/file_logic.gd:246
 msgid "Apply to File Only"
 msgstr "Appliquer uniquement au fichier"
 
-#: scripts/logic/file_logic.gd:348
+#: scripts/logic/file_logic.gd:341
 msgid "Files dropped"
 msgstr "Fichiers déposés"
 
-#: scripts/logic/file_logic.gd:363
+#: scripts/logic/file_logic.gd:356
 msgid "Files loading ..."
 msgstr "Chargement des fichiers..."
 
