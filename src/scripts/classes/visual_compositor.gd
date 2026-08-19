@@ -401,27 +401,22 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], transition_
 
 
 func _update_transition_buffers(transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float) -> void:
-	if fade_in < 1.0 and transition_left:
-		var buffer_data: PackedByteArray = PackedByteArray()
-		var err: int = buffer_data.resize(16)
-		if err != OK:
-			printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
+	_update_fade_buffer(fade_in, transition_left, fade_in_buffer)
+	_update_fade_buffer(fade_out, transition_right, fade_out_buffer)
 
-		buffer_data.encode_float(0, fade_in)
-		err = device.buffer_update(fade_in_buffer, 0, 16, buffer_data)
-		if err != OK:
-			printerr("VisualCompositor: Updating device 'fade_in_buffer' failed with '%s'!" % err)
 
-	if fade_out < 1.0 and transition_right:
-		var buffer_data: PackedByteArray = PackedByteArray()
-		var err: int = buffer_data.resize(16)
-		if err != OK:
-			printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
+func _update_fade_buffer(fade: float, transition: EffectVisual, buffer: RID) -> void:
+	if fade >= 1.0 or !transition: return
 
-		buffer_data.encode_float(0, fade_out)
-		err = device.buffer_update(fade_out_buffer, 0, 16, buffer_data)
-		if err != OK:
-			printerr("VisualCompositor: Updating device 'fade_out_buffer' failed with '%s'!" % err)
+	var buffer_data: PackedByteArray = PackedByteArray()
+	var err: int = buffer_data.resize(16)
+	if err != OK:
+		printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
+
+	buffer_data.encode_float(0, fade)
+	err = device.buffer_update(buffer, 0, 16, buffer_data)
+	if err != OK:
+		printerr("VisualCompositor: Updating device 'fade_buffer' failed with '%s'!" % err)
 
 
 func _apply_transition(compute_list: int, transition: EffectVisual, _progress: float, progress_buffer: RID, sets_to_free: Array[RID]) -> void:

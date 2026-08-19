@@ -89,6 +89,19 @@ func _ready() -> void:
 			shader_cache[effect.shader_path] = load(effect.shader_path)
 
 
+func _get_effect(clip: ClipData, index: int, is_visual: bool) -> Effect:
+	if index < 0: return null
+
+	var effects: Array
+	if is_visual: effects = clip.effects.video
+	else: effects = clip.effects.audio
+
+	if index >= effects.size():
+		printerr("EffectsHandler: Trying to access invalid effect! ", index)
+		return null
+	return effects[index]
+
+
 #---- Transition handling ----
 
 func set_transition(clip: ClipData, is_left: bool, transition_id: String) -> void:
@@ -244,16 +257,8 @@ func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) ->
 #---- Resetting effects ----
 
 func reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
-	if index < 0: return
-
-	var effect: Effect
-	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
-	if index >= size: return
-
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(effect.keyframes)
 
@@ -264,11 +269,8 @@ func reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 
 
 func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
-	var effect: Effect
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	effect.keyframes.clear()
 	_apply_param_exceptions(effect)
@@ -279,11 +281,8 @@ func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 
 
 func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_keyframes: Dictionary) -> void:
-	var effect: Effect
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	effect._cache_dirty = true
@@ -296,15 +295,8 @@ func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_
 func remove_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 	if !ClipLogic.clips.has(clip.id) or index < 0: return
 
-	var effect: Effect
-	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
-	if index >= size:
-		return printerr("EffectsHandler: Trying to remove invalid effect! ", index)
-
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	InputManager.undo_redo.create_action("Remove effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_remove_effect.bind(clip, index, is_visual))
@@ -327,16 +319,8 @@ func _remove_effect(clip: ClipData, effect_index: int, is_visual: bool) -> void:
 func move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
 	if effect_index < 0 or new_index < 0: return
 
-	var effect: Effect
-	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
-	if effect_index >= size:
-		printerr("EffectsHandler: Trying to move invalid effect! ", effect_index)
-		return
-
-	if is_visual:
-		effect = clip.effects.video[effect_index]
-	else:
-		effect = clip.effects.audio[effect_index]
+	var effect: Effect = _get_effect(clip, effect_index, is_visual)
+	if not effect: return
 
 	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_move_effect.bind(clip, effect_index, new_index, is_visual))
@@ -346,9 +330,9 @@ func move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: b
 
 func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
 	if is_visual:
-		var _err: int = clip.effects.video.insert(new_index, clip.effects.video.pop_at(effect_index))
+		if clip.effects.video.insert(new_index, clip.effects.video.pop_at(effect_index)): print_stack()
 	else:
-		var _err: int = clip.effects.audio.insert(new_index, clip.effects.audio.pop_at(effect_index))
+		if clip.effects.audio.insert(new_index, clip.effects.audio.pop_at(effect_index)): print_stack()
 
 	effect_moved.emit(clip, effect_index, new_index, is_visual)
 	effects_updated.emit()
@@ -357,18 +341,8 @@ func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: 
 #---- Updating effect params ----
 
 func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
-	if effect_index < 0: return
-
-	var effect: Effect
-	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
-	if effect_index >= size:
-		printerr("EffectsHandler: Trying to remove invalid effect! ", effect_index)
-		return
-
-	if is_visual:
-		effect = clip.effects.video[effect_index]
-	else:
-		effect = clip.effects.audio[effect_index]
+	var effect: Effect = _get_effect(clip, effect_index, is_visual)
+	if not effect: return
 
 	var effect_param: EffectParam = null
 	for param: EffectParam in effect.params:
@@ -421,17 +395,8 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 #---- Removing keyframes ----
 
 func remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	if index < 0: return
-
-	var effect: Effect
-	var size: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()
-	if index >= size:
-		return printerr("EffectsHandler: Trying to remove keyframe from invalid effect! ", index)
-
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	# Check if there is actually a keyframe to remove
 	if not effect.keyframes.has(param_id): return
@@ -450,11 +415,8 @@ func remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Stri
 
 
 func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
-	var effect: Effect
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	if not effect.keyframes.has(param_id):
 		var typed_dict: Dictionary[int, Variant] = {}
@@ -466,11 +428,8 @@ func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String
 
 
 func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
-	var effect: Effect
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	if effect.keyframes.has(param_id):
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
@@ -491,11 +450,8 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool = false) -> void:
 	if old_frame == new_frame: return
 
-	var effect: Effect
-	if is_visual:
-		effect = clip.effects.video[effect_index]
-	else:
-		effect = clip.effects.audio[effect_index]
+	var effect: Effect = _get_effect(clip, effect_index, is_visual)
+	if not effect: return
 
 	InputManager.undo_redo.create_action("Move/Copy Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
@@ -541,11 +497,8 @@ func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual:
 func remove_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, frame_nr: int) -> void:
 	if frame_nr == 0: return
 
-	var effect: Effect
-	if is_visual:
-		effect = clip.effects.video[effect_index]
-	else:
-		effect = clip.effects.audio[effect_index]
+	var effect: Effect = _get_effect(clip, effect_index, is_visual)
+	if not effect: return
 
 	InputManager.undo_redo.create_action("Remove Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
@@ -565,15 +518,8 @@ func remove_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visua
 #---- Switch enabled ----
 
 func switch_enabled(clip: ClipData, index: int, is_visual: bool) -> void:
-	if index < 0: return
-
-	var effect: Effect
-	if index >= (clip.effects.video.size() if is_visual else clip.effects.audio.size()):
-		return printerr("EffectsHandler: Trying to remove invalid effect! ", index)
-	if is_visual:
-		effect = clip.effects.video[index]
-	else:
-		effect = clip.effects.audio[index]
+	var effect: Effect = _get_effect(clip, index, is_visual)
+	if not effect: return
 
 	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
 	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip, index, is_visual, !effect.is_enabled))

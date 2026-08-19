@@ -13,8 +13,7 @@ func _ready() -> void:
 	register(Command.new("Open project settings", Project.open_settings_menu, "open_project_settings"))
 	register(Command.new("open render menu", InputManager.switch_workspace.bind(1), "open_render_workspace"))
 
-	@warning_ignore("return_value_discarded")
-	Settings.on_localization_updated.connect(_localize_commands)
+	if Settings.on_localization_updated.connect(_localize_commands): print_stack()
 
 
 func _localize_commands() -> void:

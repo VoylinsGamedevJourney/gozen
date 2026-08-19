@@ -196,8 +196,8 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		snapshot.start += duration_left
 		snapshot.begin += int(duration_left * request.clip.speed)
 		snapshot.duration = duration_right
-		effects.video = _copy_visual_effects(request.clip.effects.video, split_offset)
-		effects.audio = _copy_audio_effects(request.clip.effects.audio, split_offset)
+		effects.video.assign(_copy_effects(request.clip.effects.video, split_offset))
+		effects.audio.assign(_copy_effects(request.clip.effects.audio, split_offset))
 		effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
 		effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 
@@ -271,8 +271,8 @@ func copy_selected_clips() -> void:
 		snapshot.effects.ato_offset = clip.effects.ato_offset
 		snapshot.effects.ato_file = clip.effects.ato_file
 		snapshot.effects.is_muted = clip.effects.is_muted
-		snapshot.effects.video = _copy_visual_effects(clip.effects.video, 0)
-		snapshot.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
+		snapshot.effects.video.assign(_copy_effects(clip.effects.video, 0))
+		snapshot.effects.audio.assign(_copy_effects(clip.effects.audio, 0))
 		snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
 		snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 		copied_clips.append(snapshot)
@@ -316,8 +316,8 @@ func paste_copied_clips() -> void:
 		new_clip.effects.ato_offset = copied_clip.effects.ato_offset
 		new_clip.effects.ato_file = copied_clip.effects.ato_file
 		new_clip.effects.is_muted = copied_clip.effects.is_muted
-		new_clip.effects.video = _copy_visual_effects(copied_clip.effects.video, 0)
-		new_clip.effects.audio = _copy_audio_effects(copied_clip.effects.audio, 0)
+		new_clip.effects.video.assign(_copy_effects(copied_clip.effects.video, 0))
+		new_clip.effects.audio.assign(_copy_effects(copied_clip.effects.audio, 0))
 		new_clip.effects.transition_left = copied_clip.effects.transition_left.deep_copy() if copied_clip.effects.transition_left else null
 		new_clip.effects.transition_right = copied_clip.effects.transition_right.deep_copy() if copied_clip.effects.transition_right else null
 
@@ -384,8 +384,8 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 			new_clip.effects.ato_offset = clip.effects.ato_offset
 			new_clip.effects.ato_file = clip.effects.ato_file
 			new_clip.effects.is_muted = clip.effects.is_muted
-			new_clip.effects.video = _copy_visual_effects(clip.effects.video, 0)
-			new_clip.effects.audio = _copy_audio_effects(clip.effects.audio, 0)
+			new_clip.effects.video.assign(_copy_effects(clip.effects.video, 0))
+			new_clip.effects.audio.assign(_copy_effects(clip.effects.audio, 0))
 			new_clip.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
 			new_clip.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 			new_clip.start = target_frame
@@ -484,10 +484,10 @@ func _set_clip_groups(clip: ClipData, new_groups: Array[int]) -> void:
 #---- Helper functions ----
 
 ## This function is intended to be used when splitting clips to copy over the effects.
-func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array[EffectVisual]:
-	var new_effects: Array[EffectVisual] = []
-	for effect: EffectVisual in effects:
-		var new_effect: EffectVisual = effect.deep_copy()
+func _copy_effects(effects: Array, split_pos: int) -> Array:
+	var new_effects: Array = []
+	for effect: Effect in effects:
+		var new_effect: Effect = effect.deep_copy()
 		new_effect.keyframes = {}
 		new_effect._cache_dirty = true
 
@@ -505,50 +505,18 @@ func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array
 				if frame <= split_pos: continue
 
 				var value: Variant = effect.keyframes[param_id][frame]
+				var new_frame: int = frame - split_pos
 
+				@warning_ignore_start("unsafe_method_access")
 				if value is Resource:
-					new_effect.keyframes[param_id][frame - split_pos] = (value as Resource).duplicate(true)
+					new_effect.keyframes[param_id][new_frame] = value.duplicate(true)
 				elif typeof(value) == TYPE_ARRAY:
-					new_effect.keyframes[param_id][frame - split_pos] = (value as Array).duplicate(true)
+					new_effect.keyframes[param_id][new_frame] = value.duplicate(true)
 				elif typeof(value) == TYPE_DICTIONARY:
-					new_effect.keyframes[param_id][frame - split_pos] = (value as Dictionary).duplicate(true)
+					new_effect.keyframes[param_id][new_frame] = value.duplicate(true)
 				else:
-					new_effect.keyframes[param_id][frame - split_pos] = value
-		new_effects.append(new_effect)
-	return new_effects
-
-
-## This function is intended to be used when splitting clips to copy over the effects.
-func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[EffectAudio]:
-	var new_effects: Array[EffectAudio] = []
-	for effect: EffectAudio in effects:
-		var new_effect: EffectAudio = effect.deep_copy()
-		new_effect.keyframes = {}
-		new_effect._cache_dirty = true
-
-		for param: EffectParam in new_effect.params:
-			var param_id: String = param.id
-			var value_at_split: Variant = effect.get_value(param, split_pos)
-
-			if not new_effect.keyframes.has(param_id):
-				new_effect.keyframes[param_id] = {}
-			new_effect.keyframes[param_id][0] = value_at_split
-
-			# Shift existing keyframes that appear after the split.
-			if !effect.keyframes.has(param_id): continue
-			for frame: int in effect.keyframes[param_id]:
-				if frame <= split_pos: continue
-
-				var value: Variant = effect.keyframes[param_id][frame]
-
-				if value is Resource:
-					new_effect.keyframes[param_id][frame - split_pos] = (value as Resource).duplicate(true)
-				elif typeof(value) == TYPE_ARRAY:
-					new_effect.keyframes[param_id][frame - split_pos] = (value as Array).duplicate(true)
-				elif typeof(value) == TYPE_DICTIONARY:
-					new_effect.keyframes[param_id][frame - split_pos] = (value as Dictionary).duplicate(true)
-				else:
-					new_effect.keyframes[param_id][frame - split_pos] = value
+					new_effect.keyframes[param_id][new_frame] = value
+				@warning_ignore_restore("unsafe_method_access")
 		new_effects.append(new_effect)
 	return new_effects
 
