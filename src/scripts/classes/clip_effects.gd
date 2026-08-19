@@ -11,7 +11,7 @@ var fade_audio: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
 var transition_left: EffectVisual = null
 var transition_right: EffectVisual = null
 
-var ato_active: bool = false
+var ato_active: bool = false ## Audio-take-over (renamed to Replace audio).
 var ato_offset: float = 0.0 ## Seconds.
 var ato_file: int = -1
 

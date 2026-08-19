@@ -130,7 +130,10 @@ func clipboard_paste() -> void:
 				var free_region: Vector2i = TrackLogic.get_free_region(Timeline.mouse_track, Timeline.mouse_frame)
 				var available_duration: int = free_region.y - Timeline.mouse_frame
 				if available_duration > 0:
-					var request: ClipLogic.Request = ClipLogic.Request.add_request(file, Timeline.mouse_track, Timeline.mouse_frame)
+					var request: RequestClipAdd = RequestClipAdd.new()
+					request.file = file
+					request.track = Timeline.mouse_track
+					request.frame = Timeline.mouse_frame
 					request.duration = mini(file.duration, available_duration)
 					ClipLogic.add([request])
 			return

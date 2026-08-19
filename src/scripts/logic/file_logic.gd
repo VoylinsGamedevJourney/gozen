@@ -42,12 +42,10 @@ func _ready() -> void:
 	if !DirAccess.dir_exists_absolute(wave_folder) and DirAccess.make_dir_recursive_absolute(wave_folder):
 		printerr("FileLogic: Couldn't create folder '%s'!" % wave_folder)
 
-	@warning_ignore_start("return_value_discarded")
-	Project.get_window().files_dropped.connect(dropped)
-	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
-	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
-	Project.resolution_changed.connect(_on_project_resolution_changed)
-	@warning_ignore_restore("return_value_discarded")
+	if Project.get_window().files_dropped.connect(dropped): print_stack()
+	if Settings.on_video_cache_size_changed.connect(_update_video_cache_size): print_stack()
+	if Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold): print_stack()
+	if Project.resolution_changed.connect(_on_project_resolution_changed): print_stack()
 
 
 ## Load everything on startup and give user indication of the progress.
@@ -158,13 +156,10 @@ func _delete(file: FileData) -> void:
 	if video_pools.has(file.id):
 		for video: Video in video_pools[file.id]:
 			video.close()
-		@warning_ignore("return_value_discarded")
-		video_pools.erase(file.id)
+		if video_pools.erase(file.id): print_stack()
 
-	@warning_ignore_start("return_value_discarded")
-	audio_pools.erase(file.id)
-	audio_wave.erase(file.id)
-	@warning_ignore_restore("return_value_discarded")
+	if audio_pools.erase(file.id): print_stack()
+	if audio_wave.erase(file.id): print_stack()
 
 	Project.unsaved_changes = true
 	deleted.emit(file.id)
@@ -248,15 +243,13 @@ func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) ->
 	dialog.get_ok_button().text = tr("Apply to All")
 	dialog.get_cancel_button().text = tr("Cancel")
 
-	@warning_ignore_start("return_value_discarded")
-	dialog.add_button(tr("Apply to File Only"), true, "file_only")
-	dialog.confirmed.connect(func() -> void:
-		_commit_ato(file, active, audio_file.id, offset, true, affected_clips))
-	dialog.custom_action.connect(func(action: String) -> void:
+	if dialog.add_button(tr("Apply to File Only"), true, "file_only"): print_stack()
+	if dialog.confirmed.connect(func() -> void:
+		_commit_ato(file, active, audio_file.id, offset, true, affected_clips)): print_stack()
+	if dialog.custom_action.connect(func(action: String) -> void:
 		if action == "file_only":
 			_commit_ato(file, active, audio_file.id, offset, false,[])
-			dialog.hide())
-	@warning_ignore_restore("return_value_discarded")
+			dialog.hide()): print_stack()
 
 	dialog.popup_centered()
 
@@ -494,8 +487,7 @@ func _load_video(file: FileData) -> void:
 	for i: int in 2:
 		# Get 2 extra video instances which can help with tight cuts.
 		# We load the video into the pool, but don't use it here directly.
-		@warning_ignore("return_value_discarded")
-		get_video_reader(file, i)
+		if !get_video_reader(file, i): print_stack()
 
 	file.audio_streams.assign(temp_video.get_streams(1))
 	if temp_video.get_audio() != null:

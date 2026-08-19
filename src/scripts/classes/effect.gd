@@ -75,14 +75,14 @@ static func duplicate_keyframes(source_keyframes: Dictionary) -> Dictionary:
 		for frame: int in param_keyframes:
 			var value: Variant = param_keyframes[frame]
 
-			@warning_ignore_start("unsafe_method_access")
 			if value is Resource:
-				new_param_keyframes[frame] = value.duplicate(true)
-			elif typeof(value) == TYPE_ARRAY or typeof(value) == TYPE_DICTIONARY:
-				new_param_keyframes[frame] = value.duplicate(true)
+				new_param_keyframes[frame] = (value as Resource).duplicate(true)
+			elif typeof(value) == TYPE_ARRAY:
+				new_param_keyframes[frame] = (value as Array).duplicate(true)
+			elif typeof(value) == TYPE_DICTIONARY:
+				new_param_keyframes[frame] = (value as Dictionary).duplicate(true)
 			else:
 				new_param_keyframes[frame] = value
-			@warning_ignore_restore("unsafe_method_access")
 
 		duplicated_keyframes[param_id] = new_param_keyframes
 	return duplicated_keyframes

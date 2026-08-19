@@ -110,7 +110,6 @@ func _init_start(p_resolution: Vector2i) -> void:
 	groups_y = ceili(resolution.y / 8.0)
 
 	if not fade_shader.is_valid():
-		@warning_ignore("unsafe_method_access")
 		var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/internal_copy.glsl").get_spirv()
 		var fade_buffer_data: PackedByteArray = PackedByteArray()
 
@@ -316,8 +315,7 @@ func cleanup() -> void:
 
 	for buffers: Array in effect_buffers.values():
 		for buffer: RID in buffers:
-			@warning_ignore("return_value_discarded")
-			Utils.cleanup_rid(device, buffer)
+			if !Utils.cleanup_rid(device, buffer): print_stack()
 	effect_buffers.clear()
 
 	if display_texture:
@@ -342,8 +340,7 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 
 		if buffers.size() != effect.shader_passes:
 			for buffer: RID in buffers:
-				@warning_ignore("return_value_discarded")
-				Utils.cleanup_rid(device, buffer)
+				if !Utils.cleanup_rid(device, buffer): print_stack()
 			buffers.clear()
 
 			for i: int in effect.shader_passes:
@@ -357,13 +354,12 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 
 	var known_ids: Array = effect_buffers.keys()
 	for buffer_id: int in known_ids:
-		if not buffer_id in active_ids:
-			for buffer: RID in effect_buffers[buffer_id]:
-				@warning_ignore("return_value_discarded")
-				Utils.cleanup_rid(device, buffer)
+		if buffer_id in active_ids: continue
+		for buffer: RID in effect_buffers[buffer_id]:
+			if !Utils.cleanup_rid(device, buffer): print_stack()
 
-			if !effect_buffers.erase(buffer_id):
-				printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)
+		if !effect_buffers.erase(buffer_id):
+			printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)
 
 
 func _process_frame(compute_list: int, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, _current_frame: int) -> void:

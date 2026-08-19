@@ -103,56 +103,72 @@ func find_snap_offset(edges: Array[int], threshold: int, ignores: Array[int] = [
 	return 0
 
 
-func can_drop_new_clips(track: int, frame: int, safe_zone: int) -> bool:
+func can_drop_new_clips(track: int, frame: int, safe_zone: int, split_audio: bool = false, split_extra_audio: bool = false) -> bool:
 	draggable.track_offset = track
-	if TrackLogic.tracks[draggable.track_offset].is_locked:
+	if track < TrackLogic.tracks.size() and TrackLogic.tracks[draggable.track_offset].is_locked:
 		return false
+
+	var max_track_needed: int = track
+	if split_audio or split_extra_audio:
+		for file_id: int in draggable.ids:
+			var file: FileData = FileLogic.files[file_id]
+			if file.type == EditorCore.Type.VIDEO and file.audio_streams.size() > 0:
+				var added_tracks: int = file.audio_streams.size()
+				if split_extra_audio:
+					added_tracks -= 1
+				max_track_needed = maxi(max_track_needed, track + added_tracks)
+
 	var target_frame: int = frame - draggable.mouse_offset
 	var target_end: int = target_frame + draggable.duration
 
 	var snap_delta: int = find_snap_offset([target_frame, target_end], maxi(1, int(10.0 / zoom)))
 	target_frame += snap_delta
 	target_end += snap_delta
-	var clip_at_pos: ClipData = TrackLogic.get_clip_at_overlap(draggable.track_offset, target_frame)
-	var clip_at_end: ClipData = TrackLogic.get_clip_at_overlap(draggable.track_offset, target_end)
-	var free_region: Vector2i
 
 	if target_frame < 0:
 		target_end += abs(target_frame)
 		target_frame = 0
 
+	var clip_at_pos: ClipData = TrackLogic.get_clip_at_overlap(draggable.track_offset, target_frame) if track < TrackLogic.tracks.size() else null
+	var clip_at_end: ClipData = TrackLogic.get_clip_at_overlap(draggable.track_offset, target_end) if track < TrackLogic.tracks.size() else null
+	var free_region: Vector2i
+
+	var found_offset: bool = false
 	if !clip_at_pos:
-		free_region = TrackLogic.get_free_region(draggable.track_offset, target_frame)
+		free_region = TrackLogic.get_free_region(draggable.track_offset, target_frame) if track < TrackLogic.tracks.size() else Vector2i(0, Utils.INT_32_MAX)
 
 		if free_region.y > target_end:
 			draggable.frame_offset = target_frame
-			return true # Space fully available from target_frame to target_end.
-		elif free_region.y - free_region.x < draggable.duration:
-			return false # No space.
-
-		# Check what space is needed on right side and if within safe zone
-		# Possible with safe zone so checking if enough space on left side.
-		var distance_necessary: int = target_end - free_region.y
-
-		if distance_necessary > safe_zone or target_frame - free_region.x < distance_necessary:
-			return false
-
-		draggable.frame_offset = target_frame - distance_necessary
-		return true
+			found_offset = true # Space fully available from target_frame to target_end.
+		elif free_region.y - free_region.x >= draggable.duration:
+			var distance_necessary: int = target_end - free_region.y
+			if distance_necessary <= safe_zone and target_frame - free_region.x >= distance_necessary:
+				draggable.frame_offset = target_frame - distance_necessary
+				found_offset = true
 	elif !clip_at_end:
-		free_region = TrackLogic.get_free_region(draggable.track_offset, target_end)
-		if free_region.y - free_region.x < draggable.duration:
-			return false # No space.
+		free_region = TrackLogic.get_free_region(draggable.track_offset, target_end) if track < TrackLogic.tracks.size() else Vector2i(0, Utils.INT_32_MAX)
+		if free_region.y - free_region.x >= draggable.duration:
+			var distance_necessary: int = target_frame - free_region.x
+			if distance_necessary <= safe_zone and target_end - free_region.y <= distance_necessary:
+				draggable.frame_offset = target_frame - distance_necessary
+				found_offset = true
 
-		# Check what space is needed on left side and if within safe zone.
-		# Possible with safe zone so checking if enough space on left side.
-		var distance_necessary: int = target_frame - free_region.x
-		if distance_necessary > safe_zone or target_end - free_region.y > distance_necessary:
-			return false
+	if not found_offset:
+		return false # Not possible to find space.
 
-		draggable.frame_offset = target_frame - distance_necessary
-		return true
-	return false # Not possible to find space.
+	if split_audio or split_extra_audio:
+		for check_track: int in range(track + 1, max_track_needed + 1):
+			if check_track < TrackLogic.tracks.size():
+				if TrackLogic.tracks[check_track].is_locked:
+					return false
+				var track_free_region: Vector2i = TrackLogic.get_free_region(check_track, draggable.frame_offset)
+				var clip_at_start: ClipData = TrackLogic.get_clip_at_overlap(check_track, draggable.frame_offset)
+				var clip_at_track_end: ClipData = TrackLogic.get_clip_at_overlap(check_track, draggable.frame_offset + draggable.duration - 1)
+				if clip_at_start or clip_at_track_end:
+					return false
+				if track_free_region.y < draggable.frame_offset + draggable.duration:
+					return false
+	return true
 
 
 func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:

@@ -86,15 +86,18 @@ func load_data(id: int, is_file: bool) -> void:
 	var file_a: FileData
 	var target_file_b_id: int = -1
 	var target_offset: float = 0.0
-	current_file_id = id
 
 	if is_file:
+		current_file_id = id
+		current_clip_id = -1
 		file_a = FileLogic.files[current_file_id]
 		file_a_wave.set("file_id", current_file_id)
 		if file_a.ato_active:
 			target_file_b_id = file_a.ato_file
 			target_offset = file_a.ato_offset
 	else:
+		current_file_id = -1
+		current_clip_id = id
 		var clip: ClipData = ClipLogic.clips[current_clip_id]
 		file_a = FileLogic.files[clip.file]
 		file_a_wave.set("file_id", file_a.id)
@@ -193,8 +196,7 @@ func _start_playback(start_time: float) -> void:
 				file_b_player.play(b_time)
 				played_anything = true
 
-	if not played_anything:
-		_stop_playback()
+	if not played_anything: _stop_playback()
 
 
 func _stop_playback() -> void:

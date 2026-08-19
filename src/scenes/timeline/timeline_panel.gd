@@ -474,7 +474,9 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	Timeline.draggable = data
 	if Timeline.draggable.is_file:
 		Timeline.current_state = Timeline.State.DROPPING
-		result = Timeline.can_drop_new_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE)
+		var split_audio: bool = Input.is_key_pressed(KEY_SHIFT)
+		var split_extra_audio: bool = Input.is_key_pressed(KEY_CTRL) and not split_audio
+		result = Timeline.can_drop_new_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE, split_audio, split_extra_audio)
 	else:
 		Timeline.current_state = Timeline.State.MOVING
 		result = Timeline.can_move_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE)
@@ -502,21 +504,58 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 	elif data is not Draggable or Timeline.current_state not in [Timeline.State.DROPPING, Timeline.State.MOVING]:
 		return
 	elif Timeline.draggable.is_file: # Creating new clips (ids are file ids!)
-		var requests: Array[ClipLogic.Request] = []
+		var requests: Array[RequestClipAdd] = []
 		var total_duration: int = 0
+		var split_audio: bool = Input.is_key_pressed(KEY_SHIFT)
+		var split_extra_audio: bool = Input.is_key_pressed(KEY_CTRL) and not split_audio
+		var existing_group_ids: Array[int] = ClipLogic._get_all_group_ids()
+
 		for file_id: int in Timeline.draggable.ids:
 			var file: FileData = FileLogic.files[file_id]
 			var target_frame: int = Timeline.draggable.frame_offset + total_duration
-			requests.append(ClipLogic.Request.add_request(file, Timeline.draggable.track_offset, target_frame))
+			var is_split: bool = split_audio or split_extra_audio
+
+			var video_request: RequestClipAdd = RequestClipAdd.new()
+			video_request.file = file
+			video_request.frame = target_frame
+			video_request.track = Timeline.draggable.track_offset
+			video_request.type =  FileLogic.files[file.id].type
+
+			if is_split and file.type == EditorCore.Type.VIDEO and file.audio_streams.size() > 0:
+				var group_id: int = Utils.get_unique_id(existing_group_ids)
+				existing_group_ids.append(group_id)
+
+				video_request.type = EditorCore.Type.VIDEO
+				video_request.group_id = group_id
+				video_request.is_muted = split_audio
+				if split_extra_audio:
+					video_request.audio_index = file.audio_streams[0]
+
+				requests.append(video_request)
+
+				var start_i: int = 0 if split_audio else 1
+				for i: int in range(start_i, file.audio_streams.size()):
+					var audio_track_idx: int = Timeline.draggable.track_offset + 1 + (i - start_i)
+					var audio_request: RequestClipAdd = RequestClipAdd.new()
+					audio_request.file = file
+					audio_request.group_id = group_id
+					audio_request.track = audio_track_idx
+					audio_request.audio_index = file.audio_streams[i]
+					audio_request.type = EditorCore.Type.AUDIO
+					requests.append(audio_request)
+			else: requests.append(video_request)
 			total_duration += file.duration
 		ClipLogic.add(requests)
-	else: # Moving clips
-		var move_requests: Array[ClipLogic.Request] = []
+	else: # Moving clips.
+		var move_requests: Array[RequestClipMove] = []
 		for clip_id: int in Timeline.draggable.ids:
 			var clip: ClipData = ClipLogic.clips[clip_id]
-			move_requests.append(ClipLogic.Request.move_request(clip, Timeline.draggable.track_offset, Timeline.draggable.frame_offset))
-		if not move_requests.is_empty():
-			ClipLogic.move(move_requests)
+			var request: RequestClipMove = RequestClipMove.new()
+			request.clip = clip
+			request.offset_frame = Timeline.draggable.frame_offset
+			request.offset_track = Timeline.draggable.track_offset
+			move_requests.append(request)
+		ClipLogic.move(move_requests)
 	Timeline.draggable = null
 	_update_clips = true
 	draw_clips.queue_redraw()
@@ -550,12 +589,15 @@ func _on_group_button_toggled(toggled: bool) -> void:
 ## This function is also used to handle speeding.
 func _commit_current_resize() -> void:
 	if Timeline.resize_target.delta != 0:
+		var request: RequestClipResize = RequestClipResize.new()
+		request.clip = Timeline.resize_target.clip
+		request.resize_amount = Timeline.resize_target.delta
+		request.from_end = Timeline.resize_target.is_end
+
 		if Timeline.current_state == Timeline.State.SPEEDING:
-			ClipLogic.change_speed([ClipLogic.Request.resize_request(
-				Timeline.resize_target.clip, Timeline.resize_target.delta, Timeline.resize_target.is_end)])
+			ClipLogic.change_speed([request])
 		else:
-			ClipLogic.resize([ClipLogic.Request.resize_request(
-					Timeline.resize_target.clip, Timeline.resize_target.delta, Timeline.resize_target.is_end)])
+			ClipLogic.resize([request])
 	Timeline.resize_target = null
 	draw_clips.queue_redraw()
 
@@ -852,19 +894,21 @@ func _on_popup_action_clip_change_speed() -> void:
 	spinbox.suffix = "x"
 	dialog.add_child(spinbox)
 
-	@warning_ignore("return_value_discarded")
-	dialog.confirmed.connect(func() -> void:
-		var new_speed: float = spinbox.value
-		var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
+	if dialog.confirmed.connect(func() -> void:
+			var new_speed: float = spinbox.value
+			var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
 
-		var free_region: Vector2i = TrackLogic.get_free_region(right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
-		if right_click_clip.start + new_duration > free_region.y:
-			new_duration = free_region.y - right_click_clip.start
+			var free_region: Vector2i = TrackLogic.get_free_region(right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
+			if right_click_clip.start + new_duration > free_region.y:
+				new_duration = free_region.y - right_click_clip.start
 
-		var delta: int = new_duration - right_click_clip.duration
-		ClipLogic.change_speed([ClipLogic.Request.resize_request(right_click_clip, delta, true)])
-		dialog.queue_free()
-	)
+			var request: RequestClipResize = RequestClipResize.new()
+			var delta: int = new_duration - right_click_clip.duration
+			request.clip = right_click_clip
+			request.resize_amount = delta
+			request.from_end = true
+			ClipLogic.change_speed([request])
+			dialog.queue_free()): print_stack()
 	dialog.popup_centered(Vector2i(200, 80))
 
 
@@ -876,16 +920,15 @@ func _on_popup_action_clip_reset_speed() -> void:
 	if right_click_clip.start + new_duration > free_region.y:
 		new_duration = free_region.y - right_click_clip.start
 
-	var delta: int = new_duration - right_click_clip.duration
-	ClipLogic.change_speed([ClipLogic.Request.resize_request(right_click_clip, delta, true)])
+	var request: RequestClipResize = RequestClipResize.new()
+	request.clip = right_click_clip
+	request.resize_amount = new_duration - right_click_clip.duration
+	request.from_end = true
+	ClipLogic.change_speed([request])
 
 
-func _on_popup_action_track_add() -> void:
-	TrackLogic.add_track(right_click_track)
-
-
-func _on_popup_action_track_remove() -> void:
-	TrackLogic.remove_track(right_click_track)
+func _on_popup_action_track_add() -> void:    TrackLogic.add_track(right_click_track)
+func _on_popup_action_track_remove() -> void: TrackLogic.remove_track(right_click_track)
 
 
 func _on_popup_action_track_toggle(property: String) -> void:
@@ -987,38 +1030,55 @@ func move_playhead(frame_nr: int) -> void:
 
 
 func remove_empty_space_at(track: int, frame_nr: int) -> void:
-	if TrackLogic.tracks[track].is_locked:
-		return
+	if TrackLogic.tracks[track].is_locked: return
+
 	var clips: Array[ClipData] = TrackLogic.get_clips_after(track, frame_nr)
 	var region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
 	var empty_size: int = region.y - region.x
-	var move_requests: Array[ClipLogic.Request] = []
+	var move_requests: Array[RequestClipMove] = []
 
+	var clips_to_move: Array[ClipData] = []
 	for clip: ClipData in clips:
-		move_requests.append(ClipLogic.Request.move_request(clip, 0, -empty_size))
-	if !move_requests.is_empty():
-		ClipLogic.move(move_requests)
+		if clip in clips_to_move: continue
+		clips_to_move.append(clip)
+
+		if !Timeline.group_enabled: continue
+		for group_clip: ClipData in ClipLogic.get_group_clips(clip):
+			if not group_clip in clips_to_move:
+				clips_to_move.append(group_clip)
+
+	for clip: ClipData in clips_to_move:
+		var request: RequestClipMove = RequestClipMove.new()
+		request.clip = clip
+		request.offset_frame = -empty_size
+		move_requests.append(request)
+	ClipLogic.move(move_requests)
 
 
 func split_clip_at(clip: ClipData, frame_pos: int) -> void:
 	if TrackLogic.tracks[clip.track].is_locked:
 		return
 	if clip.start <= frame_pos and clip.end >= frame_pos:
-		@warning_ignore("return_value_discarded")
-		ClipLogic.split([ClipLogic.Request.split_request(clip, frame_pos - clip.start)])
+		var request: RequestClipSplit = RequestClipSplit.new()
+		request.clip = clip
+		request.frame = frame_pos - clip.start
+		if !ClipLogic.split([request]): print_stack()
 	draw_clips.queue_redraw()
 
 
 func split_clips_at(frame_pos: int) -> void:
 	# Check if any of the clips in the tracks is in selected clips
 	# if there are selected clips present, we only split the selected ones
-	var requests: Array[ClipLogic.Request] = []
+	var requests: Array[RequestClipSplit] = []
 	var new_clips: Array[ClipData]
 
 	# Checking if we only want selected clips to be split.
 	for clip: ClipData in ClipLogic.selected_clips:
 		if clip.start < frame_pos and clip.end > frame_pos:
-			requests.append(ClipLogic.Request.split_request(clip, frame_pos - clip.start))
+			var request: RequestClipSplit = RequestClipSplit.new()
+			request.clip = clip
+			request.frame = frame_pos - clip.start
+			requests.append(request)
 
 	if !requests.is_empty():
 		new_clips = ClipLogic.split(requests)
@@ -1030,7 +1090,10 @@ func split_clips_at(frame_pos: int) -> void:
 	if not ClipLogic.selected_clips.is_empty():
 		for clip: ClipData in ClipLogic.selected_clips:
 			if clip.start < frame_pos and clip.end > frame_pos:
-				requests.append(ClipLogic.Request.split_request(clip, frame_pos - clip.start))
+				var request: RequestClipSplit = RequestClipSplit.new()
+				request.clip = clip
+				request.frame = frame_pos - clip.start
+				requests.append(request)
 
 		if !requests.is_empty():
 			new_clips = ClipLogic.split(requests)
@@ -1042,13 +1105,14 @@ func split_clips_at(frame_pos: int) -> void:
 
 	# No selected clips present so splitting all possible clips.
 	for track: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[track].is_locked:
-			continue
+		if TrackLogic.tracks[track].is_locked: continue
+
 		var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
-		if !clip:
-			continue
-		if clip.start < frame_pos and clip.end > frame_pos:
-			requests.append(ClipLogic.Request.split_request(clip, frame_pos - clip.start))
+		if clip and clip.start < frame_pos and clip.end > frame_pos:
+			var request: RequestClipSplit = RequestClipSplit.new()
+			request.clip = clip
+			request.frame = frame_pos - clip.start
+			requests.append(request)
 
 	new_clips = ClipLogic.split(requests)
 	if new_clips.size() > 0:
@@ -1090,11 +1154,44 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 		drag_data.mouse_offset = 0
 
 		Timeline.draggable = drag_data
-		if Timeline.can_drop_new_clips(track_idx, frame_nr, SAFE_ZONE):
-			var requests: Array[ClipLogic.Request] = []
+		Timeline.draggable = drag_data
+		var split_audio: bool = Input.is_key_pressed(KEY_SHIFT)
+		var split_extra_audio: bool = Input.is_key_pressed(KEY_CTRL) and not split_audio
+		if Timeline.can_drop_new_clips(track_idx, frame_nr, SAFE_ZONE, split_audio, split_extra_audio):
+			var requests: Array[RequestClipAdd] = []
 			var total_duration: int = 0
+			var existing_group_ids: Array[int] = ClipLogic._get_all_group_ids()
+
 			for file: FileData in files:
-				requests.append(ClipLogic.Request.add_request(file, track_idx, Timeline.draggable.frame_offset + total_duration))
+				var target_frame: int = Timeline.draggable.frame_offset + total_duration
+				var video_request: RequestClipAdd = RequestClipAdd.new()
+				video_request.file = file
+				video_request.track = track_idx
+				video_request.frame = target_frame
+				video_request.type =  FileLogic.files[file.id].type
+
+				if (split_audio or split_extra_audio) and file.type == EditorCore.Type.VIDEO and file.audio_streams.size() > 0:
+					var group_id: int = Utils.get_unique_id(existing_group_ids)
+					existing_group_ids.append(group_id)
+
+					video_request.group_id = group_id
+					video_request.is_muted = split_audio
+					if split_extra_audio:
+						video_request.audio_index = file.audio_streams[0]
+					requests.append(video_request)
+
+					var start_i: int = 0 if split_audio else 1
+					for i: int in range(start_i, file.audio_streams.size()):
+						var audio_track_idx: int = track_idx + 1 + (i - start_i)
+						var audio_request: RequestClipAdd = RequestClipAdd.new()
+						audio_request.file = file
+						audio_request.track = audio_track_idx
+						audio_request.frame = target_frame
+						audio_request.group_id = group_id
+						audio_request.audio_index = file.audio_streams[i]
+						audio_request.type = EditorCore.Type.AUDIO
+						requests.append(audio_request)
+				else: requests.append(video_request)
 				total_duration += file.duration
 			ClipLogic.add(requests)
 		Timeline.draggable = null
@@ -1102,25 +1199,33 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 
 
 func trim_clips_at(frame_pos: int, from_end: bool) -> void:
-	var requests: Array[ClipLogic.Request] = []
+	var requests: Array[RequestClipResize] = []
 
 	for clip: ClipData in ClipLogic.selected_clips:
 		if clip.start < frame_pos and clip.end > frame_pos:
+			var request: RequestClipResize = RequestClipResize.new()
 			var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
-			requests.append(ClipLogic.Request.resize_request(clip, amount, from_end))
+			request.clip = clip
+			request.from_end = from_end
+			request.resize_amount = amount
+			requests.append(request)
 
 	if requests.is_empty():
 		for track: int in TrackLogic.tracks.size():
-			if TrackLogic.tracks[track].is_locked:
-				continue
+			if TrackLogic.tracks[track].is_locked: continue
+
 			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
 			if clip and clip.start < frame_pos and clip.end > frame_pos:
+				var request: RequestClipResize = RequestClipResize.new()
 				var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
-				requests.append(ClipLogic.Request.resize_request(clip, amount, from_end))
 
-	if !requests.is_empty():
-		ClipLogic.resize(requests)
-		draw_clips.queue_redraw()
+				request.clip = clip
+				request.from_end = from_end
+				request.resize_amount = amount
+				requests.append(request)
+
+	ClipLogic.resize(requests)
+	draw_clips.queue_redraw()
 
 
 func draw_all() -> void:

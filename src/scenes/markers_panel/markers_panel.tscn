@@ -39,6 +39,7 @@ flat = true
 [node name="CopyMarkersButton" type="TextureButton" parent="Margin/Panel/Margin/VBox/HBox" unique_id=723875809]
 custom_minimum_size = Vector2(17, 0)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("2_fuqur")
 ignore_texture_size = true
 stretch_mode = 5

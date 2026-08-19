@@ -1,141 +1,222 @@
 extends Control
 
+enum SPLIT_AUDIO { NONE, SHIFT, CTRL }
+
+
 const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
+
+const COLOR_RESIZING: Color = Color(1.0, 1.0, 1.0, 0.3)
+const COLOR_SPEEDING: Color = Color(1.0, 0.5, 0.0, 0.3)
+
+const COLOR_WAVE: Color = Color(0.82, 0.82, 0.82, 0.6)
+const COLOR_WAVE_MUTED: Color = Color(0.82, 0.82, 0.82, 0.2)
+
+
+@onready var scroll_container: ScrollContainer = get_parent().get_parent()
+
+var draggable: Draggable = null
+
+var offset_frames: int = 0
+var split_audio: SPLIT_AUDIO = SPLIT_AUDIO.NONE
+
+var preview_size: Vector2 = Vector2.ZERO
+var preview_pos: Vector2 = Vector2.ZERO
+
+var box_pos: Vector2 = Vector2.ZERO
+var clip_rect: Rect2 = Rect2()
+
+var wave_file_id: int = 0
+var wave_offset: float = 0.0 ## In seconds.
+var wave_streams: Dictionary = {}
+var wave_dict: Dictionary = {}
+var is_muted: bool = false
 
 
 
 func _draw() -> void:
-	var zoom: float = Timeline.zoom
-	if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING] and Timeline.draggable != null:
-		if !Timeline.drop_valid:
-			return
-		if Timeline.draggable.is_file:
-			var scroll_container: ScrollContainer = get_parent().get_parent()
-			var current_offset_frames: int = 0
-			for file_id: int in Timeline.draggable.ids:
-				var file: FileData = FileLogic.files[file_id]
-				var preview_position: Vector2 = Vector2(
-						(Timeline.draggable.frame_offset + current_offset_frames) * zoom,
-						Timeline.draggable.track_offset * Timeline.track_total_size)
-				var preview_size: Vector2 = Vector2(file.duration * zoom, Timeline.track_height)
-				var clip_rect: Rect2 = Rect2(preview_position, preview_size)
-				draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
-
-				if file.type in EditorCore.AUDIO_TYPES:
-					var wave_streams: Dictionary = FileLogic.audio_wave.get(file.id, {})
-					var wave_dict: Dictionary = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
-					if not wave_dict.is_empty():
-						var lod: int = 1
-						if zoom < 0.2:
-							lod = 16
-						elif zoom < 0.8:
-							lod = 4
-						var audio_wave: PackedFloat32Array = wave_dict[lod]
-						_draw_wave(audio_wave, 0, int(file.duration / float(lod)), clip_rect, 1.0, lod, scroll_container, false)
-
-				current_offset_frames += file.duration
-		else:
-			var scroll_container: ScrollContainer = get_parent().get_parent()
-			for clip_id: int in Timeline.draggable.ids:
-				var clip: ClipData = ClipLogic.clips[clip_id]
-				var preview_position: Vector2 = Vector2(
-						(clip.start + Timeline.draggable.frame_offset) * zoom,
-						(clip.track + Timeline.draggable.track_offset) * Timeline.track_total_size)
-				var preview_size: Vector2 = Vector2(clip.duration * zoom, Timeline.track_height)
-				var clip_rect: Rect2 = Rect2(preview_position, preview_size)
-				draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
-
-				var wave_file_id: int = clip.file
-				var wave_offset_sec: float = 0.0
-
-				if clip.effects.ato_active and clip.effects.ato_file != -1:
-					wave_file_id = clip.effects.ato_file
-					wave_offset_sec = clip.effects.ato_offset
-				else:
-					var target_file: FileData = FileLogic.files.get(clip.file)
-					if target_file and target_file.ato_active and target_file.ato_file != -1:
-						wave_file_id = target_file.ato_file
-						wave_offset_sec = target_file.ato_offset
-
-				var wave_streams: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
-				var wave_dict: Dictionary = wave_streams.get(clip.effects.audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
-				if not wave_dict.is_empty():
-					var lod: int = 1
-					if zoom < 0.2:
-						lod = 16
-					elif zoom < 0.8:
-						lod = 4
-
-					var audio_wave: PackedFloat32Array = wave_dict[lod]
-					var wave_begin: int = int((clip.begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
-					var is_muted: bool = TrackLogic.tracks[clip.track].is_muted or clip.effects.is_muted
-					_draw_wave(audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, lod, scroll_container, is_muted)
-	elif Timeline.current_state in [Timeline.State.RESIZING, Timeline.State.SPEEDING]:
-		var clip: ClipData = Timeline.resize_target.clip
-		var draw_start: float = clip.start
-		var draw_length: int = clip.duration
-		var draw_begin: int = clip.begin
-		var draw_speed: float = clip.speed
-
-		if !Timeline.resize_target.is_end:
-			draw_start += Timeline.resize_target.delta
-			draw_length -= Timeline.resize_target.delta
-			if Timeline.current_state == Timeline.State.RESIZING:
-				draw_begin += int(Timeline.resize_target.delta * clip.speed)
-		else:
-			draw_length += Timeline.resize_target.delta
-
-		if Timeline.current_state == Timeline.State.SPEEDING:
-			draw_speed = (clip.duration * clip.speed) / float(maxi(draw_length, 1))
-
-		var preview_position: Vector2 = Vector2(draw_start * zoom, clip.track * Timeline.track_total_size)
-		var preview_size: Vector2 = Vector2(draw_length * zoom, Timeline.track_height)
-		var box_pos: Vector2 = Vector2(clip.start * zoom, Timeline.track_total_size * clip.track)
-		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, Timeline.track_height))
-		var color: Color = Color(1.0, 1.0, 1.0, 0.3) # Resizing color.
-		if Timeline.current_state == Timeline.State.SPEEDING:
-			color = Color(1.0, 0.5, 0.0, 0.3) # Have different color on speeding.
-
-		# Drawing the original clip box and actual resized box.
-		draw_rect(clip_rect, color)
-		var preview_rect: Rect2 = Rect2(preview_position, preview_size)
-		draw_style_box(STYLE_BOX_PREVIEW, preview_rect)
-
-		var scroll_container: ScrollContainer = get_parent().get_parent()
-		var wave_file_id: int = clip.file
-		var wave_offset_sec: float = 0.0
-
-		if clip.effects.ato_active and clip.effects.ato_file != -1:
-			wave_file_id = clip.effects.ato_file
-			wave_offset_sec = clip.effects.ato_offset
-		else:
-			var target_file: FileData = FileLogic.files.get(clip.file)
-			if target_file and target_file.ato_active and target_file.ato_file != -1:
-				wave_file_id = target_file.ato_file
-				wave_offset_sec = target_file.ato_offset
-
-		var wave_streams: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
-		var wave_dict: Dictionary = wave_streams.get(clip.effects.audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
-		if not wave_dict.is_empty():
-			var lod: int = 1
-			if zoom < 0.2:
-				lod = 16
-			elif zoom < 0.8:
-				lod = 4
-
-			var audio_wave: PackedFloat32Array = wave_dict[lod]
-			var wave_begin: int = int((draw_begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
-			var is_muted: bool = TrackLogic.tracks[clip.track].is_muted or clip.effects.is_muted
-			_draw_wave(audio_wave, wave_begin, int(draw_length / float(lod)), preview_rect, draw_speed, lod, scroll_container, is_muted)
+	match Timeline.current_state:
+		Timeline.State.RESIZING: _handle_clip(false)
+		Timeline.State.SPEEDING: _handle_clip(true)
+		Timeline.State.DROPPING: _handle_draggable()
+		Timeline.State.MOVING:   _handle_draggable()
 
 
-func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, speed: float, lod: int, scroll_container: ScrollContainer, is_muted: bool) -> void:
-	if wave_data.is_empty():
+func _get_wave_dict(index: int) -> Dictionary:
+	if wave_streams.is_empty(): return {}
+	if wave_streams.has(index): return wave_streams[index]
+	if wave_streams.has(-1):    return wave_streams[-1]
+	return wave_streams.values()[0]
+
+
+func _set_wave_source(clip: ClipData) -> void:
+	wave_file_id = clip.file
+	wave_offset = 0.0
+	var effects: ClipEffects = clip.effects
+
+	if clip.effects and effects.ato_active and effects.ato_file != -1:
+		wave_file_id = effects.ato_file
+		wave_offset = effects.ato_offset
 		return
+
+	var target_file: FileData = FileLogic.files.get(clip.file)
+	if target_file and target_file.ato_active and target_file.ato_file != -1:
+		wave_file_id = target_file.ato_file
+		wave_offset = target_file.ato_offset
+
+
+# --- HANDLERS ---
+
+func _handle_draggable() -> void:
+	if Timeline.draggable == null or !Timeline.drop_valid: return
+	draggable = Timeline.draggable
+
+	if draggable.is_file:
+		if Input.is_key_pressed(KEY_SHIFT):  split_audio = SPLIT_AUDIO.SHIFT
+		elif Input.is_key_pressed(KEY_CTRL): split_audio = SPLIT_AUDIO.CTRL
+		else: split_audio = SPLIT_AUDIO.NONE
+
+		offset_frames = 0
+		for file_id: int in draggable.ids:
+			offset_frames += _handle_draggable_file(FileLogic.files[file_id])
+		return
+
+	# For preview clips only.
+	for clip_id: int in draggable.ids:
+		var clip: ClipData = ClipLogic.clips[clip_id]
+		var track: int = clip.track
+		preview_pos.x = (clip.start + draggable.frame_offset) * Timeline.zoom
+		preview_pos.y = (track + draggable.track_offset) * Timeline.track_total_size
+		preview_size.x = clip.duration * Timeline.zoom
+		preview_size.y = Timeline.track_height
+
+		clip_rect = Rect2(preview_pos, preview_size)
+		draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+
+		_set_wave_source(clip)
+
+		wave_streams = FileLogic.audio_wave.get(wave_file_id, {})
+		wave_dict = _get_wave_dict(clip.effects.audio_stream_index)
+		if not wave_dict.is_empty():
+			var begin: int = (clip.begin - int(wave_offset * Project.data.framerate))
+			is_muted = TrackLogic.tracks[track].is_muted or clip.effects.is_muted
+			_draw_wave(begin, clip.duration, clip.speed)
+
+
+func _handle_draggable_file(file: FileData) -> int: ## Returns file duration.
+	var multi_audio_streams: bool = file.audio_streams.size() > 0
+	var is_video: bool = file.type == EditorCore.Type.VIDEO
+	var is_split_video: bool = multi_audio_streams and is_video and split_audio != 0
+	preview_size = Vector2(file.duration * Timeline.zoom, Timeline.track_height)
+
+	if is_split_video: _draw_split_video_preview(file)
+	else: _draw_clip_preview(file)
+	return file.duration
+
+
+func _handle_clip(is_speeding: bool) -> void:
+	var clip: ClipData = Timeline.resize_target.clip
+	var draw_start: float = clip.start
+	var draw_length: int = clip.duration
+	var draw_begin: int = clip.begin
+	var draw_speed: float = clip.speed
+
+	if !Timeline.resize_target.is_end:
+		draw_start += Timeline.resize_target.delta
+		draw_length -= Timeline.resize_target.delta
+		if Timeline.current_state == Timeline.State.RESIZING:
+			draw_begin += int(Timeline.resize_target.delta * clip.speed)
+	else: draw_length += Timeline.resize_target.delta
+
+	if is_speeding: draw_speed = (clip.duration * clip.speed) / float(maxi(draw_length, 1))
+
+	preview_pos = Vector2(draw_start * Timeline.zoom, clip.track * Timeline.track_total_size)
+	preview_size = Vector2(draw_length * Timeline.zoom, Timeline.track_height)
+	box_pos = Vector2(clip.start * Timeline.zoom, Timeline.track_total_size * clip.track)
+
+	var clip_size: Vector2 = Vector2(clip.duration * Timeline.zoom, Timeline.track_height)
+	clip_rect = Rect2(box_pos, clip_size)
+
+	# Drawing the original clip box and actual resized box.
+	draw_rect(clip_rect, COLOR_SPEEDING if is_speeding else COLOR_RESIZING)
+
+	# Clip rect is re-used for the preview.
+	clip_rect = Rect2(preview_pos, preview_size)
+	draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+
+	_set_wave_source(clip)
+	wave_streams = FileLogic.audio_wave.get(wave_file_id, {})
+	wave_dict = _get_wave_dict(clip.effects.audio_stream_index)
+	if not wave_dict.is_empty():
+		var begin: int = (draw_begin - int(wave_offset * Project.data.framerate))
+		is_muted = TrackLogic.tracks[clip.track].is_muted or clip.effects.is_muted
+		_draw_wave(begin, draw_length, draw_speed)
+
+
+# --- DRAW LOGIC ---
+
+func _draw_split_video_preview(file: FileData) -> void:
+	var video_preview_position: Vector2 = Vector2(
+			(draggable.frame_offset + offset_frames) * Timeline.zoom,
+			draggable.track_offset * Timeline.track_total_size)
+	draw_style_box(STYLE_BOX_PREVIEW, Rect2(video_preview_position, preview_size))
+
+	wave_streams = FileLogic.audio_wave.get(file.id, {})
+	if split_audio == SPLIT_AUDIO.CTRL:
+		var stream_index: int = file.audio_streams[0]
+		wave_dict = _get_wave_dict(stream_index)
+
+		if not wave_dict.is_empty():
+			clip_rect = Rect2(video_preview_position, preview_size)
+			is_muted = false
+			_draw_wave(0, file.duration, 1.0)
+
+	# Draw audio previews.
+	var start_i: int = 0 if split_audio else 1
+	for i: int in range(start_i, file.audio_streams.size()):
+		var audio_track_idx: int = draggable.track_offset + 1 + (i - start_i)
+		var audio_preview_position: Vector2 = Vector2(
+				(draggable.frame_offset + offset_frames) * Timeline.zoom,
+				audio_track_idx * Timeline.track_total_size)
+		clip_rect = Rect2(audio_preview_position, preview_size)
+		draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+
+		var stream_index: int = file.audio_streams[i]
+		wave_dict = _get_wave_dict(stream_index)
+		if not wave_dict.is_empty():
+			is_muted = false
+			_draw_wave(0, file.duration, 1.0)
+
+
+func _draw_clip_preview(file: FileData) -> void:
+	preview_pos.x = (draggable.frame_offset + offset_frames) * Timeline.zoom
+	preview_pos.y = draggable.track_offset * Timeline.track_total_size
+
+	clip_rect = Rect2(preview_pos, preview_size)
+	draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+
+	if file.type in EditorCore.AUDIO_TYPES:
+		wave_streams = FileLogic.audio_wave.get(file.id, {})
+		wave_dict = _get_wave_dict(-1)
+		if not wave_dict.is_empty():
+			is_muted = false
+			_draw_wave(0, file.duration, 1.0)
+
+
+func _draw_wave(begin: int, total_duration: int, speed: float) -> void:
+	var lod: int = 1
+	if Timeline.zoom < 0.2: lod = 16
+	elif Timeline.zoom < 0.8: lod = 4
+
+	begin /= lod
+
+	var duration: int = int(total_duration / float(lod))
+	var wave_data: PackedFloat32Array = wave_dict.get(lod, [])
+	if wave_data.is_empty(): return
+
 	var zoom: float = Timeline.zoom * lod
-	var height: float = rect.size.y
-	var base_x: float = rect.position.x
-	var base_y: float = rect.position.y
+	var height: float = clip_rect.size.y
+	var base_x: float = clip_rect.position.x
+	var base_y: float = clip_rect.position.y
 	var step: int = maxi(1, int(2.0 / zoom))
 
 	var start_i: int = 0
@@ -156,12 +237,11 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 
 	for i: int in range(start_i, end_i, step):
 		var wave_index: int = begin + int(i * speed)
-		if wave_index < 0 or wave_index >= wave_data.size():
-			continue
+		if wave_index < 0 or wave_index >= wave_data.size(): continue
 
 		var max_value: float = 0.0
-		var check_end: int = mini(wave_index + maxi(1, int(step * speed)), wave_data.size())
-		for index: int in range(wave_index, check_end):
+		var end: int = mini(wave_index + maxi(1, int(step * speed)), wave_data.size())
+		for index: int in range(wave_index, end):
 			if wave_data[index] > max_value:
 				max_value = wave_data[index]
 
@@ -169,13 +249,11 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 		var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
 		var block_pos_y: float = base_y
 
-		match waveform_style:
-			SettingsData.AudioWaveformStyle.CENTER:
-				block_pos_y = base_y + (height - block_height) / 2.0
-			SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP:
+		if waveform_style == SettingsData.AudioWaveformStyle.CENTER:
+			block_pos_y = base_y + (height - block_height) / 2.0
+		elif waveform_style == SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
 
-		var wave_color: Color = Color(0.82, 0.82, 0.82, 0.6)
-		if is_muted:
-			wave_color.a *= 0.3
-		draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
+		draw_rect(
+				Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height),
+				COLOR_WAVE_MUTED if is_muted else COLOR_WAVE)

@@ -17,19 +17,41 @@ var copied_min_track: int = 0
 
 # --- Handling ---
 
-func add(requests: Array[Request]) -> void:
+func add(requests: Array[RequestClipAdd]) -> void:
+	if requests.is_empty(): return
+
 	InputManager.undo_redo.create_action("Add new clip(s)")
+
+	var current_track_size: int = TrackLogic.tracks.size()
 	var existing_keys: Array[int] = clips.keys()
 
-	for request: Request in requests:
+	for request: RequestClipAdd in requests:
+		for i: int in range(current_track_size, request.track + 1):
+			InputManager.undo_redo.add_do_method(TrackLogic._add_track.bind(i))
+			InputManager.undo_redo.add_undo_method(TrackLogic._remove_track.bind(i))
+		current_track_size = request.track + 1
+
+	for request: RequestClipAdd in requests:
 		var new_clip: ClipData = ClipData.new()
 		new_clip.id = Utils.get_unique_id(existing_keys)
-		new_clip.type = FileLogic.files[request.file.id].type
+		existing_keys.append(new_clip.id)
+
+		new_clip.type = request.type
+		if new_clip.type == EditorCore.Type.EMPTY:
+			printerr("ClipLogic: Clip to add has type 'EMPTY'!")
+
 		new_clip.file = request.file.id
 		new_clip.track = request.track
 		new_clip.start = request.frame
-		new_clip.duration = request.duration if request.duration > 0 else FileLogic.files[request.file.id].duration
+		new_clip.duration = FileLogic.files[request.file.id].duration
+		if request.duration > 0:
+			new_clip.duration = request.duration
+
 		new_clip.effects = _create_default_effects(new_clip.type, request.file.id)
+
+		new_clip.effects.is_muted = request.is_muted
+		new_clip.effects.audio_stream_index = request.audio_index
+		if request.group_id != -1: new_clip.groups.append(request.group_id)
 
 		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
 			new_clip.effects.is_muted = true
@@ -49,6 +71,8 @@ func _restore_clip(snapshot: ClipData) -> void:
 
 
 func delete(clips_to_delete: Array[ClipData]) -> void:
+	if clips_to_delete.is_empty(): return
+
 	InputManager.undo_redo.create_action("Delete clip_data(s)")
 	for clip: ClipData in clips_to_delete:
 		InputManager.undo_redo.add_do_method(_delete.bind(clip))
@@ -69,6 +93,7 @@ func _delete(clip: ClipData) -> void:
 
 
 func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
+	if clips_to_delete.is_empty(): return
 	# Store min start and total duration per track.
 	var ranges_by_track: Dictionary[int, Vector2i] = {}
 
@@ -98,18 +123,21 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 
 	var leftmost_frame: int = ranges_by_track.values().map(func(vec: Vector2i) -> int: return vec.x).min()
 	if !EditorCore.is_playing:
-		InputManager.undo_redo.add_do_method(EditorCore.scrub_to_frame.bind(leftmost_frame))
-		InputManager.undo_redo.add_undo_method(EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
-
+		InputManager.undo_redo.add_do_method(
+				EditorCore.scrub_to_frame.bind(leftmost_frame))
+		InputManager.undo_redo.add_undo_method(
+				EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
 	InputManager.undo_redo.commit_action()
 
 
-func move(requests: Array[Request]) -> void:
+func move(requests: Array[RequestClipMove]) -> void:
+	if requests.is_empty(): return
+
 	InputManager.undo_redo.create_action("Move clip_data(s)")
-	for request: Request in requests:
+	for request: RequestClipMove in requests:
 		var clip: ClipData = request.clip
-		var new_track: int = clip.track + request.track_offset
-		var new_start: int = clip.start + request.frame_offset
+		var new_track: int = clip.track + request.offset_track
+		var new_start: int = clip.start + request.offset_frame
 		InputManager.undo_redo.add_do_method(_move.bind(clip, new_track, new_start))
 		InputManager.undo_redo.add_undo_method(_move.bind(clip, clip.track, clip.start))
 	InputManager.undo_redo.commit_action()
@@ -126,13 +154,15 @@ func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
 	updated.emit.call_deferred()
 
 
-func split(requests: Array[Request]) -> Array[ClipData]:
+func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
+	if requests.is_empty(): return []
+
 	var new_clips: Array[ClipData] = []
 	var existing_group_ids: Array[int] = _get_all_group_ids()
 	var group_id_map: Dictionary = {}
 	InputManager.undo_redo.create_action("Split clip_data(s)")
 
-	for request: Request in requests:
+	for request: RequestClipSplit in requests:
 		var clip: ClipData = request.clip
 		var split_offset: int = request.frame
 		var duration_left: int = split_offset
@@ -141,8 +171,14 @@ func split(requests: Array[Request]) -> Array[ClipData]:
 			continue # Check for invalid splits.
 
 		# Splitting the main clip.
-		InputManager.undo_redo.add_do_method(_resize_and_fade.bind(clip, -duration_right, true, clip.effects.fade_visual.x, 0, clip.effects.fade_audio.x, 0))
-		InputManager.undo_redo.add_undo_method(_resize_and_fade.bind(clip, duration_right, true, clip.effects.fade_visual.x, clip.effects.fade_visual.y, clip.effects.fade_audio.x, clip.effects.fade_audio.y))
+		var v_fade_in: int = clip.effects.fade_visual.x
+		var v_fade_out: int = clip.effects.fade_visual.y
+		var a_fade_in: int = clip.effects.fade_audio.x
+		var a_fade_out: int = clip.effects.fade_audio.y
+		InputManager.undo_redo.add_do_method(_resize_and_fade.bind(
+				clip, -duration_right, true, v_fade_in, 0, a_fade_in, 0))
+		InputManager.undo_redo.add_undo_method(_resize_and_fade.bind(
+				clip, duration_right, true, v_fade_in, v_fade_out, a_fade_in, a_fade_out))
 
 		# Construct the new clip snapshot.
 		var snapshot: ClipData = request.clip.duplicate(true)
@@ -181,12 +217,14 @@ func split(requests: Array[Request]) -> Array[ClipData]:
 	return new_clips
 
 
-func resize(requests: Array[Request]) -> void:
+func resize(requests: Array[RequestClipResize]) -> void:
 	InputManager.undo_redo.create_action("Resize clip_data(s)")
-	for request: Request in requests:
+	for request: RequestClipResize in requests:
 		var clip: ClipData = request.clip
-		InputManager.undo_redo.add_do_method(_resize.bind( clip, request.resize, request.is_end))
-		InputManager.undo_redo.add_undo_method(_resize_restore.bind( clip, clip.start, clip.duration, clip.begin))
+		InputManager.undo_redo.add_do_method(_resize.bind(
+				clip, request.resize_amount, request.from_end))
+		InputManager.undo_redo.add_undo_method(_resize_restore.bind(
+				clip, clip.start, clip.duration, clip.begin))
 	InputManager.undo_redo.commit_action()
 
 
@@ -468,14 +506,14 @@ func _copy_visual_effects(effects: Array[EffectVisual], split_pos: int) -> Array
 
 				var value: Variant = effect.keyframes[param_id][frame]
 
-				@warning_ignore_start("unsafe_method_access")
 				if value is Resource:
-					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
-				elif typeof(value) == TYPE_ARRAY or typeof(value) == TYPE_DICTIONARY:
-					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
+					new_effect.keyframes[param_id][frame - split_pos] = (value as Resource).duplicate(true)
+				elif typeof(value) == TYPE_ARRAY:
+					new_effect.keyframes[param_id][frame - split_pos] = (value as Array).duplicate(true)
+				elif typeof(value) == TYPE_DICTIONARY:
+					new_effect.keyframes[param_id][frame - split_pos] = (value as Dictionary).duplicate(true)
 				else:
 					new_effect.keyframes[param_id][frame - split_pos] = value
-				@warning_ignore_restore("unsafe_method_access")
 		new_effects.append(new_effect)
 	return new_effects
 
@@ -503,14 +541,14 @@ func _copy_audio_effects(effects: Array[EffectAudio], split_pos: int) -> Array[E
 
 				var value: Variant = effect.keyframes[param_id][frame]
 
-				@warning_ignore_start("unsafe_method_access")
 				if value is Resource:
-					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
-				elif typeof(value) == TYPE_ARRAY or typeof(value) == TYPE_DICTIONARY:
-					new_effect.keyframes[param_id][frame - split_pos] = value.duplicate(true)
+					new_effect.keyframes[param_id][frame - split_pos] = (value as Resource).duplicate(true)
+				elif typeof(value) == TYPE_ARRAY:
+					new_effect.keyframes[param_id][frame - split_pos] = (value as Array).duplicate(true)
+				elif typeof(value) == TYPE_DICTIONARY:
+					new_effect.keyframes[param_id][frame - split_pos] = (value as Dictionary).duplicate(true)
 				else:
 					new_effect.keyframes[param_id][frame - split_pos] = value
-				@warning_ignore_restore("unsafe_method_access")
 		new_effects.append(new_effect)
 	return new_effects
 
@@ -520,8 +558,10 @@ func apply_replace_audio(clip: ClipData, audio_file: int, offset: float) -> void
 	var active: bool = audio_file != -1
 
 	InputManager.undo_redo.create_action("Set clip replace audio")
-	InputManager.undo_redo.add_do_method(_apply_replace_audio.bind(clip, active, audio_file, offset))
-	InputManager.undo_redo.add_undo_method(_apply_replace_audio.bind(clip, effects.ato_active, effects.ato_file, effects.ato_offset))
+	InputManager.undo_redo.add_do_method(_apply_replace_audio.bind(
+			clip, active, audio_file, offset))
+	InputManager.undo_redo.add_undo_method(_apply_replace_audio.bind(
+			clip, effects.ato_active, effects.ato_file, effects.ato_offset))
 	InputManager.undo_redo.commit_action()
 
 
@@ -536,13 +576,13 @@ func _apply_replace_audio(clip: ClipData, active: bool, audio_file_id: int, offs
 	updated.emit.call_deferred()
 
 
-func change_speed(requests: Array[Request]) -> void:
+func change_speed(requests: Array[RequestClipResize]) -> void:
 	InputManager.undo_redo.create_action("Change speed clip(s)")
 
-	for request: Request in requests:
+	for request: RequestClipResize in requests:
 		var clip: ClipData = request.clip
-		var amount: int = request.resize
-		var from_end: int = request.is_end
+		var amount: int = request.resize_amount
+		var from_end: int = request.from_end
 		var new_duration: int = maxi(clip.duration + (amount if from_end else -amount), 1)
 		var new_speed: float = (clip.duration * clip.speed) / float(new_duration)
 
@@ -659,50 +699,3 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 		effects.transition_right.set_default_keyframe()
 
 	return effects
-
-
-
-class Request:
-	var clip: ClipData = null
-	var file: FileData = null
-
-	var track: int = 0
-	var frame: int = 0
-
-	var frame_offset: int = 0
-	var track_offset: int = 0
-
-	var duration: int = -1
-	var resize: int
-	var is_end: bool = false
-
-
-	static func add_request(file_data: FileData, track_index: int, frame_nr: int) -> Request:
-		var request: Request = Request.new()
-		request.file = file_data
-		request.track = track_index
-		request.frame = frame_nr
-		return request
-
-
-	static func split_request(clip_data: ClipData, frame_split_pos: int) -> Request:
-		var request: Request = Request.new()
-		request.clip = clip_data
-		request.frame = frame_split_pos
-		return request
-
-
-	static func move_request(clip_data: ClipData, offset_track: int, offset_frame: int) -> Request:
-		var request: Request = Request.new()
-		request.clip = clip_data
-		request.frame_offset = offset_frame
-		request.track_offset = offset_track
-		return request
-
-
-	static func resize_request(clip_data: ClipData, resize_amount: int, end: bool) -> Request:
-		var request: Request = Request.new()
-		request.clip = clip_data
-		request.resize = resize_amount
-		request.is_end = end
-		return request

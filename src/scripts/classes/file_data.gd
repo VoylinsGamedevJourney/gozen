@@ -44,9 +44,7 @@ func serialize() -> Dictionary:
 	if !audio_streams.is_empty():
 		data["audio_streams"] = audio_streams
 
-	if temp_file:
-		@warning_ignore("unsafe_method_access")
-		data["temp_file"] = temp_file.serialize()
+	if temp_file: data["temp_file"] = temp_file.serialize()
 	return data
 
 
