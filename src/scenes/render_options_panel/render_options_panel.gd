@@ -398,12 +398,12 @@ func _on_start_render_button_pressed() -> void:
 
 		@warning_ignore_start("return_value_discarded")
 		dialog.confirmed.connect(func() -> void:
-				RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
+				await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
 		dialog.canceled.connect(dialog.queue_free)
 		@warning_ignore_restore("return_value_discarded")
 		dialog.popup_centered()
 	else:
-		RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft)
+		await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft)
 
 	if is_inside_tree():
 		var focus_owner: Control = get_viewport().gui_get_focus_owner()

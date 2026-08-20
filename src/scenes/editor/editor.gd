@@ -148,11 +148,8 @@ func _ready() -> void:
 		Project.new_project(request)
 	else:
 		add_child(preload(Library.SCENE_STARTUP).instantiate())
-		return
 
-	if not is_view_mode and not is_render_mode:
-		switch_workspace(0)
-	else:
+	if is_view_mode and is_render_mode:
 		menu_bar.visible = false
 		workspace_buttons_hbox.visible = false
 
@@ -186,6 +183,8 @@ func _ready() -> void:
 			if RenderManager.update_encoder_status.connect(
 					_on_cli_render_status_check.bind(is_quick_render_mode)): print_stack()
 			await RenderManager.start_cli_render(render_output_path, render_profile_name)
+	else:
+		switch_workspace(0)
 
 
 func _delete_dir_contents(path: String) -> void:
