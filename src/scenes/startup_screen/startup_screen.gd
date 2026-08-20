@@ -228,12 +228,14 @@ func _on_editor_settings_button_pressed() -> void:
 
 
 func _on_image_author_meta_clicked(meta: Variant) -> void:  Utils.open_url(str(meta))
-func _on_support_project_button_pressed() -> void:  		Utils.open_url("support")
-func _on_gozen_logo_button_pressed() -> void:				Utils.open_url("site")
-func _on_site_button_pressed() -> void: 					Utils.open_url("site")
-func _on_manual_button_pressed() -> void: 					Utils.open_url("manual")
-func _on_tutorials_button_pressed() -> void: 				Utils.open_url("tutorials")
-func _on_discord_server_button_pressed() -> void: 			Utils.open_url("discord")
+
+
+func _on_support_project_button_pressed() -> void: Utils.open_url("support")
+func _on_gozen_logo_button_pressed() -> void:	   Utils.open_url("site")
+func _on_site_button_pressed() -> void: 		   Utils.open_url("site")
+func _on_manual_button_pressed() -> void: 		   Utils.open_url("manual")
+func _on_tutorials_button_pressed() -> void: 	   Utils.open_url("tutorials")
+func _on_discord_server_button_pressed() -> void:  Utils.open_url("discord")
 
 
 func _on_create_project_button_pressed() -> void:		 tab_container.current_tab = 1
@@ -251,7 +253,6 @@ func _on_open_project_button_pressed() -> void:
 
 	add_child(dialog)
 	dialog.popup_centered()
-
 
 
 func open_project(path: String) -> void:

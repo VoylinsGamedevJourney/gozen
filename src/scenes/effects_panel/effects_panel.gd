@@ -191,6 +191,7 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 		current_clip = null
 		current_file = null
 		_load_effects() # Clear the ui.
+		return
 
 	var clip: ClipData = ClipLogic.clips.get(clip_data.id)
 	if current_clip and clip.id == current_clip.id:
