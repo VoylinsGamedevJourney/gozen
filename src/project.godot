@@ -27,6 +27,7 @@ boot_splash/minimum_display_time=500
 [autoload]
 
 CommandManager="*res://scripts/autoloads/command_manager.gd"
+ModuleManager="*res://scripts/autoloads/module_manager.gd"
 Settings="*res://scripts/autoloads/settings.gd"
 EditorCore="*res://scripts/autoloads/editor_core.gd"
 Project="*res://scripts/autoloads/project.gd"
