@@ -10,27 +10,6 @@ const INT_32_MAX: int = 2_147_483_647
 
 
 
-static func format_file_nickname(file_name: String, size: int) -> String:
-	var new_name: String = ""
-	while file_name.length() > size:
-		if new_name.length() == 0:
-			new_name += "\n"
-		new_name += file_name.left(size)
-		file_name = file_name.trim_prefix(file_name.left(size))
-	new_name += file_name
-	return new_name
-
-
-static func open_url(url: String) -> void:
-	if url.begins_with("http") or url.begins_with("www"):
-		@warning_ignore("return_value_discarded")
-		OS.shell_open(url)
-	else:
-		url = url.trim_prefix("urls/") # Just in case
-		@warning_ignore("return_value_discarded")
-		OS.shell_open(str(ProjectSettings.get_setting("urls/%s" % url)))
-
-
 static func get_unique_id(keys: Array[int]) -> int:
 	var id: int = abs(randi())
 	while keys.has(id):
@@ -39,36 +18,6 @@ static func get_unique_id(keys: Array[int]) -> int:
 			id = get_unique_id(keys)
 	return id
 
-
-## Easier way to check if a value is within a range.
-static func in_range(value: int, min_value: int, max_value: int, include_last: bool = true) -> bool:
-	return value >= min_value and (value <= max_value if include_last else value < max_value)
-
-
-## Same as in_range but for floats
-static func in_rangef(value: float, min_value: float, max_value: float, include_last: bool = true) -> bool:
-	return value >= min_value and (value <= max_value if include_last else value < max_value)
-
-
-static func format_time_str_from_frame(frame_count: int, framerate: float, short: bool) -> String:
-	return format_time_str(float(frame_count) / framerate, short)
-
-
-## Short = 00:00:00
-## Long = 00:00:00.00
-static func format_time_str(total_seconds: float, short: bool = false) -> String:
-	var total_seconds_int: int = floor(total_seconds)
-
-	var hours: int = int(float(total_seconds_int) / 3600)
-	var remaining_seconds: int = total_seconds_int % 3600
-	var minutes: int = int(float(remaining_seconds) / 60)
-	var seconds: int = total_seconds_int % 60
-	var micro: int = int(float(total_seconds - total_seconds_int) * 100)
-
-	if short:
-		return "%02d:%02d:%02d" % [hours, minutes, seconds]
-	else:
-		return "%02d:%02d:%02d.%02d" % [hours, minutes, seconds, micro]
 
 
 static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
@@ -105,10 +54,6 @@ static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
 	return result
 
 
-static func get_sample_count(frames: int, framerate: float) -> int:
-	return (int((float(frames) / framerate) * RenderManager.MIX_RATE)) * 4
-
-
 static func get_video_extension(video_codec: Encoder.VideoCodec) -> String:
 	match video_codec:
 		Encoder.VideoCodec.V_HEVC: return ".mp4"
@@ -120,13 +65,12 @@ static func get_video_extension(video_codec: Encoder.VideoCodec) -> String:
 		Encoder.VideoCodec.V_AV1: return ".webm"
 		Encoder.VideoCodec.V_VP9: return ".webm"
 		Encoder.VideoCodec.V_VP8: return ".webm"
-
 	printerr("Utils: Unrecognized codec! ", video_codec)
 	return ""
 
 
 ## A function to help getting the number lower than the given number.
-static func get_previous(frame: int, array: Array[int]) -> int:
+static func get_previous_in_array(frame: int, array: Array[int]) -> int:
 	var prev: int = -1
 
 	for i: int in array:
@@ -138,7 +82,7 @@ static func get_previous(frame: int, array: Array[int]) -> int:
 
 
 ## A function to help getting the number higher than the given number.
-static func get_next(frame: int, array: Array[int]) -> int:
+static func get_next_in_array(frame: int, array: Array[int]) -> int:
 	for i: int in array:
 		if i > frame:
 			return i
@@ -147,25 +91,9 @@ static func get_next(frame: int, array: Array[int]) -> int:
 
 
 ## Cleaning up render stuff.
-static func cleanup_rid(device: RenderingDevice, rid: RID) -> RID:
+static func cleanup_rid(device: RenderingDevice, rid: RID) -> void:
 	if rid.is_valid():
 		device.free_rid(rid)
-
-	return RID()
-
-
-## Removind the middle the path so it fits in a certain amount of width without
-## bleeding to the next line.
-static func path_remove_middle(path: String, max_length: int) -> String:
-	if path.length() <= max_length:
-		return path
-
-	# "..." takes 3 characters
-	var split_size: int = floori((max_length - 3) / 2.0)
-	var left_part: String = path.left(split_size)
-	var right_part: String = path.right(split_size)
-
-	return "%s...%s" % [left_part, right_part]
 
 
 ## For fuzzy searching.
@@ -193,20 +121,3 @@ static func get_fuzzy_score(query: String, text: String) -> int:
 		text_index += 1
 
 	return score if query_index == query.length() else 0
-
-
-static func calculate_fade_in(frame_nr: int, clip: ClipData) -> float:
-	var fade: Vector2i = clip.effects.fade_visual
-	return 1.0 if fade.x == 0 else clamp(frame_nr / float(fade.x), 0.0, 1.0)
-
-
-static func calculate_fade_out(frame_nr: int, clip: ClipData) -> float:
-	var fade: Vector2i = clip.effects.fade_visual
-	return 1.0 if fade.y == 0 else clamp((clip.duration - frame_nr) / float(fade.y), 0.0, 1.0)
-
-
-static func calculate_fade(frame_nr: int, clip: ClipData, is_visual: bool) -> float:
-	var fade: Vector2i = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
-	var fade_in: float = 1.0 if fade.x == 0 else clamp(frame_nr / float(fade.x), 0.0, 1.0)
-	var fade_out: float = 1.0 if fade.y == 0 else clamp((clip.duration - frame_nr) / float(fade.y), 0.0, 1.0)
-	return fade_in * fade_out
