@@ -161,11 +161,14 @@ func initialize_video(video: Video) -> void:
 		yuv_shader = device.shader_create_from_spirv(spirv)
 		yuv_pipeline = device.compute_pipeline_create(yuv_shader)
 
-	y_texture = Utils.cleanup_rid(device, y_texture)
-	u_texture = Utils.cleanup_rid(device, u_texture)
-	v_texture = Utils.cleanup_rid(device, v_texture)
-	a_texture = Utils.cleanup_rid(device, a_texture)
-	yuv_params = Utils.cleanup_rid(device, yuv_params)
+	for rid: RID in [y_texture, u_texture, v_texture, a_texture, yuv_params]:
+		Utils.cleanup_rid(device, rid)
+
+	y_texture = RID()
+	u_texture = RID()
+	v_texture = RID()
+	a_texture = RID()
+	yuv_params = RID()
 
 	var format_y: RDTextureFormat = RDTextureFormat.new()
 	var format_uv: RDTextureFormat = RDTextureFormat.new()
@@ -202,7 +205,7 @@ func initialize_video(video: Video) -> void:
 	_init_ping_pong()
 
 
-func process_video_frame(video: Video, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, frame_nr: int) -> void:
+func process_video_frame(video: Video, effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, frame_nr: int) -> void:
 	if not initialized: return
 
 	if device.texture_update(y_texture, 0, video.get_y_data().get_data()) or \
@@ -213,7 +216,7 @@ func process_video_frame(video: Video, effects: Array[EffectVisual], transition_
 	if video.get_has_alpha() and device.texture_update(a_texture, 0, video.get_a_data().get_data()):
 		printerr("VisualCompositor: Failed to update alpha texture in RenderingDevice!")
 
-	var all_effects: Array[EffectVisual] = effects.duplicate()
+	var all_effects: Array[Effect] = effects.duplicate()
 	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
 	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
 	_update_effect_buffers(all_effects, frame_nr)
@@ -239,10 +242,10 @@ func process_video_frame(video: Video, effects: Array[EffectVisual], transition_
 	device.free_rid(yuv_set)
 
 
-func process_image_frame(effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, frame_nr: int) -> void:
+func process_image_frame(effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, frame_nr: int) -> void:
 	if not initialized: return
 
-	var all_effects: Array[EffectVisual] = effects.duplicate()
+	var all_effects: Array[Effect] = effects.duplicate()
 	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
 	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
 	_update_effect_buffers(all_effects, frame_nr)
@@ -254,13 +257,13 @@ func process_image_frame(effects: Array[EffectVisual], transition_left: EffectVi
 	_process_frame(device.compute_list_begin(), effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
 
 
-func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, frame_nr: int) -> void:
+func process_texture_frame(texture_rid: RID, effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, frame_nr: int) -> void:
 	if not initialized: return
 
 	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(texture_rid)
 	if not rd_input_tex.is_valid(): return
 
-	var all_effects: Array[EffectVisual] = effects.duplicate()
+	var all_effects: Array[Effect] = effects.duplicate()
 	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
 	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
 	_update_effect_buffers(all_effects, frame_nr)
@@ -286,28 +289,37 @@ func process_texture_frame(texture_rid: RID, effects: Array[EffectVisual], trans
 
 
 func cleanup() -> void:
-	ping_texture = Utils.cleanup_rid(device, ping_texture)
-	pong_texture = Utils.cleanup_rid(device, pong_texture)
-	default_sampler = Utils.cleanup_rid(device, default_sampler)
+	for rid: RID in [ping_texture, pong_texture, default_sampler]:
+		Utils.cleanup_rid(device, rid)
+
+	ping_texture = RID()
+	pong_texture = RID()
+	default_sampler = RID()
 
 	# Video cleanup
-	y_texture = Utils.cleanup_rid(device, y_texture)
-	u_texture = Utils.cleanup_rid(device, u_texture)
-	v_texture = Utils.cleanup_rid(device, v_texture)
-	a_texture = Utils.cleanup_rid(device, a_texture)
-	yuv_params = Utils.cleanup_rid(device, yuv_params)
-	yuv_pipeline = Utils.cleanup_rid(device, yuv_pipeline)
-	yuv_shader = Utils.cleanup_rid(device, yuv_shader)
+	for rid: RID in [y_texture, u_texture, v_texture, a_texture, yuv_params, yuv_pipeline, yuv_shader]:
+		Utils.cleanup_rid(device, rid)
+
+	y_texture = RID()
+	u_texture = RID()
+	v_texture = RID()
+	a_texture = RID()
+	yuv_params = RID()
+	yuv_pipeline = RID()
+	yuv_shader = RID()
 
 	# Image cleanup.
-	base_image = Utils.cleanup_rid(device, base_image)
+	for rid: RID in [base_image, fade_pipeline, fade_shader, fade_buffer, fade_in_buffer, fade_out_buffer, copy_buffer]:
+		Utils.cleanup_rid(device, rid)
 
-	fade_pipeline = Utils.cleanup_rid(device, fade_pipeline)
-	fade_shader = Utils.cleanup_rid(device, fade_shader)
-	fade_buffer = Utils.cleanup_rid(device, fade_buffer)
-	fade_in_buffer = Utils.cleanup_rid(device, fade_in_buffer)
-	fade_out_buffer = Utils.cleanup_rid(device, fade_out_buffer)
-	copy_buffer = Utils.cleanup_rid(device, copy_buffer)
+	base_image = RID()
+
+	fade_pipeline = RID()
+	fade_shader = RID()
+	fade_buffer = RID()
+	fade_in_buffer = RID()
+	fade_out_buffer = RID()
+	copy_buffer = RID()
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)
@@ -315,7 +327,6 @@ func cleanup() -> void:
 
 	for buffers: Array in effect_buffers.values():
 		for buffer: RID in buffers:
-			@warning_ignore("return_value_discarded")
 			Utils.cleanup_rid(device, buffer)
 	effect_buffers.clear()
 
@@ -324,9 +335,9 @@ func cleanup() -> void:
 	initialized = false
 
 
-func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) -> void:
+func _update_effect_buffers(effects: Array[Effect], current_frame: int) -> void:
 	var active_ids: Array[int] = []
-	for effect: EffectVisual in effects:
+	for effect: Effect in effects:
 		if not effect.is_enabled: continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
@@ -341,7 +352,6 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 
 		if buffers.size() != effect.shader_passes:
 			for buffer: RID in buffers:
-				@warning_ignore("return_value_discarded")
 				Utils.cleanup_rid(device, buffer)
 			buffers.clear()
 
@@ -358,16 +368,15 @@ func _update_effect_buffers(effects: Array[EffectVisual], current_frame: int) ->
 	for buffer_id: int in known_ids:
 		if buffer_id in active_ids: continue
 		for buffer: RID in effect_buffers[buffer_id]:
-			@warning_ignore("return_value_discarded")
 			Utils.cleanup_rid(device, buffer)
 
 		if !effect_buffers.erase(buffer_id):
 			printerr("VisualCompositor: Failed to erase '%s' from effect_buffers!" % buffer_id)
 
 
-func _process_frame(compute_list: int, effects: Array[EffectVisual], transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float, _current_frame: int) -> void:
+func _process_frame(compute_list: int, effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, _current_frame: int) -> void:
 	var sets_to_free: Array[RID] = []
-	for effect: EffectVisual in effects:
+	for effect: Effect in effects:
 		if not effect.is_enabled: continue
 
 		var cache: EffectCache = _get_effect_pipeline(effect.shader_path, effect)
@@ -403,12 +412,12 @@ func _process_frame(compute_list: int, effects: Array[EffectVisual], transition_
 		device.free_rid(rid)
 
 
-func _update_transition_buffers(transition_left: EffectVisual, fade_in: float, transition_right: EffectVisual, fade_out: float) -> void:
+func _update_transition_buffers(transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float) -> void:
 	_update_fade_buffer(fade_in, transition_left, fade_in_buffer)
 	_update_fade_buffer(fade_out, transition_right, fade_out_buffer)
 
 
-func _update_fade_buffer(fade: float, transition: EffectVisual, buffer: RID) -> void:
+func _update_fade_buffer(fade: float, transition: Effect, buffer: RID) -> void:
 	if fade >= 1.0 or !transition: return
 
 	var buffer_data: PackedByteArray = PackedByteArray()
@@ -422,7 +431,7 @@ func _update_fade_buffer(fade: float, transition: EffectVisual, buffer: RID) -> 
 		printerr("VisualCompositor: Updating device 'fade_buffer' failed with '%s'!" % err)
 
 
-func _apply_transition(compute_list: int, transition: EffectVisual, _progress: float, progress_buffer: RID, sets_to_free: Array[RID]) -> void:
+func _apply_transition(compute_list: int, transition: Effect, _progress: float, progress_buffer: RID, sets_to_free: Array[RID]) -> void:
 	var cache: EffectCache = _get_effect_pipeline(transition.shader_path, transition)
 	if not cache: return
 
@@ -510,7 +519,7 @@ func _create_buffer_uniform(buffer_rid: RID, binding: int) -> RDUniform:
 	return uniform
 
 
-func _get_effect_pipeline(shader_path: String, effect: EffectVisual) -> EffectCache:
+func _get_effect_pipeline(shader_path: String, effect: Effect) -> EffectCache:
 	if shader_path.is_empty(): return null
 	if effects_cache.has(shader_path):
 		return effects_cache[shader_path]
