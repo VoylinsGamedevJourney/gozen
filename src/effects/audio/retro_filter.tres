@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="EffectAudio" format=3 uid="uid://dbrtc4effect0"]
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://dbrtc4effect0"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
-[ext_resource type="Script" uid="uid://cddcl2omddlan" path="res://scripts/classes/effect_audio.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
 [sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_retro"]
 mode = 2

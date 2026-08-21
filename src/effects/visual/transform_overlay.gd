@@ -1,11 +1,11 @@
-extends EffectVisualOverlay
+extends EffectOverlay
 
 
 enum DragMode { NONE, POSITION, ROTATION }
 
 
 var clip: ClipData
-var effect: EffectVisual
+var effect: Effect
 
 var drag_mode: DragMode = DragMode.NONE
 var drag_start_val: Variant
@@ -17,7 +17,7 @@ var drag_accumulated_rot: float = 0.0
 
 
 
-func initialize(clip_data: ClipData, effect_visual: EffectVisual) -> void:
+func initialize(clip_data: ClipData, effect_visual: Effect) -> void:
 	clip = clip_data
 	effect = effect_visual
 

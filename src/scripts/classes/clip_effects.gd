@@ -2,20 +2,22 @@ class_name ClipEffects
 extends Resource
 
 
-var video: Array[EffectVisual] = []
-var audio: Array[EffectAudio] = []
+var video: Array[Effect] = []
+var audio: Array[Effect] = []
 
 var fade_visual: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
 var fade_audio: Vector2i = Vector2i.ZERO ## { x = in, y = out }.
 
-var transition_left: EffectVisual = null
-var transition_right: EffectVisual = null
+var transition_left: Effect = null
+var transition_right: Effect = null
 
 var ato_active: bool = false ## Audio-take-over (renamed to Replace audio).
 var ato_offset: float = 0.0 ## Seconds.
 var ato_file: int = -1
 
+var is_showing: bool = true
 var is_muted: bool = false
+
 var audio_stream_index: int = -1
 
 
@@ -40,8 +42,8 @@ func serialize() -> Dictionary:
 	if transition_left:  data["transition_left"] = transition_left.serialize()
 	if transition_right: data["transition_right"] = transition_right.serialize()
 
-	for effect: EffectVisual in video: (data["video"] as Array).append(effect.serialize())
-	for effect: EffectAudio in audio:  (data["audio"] as Array).append(effect.serialize())
+	for effect: Effect in video: (data["video"] as Array).append(effect.serialize())
+	for effect: Effect in audio:  (data["audio"] as Array).append(effect.serialize())
 
 	return data
 
@@ -80,19 +82,19 @@ func deserialize(data: Dictionary, file_id: int = -1) -> void:
 
 func _deserialize_video(data: Dictionary, file_id: int = -1) -> void:
 	for effect_value: Variant in data["video"]:
-		if effect_value is EffectVisual:
+		if effect_value is Effect:
 			video.append(effect_value)
 			continue
 
 		var effect_id: String = (effect_value as Dictionary).get("id", "")
-		var effect: EffectVisual = null
+		var effect: Effect = null
 
 		if effect_id == "pck_effect_params" and file_id != -1:
-			effect = EffectVisual.new()
+			effect = Effect.new()
 			effect.id = "pck_effect_params"
 			effect.nickname = "Module Parameters"
 
-			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
+			var module_data: GoZenModuleScene = FileLogic.file_data.get(file_id)
 			if module_data:
 				for effect_param: EffectParam in module_data.params:
 					effect.params.append(effect_param.duplicate(true))
@@ -106,13 +108,13 @@ func _deserialize_video(data: Dictionary, file_id: int = -1) -> void:
 
 func _deserialize_audio(data: Dictionary) -> void:
 	for effect_value: Variant in data["audio"]:
-		if effect_value is EffectAudio:
+		if effect_value is Effect:
 			audio.append(effect_value)
 			continue
 
 		var effect_id: String = (effect_value as Dictionary).get("id", "")
 		if !EffectsHandler.audio_effect_instances.has(effect_id): continue
 
-		var effect: EffectAudio = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
+		var effect: Effect = EffectsHandler.audio_effect_instances[effect_id].deep_copy()
 		effect.deserialize(effect_value as Dictionary)
 		audio.append(effect)

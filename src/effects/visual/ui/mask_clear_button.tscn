@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmaskbtn"]
+
+[ext_resource type="Script" path="res://effects/visual/ui/mask_clear_button.gd" id="1_script"]
+
+[node name="MaskClearButton" type="MarginContainer"]
+script = ExtResource("1_script")

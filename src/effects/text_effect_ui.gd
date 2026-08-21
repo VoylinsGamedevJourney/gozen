@@ -4,15 +4,13 @@ extends EffectUI
 var effect: Effect
 var clip: ClipData
 var file: FileData
-var effects_panel: EffectsPanel
 
 
 
-func load_ui(_effect: Effect, _clip: ClipData, _is_visual: bool, _effects_panel: EffectsPanel) -> void:
+func load_ui(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 	effect = _effect
 	clip = _clip
 	file = FileLogic.files[clip.file]
-	effects_panel = _effects_panel
 
 	var relative_frame_nr: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	var container: FoldableContainer = FoldableContainer.new()
@@ -152,7 +150,7 @@ func load_ui(_effect: Effect, _clip: ClipData, _is_visual: bool, _effects_panel:
 
 
 func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool, is_copy: bool) -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
 	InputManager.undo_redo.create_action("Move/Copy Text Keyframes")
@@ -183,7 +181,7 @@ func _on_text_keyframe_moved(old_frame: int, new_frame: int, preserve: bool, is_
 func _on_text_keyframe_deleted(frame_nr: int) -> void:
 	if frame_nr == 0:
 		return
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
 	InputManager.undo_redo.create_action("Delete Text Keyframes")
@@ -199,7 +197,7 @@ func _on_text_keyframe_deleted(frame_nr: int) -> void:
 
 func _text_param_update_call(value: Variant, param_id: String) -> void:
 	var frame_nr: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 
 	var param_obj: EffectParam
@@ -224,7 +222,7 @@ func _text_param_update_call(value: Variant, param_id: String) -> void:
 
 func _text_keyframe_button_pressed(param_id: String) -> void:
 	var frame_nr: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var keyframes: Dictionary = text_effect.keyframes
 	var param_keyframes: Dictionary = keyframes[param_id]
 
@@ -242,7 +240,7 @@ func _text_keyframe_button_pressed(param_id: String) -> void:
 
 
 func _on_reset_text_effect() -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(text_effect.keyframes)
 
 	InputManager.undo_redo.create_action("Reset text effect")
@@ -252,7 +250,7 @@ func _on_reset_text_effect() -> void:
 
 
 func _reset_text_effect() -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	text_effect.keyframes.clear()
 	text_effect.set_default_keyframe()
 	Project.unsaved_changes = true
@@ -261,7 +259,7 @@ func _reset_text_effect() -> void:
 
 
 func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	text_effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true

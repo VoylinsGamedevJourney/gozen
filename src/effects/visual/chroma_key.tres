@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="EffectVisual" format=3 uid="uid://df8gtdi3d2cv4"]
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://df8gtdi3d2cv4"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
-[ext_resource type="Script" uid="uid://e26q35ad13vv" path="res://scripts/classes/effect_visual.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
 [sub_resource type="Resource" id="Resource_key_color"]
 script = ExtResource("1_param")

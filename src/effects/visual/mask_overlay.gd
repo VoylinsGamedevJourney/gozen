@@ -1,7 +1,7 @@
-extends EffectVisualOverlay
+extends EffectOverlay
 
 var clip: ClipData
-var effect: EffectVisual
+var effect: Effect
 
 var drag_index: int = -1
 var hovered_index: int = -1
@@ -11,7 +11,7 @@ var _err: int = 0 ## Useless stuff to get rid of return warnings.
 
 
 
-func initialize(clip_data: ClipData, effect_visual: EffectVisual) -> void:
+func initialize(clip_data: ClipData, effect_visual: Effect) -> void:
 	clip = clip_data
 	effect = effect_visual
 

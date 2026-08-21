@@ -3,16 +3,14 @@ extends EffectUI
 var effect: Effect
 var clip: ClipData
 var is_visual: bool
-var effects_panel: EffectsPanel
 var hboxes: Dictionary = {}
 
 
 
-func load_ui(_effect: Effect, _clip: ClipData, _is_visual: bool, _effects_panel: EffectsPanel) -> void:
+func load_ui(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 	effect = _effect
 	clip = _clip
 	is_visual = _is_visual
-	effects_panel = _effects_panel
 
 	for param: EffectParam in effect.params:
 		var param_hbox: HBoxContainer = effects_panel.create_effect_param_hbox(param, effect, is_visual)
