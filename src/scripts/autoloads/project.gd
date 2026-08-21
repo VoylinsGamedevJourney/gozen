@@ -45,7 +45,7 @@ func _setup_logic() -> void:
 	TrackLogic.prepare_data()
 
 
-func new_project(request: NewRequest) -> void:
+func new_project(request: RequestProjectNew) -> void:
 	var loading_overlay: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 
 	loading_overlay.update_title(tr("New project"))
@@ -417,7 +417,7 @@ func set_resolution(resolution: Vector2i) -> void:
 				_update_effect.call(file.temp_file.text_effect, ratio)
 
 		for clip: ClipData in ClipLogic.clips.values():
-			for effect: EffectVisual in clip.effects.video:
+			for effect: Effect in clip.effects.video:
 				_update_effect.call(effect, ratio)
 
 		EffectsHandler.effect_values_updated.emit()
@@ -458,9 +458,9 @@ func set_framerate(new_framerate: float, force: bool = false) -> void:
 			clip.effects.fade_visual = Vector2i(roundi(clip.effects.fade_visual.x * ratio), roundi(clip.effects.fade_visual.y * ratio))
 			clip.effects.fade_audio = Vector2i(roundi(clip.effects.fade_audio.x * ratio), roundi(clip.effects.fade_audio.y * ratio))
 
-			for effect: EffectVisual in clip.effects.video:
+			for effect: Effect in clip.effects.video:
 				_scale_keyframes(effect, ratio)
-			for effect: EffectAudio in clip.effects.audio:
+			for effect: Effect in clip.effects.audio:
 				_scale_keyframes(effect, ratio)
 
 		for marker: MarkerData in MarkerLogic.markers:
@@ -531,14 +531,3 @@ func set_render_region(region: Vector2i) -> void:
 	data.render_region = region
 	unsaved_changes = true
 	render_region_updated.emit()
-
-
-class NewRequest:
-	# Basic settings.
-	@export var project_path: String = ""
-	@export var resolution: Vector2i
-	@export var framerate: float
-
-	# Advanced settings.
-	@export var track_amount: int = Settings.get_tracks_amount()
-	@export var background_color: Color = Color.BLACK

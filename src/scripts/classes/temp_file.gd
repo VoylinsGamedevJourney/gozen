@@ -10,7 +10,7 @@ extends Resource
 
 @export var image_data: ImageTexture = null
 @export var color: Color = Color.WHITE
-@export var text_effect: EffectVisual = null
+@export var text_effect: Effect = null
 
 
 
@@ -41,10 +41,10 @@ func deserialize(data: Dictionary) -> void:
 
 	if data.has("text_effect"):
 		var text_effect_value: Variant = data["text_effect"]
-		if text_effect_value is EffectVisual:
+		if text_effect_value is Effect:
 			text_effect = text_effect_value
 		else:
-			text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
+			text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
 			text_effect.deserialize(text_effect_value as Dictionary)
 
 	if data.has("image_png"):

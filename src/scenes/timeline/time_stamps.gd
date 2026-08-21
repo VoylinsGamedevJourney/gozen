@@ -132,13 +132,13 @@ func _draw() -> void:
 	var last_text_x: float = -999.0
 	for frame: int in range(start_frame, visible_end_nr, minor_step):
 		var x: float = frame * Timeline.zoom
-		if !Utils.in_rangef(x, Timeline.scroll_x - 100, Timeline.scroll_x + size.x + 100, false):
+		if !Math.in_rangef(x, Timeline.scroll_x - 100, Timeline.scroll_x + size.x + 100, false):
 			continue
 
 		var is_major: int = frame % major_step == 0
 		var tick_h: int = 12 if is_major else 6
 		if is_major:
-			var label: String = Utils.format_time_str_from_frame(frame, Project.data.framerate, true)
+			var label: String = Format.time_str_from_frame(frame, Project.data.framerate, true)
 			var label_width: float = default_font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE_TIME_STAMP).x
 			if x - last_text_x >= label_width + 8.0:  # 8px padding between labels.
 				draw_string(
@@ -162,7 +162,7 @@ func _draw() -> void:
 	for marker: MarkerData in MarkerLogic.markers:
 		var dragged_marker: MarkerData = MarkerLogic.dragged_marker
 		var is_being_dragged: bool = marker == dragged_marker
-		if !is_being_dragged and !Utils.in_range(marker.frame_nr, visible_start_nr, visible_end_nr):
+		if !is_being_dragged and !Math.in_range(marker.frame_nr, visible_start_nr, visible_end_nr):
 			continue # Only visible markers and the one being dragged get drawn
 
 		var marker_text: String = marker.text
@@ -208,10 +208,10 @@ func _update_tooltip() -> void:
 	if mouse_x < 0 or mouse_x > size.x:
 		if tooltip_text != "":
 			tooltip_text = ""
-		return # Out of bounds
+		return # Out of bounds.
 
 	var frame_nr: int = maxi(0, floori(mouse_x / Timeline.zoom))
-	var time_str: String = Utils.format_time_str_from_frame(frame_nr, Project.data.framerate, false)
+	var time_str: String = Format.time_str_from_frame(frame_nr, Project.data.framerate, false)
 	var full_tooltip: String = "%s\n(Frame: %d)" % [time_str, frame_nr]
 	if tooltip_text != full_tooltip:
 		tooltip_text = full_tooltip

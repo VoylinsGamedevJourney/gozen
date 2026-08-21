@@ -11,10 +11,10 @@ enum PopupType {
 const SIZE_CROSS: int = 20
 
 
-@onready var overlay_control: Control = get_parent()
-
-
 @export var show_safe_areas_button: TextureButton
+
+
+@onready var overlay_control: Control = get_parent()
 
 
 var show_safe_areas: bool = false: set = set_show_safe_areas
@@ -22,14 +22,13 @@ var show_safe_areas: bool = false: set = set_show_safe_areas
 var view_zoom: float = 1.0
 
 var active_clip: ClipData = null
-var active_effect: EffectVisual = null
-var active_overlay: EffectVisualOverlay = null
+var active_effect: Effect = null
+var active_overlay: EffectOverlay = null
 
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
-	gui_input.connect(_on_gui_input)
+	if gui_input.connect(_on_gui_input): Print.stack_connect()
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
 	else:
@@ -41,20 +40,19 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	overlay_control.clip_contents = true
 
-	@warning_ignore_start("return_value_discarded")
-	overlay_control.resized.connect(_update_transform)
-	Project.project_ready.connect(_update_transform)
-	Project.resolution_changed.connect(_update_transform)
+	if overlay_control.resized.connect(_update_transform): Print.stack_connect()
+	if Project.project_ready.connect(_update_transform): Print.stack_connect()
+	if Project.resolution_changed.connect(_update_transform): Print.stack_connect()
 	if Project.is_loaded:
 		_update_transform()
 
-	ClipLogic.selected.connect(_on_clip_selected)
-	ClipLogic.deleted.connect(_on_clip_deleted)
-	EffectsHandler.effect_selected.connect(_on_effect_selected)
-	EffectsHandler.effect_removed.connect(_on_effect_removed)
-	EditorCore.visual_frame_changed.connect(queue_redraw)
-	EditorCore.play_changed.connect(func(_playing: bool) -> void: queue_redraw())
-	@warning_ignore_restore("return_value_discarded")
+	if ClipLogic.selected.connect(_on_clip_selected): Print.stack_connect()
+	if ClipLogic.deleted.connect(_on_clip_deleted): Print.stack_connect()
+	if EffectsHandler.effect_selected.connect(_on_effect_selected): Print.stack_connect()
+	if EffectsHandler.effect_removed.connect(_on_effect_removed): Print.stack_connect()
+	if EditorCore.visual_frame_changed.connect(queue_redraw): Print.stack_connect()
+	if EditorCore.play_changed.connect(func(_playing: bool) -> void:
+			queue_redraw()): Print.stack_connect()
 
 
 func _update_transform() -> void:
@@ -80,7 +78,7 @@ func _on_clip_selected(clip: ClipData) -> void:
 	active_effect = null
 	active_overlay = null
 	if clip and clip.type in EditorCore.VISUAL_TYPES:
-		for effect_visual: EffectVisual in clip.effects.video:
+		for effect_visual: Effect in clip.effects.video:
 			if effect_visual.custom_overlay_path != "":
 				_set_active_effect(effect_visual)
 				break
@@ -101,16 +99,16 @@ func _on_effect_removed(clip: ClipData, _index: int, is_visual: bool) -> void:
 
 
 func _on_effect_selected(effect: Effect) -> void:
-	if effect is not EffectVisual:
+	if effect is not Effect:
 		return
 
-	var effect_visual: EffectVisual = effect
+	var effect_visual: Effect = effect
 	if effect_visual.custom_overlay_path != "":
 		_set_active_effect(effect_visual)
 		queue_redraw()
 
 
-func _set_active_effect(effect: EffectVisual) -> void:
+func _set_active_effect(effect: Effect) -> void:
 	active_effect = effect
 	active_overlay = effect.get_custom_overlay()
 	if active_overlay:
@@ -132,8 +130,7 @@ func _on_gui_input(event: InputEvent) -> void:
 			popup.add_item("Save screenshot to project ...", PopupType.SAVE_SCREENSHOT_TO_PROJECT)
 			# popup.add_item("Copy screenshot to clipboard", PopupType.COPY_SCREENSHOT) # TODO: Godot doesn't have the option yet to set clipboard image
 
-			@warning_ignore("return_value_discarded")
-			popup.id_pressed.connect(_on_popup_id_pressed)
+			if popup.id_pressed.connect(_on_popup_id_pressed): Print.stack_connect()
 			PopupManager.show_menu(popup)
 
 		elif mouse_event.ctrl_pressed:
@@ -180,21 +177,16 @@ func _on_popup_id_pressed(id: int) -> void:
 				["*.webp", "*.png", "*.jpg", "*.jpeg"])
 
 		if id == PopupType.SAVE_SCREENSHOT:
-			@warning_ignore("return_value_discarded")
-			file_dialog.file_selected.connect(_on_save_screenshot)
-		else:
-			@warning_ignore("return_value_discarded")
-			file_dialog.file_selected.connect(_on_save_screenshot_to_project)
+			if file_dialog.file_selected.connect(_on_save_screenshot): Print.stack_connect()
+		elif file_dialog.file_selected.connect(_on_save_screenshot_to_project): Print.stack_connect()
 
 		var folder: String = Project.get_project_path().get_base_dir() + "/"
 		var file_name: String = "image_%03d.webp"
 		var nr: int = 1
 
 		while true:
-			if FileAccess.file_exists(folder + file_name % nr):
-				nr += 1
-			else:
-				break
+			if FileAccess.file_exists(folder + file_name % nr): nr += 1
+			else: break
 
 		file_dialog.current_path = folder + file_name % nr
 

@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://bcu0coqxgk2do"]
+
+[ext_resource type="Script" uid="uid://castly6xxjrtk" path="res://scenes/module_manager/module_manager.gd" id="1_script"]
+
+[node name="ModuleManager" type="Control" unique_id=174254078 node_paths=PackedStringArray("tree", "install_button", "close_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_script")
+tree = NodePath("Panel/Margin/VBox/Tree")
+install_button = NodePath("Panel/Margin/VBox/HBox/InstallButton")
+close_button = NodePath("Panel/Margin/VBox/HBox/CloseButton")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1148467337]
+custom_minimum_size = Vector2(700, 450)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -225.0
+offset_right = 350.0
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=1314172140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=39609589]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox" unique_id=560477206]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Module Manager"
+
+[node name="Tree" type="Tree" parent="Panel/Margin/VBox" unique_id=972409185]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3
+column_titles_visible = true
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=299505533]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=674705608]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Close"
+
+[node name="InstallButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=1142463649]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"main_button"
+text = "Install Module"

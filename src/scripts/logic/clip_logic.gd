@@ -637,7 +637,7 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 	var effects: ClipEffects = ClipEffects.new()
 	if file_type in EditorCore.VISUAL_TYPES:
 		var resolution: Vector2i = Project.get_resolution()
-		var transform_effect: EffectVisual = (load(Library.EFFECT_VISUAL_TRANSFORM) as EffectVisual).deep_copy()
+		var transform_effect: Effect = (load(Library.EFFECT_VISUAL_TRANSFORM) as Effect).deep_copy()
 
 		for param: EffectParam in transform_effect.params:
 			if param.id == "pivot": param.default_value = Vector2i(resolution / 2.0)
@@ -646,8 +646,8 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 		effects.video.append(transform_effect)
 
 		if file_type == EditorCore.Type.PCK and file_id != -1:
-			var module_data: GoZenModule = FileLogic.file_data.get(file_id)
-			var pck_effect: EffectVisual = EffectVisual.new()
+			var module_data: GoZenModuleScene = FileLogic.file_data.get(file_id)
+			var pck_effect: Effect = Effect.new()
 			pck_effect.id = "pck_effect_params"
 			pck_effect.nickname = "Module Parameters"
 			for param: EffectParam in module_data.params:
@@ -656,7 +656,7 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 			effects.video.append(pck_effect)
 
 	if file_type in EditorCore.AUDIO_TYPES:
-		var volume_effect: EffectAudio = (load(Library.EFFECT_AUDIO_VOLUME) as EffectAudio).deep_copy()
+		var volume_effect: Effect = (load(Library.EFFECT_AUDIO_VOLUME) as Effect).deep_copy()
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
 

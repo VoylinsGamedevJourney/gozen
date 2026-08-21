@@ -237,7 +237,7 @@ func _on_update_encoder_status(status: Status) -> void:
 
 func _render_finished() -> void:
 	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rendering finished"))
-	dialog.dialog_text = "Render time: %s" % Utils.format_time_str(encoding_time / 1000.0)
+	dialog.dialog_text = "Render time: %s" % Format.time_str(encoding_time / 1000.0)
 	dialog.exclusive = true
 
 	get_tree().root.add_child(dialog)
@@ -554,7 +554,7 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 					audio_data = Audio.change_speed(audio_data, clip.speed)
 
 				# Apply static effects.
-				for effect: EffectAudio in clip.effects.audio:
+				for effect: Effect in clip.effects.audio:
 					if not effect.is_enabled: continue
 					if effect.id == "pitch":
 						var pitch_scale: float = effect.get_value(effect.params[0], 0)
@@ -608,7 +608,7 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 						frame_audio.append_array(zeros)
 
 					# Apply per-frame effects.
-					for effect: EffectAudio in clip.effects.audio:
+					for effect: Effect in clip.effects.audio:
 						if not effect.is_enabled: continue
 
 						var volume_db: float = 0.0

@@ -32,7 +32,17 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_transitions", "section_visuals", "section_audio")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5peu"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6589966, 0, 0.24948001, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_transitions", "section_visuals", "section_audio", "section_module")]
 custom_minimum_size = Vector2(300, 200)
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,6 +56,7 @@ section_text = NodePath("Margin/Scroll/Panel/Margin/VBox/TextContainer")
 section_transitions = NodePath("Margin/Scroll/Panel/Margin/VBox/TransitionsContainer")
 section_visuals = NodePath("Margin/Scroll/Panel/Margin/VBox/VisualsContainer")
 section_audio = NodePath("Margin/Scroll/Panel/Margin/VBox/AudioContainer")
+section_module = NodePath("Margin/Scroll/Panel/Margin/VBox/ModuleContainer")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1256017663]
 layout_mode = 2
@@ -93,3 +104,10 @@ theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_b381o")
 title = "Audio effects"
+
+[node name="ModuleContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1119539112]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_k5peu")
+title = "Module settings"

@@ -43,7 +43,7 @@ func _on_markers_updated() -> void:
 	# Updating the texts.
 	var selected: int = markers_option_button.selected
 	for marker: MarkerData in MarkerLogic.markers:
-		var time: String = Utils.format_time_str_from_frame(marker.frame_nr, Project.data.framerate, true)
+		var time: String = Format.time_str_from_frame(marker.frame_nr, Project.data.framerate, true)
 		markers_text[marker.type] += "%s %s\n" % [time, marker.text]
 	markers_option_button.selected = max(0, selected)
 	_on_markers_button_item_selected(markers_option_button.selected)

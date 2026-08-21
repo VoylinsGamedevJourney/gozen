@@ -33,6 +33,8 @@ func _ready() -> void:
 	register_panel("ViewPanel", preload("res://scenes/view_panel/view_panel.tscn").instantiate() as Control)
 	register_panel("Timeline", preload("res://scenes/timeline/timeline.tscn").instantiate() as Control)
 
+	ModuleManager.register_panels()
+
 	drag_layer = CanvasLayer.new()
 	drag_layer.layer = 100
 	add_child(drag_layer)

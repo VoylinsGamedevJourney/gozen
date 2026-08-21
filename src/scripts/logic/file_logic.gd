@@ -118,7 +118,7 @@ func _create_file(path: String) -> FileData:
 			file.type = EditorCore.Type.TEXT
 			file.duration = Settings.get_text_duration()
 			file.nickname = "Text: Empty text"
-			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
+			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
 			file.temp_file.text_effect.set_default_keyframe()
 		elif path.begins_with("temp://image"):
 			file.type = EditorCore.Type.IMAGE
@@ -460,13 +460,14 @@ func load_data(file: FileData) -> void:
 				return
 
 			var module_data: GoZenModule = load(module_path)
-			if !module_data:
-				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule!")
+			if !module_data or module_data.custom_scenes.is_empty():
+				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule with clips!")
 				file_data[file.id] = null
 				return
 
-			file_data[file.id] = module_data
-			file.duration = module_data.default_duration
+			var clip_data: GoZenModuleScene = module_data.custom_scenes[0]
+			file_data[file.id] = clip_data
+			file.duration = clip_data.default_duration
 
 
 func _load_video(file: FileData) -> void:
@@ -875,7 +876,7 @@ func update_text_param(file: FileData, param_id: String, frame_nr: int, new_valu
 
 
 func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: Variant) -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	if not text_effect.keyframes.has(param_id):
 		var typed_dict: Dictionary = {}
 		text_effect.keyframes[param_id] = typed_dict
@@ -896,7 +897,7 @@ func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: 
 
 
 func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
 	if not text_effect.keyframes.has(param_id) or not param_keyframes.has(frame_nr):
 		return
@@ -910,8 +911,9 @@ func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> vo
 
 func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
 	var temp_file: TempFile = file.temp_file
-	var text_effect: EffectVisual = temp_file.text_effect
+	var text_effect: Effect = temp_file.text_effect
 	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
+
 	if !param_keyframes.erase(frame_nr):
 		printerr("FileLogic: '%s' frame number isn't present in text keyframes!" % frame_nr)
 	text_effect._cache_dirty = true

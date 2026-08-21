@@ -107,7 +107,7 @@ func _on_skip_next_button_pressed() -> void:
 
 func _on_frame_changed() -> void:
 	frame_label.text = tr("Frame") + ": %s" % EditorCore.visual_frame_nr
-	time_label.text = Utils.format_time_str_from_frame(EditorCore.visual_frame_nr, Project.data.framerate, false)
+	time_label.text = Format.time_str_from_frame(EditorCore.visual_frame_nr, Project.data.framerate, false)
 
 
 func _on_playback_speed_button_pressed() -> void:

@@ -455,8 +455,8 @@ func _get_drag_data(_p: Vector2) -> Variant:
 
 
 func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
-	if data is EffectsPanel.DragData:
-		var drag_data: EffectsPanel.DragData = data
+	if data is RequestEffectDrag:
+		var drag_data: RequestEffectDrag = data
 		var clip_on_mouse: ClipData = _get_clip_on_mouse()
 		if not clip_on_mouse:
 			return false
@@ -494,8 +494,8 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 
 
 func _drop_data(_p: Vector2, data: Variant) -> void:
-	if data is EffectsPanel.DragData:
-		var drag_data: EffectsPanel.DragData = data
+	if data is RequestEffectDrag:
+		var drag_data: RequestEffectDrag = data
 		var clip: ClipData = _get_clip_on_mouse()
 		if clip:
 			var new_effect: Effect = drag_data.effect.deep_copy()

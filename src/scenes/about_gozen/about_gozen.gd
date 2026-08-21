@@ -1,6 +1,6 @@
 extends PanelContainer
 
-const URL: String = "[color=#A718F1][url=URL]URL[/url][/color]"
+
 const PROJECT_SETTING_VERSION: String = "application/config/version"
 
 
@@ -41,5 +41,4 @@ func _on_close_button_pressed() -> void:
 	PopupManager.close(PopupManager.CREDITS)
 
 
-func _on_links_label_meta_clicked(meta: Variant) -> void:
-	Utils.open_url(str(meta))
+func _on_links_label_meta_clicked(meta: Variant) -> void: URL.open(str(meta))

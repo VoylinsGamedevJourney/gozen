@@ -93,6 +93,8 @@ func load_custom_themes() -> void:
 				custom_themes[theme_name] = PATH_THEMES + file_name
 		file_name = dir.get_next()
 
+	ModuleManager.register_themes()
+
 
 func get_system_locale() -> String:
 	if OS.get_locale() in TranslationServer.get_loaded_locales():
