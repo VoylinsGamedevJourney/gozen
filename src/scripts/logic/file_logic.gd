@@ -449,13 +449,20 @@ func load_data(file: FileData) -> void:
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 				file_data[file.id] = null
 				return
+
 			var module_name: String = file.path.get_file().get_basename()
 			if module_name.begins_with(str(file.id) + "_"):
 				module_name = module_name.trim_prefix(str(file.id) + "_")
 			var module_path: String = "res://modules/" + module_name + "/module.tres"
 
 			if !FileAccess.file_exists(module_path):
-				printerr("FileLogic: PCK is missing the required `module.tres` at '%s'!" % module_path)
+				for loaded_mod: GoZenModule in ModuleManager.loaded_gozen_modules:
+					if loaded_mod.name == module_name or loaded_mod.resource_path.get_base_dir().get_file() == module_name:
+						module_path = loaded_mod.resource_path
+						break
+
+			if !FileAccess.file_exists(module_path):
+				printerr("FileLogic: PCK is missing the required `module.tres` for module '%s'!" % module_name)
 				file_data[file.id] = null
 				return
 

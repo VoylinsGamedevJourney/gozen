@@ -208,7 +208,8 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 		return _update_ui_values()
 
 	section_text.visible = clip.type == EditorCore.Type.TEXT
-	section_visuals.visible = clip.type in EditorCore.VISUAL_TYPES
+	section_visuals.visible = clip.type in EditorCore.VISUAL_TYPES and clip.type != EditorCore.Type.PCK
+	section_module.visible = clip.type == EditorCore.Type.PCK
 	section_audio.visible = clip.type in EditorCore.AUDIO_TYPES
 	current_clip = clip
 	current_file = FileLogic.files[clip.file]
@@ -223,8 +224,23 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 		var location: Control
 
 		if is_visual:
-			effect = _create_effect_ui(clip.effects.video[index], is_visual)
-			location = section_visuals.get_child(0).get_child(0)
+			var target_effect: Effect = clip.effects.video[index]
+			effect = _create_effect_ui(target_effect, is_visual)
+			if target_effect.id == "pck_effect_params":
+				location = section_module.get_child(0).get_child(0)
+			else:
+				location = section_visuals.get_child(0).get_child(0)
+
+			var target_ui_index: int = 0
+			for i: int in range(0, index):
+				if (clip.effects.video[i].id == "pck_effect_params") == (target_effect.id == "pck_effect_params"):
+					target_ui_index += 1
+			location.add_child(effect)
+			location.move_child(effect, target_ui_index)
+
+			await get_tree().process_frame
+			if is_instance_valid(effect): scroll.ensure_control_visible(effect)
+			return
 		else:
 			effect = _create_effect_ui(clip.effects.audio[index], is_visual)
 			location = section_audio.get_child(0).get_child(0)
@@ -242,10 +258,7 @@ func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
 	if current_clip and clip and clip.id == current_clip.id:
 		var removed_effect: Control
 		var location: Control
-		if is_visual:
-			location = section_visuals.get_child(0).get_child(0)
-			removed_effect = location.get_child(index)
-			location.remove_child(removed_effect)
+		if is_visual: return _load_effects() # We just rebuild the entire thing.
 		else:
 			location = section_audio.get_child(0).get_child(0)
 			var child_offset: int = 0
@@ -259,9 +272,7 @@ func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
 func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool) -> void:
 	if !current_clip or !clip or clip.id != current_clip.id: return
 
-	if is_visual:
-		var location: Control = section_visuals.get_child(0).get_child(0)
-		location.move_child(location.get_child(old_index), new_index)
+	if is_visual: _load_effects() # Rebuilding, it's easier. :p
 	else:
 		var location: Control = section_audio.get_child(0).get_child(0)
 		if current_file and current_file.audio_streams.size() > 1:
@@ -446,7 +457,7 @@ func _load_effects() -> void:
 		container.queue_free()
 	if section_module.get_child_count() != 0:
 		var container: Container = section_module.get_child(0)
-		section_audio.remove_child(container)
+		section_module.remove_child(container)
 		container.queue_free()
 
 	var margin_visuals: MarginContainer = MarginContainer.new()
@@ -472,6 +483,12 @@ func _load_effects() -> void:
 	margin_audio.add_child(vbox_audio)
 	margin_audio.add_child(overlay_audio)
 	section_audio.add_child(margin_audio)
+
+	var margin_module: MarginContainer = MarginContainer.new()
+	var vbox_module: VBoxContainer = VBoxContainer.new()
+	margin_module.add_child(vbox_module)
+	section_module.add_child(margin_module)
+
 
 	if current_clip and current_file and current_file.audio_streams.size() > 1:
 		var hbox: HBoxContainer = HBoxContainer.new()
@@ -531,7 +548,12 @@ func _load_effects() -> void:
 		section_text.add_child(ui)
 
 	for index: int in clip_effects.video.size(): # Add visual effects.
-		vbox_visuals.add_child(_create_effect_ui(clip_effects.video[index], true))
+		var effect: Effect = clip_effects.video[index]
+		if effect.id == "pck_effect_params":
+			vbox_module.add_child(_create_effect_ui(effect, true))
+		else:
+			vbox_visuals.add_child(_create_effect_ui(effect, true))
+
 	for index: int in clip_effects.audio.size(): # Add audio effects.
 		vbox_audio.add_child(_create_effect_ui(clip_effects.audio[index], false))
 
@@ -951,6 +973,10 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 			spinbox_x.allow_greater = param.max_value == null
 			spinbox_x.custom_arrow_step = spinbox_x.step
 			spinbox_x.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			if param.is_linkable and param.is_linked:
+				spinbox_x.prefix = ""
+			else:
+				spinbox_x.prefix = "X:"
 
 			@warning_ignore("return_value_discarded")
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
@@ -1031,6 +1057,7 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 						param.is_linked = toggled
 						link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
 						spinbox_y.visible = not toggled
+						spinbox_x.prefix = "" if toggled else "X:" # NO_TRANSLATE
 						if toggled:
 							spinbox_y.set_value_no_signal(spinbox_x.value)
 							spinbox_y.value_changed.emit(spinbox_x.value)): Print.stack_connect()
@@ -1038,6 +1065,7 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 
 			hbox.add_child(spinbox_y)
 			spinbox_y.visible = not param.is_linked
+			spinbox_y.prefix = "Y:" # NO_TRANSLATE
 			hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return hbox
 		TYPE_COLOR:
@@ -1146,7 +1174,14 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 	var section: FoldableContainer
 	var child_offset: int = 0
 	if effects == current_clip.effects.video:
-		section = section_visuals
+		if effect.id == "pck_effect_params":
+			section = section_module
+			child_offset = -index
+		else:
+			section = section_visuals
+			for i: int in range(0, index):
+				if effects[i].id == "pck_effect_params":
+					child_offset -= 1
 	else:
 		section = section_audio
 		if current_file and current_file.audio_streams.size() > 1:

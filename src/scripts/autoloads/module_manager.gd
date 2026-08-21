@@ -42,29 +42,23 @@ func _apply_modules() -> void:
 				printerr("ModuleManager: Couldn't load resource at '%s'!" % path)
 
 	if !DirAccess.dir_exists_absolute(PATH_MODULES_LOCAL): return
-	var dir: DirAccess = DirAccess.open(PATH_MODULES_LOCAL)
-	if dir.list_dir_begin() != OK:
-		return printerr("ModuleManager: Couldn't go to beginning of '%s' dir!" % PATH_MODULES_LOCAL)
 
-	var module_dir: String = dir.get_next()
-	while module_dir != "":
-		if dir.current_is_dir() and not module_dir.begins_with("."):
-			var module_tres: String = "res://modules/".path_join(module_dir).path_join("module.tres")
-			if FileAccess.file_exists(module_tres):
-				var res: Resource = load(module_tres)
-				if res is GoZenModule:
-					loaded_gozen_modules.append(res)
-		module_dir = dir.get_next()
-	dir.list_dir_end()
+	for module_dir: String in DirAccess.get_directories_at(PATH_MODULES_LOCAL):
+		if module_dir.begins_with("."): continue
+		var module_tres: String = PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
+		if FileAccess.file_exists(module_tres):
+			var res: Resource = load(module_tres)
+			if res is GoZenModule:
+				loaded_gozen_modules.append(res)
 
 
 func register_panels() -> void:
 	for module: GoZenModule in loaded_gozen_modules:
 		for module_panel: GoZenModulePanel in module.custom_panels:
-			if module_panel and module_panel.scene:
-				var panel: Node = module_panel.scene.instantiate()
-				if panel is Control:
-					WorkspaceManager.register_panel(panel.name, panel as Control)
+			if !module_panel or !module_panel.scene: continue
+			var panel: Node = module_panel.scene.instantiate()
+			if panel is Control:
+				WorkspaceManager.register_panel(panel.name, panel as Control)
 
 
 func register_effects() -> void:
@@ -72,7 +66,7 @@ func register_effects() -> void:
 		for module_effect: GoZenModuleEffect in module.custom_effects:
 			if module_effect and module_effect.effect:
 				var effect: Effect = module_effect.effect
-				if effect is Effect:
+				if !effect.shader_path.is_empty(): # Visual.
 					if not EffectsHandler.visual_effect_instances.has(effect.id):
 						EffectsHandler.visual_effects[effect.nickname] = effect.id
 						EffectsHandler.visual_effect_instances[effect.id] = effect
@@ -118,7 +112,7 @@ func install_module(path: String) -> void:
 
 func delete_module(filename: String) -> void:
 	if loaded_modules.has(filename):
-		if loaded_modules.erase(filename): Print.stack_erase()
+		if !loaded_modules.erase(filename): Print.stack_erase()
 		var target_path: String = PATH_MODULES_GLOBAL.path_join(filename)
 		if FileAccess.file_exists(target_path) and DirAccess.remove_absolute(target_path) != OK:
 			printerr("ModuleManager: Can't remove dir '%s'!" % target_path)
