@@ -17,7 +17,7 @@ extends Resource
 @export var custom_overlay_path: String ## UID which leads to the EffectOverlay.
 
 @export_category("Audio Effects")
-@export var effect: AudioEffect
+@export var audio_effect: AudioEffect
 
 
 var keyframes: Dictionary = {} ## { param_id: { frame_number: value }}

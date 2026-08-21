@@ -19,7 +19,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-effect = SubResource("AudioEffectPitchShift_pitch")
+audio_effect = SubResource("AudioEffectPitchShift_pitch")
 id = "pitch"
 nickname = "Pitch shift"
 params = Array[ExtResource("1_param")]([SubResource("Resource_pitch")])

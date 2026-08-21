@@ -16,7 +16,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-effect = SubResource("AudioEffectAmplify_mono")
+audio_effect = SubResource("AudioEffectAmplify_mono")
 id = "stereo_to_mono"
 nickname = "Stereo to mono"
 params = Array[ExtResource("1_param")]([SubResource("Resource_active")])

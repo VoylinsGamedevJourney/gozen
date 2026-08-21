@@ -71,7 +71,7 @@ func register_effects() -> void:
 						EffectsHandler.visual_effects[effect.nickname] = effect.id
 						EffectsHandler.visual_effect_instances[effect.id] = effect
 						EffectsHandler.shader_cache[effect.shader_path] = load(effect.shader_path)
-				elif effect is Effect:
+				elif effect.audio_effect:
 					if not EffectsHandler.audio_effect_instances.has(effect.id):
 						EffectsHandler.audio_effects[effect.nickname] = effect.id
 						EffectsHandler.audio_effect_instances[effect.id] = effect

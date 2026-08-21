@@ -18,7 +18,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_7fg1e")
-effect = SubResource("AudioEffectAmplify_glfcg")
+audio_effect = SubResource("AudioEffectAmplify_glfcg")
 id = "volume"
 nickname = "Volume"
 params = Array[ExtResource("1_7fg1e")]([SubResource("Resource_c7eta")])

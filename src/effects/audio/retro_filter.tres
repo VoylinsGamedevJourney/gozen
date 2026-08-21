@@ -19,7 +19,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-effect = SubResource("AudioEffectDistortion_retro")
+audio_effect = SubResource("AudioEffectDistortion_retro")
 id = "retro_filter"
 nickname = "Retro filter"
 params = Array[ExtResource("1_param")]([SubResource("Resource_bit_depth")])
