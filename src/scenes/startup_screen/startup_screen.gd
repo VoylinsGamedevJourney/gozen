@@ -247,6 +247,7 @@ func _on_open_project_button_pressed() -> void:
 			tr("Open project"),
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
+	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
 	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(open_project)
@@ -314,6 +315,7 @@ func _on_project_path_button_pressed() -> void:
 			tr("Select project save path"),
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
+	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
 	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_set_project_path)
