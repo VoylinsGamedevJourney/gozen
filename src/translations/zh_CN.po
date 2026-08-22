@@ -6,349 +6,746 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scenes/effects_panel/effects_panel.gd:48
-#, fuzzy
-msgid "Enable clip audio."
-msgstr "静音片段"
-
-#: scenes/effects_panel/effects_panel.gd:268
-#, fuzzy
-msgid "Left Transition"
-msgstr "过渡效果"
-
-#: scenes/effects_panel/effects_panel.gd:277
-#: scenes/effects_panel/effects_panel.gd:347
-#, fuzzy
-msgid "Visual Fade (frames)"
-msgstr "视觉效果"
-
-#: scenes/effects_panel/effects_panel.gd:295
-#: scenes/effects_panel/effects_panel.gd:365
-#, fuzzy
-msgid "Audio Fade (frames)"
-msgstr "音频波形"
-
-#: scenes/effects_panel/effects_panel.gd:313
-#: scenes/effects_panel/effects_panel.gd:381
-msgid "Style"
+#: modules/core_effects/visual/ui/mask_clear_button.gd:10
+msgid "Clear Mask Points"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:338
-#, fuzzy
-msgid "Right Transition"
-msgstr "过渡效果"
-
-#: scenes/effects_panel/effects_panel.gd:464
-#, fuzzy
-msgid "Audio Track"
-msgstr "添加轨道"
-
-#: scenes/effects_panel/effects_panel.gd:546
-msgid "Presets & Options"
-msgstr "预设与选项"
-
-#: scenes/effects_panel/effects_panel.gd:663 effects/text_effect_ui.gd:104
-msgid "Reset parameter"
-msgstr "重置"
-
-#: scenes/effects_panel/effects_panel.gd:729
-#: scenes/effects_panel/effects_panel.gd:1326
-msgid "Default"
-msgstr "默认"
-
-#: scenes/effects_panel/effects_panel.gd:760
-msgid "Left"
-msgstr "左"
-
-#: scenes/effects_panel/effects_panel.gd:761
-#: scenes/effects_panel/effects_panel.gd:765
-msgid "Center"
-msgstr "居中"
-
-#: scenes/effects_panel/effects_panel.gd:762
-msgid "Right"
-msgstr "右"
-
-#: scenes/effects_panel/effects_panel.gd:764
-msgid "Top"
-msgstr "上"
-
-#: scenes/effects_panel/effects_panel.gd:766
-msgid "Bottom"
-msgstr "下"
-
-#: scenes/effects_panel/effects_panel.gd:768
-#, fuzzy
-msgid "Mix (Normal)"
-msgstr "混合（普通）"
-
-#: scenes/effects_panel/effects_panel.gd:769
-#, fuzzy
-msgid "Add"
-msgstr "相加"
-
-#: scenes/effects_panel/effects_panel.gd:770
-#, fuzzy
-msgid "Subtract"
-msgstr "相减"
-
-#: scenes/effects_panel/effects_panel.gd:771
-#, fuzzy
-msgid "Multiply"
-msgstr "相乘"
-
-#: scenes/effects_panel/effects_panel.gd:772
-#, fuzzy
-msgid "Premultiplied Alpha"
-msgstr "预乘Alpha"
-
-#: scenes/effects_panel/effects_panel.gd:774
-msgid "Thin"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:775
-#, fuzzy
-msgid "Extra Light"
-msgstr "轨道高度"
-
-#: scenes/effects_panel/effects_panel.gd:776
-#, fuzzy
-msgid "Light"
-msgstr "右"
-
-#: scenes/effects_panel/effects_panel.gd:777
-msgid "Regular"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:778
-msgid "Medium"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:779
-msgid "Semi Bold"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:780
-msgid "Bold"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:781
-#, fuzzy
-msgid "Extra Bold"
-msgstr "其他"
-
-#: scenes/effects_panel/effects_panel.gd:782
-msgid "Black"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:947
-msgid "Link X and Y"
-msgstr "等比缩放"
-
-#: scenes/effects_panel/effects_panel.gd:1183
-msgid "Add effects"
-msgstr "添加效果器"
-
-#: scenes/effects_panel/effects_panel.gd:1263
-msgid "Presets"
-msgstr "预设"
-
-#: scenes/effects_panel/effects_panel.gd:1282
-msgid "Reset effect"
-msgstr "重置效果"
-
-#: scenes/effects_panel/effects_panel.gd:1295
-msgid "Delete effect"
-msgstr "删除"
-
-#: scenes/effects_panel/effects_panel.gd:1309
-msgid "Save as preset..."
-msgstr "保存为预设..."
-
-#: scenes/effects_panel/effects_panel.gd:1382
-#: scenes/startup_screen/startup_screen.gd:363
-msgid "Save preset"
-msgstr "保存预设"
-
-#: scenes/effects_panel/effects_panel.gd:1383
-#: scenes/startup_screen/startup_screen.gd:365
-msgid "Preset name"
-msgstr "预设名称"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Transitions"
-msgstr "过渡效果"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Visual effects"
-msgstr "视觉效果"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Audio effects"
-msgstr "声音效果"
-
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 #, fuzzy
 msgid "Start project playback."
 msgstr "正在准备播放..."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 #, fuzzy
 msgid "Pause project playback."
 msgstr "另存为..."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Go to next chapter marker."
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Show video safety guidelines on top of the project preview."
 msgstr ""
 
-#: scenes/view_panel/view_panel.gd:63
+#: modules/core_view_panel/view_panel.gd:63
 msgid "Jump to frame"
 msgstr "跳转至帧"
 
-#: scenes/view_panel/view_panel.gd:109
+#: modules/core_view_panel/view_panel.gd:109
 msgid "Frame"
 msgstr "帧"
 
-#: scenes/view_panel/project_view_texture.gd:131
+#: modules/core_view_panel/project_view_texture.gd:129
 msgid "Save screenshot ..."
 msgstr "保存截图..."
 
-#: scenes/view_panel/project_view_texture.gd:132
+#: modules/core_view_panel/project_view_texture.gd:130
 msgid "Save screenshot to project ..."
 msgstr "保存截图到工程..."
 
-#: scenes/editor/editor.gd:232
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render settings"
+msgstr "渲染设置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render profile"
+msgstr "渲染配置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Save current presets as a custom render profile."
+msgstr "保存当前预设为自定义渲染配置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Save profile"
+msgstr "保存配置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Set selected profile as the default render profile."
+msgstr "保存当前预设为自定义渲染配置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Set default"
+msgstr "重置为默认值"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Export path"
+msgstr "导出路径"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render video settings"
+msgstr "渲染视频设置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Video codec"
+msgstr "视频编码"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
+msgstr ""
+"调整CRF（恒定速率因子），最低质量设置为50，最高质量设置为15。默认值为18。用于"
+"调整比特率，这会影响视频质量和文件大小。数值 0 表示最佳质量，51表示最差质量，"
+"18则几乎视觉无损。"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Quality"
+msgstr "质量"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
+msgstr ""
+"调整H264编码的速度。如果设置的速度过高，可能会对最终的视频质量产生负面影响。"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Speed"
+msgstr "速度"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
+msgstr ""
+"Group Of Pictures（图像组）。与较低的数值相比，较高的数值更有利于压缩。但数值"
+"越高，视频播放时的定位和快进/快退操作就越不精确。如果您打算将渲染后的视频用于"
+"编辑，建议将该数值调低。"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Gop size"
+msgstr "GOP大小"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "B frames"
+msgstr "关键帧"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render audio settings"
+msgstr "渲染音频设置"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Audio codec"
+msgstr "音频编码"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Audio channels"
+msgstr "音频通道数"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Multi-threading"
+msgstr "多线程"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Threads"
+msgstr "线程数量"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "The amount of threads you want to use for exporting your video."
+msgstr "导出视频所使用的线程数量"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render region"
+msgstr "渲染区域"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Create a low quality draft version of your video."
+msgstr "导出为低质量草稿版"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Draft"
+msgstr "草稿模式"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Start render"
+msgstr "开始渲染"
+
+#: modules/core_render_options_panel/render_options_panel.gd:85
+msgid "Custom render profiles"
+msgstr "自定义渲染配置"
+
+#: modules/core_render_options_panel/render_options_panel.gd:185
+#: scenes/replace_audio_popup/replace_audio_popup.gd:113
+msgid "None"
+msgstr "无"
+
+#: modules/core_render_options_panel/render_options_panel.gd:187
+msgid "Stereo"
+msgstr "立体声"
+
+#: modules/core_render_options_panel/render_options_panel.gd:188
+msgid "Mono"
+msgstr "单声道"
+
+#: modules/core_render_options_panel/render_options_panel.gd:285
+msgid "Select export path"
+msgstr "选择导出路径"
+
+#: modules/core_render_options_panel/render_options_panel.gd:396
+msgid "Overwrite file?"
+msgstr "覆盖文件？"
+
+#: modules/core_render_options_panel/render_options_panel.gd:397
+msgid ""
+"A file already exists at the chosen export path. Do you want to overwrite it?"
+msgstr "要导出的路径文件已存在，是否覆盖？"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr "搜索文件..."
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add files"
+msgstr "添加文件"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add text"
+msgstr "添加文本"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add color"
+msgstr "添加颜色"
+
+#: modules/core_file_panel/file_panel.gd:102
+msgid "Add files ..."
+msgstr "添加文件..."
+
+#: modules/core_file_panel/file_panel.gd:120
+msgid "Rename"
+msgstr "重命名"
+
+#: modules/core_file_panel/file_panel.gd:121
+msgid "Reload"
+msgstr "重新加载"
+
+#: modules/core_file_panel/file_panel.gd:122 scenes/editor/editor.gd:458
+msgid "Delete"
+msgstr "删除"
+
+#: modules/core_file_panel/file_panel.gd:126
+msgid "Image options"
+msgstr "图像选项"
+
+#: modules/core_file_panel/file_panel.gd:127
+msgid "Save image as ..."
+msgstr "保存图像为..."
+
+#: modules/core_file_panel/file_panel.gd:129
+#: modules/core_timeline_panel/timeline_panel.gd:828
+msgid "Video options"
+msgstr "视频选项"
+
+#: modules/core_file_panel/file_panel.gd:133
+msgid "Create proxy"
+msgstr "创建代理片段"
+
+#: modules/core_file_panel/file_panel.gd:135
+msgid "Re-create proxy"
+msgstr "重建代理片段"
+
+#: modules/core_file_panel/file_panel.gd:136
+msgid "Remove proxy"
+msgstr "删除代理片段"
+
+#: modules/core_file_panel/file_panel.gd:137
+msgid "Replace audio"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:138
+msgid "Extract audio to file ..."
+msgstr "提取音频到文件..."
+
+#: modules/core_file_panel/file_panel.gd:140
+msgid "Text options"
+msgstr "文本选项"
+
+#: modules/core_file_panel/file_panel.gd:141
+msgid "Duplicate"
+msgstr "创建副本"
+
+#: modules/core_file_panel/file_panel.gd:144
+msgid "Save file as ..."
+msgstr "保存文件为..."
+
+#: modules/core_file_panel/file_panel.gd:148
+msgid "Open in file manager"
+msgstr "在文件管理器中打开"
+
+#: modules/core_file_panel/file_panel.gd:149
+msgid "Copy file path"
+msgstr "复制文件路径"
+
+#: modules/core_file_panel/file_panel.gd:151
+msgid "Folder options"
+msgstr "文件夹选项"
+
+#: modules/core_file_panel/file_panel.gd:152
+#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:537
+msgid "Create folder"
+msgstr "创建文件夹"
+
+#: modules/core_file_panel/file_panel.gd:158
+msgid "Rename folder"
+msgstr "重命名"
+
+#: modules/core_file_panel/file_panel.gd:159
+msgid "Delete folder"
+msgstr "删除"
+
+#: modules/core_file_panel/file_panel.gd:198
+#: scenes/rename_file/rename_file.tscn
+msgid "Rename file"
+msgstr "重命名文件"
+
+#: modules/core_file_panel/file_panel.gd:203
+#: modules/core_file_panel/file_panel.gd:542
+msgid "Folder name"
+msgstr "文件夹名称"
+
+#: modules/core_file_panel/file_panel.gd:258
+msgid "Save image to file"
+msgstr "保存图像到文件"
+
+#: modules/core_file_panel/file_panel.gd:271
+msgid "Save video audio to WAV"
+msgstr "将视频音频保存为 WAV"
+
+#: modules/core_file_panel/file_panel.gd:395
+msgid "(Loading thumbnail...)"
+msgstr "（加载缩略图中...）"
+
+#: modules/core_markers_panel/markers_panel.tscn
+#: scenes/settings_menu/settings_menu.gd:112
+#: scenes/settings_menu/settings_menu.gd:289
+msgid "Markers"
+msgstr "标记"
+
+#: modules/core_timeline_panel/timeline_panel.gd:144
+msgid "Duplication failed"
+msgstr "创建副本失败"
+
+#: modules/core_timeline_panel/timeline_panel.gd:145
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
+msgstr "此处没有足够的空间，无法为%d个片段创建副本"
+
+#: modules/core_timeline_panel/timeline_panel.gd:255
+msgid "Remove empty space"
+msgstr "移除空白区域"
+
+#: modules/core_timeline_panel/timeline_panel.gd:257
+msgid "Track options"
+msgstr "轨道选项"
+
+#: modules/core_timeline_panel/timeline_panel.gd:260
+msgid "Add track"
+msgstr "添加轨道"
+
+#: modules/core_timeline_panel/timeline_panel.gd:262
+msgid "Remove track"
+msgstr "删除轨道"
+
+#: modules/core_timeline_panel/timeline_panel.gd:266
+msgid "Visible"
+msgstr "可见"
+
+#: modules/core_timeline_panel/timeline_panel.gd:269
+msgid "Muted"
+msgstr "静音"
+
+#: modules/core_timeline_panel/timeline_panel.gd:272
+msgid "Locked"
+msgstr "锁定"
+
+#: modules/core_timeline_panel/timeline_panel.gd:818
+msgid "Delete clip"
+msgstr "删除片段"
+
+#: modules/core_timeline_panel/timeline_panel.gd:819
+msgid "Split clip"
+msgstr "分割片段"
+
+#: modules/core_timeline_panel/timeline_panel.gd:823
+#: modules/core_timeline_panel/timeline_panel.gd:886
+msgid "Change speed"
+msgstr "变速"
+
+#: modules/core_timeline_panel/timeline_panel.gd:825
+msgid "Reset speed"
+msgstr "重置速度"
+
+#: modules/core_timeline_panel/timeline_panel.gd:829
+msgid "Clip replace audio"
+msgstr ""
+
+#: modules/core_timeline_panel/timeline_panel.gd:842
+msgid "Select Audio Track"
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Select mode: Used for selecting clips on the timeline."
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid ""
+"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"clicking."
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+#, fuzzy
+msgid "Turn group selection on/off for clips in the timeline."
+msgstr "开/关吸附"
+
+#: modules/core_timeline_panel/timeline.tscn
+#, fuzzy
+msgid "Turn clip snapping on/off when moving clips."
+msgstr "开/关吸附"
+
+#: modules/core_timeline_panel/track_controls.gd:69
+msgid "Toggle track visibility"
+msgstr "切换可见性"
+
+#: modules/core_timeline_panel/track_controls.gd:87
+msgid "Mute track"
+msgstr "静音"
+
+#: modules/core_effects_panel/effects_panel.gd:53
+#, fuzzy
+msgid "Enable clip visuals."
+msgstr "静音片段"
+
+#: modules/core_effects_panel/effects_panel.gd:57
+#, fuzzy
+msgid "Enable clip audio."
+msgstr "静音片段"
+
+#: modules/core_effects_panel/effects_panel.gd:290
+#, fuzzy
+msgid "Left Transition"
+msgstr "过渡效果"
+
+#: modules/core_effects_panel/effects_panel.gd:299
+#: modules/core_effects_panel/effects_panel.gd:369
+#, fuzzy
+msgid "Visual Fade (frames)"
+msgstr "视觉效果"
+
+#: modules/core_effects_panel/effects_panel.gd:317
+#: modules/core_effects_panel/effects_panel.gd:387
+#, fuzzy
+msgid "Audio Fade (frames)"
+msgstr "音频波形"
+
+#: modules/core_effects_panel/effects_panel.gd:335
+#: modules/core_effects_panel/effects_panel.gd:403
+msgid "Style"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:360
+#, fuzzy
+msgid "Right Transition"
+msgstr "过渡效果"
+
+#: modules/core_effects_panel/effects_panel.gd:496
+#, fuzzy
+msgid "Audio Track"
+msgstr "添加轨道"
+
+#: modules/core_effects_panel/effects_panel.gd:590
+msgid "Presets & Options"
+msgstr "预设与选项"
+
+#: modules/core_effects_panel/effects_panel.gd:625
+#: scenes/settings_menu/settings_menu.gd:405
+msgid "Reset to default"
+msgstr "重置为默认值"
+
+#: modules/core_effects_panel/effects_panel.gd:757
+msgid "Reset parameter"
+msgstr "重置"
+
+#: modules/core_effects_panel/effects_panel.gd:824
+#: modules/core_effects_panel/effects_panel.gd:1440
+msgid "Default"
+msgstr "默认"
+
+#: modules/core_effects_panel/effects_panel.gd:840
+msgid "Text ..."
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:866
+msgid "Left"
+msgstr "左"
+
+#: modules/core_effects_panel/effects_panel.gd:867
+#: modules/core_effects_panel/effects_panel.gd:871
+msgid "Center"
+msgstr "居中"
+
+#: modules/core_effects_panel/effects_panel.gd:868
+msgid "Right"
+msgstr "右"
+
+#: modules/core_effects_panel/effects_panel.gd:870
+msgid "Top"
+msgstr "上"
+
+#: modules/core_effects_panel/effects_panel.gd:872
+msgid "Bottom"
+msgstr "下"
+
+#: modules/core_effects_panel/effects_panel.gd:874
+#, fuzzy
+msgid "Mix (Normal)"
+msgstr "混合（普通）"
+
+#: modules/core_effects_panel/effects_panel.gd:875
+#, fuzzy
+msgid "Add"
+msgstr "相加"
+
+#: modules/core_effects_panel/effects_panel.gd:876
+#, fuzzy
+msgid "Subtract"
+msgstr "相减"
+
+#: modules/core_effects_panel/effects_panel.gd:877
+#, fuzzy
+msgid "Multiply"
+msgstr "相乘"
+
+#: modules/core_effects_panel/effects_panel.gd:878
+#, fuzzy
+msgid "Premultiplied Alpha"
+msgstr "预乘Alpha"
+
+#: modules/core_effects_panel/effects_panel.gd:880
+msgid "Thin"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:881
+#, fuzzy
+msgid "Extra Light"
+msgstr "轨道高度"
+
+#: modules/core_effects_panel/effects_panel.gd:882
+#, fuzzy
+msgid "Light"
+msgstr "右"
+
+#: modules/core_effects_panel/effects_panel.gd:883
+msgid "Regular"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:884
+msgid "Medium"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:885
+msgid "Semi Bold"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:886
+msgid "Bold"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:887
+#, fuzzy
+msgid "Extra Bold"
+msgstr "其他"
+
+#: modules/core_effects_panel/effects_panel.gd:888
+msgid "Black"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:1054
+msgid "Link X and Y"
+msgstr "等比缩放"
+
+#: modules/core_effects_panel/effects_panel.gd:1273
+msgid "Add effects"
+msgstr "添加效果器"
+
+#: modules/core_effects_panel/effects_panel.gd:1377
+msgid "Presets"
+msgstr "预设"
+
+#: modules/core_effects_panel/effects_panel.gd:1396
+msgid "Reset effect"
+msgstr "重置效果"
+
+#: modules/core_effects_panel/effects_panel.gd:1409
+msgid "Delete effect"
+msgstr "删除"
+
+#: modules/core_effects_panel/effects_panel.gd:1423
+msgid "Save as preset..."
+msgstr "保存为预设..."
+
+#: modules/core_effects_panel/effects_panel.gd:1496
+#: scenes/startup_screen/startup_screen.gd:356
+msgid "Save preset"
+msgstr "保存预设"
+
+#: modules/core_effects_panel/effects_panel.gd:1497
+#: scenes/startup_screen/startup_screen.gd:358
+msgid "Preset name"
+msgstr "预设名称"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Transitions"
+msgstr "过渡效果"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Visual effects"
+msgstr "视觉效果"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Audio effects"
+msgstr "声音效果"
+
+#: modules/core_effects_panel/effects_panel.tscn
+#, fuzzy
+msgid "Module settings"
+msgstr "关闭设置"
+
+#: scenes/editor/editor.gd:231
 msgid "Save project"
 msgstr "保存"
 
-#: scenes/editor/editor.gd:233 scripts/autoloads/project.gd:100
+#: scenes/editor/editor.gd:232 scripts/autoloads/project.gd:100
 msgid "Save project as ..."
 msgstr "另存为..."
 
-#: scenes/editor/editor.gd:234
+#: scenes/editor/editor.gd:233
 #, fuzzy
 msgid "Archive project ..."
 msgstr "另存为..."
 
-#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:245 scripts/autoloads/project.gd:268
+#: scenes/editor/editor.gd:235 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:241 scripts/autoloads/project.gd:268
 msgid "Open project"
 msgstr "打开工程"
 
-#: scenes/editor/editor.gd:237 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "近期工程"
 
-#: scenes/editor/editor.gd:239 scenes/settings_menu/settings_menu.gd:351
+#: scenes/editor/editor.gd:238 scenes/settings_menu/settings_menu.gd:353
 msgid "Project settings"
 msgstr "工程设置"
 
-#: scenes/editor/editor.gd:240
+#: scenes/editor/editor.gd:239
 msgid "Quit"
 msgstr "退出"
 
-#: scenes/editor/editor.gd:266
+#: scenes/editor/editor.gd:265
 msgid "Undo"
 msgstr "撤消"
 
-#: scenes/editor/editor.gd:267
+#: scenes/editor/editor.gd:266
 msgid "Redo"
 msgstr "恢复"
 
-#: scenes/editor/editor.gd:288
+#: scenes/editor/editor.gd:287
 msgid "Save workspace"
 msgstr "保存工作区"
 
-#: scenes/editor/editor.gd:289 scenes/editor/editor.gd:391
+#: scenes/editor/editor.gd:288 scenes/editor/editor.gd:390
 msgid "New workspace"
 msgstr "新建工作区"
 
-#: scenes/editor/editor.gd:291 scenes/editor/editor.gd:309
+#: scenes/editor/editor.gd:290 scenes/editor/editor.gd:308
 msgid "Show panel titles"
 msgstr "显示面板标题"
 
-#: scenes/editor/editor.gd:292
+#: scenes/editor/editor.gd:291
 msgid "Panels"
 msgstr "面板"
 
-#: scenes/editor/editor.gd:307
+#: scenes/editor/editor.gd:306
 msgid "Hide panel titles"
 msgstr "隐藏面板标题"
 
-#: scenes/editor/editor.gd:341 scenes/settings_menu/settings_menu.gd:105
+#: scenes/editor/editor.gd:340 scenes/settings_menu/settings_menu.gd:105
 #: scenes/settings_menu/settings_menu.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "编辑器设置"
 
-#: scenes/editor/editor.gd:342
+#: scenes/editor/editor.gd:341
 msgid "Module manager"
 msgstr "模块管理"
 
-#: scenes/editor/editor.gd:344
+#: scenes/editor/editor.gd:343
 msgid "Command bar"
 msgstr "命令行"
 
-#: scenes/editor/editor.gd:365
+#: scenes/editor/editor.gd:364
 msgid "Report bug"
 msgstr "报告 Bug"
 
-#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:365 scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "手册"
 
-#: scenes/editor/editor.gd:367 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "教程"
 
-#: scenes/editor/editor.gd:368 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:367 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:370 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:369 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "官网"
 
-#: scenes/editor/editor.gd:371 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:370 scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Support GoZen"
 msgstr "支持GoZen"
 
-#: scenes/editor/editor.gd:372 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:371 scenes/about_gozen/about_gozen.tscn
 msgid "About GoZen"
 msgstr "关于GoZen"
 
-#: scenes/editor/editor.gd:393
+#: scenes/editor/editor.gd:392
 msgid "Workspace name"
 msgstr "工作区名称"
 
-#: scenes/editor/editor.gd:453
+#: scenes/editor/editor.gd:452
 msgid "Move Left"
 msgstr "左移"
 
-#: scenes/editor/editor.gd:456
+#: scenes/editor/editor.gd:455
 msgid "Move Right"
 msgstr "右移"
 
-#: scenes/editor/editor.gd:459 scenes/file_panel/file_panel.gd:122
-msgid "Delete"
-msgstr "删除"
-
-#: scenes/editor/editor.gd:506
+#: scenes/editor/editor.gd:505
 msgid "Delete Workspace"
 msgstr "删除工作区"
 
-#: scenes/editor/editor.gd:507
+#: scenes/editor/editor.gd:506
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr "您确定要删除“%s”工作区吗？"
 
@@ -366,218 +763,6 @@ msgstr ""
 msgid "Close popup"
 msgstr "关闭"
 
-#: scenes/file_panel/file_panel.tscn
-msgid "Search files ..."
-msgstr "搜索文件..."
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add files"
-msgstr "添加文件"
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add text"
-msgstr "添加文本"
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add color"
-msgstr "添加颜色"
-
-#: scenes/file_panel/file_panel.gd:102
-msgid "Add files ..."
-msgstr "添加文件..."
-
-#: scenes/file_panel/file_panel.gd:120
-msgid "Rename"
-msgstr "重命名"
-
-#: scenes/file_panel/file_panel.gd:121
-msgid "Reload"
-msgstr "重新加载"
-
-#: scenes/file_panel/file_panel.gd:126
-msgid "Image options"
-msgstr "图像选项"
-
-#: scenes/file_panel/file_panel.gd:127
-msgid "Save image as ..."
-msgstr "保存图像为..."
-
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:830
-msgid "Video options"
-msgstr "视频选项"
-
-#: scenes/file_panel/file_panel.gd:133
-msgid "Create proxy"
-msgstr "创建代理片段"
-
-#: scenes/file_panel/file_panel.gd:135
-msgid "Re-create proxy"
-msgstr "重建代理片段"
-
-#: scenes/file_panel/file_panel.gd:136
-msgid "Remove proxy"
-msgstr "删除代理片段"
-
-#: scenes/file_panel/file_panel.gd:137
-msgid "Replace audio"
-msgstr ""
-
-#: scenes/file_panel/file_panel.gd:138
-msgid "Extract audio to file ..."
-msgstr "提取音频到文件..."
-
-#: scenes/file_panel/file_panel.gd:140
-msgid "Text options"
-msgstr "文本选项"
-
-#: scenes/file_panel/file_panel.gd:141
-msgid "Duplicate"
-msgstr "创建副本"
-
-#: scenes/file_panel/file_panel.gd:144
-msgid "Save file as ..."
-msgstr "保存文件为..."
-
-#: scenes/file_panel/file_panel.gd:148
-msgid "Open in file manager"
-msgstr "在文件管理器中打开"
-
-#: scenes/file_panel/file_panel.gd:149
-msgid "Copy file path"
-msgstr "复制文件路径"
-
-#: scenes/file_panel/file_panel.gd:151
-msgid "Folder options"
-msgstr "文件夹选项"
-
-#: scenes/file_panel/file_panel.gd:152 scenes/file_panel/file_panel.gd:155
-#: scenes/file_panel/file_panel.gd:537
-msgid "Create folder"
-msgstr "创建文件夹"
-
-#: scenes/file_panel/file_panel.gd:158
-msgid "Rename folder"
-msgstr "重命名"
-
-#: scenes/file_panel/file_panel.gd:159
-msgid "Delete folder"
-msgstr "删除"
-
-#: scenes/file_panel/file_panel.gd:198 scenes/rename_file/rename_file.tscn
-msgid "Rename file"
-msgstr "重命名文件"
-
-#: scenes/file_panel/file_panel.gd:203 scenes/file_panel/file_panel.gd:542
-msgid "Folder name"
-msgstr "文件夹名称"
-
-#: scenes/file_panel/file_panel.gd:258
-msgid "Save image to file"
-msgstr "保存图像到文件"
-
-#: scenes/file_panel/file_panel.gd:271
-msgid "Save video audio to WAV"
-msgstr "将视频音频保存为 WAV"
-
-#: scenes/file_panel/file_panel.gd:395
-msgid "(Loading thumbnail...)"
-msgstr "（加载缩略图中...）"
-
-#: scenes/timeline/timeline_panel.gd:145
-msgid "Duplication failed"
-msgstr "创建副本失败"
-
-#: scenes/timeline/timeline_panel.gd:146
-msgid ""
-"Could not duplicate %d clip(s) because there was not enough empty space."
-msgstr "此处没有足够的空间，无法为%d个片段创建副本"
-
-#: scenes/timeline/timeline_panel.gd:255
-msgid "Remove empty space"
-msgstr "移除空白区域"
-
-#: scenes/timeline/timeline_panel.gd:257
-msgid "Track options"
-msgstr "轨道选项"
-
-#: scenes/timeline/timeline_panel.gd:260
-msgid "Add track"
-msgstr "添加轨道"
-
-#: scenes/timeline/timeline_panel.gd:262
-msgid "Remove track"
-msgstr "删除轨道"
-
-#: scenes/timeline/timeline_panel.gd:266
-msgid "Visible"
-msgstr "可见"
-
-#: scenes/timeline/timeline_panel.gd:269
-msgid "Muted"
-msgstr "静音"
-
-#: scenes/timeline/timeline_panel.gd:272
-msgid "Locked"
-msgstr "锁定"
-
-#: scenes/timeline/timeline_panel.gd:820
-msgid "Delete clip"
-msgstr "删除片段"
-
-#: scenes/timeline/timeline_panel.gd:821
-msgid "Split clip"
-msgstr "分割片段"
-
-#: scenes/timeline/timeline_panel.gd:825 scenes/timeline/timeline_panel.gd:888
-msgid "Change speed"
-msgstr "变速"
-
-#: scenes/timeline/timeline_panel.gd:827
-msgid "Reset speed"
-msgstr "重置速度"
-
-#: scenes/timeline/timeline_panel.gd:831
-msgid "Clip replace audio"
-msgstr ""
-
-#: scenes/timeline/timeline_panel.gd:844
-msgid "Select Audio Track"
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-msgid "Select mode: Used for selecting clips on the timeline."
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
-"clicking."
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-#, fuzzy
-msgid "Turn group selection on/off for clips in the timeline."
-msgstr "开/关吸附"
-
-#: scenes/timeline/timeline.tscn
-#, fuzzy
-msgid "Turn clip snapping on/off when moving clips."
-msgstr "开/关吸附"
-
-#: scenes/timeline/track_controls.gd:68
-msgid "Toggle track visibility"
-msgstr "切换可见性"
-
-#: scenes/timeline/track_controls.gd:86
-msgid "Mute track"
-msgstr "静音"
-
-#: scenes/markers_panel/markers_panel.tscn
-#: scenes/settings_menu/settings_menu.gd:112
-#: scenes/settings_menu/settings_menu.gd:335
-msgid "Markers"
-msgstr "标记"
-
 #: scenes/color_popup/color_popup.tscn
 msgid "Add color file"
 msgstr "添加颜色文件"
@@ -592,11 +777,6 @@ msgstr "取消"
 #: scenes/color_popup/color_popup.tscn
 msgid "Create new color file"
 msgstr "创建新颜色文件"
-
-#: scenes/replace_audio_popup/replace_audio_popup.gd:113
-#: scenes/render_options_panel/render_options_panel.gd:185
-msgid "None"
-msgstr "无"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Replace Audio"
@@ -621,7 +801,7 @@ msgid "Confirm"
 msgstr "确认"
 
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:166
+#: scenes/startup_screen/startup_screen.gd:160
 msgid "Version"
 msgstr "版本"
 
@@ -646,6 +826,20 @@ msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:32
 msgid "License"
+msgstr ""
+
+#: scenes/module_manager/module_manager.tscn
+#, fuzzy
+msgid "Module Manager"
+msgstr "模块管理"
+
+#: scenes/module_manager/module_manager.tscn
+#, fuzzy
+msgid "Close"
+msgstr "关闭"
+
+#: scenes/module_manager/module_manager.tscn
+msgid "Install Module"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -679,13 +873,13 @@ msgid "Marker five"
 msgstr "第五种标记"
 
 #: scenes/settings_menu/settings_menu.gd:122
-#: scenes/settings_menu/settings_menu.gd:346
+#: scenes/settings_menu/settings_menu.gd:300
 msgid "Shortcuts"
 msgstr "快捷键"
 
 #: scenes/settings_menu/settings_menu.gd:131
-#: scenes/settings_menu/settings_menu.gd:369
-#: scenes/settings_menu/settings_menu.gd:370
+#: scenes/settings_menu/settings_menu.gd:371
+#: scenes/settings_menu/settings_menu.gd:372
 msgid "Appearance"
 msgstr "界面"
 
@@ -777,12 +971,12 @@ msgid "Default text duration"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:222
-#: scenes/settings_menu/settings_menu.gd:355
+#: scenes/settings_menu/settings_menu.gd:357
 msgid "Project resolution"
 msgstr "默认工程分辨率"
 
 #: scenes/settings_menu/settings_menu.gd:227
-#: scenes/settings_menu/settings_menu.gd:360
+#: scenes/settings_menu/settings_menu.gd:362
 msgid "Project frame-rate"
 msgstr "默认工程帧率"
 
@@ -811,77 +1005,18 @@ msgid "Vertical framerate"
 msgstr "默认工程帧率"
 
 #: scenes/settings_menu/settings_menu.gd:258
-msgid "Timeline"
-msgstr "时间轴"
-
-#: scenes/settings_menu/settings_menu.gd:259
-msgid "Timeline settings"
-msgstr "时间轴设置"
-
-#: scenes/settings_menu/settings_menu.gd:260
-msgid "Default track amount"
-msgstr "默认轨道数量"
-
-#: scenes/settings_menu/settings_menu.gd:266
-msgid "Track height"
-msgstr "轨道高度"
-
-#: scenes/settings_menu/settings_menu.gd:272
-msgid "Timeline controls"
-msgstr "时间轴控制"
-
-#: scenes/settings_menu/settings_menu.gd:273
-msgid "Pause after dragging"
-msgstr "拖动后暂停"
-
-#: scenes/settings_menu/settings_menu.gd:278
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
-msgstr "开启此选项时，拖动播放头移动后，播放将暂停。"
-
-#: scenes/settings_menu/settings_menu.gd:279
-msgid "Empty space delete modifier"
-msgstr "移除空白区域修饰键"
-
-#: scenes/settings_menu/settings_menu.gd:286
-msgid "The modifier you want to easily delete empty space between clips."
-msgstr "该修饰键可让您轻松删除片段之间的空白区域。"
-
-#: scenes/settings_menu/settings_menu.gd:287
-msgid "Empty space click action"
-msgstr "空白区域点击行为"
-
-#: scenes/settings_menu/settings_menu.gd:294
-msgid "What to do when clicking empty space in the timeline."
-msgstr "点击时间轴空白区域时的行为。"
-
-#: scenes/settings_menu/settings_menu.gd:295
-msgid "Addons"
-msgstr "附加"
-
-#: scenes/settings_menu/settings_menu.gd:296
-msgid "Show mode bar"
-msgstr "显示模式栏"
-
-#: scenes/settings_menu/settings_menu.gd:301
-msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
-msgstr "模式栏位于时间轴左侧，其中包含用于切换当前时间轴模式的按钮。"
-
-#: scenes/settings_menu/settings_menu.gd:304
 msgid "Performance"
 msgstr "性能"
 
-#: scenes/settings_menu/settings_menu.gd:305
+#: scenes/settings_menu/settings_menu.gd:259
 msgid "Video Decoding"
 msgstr "视频解码"
 
-#: scenes/settings_menu/settings_menu.gd:306
+#: scenes/settings_menu/settings_menu.gd:260
 msgid "Smart Seek Threshold"
 msgstr "智能跳转阈值"
 
-#: scenes/settings_menu/settings_menu.gd:313
+#: scenes/settings_menu/settings_menu.gd:267
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
@@ -890,11 +1025,11 @@ msgstr ""
 "定义解码器在执行完整跳转操作之前，将依次预读多少帧。较高的数值可避免短距离跳"
 "转时的卡顿，但会消耗更多CPU资源。"
 
-#: scenes/settings_menu/settings_menu.gd:314
+#: scenes/settings_menu/settings_menu.gd:268
 msgid "Video Cache Size"
 msgstr "视频缓存大小"
 
-#: scenes/settings_menu/settings_menu.gd:321
+#: scenes/settings_menu/settings_menu.gd:275
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
@@ -902,15 +1037,15 @@ msgstr ""
 "RAM 中保留的已解码帧的最大数量。数值越大，倒带和快进操作越流畅，但会增加内存"
 "占用。"
 
-#: scenes/settings_menu/settings_menu.gd:322
+#: scenes/settings_menu/settings_menu.gd:276
 msgid "Use proxies"
 msgstr "使用代理片段"
 
-#: scenes/settings_menu/settings_menu.gd:327
+#: scenes/settings_menu/settings_menu.gd:281
 msgid "Proxies save path"
 msgstr "代理片段保存路径"
 
-#: scenes/settings_menu/settings_menu.gd:332
+#: scenes/settings_menu/settings_menu.gd:286
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
@@ -919,41 +1054,41 @@ msgstr ""
 "修改此设置时，应选择已存在的文件夹路径。所有之前创建的代理片段都需要重新生"
 "成，并且需要手动从原文件夹中删除。"
 
-#: scenes/settings_menu/settings_menu.gd:337
-#: scenes/settings_menu/settings_menu.gd:338
+#: scenes/settings_menu/settings_menu.gd:291
+#: scenes/settings_menu/settings_menu.gd:292
 msgid "Extras"
 msgstr "其他"
 
-#: scenes/settings_menu/settings_menu.gd:339
+#: scenes/settings_menu/settings_menu.gd:293
 msgid "Auto save"
 msgstr "自动保存"
 
-#: scenes/settings_menu/settings_menu.gd:353
+#: scenes/settings_menu/settings_menu.gd:347
+msgid "Modules"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:355
 msgid "Video"
 msgstr "视频"
 
-#: scenes/settings_menu/settings_menu.gd:354
+#: scenes/settings_menu/settings_menu.gd:356
 msgid "Video settings"
 msgstr "视频设置"
 
-#: scenes/settings_menu/settings_menu.gd:367
+#: scenes/settings_menu/settings_menu.gd:369
 msgid "Project framerate (fps)."
 msgstr "工程帧率（FPS）"
 
-#: scenes/settings_menu/settings_menu.gd:371
+#: scenes/settings_menu/settings_menu.gd:373
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr "背景色"
 
-#: scenes/settings_menu/settings_menu.gd:376
+#: scenes/settings_menu/settings_menu.gd:378
 msgid "The background color when no clips are displayed."
 msgstr "无视频片段时显示的背景色"
 
-#: scenes/settings_menu/settings_menu.gd:403 effects/text_effect_ui.gd:29
-msgid "Reset to default"
-msgstr "重置为默认值"
-
-#: scenes/settings_menu/settings_menu.gd:659
+#: scenes/settings_menu/settings_menu.gd:661
 msgid "Press any key..."
 msgstr "按下任意键..."
 
@@ -964,158 +1099,6 @@ msgstr "搜索设置..."
 #: scenes/settings_menu/settings_menu.tscn
 msgid "Close settings"
 msgstr "关闭设置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render settings"
-msgstr "渲染设置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render profile"
-msgstr "渲染配置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Save current presets as a custom render profile."
-msgstr "保存当前预设为自定义渲染配置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Save profile"
-msgstr "保存配置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Set selected profile as the default render profile."
-msgstr "保存当前预设为自定义渲染配置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Set default"
-msgstr "重置为默认值"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Export path"
-msgstr "导出路径"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render video settings"
-msgstr "渲染视频设置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Video codec"
-msgstr "视频编码"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
-msgstr ""
-"调整CRF（恒定速率因子），最低质量设置为50，最高质量设置为15。默认值为18。用于"
-"调整比特率，这会影响视频质量和文件大小。数值 0 表示最佳质量，51表示最差质量，"
-"18则几乎视觉无损。"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Quality"
-msgstr "质量"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
-msgstr ""
-"调整H264编码的速度。如果设置的速度过高，可能会对最终的视频质量产生负面影响。"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Speed"
-msgstr "速度"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
-msgstr ""
-"Group Of Pictures（图像组）。与较低的数值相比，较高的数值更有利于压缩。但数值"
-"越高，视频播放时的定位和快进/快退操作就越不精确。如果您打算将渲染后的视频用于"
-"编辑，建议将该数值调低。"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Gop size"
-msgstr "GOP大小"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "B frames"
-msgstr "关键帧"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render audio settings"
-msgstr "渲染音频设置"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Audio codec"
-msgstr "音频编码"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Audio channels"
-msgstr "音频通道数"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Multi-threading"
-msgstr "多线程"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Threads"
-msgstr "线程数量"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "The amount of threads you want to use for exporting your video."
-msgstr "导出视频所使用的线程数量"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render region"
-msgstr "渲染区域"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Create a low quality draft version of your video."
-msgstr "导出为低质量草稿版"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Draft"
-msgstr "草稿模式"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Start render"
-msgstr "开始渲染"
-
-#: scenes/render_options_panel/render_options_panel.gd:85
-msgid "Custom render profiles"
-msgstr "自定义渲染配置"
-
-#: scenes/render_options_panel/render_options_panel.gd:187
-msgid "Stereo"
-msgstr "立体声"
-
-#: scenes/render_options_panel/render_options_panel.gd:188
-msgid "Mono"
-msgstr "单声道"
-
-#: scenes/render_options_panel/render_options_panel.gd:285
-msgid "Select export path"
-msgstr "选择导出路径"
-
-#: scenes/render_options_panel/render_options_panel.gd:396
-msgid "Overwrite file?"
-msgstr "覆盖文件？"
-
-#: scenes/render_options_panel/render_options_panel.gd:397
-msgid ""
-"A file already exists at the chosen export path. Do you want to overwrite it?"
-msgstr "要导出的路径文件已存在，是否覆盖？"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -1222,21 +1205,21 @@ msgstr "高级选项"
 msgid "Return"
 msgstr "返回"
 
-#: scenes/startup_screen/startup_screen.gd:80
+#: scenes/startup_screen/startup_screen.gd:78
 msgid "Image by"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:193
+#: scenes/startup_screen/startup_screen.gd:187
 #, fuzzy
 msgid "User presets"
 msgstr "保存预设"
 
-#: scenes/startup_screen/startup_screen.gd:247
-#: scenes/startup_screen/startup_screen.gd:315 scripts/autoloads/project.gd:102
+#: scenes/startup_screen/startup_screen.gd:243
+#: scenes/startup_screen/startup_screen.gd:309 scripts/autoloads/project.gd:102
 msgid "GoZen project file"
 msgstr "GoZen工程文件"
 
-#: scenes/startup_screen/startup_screen.gd:313
+#: scenes/startup_screen/startup_screen.gd:307
 msgid "Select project save path"
 msgstr "选择工程保存路径"
 
@@ -1260,18 +1243,6 @@ msgstr "类别"
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
 msgstr "删除所选的标记。"
-
-#: effects/text_effect_ui.gd:47
-msgid "Text ..."
-msgstr ""
-
-#: effects/text_effect_ui.gd:126
-msgid "Keyframes"
-msgstr "关键帧"
-
-#: effects/visual/mask_ui.gd:27
-msgid "Clear Mask Points"
-msgstr ""
 
 #: scripts/autoloads/project.gd:52
 msgid "Initialize new project ..."
@@ -1403,6 +1374,54 @@ msgstr "文件已拖放"
 #: scripts/logic/file_logic.gd:356
 msgid "Files loading ..."
 msgstr "文件加载中..."
+
+#~ msgid "Timeline"
+#~ msgstr "时间轴"
+
+#~ msgid "Timeline settings"
+#~ msgstr "时间轴设置"
+
+#~ msgid "Default track amount"
+#~ msgstr "默认轨道数量"
+
+#~ msgid "Track height"
+#~ msgstr "轨道高度"
+
+#~ msgid "Timeline controls"
+#~ msgstr "时间轴控制"
+
+#~ msgid "Pause after dragging"
+#~ msgstr "拖动后暂停"
+
+#~ msgid ""
+#~ "Setting this will pause playback after having dragged the playhead around."
+#~ msgstr "开启此选项时，拖动播放头移动后，播放将暂停。"
+
+#~ msgid "Empty space delete modifier"
+#~ msgstr "移除空白区域修饰键"
+
+#~ msgid "The modifier you want to easily delete empty space between clips."
+#~ msgstr "该修饰键可让您轻松删除片段之间的空白区域。"
+
+#~ msgid "Empty space click action"
+#~ msgstr "空白区域点击行为"
+
+#~ msgid "What to do when clicking empty space in the timeline."
+#~ msgstr "点击时间轴空白区域时的行为。"
+
+#~ msgid "Addons"
+#~ msgstr "附加"
+
+#~ msgid "Show mode bar"
+#~ msgstr "显示模式栏"
+
+#~ msgid ""
+#~ "The mode bar is the bar on the left of the timeline with buttons for "
+#~ "changing the current timeline mode."
+#~ msgstr "模式栏位于时间轴左侧，其中包含用于切换当前时间轴模式的按钮。"
+
+#~ msgid "Keyframes"
+#~ msgstr "关键帧"
 
 #~ msgid "Audio-take-over"
 #~ msgstr "音频替换"
