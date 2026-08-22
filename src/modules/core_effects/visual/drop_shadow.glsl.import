@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cvncclpbfug05"
+path="res://.godot/imported/drop_shadow.glsl-507df4e0abc6839a1e81e9180d2f9a67.res"
+
+[deps]
+
+source_file="res://modules/core_effects/visual/drop_shadow.glsl"
+dest_files=["res://.godot/imported/drop_shadow.glsl-507df4e0abc6839a1e81e9180d2f9a67.res"]
+
+[params]
+

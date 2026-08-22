@@ -61,7 +61,7 @@ func _on_project_resolution_changed() -> void:
 			reloaded.emit(file)
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add(paths: Array[String]) -> void:
 	var existing_file_paths: Array[String] = []
@@ -297,7 +297,7 @@ func duplicate_text(file: FileData) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-# --- File dropping ---
+#--- File dropping ---
 
 ## File dropping can't be un-done with the undo_redo system!
 func dropped(dropped_file_paths: Array[String]) -> void:
@@ -391,7 +391,7 @@ func _set_nickname(file: FileData, nickname: String) -> void:
 	nickname_changed.emit(file)
 
 
-# --- Data loading ---
+#--- Data loading ---
 
 ## (Re)load the data of a file.
 func load_data(file: FileData) -> void:
@@ -847,7 +847,7 @@ func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
 	image.copy_from(padded_image)
 
 
-# --- Getters ---
+#--- Getters ---
 
 ## Returns all audio file id's.
 func get_all_audio_files() -> Array[FileData]:
@@ -944,7 +944,7 @@ func _toggle_ato(file: FileData, value: bool) -> void:
 	Project.unsaved_changes = true
 
 
-# --- Updaters ---
+#--- Updaters ---
 
 func update_audio_waves() -> void:
 	for file: FileData in get_all_audio_files():

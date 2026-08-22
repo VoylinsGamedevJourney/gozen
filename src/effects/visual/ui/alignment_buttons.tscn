@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://calignbtn"]
-
-[ext_resource type="Script" path="res://effects/visual/ui/alignment_buttons.gd" id="1_script"]
-
-[node name="AlignmentButtons" type="HBoxContainer"]
-script = ExtResource("1_script")

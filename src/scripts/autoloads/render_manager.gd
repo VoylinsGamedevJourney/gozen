@@ -63,7 +63,7 @@ func _ready() -> void:
 	if update_encoder_status.connect(_on_update_encoder_status): print_stack()
 
 
-# --- Render logic ---
+#--- Render logic ---
 
 func get_render_profile(profile_name: String) -> RenderProfile:
 	var defaults: Array[String] = [
@@ -495,7 +495,7 @@ func _encoding_loop(use_audio: bool, audio_queue: Array[PackedByteArray]) -> voi
 				break
 
 
-# --- Audio handling ---
+#--- Audio handling ---
 
 func _get_clip_audio_info(clip: ClipData) -> Dictionary:
 	var framerate: float = project_data.framerate
@@ -654,7 +654,7 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 	return master_audio
 
 
-# --- RGBA to YUV handling ---
+#--- RGBA to YUV handling ---
 
 func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteArray:
 	var rd_input_tex: RID = RenderingServer.texture_get_rd_texture(input_texture_rid)

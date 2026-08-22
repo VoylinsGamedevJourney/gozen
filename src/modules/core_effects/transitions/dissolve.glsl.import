@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://ypgomrcix7u3"
+path="res://.godot/imported/dissolve.glsl-aa9aa242dadf7d50f6ae336266d2d412.res"
+
+[deps]
+
+source_file="res://modules/core_effects/transitions/dissolve.glsl"
+dest_files=["res://.godot/imported/dissolve.glsl-aa9aa242dadf7d50f6ae336266d2d412.res"]
+
+[params]
+

@@ -208,7 +208,7 @@ func _set_new_project_defaults() -> void:
 
 	# Setting the advanced project settings.
 	background_color_picker.color = Color.BLACK
-	track_amount_spinbox.set_value_no_signal(Settings.get_tracks_amount())
+	track_amount_spinbox.set_value_no_signal(Settings.get_module_setting("core_timeline_panel", "tracks_amount", 6) as float)
 
 	_on_new_project_option_button_item_selected(0)
 	save_profile_preset_button.disabled = true

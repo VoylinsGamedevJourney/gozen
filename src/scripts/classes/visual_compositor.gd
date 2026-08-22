@@ -110,7 +110,7 @@ func _init_start(p_resolution: Vector2i) -> void:
 	groups_y = ceili(resolution.y / 8.0)
 
 	if not fade_shader.is_valid():
-		var fade_spirv: RDShaderSPIRV = preload("res://effects/shaders/internal_copy.glsl").get_spirv()
+		var fade_spirv: RDShaderSPIRV = preload("uid://b4xofs8x5wgxu").get_spirv() # internal_copy.glsl
 		var fade_buffer_data: PackedByteArray = PackedByteArray()
 
 		fade_shader = device.shader_create_from_spirv(fade_spirv)
@@ -157,7 +157,7 @@ func initialize_video(video: Video) -> void:
 	_init_start(Project.data.resolution)
 
 	if not yuv_shader.is_valid():
-		var spirv: RDShaderSPIRV = preload("res://effects/shaders/yuv_to_rgba.glsl").get_spirv()
+		var spirv: RDShaderSPIRV = preload("uid://6gymaqs7ndl1").get_spirv()
 		yuv_shader = device.shader_create_from_spirv(spirv)
 		yuv_pipeline = device.compute_pipeline_create(yuv_shader)
 

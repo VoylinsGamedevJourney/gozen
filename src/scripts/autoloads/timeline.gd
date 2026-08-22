@@ -48,7 +48,7 @@ func _ready() -> void:
 	@warning_ignore_restore("return_value_discarded")
 
 
-# --- Setters ---
+#--- Setters ---
 
 func set_state(val: State) -> void:
 	if current_state != val:
@@ -74,7 +74,7 @@ func set_scroll_y(value: float) -> void:
 		scroll_changed.emit(Vector2(scroll_x, scroll_y))
 
 
-# --- Logic ---
+#--- Logic ---
 
 func find_snap_offset(edges: Array[int], threshold: int, ignores: Array[int] = []) -> int:
 	if not snap_enabled:

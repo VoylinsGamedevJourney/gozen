@@ -219,7 +219,7 @@ func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
 				if dialog.confirmed.connect(get_tree().quit): print_stack()
 
 
-# --- Menu bar functions ---
+#--- Menu bar functions ---
 
 func _create_project_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
@@ -405,7 +405,7 @@ func _on_create_new_workspace_confirmed(dialog: ConfirmationDialog, line_edit: L
 	dialog.queue_free()
 
 
-# --- Workspace functions ---
+#--- Workspace functions ---
 
 func _add_workspace_tab(workspace_name: String) -> void:
 	var tab: Control = Control.new()

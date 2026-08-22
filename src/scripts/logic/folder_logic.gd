@@ -9,7 +9,7 @@ var folders: Array[String]
 
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add(folder: String) -> void:
 	if !folders.has(folder):

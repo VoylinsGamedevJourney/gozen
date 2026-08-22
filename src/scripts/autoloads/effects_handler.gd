@@ -15,11 +15,6 @@ signal transition_updated(clip: ClipData, is_left: bool)
 enum TYPE { ALL = 0, VISUALS = 1, AUDIO = 2 }
 
 
-const PATH_EFFECTS_VISUAL: String = "res://effects/visual/"
-const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
-const PATH_EFFECTS_TRANSITIONS: String = "res://effects/transitions/"
-
-
 var visual_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
 var visual_effect_instances: Dictionary[String, Effect] = {} ## { effect_id: effect_class }
 var shader_cache: Dictionary[String, RDShaderFile] = {}
@@ -49,46 +44,7 @@ var param_exceptions: Dictionary[String, Dictionary] = {
 func _ready() -> void:
 	effect_selected.emit(null) # It's here to remove the unused signal warning.
 
-	for file_name: String in DirAccess.open(PATH_EFFECTS_VISUAL).get_files():
-		file_name = file_name.trim_suffix(".remap")
-		if !file_name.ends_with(".tres"): continue
-
-		var temp: Variant = load(PATH_EFFECTS_VISUAL + file_name)
-		if temp is not Effect: continue
-
-		var effect: Effect = temp
-		if visual_effect_instances.has(effect.id): continue
-		visual_effects[effect.nickname] = effect.id
-		visual_effect_instances[effect.id] = effect
-		shader_cache[effect.shader_path] = load(effect.shader_path)
-
 	ModuleManager.register_effects()
-
-	for file_name: String in DirAccess.open(PATH_EFFECTS_AUDIO).get_files():
-		file_name = file_name.trim_suffix(".remap")
-		if !file_name.ends_with(".tres"): continue
-
-		var temp: Variant = load(PATH_EFFECTS_AUDIO + file_name)
-		if temp is not Effect: continue
-
-		var effect: Effect = temp
-		if audio_effect_instances.has(effect.id): continue
-		audio_effects[effect.nickname] = effect.id
-		audio_effect_instances[effect.id] = effect
-
-	if DirAccess.dir_exists_absolute(PATH_EFFECTS_TRANSITIONS):
-		for file_name: String in DirAccess.open(PATH_EFFECTS_TRANSITIONS).get_files():
-			file_name = file_name.trim_suffix(".remap")
-			if !file_name.ends_with(".tres"): continue
-
-			var temp: Variant = load(PATH_EFFECTS_TRANSITIONS + file_name)
-			if temp is not Effect: continue
-
-			var effect: Effect = temp
-			if transition_instances.has(effect.id): continue
-			transitions[effect.nickname] = effect.id
-			transition_instances[effect.id] = effect
-			shader_cache[effect.shader_path] = load(effect.shader_path)
 
 
 func _get_effect(clip: ClipData, index: int, is_visual: bool) -> Effect:

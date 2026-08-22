@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://7gty5dfdid1e"]
+
+[ext_resource type="Script" uid="uid://cokjtiygfsxqk" path="res://modules/core_effects_panel/effects_panel.gd" id="1_yqe27"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vdjnm"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.7892687, 0.8352808, 0, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wv8tu"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 0.77267843, 0.65458363, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b381o"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101960786, 0.101960786, 1, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5peu"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6589966, 0, 0.24948001, 0.078431375)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_text", "section_transitions", "section_visuals", "section_audio", "section_module")]
+custom_minimum_size = Vector2(300, 200)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_type_variation = &"box"
+script = ExtResource("1_yqe27")
+section_text = NodePath("Margin/Scroll/Panel/Margin/VBox/TextContainer")
+section_transitions = NodePath("Margin/Scroll/Panel/Margin/VBox/TransitionsContainer")
+section_visuals = NodePath("Margin/Scroll/Panel/Margin/VBox/VisualsContainer")
+section_audio = NodePath("Margin/Scroll/Panel/Margin/VBox/AudioContainer")
+section_module = NodePath("Margin/Scroll/Panel/Margin/VBox/ModuleContainer")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1256017663]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="Scroll" type="ScrollContainer" parent="Margin" unique_id=1094673545]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Margin/Scroll" unique_id=1349871711]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Margin/Scroll/Panel" unique_id=1894938216]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Scroll/Panel/Margin" unique_id=1400588315]
+layout_mode = 2
+
+[node name="TextContainer" type="VBoxContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=654175760]
+layout_mode = 2
+
+[node name="TransitionsContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1507050130]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_vdjnm")
+title = "Transitions"
+
+[node name="VisualsContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1695060905]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_wv8tu")
+title = "Visual effects"
+
+[node name="AudioContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1481519147]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_b381o")
+title = "Audio effects"
+
+[node name="ModuleContainer" type="FoldableContainer" parent="Margin/Scroll/Panel/Margin/VBox" unique_id=1119539112]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_k5peu")
+title = "Module settings"

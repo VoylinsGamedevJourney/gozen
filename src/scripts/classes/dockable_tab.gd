@@ -53,7 +53,7 @@ func _get_drop_zone(pos: Vector2) -> DropZone:
 	return DropZone.CENTER
 
 
-# --- Drop logic ---
+#--- Drop logic ---
 
 func _get_drag_data(at_position: Vector2) -> Variant:
 	var index: int = get_tab_bar().get_tab_idx_at_point(at_position)

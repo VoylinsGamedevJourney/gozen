@@ -52,7 +52,7 @@ func _on_close_button_pressed() -> void:
 
 
 func set_mode(mode: Mode) -> void:
-	var menu_options: Dictionary[String, Array] = {}
+	var menu_options: Dictionary = {}
 	match mode:
 		Mode.EDITOR_SETTINGS:
 			menu_options = get_settings_menu_options()
@@ -100,7 +100,7 @@ func _create_section(section_name: String) -> GridContainer:
 	return grid
 
 
-func get_settings_menu_options() -> Dictionary[String, Array]:
+func get_settings_menu_options() -> Dictionary: ## { String: Array }
 	var default_settings: SettingsData = SettingsData.new()
 	panel_label.text = tr("Editor settings")
 
@@ -127,7 +127,7 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 		shortcut_nodes.append(create_label(action.capitalize()))
 		shortcut_nodes.append(create_shortcut_buttons(action))
 
-	return {
+	var options: Dictionary = {
 		tr("Appearance"): [
 			create_header(tr("Display")), Control.new(),
 			create_label(tr("Language")),
@@ -255,52 +255,6 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 					Settings.set_quick_create_vertical_fps),
 		],
 
-		tr("Timeline"): [
-			create_header(tr("Timeline settings")), Control.new(),
-			create_label(tr("Default track amount")),
-			create_spinbox(
-					Settings.get_tracks_amount(),
-					default_settings.tracks_amount,
-					1, 32, 1, false, false,
-					Settings.set_tracks_amount),
-			create_label(tr("Track height")),
-			create_spinbox(
-					Settings.get_track_height(),
-					default_settings.tracks_height,
-					20, 60, 1, false, false,
-					Settings.set_track_height),
-			create_header(tr("Timeline controls")), Control.new(),
-			create_label(tr("Pause after dragging")),
-			create_check_button(
-					Settings.get_pause_after_drag(),
-					default_settings.pause_after_drag,
-					Settings.set_pause_after_drag,
-					tr("Setting this will pause playback after having dragged the playhead around.")),
-			create_label(tr("Empty space delete modifier")),
-			create_option_button(
-					Settings.get_delete_empty_modifiers(),
-					Settings.get_delete_empty_modifiers().values().find(Settings.get_delete_empty_modifier()),
-					Settings.get_delete_empty_modifiers().values().find(default_settings.delete_empty_modifier),
-					Settings.set_delete_empty_modifier,
-					TYPE_INT,
-					tr("The modifier you want to easily delete empty space between clips.")),
-			create_label(tr("Empty space click action")),
-			create_option_button(
-					Settings.get_empty_space_click_actions(),
-					Settings.get_empty_space_click_actions().values().find(Settings.get_empty_space_click_action()),
-					Settings.get_empty_space_click_actions().values().find(default_settings.empty_space_click_action),
-					Settings.set_empty_space_click_action,
-					TYPE_INT,
-					tr("What to do when clicking empty space in the timeline.")),
-			create_header(tr("Addons")), Control.new(),
-			create_label(tr("Show mode bar")),
-			create_check_button(
-					Settings.get_show_time_mode_bar(),
-					default_settings.show_time_mode_bar,
-					Settings.set_show_time_mode_bar,
-					tr("The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode.")),
-		],
-
 		tr("Performance"): [
 			create_header(tr("Video Decoding")), Control.new(),
 			create_label(tr("Smart Seek Threshold")),
@@ -345,6 +299,54 @@ func get_settings_menu_options() -> Dictionary[String, Array]:
 
 		tr("Shortcuts"): shortcut_nodes,
 	}
+
+	var modules_nodes: Array = []
+	for module: GoZenModule in ModuleManager.loaded_gozen_modules:
+		if module.settings.is_empty(): continue
+
+		var folder_name: String = module.resource_path.get_base_dir().get_file()
+		var display_name: String = module.name if module.name != "" else folder_name
+		modules_nodes.append(create_header(display_name))
+		modules_nodes.append(Control.new()) # Spacer.
+
+		for setting: GoZenModuleSetting in module.settings:
+			modules_nodes.append(create_label(setting.name))
+
+			var current_value: Variant = Settings.get_module_setting(folder_name, setting.id, setting.default_value)
+			var set_func: Callable = func(val: Variant, m_folder: String, s_id: String) -> void:
+					Settings.set_module_setting(m_folder, s_id, val)
+			set_func = set_func.bind(folder_name, setting.id)
+
+			var control_node: Control
+			if not setting.options.is_empty():
+				var values: Array = setting.options.values()
+				var current_idx: int = values.find(current_value)
+				var default_idx: int = values.find(setting.default_value)
+				if current_idx == -1: current_idx = 0
+				if default_idx == -1: default_idx = 0
+				control_node = create_option_button(setting.options, current_idx, default_idx, set_func, typeof(setting.default_value), setting.description)
+			else:
+				match typeof(setting.default_value):
+					TYPE_BOOL:
+						control_node = create_check_button(current_value as bool, setting.default_value as bool, set_func, setting.description)
+					TYPE_INT:
+						control_node = create_spinbox(
+								current_value as int, setting.default_value as int, setting.min_value, setting.max_value, setting.step, setting.allow_lesser, setting.allow_greater, set_func, "", setting.description)
+					TYPE_FLOAT:
+						control_node = create_spinbox(
+								current_value as float, setting.default_value as float, setting.min_value, setting.max_value, setting.step, setting.allow_lesser, setting.allow_greater, set_func, "", setting.description)
+					TYPE_COLOR:
+						control_node = create_color_picker(current_value as Color, setting.default_value as Color, set_func, setting.description)
+					TYPE_STRING:
+						control_node = create_line_edit(current_value as String, setting.default_value as String, set_func, setting.description)
+					_: control_node = Control.new() # Fallback.
+
+			modules_nodes.append(control_node)
+
+	if not modules_nodes.is_empty():
+		options[tr("Modules")] = modules_nodes
+
+	return options
 
 
 func get_project_settings_menu_options() -> Dictionary[String, Array]:

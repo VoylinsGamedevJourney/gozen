@@ -19,7 +19,7 @@ var markers: Array[MarkerData]
 
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add(frame_nr: int, text: String, type: int) -> void:
 	var marker_index: int = get_marker_index(frame_nr)
@@ -82,7 +82,7 @@ func _remove(frame_nr: int) -> void:
 	removed.emit(frame_nr)
 
 
-# --- Helper functions ---
+#--- Helper functions ---
 
 func _find(marker: MarkerData, frame_nr: int) -> bool: return marker.frame_nr == frame_nr
 func _sort(a: MarkerData, b: MarkerData) -> bool: return a.frame_nr < b.frame_nr

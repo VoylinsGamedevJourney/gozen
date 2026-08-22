@@ -353,7 +353,7 @@ func _check_clip(track: int, new_frame_nr: int) -> bool:
 	return Math.in_range(new_frame_nr, clip.start, clip.end, false)
 
 
-# --- Playback logic ---
+#--- Playback logic ---
 
 func on_play_pressed() -> void:
 	is_playing = false if frame_nr == Project.data.timeline_end else !is_playing
@@ -438,14 +438,14 @@ func finish_scrub() -> void:
 		_scrub_frame = -1
 
 
-# --- Audio handling ---
+#--- Audio handling ---
 
 func find_audio(frame: int, track: int) -> ClipData:
 	var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame)
 	return clip if clip and clip.type in AUDIO_TYPES else null
 
 
-# --- Video stuff ---
+#--- Video stuff ---
 
 func update_data(track: int) -> void:
 	var clip: ClipData = loaded_clips[track]
@@ -619,7 +619,7 @@ func _apply_track_blend_mode(id: int, effects: Array[Effect], clip_frame: int) -
 		view_textures[id].material = new_material
 
 
-# --- Setters ---
+#--- Setters ---
 
 func set_is_playing(value: bool) -> void:
 	if value:
@@ -668,7 +668,7 @@ func set_background_color(color: Color) -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
-# --- Playback helpers ---
+#--- Playback helpers ---
 
 func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
 	if !clip or clip.type != Type.VIDEO: return

@@ -7,6 +7,11 @@
 [ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="5_sie2t"]
 [ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="6_tayen"]
 [ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="7_62oee"]
+[ext_resource type="PackedScene" uid="uid://clx31ubx70lv0" path="res://modules/core_timeline_panel/timeline.tscn" id="8_scene"]
+
+[sub_resource type="Resource" id="Resource_timeline_panel"]
+script = ExtResource("2_ppwg1")
+scene = ExtResource("8_scene")
 
 [sub_resource type="Resource" id="Resource_uy8hc"]
 script = ExtResource("7_62oee")
@@ -24,6 +29,7 @@ name = "Track height"
 default_value = 25.0
 min_value = 15.0
 max_value = 60.0
+allow_greater = true
 metadata/_custom_type_script = "uid://dhlfblonhwake"
 
 [sub_resource type="Resource" id="Resource_powtx"]
@@ -72,4 +78,5 @@ name = "Core Timeline Panel"
 description = "The default timeline panel for GoZen."
 author = "Voylin"
 settings = Array[ExtResource("7_62oee")]([SubResource("Resource_uy8hc"), SubResource("Resource_rs666"), SubResource("Resource_powtx"), SubResource("Resource_ppwg1"), SubResource("Resource_empty_click"), SubResource("Resource_del_empty")])
+custom_panels = Array[ExtResource("2_ppwg1")]([SubResource("Resource_timeline_panel")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"

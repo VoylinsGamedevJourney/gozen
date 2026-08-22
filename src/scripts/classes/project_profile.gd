@@ -9,4 +9,4 @@ extends Resource
 
 @export var advanced_settings_enabled: bool = false
 @export var background_color: Color = Color.BLACK
-@export var track_amount: int = Settings.get_tracks_amount()
+@export var track_amount: int = Settings.get_module_setting("core_timeline_panel", "tracks_amount", 6)

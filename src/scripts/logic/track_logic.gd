@@ -20,7 +20,7 @@ func prepare_data() -> void:
 		clips.sort()
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add_track(track: int) -> void:
 	InputManager.undo_redo.create_action("Add track: %s" % track)
@@ -73,7 +73,7 @@ func remove_clip_from_track(track: int, clip: ClipData) -> void:
 	track_clips[track].clips.erase(clip)
 
 
-# --- Track clip data getters ---
+#--- Track clip data getters ---
 
 func get_clips_after(track: int, frame_nr: int) -> Array[ClipData]:
 	var clips: Array[ClipData] = track_clips[track].clips

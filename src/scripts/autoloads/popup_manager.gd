@@ -153,7 +153,7 @@ func show_menu(popup: PopupMenu) -> void:
 	popup.popup()
 
 
-# --- Helper functions ---
+#--- Helper functions ---
 
 func _on_size_changed() -> void:
 	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

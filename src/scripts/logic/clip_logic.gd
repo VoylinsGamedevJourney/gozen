@@ -15,7 +15,7 @@ var copied_min_track: int = 0
 
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add(requests: Array[RequestClipAdd]) -> void:
 	if requests.is_empty(): return
@@ -581,7 +581,7 @@ func _change_speed_restore(clip: ClipData, start: int, duration: int, speed: flo
 	updated.emit.call_deferred()
 
 
-# --- Setters ---
+#--- Setters ---
 
 func switch_ato_active(clip: ClipData) -> void:
 	set_ato_active(clip, clip.effects.ato_active)
@@ -631,7 +631,7 @@ func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 	updated.emit.call_deferred()
 
 
-# --- Helpers ---
+#--- Helpers ---
 
 func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> ClipEffects:
 	var effects: ClipEffects = ClipEffects.new()
