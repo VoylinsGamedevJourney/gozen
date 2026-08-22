@@ -21,7 +21,7 @@ metadata/_custom_type_script = "uid://dhlfblonhwake"
 script = ExtResource("7_62oee")
 id = "track_height"
 name = "Track height"
-default_value = 25
+default_value = 25.0
 min_value = 15.0
 max_value = 60.0
 metadata/_custom_type_script = "uid://dhlfblonhwake"
@@ -41,7 +41,35 @@ description = "The mode bar is the bar on the left of the timeline with buttons 
 default_value = true
 metadata/_custom_type_script = "uid://dhlfblonhwake"
 
+[sub_resource type="Resource" id="Resource_empty_click"]
+script = ExtResource("7_62oee")
+id = "empty_space_click_action"
+name = "Empty space click action"
+description = "What happens when you click on empty space in the timeline."
+default_value = 0
+options = {
+"Clear Selection": 1,
+"Seek": 0
+}
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
+[sub_resource type="Resource" id="Resource_del_empty"]
+script = ExtResource("7_62oee")
+id = "delete_empty_modifier"
+name = "Delete empty space modifier"
+description = "Modifier key to double-click and delete empty space."
+default_value = 0
+options = {
+"Ctrl": 4194326,
+"None": 0,
+"Shift": 4194325
+}
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
 [resource]
 script = ExtResource("6_tayen")
-settings = Array[ExtResource("7_62oee")]([SubResource("Resource_uy8hc"), SubResource("Resource_rs666"), SubResource("Resource_powtx"), SubResource("Resource_ppwg1")])
+name = "Core Timeline Panel"
+description = "The default timeline panel for GoZen."
+author = "Voylin"
+settings = Array[ExtResource("7_62oee")]([SubResource("Resource_uy8hc"), SubResource("Resource_rs666"), SubResource("Resource_powtx"), SubResource("Resource_ppwg1"), SubResource("Resource_empty_click"), SubResource("Resource_del_empty")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"

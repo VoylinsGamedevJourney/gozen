@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://de0r3l6ipvr0y"
+path="res://.godot/imported/rgba_to_yuv.glsl-8fb6345206b83e87190a77233704884d.res"
+
+[deps]
+
+source_file="res://shaders/rgba_to_yuv.glsl"
+dest_files=["res://.godot/imported/rgba_to_yuv.glsl-8fb6345206b83e87190a77233704884d.res"]
+
+[params]
+
