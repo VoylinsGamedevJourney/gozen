@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://cyn522acouqas"]
+
+[ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_powtx"]
+[ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="2_ppwg1"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="3_af1nq"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="4_ra4nv"]
+[ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="5_sie2t"]
+[ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="6_tayen"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="7_62oee"]
+
+[sub_resource type="Resource" id="Resource_uy8hc"]
+script = ExtResource("7_62oee")
+id = "tracks_amount"
+name = "Default track amount"
+default_value = 6
+min_value = 1.0
+max_value = 32.0
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
+[sub_resource type="Resource" id="Resource_rs666"]
+script = ExtResource("7_62oee")
+id = "track_height"
+name = "Track height"
+default_value = 25
+min_value = 15.0
+max_value = 60.0
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
+[sub_resource type="Resource" id="Resource_powtx"]
+script = ExtResource("7_62oee")
+id = "pause_after_drag"
+name = "Pause after dragging"
+default_value = false
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
+[sub_resource type="Resource" id="Resource_ppwg1"]
+script = ExtResource("7_62oee")
+id = "show_time_mode_bar"
+name = "Show mode bar"
+description = "The mode bar is the bar on the left of the timeline with buttons for changing the current timeline mode."
+default_value = true
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
+[resource]
+script = ExtResource("6_tayen")
+settings = Array[ExtResource("7_62oee")]([SubResource("Resource_uy8hc"), SubResource("Resource_rs666"), SubResource("Resource_powtx"), SubResource("Resource_ppwg1")])
+metadata/_custom_type_script = "uid://bupjtpen4yap5"
