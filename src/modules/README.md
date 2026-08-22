@@ -8,7 +8,7 @@ Modules are loaded from two primary locations:
 
 ## 2. The `GoZenModule` Resource
 Every module is defined by a `module.tres` file at its root, which uses the `GoZenModule` class. This resource acts as the config file for the module and contains:
-- **Metadata:** `name`, `description`, `author`, and `version`.
+- **Metadata:** `name`, `description`, `author`, `version`, and `settings`.
 - **Content Arrays:**
     - `custom_panels`: Array of `GoZenModulePanel` (injects UI into the WorkspaceManager);
     - `custom_scenes`: Array of `GoZenModuleScene` (allows PCK clips to run custom Godot scenes on the timeline);

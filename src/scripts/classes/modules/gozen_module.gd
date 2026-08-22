@@ -8,6 +8,7 @@ extends Resource
 @export var description: String = ""
 @export var author: String = ""
 @export var version: String = "1.0"
+@export var settings: Array[GoZenModuleSetting] = []
 
 @export_group("Content")
 @export var custom_scenes: Array[GoZenModuleScene] = []

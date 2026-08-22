@@ -56,6 +56,9 @@ var auto_save: bool = true
 # Input
 var shortcuts: Dictionary = {} # { action_name: [InputEvent, InputEvent] }
 
+# Modules
+var module_settings: Dictionary = {}
+
 
 # HIDDEN SETTINGS
 var tab_edit_hsplit_offsets: PackedInt32Array = [260, 1608]
