@@ -68,7 +68,7 @@ func serialize() -> Dictionary:
 ## Trying to keep everything compatible with already made projects. for V1.0 we
 ## should probably remove some of the compatibility checking.
 func deserialize(data: Dictionary) -> void:
-	version = data.get("version", 1)
+	version = data.get("version", VERSION) if data.get("version") != null else VERSION
 	project_path = data.get("project_path", "")
 	framerate = data.get("framerate", 30.0)
 	resolution = data.get("resolution", Vector2i(1920, 1080))
