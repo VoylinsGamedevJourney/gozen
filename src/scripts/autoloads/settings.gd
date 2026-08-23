@@ -41,6 +41,7 @@ func _ready() -> void:
 		var response: int = DataManager.load_data(PATH, data)
 		if response != OK:
 			printerr("Settings: Couldn't load settings! ", response)
+		data.check_version()
 
 	if !DirAccess.dir_exists_absolute(PATH_THEMES) and DirAccess.make_dir_absolute(PATH_THEMES):
 		printerr("Settings: Couldn't create directory at '%s'!" % PATH_THEMES)

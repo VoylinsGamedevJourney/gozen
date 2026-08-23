@@ -2,6 +2,10 @@ class_name ProjectData
 extends RefCounted
 
 
+const VERSION: int = 1
+
+
+var version: int = VERSION
 var project_path: String = ""
 var framerate: float = 30.0
 var resolution: Vector2i = Vector2i(1920, 1080)
@@ -20,11 +24,11 @@ var markers: Array[MarkerData] = []
 var folders: Array[String] = []
 
 
-
 #--- Data handling ---
 
 func serialize() -> Dictionary:
 	var data: Dictionary = {
+		"version": version,
 		"project_path": project_path,
 		"timeline_end": timeline_end,
 		"playhead": playhead,
@@ -64,6 +68,7 @@ func serialize() -> Dictionary:
 ## Trying to keep everything compatible with already made projects. for V1.0 we
 ## should probably remove some of the compatibility checking.
 func deserialize(data: Dictionary) -> void:
+	version = data.get("version", 1)
 	project_path = data.get("project_path", "")
 	framerate = data.get("framerate", 30.0)
 	resolution = data.get("resolution", Vector2i(1920, 1080))
@@ -122,3 +127,6 @@ func deserialize(data: Dictionary) -> void:
 				var marker: MarkerData = MarkerData.new()
 				marker.deserialize(marker_value as Dictionary)
 				markers.append(marker)
+
+	if version == VERSION: return
+	## Add versioning stuff here in case a new version changes some data drastically.

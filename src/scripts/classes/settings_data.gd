@@ -2,7 +2,12 @@ class_name SettingsData
 extends RefCounted
 
 
+const VERSION: int = 1
+
+
 enum AudioWaveformStyle { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
+
+var version: int = VERSION
 
 
 # Appearance
@@ -55,3 +60,9 @@ var module_settings: Dictionary = {}
 var tab_edit_hsplit_offsets: PackedInt32Array = [260, 1608]
 var tab_render_hsplit_offsets: PackedInt32Array = [260, 1608]
 var tab_vsplit_offsets: PackedInt32Array = [0]
+
+
+
+func check_version() -> void:
+	if version == VERSION: return
+	## Add versioning stuff here in case a new version changes some data drastically.
