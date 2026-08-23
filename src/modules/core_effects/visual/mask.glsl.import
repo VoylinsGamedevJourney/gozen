@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://da65k6hyuxliu"
+path="res://.godot/imported/mask.glsl-b890b3ee598a6e97b0d7365a015f6f26.res"
+
+[deps]
+
+source_file="res://modules/core_effects/visual/mask.glsl"
+dest_files=["res://.godot/imported/mask.glsl-b890b3ee598a6e97b0d7365a015f6f26.res"]
+
+[params]
+

@@ -137,12 +137,12 @@ func _ready() -> void:
 	if !open_project_path.is_empty():
 		await Project.open(open_project_path)
 	elif create_new_horizontal:
-		var request: Project.NewRequest = Project.NewRequest.new()
+		var request: RequestProjectNew = RequestProjectNew.new()
 		request.resolution = Settings.get_quick_create_horizontal_res()
 		request.framerate = Settings.get_quick_create_horizontal_fps()
 		Project.new_project(request)
 	elif create_new_vertical:
-		var request: Project.NewRequest = Project.NewRequest.new()
+		var request: RequestProjectNew = RequestProjectNew.new()
 		request.resolution = Settings.get_quick_create_vertical_res()
 		request.framerate = Settings.get_quick_create_vertical_fps()
 		Project.new_project(request)
@@ -219,7 +219,7 @@ func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
 				if dialog.confirmed.connect(get_tree().quit): print_stack()
 
 
-# --- Menu bar functions ---
+#--- Menu bar functions ---
 
 func _create_project_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
@@ -376,13 +376,13 @@ func _create_help_popup_menu() -> void:
 
 func _on_help_popup_menu_id_pressed(id: int) -> void:
 	match id:
-		0: Utils.open_url("support")
-		1: Utils.open_url("manual")
-		2: Utils.open_url("tutorials")
-		3: Utils.open_url("discord")
+		0: URL.open("support")
+		1: URL.open("manual")
+		2: URL.open("tutorials")
+		3: URL.open("discord")
 		# -------------
-		4: Utils.open_url("site")
-		5: Utils.open_url("support")
+		4: URL.open("site")
+		5: URL.open("support")
 		6: PopupManager.open(PopupManager.CREDITS)
 
 
@@ -405,7 +405,7 @@ func _on_create_new_workspace_confirmed(dialog: ConfirmationDialog, line_edit: L
 	dialog.queue_free()
 
 
-# --- Workspace functions ---
+#--- Workspace functions ---
 
 func _add_workspace_tab(workspace_name: String) -> void:
 	var tab: Control = Control.new()

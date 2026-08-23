@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cvhhgcdmp7ojk"
+path="res://.godot/imported/slide.glsl-181484319d39c0ac841aed4cfa19817b.res"
+
+[deps]
+
+source_file="res://modules/core_effects/transitions/slide.glsl"
+dest_files=["res://.godot/imported/slide.glsl-181484319d39c0ac841aed4cfa19817b.res"]
+
+[params]
+

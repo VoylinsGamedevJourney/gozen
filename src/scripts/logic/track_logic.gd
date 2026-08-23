@@ -20,7 +20,7 @@ func prepare_data() -> void:
 		clips.sort()
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add_track(track: int) -> void:
 	InputManager.undo_redo.create_action("Add track: %s" % track)
@@ -73,7 +73,7 @@ func remove_clip_from_track(track: int, clip: ClipData) -> void:
 	track_clips[track].clips.erase(clip)
 
 
-# --- Track clip data getters ---
+#--- Track clip data getters ---
 
 func get_clips_after(track: int, frame_nr: int) -> Array[ClipData]:
 	var clips: Array[ClipData] = track_clips[track].clips
@@ -93,7 +93,7 @@ func get_clip_at_frame(track: int, frame_nr: int) -> ClipData:
 ## Get a clip which is overlapping with frame_nr.
 func get_clip_at_overlap(track: int, frame_nr: int) -> ClipData:
 	for clip: ClipData in track_clips[track].clips:
-		if Utils.in_range(frame_nr, clip.start, clip.end, false):
+		if Math.in_range(frame_nr, clip.start, clip.end, false):
 			return clip
 	return null
 

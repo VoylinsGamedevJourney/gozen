@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://cxmask1effect"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_yojuv"]
+[ext_resource type="PackedScene" uid="uid://cmaskbtn" path="res://modules/core_effects/visual/ui/mask_clear_button.tscn" id="2_maskbtn"]
+
+[sub_resource type="Resource" id="UI_invert"]
+script = ExtResource("1_yojuv")
+param_id = "invert"
+show_label = true
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_softness"]
+script = ExtResource("1_yojuv")
+param_id = "softness"
+show_label = true
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_clear"]
+script = ExtResource("1_yojuv")
+param_id = ""
+show_label = true
+custom_ui = ExtResource("2_maskbtn")
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_points"]
+script = ExtResource("1_param")
+id = "points"
+nickname = "Points"
+default_value = PackedVector2Array()
+min_value = null
+max_value = null
+step = 0.0
+keyframeable = true
+is_linkable = false
+is_linked = false
+has_slider = false
+
+[sub_resource type="Resource" id="Resource_invert"]
+script = ExtResource("1_param")
+id = "invert"
+nickname = "Invert Mask"
+default_value = false
+min_value = null
+max_value = null
+step = 0.0
+keyframeable = true
+is_linkable = false
+is_linked = false
+has_slider = false
+
+[sub_resource type="Resource" id="Resource_softness"]
+script = ExtResource("1_param")
+id = "softness"
+nickname = "Feather / Softness"
+default_value = 0.0
+min_value = 0.0
+max_value = 0.2
+step = 0.005
+keyframeable = true
+is_linkable = false
+is_linked = false
+has_slider = true
+
+[resource]
+script = ExtResource("2_effect")
+shader_path = "uid://da65k6hyuxliu"
+shader_passes = 1
+matrix_map = {}
+custom_overlay_path = "uid://bjc14dchyyd1o"
+custom_ui = Array[ExtResource("1_yojuv")]([SubResource("UI_invert"), SubResource("UI_softness"), SubResource("UI_clear")])
+id = "mask"
+nickname = "Polygon Mask"
+tooltip = "Draw a polygon mask directly onto the video. Left click on the video preview to add and drag points. Right click on points to remove them."
+params = Array[ExtResource("1_param")]([SubResource("Resource_points"), SubResource("Resource_invert"), SubResource("Resource_softness")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"

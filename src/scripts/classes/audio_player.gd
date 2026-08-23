@@ -98,7 +98,7 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 	else:
 		for i: int in clip.effects.audio.size():
 			var current_effect: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
-			var target_effect: AudioEffect = clip.effects.audio[i].effect
+			var target_effect: AudioEffect = clip.effects.audio[i].audio_effect
 			if current_effect.get_class() != target_effect.get_class():
 				need_rebuild = true
 				break
@@ -147,16 +147,16 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 
 
 func update_effects() -> void:
-	var effects: Array[EffectAudio] = clip.effects.audio
+	var effects: Array[Effect] = clip.effects.audio
 	var relative_frame_nr: int = EditorCore.frame_nr - clip.start
 
 	# Apply fade.
-	var fade_volume: float = Utils.calculate_fade(relative_frame_nr, clip, false)
+	var fade_volume: float = Math.calculate_fade(relative_frame_nr, clip, false)
 	player.volume_db = linear_to_db(maxf(fade_volume, 0.0001)) # Just 0 can give issues.
 
 	# Apply other effects.
 	for i: int in effects.size():
-		var effect: EffectAudio = effects[i]
+		var effect: Effect = effects[i]
 		if i >= AudioServer.get_bus_effect_count(bus_index): break
 
 		var effect_instance: AudioEffect = AudioServer.get_bus_effect(bus_index, i)
@@ -177,9 +177,9 @@ func update_effects() -> void:
 				effect_instance.set(effect_param.id, value)
 
 
-func _setup_bus_effects(effects: Array[EffectAudio]) -> void:
+func _setup_bus_effects(effects: Array[Effect]) -> void:
 	for i: int in range(AudioServer.get_bus_effect_count(bus_index) - 1, -1, -1):
 		AudioServer.remove_bus_effect(bus_index, i)
 	for i: int in effects.size():
-		AudioServer.add_bus_effect(bus_index, effects[i].effect.duplicate() as AudioEffect)
+		AudioServer.add_bus_effect(bus_index, effects[i].audio_effect.duplicate() as AudioEffect)
 		AudioServer.set_bus_effect_enabled(bus_index, i, effects[i].is_enabled)

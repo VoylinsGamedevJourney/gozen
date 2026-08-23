@@ -2,17 +2,17 @@ extends Node
 
 
 signal on_show_menu_bar_changed(value: bool)
-signal on_show_time_mode_bar_changed(value: bool)
 
 signal on_video_cache_size_changed(value: int)
 signal on_video_smart_seek_threshold(value: int)
-signal on_track_height_changed(value: float)
 
 signal on_panel_tabs_position_changed(value: int)
 
 signal on_localization_updated
 signal on_waveform_update
 signal on_theme_updated
+
+signal on_module_setting_changed(module_folder: String, setting_id: String, value: Variant)
 
 
 const PATH: String = "user://settings"
@@ -93,6 +93,8 @@ func load_custom_themes() -> void:
 				custom_themes[theme_name] = PATH_THEMES + file_name
 		file_name = dir.get_next()
 
+	ModuleManager.register_themes()
+
 
 func get_system_locale() -> String:
 	if OS.get_locale() in TranslationServer.get_loaded_locales():
@@ -108,7 +110,7 @@ func get_system_locale() -> String:
 	return "en" # Return English as a default.
 
 
-# --- Appearance set/get ---
+#--- Appearance set/get ---
 
 func set_language(code: String) -> void:
 	data.language = code
@@ -286,7 +288,7 @@ func get_panel_tabs_positions() -> Dictionary[String, int]:
 	return { "Top": TabContainer.POSITION_TOP, "Bottom": TabContainer.POSITION_BOTTOM }
 
 
-# --- Defaults set/get ---
+#--- Defaults set/get ---
 
 func set_image_duration(duration: int) -> void:
 	data.image_duration = duration
@@ -384,74 +386,22 @@ func get_quick_create_vertical_fps() -> float:
 	return data.quick_create_vertical_fps
 
 
-#--- Timeline set/get ---
+#--- Modules set/get ---
 
-func set_tracks_amount(track_amount: int) -> void:
-	data.tracks_amount = track_amount
-
-
-func get_tracks_amount() -> int:
-	return data.tracks_amount
-
-
-func set_track_height(new_height: float) -> void:
-	data.tracks_height = new_height
-	on_track_height_changed.emit(new_height)
+func set_module_setting(module_folder: String, setting_id: String, value: Variant) -> void:
+	if not data.module_settings.has(module_folder):
+		data.module_settings[module_folder] = {}
+	data.module_settings[module_folder][setting_id] = value
+	on_module_setting_changed.emit(module_folder, setting_id, value)
 
 
-func get_track_height() -> float:
-	return data.tracks_height
+func get_module_setting(module_folder: String, setting_id: String, default_value: Variant = null) -> Variant:
+	if data.module_settings.has(module_folder) and (data.module_settings[module_folder] as Dictionary).has(setting_id):
+		return data.module_settings[module_folder][setting_id]
+	return default_value
 
 
-func set_pause_after_drag(value: bool) -> void:
-	data.pause_after_drag = value
-
-
-func get_pause_after_drag() -> bool:
-	return data.pause_after_drag
-
-
-func set_delete_empty_modifier(new_key: int) -> void:
-	data.delete_empty_modifier = new_key
-
-
-func get_delete_empty_modifier() -> int:
-	return data.delete_empty_modifier
-
-
-func get_delete_empty_modifiers() -> Dictionary[String, int]:
-	var mods: Dictionary[String, int] = {
-		"": KEY_NONE,
-		"Control": KEY_CTRL,
-		"Shift": KEY_SHIFT}
-	return mods
-
-
-func set_empty_space_click_action(value: SettingsData.EmptySpaceClickAction) -> void:
-	data.empty_space_click_action = value
-
-
-func get_empty_space_click_action() -> int:
-	return data.empty_space_click_action
-
-
-func get_empty_space_click_actions() -> Dictionary[String, SettingsData.EmptySpaceClickAction]:
-	return {
-		"Seek": SettingsData.EmptySpaceClickAction.SEEK,
-		"Clear selection": SettingsData.EmptySpaceClickAction.CLEAR_SELECTION
-	}
-
-
-func set_show_time_mode_bar(value: bool) -> void:
-	data.show_time_mode_bar = value
-	on_show_time_mode_bar_changed.emit(value)
-
-
-func get_show_time_mode_bar() -> bool:
-	return data.show_time_mode_bar
-
-
-# --- Rendering set/get ---
+#--- Rendering set/get ---
 
 func set_default_render_profile(profile_name: String) -> void:
 	data.default_render_profile = profile_name
@@ -461,7 +411,7 @@ func get_default_render_profile() -> String:
 	return data.default_render_profile
 
 
-# --- Performance set/get ---
+#--- Performance set/get ---
 
 func set_video_smart_seek_threshold(value: int) -> void:
 	data.video_smart_seek_threshold = value

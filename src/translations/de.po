@@ -6,352 +6,740 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scenes/effects_panel/effects_panel.gd:48
-msgid "Enable clip audio."
+#: modules/core_effects/visual/ui/mask_clear_button.gd:10
+msgid "Clear Mask Points"
 msgstr ""
 
-#: scenes/effects_panel/effects_panel.gd:268
-#, fuzzy
-msgid "Left Transition"
-msgstr "Spuroptionen"
-
-#: scenes/effects_panel/effects_panel.gd:277
-#: scenes/effects_panel/effects_panel.gd:347
-#, fuzzy
-msgid "Visual Fade (frames)"
-msgstr "Visuelle effekte"
-
-#: scenes/effects_panel/effects_panel.gd:295
-#: scenes/effects_panel/effects_panel.gd:365
-#, fuzzy
-msgid "Audio Fade (frames)"
-msgstr "Audiowellenformen"
-
-#: scenes/effects_panel/effects_panel.gd:313
-#: scenes/effects_panel/effects_panel.gd:381
-msgid "Style"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:338
-#, fuzzy
-msgid "Right Transition"
-msgstr "Spuroptionen"
-
-#: scenes/effects_panel/effects_panel.gd:464
-#, fuzzy
-msgid "Audio Track"
-msgstr "Spur hinzufügen"
-
-#: scenes/effects_panel/effects_panel.gd:546
-#, fuzzy
-msgid "Presets & Options"
-msgstr "Textoptionen"
-
-#: scenes/effects_panel/effects_panel.gd:663 effects/text_effect_ui.gd:104
-msgid "Reset parameter"
-msgstr "Parameter zurücksetzen"
-
-#: scenes/effects_panel/effects_panel.gd:729
-#: scenes/effects_panel/effects_panel.gd:1326
-msgid "Default"
-msgstr "Standard"
-
-#: scenes/effects_panel/effects_panel.gd:760
-msgid "Left"
-msgstr "Links"
-
-#: scenes/effects_panel/effects_panel.gd:761
-#: scenes/effects_panel/effects_panel.gd:765
-msgid "Center"
-msgstr "Mitte"
-
-#: scenes/effects_panel/effects_panel.gd:762
-msgid "Right"
-msgstr "Rechts"
-
-#: scenes/effects_panel/effects_panel.gd:764
-msgid "Top"
-msgstr "Oben"
-
-#: scenes/effects_panel/effects_panel.gd:766
-msgid "Bottom"
-msgstr "Unten"
-
-#: scenes/effects_panel/effects_panel.gd:768
-msgid "Mix (Normal)"
-msgstr "Mischen (Normal)"
-
-#: scenes/effects_panel/effects_panel.gd:769
-msgid "Add"
-msgstr "Addieren"
-
-#: scenes/effects_panel/effects_panel.gd:770
-msgid "Subtract"
-msgstr "Subtrahieren"
-
-#: scenes/effects_panel/effects_panel.gd:771
-msgid "Multiply"
-msgstr "Multiplizieren"
-
-#: scenes/effects_panel/effects_panel.gd:772
-msgid "Premultiplied Alpha"
-msgstr "Vormultipliziertes Alpha"
-
-#: scenes/effects_panel/effects_panel.gd:774
-msgid "Thin"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:775
-#, fuzzy
-msgid "Extra Light"
-msgstr "Spurhöhe"
-
-#: scenes/effects_panel/effects_panel.gd:776
-#, fuzzy
-msgid "Light"
-msgstr "Rechts"
-
-#: scenes/effects_panel/effects_panel.gd:777
-msgid "Regular"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:778
-msgid "Medium"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:779
-msgid "Semi Bold"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:780
-msgid "Bold"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:781
-#, fuzzy
-msgid "Extra Bold"
-msgstr "Extras"
-
-#: scenes/effects_panel/effects_panel.gd:782
-msgid "Black"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:947
-msgid "Link X and Y"
-msgstr "X und Y verknüpfen"
-
-#: scenes/effects_panel/effects_panel.gd:1183
-msgid "Add effects"
-msgstr "Effekte hinzufügen"
-
-#: scenes/effects_panel/effects_panel.gd:1263
-msgid "Presets"
-msgstr ""
-
-#: scenes/effects_panel/effects_panel.gd:1282
-#, fuzzy
-msgid "Reset effect"
-msgstr "Geschwindigkeit zurücksetzen"
-
-#: scenes/effects_panel/effects_panel.gd:1295
-#, fuzzy
-msgid "Delete effect"
-msgstr "Ordner löschen"
-
-#: scenes/effects_panel/effects_panel.gd:1309
-#, fuzzy
-msgid "Save as preset..."
-msgstr "Screenshot speichern ..."
-
-#: scenes/effects_panel/effects_panel.gd:1382
-#: scenes/startup_screen/startup_screen.gd:363
-#, fuzzy
-msgid "Save preset"
-msgstr "Projekt speichern"
-
-#: scenes/effects_panel/effects_panel.gd:1383
-#: scenes/startup_screen/startup_screen.gd:365
-#, fuzzy
-msgid "Preset name"
-msgstr "Parameter zurücksetzen"
-
-#: scenes/effects_panel/effects_panel.tscn
-#, fuzzy
-msgid "Transitions"
-msgstr "Spuroptionen"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Visual effects"
-msgstr "Visuelle effekte"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Audio effects"
-msgstr "Audio effekte"
-
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 #, fuzzy
 msgid "Start project playback."
 msgstr "Wiedergabe wird eingerichtet ..."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 #, fuzzy
 msgid "Pause project playback."
 msgstr "Projekt speichern unter ..."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Go to next chapter marker."
 msgstr ""
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Show video safety guidelines on top of the project preview."
 msgstr ""
 
-#: scenes/view_panel/view_panel.gd:63
+#: modules/core_view_panel/view_panel.gd:63
 msgid "Jump to frame"
 msgstr "Zu Frame springen"
 
-#: scenes/view_panel/view_panel.gd:109
+#: modules/core_view_panel/view_panel.gd:109
 msgid "Frame"
 msgstr "Frame"
 
-#: scenes/view_panel/project_view_texture.gd:131
+#: modules/core_view_panel/project_view_texture.gd:129
 msgid "Save screenshot ..."
 msgstr "Screenshot speichern ..."
 
-#: scenes/view_panel/project_view_texture.gd:132
+#: modules/core_view_panel/project_view_texture.gd:130
 msgid "Save screenshot to project ..."
 msgstr "Screenshot zum Projekt speichern ..."
 
-#: scenes/editor/editor.gd:232
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Render settings"
+msgstr "Rendern-einstellungen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render profile"
+msgstr "Renderprofil"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Save current presets as a custom render profile."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Save profile"
+msgstr "Profil speichern"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Set selected profile as the default render profile."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Set default"
+msgstr "Auf Standard zurücksetzen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Export path"
+msgstr "Exportpfad"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render video settings"
+msgstr "Video-Rendereinstellungen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Video codec"
+msgstr "Video-codec"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Quality"
+msgstr "Qualität"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Gop size"
+msgstr "GOP-Größe"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "B frames"
+msgstr "Keyframes"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render audio settings"
+msgstr "Audio-Rendereinstellungen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Audio codec"
+msgstr "Audiocodec"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Audio channels"
+msgstr "Audiocodec"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Multi-threading"
+msgstr "Multi-threading"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Threads"
+msgstr "Threads"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "The amount of threads you want to use for exporting your video."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render region"
+msgstr "Render-Bereich"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Create a low quality draft version of your video."
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Draft"
+msgstr "Entwurf"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Start render"
+msgstr "Rendern starten"
+
+#: modules/core_render_options_panel/render_options_panel.gd:85
+msgid "Custom render profiles"
+msgstr "Benutzerdefinierte Renderprofile"
+
+#: modules/core_render_options_panel/render_options_panel.gd:185
+#: scenes/replace_audio_popup/replace_audio_popup.gd:113
+msgid "None"
+msgstr "Keine"
+
+#: modules/core_render_options_panel/render_options_panel.gd:187
+msgid "Stereo"
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.gd:188
+msgid "Mono"
+msgstr ""
+
+#: modules/core_render_options_panel/render_options_panel.gd:285
+msgid "Select export path"
+msgstr "Exportpfad auswählen"
+
+#: modules/core_render_options_panel/render_options_panel.gd:396
+msgid "Overwrite file?"
+msgstr "Datei überschreiben?"
+
+#: modules/core_render_options_panel/render_options_panel.gd:397
+msgid ""
+"A file already exists at the chosen export path. Do you want to overwrite it?"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr "Dateien suchen ..."
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add files"
+msgstr "Dateien hinzufügen"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add text"
+msgstr "Text hinzufügen"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add color"
+msgstr "Farbe hinzufügen"
+
+#: modules/core_file_panel/file_panel.gd:102
+msgid "Add files ..."
+msgstr "Dateien hinzufügen ..."
+
+#: modules/core_file_panel/file_panel.gd:120
+msgid "Rename"
+msgstr "Umbenennen"
+
+#: modules/core_file_panel/file_panel.gd:121
+msgid "Reload"
+msgstr "Neu lade"
+
+#: modules/core_file_panel/file_panel.gd:122 scenes/editor/editor.gd:458
+msgid "Delete"
+msgstr "Löschen"
+
+#: modules/core_file_panel/file_panel.gd:126
+msgid "Image options"
+msgstr "Bildoptionen"
+
+#: modules/core_file_panel/file_panel.gd:127
+msgid "Save image as ..."
+msgstr "Bild speichern unter ..."
+
+#: modules/core_file_panel/file_panel.gd:129
+#: modules/core_timeline_panel/timeline_panel.gd:828
+msgid "Video options"
+msgstr "Videooptionen"
+
+#: modules/core_file_panel/file_panel.gd:133
+msgid "Create proxy"
+msgstr "Proxy erstellen"
+
+#: modules/core_file_panel/file_panel.gd:135
+msgid "Re-create proxy"
+msgstr "Proxy neu erstellen"
+
+#: modules/core_file_panel/file_panel.gd:136
+msgid "Remove proxy"
+msgstr "Proxy entfernen"
+
+#: modules/core_file_panel/file_panel.gd:137
+msgid "Replace audio"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:138
+msgid "Extract audio to file ..."
+msgstr "Audio in datei extrahieren ..."
+
+#: modules/core_file_panel/file_panel.gd:140
+msgid "Text options"
+msgstr "Textoptionen"
+
+#: modules/core_file_panel/file_panel.gd:141
+msgid "Duplicate"
+msgstr "Duplizieren"
+
+#: modules/core_file_panel/file_panel.gd:144
+msgid "Save file as ..."
+msgstr "Datei speichern unter ..."
+
+#: modules/core_file_panel/file_panel.gd:148
+msgid "Open in file manager"
+msgstr "Im Dateimanager öffnen"
+
+#: modules/core_file_panel/file_panel.gd:149
+msgid "Copy file path"
+msgstr "Dateipfad kopieren"
+
+#: modules/core_file_panel/file_panel.gd:151
+#, fuzzy
+msgid "Folder options"
+msgstr "Geschwindigkeit"
+
+#: modules/core_file_panel/file_panel.gd:152
+#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:537
+msgid "Create folder"
+msgstr "Ordner erstellen"
+
+#: modules/core_file_panel/file_panel.gd:158
+msgid "Rename folder"
+msgstr "Ordner umbenennen"
+
+#: modules/core_file_panel/file_panel.gd:159
+msgid "Delete folder"
+msgstr "Ordner löschen"
+
+#: modules/core_file_panel/file_panel.gd:198
+#: scenes/rename_file/rename_file.tscn
+#, fuzzy
+msgid "Rename file"
+msgstr "Datei umbenennen zu ..."
+
+#: modules/core_file_panel/file_panel.gd:203
+#: modules/core_file_panel/file_panel.gd:542
+msgid "Folder name"
+msgstr "Ordnername"
+
+#: modules/core_file_panel/file_panel.gd:258
+#, fuzzy
+msgid "Save image to file"
+msgstr "Bild in Datei speichern"
+
+#: modules/core_file_panel/file_panel.gd:271
+msgid "Save video audio to WAV"
+msgstr "Videoaudio als WAV speichern"
+
+#: modules/core_file_panel/file_panel.gd:395
+msgid "(Loading thumbnail...)"
+msgstr "(Vorschaubild wird geladen...)"
+
+#: modules/core_markers_panel/markers_panel.tscn
+#: scenes/settings_menu/settings_menu.gd:112
+#: scenes/settings_menu/settings_menu.gd:289
+msgid "Markers"
+msgstr "Marker"
+
+#: modules/core_timeline_panel/timeline_panel.gd:144
+msgid "Duplication failed"
+msgstr "Duplizieren fehlgeschlagen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:145
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
+msgstr ""
+
+#: modules/core_timeline_panel/timeline_panel.gd:255
+msgid "Remove empty space"
+msgstr "Leeren Bereich entfernen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:257
+msgid "Track options"
+msgstr "Spuroptionen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:260
+msgid "Add track"
+msgstr "Spur hinzufügen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:262
+msgid "Remove track"
+msgstr "Spur entfernen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:266
+msgid "Visible"
+msgstr "Sichtbar"
+
+#: modules/core_timeline_panel/timeline_panel.gd:269
+msgid "Muted"
+msgstr "Stummgeschaltet"
+
+#: modules/core_timeline_panel/timeline_panel.gd:272
+msgid "Locked"
+msgstr "Gesperrt"
+
+#: modules/core_timeline_panel/timeline_panel.gd:818
+msgid "Delete clip"
+msgstr "Clip löschen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:819
+msgid "Split clip"
+msgstr "Clip teilen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:823
+#: modules/core_timeline_panel/timeline_panel.gd:886
+msgid "Change speed"
+msgstr "Geschwindigkeit ändern"
+
+#: modules/core_timeline_panel/timeline_panel.gd:825
+msgid "Reset speed"
+msgstr "Geschwindigkeit zurücksetzen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:829
+msgid "Clip replace audio"
+msgstr ""
+
+#: modules/core_timeline_panel/timeline_panel.gd:842
+msgid "Select Audio Track"
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Select mode: Used for selecting clips on the timeline."
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid ""
+"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"clicking."
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Turn group selection on/off for clips in the timeline."
+msgstr ""
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Turn clip snapping on/off when moving clips."
+msgstr ""
+
+#: modules/core_timeline_panel/track_controls.gd:69
+msgid "Toggle track visibility"
+msgstr "Spursichtbarkeit umschalten"
+
+#: modules/core_timeline_panel/track_controls.gd:87
+msgid "Mute track"
+msgstr "Spur stummschalten"
+
+#: modules/core_effects_panel/effects_panel.gd:53
+msgid "Enable clip visuals."
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:57
+msgid "Enable clip audio."
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:290
+#, fuzzy
+msgid "Left Transition"
+msgstr "Spuroptionen"
+
+#: modules/core_effects_panel/effects_panel.gd:299
+#: modules/core_effects_panel/effects_panel.gd:369
+#, fuzzy
+msgid "Visual Fade (frames)"
+msgstr "Visuelle effekte"
+
+#: modules/core_effects_panel/effects_panel.gd:317
+#: modules/core_effects_panel/effects_panel.gd:387
+#, fuzzy
+msgid "Audio Fade (frames)"
+msgstr "Audiowellenformen"
+
+#: modules/core_effects_panel/effects_panel.gd:335
+#: modules/core_effects_panel/effects_panel.gd:403
+msgid "Style"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:360
+#, fuzzy
+msgid "Right Transition"
+msgstr "Spuroptionen"
+
+#: modules/core_effects_panel/effects_panel.gd:496
+#, fuzzy
+msgid "Audio Track"
+msgstr "Spur hinzufügen"
+
+#: modules/core_effects_panel/effects_panel.gd:590
+#, fuzzy
+msgid "Presets & Options"
+msgstr "Textoptionen"
+
+#: modules/core_effects_panel/effects_panel.gd:625
+#: scenes/settings_menu/settings_menu.gd:405
+msgid "Reset to default"
+msgstr "Auf Standard zurücksetzen"
+
+#: modules/core_effects_panel/effects_panel.gd:757
+msgid "Reset parameter"
+msgstr "Parameter zurücksetzen"
+
+#: modules/core_effects_panel/effects_panel.gd:824
+#: modules/core_effects_panel/effects_panel.gd:1440
+msgid "Default"
+msgstr "Standard"
+
+#: modules/core_effects_panel/effects_panel.gd:840
+msgid "Text ..."
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:866
+msgid "Left"
+msgstr "Links"
+
+#: modules/core_effects_panel/effects_panel.gd:867
+#: modules/core_effects_panel/effects_panel.gd:871
+msgid "Center"
+msgstr "Mitte"
+
+#: modules/core_effects_panel/effects_panel.gd:868
+msgid "Right"
+msgstr "Rechts"
+
+#: modules/core_effects_panel/effects_panel.gd:870
+msgid "Top"
+msgstr "Oben"
+
+#: modules/core_effects_panel/effects_panel.gd:872
+msgid "Bottom"
+msgstr "Unten"
+
+#: modules/core_effects_panel/effects_panel.gd:874
+msgid "Mix (Normal)"
+msgstr "Mischen (Normal)"
+
+#: modules/core_effects_panel/effects_panel.gd:875
+msgid "Add"
+msgstr "Addieren"
+
+#: modules/core_effects_panel/effects_panel.gd:876
+msgid "Subtract"
+msgstr "Subtrahieren"
+
+#: modules/core_effects_panel/effects_panel.gd:877
+msgid "Multiply"
+msgstr "Multiplizieren"
+
+#: modules/core_effects_panel/effects_panel.gd:878
+msgid "Premultiplied Alpha"
+msgstr "Vormultipliziertes Alpha"
+
+#: modules/core_effects_panel/effects_panel.gd:880
+msgid "Thin"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:881
+#, fuzzy
+msgid "Extra Light"
+msgstr "Spurhöhe"
+
+#: modules/core_effects_panel/effects_panel.gd:882
+#, fuzzy
+msgid "Light"
+msgstr "Rechts"
+
+#: modules/core_effects_panel/effects_panel.gd:883
+msgid "Regular"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:884
+msgid "Medium"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:885
+msgid "Semi Bold"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:886
+msgid "Bold"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:887
+#, fuzzy
+msgid "Extra Bold"
+msgstr "Extras"
+
+#: modules/core_effects_panel/effects_panel.gd:888
+msgid "Black"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:1054
+msgid "Link X and Y"
+msgstr "X und Y verknüpfen"
+
+#: modules/core_effects_panel/effects_panel.gd:1273
+msgid "Add effects"
+msgstr "Effekte hinzufügen"
+
+#: modules/core_effects_panel/effects_panel.gd:1377
+msgid "Presets"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:1396
+#, fuzzy
+msgid "Reset effect"
+msgstr "Geschwindigkeit zurücksetzen"
+
+#: modules/core_effects_panel/effects_panel.gd:1409
+#, fuzzy
+msgid "Delete effect"
+msgstr "Ordner löschen"
+
+#: modules/core_effects_panel/effects_panel.gd:1423
+#, fuzzy
+msgid "Save as preset..."
+msgstr "Screenshot speichern ..."
+
+#: modules/core_effects_panel/effects_panel.gd:1496
+#: scenes/startup_screen/startup_screen.gd:356
+#, fuzzy
+msgid "Save preset"
+msgstr "Projekt speichern"
+
+#: modules/core_effects_panel/effects_panel.gd:1497
+#: scenes/startup_screen/startup_screen.gd:358
+#, fuzzy
+msgid "Preset name"
+msgstr "Parameter zurücksetzen"
+
+#: modules/core_effects_panel/effects_panel.tscn
+#, fuzzy
+msgid "Transitions"
+msgstr "Spuroptionen"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Visual effects"
+msgstr "Visuelle effekte"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Audio effects"
+msgstr "Audio effekte"
+
+#: modules/core_effects_panel/effects_panel.tscn
+#, fuzzy
+msgid "Module settings"
+msgstr "Einstellungen schließen"
+
+#: scenes/editor/editor.gd:231
 msgid "Save project"
 msgstr "Projekt speichern"
 
-#: scenes/editor/editor.gd:233 scripts/autoloads/project.gd:100
+#: scenes/editor/editor.gd:232 scripts/autoloads/project.gd:100
 msgid "Save project as ..."
 msgstr "Projekt speichern unter ..."
 
-#: scenes/editor/editor.gd:234
+#: scenes/editor/editor.gd:233
 #, fuzzy
 msgid "Archive project ..."
 msgstr "Projekt speichern unter ..."
 
-#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:245 scripts/autoloads/project.gd:268
+#: scenes/editor/editor.gd:235 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:241 scripts/autoloads/project.gd:268
 msgid "Open project"
 msgstr "Projekt öffnen"
 
-#: scenes/editor/editor.gd:237 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "Zuletzt geöffnete Projekte"
 
-#: scenes/editor/editor.gd:239 scenes/settings_menu/settings_menu.gd:351
+#: scenes/editor/editor.gd:238 scenes/settings_menu/settings_menu.gd:353
 msgid "Project settings"
 msgstr "Projekteinstellungen"
 
-#: scenes/editor/editor.gd:240
+#: scenes/editor/editor.gd:239
 msgid "Quit"
 msgstr "Beenden"
 
-#: scenes/editor/editor.gd:266
+#: scenes/editor/editor.gd:265
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: scenes/editor/editor.gd:267
+#: scenes/editor/editor.gd:266
 msgid "Redo"
 msgstr "Wiederherstellen"
 
-#: scenes/editor/editor.gd:288
+#: scenes/editor/editor.gd:287
 msgid "Save workspace"
 msgstr ""
 
-#: scenes/editor/editor.gd:289 scenes/editor/editor.gd:391
+#: scenes/editor/editor.gd:288 scenes/editor/editor.gd:390
 msgid "New workspace"
 msgstr ""
 
-#: scenes/editor/editor.gd:291 scenes/editor/editor.gd:309
+#: scenes/editor/editor.gd:290 scenes/editor/editor.gd:308
 msgid "Show panel titles"
 msgstr ""
 
-#: scenes/editor/editor.gd:292
+#: scenes/editor/editor.gd:291
 msgid "Panels"
 msgstr ""
 
-#: scenes/editor/editor.gd:307
+#: scenes/editor/editor.gd:306
 msgid "Hide panel titles"
 msgstr ""
 
-#: scenes/editor/editor.gd:341 scenes/settings_menu/settings_menu.gd:105
+#: scenes/editor/editor.gd:340 scenes/settings_menu/settings_menu.gd:105
 #: scenes/settings_menu/settings_menu.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "Editor Einstellungen"
 
-#: scenes/editor/editor.gd:342
+#: scenes/editor/editor.gd:341
 msgid "Module manager"
 msgstr "Modul-Manager"
 
-#: scenes/editor/editor.gd:344
+#: scenes/editor/editor.gd:343
 msgid "Command bar"
 msgstr "Befehlsleiste"
 
-#: scenes/editor/editor.gd:365
+#: scenes/editor/editor.gd:364
 msgid "Report bug"
 msgstr "Fehler melden"
 
-#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:365 scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "Handbuch"
 
-#: scenes/editor/editor.gd:367 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "Tutorials"
 
-#: scenes/editor/editor.gd:368 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:367 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:370 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:369 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "Webseite"
 
-#: scenes/editor/editor.gd:371 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:370 scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr "GoZen unterstützen"
 
-#: scenes/editor/editor.gd:372 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:371 scenes/about_gozen/about_gozen.tscn
 msgid "About GoZen"
 msgstr "Über GoZen"
 
-#: scenes/editor/editor.gd:393
+#: scenes/editor/editor.gd:392
 msgid "Workspace name"
 msgstr ""
 
-#: scenes/editor/editor.gd:453
+#: scenes/editor/editor.gd:452
 #, fuzzy
 msgid "Move Left"
 msgstr "Links"
 
-#: scenes/editor/editor.gd:456
+#: scenes/editor/editor.gd:455
 #, fuzzy
 msgid "Move Right"
 msgstr "Rechts"
 
-#: scenes/editor/editor.gd:459 scenes/file_panel/file_panel.gd:122
-msgid "Delete"
-msgstr "Löschen"
-
-#: scenes/editor/editor.gd:506
+#: scenes/editor/editor.gd:505
 #, fuzzy
 msgid "Delete Workspace"
 msgstr "Ordner löschen"
 
-#: scenes/editor/editor.gd:507
+#: scenes/editor/editor.gd:506
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr ""
 
@@ -369,219 +757,6 @@ msgstr ""
 msgid "Close popup"
 msgstr "Popup schließen"
 
-#: scenes/file_panel/file_panel.tscn
-msgid "Search files ..."
-msgstr "Dateien suchen ..."
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add files"
-msgstr "Dateien hinzufügen"
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add text"
-msgstr "Text hinzufügen"
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add color"
-msgstr "Farbe hinzufügen"
-
-#: scenes/file_panel/file_panel.gd:102
-msgid "Add files ..."
-msgstr "Dateien hinzufügen ..."
-
-#: scenes/file_panel/file_panel.gd:120
-msgid "Rename"
-msgstr "Umbenennen"
-
-#: scenes/file_panel/file_panel.gd:121
-msgid "Reload"
-msgstr "Neu lade"
-
-#: scenes/file_panel/file_panel.gd:126
-msgid "Image options"
-msgstr "Bildoptionen"
-
-#: scenes/file_panel/file_panel.gd:127
-msgid "Save image as ..."
-msgstr "Bild speichern unter ..."
-
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:830
-msgid "Video options"
-msgstr "Videooptionen"
-
-#: scenes/file_panel/file_panel.gd:133
-msgid "Create proxy"
-msgstr "Proxy erstellen"
-
-#: scenes/file_panel/file_panel.gd:135
-msgid "Re-create proxy"
-msgstr "Proxy neu erstellen"
-
-#: scenes/file_panel/file_panel.gd:136
-msgid "Remove proxy"
-msgstr "Proxy entfernen"
-
-#: scenes/file_panel/file_panel.gd:137
-msgid "Replace audio"
-msgstr ""
-
-#: scenes/file_panel/file_panel.gd:138
-msgid "Extract audio to file ..."
-msgstr "Audio in datei extrahieren ..."
-
-#: scenes/file_panel/file_panel.gd:140
-msgid "Text options"
-msgstr "Textoptionen"
-
-#: scenes/file_panel/file_panel.gd:141
-msgid "Duplicate"
-msgstr "Duplizieren"
-
-#: scenes/file_panel/file_panel.gd:144
-msgid "Save file as ..."
-msgstr "Datei speichern unter ..."
-
-#: scenes/file_panel/file_panel.gd:148
-msgid "Open in file manager"
-msgstr "Im Dateimanager öffnen"
-
-#: scenes/file_panel/file_panel.gd:149
-msgid "Copy file path"
-msgstr "Dateipfad kopieren"
-
-#: scenes/file_panel/file_panel.gd:151
-#, fuzzy
-msgid "Folder options"
-msgstr "Geschwindigkeit"
-
-#: scenes/file_panel/file_panel.gd:152 scenes/file_panel/file_panel.gd:155
-#: scenes/file_panel/file_panel.gd:537
-msgid "Create folder"
-msgstr "Ordner erstellen"
-
-#: scenes/file_panel/file_panel.gd:158
-msgid "Rename folder"
-msgstr "Ordner umbenennen"
-
-#: scenes/file_panel/file_panel.gd:159
-msgid "Delete folder"
-msgstr "Ordner löschen"
-
-#: scenes/file_panel/file_panel.gd:198 scenes/rename_file/rename_file.tscn
-#, fuzzy
-msgid "Rename file"
-msgstr "Datei umbenennen zu ..."
-
-#: scenes/file_panel/file_panel.gd:203 scenes/file_panel/file_panel.gd:542
-msgid "Folder name"
-msgstr "Ordnername"
-
-#: scenes/file_panel/file_panel.gd:258
-#, fuzzy
-msgid "Save image to file"
-msgstr "Bild in Datei speichern"
-
-#: scenes/file_panel/file_panel.gd:271
-msgid "Save video audio to WAV"
-msgstr "Videoaudio als WAV speichern"
-
-#: scenes/file_panel/file_panel.gd:395
-msgid "(Loading thumbnail...)"
-msgstr "(Vorschaubild wird geladen...)"
-
-#: scenes/timeline/timeline_panel.gd:145
-msgid "Duplication failed"
-msgstr "Duplizieren fehlgeschlagen"
-
-#: scenes/timeline/timeline_panel.gd:146
-msgid ""
-"Could not duplicate %d clip(s) because there was not enough empty space."
-msgstr ""
-
-#: scenes/timeline/timeline_panel.gd:255
-msgid "Remove empty space"
-msgstr "Leeren Bereich entfernen"
-
-#: scenes/timeline/timeline_panel.gd:257
-msgid "Track options"
-msgstr "Spuroptionen"
-
-#: scenes/timeline/timeline_panel.gd:260
-msgid "Add track"
-msgstr "Spur hinzufügen"
-
-#: scenes/timeline/timeline_panel.gd:262
-msgid "Remove track"
-msgstr "Spur entfernen"
-
-#: scenes/timeline/timeline_panel.gd:266
-msgid "Visible"
-msgstr "Sichtbar"
-
-#: scenes/timeline/timeline_panel.gd:269
-msgid "Muted"
-msgstr "Stummgeschaltet"
-
-#: scenes/timeline/timeline_panel.gd:272
-msgid "Locked"
-msgstr "Gesperrt"
-
-#: scenes/timeline/timeline_panel.gd:820
-msgid "Delete clip"
-msgstr "Clip löschen"
-
-#: scenes/timeline/timeline_panel.gd:821
-msgid "Split clip"
-msgstr "Clip teilen"
-
-#: scenes/timeline/timeline_panel.gd:825 scenes/timeline/timeline_panel.gd:888
-msgid "Change speed"
-msgstr "Geschwindigkeit ändern"
-
-#: scenes/timeline/timeline_panel.gd:827
-msgid "Reset speed"
-msgstr "Geschwindigkeit zurücksetzen"
-
-#: scenes/timeline/timeline_panel.gd:831
-msgid "Clip replace audio"
-msgstr ""
-
-#: scenes/timeline/timeline_panel.gd:844
-msgid "Select Audio Track"
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-msgid "Select mode: Used for selecting clips on the timeline."
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
-"clicking."
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-msgid "Turn group selection on/off for clips in the timeline."
-msgstr ""
-
-#: scenes/timeline/timeline.tscn
-msgid "Turn clip snapping on/off when moving clips."
-msgstr ""
-
-#: scenes/timeline/track_controls.gd:68
-msgid "Toggle track visibility"
-msgstr "Spursichtbarkeit umschalten"
-
-#: scenes/timeline/track_controls.gd:86
-msgid "Mute track"
-msgstr "Spur stummschalten"
-
-#: scenes/markers_panel/markers_panel.tscn
-#: scenes/settings_menu/settings_menu.gd:112
-#: scenes/settings_menu/settings_menu.gd:335
-msgid "Markers"
-msgstr "Marker"
-
 #: scenes/color_popup/color_popup.tscn
 #, fuzzy
 msgid "Add color file"
@@ -598,11 +773,6 @@ msgstr "Abbrechen"
 #, fuzzy
 msgid "Create new color file"
 msgstr "Neue Farbdatei erstellen"
-
-#: scenes/replace_audio_popup/replace_audio_popup.gd:113
-#: scenes/render_options_panel/render_options_panel.gd:185
-msgid "None"
-msgstr "Keine"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Replace Audio"
@@ -628,7 +798,7 @@ msgid "Confirm"
 msgstr "Bestätigen"
 
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:166
+#: scenes/startup_screen/startup_screen.gd:160
 msgid "Version"
 msgstr "Version"
 
@@ -651,6 +821,20 @@ msgstr ""
 
 #: scenes/about_gozen/about_gozen.gd:32
 msgid "License"
+msgstr ""
+
+#: scenes/module_manager/module_manager.tscn
+#, fuzzy
+msgid "Module Manager"
+msgstr "Modul-Manager"
+
+#: scenes/module_manager/module_manager.tscn
+#, fuzzy
+msgid "Close"
+msgstr "Popup schließen"
+
+#: scenes/module_manager/module_manager.tscn
+msgid "Install Module"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -684,13 +868,13 @@ msgid "Marker five"
 msgstr "Marker fünf"
 
 #: scenes/settings_menu/settings_menu.gd:122
-#: scenes/settings_menu/settings_menu.gd:346
+#: scenes/settings_menu/settings_menu.gd:300
 msgid "Shortcuts"
 msgstr "Tastenkombinationen"
 
 #: scenes/settings_menu/settings_menu.gd:131
-#: scenes/settings_menu/settings_menu.gd:369
-#: scenes/settings_menu/settings_menu.gd:370
+#: scenes/settings_menu/settings_menu.gd:371
+#: scenes/settings_menu/settings_menu.gd:372
 msgid "Appearance"
 msgstr "Darstellung"
 
@@ -782,12 +966,12 @@ msgid "Default text duration"
 msgstr "Standard Bilddauer"
 
 #: scenes/settings_menu/settings_menu.gd:222
-#: scenes/settings_menu/settings_menu.gd:355
+#: scenes/settings_menu/settings_menu.gd:357
 msgid "Project resolution"
 msgstr "Projektauflösung"
 
 #: scenes/settings_menu/settings_menu.gd:227
-#: scenes/settings_menu/settings_menu.gd:360
+#: scenes/settings_menu/settings_menu.gd:362
 msgid "Project frame-rate"
 msgstr "Projekt-Bildrate"
 
@@ -816,147 +1000,87 @@ msgid "Vertical framerate"
 msgstr "Projekt-Bildrate"
 
 #: scenes/settings_menu/settings_menu.gd:258
-msgid "Timeline"
-msgstr "Zeitachse"
-
-#: scenes/settings_menu/settings_menu.gd:259
-msgid "Timeline settings"
-msgstr "Zeitleisten-Einstellungen"
-
-#: scenes/settings_menu/settings_menu.gd:260
-#, fuzzy
-msgid "Default track amount"
-msgstr "Standardanzahl der Tracks"
-
-#: scenes/settings_menu/settings_menu.gd:266
-msgid "Track height"
-msgstr "Spurhöhe"
-
-#: scenes/settings_menu/settings_menu.gd:272
-msgid "Timeline controls"
-msgstr "Zeitleistensteuerung"
-
-#: scenes/settings_menu/settings_menu.gd:273
-msgid "Pause after dragging"
-msgstr "Pausieren nach Ziehen"
-
-#: scenes/settings_menu/settings_menu.gd:278
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:279
-msgid "Empty space delete modifier"
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:286
-msgid "The modifier you want to easily delete empty space between clips."
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:287
-msgid "Empty space click action"
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:294
-msgid "What to do when clicking empty space in the timeline."
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:295
-msgid "Addons"
-msgstr "Erweiterungen"
-
-#: scenes/settings_menu/settings_menu.gd:296
-msgid "Show mode bar"
-msgstr "Modusleiste anzeigen"
-
-#: scenes/settings_menu/settings_menu.gd:301
-msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
-msgstr ""
-
-#: scenes/settings_menu/settings_menu.gd:304
 msgid "Performance"
 msgstr "Leistung"
 
-#: scenes/settings_menu/settings_menu.gd:305
+#: scenes/settings_menu/settings_menu.gd:259
 msgid "Video Decoding"
 msgstr "Videodekodierung"
 
-#: scenes/settings_menu/settings_menu.gd:306
+#: scenes/settings_menu/settings_menu.gd:260
 msgid "Smart Seek Threshold"
 msgstr "Schwellenwert für intelligentes Springen"
 
-#: scenes/settings_menu/settings_menu.gd:313
+#: scenes/settings_menu/settings_menu.gd:267
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
 "jumps but use more CPU."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:314
+#: scenes/settings_menu/settings_menu.gd:268
 msgid "Video Cache Size"
 msgstr "Video-Cache-Größe"
 
-#: scenes/settings_menu/settings_menu.gd:321
+#: scenes/settings_menu/settings_menu.gd:275
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:322
+#: scenes/settings_menu/settings_menu.gd:276
 msgid "Use proxies"
 msgstr "Proxys verwenden"
 
-#: scenes/settings_menu/settings_menu.gd:327
+#: scenes/settings_menu/settings_menu.gd:281
 msgid "Proxies save path"
 msgstr "Proxy-Speicherpfad"
 
-#: scenes/settings_menu/settings_menu.gd:332
+#: scenes/settings_menu/settings_menu.gd:286
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
 "again and deleted manually from the previous folder."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:337
-#: scenes/settings_menu/settings_menu.gd:338
+#: scenes/settings_menu/settings_menu.gd:291
+#: scenes/settings_menu/settings_menu.gd:292
 msgid "Extras"
 msgstr "Extras"
 
-#: scenes/settings_menu/settings_menu.gd:339
+#: scenes/settings_menu/settings_menu.gd:293
 msgid "Auto save"
 msgstr "Automatisch speichern"
 
-#: scenes/settings_menu/settings_menu.gd:353
+#: scenes/settings_menu/settings_menu.gd:347
+msgid "Modules"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:355
 #, fuzzy
 msgid "Video"
 msgstr "Video-codec"
 
-#: scenes/settings_menu/settings_menu.gd:354
+#: scenes/settings_menu/settings_menu.gd:356
 #, fuzzy
 msgid "Video settings"
 msgstr "Rendern-einstellungen"
 
-#: scenes/settings_menu/settings_menu.gd:367
+#: scenes/settings_menu/settings_menu.gd:369
 #, fuzzy
 msgid "Project framerate (fps)."
 msgstr "Projekt-Bildrate"
 
-#: scenes/settings_menu/settings_menu.gd:371
+#: scenes/settings_menu/settings_menu.gd:373
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr "Hintergrundfarbe"
 
-#: scenes/settings_menu/settings_menu.gd:376
+#: scenes/settings_menu/settings_menu.gd:378
 msgid "The background color when no clips are displayed."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:403 effects/text_effect_ui.gd:29
-msgid "Reset to default"
-msgstr "Auf Standard zurücksetzen"
-
-#: scenes/settings_menu/settings_menu.gd:659
+#: scenes/settings_menu/settings_menu.gd:661
 msgid "Press any key..."
 msgstr "Beliebige Taste drücken..."
 
@@ -967,149 +1091,6 @@ msgstr "Einstellungen suchen ..."
 #: scenes/settings_menu/settings_menu.tscn
 msgid "Close settings"
 msgstr "Einstellungen schließen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Render settings"
-msgstr "Rendern-einstellungen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render profile"
-msgstr "Renderprofil"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Save current presets as a custom render profile."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Save profile"
-msgstr "Profil speichern"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Set selected profile as the default render profile."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Set default"
-msgstr "Auf Standard zurücksetzen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Export path"
-msgstr "Exportpfad"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render video settings"
-msgstr "Video-Rendereinstellungen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Video codec"
-msgstr "Video-codec"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Quality"
-msgstr "Qualität"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Speed"
-msgstr "Geschwindigkeit"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Gop size"
-msgstr "GOP-Größe"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "B frames"
-msgstr "Keyframes"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render audio settings"
-msgstr "Audio-Rendereinstellungen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Audio codec"
-msgstr "Audiocodec"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-#, fuzzy
-msgid "Audio channels"
-msgstr "Audiocodec"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Multi-threading"
-msgstr "Multi-threading"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Threads"
-msgstr "Threads"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "The amount of threads you want to use for exporting your video."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render region"
-msgstr "Render-Bereich"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Create a low quality draft version of your video."
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Draft"
-msgstr "Entwurf"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Start render"
-msgstr "Rendern starten"
-
-#: scenes/render_options_panel/render_options_panel.gd:85
-msgid "Custom render profiles"
-msgstr "Benutzerdefinierte Renderprofile"
-
-#: scenes/render_options_panel/render_options_panel.gd:187
-msgid "Stereo"
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.gd:188
-msgid "Mono"
-msgstr ""
-
-#: scenes/render_options_panel/render_options_panel.gd:285
-msgid "Select export path"
-msgstr "Exportpfad auswählen"
-
-#: scenes/render_options_panel/render_options_panel.gd:396
-msgid "Overwrite file?"
-msgstr "Datei überschreiben?"
-
-#: scenes/render_options_panel/render_options_panel.gd:397
-msgid ""
-"A file already exists at the chosen export path. Do you want to overwrite it?"
-msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -1216,21 +1197,21 @@ msgstr ""
 msgid "Return"
 msgstr "Zurück"
 
-#: scenes/startup_screen/startup_screen.gd:80
+#: scenes/startup_screen/startup_screen.gd:78
 msgid "Image by"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:193
+#: scenes/startup_screen/startup_screen.gd:187
 #, fuzzy
 msgid "User presets"
 msgstr "Projekt speichern"
 
-#: scenes/startup_screen/startup_screen.gd:247
-#: scenes/startup_screen/startup_screen.gd:315 scripts/autoloads/project.gd:102
+#: scenes/startup_screen/startup_screen.gd:243
+#: scenes/startup_screen/startup_screen.gd:309 scripts/autoloads/project.gd:102
 msgid "GoZen project file"
 msgstr "GoZen Projektdatei"
 
-#: scenes/startup_screen/startup_screen.gd:313
+#: scenes/startup_screen/startup_screen.gd:307
 msgid "Select project save path"
 msgstr ""
 
@@ -1252,18 +1233,6 @@ msgstr "Type"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
-msgstr ""
-
-#: effects/text_effect_ui.gd:47
-msgid "Text ..."
-msgstr ""
-
-#: effects/text_effect_ui.gd:126
-msgid "Keyframes"
-msgstr "Keyframes"
-
-#: effects/visual/mask_ui.gd:27
-msgid "Clear Mask Points"
 msgstr ""
 
 #: scripts/autoloads/project.gd:52
@@ -1391,6 +1360,34 @@ msgstr "Dateien abgelegt"
 #: scripts/logic/file_logic.gd:356
 msgid "Files loading ..."
 msgstr "Dateien werden geladen ..."
+
+#~ msgid "Timeline"
+#~ msgstr "Zeitachse"
+
+#~ msgid "Timeline settings"
+#~ msgstr "Zeitleisten-Einstellungen"
+
+#, fuzzy
+#~ msgid "Default track amount"
+#~ msgstr "Standardanzahl der Tracks"
+
+#~ msgid "Track height"
+#~ msgstr "Spurhöhe"
+
+#~ msgid "Timeline controls"
+#~ msgstr "Zeitleistensteuerung"
+
+#~ msgid "Pause after dragging"
+#~ msgstr "Pausieren nach Ziehen"
+
+#~ msgid "Addons"
+#~ msgstr "Erweiterungen"
+
+#~ msgid "Show mode bar"
+#~ msgstr "Modusleiste anzeigen"
+
+#~ msgid "Keyframes"
+#~ msgstr "Keyframes"
 
 #~ msgid "Audio-take-over"
 #~ msgstr "Audioübernahme"

@@ -53,12 +53,10 @@ var default_profiles_count: int = 0
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
-	resolution_x_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
-	resolution_y_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
-	framerate_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
-	background_color_picker.color_changed.connect(_on_new_project_setting_changed.unbind(1))
-	@warning_ignore_restore("return_value_discarded")
+	if resolution_x_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
+	if resolution_y_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
+	if framerate_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
+	if background_color_picker.color_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
 
 	tab_container.current_tab = 0
 	advanced_options_button.button_pressed = false
@@ -102,8 +100,7 @@ func _set_recent_projects() -> void:
 				# We still add non-found projects in case people have projects
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
-				@warning_ignore("return_value_discarded")
-				new_paths.append(path)
+				if new_paths.append(path): Print.stack_append()
 				continue
 
 			var hbox: HBoxContainer = HBoxContainer.new()
@@ -115,8 +112,7 @@ func _set_recent_projects() -> void:
 			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-			@warning_ignore("return_value_discarded")
-			project_button.pressed.connect(open_project.bind(path))
+			if project_button.pressed.connect(open_project.bind(path)): Print.stack_connect()
 
 			delete_button.texture_normal = preload(Library.ICON_DELETE)
 			delete_button.ignore_texture_size = true
@@ -124,16 +120,14 @@ func _set_recent_projects() -> void:
 			delete_button.custom_minimum_size = Vector2i(18,0)
 			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-			@warning_ignore("return_value_discarded")
-			delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path))
+			if delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path)): Print.stack_connect()
 
 			hbox.add_child(delete_button)
 			hbox.add_child(project_button)
 
 			recent_projects_vbox.add_child(hbox)
 
-			@warning_ignore("return_value_discarded")
-			new_paths.append(path)
+			if new_paths.append(path): Print.stack_connect()
 		path = file.get_line()
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
@@ -214,7 +208,7 @@ func _set_new_project_defaults() -> void:
 
 	# Setting the advanced project settings.
 	background_color_picker.color = Color.BLACK
-	track_amount_spinbox.set_value_no_signal(Settings.get_tracks_amount())
+	track_amount_spinbox.set_value_no_signal(Settings.get_module_setting("core_timeline_panel", "tracks_amount", 6) as float)
 
 	_on_new_project_option_button_item_selected(0)
 	save_profile_preset_button.disabled = true
@@ -227,15 +221,15 @@ func _on_editor_settings_button_pressed() -> void:
 	Settings.open_settings_menu()
 
 
-func _on_image_author_meta_clicked(meta: Variant) -> void:  Utils.open_url(str(meta))
+func _on_image_author_meta_clicked(meta: Variant) -> void:  URL.open(str(meta))
 
 
-func _on_support_project_button_pressed() -> void: Utils.open_url("support")
-func _on_gozen_logo_button_pressed() -> void:	   Utils.open_url("site")
-func _on_site_button_pressed() -> void: 		   Utils.open_url("site")
-func _on_manual_button_pressed() -> void: 		   Utils.open_url("manual")
-func _on_tutorials_button_pressed() -> void: 	   Utils.open_url("tutorials")
-func _on_discord_server_button_pressed() -> void:  Utils.open_url("discord")
+func _on_support_project_button_pressed() -> void: URL.open("support")
+func _on_gozen_logo_button_pressed() -> void:	   URL.open("site")
+func _on_site_button_pressed() -> void: 		   URL.open("site")
+func _on_manual_button_pressed() -> void: 		   URL.open("manual")
+func _on_tutorials_button_pressed() -> void: 	   URL.open("tutorials")
+func _on_discord_server_button_pressed() -> void:  URL.open("discord")
 
 
 func _on_create_project_button_pressed() -> void:		 tab_container.current_tab = 1
@@ -249,8 +243,7 @@ func _on_open_project_button_pressed() -> void:
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	@warning_ignore("return_value_discarded")
-	dialog.file_selected.connect(open_project)
+	if dialog.file_selected.connect(open_project): Print.stack_connect()
 
 	add_child(dialog)
 	dialog.popup_centered()
@@ -279,7 +272,7 @@ func _on_create_new_project_button_pressed() -> void:
 		warning_label.visible = true
 		return
 
-	var request: Project.NewRequest = Project.NewRequest.new()
+	var request: RequestProjectNew = RequestProjectNew.new()
 	request.project_path = path
 	request.resolution = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
 	request.framerate = framerate_spinbox.value
@@ -295,7 +288,7 @@ func _on_create_new_project_button_pressed() -> void:
 
 
 func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
-	var request: Project.NewRequest = Project.NewRequest.new()
+	var request: RequestProjectNew = RequestProjectNew.new()
 	request.resolution = Settings.get_quick_create_horizontal_res()
 	request.framerate  = Settings.get_quick_create_horizontal_fps()
 	Project.new_project(request)
@@ -303,7 +296,7 @@ func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
 
 
 func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
-	var request: Project.NewRequest = Project.NewRequest.new()
+	var request: RequestProjectNew = RequestProjectNew.new()
 	request.resolution = Settings.get_quick_create_vertical_res()
 	request.framerate  = Settings.get_quick_create_vertical_fps()
 	Project.new_project(request)
@@ -317,8 +310,7 @@ func _on_project_path_button_pressed() -> void:
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	@warning_ignore("return_value_discarded")
-	dialog.file_selected.connect(_set_project_path)
+	if dialog.file_selected.connect(_set_project_path): Print.stack_connect()
 	dialog.ok_button_text = "Select"
 
 	add_child(dialog)
@@ -398,10 +390,9 @@ func _on_save_profile_preset_button_pressed() -> void:
 
 		dialog.queue_free()
 
-	@warning_ignore_start("return_value_discarded")
-	dialog.confirmed.connect(confirm_lambda)
-	line_edit.text_submitted.connect(func(_text: String) -> void: confirm_lambda.call())
-	@warning_ignore_restore("return_value_discarded")
+	if dialog.confirmed.connect(confirm_lambda): Print.stack_connect()
+	if line_edit.text_submitted.connect(func(_text: String) -> void:
+				confirm_lambda.call()): Print.stack_connect()
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2i(250, 80))

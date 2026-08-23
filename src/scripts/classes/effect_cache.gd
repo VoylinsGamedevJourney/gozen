@@ -7,19 +7,19 @@ var nickname: String
 var shader: RID
 var pipeline: RID
 
-var _effect: EffectVisual
+var _effect: Effect
 var _frame_nr: int = -1
 var _resolution: Vector2i
 
 
 
-func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: EffectVisual) -> void:
+func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: Effect) -> void:
 	nickname = effect.nickname
 	shader = device.shader_create_from_spirv(spirv)
 	pipeline = device.compute_pipeline_create(shader)
 
 
-func get_buffer_data(effect: EffectVisual, frame_nr: int, resolution: Vector2i, pass_index: int = 0) -> PackedByteArray:
+func get_buffer_data(effect: Effect, frame_nr: int, resolution: Vector2i, pass_index: int = 0) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
 	var processed_matrices: Array[Matrix.Type] = []
 
@@ -125,8 +125,10 @@ func _handle_matrix(type: Matrix.Type) -> PackedFloat32Array:
 
 
 func free_rids(device: RenderingDevice) -> void:
-	pipeline = Utils.cleanup_rid(device, pipeline)
-	shader = Utils.cleanup_rid(device, shader)
+	Utils.cleanup_rid(device, pipeline)
+	Utils.cleanup_rid(device, shader)
+	pipeline = RID()
+	shader = RID()
 
 
 func _pad_stream(stream_buffer: StreamPeerBuffer, alignment: int) -> void:

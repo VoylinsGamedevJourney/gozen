@@ -350,10 +350,10 @@ func _check_clip(track: int, new_frame_nr: int) -> bool:
 		return false
 	elif clip.track != track: # Track check.
 		return false
-	return Utils.in_range(new_frame_nr, clip.start, clip.end, false)
+	return Math.in_range(new_frame_nr, clip.start, clip.end, false)
 
 
-# --- Playback logic ---
+#--- Playback logic ---
 
 func on_play_pressed() -> void:
 	is_playing = false if frame_nr == Project.data.timeline_end else !is_playing
@@ -438,14 +438,14 @@ func finish_scrub() -> void:
 		_scrub_frame = -1
 
 
-# --- Audio handling ---
+#--- Audio handling ---
 
 func find_audio(frame: int, track: int) -> ClipData:
 	var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame)
 	return clip if clip and clip.type in AUDIO_TYPES else null
 
 
-# --- Video stuff ---
+#--- Video stuff ---
 
 func update_data(track: int) -> void:
 	var clip: ClipData = loaded_clips[track]
@@ -455,7 +455,7 @@ func update_data(track: int) -> void:
 
 	if clip.type == Type.TEXT:
 		var temp_file: TempFile = raw_data
-		var text_effect: EffectVisual = temp_file.text_effect
+		var text_effect: Effect = temp_file.text_effect
 
 		var text_data: String = text_effect.get_value(text_effect.params[0], clip_frame)
 		var text_font: String = text_effect.get_value(text_effect.params[1], clip_frame)
@@ -501,7 +501,7 @@ func update_data(track: int) -> void:
 
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	elif clip.type == Type.PCK:
-		var module: GoZenModule = raw_data
+		var module: GoZenModuleScene = raw_data
 		var pck_viewport: SubViewport = track_viewports[track]
 
 		@warning_ignore_start("unsafe_property_access")
@@ -531,7 +531,7 @@ func update_data(track: int) -> void:
 			var pck_effect_params: Dictionary = {}
 
 			# Gathering the current values for the params.
-			for effect: EffectVisual in clip.effects.video:
+			for effect: Effect in clip.effects.video:
 				if effect.id == "pck_effect_params":
 					for param: EffectParam in effect.params:
 						pck_effect_params[param.id] = effect.get_value(param, clip_frame)
@@ -561,11 +561,11 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	var clip_frame: int = frame_nr - clip.start
 	var relative_frame: int = int(clip_frame * clip.speed) + clip.begin
 
-	var fade_in: float = Utils.calculate_fade_in(clip_frame, clip)
-	var fade_out: float = Utils.calculate_fade_out(clip_frame, clip)
-	var transition_left: EffectVisual = clip.effects.transition_left
-	var transition_right: EffectVisual = clip.effects.transition_right
-	var effects: Array[EffectVisual] = clip.effects.video
+	var fade_in: float = Math.calculate_fade_in(clip_frame, clip)
+	var fade_out: float = Math.calculate_fade_out(clip_frame, clip)
+	var transition_left: Effect = clip.effects.transition_left
+	var transition_right: Effect = clip.effects.transition_right
+	var effects: Array[Effect] = clip.effects.video
 	load_video_frame(clip, relative_frame, instance_index)
 
 	if clip.type == Type.TEXT:
@@ -605,9 +605,9 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 	_apply_track_blend_mode(track_id, effects, clip_frame)
 
 
-func _apply_track_blend_mode(id: int, effects: Array[EffectVisual], clip_frame: int) -> void:
+func _apply_track_blend_mode(id: int, effects: Array[Effect], clip_frame: int) -> void:
 	var target_blend_mode: int = 0
-	for effect: EffectVisual in effects:
+	for effect: Effect in effects:
 		if effect.id == "blend_mode" and effect.is_enabled:
 			target_blend_mode = effect.get_value(effect.params[0], clip_frame)
 			break
@@ -619,7 +619,7 @@ func _apply_track_blend_mode(id: int, effects: Array[EffectVisual], clip_frame: 
 		view_textures[id].material = new_material
 
 
-# --- Setters ---
+#--- Setters ---
 
 func set_is_playing(value: bool) -> void:
 	if value:
@@ -668,7 +668,7 @@ func set_background_color(color: Color) -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
-# --- Playback helpers ---
+#--- Playback helpers ---
 
 func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
 	if !clip or clip.type != Type.VIDEO: return

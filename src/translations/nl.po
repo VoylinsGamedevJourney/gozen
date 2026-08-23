@@ -6,331 +6,725 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: scenes/effects_panel/effects_panel.gd:48
-msgid "Enable clip audio."
-msgstr "Clip audio inschakelen."
+#: modules/core_effects/visual/ui/mask_clear_button.gd:10
+msgid "Clear Mask Points"
+msgstr "Maskerpunten wissen"
 
-#: scenes/effects_panel/effects_panel.gd:268
-msgid "Left Transition"
-msgstr "Linker overgang"
-
-#: scenes/effects_panel/effects_panel.gd:277
-#: scenes/effects_panel/effects_panel.gd:347
-msgid "Visual Fade (frames)"
-msgstr "Visuele fade (frames)"
-
-#: scenes/effects_panel/effects_panel.gd:295
-#: scenes/effects_panel/effects_panel.gd:365
-msgid "Audio Fade (frames)"
-msgstr "Audio fade (frames)"
-
-#: scenes/effects_panel/effects_panel.gd:313
-#: scenes/effects_panel/effects_panel.gd:381
-msgid "Style"
-msgstr "Stijl"
-
-#: scenes/effects_panel/effects_panel.gd:338
-msgid "Right Transition"
-msgstr "Rechter overgang"
-
-#: scenes/effects_panel/effects_panel.gd:464
-msgid "Audio Track"
-msgstr "Audiotrack"
-
-#: scenes/effects_panel/effects_panel.gd:546
-msgid "Presets & Options"
-msgstr "Voorinstellingen en opties"
-
-#: scenes/effects_panel/effects_panel.gd:663 effects/text_effect_ui.gd:104
-msgid "Reset parameter"
-msgstr "Parameter resetten"
-
-#: scenes/effects_panel/effects_panel.gd:729
-#: scenes/effects_panel/effects_panel.gd:1326
-msgid "Default"
-msgstr "Standaard"
-
-#: scenes/effects_panel/effects_panel.gd:760
-msgid "Left"
-msgstr "Links"
-
-#: scenes/effects_panel/effects_panel.gd:761
-#: scenes/effects_panel/effects_panel.gd:765
-msgid "Center"
-msgstr "Midden"
-
-#: scenes/effects_panel/effects_panel.gd:762
-msgid "Right"
-msgstr "Rechts"
-
-#: scenes/effects_panel/effects_panel.gd:764
-msgid "Top"
-msgstr "Boven"
-
-#: scenes/effects_panel/effects_panel.gd:766
-msgid "Bottom"
-msgstr "Onder"
-
-#: scenes/effects_panel/effects_panel.gd:768
-msgid "Mix (Normal)"
-msgstr "Mix (Normaal)"
-
-#: scenes/effects_panel/effects_panel.gd:769
-msgid "Add"
-msgstr "Toevoegen"
-
-#: scenes/effects_panel/effects_panel.gd:770
-msgid "Subtract"
-msgstr "Aftrekken"
-
-#: scenes/effects_panel/effects_panel.gd:771
-msgid "Multiply"
-msgstr "Vermenigvuldigen"
-
-#: scenes/effects_panel/effects_panel.gd:772
-msgid "Premultiplied Alpha"
-msgstr "Premultiplied Alpha"
-
-#: scenes/effects_panel/effects_panel.gd:774
-msgid "Thin"
-msgstr "Dun"
-
-#: scenes/effects_panel/effects_panel.gd:775
-msgid "Extra Light"
-msgstr "Extra licht"
-
-#: scenes/effects_panel/effects_panel.gd:776
-msgid "Light"
-msgstr "Licht"
-
-#: scenes/effects_panel/effects_panel.gd:777
-msgid "Regular"
-msgstr "Normaal"
-
-#: scenes/effects_panel/effects_panel.gd:778
-msgid "Medium"
-msgstr "Medium"
-
-#: scenes/effects_panel/effects_panel.gd:779
-msgid "Semi Bold"
-msgstr "Halfvet"
-
-#: scenes/effects_panel/effects_panel.gd:780
-msgid "Bold"
-msgstr "Vet"
-
-#: scenes/effects_panel/effects_panel.gd:781
-msgid "Extra Bold"
-msgstr "Extra vet"
-
-#: scenes/effects_panel/effects_panel.gd:782
-msgid "Black"
-msgstr "Zwart"
-
-#: scenes/effects_panel/effects_panel.gd:947
-msgid "Link X and Y"
-msgstr "Koppel X en Y"
-
-#: scenes/effects_panel/effects_panel.gd:1183
-msgid "Add effects"
-msgstr "Effecten toevoegen"
-
-#: scenes/effects_panel/effects_panel.gd:1263
-msgid "Presets"
-msgstr "Voorinstellingen"
-
-#: scenes/effects_panel/effects_panel.gd:1282
-msgid "Reset effect"
-msgstr "Effect resetten"
-
-#: scenes/effects_panel/effects_panel.gd:1295
-msgid "Delete effect"
-msgstr "Effect verwijderen"
-
-#: scenes/effects_panel/effects_panel.gd:1309
-msgid "Save as preset..."
-msgstr "Opslaan als voorinstelling..."
-
-#: scenes/effects_panel/effects_panel.gd:1382
-#: scenes/startup_screen/startup_screen.gd:363
-msgid "Save preset"
-msgstr "Voorinstelling opslaan"
-
-#: scenes/effects_panel/effects_panel.gd:1383
-#: scenes/startup_screen/startup_screen.gd:365
-msgid "Preset name"
-msgstr "Naam van voorinstelling"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Transitions"
-msgstr "Overgangen"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Visual effects"
-msgstr "Visuele effecten"
-
-#: scenes/effects_panel/effects_panel.tscn
-msgid "Audio effects"
-msgstr "Audio effecten"
-
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
 msgstr "Ga naar de vorige hoofdstukmarkering."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Start project playback."
 msgstr "Project afspelen starten."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Pause project playback."
 msgstr "Project afspelen pauzeren."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Go to next chapter marker."
 msgstr "Ga naar de volgende hoofdstukmarkering."
 
-#: scenes/view_panel/view_panel.tscn
+#: modules/core_view_panel/view_panel.tscn
 msgid "Show video safety guidelines on top of the project preview."
 msgstr "Toon videoveiligheidsrichtlijnen boven op het projectvoorbeeld."
 
-#: scenes/view_panel/view_panel.gd:63
+#: modules/core_view_panel/view_panel.gd:63
 msgid "Jump to frame"
 msgstr "Ga naar frame"
 
-#: scenes/view_panel/view_panel.gd:109
+#: modules/core_view_panel/view_panel.gd:109
 msgid "Frame"
 msgstr "Frame"
 
-#: scenes/view_panel/project_view_texture.gd:131
+#: modules/core_view_panel/project_view_texture.gd:129
 msgid "Save screenshot ..."
 msgstr "Screenshot opslaan ..."
 
-#: scenes/view_panel/project_view_texture.gd:132
+#: modules/core_view_panel/project_view_texture.gd:130
 msgid "Save screenshot to project ..."
 msgstr "Screenshot opslaan in project ..."
 
-#: scenes/editor/editor.gd:232
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render settings"
+msgstr "Render instellingen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render profile"
+msgstr "Renderprofiel"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Save current presets as a custom render profile."
+msgstr "Sla huidige voorinstellingen op als een aangepast renderprofiel."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Save profile"
+msgstr "Profiel opslaan"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Set selected profile as the default render profile."
+msgstr "Stel het geselecteerde profiel in als standaard renderprofiel."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Set default"
+msgstr "Als standaard instellen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Export path"
+msgstr "Exportpad"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render video settings"
+msgstr "Video-renderinstellingen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Video codec"
+msgstr "Videocodec"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15. Default is set to 18 Used for adjusting "
+"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
+"worst quality, 18 not really noticable."
+msgstr ""
+"Past de CRF (Constant Rate Factor) aan. Laagste kwaliteit is 50, hoogste "
+"kwaliteit is 15. Standaard is 18. Wordt gebruikt om de bitrate aan te "
+"passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 is het best, 51 "
+"het slechtst, 18 is nauwelijks merkbaar."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Quality"
+msgstr "Kwaliteit"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Adjusts the speed for encoding H264. Setting the speed too high might have a "
+"negative impact on the final video quality."
+msgstr ""
+"Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een "
+"negatieve invloed hebben op de uiteindelijke videokwaliteit."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Speed"
+msgstr "Snelheid"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid ""
+"Group Of Pictures. Higher value is better for compression compared to a "
+"lower value. But how higher the value is, the less precise it will get for "
+"seeking and scrubbing through the video playback. Put to a low value if you "
+"intend to use the rendered video for editing."
+msgstr ""
+"Group Of Pictures. Een hogere waarde is beter voor compressie. Maar hoe "
+"hoger de waarde, hoe minder nauwkeurig het zoeken en navigeren door de video "
+"zal zijn. Zet op een lage waarde als je de gerenderde video wilt bewerken."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Gop size"
+msgstr "GOP-grootte"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "B frames"
+msgstr "B-frames"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render audio settings"
+msgstr "Audio-renderinstellingen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Audio codec"
+msgstr "Audiocodec"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Audio channels"
+msgstr "Audiokanalen"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Multi-threading"
+msgstr "Multi-threading"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Threads"
+msgstr "Threads"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "The amount of threads you want to use for exporting your video."
+msgstr "Het aantal threads dat je wilt gebruiken voor het exporteren."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Render region"
+msgstr "Renderregio"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Create a low quality draft version of your video."
+msgstr "Maak een conceptversie van lage kwaliteit van je video."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Draft"
+msgstr "Concept"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Start render"
+msgstr "Start renderen"
+
+#: modules/core_render_options_panel/render_options_panel.gd:85
+msgid "Custom render profiles"
+msgstr "Aangepaste renderprofielen"
+
+#: modules/core_render_options_panel/render_options_panel.gd:185
+#: scenes/replace_audio_popup/replace_audio_popup.gd:113
+msgid "None"
+msgstr "Geen"
+
+#: modules/core_render_options_panel/render_options_panel.gd:187
+msgid "Stereo"
+msgstr "Stereo"
+
+#: modules/core_render_options_panel/render_options_panel.gd:188
+msgid "Mono"
+msgstr "Mono"
+
+#: modules/core_render_options_panel/render_options_panel.gd:285
+msgid "Select export path"
+msgstr "Selecteer exportpad"
+
+#: modules/core_render_options_panel/render_options_panel.gd:396
+msgid "Overwrite file?"
+msgstr "Bestand overschrijven?"
+
+#: modules/core_render_options_panel/render_options_panel.gd:397
+msgid ""
+"A file already exists at the chosen export path. Do you want to overwrite it?"
+msgstr ""
+"Er bestaat al een bestand op het gekozen exportpad. Wil je het overschrijven?"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Search files ..."
+msgstr "Bestanden zoeken ..."
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add files"
+msgstr "Bestanden toevoegen"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add text"
+msgstr "Tekst toevoegen"
+
+#: modules/core_file_panel/file_panel.tscn
+msgid "Add color"
+msgstr "Kleur toevoegen"
+
+#: modules/core_file_panel/file_panel.gd:102
+msgid "Add files ..."
+msgstr "Bestanden toevoegen"
+
+#: modules/core_file_panel/file_panel.gd:120
+msgid "Rename"
+msgstr "Hernoemen"
+
+#: modules/core_file_panel/file_panel.gd:121
+msgid "Reload"
+msgstr "Herladen"
+
+#: modules/core_file_panel/file_panel.gd:122 scenes/editor/editor.gd:458
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: modules/core_file_panel/file_panel.gd:126
+msgid "Image options"
+msgstr "Afbeeldingopties"
+
+#: modules/core_file_panel/file_panel.gd:127
+msgid "Save image as ..."
+msgstr "Afbeelding opslaan als ..."
+
+#: modules/core_file_panel/file_panel.gd:129
+#: modules/core_timeline_panel/timeline_panel.gd:828
+msgid "Video options"
+msgstr "Video-opties"
+
+#: modules/core_file_panel/file_panel.gd:133
+msgid "Create proxy"
+msgstr "Proxy aanmaken"
+
+#: modules/core_file_panel/file_panel.gd:135
+msgid "Re-create proxy"
+msgstr "Proxy opnieuw aanmaken"
+
+#: modules/core_file_panel/file_panel.gd:136
+msgid "Remove proxy"
+msgstr "Proxy verwijderen"
+
+#: modules/core_file_panel/file_panel.gd:137
+msgid "Replace audio"
+msgstr "Audio vervangen"
+
+#: modules/core_file_panel/file_panel.gd:138
+msgid "Extract audio to file ..."
+msgstr "Audio exporteren naar bestand ..."
+
+#: modules/core_file_panel/file_panel.gd:140
+msgid "Text options"
+msgstr "Tekstopties"
+
+#: modules/core_file_panel/file_panel.gd:141
+msgid "Duplicate"
+msgstr "Dupliceren"
+
+#: modules/core_file_panel/file_panel.gd:144
+msgid "Save file as ..."
+msgstr "Bestand opslaan als ..."
+
+#: modules/core_file_panel/file_panel.gd:148
+msgid "Open in file manager"
+msgstr "Openen in bestandsbeheer"
+
+#: modules/core_file_panel/file_panel.gd:149
+msgid "Copy file path"
+msgstr "Pad kopiëren"
+
+#: modules/core_file_panel/file_panel.gd:151
+msgid "Folder options"
+msgstr "Mapopties"
+
+#: modules/core_file_panel/file_panel.gd:152
+#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:537
+msgid "Create folder"
+msgstr "Map aanmaken"
+
+#: modules/core_file_panel/file_panel.gd:158
+msgid "Rename folder"
+msgstr "Map hernoemen"
+
+#: modules/core_file_panel/file_panel.gd:159
+msgid "Delete folder"
+msgstr "Map verwijderen"
+
+#: modules/core_file_panel/file_panel.gd:198
+#: scenes/rename_file/rename_file.tscn
+msgid "Rename file"
+msgstr "Bestand hernoemen"
+
+#: modules/core_file_panel/file_panel.gd:203
+#: modules/core_file_panel/file_panel.gd:542
+msgid "Folder name"
+msgstr "Mapnaam"
+
+#: modules/core_file_panel/file_panel.gd:258
+msgid "Save image to file"
+msgstr "Afbeelding opslaan naar bestand"
+
+#: modules/core_file_panel/file_panel.gd:271
+msgid "Save video audio to WAV"
+msgstr "Video-audio opslaan als WAV"
+
+#: modules/core_file_panel/file_panel.gd:395
+msgid "(Loading thumbnail...)"
+msgstr "(Thumbnail laden...)"
+
+#: modules/core_markers_panel/markers_panel.tscn
+#: scenes/settings_menu/settings_menu.gd:112
+#: scenes/settings_menu/settings_menu.gd:289
+msgid "Markers"
+msgstr "Markeringen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:144
+msgid "Duplication failed"
+msgstr "Dupliceren mislukt"
+
+#: modules/core_timeline_panel/timeline_panel.gd:145
+msgid ""
+"Could not duplicate %d clip(s) because there was not enough empty space."
+msgstr "Kon %d clip(s) niet dupliceren omdat er niet genoeg lege ruimte was."
+
+#: modules/core_timeline_panel/timeline_panel.gd:255
+msgid "Remove empty space"
+msgstr "Lege ruimte verwijderen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:257
+msgid "Track options"
+msgstr "Track opties"
+
+#: modules/core_timeline_panel/timeline_panel.gd:260
+msgid "Add track"
+msgstr "Track toevoegen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:262
+msgid "Remove track"
+msgstr "Track verwijderen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:266
+msgid "Visible"
+msgstr "Zichtbaar"
+
+#: modules/core_timeline_panel/timeline_panel.gd:269
+msgid "Muted"
+msgstr "Gedempt"
+
+#: modules/core_timeline_panel/timeline_panel.gd:272
+msgid "Locked"
+msgstr "Vergrendeld"
+
+#: modules/core_timeline_panel/timeline_panel.gd:818
+msgid "Delete clip"
+msgstr "Clip verwijderen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:819
+msgid "Split clip"
+msgstr "Clip splitsen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:823
+#: modules/core_timeline_panel/timeline_panel.gd:886
+msgid "Change speed"
+msgstr "Snelheid wijzigen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:825
+msgid "Reset speed"
+msgstr "Snelheid herstellen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:829
+msgid "Clip replace audio"
+msgstr "Audio van clip vervangen"
+
+#: modules/core_timeline_panel/timeline_panel.gd:842
+msgid "Select Audio Track"
+msgstr "Audiotrack selecteren"
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Select mode: Used for selecting clips on the timeline."
+msgstr "Selectiemodus: wordt gebruikt om clips op de tijdlijn te selecteren."
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid ""
+"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"clicking."
+msgstr ""
+"Snijmodus: hiermee kun je clips knippen op de positie van je muiscursor door "
+"te klikken."
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Turn group selection on/off for clips in the timeline."
+msgstr "Groepsselectie voor clips op de tijdlijn in-/uitschakelen."
+
+#: modules/core_timeline_panel/timeline.tscn
+msgid "Turn clip snapping on/off when moving clips."
+msgstr "Snappen van clips bij het verplaatsen in-/uitschakelen."
+
+#: modules/core_timeline_panel/track_controls.gd:69
+msgid "Toggle track visibility"
+msgstr "Trackzichtbaarheid schakelen"
+
+#: modules/core_timeline_panel/track_controls.gd:87
+msgid "Mute track"
+msgstr "Track dempen"
+
+#: modules/core_effects_panel/effects_panel.gd:53
+#, fuzzy
+msgid "Enable clip visuals."
+msgstr "Clip audio inschakelen."
+
+#: modules/core_effects_panel/effects_panel.gd:57
+msgid "Enable clip audio."
+msgstr "Clip audio inschakelen."
+
+#: modules/core_effects_panel/effects_panel.gd:290
+msgid "Left Transition"
+msgstr "Linker overgang"
+
+#: modules/core_effects_panel/effects_panel.gd:299
+#: modules/core_effects_panel/effects_panel.gd:369
+msgid "Visual Fade (frames)"
+msgstr "Visuele fade (frames)"
+
+#: modules/core_effects_panel/effects_panel.gd:317
+#: modules/core_effects_panel/effects_panel.gd:387
+msgid "Audio Fade (frames)"
+msgstr "Audio fade (frames)"
+
+#: modules/core_effects_panel/effects_panel.gd:335
+#: modules/core_effects_panel/effects_panel.gd:403
+msgid "Style"
+msgstr "Stijl"
+
+#: modules/core_effects_panel/effects_panel.gd:360
+msgid "Right Transition"
+msgstr "Rechter overgang"
+
+#: modules/core_effects_panel/effects_panel.gd:496
+msgid "Audio Track"
+msgstr "Audiotrack"
+
+#: modules/core_effects_panel/effects_panel.gd:590
+msgid "Presets & Options"
+msgstr "Voorinstellingen en opties"
+
+#: modules/core_effects_panel/effects_panel.gd:625
+#: scenes/settings_menu/settings_menu.gd:405
+msgid "Reset to default"
+msgstr "Terugzetten naar standaard"
+
+#: modules/core_effects_panel/effects_panel.gd:757
+msgid "Reset parameter"
+msgstr "Parameter resetten"
+
+#: modules/core_effects_panel/effects_panel.gd:824
+#: modules/core_effects_panel/effects_panel.gd:1440
+msgid "Default"
+msgstr "Standaard"
+
+#: modules/core_effects_panel/effects_panel.gd:840
+msgid "Text ..."
+msgstr "Tekst ..."
+
+#: modules/core_effects_panel/effects_panel.gd:866
+msgid "Left"
+msgstr "Links"
+
+#: modules/core_effects_panel/effects_panel.gd:867
+#: modules/core_effects_panel/effects_panel.gd:871
+msgid "Center"
+msgstr "Midden"
+
+#: modules/core_effects_panel/effects_panel.gd:868
+msgid "Right"
+msgstr "Rechts"
+
+#: modules/core_effects_panel/effects_panel.gd:870
+msgid "Top"
+msgstr "Boven"
+
+#: modules/core_effects_panel/effects_panel.gd:872
+msgid "Bottom"
+msgstr "Onder"
+
+#: modules/core_effects_panel/effects_panel.gd:874
+msgid "Mix (Normal)"
+msgstr "Mix (Normaal)"
+
+#: modules/core_effects_panel/effects_panel.gd:875
+msgid "Add"
+msgstr "Toevoegen"
+
+#: modules/core_effects_panel/effects_panel.gd:876
+msgid "Subtract"
+msgstr "Aftrekken"
+
+#: modules/core_effects_panel/effects_panel.gd:877
+msgid "Multiply"
+msgstr "Vermenigvuldigen"
+
+#: modules/core_effects_panel/effects_panel.gd:878
+msgid "Premultiplied Alpha"
+msgstr "Premultiplied Alpha"
+
+#: modules/core_effects_panel/effects_panel.gd:880
+msgid "Thin"
+msgstr "Dun"
+
+#: modules/core_effects_panel/effects_panel.gd:881
+msgid "Extra Light"
+msgstr "Extra licht"
+
+#: modules/core_effects_panel/effects_panel.gd:882
+msgid "Light"
+msgstr "Licht"
+
+#: modules/core_effects_panel/effects_panel.gd:883
+msgid "Regular"
+msgstr "Normaal"
+
+#: modules/core_effects_panel/effects_panel.gd:884
+msgid "Medium"
+msgstr "Medium"
+
+#: modules/core_effects_panel/effects_panel.gd:885
+msgid "Semi Bold"
+msgstr "Halfvet"
+
+#: modules/core_effects_panel/effects_panel.gd:886
+msgid "Bold"
+msgstr "Vet"
+
+#: modules/core_effects_panel/effects_panel.gd:887
+msgid "Extra Bold"
+msgstr "Extra vet"
+
+#: modules/core_effects_panel/effects_panel.gd:888
+msgid "Black"
+msgstr "Zwart"
+
+#: modules/core_effects_panel/effects_panel.gd:1054
+msgid "Link X and Y"
+msgstr "Koppel X en Y"
+
+#: modules/core_effects_panel/effects_panel.gd:1273
+msgid "Add effects"
+msgstr "Effecten toevoegen"
+
+#: modules/core_effects_panel/effects_panel.gd:1377
+msgid "Presets"
+msgstr "Voorinstellingen"
+
+#: modules/core_effects_panel/effects_panel.gd:1396
+msgid "Reset effect"
+msgstr "Effect resetten"
+
+#: modules/core_effects_panel/effects_panel.gd:1409
+msgid "Delete effect"
+msgstr "Effect verwijderen"
+
+#: modules/core_effects_panel/effects_panel.gd:1423
+msgid "Save as preset..."
+msgstr "Opslaan als voorinstelling..."
+
+#: modules/core_effects_panel/effects_panel.gd:1496
+#: scenes/startup_screen/startup_screen.gd:356
+msgid "Save preset"
+msgstr "Voorinstelling opslaan"
+
+#: modules/core_effects_panel/effects_panel.gd:1497
+#: scenes/startup_screen/startup_screen.gd:358
+msgid "Preset name"
+msgstr "Naam van voorinstelling"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Transitions"
+msgstr "Overgangen"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Visual effects"
+msgstr "Visuele effecten"
+
+#: modules/core_effects_panel/effects_panel.tscn
+msgid "Audio effects"
+msgstr "Audio effecten"
+
+#: modules/core_effects_panel/effects_panel.tscn
+#, fuzzy
+msgid "Module settings"
+msgstr "Instellingen sluiten"
+
+#: scenes/editor/editor.gd:231
 msgid "Save project"
 msgstr "Project opslaan"
 
-#: scenes/editor/editor.gd:233 scripts/autoloads/project.gd:100
+#: scenes/editor/editor.gd:232 scripts/autoloads/project.gd:100
 msgid "Save project as ..."
 msgstr "Project opslaan als ..."
 
-#: scenes/editor/editor.gd:234
+#: scenes/editor/editor.gd:233
 msgid "Archive project ..."
 msgstr "Project archiveren ..."
 
-#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:245 scripts/autoloads/project.gd:268
+#: scenes/editor/editor.gd:235 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:241 scripts/autoloads/project.gd:268
 msgid "Open project"
 msgstr "Project openen"
 
-#: scenes/editor/editor.gd:237 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:236 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "Recente projecten"
 
-#: scenes/editor/editor.gd:239 scenes/settings_menu/settings_menu.gd:351
+#: scenes/editor/editor.gd:238 scenes/settings_menu/settings_menu.gd:353
 msgid "Project settings"
 msgstr "Projectinstellingen"
 
-#: scenes/editor/editor.gd:240
+#: scenes/editor/editor.gd:239
 msgid "Quit"
 msgstr "Afsluiten"
 
-#: scenes/editor/editor.gd:266
+#: scenes/editor/editor.gd:265
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: scenes/editor/editor.gd:267
+#: scenes/editor/editor.gd:266
 msgid "Redo"
 msgstr "Opnieuw uitvoeren"
 
-#: scenes/editor/editor.gd:288
+#: scenes/editor/editor.gd:287
 msgid "Save workspace"
 msgstr "Werkruimte opslaan"
 
-#: scenes/editor/editor.gd:289 scenes/editor/editor.gd:391
+#: scenes/editor/editor.gd:288 scenes/editor/editor.gd:390
 msgid "New workspace"
 msgstr "Nieuwe werkruimte"
 
-#: scenes/editor/editor.gd:291 scenes/editor/editor.gd:309
+#: scenes/editor/editor.gd:290 scenes/editor/editor.gd:308
 msgid "Show panel titles"
 msgstr "Paneeltitels weergeven"
 
-#: scenes/editor/editor.gd:292
+#: scenes/editor/editor.gd:291
 msgid "Panels"
 msgstr "Panelen"
 
-#: scenes/editor/editor.gd:307
+#: scenes/editor/editor.gd:306
 msgid "Hide panel titles"
 msgstr "Paneeltitels verbergen"
 
-#: scenes/editor/editor.gd:341 scenes/settings_menu/settings_menu.gd:105
+#: scenes/editor/editor.gd:340 scenes/settings_menu/settings_menu.gd:105
 #: scenes/settings_menu/settings_menu.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "Editor-instellingen"
 
-#: scenes/editor/editor.gd:342
+#: scenes/editor/editor.gd:341
 msgid "Module manager"
 msgstr "Modulebeheer"
 
-#: scenes/editor/editor.gd:344
+#: scenes/editor/editor.gd:343
 msgid "Command bar"
 msgstr "Opdrachtbalk"
 
-#: scenes/editor/editor.gd:365
+#: scenes/editor/editor.gd:364
 msgid "Report bug"
 msgstr "Probleem melden"
 
-#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:365 scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "Handleiding"
 
-#: scenes/editor/editor.gd:367 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:366 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "Tutorials"
 
-#: scenes/editor/editor.gd:368 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:367 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:370 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:369 scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "Website"
 
-#: scenes/editor/editor.gd:371 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:370 scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr "Steun GoZen"
 
-#: scenes/editor/editor.gd:372 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:371 scenes/about_gozen/about_gozen.tscn
 msgid "About GoZen"
 msgstr "Over GoZen"
 
-#: scenes/editor/editor.gd:393
+#: scenes/editor/editor.gd:392
 msgid "Workspace name"
 msgstr "Naam van werkruimte"
 
-#: scenes/editor/editor.gd:453
+#: scenes/editor/editor.gd:452
 msgid "Move Left"
 msgstr "Naar links verplaatsen"
 
-#: scenes/editor/editor.gd:456
+#: scenes/editor/editor.gd:455
 msgid "Move Right"
 msgstr "Naar rechts verplaatsen"
 
-#: scenes/editor/editor.gd:459 scenes/file_panel/file_panel.gd:122
-msgid "Delete"
-msgstr "Verwijderen"
-
-#: scenes/editor/editor.gd:506
+#: scenes/editor/editor.gd:505
 msgid "Delete Workspace"
 msgstr "Werkruimte verwijderen"
 
-#: scenes/editor/editor.gd:507
+#: scenes/editor/editor.gd:506
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr "Weet je zeker dat je de werkruimte '%s' wilt verwijderen?"
 
@@ -348,218 +742,6 @@ msgstr "Voer de naam van het effect in ..."
 msgid "Close popup"
 msgstr "Venster sluiten"
 
-#: scenes/file_panel/file_panel.tscn
-msgid "Search files ..."
-msgstr "Bestanden zoeken ..."
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add files"
-msgstr "Bestanden toevoegen"
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add text"
-msgstr "Tekst toevoegen"
-
-#: scenes/file_panel/file_panel.tscn
-msgid "Add color"
-msgstr "Kleur toevoegen"
-
-#: scenes/file_panel/file_panel.gd:102
-msgid "Add files ..."
-msgstr "Bestanden toevoegen"
-
-#: scenes/file_panel/file_panel.gd:120
-msgid "Rename"
-msgstr "Hernoemen"
-
-#: scenes/file_panel/file_panel.gd:121
-msgid "Reload"
-msgstr "Herladen"
-
-#: scenes/file_panel/file_panel.gd:126
-msgid "Image options"
-msgstr "Afbeeldingopties"
-
-#: scenes/file_panel/file_panel.gd:127
-msgid "Save image as ..."
-msgstr "Afbeelding opslaan als ..."
-
-#: scenes/file_panel/file_panel.gd:129 scenes/timeline/timeline_panel.gd:830
-msgid "Video options"
-msgstr "Video-opties"
-
-#: scenes/file_panel/file_panel.gd:133
-msgid "Create proxy"
-msgstr "Proxy aanmaken"
-
-#: scenes/file_panel/file_panel.gd:135
-msgid "Re-create proxy"
-msgstr "Proxy opnieuw aanmaken"
-
-#: scenes/file_panel/file_panel.gd:136
-msgid "Remove proxy"
-msgstr "Proxy verwijderen"
-
-#: scenes/file_panel/file_panel.gd:137
-msgid "Replace audio"
-msgstr "Audio vervangen"
-
-#: scenes/file_panel/file_panel.gd:138
-msgid "Extract audio to file ..."
-msgstr "Audio exporteren naar bestand ..."
-
-#: scenes/file_panel/file_panel.gd:140
-msgid "Text options"
-msgstr "Tekstopties"
-
-#: scenes/file_panel/file_panel.gd:141
-msgid "Duplicate"
-msgstr "Dupliceren"
-
-#: scenes/file_panel/file_panel.gd:144
-msgid "Save file as ..."
-msgstr "Bestand opslaan als ..."
-
-#: scenes/file_panel/file_panel.gd:148
-msgid "Open in file manager"
-msgstr "Openen in bestandsbeheer"
-
-#: scenes/file_panel/file_panel.gd:149
-msgid "Copy file path"
-msgstr "Pad kopiëren"
-
-#: scenes/file_panel/file_panel.gd:151
-msgid "Folder options"
-msgstr "Mapopties"
-
-#: scenes/file_panel/file_panel.gd:152 scenes/file_panel/file_panel.gd:155
-#: scenes/file_panel/file_panel.gd:537
-msgid "Create folder"
-msgstr "Map aanmaken"
-
-#: scenes/file_panel/file_panel.gd:158
-msgid "Rename folder"
-msgstr "Map hernoemen"
-
-#: scenes/file_panel/file_panel.gd:159
-msgid "Delete folder"
-msgstr "Map verwijderen"
-
-#: scenes/file_panel/file_panel.gd:198 scenes/rename_file/rename_file.tscn
-msgid "Rename file"
-msgstr "Bestand hernoemen"
-
-#: scenes/file_panel/file_panel.gd:203 scenes/file_panel/file_panel.gd:542
-msgid "Folder name"
-msgstr "Mapnaam"
-
-#: scenes/file_panel/file_panel.gd:258
-msgid "Save image to file"
-msgstr "Afbeelding opslaan naar bestand"
-
-#: scenes/file_panel/file_panel.gd:271
-msgid "Save video audio to WAV"
-msgstr "Video-audio opslaan als WAV"
-
-#: scenes/file_panel/file_panel.gd:395
-msgid "(Loading thumbnail...)"
-msgstr "(Thumbnail laden...)"
-
-#: scenes/timeline/timeline_panel.gd:145
-msgid "Duplication failed"
-msgstr "Dupliceren mislukt"
-
-#: scenes/timeline/timeline_panel.gd:146
-msgid ""
-"Could not duplicate %d clip(s) because there was not enough empty space."
-msgstr "Kon %d clip(s) niet dupliceren omdat er niet genoeg lege ruimte was."
-
-#: scenes/timeline/timeline_panel.gd:255
-msgid "Remove empty space"
-msgstr "Lege ruimte verwijderen"
-
-#: scenes/timeline/timeline_panel.gd:257
-msgid "Track options"
-msgstr "Track opties"
-
-#: scenes/timeline/timeline_panel.gd:260
-msgid "Add track"
-msgstr "Track toevoegen"
-
-#: scenes/timeline/timeline_panel.gd:262
-msgid "Remove track"
-msgstr "Track verwijderen"
-
-#: scenes/timeline/timeline_panel.gd:266
-msgid "Visible"
-msgstr "Zichtbaar"
-
-#: scenes/timeline/timeline_panel.gd:269
-msgid "Muted"
-msgstr "Gedempt"
-
-#: scenes/timeline/timeline_panel.gd:272
-msgid "Locked"
-msgstr "Vergrendeld"
-
-#: scenes/timeline/timeline_panel.gd:820
-msgid "Delete clip"
-msgstr "Clip verwijderen"
-
-#: scenes/timeline/timeline_panel.gd:821
-msgid "Split clip"
-msgstr "Clip splitsen"
-
-#: scenes/timeline/timeline_panel.gd:825 scenes/timeline/timeline_panel.gd:888
-msgid "Change speed"
-msgstr "Snelheid wijzigen"
-
-#: scenes/timeline/timeline_panel.gd:827
-msgid "Reset speed"
-msgstr "Snelheid herstellen"
-
-#: scenes/timeline/timeline_panel.gd:831
-msgid "Clip replace audio"
-msgstr "Audio van clip vervangen"
-
-#: scenes/timeline/timeline_panel.gd:844
-msgid "Select Audio Track"
-msgstr "Audiotrack selecteren"
-
-#: scenes/timeline/timeline.tscn
-msgid "Select mode: Used for selecting clips on the timeline."
-msgstr "Selectiemodus: wordt gebruikt om clips op de tijdlijn te selecteren."
-
-#: scenes/timeline/timeline.tscn
-msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
-"clicking."
-msgstr ""
-"Snijmodus: hiermee kun je clips knippen op de positie van je muiscursor door "
-"te klikken."
-
-#: scenes/timeline/timeline.tscn
-msgid "Turn group selection on/off for clips in the timeline."
-msgstr "Groepsselectie voor clips op de tijdlijn in-/uitschakelen."
-
-#: scenes/timeline/timeline.tscn
-msgid "Turn clip snapping on/off when moving clips."
-msgstr "Snappen van clips bij het verplaatsen in-/uitschakelen."
-
-#: scenes/timeline/track_controls.gd:68
-msgid "Toggle track visibility"
-msgstr "Trackzichtbaarheid schakelen"
-
-#: scenes/timeline/track_controls.gd:86
-msgid "Mute track"
-msgstr "Track dempen"
-
-#: scenes/markers_panel/markers_panel.tscn
-#: scenes/settings_menu/settings_menu.gd:112
-#: scenes/settings_menu/settings_menu.gd:335
-msgid "Markers"
-msgstr "Markeringen"
-
 #: scenes/color_popup/color_popup.tscn
 msgid "Add color file"
 msgstr "Kleurbestand toevoegen"
@@ -574,11 +756,6 @@ msgstr "Annuleren"
 #: scenes/color_popup/color_popup.tscn
 msgid "Create new color file"
 msgstr "Nieuw kleurbestand aanmaken"
-
-#: scenes/replace_audio_popup/replace_audio_popup.gd:113
-#: scenes/render_options_panel/render_options_panel.gd:185
-msgid "None"
-msgstr "Geen"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Replace Audio"
@@ -602,7 +779,7 @@ msgid "Confirm"
 msgstr "Bevestigen"
 
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:166
+#: scenes/startup_screen/startup_screen.gd:160
 msgid "Version"
 msgstr "Versie"
 
@@ -625,6 +802,20 @@ msgstr "Gemaakt door [url=%s]Voylin's Gamedev Journey[/url]!"
 #: scenes/about_gozen/about_gozen.gd:32
 msgid "License"
 msgstr "Licentie"
+
+#: scenes/module_manager/module_manager.tscn
+#, fuzzy
+msgid "Module Manager"
+msgstr "Modulebeheer"
+
+#: scenes/module_manager/module_manager.tscn
+#, fuzzy
+msgid "Close"
+msgstr "Venster sluiten"
+
+#: scenes/module_manager/module_manager.tscn
+msgid "Install Module"
+msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:200
@@ -657,13 +848,13 @@ msgid "Marker five"
 msgstr "Markering vijf"
 
 #: scenes/settings_menu/settings_menu.gd:122
-#: scenes/settings_menu/settings_menu.gd:346
+#: scenes/settings_menu/settings_menu.gd:300
 msgid "Shortcuts"
 msgstr "Sneltoetsen"
 
 #: scenes/settings_menu/settings_menu.gd:131
-#: scenes/settings_menu/settings_menu.gd:369
-#: scenes/settings_menu/settings_menu.gd:370
+#: scenes/settings_menu/settings_menu.gd:371
+#: scenes/settings_menu/settings_menu.gd:372
 msgid "Appearance"
 msgstr "Uiterlijk"
 
@@ -759,12 +950,12 @@ msgid "Default text duration"
 msgstr "Standaard tekstduur"
 
 #: scenes/settings_menu/settings_menu.gd:222
-#: scenes/settings_menu/settings_menu.gd:355
+#: scenes/settings_menu/settings_menu.gd:357
 msgid "Project resolution"
 msgstr "Projectresolutie"
 
 #: scenes/settings_menu/settings_menu.gd:227
-#: scenes/settings_menu/settings_menu.gd:360
+#: scenes/settings_menu/settings_menu.gd:362
 msgid "Project frame-rate"
 msgstr "Project-framerate"
 
@@ -789,82 +980,18 @@ msgid "Vertical framerate"
 msgstr "Verticale framerate"
 
 #: scenes/settings_menu/settings_menu.gd:258
-msgid "Timeline"
-msgstr "Tijdlijn"
-
-#: scenes/settings_menu/settings_menu.gd:259
-msgid "Timeline settings"
-msgstr "Tijdlijninstellingen"
-
-#: scenes/settings_menu/settings_menu.gd:260
-msgid "Default track amount"
-msgstr "Standaard aantal tracks"
-
-#: scenes/settings_menu/settings_menu.gd:266
-msgid "Track height"
-msgstr "Track hoogte"
-
-#: scenes/settings_menu/settings_menu.gd:272
-msgid "Timeline controls"
-msgstr "Tijdlijnbediening"
-
-#: scenes/settings_menu/settings_menu.gd:273
-msgid "Pause after dragging"
-msgstr "Pauzeren na slepen"
-
-#: scenes/settings_menu/settings_menu.gd:278
-msgid ""
-"Setting this will pause playback after having dragged the playhead around."
-msgstr ""
-"Als dit is ingesteld, pauzeert het afspelen na het verslepen van de "
-"afspeelkop."
-
-#: scenes/settings_menu/settings_menu.gd:279
-msgid "Empty space delete modifier"
-msgstr "Toets voor verwijderen lege ruimte"
-
-#: scenes/settings_menu/settings_menu.gd:286
-msgid "The modifier you want to easily delete empty space between clips."
-msgstr ""
-"De toets die je wilt gebruiken om lege ruimte tussen clips te verwijderen."
-
-#: scenes/settings_menu/settings_menu.gd:287
-msgid "Empty space click action"
-msgstr "Actie bij klikken op lege ruimte"
-
-#: scenes/settings_menu/settings_menu.gd:294
-msgid "What to do when clicking empty space in the timeline."
-msgstr "Bepaalt wat er gebeurt wanneer je op lege ruimte in de tijdlijn klikt."
-
-#: scenes/settings_menu/settings_menu.gd:295
-msgid "Addons"
-msgstr "Add-ons"
-
-#: scenes/settings_menu/settings_menu.gd:296
-msgid "Show mode bar"
-msgstr "Modusbalk tonen"
-
-#: scenes/settings_menu/settings_menu.gd:301
-msgid ""
-"The mode bar is the bar on the left of the timeline with buttons for "
-"changing the current timeline mode."
-msgstr ""
-"De modusbalk is de balk links van de tijdlijn met knoppen om de huidige "
-"tijdlijnmodus te wijzigen."
-
-#: scenes/settings_menu/settings_menu.gd:304
 msgid "Performance"
 msgstr "Prestaties"
 
-#: scenes/settings_menu/settings_menu.gd:305
+#: scenes/settings_menu/settings_menu.gd:259
 msgid "Video Decoding"
 msgstr "Videodecodering"
 
-#: scenes/settings_menu/settings_menu.gd:306
+#: scenes/settings_menu/settings_menu.gd:260
 msgid "Smart Seek Threshold"
 msgstr "Slimme zoekdrempel"
 
-#: scenes/settings_menu/settings_menu.gd:313
+#: scenes/settings_menu/settings_menu.gd:267
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
@@ -874,11 +1001,11 @@ msgstr ""
 "zoekactie. Hogere waarden voorkomen vertraging bij korte sprongen maar "
 "gebruiken meer CPU."
 
-#: scenes/settings_menu/settings_menu.gd:314
+#: scenes/settings_menu/settings_menu.gd:268
 msgid "Video Cache Size"
 msgstr "Videocachegrootte"
 
-#: scenes/settings_menu/settings_menu.gd:321
+#: scenes/settings_menu/settings_menu.gd:275
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
@@ -886,15 +1013,15 @@ msgstr ""
 "Het maximum aantal gedecodeerde frames in RAM. Hogere waarden zorgen voor "
 "soepeler achteruit zoeken maar verhogen geheugengebruik."
 
-#: scenes/settings_menu/settings_menu.gd:322
+#: scenes/settings_menu/settings_menu.gd:276
 msgid "Use proxies"
 msgstr "Gebruik proxies"
 
-#: scenes/settings_menu/settings_menu.gd:327
+#: scenes/settings_menu/settings_menu.gd:281
 msgid "Proxies save path"
 msgstr "Opslagpad proxies"
 
-#: scenes/settings_menu/settings_menu.gd:332
+#: scenes/settings_menu/settings_menu.gd:286
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
@@ -904,41 +1031,41 @@ msgstr ""
 "moeten opnieuw worden gegenereerd en handmatig uit de oude map worden "
 "verwijderd."
 
-#: scenes/settings_menu/settings_menu.gd:337
-#: scenes/settings_menu/settings_menu.gd:338
+#: scenes/settings_menu/settings_menu.gd:291
+#: scenes/settings_menu/settings_menu.gd:292
 msgid "Extras"
 msgstr "Extra's"
 
-#: scenes/settings_menu/settings_menu.gd:339
+#: scenes/settings_menu/settings_menu.gd:293
 msgid "Auto save"
 msgstr "Automatisch opslaan"
 
-#: scenes/settings_menu/settings_menu.gd:353
+#: scenes/settings_menu/settings_menu.gd:347
+msgid "Modules"
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:355
 msgid "Video"
 msgstr "Video"
 
-#: scenes/settings_menu/settings_menu.gd:354
+#: scenes/settings_menu/settings_menu.gd:356
 msgid "Video settings"
 msgstr "Video-instellingen"
 
-#: scenes/settings_menu/settings_menu.gd:367
+#: scenes/settings_menu/settings_menu.gd:369
 msgid "Project framerate (fps)."
 msgstr "Projectframerate (fps)."
 
-#: scenes/settings_menu/settings_menu.gd:371
+#: scenes/settings_menu/settings_menu.gd:373
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr "Achtergrondkleur"
 
-#: scenes/settings_menu/settings_menu.gd:376
+#: scenes/settings_menu/settings_menu.gd:378
 msgid "The background color when no clips are displayed."
 msgstr "De achtergrondkleur wanneer er geen clips worden weergegeven."
 
-#: scenes/settings_menu/settings_menu.gd:403 effects/text_effect_ui.gd:29
-msgid "Reset to default"
-msgstr "Terugzetten naar standaard"
-
-#: scenes/settings_menu/settings_menu.gd:659
+#: scenes/settings_menu/settings_menu.gd:661
 msgid "Press any key..."
 msgstr "Druk op een toets..."
 
@@ -949,155 +1076,6 @@ msgstr "Instellingen zoeken ..."
 #: scenes/settings_menu/settings_menu.tscn
 msgid "Close settings"
 msgstr "Instellingen sluiten"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render settings"
-msgstr "Render instellingen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render profile"
-msgstr "Renderprofiel"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Save current presets as a custom render profile."
-msgstr "Sla huidige voorinstellingen op als een aangepast renderprofiel."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Save profile"
-msgstr "Profiel opslaan"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Set selected profile as the default render profile."
-msgstr "Stel het geselecteerde profiel in als standaard renderprofiel."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Set default"
-msgstr "Als standaard instellen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Export path"
-msgstr "Exportpad"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render video settings"
-msgstr "Video-renderinstellingen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Video codec"
-msgstr "Videocodec"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
-"highest quality setting is 15. Default is set to 18 Used for adjusting "
-"bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
-"worst quality, 18 not really noticable."
-msgstr ""
-"Past de CRF (Constant Rate Factor) aan. Laagste kwaliteit is 50, hoogste "
-"kwaliteit is 15. Standaard is 18. Wordt gebruikt om de bitrate aan te "
-"passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 is het best, 51 "
-"het slechtst, 18 is nauwelijks merkbaar."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Quality"
-msgstr "Kwaliteit"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Adjusts the speed for encoding H264. Setting the speed too high might have a "
-"negative impact on the final video quality."
-msgstr ""
-"Past de snelheid aan voor het coderen van H264. Een te hoge snelheid kan een "
-"negatieve invloed hebben op de uiteindelijke videokwaliteit."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Speed"
-msgstr "Snelheid"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid ""
-"Group Of Pictures. Higher value is better for compression compared to a "
-"lower value. But how higher the value is, the less precise it will get for "
-"seeking and scrubbing through the video playback. Put to a low value if you "
-"intend to use the rendered video for editing."
-msgstr ""
-"Group Of Pictures. Een hogere waarde is beter voor compressie. Maar hoe "
-"hoger de waarde, hoe minder nauwkeurig het zoeken en navigeren door de video "
-"zal zijn. Zet op een lage waarde als je de gerenderde video wilt bewerken."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Gop size"
-msgstr "GOP-grootte"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "B frames"
-msgstr "B-frames"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render audio settings"
-msgstr "Audio-renderinstellingen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Audio codec"
-msgstr "Audiocodec"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Audio channels"
-msgstr "Audiokanalen"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Multi-threading"
-msgstr "Multi-threading"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Threads"
-msgstr "Threads"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "The amount of threads you want to use for exporting your video."
-msgstr "Het aantal threads dat je wilt gebruiken voor het exporteren."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Render region"
-msgstr "Renderregio"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Create a low quality draft version of your video."
-msgstr "Maak een conceptversie van lage kwaliteit van je video."
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Draft"
-msgstr "Concept"
-
-#: scenes/render_options_panel/render_options_panel.tscn
-msgid "Start render"
-msgstr "Start renderen"
-
-#: scenes/render_options_panel/render_options_panel.gd:85
-msgid "Custom render profiles"
-msgstr "Aangepaste renderprofielen"
-
-#: scenes/render_options_panel/render_options_panel.gd:187
-msgid "Stereo"
-msgstr "Stereo"
-
-#: scenes/render_options_panel/render_options_panel.gd:188
-msgid "Mono"
-msgstr "Mono"
-
-#: scenes/render_options_panel/render_options_panel.gd:285
-msgid "Select export path"
-msgstr "Selecteer exportpad"
-
-#: scenes/render_options_panel/render_options_panel.gd:396
-msgid "Overwrite file?"
-msgstr "Bestand overschrijven?"
-
-#: scenes/render_options_panel/render_options_panel.gd:397
-msgid ""
-"A file already exists at the chosen export path. Do you want to overwrite it?"
-msgstr ""
-"Er bestaat al een bestand op het gekozen exportpad. Wil je het overschrijven?"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -1208,20 +1186,20 @@ msgstr "Geavanceerde opties"
 msgid "Return"
 msgstr "Terug"
 
-#: scenes/startup_screen/startup_screen.gd:80
+#: scenes/startup_screen/startup_screen.gd:78
 msgid "Image by"
 msgstr "Afbeelding door"
 
-#: scenes/startup_screen/startup_screen.gd:193
+#: scenes/startup_screen/startup_screen.gd:187
 msgid "User presets"
 msgstr "Gebruikersvoorinstellingen"
 
-#: scenes/startup_screen/startup_screen.gd:247
-#: scenes/startup_screen/startup_screen.gd:315 scripts/autoloads/project.gd:102
+#: scenes/startup_screen/startup_screen.gd:243
+#: scenes/startup_screen/startup_screen.gd:309 scripts/autoloads/project.gd:102
 msgid "GoZen project file"
 msgstr "GoZen projectbestand"
 
-#: scenes/startup_screen/startup_screen.gd:313
+#: scenes/startup_screen/startup_screen.gd:307
 msgid "Select project save path"
 msgstr "Selecteer projectopslagpad"
 
@@ -1244,18 +1222,6 @@ msgstr "Type"
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
 msgstr "Geselecteerde markering verwijderen."
-
-#: effects/text_effect_ui.gd:47
-msgid "Text ..."
-msgstr "Tekst ..."
-
-#: effects/text_effect_ui.gd:126
-msgid "Keyframes"
-msgstr "Keyframes"
-
-#: effects/visual/mask_ui.gd:27
-msgid "Clear Mask Points"
-msgstr "Maskerpunten wissen"
 
 #: scripts/autoloads/project.gd:52
 msgid "Initialize new project ..."
@@ -1380,6 +1346,60 @@ msgstr "Bestanden neergezet"
 #: scripts/logic/file_logic.gd:356
 msgid "Files loading ..."
 msgstr "Bestanden laden ..."
+
+#~ msgid "Timeline"
+#~ msgstr "Tijdlijn"
+
+#~ msgid "Timeline settings"
+#~ msgstr "Tijdlijninstellingen"
+
+#~ msgid "Default track amount"
+#~ msgstr "Standaard aantal tracks"
+
+#~ msgid "Track height"
+#~ msgstr "Track hoogte"
+
+#~ msgid "Timeline controls"
+#~ msgstr "Tijdlijnbediening"
+
+#~ msgid "Pause after dragging"
+#~ msgstr "Pauzeren na slepen"
+
+#~ msgid ""
+#~ "Setting this will pause playback after having dragged the playhead around."
+#~ msgstr ""
+#~ "Als dit is ingesteld, pauzeert het afspelen na het verslepen van de "
+#~ "afspeelkop."
+
+#~ msgid "Empty space delete modifier"
+#~ msgstr "Toets voor verwijderen lege ruimte"
+
+#~ msgid "The modifier you want to easily delete empty space between clips."
+#~ msgstr ""
+#~ "De toets die je wilt gebruiken om lege ruimte tussen clips te verwijderen."
+
+#~ msgid "Empty space click action"
+#~ msgstr "Actie bij klikken op lege ruimte"
+
+#~ msgid "What to do when clicking empty space in the timeline."
+#~ msgstr ""
+#~ "Bepaalt wat er gebeurt wanneer je op lege ruimte in de tijdlijn klikt."
+
+#~ msgid "Addons"
+#~ msgstr "Add-ons"
+
+#~ msgid "Show mode bar"
+#~ msgstr "Modusbalk tonen"
+
+#~ msgid ""
+#~ "The mode bar is the bar on the left of the timeline with buttons for "
+#~ "changing the current timeline mode."
+#~ msgstr ""
+#~ "De modusbalk is de balk links van de tijdlijn met knoppen om de huidige "
+#~ "tijdlijnmodus te wijzigen."
+
+#~ msgid "Keyframes"
+#~ msgstr "Keyframes"
 
 #~ msgid "Audio-take-over"
 #~ msgstr "Audio-overname"

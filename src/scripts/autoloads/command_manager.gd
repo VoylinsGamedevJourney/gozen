@@ -20,7 +20,7 @@ func _localize_commands() -> void:
 	for i: int in commands.size(): commands[i] = tr(base_commands[i])
 
 
-# --- Command registering ---
+#--- Command registering ---
 
 func register(cmd: Command) -> void:
 	commands.append(tr(cmd.command))
@@ -30,7 +30,7 @@ func register(cmd: Command) -> void:
 	actions.append(cmd.action)
 
 
-# --- Getters ---
+#--- Getters ---
 
 func get_text(index: int) -> String:   return ("%s [%s]" % [commands[index], actions[index]]).replace(' []', '')
 func get_call(index: int) -> Callable: return calls[index]

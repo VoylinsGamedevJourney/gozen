@@ -37,15 +37,15 @@ func update(value: int, text: String) -> void:
 
 
 func set_bar(value: int) -> void:
-	if _tween:
-		_tween.kill()
+	if _tween: _tween.kill()
+
 	_target_value = value
 	progress_bar.value = _target_value
 
 
 func update_bar(value: int) -> void:
-	if _tween:
-		_tween.kill()
+	if _tween: _tween.kill()
+
 	_target_value = value
 	_tween = create_tween()
 	@warning_ignore("return_value_discarded")
@@ -71,7 +71,7 @@ func _update_estimate() -> void:
 		var time_elapsed: float = (Time.get_ticks_msec() - start_time) / 1000.0
 		var rate: float = time_elapsed / _target_value
 		var remaining_sec: float = rate * (100.0 - _target_value)
-		var remaining: String = Utils.format_time_str(remaining_sec, true)
+		var remaining: String = Format.time_str(remaining_sec, true)
 		estimated_time_label.text = "Estimated time - %s" % remaining
 
 
@@ -101,5 +101,4 @@ func update_file(path: String, status: int) -> void:
 
 
 ## If errors happen, we want the user to be able to see them and not close directly.
-func show_close() -> void:
-	close_button.visible = true
+func show_close() -> void: close_button.visible = true

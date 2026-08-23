@@ -21,3 +21,20 @@ static func info(title: String, ...context: Array) -> void:
 
 static func info_editor(title: String, ...context: Array) -> void:
 	print_rich(SUFFIX % COLOR_DEFAULT, title, "[/b]: [color=gray]", " ".join(context))
+
+
+#--- Error prints ---
+
+static func stack_connect() -> void:
+	print_rich("[b][color=red]Connecting failed!")
+	print_stack()
+
+
+static func stack_append() -> void:
+	print_rich("[b][color=red]Appending failed!")
+	print_stack()
+
+
+static func stack_erase() -> void:
+	print_rich("[b][color=red]Erasing failed!")
+	print_stack()

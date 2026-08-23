@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://fly5vb2vnipp"
+path="res://.godot/imported/chroma_key.glsl-6f95e2ec999e53b103d8072f7205a9ea.res"
+
+[deps]
+
+source_file="res://modules/core_effects/visual/chroma_key.glsl"
+dest_files=["res://.godot/imported/chroma_key.glsl-6f95e2ec999e53b103d8072f7205a9ea.res"]
+
+[params]
+

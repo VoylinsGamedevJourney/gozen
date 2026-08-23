@@ -3,7 +3,6 @@ extends RefCounted
 
 
 enum AudioWaveformStyle { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
-enum EmptySpaceClickAction { SEEK, CLEAR_SELECTION }
 
 
 # Appearance
@@ -29,14 +28,6 @@ var quick_create_horizontal_fps: float = 30.0
 var quick_create_vertical_res: Vector2i = Vector2i(1080, 1920)
 var quick_create_vertical_fps: float = 30.0
 
-# Timeline
-var tracks_amount: int = 6 ## The amount of tracks.
-var tracks_height: float = 30
-var pause_after_drag: bool = false
-var delete_empty_modifier: int = KEY_NONE
-var empty_space_click_action: EmptySpaceClickAction = EmptySpaceClickAction.SEEK
-var show_time_mode_bar: bool = true
-
 # Rendering
 var default_render_profile: String = "YouTube"
 
@@ -55,6 +46,9 @@ var auto_save: bool = true
 
 # Input
 var shortcuts: Dictionary = {} # { action_name: [InputEvent, InputEvent] }
+
+# Modules
+var module_settings: Dictionary = {}
 
 
 # HIDDEN SETTINGS

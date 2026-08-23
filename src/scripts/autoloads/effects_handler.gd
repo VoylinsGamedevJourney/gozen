@@ -15,20 +15,15 @@ signal transition_updated(clip: ClipData, is_left: bool)
 enum TYPE { ALL = 0, VISUALS = 1, AUDIO = 2 }
 
 
-const PATH_EFFECTS_VISUAL: String = "res://effects/visual/"
-const PATH_EFFECTS_AUDIO: String = "res://effects/audio/"
-const PATH_EFFECTS_TRANSITIONS: String = "res://effects/transitions/"
-
-
 var visual_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
-var visual_effect_instances: Dictionary[String, EffectVisual] = {} ## { effect_id: effect_class }
+var visual_effect_instances: Dictionary[String, Effect] = {} ## { effect_id: effect_class }
 var shader_cache: Dictionary[String, RDShaderFile] = {}
 
 var audio_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
-var audio_effect_instances: Dictionary[String, EffectAudio] = {} ## { effect_id: effect_class }
+var audio_effect_instances: Dictionary[String, Effect] = {} ## { effect_id: effect_class }
 
 var transitions: Dictionary[String, String] = {} ## { effect_name: effect_id }
-var transition_instances: Dictionary[String, EffectVisual] = {} ## { effect_id: effect_class }
+var transition_instances: Dictionary[String, Effect] = {} ## { effect_id: effect_class }
 
 ## Exceptions can be a string or callable.
 var param_exceptions: Dictionary[String, Dictionary] = {
@@ -49,52 +44,13 @@ var param_exceptions: Dictionary[String, Dictionary] = {
 func _ready() -> void:
 	effect_selected.emit(null) # It's here to remove the unused signal warning.
 
-	for file_name: String in DirAccess.open(PATH_EFFECTS_VISUAL).get_files():
-		file_name = file_name.trim_suffix(".remap")
-		if !file_name.ends_with(".tres"): continue
-
-		var temp: Variant = load(PATH_EFFECTS_VISUAL + file_name)
-		if temp is not EffectVisual: continue
-
-		var effect: EffectVisual = temp
-		if visual_effect_instances.has(effect.id): continue
-		visual_effects[effect.nickname] = effect.id
-		visual_effect_instances[effect.id] = effect
-		shader_cache[effect.shader_path] = load(effect.shader_path)
-
-	for file_name: String in DirAccess.open(PATH_EFFECTS_AUDIO).get_files():
-		file_name = file_name.trim_suffix(".remap")
-		if !file_name.ends_with(".tres"): continue
-
-		var temp: Variant = load(PATH_EFFECTS_AUDIO + file_name)
-		if temp is not EffectAudio: continue
-
-		var effect: EffectAudio = temp
-		if audio_effect_instances.has(effect.id): continue
-		audio_effects[effect.nickname] = effect.id
-		audio_effect_instances[effect.id] = effect
-
-	if DirAccess.dir_exists_absolute(PATH_EFFECTS_TRANSITIONS):
-		for file_name: String in DirAccess.open(PATH_EFFECTS_TRANSITIONS).get_files():
-			file_name = file_name.trim_suffix(".remap")
-			if !file_name.ends_with(".tres"): continue
-
-			var temp: Variant = load(PATH_EFFECTS_TRANSITIONS + file_name)
-			if temp is not EffectVisual: continue
-
-			var effect: EffectVisual = temp
-			if transition_instances.has(effect.id): continue
-			transitions[effect.nickname] = effect.id
-			transition_instances[effect.id] = effect
-			shader_cache[effect.shader_path] = load(effect.shader_path)
+	ModuleManager.register_effects()
 
 
 func _get_effect(clip: ClipData, index: int, is_visual: bool) -> Effect:
 	if index < 0: return null
 
-	var effects: Array
-	if is_visual: effects = clip.effects.video
-	else: effects = clip.effects.audio
+	var effects: Array = clip.effects.video if is_visual else clip.effects.audio
 
 	if index >= effects.size():
 		printerr("EffectsHandler: Trying to access invalid effect! ", index)
@@ -105,8 +61,8 @@ func _get_effect(clip: ClipData, index: int, is_visual: bool) -> Effect:
 #---- Transition handling ----
 
 func set_transition(clip: ClipData, is_left: bool, transition_id: String) -> void:
-	var new_transition: EffectVisual = transition_instances[transition_id].deep_copy()
-	var old_transition: EffectVisual = clip.effects.transition_left if is_left else clip.effects.transition_right
+	var new_transition: Effect = transition_instances[transition_id].deep_copy()
+	var old_transition: Effect = clip.effects.transition_left if is_left else clip.effects.transition_right
 	new_transition.set_default_keyframe()
 
 	InputManager.undo_redo.create_action("Set transition")
@@ -115,7 +71,7 @@ func set_transition(clip: ClipData, is_left: bool, transition_id: String) -> voi
 	InputManager.undo_redo.commit_action()
 
 
-func _set_transition(clip: ClipData, is_left: bool, transition: EffectVisual) -> void:
+func _set_transition(clip: ClipData, is_left: bool, transition: Effect) -> void:
 	if is_left:
 		clip.effects.transition_left = transition
 	else:
@@ -125,7 +81,7 @@ func _set_transition(clip: ClipData, is_left: bool, transition: EffectVisual) ->
 
 
 func update_transition_param(clip: ClipData, is_left: bool, param_id: String, value: Variant) -> void:
-	var transition: EffectVisual = clip.effects.transition_left if is_left else clip.effects.transition_right
+	var transition: Effect = clip.effects.transition_left if is_left else clip.effects.transition_right
 	var old_value: Variant = transition.keyframes[param_id][0]
 	@warning_ignore("unsafe_call_argument")
 	var new_value: Variant = int(value) if typeof(old_value) else value
@@ -136,7 +92,7 @@ func update_transition_param(clip: ClipData, is_left: bool, param_id: String, va
 	InputManager.undo_redo.commit_action()
 
 
-func _set_transition_param(transition: EffectVisual, param_id: String, value: Variant) -> void:
+func _set_transition_param(transition: Effect, param_id: String, value: Variant) -> void:
 	transition.keyframes[param_id][0] = value
 	transition._cache_dirty = true
 	effect_values_updated.emit()
@@ -167,10 +123,10 @@ func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 	for clip: ClipData in clips.values():
 		for i: int in clip.effects.video.size():
-			var old_effect: EffectVisual = clip.effects.video[i]
+			var old_effect: Effect = clip.effects.video[i]
 			if old_effect.id == "pck_effect_params":
-				var module_data: GoZenModule = FileLogic.file_data.get(clip.file)
-				var new_effect: EffectVisual = EffectVisual.new()
+				var module_data: GoZenModuleScene = FileLogic.file_data.get(clip.file)
+				var new_effect: Effect = Effect.new()
 
 				new_effect.id = "pck_effect_params"
 				new_effect.nickname = "Module Parameters"
@@ -183,7 +139,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				new_effect.set_default_keyframe()
 				clip.effects.video[i] = new_effect
 			elif visual_effect_instances.has(old_effect.id):
-				var new_effect: EffectVisual = visual_effect_instances[old_effect.id].deep_copy()
+				var new_effect: Effect = visual_effect_instances[old_effect.id].deep_copy()
 				_apply_param_exceptions(new_effect)
 
 				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
@@ -192,9 +148,9 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				clip.effects.video[i] = new_effect
 
 		for i: int in clip.effects.audio.size():
-			var old_effect: EffectAudio = clip.effects.audio[i]
+			var old_effect: Effect = clip.effects.audio[i]
 			if audio_effect_instances.has(old_effect.id):
-				var new_effect: EffectAudio = audio_effect_instances[old_effect.id].deep_copy()
+				var new_effect: Effect = audio_effect_instances[old_effect.id].deep_copy()
 				_apply_param_exceptions(new_effect)
 
 				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
@@ -202,11 +158,11 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				new_effect.set_default_keyframe()
 				clip.effects.audio[i] = new_effect
 
-	var base_text_effect: EffectVisual = load(Library.EFFECT_TEXT)
+	var base_text_effect: Effect = load(Library.EFFECT_TEXT)
 	for file: FileData in files.values():
 		if file.type == EditorCore.Type.TEXT and file.temp_file and file.temp_file.text_effect:
-			var old_effect: EffectVisual = file.temp_file.text_effect
-			var new_effect: EffectVisual = base_text_effect.deep_copy()
+			var old_effect: Effect = file.temp_file.text_effect
+			var new_effect: Effect = base_text_effect.deep_copy()
 			_apply_param_exceptions(new_effect)
 
 			new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
@@ -246,9 +202,9 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 
 func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) -> void:
 	if is_visual:
-		var _err: int = clip.effects.video.insert(index, effect as EffectVisual)
+		var _err: int = clip.effects.video.insert(index, effect as Effect)
 	else:
-		var _err: int = clip.effects.audio.insert(index, effect as EffectAudio)
+		var _err: int = clip.effects.audio.insert(index, effect as Effect)
 
 	effect_added.emit(clip, index, is_visual)
 	effects_updated.emit()
@@ -434,9 +390,9 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 	if effect.keyframes.has(param_id):
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
 		if !effect_keyframes.erase(frame_nr):
-			printerr("EffectsHandler: Frame nr '%s' wasn'transition present in effect_keyframes!" % frame_nr)
+			printerr("EffectsHandler: Frame nr '%s' wasn't present in effect_keyframes!" % frame_nr)
 		if effect_keyframes.is_empty() and !effect.keyframes.erase(param_id):
-			printerr("EffectsHandler: Param id '%s' wasn'transition present in effect.keyframes!" % param_id)
+			printerr("EffectsHandler: Param id '%s' wasn't present in effect.keyframes!" % param_id)
 
 	effect._cache_dirty = true
 	effect_values_updated.emit()

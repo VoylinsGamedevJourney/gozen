@@ -1,0 +1,141 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://bl6l8k0pk0bew"]
+
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_drc3j"]
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_xilbx"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_xilbx"]
+
+[sub_resource type="Resource" id="UI_text_data"]
+script = ExtResource("1_xilbx")
+param_id = "text_data"
+show_label = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_font"]
+script = ExtResource("1_xilbx")
+param_id = "font"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_text_h_align"]
+script = ExtResource("1_xilbx")
+param_id = "text_h_align"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_text_v_align"]
+script = ExtResource("1_xilbx")
+param_id = "text_v_align"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_font_size"]
+script = ExtResource("1_xilbx")
+param_id = "font_size"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_font_color"]
+script = ExtResource("1_xilbx")
+param_id = "font_color"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_font_weight"]
+script = ExtResource("1_xilbx")
+param_id = "font_weight"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="UI_font_italic"]
+script = ExtResource("1_xilbx")
+param_id = "font_italic"
+is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_drc3j"]
+script = ExtResource("1_drc3j")
+id = "text_data"
+nickname = "param_text_data"
+default_value = "3"
+min_value = null
+max_value = null
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_xilbx"]
+script = ExtResource("1_drc3j")
+id = "font"
+nickname = "param_font"
+default_value = ""
+min_value = null
+max_value = null
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_ptuff"]
+script = ExtResource("1_drc3j")
+id = "text_h_align"
+nickname = "param_text_h_align"
+default_value = 1
+min_value = 0
+max_value = 2
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_gif22"]
+script = ExtResource("1_drc3j")
+id = "text_v_align"
+nickname = "param_text_v_align"
+default_value = 1
+min_value = 0
+max_value = 2
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_nmfvc"]
+script = ExtResource("1_drc3j")
+id = "font_size"
+nickname = "param_font_size"
+default_value = 50
+min_value = 1
+max_value = 1500
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_dgkg4"]
+script = ExtResource("1_drc3j")
+id = "font_color"
+nickname = "param_font_color"
+default_value = Color(1, 1, 1, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_7s7tl"]
+script = ExtResource("1_drc3j")
+id = "font_weight"
+nickname = "param_font_weight"
+default_value = 400
+min_value = 100
+max_value = 900
+step = 100.0
+keyframeable = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_e3wl7"]
+script = ExtResource("1_drc3j")
+id = "font_italic"
+nickname = "param_font_italic"
+default_value = false
+min_value = null
+max_value = null
+keyframeable = false
+has_slider = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("2_xilbx")
+id = "text"
+nickname = "Text"
+custom_ui = Array[ExtResource("1_xilbx")]([SubResource("UI_text_data"), SubResource("UI_font"), SubResource("UI_text_h_align"), SubResource("UI_text_v_align"), SubResource("UI_font_size"), SubResource("UI_font_color"), SubResource("UI_font_weight"), SubResource("UI_font_italic")])
+params = Array[ExtResource("1_drc3j")]([SubResource("Resource_drc3j"), SubResource("Resource_xilbx"), SubResource("Resource_ptuff"), SubResource("Resource_gif22"), SubResource("Resource_nmfvc"), SubResource("Resource_dgkg4"), SubResource("Resource_7s7tl"), SubResource("Resource_e3wl7")])
+metadata/_custom_type_script = "uid://e26q35ad13vv"

@@ -61,7 +61,7 @@ func _on_project_resolution_changed() -> void:
 			reloaded.emit(file)
 
 
-# --- Handling ---
+#--- Handling ---
 
 func add(paths: Array[String]) -> void:
 	var existing_file_paths: Array[String] = []
@@ -118,7 +118,7 @@ func _create_file(path: String) -> FileData:
 			file.type = EditorCore.Type.TEXT
 			file.duration = Settings.get_text_duration()
 			file.nickname = "Text: Empty text"
-			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as EffectVisual).deep_copy()
+			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
 			file.temp_file.text_effect.set_default_keyframe()
 		elif path.begins_with("temp://image"):
 			file.type = EditorCore.Type.IMAGE
@@ -297,7 +297,7 @@ func duplicate_text(file: FileData) -> void:
 	InputManager.undo_redo.commit_action()
 
 
-# --- File dropping ---
+#--- File dropping ---
 
 ## File dropping can't be un-done with the undo_redo system!
 func dropped(dropped_file_paths: Array[String]) -> void:
@@ -391,7 +391,7 @@ func _set_nickname(file: FileData, nickname: String) -> void:
 	nickname_changed.emit(file)
 
 
-# --- Data loading ---
+#--- Data loading ---
 
 ## (Re)load the data of a file.
 func load_data(file: FileData) -> void:
@@ -449,24 +449,32 @@ func load_data(file: FileData) -> void:
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
 				file_data[file.id] = null
 				return
+
 			var module_name: String = file.path.get_file().get_basename()
 			if module_name.begins_with(str(file.id) + "_"):
 				module_name = module_name.trim_prefix(str(file.id) + "_")
 			var module_path: String = "res://modules/" + module_name + "/module.tres"
 
 			if !FileAccess.file_exists(module_path):
-				printerr("FileLogic: PCK is missing the required `module.tres` at '%s'!" % module_path)
+				for loaded_mod: GoZenModule in ModuleManager.loaded_gozen_modules:
+					if loaded_mod.name == module_name or loaded_mod.resource_path.get_base_dir().get_file() == module_name:
+						module_path = loaded_mod.resource_path
+						break
+
+			if !FileAccess.file_exists(module_path):
+				printerr("FileLogic: PCK is missing the required `module.tres` for module '%s'!" % module_name)
 				file_data[file.id] = null
 				return
 
 			var module_data: GoZenModule = load(module_path)
-			if !module_data:
-				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule!")
+			if !module_data or module_data.custom_scenes.is_empty():
+				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule with clips!")
 				file_data[file.id] = null
 				return
 
-			file_data[file.id] = module_data
-			file.duration = module_data.default_duration
+			var clip_data: GoZenModuleScene = module_data.custom_scenes[0]
+			file_data[file.id] = clip_data
+			file.duration = clip_data.default_duration
 
 
 func _load_video(file: FileData) -> void:
@@ -839,7 +847,7 @@ func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
 	image.copy_from(padded_image)
 
 
-# --- Getters ---
+#--- Getters ---
 
 ## Returns all audio file id's.
 func get_all_audio_files() -> Array[FileData]:
@@ -875,7 +883,7 @@ func update_text_param(file: FileData, param_id: String, frame_nr: int, new_valu
 
 
 func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: Variant) -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	if not text_effect.keyframes.has(param_id):
 		var typed_dict: Dictionary = {}
 		text_effect.keyframes[param_id] = typed_dict
@@ -896,7 +904,7 @@ func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: 
 
 
 func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
-	var text_effect: EffectVisual = file.temp_file.text_effect
+	var text_effect: Effect = file.temp_file.text_effect
 	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
 	if not text_effect.keyframes.has(param_id) or not param_keyframes.has(frame_nr):
 		return
@@ -910,8 +918,9 @@ func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> vo
 
 func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
 	var temp_file: TempFile = file.temp_file
-	var text_effect: EffectVisual = temp_file.text_effect
+	var text_effect: Effect = temp_file.text_effect
 	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
+
 	if !param_keyframes.erase(frame_nr):
 		printerr("FileLogic: '%s' frame number isn't present in text keyframes!" % frame_nr)
 	text_effect._cache_dirty = true
@@ -935,7 +944,7 @@ func _toggle_ato(file: FileData, value: bool) -> void:
 	Project.unsaved_changes = true
 
 
-# --- Updaters ---
+#--- Updaters ---
 
 func update_audio_waves() -> void:
 	for file: FileData in get_all_audio_files():

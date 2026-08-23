@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://cvwpst1yv0yb6"]
+
+[ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="1_panel"]
+[ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="2_mod"]
+[ext_resource type="PackedScene" uid="uid://yfososo2t8n4" path="res://modules/core_view_panel/view_panel.tscn" id="3_scene"]
+
+[sub_resource type="Resource" id="Resource_panel"]
+script = ExtResource("1_panel")
+scene = ExtResource("3_scene")
+
+[resource]
+script = ExtResource("2_mod")
+name = "Core View Panel"
+description = "The default view panel for GoZen."
+author = "Voylin"
+version = "1.0"
+custom_panels = Array[ExtResource("1_panel")]([SubResource("Resource_panel")])

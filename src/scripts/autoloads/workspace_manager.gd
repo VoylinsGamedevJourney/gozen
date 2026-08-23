@@ -16,8 +16,8 @@ var workspace_root: Control = null
 var available_workspaces: Array[String] = []
 var show_tab_titles: bool = false
 
-var drag_layer: CanvasLayer
-var drag_overlay: Control
+var drag_layer: CanvasLayer = CanvasLayer.new()
+var drag_overlay: Control = Control.new()
 var preview_tab: DockableTab = null
 var preview_zone: int = 0
 var preview_is_root: bool = false
@@ -25,19 +25,11 @@ var preview_is_root: bool = false
 
 
 func _ready() -> void:
-	# Adding all GoZen default panels:
-	register_panel("EffectsPanel", preload("res://scenes/effects_panel/effects_panel.tscn").instantiate() as Control)
-	register_panel("FilePanel", preload("res://scenes/file_panel/file_panel.tscn").instantiate() as Control)
-	register_panel("MarkersPanel", preload("res://scenes/markers_panel/markers_panel.tscn").instantiate() as Control)
-	register_panel("RenderOptionsPanel", preload("res://scenes/render_options_panel/render_options_panel.tscn").instantiate() as Control)
-	register_panel("ViewPanel", preload("res://scenes/view_panel/view_panel.tscn").instantiate() as Control)
-	register_panel("Timeline", preload("res://scenes/timeline/timeline.tscn").instantiate() as Control)
+	ModuleManager.register_panels()
 
-	drag_layer = CanvasLayer.new()
 	drag_layer.layer = 100
 	add_child(drag_layer)
 
-	drag_overlay = Control.new()
 	drag_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	drag_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	@warning_ignore("return_value_discarded")
@@ -482,7 +474,7 @@ func _cleanup_split_container(split: SplitContainer) -> void:
 			_cleanup_split_container(parent as SplitContainer)
 
 
-# --- Default workspaces ---
+#--- Default workspaces ---
 
 func _create_default_edit_workspace() -> WorkspaceLayout:
 	var layout: WorkspaceLayout = WorkspaceLayout.new()
