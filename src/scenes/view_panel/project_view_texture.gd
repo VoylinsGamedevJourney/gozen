@@ -186,7 +186,7 @@ func _on_popup_id_pressed(id: int) -> void:
 			@warning_ignore("return_value_discarded")
 			file_dialog.file_selected.connect(_on_save_screenshot_to_project)
 
-		var folder: String = Project.get_project_path().get_base_dir() + "/"
+		var folder: String = Project.get_picker_path(OS.SYSTEM_DIR_PICTURES) + "/"
 		var file_name: String = "image_%03d.webp"
 		var nr: int = 1
 

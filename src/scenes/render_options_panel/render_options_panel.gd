@@ -286,7 +286,7 @@ func _on_select_save_path_button_pressed() -> void:
 			FileDialog.FileMode.FILE_MODE_SAVE_FILE,
 			["*" +_get_current_extension()])
 
-	dialog.current_dir = Project.get_project_base_folder()
+	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 	dialog.current_file = Project.get_project_name()
 
 	@warning_ignore("return_value_discarded")

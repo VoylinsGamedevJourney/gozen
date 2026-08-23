@@ -100,6 +100,7 @@ func save_as() -> void:
 			tr("Save project as ..."),
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [EXTENSION, tr("GoZen project file")]])
+	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
 	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_save_as)
@@ -112,6 +113,7 @@ func archive_as() -> void:
 			tr("Archive project as ..."),
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*.zip;" + tr("ZIP Archive")])
+	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
 	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_archive_project)
@@ -267,6 +269,7 @@ func open_project() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
 			tr("Open project"), FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [EXTENSION, tr("GoZen project files")]])
+	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
 	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_open_project)
@@ -360,6 +363,21 @@ func set_project_path(new_project_path: String) -> void:
 func get_project_path() -> String: return data.project_path
 func get_project_name() -> String: return data.project_path.get_file().get_basename()
 func get_project_base_folder() -> String: return data.project_path.get_base_dir()
+
+func get_picker_path(fallback: OS.SystemDir) -> String:
+	var dir: String = get_project_base_folder()
+	if !dir.is_empty():
+		return dir
+
+	dir = OS.get_system_dir(fallback)
+
+	if dir.is_empty():
+		dir = OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
+	
+	if dir.is_empty():
+		printerr("Project: Failed to get any path for picker")
+	
+	return dir
 
 
 func set_resolution(resolution: Vector2i) -> void:

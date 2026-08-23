@@ -100,6 +100,7 @@ func _file_menu_pressed(id: int) -> void:
 		0: # Add file(s).
 			var dialog: FileDialog = PopupManager.create_file_dialog(
 					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
+			dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 			add_child(dialog)
 			@warning_ignore("return_value_discarded")
 			dialog.files_selected.connect(FileLogic.dropped)
@@ -258,6 +259,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 				tr("Save image to file"),
 				FileDialog.FILE_MODE_SAVE_FILE,
 				IMAGE_FORMATS)
+		dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_PICTURES)
 		@warning_ignore("return_value_discarded")
 		dialog.file_selected.connect(func(path: String) -> void:
 				FileLogic.save_image_to_file(file, path))
@@ -269,6 +271,7 @@ func _on_popup_action_file_extract_audio() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
 	var dialog: FileDialog = PopupManager.create_file_dialog(
 			tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
+	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MUSIC)
 
 	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(func(path: String) -> void:
