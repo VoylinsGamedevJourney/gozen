@@ -743,7 +743,7 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 		var empty_wave: bool = FileLogic.audio_wave.has(file.id) and FileLogic.audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
-		if stream_index == -1 or (file.audio_streams.size() > 0 and stream_index == file.audio_streams[0]):
+		if stream_index == -1:
 			var video: Video = get_video_reader(file, instance_index)
 			return null if video == null else video.get_audio()
 

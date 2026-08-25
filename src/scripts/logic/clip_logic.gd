@@ -29,7 +29,7 @@ func add(requests: Array[RequestClipAdd]) -> void:
 		for i: int in range(current_track_size, request.track + 1):
 			InputManager.undo_redo.add_do_method(TrackLogic._add_track.bind(i))
 			InputManager.undo_redo.add_undo_method(TrackLogic._remove_track.bind(i))
-		current_track_size = request.track + 1
+		current_track_size = maxi(current_track_size, request.track + 1)
 
 	for request: RequestClipAdd in requests:
 		var new_clip: ClipData = ClipData.new()
@@ -192,6 +192,7 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		effects.ato_offset = request.clip.effects.ato_offset
 		effects.ato_file = request.clip.effects.ato_file
 		effects.is_muted = request.clip.effects.is_muted
+		effects.audio_stream_index = request.clip.effects.audio_stream_index
 		snapshot.id = Utils.get_unique_id(clips.keys())
 		snapshot.start += duration_left
 		snapshot.begin += int(duration_left * request.clip.speed)
@@ -271,6 +272,7 @@ func copy_selected_clips() -> void:
 		snapshot.effects.ato_offset = clip.effects.ato_offset
 		snapshot.effects.ato_file = clip.effects.ato_file
 		snapshot.effects.is_muted = clip.effects.is_muted
+		snapshot.effects.audio_stream_index = clip.effects.audio_stream_index
 		snapshot.effects.video.assign(_copy_effects(clip.effects.video, 0))
 		snapshot.effects.audio.assign(_copy_effects(clip.effects.audio, 0))
 		snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
@@ -316,6 +318,7 @@ func paste_copied_clips() -> void:
 		new_clip.effects.ato_offset = copied_clip.effects.ato_offset
 		new_clip.effects.ato_file = copied_clip.effects.ato_file
 		new_clip.effects.is_muted = copied_clip.effects.is_muted
+		new_clip.effects.audio_stream_index = copied_clip.effects.audio_stream_index
 		new_clip.effects.video.assign(_copy_effects(copied_clip.effects.video, 0))
 		new_clip.effects.audio.assign(_copy_effects(copied_clip.effects.audio, 0))
 		new_clip.effects.transition_left = copied_clip.effects.transition_left.deep_copy() if copied_clip.effects.transition_left else null
@@ -384,6 +387,7 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 			new_clip.effects.ato_offset = clip.effects.ato_offset
 			new_clip.effects.ato_file = clip.effects.ato_file
 			new_clip.effects.is_muted = clip.effects.is_muted
+			new_clip.effects.audio_stream_index = clip.effects.audio_stream_index
 			new_clip.effects.video.assign(_copy_effects(clip.effects.video, 0))
 			new_clip.effects.audio.assign(_copy_effects(clip.effects.audio, 0))
 			new_clip.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null

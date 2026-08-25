@@ -242,7 +242,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 					if clip in ClipLogic.selected_clips: continue
 					ClipLogic.selected_clips.append(clip)
 			draw_clips.queue_redraw()
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+			ClipLogic.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
 		var popup: PopupMenu = PopupManager.create_menu()
 		right_click_clip = _get_clip_on_mouse(event.position)
@@ -538,6 +538,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 					audio_request.file = file
 					audio_request.group_id = group_id
 					audio_request.track = audio_track_idx
+					audio_request.frame = target_frame
 					audio_request.audio_index = file.audio_streams[i]
 					audio_request.type = EditorCore.Type.AUDIO
 					requests.append(audio_request)
@@ -614,7 +615,7 @@ func _commit_select(shift_pressed: bool) -> void:
 		if different:
 			ClipLogic.selected_clips = group_clips
 			draw_clips.queue_redraw()
-			ClipLogic.selected.emit(pressed_clip)
+		ClipLogic.selected.emit(pressed_clip)
 
 
 func _commit_current_fade() -> void:
@@ -1063,13 +1064,26 @@ func remove_empty_space_at(track: int, frame_nr: int) -> void:
 
 
 func split_clip_at(clip: ClipData, frame_pos: int) -> void:
-	if TrackLogic.tracks[clip.track].is_locked:
-		return
-	if clip.start <= frame_pos and clip.end >= frame_pos:
-		var request: RequestClipSplit = RequestClipSplit.new()
-		request.clip = clip
-		request.frame = frame_pos - clip.start
-		if !ClipLogic.split([request]): print_stack()
+	var clips_to_split: Array[ClipData] = []
+	if clip in ClipLogic.selected_clips:
+		clips_to_split = ClipLogic.selected_clips
+	else:
+		clips_to_split = ClipLogic.get_clips_to_select(clip)
+
+	var requests: Array[RequestClipSplit] = []
+	for clip_data: ClipData in clips_to_split:
+		if TrackLogic.tracks[clip_data.track].is_locked: continue
+		elif clip_data.start < frame_pos and clip_data.end > frame_pos:
+			var request: RequestClipSplit = RequestClipSplit.new()
+			request.clip = clip_data
+			request.frame = frame_pos - clip_data.start
+			requests.append(request)
+
+	if !requests.is_empty():
+		var new_clips: Array[ClipData] = ClipLogic.split(requests)
+		if new_clips.size() > 0 and clip in ClipLogic.selected_clips:
+			ClipLogic.selected_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
 	draw_clips.queue_redraw()
 
 
@@ -1092,22 +1106,10 @@ func split_clips_at(frame_pos: int) -> void:
 		if new_clips.size() > 0:
 			ClipLogic.selected_clips = new_clips
 			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
-		return draw_clips.queue_redraw()
+		draw_clips.queue_redraw()
+		return
 
 	if not ClipLogic.selected_clips.is_empty():
-		for clip: ClipData in ClipLogic.selected_clips:
-			if clip.start < frame_pos and clip.end > frame_pos:
-				var request: RequestClipSplit = RequestClipSplit.new()
-				request.clip = clip
-				request.frame = frame_pos - clip.start
-				requests.append(request)
-
-		if !requests.is_empty():
-			new_clips = ClipLogic.split(requests)
-			if new_clips.size() > 0:
-				ClipLogic.selected_clips = new_clips
-				ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
-			draw_clips.queue_redraw()
 		return
 
 	# No selected clips present so splitting all possible clips.
@@ -1121,11 +1123,12 @@ func split_clips_at(frame_pos: int) -> void:
 			request.frame = frame_pos - clip.start
 			requests.append(request)
 
-	new_clips = ClipLogic.split(requests)
-	if new_clips.size() > 0:
-		ClipLogic.selected_clips = new_clips
-		ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
-	draw_clips.queue_redraw()
+	if !requests.is_empty():
+		new_clips = ClipLogic.split(requests)
+		if new_clips.size() > 0:
+			ClipLogic.selected_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+		draw_clips.queue_redraw()
 
 
 func _on_request_drop_folder(screen_pos: Vector2) -> void:
@@ -1196,6 +1199,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 						audio_request.frame = target_frame
 						audio_request.group_id = group_id
 						audio_request.audio_index = file.audio_streams[i]
+						audio_request.is_muted = (i != start_i)
 						audio_request.type = EditorCore.Type.AUDIO
 						requests.append(audio_request)
 				else: requests.append(video_request)

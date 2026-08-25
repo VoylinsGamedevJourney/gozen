@@ -171,7 +171,7 @@ func _draw_split_video_preview(file: FileData) -> void:
 			_draw_wave(0, file.duration, 1.0)
 
 	# Draw audio previews.
-	var start_i: int = 0 if split_audio else 1
+	var start_i: int = 0 if split_audio == SPLIT_AUDIO.SHIFT else 1
 	for i: int in range(start_i, file.audio_streams.size()):
 		var audio_track_idx: int = draggable.track_offset + 1 + (i - start_i)
 		var audio_preview_position: Vector2 = Vector2(

@@ -584,7 +584,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
-	elif raw_data is Video:
+	elif raw_data is Video and clip.type == Type.VIDEO:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
 		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_video.bind(video))
