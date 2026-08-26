@@ -88,16 +88,16 @@ func update_file(path: String, status: int) -> void:
 	if !file_labels.has(path):
 		var new_label: Label = Label.new()
 		new_label.text = "- " + path.get_file()
-		new_label.self_modulate = Color.ORANGE
+		new_label.add_theme_color_override("font_color", get_theme_color("loading_color", "ProgressOverlay"))
 		new_label.tooltip_text = path
 		file_labels[path] = new_label
 		vbox.add_child(new_label)
 
 	if status == -1: # Problem.
-		file_labels[path].self_modulate = Color.RED
+		(file_labels[path] as Label).add_theme_color_override("font_color", get_theme_color("error_color", "ProgressOverlay"))
 		file_labels[path].tooltip_text = path + "\nThis file could not be loaded."
 	elif status == 1: # Loaded.
-		file_labels[path].self_modulate = Color.GREEN
+		(file_labels[path] as Label).add_theme_color_override("font_color", get_theme_color("loaded_color", "ProgressOverlay"))
 
 
 ## If errors happen, we want the user to be able to see them and not close directly.

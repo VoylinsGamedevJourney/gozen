@@ -270,7 +270,7 @@ func _on_drag_overlay_draw() -> void:
 		threshold = DockableTab.SPLIT_THRESHOLD
 
 	var draw_rect: Rect2
-	var color: Color = DockableTab.COLOR_OVERLAY
+	var color: Color = drag_overlay.get_theme_color("overlay_color", "DockableTab")
 
 	if preview_zone == DockableTab.DropZone.CENTER:
 		draw_rect = Rect2(Vector2.ZERO, rect.size)

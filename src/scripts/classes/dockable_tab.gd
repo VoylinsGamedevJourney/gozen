@@ -5,7 +5,6 @@ extends TabContainer
 enum DropZone { NONE, CENTER, LEFT, RIGHT, TOP, BOTTOM }
 
 
-const COLOR_OVERLAY: Color = Library.COLOR_GOZEN_ACCENT
 const SPLIT_THRESHOLD: float = 0.25
 
 

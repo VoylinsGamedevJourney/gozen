@@ -1,8 +1,5 @@
 extends Control
 
-const TRACK_LINE_COLOR: Color = Color.DIM_GRAY
-
-
 
 func _draw() -> void:
 	var scroll_container: ScrollContainer = get_parent().get_parent()
@@ -12,4 +9,4 @@ func _draw() -> void:
 		var y_pos: float = Timeline.track_total_size * (i + 1)
 		draw_dashed_line(
 				Vector2(scroll_start, y_pos), Vector2(scroll_end, y_pos),
-				TRACK_LINE_COLOR, Timeline.TRACK_LINE_WIDTH)
+				get_theme_color("track_line", "Timeline"), Timeline.TRACK_LINE_WIDTH)

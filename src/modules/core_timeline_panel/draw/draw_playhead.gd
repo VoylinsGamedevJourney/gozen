@@ -1,7 +1,6 @@
 extends Control
 
 const PLAYHEAD_WIDTH: int = 2
-const PLAYHEAD_COLOR: Color = Color(0.4, 0.4, 0.4)
 
 
 
@@ -11,4 +10,4 @@ func _draw() -> void:
 
 	draw_line(
 			Vector2(playhead_pos, 0), Vector2(playhead_pos, size.y),
-			PLAYHEAD_COLOR, PLAYHEAD_WIDTH)
+			get_theme_color("playhead", "Timeline"), PLAYHEAD_WIDTH)

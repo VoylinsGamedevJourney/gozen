@@ -1,8 +1,6 @@
 extends PanelContainer
 
 
-const COLOR_TEXT: Color = Color(0.85, 0.85, 0.85, 0.5)
-const COLOR_TICK: Color = Color(0.4, 0.4, 0.4, 0.5)
 const STEPS: PackedInt32Array = [1, 5, 10, 30, 60, 150, 300, 600, 1800, 3600]
 
 const MARKER_HANDLE_HEIGHT: int = 16
@@ -148,13 +146,12 @@ func _draw() -> void:
 					HORIZONTAL_ALIGNMENT_LEFT,
 					-1,
 					FONT_SIZE_TIME_STAMP,
-					COLOR_TEXT)
+					get_theme_color("text_color", "TimeStamps"))
 				last_text_x = x
 		draw_line(
 			Vector2(x, size.y),
 			Vector2(x, size.y - tick_h),
-			COLOR_TICK
-		)
+			get_theme_color("tick_color", "TimeStamps"))
 
 	# - Draw markers
 	marker_rects.clear()
@@ -199,8 +196,10 @@ func _draw() -> void:
 	var region_start: float = Project.data.render_region.x * Timeline.zoom
 	var region_end: float = Project.data.render_region.y * Timeline.zoom
 	var alpha: float = 0.7 if Project.data.use_render_region else 0.3
+	var render_color: Color = get_theme_color("render_region", "TimeStamps")
+	render_color.a *= alpha
 	if region_end >= region_start:
-		draw_rect(Rect2(region_start, 0, region_end - region_start, 4), Color(0.65, 0.1, 0.95, alpha))
+		draw_rect(Rect2(region_start, 0, region_end - region_start, 4), render_color)
 
 
 func _update_tooltip() -> void:

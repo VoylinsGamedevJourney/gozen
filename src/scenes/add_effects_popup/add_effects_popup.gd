@@ -1,10 +1,6 @@
 extends PanelContainer
 # TODO: In 4.8 we can use the native fuzzy search feature.
 
-const COLOR_VISUAL: Color = Color(0.101960786, 1, 0.101960786, 0.078431375)
-const COLOR_AUDIO: Color = Color(0.101960786, 0.101960786, 1, 0.078431375)
-
-
 @export var search_line_edit: LineEdit
 @export var effect_buttons: VBoxContainer
 
@@ -65,26 +61,14 @@ func load_effects(type: EffectsHandler.TYPE, clips: Array[ClipData]) -> void:
 
 func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> void:
 	for effect_option: String in effects_data:
-		var color: Color = COLOR_VISUAL if is_visual else COLOR_AUDIO
 		var button: Button = Button.new()
 
+		button.theme_type_variation = "EffectVisualButton" if is_visual else "EffectAudioButton"
 		button.text = tr(effect_option)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.toggle_mode = true
 		button.button_group = button_group
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-		var stylebox: StyleBoxFlat = StyleBoxFlat.new()
-		stylebox.bg_color = color
-		stylebox.set_corner_radius_all(3)
-		stylebox.set_content_margin_all(4)
-		button.add_theme_stylebox_override("normal", stylebox)
-
-		var stylebox_pressed: StyleBoxFlat = stylebox.duplicate()
-		stylebox_pressed.bg_color = color.lightened(0.2)
-		button.add_theme_stylebox_override("pressed", stylebox_pressed)
-		button.add_theme_stylebox_override("hover", stylebox_pressed)
-		button.add_theme_stylebox_override("focus", stylebox_pressed)
 
 		if button.pressed.connect(_on_effect_clicked.bind(effects_data[effect_option], is_visual)):
 			printerr("AddEffectsPopup: Couldn't connect 'pressed' on '%s' button!" % tr(effect_option))

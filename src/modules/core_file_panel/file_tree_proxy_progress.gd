@@ -1,9 +1,6 @@
 extends Tree
 
 
-const COLOR_PROXY_LOADING: Color = Color(0.0, 0.5, 0.5, 0.5)
-
-
 @export var main_file_panel: Control
 
 
@@ -21,7 +18,7 @@ func _draw() -> void:
 	for file_id: int in proxy_progress.keys():
 		var rect: Rect2 = get_item_area_rect(main_file_panel.get("file_items")[file_id] as TreeItem)
 		rect.size.x = (rect.size.x / 100.0) * proxy_progress[file_id]
-		draw_rect(rect, COLOR_PROXY_LOADING)
+		draw_rect(rect, get_theme_color("proxy_loading_color", "FileTree"))
 
 
 func _on_proxy_loading(file_id: int, progress: int) -> void:

@@ -5,8 +5,6 @@ signal seek_requested(position: float)
 signal zoom_requested(new_duration: float)
 
 
-const COLOR_WAVE: Color = Color(1.0, 1.0, 1.0, 0.5)
-const COLOR_PLAYHEAD: Color = Color(1.0, 0.2, 0.2, 0.8)
 const PREVIEW_DURATION: float = 30 ## Seconds of duration shown.
 
 
@@ -87,9 +85,9 @@ func _draw() -> void:
 		var height: float = clampf(value * wave_modifier, 0.0, 1.0) * (area_height * 0.9)
 		var from: Vector2 = Vector2(pos_x, center_y - height / 2.0)
 		var to: Vector2 = Vector2(pos_x, center_y + height / 2.0)
-		draw_line(from, to, COLOR_WAVE)
+		draw_line(from, to, get_theme_color("wave_color", "ATOWave"))
 
 	# - Draw playhead.
 	var playhead_x: float = (playback_position / preview_duration) * size.x
 	if playhead_x >= 0 and playhead_x <= size.x:
-		draw_line(Vector2(playhead_x, 0), Vector2(playhead_x, size.y), COLOR_PLAYHEAD, 2.0)
+		draw_line(Vector2(playhead_x, 0), Vector2(playhead_x, size.y), get_theme_color("playhead_color", "ATOWave"), 2.0)

@@ -41,15 +41,12 @@ func _rebuild() -> void:
 		var track_data: TrackData = TrackLogic.tracks[i]
 		var panel: PanelContainer = PanelContainer.new()
 		panel.custom_minimum_size.y = track_total_size
-		var style: StyleBoxFlat = StyleBoxFlat.new()
+		panel.theme_type_variation = "TrackControlPanel"
 		var update_bg_color: Callable = func() -> void:
 			if track_data.is_muted or not track_data.is_visible:
-				style.bg_color = Color(1.0, 0.0, 0.0, 0.15)
+				panel.theme_type_variation = "TrackControlPanelMuted"
 			else:
-				style.bg_color = Color(0, 0, 0, 0)
-		style.border_width_bottom = 1
-		style.border_color = Color.DIM_GRAY
-		panel.add_theme_stylebox_override("panel", style)
+				panel.theme_type_variation = "TrackControlPanel"
 
 		update_bg_color.call()
 
@@ -68,16 +65,17 @@ func _rebuild() -> void:
 		button_visibility.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_visibility.tooltip_text = tr("Toggle track visibility")
 
-		@warning_ignore("return_value_discarded")
-		button_visibility.toggled.connect(func(toggled: bool) -> void:
+		button_visibility.modulate = button_visibility.get_theme_color("hidden_modulate", "VisibilityButton") if !track_data.is_visible else button_visibility.get_theme_color("visible_modulate", "VisibilityButton")
+		if button_visibility.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_visible = !toggled
-				button_visibility.modulate = Color.RED if toggled else Color.WHITE
+				button_visibility.modulate = button_visibility.get_theme_color("hidden_modulate", "VisibilityButton") if toggled else button_visibility.get_theme_color("visible_modulate", "VisibilityButton")
 				update_bg_color.call()
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
 				Project.unsaved_changes = true
-				ClipLogic.updated.emit())
+				ClipLogic.updated.emit()): Print.stack_connect()
 
 		var button_mute: Button = Button.new()
+		button_mute.theme_type_variation = "MuteButton"
 		button_mute.toggle_mode = true
 		button_mute.flat = true
 		button_mute.text = "M" # NO_TRANSLATE
@@ -85,19 +83,13 @@ func _rebuild() -> void:
 		button_mute.custom_minimum_size = Vector2(8, 8)
 		button_mute.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_mute.tooltip_text = tr("Mute track")
-		button_mute.add_theme_font_size_override("font_size", 8)
-		button_mute.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
-		button_mute.add_theme_color_override("font_hover_color", Color(0.8, 0.8, 0.8))
-		button_mute.add_theme_color_override("font_pressed_color", Color(1, 0.3, 0.3))
 
-		@warning_ignore("return_value_discarded")
-		button_mute.toggled.connect(func(toggled: bool) -> void:
+		if button_mute.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_muted = toggled
-				button_mute.modulate = Color.RED if toggled else Color.WHITE
 				update_bg_color.call()
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
 				Project.unsaved_changes = true
-				ClipLogic.updated.emit())
+				ClipLogic.updated.emit()): Print.stack_connect()
 
 		vbox.add_child(button_visibility)
 		vbox.add_child(button_mute)

@@ -8,10 +8,6 @@ signal keyframe_dragged_to(frame: int)
 
 const MARGIN: float = 8.0
 const KEYFRAME_RADIUS: float = 6.0
-const KEYFRAME_COLOR: Color = Color(0.8, 0.8, 0.8)
-const SELECTED_COLOR: Color = Color(1.0, 0.6, 0.2)
-const TRACK_BAR_COLOR: Color = Color(0.1, 0.1, 0.1, 0.5)
-
 
 const MIN_ZOOM: float = 0.01
 const MAX_ZOOM: float = 200.0
@@ -30,9 +26,6 @@ var _is_scrubbing: bool = false
 var _drag_start_pos: Vector2 = Vector2.ZERO
 
 
-
-func _init() -> void:
-	color = Color("ffffff7c")
 
 
 func setup(p_effect: Effect, p_duration: int, p_current_frame: int) -> void:
@@ -115,13 +108,14 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
+	color = get_theme_color("bg_color", "KeyframeTrack")
 	var width: float = size.x - (MARGIN * 2)
 	var mid_y: float = size.y / 2.0
 
-	draw_rect(Rect2(MARGIN, mid_y - 2, width, 4), TRACK_BAR_COLOR)
+	draw_rect(Rect2(MARGIN, mid_y - 2, width, 4), get_theme_color("track_bar_color", "KeyframeTrack"))
 
 	if clip_duration > 0:
-		var line_color: Color = TRACK_BAR_COLOR
+		var line_color: Color = get_theme_color("track_bar_color", "KeyframeTrack")
 		line_color.a = 0.8
 		var max_frame: float = maxf(1.0, float(clip_duration - 1))
 		var pixels_per_frame: float = width / max_frame
@@ -155,10 +149,10 @@ func _draw() -> void:
 		var max_frame: float = maxf(1.0, float(clip_duration - 1))
 		var ratio: float = float(draw_frame_val) / max_frame
 		var pos: Vector2 = Vector2(MARGIN + (ratio * width), mid_y)
-		var keyframe_color: Color = KEYFRAME_COLOR
+		var keyframe_color: Color = get_theme_color("keyframe_color", "KeyframeTrack")
 
 		if frame_int == _hovered_frame or (_is_dragging and frame_int == _dragged_frame):
-			keyframe_color = SELECTED_COLOR
+			keyframe_color = get_theme_color("selected_color", "KeyframeTrack")
 
 		var points: PackedVector2Array = [
 			pos + Vector2(0, -KEYFRAME_RADIUS),

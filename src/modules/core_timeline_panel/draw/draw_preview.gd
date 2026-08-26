@@ -3,16 +3,8 @@ extends Control
 enum SPLIT_AUDIO { NONE, SHIFT, CTRL }
 
 
-const STYLE_BOX_PREVIEW: StyleBox = preload("uid://dx2v44643hfvy")
-
-const COLOR_RESIZING: Color = Color(1.0, 1.0, 1.0, 0.3)
-const COLOR_SPEEDING: Color = Color(1.0, 0.5, 0.0, 0.3)
-
-const COLOR_WAVE: Color = Color(0.82, 0.82, 0.82, 0.6)
-const COLOR_WAVE_MUTED: Color = Color(0.82, 0.82, 0.82, 0.2)
-
-
 @onready var scroll_container: ScrollContainer = get_parent().get_parent()
+
 
 var draggable: Draggable = null
 
@@ -90,7 +82,7 @@ func _handle_draggable() -> void:
 		preview_size.y = Timeline.track_height
 
 		clip_rect = Rect2(preview_pos, preview_size)
-		draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+		draw_style_box(get_theme_stylebox("ClipPreview", "Timeline"), clip_rect)
 
 		_set_wave_source(clip)
 
@@ -137,11 +129,11 @@ func _handle_clip(is_speeding: bool) -> void:
 	clip_rect = Rect2(box_pos, clip_size)
 
 	# Drawing the original clip box and actual resized box.
-	draw_rect(clip_rect, COLOR_SPEEDING if is_speeding else COLOR_RESIZING)
+	draw_rect(clip_rect, get_theme_color("speeding", "Timeline") if is_speeding else get_theme_color("resizing", "Timeline"))
 
 	# Clip rect is re-used for the preview.
 	clip_rect = Rect2(preview_pos, preview_size)
-	draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+	draw_style_box(get_theme_stylebox("ClipPreview", "Timeline"), clip_rect)
 
 	_set_wave_source(clip)
 	wave_streams = FileLogic.audio_wave.get(wave_file_id, {})
@@ -158,7 +150,7 @@ func _draw_split_video_preview(file: FileData) -> void:
 	var video_preview_position: Vector2 = Vector2(
 			(draggable.frame_offset + offset_frames) * Timeline.zoom,
 			draggable.track_offset * Timeline.track_total_size)
-	draw_style_box(STYLE_BOX_PREVIEW, Rect2(video_preview_position, preview_size))
+	draw_style_box(get_theme_stylebox("ClipPreview", "Timeline"), Rect2(video_preview_position, preview_size))
 
 	wave_streams = FileLogic.audio_wave.get(file.id, {})
 	if split_audio == SPLIT_AUDIO.CTRL:
@@ -178,7 +170,7 @@ func _draw_split_video_preview(file: FileData) -> void:
 				(draggable.frame_offset + offset_frames) * Timeline.zoom,
 				audio_track_idx * Timeline.track_total_size)
 		clip_rect = Rect2(audio_preview_position, preview_size)
-		draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+		draw_style_box(get_theme_stylebox("ClipPreview", "Timeline"), clip_rect)
 
 		var stream_index: int = file.audio_streams[i]
 		wave_dict = _get_wave_dict(stream_index)
@@ -192,7 +184,7 @@ func _draw_clip_preview(file: FileData) -> void:
 	preview_pos.y = draggable.track_offset * Timeline.track_total_size
 
 	clip_rect = Rect2(preview_pos, preview_size)
-	draw_style_box(STYLE_BOX_PREVIEW, clip_rect)
+	draw_style_box(get_theme_stylebox("ClipPreview", "Timeline"), clip_rect)
 
 	if file.type in EditorCore.AUDIO_TYPES:
 		wave_streams = FileLogic.audio_wave.get(file.id, {})
@@ -256,4 +248,4 @@ func _draw_wave(begin: int, total_duration: int, speed: float) -> void:
 
 		draw_rect(
 				Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height),
-				COLOR_WAVE_MUTED if is_muted else COLOR_WAVE)
+				get_theme_color("audio_wave_muted", "Timeline") if is_muted else get_theme_color("audio_wave", "Timeline"))

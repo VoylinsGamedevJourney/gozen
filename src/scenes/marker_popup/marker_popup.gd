@@ -31,7 +31,7 @@ func _ready() -> void:
 	marker_line_edit.select_all()
 	type_option_button.selected = last_type
 	time_label.text = "%s (Frame: %d)" % [
-			Utils.format_time_str_from_frame(current_frame_nr, Project.data.framerate, false),
+			Format.time_str_from_frame(current_frame_nr, Project.data.framerate, false),
 			current_frame_nr]
 
 	delete_button.visible = !(not marker)

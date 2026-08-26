@@ -10,10 +10,6 @@ extends PanelContainer
 
 const HEADER: String = "EffectsPanel:" # NO_TRANSLATE
 
-const COLOR_KEYFRAMING_ON: Color = Color(1, 1, 1, 1)
-const COLOR_KEYFRAMING_OFF: Color = Color(1, 1, 1, 0.5)
-const COLOR_DROP_LINE: Color = Color(0.65, 0.1, 0.95, 1.0)
-
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
 
@@ -190,7 +186,7 @@ func _draw_drop_indicator(vbox: VBoxContainer) -> void:
 		pos.y = last_child.position.y + last_child.size.y
 
 	var length: Vector2 = Vector2(vbox.size.x, pos.y)
-	vbox.draw_line(pos, length, COLOR_DROP_LINE, 3.0)
+	vbox.draw_line(pos, length, vbox.get_theme_color("drop_line_color", "EffectsPanel"), 3.0)
 
 
 func _on_clip_pressed(clip_data: ClipData) -> void:
@@ -573,9 +569,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 	var container: FoldableContainer = FoldableContainer.new()
 	container.title = effect.nickname if not (is_file_effect and effect.id == "text") else "Text Properties"
 	container.tooltip_text = effect.tooltip
-	#container.theme_type_variation = "box" # TODO: Create specific theme (light + dark).
-	container.add_theme_font_size_override("font_size", 11)
-	container.add_theme_color_override("font_color", "#b8b8b8")
+	container.theme_type_variation = "EffectContainer"
 
 	if not is_file_effect:
 		var button_visible: TextureButton = TextureButton.new()

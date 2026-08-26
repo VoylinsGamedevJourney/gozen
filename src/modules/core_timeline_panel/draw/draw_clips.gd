@@ -1,23 +1,8 @@
 extends Control
 
+
 const FADE_HANDLE_SIZE: float = 3.5
-const FADE_HANDLE_COLOR: Color = Color(1.0, 1.0, 1.0, 0.7)
-const FADE_LINE_COLOR: Color = Color(1.0, 1.0, 1.0, 0.5)
-const FADE_AREA_COLOR: Color = Color(0.0, 0.0, 0.0, 0.3)
-
-const COLOR_AUDIO_WAVE: Color = Color(0.82, 0.82, 0.82, 0.6)
-
-const STYLE_BOXES: Dictionary[EditorCore.Type, Array] = {
-	EditorCore.Type.IMAGE: [preload(Library.STYLE_BOX_CLIP_IMAGE_NORMAL), preload(Library.STYLE_BOX_CLIP_IMAGE_FOCUS)],
-	EditorCore.Type.AUDIO: [preload(Library.STYLE_BOX_CLIP_AUDIO_NORMAL), preload(Library.STYLE_BOX_CLIP_AUDIO_FOCUS)],
-	EditorCore.Type.VIDEO: [preload(Library.STYLE_BOX_CLIP_VIDEO_NORMAL), preload(Library.STYLE_BOX_CLIP_VIDEO_FOCUS)],
-	EditorCore.Type.COLOR: [preload(Library.STYLE_BOX_CLIP_COLOR_NORMAL), preload(Library.STYLE_BOX_CLIP_COLOR_FOCUS)],
-	EditorCore.Type.TEXT:  [preload(Library.STYLE_BOX_CLIP_TEXT_NORMAL), preload(Library.STYLE_BOX_CLIP_TEXT_FOCUS)],
-	EditorCore.Type.PCK:  [preload(Library.STYLE_BOX_CLIP_PCK_NORMAL), preload(Library.STYLE_BOX_CLIP_PCK_FOCUS)],
-}
-
 const CLIP_TEXT_OFFSET: Vector2 = Vector2(5, 12)
-const CLIP_TEXT_COLOR: Color = Color.WHITE
 
 
 
@@ -59,7 +44,18 @@ func _draw() -> void:
 		var visible_rect: Rect2 = Rect2(scroll_amount - 100, box_pos.y, scroll_container.size.x + 200, Timeline.track_height)
 		var final_rect: Rect2 = clip_rect.intersection(visible_rect)
 		if final_rect.size.x > 0:
-			draw_style_box(STYLE_BOXES[clip.type][box_type] as StyleBox, final_rect)
+			var type_str: String = "Unknown"
+			match clip.type:
+				EditorCore.Type.IMAGE: type_str = "Image"
+				EditorCore.Type.AUDIO: type_str = "Audio"
+				EditorCore.Type.VIDEO: type_str = "Video"
+				EditorCore.Type.COLOR: type_str = "Color"
+				EditorCore.Type.TEXT:  type_str = "Text"
+				EditorCore.Type.PCK:   type_str = "Pck"
+			var style_name: String = "Clip" + type_str + ("Focus" if box_type == 1 else "Normal")
+			var style: StyleBox = get_theme_stylebox(style_name, "Timeline")
+			if style:
+				draw_style_box(style, final_rect)
 
 		# - Audio waves (Part of clip blocks)
 		var wave_file_id: int = clip.file
@@ -100,7 +96,7 @@ func _draw() -> void:
 
 		# - Clip speed tint
 		if not is_equal_approx(clip.speed, 1.0):
-			draw_rect(final_rect, Color(1.0, 1.0, 0.0, 0.3))
+			draw_rect(final_rect, get_theme_color("speed_tint", "Timeline"))
 
 		# - Clip nickname
 		if clip_rect.size.x > 20:
@@ -117,15 +113,14 @@ func _draw() -> void:
 						clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
 						10,
 						Color(1.0, 1.0, 1.0, 0.5))
-
 			draw_string(
 					get_theme_default_font(),
 					Vector2(text_pos_x, box_pos.y) + CLIP_TEXT_OFFSET,
 					text,
 					HORIZONTAL_ALIGNMENT_LEFT,
 					clip_end_x - text_pos_x - CLIP_TEXT_OFFSET.x,
-					11, # Font size
-					CLIP_TEXT_COLOR)
+					11, # Font size.
+					get_theme_color("clip_text", "Timeline"))
 
 	# - Draw track state overlays (locked, muted, invisible)
 	for i: int in TrackLogic.tracks.size():
@@ -134,10 +129,10 @@ func _draw() -> void:
 		var track_rect: Rect2 = Rect2(scroll_amount, y_pos, scroll_container.size.x, Timeline.track_total_size)
 
 		if track.is_muted or not track.is_visible:
-			draw_rect(track_rect, Color(1.0, 0.0, 0.0, 0.1))
+			draw_rect(track_rect, get_theme_color("track_muted", "Timeline"))
 
 		if track.is_locked:
-			draw_rect(track_rect, Color(0.5, 0.5, 0.5, 0.8))
+			draw_rect(track_rect, get_theme_color("track_locked", "Timeline"))
 
 
 func _get_visible(start: int, end: int) -> Array[ClipData]:
@@ -193,9 +188,9 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 			SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
 
-		var wave_color: Color = COLOR_AUDIO_WAVE
+		var wave_color: Color = get_theme_color("audio_wave", "Timeline")
 		if is_muted:
-			wave_color.a *= 0.3
+			wave_color = get_theme_color("audio_wave_muted", "Timeline")
 		draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
 
 
@@ -213,8 +208,8 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 			Vector2(box_pos.x, corner_y),
 			Vector2(box_pos.x + fade.x * zoom, corner_y)
 		]
-		draw_colored_polygon(fade_in_pts, FADE_AREA_COLOR)
-		draw_line(fade_in_pts[2], fade_in_pts[0], FADE_LINE_COLOR, 1.0, true)
+		draw_colored_polygon(fade_in_pts, get_theme_color("fade_area", "Timeline"))
+		draw_line(fade_in_pts[2], fade_in_pts[0], get_theme_color("fade_line", "Timeline"), 1.0, true)
 
 	if fade.y > 0: # Draw line fade out.
 		var fade_out_pts: PackedVector2Array = [
@@ -222,8 +217,8 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 			Vector2(box_pos.x + duration, corner_y),
 			Vector2(box_pos.x + duration - fade.y * zoom, corner_y)
 		]
-		draw_colored_polygon(fade_out_pts, FADE_AREA_COLOR)
-		draw_line(fade_out_pts[2], fade_out_pts[0], FADE_LINE_COLOR, 1.0, true)
+		draw_colored_polygon(fade_out_pts, get_theme_color("fade_area", "Timeline"))
+		draw_line(fade_out_pts[2], fade_out_pts[0], get_theme_color("fade_line", "Timeline"), 1.0, true)
 
 	# Draw handles.
 	if show_handles:
@@ -241,5 +236,5 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 			in_rect = Rect2(in_x, corner_y, current_handle_size, current_handle_size)
 			out_rect = Rect2(out_x, corner_y, current_handle_size, current_handle_size)
 
-		draw_rect(in_rect, FADE_HANDLE_COLOR)
-		draw_rect(out_rect, FADE_HANDLE_COLOR)
+		draw_rect(in_rect, get_theme_color("fade_handle", "Timeline"))
+		draw_rect(out_rect, get_theme_color("fade_handle", "Timeline"))

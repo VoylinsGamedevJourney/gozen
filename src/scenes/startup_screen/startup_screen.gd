@@ -8,9 +8,6 @@ extends PanelContainer
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 const USER_PROFILES_PATH: String = "user://project_profiles/"
 
-const COLOR_ENABLED: Color = Color.WHITE
-const COLOR_DISABLED: Color = Color(1.0,1.0,1.0,0.2)
-
 
 @export var version_label: RichTextLabel
 @export var tab_container: TabContainer
@@ -212,9 +209,9 @@ func _set_new_project_defaults() -> void:
 
 	_on_new_project_option_button_item_selected(0)
 	save_profile_preset_button.disabled = true
-	save_profile_preset_button.modulate = COLOR_DISABLED
+	save_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
 	delete_profile_preset_button.disabled = true
-	delete_profile_preset_button.modulate = COLOR_DISABLED
+	delete_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
 
 
 func _on_editor_settings_button_pressed() -> void:
@@ -345,13 +342,13 @@ func _on_new_project_option_button_item_selected(index: int) -> void:
 		background_color_picker.color = profile.background_color
 
 	save_profile_preset_button.disabled = true
-	save_profile_preset_button.modulate = COLOR_DISABLED
+	save_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
 	if id < default_profiles_count:
 		delete_profile_preset_button.disabled = true
-		delete_profile_preset_button.modulate = COLOR_DISABLED
+		delete_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
 	else:
 		delete_profile_preset_button.disabled = false
-		delete_profile_preset_button.modulate = COLOR_ENABLED
+		delete_profile_preset_button.modulate = get_theme_color("icon_enabled", "StartupScreen")
 
 
 func _on_save_profile_preset_button_pressed() -> void:
@@ -418,7 +415,7 @@ func _on_new_project_setting_changed() -> void:
 	project_presets_option_button.selected = -1
 
 	save_profile_preset_button.disabled = false
-	save_profile_preset_button.modulate = COLOR_ENABLED
+	save_profile_preset_button.modulate = get_theme_color("icon_enabled", "StartupScreen")
 
 	delete_profile_preset_button.disabled = true
-	delete_profile_preset_button.modulate = COLOR_DISABLED
+	delete_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
