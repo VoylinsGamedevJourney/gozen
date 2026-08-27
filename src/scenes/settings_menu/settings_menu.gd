@@ -127,71 +127,115 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 		shortcut_nodes.append(create_label(action.capitalize()))
 		shortcut_nodes.append(create_shortcut_buttons(action))
 
-	var options: Dictionary = {
-		tr("Appearance"): [
-			create_header(tr("Display")), Control.new(),
-			create_label(tr("Language")),
-			create_option_button(
-					Settings.get_languages(),
-					Settings.get_languages().values().find(Settings.get_language()),
-					Settings.get_languages().values().find("en"),
-					Settings.set_language,
-					TYPE_STRING),
-			create_label(tr("Display scale")),
-			create_spinbox(
-					Settings.get_display_scale_int(),
-					100,
-					50, 300, 5, false, false,
-					Settings.set_display_scale_int,
-					"%"),
+	var appearance_options: Array = [
+		create_header(tr("Display")), Control.new(),
+		create_label(tr("Language")),
+		create_option_button(
+				Settings.get_languages(),
+				Settings.get_languages().values().find(Settings.get_language()),
+				Settings.get_languages().values().find("en"),
+				Settings.set_language,
+				TYPE_STRING),
+		create_label(tr("Display scale")),
+		create_spinbox(
+				Settings.get_display_scale_int(),
+				100,
+				50, 300, 5, false, false,
+				Settings.set_display_scale_int,
+				"%"),
+	]
+
+	if not OS.has_feature("demo"):
+		appearance_options.append_array([
 			create_label(tr("Editor theme")),
 			create_option_button(
 					Settings.get_themes(),
 					Settings.get_themes().values().find(Settings.get_theme_path()),
 					Settings.get_themes().values().find(Library.THEME_DEFAULT),
 					Settings.set_theme_path,
-					TYPE_STRING),
-			create_label(tr("Show menu bar")),
+					TYPE_STRING)
+		])
+
+	appearance_options.append_array([
+		create_label(tr("Show menu bar")),
+		create_check_button(
+				Settings.get_show_menu_bar(),
+				default_settings.show_menu_bar,
+				Settings.set_show_menu_bar),
+		create_label(tr("Show safe areas on startup")),
+		create_check_button(
+				Settings.get_show_safe_areas_on_startup(),
+				default_settings.show_safe_areas_on_startup,
+				Settings.set_show_safe_areas_on_startup),
+		create_header(tr("Audio waveforms")), Control.new(),
+		create_label(tr("Waveform style")),
+		create_option_button(
+				Settings.get_audio_waveform_styles(),
+				Settings.get_audio_waveform_styles().values().find(Settings.get_audio_waveform_style()),
+				Settings.get_audio_waveform_styles().values().find(default_settings.audio_waveform_style),
+				Settings.set_audio_waveform_style,
+				TYPE_INT),
+		create_label(tr("Waveform amplifier")),
+		create_spinbox(
+				Settings.get_audio_waveform_amp(),
+				default_settings.audio_waveform_amp,
+				0.5, 6, 0.5, false, false,
+				Settings.set_audio_waveform_amp,
+				"",
+				tr("Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity")),
+		create_header(tr("Dialogs")), Control.new(),
+		create_label(tr("Use native dialogs")),
+		create_check_button(
+				Settings.get_use_native_dialog(),
+				default_settings.use_native_dialog,
+				Settings.set_use_native_dialog,
+				tr("Native dialogs use your operating system's file browser and windows. Disabling this uses GoZen's built-in dialogs instead.")),
+		create_label(tr("Panel tabs position")),
+		create_option_button(
+				Settings.get_panel_tabs_positions(),
+				Settings.get_panel_tabs_positions().values().find(Settings.get_panel_tabs_position()),
+				Settings.get_panel_tabs_positions().values().find(default_settings.panel_tabs_position),
+				Settings.set_panel_tabs_position,
+				TYPE_INT),
+	])
+
+	var performance_options: Array = [
+		create_header(tr("Video Decoding")), Control.new(),
+		create_label(tr("Smart Seek Threshold")),
+		create_spinbox(
+				Settings.get_video_smart_seek_threshold(),
+				default_settings.video_smart_seek_threshold,
+				4, 500, 1, false, true,
+				Settings.set_video_smart_seek_threshold,
+				"",
+				tr("Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU.")),
+		create_label(tr("Video Cache Size")),
+		create_spinbox(
+				Settings.get_video_cache_size(),
+				default_settings.video_cache_size,
+				4, 1000, 1, false, true,
+				Settings.set_video_cache_size,
+				"",
+				tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage.")),
+	]
+
+	if not OS.has_feature("demo"):
+		performance_options.append_array([
+			create_label(tr("Use proxies")),
 			create_check_button(
-					Settings.get_show_menu_bar(),
-					default_settings.show_menu_bar,
-					Settings.set_show_menu_bar),
-			create_label(tr("Show safe areas on startup")),
-			create_check_button(
-					Settings.get_show_safe_areas_on_startup(),
-					default_settings.show_safe_areas_on_startup,
-					Settings.set_show_safe_areas_on_startup),
-			create_header(tr("Audio waveforms")), Control.new(),
-			create_label(tr("Waveform style")),
-			create_option_button(
-					Settings.get_audio_waveform_styles(),
-					Settings.get_audio_waveform_styles().values().find(Settings.get_audio_waveform_style()),
-					Settings.get_audio_waveform_styles().values().find(default_settings.audio_waveform_style),
-					Settings.set_audio_waveform_style,
-					TYPE_INT),
-			create_label(tr("Waveform amplifier")),
-			create_spinbox(
-					Settings.get_audio_waveform_amp(),
-					default_settings.audio_waveform_amp,
-					0.5, 6, 0.5, false, false,
-					Settings.set_audio_waveform_amp,
-					"",
-					tr("Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity")),
-			create_header(tr("Dialogs")), Control.new(),
-			create_label(tr("Use native dialogs")),
-			create_check_button(
-					Settings.get_use_native_dialog(),
-					default_settings.use_native_dialog,
-					Settings.set_use_native_dialog,
-					tr("Native dialogs use your operating system's file browser and windows. Disabling this uses GoZen's built-in dialogs instead.")),
-			create_label(tr("Panel tabs position")),
-			create_option_button(
-					Settings.get_panel_tabs_positions(),
-					Settings.get_panel_tabs_positions().values().find(Settings.get_panel_tabs_position()),
-					Settings.get_panel_tabs_positions().values().find(default_settings.panel_tabs_position),
-					Settings.set_panel_tabs_position,
-					TYPE_INT),
-		],
+				Settings.get_use_proxies(),
+				default_settings.use_proxies,
+				Settings.set_use_proxies),
+			create_label(tr("Proxies save path")),
+			create_line_edit(
+				Settings.get_proxies_path(),
+				default_settings.proxies_path,
+				Settings.set_proxies_path,
+				tr("Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder."))
+		])
+
+	var options: Dictionary = {
+		tr("Appearance"): appearance_options,
 
 		tr("Defaults"): [
 			create_header(tr("Default durations")), Control.new(),
@@ -255,36 +299,7 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 					Settings.set_quick_create_vertical_fps),
 		],
 
-		tr("Performance"): [
-			create_header(tr("Video Decoding")), Control.new(),
-			create_label(tr("Smart Seek Threshold")),
-			create_spinbox(
-					Settings.get_video_smart_seek_threshold(),
-					default_settings.video_smart_seek_threshold,
-					4, 500, 1, false, true,
-					Settings.set_video_smart_seek_threshold,
-					"",
-					tr("Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU.")),
-			create_label(tr("Video Cache Size")),
-			create_spinbox(
-					Settings.get_video_cache_size(),
-					default_settings.video_cache_size,
-					4, 1000, 1, false, true,
-					Settings.set_video_cache_size,
-					"",
-					tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage.")),
-			create_label(tr("Use proxies")),
-			create_check_button(
-				Settings.get_use_proxies(),
-				default_settings.use_proxies,
-				Settings.set_use_proxies),
-			create_label(tr("Proxies save path")),
-			create_line_edit(
-				Settings.get_proxies_path(),
-				default_settings.proxies_path,
-				Settings.set_proxies_path,
-				tr("Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder.")),
-		],
+		tr("Performance"): performance_options,
 
 		tr("Markers"): marker_nodes,
 

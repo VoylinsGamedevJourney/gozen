@@ -314,7 +314,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	if !rendering_device:
 		rendering_device = RenderingServer.get_rendering_device()
 	var render_resolution: Vector2i = Project.data.resolution
-	var shader_file: RDShaderFile = load("res://effects/shaders/rgba_to_yuv.glsl")
+	var shader_file: RDShaderFile = load("uid://de0r3l6ipvr0y")
 	yuv_shader = rendering_device.shader_create_from_spirv(shader_file.get_spirv())
 	yuv_pipeline = rendering_device.compute_pipeline_create(yuv_shader)
 

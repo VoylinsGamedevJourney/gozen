@@ -49,6 +49,94 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonFocus"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.121569, 0.121569, 1, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonHover"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.121569, 0.121569, 1, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonNormal"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101961, 0.101961, 1, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonPressed"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.301961, 0.301961, 1, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonFocus"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.121569, 1, 0.121569, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonHover"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.121569, 1, 0.121569, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonNormal"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101961, 1, 0.101961, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonPressed"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.301961, 1, 0.301961, 0.0784314)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_0hspu"]
 color = Color(0.333333, 0.333333, 0.333333, 0.784314)
 
@@ -88,6 +176,16 @@ corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmx4m"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TrackControlPanel"]
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 1
+border_color = Color(0.411765, 0.411765, 0.411765, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TrackControlPanelMuted"]
+bg_color = Color(1, 0, 0, 0.15)
+border_width_bottom = 1
+border_color = Color(0.411765, 0.411765, 0.411765, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1y3w"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
@@ -195,6 +293,12 @@ bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 corner_radius_top_left = 7
 corner_radius_bottom_left = 7
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timeline"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timestamps"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_by48d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07bah"]
@@ -218,176 +322,16 @@ content_margin_right = 7.0
 content_margin_bottom = 2.0
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timeline"]
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timestamps"]
-bg_color = Color(0.2, 0.2, 0.2, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonFocus"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.121569, 0.121569, 1, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonHover"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.121569, 0.121569, 1, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonNormal"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.101961, 0.101961, 1, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_AudioButtonPressed"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.301961, 0.301961, 1, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TrackControlPanel"]
-bg_color = Color(0, 0, 0, 0)
-border_width_bottom = 1
-border_color = Color(0.411765, 0.411765, 0.411765, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TrackControlPanelMuted"]
-bg_color = Color(1, 0, 0, 0.15)
-border_width_bottom = 1
-border_color = Color(0.411765, 0.411765, 0.411765, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonFocus"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.121569, 1, 0.121569, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonHover"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.121569, 1, 0.121569, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonNormal"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.101961, 1, 0.101961, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_VisualButtonPressed"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.301961, 1, 0.301961, 0.0784314)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
 [resource]
 default_font_size = 14
+ATOWave/colors/playhead_color = Color(1, 0.2, 0.2, 0.8)
+ATOWave/colors/wave_color = Color(1, 1, 1, 0.5)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/constants/h_separation = 7
 Button/styles/focus = SubResource("StyleBoxEmpty_oqxky")
 Button/styles/hover = SubResource("StyleBoxFlat_i2lla")
 Button/styles/normal = SubResource("StyleBoxFlat_jiub5")
 Button/styles/pressed = SubResource("StyleBoxFlat_i7l8v")
-HSeparator/styles/separator = SubResource("StyleBoxLine_0hspu")
-ItemList/styles/focus = SubResource("StyleBoxEmpty_rmx4m")
-ItemList/styles/panel = SubResource("StyleBoxEmpty_jiub5")
-MarginContainer/constants/margin_bottom = 7
-MarginContainer/constants/margin_left = 7
-MarginContainer/constants/margin_right = 7
-MarginContainer/constants/margin_top = 7
-MenuBar/colors/font_color = Color(0.875, 0.875, 0.875, 1)
-PanelContainer/styles/panel = SubResource("StyleBoxFlat_0icvv")
-PopupMenu/styles/panel = SubResource("StyleBoxFlat_f7d0x")
-TabContainer/styles/panel = SubResource("StyleBoxFlat_1vteb")
-TooltipPanel/styles/panel = SubResource("StyleBoxFlat_rmx4m")
-Tree/colors/font_color = Color(1, 1, 1, 1)
-Tree/styles/panel = SubResource("StyleBoxFlat_a1y3w")
-VSeparator/styles/separator = SubResource("StyleBoxLine_rmx4m")
-background/base_type = &"PanelContainer"
-background/styles/panel = SubResource("StyleBoxFlat_oqxky")
-box/base_type = &"PanelContainer"
-box/styles/panel = SubResource("StyleBoxFlat_0hspu")
-file_tab_button/base_type = &"Button"
-file_tab_button/styles/hover = SubResource("StyleBoxEmpty_0hspu")
-file_tab_button/styles/normal = SubResource("StyleBoxEmpty_0icvv")
-file_tab_button/styles/pressed = SubResource("StyleBoxFlat_h2olj")
-info_label/base_type = &"Label"
-info_label/colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
-info_label/font_sizes/font_size = 12
-main_button/base_type = &"Button"
-main_button/styles/normal = SubResource("StyleBoxFlat_by48d")
-overlay_background/base_type = &"PanelContainer"
-overlay_background/styles/panel = SubResource("StyleBoxFlat_catyp")
-render_profile_button/base_type = &"Button"
-render_profile_button/styles/focus = SubResource("StyleBoxEmpty_1vteb")
-render_profile_button/styles/hover = SubResource("StyleBoxEmpty_i7l8v")
-render_profile_button/styles/normal = SubResource("StyleBoxEmpty_catyp")
-render_profile_button/styles/pressed = SubResource("StyleBoxFlat_l8pwb")
-side_bar_button/base_type = &"Button"
-side_bar_button/styles/focus = SubResource("StyleBoxEmpty_i2lla")
-side_bar_button/styles/hover = SubResource("StyleBoxFlat_7g1jt")
-side_bar_button/styles/normal = SubResource("StyleBoxFlat_o3blr")
-side_bar_button/styles/pressed = SubResource("StyleBoxFlat_funo1")
-title_label/base_type = &"Label"
-timeline_panel/base_type = &"PanelContainer"
-timeline_panel/styles/panel = SubResource("StyleBoxFlat_timeline")
-timestamps_panel/base_type = &"PanelContainer"
-timestamps_panel/styles/panel = SubResource("StyleBoxFlat_timestamps")
-title_label/colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
-title_label/font_sizes/font_size = 12
-warning_label/base_type = &"Label"
-warning_label/colors/font_color = Color(1, 0, 0, 1)
-workspace_button/base_type = &"Button"
-workspace_button/colors/font_hover_color = Color(0.654902, 0.0941176, 0.945098, 1)
-workspace_button/colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
-workspace_button/styles/focus = SubResource("StyleBoxEmpty_by48d")
-workspace_button/styles/hover = SubResource("StyleBoxFlat_07bah")
-workspace_button/styles/normal = SubResource("StyleBoxFlat_3k2yc")
-workspace_button/styles/pressed = SubResource("StyleBoxFlat_c21jn")
-ATOWave/colors/playhead_color = Color(1, 0.2, 0.2, 0.8)
-ATOWave/colors/wave_color = Color(1, 1, 1, 0.5)
 DockableTab/colors/overlay_color = Color(0.65, 0.1, 0.95, 0.4)
 EffectAudioButton/base_type = &"Button"
 EffectAudioButton/styles/focus = SubResource("StyleBoxFlat_AudioButtonFocus")
@@ -405,20 +349,31 @@ EffectVisualButton/styles/pressed = SubResource("StyleBoxFlat_VisualButtonPresse
 EffectsPanel/colors/drop_line_color = Color(0.65, 0.1, 0.95, 1)
 FileTree/base_type = &"Tree"
 FileTree/colors/proxy_loading_color = Color(0, 0.5, 0.5, 0.5)
+HSeparator/styles/separator = SubResource("StyleBoxLine_0hspu")
+ItemList/styles/focus = SubResource("StyleBoxEmpty_rmx4m")
+ItemList/styles/panel = SubResource("StyleBoxEmpty_jiub5")
 KeyframeTrack/colors/bg_color = Color(1, 1, 1, 0.486275)
 KeyframeTrack/colors/keyframe_color = Color(0.8, 0.8, 0.8, 1)
 KeyframeTrack/colors/selected_color = Color(1, 0.6, 0.2, 1)
 KeyframeTrack/colors/track_bar_color = Color(0.1, 0.1, 0.1, 0.5)
+MarginContainer/constants/margin_bottom = 7
+MarginContainer/constants/margin_left = 7
+MarginContainer/constants/margin_right = 7
+MarginContainer/constants/margin_top = 7
+MenuBar/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 MuteButton/base_type = &"Button"
 MuteButton/colors/font_color = Color(0.8, 0.8, 0.8, 1)
 MuteButton/colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
 MuteButton/colors/font_pressed_color = Color(1, 0.3, 0.3, 1)
 MuteButton/font_sizes/font_size = 8
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_0icvv")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_f7d0x")
 ProgressOverlay/colors/error_color = Color(1, 0, 0, 1)
 ProgressOverlay/colors/loaded_color = Color(0, 1, 0, 1)
 ProgressOverlay/colors/loading_color = Color(1, 0.647059, 0, 1)
 StartupScreen/colors/icon_disabled = Color(1, 1, 1, 0.2)
 StartupScreen/colors/icon_enabled = Color(1, 1, 1, 1)
+TabContainer/styles/panel = SubResource("StyleBoxFlat_1vteb")
 TimeStamps/colors/render_region = Color(0.65, 0.1, 0.95, 1)
 TimeStamps/colors/text_color = Color(0.85, 0.85, 0.85, 0.5)
 TimeStamps/colors/tick_color = Color(0.4, 0.4, 0.4, 0.5)
@@ -452,10 +407,55 @@ Timeline/styles/ClipTextFocus = ExtResource("TimelineBoxTextFocus")
 Timeline/styles/ClipTextNormal = ExtResource("TimelineBoxTextNormal")
 Timeline/styles/ClipVideoFocus = ExtResource("TimelineBoxVideoFocus")
 Timeline/styles/ClipVideoNormal = ExtResource("TimelineBoxVideoNormal")
+TooltipPanel/styles/panel = SubResource("StyleBoxFlat_rmx4m")
 TrackControlPanel/base_type = &"PanelContainer"
 TrackControlPanel/styles/panel = SubResource("StyleBoxFlat_TrackControlPanel")
 TrackControlPanelMuted/base_type = &"PanelContainer"
 TrackControlPanelMuted/styles/panel = SubResource("StyleBoxFlat_TrackControlPanelMuted")
+Tree/colors/font_color = Color(1, 1, 1, 1)
+Tree/styles/panel = SubResource("StyleBoxFlat_a1y3w")
+VSeparator/styles/separator = SubResource("StyleBoxLine_rmx4m")
 VisibilityButton/base_type = &"TextureButton"
 VisibilityButton/colors/hidden_modulate = Color(1, 0, 0, 1)
 VisibilityButton/colors/visible_modulate = Color(1, 1, 1, 1)
+background/base_type = &"PanelContainer"
+background/styles/panel = SubResource("StyleBoxFlat_oqxky")
+box/base_type = &"PanelContainer"
+box/styles/panel = SubResource("StyleBoxFlat_0hspu")
+file_tab_button/base_type = &"Button"
+file_tab_button/styles/hover = SubResource("StyleBoxEmpty_0hspu")
+file_tab_button/styles/normal = SubResource("StyleBoxEmpty_0icvv")
+file_tab_button/styles/pressed = SubResource("StyleBoxFlat_h2olj")
+info_label/base_type = &"Label"
+info_label/colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
+info_label/font_sizes/font_size = 12
+main_button/base_type = &"Button"
+main_button/styles/normal = SubResource("StyleBoxFlat_by48d")
+overlay_background/base_type = &"PanelContainer"
+overlay_background/styles/panel = SubResource("StyleBoxFlat_catyp")
+render_profile_button/base_type = &"Button"
+render_profile_button/styles/focus = SubResource("StyleBoxEmpty_1vteb")
+render_profile_button/styles/hover = SubResource("StyleBoxEmpty_i7l8v")
+render_profile_button/styles/normal = SubResource("StyleBoxEmpty_catyp")
+render_profile_button/styles/pressed = SubResource("StyleBoxFlat_l8pwb")
+side_bar_button/base_type = &"Button"
+side_bar_button/styles/focus = SubResource("StyleBoxEmpty_i2lla")
+side_bar_button/styles/hover = SubResource("StyleBoxFlat_7g1jt")
+side_bar_button/styles/normal = SubResource("StyleBoxFlat_o3blr")
+side_bar_button/styles/pressed = SubResource("StyleBoxFlat_funo1")
+timeline_panel/base_type = &"PanelContainer"
+timeline_panel/styles/panel = SubResource("StyleBoxFlat_timeline")
+timestamps_panel/base_type = &"PanelContainer"
+timestamps_panel/styles/panel = SubResource("StyleBoxFlat_timestamps")
+title_label/base_type = &"Label"
+title_label/colors/font_color = Color(0.733333, 0.733333, 0.733333, 1)
+title_label/font_sizes/font_size = 12
+warning_label/base_type = &"Label"
+warning_label/colors/font_color = Color(1, 0, 0, 1)
+workspace_button/base_type = &"Button"
+workspace_button/colors/font_hover_color = Color(0.654902, 0.0941176, 0.945098, 1)
+workspace_button/colors/font_hover_pressed_color = Color(0.654902, 0.0941176, 0.945098, 1)
+workspace_button/styles/focus = SubResource("StyleBoxEmpty_by48d")
+workspace_button/styles/hover = SubResource("StyleBoxFlat_07bah")
+workspace_button/styles/normal = SubResource("StyleBoxFlat_3k2yc")
+workspace_button/styles/pressed = SubResource("StyleBoxFlat_c21jn")

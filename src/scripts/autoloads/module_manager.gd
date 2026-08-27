@@ -33,20 +33,23 @@ func _save_config() -> void:
 
 
 func _apply_modules() -> void:
-	for filename: String in loaded_modules.keys():
-		var dict: Dictionary = loaded_modules[filename]
-		if dict.get("enabled", false):
-			var path: String = PATH_MODULES_GLOBAL.path_join(filename)
-			if !FileAccess.file_exists(path): continue
-			elif !ProjectSettings.load_resource_pack(path):
-				printerr("ModuleManager: Couldn't load resource at '%s'!" % path)
+	if not OS.has_feature("demo"):
+		for filename: String in loaded_modules.keys():
+			var dict: Dictionary = loaded_modules[filename]
+			if dict.get("enabled", false):
+				var path: String = PATH_MODULES_GLOBAL.path_join(filename)
+				if !FileAccess.file_exists(path): continue
+				elif !ProjectSettings.load_resource_pack(path):
+					printerr("ModuleManager: Couldn't load resource at '%s'!" % path)
 
 	if !DirAccess.dir_exists_absolute(PATH_MODULES_LOCAL): return
 
 	for module_dir: String in DirAccess.get_directories_at(PATH_MODULES_LOCAL):
 		if module_dir.begins_with("."): continue
+		elif OS.has_feature("demo") and module_dir.begins_with("extra_"): continue
+
 		var module_tres: String = PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
-		if FileAccess.file_exists(module_tres):
+		if ResourceLoader.exists(module_tres):
 			var res: Resource = load(module_tres)
 			if res is GoZenModule:
 				loaded_gozen_modules.append(res)

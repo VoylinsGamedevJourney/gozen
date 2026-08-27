@@ -135,8 +135,10 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 				else:
 					popup.add_item(tr("Re-create proxy"), PopupAction.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), PopupAction.REMOVE_PROXY)
-			popup.add_item(tr("Replace audio"), PopupAction.REPLACE_AUDIO)
-			popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
+
+			if not OS.has_feature("demo"):
+				popup.add_item(tr("Replace audio"), PopupAction.REPLACE_AUDIO)
+				popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
 		elif file.type == EditorCore.Type.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), PopupAction.DUPLICATE)

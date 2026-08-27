@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="Effect" format=3 uid="uid://dxp7sisypvq8b"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_7fg1e"]
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_emlft"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_7fg1e"]
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_glfcg"]
@@ -13,13 +14,11 @@ default_value = 0.0
 min_value = -80.0
 max_value = 25.0
 step = 1.0
-has_slider = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_7fg1e")
-audio_effect = SubResource("AudioEffectAmplify_glfcg")
 id = "volume"
 nickname = "Volume"
 params = Array[ExtResource("1_7fg1e")]([SubResource("Resource_c7eta")])
-metadata/_custom_type_script = "uid://cddcl2omddlan"
+audio_effect = SubResource("AudioEffectAmplify_glfcg")

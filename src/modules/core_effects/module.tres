@@ -3,13 +3,11 @@
 [ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="1_mod"]
 [ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="2_eff"]
 [ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="3_trans"]
-
 [ext_resource type="Resource" uid="uid://ddy7btpe5ktsv" path="res://modules/core_effects/audio/stereo_to_mono.tres" id="4"]
 [ext_resource type="Resource" uid="uid://cpq10awxh00b5" path="res://modules/core_effects/audio/pitch.tres" id="5"]
 [ext_resource type="Resource" uid="uid://dcswap1effect" path="res://modules/core_effects/audio/channel_swap.tres" id="6"]
 [ext_resource type="Resource" uid="uid://dpnpaneffect7" path="res://modules/core_effects/audio/pan.tres" id="7"]
 [ext_resource type="Resource" uid="uid://bc8xynxapll4a" path="res://modules/core_effects/audio/normalize.tres" id="8"]
-[ext_resource type="Resource" uid="uid://dbrtc4effect0" path="res://modules/core_effects/audio/retro_filter.tres" id="9"]
 [ext_resource type="Resource" uid="uid://dxp7sisypvq8b" path="res://modules/core_effects/audio/volume.tres" id="10"]
 [ext_resource type="Resource" uid="uid://c78l2432b4xdl" path="res://modules/core_effects/visual/crop.tres" id="11"]
 [ext_resource type="Resource" uid="uid://cxmask1effect" path="res://modules/core_effects/visual/mask.tres" id="12"]
@@ -18,22 +16,20 @@
 [ext_resource type="Resource" uid="uid://djaemkcftd4w5" path="res://modules/core_effects/visual/color_correction.tres" id="15"]
 [ext_resource type="Resource" uid="uid://bfvs8it7ufe0r" path="res://modules/core_effects/visual/drop_shadow.tres" id="16"]
 [ext_resource type="Resource" uid="uid://kuyj3x43rxyp" path="res://modules/core_effects/visual/white_balance.tres" id="17"]
-[ext_resource type="Resource" uid="uid://df8gtdi3d2cv4" path="res://modules/core_effects/visual/chroma_key.tres" id="18"]
 [ext_resource type="Resource" uid="uid://dxlxe0ua178xu" path="res://modules/core_effects/visual/guassion_blur.tres" id="19"]
 [ext_resource type="Resource" uid="uid://lqo2dnvh15ro" path="res://modules/core_effects/visual/sharpen.tres" id="20"]
 [ext_resource type="Resource" uid="uid://cpm42swydlbwm" path="res://modules/core_effects/visual/soften.tres" id="21"]
-[ext_resource type="Resource" uid="uid://i4doaa48yrd6" path="res://modules/core_effects/visual/rounded_corners.tres" id="22"]
-[ext_resource type="Resource" uid="uid://dyxs3hiphm2s" path="res://modules/core_effects/visual/noise.tres" id="23"]
-[ext_resource type="Resource" uid="uid://uldmav0kgs4f" path="res://modules/core_effects/visual/360.tres" id="24"]
+[ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="21_f8bxd"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="22_iu5p5"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="23_noaeb"]
 [ext_resource type="Resource" uid="uid://c5lm6nvny00ef" path="res://modules/core_effects/visual/vignette.tres" id="25"]
 [ext_resource type="Resource" uid="uid://731xub3idrp2" path="res://modules/core_effects/visual/blend_mode.tres" id="26"]
 [ext_resource type="Resource" uid="uid://bl6l8k0pk0bew" path="res://modules/core_effects/text_effect.tres" id="27"]
-
 [ext_resource type="Resource" uid="uid://yfl0kv4ekacl" path="res://modules/core_effects/transitions/slide.tres" id="28"]
 [ext_resource type="Resource" uid="uid://hrmvw5heg6se" path="res://modules/core_effects/transitions/fade.tres" id="29"]
 [ext_resource type="Resource" uid="uid://boglvdxxqg3ki" path="res://modules/core_effects/transitions/dissolve.tres" id="30"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="30_g8sda"]
 [ext_resource type="Resource" uid="uid://deq3pbrigrrdj" path="res://modules/core_effects/transitions/wipe.tres" id="31"]
-
 
 [sub_resource type="Resource" id="Resource_eff_1"]
 script = ExtResource("2_eff")
@@ -54,10 +50,6 @@ effect = ExtResource("7")
 [sub_resource type="Resource" id="Resource_eff_5"]
 script = ExtResource("2_eff")
 effect = ExtResource("8")
-
-[sub_resource type="Resource" id="Resource_eff_6"]
-script = ExtResource("2_eff")
-effect = ExtResource("9")
 
 [sub_resource type="Resource" id="Resource_eff_7"]
 script = ExtResource("2_eff")
@@ -91,10 +83,6 @@ effect = ExtResource("16")
 script = ExtResource("2_eff")
 effect = ExtResource("17")
 
-[sub_resource type="Resource" id="Resource_eff_15"]
-script = ExtResource("2_eff")
-effect = ExtResource("18")
-
 [sub_resource type="Resource" id="Resource_eff_16"]
 script = ExtResource("2_eff")
 effect = ExtResource("19")
@@ -107,18 +95,6 @@ effect = ExtResource("20")
 script = ExtResource("2_eff")
 effect = ExtResource("21")
 
-[sub_resource type="Resource" id="Resource_eff_19"]
-script = ExtResource("2_eff")
-effect = ExtResource("22")
-
-[sub_resource type="Resource" id="Resource_eff_20"]
-script = ExtResource("2_eff")
-effect = ExtResource("23")
-
-[sub_resource type="Resource" id="Resource_eff_21"]
-script = ExtResource("2_eff")
-effect = ExtResource("24")
-
 [sub_resource type="Resource" id="Resource_eff_22"]
 script = ExtResource("2_eff")
 effect = ExtResource("25")
@@ -130,7 +106,6 @@ effect = ExtResource("26")
 [sub_resource type="Resource" id="Resource_eff_24"]
 script = ExtResource("2_eff")
 effect = ExtResource("27")
-
 
 [sub_resource type="Resource" id="Resource_trans_1"]
 script = ExtResource("3_trans")
@@ -153,7 +128,6 @@ script = ExtResource("1_mod")
 name = "Core Effects"
 description = "Default effects and transitions for GoZen."
 author = "Voylin"
-version = "1.0"
-custom_effects = Array[ExtResource("2_eff")]([SubResource("Resource_eff_1"), SubResource("Resource_eff_2"), SubResource("Resource_eff_3"), SubResource("Resource_eff_4"), SubResource("Resource_eff_5"), SubResource("Resource_eff_6"), SubResource("Resource_eff_7"), SubResource("Resource_eff_8"), SubResource("Resource_eff_9"), SubResource("Resource_eff_10"), SubResource("Resource_eff_11"), SubResource("Resource_eff_12"), SubResource("Resource_eff_13"), SubResource("Resource_eff_14"), SubResource("Resource_eff_15"), SubResource("Resource_eff_16"), SubResource("Resource_eff_17"), SubResource("Resource_eff_18"), SubResource("Resource_eff_19"), SubResource("Resource_eff_20"), SubResource("Resource_eff_21"), SubResource("Resource_eff_22"), SubResource("Resource_eff_23"), SubResource("Resource_eff_24")])
+custom_effects = Array[ExtResource("2_eff")]([SubResource("Resource_eff_1"), SubResource("Resource_eff_2"), SubResource("Resource_eff_3"), SubResource("Resource_eff_4"), SubResource("Resource_eff_5"), SubResource("Resource_eff_7"), SubResource("Resource_eff_8"), SubResource("Resource_eff_9"), SubResource("Resource_eff_10"), SubResource("Resource_eff_11"), SubResource("Resource_eff_12"), SubResource("Resource_eff_13"), SubResource("Resource_eff_14"), SubResource("Resource_eff_16"), SubResource("Resource_eff_17"), SubResource("Resource_eff_18"), SubResource("Resource_eff_22"), SubResource("Resource_eff_23"), SubResource("Resource_eff_24")])
 custom_transitions = Array[ExtResource("3_trans")]([SubResource("Resource_trans_1"), SubResource("Resource_trans_2"), SubResource("Resource_trans_3"), SubResource("Resource_trans_4")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"

@@ -17,6 +17,8 @@ func _ready() -> void:
 
 
 func request_generation(file: FileData) -> void:
+	if OS.has_feature("demo"): return
+
 	var proxy_path: String = Settings.get_proxies_path()
 	if file.type != EditorCore.Type.VIDEO:
 		return # Only proxies for videos possible.
@@ -69,7 +71,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 
 	# RGBA to YUV stuff.
 	var rendering_device: RenderingDevice = RenderingServer.get_rendering_device()
-	var shader_file: RDShaderFile = load("res://effects/shaders/rgba_to_yuv.glsl")
+	var shader_file: RDShaderFile = load("uid://de0r3l6ipvr0y")
 	var rd_yuv_shader: RID = rendering_device.shader_create_from_spirv(shader_file.get_spirv())
 	var rd_yuv_pipeline: RID = rendering_device.compute_pipeline_create(rd_yuv_shader)
 

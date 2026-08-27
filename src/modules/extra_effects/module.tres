@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://bfwj5van3kh0q"]
+
+[ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_ceq06"]
+[ext_resource type="Resource" uid="uid://dbrtc4effect0" path="res://modules/extra_effects/audio/retro_filter.tres" id="7_0qexk"]
+[ext_resource type="Resource" uid="uid://df8gtdi3d2cv4" path="res://modules/extra_effects/visual/chroma_key.tres" id="16_kaufb"]
+[ext_resource type="Resource" uid="uid://i4doaa48yrd6" path="res://modules/extra_effects/visual/rounded_corners.tres" id="20_p1nu8"]
+[ext_resource type="Resource" uid="uid://dyxs3hiphm2s" path="res://modules/extra_effects/visual/noise.tres" id="21_duc23"]
+[ext_resource type="Resource" uid="uid://uldmav0kgs4f" path="res://modules/extra_effects/visual/360.tres" id="22_18u1v"]
+[ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="26_yq0ol"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="27_enk7o"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="28_q8rrd"]
+[ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="29_ovaqm"]
+[ext_resource type="Resource" uid="uid://yfl0kv4ekacl" path="res://modules/core_effects/transitions/slide.tres" id="30_wv3df"]
+[ext_resource type="Resource" uid="uid://hrmvw5heg6se" path="res://modules/core_effects/transitions/fade.tres" id="31_p4ssf"]
+[ext_resource type="Resource" uid="uid://boglvdxxqg3ki" path="res://modules/core_effects/transitions/dissolve.tres" id="32_3yr7y"]
+[ext_resource type="Resource" uid="uid://deq3pbrigrrdj" path="res://modules/core_effects/transitions/wipe.tres" id="33_b1n2e"]
+[ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="34_xak6b"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="35_via0a"]
+
+[sub_resource type="Resource" id="Resource_eff_6"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("7_0qexk")
+
+[sub_resource type="Resource" id="Resource_eff_15"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("16_kaufb")
+
+[sub_resource type="Resource" id="Resource_eff_19"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("20_p1nu8")
+
+[sub_resource type="Resource" id="Resource_eff_21"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("22_18u1v")
+
+[sub_resource type="Resource" id="Resource_464ft"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("21_duc23")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
+[sub_resource type="Resource" id="Resource_trans_1"]
+script = ExtResource("29_ovaqm")
+transition = ExtResource("30_wv3df")
+
+[sub_resource type="Resource" id="Resource_trans_2"]
+script = ExtResource("29_ovaqm")
+transition = ExtResource("31_p4ssf")
+
+[sub_resource type="Resource" id="Resource_trans_3"]
+script = ExtResource("29_ovaqm")
+transition = ExtResource("32_3yr7y")
+
+[sub_resource type="Resource" id="Resource_trans_4"]
+script = ExtResource("29_ovaqm")
+transition = ExtResource("33_b1n2e")
+
+[resource]
+script = ExtResource("34_xak6b")
+name = "Extra Effects"
+description = "Extra effects (full version addition)."
+author = "Voylin"
+custom_effects = Array[ExtResource("1_ceq06")]([SubResource("Resource_eff_6"), SubResource("Resource_eff_15"), SubResource("Resource_eff_19"), SubResource("Resource_eff_21"), SubResource("Resource_464ft")])
+custom_transitions = Array[ExtResource("29_ovaqm")]([SubResource("Resource_trans_1"), SubResource("Resource_trans_2"), SubResource("Resource_trans_3"), SubResource("Resource_trans_4")])
+metadata/_custom_type_script = "uid://bupjtpen4yap5"

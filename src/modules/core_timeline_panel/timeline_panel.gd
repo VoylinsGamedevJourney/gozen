@@ -827,7 +827,9 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if right_click_clip.type == EditorCore.Type.VIDEO:
 		popup.add_separator(tr("Video options"))
-		popup.add_item(tr("Clip replace audio"), PopupAction.CLIP_REPLACE_AUDIO)
+
+		if not OS.has_feature("demo"):
+			popup.add_item(tr("Clip replace audio"), PopupAction.CLIP_REPLACE_AUDIO)
 
 		var file: FileData = FileLogic.files[right_click_clip.file]
 		if file.audio_streams.size() > 1:

@@ -84,7 +84,8 @@ func _strict_input_check(event: InputEvent) -> bool:
 		Timeline.focus_on_playhead()
 		return true
 	elif event.is_action_pressed("open_command_bar"):
-		PopupManager.open(PopupManager.COMMAND_BAR)
+		if not OS.has_feature("demo"):
+			PopupManager.open(PopupManager.COMMAND_BAR)
 		return true
 	elif event.is_action_pressed("next_frame", false, true):
 		EditorCore.frame_nr = clampi(EditorCore.frame_nr + 1, 0, Project.data.timeline_end)

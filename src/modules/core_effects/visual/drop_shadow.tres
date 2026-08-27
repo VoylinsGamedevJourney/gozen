@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Effect" format=3 uid="uid://bfvs8it7ufe0r"]
 
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_icj3m"]
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
@@ -11,10 +12,7 @@ default_value = Vector2(0, 0)
 min_value = Vector2(-1000, -1000)
 max_value = Vector2(1000, 1000)
 step = 1.0
-keyframeable = true
 is_linkable = true
-is_linked = false
-has_slider = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_fade"]
@@ -25,10 +23,6 @@ default_value = 10.0
 min_value = 0.0
 max_value = 200.0
 step = 0.5
-keyframeable = true
-is_linkable = false
-is_linked = false
-has_slider = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [sub_resource type="Resource" id="Resource_color"]
@@ -38,18 +32,11 @@ nickname = "Shadow Color"
 default_value = Color(0, 0, 0, 0.75)
 min_value = null
 max_value = null
-step = 0.0
-keyframeable = true
-is_linkable = false
-is_linked = false
-has_slider = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "uid://cvncclpbfug05"
-shader_passes = 1
 id = "drop_shadow"
 nickname = "Drop Shadow"
 params = Array[ExtResource("1_param")]([SubResource("Resource_offset"), SubResource("Resource_fade"), SubResource("Resource_color")])
-metadata/_custom_type_script = "uid://e26q35ad13vv"
+shader_path = "uid://cvncclpbfug05"

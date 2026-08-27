@@ -81,6 +81,10 @@ func get_system_font(font_name: String) -> SystemFont:
 
 
 func load_custom_themes() -> void:
+	if OS.has_feature("demo"):
+		ModuleManager.register_themes()
+		return
+
 	var default_themes: Dictionary[String, String] = get_themes()
 	var dir: DirAccess = DirAccess.open(PATH_THEMES)
 	if !dir or dir.list_dir_begin():

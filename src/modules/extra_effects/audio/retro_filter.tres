@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Effect" format=3 uid="uid://dbrtc4effect0"]
 
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_c2koy"]
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
@@ -14,13 +15,11 @@ default_value = 16.0
 min_value = 1.0
 max_value = 16.0
 step = 1.0
-has_slider = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-audio_effect = SubResource("AudioEffectDistortion_retro")
 id = "retro_filter"
 nickname = "Retro filter"
 params = Array[ExtResource("1_param")]([SubResource("Resource_bit_depth")])
-metadata/_custom_type_script = "uid://cddcl2omddlan"
+audio_effect = SubResource("AudioEffectDistortion_retro")

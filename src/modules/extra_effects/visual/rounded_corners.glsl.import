@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b173oxoeakjyq"
+path="res://.godot/imported/rounded_corners.glsl-a9760f540e5c72c019b22d8acfe874e3.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/rounded_corners.glsl"
+dest_files=["res://.godot/imported/rounded_corners.glsl-a9760f540e5c72c019b22d8acfe874e3.res"]
+
+[params]
+

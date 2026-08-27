@@ -154,7 +154,10 @@ func _build_node(node: WorkspaceNode) -> Control:
 	if node.type == WorkspaceNode.Type.TAB:
 		var tab: DockableTab = DockableTab.new()
 		for id: String in node.panel_ids:
-			tab.add_child(active_panels[id])
+			if active_panels.has(id):
+				tab.add_child(active_panels[id])
+			else:
+				printerr("WorkspaceManager: Panel '%s' not found (it might be disabled)!" % id)
 		tab.current_tab = node.current_tab
 		return tab
 	var split: SplitContainer

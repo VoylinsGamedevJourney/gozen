@@ -106,4 +106,3 @@ matrix_map = Dictionary[String, int]({
 "scale": 0
 })
 custom_overlay_path = "uid://bips8ivb5wors"
-metadata/_custom_type_script = "uid://e26q35ad13vv"

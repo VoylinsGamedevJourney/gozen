@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bkqtgecyd8bh6"
+path="res://.godot/imported/360.glsl-81ae1bbe460f9eaad610d84cf4a227a8.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/360.glsl"
+dest_files=["res://.godot/imported/360.glsl-81ae1bbe460f9eaad610d84cf4a227a8.res"]
+
+[params]
+

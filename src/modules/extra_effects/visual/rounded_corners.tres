@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Effect" format=3 uid="uid://i4doaa48yrd6"]
 
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_ftbgl"]
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
@@ -50,9 +51,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
 script = ExtResource("2_effect")
-shader_path = "uid://b173oxoeakjyq"
 id = "rounded_corners"
 nickname = "Rounded Corners"
 tooltip = "This effect is best applied before using transform effects."
 params = Array[ExtResource("1_param")]([SubResource("Resource_rc_rad"), SubResource("Resource_rc_w"), SubResource("Resource_rc_h"), SubResource("Resource_rc_cx"), SubResource("Resource_rc_cy")])
-metadata/_custom_type_script = "uid://e26q35ad13vv"
+shader_path = "uid://b173oxoeakjyq"

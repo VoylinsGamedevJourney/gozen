@@ -230,7 +230,8 @@ func _create_project_popup_menu() -> void:
 
 	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project", 0)
 	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project as ...", 1)
-	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 2)
+	if not OS.has_feature("demo"):
+		menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 2)
 	menu.add_separator()
 	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 3)
 	menu.add_icon_item(preload(Library.ICON_OPEN), "Recent projects", 4)
@@ -285,7 +286,8 @@ func _create_view_popup_menu() -> void:
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_item(tr("Save workspace"), 0)
-	menu.add_item(tr("New workspace"), 1)
+	if not OS.has_feature("demo"):
+		menu.add_item(tr("New workspace"), 1)
 	menu.add_separator("", 2)
 	menu.add_item(tr("Show panel titles"), 3)
 	menu.add_separator(tr("Panels"), 4)
@@ -297,9 +299,11 @@ func _create_view_popup_menu() -> void:
 
 
 func _on_view_popup_menu_about_to_popup(menu: PopupMenu) -> void:
-	const PANEL_ENTRIES_START: int = 5
-	while menu.item_count > PANEL_ENTRIES_START:
-		menu.remove_item(PANEL_ENTRIES_START)
+	var panels_sep_idx: int = menu.get_item_index(4)
+	var start_idx: int = panels_sep_idx + 1
+
+	while menu.item_count > start_idx:
+		menu.remove_item(start_idx)
 
 	var title_item_idx: int = menu.get_item_index(3)
 	if WorkspaceManager.show_tab_titles:
@@ -311,9 +315,9 @@ func _on_view_popup_menu_about_to_popup(menu: PopupMenu) -> void:
 	for i: int in panel_names.size():
 		var panel_name: String = panel_names[i]
 		var panel: Control = WorkspaceManager.active_panels[panel_name]
-		menu.add_check_item(panel_name, PANEL_ENTRIES_START + i)
+		menu.add_check_item(panel_name, 10 + i) # Higher base ID to prevent conflicts
 		menu.set_item_checked(
-				menu.get_item_index(PANEL_ENTRIES_START + i),
+				menu.get_item_index(10 + i),
 				panel.is_inside_tree())
 
 
@@ -338,9 +342,11 @@ func _create_preferences_popup_menu() -> void:
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_icon_item(preload(Library.ICON_EDITOR_SETTINGS), "Editor settings", 0)
-	menu.add_icon_item(preload(Library.ICON_MODULE_MANAGER), "Module manager", 1)
-	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_COMMAND_PROMPT), "Command bar", 2)
+
+	if not OS.has_feature("demo"):
+		menu.add_icon_item(preload(Library.ICON_MODULE_MANAGER), "Module manager", 1)
+		menu.add_separator()
+		menu.add_icon_item(preload(Library.ICON_COMMAND_PROMPT), "Command bar", 2)
 
 	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_preferences_popup_menu_id_pressed)

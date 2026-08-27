@@ -159,12 +159,14 @@ func _add_default_profiles() -> void:
 	add_profile(preload(Library.RENDER_PROFILE_AV1))
 	add_profile(preload(Library.RENDER_PROFILE_VP9))
 	add_profile(preload(Library.RENDER_PROFILE_VP8))
-	add_profile(preload(Library.RENDER_PROFILE_HEVC))
+	if not OS.has_feature("demo"):
+		add_profile(preload(Library.RENDER_PROFILE_HEVC))
 	custom_profile_id_start = option_button_render_profiles.item_count
 
 
 func _setup_codec_option_buttons() -> void:
-	video_codec_option_button.add_item("HEVC", Encoder.VideoCodec.V_HEVC) # NO_TRANSLATE
+	if not OS.has_feature("demo"):
+		video_codec_option_button.add_item("HEVC", Encoder.VideoCodec.V_HEVC) # NO_TRANSLATE
 	video_codec_option_button.add_item("H264", Encoder.VideoCodec.V_H264) # NO_TRANSLATE
 	video_codec_option_button.add_item("MPEG4", Encoder.VideoCodec.V_MPEG4) # NO_TRANSLATE
 	video_codec_option_button.add_item("MPEG2", Encoder.VideoCodec.V_MPEG2) # NO_TRANSLATE
@@ -413,7 +415,7 @@ func _on_start_render_button_pressed() -> void:
 
 func _on_render_settings_changed() -> void:
 	if !_is_loading_profile:
-		button_save_render_profile.visible = true
+		button_save_render_profile.visible =  not OS.has_feature("demo")
 		option_button_render_profiles.selected = -1
 		region_start_spinbox.visible = render_region_check_button.button_pressed
 		region_end_spinbox.visible = render_region_check_button.button_pressed

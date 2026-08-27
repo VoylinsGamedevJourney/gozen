@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="Effect" format=3 uid="uid://deq3pbrigrrdj"]
 
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1"]
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_li7ih"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2"]
 
 [sub_resource type="Resource" id="Resource_dir"]
@@ -14,7 +15,7 @@ has_slider = false
 
 [resource]
 script = ExtResource("2")
-shader_path = "uid://dl5ew5rtryqiw"
 id = "wipe"
 nickname = "Wipe"
 params = Array[ExtResource("1")]([SubResource("Resource_dir")])
+shader_path = "uid://dl5ew5rtryqiw"
