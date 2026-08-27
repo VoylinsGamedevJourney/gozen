@@ -228,16 +228,18 @@ func _create_project_popup_menu() -> void:
 	menu.title = "Project"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
-	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project", 0)
-	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project as ...", 1)
+	menu.add_icon_item(preload(Library.ICON_ADD), "New project", 0)
+	menu.add_separator()
+	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project", 1)
+	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project as ...", 2)
 	if not OS.has_feature("demo"):
-		menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 2)
+		menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 3)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 3)
-	menu.add_icon_item(preload(Library.ICON_OPEN), "Recent projects", 4)
+	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 4)
+	menu.add_icon_item(preload(Library.ICON_OPEN), "Recent projects", 5)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 5)
-	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 6)
+	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 6)
+	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 7)
 
 	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_project_popup_menu_id_pressed)
@@ -245,15 +247,16 @@ func _create_project_popup_menu() -> void:
 
 func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
-		0: Project.save()
-		1: Project.save_as()
-		2: Project.archive_as()
+		0: if OS.create_process(OS.get_executable_path(), []): print_stack()
+		1: Project.save()
+		2: Project.save_as()
+		3: Project.archive_as()
 		# -------------
-		3: Project.open_project()
-		4: PopupManager.open(PopupManager.RECENT_PROJECTS)
+		4: Project.open_project()
+		5: PopupManager.open(PopupManager.RECENT_PROJECTS)
 		# -------------
-		5: Project.open_settings_menu()
-		6: get_tree().quit()
+		6: Project.open_settings_menu()
+		7: get_tree().quit()
 
 
 func _create_edit_popup_menu() -> void:
