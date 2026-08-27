@@ -22,6 +22,42 @@ var _editor_settings: bool = false
 
 
 
+func _ready() -> void:
+	if Settings.on_localization_updated.connect(_rebuild_ui): Print.stack_connect()
+
+
+func _rebuild_ui() -> void:
+	var active_section_index: int = 0
+	for i: int in side_bar_vbox.get_child_count():
+		var button: Button = side_bar_vbox.get_child(i) as Button
+		if button and button.button_pressed:
+			active_section_index = i
+			break
+
+	for child: Node in side_bar_vbox.get_children():
+		side_bar_vbox.remove_child(child)
+		child.queue_free()
+	for child: Node in settings_vbox.get_children():
+		settings_vbox.remove_child(child)
+		child.queue_free()
+
+	sections.clear()
+	side_bar_button_group = ButtonGroup.new()
+	search_line_edit.placeholder_text = tr("Search settings ...")
+
+	var close_button: Button = search_line_edit.get_parent().get_node_or_null("CloseButton")
+	if close_button:
+		close_button.text = tr("Close settings")
+
+	set_mode(Mode.EDITOR_SETTINGS if _editor_settings else Mode.PROJECT_SETTINGS)
+
+	if active_section_index >= 0 and active_section_index < side_bar_vbox.get_child_count():
+		var button: Button = side_bar_vbox.get_child(active_section_index) as Button
+		if button:
+			button.set_pressed_no_signal(true)
+			_show_section(button.text)
+
+
 func _input(event: InputEvent) -> void:
 	if listening_active and listening_button != null:
 		get_viewport().set_input_as_handled()
