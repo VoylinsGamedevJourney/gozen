@@ -128,29 +128,29 @@ msgstr ""
 
 #: modules/core_effects/visual/ui/mask_clear_button.gd:10
 msgid "Clear Mask Points"
-msgstr ""
+msgstr "حذف نقاط ماسک"
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
-msgstr ""
+msgstr "رفتن به نشانگر بخش قبلی."
 
 #: modules/core_view_panel/view_panel.tscn
-#, fuzzy
 msgid "Start project playback."
-msgstr "درحال راه اندازی پخش ..."
+msgstr "شروع پخش پروژه."
 
 #: modules/core_view_panel/view_panel.tscn
-#, fuzzy
 msgid "Pause project playback."
-msgstr "ذخیره پروژه به عنوان ..."
+msgstr "متوقف کردن پخش پروژه."
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to next chapter marker."
-msgstr ""
+msgstr "رفتن به نشانگر بخش بعدی."
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Show video safety guidelines on top of the project preview."
 msgstr ""
+"نمایش راهنماهای ناحیه امن ویدیو روی پیش نمایش پروژه.\n"
+"."
 
 #: modules/core_view_panel/view_panel.gd:63
 msgid "Jump to frame"
@@ -185,14 +185,12 @@ msgid "Save profile"
 msgstr "ذخیره نمایه"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Set selected profile as the default render profile."
-msgstr "تنظیمات فعلی به عنوان نمایه رندر سفارشی ذخیره شود."
+msgstr "تنظیم نمایه انتخاب شده به عنوان نمایه پیش فرض رندر."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Set default"
-msgstr "بازنشانی به پیش فرض"
+msgstr "تنظیم به عنوان پیش فرض"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Export path"
@@ -214,7 +212,7 @@ msgid ""
 "worst quality, 18 not really noticable."
 msgstr ""
 "برای تنظیم CRF (Constant Rate Factor) استفاده میشود، کمترین مقدار کیفیت 50، "
-"و بیشترین مقدار کیفیت 15 است. مقدار پیشفرض 18 تنظیم شده. این گزینه برای "
+"و بیشترین مقدار کیفیت 15 است. مقدار پیش فرض 18 تنظیم شده. این گزینه برای "
 "تنظیم نرخ بیت استفاده میشود و روی کیفیت و حجم فایل اثر دارد. مقدار 0 بهترین "
 "کیفیت، 51 بدترین کیفیت و 18 تقریبأ محسوس نیست."
 
@@ -251,9 +249,8 @@ msgid "Gop size"
 msgstr "اندازه Gop"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "B frames"
-msgstr "فریم های کلیدی"
+msgstr "فریم های B"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render audio settings"
@@ -386,7 +383,7 @@ msgstr "حذف پروکسی"
 
 #: modules/core_file_panel/file_panel.gd:137
 msgid "Replace audio"
-msgstr ""
+msgstr "جایگزینی صدا"
 
 #: modules/core_file_panel/file_panel.gd:138
 msgid "Extract audio to file ..."
@@ -514,31 +511,29 @@ msgstr "بازنشانی سرعت"
 
 #: modules/core_timeline_panel/timeline_panel.gd:829
 msgid "Clip replace audio"
-msgstr ""
+msgstr "جایگزینی صدای کلیپ"
 
 #: modules/core_timeline_panel/timeline_panel.gd:842
 msgid "Select Audio Track"
-msgstr ""
+msgstr "انتخاب ترک صدا"
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid "Select mode: Used for selecting clips on the timeline."
-msgstr ""
+msgstr "حالت انتخاب: برای انتخاب کلیپ ها در تایم لاین."
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid ""
 "Cut mode: Let's you cut clips on the position of your mouse cursor by "
 "clicking."
-msgstr ""
+msgstr "حالت برش: با کلیک کردن، کلیپ ها را در محل نشانگر ماوس برش می دهد."
 
 #: modules/core_timeline_panel/timeline.tscn
-#, fuzzy
 msgid "Turn group selection on/off for clips in the timeline."
-msgstr "خاموش/روشن کردن چسبندگی."
+msgstr "خاموش/روشن کردن انتخاب گروهی کلیپ ها در تایم لاین."
 
 #: modules/core_timeline_panel/timeline.tscn
-#, fuzzy
 msgid "Turn clip snapping on/off when moving clips."
-msgstr "خاموش/روشن کردن چسبندگی."
+msgstr "خاموش/روشن کردن چسبندگی کلیپ ها هنگام جابجایی."
 
 #: modules/core_timeline_panel/track_controls.gd:69
 msgid "Toggle track visibility"
@@ -549,46 +544,39 @@ msgid "Mute track"
 msgstr "بی صدا کردن ترک"
 
 #: modules/core_effects_panel/effects_panel.gd:53
-#, fuzzy
 msgid "Enable clip visuals."
-msgstr "قطع صدای کلیپ."
+msgstr "فعال سازی نمایش بصری کلیپ."
 
 #: modules/core_effects_panel/effects_panel.gd:57
-#, fuzzy
 msgid "Enable clip audio."
-msgstr "قطع صدای کلیپ."
+msgstr "فعال سازی صدای کلیپ."
 
 #: modules/core_effects_panel/effects_panel.gd:290
-#, fuzzy
 msgid "Left Transition"
-msgstr "ترانزیشن ها"
+msgstr "ترانزیشن چپ"
 
 #: modules/core_effects_panel/effects_panel.gd:299
 #: modules/core_effects_panel/effects_panel.gd:369
-#, fuzzy
 msgid "Visual Fade (frames)"
-msgstr "افکت های تصویری"
+msgstr "محو شدن تصویر (فریم)"
 
 #: modules/core_effects_panel/effects_panel.gd:317
 #: modules/core_effects_panel/effects_panel.gd:387
-#, fuzzy
 msgid "Audio Fade (frames)"
-msgstr "موج نگارهای صوت"
+msgstr "محو شدن صدا (فریم)"
 
 #: modules/core_effects_panel/effects_panel.gd:335
 #: modules/core_effects_panel/effects_panel.gd:403
 msgid "Style"
-msgstr ""
+msgstr "حالت"
 
 #: modules/core_effects_panel/effects_panel.gd:360
-#, fuzzy
 msgid "Right Transition"
-msgstr "ترانزیشن ها"
+msgstr "ترانزیشن راست"
 
 #: modules/core_effects_panel/effects_panel.gd:496
-#, fuzzy
 msgid "Audio Track"
-msgstr "افزودن ترک"
+msgstr "ترک صدا"
 
 #: modules/core_effects_panel/effects_panel.gd:590
 msgid "Presets & Options"
@@ -610,7 +598,7 @@ msgstr "پیش فرض"
 
 #: modules/core_effects_panel/effects_panel.gd:840
 msgid "Text ..."
-msgstr ""
+msgstr "متن ..."
 
 #: modules/core_effects_panel/effects_panel.gd:866
 msgid "Left"
@@ -655,42 +643,39 @@ msgstr "آلفای پیش ضرب"
 
 #: modules/core_effects_panel/effects_panel.gd:880
 msgid "Thin"
-msgstr ""
+msgstr "فوق نازک"
 
 #: modules/core_effects_panel/effects_panel.gd:881
-#, fuzzy
 msgid "Extra Light"
-msgstr "ارتفاع ترک"
+msgstr "بسیار نازک"
 
 #: modules/core_effects_panel/effects_panel.gd:882
-#, fuzzy
 msgid "Light"
-msgstr "راست"
+msgstr "نازک"
 
 #: modules/core_effects_panel/effects_panel.gd:883
 msgid "Regular"
-msgstr ""
+msgstr "معمولی"
 
 #: modules/core_effects_panel/effects_panel.gd:884
 msgid "Medium"
-msgstr ""
+msgstr "متوسط"
 
 #: modules/core_effects_panel/effects_panel.gd:885
 msgid "Semi Bold"
-msgstr ""
+msgstr "نیمه پررنگ"
 
 #: modules/core_effects_panel/effects_panel.gd:886
 msgid "Bold"
-msgstr ""
+msgstr "پررنگ"
 
 #: modules/core_effects_panel/effects_panel.gd:887
-#, fuzzy
 msgid "Extra Bold"
-msgstr "امکانات جانبی"
+msgstr "بسیار پررنگ"
 
 #: modules/core_effects_panel/effects_panel.gd:888
 msgid "Black"
-msgstr ""
+msgstr "فوق پررنگ"
 
 #: modules/core_effects_panel/effects_panel.gd:1054
 msgid "Link X and Y"
@@ -739,9 +724,8 @@ msgid "Audio effects"
 msgstr "افکت های صوتی"
 
 #: modules/core_effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Module settings"
-msgstr "بستن تنظیمات"
+msgstr "تنظیمات ماژول"
 
 #: scenes/editor/editor.gd:231
 msgid "Save project"
@@ -752,9 +736,8 @@ msgid "Save project as ..."
 msgstr "ذخیره پروژه به عنوان ..."
 
 #: scenes/editor/editor.gd:233
-#, fuzzy
 msgid "Archive project ..."
-msgstr "ذخیره پروژه به عنوان ..."
+msgstr "بایگانی پروژه ..."
 
 #: scenes/editor/editor.gd:235 scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:241 scripts/autoloads/project.gd:268
@@ -775,11 +758,11 @@ msgstr "خروج"
 
 #: scenes/editor/editor.gd:265
 msgid "Undo"
-msgstr "بازگشت"
+msgstr "واگردانی"
 
 #: scenes/editor/editor.gd:266
 msgid "Redo"
-msgstr "انجام مجدد"
+msgstr "بازانجام"
 
 #: scenes/editor/editor.gd:287
 msgid "Save workspace"
@@ -871,7 +854,7 @@ msgstr "افزودن افکت"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Enter effect name ..."
-msgstr ""
+msgstr "نام افکت را وارد کنید ..."
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 #: scenes/about_gozen/about_gozen.tscn
@@ -896,7 +879,7 @@ msgstr "ایجاد فایل رنگ جدید"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Replace Audio"
-msgstr ""
+msgstr "جایگزینی صدا"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Waveform modifier"
@@ -922,41 +905,35 @@ msgstr "نسخه"
 
 #: scenes/about_gozen/about_gozen.tscn
 msgid "Source code"
-msgstr ""
+msgstr "کد منبع"
 
 #: scenes/about_gozen/about_gozen.tscn
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: scenes/about_gozen/about_gozen.tscn
-#, fuzzy
 msgid "Support the project"
-msgstr "ایجاد پروژه جدید"
+msgstr "حمایت از پروژه"
 
 #: scenes/about_gozen/about_gozen.gd:30
-#, fuzzy
 msgid "Made by [url=%s]Voylin's Gamedev Journey[/url]!"
-msgstr ""
-"ساخته شده توسط [color=#A718F1][url=URL]Voylin's Gamedev Journey[/url][/"
-"color]! ;)"
+msgstr "ساخته شده توسط [url=%s]Voylin's Gamedev Journey[/url]!"
 
 #: scenes/about_gozen/about_gozen.gd:32
 msgid "License"
-msgstr ""
+msgstr "مجوز"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Module Manager"
 msgstr "مدیریت ماژول ها"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Close"
-msgstr "بستن پنجره"
+msgstr "بستن"
 
 #: scenes/module_manager/module_manager.tscn
 msgid "Install Module"
-msgstr ""
+msgstr "نصب ماژول"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:200
@@ -1021,7 +998,7 @@ msgstr "نمایش نوار منو"
 
 #: scenes/settings_menu/settings_menu.gd:159
 msgid "Show safe areas on startup"
-msgstr ""
+msgstr "نمایش نواحی امن هنگام راه اندازی"
 
 #: scenes/settings_menu/settings_menu.gd:164
 msgid "Audio waveforms"
@@ -1056,6 +1033,9 @@ msgid ""
 "Native dialogs use your operating system's file browser and windows. "
 "Disabling this uses GoZen's built-in dialogs instead."
 msgstr ""
+"پنجره های محاوره ای بومی از جستوجوگر فایل و پنجزه های سیستم عامل شما استفاده "
+"می کنند، با غیر فعال کردن این گزینه، پنجره های محاوره ای داخلی GoZen استفاده "
+"می شوند."
 
 #: scenes/settings_menu/settings_menu.gd:187
 msgid "Panel tabs position"
@@ -1099,27 +1079,23 @@ msgstr "نرخ فریم پروژه"
 
 #: scenes/settings_menu/settings_menu.gd:233
 msgid "Quick create project options"
-msgstr ""
+msgstr "گزینه های ایجاد سریع پروژه"
 
 #: scenes/settings_menu/settings_menu.gd:234
-#, fuzzy
 msgid "Horizontal resolution"
-msgstr "وضوح پروژه"
+msgstr "وضوح افقی"
 
 #: scenes/settings_menu/settings_menu.gd:239
-#, fuzzy
 msgid "Horizontal framerate"
-msgstr "نرخ فریم پروژه"
+msgstr "نرخ فریم افقی"
 
 #: scenes/settings_menu/settings_menu.gd:245
-#, fuzzy
 msgid "Vertical resolution"
-msgstr "وضوح پروژه"
+msgstr "وضوح عمودی"
 
 #: scenes/settings_menu/settings_menu.gd:250
-#, fuzzy
 msgid "Vertical framerate"
-msgstr "نرخ فریم پروژه"
+msgstr "نرخ فریم عمودی"
 
 #: scenes/settings_menu/settings_menu.gd:258
 msgid "Performance"
@@ -1185,7 +1161,7 @@ msgstr "ذخیره خودکار"
 
 #: scenes/settings_menu/settings_menu.gd:347
 msgid "Modules"
-msgstr ""
+msgstr "ماژول ها"
 
 #: scenes/settings_menu/settings_menu.gd:355
 msgid "Video"
@@ -1230,15 +1206,15 @@ msgstr "نسخه: "
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The creator of the startup picture you're seeing right now."
-msgstr ""
+msgstr "سازنده تصویر شروع برنامه که اکنون مشاهده می کنید."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Open a previously created project through your file explorer."
-msgstr ""
+msgstr "بازکردن پروژه ای که از قبل ایجاد شده توسط جستوجوگر فایل."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
-msgstr ""
+msgstr "رفتن به منو برای تنظیمات پروژه جدیدتان."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Create new project"
@@ -1249,12 +1225,14 @@ msgid ""
 "Quick option to create a horizontal project with settings defined in the "
 "editor settings menu."
 msgstr ""
+"ایجاد سریع پروژه ای افقی با تنظیمات تعیین شده در منوی تنظیمات ویرایشگر."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid ""
 "Quick option to create a vertical project with settings defined in the "
 "editor settings menu."
 msgstr ""
+"ایجاد سریع پروژه ای عمودی با تنظیمات تعیین شده در منوی تنظیمات ویرایشگر."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Getting started"
@@ -1262,23 +1240,23 @@ msgstr "شروع کردن"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the GoZen website."
-msgstr ""
+msgstr "پیوند خارجی به وب سایت GoZen."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the GoZen manual."
-msgstr ""
+msgstr "پیوند خارجی به راهنمای کاربر GoZen."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to GoZen tutorials."
-msgstr ""
+msgstr "پیوند خارجی به آموزش های GoZen."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the Discord server."
-msgstr ""
+msgstr "پیوند خارجی به سرور Discord."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the Ko-fi page."
-msgstr ""
+msgstr "پیوند خارجی به صفحه Ko-fi."
 
 #: scenes/startup_screen/startup_screen.tscn scripts/autoloads/project.gd:51
 msgid "New project"
@@ -1309,13 +1287,12 @@ msgid "The video framerate (fps)."
 msgstr "نرخ فریم ویدیو (fps)."
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Track amount"
-msgstr "تعداد ترک پیش فرض"
+msgstr "تعداد ترک"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Amount of tracks in the timeline."
-msgstr ""
+msgstr "تعداد ترک های موجود در تایم لاین."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Advanced options"
@@ -1327,12 +1304,11 @@ msgstr "بازگشت"
 
 #: scenes/startup_screen/startup_screen.gd:78
 msgid "Image by"
-msgstr ""
+msgstr "تصویر از"
 
 #: scenes/startup_screen/startup_screen.gd:187
-#, fuzzy
 msgid "User presets"
-msgstr "ذخیره پیش تنظیم"
+msgstr "پیش تنظیم های کاربر"
 
 #: scenes/startup_screen/startup_screen.gd:243
 #: scenes/startup_screen/startup_screen.gd:309 scripts/autoloads/project.gd:102
@@ -1376,23 +1352,20 @@ msgid "Finalizing ..."
 msgstr "نهایی سازی ..."
 
 #: scripts/autoloads/project.gd:112
-#, fuzzy
 msgid "Archive project as ..."
-msgstr "ذخیره پروژه به عنوان ..."
+msgstr "بایگانی پروژه به عنوان ..."
 
 #: scripts/autoloads/project.gd:114
 msgid "ZIP Archive"
-msgstr ""
+msgstr "فایل ZIP"
 
 #: scripts/autoloads/project.gd:127
-#, fuzzy
 msgid "Archiving project"
-msgstr "درحال بارگذاری پروژه"
+msgstr "درحال بایگانی پروژه"
 
 #: scripts/autoloads/project.gd:128
-#, fuzzy
 msgid "Preparing files ..."
-msgstr "جستجوی فایل ها ..."
+msgstr "آماده سازی فایل ها ..."
 
 #: scripts/autoloads/project.gd:215
 msgid "Setting up timeline ..."
@@ -1466,13 +1439,12 @@ msgid "Update existing clips?"
 msgstr "آیا کلیپ های موجود به روزرسانی شوند؟"
 
 #: scripts/logic/file_logic.gd:242
-#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the audio replacement to all existing clips?"
 msgstr ""
 "این فایل در حال حاضر توسط کلیپ(های) '%d' استفاده می شود.\n"
-"آیا میخواهید تغییرات تصاحب صوت به همه کلیپ های موجود اعمال شود؟"
+"آیا میخواهید تغییرات جایگزینی صوت به همه کلیپ های موجود اعمال شود؟"
 
 #: scripts/logic/file_logic.gd:243
 msgid "Apply to All"
