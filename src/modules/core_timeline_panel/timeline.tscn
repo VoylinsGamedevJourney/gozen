@@ -138,7 +138,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_horizontal_custom_step = 30.0
 scroll_vertical_custom_step = 30.0
-vertical_scroll_mode = 3
 scroll_horizontal_by_default = true
 script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
