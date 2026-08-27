@@ -12,17 +12,19 @@
 ![screenshot of GoZen startup UI](./assets/screenshots/alpha_01.jpg)
 
 ## What is GoZen?
-GoZen is a lightweight, stable, minimalistic, and performant video editor with simplicity in mind. Built using the Godot game engine, GoZen aims to provide a focused video editing  experience without the complexity which other traditional NLE's. It is primarily developed for Linux but includes support for Windows, MacOS support will come in the future.
+GoZen is a modern, lightweight, stable, minimalistic, and performant open-source video editor with simplicity in mind. Built using the Godot game engine for everyday creators, hobbyists, and semi-professionals in mind. GoZen aims to provide a focused video editing experience without the complexity that comes with other traditional NLE's (Non-Linear Editors). It is primarily developed for Linux, but includes support for Windows and MacOS.
 
-Visit the [GoZen project site](https://gozen.voylin.com/) for more information and updates. _(The website is a WIP and will be for the time being so I can focus more on the actual project first)_
+Visit the [GoZen project site](https://gozen.voylin.com/) for more information and updates. _(The website is still a WIP as I am trying to focus on the main project first.)_
 
 ## Features
 - Smooth video playback;
-- Fast rendering;
+- Fast rendering & fast seeking;
 - Designed with stability in mind;
-- Support for all codecs (which FFmpeg supports);
-- Clean, minimalist, but usable UI;
 - Cross-platform (Linux, Windows);
+- Clean, minimalist, but usable UI;
+- Support for all codecs (which FFmpeg supports);
+- No bloatware, no gathering of data, and no account required;
+- Unified timeline (no separation between audio and visual tracks);
 
 ## UI overview
 ![screenshot of GoZen editor UI](./assets/screenshots/alpha_02.jpg)
