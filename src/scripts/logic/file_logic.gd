@@ -705,6 +705,7 @@ func generate_audio_thumb(file: FileData) -> Image:
 
 
 func reload(file: FileData) -> void:
+	if not files.has(file.id): return
 	load_data(file)
 	reloaded.emit(file)
 

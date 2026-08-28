@@ -236,27 +236,73 @@ func _create_project_popup_menu() -> void:
 		menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 3)
 	menu.add_separator()
 	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 4)
-	menu.add_icon_item(preload(Library.ICON_OPEN), "Recent projects", 5)
-	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 6)
-	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 7)
 
-	@warning_ignore("return_value_discarded")
-	menu.id_pressed.connect(_on_project_popup_menu_id_pressed)
+	var recent_submenu: PopupMenu = PopupMenu.new()
+	recent_submenu.name = "RecentProjectsSubMenu"
+	menu.add_child(recent_submenu)
+	menu.add_submenu_node_item("Recent projects", recent_submenu, 5)
+	menu.set_item_icon(menu.get_item_index(5), preload(Library.ICON_OPEN))
+
+	menu.add_separator()
+	menu.add_icon_item(preload(Library.ICON_GOZEN), "Splash screen", 6)
+	menu.add_separator()
+	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 7)
+	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 8)
+
+	if menu.id_pressed.connect(_on_project_popup_menu_id_pressed): Print.stack_connect()
+	if menu.about_to_popup.connect(_on_project_menu_about_to_popup.bind(recent_submenu)): Print.stack_connect()
+
+
+func _on_project_menu_about_to_popup(recent_submenu: PopupMenu) -> void:
+	recent_submenu.clear()
+	if not FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
+		return
+	var file: FileAccess = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
+	var path: String = file.get_line().strip_edges()
+	var id: int = 0
+	var added_paths: Array[String] = []
+	while not file.eof_reached():
+		if path.contains(Project.EXTENSION) and not added_paths.has(path):
+			recent_submenu.add_item(path.get_file().trim_suffix(Project.EXTENSION), id)
+			recent_submenu.set_item_metadata(id, path)
+			added_paths.append(path)
+			id += 1
+		path = file.get_line().strip_edges()
+	file.close()
+
+	if not recent_submenu.id_pressed.is_connected(_on_recent_project_pressed):
+		if recent_submenu.id_pressed.connect(_on_recent_project_pressed.bind(recent_submenu)): Print.stack_connect()
+
+
+func _on_recent_project_pressed(id: int, recent_submenu: PopupMenu) -> void:
+	var path: String = recent_submenu.get_item_metadata(id)
+	if not path.is_empty():
+		Project.check_unsaved_and_perform(func() -> void:
+				Project._cleanup()
+				await get_tree().process_frame
+				await Project.open(path))
 
 
 func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
-		0: if OS.create_process(OS.get_executable_path(), []): print_stack()
+		0:
+			if not get_tree().root.has_node("StartupPanel"):
+				var splash: Node = preload(Library.SCENE_STARTUP).instantiate()
+				get_tree().root.add_child(splash)
+				@warning_ignore("unsafe_property_access")
+				splash.tab_container.current_tab = 1
 		1: Project.save()
 		2: Project.save_as()
 		3: Project.archive_as()
 		# -------------
 		4: Project.open_project()
-		5: PopupManager.open(PopupManager.RECENT_PROJECTS)
+		# 5 is Recent projects
+		6:
+			if not get_tree().root.has_node("StartupPanel"):
+				get_tree().root.add_child(preload(Library.SCENE_STARTUP).instantiate())
 		# -------------
-		6: Project.open_settings_menu()
-		7: get_tree().quit()
+		7: Project.open_settings_menu()
+		8: get_tree().quit()
 
 
 func _create_edit_popup_menu() -> void:

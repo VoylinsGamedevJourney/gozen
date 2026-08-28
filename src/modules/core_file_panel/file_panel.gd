@@ -379,6 +379,8 @@ func _add_folder_to_tree(folder: String) -> void:
 
 
 func _add_file_to_tree(file: FileData) -> void:
+	if file_items.has(file.id): return
+
 	# Create item for the file panel tree.
 	var file_nickname: String = file.nickname
 	if !folder_items.keys().has(file.folder):
@@ -402,8 +404,9 @@ func _add_file_to_tree(file: FileData) -> void:
 
 
 func _on_update_thumb(file: FileData) -> void:
-	if !FileLogic.files.has(file.id):
-		return _on_deleted(file.id)
+	if !FileLogic.files.has(file.id): return _on_deleted(file.id)
+	if not file_items.has(file.id): return
+
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file))
 	file_items[file.id].set_icon_modulate(0, Color.WHITE)
 	file_items[file.id].set_tooltip_text(0, file.path)
@@ -466,10 +469,13 @@ func _on_moved(file: FileData) -> void:
 
 
 func _on_path_updated(file: FileData) -> void:
-	file_items[file.id].set_tooltip_text(0, file.path)
+	if file_items.has(file.id):
+		file_items[file.id].set_tooltip_text(0, file.path)
 
 
 func _on_nickname_changed(file: FileData) -> void:
+	if not file_items.has(file.id): return
+
 	var file_nickname: String = file.nickname
 
 	if Settings.get_use_proxies():

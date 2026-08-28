@@ -15,8 +15,7 @@ var thumbs_todo: Array[FileData] = []
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
-	Project.project_ready.connect(_on_project_ready)
+	if FileLogic.audio_wave_generated.connect(_on_audio_wave_generated): Print.stack_connect()
 
 	# Create the thumb directory if not existing.
 	if !DirAccess.dir_exists_absolute(thumb_folder):
@@ -33,11 +32,6 @@ func _ready() -> void:
 		data = file.get_var()
 	else:
 		_save_data()
-
-
-func _on_project_ready() -> void:
-	@warning_ignore("return_value_discarded")
-	FileLogic.audio_wave_generated.connect(_on_audio_wave_generated)
 
 
 func _process(_delta: float) -> void:

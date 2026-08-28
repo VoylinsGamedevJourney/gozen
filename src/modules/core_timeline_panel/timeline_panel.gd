@@ -78,6 +78,11 @@ func _ready() -> void:
 	if MarkerLogic.updated.connect(draw_markers.queue_redraw.unbind(1)): print_stack()
 	if MarkerLogic.moving.connect(draw_markers.queue_redraw): print_stack()
 
+	if ClipLogic.added.connect(draw_clips.queue_redraw.unbind(1)): Print.stack_connect()
+	if ClipLogic.deleted.connect(_on_clip_deleted): Print.stack_connect()
+	if ClipLogic.updated.connect(draw_clips.queue_redraw): Print.stack_connect()
+	if TrackLogic.updated.connect(_on_tracks_updated): Print.stack_connect()
+
 	if get_window().size_changed.connect(_redraw_on_change): print_stack()
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
@@ -422,11 +427,6 @@ func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeli
 
 
 func _project_ready() -> void:
-	if ClipLogic.added.connect(draw_clips.queue_redraw.unbind(1)): Print.stack_connect()
-	if ClipLogic.deleted.connect(_on_clip_deleted): Print.stack_connect()
-	if ClipLogic.updated.connect(draw_clips.queue_redraw): Print.stack_connect()
-	if TrackLogic.updated.connect(_on_tracks_updated): Print.stack_connect()
-
 	_update_track_height(Settings.get_module_setting("core_timeline_panel", "track_height", 25.0) as float)
 	draw_all()
 

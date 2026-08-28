@@ -88,7 +88,7 @@ func _set_recent_projects() -> void:
 	if !FileAccess.file_exists(Project.RECENT_PROJECTS_FILE): return
 
 	var file: FileAccess = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
-	var path: String = file.get_line()
+	var path: String = file.get_line().strip_edges()
 	var new_paths: PackedStringArray = []
 
 	while !file.eof_reached():
@@ -98,6 +98,7 @@ func _set_recent_projects() -> void:
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
 				if new_paths.append(path): Print.stack_append()
+				path = file.get_line().strip_edges()
 				continue
 
 			var hbox: HBoxContainer = HBoxContainer.new()
@@ -125,13 +126,14 @@ func _set_recent_projects() -> void:
 			recent_projects_vbox.add_child(hbox)
 
 			if new_paths.append(path): Print.stack_connect()
-		path = file.get_line()
+		path = file.get_line().strip_edges()
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	for new_path: String in new_paths:
-		if !file.store_line(new_path) or file.get_error():
-			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
-	file.close()
+	if file:
+		for new_path: String in new_paths:
+			if !file.store_line(new_path) or file.get_error():
+				printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
+		file.close()
 
 	# Set the focus on the first project so it can be opened with enter.
 	if recent_projects_vbox.get_child_count() > 0:
@@ -143,12 +145,24 @@ func _set_recent_projects() -> void:
 
 
 func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
-	var file: FileAccess = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
-	var context: String = file.get_as_text().replace(path, '')
+	var paths: Array[String] = []
+	var file: FileAccess
+	var _err: int
 
-	file.close()
+	if FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
+		file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
+		while not file.eof_reached():
+			var line: String = file.get_line().strip_edges()
+			if not line.is_empty() and line != path:
+				paths.append(line)
+		file.close()
+
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if !file.store_string(context) or file.get_error():
+	if file:
+		for project_path: String in paths:
+			_err = file.store_line(project_path)
+		file.close()
+	else:
 		printerr("StartupScreen: Error storing String for recent_projects!\n", get_stack())
 	hbox.queue_free()
 
@@ -247,10 +261,12 @@ func _on_open_project_button_pressed() -> void:
 
 
 func open_project(path: String) -> void:
-	self.visible = false
-	await get_tree().process_frame
-	await Project.open(path)
-	self.queue_free()
+	Project.check_unsaved_and_perform(func() -> void:
+			self.visible = false
+			Project._cleanup()
+			await get_tree().process_frame
+			await Project.open(path)
+			self.queue_free())
 
 
 func _on_create_new_project_button_pressed() -> void:
@@ -278,26 +294,36 @@ func _on_create_new_project_button_pressed() -> void:
 		request.background_color = background_color_picker.color
 		request.track_amount = int(track_amount_spinbox.value)
 
-	self.visible = false
-	await get_tree().process_frame
-	Project.new_project(request)
-	self.queue_free()
+	Project.check_unsaved_and_perform(func() -> void:
+			self.visible = false
+			Project._cleanup()
+			await get_tree().process_frame
+			Project.new_project(request)
+			self.queue_free())
 
 
 func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
 	var request: RequestProjectNew = RequestProjectNew.new()
 	request.resolution = Settings.get_quick_create_horizontal_res()
 	request.framerate  = Settings.get_quick_create_horizontal_fps()
-	Project.new_project(request)
-	self.queue_free()
+	Project.check_unsaved_and_perform(func() -> void:
+			self.visible = false
+			Project._cleanup()
+			await get_tree().process_frame
+			Project.new_project(request)
+			self.queue_free())
 
 
 func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
 	var request: RequestProjectNew = RequestProjectNew.new()
 	request.resolution = Settings.get_quick_create_vertical_res()
 	request.framerate  = Settings.get_quick_create_vertical_fps()
-	Project.new_project(request)
-	self.queue_free()
+	Project.check_unsaved_and_perform(func() -> void:
+			self.visible = false
+			Project._cleanup()
+			await get_tree().process_frame
+			Project.new_project(request)
+			self.queue_free())
 
 
 func _on_project_path_button_pressed() -> void:

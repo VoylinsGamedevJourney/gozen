@@ -297,22 +297,34 @@ func _auto_save() -> void:
 
 
 func _update_recent_projects(new_path: String) -> void:
-	var content: String = ""
+	var paths: Array[String] = []
 	var file: FileAccess
 
 	if FileAccess.file_exists(RECENT_PROJECTS_FILE):
 		file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.READ)
-		content = file.get_as_text()
+		while not file.eof_reached():
+			var line: String = file.get_line().strip_edges()
+			if not line.is_empty() and line != new_path and not paths.has(line):
+				paths.append(line)
 		file.close()
 
+	var _err: int = paths.insert(0, new_path)
+
+	file.close()
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if !file.store_string(new_path + "\n" + content):
+	if file:
+		for project_path: String in paths:
+			_err = file.store_line(project_path)
+		file.close()
+	else:
 		printerr("Project: Error storing String for recent_projects!")
 
 
 func _open_project(file_path: String) -> void:
-	if OS.execute(OS.get_executable_path(), [file_path]) != OK:
-		printerr("Project: Something went wrong opening project from file dialog!")
+	check_unsaved_and_perform(func() -> void:
+			_cleanup()
+			await get_tree().process_frame
+			await open(file_path))
 
 
 func _save_as(new_project_path: String) -> void:
@@ -321,36 +333,90 @@ func _save_as(new_project_path: String) -> void:
 
 
 func _on_close() -> void:
+	check_unsaved_and_perform(func() -> void: get_tree().quit())
+
+
+func check_unsaved_and_perform(callback: Callable) -> void:
 	if !unsaved_changes:
-		get_tree().quit()
+		callback.call()
 		return
 
 	var popup: AcceptDialog = AcceptDialog.new()
 	var dont_save_button: Button = popup.add_button(tr("Don't save"))
 	var cancel_button: Button = popup.add_cancel_button(tr("Cancel"))
 
-	auto_save_timer.paused = true
-	popup.title = tr("Close without saving")
+	if auto_save_timer != null:
+		auto_save_timer.paused = true
+	popup.title = tr("Unsaved changes")
+	popup.dialog_text = tr("You have unsaved changes in your current project. Save before proceeding?")
 	popup.ok_button_text = tr("Save")
 
-	@warning_ignore_start("return_value_discarded")
-	popup.confirmed.connect(_on_save_close)
-	cancel_button.pressed.connect(_on_cancel_close)
-	dont_save_button.pressed.connect(func() -> void: get_tree().quit.call_deferred())
-	@warning_ignore_restore("return_value_discarded")
+	if popup.confirmed.connect(func() -> void:
+			save()
+			callback.call()
+			popup.queue_free()): Print.stack_connect()
+	if dont_save_button.pressed.connect(func() -> void:
+			callback.call()
+			popup.queue_free()): Print.stack_connect()
+	if cancel_button.pressed.connect(func() -> void:
+			if Settings.get_auto_save() and auto_save_timer != null:
+				auto_save_timer.paused = false
+			popup.queue_free()): Print.stack_connect()
 
-	add_child(popup)
+	get_tree().root.add_child(popup)
 	popup.popup_centered()
 
 
-func _on_save_close() -> void:
-	save()
-	get_tree().quit()
+func _cleanup() -> void:
+	is_loaded = false
+	unsaved_changes = false
+	if auto_save_timer != null:
+		auto_save_timer.stop()
 
+	EditorCore.is_playing = false
+	for video_id: int in EditorCore.active_tasks:
+		if WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[video_id] as int): print_stack()
+	EditorCore.active_tasks.clear()
 
-func _on_cancel_close() -> void:
-	if Settings.get_auto_save():
-		auto_save_timer.start()
+	for player: AudioPlayer in EditorCore.audio_players:
+		if player != null: player.stop()
+
+	EditorCore.loaded_clips.clear()
+	EditorCore.clips_to_update.clear()
+	EditorCore.clips_instance_index.clear()
+	EditorCore.clip_instances.clear()
+
+	for pool: Array in FileLogic.video_pools.values():
+		for video: Video in pool:
+			video.close()
+	FileLogic.video_pools.clear()
+	FileLogic.audio_pools.clear()
+	FileLogic.audio_wave.clear()
+	FileLogic.file_data.clear()
+
+	for file_id: int in FileLogic.files:
+		FileLogic.deleted.emit(file_id)
+	FileLogic.files.clear()
+
+	ClipLogic.clips.clear()
+	ClipLogic.selected_clips.clear()
+	ClipLogic.copied_clips.clear()
+
+	TrackLogic.tracks.clear()
+	TrackLogic.track_clips.clear()
+
+	MarkerLogic.markers.clear()
+	MarkerLogic.dragged_marker = null
+
+	for folder: String in FolderLogic.folders:
+		FolderLogic.deleted.emit(folder)
+	FolderLogic.folders.clear()
+
+	Thumbnailer.thumbs_todo.clear()
+
+	InputManager.undo_redo.clear_history()
+
+	data = ProjectData.new()
 
 
 #--- Project setters & getters ---
@@ -373,10 +439,10 @@ func get_picker_path(fallback: OS.SystemDir) -> String:
 
 	if dir.is_empty():
 		dir = OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
-	
+
 	if dir.is_empty():
 		printerr("Project: Failed to get any path for picker")
-	
+
 	return dir
 
 
