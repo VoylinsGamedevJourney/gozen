@@ -9,6 +9,7 @@ signal path_updated(file: FileData)
 signal nickname_changed(file: FileData)
 signal ato_changed(file: FileData)
 signal audio_wave_generated(file: FileData)
+signal wave_loading(file: FileData, progress: int)
 
 signal video_loaded(file: FileData)
 
@@ -517,13 +518,19 @@ func _create_wave(file: FileData) -> void:
 	if not file.audio_streams.is_empty():
 		streams_to_process.assign(file.audio_streams)
 
+	var num_streams: int = streams_to_process.size()
+	var current_index: int = 0
+
 	for stream_index: int in streams_to_process:
-		_create_wave_for_stream(file, stream_index)
+		_create_wave_for_stream(file, stream_index, current_index, num_streams)
+		current_index += 1
+
+	call_deferred("emit_signal", "wave_loading", file, 100)
 	call_deferred("_on_wave_ready", file)
 	Print.info("FileLogic", "Wave creation/loading done for '%s'!" % file.nickname)
 
 
-func _create_wave_for_stream(file: FileData, stream_index: int) -> void:
+func _create_wave_for_stream(file: FileData, stream_index: int, current_index: int = 0, num_streams: int = 1) -> void:
 	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + "_" + str(stream_index) + ".wave"
 	if FileAccess.file_exists(cache_path):
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
@@ -607,8 +614,13 @@ func _create_wave_for_stream(file: FileData, stream_index: int) -> void:
 				local_wave_16[i16] = normalized
 			block_index += 1
 
+		var base_progress: float = float(current_index) / float(num_streams)
+		var stream_progress: float = (current_time / stream_length) / float(num_streams)
+		var total_progress: int = int((base_progress + stream_progress) * 100.0)
+
 		_mutex.lock()
-		call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p
+		call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p This should probably be replaced at some point to use the wave_loading signal
+		call_deferred("emit_signal", "wave_loading", file, total_progress)
 		_mutex.unlock()
 		current_time += chunk_duration
 

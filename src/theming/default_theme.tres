@@ -349,6 +349,7 @@ EffectVisualButton/styles/pressed = SubResource("StyleBoxFlat_VisualButtonPresse
 EffectsPanel/colors/drop_line_color = Color(0.65, 0.1, 0.95, 1)
 FileTree/base_type = &"Tree"
 FileTree/colors/proxy_loading_color = Color(0, 0.5, 0.5, 0.5)
+FileTree/colors/wave_loading_color = Color(0.2, 0.6, 1.0, 0.5)
 HSeparator/styles/separator = SubResource("StyleBoxLine_0hspu")
 ItemList/styles/focus = SubResource("StyleBoxEmpty_rmx4m")
 ItemList/styles/panel = SubResource("StyleBoxEmpty_jiub5")
