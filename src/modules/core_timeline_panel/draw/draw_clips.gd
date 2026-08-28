@@ -82,7 +82,7 @@ func _draw() -> void:
 			var audio_wave: PackedFloat32Array = wave_dict[lod]
 			var wave_begin: int = int((clip.begin - int(wave_offset_sec * Project.data.framerate)) / float(lod))
 			var is_muted: bool = TrackLogic.tracks[clip.track].is_muted or clip.effects.is_muted
-			_draw_wave(audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, lod, scroll_container, is_muted)
+			_draw_wave(clip, audio_wave, wave_begin, int(clip.duration / float(lod)), clip_rect, clip.speed, lod, scroll_container, is_muted)
 
 		# - Fading handles + amount
 		var show_handles: bool = false
@@ -142,7 +142,7 @@ func _get_visible(start: int, end: int) -> Array[ClipData]:
 	return data
 
 
-func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, speed: float, lod: int, scroll_container: ScrollContainer, is_muted: bool) -> void:
+func _draw_wave(clip: ClipData, wave_data: PackedFloat32Array, begin: int, duration: int, rect: Rect2, speed: float, lod: int, scroll_container: ScrollContainer, is_muted: bool) -> void:
 	if wave_data.is_empty():
 		return
 	var zoom: float = Timeline.zoom * lod
@@ -167,6 +167,14 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 	var waveform_style: int = Settings.get_audio_waveform_style()
 	var waveform_amp: float = Settings.get_audio_waveform_amp()
 
+	var volume_effects: Array[Effect] = []
+	var peak_db: float = 0.0
+	for effect: Effect in clip.effects.audio:
+		if effect.is_enabled and effect.id in ["volume", "normalize"]:
+			volume_effects.append(effect)
+			if effect.id == "normalize":
+				peak_db = FileLogic.get_clip_peak_db(clip)
+
 	for i: int in range(start_i, end_i, step):
 		var wave_index: int = begin + int(i * speed)
 		if wave_index < 0 or wave_index >= wave_data.size():
@@ -178,7 +186,20 @@ func _draw_wave(wave_data: PackedFloat32Array, begin: int, duration: int, rect: 
 			if wave_data[index] > max_value:
 				max_value = wave_data[index]
 
-		var normalized_height: float = max_value * waveform_amp
+		var volume_linear: float = 1.0
+		var frame_offset: int = i * lod
+
+		for effect: Effect in volume_effects:
+			if effect.id == "volume":
+				var vol_db: float = effect.get_value(effect.params[0], frame_offset)
+				volume_linear *= db_to_linear(vol_db)
+			elif effect.id == "normalize":
+				var target_db: float = effect.get_value(effect.params[0], frame_offset)
+				volume_linear *= db_to_linear(target_db - peak_db)
+
+		volume_linear *= Math.calculate_fade(frame_offset, clip, false)
+
+		var normalized_height: float = max_value * waveform_amp * volume_linear
 		var block_height: float = clampf(normalized_height * (height * 0.9), 0, height)
 		var block_pos_y: float = base_y # TOP_TO_BOTTOM style.
 

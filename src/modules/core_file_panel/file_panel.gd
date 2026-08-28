@@ -116,7 +116,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 	var metadata: Variant = file_item.get_metadata(0)
 	var popup: PopupMenu = PopupManager.create_menu()
 
-	if str(metadata).is_valid_int(): # - File
+	if str(metadata).is_valid_int(): # File.
 		var file: FileData = FileLogic.files[metadata as int]
 		popup.add_item(tr("Rename"), PopupAction.RENAME)
 		popup.add_item(tr("Reload"), PopupAction.RELOAD)
@@ -126,7 +126,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			if file.path.contains("temp://"):
 				popup.add_separator(tr("Image options"))
 				popup.add_item(tr("Save image as ..."), PopupAction.SAVE_TEMP_AS)
-		elif file.type == EditorCore.Type.VIDEO:
+		elif file.type == EditorCore.Type.VIDEO and not OS.has_feature("demo"):
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
@@ -136,9 +136,8 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 					popup.add_item(tr("Re-create proxy"), PopupAction.RECREATE_PROXY)
 					popup.add_item(tr("Remove proxy"), PopupAction.REMOVE_PROXY)
 
-			if not OS.has_feature("demo"):
-				popup.add_item(tr("Replace audio"), PopupAction.REPLACE_AUDIO)
-				popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
+			popup.add_item(tr("Replace audio"), PopupAction.REPLACE_AUDIO)
+			popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
 		elif file.type == EditorCore.Type.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), PopupAction.DUPLICATE)
@@ -146,14 +145,12 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			if file.path.contains("temp://"):
 				popup.add_item(tr("Save file as ..."), PopupAction.SAVE_TEMP_AS)
 
+		popup.add_separator(tr("Folder options"))
 		if not file.path.begins_with("temp://"):
-			popup.add_separator()
 			popup.add_item(tr("Open in file manager"), PopupAction.OPEN_IN_FILE_MANAGER)
 			popup.add_item(tr("Copy file path"), PopupAction.COPY_PATH)
-
-		popup.add_separator(tr("Folder options"))
 		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
-	else: # Folder
+	else: # Folder.
 		var folder_path: String = str(metadata)
 		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
 

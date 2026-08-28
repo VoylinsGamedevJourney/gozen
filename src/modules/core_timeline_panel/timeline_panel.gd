@@ -59,31 +59,34 @@ var _drop_frame_nr: int = -1
 
 
 func _ready() -> void:
-	if Project.project_ready.connect(_project_ready): print_stack()
-	if Project.framerate_changed.connect(draw_all): print_stack()
+	if Project.project_ready.connect(_project_ready): Print.stack_connect()
+	if Project.framerate_changed.connect(draw_all): Print.stack_connect()
 
-	if Timeline.state_changed.connect(_on_state_changed): print_stack()
-	if Timeline.scroll_changed.connect(draw_all.unbind(1)): print_stack()
-	if Timeline.zoom_changed.connect(draw_all.unbind(1)): print_stack()
+	if Timeline.state_changed.connect(_on_state_changed): Print.stack_connect()
+	if Timeline.scroll_changed.connect(draw_all.unbind(1)): Print.stack_connect()
+	if Timeline.zoom_changed.connect(draw_all.unbind(1)): Print.stack_connect()
 
-	if Settings.on_module_setting_changed.connect(_on_module_setting_changed): print_stack()
+	if Settings.on_module_setting_changed.connect(_on_module_setting_changed): Print.stack_connect()
 
-	if EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw): print_stack()
+	if EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw): Print.stack_connect()
 
-	if FileLogic.files_dropped_and_loaded.connect(_on_files_dropped_and_loaded): print_stack()
-	if FileLogic.request_drop_folder.connect(_on_request_drop_folder): print_stack()
+	if FileLogic.files_dropped_and_loaded.connect(_on_files_dropped_and_loaded): Print.stack_connect()
+	if FileLogic.request_drop_folder.connect(_on_request_drop_folder): Print.stack_connect()
 
-	if MarkerLogic.added.connect(draw_markers.queue_redraw.unbind(1)): print_stack()
-	if MarkerLogic.removed.connect(draw_markers.queue_redraw.unbind(1)): print_stack()
-	if MarkerLogic.updated.connect(draw_markers.queue_redraw.unbind(1)): print_stack()
-	if MarkerLogic.moving.connect(draw_markers.queue_redraw): print_stack()
+	if MarkerLogic.added.connect(draw_markers.queue_redraw.unbind(1)): Print.stack_connect()
+	if MarkerLogic.removed.connect(draw_markers.queue_redraw.unbind(1)): Print.stack_connect()
+	if MarkerLogic.updated.connect(draw_markers.queue_redraw.unbind(1)): Print.stack_connect()
+	if MarkerLogic.moving.connect(draw_markers.queue_redraw): Print.stack_connect()
 
 	if ClipLogic.added.connect(draw_clips.queue_redraw.unbind(1)): Print.stack_connect()
 	if ClipLogic.deleted.connect(_on_clip_deleted): Print.stack_connect()
 	if ClipLogic.updated.connect(draw_clips.queue_redraw): Print.stack_connect()
 	if TrackLogic.updated.connect(_on_tracks_updated): Print.stack_connect()
 
-	if get_window().size_changed.connect(_redraw_on_change): print_stack()
+	if EffectsHandler.effects_updated.connect(draw_clips.queue_redraw): Print.stack_connect()
+	if EffectsHandler.effect_values_updated.connect(draw_clips.queue_redraw): Print.stack_connect()
+
+	if get_window().size_changed.connect(_redraw_on_change): Print.stack_connect()
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
@@ -277,8 +280,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		popup.add_check_item(tr("Locked"), PopupAction.TRACK_TOGGLE_LOCK)
 		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
-		@warning_ignore("return_value_discarded")
-		popup.id_pressed.connect(_on_popup_menu_id_pressed)
+		if popup.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
 		PopupManager.show_menu(popup)
 
 	if event.is_pressed() and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
@@ -843,12 +845,11 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 				audio_submenu.set_item_checked(i, stream_index == current_index)
 			popup.add_child(audio_submenu)
 			popup.add_submenu_node_item("Select Audio Track", audio_submenu)
-			@warning_ignore("return_value_discarded")
-			audio_submenu.id_pressed.connect(func(id: int) -> void:
+			if audio_submenu.id_pressed.connect(func(id: int) -> void:
 					InputManager.undo_redo.create_action("Change audio track")
 					InputManager.undo_redo.add_do_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, id))
 					InputManager.undo_redo.add_undo_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, right_click_clip.effects.audio_stream_index))
-					InputManager.undo_redo.commit_action())
+					InputManager.undo_redo.commit_action()): Print.stack_connect()
 
 
 func _on_popup_menu_id_pressed(id: PopupAction) -> void:
@@ -909,7 +910,7 @@ func _on_popup_action_clip_change_speed() -> void:
 			request.resize_amount = delta
 			request.from_end = true
 			ClipLogic.change_speed([request])
-			dialog.queue_free()): print_stack()
+			dialog.queue_free()): Print.stack_connect()
 	dialog.popup_centered(Vector2i(200, 80))
 
 
