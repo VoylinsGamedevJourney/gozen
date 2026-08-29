@@ -75,6 +75,8 @@ func _ready() -> void:
 	section_transitions.visible = false
 	section_transitions.folded = true
 
+
+	section_visuals.add_title_bar_control(clip_enable_visuals_button)
 	section_visuals.add_title_bar_control(_get_section_preset_button(true))
 	section_visuals.add_title_bar_control(_get_add_effects_button(1))
 	section_visuals.folded = true
@@ -210,7 +212,7 @@ func _on_clip_pressed(clip_data: ClipData) -> void:
 	current_clip = clip
 	current_file = FileLogic.files[clip.file]
 	_load_effects()
-	section_visuals.folded = false
+	section_visuals.folded = not clip.effects.is_showing
 	section_audio.folded = clip.effects.is_muted
 
 
@@ -1101,6 +1103,7 @@ func _update_ui_values() -> void:
 		current_clip = null
 		return
 
+	clip_enable_visuals_button.set_pressed_no_signal(current_clip.effects.is_showing)
 	clip_enable_audio_button.set_pressed_no_signal(!current_clip.effects.is_muted)
 	var frame_nr: int = clampi(EditorCore.frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
 	if section_text.visible and section_text.get_child_count() > 0:
@@ -1652,9 +1655,9 @@ func _on_transition_updated(clip: ClipData, _is_left: bool) -> void:
 
 
 func _on_visuals_enable_button_toggled(toggled_on: bool) -> void:
-	if current_clip and current_clip.effects.is_muted == toggled_on:
-		ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
-	section_audio.folded = !toggled_on
+	if current_clip and current_clip.effects.is_showing != toggled_on:
+		ClipLogic.toggle_clip_visible(current_clip, toggled_on)
+	section_visuals.folded = !toggled_on
 
 
 func _on_audio_enable_button_toggled(toggled_on: bool) -> void:

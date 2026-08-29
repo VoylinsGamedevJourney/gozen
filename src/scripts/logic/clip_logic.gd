@@ -606,6 +606,19 @@ func _set_ato_active(effects: ClipEffects, value: bool) -> void:
 	Project.unsaved_changes = true
 
 
+func toggle_clip_visible(clip: ClipData, visible: bool) -> void:
+	InputManager.undo_redo.create_action("Show clip" if visible else "Hide clip")
+	InputManager.undo_redo.add_do_method(_set_clip_visible.bind(clip.effects, visible))
+	InputManager.undo_redo.add_undo_method(_set_clip_visible.bind(clip.effects, !visible))
+	InputManager.undo_redo.commit_action()
+
+
+func _set_clip_visible(effects: ClipEffects, visible: bool) -> void:
+	effects.is_showing = visible
+	Project.unsaved_changes = true
+	updated.emit.call_deferred()
+
+
 func toggle_clip_mute(clip: ClipData, muted: bool) -> void:
 	InputManager.undo_redo.create_action("Mute clip" if muted else "Unmute clip")
 	InputManager.undo_redo.add_do_method(_set_clip_mute.bind(clip.effects, muted))

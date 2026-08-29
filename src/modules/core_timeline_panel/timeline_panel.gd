@@ -5,6 +5,7 @@ enum PopupAction {
 	# Clip options.
 	CLIP_DELETE, CLIP_SPLIT, CLIP_REPLACE_AUDIO,
 	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
+	CLIP_TOGGLE_VISIBLE, CLIP_TOGGLE_MUTE,
 	# Track options.
 	REMOVE_EMPTY_SPACE, TRACK_ADD, TRACK_REMOVE, TRACK_TOGGLE_VISIBLE,
 	TRACK_TOGGLE_MUTE, TRACK_TOGGLE_LOCK }
@@ -262,25 +263,33 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		else:
 			popup.add_item(tr("Remove empty space"), PopupAction.REMOVE_EMPTY_SPACE)
 
-		popup.add_separator(tr("Track options"))
+		popup.add_separator()
+		var track_submenu: PopupMenu = PopupMenu.new()
+		track_submenu.name = "TrackSubMenu"
+		track_submenu.add_theme_constant_override("icon_max_width", 20)
+		popup.add_child(track_submenu)
+		popup.add_submenu_node_item(tr("Track options"), track_submenu)
+
 		var track_data: TrackData = TrackLogic.tracks[right_click_track]
 
-		popup.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), PopupAction.TRACK_ADD)
+		track_submenu.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), PopupAction.TRACK_ADD)
 		if TrackLogic.tracks.size() != 1:
-			popup.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), PopupAction.TRACK_REMOVE)
+			track_submenu.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), PopupAction.TRACK_REMOVE)
 
-		popup.add_separator()
+		track_submenu.add_separator()
 
-		popup.add_check_item(tr("Visible"), PopupAction.TRACK_TOGGLE_VISIBLE)
-		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
+		track_submenu.add_check_item(tr("Show track"), PopupAction.TRACK_TOGGLE_VISIBLE)
+		track_submenu.set_item_checked(track_submenu.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
 
-		popup.add_check_item(tr("Muted"), PopupAction.TRACK_TOGGLE_MUTE)
-		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
+		track_submenu.add_check_item(tr("Mute track"), PopupAction.TRACK_TOGGLE_MUTE)
+		track_submenu.set_item_checked(track_submenu.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
 
-		popup.add_check_item(tr("Locked"), PopupAction.TRACK_TOGGLE_LOCK)
-		popup.set_item_checked(popup.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
+		if not OS.has_feature("demo"):
+			track_submenu.add_check_item(tr("Lock track"), PopupAction.TRACK_TOGGLE_LOCK)
+			track_submenu.set_item_checked(track_submenu.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
 		if popup.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
+		if track_submenu.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
 		PopupManager.show_menu(popup)
 
 	if event.is_pressed() and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
@@ -821,6 +830,14 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), PopupAction.CLIP_DELETE)
 	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_SPLIT), tr("Split clip"), PopupAction.CLIP_SPLIT)
 
+	popup.add_separator()
+	if right_click_clip.type in EditorCore.VISUAL_TYPES:
+		popup.add_check_item(tr("Show clip"), PopupAction.CLIP_TOGGLE_VISIBLE)
+		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_VISIBLE), right_click_clip.effects.is_showing)
+	if right_click_clip.type in EditorCore.AUDIO_TYPES:
+		popup.add_check_item(tr("Mute clip"), PopupAction.CLIP_TOGGLE_MUTE)
+		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_MUTE), right_click_clip.effects.is_muted)
+
 	if right_click_clip.type in [EditorCore.Type.VIDEO, EditorCore.Type.AUDIO]:
 		# TODO: Add icons
 		popup.add_icon_item(preload(Library.ICON_SPEED), tr("Change speed"), PopupAction.CLIP_CHANGE_SPEED)
@@ -859,6 +876,10 @@ func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 		PopupAction.CLIP_REPLACE_AUDIO: _on_popup_action_clip_ato()
 		PopupAction.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
 		PopupAction.CLIP_RESET_SPEED: _on_popup_action_clip_reset_speed()
+		PopupAction.CLIP_TOGGLE_VISIBLE:
+			ClipLogic.toggle_clip_visible(right_click_clip, not right_click_clip.effects.is_showing)
+		PopupAction.CLIP_TOGGLE_MUTE:
+			ClipLogic.toggle_clip_mute(right_click_clip, not right_click_clip.effects.is_muted)
 		PopupAction.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
 		PopupAction.TRACK_ADD: _on_popup_action_track_add()
 		PopupAction.TRACK_REMOVE: _on_popup_action_track_remove()

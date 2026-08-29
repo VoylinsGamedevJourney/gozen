@@ -33,6 +33,7 @@ func serialize() -> Dictionary:
 	if fade_visual != Vector2i.ZERO: data["fade_visual"] = fade_visual
 	if fade_audio  != Vector2i.ZERO: data["fade_audio"]  = fade_audio
 
+	if is_showing != true: data["is_showing"] = is_showing
 	if is_muted != false:	data["is_muted"] = is_muted
 	if ato_active != false: data["ato_active"] = ato_active
 	if ato_offset != 0.0:	data["ato_offset"] = ato_offset
@@ -54,6 +55,7 @@ func deserialize(data: Dictionary, file_id: int = -1) -> void:
 	ato_active = data.get("ato_active", false)
 	ato_offset = data.get("ato_offset", 0.0)
 	ato_file = data.get("ato_file", -1)
+	is_showing = data.get("is_showing", true)
 	is_muted = data.get("is_muted", false)
 	audio_stream_index = data.get("audio_stream_index", -1)
 
