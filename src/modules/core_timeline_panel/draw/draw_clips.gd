@@ -72,7 +72,7 @@ func _draw() -> void:
 
 		var wave_streams: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
 		var wave_dict: Dictionary = wave_streams.get(clip.effects.audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
-		if not wave_dict.is_empty():
+		if not wave_dict.is_empty() and zoom >= 0.01:
 			var lod: int = 1
 			if zoom < 0.2:
 				lod = 16
@@ -212,6 +212,8 @@ func _draw_wave(clip: ClipData, wave_data: PackedFloat32Array, begin: int, durat
 		var wave_color: Color = get_theme_color("audio_wave", "Timeline")
 		if is_muted:
 			wave_color = get_theme_color("audio_wave_muted", "Timeline")
+		elif (max_value * volume_linear) > 1.0:
+			wave_color = Color.RED
 		draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
 
 
