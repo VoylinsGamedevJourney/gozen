@@ -15,7 +15,7 @@ const TRACK_HEIGHT_LIMIT: Vector2i = Vector2i(34, 100)
 const RESIZE_HANDLE_WIDTH: int = 5
 const RESIZE_CLIP_MIN_WIDTH: float = 14
 
-const ZOOM_MIN: float = 0.01
+const ZOOM_MIN: float = 0.001
 const ZOOM_MAX: float = 200.0
 const ZOOM_STEP: float = 1.1
 

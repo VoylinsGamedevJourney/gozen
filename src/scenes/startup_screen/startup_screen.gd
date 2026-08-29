@@ -80,8 +80,13 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_project", false, true):
 		_on_open_project_button_pressed()
-	if event.is_action_pressed("ui_cancel", false, true):
-		tab_container.current_tab = 0
+	elif event.is_action_pressed("ui_cancel", false, true):
+		if tab_container.current_tab != 0:
+			tab_container.current_tab = 0
+		elif Project.is_loaded:
+			self.queue_free()
+		else:
+			_on_create_quick_h_project_button_pressed()
 
 
 func _set_recent_projects() -> void:
