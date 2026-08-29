@@ -310,7 +310,6 @@ func _update_recent_projects(new_path: String) -> void:
 
 	var _err: int = paths.insert(0, new_path)
 
-	file.close()
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if file:
 		for project_path: String in paths:
