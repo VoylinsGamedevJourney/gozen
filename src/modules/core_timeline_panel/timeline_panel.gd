@@ -63,6 +63,7 @@ func _ready() -> void:
 	if Project.project_ready.connect(_project_ready): Print.stack_connect()
 	if Project.framerate_changed.connect(draw_all): Print.stack_connect()
 
+	if Timeline.draw_requested.connect(draw_all): Print.stack_connect()
 	if Timeline.state_changed.connect(_on_state_changed): Print.stack_connect()
 	if Timeline.scroll_changed.connect(draw_all.unbind(1)): Print.stack_connect()
 	if Timeline.zoom_changed.connect(draw_all.unbind(1)): Print.stack_connect()
@@ -127,11 +128,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if focus is LineEdit or focus is TextEdit:       return
 
 	if event.is_action_pressed("split_clips_at_playhead", false, true):
-		split_clips_at(EditorCore.frame_nr)
+		Timeline.split_clips_at(EditorCore.frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
 		if !PopupManager._open_popups.is_empty(): return
 		if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING]: return
-		ClipLogic.selected_clips.clear()
+		ClipLogic.clear_selection()
 		Timeline.current_state = Timeline.State.SELECT
 		_on_ui_cancel()
 
@@ -155,12 +156,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				add_child(dialog)
 				dialog.popup_centered()
 			draw_clips.queue_redraw()
-		elif event.is_action_pressed("split_clips_at_mouse", false, true):
-			split_clips_at(get_frame_from_mouse())
-		elif event.is_action_pressed("trim_to_clip_start", false, true):
-			trim_clips_at(EditorCore.frame_nr, false)
-		elif event.is_action_pressed("trim_to_clip_end", false, true):
-			trim_clips_at(EditorCore.frame_nr, true)
+		elif event.is_action_pressed("split_clips_at_mouse", false, true): Timeline.split_clips_at(get_frame_from_mouse())
+		elif event.is_action_pressed("trim_to_clip_start", false, true):   Timeline.trim_clips_to_start()
+		elif event.is_action_pressed("trim_to_clip_end", false, true):     Timeline.trim_clips_to_end()
 		elif event.is_action_pressed("remove_empty_space"):
 			var track: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
@@ -192,8 +190,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	if Timeline.current_state == Timeline.State.SPLIT:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 			var target: ClipData = _get_clip_on_mouse(event.position)
-			if target:
-				split_clip_at(target, get_frame_from_mouse(event.position))
+			if target: Timeline.split_clip_at(target, get_frame_from_mouse(event.position))
 			accept_event()
 		return
 	elif event.is_released():
@@ -896,7 +893,7 @@ func _on_popup_action_clip_delete() -> void:
 
 
 func _on_popup_action_clip_split() -> void:
-	split_clips_at(right_click_frame)
+	Timeline.split_clips_at(right_click_frame)
 
 
 func _on_popup_action_remove_empty_space() -> void:
@@ -1091,74 +1088,6 @@ func remove_empty_space_at(track: int, frame_nr: int) -> void:
 	ClipLogic.move(move_requests)
 
 
-func split_clip_at(clip: ClipData, frame_pos: int) -> void:
-	var clips_to_split: Array[ClipData] = []
-	if clip in ClipLogic.selected_clips:
-		clips_to_split = ClipLogic.selected_clips
-	else:
-		clips_to_split = ClipLogic.get_clips_to_select(clip)
-
-	var requests: Array[RequestClipSplit] = []
-	for clip_data: ClipData in clips_to_split:
-		if TrackLogic.tracks[clip_data.track].is_locked: continue
-		elif clip_data.start < frame_pos and clip_data.end > frame_pos:
-			var request: RequestClipSplit = RequestClipSplit.new()
-			request.clip = clip_data
-			request.frame = frame_pos - clip_data.start
-			requests.append(request)
-
-	if !requests.is_empty():
-		var new_clips: Array[ClipData] = ClipLogic.split(requests)
-		if new_clips.size() > 0 and clip in ClipLogic.selected_clips:
-			ClipLogic.selected_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
-	draw_clips.queue_redraw()
-
-
-func split_clips_at(frame_pos: int) -> void:
-	# Check if any of the clips in the tracks is in selected clips
-	# if there are selected clips present, we only split the selected ones
-	var requests: Array[RequestClipSplit] = []
-	var new_clips: Array[ClipData]
-
-	# Checking if we only want selected clips to be split.
-	for clip: ClipData in ClipLogic.selected_clips:
-		if clip.start < frame_pos and clip.end > frame_pos:
-			var request: RequestClipSplit = RequestClipSplit.new()
-			request.clip = clip
-			request.frame = frame_pos - clip.start
-			requests.append(request)
-
-	if !requests.is_empty():
-		new_clips = ClipLogic.split(requests)
-		if new_clips.size() > 0:
-			ClipLogic.selected_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
-		draw_clips.queue_redraw()
-		return
-
-	if not ClipLogic.selected_clips.is_empty():
-		return
-
-	# No selected clips present so splitting all possible clips.
-	for track: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[track].is_locked: continue
-
-		var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
-		if clip and clip.start < frame_pos and clip.end > frame_pos:
-			var request: RequestClipSplit = RequestClipSplit.new()
-			request.clip = clip
-			request.frame = frame_pos - clip.start
-			requests.append(request)
-
-	if !requests.is_empty():
-		new_clips = ClipLogic.split(requests)
-		if new_clips.size() > 0:
-			ClipLogic.selected_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
-		draw_clips.queue_redraw()
-
-
 func _on_request_drop_folder(screen_pos: Vector2) -> void:
 	if is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
@@ -1235,36 +1164,6 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 			ClipLogic.add(requests)
 		Timeline.draggable = null
 		Timeline.current_state = Timeline.State.SELECT
-
-
-func trim_clips_at(frame_pos: int, from_end: bool) -> void:
-	var requests: Array[RequestClipResize] = []
-
-	for clip: ClipData in ClipLogic.selected_clips:
-		if clip.start < frame_pos and clip.end > frame_pos:
-			var request: RequestClipResize = RequestClipResize.new()
-			var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
-			request.clip = clip
-			request.from_end = from_end
-			request.resize_amount = amount
-			requests.append(request)
-
-	if requests.is_empty():
-		for track: int in TrackLogic.tracks.size():
-			if TrackLogic.tracks[track].is_locked: continue
-
-			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
-			if clip and clip.start < frame_pos and clip.end > frame_pos:
-				var request: RequestClipResize = RequestClipResize.new()
-				var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
-
-				request.clip = clip
-				request.from_end = from_end
-				request.resize_amount = amount
-				requests.append(request)
-
-	ClipLogic.resize(requests)
-	draw_clips.queue_redraw()
 
 
 func draw_all() -> void:

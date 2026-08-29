@@ -22,6 +22,7 @@ func prepare_data() -> void:
 
 #--- Handling ---
 
+func add_track_to_end() -> void: add_track(tracks.size())
 func add_track(track: int) -> void:
 	InputManager.undo_redo.create_action("Add track: %s" % track)
 	InputManager.undo_redo.add_do_method(_add_track.bind(track))

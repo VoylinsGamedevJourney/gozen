@@ -391,6 +391,10 @@ func set_frame_nr(value: int) -> void:
 		_needs_final_audio_seek = true
 
 
+func next_frame() -> void: frame_nr = clampi(frame_nr + 1, 0, Project.data.timeline_end)
+func previous_frame() -> void: frame_nr = clampi(frame_nr - 1, 0, Project.data.timeline_end)
+
+
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
 		self.frame_nr = new_frame

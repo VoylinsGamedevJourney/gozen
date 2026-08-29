@@ -609,6 +609,18 @@ func set_render_toggle(value: bool) -> void:
 	render_region_updated.emit()
 
 
+func set_render_region_in(new_in: int = EditorCore.frame_nr) -> void:
+	var region: Vector2i = data.render_region
+	region.x = new_in
+	set_render_region(region)
+
+
+func set_render_region_out(new_out: int = EditorCore.frame_nr) -> void:
+	var region: Vector2i = data.render_region
+	region.y = new_out
+	set_render_region(region)
+
+
 func set_render_region(region: Vector2i) -> void:
 	if region.x >= region.y: # Invalid region.
 		region.y = region.x + int(data.framerate)

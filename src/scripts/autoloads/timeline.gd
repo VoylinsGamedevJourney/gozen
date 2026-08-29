@@ -1,6 +1,7 @@
 extends Node
 
 
+signal draw_requested
 signal state_changed(new_state: State)
 signal zoom_changed(new_zoom: float)
 signal scroll_changed(new_zoom: float)
@@ -239,6 +240,107 @@ func focus_on_playhead() -> void:
 		var playhead_x: float = EditorCore.frame_nr * zoom
 		var new_scroll: float = playhead_x - (scroll_container.size.x / 2.0)
 		scroll_x = maxi(0, int(new_scroll))
+
+
+
+func split_clip_at(clip: ClipData, frame_pos: int = EditorCore.frame_nr) -> void:
+	var clips_to_split: Array[ClipData] = []
+	if clip in ClipLogic.selected_clips:
+		clips_to_split = ClipLogic.selected_clips
+	else:
+		clips_to_split = ClipLogic.get_clips_to_select(clip)
+
+	var requests: Array[RequestClipSplit] = []
+	for clip_data: ClipData in clips_to_split:
+		if TrackLogic.tracks[clip_data.track].is_locked: continue
+		elif clip_data.start < frame_pos and clip_data.end > frame_pos:
+			var request: RequestClipSplit = RequestClipSplit.new()
+			request.clip = clip_data
+			request.frame = frame_pos - clip_data.start
+			requests.append(request)
+
+	if !requests.is_empty():
+		var new_clips: Array[ClipData] = ClipLogic.split(requests)
+		if new_clips.size() > 0 and clip in ClipLogic.selected_clips:
+			ClipLogic.selected_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+	draw_requested.emit()
+
+
+func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
+	# Check if any of the clips in the tracks is in selected clips
+	# if there are selected clips present, we only split the selected ones
+	var requests: Array[RequestClipSplit] = []
+	var new_clips: Array[ClipData]
+
+	# Checking if we only want selected clips to be split.
+	for clip: ClipData in ClipLogic.selected_clips:
+		if clip.start < frame_pos and clip.end > frame_pos:
+			var request: RequestClipSplit = RequestClipSplit.new()
+			request.clip = clip
+			request.frame = frame_pos - clip.start
+			requests.append(request)
+
+	if !requests.is_empty():
+		new_clips = ClipLogic.split(requests)
+		if new_clips.size() > 0:
+			ClipLogic.selected_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+		draw_requested.emit()
+		return
+
+	if not ClipLogic.selected_clips.is_empty(): return
+
+	# No selected clips present so splitting all possible clips.
+	for track: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[track].is_locked: continue
+
+		var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
+		if clip and clip.start < frame_pos and clip.end > frame_pos:
+			var request: RequestClipSplit = RequestClipSplit.new()
+			request.clip = clip
+			request.frame = frame_pos - clip.start
+			requests.append(request)
+
+	if !requests.is_empty():
+		new_clips = ClipLogic.split(requests)
+		if new_clips.size() > 0:
+			ClipLogic.selected_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+		draw_requested.emit()
+
+
+func trim_clips_to_start(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, false)
+func trim_clips_to_end(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, true)
+func trim_clips_at(frame_pos: int, from_end: bool) -> void:
+	var requests: Array[RequestClipResize] = []
+
+	for clip: ClipData in ClipLogic.selected_clips:
+		if clip.start < frame_pos and clip.end > frame_pos:
+			var request: RequestClipResize = RequestClipResize.new()
+			var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
+			request.clip = clip
+			request.from_end = from_end
+			request.resize_amount = amount
+			requests.append(request)
+
+	if requests.is_empty():
+		for track: int in TrackLogic.tracks.size():
+			if TrackLogic.tracks[track].is_locked: continue
+
+			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
+			if clip and clip.start < frame_pos and clip.end > frame_pos:
+				var request: RequestClipResize = RequestClipResize.new()
+				var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
+
+				request.clip = clip
+				request.from_end = from_end
+				request.resize_amount = amount
+				requests.append(request)
+
+	ClipLogic.resize(requests)
+	draw_requested.emit()
+
 
 
 

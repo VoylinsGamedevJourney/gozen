@@ -134,16 +134,12 @@ func _on_render_region_toggled(toggled_on: bool) -> void:
 
 
 func _on_region_start_changed(value: float) -> void:
-	var region: Vector2i = Project.data.render_region
-	region.x = int(value)
-	Project.set_render_region(region)
+	Project.set_render_region_in(int(value))
 	_on_render_settings_changed()
 
 
 func _on_region_end_changed(value: float) -> void:
-	var region: Vector2i = Project.data.render_region
-	region.y = int(value)
-	Project.set_render_region(region)
+	Project.set_render_region_out(int(value))
 	_on_render_settings_changed()
 
 

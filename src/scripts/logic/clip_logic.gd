@@ -70,6 +70,7 @@ func _restore_clip(snapshot: ClipData) -> void:
 	updated.emit.call_deferred()
 
 
+func delete_selected_clips() -> void: delete(selected_clips)
 func delete(clips_to_delete: Array[ClipData]) -> void:
 	if clips_to_delete.is_empty(): return
 
@@ -92,6 +93,7 @@ func _delete(clip: ClipData) -> void:
 	updated.emit.call_deferred()
 
 
+func ripple_delete_selected_clips() -> void: ripple_delete(selected_clips)
 func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 	if clips_to_delete.is_empty(): return
 	# Store min start and total duration per track.
@@ -351,6 +353,7 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String, files_t
 		selected.emit(selected_clips[-1])
 
 
+func duplicate_selected_clips() -> int: return duplicate_clips(selected_clips)
 func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool = false) -> int:
 	if clips_to_duplicate.is_empty(): return 0
 
@@ -445,6 +448,7 @@ func _get_all_group_ids() -> Array[int]:
 	return ids
 
 
+func group_selected_clips() -> void: group_clips(selected_clips)
 func group_clips(clips_to_group: Array[ClipData]) -> void:
 	if clips_to_group.size() > 1:
 		var group_id: int = Utils.get_unique_id(_get_all_group_ids())
@@ -458,6 +462,7 @@ func group_clips(clips_to_group: Array[ClipData]) -> void:
 		InputManager.undo_redo.commit_action()
 
 
+func ungroup_selected_clips() -> void: ungroup_clips(selected_clips)
 func ungroup_clips(clips_to_ungroup: Array[ClipData]) -> void:
 	if clips_to_ungroup.is_empty(): return
 
@@ -684,3 +689,8 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 		effects.transition_right.set_default_keyframe()
 
 	return effects
+
+
+func clear_selection() -> void:
+	selected_clips.clear()
+	selected.emit(null)
