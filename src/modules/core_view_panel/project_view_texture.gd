@@ -5,13 +5,11 @@ enum PopupType {
 	SAVE_SCREENSHOT,
 	SAVE_SCREENSHOT_TO_PROJECT,
 #	COPY_SCREENSHOT # TODO: Godot doesn't have the option yet to set clipboard image
+	TOGGLE_SAFE_AREAS
 }
 
 
 const SIZE_CROSS: int = 20
-
-
-@export var show_safe_areas_button: TextureButton
 
 
 @onready var overlay_control: Control = get_parent()
@@ -35,7 +33,6 @@ func _ready() -> void:
 		printerr("ProjectViewTexture: Couldn't get viewport texture from EditorCore!")
 
 	show_safe_areas = Settings.get_show_safe_areas_on_startup()
-	_update_safe_areas_button()
 
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	overlay_control.clip_contents = true
@@ -128,11 +125,13 @@ func _on_gui_input(event: InputEvent) -> void:
 
 			popup.add_item("Save screenshot ...", PopupType.SAVE_SCREENSHOT)
 			popup.add_item("Save screenshot to project ...", PopupType.SAVE_SCREENSHOT_TO_PROJECT)
+			popup.add_separator()
+			popup.add_check_item("Show safe areas", PopupType.TOGGLE_SAFE_AREAS)
+			popup.set_item_checked(popup.get_item_index(PopupType.TOGGLE_SAFE_AREAS), show_safe_areas)
 			# popup.add_item("Copy screenshot to clipboard", PopupType.COPY_SCREENSHOT) # TODO: Godot doesn't have the option yet to set clipboard image
 
 			if popup.id_pressed.connect(_on_popup_id_pressed): Print.stack_connect()
 			PopupManager.show_menu(popup)
-
 		elif mouse_event.ctrl_pressed:
 			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
 				_zoom_view(1.05)
@@ -170,7 +169,9 @@ func _draw() -> void:
 
 
 func _on_popup_id_pressed(id: int) -> void:
-	if id in [PopupType.SAVE_SCREENSHOT, PopupType.SAVE_SCREENSHOT_TO_PROJECT]:
+	if id == PopupType.TOGGLE_SAFE_AREAS:
+		toggle_safe_areas()
+	elif id in [PopupType.SAVE_SCREENSHOT, PopupType.SAVE_SCREENSHOT_TO_PROJECT]:
 		var file_dialog: FileDialog = PopupManager.create_file_dialog(
 				"Save screenshot ...",
 				FileDialog.FILE_MODE_SAVE_FILE,
@@ -218,16 +219,8 @@ func _on_save_screenshot(path: String) -> void:
 				printerr("ProjectViewTexture: Problem saving screenshot to system!")
 
 
-func _update_safe_areas_button() -> void:
-	if show_safe_areas:
-		show_safe_areas_button.modulate = Color(1,1,1,1)
-	else:
-		show_safe_areas_button.modulate = Color(1,1,1,0.5)
-
-
 func set_show_safe_areas(value: bool) -> void:
 	show_safe_areas = value
-	_update_safe_areas_button()
 	queue_redraw()
 
 

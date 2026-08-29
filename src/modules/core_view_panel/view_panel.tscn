@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="4_k374p"]
 [ext_resource type="Texture2D" uid="uid://drcdxc6b6le8r" path="res://assets/icons/playback/pause.svg" id="5_nh5w4"]
 [ext_resource type="Texture2D" uid="uid://5sdky8df2641" path="res://assets/icons/playback/skip_next.svg" id="6_pf2aw"]
-[ext_resource type="Texture2D" uid="uid://b7ahpuarqvljr" path="res://assets/icons/safe_areas.svg" id="7_l50ca"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cre3o"]
 
@@ -76,6 +75,7 @@ _data = {
 }
 
 [node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("project_view", "button_play", "button_pause", "button_playback_speed", "frame_label", "time_label", "prefetch_waiting_screen")]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -105,7 +105,7 @@ theme_override_constants/separation = 3
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox/EffectOverlay" unique_id=1517280290 node_paths=PackedStringArray("show_safe_areas_button")]
+[node name="ProjectViewTextureRect" type="TextureRect" parent="Margin/VBox/EffectOverlay" unique_id=1517280290]
 material = SubResource("ShaderMaterial_cre3o")
 layout_mode = 1
 anchors_preset = 15
@@ -117,7 +117,6 @@ size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 5
 script = ExtResource("2_l50ca")
-show_safe_areas_button = NodePath("../../ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton")
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="Margin/VBox" unique_id=1040074173]
 layout_mode = 2
@@ -197,14 +196,6 @@ theme_override_colors/font_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
 text = "x1"
 flat = true
 
-[node name="ShowGuidelinesButton" type="TextureButton" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=1324770277]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-tooltip_text = "Show video safety guidelines on top of the project preview."
-texture_normal = ExtResource("7_l50ca")
-ignore_texture_size = true
-stretch_mode = 5
-
 [node name="PrefetchingInProgress" type="ColorRect" parent="Margin" unique_id=546247977]
 visible = false
 layout_mode = 2
@@ -256,4 +247,3 @@ autoplay = &"loading"
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PauseButton" to="." method="_on_pause_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/PlaybackControlsContainer/SkipNextButton" to="." method="_on_skip_next_button_pressed"]
 [connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton" to="." method="_on_playback_speed_button_pressed"]
-[connection signal="pressed" from="Margin/VBox/ButtonsHBox/GuidelinesHBox/ShowGuidelinesButton" to="Margin/VBox/EffectOverlay/ProjectViewTextureRect" method="toggle_safe_areas"]
