@@ -4,6 +4,9 @@ extends Control
 static var instance: EditorUI
 
 
+const SCENE_STARTUP: String = "uid://bqlcn30hs8qp5"
+
+
 @export var menu_bar: MenuBar
 
 @export var workspaces: TabContainer
@@ -108,7 +111,7 @@ func _ready() -> void:
 			is_clean_cache = true
 			is_clean_settings = true
 		elif arg == "--reset-layout":
-			_delete_dir_contents(WorkspaceManager.WORKSPACES_DIR)
+			_delete_dir_contents(WorkspaceManager.get_workspaces_dir())
 			WorkspaceManager.available_workspaces.clear()
 		# Different modes.
 		elif clean_arg == "--view":
@@ -147,7 +150,7 @@ func _ready() -> void:
 		request.framerate = Settings.get_quick_create_vertical_fps()
 		Project.new_project(request)
 	else:
-		add_child(preload(Library.SCENE_STARTUP).instantiate())
+		add_child(preload(SCENE_STARTUP).instantiate())
 
 	if is_view_mode and is_render_mode:
 		menu_bar.visible = false
@@ -287,7 +290,7 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0:
 			if not get_tree().root.has_node("StartupPanel"):
-				var splash: Node = preload(Library.SCENE_STARTUP).instantiate()
+				var splash: Node = (load(SCENE_STARTUP) as PackedScene).instantiate()
 				get_tree().root.add_child(splash)
 				@warning_ignore("unsafe_property_access")
 				splash.tab_container.current_tab = 1
@@ -299,7 +302,7 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 		# 5 is Recent projects
 		6:
 			if not get_tree().root.has_node("StartupPanel"):
-				get_tree().root.add_child(preload(Library.SCENE_STARTUP).instantiate())
+				get_tree().root.add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
 		# -------------
 		7: Project.open_settings_menu()
 		8: get_tree().quit()
@@ -572,7 +575,7 @@ func _delete_workspace(workspace_name: String) -> void:
 			break
 
 	var file_name: String = workspace_name.to_lower().replace(" ", "_") + ".tres"
-	var path: String = WorkspaceManager.WORKSPACES_DIR + file_name
+	var path: String = WorkspaceManager.get_workspaces_dir() + file_name
 	if FileAccess.file_exists(path):
 		var err: Error = DirAccess.remove_absolute(path)
 		if err != OK:

@@ -11,24 +11,27 @@ enum {
 	MODULE_MANAGER,
 	RECENT_PROJECTS,
 	ADD_EFFECTS,
-	REPLACE_AUDIO }
+	REPLACE_AUDIO,
+	WELCOME }
 
 
 var _open_popups: Dictionary [int, Control] = {}
 var _popup_uids: Dictionary [int, String] = {
-	SETTINGS: Library.SCENE_SETTINGS,
-	PROJECT_SETTINGS: Library.SCENE_SETTINGS,
-	CREDITS: Library.SCENE_ABOUT_GOZEN,
-	COLOR: Library.SCENE_COLOR_PICKER_DIALOG,
-	MARKER: Library.SCENE_MARKER_DIALOG,
-	PROGRESS: Library.SCENE_PROGRESS_OVERLAY,
-	COMMAND_BAR: Library.SCENE_COMMAND_BAR,
-	MODULE_MANAGER: Library.SCENE_MODULE_MANAGER,
-	RECENT_PROJECTS: Library.SCENE_RECENT_PROJECTS,
-	ADD_EFFECTS: Library.SCENE_ADD_EFFECTS,
-	REPLACE_AUDIO: Library.SCENE_REPLACE_AUDIO }
+	SETTINGS: "uid://dnhn66udpn7vp",
+	PROJECT_SETTINGS: "uid://dnhn66udpn7vp",
+	CREDITS: "uid://d4e5ndtm65ok3",
+	COLOR: "uid://brbxvynl0y3ha",
+	MARKER: "uid://ce1hy5ks465h7",
+	PROGRESS: "uid://d4h7t8ccus0yv",
+	COMMAND_BAR: "uid://rj2h8g761jr1",
+	MODULE_MANAGER: "uid://bcu0coqxgk2do",
+	RECENT_PROJECTS: "", # TODO
+	ADD_EFFECTS: "uid://dqsbn4yb7nd0",
+	REPLACE_AUDIO: "uid://c3c08cihs1see",
+	WELCOME: "uid://bdxuv18wukbj5" }
+
 var _control: Control = Control.new()
-var _background: PanelContainer = preload(Library.SCENE_POPUP_BACKGROUND).instantiate()
+var _background: PanelContainer = (load("uid://xu8ndgud6cox") as PackedScene).instantiate()
 
 
 

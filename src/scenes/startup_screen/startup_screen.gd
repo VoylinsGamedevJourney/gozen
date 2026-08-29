@@ -6,7 +6,6 @@ extends PanelContainer
 # all projects.
 
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
-const USER_PROFILES_PATH: String = "user://project_profiles/"
 
 
 @export var version_label: RichTextLabel
@@ -87,6 +86,9 @@ func _input(event: InputEvent) -> void:
 			self.queue_free()
 		else:
 			_on_create_quick_h_project_button_pressed()
+
+
+func get_user_profiles_path() -> String: return Utils.get_config_dir() + "project_profiles/"
 
 
 func _set_recent_projects() -> void:
@@ -202,15 +204,15 @@ func _set_new_project_defaults() -> void:
 
 	project_presets_option_button.add_separator(tr("User presets"))
 
-	if not DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
-		var _err: int = DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
+	if not DirAccess.dir_exists_absolute(get_user_profiles_path()):
+		var _err: int = DirAccess.make_dir_recursive_absolute(get_user_profiles_path())
 	else:
-		var user_profile_files: PackedStringArray = DirAccess.get_files_at(USER_PROFILES_PATH)
+		var user_profile_files: PackedStringArray = DirAccess.get_files_at(get_user_profiles_path())
 		for profile_path: String in user_profile_files:
 			profile_path = profile_path.trim_suffix(".remap")
 			if !profile_path.ends_with(".tres") and !profile_path.ends_with(".res"): continue
 
-			var project_profile: ProjectProfile = load(USER_PROFILES_PATH.path_join(profile_path))
+			var project_profile: ProjectProfile = load(get_user_profiles_path().path_join(profile_path))
 			if not project_profile: continue
 
 			project_presets_option_button.add_item(project_profile.profile_name, loaded_preset_profiles.size())
@@ -400,10 +402,10 @@ func _on_save_profile_preset_button_pressed() -> void:
 		profile.advanced_settings_enabled = advanced_options_button.button_pressed
 		profile.background_color = background_color_picker.color
 
-		if not DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
-			var _dir_err: int = DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH)
+		if not DirAccess.dir_exists_absolute(get_user_profiles_path()):
+			var _dir_err: int = DirAccess.make_dir_recursive_absolute(get_user_profiles_path())
 
-		var save_path: String = USER_PROFILES_PATH.path_join(preset_name.validate_filename() + ".tres")
+		var save_path: String = get_user_profiles_path().path_join(preset_name.validate_filename() + ".tres")
 		var _err: int = ResourceSaver.save(profile, save_path)
 
 		_set_new_project_defaults()
@@ -435,7 +437,7 @@ func _on_delete_profile_preset_button_pressed() -> void:
 		return
 
 	var profile: ProjectProfile = loaded_preset_profiles[id]
-	var path: String = USER_PROFILES_PATH.path_join(profile.profile_name.validate_filename() + ".tres")
+	var path: String = get_user_profiles_path().path_join(profile.profile_name.validate_filename() + ".tres")
 	if FileAccess.file_exists(path):
 		var _err: int = DirAccess.remove_absolute(path)
 

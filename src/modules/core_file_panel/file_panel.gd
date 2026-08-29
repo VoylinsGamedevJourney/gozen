@@ -236,7 +236,7 @@ func _on_popup_action_folder_delete() -> void:
 
 
 func _on_popup_action_file_rename() -> void:
-	var rename_dialog: FileRenameDialog = preload(Library.SCENE_RENAME_DIALOG).instantiate()
+	var rename_dialog: FileRenameDialog = (load(PopupManager.SCENE_RENAME_DIALOG) as PackedScene).instantiate()
 	rename_dialog.prepare(FileLogic.files[tree.get_selected().get_metadata(0) as int])
 	add_child(rename_dialog)
 

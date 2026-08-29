@@ -5,9 +5,6 @@ extends Node
 signal workspace_added(workspace_name: String)
 
 
-const WORKSPACES_DIR: String = "user://workspaces/"
-
-
 var active_panels: Dictionary[String, Control] = {}
 
 var current_workspace_layout: WorkspaceLayout = null
@@ -38,21 +35,24 @@ func _ready() -> void:
 	drag_layer.add_child(drag_overlay)
 
 	# Checking if we have the workspaces or if we should add the default ones.
-	if !DirAccess.dir_exists_absolute(WORKSPACES_DIR) and DirAccess.make_dir_absolute(WORKSPACES_DIR) != OK:
-		printerr("WorkspaceManager: Couldn't create workspaces save directory at '%s'!" % WORKSPACES_DIR)
-	if DirAccess.get_files_at(WORKSPACES_DIR).size() == 0:
+	if !DirAccess.dir_exists_absolute(get_workspaces_dir()) and DirAccess.make_dir_absolute(get_workspaces_dir()) != OK:
+		printerr("WorkspaceManager: Couldn't create workspaces save directory at '%s'!" % get_workspaces_dir())
+	if DirAccess.get_files_at(get_workspaces_dir()).size() == 0:
 		var edit_workspace: WorkspaceLayout = _create_default_edit_workspace()
 		var render_workspace: WorkspaceLayout = _create_default_render_workspace()
-		if ResourceSaver.save(edit_workspace, WORKSPACES_DIR + "edit.tres") != OK:
+		if ResourceSaver.save(edit_workspace, get_workspaces_dir() + "edit.tres") != OK:
 			printerr("WorkspaceManager: Something went wrong saving the default 'edit' workspace!")
-		if ResourceSaver.save(render_workspace, WORKSPACES_DIR + "render.tres") != OK:
+		if ResourceSaver.save(render_workspace, get_workspaces_dir() + "render.tres") != OK:
 			printerr("WorkspaceManager: Something went wrong saving the default 'render' workspace!")
 
 	_load_available_workspaces()
 
 
+func get_workspaces_dir() -> String: return Utils.get_config_dir() + "workspaces/"
+
+
 func _load_available_workspaces() -> void:
-	for file_name: String in DirAccess.get_files_at(WORKSPACES_DIR):
+	for file_name: String in DirAccess.get_files_at(get_workspaces_dir()):
 		if file_name.ends_with(".tres"):
 			var workspace_name: String = file_name.get_basename().capitalize()
 			if not available_workspaces.has(workspace_name):
@@ -70,7 +70,7 @@ func save_workspace(workspace_name: String) -> void:
 	layout.name = workspace_name
 	layout.root = _save_node(workspace_root.get_child(0) as Control)
 
-	var path: String = WORKSPACES_DIR + workspace_name.to_lower().replace(" ", "_") + ".tres"
+	var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
 	var err: Error = ResourceSaver.save(layout, path)
 	if err != OK:
 		return printerr("WorkspaceManager: Failed to save workspace '%s' at '%s'!" % [workspace_name, path])
@@ -97,7 +97,7 @@ func create_workspace(workspace_name: String) -> void:
 	root_vsplit.children = [view_tab, timeline_tab]
 	layout.root = root_vsplit
 
-	var path: String = WORKSPACES_DIR + workspace_name.to_lower().replace(" ", "_") + ".tres"
+	var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
 	var err: Error = ResourceSaver.save(layout, path)
 	if err != OK:
 		return printerr("WorkspaceManager: Failed to save workspace '%s' at '%s'!" % [workspace_name, path])
@@ -122,7 +122,7 @@ func _save_node(control: Control) -> WorkspaceNode:
 
 
 func load_workspace(workspace_name: String) -> void:
-	var path: String = WORKSPACES_DIR + workspace_name.to_lower().replace(" ", "_") + ".tres"
+	var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
 	if !FileAccess.file_exists(path):
 		return printerr("WorkspaceManager: Workspace file not found at '%s'" % path)
 

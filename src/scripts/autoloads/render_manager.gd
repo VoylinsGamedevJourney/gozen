@@ -18,6 +18,13 @@ enum Status { ## The progress amounts.
 }
 
 
+const RENDER_PROFILE_YOUTUBE: String = "uid://bp6oahvgcklvc"
+const RENDER_PROFILE_YOUTUBE_HQ: String = "uid://f5ffyfe5gb5b"
+const RENDER_PROFILE_AV1: String = "uid://du35gfskoijp"
+const RENDER_PROFILE_VP9: String = "uid://b8lmmvi0gnujr"
+const RENDER_PROFILE_VP8: String = "uid://drlbs008bf7so"
+const RENDER_PROFILE_HEVC: String = "uid://bcktb6d5bti7t"
+
 const MIX_RATE: float = 44100.0
 const AUDIO_MIN: int = -32768
 const AUDIO_MAX: int = 32767
@@ -67,19 +74,19 @@ func _ready() -> void:
 
 func get_render_profile(profile_name: String) -> RenderProfile:
 	var defaults: Array[String] = [
-		Library.RENDER_PROFILE_YOUTUBE,
-		Library.RENDER_PROFILE_YOUTUBE_HQ,
-		Library.RENDER_PROFILE_AV1,
-		Library.RENDER_PROFILE_VP9,
-		Library.RENDER_PROFILE_VP8,
-		Library.RENDER_PROFILE_HEVC
+		RENDER_PROFILE_YOUTUBE,
+		RENDER_PROFILE_YOUTUBE_HQ,
+		RENDER_PROFILE_AV1,
+		RENDER_PROFILE_VP9,
+		RENDER_PROFILE_VP8,
+		RENDER_PROFILE_HEVC
 	]
 	for path: String in defaults:
 		var profile: RenderProfile = load(path)
 		if profile and profile.profile_name == profile_name:
 			return profile
 
-	var user_path: String = "user://profiles/render/"
+	var user_path: String = Utils.get_config_dir() + "profiles/render/"
 	if DirAccess.dir_exists_absolute(user_path):
 		for file_name: String in DirAccess.get_files_at(user_path):
 			file_name = file_name.trim_suffix(".remap")

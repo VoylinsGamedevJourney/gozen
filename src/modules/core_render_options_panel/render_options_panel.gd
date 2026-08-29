@@ -1,8 +1,6 @@
 extends PanelContainer
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
-const USER_PROFILES_PATH: String = "user://profiles/render/"
-
 
 @export var button_save_render_profile: Button
 @export var button_set_default_profile: Button
@@ -83,20 +81,20 @@ func _ready() -> void:
 	_add_default_profiles()
 
 	option_button_render_profiles.add_separator("Custom render profiles")
-	if DirAccess.dir_exists_absolute(USER_PROFILES_PATH):
+	if DirAccess.dir_exists_absolute(get_user_profiles_path()):
 		# Dir existed so there might be profiles inside. We go over the files
 		# alphabetically and check if they are valid RenderProfile classes.
-		for file_name: String in DirAccess.get_files_at(USER_PROFILES_PATH):
+		for file_name: String in DirAccess.get_files_at(get_user_profiles_path()):
 			file_name = file_name.trim_suffix(".remap")
 			if !file_name.ends_with(".tres") and !file_name.ends_with(".res"): continue
 
-			var path: String = USER_PROFILES_PATH + file_name
+			var path: String = get_user_profiles_path() + file_name
 			var profile: RenderProfile = load(path)
 			if profile:
 				add_profile(profile, path)
-	elif DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
+	elif DirAccess.make_dir_recursive_absolute(get_user_profiles_path()):
 		# Else we create the directory in case we need to save a profile to it.
-		printerr("RenderScreen: Couldn't create folder at %s!" % USER_PROFILES_PATH)
+		printerr("RenderScreen: Couldn't create folder at %s!" % get_user_profiles_path())
 
 	# Setting thread count to all threads minus 1.
 	threads_spin_box.set_value_no_signal(OS.get_processor_count() - 1)
@@ -115,6 +113,9 @@ func _ready() -> void:
 	_on_render_profile_option_button_item_selected(default_index)
 	button_save_render_profile.visible = false
 	_on_project_ready()
+
+
+func get_user_profiles_path() -> String: return Utils.get_config_dir() + "profiles/render/"
 
 
 func _on_project_ready() -> void:
@@ -150,13 +151,13 @@ func _get_current_extension() -> String:
 func _add_default_profiles() -> void:
 	# Default projects should appear in this order. User profiles get added
 	# after these default profiles separated by a line.
-	add_profile(preload(Library.RENDER_PROFILE_YOUTUBE))
-	add_profile(preload(Library.RENDER_PROFILE_YOUTUBE_HQ))
-	add_profile(preload(Library.RENDER_PROFILE_AV1))
-	add_profile(preload(Library.RENDER_PROFILE_VP9))
-	add_profile(preload(Library.RENDER_PROFILE_VP8))
+	add_profile(preload(RenderManager.RENDER_PROFILE_YOUTUBE))
+	add_profile(preload(RenderManager.RENDER_PROFILE_YOUTUBE_HQ))
+	add_profile(preload(RenderManager.RENDER_PROFILE_AV1))
+	add_profile(preload(RenderManager.RENDER_PROFILE_VP9))
+	add_profile(preload(RenderManager.RENDER_PROFILE_VP8))
 	if not OS.has_feature("demo"):
-		add_profile(preload(Library.RENDER_PROFILE_HEVC))
+		add_profile(preload(RenderManager.RENDER_PROFILE_HEVC))
 	custom_profile_id_start = option_button_render_profiles.item_count
 
 
@@ -445,12 +446,12 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.b_frames = int(video_bframes_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
 
-	if !DirAccess.dir_exists_absolute(USER_PROFILES_PATH) and DirAccess.make_dir_recursive_absolute(USER_PROFILES_PATH):
-		printerr("RenderScreen: Couldn't create directory at '%s'!" % USER_PROFILES_PATH)
+	if !DirAccess.dir_exists_absolute(get_user_profiles_path()) and DirAccess.make_dir_recursive_absolute(get_user_profiles_path()):
+		printerr("RenderScreen: Couldn't create directory at '%s'!" % get_user_profiles_path())
 
 	# Fix filename to not cause issues.
 	var save_name: String = profile_name.to_lower().validate_filename()
-	var save_path: String = USER_PROFILES_PATH.path_join(save_name + ".tres")
+	var save_path: String = get_user_profiles_path().path_join(save_name + ".tres")
 	var _err: int = ResourceSaver.save(new_profile, save_path)
 	if _err != OK:
 		return printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])

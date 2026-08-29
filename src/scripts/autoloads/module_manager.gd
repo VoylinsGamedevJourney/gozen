@@ -1,33 +1,36 @@
 extends Node
 
-const CONFIG_FILE: String = "user://modules_config.json"
-const PATH_MODULES_GLOBAL: String = "user://modules/"
 const PATH_MODULES_LOCAL: String = "res://modules/"
+
 
 var loaded_modules: Dictionary = {}
 var loaded_gozen_modules: Array[GoZenModule] = []
 
 
 
+func get_config_file() -> String:		  return Utils.get_config_dir() + "modules_config.json"
+func get_modules_global_path() -> String: return Utils.get_config_dir() + "modules/"
+
+
 func _enter_tree() -> void:
-	if not DirAccess.dir_exists_absolute(PATH_MODULES_GLOBAL):
-		if DirAccess.make_dir_absolute(PATH_MODULES_GLOBAL) not in [ERR_ALREADY_EXISTS, OK]:
-			printerr("ModuleManager: '%s' could not be created!" % PATH_MODULES_GLOBAL)
+	if not DirAccess.dir_exists_absolute(get_modules_global_path()):
+		if DirAccess.make_dir_absolute(get_modules_global_path()) not in [ERR_ALREADY_EXISTS, OK]:
+			printerr("ModuleManager: '%s' could not be created!" % get_modules_global_path())
 
 	_load_config()
 	_apply_modules()
 
 
 func _load_config() -> void:
-	if FileAccess.file_exists(CONFIG_FILE):
-		var file: FileAccess = FileAccess.open(CONFIG_FILE, FileAccess.READ)
+	if FileAccess.file_exists(get_config_file()):
+		var file: FileAccess = FileAccess.open(get_config_file(), FileAccess.READ)
 		var data: Variant = JSON.parse_string(file.get_as_text())
 		if typeof(data) == TYPE_DICTIONARY:
 			loaded_modules = data
 
 
 func _save_config() -> void:
-	var file: FileAccess = FileAccess.open(CONFIG_FILE, FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open(get_config_file(), FileAccess.WRITE)
 	if !file.store_string(JSON.stringify(loaded_modules, "\t")):
 		printerr("ModuleManager: Couldn't store string to config file!")
 
@@ -37,7 +40,7 @@ func _apply_modules() -> void:
 		for filename: String in loaded_modules.keys():
 			var dict: Dictionary = loaded_modules[filename]
 			if dict.get("enabled", false):
-				var path: String = PATH_MODULES_GLOBAL.path_join(filename)
+				var path: String = get_modules_global_path().path_join(filename)
 				if !FileAccess.file_exists(path): continue
 				elif !ProjectSettings.load_resource_pack(path):
 					printerr("ModuleManager: Couldn't load resource at '%s'!" % path)
@@ -100,7 +103,7 @@ func register_themes() -> void:
 
 func install_module(path: String) -> void:
 	var filename: String = path.get_file()
-	var target_path: String = PATH_MODULES_GLOBAL.path_join(filename)
+	var target_path: String = get_modules_global_path().path_join(filename)
 	var err: int = DirAccess.copy_absolute(path, target_path)
 	if err != OK:
 		printerr("Failed to copy module to: ", target_path)
@@ -116,7 +119,7 @@ func install_module(path: String) -> void:
 func delete_module(filename: String) -> void:
 	if loaded_modules.has(filename):
 		if !loaded_modules.erase(filename): Print.stack_erase()
-		var target_path: String = PATH_MODULES_GLOBAL.path_join(filename)
+		var target_path: String = get_modules_global_path().path_join(filename)
 		if FileAccess.file_exists(target_path) and DirAccess.remove_absolute(target_path) != OK:
 			printerr("ModuleManager: Can't remove dir '%s'!" % target_path)
 

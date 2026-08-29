@@ -15,10 +15,7 @@ signal on_theme_updated
 signal on_module_setting_changed(module_folder: String, setting_id: String, value: Variant)
 
 
-const PATH: String = "user://settings"
-const PATH_THEMES: String = "user://themes/"
-
-
+var is_first_time: bool = false
 var data: SettingsData = SettingsData.new()
 
 var fonts: Dictionary[String, SystemFont] = {}
@@ -32,19 +29,21 @@ func _ready() -> void:
 		if arg.to_lower() == "reset_settings":
 			save()
 
-	if !FileAccess.file_exists(PATH):
+	if !FileAccess.file_exists(get_settings_path()):
+		is_first_time = true
 		data.language = get_system_locale()
 		data.display_scale = get_display_scale()
 		data.default_project_path = OS.get_executable_path().trim_suffix(
 				OS.get_executable_path().get_file())
 	else:
-		var response: int = DataManager.load_data(PATH, data)
+		var response: int = DataManager.load_data(get_settings_path(), data)
 		if response != OK:
 			printerr("Settings: Couldn't load settings! ", response)
 		data.check_version()
 
-	if !DirAccess.dir_exists_absolute(PATH_THEMES) and DirAccess.make_dir_absolute(PATH_THEMES):
-		printerr("Settings: Couldn't create directory at '%s'!" % PATH_THEMES)
+	if !DirAccess.dir_exists_absolute(get_themes_path()) and DirAccess.make_dir_absolute(get_themes_path()):
+		printerr("Settings: Couldn't create directory at '%s'!" % get_themes_path())
+
 
 	load_system_fonts()
 	load_custom_themes()
@@ -58,8 +57,12 @@ func _ready() -> void:
 	load_new_shortcuts()
 
 
+func get_settings_path() -> String: return Utils.get_config_dir() + "settings"
+func get_themes_path() -> String:   return Utils.get_config_dir() + "themes/"
+
+
 func save() -> void:
-	var response: int = DataManager.save_data(PATH, data)
+	var response: int = DataManager.save_data(get_settings_path(), data)
 	if response != OK:
 		printerr("Settings: Something went wrong saving settings! ", response)
 
@@ -86,7 +89,7 @@ func load_custom_themes() -> void:
 		return
 
 	var default_themes: Dictionary[String, String] = get_themes()
-	var dir: DirAccess = DirAccess.open(PATH_THEMES)
+	var dir: DirAccess = DirAccess.open(get_themes_path())
 	if !dir or dir.list_dir_begin():
 		return
 
@@ -95,7 +98,7 @@ func load_custom_themes() -> void:
 		if !dir.current_is_dir() and file_name.ends_with(".tres"):
 			var theme_name: String = file_name.get_basename().replace('_', ' ')
 			if not theme_name in default_themes and not theme_name in custom_themes:
-				custom_themes[theme_name] = PATH_THEMES + file_name
+				custom_themes[theme_name] = get_themes_path() + file_name
 		file_name = dir.get_next()
 
 	ModuleManager.register_themes()

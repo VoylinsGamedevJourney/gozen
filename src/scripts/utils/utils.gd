@@ -1,6 +1,8 @@
 class_name Utils
 extends Node
 
+# TODO in Godot 4.8: Move over to the build in fuzzy searching.
+
 
 # Const variables for get_fuzzy_score().
 const FUZZY_SCORE_POINT: int = 1
@@ -10,6 +12,14 @@ const INT_32_MAX: int = 2_147_483_647
 
 
 
+static func get_config_dir() -> String:
+	var app_dir: String = OS.get_config_dir().path_join("gozen")
+	if not DirAccess.dir_exists_absolute(app_dir):
+		if DirAccess.make_dir_recursive_absolute(app_dir):
+			printerr("Utils: Couldn't create config folder!")
+	return app_dir + "/"
+
+
 static func get_unique_id(keys: Array[int]) -> int:
 	var id: int = abs(randi())
 	while keys.has(id):
@@ -17,7 +27,6 @@ static func get_unique_id(keys: Array[int]) -> int:
 		if keys.has(id):
 			id = get_unique_id(keys)
 	return id
-
 
 
 static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
