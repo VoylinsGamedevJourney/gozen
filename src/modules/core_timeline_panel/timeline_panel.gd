@@ -258,38 +258,40 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		right_click_track = get_track_from_mouse(event.position)
 		right_click_frame = get_frame_from_mouse(event.position)
 
+		var target_menu: PopupMenu = popup
 		if right_click_clip:
 			_add_popup_menu_items_clip(popup)
+			popup.add_separator()
+			var track_submenu: PopupMenu = PopupMenu.new()
+			track_submenu.name = "TrackSubMenu"
+			track_submenu.add_theme_constant_override("icon_max_width", 20)
+			popup.add_child(track_submenu)
+			popup.add_submenu_node_item(tr("Track options"), track_submenu)
+			target_menu = track_submenu
+			if track_submenu.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
 		else:
 			popup.add_item(tr("Remove empty space"), PopupAction.REMOVE_EMPTY_SPACE)
-
-		popup.add_separator()
-		var track_submenu: PopupMenu = PopupMenu.new()
-		track_submenu.name = "TrackSubMenu"
-		track_submenu.add_theme_constant_override("icon_max_width", 20)
-		popup.add_child(track_submenu)
-		popup.add_submenu_node_item(tr("Track options"), track_submenu)
+			popup.add_separator(tr("Track options"))
 
 		var track_data: TrackData = TrackLogic.tracks[right_click_track]
 
-		track_submenu.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), PopupAction.TRACK_ADD)
+		target_menu.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), PopupAction.TRACK_ADD)
 		if TrackLogic.tracks.size() != 1:
-			track_submenu.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), PopupAction.TRACK_REMOVE)
+			target_menu.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), PopupAction.TRACK_REMOVE)
 
-		track_submenu.add_separator()
+		target_menu.add_separator()
 
-		track_submenu.add_check_item(tr("Show track"), PopupAction.TRACK_TOGGLE_VISIBLE)
-		track_submenu.set_item_checked(track_submenu.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
+		target_menu.add_check_item(tr("Show track"), PopupAction.TRACK_TOGGLE_VISIBLE)
+		target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
 
-		track_submenu.add_check_item(tr("Mute track"), PopupAction.TRACK_TOGGLE_MUTE)
-		track_submenu.set_item_checked(track_submenu.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
+		target_menu.add_check_item(tr("Mute track"), PopupAction.TRACK_TOGGLE_MUTE)
+		target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
 
 		if not OS.has_feature("demo"):
-			track_submenu.add_check_item(tr("Lock track"), PopupAction.TRACK_TOGGLE_LOCK)
-			track_submenu.set_item_checked(track_submenu.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
+			target_menu.add_check_item(tr("Lock track"), PopupAction.TRACK_TOGGLE_LOCK)
+			target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
 		if popup.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
-		if track_submenu.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
 		PopupManager.show_menu(popup)
 
 	if event.is_pressed() and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:

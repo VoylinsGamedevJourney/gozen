@@ -42,10 +42,8 @@ var mouse_frame: int = 0
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
-	InputManager.switch_timeline_mode_select.connect(set_state.bind(State.SELECT))
-	InputManager.switch_timeline_mode_split.connect(set_state.bind(State.SPLIT))
-	@warning_ignore_restore("return_value_discarded")
+	if InputManager.switch_timeline_mode_select.connect(set_state.bind(State.SELECT)): Print.stack_connect()
+	if InputManager.switch_timeline_mode_split.connect(set_state.bind(State.SPLIT)): Print.stack_connect()
 
 
 #--- Setters ---
