@@ -956,6 +956,8 @@ func _on_split_mode_button_pressed() -> void:
 	button_select.set_pressed_no_signal(false)
 	button_split.set_pressed_no_signal(true)
 	Timeline.current_state = Timeline.State.SPLIT
+	draw_mode.set("mouse_pos_x", get_local_mouse_position().x)
+	draw_mode.queue_redraw()
 
 
 func _on_module_setting_changed(module_folder: String, setting_id: String, value: Variant) -> void:
