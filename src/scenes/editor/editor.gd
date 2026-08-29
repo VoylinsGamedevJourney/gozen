@@ -5,6 +5,7 @@ static var instance: EditorUI
 
 
 const SCENE_STARTUP: String = "uid://bqlcn30hs8qp5"
+const SCENE_WELCOME: String = "uid://bdxuv18wukbj5"
 
 
 @export var menu_bar: MenuBar
@@ -150,7 +151,9 @@ func _ready() -> void:
 		request.framerate = Settings.get_quick_create_vertical_fps()
 		Project.new_project(request)
 	else:
-		add_child(preload(SCENE_STARTUP).instantiate())
+		add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
+		if Settings.is_first_time:
+			add_child((load(SCENE_WELCOME) as PackedScene).instantiate()) # Welcome scene
 
 	if is_view_mode and is_render_mode:
 		menu_bar.visible = false
