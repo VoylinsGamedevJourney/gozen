@@ -7,7 +7,7 @@ extends PanelContainer
 
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 
-
+@export var panel: PanelContainer
 @export var version_label: RichTextLabel
 @export var tab_container: TabContainer
 @export var recent_projects_vbox: VBoxContainer
@@ -80,12 +80,27 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_project", false, true):
 		_on_open_project_button_pressed()
 	elif event.is_action_pressed("ui_cancel", false, true):
-		if tab_container.current_tab != 0:
+		if tab_container.current_tab != 0 and not Project.is_loaded:
 			tab_container.current_tab = 0
-		elif Project.is_loaded:
-			self.queue_free()
 		else:
-			_on_create_quick_h_project_button_pressed()
+			dismiss()
+	
+	if not event is InputEventMouseButton:
+		return
+		
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	
+	if mouse_event.pressed \
+		and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT \
+		and not panel.get_global_rect().has_point(mouse_event.global_position):
+			dismiss()
+		
+
+func dismiss() -> void:
+	if Project.is_loaded:
+		self.queue_free()
+	else:
+		_on_create_quick_h_project_button_pressed()
 
 
 func get_user_profiles_path() -> String: return Utils.get_config_dir() + "project_profiles/"

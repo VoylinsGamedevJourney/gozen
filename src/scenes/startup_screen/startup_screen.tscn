@@ -18,7 +18,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
 shader = ExtResource("1_5viva")
 
-[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("version_label", "tab_container", "recent_projects_vbox", "create_new_project_button", "project_presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "track_amount_spinbox", "save_profile_preset_button", "delete_profile_preset_button", "startup_image", "startup_image_credit_label")]
+[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("panel", "version_label", "tab_container", "recent_projects_vbox", "create_new_project_button", "project_presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "track_amount_spinbox", "save_profile_preset_button", "delete_profile_preset_button", "startup_image", "startup_image_credit_label")]
 material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,6 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_sgta6")
+panel = NodePath("Panel")
 version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
 tab_container = NodePath("Panel/VBox/StartupTabContainer")
 recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
