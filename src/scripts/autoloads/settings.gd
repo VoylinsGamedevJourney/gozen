@@ -145,18 +145,11 @@ func get_languages() -> Dictionary:
 
 	for code: String in locales:
 		var key: String = code.split('_')[0]
-		if Localization.native_locale_names.has(key):
-			key = Localization.native_locale_names[key]
-		else:
-			key = TranslationServer.get_locale_name(key)
+		key = TranslationServer.get_locale_name(key)
 
-		if code.contains('_'): # Country code present
+		if code.contains('_'): # Contains a country code.
 			var country_code: String = code.split('_')[1]
-
-			if Localization.native_country_names.has(country_code):
-				key += " (" + Localization.native_country_names[country_code] + ")"
-			else:
-				key += " (" + TranslationServer.get_country_name(country_code) + ")"
+			key += " (" + TranslationServer.get_country_name(country_code) + ")"
 		temp_language_data[key] = code
 
 	var keys: Array[String] = temp_language_data.keys()

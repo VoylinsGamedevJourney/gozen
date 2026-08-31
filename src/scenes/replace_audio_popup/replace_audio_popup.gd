@@ -221,8 +221,11 @@ func _on_auto_align_button_pressed() -> void:
 	if current_file_id == -1 and current_clip_id != -1:
 		file_a_id = ClipLogic.clips[current_clip_id].file
 
-	var wave_dict_a: Dictionary = FileLogic.audio_wave.get(file_a_id, {})
-	var wave_dict_b: Dictionary = FileLogic.audio_wave.get(file_b_id, {})
+	var wave_streams_a: Dictionary = FileLogic.audio_wave.get(file_a_id, {})
+	var wave_streams_b: Dictionary = FileLogic.audio_wave.get(file_b_id, {})
+	var wave_dict_a: Dictionary = wave_streams_a.get(-1, wave_streams_a.values()[0] if wave_streams_a.size() > 0 else {})
+	var wave_dict_b: Dictionary = wave_streams_b.get(-1, wave_streams_b.values()[0] if wave_streams_b.size() > 0 else {})
+
 	if wave_dict_a.is_empty() or wave_dict_b.is_empty():
 		return
 

@@ -133,6 +133,7 @@ func clipboard_paste() -> void:
 				if available_duration > 0:
 					var request: RequestClipAdd = RequestClipAdd.new()
 					request.file = file
+					request.type = file.type
 					request.track = Timeline.mouse_track
 					request.frame = Timeline.mouse_frame
 					request.duration = mini(file.duration, available_duration)
