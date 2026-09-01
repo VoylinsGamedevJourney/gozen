@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cdwfhglyhu6je"
+path="res://.godot/imported/rotate.glsl-4b2a36c829f3c25c0e405da49bf7fcf2.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/rotate.glsl"
+dest_files=["res://.godot/imported/rotate.glsl-4b2a36c829f3c25c0e405da49bf7fcf2.res"]
+
+[params]
+

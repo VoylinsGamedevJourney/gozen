@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://bc28rhll046uw"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_qhdrf"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_fkvoh"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_liprk"]
+
+[sub_resource type="Resource" id="Resource_a6fpd"]
+script = ExtResource("2_fkvoh")
+id = "x_rotation"
+nickname = "X"
+tooltip = "X rotation."
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_sl2ly"]
+script = ExtResource("2_fkvoh")
+id = "y_rotation"
+nickname = "Y"
+tooltip = "Y rotation."
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_ayxj4"]
+script = ExtResource("2_fkvoh")
+id = "z_rotation"
+nickname = "Z"
+tooltip = "Z rotation."
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_qhdrf"]
+script = ExtResource("2_fkvoh")
+id = "fov"
+nickname = "FOV"
+tooltip = "Field of view (depth)."
+default_value = 2.0
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_liprk")
+id = "rotate"
+nickname = "Rotate"
+tooltip = "Rotate clip in X, Y, and Z."
+params = Array[ExtResource("2_fkvoh")]([SubResource("Resource_a6fpd"), SubResource("Resource_sl2ly"), SubResource("Resource_ayxj4"), SubResource("Resource_qhdrf")])
+shader_path = "uid://cdwfhglyhu6je"
+metadata/_custom_type_script = "uid://jveevg12khsa"
