@@ -55,4 +55,5 @@ nickname = "Rotate"
 tooltip = "Rotate clip in X, Y, and Z."
 params = Array[ExtResource("2_fkvoh")]([SubResource("Resource_a6fpd"), SubResource("Resource_sl2ly"), SubResource("Resource_ayxj4"), SubResource("Resource_qhdrf")])
 shader_path = "uid://cdwfhglyhu6je"
+custom_overlay_path = "uid://dxdhipjpg3cua"
 metadata/_custom_type_script = "uid://jveevg12khsa"
