@@ -12,7 +12,8 @@ enum {
 	RECENT_PROJECTS,
 	ADD_EFFECTS,
 	REPLACE_AUDIO,
-	WELCOME }
+	WELCOME,
+	AUTO_CUT }
 
 
 var _open_popups: Dictionary [int, Control] = {}
@@ -28,7 +29,8 @@ var _popup_uids: Dictionary [int, String] = {
 	RECENT_PROJECTS: "", # TODO
 	ADD_EFFECTS: "uid://dqsbn4yb7nd0",
 	REPLACE_AUDIO: "uid://c3c08cihs1see",
-	WELCOME: "uid://bdxuv18wukbj5" }
+	WELCOME: "uid://bdxuv18wukbj5",
+	AUTO_CUT: "uid://td87gbksxsi3" }
 
 var _control: Control = Control.new()
 var _background: PanelContainer = (load("uid://xu8ndgud6cox") as PackedScene).instantiate()

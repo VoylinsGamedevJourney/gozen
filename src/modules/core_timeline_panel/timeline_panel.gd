@@ -3,7 +3,7 @@ extends PanelContainer
 
 enum PopupAction {
 	# Clip options.
-	CLIP_DELETE, CLIP_SPLIT, CLIP_REPLACE_AUDIO,
+	CLIP_DELETE, CLIP_SPLIT, CLIP_REPLACE_AUDIO, CLIP_AUTO_CUT,
 	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
 	CLIP_TOGGLE_VISIBLE, CLIP_TOGGLE_MUTE,
 	# Track options.
@@ -844,16 +844,21 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 			popup.add_icon_item(preload(Library.ICON_SPEED_RESET), tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)
 
 	if right_click_clip.type == EditorCore.Type.VIDEO:
-		popup.add_separator(tr("Video options"))
-
-		if not OS.has_feature("demo"):
-			popup.add_item(tr("Clip replace audio"), PopupAction.CLIP_REPLACE_AUDIO)
-
 		var file: FileData = FileLogic.files[right_click_clip.file]
-		if file.audio_streams.size() > 1:
+		var is_demo: bool = OS.has_feature("demo")
+		var audio_streams_size: int = file.audio_streams.size()
+		if not is_demo or audio_streams_size > 1:
+			popup.add_separator(tr("Video options"))
+
+		if not is_demo:
+			popup.add_item(tr("Clip replace audio"), PopupAction.CLIP_REPLACE_AUDIO)
+			popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Texture2D,
+					tr("Auto-cut silence"), PopupAction.CLIP_AUTO_CUT)
+
+		if audio_streams_size > 1:
 			var audio_submenu: PopupMenu = PopupMenu.new()
 			audio_submenu.name = "AudioStreamsSubMenu"
-			for i: int in file.audio_streams.size():
+			for i: int in audio_streams_size:
 				var stream_index: int = file.audio_streams[i]
 				audio_submenu.add_radio_check_item("Audio Track %d" % (i + 1), stream_index)
 				var current_index: int = right_click_clip.effects.audio_stream_index
@@ -873,6 +878,7 @@ func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 		PopupAction.CLIP_DELETE: _on_popup_action_clip_delete()
 		PopupAction.CLIP_SPLIT: _on_popup_action_clip_split()
 		PopupAction.CLIP_REPLACE_AUDIO: _on_popup_action_clip_ato()
+		PopupAction.CLIP_AUTO_CUT: _on_popup_action_clip_auto_cut()
 		PopupAction.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
 		PopupAction.CLIP_RESET_SPEED: _on_popup_action_clip_reset_speed()
 		PopupAction.CLIP_TOGGLE_VISIBLE:
@@ -904,6 +910,12 @@ func _on_popup_action_clip_ato() -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.REPLACE_AUDIO)
 	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
 	popup.load_data(right_click_clip.id, false)
+
+
+func _on_popup_action_clip_auto_cut() -> void:
+	var popup: Control = PopupManager.get_popup(PopupManager.AUTO_CUT)
+	@warning_ignore("unsafe_method_access")
+	popup.load_data(right_click_clip.id)
 
 
 func _on_popup_action_clip_change_speed() -> void:

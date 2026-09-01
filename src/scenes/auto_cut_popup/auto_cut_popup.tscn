@@ -1,0 +1,175 @@
+[gd_scene format=3 uid="uid://td87gbksxsi3"]
+
+[ext_resource type="Script" uid="uid://drxwwlsm6dehq" path="res://scenes/auto_cut_popup/auto_cut_popup.gd" id="1_scripts"]
+[ext_resource type="Script" uid="uid://c1iy4cj7tl12s" path="res://scenes/auto_cut_popup/auto_cut_wave.gd" id="2_wave"]
+[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="3_play"]
+
+[node name="AutoCutPopup" type="Control" unique_id=1128770682 node_paths=PackedStringArray("threshold_spinbox", "min_duration_spinbox", "padding_spinbox", "apply_group_checkbox", "ripple_checkbox", "wave_preview", "audio_play_button", "audio_player")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_scripts")
+threshold_spinbox = NodePath("Panel/Margin/VBox/OptionsGrid/ThresholdSpinBox")
+min_duration_spinbox = NodePath("Panel/Margin/VBox/OptionsGrid/MinDurationSpinBox")
+padding_spinbox = NodePath("Panel/Margin/VBox/OptionsGrid/PaddingSpinBox")
+apply_group_checkbox = NodePath("Panel/Margin/VBox/TogglesHBox/GroupCheckButton")
+ripple_checkbox = NodePath("Panel/Margin/VBox/TogglesHBox/RippleCheckButton")
+wave_preview = NodePath("Panel/Margin/VBox/WaveColorRect")
+audio_play_button = NodePath("Panel/Margin/VBox/TopHBox/PlayAudioButton")
+audio_player = NodePath("AudioStreamPlayer")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1183935874]
+custom_minimum_size = Vector2(650, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -325.0
+offset_top = -150.0
+offset_right = 325.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=310473342]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1233634960]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=625888096]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/TopHBox" unique_id=1789791951]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title_label"
+text = "Auto-Cut Silence"
+
+[node name="AudioWaveModifier" type="Label" parent="Panel/Margin/VBox/TopHBox" unique_id=456178457]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_type_variation = &"title_label"
+text = "Waveform modifier"
+
+[node name="AudioWaveModifierSpinBox" type="SpinBox" parent="Panel/Margin/VBox/TopHBox" unique_id=613257622]
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = 1.0
+max_value = 40.0
+value = 10.0
+rounded = true
+alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/TopHBox" unique_id=979438703]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="PlayAudioButton" type="TextureButton" parent="Panel/Margin/VBox/TopHBox" unique_id=979822767]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+texture_normal = ExtResource("3_play")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="OptionsGrid" type="GridContainer" parent="Panel/Margin/VBox" unique_id=1292554712]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+columns = 2
+
+[node name="ThresholdLabel" type="Label" parent="Panel/Margin/VBox/OptionsGrid" unique_id=1932600473]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Silence Threshold (dB)"
+
+[node name="ThresholdSpinBox" type="SpinBox" parent="Panel/Margin/VBox/OptionsGrid" unique_id=2072378705]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+min_value = -80.0
+max_value = 0.0
+value = -40.0
+alignment = 1
+suffix = "dB"
+
+[node name="MinDurationLabel" type="Label" parent="Panel/Margin/VBox/OptionsGrid" unique_id=1231623505]
+layout_mode = 2
+text = "Minimum Silence Duration (s)"
+
+[node name="MinDurationSpinBox" type="SpinBox" parent="Panel/Margin/VBox/OptionsGrid" unique_id=287593694]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+value = 3.0
+alignment = 1
+suffix = "s"
+
+[node name="PaddingLabel" type="Label" parent="Panel/Margin/VBox/OptionsGrid" unique_id=830778488]
+layout_mode = 2
+text = "Cut Padding (frames)"
+
+[node name="PaddingSpinBox" type="SpinBox" parent="Panel/Margin/VBox/OptionsGrid" unique_id=643571776]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 60.0
+value = 5.0
+alignment = 1
+suffix = "frames"
+
+[node name="TogglesHBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=477897858]
+layout_mode = 2
+alignment = 1
+
+[node name="GroupCheckButton" type="CheckButton" parent="Panel/Margin/VBox/TogglesHBox" unique_id=949651771]
+layout_mode = 2
+button_pressed = true
+text = "Apply to Grouped Clips"
+
+[node name="RippleCheckButton" type="CheckButton" parent="Panel/Margin/VBox/TogglesHBox" unique_id=2120526071]
+layout_mode = 2
+button_pressed = true
+text = "Ripple Delete"
+
+[node name="WaveColorRect" type="ColorRect" parent="Panel/Margin/VBox" unique_id=641102045]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.478431, 0.478431, 0.478431, 1)
+script = ExtResource("2_wave")
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=49831888]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/ButtonsHBox" unique_id=317941077]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="ConfirmButton" type="Button" parent="Panel/Margin/VBox/ButtonsHBox" unique_id=351638323]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"main_button"
+text = "Confirm Auto-Cut"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1609794611]
+
+[connection signal="value_changed" from="Panel/Margin/VBox/TopHBox/AudioWaveModifierSpinBox" to="." method="_on_audio_wave_modifier_spin_box_value_changed"]
+[connection signal="pressed" from="Panel/Margin/VBox/TopHBox/PlayAudioButton" to="." method="_on_play_audio_button_pressed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/OptionsGrid/ThresholdSpinBox" to="." method="_on_settings_changed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/OptionsGrid/MinDurationSpinBox" to="." method="_on_settings_changed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/OptionsGrid/PaddingSpinBox" to="." method="_on_settings_changed"]
+[connection signal="seek_requested" from="Panel/Margin/VBox/WaveColorRect" to="." method="_on_wave_seek_request"]
+[connection signal="pressed" from="Panel/Margin/VBox/ButtonsHBox/CancelButton" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/ButtonsHBox/ConfirmButton" to="." method="_on_confirm_pressed"]

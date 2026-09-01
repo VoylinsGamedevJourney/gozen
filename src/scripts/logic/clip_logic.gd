@@ -553,6 +553,129 @@ func _apply_replace_audio(clip: ClipData, active: bool, audio_file_id: int, offs
 	updated.emit.call_deferred()
 
 
+func auto_cut_silence(target_clip: ClipData, local_ranges: Array[Vector2i], apply_to_group: bool, ripple: bool) -> void:
+	if local_ranges.is_empty(): return
+
+	var targets: Array[ClipData] = [target_clip]
+	if apply_to_group and not target_clip.groups.is_empty():
+		for clip_data: ClipData in get_group_clips(target_clip):
+			if not clip_data in targets:
+				targets.append(clip_data)
+
+	var project_silences: Array[Vector2i] = []
+	for local_range: Vector2i in local_ranges:
+		project_silences.append(Vector2i(target_clip.start + local_range.x, target_clip.start + local_range.y))
+
+	var clips_to_delete: Array[ClipData] = []
+	var new_clips_to_add: Array[ClipData] = []
+	var existing_group_ids: Array[int] = _get_all_group_ids()
+	var group_id_map: Dictionary = {}
+	var ranges_by_track: Dictionary[int, Vector2i] = {}
+
+	for clip: ClipData in targets:
+		var kept_ranges: Array[Vector2i] = []
+		var current_start: int = clip.start
+		var current_end: int = clip.end
+
+		for silence: Vector2i in project_silences:
+			if silence.y <= current_start or silence.x >= current_end: continue
+			elif silence.x > current_start:
+				kept_ranges.append(Vector2i(current_start, silence.x))
+			current_start = max(current_start, silence.y)
+
+		if current_start < current_end:
+			kept_ranges.append(Vector2i(current_start, current_end))
+
+		if kept_ranges.size() == 1 and kept_ranges[0] == Vector2i(clip.start, clip.end):
+			continue
+
+		clips_to_delete.append(clip)
+		if not ranges_by_track.has(clip.track):
+			ranges_by_track[clip.track] = Vector2i(clip.start, clip.end)
+		else:
+			ranges_by_track[clip.track].x = mini(ranges_by_track[clip.track].x, clip.start)
+			ranges_by_track[clip.track].y = maxi(ranges_by_track[clip.track].y, clip.end)
+
+		for i: int in range(kept_ranges.size()):
+			var kept_range: Vector2i = kept_ranges[i]
+			var snapshot: ClipData = clip.duplicate(true)
+
+			var potential_ids: Array[int] = clips.keys()
+			for clip_data: ClipData in new_clips_to_add: potential_ids.append(clip_data.id)
+			snapshot.id = Utils.get_unique_id(potential_ids)
+
+			var mapped_groups: Array[int] = []
+			for group: int in snapshot.groups:
+				var key: String = str(group) + "_" + str(i)
+				if not group_id_map.has(key):
+					var new_group: int = Utils.get_unique_id(existing_group_ids)
+					existing_group_ids.append(new_group)
+					group_id_map[key] = new_group
+				mapped_groups.append(group_id_map[key])
+			snapshot.groups = mapped_groups
+
+			var offset: int = kept_range.x - clip.start
+			snapshot.start = kept_range.x
+			snapshot.begin += int(offset * clip.speed)
+			snapshot.duration = kept_range.y - kept_range.x
+
+			snapshot.effects = ClipEffects.new()
+			var v_fade_in: int = clip.effects.fade_visual.x if i == 0 else 0
+			var v_fade_out: int = clip.effects.fade_visual.y if i == kept_ranges.size() - 1 else 0
+			var a_fade_in: int = clip.effects.fade_audio.x if i == 0 else 0
+			var a_fade_out: int = clip.effects.fade_audio.y if i == kept_ranges.size() - 1 else 0
+			snapshot.effects.fade_visual = Vector2i(v_fade_in, v_fade_out)
+			snapshot.effects.fade_audio = Vector2i(a_fade_in, a_fade_out)
+
+			snapshot.effects.ato_active = clip.effects.ato_active
+			snapshot.effects.ato_offset = clip.effects.ato_offset
+			snapshot.effects.ato_file = clip.effects.ato_file
+			snapshot.effects.is_muted = clip.effects.is_muted
+			snapshot.effects.audio_stream_index = clip.effects.audio_stream_index
+			snapshot.effects.video.assign(_copy_effects(clip.effects.video, offset))
+			snapshot.effects.audio.assign(_copy_effects(clip.effects.audio, offset))
+
+			snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if (clip.effects.transition_left and i == 0) else null
+			snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if (clip.effects.transition_right and i == kept_ranges.size() - 1) else null
+
+			if ripple:
+				var shift: int = 0
+				for silence: Vector2i in project_silences:
+					if silence.y <= kept_range.x:
+						shift += silence.y - silence.x
+					elif silence.x < kept_range.x:
+						shift += kept_range.x - silence.x
+				snapshot.start -= shift
+			new_clips_to_add.append(snapshot)
+
+	InputManager.undo_redo.create_action("Auto-Cut Silence")
+
+	for clip: ClipData in clips_to_delete:
+		InputManager.undo_redo.add_do_method(_delete.bind(clip))
+		InputManager.undo_redo.add_undo_method(_restore_clip.bind(clip))
+
+	for new_clip: ClipData in new_clips_to_add:
+		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
+		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
+
+	if ripple and not clips_to_delete.is_empty():
+		var total_silence: int = 0
+		for silence: Vector2i in project_silences:
+			total_silence += silence.y - silence.x
+
+		for track: int in ranges_by_track:
+			var track_range: Vector2i = ranges_by_track[track]
+			for move_clip: ClipData in TrackLogic.get_clips_after(track, track_range.y):
+				if move_clip in clips_to_delete: continue
+				InputManager.undo_redo.add_do_method(_move.bind(
+						move_clip, track, move_clip.start - total_silence))
+				InputManager.undo_redo.add_undo_method(_move.bind(
+						move_clip, track, move_clip.start))
+
+	InputManager.undo_redo.commit_action()
+	updated.emit.call_deferred()
+
+
 func change_speed(requests: Array[RequestClipResize]) -> void:
 	InputManager.undo_redo.create_action("Change speed clip(s)")
 
