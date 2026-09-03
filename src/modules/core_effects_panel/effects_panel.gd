@@ -19,13 +19,13 @@ const PRESETS_PATH: String = "user://presets/"
 
 
 @export var section_text: VBoxContainer
+@export var section_module: VBoxContainer
 @export var section_transitions: FoldableContainer
 @export var section_visuals: FoldableContainer
 @export var section_audio: FoldableContainer
-@export var section_module: FoldableContainer
 
 
-@onready var scroll: ScrollContainer = $Margin/Scroll
+@onready var scroll: ScrollContainer = $Margin/MainScroll
 
 
 var current_clip: ClipData = null
@@ -52,29 +52,26 @@ func _ready() -> void:
 	clip_enable_audio_button.flat = true
 	clip_enable_audio_button.tooltip_text = tr("Enable clip audio.")
 
-	@warning_ignore_start("return_value_discarded")
-	ClipLogic.deleted.connect(func(clip_id: int) -> void:
+	if ClipLogic.deleted.connect(func(clip_id: int) -> void:
 			if current_clip and clip_id == current_clip.id:
-				_on_clip_pressed(null))
-	ClipLogic.selected.connect(_on_clip_pressed)
+				_on_clip_pressed(null)): Print.stack_connect()
+	if ClipLogic.selected.connect(_on_clip_pressed): Print.stack_connect()
 
-	EditorCore.visual_frame_changed.connect(func() -> void:
-			if current_clip: _update_ui_values())
+	if EditorCore.visual_frame_changed.connect(func() -> void:
+			if current_clip: _update_ui_values()): Print.stack_connect()
 
-	EffectsHandler.effect_added.connect(_on_effect_added)
-	EffectsHandler.effect_removed.connect(_on_effect_removed)
-	EffectsHandler.effect_moved.connect(_on_effect_moved)
-	EffectsHandler.effect_values_updated.connect(_update_ui_values)
+	if EffectsHandler.effect_added.connect(_on_effect_added): Print.stack_connect()
+	if EffectsHandler.effect_removed.connect(_on_effect_removed): Print.stack_connect()
+	if EffectsHandler.effect_moved.connect(_on_effect_moved): Print.stack_connect()
+	if EffectsHandler.effect_values_updated.connect(_update_ui_values): Print.stack_connect()
 
-	EffectsHandler.transition_updated.connect(_on_transition_updated)
+	if EffectsHandler.transition_updated.connect(_on_transition_updated): Print.stack_connect()
 
-	clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled)
-	clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled)
-	@warning_ignore_restore("return_value_discarded")
+	if clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled): Print.stack_connect()
+	if clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled): Print.stack_connect()
 
 	section_transitions.visible = false
 	section_transitions.folded = true
-
 
 	section_visuals.add_title_bar_control(clip_enable_visuals_button)
 	section_visuals.add_title_bar_control(_get_section_preset_button(true))
@@ -97,10 +94,33 @@ func _input(event: InputEvent) -> void:
 		if is_ui_cancel:
 			focus_owner.release_focus()
 			get_viewport().set_input_as_handled()
+		return
 	elif event.is_action_pressed("add_effect", false, true):
 		_open_add_effects_popup(0, false)
 	elif is_ui_cancel:
 		_on_clip_pressed(null)
+
+	if get_global_rect().has_point(get_global_mouse_position()) and Settings.get_module_setting("core_effects_panel", "enable_number_shortcuts", true):
+		if event is not InputEventKey: return
+		var event_key: InputEventKey = event
+		if !event_key.pressed: return
+
+		match event_key.keycode:
+			KEY_1:
+				_on_special_pressed()
+				get_viewport().set_input_as_handled()
+			KEY_2:
+				_on_transitions_pressed()
+				get_viewport().set_input_as_handled()
+			KEY_3:
+				_on_visuals_pressed()
+				get_viewport().set_input_as_handled()
+			KEY_4:
+				_on_audio_pressed()
+				get_viewport().set_input_as_handled()
+			KEY_5:
+				_on_fold_all_pressed()
+				get_viewport().set_input_as_handled()
 
 
 func _notification(what: int) -> void:
@@ -223,10 +243,11 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 
 		if is_visual:
 			var target_effect: Effect = clip.effects.video[index]
-			effect = _create_effect_ui(target_effect, is_visual)
 			if target_effect.id == "pck_effect_params":
-				location = section_module.get_child(0).get_child(0)
+				effect = _create_effect_ui(target_effect, is_visual, true)
+				location = section_module
 			else:
+				effect = _create_effect_ui(target_effect, is_visual)
 				location = section_visuals.get_child(0).get_child(0)
 
 			var target_ui_index: int = 0
@@ -441,22 +462,18 @@ func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left
 func _load_effects() -> void:
 	# Clean UI.
 	_drag_overlays.clear()
-	if section_text.get_child_count() != 0:
-		var container: Container = section_text.get_child(0)
-		section_text.remove_child(container)
-		container.queue_free()
-	if section_visuals.get_child_count() != 0:
-		var container: Container = section_visuals.get_child(0)
-		section_visuals.remove_child(container)
-		container.queue_free()
-	if section_audio.get_child_count() != 0:
-		var container: Container = section_audio.get_child(0)
-		section_audio.remove_child(container)
-		container.queue_free()
-	if section_module.get_child_count() != 0:
-		var container: Container = section_module.get_child(0)
-		section_module.remove_child(container)
-		container.queue_free()
+	for child: Node in section_text.get_children():
+		section_text.remove_child(child)
+		child.queue_free()
+	for child: Node in section_visuals.get_children():
+		section_visuals.remove_child(child)
+		child.queue_free()
+	for child: Node in section_audio.get_children():
+		section_audio.remove_child(child)
+		child.queue_free()
+	for child: Node in section_module.get_children():
+		section_module.remove_child(child)
+		child.queue_free()
 
 	var margin_visuals: MarginContainer = MarginContainer.new()
 	var vbox_visuals: VBoxContainer = VBoxContainer.new()
@@ -481,12 +498,6 @@ func _load_effects() -> void:
 	margin_audio.add_child(vbox_audio)
 	margin_audio.add_child(overlay_audio)
 	section_audio.add_child(margin_audio)
-
-	var margin_module: MarginContainer = MarginContainer.new()
-	var vbox_module: VBoxContainer = VBoxContainer.new()
-	margin_module.add_child(vbox_module)
-	section_module.add_child(margin_module)
-
 
 	if current_clip and current_file and current_file.audio_streams.size() > 1:
 		var hbox: HBoxContainer = HBoxContainer.new()
@@ -548,7 +559,7 @@ func _load_effects() -> void:
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		var effect: Effect = clip_effects.video[index]
 		if effect.id == "pck_effect_params":
-			vbox_module.add_child(_create_effect_ui(effect, true))
+			section_module.add_child(_create_effect_ui(effect, true, true))
 		else:
 			vbox_visuals.add_child(_create_effect_ui(effect, true))
 
@@ -619,7 +630,10 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_reset.tooltip_text = tr("Reset to default")
-		if button_reset.pressed.connect(_on_reset_text_effect): Print.stack_connect()
+		if effect.id == "text":
+			if button_reset.pressed.connect(_on_reset_text_effect): Print.stack_connect()
+		elif effect.id == "pck_effect_params":
+			if button_reset.pressed.connect(_on_reset_pck_effect): Print.stack_connect()
 		container.add_title_bar_control(button_reset)
 
 	var content_vbox: VBoxContainer = VBoxContainer.new()
@@ -715,6 +729,17 @@ func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
 	EffectsHandler.effect_values_updated.emit()
+
+
+func _on_reset_pck_effect() -> void:
+	if not current_clip: return
+	var pck_effect: Effect = null
+	for i: int in current_clip.effects.video.size():
+		if current_clip.effects.video[i].id == "pck_effect_params":
+			pck_effect = current_clip.effects.video[i]
+			break
+	if pck_effect:
+		_on_reset_effect(pck_effect, true)
 
 
 func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect: Effect, is_visual: bool) -> void:
@@ -1168,7 +1193,7 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
 	var effect: Effect = effects[index]
-	var section: FoldableContainer
+	var section: Control
 	var child_offset: int = 0
 	if effects == current_clip.effects.video:
 		if effect.id == "pck_effect_params":
@@ -1184,7 +1209,11 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 		if current_file and current_file.audio_streams.size() > 1:
 			child_offset = 2
 
-	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index + child_offset)
+	var effect_container: FoldableContainer
+	if effect.id == "pck_effect_params":
+		effect_container = section.get_child(index + child_offset) as FoldableContainer
+	else:
+		effect_container = section.get_child(0).get_child(0).get_child(index + child_offset) as FoldableContainer
 	var content_vbox: VBoxContainer = effect_container.get_child(0)
 	if !effect.is_enabled:
 		effect_container.folded = true
@@ -1664,6 +1693,60 @@ func _on_audio_enable_button_toggled(toggled_on: bool) -> void:
 	if current_clip and current_clip.effects.is_muted == toggled_on:
 		ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
 	section_audio.folded = !toggled_on
+
+
+func _get_special_foldable() -> FoldableContainer:
+	if current_clip:
+		if current_clip.type == EditorCore.Type.TEXT and section_text.get_child_count() > 0:
+			return section_text.get_child(0) as FoldableContainer
+		elif current_clip.type == EditorCore.Type.PCK and section_module.get_child_count() > 0:
+			return section_module.get_child(0) as FoldableContainer
+	return null
+
+
+func _toggle_section(target: FoldableContainer, shift: bool) -> void:
+	if shift:
+		var special: FoldableContainer = _get_special_foldable()
+		if special and special != target: special.folded = true
+		if section_transitions != target: section_transitions.folded = true
+		if section_visuals != target: section_visuals.folded = true
+		if section_audio != target: section_audio.folded = true
+		if target: target.folded = false
+	elif target:
+		target.folded = !target.folded
+
+
+func _on_special_pressed() -> void:
+	_toggle_section(_get_special_foldable(), !Input.is_key_pressed(KEY_SHIFT))
+
+
+func _on_transitions_pressed() -> void:
+	_toggle_section(section_transitions, !Input.is_key_pressed(KEY_SHIFT))
+
+
+func _on_visuals_pressed() -> void:
+	_toggle_section(section_visuals, !Input.is_key_pressed(KEY_SHIFT))
+
+
+func _on_audio_pressed() -> void:
+	_toggle_section(section_audio, !Input.is_key_pressed(KEY_SHIFT))
+
+
+func _on_fold_all_pressed() -> void:
+	var special: FoldableContainer = _get_special_foldable()
+	var any_unfolded: bool = false
+	if special and not special.folded: any_unfolded = true
+	if not section_transitions.folded: any_unfolded = true
+	if not section_visuals.folded: any_unfolded = true
+	if not section_audio.folded: any_unfolded = true
+
+	var target_state: bool = any_unfolded
+	if !Input.is_key_pressed(KEY_SHIFT):
+		target_state = true # Shift modifier always unfolds all.
+	if special: special.folded = target_state
+	section_transitions.folded = target_state
+	section_visuals.folded = target_state
+	section_audio.folded = target_state
 
 
 #---- Transition spinbox stuff ----

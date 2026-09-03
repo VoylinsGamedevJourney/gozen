@@ -1,17 +1,29 @@
 [gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://c76y2s0et4i4"]
 
+[ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_hycg3"]
 [ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="1_panel"]
 [ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="2_mod"]
 [ext_resource type="PackedScene" uid="uid://7gty5dfdid1e" path="res://modules/core_effects_panel/effects_panel.tscn" id="3_scene"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="4_bgva6"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="4_set"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="5_nwtak"]
+[ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="6_3ukir"]
 
 [sub_resource type="Resource" id="Resource_panel"]
 script = ExtResource("1_panel")
 scene = ExtResource("3_scene")
+
+[sub_resource type="Resource" id="Resource_set_2"]
+script = ExtResource("4_set")
+id = "enable_number_shortcuts"
+name = "Enable number shortcuts"
+description = "Enable folding/unfolding panels using the number keys 1 to 5."
+default_value = false
 
 [resource]
 script = ExtResource("2_mod")
 name = "Core Effects Panel"
 description = "The default effects panel for GoZen."
 author = "Voylin"
-version = "1.0"
+settings = Array[ExtResource("4_set")]([SubResource("Resource_set_2")])
 custom_panels = Array[ExtResource("1_panel")]([SubResource("Resource_panel")])
