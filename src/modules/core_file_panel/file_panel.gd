@@ -367,7 +367,7 @@ func _add_folder_to_tree(folder: String) -> void:
 			folder_items[check_path] = tree.create_item(previous_folder)
 			folder_items[check_path].set_custom_minimum_height(26)
 			folder_items[check_path].set_text(0, folders[i])
-			folder_items[check_path].set_icon(0, preload(Library.ICON_FOLDER))
+			folder_items[check_path].set_icon(0, load(Library.ICON_FOLDER) as Icon)
 			folder_items[check_path].set_icon_max_width(0, 20)
 			folder_items[check_path].set_metadata(0, check_path)
 			_sort_folder(parent_path)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dnhn66udpn7vp"]
 
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
-[ext_resource type="Texture2D" uid="uid://c5th80tg7y31u" path="res://assets/icons/search.svg" id="2_p28av"]
+[ext_resource type="Texture2D" uid="uid://dmqhsyh4vjsnp" path="res://assets/icons/search.tres" id="2_p28av"]
 
 [node name="Settings" type="Control" unique_id=2082599071 node_paths=PackedStringArray("panel_label", "side_bar_vbox", "search_line_edit", "settings_vbox")]
 layout_mode = 3

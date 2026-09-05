@@ -1,8 +1,13 @@
 [gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://c8n3j5x1q4w7t"]
 
+[ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_gsg7r"]
 [ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="1_panel"]
 [ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="2_mod"]
 [ext_resource type="PackedScene" uid="uid://dktafpwgtv5m3" path="res://modules/core_file_panel/file_panel.tscn" id="3_scene"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="4_jmpvg"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="5_cfvl8"]
+[ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="6_bh0up"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="8_3lybu"]
 
 [sub_resource type="Resource" id="Resource_panel"]
 script = ExtResource("1_panel")
@@ -13,5 +18,4 @@ script = ExtResource("2_mod")
 name = "Core File Panel"
 description = "The default file panel for GoZen."
 author = "Voylin"
-version = "1.0"
 custom_panels = Array[ExtResource("1_panel")]([SubResource("Resource_panel")])

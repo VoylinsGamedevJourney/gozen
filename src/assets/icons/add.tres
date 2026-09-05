@@ -1,0 +1,8 @@
+[gd_resource type="ImageTexture" script_class="Icon" format=3 uid="uid://ca5yfytbff5wr"]
+
+[ext_resource type="Script" uid="uid://c3xb5cvay2wbf" path="res://scripts/classes/icon.gd" id="1_l34u2"]
+
+[resource]
+script = ExtResource("1_l34u2")
+base_svg_path = "res://assets/icons/add.svg"
+metadata/_custom_type_script = "uid://c3xb5cvay2wbf"

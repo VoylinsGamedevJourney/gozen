@@ -16,14 +16,14 @@ func setup(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 	var flow: FlowContainer = HFlowContainer.new()
 	var horizontal_hbox: HBoxContainer = HBoxContainer.new()
 	var horizontal_data: Array[Array] = [
-		[HORIZONTAL_ALIGNMENT_LEFT, preload(Library.ICON_ALIGN_LEFT)],
-		[HORIZONTAL_ALIGNMENT_CENTER, preload(Library.ICON_ALIGN_CENTER)],
-		[HORIZONTAL_ALIGNMENT_RIGHT, preload(Library.ICON_ALIGN_RIGHT)]]
+		[HORIZONTAL_ALIGNMENT_LEFT, load(Library.ICON_ALIGN_LEFT)],
+		[HORIZONTAL_ALIGNMENT_CENTER, load(Library.ICON_ALIGN_CENTER)],
+		[HORIZONTAL_ALIGNMENT_RIGHT, load(Library.ICON_ALIGN_RIGHT)]]
 	var vertical_hbox: HBoxContainer = HBoxContainer.new()
 	var vertical_data: Array[Array] = [
-		[VERTICAL_ALIGNMENT_TOP + 10, preload(Library.ICON_ALIGN_TOP)],
-		[VERTICAL_ALIGNMENT_CENTER + 10, preload(Library.ICON_ALIGN_CENTER)],
-		[VERTICAL_ALIGNMENT_BOTTOM + 10, preload(Library.ICON_ALIGN_BOTTOM)]]
+		[VERTICAL_ALIGNMENT_TOP + 10, load(Library.ICON_ALIGN_TOP)],
+		[VERTICAL_ALIGNMENT_CENTER + 10, load(Library.ICON_ALIGN_CENTER)],
+		[VERTICAL_ALIGNMENT_BOTTOM + 10, load(Library.ICON_ALIGN_BOTTOM)]]
 
 	for data: Array in horizontal_data:
 		var tex_button: TextureButton = TextureButton.new()
@@ -43,7 +43,7 @@ func setup(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 		vertical_hbox.add_child(tex_button)
 
 	var fill_tex_button: TextureButton = TextureButton.new()
-	fill_tex_button.texture_normal = preload(Library.ICON_ALIGN_FILL)
+	fill_tex_button.texture_normal = load(Library.ICON_ALIGN_FILL)
 	fill_tex_button.ignore_texture_size = true
 	fill_tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 	fill_tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE

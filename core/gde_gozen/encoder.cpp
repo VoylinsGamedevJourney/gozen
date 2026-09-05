@@ -134,7 +134,7 @@ bool Encoder::_add_video_stream() {
 	av_opt_set(av_codec_ctx_video->priv_data, "crf", std::to_string(crf).c_str(), 0);
 
 	// Encoding options for different codecs.
-	if (av_codec->id == AV_CODEC_ID_H264 || av_codec->id == AV_CODEC_ID_HEVC) {
+	if (av_codec->id == AV_CODEC_ID_H264) {
 		av_opt_set(av_codec_ctx_video->priv_data, "preset", h264_preset.c_str(), 0);
 		av_dict_set(&codec_options, "preset", h264_preset.c_str(), 0);
 	}
@@ -559,7 +559,6 @@ void Encoder::close() {
 
 void Encoder::_bind_methods() {
 	/* VIDEO CODEC ENUMS */
-	BIND_ENUM_CONSTANT(V_HEVC);
 	BIND_ENUM_CONSTANT(V_H264);
 	BIND_ENUM_CONSTANT(V_MPEG4);
 	BIND_ENUM_CONSTANT(V_MPEG2);

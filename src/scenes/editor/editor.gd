@@ -150,7 +150,7 @@ func _ready() -> void:
 		request.framerate = Settings.get_quick_create_vertical_fps()
 		Project.new_project(request)
 	else:
-		add_child(preload(SCENE_STARTUP).instantiate())
+		add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
 
 	if is_view_mode and is_render_mode:
 		menu_bar.visible = false
@@ -231,26 +231,26 @@ func _create_project_popup_menu() -> void:
 	menu.title = "Project"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
-	menu.add_icon_item(preload(Library.ICON_ADD), "New project", 0)
+	menu.add_icon_item(load(Library.ICON_ADD) as Icon, "New project", 0)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project", 1)
-	menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Save project as ...", 2)
+	menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Icon, "Save project", 1)
+	menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Icon, "Save project as ...", 2)
 	if not OS.has_feature("demo"):
-		menu.add_icon_item(preload(Library.ICON_FILE_VIDEO), "Archive project ...", 3)
+		menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Icon, "Archive project ...", 3)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_OPEN), "Open project", 4)
+	menu.add_icon_item(load(Library.ICON_OPEN) as Icon, "Open project", 4)
 
 	var recent_submenu: PopupMenu = PopupMenu.new()
 	recent_submenu.name = "RecentProjectsSubMenu"
 	menu.add_child(recent_submenu)
 	menu.add_submenu_node_item("Recent projects", recent_submenu, 5)
-	menu.set_item_icon(menu.get_item_index(5), preload(Library.ICON_OPEN))
+	menu.set_item_icon(menu.get_item_index(5), load(Library.ICON_OPEN) as Icon)
 
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_GOZEN), "Splash screen", 6)
+	menu.add_icon_item(load(Library.ICON_GOZEN) as Icon, "Splash screen", 6)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_PROJECT_SETTINGS), "Project settings", 7)
-	menu.add_icon_item(preload(Library.ICON_CLOSE), "Quit", 8)
+	menu.add_icon_item(load(Library.ICON_PROJECT_SETTINGS) as Icon, "Project settings", 7)
+	menu.add_icon_item(load(Library.ICON_CLOSE) as Icon, "Quit", 8)
 
 	if menu.id_pressed.connect(_on_project_popup_menu_id_pressed): Print.stack_connect()
 	if menu.about_to_popup.connect(_on_project_menu_about_to_popup.bind(recent_submenu)): Print.stack_connect()
@@ -393,12 +393,12 @@ func _create_preferences_popup_menu() -> void:
 	menu.title = "Preferences"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
-	menu.add_icon_item(preload(Library.ICON_EDITOR_SETTINGS), "Editor settings", 0)
+	menu.add_icon_item(load(Library.ICON_EDITOR_SETTINGS) as Icon, "Editor settings", 0)
 
 	if not OS.has_feature("demo"):
-		menu.add_icon_item(preload(Library.ICON_MODULE_MANAGER), "Module manager", 1)
+		menu.add_icon_item(load(Library.ICON_MODULE_MANAGER) as Icon, "Module manager", 1)
 		menu.add_separator()
-		menu.add_icon_item(preload(Library.ICON_COMMAND_PROMPT), "Command bar", 2)
+		menu.add_icon_item(load(Library.ICON_COMMAND_PROMPT) as Icon, "Command bar", 2)
 
 	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_preferences_popup_menu_id_pressed)
@@ -419,14 +419,14 @@ func _create_help_popup_menu() -> void:
 	menu.title = "Help"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
-	menu.add_icon_item(preload(Library.ICON_BUG), "Report bug", 0)
-	menu.add_icon_item(preload(Library.ICON_MANUAL), "Manual", 1)
-	menu.add_icon_item(preload(Library.ICON_TUTORIALS), "Tutorials", 2)
-	menu.add_icon_item(preload(Library.ICON_LINK), "Discord", 3)
+	menu.add_icon_item(load(Library.ICON_BUG) as Icon, "Report bug", 0)
+	menu.add_icon_item(load(Library.ICON_MANUAL) as Icon, "Manual", 1)
+	menu.add_icon_item(load(Library.ICON_TUTORIALS) as Icon, "Tutorials", 2)
+	menu.add_icon_item(load(Library.ICON_LINK) as Icon, "Discord", 3)
 	menu.add_separator()
-	menu.add_icon_item(preload(Library.ICON_LINK), "Website", 4)
-	menu.add_icon_item(preload(Library.ICON_SUPPORT), "Support GoZen", 5)
-	menu.add_icon_item(preload(Library.ICON_GOZEN), "About GoZen", 6)
+	menu.add_icon_item(load(Library.ICON_LINK) as Icon, "Website", 4)
+	menu.add_icon_item(load(Library.ICON_SUPPORT) as Icon, "Support GoZen", 5)
+	menu.add_icon_item(load(Library.ICON_GOZEN) as Icon, "About GoZen", 6)
 
 	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_help_popup_menu_id_pressed)

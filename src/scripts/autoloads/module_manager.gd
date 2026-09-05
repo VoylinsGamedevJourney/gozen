@@ -97,7 +97,7 @@ func register_themes() -> void:
 				var theme: Theme = module_theme.theme
 				var theme_name: String = theme.resource_name
 				if theme_name.is_empty():
-					theme_name = module.name + " Theme"
+					theme_name = module.name
 				Settings.custom_themes[theme_name] = theme.resource_path
 
 

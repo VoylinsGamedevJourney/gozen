@@ -272,9 +272,9 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 		var track_data: TrackData = TrackLogic.tracks[right_click_track]
 
-		target_menu.add_icon_item(preload(Library.ICON_ADD), tr("Add track"), PopupAction.TRACK_ADD)
+		target_menu.add_icon_item(load(Library.ICON_ADD) as Icon, tr("Add track"), PopupAction.TRACK_ADD)
 		if TrackLogic.tracks.size() != 1:
-			target_menu.add_icon_item(preload(Library.ICON_DELETE), tr("Remove track"), PopupAction.TRACK_REMOVE)
+			target_menu.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Remove track"), PopupAction.TRACK_REMOVE)
 
 		target_menu.add_separator()
 
@@ -826,8 +826,8 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	# TODO: Set shortcuts.
 	popup.add_theme_constant_override("icon_max_width", 20)
-	popup.add_icon_item(preload(Library.ICON_DELETE), tr("Delete clip"), PopupAction.CLIP_DELETE)
-	popup.add_icon_item(preload(Library.ICON_TIMELINE_MODE_SPLIT), tr("Split clip"), PopupAction.CLIP_SPLIT)
+	popup.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Delete clip"), PopupAction.CLIP_DELETE)
+	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip"), PopupAction.CLIP_SPLIT)
 
 	popup.add_separator()
 	if right_click_clip.type in EditorCore.VISUAL_TYPES:
@@ -839,9 +839,9 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if right_click_clip.type in [EditorCore.Type.VIDEO, EditorCore.Type.AUDIO]:
 		# TODO: Add icons
-		popup.add_icon_item(preload(Library.ICON_SPEED), tr("Change speed"), PopupAction.CLIP_CHANGE_SPEED)
+		popup.add_icon_item(load(Library.ICON_SPEED) as Icon, tr("Change speed"), PopupAction.CLIP_CHANGE_SPEED)
 		if right_click_clip.speed != 1.0:
-			popup.add_icon_item(preload(Library.ICON_SPEED_RESET), tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)
+			popup.add_icon_item(load(Library.ICON_SPEED_RESET) as Icon, tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)
 
 	if right_click_clip.type == EditorCore.Type.VIDEO:
 		var file: FileData = FileLogic.files[right_click_clip.file]

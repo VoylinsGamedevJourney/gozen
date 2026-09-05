@@ -84,17 +84,17 @@ func _input(event: InputEvent) -> void:
 			tab_container.current_tab = 0
 		else:
 			dismiss()
-	
+
 	if not event is InputEventMouseButton:
 		return
-		
+
 	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
-	
+
 	if mouse_event.pressed \
 		and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT \
 		and not panel.get_global_rect().has_point(mouse_event.global_position):
 			dismiss()
-		
+
 
 func dismiss() -> void:
 	if Project.is_loaded:
@@ -134,7 +134,7 @@ func _set_recent_projects() -> void:
 
 			if project_button.pressed.connect(open_project.bind(path)): Print.stack_connect()
 
-			delete_button.texture_normal = preload(Library.ICON_DELETE)
+			delete_button.texture_normal = load(Library.ICON_DELETE)
 			delete_button.ignore_texture_size = true
 			delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			delete_button.custom_minimum_size = Vector2i(18,0)

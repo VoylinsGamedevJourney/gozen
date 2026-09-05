@@ -151,19 +151,15 @@ func _get_current_extension() -> String:
 func _add_default_profiles() -> void:
 	# Default projects should appear in this order. User profiles get added
 	# after these default profiles separated by a line.
-	add_profile(preload(RenderManager.RENDER_PROFILE_YOUTUBE))
-	add_profile(preload(RenderManager.RENDER_PROFILE_YOUTUBE_HQ))
-	add_profile(preload(RenderManager.RENDER_PROFILE_AV1))
-	add_profile(preload(RenderManager.RENDER_PROFILE_VP9))
-	add_profile(preload(RenderManager.RENDER_PROFILE_VP8))
-	if not OS.has_feature("demo"):
-		add_profile(preload(RenderManager.RENDER_PROFILE_HEVC))
+	add_profile(load(RenderManager.RENDER_PROFILE_YOUTUBE) as RenderProfile)
+	add_profile(load(RenderManager.RENDER_PROFILE_YOUTUBE_HQ) as RenderProfile)
+	add_profile(load(RenderManager.RENDER_PROFILE_AV1) as RenderProfile)
+	add_profile(load(RenderManager.RENDER_PROFILE_VP9) as RenderProfile)
+	add_profile(load(RenderManager.RENDER_PROFILE_VP8) as RenderProfile)
 	custom_profile_id_start = option_button_render_profiles.item_count
 
 
 func _setup_codec_option_buttons() -> void:
-	if not OS.has_feature("demo"):
-		video_codec_option_button.add_item("HEVC", Encoder.VideoCodec.V_HEVC) # NO_TRANSLATE
 	video_codec_option_button.add_item("H264", Encoder.VideoCodec.V_H264) # NO_TRANSLATE
 	video_codec_option_button.add_item("MPEG4", Encoder.VideoCodec.V_MPEG4) # NO_TRANSLATE
 	video_codec_option_button.add_item("MPEG2", Encoder.VideoCodec.V_MPEG2) # NO_TRANSLATE

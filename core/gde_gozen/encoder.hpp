@@ -81,7 +81,6 @@ class Encoder : public Resource {
 
   public:
 	enum VideoCodec {
-		V_HEVC = AV_CODEC_ID_HEVC, // H265
 		V_H264 = AV_CODEC_ID_H264,
 		V_MPEG4 = AV_CODEC_ID_MPEG4,
 		V_MPEG2 = AV_CODEC_ID_MPEG2VIDEO,

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ce1hy5ks465h7"]
 
 [ext_resource type="Script" uid="uid://ds4exxdlc67ib" path="res://scenes/marker_popup/marker_popup.gd" id="1_df1gq"]
-[ext_resource type="Texture2D" uid="uid://dyndi17ou8ixo" path="res://assets/icons/delete.svg" id="2_yxvoa"]
+[ext_resource type="Texture2D" uid="uid://cm8roaxbwvyv8" path="res://assets/icons/delete.tres" id="2_yxvoa"]
 
 [node name="MarkerPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("marker_line_edit", "type_option_button", "time_label", "delete_button")]
 layout_mode = 3

@@ -56,8 +56,8 @@ func _rebuild() -> void:
 
 		var button_visibility: TextureButton = TextureButton.new()
 		button_visibility.toggle_mode = true
-		button_visibility.texture_normal = preload(Library.ICON_VISIBLE)
-		button_visibility.texture_pressed = preload(Library.ICON_INVISIBLE)
+		button_visibility.texture_normal = load(Library.ICON_VISIBLE)
+		button_visibility.texture_pressed = load(Library.ICON_INVISIBLE)
 		button_visibility.button_pressed = !track_data.is_visible
 		button_visibility.ignore_texture_size = true
 		button_visibility.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED

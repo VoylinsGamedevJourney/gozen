@@ -452,7 +452,7 @@ func wrap_with_reset_button(control: Control, current_value: Variant, reset_valu
 	var hbox: HBoxContainer = HBoxContainer.new()
 	var reset_button: TextureButton = TextureButton.new()
 	reset_button.name = "ResetButton"
-	reset_button.texture_normal = preload(Library.ICON_REFRESH)
+	reset_button.texture_normal = load(Library.ICON_REFRESH)
 	reset_button.tooltip_text = tr("Reset to default")
 	reset_button.ignore_texture_size = true
 	reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED

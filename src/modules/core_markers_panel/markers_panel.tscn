@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b6vpttfp0ykxp"]
 
 [ext_resource type="Script" uid="uid://dpqqceo10bxqs" path="res://modules/core_markers_panel/markers_panel.gd" id="1_336cf"]
-[ext_resource type="Texture2D" uid="uid://b5b68ecgp4cw5" path="res://assets/icons/copy.svg" id="2_fuqur"]
+[ext_resource type="Texture2D" uid="uid://ku6b500vhgre" path="res://assets/icons/copy.tres" id="2_e5wos"]
 
 [node name="MarkersPanel" type="PanelContainer" unique_id=548154008 node_paths=PackedStringArray("markers_text_edit", "markers_option_button")]
 custom_minimum_size = Vector2(0, 100)
@@ -40,7 +40,7 @@ flat = true
 custom_minimum_size = Vector2(17, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("2_fuqur")
+texture_normal = ExtResource("2_e5wos")
 ignore_texture_size = true
 stretch_mode = 5
 

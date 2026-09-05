@@ -202,8 +202,9 @@ func apply_theme() -> void:
 	get_tree().root.theme = theme
 
 
-func get_theme_path() -> String:
-	return data.theme
+
+func get_theme() -> Theme:  return get_tree().root.theme if is_node_ready() else load(data.theme)
+func get_theme_path() -> String: return data.theme
 
 
 func get_themes() -> Dictionary[String, String]:

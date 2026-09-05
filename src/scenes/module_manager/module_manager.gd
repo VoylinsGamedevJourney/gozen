@@ -48,7 +48,7 @@ func _populate_tree() -> void:
 		item.set_editable(0, true)
 		item.set_metadata(0, filename)
 		item.set_text(1, data.get("description", "") as String)
-		item.add_button(2, preload(Library.ICON_DELETE), 0, false, "Delete Module")
+		item.add_button(2, load(Library.ICON_DELETE) as Icon, 0, false, "Delete Module")
 
 
 func _on_item_edited() -> void:

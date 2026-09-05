@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://buf47l4gua38r" path="res://modules/core_effects/visual/ui/mask_clear_button.gd" id="1_script"]
 
-[node name="MaskClearButton" type="MarginContainer"]
+[node name="MaskClearButton" type="MarginContainer" unique_id=1488439045]
 script = ExtResource("1_script")

@@ -3,14 +3,12 @@
 [ext_resource type="Script" uid="uid://uduexkkpswd4" path="res://modules/core_timeline_panel/timeline.gd" id="1_p3xsq"]
 [ext_resource type="Script" uid="uid://yfoq75slyooi" path="res://modules/core_timeline_panel/timeline_panel.gd" id="2_2or7f"]
 [ext_resource type="Script" uid="uid://btjvbysh6x45y" path="res://modules/core_timeline_panel/timeline_scroll.gd" id="2_6dfq3"]
+[ext_resource type="Texture2D" uid="uid://de7u45155mub0" path="res://assets/icons/mode_select.tres" id="2_g6lje"]
 [ext_resource type="Script" uid="uid://7ojbq5n6igoh" path="res://modules/core_timeline_panel/time_stamps.gd" id="2_jxg8b"]
-[ext_resource type="Texture2D" uid="uid://nnhel2a8tad5" path="res://assets/icons/mode_select_pressed.svg" id="3_gtnhe"]
-[ext_resource type="Texture2D" uid="uid://bix5e8n2tjje3" path="res://assets/icons/mode_select.svg" id="3_vuipj"]
-[ext_resource type="Texture2D" uid="uid://brrif81b6g1qd" path="res://assets/icons/mode_cut.svg" id="4_qnybs"]
-[ext_resource type="Texture2D" uid="uid://do2vct1lgsblg" path="res://assets/icons/snap_on.svg" id="4_scsrl"]
-[ext_resource type="Texture2D" uid="uid://rxhyhtm5qlwo" path="res://assets/icons/mode_cut_pressed.svg" id="5_3ixqu"]
+[ext_resource type="Texture2D" uid="uid://vrkhavabr26v" path="res://assets/icons/mode_cut.tres" id="3_7xsds"]
+[ext_resource type="Texture2D" uid="uid://d0g35wgxg8nw0" path="res://assets/icons/link_on.tres" id="4_rfr0q"]
+[ext_resource type="Texture2D" uid="uid://blw00i0hrh0x8" path="res://assets/icons/snap_on.tres" id="5_g6lje"]
 [ext_resource type="Script" uid="uid://b2fv3om3dl86q" path="res://modules/core_timeline_panel/track_controls.gd" id="5_qnybs"]
-[ext_resource type="Texture2D" uid="uid://c0j0doi72c5wt" path="res://assets/icons/link_on.svg" id="6_7sle8"]
 [ext_resource type="Script" uid="uid://cagvlct2dimqn" path="res://modules/core_timeline_panel/draw/draw_track_lines.gd" id="8_nb4qx"]
 [ext_resource type="Script" uid="uid://bc4nf46qhfy2f" path="res://modules/core_timeline_panel/draw/draw_clips.gd" id="9_scsrl"]
 [ext_resource type="Script" uid="uid://cet1rulaufij4" path="res://modules/core_timeline_panel/draw/draw_preview.gd" id="10_gtnhe"]
@@ -51,8 +49,7 @@ tooltip_text = "Select mode: Used for selecting clips on the timeline."
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_3ixqu")
-texture_normal = ExtResource("3_vuipj")
-texture_pressed = ExtResource("3_gtnhe")
+texture_normal = ExtResource("2_g6lje")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -62,8 +59,7 @@ layout_mode = 2
 tooltip_text = "Cut mode: Let's you cut clips on the position of your mouse cursor by clicking."
 toggle_mode = true
 button_group = SubResource("ButtonGroup_3ixqu")
-texture_normal = ExtResource("4_qnybs")
-texture_pressed = ExtResource("5_3ixqu")
+texture_normal = ExtResource("3_7xsds")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -77,7 +73,7 @@ layout_mode = 2
 tooltip_text = "Turn group selection on/off for clips in the timeline."
 toggle_mode = true
 button_pressed = true
-texture_normal = ExtResource("6_7sle8")
+texture_normal = ExtResource("4_rfr0q")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -87,7 +83,7 @@ layout_mode = 2
 tooltip_text = "Turn clip snapping on/off when moving clips."
 toggle_mode = true
 button_pressed = true
-texture_normal = ExtResource("4_scsrl")
+texture_normal = ExtResource("5_g6lje")
 ignore_texture_size = true
 stretch_mode = 5
 

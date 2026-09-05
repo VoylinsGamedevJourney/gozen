@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://td87gbksxsi3"]
 
 [ext_resource type="Script" uid="uid://drxwwlsm6dehq" path="res://scenes/auto_cut_popup/auto_cut_popup.gd" id="1_scripts"]
+[ext_resource type="Texture2D" uid="uid://mk4pnxw14y5q" path="res://assets/icons/playback/play.tres" id="2_0do6h"]
 [ext_resource type="Script" uid="uid://c1iy4cj7tl12s" path="res://scenes/auto_cut_popup/auto_cut_wave.gd" id="2_wave"]
-[ext_resource type="Texture2D" uid="uid://dt44mb30o2c8e" path="res://assets/icons/playback/play.svg" id="3_play"]
 
 [node name="AutoCutPopup" type="Control" unique_id=1128770682 node_paths=PackedStringArray("threshold_spinbox", "min_duration_spinbox", "padding_spinbox", "apply_group_checkbox", "ripple_checkbox", "wave_preview", "audio_play_button", "audio_player")]
 layout_mode = 3
@@ -76,7 +76,7 @@ layout_mode = 2
 [node name="PlayAudioButton" type="TextureButton" parent="Panel/Margin/VBox/TopHBox" unique_id=979822767]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
-texture_normal = ExtResource("3_play")
+texture_normal = ExtResource("2_0do6h")
 ignore_texture_size = true
 stretch_mode = 5
 

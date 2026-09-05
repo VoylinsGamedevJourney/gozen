@@ -589,11 +589,11 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		var button_preset: TextureButton = TextureButton.new()
 		button_visible.name = "VisibleButton"
 		if effect.is_enabled:
-			button_visible.texture_normal = preload(Library.ICON_VISIBLE)
+			button_visible.texture_normal = load(Library.ICON_VISIBLE)
 		else:
-			button_visible.texture_normal = preload(Library.ICON_INVISIBLE)
+			button_visible.texture_normal = load(Library.ICON_INVISIBLE)
 
-		button_preset.texture_normal = preload(Library.ICON_EFFECT_SETTINGS)
+		button_preset.texture_normal = load(Library.ICON_EFFECT_SETTINGS)
 		button_preset.tooltip_text = tr("Presets & Options")
 
 		@warning_ignore_start("return_value_discarded")
@@ -610,7 +610,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 
 		# Not a button but will act like a button. Easier to use for this use case.
 		var button_drag: TextureRect = TextureRect.new()
-		button_drag.texture = preload(Library.ICON_MOVE_HANDLE)
+		button_drag.texture = load(Library.ICON_MOVE_HANDLE)
 		button_drag.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button_drag.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 		button_drag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -624,7 +624,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		container.add_title_bar_control(button_drag)
 	else:
 		var button_reset: TextureButton = TextureButton.new()
-		button_reset.texture_normal = preload(Library.ICON_REFRESH)
+		button_reset.texture_normal = load(Library.ICON_REFRESH)
 		button_reset.ignore_texture_size = true
 		button_reset.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -774,7 +774,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 	param_settings.name = "PARAM_" + param_id
 
 	var param_reset_button: TextureButton = TextureButton.new()
-	param_reset_button.texture_normal = preload(Library.ICON_REFRESH)
+	param_reset_button.texture_normal = load(Library.ICON_REFRESH)
 	param_reset_button.tooltip_text = tr("Reset parameter")
 	param_reset_button.ignore_texture_size = true
 	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -1064,7 +1064,7 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 
 			if param.is_linkable:
 				var link_button: TextureButton = TextureButton.new()
-				link_button.texture_normal = preload(Library.ICON_LINK)
+				link_button.texture_normal = load(Library.ICON_LINK)
 				link_button.toggle_mode = true
 				link_button.button_pressed = param.is_linked
 				link_button.modulate = Color(1, 1, 1, 1) if link_button.button_pressed else Color(1, 1, 1, 0.5)
@@ -1295,7 +1295,7 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 ## Type: 0 = All, 1 = Visuals, 2 = Audio
 func _get_add_effects_button(type: int) -> TextureButton:
 	var texture_button: TextureButton = TextureButton.new()
-	texture_button.texture_normal = preload(Library.ICON_ADD)
+	texture_button.texture_normal = load(Library.ICON_ADD)
 	texture_button.tooltip_text = tr("Add effects")
 	texture_button.ignore_texture_size = true
 	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
@@ -1399,7 +1399,7 @@ func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String)
 
 func _get_section_preset_button(is_visual: bool) -> TextureButton:
 	var texture_button: TextureButton = TextureButton.new()
-	texture_button.texture_normal = preload(Library.ICON_EFFECT_SETTINGS)
+	texture_button.texture_normal = load(Library.ICON_EFFECT_SETTINGS)
 	texture_button.tooltip_text = tr("Presets")
 	texture_button.ignore_texture_size = true
 	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
@@ -1420,7 +1420,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 	if !is_section:
 		var button_reset: Button = Button.new()
 		button_reset.text = tr("Reset effect")
-		button_reset.icon = preload(Library.ICON_REFRESH)
+		button_reset.icon = load(Library.ICON_REFRESH)
 		button_reset.expand_icon = true
 		button_reset.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button_reset.flat = true
@@ -1433,7 +1433,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 
 		var button_delete: Button = Button.new()
 		button_delete.text = tr("Delete effect")
-		button_delete.icon = preload(Library.ICON_DELETE)
+		button_delete.icon = load(Library.ICON_DELETE)
 		button_delete.expand_icon = true
 		button_delete.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button_delete.flat = true
@@ -1447,7 +1447,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 
 	var button_save: Button = Button.new()
 	button_save.text = tr("Save as preset...")
-	button_save.icon = preload(Library.ICON_ADD)
+	button_save.icon = load(Library.ICON_ADD)
 	button_save.expand_icon = true
 	button_save.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button_save.flat = true
@@ -1495,7 +1495,7 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 						_apply_preset(PRESETS_PATH + file_name, is_section, is_visual, effect)
 						popup.queue_free())
 				var button_delete: TextureButton = TextureButton.new()
-				button_delete.texture_normal = preload(Library.ICON_DELETE)
+				button_delete.texture_normal = load(Library.ICON_DELETE)
 				button_delete.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 				button_delete.ignore_texture_size = true
 				button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
