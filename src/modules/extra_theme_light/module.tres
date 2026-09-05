@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://do2beaclkefem"]
+
+[ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_xyn33"]
+[ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="2_pmtsf"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="3_7oe3d"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="4_i7os3"]
+[ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="5_iqure"]
+[ext_resource type="Resource" uid="uid://cf5kygq2i8pxi" path="res://modules/extra_theme_light/light_theme_module.tres" id="5_pmtsf"]
+[ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="6_16w3n"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="7_fe7lv"]
+
+[resource]
+script = ExtResource("6_16w3n")
+name = "Light theme"
+author = "Voylin"
+custom_themes = Array[ExtResource("4_i7os3")]([ExtResource("5_pmtsf")])
+metadata/_custom_type_script = "uid://bupjtpen4yap5"
