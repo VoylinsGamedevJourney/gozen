@@ -11,9 +11,9 @@ const END_PADDING: int = 80000
 
 
 func _ready() -> void:
-	if Project.timeline_end_update.connect(_end_update): Print.stack_connect()
-	if Timeline.zoom_changed.connect(_end_update.unbind(1)): Print.stack_connect()
-	if (timeline_panel.get_parent() as Control).resized.connect(_end_update): Print.stack_connect()
+	Project.timeline_end_update.connect(_end_update)
+	Timeline.zoom_changed.connect(_end_update.unbind(1))
+	(timeline_panel.get_parent() as Control).resized.connect(_end_update)
 
 
 func _end_update(new_end: int = Project.data.timeline_end) -> void:

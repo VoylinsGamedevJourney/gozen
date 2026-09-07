@@ -33,7 +33,6 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(update_stamps)
 	Project.framerate_changed.connect(update_stamps)
 	Project.render_region_updated.connect(queue_redraw)
@@ -44,7 +43,6 @@ func _ready() -> void:
 
 	Timeline.zoom_changed.connect(queue_redraw.unbind(1))
 	Timeline.scroll_changed.connect(queue_redraw.unbind(1))
-	@warning_ignore_restore("return_value_discarded")
 
 	_setup_marker_style_box()
 

@@ -7,7 +7,7 @@ extends Resource
 @export var proxy_path: String
 @export var modified_time: int = -1
 
-@export var type: EditorCore.Type = EditorCore.Type.EMPTY
+@export var type: int = Type.EMPTY
 @export var nickname: String
 @export var folder: String = "/" ## Folder inside the editor.
 @export var duration: int = -1
@@ -53,7 +53,7 @@ func deserialize(data: Dictionary) -> void:
 	path = data.get("path", "")
 	proxy_path = data.get("proxy_path", "")
 	modified_time = data.get("modified_time", -1)
-	type = data.get("type", EditorCore.Type.EMPTY) as EditorCore.Type
+	type = data.get("type", Type.EMPTY)
 	nickname = data.get("nickname", "")
 	folder = data.get("folder", "/")
 	duration = data.get("duration", -1)

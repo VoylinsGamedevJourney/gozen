@@ -49,10 +49,10 @@ var default_profiles_count: int = 0
 
 
 func _ready() -> void:
-	if resolution_x_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
-	if resolution_y_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
-	if framerate_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
-	if background_color_picker.color_changed.connect(_on_new_project_setting_changed.unbind(1)): Print.stack_connect()
+	resolution_x_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
+	resolution_y_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
+	framerate_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
+	background_color_picker.color_changed.connect(_on_new_project_setting_changed.unbind(1))
 
 	tab_container.current_tab = 0
 	advanced_options_button.button_pressed = false
@@ -119,7 +119,7 @@ func _set_recent_projects() -> void:
 				# We still add non-found projects in case people have projects
 				# saved on removable disks. This way when they connect their
 				# disk, they can easily find the project in recent projects.
-				if new_paths.append(path): Print.stack_append()
+				new_paths.append(path)
 				path = file.get_line().strip_edges()
 				continue
 
@@ -132,7 +132,7 @@ func _set_recent_projects() -> void:
 			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-			if project_button.pressed.connect(open_project.bind(path)): Print.stack_connect()
+			project_button.pressed.connect(open_project.bind(path))
 
 			delete_button.texture_normal = load(Library.ICON_DELETE)
 			delete_button.ignore_texture_size = true
@@ -140,14 +140,14 @@ func _set_recent_projects() -> void:
 			delete_button.custom_minimum_size = Vector2i(18,0)
 			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-			if delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path)): Print.stack_connect()
+			delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path))
 
 			hbox.add_child(delete_button)
 			hbox.add_child(project_button)
 
 			recent_projects_vbox.add_child(hbox)
 
-			if new_paths.append(path): Print.stack_connect()
+			new_paths.append(path)
 		path = file.get_line().strip_edges()
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
@@ -276,7 +276,7 @@ func _on_open_project_button_pressed() -> void:
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	if dialog.file_selected.connect(open_project): Print.stack_connect()
+	dialog.file_selected.connect(open_project)
 
 	add_child(dialog)
 	dialog.popup_centered()
@@ -355,7 +355,7 @@ func _on_project_path_button_pressed() -> void:
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	if dialog.file_selected.connect(_set_project_path): Print.stack_connect()
+	dialog.file_selected.connect(_set_project_path)
 	dialog.ok_button_text = "Select"
 
 	add_child(dialog)
@@ -435,9 +435,9 @@ func _on_save_profile_preset_button_pressed() -> void:
 
 		dialog.queue_free()
 
-	if dialog.confirmed.connect(confirm_lambda): Print.stack_connect()
-	if line_edit.text_submitted.connect(func(_text: String) -> void:
-				confirm_lambda.call()): Print.stack_connect()
+	dialog.confirmed.connect(confirm_lambda)
+	line_edit.text_submitted.connect(func(_text: String) -> void:
+				confirm_lambda.call())
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2i(250, 80))
@@ -446,7 +446,9 @@ func _on_save_profile_preset_button_pressed() -> void:
 
 func _on_delete_profile_preset_button_pressed() -> void:
 	var index: int = project_presets_option_button.selected
-	if index == -1: return
+	if index == -1:
+		return
+
 	var id: int = project_presets_option_button.get_item_id(index)
 	if id < default_profiles_count or id >= loaded_preset_profiles.size():
 		return

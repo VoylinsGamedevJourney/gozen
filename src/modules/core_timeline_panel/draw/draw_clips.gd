@@ -7,7 +7,6 @@ const CLIP_TEXT_OFFSET: Vector2 = Vector2(5, 12)
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
 	Settings.on_waveform_update.connect(queue_redraw)
 
 
@@ -32,7 +31,7 @@ func _draw() -> void:
 	for clip: ClipData in visible_clips:
 		if clip in handled_clips:
 			continue
-		var box_type: int = 1 if clip in ClipLogic.selected_clips else 0
+		var box_type: int = 1 if clip in ClipLogic.active_clips else 0
 		var box_pos: Vector2 = Vector2(clip.start * zoom, Timeline.track_total_size * clip.track)
 		var clip_rect: Rect2 = Rect2(box_pos, Vector2(clip.duration * zoom, Timeline.track_height))
 		var text_pos_x: float = box_pos.x
@@ -46,12 +45,13 @@ func _draw() -> void:
 		if final_rect.size.x > 0:
 			var type_str: String = "Unknown"
 			match clip.type:
-				EditorCore.Type.IMAGE: type_str = "Image"
-				EditorCore.Type.AUDIO: type_str = "Audio"
-				EditorCore.Type.VIDEO: type_str = "Video"
-				EditorCore.Type.COLOR: type_str = "Color"
-				EditorCore.Type.TEXT:  type_str = "Text"
-				EditorCore.Type.PCK:   type_str = "Pck"
+				Type.IMAGE: type_str = "Image"
+				Type.AUDIO: type_str = "Audio"
+				Type.VIDEO: type_str = "Video"
+				Type.COLOR: type_str = "Color"
+				Type.TEXT:  type_str = "Text"
+				Type.PCK:   type_str = "Pck"
+				Type.MODEL:   type_str = "Model"
 			var style_name: String = "Clip" + type_str + ("Focus" if box_type == 1 else "Normal")
 			var style: StyleBox = get_theme_stylebox(style_name, "Timeline")
 			if style:
@@ -89,9 +89,9 @@ func _draw() -> void:
 		if (clip.duration * zoom) >= 20.0:
 			show_handles = Timeline.hovered_clip == clip or (Timeline.current_state == Timeline.State.FADING and Timeline.fade_target != null and Timeline.fade_target.clip == clip)
 
-		if clip.type in EditorCore.VISUAL_TYPES:
+		if clip.type & Type.GROUP_VISUAL:
 			_draw_fade_handles(clip, box_pos, true, show_handles) # Bottom.
-		if clip.type in EditorCore.AUDIO_TYPES:
+		if clip.type & Type.GROUP_AUDIO:
 			_draw_fade_handles(clip, box_pos, false, show_handles) # Top.
 
 		# - Clip speed tint

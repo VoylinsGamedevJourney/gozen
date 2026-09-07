@@ -140,7 +140,6 @@ func get_languages() -> Dictionary:
 	var locales: PackedStringArray = TranslationServer.get_loaded_locales()
 
 	if not locales.has("en"):
-		@warning_ignore("return_value_discarded")
 		locales.append("en")
 
 	for code: String in locales:
@@ -565,7 +564,6 @@ func get_events_for_action(action: String) -> Array[InputEvent]:
 
 	# We need to make certain we have exactly 2.
 	if events.size() > 2:
-		@warning_ignore("return_value_discarded")
 		events.resize(2)
 		return events
 

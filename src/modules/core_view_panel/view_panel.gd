@@ -19,7 +19,6 @@ func _ready() -> void:
 	frame_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	frame_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-	@warning_ignore_start("return_value_discarded")
 	frame_label.gui_input.connect(_on_label_gui_input)
 
 	EditorCore.visual_frame_changed.connect(_on_frame_changed)
@@ -28,7 +27,6 @@ func _ready() -> void:
 	EditorCore.done_prefetching_before_play.connect(_hide_prefetch_waiting_screen)
 
 	Project.framerate_changed.connect(_on_frame_changed)
-	@warning_ignore_restore("return_value_discarded")
 
 	prefetch_waiting_screen.visible = false
 	_on_play_changed(EditorCore.is_playing)
@@ -69,13 +67,11 @@ func _show_jump_to_frame_dialog() -> void:
 	spinbox.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	spinbox.get_line_edit().focus_next = get_path_to(dialog.get_ok_button())
 
-	@warning_ignore_start("return_value_discarded")
 	spinbox.get_line_edit().text_submitted.connect(func(value: String) -> void:
 			EditorCore.set_frame(int(value))
 			dialog.queue_free())
 	dialog.focus_exited.connect(dialog.queue_free)
 	dialog.confirmed.connect(func() -> void: EditorCore.set_frame(int(spinbox.value)))
-	@warning_ignore_restore("return_value_discarded")
 
 	dialog.add_child(spinbox)
 	dialog.popup_centered(Vector2i(200, 80))

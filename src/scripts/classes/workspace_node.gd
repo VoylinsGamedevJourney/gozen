@@ -2,10 +2,10 @@ class_name WorkspaceNode
 extends Resource
 
 
-enum Type { TAB, HSPLIT, VSPLIT}
+enum { TAB, HSPLIT, VSPLIT}
 
 
-@export var type: Type = Type.TAB
+@export var type: int = TAB
 
 @export var current_tab: int = 0
 @export var panel_ids: Array[String] = []

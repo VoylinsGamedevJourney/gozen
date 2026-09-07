@@ -2,7 +2,7 @@ class_name RequestClipAdd
 
 
 var file: FileData = null
-var type: EditorCore.Type = EditorCore.Type.EMPTY
+var type: int = Type.EMPTY
 
 var track: int = 0
 var frame: int = 0

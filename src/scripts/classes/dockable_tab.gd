@@ -15,10 +15,10 @@ func _ready() -> void:
 	tabs_position = Settings.get_panel_tabs_position() as TabContainer.TabPosition
 	get_tab_bar().set_drag_forwarding(_get_drag_data, Callable(), Callable())
 
-	@warning_ignore_start("return_value_discarded")
-	child_entered_tree.connect(func(_node: Node) -> void: _update_tabs_visible.call_deferred())
-	child_exiting_tree.connect(func(_node: Node) -> void: _update_tabs_visible.call_deferred())
-	@warning_ignore_restore("return_value_discarded")
+	child_entered_tree.connect(func(_node: Node) -> void:
+			_update_tabs_visible.call_deferred())
+	child_exiting_tree.connect(func(_node: Node) -> void:
+			_update_tabs_visible.call_deferred())
 
 	_update_tabs_visible.call_deferred()
 

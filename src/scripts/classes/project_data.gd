@@ -2,7 +2,7 @@ class_name ProjectData
 extends RefCounted
 
 
-const VERSION: int = 1
+const VERSION: int = 2
 
 
 var version: int = VERSION
@@ -51,17 +51,15 @@ func serialize() -> Dictionary:
 	if markers.size() != 0:
 		data["markers"] = []
 
-	@warning_ignore_start("unsafe_method_access")
 	for file_id: int in files:
 		data["files"][file_id] = files[file_id].serialize()
 	for clip_id: int in clips:
 		data["clips"][clip_id] = clips[clip_id].serialize()
 
 	for track: TrackData in tracks:
-		data["tracks"].append(track.serialize())
+		(data["tracks"] as Array).append(track.serialize())
 	for marker: MarkerData in markers:
-		data["markers"].append(marker.serialize())
-	@warning_ignore_restore("unsafe_method_access")
+		(data["markers"] as Array).append(marker.serialize())
 	return data
 
 
@@ -128,5 +126,31 @@ func deserialize(data: Dictionary) -> void:
 				marker.deserialize(marker_value as Dictionary)
 				markers.append(marker)
 
-	if version == VERSION: return
-	## Add versioning stuff here in case a new version changes some data drastically.
+	if version == 1:
+		_migrate_v1_to_v2()
+	if version == VERSION:
+		return
+
+
+## Map the old incremental integer IDs to the new bitwise flags (Type class).
+## (Verify that these match what the old EditorCore.Type enum was).
+func _migrate_v1_to_v2() -> void:
+	var type_map: Dictionary = {
+		-1: Type.EMPTY,
+		0: Type.IMAGE,
+		1: Type.AUDIO,
+		2: Type.VIDEO,
+		3: Type.TEXT,
+		4: Type.COLOR,
+		5: Type.PCK,
+	}
+
+	for file_id: int in files:
+		var file: FileData = files[file_id]
+		if type_map.has(file.type):
+			file.type = type_map[file.type]
+
+	for clip_id: int in clips:
+		var clip: ClipData = clips[clip_id]
+		if type_map.has(clip.type):
+			clip.type = type_map[clip.type]

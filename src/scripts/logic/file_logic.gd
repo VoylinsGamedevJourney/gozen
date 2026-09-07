@@ -23,7 +23,7 @@ const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo).
 var files: Dictionary[int, FileData]
 
 # Runtime file data.
-var file_data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK.
+var data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK.
 var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
 var audio_wave: Dictionary[int, Dictionary] = {} ## { file: { 1: wave_1, 5: wave_4, 16: wave_16 }} - Different detail levels.
 var video_pools: Dictionary[int, Array] = {} ## { file: [Video] }
@@ -57,7 +57,7 @@ func _startup_loading() -> void:
 
 func _on_project_resolution_changed() -> void:
 	for file: FileData in files.values():
-		if file.type in [EditorCore.Type.IMAGE, EditorCore.Type.COLOR]:
+		if file.type & (Type.IMAGE | Type.COLOR):
 			load_data(file)
 			reloaded.emit(file)
 
@@ -94,16 +94,16 @@ func _create_file(path: String) -> FileData:
 	file.nickname = path.get_file()
 
 	if extension in ProjectSettings.get_setting("extensions/image"):
-		file.type = EditorCore.Type.IMAGE
+		file.type = Type.IMAGE
 		file.duration = Settings.get_image_duration()
 	elif extension in ProjectSettings.get_setting("extensions/audio"):
-		file.type = EditorCore.Type.AUDIO
+		file.type = Type.AUDIO
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
 	elif extension in ProjectSettings.get_setting("extensions/video"):
-		file.type = EditorCore.Type.VIDEO # We check later if the video is audio only.
+		file.type = Type.VIDEO # We check later if the video is audio only.
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
 	elif extension in ProjectSettings.get_setting("extensions/pck"):
-		file.type = EditorCore.Type.PCK
+		file.type = Type.PCK
 		file.duration = 300 # Temporary default.
 	elif !path.contains("temp://"):
 		printerr("FileLogic: Invalid file:", path)
@@ -116,24 +116,24 @@ func _create_file(path: String) -> FileData:
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		var time_dict: Dictionary = Time.get_datetime_dict_from_system()
 		if path == "temp://text":
-			file.type = EditorCore.Type.TEXT
+			file.type = Type.TEXT
 			file.duration = Settings.get_text_duration()
 			file.nickname = "Text: Empty text"
 			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
 			file.temp_file.text_effect.set_default_keyframe()
 		elif path.begins_with("temp://image"):
-			file.type = EditorCore.Type.IMAGE
+			file.type = Type.IMAGE
 			file.duration = Settings.get_image_duration()
 			file.nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
 					time_dict.year, time_dict.month, time_dict.day,
 					time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
 			var splits: PackedStringArray = path.split("#")
-			file.type = EditorCore.Type.COLOR
+			file.type = Type.COLOR
 			file.duration = Settings.get_color_duration()
 			file.nickname = temp_nickname.replace("#", " #")
 			file.temp_file.color = Color(splits[1])
-	return null if file.type == EditorCore.Type.EMPTY else file
+	return null if file.type == Type.EMPTY else file
 
 
 func delete(ids: Array[int]) -> void:
@@ -151,8 +151,8 @@ func delete(ids: Array[int]) -> void:
 
 func _delete(file: FileData) -> void:
 	# TODO: We should check if some other file relies on using this one as ATO.
-	if !files.erase(file.id) or !file_data.erase(file.id):
-		printerr("FileLogic: File id '%s' isn't present in files/file_data!" % file.id)
+	if !files.erase(file.id) or !data.erase(file.id):
+		printerr("FileLogic: File id '%s' isn't present in files/data!" % file.id)
 
 	if video_pools.has(file.id):
 		for video: Video in video_pools[file.id]:
@@ -206,7 +206,7 @@ func paste_image(image: Image) -> FileData:
 	var file: FileData = FileData.new()
 	file.id = Utils.get_unique_id(files.keys())
 	file.path = "temp://image#" + str(file.id)
-	file.type = EditorCore.Type.IMAGE
+	file.type = Type.IMAGE
 	file.duration = Settings.get_image_duration()
 	file.temp_file = TempFile.new()
 
@@ -360,13 +360,13 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 	while !dropped_files.is_empty(): # Looping till all files are loaded.
 		await get_tree().process_frame
 		for file: FileData in dropped_files:
-			if file_data.has(file.id) and file_data[file.id]:
+			if data.has(file.id) and data[file.id]:
 				progress.update_file(file.path, 1)
 				progress.increment_bar(progress_increment)
 				final_dropped_files.append(file)
 				dropped_files.erase(file)
 				break
-			elif !file_data.has(file.id) and !Threader.check_tasks(file):
+			elif !data.has(file.id) and !Threader.check_tasks(file):
 				progress.update_file(file.path, -1)
 				dropped_files.erase(file)
 				break
@@ -398,7 +398,7 @@ func _set_nickname(file: FileData, nickname: String) -> void:
 func load_data(file: FileData) -> void:
 	if not file.path.begins_with("temp://") and not FileAccess.file_exists(file.path):
 		# File not available anymore. TODO: Handle this in a better way.
-		file_data[file.id] = null
+		data[file.id] = null
 		return
 
 	if file.path.begins_with("temp://"):
@@ -409,46 +409,46 @@ func load_data(file: FileData) -> void:
 		if file.path == "temp://text":
 			if temp_file.text_effect.keyframes.is_empty():
 				temp_file.text_effect.set_default_keyframe()
-			file_data[file.id] = temp_file
+			data[file.id] = temp_file
 		elif file.path.begins_with("temp://image"):
 			var image: Image = temp_file.image_data.get_image()
 			if image.get_size() != Project.data.resolution:
 				_scale_image_to_fit(image, Project.data.resolution)
 				temp_file.image_data = ImageTexture.create_from_image(image)
-			file_data[file.id] = temp_file.image_data
+			data[file.id] = temp_file.image_data
 		elif file.path.begins_with("temp://color"):
 			temp_file.load_image_from_color()
-			file_data[file.id] = temp_file.image_data
+			data[file.id] = temp_file.image_data
 		return
 
 	match file.type:
-		EditorCore.Type.IMAGE:
+		Type.IMAGE:
 			var image: Image = Image.load_from_file(file.path)
 			if image.get_format() != Image.FORMAT_RGBA8:
 				image.convert(Image.FORMAT_RGBA8)
 			if image.get_size() != Project.data.resolution:
 				_scale_image_to_fit(image, Project.data.resolution)
-			file_data[file.id] = ImageTexture.create_from_image(image)
-		EditorCore.Type.VIDEO:
+			data[file.id] = ImageTexture.create_from_image(image)
+		Type.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
-		EditorCore.Type.AUDIO:
+		Type.AUDIO:
 			if audio_pools.has(file.id):
 				audio_pools[file.id] = []
 
 			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 			if stream.open(file.path) == OK and stream.get_length() != 0:
-				file_data[file.id] = stream
+				data[file.id] = stream
 				Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 			else:
 				printerr("FileLogic: Couldn't open audio stream!")
-				file_data[file.id] = AudioStreamWAV.new()
-		EditorCore.Type.PCK:
+				data[file.id] = AudioStreamWAV.new()
+		Type.PCK:
 			if OS.get_cmdline_args().has("--safe-mode"):
-				file_data[file.id] = null
+				data[file.id] = null
 				return
 			if !ProjectSettings.load_resource_pack(file.path):
 				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
-				file_data[file.id] = null
+				data[file.id] = null
 				return
 
 			var module_name: String = file.path.get_file().get_basename()
@@ -465,17 +465,17 @@ func load_data(file: FileData) -> void:
 
 			if !ResourceLoader.exists(module_path):
 				printerr("FileLogic: PCK is missing the required `module.tres` for module '%s'!" % module_name)
-				file_data[file.id] = null
+				data[file.id] = null
 				return
 
 			var module_data: GoZenModule = load(module_path)
 			if !module_data or module_data.custom_scenes.is_empty():
 				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule with clips!")
-				file_data[file.id] = null
+				data[file.id] = null
 				return
 
 			var clip_data: GoZenModuleScene = module_data.custom_scenes[0]
-			file_data[file.id] = clip_data
+			data[file.id] = clip_data
 			file.duration = clip_data.default_duration
 
 
@@ -491,7 +491,7 @@ func _load_video(file: FileData) -> void:
 
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	temp_video.set_cache_size(Settings.get_video_cache_size())
-	file_data[file.id] = temp_video
+	data[file.id] = temp_video
 	if video_pools.has(file.id):
 		for video: Video in video_pools[file.id]:
 			video.close()
@@ -545,7 +545,7 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 
 	# Calculate actual mix rate based on the audio length.
 	var stream_length: float = 0.0
-	var raw_data: Variant = file_data.get(file.id)
+	var raw_data: Variant = data.get(file.id)
 	if raw_data != null:
 		if raw_data is Video:
 			var audio_stream: AudioStream = (raw_data as Video).get_audio()
@@ -579,10 +579,10 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 		return
 
 	while current_time < stream_length:
-		var data: PackedByteArray = audio_reader.get_audio_data_chunk(current_time, chunk_duration)
-		if data.is_empty(): break
+		var audio_data: PackedByteArray = audio_reader.get_audio_data_chunk(current_time, chunk_duration)
+		if audio_data.is_empty(): break
 
-		var chunk_total_frames: int = int(data.size() / bytes_size)
+		var chunk_total_frames: int = int(audio_data.size() / bytes_size)
 		var chunk_blocks: int = ceili(float(chunk_total_frames) / frames_per_block)
 
 		for i: int in chunk_blocks:
@@ -594,10 +594,10 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 
 			for frame_index: int in range(start_frame, end_frame, sample_step):
 				var byte_offset: int = int(frame_index * bytes_size)
-				if byte_offset + 3 >= data.size(): break
+				if byte_offset + 3 >= audio_data.size(): break
 
-				var left_sample: int = data.decode_s16(byte_offset)
-				var right_sample: int = data.decode_s16(byte_offset + 2)
+				var left_sample: int = audio_data.decode_s16(byte_offset)
+				var right_sample: int = audio_data.decode_s16(byte_offset + 2)
 				var frame_max_abs_amplitude: float = max(abs(float(left_sample)), abs(float(right_sample)))
 				if frame_max_abs_amplitude > max_abs_amplitude:
 					max_abs_amplitude = frame_max_abs_amplitude
@@ -724,7 +724,7 @@ func reload(file: FileData) -> void:
 
 func get_video_reader(file: FileData, instance_index: int) -> Video:
 	if instance_index == 0:
-		return file_data[file.id]
+		return data[file.id]
 
 	if not video_pools.has(file.id):
 		video_pools[file.id] = []
@@ -740,10 +740,10 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
 		if new_video.open(file.proxy_path) != OK:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.proxy_path)
-			return file_data[file.id] # Return main video as fallback.
+			return data[file.id] # Return main video as fallback.
 	if !new_video.is_open() and new_video.open(file.path) != OK:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.path)
-			return file_data[file.id] # Return main video as fallback.
+			return data[file.id] # Return main video as fallback.
 
 	# Lower cache for extra instances might help with ram consumption.
 	new_video.set_cache_size(ceili(Settings.get_video_cache_size() / 2.0))
@@ -753,7 +753,7 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 
 
 func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -1) -> AudioStreamFFmpeg:
-	if file.type == EditorCore.Type.VIDEO:
+	if file.type == Type.VIDEO:
 		var empty_wave: bool = FileLogic.audio_wave.has(file.id) and FileLogic.audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
@@ -761,8 +761,8 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 			var video: Video = get_video_reader(file, instance_index)
 			return null if video == null else video.get_audio()
 
-	if instance_index == 0 and file.type == EditorCore.Type.AUDIO:
-		return file_data[file.id]
+	if instance_index == 0 and file.type == Type.AUDIO:
+		return data[file.id]
 	elif not audio_pools.has(file.id):
 		audio_pools[file.id] = []
 
@@ -777,7 +777,7 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 			stream_offset = idx
 
 	var pool_index: int
-	if file.type == EditorCore.Type.VIDEO:
+	if file.type == Type.VIDEO:
 		pool_index = (instance_index * total_streams) + stream_offset
 	else:
 		pool_index = ((instance_index - 1) * total_streams) + stream_offset
@@ -865,20 +865,20 @@ func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
 
 ## Returns all audio file id's.
 func get_all_audio_files() -> Array[FileData]:
-	var data: Array[FileData] = []
+	var audio_files: Array[FileData] = []
 	for file: FileData in files.values():
-		if file.type == EditorCore.Type.AUDIO:
-			data.append(file)
-	return data
+		if file.type == Type.AUDIO:
+			audio_files.append(file)
+	return audio_files
 
 
 ## Returns all video file id's.
 func get_all_video_files() -> Array[FileData]:
-	var data: Array[FileData] = []
+	var video_files: Array[FileData] = []
 	for file: FileData in files.values():
-		if file.type == EditorCore.Type.VIDEO:
-			data.append(file)
-	return data
+		if file.type == Type.VIDEO:
+			video_files.append(file)
+	return video_files
 
 
 func set_proxy_path(file: FileData, path: String) -> void:
@@ -972,9 +972,9 @@ func reload_videos() -> void:
 
 func _update_video_cache_size(value: int) -> void:
 	for file: FileData in get_all_video_files():
-		if file_data[file.id] is not Video:
+		if data[file.id] is not Video:
 			continue
-		var video: Video = file_data[file.id]
+		var video: Video = data[file.id]
 		video.set_cache_size(value)
 		if video_pools.has(file.id):
 			for video_instance: Video in video_pools[file.id]:
@@ -983,9 +983,9 @@ func _update_video_cache_size(value: int) -> void:
 
 func _update_video_smart_seek_threshold(value: int) -> void:
 	for file: FileData in get_all_video_files():
-		if file_data[file.id] is not Video:
+		if data[file.id] is not Video:
 			continue
-		var video: Video = file_data[file.id]
+		var video: Video = data[file.id]
 		video.set_smart_seek_threshold(value)
 		if video_pools.has(file.id):
 			for video_instance: Video in video_pools[file.id]:

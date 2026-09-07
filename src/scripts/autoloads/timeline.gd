@@ -43,8 +43,8 @@ var mouse_frame: int = 0
 
 
 func _ready() -> void:
-	if InputManager.switch_timeline_mode_select.connect(set_state.bind(State.SELECT)): Print.stack_connect()
-	if InputManager.switch_timeline_mode_split.connect(set_state.bind(State.SPLIT)): Print.stack_connect()
+	InputManager.switch_timeline_mode_select.connect(set_state.bind(State.SELECT))
+	InputManager.switch_timeline_mode_split.connect(set_state.bind(State.SPLIT))
 
 
 #--- Setters ---
@@ -111,7 +111,7 @@ func can_drop_new_clips(track: int, frame: int, safe_zone: int, split_audio: boo
 	if split_audio or split_extra_audio:
 		for file_id: int in draggable.ids:
 			var file: FileData = FileLogic.files[file_id]
-			if file.type == EditorCore.Type.VIDEO and file.audio_streams.size() > 0:
+			if file.type == Type.VIDEO and file.audio_streams.size() > 0:
 				var added_tracks: int = file.audio_streams.size()
 				if split_extra_audio:
 					added_tracks -= 1
@@ -245,8 +245,8 @@ func focus_on_playhead() -> void:
 
 func split_clip_at(clip: ClipData, frame_pos: int = EditorCore.frame_nr) -> void:
 	var clips_to_split: Array[ClipData] = []
-	if clip in ClipLogic.selected_clips:
-		clips_to_split = ClipLogic.selected_clips
+	if clip in ClipLogic.active_clips:
+		clips_to_split = ClipLogic.active_clips
 	else:
 		clips_to_split = ClipLogic.get_clips_to_select(clip)
 
@@ -261,9 +261,9 @@ func split_clip_at(clip: ClipData, frame_pos: int = EditorCore.frame_nr) -> void
 
 	if !requests.is_empty():
 		var new_clips: Array[ClipData] = ClipLogic.split(requests)
-		if new_clips.size() > 0 and clip in ClipLogic.selected_clips:
-			ClipLogic.selected_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+		if new_clips.size() > 0 and clip in ClipLogic.active_clips:
+			ClipLogic.active_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.active_clips[-1])
 	draw_requested.emit()
 
 
@@ -274,7 +274,7 @@ func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
 	var new_clips: Array[ClipData]
 
 	# Checking if we only want selected clips to be split.
-	for clip: ClipData in ClipLogic.selected_clips:
+	for clip: ClipData in ClipLogic.active_clips:
 		if clip.start < frame_pos and clip.end > frame_pos:
 			var request: RequestClipSplit = RequestClipSplit.new()
 			request.clip = clip
@@ -284,12 +284,12 @@ func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
 	if !requests.is_empty():
 		new_clips = ClipLogic.split(requests)
 		if new_clips.size() > 0:
-			ClipLogic.selected_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+			ClipLogic.active_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.active_clips[-1])
 		draw_requested.emit()
 		return
 
-	if not ClipLogic.selected_clips.is_empty(): return
+	if not ClipLogic.active_clips.is_empty(): return
 
 	# No selected clips present so splitting all possible clips.
 	for track: int in TrackLogic.tracks.size():
@@ -305,8 +305,8 @@ func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
 	if !requests.is_empty():
 		new_clips = ClipLogic.split(requests)
 		if new_clips.size() > 0:
-			ClipLogic.selected_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+			ClipLogic.active_clips = new_clips
+			ClipLogic.selected.emit(ClipLogic.active_clips[-1])
 		draw_requested.emit()
 
 
@@ -315,7 +315,7 @@ func trim_clips_to_end(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips
 func trim_clips_at(frame_pos: int, from_end: bool) -> void:
 	var requests: Array[RequestClipResize] = []
 
-	for clip: ClipData in ClipLogic.selected_clips:
+	for clip: ClipData in ClipLogic.active_clips:
 		if clip.start < frame_pos and clip.end > frame_pos:
 			var request: RequestClipResize = RequestClipResize.new()
 			var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start

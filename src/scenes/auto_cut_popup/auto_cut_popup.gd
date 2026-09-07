@@ -19,7 +19,7 @@ var local_ranges: Array[Vector2i] = []
 
 
 func _ready() -> void:
-	if wave_preview.zoom_requested.connect(_on_wave_zoom_requested): Print.stack_connect()
+	wave_preview.zoom_requested.connect(_on_wave_zoom_requested)
 
 
 func _on_wave_zoom_requested(new_duration: float) -> void:

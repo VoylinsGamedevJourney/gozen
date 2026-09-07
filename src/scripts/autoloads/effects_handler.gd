@@ -12,9 +12,6 @@ signal effect_selected(effect: Effect)
 signal transition_updated(clip: ClipData, is_left: bool)
 
 
-enum TYPE { ALL = 0, VISUALS = 1, AUDIO = 2 }
-
-
 var visual_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
 var visual_effect_instances: Dictionary[String, Effect] = {} ## { effect_id: effect_class }
 var shader_cache: Dictionary[String, RDShaderFile] = {}
@@ -43,7 +40,6 @@ var param_exceptions: Dictionary[String, Dictionary] = {
 
 func _ready() -> void:
 	effect_selected.emit(null) # It's here to remove the unused signal warning.
-
 	ModuleManager.register_effects()
 
 
@@ -83,8 +79,7 @@ func _set_transition(clip: ClipData, is_left: bool, transition: Effect) -> void:
 func update_transition_param(clip: ClipData, is_left: bool, param_id: String, value: Variant) -> void:
 	var transition: Effect = clip.effects.transition_left if is_left else clip.effects.transition_right
 	var old_value: Variant = transition.keyframes[param_id][0]
-	@warning_ignore("unsafe_call_argument")
-	var new_value: Variant = int(value) if typeof(old_value) else value
+	var new_value: Variant = value as int if typeof(old_value) == TYPE_INT else value
 
 	InputManager.undo_redo.create_action("Update transition param")
 	InputManager.undo_redo.add_do_method(_set_transition_param.bind(transition, param_id, new_value))
@@ -125,7 +120,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 		for i: int in clip.effects.video.size():
 			var old_effect: Effect = clip.effects.video[i]
 			if old_effect.id == "pck_effect_params":
-				var module_data: GoZenModuleScene = FileLogic.file_data.get(clip.file)
+				var module_data: GoZenModuleScene = FileLogic.data.get(clip.file)
 				var new_effect: Effect = Effect.new()
 
 				new_effect.id = "pck_effect_params"
@@ -160,7 +155,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 
 	var base_text_effect: Effect = load(Library.EFFECT_TEXT)
 	for file: FileData in files.values():
-		if file.type == EditorCore.Type.TEXT and file.temp_file and file.temp_file.text_effect:
+		if file.type == Type.TEXT and file.temp_file and file.temp_file.text_effect:
 			var old_effect: Effect = file.temp_file.text_effect
 			var new_effect: Effect = base_text_effect.deep_copy()
 			_apply_param_exceptions(new_effect)
@@ -187,8 +182,8 @@ func _apply_param_exceptions(effect: Effect) -> void:
 func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void:
 	InputManager.undo_redo.create_action("Add effect: %s" % effect.nickname)
 	for clip: ClipData in clips:
-		if is_visual and clip.type not in EditorCore.VISUAL_TYPES: continue
-		if !is_visual and clip.type not in EditorCore.AUDIO_TYPES: continue
+		if is_visual and !(clip.type & Type.GROUP_VISUAL): continue
+		if !is_visual and !(clip.type & Type.GROUP_AUDIO): continue
 
 		var effect_copy: Effect = effect.deep_copy()
 		var index: int = clip.effects.video.size() if is_visual else clip.effects.audio.size()

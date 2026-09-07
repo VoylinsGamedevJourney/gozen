@@ -8,7 +8,7 @@ func setup(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 	effect = _effect
 	var button: Button = Button.new()
 	button.text = "Clear Mask Points"
-	if button.pressed.connect(_on_clear_pressed): Print.stack_connect()
+	button.pressed.connect(_on_clear_pressed)
 	add_child(button)
 
 

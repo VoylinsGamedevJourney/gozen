@@ -11,13 +11,13 @@ var spacer: Control
 func _ready() -> void:
 	add_theme_constant_override("separation", 0)
 
-	if Project.project_ready.connect(_rebuild): Print.stack_connect()
-	if TrackLogic.updated.connect(_rebuild): Print.stack_connect()
-	if Settings.on_module_setting_changed.connect(func(mod: String, id: String, _val: Variant) -> void:
+	Project.project_ready.connect(_rebuild)
+	TrackLogic.updated.connect(_rebuild)
+	Settings.on_module_setting_changed.connect(func(mod: String, id: String, _val: Variant) -> void:
 		if mod == "core_timeline_panel" and id == "track_height":
-			_on_track_height_changed(_val as float)): Print.stack_connect()
+			_on_track_height_changed(_val as float))
 
-	if timeline_scroll.get_v_scroll_bar().value_changed.connect(_on_scrolled): Print.stack_connect()
+	timeline_scroll.get_v_scroll_bar().value_changed.connect(_on_scrolled)
 
 
 func _enter_tree() -> void:
@@ -66,13 +66,13 @@ func _rebuild() -> void:
 		button_visibility.tooltip_text = tr("Toggle track visibility")
 
 		button_visibility.modulate = button_visibility.get_theme_color("hidden_modulate", "VisibilityButton") if !track_data.is_visible else button_visibility.get_theme_color("visible_modulate", "VisibilityButton")
-		if button_visibility.toggled.connect(func(toggled: bool) -> void:
+		button_visibility.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_visible = !toggled
 				button_visibility.modulate = button_visibility.get_theme_color("hidden_modulate", "VisibilityButton") if toggled else button_visibility.get_theme_color("visible_modulate", "VisibilityButton")
 				update_bg_color.call()
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
 				Project.unsaved_changes = true
-				ClipLogic.updated.emit()): Print.stack_connect()
+				ClipLogic.updated.emit())
 
 		var button_mute: Button = Button.new()
 		button_mute.theme_type_variation = "MuteButton"
@@ -84,12 +84,12 @@ func _rebuild() -> void:
 		button_mute.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_mute.tooltip_text = tr("Mute track")
 
-		if button_mute.toggled.connect(func(toggled: bool) -> void:
+		button_mute.toggled.connect(func(toggled: bool) -> void:
 				track_data.is_muted = toggled
 				update_bg_color.call()
 				EditorCore.set_frame_nr(EditorCore.frame_nr)
 				Project.unsaved_changes = true
-				ClipLogic.updated.emit()): Print.stack_connect()
+				ClipLogic.updated.emit())
 
 		vbox.add_child(button_visibility)
 		vbox.add_child(button_mute)

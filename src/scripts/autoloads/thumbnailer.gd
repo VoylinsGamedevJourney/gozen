@@ -15,7 +15,7 @@ var thumbs_todo: Array[FileData] = []
 
 
 func _ready() -> void:
-	if FileLogic.audio_wave_generated.connect(_on_audio_wave_generated): Print.stack_connect()
+	FileLogic.audio_wave_generated.connect(_on_audio_wave_generated)
 
 	# Create the thumb directory if not existing.
 	if !DirAccess.dir_exists_absolute(thumb_folder):
@@ -52,7 +52,7 @@ func get_thumb(file: FileData) -> Texture2D:
 
 	# Check if color or image.
 	if file.path.begins_with("temp://color") or file.path.begins_with("temp://image"):
-		var temp: Variant = FileLogic.file_data[file.id]
+		var temp: Variant = FileLogic.data[file.id]
 		if !temp or temp is not ImageTexture:
 			return null
 
@@ -79,9 +79,9 @@ func get_thumb(file: FileData) -> Texture2D:
 		thumbs_todo.append(file)
 		# Add the correct placeholder image.
 		match file.type:
-			EditorCore.Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
-			EditorCore.Type.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
-			EditorCore.Type.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # TODO: Allow for the PCK file to give it's own thumb.
+			Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
+			Type.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
+			Type.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # TODO: Allow for the PCK file to give it's own thumb.
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video placeholder.
 
 	# Return the saved thumbnail.
@@ -100,23 +100,27 @@ func _get_default_thumb(icon_uid: String) -> Texture2D:
 
 ## This function is for generating thumbnails, should only be called from the
 ## _process function and in a thread through Threader.
-func _gen_thumb(file: FileData) -> void:
+## NOTE: PCK files only use a placeholder for now!
+func _gen_thumb(file: FileData, try: int = 0) -> void:
 	var image: Image
 
 	match file.type:
-		EditorCore.Type.IMAGE: image = Image.load_from_file(file.path)
-		EditorCore.Type.AUDIO: image = FileLogic.generate_audio_thumb(file)
-		EditorCore.Type.VIDEO:
+		Type.IMAGE: image = Image.load_from_file(file.path)
+		Type.AUDIO: image = FileLogic.generate_audio_thumb(file)
+		Type.PCK:   image = _get_default_thumb(Library.THUMB_DEFAULT_VIDEO).get_image()
+		Type.VIDEO:
 			var video: Video = Video.new()
 			if video.open(file.path) == OK:
 				image = video.generate_thumbnail_at_frame(0)
 				video.close()
-		EditorCore.Type.PCK: image = _get_default_thumb(Library.THUMB_DEFAULT_VIDEO).get_image() # NOTE: Placeholder for now!
-	if !image: # TODO: Run this function a second or so later as the data will probably be ready by now.
+
+	if !image:
+		if try < 2:
+			_gen_thumb.call_deferred(file, try + 1)
 		return
 
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
-	if file.type != EditorCore.Type.AUDIO:
+	if file.type != Type.AUDIO:
 		image = scale_thumbnail(image)
 	if image.save_webp(thumb_folder + FILE_NAME % file.id):
 		return printerr("FilePanel: Something went wrong saving thumb!")
@@ -128,7 +132,7 @@ func _gen_thumb(file: FileData) -> void:
 
 
 func _on_audio_wave_generated(file: FileData) -> void:
-	if file.type != EditorCore.Type.AUDIO:
+	if !(file.type & Type.GROUP_AUDIO):
 		return
 
 	# Remove the potentially flat/empty cached thumbnail data.
@@ -147,6 +151,7 @@ func _on_audio_wave_generated(file: FileData) -> void:
 func scale_thumbnail(image: Image) -> Image:
 	if !image or image.is_empty():
 		return null
+
 	var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
 	image.resize(
 			int(image.get_width() * image_scale),

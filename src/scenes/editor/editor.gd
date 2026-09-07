@@ -43,13 +43,11 @@ func _ready() -> void:
 		Print.info_editor(info_print[0], info_print[1])
 	Print.header_editor("--==--================--==--")
 
-	@warning_ignore_start("return_value_discarded")
 	InputManager.on_show_editor_workspace.connect(switch_workspace.bind(0))
 	InputManager.on_show_render_workspace.connect(switch_workspace.bind(1))
 	InputManager.on_switch_workspace.connect(switch_workspace_quick)
 	WorkspaceManager.workspace_added.connect(_on_workspace_added)
 	Settings.on_show_menu_bar_changed.connect(func(value: bool) -> void: menu_bar.visible = value)
-	@warning_ignore_restore("return_value_discarded")
 
 	# Populate workspaces + buttons.
 	for workspace_name: String in WorkspaceManager.available_workspaces:
@@ -162,7 +160,7 @@ func _ready() -> void:
 		var view_tab: WorkspaceNode = WorkspaceNode.new()
 
 		layout.name = "ViewOnly"
-		view_tab.type = WorkspaceNode.Type.TAB
+		view_tab.type = WorkspaceNode.TAB
 		view_tab.panel_ids = ["ViewPanel"]
 
 		layout.root = view_tab
@@ -252,8 +250,8 @@ func _create_project_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_PROJECT_SETTINGS) as Icon, "Project settings", 7)
 	menu.add_icon_item(load(Library.ICON_CLOSE) as Icon, "Quit", 8)
 
-	if menu.id_pressed.connect(_on_project_popup_menu_id_pressed): Print.stack_connect()
-	if menu.about_to_popup.connect(_on_project_menu_about_to_popup.bind(recent_submenu)): Print.stack_connect()
+	menu.id_pressed.connect(_on_project_popup_menu_id_pressed)
+	menu.about_to_popup.connect(_on_project_menu_about_to_popup.bind(recent_submenu))
 
 
 func _on_project_menu_about_to_popup(recent_submenu: PopupMenu) -> void:
@@ -274,7 +272,7 @@ func _on_project_menu_about_to_popup(recent_submenu: PopupMenu) -> void:
 	file.close()
 
 	if not recent_submenu.id_pressed.is_connected(_on_recent_project_pressed):
-		if recent_submenu.id_pressed.connect(_on_recent_project_pressed.bind(recent_submenu)): Print.stack_connect()
+		recent_submenu.id_pressed.connect(_on_recent_project_pressed.bind(recent_submenu))
 
 
 func _on_recent_project_pressed(id: int, recent_submenu: PopupMenu) -> void:
@@ -292,8 +290,7 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 			if not get_tree().root.has_node("StartupPanel"):
 				var splash: Node = (load(SCENE_STARTUP) as PackedScene).instantiate()
 				get_tree().root.add_child(splash)
-				@warning_ignore("unsafe_property_access")
-				splash.tab_container.current_tab = 1
+				splash.get("tab_container").current_tab = 1
 		1: Project.save()
 		2: Project.save_as()
 		3: Project.archive_as()
@@ -318,16 +315,13 @@ func _create_edit_popup_menu() -> void:
 	menu.add_item(tr("Undo"), 0)
 	menu.add_item(tr("Redo"), 1)
 
-	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_edit_popup_menu_id_pressed)
 
 
 func _on_edit_popup_menu_id_pressed(id: int) -> void:
-	@warning_ignore_start("return_value_discarded")
 	match id:
 		0: InputManager.undo_redo.undo()
 		1: InputManager.undo_redo.redo()
-	@warning_ignore_restore("return_value_discarded")
 
 
 func _create_view_popup_menu() -> void:
@@ -344,10 +338,8 @@ func _create_view_popup_menu() -> void:
 	menu.add_item(tr("Show panel titles"), 3)
 	menu.add_separator(tr("Panels"), 4)
 
-	@warning_ignore_start("return_value_discarded")
 	menu.about_to_popup.connect(_on_view_popup_menu_about_to_popup.bind(menu))
 	menu.id_pressed.connect(_on_view_popup_menu_id_pressed)
-	@warning_ignore_restore("return_value_discarded")
 
 
 func _on_view_popup_menu_about_to_popup(menu: PopupMenu) -> void:
@@ -400,7 +392,6 @@ func _create_preferences_popup_menu() -> void:
 		menu.add_separator()
 		menu.add_icon_item(load(Library.ICON_COMMAND_PROMPT) as Icon, "Command bar", 2)
 
-	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_preferences_popup_menu_id_pressed)
 
 
@@ -428,7 +419,6 @@ func _create_help_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_SUPPORT) as Icon, "Support GoZen", 5)
 	menu.add_icon_item(load(Library.ICON_GOZEN) as Icon, "About GoZen", 6)
 
-	@warning_ignore("return_value_discarded")
 	menu.id_pressed.connect(_on_help_popup_menu_id_pressed)
 
 
@@ -450,7 +440,6 @@ func _create_new_workspace() -> void:
 	line_edit.placeholder_text = tr("Workspace name")
 	dialog.add_child(line_edit)
 
-	@warning_ignore("return_value_discarded")
 	dialog.confirmed.connect(_on_create_new_workspace_confirmed.bind(dialog, line_edit))
 	dialog.popup_centered(Vector2i(250, 80))
 	line_edit.grab_focus()
@@ -476,10 +465,8 @@ func _add_workspace_tab(workspace_name: String) -> void:
 	button.toggle_mode = true
 	button.button_group = workspace_button_group
 
-	@warning_ignore_start("return_value_discarded")
 	button.pressed.connect(_on_add_workspace_tab_button_pressed.bind(button))
 	button.gui_input.connect(_on_add_workspace_tab_gui_input.bind(workspace_name, button))
-	@warning_ignore_restore("return_value_discarded")
 
 	workspace_buttons_hbox.add_child(button)
 	workspace_buttons.append(button)
@@ -516,7 +503,6 @@ func _show_workspace_context_menu(workspace_name: String, button: Button) -> voi
 	popup.add_item(tr("Delete"), 2)
 	if workspace_buttons.size() <= 1: popup.set_item_disabled(2, true)
 
-	@warning_ignore("return_value_discarded")
 	popup.id_pressed.connect(func(id: int) -> void:
 			match id:
 				0: _move_workspace(workspace_name, -1)
@@ -562,7 +548,6 @@ func _delete_workspace_prompt(workspace_name: String) -> void:
 	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
 			tr("Delete Workspace"),
 			tr("Are you sure you want to delete the workspace '%s'?") % workspace_name)
-	@warning_ignore("return_value_discarded")
 	dialog.confirmed.connect(func() -> void: _delete_workspace(workspace_name))
 	dialog.popup_centered()
 

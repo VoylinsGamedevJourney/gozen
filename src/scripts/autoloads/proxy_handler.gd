@@ -20,7 +20,7 @@ func request_generation(file: FileData) -> void:
 	if OS.has_feature("demo"): return
 
 	var proxy_path: String = Settings.get_proxies_path()
-	if file.type != EditorCore.Type.VIDEO:
+	if file.type != Type.VIDEO:
 		return # Only proxies for videos possible.
 	var new_path: String = proxy_path.path_join(_create_proxy_name(file.path))
 
@@ -125,7 +125,6 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	var uniform_set: RID = rendering_device.uniform_set_create([uniform_input, uniform_output, uniform_params], rd_yuv_shader, 0)
 	var total_frames: float = float(video.get_frame_count())
 	var loaded_amount: int = 0
-	@warning_ignore("return_value_discarded")
 	video.seek_frame(0)
 
 	for i: int in video.get_frame_count():

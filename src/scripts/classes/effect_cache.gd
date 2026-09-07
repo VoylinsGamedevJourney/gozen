@@ -21,7 +21,7 @@ func initialize(device: RenderingDevice, spirv: RDShaderSPIRV, effect: Effect) -
 
 func get_buffer_data(effect: Effect, frame_nr: int, resolution: Vector2i, pass_index: int = 0) -> PackedByteArray:
 	var stream: StreamPeerBuffer = StreamPeerBuffer.new()
-	var processed_matrices: Array[Matrix.Type] = []
+	var processed_matrices: Array[Matrix.M_Type] = []
 
 	_effect = effect
 	_frame_nr = frame_nr
@@ -29,7 +29,7 @@ func get_buffer_data(effect: Effect, frame_nr: int, resolution: Vector2i, pass_i
 	for effect_param: EffectParam in effect.params:
 		# First do matrix handling
 		if effect_param.id in effect.matrix_map:
-			var matrix_type: Matrix.Type = effect.matrix_map[effect_param.id]
+			var matrix_type: Matrix.M_Type = effect.matrix_map[effect_param.id]
 
 			if matrix_type not in processed_matrices:
 				_pad_stream(stream, 16)
@@ -102,7 +102,7 @@ func get_buffer_data(effect: Effect, frame_nr: int, resolution: Vector2i, pass_i
 	return buffer_data
 
 
-func _handle_matrix(type: Matrix.Type) -> PackedFloat32Array:
+func _handle_matrix(type: Matrix.M_Type) -> PackedFloat32Array:
 	var data: Dictionary[String, Variant] = {}
 	var param_map: Dictionary[String, EffectParam] = {}
 	for effect_param: EffectParam in _effect.params:
@@ -113,7 +113,7 @@ func _handle_matrix(type: Matrix.Type) -> PackedFloat32Array:
 	var current_resolution: Vector2 = Vector2(_resolution)
 	var ratio: Vector2 = current_resolution / project_resolution
 	match type:
-		Matrix.Type.TRANSFORM:
+		Matrix.M_Type.TRANSFORM:
 			for key: String in Matrix.get_transform_matrix_variables():
 				data[key] = _effect.get_value(param_map[key], _frame_nr)
 				if key == "position" or key == "pivot":

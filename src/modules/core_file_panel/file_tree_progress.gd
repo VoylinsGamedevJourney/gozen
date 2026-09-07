@@ -10,8 +10,8 @@ var wave_progress: Dictionary[int, int] = {}
 
 
 func _ready() -> void:
-	if ProxyHandler.proxy_loading.connect(_on_proxy_loading): Print.stack_connect()
-	if FileLogic.wave_loading.connect(_on_wave_loading): Print.stack_connect()
+	ProxyHandler.proxy_loading.connect(_on_proxy_loading)
+	FileLogic.wave_loading.connect(_on_wave_loading)
 
 
 func _draw() -> void:
@@ -43,5 +43,5 @@ func _on_proxy_loading(file: FileData, progress: int) -> void:
 func _on_wave_loading(file: FileData, progress: int) -> void:
 	wave_progress[file.id] = progress
 	if progress == 100:
-		if !wave_progress.erase(file.id): Print.stack_erase()
+		wave_progress.erase(file.id)
 	queue_redraw()

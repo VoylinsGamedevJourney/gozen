@@ -96,7 +96,7 @@ func _handle_draggable() -> void:
 
 func _handle_draggable_file(file: FileData) -> int: ## Returns file duration.
 	var multi_audio_streams: bool = file.audio_streams.size() > 0
-	var is_video: bool = file.type == EditorCore.Type.VIDEO
+	var is_video: bool = file.type & Type.VIDEO
 	var is_split_video: bool = multi_audio_streams and is_video and split_audio != 0
 	preview_size = Vector2(file.duration * Timeline.zoom, Timeline.track_height)
 
@@ -186,7 +186,7 @@ func _draw_clip_preview(file: FileData) -> void:
 	clip_rect = Rect2(preview_pos, preview_size)
 	draw_style_box(get_theme_stylebox("ClipPreview", "Timeline"), clip_rect)
 
-	if file.type in EditorCore.AUDIO_TYPES:
+	if file.type & Type.GROUP_AUDIO:
 		wave_streams = FileLogic.audio_wave.get(file.id, {})
 		wave_dict = _get_wave_dict(-1)
 		if not wave_dict.is_empty():

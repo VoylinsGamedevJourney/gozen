@@ -7,14 +7,6 @@ signal is_prefetching_before_play
 signal done_prefetching_before_play
 
 
-## File/Clip types.
-enum Type { EMPTY = -1, IMAGE, AUDIO, VIDEO, TEXT, COLOR, PCK }
-
-
-const AUDIO_TYPES: Array[int] = [ Type.AUDIO, Type.VIDEO ]
-const VISUAL_TYPES: Array[int] = [ Type.IMAGE, Type.COLOR, Type.TEXT, Type.VIDEO, Type.PCK ]
-
-
 var viewport: SubViewport
 var track_viewports: Array[SubViewport]
 
@@ -55,7 +47,6 @@ var _needs_final_audio_seek: bool = false
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Project.resolution_changed.connect(_on_resolution_changed)
 
@@ -69,7 +60,6 @@ func _ready() -> void:
 	FileLogic.ato_changed.connect(_on_clips_updated.unbind(1))
 
 	tree_exiting.connect(_on_closing_editor)
-	@warning_ignore_restore("return_value_discarded")
 
 	# TODO: Find out why FFT_SIZE_4096 and FFT_SIZE_MAX don't work.
 	pitch_shift_effect = AudioEffectPitchShift.new()
@@ -149,8 +139,7 @@ func _on_resolution_changed() -> void:
 	for track_viewport: SubViewport in track_viewports:
 		if track_viewport:
 			track_viewport.size = Project.data.resolution
-			@warning_ignore("unsafe_property_access")
-			track_viewport.get_child(0).size = Project.data.resolution
+			(track_viewport.get_child(0) as Control).size = Project.data.resolution
 
 	set_frame(frame_nr)
 
@@ -164,21 +153,18 @@ func _rebuild_structure() -> void:
 	viewport.size = background.size
 
 	# Loaded clips setup.
-	@warning_ignore_start("return_value_discarded")
 	loaded_clips.resize(track_size)
 	loaded_clips.fill(null)
 	clips_to_update.resize(track_size)
 	clips_to_update.fill(false)
 	clips_instance_index.resize(track_size)
 	clips_instance_index.fill(-1)
-	@warning_ignore_restore("return_value_discarded")
 
 	# Audio setup.
 	for player: AudioPlayer in audio_players:
 		if player == null: continue
 		remove_child(player.player)
 		player.cleanup()
-	@warning_ignore("return_value_discarded")
 	audio_players.resize(track_size) # RefCounted so should be fine. (I hope :p)
 
 	for index: int in track_size:
@@ -196,11 +182,9 @@ func _rebuild_structure() -> void:
 		if track_viewport: track_viewport.queue_free()
 
 
-	@warning_ignore_start("return_value_discarded")
 	compositors.resize(track_size)
 	view_textures.resize(track_size)
 	track_viewports.resize(track_size)
-	@warning_ignore_restore("return_value_discarded")
 
 	for index: int in track_size:
 		compositors[index] = VisualCompositor.new()
@@ -446,14 +430,18 @@ func finish_scrub() -> void:
 
 func find_audio(frame: int, track: int) -> ClipData:
 	var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame)
-	return clip if clip and clip.type in AUDIO_TYPES else null
+
+	if clip and clip.type & Type.GROUP_AUDIO:
+		return clip
+	else:
+		return null
 
 
 #--- Video stuff ---
 
 func update_data(track: int) -> void:
 	var clip: ClipData = loaded_clips[track]
-	var raw_data: Variant = FileLogic.file_data.get(clip.file)
+	var raw_data: Variant = FileLogic.data.get(clip.file)
 	if raw_data == null: return
 	var clip_frame: int = frame_nr - clip.start
 
@@ -484,10 +472,8 @@ func update_data(track: int) -> void:
 		var text_label_settings: LabelSettings = text_label.label_settings
 
 		if text_viewport.get_child_count() > 1:
-			@warning_ignore("unsafe_property_access")
-			text_viewport.get_child(1).visible = false # Hiding the loaded pck if exists.
-		@warning_ignore("unsafe_property_access")
-		text_viewport.get_child(0).visible = true # Showing the label.
+			(text_viewport.get_child(1) as Control).visible = false # Hiding the loaded pck if exists.
+		(text_viewport.get_child(0) as Control).visible = true # Showing the label.
 
 		text_label.text = text_data
 		text_label.horizontal_alignment = text_h_align as HorizontalAlignment
@@ -508,11 +494,9 @@ func update_data(track: int) -> void:
 		var module: GoZenModuleScene = raw_data
 		var pck_viewport: SubViewport = track_viewports[track]
 
-		@warning_ignore_start("unsafe_property_access")
-		pck_viewport.get_child(0).visible = false # Hiding the label.
+		(pck_viewport.get_child(0) as Control).visible = false # Hiding the label.
 		if pck_viewport.get_child_count() > 1:
-			pck_viewport.get_child(1).visible = true # Showing the label.
-		@warning_ignore_restore("unsafe_property_access")
+			(pck_viewport.get_child(1) as Control).visible = true # Showing the label.
 
 		# Re-instantiate if clip has changed.
 		if pck_viewport.has_meta("file_id") and pck_viewport.get_meta("file_id") != clip.file:
@@ -565,7 +549,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		return
 
 	var file: FileData = FileLogic.files[clip.file]
-	var raw_data: Variant = FileLogic.file_data.get(file.id)
+	var raw_data: Variant = FileLogic.data.get(file.id)
 
 	var clip_frame: int = frame_nr - clip.start
 	var relative_frame: int = int(clip_frame * clip.speed) + clip.begin

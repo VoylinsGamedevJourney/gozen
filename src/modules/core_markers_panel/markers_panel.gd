@@ -10,14 +10,12 @@ var markers_text: Array[String] = []
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
 	markers_text.resize(5) # Default amount of markers.
 
 	Project.project_ready.connect(_on_markers_updated)
 	MarkerLogic.added.connect(_on_markers_updated.unbind(1))
 	MarkerLogic.updated.connect(_on_markers_updated.unbind(1))
 	MarkerLogic.removed.connect(_on_markers_updated.unbind(1))
-	@warning_ignore_restore("return_value_discarded")
 	_on_markers_updated()
 
 

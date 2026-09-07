@@ -13,7 +13,6 @@ func _process(_delta: float) -> void:
 	for i: int in timed_tasks.keys():
 		if timed_tasks[i].check():
 			timed_tasks[i].execute()
-			@warning_ignore("return_value_discarded")
 			timed_tasks.erase(i)
 
 	mutex.lock()

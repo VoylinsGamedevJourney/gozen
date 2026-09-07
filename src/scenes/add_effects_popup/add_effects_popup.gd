@@ -45,18 +45,27 @@ func load_effects(type: EffectsHandler.TYPE, clips: Array[ClipData]) -> void:
 	var has_visual: bool = false
 	var has_audio: bool = false
 	for clip: ClipData in current_clips:
-		if clip.type in EditorCore.VISUAL_TYPES: has_visual = true
-		if clip.type in EditorCore.AUDIO_TYPES:  has_audio  = true
-		if has_visual and has_audio: break # No need to go over the other clips anymore.
+		if clip.type & Type.GROUP_VISUAL:
+			has_visual = true
+
+		if clip.type & Type.GROUP_AUDIO:
+			has_audio  = true
+
+		if has_visual and has_audio:
+			break # No need to go over the other clips anymore.
 
 	match type:
 		EffectsHandler.TYPE.ALL:
-			if has_visual: _add_effects(EffectsHandler.visual_effects, true)
-			if has_audio: _add_effects(EffectsHandler.audio_effects, false)
+			if has_visual:
+				_add_effects(EffectsHandler.visual_effects, true)
+			if has_audio:
+				_add_effects(EffectsHandler.audio_effects, false)
 		EffectsHandler.TYPE.VISUALS:
-			if has_visual: _add_effects(EffectsHandler.visual_effects, true)
+			if has_visual:
+				_add_effects(EffectsHandler.visual_effects, true)
 		EffectsHandler.TYPE.AUDIO:
-			if has_audio: _add_effects(EffectsHandler.audio_effects, false)
+			if has_audio:
+				_add_effects(EffectsHandler.audio_effects, false)
 
 
 func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> void:

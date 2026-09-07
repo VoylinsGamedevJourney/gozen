@@ -34,7 +34,7 @@ func _init() -> void:
 func _setup() -> void:
 	if not Engine.is_editor_hint():
 		if not Settings.on_theme_updated.is_connected(_update_texture):
-			if Settings.on_theme_updated.connect(_update_texture): Print.stack_connect()
+			Settings.on_theme_updated.connect(_update_texture)
 
 
 func _update_texture() -> void:

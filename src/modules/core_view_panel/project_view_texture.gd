@@ -26,7 +26,7 @@ var active_overlay: EffectOverlay = null
 
 
 func _ready() -> void:
-	if gui_input.connect(_on_gui_input): Print.stack_connect()
+	gui_input.connect(_on_gui_input)
 	if EditorCore.viewport != null:
 		texture = EditorCore.viewport.get_texture()
 	else:
@@ -37,26 +37,29 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	overlay_control.clip_contents = true
 
-	if overlay_control.resized.connect(_update_transform): Print.stack_connect()
-	if Project.project_ready.connect(_update_transform): Print.stack_connect()
-	if Project.resolution_changed.connect(_update_transform): Print.stack_connect()
+	overlay_control.resized.connect(_update_transform)
+	Project.project_ready.connect(_update_transform)
+	Project.resolution_changed.connect(_update_transform)
+
+	ClipLogic.selected.connect(_on_clip_selected)
+	ClipLogic.deleted.connect(_on_clip_deleted)
+	EffectsHandler.effect_selected.connect(_on_effect_selected)
+	EffectsHandler.effect_removed.connect(_on_effect_removed)
+	EditorCore.visual_frame_changed.connect(queue_redraw)
+	EditorCore.play_changed.connect(func(_playing: bool) -> void:
+			queue_redraw())
+
 	if Project.is_loaded:
 		_update_transform()
 
-	if ClipLogic.selected.connect(_on_clip_selected): Print.stack_connect()
-	if ClipLogic.deleted.connect(_on_clip_deleted): Print.stack_connect()
-	if EffectsHandler.effect_selected.connect(_on_effect_selected): Print.stack_connect()
-	if EffectsHandler.effect_removed.connect(_on_effect_removed): Print.stack_connect()
-	if EditorCore.visual_frame_changed.connect(queue_redraw): Print.stack_connect()
-	if EditorCore.play_changed.connect(func(_playing: bool) -> void:
-			queue_redraw()): Print.stack_connect()
-
 
 func _update_transform() -> void:
-	if not Project.is_loaded: return
+	if !Project.is_loaded:
+		return
 
 	var overlay_size: Vector2 = overlay_control.size
-	if overlay_size.y == 0: return
+	if overlay_size.y == 0:
+		return
 
 	var aspect: float = Project.data.resolution.x / float(Project.data.resolution.y)
 	var base_size: Vector2 = overlay_size
@@ -74,7 +77,8 @@ func _on_clip_selected(clip: ClipData) -> void:
 	active_clip = clip
 	active_effect = null
 	active_overlay = null
-	if clip and clip.type in EditorCore.VISUAL_TYPES:
+
+	if clip and clip.type & Type.GROUP_VISUAL:
 		for effect_visual: Effect in clip.effects.video:
 			if effect_visual.custom_overlay_path != "":
 				_set_active_effect(effect_visual)
@@ -96,18 +100,15 @@ func _on_effect_removed(clip: ClipData, _index: int, is_visual: bool) -> void:
 
 
 func _on_effect_selected(effect: Effect) -> void:
-	if effect is not Effect:
-		return
-
-	var effect_visual: Effect = effect
-	if effect_visual.custom_overlay_path != "":
-		_set_active_effect(effect_visual)
+	if effect.custom_overlay_path != "":
+		_set_active_effect(effect)
 		queue_redraw()
 
 
 func _set_active_effect(effect: Effect) -> void:
 	active_effect = effect
 	active_overlay = effect.get_custom_overlay()
+
 	if active_overlay:
 		active_overlay.initialize(active_clip, active_effect)
 
@@ -119,26 +120,30 @@ func _on_gui_input(event: InputEvent) -> void:
 			return
 
 	if event is InputEventMouseButton:
-		var mouse_event: InputEventMouseButton = event
-		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT:
-			var popup: PopupMenu = PopupManager.create_menu()
+		_on_gui_input_mouse_button(event as InputEventMouseButton)
 
-			popup.add_item("Save screenshot ...", PopupType.SAVE_SCREENSHOT)
-			popup.add_item("Save screenshot to project ...", PopupType.SAVE_SCREENSHOT_TO_PROJECT)
-			popup.add_separator()
-			popup.add_check_item("Show safe areas", PopupType.TOGGLE_SAFE_AREAS)
-			popup.set_item_checked(popup.get_item_index(PopupType.TOGGLE_SAFE_AREAS), show_safe_areas)
-			# popup.add_item("Copy screenshot to clipboard", PopupType.COPY_SCREENSHOT) # TODO: Godot doesn't have the option yet to set clipboard image
 
-			if popup.id_pressed.connect(_on_popup_id_pressed): Print.stack_connect()
-			PopupManager.show_menu(popup)
-		elif mouse_event.ctrl_pressed:
-			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				_zoom_view(1.05)
-				accept_event()
-			elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				_zoom_view(1.0 / 1.05)
-				accept_event()
+func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
+	var mouse_event: InputEventMouseButton = event
+	if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT:
+		var popup: PopupMenu = PopupManager.create_menu()
+
+		popup.add_item("Save screenshot ...", PopupType.SAVE_SCREENSHOT)
+		popup.add_item("Save screenshot to project ...", PopupType.SAVE_SCREENSHOT_TO_PROJECT)
+		popup.add_separator()
+		popup.add_check_item("Show safe areas", PopupType.TOGGLE_SAFE_AREAS)
+		popup.set_item_checked(popup.get_item_index(PopupType.TOGGLE_SAFE_AREAS), show_safe_areas)
+		# popup.add_item("Copy screenshot to clipboard", PopupType.COPY_SCREENSHOT) # TODO: Godot doesn't have the option yet to set clipboard image
+
+		popup.id_pressed.connect(_on_popup_id_pressed)
+		PopupManager.show_menu(popup)
+	elif mouse_event.ctrl_pressed:
+		if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_zoom_view(1.05)
+			accept_event()
+		elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_zoom_view(1.0 / 1.05)
+			accept_event()
 
 
 func _zoom_view(factor: float) -> void:
@@ -178,16 +183,19 @@ func _on_popup_id_pressed(id: int) -> void:
 				["*.webp", "*.png", "*.jpg", "*.jpeg"])
 
 		if id == PopupType.SAVE_SCREENSHOT:
-			if file_dialog.file_selected.connect(_on_save_screenshot): Print.stack_connect()
-		elif file_dialog.file_selected.connect(_on_save_screenshot_to_project): Print.stack_connect()
+			file_dialog.file_selected.connect(_on_save_screenshot)
+		else:
+			file_dialog.file_selected.connect(_on_save_screenshot_to_project)
 
 		var folder: String = Project.get_picker_path(OS.SYSTEM_DIR_PICTURES) + "/"
 		var file_name: String = "image_%03d.webp"
 		var nr: int = 1
 
 		while true:
-			if FileAccess.file_exists(folder + file_name % nr): nr += 1
-			else: break
+			if FileAccess.file_exists(folder + file_name % nr):
+				nr += 1
+			else:
+				break
 
 		file_dialog.current_path = folder + file_name % nr
 

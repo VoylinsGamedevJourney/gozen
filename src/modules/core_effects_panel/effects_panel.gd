@@ -7,7 +7,6 @@ extends PanelContainer
 # - Make it possible to edit values;
 # - Draw basic panel UI (not effects UI);
 
-
 const HEADER: String = "EffectsPanel:" # NO_TRANSLATE
 
 const MIN_VALUE: float = -100000
@@ -18,8 +17,7 @@ const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 const PRESETS_PATH: String = "user://presets/"
 
 
-@export var section_text: VBoxContainer
-@export var section_module: VBoxContainer
+@export var section_extra: VBoxContainer ## For text, module params, 3D models, ...
 @export var section_transitions: FoldableContainer
 @export var section_visuals: FoldableContainer
 @export var section_audio: FoldableContainer
@@ -28,8 +26,8 @@ const PRESETS_PATH: String = "user://presets/"
 @onready var scroll: ScrollContainer = $Margin/MainScroll
 
 
-var current_clip: ClipData = null
-var current_file: FileData = null
+var active_clip: ClipData = null
+var active_file: FileData = null
 
 var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
@@ -52,23 +50,23 @@ func _ready() -> void:
 	clip_enable_audio_button.flat = true
 	clip_enable_audio_button.tooltip_text = tr("Enable clip audio.")
 
-	if ClipLogic.deleted.connect(func(clip_id: int) -> void:
-			if current_clip and clip_id == current_clip.id:
-				_on_clip_pressed(null)): Print.stack_connect()
-	if ClipLogic.selected.connect(_on_clip_pressed): Print.stack_connect()
+	ClipLogic.deleted.connect(func(clip_id: int) -> void:
+			if active_clip and clip_id == active_clip.id:
+				_on_clip_pressed(null))
+	ClipLogic.selected.connect(_on_clip_pressed)
 
-	if EditorCore.visual_frame_changed.connect(func() -> void:
-			if current_clip: _update_ui_values()): Print.stack_connect()
+	EditorCore.visual_frame_changed.connect(func() -> void:
+			if active_clip: _update_ui_values())
 
-	if EffectsHandler.effect_added.connect(_on_effect_added): Print.stack_connect()
-	if EffectsHandler.effect_removed.connect(_on_effect_removed): Print.stack_connect()
-	if EffectsHandler.effect_moved.connect(_on_effect_moved): Print.stack_connect()
-	if EffectsHandler.effect_values_updated.connect(_update_ui_values): Print.stack_connect()
+	EffectsHandler.effect_added.connect(_on_effect_added)
+	EffectsHandler.effect_removed.connect(_on_effect_removed)
+	EffectsHandler.effect_moved.connect(_on_effect_moved)
+	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 
-	if EffectsHandler.transition_updated.connect(_on_transition_updated): Print.stack_connect()
+	EffectsHandler.transition_updated.connect(_on_transition_updated)
 
-	if clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled): Print.stack_connect()
-	if clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled): Print.stack_connect()
+	clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled)
+	clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled)
 
 	section_transitions.visible = false
 	section_transitions.folded = true
@@ -159,7 +157,7 @@ func _can_drop_effect(at_pos: Vector2, data: Variant, is_visual: bool, vbox: VBo
 		return false
 
 	var child_offset: int = 0
-	if not is_visual and current_file and current_file.audio_streams.size() > 1:
+	if not is_visual and active_file and active_file.audio_streams.size() > 1:
 		child_offset = 2
 
 	var drop_index: int = child_offset
@@ -181,7 +179,7 @@ func _drop_effect(at_pos: Vector2, data: Variant, is_visual: bool, vbox: VBoxCon
 	if not data is RequestEffectDrag or data.is_visual != is_visual: return
 
 	var child_offset: int = 0
-	if not is_visual and current_file and current_file.audio_streams.size() > 1:
+	if not is_visual and active_file and active_file.audio_streams.size() > 1:
 		child_offset = 2
 
 	var old_index: int = data.effect_index
@@ -193,7 +191,7 @@ func _drop_effect(at_pos: Vector2, data: Variant, is_visual: bool, vbox: VBoxCon
 	if new_index > old_index: new_index -= 1
 
 	if old_index != new_index:
-		EffectsHandler.move_effect(current_clip, old_index, new_index, is_visual)
+		EffectsHandler.move_effect(active_clip, old_index, new_index, is_visual)
 
 
 func _draw_drop_indicator(vbox: VBoxContainer) -> void:
@@ -211,99 +209,106 @@ func _draw_drop_indicator(vbox: VBoxContainer) -> void:
 	vbox.draw_line(pos, length, vbox.get_theme_color("drop_line_color", "EffectsPanel"), 3.0)
 
 
-func _on_clip_pressed(clip_data: ClipData) -> void:
-	if !clip_data or !ClipLogic.clips.has(clip_data.id):
-		section_text.visible = false
+func _on_clip_pressed(clip: ClipData) -> void:
+	if !clip or !ClipLogic.clips.has(clip.id):
+		section_extra.visible = false
 		section_visuals.visible = false
 		section_audio.visible =  false
-		current_clip = null
-		current_file = null
+		active_clip = null
+		active_file = null
 		_load_effects() # Clear the ui.
 		return
 
-	var clip: ClipData = ClipLogic.clips.get(clip_data.id)
-	if current_clip and clip.id == current_clip.id:
+	var temp_clip: ClipData = ClipLogic.clips.get(clip.id)
+	if active_clip and temp_clip.id == active_clip.id:
 		return _update_ui_values()
 
-	section_text.visible = clip.type == EditorCore.Type.TEXT
-	section_visuals.visible = clip.type in EditorCore.VISUAL_TYPES and clip.type != EditorCore.Type.PCK
-	section_module.visible = clip.type == EditorCore.Type.PCK
-	section_audio.visible = clip.type in EditorCore.AUDIO_TYPES
-	current_clip = clip
-	current_file = FileLogic.files[clip.file]
+	active_clip = temp_clip
+	active_file = FileLogic.files[active_clip.file]
+
+	section_extra.visible = active_clip.type & Type.GROUP_EXTRA
+	section_visuals.visible = active_clip.type & Type.GROUP_VISUAL and active_clip.type != Type.PCK
+	section_audio.visible = active_clip.type & Type.GROUP_AUDIO
 	_load_effects()
-	section_visuals.folded = not clip.effects.is_showing
-	section_audio.folded = clip.effects.is_muted
+	section_visuals.folded = not active_clip.effects.is_showing
+	section_audio.folded = active_clip.effects.is_muted
 
 
 func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
-	if current_clip and clip and clip.id == current_clip.id:
-		var effect: FoldableContainer
-		var location: Control
+	if !active_clip or !clip or clip.id != active_clip.id:
+		return
 
-		if is_visual:
-			var target_effect: Effect = clip.effects.video[index]
-			if target_effect.id == "pck_effect_params":
-				effect = _create_effect_ui(target_effect, is_visual, true)
-				location = section_module
-			else:
-				effect = _create_effect_ui(target_effect, is_visual)
-				location = section_visuals.get_child(0).get_child(0)
+	var effect: FoldableContainer
+	var location: Control
 
-			var target_ui_index: int = 0
-			for i: int in range(0, index):
-				if (clip.effects.video[i].id == "pck_effect_params") == (target_effect.id == "pck_effect_params"):
-					target_ui_index += 1
-			location.add_child(effect)
-			location.move_child(effect, target_ui_index)
-
-			await get_tree().process_frame
-			if is_instance_valid(effect): scroll.ensure_control_visible(effect)
-			return
+	if is_visual:
+		var target_effect: Effect = clip.effects.video[index]
+		if target_effect.id == "pck_effect_params":
+			effect = _create_effect_ui(target_effect, is_visual, true)
+			location = section_extra
 		else:
-			effect = _create_effect_ui(clip.effects.audio[index], is_visual)
-			location = section_audio.get_child(0).get_child(0)
-			if current_file and current_file.audio_streams.size() > 1:
-				index += 2
+			effect = _create_effect_ui(target_effect, is_visual)
+			location = section_visuals.get_child(0).get_child(0)
 
+		var target_ui_index: int = 0
+		for i: int in range(0, index):
+			if (clip.effects.video[i].id == "pck_effect_params") == (target_effect.id == "pck_effect_params"):
+				target_ui_index += 1
 		location.add_child(effect)
-		location.move_child(effect, index)
+		location.move_child(effect, target_ui_index)
 
 		await get_tree().process_frame
-		if is_instance_valid(effect): scroll.ensure_control_visible(effect)
+		if is_instance_valid(effect):
+			scroll.ensure_control_visible(effect)
+		return
+	else:
+		effect = _create_effect_ui(clip.effects.audio[index], is_visual)
+		location = section_audio.get_child(0).get_child(0)
+		if active_file and active_file.audio_streams.size() > 1:
+			index += 2
+
+	location.add_child(effect)
+	location.move_child(effect, index)
+
+	await get_tree().process_frame
+	if is_instance_valid(effect):
+		scroll.ensure_control_visible(effect)
 
 
 func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
-	if current_clip and clip and clip.id == current_clip.id:
-		var removed_effect: Control
-		var location: Control
-		if is_visual: return _load_effects() # We just rebuild the entire thing.
-		else:
-			location = section_audio.get_child(0).get_child(0)
-			var child_offset: int = 0
-			if current_file and current_file.audio_streams.size() > 1:
-				child_offset = 2
-			removed_effect = location.get_child(index + child_offset)
-			location.remove_child(removed_effect)
-		removed_effect.queue_free()
+	if !active_clip or !clip or clip.id != active_clip.id:
+		return
+
+	var removed_effect: Control
+	var location: Control
+	if is_visual:
+		return _load_effects() # We just rebuild the entire thing.
+
+	location = section_audio.get_child(0).get_child(0)
+	var child_offset: int = 0
+	if active_file and active_file.audio_streams.size() > 1:
+		child_offset = 2
+	removed_effect = location.get_child(index + child_offset)
+	location.remove_child(removed_effect)
+	removed_effect.queue_free()
 
 
 func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool) -> void:
-	if !current_clip or !clip or clip.id != current_clip.id: return
+	if !active_clip or !clip or clip.id != active_clip.id: return
 
 	if is_visual: _load_effects() # Rebuilding, it's easier. :p
 	else:
 		var location: Control = section_audio.get_child(0).get_child(0)
-		if current_file and current_file.audio_streams.size() > 1:
+		if active_file and active_file.audio_streams.size() > 1:
 			old_index += 2
 			new_index += 2
 		location.move_child(location.get_child(old_index), new_index)
 
 
 func _create_transitions_ui(parent: Control) -> void:
-	var clip_effects: ClipEffects = current_clip.effects
-	var has_visual: bool = current_clip.type in EditorCore.VISUAL_TYPES
-	var has_audio: bool = current_clip.type in EditorCore.AUDIO_TYPES
+	var clip_effects: ClipEffects = active_clip.effects
+	var has_visual: bool = active_clip.type & Type.GROUP_VISUAL
+	var has_audio: bool = active_clip.type & Type.GROUP_AUDIO
 
 	var left_label: Label = Label.new()
 	left_label.text = "Left Transition"
@@ -320,7 +325,6 @@ func _create_transitions_ui(parent: Control) -> void:
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_visual.x
-		@warning_ignore("return_value_discarded")
 		spinbox.value_changed.connect(
 				_on_visual_in_value_changed.bind(clip_effects, spinbox))
 
@@ -338,7 +342,6 @@ func _create_transitions_ui(parent: Control) -> void:
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_audio.x
-		@warning_ignore("return_value_discarded")
 		spinbox.value_changed.connect(
 				_on_audio_in_value_changed.bind(clip_effects, spinbox))
 
@@ -359,7 +362,6 @@ func _create_transitions_ui(parent: Control) -> void:
 			if !clip_effects.transition_left: continue
 			elif clip_effects.transition_left.id == EffectsHandler.transitions[transition_name]:
 				option_button.selected = option_button.item_count - 1
-		@warning_ignore("return_value_discarded")
 		option_button.item_selected.connect(
 				_on_transition_in_style_item_selected.bind(option_button))
 
@@ -390,7 +392,6 @@ func _create_transitions_ui(parent: Control) -> void:
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_visual.y
-		@warning_ignore("return_value_discarded")
 		spinbox.value_changed.connect(
 				_on_visual_out_value_changed.bind(clip_effects, spinbox))
 
@@ -408,7 +409,6 @@ func _create_transitions_ui(parent: Control) -> void:
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_audio.y
-		@warning_ignore("return_value_discarded")
 		spinbox.value_changed.connect(
 				_on_audio_out_value_changed.bind(clip_effects, spinbox))
 
@@ -426,8 +426,8 @@ func _create_transitions_ui(parent: Control) -> void:
 			option_button.add_item(transition_name)
 			if clip_effects.transition_right and clip_effects.transition_right.id == EffectsHandler.transitions[transition_name]:
 				option_button.selected = option_button.item_count - 1
-		@warning_ignore("return_value_discarded")
-		option_button.item_selected.connect(_on_transition_out_style_item_selected.bind(option_button))
+		option_button.item_selected.connect(
+				_on_transition_out_style_item_selected.bind(option_button))
 		hbox.add_child(label)
 		hbox.add_child(option_button)
 		parent.add_child(hbox)
@@ -441,7 +441,7 @@ func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left
 	var param_hbox: HBoxContainer = HBoxContainer.new()
 	var param_title: Label = Label.new()
 	var update_call: Callable = func(val: Variant) -> void:
-		EffectsHandler.update_transition_param(current_clip, is_left, param.id, val)
+		EffectsHandler.update_transition_param(active_clip, is_left, param.id, val)
 
 	var param_settings: Control = create_param_control(param, update_call)
 
@@ -462,17 +462,14 @@ func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left
 func _load_effects() -> void:
 	# Clean UI.
 	_drag_overlays.clear()
-	for child: Node in section_text.get_children():
-		section_text.remove_child(child)
+	for child: Node in section_extra.get_children():
+		section_extra.remove_child(child)
 		child.queue_free()
 	for child: Node in section_visuals.get_children():
 		section_visuals.remove_child(child)
 		child.queue_free()
 	for child: Node in section_audio.get_children():
 		section_audio.remove_child(child)
-		child.queue_free()
-	for child: Node in section_module.get_children():
-		section_module.remove_child(child)
 		child.queue_free()
 
 	var margin_visuals: MarginContainer = MarginContainer.new()
@@ -499,30 +496,29 @@ func _load_effects() -> void:
 	margin_audio.add_child(overlay_audio)
 	section_audio.add_child(margin_audio)
 
-	if current_clip and current_file and current_file.audio_streams.size() > 1:
+	if active_clip and active_file and active_file.audio_streams.size() > 1:
 		var hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
 		label.text = "Audio Track"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var option_button: OptionButton = OptionButton.new()
-		for i: int in current_file.audio_streams.size():
-			option_button.add_item("Track %d" % (i + 1), current_file.audio_streams[i])
-			var current_index: int = current_clip.effects.audio_stream_index
-			if current_index == -1: current_index = current_file.audio_streams[0]
-			if current_file.audio_streams[i] == current_index:
+		for i: int in active_file.audio_streams.size():
+			option_button.add_item("Track %d" % (i + 1), active_file.audio_streams[i])
+			var current_index: int = active_clip.effects.audio_stream_index
+			if current_index == -1: current_index = active_file.audio_streams[0]
+			if active_file.audio_streams[i] == current_index:
 				option_button.selected = i
 
-		@warning_ignore("return_value_discarded")
 		option_button.item_selected.connect(func(index: int) -> void:
 				InputManager.undo_redo.create_action("Change audio track")
 				InputManager.undo_redo.add_do_method(
 						ClipLogic._set_audio_stream.bind(
-								current_clip.effects,
+								active_clip.effects,
 								option_button.get_item_id(index)))
 				InputManager.undo_redo.add_undo_method(
 						ClipLogic._set_audio_stream.bind(
-								current_clip.effects,
-								current_clip.effects.audio_stream_index))
+								active_clip.effects,
+								active_clip.effects.audio_stream_index))
 				InputManager.undo_redo.commit_action())
 
 		hbox.add_child(label)
@@ -540,26 +536,24 @@ func _load_effects() -> void:
 	overlay_visuals.set_drag_forwarding(Callable(), _can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
 	overlay_audio.set_drag_forwarding(Callable(), _can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
 
-	@warning_ignore_start("return_value_discarded")
 	vbox_visuals.draw.connect(_draw_drop_indicator.bind(vbox_visuals))
 	vbox_audio.draw.connect(_draw_drop_indicator.bind(vbox_audio))
-	@warning_ignore_restore("return_value_discarded")
 
-	if !current_clip or !ClipLogic.clips.has(current_clip.id):
+	if !active_clip or !ClipLogic.clips.has(active_clip.id):
 		_update_ui_values()
 		return
 
 	# Creating/updating new UI.
-	var clip_effects: ClipEffects = current_clip.effects
-	if section_text.visible: # Set text params.
-		var text_effect: Effect = current_file.temp_file.text_effect
+	var clip_effects: ClipEffects = active_clip.effects
+	if section_extra.visible and active_clip.type == Type.TEXT: # Set text params.
+		var text_effect: Effect = active_file.temp_file.text_effect
 		var ui: FoldableContainer = _create_effect_ui(text_effect, true, true)
-		section_text.add_child(ui)
+		section_extra.add_child(ui)
 
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		var effect: Effect = clip_effects.video[index]
 		if effect.id == "pck_effect_params":
-			section_module.add_child(_create_effect_ui(effect, true, true))
+			section_extra.add_child(_create_effect_ui(effect, true, true))
 		else:
 			vbox_visuals.add_child(_create_effect_ui(effect, true))
 
@@ -567,7 +561,7 @@ func _load_effects() -> void:
 		vbox_audio.add_child(_create_effect_ui(clip_effects.audio[index], false))
 
 	_create_transitions_ui(vbox_transitions)
-	section_transitions.visible = current_clip.type in EditorCore.VISUAL_TYPES or current_clip.type in EditorCore.AUDIO_TYPES
+	section_transitions.visible = active_clip.type & Type.GROUP_VISUAL or active_clip.type & Type.GROUP_AUDIO
 	_update_ui_values()
 
 
@@ -576,8 +570,8 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 	# inside of the metadata and let the buttons check if they are at the top
 	# or bottom to disable the correct buttons.
 	var relative_frame_nr: int = clampi(
-			EditorCore.frame_nr - current_clip.start, 0,
-			maxi(0, current_clip.duration - 1))
+			EditorCore.frame_nr - active_clip.start, 0,
+			maxi(0, active_clip.duration - 1))
 
 	var container: FoldableContainer = FoldableContainer.new()
 	container.title = effect.nickname if not (is_file_effect and effect.id == "text") else "Text Properties"
@@ -596,11 +590,9 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		button_preset.texture_normal = load(Library.ICON_EFFECT_SETTINGS)
 		button_preset.tooltip_text = tr("Presets & Options")
 
-		@warning_ignore_start("return_value_discarded")
 		button_visible.pressed.connect(_on_switch_enabled.bind(effect, is_visual))
 		button_preset.pressed.connect(func() -> void:
 				_show_preset_popup(false, is_visual, effect, button_preset))
-		@warning_ignore_restore("return_value_discarded")
 
 		for button: TextureButton in [button_preset, button_visible]:
 			button.ignore_texture_size = true
@@ -631,16 +623,15 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button_reset.tooltip_text = tr("Reset to default")
 		if effect.id == "text":
-			if button_reset.pressed.connect(_on_reset_text_effect): Print.stack_connect()
+			button_reset.pressed.connect(_on_reset_text_effect)
 		elif effect.id == "pck_effect_params":
-			if button_reset.pressed.connect(_on_reset_pck_effect): Print.stack_connect()
+			button_reset.pressed.connect(_on_reset_pck_effect)
 		container.add_title_bar_control(button_reset)
 
 	var content_vbox: VBoxContainer = VBoxContainer.new()
 	container.add_child(content_vbox)
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	@warning_ignore("return_value_discarded")
 	container.gui_input.connect(func(event: InputEvent) -> void:
 			if event is not InputEventMouseButton: return
 
@@ -668,7 +659,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 			elif effect_ui.custom_ui != null:
 				var custom_scene: Node = effect_ui.custom_ui.instantiate()
 				if custom_scene.has_method("setup"):
-					custom_scene.call("setup", effect, current_clip, is_visual)
+					custom_scene.call("setup", effect, active_clip, is_visual)
 				content_vbox.add_child(custom_scene)
 
 	if keyframes_found:
@@ -683,13 +674,11 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 
 		track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		track.setup(effect, current_clip.duration, relative_frame_nr)
+		track.setup(effect, active_clip.duration, relative_frame_nr)
 
-		@warning_ignore_start("return_value_discarded")
 		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(effect, is_visual))
 		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(effect, is_visual))
 		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
-		@warning_ignore_restore("return_value_discarded")
 
 		track_scroll.add_child(track)
 		content_vbox.add_child(HSeparator.new())
@@ -704,7 +693,7 @@ func _get_param_by_id(effect: Effect, param_id: String) -> EffectParam:
 
 
 func _on_reset_text_effect() -> void:
-	var text_effect: Effect = current_file.temp_file.text_effect
+	var text_effect: Effect = active_file.temp_file.text_effect
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(text_effect.keyframes)
 
 	InputManager.undo_redo.create_action("Reset text effect")
@@ -714,7 +703,7 @@ func _on_reset_text_effect() -> void:
 
 
 func _reset_text_effect() -> void:
-	var text_effect: Effect = current_file.temp_file.text_effect
+	var text_effect: Effect = active_file.temp_file.text_effect
 	text_effect.keyframes.clear()
 	text_effect.set_default_keyframe()
 	Project.unsaved_changes = true
@@ -723,7 +712,7 @@ func _reset_text_effect() -> void:
 
 
 func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
-	var text_effect: Effect = current_file.temp_file.text_effect
+	var text_effect: Effect = active_file.temp_file.text_effect
 	text_effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
@@ -732,11 +721,11 @@ func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
 
 
 func _on_reset_pck_effect() -> void:
-	if not current_clip: return
+	if not active_clip: return
 	var pck_effect: Effect = null
-	for i: int in current_clip.effects.video.size():
-		if current_clip.effects.video[i].id == "pck_effect_params":
-			pck_effect = current_clip.effects.video[i]
+	for i: int in active_clip.effects.video.size():
+		if active_clip.effects.video[i].id == "pck_effect_params":
+			pck_effect = active_clip.effects.video[i]
 			break
 	if pck_effect:
 		_on_reset_effect(pck_effect, true)
@@ -744,18 +733,18 @@ func _on_reset_pck_effect() -> void:
 
 func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect: Effect, is_visual: bool) -> void:
 	var effect_index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.move_effect_keyframe_at_frame(current_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing, is_copy)
+	EffectsHandler.move_effect_keyframe_at_frame(active_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing, is_copy)
 	_update_ui_values()
 
 
 func _on_keyframe_deleted_effect_ui(frame: int, effect: Effect, is_visual: bool) -> void:
 	var effect_index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.remove_effect_keyframe_at_frame(current_clip, effect_index, is_visual, frame)
+	EffectsHandler.remove_effect_keyframe_at_frame(active_clip, effect_index, is_visual, frame)
 	_update_ui_values()
 
 
 func _on_keyframe_dragged_to_effect_ui(relative_frame: int) -> void:
-	EditorCore.scrub_to_frame(current_clip.start + relative_frame)
+	EditorCore.scrub_to_frame(active_clip.start + relative_frame)
 
 
 func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: bool, effect_ui: EffectUI = null) -> HBoxContainer:
@@ -780,7 +769,6 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	param_reset_button.custom_minimum_size = Vector2(14, 14)
 
-	@warning_ignore("return_value_discarded")
 	param_reset_button.pressed.connect(
 			_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
 
@@ -802,7 +790,6 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_prev_button.custom_minimum_size.x = 8
 
-		@warning_ignore("return_value_discarded")
 		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(effect, param_id))
 
 		var param_keyframe_button: TextureButton = TextureButton.new()
@@ -812,7 +799,6 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_keyframe_button.custom_minimum_size.x = 14
 
-		@warning_ignore("return_value_discarded")
 		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
 				effect, is_visual, param_id))
 
@@ -822,7 +808,6 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_next_button.ignore_texture_size = true
 		param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_next_button.custom_minimum_size.x = 8
-		@warning_ignore("return_value_discarded")
 		param_next_button.pressed.connect(_jump_next_keyframe.bind(effect, param_id))
 
 		param_hbox.add_child(param_prev_button)
@@ -850,7 +835,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 					option_button.add_item(fonts[i] as String)
 					option_button.set_item_metadata(i + 1, fonts[i])
 
-				@warning_ignore("return_value_discarded")
 				option_button.item_selected.connect(func(id: int) -> void:
 						update_call.call(option_button.get_item_metadata(id)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -859,7 +843,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 			if effect_ui and effect_ui.is_multiline:
 				var text_edit: TextEdit = TextEdit.new()
 				text_edit.placeholder_text = "Text ..."
-				@warning_ignore("return_value_discarded")
 				text_edit.text_changed.connect(func() -> void: update_call.call(text_edit.text))
 				text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				text_edit.custom_minimum_size.y = 80
@@ -867,15 +850,12 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 				return text_edit
 			else:
 				var line_edit: LineEdit = LineEdit.new()
-				@warning_ignore_start("return_value_discarded")
 				line_edit.text_changed.connect(update_call)
 				line_edit.text_submitted.connect((func() -> void: line_edit.release_focus()).unbind(1))
-				@warning_ignore_restore("return_value_discarded")
 				line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				return line_edit
 		TYPE_BOOL:
 			var check_button: CheckButton = CheckButton.new()
-			@warning_ignore("return_value_discarded")
 			check_button.toggled.connect(update_call)
 			check_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			return check_button
@@ -907,7 +887,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 					option_button.add_item("Bold", 700)
 					option_button.add_item("Extra Bold", 800)
 					option_button.add_item("Black", 900)
-				@warning_ignore("return_value_discarded")
 				option_button.item_selected.connect(func(index: int) -> void:
 						update_call.call(option_button.get_item_id(index)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -932,10 +911,8 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 							spinbox.value -= spinbox.step
 							spinbox.accept_event()
 
-			@warning_ignore_start("return_value_discarded")
 			spinbox.gui_input.connect(scroll_handler)
 			spinbox.get_line_edit().gui_input.connect(scroll_handler)
-			@warning_ignore_restore("return_value_discarded")
 
 			if param.has_slider:
 				var hbox: HBoxContainer = HBoxContainer.new()
@@ -955,12 +932,10 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 					slider.tick_count = 13
 				slider.ticks_on_borders = true
 
-				@warning_ignore("return_value_discarded")
 				slider.value_changed.connect(func(val: float) -> void:
 						spinbox.set_value_no_signal(val)
 						update_call.call(val))
 
-				@warning_ignore("return_value_discarded")
 				spinbox.value_changed.connect(func(val: float) -> void:
 						if spinbox.get_line_edit().has_focus():
 							spinbox.get_line_edit().release_focus()
@@ -972,7 +947,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 				hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				return hbox
 			else:
-				@warning_ignore("return_value_discarded")
 				spinbox.value_changed.connect(func(val: float) -> void:
 						if spinbox.get_line_edit().has_focus():
 							spinbox.get_line_edit().release_focus()
@@ -999,7 +973,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 			else:
 				spinbox_x.prefix = "X:"
 
-			@warning_ignore("return_value_discarded")
 			spinbox_x.value_changed.connect(func(new_value: float) -> void:
 					if spinbox_x.get_line_edit().has_focus():
 						spinbox_x.get_line_edit().release_focus()
@@ -1022,8 +995,8 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 							spinbox_x.value -= spinbox_x.step
 							spinbox_x.accept_event()
 
-			if spinbox_x.gui_input.connect(scroll_handler_x): Print.stack_connect()
-			if spinbox_x.get_line_edit().gui_input.connect(scroll_handler_x): Print.stack_connect()
+			spinbox_x.gui_input.connect(scroll_handler_x)
+			spinbox_x.get_line_edit().gui_input.connect(scroll_handler_x)
 
 			# Y
 			spinbox_y.min_value = param.min_value.y if param.min_value != null else MIN_VALUE
@@ -1033,7 +1006,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 			spinbox_y.allow_greater = param.max_value == null
 			spinbox_y.custom_arrow_step = spinbox_y.step
 			spinbox_y.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			@warning_ignore("return_value_discarded")
 			spinbox_y.value_changed.connect(func(new_value: float) -> void:
 					if spinbox_y.get_line_edit().has_focus():
 						spinbox_y.get_line_edit().release_focus()
@@ -1055,10 +1027,8 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 						elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 							spinbox_y.value -= spinbox_y.step
 							spinbox_y.accept_event()
-			@warning_ignore_start("return_value_discarded")
 			spinbox_y.gui_input.connect(scroll_handler_y)
 			spinbox_y.get_line_edit().gui_input.connect(scroll_handler_y)
-			@warning_ignore_restore("return_value_discarded")
 
 			hbox.add_child(spinbox_x)
 
@@ -1074,14 +1044,14 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 				link_button.tooltip_text = "Link X and Y"
 
-				if link_button.toggled.connect(func(toggled: bool) -> void:
+				link_button.toggled.connect(func(toggled: bool) -> void:
 						param.is_linked = toggled
 						link_button.modulate = Color(1, 1, 1, 1) if toggled else Color(1, 1, 1, 0.5)
 						spinbox_y.visible = not toggled
 						spinbox_x.prefix = "" if toggled else "X:" # NO_TRANSLATE
 						if toggled:
 							spinbox_y.set_value_no_signal(spinbox_x.value)
-							spinbox_y.value_changed.emit(spinbox_x.value)): Print.stack_connect()
+							spinbox_y.value_changed.emit(spinbox_x.value))
 				hbox.add_child(link_button)
 
 			hbox.add_child(spinbox_y)
@@ -1094,7 +1064,6 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 			color_picker.custom_minimum_size.x = 40
 			color_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-			@warning_ignore("return_value_discarded")
 			color_picker.color_changed.connect(update_call)
 			return color_picker
 	return Control.new() # Fallback.
@@ -1102,8 +1071,8 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 
 func _get_effect_index(effect: Effect, is_visual: bool) -> int:
 	if is_visual:
-		return current_clip.effects.video.find(effect)
-	return current_clip.effects.audio.find(effect)
+		return active_clip.effects.video.find(effect)
+	return active_clip.effects.audio.find(effect)
 
 
 func _get_current_ui_value_for_param(effect: Effect, param_id: String, relative_frame_nr: int) -> Variant:
@@ -1115,46 +1084,46 @@ func _get_current_ui_value_for_param(effect: Effect, param_id: String, relative_
 
 func _on_remove_effect(effect: Effect, is_visual: bool) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.remove_effect(current_clip, index, is_visual)
+	EffectsHandler.remove_effect(active_clip, index, is_visual)
 
 
 func _on_reset_effect(effect: Effect, is_visual: bool) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.reset_effect(current_clip, index, is_visual)
+	EffectsHandler.reset_effect(active_clip, index, is_visual)
 
 
 func _update_ui_values() -> void:
-	if !current_clip or !ClipLogic.clips.has(current_clip.id):
-		current_clip = null
+	if !active_clip or !ClipLogic.clips.has(active_clip.id):
+		active_clip = null
 		return
 
-	clip_enable_visuals_button.set_pressed_no_signal(current_clip.effects.is_showing)
-	clip_enable_audio_button.set_pressed_no_signal(!current_clip.effects.is_muted)
-	var frame_nr: int = clampi(EditorCore.frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
-	if section_text.visible and section_text.get_child_count() > 0:
-		var text_effect: Effect = current_file.temp_file.text_effect
-		var container: FoldableContainer = section_text.get_child(0)
+	clip_enable_visuals_button.set_pressed_no_signal(active_clip.effects.is_showing)
+	clip_enable_audio_button.set_pressed_no_signal(!active_clip.effects.is_muted)
+	var frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
+	if section_extra.visible and section_extra.get_child_count() > 0:
+		var text_effect: Effect = active_file.temp_file.text_effect
+		var container: FoldableContainer = section_extra.get_child(0)
 		_update_ui_values_for_container(text_effect, container.get_child(0) as VBoxContainer, frame_nr)
 
-	for i: int in current_clip.effects.video.size():
-		_update_ui_values_effect(current_clip.effects.video, i, frame_nr)
-	for i: int in current_clip.effects.audio.size():
-		_update_ui_values_effect(current_clip.effects.audio, i, frame_nr)
+	for i: int in active_clip.effects.video.size():
+		_update_ui_values_effect(active_clip.effects.video, i, frame_nr)
+	for i: int in active_clip.effects.audio.size():
+		_update_ui_values_effect(active_clip.effects.audio, i, frame_nr)
 
 	if !section_transitions.visible or section_transitions.get_child_count() <= 0: return
 	var transition_vbox: VBoxContainer = section_transitions.get_child(0)
 
-	if current_clip.effects.transition_left:
-		for param: EffectParam in current_clip.effects.transition_left.params:
+	if active_clip.effects.transition_left:
+		for param: EffectParam in active_clip.effects.transition_left.params:
 			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("LEFT_" + param.id)) as HBoxContainer
 			if hbox and hbox.get_child_count() > 1:
-				_set_param_settings_value(hbox.get_child(1) as Control, current_clip.effects.transition_left.get_value(param, 0))
+				_set_param_settings_value(hbox.get_child(1) as Control, active_clip.effects.transition_left.get_value(param, 0))
 
-	if current_clip.effects.transition_right:
-		for param: EffectParam in current_clip.effects.transition_right.params:
+	if active_clip.effects.transition_right:
+		for param: EffectParam in active_clip.effects.transition_right.params:
 			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("RIGHT_" + param.id)) as HBoxContainer
 			if hbox and hbox.get_child_count() > 1:
-				_set_param_settings_value(hbox.get_child(1) as Control, current_clip.effects.transition_right.get_value(param, 0))
+				_set_param_settings_value(hbox.get_child(1) as Control, active_clip.effects.transition_right.get_value(param, 0))
 
 
 func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer, frame_nr: int) -> void:
@@ -1187,7 +1156,7 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 		if track_scroll:
 			var track: KeyframeTrack = track_scroll.get_child(0)
 			track.current_relative_frame = frame_nr
-			track.clip_duration = current_clip.duration
+			track.clip_duration = active_clip.duration
 			track.queue_redraw()
 
 
@@ -1195,9 +1164,9 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 	var effect: Effect = effects[index]
 	var section: Control
 	var child_offset: int = 0
-	if effects == current_clip.effects.video:
+	if effects == active_clip.effects.video:
 		if effect.id == "pck_effect_params":
-			section = section_module
+			section = section_extra
 			child_offset = -index
 		else:
 			section = section_visuals
@@ -1206,7 +1175,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 					child_offset -= 1
 	else:
 		section = section_audio
-		if current_file and current_file.audio_streams.size() > 1:
+		if active_file and active_file.audio_streams.size() > 1:
 			child_offset = 2
 
 	var effect_container: FoldableContainer
@@ -1272,19 +1241,19 @@ func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
 
 func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 	var index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.switch_enabled(current_clip, index, is_visual)
+	EffectsHandler.switch_enabled(active_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
 	var child_offset: int = 0
-	if not is_visual and current_file and current_file.audio_streams.size() > 1:
+	if not is_visual and active_file and active_file.audio_streams.size() > 1:
 		child_offset = 2
 	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index + child_offset)
 	var visible_button: TextureButton = effect_container.find_child("VisibleButton", true, false)
 	var is_enabled: bool
 
 	if is_visual:
-		effect_container.folded = !current_clip.effects.video[index].is_enabled
+		effect_container.folded = !active_clip.effects.video[index].is_enabled
 	else:
-		effect_container.folded = !current_clip.effects.audio[index].is_enabled
+		effect_container.folded = !active_clip.effects.audio[index].is_enabled
 
 	if effect_container.folded:
 		visible_button.texture_normal = load(Library.ICON_INVISIBLE)
@@ -1302,7 +1271,6 @@ func _get_add_effects_button(type: int) -> TextureButton:
 	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	texture_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-	@warning_ignore("return_value_discarded")
 	texture_button.pressed.connect(_open_add_effects_popup.bind(type, true))
 	return texture_button
 
@@ -1310,20 +1278,20 @@ func _get_add_effects_button(type: int) -> TextureButton:
 ## Type: 0 = All, 1 = Visuals, 2 = Audio.
 ## From_add_button is to avoid adding effects to all clips when using Ctrl+A.
 func _open_add_effects_popup(type: int, from_add_button: bool) -> void:
-	if current_clip:
+	if active_clip:
 		var popup: Control = PopupManager.get_popup(PopupManager.ADD_EFFECTS)
 		var pass_clips: Array[ClipData] = []
 		if from_add_button:
-			pass_clips.append(current_clip)
+			pass_clips.append(active_clip)
 		else:
-			pass_clips.assign(ClipLogic.selected_clips)
+			pass_clips.assign(ClipLogic.active_clips)
 		popup.call("load_effects", type, pass_clips)
 
 
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:
 	EffectsHandler.effect_selected.emit(effect)
-	if current_file and current_file.temp_file and current_file.temp_file.text_effect == effect:
-		var frame_nr: int = clampi(EditorCore.frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
+	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
+		var frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 		var param_obj: EffectParam = _get_param_by_id(effect, param_id)
 		var is_keyframeable: bool = param_obj.keyframeable if param_obj else false
 		var param_keyframes: Dictionary = effect.keyframes[param_id]
@@ -1331,21 +1299,21 @@ func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, 
 		if param_keyframes.size() <= 1 or not is_keyframeable:
 			var base_frame: int = param_keyframes.keys()[0] if param_keyframes.size() > 0 else 0
 			var old_value: Variant = param_keyframes.get(base_frame, param_obj.default_value)
-			FileLogic.update_text_param(current_file, param_id, base_frame, value, old_value, false)
+			FileLogic.update_text_param(active_file, param_id, base_frame, value, old_value, false)
 		else:
 			var is_new: bool = not param_keyframes.has(frame_nr)
 			var old_value: Variant = param_keyframes[frame_nr] if not is_new else effect.get_value(param_obj, frame_nr)
-			FileLogic.update_text_param(current_file, param_id, frame_nr, value, old_value, is_new)
+			FileLogic.update_text_param(active_file, param_id, frame_nr, value, old_value, is_new)
 	else:
 		EffectsHandler.update_param(
-				current_clip, _get_effect_index(effect, is_visual), is_visual, param_id, value, false)
+				active_clip, _get_effect_index(effect, is_visual), is_visual, param_id, value, false)
 
 
 func _jump_prev_keyframe(effect: Effect, param_id: String) -> void:
 	if not effect.keyframes.has(param_id):
-		EditorCore.set_frame(current_clip.start)
+		EditorCore.set_frame(active_clip.start)
 		return
-	var relative_frame: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
+	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
 	keys.sort()
 	var target: int = 0
@@ -1353,45 +1321,45 @@ func _jump_prev_keyframe(effect: Effect, param_id: String) -> void:
 		if keys[index] < relative_frame:
 			target = keys[index]
 			break
-	EditorCore.set_frame(current_clip.start + target)
+	EditorCore.set_frame(active_clip.start + target)
 
 
 func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 	if not effect.keyframes.has(param_id):
-		EditorCore.set_frame(current_clip.end)
+		EditorCore.set_frame(active_clip.end)
 		return
-	var relative_frame: int = clampi(EditorCore.visual_frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
+	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
 	keys.sort()
-	var target: int = current_clip.duration
+	var target: int = active_clip.duration
 	for key: int in keys:
 		if key > relative_frame:
 			target = key
 			break
-	EditorCore.set_frame(current_clip.start + target)
+	EditorCore.set_frame(active_clip.start + target)
 
 
 func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String) -> void:
-	var relative_frame_nr: int = clampi(EditorCore.frame_nr - current_clip.start, 0, maxi(0, current_clip.duration - 1))
+	var relative_frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 
-	if current_file and current_file.temp_file and current_file.temp_file.text_effect == effect:
+	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
 		var param_keyframes: Dictionary = effect.keyframes[param_id]
 		if !param_keyframes.has(relative_frame_nr):
 			var param_obj: EffectParam = _get_param_by_id(effect, param_id)
 			var value: Variant = effect.get_value(param_obj, relative_frame_nr)
-			FileLogic.update_text_param(current_file, param_id, relative_frame_nr, value, null, true)
+			FileLogic.update_text_param(active_file, param_id, relative_frame_nr, value, null, true)
 		elif relative_frame_nr != 0:
-			FileLogic.remove_text_keyframe(current_file, param_id, relative_frame_nr)
+			FileLogic.remove_text_keyframe(active_file, param_id, relative_frame_nr)
 		_update_ui_values()
 	else:
 		var index: int = _get_effect_index(effect, is_visual)
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
 		if effect_keyframes.has(relative_frame_nr):
 			if relative_frame_nr != 0:
-				EffectsHandler.remove_keyframe(current_clip, index, is_visual, param_id, relative_frame_nr)
+				EffectsHandler.remove_keyframe(active_clip, index, is_visual, param_id, relative_frame_nr)
 		else:
 			var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
-			EffectsHandler.update_param(current_clip, index, is_visual, param_id, value, true)
+			EffectsHandler.update_param(active_clip, index, is_visual, param_id, value, true)
 		_update_ui_values()
 
 
@@ -1406,7 +1374,6 @@ func _get_section_preset_button(is_visual: bool) -> TextureButton:
 	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	texture_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-	@warning_ignore("return_value_discarded")
 	texture_button.pressed.connect(func() -> void: _show_preset_popup(true, is_visual, null, texture_button))
 	return texture_button
 
@@ -1425,7 +1392,6 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		button_reset.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button_reset.flat = true
 
-		@warning_ignore("return_value_discarded")
 		button_reset.pressed.connect(func() -> void:
 				_on_reset_effect(effect, is_visual)
 				popup.queue_free())
@@ -1438,7 +1404,6 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		button_delete.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button_delete.flat = true
 
-		@warning_ignore("return_value_discarded")
 		button_delete.pressed.connect(func() -> void:
 				_on_remove_effect(effect, is_visual)
 				popup.queue_free())
@@ -1452,7 +1417,6 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 	button_save.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button_save.flat = true
 
-	@warning_ignore("return_value_discarded")
 	button_save.pressed.connect(func() -> void:
 			_prompt_save_preset(is_section, is_visual, effect)
 			popup.queue_free())
@@ -1468,7 +1432,6 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 		button_default.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button_default.flat = true
 
-		@warning_ignore("return_value_discarded")
 		button_default.pressed.connect(func() -> void:
 				_apply_default_section_preset(is_visual)
 				popup.queue_free())
@@ -1490,16 +1453,15 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 				button_apply.alignment = HORIZONTAL_ALIGNMENT_LEFT
 				button_apply.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				button_apply.flat = true
-				@warning_ignore("return_value_discarded")
 				button_apply.pressed.connect(func() -> void:
 						_apply_preset(PRESETS_PATH + file_name, is_section, is_visual, effect)
 						popup.queue_free())
+
 				var button_delete: TextureButton = TextureButton.new()
 				button_delete.texture_normal = load(Library.ICON_DELETE)
 				button_delete.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 				button_delete.ignore_texture_size = true
 				button_delete.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-				@warning_ignore("return_value_discarded")
 				button_delete.pressed.connect(func() -> void:
 						DirAccess.remove_absolute(PRESETS_PATH + file_name)
 						hbox.queue_free())
@@ -1508,7 +1470,6 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 				vbox.add_child(hbox)
 			file_name = dir.get_next()
 
-	@warning_ignore("return_value_discarded")
 	popup.popup_hide.connect(popup.queue_free)
 	add_child(popup)
 	popup.position = Vector2i(button.get_screen_transform().origin) + Vector2i(0, int(button.size.y))
@@ -1536,9 +1497,9 @@ func _prompt_save_preset(is_section: bool, is_visual: bool, effect: Effect) -> v
 				var serialized_effects: Array = []
 				var effects: Array
 				if is_visual:
-					effects = current_clip.effects.video
+					effects = active_clip.effects.video
 				else:
-					effects = current_clip.effects.audio
+					effects = active_clip.effects.audio
 
 				for clip_effect: Effect in effects:
 					serialized_effects.append(clip_effect.serialize())
@@ -1548,18 +1509,15 @@ func _prompt_save_preset(is_section: bool, is_visual: bool, effect: Effect) -> v
 
 			var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 			if file:
-				@warning_ignore("return_value_discarded")
 				file.store_var(save_data)
 				file.close()
 			else:
 				printerr(HEADER, "Could not save preset to '%s'!" % path)
 			dialog.queue_free()
 
-	@warning_ignore_start("return_value_discarded")
 	dialog.confirmed.connect(confirm_lambda)
-	line_edit.text_submitted.connect(func(_text: String) -> void: confirm_lambda.call())
 	dialog.canceled.connect(dialog.queue_free)
-	@warning_ignore_restore("return_value_discarded")
+	line_edit.text_submitted.connect(func(_text: String) -> void: confirm_lambda.call())
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2i(300, 100))
@@ -1590,11 +1548,11 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 			new_effect.set_default_keyframe()
 			new_effects.append(new_effect)
 
-		var old_effects: Array = _copy_effect_array(current_clip.effects.video as Array if is_visual else current_clip.effects.audio as Array)
+		var old_effects: Array = _copy_effect_array(active_clip.effects.video as Array if is_visual else active_clip.effects.audio as Array)
 
 		InputManager.undo_redo.create_action("Apply section preset")
-		InputManager.undo_redo.add_do_method(_set_section_effects.bind(current_clip, new_effects, is_visual))
-		InputManager.undo_redo.add_undo_method(_set_section_effects.bind(current_clip, old_effects, is_visual))
+		InputManager.undo_redo.add_do_method(_set_section_effects.bind(active_clip, new_effects, is_visual))
+		InputManager.undo_redo.add_undo_method(_set_section_effects.bind(active_clip, old_effects, is_visual))
 		InputManager.undo_redo.commit_action()
 	elif typeof(data) == TYPE_DICTIONARY:
 		var effect_id: String = (data as Dictionary).get("id", "")
@@ -1614,14 +1572,14 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 		InputManager.undo_redo.create_action("Apply effect preset")
 
 		var index: int = _get_effect_index(effect, is_visual)
-		InputManager.undo_redo.add_do_method(_replace_effect.bind(current_clip, index, new_effect, is_visual))
-		InputManager.undo_redo.add_undo_method(_replace_effect.bind(current_clip, index, old_effect, is_visual))
+		InputManager.undo_redo.add_do_method(_replace_effect.bind(active_clip, index, new_effect, is_visual))
+		InputManager.undo_redo.add_undo_method(_replace_effect.bind(active_clip, index, old_effect, is_visual))
 		InputManager.undo_redo.commit_action()
 
 
 func _apply_default_section_preset(is_visual: bool) -> void:
 	InputManager.undo_redo.create_action("Apply default preset")
-	var old_effects: Array = _copy_effect_array(current_clip.effects.video as Array if is_visual else current_clip.effects.audio as Array)
+	var old_effects: Array = _copy_effect_array(active_clip.effects.video as Array if is_visual else active_clip.effects.audio as Array)
 	var new_effects: Array = []
 	if is_visual:
 		var transform_effect: Effect = (load(Library.EFFECT_VISUAL_TRANSFORM) as Effect).deep_copy()
@@ -1635,8 +1593,8 @@ func _apply_default_section_preset(is_visual: bool) -> void:
 		volume_effect.set_default_keyframe()
 		new_effects.append(volume_effect)
 
-	InputManager.undo_redo.add_do_method(_set_section_effects.bind(current_clip, new_effects, is_visual))
-	InputManager.undo_redo.add_undo_method(_set_section_effects.bind(current_clip, old_effects, is_visual))
+	InputManager.undo_redo.add_do_method(_set_section_effects.bind(active_clip, new_effects, is_visual))
+	InputManager.undo_redo.add_undo_method(_set_section_effects.bind(active_clip, old_effects, is_visual))
 	InputManager.undo_redo.commit_action()
 
 
@@ -1647,7 +1605,8 @@ func _set_section_effects(clip: ClipData, effects: Array, is_visual: bool) -> vo
 	else:
 		clip.effects.audio.assign(cloned_effects)
 	Project.unsaved_changes = true
-	_load_effects()
+	if active_clip and active_clip.id == clip.id:
+		_load_effects()
 	EffectsHandler.effects_updated.emit()
 
 
@@ -1659,7 +1618,8 @@ func _replace_effect(clip: ClipData, index: int, new_effect: Effect, is_visual: 
 	else:
 		clip.effects.audio[index] = cloned_effect
 	Project.unsaved_changes = true
-	_load_effects()
+	if active_clip and active_clip.id == clip.id:
+		_load_effects()
 	EffectsHandler.effects_updated.emit()
 
 
@@ -1673,7 +1633,7 @@ func _copy_effect_array(array: Array) -> Array:
 
 
 func _on_transition_updated(clip: ClipData, _is_left: bool) -> void:
-	if current_clip and clip.id == current_clip.id:
+	if active_clip and clip.id == active_clip.id:
 		if section_transitions.get_child_count() != 0:
 			var vbox: VBoxContainer = section_transitions.get_child(0)
 			section_transitions.remove_child(vbox)
@@ -1684,40 +1644,42 @@ func _on_transition_updated(clip: ClipData, _is_left: bool) -> void:
 
 
 func _on_visuals_enable_button_toggled(toggled_on: bool) -> void:
-	if current_clip and current_clip.effects.is_showing != toggled_on:
-		ClipLogic.toggle_clip_visible(current_clip, toggled_on)
+	if active_clip and active_clip.effects.is_showing != toggled_on:
+		ClipLogic.toggle_clip_visible(active_clip, toggled_on)
 	section_visuals.folded = !toggled_on
 
 
 func _on_audio_enable_button_toggled(toggled_on: bool) -> void:
-	if current_clip and current_clip.effects.is_muted == toggled_on:
-		ClipLogic.toggle_clip_mute(current_clip, !toggled_on)
+	if active_clip and active_clip.effects.is_muted == toggled_on:
+		ClipLogic.toggle_clip_mute(active_clip, !toggled_on)
 	section_audio.folded = !toggled_on
 
 
-func _get_special_foldable() -> FoldableContainer:
-	if current_clip:
-		if current_clip.type == EditorCore.Type.TEXT and section_text.get_child_count() > 0:
-			return section_text.get_child(0) as FoldableContainer
-		elif current_clip.type == EditorCore.Type.PCK and section_module.get_child_count() > 0:
-			return section_module.get_child(0) as FoldableContainer
+func _get_extra_foldable() -> FoldableContainer:
+	if active_clip and active_clip.type & Type.GROUP_EXTRA and section_extra.get_child_count() > 0:
+		return section_extra.get_child(0) as FoldableContainer
 	return null
 
 
 func _toggle_section(target: FoldableContainer, shift: bool) -> void:
 	if shift:
-		var special: FoldableContainer = _get_special_foldable()
-		if special and special != target: special.folded = true
-		if section_transitions != target: section_transitions.folded = true
-		if section_visuals != target: section_visuals.folded = true
-		if section_audio != target: section_audio.folded = true
-		if target: target.folded = false
+		var extra: FoldableContainer = _get_extra_foldable()
+		if extra and extra != target:
+			extra.folded = true
+		if section_transitions != target:
+			section_transitions.folded = true
+		if section_visuals != target:
+			section_visuals.folded = true
+		if section_audio != target:
+			section_audio.folded = true
+		if target:
+			target.folded = false
 	elif target:
 		target.folded = !target.folded
 
 
 func _on_special_pressed() -> void:
-	_toggle_section(_get_special_foldable(), !Input.is_key_pressed(KEY_SHIFT))
+	_toggle_section(_get_extra_foldable(), !Input.is_key_pressed(KEY_SHIFT))
 
 
 func _on_transitions_pressed() -> void:
@@ -1733,17 +1695,22 @@ func _on_audio_pressed() -> void:
 
 
 func _on_fold_all_pressed() -> void:
-	var special: FoldableContainer = _get_special_foldable()
+	var extra: FoldableContainer = _get_extra_foldable()
 	var any_unfolded: bool = false
-	if special and not special.folded: any_unfolded = true
-	if not section_transitions.folded: any_unfolded = true
-	if not section_visuals.folded: any_unfolded = true
-	if not section_audio.folded: any_unfolded = true
+
+	if extra and not extra.folded:
+		any_unfolded = true
+	if not section_transitions.folded:
+		any_unfolded = true
+	if not section_visuals.folded:
+		any_unfolded = true
+	if not section_audio.folded:
+		any_unfolded = true
 
 	var target_state: bool = any_unfolded
 	if !Input.is_key_pressed(KEY_SHIFT):
 		target_state = true # Shift modifier always unfolds all.
-	if special: special.folded = target_state
+	if extra: extra.folded = target_state
 	section_transitions.folded = target_state
 	section_visuals.folded = target_state
 	section_audio.folded = target_state
@@ -1753,29 +1720,29 @@ func _on_fold_all_pressed() -> void:
 
 func _on_visual_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
 	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(current_clip, true, Vector2i(int(value), clip_effects.fade_visual.y))
+		EffectsHandler.set_fade(active_clip, true, Vector2i(int(value), clip_effects.fade_visual.y))
 
 
 func _on_visual_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
 	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(current_clip, true, Vector2i(clip_effects.fade_visual.x, int(value)))
+		EffectsHandler.set_fade(active_clip, true, Vector2i(clip_effects.fade_visual.x, int(value)))
 
 
 func _on_audio_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
 	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(current_clip, false, Vector2i(int(value), clip_effects.fade_audio.y))
+		EffectsHandler.set_fade(active_clip, false, Vector2i(int(value), clip_effects.fade_audio.y))
 
 
 func _on_audio_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
 	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(current_clip, false, Vector2i(clip_effects.fade_audio.x, int(value)))
+		EffectsHandler.set_fade(active_clip, false, Vector2i(clip_effects.fade_audio.x, int(value)))
 
 
 func _on_transition_in_style_item_selected(index: int, option_button: OptionButton) -> void:
 	var transition_id: String = EffectsHandler.transitions[option_button.get_item_text(index)]
-	EffectsHandler.set_transition(current_clip, true, transition_id)
+	EffectsHandler.set_transition(active_clip, true, transition_id)
 
 
 func _on_transition_out_style_item_selected(index: int, option_button: OptionButton) -> void:
 	var transition_id: String = EffectsHandler.transitions[option_button.get_item_text(index)]
-	EffectsHandler.set_transition(current_clip, false, transition_id)
+	EffectsHandler.set_transition(active_clip, false, transition_id)

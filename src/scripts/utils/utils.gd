@@ -65,7 +65,6 @@ static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
 
 static func get_video_extension(video_codec: Encoder.VideoCodec) -> String:
 	match video_codec:
-		Encoder.VideoCodec.V_HEVC: return ".mp4"
 		Encoder.VideoCodec.V_H264: return ".mp4"
 		Encoder.VideoCodec.V_MPEG4: return ".mp4"
 		Encoder.VideoCodec.V_MPEG2: return ".mpg"

@@ -60,18 +60,15 @@ func input(event: InputEvent, control: Control) -> void:
 					if points.size() >= 3:
 						insert_idx = _get_closest_segment_index(mouse_pos, points, control) + 1
 
-					@warning_ignore_start("unsafe_method_access")
-					var old_keyframes: Dictionary = effect.keyframes.get("points", {}).duplicate(true)
-					var new_keyframes: Dictionary = effect.keyframes.get("points", {}).duplicate(true)
+					var old_keyframes: Dictionary = (effect.keyframes.get("points", {}) as Dictionary).duplicate(true)
+					var new_keyframes: Dictionary = (effect.keyframes.get("points", {}) as Dictionary).duplicate(true)
 					var is_multi_keyframe: bool = new_keyframes.size() > 1
-					@warning_ignore_restore("unsafe_method_access")
 
 					var safe_insert_index: int
 
 					if not is_multi_keyframe:
 						for keyframe: int in new_keyframes:
-							@warning_ignore("unsafe_method_access")
-							var pts: PackedVector2Array = new_keyframes[keyframe].duplicate()
+							var pts: PackedVector2Array = (new_keyframes[keyframe] as PackedVector2Array).duplicate()
 							safe_insert_index = mini(insert_idx, pts.size())
 							_err = pts.insert(safe_insert_index, normalized_pos)
 							new_keyframes[keyframe] = pts
@@ -82,8 +79,7 @@ func input(event: InputEvent, control: Control) -> void:
 							new_keyframes[0] = pts
 					else:
 						for keyframe: int in new_keyframes:
-							@warning_ignore("unsafe_method_access")
-							var pts: PackedVector2Array = new_keyframes[keyframe].duplicate()
+							var pts: PackedVector2Array = (new_keyframes[keyframe] as PackedVector2Array).duplicate()
 							safe_insert_index = mini(insert_idx, pts.size())
 							if pts.size() < 3:
 								_err = pts.insert(safe_insert_index, normalized_pos)
@@ -112,14 +108,11 @@ func input(event: InputEvent, control: Control) -> void:
 					control.accept_event()
 			elif mouse_event.button_index == MOUSE_BUTTON_RIGHT:
 				if hovered_index != -1:
-					@warning_ignore_start("unsafe_method_access")
-					var old_keyframes: Dictionary = effect.keyframes.get("points", {}).duplicate(true)
-					var new_keyframes: Dictionary = effect.keyframes.get("points", {}).duplicate(true)
-					@warning_ignore_restore("unsafe_method_access")
+					var old_keyframes: Dictionary = (effect.keyframes.get("points", {}) as Dictionary).duplicate(true)
+					var new_keyframes: Dictionary = (effect.keyframes.get("points", {}) as Dictionary).duplicate(true)
 
 					for keyframe: int in new_keyframes:
-						@warning_ignore("unsafe_method_access")
-						var pts: PackedVector2Array = new_keyframes[keyframe].duplicate()
+						var pts: PackedVector2Array = (new_keyframes[keyframe] as PackedVector2Array).duplicate()
 						if hovered_index < pts.size():
 							pts.remove_at(hovered_index)
 						new_keyframes[keyframe] = pts

@@ -25,8 +25,8 @@ func _draw_split() -> void:
 	var frame_pos: int = timeline_panel.call("get_frame_from_mouse", mouse_pos)
 	var clips_to_split: Array[ClipData] = []
 
-	if target in ClipLogic.selected_clips:
-		clips_to_split = ClipLogic.selected_clips
+	if target in ClipLogic.active_clips:
+		clips_to_split = ClipLogic.active_clips
 	else:
 		clips_to_split = ClipLogic.get_clips_to_select(target)
 

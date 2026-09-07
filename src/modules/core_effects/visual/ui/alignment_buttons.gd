@@ -31,7 +31,7 @@ func setup(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 		tex_button.ignore_texture_size = true
 		tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 		tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
-		if tex_button.pressed.connect(_align.bind(data[0])): Print.stack_connect()
+		tex_button.pressed.connect(_align.bind(data[0]))
 		horizontal_hbox.add_child(tex_button)
 	for data: Array in vertical_data:
 		var tex_button: TextureButton = TextureButton.new()
@@ -39,7 +39,7 @@ func setup(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 		tex_button.ignore_texture_size = true
 		tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 		tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
-		if tex_button.pressed.connect(_align.bind(data[0])): Print.stack_connect()
+		tex_button.pressed.connect(_align.bind(data[0]))
 		vertical_hbox.add_child(tex_button)
 
 	var fill_tex_button: TextureButton = TextureButton.new()
@@ -47,7 +47,7 @@ func setup(_effect: Effect, _clip: ClipData, _is_visual: bool) -> void:
 	fill_tex_button.ignore_texture_size = true
 	fill_tex_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_COVERED
 	fill_tex_button.custom_minimum_size = ALIGN_BUTTON_SIZE
-	if fill_tex_button.pressed.connect(_align.bind(HORIZONTAL_ALIGNMENT_FILL)): Print.stack_connect()
+	fill_tex_button.pressed.connect(_align.bind(HORIZONTAL_ALIGNMENT_FILL))
 
 	flow.add_child(horizontal_hbox)
 	flow.add_child(VSeparator.new())
@@ -81,10 +81,10 @@ func _align(type: int) -> void:
 
 	var media_size: Vector2 = res
 	var file: FileData = FileLogic.files[clip.file]
-	var raw_data: Variant = FileLogic.file_data.get(file.id)
-	if clip.type == EditorCore.Type.VIDEO and raw_data is Video:
+	var raw_data: Variant = FileLogic.data.get(file.id)
+	if clip.type == Type.VIDEO and raw_data is Video:
 		media_size = Vector2((raw_data as Video).get_resolution())
-	elif clip.type == EditorCore.Type.IMAGE:
+	elif clip.type == Type.IMAGE:
 		if raw_data is Texture2D:
 			media_size = (raw_data as Texture2D).get_size()
 		elif not file.path.begins_with("temp://"):

@@ -7,7 +7,7 @@ signal updated ## Signal for when all clips got updated.
 
 
 var clips: Dictionary[int, ClipData] = {}
-var selected_clips: Array[ClipData] = []
+var active_clips: Array[ClipData] = []
 
 var copied_clips: Array[ClipData] = []
 var copied_min_start: int = 0
@@ -37,7 +37,7 @@ func add(requests: Array[RequestClipAdd]) -> void:
 		existing_keys.append(new_clip.id)
 
 		new_clip.type = request.type
-		if new_clip.type == EditorCore.Type.EMPTY:
+		if new_clip.type == Type.EMPTY:
 			printerr("ClipLogic: Clip to add has type 'EMPTY'!")
 
 		new_clip.file = request.file.id
@@ -70,7 +70,7 @@ func _restore_clip(snapshot: ClipData) -> void:
 	updated.emit.call_deferred()
 
 
-func delete_selected_clips() -> void: delete(selected_clips)
+func delete_selected_clips() -> void: delete(active_clips)
 func delete(clips_to_delete: Array[ClipData]) -> void:
 	if clips_to_delete.is_empty(): return
 
@@ -86,14 +86,14 @@ func _delete(clip: ClipData) -> void:
 	if !clips.erase(clip.id):
 		printerr("ClipLogic: Couldn't erase clip '%s' in clips!" % clip.id)
 
-	selected_clips.erase(clip)
+	active_clips.erase(clip)
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
 	deleted.emit(clip.id)
 	updated.emit.call_deferred()
 
 
-func ripple_delete_selected_clips() -> void: ripple_delete(selected_clips)
+func ripple_delete_selected_clips() -> void: ripple_delete(active_clips)
 func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 	if clips_to_delete.is_empty(): return
 	# Store min start and total duration per track.
@@ -260,12 +260,12 @@ func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> v
 
 func copy_selected_clips() -> void:
 	copied_clips.clear()
-	if selected_clips.is_empty(): return
+	if active_clips.is_empty(): return
 
 	# 32 bit max.
 	copied_min_start = Utils.INT_32_MAX
 	copied_min_track = Utils.INT_32_MAX
-	for clip: ClipData in selected_clips:
+	for clip: ClipData in active_clips:
 		var snapshot: ClipData = clip.duplicate(true)
 		snapshot.effects = ClipEffects.new()
 		snapshot.effects.fade_visual = clip.effects.fade_visual
@@ -288,7 +288,7 @@ func copy_selected_clips() -> void:
 ## Cut as in Ctrl+X.
 func cut_selected_clips() -> void:
 	copy_selected_clips()
-	delete(selected_clips)
+	delete(active_clips)
 
 
 func paste_copied_clips() -> void:
@@ -348,12 +348,12 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String, files_t
 		new_selected.append(clip)
 	InputManager.undo_redo.commit_action()
 
-	selected_clips = new_selected
+	active_clips = new_selected
 	if new_selected.size() > 0:
-		selected.emit(selected_clips[-1])
+		selected.emit(active_clips[-1])
 
 
-func duplicate_selected_clips() -> int: return duplicate_clips(selected_clips)
+func duplicate_selected_clips() -> int: return duplicate_clips(active_clips)
 func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool = false) -> int:
 	if clips_to_duplicate.is_empty(): return 0
 
@@ -398,7 +398,7 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 			new_clip.start = target_frame
 			new_clip.id = Utils.get_unique_id(existing_keys)
 
-			if duplicate_files and clip.type == EditorCore.Type.TEXT:
+			if duplicate_files and clip.type == Type.TEXT:
 				var original_file: FileData = FileLogic.files[clip.file]
 				var new_file: FileData = original_file.duplicate(true)
 				if new_file.temp_file:
@@ -448,7 +448,7 @@ func _get_all_group_ids() -> Array[int]:
 	return ids
 
 
-func group_selected_clips() -> void: group_clips(selected_clips)
+func group_selected_clips() -> void: group_clips(active_clips)
 func group_clips(clips_to_group: Array[ClipData]) -> void:
 	if clips_to_group.size() > 1:
 		var group_id: int = Utils.get_unique_id(_get_all_group_ids())
@@ -462,7 +462,7 @@ func group_clips(clips_to_group: Array[ClipData]) -> void:
 		InputManager.undo_redo.commit_action()
 
 
-func ungroup_selected_clips() -> void: ungroup_clips(selected_clips)
+func ungroup_selected_clips() -> void: ungroup_clips(active_clips)
 func ungroup_clips(clips_to_ungroup: Array[ClipData]) -> void:
 	if clips_to_ungroup.is_empty(): return
 
@@ -516,16 +516,14 @@ func _copy_effects(effects: Array, split_pos: int) -> Array:
 				var value: Variant = effect.keyframes[param_id][frame]
 				var new_frame: int = frame - split_pos
 
-				@warning_ignore_start("unsafe_method_access")
 				if value is Resource:
-					new_effect.keyframes[param_id][new_frame] = value.duplicate(true)
+					new_effect.keyframes[param_id][new_frame] = (value as Resource).duplicate(true)
 				elif typeof(value) == TYPE_ARRAY:
-					new_effect.keyframes[param_id][new_frame] = value.duplicate(true)
+					new_effect.keyframes[param_id][new_frame] = (value as Array).duplicate(true)
 				elif typeof(value) == TYPE_DICTIONARY:
-					new_effect.keyframes[param_id][new_frame] = value.duplicate(true)
+					new_effect.keyframes[param_id][new_frame] = (value as Dictionary).duplicate(true)
 				else:
 					new_effect.keyframes[param_id][new_frame] = value
-				@warning_ignore_restore("unsafe_method_access")
 		new_effects.append(new_effect)
 	return new_effects
 
@@ -778,9 +776,9 @@ func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 
 #--- Helpers ---
 
-func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> ClipEffects:
+func _create_default_effects(file_type: int, file_id: int = -1) -> ClipEffects:
 	var effects: ClipEffects = ClipEffects.new()
-	if file_type in EditorCore.VISUAL_TYPES:
+	if file_type & Type.GROUP_VISUAL:
 		var resolution: Vector2i = Project.get_resolution()
 		var transform_effect: Effect = (load(Library.EFFECT_VISUAL_TRANSFORM) as Effect).deep_copy()
 
@@ -790,8 +788,8 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
 
-		if file_type == EditorCore.Type.PCK and file_id != -1:
-			var module_data: GoZenModuleScene = FileLogic.file_data.get(file_id)
+		if file_type == Type.PCK and file_id != -1:
+			var module_data: GoZenModuleScene = FileLogic.data.get(file_id)
 			var pck_effect: Effect = Effect.new()
 			pck_effect.id = "pck_effect_params"
 			pck_effect.nickname = "Module Parameters"
@@ -800,7 +798,7 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 			pck_effect.set_default_keyframe()
 			effects.video.append(pck_effect)
 
-	if file_type in EditorCore.AUDIO_TYPES:
+	if file_type & Type.GROUP_AUDIO:
 		var volume_effect: Effect = (load(Library.EFFECT_AUDIO_VOLUME) as Effect).deep_copy()
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
@@ -815,5 +813,5 @@ func _create_default_effects(file_type: EditorCore.Type, file_id: int = -1) -> C
 
 
 func clear_selection() -> void:
-	selected_clips.clear()
+	active_clips.clear()
 	selected.emit(null)

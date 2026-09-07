@@ -29,7 +29,6 @@ func _ready() -> void:
 
 	drag_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	drag_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	@warning_ignore("return_value_discarded")
 	drag_overlay.draw.connect(_on_drag_overlay_draw)
 	drag_overlay.set_drag_forwarding(Callable(), _overlay_can_drop_data, _overlay_drop_data)
 	drag_layer.add_child(drag_overlay)
@@ -83,15 +82,15 @@ func create_workspace(workspace_name: String) -> void:
 	layout.name = workspace_name
 
 	var root_vsplit: WorkspaceNode = WorkspaceNode.new()
-	root_vsplit.type = WorkspaceNode.Type.VSPLIT
+	root_vsplit.type = WorkspaceNode.VSPLIT
 	root_vsplit.split_offsets = PackedInt32Array([650])
 
 	var view_tab: WorkspaceNode = WorkspaceNode.new()
-	view_tab.type = WorkspaceNode.Type.TAB
+	view_tab.type = WorkspaceNode.TAB
 	view_tab.panel_ids = ["ViewPanel"]
 
 	var timeline_tab: WorkspaceNode = WorkspaceNode.new()
-	timeline_tab.type = WorkspaceNode.Type.TAB
+	timeline_tab.type = WorkspaceNode.TAB
 	timeline_tab.panel_ids = ["Timeline"]
 
 	root_vsplit.children = [view_tab, timeline_tab]
@@ -109,12 +108,12 @@ func create_workspace(workspace_name: String) -> void:
 func _save_node(control: Control) -> WorkspaceNode:
 	var node: WorkspaceNode = WorkspaceNode.new()
 	if control is DockableTab:
-		node.type = node.Type.TAB
+		node.type = WorkspaceNode.TAB
 		node.current_tab = (control as DockableTab).current_tab
 		for child: Node in control.get_children():
 			node.panel_ids.append(child.name)
 	elif control is HSplitContainer or control is VSplitContainer:
-		node.type = node.Type.HSPLIT if control is HSplitContainer else node.Type.VSPLIT
+		node.type = WorkspaceNode.HSPLIT if control is HSplitContainer else WorkspaceNode.VSPLIT
 		node.split_offsets = (control as SplitContainer).split_offsets
 		for child: Node in control.get_children():
 			node.children.append(_save_node(child as Control))
@@ -151,7 +150,7 @@ func _clear_workspace() -> void:
 
 
 func _build_node(node: WorkspaceNode) -> Control:
-	if node.type == WorkspaceNode.Type.TAB:
+	if node.type == WorkspaceNode.TAB:
 		var tab: DockableTab = DockableTab.new()
 		for id: String in node.panel_ids:
 			if active_panels.has(id):
@@ -161,7 +160,7 @@ func _build_node(node: WorkspaceNode) -> Control:
 		tab.current_tab = node.current_tab
 		return tab
 	var split: SplitContainer
-	if node.type == WorkspaceNode.Type.HSPLIT:
+	if node.type == WorkspaceNode.HSPLIT:
 		split = HSplitContainer.new()
 	else:
 		split = VSplitContainer.new()
@@ -484,33 +483,33 @@ func _create_default_edit_workspace() -> WorkspaceLayout:
 	layout.name = "Edit"
 
 	var root_vsplit: WorkspaceNode = WorkspaceNode.new()
-	root_vsplit.type = WorkspaceNode.Type.VSPLIT
+	root_vsplit.type = WorkspaceNode.VSPLIT
 	root_vsplit.split_offsets = PackedInt32Array([650])
 
 	var top_hsplit: WorkspaceNode = WorkspaceNode.new()
-	top_hsplit.type = WorkspaceNode.Type.HSPLIT
+	top_hsplit.type = WorkspaceNode.HSPLIT
 	top_hsplit.split_offsets = PackedInt32Array([350, 1400])
 
 	var file_tab: WorkspaceNode = WorkspaceNode.new()
-	file_tab.type = WorkspaceNode.Type.TAB
+	file_tab.type = WorkspaceNode.TAB
 	file_tab.panel_ids = ["FilePanel"]
 
 	var view_tab: WorkspaceNode = WorkspaceNode.new()
-	view_tab.type = WorkspaceNode.Type.TAB
+	view_tab.type = WorkspaceNode.TAB
 	view_tab.panel_ids = ["ViewPanel"]
 
 	var effects_tab: WorkspaceNode = WorkspaceNode.new()
-	effects_tab.type = WorkspaceNode.Type.TAB
+	effects_tab.type = WorkspaceNode.TAB
 	effects_tab.panel_ids = ["EffectsPanel"]
 
 	top_hsplit.children = [file_tab, view_tab, effects_tab]
 
 	var bottom_hsplit: WorkspaceNode = WorkspaceNode.new()
-	bottom_hsplit.type = WorkspaceNode.Type.HSPLIT
+	bottom_hsplit.type = WorkspaceNode.HSPLIT
 	bottom_hsplit.split_offsets = PackedInt32Array([0])
 
 	var timeline_tab: WorkspaceNode = WorkspaceNode.new()
-	timeline_tab.type = WorkspaceNode.Type.TAB
+	timeline_tab.type = WorkspaceNode.TAB
 	timeline_tab.panel_ids = ["Timeline"]
 
 	bottom_hsplit.children = [timeline_tab]
@@ -525,33 +524,33 @@ func _create_default_render_workspace() -> WorkspaceLayout:
 	layout.name = "Render"
 
 	var root_vsplit: WorkspaceNode = WorkspaceNode.new()
-	root_vsplit.type = WorkspaceNode.Type.VSPLIT
+	root_vsplit.type = WorkspaceNode.VSPLIT
 	root_vsplit.split_offsets = PackedInt32Array([650])
 
 	var top_hsplit: WorkspaceNode = WorkspaceNode.new()
-	top_hsplit.type = WorkspaceNode.Type.HSPLIT
+	top_hsplit.type = WorkspaceNode.HSPLIT
 	top_hsplit.split_offsets = PackedInt32Array([500, 1500])
 
 	var render_options_tab: WorkspaceNode = WorkspaceNode.new()
-	render_options_tab.type = WorkspaceNode.Type.TAB
+	render_options_tab.type = WorkspaceNode.TAB
 	render_options_tab.panel_ids = ["RenderOptionsPanel"]
 
 	var view_tab: WorkspaceNode = WorkspaceNode.new()
-	view_tab.type = WorkspaceNode.Type.TAB
+	view_tab.type = WorkspaceNode.TAB
 	view_tab.panel_ids = ["ViewPanel"]
 
 	var markers_tab: WorkspaceNode = WorkspaceNode.new()
-	markers_tab.type = WorkspaceNode.Type.TAB
+	markers_tab.type = WorkspaceNode.TAB
 	markers_tab.panel_ids = ["MarkersPanel"]
 
 	top_hsplit.children = [render_options_tab, view_tab, markers_tab]
 
 	var bottom_hsplit: WorkspaceNode = WorkspaceNode.new()
-	bottom_hsplit.type = WorkspaceNode.Type.HSPLIT
+	bottom_hsplit.type = WorkspaceNode.HSPLIT
 	bottom_hsplit.split_offsets = PackedInt32Array([0])
 
 	var timeline_tab: WorkspaceNode = WorkspaceNode.new()
-	timeline_tab.type = WorkspaceNode.Type.TAB
+	timeline_tab.type = WorkspaceNode.TAB
 	timeline_tab.panel_ids = ["Timeline"]
 
 	bottom_hsplit.children = [timeline_tab]

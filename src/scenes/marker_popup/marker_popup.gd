@@ -14,7 +14,7 @@ var current_frame_nr: int = 0
 
 
 func _ready() -> void:
-	if marker_line_edit.text_submitted.connect(_on_create_marker_pressed.unbind(1)): Print.stack_connect()
+	marker_line_edit.text_submitted.connect(_on_create_marker_pressed.unbind(1))
 	_setup_type_option_button()
 	accept_event()
 

@@ -13,7 +13,7 @@ extends Resource
 @export_category("Visual Effects")
 @export var shader_path: String
 @export var shader_passes: int = 1
-@export var matrix_map: Dictionary[String, Matrix.Type]
+@export var matrix_map: Dictionary[String, Matrix.M_Type]
 @export var custom_overlay_path: String ## UID which leads to the EffectOverlay.
 
 @export_category("Audio Effects")

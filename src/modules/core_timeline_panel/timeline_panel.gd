@@ -60,35 +60,35 @@ var _drop_frame_nr: int = -1
 
 
 func _ready() -> void:
-	if Project.project_ready.connect(_project_ready): Print.stack_connect()
-	if Project.framerate_changed.connect(draw_all): Print.stack_connect()
+	Project.project_ready.connect(_project_ready)
+	Project.framerate_changed.connect(draw_all)
 
-	if Timeline.draw_requested.connect(draw_all): Print.stack_connect()
-	if Timeline.state_changed.connect(_on_state_changed): Print.stack_connect()
-	if Timeline.scroll_changed.connect(draw_all.unbind(1)): Print.stack_connect()
-	if Timeline.zoom_changed.connect(draw_all.unbind(1)): Print.stack_connect()
+	Timeline.draw_requested.connect(draw_all)
+	Timeline.state_changed.connect(_on_state_changed)
+	Timeline.scroll_changed.connect(draw_all.unbind(1))
+	Timeline.zoom_changed.connect(draw_all.unbind(1))
 
-	if Settings.on_module_setting_changed.connect(_on_module_setting_changed): Print.stack_connect()
+	Settings.on_module_setting_changed.connect(_on_module_setting_changed)
 
-	if EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw): Print.stack_connect()
+	EditorCore.visual_frame_changed.connect(draw_playhead.queue_redraw)
 
-	if FileLogic.files_dropped_and_loaded.connect(_on_files_dropped_and_loaded): Print.stack_connect()
-	if FileLogic.request_drop_folder.connect(_on_request_drop_folder): Print.stack_connect()
+	FileLogic.files_dropped_and_loaded.connect(_on_files_dropped_and_loaded)
+	FileLogic.request_drop_folder.connect(_on_request_drop_folder)
 
-	if MarkerLogic.added.connect(draw_markers.queue_redraw.unbind(1)): Print.stack_connect()
-	if MarkerLogic.removed.connect(draw_markers.queue_redraw.unbind(1)): Print.stack_connect()
-	if MarkerLogic.updated.connect(draw_markers.queue_redraw.unbind(1)): Print.stack_connect()
-	if MarkerLogic.moving.connect(draw_markers.queue_redraw): Print.stack_connect()
+	MarkerLogic.added.connect(draw_markers.queue_redraw.unbind(1))
+	MarkerLogic.removed.connect(draw_markers.queue_redraw.unbind(1))
+	MarkerLogic.updated.connect(draw_markers.queue_redraw.unbind(1))
+	MarkerLogic.moving.connect(draw_markers.queue_redraw)
 
-	if ClipLogic.added.connect(draw_clips.queue_redraw.unbind(1)): Print.stack_connect()
-	if ClipLogic.deleted.connect(_on_clip_deleted): Print.stack_connect()
-	if ClipLogic.updated.connect(draw_clips.queue_redraw): Print.stack_connect()
-	if TrackLogic.updated.connect(_on_tracks_updated): Print.stack_connect()
+	ClipLogic.added.connect(draw_clips.queue_redraw.unbind(1))
+	ClipLogic.deleted.connect(_on_clip_deleted)
+	ClipLogic.updated.connect(draw_clips.queue_redraw)
+	TrackLogic.updated.connect(_on_tracks_updated)
 
-	if EffectsHandler.effects_updated.connect(draw_clips.queue_redraw): Print.stack_connect()
-	if EffectsHandler.effect_values_updated.connect(draw_clips.queue_redraw): Print.stack_connect()
+	EffectsHandler.effects_updated.connect(draw_clips.queue_redraw)
+	EffectsHandler.effect_values_updated.connect(draw_clips.queue_redraw)
 
-	if get_window().size_changed.connect(_redraw_on_change): Print.stack_connect()
+	get_window().size_changed.connect(_redraw_on_change)
 
 	set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	_show_hide_mode_bar()
@@ -144,12 +144,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			ClipLogic.cut_selected_clips()
 			accept_event()
 		elif event.is_action_pressed("ripple_delete_clips", false, true):
-			ClipLogic.ripple_delete(ClipLogic.selected_clips)
+			ClipLogic.ripple_delete(ClipLogic.active_clips)
 		elif event.is_action_pressed("delete_clips", false, true):
-			ClipLogic.delete(ClipLogic.selected_clips)
+			ClipLogic.delete(ClipLogic.active_clips)
 		elif event.is_action_pressed("duplicate_selected_clips", false, false):
 			var duplicate_files: bool = (event as InputEventKey).shift_pressed
-			var failed_dupes: int = ClipLogic.duplicate_clips(ClipLogic.selected_clips, duplicate_files)
+			var failed_dupes: int = ClipLogic.duplicate_clips(ClipLogic.active_clips, duplicate_files)
 			if failed_dupes > 0:
 				var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Duplication failed"))
 				dialog.dialog_text = tr("Could not duplicate %d clip(s) because there was not enough empty space.") % failed_dupes
@@ -165,10 +165,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			if !TrackLogic.get_clip_at_overlap(track, frame_nr):
 				remove_empty_space_at(track, frame_nr)
 		elif event.is_action_pressed("group_clips", false, true):
-			ClipLogic.group_clips(ClipLogic.selected_clips)
+			ClipLogic.group_clips(ClipLogic.active_clips)
 			accept_event()
 		elif event.is_action_pressed("ungroup_clips", false, true):
-			ClipLogic.ungroup_clips(ClipLogic.selected_clips)
+			ClipLogic.ungroup_clips(ClipLogic.active_clips)
 			accept_event()
 
 
@@ -236,17 +236,17 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 							EditorCore.is_playing = false
 						EditorCore.scrub_to_frame(get_frame_from_mouse(event.position))
 					1: # CLEAR_SELECTION.
-						ClipLogic.selected_clips.clear()
+						ClipLogic.active_clips.clear()
 						ClipLogic.selected.emit(null)
-		elif pressed_clip not in ClipLogic.selected_clips:
+		elif pressed_clip not in ClipLogic.active_clips:
 			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(pressed_clip)
 
 			if !event.shift_pressed:
-				ClipLogic.selected_clips = clips_to_select
+				ClipLogic.active_clips = clips_to_select
 			else:
 				for clip: ClipData in clips_to_select:
-					if clip in ClipLogic.selected_clips: continue
-					ClipLogic.selected_clips.append(clip)
+					if clip in ClipLogic.active_clips: continue
+					ClipLogic.active_clips.append(clip)
 			draw_clips.queue_redraw()
 			ClipLogic.selected.emit(pressed_clip)
 	elif event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
@@ -265,7 +265,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			popup.add_child(track_submenu)
 			popup.add_submenu_node_item(tr("Track options"), track_submenu)
 			target_menu = track_submenu
-			if track_submenu.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
+			track_submenu.id_pressed.connect(_on_popup_menu_id_pressed)
 		else:
 			popup.add_item(tr("Remove empty space"), PopupAction.REMOVE_EMPTY_SPACE)
 			popup.add_separator(tr("Track options"))
@@ -288,7 +288,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			target_menu.add_check_item(tr("Lock track"), PopupAction.TRACK_TOGGLE_LOCK)
 			target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
-		if popup.id_pressed.connect(_on_popup_menu_id_pressed): Print.stack_connect()
+		popup.id_pressed.connect(_on_popup_menu_id_pressed)
 		PopupManager.show_menu(popup)
 
 	if event.is_pressed() and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
@@ -412,7 +412,7 @@ func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeli
 		var start_x: float = clip.start * zoom
 		var end_x: float = clip.end * zoom
 		var y_pos: float = clip.track * Timeline.track_total_size
-		if clip.type in EditorCore.VISUAL_TYPES:
+		if clip.type & Type.GROUP_VISUAL:
 			var corner_y: float = y_pos + Timeline.track_height
 			var in_x: float = start_x + clip.effects.fade_visual.x * zoom
 			var out_x: float = end_x - clip.effects.fade_visual.y * zoom - handle_size * 2
@@ -423,7 +423,7 @@ func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeli
 			if out_rect.grow(handle_size).has_point(mouse_pos):
 				return Timeline.FadeTarget.new(clip, true, true)
 
-		if clip.type in EditorCore.AUDIO_TYPES:
+		if clip.type & Type.GROUP_AUDIO:
 			var corner_y: float = y_pos
 			var in_x: float = start_x + clip.effects.fade_audio.x * zoom
 			var out_x: float = end_x - clip.effects.fade_audio.y * zoom - handle_size * 2
@@ -444,12 +444,12 @@ func _project_ready() -> void:
 func _get_drag_data(_p: Vector2) -> Variant:
 	if Timeline.current_state != Timeline.State.SELECT or !pressed_clip or TrackLogic.tracks[pressed_clip.track].is_locked or Input.is_key_pressed(KEY_SHIFT):
 		return null
-	if pressed_clip not in ClipLogic.selected_clips:
-		ClipLogic.selected_clips = ClipLogic.get_clips_to_select(pressed_clip)
+	if pressed_clip not in ClipLogic.active_clips:
+		ClipLogic.active_clips = ClipLogic.get_clips_to_select(pressed_clip)
 		draw_clips.queue_redraw()
 
 	var data: Draggable = Draggable.new()
-	var clips: Array[ClipData] = ClipLogic.selected_clips.duplicate()
+	var clips: Array[ClipData] = ClipLogic.active_clips.duplicate()
 	var anchor_index: int = clips.find(pressed_clip)
 	if anchor_index != -1:
 		clips.remove_at(anchor_index)
@@ -468,9 +468,10 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 		var clip_on_mouse: ClipData = _get_clip_on_mouse()
 		if not clip_on_mouse:
 			return false
-		if drag_data.is_visual and clip_on_mouse.type not in EditorCore.VISUAL_TYPES:
-			return false
-		if not drag_data.is_visual and clip_on_mouse.type not in EditorCore.AUDIO_TYPES:
+		if drag_data.is_visual:
+			if !(clip_on_mouse.type & Type.GROUP_VISUAL):
+				return false
+		elif !(clip_on_mouse.type & Type.GROUP_AUDIO):
 			return false
 		return true
 
@@ -529,11 +530,11 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 			video_request.track = Timeline.draggable.track_offset
 			video_request.type =  FileLogic.files[file.id].type
 
-			if is_split and file.type == EditorCore.Type.VIDEO and file.audio_streams.size() > 0:
+			if is_split and file.type == Type.VIDEO and file.audio_streams.size() > 0:
 				var group_id: int = Utils.get_unique_id(existing_group_ids)
 				existing_group_ids.append(group_id)
 
-				video_request.type = EditorCore.Type.VIDEO
+				video_request.type = Type.VIDEO
 				video_request.group_id = group_id
 				video_request.is_muted = split_audio
 				if split_extra_audio:
@@ -550,7 +551,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 					audio_request.track = audio_track_idx
 					audio_request.frame = target_frame
 					audio_request.audio_index = file.audio_streams[i]
-					audio_request.type = EditorCore.Type.AUDIO
+					audio_request.type = Type.AUDIO
 					requests.append(audio_request)
 			else: requests.append(video_request)
 			total_duration += file.duration
@@ -615,15 +616,15 @@ func _commit_select(shift_pressed: bool) -> void:
 	if pressed_clip and pressed_clip == _get_clip_on_mouse() and not shift_pressed:
 		var group_clips: Array[ClipData] = ClipLogic.get_clips_to_select(pressed_clip)
 		var different: bool = false
-		if ClipLogic.selected_clips.size() != group_clips.size():
+		if ClipLogic.active_clips.size() != group_clips.size():
 			different = true
 		else:
 			for clip: ClipData in group_clips:
-				if clip in ClipLogic.selected_clips: continue
+				if clip in ClipLogic.active_clips: continue
 				different = true
 				break
 		if different:
-			ClipLogic.selected_clips = group_clips
+			ClipLogic.active_clips = group_clips
 			draw_clips.queue_redraw()
 		ClipLogic.selected.emit(pressed_clip)
 
@@ -698,7 +699,7 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 	var frame_end: int = floori(Timeline.box_select_end.x / zoom)
 	var temp: int
 	if not is_ctrl_pressed:
-		ClipLogic.selected_clips.clear()
+		ClipLogic.active_clips.clear()
 
 	if track_start > track_end:
 		temp = track_start
@@ -717,17 +718,17 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 			if not (clip.start > frame_start or clip.end > frame_start):
 				continue
 
-			if clip in ClipLogic.selected_clips: continue
+			if clip in ClipLogic.active_clips: continue
 
 			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(clip)
 			for group_clip: ClipData in clips_to_select:
-				if group_clip in ClipLogic.selected_clips: continue
-				ClipLogic.selected_clips.append(group_clip)
+				if group_clip in ClipLogic.active_clips: continue
+				ClipLogic.active_clips.append(group_clip)
 
-	if ClipLogic.selected_clips.is_empty():
+	if ClipLogic.active_clips.is_empty():
 		ClipLogic.selected.emit(null)
 	else:
-		ClipLogic.selected.emit(ClipLogic.selected_clips[-1])
+		ClipLogic.selected.emit(ClipLogic.active_clips[-1])
 
 	draw_box_selection.queue_redraw()
 	draw_clips.queue_redraw()
@@ -746,7 +747,7 @@ func _handle_resize_motion(mouse_pos: Vector2) -> void:
 	var clip: ClipData = Timeline.resize_target.clip
 	var file: FileData = FileLogic.files[clip.file]
 	var current_frame: int = get_frame_from_mouse(mouse_pos)
-	var is_fixed_duration: bool = file.type in [EditorCore.Type.AUDIO, EditorCore.Type.VIDEO]
+	var is_fixed_duration: bool = file.type & (Type.AUDIO | Type.VIDEO)
 	if file.path.to_lower().get_extension() == "gif":
 		is_fixed_duration = false
 
@@ -820,8 +821,8 @@ func _handle_fade_motion(mouse_pos: Vector2) -> void:
 func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	if !right_click_clip:
 		return
-	if right_click_clip not in ClipLogic.selected_clips:
-		ClipLogic.selected_clips = [right_click_clip]
+	if right_click_clip not in ClipLogic.active_clips:
+		ClipLogic.active_clips = [right_click_clip]
 		ClipLogic.selected.emit(right_click_clip)
 
 	# TODO: Set shortcuts.
@@ -830,20 +831,20 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip"), PopupAction.CLIP_SPLIT)
 
 	popup.add_separator()
-	if right_click_clip.type in EditorCore.VISUAL_TYPES:
+	if right_click_clip.type & Type.GROUP_VISUAL:
 		popup.add_check_item(tr("Show clip"), PopupAction.CLIP_TOGGLE_VISIBLE)
 		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_VISIBLE), right_click_clip.effects.is_showing)
-	if right_click_clip.type in EditorCore.AUDIO_TYPES:
+	if right_click_clip.type & Type.GROUP_AUDIO:
 		popup.add_check_item(tr("Mute clip"), PopupAction.CLIP_TOGGLE_MUTE)
 		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_MUTE), right_click_clip.effects.is_muted)
 
-	if right_click_clip.type in [EditorCore.Type.VIDEO, EditorCore.Type.AUDIO]:
+	if right_click_clip.type & (Type.VIDEO | Type.AUDIO):
 		# TODO: Add icons
 		popup.add_icon_item(load(Library.ICON_SPEED) as Icon, tr("Change speed"), PopupAction.CLIP_CHANGE_SPEED)
 		if right_click_clip.speed != 1.0:
 			popup.add_icon_item(load(Library.ICON_SPEED_RESET) as Icon, tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)
 
-	if right_click_clip.type == EditorCore.Type.VIDEO:
+	if right_click_clip.type == Type.VIDEO:
 		var file: FileData = FileLogic.files[right_click_clip.file]
 		var is_demo: bool = OS.has_feature("demo")
 		var audio_streams_size: int = file.audio_streams.size()
@@ -866,11 +867,11 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 				audio_submenu.set_item_checked(i, stream_index == current_index)
 			popup.add_child(audio_submenu)
 			popup.add_submenu_node_item("Select Audio Track", audio_submenu)
-			if audio_submenu.id_pressed.connect(func(id: int) -> void:
+			audio_submenu.id_pressed.connect(func(id: int) -> void:
 					InputManager.undo_redo.create_action("Change audio track")
 					InputManager.undo_redo.add_do_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, id))
 					InputManager.undo_redo.add_undo_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, right_click_clip.effects.audio_stream_index))
-					InputManager.undo_redo.commit_action()): Print.stack_connect()
+					InputManager.undo_redo.commit_action())
 
 
 func _on_popup_menu_id_pressed(id: PopupAction) -> void:
@@ -895,7 +896,7 @@ func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 
 
 func _on_popup_action_clip_delete() -> void:
-	ClipLogic.delete(ClipLogic.selected_clips)
+	ClipLogic.delete(ClipLogic.active_clips)
 
 
 func _on_popup_action_clip_split() -> void:
@@ -907,15 +908,11 @@ func _on_popup_action_remove_empty_space() -> void:
 
 
 func _on_popup_action_clip_ato() -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.REPLACE_AUDIO)
-	@warning_ignore("unsafe_method_access") # NOTE: Audio take over doesn't have a class.
-	popup.load_data(right_click_clip.id, false)
+	PopupManager.get_popup(PopupManager.REPLACE_AUDIO).call("load_data", right_click_clip.id, false)
 
 
 func _on_popup_action_clip_auto_cut() -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.AUTO_CUT)
-	@warning_ignore("unsafe_method_access")
-	popup.load_data(right_click_clip.id)
+	PopupManager.get_popup(PopupManager.AUTO_CUT).call("load_data", right_click_clip.id)
 
 
 func _on_popup_action_clip_change_speed() -> void:
@@ -928,7 +925,7 @@ func _on_popup_action_clip_change_speed() -> void:
 	spinbox.suffix = "x"
 	dialog.add_child(spinbox)
 
-	if dialog.confirmed.connect(func() -> void:
+	dialog.confirmed.connect(func() -> void:
 			var new_speed: float = spinbox.value
 			var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
 
@@ -942,7 +939,7 @@ func _on_popup_action_clip_change_speed() -> void:
 			request.resize_amount = delta
 			request.from_end = true
 			ClipLogic.change_speed([request])
-			dialog.queue_free()): Print.stack_connect()
+			dialog.queue_free())
 	dialog.popup_centered(Vector2i(200, 80))
 
 
@@ -1149,7 +1146,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 				video_request.frame = target_frame
 				video_request.type =  FileLogic.files[file.id].type
 
-				if (split_audio or split_extra_audio) and file.type == EditorCore.Type.VIDEO and file.audio_streams.size() > 0:
+				if (split_audio or split_extra_audio) and file.type == Type.VIDEO and file.audio_streams.size() > 0:
 					var group_id: int = Utils.get_unique_id(existing_group_ids)
 					existing_group_ids.append(group_id)
 
@@ -1169,7 +1166,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 						audio_request.group_id = group_id
 						audio_request.audio_index = file.audio_streams[i]
 						audio_request.is_muted = (i != start_i)
-						audio_request.type = EditorCore.Type.AUDIO
+						audio_request.type = Type.AUDIO
 						requests.append(audio_request)
 				else: requests.append(video_request)
 				total_duration += file.duration

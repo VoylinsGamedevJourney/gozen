@@ -17,10 +17,10 @@ func _ready() -> void:
 	tree.set_column_custom_minimum_width(2, 100)
 	tree.hide_root = true
 
-	if install_button.pressed.connect(_on_install_pressed): Print.stack_connect()
-	if close_button.pressed.connect(_on_close_pressed): Print.stack_connect()
-	if tree.button_clicked.connect(_on_button_clicked): Print.stack_connect()
-	if tree.item_edited.connect(_on_item_edited): Print.stack_connect()
+	install_button.pressed.connect(_on_install_pressed)
+	close_button.pressed.connect(_on_close_pressed)
+	tree.button_clicked.connect(_on_button_clicked)
+	tree.item_edited.connect(_on_item_edited)
 
 	_populate_tree()
 

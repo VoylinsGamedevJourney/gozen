@@ -38,7 +38,6 @@ var _background: PanelContainer = (load("uid://xu8ndgud6cox") as PackedScene).in
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
 	get_window().size_changed.connect(_on_size_changed)
 
 	await get_tree().root.ready
@@ -109,7 +108,6 @@ func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array
 	dialog.file_mode = mode
 	dialog.filters = filters
 
-	@warning_ignore("return_value_discarded")
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	return dialog
 
@@ -121,7 +119,6 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 	dialog.force_native = use_native_dialog
 	dialog.title = title
 
-	@warning_ignore("return_value_discarded")
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	return dialog
 
@@ -134,7 +131,6 @@ func create_confirmation_dialog(title: String, text: String) -> ConfirmationDial
 	dialog.title = title
 	dialog.dialog_text = text
 
-	@warning_ignore("return_value_discarded")
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	_control.add_child(dialog)
 	return dialog
@@ -143,7 +139,6 @@ func create_confirmation_dialog(title: String, text: String) -> ConfirmationDial
 func create_menu(permanent: bool = false) -> PopupMenu:
 	var popup: PopupMenu = PopupMenu.new()
 	if !permanent:
-		@warning_ignore("return_value_discarded")
 		popup.popup_hide.connect(popup.queue_free)
 	popup.size = Vector2i(100,0)
 	popup.add_theme_constant_override("icon_max_width", 20)

@@ -49,7 +49,6 @@ var _is_loading_profile: bool = false
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Project.render_region_updated.connect(_on_render_region_updated)
 
@@ -73,7 +72,6 @@ func _ready() -> void:
 	audio_channels_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 
 	button_set_default_profile.pressed.connect(_on_set_default_profile_button_pressed)
-	@warning_ignore_restore("return_value_discarded")
 
 	button_save_render_profile.visible = false
 
@@ -284,7 +282,6 @@ func _on_select_save_path_button_pressed() -> void:
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 	dialog.current_file = Project.get_project_name()
 
-	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_save_path_selected)
 
 	add_child(dialog)
@@ -391,11 +388,9 @@ func _on_start_render_button_pressed() -> void:
 				tr("Overwrite file?"),
 				tr("A file already exists at the chosen export path. Do you want to overwrite it?"))
 
-		@warning_ignore_start("return_value_discarded")
 		dialog.confirmed.connect(func() -> void:
 				await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
 		dialog.canceled.connect(dialog.queue_free)
-		@warning_ignore_restore("return_value_discarded")
 		dialog.popup_centered()
 	else:
 		await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft)

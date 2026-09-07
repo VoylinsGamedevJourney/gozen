@@ -21,7 +21,6 @@ var auto_save_timer: Timer
 
 
 func _ready() -> void:
-	@warning_ignore("return_value_discarded")
 	get_window().close_requested.connect(_on_close)
 
 
@@ -102,7 +101,6 @@ func save_as() -> void:
 			["*%s;%s" % [EXTENSION, tr("GoZen project file")]])
 	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_save_as)
 	add_child(dialog)
 	dialog.popup_centered()
@@ -115,7 +113,6 @@ func archive_as() -> void:
 			["*.zip;" + tr("ZIP Archive")])
 	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_archive_project)
 	add_child(dialog)
 	dialog.popup_centered()
@@ -239,10 +236,9 @@ func open(new_project_path: String) -> void:
 	while not all_loaded:
 		all_loaded = true
 		for file: FileData in data.files.values():
-			if file.type in [EditorCore.Type.VIDEO, EditorCore.Type.AUDIO]:
-				if not FileLogic.file_data.has(file.id):
-					all_loaded = false
-					break
+			if file.type & (Type.VIDEO | Type.AUDIO) and !FileLogic.data.has(file.id):
+				all_loaded = false
+				break
 		if not all_loaded:
 			await get_tree().process_frame
 
@@ -271,7 +267,6 @@ func open_project() -> void:
 			["*%s;%s" % [EXTENSION, tr("GoZen project files")]])
 	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
-	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(_open_project)
 	add_child(dialog)
 	dialog.popup_centered()
@@ -285,7 +280,6 @@ func _auto_save() -> void:
 	if auto_save_timer == null:
 		auto_save_timer = Timer.new()
 		add_child(auto_save_timer)
-		@warning_ignore("return_value_discarded")
 		auto_save_timer.timeout.connect(_auto_save)
 
 	if Settings.get_auto_save():
@@ -350,17 +344,17 @@ func check_unsaved_and_perform(callback: Callable) -> void:
 	popup.dialog_text = tr("You have unsaved changes in your current project. Save before proceeding?")
 	popup.ok_button_text = tr("Save")
 
-	if popup.confirmed.connect(func() -> void:
+	popup.confirmed.connect(func() -> void:
 			save()
 			callback.call()
-			popup.queue_free()): Print.stack_connect()
-	if dont_save_button.pressed.connect(func() -> void:
+			popup.queue_free())
+	dont_save_button.pressed.connect(func() -> void:
 			callback.call()
-			popup.queue_free()): Print.stack_connect()
-	if cancel_button.pressed.connect(func() -> void:
+			popup.queue_free())
+	cancel_button.pressed.connect(func() -> void:
 			if Settings.get_auto_save() and auto_save_timer != null:
 				auto_save_timer.paused = false
-			popup.queue_free()): Print.stack_connect()
+			popup.queue_free())
 
 	get_tree().root.add_child(popup)
 	popup.popup_centered()
@@ -391,14 +385,14 @@ func _cleanup() -> void:
 	FileLogic.video_pools.clear()
 	FileLogic.audio_pools.clear()
 	FileLogic.audio_wave.clear()
-	FileLogic.file_data.clear()
+	FileLogic.data.clear()
 
 	for file_id: int in FileLogic.files:
 		FileLogic.deleted.emit(file_id)
 	FileLogic.files.clear()
 
 	ClipLogic.clips.clear()
-	ClipLogic.selected_clips.clear()
+	ClipLogic.active_clips.clear()
 	ClipLogic.copied_clips.clear()
 
 	TrackLogic.tracks.clear()
@@ -529,8 +523,7 @@ func set_framerate(new_framerate: float, force: bool = false) -> void:
 			file.duration = maxi(1, roundi(file.duration * ratio))
 			if file.temp_file and file.temp_file.text_effect:
 				_scale_keyframes(file.temp_file.text_effect, ratio)
-			if file.type in [EditorCore.Type.AUDIO, EditorCore.Type.VIDEO]:
-				@warning_ignore("RETURN_VALUE_DISCARDED")
+			if file.type & (Type.AUDIO | Type.VIDEO):
 				FileLogic.audio_wave.erase(file.id)
 				Threader.add_task(FileLogic._create_wave.bind(file), FileLogic._on_wave_ready.bind(file))
 

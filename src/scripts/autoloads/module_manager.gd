@@ -118,11 +118,11 @@ func install_module(path: String) -> void:
 
 func delete_module(filename: String) -> void:
 	if loaded_modules.has(filename):
-		if !loaded_modules.erase(filename): Print.stack_erase()
 		var target_path: String = get_modules_global_path().path_join(filename)
+		loaded_modules.erase(filename)
+
 		if FileAccess.file_exists(target_path) and DirAccess.remove_absolute(target_path) != OK:
 			printerr("ModuleManager: Can't remove dir '%s'!" % target_path)
-
 		_save_config()
 
 

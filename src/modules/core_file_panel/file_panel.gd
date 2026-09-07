@@ -44,7 +44,6 @@ func _ready() -> void:
 	for i: int in file_menu_button.item_count:
 		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
 
-	@warning_ignore_start("return_value_discarded")
 	Project.project_ready.connect(_on_project_ready)
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
@@ -62,7 +61,6 @@ func _ready() -> void:
 	tree.empty_clicked.connect(_tree_item_clicked.bind(true))
 
 	file_menu_button.get_popup().id_pressed.connect(_file_menu_pressed)
-	@warning_ignore_restore("return_value_discarded")
 
 
 func _input(event: InputEvent) -> void:
@@ -81,18 +79,21 @@ func _on_project_ready() -> void:
 
 
 func _on_request_drop_folder(screen_pos: Vector2) -> void:
-	if tree.is_visible_in_tree() and tree.get_global_rect().has_point(screen_pos):
-		var local_pos: Vector2 = tree.get_global_transform().affine_inverse() * screen_pos
-		var item: TreeItem = tree.get_item_at_position(local_pos)
-		var target_folder: String = "/"
-		if item:
-			var metadata: Variant = item.get_metadata(0)
-			if str(metadata).is_valid_int(): # File
-				var file: FileData = FileLogic.files[metadata as int]
-				target_folder = file.folder
-			else: # Folder.
-				target_folder = str(metadata)
-		FileLogic.current_drop_folder = target_folder
+	if !tree.is_visible_in_tree() or !tree.get_global_rect().has_point(screen_pos):
+		return
+
+	var local_pos: Vector2 = tree.get_global_transform().affine_inverse() * screen_pos
+	var item: TreeItem = tree.get_item_at_position(local_pos)
+	var target_folder: String = "/"
+
+	if item:
+		var metadata: Variant = item.get_metadata(0)
+		if str(metadata).is_valid_int(): # File
+			var file: FileData = FileLogic.files[metadata as int]
+			target_folder = file.folder
+		else: # Folder.
+			target_folder = str(metadata)
+	FileLogic.current_drop_folder = target_folder
 
 
 func _file_menu_pressed(id: int) -> void:
@@ -102,7 +103,6 @@ func _file_menu_pressed(id: int) -> void:
 					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
 			dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 			add_child(dialog)
-			@warning_ignore("return_value_discarded")
 			dialog.files_selected.connect(FileLogic.dropped)
 			dialog.popup_centered()
 		1: FileLogic.add(["temp://text"])
@@ -112,6 +112,7 @@ func _file_menu_pressed(id: int) -> void:
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
 	if button_index != MOUSE_BUTTON_RIGHT:
 		return
+
 	var file_item: TreeItem = folder_items["/"] if empty else tree.get_selected()
 	var metadata: Variant = file_item.get_metadata(0)
 	var popup: PopupMenu = PopupManager.create_menu()
@@ -122,11 +123,11 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 		popup.add_item(tr("Reload"), PopupAction.RELOAD)
 		popup.add_item(tr("Delete"), PopupAction.DELETE)
 
-		if file.type == EditorCore.Type.IMAGE:
+		if file.type == Type.IMAGE:
 			if file.path.contains("temp://"):
 				popup.add_separator(tr("Image options"))
 				popup.add_item(tr("Save image as ..."), PopupAction.SAVE_TEMP_AS)
-		elif file.type == EditorCore.Type.VIDEO and not OS.has_feature("demo"):
+		elif file.type == Type.VIDEO and not OS.has_feature("demo"):
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():
@@ -138,7 +139,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 
 			popup.add_item(tr("Replace audio"), PopupAction.REPLACE_AUDIO)
 			popup.add_item(tr("Extract audio to file ..."), PopupAction.EXTRACT_AUDIO)
-		elif file.type == EditorCore.Type.TEXT:
+		elif file.type == Type.TEXT:
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), PopupAction.DUPLICATE)
 
@@ -158,7 +159,6 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_item(tr("Rename folder"), PopupAction.FOLDER_RENAME)
 			popup.add_item(tr("Delete folder"), PopupAction.FOLDER_DELETE)
 
-	@warning_ignore("return_value_discarded")
 	popup.id_pressed.connect(_on_popup_option_pressed)
 	PopupManager.show_menu(popup)
 
@@ -169,15 +169,15 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		PopupAction.RENAME: _on_popup_action_file_rename()
 		PopupAction.RELOAD: _on_popup_action_file_reload()
 		PopupAction.DELETE: _on_popup_action_file_delete()
-		PopupAction.SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
-		PopupAction.EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
-		PopupAction.DUPLICATE: _on_popup_action_file_duplicate()
-		PopupAction.CREATE_PROXY: _on_popup_action_file_create_proxy()
-		PopupAction.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
-		PopupAction.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
-		PopupAction.REPLACE_AUDIO: _on_popup_action_replace_audio()
-		PopupAction.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
 		PopupAction.COPY_PATH: _on_popup_action_copy_path()
+		PopupAction.DUPLICATE: _on_popup_action_file_duplicate()
+		PopupAction.SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
+		PopupAction.CREATE_PROXY: _on_popup_action_file_create_proxy()
+		PopupAction.REMOVE_PROXY: _on_popup_action_file_remove_proxy()
+		PopupAction.EXTRACT_AUDIO: _on_popup_action_file_extract_audio()
+		PopupAction.REPLACE_AUDIO: _on_popup_action_replace_audio()
+		PopupAction.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
+		PopupAction.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
 
 		PopupAction.FOLDER_CREATE: _on_popup_action_folder_create()
 		PopupAction.FOLDER_RENAME: _on_popup_action_folder_rename()
@@ -193,6 +193,7 @@ func _on_popup_action_folder_rename() -> void:
 	var folder_path: String = str(selected_item.get_metadata(0))
 	if not folder_path.ends_with("/") or folder_path == "/":
 		return # Ensure it is a folder and not root
+
 	var current_name: String = folder_path.trim_suffix("/").get_file()
 
 	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rename file"))
@@ -209,22 +210,20 @@ func _on_popup_action_folder_rename() -> void:
 	dialog.add_child(vbox)
 
 	var confirm_lambda: Callable = func(_t: String = "") -> void:
-		var new_folder_name: String = line_edit.text.strip_edges()
-		if new_folder_name not in ["", "/"] and new_folder_name != current_name:
-			var parent_path: String = folder_path.trim_suffix("/").get_base_dir()
-			var new_path: String = ""
+			var new_folder_name: String = line_edit.text.strip_edges()
+			if new_folder_name not in ["", "/"] and new_folder_name != current_name:
+				var parent_path: String = folder_path.trim_suffix("/").get_base_dir()
+				var new_path: String = ""
 
-			if parent_path == "/":
-				new_path = "/" + new_folder_name + "/"
-			else:
-				new_path = parent_path + "/" + new_folder_name + "/"
-			FolderLogic.rename(folder_path, new_path)
-		dialog.queue_free()
+				if parent_path == "/":
+					new_path = "/" + new_folder_name + "/"
+				else:
+					new_path = parent_path + "/" + new_folder_name + "/"
+				FolderLogic.rename(folder_path, new_path)
+			dialog.queue_free()
 
-	@warning_ignore_start("return_value_discarded")
 	dialog.confirmed.connect(confirm_lambda)
 	line_edit.text_submitted.connect(confirm_lambda)
-	@warning_ignore_restore("return_value_discarded")
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2(300, 100))
@@ -251,15 +250,15 @@ func _on_popup_action_file_delete() -> void:
 
 func _on_popup_action_file_save_temp_as() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
-	if file.type == EditorCore.Type.TEXT: # TODO: Implement duplicating text files
+
+	if file.type == Type.TEXT: # TODO: Implement duplicating text files
 		printerr("FilePanel: Not implemented yet!")
-	elif file.type == EditorCore.Type.IMAGE:
+	elif file.type == Type.IMAGE:
 		var dialog: FileDialog = PopupManager.create_file_dialog(
 				tr("Save image to file"),
 				FileDialog.FILE_MODE_SAVE_FILE,
 				IMAGE_FORMATS)
 		dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_PICTURES)
-		@warning_ignore("return_value_discarded")
 		dialog.file_selected.connect(func(path: String) -> void:
 				FileLogic.save_image_to_file(file, path))
 		add_child(dialog)
@@ -272,16 +271,16 @@ func _on_popup_action_file_extract_audio() -> void:
 			tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MUSIC)
 
-	@warning_ignore("return_value_discarded")
 	dialog.file_selected.connect(func(path: String) -> void:
 			FileLogic.save_audio_to_wav(file, path))
 	add_child(dialog)
 	dialog.popup_centered()
 
 
-func _on_popup_action_file_duplicate() -> void: # Only for text.
+func _on_popup_action_file_duplicate() -> void: ## Only for text.
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
-	if file.type != EditorCore.Type.TEXT:
+
+	if file.type != Type.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
 	FileLogic.duplicate_text(file)
 
@@ -312,7 +311,6 @@ func _on_popup_action_replace_audio() -> void:
 
 func _on_popup_action_open_in_file_manager() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
-	@warning_ignore("return_value_discarded")
 	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(file.path))
 
 
@@ -394,7 +392,7 @@ func _add_file_to_tree(file: FileData) -> void:
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file))
 	file_items[file.id].set_icon_max_width(0, 70)
 
-	if not Thumbnailer.data.has(file.path) and file.type != EditorCore.Type.AUDIO and not file.path.begins_with("temp://"):
+	if not Thumbnailer.data.has(file.path) and file.type != Type.AUDIO and not file.path.begins_with("temp://"):
 		file_items[file.id].set_icon_modulate(0, Color(1, 1, 1, 0.4))
 		file_items[file.id].set_tooltip_text(0, file.path + "\n" + tr("(Loading thumbnail...)"))
 	_sort_folder(file.folder)
@@ -558,10 +556,8 @@ func _show_create_folder_dialog() -> void:
 			_create_folder_at_selected(new_folder_name)
 		dialog.queue_free()
 
-	@warning_ignore_start("return_value_discarded")
 	dialog.confirmed.connect(confirm_lambda)
 	line_edit.text_submitted.connect(confirm_lambda)
-	@warning_ignore_restore("return_value_discarded")
 
 	add_child(dialog)
 	dialog.popup_centered(Vector2(300, 100))

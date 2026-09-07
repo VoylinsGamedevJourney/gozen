@@ -48,7 +48,6 @@ func update_bar(value: int) -> void:
 
 	_target_value = value
 	_tween = create_tween()
-	@warning_ignore("return_value_discarded")
 	_tween.tween_property(progress_bar, "value", _target_value, 0.5)
 
 
@@ -61,7 +60,6 @@ func increment_bar(value: float) -> void:
 	if _tween:
 		_tween.kill()
 	_tween = create_tween()
-	@warning_ignore("return_value_discarded")
 	_tween.tween_property(progress_bar, "value", _target_value, 0.1)
 	_update_estimate()
 

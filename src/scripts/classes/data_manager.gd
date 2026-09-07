@@ -5,8 +5,7 @@ extends RefCounted
 
 static func get_data(instance: RefCounted) -> Dictionary:
 	if instance.has_method("serialize"):
-		@warning_ignore("unsafe_method_access")
-		return instance.serialize()
+		return instance.call("serialize")
 
 	var data: Dictionary = {}
 	for property: Dictionary in instance.get_property_list():
@@ -49,8 +48,7 @@ static func load_data(a_path: String, instance: RefCounted) -> int:
 
 	data = str_to_var(file.get_as_text())
 	if instance.has_method("deserialize"):
-		@warning_ignore("unsafe_method_access")
-		instance.deserialize(data)
+		instance.call("deserialize", data)
 		return OK
 
 	for key: String in data.keys():

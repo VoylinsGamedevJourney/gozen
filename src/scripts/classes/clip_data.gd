@@ -4,9 +4,9 @@ extends Resource
 
 @export var id: int
 @export var track: int
-@export var type: EditorCore.Type
+@export var type: int ## Type enum.
 
-@export var file: int # File ID.
+@export var file: int ## File ID.
 
 @export var start: int ## Frame_nr.
 @export var begin: int ## Only for video and audio files.
@@ -47,7 +47,7 @@ func serialize() -> Dictionary:
 func deserialize(data: Dictionary) -> void:
 	id = data.get("id", -1)
 	track = data.get("track", 0)
-	type = data.get("type", EditorCore.Type.EMPTY) as EditorCore.Type
+	type = data.get("type", Type.EMPTY)
 	file = data.get("file", -1)
 	start = data.get("start", 0)
 	begin = data.get("begin", 0)

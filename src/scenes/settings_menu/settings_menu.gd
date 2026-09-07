@@ -23,7 +23,7 @@ var _editor_settings: bool = false
 
 
 func _ready() -> void:
-	if Settings.on_localization_updated.connect(_rebuild_ui): Print.stack_connect()
+	Settings.on_localization_updated.connect(_rebuild_ui)
 
 
 func _rebuild_ui() -> void:
@@ -118,7 +118,6 @@ func _add_side_bar_option(section_name: String) -> void:
 	button.theme_type_variation = "side_bar_button"
 	button.button_pressed = side_bar_vbox.get_child_count() == 0
 
-	@warning_ignore("return_value_discarded")
 	button.pressed.connect(_show_section.bind(section_name))
 	side_bar_vbox.add_child(button)
 
@@ -488,12 +487,10 @@ func create_option_button(options: Dictionary, current_value: int, reset_value: 
 			reset_btn.visible = not _is_same_value(id, reset_value)
 			_option_button_item_selected(id, option_button, callable, type))
 
-	@warning_ignore_start("return_value_discarded")
 	option_button.item_selected.connect(update_value)
 	reset_btn.pressed.connect(func() -> void:
 			option_button.selected = reset_value
 			option_button.item_selected.emit(reset_value))
-	@warning_ignore_restore("return_value_discarded")
 	return hbox
 
 
@@ -520,13 +517,11 @@ func create_line_edit(current_value: String, reset_value: String, callable: Call
 			reset_btn.visible = not _is_same_value(value, reset_value)
 			callable.call(value))
 
-	@warning_ignore_start("return_value_discarded")
 	line_edit.text_submitted.connect(update_value)
 	line_edit.focus_exited.connect(func() -> void: update_value.call(line_edit.text))
 	reset_btn.pressed.connect(func() -> void:
 			line_edit.text = reset_value
 			update_value.call(reset_value))
-	@warning_ignore_restore("return_value_discarded")
 	return hbox
 
 
@@ -544,14 +539,12 @@ func create_check_button(current_value: bool, reset_value: bool, callable: Calla
 			reset_btn.visible = not _is_same_value(value, reset_value)
 			callable.call(value))
 
-	@warning_ignore_start("return_value_discarded")
 	check_button.toggled.connect(update_value)
 	reset_btn.pressed.connect(func() -> void:
 			if check_button.button_pressed != reset_value:
 				check_button.button_pressed = reset_value
 			else:
 				update_value.call(reset_value))
-	@warning_ignore_restore("return_value_discarded")
 
 	hbox.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	return hbox
@@ -579,14 +572,12 @@ func create_spinbox(current_value: float, reset_value: float, min_value: float, 
 			reset_btn.visible = not _is_same_value(value, reset_value)
 			callable.call(value))
 
-	@warning_ignore_start("return_value_discarded")
 	spinbox.value_changed.connect(update_value)
 	reset_btn.pressed.connect(func() -> void:
 			if not _is_same_value(spinbox.value, reset_value):
 				spinbox.value = reset_value
 			else:
 				update_value.call(reset_value))
-	@warning_ignore_restore("return_value_discarded")
 	return hbox
 
 
@@ -603,7 +594,6 @@ func create_color_picker(current_value: Color, reset_value: Color, callable: Cal
 			reset_btn.visible = not _is_same_value(value, reset_value)
 			callable.call(value))
 
-	@warning_ignore_start("return_value_discarded")
 	color_picker.color_changed.connect(update_value)
 	reset_btn.pressed.connect(func() -> void:
 			if not _is_same_value(color_picker.color, reset_value):
@@ -611,7 +601,6 @@ func create_color_picker(current_value: Color, reset_value: Color, callable: Cal
 				color_picker.color_changed.emit(reset_value)
 			else:
 				update_value.call(reset_value))
-	@warning_ignore_restore("return_value_discarded")
 	return hbox
 
 
@@ -693,7 +682,6 @@ func create_shortcut_buttons(action: String) -> HBoxContainer:
 		button.size_flags_horizontal = SIZE_EXPAND_FILL
 		button.toggle_mode = true
 		button.text = _get_event_text(events[i])
-		@warning_ignore("return_value_discarded")
 		button.pressed.connect(_on_shortcut_button_pressed.bind(button, action, i))
 		hbox.add_child(button)
 	return hbox

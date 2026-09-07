@@ -8,7 +8,6 @@ extends ScrollContainer
 
 
 func _ready() -> void:
-	@warning_ignore_start("return_value_discarded")
 	timestamp_scroll.get_h_scroll_bar().value_changed.connect(_on_timestamp_scrolling)
 	track_controls_scroll.get_v_scroll_bar().value_changed.connect(_on_timeline_v_scrolling)
 
@@ -16,7 +15,6 @@ func _ready() -> void:
 	get_v_scroll_bar().value_changed.connect(_on_timeline_v_scrolling_self)
 
 	Timeline.scroll_changed.connect(_on_global_scroll_changed)
-	@warning_ignore_restore("return_value_discarded")
 
 
 func _enter_tree() -> void:

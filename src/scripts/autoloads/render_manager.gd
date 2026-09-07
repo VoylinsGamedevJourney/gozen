@@ -180,7 +180,6 @@ func start_render(export_path: String, profile: RenderProfile, threads: int, sta
 	var status_label: Label = status_hbox.get_child(0)
 
 	button.text = tr("Cancel rendering")
-	@warning_ignore("return_value_discarded")
 	button.pressed.connect(_cancel_render)
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	status_hbox.add_child(button)
@@ -546,7 +545,7 @@ func _get_audio_for_frame(frame_nr: int, active_audio_tracks: Array[Dictionary])
 
 		if active_dict.is_empty():
 			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
-			if clip and clip.type in EditorCore.AUDIO_TYPES and not clip.effects.is_muted:
+			if clip and clip.type & Type.GROUP_AUDIO and not clip.effects.is_muted:
 				var info: Dictionary = _get_clip_audio_info(clip)
 				var clip_global_start: int = int((float(clip.start) / framerate) * MIX_RATE)
 				var clip_global_end: int = int((float(clip.end) / framerate) * MIX_RATE)
