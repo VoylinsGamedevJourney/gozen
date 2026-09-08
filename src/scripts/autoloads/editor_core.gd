@@ -108,7 +108,7 @@ func _process(delta: float) -> void:
 	if data_ready:
 		var needs_delay: bool = false
 		for clip: ClipData in loaded_clips:
-			if clip and clip.type in [Type.TEXT, Type.PCK]:
+			if clip and clip.type & Type.GROUP_EXTRA:
 				needs_delay = true
 				break
 		if !needs_delay or data_set_frame != Engine.get_process_frames():
@@ -208,6 +208,7 @@ func _rebuild_structure() -> void:
 		track_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 		text_label.size = Project.data.resolution
 		track_viewport.add_child(text_label)
+
 		add_child(track_viewport)
 		track_viewports[index] = track_viewport
 
@@ -510,7 +511,8 @@ func update_data(track: int) -> void:
 			if module.scene:
 				var instance: Node = module.scene.instantiate()
 				pck_viewport.add_child(instance)
-				instance.call("setup", Project.data.framerate, Project.data.resolution)
+				if instance.has_method("setup"):
+					instance.call("setup", Project.data.framerate, Project.data.resolution)
 			pck_viewport.set_meta("file_id", clip.file)
 
 		# Updating the frame/scene/instance.

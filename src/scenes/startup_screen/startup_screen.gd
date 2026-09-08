@@ -294,18 +294,17 @@ func open_project(path: String) -> void:
 func _on_create_new_project_button_pressed() -> void:
 	var path: String = project_path_line_edit.text
 
-	if path.is_empty():
-		pass # TODO: Fix this later, empty projects are allowed now!
-	elif path[-1] == '/':
-		path += "project" + Project.EXTENSION
-	elif path.split('.')[-1] != Project.EXTENSION.replace('.', ''):
-		path += Project.EXTENSION
+	if !path.is_empty():
+		if path[-1] == '/':
+			path += "project" + Project.EXTENSION
+		elif path.split('.')[-1] != Project.EXTENSION.replace('.', ''):
+			path += Project.EXTENSION
 
-	if !path.is_empty() and FileAccess.file_exists(path):
-		warning_label.text = "Already a project with this name in the current folder! %s" % path
-		warning_label.tooltip_text = warning_label.text
-		warning_label.visible = true
-		return
+		if FileAccess.file_exists(path):
+			warning_label.text = "Already a project with this name in the current folder! %s" % path
+			warning_label.tooltip_text = warning_label.text
+			warning_label.visible = true
+			return
 
 	var request: RequestProjectNew = RequestProjectNew.new()
 	request.project_path = path

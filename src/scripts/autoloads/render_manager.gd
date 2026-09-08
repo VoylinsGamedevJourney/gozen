@@ -159,8 +159,8 @@ func start_render(export_path: String, profile: RenderProfile, threads: int, sta
 	progress_frame_increase = 90.0 / maxi(1, end_frame - start_frame)
 	current_progress = 0.0
 
-	var gozen_icon: CompressedTexture2D = load(Library.ICON_GOZEN)
-	var rendering_icon: CompressedTexture2D = load(Library.ICON_RENDERING)
+	var gozen_icon: Texture2D = load(Library.ICON_GOZEN)
+	var rendering_icon: Texture2D = load(Library.ICON_RENDERING)
 
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(rendering_icon.get_image())

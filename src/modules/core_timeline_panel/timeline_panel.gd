@@ -839,7 +839,6 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_MUTE), right_click_clip.effects.is_muted)
 
 	if right_click_clip.type & (Type.VIDEO | Type.AUDIO):
-		# TODO: Add icons
 		popup.add_icon_item(load(Library.ICON_SPEED) as Icon, tr("Change speed"), PopupAction.CLIP_CHANGE_SPEED)
 		if right_click_clip.speed != 1.0:
 			popup.add_icon_item(load(Library.ICON_SPEED_RESET) as Icon, tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)

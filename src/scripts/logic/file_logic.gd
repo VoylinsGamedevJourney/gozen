@@ -83,7 +83,7 @@ func add(paths: Array[String]) -> void:
 func add_colors(html_colors: Array[String]) -> void:
 	var paths: Array[String] = []
 	for color: String in html_colors: paths.append("temp://color#" + color)
-	FileLogic.add(paths)
+	add(paths)
 
 
 func _create_file(path: String) -> FileData:
@@ -411,11 +411,14 @@ func load_data(file: FileData) -> void:
 				temp_file.text_effect.set_default_keyframe()
 			data[file.id] = temp_file
 		elif file.path.begins_with("temp://image"):
-			var image: Image = temp_file.image_data.get_image()
-			if image.get_size() != Project.data.resolution:
-				_scale_image_to_fit(image, Project.data.resolution)
-				temp_file.image_data = ImageTexture.create_from_image(image)
-			data[file.id] = temp_file.image_data
+			if temp_file.image_data != null:
+				var image: Image = temp_file.image_data.get_image()
+				if image.get_size() != Project.data.resolution:
+					_scale_image_to_fit(image, Project.data.resolution)
+					temp_file.image_data = ImageTexture.create_from_image(image)
+				data[file.id] = temp_file.image_data
+			else:
+				data[file.id] = null
 		elif file.path.begins_with("temp://color"):
 			temp_file.load_image_from_color()
 			data[file.id] = temp_file.image_data
@@ -754,7 +757,7 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 
 func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -1) -> AudioStreamFFmpeg:
 	if file.type == Type.VIDEO:
-		var empty_wave: bool = FileLogic.audio_wave.has(file.id) and FileLogic.audio_wave[file.id].is_empty()
+		var empty_wave: bool = audio_wave.has(file.id) and audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
 		if stream_index == -1:

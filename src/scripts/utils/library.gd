@@ -59,6 +59,7 @@ const SHADER_YUV420P_FULL: String = "res://shaders/yuv420p_full.glsl"
 const THUMB_DEFAULT_AUDIO: String = "uid://cs5gcg8kix42x"
 const THUMB_DEFAULT_VIDEO: String = "uid://dpg11eiuwgv38"
 const THUMB_DEFAULT_TEXT: String = "uid://nkyfxrdl2o8"
+const THUMB_DEFAULT_PCK: String = "uid://04q7h7aeq1el"
 
 const BUTTON_CLIP: String = "uid://cvdbyqqvy1rl1"
 const BUTTON_MARKER: String = "uid://dvp6a4xgk5pa8"

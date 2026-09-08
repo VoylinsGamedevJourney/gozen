@@ -135,6 +135,10 @@ func deserialize(data: Dictionary) -> void:
 ## Map the old incremental integer IDs to the new bitwise flags (Type class).
 ## (Verify that these match what the old EditorCore.Type enum was).
 func _migrate_v1_to_v2() -> void:
+	if files.is_empty():
+		version = 2
+		return
+
 	var type_map: Dictionary = {
 		-1: Type.EMPTY,
 		0: Type.IMAGE,
@@ -154,3 +158,5 @@ func _migrate_v1_to_v2() -> void:
 		var clip: ClipData = clips[clip_id]
 		if type_map.has(clip.type):
 			clip.type = type_map[clip.type]
+
+	version = 2

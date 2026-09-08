@@ -53,7 +53,7 @@ func deserialize(data: Dictionary) -> void:
 	path = data.get("path", "")
 	proxy_path = data.get("proxy_path", "")
 	modified_time = data.get("modified_time", -1)
-	type = data.get("type", Type.EMPTY)
+	type = data.get("type", Type.EMPTY) as int
 	nickname = data.get("nickname", "")
 	folder = data.get("folder", "/")
 	duration = data.get("duration", -1)

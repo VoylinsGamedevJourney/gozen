@@ -51,10 +51,9 @@ func _draw() -> void:
 				Type.COLOR: type_str = "Color"
 				Type.TEXT:  type_str = "Text"
 				Type.PCK:   type_str = "Pck"
-				Type.MODEL:   type_str = "Model"
 			var style_name: String = "Clip" + type_str + ("Focus" if box_type == 1 else "Normal")
-			var style: StyleBox = get_theme_stylebox(style_name, "Timeline")
-			if style:
+			if has_theme_stylebox(style_name, "Timeline"):
+				var style: StyleBox = get_theme_stylebox(style_name, "Timeline")
 				draw_style_box(style, final_rect)
 
 		# - Audio waves (Part of clip blocks)

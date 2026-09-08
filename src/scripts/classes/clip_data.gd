@@ -47,7 +47,7 @@ func serialize() -> Dictionary:
 func deserialize(data: Dictionary) -> void:
 	id = data.get("id", -1)
 	track = data.get("track", 0)
-	type = data.get("type", Type.EMPTY)
+	type = data.get("type", Type.EMPTY) as int
 	file = data.get("file", -1)
 	start = data.get("start", 0)
 	begin = data.get("begin", 0)

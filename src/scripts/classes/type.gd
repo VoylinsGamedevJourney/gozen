@@ -11,10 +11,9 @@ enum {
 	TEXT  = 1 << 3,
 	COLOR = 1 << 4,
 	PCK   = 1 << 5, ## GoZen Modules.
-	MODEL = 1 << 6, ## 3D models.
 }
 
 
 const GROUP_AUDIO:  int = AUDIO | VIDEO
-const GROUP_VISUAL: int = IMAGE | COLOR | TEXT | VIDEO | PCK | MODEL
-const GROUP_EXTRA:  int = TEXT | PCK | MODEL
+const GROUP_VISUAL: int = IMAGE | COLOR | TEXT | VIDEO | PCK
+const GROUP_EXTRA:  int = TEXT | PCK

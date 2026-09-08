@@ -609,6 +609,8 @@ func _is_same_value(value_a: Variant, value_b: Variant) -> bool:
 		return is_equal_approx(value_a as float, value_b as float)
 	elif typeof(value_a) in [TYPE_VECTOR2, TYPE_VECTOR2I] and typeof(value_b) in [TYPE_VECTOR2, TYPE_VECTOR2I]:
 		return (value_a as Vector2).is_equal_approx(value_b as Vector2)
+	elif typeof(value_a) in [TYPE_VECTOR3, TYPE_VECTOR3I] and typeof(value_b) in [TYPE_VECTOR3, TYPE_VECTOR3I]:
+		return (value_a as Vector3).is_equal_approx(value_b as Vector3)
 	elif value_a is Color and value_b is Color:
 		return (value_a as Color).is_equal_approx(value_b as Color)
 	return value_a == value_b

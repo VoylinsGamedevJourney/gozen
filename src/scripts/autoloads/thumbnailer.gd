@@ -77,12 +77,11 @@ func get_thumb(file: FileData) -> Texture2D:
 
 	if !has_thumb:
 		thumbs_todo.append(file)
-		# Add the correct placeholder image.
-		match file.type:
+		match file.type: # Add the correct placeholder image.
 			Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
 			Type.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
-			Type.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # TODO: Allow for the PCK file to give it's own thumb.
-			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video placeholder.
+			Type.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_PCK)
+			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video.
 
 	# Return the saved thumbnail.
 	var raw_path: String = thumb_folder + FILE_NAME % thumb_id
@@ -93,7 +92,7 @@ func get_thumb(file: FileData) -> Texture2D:
 
 
 func _get_default_thumb(icon_uid: String) -> Texture2D:
-	var image_tex: CompressedTexture2D = load(icon_uid)
+	var image_tex: Texture2D = load(icon_uid)
 	var image: Image = scale_thumbnail(image_tex.get_image())
 	return ImageTexture.create_from_image(image)
 
@@ -107,7 +106,7 @@ func _gen_thumb(file: FileData, try: int = 0) -> void:
 	match file.type:
 		Type.IMAGE: image = Image.load_from_file(file.path)
 		Type.AUDIO: image = FileLogic.generate_audio_thumb(file)
-		Type.PCK:   image = _get_default_thumb(Library.THUMB_DEFAULT_VIDEO).get_image()
+		Type.PCK:   image = _get_default_thumb(Library.THUMB_DEFAULT_PCK).get_image()
 		Type.VIDEO:
 			var video: Video = Video.new()
 			if video.open(file.path) == OK:

@@ -143,9 +143,6 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), PopupAction.DUPLICATE)
 
-			if file.path.contains("temp://"):
-				popup.add_item(tr("Save file as ..."), PopupAction.SAVE_TEMP_AS)
-
 		popup.add_separator(tr("Folder options"))
 		if not file.path.begins_with("temp://"):
 			popup.add_item(tr("Open in file manager"), PopupAction.OPEN_IN_FILE_MANAGER)
@@ -250,19 +247,18 @@ func _on_popup_action_file_delete() -> void:
 
 func _on_popup_action_file_save_temp_as() -> void:
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	if file.type != Type.IMAGE:
+		return
 
-	if file.type == Type.TEXT: # TODO: Implement duplicating text files
-		printerr("FilePanel: Not implemented yet!")
-	elif file.type == Type.IMAGE:
-		var dialog: FileDialog = PopupManager.create_file_dialog(
-				tr("Save image to file"),
-				FileDialog.FILE_MODE_SAVE_FILE,
-				IMAGE_FORMATS)
-		dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_PICTURES)
-		dialog.file_selected.connect(func(path: String) -> void:
-				FileLogic.save_image_to_file(file, path))
-		add_child(dialog)
-		dialog.popup_centered()
+	var dialog: FileDialog = PopupManager.create_file_dialog(
+			tr("Save image to file"),
+			FileDialog.FILE_MODE_SAVE_FILE,
+			IMAGE_FORMATS)
+	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_PICTURES)
+	dialog.file_selected.connect(func(path: String) -> void:
+			FileLogic.save_image_to_file(file, path))
+	add_child(dialog)
+	dialog.popup_centered()
 
 
 func _on_popup_action_file_extract_audio() -> void:
@@ -279,7 +275,6 @@ func _on_popup_action_file_extract_audio() -> void:
 
 func _on_popup_action_file_duplicate() -> void: ## Only for text.
 	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
-
 	if file.type != Type.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
 	FileLogic.duplicate_text(file)
@@ -304,7 +299,6 @@ func _on_popup_action_file_remove_proxy() -> void:
 
 
 func _on_popup_action_replace_audio() -> void:
-	# TODO: Add this to undo_redo!
 	var popup: Control = PopupManager.get_popup(PopupManager.REPLACE_AUDIO)
 	popup.call("load_data", tree.get_selected().get_metadata(0), true)
 
