@@ -128,6 +128,7 @@ func deserialize(data: Dictionary) -> void:
 
 	if version == 1:
 		_migrate_v1_to_v2()
+
 	if version == VERSION:
 		return
 

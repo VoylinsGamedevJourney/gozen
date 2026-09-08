@@ -29,12 +29,6 @@ X264_SOURCE_DIR = LIBS_ROOT_DIR / "x264_src"
 X264_INSTALL_DIR_NAME = "x264"
 X264_GIT_OPTIONS: dict[str, Any] = {}
 
-X265_REPO = "https://bitbucket.org/multicoreware/x265_git.git"
-X265_SOURCE_DIR = LIBS_ROOT_DIR / "x265_src"
-X265_INSTALL_DIR_NAME = "x265"
-X265_BUILD_DIR = X265_SOURCE_DIR / "build"
-X265_GIT_OPTIONS: dict[str, Any] = {}
-
 AOM_REPO = "https://aomedia.googlesource.com/aom"
 AOM_SOURCE_DIR = LIBS_ROOT_DIR / "aom_src"
 AOM_INSTALL_DIR_NAME = "aom"

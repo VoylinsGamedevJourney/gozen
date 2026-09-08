@@ -28,9 +28,6 @@ try:
         VPX_SOURCE_DIR,
         X264_REPO,
         X264_SOURCE_DIR,
-        X265_BUILD_DIR,
-        X265_REPO,
-        X265_SOURCE_DIR,
     )
     from .utils import GIT_PATH, run_command
 except ImportError:
@@ -57,9 +54,6 @@ except ImportError:
         VPX_SOURCE_DIR,
         X264_REPO,
         X264_SOURCE_DIR,
-        X265_BUILD_DIR,
-        X265_REPO,
-        X265_SOURCE_DIR,
     )
     from utils import GIT_PATH, run_command
 
@@ -93,7 +87,6 @@ def clone_dep(
 
 def download_ffmpeg_deps() -> None:
     clone_dep_x264()
-    clone_dep_x265()
     clone_dep_aom()
     clone_dep_svt_av1()
     clone_dep_vpx()
@@ -105,10 +98,6 @@ def download_ffmpeg_deps() -> None:
 
 def clone_dep_x264() -> None:
     clone_dep(X264_REPO, X264_SOURCE_DIR)
-
-
-def clone_dep_x265() -> None:
-    clone_dep(X265_REPO, X265_SOURCE_DIR, build_dir=X265_BUILD_DIR)
 
 
 def clone_dep_aom() -> None:

@@ -13,8 +13,6 @@ try:
         VORBIS_SOURCE_DIR,
         VPX_SOURCE_DIR,
         X264_SOURCE_DIR,
-        X265_BUILD_DIR,
-        X265_SOURCE_DIR,
         get_ffmpeg_install_dir,
         get_lib_dir,
     )
@@ -37,8 +35,6 @@ except ImportError:
         VORBIS_SOURCE_DIR,
         VPX_SOURCE_DIR,
         X264_SOURCE_DIR,
-        X265_BUILD_DIR,
-        X265_SOURCE_DIR,
         get_ffmpeg_install_dir,
         get_lib_dir,
     )
@@ -152,53 +148,6 @@ def build_x264(
             "--extra-ldflags=-lpthread",
         ]
         + ([f"--host={host}", f"--cross-prefix={host}-"] if host else []),
-        threads=threads,
-        env=env,
-        use_msys2=CURR_PLATFORM == "windows",
-    )
-
-
-def build_x265(
-    platform: str, arch: str, threads: int, env: dict[str, str] | None = None
-):
-    install_dir = get_ffmpeg_install_dir(platform)
-    source_dir = X265_SOURCE_DIR / "source"
-
-    if X265_BUILD_DIR.exists():
-        run_command(
-            ["ninja", "-t", "clean", "-g"],
-            cwd=X265_BUILD_DIR,
-            use_msys2=CURR_PLATFORM == "windows",
-        )
-    os.makedirs(install_dir, exist_ok=True)
-
-    host, _ = get_host_and_sysroot(platform, arch)
-    build_lib(
-        "x265",
-        X265_BUILD_DIR,
-        configure_cmd=[
-            "cmake",
-            "-G=Ninja",
-            "--fresh",
-            f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
-            "-DENABLE_SHARED=OFF",
-            "-DENABLE_PIC=ON",
-            f"{convert_to_msys2_path(source_dir)}",
-        ]
-        + (
-            [
-                f"-DCMAKE_SYSTEM_NAME={'Windows' if platform == 'windows' else 'Darwin' if platform == 'macos' else 'Linux'}",
-                f"-DCMAKE_SYSTEM_PROCESSOR={arch if arch == 'x86_64' else 'aarch64'}",
-                f"-DCMAKE_C_COMPILER={host}-gcc",
-                f"-DCMAKE_CXX_COMPILER={host}-g++",
-                f"-DCMAKE_C_COMPILER_AR={host}-gcc-ar",
-                f"-DCMAKE_CXX_COMPILER_AR={host}-gcc-ar",
-                f"-DCMAKE_RC_COMPILER={host}-windres",
-            ]
-            if host
-            else []
-        ),
-        compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",
