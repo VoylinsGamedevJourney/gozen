@@ -5,11 +5,11 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.12-alpha'
+        default: '0.13-alpha'
       godot_version:
         description: The Godot version to use
         type: string
-        default: '4.7.1-stable'
+        default: '4.7.2-stable'
 
 env:
   APP_NAME: gozen
@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dep: [x264, x265, aom, svt_av1, vpx, opus, ogg_vorbis, mp3lame]
+        dep: [x264, aom, svt_av1, vpx, opus, ogg_vorbis, mp3lame]
     steps:
       - uses: actions/checkout@v5
         with:

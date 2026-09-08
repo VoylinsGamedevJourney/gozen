@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="GoZen"
-config/description="Video editor "
-config/version="0.12-alpha"
+config/description="Video editor"
+config/version="0.13-alpha"
 run/main_scene="uid://b0r37lfkj7wl6"
 run/print_header=false
 run/enable_alt_space_menu=true
