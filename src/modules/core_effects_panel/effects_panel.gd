@@ -74,11 +74,13 @@ func _ready() -> void:
 	section_visuals.add_title_bar_control(clip_enable_visuals_button)
 	section_visuals.add_title_bar_control(_get_section_preset_button(true))
 	section_visuals.add_title_bar_control(_get_add_effects_button(1))
+	section_visuals.visible = false
 	section_visuals.folded = true
 
 	section_audio.add_title_bar_control(clip_enable_audio_button)
 	section_audio.add_title_bar_control(_get_section_preset_button(false))
 	section_audio.add_title_bar_control(_get_add_effects_button(2))
+	section_audio.visible = false
 	section_audio.folded = true
 
 
@@ -212,6 +214,7 @@ func _draw_drop_indicator(vbox: VBoxContainer) -> void:
 func _on_clip_pressed(clip: ClipData) -> void:
 	if !clip or !ClipLogic.clips.has(clip.id):
 		section_extra.visible = false
+		section_transitions.visible = false
 		section_visuals.visible = false
 		section_audio.visible =  false
 		active_clip = null
