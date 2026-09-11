@@ -71,7 +71,7 @@ func _draw() -> void:
 
 		var wave_streams: Dictionary = FileLogic.audio_wave.get(wave_file_id, {})
 		var wave_dict: Dictionary = wave_streams.get(clip.effects.audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
-		if not wave_dict.is_empty() and zoom >= 0.01:
+		if not wave_dict.is_empty() and (zoom >= 0.01 or final_rect.size.x >= 4):
 			var lod: int = 1
 			if zoom < 0.2:
 				lod = 16
