@@ -278,8 +278,8 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 		target_menu.add_separator()
 
-		target_menu.add_check_item(tr("Show track"), PopupAction.TRACK_TOGGLE_VISIBLE)
-		target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), track_data.is_visible)
+		target_menu.add_check_item(tr("Hide track"), PopupAction.TRACK_TOGGLE_VISIBLE)
+		target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_VISIBLE), !track_data.is_visible)
 
 		target_menu.add_check_item(tr("Mute track"), PopupAction.TRACK_TOGGLE_MUTE)
 		target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
@@ -832,8 +832,8 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	popup.add_separator()
 	if right_click_clip.type & Type.GROUP_VISUAL:
-		popup.add_check_item(tr("Show clip"), PopupAction.CLIP_TOGGLE_VISIBLE)
-		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_VISIBLE), right_click_clip.effects.is_showing)
+		popup.add_check_item(tr("Hide clip"), PopupAction.CLIP_TOGGLE_VISIBLE)
+		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_VISIBLE), !right_click_clip.effects.is_showing)
 	if right_click_clip.type & Type.GROUP_AUDIO:
 		popup.add_check_item(tr("Mute clip"), PopupAction.CLIP_TOGGLE_MUTE)
 		popup.set_item_checked(popup.get_item_index(PopupAction.CLIP_TOGGLE_MUTE), right_click_clip.effects.is_muted)
