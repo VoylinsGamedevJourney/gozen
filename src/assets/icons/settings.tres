@@ -15,4 +15,5 @@ data = {
 image = SubResource("Image_mx8yl")
 script = ExtResource("1_l34u2")
 base_svg_path = "uid://c35rwqbeqmush"
+is_static = true
 metadata/_custom_type_script = "uid://c3xb5cvay2wbf"

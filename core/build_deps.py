@@ -142,6 +142,7 @@ def build_x264(
             "./configure",
             f"--prefix={convert_to_msys2_path(install_dir)}",
             "--enable-static",
+            "--disable-shared",
             "--disable-cli",
             "--enable-pic",
             "--disable-avs",

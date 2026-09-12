@@ -208,110 +208,110 @@ jobs:
           name: GoZen_AppImage_v${{ inputs.version }}
           path: ${{ env.APP_NAME }}-v${{ inputs.version }}-x86_64.AppImage
 
-  package-gozen-deb:
-    name: Package DEB
-    needs: export-gozen
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v8
-        with:
-          name: GoZen_Linux_v${{ inputs.version }}
-          path: bin
-          merge-multiple: true
-
-      - name: Build DEB
-        run: |
-          DEB_ROOT=deb_dist
-          mkdir -p $DEB_ROOT/{DEBIAN,usr/bin,usr/lib/${{ env.APP_NAME }},usr/share/applications,usr/share/icons/hicolor/128x128/apps}
-
-          cp bin/${{ env.APP_NAME }}.x86_64 $DEB_ROOT/usr/bin/${{ env.APP_NAME }}
-          cp bin/*.so* $DEB_ROOT/usr/lib/${{ env.APP_NAME }}/
-          cp assets/linux/gozen.desktop $DEB_ROOT/usr/share/applications/
-          cp assets/linux/gozen.png $DEB_ROOT/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
-
-          chmod 755 $DEB_ROOT/usr/bin/${{ env.APP_NAME }}
-
-          cat <<EOF > $DEB_ROOT/DEBIAN/control
-          Package: ${{ env.APP_NAME }}
-          Version: ${{ inputs.version }}
-          Section: utils
-          Priority: optional
-          Architecture: amd64
-          Depends: libc6 (>= 2.27)
-          Maintainer: Voylin <noreply@example.com>
-          Description: GoZen Video Editor
-           A fast and modern open-source video editor for Linux.
-          EOF
-
-          dpkg-deb --build $DEB_ROOT ${{ env.APP_NAME }}_v${{ inputs.version }}_amd64.deb
-
-      - uses: actions/upload-artifact@v6
-        with:
-          name: GoZen_DEB_v${{ inputs.version }}
-          path: "*.deb"
-
-  package-gozen-rpm:
-    name: Package RPM
-    needs: export-gozen
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v8
-        with:
-          name: GoZen_Linux_v${{ inputs.version }}
-          path: bin
-          merge-multiple: true
-
-      - name: Install RPM tools
-        run: sudo apt-get install -y rpm
-
-      - name: Build RPM
-        run: |
-          VERSION=$(echo "${{ inputs.version }}" | tr '-' '_')
-          mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-
-          SRC_DIR=rpmbuild/SOURCES/${{ env.APP_NAME }}-${{ inputs.version }}
-          mkdir -p $SRC_DIR
-          cp bin/* $SRC_DIR/
-          cp assets/linux/gozen.desktop $SRC_DIR/
-          cp assets/linux/gozen.png $SRC_DIR/
-
-          sed -i 's|^Exec=.*|Exec=/opt/${{ env.APP_NAME }}/${{ env.APP_NAME }}.x86_64|' $SRC_DIR/gozen.desktop
-
-          cat <<EOF > rpmbuild/SPECS/${{ env.APP_NAME }}.spec
-          %define _topdir $(pwd)/rpmbuild
-          Name:           ${{ env.APP_NAME }}
-          Version:        $VERSION
-          Release:        1
-          Summary:        GoZen Video Editor
-          License:        GPLv3
-          BuildArch:      x86_64
-
-          %description
-          GoZen Video Editor.
-
-          %install
-          mkdir -p %{buildroot}/opt/${{ env.APP_NAME }}
-          cp -r ../SOURCES/${{ env.APP_NAME }}-${{ inputs.version }}/* %{buildroot}/opt/${{ env.APP_NAME }}/
-
-          mkdir -p %{buildroot}/usr/share/applications
-          mv %{buildroot}/opt/${{ env.APP_NAME }}/gozen.desktop %{buildroot}/usr/share/applications/
-
-          mkdir -p %{buildroot}/usr/share/icons/hicolor/128x128/apps
-          mv %{buildroot}/opt/${{ env.APP_NAME }}/gozen.png %{buildroot}/usr/share/icons/hicolor/128x128/apps/
-
-          %files
-          /opt/${{ env.APP_NAME }}
-          /usr/share/applications/gozen.desktop
-          /usr/share/icons/hicolor/128x128/apps/gozen.png
-          EOF
-
-          # Build
-          rpmbuild -bb rpmbuild/SPECS/${{ env.APP_NAME }}.spec
-
-      - uses: actions/upload-artifact@v6
-        with:
-          name: GoZen_RPM_v${{ inputs.version }}
-          path: rpmbuild/RPMS/x86_64/*.rpm
+#  package-gozen-deb:
+#    name: Package DEB
+#    needs: export-gozen
+#    runs-on: ubuntu-22.04
+#    steps:
+#      - uses: actions/checkout@v5
+#      - uses: actions/download-artifact@v8
+#        with:
+#          name: GoZen_Linux_v${{ inputs.version }}
+#          path: bin
+#          merge-multiple: true
+#
+#      - name: Build DEB
+#        run: |
+#          DEB_ROOT=deb_dist
+#          mkdir -p $DEB_ROOT/{DEBIAN,usr/bin,usr/lib/${{ env.APP_NAME }},usr/share/applications,usr/share/icons/hicolor/128x128/apps}
+#
+#          cp bin/${{ env.APP_NAME }}.x86_64 $DEB_ROOT/usr/bin/${{ env.APP_NAME }}
+#          cp bin/*.so* $DEB_ROOT/usr/lib/${{ env.APP_NAME }}/
+#          cp assets/linux/gozen.desktop $DEB_ROOT/usr/share/applications/
+#          cp assets/linux/gozen.png $DEB_ROOT/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+#
+#          chmod 755 $DEB_ROOT/usr/bin/${{ env.APP_NAME }}
+#
+#          cat <<EOF > $DEB_ROOT/DEBIAN/control
+#          Package: ${{ env.APP_NAME }}
+#          Version: ${{ inputs.version }}
+#          Section: utils
+#          Priority: optional
+#          Architecture: amd64
+#          Depends: libc6 (>= 2.27)
+#          Maintainer: Voylin <noreply@example.com>
+#          Description: GoZen Video Editor
+#           A fast and modern open-source video editor for Linux.
+#          EOF
+#
+#          dpkg-deb --build $DEB_ROOT ${{ env.APP_NAME }}_v${{ inputs.version }}_amd64.deb
+#
+#      - uses: actions/upload-artifact@v6
+#        with:
+#          name: GoZen_DEB_v${{ inputs.version }}
+#          path: "*.deb"
+#
+#  package-gozen-rpm:
+#    name: Package RPM
+#    needs: export-gozen
+#    runs-on: ubuntu-22.04
+#    steps:
+#      - uses: actions/checkout@v5
+#      - uses: actions/download-artifact@v8
+#        with:
+#          name: GoZen_Linux_v${{ inputs.version }}
+#          path: bin
+#          merge-multiple: true
+#
+#      - name: Install RPM tools
+#        run: sudo apt-get install -y rpm
+#
+#      - name: Build RPM
+#        run: |
+#          VERSION=$(echo "${{ inputs.version }}" | tr '-' '_')
+#          mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+#
+#          SRC_DIR=rpmbuild/SOURCES/${{ env.APP_NAME }}-${{ inputs.version }}
+#          mkdir -p $SRC_DIR
+#          cp bin/* $SRC_DIR/
+#          cp assets/linux/gozen.desktop $SRC_DIR/
+#          cp assets/linux/gozen.png $SRC_DIR/
+#
+#          sed -i 's|^Exec=.*|Exec=/opt/${{ env.APP_NAME }}/${{ env.APP_NAME }}.x86_64|' $SRC_DIR/gozen.desktop
+#
+#          cat <<EOF > rpmbuild/SPECS/${{ env.APP_NAME }}.spec
+#          %define _topdir $(pwd)/rpmbuild
+#          Name:           ${{ env.APP_NAME }}
+#          Version:        $VERSION
+#          Release:        1
+#          Summary:        GoZen Video Editor
+#          License:        GPLv3
+#          BuildArch:      x86_64
+#
+#          %description
+#          GoZen Video Editor.
+#
+#          %install
+#          mkdir -p %{buildroot}/opt/${{ env.APP_NAME }}
+#          cp -r ../SOURCES/${{ env.APP_NAME }}-${{ inputs.version }}/* %{buildroot}/opt/${{ env.APP_NAME }}/
+#
+#          mkdir -p %{buildroot}/usr/share/applications
+#          mv %{buildroot}/opt/${{ env.APP_NAME }}/gozen.desktop %{buildroot}/usr/share/applications/
+#
+#          mkdir -p %{buildroot}/usr/share/icons/hicolor/128x128/apps
+#          mv %{buildroot}/opt/${{ env.APP_NAME }}/gozen.png %{buildroot}/usr/share/icons/hicolor/128x128/apps/
+#
+#          %files
+#          /opt/${{ env.APP_NAME }}
+#          /usr/share/applications/gozen.desktop
+#          /usr/share/icons/hicolor/128x128/apps/gozen.png
+#          EOF
+#
+#          # Build
+#          rpmbuild -bb rpmbuild/SPECS/${{ env.APP_NAME }}.spec
+#
+#      - uses: actions/upload-artifact@v6
+#        with:
+#          name: GoZen_RPM_v${{ inputs.version }}
+#          path: rpmbuild/RPMS/x86_64/*.rpm
 # End GoZen build

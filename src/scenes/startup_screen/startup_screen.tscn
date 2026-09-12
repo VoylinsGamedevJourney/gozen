@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://fhvnu4547w3e" path="res://scenes/startup_screen/startup_screen.gd" id="1_sgta6"]
 [ext_resource type="Texture2D" uid="uid://sh8txndv1wtu" path="res://assets/startup_images/clay_banks.png" id="2_5viva"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_gatud"]
-[ext_resource type="Texture2D" uid="uid://c35rwqbeqmush" path="res://assets/icons/settings.svg" id="5_gatud"]
+[ext_resource type="Texture2D" uid="uid://cw6unlqdkehwq" path="res://assets/icons/settings.tres" id="5_gatud"]
 [ext_resource type="Texture2D" uid="uid://xemajw5h1gsg" path="res://assets/icons/horizontal.tres" id="8_pcyft"]
 [ext_resource type="Texture2D" uid="uid://do34v1pyahi2u" path="res://assets/icons/vertical.tres" id="9_j711k"]
 [ext_resource type="Texture2D" uid="uid://brk03ymljvaym" path="res://assets/icons/link.tres" id="10_pcyft"]
