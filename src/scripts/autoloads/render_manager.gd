@@ -18,11 +18,11 @@ enum Status { ## The progress amounts.
 }
 
 
-const RENDER_PROFILE_YOUTUBE: String = "uid://cy0wf25emij1j"
-const RENDER_PROFILE_YOUTUBE_HQ: String = "uid://cuxqydjchpf8p"
-const RENDER_PROFILE_AV1: String = "uid://d3g2w2mw8aqv4"
-const RENDER_PROFILE_VP9: String = "uid://4xgiht5esyd5"
-const RENDER_PROFILE_VP8: String = "uid://d2tu4gw0wxcmd"
+const RENDER_PROFILE_YOUTUBE: String = "uid://bp6oahvgcklvc"
+const RENDER_PROFILE_YOUTUBE_HQ: String = "uid://f5ffyfe5gb5b"
+const RENDER_PROFILE_AV1: String = "uid://du35gfskoijp"
+const RENDER_PROFILE_VP9: String = "uid://b8lmmvi0gnujr"
+const RENDER_PROFILE_VP8: String = "uid://drlbs008bf7so"
 
 const MIX_RATE: float = 44100.0
 const AUDIO_MIN: int = -32768
