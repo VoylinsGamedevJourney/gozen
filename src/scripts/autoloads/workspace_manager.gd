@@ -33,9 +33,15 @@ func _ready() -> void:
 	drag_overlay.set_drag_forwarding(Callable(), _overlay_can_drop_data, _overlay_drop_data)
 	drag_layer.add_child(drag_overlay)
 
+	if OS.has_feature("demo"):
+		available_workspaces.append("Edit")
+		available_workspaces.append("Render")
+		return
+
 	# Checking if we have the workspaces or if we should add the default ones.
 	if !DirAccess.dir_exists_absolute(get_workspaces_dir()) and DirAccess.make_dir_absolute(get_workspaces_dir()) != OK:
 		printerr("WorkspaceManager: Couldn't create workspaces save directory at '%s'!" % get_workspaces_dir())
+
 	if DirAccess.get_files_at(get_workspaces_dir()).size() == 0:
 		var edit_workspace: WorkspaceLayout = _create_default_edit_workspace()
 		var render_workspace: WorkspaceLayout = _create_default_render_workspace()
@@ -47,7 +53,8 @@ func _ready() -> void:
 	_load_available_workspaces()
 
 
-func get_workspaces_dir() -> String: return Utils.get_config_dir() + "workspaces/"
+func get_workspaces_dir() -> String:
+	return Utils.get_config_dir() + "workspaces/"
 
 
 func _load_available_workspaces() -> void:
@@ -121,11 +128,19 @@ func _save_node(control: Control) -> WorkspaceNode:
 
 
 func load_workspace(workspace_name: String) -> void:
-	var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
-	if !FileAccess.file_exists(path):
-		return printerr("WorkspaceManager: Workspace file not found at '%s'" % path)
+	var layout: WorkspaceLayout
 
-	var layout: WorkspaceLayout = load(path)
+	if OS.has_feature("demo"):
+		if workspace_name == "Edit":
+			layout = _create_default_edit_workspace()
+		if workspace_name == "Render":
+			layout = _create_default_render_workspace()
+	else:
+		var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
+		if !FileAccess.file_exists(path):
+			return printerr("WorkspaceManager: Workspace file not found at '%s'" % path)
+		layout = load(path)
+
 	if not layout or not layout.root:
 		return printerr("WorkspaceManager: Invalid workspace layout '%s'!" % workspace_name)
 
