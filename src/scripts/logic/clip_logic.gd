@@ -24,6 +24,7 @@ func add(requests: Array[RequestClipAdd]) -> void:
 
 	var current_track_size: int = TrackLogic.tracks.size()
 	var existing_keys: Array[int] = clips.keys()
+	active_clips = []
 
 	for request: RequestClipAdd in requests:
 		for i: int in range(current_track_size, request.track + 1):
@@ -51,13 +52,18 @@ func add(requests: Array[RequestClipAdd]) -> void:
 
 		new_clip.effects.is_muted = request.is_muted
 		new_clip.effects.audio_stream_index = request.audio_index
-		if request.group_id != -1: new_clip.groups.append(request.group_id)
+		if request.group_id != -1:
+			new_clip.groups.append(request.group_id)
 
 		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
 			new_clip.effects.is_muted = true
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
 		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
+		active_clips.append(new_clip)
 	InputManager.undo_redo.commit_action()
+
+	if active_clips.size() > 0:
+		selected.emit(active_clips[-1])
 
 
 func _restore_clip(snapshot: ClipData) -> void:
