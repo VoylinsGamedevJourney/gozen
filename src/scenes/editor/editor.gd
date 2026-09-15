@@ -58,7 +58,7 @@ func _ready() -> void:
 	_create_edit_popup_menu()
 	_create_view_popup_menu()
 	_create_preferences_popup_menu()
-	_create_help_popup_menu()
+	_create_info_popup_menu()
 
 	Settings.on_show_menu_bar_changed.emit(Settings.get_show_menu_bar())
 
@@ -224,9 +224,10 @@ func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
 
 func _create_project_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
+	menu.name = "Project"
+	menu.title = "Project"
 	menu_bar.add_child(menu)
 
-	menu.title = "Project"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_icon_item(load(Library.ICON_ADD) as Icon, "New project", 0)
@@ -307,9 +308,10 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 
 func _create_edit_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
+	menu.name = "Edit"
+	menu.title = "Edit"
 	menu_bar.add_child(menu)
 
-	menu.title = "Edit"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_item(tr("Undo"), 0)
@@ -326,15 +328,16 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 
 func _create_view_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
+	menu.name = "View"
+	menu.title = "View"
 	menu_bar.add_child(menu)
 
-	menu.title = "View"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
+	menu.add_item(tr("Save workspace"), 0)
 	if not OS.has_feature("demo"):
-		menu.add_item(tr("Save workspace"), 0)
 		menu.add_item(tr("New workspace"), 1)
-		menu.add_separator("", 2)
+	menu.add_separator("", 2)
 	menu.add_item(tr("Show panel titles"), 3)
 	menu.add_separator(tr("Panels"), 4)
 
@@ -380,9 +383,10 @@ func _on_view_popup_menu_id_pressed(id: int) -> void:
 
 func _create_preferences_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
+	menu.name = "Preferences"
+	menu.title = "Preferences"
 	menu_bar.add_child(menu)
 
-	menu.title = "Preferences"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_icon_item(load(Library.ICON_EDITOR_SETTINGS) as Icon, "Editor settings", 0)
@@ -403,11 +407,12 @@ func _on_preferences_popup_menu_id_pressed(id: int) -> void:
 		3: PopupManager.open(PopupManager.COMMAND_BAR)
 
 
-func _create_help_popup_menu() -> void:
+func _create_info_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
+	menu.name = "Info"
+	menu.title = "Info"
 	menu_bar.add_child(menu)
 
-	menu.title = "Help"
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_icon_item(load(Library.ICON_BUG) as Icon, "Report bug", 0)
@@ -419,10 +424,10 @@ func _create_help_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_SUPPORT) as Icon, "Support GoZen", 5)
 	menu.add_icon_item(load(Library.ICON_GOZEN) as Icon, "About GoZen", 6)
 
-	menu.id_pressed.connect(_on_help_popup_menu_id_pressed)
+	menu.id_pressed.connect(_on_info_popup_menu_id_pressed)
 
 
-func _on_help_popup_menu_id_pressed(id: int) -> void:
+func _on_info_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: URL.open("support")
 		1: URL.open("manual")
