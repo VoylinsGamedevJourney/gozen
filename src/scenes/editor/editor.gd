@@ -404,7 +404,7 @@ func _on_preferences_popup_menu_id_pressed(id: int) -> void:
 		0: Settings.open_settings_menu()
 		1: PopupManager.open(PopupManager.MODULE_MANAGER)
 		# Line.
-		3: PopupManager.open(PopupManager.COMMAND_BAR)
+		2: PopupManager.open(PopupManager.COMMAND_BAR)
 
 
 func _create_info_popup_menu() -> void:
