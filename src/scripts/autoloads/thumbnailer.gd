@@ -43,7 +43,9 @@ func _process(_delta: float) -> void:
 
 
 func _save_data() -> void:
-	if !FileAccess.open(thumb_folder + DATA_NAME, FileAccess.WRITE).store_var(data):
+	var file: FileAccess = FileAccess.open(thumb_folder + DATA_NAME, FileAccess.WRITE)
+
+	if !file.store_var(data) or file.get_error():
 		printerr("FilePanel: Error happened when storing empty thumb data!")
 
 

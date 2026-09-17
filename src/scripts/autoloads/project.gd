@@ -302,12 +302,12 @@ func _update_recent_projects(new_path: String) -> void:
 				paths.append(line)
 		file.close()
 
-	var _err: int = paths.insert(0, new_path)
+	paths.insert(0, new_path)
 
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if file:
 		for project_path: String in paths:
-			_err = file.store_line(project_path)
+			file.store_line(project_path)
 		file.close()
 	else:
 		printerr("Project: Error storing String for recent_projects!")

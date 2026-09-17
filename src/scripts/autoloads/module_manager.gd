@@ -31,7 +31,7 @@ func _load_config() -> void:
 
 func _save_config() -> void:
 	var file: FileAccess = FileAccess.open(get_config_file(), FileAccess.WRITE)
-	if !file.store_string(JSON.stringify(loaded_modules, "\t")):
+	if !file.store_string(JSON.stringify(loaded_modules, "\t")) or file.get_error():
 		printerr("ModuleManager: Couldn't store string to config file!")
 
 

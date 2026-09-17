@@ -628,7 +628,7 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 		current_time += chunk_duration
 
 	var save_file: FileAccess = FileAccess.open(cache_path, FileAccess.WRITE)
-	if save_file and !save_file.store_var(audio_wave[file.id][stream_index]):
+	if !save_file or !save_file.store_var(audio_wave[file.id][stream_index]) or save_file.get_error():
 		printerr("FileLogic: Couldn't save wave file for file '%s'!" % file.path)
 	audio_reader.close()
 

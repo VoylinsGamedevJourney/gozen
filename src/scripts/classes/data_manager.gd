@@ -22,15 +22,28 @@ static func save_data(save_path: String, instance: RefCounted) -> int:
 		return ERR_FILE_CANT_OPEN
 
 	var data: Dictionary = get_data(instance)
-	if !file.store_string(var_to_str(data)):
+	if !file.store_string(var_to_str(data)) or file.get_error():
 		printerr("DataManager: Something went wrong storing data to file '%s'!" % tmp_path)
 		return file.get_error()
 
 	file.close()
 
+	# Verify that the tmp file is actually correct or not.
+	if not FileAccess.file_exists(tmp_path):
+		printerr("DataManager: Temporary save file '%s' was not found!" % tmp_path)
+		return ERR_FILE_NOT_FOUND
+
+	# Make certain that tmp file isn't empty.
+	if FileAccess.get_size(tmp_path) == 0:
+		printerr("DataManager: Temporary save file '%s' has size 0!" % tmp_path)
+		return ERR_FILE_CORRUPT
+
+	# Remove original data.
 	if FileAccess.file_exists(save_path):
 		if DirAccess.remove_absolute(save_path):
 			printerr("DataManager: Problem happened on removing '%s'!" % save_path)
+
+	# Rename to replace original data.
 	if DirAccess.rename_absolute(tmp_path, save_path):
 		printerr("DataManager: Problem happened on renaming '%s' to '%s'!" % [tmp_path, save_path])
 	return OK
