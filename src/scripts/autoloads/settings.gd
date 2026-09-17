@@ -75,12 +75,18 @@ func load_system_fonts() -> void:
 	available_system_fonts = OS.get_system_fonts()
 
 
-func get_system_font(font_name: String) -> SystemFont:
-	if not fonts.has(font_name):
+func get_system_font(font_name: String, weight: int, italic: bool) -> SystemFont:
+	var key: String = "%s_%d_%s" % [font_name, weight, italic]
+
+	if not fonts.has(key):
 		var system_font: SystemFont = SystemFont.new()
-		system_font.font_names = [font_name]
-		fonts[font_name] = system_font
-	return fonts[font_name]
+
+		if font_name != "":
+			system_font.font_names = [font_name]
+		system_font.font_weight = weight
+		system_font.font_italic = italic
+		fonts[key] = system_font
+	return fonts[key]
 
 
 func load_custom_themes() -> void:

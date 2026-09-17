@@ -890,10 +890,15 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 					option_button.add_item("Bold", 700)
 					option_button.add_item("Extra Bold", 800)
 					option_button.add_item("Black", 900)
+
+				for i: int in option_button.item_count:
+					option_button.set_item_metadata(i, option_button.get_item_id(i))
+
 				option_button.item_selected.connect(func(index: int) -> void:
 						update_call.call(option_button.get_item_id(index)))
 				option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				return option_button
+
 			var spinbox: SpinBox = SpinBox.new()
 			spinbox.min_value = param.min_value if param.min_value != null else MIN_VALUE
 			spinbox.max_value = param.max_value if param.max_value != null else MAX_VALUE
