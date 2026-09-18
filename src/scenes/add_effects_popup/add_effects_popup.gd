@@ -38,7 +38,7 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 
-func load_effects(type: EffectsHandler.TYPE, clips: Array[ClipData]) -> void:
+func load_effects(type: int, clips: Array[ClipData]) -> void:
 	current_clips = clips
 	is_type = type
 
@@ -54,18 +54,11 @@ func load_effects(type: EffectsHandler.TYPE, clips: Array[ClipData]) -> void:
 		if has_visual and has_audio:
 			break # No need to go over the other clips anymore.
 
-	match type:
-		EffectsHandler.TYPE.ALL:
-			if has_visual:
-				_add_effects(EffectsHandler.visual_effects, true)
-			if has_audio:
-				_add_effects(EffectsHandler.audio_effects, false)
-		EffectsHandler.TYPE.VISUALS:
-			if has_visual:
-				_add_effects(EffectsHandler.visual_effects, true)
-		EffectsHandler.TYPE.AUDIO:
-			if has_audio:
-				_add_effects(EffectsHandler.audio_effects, false)
+	if type == Type.GROUP_VISUAL and has_visual:
+		_add_effects(EffectsHandler.visual_effects, true)
+
+	if type ==Type.GROUP_AUDIO and has_audio:
+		_add_effects(EffectsHandler.audio_effects, false)
 
 
 func _add_effects(effects_data: Dictionary[String, String], is_visual: bool) -> void:
