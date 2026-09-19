@@ -23,6 +23,8 @@ var tracks: Array[TrackData] = []
 var markers: Array[MarkerData] = []
 var folders: Array[String] = []
 
+var module_versions: Dictionary = {}
+
 
 #--- Data handling ---
 
@@ -60,6 +62,12 @@ func serialize() -> Dictionary:
 		(data["tracks"] as Array).append(track.serialize())
 	for marker: MarkerData in markers:
 		(data["markers"] as Array).append(marker.serialize())
+
+	var mod_versions: Dictionary = {}
+	for module: GoZenModule in ModuleManager.loaded_gozen_modules:
+		mod_versions[module.name] = module.version
+	data["module_versions"] = mod_versions
+
 	return data
 
 
@@ -81,6 +89,7 @@ func deserialize(data: Dictionary) -> void:
 	playhead = data.get("playhead", 0)
 	render_region = data.get("render_region", Vector2i(0, int(framerate * 60.0)))
 	use_render_region = data.get("use_render_region", false)
+	module_versions = data.get("module_versions", {})
 
 	folders.clear()
 	for folder: String in data["folders"]:
