@@ -49,11 +49,18 @@ func _draw() -> void:
 	if file_id == -1 or !FileLogic.audio_wave.has(file_id): return
 
 	var wave_streams: Dictionary = FileLogic.audio_wave[file_id]
-	var wave_dict: Dictionary = wave_streams.get(audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
-	if wave_dict.is_empty(): return
+	var wave_dict: Dictionary = {}
+	if wave_streams.has(audio_stream_index):
+		wave_dict = wave_streams[audio_stream_index]
+	elif audio_stream_index == -1:
+		wave_dict = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
+
+	if wave_dict.is_empty():
+		return
 
 	var wave_data: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
-	if wave_data.is_empty(): return
+	if wave_data.is_empty():
+		return
 
 	var area_width: float = size.x
 	var area_height: float = size.y
@@ -68,7 +75,8 @@ func _draw() -> void:
 
 	var step: int = maxi(1, int(max_visible_frames / area_width))
 	var start_index: int = floori(clip_offset_sec * framerate)
-	if start_index < 0: start_index = 0
+	if start_index < 0:
+		start_index = 0
 
 	var end_index: int = mini(total_frames, start_index + max_visible_frames + 1)
 

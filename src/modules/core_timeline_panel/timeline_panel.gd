@@ -31,8 +31,9 @@ const DRAG_START_THRESHOLD_PX: float = 10.0
 @export var button_snap: TextureButton
 @export var button_group: TextureButton
 
+@export var scroll_timeline: ScrollContainer
+@export var scroll_timestamp: ScrollContainer
 
-@onready var scroll: ScrollContainer = get_parent()
 
 @onready var draw_track_lines: Control = $TrackLinesDraw
 @onready var draw_clips: Control = $ClipsDraw
@@ -136,7 +137,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		Timeline.current_state = Timeline.State.SELECT
 		_on_ui_cancel()
 
-	if scroll.get_global_rect().has_point(get_global_mouse_position()):
+	if scroll_timeline.get_global_rect().has_point(get_global_mouse_position()):
 		if event.is_action_pressed("ui_copy", false, true):
 			ClipLogic.copy_selected_clips()
 			accept_event()
@@ -301,7 +302,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 	Timeline.mouse_frame = get_frame_from_mouse(event.position)
 
 	if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
-		scroll.scroll_horizontal = max(scroll.scroll_horizontal - event.relative.x, 0.0)
+		scroll_timeline.scroll_horizontal = max(scroll_timeline.scroll_horizontal - event.relative.x, 0.0)
 
 	var clip_on_mouse: ClipData = _get_clip_on_mouse(event.position)
 	if clip_on_mouse:
@@ -1034,28 +1035,30 @@ func zoom_at_mouse(factor: float) -> void:
 		accept_event()
 		return
 
-	var mouse_viewport_offset: float = get_global_mouse_position().x - scroll.global_position.x
+	var mouse_viewport_offset: float = get_global_mouse_position().x - scroll_timeline.global_position.x
 	var absolute_x: float = Timeline.scroll_x + mouse_viewport_offset
 	var zoom_ratio: float = new_zoom / old_zoom
 	var new_absolute_x: float = absolute_x * zoom_ratio
 	var target_scroll: int = maxi(0, int(new_absolute_x - mouse_viewport_offset))
-	var timestamp_scroll: ScrollContainer = scroll.get("timestamp_scroll")
-	if new_zoom < old_zoom:
-		if timestamp_scroll: timestamp_scroll.scroll_horizontal = target_scroll
-		scroll.scroll_horizontal = target_scroll
-
 	Timeline.zoom = new_zoom
-	Timeline.scroll_x = target_scroll
-	Timeline.scroll_y = scroll.scroll_vertical
+	var max_scroll: int = maxi(0, int(size.x - scroll_timeline.size.x))
+	var clamped_target: int = clampi(target_scroll, 0, max_scroll)
+
+	scroll_timeline.scroll_horizontal = clamped_target
+	scroll_timestamp.scroll_horizontal = clamped_target
+
+	Timeline.scroll_x = clamped_target
+	Timeline.scroll_y = scroll_timeline.scroll_vertical
+
 	draw_all()
 	accept_event()
-	if new_zoom >= old_zoom:
-		_update_scroll.call_deferred(timestamp_scroll, target_scroll)
+
+	_update_scroll.call_deferred(clamped_target)
 
 
-func _update_scroll(timestamp_scroll: ScrollContainer, target_scroll: int) -> void:
-	timestamp_scroll.scroll_horizontal = target_scroll
-	scroll.scroll_horizontal = target_scroll
+func _update_scroll(target_scroll: int) -> void:
+	scroll_timestamp.scroll_horizontal = target_scroll
+	scroll_timeline.scroll_horizontal = target_scroll
 
 
 func get_frame_from_mouse(mouse_pos: Vector2 = get_local_mouse_position()) -> int:
@@ -1097,7 +1100,7 @@ func remove_empty_space_at(track: int, frame_nr: int) -> void:
 
 
 func _on_request_drop_folder(screen_pos: Vector2) -> void:
-	if is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
+	if is_visible_in_tree() and scroll_timeline.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
 		_drop_track_idx = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
 		_drop_frame_nr = maxi(roundi(local_mouse.x / Timeline.zoom), 0)
@@ -1115,7 +1118,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 		frame_nr = _drop_frame_nr
 		_drop_track_idx = -1
 		_drop_frame_nr = -1
-	elif is_visible_in_tree() and scroll.get_global_rect().has_point(screen_pos):
+	elif is_visible_in_tree() and scroll_timeline.get_global_rect().has_point(screen_pos):
 		var local_mouse: Vector2 = get_global_transform().affine_inverse() * screen_pos
 		track_idx = clampi(floori(local_mouse.y / Timeline.track_total_size), 0, TrackLogic.tracks.size() - 1)
 		frame_nr = maxi(roundi(local_mouse.x / Timeline.zoom), 0)

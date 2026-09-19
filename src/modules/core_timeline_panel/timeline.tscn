@@ -139,7 +139,7 @@ script = ExtResource("2_6dfq3")
 timestamp_scroll = NodePath("../TimestampScroll")
 track_controls_scroll = NodePath("../TrackControls")
 
-[node name="TimelinePanel" type="PanelContainer" parent="Grid/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_split", "button_snap", "button_group")]
+[node name="TimelinePanel" type="PanelContainer" parent="Grid/TimelineScroll" unique_id=915200831 node_paths=PackedStringArray("mode_panel", "button_select", "button_split", "button_snap", "button_group", "scroll_timeline", "scroll_timestamp")]
 custom_minimum_size = Vector2(5760, 0)
 clip_contents = true
 layout_mode = 2
@@ -152,6 +152,8 @@ button_select = NodePath("../../../TimelineModes/Margin/VBox/SelectModeButton")
 button_split = NodePath("../../../TimelineModes/Margin/VBox/SplitModeButton")
 button_snap = NodePath("../../../TimelineModes/Margin/VBox/SnapButton")
 button_group = NodePath("../../../TimelineModes/Margin/VBox/GroupButton")
+scroll_timeline = NodePath("..")
+scroll_timestamp = NodePath("../../TimestampScroll")
 
 [node name="TrackLinesDraw" type="Control" parent="Grid/TimelineScroll/TimelinePanel" unique_id=22986217]
 layout_mode = 2

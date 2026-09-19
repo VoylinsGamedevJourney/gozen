@@ -102,7 +102,12 @@ func _calculate_silences() -> void:
 
 	var wave_streams: Dictionary = FileLogic.audio_wave.get(target_file_id, {})
 	var stream_index: int = ClipLogic.clips[current_clip_id].effects.audio_stream_index
-	var wave_dict: Dictionary = wave_streams.get(stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
+	var wave_dict: Dictionary = {}
+	if wave_streams.has(stream_index):
+		wave_dict = wave_streams[stream_index]
+	elif stream_index == -1:
+		wave_dict = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
+
 	if wave_dict.is_empty():
 		wave_preview.set("silences", silences_sec)
 		return

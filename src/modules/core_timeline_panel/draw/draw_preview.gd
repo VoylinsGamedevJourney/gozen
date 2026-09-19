@@ -34,10 +34,13 @@ func _draw() -> void:
 
 
 func _get_wave_dict(index: int) -> Dictionary:
-	if wave_streams.is_empty(): return {}
-	if wave_streams.has(index): return wave_streams[index]
-	if wave_streams.has(-1):    return wave_streams[-1]
-	return wave_streams.values()[0]
+	if wave_streams.is_empty():
+		return {}
+	elif wave_streams.has(index):
+		return wave_streams[index]
+	elif index != -1:
+		return {}
+	return wave_streams[-1] if wave_streams.has(-1) else wave_streams.values()[0]
 
 
 func _set_wave_source(clip: ClipData) -> void:

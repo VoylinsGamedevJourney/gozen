@@ -659,11 +659,18 @@ func get_clip_peak_db(clip: ClipData) -> float:
 		return clip.get_meta("peak_db")
 
 	var wave_streams: Dictionary = audio_wave.get(file_id, {})
-	var wave_dict: Dictionary = wave_streams.get(audio_stream_index, wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {}))
-	if wave_dict.is_empty(): return 0.0 # Default if wave not ready yet
+	var wave_dict: Dictionary = {}
+	if wave_streams.has(audio_stream_index):
+		wave_dict = wave_streams[audio_stream_index]
+	elif audio_stream_index == -1:
+		wave_dict = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
+
+	if wave_dict.is_empty():
+		return 0.0 # Default if wave not ready yet.
 
 	var wave_1: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
-	if wave_1.is_empty(): return 0.0
+	if wave_1.is_empty():
+		return 0.0
 
 	var wave_begin: int = int(clip.begin - int(time_offset * Project.data.framerate))
 	var wave_end: int = wave_begin + int(clip.duration * clip.speed)
@@ -744,6 +751,7 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 		if new_video.open(file.proxy_path) != OK:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.proxy_path)
 			return data[file.id] # Return main video as fallback.
+
 	if !new_video.is_open() and new_video.open(file.path) != OK:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.path)
 			return data[file.id] # Return main video as fallback.
@@ -760,6 +768,7 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 		var empty_wave: bool = audio_wave.has(file.id) and audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
+
 		if stream_index == -1:
 			var video: Video = get_video_reader(file, instance_index)
 			return null if video == null else video.get_audio()
