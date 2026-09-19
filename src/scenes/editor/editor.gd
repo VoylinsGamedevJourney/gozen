@@ -56,7 +56,8 @@ func _ready() -> void:
 	# Create menu buttons.
 	_create_project_popup_menu()
 	_create_edit_popup_menu()
-	_create_view_popup_menu()
+	if not OS.has_feature("demo"):
+		_create_view_popup_menu() # Only for full and self-compiled versions.
 	_create_preferences_popup_menu()
 	_create_info_popup_menu()
 
@@ -335,8 +336,7 @@ func _create_view_popup_menu() -> void:
 	menu.add_theme_constant_override("icon_max_width", 20)
 
 	menu.add_item(tr("Save workspace"), 0)
-	if not OS.has_feature("demo"):
-		menu.add_item(tr("New workspace"), 1)
+	menu.add_item(tr("New workspace"), 1)
 	menu.add_separator("", 2)
 	menu.add_item(tr("Show panel titles"), 3)
 	menu.add_separator(tr("Panels"), 4)
