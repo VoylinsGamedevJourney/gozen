@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://d164jwid0jpoi"
+path="res://.godot/imported/glow.glsl-36c24a8b954c6f5cc834faa61a474233.res"
+
+[deps]
+
+source_file="res://modules/core_effects/visual/glow.glsl"
+dest_files=["res://.godot/imported/glow.glsl-36c24a8b954c6f5cc834faa61a474233.res"]
+
+[params]
+

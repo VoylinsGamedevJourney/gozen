@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://chwps06p8a43p"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_fwn3q"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_7c01j"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_fx805"]
+
+[sub_resource type="Resource" id="Resource_oc6m5"]
+script = ExtResource("2_7c01j")
+id = "fade"
+nickname = "Size"
+tooltip = "Radius of the glow."
+default_value = 1.0
+min_value = 0.0
+max_value = 200.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_fwn3q"]
+script = ExtResource("2_7c01j")
+id = "intensity"
+nickname = "Intensity"
+default_value = 1.0
+min_value = 0.0
+max_value = 10.0
+step = 0.1
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_gga74"]
+script = ExtResource("2_7c01j")
+id = "color"
+nickname = "Color"
+default_value = Color(1, 1, 1, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_fx805")
+id = "glow"
+nickname = "Glow"
+params = Array[ExtResource("2_7c01j")]([SubResource("Resource_oc6m5"), SubResource("Resource_fwn3q"), SubResource("Resource_gga74")])
+shader_path = "uid://d164jwid0jpoi"
+metadata/_custom_type_script = "uid://jveevg12khsa"

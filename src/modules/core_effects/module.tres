@@ -20,6 +20,7 @@
 [ext_resource type="Resource" uid="uid://lqo2dnvh15ro" path="res://modules/core_effects/visual/sharpen.tres" id="20"]
 [ext_resource type="Resource" uid="uid://cpm42swydlbwm" path="res://modules/core_effects/visual/soften.tres" id="21"]
 [ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="21_f8bxd"]
+[ext_resource type="Resource" uid="uid://chwps06p8a43p" path="res://modules/core_effects/visual/glow.tres" id="21_iu5p5"]
 [ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="22_iu5p5"]
 [ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="23_noaeb"]
 [ext_resource type="Resource" uid="uid://c5lm6nvny00ef" path="res://modules/core_effects/visual/vignette.tres" id="25"]
@@ -107,6 +108,11 @@ effect = ExtResource("26")
 script = ExtResource("2_eff")
 effect = ExtResource("27")
 
+[sub_resource type="Resource" id="Resource_fwn3q"]
+script = ExtResource("2_eff")
+effect = ExtResource("21_iu5p5")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
 [sub_resource type="Resource" id="Resource_trans_1"]
 script = ExtResource("3_trans")
 transition = ExtResource("28")
@@ -128,6 +134,7 @@ script = ExtResource("1_mod")
 name = "Core Effects"
 description = "Default effects and transitions for GoZen."
 author = "Voylin"
-custom_effects = Array[ExtResource("2_eff")]([SubResource("Resource_eff_1"), SubResource("Resource_eff_2"), SubResource("Resource_eff_3"), SubResource("Resource_eff_4"), SubResource("Resource_eff_5"), SubResource("Resource_eff_7"), SubResource("Resource_eff_8"), SubResource("Resource_eff_9"), SubResource("Resource_eff_10"), SubResource("Resource_eff_11"), SubResource("Resource_eff_12"), SubResource("Resource_eff_13"), SubResource("Resource_eff_14"), SubResource("Resource_eff_16"), SubResource("Resource_eff_17"), SubResource("Resource_eff_18"), SubResource("Resource_eff_22"), SubResource("Resource_eff_23"), SubResource("Resource_eff_24")])
+version = "1.1"
+custom_effects = Array[ExtResource("2_eff")]([SubResource("Resource_eff_1"), SubResource("Resource_eff_2"), SubResource("Resource_eff_3"), SubResource("Resource_eff_4"), SubResource("Resource_eff_5"), SubResource("Resource_eff_7"), SubResource("Resource_eff_8"), SubResource("Resource_eff_9"), SubResource("Resource_eff_10"), SubResource("Resource_eff_11"), SubResource("Resource_eff_12"), SubResource("Resource_eff_13"), SubResource("Resource_eff_14"), SubResource("Resource_eff_16"), SubResource("Resource_eff_17"), SubResource("Resource_eff_18"), SubResource("Resource_eff_22"), SubResource("Resource_eff_23"), SubResource("Resource_eff_24"), SubResource("Resource_fwn3q")])
 custom_transitions = Array[ExtResource("3_trans")]([SubResource("Resource_trans_1"), SubResource("Resource_trans_2"), SubResource("Resource_trans_3"), SubResource("Resource_trans_4")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"
