@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b13vmlac6i420"
+path="res://.godot/imported/shake.glsl-de7af0b2eae815f8f629a9083c0f192f.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/shake.glsl"
+dest_files=["res://.godot/imported/shake.glsl-de7af0b2eae815f8f629a9083c0f192f.res"]
+
+[params]
+

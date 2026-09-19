@@ -6,7 +6,7 @@
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_mono"]
 
-[sub_resource type="Resource" id="Resource_active"]
+[sub_resource type="Resource" id="Resource_fsmg5"]
 script = ExtResource("1_param")
 id = "active"
 nickname = "Active"
@@ -19,5 +19,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "stereo_to_mono"
 nickname = "Stereo to mono"
-params = Array[ExtResource("1_param")]([SubResource("Resource_active")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_fsmg5")])
 audio_effect = SubResource("AudioEffectAmplify_mono")

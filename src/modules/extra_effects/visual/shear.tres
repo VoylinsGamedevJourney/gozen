@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://cltfs4jgxdcmb"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_4o1vp"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_tt8tf"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_k83m3"]
+
+[sub_resource type="Resource" id="Resource_jxluw"]
+script = ExtResource("2_tt8tf")
+id = "factor"
+nickname = "Factor"
+default_value = Vector2(0, 0)
+min_value = Vector2(-2, -2)
+max_value = Vector2(2, 2)
+step = 0.05
+is_linkable = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_k83m3")
+id = "shear"
+nickname = "Shear"
+params = Array[ExtResource("2_tt8tf")]([SubResource("Resource_jxluw")])
+shader_path = "uid://d1wib6h5jwi7g"
+metadata/_custom_type_script = "uid://jveevg12khsa"

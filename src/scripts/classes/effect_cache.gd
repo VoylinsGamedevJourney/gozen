@@ -91,6 +91,7 @@ func get_buffer_data(effect: Effect, frame_nr: int, resolution: Vector2i, pass_i
 
 	_pad_stream(stream, 4)
 	stream.put_32(pass_index)
+	stream.put_32(_frame_nr)
 	var buffer_data: PackedByteArray = stream.data_array
 	var remainder: int = buffer_data.size() % 16
 

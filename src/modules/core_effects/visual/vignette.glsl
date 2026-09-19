@@ -11,26 +11,26 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-    vec4 color;
-    float radius;
-    float softness;
-    vec2 center;
+	vec4 color;
+	float radius;
+	float softness;
+	vec2 center;
 } params;
 
 
 void main() {
-    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 out_size = imageSize(output_image);
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 out_size = imageSize(output_image);
 
-    if (id.x >= out_size.x || id.y >= out_size.y) {
-        return;
-    }
+	if (id.x >= out_size.x || id.y >= out_size.y) {
+		return;
+	}
 
-    vec4 color = texelFetch(source_image, id, 0);
-    vec2 position = vec2(id.x, id.y);
-    float distance = distance(position, params.center);
-    float mix_value = smoothstep(params.radius, params.radius + max(params.softness, 0.001), distance);
+	vec4 color = texelFetch(source_image, id, 0);
+	vec2 position = vec2(id.x, id.y);
+	float distance = distance(position, params.center);
+	float mix_value = smoothstep(params.radius, params.radius + max(params.softness, 0.001), distance);
 
-    color.rgb = mix(color.rgb, params.color.rgb, mix_value * params.color.a);
-    imageStore(output_image, id, color);
+	color.rgb = mix(color.rgb, params.color.rgb, mix_value * params.color.a);
+	imageStore(output_image, id, color);
 }

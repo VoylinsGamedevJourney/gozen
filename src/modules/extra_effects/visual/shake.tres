@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://d1whelavrgmet"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_sm6og"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_id72t"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_oqmwi"]
+
+[sub_resource type="Resource" id="Resource_sm6og"]
+script = ExtResource("2_id72t")
+id = "horizontal"
+nickname = "Horizontal"
+default_value = true
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_id72t"]
+script = ExtResource("2_id72t")
+id = "vertical"
+nickname = "Vertical"
+default_value = true
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_oqmwi"]
+script = ExtResource("2_id72t")
+id = "amplitude"
+nickname = "Amplitude"
+default_value = 20.0
+min_value = 0.0
+max_value = 200.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_oexf3"]
+script = ExtResource("2_id72t")
+id = "speed"
+nickname = "Speed"
+default_value = 1.0
+min_value = 0.0
+max_value = 10.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_oqmwi")
+id = "shake"
+nickname = "Shake"
+params = Array[ExtResource("2_id72t")]([SubResource("Resource_sm6og"), SubResource("Resource_id72t"), SubResource("Resource_oqmwi"), SubResource("Resource_oexf3")])
+shader_path = "uid://b13vmlac6i420"
+metadata/_custom_type_script = "uid://jveevg12khsa"

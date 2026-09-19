@@ -6,7 +6,7 @@
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_norm"]
 
-[sub_resource type="Resource" id="Resource_target"]
+[sub_resource type="Resource" id="Resource_bunru"]
 script = ExtResource("1_param")
 id = "target_db"
 nickname = "Target dB"
@@ -20,5 +20,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "normalize"
 nickname = "Normalize"
-params = Array[ExtResource("1_param")]([SubResource("Resource_target")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_bunru")])
 audio_effect = SubResource("AudioEffectAmplify_norm")

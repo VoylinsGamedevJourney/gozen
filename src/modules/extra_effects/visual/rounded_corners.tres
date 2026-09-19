@@ -4,49 +4,34 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_rc_rad"]
+[sub_resource type="Resource" id="Resource_ftbgl"]
 script = ExtResource("1_param")
 id = "radius"
-nickname = "Corner Radius"
+nickname = "Radius"
+tooltip = "Corner radius"
 default_value = 50.0
 min_value = 0.0
 max_value = null
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_rc_w"]
+[sub_resource type="Resource" id="Resource_ojj3y"]
 script = ExtResource("1_param")
-id = "width"
-nickname = "Width"
-default_value = 1920.0
-min_value = 0.0
-max_value = null
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
-[sub_resource type="Resource" id="Resource_rc_h"]
-script = ExtResource("1_param")
-id = "height"
-nickname = "Height"
-default_value = 1080.0
-min_value = 0.0
-max_value = null
-metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
-
-[sub_resource type="Resource" id="Resource_rc_cx"]
-script = ExtResource("1_param")
-id = "center_x"
-nickname = "Center X"
-default_value = 960.0
+id = "size"
+nickname = "Size"
+default_value = Vector2(1920, 1080)
 min_value = null
 max_value = null
+has_slider = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_rc_cy"]
+[sub_resource type="Resource" id="Resource_lpvr3"]
 script = ExtResource("1_param")
-id = "center_y"
-nickname = "Center Y"
-default_value = 540.0
+id = "center"
+nickname = "Center"
+default_value = Vector2(960, 540)
 min_value = null
 max_value = null
+has_slider = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
 [resource]
@@ -54,5 +39,5 @@ script = ExtResource("2_effect")
 id = "rounded_corners"
 nickname = "Rounded Corners"
 tooltip = "This effect is best applied before using transform effects."
-params = Array[ExtResource("1_param")]([SubResource("Resource_rc_rad"), SubResource("Resource_rc_w"), SubResource("Resource_rc_h"), SubResource("Resource_rc_cx"), SubResource("Resource_rc_cy")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_ftbgl"), SubResource("Resource_ojj3y"), SubResource("Resource_lpvr3")])
 shader_path = "uid://b173oxoeakjyq"

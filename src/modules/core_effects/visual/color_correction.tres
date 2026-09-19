@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_tint"]
+[sub_resource type="Resource" id="Resource_74qq6"]
 script = ExtResource("1_param")
 id = "tint"
 nickname = "Tint"
@@ -13,7 +13,7 @@ min_value = null
 max_value = null
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_brightness"]
+[sub_resource type="Resource" id="Resource_7ruhg"]
 script = ExtResource("1_param")
 id = "brightness"
 nickname = "Brightness"
@@ -22,7 +22,7 @@ min_value = -1.0
 max_value = 2.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_contrast"]
+[sub_resource type="Resource" id="Resource_y2cyi"]
 script = ExtResource("1_param")
 id = "contrast"
 nickname = "Contrast"
@@ -31,7 +31,7 @@ min_value = 0.0
 max_value = 5.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_saturation"]
+[sub_resource type="Resource" id="Resource_rf3ay"]
 script = ExtResource("1_param")
 id = "saturation"
 nickname = "Saturation"
@@ -40,7 +40,7 @@ min_value = 0.0
 max_value = 5.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_tint_amount"]
+[sub_resource type="Resource" id="Resource_ickoh"]
 script = ExtResource("1_param")
 id = "tint_amount"
 nickname = "Tint amount"
@@ -49,7 +49,7 @@ min_value = 0.0
 max_value = 1.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_red_value"]
+[sub_resource type="Resource" id="Resource_8ofbb"]
 script = ExtResource("1_param")
 id = "red_value"
 nickname = "Red value"
@@ -58,7 +58,7 @@ min_value = 0.0
 max_value = 5.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_green_value"]
+[sub_resource type="Resource" id="Resource_n5o7a"]
 script = ExtResource("1_param")
 id = "green_value"
 nickname = "Green value"
@@ -67,7 +67,7 @@ min_value = 0.0
 max_value = 5.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_blue_value"]
+[sub_resource type="Resource" id="Resource_lj6sv"]
 script = ExtResource("1_param")
 id = "blue_value"
 nickname = "Blue value"
@@ -80,5 +80,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "color_correction"
 nickname = "Color Correction"
-params = Array[ExtResource("1_param")]([SubResource("Resource_tint"), SubResource("Resource_brightness"), SubResource("Resource_contrast"), SubResource("Resource_saturation"), SubResource("Resource_tint_amount"), SubResource("Resource_red_value"), SubResource("Resource_green_value"), SubResource("Resource_blue_value")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_74qq6"), SubResource("Resource_7ruhg"), SubResource("Resource_y2cyi"), SubResource("Resource_rf3ay"), SubResource("Resource_ickoh"), SubResource("Resource_8ofbb"), SubResource("Resource_n5o7a"), SubResource("Resource_lj6sv")])
 shader_path = "uid://dfvavj2472tgp"

@@ -3,45 +3,60 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_ny2jm"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="1_x451f"]
 [ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_yojuv"]
-[ext_resource type="PackedScene" uid="uid://calignbtn" path="res://modules/core_effects/visual/ui/alignment_buttons.tscn" id="2_align"]
+[ext_resource type="Script" uid="uid://b6d0b6c27wlvs" path="res://modules/core_effects/visual/ui/alignment_buttons.gd" id="2_ml87e"]
 
-[sub_resource type="Resource" id="UI_position"]
+[sub_resource type="Resource" id="Resource_cyuo8"]
 script = ExtResource("1_yojuv")
 param_id = "position"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_scale"]
+[sub_resource type="Resource" id="Resource_rqrqj"]
 script = ExtResource("1_yojuv")
 param_id = "scale"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_align"]
+[sub_resource type="PackedScene" id="PackedScene_wumbn"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"id_paths": [],
+"names": PackedStringArray("AlignmentButtons", "HBoxContainer", "script"),
+"node_count": 1,
+"node_ids": PackedInt32Array(655603216),
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 1, 2, 0, 0),
+"variants": [ExtResource("2_ml87e")],
+"version": 3
+}
+
+[sub_resource type="Resource" id="Resource_vu3rd"]
 script = ExtResource("1_yojuv")
-custom_ui = ExtResource("2_align")
+custom_ui = SubResource("PackedScene_wumbn")
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_pivot"]
+[sub_resource type="Resource" id="Resource_5c4ii"]
 script = ExtResource("1_yojuv")
 param_id = "pivot"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_rotation"]
+[sub_resource type="Resource" id="Resource_ykspq"]
 script = ExtResource("1_yojuv")
-param_id = "rotation"
+param_id = "pivot"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_alpha"]
+[sub_resource type="Resource" id="Resource_678va"]
 script = ExtResource("1_yojuv")
 param_id = "alpha"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="Resource_cpby2"]
+[sub_resource type="Resource" id="Resource_ml87e"]
 script = ExtResource("1_ny2jm")
 id = "position"
 nickname = "Position"
@@ -51,7 +66,7 @@ max_value = null
 step = 1.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_p0oov"]
+[sub_resource type="Resource" id="Resource_a8lmi"]
 script = ExtResource("1_ny2jm")
 id = "scale"
 nickname = "Scale"
@@ -63,7 +78,7 @@ is_linkable = true
 is_linked = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_qhav0"]
+[sub_resource type="Resource" id="Resource_yvin6"]
 script = ExtResource("1_ny2jm")
 id = "rotation"
 nickname = "Rotation"
@@ -73,7 +88,7 @@ max_value = 360.0
 step = 1.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_ii5di"]
+[sub_resource type="Resource" id="Resource_xmpf0"]
 script = ExtResource("1_ny2jm")
 id = "pivot"
 nickname = "Pivot"
@@ -82,7 +97,7 @@ min_value = null
 max_value = null
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_bdb61"]
+[sub_resource type="Resource" id="Resource_jyyio"]
 script = ExtResource("1_ny2jm")
 id = "alpha"
 nickname = "Alpha"
@@ -96,8 +111,8 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("1_x451f")
 id = "transform"
 nickname = "Transform"
-custom_ui = Array[ExtResource("1_yojuv")]([SubResource("UI_position"), SubResource("UI_scale"), SubResource("UI_align"), SubResource("UI_pivot"), SubResource("UI_rotation"), SubResource("UI_alpha")])
-params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_cpby2"), SubResource("Resource_p0oov"), SubResource("Resource_qhav0"), SubResource("Resource_ii5di"), SubResource("Resource_bdb61")])
+custom_ui = Array[ExtResource("1_yojuv")]([SubResource("Resource_cyuo8"), SubResource("Resource_rqrqj"), SubResource("Resource_vu3rd"), SubResource("Resource_5c4ii"), SubResource("Resource_ykspq"), SubResource("Resource_678va")])
+params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_ml87e"), SubResource("Resource_a8lmi"), SubResource("Resource_yvin6"), SubResource("Resource_xmpf0"), SubResource("Resource_jyyio")])
 shader_path = "uid://dpcurhtmkmqxc"
 matrix_map = Dictionary[String, int]({
 "pivot": 0,

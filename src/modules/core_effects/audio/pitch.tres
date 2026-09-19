@@ -6,7 +6,7 @@
 
 [sub_resource type="AudioEffectPitchShift" id="AudioEffectPitchShift_pitch"]
 
-[sub_resource type="Resource" id="Resource_pitch"]
+[sub_resource type="Resource" id="Resource_uio10"]
 script = ExtResource("1_param")
 id = "pitch_scale"
 nickname = "Pitch scale"
@@ -21,5 +21,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "pitch"
 nickname = "Pitch shift"
-params = Array[ExtResource("1_param")]([SubResource("Resource_pitch")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_uio10")])
 audio_effect = SubResource("AudioEffectPitchShift_pitch")

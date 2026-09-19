@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_key_color"]
+[sub_resource type="Resource" id="Resource_br4os"]
 script = ExtResource("1_param")
 id = "chroma_key_color"
 nickname = "Chroma key"
@@ -13,7 +13,7 @@ min_value = null
 max_value = null
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_similarity"]
+[sub_resource type="Resource" id="Resource_dxutv"]
 script = ExtResource("1_param")
 id = "similarity"
 nickname = "Similarity"
@@ -22,7 +22,7 @@ min_value = 0.0
 max_value = 1.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_smoothness"]
+[sub_resource type="Resource" id="Resource_51bkn"]
 script = ExtResource("1_param")
 id = "smoothness"
 nickname = "Smoothness"
@@ -35,5 +35,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "chroma_key"
 nickname = "Chroma Key"
-params = Array[ExtResource("1_param")]([SubResource("Resource_key_color"), SubResource("Resource_similarity"), SubResource("Resource_smoothness")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_br4os"), SubResource("Resource_dxutv"), SubResource("Resource_51bkn")])
 shader_path = "uid://fly5vb2vnipp"

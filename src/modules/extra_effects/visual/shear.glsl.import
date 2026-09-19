@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://d1wib6h5jwi7g"
+path="res://.godot/imported/shear.glsl-96a9fe4cf82ee613e4772bb63b1f59b7.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/shear.glsl"
+dest_files=["res://.godot/imported/shear.glsl-96a9fe4cf82ee613e4772bb63b1f59b7.res"]
+
+[params]
+

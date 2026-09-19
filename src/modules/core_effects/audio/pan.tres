@@ -6,7 +6,7 @@
 
 [sub_resource type="AudioEffectPanner" id="AudioEffectPanner_pan"]
 
-[sub_resource type="Resource" id="Resource_pan"]
+[sub_resource type="Resource" id="Resource_8q1oo"]
 script = ExtResource("1_param")
 id = "pan"
 nickname = "Pan"
@@ -20,5 +20,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "pan"
 nickname = "Stereo balance / pan"
-params = Array[ExtResource("1_param")]([SubResource("Resource_pan")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_8q1oo")])
 audio_effect = SubResource("AudioEffectPanner_pan")

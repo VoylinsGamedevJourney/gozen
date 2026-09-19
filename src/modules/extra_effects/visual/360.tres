@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_yaw"]
+[sub_resource type="Resource" id="Resource_ed2yp"]
 script = ExtResource("1_param")
 id = "yaw"
 nickname = "Yaw"
@@ -12,7 +12,7 @@ default_value = 0.0
 min_value = -180.0
 max_value = 180.0
 
-[sub_resource type="Resource" id="Resource_pitch"]
+[sub_resource type="Resource" id="Resource_ygcg7"]
 script = ExtResource("1_param")
 id = "pitch"
 nickname = "Pitch"
@@ -20,7 +20,7 @@ default_value = 0.0
 min_value = -90.0
 max_value = 90.0
 
-[sub_resource type="Resource" id="Resource_roll"]
+[sub_resource type="Resource" id="Resource_5kse8"]
 script = ExtResource("1_param")
 id = "roll"
 nickname = "Roll"
@@ -28,7 +28,7 @@ default_value = 0.0
 min_value = -180.0
 max_value = 180.0
 
-[sub_resource type="Resource" id="Resource_fov"]
+[sub_resource type="Resource" id="Resource_5in2k"]
 script = ExtResource("1_param")
 id = "fov"
 nickname = "Field of View"
@@ -40,5 +40,5 @@ max_value = 150.0
 script = ExtResource("2_effect")
 id = "equirectangular"
 nickname = "360 Video Controller"
-params = Array[ExtResource("1_param")]([SubResource("Resource_yaw"), SubResource("Resource_pitch"), SubResource("Resource_roll"), SubResource("Resource_fov")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_ed2yp"), SubResource("Resource_ygcg7"), SubResource("Resource_5kse8"), SubResource("Resource_5in2k")])
 shader_path = "uid://bkqtgecyd8bh6"

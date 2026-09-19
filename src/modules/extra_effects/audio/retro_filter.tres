@@ -7,7 +7,7 @@
 [sub_resource type="AudioEffectDistortion" id="AudioEffectDistortion_retro"]
 mode = 2
 
-[sub_resource type="Resource" id="Resource_bit_depth"]
+[sub_resource type="Resource" id="Resource_c2koy"]
 script = ExtResource("1_param")
 id = "bit_depth"
 nickname = "Bit depth"
@@ -21,5 +21,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "retro_filter"
 nickname = "Retro filter"
-params = Array[ExtResource("1_param")]([SubResource("Resource_bit_depth")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_c2koy")])
 audio_effect = SubResource("AudioEffectDistortion_retro")

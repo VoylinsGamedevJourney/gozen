@@ -6,7 +6,7 @@
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_swap"]
 
-[sub_resource type="Resource" id="Resource_active"]
+[sub_resource type="Resource" id="Resource_ojpf6"]
 script = ExtResource("1_param")
 id = "active"
 nickname = "Active"
@@ -19,5 +19,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "channel_swap"
 nickname = "Channel swap"
-params = Array[ExtResource("1_param")]([SubResource("Resource_active")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_ojpf6")])
 audio_effect = SubResource("AudioEffectAmplify_swap")

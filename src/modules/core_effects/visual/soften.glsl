@@ -28,17 +28,17 @@ void main() {
 	}
 
 	float sigma = params.amount * 10.0;
-    int radius = clamp(int(ceil(sigma * 3.0)), 1, 20);
-    vec4 color_sum = vec4(0.0);
-    float weight_sum = 0.0;
-    float two_sigma_sq = 2.0 * sigma * sigma;
-    for (int x = -radius; x <= radius; x++) {
-        for (int y = -radius; y <= radius; y++) {
-            float weight = exp(-float(x * x + y * y) / two_sigma_sq);
-            ivec2 coord = clamp(id + ivec2(x, y), ivec2(0), out_size - ivec2(1));
-            color_sum += texelFetch(source_image, coord, 0) * weight;
-            weight_sum += weight;
-        }
-    }
-    imageStore(output_image, id, color_sum / weight_sum);
+	int radius = clamp(int(ceil(sigma * 3.0)), 1, 20);
+	vec4 color_sum = vec4(0.0);
+	float weight_sum = 0.0;
+	float two_sigma_sq = 2.0 * sigma * sigma;
+	for (int x = -radius; x <= radius; x++) {
+		for (int y = -radius; y <= radius; y++) {
+			float weight = exp(-float(x * x + y * y) / two_sigma_sq);
+			ivec2 coord = clamp(id + ivec2(x, y), ivec2(0), out_size - ivec2(1));
+			color_sum += texelFetch(source_image, coord, 0) * weight;
+			weight_sum += weight;
+		}
+	}
+	imageStore(output_image, id, color_sum / weight_sum);
 }

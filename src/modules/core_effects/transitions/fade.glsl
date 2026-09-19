@@ -15,11 +15,11 @@ layout(set = 0, binding = 3, std140) uniform Progress { float value; } progress;
 
 
 void main() {
-    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 size = imageSize(output_image);
-    if (id.x >= size.x || id.y >= size.y) return;
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(output_image);
+	if (id.x >= size.x || id.y >= size.y) return;
 
-    vec4 color = texelFetch(input_image, id, 0);
-    color.a *= progress.value;
-    imageStore(output_image, id, color);
+	vec4 color = texelFetch(input_image, id, 0);
+	color.a *= progress.value;
+	imageStore(output_image, id, color);
 }

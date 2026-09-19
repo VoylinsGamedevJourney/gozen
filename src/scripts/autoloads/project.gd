@@ -295,6 +295,9 @@ func _auto_save() -> void:
 
 
 func _update_recent_projects(new_path: String) -> void:
+	if new_path.is_empty():
+		return
+
 	var paths: Array[String] = []
 	var file: FileAccess
 
@@ -327,6 +330,7 @@ func _open_project(file_path: String) -> void:
 func _save_as(new_project_path: String) -> void:
 	set_project_path(new_project_path)
 	save()
+	_update_recent_projects(new_project_path)
 
 
 func _on_close() -> void:

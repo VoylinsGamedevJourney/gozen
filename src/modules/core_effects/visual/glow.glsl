@@ -11,50 +11,50 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-    float fade;
-    float intensity;
-    vec4 color;
+	float fade;
+	float intensity;
+	vec4 color;
 } params;
 
 
 
 void main() {
-    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 out_size = imageSize(output_image);
-    if (id.x >= out_size.x || id.y >= out_size.y) {
-        return;
-    }
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 out_size = imageSize(output_image);
+	if (id.x >= out_size.x || id.y >= out_size.y) {
+		return;
+	}
 
-    vec4 fg_color = texelFetch(source_image, id, 0);
-    float glow_alpha = 0.0;
+	vec4 fg_color = texelFetch(source_image, id, 0);
+	float glow_alpha = 0.0;
 
-    if (params.fade > 0.0) {
-        float weight_sum = 0.0;
-        int NUM_SAMPLES = clamp(int(params.fade * 3.0), 32, 128);
+	if (params.fade > 0.0) {
+		float weight_sum = 0.0;
+		int NUM_SAMPLES = clamp(int(params.fade * 3.0), 32, 128);
 
-        for (int i = 0; i < NUM_SAMPLES; i++) {
-            float theta = float(i) * 2.39996323;
-            float r = (sqrt(float(i) + 0.5) / sqrt(float(NUM_SAMPLES))) * params.fade;
-            ivec2 s_id = id + ivec2(round(cos(theta) * r), round(sin(theta) * r));
+		for (int i = 0; i < NUM_SAMPLES; i++) {
+			float theta = float(i) * 2.39996323;
+			float r = (sqrt(float(i) + 0.5) / sqrt(float(NUM_SAMPLES))) * params.fade;
+			ivec2 s_id = id + ivec2(round(cos(theta) * r), round(sin(theta) * r));
 
-            if (s_id.x >= 0 && s_id.y >= 0 && s_id.x < out_size.x && s_id.y < out_size.y) {
-                glow_alpha += texelFetch(source_image, s_id, 0).a;
-            }
-            weight_sum += 1.0;
-        }
-        glow_alpha /= weight_sum;
-    } else {
-        glow_alpha = fg_color.a;
-    }
+			if (s_id.x >= 0 && s_id.y >= 0 && s_id.x < out_size.x && s_id.y < out_size.y) {
+				glow_alpha += texelFetch(source_image, s_id, 0).a;
+			}
+			weight_sum += 1.0;
+		}
+		glow_alpha /= weight_sum;
+	} else {
+		glow_alpha = fg_color.a;
+	}
 
 	glow_alpha = (params.intensity > 0.0) ? (1.0 - pow(1.0 - clamp(glow_alpha, 0.0, 1.0), params.intensity)) : 0.0;
-    vec4 glow_color = vec4(params.color.rgb, params.color.a * glow_alpha);
+	vec4 glow_color = vec4(params.color.rgb, params.color.a * glow_alpha);
 
-    float out_a = fg_color.a + glow_color.a * (1.0 - fg_color.a);
-    vec3 out_rgb = vec3(0.0);
-    if (out_a > 0.0) {
-        out_rgb = (fg_color.rgb * fg_color.a + glow_color.rgb * glow_color.a * (1.0 - fg_color.a)) / out_a;
-    }
+	float out_a = fg_color.a + glow_color.a * (1.0 - fg_color.a);
+	vec3 out_rgb = vec3(0.0);
+	if (out_a > 0.0) {
+		out_rgb = (fg_color.rgb * fg_color.a + glow_color.rgb * glow_color.a * (1.0 - fg_color.a)) / out_a;
+	}
 
-    imageStore(output_image, id, vec4(out_rgb, out_a));
+	imageStore(output_image, id, vec4(out_rgb, out_a));
 }

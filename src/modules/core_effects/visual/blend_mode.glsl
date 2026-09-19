@@ -11,17 +11,17 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-    int mode;
+	int mode;
 } params;
 
 
 
 void main() {
-    ivec2 id = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 out_size = imageSize(output_image);
-    if (id.x >= out_size.x || id.y >= out_size.y) {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 out_size = imageSize(output_image);
+	if (id.x >= out_size.x || id.y >= out_size.y) {
 		return;
 	}
 
-    imageStore(output_image, id, texelFetch(source_image, id, 0));
+	imageStore(output_image, id, texelFetch(source_image, id, 0));
 }

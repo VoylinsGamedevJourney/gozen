@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://bxwh1tpwxykyn"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_rjn82"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_j6akj"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_5kl2u"]
+
+[sub_resource type="Resource" id="Resource_pv5yq"]
+script = ExtResource("2_j6akj")
+id = "init_pos"
+nickname = "Initial position"
+default_value = Vector2i(0, 0)
+min_value = null
+max_value = null
+has_slider = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_3hyth"]
+script = ExtResource("2_j6akj")
+id = "speed"
+nickname = "Scroll speed"
+default_value = Vector2(1, 0)
+min_value = null
+max_value = null
+is_linkable = true
+has_slider = false
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_5kl2u")
+id = "scroll"
+nickname = "Scroll"
+params = Array[ExtResource("2_j6akj")]([SubResource("Resource_pv5yq"), SubResource("Resource_3hyth")])
+shader_path = "uid://b0ag0aqseo5px"
+metadata/_custom_type_script = "uid://jveevg12khsa"

@@ -3,6 +3,11 @@
 [ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_ceq06"]
 [ext_resource type="Resource" uid="uid://dbrtc4effect0" path="res://modules/extra_effects/audio/retro_filter.tres" id="7_0qexk"]
 [ext_resource type="Resource" uid="uid://bc28rhll046uw" path="res://modules/extra_effects/visual/rotate.tres" id="7_satfi"]
+[ext_resource type="Resource" uid="uid://bxwh1tpwxykyn" path="res://modules/extra_effects/visual/scroll.tres" id="8_pitss"]
+[ext_resource type="Resource" uid="uid://cltfs4jgxdcmb" path="res://modules/extra_effects/visual/shear.tres" id="9_4e8dq"]
+[ext_resource type="Resource" uid="uid://dciykad3nywrm" path="res://modules/extra_effects/visual/wave.tres" id="10_m6nqb"]
+[ext_resource type="Resource" uid="uid://d1whelavrgmet" path="res://modules/extra_effects/visual/shake.tres" id="11_72ohh"]
+[ext_resource type="Resource" uid="uid://cgoxo1qxt55kx" path="res://modules/extra_effects/visual/glitch.tres" id="12_56pyc"]
 [ext_resource type="Resource" uid="uid://df8gtdi3d2cv4" path="res://modules/extra_effects/visual/chroma_key.tres" id="16_kaufb"]
 [ext_resource type="Resource" uid="uid://i4doaa48yrd6" path="res://modules/extra_effects/visual/rounded_corners.tres" id="20_p1nu8"]
 [ext_resource type="Resource" uid="uid://dyxs3hiphm2s" path="res://modules/extra_effects/visual/noise.tres" id="21_duc23"]
@@ -44,6 +49,31 @@ script = ExtResource("1_ceq06")
 effect = ExtResource("7_satfi")
 metadata/_custom_type_script = "uid://bxqfbvdauxheh"
 
+[sub_resource type="Resource" id="Resource_3s3x1"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("8_pitss")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
+[sub_resource type="Resource" id="Resource_lo652"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("9_4e8dq")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
+[sub_resource type="Resource" id="Resource_svwnf"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("10_m6nqb")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
+[sub_resource type="Resource" id="Resource_g6lje"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("11_72ohh")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
+[sub_resource type="Resource" id="Resource_ymuub"]
+script = ExtResource("1_ceq06")
+effect = ExtResource("12_56pyc")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
 [sub_resource type="Resource" id="Resource_trans_1"]
 script = ExtResource("29_ovaqm")
 transition = ExtResource("30_wv3df")
@@ -65,6 +95,6 @@ script = ExtResource("34_xak6b")
 name = "Extra Effects"
 description = "Extra effects (full version addition)."
 author = "Voylin"
-custom_effects = Array[ExtResource("1_ceq06")]([SubResource("Resource_eff_6"), SubResource("Resource_eff_15"), SubResource("Resource_eff_19"), SubResource("Resource_eff_21"), SubResource("Resource_464ft"), SubResource("Resource_qhdrf")])
+custom_effects = Array[ExtResource("1_ceq06")]([SubResource("Resource_eff_6"), SubResource("Resource_eff_15"), SubResource("Resource_eff_19"), SubResource("Resource_eff_21"), SubResource("Resource_464ft"), SubResource("Resource_qhdrf"), SubResource("Resource_3s3x1"), SubResource("Resource_lo652"), SubResource("Resource_svwnf"), SubResource("Resource_g6lje"), SubResource("Resource_ymuub")])
 custom_transitions = Array[ExtResource("29_ovaqm")]([SubResource("Resource_trans_1"), SubResource("Resource_trans_2"), SubResource("Resource_trans_3"), SubResource("Resource_trans_4")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"

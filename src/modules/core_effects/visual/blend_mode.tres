@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_t34ue"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_mode"]
+[sub_resource type="Resource" id="Resource_t34ue"]
 script = ExtResource("1_param")
 id = "mode"
 nickname = "Blend Mode"
@@ -17,5 +17,5 @@ keyframeable = false
 script = ExtResource("2_effect")
 id = "blend_mode"
 nickname = "Blend Mode"
-params = Array[ExtResource("1_param")]([SubResource("Resource_mode")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_t34ue")])
 shader_path = "uid://cqy0pix4fcocp"

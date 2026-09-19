@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_horizontal"]
+[sub_resource type="Resource" id="Resource_lhuv5"]
 script = ExtResource("1_param")
 id = "horizontal"
 nickname = "param_horizontal"
@@ -14,7 +14,7 @@ max_value = null
 keyframeable = false
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_vertical"]
+[sub_resource type="Resource" id="Resource_hejku"]
 script = ExtResource("1_param")
 id = "vertical"
 nickname = "param_vertical"
@@ -28,5 +28,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "flip"
 nickname = "Flip"
-params = Array[ExtResource("1_param")]([SubResource("Resource_horizontal"), SubResource("Resource_vertical")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_lhuv5"), SubResource("Resource_hejku")])
 shader_path = "uid://dtcpk7vw3ujdx"

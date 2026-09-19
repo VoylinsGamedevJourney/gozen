@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://cgoxo1qxt55kx"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_5ugkc"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_8d5es"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_v8ob8"]
+
+[sub_resource type="Resource" id="Resource_pngp3"]
+script = ExtResource("2_8d5es")
+id = "frequency"
+nickname = "Frequency"
+default_value = 0.1
+min_value = 0.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_1jew5"]
+script = ExtResource("2_8d5es")
+id = "max_block_height"
+nickname = "Max Height"
+tooltip = "Maximum height of the glitch \"blocks\"."
+default_value = 20.0
+min_value = 3.0
+max_value = 200.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_33owm"]
+script = ExtResource("2_8d5es")
+id = "intensity"
+nickname = "Intensity"
+default_value = 0.01
+min_value = 0.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_shd2h"]
+script = ExtResource("2_8d5es")
+id = "color_intensity"
+nickname = "Color Shift"
+default_value = 0.0
+min_value = 0.0
+max_value = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_v8ob8")
+id = "glitch"
+nickname = "Glitch"
+params = Array[ExtResource("2_8d5es")]([SubResource("Resource_pngp3"), SubResource("Resource_1jew5"), SubResource("Resource_33owm"), SubResource("Resource_shd2h")])
+shader_path = "uid://b323jbsg1bduv"
+metadata/_custom_type_script = "uid://jveevg12khsa"

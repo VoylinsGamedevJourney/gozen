@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://ddiffmsr7alnd"
+path="res://.godot/imported/wave.glsl-f26a8a0a4146735c97b73bbf3f0c41f8.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/wave.glsl"
+dest_files=["res://.godot/imported/wave.glsl-f26a8a0a4146735c97b73bbf3f0c41f8.res"]
+
+[params]
+

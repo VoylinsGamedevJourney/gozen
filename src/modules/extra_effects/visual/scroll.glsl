@@ -11,15 +11,12 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-	float radius;
-	vec2 size;
-	vec2 center;
+	vec2 init_pos;
+	vec2 speed;
+	int pass_index;
+	int frame_nr;
 } params;
 
-
-float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
-	return length(max(abs(CenterPosition) - Size + Radius, 0.0)) - Radius;
-}
 
 
 void main() {
@@ -30,12 +27,7 @@ void main() {
 		return;
 	}
 
-	vec4 color = texelFetch(source_image, id, 0);
-	vec2 pos = vec2(id.x, id.y) - params.center;
-	vec2 size = params.size / 2.0;
-	float distance = roundedBoxSDF(pos, size, params.radius);
-	float alpha = 1.0 - smoothstep(-0.5, 1.0, distance); // Smoothstep of 1.5 pixels.
-
-	color.a *= alpha;
-	imageStore(output_image, id, color);
+	vec2 scroll_offset = params.init_pos + (params.speed * float(params.frame_nr));
+	ivec2 source_id = ivec2(mod(vec2(id) - scroll_offset, vec2(out_size)));
+	imageStore(output_image, id, texelFetch(source_image, source_id, 0));
 }

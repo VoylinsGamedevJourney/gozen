@@ -11,31 +11,30 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-	float radius;
-	vec2 size;
-	vec2 center;
+	vec2 factor;
 } params;
 
-
-float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
-	return length(max(abs(CenterPosition) - Size + Radius, 0.0)) - Radius;
-}
 
 
 void main() {
 	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
 	ivec2 out_size = imageSize(output_image);
-
 	if (id.x >= out_size.x || id.y >= out_size.y) {
 		return;
 	}
 
-	vec4 color = texelFetch(source_image, id, 0);
-	vec2 pos = vec2(id.x, id.y) - params.center;
-	vec2 size = params.size / 2.0;
-	float distance = roundedBoxSDF(pos, size, params.radius);
-	float alpha = 1.0 - smoothstep(-0.5, 1.0, distance); // Smoothstep of 1.5 pixels.
+	vec2 uv = vec2(id) / vec2(out_size);
+	vec2 centered_uv = uv - 0.5;
 
-	color.a *= alpha;
+	vec2 sheared_uv;
+	sheared_uv.x = centered_uv.x - (params.factor.x * centered_uv.y);
+	sheared_uv.y = centered_uv.y - (params.factor.y * centered_uv.x);
+	sheared_uv += 0.5;
+
+	vec4 color = vec4(0.0);
+	if (sheared_uv.x >= 0.0 && sheared_uv.x <= 1.0 && sheared_uv.y >= 0.0 && sheared_uv.y <= 1.0) {
+		color = textureLod(source_image, sheared_uv, 0.0);
+	}
+
 	imageStore(output_image, id, color);
 }

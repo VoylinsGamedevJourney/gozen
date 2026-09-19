@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_temperature"]
+[sub_resource type="Resource" id="Resource_md48l"]
 script = ExtResource("1_param")
 id = "temperature"
 nickname = "Temperature"
@@ -13,7 +13,7 @@ min_value = -1.0
 max_value = 1.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_tint"]
+[sub_resource type="Resource" id="Resource_rkn58"]
 script = ExtResource("1_param")
 id = "tint"
 nickname = "Tint"
@@ -26,5 +26,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "white_balance"
 nickname = "White Balance"
-params = Array[ExtResource("1_param")]([SubResource("Resource_temperature"), SubResource("Resource_tint")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_md48l"), SubResource("Resource_rkn58")])
 shader_path = "uid://qkfnt7idf5ng"

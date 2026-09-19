@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="1_param"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_offset"]
+[sub_resource type="Resource" id="Resource_icj3m"]
 script = ExtResource("1_param")
 id = "offset"
 nickname = "Offset"
@@ -15,7 +15,7 @@ step = 1.0
 is_linkable = true
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_fade"]
+[sub_resource type="Resource" id="Resource_2trpa"]
 script = ExtResource("1_param")
 id = "fade"
 nickname = "Fade / Softness"
@@ -25,7 +25,7 @@ max_value = 200.0
 step = 0.5
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_size"]
+[sub_resource type="Resource" id="Resource_auc7a"]
 script = ExtResource("1_param")
 id = "size"
 nickname = "Size"
@@ -36,7 +36,7 @@ max_value = 200.0
 step = 0.1
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 
-[sub_resource type="Resource" id="Resource_color"]
+[sub_resource type="Resource" id="Resource_8iy8f"]
 script = ExtResource("1_param")
 id = "color"
 nickname = "Shadow Color"
@@ -49,5 +49,5 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("2_effect")
 id = "drop_shadow"
 nickname = "Drop Shadow"
-params = Array[ExtResource("1_param")]([SubResource("Resource_offset"), SubResource("Resource_fade"), SubResource("Resource_size"), SubResource("Resource_color")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_icj3m"), SubResource("Resource_2trpa"), SubResource("Resource_auc7a"), SubResource("Resource_8iy8f")])
 shader_path = "uid://cvncclpbfug05"

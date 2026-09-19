@@ -29,7 +29,7 @@ void main() {
 	}
 
 	vec4 center = texelFetch(source_image, id, 0);
-	vec4 up     = texelFetch(source_image, clamp(id + ivec2(0, -1), ivec2(0), out_size - ivec2(1)), 0);
+	vec4 up	 = texelFetch(source_image, clamp(id + ivec2(0, -1), ivec2(0), out_size - ivec2(1)), 0);
 	vec4 down   = texelFetch(source_image, clamp(id + ivec2(0, 1), ivec2(0), out_size - ivec2(1)), 0);
 	vec4 left   = texelFetch(source_image, clamp(id + ivec2(-1, 0), ivec2(0), out_size - ivec2(1)), 0);
 	vec4 right  = texelFetch(source_image, clamp(id + ivec2(1, 0), ivec2(0), out_size - ivec2(1)), 0);

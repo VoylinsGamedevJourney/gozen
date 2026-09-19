@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://dciykad3nywrm"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_svwnf"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_nnj57"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_1erj8"]
+
+[sub_resource type="Resource" id="Resource_svwnf"]
+script = ExtResource("2_nnj57")
+id = "horizontal"
+nickname = "Horizontal"
+default_value = true
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_nnj57"]
+script = ExtResource("2_nnj57")
+id = "vertical"
+nickname = "Vertical"
+default_value = false
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_1erj8"]
+script = ExtResource("2_nnj57")
+id = "amplitude"
+nickname = "Amplitude"
+default_value = 20.0
+min_value = 0.0
+max_value = 200.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_v50ei"]
+script = ExtResource("2_nnj57")
+id = "frequency"
+nickname = "Frequency"
+default_value = 10.0
+min_value = 0.1
+max_value = 100.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_0gr6i"]
+script = ExtResource("2_nnj57")
+id = "speed"
+nickname = "Speed"
+default_value = 5.0
+min_value = -50.0
+max_value = 50.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_1erj8")
+id = "wave"
+nickname = "Wave"
+params = Array[ExtResource("2_nnj57")]([SubResource("Resource_svwnf"), SubResource("Resource_nnj57"), SubResource("Resource_1erj8"), SubResource("Resource_v50ei"), SubResource("Resource_0gr6i")])
+shader_path = "uid://ddiffmsr7alnd"
+metadata/_custom_type_script = "uid://jveevg12khsa"

@@ -5,25 +5,25 @@
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 [ext_resource type="PackedScene" uid="uid://cmaskbtn" path="res://modules/core_effects/visual/ui/mask_clear_button.tscn" id="2_maskbtn"]
 
-[sub_resource type="Resource" id="UI_invert"]
+[sub_resource type="Resource" id="Resource_rg0b7"]
 script = ExtResource("1_yojuv")
 param_id = "invert"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_softness"]
+[sub_resource type="Resource" id="Resource_lnp22"]
 script = ExtResource("1_yojuv")
 param_id = "softness"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="UI_clear"]
+[sub_resource type="Resource" id="Resource_vltv6"]
 script = ExtResource("1_yojuv")
 custom_ui = ExtResource("2_maskbtn")
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="Resource_points"]
+[sub_resource type="Resource" id="Resource_wynl7"]
 script = ExtResource("1_param")
 id = "points"
 nickname = "Points"
@@ -32,16 +32,16 @@ min_value = null
 max_value = null
 has_slider = false
 
-[sub_resource type="Resource" id="Resource_invert"]
+[sub_resource type="Resource" id="Resource_oy35d"]
 script = ExtResource("1_param")
-id = "invert"
-nickname = "Invert Mask"
-default_value = false
-min_value = null
-max_value = null
-has_slider = false
+id = "softness"
+nickname = "Feather / Softness"
+default_value = 0.0
+min_value = 0.0
+max_value = 0.2
+step = 0.005
 
-[sub_resource type="Resource" id="Resource_softness"]
+[sub_resource type="Resource" id="Resource_vp8uj"]
 script = ExtResource("1_param")
 id = "softness"
 nickname = "Feather / Softness"
@@ -55,7 +55,7 @@ script = ExtResource("2_effect")
 id = "mask"
 nickname = "Polygon Mask"
 tooltip = "Draw a polygon mask directly onto the video. Left click on the video preview to add and drag points. Right click on points to remove them."
-custom_ui = Array[ExtResource("1_yojuv")]([SubResource("UI_invert"), SubResource("UI_softness"), SubResource("UI_clear")])
-params = Array[ExtResource("1_param")]([SubResource("Resource_points"), SubResource("Resource_invert"), SubResource("Resource_softness")])
+custom_ui = Array[ExtResource("1_yojuv")]([SubResource("Resource_rg0b7"), SubResource("Resource_lnp22"), SubResource("Resource_vltv6")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_wynl7"), SubResource("Resource_oy35d"), SubResource("Resource_vp8uj")])
 shader_path = "uid://da65k6hyuxliu"
 custom_overlay_path = "uid://bjc14dchyyd1o"

@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_whd3x"]
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="2_effect"]
 
-[sub_resource type="Resource" id="Resource_amount"]
+[sub_resource type="Resource" id="Resource_whd3x"]
 script = ExtResource("1_param")
 id = "amount"
 nickname = "Amount"
@@ -12,7 +12,7 @@ default_value = 0.1
 min_value = 0.0
 max_value = 1.0
 
-[sub_resource type="Resource" id="Resource_seed"]
+[sub_resource type="Resource" id="Resource_a3rba"]
 script = ExtResource("1_param")
 id = "seed"
 nickname = "Seed (Animate for movement)"
@@ -24,5 +24,5 @@ max_value = 1000.0
 script = ExtResource("2_effect")
 id = "noise"
 nickname = "Noise / Grain"
-params = Array[ExtResource("1_param")]([SubResource("Resource_amount"), SubResource("Resource_seed")])
+params = Array[ExtResource("1_param")]([SubResource("Resource_whd3x"), SubResource("Resource_a3rba")])
 shader_path = "uid://6spda5dy0prx"

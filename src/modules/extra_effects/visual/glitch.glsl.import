@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b323jbsg1bduv"
+path="res://.godot/imported/glitch.glsl-39707beb0638126d1ab4703c57be1ee4.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/glitch.glsl"
+dest_files=["res://.godot/imported/glitch.glsl-39707beb0638126d1ab4703c57be1ee4.res"]
+
+[params]
+

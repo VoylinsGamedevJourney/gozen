@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b0ag0aqseo5px"
+path="res://.godot/imported/scroll.glsl-2c100156fe38b176a9b4b31a83b5c805.res"
+
+[deps]
+
+source_file="res://modules/extra_effects/visual/scroll.glsl"
+dest_files=["res://.godot/imported/scroll.glsl-2c100156fe38b176a9b4b31a83b5c805.res"]
+
+[params]
+
