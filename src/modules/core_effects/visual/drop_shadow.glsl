@@ -13,6 +13,7 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 layout(set = 0, binding = 2, std140) uniform Params {
     vec2 offset;
     float fade;
+    float size;
     vec4 color;
 } params;
 
@@ -29,6 +30,7 @@ void main() {
     ivec2 shadow_id = id - ivec2(params.offset);
     vec4 shadow_color = vec4(0.0);
     float shadow_alpha = 0.0;
+
     if (params.fade > 0.0) { // Probably not great to have an if statement here.
         float weight_sum = 0.0;
         int NUM_SAMPLES = clamp(int(params.fade * 3.0), 32, 128);
@@ -49,6 +51,7 @@ void main() {
             shadow_alpha = texelFetch(source_image, shadow_id, 0).a;
         }
     }
+	shadow_alpha = (params.size > 0.0) ? (1.0 - pow(1.0 - clamp(shadow_alpha, 0.0, 1.0), params.size)) : 0.0;
     shadow_color = vec4(params.color.rgb, params.color.a * shadow_alpha);
 
     float out_a = fg_color.a + shadow_color.a * (1.0 - fg_color.a);
