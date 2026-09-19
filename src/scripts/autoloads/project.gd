@@ -64,17 +64,21 @@ func new_project(request: RequestProjectNew) -> void:
 	get_window().title = "GoZen - %s" % get_project_name()
 	_update_recent_projects(get_project_path())
 	PopupManager.close_all()
-	if !data.project_path.is_empty(): save()
+	if !data.project_path.is_empty():
+		save()
 
 	set_background_color(request.background_color)
 
 	is_loaded = true
-	if !data.project_path.is_empty(): _auto_save()
+	if !data.project_path.is_empty():
+		_auto_save()
 	project_ready.emit()
 
 
 func save(auto_saved: bool = false) -> void:
-	if data.project_path.is_empty(): save_as()
+	if data.project_path.is_empty():
+		save_as()
+		return
 
 	data.playhead = EditorCore.frame_nr
 	var was_unsaved: bool = unsaved_changes
