@@ -76,21 +76,18 @@ layout_mode = 2
 
 [node name="TransitionsContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=1507050130]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_vdjnm")
 title = "Transitions"
 
 [node name="VisualsContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=1695060905]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_wv8tu")
 title = "Visual effects"
 
 [node name="AudioContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=1481519147]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7204674, 0.7204675, 0.7204674, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_b381o")
 title = "Audio effects"

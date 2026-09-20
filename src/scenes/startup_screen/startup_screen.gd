@@ -103,7 +103,8 @@ func dismiss() -> void:
 		_on_create_quick_h_project_button_pressed()
 
 
-func get_user_profiles_path() -> String: return Utils.get_config_dir() + "project_profiles/"
+func get_user_profiles_path() -> String:
+	return Utils.get_config_dir() + "profiles/project/"
 
 
 func _set_recent_projects() -> void:
