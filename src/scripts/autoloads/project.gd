@@ -11,6 +11,8 @@ signal framerate_changed
 const EXTENSION: String = ".gozen"
 const RECENT_PROJECTS_FILE: String = "user://recent_projects"
 
+const AUTO_SAVE_TIME: int = 5 * 60
+
 
 var data: ProjectData = ProjectData.new()
 var is_loaded: bool = false
@@ -285,11 +287,13 @@ func _auto_save() -> void:
 		auto_save_timer = Timer.new()
 		add_child(auto_save_timer)
 		auto_save_timer.timeout.connect(_auto_save)
+		auto_save_timer.start(AUTO_SAVE_TIME)
+		return
 
 	if Settings.get_auto_save():
 		if is_loaded and !RenderManager.is_encoding and !data.project_path.is_empty():
 			save.call_deferred(true)
-		auto_save_timer.start(5 * 60) # Default time is every 5 minutes.
+		auto_save_timer.start(AUTO_SAVE_TIME)
 	else:
 		auto_save_timer.stop()
 

@@ -27,13 +27,18 @@ var _drag_start_pos: Vector2 = Vector2.ZERO
 
 
 
-
 func setup(p_effect: Effect, p_duration: int, p_current_frame: int) -> void:
 	effect = p_effect
 	clip_duration = p_duration
 	current_relative_frame = p_current_frame
 	custom_minimum_size.y = 16
+	color = get_theme_color("bg_color", "KeyframeTrack")
 	queue_redraw()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_THEME_CHANGED:
+		color = get_theme_color("bg_color", "KeyframeTrack")
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -108,7 +113,6 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
-	color = get_theme_color("bg_color", "KeyframeTrack")
 	var width: float = size.x - (MARGIN * 2)
 	var mid_y: float = size.y / 2.0
 
