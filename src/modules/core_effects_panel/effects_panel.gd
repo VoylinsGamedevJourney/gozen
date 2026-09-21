@@ -591,13 +591,19 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 			button_visible.texture_normal = load(Library.ICON_INVISIBLE)
 
 		button_preset.texture_normal = load(Library.ICON_EFFECT_SETTINGS)
-		button_preset.tooltip_text = tr("Presets & Options")
+		button_preset.tooltip_text = tr("Presets & Options.")
+
+		var button_keyframe_all: TextureButton = TextureButton.new()
+		button_keyframe_all.name = "KeyframeAllButton"
+		button_keyframe_all.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+		button_keyframe_all.tooltip_text = tr("Keyframe all parameters.")
 
 		button_visible.pressed.connect(_on_switch_enabled.bind(effect, is_visual))
 		button_preset.pressed.connect(func() -> void:
 				_show_preset_popup(false, is_visual, effect, button_preset))
+		button_keyframe_all.pressed.connect(_on_keyframe_all_pressed.bind(effect, is_visual))
 
-		for button: TextureButton in [button_preset, button_visible]:
+		for button: TextureButton in [button_preset, button_visible, button_keyframe_all]:
 			button.ignore_texture_size = true
 			button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 			button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -616,19 +622,32 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 
 		container.add_title_bar_control(button_preset)
 		container.add_title_bar_control(button_visible)
+		container.add_title_bar_control(button_keyframe_all)
 		container.add_title_bar_control(button_drag)
 	else:
+		var button_keyframe_all: TextureButton = TextureButton.new()
+		button_keyframe_all.name = "KeyframeAllButton"
+		button_keyframe_all.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+		button_keyframe_all.tooltip_text = tr("Keyframe all parameters.")
+		button_keyframe_all.ignore_texture_size = true
+		button_keyframe_all.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
+		button_keyframe_all.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		button_keyframe_all.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		button_keyframe_all.pressed.connect(_on_keyframe_all_pressed.bind(effect, is_visual))
+
 		var button_reset: TextureButton = TextureButton.new()
 		button_reset.texture_normal = load(Library.ICON_REFRESH)
 		button_reset.ignore_texture_size = true
 		button_reset.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		button_reset.tooltip_text = tr("Reset to default")
+		button_reset.tooltip_text = tr("Reset to default.")
 		if effect.id == "text":
 			button_reset.pressed.connect(_on_reset_text_effect)
 		elif effect.id == "pck_effect_params":
 			button_reset.pressed.connect(_on_reset_pck_effect)
+
+		container.add_title_bar_control(button_keyframe_all)
 		container.add_title_bar_control(button_reset)
 
 	var content_vbox: VBoxContainer = VBoxContainer.new()
@@ -666,14 +685,34 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 				content_vbox.add_child(custom_scene)
 
 	if keyframes_found:
+		var track_hbox: HBoxContainer = HBoxContainer.new()
+		track_hbox.name = "TrackHBox"
 		var track_scroll: ScrollContainer = ScrollContainer.new()
 		track_scroll.name = "TrackScroll"
 		var track: KeyframeTrack = KeyframeTrack.new()
 
+		var prev_button: TextureButton = TextureButton.new()
+		prev_button.texture_normal = load(Library.ICON_PREV_KEYFRAME)
+		prev_button.ignore_texture_size = true
+		prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		prev_button.custom_minimum_size = Vector2(10, 10)
+		prev_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		prev_button.tooltip_text = tr("Previous keyframe.")
+		prev_button.pressed.connect(_jump_prev_keyframe_all.bind(effect))
+
+		var next_button: TextureButton = TextureButton.new()
+		next_button.texture_normal = load(Library.ICON_NEXT_KEYFRAME)
+		next_button.ignore_texture_size = true
+		next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		next_button.custom_minimum_size = Vector2(10, 10)
+		next_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		next_button.tooltip_text = tr("Next keyframe.")
+		next_button.pressed.connect(_jump_next_keyframe_all.bind(effect))
+
 		track_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		track_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 		track_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		track_scroll.custom_minimum_size.y = 32
+		track_scroll.custom_minimum_size.y = 28
 
 		track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -684,8 +723,12 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
 
 		track_scroll.add_child(track)
+		track_hbox.add_child(prev_button)
+		track_hbox.add_child(track_scroll)
+		track_hbox.add_child(next_button)
+
 		content_vbox.add_child(HSeparator.new())
-		content_vbox.add_child(track_scroll)
+		content_vbox.add_child(track_hbox)
 	return container
 
 
@@ -733,6 +776,59 @@ func _on_reset_pck_effect() -> void:
 	if pck_effect:
 		_on_reset_effect(pck_effect, true)
 
+func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
+	var relative_frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
+
+	var all_keyframed: bool = true
+	var has_keyframeable: bool = false
+	for param: EffectParam in effect.params:
+		if !param.keyframeable:
+			continue
+
+		has_keyframeable = true
+		if not (effect.keyframes.get(param.id, {}) as Dictionary).has(relative_frame_nr):
+			all_keyframed = false
+			break
+
+	if not has_keyframeable:
+		return
+
+	InputManager.undo_redo.create_action("Keyframe all parameters")
+
+	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
+		for param: EffectParam in effect.params:
+			if param.keyframeable:
+				var param_id: String = param.id
+				var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
+				if all_keyframed:
+					if relative_frame_nr != 0 and param_keyframes.has(relative_frame_nr):
+						var old_value: Variant = param_keyframes[relative_frame_nr]
+						InputManager.undo_redo.add_do_method(FileLogic._remove_text_keyframe.bind(active_file, param_id, relative_frame_nr))
+						InputManager.undo_redo.add_undo_method(FileLogic._set_text_keyframe.bind(active_file, param_id, relative_frame_nr, old_value))
+				else:
+					if not param_keyframes.has(relative_frame_nr):
+						var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
+						InputManager.undo_redo.add_do_method(FileLogic._set_text_keyframe.bind(active_file, param_id, relative_frame_nr, value))
+						InputManager.undo_redo.add_undo_method(FileLogic._remove_text_keyframe.bind(active_file, param_id, relative_frame_nr))
+	else:
+		var index: int = _get_effect_index(effect, is_visual)
+		for param: EffectParam in effect.params:
+			if param.keyframeable:
+				var param_id: String = param.id
+				var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
+				if all_keyframed:
+					if relative_frame_nr != 0 and param_keyframes.has(relative_frame_nr):
+						var old_value: Variant = param_keyframes[relative_frame_nr]
+						InputManager.undo_redo.add_do_method(EffectsHandler._remove_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr))
+						InputManager.undo_redo.add_undo_method(EffectsHandler._set_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr, old_value))
+				else:
+					if not param_keyframes.has(relative_frame_nr):
+						var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
+						InputManager.undo_redo.add_do_method(EffectsHandler._set_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr, value))
+						InputManager.undo_redo.add_undo_method(EffectsHandler._remove_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr))
+
+	InputManager.undo_redo.commit_action()
+
 
 func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect: Effect, is_visual: bool) -> void:
 	var effect_index: int = _get_effect_index(effect, is_visual)
@@ -767,7 +863,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 
 	var param_reset_button: TextureButton = TextureButton.new()
 	param_reset_button.texture_normal = load(Library.ICON_REFRESH)
-	param_reset_button.tooltip_text = tr("Reset parameter")
+	param_reset_button.tooltip_text = tr("Reset parameter.")
 	param_reset_button.ignore_texture_size = true
 	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	param_reset_button.custom_minimum_size = Vector2(14, 14)
@@ -1050,7 +1146,7 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 				link_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 				link_button.custom_minimum_size = Vector2(14, 14)
 				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-				link_button.tooltip_text = "Link X and Y"
+				link_button.tooltip_text = "Link X and Y."
 
 				link_button.toggled.connect(func(toggled: bool) -> void:
 						param.is_linked = toggled
@@ -1136,6 +1232,27 @@ func _update_ui_values() -> void:
 
 func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer, frame_nr: int) -> void:
 	var keyframes_found: bool = false
+	var container: FoldableContainer = content_vbox.get_parent() as FoldableContainer
+	if container:
+		var keyframe_all_button: TextureButton = container.find_child("KeyframeAllButton", true, false)
+		if keyframe_all_button:
+			var all_keyframed: bool = true
+			var has_keyframeable: bool = false
+			for param: EffectParam in effect.params:
+				if param.keyframeable:
+					has_keyframeable = true
+					var effect_keyframes: Dictionary = effect.keyframes.get(param.id, {})
+					if not effect_keyframes.has(frame_nr):
+						all_keyframed = false
+						break
+			if has_keyframeable:
+				keyframe_all_button.visible = true
+				if all_keyframed:
+					keyframe_all_button.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME)
+				else:
+					keyframe_all_button.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+			else:
+				keyframe_all_button.visible = false
 
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
@@ -1160,12 +1277,14 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 			keyframes_found = true
 
 	if keyframes_found:
-		var track_scroll: ScrollContainer = content_vbox.get_node_or_null("TrackScroll")
-		if track_scroll:
-			var track: KeyframeTrack = track_scroll.get_child(0)
-			track.current_relative_frame = frame_nr
-			track.clip_duration = active_clip.duration
-			track.queue_redraw()
+		var track_hbox: HBoxContainer = content_vbox.get_node_or_null("TrackHBox")
+		if track_hbox:
+			var track_scroll: ScrollContainer = track_hbox.get_node_or_null("TrackScroll")
+			if track_scroll:
+				var track: KeyframeTrack = track_scroll.get_child(0)
+				track.current_relative_frame = frame_nr
+				track.clip_duration = active_clip.duration
+				track.queue_redraw()
 
 
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
@@ -1273,7 +1392,7 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 func _get_add_effects_button(type: int) -> TextureButton:
 	var texture_button: TextureButton = TextureButton.new()
 	texture_button.texture_normal = load(Library.ICON_ADD)
-	texture_button.tooltip_text = tr("Add effects")
+	texture_button.tooltip_text = tr("Add effects.")
 	texture_button.ignore_texture_size = true
 	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -1344,6 +1463,49 @@ func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 		if key > relative_frame:
 			target = key
 			break
+	EditorCore.set_frame(active_clip.start + target)
+
+func _jump_prev_keyframe_all(effect: Effect) -> void:
+	if not active_clip:
+		return
+
+	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
+	var target: int = -1
+	for param: EffectParam in effect.params:
+		var param_id: String = param.id
+		if not effect.keyframes.has(param_id) or not param.keyframeable:
+			continue
+
+		var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
+		for key: int in keys:
+			if key < relative_frame:
+				target = maxi(target, key)
+
+	if target == -1:
+		target = 0
+	EditorCore.set_frame(active_clip.start + target)
+
+func _jump_next_keyframe_all(effect: Effect) -> void:
+	if not active_clip:
+		return
+
+	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
+	var target: int = -1
+	for param: EffectParam in effect.params:
+		var param_id: String = param.id
+		if not effect.keyframes.has(param_id) or not param.keyframeable:
+			continue
+
+		var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
+		for key: int in keys:
+			if key > relative_frame:
+				if target == -1:
+					target = key
+				else:
+					target = mini(target, key)
+
+	if target == -1:
+		target = active_clip.duration
 	EditorCore.set_frame(active_clip.start + target)
 
 
