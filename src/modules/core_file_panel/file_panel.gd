@@ -32,6 +32,7 @@ const IMAGE_FORMATS: Array[String] = ["*.png", "*.jpg", "*.webp"]
 
 var folder_items: Dictionary[String, TreeItem] = {} ## { folder_path: tree_item }
 var file_items: Dictionary[int, TreeItem] = {} ## { file: tree_item }
+var _tree_rebuild_pending: bool = false
 
 
 
@@ -65,7 +66,10 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if get_global_rect().has_point(get_global_mouse_position()):
-		if tree.get_selected() and event.is_action_pressed("delete_file", false, true):
+		if event.is_action_pressed("ui_cancel", false, true):
+			tree.deselect_all()
+			accept_event()
+		elif tree.get_selected() and event.is_action_pressed("delete_file", false, true):
 			_on_popup_option_pressed(PopupAction.DELETE)
 			accept_event()
 
@@ -110,6 +114,9 @@ func _file_menu_pressed(id: int) -> void:
 
 
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
+	if button_index == MOUSE_BUTTON_LEFT and empty:
+		return tree.deselect_all()
+
 	if button_index != MOUSE_BUTTON_RIGHT:
 		return
 
@@ -325,8 +332,13 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		var file_ids: Array[int] = []
 
 		if str(metadata).is_valid_int():
-			file_ids.append(metadata as int) # Single file.
+			var file_id: int = metadata as int
+			file_ids.append(file_id) # Single file.
+			if file_id not in draggable.ids:
+				draggable.ids.append(file_id)
 		else:
+			var folder_path: String = str(metadata)
+			draggable.folders.append(folder_path)
 			file_ids = _get_recursive_ids(selected) # Folder.
 
 		for file_id: int in file_ids:
@@ -488,35 +500,51 @@ func _on_folder_deleted(path: String) -> void:
 			printerr("FilePanel: Couldn't erase '%s' from folder_items!" % path)
 
 
-func _on_folder_renamed(old_path: String, new_path: String) -> void:
-	var paths_to_update: Array[String] = []
-	var length: int = old_path.length()
+func _on_folder_renamed(_old_path: String, _new_path: String) -> void:
+	if not _tree_rebuild_pending:
+		_tree_rebuild_pending = true
+		_rebuild_tree.call_deferred()
 
-	for folder_path: String in folder_items.keys():
-		if folder_path.begins_with(old_path):
-			paths_to_update.append(folder_path)
 
-	# Update items mapping and metadata.
-	for folder_path: String in paths_to_update:
-		var updated_path: String = new_path + folder_path.substr(length)
-		var item: TreeItem = folder_items[folder_path]
+func _rebuild_tree() -> void:
+	_tree_rebuild_pending = false
 
-		if !folder_items.erase(folder_path):
-			printerr("FilePanel: Couldn't erase '%s' to folder_items!" % folder_path)
-		folder_items[updated_path] = item
-		item.set_metadata(0, updated_path)
+	var expanded_folders: Array[String] = []
+	for path: String in folder_items:
+		var item: TreeItem = folder_items[path]
+		if is_instance_valid(item) and not item.collapsed:
+			expanded_folders.append(path)
 
-		# Rename the actual path of the exact folder
-		if folder_path == old_path:
-			var new_folder_name: String = new_path.trim_suffix("/").get_file()
-			item.set_text(0, new_folder_name)
+	var selected_metadata: Variant = null
+	var selected_item: TreeItem = tree.get_selected()
+	if is_instance_valid(selected_item):
+		selected_metadata = selected_item.get_metadata(0)
 
-	var parent_path: String = new_path.trim_suffix("/").get_base_dir()
-	if parent_path in ["", "/"]:
-		parent_path = "/"
-	else:
-		parent_path += "/"
-	_sort_folder(parent_path)
+	tree.clear()
+	folder_items.clear()
+	file_items.clear()
+
+	folder_items["/"] = tree.create_item()
+	folder_items["/"].set_metadata(0, "/")
+
+	for folder: String in FolderLogic.folders:
+		if not folder_items.has(folder):
+			_add_folder_to_tree(folder)
+
+	for file: FileData in FileLogic.files.values():
+		_add_file_to_tree(file)
+
+	for path: String in folder_items:
+		if folder_items.has(path) and is_instance_valid(folder_items[path]):
+			folder_items[path].collapsed = not (path in expanded_folders)
+
+	if selected_metadata != null:
+		if typeof(selected_metadata) == TYPE_STRING:
+			if folder_items.has(selected_metadata) and is_instance_valid(folder_items[selected_metadata]):
+				folder_items[selected_metadata].select(0)
+		else:
+			if file_items.has(selected_metadata) and is_instance_valid(file_items[selected_metadata]):
+				file_items[selected_metadata].select(0)
 
 
 func _get_recursive_ids(item: TreeItem) -> Array[int]:
@@ -606,5 +634,30 @@ func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 
 	var files: Array[FileData] = []
 	for file_id: int in draggable.ids:
-		files.append(FileLogic.files[file_id])
-	FileLogic.move(files, target_folder)
+		var file: FileData = FileLogic.files[file_id]
+		var in_dragged_folder: bool = false
+		for folder_path: String in draggable.folders:
+			if file.folder.begins_with(folder_path):
+				in_dragged_folder = true
+				break
+		if not in_dragged_folder:
+			files.append(file)
+	if not files.is_empty():
+		FileLogic.move(files, target_folder)
+
+	var top_folders: Array[String] = []
+	for folder_path: String in draggable.folders:
+		var is_sub: bool = false
+		for other: String in draggable.folders:
+			if folder_path != other and folder_path.begins_with(other):
+				is_sub = true
+				break
+
+		if not is_sub:
+			top_folders.append(folder_path)
+
+	for folder_path: String in top_folders:
+		var folder_name: String = folder_path.trim_suffix("/").get_file()
+		var new_path: String = target_folder + folder_name + "/"
+		if not target_folder.begins_with(folder_path) and folder_path != new_path:
+			FolderLogic.rename(folder_path, new_path)

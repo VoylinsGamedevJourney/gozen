@@ -6,6 +6,8 @@ const BASE_NAME: String = "<Draggable:%s-%s>"
 
 
 var ids: Array[int] = []
+var folders: Array[String] = []
+
 var duration: int = 0 ## Duration in frames.
 var is_file: bool = false ## ID's are file ids.
 
