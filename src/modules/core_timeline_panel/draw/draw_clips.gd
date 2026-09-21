@@ -249,19 +249,18 @@ func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_
 
 	# Draw handles.
 	if show_handles:
-		var current_handle_size: float = FADE_HANDLE_SIZE
-		var in_x: float = box_pos.x + fade.x * zoom
-		var out_x: float = box_pos.x + duration - fade.y * zoom - current_handle_size * 2
-		current_handle_size *= 2
+		var handle_size: float = FADE_HANDLE_SIZE * 2.0
+		var in_x: float = clampf(box_pos.x + fade.x * zoom - handle_size, box_pos.x, box_pos.x + duration - handle_size)
+		var out_x: float = clampf(box_pos.x + duration - fade.y * zoom, box_pos.x, box_pos.x + duration - handle_size)
 
 		var in_rect: Rect2
 		var out_rect: Rect2
 		if is_visual:
-			in_rect = Rect2(in_x, corner_y - current_handle_size, current_handle_size, current_handle_size)
-			out_rect = Rect2(out_x, corner_y - current_handle_size, current_handle_size, current_handle_size)
+			in_rect = Rect2(in_x, corner_y - handle_size, handle_size, handle_size)
+			out_rect = Rect2(out_x, corner_y - handle_size, handle_size, handle_size)
 		else:
-			in_rect = Rect2(in_x, corner_y, current_handle_size, current_handle_size)
-			out_rect = Rect2(out_x, corner_y, current_handle_size, current_handle_size)
+			in_rect = Rect2(in_x, corner_y, handle_size, handle_size)
+			out_rect = Rect2(out_x, corner_y, handle_size, handle_size)
 
 		draw_rect(in_rect, get_theme_color("fade_handle", "Timeline"))
 		draw_rect(out_rect, get_theme_color("fade_handle", "Timeline"))

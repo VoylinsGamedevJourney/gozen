@@ -426,24 +426,55 @@ func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeli
 		var y_pos: float = clip.track * Timeline.track_total_size
 		if clip.type & Type.GROUP_VISUAL:
 			var corner_y: float = y_pos + Timeline.track_height
-			var in_x: float = start_x + clip.effects.fade_visual.x * zoom
-			var out_x: float = end_x - clip.effects.fade_visual.y * zoom - handle_size * 2
+			var fade: Vector2 = clip.effects.fade_visual
+			var in_x: float = clampf(start_x + fade.x * zoom - handle_size * 2.0, start_x, end_x - handle_size * 2.0)
+			var out_x: float = clampf(end_x - fade.y * zoom, start_x, end_x - handle_size * 2.0)
 			var in_rect: Rect2 = Rect2(in_x, corner_y - handle_size * 2, handle_size * 2, handle_size * 2)
 			var out_rect: Rect2 = Rect2(out_x, corner_y - handle_size * 2, handle_size * 2, handle_size * 2)
-			if in_rect.grow(handle_size).has_point(mouse_pos):
+
+			var has_in: bool = in_rect.grow(handle_size).has_point(mouse_pos)
+			var has_out: bool = out_rect.grow(handle_size).has_point(mouse_pos)
+			if has_in and has_out:
+				if fade.x == 0 and fade.y > 0:
+					return Timeline.FadeTarget.new(clip, true, true)
+				elif fade.y == 0 and fade.x > 0:
+					return Timeline.FadeTarget.new(clip, false, true)
+
+				var in_dist: float = abs(mouse_pos.x - in_rect.get_center().x)
+				var out_dist: float = abs(mouse_pos.x - out_rect.get_center().x)
+				if out_dist < in_dist:
+					return Timeline.FadeTarget.new(clip, true, true)
+				else:
+					return Timeline.FadeTarget.new(clip, false, true)
+			elif has_in:
 				return Timeline.FadeTarget.new(clip, false, true)
-			if out_rect.grow(handle_size).has_point(mouse_pos):
+			elif has_out:
 				return Timeline.FadeTarget.new(clip, true, true)
 
 		if clip.type & Type.GROUP_AUDIO:
+			var fade: Vector2 = clip.effects.fade_audio
 			var corner_y: float = y_pos
-			var in_x: float = start_x + clip.effects.fade_audio.x * zoom
-			var out_x: float = end_x - clip.effects.fade_audio.y * zoom - handle_size * 2
+			var in_x: float = clampf(start_x + fade.x * zoom - handle_size * 2.0, start_x, end_x - handle_size * 2.0)
+			var out_x: float = clampf(end_x - fade.y * zoom, start_x, end_x - handle_size * 2.0)
 			var in_rect: Rect2 = Rect2(in_x, corner_y, handle_size * 2, handle_size * 2)
 			var out_rect: Rect2 = Rect2(out_x, corner_y, handle_size * 2, handle_size * 2)
-			if in_rect.grow(handle_size).has_point(mouse_pos):
+
+			var has_in: bool = in_rect.grow(handle_size).has_point(mouse_pos)
+			var has_out: bool = out_rect.grow(handle_size).has_point(mouse_pos)
+			if has_in and has_out:
+				if fade.x == 0 and fade.y > 0:
+					return Timeline.FadeTarget.new(clip, true, false)
+				elif fade.y == 0 and fade.x > 0:
+					return Timeline.FadeTarget.new(clip, false, false)
+				var in_dist: float = abs(mouse_pos.x - in_rect.get_center().x)
+				var out_dist: float = abs(mouse_pos.x - out_rect.get_center().x)
+				if out_dist < in_dist:
+					return Timeline.FadeTarget.new(clip, true, false)
+				else:
+					return Timeline.FadeTarget.new(clip, false, false)
+			elif has_in:
 				return Timeline.FadeTarget.new(clip, false, false)
-			if out_rect.grow(handle_size).has_point(mouse_pos):
+			elif has_out:
 				return Timeline.FadeTarget.new(clip, true, false)
 	return null
 
