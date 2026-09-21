@@ -134,12 +134,27 @@ func _notification(what: int) -> void:
 			drop_indicator_vbox = null
 
 
-func _get_drag_data_effect(_pos: Vector2, effect: Effect, is_visual: bool) -> Variant:
+func _get_drag_data_effect(pos: Vector2, effect: Effect, is_visual: bool, container: FoldableContainer = null, content: Control = null) -> Variant:
+	if container:
+		var title_height: float = 0.0
+		if container.folded:
+			title_height = container.size.y
+		elif content and content.position.y > 0:
+			title_height = content.position.y
+		else:
+			title_height = 30.0
+
+		if pos.y < 0 or pos.y > title_height:
+			return null
+
 	for overlay: Control in _drag_overlays:
-		if !is_instance_valid(overlay): continue
-		overlay.mouse_filter = Control.MOUSE_FILTER_PASS
+		if is_instance_valid(overlay):
+			overlay.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	var index: int = _get_effect_index(effect, is_visual)
+	if index == -1:
+		return null
+
 	var drag_data: RequestEffectDrag = RequestEffectDrag.new()
 	var preview: Label = Label.new()
 	drag_data.is_visual = is_visual
@@ -609,21 +624,9 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 			button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-		# Not a button but will act like a button. Easier to use for this use case.
-		var button_drag: TextureRect = TextureRect.new()
-		button_drag.texture = load(Library.ICON_MOVE_HANDLE)
-		button_drag.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
-		button_drag.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-		button_drag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		button_drag.mouse_default_cursor_shape = Control.CURSOR_DRAG
-		button_drag.mouse_filter = Control.MOUSE_FILTER_STOP
-		button_drag.set_drag_forwarding(
-				_get_drag_data_effect.bind(effect, is_visual), Callable(), Callable())
-
 		container.add_title_bar_control(button_preset)
 		container.add_title_bar_control(button_visible)
 		container.add_title_bar_control(button_keyframe_all)
-		container.add_title_bar_control(button_drag)
 	else:
 		var button_keyframe_all: TextureButton = TextureButton.new()
 		button_keyframe_all.name = "KeyframeAllButton"
@@ -654,13 +657,21 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 	container.add_child(content_vbox)
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	container.gui_input.connect(func(event: InputEvent) -> void:
-			if event is not InputEventMouseButton: return
+	if not is_file_effect:
+		container.set_drag_forwarding(
+				_get_drag_data_effect.bind(effect, is_visual, container, content_vbox), Callable(), Callable())
 
-			var event_mouse_button: InputEventMouseButton = event
-			if !event_mouse_button.pressed: return
-			elif event_mouse_button.button_index == MOUSE_BUTTON_LEFT:
-				EffectsHandler.effect_selected.emit(effect))
+	container.gui_input.connect(func(event: InputEvent) -> void:
+			if event is not InputEventMouseButton:
+				return
+
+			var event_mouse: InputEventMouseButton = event
+			if event_mouse.button_index == MOUSE_BUTTON_LEFT:
+				if event_mouse.pressed:
+					EffectsHandler.effect_selected.emit(effect)
+					container.folded = !container.folded
+				else:
+					container.folded = !container.folded)
 
 	# Adding effect params.
 	var keyframes_found: bool = false
