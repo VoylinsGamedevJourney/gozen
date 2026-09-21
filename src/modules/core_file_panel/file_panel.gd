@@ -331,15 +331,13 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 		var metadata: Variant = selected.get_metadata(0)
 		var file_ids: Array[int] = []
 
-		if str(metadata).is_valid_int():
+		if str(metadata).is_valid_int(): # File.
 			var file_id: int = metadata as int
-			file_ids.append(file_id) # Single file.
-			if file_id not in draggable.ids:
-				draggable.ids.append(file_id)
-		else:
+			file_ids.append(file_id)
+		else: # Folder.
 			var folder_path: String = str(metadata)
 			draggable.folders.append(folder_path)
-			file_ids = _get_recursive_ids(selected) # Folder.
+			file_ids = _get_recursive_ids(selected)
 
 		for file_id: int in file_ids:
 			if file_id in draggable.ids:
