@@ -17,8 +17,11 @@ layout(set = 0, binding = 2, std140) uniform Params {
 } params;
 
 
+
 float roundedBoxSDF(vec2 CenterPosition, vec2 Size, float Radius) {
-	return length(max(abs(CenterPosition) - Size + Radius, 0.0)) - Radius;
+	float r = clamp(Radius, 0.0, min(Size.x, Size.y));
+	vec2 q = abs(CenterPosition) - Size + vec2(r);
+	return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
 }
 
 
@@ -34,7 +37,7 @@ void main() {
 	vec2 pos = vec2(id.x, id.y) - params.center;
 	vec2 size = params.size / 2.0;
 	float distance = roundedBoxSDF(pos, size, params.radius);
-	float alpha = 1.0 - smoothstep(-0.5, 1.0, distance); // Smoothstep of 1.5 pixels.
+	float alpha = 1.0 - smoothstep(-0.5, 0.5, distance);
 
 	color.a *= alpha;
 	imageStore(output_image, id, color);

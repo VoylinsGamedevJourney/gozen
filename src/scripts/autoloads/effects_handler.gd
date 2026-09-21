@@ -26,10 +26,8 @@ var transition_instances: Dictionary[String, Effect] = {} ## { effect_id: effect
 var param_exceptions: Dictionary[String, Dictionary] = {
 	"transform": { "pivot": func() -> Vector2i: return Project.get_resolution_center() },
 	"rounded_corners": {
-		"width": func() -> float: return Project.get_resolution().x,
-		"height":  func() -> float: return Project.get_resolution().y,
-		"center_x": func() -> float: return Project.get_resolution_center().x,
-		"center_y": func() -> float: return Project.get_resolution_center().y
+		"size": func() -> Vector2: return Project.get_resolution(),
+		"center": func() -> Vector2: return Project.get_resolution_center(),
 	},
 	"vignette": {
 		"center": func() -> Vector2i: return Project.get_resolution_center(),

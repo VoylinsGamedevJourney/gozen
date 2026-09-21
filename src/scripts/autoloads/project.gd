@@ -468,7 +468,7 @@ func set_resolution(resolution: Vector2i) -> void:
 		if effect.id == "transform":
 			scale_params = ["pivot", "position"]
 		elif effect.id == "rounded_corners":
-			scale_params = ["width", "height", "center_x", "center_y"]
+			scale_params = ["size", "center"]
 		elif effect.id == "vignette":
 			scale_params = ["center"]
 
