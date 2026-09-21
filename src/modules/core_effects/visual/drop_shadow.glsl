@@ -33,17 +33,20 @@ void main() {
 
 	if (params.fade > 0.0) { // Probably not great to have an if statement here.
 		float weight_sum = 0.0;
-		int NUM_SAMPLES = clamp(int(params.fade * 3.0), 32, 128);
+		int NUM_SAMPLES = clamp(int(params.fade * 5.0), 32, 1024);
 
+		float sigma = max(params.fade / 3.0, 0.1);
+		float two_sigma_sq = 2.0 * sigma * sigma;
 		for (int i = 0; i < NUM_SAMPLES; i++) {
 			float theta = float(i) * 2.39996323;
 			float r = (sqrt(float(i) + 0.5) / sqrt(float(NUM_SAMPLES))) * params.fade;
 			ivec2 s_id = shadow_id + ivec2(round(cos(theta) * r), round(sin(theta) * r));
 
+			float weight = exp(-(r * r) / two_sigma_sq);
 			if (s_id.x >= 0 && s_id.y >= 0 && s_id.x < out_size.x && s_id.y < out_size.y) {
-				shadow_alpha += texelFetch(source_image, s_id, 0).a;
+				shadow_alpha += texelFetch(source_image, s_id, 0).a * weight;
 			}
-			weight_sum += 1.0;
+			weight_sum += weight;
 		}
 		shadow_alpha /= weight_sum;
 	} else {
