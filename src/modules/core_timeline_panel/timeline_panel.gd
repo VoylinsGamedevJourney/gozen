@@ -370,7 +370,8 @@ func _on_ui_cancel() -> void:
 func _get_clip_on_mouse(mouse_pos: Vector2 = get_local_mouse_position()) -> ClipData:
 	if mouse_pos.y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
-	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(mouse_pos), clampi(get_frame_from_mouse(mouse_pos) - 1, 0, Project.data.timeline_end))
+	var frame: int = maxi(floori(mouse_pos.x / Timeline.zoom), 0)
+	return TrackLogic.get_clip_at_overlap(get_track_from_mouse(mouse_pos), frame)
 
 
 func _get_resize_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeline.ResizeTarget:
@@ -383,18 +384,28 @@ func _get_resize_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Time
 	var zoom: float = Timeline.zoom
 	var mouse_x: float = mouse_pos.x
 	var handle_width: float = RESIZE_HANDLE_WIDTH
+	var best_target: Timeline.ResizeTarget = null
+	var best_distance: float = handle_width + 1.0
+
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
 		if (clip.duration * zoom) < 20.0:
 			continue
 		var start_x: float = clip.start * zoom
-		var end_x: float = (clip.end - 1) * zoom
+		var end_x: float = clip.end * zoom
 		var start_distance: float = abs(mouse_x - start_x)
 		var end_distance: float = abs(mouse_x - end_x)
+
 		if start_distance <= handle_width and start_distance < end_distance:
-			return Timeline.ResizeTarget.new(clip, false, clip.start, clip.duration)
+			if start_distance < best_distance or (start_distance == best_distance and mouse_x >= start_x):
+				best_distance = start_distance
+				best_target = Timeline.ResizeTarget.new(clip, false, clip.start, clip.duration)
+
 		if end_distance <= handle_width and end_distance <= start_distance:
-			return Timeline.ResizeTarget.new(clip, true, clip.start, clip.duration)
-	return null
+			if end_distance < best_distance or (end_distance == best_distance and mouse_x <= end_x):
+				best_distance = end_distance
+				best_target = Timeline.ResizeTarget.new(clip, true, clip.start, clip.duration)
+
+	return best_target
 
 
 func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeline.FadeTarget:
