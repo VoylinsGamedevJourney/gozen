@@ -65,6 +65,9 @@ func _ready() -> void:
 
 	EffectsHandler.transition_updated.connect(_on_transition_updated)
 
+	FileLogic.video_loaded.connect(_on_file_updated)
+	FileLogic.reloaded.connect(_on_file_updated)
+
 	clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled)
 	clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled)
 
@@ -226,6 +229,11 @@ func _draw_drop_indicator(vbox: VBoxContainer) -> void:
 	vbox.draw_line(pos, length, vbox.get_theme_color("drop_line_color", "EffectsPanel"), 3.0)
 
 
+func _on_file_updated(file: FileData) -> void:
+	if active_file and file.id == active_file.id:
+		_load_effects()
+
+
 func _on_clip_pressed(clip: ClipData) -> void:
 	if !clip or !ClipLogic.clips.has(clip.id):
 		section_extra.visible = false
@@ -286,7 +294,7 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 			index += 2
 
 	location.add_child(effect)
-	location.move_child(effect, index)
+	location.move_child(effect, mini(index, location.get_child_count() - 1))
 
 	await get_tree().process_frame
 	if is_instance_valid(effect):
@@ -303,12 +311,15 @@ func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
 		return _load_effects() # We just rebuild the entire thing.
 
 	location = section_audio.get_child(0).get_child(0)
+
 	var child_offset: int = 0
 	if active_file and active_file.audio_streams.size() > 1:
 		child_offset = 2
-	removed_effect = location.get_child(index + child_offset)
-	location.remove_child(removed_effect)
-	removed_effect.queue_free()
+
+	if location.get_child_count() > index + child_offset:
+		removed_effect = location.get_child(index + child_offset)
+		location.remove_child(removed_effect)
+		removed_effect.queue_free()
 
 
 func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool) -> void:
@@ -320,7 +331,9 @@ func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual:
 		if active_file and active_file.audio_streams.size() > 1:
 			old_index += 2
 			new_index += 2
-		location.move_child(location.get_child(old_index), new_index)
+
+		if location.get_child_count() > old_index:
+			location.move_child(location.get_child(old_index), mini(new_index, location.get_child_count() - 1))
 
 
 func _create_transitions_ui(parent: Control) -> void:
@@ -1318,9 +1331,17 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 
 	var effect_container: FoldableContainer
 	if effect.id == "pck_effect_params":
-		effect_container = section.get_child(index + child_offset) as FoldableContainer
+		if section.get_child_count() > index + child_offset:
+			effect_container = section.get_child(index + child_offset) as FoldableContainer
 	else:
-		effect_container = section.get_child(0).get_child(0).get_child(index + child_offset) as FoldableContainer
+		if section.get_child_count() > 0 and section.get_child(0).get_child_count() > 0:
+			var container: Control = section.get_child(0).get_child(0)
+			if container.get_child_count() > index + child_offset:
+				effect_container = container.get_child(index + child_offset) as FoldableContainer
+
+	if not effect_container:
+		return
+
 	var content_vbox: VBoxContainer = effect_container.get_child(0)
 	if !effect.is_enabled:
 		effect_container.folded = true
@@ -1384,7 +1405,12 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 	var child_offset: int = 0
 	if not is_visual and active_file and active_file.audio_streams.size() > 1:
 		child_offset = 2
-	var effect_container: FoldableContainer = section.get_child(0).get_child(0).get_child(index + child_offset)
+
+	var container: Control = section.get_child(0).get_child(0)
+	if container.get_child_count() <= index + child_offset:
+		return
+
+	var effect_container: FoldableContainer = container.get_child(index + child_offset)
 	var visible_button: TextureButton = effect_container.find_child("VisibleButton", true, false)
 	var is_enabled: bool
 
