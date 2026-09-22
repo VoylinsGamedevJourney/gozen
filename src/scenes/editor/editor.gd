@@ -26,9 +26,9 @@ func _ready() -> void:
 	Print.header_editor("--==  GoZen - Video Editor  ==--")
 	for info_print: PackedStringArray in [
 			["GoZen Version", ProjectSettings.get_setting("application/config/version")],
-			["OS", OS.get_model_name()],
-			["OS Version", OS.get_version()],
+			["OS", "%s - %s", [OS.get_name(), OS.get_version_alias()]],
 			["Distribution", OS.get_distribution_name()],
+			["Model", OS.get_model_name()],
 			["Processor", OS.get_processor_name()],
 			["Threads", OS.get_processor_count()],
 			["Ram", "\n\tTotal: %s GB\n\tAvailable: %s GB" % [
