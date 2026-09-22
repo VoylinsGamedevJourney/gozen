@@ -5,5 +5,4 @@
 [resource]
 script = ExtResource("1_l34u2")
 base_svg_path = "res://assets/icons/arrow_up.svg"
-svg_path = "res://assets/icons/arrow_up.svg"
 metadata/_custom_type_script = "uid://c3xb5cvay2wbf"

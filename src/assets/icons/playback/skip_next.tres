@@ -15,5 +15,4 @@ data = {
 image = SubResource("Image_qfc4f")
 script = ExtResource("1_l34u2")
 base_svg_path = "res://assets/icons/playback/skip_next.svg"
-svg_path = "res://assets/icons/playback/skip_next.svg"
 metadata/_custom_type_script = "uid://c3xb5cvay2wbf"

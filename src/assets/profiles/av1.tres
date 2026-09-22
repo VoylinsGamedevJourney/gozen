@@ -14,6 +14,6 @@ data = {
 [resource]
 image = SubResource("Image_t7242")
 script = ExtResource("1_t7242")
-base_svg_path = "uid://etnl583cumbo"
+base_svg_path = "res://assets/profiles/av1.svg"
 is_static = true
 metadata/_custom_type_script = "uid://c3xb5cvay2wbf"
