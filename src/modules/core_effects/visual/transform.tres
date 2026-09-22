@@ -44,12 +44,6 @@ param_id = "pivot"
 is_multiline = false
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
-[sub_resource type="Resource" id="Resource_ykspq"]
-script = ExtResource("1_yojuv")
-param_id = "pivot"
-is_multiline = false
-metadata/_custom_type_script = "uid://d25iocjdybfbl"
-
 [sub_resource type="Resource" id="Resource_678va"]
 script = ExtResource("1_yojuv")
 param_id = "alpha"
@@ -111,7 +105,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("1_x451f")
 id = "transform"
 nickname = "Transform"
-custom_ui = Array[ExtResource("1_yojuv")]([SubResource("Resource_cyuo8"), SubResource("Resource_rqrqj"), SubResource("Resource_vu3rd"), SubResource("Resource_5c4ii"), SubResource("Resource_ykspq"), SubResource("Resource_678va")])
+custom_ui = Array[ExtResource("1_yojuv")]([SubResource("Resource_cyuo8"), SubResource("Resource_rqrqj"), SubResource("Resource_vu3rd"), SubResource("Resource_5c4ii"), SubResource("Resource_678va")])
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_ml87e"), SubResource("Resource_a8lmi"), SubResource("Resource_yvin6"), SubResource("Resource_xmpf0"), SubResource("Resource_jyyio")])
 shader_path = "uid://dpcurhtmkmqxc"
 matrix_map = Dictionary[String, int]({
