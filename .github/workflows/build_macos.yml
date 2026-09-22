@@ -5,18 +5,22 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.13-alpha'
+        default: '0.14-alpha'
       godot_version:
         description: The Godot version to use
         type: string
         default: '4.7.2-stable'
+      demo:
+        description: Build the demo version
+        type: boolean
+        default: false
 
 env:
-  APP_NAME: gozen
+  APP_NAME: GoZen
   PATH_FFMPEG: core/ffmpeg/bin_macos
   PATH_EXPORT: bin/macos_arm64
 
-run-name: 'Build GoZen MacOS Release: v${{ inputs.version }} by @${{ github.actor }}'
+run-name: "Build GoZen MacOS Release: v${{ inputs.version }} (${{ inputs.demo && 'Demo' || 'Full' }}) by @${{ github.actor }}"
 
 jobs:
 # Start FFMPEG build
@@ -129,11 +133,11 @@ jobs:
 
           mkdir -p ../${{ env.PATH_EXPORT }}
           Godot --import project.godot --headless --quit
-          Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen.dmg
+          Godot --headless --export-release "macOS${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen.dmg
 
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_MacOS_v${{ inputs.version }}
+          name: GoZen_MacOS
           path: ${{ env.PATH_EXPORT }}/GoZen.dmg
 # End GoZen build

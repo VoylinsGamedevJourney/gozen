@@ -5,18 +5,22 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.13-alpha'
+        default: '0.14-alpha'
       godot_version:
         description: The Godot version to use
         type: string
         default: '4.7.2-stable'
+      demo:
+        description: Build the demo version
+        type: boolean
+        default: false
 
 env:
-  APP_NAME: gozen
+  APP_NAME: GoZen
   PATH_FFMPEG: core/ffmpeg/bin_windows
   PATH_EXPORT: bin/windows_x86_64
 
-run-name: 'Build GoZen Windows Release: v${{ inputs.version }} by @${{ github.actor }}'
+run-name: "Build GoZen Windows Release: v${{ inputs.version }} (${{ inputs.demo && 'Demo' || 'Full' }}) by @${{ github.actor }}"
 
 jobs:
 # Start FFMPEG build
@@ -200,16 +204,14 @@ jobs:
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
           mkdir -p ../${{ env.PATH_EXPORT }}
           godot --import project.godot --headless --quit
-          godot --headless --export-release "Windows_x86_64" ../${{ env.PATH_EXPORT }}/GoZen.exe
+          godot --headless --export-release "Windows_x86_64${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen.exe
 
       - name: Bundle Windows
         working-directory: ${{ env.PATH_EXPORT }}
-        run: |
-          cp ../../LICENSE .
-          zip -r "GoZen_Windows_v${{ inputs.version }}.zip" *
+        run: cp ../../LICENSE .
 
       - uses: actions/upload-artifact@v6
         with:
-          name: GoZen_Windows_v${{ inputs.version }}
-          path: ${{ env.PATH_EXPORT }}/GoZen_Windows_v${{ inputs.version }}.zip
+          name: GoZen_Windows
+          path: ${{ env.PATH_EXPORT }}
 # End GoZen build
