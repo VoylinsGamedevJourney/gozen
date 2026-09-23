@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="1_x451f"]
 [ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_yojuv"]
 [ext_resource type="Script" uid="uid://b6d0b6c27wlvs" path="res://modules/core_effects/visual/ui/alignment_buttons.gd" id="2_ml87e"]
+[ext_resource type="PackedScene" uid="uid://d3u8v5qxw4f11" path="res://modules/core_effects/transitions/ui/angle_control.tscn" id="3_a8lmi"]
 
 [sub_resource type="Resource" id="Resource_cyuo8"]
 script = ExtResource("1_yojuv")
@@ -42,6 +43,12 @@ metadata/_custom_type_script = "uid://d25iocjdybfbl"
 script = ExtResource("1_yojuv")
 param_id = "pivot"
 is_multiline = false
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_iftpg"]
+script = ExtResource("1_yojuv")
+param_id = "rotation"
+custom_ui = ExtResource("3_a8lmi")
 metadata/_custom_type_script = "uid://d25iocjdybfbl"
 
 [sub_resource type="Resource" id="Resource_678va"]
@@ -105,7 +112,7 @@ metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 script = ExtResource("1_x451f")
 id = "transform"
 nickname = "Transform"
-custom_ui = Array[ExtResource("1_yojuv")]([SubResource("Resource_cyuo8"), SubResource("Resource_rqrqj"), SubResource("Resource_vu3rd"), SubResource("Resource_5c4ii"), SubResource("Resource_678va")])
+custom_ui = Array[ExtResource("1_yojuv")]([SubResource("Resource_cyuo8"), SubResource("Resource_rqrqj"), SubResource("Resource_vu3rd"), SubResource("Resource_5c4ii"), SubResource("Resource_iftpg"), SubResource("Resource_678va")])
 params = Array[ExtResource("1_ny2jm")]([SubResource("Resource_ml87e"), SubResource("Resource_a8lmi"), SubResource("Resource_yvin6"), SubResource("Resource_xmpf0"), SubResource("Resource_jyyio")])
 shader_path = "uid://dpcurhtmkmqxc"
 matrix_map = Dictionary[String, int]({

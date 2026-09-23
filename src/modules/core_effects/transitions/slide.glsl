@@ -11,23 +11,27 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
-	int direction; // 0=left, 1=right, 2=top, 3=bottom
+	float angle;
 	int pass_index;
+	int frame_nr;
 } params;
 layout(set = 0, binding = 3, std140) uniform Progress { float value; } progress;
+
 
 
 void main() {
 	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
 	ivec2 size = imageSize(output_image);
-	if (id.x >= size.x || id.y >= size.y) return;
+	if (id.x >= size.x || id.y >= size.y) {
+		return;
+	}
 
-	vec2 offset = vec2(0.0);
 	float dist = 1.0 - progress.value;
-	if (params.direction == 0) offset.x = dist * float(size.x);
-	else if (params.direction == 1) offset.x = -dist * float(size.x);
-	else if (params.direction == 2) offset.y = dist * float(size.y);
-	else if (params.direction == 3) offset.y = -dist * float(size.y);
+	float angle_rad = radians(params.angle);
+	vec2 dir = vec2(-sin(angle_rad), cos(angle_rad));
+
+	float displacement = abs(dir.x) * float(size.x) + abs(dir.y) * float(size.y);
+	vec2 offset = dist * dir * displacement;
 
 	ivec2 src_id = id + ivec2(offset);
 	vec4 color = vec4(0.0);

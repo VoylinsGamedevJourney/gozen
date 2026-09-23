@@ -850,14 +850,16 @@ func _handle_fade_motion(mouse_pos: Vector2) -> void:
 			clip.effects.fade_visual.x = drag_frames
 		else:
 			clip.effects.fade_audio.x = drag_frames
-	else: # Fade Out
+	else: # Fade Out.
 		var max_frames: int = clip.duration - (clip.effects.fade_visual.x if Timeline.fade_target.is_visual else clip.effects.fade_audio.x)
 		drag_frames = clamp(floori((end_x - mouse_x) / zoom), 0, max_frames)
 		if Timeline.fade_target.is_visual:
 			clip.effects.fade_visual.y = drag_frames
 		else:
 			clip.effects.fade_audio.y = drag_frames
+
 	draw_clips.queue_redraw()
+	EffectsHandler.effect_values_updated.emit()
 	EditorCore.set_frame(EditorCore.frame_nr)
 
 

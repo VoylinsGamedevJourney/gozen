@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://d3u8v5qxw4f11"]
+
+[ext_resource type="Script" uid="uid://bjvkh8860k4pp" path="res://modules/core_effects/transitions/ui/angle_control.gd" id="1_scrpt"]
+
+[node name="AngleControl" type="HBoxContainer" unique_id=605217546 node_paths=PackedStringArray("spinbox", "circle")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_scrpt")
+spinbox = NodePath("SpinBox")
+circle = NodePath("Circle")
+metadata/_edit_lock_ = true
+
+[node name="Circle" type="Control" parent="." unique_id=740214524]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="SpinBox" type="SpinBox" parent="." unique_id=1415792866]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4

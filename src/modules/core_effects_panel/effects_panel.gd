@@ -62,6 +62,7 @@ func _ready() -> void:
 	EffectsHandler.effect_removed.connect(_on_effect_removed)
 	EffectsHandler.effect_moved.connect(_on_effect_moved)
 	EffectsHandler.effect_values_updated.connect(_update_ui_values)
+	EffectsHandler.effects_updated.connect(_update_ui_values)
 
 	EffectsHandler.transition_updated.connect(_on_transition_updated)
 
@@ -348,55 +349,124 @@ func _create_transitions_ui(parent: Control) -> void:
 
 	if has_visual: # Visual fade in.
 		var hbox: HBoxContainer = HBoxContainer.new()
+		var title_hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
 		var spinbox: SpinBox = SpinBox.new()
+		var reset_button: TextureButton = TextureButton.new()
+
+		title_hbox.name = "TitleHBox"
+		spinbox.name = "FadeVisualIn"
+		reset_button.name = "ResetButton"
 
 		label.text = "Visual Fade (frames)"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		reset_button.texture_normal = load(Library.ICON_REFRESH)
+		reset_button.tooltip_text = tr("Reset")
+		reset_button.ignore_texture_size = true
+		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		reset_button.custom_minimum_size = Vector2(14, 14)
+		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		reset_button.visible = clip_effects.fade_visual.x != 0
+		reset_button.pressed.connect(func() -> void:
+				EffectsHandler.set_fade(active_clip, true, Vector2i(0, active_clip.effects.fade_visual.y))
+				spinbox.set_value_no_signal(0)
+				reset_button.visible = false)
+
+		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_hbox.add_child(label)
+		title_hbox.add_child(reset_button)
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_visual.x
 		spinbox.value_changed.connect(
 				_on_visual_in_value_changed.bind(clip_effects, spinbox))
 
-		hbox.add_child(label)
+		hbox.add_child(title_hbox)
 		hbox.add_child(spinbox)
 		parent.add_child(hbox)
 
 	if has_audio: # Audio fade in.
 		var hbox: HBoxContainer = HBoxContainer.new()
+		var title_hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
 		var spinbox: SpinBox = SpinBox.new()
+		var reset_button: TextureButton = TextureButton.new()
+
+		title_hbox.name = "TitleHBox"
+		spinbox.name = "FadeAudioIn"
+		reset_button.name = "ResetButton"
 
 		label.text = "Audio Fade (frames)"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		reset_button.texture_normal = load(Library.ICON_REFRESH)
+		reset_button.tooltip_text = tr("Reset")
+		reset_button.ignore_texture_size = true
+		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		reset_button.custom_minimum_size = Vector2(14, 14)
+		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		reset_button.visible = clip_effects.fade_audio.x != 0
+		reset_button.pressed.connect(func() -> void:
+				EffectsHandler.set_fade(active_clip, false, Vector2i(0, active_clip.effects.fade_audio.y))
+				spinbox.set_value_no_signal(0)
+				reset_button.visible = false)
+
+		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_hbox.add_child(label)
+		title_hbox.add_child(reset_button)
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_audio.x
 		spinbox.value_changed.connect(
 				_on_audio_in_value_changed.bind(clip_effects, spinbox))
 
-		hbox.add_child(label)
+		hbox.add_child(title_hbox)
 		hbox.add_child(spinbox)
 		parent.add_child(hbox)
 
 	if has_visual: # Transition in.
 		var hbox: HBoxContainer = HBoxContainer.new()
+		var title_hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
+		var reset_button: TextureButton = TextureButton.new()
 		var option_button: OptionButton = OptionButton.new()
 
 		label.text = "Style"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		reset_button.name = "ResetButton"
+		reset_button.texture_normal = load(Library.ICON_REFRESH)
+		reset_button.tooltip_text = tr("Reset")
+		reset_button.ignore_texture_size = true
+		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		reset_button.custom_minimum_size = Vector2(14, 14)
+		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+		title_hbox.name = "TitleHBox"
+		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_hbox.add_child(label)
+		title_hbox.add_child(reset_button)
+
+		var default_style_id: String = "fade"
+		var current_style_id: String = clip_effects.transition_left.id if clip_effects.transition_left else default_style_id
 
 		for transition_name: String in EffectsHandler.transitions:
 			option_button.add_item(transition_name)
-			if !clip_effects.transition_left: continue
-			elif clip_effects.transition_left.id == EffectsHandler.transitions[transition_name]:
+			if current_style_id == EffectsHandler.transitions[transition_name]:
 				option_button.selected = option_button.item_count - 1
 		option_button.item_selected.connect(
 				_on_transition_in_style_item_selected.bind(option_button))
 
-		hbox.add_child(label)
+		reset_button.visible = current_style_id != default_style_id
+		reset_button.pressed.connect(func() -> void:
+				EffectsHandler.set_transition(active_clip, true, default_style_id))
+
+		hbox.name = "StyleLeft"
+		hbox.add_child(title_hbox)
 		hbox.add_child(option_button)
 		parent.add_child(hbox)
 
@@ -415,51 +485,124 @@ func _create_transitions_ui(parent: Control) -> void:
 
 	if has_visual: # Visual fade out.
 		var hbox: HBoxContainer = HBoxContainer.new()
+		var title_hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
 		var spinbox: SpinBox = SpinBox.new()
+		var reset_button: TextureButton = TextureButton.new()
+
+		title_hbox.name = "TitleHBox"
+		spinbox.name = "FadeVisualOut"
+		reset_button.name = "ResetButton"
 
 		label.text = "Visual Fade (frames)"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		reset_button.texture_normal = load(Library.ICON_REFRESH)
+		reset_button.tooltip_text = tr("Reset")
+		reset_button.ignore_texture_size = true
+		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		reset_button.custom_minimum_size = Vector2(14, 14)
+		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		reset_button.visible = clip_effects.fade_visual.y != 0
+		reset_button.pressed.connect(func() -> void:
+				EffectsHandler.set_fade(active_clip, true, Vector2i(active_clip.effects.fade_visual.x, 0))
+				spinbox.set_value_no_signal(0)
+				reset_button.visible = false)
+
+		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_hbox.add_child(label)
+		title_hbox.add_child(reset_button)
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_visual.y
 		spinbox.value_changed.connect(
 				_on_visual_out_value_changed.bind(clip_effects, spinbox))
 
-		hbox.add_child(label)
+		hbox.add_child(title_hbox)
 		hbox.add_child(spinbox)
 		parent.add_child(hbox)
 
 	if has_audio: # Audio fade out.
 		var hbox: HBoxContainer = HBoxContainer.new()
+		var title_hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
 		var spinbox: SpinBox = SpinBox.new()
+		var reset_button: TextureButton = TextureButton.new()
+
+		title_hbox.name = "TitleHBox"
+		spinbox.name = "FadeAudioOut"
+		reset_button.name = "ResetButton"
 
 		label.text = "Audio Fade (frames)"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		reset_button.texture_normal = load(Library.ICON_REFRESH)
+		reset_button.tooltip_text = tr("Reset")
+		reset_button.ignore_texture_size = true
+		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		reset_button.custom_minimum_size = Vector2(14, 14)
+		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		reset_button.visible = clip_effects.fade_audio.y != 0
+		reset_button.pressed.connect(func() -> void:
+				EffectsHandler.set_fade(active_clip, false, Vector2i(active_clip.effects.fade_audio.x, 0))
+				spinbox.set_value_no_signal(0)
+				reset_button.visible = false)
+
+		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_hbox.add_child(label)
+		title_hbox.add_child(reset_button)
 
 		spinbox.max_value = 10000
 		spinbox.value = clip_effects.fade_audio.y
 		spinbox.value_changed.connect(
 				_on_audio_out_value_changed.bind(clip_effects, spinbox))
 
-		hbox.add_child(label)
+		hbox.add_child(title_hbox)
 		hbox.add_child(spinbox)
 		parent.add_child(hbox)
 
-	if has_visual: # Transition in.
+	if has_visual: # Transition out.
 		var hbox: HBoxContainer = HBoxContainer.new()
+		var title_hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
+		var reset_button: TextureButton = TextureButton.new()
+		var option_button: OptionButton = OptionButton.new()
+
 		label.text = "Style"
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var option_button: OptionButton = OptionButton.new()
+		option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		reset_button.name = "ResetButton"
+		reset_button.texture_normal = load(Library.ICON_REFRESH)
+		reset_button.tooltip_text = tr("Reset")
+		reset_button.ignore_texture_size = true
+		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		reset_button.custom_minimum_size = Vector2(14, 14)
+		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+		title_hbox.name = "TitleHBox"
+		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_hbox.add_child(label)
+		title_hbox.add_child(reset_button)
+
+		var default_style_id: String = "fade"
+		var current_style_id: String = clip_effects.transition_right.id if clip_effects.transition_right else default_style_id
+
 		for transition_name: String in EffectsHandler.transitions:
 			option_button.add_item(transition_name)
-			if clip_effects.transition_right and clip_effects.transition_right.id == EffectsHandler.transitions[transition_name]:
+			if current_style_id == EffectsHandler.transitions[transition_name]:
 				option_button.selected = option_button.item_count - 1
 		option_button.item_selected.connect(
 				_on_transition_out_style_item_selected.bind(option_button))
-		hbox.add_child(label)
+
+		reset_button.visible = current_style_id != default_style_id
+		reset_button.pressed.connect(func() -> void:
+				EffectsHandler.set_transition(active_clip, false, default_style_id))
+
+		hbox.name = "StyleRight"
+		hbox.add_child(title_hbox)
 		hbox.add_child(option_button)
 		parent.add_child(hbox)
 
@@ -474,18 +617,46 @@ func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left
 	var update_call: Callable = func(val: Variant) -> void:
 		EffectsHandler.update_transition_param(active_clip, is_left, param.id, val)
 
-	var param_settings: Control = create_param_control(param, update_call)
+	var effect_ui: EffectUI = null
+	if transition.custom_ui:
+		for param_effect_ui: EffectUI in transition.custom_ui:
+			if param_effect_ui.param_id == param.id:
+				effect_ui = param_effect_ui
+				break
+
+	var param_settings: Control = create_param_control(param, update_call, effect_ui)
 
 	param_title.text = param.nickname
 	param_title.tooltip_text = param.tooltip
 	param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
+	var param_reset_button: TextureButton = TextureButton.new()
+	param_reset_button.name = "ResetButton"
+	param_reset_button.texture_normal = load(Library.ICON_REFRESH)
+	param_reset_button.tooltip_text = tr("Reset parameter.")
+	param_reset_button.ignore_texture_size = true
+	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	param_reset_button.custom_minimum_size = Vector2(14, 14)
+	param_reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	var default_val: Variant = param.default_value
+	param_reset_button.pressed.connect(func() -> void: update_call.call(default_val))
+
+	var title_hbox: HBoxContainer = HBoxContainer.new()
+	title_hbox.name = "TitleHBox"
+	title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_hbox.size_flags_stretch_ratio = 0.4
+	title_hbox.visible = not effect_ui or effect_ui.show_label
+	title_hbox.add_child(param_title)
+	title_hbox.add_child(param_reset_button)
+
 	param_hbox.name = ("LEFT_" if is_left else "RIGHT_") + param.id
-	param_hbox.add_child(param_title)
+	param_hbox.add_child(title_hbox)
 	param_hbox.add_child(param_settings)
 
 	var value: Variant = transition.get_value(param, 0)
 	_set_param_settings_value(param_settings, value)
+	param_reset_button.visible = not _is_same_value(value, default_val)
 
 	return param_hbox
 
@@ -946,6 +1117,12 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 		printerr(HEADER, "Value is null! %s" % param)
 		value = 0
 
+	if effect_ui and effect_ui.custom_ui != null:
+		var custom_node: Control = effect_ui.custom_ui.instantiate()
+		if custom_node.has_method("setup"):
+			custom_node.call("setup", param, update_call, value)
+		return custom_node
+
 	match typeof(value):
 		TYPE_STRING:
 			if param.id == "font":
@@ -1235,23 +1412,69 @@ func _update_ui_values() -> void:
 
 	for i: int in active_clip.effects.video.size():
 		_update_ui_values_effect(active_clip.effects.video, i, frame_nr)
+
 	for i: int in active_clip.effects.audio.size():
 		_update_ui_values_effect(active_clip.effects.audio, i, frame_nr)
 
-	if !section_transitions.visible or section_transitions.get_child_count() <= 0: return
+	if !section_transitions.visible or section_transitions.get_child_count() <= 0:
+		return
 	var transition_vbox: VBoxContainer = section_transitions.get_child(0)
 
+	var fade_visual_in: SpinBox = transition_vbox.find_child("FadeVisualIn", true, false)
+	if fade_visual_in:
+		fade_visual_in.set_value_no_signal(active_clip.effects.fade_visual.x)
+		if fade_visual_in.get_parent().has_node("TitleHBox/ResetButton"):
+			(fade_visual_in.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_visual.x != 0)
+
+	var fade_audio_in: SpinBox = transition_vbox.find_child("FadeAudioIn", true, false)
+	if fade_audio_in:
+		fade_audio_in.set_value_no_signal(active_clip.effects.fade_audio.x)
+		if fade_audio_in.get_parent().has_node("TitleHBox/ResetButton"):
+			(fade_audio_in.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_audio.x != 0)
+
+	var fade_visual_out: SpinBox = transition_vbox.find_child("FadeVisualOut", true, false)
+	if fade_visual_out:
+		fade_visual_out.set_value_no_signal(active_clip.effects.fade_visual.y)
+		if fade_visual_out.get_parent().has_node("TitleHBox/ResetButton"):
+			(fade_visual_out.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_visual.y != 0)
+
+	var fade_audio_out: SpinBox = transition_vbox.find_child("FadeAudioOut", true, false)
+	if fade_audio_out:
+		fade_audio_out.set_value_no_signal(active_clip.effects.fade_audio.y)
+		if fade_audio_out.get_parent().has_node("TitleHBox/ResetButton"):
+			(fade_audio_out.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_audio.y != 0)
+
 	if active_clip.effects.transition_left:
+		var style_left_hbox: HBoxContainer = transition_vbox.get_node_or_null("StyleLeft") as HBoxContainer
+		if style_left_hbox:
+			var reset_button: TextureButton = style_left_hbox.get_node_or_null("TitleHBox/ResetButton")
+			if reset_button:
+				reset_button.visible = active_clip.effects.transition_left.id != "fade"
+
 		for param: EffectParam in active_clip.effects.transition_left.params:
 			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("LEFT_" + param.id)) as HBoxContainer
 			if hbox and hbox.get_child_count() > 1:
-				_set_param_settings_value(hbox.get_child(1) as Control, active_clip.effects.transition_left.get_value(param, 0))
+				var val: Variant = active_clip.effects.transition_left.get_value(param, 0)
+				_set_param_settings_value(hbox.get_child(1) as Control, val)
+				var reset_button: TextureButton = hbox.get_node_or_null("TitleHBox/ResetButton")
+				if reset_button:
+					reset_button.visible = not _is_same_value(val, param.default_value)
 
 	if active_clip.effects.transition_right:
+		var style_right_hbox: HBoxContainer = transition_vbox.get_node_or_null("StyleRight") as HBoxContainer
+		if style_right_hbox:
+			var reset_button: TextureButton = style_right_hbox.get_node_or_null("TitleHBox/ResetButton")
+			if reset_button:
+				reset_button.visible = active_clip.effects.transition_right.id != "fade"
+
 		for param: EffectParam in active_clip.effects.transition_right.params:
 			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("RIGHT_" + param.id)) as HBoxContainer
 			if hbox and hbox.get_child_count() > 1:
-				_set_param_settings_value(hbox.get_child(1) as Control, active_clip.effects.transition_right.get_value(param, 0))
+				var val: Variant = active_clip.effects.transition_right.get_value(param, 0)
+				_set_param_settings_value(hbox.get_child(1) as Control, val)
+				var reset_button: TextureButton = hbox.get_node_or_null("TitleHBox/ResetButton")
+				if reset_button:
+					reset_button.visible = not _is_same_value(val, param.default_value)
 
 
 func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer, frame_nr: int) -> void:
@@ -1281,7 +1504,8 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		var param_hbox: HBoxContainer = content_vbox.get_node_or_null("HBOX_" + param_id)
-		if not param_hbox: continue
+		if not param_hbox:
+			continue
 
 		var reset_button: TextureButton = param_hbox.get_child(0).get_child(1)
 		var param_settings: Control = param_hbox.get_node("PARAM_" + param_id)
@@ -1360,7 +1584,10 @@ func _is_same_value(value_a: Variant, value_b: Variant) -> bool:
 
 
 func _set_param_settings_value(param_settings: Control, value: Variant) -> void:
-	if param_settings is LineEdit:
+	if param_settings.has_method("set_value"):
+		param_settings.call("set_value", value)
+		return
+	elif param_settings is LineEdit:
 		var line_edit: LineEdit = param_settings
 		if line_edit.text != str(value):
 			line_edit.text = str(value)
@@ -1926,21 +2153,33 @@ func _on_fold_all_pressed() -> void:
 #---- Transition spinbox stuff ----
 
 func _on_visual_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
+		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
+
 	if spinbox.get_line_edit().has_focus():
 		EffectsHandler.set_fade(active_clip, true, Vector2i(int(value), clip_effects.fade_visual.y))
 
 
 func _on_visual_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
+		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
+
 	if spinbox.get_line_edit().has_focus():
 		EffectsHandler.set_fade(active_clip, true, Vector2i(clip_effects.fade_visual.x, int(value)))
 
 
 func _on_audio_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
+		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
+
 	if spinbox.get_line_edit().has_focus():
 		EffectsHandler.set_fade(active_clip, false, Vector2i(int(value), clip_effects.fade_audio.y))
 
 
 func _on_audio_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
+		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
+
 	if spinbox.get_line_edit().has_focus():
 		EffectsHandler.set_fade(active_clip, false, Vector2i(clip_effects.fade_audio.x, int(value)))
 
