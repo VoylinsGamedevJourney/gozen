@@ -43,3 +43,5 @@ Almost finished adding a new language, final thing to do is checking the `locali
 ### Updating an already existing translation
 Open the po file of the language you want to edit. You can find a list of language codes here in the [Godot docs](https://docs.godotengine.org/en/stable/tutorials/i18n/locales.html). When uncertain about a specific translation you can mark it as "Needs work", this allows other translators te see and check if your translation is correct or not.
 
+### Steam localizations
+For the Steam page you can, but don't have to, complete the localization by looking at `BASE.md` inside of the `steam` folder.
