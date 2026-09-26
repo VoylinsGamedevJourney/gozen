@@ -53,7 +53,7 @@ func _set_wave_source(clip: ClipData) -> void:
 		wave_offset = effects.ato_offset
 		return
 
-	var target_file: FileData = FileLogic.files.get(clip.file)
+	var target_file: FileData = FileLogic.get_data(clip.file)
 	if target_file and target_file.ato_active and target_file.ato_file != -1:
 		wave_file_id = target_file.ato_file
 		wave_offset = target_file.ato_offset
@@ -72,12 +72,12 @@ func _handle_draggable() -> void:
 
 		offset_frames = 0
 		for file_id: int in draggable.ids:
-			offset_frames += _handle_draggable_file(FileLogic.files[file_id])
+			offset_frames += _handle_draggable_file(FileLogic.get_data(file_id))
 		return
 
 	# For preview clips only.
 	for clip_id: int in draggable.ids:
-		var clip: ClipData = ClipLogic.clips[clip_id]
+		var clip: ClipData = ClipLogic.get_data(clip_id)
 		var track: int = clip.track
 		preview_pos.x = (clip.start + draggable.frame_offset) * Timeline.zoom
 		preview_pos.y = (track + draggable.track_offset) * Timeline.track_total_size

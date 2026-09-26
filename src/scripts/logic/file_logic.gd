@@ -39,10 +39,12 @@ var _mutex: Mutex = Mutex.new()
 
 
 
-func _ready() -> void:
-	if !DirAccess.dir_exists_absolute(wave_folder) and DirAccess.make_dir_recursive_absolute(wave_folder):
-		printerr("FileLogic: Couldn't create folder '%s'!" % wave_folder)
+func has(id: int) -> bool: return files.has(id)
+func get_data(id: int) -> FileData: return files.get(id)
+func get_new_id(ids: Array = files.keys()) -> int: return Utils.get_unique_id(ids)
 
+
+func _ready() -> void:
 	if Project.get_window().files_dropped.connect(dropped): print_stack()
 	if Settings.on_video_cache_size_changed.connect(_update_video_cache_size): print_stack()
 	if Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold): print_stack()
@@ -89,7 +91,7 @@ func add_colors(html_colors: Array[String]) -> void:
 func _create_file(path: String) -> FileData:
 	var extension: String = path.get_extension().to_lower()
 	var file: FileData = FileData.new()
-	file.id = Utils.get_unique_id(files.keys())
+	file.id = get_new_id()
 	file.path = path
 	file.nickname = path.get_file()
 
@@ -204,7 +206,7 @@ func _change_nickname(file: FileData, new_name: String) -> void:
 func paste_image(image: Image) -> FileData:
 	InputManager.undo_redo.create_action("Paste Image")
 	var file: FileData = FileData.new()
-	file.id = Utils.get_unique_id(files.keys())
+	file.id = get_new_id()
 	file.path = "temp://image#" + str(file.id)
 	file.type = Type.IMAGE
 	file.duration = Settings.get_image_duration()
@@ -290,7 +292,7 @@ func duplicate_text(file: FileData) -> void:
 			new_file.temp_file.text_effect = file.temp_file.text_effect.deep_copy()
 			new_file.temp_file.text_effect.keyframes = file.temp_file.text_effect.keyframes.duplicate(true)
 
-	new_file.id = Utils.get_unique_id(files.keys())
+	new_file.id = get_new_id()
 
 	InputManager.undo_redo.create_action("Duplicate Text File")
 	InputManager.undo_redo.add_do_method(_restore.bind(new_file))
@@ -534,6 +536,9 @@ func _create_wave(file: FileData) -> void:
 
 
 func _create_wave_for_stream(file: FileData, stream_index: int, current_index: int = 0, num_streams: int = 1) -> void:
+	if !DirAccess.dir_exists_absolute(wave_folder) and DirAccess.make_dir_recursive_absolute(wave_folder):
+		printerr("FileLogic: Couldn't create folder '%s'!" % wave_folder)
+
 	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + "_" + str(stream_index) + ".wave"
 	if FileAccess.file_exists(cache_path):
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
@@ -926,7 +931,7 @@ func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: 
 			Project.unsaved_changes = true
 			ClipLogic.updated.emit()
 			nickname_changed.emit(file)
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
@@ -952,7 +957,7 @@ func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> v
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func toggle_ato(file: FileData) -> void:

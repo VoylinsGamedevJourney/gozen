@@ -15,6 +15,7 @@ func _process(_delta: float) -> void:
 			timed_tasks[i].execute()
 			timed_tasks.erase(i)
 
+	var completed_callbacks: Array[Callable] = []
 	mutex.lock()
 	for i: int in range(tasks.size() - 1, -1, -1):
 		var task: Task = tasks[i]
@@ -23,13 +24,13 @@ func _process(_delta: float) -> void:
 			if error:
 				printerr("Threader: Error with task: ", task.id, " - Error: ", error)
 
-			var next_task: Callable = task.after_task
+			if !task.after_task.is_null():
+				completed_callbacks.append(task.after_task)
 			tasks.remove_at(i)
-			mutex.unlock()
-			if !next_task.is_null():
-				next_task.call()
-			mutex.lock()
 	mutex.unlock()
+
+	for callback: Callable in completed_callbacks:
+		callback.call()
 
 
 func add_task(todo: Callable, after_todo: Callable = Callable()) -> void:

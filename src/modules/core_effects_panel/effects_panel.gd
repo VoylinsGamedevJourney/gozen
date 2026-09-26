@@ -17,7 +17,9 @@ const SIZE_EFFECT_HEADER_ICON: Vector2i = Vector2i(16, 16)
 const PRESETS_PATH: String = "user://presets/"
 
 
-@export var section_extra: VBoxContainer ## For text, module params, 3D models, ...
+@export var vbox_sections: VBoxContainer
+@export var section_text: FoldableContainer
+@export var section_module: FoldableContainer
 @export var section_transitions: FoldableContainer
 @export var section_visuals: FoldableContainer
 @export var section_audio: FoldableContainer
@@ -33,8 +35,13 @@ var drop_indicator_pos: int = -1
 var drop_indicator_vbox: VBoxContainer = null
 var _drag_overlays: Array[Control] = []
 
-var clip_enable_visuals_button: CheckButton
-var clip_enable_audio_button: CheckButton
+var clip_enable_visuals_button: CheckButton = CheckButton.new()
+var clip_enable_audio_button: CheckButton = CheckButton.new()
+
+# Base nodes
+var _base_reset_button: TextureButton = TextureButton.new()
+
+var _shortcuts_enabled: bool
 
 
 
@@ -42,50 +49,49 @@ func _ready() -> void:
 	if DirAccess.make_dir_absolute(PRESETS_PATH) not in [ERR_ALREADY_EXISTS, OK]:
 		printerr(HEADER, "Couldn't create folder at '%s'!" % PRESETS_PATH)
 
-	clip_enable_visuals_button = CheckButton.new()
-	clip_enable_visuals_button.flat = true
-	clip_enable_visuals_button.tooltip_text = tr("Enable clip visuals.")
-
-	clip_enable_audio_button = CheckButton.new()
 	clip_enable_audio_button.flat = true
+	clip_enable_visuals_button.flat = true
 	clip_enable_audio_button.tooltip_text = tr("Enable clip audio.")
+	clip_enable_visuals_button.tooltip_text = tr("Enable clip visuals.")
+	clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled)
+	clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled)
 
-	ClipLogic.deleted.connect(func(clip_id: int) -> void:
-			if active_clip and clip_id == active_clip.id:
-				_on_clip_pressed(null))
+	_base_reset_button.name = "ResetButton"
+	_base_reset_button.texture_normal = load(Library.ICON_REFRESH)
+	_base_reset_button.tooltip_text = tr("Reset")
+	_base_reset_button.ignore_texture_size = true
+	_base_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	_base_reset_button.custom_minimum_size = Vector2(14, 14)
+	_base_reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	ClipLogic.deleted.connect(_on_clip_deleted)
 	ClipLogic.selected.connect(_on_clip_pressed)
 
-	EditorCore.visual_frame_changed.connect(func() -> void:
-			if active_clip: _update_ui_values())
+	EditorCore.visual_frame_changed.connect(_update_ui_values)
 
 	EffectsHandler.effect_added.connect(_on_effect_added)
 	EffectsHandler.effect_removed.connect(_on_effect_removed)
 	EffectsHandler.effect_moved.connect(_on_effect_moved)
-	EffectsHandler.effect_values_updated.connect(_update_ui_values)
 	EffectsHandler.effects_updated.connect(_update_ui_values)
-
-	EffectsHandler.transition_updated.connect(_on_transition_updated)
 
 	FileLogic.video_loaded.connect(_on_file_updated)
 	FileLogic.reloaded.connect(_on_file_updated)
 
-	clip_enable_audio_button.toggled.connect(_on_audio_enable_button_toggled)
-	clip_enable_visuals_button.toggled.connect(_on_visuals_enable_button_toggled)
-
-	section_transitions.visible = false
-	section_transitions.folded = true
+	for section: FoldableContainer in vbox_sections.get_children():
+		section.visible = false
+		section.folded = true
 
 	section_visuals.add_title_bar_control(clip_enable_visuals_button)
 	section_visuals.add_title_bar_control(_get_section_preset_button(true))
 	section_visuals.add_title_bar_control(_get_add_effects_button(1))
-	section_visuals.visible = false
-	section_visuals.folded = true
 
 	section_audio.add_title_bar_control(clip_enable_audio_button)
 	section_audio.add_title_bar_control(_get_section_preset_button(false))
 	section_audio.add_title_bar_control(_get_add_effects_button(2))
-	section_audio.visible = false
-	section_audio.folded = true
+
+	_shortcuts_enabled = Settings.get_module_setting(
+			"core_effects_panel", "enable_number_shortcuts", true)
+	Settings.on_module_setting_changed.connect(_on_module_settings_changed)
 
 
 func _input(event: InputEvent) -> void:
@@ -93,7 +99,6 @@ func _input(event: InputEvent) -> void:
 
 	var focus_owner: Control = get_viewport().gui_get_focus_owner()
 	var is_ui_cancel: bool = event.is_action_pressed("ui_cancel", false, true)
-
 	if focus_owner is LineEdit or focus_owner is TextEdit:
 		if is_ui_cancel:
 			focus_owner.release_focus()
@@ -104,49 +109,44 @@ func _input(event: InputEvent) -> void:
 	elif is_ui_cancel:
 		_on_clip_pressed(null)
 
-	if get_global_rect().has_point(get_global_mouse_position()) and Settings.get_module_setting("core_effects_panel", "enable_number_shortcuts", true):
-		if event is not InputEventKey: return
-		var event_key: InputEventKey = event
-		if !event_key.pressed: return
-
-		match event_key.keycode:
-			KEY_1:
-				_on_special_pressed()
-				get_viewport().set_input_as_handled()
-			KEY_2:
-				_on_transitions_pressed()
-				get_viewport().set_input_as_handled()
-			KEY_3:
-				_on_visuals_pressed()
-				get_viewport().set_input_as_handled()
-			KEY_4:
-				_on_audio_pressed()
-				get_viewport().set_input_as_handled()
-			KEY_5:
-				_on_fold_all_pressed()
+	var has_point: bool = get_global_rect().has_point(get_global_mouse_position())
+	if has_point and _shortcuts_enabled:
+		if event is InputEventKey and (event as InputEventKey).pressed:
+			var key_code: Key = (event as InputEventKey).keycode
+			var keys: Dictionary[Key, Callable] = {
+					KEY_1: _on_special_pressed,
+					KEY_2: _on_transitions_pressed,
+					KEY_3: _on_visuals_pressed,
+					KEY_4: _on_audio_pressed,
+					KEY_5: _on_fold_all_pressed }
+			if key_code in keys:
+				keys[key_code].call()
 				get_viewport().set_input_as_handled()
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_DRAG_END:
 		for overlay: Control in _drag_overlays:
-			if !is_instance_valid(overlay): continue
-			overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			if is_instance_valid(overlay):
+				overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		drop_indicator_pos = -1
 		if drop_indicator_vbox:
 			drop_indicator_vbox.queue_redraw()
 			drop_indicator_vbox = null
 
 
-func _get_drag_data_effect(pos: Vector2, effect: Effect, is_visual: bool, container: FoldableContainer = null, content: Control = null) -> Variant:
-	if container:
-		var title_height: float = 0.0
-		if container.folded:
-			title_height = container.size.y
-		elif content and content.position.y > 0:
-			title_height = content.position.y
-		else:
-			title_height = 30.0
+func _on_module_settings_changed(module: String, id: String, value: Variant) -> void:
+	if module == "core_effects_panel" and id == "enable_number_shortcuts":
+		_shortcuts_enabled = Settings.get_module_setting(module, id, value)
+
+
+func _get_drag_data_effect(pos: Vector2, data: DragDataEffect) -> Variant:
+	if data.container:
+		var title_height: float = 30.0
+		if data.container.folded:
+			title_height = data.container.size.y
+		elif data.content and data.content.position.y > 0:
+			title_height = data.content.position.y
 
 		if pos.y < 0 or pos.y > title_height:
 			return null
@@ -155,18 +155,17 @@ func _get_drag_data_effect(pos: Vector2, effect: Effect, is_visual: bool, contai
 		if is_instance_valid(overlay):
 			overlay.mouse_filter = Control.MOUSE_FILTER_PASS
 
-	var index: int = _get_effect_index(effect, is_visual)
+	var index: int = _get_effect_index(data.effect, data.is_visual)
 	if index == -1:
 		return null
 
 	var drag_data: RequestEffectDrag = RequestEffectDrag.new()
 	var preview: Label = Label.new()
-	drag_data.is_visual = is_visual
+	drag_data.is_visual = data.is_visual
 	drag_data.effect_index = index
-	drag_data.effect = effect
-	preview.text = "Moving: " + effect.nickname
+	drag_data.effect = data.effect
+	preview.text = "Moving: " + data.effect.nickname
 	set_drag_preview(preview)
-
 	return drag_data
 
 
@@ -197,37 +196,35 @@ func _drop_effect(at_pos: Vector2, data: Variant, is_visual: bool, vbox: VBoxCon
 	drop_indicator_vbox = null
 	vbox.queue_redraw()
 
-	if not data is RequestEffectDrag or data.is_visual != is_visual: return
+	if data is RequestEffectDrag and data.is_visual == is_visual:
+		var child_offset: int = 0
+		if not is_visual and active_file and active_file.audio_streams.size() > 1:
+			child_offset = 2
 
-	var child_offset: int = 0
-	if not is_visual and active_file and active_file.audio_streams.size() > 1:
-		child_offset = 2
+		var old_index: int = data.effect_index
+		var new_index: int = 0
+		for index: int in range(child_offset, vbox.get_child_count()):
+			var child: Control = vbox.get_child(index)
+			if at_pos.y > child.position.y + (child.size.y / 2.0):
+				new_index = index - child_offset + 1
+		if new_index > old_index: new_index -= 1
 
-	var old_index: int = data.effect_index
-	var new_index: int = 0
-	for index: int in range(child_offset, vbox.get_child_count()):
-		var child: Control = vbox.get_child(index)
-		if at_pos.y > child.position.y + (child.size.y / 2.0):
-			new_index = index - child_offset + 1
-	if new_index > old_index: new_index -= 1
-
-	if old_index != new_index:
-		EffectsHandler.move_effect(active_clip, old_index, new_index, is_visual)
+		if old_index != new_index:
+			EffectsHandler.move_effect(active_clip, old_index, new_index, is_visual)
 
 
 func _draw_drop_indicator(vbox: VBoxContainer) -> void:
-	if drop_indicator_vbox != vbox or drop_indicator_pos == -1:
-		return
+	if drop_indicator_vbox == vbox and drop_indicator_pos != -1:
+		var pos: Vector2 = Vector2.ZERO
+		if drop_indicator_pos < vbox.get_child_count():
+			pos.y = (vbox.get_child(drop_indicator_pos) as Control).position.y
+		elif vbox.get_child_count() > 0:
+			var last_child: Control = vbox.get_child(vbox.get_child_count() - 1)
+			pos.y = last_child.position.y + last_child.size.y
 
-	var pos: Vector2 = Vector2.ZERO
-	if drop_indicator_pos < vbox.get_child_count():
-		pos.y = (vbox.get_child(drop_indicator_pos) as Control).position.y
-	elif vbox.get_child_count() > 0:
-		var last_child: Control = vbox.get_child(vbox.get_child_count() - 1)
-		pos.y = last_child.position.y + last_child.size.y
-
-	var length: Vector2 = Vector2(vbox.size.x, pos.y)
-	vbox.draw_line(pos, length, vbox.get_theme_color("drop_line_color", "EffectsPanel"), 3.0)
+		var length: Vector2 = Vector2(vbox.size.x, pos.y)
+		var color: Color = vbox.get_theme_color("drop_line_color", "EffectsPanel")
+		vbox.draw_line(pos, length, color, 3.0)
 
 
 func _on_file_updated(file: FileData) -> void:
@@ -235,27 +232,32 @@ func _on_file_updated(file: FileData) -> void:
 		_load_effects()
 
 
+func _on_clip_deleted(clip_id: int) -> void:
+	if active_clip and clip_id == active_clip.id:
+		_on_clip_pressed(null)
+
+
 func _on_clip_pressed(clip: ClipData) -> void:
-	if !clip or !ClipLogic.clips.has(clip.id):
-		section_extra.visible = false
-		section_transitions.visible = false
-		section_visuals.visible = false
-		section_audio.visible =  false
+	if !clip or !ClipLogic.has(clip.id):
+		for section: FoldableContainer in vbox_sections.get_children():
+			section.visible = false
 		active_clip = null
 		active_file = null
 		_load_effects() # Clear the ui.
 		return
 
-	var temp_clip: ClipData = ClipLogic.clips.get(clip.id)
+	var temp_clip: ClipData = ClipLogic.get_data(clip.id)
 	if active_clip and temp_clip.id == active_clip.id:
 		return _update_ui_values()
 
 	active_clip = temp_clip
-	active_file = FileLogic.files[active_clip.file]
+	active_file = FileLogic.get_data(active_clip.file)
 
-	section_extra.visible = active_clip.type & Type.GROUP_EXTRA
-	section_visuals.visible = active_clip.type & Type.GROUP_VISUAL and active_clip.type != Type.PCK
+	section_text.visible = active_clip.type == Type.TEXT
+	section_module.visible = active_clip.type == Type.PCK
+	section_visuals.visible = active_clip.type & Type.GROUP_VISUAL
 	section_audio.visible = active_clip.type & Type.GROUP_AUDIO
+
 	_load_effects()
 	section_visuals.folded = not active_clip.effects.is_showing
 	section_audio.folded = active_clip.effects.is_muted
@@ -267,12 +269,11 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 
 	var effect: FoldableContainer
 	var location: Control
-
 	if is_visual:
 		var target_effect: Effect = clip.effects.video[index]
 		if target_effect.id == "pck_effect_params":
 			effect = _create_effect_ui(target_effect, is_visual, true)
-			location = section_extra
+			location = section_module
 		else:
 			effect = _create_effect_ui(target_effect, is_visual)
 			location = section_visuals.get_child(0).get_child(0)
@@ -303,38 +304,37 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 
 
 func _on_effect_removed(clip: ClipData, index: int, is_visual: bool) -> void:
-	if !active_clip or !clip or clip.id != active_clip.id:
-		return
+	if active_clip and clip and clip.id == active_clip.id:
+		var removed_effect: Control
+		var location: Control
+		if is_visual:
+			return _load_effects() # We just rebuild the entire thing.
 
-	var removed_effect: Control
-	var location: Control
-	if is_visual:
-		return _load_effects() # We just rebuild the entire thing.
+		location = section_audio.get_child(0).get_child(0)
 
-	location = section_audio.get_child(0).get_child(0)
+		var child_offset: int = 0
+		if active_file and active_file.audio_streams.size() > 1:
+			child_offset = 2
 
-	var child_offset: int = 0
-	if active_file and active_file.audio_streams.size() > 1:
-		child_offset = 2
-
-	if location.get_child_count() > index + child_offset:
-		removed_effect = location.get_child(index + child_offset)
-		location.remove_child(removed_effect)
-		removed_effect.queue_free()
+		if location.get_child_count() > index + child_offset:
+			removed_effect = location.get_child(index + child_offset)
+			location.remove_child(removed_effect)
+			removed_effect.queue_free()
 
 
 func _on_effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool) -> void:
-	if !active_clip or !clip or clip.id != active_clip.id: return
+	if active_clip and clip and clip.id == active_clip.id:
+		if is_visual:
+			return _load_effects() # Rebuilding, it's easier. :p
 
-	if is_visual: _load_effects() # Rebuilding, it's easier. :p
-	else:
 		var location: Control = section_audio.get_child(0).get_child(0)
 		if active_file and active_file.audio_streams.size() > 1:
 			old_index += 2
 			new_index += 2
 
 		if location.get_child_count() > old_index:
-			location.move_child(location.get_child(old_index), mini(new_index, location.get_child_count() - 1))
+			var to_index: int = mini(new_index, location.get_child_count() - 1)
+			location.move_child(location.get_child(old_index), to_index)
 
 
 func _create_transitions_ui(parent: Control) -> void:
@@ -347,134 +347,17 @@ func _create_transitions_ui(parent: Control) -> void:
 	left_label.theme_type_variation = "title_label"
 	parent.add_child(left_label)
 
-	if has_visual: # Visual fade in.
-		var hbox: HBoxContainer = HBoxContainer.new()
-		var title_hbox: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		var spinbox: SpinBox = SpinBox.new()
-		var reset_button: TextureButton = TextureButton.new()
+	if has_visual:
+		_create_fade_ui(parent, "Visual Fade (frames)", "FadeVisualIn", true, true, clip_effects.fade_visual.x)
 
-		title_hbox.name = "TitleHBox"
-		spinbox.name = "FadeVisualIn"
-		reset_button.name = "ResetButton"
+	if has_audio:
+		_create_fade_ui(parent, "Audio Fade (frames)", "FadeAudioIn", false, true, clip_effects.fade_audio.x)
 
-		label.text = "Visual Fade (frames)"
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		reset_button.texture_normal = load(Library.ICON_REFRESH)
-		reset_button.tooltip_text = tr("Reset")
-		reset_button.ignore_texture_size = true
-		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		reset_button.custom_minimum_size = Vector2(14, 14)
-		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		reset_button.visible = clip_effects.fade_visual.x != 0
-		reset_button.pressed.connect(func() -> void:
-				EffectsHandler.set_fade(active_clip, true, Vector2i(0, active_clip.effects.fade_visual.y))
-				spinbox.set_value_no_signal(0)
-				reset_button.visible = false)
-
-		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		title_hbox.add_child(label)
-		title_hbox.add_child(reset_button)
-
-		spinbox.max_value = 10000
-		spinbox.value = clip_effects.fade_visual.x
-		spinbox.value_changed.connect(
-				_on_visual_in_value_changed.bind(clip_effects, spinbox))
-
-		hbox.add_child(title_hbox)
-		hbox.add_child(spinbox)
-		parent.add_child(hbox)
-
-	if has_audio: # Audio fade in.
-		var hbox: HBoxContainer = HBoxContainer.new()
-		var title_hbox: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		var spinbox: SpinBox = SpinBox.new()
-		var reset_button: TextureButton = TextureButton.new()
-
-		title_hbox.name = "TitleHBox"
-		spinbox.name = "FadeAudioIn"
-		reset_button.name = "ResetButton"
-
-		label.text = "Audio Fade (frames)"
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		reset_button.texture_normal = load(Library.ICON_REFRESH)
-		reset_button.tooltip_text = tr("Reset")
-		reset_button.ignore_texture_size = true
-		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		reset_button.custom_minimum_size = Vector2(14, 14)
-		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		reset_button.visible = clip_effects.fade_audio.x != 0
-		reset_button.pressed.connect(func() -> void:
-				EffectsHandler.set_fade(active_clip, false, Vector2i(0, active_clip.effects.fade_audio.y))
-				spinbox.set_value_no_signal(0)
-				reset_button.visible = false)
-
-		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		title_hbox.add_child(label)
-		title_hbox.add_child(reset_button)
-
-		spinbox.max_value = 10000
-		spinbox.value = clip_effects.fade_audio.x
-		spinbox.value_changed.connect(
-				_on_audio_in_value_changed.bind(clip_effects, spinbox))
-
-		hbox.add_child(title_hbox)
-		hbox.add_child(spinbox)
-		parent.add_child(hbox)
-
-	if has_visual: # Transition in.
-		var hbox: HBoxContainer = HBoxContainer.new()
-		var title_hbox: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		var reset_button: TextureButton = TextureButton.new()
-		var option_button: OptionButton = OptionButton.new()
-
-		label.text = "Style"
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		reset_button.name = "ResetButton"
-		reset_button.texture_normal = load(Library.ICON_REFRESH)
-		reset_button.tooltip_text = tr("Reset")
-		reset_button.ignore_texture_size = true
-		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		reset_button.custom_minimum_size = Vector2(14, 14)
-		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-		title_hbox.name = "TitleHBox"
-		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		title_hbox.add_child(label)
-		title_hbox.add_child(reset_button)
-
-		var default_style_id: String = "fade"
-		var current_style_id: String = clip_effects.transition_left.id if clip_effects.transition_left else default_style_id
-
-		for transition_name: String in EffectsHandler.transitions:
-			option_button.add_item(transition_name)
-			if current_style_id == EffectsHandler.transitions[transition_name]:
-				option_button.selected = option_button.item_count - 1
-		option_button.item_selected.connect(
-				_on_transition_in_style_item_selected.bind(option_button))
-
-		reset_button.visible = current_style_id != default_style_id
-		reset_button.pressed.connect(func() -> void:
-				EffectsHandler.set_transition(active_clip, true, default_style_id))
-
-		hbox.name = "StyleLeft"
-		hbox.add_child(title_hbox)
-		hbox.add_child(option_button)
-		parent.add_child(hbox)
-
-		var params: Array[EffectParam] = []
-		if clip_effects.transition_left: params = clip_effects.transition_left.params
-
-		for param: EffectParam in params:
-			parent.add_child(_create_transition_param_ui(clip_effects.transition_left, param, true))
+	if has_visual:
+		_create_transition_style_ui(parent, true, clip_effects.transition_left)
+		if clip_effects.transition_left:
+			for param: EffectParam in clip_effects.transition_left.params:
+				parent.add_child(_create_transition_param_ui(clip_effects.transition_left, param, true))
 
 	parent.add_child(HSeparator.new())
 
@@ -483,132 +366,87 @@ func _create_transitions_ui(parent: Control) -> void:
 	right_label.theme_type_variation = "title_label"
 	parent.add_child(right_label)
 
-	if has_visual: # Visual fade out.
-		var hbox: HBoxContainer = HBoxContainer.new()
-		var title_hbox: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		var spinbox: SpinBox = SpinBox.new()
-		var reset_button: TextureButton = TextureButton.new()
+	if has_visual:
+		_create_fade_ui(parent, "Visual Fade (frames)", "FadeVisualOut", true, false, clip_effects.fade_visual.y)
 
-		title_hbox.name = "TitleHBox"
-		spinbox.name = "FadeVisualOut"
-		reset_button.name = "ResetButton"
+	if has_audio:
+		_create_fade_ui(parent, "Audio Fade (frames)", "FadeAudioOut", false, false, clip_effects.fade_audio.y)
 
-		label.text = "Visual Fade (frames)"
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		reset_button.texture_normal = load(Library.ICON_REFRESH)
-		reset_button.tooltip_text = tr("Reset")
-		reset_button.ignore_texture_size = true
-		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		reset_button.custom_minimum_size = Vector2(14, 14)
-		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		reset_button.visible = clip_effects.fade_visual.y != 0
-		reset_button.pressed.connect(func() -> void:
-				EffectsHandler.set_fade(active_clip, true, Vector2i(active_clip.effects.fade_visual.x, 0))
-				spinbox.set_value_no_signal(0)
-				reset_button.visible = false)
-
-		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		title_hbox.add_child(label)
-		title_hbox.add_child(reset_button)
-
-		spinbox.max_value = 10000
-		spinbox.value = clip_effects.fade_visual.y
-		spinbox.value_changed.connect(
-				_on_visual_out_value_changed.bind(clip_effects, spinbox))
-
-		hbox.add_child(title_hbox)
-		hbox.add_child(spinbox)
-		parent.add_child(hbox)
-
-	if has_audio: # Audio fade out.
-		var hbox: HBoxContainer = HBoxContainer.new()
-		var title_hbox: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		var spinbox: SpinBox = SpinBox.new()
-		var reset_button: TextureButton = TextureButton.new()
-
-		title_hbox.name = "TitleHBox"
-		spinbox.name = "FadeAudioOut"
-		reset_button.name = "ResetButton"
-
-		label.text = "Audio Fade (frames)"
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		reset_button.texture_normal = load(Library.ICON_REFRESH)
-		reset_button.tooltip_text = tr("Reset")
-		reset_button.ignore_texture_size = true
-		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		reset_button.custom_minimum_size = Vector2(14, 14)
-		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		reset_button.visible = clip_effects.fade_audio.y != 0
-		reset_button.pressed.connect(func() -> void:
-				EffectsHandler.set_fade(active_clip, false, Vector2i(active_clip.effects.fade_audio.x, 0))
-				spinbox.set_value_no_signal(0)
-				reset_button.visible = false)
-
-		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		title_hbox.add_child(label)
-		title_hbox.add_child(reset_button)
-
-		spinbox.max_value = 10000
-		spinbox.value = clip_effects.fade_audio.y
-		spinbox.value_changed.connect(
-				_on_audio_out_value_changed.bind(clip_effects, spinbox))
-
-		hbox.add_child(title_hbox)
-		hbox.add_child(spinbox)
-		parent.add_child(hbox)
-
-	if has_visual: # Transition out.
-		var hbox: HBoxContainer = HBoxContainer.new()
-		var title_hbox: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		var reset_button: TextureButton = TextureButton.new()
-		var option_button: OptionButton = OptionButton.new()
-
-		label.text = "Style"
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-		reset_button.name = "ResetButton"
-		reset_button.texture_normal = load(Library.ICON_REFRESH)
-		reset_button.tooltip_text = tr("Reset")
-		reset_button.ignore_texture_size = true
-		reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		reset_button.custom_minimum_size = Vector2(14, 14)
-		reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-		title_hbox.name = "TitleHBox"
-		title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		title_hbox.add_child(label)
-		title_hbox.add_child(reset_button)
-
-		var default_style_id: String = "fade"
-		var current_style_id: String = clip_effects.transition_right.id if clip_effects.transition_right else default_style_id
-
-		for transition_name: String in EffectsHandler.transitions:
-			option_button.add_item(transition_name)
-			if current_style_id == EffectsHandler.transitions[transition_name]:
-				option_button.selected = option_button.item_count - 1
-		option_button.item_selected.connect(
-				_on_transition_out_style_item_selected.bind(option_button))
-
-		reset_button.visible = current_style_id != default_style_id
-		reset_button.pressed.connect(func() -> void:
-				EffectsHandler.set_transition(active_clip, false, default_style_id))
-
-		hbox.name = "StyleRight"
-		hbox.add_child(title_hbox)
-		hbox.add_child(option_button)
-		parent.add_child(hbox)
-
+	if has_visual:
+		_create_transition_style_ui(parent, false, clip_effects.transition_right)
 		if clip_effects.transition_right:
 			for param: EffectParam in clip_effects.transition_right.params:
 				parent.add_child(_create_transition_param_ui(clip_effects.transition_right, param, false))
+
+
+func _create_fade_ui(parent: Control, label_text: String, node_name: String, is_visual: bool, is_left: bool, value: int) -> void:
+	var hbox: HBoxContainer = HBoxContainer.new()
+	var title_hbox: HBoxContainer = HBoxContainer.new()
+	var label: Label = Label.new()
+	var spinbox: SpinBox = SpinBox.new()
+	var reset_button: TextureButton = _base_reset_button.duplicate()
+
+	title_hbox.name = "TitleHBox"
+	spinbox.name = node_name
+
+	label.text = label_text
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	reset_button.visible = value != 0
+	reset_button.pressed.connect(func() -> void:
+			var fade_val: Vector2i = active_clip.effects.fade_visual if is_visual else active_clip.effects.fade_audio
+			var new_fade: Vector2i = Vector2i(0, fade_val.y) if is_left else Vector2i(fade_val.x, 0)
+			EffectsHandler.set_fade(active_clip, is_visual, new_fade)
+			spinbox.set_value_no_signal(0)
+			reset_button.visible = false)
+
+	title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_hbox.add_child(label)
+	title_hbox.add_child(reset_button)
+
+	spinbox.max_value = 10000
+	spinbox.value = value
+	spinbox.value_changed.connect(_on_fade_value_changed.bind(is_visual, is_left, spinbox))
+
+	hbox.add_child(title_hbox)
+	hbox.add_child(spinbox)
+	parent.add_child(hbox)
+
+
+func _create_transition_style_ui(parent: Control, is_left: bool, transition: Effect) -> void:
+	var hbox: HBoxContainer = HBoxContainer.new()
+	var title_hbox: HBoxContainer = HBoxContainer.new()
+	var label: Label = Label.new()
+	var reset_button: TextureButton = _base_reset_button.duplicate()
+	var option_button: OptionButton = OptionButton.new()
+
+	label.text = "Style"
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	title_hbox.name = "TitleHBox"
+	title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_hbox.add_child(label)
+	title_hbox.add_child(reset_button)
+
+	var default_style_id: String = "fade"
+	var current_style_id: String = transition.id if transition else default_style_id
+
+	for transition_name: String in EffectsHandler.transitions:
+		option_button.add_item(transition_name)
+		if current_style_id == EffectsHandler.transitions[transition_name]:
+			option_button.selected = option_button.item_count - 1
+	option_button.item_selected.connect(_on_transition_style_item_selected.bind(option_button, is_left))
+
+	reset_button.visible = current_style_id != default_style_id
+	reset_button.pressed.connect(func() -> void:
+			EffectsHandler.set_transition(active_clip, is_left, default_style_id))
+
+	hbox.name = "StyleLeft" if is_left else "StyleRight"
+	hbox.add_child(title_hbox)
+	hbox.add_child(option_button)
+	parent.add_child(hbox)
 
 
 func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left: bool) -> HBoxContainer:
@@ -625,20 +463,11 @@ func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left
 				break
 
 	var param_settings: Control = create_param_control(param, update_call, effect_ui)
-
 	param_title.text = param.nickname
 	param_title.tooltip_text = param.tooltip
 	param_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	var param_reset_button: TextureButton = TextureButton.new()
-	param_reset_button.name = "ResetButton"
-	param_reset_button.texture_normal = load(Library.ICON_REFRESH)
-	param_reset_button.tooltip_text = tr("Reset parameter.")
-	param_reset_button.ignore_texture_size = true
-	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	param_reset_button.custom_minimum_size = Vector2(14, 14)
-	param_reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
+	var param_reset_button: TextureButton = _base_reset_button.duplicate()
 	var default_val: Variant = param.default_value
 	param_reset_button.pressed.connect(func() -> void: update_call.call(default_val))
 
@@ -657,22 +486,16 @@ func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left
 	var value: Variant = transition.get_value(param, 0)
 	_set_param_settings_value(param_settings, value)
 	param_reset_button.visible = not _is_same_value(value, default_val)
-
 	return param_hbox
 
 
 func _load_effects() -> void:
 	# Clean UI.
 	_drag_overlays.clear()
-	for child: Node in section_extra.get_children():
-		section_extra.remove_child(child)
-		child.queue_free()
-	for child: Node in section_visuals.get_children():
-		section_visuals.remove_child(child)
-		child.queue_free()
-	for child: Node in section_audio.get_children():
-		section_audio.remove_child(child)
-		child.queue_free()
+	for section: FoldableContainer in vbox_sections.get_children():
+		for child: Node in section.get_children():
+			section.remove_child(child)
+			child.queue_free()
 
 	var margin_visuals: MarginContainer = MarginContainer.new()
 	var vbox_visuals: VBoxContainer = VBoxContainer.new()
@@ -741,21 +564,21 @@ func _load_effects() -> void:
 	vbox_visuals.draw.connect(_draw_drop_indicator.bind(vbox_visuals))
 	vbox_audio.draw.connect(_draw_drop_indicator.bind(vbox_audio))
 
-	if !active_clip or !ClipLogic.clips.has(active_clip.id):
+	if !active_clip or !ClipLogic.has(active_clip.id):
 		_update_ui_values()
 		return
 
 	# Creating/updating new UI.
 	var clip_effects: ClipEffects = active_clip.effects
-	if section_extra.visible and active_clip.type == Type.TEXT: # Set text params.
+	if section_text.visible and active_clip.type == Type.TEXT: # Set text params.
 		var text_effect: Effect = active_file.temp_file.text_effect
 		var ui: FoldableContainer = _create_effect_ui(text_effect, true, true)
-		section_extra.add_child(ui)
+		section_text.add_child(ui)
 
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		var effect: Effect = clip_effects.video[index]
 		if effect.id == "pck_effect_params":
-			section_extra.add_child(_create_effect_ui(effect, true, true))
+			section_module.add_child(_create_effect_ui(effect, true, true))
 		else:
 			vbox_visuals.add_child(_create_effect_ui(effect, true))
 
@@ -842,37 +665,42 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 	container.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	if not is_file_effect:
+		var data: DragDataEffect = DragDataEffect.new()
+		data.effect = effect
+		data.is_visual = is_visual
+		data.container = container
+		data.content = content_vbox
 		container.set_drag_forwarding(
-				_get_drag_data_effect.bind(effect, is_visual, container, content_vbox), Callable(), Callable())
+				_get_drag_data_effect.bind(data), Callable(), Callable())
 
 	container.gui_input.connect(func(event: InputEvent) -> void:
-			if event is not InputEventMouseButton:
-				return
-
-			var event_mouse: InputEventMouseButton = event
-			if event_mouse.button_index == MOUSE_BUTTON_LEFT:
-				if event_mouse.pressed:
-					EffectsHandler.effect_selected.emit(effect)
-					container.folded = !container.folded
-				else:
-					container.folded = !container.folded)
+			if event is InputEventMouseButton:
+				var event_mouse: InputEventMouseButton = event
+				if event_mouse.button_index == MOUSE_BUTTON_LEFT:
+					if event_mouse.pressed:
+						EffectsHandler.effect_selected.emit(effect)
+						container.folded = !container.folded
+					else:
+						container.folded = !container.folded)
 
 	# Adding effect params.
 	var keyframes_found: bool = false
 	if effect.custom_ui.is_empty():
 		for param: EffectParam in effect.params:
 			var param_hbox: HBoxContainer = create_effect_param_hbox(param, effect, is_visual)
-			if param.keyframeable: keyframes_found = true
+			if param.keyframeable:
+				keyframes_found = true
 			content_vbox.add_child(param_hbox)
 	else:
 		for effect_ui: EffectUI in effect.custom_ui:
 			if effect_ui == null: continue
 			if effect_ui.param_id != "":
 				var param: EffectParam = _get_param_by_id(effect, effect_ui.param_id)
-				if param:
-					var param_hbox: HBoxContainer = create_effect_param_hbox(param, effect, is_visual, effect_ui)
-					if param.keyframeable: keyframes_found = true
-					content_vbox.add_child(param_hbox)
+				var param_hbox: HBoxContainer = create_effect_param_hbox(
+						param, effect, is_visual, effect_ui)
+				if param.keyframeable:
+					keyframes_found = true
+				content_vbox.add_child(param_hbox)
 			elif effect_ui.custom_ui != null:
 				var custom_scene: Node = effect_ui.custom_ui.instantiate()
 				if custom_scene.has_method("setup"):
@@ -929,7 +757,8 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 
 func _get_param_by_id(effect: Effect, param_id: String) -> EffectParam:
 	for param: EffectParam in effect.params:
-		if param.id == param_id: return param
+		if param.id == param_id:
+			return param
 	return null
 
 
@@ -949,7 +778,7 @@ func _reset_text_effect() -> void:
 	text_effect.set_default_keyframe()
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
@@ -958,18 +787,19 @@ func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
 	ClipLogic.updated.emit()
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func _on_reset_pck_effect() -> void:
-	if not active_clip: return
-	var pck_effect: Effect = null
-	for i: int in active_clip.effects.video.size():
-		if active_clip.effects.video[i].id == "pck_effect_params":
-			pck_effect = active_clip.effects.video[i]
-			break
-	if pck_effect:
-		_on_reset_effect(pck_effect, true)
+	if active_clip:
+		var pck_effect: Effect = null
+		for i: int in active_clip.effects.video.size():
+			if active_clip.effects.video[i].id == "pck_effect_params":
+				pck_effect = active_clip.effects.video[i]
+				break
+		if pck_effect:
+			_on_reset_effect(pck_effect, true)
+
 
 func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
 	var relative_frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
@@ -1056,13 +886,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 	param_title.clip_text = true
 	param_settings.name = "PARAM_" + param_id
 
-	var param_reset_button: TextureButton = TextureButton.new()
-	param_reset_button.texture_normal = load(Library.ICON_REFRESH)
-	param_reset_button.tooltip_text = tr("Reset parameter.")
-	param_reset_button.ignore_texture_size = true
-	param_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	param_reset_button.custom_minimum_size = Vector2(14, 14)
-
+	var param_reset_button: TextureButton = _base_reset_button.duplicate()
 	param_reset_button.pressed.connect(
 			_effect_param_update_call.bind(param.default_value, effect, is_visual, param_id))
 
@@ -1398,17 +1222,18 @@ func _on_reset_effect(effect: Effect, is_visual: bool) -> void:
 
 
 func _update_ui_values() -> void:
-	if !active_clip or !ClipLogic.clips.has(active_clip.id):
+	if !active_clip or !ClipLogic.has(active_clip.id):
 		active_clip = null
 		return
 
 	clip_enable_visuals_button.set_pressed_no_signal(active_clip.effects.is_showing)
 	clip_enable_audio_button.set_pressed_no_signal(!active_clip.effects.is_muted)
 	var frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
-	if section_extra.visible and section_extra.get_child_count() > 0:
+	if section_text.visible and section_text.get_child_count() > 0:
 		var text_effect: Effect = active_file.temp_file.text_effect
-		var container: FoldableContainer = section_extra.get_child(0)
-		_update_ui_values_for_container(text_effect, container.get_child(0) as VBoxContainer, frame_nr)
+		var ui_container: FoldableContainer = section_text.get_child(0) as FoldableContainer
+		if ui_container and ui_container.get_child_count() > 0:
+			_update_ui_values_for_container(text_effect, ui_container.get_child(0) as VBoxContainer, frame_nr)
 
 	for i: int in active_clip.effects.video.size():
 		_update_ui_values_effect(active_clip.effects.video, i, frame_nr)
@@ -1418,63 +1243,57 @@ func _update_ui_values() -> void:
 
 	if !section_transitions.visible or section_transitions.get_child_count() <= 0:
 		return
+
 	var transition_vbox: VBoxContainer = section_transitions.get_child(0)
+	for is_left: bool in [true, false]:
+		var style_hbox: HBoxContainer = transition_vbox.get_node_or_null(
+				"StyleLeft" if is_left else "StyleRight") as HBoxContainer
+		if style_hbox:
+			var option_button: OptionButton = style_hbox.get_child(1) as OptionButton
+			var current_ui_id: String = EffectsHandler.transitions[option_button.get_item_text(option_button.selected)]
+			var transition: Effect = active_clip.effects.transition_left if is_left else active_clip.effects.transition_right
+			var real_id: String = transition.id if transition else "fade"
+			if current_ui_id != real_id:
+				for child: Control in transition_vbox.get_children():
+					transition_vbox.remove_child(child)
+					child.queue_free()
+				_create_transitions_ui(transition_vbox)
+				return
 
-	var fade_visual_in: SpinBox = transition_vbox.find_child("FadeVisualIn", true, false)
-	if fade_visual_in:
-		fade_visual_in.set_value_no_signal(active_clip.effects.fade_visual.x)
-		if fade_visual_in.get_parent().has_node("TitleHBox/ResetButton"):
-			(fade_visual_in.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_visual.x != 0)
+	for fade_data: Array in [
+			[ "FadeVisualIn",  active_clip.effects.fade_visual.x ],
+			[ "FadeVisualOut", active_clip.effects.fade_visual.y ],
+			[ "FadeAudioIn",   active_clip.effects.fade_audio.x  ],
+			[ "FadeAudioOut",  active_clip.effects.fade_audio.y  ]]:
+		var spinbox: SpinBox = transition_vbox.find_child(fade_data[0] as String, true, false)
+		if spinbox:
+			var value: int = fade_data[1]
+			spinbox.set_value_no_signal(value)
+			if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
+				(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
 
-	var fade_audio_in: SpinBox = transition_vbox.find_child("FadeAudioIn", true, false)
-	if fade_audio_in:
-		fade_audio_in.set_value_no_signal(active_clip.effects.fade_audio.x)
-		if fade_audio_in.get_parent().has_node("TitleHBox/ResetButton"):
-			(fade_audio_in.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_audio.x != 0)
+	_update_transition_ui_values(transition_vbox, active_clip.effects.transition_left, true)
+	_update_transition_ui_values(transition_vbox, active_clip.effects.transition_right, false)
 
-	var fade_visual_out: SpinBox = transition_vbox.find_child("FadeVisualOut", true, false)
-	if fade_visual_out:
-		fade_visual_out.set_value_no_signal(active_clip.effects.fade_visual.y)
-		if fade_visual_out.get_parent().has_node("TitleHBox/ResetButton"):
-			(fade_visual_out.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_visual.y != 0)
 
-	var fade_audio_out: SpinBox = transition_vbox.find_child("FadeAudioOut", true, false)
-	if fade_audio_out:
-		fade_audio_out.set_value_no_signal(active_clip.effects.fade_audio.y)
-		if fade_audio_out.get_parent().has_node("TitleHBox/ResetButton"):
-			(fade_audio_out.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (active_clip.effects.fade_audio.y != 0)
+func _update_transition_ui_values(transition_vbox: VBoxContainer, transition: Effect, is_left: bool) -> void:
+	if not transition: return
+	var style_hbox: HBoxContainer = transition_vbox.get_node_or_null(
+			"StyleLeft" if is_left else "StyleRight") as HBoxContainer
+	if style_hbox:
+		var reset_button: TextureButton = style_hbox.get_node_or_null("TitleHBox/ResetButton")
+		if reset_button:
+			reset_button.visible = transition.id != "fade"
 
-	if active_clip.effects.transition_left:
-		var style_left_hbox: HBoxContainer = transition_vbox.get_node_or_null("StyleLeft") as HBoxContainer
-		if style_left_hbox:
-			var reset_button: TextureButton = style_left_hbox.get_node_or_null("TitleHBox/ResetButton")
+	for param: EffectParam in transition.params:
+		var hbox: HBoxContainer = transition_vbox.get_node_or_null(
+				NodePath(("LEFT_" if is_left else "RIGHT_") + param.id)) as HBoxContainer
+		if hbox and hbox.get_child_count() > 1:
+			var val: Variant = transition.get_value(param, 0)
+			_set_param_settings_value(hbox.get_child(1) as Control, val)
+			var reset_button: TextureButton = hbox.get_node_or_null("TitleHBox/ResetButton")
 			if reset_button:
-				reset_button.visible = active_clip.effects.transition_left.id != "fade"
-
-		for param: EffectParam in active_clip.effects.transition_left.params:
-			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("LEFT_" + param.id)) as HBoxContainer
-			if hbox and hbox.get_child_count() > 1:
-				var val: Variant = active_clip.effects.transition_left.get_value(param, 0)
-				_set_param_settings_value(hbox.get_child(1) as Control, val)
-				var reset_button: TextureButton = hbox.get_node_or_null("TitleHBox/ResetButton")
-				if reset_button:
-					reset_button.visible = not _is_same_value(val, param.default_value)
-
-	if active_clip.effects.transition_right:
-		var style_right_hbox: HBoxContainer = transition_vbox.get_node_or_null("StyleRight") as HBoxContainer
-		if style_right_hbox:
-			var reset_button: TextureButton = style_right_hbox.get_node_or_null("TitleHBox/ResetButton")
-			if reset_button:
-				reset_button.visible = active_clip.effects.transition_right.id != "fade"
-
-		for param: EffectParam in active_clip.effects.transition_right.params:
-			var hbox: HBoxContainer = transition_vbox.get_node_or_null(NodePath("RIGHT_" + param.id)) as HBoxContainer
-			if hbox and hbox.get_child_count() > 1:
-				var val: Variant = active_clip.effects.transition_right.get_value(param, 0)
-				_set_param_settings_value(hbox.get_child(1) as Control, val)
-				var reset_button: TextureButton = hbox.get_node_or_null("TitleHBox/ResetButton")
-				if reset_button:
-					reset_button.visible = not _is_same_value(val, param.default_value)
+				reset_button.visible = not _is_same_value(val, param.default_value)
 
 
 func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer, frame_nr: int) -> void:
@@ -1541,7 +1360,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 	var child_offset: int = 0
 	if effects == active_clip.effects.video:
 		if effect.id == "pck_effect_params":
-			section = section_extra
+			section = section_module
 			child_offset = -index
 		else:
 			section = section_visuals
@@ -1729,6 +1548,7 @@ func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 			break
 	EditorCore.set_frame(active_clip.start + target)
 
+
 func _jump_prev_keyframe_all(effect: Effect) -> void:
 	if not active_clip:
 		return
@@ -1748,6 +1568,7 @@ func _jump_prev_keyframe_all(effect: Effect) -> void:
 	if target == -1:
 		target = 0
 	EditorCore.set_frame(active_clip.start + target)
+
 
 func _jump_next_keyframe_all(effect: Effect) -> void:
 	if not active_clip:
@@ -1982,7 +1803,11 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 			new_effect.set_default_keyframe()
 			new_effects.append(new_effect)
 
-		var old_effects: Array = _copy_effect_array(active_clip.effects.video as Array if is_visual else active_clip.effects.audio as Array)
+		var old_effects: Array
+		if is_visual:
+			old_effects = _copy_effect_array(active_clip.effects.video as Array)
+		else:
+			old_effects = _copy_effect_array(active_clip.effects.audio as Array)
 
 		InputManager.undo_redo.create_action("Apply section preset")
 		InputManager.undo_redo.add_do_method(_set_section_effects.bind(active_clip, new_effects, is_visual))
@@ -2013,7 +1838,12 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 
 func _apply_default_section_preset(is_visual: bool) -> void:
 	InputManager.undo_redo.create_action("Apply default preset")
-	var old_effects: Array = _copy_effect_array(active_clip.effects.video as Array if is_visual else active_clip.effects.audio as Array)
+	var old_effects: Array
+	if is_visual:
+		old_effects = _copy_effect_array(active_clip.effects.video as Array)
+	else:
+		old_effects = _copy_effect_array(active_clip.effects.audio as Array)
+
 	var new_effects: Array = []
 	if is_visual:
 		var transform_effect: Effect = (load(Library.EFFECT_VISUAL_TRANSFORM) as Effect).deep_copy()
@@ -2066,17 +1896,6 @@ func _copy_effect_array(array: Array) -> Array:
 	return data
 
 
-func _on_transition_updated(clip: ClipData, _is_left: bool) -> void:
-	if active_clip and clip.id == active_clip.id:
-		if section_transitions.get_child_count() != 0:
-			var vbox: VBoxContainer = section_transitions.get_child(0)
-			section_transitions.remove_child(vbox)
-			vbox.queue_free()
-		var vbox_transitions: VBoxContainer = VBoxContainer.new()
-		section_transitions.add_child(vbox_transitions)
-		_create_transitions_ui(vbox_transitions)
-
-
 func _on_visuals_enable_button_toggled(toggled_on: bool) -> void:
 	if active_clip and active_clip.effects.is_showing != toggled_on:
 		ClipLogic.toggle_clip_visible(active_clip, toggled_on)
@@ -2089,31 +1908,28 @@ func _on_audio_enable_button_toggled(toggled_on: bool) -> void:
 	section_audio.folded = !toggled_on
 
 
-func _get_extra_foldable() -> FoldableContainer:
-	if active_clip and active_clip.type & Type.GROUP_EXTRA and section_extra.get_child_count() > 0:
-		return section_extra.get_child(0) as FoldableContainer
-	return null
-
-
 func _toggle_section(target: FoldableContainer, shift: bool) -> void:
 	if shift:
-		var extra: FoldableContainer = _get_extra_foldable()
-		if extra and extra != target:
-			extra.folded = true
-		if section_transitions != target:
+		if !target:
+			section_text.folded = true
+			section_module.folded = true
+		elif section_transitions != target:
 			section_transitions.folded = true
-		if section_visuals != target:
+		elif section_visuals != target:
 			section_visuals.folded = true
-		if section_audio != target:
+		elif section_audio != target:
 			section_audio.folded = true
-		if target:
+		elif target:
 			target.folded = false
 	elif target:
 		target.folded = !target.folded
+	else:
+		section_text.folded = !section_text.folded
+		section_module.folded = !section_module.folded
 
 
 func _on_special_pressed() -> void:
-	_toggle_section(_get_extra_foldable(), !Input.is_key_pressed(KEY_SHIFT))
+	_toggle_section(null, !Input.is_key_pressed(KEY_SHIFT))
 
 
 func _on_transitions_pressed() -> void:
@@ -2129,66 +1945,40 @@ func _on_audio_pressed() -> void:
 
 
 func _on_fold_all_pressed() -> void:
-	var extra: FoldableContainer = _get_extra_foldable()
-	var any_unfolded: bool = false
-
-	if extra and not extra.folded:
-		any_unfolded = true
-	if not section_transitions.folded:
-		any_unfolded = true
-	if not section_visuals.folded:
-		any_unfolded = true
-	if not section_audio.folded:
-		any_unfolded = true
-
-	var target_state: bool = any_unfolded
 	if !Input.is_key_pressed(KEY_SHIFT):
-		target_state = true # Shift modifier always unfolds all.
-	if extra: extra.folded = target_state
-	section_transitions.folded = target_state
-	section_visuals.folded = target_state
-	section_audio.folded = target_state
+		return _fold_all(true)
+
+	for section: FoldableContainer in vbox_sections.get_children():
+		if !section.folded:
+			return _fold_all(true)
+	return _fold_all(false)
+
+
+func _fold_all(value: bool) -> void:
+	for section: FoldableContainer in vbox_sections.get_children():
+		section.folded = value
 
 
 #---- Transition spinbox stuff ----
 
-func _on_visual_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
+func _on_fade_value_changed(value: float, is_visual: bool, is_left: bool, spinbox: SpinBox) -> void:
 	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
 		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
 
 	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(active_clip, true, Vector2i(int(value), clip_effects.fade_visual.y))
+		var current_fade: Vector2i = active_clip.effects.fade_visual if is_visual else active_clip.effects.fade_audio
+		var new_fade: Vector2i = Vector2i(int(value), current_fade.y) if is_left else Vector2i(current_fade.x, int(value))
+		EffectsHandler.set_fade(active_clip, is_visual, new_fade)
 
 
-func _on_visual_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
-	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
-		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
-
-	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(active_clip, true, Vector2i(clip_effects.fade_visual.x, int(value)))
-
-
-func _on_audio_in_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
-	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
-		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
-
-	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(active_clip, false, Vector2i(int(value), clip_effects.fade_audio.y))
-
-
-func _on_audio_out_value_changed(value: float, clip_effects: ClipEffects, spinbox: SpinBox) -> void:
-	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
-		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
-
-	if spinbox.get_line_edit().has_focus():
-		EffectsHandler.set_fade(active_clip, false, Vector2i(clip_effects.fade_audio.x, int(value)))
-
-
-func _on_transition_in_style_item_selected(index: int, option_button: OptionButton) -> void:
+func _on_transition_style_item_selected(index: int, option_button: OptionButton, is_left: bool) -> void:
 	var transition_id: String = EffectsHandler.transitions[option_button.get_item_text(index)]
-	EffectsHandler.set_transition(active_clip, true, transition_id)
+	EffectsHandler.set_transition(active_clip, is_left, transition_id)
 
 
-func _on_transition_out_style_item_selected(index: int, option_button: OptionButton) -> void:
-	var transition_id: String = EffectsHandler.transitions[option_button.get_item_text(index)]
-	EffectsHandler.set_transition(active_clip, false, transition_id)
+
+class DragDataEffect:
+	var effect: Effect
+	var is_visual: bool
+	var container: FoldableContainer = null
+	var content: Control = null

@@ -167,7 +167,7 @@ func _create_proxy_name(file_path: String) -> String:
 
 
 func _on_proxy_finished(file: FileData) -> void:
-	if not FileLogic.files.has(file.id): return
+	if not FileLogic.has(file.id): return
 	if Settings.get_use_proxies():
 		FileLogic.reload(file)
 	FileLogic.nickname_changed.emit(file) # To update the name.

@@ -93,7 +93,7 @@ func _on_request_drop_folder(screen_pos: Vector2) -> void:
 	if item:
 		var metadata: Variant = item.get_metadata(0)
 		if str(metadata).is_valid_int(): # File
-			var file: FileData = FileLogic.files[metadata as int]
+			var file: FileData = FileLogic.get_data(metadata as int)
 			target_folder = file.folder
 		else: # Folder.
 			target_folder = str(metadata)
@@ -125,7 +125,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 	var popup: PopupMenu = PopupManager.create_menu()
 
 	if str(metadata).is_valid_int(): # File.
-		var file: FileData = FileLogic.files[metadata as int]
+		var file: FileData = FileLogic.get_data(metadata as int)
 		popup.add_item(tr("Rename"), PopupAction.RENAME)
 		popup.add_item(tr("Reload"), PopupAction.RELOAD)
 		popup.add_item(tr("Delete"), PopupAction.DELETE)
@@ -240,12 +240,12 @@ func _on_popup_action_folder_delete() -> void:
 
 func _on_popup_action_file_rename() -> void:
 	var rename_dialog: FileRenameDialog = (load("uid://y450a2mtc4om") as PackedScene).instantiate()
-	rename_dialog.prepare(FileLogic.files[tree.get_selected().get_metadata(0) as int])
+	rename_dialog.prepare(FileLogic.get_data(tree.get_selected().get_metadata(0) as int))
 	add_child(rename_dialog)
 
 
 func _on_popup_action_file_reload() -> void:
-	FileLogic.load_data(FileLogic.files[tree.get_selected().get_metadata(0)])
+	FileLogic.load_data(FileLogic.get_data(tree.get_selected().get_metadata(0) as int))
 
 
 func _on_popup_action_file_delete() -> void:
@@ -253,7 +253,7 @@ func _on_popup_action_file_delete() -> void:
 
 
 func _on_popup_action_file_save_temp_as() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	if file.type != Type.IMAGE:
 		return
 
@@ -269,7 +269,7 @@ func _on_popup_action_file_save_temp_as() -> void:
 
 
 func _on_popup_action_file_extract_audio() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	var dialog: FileDialog = PopupManager.create_file_dialog(
 			tr("Save video audio to WAV"), FileDialog.FILE_MODE_SAVE_FILE, ["*.wav"])
 	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MUSIC)
@@ -281,25 +281,25 @@ func _on_popup_action_file_extract_audio() -> void:
 
 
 func _on_popup_action_file_duplicate() -> void: ## Only for text.
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	if file.type != Type.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
 	FileLogic.duplicate_text(file)
 
 
 func _on_popup_action_file_create_proxy() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	ProxyHandler.request_generation(file)
 
 
 func _on_popup_action_file_recreate_proxy() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	ProxyHandler.delete_proxy(file)
 	ProxyHandler.request_generation(file)
 
 
 func _on_popup_action_file_remove_proxy() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	FileLogic.load_data(file)
 	FileLogic.nickname_changed.emit(file)
 	ProxyHandler.delete_proxy(file)
@@ -311,12 +311,12 @@ func _on_popup_action_replace_audio() -> void:
 
 
 func _on_popup_action_open_in_file_manager() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(file.path))
 
 
 func _on_popup_action_copy_path() -> void:
-	var file: FileData = FileLogic.files[tree.get_selected().get_metadata(0)]
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	DisplayServer.clipboard_set(ProjectSettings.globalize_path(file.path))
 
 
@@ -324,7 +324,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 	var draggable: Draggable = Draggable.new()
 	var selected: TreeItem = tree.get_next_selected(folder_items["/"])
 	if selected == null:
-		return
+		return null
 	draggable.is_file = true
 
 	while true:
@@ -343,7 +343,7 @@ func _get_list_drag_data(_pos: Vector2) -> Draggable:
 			if file_id in draggable.ids:
 				continue
 			draggable.ids.append(file_id)
-			draggable.duration += FileLogic.files[file_id].duration
+			draggable.duration += FileLogic.get_data(file_id).duration
 		selected = tree.get_next_selected(selected)
 		if selected == null:
 			break # End of selected TreeItem's.
@@ -403,7 +403,7 @@ func _add_file_to_tree(file: FileData) -> void:
 
 
 func _on_update_thumb(file: FileData) -> void:
-	if !FileLogic.files.has(file.id): return _on_deleted(file.id)
+	if !FileLogic.has(file.id): return _on_deleted(file.id)
 	if not file_items.has(file.id): return
 
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file))
@@ -591,7 +591,7 @@ func _create_folder_at_selected(folder_name: String) -> void:
 	if selected_item:
 		var metadata: Variant = selected_item.get_metadata(0)
 		if str(metadata).is_valid_int(): # File
-			var file: FileData = FileLogic.files[metadata as int]
+			var file: FileData = FileLogic.get_data(metadata as int)
 			parent_path = file.folder
 		else:
 			parent_path = str(metadata)
@@ -632,7 +632,7 @@ func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 
 	var files: Array[FileData] = []
 	for file_id: int in draggable.ids:
-		var file: FileData = FileLogic.files[file_id]
+		var file: FileData = FileLogic.get_data(file_id)
 		var in_dragged_folder: bool = false
 		for folder_path: String in draggable.folders:
 			if file.folder.begins_with(folder_path):

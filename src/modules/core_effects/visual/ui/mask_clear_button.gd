@@ -30,4 +30,4 @@ func _on_clear_pressed() -> void:
 func _apply_keyframes(param_id: String, keyframes: Dictionary) -> void:
 	effect.keyframes[param_id] = keyframes.duplicate(true)
 	effect._cache_dirty = true
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()

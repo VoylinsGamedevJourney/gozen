@@ -110,7 +110,7 @@ func can_drop_new_clips(track: int, frame: int, safe_zone: int, split_audio: boo
 	var max_track_needed: int = track
 	if split_audio or split_extra_audio:
 		for file_id: int in draggable.ids:
-			var file: FileData = FileLogic.files[file_id]
+			var file: FileData = FileLogic.get_data(file_id)
 			if file.type == Type.VIDEO and file.audio_streams.size() > 0:
 				var added_tracks: int = file.audio_streams.size()
 				if split_extra_audio:
@@ -171,7 +171,7 @@ func can_drop_new_clips(track: int, frame: int, safe_zone: int, split_audio: boo
 
 
 func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:
-	var anchor_clip: ClipData = ClipLogic.clips[draggable.ids[0]]
+	var anchor_clip: ClipData = ClipLogic.get_data(draggable.ids[0])
 	var target_start: int = frame - draggable.mouse_offset
 	var track_difference: int = track - anchor_clip.track
 	var frame_difference: int = target_start - anchor_clip.start
@@ -180,7 +180,7 @@ func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:
 
 	var edges: Array[int] = []
 	for clip_id: int in draggable.ids:
-		var c: ClipData = ClipLogic.clips[clip_id]
+		var c: ClipData = ClipLogic.get_data(clip_id)
 		edges.append(c.start + frame_difference)
 		edges.append(c.end + frame_difference)
 	var snap_delta: int = find_snap_offset(edges, maxi(1, int(10.0 / zoom)), ignore_ids)
@@ -188,7 +188,7 @@ func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:
 
 	var candidates: Array[int] = [frame_difference]
 	for clip_id: int in draggable.ids:
-		var clip: ClipData = ClipLogic.clips[clip_id]
+		var clip: ClipData = ClipLogic.get_data(clip_id)
 		var new_track: int = clip.track + track_difference
 		if new_track < 0 or new_track >= TrackLogic.tracks.size() or TrackLogic.tracks[new_track].is_locked:
 			return false
@@ -208,7 +208,7 @@ func can_move_clips(track: int, frame: int, safe_zone: int) -> bool:
 		if distance <= safe_zone and distance < best_distance:
 			var is_valid: bool = true
 			for clip_id: int in draggable.ids:
-				var clip: ClipData = ClipLogic.clips[clip_id]
+				var clip: ClipData = ClipLogic.get_data(clip_id)
 				var new_track: int = clip.track + track_difference
 				var new_start: int = clip.start + difference
 				var new_end: int = clip.end + difference

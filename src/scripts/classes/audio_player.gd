@@ -57,22 +57,22 @@ func set_audio(audio_clip: ClipData, instance_index: int = 0) -> void:
 		return stop()
 	elif RenderManager.encoder != null and RenderManager.encoder.is_open():
 		return stop()
-	elif !ClipLogic.clips.has(audio_clip.id):
+	elif !ClipLogic.has(audio_clip.id):
 		return stop()
 
 	# Replace audio logic.
-	var target_file: FileData = FileLogic.files[audio_clip.file]
+	var target_file: FileData = FileLogic.get_data(audio_clip.file)
 	var time_offset: float = 0.0
 	if audio_clip.effects.ato_active and audio_clip.effects.ato_file != -1:
-		target_file = FileLogic.files[audio_clip.effects.ato_file]
+		target_file = FileLogic.get_data(audio_clip.effects.ato_file)
 		time_offset = audio_clip.effects.ato_offset
 	elif target_file.ato_active:
 		if target_file.ato_file != -1:
 			time_offset = target_file.ato_offset
-			target_file = FileLogic.files[target_file.ato_file]
+			target_file = FileLogic.get_data(target_file.ato_file)
 
 	# Getting file_id data.
-	if !FileLogic.files.has(target_file.id):
+	if !FileLogic.has(target_file.id):
 		return stop()
 	var stream: AudioStream = FileLogic.get_audio_stream(target_file, instance_index, audio_clip.effects.audio_stream_index)
 	if stream == null:

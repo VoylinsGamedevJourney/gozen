@@ -175,13 +175,13 @@ func _set_keyframe_raw(frame: int, param_id: String, value: Variant) -> void:
 
 	effect.keyframes[param_id][target_frame] = value
 	effect._cache_dirty = true
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func _apply_keyframes(param_id: String, keyframes: Dictionary) -> void:
 	effect.keyframes[param_id] = keyframes.duplicate(true)
 	effect._cache_dirty = true
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func _get_param(id: String) -> EffectParam:

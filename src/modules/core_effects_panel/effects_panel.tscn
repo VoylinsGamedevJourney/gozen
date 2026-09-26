@@ -32,7 +32,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("section_extra", "section_transitions", "section_visuals", "section_audio")]
+[node name="EffectsPanel" type="PanelContainer" unique_id=1266123162 node_paths=PackedStringArray("vbox_sections", "section_text", "section_module", "section_transitions", "section_visuals", "section_audio")]
 custom_minimum_size = Vector2(300, 200)
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,7 +42,9 @@ grow_vertical = 2
 size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_yqe27")
-section_extra = NodePath("Margin/MainScroll/Panel/Margin/VBox/ExtraContainer")
+vbox_sections = NodePath("Margin/MainScroll/Panel/Margin/VBox")
+section_text = NodePath("Margin/MainScroll/Panel/Margin/VBox/TextContainer")
+section_module = NodePath("Margin/MainScroll/Panel/Margin/VBox/ModulesContainer")
 section_transitions = NodePath("Margin/MainScroll/Panel/Margin/VBox/TransitionsContainer")
 section_visuals = NodePath("Margin/MainScroll/Panel/Margin/VBox/VisualsContainer")
 section_audio = NodePath("Margin/MainScroll/Panel/Margin/VBox/AudioContainer")
@@ -71,8 +73,17 @@ size_flags_vertical = 3
 [node name="VBox" type="VBoxContainer" parent="Margin/MainScroll/Panel/Margin" unique_id=1400588315]
 layout_mode = 2
 
-[node name="ExtraContainer" type="VBoxContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=654175760]
+[node name="TextContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=901523623]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_vdjnm")
+title = "Text"
+
+[node name="ModulesContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=882025339]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_vdjnm")
+title = "Module"
 
 [node name="TransitionsContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=1507050130]
 layout_mode = 2

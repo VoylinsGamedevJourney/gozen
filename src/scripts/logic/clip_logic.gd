@@ -15,6 +15,11 @@ var copied_min_track: int = 0
 
 
 
+func has(id: int) -> bool: return clips.has(id)
+func get_data(id: int) -> ClipData: return clips.get(id)
+func get_new_id(ids: Array = clips.keys()) -> int: return Utils.get_unique_id(ids)
+
+
 #--- Handling ---
 
 func add(requests: Array[RequestClipAdd]) -> void:
@@ -34,7 +39,7 @@ func add(requests: Array[RequestClipAdd]) -> void:
 
 	for request: RequestClipAdd in requests:
 		var new_clip: ClipData = ClipData.new()
-		new_clip.id = Utils.get_unique_id(existing_keys)
+		new_clip.id = get_new_id(existing_keys)
 		existing_keys.append(new_clip.id)
 
 		new_clip.type = request.type
@@ -44,7 +49,7 @@ func add(requests: Array[RequestClipAdd]) -> void:
 		new_clip.file = request.file.id
 		new_clip.track = request.track
 		new_clip.start = request.frame
-		new_clip.duration = FileLogic.files[request.file.id].duration
+		new_clip.duration = FileLogic.get_data(request.file.id).duration
 		if request.duration > 0:
 			new_clip.duration = request.duration
 
@@ -55,7 +60,7 @@ func add(requests: Array[RequestClipAdd]) -> void:
 		if request.group_id != -1:
 			new_clip.groups.append(request.group_id)
 
-		if FileLogic.files[request.file.id].path.to_lower().ends_with(".gif"):
+		if FileLogic.get_data(request.file.id).path.to_lower().ends_with(".gif"):
 			new_clip.effects.is_muted = true
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
 		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
@@ -201,7 +206,7 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		effects.ato_file = request.clip.effects.ato_file
 		effects.is_muted = request.clip.effects.is_muted
 		effects.audio_stream_index = request.clip.effects.audio_stream_index
-		snapshot.id = Utils.get_unique_id(clips.keys())
+		snapshot.id = get_new_id()
 		snapshot.start += duration_left
 		snapshot.begin += int(duration_left * request.clip.speed)
 		snapshot.duration = duration_right
@@ -213,7 +218,7 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		if not clip.groups.is_empty():
 			var old_group: int = clip.groups[-1]
 			if not group_id_map.has(old_group):
-				var new_id: int = Utils.get_unique_id(existing_group_ids)
+				var new_id: int = get_new_id(existing_group_ids)
 				group_id_map[old_group] = new_id
 				existing_group_ids.append(new_id)
 			snapshot.groups[-1] = group_id_map[old_group]
@@ -313,7 +318,7 @@ func paste_copied_clips() -> void:
 
 		for group: int in new_clip.groups:
 			if not group_id_map.has(group):
-				var new_group: int = Utils.get_unique_id(existing_group_ids)
+				var new_group: int = get_new_id(existing_group_ids)
 				existing_group_ids.append(new_group)
 				group_id_map[group] = new_group
 			mapped_groups.append(group_id_map[group])
@@ -334,7 +339,7 @@ func paste_copied_clips() -> void:
 
 		var relative_start: int = copied_clip.start - copied_min_start
 		new_clip.start = target_frame + relative_start
-		new_clip.id = Utils.get_unique_id(existing_keys)
+		new_clip.id = get_new_id(existing_keys)
 		existing_keys.append(new_clip.id)
 		clips_to_paste.append(new_clip)
 	insert_clips(clips_to_paste, "Paste clip(s)")
@@ -383,7 +388,7 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 
 			for group: int in new_clip.groups:
 				if not group_id_map.has(group):
-					var new_group: int = Utils.get_unique_id(existing_group_ids)
+					var new_group: int = get_new_id(existing_group_ids)
 					existing_group_ids.append(new_group)
 					group_id_map[group] = new_group
 				mapped_groups.append(group_id_map[group])
@@ -402,16 +407,16 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 			new_clip.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
 			new_clip.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 			new_clip.start = target_frame
-			new_clip.id = Utils.get_unique_id(existing_keys)
+			new_clip.id = get_new_id(existing_keys)
 
 			if duplicate_files and clip.type == Type.TEXT:
-				var original_file: FileData = FileLogic.files[clip.file]
+				var original_file: FileData = FileLogic.get_data(clip.file)
 				var new_file: FileData = original_file.duplicate(true)
 				if new_file.temp_file:
 					new_file.temp_file = original_file.temp_file.duplicate(true)
 					if new_file.temp_file.text_effect:
 						new_file.temp_file.text_effect = original_file.temp_file.text_effect.deep_copy()
-				new_file.id = Utils.get_unique_id(existing_file_keys)
+				new_file.id = get_new_id(existing_file_keys)
 				existing_file_keys.append(new_file.id)
 				new_clip.file = new_file.id
 				new_files.append(new_file)
@@ -457,7 +462,7 @@ func _get_all_group_ids() -> Array[int]:
 func group_selected_clips() -> void: group_clips(active_clips)
 func group_clips(clips_to_group: Array[ClipData]) -> void:
 	if clips_to_group.size() > 1:
-		var group_id: int = Utils.get_unique_id(_get_all_group_ids())
+		var group_id: int = get_new_id(_get_all_group_ids())
 		InputManager.undo_redo.create_action("Group clips")
 
 		for clip: ClipData in clips_to_group:
@@ -606,13 +611,13 @@ func auto_cut_silence(target_clip: ClipData, local_ranges: Array[Vector2i], appl
 
 			var potential_ids: Array[int] = clips.keys()
 			for clip_data: ClipData in new_clips_to_add: potential_ids.append(clip_data.id)
-			snapshot.id = Utils.get_unique_id(potential_ids)
+			snapshot.id = get_new_id(potential_ids)
 
 			var mapped_groups: Array[int] = []
 			for group: int in snapshot.groups:
 				var key: String = str(group) + "_" + str(i)
 				if not group_id_map.has(key):
-					var new_group: int = Utils.get_unique_id(existing_group_ids)
+					var new_group: int = get_new_id(existing_group_ids)
 					existing_group_ids.append(new_group)
 					group_id_map[key] = new_group
 				mapped_groups.append(group_id_map[key])

@@ -24,7 +24,7 @@ func _draw() -> void:
 	if Timeline.draggable != null and !Timeline.draggable.is_file:
 		if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING, Timeline.State.RESIZING]:
 			for clip_id: int in Timeline.draggable.ids:
-				var clip: ClipData = ClipLogic.clips.get(clip_id)
+				var clip: ClipData = ClipLogic.get_data(clip_id)
 				if clip: visible_clips.erase(clip)
 
 	# - Clip blocks
@@ -64,7 +64,7 @@ func _draw() -> void:
 			wave_file_id = clip.effects.ato_file
 			wave_offset_sec = clip.effects.ato_offset
 		else:
-			var target_file: FileData = FileLogic.files.get(clip.file)
+			var target_file: FileData = FileLogic.get_data(clip.file)
 			if target_file and target_file.ato_active and target_file.ato_file != -1:
 				wave_file_id = target_file.ato_file
 				wave_offset_sec = target_file.ato_offset
@@ -105,7 +105,7 @@ func _draw() -> void:
 		# - Clip nickname
 		if clip_rect.size.x > 20:
 			var speed: float = clip.speed
-			var text: String = FileLogic.files[clip.file].nickname
+			var text: String = FileLogic.get_data(clip.file).nickname
 
 			if not is_equal_approx(speed, 1.0):
 				var speed_text: String = "speed: %d%%" % int(speed * 100)

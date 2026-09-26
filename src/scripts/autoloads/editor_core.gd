@@ -51,7 +51,6 @@ func _ready() -> void:
 	Project.resolution_changed.connect(_on_resolution_changed)
 
 	EffectsHandler.effects_updated.connect(_on_clips_updated)
-	EffectsHandler.effect_values_updated.connect(_on_clips_updated)
 
 	ClipLogic.updated.connect(_on_clips_updated)
 	TrackLogic.updated.connect(_rebuild_structure)
@@ -220,7 +219,7 @@ func _get_instance_for_clip(clip: ClipData) -> int:
 	var used_indices: Array[int] = []
 
 	for clip_id: int in clip_instances:
-		var clip_data: ClipData = ClipLogic.clips.get(clip_id)
+		var clip_data: ClipData = ClipLogic.get_data(clip_id)
 		if !clip_data or clip_data.file != file_id: continue
 
 		if clip_data.end == clip.start and clip_data.begin + int(clip_data.duration * clip_data.speed) == clip.begin and is_equal_approx(clip_data.speed, clip.speed):
@@ -267,7 +266,8 @@ func _prefetch_upcoming_clips() -> void:
 		var current_clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_nr)
 		var upcoming: Array[ClipData] = TrackLogic.get_clips_in_range(track, frame_nr + 1, frame_nr + look_ahead)
 		for upcoming_clip: ClipData in upcoming:
-			if upcoming_clip == current_clip or upcoming_clip.type != Type.VIDEO: continue
+			if upcoming_clip == current_clip or upcoming_clip.type != Type.VIDEO:
+				continue
 
 			var index: int = _get_instance_for_clip(upcoming_clip)
 			var instance_in_use: bool = false
@@ -278,12 +278,14 @@ func _prefetch_upcoming_clips() -> void:
 					instance_in_use = true
 					break
 
-			if instance_in_use: continue
+			if instance_in_use:
+				continue
 
-			var file: FileData = FileLogic.files[upcoming_clip.file]
+			var file: FileData = FileLogic.get_data(upcoming_clip.file)
 			var video: Video = FileLogic.get_video_reader(file, index)
 			var video_id: int = video.get_instance_id()
-			if active_tasks.has(video_id): continue
+			if active_tasks.has(video_id):
+				continue
 
 			var target: int = roundi((float(upcoming_clip.begin) / Project.data.framerate) * video.get_framerate())
 			if file.path.to_lower().ends_with(".gif"):
@@ -330,7 +332,7 @@ func _on_clips_updated() -> void:
 func _check_clip(track: int, new_frame_nr: int) -> bool:
 	var clip: ClipData = loaded_clips[track]
 	if !clip: return false
-	elif !ClipLogic.clips.has(clip.id): # Check if clip really still exists or not.
+	elif !ClipLogic.has(clip.id): # Check if clip really still exists or not.
 		loaded_clips[track] = null
 		return false
 	elif clip.track != track: # Track check.
@@ -543,7 +545,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 			view_textures[track_id].texture = null
 		return
 
-	var file: FileData = FileLogic.files[clip.file]
+	var file: FileData = FileLogic.get_data(clip.file)
 	var raw_data: Variant = FileLogic.data.get(file.id)
 
 	var clip_frame: int = frame_nr - clip.start
@@ -661,7 +663,7 @@ func set_background_color(color: Color) -> void:
 func load_video_frame(clip: ClipData, frame: int, instance_index: int = 0) -> void:
 	if !clip or clip.type != Type.VIDEO: return
 
-	var file: FileData = FileLogic.files[clip.file]
+	var file: FileData = FileLogic.get_data(clip.file)
 	var video: Video = FileLogic.get_video_reader(file, instance_index)
 	if !video: return # Check if video is done loading.
 

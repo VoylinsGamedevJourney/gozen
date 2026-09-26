@@ -509,7 +509,7 @@ func set_resolution(resolution: Vector2i) -> void:
 			for effect: Effect in clip.effects.video:
 				_update_effect.call(effect, ratio)
 
-		EffectsHandler.effect_values_updated.emit()
+		EffectsHandler.effects_updated.emit()
 
 	unsaved_changes = true
 	resolution_changed.emit()

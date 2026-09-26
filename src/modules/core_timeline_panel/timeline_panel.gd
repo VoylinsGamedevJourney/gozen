@@ -87,7 +87,6 @@ func _ready() -> void:
 	TrackLogic.updated.connect(_on_tracks_updated)
 
 	EffectsHandler.effects_updated.connect(draw_clips.queue_redraw)
-	EffectsHandler.effect_values_updated.connect(draw_clips.queue_redraw)
 
 	get_window().size_changed.connect(_redraw_on_change)
 
@@ -306,7 +305,7 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 
 	var clip_on_mouse: ClipData = _get_clip_on_mouse(event.position)
 	if clip_on_mouse:
-		var nickname: String = FileLogic.files[clip_on_mouse.file].nickname
+		var nickname: String = FileLogic.get_data(clip_on_mouse.file).nickname
 		if tooltip_text != nickname:
 			tooltip_text = nickname
 		if Timeline.hovered_clip != clip_on_mouse:
@@ -563,7 +562,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 		var existing_group_ids: Array[int] = ClipLogic._get_all_group_ids()
 
 		for file_id: int in Timeline.draggable.ids:
-			var file: FileData = FileLogic.files[file_id]
+			var file: FileData = FileLogic.get_data(file_id)
 			var target_frame: int = Timeline.draggable.frame_offset + total_duration
 			var is_split: bool = split_audio or split_extra_audio
 
@@ -571,7 +570,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 			video_request.file = file
 			video_request.frame = target_frame
 			video_request.track = Timeline.draggable.track_offset
-			video_request.type =  FileLogic.files[file.id].type
+			video_request.type =  FileLogic.get_data(file.id).type
 
 			if is_split and file.type == Type.VIDEO and file.audio_streams.size() > 0:
 				var group_id: int = Utils.get_unique_id(existing_group_ids)
@@ -602,7 +601,7 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 	else: # Moving clips.
 		var move_requests: Array[RequestClipMove] = []
 		for clip_id: int in Timeline.draggable.ids:
-			var clip: ClipData = ClipLogic.clips[clip_id]
+			var clip: ClipData = ClipLogic.get_data(clip_id)
 			var request: RequestClipMove = RequestClipMove.new()
 			request.clip = clip
 			request.offset_frame = Timeline.draggable.frame_offset
@@ -788,7 +787,7 @@ func _start_box_select(start_pos: Vector2, end_pos: Vector2) -> void:
 ## This function is also used to handle speeding.
 func _handle_resize_motion(mouse_pos: Vector2) -> void:
 	var clip: ClipData = Timeline.resize_target.clip
-	var file: FileData = FileLogic.files[clip.file]
+	var file: FileData = FileLogic.get_data(clip.file)
 	var current_frame: int = get_frame_from_mouse(mouse_pos)
 	var is_fixed_duration: bool = file.type & (Type.AUDIO | Type.VIDEO)
 	if file.path.to_lower().get_extension() == "gif":
@@ -859,7 +858,7 @@ func _handle_fade_motion(mouse_pos: Vector2) -> void:
 			clip.effects.fade_audio.y = drag_frames
 
 	draw_clips.queue_redraw()
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 	EditorCore.set_frame(EditorCore.frame_nr)
 
 
@@ -889,7 +888,7 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 			popup.add_icon_item(load(Library.ICON_SPEED_RESET) as Icon, tr("Reset speed"), PopupAction.CLIP_RESET_SPEED)
 
 	if right_click_clip.type == Type.VIDEO:
-		var file: FileData = FileLogic.files[right_click_clip.file]
+		var file: FileData = FileLogic.get_data(right_click_clip.file)
 		var is_demo: bool = OS.has_feature("demo")
 		var audio_streams_size: int = file.audio_streams.size()
 		if not is_demo or audio_streams_size > 1:
@@ -1190,7 +1189,7 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 				video_request.file = file
 				video_request.track = track_idx
 				video_request.frame = target_frame
-				video_request.type =  FileLogic.files[file.id].type
+				video_request.type =  FileLogic.get_data(file.id).type
 
 				if (split_audio or split_extra_audio) and file.type == Type.VIDEO and file.audio_streams.size() > 0:
 					var group_id: int = Utils.get_unique_id(existing_group_ids)

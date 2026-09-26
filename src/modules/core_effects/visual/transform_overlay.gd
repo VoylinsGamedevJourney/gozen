@@ -133,7 +133,7 @@ func _set_keyframe_raw(frame: int, param_id: String, value: Variant) -> void:
 
 	effect.keyframes[param_id][target_frame] = value
 	effect._cache_dirty = true
-	EffectsHandler.effect_values_updated.emit()
+	EffectsHandler.effects_updated.emit()
 
 
 func draw(control: Control) -> void:

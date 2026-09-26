@@ -5,11 +5,8 @@ signal effect_added(clip: ClipData, index: int, is_visual: bool)
 signal effect_removed(clip: ClipData, index: int, is_visual: bool)
 signal effect_moved(clip: ClipData, old_index: int, new_index: int, is_visual: bool)
 signal effects_updated
-signal effect_values_updated
 
 signal effect_selected(effect: Effect)
-
-signal transition_updated(clip: ClipData, is_left: bool)
 
 
 var visual_effects: Dictionary[String, String] = {} ## { effect_name: effect_id }
@@ -71,7 +68,6 @@ func _set_transition(clip: ClipData, is_left: bool, transition: Effect) -> void:
 	else:
 		clip.effects.transition_right = transition
 	effects_updated.emit()
-	transition_updated.emit(clip, is_left)
 
 
 func update_transition_param(clip: ClipData, is_left: bool, param_id: String, value: Variant) -> void:
@@ -88,7 +84,7 @@ func update_transition_param(clip: ClipData, is_left: bool, param_id: String, va
 func _set_transition_param(transition: Effect, param_id: String, value: Variant) -> void:
 	transition.keyframes[param_id][0] = value
 	transition._cache_dirty = true
-	effect_values_updated.emit()
+	effects_updated.emit()
 
 
 func set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
@@ -226,7 +222,6 @@ func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 
 	effect.set_default_keyframe()
 	effects_updated.emit()
-	effect_values_updated.emit()
 
 
 func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_keyframes: Dictionary) -> void:
@@ -236,13 +231,12 @@ func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_
 	effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	effect._cache_dirty = true
 	effects_updated.emit()
-	effect_values_updated.emit()
 
 
 #---- Removing effects ----
 
 func remove_effect(clip: ClipData, index: int, is_visual: bool) -> void:
-	if !ClipLogic.clips.has(clip.id) or index < 0: return
+	if !ClipLogic.has(clip.id) or index < 0: return
 
 	var effect: Effect = _get_effect(clip, index, is_visual)
 	if not effect: return
@@ -373,7 +367,7 @@ func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String
 
 	effect.keyframes[param_id][frame_nr] = value
 	effect._cache_dirty = true
-	effect_values_updated.emit()
+	effects_updated.emit()
 
 
 func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
@@ -388,7 +382,7 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 			printerr("EffectsHandler: Param id '%s' wasn't present in effect.keyframes!" % param_id)
 
 	effect._cache_dirty = true
-	effect_values_updated.emit()
+	effects_updated.emit()
 
 
 #---- Moving effect keyframes ----

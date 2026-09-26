@@ -66,8 +66,8 @@ func _process(_delta: float) -> void:
 
 func load_data(id: int) -> void:
 	current_clip_id = id
-	var clip: ClipData = ClipLogic.clips[current_clip_id]
-	var file: FileData = FileLogic.files[clip.file]
+	var clip: ClipData = ClipLogic.get_data(current_clip_id)
+	var file: FileData = FileLogic.get_data(clip.file)
 
 	target_file_id = file.id
 	var time_offset: float = 0.0
@@ -88,7 +88,7 @@ func load_data(id: int) -> void:
 	wave_preview.set("clip_duration_sec", duration_sec)
 	wave_preview.set("playback_position", start_sec)
 
-	var target_file: FileData = FileLogic.files[target_file_id]
+	var target_file: FileData = FileLogic.get_data(target_file_id)
 	var stream_index: int = clip.effects.audio_stream_index
 	wave_preview.set("audio_stream_index", stream_index)
 	audio_player.stream = FileLogic.get_audio_stream(target_file, 0, stream_index)
@@ -101,7 +101,7 @@ func _calculate_silences() -> void:
 	var silences_sec: Array[Vector2] = []
 
 	var wave_streams: Dictionary = FileLogic.audio_wave.get(target_file_id, {})
-	var stream_index: int = ClipLogic.clips[current_clip_id].effects.audio_stream_index
+	var stream_index: int = ClipLogic.get_data(current_clip_id).effects.audio_stream_index
 	var wave_dict: Dictionary = {}
 	if wave_streams.has(stream_index):
 		wave_dict = wave_streams[stream_index]
@@ -118,7 +118,7 @@ func _calculate_silences() -> void:
 		return
 
 	var framerate: float = Project.data.framerate
-	var clip: ClipData = ClipLogic.clips[current_clip_id]
+	var clip: ClipData = ClipLogic.get_data(current_clip_id)
 
 	var start_sec: float = wave_preview.get("clip_offset_sec")
 	var duration_sec: float = wave_preview.get("clip_duration_sec")
@@ -210,6 +210,6 @@ func _on_cancel_pressed() -> void:
 
 func _on_confirm_pressed() -> void:
 	_stop_playback()
-	var clip: ClipData = ClipLogic.clips[current_clip_id]
+	var clip: ClipData = ClipLogic.get_data(current_clip_id)
 	ClipLogic.auto_cut_silence(clip, local_ranges, apply_group_checkbox.button_pressed, ripple_checkbox.button_pressed)
 	PopupManager.close_all()

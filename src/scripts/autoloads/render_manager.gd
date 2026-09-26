@@ -509,12 +509,12 @@ func _get_clip_audio_info(clip: ClipData) -> Dictionary:
 
 	if clip.effects.ato_active and clip.effects.ato_file != -1:
 		start_sec -= clip.effects.ato_offset
-		file_path = FileLogic.files[clip.effects.ato_file].path
+		file_path = FileLogic.get_data(clip.effects.ato_file).path
 	else:
-		var target_file: FileData = FileLogic.files[clip.file]
+		var target_file: FileData = FileLogic.get_data(clip.file)
 		if target_file.ato_active and target_file.ato_file != -1:
 			start_sec -= target_file.ato_offset
-			file_path = FileLogic.files[target_file.ato_file].path
+			file_path = FileLogic.get_data(target_file.ato_file).path
 		else:
 			file_path = target_file.path
 

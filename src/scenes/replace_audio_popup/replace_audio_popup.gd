@@ -90,7 +90,7 @@ func load_data(id: int, is_file: bool) -> void:
 	if is_file:
 		current_file_id = id
 		current_clip_id = -1
-		file_a = FileLogic.files[current_file_id]
+		file_a = FileLogic.get_data(current_file_id)
 		file_a_wave.set("file_id", current_file_id)
 		if file_a.ato_active:
 			target_file_b_id = file_a.ato_file
@@ -98,8 +98,8 @@ func load_data(id: int, is_file: bool) -> void:
 	else:
 		current_file_id = -1
 		current_clip_id = id
-		var clip: ClipData = ClipLogic.clips[current_clip_id]
-		file_a = FileLogic.files[clip.file]
+		var clip: ClipData = ClipLogic.get_data(current_clip_id)
+		file_a = FileLogic.get_data(clip.file)
 		file_a_wave.set("file_id", file_a.id)
 		if clip.effects.ato_active:
 			target_file_b_id = clip.effects.ato_file
@@ -132,17 +132,17 @@ func load_data(id: int, is_file: bool) -> void:
 
 
 func _on_replace_audio_button_pressed() -> void:
-	var file_b: FileData = FileLogic.files.get(file_b_id)
+	var file_b: FileData = FileLogic.get_data(file_b_id)
 	if file_b == null:
 		file_b = FileData.new()
 		file_b.id = -1
 
 	if current_file_id != -1:
-		var file_a: FileData = FileLogic.files.get(current_file_id)
+		var file_a: FileData = FileLogic.get_data(current_file_id)
 		if file_a:
 			FileLogic.apply_replace_audio(file_a, file_b, offset_spinbox.value)
 	elif current_clip_id != -1:
-		var clip: ClipData = ClipLogic.clips.get(current_clip_id)
+		var clip: ClipData = ClipLogic.get_data(current_clip_id)
 		if clip:
 			ClipLogic.apply_replace_audio(clip, file_b_id, offset_spinbox.value)
 	PopupManager.close_all()
@@ -169,7 +169,7 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 		file_b_wave.set("file_id", -1)
 		file_b_player.stream = null
 	else:
-		var file_b: FileData = FileLogic.files[file_b_id]
+		var file_b: FileData = FileLogic.get_data(file_b_id)
 		file_b_wave.set("file_id", file_b_id)
 		file_b_player.stream = FileLogic.get_audio_stream(file_b, 0)
 
@@ -219,7 +219,7 @@ func _on_auto_align_button_pressed() -> void:
 	if file_b_id == -1: return
 	var file_a_id: int = current_file_id
 	if current_file_id == -1 and current_clip_id != -1:
-		file_a_id = ClipLogic.clips[current_clip_id].file
+		file_a_id = ClipLogic.get_data(current_clip_id).file
 
 	var wave_streams_a: Dictionary = FileLogic.audio_wave.get(file_a_id, {})
 	var wave_streams_b: Dictionary = FileLogic.audio_wave.get(file_b_id, {})
