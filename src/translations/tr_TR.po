@@ -411,7 +411,7 @@ msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
 
@@ -1426,63 +1426,3 @@ msgstr "Dosyalar eklendi"
 #: scripts/logic/file_logic.gd:359
 msgid "Files loading ..."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Module settings"
-#~ msgstr "Ayarları kaydet"
-
-#, fuzzy
-#~ msgid "Close without saving"
-#~ msgstr "Kaydetmeden kapat?"
-
-#, fuzzy
-#~ msgid "Timeline"
-#~ msgstr "Zaman çizelgesi"
-
-#, fuzzy
-#~ msgid "Timeline settings"
-#~ msgstr "İşleme ayarları"
-
-#, fuzzy
-#~ msgid "Default track amount"
-#~ msgstr "Varsayılan parça sayısı"
-
-#, fuzzy
-#~ msgid "Pause after dragging"
-#~ msgstr "Sürüklemeden sonra duraklat"
-
-#, fuzzy
-#~ msgid "Base color"
-#~ msgstr "Arka plan rengi"
-
-#, fuzzy
-#~ msgid "Open editor settings"
-#~ msgstr "Düzenleyici ayarları"
-
-#, fuzzy
-#~ msgid "Open project settings"
-#~ msgstr "Proje ayarları"
-
-#, fuzzy
-#~ msgid "open render menu"
-#~ msgstr "İşleme menüsü"
-
-#, fuzzy
-#~ msgid "Create render profile"
-#~ msgstr "Profil"
-
-#, fuzzy
-#~ msgid "GoZen version"
-#~ msgstr "Sürüm"
-
-#, fuzzy
-#~ msgid "Check version"
-#~ msgstr "Sürüm kontrolü"
-
-#, fuzzy
-#~ msgid "Preferences"
-#~ msgstr "Proje"
-
-#, fuzzy
-#~ msgid "Update available"
-#~ msgstr "Güncelleme var!"

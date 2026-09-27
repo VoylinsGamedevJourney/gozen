@@ -524,7 +524,7 @@ msgid "Select mode: Used for selecting clips on the timeline."
 msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
-msgid "Cut mode: Let's you cut clips on the position of your mouse cursor by clicking."
+msgid "Cut mode: Lets you cut clips on the position of your mouse cursor by clicking."
 msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn

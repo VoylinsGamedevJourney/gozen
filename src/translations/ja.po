@@ -43,9 +43,8 @@ msgid "Save screenshot to project ..."
 msgstr "プロジェクトにスクリーンショットを保存..."
 
 #: modules/core_view_panel/project_view_texture.gd:134
-#, fuzzy
 msgid "Show safe areas"
-msgstr "起動時にセーフエリアを表示"
+msgstr "セーフエリアを表示"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
@@ -354,9 +353,8 @@ msgid "Remove track"
 msgstr "トラックを削除"
 
 #: modules/core_timeline_panel/timeline_panel.gd:281
-#, fuzzy
 msgid "Hide track"
-msgstr "トラックを追加"
+msgstr "トラックを非表示"
 
 #: modules/core_timeline_panel/timeline_panel.gd:284
 #: modules/core_timeline_panel/track_controls.gd:85
@@ -364,9 +362,8 @@ msgid "Mute track"
 msgstr "トラックをミュート"
 
 #: modules/core_timeline_panel/timeline_panel.gd:288
-#, fuzzy
 msgid "Lock track"
-msgstr "トラックを削除"
+msgstr "トラックをロック"
 
 #: modules/core_timeline_panel/timeline_panel.gd:874
 msgid "Delete clip"
@@ -377,14 +374,12 @@ msgid "Split clip"
 msgstr "クリップを分割"
 
 #: modules/core_timeline_panel/timeline_panel.gd:879
-#, fuzzy
 msgid "Hide clip"
-msgstr "クリップを分割"
+msgstr "クリップを非表示"
 
 #: modules/core_timeline_panel/timeline_panel.gd:882
-#, fuzzy
 msgid "Mute clip"
-msgstr "クリップを削除"
+msgstr "クリップをミュート"
 
 #: modules/core_timeline_panel/timeline_panel.gd:886
 #: modules/core_timeline_panel/timeline_panel.gd:962
@@ -401,7 +396,7 @@ msgstr "クリップの音声を置き換え"
 
 #: modules/core_timeline_panel/timeline_panel.gd:900
 msgid "Auto-cut silence"
-msgstr ""
+msgstr "無音を自動カット"
 
 #: modules/core_timeline_panel/timeline_panel.gd:912
 msgid "Select Audio Track"
@@ -412,8 +407,9 @@ msgid "Select mode: Used for selecting clips on the timeline."
 msgstr "選択モード：タイムライン上のクリップを選択するために使用します。"
 
 #: modules/core_timeline_panel/timeline.tscn
+#, fuzzy
 msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
 "カットモード：クリックしてマウスカーソルの位置でクリップをカットします。"
@@ -435,14 +431,12 @@ msgid "Enable clip audio."
 msgstr "クリップの音声を有効にする。"
 
 #: modules/core_effects_panel/effects_panel.gd:55
-#, fuzzy
 msgid "Enable clip visuals."
-msgstr "クリップの音声を有効にする。"
+msgstr "クリップの映像を有効にする。"
 
 #: modules/core_effects_panel/effects_panel.gd:61
-#, fuzzy
 msgid "Reset"
-msgstr "プリセット"
+msgstr "リセット"
 
 #: modules/core_effects_panel/effects_panel.gd:346
 msgid "Left Transition"
@@ -461,29 +455,25 @@ msgid "Audio Track"
 msgstr "音声トラック"
 
 #: modules/core_effects_panel/effects_panel.gd:616
-#, fuzzy
 msgid "Presets & Options."
-msgstr "プリセットとオプション"
+msgstr "プリセットとオプション。"
 
 #: modules/core_effects_panel/effects_panel.gd:621
 #: modules/core_effects_panel/effects_panel.gd:641
-#, fuzzy
 msgid "Keyframe all parameters."
-msgstr "パラメータをリセット"
+msgstr "すべてのパラメータにキーフレームを設定します。"
 
 #: modules/core_effects_panel/effects_panel.gd:654
-#, fuzzy
 msgid "Reset to default."
-msgstr "デフォルトにリセット"
+msgstr "デフォルトに戻します。"
 
 #: modules/core_effects_panel/effects_panel.gd:723
 msgid "Previous keyframe."
-msgstr ""
+msgstr "前のキーフレーム。"
 
 #: modules/core_effects_panel/effects_panel.gd:732
-#, fuzzy
 msgid "Next keyframe."
-msgstr "キーフレーム"
+msgstr "次のキーフレーム。"
 
 #: modules/core_effects_panel/effects_panel.gd:954
 #: modules/core_effects_panel/effects_panel.gd:1685
@@ -572,14 +562,12 @@ msgid "Black"
 msgstr "ブラック"
 
 #: modules/core_effects_panel/effects_panel.gd:1174
-#, fuzzy
 msgid "Link X and Y."
 msgstr "XとYをリンク"
 
 #: modules/core_effects_panel/effects_panel.gd:1478
-#, fuzzy
 msgid "Add effects."
-msgstr "エフェクトを追加"
+msgstr "エフェクトを追加。"
 
 #: modules/core_effects_panel/effects_panel.gd:1626
 msgid "Presets"
@@ -591,7 +579,7 @@ msgstr "エフェクトをリセット"
 
 #: modules/core_effects_panel/effects_panel.gd:1656
 msgid "Delete effect"
-msgstr "エフェクトをを削除"
+msgstr "エフェクトを削除"
 
 #: modules/core_effects_panel/effects_panel.gd:1669
 msgid "Save as preset..."
@@ -608,14 +596,12 @@ msgid "Preset name"
 msgstr "プリセット名"
 
 #: modules/core_effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Text"
-msgstr "テキスト..."
+msgstr "テキスト"
 
 #: modules/core_effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Module"
-msgstr "モジュールマネージャー"
+msgstr "モジュール"
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Transitions"
@@ -657,7 +643,7 @@ msgstr "最近のプロジェクト"
 
 #: scenes/editor/editor.gd:250
 msgid "Splash screen"
-msgstr ""
+msgstr "スプラッシュ画面"
 
 #: scenes/editor/editor.gd:252 scenes/settings_menu/settings_menu.gd:403
 msgid "Project settings"
@@ -837,18 +823,16 @@ msgid "License"
 msgstr "ライセンス"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Module Manager"
 msgstr "モジュールマネージャー"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Close"
-msgstr "ポップアップを閉じる"
+msgstr "閉じる"
 
 #: scenes/module_manager/module_manager.tscn
 msgid "Install Module"
-msgstr ""
+msgstr "モジュールをインストール"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:205
@@ -1084,7 +1068,7 @@ msgstr "自動保存"
 
 #: scenes/settings_menu/settings_menu.gd:397
 msgid "Modules"
-msgstr ""
+msgstr "モジュール"
 
 #: scenes/settings_menu/settings_menu.gd:405
 msgid "Video"
@@ -1258,36 +1242,31 @@ msgstr "選択したマーカーを削除します。"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Auto-Cut Silence"
-msgstr ""
+msgstr "無音の自動カット"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Silence Threshold (dB)"
-msgstr "スマートシークしきい値"
+msgstr "無音しきい値（dB）"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Minimum Silence Duration (s)"
-msgstr ""
+msgstr "最小無音時間（秒）"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Cut Padding (frames)"
-msgstr "音声フェード（フレーム）"
+msgstr "カット前後の余白（フレーム）"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Apply to Grouped Clips"
-msgstr "ファイルのみに適用"
+msgstr "グループ化されたクリップに適用"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Ripple Delete"
-msgstr "削除"
+msgstr "リップル削除"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Confirm Auto-Cut"
-msgstr "確認"
+msgstr "自動カットを確定"
 
 #: scripts/autoloads/project.gd:53
 msgid "Initialize new project ..."
@@ -1335,12 +1314,12 @@ msgstr "保存しない"
 
 #: scripts/autoloads/project.gd:355
 msgid "Unsaved changes"
-msgstr ""
+msgstr "未保存の変更"
 
 #: scripts/autoloads/project.gd:356
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
-msgstr ""
+msgstr "現在のプロジェクトに未保存の変更があります。続行する前に保存しますか？"
 
 #: scripts/autoloads/project.gd:357
 msgid "Save"
@@ -1394,13 +1373,12 @@ msgid "Update existing clips?"
 msgstr "既存のクリップを更新しますか？"
 
 #: scripts/logic/file_logic.gd:245
-#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the audio replacement to all existing clips?"
 msgstr ""
 "このファイルは現在 '%d' 個のクリップで使用されています。\n"
-"音声の置き換えをすべての既存クリップに適用しますか？"
+"既存のすべてのクリップに音声の置き換えを適用しますか？"
 
 #: scripts/logic/file_logic.gd:246
 msgid "Apply to All"
@@ -1417,139 +1395,3 @@ msgstr "ファイルがドロップされました"
 #: scripts/logic/file_logic.gd:359
 msgid "Files loading ..."
 msgstr "ファイルを読み込み中..."
-
-#~ msgid "Show video safety guidelines on top of the project preview."
-#~ msgstr "プロジェクトプレビュー上にビデオのセーフティガイドを表示します。"
-
-#~ msgid "Save file as ..."
-#~ msgstr "名前を付けて保存..."
-
-#~ msgid "Visible"
-#~ msgstr "表示"
-
-#~ msgid "Muted"
-#~ msgstr "ミュート"
-
-#~ msgid "Locked"
-#~ msgstr "ロック"
-
-#~ msgid "Visual Fade (frames)"
-#~ msgstr "映像フェード（フレーム）"
-
-#, fuzzy
-#~ msgid "Module settings"
-#~ msgstr "設定を閉じる"
-
-#~ msgid "Close without saving"
-#~ msgstr "保存せずに閉じる"
-
-#~ msgid "Timeline"
-#~ msgstr "タイムライン"
-
-#~ msgid "Timeline settings"
-#~ msgstr "タイムライン設定"
-
-#~ msgid "Default track amount"
-#~ msgstr "デフォルトトラック数"
-
-#~ msgid "Track height"
-#~ msgstr "トラックの高さ"
-
-#~ msgid "Timeline controls"
-#~ msgstr "タイムライン操作"
-
-#~ msgid "Pause after dragging"
-#~ msgstr "ドラッグ後に一時停止"
-
-#~ msgid ""
-#~ "Setting this will pause playback after having dragged the playhead around."
-#~ msgstr ""
-#~ "これを設定すると、再生ヘッドをドラッグした後に再生が一時停止されます。"
-
-#~ msgid "Empty space delete modifier"
-#~ msgstr "空白削除修飾キー"
-
-#~ msgid "The modifier you want to easily delete empty space between clips."
-#~ msgstr "クリップ間の空白を簡単に削除するために使用する修飾キー。"
-
-#~ msgid "Empty space click action"
-#~ msgstr "空白部分クリック時の動作"
-
-#~ msgid "What to do when clicking empty space in the timeline."
-#~ msgstr "タイムラインの空白部分をクリックしたときの動作を設定します。"
-
-#~ msgid "Addons"
-#~ msgstr "アドオン"
-
-#~ msgid "Show mode bar"
-#~ msgstr "モードバーを表示"
-
-#~ msgid ""
-#~ "The mode bar is the bar on the left of the timeline with buttons for "
-#~ "changing the current timeline mode."
-#~ msgstr ""
-#~ "モードバーはタイムラインの左側にあるバーで、現在のタイムラインモードを変更"
-#~ "するボタンがあります。"
-
-#~ msgid "Audio-take-over"
-#~ msgstr "音声テイクオーバー"
-
-#~ msgid "Clip audio-take-over"
-#~ msgstr "クリップ音声テイクオーバー"
-
-#~ msgid "Open editor settings"
-#~ msgstr "エディター設定を開く"
-
-#~ msgid "Open project settings"
-#~ msgstr "プロジェクト設定を開く"
-
-#~ msgid "open render menu"
-#~ msgstr "書き出しメニューを開く"
-
-#~ msgid "Create render profile"
-#~ msgstr "書き出しプロファイルを作成"
-
-#~ msgid "New profile name"
-#~ msgstr "新しいプロファイル名"
-
-#~ msgid "Select Icon"
-#~ msgstr "アイコンを選択"
-
-#~ msgid "GoZen version"
-#~ msgstr "GoZenのバージョン"
-
-#~ msgid "Check version"
-#~ msgstr "バージョンを確認"
-
-#~ msgid "Project"
-#~ msgstr "プロジェクト"
-
-#~ msgid "Edit"
-#~ msgstr "編集"
-
-#~ msgid "View"
-#~ msgstr "表示"
-
-#~ msgid "Preferences"
-#~ msgstr "環境設定"
-
-#~ msgid "Help"
-#~ msgstr "ヘルプ"
-
-#~ msgid "Update available"
-#~ msgstr "アップデートがあります"
-
-#~ msgid "EditTab"
-#~ msgstr "編集"
-
-#~ msgid "Render"
-#~ msgstr "書き出し"
-
-#~ msgid "Cut"
-#~ msgstr "切り取り"
-
-#~ msgid "Copy"
-#~ msgstr "コピー"
-
-#~ msgid "Paste"
-#~ msgstr "貼り付け"

@@ -43,9 +43,8 @@ msgid "Save screenshot to project ..."
 msgstr "Screenshot opslaan in project ..."
 
 #: modules/core_view_panel/project_view_texture.gd:134
-#, fuzzy
 msgid "Show safe areas"
-msgstr "Veilige gebieden tonen bij het opstarten"
+msgstr "Veilige gebieden tonen"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
@@ -355,9 +354,8 @@ msgid "Remove track"
 msgstr "Track verwijderen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:281
-#, fuzzy
 msgid "Hide track"
-msgstr "Track toevoegen"
+msgstr "Track verbergen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:284
 #: modules/core_timeline_panel/track_controls.gd:85
@@ -365,9 +363,8 @@ msgid "Mute track"
 msgstr "Track dempen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:288
-#, fuzzy
 msgid "Lock track"
-msgstr "Track verwijderen"
+msgstr "Track vergrendelen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:874
 msgid "Delete clip"
@@ -378,14 +375,12 @@ msgid "Split clip"
 msgstr "Clip splitsen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:879
-#, fuzzy
 msgid "Hide clip"
-msgstr "Clip splitsen"
+msgstr "Clip verbergen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:882
-#, fuzzy
 msgid "Mute clip"
-msgstr "Clip verwijderen"
+msgstr "Clip dempen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:886
 #: modules/core_timeline_panel/timeline_panel.gd:962
@@ -402,7 +397,7 @@ msgstr "Audio van clip vervangen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:900
 msgid "Auto-cut silence"
-msgstr ""
+msgstr "Stilte automatisch knippen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:912
 msgid "Select Audio Track"
@@ -413,8 +408,9 @@ msgid "Select mode: Used for selecting clips on the timeline."
 msgstr "Selectiemodus: wordt gebruikt om clips op de tijdlijn te selecteren."
 
 #: modules/core_timeline_panel/timeline.tscn
+#, fuzzy
 msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
 "Snijmodus: hiermee kun je clips knippen op de positie van je muiscursor door "
@@ -437,14 +433,12 @@ msgid "Enable clip audio."
 msgstr "Clip audio inschakelen."
 
 #: modules/core_effects_panel/effects_panel.gd:55
-#, fuzzy
 msgid "Enable clip visuals."
-msgstr "Clip audio inschakelen."
+msgstr "Clipweergave inschakelen."
 
 #: modules/core_effects_panel/effects_panel.gd:61
-#, fuzzy
 msgid "Reset"
-msgstr "Voorinstellingen"
+msgstr "Resetten"
 
 #: modules/core_effects_panel/effects_panel.gd:346
 msgid "Left Transition"
@@ -463,29 +457,25 @@ msgid "Audio Track"
 msgstr "Audiotrack"
 
 #: modules/core_effects_panel/effects_panel.gd:616
-#, fuzzy
 msgid "Presets & Options."
-msgstr "Voorinstellingen en opties"
+msgstr "Voorinstellingen en opties."
 
 #: modules/core_effects_panel/effects_panel.gd:621
 #: modules/core_effects_panel/effects_panel.gd:641
-#, fuzzy
 msgid "Keyframe all parameters."
-msgstr "Parameter resetten"
+msgstr "Keyframes voor alle parameters instellen."
 
 #: modules/core_effects_panel/effects_panel.gd:654
-#, fuzzy
 msgid "Reset to default."
-msgstr "Terugzetten naar standaard"
+msgstr "Terugzetten naar standaard."
 
 #: modules/core_effects_panel/effects_panel.gd:723
 msgid "Previous keyframe."
-msgstr ""
+msgstr "Vorig keyframe."
 
 #: modules/core_effects_panel/effects_panel.gd:732
-#, fuzzy
 msgid "Next keyframe."
-msgstr "Keyframes"
+msgstr "Volgend keyframe."
 
 #: modules/core_effects_panel/effects_panel.gd:954
 #: modules/core_effects_panel/effects_panel.gd:1685
@@ -574,14 +564,12 @@ msgid "Black"
 msgstr "Zwart"
 
 #: modules/core_effects_panel/effects_panel.gd:1174
-#, fuzzy
 msgid "Link X and Y."
-msgstr "Koppel X en Y"
+msgstr "X en Y koppelen."
 
 #: modules/core_effects_panel/effects_panel.gd:1478
-#, fuzzy
 msgid "Add effects."
-msgstr "Effecten toevoegen"
+msgstr "Effecten toevoegen."
 
 #: modules/core_effects_panel/effects_panel.gd:1626
 msgid "Presets"
@@ -610,14 +598,12 @@ msgid "Preset name"
 msgstr "Naam van voorinstelling"
 
 #: modules/core_effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Text"
-msgstr "Tekst ..."
+msgstr "Tekst"
 
 #: modules/core_effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Module"
-msgstr "Modulebeheer"
+msgstr "Module"
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Transitions"
@@ -659,7 +645,7 @@ msgstr "Recente projecten"
 
 #: scenes/editor/editor.gd:250
 msgid "Splash screen"
-msgstr ""
+msgstr "Opstartscherm"
 
 #: scenes/editor/editor.gd:252 scenes/settings_menu/settings_menu.gd:403
 msgid "Project settings"
@@ -839,18 +825,16 @@ msgid "License"
 msgstr "Licentie"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Module Manager"
 msgstr "Modulebeheer"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Close"
-msgstr "Venster sluiten"
+msgstr "Sluiten"
 
 #: scenes/module_manager/module_manager.tscn
 msgid "Install Module"
-msgstr ""
+msgstr "Module installeren"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:205
@@ -1054,7 +1038,7 @@ msgstr "Project-framerate"
 
 #: scenes/settings_menu/settings_menu.gd:312
 msgid "Quick create project options"
-msgstr "Snelle opties voor het aanmaken van projecten"
+msgstr "Snelle projectopties"
 
 #: scenes/settings_menu/settings_menu.gd:313
 msgid "Horizontal resolution"
@@ -1087,7 +1071,7 @@ msgstr "Automatisch opslaan"
 
 #: scenes/settings_menu/settings_menu.gd:397
 msgid "Modules"
-msgstr ""
+msgstr "Modules"
 
 #: scenes/settings_menu/settings_menu.gd:405
 msgid "Video"
@@ -1262,36 +1246,31 @@ msgstr "Geselecteerde markering verwijderen."
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Auto-Cut Silence"
-msgstr ""
+msgstr "Stilte automatisch knippen"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Silence Threshold (dB)"
-msgstr "Slimme zoekdrempel"
+msgstr "Stiltedrempel (dB)"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Minimum Silence Duration (s)"
-msgstr ""
+msgstr "Minimale stilteduur (s)"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Cut Padding (frames)"
-msgstr "Audio fade (frames)"
+msgstr "Knipmarge (frames)"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Apply to Grouped Clips"
-msgstr "Alleen op bestand toepassen"
+msgstr "Toepassen op gegroepeerde clips"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Ripple Delete"
-msgstr "Verwijderen"
+msgstr "Ripple verwijderen"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Confirm Auto-Cut"
-msgstr "Bevestigen"
+msgstr "Automatisch knippen bevestigen"
 
 #: scripts/autoloads/project.gd:53
 msgid "Initialize new project ..."
@@ -1339,12 +1318,14 @@ msgstr "Niet opslaan"
 
 #: scripts/autoloads/project.gd:355
 msgid "Unsaved changes"
-msgstr ""
+msgstr "Niet-opgeslagen wijzigingen"
 
 #: scripts/autoloads/project.gd:356
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
 msgstr ""
+"Er zijn niet-opgeslagen wijzigingen in je huidige project. Wil je opslaan "
+"voordat je doorgaat?"
 
 #: scripts/autoloads/project.gd:357
 msgid "Save"
@@ -1398,13 +1379,12 @@ msgid "Update existing clips?"
 msgstr "Bestaande clips bijwerken?"
 
 #: scripts/logic/file_logic.gd:245
-#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the audio replacement to all existing clips?"
 msgstr ""
 "Dit bestand wordt momenteel gebruikt door '%d' clip(s).\n"
-"Wil je het vervangen van de audio toepassen op alle bestaande clips?"
+"Wil je de audiovervanging toepassen op alle bestaande clips?"
 
 #: scripts/logic/file_logic.gd:246
 msgid "Apply to All"
@@ -1421,139 +1401,3 @@ msgstr "Bestanden neergezet"
 #: scripts/logic/file_logic.gd:359
 msgid "Files loading ..."
 msgstr "Bestanden laden ..."
-
-#~ msgid "Show video safety guidelines on top of the project preview."
-#~ msgstr "Toon videoveiligheidsrichtlijnen boven op het projectvoorbeeld."
-
-#~ msgid "Save file as ..."
-#~ msgstr "Bestand opslaan als ..."
-
-#~ msgid "Visible"
-#~ msgstr "Zichtbaar"
-
-#~ msgid "Muted"
-#~ msgstr "Gedempt"
-
-#~ msgid "Locked"
-#~ msgstr "Vergrendeld"
-
-#~ msgid "Visual Fade (frames)"
-#~ msgstr "Visuele fade (frames)"
-
-#, fuzzy
-#~ msgid "Module settings"
-#~ msgstr "Instellingen sluiten"
-
-#~ msgid "Close without saving"
-#~ msgstr "Sluiten zonder opslaan"
-
-#~ msgid "Timeline"
-#~ msgstr "Tijdlijn"
-
-#~ msgid "Timeline settings"
-#~ msgstr "Tijdlijninstellingen"
-
-#~ msgid "Default track amount"
-#~ msgstr "Standaard aantal tracks"
-
-#~ msgid "Track height"
-#~ msgstr "Track hoogte"
-
-#~ msgid "Timeline controls"
-#~ msgstr "Tijdlijnbediening"
-
-#~ msgid "Pause after dragging"
-#~ msgstr "Pauzeren na slepen"
-
-#~ msgid ""
-#~ "Setting this will pause playback after having dragged the playhead around."
-#~ msgstr ""
-#~ "Als dit is ingesteld, pauzeert het afspelen na het verslepen van de "
-#~ "afspeelkop."
-
-#~ msgid "Empty space delete modifier"
-#~ msgstr "Toets voor verwijderen lege ruimte"
-
-#~ msgid "The modifier you want to easily delete empty space between clips."
-#~ msgstr ""
-#~ "De toets die je wilt gebruiken om lege ruimte tussen clips te verwijderen."
-
-#~ msgid "Empty space click action"
-#~ msgstr "Actie bij klikken op lege ruimte"
-
-#~ msgid "What to do when clicking empty space in the timeline."
-#~ msgstr ""
-#~ "Bepaalt wat er gebeurt wanneer je op lege ruimte in de tijdlijn klikt."
-
-#~ msgid "Addons"
-#~ msgstr "Add-ons"
-
-#~ msgid "Show mode bar"
-#~ msgstr "Modusbalk tonen"
-
-#~ msgid ""
-#~ "The mode bar is the bar on the left of the timeline with buttons for "
-#~ "changing the current timeline mode."
-#~ msgstr ""
-#~ "De modusbalk is de balk links van de tijdlijn met knoppen om de huidige "
-#~ "tijdlijnmodus te wijzigen."
-
-#~ msgid "Audio-take-over"
-#~ msgstr "Audio-overname"
-
-#~ msgid "Clip audio-take-over"
-#~ msgstr "Clip audio-overname"
-
-#~ msgid "Open editor settings"
-#~ msgstr "Editor-instellingen openen"
-
-#~ msgid "Open project settings"
-#~ msgstr "Projectinstellingen openen"
-
-#~ msgid "open render menu"
-#~ msgstr "rendermenu openen"
-
-#~ msgid "Create render profile"
-#~ msgstr "Renderprofiel aanmaken"
-
-#~ msgid "New profile name"
-#~ msgstr "Nieuwe profielnaam"
-
-#~ msgid "Select Icon"
-#~ msgstr "Selecteer icoon"
-
-#~ msgid "GoZen version"
-#~ msgstr "GoZen versie"
-
-#~ msgid "Project"
-#~ msgstr "Project"
-
-#~ msgid "Edit"
-#~ msgstr "Bewerken"
-
-#~ msgid "View"
-#~ msgstr "Beeld"
-
-#~ msgid "Preferences"
-#~ msgstr "Voorkeuren"
-
-#~ msgid "Help"
-#~ msgstr "Help"
-
-#~ msgid "EditTab"
-#~ msgstr "Bewerken"
-
-#~ msgid "Render"
-#~ msgstr "Renderen"
-
-#~ msgid "M"
-#~ msgstr "M"
-
-#~ msgid "Cut"
-#~ msgstr "Knippen"
-
-#~ msgid "Copy"
-#~ msgstr "Kopiëren"
-
-#~ msgid "Paste"
-#~ msgstr "Plakken"

@@ -13,7 +13,7 @@ A minimalist, modern, open-source, customizable, and modular video editor for be
 [*][p][b]Modern Feel[/b]: The UI/UX has a modern touch whilst keeping the overall feel clutter free;[/p][/*]
 [*][p][b]GPU-Accelerated Effects[/b]: Higher performance as all effects are handled on the GPU directly;[/p][/*]
 [*][p][b]Customizable Workspaces[/b]: Your editor, you decide how it looks;[/p][/*]
-[*][p][b]Audio Sync:[/b] Builtin support for easily syncing external microphone audio with your video's;[/p][/*]
+[*][p][b]Audio Sync:[/b] Built-in support for easily syncing external microphone audio with your video's;[/p][/*]
 [*][p][b]Godot Module Extensibility:[/b] Import custom Godot scenes (.pck) directly into your timeline to create custom procedural graphics, titles, and animations.[/p][/*]
 [/list]
 [h2][b]The Steam Edition[/b][/h2]

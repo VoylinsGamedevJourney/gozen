@@ -411,7 +411,7 @@ msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
 
@@ -1423,63 +1423,3 @@ msgstr "已加入檔案"
 #: scripts/logic/file_logic.gd:359
 msgid "Files loading ..."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Module settings"
-#~ msgstr "儲存設定"
-
-#, fuzzy
-#~ msgid "Close without saving"
-#~ msgstr "編輯器設定"
-
-#, fuzzy
-#~ msgid "Timeline"
-#~ msgstr "時間軸"
-
-#, fuzzy
-#~ msgid "Timeline settings"
-#~ msgstr "編輯器設定"
-
-#, fuzzy
-#~ msgid "Default track amount"
-#~ msgstr "預設軌道數量"
-
-#, fuzzy
-#~ msgid "Pause after dragging"
-#~ msgstr "拖曳後暫停"
-
-#, fuzzy
-#~ msgid "Base color"
-#~ msgstr "背景顏色"
-
-#, fuzzy
-#~ msgid "Open editor settings"
-#~ msgstr "編輯器設定"
-
-#, fuzzy
-#~ msgid "Open project settings"
-#~ msgstr "專案設定"
-
-#, fuzzy
-#~ msgid "open render menu"
-#~ msgstr "渲染選單"
-
-#, fuzzy
-#~ msgid "Create render profile"
-#~ msgstr "渲染設定檔"
-
-#, fuzzy
-#~ msgid "GoZen version"
-#~ msgstr "版本"
-
-#, fuzzy
-#~ msgid "Check version"
-#~ msgstr "檢查更新"
-
-#, fuzzy
-#~ msgid "Preferences"
-#~ msgstr "新增專案"
-
-#, fuzzy
-#~ msgid "Update available"
-#~ msgstr "有可用的更新！"

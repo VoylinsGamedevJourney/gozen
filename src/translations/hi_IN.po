@@ -411,7 +411,7 @@ msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
 
@@ -1426,63 +1426,3 @@ msgstr "फ़ाइलें डाली गईं"
 #: scripts/logic/file_logic.gd:359
 msgid "Files loading ..."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Module settings"
-#~ msgstr "सेटिंग्स सहेजें"
-
-#, fuzzy
-#~ msgid "Close without saving"
-#~ msgstr "एडिटर सेटिंग्स"
-
-#, fuzzy
-#~ msgid "Timeline"
-#~ msgstr "टाइमलाइन"
-
-#, fuzzy
-#~ msgid "Timeline settings"
-#~ msgstr "रेंडर सेटिंग्स"
-
-#, fuzzy
-#~ msgid "Default track amount"
-#~ msgstr "डिफ़ॉल्ट ट्रैक की संख्या"
-
-#, fuzzy
-#~ msgid "Pause after dragging"
-#~ msgstr "ड्रैग करने के बाद रोकें"
-
-#, fuzzy
-#~ msgid "Base color"
-#~ msgstr "पृष्ठभूमि रंग"
-
-#, fuzzy
-#~ msgid "Open editor settings"
-#~ msgstr "एडिटर सेटिंग्स"
-
-#, fuzzy
-#~ msgid "Open project settings"
-#~ msgstr "प्रोजेक्ट सेटिंग्स"
-
-#, fuzzy
-#~ msgid "open render menu"
-#~ msgstr "रेंडर मेनू"
-
-#, fuzzy
-#~ msgid "Create render profile"
-#~ msgstr "रेंडर प्रोफ़ाइल"
-
-#, fuzzy
-#~ msgid "GoZen version"
-#~ msgstr "वर्शन"
-
-#, fuzzy
-#~ msgid "Check version"
-#~ msgstr "वर्शन जांचें"
-
-#, fuzzy
-#~ msgid "Preferences"
-#~ msgstr "प्रोजेक्ट"
-
-#, fuzzy
-#~ msgid "Update available"
-#~ msgstr "अपडेट उपलब्ध है!"

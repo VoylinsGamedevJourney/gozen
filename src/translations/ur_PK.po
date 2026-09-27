@@ -410,7 +410,7 @@ msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid ""
-"Cut mode: Let's you cut clips on the position of your mouse cursor by "
+"Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
 
@@ -1424,55 +1424,3 @@ msgstr "نیا پروجیکت"
 #: scripts/logic/file_logic.gd:359
 msgid "Files loading ..."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Module settings"
-#~ msgstr "ترتیبات سیو کریں"
-
-#, fuzzy
-#~ msgid "Close without saving"
-#~ msgstr "ایڈیٹر کی ترتیبات."
-
-#, fuzzy
-#~ msgid "Timeline"
-#~ msgstr "ٹائم لائن"
-
-#, fuzzy
-#~ msgid "Timeline settings"
-#~ msgstr "رینڈرنگ"
-
-#, fuzzy
-#~ msgid "Default track amount"
-#~ msgstr "ڈیفالٹ ٹریک کی مقدار"
-
-#, fuzzy
-#~ msgid "Pause after dragging"
-#~ msgstr "ڈریگ کے بعد توقف"
-
-#, fuzzy
-#~ msgid "Base color"
-#~ msgstr "بیک گراونڈ کا رنگ"
-
-#, fuzzy
-#~ msgid "Open editor settings"
-#~ msgstr "ایڈیٹر کی ترتیبات."
-
-#, fuzzy
-#~ msgid "Open project settings"
-#~ msgstr "نیا پروجیکت"
-
-#, fuzzy
-#~ msgid "Create render profile"
-#~ msgstr "رینڈر پروفائل"
-
-#, fuzzy
-#~ msgid "GoZen version"
-#~ msgstr "ورژن"
-
-#, fuzzy
-#~ msgid "Check version"
-#~ msgstr "تھیم"
-
-#, fuzzy
-#~ msgid "Preferences"
-#~ msgstr "نیا پروجیکت"

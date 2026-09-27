@@ -1,26 +1,25 @@
 --- SHORT DESCRIPTION ---
 
-A minimalist, modern, open-source, customizable, and modular video editor for beginners and semi-professionals designed to make editing simple, fast, and stress-free.
-
+初心者からセミプロまでを対象とした、ミニマリストでモダン、オープンソース、カスタマイズ可能かつモジュール式のビデオエディター。動画編集をシンプル、快適、そしてストレスなく行えるように設計されています。
 
 --- LONG DESCRIPTION ---
 
-[p][b]GoZen[/b] is a modern, lightweight, fast, open-source, customizable, and modular video editor for everyday creators, hobbyists, and semi-professionals. Designed with a minimalist mindset, simple UI, for a smooth editing flow, but with a strong core to give creators a smooth, fast, and zen-like editing experience without getting in your way.[/p]
-[h2][b]Built for Performance & Simplicity[/b][/h2]
-[p]Whether you are editing gameplay footage, devlogs, tutorials, or personal projects, GoZen stays out of your way and lets you focus on the creating of your videos.[/p]
+[p][b]GoZen[/b]は、日常的に動画を作るクリエイター、趣味で動画を作る人、セミプロ向けに設計された、モダンで軽量、高速、オープンソース、カスタマイズ可能かつモジュール式のビデオエディターです。ミニマリストな考え方とシンプルなUIでスムーズな編集フローを実現しながら、強力なコア機能によって、邪魔をせず、快適で高速、そして禅のように落ち着いた編集体験を提供します。[/p]
+[h2][b]パフォーマンスとシンプルさを重視[/b][/h2]
+[p]ゲームプレイ映像、デブログ、チュートリアル、個人プロジェクトなど、GoZenは作業の邪魔をせず、動画の制作そのものに集中できるようにします。[/p]
 [list]
-[*][p][b]Smooth Playback & Responsive Scrubbing[/b]: For a stress-free and (Go)Zen experience[b];[/b][/p][/*]
-[*][p][b]Modern Feel[/b]: The UI/UX has a modern touch whilst keeping the overall feel clutter free;[/p][/*]
-[*][p][b]GPU-Accelerated Effects[/b]: Higher performance as all effects are handled on the GPU directly;[/p][/*]
-[*][p][b]Customizable Workspaces[/b]: Your editor, you decide how it looks;[/p][/*]
-[*][p][b]Audio Sync:[/b] Builtin support for easily syncing external microphone audio with your video's;[/p][/*]
-[*][p][b]Godot Module Extensibility:[/b] Import custom Godot scenes (.pck) directly into your timeline to create custom procedural graphics, titles, and animations.[/p][/*]
+[*][p][b]スムーズな再生と快適なスクラブ操作[/b]：ストレスのない、そして(Go)Zenな編集体験を実現[b]；[/b][/p][/*]
+[*][p][b]モダンな操作感[/b]：モダンなUI/UXを取り入れながら、全体としてすっきりとしたデザインを維持しています；[/p][/*]
+[*][p][b]GPUアクセラレーション対応エフェクト[/b]：すべてのエフェクトをGPU上で直接処理することで、より高いパフォーマンスを実現；[/p][/*]
+[*][p][b]カスタマイズ可能なワークスペース[/b]：エディターの見た目はあなた次第；[/p][/*]
+[*][p][b]オーディオ同期：[/b]外部マイクで録音した音声を動画と簡単に同期できる機能を標準搭載；[/p][/*]
+[*][p][b]Godotモジュールによる拡張：[/b]カスタムGodotシーン(.pck)をタイムラインに直接読み込み、プロシージャルなグラフィック、タイトル、アニメーションを作成できます。[/p][/*]
 [/list]
-[h2][b]The Steam Edition[/b][/h2]
-[p]GoZen is an open-source project created by an independent developer. The Steam Edition is the best way to support ongoing development. With the Steam edition you get:[/p]
+[h2][b]Steam版[/b][/h2]
+[p]GoZenは個人開発者によって作られているオープンソースプロジェクトです。Steam版は、継続的な開発を支援する最も簡単な方法です。Steam版では以下を利用できます：[/p]
 [list]
-[*][p][b]Hassle-Free Updates:[/b] Always stay on the latest stable build seamlessly through Steam;[/p][/*]
-[*][p]Future updates might include Steam workshop access to easily get/create/share modules;[/p][/*]
+[*][p][b]手間のかからないアップデート：[/b]Steamを通じて、常に最新の安定版へシームレスに更新できます；[/p][/*]
+[*][p]今後のアップデートで、モジュールを簡単に入手・作成・共有できるSteamワークショップへの対応を予定しています；[/p][/*]
 [/list]
-[h2][b]Community-Driven Development[/b][/h2]
-[p]GoZen is actively developed with direct input from creators. Join our community, request features, report bugs, and help shape the future of a zen-like video editing experience![/p]
+[h2][b]コミュニティ主導の開発[/b][/h2]
+[p]GoZenは、クリエイターから直接寄せられる意見をもとに積極的に開発されています。コミュニティに参加して、機能をリクエストしたり、バグを報告したり、禅のように落ち着いた動画編集体験の未来を一緒につくりましょう！[/p]

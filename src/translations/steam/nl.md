@@ -1,26 +1,26 @@
 --- SHORT DESCRIPTION ---
 
-A minimalist, modern, open-source, customizable, and modular video editor for beginners and semi-professionals designed to make editing simple, fast, and stress-free.
+Een minimalistische, moderne, open-source, en modulaire video-editor voor beginners en semi-professionals, ontworpen om videobewerking eenvoudig, snel en stressvrij te maken.
 
 
 --- LONG DESCRIPTION ---
 
-[p][b]GoZen[/b] is a modern, lightweight, fast, open-source, customizable, and modular video editor for everyday creators, hobbyists, and semi-professionals. Designed with a minimalist mindset, simple UI, for a smooth editing flow, but with a strong core to give creators a smooth, fast, and zen-like editing experience without getting in your way.[/p]
-[h2][b]Built for Performance & Simplicity[/b][/h2]
-[p]Whether you are editing gameplay footage, devlogs, tutorials, or personal projects, GoZen stays out of your way and lets you focus on the creating of your videos.[/p]
+[p][b]GoZen[/b] is een moderne, lichte, snelle, open-source, en modulaire video-editor voor dagelijkse videomakers, hobbyisten en semi-professionals. GoZen is ontworpen vanuit een minimalistische visie, met een eenvoudige UI voor een soepele workflow, maar met een krachtige basis om een snelle, vloeiende en zen-achtige bewerkingservaring te bieden zonder je in de weg te zitten.[/p]
+[h2][b]Gebouwd voor prestaties en eenvoud[/b][/h2]
+[p]Of je nu gameplay-beelden, devlogs, tutorials, of persoonlijke projecten bewerkt, GoZen blijft op de achtergrond zodat jij je kunt concentreren op het maken van je video's.[/p]
 [list]
-[*][p][b]Smooth Playback & Responsive Scrubbing[/b]: For a stress-free and (Go)Zen experience[b];[/b][/p][/*]
-[*][p][b]Modern Feel[/b]: The UI/UX has a modern touch whilst keeping the overall feel clutter free;[/p][/*]
-[*][p][b]GPU-Accelerated Effects[/b]: Higher performance as all effects are handled on the GPU directly;[/p][/*]
-[*][p][b]Customizable Workspaces[/b]: Your editor, you decide how it looks;[/p][/*]
-[*][p][b]Audio Sync:[/b] Builtin support for easily syncing external microphone audio with your video's;[/p][/*]
-[*][p][b]Godot Module Extensibility:[/b] Import custom Godot scenes (.pck) directly into your timeline to create custom procedural graphics, titles, and animations.[/p][/*]
+[*][p][b]Vloeiende weergave en responsief scrubben[/b]: Voor een stressvrije en (Go)Zen-ervaring[b];[/b][/p][/*]
+[*][p][b]Moderne uitstraling[/b]: De UI/UX voelt modern aan en blijft tegelijkertijd overzichtelijk en clean;[/p][/*]
+[*][p][b]GPU-versnelde effecten[/b]: Hogere prestaties doordat alle effecten rechtstreeks op de GPU worden verwerkt;[/p][/*]
+[*][p][b]Aanpasbare werkruimtes[/b]: Jij bepaalt hoe je editor eruitziet;[/p][/*]
+[*][p][b]Audio-sync:[/b] Ingebouwde ondersteuning om externe microfoonaudio eenvoudig met je video te synchroniseren;[/p][/*]
+[*][p][b]Uitbreidbaarheid met Godot-modules:[/b] Importeer aangepaste Godot-scènes (.pck) rechtstreeks in je tijdlijn om procedurele graphics, titels en animaties te maken.[/p][/*]
 [/list]
-[h2][b]The Steam Edition[/b][/h2]
-[p]GoZen is an open-source project created by an independent developer. The Steam Edition is the best way to support ongoing development. With the Steam edition you get:[/p]
+[h2][b]De Steam-editie[/b][/h2]
+[p]GoZen is een open-source project dat door een onafhankelijke ontwikkelaar wordt gemaakt. De Steam-editie is de beste manier om de verdere ontwikkeling te ondersteunen. Met de Steam-editie krijg je:[/p]
 [list]
-[*][p][b]Hassle-Free Updates:[/b] Always stay on the latest stable build seamlessly through Steam;[/p][/*]
-[*][p]Future updates might include Steam workshop access to easily get/create/share modules;[/p][/*]
+[*][p][b]Probleemloze updates:[/b] Blijf via Steam altijd naadloos op de nieuwste stabiele versie;[/p][/*]
+[*][p]Toekomstige updates kunnen ondersteuning voor de Steam Workshop toevoegen, zodat je eenvoudig modules kunt verkrijgen, maken en delen;[/p][/*]
 [/list]
-[h2][b]Community-Driven Development[/b][/h2]
-[p]GoZen is actively developed with direct input from creators. Join our community, request features, report bugs, and help shape the future of a zen-like video editing experience![/p]
+[h2][b]Door de community gedreven ontwikkeling[/b][/h2]
+[p]GoZen wordt actief ontwikkeld op basis van directe feedback van makers. Word lid van onze community, vraag om nieuwe functies, meld bugs en help mee de toekomst van een zen-achtige video-editor vorm te geven![/p]
