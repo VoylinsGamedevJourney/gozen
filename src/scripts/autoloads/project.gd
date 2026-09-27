@@ -332,6 +332,8 @@ func _open_project(file_path: String) -> void:
 
 
 func _save_as(new_project_path: String) -> void:
+	if new_project_path.get_extension().to_lower() != EXTENSION.replace(".", ""):
+		new_project_path += EXTENSION
 	set_project_path(new_project_path)
 	save()
 	_update_recent_projects(new_project_path)

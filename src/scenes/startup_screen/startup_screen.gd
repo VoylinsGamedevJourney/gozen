@@ -298,7 +298,7 @@ func _on_create_new_project_button_pressed() -> void:
 	if !path.is_empty():
 		if path[-1] == '/':
 			path += "project" + Project.EXTENSION
-		elif path.split('.')[-1] != Project.EXTENSION.replace('.', ''):
+		elif path.get_extension().to_lower() != Project.EXTENSION.replace('.', ''):
 			path += Project.EXTENSION
 
 		if FileAccess.file_exists(path):
@@ -363,7 +363,7 @@ func _on_project_path_button_pressed() -> void:
 
 
 func _set_project_path(path: String) -> void:
-	if path.split('.')[-1].to_lower() != Project.EXTENSION.replace('.', ''):
+	if path.get_extension().to_lower() != Project.EXTENSION.replace('.', ''):
 		path += Project.EXTENSION
 
 	project_path_line_edit.text = path
