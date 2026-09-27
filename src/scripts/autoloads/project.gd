@@ -291,7 +291,7 @@ func _auto_save() -> void:
 		return
 
 	if Settings.get_auto_save():
-		if is_loaded and !RenderManager.is_encoding and !data.project_path.is_empty():
+		if is_loaded and !RenderManager.is_encoding and !data.project_path.is_empty() and unsaved_changes:
 			save.call_deferred(true)
 		auto_save_timer.start(AUTO_SAVE_TIME)
 	else:

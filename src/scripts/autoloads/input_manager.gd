@@ -83,6 +83,9 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("focus_on_playhead", false, true):
 		Timeline.focus_on_playhead()
 		return true
+	elif event.is_action_pressed("timeline_zoom_full", false, true):
+		Timeline.zoom_to_fit()
+		return true
 	elif event.is_action_pressed("open_command_bar"):
 		if not OS.has_feature("demo"):
 			PopupManager.open(PopupManager.COMMAND_BAR)

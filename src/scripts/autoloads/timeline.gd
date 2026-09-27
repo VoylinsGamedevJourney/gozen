@@ -242,6 +242,14 @@ func focus_on_playhead() -> void:
 		scroll_x = maxi(0, int(new_scroll))
 
 
+func zoom_to_fit() -> void:
+	var scroll_container: ScrollContainer = get_tree().root.find_child("TimelineScroll", true, false)
+	if scroll_container and Project.data.timeline_end > 0:
+		var panel_width: float = scroll_container.size.x
+		var new_zoom: float = panel_width / float(Project.data.timeline_end + (Project.data.framerate * 2.0))
+		zoom = clampf(new_zoom, 0.001, 200.0)
+		scroll_x = 0
+
 
 func split_clip_at(clip: ClipData, frame_pos: int = EditorCore.frame_nr) -> void:
 	var clips_to_split: Array[ClipData] = []

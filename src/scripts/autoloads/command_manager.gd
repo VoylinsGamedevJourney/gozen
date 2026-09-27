@@ -30,6 +30,7 @@ func _ready() -> void:
 
 	register(Command.new("Play/Pause timeline", EditorCore.on_play_pressed, "timeline_play_pause"))
 	register(Command.new("Focus on playhead", Timeline.focus_on_playhead, "focus_on_playhead"))
+	register(Command.new("Zoom to fit timeline", Timeline.zoom_to_fit, "timeline_zoom_full"))
 	register(Command.new("Select mode", Timeline.set_state.bind(Timeline.State.SELECT), "timeline_mode_select"))
 	register(Command.new("Split mode", Timeline.set_state.bind(Timeline.State.SPLIT), "timeline_mode_split"))
 
