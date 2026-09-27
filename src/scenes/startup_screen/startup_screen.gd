@@ -84,14 +84,11 @@ func _input(event: InputEvent) -> void:
 		else:
 			dismiss()
 
-	if not event is InputEventMouseButton:
-		return
 
-	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
-
-	if mouse_event.pressed \
-		and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT \
-		and not panel.get_global_rect().has_point(mouse_event.global_position):
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 			dismiss()
 
 
