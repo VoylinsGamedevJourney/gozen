@@ -134,6 +134,8 @@ class Encoder : public Resource {
 	static PackedStringArray get_available_codecs(int codec_id);
 
 	inline void set_video_codec_id(VideoCodec codec_id) { video_codec_id = (AVCodecID)codec_id; }
+	inline bool video_codec_set() const { return AV_CODEC_ID_NONE != video_codec_id; }
+
 	inline void set_audio_codec_id(AudioCodec codec_id) { audio_codec_id = (AVCodecID)codec_id; }
 	inline bool audio_codec_set() const { return AV_CODEC_ID_NONE != audio_codec_id; }
 

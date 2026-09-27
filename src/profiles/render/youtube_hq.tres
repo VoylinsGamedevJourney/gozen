@@ -7,7 +7,7 @@
 script = ExtResource("1_burnd")
 profile_name = "YouTube HQ"
 icon = ExtResource("1_5jr8x")
-video_codec = 167
+video_codec = 27
 h264_preset = 2
 audio_codec = 86076
 b_frames = 2

@@ -75,9 +75,13 @@ func _ready() -> void:
 	# --view = gives a video player instead of the editor with the current project playing in a loop.
 	# --render <output path> = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it shows the popup, after closing the popup the editor close. The output path is just the same folder and same name as the project file but with a different extension if no output path was provided.
 	# --render-quick <output path> = opens the project in the view mode, but with the rendering stuff happening instead, on render complete it closes the editor completely. The output path is just the same folder and same name as the project file but with a different extension.
+	# --render-video-only = renders video without audio.
+	# --render-audio-only = renders video without visuals.
+	# --render-draft = renders a low quality version of the video for quick checking.
 	# --render-profile <profile name> = uses the profile chosen to render the video out (only applicable with '--render' and '--render-quick').
 	# --safe-mode = starts the editor without any modules activated.
 	# --reset-layout = resets the editor layout to the default edit and render layouts.
+
 
 	var open_project_path: String = ""
 	var render_output_path: String = ""
@@ -86,6 +90,9 @@ func _ready() -> void:
 	var is_view_mode: bool = false
 	var is_render_mode: bool = false
 	var is_quick_render_mode: bool = false
+	var is_video_only: bool = false
+	var is_audio_only: bool = false
+	var is_render_draft: bool = false
 
 	var is_clean_cache: bool = false
 	var is_clean_settings: bool = false
@@ -99,13 +106,16 @@ func _ready() -> void:
 		var arg: String = args[i]
 		var clean_arg: String = arg.to_lower()
 
-		if clean_arg.ends_with(Project.EXTENSION): open_project_path = arg
-		# Opening new projects.
-		elif clean_arg in ["--new", "--new_h", "--new-horizontal"]: create_new_horizontal = true
-		elif clean_arg in ["--new_v", "--new-vertical"]: create_new_vertical = true
-		# Cleaning stuff.
-		elif clean_arg == "--clean-cache":    is_clean_cache = true
-		elif clean_arg == "--clean-settings": is_clean_settings = true
+		if clean_arg.ends_with(Project.EXTENSION):
+			open_project_path = arg
+		elif clean_arg in ["--new", "--new_h", "--new-horizontal"]:
+			create_new_horizontal = true
+		elif clean_arg in ["--new_v", "--new-vertical"]:
+			create_new_vertical = true
+		elif clean_arg == "--clean-cache":
+			is_clean_cache = true
+		elif clean_arg == "--clean-settings":
+			is_clean_settings = true
 		elif clean_arg == "--clean-all":
 			is_clean_cache = true
 			is_clean_settings = true
@@ -125,6 +135,12 @@ func _ready() -> void:
 			if i + 1 < args.size() and not args[i + 1].begins_with("--") and not args[i + 1].ends_with(Project.EXTENSION):
 				render_profile_name = args[i + 1]
 				i += 1
+		elif clean_arg == "--render-video-only":
+			is_video_only = true
+		elif clean_arg == "--render-audio-only":
+			is_audio_only = true
+		elif clean_arg == "--render-draft":
+			is_render_draft = true
 		i += 1
 
 	if is_clean_cache:
@@ -182,9 +198,8 @@ func _ready() -> void:
 			EditorCore.on_play_pressed()
 		elif is_render_mode:
 			await get_tree().process_frame
-			if RenderManager.update_encoder_status.connect(
-					_on_cli_render_status_check.bind(is_quick_render_mode)): print_stack()
-			await RenderManager.start_cli_render(render_output_path, render_profile_name)
+			RenderManager.update_encoder_status.connect(_on_cli_render_status_check.bind(is_quick_render_mode))
+			await RenderManager.start_cli_render(render_output_path, render_profile_name, is_video_only, is_audio_only, is_render_draft)
 	else:
 		switch_workspace(0)
 

@@ -5,8 +5,6 @@ extends PanelContainer
 @export var button_save_render_profile: Button
 @export var button_set_default_profile: Button
 @export var option_button_render_profiles: OptionButton
-@export var grid_audio: GridContainer
-@export var button_render_draft: CheckButton
 
 @export_category("Path")
 @export var path_line_edit: LineEdit
@@ -72,6 +70,7 @@ func _ready() -> void:
 	audio_channels_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 
 	button_set_default_profile.pressed.connect(_on_set_default_profile_button_pressed)
+	option_button_render_profiles.item_selected.connect(_on_render_profile_option_button_item_selected)
 
 	button_save_render_profile.visible = false
 
@@ -97,8 +96,6 @@ func _ready() -> void:
 	# Setting thread count to all threads minus 1.
 	threads_spin_box.set_value_no_signal(OS.get_processor_count() - 1)
 	threads_spin_box.max_value = OS.get_processor_count()
-
-	_on_render_audio_check_button_toggled(true)
 
 	var default_profile: String = Settings.get_default_render_profile()
 	var default_index: int = 0
@@ -261,16 +258,12 @@ func load_profile(profile: RenderProfile) -> void:
 			break
 
 	for index: int in audio_channels_option_button.item_count:
-		if audio_channels_option_button.get_item_index(index) == profile.audio_channels:
+		if audio_channels_option_button.get_item_id(index) == profile.audio_channels:
 			audio_channels_option_button.selected = index
 			break
 
 	button_save_render_profile.visible = false
 	_is_loading_profile = false
-
-
-func _on_render_audio_check_button_toggled(toggled_on:bool) -> void:
-	grid_audio.visible = toggled_on
 
 
 func _on_select_save_path_button_pressed() -> void:
@@ -355,14 +348,18 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 		audio_codec_option_button.select(audio_codec_index)
 
 
-func _on_start_render_button_pressed() -> void:
+func _on_start_render_button_pressed(video_only: bool = false, audio_only: bool = false, draft: bool = false) -> void:
 	var export_path: String = path_line_edit.text
-	var extension: String = _get_current_extension()
+	var extension: String
+	if audio_only:
+		extension = Utils.get_audio_extension(audio_codec_option_button.get_selected_id() as Encoder.AudioCodec)
+	else:
+		extension = _get_current_extension()
 
 	if export_path.is_empty():
-		export_path = Project.get_project_path().get_basename() + _get_current_extension()
+		export_path = Project.get_project_path().get_basename() + extension
 	elif export_path.get_extension().to_lower() != extension.replace(".", ""):
-		export_path += extension
+		export_path = export_path.get_basename() + extension
 
 	var dir: DirAccess = DirAccess.open(export_path.get_base_dir())
 	if dir and dir.get_space_left() < 500 * 1024 * 1024:
@@ -380,14 +377,18 @@ func _on_start_render_button_pressed() -> void:
 
 	var profile: RenderProfile = RenderProfile.new()
 	profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VideoCodec
-	profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec if grid_audio.visible else Encoder.AudioCodec.A_NONE
+	profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec
 	profile.audio_channels = audio_channels_option_button.get_selected_id() as RenderProfile.AudioChannels
 	profile.crf = int(video_quality_spin_box.value)
 	profile.gop = int(video_gop_spin_box.value)
 	profile.b_frames = int(video_bframes_spin_box.value)
 	profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
 
-	var draft: bool = button_render_draft.button_pressed
+	if video_only:
+		profile.audio_codec = Encoder.AudioCodec.A_NONE
+	if audio_only:
+		profile.video_codec = Encoder.VideoCodec.V_NONE
+
 	var threads: int = int(threads_spin_box.value)
 
 	if FileAccess.file_exists(export_path) and not is_quick_render:
@@ -473,3 +474,20 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 	else:
 		var render_profile: RenderProfile = load(option_button_render_profiles.get_item_metadata(index) as String)
 		load_profile(render_profile)
+
+
+func _on_extra_render_button_pressed() -> void:
+	var popup: PopupMenu = PopupManager.create_menu()
+	popup.add_item(tr("Video only"), 0)
+	popup.add_item(tr("Audio only"), 1)
+	popup.add_item(tr("Draft"), 2)
+
+	popup.id_pressed.connect(func(id: int) -> void:
+			if id == 0:
+				await _on_start_render_button_pressed(true, false, false)
+			elif id == 1:
+				await _on_start_render_button_pressed(false, true, false)
+			elif id == 2:
+				await _on_start_render_button_pressed(false, false, true))
+
+	PopupManager.show_menu(popup)

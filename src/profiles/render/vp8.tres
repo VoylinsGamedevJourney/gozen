@@ -7,7 +7,7 @@
 script = ExtResource("1_548w1")
 profile_name = "VP8"
 icon = ExtResource("1_fmtkr")
-video_codec = 167
+video_codec = 139
 crf = 20
 audio_codec = 86076
 metadata/_custom_type_script = "uid://bcxushh1wsu1b"

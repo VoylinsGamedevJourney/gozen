@@ -116,16 +116,16 @@ func open_marker_popup() -> void:	  PopupManager.open(PopupManager.MARKER)
 
 func clipboard_paste() -> void:
 	if !Project.is_loaded: return
-	
+
 	# Check for clip(s).
 	if !ClipLogic.copied_clips.is_empty() and WorkspaceManager.is_panel_mouse_focused("Timeline"):
 		ClipLogic.paste_copied_clips()
 		return
-		
+
 	if WorkspaceManager.is_panel_mouse_focused("FilePanel"):
-		clipboard_try_paste_file()
-	
-	
+		await clipboard_try_paste_file()
+
+
 func clipboard_try_paste_file() -> void:
 	# Check for image.
 	if DisplayServer.clipboard_has_image():
@@ -150,13 +150,12 @@ func clipboard_try_paste_file() -> void:
 	var valid_paths: Array[String] = []
 	for path: String in raw_paths:
 		var clean_path: String = path.strip_edges().replace('"', '')
-		
+
 		if clean_path.begins_with("file://"):
 			clean_path = clean_path.trim_prefix("file://").uri_decode()
-		
+
 		if FileAccess.file_exists(clean_path):
 			valid_paths.append(clean_path)
 
 	if !valid_paths.is_empty():
 		await FileLogic.dropped(valid_paths)
-		

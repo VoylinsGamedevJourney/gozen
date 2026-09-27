@@ -7,7 +7,7 @@
 script = ExtResource("1_edoyl")
 profile_name = "VP9"
 icon = ExtResource("1_3oq75")
-video_codec = 139
+video_codec = 167
 crf = 20
 audio_codec = 86076
 b_frames = 2

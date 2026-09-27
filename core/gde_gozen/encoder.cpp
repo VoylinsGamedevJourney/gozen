@@ -21,11 +21,11 @@ bool Encoder::open(bool rgba) {
 
 	if (path.is_empty())
 		return _log_err("No path set");
-	if (video_codec_id == AV_CODEC_ID_NONE)
-		return _log_err("No video codec set");
-	if (resolution.x <= 0 || resolution.y <= 0)
+	if (video_codec_id == AV_CODEC_ID_NONE && audio_codec_id == AV_CODEC_ID_NONE)
+		return _log_err("No codec set");
+	if (video_codec_id != AV_CODEC_ID_NONE && (resolution.x <= 0 || resolution.y <= 0))
 		return _log_err("Invalid resolution set");
-	if (framerate <= 0)
+	if (video_codec_id != AV_CODEC_ID_NONE && framerate <= 0)
 		return _log_err("Invalid framerate set");
 
 	format_size = rgba ? 4 : 3;
@@ -44,16 +44,21 @@ bool Encoder::open(bool rgba) {
 	av_format_ctx = make_unique_ffmpeg<AVFormatContext, AVFormatCtxOutputDeleter>(temp_format_ctx);
 
 	// Setting up video stream.
-	if (!_add_video_stream()) {
-		close();
-		return _log_err("Couldn't create video stream");
+	if (video_codec_id != AV_CODEC_ID_NONE) {
+		if (!_add_video_stream()) {
+			close();
+			return _log_err("Couldn't create video stream");
+		}
 	}
 
 	// Setting up audio stream.
-	if (audio_codec_id != AV_CODEC_ID_NONE && !_add_audio_stream()) {
-		close();
-		return _log_err("Couldn't create video stream");
+	if (audio_codec_id != AV_CODEC_ID_NONE) {
+		if (!_add_audio_stream()) {
+			close();
+			return _log_err("Couldn't create audio stream");
+		}
 	}
+
 	av_dump_format(av_format_ctx.get(), 0, local_path.get_data(), 1);
 
 	// Open output file if needed.
@@ -284,9 +289,12 @@ bool Encoder::_write_header() {
 	return true;
 }
 
+
 bool Encoder::send_frame(PackedByteArray yuv_data) {
 	if (!encoder_open) {
 		return _log_err("Not open");
+	} else if (video_codec_id == AV_CODEC_ID_NONE) {
+		return true;
 	} else if (av_frame_make_writable(av_frame_video.get()) < 0) {
 		return _log_err("Couldn't make frame writable");
 	}
@@ -609,6 +617,8 @@ void Encoder::_bind_methods() {
 	BIND_METHOD(close);
 
 	BIND_METHOD_ARGS(set_video_codec_id, "codec_id");
+	BIND_METHOD(video_codec_set);
+
 	BIND_METHOD_ARGS(set_audio_codec_id, "codec_id");
 	BIND_METHOD(audio_codec_set);
 

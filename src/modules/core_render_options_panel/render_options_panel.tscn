@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dym1ks0g5svwb" path="res://modules/core_render_options_panel/render_options_panel.gd" id="1_raodm"]
 [ext_resource type="Texture2D" uid="uid://17gcpvhkgkjl" path="res://assets/icons/open.tres" id="2_e0lmu"]
+[ext_resource type="Texture2D" uid="uid://diadjef0vgd1o" path="res://assets/icons/arrow_down.tres" id="3_bqj0i"]
 
-[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "grid_audio", "button_render_draft", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 custom_minimum_size = Vector2(300, 100)
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,8 +17,6 @@ script = ExtResource("1_raodm")
 button_save_render_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
 button_set_default_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SetDefaultProfileButton")
 option_button_render_profiles = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
-grid_audio = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
-button_render_draft = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/HBox/DraftCheckButton")
 path_line_edit = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
 video_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
 video_quality_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHBox/QualityHSlider")
@@ -206,7 +205,7 @@ text = "B frames"
 [node name="BFramesSpinBox" type="SpinBox" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1441852042]
 layout_mode = 2
 size_flags_horizontal = 0
-tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+tooltip_text = "B-frames (Bi-directional predictive frames) improve compression and visual quality by referencing both past and future frames. Higher values reduce file size but increase encoding time and player decoding requirements. Values between 2 and 4 are generally recommended."
 value = 15.0
 allow_greater = true
 alignment = 2
@@ -214,19 +213,11 @@ alignment = 2
 [node name="Line1" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1637046039]
 layout_mode = 2
 
-[node name="AudioTitleHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1066897249]
-layout_mode = 2
-
-[node name="AudioLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1222755429]
+[node name="AudioLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1222755429]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render audio settings"
-
-[node name="RenderAudioCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1644968205]
-layout_mode = 2
-button_pressed = true
-flat = true
 
 [node name="AudioGrid" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=323372018]
 layout_mode = 2
@@ -299,21 +290,22 @@ prefix = "End:"
 [node name="HBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=465246335]
 layout_mode = 2
 
-[node name="DraftCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=324102700]
-layout_mode = 2
-tooltip_text = "Create a low quality draft version of your video."
-text = "Draft"
-
 [node name="StartRenderButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=660434586]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Start render"
 
+[node name="ExtraRenderButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=15208269]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+icon = ExtResource("3_bqj0i")
+expand_icon = true
+
 [connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton" to="." method="_on_save_custom_profile_button_pressed"]
 [connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/SelectPathButton" to="." method="_on_select_save_path_button_pressed"]
 [connection signal="item_selected" from="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton" to="." method="_on_video_codec_option_button_item_selected"]
-[connection signal="toggled" from="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/RenderAudioCheckButton" to="." method="_on_render_audio_check_button_toggled"]
 [connection signal="toggled" from="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RenderRegionCheckButton" to="." method="_on_render_region_toggled"]
 [connection signal="value_changed" from="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionStartSpinBox" to="." method="_on_region_start_changed"]
 [connection signal="value_changed" from="Margin/Panel/Margin/ScrollContainer/VBox/RenderRegionHBox/RegionEndSpinBox" to="." method="_on_region_end_changed"]
 [connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/HBox/StartRenderButton" to="." method="_on_start_render_button_pressed"]
+[connection signal="pressed" from="Margin/Panel/Margin/ScrollContainer/VBox/HBox/ExtraRenderButton" to="." method="_on_extra_render_button_pressed"]

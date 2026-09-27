@@ -38,6 +38,8 @@ var cancel_encoding: bool = false
 var start_time: int = 0
 var encoding_time: int = 0
 
+var current_render_resolution: Vector2i
+
 var buffer_size: int = 5
 var frame_queue: Array[PackedByteArray] = []
 var thread: Thread
@@ -95,7 +97,7 @@ func get_render_profile(profile_name: String) -> RenderProfile:
 	return null
 
 
-func start_cli_render(export_path: String, profile_name: String) -> void:
+func start_cli_render(export_path: String, profile_name: String, video_only: bool = false, audio_only: bool = false, draft: bool = false) -> void:
 	if profile_name.is_empty():
 		profile_name = Settings.get_default_render_profile()
 
@@ -104,11 +106,21 @@ func start_cli_render(export_path: String, profile_name: String) -> void:
 		profile = get_render_profile("YouTube")
 		printerr("RenderManager: Profile '%s' not found, falling back to 'YouTube'." % profile_name)
 
-	var extension: String = Utils.get_video_extension(profile.video_codec)
+	if video_only:
+		profile.audio_codec = Encoder.AudioCodec.A_NONE
+	if audio_only:
+		profile.video_codec = Encoder.VideoCodec.V_NONE
+
+	var extension: String
+	if audio_only:
+		extension = Utils.get_audio_extension(profile.audio_codec)
+	else:
+		extension = Utils.get_video_extension(profile.video_codec)
+
 	if export_path.is_empty():
 		export_path = Project.get_project_path().get_basename() + extension
 	elif export_path.get_extension().to_lower() != extension.replace(".", ""):
-		export_path += extension
+		export_path = export_path.get_basename() + extension
 
 	var start_frame: int = 0
 	var end_frame: int = Project.data.timeline_end
@@ -119,7 +131,7 @@ func start_cli_render(export_path: String, profile_name: String) -> void:
 			printerr("RenderManager: Render region start frame cannot be after the end frame.")
 			return
 
-	await start_render(export_path, profile, OS.get_processor_count() - 1, start_frame, end_frame, false)
+	await start_render(export_path, profile, OS.get_processor_count() - 1, start_frame, end_frame, draft)
 
 
 func start_render(export_path: String, profile: RenderProfile, threads: int, start_frame: int = 0, end_frame: int = -1, draft: bool = false) -> void:
@@ -137,6 +149,8 @@ func start_render(export_path: String, profile: RenderProfile, threads: int, sta
 		render_resolution.x += 1
 	if render_resolution.y % 2 != 0:
 		render_resolution.y += 1
+
+	current_render_resolution = render_resolution
 
 	print("--------------------")
 	Print.header("Rendering process started")
@@ -309,50 +323,52 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		return printerr("RenderManager: Couldn't open encoder!")
 
 	var use_audio: bool = encoder.audio_codec_set()
+	var use_video: bool = encoder.video_codec_set()
 	var active_audio_tracks: Array[Dictionary] = []
 	if use_audio:
 		for i: int in TrackLogic.tracks.size():
 			active_audio_tracks.append({})
 
-	# RGBA to YUV shader setup.
-	if !rendering_device:
-		rendering_device = RenderingServer.get_rendering_device()
-	var render_resolution: Vector2i = Project.data.resolution
-	var shader_file: RDShaderFile = load("uid://de0r3l6ipvr0y")
-	yuv_shader = rendering_device.shader_create_from_spirv(shader_file.get_spirv())
-	yuv_pipeline = rendering_device.compute_pipeline_create(yuv_shader)
+	if use_video:
+		# RGBA to YUV shader setup.
+		if !rendering_device:
+			rendering_device = RenderingServer.get_rendering_device()
+		var render_resolution: Vector2i = current_render_resolution
+		var shader_file: RDShaderFile = load("uid://de0r3l6ipvr0y")
+		yuv_shader = rendering_device.shader_create_from_spirv(shader_file.get_spirv())
+		yuv_pipeline = rendering_device.compute_pipeline_create(yuv_shader)
 
-	var texture_format: RDTextureFormat = RDTextureFormat.new()
-	texture_format.width = render_resolution.x
-	texture_format.height = int(render_resolution.y * 1.5)
-	texture_format.format = RenderingDevice.DATA_FORMAT_R8_UNORM
-	texture_format.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
-	yuv_output_tex = rendering_device.texture_create(texture_format, RDTextureView.new())
-	yuv_sampler = rendering_device.sampler_create(RDSamplerState.new())
+		var texture_format: RDTextureFormat = RDTextureFormat.new()
+		texture_format.width = render_resolution.x
+		texture_format.height = int(render_resolution.y * 1.5)
+		texture_format.format = RenderingDevice.DATA_FORMAT_R8_UNORM
+		texture_format.usage_bits = RenderingDevice.TEXTURE_USAGE_STORAGE_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
+		yuv_output_tex = rendering_device.texture_create(texture_format, RDTextureView.new())
+		yuv_sampler = rendering_device.sampler_create(RDSamplerState.new())
 
-	var input_format: RDTextureFormat = RDTextureFormat.new()
-	input_format.width = render_resolution.x
-	input_format.height = render_resolution.y
-	input_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
-	input_format.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
-	yuv_input_texture = rendering_device.texture_create(input_format, RDTextureView.new())
+		var input_format: RDTextureFormat = RDTextureFormat.new()
+		input_format.width = render_resolution.x
+		input_format.height = render_resolution.y
+		input_format.format = RenderingDevice.DATA_FORMAT_R8G8B8A8_UNORM
+		input_format.usage_bits = RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT | RenderingDevice.TEXTURE_USAGE_CAN_COPY_TO_BIT
+		yuv_input_texture = rendering_device.texture_create(input_format, RDTextureView.new())
 
-	# BT709 Limited range matrix.
-	var bt709_rgb_to_yuv: PackedFloat32Array = PackedFloat32Array([
-		0.182586, -0.100642,  0.439216, 0.0,
-		0.614231, -0.338574, -0.398942, 0.0,
-		0.062007,  0.439216, -0.040276, 0.0,
-		0.062745,  0.500000,  0.500000, 1.0 ])
-	var params_bytes: PackedByteArray = PackedByteArray()
-	if params_bytes.resize(80):
-		printerr("RenderManager: Couldn't resize params_bytes array!")
+		# BT709 Limited range matrix.
+		var bt709_rgb_to_yuv: PackedFloat32Array = PackedFloat32Array([
+			0.182586, -0.100642,  0.439216, 0.0,
+			0.614231, -0.338574, -0.398942, 0.0,
+			0.062007,  0.439216, -0.040276, 0.0,
+			0.062745,  0.500000,  0.500000, 1.0 ])
+		var params_bytes: PackedByteArray = PackedByteArray()
+		if params_bytes.resize(80):
+			printerr("RenderManager: Couldn't resize params_bytes array!")
 
-	for index: int in 16:
-		params_bytes.encode_float(index * 4, bt709_rgb_to_yuv[index])
+		for index: int in 16:
+			params_bytes.encode_float(index * 4, bt709_rgb_to_yuv[index])
 
-	params_bytes.encode_s32(64, render_resolution.x)
-	params_bytes.encode_s32(68, render_resolution.y)
-	yuv_params_buffer = rendering_device.uniform_buffer_create(params_bytes.size(), params_bytes)
+		params_bytes.encode_s32(64, render_resolution.x)
+		params_bytes.encode_s32(68, render_resolution.y)
+		yuv_params_buffer = rendering_device.uniform_buffer_create(params_bytes.size(), params_bytes)
 
 	# Sending the video frame data.
 	update_encoder_status.emit(Status.SENDING_FRAMES)
@@ -361,7 +377,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	var audio_queue: Array[PackedByteArray] = []
 	stop_encoding = false
 	thread = Thread.new()
-	if thread.start(_encoding_loop.bind(use_audio, audio_queue)):
+	if thread.start(_encoding_loop.bind(use_audio, use_video, audio_queue)):
 		printerr("RenderManager: Couldn't start encoder thread!")
 		stop_encoder()
 		update_encoder_status.emit(Status.ERROR_CANCELED)
@@ -381,7 +397,9 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 			break
 
 		await get_tree().process_frame
-		var frame_data: PackedByteArray = _convert_rgba_to_yuv(viewport.get_rid(), render_resolution)
+		var frame_data: PackedByteArray = PackedByteArray()
+		if use_video:
+			frame_data = _convert_rgba_to_yuv(viewport.get_rid(), current_render_resolution)
 		var audio_data: PackedByteArray = PackedByteArray()
 		if use_audio:
 			audio_data = _get_audio_for_frame(i, active_audio_tracks)
@@ -465,7 +483,7 @@ func stop_encoder() -> void:
 	is_encoding = false
 
 
-func _encoding_loop(use_audio: bool, audio_queue: Array[PackedByteArray]) -> void:
+func _encoding_loop(use_audio: bool, use_video: bool, audio_queue: Array[PackedByteArray]) -> void:
 	while true:
 		Threader.semaphore.wait()
 		Threader.mutex.lock()
@@ -479,16 +497,17 @@ func _encoding_loop(use_audio: bool, audio_queue: Array[PackedByteArray]) -> voi
 		update_encoder_status.emit.call_deferred(Status.FRAMES_SEND)
 		Threader.mutex.unlock()
 
-		if not frame_data.is_empty():
+		if has_frames:
 			if use_audio and not audio_data.is_empty():
 				if not encoder.send_audio(audio_data):
 					call_deferred("stop_encoder")
 					printerr("RenderManager: Something went wrong sending audio frame!")
 					break
-			if not encoder.send_frame(frame_data):
-				call_deferred("stop_encoder")
-				printerr("RenderManager: Something went wrong sending frame(s)!")
-				break # Error happened in encoder.
+			if use_video and not frame_data.is_empty():
+				if not encoder.send_frame(frame_data):
+					call_deferred("stop_encoder")
+					printerr("RenderManager: Something went wrong sending frame(s)!")
+					break # Error happened in encoder.
 		if stop_encoding:
 			Threader.mutex.lock()
 			var is_empty: bool = frame_queue.is_empty()

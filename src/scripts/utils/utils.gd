@@ -77,6 +77,19 @@ static func get_video_extension(video_codec: Encoder.VideoCodec) -> String:
 	return ""
 
 
+static func get_audio_extension(audio_codec: Encoder.AudioCodec) -> String:
+	match audio_codec:
+		Encoder.AudioCodec.A_WAV: return ".wav"
+		Encoder.AudioCodec.A_PCM: return ".wav"
+		Encoder.AudioCodec.A_MP2: return ".mp2"
+		Encoder.AudioCodec.A_MP3: return ".mp3"
+		Encoder.AudioCodec.A_AAC: return ".aac"
+		Encoder.AudioCodec.A_OPUS: return ".opus"
+		Encoder.AudioCodec.A_VORBIS: return ".ogg"
+		Encoder.AudioCodec.A_FLAC: return ".flac"
+	return ".wav"
+
+
 ## A function to help getting the number lower than the given number.
 static func get_previous_in_array(frame: int, array: Array[int]) -> int:
 	var prev: int = -1
