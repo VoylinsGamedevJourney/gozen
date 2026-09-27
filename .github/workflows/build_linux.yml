@@ -146,7 +146,7 @@ jobs:
           export LD_LIBRARY_PATH=$(readlink -f ../${{ env.PATH_EXPORT }}):$LD_LIBRARY_PATH
           ls -l ../${{ env.PATH_EXPORT }}
 
-          godot --import project.godot --headless --quit
+          godot --import project.godot --headless --quit || true
           godot --headless --export-release "Linux_x86_64${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/${{ env.APP_NAME }}.x86_64
 
       - name: Cleanup & fix RPATH
@@ -187,7 +187,7 @@ jobs:
 
           cp bin/${{ env.APP_NAME }}.x86_64 $APP_DIR/usr/bin/${{ env.APP_NAME }}
           cp bin/*.so* $APP_DIR/usr/lib/
-          cp assets/linux/gozen.png $APP_DIR/usr/share/icons/hicolor/128x128/apps/${{ env.APP_NAME }}.png
+          cp assets/linux/gozen.png $APP_DIR/usr/share/icons/hicolor/128x128/apps/gozen.png
           cp assets/linux/gozen.png $APP_DIR/.DirIcon
           cp assets/linux/gozen.desktop $APP_DIR/usr/share/applications/
 

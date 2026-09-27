@@ -203,7 +203,7 @@ jobs:
           export PATH=$PATH:"/c/Program Files/Godot":"$(pwd)/../${{ env.PATH_EXPORT }}"
           sed -i 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
           mkdir -p ../${{ env.PATH_EXPORT }}
-          godot --import project.godot --headless --quit
+          godot --import project.godot --headless --quit || true
           godot --headless --export-release "Windows_x86_64${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen.exe
 
       - name: Bundle Windows

@@ -132,7 +132,7 @@ jobs:
           sed -i '' 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
 
           mkdir -p ../${{ env.PATH_EXPORT }}
-          Godot --import project.godot --headless --quit
+          Godot --import project.godot --headless --quit || true
           Godot --headless --export-release "macOS${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen.dmg
 
       - name: Upload raw MacOS export
