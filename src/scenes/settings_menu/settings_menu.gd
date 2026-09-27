@@ -776,8 +776,11 @@ func _get_event_text(event: InputEvent) -> String:
 		return "None"
 	elif event is not InputEventKey:
 		return event.as_text()
+
 	var event_key: InputEventKey = event
-	return event_key.as_text_physical_keycode()
+	if event_key.physical_keycode != 0:
+		return event_key.as_text_physical_keycode()
+	return event_key.as_text_keycode()
 
 
 func _on_search_line_edit_text_changed(new_text: String) -> void:
