@@ -218,7 +218,14 @@ func _draw_wave(clip: ClipData, wave_data: PackedFloat32Array, begin: int, durat
 			wave_color = get_theme_color("audio_wave_muted", "Timeline")
 		elif (max_value * volume_linear) > 1.0:
 			wave_color = Color.RED
-		draw_rect(Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height), wave_color)
+
+		var block_x: float = base_x + (i * zoom)
+		var block_w: float = zoom * step
+		if block_x + block_w > base_x + rect.size.x:
+			block_w = (base_x + rect.size.x) - block_x
+
+		if block_w > 0:
+			draw_rect(Rect2(block_x, block_pos_y, block_w, block_height), wave_color)
 
 
 func _draw_fade_handles(clip: ClipData, box_pos: Vector2, is_visual: bool, show_handles: bool) -> void:

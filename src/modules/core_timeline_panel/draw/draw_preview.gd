@@ -249,6 +249,16 @@ func _draw_wave(begin: int, total_duration: int, speed: float) -> void:
 		elif waveform_style == SettingsData.AudioWaveformStyle.BOTTOM_TO_TOP:
 				block_pos_y = base_y + height - block_height
 
-		draw_rect(
-				Rect2(base_x + (i * zoom), block_pos_y, zoom * step, block_height),
-				get_theme_color("audio_wave_muted", "Timeline") if is_muted else get_theme_color("audio_wave", "Timeline"))
+		var block_x: float = base_x + (i * zoom)
+		var block_w: float = zoom * step
+		if block_x + block_w > base_x + clip_rect.size.x:
+			block_w = (base_x + clip_rect.size.x) - block_x
+
+		if block_w > 0:
+			var color: Color
+			if is_muted:
+				color = get_theme_color("audio_wave_muted", "Timeline")
+			else:
+				color = get_theme_color("audio_wave", "Timeline")
+
+			draw_rect(Rect2(block_x, block_pos_y, block_w, block_height), color)
