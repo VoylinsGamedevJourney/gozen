@@ -133,11 +133,11 @@ jobs:
 
           mkdir -p ../${{ env.PATH_EXPORT }}
           Godot --import project.godot --headless --quit || true
-          Godot --headless --export-release "macOS${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen.dmg
+          Godot --headless --export-release "macOS${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
 
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_MacOS
-          path: ${{ env.PATH_EXPORT }}/GoZen.dmg
+          name: GoZen_MacOS${{ inputs.demo && '_demo' || '' }}
+          path: ${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
 # End GoZen build

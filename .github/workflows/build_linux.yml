@@ -147,20 +147,20 @@ jobs:
           ls -l ../${{ env.PATH_EXPORT }}
 
           godot --import project.godot --headless --quit || true
-          godot --headless --export-release "Linux_x86_64${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/${{ env.APP_NAME }}.x86_64
+          godot --headless --export-release "Linux_x86_64${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/${{ env.APP_NAME }}${{ inputs.demo && '_demo' || '' }}.x86_64
 
       - name: Cleanup & fix RPATH
         working-directory: ${{ env.PATH_EXPORT }}
         run: |
           rm -f *template_debug*
-          chmod +x ${{ env.APP_NAME }}.x86_64
-          patchelf --set-rpath '$ORIGIN' ${{ env.APP_NAME }}.x86_64
+          chmod +x ${{ env.APP_NAME }}${{ inputs.demo && '_demo' || '' }}.x86_64
+          patchelf --set-rpath '$ORIGIN' ${{ env.APP_NAME }}${{ inputs.demo && '_demo' || '' }}.x86_64
           find . -name "*.so" -exec patchelf --set-rpath '$ORIGIN' {} \;
 
       - name: Upload raw Linux export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_Linux
+          name: GoZen_Linux${{ inputs.demo && '_demo' || '' }}
           path: ${{ env.PATH_EXPORT }}
 
   package-gozen-appimage:
@@ -171,7 +171,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v8
         with:
-          name: GoZen_Linux
+          name: GoZen_Linux${{ inputs.demo && '_demo' || '' }}
           path: bin
           merge-multiple: true
 
@@ -185,7 +185,7 @@ jobs:
           APP_DIR=AppDir
           mkdir -p $APP_DIR/usr/{bin,lib,share/applications,share/icons/hicolor/128x128/apps}
 
-          cp bin/${{ env.APP_NAME }}.x86_64 $APP_DIR/usr/bin/${{ env.APP_NAME }}
+          cp bin/${{ env.APP_NAME }}*.x86_64 $APP_DIR/usr/bin/${{ env.APP_NAME }}
           cp bin/*.so* $APP_DIR/usr/lib/
           cp assets/linux/gozen.png $APP_DIR/usr/share/icons/hicolor/128x128/apps/gozen.png
           cp assets/linux/gozen.png $APP_DIR/.DirIcon
@@ -205,10 +205,10 @@ jobs:
           ./linuxdeploy-x86_64.AppImage --appdir $APP_DIR --output appimage
 
           # Rename
-          mv GoZen*.AppImage ${{ env.APP_NAME }}.AppImage
+          mv GoZen*.AppImage ${{ env.APP_NAME }}${{ inputs.demo && '_demo' || '' }}.AppImage
 
       - uses: actions/upload-artifact@v6
         with:
-          name: GoZen_AppImage
-          path: ${{ env.APP_NAME }}.AppImage
+          name: GoZen_AppImage${{ inputs.demo && '_demo' || '' }}
+          path: ${{ env.APP_NAME }}${{ inputs.demo && '_demo' || '' }}.AppImage
 # End GoZen build
