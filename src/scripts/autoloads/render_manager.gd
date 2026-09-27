@@ -104,11 +104,11 @@ func start_cli_render(export_path: String, profile_name: String) -> void:
 		profile = get_render_profile("YouTube")
 		printerr("RenderManager: Profile '%s' not found, falling back to 'YouTube'." % profile_name)
 
-	var ext: String = Utils.get_video_extension(profile.video_codec)
+	var extension: String = Utils.get_video_extension(profile.video_codec)
 	if export_path.is_empty():
-		export_path = Project.get_project_path().get_basename() + ext
-	elif not export_path.ends_with(ext):
-		export_path += ext
+		export_path = Project.get_project_path().get_basename() + extension
+	elif export_path.get_extension().to_lower() != extension.replace(".", ""):
+		export_path += extension
 
 	var start_frame: int = 0
 	var end_frame: int = Project.data.timeline_end

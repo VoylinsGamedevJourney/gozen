@@ -289,6 +289,9 @@ func _on_select_save_path_button_pressed() -> void:
 
 
 func _save_path_selected(file_path: String) -> void:
+	var extension: String = _get_current_extension()
+	if file_path.get_extension().to_lower() != extension.replace(".", ""):
+		file_path += extension
 	path_line_edit.text = file_path
 
 
@@ -354,8 +357,12 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 
 func _on_start_render_button_pressed() -> void:
 	var export_path: String = path_line_edit.text
+	var extension: String = _get_current_extension()
+
 	if export_path.is_empty():
 		export_path = Project.get_project_path().get_basename() + _get_current_extension()
+	elif export_path.get_extension().to_lower() != extension.replace(".", ""):
+		export_path += extension
 
 	var dir: DirAccess = DirAccess.open(export_path.get_base_dir())
 	if dir and dir.get_space_left() < 500 * 1024 * 1024:
