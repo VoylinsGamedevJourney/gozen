@@ -271,6 +271,15 @@ func _get_hovered_tab(global_pos: Vector2) -> DockableTab:
 		if tab.is_visible_in_tree() and tab.get_global_rect().has_point(global_pos):
 			return tab
 	return null
+	
+func is_panel_mouse_focused(panel_id: String) -> bool:
+	var panel: Control = active_panels.get(panel_id)
+	if panel == null:
+		return false
+	var mouse_pos: Vector2 = EditorUI.instance.get_global_mouse_position()
+	var visible: bool = panel.is_visible_in_tree()
+	var mouse_over_it: bool = panel.get_global_rect().has_point(mouse_pos)
+	return visible and mouse_over_it
 
 
 func _on_drag_overlay_draw() -> void:
