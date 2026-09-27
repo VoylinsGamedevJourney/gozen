@@ -11,6 +11,7 @@ enum Mode { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
 
 var sections: Dictionary[String, GridContainer] = {}
+var module_sections: Array[String] = []
 var side_bar_button_group: ButtonGroup = ButtonGroup.new()
 
 var listening_active: bool = false
@@ -42,6 +43,7 @@ func _rebuild_ui() -> void:
 		child.queue_free()
 
 	sections.clear()
+	module_sections.clear()
 	side_bar_button_group = ButtonGroup.new()
 	search_line_edit.placeholder_text = tr("Search settings ...")
 
@@ -55,7 +57,7 @@ func _rebuild_ui() -> void:
 		var button: Button = side_bar_vbox.get_child(active_section_index) as Button
 		if button:
 			button.set_pressed_no_signal(true)
-			_show_section(button.text)
+			_show_section(button.get_meta("section_name") as String)
 
 
 func _input(event: InputEvent) -> void:
@@ -106,20 +108,44 @@ func set_mode(mode: Mode) -> void:
 
 func _show_section(section_name: String) -> void:
 	for section: String in sections.keys():
-		sections[section].visible = section == section_name
+		if section_name == "mod":
+			sections[section].visible = section in module_sections
+		else:
+			sections[section].visible = section == section_name
 	_on_search_line_edit_text_changed(search_line_edit.text)
 
 
 func _add_side_bar_option(section_name: String) -> void:
+	if section_name == "mod":
+		var separator: HSeparator = HSeparator.new()
+		separator.custom_minimum_size.y = 10
+		side_bar_vbox.add_child(separator)
+
 	var button: Button = Button.new()
-	button.text = section_name
+	if section_name == "mod":
+		button.text = tr("All module settings")
+	else:
+		button.text = section_name
+
+	button.set_meta("section_name", section_name)
 	button.toggle_mode = true
 	button.button_group = side_bar_button_group
 	button.theme_type_variation = "side_bar_button"
-	button.button_pressed = side_bar_vbox.get_child_count() == 0
+
+	var has_pressed: bool = false
+	for child: Control in side_bar_vbox.get_children():
+		if child is Button and (child as Button).button_pressed:
+			has_pressed = true
+			break
+	button.button_pressed = not has_pressed
 
 	button.pressed.connect(_show_section.bind(section_name))
 	side_bar_vbox.add_child(button)
+
+	if section_name == "mod":
+		var separator: HSeparator = HSeparator.new()
+		separator.custom_minimum_size.y = 4
+		side_bar_vbox.add_child(separator)
 
 
 func _create_section(section_name: String) -> GridContainer:
@@ -350,17 +376,23 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 		tr("Shortcuts"): shortcut_nodes,
 	}
 
-	var modules_nodes: Array = []
+	var has_modules: bool = false
+	var individual_modules: Dictionary = {}
+
 	for module: GoZenModule in ModuleManager.loaded_gozen_modules:
-		if module.settings.is_empty(): continue
+		if module.settings.is_empty():
+			continue
+
+		has_modules = true
 
 		var folder_name: String = module.resource_path.get_base_dir().get_file()
 		var display_name: String = module.name if module.name != "" else folder_name
-		modules_nodes.append(create_header(display_name))
-		modules_nodes.append(Control.new()) # Spacer.
+		var current_module_nodes: Array = []
+		current_module_nodes.append(create_header(display_name))
+		current_module_nodes.append(Control.new()) # Spacer.
 
 		for setting: GoZenModuleSetting in module.settings:
-			modules_nodes.append(create_label(setting.name))
+			current_module_nodes.append(create_label(setting.name))
 
 			var current_value: Variant = Settings.get_module_setting(folder_name, setting.id, setting.default_value)
 			var set_func: Callable = func(val: Variant, m_folder: String, s_id: String) -> void:
@@ -372,29 +404,55 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				var values: Array = setting.options.values()
 				var current_idx: int = values.find(current_value)
 				var default_idx: int = values.find(setting.default_value)
-				if current_idx == -1: current_idx = 0
-				if default_idx == -1: default_idx = 0
-				control_node = create_option_button(setting.options, current_idx, default_idx, set_func, typeof(setting.default_value), setting.description)
+				if current_idx == -1:
+					current_idx = 0
+
+				if default_idx == -1:
+					default_idx = 0
+				control_node = create_option_button(
+						setting.options, current_idx, default_idx, set_func,
+						typeof(setting.default_value), setting.description)
 			else:
 				match typeof(setting.default_value):
 					TYPE_BOOL:
-						control_node = create_check_button(current_value as bool, setting.default_value as bool, set_func, setting.description)
+						control_node = create_check_button(
+								current_value as bool,
+								setting.default_value as bool,
+								set_func,
+								setting.description)
 					TYPE_INT:
 						control_node = create_spinbox(
-								current_value as int, setting.default_value as int, setting.min_value, setting.max_value, setting.step, setting.allow_lesser, setting.allow_greater, set_func, "", setting.description)
+								current_value as int, setting.default_value as int,
+								setting.min_value, setting.max_value, setting.step,
+								setting.allow_lesser, setting.allow_greater, set_func,
+								"", setting.description)
 					TYPE_FLOAT:
 						control_node = create_spinbox(
-								current_value as float, setting.default_value as float, setting.min_value, setting.max_value, setting.step, setting.allow_lesser, setting.allow_greater, set_func, "", setting.description)
+								current_value as float,
+								setting.default_value as float,
+								setting.min_value, setting.max_value, setting.step,
+								setting.allow_lesser, setting.allow_greater, set_func,
+								"", setting.description)
 					TYPE_COLOR:
-						control_node = create_color_picker(current_value as Color, setting.default_value as Color, set_func, setting.description)
+						control_node = create_color_picker(
+								current_value as Color,
+								setting.default_value as Color,
+								set_func, setting.description)
 					TYPE_STRING:
-						control_node = create_line_edit(current_value as String, setting.default_value as String, set_func, setting.description)
+						control_node = create_line_edit(
+								current_value as String, setting.default_value as String,
+								set_func, setting.description)
 					_: control_node = Control.new() # Fallback.
 
-			modules_nodes.append(control_node)
+			current_module_nodes.append(control_node)
 
-	if not modules_nodes.is_empty():
-		options[tr("Modules")] = modules_nodes
+		individual_modules[display_name] = current_module_nodes
+		module_sections.append(display_name)
+
+	if has_modules:
+		options["mod"] = []
+		for mod_name: String in individual_modules:
+			options[mod_name] = individual_modules[mod_name]
 
 	return options
 

@@ -13,7 +13,7 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_26ncd")
 panel_label = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/PanelLabel")
-side_bar_vbox = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SideBarVBox")
+side_bar_vbox = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/ScrollContainer/SideBarVBox")
 search_line_edit = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SearchLineEdit")
 settings_vbox = NodePath("SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin/SettingsVBox")
 
@@ -68,7 +68,14 @@ icon_expand_mode = 1
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 
-[node name="SideBarVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=386574672]
+[node name="ScrollContainer" type="ScrollContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer" unique_id=625461069]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="SideBarVBox" type="VBoxContainer" parent="SettingsPanel/Margin/HBox/VBoxContainer/ScrollContainer" unique_id=386574672]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_vertical = 3
