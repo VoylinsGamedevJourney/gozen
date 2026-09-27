@@ -131,7 +131,10 @@ size_flags_horizontal = 3
 [node name="QualityLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=594486059]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15. Default is set to 18 Used for adjusting bitrate which has an impact on quality and size. Value 0 gives the best, 51 worst quality, 18 not really noticable."
+tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15.
+Default is set to 18 Used for adjusting bitrate which
+has an impact on quality and size. Value 0 gives the best,
+51 worst quality, 18 not really noticable."
 mouse_filter = 1
 text = "Quality"
 
