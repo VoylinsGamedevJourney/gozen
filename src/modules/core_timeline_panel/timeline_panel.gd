@@ -116,22 +116,28 @@ func _sync_and_redraw() -> void:
 #--- INPUT HANDLING ---
 
 func _gui_input(event: InputEvent) -> void:
-	if !Project.is_loaded: return
-	elif event is InputEventMouseButton: _on_gui_input_mouse_button(event as InputEventMouseButton)
-	elif event is InputEventMouseMotion: _on_gui_input_mouse_motion(event as InputEventMouseMotion)
-	_unhandled_input(event)
+	if Project.is_loaded:
+		if event is InputEventMouseButton:
+			_on_gui_input_mouse_button(event as InputEventMouseButton)
+		elif event is InputEventMouseMotion:
+			_on_gui_input_mouse_motion(event as InputEventMouseMotion)
+		_unhandled_input(event)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	var focus: Control = get_window().gui_get_focus_owner()
-	if !is_visible_in_tree() and !Project.is_loaded: return
-	if focus is LineEdit or focus is TextEdit:       return
+	if !is_visible_in_tree() and !Project.is_loaded:
+		return
+	elif focus is LineEdit or focus is TextEdit:
+		return
 
 	if event.is_action_pressed("split_clips_at_playhead", false, true):
 		Timeline.split_clips_at(EditorCore.frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
-		if !PopupManager._open_popups.is_empty(): return
-		if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING]: return
+		if !PopupManager._open_popups.is_empty():
+			return
+		if Timeline.current_state in [Timeline.State.MOVING, Timeline.State.DROPPING]:
+			return
 		ClipLogic.clear_selection()
 		Timeline.current_state = Timeline.State.SELECT
 		_on_ui_cancel()
@@ -156,9 +162,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				add_child(dialog)
 				dialog.popup_centered()
 			draw_clips.queue_redraw()
-		elif event.is_action_pressed("split_clips_at_mouse", false, true): Timeline.split_clips_at(get_frame_from_mouse())
-		elif event.is_action_pressed("trim_to_clip_start", false, true):   Timeline.trim_clips_to_start()
-		elif event.is_action_pressed("trim_to_clip_end", false, true):     Timeline.trim_clips_to_end()
+		elif event.is_action_pressed("split_clips_at_mouse", false, true):
+			Timeline.split_clips_at(get_frame_from_mouse())
+		elif event.is_action_pressed("trim_to_clip_start", false, true):
+			Timeline.trim_clips_to_start()
+		elif event.is_action_pressed("trim_to_clip_end", false, true):
+			Timeline.trim_clips_to_end()
 		elif event.is_action_pressed("remove_empty_space"):
 			var track: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
@@ -177,20 +186,29 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	if event.ctrl_pressed and event.shift_pressed and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			var new_height: float = Settings.get_module_setting("core_timeline_panel", "track_height", 25.0) + 2.0
-			Settings.set_module_setting("core_timeline_panel", "track_height", clampf(new_height, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+			Settings.set_module_setting(
+					"core_timeline_panel",
+					"track_height",
+					clampf(new_height, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
 			return accept_event()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			var new_height: float = Settings.get_module_setting("core_timeline_panel", "track_height", 25.0) - 2.0
-			Settings.set_module_setting("core_timeline_panel", "track_height", clampf(new_height, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+			Settings.set_module_setting(
+					"core_timeline_panel",
+					"track_height",
+					clampf(new_height, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
 			return accept_event()
 
-	if event.is_action_pressed("timeline_zoom_in", false, true):    return zoom_at_mouse(ZOOM_STEP)
-	elif event.is_action_pressed("timeline_zoom_out", false, true): return zoom_at_mouse(1.0 / ZOOM_STEP)
+	if event.is_action_pressed("timeline_zoom_in", false, true):
+		return zoom_at_mouse(ZOOM_STEP)
+	elif event.is_action_pressed("timeline_zoom_out", false, true):
+		return zoom_at_mouse(1.0 / ZOOM_STEP)
 
 	if Timeline.current_state == Timeline.State.SPLIT:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 			var target: ClipData = _get_clip_on_mouse(event.position)
-			if target: Timeline.split_clip_at(target, get_frame_from_mouse(event.position))
+			if target:
+				Timeline.split_clip_at(target, get_frame_from_mouse(event.position))
 			accept_event()
 		return
 	elif event.is_released():
@@ -376,6 +394,7 @@ func _get_clip_on_mouse(mouse_pos: Vector2 = get_local_mouse_position()) -> Clip
 func _get_resize_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeline.ResizeTarget:
 	if mouse_pos.y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
+
 	var track: int = get_track_from_mouse(mouse_pos)
 	if TrackLogic.tracks[track].is_locked:
 		return null
@@ -389,6 +408,7 @@ func _get_resize_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Time
 	for clip: ClipData in TrackLogic.track_clips[track].clips:
 		if (clip.duration * zoom) < 20.0:
 			continue
+
 		var start_x: float = clip.start * zoom
 		var end_x: float = clip.end * zoom
 		var start_distance: float = abs(mouse_x - start_x)
@@ -410,6 +430,7 @@ func _get_resize_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Time
 func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeline.FadeTarget:
 	if mouse_pos.y >= TrackLogic.tracks.size() * Timeline.track_total_size:
 		return null
+
 	var track: int = get_track_from_mouse(mouse_pos)
 	if TrackLogic.tracks[track].is_locked:
 		return null
@@ -465,6 +486,7 @@ func _get_fade_target(mouse_pos: Vector2 = get_local_mouse_position()) -> Timeli
 					return Timeline.FadeTarget.new(clip, true, false)
 				elif fade.y == 0 and fade.x > 0:
 					return Timeline.FadeTarget.new(clip, false, false)
+
 				var in_dist: float = abs(mouse_pos.x - in_rect.get_center().x)
 				var out_dist: float = abs(mouse_pos.x - out_rect.get_center().x)
 				if out_dist < in_dist:
@@ -510,6 +532,7 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 		var clip_on_mouse: ClipData = _get_clip_on_mouse()
 		if not clip_on_mouse:
 			return false
+
 		if drag_data.is_visual:
 			if !(clip_on_mouse.type & Type.GROUP_VISUAL):
 				return false
@@ -665,6 +688,7 @@ func _commit_select(shift_pressed: bool) -> void:
 				if clip in ClipLogic.active_clips: continue
 				different = true
 				break
+
 		if different:
 			ClipLogic.active_clips = group_clips
 			draw_clips.queue_redraw()
@@ -685,7 +709,9 @@ func _commit_current_fade() -> void:
 
 		for track_data: TrackLogic.TrackClips in TrackLogic.track_clips:
 			for other_clip: ClipData in track_data.clips:
-				if other_clip == clip: continue
+				if other_clip == clip:
+					continue
+
 				if not Timeline.fade_target.is_end: # Fade In.
 					if other_clip.start > clip.start and other_clip.start <= clip.end:
 						var dist: int = other_clip.start - clip.start
@@ -760,11 +786,13 @@ func _commit_box_selection(is_ctrl_pressed: bool) -> void:
 			if not (clip.start > frame_start or clip.end > frame_start):
 				continue
 
-			if clip in ClipLogic.active_clips: continue
+			if clip in ClipLogic.active_clips:
+				continue
 
 			var clips_to_select: Array[ClipData] = ClipLogic.get_clips_to_select(clip)
 			for group_clip: ClipData in clips_to_select:
-				if group_clip in ClipLogic.active_clips: continue
+				if group_clip in ClipLogic.active_clips:
+					continue
 				ClipLogic.active_clips.append(group_clip)
 
 	if ClipLogic.active_clips.is_empty():
@@ -802,6 +830,7 @@ func _handle_resize_motion(mouse_pos: Vector2) -> void:
 
 		if new_duration < 1:
 			new_duration = 1
+
 		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration and new_duration > max_allowed_duration:
 			new_duration = max_allowed_duration
 
@@ -1019,26 +1048,38 @@ func _show_hide_mode_bar(value: bool = Settings.get_module_setting("core_timelin
 
 
 func _on_select_mode_button_pressed() -> void:
+	button_select.modulate.a = 1.0
 	button_select.set_pressed_no_signal(true)
-	button_split.set_pressed_no_signal(false)
+
+	# For loop as it'll be easier for when we have more modes.
+	for button: TextureButton in [button_split]:
+		button.modulate.a = 0.5
+		button.set_pressed_no_signal(false)
+
 	Timeline.current_state = Timeline.State.SELECT
 
 
 func _on_split_mode_button_pressed() -> void:
-	button_select.set_pressed_no_signal(false)
+	button_split.modulate.a = 1.0
 	button_split.set_pressed_no_signal(true)
+
+	# For loop as it'll be easier for when we have more modes.
+	# should probably turn into a function later on.
+	for button: TextureButton in [button_select]:
+		button.modulate.a = 0.5
+		button.set_pressed_no_signal(false)
+
 	Timeline.current_state = Timeline.State.SPLIT
 	draw_mode.set("mouse_pos_x", get_local_mouse_position().x)
 	draw_mode.queue_redraw()
 
 
 func _on_module_setting_changed(module_folder: String, setting_id: String, value: Variant) -> void:
-	if module_folder != "core_timeline_panel": return
-
-	if setting_id == "show_time_mode_bar":
-		_show_hide_mode_bar(value as bool)
-	elif setting_id == "track_height":
-		_update_track_height(value as float)
+	if module_folder == "core_timeline_panel":
+		if setting_id == "show_time_mode_bar":
+			_show_hide_mode_bar(value as bool)
+		elif setting_id == "track_height":
+			_update_track_height(value as float)
 
 
 func _on_state_changed(new_state: Timeline.State) -> void:
@@ -1059,8 +1100,10 @@ func _update_track_height(new_height: float) -> void:
 func _on_clip_deleted(clip_id: int) -> void:
 	if Timeline.hovered_clip and Timeline.hovered_clip.id == clip_id:
 		Timeline.hovered_clip = null
+
 	if pressed_clip and pressed_clip.id == clip_id:
 		pressed_clip = null
+
 	if right_click_clip and right_click_clip.id == clip_id:
 		right_click_clip = null
 	draw_clips.queue_redraw()
@@ -1117,29 +1160,28 @@ func move_playhead(frame_nr: int) -> void:
 
 
 func remove_empty_space_at(track: int, frame_nr: int) -> void:
-	if TrackLogic.tracks[track].is_locked: return
+	if !TrackLogic.tracks[track].is_locked:
+		var clips: Array[ClipData] = TrackLogic.get_clips_after(track, frame_nr)
+		var region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
+		var empty_size: int = region.y - region.x
+		var move_requests: Array[RequestClipMove] = []
 
-	var clips: Array[ClipData] = TrackLogic.get_clips_after(track, frame_nr)
-	var region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
-	var empty_size: int = region.y - region.x
-	var move_requests: Array[RequestClipMove] = []
+		var clips_to_move: Array[ClipData] = []
+		for clip: ClipData in clips:
+			if clip in clips_to_move: continue
+			clips_to_move.append(clip)
 
-	var clips_to_move: Array[ClipData] = []
-	for clip: ClipData in clips:
-		if clip in clips_to_move: continue
-		clips_to_move.append(clip)
+			if !Timeline.group_enabled: continue
+			for group_clip: ClipData in ClipLogic.get_group_clips(clip):
+				if not group_clip in clips_to_move:
+					clips_to_move.append(group_clip)
 
-		if !Timeline.group_enabled: continue
-		for group_clip: ClipData in ClipLogic.get_group_clips(clip):
-			if not group_clip in clips_to_move:
-				clips_to_move.append(group_clip)
-
-	for clip: ClipData in clips_to_move:
-		var request: RequestClipMove = RequestClipMove.new()
-		request.clip = clip
-		request.offset_frame = -empty_size
-		move_requests.append(request)
-	ClipLogic.move(move_requests)
+		for clip: ClipData in clips_to_move:
+			var request: RequestClipMove = RequestClipMove.new()
+			request.clip = clip
+			request.offset_frame = -empty_size
+			move_requests.append(request)
+		ClipLogic.move(move_requests)
 
 
 func _on_request_drop_folder(screen_pos: Vector2) -> void:
