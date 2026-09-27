@@ -369,10 +369,10 @@ func _on_view_popup_menu_about_to_popup(menu: PopupMenu) -> void:
 
 
 func _on_view_popup_menu_id_pressed(id: int) -> void:
-	if id >= 5:
+	if id >= 10:
 		var panel_names: Array = WorkspaceManager.active_panels.keys()
-		if id - 5 < panel_names.size():
-			var panel_id: String = panel_names[id - 5]
+		if id - 10 < panel_names.size():
+			var panel_id: String = panel_names[id - 10]
 			WorkspaceManager.toggle_panel(panel_id)
 
 	match id:
