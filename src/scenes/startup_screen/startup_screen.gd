@@ -61,7 +61,6 @@ func _ready() -> void:
 	_set_recent_projects()
 	_set_version_label()
 	_set_new_project_defaults()
-	project_path_line_edit.text = OS.get_system_dir(OS.SYSTEM_DIR_MOVIES) + "/project.gozen"
 
 	# Set the startup background image.
 	randomize()
@@ -104,7 +103,7 @@ func dismiss() -> void:
 
 
 func get_user_profiles_path() -> String:
-	return Utils.get_config_dir() + "profiles/project/"
+	return Utils.get_config_dir().path_join("profiles/project")
 
 
 func _set_recent_projects() -> void:
@@ -235,7 +234,7 @@ func _set_new_project_defaults() -> void:
 			loaded_preset_profiles.append(project_profile)
 
 	# Setting the normal project settings.
-	project_path_line_edit.text = Settings.get_default_project_path()
+	project_path_line_edit.text = Settings.get_default_project_path().path_join("project.gozen")
 	resolution_x_spinbox.set_value_no_signal(Settings.get_default_resolution_x())
 	resolution_y_spinbox.set_value_no_signal(Settings.get_default_resolution_y())
 	framerate_spinbox.set_value_no_signal(Settings.get_default_framerate())
@@ -275,8 +274,8 @@ func _on_open_project_button_pressed() -> void:
 			tr("Open project"),
 			FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
-	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
-
+	var default_dir: String = Settings.get_default_project_path()
+	dialog.current_dir = default_dir if not default_dir.is_empty() else Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 	dialog.file_selected.connect(open_project)
 
 	add_child(dialog)
@@ -296,8 +295,8 @@ func _on_create_new_project_button_pressed() -> void:
 	var path: String = project_path_line_edit.text
 
 	if !path.is_empty():
-		if path[-1] == '/':
-			path += "project" + Project.EXTENSION
+		if path.ends_with("/") or path.ends_with("\\"):
+			path = path.path_join("project" + Project.EXTENSION)
 		elif path.get_extension().to_lower() != Project.EXTENSION.replace('.', ''):
 			path += Project.EXTENSION
 
@@ -353,8 +352,8 @@ func _on_project_path_button_pressed() -> void:
 			tr("Select project save path"),
 			FileDialog.FILE_MODE_SAVE_FILE,
 			["*%s;%s" % [Project.EXTENSION, tr("GoZen project file")]])
-	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
-
+	var default_dir: String = Settings.get_default_project_path()
+	dialog.current_dir = default_dir if not default_dir.is_empty() else Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 	dialog.file_selected.connect(_set_project_path)
 	dialog.ok_button_text = "Select"
 

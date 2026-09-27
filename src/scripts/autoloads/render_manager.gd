@@ -86,8 +86,8 @@ func get_render_profile(profile_name: String) -> RenderProfile:
 		if profile and profile.profile_name == profile_name:
 			return profile
 
-	var user_path: String = Utils.get_config_dir() + "profiles/render/"
-	if DirAccess.dir_exists_absolute(user_path):
+	var user_path: String = Utils.get_config_dir().path_join("profiles/render")
+	if DirAccess.dir_exists_absolute(user_path)
 		for file_name: String in DirAccess.get_files_at(user_path):
 			file_name = file_name.trim_suffix(".remap")
 			if not file_name.ends_with(".tres") and not file_name.ends_with(".res"): continue

@@ -33,7 +33,7 @@ var files_dropping: bool = false
 var drop_mouse_pos: Vector2 = Vector2.ZERO
 var current_drop_folder: String = "/"
 
-var wave_folder: String = "%s/gozen/waves/" % OS.get_cache_dir()
+var wave_folder: String = OS.get_cache_dir().path_join("gozen").path_join("waves")
 
 var _mutex: Mutex = Mutex.new()
 
@@ -539,7 +539,7 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 	if !DirAccess.dir_exists_absolute(wave_folder) and DirAccess.make_dir_recursive_absolute(wave_folder):
 		printerr("FileLogic: Couldn't create folder '%s'!" % wave_folder)
 
-	var cache_path: String = wave_folder + file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + "_" + str(stream_index) + ".wave"
+	var cache_path: String = wave_folder.path_join(file.path.md5_text() + "_" + str(file.modified_time) + "_" + str(Project.data.framerate) + "_" + str(stream_index) + ".wave")
 	if FileAccess.file_exists(cache_path):
 		var temp_file: FileAccess = FileAccess.open(cache_path, FileAccess.READ)
 		if temp_file.get_length() > 0:

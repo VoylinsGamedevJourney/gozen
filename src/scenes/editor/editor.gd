@@ -533,35 +533,35 @@ func _show_workspace_context_menu(workspace_name: String, button: Button) -> voi
 
 
 func _move_workspace(workspace_name: String, direction: int) -> void:
-	var current_idx: int = -1
+	var current_index: int = -1
 	for i: int in workspace_buttons.size():
 		if workspace_buttons[i].text == workspace_name:
-			current_idx = i
+			current_index = i
 			break
-	if current_idx == -1: return
+	if current_index == -1: return
 
-	var target_idx: int = current_idx + direction
+	var target_idx: int = current_index + direction
 	if target_idx < 0 or target_idx >= workspace_buttons.size(): return
 
-	var name_a: String = WorkspaceManager.available_workspaces[current_idx]
+	var name_a: String = WorkspaceManager.available_workspaces[current_index]
 	var name_b: String = WorkspaceManager.available_workspaces[target_idx]
-	WorkspaceManager.available_workspaces[current_idx] = name_b
+	WorkspaceManager.available_workspaces[current_index] = name_b
 	WorkspaceManager.available_workspaces[target_idx] = name_a
 
-	var button_a: Button = workspace_buttons[current_idx]
+	var button_a: Button = workspace_buttons[current_index]
 	var button_b: Button = workspace_buttons[target_idx]
-	workspace_buttons[current_idx] = button_b
+	workspace_buttons[current_index] = button_b
 	workspace_buttons[target_idx] = button_a
 
 	workspace_buttons_hbox.move_child(button_a, target_idx)
 
-	var tab_a: Node = workspaces.get_child(current_idx)
+	var tab_a: Node = workspaces.get_child(current_index)
 	workspaces.move_child(tab_a, target_idx)
 
 	if button_a.button_pressed:
 		switch_workspace(target_idx)
 	elif button_b.button_pressed:
-		switch_workspace(current_idx)
+		switch_workspace(current_index)
 
 
 func _delete_workspace_prompt(workspace_name: String) -> void:
@@ -573,34 +573,34 @@ func _delete_workspace_prompt(workspace_name: String) -> void:
 
 
 func _delete_workspace(workspace_name: String) -> void:
-	var current_idx: int = -1
+	var current_index: int = -1
 	for i: int in workspace_buttons.size():
 		if workspace_buttons[i].text == workspace_name:
-			current_idx = i
+			current_index = i
 			break
 
 	var file_name: String = workspace_name.to_lower().replace(" ", "_") + ".tres"
-	var path: String = WorkspaceManager.get_workspaces_dir() + file_name
+	var path: String = WorkspaceManager.get_workspaces_dir().path_join(file_name)
 	if FileAccess.file_exists(path):
 		var err: Error = DirAccess.remove_absolute(path)
 		if err != OK:
 			printerr("Editor: Failed to delete workspace file at '%s'!" % path)
 
-	var button_to_delete: Button = workspace_buttons[current_idx]
+	var button_to_delete: Button = workspace_buttons[current_index]
 	if button_to_delete.button_pressed:
 		var target_idx: int = 0
-		if current_idx == 0:
+		if current_index == 0:
 			target_idx = 1
 		switch_workspace(target_idx)
 
 	WorkspaceManager.available_workspaces.erase(workspace_name)
 
-	var tab: Node = workspaces.get_child(current_idx)
+	var tab: Node = workspaces.get_child(current_index)
 	workspaces.remove_child(tab)
 	tab.queue_free()
 	workspace_buttons_hbox.remove_child(button_to_delete)
 	button_to_delete.queue_free()
-	workspace_buttons.remove_at(current_idx)
+	workspace_buttons.remove_at(current_index)
 
 
 func switch_workspace(index: int) -> void:

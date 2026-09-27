@@ -45,16 +45,16 @@ func _ready() -> void:
 	if DirAccess.get_files_at(get_workspaces_dir()).size() == 0:
 		var edit_workspace: WorkspaceLayout = _create_default_edit_workspace()
 		var render_workspace: WorkspaceLayout = _create_default_render_workspace()
-		if ResourceSaver.save(edit_workspace, get_workspaces_dir() + "edit.tres") != OK:
+		if ResourceSaver.save(edit_workspace, get_workspaces_dir().path_join("edit.tres")) != OK:
 			printerr("WorkspaceManager: Something went wrong saving the default 'edit' workspace!")
-		if ResourceSaver.save(render_workspace, get_workspaces_dir() + "render.tres") != OK:
+		if ResourceSaver.save(render_workspace, get_workspaces_dir().path_join("render.tres")) != OK:
 			printerr("WorkspaceManager: Something went wrong saving the default 'render' workspace!")
 
 	_load_available_workspaces()
 
 
 func get_workspaces_dir() -> String:
-	return Utils.get_config_dir() + "workspaces/"
+	return Utils.get_config_dir().path_join("workspaces")
 
 
 func _load_available_workspaces() -> void:
@@ -71,16 +71,16 @@ func save_current_workspace() -> void:
 
 
 func save_workspace(workspace_name: String) -> void:
-	if workspace_root.get_child_count() == 0: return
-	var layout: WorkspaceLayout = WorkspaceLayout.new()
-	layout.name = workspace_name
-	layout.root = _save_node(workspace_root.get_child(0) as Control)
+	if workspace_root.get_child_count() != 0:
+		var layout: WorkspaceLayout = WorkspaceLayout.new()
+		layout.name = workspace_name
+		layout.root = _save_node(workspace_root.get_child(0) as Control)
 
-	var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
-	var err: Error = ResourceSaver.save(layout, path)
-	if err != OK:
-		return printerr("WorkspaceManager: Failed to save workspace '%s' at '%s'!" % [workspace_name, path])
-	current_workspace_layout = layout
+		var path: String = get_workspaces_dir().path_join(workspace_name.to_lower().replace(" ", "_") + ".tres")
+		var err: Error = ResourceSaver.save(layout, path)
+		if err != OK:
+			return printerr("WorkspaceManager: Failed to save workspace '%s' at '%s'!" % [workspace_name, path])
+		current_workspace_layout = layout
 
 
 func create_workspace(workspace_name: String) -> void:
@@ -103,7 +103,7 @@ func create_workspace(workspace_name: String) -> void:
 	root_vsplit.children = [view_tab, timeline_tab]
 	layout.root = root_vsplit
 
-	var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
+	var path: String = get_workspaces_dir().path_join(workspace_name.to_lower().replace(" ", "_") + ".tres")
 	var err: Error = ResourceSaver.save(layout, path)
 	if err != OK:
 		return printerr("WorkspaceManager: Failed to save workspace '%s' at '%s'!" % [workspace_name, path])
@@ -136,7 +136,7 @@ func load_workspace(workspace_name: String) -> void:
 		if workspace_name == "Render":
 			layout = _create_default_render_workspace()
 	else:
-		var path: String = get_workspaces_dir() + workspace_name.to_lower().replace(" ", "_") + ".tres"
+		var path: String = get_workspaces_dir().path_join(workspace_name.to_lower().replace(" ", "_") + ".tres")
 		if !FileAccess.file_exists(path):
 			return printerr("WorkspaceManager: Workspace file not found at '%s'" % path)
 		layout = load(path)
@@ -153,15 +153,14 @@ func load_workspace(workspace_name: String) -> void:
 
 
 func _clear_workspace() -> void:
-	if not workspace_root: return
+	if workspace_root:
+		for id: String in active_panels:
+			var panel: Control = active_panels[id]
+			if panel.get_parent():
+				panel.get_parent().remove_child(panel)
 
-	for id: String in active_panels:
-		var panel: Control = active_panels[id]
-		if panel.get_parent():
-			panel.get_parent().remove_child(panel)
-
-	for child: Node in workspace_root.get_children():
-		child.queue_free()
+		for child: Node in workspace_root.get_children():
+			child.queue_free()
 
 
 func _build_node(node: WorkspaceNode) -> Control:
@@ -271,47 +270,48 @@ func _get_hovered_tab(global_pos: Vector2) -> DockableTab:
 		if tab.is_visible_in_tree() and tab.get_global_rect().has_point(global_pos):
 			return tab
 	return null
-	
+
+
 func is_panel_mouse_focused(panel_id: String) -> bool:
 	var panel: Control = active_panels.get(panel_id)
-	if panel == null:
-		return false
-	var mouse_pos: Vector2 = EditorUI.instance.get_global_mouse_position()
-	var visible: bool = panel.is_visible_in_tree()
-	var mouse_over_it: bool = panel.get_global_rect().has_point(mouse_pos)
-	return visible and mouse_over_it
+	if panel != null:
+		var mouse_pos: Vector2 = EditorUI.instance.get_global_mouse_position()
+		var visible: bool = panel.is_visible_in_tree()
+		var mouse_over_it: bool = panel.get_global_rect().has_point(mouse_pos)
+		return visible and mouse_over_it
+	return false
 
 
 func _on_drag_overlay_draw() -> void:
-	if preview_zone == DockableTab.DropZone.NONE: return
-	var rect: Rect2
-	var threshold: float
+	if preview_zone != DockableTab.DropZone.NONE:
+		var rect: Rect2
+		var threshold: float
 
-	if preview_is_root:
-		rect = workspace_root.get_global_rect()
-		threshold = 0.25
-	else:
-		if not preview_tab: return
-		rect = preview_tab.get_global_rect()
-		threshold = DockableTab.SPLIT_THRESHOLD
+		if preview_is_root:
+			rect = workspace_root.get_global_rect()
+			threshold = 0.25
+		else:
+			if not preview_tab: return
+			rect = preview_tab.get_global_rect()
+			threshold = DockableTab.SPLIT_THRESHOLD
 
-	var draw_rect: Rect2
-	var color: Color = drag_overlay.get_theme_color("overlay_color", "DockableTab")
+		var draw_rect: Rect2
+		var color: Color = drag_overlay.get_theme_color("overlay_color", "DockableTab")
 
-	if preview_zone == DockableTab.DropZone.CENTER:
-		draw_rect = Rect2(Vector2.ZERO, rect.size)
-	elif preview_zone == DockableTab.DropZone.LEFT:
-		draw_rect = Rect2(0, 0, rect.size.x * threshold, rect.size.y)
-	elif preview_zone == DockableTab.DropZone.RIGHT:
-		draw_rect = Rect2(rect.size.x * (1.0 - threshold), 0, rect.size.x * threshold, rect.size.y)
-	elif preview_zone == DockableTab.DropZone.TOP:
-		draw_rect = Rect2(0, 0, rect.size.x, rect.size.y * threshold)
-	elif preview_zone == DockableTab.DropZone.BOTTOM:
-		draw_rect = Rect2(0, rect.size.y * (1.0 - threshold), rect.size.x, rect.size.y * threshold)
+		if preview_zone == DockableTab.DropZone.CENTER:
+			draw_rect = Rect2(Vector2.ZERO, rect.size)
+		elif preview_zone == DockableTab.DropZone.LEFT:
+			draw_rect = Rect2(0, 0, rect.size.x * threshold, rect.size.y)
+		elif preview_zone == DockableTab.DropZone.RIGHT:
+			draw_rect = Rect2(rect.size.x * (1.0 - threshold), 0, rect.size.x * threshold, rect.size.y)
+		elif preview_zone == DockableTab.DropZone.TOP:
+			draw_rect = Rect2(0, 0, rect.size.x, rect.size.y * threshold)
+		elif preview_zone == DockableTab.DropZone.BOTTOM:
+			draw_rect = Rect2(0, rect.size.y * (1.0 - threshold), rect.size.x, rect.size.y * threshold)
 
-	draw_rect.position += rect.position
-	draw_rect.position = drag_overlay.get_global_transform().affine_inverse() * draw_rect.position
-	drag_overlay.draw_rect(draw_rect, color)
+		draw_rect.position += rect.position
+		draw_rect.position = drag_overlay.get_global_transform().affine_inverse() * draw_rect.position
+		drag_overlay.draw_rect(draw_rect, color)
 
 
 func handle_root_drop(id: String, zone: int) -> void:
@@ -368,7 +368,7 @@ func handle_panel_drop(id: String, source: TabContainer, target: TabContainer, z
 			parent.move_child(new_tab_container, index if is_before else index + 1)
 		else: # Different direction split needed.
 			var new_split: SplitContainer
-			var target_idx: int = target.get_index()
+			var target_index: int = target.get_index()
 			if is_horizontal:
 				new_split = HSplitContainer.new()
 			else:
@@ -377,7 +377,7 @@ func handle_panel_drop(id: String, source: TabContainer, target: TabContainer, z
 			parent.add_child(new_split)
 			if parent == workspace_root:
 				new_split.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-			parent.move_child(new_split, target_idx)
+			parent.move_child(new_split, target_index)
 
 			parent.remove_child(target)
 			new_split.add_child(target)

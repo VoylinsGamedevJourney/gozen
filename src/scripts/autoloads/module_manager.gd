@@ -8,8 +8,12 @@ var loaded_gozen_modules: Array[GoZenModule] = []
 
 
 
-func get_config_file() -> String:		  return Utils.get_config_dir() + "modules_config.json"
-func get_modules_global_path() -> String: return Utils.get_config_dir() + "modules/"
+func get_config_file() -> String:
+	return Utils.get_config_dir().path_join("modules_config.json")
+
+
+func get_modules_global_path() -> String:
+	return Utils.get_config_dir().path_join("modules")
 
 
 func _enter_tree() -> void:

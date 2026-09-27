@@ -17,7 +17,7 @@ static func get_config_dir() -> String:
 	if not DirAccess.dir_exists_absolute(app_dir):
 		if DirAccess.make_dir_recursive_absolute(app_dir):
 			printerr("Utils: Couldn't create config folder!")
-	return app_dir + "/"
+	return app_dir
 
 
 static func get_unique_id(keys: Array[int]) -> int:
@@ -50,13 +50,13 @@ static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
 			var virtual_path: String = folder_data["virtual"]
 
 			for file_name: String in DirAccess.get_files_at(dir_path):
-				var full_path: String = dir_path + "/" + file_name
+				var full_path: String = dir_path.path_join(file_name)
 				if FileLogic.check(full_path):
 					result[full_path] = virtual_path
 
 			for subdir_name: String in DirAccess.get_directories_at(dir_path):
 				new_folders.append({
-					"path": dir_path + "/" + subdir_name,
+					"path": dir_path.path_join(subdir_name),
 					"virtual": virtual_path + subdir_name + "/"
 				})
 		folders = new_folders

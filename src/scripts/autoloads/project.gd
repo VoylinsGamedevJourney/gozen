@@ -271,7 +271,15 @@ func open_project() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog(
 			tr("Open project"), FileDialog.FILE_MODE_OPEN_FILE,
 			["*%s;%s" % [EXTENSION, tr("GoZen project files")]])
-	dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
+
+	var default_dir: String = Settings.get_default_project_path()
+	var current_base: String = get_project_base_folder()
+	if not current_base.is_empty():
+		dialog.current_dir = current_base
+	elif not default_dir.is_empty():
+		dialog.current_dir = default_dir
+	else:
+		dialog.current_dir = get_picker_path(OS.SYSTEM_DIR_MOVIES)
 
 	dialog.file_selected.connect(_open_project)
 	add_child(dialog)

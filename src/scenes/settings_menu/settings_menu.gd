@@ -299,6 +299,13 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 		tr("Appearance"): appearance_options,
 
 		tr("Defaults"): [
+			create_header(tr("Paths")), Control.new(),
+			create_label(tr("Default project path")),
+			create_line_edit(
+					Settings.get_default_project_path(),
+					default_settings.default_project_path,
+					Settings.set_default_project_path,
+					tr("The default directory where new projects are created.")),
 			create_header(tr("Default durations")), Control.new(),
 			create_label(tr("Default image duration")),
 			create_spinbox(

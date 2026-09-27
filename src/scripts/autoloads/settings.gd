@@ -33,8 +33,6 @@ func _ready() -> void:
 		is_first_time = true
 		data.language = get_system_locale()
 		data.display_scale = get_display_scale()
-		data.default_project_path = OS.get_executable_path().trim_suffix(
-				OS.get_executable_path().get_file())
 	else:
 		var response: int = DataManager.load_data(get_settings_path(), data)
 		if response != OK:
@@ -57,8 +55,12 @@ func _ready() -> void:
 	load_new_shortcuts()
 
 
-func get_settings_path() -> String: return Utils.get_config_dir() + "settings"
-func get_themes_path() -> String:   return Utils.get_config_dir() + "themes/"
+func get_settings_path() -> String:
+	return Utils.get_config_dir().path_join("settings")
+
+
+func get_themes_path() -> String:
+	return Utils.get_config_dir().path_join("themes")
 
 
 func save() -> void:
@@ -104,7 +106,7 @@ func load_custom_themes() -> void:
 		if !dir.current_is_dir() and file_name.ends_with(".tres"):
 			var theme_name: String = file_name.get_basename().replace('_', ' ')
 			if not theme_name in default_themes and not theme_name in custom_themes:
-				custom_themes[theme_name] = get_themes_path() + file_name
+				custom_themes[theme_name] = get_themes_path().path_join(file_name)
 		file_name = dir.get_next()
 
 	ModuleManager.register_themes()

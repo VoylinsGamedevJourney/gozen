@@ -1745,7 +1745,7 @@ func _prompt_save_preset(is_section: bool, is_visual: bool, effect: Effect) -> v
 			if preset_name.is_empty():
 				preset_name = "Custom"
 			var prefix: String = ("visual" if is_visual else "audio") if is_section else effect.id
-			var path: String = PRESETS_PATH + prefix + "_" + preset_name.validate_filename() + ".preset"
+			var path: String = PRESETS_PATH.path_join(prefix + "_" + preset_name.validate_filename() + ".preset")
 
 			var save_data: Variant
 			if is_section:
