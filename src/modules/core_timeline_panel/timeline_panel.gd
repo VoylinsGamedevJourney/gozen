@@ -131,6 +131,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif focus is LineEdit or focus is TextEdit:
 		return
 
+	if event is InputEventKey and (event as InputEventKey).keycode == KEY_CTRL:
+		if Timeline.current_state == Timeline.State.SPLIT:
+			draw_mode.queue_redraw()
+
 	if event.is_action_pressed("split_clips_at_playhead", false, true):
 		Timeline.split_clips_at(EditorCore.frame_nr)
 	elif event.is_action_pressed("ui_cancel"):
@@ -206,9 +210,19 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 
 	if Timeline.current_state == Timeline.State.SPLIT:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-			var target: ClipData = _get_clip_on_mouse(event.position)
+			var mouse_pos: Vector2 = event.position
+			var frame: int = get_frame_from_mouse(mouse_pos)
+			if event.ctrl_pressed:
+				var was_snap: bool = Timeline.snap_enabled
+				Timeline.snap_enabled = true
+				var snap_delta: int = Timeline.find_snap_offset([frame], maxi(1, int(15.0 / Timeline.zoom)))
+				Timeline.snap_enabled = was_snap
+				frame += snap_delta
+				mouse_pos.x = frame * Timeline.zoom
+
+			var target: ClipData = _get_clip_on_mouse(mouse_pos)
 			if target:
-				Timeline.split_clip_at(target, get_frame_from_mouse(event.position))
+				Timeline.split_clip_at(target, frame)
 			accept_event()
 		return
 	elif event.is_released():
@@ -352,7 +366,6 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 				mouse_default_cursor_shape = Control.CURSOR_ARROW
 		Timeline.State.SPLIT:
 			mouse_default_cursor_shape = Control.CURSOR_IBEAM
-			draw_mode.set("mouse_pos_x", event.position.x)
 			draw_mode.queue_redraw()
 		Timeline.State.FADING:
 			_handle_fade_motion(event.position)
@@ -1070,7 +1083,6 @@ func _on_split_mode_button_pressed() -> void:
 		button.set_pressed_no_signal(false)
 
 	Timeline.current_state = Timeline.State.SPLIT
-	draw_mode.set("mouse_pos_x", get_local_mouse_position().x)
 	draw_mode.queue_redraw()
 
 

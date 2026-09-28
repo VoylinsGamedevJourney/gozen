@@ -10,6 +10,14 @@ func _draw_split() -> void:
 	var timeline_panel: Control = get_parent()
 	var mouse_pos: Vector2 = get_local_mouse_position()
 
+	if Input.is_key_pressed(KEY_CTRL):
+		var frame: int = timeline_panel.call("get_frame_from_mouse", mouse_pos)
+		var was_snap: bool = Timeline.snap_enabled
+		Timeline.snap_enabled = true
+		var snap_delta: int = Timeline.find_snap_offset([frame], maxi(1, int(15.0 / Timeline.zoom)))
+		Timeline.snap_enabled = was_snap
+		mouse_pos.x = (frame + snap_delta) * Timeline.zoom
+
 	var fade_pos: float = mouse_pos.x + 1
 	var split_color: Color = get_theme_color("split", "Timeline")
 
