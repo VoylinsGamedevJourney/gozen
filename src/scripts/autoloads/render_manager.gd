@@ -41,7 +41,7 @@ var encoding_time: int = 0
 var current_render_resolution: Vector2i
 
 var buffer_size: int = 5
-var frame_queue: Array[PackedByteArray] = []
+var frame_queue: Array[Dictionary] = []
 var thread: Thread
 
 var rendering_device: RenderingDevice
@@ -324,10 +324,6 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 
 	var use_audio: bool = encoder.audio_codec_set()
 	var use_video: bool = encoder.video_codec_set()
-	var active_audio_tracks: Array[Dictionary] = []
-	if use_audio:
-		for i: int in TrackLogic.tracks.size():
-			active_audio_tracks.append({})
 
 	if use_video:
 		# RGBA to YUV shader setup.
@@ -374,10 +370,9 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	update_encoder_status.emit(Status.SENDING_FRAMES)
 
 	frame_queue.clear()
-	var audio_queue: Array[PackedByteArray] = []
 	stop_encoding = false
 	thread = Thread.new()
-	if thread.start(_encoding_loop.bind(use_audio, use_video, audio_queue)):
+	if thread.start(_encoding_loop.bind(use_audio, use_video)):
 		printerr("RenderManager: Couldn't start encoder thread!")
 		stop_encoder()
 		update_encoder_status.emit(Status.ERROR_CANCELED)
@@ -400,9 +395,6 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		var frame_data: PackedByteArray = PackedByteArray()
 		if use_video:
 			frame_data = _convert_rgba_to_yuv(viewport.get_rid(), current_render_resolution)
-		var audio_data: PackedByteArray = PackedByteArray()
-		if use_audio:
-			audio_data = _get_audio_for_frame(i, active_audio_tracks)
 
 		var frame_pushed: bool = false
 		while not frame_pushed and not cancel_encoding:
@@ -411,9 +403,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 
 			Threader.mutex.lock()
 			if frame_queue.size() < buffer_size: # Limiting RAM usage.
-				frame_queue.append(frame_data)
-				if use_audio:
-					audio_queue.append(audio_data)
+				frame_queue.append({"frame_data": frame_data, "frame_nr": i})
 				frame_pushed = true
 			Threader.mutex.unlock()
 			if frame_pushed:
@@ -483,31 +473,37 @@ func stop_encoder() -> void:
 	is_encoding = false
 
 
-func _encoding_loop(use_audio: bool, use_video: bool, audio_queue: Array[PackedByteArray]) -> void:
+func _encoding_loop(use_audio: bool, use_video: bool) -> void:
+	var active_audio_tracks: Array[Dictionary] = []
+	if use_audio:
+		for i: int in TrackLogic.tracks.size():
+			active_audio_tracks.append({})
+
 	while true:
 		Threader.semaphore.wait()
 		Threader.mutex.lock()
 		var has_frames: bool = not frame_queue.is_empty()
 		var frame_data: PackedByteArray = PackedByteArray()
-		var audio_data: PackedByteArray = PackedByteArray()
+		var frame_nr: int = -1
 		if has_frames:
-			frame_data = frame_queue.pop_front()
-			if use_audio:
-				audio_data = audio_queue.pop_front()
+			var item: Dictionary = frame_queue.pop_front()
+			frame_data = item["frame_data"]
+			frame_nr = item["frame_nr"]
 		update_encoder_status.emit.call_deferred(Status.FRAMES_SEND)
 		Threader.mutex.unlock()
 
 		if has_frames:
-			if use_audio and not audio_data.is_empty():
-				if not encoder.send_audio(audio_data):
+			if use_audio:
+				var audio_data: PackedByteArray = _get_audio_for_frame(frame_nr, active_audio_tracks)
+				if not audio_data.is_empty() and not encoder.send_audio(audio_data):
 					call_deferred("stop_encoder")
 					printerr("RenderManager: Something went wrong sending audio frame!")
 					break
-			if use_video and not frame_data.is_empty():
-				if not encoder.send_frame(frame_data):
-					call_deferred("stop_encoder")
-					printerr("RenderManager: Something went wrong sending frame(s)!")
-					break # Error happened in encoder.
+			if use_video and not frame_data.is_empty() and not encoder.send_frame(frame_data):
+				call_deferred("stop_encoder")
+				printerr("RenderManager: Something went wrong sending frame(s)!")
+				break # Error happened in encoder.
+
 		if stop_encoding:
 			Threader.mutex.lock()
 			var is_empty: bool = frame_queue.is_empty()
