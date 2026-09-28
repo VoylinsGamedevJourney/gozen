@@ -106,7 +106,8 @@ func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array
 	dialog.title = title
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.file_mode = mode
-	dialog.filters = filters
+	if !filters.is_empty():
+		dialog.filters = filters
 
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
 	return dialog

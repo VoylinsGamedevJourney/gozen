@@ -104,9 +104,10 @@ func _file_menu_pressed(id: int) -> void:
 	match id:
 		0: # Add file(s).
 			var dialog: FileDialog = PopupManager.create_file_dialog(
-					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_FILES)
+					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_ANY)
 			dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
 			add_child(dialog)
+			dialog.dir_selected.connect(FileLogic.dropped)
 			dialog.files_selected.connect(FileLogic.dropped)
 			dialog.popup_centered()
 		1: FileLogic.add(["temp://text"])
