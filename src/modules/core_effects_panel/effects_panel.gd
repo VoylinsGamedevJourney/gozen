@@ -75,6 +75,7 @@ func _ready() -> void:
 	EffectsHandler.effects_updated.connect(_update_ui_values)
 
 	FileLogic.video_loaded.connect(_on_file_updated)
+	FileLogic.audio_loaded.connect(_on_file_updated)
 	FileLogic.reloaded.connect(_on_file_updated)
 
 	for section: FoldableContainer in vbox_sections.get_children():

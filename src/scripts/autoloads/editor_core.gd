@@ -56,6 +56,7 @@ func _ready() -> void:
 	TrackLogic.updated.connect(_rebuild_structure)
 	FileLogic.reloaded.connect(_on_clips_updated.unbind(1))
 	FileLogic.video_loaded.connect(_on_clips_updated.unbind(1))
+	FileLogic.audio_loaded.connect(_on_clips_updated.unbind(1))
 	FileLogic.ato_changed.connect(_on_clips_updated.unbind(1))
 
 	tree_exiting.connect(_on_closing_editor)

@@ -12,6 +12,7 @@ signal audio_wave_generated(file: FileData)
 signal wave_loading(file: FileData, progress: int)
 
 signal video_loaded(file: FileData)
+signal audio_loaded(file: FileData)
 
 signal request_drop_folder(screen_pos: Vector2)
 signal files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2)
@@ -362,13 +363,16 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 	while !dropped_files.is_empty(): # Looping till all files are loaded.
 		await get_tree().process_frame
 		for file: FileData in dropped_files:
-			if data.has(file.id) and data[file.id]:
-				progress.update_file(file.path, 1)
-				progress.increment_bar(progress_increment)
-				final_dropped_files.append(file)
+			if data.has(file.id):
+				if data[file.id] != null:
+					progress.update_file(file.path, 1)
+					progress.increment_bar(progress_increment)
+					final_dropped_files.append(file)
+				else:
+					progress.update_file(file.path, -1)
 				dropped_files.erase(file)
 				break
-			elif !data.has(file.id) and !Threader.check_tasks(file):
+			elif !Threader.check_tasks(file):
 				progress.update_file(file.path, -1)
 				dropped_files.erase(file)
 				break
@@ -429,24 +433,19 @@ func load_data(file: FileData) -> void:
 	match file.type:
 		Type.IMAGE:
 			var image: Image = Image.load_from_file(file.path)
-			if image.get_format() != Image.FORMAT_RGBA8:
-				image.convert(Image.FORMAT_RGBA8)
-			if image.get_size() != Project.data.resolution:
-				_scale_image_to_fit(image, Project.data.resolution)
-			data[file.id] = ImageTexture.create_from_image(image)
+			if image and not image.is_empty():
+				if image.get_format() != Image.FORMAT_RGBA8:
+					image.convert(Image.FORMAT_RGBA8)
+				if image.get_size() != Project.data.resolution:
+					_scale_image_to_fit(image, Project.data.resolution)
+				data[file.id] = ImageTexture.create_from_image(image)
+			else:
+				printerr("FileLogic: Couldn't load image at path '%s'!" % file.path)
+				data[file.id] = null
 		Type.VIDEO:
 			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
 		Type.AUDIO:
-			if audio_pools.has(file.id):
-				audio_pools[file.id] = []
-
-			var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
-			if stream.open(file.path) == OK and stream.get_length() != 0:
-				data[file.id] = stream
-				Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
-			else:
-				printerr("FileLogic: Couldn't open audio stream!")
-				data[file.id] = AudioStreamWAV.new()
+			Threader.add_task(_load_audio.bind(file), audio_loaded.emit.bind(file))
 		Type.PCK:
 			if OS.get_cmdline_args().has("--safe-mode"):
 				data[file.id] = null
@@ -490,8 +489,9 @@ func _load_video(file: FileData) -> void:
 
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty():
 		if FileAccess.file_exists(file.proxy_path) and temp_video.open(file.proxy_path):
-			return printerr("FileLogic: Couldn't open proxy video at path '%s'!" % file.proxy_path)
+			printerr("FileLogic: Couldn't open proxy video at path '%s'!" % file.proxy_path)
 	if !temp_video.is_open() and temp_video.open(path_to_load):
+		data[file.id] = null
 		return printerr("FileLogic: Couldn't open video at path '%s'!" % file.path)
 
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
@@ -513,6 +513,19 @@ func _load_video(file: FileData) -> void:
 	else:
 		audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
 		call_deferred("_on_wave_ready", file)
+
+
+func _load_audio(file: FileData) -> void:
+	if audio_pools.has(file.id):
+		audio_pools[file.id] = []
+
+	var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
+	if stream.open(file.path) == OK and stream.get_length() != 0:
+		data[file.id] = stream
+		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+	else:
+		printerr("FileLogic: Couldn't open audio stream!")
+		data[file.id] = AudioStreamWAV.new()
 
 
 func _create_wave(file: FileData) -> void:
