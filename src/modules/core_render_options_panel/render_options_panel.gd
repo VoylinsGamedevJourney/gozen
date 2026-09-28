@@ -10,6 +10,8 @@ extends PanelContainer
 @export var path_line_edit: LineEdit
 
 @export_category("Video")
+@export var video_toggle: CheckButton
+@export var video_grid: GridContainer
 @export var video_codec_option_button: OptionButton
 @export var video_quality_hslider: HSlider
 @export var video_quality_spin_box: SpinBox
@@ -21,6 +23,8 @@ extends PanelContainer
 @export var video_speed_spin_box: SpinBox
 
 @export_category("Audio")
+@export var audio_toggle: CheckButton
+@export var audio_grid: GridContainer
 @export var audio_codec_option_button: OptionButton
 @export var audio_channels_option_button: OptionButton
 
@@ -68,6 +72,13 @@ func _ready() -> void:
 	video_codec_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 	audio_codec_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
 	audio_channels_option_button.item_selected.connect(_on_render_settings_changed.unbind(1))
+
+	video_toggle.toggled.connect(_on_video_toggled)
+	audio_toggle.toggled.connect(_on_audio_toggled)
+
+	audio_codec_option_button.item_selected.connect(func(_index: int) -> void:
+			if not video_toggle.button_pressed:
+				_update_extension_in_path())
 
 	button_set_default_profile.pressed.connect(_on_set_default_profile_button_pressed)
 	option_button_render_profiles.item_selected.connect(_on_render_profile_option_button_item_selected)
@@ -140,7 +151,33 @@ func _on_region_end_changed(value: float) -> void:
 
 
 func _get_current_extension() -> String:
+	if not video_toggle.button_pressed:
+		return Utils.get_audio_extension(audio_codec_option_button.get_selected_id() as Encoder.AudioCodec)
 	return Utils.get_video_extension(video_codec_option_button.get_selected_id())
+
+
+func _update_extension_in_path() -> void:
+	var extension: String = _get_current_extension()
+	var path: String = path_line_edit.text
+	if path.is_empty():
+		return
+	path_line_edit.text = path.get_basename() + extension
+
+
+func _on_video_toggled(toggled_on: bool) -> void:
+	if not toggled_on and not audio_toggle.button_pressed:
+		audio_toggle.button_pressed = true
+	video_grid.visible = toggled_on
+	_update_extension_in_path()
+	_on_render_settings_changed()
+
+
+func _on_audio_toggled(toggled_on: bool) -> void:
+	if not toggled_on and not video_toggle.button_pressed:
+		video_toggle.button_pressed = true
+	audio_grid.visible = toggled_on
+	_update_extension_in_path()
+	_on_render_settings_changed()
 
 
 func _add_default_profiles() -> void:
@@ -172,7 +209,6 @@ func _setup_codec_option_buttons() -> void:
 	audio_codec_option_button.add_item("Opus", Encoder.AudioCodec.A_OPUS) # NO_TRANSLATE
 	audio_codec_option_button.add_item("Vorbis", Encoder.AudioCodec.A_VORBIS) # NO_TRANSLATE
 	audio_codec_option_button.add_item("FLAC", Encoder.AudioCodec.A_FLAC) # NO_TRANSLATE
-	audio_codec_option_button.add_item("None", Encoder.AudioCodec.A_NONE)
 
 	audio_channels_option_button.add_item("Stereo", 2)
 	audio_channels_option_button.add_item("Mono", 1)
@@ -262,6 +298,12 @@ func load_profile(profile: RenderProfile) -> void:
 			audio_channels_option_button.selected = index
 			break
 
+	video_toggle.set_pressed_no_signal(true)
+	audio_toggle.set_pressed_no_signal(true)
+	video_grid.visible = true
+	audio_grid.visible = true
+	_update_extension_in_path()
+
 	button_save_render_profile.visible = false
 	_is_loading_profile = false
 
@@ -292,7 +334,6 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	var video_codec_id: int = video_codec_option_button.get_item_id(index)
 	var extension: String = Utils.get_video_extension(video_codec_id)
 	var is_h264: bool = video_codec_id == Encoder.VideoCodec.V_H264
-	var path: String = path_line_edit.text
 	var allowed: Array[int] = []
 
 	# Hide speed if not H264.
@@ -300,7 +341,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 	(video_speed_hslider.get_parent() as HBoxContainer).visible = is_h264
 
 	# Changing the extension in path line edit.
-	path_line_edit.text = path.trim_suffix("." + path.get_extension()) + extension
+	_update_extension_in_path()
 
 	# First option is also the option it will select in case the currently
 	# selected audio codec does not fit the selected video codec.
@@ -348,13 +389,12 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 		audio_codec_option_button.select(audio_codec_index)
 
 
-func _on_start_render_button_pressed(video_only: bool = false, audio_only: bool = false, draft: bool = false) -> void:
+func _on_start_render_button_pressed(draft: bool = false) -> void:
+	var video_only: bool = not audio_toggle.button_pressed
+	var audio_only: bool = not video_toggle.button_pressed
+
 	var export_path: String = path_line_edit.text
-	var extension: String
-	if audio_only:
-		extension = Utils.get_audio_extension(audio_codec_option_button.get_selected_id() as Encoder.AudioCodec)
-	else:
-		extension = _get_current_extension()
+	var extension: String = _get_current_extension()
 
 	if export_path.is_empty():
 		export_path = Project.get_project_path().get_basename() + extension
@@ -445,8 +485,9 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	new_profile.b_frames = int(video_bframes_spin_box.value)
 	new_profile.h264_preset = int(video_speed_hslider.value) as Encoder.H264Presets
 
-	if !DirAccess.dir_exists_absolute(get_user_profiles_path()) and DirAccess.make_dir_recursive_absolute(get_user_profiles_path()):
-		printerr("RenderScreen: Couldn't create directory at '%s'!" % get_user_profiles_path())
+	if !DirAccess.dir_exists_absolute(get_user_profiles_path()):
+		if DirAccess.make_dir_recursive_absolute(get_user_profiles_path()):
+			printerr("RenderScreen: Couldn't create directory at '%s'!" % get_user_profiles_path())
 
 	# Fix filename to not cause issues.
 	var save_name: String = profile_name.to_lower().validate_filename()
@@ -478,16 +519,9 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 
 func _on_extra_render_button_pressed() -> void:
 	var popup: PopupMenu = PopupManager.create_menu()
-	popup.add_item(tr("Video only"), 0)
-	popup.add_item(tr("Audio only"), 1)
-	popup.add_item(tr("Draft"), 2)
+	popup.add_item(tr("Draft"), 0)
 
-	popup.id_pressed.connect(func(id: int) -> void:
-			if id == 0:
-				await _on_start_render_button_pressed(true, false, false)
-			elif id == 1:
-				await _on_start_render_button_pressed(false, true, false)
-			elif id == 2:
-				await _on_start_render_button_pressed(false, false, true))
-
+	# There's only "Draft" as an option for now.
+	popup.id_pressed.connect(func(_id: int) -> void:
+			await _on_start_render_button_pressed(true))
 	PopupManager.show_menu(popup)

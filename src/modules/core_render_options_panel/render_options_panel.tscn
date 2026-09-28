@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://17gcpvhkgkjl" path="res://assets/icons/open.tres" id="2_e0lmu"]
 [ext_resource type="Texture2D" uid="uid://diadjef0vgd1o" path="res://assets/icons/arrow_down.tres" id="3_bqj0i"]
 
-[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "path_line_edit", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "path_line_edit", "video_toggle", "video_grid", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_toggle", "audio_grid", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 custom_minimum_size = Vector2(300, 100)
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,6 +18,8 @@ button_save_render_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/
 button_set_default_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SetDefaultProfileButton")
 option_button_render_profiles = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
 path_line_edit = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
+video_toggle = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoTitleHBox/VideoCheckButton")
+video_grid = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid")
 video_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/VideoCodecOptionButton")
 video_quality_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHBox/QualityHSlider")
 video_quality_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/QualityHBox/QualitySpinBox")
@@ -26,6 +28,8 @@ video_bframes_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/Vide
 video_speed_label = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedLabel")
 video_speed_hslider = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHBox/SpeedHSlider")
 video_speed_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid/SpeedHBox/SpeedSpinBox")
+audio_toggle = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox/AudioCheckButton")
+audio_grid = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid")
 audio_codec_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioCodecOptionButton")
 audio_channels_option_button = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid/AudioChannelsOptionButton")
 threads_spin_box = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/ThreadsGrid/ThreadsSpinBox")
@@ -61,8 +65,9 @@ layout_mode = 2
 columns = 2
 
 [node name="RenderProfilesLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=257110258]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 text = "Render profile"
 
 [node name="RenderProfilesHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=1741376081]
@@ -88,7 +93,9 @@ expand_icon = true
 allow_reselect = true
 
 [node name="PathLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=430655514]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 text = "Export path"
 
 [node name="RenderPathHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=1540662243]
@@ -109,17 +116,26 @@ stretch_mode = 5
 [node name="Line0" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1541658923]
 layout_mode = 2
 
-[node name="VideoLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=629053772]
+[node name="VideoTitleHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=331540696]
 layout_mode = 2
+
+[node name="VideoLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoTitleHBox" unique_id=629053772]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render video settings"
+
+[node name="VideoCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoTitleHBox" unique_id=1138299803]
+layout_mode = 2
 
 [node name="VideoGrid" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=588353333]
 layout_mode = 2
 columns = 2
 
 [node name="CodecLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1045082]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 text = "Video codec"
 
 [node name="VideoCodecOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1918135312]
@@ -130,6 +146,7 @@ size_flags_horizontal = 3
 [node name="QualityLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=594486059]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 tooltip_text = "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and highest quality setting is 15.
 Default is set to 18 Used for adjusting bitrate which
 has an impact on quality and size. Value 0 gives the best,
@@ -158,6 +175,7 @@ value = 18.0
 [node name="SpeedLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=2131112934]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_horizontal = 0
 tooltip_text = "Adjusts the speed for encoding H264. Setting the speed too high might have a negative impact on the final video quality."
 mouse_filter = 1
 text = "Speed"
@@ -180,10 +198,20 @@ layout_mode = 2
 max_value = 8.0
 value = 3.0
 
+[node name="AdvancedVideoLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=328385009]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"title_label"
+text = "Advanced video settings"
+
+[node name="Spacer" type="Control" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1917631447]
+layout_mode = 2
+
 [node name="GOPSizeLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=339081235]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+size_flags_horizontal = 0
 mouse_filter = 1
 text = "Gop size"
 
@@ -198,7 +226,8 @@ alignment = 2
 [node name="BFramesLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/VideoGrid" unique_id=1994113596]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-tooltip_text = "Group Of Pictures. Higher value is better for compression compared to a lower value. But how higher the value is, the less precise it will get for seeking and scrubbing through the video playback. Put to a low value if you intend to use the rendered video for editing."
+size_flags_horizontal = 0
+tooltip_text = "B-frames (Bi-directional predictive frames) improve compression and visual quality by referencing both past and future frames. Higher values reduce file size but increase encoding time and player decoding requirements. Values between 2 and 4 are generally recommended."
 mouse_filter = 1
 text = "B frames"
 
@@ -210,20 +239,38 @@ value = 15.0
 allow_greater = true
 alignment = 2
 
+[node name="AdvancedVideoVBox" type="VBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=12670941]
+layout_mode = 2
+
+[node name="AdvancedVideoHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox/AdvancedVideoVBox" unique_id=367049203]
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="Spacer" type="Control" parent="Margin/Panel/Margin/ScrollContainer/VBox/AdvancedVideoVBox/AdvancedVideoHBox" unique_id=723281412]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
 [node name="Line1" type="HSeparator" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1637046039]
 layout_mode = 2
 
-[node name="AudioLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=1222755429]
+[node name="AudioTitleHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=412005165]
+layout_mode = 2
+
+[node name="AudioLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1222755429]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Render audio settings"
+
+[node name="AudioCheckButton" type="CheckButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioTitleHBox" unique_id=1327401113]
+layout_mode = 2
 
 [node name="AudioGrid" type="GridContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox" unique_id=323372018]
 layout_mode = 2
 columns = 2
 
 [node name="CodecLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=1549662471]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Audio codec"
 
@@ -233,6 +280,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ChannelsLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/AudioGrid" unique_id=901267617]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Audio channels"
 
