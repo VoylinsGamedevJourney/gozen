@@ -1,6 +1,7 @@
 class_name KeyframeTrack
 extends ColorRect
 
+signal keyframe_added_effect(frame: int)
 signal keyframe_moved_effect(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool)
 signal keyframe_deleted_effect(frame: int)
 signal keyframe_dragged_to(frame: int)
@@ -52,32 +53,54 @@ func _gui_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventMouseMotion:
-		var mouse_x: float = get_local_mouse_position().x
-		var frame: int = _get_frame_at_x(mouse_x)
+		_gui_mouse_motion(event as InputEventMouseMotion)
+	elif event is InputEventMouseButton:
+		_gui_mouse_button(event as InputEventMouseButton)
 
-		if _is_dragging:
-			if get_local_mouse_position().distance_to(_drag_start_pos) > 3.0:
-				frame = clampi(frame, 0, clip_duration)
-				keyframe_dragged_to.emit(frame)
-				queue_redraw()
-		elif _is_scrubbing:
-			frame = clampi(frame, 0, clip_duration - 1)
+
+func _gui_mouse_motion(_event: InputEventMouseMotion) -> void:
+	var mouse_x: float = get_local_mouse_position().x
+	var frame: int = _get_frame_at_x(mouse_x)
+
+	if _is_dragging:
+		if get_local_mouse_position().distance_to(_drag_start_pos) > 3.0:
+			frame = clampi(frame, 0, clip_duration)
 			keyframe_dragged_to.emit(frame)
 			queue_redraw()
+	elif _is_scrubbing:
+		frame = clampi(frame, 0, clip_duration - 1)
+		keyframe_dragged_to.emit(frame)
+		queue_redraw()
+	else:
+		_hovered_frame = _find_closest_keyframe(frame)
+		if _hovered_frame != -1:
+			mouse_default_cursor_shape = CURSOR_POINTING_HAND
 		else:
-			_hovered_frame = _find_closest_keyframe(frame)
-			if _hovered_frame != -1:
-				mouse_default_cursor_shape = CURSOR_POINTING_HAND
-			else:
-				mouse_default_cursor_shape = CURSOR_ARROW
-			queue_redraw()
+			mouse_default_cursor_shape = CURSOR_ARROW
+		queue_redraw()
 
-	if event is not InputEventMouseButton:
-		return
 
-	var mouse_event: InputEventMouseButton = event
-	if mouse_event.pressed:
-		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+func _gui_mouse_button(event: InputEventMouseButton) -> void:
+	if event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.double_click:
+				if _is_scrubbing:
+					_is_scrubbing = false
+					EditorCore.finish_scrub()
+				_is_dragging = false
+				_dragged_frame = -1
+
+				var mouse_x: float = get_local_mouse_position().x
+				var frame: int = clampi(_get_frame_at_x(mouse_x), 0, maxi(0, clip_duration - 1))
+				var target_frame: int = _find_closest_keyframe(frame)
+				if target_frame == -1:
+					target_frame = frame
+				keyframe_added_effect.emit(target_frame)
+				_hovered_frame = target_frame
+				queue_redraw()
+				accept_event()
+				return
+
 			if _hovered_frame != -1:
 				_is_dragging = true
 				_dragged_frame = _hovered_frame
@@ -89,14 +112,13 @@ func _gui_input(event: InputEvent) -> void:
 				var frame: int = clampi(_get_frame_at_x(mouse_x), 0, clip_duration)
 				keyframe_dragged_to.emit(frame)
 				queue_redraw()
-		elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and _hovered_frame > 0:
+		elif event.button_index == MOUSE_BUTTON_RIGHT and _hovered_frame > 0:
 			keyframe_deleted_effect.emit(_hovered_frame)
 			_hovered_frame = -1
 			mouse_default_cursor_shape = CURSOR_ARROW
 			queue_redraw()
-
-	elif not mouse_event.pressed:
-		if _is_dragging and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+	else: # Not pressed.
+		if _is_dragging and event.button_index == MOUSE_BUTTON_LEFT:
 			var final_pos: Vector2 = get_local_mouse_position()
 			var new_frame: int = clampi(_get_frame_at_x(final_pos.x), 0, clip_duration)
 
@@ -107,7 +129,7 @@ func _gui_input(event: InputEvent) -> void:
 			_is_dragging = false
 			_dragged_frame = -1
 			queue_redraw()
-		elif _is_scrubbing and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+		elif _is_scrubbing and event.button_index == MOUSE_BUTTON_LEFT:
 			_is_scrubbing = false
 			EditorCore.finish_scrub()
 
@@ -174,7 +196,7 @@ func _get_frame_at_x(x_pos: float) -> int:
 		return 0
 
 	var ratio: float = (x_pos - MARGIN) / width
-	return int(ratio * (clip_duration - 1))
+	return int(ratio * maxf(1.0, float(clip_duration - 1)))
 
 
 func _find_closest_keyframe(target_frame: int) -> int:
@@ -191,7 +213,7 @@ func _find_closest_keyframe(target_frame: int) -> int:
 	var found_frame: int = -1
 	var min_dist: int = 9999999
 	for param: EffectParam in effect.params:
-		if !effect.keyframes.has(param.id) or !param.keyframeable:
+		if not effect.keyframes.has(param.id) or not param.keyframeable:
 			continue
 		for frame: int in effect.keyframes[param.id]:
 			var dist: int = abs(frame - target_frame)

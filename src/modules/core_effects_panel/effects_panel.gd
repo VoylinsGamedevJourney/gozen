@@ -95,33 +95,32 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if !PopupManager._open_popups.is_empty() or !Project.is_loaded: return
-
-	var focus_owner: Control = get_viewport().gui_get_focus_owner()
-	var is_ui_cancel: bool = event.is_action_pressed("ui_cancel", false, true)
-	if focus_owner is LineEdit or focus_owner is TextEdit:
-		if is_ui_cancel:
-			focus_owner.release_focus()
-			get_viewport().set_input_as_handled()
-		return
-	elif event.is_action_pressed("add_effect", false, true):
-		_open_add_effects_popup(0, false)
-	elif is_ui_cancel:
-		_on_clip_pressed(null)
-
-	var has_point: bool = get_global_rect().has_point(get_global_mouse_position())
-	if has_point and _shortcuts_enabled:
-		if event is InputEventKey and (event as InputEventKey).pressed:
-			var key_code: Key = (event as InputEventKey).keycode
-			var keys: Dictionary[Key, Callable] = {
-					KEY_1: _on_special_pressed,
-					KEY_2: _on_transitions_pressed,
-					KEY_3: _on_visuals_pressed,
-					KEY_4: _on_audio_pressed,
-					KEY_5: _on_fold_all_pressed }
-			if key_code in keys:
-				keys[key_code].call()
+	if PopupManager._open_popups.is_empty() and Project.is_loaded:
+		var focus_owner: Control = get_viewport().gui_get_focus_owner()
+		var is_ui_cancel: bool = event.is_action_pressed("ui_cancel", false, true)
+		if focus_owner is LineEdit or focus_owner is TextEdit:
+			if is_ui_cancel:
+				focus_owner.release_focus()
 				get_viewport().set_input_as_handled()
+			return
+		elif event.is_action_pressed("add_effect", false, true):
+			_open_add_effects_popup(0, false)
+		elif is_ui_cancel:
+			_on_clip_pressed(null)
+
+		var has_point: bool = get_global_rect().has_point(get_global_mouse_position())
+		if has_point and _shortcuts_enabled:
+			if event is InputEventKey and (event as InputEventKey).pressed:
+				var key_code: Key = (event as InputEventKey).keycode
+				var keys: Dictionary[Key, Callable] = {
+						KEY_1: _on_special_pressed,
+						KEY_2: _on_transitions_pressed,
+						KEY_3: _on_visuals_pressed,
+						KEY_4: _on_audio_pressed,
+						KEY_5: _on_fold_all_pressed }
+				if key_code in keys:
+					keys[key_code].call()
+					get_viewport().set_input_as_handled()
 
 
 func _notification(what: int) -> void:
@@ -741,6 +740,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		track.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		track.setup(effect, active_clip.duration, relative_frame_nr)
 
+		track.keyframe_added_effect.connect(_on_keyframe_added_effect_ui.bind(effect, is_visual))
 		track.keyframe_moved_effect.connect(_on_keyframe_moved_effect_ui.bind(effect, is_visual))
 		track.keyframe_deleted_effect.connect(_on_keyframe_deleted_effect_ui.bind(effect, is_visual))
 		track.keyframe_dragged_to.connect(_on_keyframe_dragged_to_effect_ui)
@@ -853,6 +853,37 @@ func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
 						InputManager.undo_redo.add_undo_method(EffectsHandler._remove_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr))
 
 	InputManager.undo_redo.commit_action()
+
+
+func _on_keyframe_added_effect_ui(frame: int, effect: Effect, is_visual: bool) -> void:
+	if EditorCore.is_playing:
+		EditorCore.is_playing = false
+	EditorCore.set_frame(active_clip.start + frame)
+
+	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
+		var has_missing: bool = false
+		for param: EffectParam in effect.params:
+			if param.keyframeable and not (effect.keyframes.get(param.id, {}) as Dictionary).has(frame):
+				has_missing = true
+				break
+		if not has_missing:
+			_update_ui_values()
+			return
+
+		InputManager.undo_redo.create_action("Add Effect Keyframe(s)")
+		for param: EffectParam in effect.params:
+			if param.keyframeable:
+				var param_id: String = param.id
+				var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
+				if not param_keyframes.has(frame):
+					var value: Variant = _get_current_ui_value_for_param(effect, param_id, frame)
+					InputManager.undo_redo.add_do_method(FileLogic._set_text_keyframe.bind(active_file, param_id, frame, value))
+					InputManager.undo_redo.add_undo_method(FileLogic._remove_text_keyframe.bind(active_file, param_id, frame))
+		InputManager.undo_redo.commit_action()
+	else:
+		var effect_index: int = _get_effect_index(effect, is_visual)
+		EffectsHandler.add_effect_keyframe_at_frame(active_clip, effect_index, is_visual, frame)
+	_update_ui_values()
 
 
 func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect: Effect, is_visual: bool) -> void:
@@ -1277,7 +1308,7 @@ func _update_ui_values() -> void:
 
 
 func _update_transition_ui_values(transition_vbox: VBoxContainer, transition: Effect, is_left: bool) -> void:
-	if not transition: return
+	if !transition: return
 	var style_hbox: HBoxContainer = transition_vbox.get_node_or_null(
 			"StyleLeft" if is_left else "StyleRight") as HBoxContainer
 	if style_hbox:
@@ -1308,7 +1339,7 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 				if param.keyframeable:
 					has_keyframeable = true
 					var effect_keyframes: Dictionary = effect.keyframes.get(param.id, {})
-					if not effect_keyframes.has(frame_nr):
+					if !effect_keyframes.has(frame_nr):
 						all_keyframed = false
 						break
 			if has_keyframeable:
@@ -1323,7 +1354,7 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		var param_hbox: HBoxContainer = content_vbox.get_node_or_null("HBOX_" + param_id)
-		if not param_hbox:
+		if !param_hbox:
 			continue
 
 		var reset_button: TextureButton = param_hbox.get_child(0).get_child(1)
@@ -1382,7 +1413,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 			if container.get_child_count() > index + child_offset:
 				effect_container = container.get_child(index + child_offset) as FoldableContainer
 
-	if not effect_container:
+	if !effect_container:
 		return
 
 	var content_vbox: VBoxContainer = effect_container.get_child(0)
@@ -1449,7 +1480,7 @@ func _on_switch_enabled(effect: Effect, is_visual: bool) -> void:
 	EffectsHandler.switch_enabled(active_clip, index, is_visual)
 	var section: FoldableContainer = section_visuals if is_visual else section_audio
 	var child_offset: int = 0
-	if not is_visual and active_file and active_file.audio_streams.size() > 1:
+	if !is_visual and active_file and active_file.audio_streams.size() > 1:
 		child_offset = 2
 
 	var container: Control = section.get_child(0).get_child(0)
@@ -1512,7 +1543,7 @@ func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, 
 			FileLogic.update_text_param(active_file, param_id, base_frame, value, old_value, false)
 		else:
 			var is_new: bool = not param_keyframes.has(frame_nr)
-			var old_value: Variant = param_keyframes[frame_nr] if not is_new else effect.get_value(param_obj, frame_nr)
+			var old_value: Variant = param_keyframes[frame_nr] if !is_new else effect.get_value(param_obj, frame_nr)
 			FileLogic.update_text_param(active_file, param_id, frame_nr, value, old_value, is_new)
 	else:
 		EffectsHandler.update_param(
@@ -1526,6 +1557,7 @@ func _jump_prev_keyframe(effect: Effect, param_id: String) -> void:
 	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
 	keys.sort()
+
 	var target: int = 0
 	for index: int in range(keys.size() - 1, -1, -1):
 		if keys[index] < relative_frame:
@@ -1538,6 +1570,7 @@ func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 	if not effect.keyframes.has(param_id):
 		EditorCore.set_frame(active_clip.end)
 		return
+
 	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 	var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
 	keys.sort()
@@ -1550,48 +1583,44 @@ func _jump_next_keyframe(effect: Effect, param_id: String) -> void:
 
 
 func _jump_prev_keyframe_all(effect: Effect) -> void:
-	if not active_clip:
-		return
+	if active_clip:
+		var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
+		var target: int = -1
+		for param: EffectParam in effect.params:
+			var param_id: String = param.id
+			if not effect.keyframes.has(param_id) or not param.keyframeable:
+				continue
 
-	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
-	var target: int = -1
-	for param: EffectParam in effect.params:
-		var param_id: String = param.id
-		if not effect.keyframes.has(param_id) or not param.keyframeable:
-			continue
+			var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
+			for key: int in keys:
+				if key < relative_frame:
+					target = maxi(target, key)
 
-		var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
-		for key: int in keys:
-			if key < relative_frame:
-				target = maxi(target, key)
-
-	if target == -1:
-		target = 0
-	EditorCore.set_frame(active_clip.start + target)
+		if target == -1:
+			target = 0
+		EditorCore.set_frame(active_clip.start + target)
 
 
 func _jump_next_keyframe_all(effect: Effect) -> void:
-	if not active_clip:
-		return
+	if active_clip:
+		var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
+		var target: int = -1
+		for param: EffectParam in effect.params:
+			var param_id: String = param.id
+			if not effect.keyframes.has(param_id) or not param.keyframeable:
+				continue
 
-	var relative_frame: int = clampi(EditorCore.visual_frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
-	var target: int = -1
-	for param: EffectParam in effect.params:
-		var param_id: String = param.id
-		if not effect.keyframes.has(param_id) or not param.keyframeable:
-			continue
+			var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
+			for key: int in keys:
+				if key > relative_frame:
+					if target == -1:
+						target = key
+					else:
+						target = mini(target, key)
 
-		var keys: Array = (effect.keyframes[param_id] as Dictionary).keys()
-		for key: int in keys:
-			if key > relative_frame:
-				if target == -1:
-					target = key
-				else:
-					target = mini(target, key)
-
-	if target == -1:
-		target = active_clip.duration
-	EditorCore.set_frame(active_clip.start + target)
+		if target == -1:
+			target = active_clip.duration
+		EditorCore.set_frame(active_clip.start + target)
 
 
 func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String) -> void:
@@ -1908,8 +1937,8 @@ func _on_audio_enable_button_toggled(toggled_on: bool) -> void:
 	section_audio.folded = !toggled_on
 
 
-func _toggle_section(target: FoldableContainer, shift: bool) -> void:
-	if shift:
+func _toggle_section(target: FoldableContainer) -> void:
+	if !Input.is_key_pressed(KEY_SHIFT):
 		if !target:
 			section_text.folded = true
 			section_module.folded = true
@@ -1929,19 +1958,19 @@ func _toggle_section(target: FoldableContainer, shift: bool) -> void:
 
 
 func _on_special_pressed() -> void:
-	_toggle_section(null, !Input.is_key_pressed(KEY_SHIFT))
+	_toggle_section(null)
 
 
 func _on_transitions_pressed() -> void:
-	_toggle_section(section_transitions, !Input.is_key_pressed(KEY_SHIFT))
+	_toggle_section(section_transitions)
 
 
 func _on_visuals_pressed() -> void:
-	_toggle_section(section_visuals, !Input.is_key_pressed(KEY_SHIFT))
+	_toggle_section(section_visuals)
 
 
 func _on_audio_pressed() -> void:
-	_toggle_section(section_audio, !Input.is_key_pressed(KEY_SHIFT))
+	_toggle_section(section_audio)
 
 
 func _on_fold_all_pressed() -> void:

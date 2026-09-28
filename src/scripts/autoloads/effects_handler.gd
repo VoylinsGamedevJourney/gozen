@@ -385,6 +385,43 @@ func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Str
 	effects_updated.emit()
 
 
+#---- Adding effect keyframes ----
+
+## Adds keyframes for all keyframeable parameters at a specific frame for this effect.
+func add_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, frame_nr: int) -> void:
+	var effect: Effect = _get_effect(clip, effect_index, is_visual)
+	if not effect:
+		return
+
+	var has_keyframeable: bool = false
+	var has_missing_keyframe: bool = false
+	for param: EffectParam in effect.params:
+		if param.keyframeable:
+			has_keyframeable = true
+			var keyframes: Dictionary = effect.keyframes.get(param.id, {})
+			if not keyframes.has(frame_nr):
+				has_missing_keyframe = true
+	if not has_keyframeable or not has_missing_keyframe:
+		return
+
+	InputManager.undo_redo.create_action("Add Effect Keyframe(s)")
+	for param: EffectParam in effect.params:
+		if not param.keyframeable:
+			continue
+
+		var param_id: String = param.id
+		var keyframes: Dictionary = effect.keyframes.get(param_id, {})
+		if not keyframes.has(frame_nr):
+			var new_value: Variant = effect.get_value(param, frame_nr)
+			InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+					clip, effect_index, is_visual, param_id, frame_nr, new_value))
+			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+					clip, effect_index, is_visual, param_id, frame_nr))
+	InputManager.undo_redo.commit_action()
+	Project.unsaved_changes = true
+	effects_updated.emit()
+
+
 #---- Moving effect keyframes ----
 
 ## Moves all keyframes from all parameters at old_frame to new_frame.
