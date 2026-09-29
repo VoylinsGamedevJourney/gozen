@@ -268,14 +268,6 @@ func get_audio_waveform_amp() -> float:
 	return data.audio_waveform_amp
 
 
-func set_use_native_dialog(value: bool) -> void:
-	data.use_native_dialog = value
-
-
-func get_use_native_dialog() -> bool:
-	return data.use_native_dialog
-
-
 func set_panel_tabs_position(value: int) -> void:
 	data.panel_tabs_position = value
 	apply_panel_tabs_position()

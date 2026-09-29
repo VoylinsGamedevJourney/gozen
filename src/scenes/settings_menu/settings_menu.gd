@@ -252,12 +252,6 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				"",
 				tr("Sometimes the waveforms aren't very clear due to audio levels being too low, with this setting you can adjust their intensity")),
 		create_header(tr("Dialogs")), Control.new(),
-		create_label(tr("Use native dialogs")),
-		create_check_button(
-				Settings.get_use_native_dialog(),
-				default_settings.use_native_dialog,
-				Settings.set_use_native_dialog,
-				tr("Native dialogs use your operating system's file browser and windows. Disabling this uses GoZen's built-in dialogs instead.")),
 		create_label(tr("Panel tabs position")),
 		create_option_button(
 				Settings.get_panel_tabs_positions(),

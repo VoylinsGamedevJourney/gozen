@@ -43,6 +43,11 @@ func _ready() -> void:
 		Print.info_editor(info_print[0], info_print[1])
 	Print.header_editor("--==--================--==--")
 
+	if OS.get_name() == "Windows":
+		register_windows_file_icons()
+	elif OS.get_name() in ["Linux", "FreeBSD"]:
+		register_linux_file_icons()
+
 	InputManager.on_show_editor_workspace.connect(switch_workspace.bind(0))
 	InputManager.on_show_render_workspace.connect(switch_workspace.bind(1))
 	InputManager.on_switch_workspace.connect(switch_workspace_quick)
@@ -620,3 +625,54 @@ func switch_workspace_quick() -> void:
 				next_index = (i + 1) % workspace_buttons.size()
 				break
 		switch_workspace(next_index)
+
+
+func register_windows_file_icons() -> void:
+	if OS.has_feature("editor"):
+		return
+
+	# Some notes for Window devs: I have no idea if this works, what I want it
+	# to do is add the GoZen icon as the icon for *.gozen files.
+	var exe_path: String = OS.get_executable_path().replace("/", "\\")
+	OS.execute("reg", ["add", "HKCU\\Software\\Classes\\.gozen", "/ve", "/d", "GoZen.Project", "/f"])
+	OS.execute("reg", ["add", "HKCU\\Software\\Classes\\GoZen.Project", "/ve", "/d", "GoZen Project", "/f"])
+	OS.execute("reg", ["add", "HKCU\\Software\\Classes\\GoZen.Project\\DefaultIcon", "/ve", "/d", "\"%s\",0" % exe_path, "/f"])
+	OS.execute("reg", ["add", "HKCU\\Software\\Classes\\GoZen.Project\\shell\\open\\command", "/ve", "/d", "\"%s\" \"%%1\"" % exe_path, "/f"])
+
+
+func register_linux_file_icons() -> void:
+	var home_path: String = OS.get_environment("HOME")
+	if home_path.is_empty():
+		return
+
+	var svg_folder: String = home_path.path_join(".local/share/icons/hicolor/scalable/mimetypes")
+	var xml_folder: String = home_path.path_join(".local/share/mime/packages")
+
+	var svg_file: String = svg_folder.path_join("application-x-gozen.svg")
+	var xml_file: String = xml_folder.path_join("application-x-gozen.xml")
+
+	# TODO: We should probably have a quick read of check if the file is still
+	# up-to-date when we add changes here in the future.
+	if FileAccess.file_exists(svg_file) and FileAccess.file_exists(xml_file):
+		return
+
+	DirAccess.make_dir_recursive_absolute(svg_folder)
+	DirAccess.make_dir_recursive_absolute(xml_folder)
+
+	var file: FileAccess = FileAccess.open("res://gozen.svg", FileAccess.READ)
+	var svg_data: String = file.get_as_text()
+	var xml_data: String = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<mime-info xmlns=\"http://www.freedesktop.org/standards/shared-mime-info\">
+	<mime-type type=\"application/x-gozen\">
+		<comment>GoZen Project</comment>
+		<glob pattern=\"*.gozen\"/>
+	</mime-type>
+</mime-info>"""
+
+	file = FileAccess.open(svg_file, FileAccess.WRITE)
+	file.store_string(svg_data)
+	file.close()
+	file = FileAccess.open(xml_file, FileAccess.WRITE)
+	file.store_string(xml_data)
+	file.close()
+	OS.execute("update-mime-database", [home_path.path_join(".local/share/mime")])

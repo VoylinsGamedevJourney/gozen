@@ -1,5 +1,6 @@
 extends Node
 
+
 enum {
 	SETTINGS,
 	PROJECT_SETTINGS,
@@ -99,10 +100,8 @@ func get_popup(popup: int) -> Control:
 
 func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array[String] = []) -> FileDialog:
 	var dialog: FileDialog = FileDialog.new()
-	var use_native_dialog: bool = Settings.get_use_native_dialog()
-
-	dialog.force_native = use_native_dialog
-	dialog.use_native_dialog = use_native_dialog
+	dialog.force_native = true
+	dialog.use_native_dialog = true
 	dialog.title = title
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.file_mode = mode
@@ -115,9 +114,7 @@ func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array
 
 func create_accept_dialog(title: String) -> AcceptDialog:
 	var dialog: AcceptDialog = AcceptDialog.new()
-	var use_native_dialog: bool = Settings.get_use_native_dialog()
-
-	dialog.force_native = use_native_dialog
+	dialog.force_native = true
 	dialog.title = title
 
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
@@ -126,9 +123,7 @@ func create_accept_dialog(title: String) -> AcceptDialog:
 
 func create_confirmation_dialog(title: String, text: String) -> ConfirmationDialog:
 	var dialog: ConfirmationDialog = ConfirmationDialog.new()
-	var use_native_dialog: bool = Settings.get_use_native_dialog()
-
-	dialog.force_native = use_native_dialog
+	dialog.force_native = true
 	dialog.title = title
 	dialog.dialog_text = text
 

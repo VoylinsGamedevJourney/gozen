@@ -18,7 +18,6 @@ var show_menu_bar: bool = true
 var show_safe_areas_on_startup: bool = false
 var audio_waveform_style: AudioWaveformStyle = AudioWaveformStyle.CENTER
 var audio_waveform_amp: float = 1.0
-var use_native_dialog: bool = true
 var panel_tabs_position: int = 0
 
 # Defaults
